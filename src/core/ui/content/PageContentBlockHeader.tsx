@@ -14,6 +14,7 @@ export interface PageContentBlockHeaderProps {
   dialogAction?: ReactNode;
   disclaimer?: ReactNode;
   fullWidth?: boolean;
+  noWrap?: boolean;
 }
 
 const PageContentBlockHeader = ({
@@ -23,10 +24,15 @@ const PageContentBlockHeader = ({
   dialogAction,
   disclaimer,
   fullWidth,
+  noWrap = false,
   children,
 }: PropsWithChildren<PageContentBlockHeaderProps>) => {
   const isSmallScreen = useMediaQuery((theme: Theme) => theme.breakpoints.down('lg'));
+
+  // In desktop the expand button and the actions go in the same row,
+  // In mobile the expand button stays but the actions collapse down unless we pass noWrap
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
+  const separateActions = isMobile && !noWrap;
 
   const nextBlock = useNextBlockAnchor();
 
@@ -54,16 +60,15 @@ const PageContentBlockHeader = ({
           {disclaimer && <CaptionSmall>{disclaimer}</CaptionSmall>}
           {children}
         </Box>
-        {!isMobile && (
-          // In desktop the expand button and the actions go in the same row
+        {!separateActions && (
           <Actions>
             {actions}
             {dialogAction}
           </Actions>
         )}
-        {isMobile && <Actions>{dialogAction}</Actions>}
+        {separateActions && <Actions>{dialogAction}</Actions>}
       </Box>
-      {isMobile && (
+      {separateActions && (
         <Actions marginTop={gutters(-0.5)} flexDirection="row">
           {actions}
         </Actions>

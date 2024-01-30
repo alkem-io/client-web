@@ -76,6 +76,7 @@ const DashboardNavigation = ({
             </IconButton>
           </Tooltip>
         }
+        noWrap
       />
       <Collapse in={showAll} collapsedSize={allItemsFit ? 0 : theme.spacing(6 * VISIBLE_ROWS_WHEN_COLLAPSED - 2)}>
         <Gutters disablePadding>
