@@ -5,7 +5,7 @@ import CommunityUpdatesDialog from '../../../community/community/CommunityUpdate
 import ContributorsDialog from '../../../community/community/ContributorsDialog/ContributorsDialog';
 import OpportunityContributorsDialogContent from '../../../community/community/entities/OpportunityContributorsDialogContent';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
-import useBackToParentPage from '../../../shared/utils/useBackToParentPage';
+import useBackToParentPage from '../../../../core/routing/deprecated/useBackToParentPage';
 import OpportunityPageLayout from '../layout/OpportunityPageLayout';
 import JourneyDashboardView from '../../common/tabs/Dashboard/JourneyDashboardView';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';

@@ -8,7 +8,7 @@ import {
   useInnovationPacksLazyQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { useParams } from 'react-router-dom';
-import useBackToParentPage from '../../../shared/utils/useBackToParentPage';
+import useBackToParentPage from '../../../../core/routing/deprecated/useBackToParentPage';
 import AdminPostTemplatesSection from '../templates/PostTemplates/AdminPostTemplatesSection';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import AdminInnovationTemplatesSection from '../templates/InnovationTemplates/AdminInnovationTemplatesSection';
