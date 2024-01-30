@@ -3,7 +3,7 @@ import { useResolvedPath } from 'react-router-dom';
 import ChallengePageContainer from '../containers/ChallengePageContainer';
 import ChallengePageLayout from '../layout/ChallengePageLayout';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
-import useBackToParentPage from '../../../shared/utils/useBackToParentPage';
+import useBackToParentPage from '../../../../core/routing/deprecated/useBackToParentPage';
 import CommunityUpdatesDialog from '../../../community/community/CommunityUpdatesDialog/CommunityUpdatesDialog';
 import ContributorsDialog from '../../../community/community/ContributorsDialog/ContributorsDialog';
 import ChallengeContributorsDialogContent from '../../../community/community/entities/ChallengeContributorsDialogContent';
