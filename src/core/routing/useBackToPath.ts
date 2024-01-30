@@ -14,13 +14,13 @@ const useBackToPath = () => {
     if (!canGoBack) {
       navigate(parentPagePath);
     }
-    const eventHandler = () => {
-      window.removeEventListener('popstate', eventHandler);
+    const handlePopState = () => {
+      window.removeEventListener('popstate', handlePopState);
       if (window.location.pathname !== parentPagePath) {
         navigate(parentPagePath);
       }
     };
-    window.addEventListener('popstate', eventHandler);
+    window.addEventListener('popstate', handlePopState);
     navigate(-1);
   }, []);
 };
