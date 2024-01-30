@@ -2687,7 +2687,12 @@ export const SpaceDashboardNavigationProfileFragmentDoc = gql`
     tagset {
       ...TagsetDetails
     }
-    visual(type: CARD) {
+    avatar: visual(type: AVATAR) {
+      id
+      uri
+      alternativeText
+    }
+    cardBanner: visual(type: CARD) {
       id
       uri
       alternativeText
@@ -3083,6 +3088,7 @@ export const ConfigurationFragmentDoc = gql`
     locations {
       environment
       domain
+      landing
       about
       blog
       feedback

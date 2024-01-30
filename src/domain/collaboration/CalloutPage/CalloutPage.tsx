@@ -16,6 +16,8 @@ import { isApolloNotFoundError } from '../../../core/apollo/hooks/useApolloError
 import { NotFoundPageLayout } from '../../journey/common/EntityPageLayout';
 import { Error404 } from '../../../core/pages/Errors/Error404';
 import useBackToPath from '../../../core/routing/useBackToPath';
+import usePageLayoutByEntity from '../../shared/utils/usePageLayoutByEntity';
+import { EntityPageSection } from '../../shared/layout/EntityPageSection';
 
 interface CalloutLocation {
   journeyTypeName: JourneyTypeName;
@@ -104,8 +106,14 @@ const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: Cal
 
   const isSmallScreen = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
 
+  const PageLayout = usePageLayoutByEntity(journeyTypeName);
+
   if (isCalloutLoading) {
-    return <Loading />;
+    return (
+      <PageLayout currentSection={EntityPageSection.Contribute}>
+        <Loading />
+      </PageLayout>
+    );
   }
 
   if (isApolloNotFoundError(error)) {
