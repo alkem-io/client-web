@@ -79,7 +79,7 @@ const DashboardNavigation = ({
       />
       <Collapse in={showAll} collapsedSize={allItemsFit ? 0 : theme.spacing(6 * VISIBLE_ROWS_WHEN_COLLAPSED - 2)}>
         <Gutters disablePadding>
-          {dashboardNavigation?.map(({ id, nameId: challengeNameId, visual, member, ...challenge }) => {
+          {dashboardNavigation?.map(({ id, nameId: challengeNameId, avatar, cardBanner, member, ...challenge }) => {
             if (!spaceNameId) {
               return <Skeleton key={id} />;
             }
@@ -89,12 +89,12 @@ const DashboardNavigation = ({
               <DashboardNavigationItemView
                 key={id}
                 url={challengeUrl}
-                visualUri={visual?.uri}
+                visualUri={avatar?.uri}
                 tooltip={
                   <ChallengeCard
                     challengeId={id}
                     challengeNameId={challengeNameId}
-                    banner={visual}
+                    banner={cardBanner}
                     displayName={challenge.displayName}
                     tags={challenge.tags ?? []}
                     tagline={challenge.tagline}
@@ -112,31 +112,33 @@ const DashboardNavigation = ({
                 {...challenge}
               >
                 {Boolean(challenge.children?.length) &&
-                  challenge.children?.map(({ id, nameId: opportunityNameId, visual, member, ...opportunity }) => (
-                    <DashboardNavigationItemView
-                      key={id}
-                      url={spaceNameId && buildOpportunityUrl(spaceNameId, challengeNameId, opportunityNameId)}
-                      visualUri={visual?.uri}
-                      tooltip={
-                        <OpportunityCard
-                          opportunityId={id}
-                          banner={visual}
-                          displayName={opportunity.displayName}
-                          tags={opportunity.tags ?? []}
-                          tagline={opportunity.tagline}
-                          vision={opportunity.vision ?? ''}
-                          innovationFlowState={opportunity.lifecycleState}
-                          journeyUri={buildOpportunityUrl(spaceNameId, challengeNameId, opportunityNameId)}
-                          challengeDisplayName={challenge.displayName}
-                          challengeUri={challengeUrl}
-                          spaceVisibility={spaceVisibility}
-                          sx={{ width: gutters(15) }}
-                          member={member}
-                        />
-                      }
-                      {...opportunity}
-                    />
-                  ))}
+                  challenge.children?.map(
+                    ({ id, nameId: opportunityNameId, avatar, cardBanner, member, ...opportunity }) => (
+                      <DashboardNavigationItemView
+                        key={id}
+                        url={spaceNameId && buildOpportunityUrl(spaceNameId, challengeNameId, opportunityNameId)}
+                        visualUri={avatar?.uri}
+                        tooltip={
+                          <OpportunityCard
+                            opportunityId={id}
+                            banner={cardBanner}
+                            displayName={opportunity.displayName}
+                            tags={opportunity.tags ?? []}
+                            tagline={opportunity.tagline}
+                            vision={opportunity.vision ?? ''}
+                            innovationFlowState={opportunity.lifecycleState}
+                            journeyUri={buildOpportunityUrl(spaceNameId, challengeNameId, opportunityNameId)}
+                            challengeDisplayName={challenge.displayName}
+                            challengeUri={challengeUrl}
+                            spaceVisibility={spaceVisibility}
+                            sx={{ width: gutters(15) }}
+                            member={member}
+                          />
+                        }
+                        {...opportunity}
+                      />
+                    )
+                  )}
               </DashboardNavigationItemView>
             );
           })}

@@ -32,7 +32,11 @@ export interface DashboardNavigationItem {
   tagline: string;
   vision?: string;
   journeyTypeName: JourneyTypeName;
-  visual?: {
+  avatar?: {
+    uri: string;
+    alternativeText?: string;
+  };
+  cardBanner?: {
     uri: string;
     alternativeText?: string;
   };
@@ -62,7 +66,8 @@ const DashboardNavigationItemPropsGetter =
       displayName: journey.profile.displayName,
       tagline: journey.profile.tagline,
       vision: journey.context?.vision,
-      visual: journey.profile.visual,
+      avatar: journey.profile.avatar,
+      cardBanner: journey.profile.cardBanner,
       tags: journey.profile.tagset?.tags,
       lifecycleState: journey.lifecycle?.state,
       private: disabled,
