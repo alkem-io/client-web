@@ -2,8 +2,8 @@ import React, { FC } from 'react';
 import { ActivityBaseView } from './ActivityBaseView';
 import { ActivityViewProps } from './ActivityViewProps';
 import { buildUpdatesUrl } from '../../../../../main/routing/urlBuilders';
-import ActivityDescriptionByType from '../../../../shared/components/ActivityDescription/ActivityDescriptionByType';
 import { ActivityEventType } from '../../../../../core/apollo/generated/graphql-schema';
+import ActivitySubjectMarkdown from './ActivitySubjectMarkdown';
 
 export interface ActivityUpdateSentViewProps extends ActivityViewProps {
   message: string;
@@ -27,7 +27,7 @@ export const ActivityUpdateSentView: FC<ActivityUpdateSentViewProps> = ({
       type={type}
       author={author}
       loading={loading}
-      title={<ActivityDescriptionByType activityType={type} subject={message} />}
+      title={<ActivitySubjectMarkdown>{message}</ActivitySubjectMarkdown>}
       url={url}
       footerComponent={footerComponent}
       contextDisplayName={journeyDisplayName}
