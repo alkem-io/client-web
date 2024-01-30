@@ -9,7 +9,7 @@ import {
 } from '../../../../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../../../../core/routing/useUrlParams';
 import { useNotification } from '../../../../../../core/ui/notifications/useNotification';
-import useBackToParentPage from '../../../../../shared/utils/useBackToParentPage';
+import useBackToParentPage from '../../../../../../core/routing/deprecated/useBackToParentPage';
 import AdminInnovationTemplatesSection from '../../InnovationTemplates/AdminInnovationTemplatesSection';
 import AdminPostTemplatesSection from '../../PostTemplates/AdminPostTemplatesSection';
 import AdminWhiteboardTemplatesSection from '../../WhiteboardTemplates/AdminWhiteboardTemplatesSection';
