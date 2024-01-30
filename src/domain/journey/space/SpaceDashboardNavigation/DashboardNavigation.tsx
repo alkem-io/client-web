@@ -1,5 +1,5 @@
 import { ExpandMore, HelpOutlineOutlined, HubOutlined } from '@mui/icons-material';
-import { ButtonBase, Collapse, IconButton, Skeleton, Tooltip, useMediaQuery, useTheme } from '@mui/material';
+import { Box, ButtonBase, Collapse, IconButton, Skeleton, Tooltip, useMediaQuery, useTheme } from '@mui/material';
 import { Theme } from '@mui/material/styles';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -60,7 +60,11 @@ const DashboardNavigation = ({
     <PageContentBlock>
       <PageContentBlockHeader
         icon={<HubOutlined />}
-        title={t('components.dashboardNavigation.title', { space: displayName })}
+        title={
+          <Tooltip title={<Caption>{t('components.dashboardNavigation.title', { space: displayName })}</Caption>}>
+            <Box component="span">{t('components.dashboardNavigation.title', { space: displayName })}</Box>
+          </Tooltip>
+        }
         actions={
           <Tooltip
             title={<Caption>{t('components.dashboardNavigation.help')}</Caption>}
