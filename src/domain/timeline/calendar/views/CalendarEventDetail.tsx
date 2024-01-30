@@ -80,15 +80,15 @@ const CalendarEventDetail = ({
                 bannerOverlayOverride={<EventCardHeader event={event} />}
                 {...rest}
               />
-              <Actions justifyContent="space-between" marginTop={gutters()}>
-                {actions}
-                {canDelete && (
-                  <Button startIcon={<DeleteIcon />} onClick={onDelete}>
-                    {t('buttons.delete')}
-                  </Button>
-                )}
-              </Actions>
             </DialogContent>
+            <Actions justifyContent="space-between" padding={gutters()}>
+              {actions}
+              {canDelete && (
+                <Button startIcon={<DeleteIcon />} onClick={onDelete}>
+                  {t('buttons.delete')}
+                </Button>
+              )}
+            </Actions>
           </>
         );
       }}
