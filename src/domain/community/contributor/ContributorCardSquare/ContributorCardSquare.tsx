@@ -7,8 +7,12 @@ import ConditionalLink from '../../../../core/ui/link/ConditionalLink';
 import UserCard from '../../user/userCard/UserCard';
 import withElevationOnHover from '../../../shared/components/withElevationOnHover';
 import { useTranslation } from 'react-i18next';
-import { useSendMessageToUserMutation } from '../../../../core/apollo/generated/apollo-hooks';
+import {
+  useSendMessageToOrganizationMutation,
+  useSendMessageToUserMutation,
+} from '../../../../core/apollo/generated/apollo-hooks';
 import { DirectMessageDialog } from '../../../communication/messaging/DirectMessaging/DirectMessageDialog';
+import { ContributorType } from '../CommunityContributorsBlockWide/CommunityContributorsBlockWideContent';
 
 interface ContributorCardTooltip {
   tags: string[];
@@ -25,6 +29,7 @@ export interface ContributorCardSquareProps {
   tooltip?: ContributorCardTooltip;
   url: string;
   isContactable?: boolean;
+  contributorType?: ContributorType;
   roleName?: ReactNode;
 }
 
@@ -59,9 +64,10 @@ const ElevatedPaper = withElevationOnHover(Paper);
 
 export const ContributorCardSquare: FC<ContributorCardSquareProps> = props => {
   const styles = useStyles();
-  const { id, displayName, avatar, avatarAltText, url, tooltip, isContactable, roleName } = props;
+  const { id, displayName, avatar, avatarAltText, url, tooltip, isContactable, roleName, contributorType } = props;
   const { t } = useTranslation();
   const [sendMessageToUser] = useSendMessageToUserMutation();
+  const [sendMessageToOrganization] = useSendMessageToOrganizationMutation();
   const [isMessageUserDialogOpen, setIsMessageUserDialogOpen] = useState(false);
 
   const messageReceivers = [
@@ -74,14 +80,25 @@ export const ContributorCardSquare: FC<ContributorCardSquareProps> = props => {
         throw new Error('User not loaded.');
       }
 
-      await sendMessageToUser({
-        variables: {
-          messageData: {
-            message: messageText,
-            receiverIds: [id],
+      if (contributorType === ContributorType.People) {
+        await sendMessageToUser({
+          variables: {
+            messageData: {
+              message: messageText,
+              receiverIds: [id],
+            },
           },
-        },
-      });
+        });
+      } else {
+        await sendMessageToOrganization({
+          variables: {
+            messageData: {
+              message: messageText,
+              organizationId: id,
+            },
+          },
+        });
+      }
     },
     [sendMessageToUser, id]
   );
