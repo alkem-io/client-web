@@ -146,7 +146,7 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
       collaboration?.callouts?.map(({ authorization, ...callout }) => {
         const draft = callout?.visibility === CalloutVisibility.Draft;
         const editable = authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
-        const movable = authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
+        const movable = collaboration.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
         const innovationFlowTagset = callout.framing.profile.tagsets?.find(
           tagset => tagset.name === INNOVATION_FLOW_STATES_TAGSET_NAME
         );

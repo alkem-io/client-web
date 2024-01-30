@@ -44,7 +44,7 @@ const SpaceProfileFixedInformation = ({ visibility, host }: SpaceProfileFixedInf
       </Gutters>
       <Gutters disablePadding>
         <BlockTitle>{t('pages.community.space-host.title')}</BlockTitle>
-        {host && <ContributorCardHorizontal {...host} />}
+        {host && <ContributorCardHorizontal {...host} seamless />}
       </Gutters>
       <Caption fontStyle="italic">{t('components.editSpaceForm.readOnly')}</Caption>
     </PageContentBlock>
