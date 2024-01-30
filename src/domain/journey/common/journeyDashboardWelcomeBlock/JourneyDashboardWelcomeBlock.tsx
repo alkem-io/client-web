@@ -81,6 +81,7 @@ const JourneyDashboardWelcomeBlock = ({
                 city: org.profile.location?.city,
               });
             }}
+            seamless
           />
         ))}
       </Gutters>
