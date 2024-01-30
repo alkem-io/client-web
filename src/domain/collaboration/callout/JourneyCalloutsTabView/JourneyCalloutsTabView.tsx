@@ -118,11 +118,12 @@ const JourneyCalloutsTabView = ({
           <PageContentColumn columns={8}>
             {innovationFlowStates && currentInnovationFlowState && selectedInnovationFlowState && (
               <InnovationFlowStates
+                states={innovationFlowStates}
                 currentState={currentInnovationFlowState}
                 selectedState={selectedInnovationFlowState}
-                states={innovationFlowStates}
-                onSelectState={handleSelectInnovationFlowState}
+                journeyTypeName={journeyTypeName}
                 showSettings={canEditInnovationFlow}
+                onSelectState={handleSelectInnovationFlowState}
               />
             )}
             <CalloutsGroupView
