@@ -64,9 +64,14 @@ fragment SpaceDashboardNavigationProfile on Profile {
   displayName
   tagline
   tagset {
-      ...TagsetDetails
+    ...TagsetDetails
   }
-  visual(type: CARD) {
+  avatar: visual(type: AVATAR) {
+    id
+    uri
+    alternativeText
+  }
+  cardBanner: visual(type: CARD) {
     id
     uri
     alternativeText

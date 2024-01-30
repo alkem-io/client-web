@@ -26127,7 +26127,10 @@ export type SpaceDashboardNavigationChallengesQuery = {
                   type: TagsetType;
                 }
               | undefined;
-            visual?:
+            avatar?:
+              | { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined }
+              | undefined;
+            cardBanner?:
               | { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined }
               | undefined;
           };
@@ -26185,7 +26188,10 @@ export type SpaceDashboardNavigationOpportunitiesQuery = {
                         type: TagsetType;
                       }
                     | undefined;
-                  visual?:
+                  avatar?:
+                    | { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined }
+                    | undefined;
+                  cardBanner?:
                     | { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined }
                     | undefined;
                 };
@@ -26222,7 +26228,8 @@ export type SpaceDashboardNavigationProfileFragment = {
         type: TagsetType;
       }
     | undefined;
-  visual?: { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined } | undefined;
+  avatar?: { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined } | undefined;
+  cardBanner?: { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined } | undefined;
 };
 
 export type SpaceDashboardNavigationContextFragment = {
