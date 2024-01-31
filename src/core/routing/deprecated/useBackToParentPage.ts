@@ -1,6 +1,6 @@
 import { To, useLocation, useNavigate } from 'react-router-dom';
 import { useCallback } from 'react';
-import { LinkWithState } from '../types/LinkWithState';
+import { LinkWithState } from '../../../domain/shared/types/LinkWithState';
 
 const LOCATION_STATE_PARAM_PARENT_PAGE = 'parentPage';
 
@@ -11,6 +11,7 @@ interface Options {
 }
 
 /**
+ * @deprecated - try to start using useBackToPath instead which doesn't require to navigate forward in a special way
  * Returns a tuple of 2 functions:
  * First is a callback that takes a user to the previous page only if the user got to the current page from that parent.
  * Second is a function that produces a link with history item state that holds the info about the parent page.
@@ -18,8 +19,6 @@ interface Options {
  * to the given "parent" page. E.g. we may not want to go "back" when current page was opened in a new tab.
  * @param parentPageUrl
  */
-
-// TODO: Temporarily simplified to just hold a flag; add some identifier instead
 const useBackToParentPage = (parentPageUrl: string, { keepScroll }: Options = {}): ReturnTuple => {
   const navigate = useNavigate();
   const location = useLocation();

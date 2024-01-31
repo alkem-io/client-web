@@ -1895,6 +1895,7 @@ export type PlatformLocationsKeySpecifier = (
   | 'impact'
   | 'innovationLibrary'
   | 'inspiration'
+  | 'landing'
   | 'newuser'
   | 'opensource'
   | 'privacy'
@@ -1918,6 +1919,7 @@ export type PlatformLocationsFieldPolicy = {
   impact?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationLibrary?: FieldPolicy<any> | FieldReadFunction<any>;
   inspiration?: FieldPolicy<any> | FieldReadFunction<any>;
+  landing?: FieldPolicy<any> | FieldReadFunction<any>;
   newuser?: FieldPolicy<any> | FieldReadFunction<any>;
   opensource?: FieldPolicy<any> | FieldReadFunction<any>;
   privacy?: FieldPolicy<any> | FieldReadFunction<any>;
