@@ -1,7 +1,7 @@
-import { FC, useRef } from 'react';
+import { FC, useState } from 'react';
 import ExcalidrawWrapper from '../../../common/whiteboard/excalidraw/ExcalidrawWrapper';
 import useWhiteboardFilesManager from '../../../common/whiteboard/excalidraw/useWhiteboardFilesManager';
-import { ExcalidrawAPIRefValue } from '@alkemio/excalidraw/types/types';
+import { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/types/types';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 
 interface WhiteboardTemplatePreviewProps {
@@ -21,8 +21,9 @@ const isLoadedWhiteboardTemplateContent = (
 };
 
 const WhiteboardTemplatePreview: FC<WhiteboardTemplatePreviewProps> = ({ template }) => {
-  const excalidrawApiRef = useRef<ExcalidrawAPIRefValue>(null);
-  const filesManager = useWhiteboardFilesManager({ excalidrawApi: excalidrawApiRef.current });
+  const excalidrawAPIState = useState<ExcalidrawImperativeAPI | null>(null);
+  const [excalidrawAPI] = excalidrawAPIState;
+  const filesManager = useWhiteboardFilesManager({ excalidrawAPI });
 
   if (!isLoadedWhiteboardTemplateContent(template)) {
     return null;
@@ -31,7 +32,7 @@ const WhiteboardTemplatePreview: FC<WhiteboardTemplatePreviewProps> = ({ templat
   return (
     <PageContentBlock disablePadding sx={{ flexGrow: 1 }}>
       <ExcalidrawWrapper
-        ref={excalidrawApiRef}
+        excalidrawAPI={excalidrawAPIState}
         entities={{
           whiteboard: template,
           filesManager,

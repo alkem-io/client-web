@@ -3,7 +3,6 @@ import { ExportedDataState } from '@alkemio/excalidraw/types/data/types';
 import {
   BinaryFileData,
   BinaryFiles,
-  ExcalidrawAPIRefValue,
   ExcalidrawImperativeAPI,
   ExcalidrawProps,
   ExportOpts,
@@ -12,9 +11,8 @@ import BackupIcon from '@mui/icons-material/Backup';
 import { Box } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { compact, debounce, merge } from 'lodash';
-import React, { forwardRef, useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import ReactDOM from 'react-dom';
-import { useCombinedRefs } from '../../../shared/utils/useCombinedRefs';
 import EmptyWhiteboard from '../EmptyWhiteboard';
 import { WhiteboardFilesManager } from './useWhiteboardFilesManager';
 
@@ -48,6 +46,8 @@ export interface WhiteboardWhiteboardProps {
   entities: WhiteboardWhiteboardEntities;
   options?: WhiteboardWhiteboardOptions;
   actions: WhiteboardWhiteboardActions;
+  // We need the entire object returned by useState here, not just the setter
+  excalidrawAPI?: [ExcalidrawImperativeAPI | null, (excalidrawAPI: ExcalidrawImperativeAPI) => void];
 }
 
 const WHITEBOARD_UPDATE_DEBOUNCE_INTERVAL = 100;
@@ -55,141 +55,142 @@ type RefreshWhiteboardStateParam = Parameters<ExcalidrawImperativeAPI['updateSce
 
 const WINDOW_SCROLL_HANDLER_DEBOUNCE_INTERVAL = 100;
 
-const ExcalidrawWrapper = forwardRef<ExcalidrawAPIRefValue | null, WhiteboardWhiteboardProps>(
-  ({ entities, actions, options }, excalidrawRef) => {
-    const { whiteboard, filesManager } = entities;
+const ExcalidrawWrapper = ({
+  entities,
+  actions,
+  options,
+  excalidrawAPI: excalidrawAPIState,
+}: WhiteboardWhiteboardProps) => {
+  const { whiteboard, filesManager } = entities;
 
-    const styles = useActorWhiteboardStyles();
-    const combinedRef = useCombinedRefs<ExcalidrawAPIRefValue | null>(null, excalidrawRef);
+  const styles = useActorWhiteboardStyles();
 
-    const { addNewFile, loadFiles, pushFilesToExcalidraw } = filesManager;
+  const [excalidrawAPI, setExcalidrawAPI] = excalidrawAPIState ?? [null, undefined];
+  const { addNewFile, loadFiles, pushFilesToExcalidraw } = filesManager;
 
-    const data = useMemo(() => {
-      const parsedData = whiteboard?.content ? JSON.parse(whiteboard?.content) : EmptyWhiteboard;
+  const data = useMemo(() => {
+    const parsedData = whiteboard?.content ? JSON.parse(whiteboard?.content) : EmptyWhiteboard;
 
-      return {
-        ...parsedData,
-        zoomToFit: true,
-      };
-    }, [whiteboard?.content]);
+    return {
+      ...parsedData,
+      zoomToFit: true,
+    };
+  }, [whiteboard?.content]);
 
-    useEffect(() => {
-      loadFiles(data);
-    }, [data]);
+  useEffect(() => {
+    loadFiles(data);
+  }, [data]);
 
-    useEffect(() => {
-      pushFilesToExcalidraw();
-    }, [filesManager]);
+  useEffect(() => {
+    pushFilesToExcalidraw();
+  }, [filesManager]);
 
-    const refreshOnDataChange = useRef(
-      debounce(async (state: RefreshWhiteboardStateParam) => {
-        const excalidraw = await combinedRef.current?.readyPromise;
-        excalidraw?.updateScene(state);
-        excalidraw?.zoomToFit();
+  const refreshOnDataChange = useRef(
+    debounce(async (state: RefreshWhiteboardStateParam) => {
+      excalidrawAPI?.updateScene(state);
+      excalidrawAPI?.zoomToFit();
 
-        // Find the properties present in `state.files` and missing in currentFiles
-        // and put them into missingFiles: BinaryFileData[]
-        const currentFiles = excalidraw?.getFiles() ?? {};
-        const newFiles = state.files ?? {};
-        const missingFiles: BinaryFileData[] = compact(
-          Object.keys(newFiles).map(key => (currentFiles[key] ? undefined : newFiles[key]))
-        );
-        if (excalidraw && missingFiles.length > 0) {
-          excalidraw.addFiles(missingFiles);
-        }
-      }, WHITEBOARD_UPDATE_DEBOUNCE_INTERVAL)
-    ).current;
+      // Find the properties present in `state.files` and missing in currentFiles
+      // and put them into missingFiles: BinaryFileData[]
+      const currentFiles = excalidrawAPI?.getFiles() ?? {};
+      const newFiles = state.files ?? {};
+      const missingFiles: BinaryFileData[] = compact(
+        Object.keys(newFiles).map(key => (currentFiles[key] ? undefined : newFiles[key]))
+      );
+      if (excalidrawAPI && missingFiles.length > 0) {
+        excalidrawAPI.addFiles(missingFiles);
+      }
+    }, WHITEBOARD_UPDATE_DEBOUNCE_INTERVAL)
+  ).current;
 
-    useEffect(() => {
-      // apparently when a whiteboard state is changed too fast
-      // it is not reflected by excalidraw (they don't have internal debounce for state change)
-      refreshOnDataChange(data);
-      return refreshOnDataChange.cancel;
-    }, [refreshOnDataChange, data]);
+  useEffect(() => {
+    // apparently when a whiteboard state is changed too fast
+    // it is not reflected by excalidraw (they don't have internal debounce for state change)
+    refreshOnDataChange(data);
+    return refreshOnDataChange.cancel;
+  }, [refreshOnDataChange, data]);
 
-    const handleScroll = useRef(
-      debounce(async () => {
-        const excalidraw = await combinedRef.current?.readyPromise;
-        excalidraw?.refresh();
-      }, WINDOW_SCROLL_HANDLER_DEBOUNCE_INTERVAL)
-    ).current;
+  const handleScroll = useRef(
+    debounce(() => {
+      excalidrawAPI?.refresh();
+    }, WINDOW_SCROLL_HANDLER_DEBOUNCE_INTERVAL)
+  ).current;
 
-    useEffect(() => {
-      window.addEventListener('scroll', handleScroll, true);
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll, true);
 
-      return () => {
-        handleScroll.cancel();
-        window.removeEventListener('scroll', handleScroll, true);
-      };
-    }, [handleScroll]);
+    return () => {
+      handleScroll.cancel();
+      window.removeEventListener('scroll', handleScroll, true);
+    };
+  }, [handleScroll]);
 
-    const renderCustomUI = useMemo<ExportOpts['renderCustomUI']>(
-      () => (exportedElements, appState) =>
-        (
-          <Box className={'Card'}>
-            <Box className={`Card-icon ${styles.excalidrawAlkemioBackground}`}>
-              <BackupIcon />
-            </Box>
-            <h2>Save to the Alkemio</h2>
-            <Box className={'Card-details'}>Save the scene in Alkemio and share it with others.</Box>
-            <button
-              className={`ToolIcon_type_button ToolIcon_size_m Card-button ToolIcon_type_button--show ToolIcon ${styles.excalidrawAlkemioBackground}`}
-              title="Save to Alkemio"
-              aria-label="Save to Alkemio"
-              type="button"
-              onClick={async () => {
-                if (actions.onUpdate) {
-                  await actions.onUpdate({ ...(data as ExportedDataState), elements: exportedElements, appState });
-                  const element = document.body.getElementsByClassName('Modal__close')[0];
-                  ReactDOM.findDOMNode(element)?.dispatchEvent(
-                    new MouseEvent('click', { view: window, cancelable: true, bubbles: true })
-                  );
-                }
-              }}
-            >
-              <div className="ToolIcon__label">Save to Alkemio</div>
-            </button>
+  const renderCustomUI = useMemo<ExportOpts['renderCustomUI']>(
+    () => (exportedElements, appState) =>
+      (
+        <Box className={'Card'}>
+          <Box className={`Card-icon ${styles.excalidrawAlkemioBackground}`}>
+            <BackupIcon />
           </Box>
-        ),
-      [data, actions, styles.excalidrawAlkemioBackground]
-    );
+          <h2>Save to the Alkemio</h2>
+          <Box className={'Card-details'}>Save the scene in Alkemio and share it with others.</Box>
+          <button
+            className={`ToolIcon_type_button ToolIcon_size_m Card-button ToolIcon_type_button--show ToolIcon ${styles.excalidrawAlkemioBackground}`}
+            title="Save to Alkemio"
+            aria-label="Save to Alkemio"
+            type="button"
+            onClick={async () => {
+              if (actions.onUpdate) {
+                await actions.onUpdate({ ...(data as ExportedDataState), elements: exportedElements, appState });
+                const element = document.body.getElementsByClassName('Modal__close')[0];
+                ReactDOM.findDOMNode(element)?.dispatchEvent(
+                  new MouseEvent('click', { view: window, cancelable: true, bubbles: true })
+                );
+              }
+            }}
+          >
+            <div className="ToolIcon__label">Save to Alkemio</div>
+          </button>
+        </Box>
+      ),
+    [data, actions, styles.excalidrawAlkemioBackground]
+  );
 
-    // This needs to be removed in case it crashes the export window
-    // We already have a Save button
-    const UIOptions: ExcalidrawProps['UIOptions'] = useMemo(
-      () => ({
-        canvasActions: {
-          export: {
-            saveFileToDisk: false,
-            renderCustomUI,
-          },
+  // This needs to be removed in case it crashes the export window
+  // We already have a Save button
+  const UIOptions: ExcalidrawProps['UIOptions'] = useMemo(
+    () => ({
+      canvasActions: {
+        export: {
+          saveFileToDisk: false,
+          renderCustomUI,
         },
-      }),
-      [renderCustomUI]
-    );
+      },
+    }),
+    [renderCustomUI]
+  );
 
-    const { UIOptions: externalUIOptions, ...restOptions } = options || {};
+  const { UIOptions: externalUIOptions, ...restOptions } = options || {};
 
-    const mergedUIOptions = useMemo(() => merge(UIOptions, externalUIOptions), [UIOptions, externalUIOptions]);
+  const mergedUIOptions = useMemo(() => merge(UIOptions, externalUIOptions), [UIOptions, externalUIOptions]);
 
-    return (
-      <div className={styles.container}>
-        {whiteboard && (
-          <Excalidraw
-            key={whiteboard.id} // initializing a fresh Excalidraw for each whiteboard
-            ref={combinedRef}
-            initialData={data}
-            UIOptions={mergedUIOptions}
-            isCollaborating={false}
-            gridModeEnabled
-            viewModeEnabled
-            generateIdForFile={addNewFile}
-            {...restOptions}
-          />
-        )}
-      </div>
-    );
-  }
-);
+  return (
+    <div className={styles.container}>
+      {whiteboard && (
+        <Excalidraw
+          key={whiteboard.id} // initializing a fresh Excalidraw for each whiteboard
+          excalidrawAPI={setExcalidrawAPI}
+          initialData={data}
+          UIOptions={mergedUIOptions}
+          isCollaborating={false}
+          gridModeEnabled
+          viewModeEnabled
+          generateIdForFile={addNewFile}
+          {...restOptions}
+        />
+      )}
+    </div>
+  );
+};
 
 export default ExcalidrawWrapper;
