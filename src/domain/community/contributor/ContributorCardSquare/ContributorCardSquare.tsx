@@ -64,9 +64,7 @@ export const ContributorCardSquare: FC<ContributorCardSquareProps> = props => {
   const [sendMessageToUser] = useSendMessageToUserMutation();
   const [isMessageUserDialogOpen, setIsMessageUserDialogOpen] = useState(false);
 
-  const messageReceivers = [
-    { id, title: displayName, avatarUri: avatar, city: tooltip?.city, country: tooltip?.country },
-  ];
+  const messageReceivers = [{ id, displayName, avatarUri: avatar, city: tooltip?.city, country: tooltip?.country }];
 
   const handleSendMessage = useCallback(
     async (messageText: string) => {
