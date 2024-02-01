@@ -1,10 +1,9 @@
 import React, { FC } from 'react';
 import { ActivityBaseView } from './ActivityBaseView';
 import { ActivityViewProps } from './ActivityViewProps';
-import replaceQuotesInOldDescription from '../../../../shared/utils/replaceQuotesInOldDescription';
-import ActivityDescriptionByType from '../../../../shared/components/ActivityDescription/ActivityDescriptionByType';
 import { ActivityCalloutValues } from '../../../../shared/types/ActivityCalloutValues';
 import { ActivityEventType } from '../../../../../core/apollo/generated/graphql-schema';
+import ActivitySubjectMarkdown from './ActivitySubjectMarkdown';
 
 interface ActivityDiscussionCommentCreatedViewProps extends ActivityViewProps {
   callout: ActivityCalloutValues;
@@ -21,14 +20,12 @@ export const ActivityDiscussionCommentCreatedView: FC<ActivityDiscussionCommentC
   type,
   footerComponent,
 }) => {
-  const comment = replaceQuotesInOldDescription(description);
-
   return (
     <ActivityBaseView
       author={author}
       loading={loading}
       type={type}
-      title={<ActivityDescriptionByType activityType={type} subject={comment} />}
+      title={<ActivitySubjectMarkdown>{description}</ActivitySubjectMarkdown>}
       url={callout.framing.profile.url}
       footerComponent={footerComponent}
       contextDisplayName={callout.framing.profile.displayName}

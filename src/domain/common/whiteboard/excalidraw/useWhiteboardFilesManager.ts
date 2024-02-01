@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState } from 'react';
 import { useUploadFileMutation } from '../../../../core/apollo/generated/apollo-hooks';
-import { BinaryFileData, DataURL, ExcalidrawAPIRefValue } from '@alkemio/excalidraw/types/types';
+import { BinaryFileData, DataURL, ExcalidrawImperativeAPI } from '@alkemio/excalidraw/types/types';
 import { excalidrawFileMimeType, generateIdFromFile } from './collab/utils';
 import Semaphore from 'ts-semaphore';
 
@@ -56,7 +56,7 @@ export type BinaryFileDataWithOptionalUrl = BinaryFileData & { url?: string };
 
 interface Props {
   storageBucketId?: string; // FilesManagers without storageBucketId will throw an exception on file upload
-  excalidrawApi: ExcalidrawAPIRefValue | null;
+  excalidrawAPI: ExcalidrawImperativeAPI | null;
   // TODO remove when all whiteboards are known to have a storageBucketId
   allowFallbackToAttached?: boolean;
 }
@@ -80,7 +80,7 @@ export interface WhiteboardFilesManager {
 const useWhiteboardFilesManager = ({
   storageBucketId,
   allowFallbackToAttached,
-  excalidrawApi,
+  excalidrawAPI,
 }: Props): WhiteboardFilesManager => {
   const log = (..._args) => {
     // TODO: Remove those `log()`s when this is confirmed to be fully stable
@@ -98,7 +98,7 @@ const useWhiteboardFilesManager = ({
   log('[render]', {
     filesCount: Object.keys(fileStore.current).length,
     fileStore: fileStore.current,
-    params: { storageBucketId, allowFallbackToAttached, excalidrawApi },
+    params: { storageBucketId, allowFallbackToAttached, excalidrawAPI },
   });
 
   const fileStoreAddFile = (fileId: string, file: BinaryFileDataWithUrl) => {
@@ -157,8 +157,8 @@ const useWhiteboardFilesManager = ({
     }
 
     log('newFile uploaded', fileId, data.uploadFileOnStorageBucket);
-    const excalidraw = await excalidrawApi?.readyPromise;
-    const fileFromExcalidraw = excalidraw?.getFiles()?.[fileId];
+
+    const fileFromExcalidraw = excalidrawAPI?.getFiles()?.[fileId];
     const url = data.uploadFileOnStorageBucket;
 
     if (fileFromExcalidraw) {
@@ -229,20 +229,18 @@ const useWhiteboardFilesManager = ({
    * @returns
    */
   const pushFilesToExcalidraw = async () => {
-    const excalidraw = await excalidrawApi?.readyPromise;
-
-    if (!excalidraw) {
-      log('excalidrawApi not ready yet or no files', excalidraw, fileStore.current);
+    if (!excalidrawAPI) {
+      log('excalidrawAPI not ready yet or no files', excalidrawAPI, fileStore.current);
       return;
     }
-    const filesAlreadyInExcalidraw = excalidraw.getFiles();
+    const filesAlreadyInExcalidraw = excalidrawAPI.getFiles();
     const filesAsArray = Object.keys(fileStore.current)
       .filter(fileId => !filesAlreadyInExcalidraw[fileId]?.dataURL) // filter out all the files that are already loaded in Excalidraw
       .map(fileId => fileStore.current[fileId]);
 
     if (filesAsArray.length > 0) {
       log('pushing files to Excalidraw from FilesManager', fileStore.current, filesAsArray);
-      excalidraw.addFiles(filesAsArray);
+      excalidrawAPI.addFiles(filesAsArray);
     }
   };
 
@@ -324,7 +322,7 @@ const useWhiteboardFilesManager = ({
         downloadingFiles,
       },
     }),
-    [storageBucketId, excalidrawApi, fileStore.current, fileStoreVersion, downloadingFiles, uploadingFile]
+    [storageBucketId, excalidrawAPI, fileStore.current, fileStoreVersion, downloadingFiles, uploadingFile]
   );
 };
 

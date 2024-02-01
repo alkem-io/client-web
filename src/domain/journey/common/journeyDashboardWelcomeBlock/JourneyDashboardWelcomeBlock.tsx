@@ -63,6 +63,7 @@ const JourneyDashboardWelcomeBlock = ({
                 city: user.profile.location?.city,
               });
             }}
+            seamless
           />
         ))}
       </Gutters>
@@ -81,6 +82,7 @@ const JourneyDashboardWelcomeBlock = ({
                 city: org.profile.location?.city,
               });
             }}
+            seamless
           />
         ))}
       </Gutters>

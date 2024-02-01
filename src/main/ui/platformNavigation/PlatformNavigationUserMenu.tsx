@@ -1,4 +1,4 @@
-import React, { forwardRef, PropsWithChildren, useMemo, useState } from 'react';
+import React, { forwardRef, PropsWithChildren, ReactNode, useMemo, useState } from 'react';
 import { Box, Divider, MenuList, Typography } from '@mui/material';
 import AlkemioAvatar from '../../../core/ui/image/AlkemioAvatar';
 import { BlockTitle, Caption } from '../../../core/ui/typography';
@@ -32,11 +32,14 @@ import usePlatformOrigin from '../../../domain/platform/routes/usePlatformOrigin
 
 interface PlatformNavigationUserMenuProps {
   surface: boolean;
+  footer?: ReactNode;
   onClose?: () => void;
 }
 
+export const UserMenuDivider = () => <Divider sx={{ width: '85%', marginX: 'auto' }} />;
+
 const PlatformNavigationUserMenu = forwardRef<HTMLDivElement, PropsWithChildren<PlatformNavigationUserMenuProps>>(
-  ({ surface, onClose, children }, ref) => {
+  ({ surface, onClose, footer, children }, ref) => {
     const { t } = useTranslation();
 
     const { pathname } = useLocation();
@@ -113,9 +116,8 @@ const PlatformNavigationUserMenu = forwardRef<HTMLDivElement, PropsWithChildren<
                   )}
                 </PendingMembershipsUserMenuItem>
               )}
-              <Divider sx={{ width: '85%', marginX: 'auto' }} />
+              <UserMenuDivider />
               {children}
-              {children && <Divider sx={{ width: '85%', marginX: 'auto' }} />}
               {isAdmin && (
                 <NavigatableMenuItem iconComponent={SettingsIcon} route="/admin" onClick={onClose}>
                   {t('common.administration')}
@@ -158,6 +160,7 @@ const PlatformNavigationUserMenu = forwardRef<HTMLDivElement, PropsWithChildren<
               <NavigatableMenuItem tabOnly iconComponent={ExitToAppOutlined} onClick={onClose}>
                 {t('components.navigation.exitMenu')}
               </NavigatableMenuItem>
+              {footer}
             </MenuList>
           </FocusTrap>
         </Wrapper>

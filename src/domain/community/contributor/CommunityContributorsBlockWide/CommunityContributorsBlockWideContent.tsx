@@ -56,7 +56,7 @@ const CommunityContributorsBlockWideContent = ({
             .map(user => (
               <GridItem key={user.id} columns={1}>
                 <Box>
-                  <ContributorCardSquare {...user} />
+                  <ContributorCardSquare {...user} contributorType={ContributorType.People} />
                 </Box>
               </GridItem>
             ))}
@@ -67,7 +67,7 @@ const CommunityContributorsBlockWideContent = ({
             .map(organization => (
               <GridItem key={organization.id} columns={1}>
                 <Box>
-                  <ContributorCardSquare {...organization} />
+                  <ContributorCardSquare {...organization} contributorType={ContributorType.Organizations} />
                 </Box>
               </GridItem>
             ))}
