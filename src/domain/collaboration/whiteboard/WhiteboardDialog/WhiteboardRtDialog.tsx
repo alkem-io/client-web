@@ -276,7 +276,7 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
         <Formik
           innerRef={formikRef}
           initialValues={initialValues}
-          onSubmit={() => {}}
+          onSubmit={() => { }}
           validationSchema={whiteboardSchema}
         >
           {() => (
