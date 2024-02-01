@@ -3639,6 +3639,8 @@ export type PlatformLocations = {
   innovationLibrary: Scalars['String'];
   /** URL to a page about the collaboration tools */
   inspiration: Scalars['String'];
+  /** URL to the landing page of the platform */
+  landing: Scalars['String'];
   /** URL where new users can get onboarding help */
   newuser: Scalars['String'];
   /** URL for the link Opensource in the HomePage of the application */
@@ -26127,7 +26129,10 @@ export type SpaceDashboardNavigationChallengesQuery = {
                   type: TagsetType;
                 }
               | undefined;
-            visual?:
+            avatar?:
+              | { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined }
+              | undefined;
+            cardBanner?:
               | { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined }
               | undefined;
           };
@@ -26185,7 +26190,10 @@ export type SpaceDashboardNavigationOpportunitiesQuery = {
                         type: TagsetType;
                       }
                     | undefined;
-                  visual?:
+                  avatar?:
+                    | { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined }
+                    | undefined;
+                  cardBanner?:
                     | { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined }
                     | undefined;
                 };
@@ -26222,7 +26230,8 @@ export type SpaceDashboardNavigationProfileFragment = {
         type: TagsetType;
       }
     | undefined;
-  visual?: { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined } | undefined;
+  avatar?: { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined } | undefined;
+  cardBanner?: { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined } | undefined;
 };
 
 export type SpaceDashboardNavigationContextFragment = {
@@ -28501,6 +28510,7 @@ export type ConfigurationQuery = {
         __typename?: 'PlatformLocations';
         environment: string;
         domain: string;
+        landing: string;
         about: string;
         blog: string;
         feedback: string;
@@ -28545,6 +28555,7 @@ export type ConfigurationFragment = {
     __typename?: 'PlatformLocations';
     environment: string;
     domain: string;
+    landing: string;
     about: string;
     blog: string;
     feedback: string;

@@ -2,7 +2,7 @@ import React, { FC, useState } from 'react';
 import { useChallenge } from '../hooks/useChallenge';
 import AboutPageContainer from '../../common/AboutPageContainer/AboutPageContainer';
 import ChallengeDashboardPage from './ChallengeDashboardPage';
-import useBackToParentPage from '../../../shared/utils/useBackToParentPage';
+import useBackToParentPage from '../../../../core/routing/deprecated/useBackToParentPage';
 import JourneyAboutDialog from '../../common/JourneyAboutDialog/JourneyAboutDialog';
 import { IconButton } from '@mui/material';
 import { Close } from '@mui/icons-material';
