@@ -1,4 +1,4 @@
-import React, { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Formik } from 'formik';
 import { FormikProps } from 'formik/dist/types';
@@ -32,8 +32,8 @@ import { error as logError } from '../../../../core/logging/sentry/log';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
 import { WhiteboardWithContent, WhiteboardWithoutContent } from '../containers/WhiteboardContentContainer';
 import {
-  WhiteboardPreviewImage,
   generateWhiteboardPreviewImages,
+  WhiteboardPreviewImage,
 } from '../WhiteboardPreviewImages/WhiteboardPreviewImages';
 import useWhiteboardFilesManager from '../../../common/whiteboard/excalidraw/useWhiteboardFilesManager';
 
@@ -112,7 +112,7 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
 
   const styles = useStyles();
 
-  const getExcalidrawStateFromApi = useCallback(() => {
+  const getExcalidrawStateFromApi = () => {
     if (!excalidrawAPI) {
       return;
     }
@@ -122,7 +122,7 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
     const files = excalidrawAPI.getFiles();
 
     return { appState, elements, files };
-  }, [excalidrawAPI]);
+  };
 
   const filesManager = useWhiteboardFilesManager({
     excalidrawAPI,
@@ -160,7 +160,7 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
 
   const actionMap: { [key in keyof typeof whiteboardActions]: ((whiteboard: Whiteboard) => void) | undefined } = {
     'save-and-checkin': async whiteboard => {
-      const state = await getExcalidrawStateFromApi();
+      const state = getExcalidrawStateFromApi();
 
       formikRef.current?.setTouched({ displayName: true }, true);
 
@@ -292,7 +292,6 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
                     whiteboard,
                     filesManager,
                   }}
-                  excalidrawAPI={[excalidrawAPI, setExcalidrawAPI]}
                   options={{
                     viewModeEnabled: !options.canEdit,
                     UIOptions: {
@@ -309,6 +308,7 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
                     onUpdate: state => {
                       handleUpdate(whiteboard, state);
                     },
+                    onInitApi: setExcalidrawAPI,
                   }}
                 />
               )}

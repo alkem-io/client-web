@@ -11,7 +11,7 @@ import BackupIcon from '@mui/icons-material/Backup';
 import { Box } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { compact, debounce, merge } from 'lodash';
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import ReactDOM from 'react-dom';
 import EmptyWhiteboard from '../EmptyWhiteboard';
 import { WhiteboardFilesManager } from './useWhiteboardFilesManager';
@@ -38,6 +38,7 @@ export interface WhiteboardWhiteboardEntities {
 
 export interface WhiteboardWhiteboardActions {
   onUpdate?: (state: ExportedDataState) => void;
+  onInitApi?: (excalidrawApi: ExcalidrawImperativeAPI) => void;
 }
 
 export interface WhiteboardWhiteboardOptions extends ExcalidrawProps {}
@@ -46,8 +47,6 @@ export interface WhiteboardWhiteboardProps {
   entities: WhiteboardWhiteboardEntities;
   options?: WhiteboardWhiteboardOptions;
   actions: WhiteboardWhiteboardActions;
-  // We need the entire object returned by useState here, not just the setter
-  excalidrawAPI?: [ExcalidrawImperativeAPI | null, (excalidrawAPI: ExcalidrawImperativeAPI) => void];
 }
 
 const WHITEBOARD_UPDATE_DEBOUNCE_INTERVAL = 100;
@@ -55,17 +54,12 @@ type RefreshWhiteboardStateParam = Parameters<ExcalidrawImperativeAPI['updateSce
 
 const WINDOW_SCROLL_HANDLER_DEBOUNCE_INTERVAL = 100;
 
-const ExcalidrawWrapper = ({
-  entities,
-  actions,
-  options,
-  excalidrawAPI: excalidrawAPIState,
-}: WhiteboardWhiteboardProps) => {
+const ExcalidrawWrapper = ({ entities, actions, options }: WhiteboardWhiteboardProps) => {
   const { whiteboard, filesManager } = entities;
 
   const styles = useActorWhiteboardStyles();
 
-  const [excalidrawAPI, setExcalidrawAPI] = excalidrawAPIState ?? [null, undefined];
+  // const [excalidrawAPI, setExcalidrawAPI] = excalidrawAPIState ?? [null, undefined];
   const { addNewFile, loadFiles, pushFilesToExcalidraw } = filesManager;
 
   const data = useMemo(() => {
@@ -87,18 +81,18 @@ const ExcalidrawWrapper = ({
 
   const refreshOnDataChange = useRef(
     debounce(async (state: RefreshWhiteboardStateParam) => {
-      excalidrawAPI?.updateScene(state);
-      excalidrawAPI?.zoomToFit();
+      excalidrawApiRef.current?.updateScene(state);
+      excalidrawApiRef.current?.zoomToFit();
 
       // Find the properties present in `state.files` and missing in currentFiles
       // and put them into missingFiles: BinaryFileData[]
-      const currentFiles = excalidrawAPI?.getFiles() ?? {};
+      const currentFiles = excalidrawApiRef.current?.getFiles() ?? {};
       const newFiles = state.files ?? {};
       const missingFiles: BinaryFileData[] = compact(
         Object.keys(newFiles).map(key => (currentFiles[key] ? undefined : newFiles[key]))
       );
-      if (excalidrawAPI && missingFiles.length > 0) {
-        excalidrawAPI.addFiles(missingFiles);
+      if (excalidrawApiRef.current && missingFiles.length > 0) {
+        excalidrawApiRef.current.addFiles(missingFiles);
       }
     }, WHITEBOARD_UPDATE_DEBOUNCE_INTERVAL)
   ).current;
@@ -112,7 +106,7 @@ const ExcalidrawWrapper = ({
 
   const handleScroll = useRef(
     debounce(() => {
-      excalidrawAPI?.refresh();
+      excalidrawApiRef.current?.refresh();
     }, WINDOW_SCROLL_HANDLER_DEBOUNCE_INTERVAL)
   ).current;
 
@@ -174,12 +168,22 @@ const ExcalidrawWrapper = ({
 
   const mergedUIOptions = useMemo(() => merge(UIOptions, externalUIOptions), [UIOptions, externalUIOptions]);
 
+  const excalidrawApiRef = useRef<ExcalidrawImperativeAPI | null>(null);
+
+  const handleInitializeApi = useCallback(
+    (excalidrawApi: ExcalidrawImperativeAPI) => {
+      excalidrawApiRef.current = excalidrawApi;
+      actions.onInitApi?.(excalidrawApi);
+    },
+    [actions.onInitApi]
+  );
+
   return (
     <div className={styles.container}>
       {whiteboard && (
         <Excalidraw
           key={whiteboard.id} // initializing a fresh Excalidraw for each whiteboard
-          excalidrawAPI={setExcalidrawAPI}
+          excalidrawAPI={handleInitializeApi}
           initialData={data}
           UIOptions={mergedUIOptions}
           isCollaborating={false}
