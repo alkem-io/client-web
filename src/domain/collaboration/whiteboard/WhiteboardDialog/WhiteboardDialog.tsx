@@ -108,8 +108,7 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
   const { t } = useTranslation();
   const notify = useNotification();
   const { whiteboard, lockedBy } = entities;
-  const excalidrawAPIState = useState<ExcalidrawImperativeAPI | null>(null);
-  const [excalidrawAPI] = excalidrawAPIState;
+  const [excalidrawAPI, setExcalidrawAPI] = useState<ExcalidrawImperativeAPI | null>(null);
 
   const styles = useStyles();
 
@@ -293,7 +292,7 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
                     whiteboard,
                     filesManager,
                   }}
-                  excalidrawAPI={excalidrawAPIState}
+                  excalidrawAPI={[excalidrawAPI, setExcalidrawAPI]}
                   options={{
                     viewModeEnabled: !options.canEdit,
                     UIOptions: {

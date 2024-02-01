@@ -39,8 +39,7 @@ const FormikWhiteboardPreview: FC<FormikWhiteboardPreviewProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const excalidrawAPIState = useState<ExcalidrawImperativeAPI | null>(null);
-  const [excalidrawAPI] = excalidrawAPIState;
+  const [excalidrawAPI, setExcalidrawAPI] = useState<ExcalidrawImperativeAPI | null>(null);
   const filesManager = useWhiteboardFilesManager({ excalidrawAPI });
 
   const [field, , helpers] = useField<string>(name); // Whiteboard content JSON string
@@ -86,7 +85,7 @@ const FormikWhiteboardPreview: FC<FormikWhiteboardPreviewProps> = ({
               whiteboard: whiteboardFromTemplate,
               filesManager,
             }}
-            excalidrawAPI={excalidrawAPIState}
+            excalidrawAPI={[excalidrawAPI, setExcalidrawAPI]}
             actions={{}}
             options={{
               viewModeEnabled: true,

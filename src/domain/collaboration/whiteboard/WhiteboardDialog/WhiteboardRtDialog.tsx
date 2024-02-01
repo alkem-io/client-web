@@ -105,8 +105,7 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
     }
   }, [pathname]);
 
-  const excalidrawAPIState = useState<ExcalidrawImperativeAPI | null>(null);
-  const [excalidrawAPI] = excalidrawAPIState;
+  const [excalidrawAPI, setExcalidrawAPI] = useState<ExcalidrawImperativeAPI | null>(null);
   const collabApiRef = useRef<CollabAPI>(null);
   const [collaborationEnabled, setCollaborationEnabled] = useState(true);
   const [collaborationStoppedNoticeOpen, setCollaborationStoppedNoticeOpen] = useState(false);
@@ -282,7 +281,7 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
                 {!state?.loadingWhiteboardValue && whiteboard && (
                   <CollaborativeExcalidrawWrapper
                     entities={{ whiteboard, filesManager }}
-                    excalidrawAPI={excalidrawAPIState}
+                    excalidrawAPI={[excalidrawAPI, setExcalidrawAPI]}
                     collabApiRef={collabApiRef}
                     options={{
                       viewModeEnabled: !editModeEnabled,

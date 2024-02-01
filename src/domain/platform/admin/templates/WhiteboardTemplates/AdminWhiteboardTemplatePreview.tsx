@@ -24,8 +24,7 @@ const AdminWhiteboardTemplatePreview = ({
   templateContent,
 }: WhiteboardTemplateViewProps) => {
   const { t } = useTranslation();
-  const excalidrawAPIState = useState<ExcalidrawImperativeAPI | null>(null);
-  const [excalidrawAPI] = excalidrawAPIState;
+  const [excalidrawAPI, setExcalidrawAPI] = useState<ExcalidrawImperativeAPI | null>(null);
   const filesManager = useWhiteboardFilesManager({ excalidrawAPI });
 
   const {
@@ -58,7 +57,7 @@ const AdminWhiteboardTemplatePreview = ({
       <Box height={theme => theme.spacing(40)}>
         {templateContent?.content && (
           <ExcalidrawWrapper
-            excalidrawAPI={excalidrawAPIState}
+            excalidrawAPI={[excalidrawAPI, setExcalidrawAPI]}
             entities={{
               whiteboard: whiteboardFromTemplate,
               filesManager,

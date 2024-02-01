@@ -21,8 +21,7 @@ const isLoadedWhiteboardTemplateContent = (
 };
 
 const WhiteboardTemplatePreview: FC<WhiteboardTemplatePreviewProps> = ({ template }) => {
-  const excalidrawAPIState = useState<ExcalidrawImperativeAPI | null>(null);
-  const [excalidrawAPI] = excalidrawAPIState;
+  const [excalidrawAPI, setExcalidrawAPI] = useState<ExcalidrawImperativeAPI | null>(null);
   const filesManager = useWhiteboardFilesManager({ excalidrawAPI });
 
   if (!isLoadedWhiteboardTemplateContent(template)) {
@@ -32,7 +31,7 @@ const WhiteboardTemplatePreview: FC<WhiteboardTemplatePreviewProps> = ({ templat
   return (
     <PageContentBlock disablePadding sx={{ flexGrow: 1 }}>
       <ExcalidrawWrapper
-        excalidrawAPI={excalidrawAPIState}
+        excalidrawAPI={[excalidrawAPI, setExcalidrawAPI]}
         entities={{
           whiteboard: template,
           filesManager,
