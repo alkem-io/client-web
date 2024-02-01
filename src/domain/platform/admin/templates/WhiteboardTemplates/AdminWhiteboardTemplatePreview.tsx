@@ -1,12 +1,12 @@
 import { Box, styled, Typography } from '@mui/material';
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import TagsComponent from '../../../../shared/components/TagsComponent/TagsComponent';
 import WrapperMarkdown from '../../../../../core/ui/markdown/WrapperMarkdown';
 import ExcalidrawWrapper from '../../../../common/whiteboard/excalidraw/ExcalidrawWrapper';
 import { AdminWhiteboardTemplateFragment } from '../../../../../core/apollo/generated/graphql-schema';
 import useWhiteboardFilesManager from '../../../../common/whiteboard/excalidraw/useWhiteboardFilesManager';
-import { ExcalidrawAPIRefValue } from '@alkemio/excalidraw/types/types';
+import { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/types/types';
 
 const TypographyTitle = styled(props => <Typography variant="h6" {...props} />)(() => ({
   fontWeight: 'bold',
@@ -24,8 +24,8 @@ const AdminWhiteboardTemplatePreview = ({
   templateContent,
 }: WhiteboardTemplateViewProps) => {
   const { t } = useTranslation();
-  const excalidrawApiRef = useRef<ExcalidrawAPIRefValue>(null);
-  const filesManager = useWhiteboardFilesManager({ excalidrawApi: excalidrawApiRef.current });
+  const [excalidrawAPI, setExcalidrawAPI] = useState<ExcalidrawImperativeAPI | null>(null);
+  const filesManager = useWhiteboardFilesManager({ excalidrawAPI });
 
   const {
     profile: { tagset: { tags } = {}, description = '' },
@@ -57,12 +57,13 @@ const AdminWhiteboardTemplatePreview = ({
       <Box height={theme => theme.spacing(40)}>
         {templateContent?.content && (
           <ExcalidrawWrapper
-            ref={excalidrawApiRef}
             entities={{
               whiteboard: whiteboardFromTemplate,
               filesManager,
             }}
-            actions={{}}
+            actions={{
+              onInitApi: setExcalidrawAPI,
+            }}
             options={{
               viewModeEnabled: true,
               UIOptions: {

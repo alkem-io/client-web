@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Formik } from 'formik';
 import { FormikProps } from 'formik/dist/types';
 import { serializeAsJSON } from '@alkemio/excalidraw';
-import { BinaryFileData, ExcalidrawAPIRefValue } from '@alkemio/excalidraw/types/types';
+import { BinaryFileData, ExcalidrawImperativeAPI } from '@alkemio/excalidraw/types/types';
 import Dialog from '@mui/material/Dialog';
 import { makeStyles } from '@mui/styles';
 import Loading from '../../../../core/ui/loading/Loading';
@@ -127,7 +127,7 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
     }
   }, [pathname]);
 
-  const excalidrawApiRef = useRef<ExcalidrawAPIRefValue>(null);
+  const [excalidrawAPI, setExcalidrawAPI] = useState<ExcalidrawImperativeAPI | null>(null);
   const collabApiRef = useRef<CollabAPI>(null);
   const [collaborationEnabled, setCollaborationEnabled] = useState(true);
   const [collaborationStoppedNoticeOpen, setCollaborationStoppedNoticeOpen] = useState(false);
@@ -146,7 +146,7 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
   );
 
   const filesManager = useWhiteboardFilesManager({
-    excalidrawApi: excalidrawApiRef.current,
+    excalidrawAPI,
     storageBucketId: whiteboard?.profile?.storageBucket.id ?? '',
   });
 
@@ -201,16 +201,15 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
   };
 
   const getWhiteboardState = async () => {
-    const whiteboardApi = await excalidrawApiRef.current?.readyPromise;
-    if (!whiteboard || !whiteboardApi) {
+    if (!whiteboard || !excalidrawAPI) {
       return;
     }
     const content = JSON.parse(whiteboard.content) as RelevantExcalidrawState;
     return {
       ...content,
-      elements: whiteboardApi.getSceneElements(),
-      appState: whiteboardApi.getAppState(),
-      files: whiteboardApi.getFiles(),
+      elements: excalidrawAPI.getSceneElements(),
+      appState: excalidrawAPI.getAppState(),
+      files: excalidrawAPI.getFiles(),
     };
   };
 
@@ -237,10 +236,9 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
   };
 
   const handleImportTemplate = async (template: WhiteboardTemplateWithContent) => {
-    const whiteboardApi = await excalidrawApiRef.current?.readyPromise;
-    if (whiteboardApi) {
+    if (excalidrawAPI) {
       try {
-        mergeWhiteboard(whiteboardApi, template.content);
+        mergeWhiteboard(excalidrawAPI, template.content);
       } catch (err) {
         notify(t('templateLibrary.whiteboardTemplates.errorImporting'), 'error');
         // @ts-ignore
@@ -278,7 +276,7 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
         <Formik
           innerRef={formikRef}
           initialValues={initialValues}
-          onSubmit={() => {}}
+          onSubmit={() => { }}
           validationSchema={whiteboardSchema}
         >
           {() => (
@@ -308,7 +306,6 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
                 {!state?.loadingWhiteboardValue && whiteboard && (
                   <CollaborativeExcalidrawWrapper
                     entities={{ whiteboard, filesManager }}
-                    ref={excalidrawApiRef}
                     collabApiRef={collabApiRef}
                     options={{
                       viewModeEnabled: !editModeEnabled,
@@ -321,6 +318,7 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
                       },
                     }}
                     actions={{
+                      onInitApi: setExcalidrawAPI,
                       onUpdate: async state => {
                         const { whiteboard: updatedWhiteboard } = await prepareWhiteboardForUpdate(whiteboard, state);
                         return submitUpdate(updatedWhiteboard);
