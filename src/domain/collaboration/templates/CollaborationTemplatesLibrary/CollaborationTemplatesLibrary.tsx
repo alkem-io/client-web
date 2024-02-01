@@ -1,5 +1,5 @@
 import { Box, Button, ButtonProps, DialogContent, Link } from '@mui/material';
-import React, { ComponentType, useEffect, useState } from 'react';
+import React, { ComponentType, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { LibraryIcon } from '../LibraryIcon';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
@@ -98,6 +98,15 @@ const CollaborationTemplatesLibrary = <
   const { t } = useTranslation();
 
   const [dialogOpen, setDialogOpen] = useState(false);
+  const handleOpen = () => {
+    if (fetchTemplatesFromSpace && fetchSpaceTemplatesOnLoad) {
+      fetchTemplatesFromSpace();
+    }
+    if (fetchTemplatesFromPlatform && !fetchSpaceTemplatesOnLoad) {
+      fetchTemplatesFromPlatform();
+    }
+    setDialogOpen(true);
+  };
   const handleClose = () => {
     setDialogOpen(false);
     handleClosePreview();
@@ -107,24 +116,10 @@ const CollaborationTemplatesLibrary = <
   const [previewTemplate, setPreviewTemplate] = useState<Template & TemplateWithContent>();
   const [templateUseDisabled, setTemplateUseDisabled] = useState<boolean>(false);
 
-  // Load Space Templates by default:
-  useEffect(() => {
-    if (fetchTemplatesFromSpace && fetchSpaceTemplatesOnLoad) {
-      fetchTemplatesFromSpace();
-    }
-  }, [fetchTemplatesFromSpace, fetchSpaceTemplatesOnLoad]);
-
   const handlePreviewTemplate = async (template: Template & Identifiable, source: TemplateSource) => {
     setTemplateUseDisabled(disableUsePlatformTemplates && source === TemplateSource.Platform);
     setPreviewTemplate(await getTemplateWithContent?.(template));
   };
-
-  // Load Platform Templates if no spaceName is provided:
-  useEffect(() => {
-    if (fetchTemplatesFromPlatform && !fetchSpaceTemplatesOnLoad) {
-      fetchTemplatesFromPlatform();
-    }
-  }, [fetchTemplatesFromPlatform, fetchSpaceTemplatesOnLoad]);
 
   const handleClosePreview = () => {
     setPreviewTemplate(undefined);
@@ -146,7 +141,7 @@ const CollaborationTemplatesLibrary = <
 
   return (
     <>
-      <Button variant="outlined" startIcon={<LibraryIcon />} onClick={() => setDialogOpen(true)} {...buttonProps} />
+      <Button variant="outlined" startIcon={<LibraryIcon />} onClick={() => handleOpen()} {...buttonProps} />
       <DialogWithGrid open={dialogOpen} onClose={handleClose} columns={12}>
         <DialogHeader title={dialogTitle} onClose={handleClose} titleContainerProps={{ alignItems: 'center' }}>
           {!previewTemplate && (

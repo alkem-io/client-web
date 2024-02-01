@@ -1,10 +1,6 @@
 import React, { FC } from 'react';
 import WhiteboardRtActionsContainer from '../containers/WhiteboardRtActionsContainer';
-import {
-  AuthorizationPrivilege,
-  WhiteboardRtDetailsFragment,
-  CreateWhiteboardWhiteboardTemplateFragment,
-} from '../../../../core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, WhiteboardRtDetailsFragment } from '../../../../core/apollo/generated/graphql-schema';
 import WhiteboardRtManagementView, {
   ActiveWhiteboardIdHolder,
   WhiteboardNavigationMethods,
@@ -14,7 +10,6 @@ import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 export interface WhiteboardsRtManagementViewWrapperProps extends ActiveWhiteboardIdHolder, WhiteboardNavigationMethods {
   journeyTypeName: JourneyTypeName;
   whiteboard: WhiteboardRtDetailsFragment | undefined;
-  templates: CreateWhiteboardWhiteboardTemplateFragment[];
   calloutId: string | undefined;
   authorization: WhiteboardRtDetailsFragment['authorization'];
   whiteboardShareUrl: string;
@@ -27,7 +22,6 @@ const WhiteboardsRtManagementViewWrapper: FC<WhiteboardsRtManagementViewWrapperP
   whiteboardNameId,
   calloutId,
   whiteboard,
-  templates,
   authorization,
   journeyTypeName,
   backToWhiteboards,
@@ -53,7 +47,6 @@ const WhiteboardsRtManagementViewWrapper: FC<WhiteboardsRtManagementViewWrapperP
         <WhiteboardRtManagementView
           entities={{
             whiteboard,
-            templates,
             calloutId,
             whiteboardNameId,
             contextSource: journeyTypeName,
