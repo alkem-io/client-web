@@ -20,7 +20,6 @@ export interface IProvidedEntities {
 
 export interface IProvidedEntitiesState {
   loadingWhiteboards: boolean;
-  loadingTemplates: boolean;
 }
 
 const WhiteboardRtProvider: FC<WhiteboardRtProviderProps> = ({
@@ -43,7 +42,7 @@ const WhiteboardRtProvider: FC<WhiteboardRtProviderProps> = ({
     <>
       {children(
         { whiteboard: callout?.framing.whiteboardRt, calloutId, authorization },
-        { loadingWhiteboards: loading, loadingTemplates: false }
+        { loadingWhiteboards: loading }
       )}
     </>
   );

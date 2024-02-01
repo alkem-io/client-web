@@ -15,7 +15,6 @@ export interface WhiteboardsRtManagementViewWrapperProps extends ActiveWhiteboar
   whiteboardShareUrl: string;
   readOnlyDisplayName?: boolean;
   loadingWhiteboards: boolean;
-  loadingTemplates: boolean;
 }
 
 const WhiteboardsRtManagementViewWrapper: FC<WhiteboardsRtManagementViewWrapperProps> = ({
