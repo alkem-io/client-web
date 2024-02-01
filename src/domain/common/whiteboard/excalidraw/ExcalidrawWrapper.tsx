@@ -59,7 +59,6 @@ const ExcalidrawWrapper = ({ entities, actions, options }: WhiteboardWhiteboardP
 
   const styles = useActorWhiteboardStyles();
 
-  // const [excalidrawAPI, setExcalidrawAPI] = excalidrawAPIState ?? [null, undefined];
   const { addNewFile, loadFiles, pushFilesToExcalidraw } = filesManager;
 
   const data = useMemo(() => {
