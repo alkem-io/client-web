@@ -31,12 +31,13 @@ const WhiteboardTemplatePreview: FC<WhiteboardTemplatePreviewProps> = ({ templat
   return (
     <PageContentBlock disablePadding sx={{ flexGrow: 1 }}>
       <ExcalidrawWrapper
-        excalidrawAPI={[excalidrawAPI, setExcalidrawAPI]}
         entities={{
           whiteboard: template,
           filesManager,
         }}
-        actions={{}}
+        actions={{
+          onInitApi: setExcalidrawAPI,
+        }}
         options={{
           viewModeEnabled: true,
           UIOptions: {

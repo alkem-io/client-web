@@ -281,7 +281,6 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
                 {!state?.loadingWhiteboardValue && whiteboard && (
                   <CollaborativeExcalidrawWrapper
                     entities={{ whiteboard, filesManager }}
-                    excalidrawAPI={[excalidrawAPI, setExcalidrawAPI]}
                     collabApiRef={collabApiRef}
                     options={{
                       viewModeEnabled: !editModeEnabled,
@@ -294,6 +293,7 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
                       },
                     }}
                     actions={{
+                      onInitApi: setExcalidrawAPI,
                       onUpdate: async state => {
                         const { whiteboard: updatedWhiteboard } = await prepareWhiteboardForUpdate(whiteboard, state);
                         return submitUpdate(updatedWhiteboard);

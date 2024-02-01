@@ -33,6 +33,7 @@ export interface WhiteboardWhiteboardEntities {
 
 export interface WhiteboardWhiteboardActions {
   onUpdate?: (state: ExportedDataState) => Promise<{ success: boolean; errors?: string[] }>;
+  onInitApi?: (excalidrawApi: ExcalidrawImperativeAPI) => void;
   onSavedToDatabase?: () => void;
 }
 
@@ -47,8 +48,6 @@ export interface WhiteboardWhiteboardProps {
   options?: WhiteboardWhiteboardOptions;
   actions: WhiteboardWhiteboardActions;
   events: WhiteboardWhiteboardEvents;
-  // We need the entire object returned by useState here, not just the setter
-  excalidrawAPI?: [ExcalidrawImperativeAPI | null, (excalidrawAPI: ExcalidrawImperativeAPI) => void];
   collabApiRef?: Ref<CollabAPI | null>;
 }
 
@@ -60,11 +59,9 @@ const CollaborativeExcalidrawWrapper = ({
   options,
   events,
   collabApiRef,
-  excalidrawAPI: excalidrawAPIState,
 }: WhiteboardWhiteboardProps) => {
   const { whiteboard, filesManager } = entities;
 
-  const [excalidrawAPI, setExcalidrawAPI] = excalidrawAPIState ?? [null, undefined];
   const [collabAPI, setCollabAPI] = useState<CollabAPI | null>(null);
   const combinedCollabApiRef = useCombinedRefs<CollabAPI | null>(null, collabApiRef);
 
@@ -95,7 +92,7 @@ const CollaborativeExcalidrawWrapper = ({
 
   const handleScroll = useRef(
     debounce(async () => {
-      excalidrawAPI?.refresh();
+      excalidrawApiRef.current?.refresh();
     }, WINDOW_SCROLL_HANDLER_DEBOUNCE_INTERVAL)
   ).current;
 
@@ -148,12 +145,21 @@ const CollaborativeExcalidrawWrapper = ({
     setCollabAPI(collabApi);
   }, []);
 
+  const excalidrawApiRef = useRef<ExcalidrawImperativeAPI | null>(null);
+  const handleInitializeApi = useCallback(
+    (excalidrawApi: ExcalidrawImperativeAPI) => {
+      excalidrawApiRef.current = excalidrawApi;
+      actions.onInitApi?.(excalidrawApi);
+    },
+    [actions.onInitApi]
+  );
+
   return (
     <div className={styles.container}>
       {whiteboard && (
         <Excalidraw
           key={whiteboard.id} // initializing a fresh Excalidraw for each whiteboard
-          excalidrawAPI={setExcalidrawAPI}
+          excalidrawAPI={handleInitializeApi}
           initialData={data}
           UIOptions={mergedUIOptions}
           isCollaborating={collaborationEnabled}
@@ -170,21 +176,24 @@ const CollaborativeExcalidrawWrapper = ({
           {...restOptions}
         />
       )}
-      {excalidrawAPI && (
+      {excalidrawApiRef.current && (
         <Collab
           username={username}
-          excalidrawAPI={excalidrawAPI}
+          excalidrawAPI={excalidrawApiRef.current}
           collabAPIRef={collabRef}
           onSavedToDatabase={actions.onSavedToDatabase}
           filesManager={filesManager}
           onSaveRequest={async () => {
-            const state = {
-              ...(data as ExportedDataState),
-              elements: excalidrawAPI.getSceneElements(),
-              appState: excalidrawAPI.getAppState(),
-            };
-            const result = await actions.onUpdate?.(state);
-            return result ?? { success: false, errors: ['Update handler not defined'] };
+            if (excalidrawApiRef.current) {
+              const state = {
+                ...(data as ExportedDataState),
+                elements: excalidrawApiRef.current.getSceneElements(),
+                appState: excalidrawApiRef.current.getAppState(),
+              };
+              const result = await actions.onUpdate?.(state);
+              return result ?? { success: false, errors: ['Update handler not defined'] };
+            }
+            return { success: false, errors: ['ExcalidrawAPI not yet ready'] };
           }}
           onCloseConnection={() => {
             setCollaborationEnabled(false);

@@ -85,8 +85,9 @@ const FormikWhiteboardPreview: FC<FormikWhiteboardPreviewProps> = ({
               whiteboard: whiteboardFromTemplate,
               filesManager,
             }}
-            excalidrawAPI={[excalidrawAPI, setExcalidrawAPI]}
-            actions={{}}
+            actions={{
+              onInitApi: setExcalidrawAPI,
+            }}
             options={{
               viewModeEnabled: true,
               UIOptions: {

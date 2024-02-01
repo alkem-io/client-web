@@ -57,12 +57,13 @@ const AdminWhiteboardTemplatePreview = ({
       <Box height={theme => theme.spacing(40)}>
         {templateContent?.content && (
           <ExcalidrawWrapper
-            excalidrawAPI={[excalidrawAPI, setExcalidrawAPI]}
             entities={{
               whiteboard: whiteboardFromTemplate,
               filesManager,
             }}
-            actions={{}}
+            actions={{
+              onInitApi: setExcalidrawAPI,
+            }}
             options={{
               viewModeEnabled: true,
               UIOptions: {
