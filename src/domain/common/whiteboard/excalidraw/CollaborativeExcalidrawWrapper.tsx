@@ -41,7 +41,7 @@ export interface WhiteboardWhiteboardEvents {
   onCollaborationEnabledChange?: (collaborationEnabled: boolean) => void;
 }
 
-export interface WhiteboardWhiteboardOptions extends ExcalidrawProps {}
+export interface WhiteboardWhiteboardOptions extends ExcalidrawProps { }
 
 export interface WhiteboardWhiteboardProps {
   entities: WhiteboardWhiteboardEntities;
@@ -188,6 +188,7 @@ const CollaborativeExcalidrawWrapper = ({
               const state = {
                 ...(data as ExportedDataState),
                 elements: excalidrawApiRef.current.getSceneElements(),
+                files: excalidrawApiRef.current.getFiles(),
                 appState: excalidrawApiRef.current.getAppState(),
               };
               const result = await actions.onUpdate?.(state);
