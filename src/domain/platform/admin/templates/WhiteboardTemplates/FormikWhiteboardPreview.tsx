@@ -1,13 +1,13 @@
 import { Box, BoxProps, Button, Skeleton, styled } from '@mui/material';
 import { useField } from 'formik';
-import React, { FC, MouseEventHandler, useMemo, useRef, useState } from 'react';
+import React, { FC, MouseEventHandler, useMemo, useState } from 'react';
 import ExcalidrawWrapper from '../../../../common/whiteboard/excalidraw/ExcalidrawWrapper';
 import WhiteboardDialog from '../../../../collaboration/whiteboard/WhiteboardDialog/WhiteboardDialog';
 import { useTranslation } from 'react-i18next';
 import { BlockTitle } from '../../../../../core/ui/typography';
 import { WhiteboardPreviewImage } from '../../../../collaboration/whiteboard/WhiteboardPreviewImages/WhiteboardPreviewImages';
 import { useFullscreen } from '../../../../../core/ui/fullscreen/useFullscreen';
-import { ExcalidrawAPIRefValue } from '@alkemio/excalidraw/types/types';
+import { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/types/types';
 import useWhiteboardFilesManager from '../../../../common/whiteboard/excalidraw/useWhiteboardFilesManager';
 
 interface FormikWhiteboardPreviewProps extends BoxProps {
@@ -38,8 +38,9 @@ const FormikWhiteboardPreview: FC<FormikWhiteboardPreviewProps> = ({
   ...containerProps
 }) => {
   const { t } = useTranslation();
-  const excalidrawApiRef = useRef<ExcalidrawAPIRefValue>(null);
-  const filesManager = useWhiteboardFilesManager({ excalidrawApi: excalidrawApiRef.current });
+
+  const [excalidrawAPI, setExcalidrawAPI] = useState<ExcalidrawImperativeAPI | null>(null);
+  const filesManager = useWhiteboardFilesManager({ excalidrawAPI });
 
   const [field, , helpers] = useField<string>(name); // Whiteboard content JSON string
   const [, , previewImagesField] = useField<WhiteboardPreviewImage[] | undefined>(previewImagesName ?? 'previewImages');
@@ -84,7 +85,9 @@ const FormikWhiteboardPreview: FC<FormikWhiteboardPreviewProps> = ({
               whiteboard: whiteboardFromTemplate,
               filesManager,
             }}
-            actions={{}}
+            actions={{
+              onInitApi: setExcalidrawAPI,
+            }}
             options={{
               viewModeEnabled: true,
               UIOptions: {

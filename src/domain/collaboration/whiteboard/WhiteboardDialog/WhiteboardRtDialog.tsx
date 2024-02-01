@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Formik } from 'formik';
 import { FormikProps } from 'formik/dist/types';
 import { serializeAsJSON } from '@alkemio/excalidraw';
-import { ExcalidrawAPIRefValue } from '@alkemio/excalidraw/types/types';
+import { BinaryFileData, ExcalidrawImperativeAPI } from '@alkemio/excalidraw/types/types';
 import Dialog from '@mui/material/Dialog';
 import { makeStyles } from '@mui/styles';
 import Loading from '../../../../core/ui/loading/Loading';
@@ -33,6 +33,7 @@ import useWhiteboardFilesManager from '../../../common/whiteboard/excalidraw/use
 import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 import WhiteboardDialogFooter from './WhiteboardDialogFooter';
 import { useLocation } from 'react-router-dom';
+import { ExcalidrawElement, ExcalidrawImageElement } from '@alkemio/excalidraw/types/element/types';
 
 interface WhiteboardDialogProps<Whiteboard extends WhiteboardRtWithContent> {
   entities: {
@@ -85,6 +86,27 @@ const useStyles = makeStyles(theme => ({
 
 type RelevantExcalidrawState = Pick<ExportedDataState, 'appState' | 'elements' | 'files'>;
 
+const checkWhiteboardConsistency = (
+  whiteboardId: string | undefined,
+  elements: readonly ExcalidrawElement[],
+  files: Record<BinaryFileData['id'], BinaryFileData & { url?: string }>
+) => {
+  const missingImages = elements.filter(
+    element =>
+      element.type === 'image' && (!element.fileId || !files || !files[element.fileId] || !files[element.fileId].url)
+  ) as ExcalidrawImageElement[];
+
+  if (missingImages.length > 0) {
+    logError(
+      new Error(
+        `Whiteboard is missing images '${whiteboardId}':[${missingImages.map(image => image.fileId).join(', ')}]`
+      )
+    );
+    return false;
+  }
+  return true;
+};
+
 const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
   entities,
   actions,
@@ -105,7 +127,7 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
     }
   }, [pathname]);
 
-  const excalidrawApiRef = useRef<ExcalidrawAPIRefValue>(null);
+  const [excalidrawAPI, setExcalidrawAPI] = useState<ExcalidrawImperativeAPI | null>(null);
   const collabApiRef = useRef<CollabAPI>(null);
   const [collaborationEnabled, setCollaborationEnabled] = useState(true);
   const [collaborationStoppedNoticeOpen, setCollaborationStoppedNoticeOpen] = useState(false);
@@ -124,7 +146,7 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
   );
 
   const filesManager = useWhiteboardFilesManager({
-    excalidrawApi: excalidrawApiRef.current,
+    excalidrawAPI,
     storageBucketId: whiteboard?.profile?.storageBucket.id ?? '',
   });
 
@@ -135,6 +157,7 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
   ): Promise<{
     whiteboard: Whiteboard;
     previewImages?: WhiteboardPreviewImage[];
+    whiteboardIsConsistent: boolean;
   }> => {
     if (!state) {
       throw new Error('Excalidraw state not defined');
@@ -148,6 +171,7 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
         : undefined;
 
     const content = serializeAsJSON(elements, appState, files ?? {}, 'local');
+    const whiteboardIsConsistent = checkWhiteboardConsistency(whiteboard.id, elements, files ?? {});
 
     if (!formikRef.current?.isValid) {
       throw new Error('Form not valid');
@@ -165,6 +189,7 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
         content,
       } as Whiteboard,
       previewImages,
+      whiteboardIsConsistent,
     };
   };
 
@@ -176,16 +201,15 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
   };
 
   const getWhiteboardState = async () => {
-    const whiteboardApi = await excalidrawApiRef.current?.readyPromise;
-    if (!whiteboard || !whiteboardApi) {
+    if (!whiteboard || !excalidrawAPI) {
       return;
     }
     const content = JSON.parse(whiteboard.content) as RelevantExcalidrawState;
     return {
       ...content,
-      elements: whiteboardApi.getSceneElements(),
-      appState: whiteboardApi.getAppState(),
-      files: whiteboardApi.getFiles(),
+      elements: excalidrawAPI.getSceneElements(),
+      appState: excalidrawAPI.getAppState(),
+      files: excalidrawAPI.getFiles(),
     };
   };
 
@@ -212,10 +236,9 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
   };
 
   const handleImportTemplate = async (template: WhiteboardTemplateWithContent) => {
-    const whiteboardApi = await excalidrawApiRef.current?.readyPromise;
-    if (whiteboardApi) {
+    if (excalidrawAPI) {
       try {
-        mergeWhiteboard(whiteboardApi, template.content);
+        mergeWhiteboard(excalidrawAPI, template.content);
       } catch (err) {
         notify(t('templateLibrary.whiteboardTemplates.errorImporting'), 'error');
         // @ts-ignore
@@ -253,7 +276,7 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
         <Formik
           innerRef={formikRef}
           initialValues={initialValues}
-          onSubmit={() => {}}
+          onSubmit={() => { }}
           validationSchema={whiteboardSchema}
         >
           {() => (
@@ -283,7 +306,6 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
                 {!state?.loadingWhiteboardValue && whiteboard && (
                   <CollaborativeExcalidrawWrapper
                     entities={{ whiteboard, filesManager }}
-                    ref={excalidrawApiRef}
                     collabApiRef={collabApiRef}
                     options={{
                       viewModeEnabled: !editModeEnabled,
@@ -296,6 +318,7 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
                       },
                     }}
                     actions={{
+                      onInitApi: setExcalidrawAPI,
                       onUpdate: async state => {
                         const { whiteboard: updatedWhiteboard } = await prepareWhiteboardForUpdate(whiteboard, state);
                         return submitUpdate(updatedWhiteboard);
