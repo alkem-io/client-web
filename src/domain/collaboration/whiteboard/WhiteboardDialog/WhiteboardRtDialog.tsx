@@ -219,32 +219,19 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
       throw new Error('Whiteboard not defined');
     }
     const whiteboardState = await getWhiteboardState();
-    const {
-      whiteboard: updatedWhiteboard,
-      previewImages,
-      whiteboardIsConsistent,
-    } = await prepareWhiteboardForUpdate(whiteboard, whiteboardState, true);
-    if (!whiteboardIsConsistent) {
-      if (!window.confirm('Whiteboard is in an inconsistent state, are you sure that you want to save it?')) {
-        return { success: false, errors: ['Whiteboard is in an inconsistent state. User cancelled save'] };
-      }
-    }
+    const { whiteboard: updatedWhiteboard, previewImages } = await prepareWhiteboardForUpdate(
+      whiteboard,
+      whiteboardState,
+      true
+    );
     return submitUpdate(updatedWhiteboard, previewImages);
   };
 
   const onClose = async () => {
     if (editModeEnabled && collaborationEnabled && whiteboard) {
       const whiteboardState = await getWhiteboardState();
-      const { whiteboard: updatedWhiteboard, whiteboardIsConsistent } = await prepareWhiteboardForUpdate(
-        whiteboard,
-        whiteboardState
-      );
-      if (whiteboardIsConsistent) {
-        submitUpdate(updatedWhiteboard);
-      } else {
-        window.alert('Whiteboard is in an inconsistent state, not saving it onClose');
-        console.error('Whiteboard is in an inconsistent state, not saving it onClose', whiteboardState);
-      }
+      const { whiteboard: updatedWhiteboard } = await prepareWhiteboardForUpdate(whiteboard, whiteboardState);
+      submitUpdate(updatedWhiteboard);
     }
     actions.onCancel(whiteboard!);
   };
@@ -335,14 +322,8 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
                     }}
                     actions={{
                       onUpdate: async state => {
-                        const { whiteboard: updatedWhiteboard, whiteboardIsConsistent } =
-                          await prepareWhiteboardForUpdate(whiteboard, state);
-                        if (whiteboardIsConsistent) {
-                          return submitUpdate(updatedWhiteboard);
-                        } else {
-                          console.error('Whiteboard is in an inconsistent state, not saving it');
-                          return { success: false, errors: ['Whiteboard is in an inconsistent state, skipping save.'] };
-                        }
+                        const { whiteboard: updatedWhiteboard } = await prepareWhiteboardForUpdate(whiteboard, state);
+                        return submitUpdate(updatedWhiteboard);
                       },
                       onSavedToDatabase: () => {
                         refetchLastSaved({
