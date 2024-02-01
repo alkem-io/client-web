@@ -3,11 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Formik } from 'formik';
 import { FormikProps } from 'formik/dist/types';
 import { serializeAsJSON } from '@alkemio/excalidraw';
-<<<<<<< HEAD
-import { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/types/types';
-=======
-import { BinaryFileData, ExcalidrawAPIRefValue } from '@alkemio/excalidraw/types/types';
->>>>>>> 96311dbfe (Possible fix to whiteboard images getting lost (#5451))
+import { BinaryFileData, ExcalidrawImperativeAPI } from '@alkemio/excalidraw/types/types';
 import Dialog from '@mui/material/Dialog';
 import { makeStyles } from '@mui/styles';
 import Loading from '../../../../core/ui/loading/Loading';
