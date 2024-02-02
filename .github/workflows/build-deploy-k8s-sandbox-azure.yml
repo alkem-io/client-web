@@ -1,7 +1,7 @@
 name: Build & Deploy to Sandbox on Azure
 
 on:
-  workflow_dispatch:
+  push:
 
 jobs:
   build-and-deploy:
@@ -15,8 +15,8 @@ jobs:
         with:
           command: 'download'
           command_args: '--all --verbose'
-          source: ./src/core/i18n/en/translation.en.json
-          translation: ./src/core/i18n/%two_letters_code%/translation.%two_letters_code%.json
+          source: ./develop/src/core/i18n/en/translation.en.json
+          translation: ./develop/src/core/i18n/%two_letters_code%/translation.%two_letters_code%.json
 
           download_translations: false
           upload_sources: false
