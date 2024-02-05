@@ -4,7 +4,6 @@ import {
   AuthorizationPrivilege,
   WhiteboardDetailsFragment,
   CollaborationWithWhiteboardDetailsFragment,
-  CreateWhiteboardWhiteboardTemplateFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
 import WhiteboardManagementView, {
   ActiveWhiteboardIdHolder,
@@ -15,20 +14,17 @@ import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 export interface WhiteboardsManagementViewWrapperProps extends ActiveWhiteboardIdHolder, WhiteboardNavigationMethods {
   journeyTypeName: JourneyTypeName;
   whiteboard: WhiteboardDetailsFragment | undefined;
-  templates: CreateWhiteboardWhiteboardTemplateFragment[];
   calloutId: string | undefined;
   authorization: NonNullable<CollaborationWithWhiteboardDetailsFragment['callouts']>[0]['authorization'];
   whiteboardShareUrl: string;
   readOnlyDisplayName?: boolean;
   loadingWhiteboards: boolean;
-  loadingTemplates: boolean;
 }
 
 const WhiteboardsManagementViewWrapper: FC<WhiteboardsManagementViewWrapperProps> = ({
   whiteboardNameId,
   calloutId,
   whiteboard,
-  templates,
   authorization,
   journeyTypeName,
   backToWhiteboards,
@@ -55,7 +51,6 @@ const WhiteboardsManagementViewWrapper: FC<WhiteboardsManagementViewWrapperProps
         <WhiteboardManagementView
           entities={{
             whiteboard,
-            templates,
             calloutId,
             whiteboardNameId,
             contextSource: journeyTypeName,

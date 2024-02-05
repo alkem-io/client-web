@@ -2,10 +2,8 @@ import React, { FC, useCallback, useLayoutEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog/Dialog';
 import {
-  PostTemplateCardFragment,
   CalloutState,
   CalloutType,
-  WhiteboardTemplateCardFragment,
   CalloutVisibility,
   CalloutDisplayLocation,
 } from '../../../../core/apollo/generated/graphql-schema';
@@ -54,7 +52,6 @@ export interface CalloutCreationDialogProps {
   onCreateCallout: (callout: CalloutCreationTypeWithPreviewImages) => Promise<Identifiable | undefined>;
   loading: boolean;
   calloutNames: string[];
-  templates: { postTemplates: PostTemplateCardFragment[]; whiteboardTemplates: WhiteboardTemplateCardFragment[] };
   displayLocation: CalloutDisplayLocation;
   flowState?: string;
   journeyTypeName: JourneyTypeName;
@@ -78,7 +75,6 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
   onCreateCallout,
   loading,
   calloutNames,
-  templates,
   displayLocation,
   flowState,
   journeyTypeName,
@@ -184,7 +180,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
         return result;
       }
     },
-    [callout, onCreateCallout, templates, spaceNameId, fetchWhiteboardTemplateContent]
+    [callout, onCreateCallout, spaceNameId, fetchWhiteboardTemplateContent]
   );
 
   const handleClose = useCallback(() => {
