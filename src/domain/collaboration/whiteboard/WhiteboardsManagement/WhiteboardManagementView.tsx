@@ -5,11 +5,7 @@ import WhiteboardDialog from '../WhiteboardDialog/WhiteboardDialog';
 import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
 import { IWhiteboardActions } from '../containers/WhiteboardActionsContainer';
 import WhiteboardContentContainer from '../containers/WhiteboardContentContainer';
-import {
-  WhiteboardDetailsFragment,
-  CreateWhiteboardWhiteboardTemplateFragment,
-  WhiteboardContentFragment,
-} from '../../../../core/apollo/generated/graphql-schema';
+import { WhiteboardDetailsFragment, WhiteboardContentFragment } from '../../../../core/apollo/generated/graphql-schema';
 import { ViewProps } from '../../../../core/container/view';
 import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
@@ -27,7 +23,6 @@ export interface WhiteboardManagementViewEntities extends ActiveWhiteboardIdHold
   calloutId: string;
   contextSource: JourneyTypeName;
   whiteboard: WhiteboardDetailsFragment | undefined;
-  templates: CreateWhiteboardWhiteboardTemplateFragment[];
   templateListHeader?: string;
   templateListSubheader?: string;
 }

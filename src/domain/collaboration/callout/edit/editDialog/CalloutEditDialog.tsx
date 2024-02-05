@@ -9,12 +9,7 @@ import DialogHeader from '../../../../../core/ui/dialog/DialogHeader';
 import ConfirmationDialog, { ConfirmationDialogProps } from '../../../../../core/ui/dialogs/ConfirmationDialog';
 import { CalloutDeleteType, CalloutEditType } from '../CalloutEditType';
 import CalloutForm, { CalloutFormInput, CalloutFormOutput } from '../../CalloutForm';
-import {
-  CalloutType,
-  PostTemplateCardFragment,
-  TagsetType,
-  WhiteboardTemplateCardFragment,
-} from '../../../../../core/apollo/generated/graphql-schema';
+import { CalloutType, TagsetType } from '../../../../../core/apollo/generated/graphql-schema';
 import { useWhiteboardTemplateContentLazyQuery } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import { CalloutLayoutProps } from '../../../CalloutBlock/CalloutLayout';
@@ -33,7 +28,6 @@ export interface CalloutEditDialogProps {
   onCalloutEdit: (callout: CalloutEditType) => Promise<void>;
   canChangeCalloutLocation?: boolean;
   calloutNames: string[];
-  templates: { postTemplates: PostTemplateCardFragment[]; whiteboardTemplates: WhiteboardTemplateCardFragment[] };
   journeyTypeName: JourneyTypeName;
 }
 
@@ -46,7 +40,6 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
   onCalloutEdit,
   canChangeCalloutLocation,
   calloutNames,
-  templates,
   journeyTypeName,
 }) => {
   const { t } = useTranslation();
@@ -106,7 +99,7 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
       displayLocation: newCallout.displayLocation,
     });
     setLoading(false);
-  }, [callout, fetchWhiteboardTemplateContent, newCallout, spaceNameId, onCalloutEdit, templates]);
+  }, [callout, fetchWhiteboardTemplateContent, newCallout, spaceNameId, onCalloutEdit]);
 
   const handleDelete = useCallback(async () => {
     setLoading(true);
