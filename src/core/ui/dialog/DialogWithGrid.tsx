@@ -1,9 +1,10 @@
-import React, { MouseEventHandler } from 'react';
+import React, { MouseEventHandler, PropsWithChildren } from 'react';
 import { Dialog as MuiDialog, DialogProps as MuiDialogProps, Paper, PaperProps } from '@mui/material';
 import GridContainer from '../grid/GridContainer';
 import { MAX_CONTENT_WIDTH_WITH_GUTTER_PX, useGlobalGridColumns } from '../grid/constants';
 import GridProvider from '../grid/GridProvider';
 import GridItem, { GridItemProps } from '../grid/GridItem';
+import createLayoutHolder from '../layout/layoutHolder/LayoutHolder';
 
 interface DialogContainerProps extends PaperProps {
   columns?: GridItemProps['columns'];
@@ -11,6 +12,20 @@ interface DialogContainerProps extends PaperProps {
   onClose?: MouseEventHandler;
   fullScreen?: boolean;
 }
+
+/**
+ * When dialog footer rendering is tightly coupled with the dialog content,
+ * you can wrap the footer content into DialogFooter for it to be rendered
+ * as a sibling of the dialog content.
+ */
+const { LayoutHolder: DialogFooterLayoutHolder, createLayout } = createLayoutHolder(({ layout, children }) => (
+  <>
+    {children}
+    {layout}
+  </>
+));
+
+export const DialogFooter = createLayout(({ children }: PropsWithChildren<{}>) => <>{children}</>);
 
 const DialogContainer = ({
   columns,
@@ -42,7 +57,9 @@ const DialogContainer = ({
       <GridProvider columns={containerColumns} force>
         <GridItem columns={columns}>
           <Paper {...paperProps}>
-            <GridProvider columns={columns ?? containerColumns}>{children}</GridProvider>
+            <GridProvider columns={columns ?? containerColumns}>
+              <DialogFooterLayoutHolder>{children}</DialogFooterLayoutHolder>
+            </GridProvider>
           </Paper>
         </GridItem>
       </GridProvider>

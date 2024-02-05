@@ -1,6 +1,6 @@
 import React, { FC, useEffect, useState } from 'react';
 import { useNavigate, useResolvedPath } from 'react-router-dom';
-import { Autocomplete, Button, TextField } from '@mui/material';
+import { Autocomplete, Button, DialogActions, TextField } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -27,6 +27,7 @@ import { LoadingButton } from '@mui/lab';
 import useLoadingState from '../../../shared/utils/useLoadingState';
 import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
 import { normalizeLink } from '../../../../core/utils/links';
+import { DialogFooter } from '../../../../core/ui/dialog/DialogWithGrid';
 
 export interface PostSettingsPageProps {
   onClose: () => void;
@@ -196,25 +197,27 @@ const PostSettingsPage: FC<PostSettingsPageProps> = ({ journeyTypeName, onClose 
                     />
                   </Box>
                 )}
-                <Box sx={{ display: 'flex', justifyContent: 'end', marginTop: 2, gap: theme => theme.spacing(1) }}>
-                  <Button
-                    aria-label="delete-post"
-                    variant="outlined"
-                    color="error"
-                    disabled={!isPostLoaded}
-                    onClick={() => setDeleteConfirmDialogOpen(true)}
-                  >
-                    {t('buttons.delete')}
-                  </Button>
-                  <LoadingButton
-                    variant="contained"
-                    disabled={!canSave && !isMoveEnabled}
-                    loading={loading}
-                    onClick={() => handleUpdate(canSave)}
-                  >
-                    {t('buttons.save')}
-                  </LoadingButton>
-                </Box>
+                <DialogFooter>
+                  <DialogActions>
+                    <Button
+                      aria-label="delete-post"
+                      variant="outlined"
+                      color="error"
+                      disabled={!isPostLoaded}
+                      onClick={() => setDeleteConfirmDialogOpen(true)}
+                    >
+                      {t('buttons.delete')}
+                    </Button>
+                    <LoadingButton
+                      variant="contained"
+                      disabled={!canSave && !isMoveEnabled}
+                      loading={loading}
+                      onClick={() => handleUpdate(canSave)}
+                    >
+                      {t('buttons.save')}
+                    </LoadingButton>
+                  </DialogActions>
+                </DialogFooter>
               </>
             );
           }}
