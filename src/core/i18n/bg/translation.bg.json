@@ -2012,7 +2012,7 @@
         },
         "welcome": {
           "welcomeUnauthenticated": "Welcome at Alkemio!",
-          "welcome-back": "Добре дошли, {{username}}!",
+          "welcome-back": "Добре дошли обратно, {{username}}!",
           "join": "Искаш ли да се присъединиш към общността и да видиш повече?",
           "existing-user": {
             "header": "Съществуващ потребител? Влезте пак!",
