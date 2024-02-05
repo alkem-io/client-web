@@ -1,10 +1,9 @@
 import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
 import { JourneyDetails } from '../../../../domain/community/pendingMembership/PendingMemberships';
-import { Avatar, ButtonBase } from '@mui/material';
+import { Avatar, ButtonBase, ListItemButton, ListItemButtonProps, ListItemButtonTypeMap } from '@mui/material';
 import { Caption } from '../../../../core/ui/typography';
 import { Trans, useTranslation } from 'react-i18next';
 import JourneyIcon from '../../../../domain/shared/components/JourneyIcon/JourneyIcon';
-import RouterLink from '../../../../core/ui/link/RouterLink';
 
 interface NewMembershipCardProps {
   membership: JourneyDetails | undefined;
@@ -13,6 +12,10 @@ interface NewMembershipCardProps {
   membershipType: 'application' | 'invitation' | 'membership';
 }
 
+const Wrapper = <D extends React.ElementType = ListItemButtonTypeMap['defaultComponent'], P = {}>({
+  ...props
+}: ListItemButtonProps<D, P>) => <ListItemButton component={ButtonBase} {...props} />;
+
 const NewMembershipCard = ({ membership, to, onClick, membershipType }: NewMembershipCardProps) => {
   const { t } = useTranslation();
 
@@ -20,7 +23,7 @@ const NewMembershipCard = ({ membership, to, onClick, membershipType }: NewMembe
 
   return (
     <BadgeCardView
-      component={to ? RouterLink : ButtonBase}
+      component={Wrapper}
       visual={<Avatar src={membership?.journeyVisual?.uri} />}
       to={to}
       onClick={onClick}
