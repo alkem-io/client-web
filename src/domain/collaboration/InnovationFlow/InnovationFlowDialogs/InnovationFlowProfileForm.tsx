@@ -1,6 +1,6 @@
 import { Button } from '@mui/material';
 import { Formik } from 'formik';
-import { FC } from 'react';
+import { ComponentType, FC, Fragment, ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { Reference, Tagset } from '../../../../core/apollo/generated/graphql-schema';
@@ -29,9 +29,15 @@ interface InnovationFlowProfileFormProps {
   profile?: InnovationFlowProfile;
   onSubmit: (formData: InnovationFlowProfileFormValues) => Promise<unknown> | void;
   onCancel?: () => void;
+  actionsRenderer?: ComponentType<{ children: ReactElement }>;
 }
 
-const InnovationFlowProfileForm: FC<InnovationFlowProfileFormProps> = ({ profile, onSubmit, onCancel }) => {
+const InnovationFlowProfileForm: FC<InnovationFlowProfileFormProps> = ({
+  profile,
+  onSubmit,
+  onCancel,
+  actionsRenderer: ActionsRenderer = Fragment,
+}) => {
   const { t } = useTranslation();
 
   const initialValues: InnovationFlowProfileFormValues = {
@@ -62,14 +68,16 @@ const InnovationFlowProfileForm: FC<InnovationFlowProfileFormProps> = ({ profile
             {/* TODO: Tags pending <TagsetSegment tagsets={profile?.tagsets ?? []} /> */}
             <ContextReferenceSegment references={references || []} profileId={profile?.id} />
             <VisualUpload visual={profile?.bannerNarrow} />
-            <Actions justifyContent="end">
-              <Button variant="text" onClick={onCancel}>
-                {t('buttons.cancel')}
-              </Button>
-              <LoadingButton loading={loading} variant="contained" onClick={() => handleSubmit()}>
-                {t('buttons.save')}
-              </LoadingButton>
-            </Actions>
+            <ActionsRenderer>
+              <Actions justifyContent="end">
+                <Button variant="text" onClick={onCancel}>
+                  {t('buttons.cancel')}
+                </Button>
+                <LoadingButton loading={loading} variant="contained" onClick={() => handleSubmit()}>
+                  {t('buttons.save')}
+                </LoadingButton>
+              </Actions>
+            </ActionsRenderer>
           </Gutters>
         );
       }}
