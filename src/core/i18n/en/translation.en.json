@@ -2067,25 +2067,25 @@
             {
               "title": "👋 Join the Welcome@Alkemio Space",
               "description": "To find examples, best practices, tips and tricks",
-              "imageUrl": "https://alkem.io/api/private/rest/storage/document/1057e0c1-2d47-4821-8848-20ec19cb2a0d",
+              "imageUrl": "/my-dashboard/tipsntricks-welcome.jpg",
               "url": "https://alkem.io/welcome-space/dashboard"
             },
             {
               "title": "💭 Have a look at the FAQ",
               "description": "To find answers to your most urgent questions",
-              "imageUrl": "https://alkem.io/api/private/rest/storage/document/6ec5cc25-ea56-4eff-8470-3adc576ed7b5",
+              "imageUrl": "/my-dashboard/tipsntricks-faq.png",
               "url": "https://welcome.alkem.io/faq/"
             },
             {
               "title": "⚒️ Start a new Space",
               "description": "To gather contributors for your envisioned change",
-              "imageUrl": "https://alkem.io/api/private/rest/storage/document/6ec5cc25-ea56-4eff-8470-3adc576ed7b5",
+              "imageUrl": "/my-dashboard/tipsntricks-space.png",
               "url": "https://welcome.alkem.io/want-to-own-space/"
             },
             {
               "title": "📑 Read more about the Key concepts",
               "description": "To help you get started smoothly on the platform",
-              "imageUrl": "https://alkem.io/api/private/rest/storage/document/51f4e9f8-758d-412a-9026-48e348384c04",
+              "imageUrl": "/my-dashboard/tipsntricks-concepts2.png",
               "url": "https://welcome.alkem.io/help/key-concepts/"
             }
           ]
