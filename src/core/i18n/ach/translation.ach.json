@@ -922,7 +922,7 @@
       }
     },
     "innovationFlowStateSelector": {
-      "selectedStateNotice": "crwdns10928:0{{currentState}}crwdnd10928:0{{selectedState}}crwdne10928:0"
+      "selectedStateNotice": "crwdns11210:0{{journeyType}}crwdnd11210:0{{currentState}}crwdnd11210:0{{selectedState}}crwdne11210:0"
     },
     "invitations": {
       "inviteOthers": "crwdns9290:0crwdne9290:0",
@@ -1978,7 +1978,7 @@
         "myMemberships": {
           "title": "crwdns11018:0crwdne11018:0",
           "noChildMemberships": "crwdns11020:0crwdne11020:0",
-          "seeMore": "crwdns11022:0crwdne11022:0"
+          "seeMore": "crwdns11212:0crwdne11212:0"
         },
         "membershipSuggestions": {
           "title": "crwdns11024:0crwdne11024:0",
