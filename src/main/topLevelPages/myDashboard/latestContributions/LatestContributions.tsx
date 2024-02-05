@@ -7,22 +7,21 @@ import usePaginatedQuery from '../../../../domain/shared/pagination/usePaginated
 import {
   ActivityLogResultType,
   ActivityViewChooser,
-} from '../../../../domain/shared/components/ActivityLog/ActivityComponent';
+} from '../../../../domain/collaboration/activity/ActivityLog/ActivityComponent';
 import {
   ActivityFeedRoles,
   LatestContributionsQuery,
   LatestContributionsQueryVariables,
 } from '../../../../core/apollo/generated/graphql-schema';
-import Gutters from '../../../../core/ui/grid/Gutters';
 import { Box, SelectChangeEvent, Skeleton, useTheme } from '@mui/material';
 import React, { forwardRef, useMemo, useState } from 'react';
 import SeamlessSelect from '../../../../core/ui/forms/select/SeamlessSelect';
 import { SelectOption } from '@mui/base';
-import { getJourneyTypeName } from '../../../../domain/journey/JourneyTypeName';
 import useLazyLoading from '../../../../domain/shared/pagination/useLazyLoading';
 import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
 import { gutters } from '../../../../core/ui/grid/utils';
 import { Identifiable } from '../../../../core/utils/Identifiable';
+import ActivityViewFooter from '../../../../domain/collaboration/activity/ActivityLog/views/ActivityViewFooter';
 
 const ROLE_OPTION_ALL = 'ROLE_OPTION_ALL';
 const SPACE_OPTION_ALL = 'SPACE_OPTION_ALL';
@@ -143,19 +142,19 @@ const LatestContributions = ({ spaceMemberships }: LatestContributionsProps) => 
         />
       </Box>
       <ScrollerWithGradient>
-        <Gutters>
+        <Box padding={1}>
           {data?.activityFeed.activityFeed.map(activity => {
             return (
               <ActivityViewChooser
                 key={activity.id}
                 activity={activity as ActivityLogResultType}
-                journeyTypeName={getJourneyTypeName(activity.journey?.profile.type)}
                 journeyUrl={activity.journey?.profile.url ?? ''}
+                footerComponent={ActivityViewFooter}
               />
             );
           })}
           {loader}
-        </Gutters>
+        </Box>
       </ScrollerWithGradient>
     </PageContentBlock>
   );

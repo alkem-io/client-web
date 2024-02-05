@@ -2418,9 +2418,7 @@ export type MeQueryResultsInvitationsArgs = {
 };
 
 export type MeQueryResultsMyJourneysArgs = {
-  filter?: InputMaybe<SpaceFilterInput>;
   limit?: InputMaybe<Scalars['Float']>;
-  types?: InputMaybe<Array<ActivityEventType>>;
 };
 
 export type MeQueryResultsSpaceMembershipsArgs = {
@@ -3641,6 +3639,8 @@ export type PlatformLocations = {
   innovationLibrary: Scalars['String'];
   /** URL to a page about the collaboration tools */
   inspiration: Scalars['String'];
+  /** URL to the landing page of the platform */
+  landing: Scalars['String'];
   /** URL where new users can get onboarding help */
   newuser: Scalars['String'];
   /** URL for the link Opensource in the HomePage of the application */
@@ -6134,6 +6134,7 @@ export type CalloutPageCalloutQuery = {
                         id: string;
                         nameID: string;
                         createdDate: Date;
+                        contentUpdatePolicy: ContentUpdatePolicy;
                         profile: {
                           __typename?: 'Profile';
                           id: string;
@@ -6197,7 +6198,11 @@ export type CalloutPageCalloutQuery = {
                                 __typename?: 'Profile';
                                 id: string;
                                 displayName: string;
-                                visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                                url: string;
+                                location?:
+                                  | { __typename?: 'Location'; id: string; country: string; city: string }
+                                  | undefined;
+                                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                               };
                             }
                           | undefined;
@@ -6356,6 +6361,7 @@ export type CalloutPageCalloutQuery = {
                                 __typename?: 'Profile';
                                 id: string;
                                 displayName: string;
+                                url: string;
                                 avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                                 tagsets?:
                                   | Array<{
@@ -6552,6 +6558,7 @@ export type CalloutPageCalloutQuery = {
                           id: string;
                           nameID: string;
                           createdDate: Date;
+                          contentUpdatePolicy: ContentUpdatePolicy;
                           profile: {
                             __typename?: 'Profile';
                             id: string;
@@ -6615,7 +6622,11 @@ export type CalloutPageCalloutQuery = {
                                   __typename?: 'Profile';
                                   id: string;
                                   displayName: string;
-                                  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                                  url: string;
+                                  location?:
+                                    | { __typename?: 'Location'; id: string; country: string; city: string }
+                                    | undefined;
+                                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                                 };
                               }
                             | undefined;
@@ -6776,6 +6787,7 @@ export type CalloutPageCalloutQuery = {
                                   __typename?: 'Profile';
                                   id: string;
                                   displayName: string;
+                                  url: string;
                                   avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                                   tagsets?:
                                     | Array<{
@@ -6973,6 +6985,7 @@ export type CalloutPageCalloutQuery = {
                           id: string;
                           nameID: string;
                           createdDate: Date;
+                          contentUpdatePolicy: ContentUpdatePolicy;
                           profile: {
                             __typename?: 'Profile';
                             id: string;
@@ -7036,7 +7049,11 @@ export type CalloutPageCalloutQuery = {
                                   __typename?: 'Profile';
                                   id: string;
                                   displayName: string;
-                                  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                                  url: string;
+                                  location?:
+                                    | { __typename?: 'Location'; id: string; country: string; city: string }
+                                    | undefined;
+                                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                                 };
                               }
                             | undefined;
@@ -7197,6 +7214,7 @@ export type CalloutPageCalloutQuery = {
                                   __typename?: 'Profile';
                                   id: string;
                                   displayName: string;
+                                  url: string;
                                   avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                                   tagsets?:
                                     | Array<{
@@ -8105,12 +8123,11 @@ export type ActivityCreatedSubscription = {
               location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
             };
           };
-          calendar: { __typename?: 'Calendar'; id: string };
           calendarEvent: {
             __typename?: 'CalendarEvent';
             id: string;
             nameID: string;
-            profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+            profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
           };
         }
       | {
@@ -8198,16 +8215,10 @@ export type ActivityCreatedSubscription = {
             nameID: string;
             framing: {
               __typename?: 'CalloutFraming';
-              profile: { __typename?: 'Profile'; id: string; displayName: string };
+              profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
             };
           };
-          reference: {
-            __typename?: 'Reference';
-            id: string;
-            name: string;
-            description?: string | undefined;
-            uri: string;
-          };
+          reference: { __typename?: 'Reference'; id: string; name: string; uri: string };
         }
       | {
           __typename: 'ActivityLogEntryCalloutPostComment';
@@ -8243,20 +8254,11 @@ export type ActivityCreatedSubscription = {
               location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
             };
           };
-          callout: {
-            __typename?: 'Callout';
-            id: string;
-            nameID: string;
-            framing: {
-              __typename?: 'CalloutFraming';
-              profile: { __typename?: 'Profile'; id: string; displayName: string };
-            };
-          };
           post: {
             __typename?: 'Post';
             id: string;
             nameID: string;
-            profile: { __typename?: 'Profile'; id: string; displayName: string };
+            profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
           };
         }
       | {
@@ -8307,8 +8309,7 @@ export type ActivityCreatedSubscription = {
             __typename?: 'Post';
             id: string;
             nameID: string;
-            type: string;
-            profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+            profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
           };
         }
       | {
@@ -8396,14 +8397,14 @@ export type ActivityCreatedSubscription = {
             nameID: string;
             framing: {
               __typename?: 'CalloutFraming';
-              profile: { __typename?: 'Profile'; id: string; displayName: string };
+              profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
             };
           };
           whiteboard: {
             __typename?: 'Whiteboard';
             id: string;
             nameID: string;
-            profile: { __typename?: 'Profile'; id: string; displayName: string };
+            profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
           };
         }
       | {
@@ -8444,7 +8445,7 @@ export type ActivityCreatedSubscription = {
             __typename?: 'Challenge';
             id: string;
             nameID: string;
-            profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string };
+            profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
           };
         }
       | {
@@ -8492,6 +8493,7 @@ export type ActivityCreatedSubscription = {
               __typename?: 'Profile';
               id: string;
               displayName: string;
+              url: string;
               visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
               tagsets?:
                 | Array<{
@@ -8545,7 +8547,7 @@ export type ActivityCreatedSubscription = {
             __typename?: 'Opportunity';
             id: string;
             nameID: string;
-            profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string };
+            profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
           };
         }
       | {
@@ -8621,12 +8623,11 @@ type ActivityLogOnCollaboration_ActivityLogEntryCalendarEventCreated_Fragment = 
       location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
     };
   };
-  calendar: { __typename?: 'Calendar'; id: string };
   calendarEvent: {
     __typename?: 'CalendarEvent';
     id: string;
     nameID: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+    profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
   };
 };
 
@@ -8714,9 +8715,12 @@ type ActivityLogOnCollaboration_ActivityLogEntryCalloutLinkCreated_Fragment = {
     __typename?: 'Callout';
     id: string;
     nameID: string;
-    framing: { __typename?: 'CalloutFraming'; profile: { __typename?: 'Profile'; id: string; displayName: string } };
+    framing: {
+      __typename?: 'CalloutFraming';
+      profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+    };
   };
-  reference: { __typename?: 'Reference'; id: string; name: string; description?: string | undefined; uri: string };
+  reference: { __typename?: 'Reference'; id: string; name: string; uri: string };
 };
 
 type ActivityLogOnCollaboration_ActivityLogEntryCalloutPostComment_Fragment = {
@@ -8753,17 +8757,11 @@ type ActivityLogOnCollaboration_ActivityLogEntryCalloutPostComment_Fragment = {
       location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
     };
   };
-  callout: {
-    __typename?: 'Callout';
-    id: string;
-    nameID: string;
-    framing: { __typename?: 'CalloutFraming'; profile: { __typename?: 'Profile'; id: string; displayName: string } };
-  };
   post: {
     __typename?: 'Post';
     id: string;
     nameID: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string };
+    profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
   };
 };
 
@@ -8815,8 +8813,7 @@ type ActivityLogOnCollaboration_ActivityLogEntryCalloutPostCreated_Fragment = {
     __typename?: 'Post';
     id: string;
     nameID: string;
-    type: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+    profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
   };
 };
 
@@ -8904,13 +8901,16 @@ type ActivityLogOnCollaboration_ActivityLogEntryCalloutWhiteboardCreated_Fragmen
     __typename?: 'Callout';
     id: string;
     nameID: string;
-    framing: { __typename?: 'CalloutFraming'; profile: { __typename?: 'Profile'; id: string; displayName: string } };
+    framing: {
+      __typename?: 'CalloutFraming';
+      profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+    };
   };
   whiteboard: {
     __typename?: 'Whiteboard';
     id: string;
     nameID: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string };
+    profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
   };
 };
 
@@ -8952,7 +8952,7 @@ type ActivityLogOnCollaboration_ActivityLogEntryChallengeCreated_Fragment = {
     __typename?: 'Challenge';
     id: string;
     nameID: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string };
+    profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
   };
 };
 
@@ -9001,6 +9001,7 @@ type ActivityLogOnCollaboration_ActivityLogEntryMemberJoined_Fragment = {
       __typename?: 'Profile';
       id: string;
       displayName: string;
+      url: string;
       visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
       tagsets?:
         | Array<{
@@ -9055,7 +9056,7 @@ type ActivityLogOnCollaboration_ActivityLogEntryOpportunityCreated_Fragment = {
     __typename?: 'Opportunity';
     id: string;
     nameID: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string };
+    profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
   };
 };
 
@@ -9152,12 +9153,11 @@ export type ActivityLogOnCollaborationQuery = {
             location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
           };
         };
-        calendar: { __typename?: 'Calendar'; id: string };
         calendarEvent: {
           __typename?: 'CalendarEvent';
           id: string;
           nameID: string;
-          profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+          profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
         };
       }
     | {
@@ -9245,16 +9245,10 @@ export type ActivityLogOnCollaborationQuery = {
           nameID: string;
           framing: {
             __typename?: 'CalloutFraming';
-            profile: { __typename?: 'Profile'; id: string; displayName: string };
+            profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
           };
         };
-        reference: {
-          __typename?: 'Reference';
-          id: string;
-          name: string;
-          description?: string | undefined;
-          uri: string;
-        };
+        reference: { __typename?: 'Reference'; id: string; name: string; uri: string };
       }
     | {
         __typename: 'ActivityLogEntryCalloutPostComment';
@@ -9290,20 +9284,11 @@ export type ActivityLogOnCollaborationQuery = {
             location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
           };
         };
-        callout: {
-          __typename?: 'Callout';
-          id: string;
-          nameID: string;
-          framing: {
-            __typename?: 'CalloutFraming';
-            profile: { __typename?: 'Profile'; id: string; displayName: string };
-          };
-        };
         post: {
           __typename?: 'Post';
           id: string;
           nameID: string;
-          profile: { __typename?: 'Profile'; id: string; displayName: string };
+          profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
         };
       }
     | {
@@ -9354,8 +9339,7 @@ export type ActivityLogOnCollaborationQuery = {
           __typename?: 'Post';
           id: string;
           nameID: string;
-          type: string;
-          profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+          profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
         };
       }
     | {
@@ -9443,14 +9427,14 @@ export type ActivityLogOnCollaborationQuery = {
           nameID: string;
           framing: {
             __typename?: 'CalloutFraming';
-            profile: { __typename?: 'Profile'; id: string; displayName: string };
+            profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
           };
         };
         whiteboard: {
           __typename?: 'Whiteboard';
           id: string;
           nameID: string;
-          profile: { __typename?: 'Profile'; id: string; displayName: string };
+          profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
         };
       }
     | {
@@ -9491,7 +9475,7 @@ export type ActivityLogOnCollaborationQuery = {
           __typename?: 'Challenge';
           id: string;
           nameID: string;
-          profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string };
+          profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
         };
       }
     | {
@@ -9539,6 +9523,7 @@ export type ActivityLogOnCollaborationQuery = {
             __typename?: 'Profile';
             id: string;
             displayName: string;
+            url: string;
             visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
             tagsets?:
               | Array<{
@@ -9592,7 +9577,7 @@ export type ActivityLogOnCollaborationQuery = {
           __typename?: 'Opportunity';
           id: string;
           nameID: string;
-          profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string };
+          profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
         };
       }
     | {
@@ -9647,6 +9632,7 @@ export type ActivityLogMemberJoinedFragment = {
       __typename?: 'Profile';
       id: string;
       displayName: string;
+      url: string;
       visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
       tagsets?:
         | Array<{
@@ -9693,8 +9679,7 @@ export type ActivityLogCalloutPostCreatedFragment = {
     __typename?: 'Post';
     id: string;
     nameID: string;
-    type: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+    profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
   };
 };
 
@@ -9704,24 +9689,21 @@ export type ActivityLogCalloutLinkCreatedFragment = {
     __typename?: 'Callout';
     id: string;
     nameID: string;
-    framing: { __typename?: 'CalloutFraming'; profile: { __typename?: 'Profile'; id: string; displayName: string } };
+    framing: {
+      __typename?: 'CalloutFraming';
+      profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+    };
   };
-  reference: { __typename?: 'Reference'; id: string; name: string; description?: string | undefined; uri: string };
+  reference: { __typename?: 'Reference'; id: string; name: string; uri: string };
 };
 
 export type ActivityLogCalloutPostCommentFragment = {
   __typename?: 'ActivityLogEntryCalloutPostComment';
-  callout: {
-    __typename?: 'Callout';
-    id: string;
-    nameID: string;
-    framing: { __typename?: 'CalloutFraming'; profile: { __typename?: 'Profile'; id: string; displayName: string } };
-  };
   post: {
     __typename?: 'Post';
     id: string;
     nameID: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string };
+    profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
   };
 };
 
@@ -9731,13 +9713,16 @@ export type ActivityLogCalloutWhiteboardCreatedFragment = {
     __typename?: 'Callout';
     id: string;
     nameID: string;
-    framing: { __typename?: 'CalloutFraming'; profile: { __typename?: 'Profile'; id: string; displayName: string } };
+    framing: {
+      __typename?: 'CalloutFraming';
+      profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+    };
   };
   whiteboard: {
     __typename?: 'Whiteboard';
     id: string;
     nameID: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string };
+    profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
   };
 };
 
@@ -9747,7 +9732,7 @@ export type ActivityLogChallengeCreatedFragment = {
     __typename?: 'Challenge';
     id: string;
     nameID: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string };
+    profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
   };
 };
 
@@ -9757,7 +9742,7 @@ export type ActivityLogOpportunityCreatedFragment = {
     __typename?: 'Opportunity';
     id: string;
     nameID: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string };
+    profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
   };
 };
 
@@ -9777,12 +9762,11 @@ export type ActivityLogCalloutDiscussionCommentFragment = {
 
 export type ActivityLogCalendarEventCreatedFragment = {
   __typename?: 'ActivityLogEntryCalendarEventCreated';
-  calendar: { __typename?: 'Calendar'; id: string };
   calendarEvent: {
     __typename?: 'CalendarEvent';
     id: string;
     nameID: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+    profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
   };
 };
 
@@ -10164,6 +10148,7 @@ export type CalloutTemplateContentQuery = {
                   id: string;
                   nameID: string;
                   createdDate: Date;
+                  contentUpdatePolicy: ContentUpdatePolicy;
                   content: string;
                   profile: {
                     __typename?: 'Profile';
@@ -10228,7 +10213,9 @@ export type CalloutTemplateContentQuery = {
                           __typename?: 'Profile';
                           id: string;
                           displayName: string;
-                          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                          url: string;
+                          location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
+                          avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                         };
                       }
                     | undefined;
@@ -10517,6 +10504,7 @@ export type CreateCalloutMutation = {
             id: string;
             nameID: string;
             createdDate: Date;
+            contentUpdatePolicy: ContentUpdatePolicy;
             profile: {
               __typename?: 'Profile';
               id: string;
@@ -10580,7 +10568,9 @@ export type CreateCalloutMutation = {
                     __typename?: 'Profile';
                     id: string;
                     displayName: string;
-                    visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                    url: string;
+                    location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                   };
                 }
               | undefined;
@@ -10729,6 +10719,7 @@ export type CreateCalloutMutation = {
                     __typename?: 'Profile';
                     id: string;
                     displayName: string;
+                    url: string;
                     avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                     tagsets?:
                       | Array<{
@@ -11260,6 +11251,7 @@ export type CalloutsQuery = {
                         id: string;
                         nameID: string;
                         createdDate: Date;
+                        contentUpdatePolicy: ContentUpdatePolicy;
                         profile: {
                           __typename?: 'Profile';
                           id: string;
@@ -11323,7 +11315,11 @@ export type CalloutsQuery = {
                                 __typename?: 'Profile';
                                 id: string;
                                 displayName: string;
-                                visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                                url: string;
+                                location?:
+                                  | { __typename?: 'Location'; id: string; country: string; city: string }
+                                  | undefined;
+                                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                               };
                             }
                           | undefined;
@@ -11482,6 +11478,7 @@ export type CalloutsQuery = {
                                 __typename?: 'Profile';
                                 id: string;
                                 displayName: string;
+                                url: string;
                                 avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                                 tagsets?:
                                   | Array<{
@@ -11682,6 +11679,7 @@ export type CalloutsQuery = {
                           id: string;
                           nameID: string;
                           createdDate: Date;
+                          contentUpdatePolicy: ContentUpdatePolicy;
                           profile: {
                             __typename?: 'Profile';
                             id: string;
@@ -11745,7 +11743,11 @@ export type CalloutsQuery = {
                                   __typename?: 'Profile';
                                   id: string;
                                   displayName: string;
-                                  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                                  url: string;
+                                  location?:
+                                    | { __typename?: 'Location'; id: string; country: string; city: string }
+                                    | undefined;
+                                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                                 };
                               }
                             | undefined;
@@ -11906,6 +11908,7 @@ export type CalloutsQuery = {
                                   __typename?: 'Profile';
                                   id: string;
                                   displayName: string;
+                                  url: string;
                                   avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                                   tagsets?:
                                     | Array<{
@@ -12107,6 +12110,7 @@ export type CalloutsQuery = {
                           id: string;
                           nameID: string;
                           createdDate: Date;
+                          contentUpdatePolicy: ContentUpdatePolicy;
                           profile: {
                             __typename?: 'Profile';
                             id: string;
@@ -12170,7 +12174,11 @@ export type CalloutsQuery = {
                                   __typename?: 'Profile';
                                   id: string;
                                   displayName: string;
-                                  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                                  url: string;
+                                  location?:
+                                    | { __typename?: 'Location'; id: string; country: string; city: string }
+                                    | undefined;
+                                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                                 };
                               }
                             | undefined;
@@ -12331,6 +12339,7 @@ export type CalloutsQuery = {
                                   __typename?: 'Profile';
                                   id: string;
                                   displayName: string;
+                                  url: string;
                                   avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                                   tagsets?:
                                     | Array<{
@@ -12526,6 +12535,7 @@ export type CollaborationWithCalloutsFragment = {
                 id: string;
                 nameID: string;
                 createdDate: Date;
+                contentUpdatePolicy: ContentUpdatePolicy;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
@@ -12589,7 +12599,9 @@ export type CollaborationWithCalloutsFragment = {
                         __typename?: 'Profile';
                         id: string;
                         displayName: string;
-                        visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                        url: string;
+                        location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
+                        avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                       };
                     }
                   | undefined;
@@ -12738,6 +12750,7 @@ export type CollaborationWithCalloutsFragment = {
                         __typename?: 'Profile';
                         id: string;
                         displayName: string;
+                        url: string;
                         avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                         tagsets?:
                           | Array<{
@@ -12910,6 +12923,7 @@ export type CalloutFragment = {
           id: string;
           nameID: string;
           createdDate: Date;
+          contentUpdatePolicy: ContentUpdatePolicy;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -12973,7 +12987,9 @@ export type CalloutFragment = {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
-                  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                  url: string;
+                  location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | undefined;
@@ -13122,6 +13138,7 @@ export type CalloutFragment = {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
+                  url: string;
                   avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                   tagsets?:
                     | Array<{
@@ -13403,6 +13420,7 @@ export type SpacePostQuery = {
                                         __typename?: 'Profile';
                                         id: string;
                                         displayName: string;
+                                        url: string;
                                         avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                                         tagsets?:
                                           | Array<{
@@ -13555,6 +13573,7 @@ export type ChallengePostQuery = {
                                           __typename?: 'Profile';
                                           id: string;
                                           displayName: string;
+                                          url: string;
                                           avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                                           tagsets?:
                                             | Array<{
@@ -13708,6 +13727,7 @@ export type OpportunityPostQuery = {
                                           __typename?: 'Profile';
                                           id: string;
                                           displayName: string;
+                                          url: string;
                                           avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                                           tagsets?:
                                             | Array<{
@@ -13843,6 +13863,7 @@ export type PostDashboardDataFragment = {
                                 __typename?: 'Profile';
                                 id: string;
                                 displayName: string;
+                                url: string;
                                 avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                                 tagsets?:
                                   | Array<{
@@ -13947,6 +13968,7 @@ export type PostDashboardFragment = {
               __typename?: 'Profile';
               id: string;
               displayName: string;
+              url: string;
               avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
               tagsets?:
                 | Array<{
@@ -15097,6 +15119,7 @@ export type WhiteboardRtDetailsFragment = {
   id: string;
   nameID: string;
   createdDate: Date;
+  contentUpdatePolicy: ContentUpdatePolicy;
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -15160,7 +15183,9 @@ export type WhiteboardRtDetailsFragment = {
           __typename?: 'Profile';
           id: string;
           displayName: string;
-          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+          url: string;
+          location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
         };
       }
     | undefined;
@@ -15446,6 +15471,7 @@ export type CalloutWithWhiteboardRtFragment = {
           id: string;
           nameID: string;
           createdDate: Date;
+          contentUpdatePolicy: ContentUpdatePolicy;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -15509,7 +15535,9 @@ export type CalloutWithWhiteboardRtFragment = {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
-                  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                  url: string;
+                  location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | undefined;
@@ -15639,6 +15667,7 @@ export type CollaborationWithWhiteboardDetailsFragment = {
                 id: string;
                 nameID: string;
                 createdDate: Date;
+                contentUpdatePolicy: ContentUpdatePolicy;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
@@ -15702,7 +15731,9 @@ export type CollaborationWithWhiteboardDetailsFragment = {
                         __typename?: 'Profile';
                         id: string;
                         displayName: string;
-                        visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                        url: string;
+                        location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
+                        avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                       };
                     }
                   | undefined;
@@ -15961,6 +15992,7 @@ export type WhiteboardRtFromCalloutQuery = {
                   id: string;
                   nameID: string;
                   createdDate: Date;
+                  contentUpdatePolicy: ContentUpdatePolicy;
                   profile: {
                     __typename?: 'Profile';
                     id: string;
@@ -16024,7 +16056,9 @@ export type WhiteboardRtFromCalloutQuery = {
                           __typename?: 'Profile';
                           id: string;
                           displayName: string;
-                          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                          url: string;
+                          location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
+                          avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                         };
                       }
                     | undefined;
@@ -16153,6 +16187,7 @@ export type WhiteboardRtWithContentQuery = {
           id: string;
           nameID: string;
           createdDate: Date;
+          contentUpdatePolicy: ContentUpdatePolicy;
           content: string;
           profile: {
             __typename?: 'Profile';
@@ -16217,7 +16252,9 @@ export type WhiteboardRtWithContentQuery = {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
-                  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                  url: string;
+                  location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | undefined;
@@ -16494,6 +16531,28 @@ export type WhiteboardContentUpdatedSubscription = {
   whiteboardContentUpdated: { __typename?: 'WhiteboardContentUpdated'; whiteboardID: string; content: string };
 };
 
+export type WhiteboardRtContentUpdatePolicyQueryVariables = Exact<{
+  whiteboardId: Scalars['UUID'];
+}>;
+
+export type WhiteboardRtContentUpdatePolicyQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    whiteboardRt?: { __typename?: 'WhiteboardRt'; id: string; contentUpdatePolicy: ContentUpdatePolicy } | undefined;
+  };
+};
+
+export type UpdateWhiteboardRtContentUpdatePolicyMutationVariables = Exact<{
+  whiteboardId: Scalars['UUID'];
+  contentUpdatePolicy: ContentUpdatePolicy;
+}>;
+
+export type UpdateWhiteboardRtContentUpdatePolicyMutation = {
+  __typename?: 'Mutation';
+  updateWhiteboardRt: { __typename?: 'WhiteboardRt'; id: string; contentUpdatePolicy: ContentUpdatePolicy };
+};
+
 export type ChallengePreferencesQueryVariables = Exact<{
   spaceNameId: Scalars['UUID_NAMEID'];
   challengeNameId: Scalars['UUID_NAMEID'];
@@ -16766,6 +16825,7 @@ export type CreateDiscussionMutation = {
                 __typename?: 'Profile';
                 id: string;
                 displayName: string;
+                url: string;
                 avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 tagsets?:
                   | Array<{
@@ -16836,6 +16896,7 @@ export type DiscussionDetailsFragment = {
               __typename?: 'Profile';
               id: string;
               displayName: string;
+              url: string;
               avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
               tagsets?:
                 | Array<{
@@ -17035,6 +17096,7 @@ export type PlatformDiscussionQuery = {
                         __typename?: 'Profile';
                         id: string;
                         displayName: string;
+                        url: string;
                         avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                         tagsets?:
                           | Array<{
@@ -17155,6 +17217,7 @@ export type MessageDetailsFragment = {
           __typename?: 'Profile';
           id: string;
           displayName: string;
+          url: string;
           avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
           tagsets?:
             | Array<{
@@ -17214,6 +17277,7 @@ export type CommentsWithMessagesFragment = {
             __typename?: 'Profile';
             id: string;
             displayName: string;
+            url: string;
             avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
             tagsets?:
               | Array<{
@@ -17337,6 +17401,7 @@ export type RoomEventsSubscription = {
                     __typename?: 'Profile';
                     id: string;
                     displayName: string;
+                    url: string;
                     avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                     tagsets?:
                       | Array<{
@@ -17414,6 +17479,7 @@ export type CommunityUpdatesQuery = {
                             __typename?: 'Profile';
                             id: string;
                             displayName: string;
+                            url: string;
                             avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                             tagsets?:
                               | Array<{
@@ -20204,16 +20270,12 @@ export type PendingMembershipsOpportunityQuery = {
 };
 
 export type PendingMembershipsUserQueryVariables = Exact<{
-  userId: Scalars['UUID'];
+  userId: Scalars['UUID_NAMEID_EMAIL'];
 }>;
 
 export type PendingMembershipsUserQuery = {
   __typename?: 'Query';
-  users: Array<{
-    __typename?: 'User';
-    id: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string };
-  }>;
+  user: { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } };
 };
 
 export type PendingMembershipsJourneyProfileFragment = {
@@ -22369,6 +22431,91 @@ export type ChallengeDashboardReferencesQuery = {
   };
 };
 
+export type ChallengeInfoQueryVariables = Exact<{
+  spaceId: Scalars['UUID_NAMEID'];
+  challengeId: Scalars['UUID_NAMEID'];
+}>;
+
+export type ChallengeInfoQuery = {
+  __typename?: 'Query';
+  space: {
+    __typename?: 'Space';
+    id: string;
+    nameID: string;
+    challenge: {
+      __typename?: 'Challenge';
+      id: string;
+      nameID: string;
+      profile: {
+        __typename?: 'Profile';
+        id: string;
+        displayName: string;
+        tagline: string;
+        description?: string | undefined;
+        url: string;
+        tagset?:
+          | {
+              __typename?: 'Tagset';
+              id: string;
+              name: string;
+              tags: Array<string>;
+              allowedValues: Array<string>;
+              type: TagsetType;
+            }
+          | undefined;
+        references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+        visuals: Array<{
+          __typename?: 'Visual';
+          id: string;
+          uri: string;
+          name: string;
+          allowedTypes: Array<string>;
+          aspectRatio: number;
+          maxHeight: number;
+          maxWidth: number;
+          minHeight: number;
+          minWidth: number;
+          alternativeText?: string | undefined;
+        }>;
+        location?:
+          | {
+              __typename?: 'Location';
+              id: string;
+              country: string;
+              city: string;
+              addressLine1: string;
+              addressLine2: string;
+              stateOrProvince: string;
+              postalCode: string;
+            }
+          | undefined;
+      };
+      community?:
+        | {
+            __typename?: 'Community';
+            id: string;
+            myMembershipStatus?: CommunityMembershipStatus | undefined;
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
+          }
+        | undefined;
+      authorization?:
+        | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+        | undefined;
+      context?:
+        | {
+            __typename?: 'Context';
+            id: string;
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
+          }
+        | undefined;
+    };
+  };
+};
+
 export type ChallengeInfoFragment = {
   __typename?: 'Challenge';
   id: string;
@@ -22379,6 +22526,7 @@ export type ChallengeInfoFragment = {
     displayName: string;
     tagline: string;
     description?: string | undefined;
+    url: string;
     tagset?:
       | {
           __typename?: 'Tagset';
@@ -22420,6 +22568,7 @@ export type ChallengeInfoFragment = {
     | {
         __typename?: 'Community';
         id: string;
+        myMembershipStatus?: CommunityMembershipStatus | undefined;
         authorization?:
           | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
           | undefined;
@@ -22636,89 +22785,6 @@ export type ChallengeApplicationTemplateQuery = {
                     maxLength: number;
                   }>;
                 }
-              | undefined;
-          }
-        | undefined;
-    };
-  };
-};
-
-export type ChallengeInfoQueryVariables = Exact<{
-  spaceId: Scalars['UUID_NAMEID'];
-  challengeId: Scalars['UUID_NAMEID'];
-}>;
-
-export type ChallengeInfoQuery = {
-  __typename?: 'Query';
-  space: {
-    __typename?: 'Space';
-    id: string;
-    nameID: string;
-    challenge: {
-      __typename?: 'Challenge';
-      id: string;
-      nameID: string;
-      profile: {
-        __typename?: 'Profile';
-        id: string;
-        displayName: string;
-        tagline: string;
-        description?: string | undefined;
-        tagset?:
-          | {
-              __typename?: 'Tagset';
-              id: string;
-              name: string;
-              tags: Array<string>;
-              allowedValues: Array<string>;
-              type: TagsetType;
-            }
-          | undefined;
-        references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
-        visuals: Array<{
-          __typename?: 'Visual';
-          id: string;
-          uri: string;
-          name: string;
-          allowedTypes: Array<string>;
-          aspectRatio: number;
-          maxHeight: number;
-          maxWidth: number;
-          minHeight: number;
-          minWidth: number;
-          alternativeText?: string | undefined;
-        }>;
-        location?:
-          | {
-              __typename?: 'Location';
-              id: string;
-              country: string;
-              city: string;
-              addressLine1: string;
-              addressLine2: string;
-              stateOrProvince: string;
-              postalCode: string;
-            }
-          | undefined;
-      };
-      community?:
-        | {
-            __typename?: 'Community';
-            id: string;
-            authorization?:
-              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-              | undefined;
-          }
-        | undefined;
-      authorization?:
-        | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-        | undefined;
-      context?:
-        | {
-            __typename?: 'Context';
-            id: string;
-            authorization?:
-              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
           }
         | undefined;
@@ -24610,6 +24676,7 @@ export type OpportunityProviderQuery = {
         displayName: string;
         description?: string | undefined;
         tagline: string;
+        url: string;
         visuals: Array<{
           __typename?: 'Visual';
           id: string;
@@ -24656,6 +24723,7 @@ export type OpportunityProviderQuery = {
         | {
             __typename?: 'Community';
             id: string;
+            myMembershipStatus?: CommunityMembershipStatus | undefined;
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
@@ -24675,6 +24743,7 @@ export type OpportunityProviderFragment = {
     displayName: string;
     description?: string | undefined;
     tagline: string;
+    url: string;
     visuals: Array<{
       __typename?: 'Visual';
       id: string;
@@ -24721,6 +24790,7 @@ export type OpportunityProviderFragment = {
     | {
         __typename?: 'Community';
         id: string;
+        myMembershipStatus?: CommunityMembershipStatus | undefined;
         authorization?:
           | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
           | undefined;
@@ -25294,6 +25364,77 @@ export type CommunityPageCommunityFragment = {
     | undefined;
 };
 
+export type SpaceDetailsFragment = {
+  __typename?: 'Space';
+  id: string;
+  nameID: string;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    description?: string | undefined;
+    tagline: string;
+    url: string;
+    tagset?:
+      | {
+          __typename?: 'Tagset';
+          id: string;
+          name: string;
+          tags: Array<string>;
+          allowedValues: Array<string>;
+          type: TagsetType;
+        }
+      | undefined;
+    references?:
+      | Array<{ __typename?: 'Reference'; id: string; name: string; description?: string | undefined; uri: string }>
+      | undefined;
+    visuals: Array<{
+      __typename?: 'Visual';
+      id: string;
+      uri: string;
+      name: string;
+      allowedTypes: Array<string>;
+      aspectRatio: number;
+      maxHeight: number;
+      maxWidth: number;
+      minHeight: number;
+      minWidth: number;
+      alternativeText?: string | undefined;
+    }>;
+    location?:
+      | {
+          __typename?: 'Location';
+          id: string;
+          country: string;
+          city: string;
+          addressLine1: string;
+          addressLine2: string;
+          stateOrProvince: string;
+          postalCode: string;
+        }
+      | undefined;
+  };
+  host?: { __typename?: 'Organization'; id: string } | undefined;
+  authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
+  context?:
+    | {
+        __typename?: 'Context';
+        id: string;
+        vision?: string | undefined;
+        impact?: string | undefined;
+        who?: string | undefined;
+        authorization?:
+          | {
+              __typename?: 'Authorization';
+              id: string;
+              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+              anonymousReadAccess: boolean;
+            }
+          | undefined;
+      }
+    | undefined;
+};
+
 export type SpaceProviderQueryVariables = Exact<{
   spaceId: Scalars['UUID_NAMEID'];
 }>;
@@ -25316,6 +25457,7 @@ export type SpaceProviderQuery = {
       | {
           __typename?: 'Community';
           id: string;
+          myMembershipStatus?: CommunityMembershipStatus | undefined;
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
@@ -25345,6 +25487,7 @@ export type SpaceProviderQuery = {
       displayName: string;
       description?: string | undefined;
       tagline: string;
+      url: string;
       tagset?:
         | {
             __typename?: 'Tagset';
@@ -25404,6 +25547,7 @@ export type SpaceInfoFragment = {
     | {
         __typename?: 'Community';
         id: string;
+        myMembershipStatus?: CommunityMembershipStatus | undefined;
         authorization?:
           | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
           | undefined;
@@ -25433,6 +25577,7 @@ export type SpaceInfoFragment = {
     displayName: string;
     description?: string | undefined;
     tagline: string;
+    url: string;
     tagset?:
       | {
           __typename?: 'Tagset';
@@ -25984,7 +26129,10 @@ export type SpaceDashboardNavigationChallengesQuery = {
                   type: TagsetType;
                 }
               | undefined;
-            visual?:
+            avatar?:
+              | { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined }
+              | undefined;
+            cardBanner?:
               | { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined }
               | undefined;
           };
@@ -26042,7 +26190,10 @@ export type SpaceDashboardNavigationOpportunitiesQuery = {
                         type: TagsetType;
                       }
                     | undefined;
-                  visual?:
+                  avatar?:
+                    | { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined }
+                    | undefined;
+                  cardBanner?:
                     | { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined }
                     | undefined;
                 };
@@ -26079,7 +26230,8 @@ export type SpaceDashboardNavigationProfileFragment = {
         type: TagsetType;
       }
     | undefined;
-  visual?: { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined } | undefined;
+  avatar?: { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined } | undefined;
+  cardBanner?: { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined } | undefined;
 };
 
 export type SpaceDashboardNavigationContextFragment = {
@@ -26410,76 +26562,6 @@ export type ChallengesOnSpaceFragment = {
     | undefined;
 };
 
-export type SpaceDetailsFragment = {
-  __typename?: 'Space';
-  id: string;
-  nameID: string;
-  profile: {
-    __typename?: 'Profile';
-    id: string;
-    displayName: string;
-    description?: string | undefined;
-    tagline: string;
-    tagset?:
-      | {
-          __typename?: 'Tagset';
-          id: string;
-          name: string;
-          tags: Array<string>;
-          allowedValues: Array<string>;
-          type: TagsetType;
-        }
-      | undefined;
-    references?:
-      | Array<{ __typename?: 'Reference'; id: string; name: string; description?: string | undefined; uri: string }>
-      | undefined;
-    visuals: Array<{
-      __typename?: 'Visual';
-      id: string;
-      uri: string;
-      name: string;
-      allowedTypes: Array<string>;
-      aspectRatio: number;
-      maxHeight: number;
-      maxWidth: number;
-      minHeight: number;
-      minWidth: number;
-      alternativeText?: string | undefined;
-    }>;
-    location?:
-      | {
-          __typename?: 'Location';
-          id: string;
-          country: string;
-          city: string;
-          addressLine1: string;
-          addressLine2: string;
-          stateOrProvince: string;
-          postalCode: string;
-        }
-      | undefined;
-  };
-  host?: { __typename?: 'Organization'; id: string } | undefined;
-  authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
-  context?:
-    | {
-        __typename?: 'Context';
-        id: string;
-        vision?: string | undefined;
-        impact?: string | undefined;
-        who?: string | undefined;
-        authorization?:
-          | {
-              __typename?: 'Authorization';
-              id: string;
-              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-              anonymousReadAccess: boolean;
-            }
-          | undefined;
-      }
-    | undefined;
-};
-
 export type SpaceDetailsProviderFragment = {
   __typename?: 'Space';
   id: string;
@@ -26534,6 +26616,7 @@ export type CreateSpaceMutation = {
       displayName: string;
       description?: string | undefined;
       tagline: string;
+      url: string;
       tagset?:
         | {
             __typename?: 'Tagset';
@@ -26620,6 +26703,7 @@ export type UpdateSpaceMutation = {
       displayName: string;
       description?: string | undefined;
       tagline: string;
+      url: string;
       tagset?:
         | {
             __typename?: 'Tagset';
@@ -28426,6 +28510,7 @@ export type ConfigurationQuery = {
         __typename?: 'PlatformLocations';
         environment: string;
         domain: string;
+        landing: string;
         about: string;
         blog: string;
         feedback: string;
@@ -28470,6 +28555,7 @@ export type ConfigurationFragment = {
     __typename?: 'PlatformLocations';
     environment: string;
     domain: string;
+    landing: string;
     about: string;
     blog: string;
     feedback: string;
@@ -29879,6 +29965,7 @@ export type CalloutTemplatePreviewQuery = {
                   id: string;
                   nameID: string;
                   createdDate: Date;
+                  contentUpdatePolicy: ContentUpdatePolicy;
                   profile: {
                     __typename?: 'Profile';
                     id: string;
@@ -29942,7 +30029,9 @@ export type CalloutTemplatePreviewQuery = {
                           __typename?: 'Profile';
                           id: string;
                           displayName: string;
-                          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                          url: string;
+                          location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
+                          avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                         };
                       }
                     | undefined;
@@ -30081,6 +30170,7 @@ export type CalloutTemplatePreviewFragment = {
           id: string;
           nameID: string;
           createdDate: Date;
+          contentUpdatePolicy: ContentUpdatePolicy;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -30144,7 +30234,9 @@ export type CalloutTemplatePreviewFragment = {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
-                  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                  url: string;
+                  location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | undefined;
@@ -30858,6 +30950,7 @@ export type CalendarEventDetailsQuery = {
                       __typename?: 'Profile';
                       id: string;
                       displayName: string;
+                      url: string;
                       avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                       tagsets?:
                         | Array<{
@@ -30973,6 +31066,7 @@ export type CalendarEventDetailsFragment = {
               __typename?: 'Profile';
               id: string;
               displayName: string;
+              url: string;
               avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
               tagsets?:
                 | Array<{
@@ -31105,6 +31199,7 @@ export type CreateCalendarEventMutation = {
                 __typename?: 'Profile';
                 id: string;
                 displayName: string;
+                url: string;
                 avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 tagsets?:
                   | Array<{
@@ -31218,6 +31313,7 @@ export type UpdateCalendarEventMutation = {
                 __typename?: 'Profile';
                 id: string;
                 displayName: string;
+                url: string;
                 avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 tagsets?:
                   | Array<{
@@ -31271,6 +31367,10 @@ export type UpdateAnswerRelevanceMutationVariables = Exact<{
 }>;
 
 export type UpdateAnswerRelevanceMutation = { __typename?: 'Mutation'; updateAnswerRelevance: boolean };
+
+export type ResetChatGuidanceMutationVariables = Exact<{ [key: string]: never }>;
+
+export type ResetChatGuidanceMutation = { __typename?: 'Mutation'; resetChatGuidance: boolean };
 
 export type AskChatGuidanceQuestionQueryVariables = Exact<{
   chatData: ChatGuidanceInput;
@@ -31959,6 +32059,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | {
@@ -31970,6 +32071,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | {
@@ -31981,6 +32083,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | {
@@ -31992,6 +32095,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | undefined;
@@ -32019,12 +32123,11 @@ export type LatestContributionsQuery = {
               location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
             };
           };
-          calendar: { __typename?: 'Calendar'; id: string };
           calendarEvent: {
             __typename?: 'CalendarEvent';
             id: string;
             nameID: string;
-            profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+            profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
           };
         }
       | {
@@ -32047,6 +32150,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | {
@@ -32058,6 +32162,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | {
@@ -32069,6 +32174,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | {
@@ -32080,6 +32186,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | undefined;
@@ -32138,6 +32245,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | {
@@ -32149,6 +32257,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | {
@@ -32160,6 +32269,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | {
@@ -32171,6 +32281,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | undefined;
@@ -32204,16 +32315,10 @@ export type LatestContributionsQuery = {
             nameID: string;
             framing: {
               __typename?: 'CalloutFraming';
-              profile: { __typename?: 'Profile'; id: string; displayName: string };
+              profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
             };
           };
-          reference: {
-            __typename?: 'Reference';
-            id: string;
-            name: string;
-            description?: string | undefined;
-            uri: string;
-          };
+          reference: { __typename?: 'Reference'; id: string; name: string; uri: string };
         }
       | {
           __typename?: 'ActivityLogEntryCalloutPostComment';
@@ -32235,6 +32340,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | {
@@ -32246,6 +32352,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | {
@@ -32257,6 +32364,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | {
@@ -32268,6 +32376,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | undefined;
@@ -32295,20 +32404,11 @@ export type LatestContributionsQuery = {
               location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
             };
           };
-          callout: {
-            __typename?: 'Callout';
-            id: string;
-            nameID: string;
-            framing: {
-              __typename?: 'CalloutFraming';
-              profile: { __typename?: 'Profile'; id: string; displayName: string };
-            };
-          };
           post: {
             __typename?: 'Post';
             id: string;
             nameID: string;
-            profile: { __typename?: 'Profile'; id: string; displayName: string };
+            profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
           };
         }
       | {
@@ -32331,6 +32431,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | {
@@ -32342,6 +32443,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | {
@@ -32353,6 +32455,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | {
@@ -32364,6 +32467,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | undefined;
@@ -32405,8 +32509,7 @@ export type LatestContributionsQuery = {
             __typename?: 'Post';
             id: string;
             nameID: string;
-            type: string;
-            profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+            profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
           };
         }
       | {
@@ -32429,6 +32532,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | {
@@ -32440,6 +32544,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | {
@@ -32451,6 +32556,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | {
@@ -32462,6 +32568,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | undefined;
@@ -32520,6 +32627,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | {
@@ -32531,6 +32639,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | {
@@ -32542,6 +32651,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | {
@@ -32553,6 +32663,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | undefined;
@@ -32586,14 +32697,14 @@ export type LatestContributionsQuery = {
             nameID: string;
             framing: {
               __typename?: 'CalloutFraming';
-              profile: { __typename?: 'Profile'; id: string; displayName: string };
+              profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
             };
           };
           whiteboard: {
             __typename?: 'Whiteboard';
             id: string;
             nameID: string;
-            profile: { __typename?: 'Profile'; id: string; displayName: string };
+            profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
           };
         }
       | {
@@ -32616,6 +32727,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | {
@@ -32627,6 +32739,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | {
@@ -32638,6 +32751,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | {
@@ -32649,6 +32763,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | undefined;
@@ -32680,7 +32795,7 @@ export type LatestContributionsQuery = {
             __typename?: 'Challenge';
             id: string;
             nameID: string;
-            profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string };
+            profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
           };
         }
       | {
@@ -32704,6 +32819,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | {
@@ -32715,6 +32831,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | {
@@ -32726,6 +32843,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | {
@@ -32737,6 +32855,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | undefined;
@@ -32774,6 +32893,7 @@ export type LatestContributionsQuery = {
               __typename?: 'Profile';
               id: string;
               displayName: string;
+              url: string;
               visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
               tagsets?:
                 | Array<{
@@ -32809,6 +32929,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | {
@@ -32820,6 +32941,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | {
@@ -32831,6 +32953,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | {
@@ -32842,6 +32965,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | undefined;
@@ -32873,7 +32997,7 @@ export type LatestContributionsQuery = {
             __typename?: 'Opportunity';
             id: string;
             nameID: string;
-            profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string };
+            profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
           };
         }
       | {
@@ -32897,6 +33021,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | {
@@ -32908,6 +33033,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | {
@@ -32919,6 +33045,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | {
@@ -32930,6 +33057,7 @@ export type LatestContributionsQuery = {
                   url: string;
                   displayName: string;
                   type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
               }
             | undefined;
@@ -32969,6 +33097,24 @@ export type RecentContributionsJourneyProfileFragment = {
   url: string;
   displayName: string;
   type?: ProfileType | undefined;
+};
+
+export type RecentContributionsSpaceProfileFragment = {
+  __typename?: 'Profile';
+  id: string;
+  url: string;
+  displayName: string;
+  type?: ProfileType | undefined;
+  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+};
+
+export type RecentContributionsChildJourneyProfileFragment = {
+  __typename?: 'Profile';
+  id: string;
+  url: string;
+  displayName: string;
+  type?: ProfileType | undefined;
+  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
 };
 
 export type LatestContributionsSpacesQueryVariables = Exact<{ [key: string]: never }>;

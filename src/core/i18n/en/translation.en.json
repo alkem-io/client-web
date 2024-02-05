@@ -1,27 +1,33 @@
 {
   "chatbot": {
-    "title": "Alkemio Help",
-    "subtitle": "Ask your question to search through our documentation or browse it directly",
+    "title": "Help",
     "intro": "Hi, this is Alkemio’s automated guidance chat. It can provide you with answers based on Alkemio’s documentation. What are you looking for?",
     "infoDialog": {
       "title": "Alkemio Help",
-      "content": "The Alkemio guidance chat is an advanced search module that helps you by automatically generating an answer to your question based on Alkemio’s documentation. There are no people on the other side of the screen ;-). If you want to reach someone from the Alkemio team, please use the contact button below.\nAnswers (and sources) returned here are based on content from the Alkemio help center. The interaction is with a widely used online generative AI engine, which is able to interpret your question and provide guidance as to the most relevant help. There is no user data involved, and interaction with the search engine cannot be linked to individual users."
+      "content": "Use the Alkemio guidance chat to get automatic answers to your questions from Alkemio’s documentation.\n\nThis is an __advanced search module__ powered by a widely used online generative AI engine. It interprets your question and guides you to the most relevant help from the Alkemio help center. You can see the sources of the answers as well.\n\n__Don’t worry about your privacy:__ the search engine does not use or store any user data, and it cannot link the interaction to individual users. If you need to contact the Alkemio team, please click the contact button below."
     },
     "feedback": {
       "message": "Is the answer relevant?",
       "tooltip": "This message has been automatically generated based on Alkemio’s documentation. Your feedback is highly relevant to us!"
     },
+    "menu": {
+      "clear": "Clear conversation",
+      "close": "Close window"
+    },
     "references": [
       {
-        "uri": "https://www.alkemio.org/help/getting-started/",
+        "icon": "GradeOutlined",
+        "uri": "https://welcome.alkem.io/help/getting-started/",
         "title": "New user? Visit our Getting Started pages!"
       },
       {
-        "uri": "https://www.alkemio.org/help/",
+        "icon": "NotListedLocationOutlined",
+        "uri": "https://welcome.alkem.io/help/",
         "title": "Find your answers in the Help Center or FAQ"
       },
       {
-        "uri": "https://www.alkemio.org/support/",
+        "icon": "EmailOutlined",
+        "uri": "https://welcome.alkem.io/contact/",
         "title": "Contact the Alkemio team"
       }
     ]
@@ -130,7 +136,6 @@
     "create-project": "Create project",
     "processing": "Processing...",
     "details": "Details",
-    "settings": "Settings",
     "member": "Member",
     "profile": "Profile",
     "view-profile": "View Profile",
@@ -852,6 +857,21 @@
     }
   },
   "components": {
+    "shareSettings": {
+      "description": "Based on the settings of the Space that this Whiteboard is in, you can edit with multiple users\u2028at once. If you do not want others to edit, change the settings below.",
+      "disabled": "Based on the settings of the Space that this Whiteboard is in, real-time collaboration is not enabled. This means that only one user can edit at a time.",
+      "ownedBy": {
+        "title": "This whiteboard is owned by:"
+      },
+      "editableBy": {
+        "title": "This whiteboard can be edited by:",
+        "options": {
+          "CONTRIBUTORS": "Everyone who can contribute in this {{journey}}",
+          "ADMINS": "The owner and the admins and leads of this {{journey}}",
+          "OWNER": "The owner of this whiteboard"
+        }
+      }
+    },
     "navigation": {
       "exitMenu": "Exit menu",
       "skipMenu": "Skip main menu"
@@ -891,7 +911,7 @@
       "title": "Challenges and Opportunities in {{space}}",
       "help": "This Space holds the following Challenges. When these Challenges have Opportunities, these are visible as well.",
       "privateChallenge": "This is a private Challenge. To view it’s content and potential Opportunities, visit the Challenge and apply to become a member.",
-      "showAll": "Show all Challenges and Opportunities in this Space"
+      "showAll": "Show all"
     },
     "dashboardRecentContributions": {
       "title": "Contributions",
@@ -902,7 +922,7 @@
       }
     },
     "innovationFlowStateSelector": {
-      "selectedStateNotice": "This Challenge is currently in the <strong>{{currentState}}</strong> state. You can already have a look at the tools for the <strong>{{selectedState}}</strong> state here."
+      "selectedStateNotice": "This {{journeyType}} is currently in the <strong>{{currentState}}</strong> state. You can already have a look at the tools for the <strong>{{selectedState}}</strong> state here."
     },
     "invitations": {
       "inviteOthers": "Invite others",
@@ -1008,33 +1028,22 @@
       "activity-join-error-message": "To see the recent contributions, please join if you are not yet a member of this {{journeyType}}.",
       "activity-sign-in-and-join-error-message": "To see the recent contributions, please sign in and join if you are not yet a member of this {{journeyType}}."
     },
-    "activity-log-view": {
-      "actions": {
-        "callout-published": "{{time}} '<userlink>{{user}}</userlink>' published a new $t(common.callout)",
-        "challenge-created": "{{time}} '<userlink>{{user}}</userlink>' created a new $t(common.challenge)",
-        "discussion-comment-created": "{{time}} '<userlink>{{user}}</userlink>' commented on '{{calloutDisplayName}}'",
-        "member-joined": "{{time}} '<userlink>{{user}}</userlink>' joined the {{communityType}} '{{journeyDisplayName}}'",
-        "opportunity-created": "{{time}} '<userlink>{{user}}</userlink>' created a new $t(common.opportunity)",
-        "post-comment-created": "{{time}} '<userlink>{{user}}</userlink>' commented on '{{postDisplayName}}'",
-        "post-created": "{{time}} '<userlink>{{user}}</userlink>' added a Post to '{{calloutDisplayName}}'",
-        "callout-link-created": "{{time}} '<userlink>{{user}}</userlink>' added a Link to '{{calloutDisplayName}}'",
-        "update-sent": "{{time}} '<userlink>{{user}}</userlink>' shared a new $t(common.update)",
-        "whiteboard-created": "{{time}} '<userlink>{{user}}</userlink>' added a $t(common.whiteboard) to '{{calloutDisplayName}}'",
-        "calendar-event-created": "{{time}} '<userlink>{{user}}</userlink>' added a new calendar event '{{eventDisplayName}}'"
+    "activityLogView": {
+      "description": {
+        "CALLOUT_PUBLISHED": "{{subject}}",
+        "CHALLENGE_CREATED": "{{subject}}",
+        "DISCUSSION_COMMENT": "{{subject}}",
+        "MEMBER_JOINED": "{{subject}} joined",
+        "OPPORTUNITY_CREATED": "{{subject}}",
+        "CALLOUT_POST_COMMENT": "{{subject}}",
+        "CALLOUT_POST_CREATED": "{{subject}}",
+        "CALLOUT_LINK_CREATED": "{{subject}}",
+        "UPDATE_SENT": "{{subject}}",
+        "CALLOUT_WHITEBOARD_CREATED": "{{subject}}",
+        "CALENDAR_EVENT_CREATED": "{{subject}}"
       },
-      "parent-link": " in <parentlink><parenticon /> {{journeyDisplayName}}</parentlink>",
-      "activity-description": {
-        "callout-published": "{{displayName}}",
-        "challenge-created": "{{displayName}}",
-        "discussion-comment-created": "{{comment}}",
-        "member-joined": "{{user}}",
-        "opportunity-created": "{{displayName}}",
-        "post-comment-created": "{{comment}}",
-        "post-created": "{{postDisplayName}} - {{postDescription}}",
-        "callout-link-created": "{{linkName}} - {{linkDescription}}",
-        "update-sent": "{{update}}",
-        "whiteboard-created": "{{displayName}}",
-        "calendar-event-created": "{{eventDescription}}"
+      "detailedDescription": {
+        "parentLink": " in <parentlink><parenticon /> {{journeyDisplayName}}</parentlink>"
       }
     },
     "lifecycle": {
@@ -1961,12 +1970,15 @@
           "message": "<big>🚀 Click here to create your account and get started!</big> <small>Already a member? <signin>Sign in here</signin></small>"
         },
         "recentJourneys": {
-          "seeMore": "Explore all Spaces, Challenges, and Opportunities that you’re a member of"
+          "seeMore": {
+            "full": "Explore all your Spaces, Challenges, and Opportunities",
+            "short": "Explore all your Spaces"
+          }
         },
         "myMemberships": {
           "title": "My Memberships",
           "noChildMemberships": "You are not a member of a Challenge in this Space. Some Challenges do not require you to be a member to contribute, but if you want to receive updates or show the Challenge here, become a member anyway!",
-          "seeMore": "That’s all! Looking for other Spaces to collaborate in? <challenges>Click here</challenges> to explore all Spaces on the platform, or <landing>click here</landing> to create your own!"
+          "seeMore": "That’s all! Looking for other Spaces to collaborate in? <challenges>Click here</challenges> to explore all Challenges on the platform, or <landing>click here</landing> to create your own!"
         },
         "membershipSuggestions": {
           "title": "Become a member",
@@ -2201,6 +2213,7 @@
       "no-whiteboards": "No whiteboards have been created yet. Be the first to add one.",
       "locked-by": "{{user}} is currently editing this Whiteboard",
       "savingWhiteboard": "Saving whiteboard...",
+      "saveTooltip": "Please note that the whiteboards are also automatically saved",
       "state": {
         "checkedout": "Someone else is currently editing this Whiteboard"
       },
@@ -2245,6 +2258,11 @@
         "title": "Whiteboard connection lost",
         "message": "Apologies for the inconvenience! The whiteboard isn't available for editing right now, possibly due to a network issue or loss of access. Please try closing and reopening the whiteboard or refreshing the page. If the issue persists, reach out to your Space administrator for assistance.",
         "lastSaved": "The content of this whiteboard was last saved {{lastSaved}}."
+      },
+      "readonlyReason": {
+        "contentUpdatePolicy": "You don't have the rights to edit this whiteboard. Ask the owner, <ownerlink>{{ownerName}}</ownerlink>, to change the settings if you want to contribute.",
+        "noMembership": "You have to be a member of the {{journeyType}} this whiteboard is in, to be able to edit. Click here to <journeylink>join/apply</journeylink>",
+        "unauthenticated": "You have to be signed in and a member of the {{journeyType}} this whiteboard is in, to be able to edit. Click here to <signinlink>sign in</signinlink>"
       }
     },
     "login": {

@@ -43,6 +43,7 @@ fragment WhiteboardDetails on Whiteboard {
     }
   }
 }
+
 fragment WhiteboardRtDetails on WhiteboardRt {
   id
   nameID
@@ -55,12 +56,19 @@ fragment WhiteboardRtDetails on WhiteboardRt {
     myPrivileges
     anonymousReadAccess
   }
+  contentUpdatePolicy
   createdBy {
     id
     profile {
       id
       displayName
-      visual(type: AVATAR) {
+      url
+      location {
+        id
+        country
+        city
+      }
+      avatar: visual(type: AVATAR) {
         id
         uri
       }

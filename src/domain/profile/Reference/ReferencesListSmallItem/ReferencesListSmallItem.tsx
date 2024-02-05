@@ -1,18 +1,23 @@
-import React, { PropsWithChildren } from 'react';
+import React, { ComponentType, PropsWithChildren } from 'react';
 import RouterLink from '../../../../core/ui/link/RouterLink';
 import { Text } from '../../../../core/ui/typography';
-import { Box } from '@mui/material';
+import { Box, SvgIconProps } from '@mui/material';
 import { gutters } from '../../../../core/ui/grid/utils';
 import { OpenInNewOutlined } from '@mui/icons-material';
 
 interface ReferencesListSmallItemProps {
   uri: string;
+  iconComponent?: ComponentType<SvgIconProps>;
 }
 
-const ReferencesListSmallItem = ({ uri, children }: PropsWithChildren<ReferencesListSmallItemProps>) => {
+const ReferencesListSmallItem = ({
+  uri,
+  iconComponent: Icon = OpenInNewOutlined,
+  children,
+}: PropsWithChildren<ReferencesListSmallItemProps>) => {
   return (
     <Box component={RouterLink} to={uri} display="flex" gap={gutters(0.5)} alignItems="center">
-      <OpenInNewOutlined fontSize="inherit" />
+      <Icon fontSize="inherit" />
       <Text>{children}</Text>
     </Box>
   );

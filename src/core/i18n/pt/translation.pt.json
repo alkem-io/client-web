@@ -1,27 +1,33 @@
 {
   "chatbot": {
-    "title": "Central de Ajuda Alkemio",
-    "subtitle": "Faça sua pergunta para pesquisar nossa documentação ou navegue diretamente",
+    "title": "Help",
     "intro": "Olá, esse é o chat automatizado de orientação do Alkemio. Ele pode fornecer respostas com base na documentação do Alkemio. O que você está procurando?",
     "infoDialog": {
       "title": "Central de Ajuda Alkemio",
-      "content": "O bate-papo de orientação do Alkemio é um módulo de pesquisa avançado que o ajuda a gerar automaticamente uma resposta para a sua pergunta com base na documentação do Alkemio. Não há pessoas no outro lado da tela ;-). Se você quiser contactar alguém da equipe do Alkemio por favor use o botão de contato abaixo.\nAs respostas (e fontes) retornadas aqui são baseadas no conteúdo do centro de ajuda do Alkemio. A interação é com um mecanismo de IA, amplamente utilizado on-line, que é capaz de interpretar a sua pergunta e fornecer orientações sobre a ajuda mais relevante. Não há dados do usuário envolvidos, e a interação com o motor de busca não pode ser ligada a usuários individuais."
+      "content": "Use the Alkemio guidance chat to get automatic answers to your questions from Alkemio’s documentation.\n\nThis is an __advanced search module__ powered by a widely used online generative AI engine. It interprets your question and guides you to the most relevant help from the Alkemio help center. You can see the sources of the answers as well.\n\n__Don’t worry about your privacy:__ the search engine does not use or store any user data, and it cannot link the interaction to individual users. If you need to contact the Alkemio team, please click the contact button below."
     },
     "feedback": {
       "message": "A resposta é relevante?",
       "tooltip": "Esta mensagem foi gerada automaticamente com base na documentação do Alkemio. Sua opinião é altamente relevante para nós!"
     },
+    "menu": {
+      "clear": "Clear conversation",
+      "close": "Close window"
+    },
     "references": [
       {
-        "uri": "https://www.alkemio.org/help/getting-started/",
+        "icon": "GradeOutlined",
+        "uri": "https://welcome.alkem.io/help/getting-started/",
         "title": "Novo usuário? Visite nossas páginas de introdução!"
       },
       {
-        "uri": "https://www.alkemio.org/help/",
+        "icon": "NotListedLocationOutlined",
+        "uri": "https://welcome.alkem.io/help/",
         "title": "Encontre suas respostas no Centro de Ajuda ou Perguntas Frequentes"
       },
       {
-        "uri": "https://www.alkemio.org/support/",
+        "icon": "EmailOutlined",
+        "uri": "https://welcome.alkem.io/contact/",
         "title": "Entre em contato com a equipe Alkemio"
       }
     ]
@@ -31,8 +37,8 @@
     "icon": "🎉",
     "releaseUpdates": {
       "2": {
-        "title": "Temos novidades emocionantes, um novo lançamento cheio de funcionalidades interessantes foi lançado!",
-        "content": "<b>Notícias emocionantes!</b> Atualizamos a navegação principal da plataforma para deixar o foco ser em sua comunidade. Alkemio como marca agora é menos visível, assumindo a função de \"powering\" o seu Espaço. Esta grande e importante mudança também nos permitiu simplificar a navegação do usuário. Então, menos botões para distraí-lo do seu trabalho dentro do seu Espaço.<br/><br/>O novo layout é o seguinte:<br/><ul><li>Menu:<b></b> além de seu perfil pessoal e configurações, agora você encontrará um menu que inclui todos os trabalhos que você pode fazer na plataforma fora do seu Espaço</li><li><b>Navegação:</b> no canto superior esquerdo. você encontrará os ícones da página inicial, Espaço ou Desafio para navegar de volta</li><li><b>Pesquisa:</b> como usuários muitas vezes estavam confusos pelas duas opções de pesquisa (no Espaço ou toda a plataforma), nós os combinamos em uma função de pesquisa com a opção de filtrar</li></ul>Esperamos que esta versão traga um passo para você mais perto de uma colaboração eficiente! **[Clique aqui](https://alkem-25488729. s-sites-eu1.com/alkemio-release-2023-11-01)** para ler tudo sobre as últimas alterações.<br/><br/>"
+        "title": "Temos novidades emocionantes, um novo lançamento cheio de funcionalidades interessantes foi colocado no ar!",
+        "content": "<b>Notícias emocionantes!</b> Atualizamos a navegação principal da plataforma para deixar o foco ser em sua comunidade. Alkemio como marca agora é menos visível, assumindo a função de \"powering\" o seu Espaço. Esta grande e importante mudança também nos permitiu simplificar a navegação do usuário. Então, menos botões para distraí-lo do seu trabalho dentro do seu Espaço.<br/><br/>O novo layout é o seguinte:<br/><ul><li><b>Menu:</b> além de seu perfil pessoal e configurações, agora você encontrará um menu que inclui todos os trabalhos que você pode fazer na plataforma fora do seu Espaço</li><li><b>Navegação:</b> no canto superior esquerdo. você encontrará os ícones da página inicial, Espaço ou Desafio para navegar de volta</li><li><b>Pesquisa:</b> como usuários muitas vezes estavam confusos pelas duas opções de pesquisa (no Espaço ou em toda a plataforma), nós combinamos em uma função de pesquisa com a opção de filtrar</li></ul>Esperamos que esta versão traga você para um passo mais perto de uma colaboração eficiente! **[Clique aqui](https://alkem-25488729.hs-sites-eu1.com/alkemio-release-2023-11-01)** para ler tudo sobre as últimas alterações.<br/><br/>"
       },
       "1": {
         "title": "Temos novidades emocionantes, um novo lançamento cheio de funcionalidades interessantes foi lançado!",
@@ -92,7 +98,7 @@
     "learn-more": "Saiba mais",
     "load-more": "Carregar mais",
     "load-count-more": "Carregar mais {{ count}}",
-    "apply": "Confirmar",
+    "apply": "Aplicar",
     "explore": "Contribuir",
     "ok": "Confirmar",
     "create": "Criar",
@@ -130,7 +136,6 @@
     "create-project": "Criar projeto",
     "processing": "Processando...",
     "details": "Detalhes",
-    "settings": "Configurações",
     "member": "Membro",
     "profile": "Perfil",
     "view-profile": "Ver Perfil",
@@ -278,7 +283,7 @@
     "users": "Usuários",
     "update": "Atualização",
     "updates": "Atualizações dos líderes do Espaço",
-    "no-updates": "Nenhuma atualização dos líderes do Espaço",
+    "no-updates": "Nenhuma atualização dos leads do Espaço",
     "no-tags": "Não há tags disponíveis",
     "no-references": "Não há referências disponíveis",
     "field-required": "Este campo é obrigatório",
@@ -312,7 +317,7 @@
     "my-profile": "Meu perfil",
     "my-memberships": "Minhas associações",
     "profile": "Perfil",
-    "social": "Social",
+    "social": "Mídias sociais",
     "lifecycle": "Ciclo de vida",
     "location": "Localização",
     "home": "Home",
@@ -361,12 +366,18 @@
       "not-verified": ""
     },
     "enums": {
+      "communityRole": {
+        "ADMIN": "$t(common.admin)",
+        "LEAD": "$t(common.lead)",
+        "HOST": "$t(common.host)",
+        "MEMBER": "$t(common.member)"
+      },
       "innovationFlowState": {
         "new": "Novo",
         "beingRefined": "Sendo Refinado",
         "inProgress": "Em Progresso",
         "complete": "Concluído",
-        "abandoned": "Cancelado",
+        "abandoned": "Abandonado",
         "archived": "Arquivado"
       },
       "space-visibility": {
@@ -483,7 +494,7 @@
         "SHARING": "Compartilhamento",
         "PLATFORM_FUNCTIONALITIES": "Funcionalidades da Plataforma",
         "COMMUNITY_BUILDING": "Construção da Comunidade",
-        "CHALLENGE_CENTRIC": "Trabalhando com o Desafio como peça central",
+        "CHALLENGE_CENTRIC": "Trabalhando Desafios como peça central",
         "HELP": "Precisa de Ajuda?",
         "OTHER": "Outros"
       },
@@ -510,7 +521,7 @@
       "minute_plural": "{{count}} minutos",
       "hour": "{{count}} hora",
       "hour_plural": "{{count}} horas",
-      "day": "{{count}} dia",
+      "day": "{{count}} dias",
       "day_plural": "{{count}} dias",
       "month": "{{count}} Mês",
       "month_plural": "{{count}} Meses",
@@ -527,7 +538,7 @@
     "leads": "Leads",
     "members": "Membros",
     "host": "Host",
-    "members-count": "Membro da {{count}}",
+    "members-count": "{{count}} Membros",
     "members-count_plural": "Membros da {{count}}",
     "addMember": "Adicionar membro",
     "unauthorizedPermissionsChange": "Você não tem permissão para editar as permissões deste usuário",
@@ -569,7 +580,7 @@
     },
     "pendingMembership": {
       "pendingMemberships": "Membros Pendentes",
-      "pendingMembershipsWithCount": "Membros Pendentes ({{count}})",
+      "pendingMembershipsWithCount": "Solicitações Pendentes ({{count}})",
       "invitationsSectionTitle": "Convites",
       "applicationsSectionTitle": "Abrir inscrições",
       "invitationDialog": {
@@ -659,7 +670,7 @@
   },
   "share-dialog": {
     "title": "Copie o link abaixo para compartilhar este {{entity}}",
-    "share-this": "Compartilhar esta {{entity}}",
+    "share-this": "Compartilhar este {{entity}}",
     "share-this-on": "Compartilhe esta {{entity}} em {{platform}}",
     "or": "ou",
     "url": "URL",
@@ -846,6 +857,21 @@
     }
   },
   "components": {
+    "shareSettings": {
+      "description": "Based on the settings of the Space that this Whiteboard is in, you can edit with multiple users\u2028at once. If you do not want others to edit, change the settings below.",
+      "disabled": "Based on the settings of the Space that this Whiteboard is in, real-time collaboration is not enabled. This means that only one user can edit at a time.",
+      "ownedBy": {
+        "title": "This whiteboard is owned by:"
+      },
+      "editableBy": {
+        "title": "This whiteboard can be edited by:",
+        "options": {
+          "CONTRIBUTORS": "Everyone who can contribute in this {{journey}}",
+          "ADMINS": "The owner and the admins and leads of this {{journey}}",
+          "OWNER": "The owner of this whiteboard"
+        }
+      }
+    },
     "navigation": {
       "exitMenu": "Sair do menu",
       "skipMenu": "Ignorar o menu principal"
@@ -896,7 +922,7 @@
       }
     },
     "innovationFlowStateSelector": {
-      "selectedStateNotice": "Este Desafio está atualmente no estado <strong>{{currentState}}</strong>. Você já pode dar uma olhada nas ferramentas para o estado <strong>{{selectedState}}</strong> aqui."
+      "selectedStateNotice": "This {{journeyType}} is currently in the <strong>{{currentState}}</strong> state. You can already have a look at the tools for the <strong>{{selectedState}}</strong> state here."
     },
     "invitations": {
       "inviteOthers": "Convidar outras pessoas",
@@ -1002,33 +1028,22 @@
       "activity-join-error-message": "Para ver as recentes contribuições, junte-se se você ainda não é um membro deste {{journeyType}}.",
       "activity-sign-in-and-join-error-message": "Para ver as recentes contribuições, por favor entre e junte-se se você ainda não é um membro deste {{journeyType}}."
     },
-    "activity-log-view": {
-      "actions": {
-        "callout-published": "{{time}} '<userlink>{{user}}</userlink>' publicou um novo $t(common.callout)",
-        "challenge-created": "{{time}} '<userlink>{{user}}</userlink>' criou um novo $t(common.challenge)",
-        "discussion-comment-created": "{{time}} '<userlink>{{user}}</userlink>' comentou em '{{calloutDisplayName}}'",
-        "member-joined": "{{time}} '<userlink>{{user}}</userlink>entrou no {{communityType}} '{{journeyDisplayName}}'",
-        "opportunity-created": "{{time}} '<userlink>{{user}}</userlink>' criou um novo $t(common.opportunity)",
-        "post-comment-created": "{{time}} '<userlink>{{user}}</userlink>' comentou em '{{postDisplayName}}'",
-        "post-created": "{{time}} '<userlink>{{user}}</userlink>' adicionou um Post em '{{calloutDisplayName}}'",
-        "callout-link-created": "{{time}} '<userlink>{{user}}</userlink>' adicionou um Link em '{{calloutDisplayName}}'",
-        "update-sent": "{{time}} '<userlink>{{user}}</userlink>' compartilhou um novo $t(common.update)",
-        "whiteboard-created": "{{time}} '<userlink>{{user}}</userlink>' adicionou um $t(common.whiteboard) em '{{calloutDisplayName}}'",
-        "calendar-event-created": "{{time}} '<userlink>{{user}}</userlink>' adicionou um novo evento de calendário '{{eventDisplayName}}'"
+    "activityLogView": {
+      "description": {
+        "CALLOUT_PUBLISHED": "{{subject}}",
+        "CHALLENGE_CREATED": "{{subject}}",
+        "DISCUSSION_COMMENT": "{{subject}}",
+        "MEMBER_JOINED": "{{subject}} joined",
+        "OPPORTUNITY_CREATED": "{{subject}}",
+        "CALLOUT_POST_COMMENT": "{{subject}}",
+        "CALLOUT_POST_CREATED": "{{subject}}",
+        "CALLOUT_LINK_CREATED": "{{subject}}",
+        "UPDATE_SENT": "{{subject}}",
+        "CALLOUT_WHITEBOARD_CREATED": "{{subject}}",
+        "CALENDAR_EVENT_CREATED": "{{subject}}"
       },
-      "parent-link": " em <parentlink><parenticon /> {{journeyDisplayName}}</parentlink>",
-      "activity-description": {
-        "callout-published": "{{displayName}}",
-        "challenge-created": "{{displayName}}",
-        "discussion-comment-created": "{{comment}}",
-        "member-joined": "{{user}}",
-        "opportunity-created": "{{displayName}}",
-        "post-comment-created": "{{comment}}",
-        "post-created": "{{postDisplayName}} - {{postDescription}}",
-        "callout-link-created": "{{linkName}} - {{linkDescription}}",
-        "update-sent": "{{update}}",
-        "whiteboard-created": "{{displayName}}",
-        "calendar-event-created": "{{eventDescription}}"
+      "detailedDescription": {
+        "parentLink": " in <parentlink><parenticon /> {{journeyDisplayName}}</parentlink>"
       }
     },
     "lifecycle": {
@@ -1189,11 +1204,11 @@
       "goToSpace": "Ir para $t(common.space)",
       "goToChallenge": "Ir para $t(common.challenge)",
       "parent-pending": "Aplicação pendente",
-      "applyTo": "Aplicar para",
-      "extendedMessage": "{{join}} nosso {{journey}} e comece a fazer mudanças!",
+      "applyTo": "Aplique para",
+      "extendedMessage": "{{join}} nossa {{journey}} e comece a fazer mudanças!",
       "dialog-apply-parent": {
-        "title": "Candidate-se a <strong title='Parent community name'>{{parentCommunityName}}</strong>",
-        "body": "Para se juntar a <strong title='Challenge name'>'{{challengeName}}'</strong> você deve entrar no Espaço <strong title='Space name'>'{{spaceName}}'</strong> primeiro. Por favor, adicione o Desafio que você deseja ingressar no formulário de pedido do Espaço."
+        "title": "Candidate-se ao <strong title='Parent community name'>{{parentCommunityName}}</strong>",
+        "body": "Para se juntar ao <strong title='Challenge name'>'{{challengeName}}'</strong> você deve entrar no Espaço <strong title='Space name'>'{{spaceName}}'</strong> primeiro. Por favor, adicione o Desafio que você deseja ingressar no formulário de pedido do Espaço."
       },
       "dialog-parent-app-pending": {
         "title": "Inscrição pendente!",
@@ -1365,7 +1380,7 @@
     "profile": {
       "fields": {
         "bio": {
-          "title": "Biografia"
+          "title": "Sobre mim"
         },
         "description": {
           "title": "Descrição"
@@ -1417,7 +1432,7 @@
       "posted_plural": "{{name}} em {{- date}} - Comentário em {{count}}"
     },
     "discussion": {
-      "initiate": "Iniciar discussão",
+      "initiate": "Iniciar conversa",
       "posted": "{{name}} iniciado em {{- date}} - Comentário em {{count}}",
       "posted_plural": "{{name}} iniciado em {{- date}} - Comentário em {{count}}",
       "summary": "$t(components.discussion.comment, {\"count\": {{comment}} })",
@@ -1425,7 +1440,7 @@
       "comment_plural": "Comentários {{count}}",
       "contributed": "A pessoa {{count}} contribuiu",
       "contributed_plural": "{{count}} Pessoas contribuíram",
-      "cant-post": "Você não pode responder a esta discussão",
+      "cant-post": "Você não pode responder a esta conversa",
       "delete-discussion": "Excluir discussão?",
       "delete-comment": "Excluir comentário?"
     },
@@ -1559,7 +1574,7 @@
           "description": ""
         },
         "subentities": {
-          "description": "Aqui você pode explorar o **{{entities}}** hospedado neste {{parentEntity}}. Filtrar por palavras-chave para mostrar apenas os tópicos que você se interessa.",
+          "description": "Aqui você pode explorar o **{{entities}}** hospedado neste {{parentEntity}}. Filtre por palavras-chave para mostrar apenas os tópicos que você se interessa.",
           "list": "Lista de {{entities}}",
           "empty": "Nenhum(a) {{entities}} encontrado neste(a) {{parentEntity}}.",
           "empty-list": "Não há {{entities}} neste(a) {{parentEntity}} ainda."
@@ -1581,22 +1596,22 @@
       "initial-text": "Na Base de Conhecimento, você encontrará documentos, dicas e outros materiais relevantes sobre o tema. Os leads do Espaço podem fornecer o conteúdo, mas também membros da comunidade podem contribuir.",
       "innovationFlow": {
         "title": "Este {{entity}} é guiado pelo(a) <b>{{innovationFlowDisplayName}}</b>. Este Fluxo de Inovação gera as estruturas do processo e convida você a tomar ações específicas por estágio.",
-        "readMore": "Leia mais sobre o/a <b>{{innovationFlowDisplayName}}</b>"
+        "readMore": "Leia mais sobre <b>{{innovationFlowDisplayName}}</b>"
       },
       "no-posts": "Nenhuma publicação encontrada"
     },
     "innovationLibrary": {
       "shortName": "$t(common.library)",
       "fullName": "Práticas recomendadas",
-      "title": "Biblioteca de Inovação no Alkemio está aqui para orientar o seu caminho para o impacto",
-      "subtitle": "Abra os pacotes de inovação abaixo para explorar todos os modelos de whiteboards, modelos de post e fluxos de inovação que você pode usar. Se você quer saber mais <click>clique aqui</click>.",
+      "title": "A Biblioteca de Inovação no Alkemio está aqui para orientar o seu caminho para o impacto",
+      "subtitle": "Abra os pacotes de inovação abaixo para explorar todos os modelos de whiteboards, de post e fluxos de inovação que você pode usar. Se você quiser saber mais <click>clique aqui</click>.",
       "useTemplateButton": "Acesse este modelo a partir do seu Espaço para utilizá-lo.",
       "innovationPacks": {
         "headerTitle": "$t(common.innovation-packs)",
         "dialogTitle": "$t(common.innovation-packs)"
       },
       "libraryTemplates": {
-        "headerTitle": "Navegue através de todos os materiais disponíveis",
+        "headerTitle": "Navegue por todos os materiais disponíveis",
         "dialogTitle": "Todos os materiais"
       }
     },
@@ -1868,18 +1883,6 @@
       "placeholder": "Pesquisar…",
       "results-disclaimer": "Mostrando os primeiros 8 resultados. Em breve, você poderá ver todos, mas, por enquanto, especifique os termos da sua pesquisa.",
       "max-tags-reached": "Você atingiu o limite de {{max}} termos para pesquisar",
-      "search-suggestions": "Sugestões de busca:",
-      "suggestions-array": [
-        "Inovação",
-        "Energia",
-        "Inclusivo",
-        "Design",
-        "3D",
-        "Comunidade",
-        "Transição",
-        "SSI",
-        "Privacidade"
-      ],
       "user-not-logged": "Faça login ou registre-se para incluir usuários nos resultados da sua pesquisa",
       "filter": {
         "type": {
@@ -1941,10 +1944,74 @@
       "innovation-flow-info": "Clique para exibir o Fluxo de Inovação"
     },
     "home": {
-      "title": "Meu Painel",
-      "subtitle": "Pronto para gerar algum impacto?",
+      "title": "Meu Painel Geral",
+      "subtitle": "Pronto(a) para gerar impacto?",
       "sections": {
+        "latestContributions": {
+          "title": "Latest Contributions in my Spaces",
+          "filter": {
+            "space": {
+              "label": "Space:",
+              "all": "All Spaces"
+            },
+            "role": {
+              "label": "My role:",
+              "all": "All roles"
+            }
+          }
+        },
+        "myLatestContributions": {
+          "title": "My Latest Contributions",
+          "card": {
+            "journey": "in: <journeyicon /> {{journey}}"
+          }
+        },
+        "createAccountBanner": {
+          "message": "<big>🚀 Click here to create your account and get started!</big> <small>Already a member? <signin>Sign in here</signin></small>"
+        },
+        "recentJourneys": {
+          "seeMore": {
+            "full": "Explore all your Spaces, Challenges, and Opportunities",
+            "short": "Explore all your Spaces"
+          }
+        },
+        "myMemberships": {
+          "title": "My Memberships",
+          "noChildMemberships": "You are not a member of a Challenge in this Space. Some Challenges do not require you to be a member to contribute, but if you want to receive updates or show the Challenge here, become a member anyway!",
+          "seeMore": "That’s all! Looking for other Spaces to collaborate in? <challenges>Click here</challenges> to explore all Challenges on the platform, or <landing>click here</landing> to create your own!"
+        },
+        "membershipSuggestions": {
+          "title": "Become a member",
+          "suggestedSpace": {
+            "join": "Join our @ Alkemio Space!",
+            "nameId": "welcome-space"
+          },
+          "searchCommunity": {
+            "title": "...or look for your Community below",
+            "searchSuggestions": "Search suggestions:"
+          },
+          "suggestionsArray": ["Innovation", "Energy", "Inclusive", "3D", "Community", "Transition", "SSI", "Privacy"]
+        },
+        "newMemberships": {
+          "title": "New Memberships",
+          "openMemberships": "Open applications & invitations",
+          "recentlyJoined": "Recently joined",
+          "seeMore": "Show all my memberships",
+          "invitation": {
+            "message": "You are <b>invited</b> to join <journeyicon /> {{journey}}",
+            "caption": "Click here to see the invitation"
+          },
+          "application": {
+            "message": "You <b>applied</b> to join <journeyicon /> {{journey}}",
+            "caption": "Your application still has to be approved"
+          },
+          "membership": {
+            "message": "<journeyicon /> {{journey}}",
+            "caption": "{{tagline}}"
+          }
+        },
         "welcome": {
+          "welcomeUnauthenticated": "Welcome at Alkemio!",
           "welcome-back": "Bem-vindo(a) de volta, {{username}}!",
           "join": "Deseja participar da comunidade e ver mais?",
           "existing-user": {
@@ -1960,11 +2027,23 @@
             "more-info-url": "https://alkemio.foundation/feedback/"
           }
         },
+        "exploreOtherChallenges": {
+          "header": "Explore the other Challenge Spaces!"
+        },
+        "innovationLibraryBlock": {
+          "title": "Innovation library: Have you seen this one yet...?",
+          "description": "In the Library you can find Innovation Packs composed for you by various organisations. Each Innovation pack can hold a variety of Whiteboard templates, Post templates, and Innovation flows.",
+          "seeMore": "Explore more Innovation Packs"
+        },
         "space": {
           "header": "Explore os Espaços de Desafio!",
           "subheader": "",
           "body": "Cada Espaço é uma comunidade com um espaço dedicado para Desafios compartilhados. Para conectar, colaborar e inovar juntos.",
           "body1": "Para usuários, os Espaços são livres para entrar. Explore as opções, inclusive para espaços públicos e privados."
+        },
+        "startingSpace": {
+          "title": "<big>🎉 Starting a Space</big> <small>Ready to build a community on Alkemio? Click here to get started!</small>",
+          "url": "https://alkemio.foundation/contact/"
         },
         "my-spaces": {
           "header": "Meus Espaços ({{mySpacesCount}})"
@@ -1976,12 +2055,48 @@
         "contributors-section": {
           "title": "Veja quem está conduzindo Desafios no Alkemio"
         },
-        "footer": {
-          "headline": "Mais sobre Alkemio? Visite nosso site, entre em contato conosco ou consulte o nosso repositório do github",
+        "forumMessages": {
+          "title": "Latest Contributions in the Forum",
+          "seeMore": "Browse through the rest of the Forum"
+        },
+        "tipsAndTricks": {
+          "title": "Tips & Tricks",
+          "findMore": "Find more tips & tricks",
+          "findMoreUrl": "https://welcome.alkem.io/blog/",
+          "items": [
+            {
+              "title": "New here? 👋 Welcome at the platform!",
+              "description": "Click here for some quick steps to get started",
+              "imageUrl": "https://alkem.io/api/private/rest/storage/document/cd53aebe-cb43-4d04-98c6-04888bad1c9f",
+              "url": "https://alkem.io/building-alkemio-org/challenges/welcomealkemio-6154/dashboard"
+            },
+            {
+              "title": "Guiding your Challenge step by step",
+              "description": "How to use the innovation flow to structure your process",
+              "imageUrl": "https://welcome.alkem.io/blog/2023-07-nadine-intro/featured_hu3d03a01dcc18bc5be0e67db3d8d209a6_2619486_808x455_fill_q75_h2_lanczos_smart1_3.webp",
+              "url": "https://alkem.io/building-alkemio-org/challenges/welcomealkemio-6154/dashboard"
+            },
+            {
+              "title": "🧑‍🎨 Using whiteboards like a pro",
+              "description": "The keyboard-shortcuts that will change your life",
+              "imageUrl": "https://alkem.io/api/private/rest/storage/document/6ec5cc25-ea56-4eff-8470-3adc576ed7b5",
+              "url": "https://alkem.io/building-alkemio-org/challenges/welcomealkemio-6154/dashboard"
+            },
+            {
+              "title": "Starting a new Space",
+              "description": "👍 Have a look at the possibilities here! ",
+              "imageUrl": "https://alkem.io/api/private/rest/storage/document/51f4e9f8-758d-412a-9026-48e348384c04",
+              "url": "https://alkem.io/building-alkemio-org/challenges/welcomealkemio-6154/dashboard"
+            }
+          ]
+        },
+        "moreAboutAlkemio": {
+          "title": "More about Alkemio",
           "links": {
-            "foundation": "Fundação Alkemio",
-            "contact-form": "Formulário de Contato",
-            "github": "gitHub"
+            "foundation": "Alkemio Foundation",
+            "news": "News & Blog",
+            "github": "Github",
+            "contact": "Contact"
           }
         }
       }
@@ -2098,6 +2213,7 @@
       "no-whiteboards": "Nenhuma whiteboard foi criada ainda. Seja o primeiro a adicionar uma.",
       "locked-by": "{{user}} está editando atualmente esta Whiteboard",
       "savingWhiteboard": "Salvando Whiteboard...",
+      "saveTooltip": "Please note that the whiteboards are also automatically saved",
       "state": {
         "checkedout": "Outro usuário está editando esta Whiteboard no momento"
       },
@@ -2142,6 +2258,11 @@
         "title": "Conexão ao quadro foi perdida",
         "message": "Desculpe pelo inconveniente! O whiteboard não está disponível para edição agora, possivelmente devido a uma questão de rede ou perda de acesso. Por favor, tente fechar e reabrir o quadro ou atualizar a página. Se o problema persistir, entre em contato com o administrador do Espaço para obter ajuda.",
         "lastSaved": "O conteúdo deste quadro foi salvo pela última vez em {{lastSaved}}."
+      },
+      "readonlyReason": {
+        "contentUpdatePolicy": "You don't have the rights to edit this whiteboard. Ask the owner, <ownerlink>{{ownerName}}</ownerlink>, to change the settings if you want to contribute.",
+        "noMembership": "You have to be a member of the {{journeyType}} this whiteboard is in, to be able to edit. Click here to <journeylink>join/apply</journeylink>",
+        "unauthenticated": "You have to be signed in and a member of the {{journeyType}} this whiteboard is in, to be able to edit. Click here to <signinlink>sign in</signinlink>"
       }
     },
     "login": {
@@ -2404,7 +2525,7 @@
     "sign-in": "Por favor, faça login para ver os usuários associados a esta organização."
   },
   "spaces-filter": {
-    "current-filter": "Escolha os tópicos que mais lhe interessam! Filtro atual: ",
+    "current-filter": "Current filter: ",
     "show-all": "Exibir Tudo",
     "other": "Outros",
     "config": [

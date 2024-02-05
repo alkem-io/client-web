@@ -5,17 +5,15 @@ import WhiteboardDialog from '../WhiteboardDialog/WhiteboardDialog';
 import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
 import { IWhiteboardActions } from '../containers/WhiteboardActionsContainer';
 import WhiteboardContentContainer from '../containers/WhiteboardContentContainer';
-import {
-  WhiteboardDetailsFragment,
-  CreateWhiteboardWhiteboardTemplateFragment,
-  WhiteboardContentFragment,
-} from '../../../../core/apollo/generated/graphql-schema';
+import { WhiteboardDetailsFragment, WhiteboardContentFragment } from '../../../../core/apollo/generated/graphql-schema';
 import { ViewProps } from '../../../../core/container/view';
 import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import { BlockTitle } from '../../../../core/ui/typography/components';
 import FullscreenButton from '../../../../core/ui/button/FullscreenButton';
 import { useFullscreen } from '../../../../core/ui/fullscreen/useFullscreen';
+import WhiteboardShareSettingsDisabled from '../share/WhiteboardShareSettingsDisabled';
+import Spacer from '../../../../core/ui/content/Spacer';
 
 export interface ActiveWhiteboardIdHolder {
   whiteboardNameId?: string;
@@ -25,7 +23,6 @@ export interface WhiteboardManagementViewEntities extends ActiveWhiteboardIdHold
   calloutId: string;
   contextSource: JourneyTypeName;
   whiteboard: WhiteboardDetailsFragment | undefined;
-  templates: CreateWhiteboardWhiteboardTemplateFragment[];
   templateListHeader?: string;
   templateListSubheader?: string;
 }
@@ -121,7 +118,10 @@ const WhiteboardManagementView: FC<WhiteboardManagementViewProps> = ({
                 fullscreen,
                 headerActions: (
                   <>
-                    <ShareButton url={options.shareUrl} entityTypeName="whiteboard" disabled={!options.shareUrl} />
+                    <ShareButton url={options.shareUrl} entityTypeName="whiteboard" disabled={!options.shareUrl}>
+                      <Spacer />
+                      <WhiteboardShareSettingsDisabled />
+                    </ShareButton>
                     <FullscreenButton />
                   </>
                 ),

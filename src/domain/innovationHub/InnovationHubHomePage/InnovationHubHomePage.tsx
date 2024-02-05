@@ -20,6 +20,9 @@ import Gutters from '../../../core/ui/grid/Gutters';
 import { ROUTE_HOME } from '../../platform/routes/constants';
 import { useConfig } from '../../platform/config/useConfig';
 import TopLevelLayout from '../../../main/ui/layout/TopLevelLayout';
+import TopLevelPageBreadcrumbs from '../../../main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
+import BreadcrumbsItem from '../../../core/ui/navigation/BreadcrumbsItem';
+import JourneyIcon from '../../shared/components/JourneyIcon/JourneyIcon';
 
 interface InnovationHubHomePageProps {
   innovationHub: InnovationHubAttrs;
@@ -47,6 +50,19 @@ const InnovationHubHomePage = ({ innovationHub }: InnovationHubHomePageProps) =>
           displayName={innovationHub.displayName}
           tagline={innovationHub.tagline}
         />
+      }
+      breadcrumbs={
+        <TopLevelPageBreadcrumbs>
+          <BreadcrumbsItem
+            iconComponent={JourneyIcon['space']}
+            accent
+            aria-label={innovationHub.displayName}
+            avatar={innovationHub.banner}
+            uri="/"
+          >
+            {innovationHub.displayName}
+          </BreadcrumbsItem>
+        </TopLevelPageBreadcrumbs>
       }
     >
       <PageContent>

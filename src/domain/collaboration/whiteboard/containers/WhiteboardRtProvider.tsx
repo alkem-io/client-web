@@ -1,12 +1,6 @@
 import React, { FC } from 'react';
-import {
-  useWhiteboardRtFromCalloutQuery,
-  useWhiteboardTemplatesQuery,
-} from '../../../../core/apollo/generated/apollo-hooks';
-import {
-  WhiteboardRtDetailsFragment,
-  CreateWhiteboardWhiteboardTemplateFragment,
-} from '../../../../core/apollo/generated/graphql-schema';
+import { useWhiteboardRtFromCalloutQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { WhiteboardRtDetailsFragment } from '../../../../core/apollo/generated/graphql-schema';
 
 interface WhiteboardLocation {
   calloutId: string | undefined;
@@ -20,26 +14,19 @@ interface WhiteboardRtProviderProps extends WhiteboardLocation {
 
 export interface IProvidedEntities {
   whiteboard: WhiteboardRtDetailsFragment | undefined;
-  templates: CreateWhiteboardWhiteboardTemplateFragment[];
   calloutId: string | undefined;
   authorization: WhiteboardRtDetailsFragment['authorization'];
 }
 
 export interface IProvidedEntitiesState {
   loadingWhiteboards: boolean;
-  loadingTemplates: boolean;
 }
 
 const WhiteboardRtProvider: FC<WhiteboardRtProviderProps> = ({
-  spaceId,
   calloutId,
   whiteboardNameId: whiteboardId,
   children,
 }) => {
-  const { data: whiteboardTemplates, loading: loadingTemplates } = useWhiteboardTemplatesQuery({
-    variables: { spaceId },
-  });
-
   const { data, loading } = useWhiteboardRtFromCalloutQuery({
     variables: { calloutId: calloutId! },
     skip: !calloutId || !whiteboardId,
@@ -49,14 +36,13 @@ const WhiteboardRtProvider: FC<WhiteboardRtProviderProps> = ({
 
   const callout = data?.lookup.callout;
 
-  const templates = whiteboardTemplates?.space.templates?.whiteboardTemplates ?? [];
   const authorization = callout?.framing.whiteboardRt?.authorization;
 
   return (
     <>
       {children(
-        { whiteboard: callout?.framing.whiteboardRt, templates, calloutId, authorization },
-        { loadingWhiteboards: loading, loadingTemplates }
+        { whiteboard: callout?.framing.whiteboardRt, calloutId, authorization },
+        { loadingWhiteboards: loading }
       )}
     </>
   );

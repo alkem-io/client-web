@@ -22,7 +22,7 @@ import { MetricType } from '../../../platform/metrics/MetricType';
 import { EntityDashboardContributors } from '../../../community/community/EntityDashboardContributorsSection/Types';
 import useCommunityMembersAsCardProps from '../../../community/community/utils/useCommunityMembersAsCardProps';
 import useCallouts, { UseCalloutsProvided } from '../../../collaboration/callout/useCallouts/useCallouts';
-import { ActivityLogResultType } from '../../../shared/components/ActivityLog/ActivityComponent';
+import { ActivityLogResultType } from '../../../collaboration/activity/ActivityLog/ActivityComponent';
 import useActivityOnCollaboration from '../../../collaboration/activity/useActivityLogOnCollaboration/useActivityOnCollaboration';
 import useSendMessageToCommunityLeads from '../../../community/CommunityLeads/useSendMessageToCommunityLeads';
 import { RECENT_ACTIVITIES_LIMIT_INITIAL, TOP_CALLOUTS_LIMIT } from '../../common/journeyDashboard/constants';

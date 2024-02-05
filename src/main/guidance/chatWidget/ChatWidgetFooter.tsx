@@ -3,6 +3,14 @@ import ReferencesListSmallItem from '../../../domain/profile/Reference/Reference
 import { useTranslation } from 'react-i18next';
 import SwapColors from '../../../core/ui/palette/SwapColors';
 import { Paper } from '@mui/material';
+import { EmailOutlined, GradeOutlined, NotListedLocationOutlined } from '@mui/icons-material';
+import { gutters } from '../../../core/ui/grid/utils';
+
+const Icons = {
+  GradeOutlined,
+  NotListedLocationOutlined,
+  EmailOutlined,
+};
 
 const ChatWidgetFooter = () => {
   const { t } = useTranslation();
@@ -12,9 +20,11 @@ const ChatWidgetFooter = () => {
   return (
     <SwapColors>
       <Paper square>
-        <Gutters>
-          {references.map(({ uri, title }) => (
-            <ReferencesListSmallItem uri={uri}>{title}</ReferencesListSmallItem>
+        <Gutters sx={{ '.MuiSvgIcon-root': { fontSize: gutters() } }}>
+          {references.map(({ uri, title, icon: iconName }) => (
+            <ReferencesListSmallItem uri={uri} iconComponent={Icons[iconName]}>
+              {title}
+            </ReferencesListSmallItem>
           ))}
         </Gutters>
       </Paper>

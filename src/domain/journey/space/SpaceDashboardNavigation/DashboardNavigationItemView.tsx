@@ -48,7 +48,7 @@ const DashboardNavigationItemView = ({
         <BadgeCardView
           component={LinkNoUnderline}
           to={url ?? ''}
-          visual={<JourneyAvatar visualUri={visualUri} journeyTypeName={journeyTypeName} />}
+          visual={<JourneyAvatar visualUri={visualUri} journeyTypeName={journeyTypeName} size="medium" />}
           visualRight={
             isPrivate ? (
               <Tooltip

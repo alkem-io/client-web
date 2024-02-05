@@ -2,9 +2,9 @@ import NavigationBar, { NAVIGATION_CONTENT_HEIGHT_GUTTERS } from '../../../core/
 import PlatformNavigationUserAvatar from './PlatformNavigationUserAvatar';
 import PlatformSearch from '../platformSearch/PlatformSearch';
 import PlatformNavigationMenuButton from './PlatformNavigationMenuButton';
-import { Box, Slide, Theme, useMediaQuery } from '@mui/material';
+import { Box, MenuItem, Slide, Theme, useMediaQuery } from '@mui/material';
 import React, { cloneElement, ReactElement, Ref, useLayoutEffect, useRef, useState } from 'react';
-import PlatformNavigationUserMenu from './PlatformNavigationUserMenu';
+import PlatformNavigationUserMenu, { UserMenuDivider } from './PlatformNavigationUserMenu';
 import UserMenuPlatformNavigationSegment from './platformNavigationMenu/UserMenuPlatformNavigationSegment';
 import NavigationBarSideContent from '../../../core/ui/navigation/NavigationBarSideContent';
 import { gutters } from '../../../core/ui/grid/utils';
@@ -15,6 +15,7 @@ import { GUTTER_PX } from '../../../core/ui/grid/constants';
 import PlatformNavigationUncollapse from './PlatformNavigationUncollapse';
 import SkipLink from '../../../core/ui/keyboardNavigation/SkipLink';
 import { useTranslation } from 'react-i18next';
+import PoweredBy from '../poweredBy/PoweredBy';
 
 export interface PlatformNavigationBarProps {
   breadcrumbs?: ReactElement<UncontrolledExpandable & { ref: Ref<Collapsible> }>;
@@ -99,8 +100,21 @@ const PlatformNavigationBar = ({ breadcrumbs }: PlatformNavigationBarProps) => {
           </PlatformSearch>
           {!isMobile && <PlatformNavigationMenuButton />}
           <PlatformNavigationUserAvatar drawer={isMobile}>
-            <PlatformNavigationUserMenu surface={!isMobile}>
+            <PlatformNavigationUserMenu
+              surface={!isMobile}
+              footer={
+                isMobile && (
+                  <>
+                    <UserMenuDivider />
+                    <Box component={MenuItem} paddingY={gutters(0.5)}>
+                      <PoweredBy preview />
+                    </Box>
+                  </>
+                )
+              }
+            >
               {isMobile && <UserMenuPlatformNavigationSegment />}
+              {isMobile && <UserMenuDivider />}
             </PlatformNavigationUserMenu>
           </PlatformNavigationUserAvatar>
         </Box>

@@ -20,7 +20,13 @@ import { StorageConfigContextProvider } from '../../../storage/StorageBucket/Sto
 interface OpportunityRootProps extends PageProps {}
 
 const OpportunityRoute: FC<OpportunityRootProps> = ({ paths: _paths }) => {
-  const { displayName, opportunityNameId, spaceNameId, challengeNameId, loading } = useOpportunity();
+  const {
+    profile: { displayName },
+    opportunityNameId,
+    spaceNameId,
+    challengeNameId,
+    loading,
+  } = useOpportunity();
   const resolved = useResolvedPath('.');
   const currentPaths = useMemo(
     () => (displayName ? [..._paths, { value: resolved.pathname, name: displayName, real: true }] : _paths),

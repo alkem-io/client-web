@@ -40,6 +40,7 @@ interface Provided {
   postingMessage: boolean;
   postingReply: boolean;
 }
+
 export type CalendarEventDetailContainerProps = ContainerPropsWithProvided<EventIds, Provided>;
 
 // TODO: VERY BASED ON domain/collaboration/post/containers/PostDashboardContainer/PostDashboardContainer.tsx

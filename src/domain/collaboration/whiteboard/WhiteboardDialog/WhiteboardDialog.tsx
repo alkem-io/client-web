@@ -1,9 +1,9 @@
-import React, { ReactNode, useEffect, useMemo, useRef } from 'react';
+import React, { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Formik } from 'formik';
 import { FormikProps } from 'formik/dist/types';
 import { serializeAsJSON } from '@alkemio/excalidraw';
-import { ExcalidrawAPIRefValue } from '@alkemio/excalidraw/types/types';
+import { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/types/types';
 import { Delete, Save } from '@mui/icons-material';
 import LockClockIcon from '@mui/icons-material/LockClock';
 import Dialog from '@mui/material/Dialog';
@@ -32,8 +32,8 @@ import { error as logError } from '../../../../core/logging/sentry/log';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
 import { WhiteboardWithContent, WhiteboardWithoutContent } from '../containers/WhiteboardContentContainer';
 import {
-  WhiteboardPreviewImage,
   generateWhiteboardPreviewImages,
+  WhiteboardPreviewImage,
 } from '../WhiteboardPreviewImages/WhiteboardPreviewImages';
 import useWhiteboardFilesManager from '../../../common/whiteboard/excalidraw/useWhiteboardFilesManager';
 
@@ -108,32 +108,24 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
   const { t } = useTranslation();
   const notify = useNotification();
   const { whiteboard, lockedBy } = entities;
-  const excalidrawApiRef = useRef<ExcalidrawAPIRefValue>(null);
+  const [excalidrawAPI, setExcalidrawAPI] = useState<ExcalidrawImperativeAPI | null>(null);
 
   const styles = useStyles();
 
-  const getExcalidrawStateFromApi = async (
-    excalidrawApi: ExcalidrawAPIRefValue | null
-  ): Promise<RelevantExcalidrawState | undefined> => {
-    if (!excalidrawApi) {
+  const getExcalidrawStateFromApi = () => {
+    if (!excalidrawAPI) {
       return;
     }
 
-    const imperativeApi = await excalidrawApi.readyPromise;
-
-    if (!imperativeApi) {
-      return;
-    }
-
-    const appState = imperativeApi.getAppState();
-    const elements = imperativeApi.getSceneElements();
-    const files = imperativeApi.getFiles();
+    const appState = excalidrawAPI.getAppState();
+    const elements = excalidrawAPI.getSceneElements();
+    const files = excalidrawAPI.getFiles();
 
     return { appState, elements, files };
   };
 
   const filesManager = useWhiteboardFilesManager({
-    excalidrawApi: excalidrawApiRef.current,
+    excalidrawAPI,
     storageBucketId: whiteboard?.profile?.storageBucket.id ?? '',
     allowFallbackToAttached: options.allowFilesAttached,
   });
@@ -142,7 +134,7 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
     if (!state) {
       return;
     }
-    const { appState, elements, files } = await filesManager.removeAllExcalidrawAttachments(state);
+    const { appState, elements, files } = await filesManager.convertLocalFilesToRemoteInWhiteboard(state);
 
     const previewImages = await generateWhiteboardPreviewImages(whiteboard, state);
     const content = serializeAsJSON(elements, appState, files ?? {}, 'local');
@@ -168,7 +160,7 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
 
   const actionMap: { [key in keyof typeof whiteboardActions]: ((whiteboard: Whiteboard) => void) | undefined } = {
     'save-and-checkin': async whiteboard => {
-      const state = await getExcalidrawStateFromApi(excalidrawApiRef.current);
+      const state = getExcalidrawStateFromApi();
 
       formikRef.current?.setTouched({ displayName: true }, true);
 
@@ -179,13 +171,11 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
     checkout: actions.onCheckout,
   };
 
-  const onClose = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    const whiteboardApi = await excalidrawApiRef.current?.readyPromise;
-
-    if (whiteboardApi && options.canEdit) {
-      const elements = whiteboardApi.getSceneElements();
-      const appState = whiteboardApi.getAppState();
-      const files = whiteboardApi.getFiles();
+  const onClose = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    if (excalidrawAPI && options.canEdit) {
+      const elements = excalidrawAPI.getSceneElements();
+      const appState = excalidrawAPI.getAppState();
+      const files = excalidrawAPI.getFiles();
       const content = serializeAsJSON(elements, appState, files, 'local');
 
       if (!isWhiteboardContentEqual(whiteboard?.content, content) || formikRef.current?.dirty) {
@@ -203,10 +193,9 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
   };
 
   const handleImportTemplate = async (template: WhiteboardTemplateWithContent) => {
-    const whiteboardApi = await excalidrawApiRef.current?.readyPromise;
-    if (whiteboardApi && options.canEdit && options.checkedOutByMe) {
+    if (excalidrawAPI && options.canEdit && options.checkedOutByMe) {
       try {
-        mergeWhiteboard(whiteboardApi, template.content);
+        mergeWhiteboard(excalidrawAPI, template.content);
       } catch (err) {
         notify(t('templateLibrary.whiteboardTemplates.errorImporting'), 'error');
         // @ts-ignore
@@ -303,7 +292,6 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
                     whiteboard,
                     filesManager,
                   }}
-                  ref={excalidrawApiRef}
                   options={{
                     viewModeEnabled: !options.canEdit,
                     UIOptions: {
@@ -320,6 +308,7 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
                     onUpdate: state => {
                       handleUpdate(whiteboard, state);
                     },
+                    onInitApi: setExcalidrawAPI,
                   }}
                 />
               )}

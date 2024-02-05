@@ -2,9 +2,10 @@ import { createContext, PropsWithChildren, useContext } from 'react';
 
 export interface MarkdownOptions {
   card: boolean;
-  flat: boolean;
+  plain: boolean;
   multiline: boolean;
   disableParagraphPadding: boolean;
+  caption: boolean;
 }
 
 const MarkdownOptionsContext = createContext<MarkdownOptions | undefined>(undefined);

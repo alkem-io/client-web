@@ -5,6 +5,7 @@ export interface Configuration {
   locations: {
     environment: string;
     domain: string;
+    landing: string;
     about: string;
     blog: string;
     feedback: string;

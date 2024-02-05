@@ -30,6 +30,7 @@ import { innovationPacksPath } from '../../domain/collaboration/InnovationPack/u
 import NonIdentity from '../../domain/platform/routes/NonIdentity';
 import useRedirectToIdentityDomain from '../../core/auth/authentication/routing/useRedirectToIdentityDomain';
 import { NotFoundPageLayout } from '../../domain/journey/common/EntityPageLayout';
+import RedirectToWelcomeSite from '../../domain/platform/routes/RedirectToWelcomeSite';
 
 export const TopLevelRoutes: FC = () => {
   const { t } = useTranslation();
@@ -49,6 +50,7 @@ export const TopLevelRoutes: FC = () => {
         }
       >
         <Route index element={<RedirectToLanding />} />
+        <Route path="landing" element={<RedirectToWelcomeSite />} />
         <Route
           path={ROUTE_HOME}
           element={

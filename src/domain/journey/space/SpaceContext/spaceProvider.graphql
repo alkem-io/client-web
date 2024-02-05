@@ -12,6 +12,7 @@ fragment SpaceInfo on Space {
   }
   community {
     id
+    myMembershipStatus
     authorization {
       id
       myPrivileges

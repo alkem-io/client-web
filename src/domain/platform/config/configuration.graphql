@@ -25,6 +25,7 @@ fragment Configuration on Config {
   locations {
     environment
     domain
+    landing
     about
     blog
     feedback

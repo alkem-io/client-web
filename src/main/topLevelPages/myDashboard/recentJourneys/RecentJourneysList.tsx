@@ -25,6 +25,8 @@ const RecentJourneysList = ({ onSeeMore }: RecentJourneysListProps) => {
 
   const { t } = useTranslation();
 
+  const noticeVariant = columns > 4 ? 'full' : 'short';
+
   return (
     <PageContentBlockSeamless row disablePadding>
       {data?.me.myJourneys.slice(0, columns / 2 - 1).map(result => (
@@ -38,7 +40,7 @@ const RecentJourneysList = ({ onSeeMore }: RecentJourneysListProps) => {
           sx={{ textTransform: 'none', aspectRatio: RECENT_JOURNEY_CARD_ASPECT_RATIO }}
           onClick={onSeeMore}
         >
-          <Caption>{t('pages.home.sections.recentJourneys.seeMore')}</Caption>
+          <Caption>{t(`pages.home.sections.recentJourneys.seeMore.${noticeVariant}` as const)}</Caption>
         </Paper>
       </GridItem>
     </PageContentBlockSeamless>

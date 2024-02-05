@@ -44,7 +44,7 @@ export const themeOptions: ThemeOptions = {
       md: 1100,
     },
   },
-};
+} as ThemeOptions;
 
 export const theme = createTheme(themeOptions);
 
@@ -71,6 +71,7 @@ declare module '@mui/material/styles' {
     avatarSize: number;
     avatarSizeLg: number;
   }
+
   interface ThemeOptions extends Theme {}
 }
 

@@ -9,12 +9,15 @@ import { ViewProps } from '../../../../core/container/view';
 interface DiscussionListViewEntities {
   discussions: Discussion[];
 }
+
 interface DiscussionListViewState {
   loading: boolean;
 }
+
 interface DiscussionListViewActions {
   onClickDiscussion: (discussion: Discussion) => void;
 }
+
 interface DiscussionListViewOptions {
   filterEnabled: boolean;
 }

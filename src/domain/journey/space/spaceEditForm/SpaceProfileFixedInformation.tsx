@@ -31,6 +31,7 @@ const SpaceProfileFixedInformation = ({ visibility, host }: SpaceProfileFixedInf
         <BlockTitle>{t('common.visibility')}</BlockTitle>
         <Text>
           <Trans
+            t={t}
             i18nKey="components.editSpaceForm.visibility"
             values={{
               visibility: t(`common.enums.space-visibility.${visibility}` as const),
@@ -43,7 +44,7 @@ const SpaceProfileFixedInformation = ({ visibility, host }: SpaceProfileFixedInf
       </Gutters>
       <Gutters disablePadding>
         <BlockTitle>{t('pages.community.space-host.title')}</BlockTitle>
-        {host && <ContributorCardHorizontal {...host} />}
+        {host && <ContributorCardHorizontal {...host} seamless />}
       </Gutters>
       <Caption fontStyle="italic">{t('components.editSpaceForm.readOnly')}</Caption>
     </PageContentBlock>

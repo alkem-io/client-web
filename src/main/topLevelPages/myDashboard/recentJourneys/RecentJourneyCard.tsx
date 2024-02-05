@@ -13,6 +13,7 @@ import { alpha } from '@mui/material/styles';
 import webkitLineClamp from '../../../../core/ui/utils/webkitLineClamp';
 import { BlockTitle } from '../../../../core/ui/typography';
 import { useColumns } from '../../../../core/ui/grid/GridContext';
+import InsertPhotoOutlinedIcon from '@mui/icons-material/InsertPhotoOutlined';
 
 interface RecentJourneyCardProps {
   journey:
@@ -44,7 +45,6 @@ const RecentJourneyCard = ({ journey, journeyTypeName }: RecentJourneyCardProps)
     <GridItem columns={2}>
       <ElevatedPaper
         component={RouterLink}
-        loose
         to={journey?.profile.url ?? ''}
         sx={{
           position: 'relative',
@@ -58,7 +58,9 @@ const RecentJourneyCard = ({ journey, journeyTypeName }: RecentJourneyCardProps)
             src={journey.profile.cardBanner?.uri}
             sx={{ width: '100%', height: 'auto', aspectRatio: RECENT_JOURNEY_CARD_ASPECT_RATIO }}
             variant="square"
-          />
+          >
+            <InsertPhotoOutlinedIcon fontSize="large" />
+          </Avatar>
         )}
         {journey && (
           <BadgeCardView

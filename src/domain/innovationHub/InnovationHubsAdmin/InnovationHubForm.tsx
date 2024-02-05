@@ -131,9 +131,6 @@ const InnovationHubForm: FC<InnovationHubFormProps> = ({
                   visual={banner}
                   altText={t('pages.visualEdit.banner.description', {
                     alternativeText: banner?.alternativeText,
-                    interpolation: {
-                      escapeValue: false,
-                    },
                   })}
                 />
               </>

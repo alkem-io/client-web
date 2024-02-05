@@ -29,18 +29,22 @@ export const MyDashboard = () => {
     <HomePageLayout>
       <ReleaseUpdatesDialog />
       <MyMembershipsDialog open={isMyMembershipsDialogOpen} onClose={() => setIsMyMembershipsDialogOpen(false)} />
-      <PageContent gridContainerProps={{ flexDirection: 'row-reverse' }}>
-        {!isAuthenticated && !isLoadingAuthentication ? (
+      {!isAuthenticated && !isLoadingAuthentication ? (
+        <PageContent gridContainerProps={{ flexDirection: 'row-reverse' }}>
           <MyDashboardUnauthenticated />
-        ) : hasSpaceMemberships ? (
+        </PageContent>
+      ) : hasSpaceMemberships ? (
+        <PageContent gridContainerProps={{ flexDirection: 'row-reverse' }}>
           <MyDashboardWithMemberships
             spacesData={spacesData}
             onOpenMembershipsDialog={() => setIsMyMembershipsDialogOpen(true)}
           />
-        ) : (
+        </PageContent>
+      ) : (
+        <PageContent gridContainerProps={{ flexDirection: 'row' }}>
           <MyDashboardWithoutMemberships />
-        )}
-      </PageContent>
+        </PageContent>
+      )}
     </HomePageLayout>
   );
 };

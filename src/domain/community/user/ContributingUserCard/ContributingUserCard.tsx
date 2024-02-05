@@ -25,7 +25,7 @@ const ContributingUserCard = ({ id, ...contributorCardProps }: ContributingUserC
   const messageReceivers = [
     {
       id,
-      title: contributorCardProps.displayName,
+      displayName: contributorCardProps.displayName,
       avatarUri: contributorCardProps.avatarUri,
       city: contributorCardProps.city,
       country: contributorCardProps.country,

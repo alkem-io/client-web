@@ -5,7 +5,7 @@ import { forwardRef } from 'react';
 
 export interface RouterLinkProps extends Omit<ReactRouterLinkProps, 'target'>, Pick<MuiLinkProps, 'underline'> {
   to: string;
-  loose?: boolean;
+  strict?: boolean;
   raw?: boolean;
   blank?: boolean;
 }
@@ -17,8 +17,8 @@ export interface RouterLinkProps extends Omit<ReactRouterLinkProps, 'target'>, P
  * @constructor
  */
 const RouterLink = forwardRef<HTMLAnchorElement, RouterLinkProps>(
-  ({ to, raw = false, loose = raw, blank, ...props }, ref) => {
-    const urlLike = loose ? normalizeLink(to) : to;
+  ({ to, raw = false, strict = false, blank, ...props }, ref) => {
+    const urlLike = !strict ? normalizeLink(to) : to;
 
     const isForeign = raw || isAbsoluteUrl(urlLike);
 

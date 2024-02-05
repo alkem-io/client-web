@@ -68,6 +68,7 @@ export const ContributeInnovationFlowBlock: FC<ContributeInnovationFlowBlockProp
             >
               <Text textTransform="none">
                 <Trans
+                  t={t}
                   i18nKey="pages.contribute.innovationFlow.readMore"
                   values={{
                     innovationFlowDisplayName: innovationFlow?.profile.displayName,

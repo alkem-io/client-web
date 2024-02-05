@@ -1,8 +1,5 @@
 /**
- * Same as WhiteboardContentContainer but:
- * - (Renamed value to content)
- * - Removed subscription, there's no whiteboardRtContentUpdated subscription yet
- * - Removed all the checkout
+ * Same as WhiteboardContentContainer but for Realtime Whiteboards
  */
 import { FC } from 'react';
 import { useWhiteboardRtWithContentQuery } from '../../../../core/apollo/generated/apollo-hooks';
@@ -35,12 +32,11 @@ export interface WhiteboardRtContentContainerProps
     WhiteboardContentParams {}
 
 const WhiteboardRtContentContainer: FC<WhiteboardRtContentContainerProps> = ({ children, whiteboardId }) => {
-  const skipWhiteboardQuery = !Boolean(whiteboardId);
   const { data: whiteboardWithContentData, loading: loadingWhiteboardWithContent } = useWhiteboardRtWithContentQuery({
     errorPolicy: 'all',
     // Disable cache, we really want to make sure that the latest content is fetched, in case there is no one else editing at the moment
     fetchPolicy: 'network-only',
-    skip: skipWhiteboardQuery,
+    skip: !whiteboardId,
     variables: {
       whiteboardId: whiteboardId!,
     },

@@ -26,7 +26,9 @@ interface MyJourneysDialogProps {
 const MyMembershipsDialog = ({ open, onClose }: MyJourneysDialogProps) => {
   const { t } = useTranslation();
 
-  const { data, loading } = useMyMembershipsQuery();
+  const { data, loading } = useMyMembershipsQuery({
+    skip: !open,
+  });
 
   const landingUrl = useLandingUrl();
 
@@ -47,7 +49,14 @@ const MyMembershipsDialog = ({ open, onClose }: MyJourneysDialogProps) => {
       <DialogContent>
         <Gutters disablePadding>
           {myMemberships?.map(space => (
-            <PageContentBlock row flexWrap="wrap" sx={{ background: theme => theme.palette.background.default }}>
+            <PageContentBlock
+              row
+              flexWrap="wrap"
+              sx={{
+                background: theme => theme.palette.background.default,
+                alignItems: 'start',
+              }}
+            >
               <SpaceCard
                 banner={space.profile.cardBanner}
                 displayName={space.profile.displayName}

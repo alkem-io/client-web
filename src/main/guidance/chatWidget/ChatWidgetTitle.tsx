@@ -7,17 +7,14 @@ import { InfoOutlined } from '@mui/icons-material';
 
 interface ChatWidgetTitleProps {
   onClickInfo?: () => void;
-  mobile?: boolean;
 }
 
-const ChatWidgetTitle = ({ onClickInfo, mobile = false }: ChatWidgetTitleProps) => {
+const ChatWidgetTitle = ({ onClickInfo }: ChatWidgetTitleProps) => {
   const { t } = useTranslation();
-
-  const infoButtonPosition = mobile ? 'left' : 'right';
 
   return (
     <Box display="flex" justifyContent="center" alignItems="center" position="relative" height={gutters(2.5)}>
-      <Box paddingTop={1}>
+      <Box>
         <PageTitle position="relative">
           {t('chatbot.title')}
           <Caption
@@ -37,7 +34,7 @@ const ChatWidgetTitle = ({ onClickInfo, mobile = false }: ChatWidgetTitleProps) 
         <IconButton
           size="small"
           color="primary"
-          sx={{ position: 'absolute', top: 0, [infoButtonPosition]: 0 }}
+          sx={{ position: 'absolute', top: 0, right: gutters(1.5) }}
           onClick={onClickInfo}
           aria-label={t('common.help')}
         >

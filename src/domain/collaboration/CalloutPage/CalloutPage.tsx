@@ -7,15 +7,17 @@ import { AuthorizationPrivilege, CalloutVisibility } from '../../../core/apollo/
 import { useCalloutEdit } from '../callout/edit/useCalloutEdit/useCalloutEdit';
 import { TypedCallout } from '../callout/useCallouts/useCallouts';
 import DialogWithGrid from '../../../core/ui/dialog/DialogWithGrid';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { buildCalloutUrl } from '../../../main/routing/urlBuilders';
-import useCanGoBack from '../../../core/routing/useCanGoBack';
 import { Theme, useMediaQuery } from '@mui/material';
 import { getCalloutDisplayLocationValue } from '../callout/utils/getCalloutDisplayLocationValue';
 import Loading from '../../../core/ui/loading/Loading';
 import { isApolloNotFoundError } from '../../../core/apollo/hooks/useApolloErrorHandler';
 import { NotFoundPageLayout } from '../../journey/common/EntityPageLayout';
 import { Error404 } from '../../../core/pages/Errors/Error404';
+import useBackToPath from '../../../core/routing/useBackToPath';
+import usePageLayoutByEntity from '../../shared/utils/usePageLayoutByEntity';
+import { EntityPageSection } from '../../shared/layout/EntityPageSection';
 
 interface CalloutLocation {
   journeyTypeName: JourneyTypeName;
@@ -75,8 +77,6 @@ const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: Cal
     fetchPolicy: 'cache-first',
   });
 
-  const navigate = useNavigate();
-
   const [callout] =
     (
       calloutData?.space.opportunity?.collaboration ??
@@ -102,12 +102,18 @@ const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: Cal
     } as unknown as TypedCallout;
   }, [callout, locationState]);
 
-  const canGoBack = useCanGoBack();
+  const backOrElse = useBackToPath();
 
   const isSmallScreen = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
 
+  const PageLayout = usePageLayoutByEntity(journeyTypeName);
+
   if (isCalloutLoading) {
-    return <Loading />;
+    return (
+      <PageLayout currentSection={EntityPageSection.Contribute}>
+        <Loading />
+      </PageLayout>
+    );
   }
 
   if (isApolloNotFoundError(error)) {
@@ -129,7 +135,7 @@ const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: Cal
   const parentPagePath = typeof parentRoute === 'function' ? parentRoute(calloutDisplayLocation) : parentRoute;
 
   const handleClose = () => {
-    canGoBack ? navigate(-1) : navigate(parentPagePath);
+    backOrElse(parentPagePath);
   };
 
   const calloutUri = buildCalloutUrl(typedCallout.nameID, {

@@ -2,7 +2,7 @@ import React, { ReactNode } from 'react';
 import { Box, BoxProps } from '@mui/material';
 import { Caption } from '../typography';
 import { gutters } from '../grid/utils';
-import { BoxTypeMap } from '@mui/material/Box/Box';
+import { BoxTypeMap } from '@mui/system';
 
 interface CardSegmentCaptionProps {
   align?: 'left' | 'right';

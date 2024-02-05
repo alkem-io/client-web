@@ -18,7 +18,8 @@ interface PoweredByProps {
 const PoweredBy = ({ compact = false, preview = false, sx, ...props }: PoweredByProps & BoxProps) => {
   const { t } = useTranslation();
 
-  const { isFeatureEnabled } = useConfig();
+  const { isFeatureEnabled, locations } = useConfig();
+  const landingPageUrl = locations?.landing;
 
   const hasLandingPage = isFeatureEnabled(PlatformFeatureFlagName.LandingPage);
 
@@ -35,7 +36,7 @@ const PoweredBy = ({ compact = false, preview = false, sx, ...props }: PoweredBy
   return (
     <Box
       component={RouterLink}
-      to={hasLandingPage ? '/landing' : ROUTE_HOME}
+      to={hasLandingPage ? landingPageUrl : ROUTE_HOME}
       raw={hasLandingPage}
       blank={false}
       display="flex"

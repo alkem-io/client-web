@@ -9,6 +9,7 @@ import { gutters } from '../../../../core/ui/grid/utils';
 import { useState } from 'react';
 import InnovationFlowSettingsDialog from '../InnovationFlowDialogs/InnovationFlowSettingsDialog';
 import { useGlobalGridColumns } from '../../../../core/ui/grid/constants';
+import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 
 export type InnovationFlowState = string;
 
@@ -16,6 +17,7 @@ interface InnovationFlowStatesProps {
   states: InnovationFlowState[];
   currentState: string;
   selectedState: string;
+  journeyTypeName: JourneyTypeName;
   showSettings?: boolean;
   onSelectState?: (state: InnovationFlowState) => void;
 }
@@ -24,6 +26,7 @@ const InnovationFlowStates = ({
   states,
   currentState,
   selectedState,
+  journeyTypeName,
   showSettings = false,
   onSelectState,
 }: InnovationFlowStatesProps) => {
@@ -95,6 +98,7 @@ const InnovationFlowStates = ({
           <Trans
             i18nKey="components.innovationFlowStateSelector.selectedStateNotice"
             values={{
+              journeyType: t(`common.journeyTypes.${journeyTypeName}` as const),
               currentState: getStateName(currentState),
               selectedState: getStateName(selectedState),
             }}

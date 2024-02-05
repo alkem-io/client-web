@@ -215,8 +215,11 @@ export const SpaceSettingsView: FC = () => {
                     getBooleanPreferenceValue(PreferenceType.MembershipJoinSpaceFromHostOrganizationMembers) ?? false,
                   label: (
                     <Trans
+                      t={t}
                       i18nKey="pages.admin.space.settings.membership.hostOrganizationJoin"
-                      values={{ host: hostOrganization?.space?.host?.profile?.displayName }}
+                      values={{
+                        host: hostOrganization?.space?.host?.profile?.displayName,
+                      }}
                       components={{ b: <strong />, i: <em /> }}
                     />
                   ),

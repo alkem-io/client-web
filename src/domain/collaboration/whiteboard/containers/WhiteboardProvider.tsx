@@ -1,12 +1,8 @@
 import React, { FC } from 'react';
-import {
-  useWhiteboardFromCalloutQuery,
-  useWhiteboardTemplatesQuery,
-} from '../../../../core/apollo/generated/apollo-hooks';
+import { useWhiteboardFromCalloutQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import {
   WhiteboardDetailsFragment,
   CollaborationWithWhiteboardDetailsFragment,
-  CreateWhiteboardWhiteboardTemplateFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
 
 interface WhiteboardLocation {
@@ -21,26 +17,15 @@ interface WhiteboardProviderProps extends WhiteboardLocation {
 
 export interface IProvidedEntities {
   whiteboard: WhiteboardDetailsFragment | undefined;
-  templates: CreateWhiteboardWhiteboardTemplateFragment[];
   calloutId: string | undefined;
   authorization: NonNullable<CollaborationWithWhiteboardDetailsFragment['callouts']>[0]['authorization'];
 }
 
 export interface IProvidedEntitiesState {
   loadingWhiteboards: boolean;
-  loadingTemplates: boolean;
 }
 
-const WhiteboardProvider: FC<WhiteboardProviderProps> = ({
-  spaceId,
-  calloutId,
-  whiteboardNameId: whiteboardId,
-  children,
-}) => {
-  const { data: whiteboardTemplates, loading: loadingTemplates } = useWhiteboardTemplatesQuery({
-    variables: { spaceId },
-  });
-
+const WhiteboardProvider: FC<WhiteboardProviderProps> = ({ calloutId, whiteboardNameId: whiteboardId, children }) => {
   const { data, loading } = useWhiteboardFromCalloutQuery({
     variables: { calloutId: calloutId!, whiteboardId },
     skip: !calloutId || !whiteboardId,
@@ -58,7 +43,6 @@ const WhiteboardProvider: FC<WhiteboardProviderProps> = ({
 
   const framingWhiteboard = callout?.framing.whiteboard;
 
-  const templates = whiteboardTemplates?.space.templates?.whiteboardTemplates ?? [];
   const authorization = callout?.authorization;
 
   return (
@@ -66,11 +50,10 @@ const WhiteboardProvider: FC<WhiteboardProviderProps> = ({
       {children(
         {
           whiteboard: framingWhiteboard ?? whiteboardContribution?.whiteboard,
-          templates,
           calloutId,
           authorization,
         },
-        { loadingWhiteboards: loading, loadingTemplates }
+        { loadingWhiteboards: loading }
       )}
     </>
   );

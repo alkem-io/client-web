@@ -23,7 +23,6 @@ import CalloutBlockMarginal from '../callout/Contribute/CalloutBlockMarginal';
 import { BlockTitle } from '../../../core/ui/typography';
 import { CalloutLayoutEvents, CalloutSortProps } from '../callout/CalloutViewTypes';
 import Gutters from '../../../core/ui/grid/Gutters';
-import { useCalloutFormTemplatesFromSpaceLazyQuery } from '../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../core/routing/useUrlParams';
 import { Ribbon } from '../../../core/ui/card/Ribbon';
 import Authorship from '../../../core/ui/authorship/Authorship';
@@ -136,13 +135,6 @@ const CalloutLayout = ({
     throw new Error('Must be within a Space');
   }
 
-  const [fetchTemplates, { data: templatesData }] = useCalloutFormTemplatesFromSpaceLazyQuery();
-  const getTemplates = () => fetchTemplates({ variables: { spaceId: spaceNameId! } });
-
-  const postTemplates = templatesData?.space.templates?.postTemplates ?? [];
-  const whiteboardTemplates = templatesData?.space.templates?.whiteboardTemplates ?? [];
-  const templates = { postTemplates, whiteboardTemplates };
-
   const [settingsAnchorEl, setSettingsAnchorEl] = useState<null | HTMLElement>(null);
   const settingsOpened = Boolean(settingsAnchorEl);
   const handleSettingsOpened = (event: React.MouseEvent<HTMLElement>) => setSettingsAnchorEl(event.currentTarget);
@@ -175,7 +167,6 @@ const CalloutLayout = ({
   };
   const [editDialogOpened, setEditDialogOpened] = useState(false);
   const handleEditDialogOpen = () => {
-    getTemplates();
     setSettingsAnchorEl(null);
     setEditDialogOpened(true);
   };
@@ -237,7 +228,7 @@ const CalloutLayout = ({
             {callout.editable && (
               <IconButton
                 id="callout-settings-button"
-                aria-label={t('buttons.settings')}
+                aria-label={t('common.settings')}
                 aria-haspopup="true"
                 aria-controls={settingsOpened ? 'callout-settings-menu' : undefined}
                 aria-expanded={settingsOpened ? 'true' : undefined}
@@ -371,7 +362,6 @@ const CalloutLayout = ({
           onDelete={onCalloutDelete}
           canChangeCalloutLocation
           calloutNames={calloutNames}
-          templates={templates}
           journeyTypeName={journeyTypeName}
         />
       )}
