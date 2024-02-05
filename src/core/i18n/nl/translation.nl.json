@@ -60,10 +60,10 @@
     "nl": "Nederlands",
     "es": "Spaans",
     "bg": "Bulgaars",
-    "ua": "Ukrainian",
+    "ua": "Oekraïens",
     "de": "Duits",
     "fr": "Frans",
-    "pt": "Portuguese (Brazil)",
+    "pt": "Portugees (Brazilië)",
     "inContextTool": "In context vertaling"
   },
   "fields": {
@@ -119,7 +119,7 @@
     "home": "Startpagina",
     "take-me-home": "Terug naar startpagina",
     "close": "Sluit",
-    "yes-close": "Yes, close",
+    "yes-close": "Ja, sluiten",
     "delete": "Verwijder",
     "submit": "Verstuur",
     "remove": "Verwijder",
@@ -922,7 +922,7 @@
       }
     },
     "innovationFlowStateSelector": {
-      "selectedStateNotice": "Deze Challenge is momenteel in de <strong>{{currentState}}</strong> fase. Je kunt hier al een kijkje nemen naar de inhoud van de <strong>{{selectedState}}</strong> fase."
+      "selectedStateNotice": "Deze {{journeyType}} is momenteel in de <strong>{{currentState}}</strong> fase. Je kunt hier al een kijkje nemen naar de inhoud van de <strong>{{selectedState}}</strong> fase."
     },
     "invitations": {
       "inviteOthers": "Anderen uitnodigen",
@@ -1103,7 +1103,7 @@
       },
       "close-dialog": {
         "title": "Discard callout",
-        "text": "Are you sure you want to close this {{calloutType}}? Unsaved changes will be lost."
+        "text": "Weet je zeker dat je {{calloutType}} wilt sluiten? Niet-opgeslagen wijzigingen gaan verloren."
       }
     },
     "calloutEdit": {
@@ -1948,26 +1948,26 @@
       "subtitle": "Klaar om impact te maken?",
       "sections": {
         "latestContributions": {
-          "title": "Latest Contributions in my Spaces",
+          "title": "Laatste bijdragen in mijn spaces",
           "filter": {
             "space": {
               "label": "Space:",
               "all": "All Spaces"
             },
             "role": {
-              "label": "My role:",
-              "all": "All roles"
+              "label": "Mijn rol:",
+              "all": "Alle rollen"
             }
           }
         },
         "myLatestContributions": {
-          "title": "My Latest Contributions",
+          "title": "Mijn laatste bijdragen",
           "card": {
             "journey": "in: <journeyicon /> {{journey}}"
           }
         },
         "createAccountBanner": {
-          "message": "<big>🚀 Click here to create your account and get started!</big> <small>Already a member? <signin>Sign in here</signin></small>"
+          "message": "<big>🚀 Klik hier om je account aan te maken en aan de slag te gaan!</big> <small>Ben je al lid? <signin>Meld je hier aan</signin></small>"
         },
         "recentJourneys": {
           "seeMore": {
@@ -1976,34 +1976,34 @@
           }
         },
         "myMemberships": {
-          "title": "My Memberships",
-          "noChildMemberships": "You are not a member of a Challenge in this Space. Some Challenges do not require you to be a member to contribute, but if you want to receive updates or show the Challenge here, become a member anyway!",
-          "seeMore": "That’s all! Looking for other Spaces to collaborate in? <challenges>Click here</challenges> to explore all Spaces on the platform, or <landing>click here</landing> to create your own!"
+          "title": "Mijn Lidmaatschappen",
+          "noChildMemberships": "U bent geen lid van een Challenge in deze Space. Sommige Challenges vereisen niet dat je lid hoeft te zijn om bij te dragen, maar als je updates wilt ontvangen of de Challenge hier wilt weergeven, word dan toch lid!",
+          "seeMore": "Dat is alles! Op zoek naar andere Spaces om in mee te werken? <challenges>Klik hier</challenges> om alle Challenges op het platform te ontdekken, of <landing>klik hier</landing> om je eigen Space te openen!"
         },
         "membershipSuggestions": {
-          "title": "Become a member",
+          "title": "Lid worden",
           "suggestedSpace": {
-            "join": "Join our @ Alkemio Space!",
+            "join": "Sluit je aan bij onze @ Alkemio Space!",
             "nameId": "welcome-space"
           },
           "searchCommunity": {
-            "title": "...or look for your Community below",
-            "searchSuggestions": "Search suggestions:"
+            "title": "...of zoek je Community hieronder",
+            "searchSuggestions": "Zoeksuggesties:"
           },
-          "suggestionsArray": ["Innovation", "Energy", "Inclusive", "3D", "Community", "Transition", "SSI", "Privacy"]
+          "suggestionsArray": ["Innovatie", "Energie", "Inclusief", "3D", "Community", "Transitie", "SSI", "Privacy"]
         },
         "newMemberships": {
-          "title": "New Memberships",
-          "openMemberships": "Open applications & invitations",
-          "recentlyJoined": "Recently joined",
-          "seeMore": "Show all my memberships",
+          "title": "Nieuwe Lidmaatschappen",
+          "openMemberships": "Openstaande aanmeldingen & uitnodigingen",
+          "recentlyJoined": "Recent toegetreden",
+          "seeMore": "Toon al mijn lidmaatschappen",
           "invitation": {
-            "message": "You are <b>invited</b> to join <journeyicon /> {{journey}}",
-            "caption": "Click here to see the invitation"
+            "message": "Je bent <b>uitgenodigd</b> om je aan te sluiten bij <journeyicon /> {{journey}}",
+            "caption": "Klik hier om de uitnodiging te zien"
           },
           "application": {
-            "message": "You <b>applied</b> to join <journeyicon /> {{journey}}",
-            "caption": "Your application still has to be approved"
+            "message": "Je hebt een <b>aanmelding</b> ingediend om lid te worden van <journeyicon /> {{journey}}",
+            "caption": "Je aanvraag moet nog goedgekeurd worden"
           },
           "membership": {
             "message": "<journeyicon /> {{journey}}",
@@ -2028,12 +2028,12 @@
           }
         },
         "exploreOtherChallenges": {
-          "header": "Explore the other Challenge Spaces!"
+          "header": "Verken de Challenge Spaces!"
         },
         "innovationLibraryBlock": {
-          "title": "Innovation library: Have you seen this one yet...?",
-          "description": "In the Library you can find Innovation Packs composed for you by various organisations. Each Innovation pack can hold a variety of Whiteboard templates, Post templates, and Innovation flows.",
-          "seeMore": "Explore more Innovation Packs"
+          "title": "Innovatie Bibliotheek: Heb je deze al gezien...?",
+          "description": "In de Bibliotheek kun je innovatiepakketten vinden die voor je zijn samengesteld door verschillende organisaties. Elk innovatiepakket kan bestaan uit whiteboard templates, post templates, en innovatie flows.",
+          "seeMore": "Ontdek meer innovatiepakketten"
         },
         "space": {
           "header": "Verken de Challenge Spaces!",
@@ -2042,7 +2042,7 @@
           "body1": "Individuele gebruikers kunnen zich aansluiten bij één of meerdere Spaces. Deze Spaces kunnen zowel openbaar als privé zijn."
         },
         "startingSpace": {
-          "title": "<big>🎉 Starting a Space</big> <small>Ready to build a community on Alkemio? Click here to get started!</small>",
+          "title": "<big>🎉 Start jouw Space</big> <small>Klaar om een community te bouwen op Alkemio? Klik hier om te starten!</small>",
           "url": "https://alkemio.foundation/contact/"
         },
         "my-spaces": {
@@ -2056,45 +2056,45 @@
           "title": "Zie wie er aan Challenges op Alkemio werkt"
         },
         "forumMessages": {
-          "title": "Latest Contributions in the Forum",
-          "seeMore": "Browse through the rest of the Forum"
+          "title": "Laatste bijdragen van het Forum",
+          "seeMore": "Blader door de rest van het Forum"
         },
         "tipsAndTricks": {
           "title": "Tips & Tricks",
-          "findMore": "Find more tips & tricks",
+          "findMore": "Vind meer tips & tricks",
           "findMoreUrl": "https://welcome.alkem.io/blog/",
           "items": [
             {
-              "title": "New here? 👋 Welcome at the platform!",
-              "description": "Click here for some quick steps to get started",
+              "title": "Nieuw hier? 👋 Welkom op het platform!",
+              "description": "Begin meteen met deze snelle stappen",
               "imageUrl": "https://alkem.io/api/private/rest/storage/document/cd53aebe-cb43-4d04-98c6-04888bad1c9f",
               "url": "https://alkem.io/building-alkemio-org/challenges/welcomealkemio-6154/dashboard"
             },
             {
-              "title": "Guiding your Challenge step by step",
-              "description": "How to use the innovation flow to structure your process",
+              "title": "Begeleid je Challenge in eenvoudige stappen",
+              "description": "Hoe je de innovation flow kan gebruiken om je proces te structureren",
               "imageUrl": "https://welcome.alkem.io/blog/2023-07-nadine-intro/featured_hu3d03a01dcc18bc5be0e67db3d8d209a6_2619486_808x455_fill_q75_h2_lanczos_smart1_3.webp",
               "url": "https://alkem.io/building-alkemio-org/challenges/welcomealkemio-6154/dashboard"
             },
             {
-              "title": "🧑‍🎨 Using whiteboards like a pro",
-              "description": "The keyboard-shortcuts that will change your life",
+              "title": "🧑‍🎨 Whiteboards gebruiken als een pro",
+              "description": "De sneltoetsen die je leven veranderen",
               "imageUrl": "https://alkem.io/api/private/rest/storage/document/6ec5cc25-ea56-4eff-8470-3adc576ed7b5",
               "url": "https://alkem.io/building-alkemio-org/challenges/welcomealkemio-6154/dashboard"
             },
             {
-              "title": "Starting a new Space",
-              "description": "👍 Have a look at the possibilities here! ",
+              "title": "Een nieuwe Space starten",
+              "description": "👍 Bekijk de mogelijkheden hier! ",
               "imageUrl": "https://alkem.io/api/private/rest/storage/document/51f4e9f8-758d-412a-9026-48e348384c04",
               "url": "https://alkem.io/building-alkemio-org/challenges/welcomealkemio-6154/dashboard"
             }
           ]
         },
         "moreAboutAlkemio": {
-          "title": "More about Alkemio",
+          "title": "Meer over Alkemio",
           "links": {
-            "foundation": "Alkemio Foundation",
-            "news": "News & Blog",
+            "foundation": "Stichting Alkemio",
+            "news": "Nieuws & Blog",
             "github": "Github",
             "contact": "Contact"
           }
@@ -2255,8 +2255,8 @@
         "templatesHeader": "Templates gedefinieerd in deze Opportunity"
       },
       "whiteboardDisconnected": {
-        "title": "Whiteboard connection lost",
-        "message": "Apologies for the inconvenience! The whiteboard isn't available for editing right now, possibly due to a network issue or loss of access. Please try closing and reopening the whiteboard or refreshing the page. If the issue persists, reach out to your Space administrator for assistance.",
+        "title": "Whiteboard verbinding verbroken",
+        "message": "Excuses voor het ongemak! Je kunt het whiteboard nu niet bewerken, mogelijk door een netwerkfout of geen toegang. Sluit en open het whiteboard opnieuw of ververs de pagina. Blijft het fout gaan? Vraag dan de beheerder van deze Space om hulp.",
         "lastSaved": "Dit whiteboard is voor het laatst opgeslagen op {{lastSaved}}."
       },
       "readonlyReason": {
@@ -2525,7 +2525,7 @@
     "sign-in": "Log in om de gebruikers die aan deze organisatie zijn gekoppeld te zien."
   },
   "spaces-filter": {
-    "current-filter": "Current filter: ",
+    "current-filter": "Huidige filter: ",
     "show-all": "Alles weergeven",
     "other": "Anders",
     "config": [
