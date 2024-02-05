@@ -141,7 +141,7 @@ const CollaborationTemplatesLibrary = <
 
   return (
     <>
-      <Button variant="outlined" startIcon={<LibraryIcon />} onClick={() => handleOpen()} {...buttonProps} />
+      <Button variant="outlined" startIcon={<LibraryIcon />} onClick={handleOpen} {...buttonProps} />
       <DialogWithGrid open={dialogOpen} onClose={handleClose} columns={12}>
         <DialogHeader title={dialogTitle} onClose={handleClose} titleContainerProps={{ alignItems: 'center' }}>
           {!previewTemplate && (

@@ -49,7 +49,6 @@ const KnowledgeBasePage = ({ journeyTypeName, scrollToCallout = false }: PropsWi
   } = useCalloutCreationWithPreviewImages();
 
   const handleCreate = () => {
-    // fetchTemplates();
     handleCreateCalloutOpened();
   };
 
