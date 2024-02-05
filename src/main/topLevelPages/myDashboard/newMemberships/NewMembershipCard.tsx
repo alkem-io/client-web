@@ -1,7 +1,7 @@
 import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
 import { JourneyDetails } from '../../../../domain/community/pendingMembership/PendingMemberships';
 import { Avatar, ButtonBase } from '@mui/material';
-import { Caption, CaptionSmall } from '../../../../core/ui/typography';
+import { Caption } from '../../../../core/ui/typography';
 import { Trans, useTranslation } from 'react-i18next';
 import JourneyIcon from '../../../../domain/shared/components/JourneyIcon/JourneyIcon';
 import RouterLink from '../../../../core/ui/link/RouterLink';
@@ -26,7 +26,7 @@ const NewMembershipCard = ({ membership, to, onClick, membershipType }: NewMembe
       onClick={onClick}
       sx={{ textAlign: 'left' }}
     >
-      <Caption>
+      <Caption whiteSpace="nowrap" overflow="hidden" textOverflow="ellipsis">
         <Trans
           t={t}
           i18nKey={`pages.home.sections.newMemberships.${membershipType}.message` as const}
@@ -39,11 +39,11 @@ const NewMembershipCard = ({ membership, to, onClick, membershipType }: NewMembe
           }}
         />
       </Caption>
-      <CaptionSmall>
+      <Caption>
         {t(`pages.home.sections.newMemberships.${membershipType}.caption` as const, {
           tagline: membership?.journeyTagline,
         })}
-      </CaptionSmall>
+      </Caption>
     </BadgeCardView>
   );
 };
