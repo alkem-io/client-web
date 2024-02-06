@@ -218,6 +218,7 @@ const CommunityApplications: FC<CommunityApplicationsProps> = ({
           await onDeleteInvitation?.(item.id);
           break;
         }
+        // TODO: invitations do not have 'approved' state, they have 'accepted' state
         case 'approved':
         case 'rejected': {
           await onInvitationStateChange?.(item.id, 'ARCHIVE');
