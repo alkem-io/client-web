@@ -1,7 +1,6 @@
 import React, { FC } from 'react';
-import { Box, IconButton, Tabs } from '@mui/material';
+import { Tabs } from '@mui/material';
 import { DashboardOutlined, SettingsOutlined, ShareOutlined } from '@mui/icons-material';
-import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import NavigationTab from '../../../../core/ui/tabs/NavigationTab';
 import { usePost } from '../context/PostProvider';
 import { PostDialogSection } from './PostDialogSection';
@@ -11,19 +10,21 @@ import { useTranslation } from 'react-i18next';
 
 export interface PostTabsProps {
   currentTab: PostDialogSection;
-  onClose: () => void;
 }
 
-const RightAlignedTabs = styled(Tabs)(({ theme }) => ({
+const DialogHeaderTabs = styled(Tabs)(({ theme }) => ({
+  marginTop: theme.spacing(-0.4),
+  marginBottom: theme.spacing(-0.8),
+  marginRight: theme.spacing(1),
   '& .MuiTabs-flexContainer': { justifyContent: 'end', gap: gutters(1)(theme) },
 }));
 
-const PostTabs: FC<PostTabsProps> = ({ currentTab, onClose }) => {
+const PostTabs: FC<PostTabsProps> = ({ currentTab }) => {
   const { t } = useTranslation();
   const { permissions } = usePost();
 
   return (
-    <RightAlignedTabs value={currentTab} variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile>
+    <DialogHeaderTabs value={currentTab} variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile>
       <NavigationTab
         icon={<DashboardOutlined />}
         value={PostDialogSection.Dashboard}
@@ -47,12 +48,7 @@ const PostTabs: FC<PostTabsProps> = ({ currentTab, onClose }) => {
           aria-label={t('common.settings')}
         />
       )}
-      <Box sx={{ display: 'flex', minWidth: 4, marginLeft: -1 }}>
-        <IconButton onClick={onClose} aria-label={t('buttons.close')}>
-          <CloseOutlinedIcon />
-        </IconButton>
-      </Box>
-    </RightAlignedTabs>
+    </DialogHeaderTabs>
   );
 };
 

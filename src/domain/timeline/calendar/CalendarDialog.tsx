@@ -1,6 +1,5 @@
 import { Add } from '@mui/icons-material';
 import { Button, IconButton, Skeleton } from '@mui/material';
-import Dialog from '@mui/material/Dialog';
 import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -22,6 +21,7 @@ import CalendarEventDetail from './views/CalendarEventDetail';
 import CalendarEventForm from './views/CalendarEventForm';
 import CalendarEventsList from './views/CalendarEventsList';
 import dayjs from 'dayjs';
+import DialogWithGrid from '../../../core/ui/dialog/DialogWithGrid';
 
 // If url params contains `highlight=YYYY-MM-DD` events in that date will be highlighted
 export const HIGHLIGHT_PARAM_NAME = 'highlight';
@@ -86,10 +86,9 @@ const CalendarDialog: FC<CalendarDialogProps> = ({
   );
 
   return (
-    <Dialog
+    <DialogWithGrid
+      columns={12}
       open={open}
-      maxWidth="xl"
-      fullWidth
       aria-labelledby="calendar-events-dialog-title"
       PaperProps={{ sx: { padding: 0, display: 'flex', flexDirection: 'column' } }}
     >
@@ -219,7 +218,7 @@ const CalendarDialog: FC<CalendarDialogProps> = ({
           }}
         </CalendarEventsContainer>
       )}
-    </Dialog>
+    </DialogWithGrid>
   );
 };
 

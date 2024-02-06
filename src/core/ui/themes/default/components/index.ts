@@ -5,6 +5,7 @@ import MuiButtonBase from './MuiButtonBase';
 import MuiChip from './MuiChip';
 import MuiDialog from './MuiDialog';
 import MuiDialogContent from './MuiDialogContent';
+import MuiDialogActions from './MuiDialogActions';
 import MuiIcon from './MuiIcon';
 import MuiLink from './MuiLink';
 import MuiMenuItem from './MuiMenuItem';
@@ -23,6 +24,7 @@ const componentsOverride: Components<Theme> = {
   MuiChip,
   MuiDialog,
   MuiDialogContent,
+  MuiDialogActions,
   MuiIcon,
   MuiLink,
   MuiMenuItem,

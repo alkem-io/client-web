@@ -1,23 +1,21 @@
-import React, { FC } from 'react';
-import { Box, DialogContent } from '@mui/material';
+import React, { FC, PropsWithChildren } from 'react';
+import { DialogContent } from '@mui/material';
 import PostTabs from './PostTabs';
 import { PostDialogSection } from './PostDialogSection';
-import DialogWhiteBg from '../../../shared/components/DialogWhiteBg';
+import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
+import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 
 export interface PostLayoutProps {
   currentSection: PostDialogSection;
   onClose: () => void;
 }
 
-const PostLayout: FC<PostLayoutProps> = ({ currentSection, onClose, children }) => {
+const PostLayout: FC<PostLayoutProps> = ({ currentSection, onClose, children }: PropsWithChildren<PostLayoutProps>) => {
   return (
-    <DialogWhiteBg open={!!currentSection} fullWidth maxWidth={false}>
-      <PostTabs currentTab={currentSection} onClose={onClose} />
-      <DialogContent>
-        <Box paddingTop={3} />
-        {children}
-      </DialogContent>
-    </DialogWhiteBg>
+    <DialogWithGrid open={!!currentSection} columns={12} onClose={onClose}>
+      <DialogHeader onClose={onClose} actions={<PostTabs currentTab={currentSection} />} />
+      <DialogContent>{children}</DialogContent>
+    </DialogWithGrid>
   );
 };
 
