@@ -15,7 +15,6 @@ import {
   WhiteboardRtDetailsFragment,
   CommentsWithMessagesFragment,
   ContributeTabPostFragment,
-  ReferenceDetailsFragment,
   CalloutContributionPolicy,
   CalloutContribution,
 } from '../../../../core/apollo/generated/graphql-schema';
@@ -33,8 +32,6 @@ export type WhiteboardFragmentWithCallout = WhiteboardDetailsFragment & { callou
 export type WhiteboardRtFragmentWithCallout = WhiteboardRtDetailsFragment & { calloutNameId: string };
 
 export type CommentsWithMessagesFragmentWithCallout = CommentsWithMessagesFragment & { calloutNameId: string };
-
-export type ReferencesFragmentWithCallout = ReferenceDetailsFragment & { calloutNameId: string };
 
 export type TypedCallout = Pick<
   Callout,

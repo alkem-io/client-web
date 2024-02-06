@@ -19,14 +19,14 @@ import {
 import AddIcon from '@mui/icons-material/Add';
 import References from '../../../shared/components/References/References';
 import RoundedIcon from '../../../../core/ui/icon/RoundedIcon';
-import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, CalloutState } from '../../../../core/apollo/generated/graphql-schema';
 import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
 import { nanoid } from 'nanoid';
 import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
 import { evictFromCache } from '../../../../core/apollo/utils/removeFromCache';
 import { compact } from 'lodash';
 
-const MAX_REFERENCES_NORMALVIEW = 3;
+const MAX_LINKS_NORMALVIEW = 3;
 
 interface LinkCollectionCalloutProps extends BaseCalloutViewProps {
   callout: CalloutLayoutProps['callout'];
@@ -51,8 +51,10 @@ const LinkCollectionCallout = forwardRef<HTMLDivElement, LinkCollectionCalloutPr
     const closeEditDialog = () => setEditReference(undefined);
 
     const calloutPrivileges = callout?.authorization?.myPrivileges ?? [];
-    const canAddLinks = calloutPrivileges.includes(AuthorizationPrivilege.Update);
-    const canEditLinks = calloutPrivileges.includes(AuthorizationPrivilege.Update);
+    const isContributionAllowed =
+      calloutPrivileges.includes(AuthorizationPrivilege.Contribute) &&
+      callout.contributionPolicy.state === CalloutState.Open;
+    const canAddLinks = isContributionAllowed || calloutPrivileges.includes(AuthorizationPrivilege.Update);
     const canDeleteLinks = calloutPrivileges.includes(AuthorizationPrivilege.Update);
 
     // New References:
@@ -144,15 +146,13 @@ const LinkCollectionCallout = forwardRef<HTMLDivElement, LinkCollectionCalloutPr
     }, [deletingReferenceId, closeEditDialog, setDeletingReferenceId, onCalloutUpdate, deleteReference, callout]);
 
     const links = useMemo(() => compact(callout.contributions?.map(contribution => contribution.link)), [callout]);
-    // List References:
-    const limitedReferences = useMemo(
-      () => compact(callout.contributions?.map(contribution => contribution.link))?.slice(0, MAX_REFERENCES_NORMALVIEW),
+    const limitedLinks = useMemo(
+      () => compact(callout.contributions?.map(contribution => contribution.link))?.slice(0, MAX_LINKS_NORMALVIEW),
       [callout]
     );
     const isListTruncated = useMemo(
       () =>
-        (compact(callout.contributions?.map(contribution => contribution.link))?.length ?? 0) >
-        MAX_REFERENCES_NORMALVIEW,
+        (compact(callout.contributions?.map(contribution => contribution.link))?.length ?? 0) > MAX_LINKS_NORMALVIEW,
       [callout]
     );
 
@@ -177,9 +177,8 @@ const LinkCollectionCallout = forwardRef<HTMLDivElement, LinkCollectionCalloutPr
             disableMarginal
           >
             <References
-              references={expanded ? links : limitedReferences}
+              references={expanded ? links : limitedLinks}
               noItemsView={<CaptionSmall>{t('callout.link-collection.no-links-yet')}</CaptionSmall>}
-              canEdit={canEditLinks}
               onEdit={ref => setEditReference(ref)}
             />
             <Box
@@ -189,7 +188,7 @@ const LinkCollectionCallout = forwardRef<HTMLDivElement, LinkCollectionCalloutPr
             >
               {isListTruncated && !expanded && (
                 <Caption component={Link} onClick={onExpand} sx={{ cursor: 'pointer' }}>
-                  {t('callout.link-collection.more-links', { count: callout.framing.profile.references?.length })}
+                  {t('callout.link-collection.more-links', { count: links.length })}
                 </Caption>
               )}
               {canAddLinks && (

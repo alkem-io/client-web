@@ -1,17 +1,17 @@
 import React, { FC, ReactNode } from 'react';
-import { Reference } from '../../../common/profile/Profile';
+import { Reference, ReferenceWithAuthorization } from '../../../common/profile/Profile';
 import ReferenceView, { ReferenceViewProps } from './ReferenceView';
 import { Box, styled } from '@mui/material';
 import { gutters } from '../../../../core/ui/grid/utils';
 import { OpenInNew } from '@mui/icons-material';
 import RouterLink from '../../../../core/ui/link/RouterLink';
+import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
 
 interface ReferencesProps {
-  references: Reference[] | undefined;
+  references: ReferenceWithAuthorization[] | undefined;
   noItemsView?: ReactNode;
   icon?: ReferenceViewProps['icon'];
   compact?: boolean;
-  canEdit?: boolean;
   onEdit?: (reference: Reference) => void;
 }
 
@@ -26,7 +26,7 @@ const CompactView = styled(Box)(({ theme }) => ({
   },
 }));
 
-const References: FC<ReferencesProps> = ({ references, canEdit, onEdit, noItemsView, icon, compact }) => {
+const References: FC<ReferencesProps> = ({ references, onEdit, noItemsView, icon, compact }) => {
   if (compact) {
     if (references && references.length > 0) {
       return (
@@ -51,7 +51,7 @@ const References: FC<ReferencesProps> = ({ references, canEdit, onEdit, noItemsV
                 key={reference.id}
                 reference={reference}
                 icon={icon}
-                canEdit={canEdit}
+                canEdit={reference.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update)}
                 onClickEdit={() => onEdit?.(reference)}
               />
             ))}

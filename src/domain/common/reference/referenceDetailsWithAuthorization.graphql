@@ -1,0 +1,10 @@
+fragment ReferenceDetailsWithAuthorization on Reference {
+  id
+  name
+  uri
+  description
+  authorization {
+    id
+    myPrivileges
+  }
+}
