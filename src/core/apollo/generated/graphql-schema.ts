@@ -18673,60 +18673,6 @@ export type DashboardLeadUserFragment = {
   };
 };
 
-export type ContributingOrganizationsQueryVariables = Exact<{
-  limit?: InputMaybe<Scalars['Float']>;
-  shuffle?: InputMaybe<Scalars['Boolean']>;
-  filterCredentials?: InputMaybe<Array<AuthorizationCredential> | AuthorizationCredential>;
-}>;
-
-export type ContributingOrganizationsQuery = {
-  __typename?: 'Query';
-  organizations: Array<{
-    __typename?: 'Organization';
-    id: string;
-    nameID: string;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      displayName: string;
-      visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-    };
-  }>;
-};
-
-export type ContributingUsersQueryVariables = Exact<{
-  limit?: InputMaybe<Scalars['Float']>;
-  shuffle?: InputMaybe<Scalars['Boolean']>;
-  filterCredentials?: InputMaybe<Array<AuthorizationCredential> | AuthorizationCredential>;
-}>;
-
-export type ContributingUsersQuery = {
-  __typename?: 'Query';
-  users: Array<{
-    __typename?: 'User';
-    id: string;
-    nameID: string;
-    isContactable: boolean;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      displayName: string;
-      location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-      visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-      tagsets?:
-        | Array<{
-            __typename?: 'Tagset';
-            id: string;
-            name: string;
-            tags: Array<string>;
-            allowedValues: Array<string>;
-            type: TagsetType;
-          }>
-        | undefined;
-    };
-  }>;
-};
-
 export type CommunityPageMembersFragment = {
   __typename?: 'User';
   id: string;
@@ -21491,31 +21437,6 @@ export type UserOrganizationIdsQuery = {
   rolesUser: {
     __typename?: 'ContributorRoles';
     organizations: Array<{ __typename?: 'RolesResultOrganization'; id: string }>;
-  };
-};
-
-export type UserSpacesQueryVariables = Exact<{ [key: string]: never }>;
-
-export type UserSpacesQuery = {
-  __typename?: 'Query';
-  me: {
-    __typename?: 'MeQueryResults';
-    spaceMemberships: Array<{
-      __typename?: 'Space';
-      id: string;
-      nameID: string;
-      profile: {
-        __typename?: 'Profile';
-        id: string;
-        displayName: string;
-        tagline: string;
-        tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-        cardBanner?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-      };
-      context?: { __typename?: 'Context'; id: string; vision?: string | undefined } | undefined;
-      metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
-      license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
-    }>;
   };
 };
 
