@@ -624,7 +624,6 @@
       "add-another": "Add another link",
       "delete-link": "Click here to delete this link",
       "save-to-add": "Click ‘Save as draft’ or ‘Publish’ to start adding links.",
-      "click-to-see": "{{count}} links, click here to show all",
       "no-links-yet": "There are no links yet, be the first to add one!",
       "delete-confirm-title": "Delete this link?",
       "delete-confirm": "Are you sure that you want to remove this link from {{title}}?",
