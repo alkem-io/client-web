@@ -15,6 +15,7 @@ import Icon from '../../../../core/ui/icon/Icon';
 import { useTranslation } from 'react-i18next';
 import { DialogFooter } from '../../../../core/ui/dialog/DialogWithGrid';
 import { useInView } from 'react-intersection-observer';
+import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
 
 export interface InnovationFlowProfile {
   id: string;
@@ -50,10 +51,7 @@ export interface InnovationFlowProfileBlockProps {
 }
 
 const FormActionsRenderer = ({ children }: { children: ReactElement }) => {
-  const { ref, inView } = useInView({
-    triggerOnce: false,
-    threshold: 0,
-  });
+  const { ref, inView } = useInView();
 
   return (
     <>
@@ -90,13 +88,15 @@ const InnovationFlowProfileBlock: FC<InnovationFlowProfileBlockProps> = ({
     <PageContentBlock disablePadding disableGap>
       <PageContentBlockGrid disablePadding>
         {editMode && innovationFlow && (
-          <PageContentColumn columns={isMobile ? 8 : 6}>
-            <InnovationFlowProfileForm
-              profile={innovationFlow.profile}
-              onSubmit={profileData => handleUpdateProfile(innovationFlow.id, profileData)}
-              onCancel={() => setEditMode(false)}
-              actionsRenderer={FormActionsRenderer}
-            />
+          <PageContentColumn columns={12}>
+            <PageContentBlockSeamless>
+              <InnovationFlowProfileForm
+                profile={innovationFlow.profile}
+                onSubmit={profileData => handleUpdateProfile(innovationFlow.id, profileData)}
+                onCancel={() => setEditMode(false)}
+                actionsRenderer={FormActionsRenderer}
+              />
+            </PageContentBlockSeamless>
           </PageContentColumn>
         )}
         {!editMode && (

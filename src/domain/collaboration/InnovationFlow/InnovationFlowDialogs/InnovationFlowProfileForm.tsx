@@ -7,7 +7,6 @@ import { Reference, Tagset } from '../../../../core/apollo/generated/graphql-sch
 import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
 import FormikMarkdownField from '../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
 import { MARKDOWN_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
-import Gutters from '../../../../core/ui/grid/Gutters';
 import ContextReferenceSegment from '../../../../domain/platform/admin/components/Common/ContextReferenceSegment';
 import { referenceSegmentSchema } from '../../../../domain/platform/admin/components/Common/ReferenceSegment';
 import { tagsetSegmentSchema } from '../../../../domain/platform/admin/components/Common/TagsetSegment';
@@ -62,7 +61,7 @@ const InnovationFlowProfileForm: FC<InnovationFlowProfileFormProps> = ({
     <Formik initialValues={initialValues} validationSchema={validationSchema} enableReinitialize onSubmit={handleSave}>
       {({ values: { references }, handleSubmit }) => {
         return (
-          <Gutters>
+          <>
             <FormikInputField name="displayName" title={t('common.title')} maxLength={SMALL_TEXT_LENGTH} />
             <FormikMarkdownField name="description" title={t('common.description')} maxLength={MARKDOWN_TEXT_LENGTH} />
             {/* TODO: Tags pending <TagsetSegment tagsets={profile?.tagsets ?? []} /> */}
@@ -78,7 +77,7 @@ const InnovationFlowProfileForm: FC<InnovationFlowProfileFormProps> = ({
                 </LoadingButton>
               </Actions>
             </ActionsRenderer>
-          </Gutters>
+          </>
         );
       }}
     </Formik>
