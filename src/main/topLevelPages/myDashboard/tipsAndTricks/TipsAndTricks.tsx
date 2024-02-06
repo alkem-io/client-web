@@ -18,7 +18,7 @@ const TipsAndTricks: FC<TipsAndTricksProps> = ({ halfWidth }) => {
   const items = t('pages.home.sections.tipsAndTricks.items', { returnObjects: true });
 
   return (
-    <PageContentBlock halfWidth={halfWidth}>
+    <PageContentBlock halfWidth={halfWidth} sx={{ justifyContent: 'space-around' }}>
       <PageContentBlockHeader title={t('pages.home.sections.tipsAndTricks.title')} />
       {items.map((item, index) => (
         <BadgeCardView
