@@ -175,7 +175,6 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
       }),
     [collaboration]
   );
-  console.log(callouts);
 
   const submitCalloutsSortOrder = useCallback(
     (calloutIds: string[]) => {
