@@ -85,7 +85,7 @@ const CalendarEventsList = ({ events, highlightedDay, actions, onClose }: Calend
       <DialogHeader onClose={onClose}>
         <BlockTitle>{t('common.events')}</BlockTitle>
       </DialogHeader>
-      <Gutters row={!['xs', 'sm'].includes(breakpoint)} minHeight={0} flexGrow={1}>
+      <Gutters row={!['xs', 'sm'].includes(breakpoint)} minHeight={0} flexGrow={1} paddingRight={0} paddingTop={0}>
         <FullCalendar
           events={sortedEvents}
           sx={{ flexGrow: 2, minWidth: gutters(15) }}
