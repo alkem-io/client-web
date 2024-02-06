@@ -1,4 +1,4 @@
-import { Authorization, TagsetType } from '../../../core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, TagsetType } from '../../../core/apollo/generated/graphql-schema';
 
 export interface Tagset {
   id?: string;
@@ -25,5 +25,7 @@ export interface ReferenceWithAuthorization {
   name: string;
   uri: string;
   description?: string;
-  authorization?: Partial<Authorization>;
+  authorization?: {
+    myPrivileges?: AuthorizationPrivilege[];
+  };
 }
