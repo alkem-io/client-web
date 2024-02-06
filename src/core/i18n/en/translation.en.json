@@ -1115,7 +1115,7 @@
         "POST": "Post",
         "POST_COLLECTION": "Call for Posts",
         "WHITEBOARD_COLLECTION": "Call for Whiteboards",
-        "LINK_COLLECTION": "Collection of Links",
+        "LINK_COLLECTION": "Collection of Links and Documents",
         "WHITEBOARD": "Whiteboard",
         "WHITEBOARD_RT": "Whiteboard RealTime"
       },
