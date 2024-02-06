@@ -3,7 +3,6 @@ import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
-import { BlockTitle } from '../../../../core/ui/typography';
 import { InnovationFlowIcon } from '../../../platform/admin/templates/InnovationTemplates/InnovationFlow/InnovationFlowIcon';
 import InnovationFlowProfileBlock from './InnovationFlowProfileBlock';
 import useInnovationFlowSettings from './useInnovationFlowSettings';
@@ -35,11 +34,7 @@ const InnovationFlowSettingsDialog: FC<InnovationFlowSettingsDialogProps> = ({ o
 
   return (
     <DialogWithGrid open={open} columns={12} onClose={onClose}>
-      <DialogHeader onClose={onClose}>
-        <BlockTitle>
-          <InnovationFlowIcon /> {t('common.innovation-flow')}
-        </BlockTitle>
-      </DialogHeader>
+      <DialogHeader icon={<InnovationFlowIcon />} title={t('common.innovation-flow')} onClose={onClose} />
       <DialogContent sx={{ paddingTop: 0 }}>
         <Gutters disablePadding>
           <InnovationFlowProfileBlock

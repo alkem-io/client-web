@@ -1,23 +1,19 @@
 import React, { FC, ReactNode, useState } from 'react';
-import { Dialog, DialogActions, Box, Alert } from '@mui/material';
-import { Form, Formik } from 'formik';
+import { Alert, DialogActions } from '@mui/material';
+import { Formik } from 'formik';
 import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import DialogContent from '../../../../core/ui/dialog/DialogContent';
-import { Caption, PageTitle } from '../../../../core/ui/typography/components';
+import { Caption } from '../../../../core/ui/typography/components';
 import SendButton from '../../../shared/components/SendButton';
 import { LONG_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
 import GridContainer from '../../../../core/ui/grid/GridContainer';
 import { gutters } from '../../../../core/ui/grid/utils';
 import { ProfileChip } from '../../../community/contributor/ProfileChip/ProfileChip';
-import GridProvider from '../../../../core/ui/grid/GridProvider';
-import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
 import useLoadingState from '../../../shared/utils/useLoadingState';
-
-const GRID_COLUMNS_DESKTOP = 6;
-const GRID_COLUMNS_MOBILE = 3;
+import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
 
 export interface MessageReceiverChipData {
   id: string;
@@ -74,60 +70,51 @@ export const DirectMessageDialog: FC<MessageUserDialogProps> = ({
     message: '',
   };
 
-  const breakpoint = useCurrentBreakpoint();
-
   return (
-    <Dialog open={open} fullWidth maxWidth="md">
-      <DialogHeader onClose={handleClose}>
-        <PageTitle>{title}</PageTitle>
-      </DialogHeader>
-      <DialogContent>
-        <Box>
-          <Formik
-            initialValues={initialValues}
-            validationSchema={validationSchema}
-            enableReinitialize
-            onSubmit={handleSendMessage}
-          >
-            {({ handleSubmit, isValid }) => (
-              <Form noValidate autoComplete="off">
-                <GridContainer disablePadding marginBottom={gutters(1)}>
-                  <GridProvider columns={breakpoint === 'xs' ? GRID_COLUMNS_MOBILE : GRID_COLUMNS_DESKTOP} force>
-                    {messageReceivers?.map(receiver => (
-                      <ProfileChip
-                        key={receiver.id}
-                        displayName={receiver.displayName}
-                        avatarUrl={receiver.avatarUri}
-                        city={receiver.city}
-                        country={receiver.country}
-                      />
-                    ))}
-                  </GridProvider>
-                </GridContainer>
-                <FormikInputField
-                  name="message"
-                  title={t('messaging.message')}
-                  placeholder={t('messaging.message')}
-                  multiline
-                  rows={5}
-                  onFocus={() => setMessageSent(false)}
-                  maxLength={LONG_TEXT_LENGTH}
-                />
-                <Caption>{t('share-dialog.warning')}</Caption>
-
-                <DialogActions sx={{ paddingX: 0 }}>
-                  {isMessageSent && (
-                    <Alert severity="info" sx={{ marginRight: 'auto' }}>
-                      {t('messaging.successfully-sent')}
-                    </Alert>
-                  )}
-                  <SendButton loading={isLoading} disabled={!isValid} onClick={() => handleSubmit()} />
-                </DialogActions>
-              </Form>
-            )}
-          </Formik>
-        </Box>
-      </DialogContent>
-    </Dialog>
+    <DialogWithGrid columns={12} open={open} fullWidth maxWidth="md">
+      <DialogHeader title={title} onClose={handleClose} />
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        enableReinitialize
+        onSubmit={handleSendMessage}
+      >
+        {({ handleSubmit, isValid }) => (
+          <>
+            <DialogContent>
+              <GridContainer disablePadding marginBottom={gutters(1)}>
+                {messageReceivers?.map(receiver => (
+                  <ProfileChip
+                    key={receiver.id}
+                    displayName={receiver.displayName}
+                    avatarUrl={receiver.avatarUri}
+                    city={receiver.city}
+                    country={receiver.country}
+                  />
+                ))}
+              </GridContainer>
+              <FormikInputField
+                name="message"
+                title={t('messaging.message')}
+                placeholder={t('messaging.message')}
+                multiline
+                rows={5}
+                onFocus={() => setMessageSent(false)}
+                maxLength={LONG_TEXT_LENGTH}
+              />
+              <Caption>{t('share-dialog.warning')}</Caption>
+            </DialogContent>
+            <DialogActions>
+              {isMessageSent && (
+                <Alert severity="info" sx={{ marginRight: 'auto' }}>
+                  {t('messaging.successfully-sent')}
+                </Alert>
+              )}
+              <SendButton loading={isLoading} disabled={!isValid} onClick={() => handleSubmit()} />
+            </DialogActions>
+          </>
+        )}
+      </Formik>
+    </DialogWithGrid>
   );
 };
