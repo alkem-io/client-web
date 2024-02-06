@@ -51,8 +51,7 @@ const LinkCollectionCallout = forwardRef<HTMLDivElement, LinkCollectionCalloutPr
     const closeEditDialog = () => setEditReference(undefined);
 
     const calloutPrivileges = callout?.authorization?.myPrivileges ?? [];
-    const canAddLinks = calloutPrivileges.includes(AuthorizationPrivilege.Update);
-    const canEditLinks = calloutPrivileges.includes(AuthorizationPrivilege.Update);
+    const canAddLinks = calloutPrivileges.includes(AuthorizationPrivilege.Contribute);
     const canDeleteLinks = calloutPrivileges.includes(AuthorizationPrivilege.Update);
 
     // New References:
@@ -179,7 +178,6 @@ const LinkCollectionCallout = forwardRef<HTMLDivElement, LinkCollectionCalloutPr
             <References
               references={expanded ? links : limitedReferences}
               noItemsView={<CaptionSmall>{t('callout.link-collection.no-links-yet')}</CaptionSmall>}
-              canEdit={canEditLinks}
               onEdit={ref => setEditReference(ref)}
             />
             <Box

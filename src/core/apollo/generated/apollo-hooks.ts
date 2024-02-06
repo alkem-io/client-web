@@ -544,6 +544,18 @@ export const WhiteboardRtDetailsFragmentDoc = gql`
   }
   ${WhiteboardProfileFragmentDoc}
 `;
+export const ReferenceDetailsWithAuthorizationFragmentDoc = gql`
+  fragment ReferenceDetailsWithAuthorization on Reference {
+    id
+    name
+    uri
+    description
+    authorization {
+      id
+      myPrivileges
+    }
+  }
+`;
 export const ReactionDetailsFragmentDoc = gql`
   fragment ReactionDetails on Reaction {
     id
@@ -654,7 +666,7 @@ export const CalloutFragmentDoc = gql`
         ...WhiteboardDetails
       }
       link {
-        ...ReferenceDetails
+        ...ReferenceDetailsWithAuthorization
       }
     }
     comments {
@@ -670,6 +682,7 @@ export const CalloutFragmentDoc = gql`
   ${ReferenceDetailsFragmentDoc}
   ${WhiteboardDetailsFragmentDoc}
   ${WhiteboardRtDetailsFragmentDoc}
+  ${ReferenceDetailsWithAuthorizationFragmentDoc}
   ${CommentsWithMessagesFragmentDoc}
 `;
 export const CollaborationWithCalloutsFragmentDoc = gql`

@@ -1,4 +1,4 @@
-import { TagsetType } from '../../../core/apollo/generated/graphql-schema';
+import { Authorization, TagsetType } from '../../../core/apollo/generated/graphql-schema';
 
 export interface Tagset {
   id?: string;
@@ -18,4 +18,12 @@ export interface Reference {
   name: string;
   uri: string;
   description?: string;
+}
+
+export interface ReferenceWithAuthorization {
+  id: string;
+  name: string;
+  uri: string;
+  description?: string;
+  authorization?: Partial<Authorization>;
 }
