@@ -6321,6 +6321,13 @@ export type CalloutPageCalloutQuery = {
                             name: string;
                             uri: string;
                             description?: string | undefined;
+                            authorization?:
+                              | {
+                                  __typename?: 'Authorization';
+                                  id: string;
+                                  myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                                }
+                              | undefined;
                           }
                         | undefined;
                     }>
@@ -6745,6 +6752,13 @@ export type CalloutPageCalloutQuery = {
                               name: string;
                               uri: string;
                               description?: string | undefined;
+                              authorization?:
+                                | {
+                                    __typename?: 'Authorization';
+                                    id: string;
+                                    myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                                  }
+                                | undefined;
                             }
                           | undefined;
                       }>
@@ -7172,6 +7186,13 @@ export type CalloutPageCalloutQuery = {
                               name: string;
                               uri: string;
                               description?: string | undefined;
+                              authorization?:
+                                | {
+                                    __typename?: 'Authorization';
+                                    id: string;
+                                    myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                                  }
+                                | undefined;
                             }
                           | undefined;
                       }>
@@ -10679,7 +10700,20 @@ export type CreateCalloutMutation = {
               }
             | undefined;
           link?:
-            | { __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }
+            | {
+                __typename?: 'Reference';
+                id: string;
+                name: string;
+                uri: string;
+                description?: string | undefined;
+                authorization?:
+                  | {
+                      __typename?: 'Authorization';
+                      id: string;
+                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                    }
+                  | undefined;
+              }
             | undefined;
         }>
       | undefined;
@@ -11438,6 +11472,13 @@ export type CalloutsQuery = {
                             name: string;
                             uri: string;
                             description?: string | undefined;
+                            authorization?:
+                              | {
+                                  __typename?: 'Authorization';
+                                  id: string;
+                                  myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                                }
+                              | undefined;
                           }
                         | undefined;
                     }>
@@ -11866,6 +11907,13 @@ export type CalloutsQuery = {
                               name: string;
                               uri: string;
                               description?: string | undefined;
+                              authorization?:
+                                | {
+                                    __typename?: 'Authorization';
+                                    id: string;
+                                    myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                                  }
+                                | undefined;
                             }
                           | undefined;
                       }>
@@ -12297,6 +12345,13 @@ export type CalloutsQuery = {
                               name: string;
                               uri: string;
                               description?: string | undefined;
+                              authorization?:
+                                | {
+                                    __typename?: 'Authorization';
+                                    id: string;
+                                    myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                                  }
+                                | undefined;
                             }
                           | undefined;
                       }>
@@ -12710,7 +12765,20 @@ export type CollaborationWithCalloutsFragment = {
                   }
                 | undefined;
               link?:
-                | { __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }
+                | {
+                    __typename?: 'Reference';
+                    id: string;
+                    name: string;
+                    uri: string;
+                    description?: string | undefined;
+                    authorization?:
+                      | {
+                          __typename?: 'Authorization';
+                          id: string;
+                          myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                        }
+                      | undefined;
+                  }
                 | undefined;
             }>
           | undefined;
@@ -13098,7 +13166,16 @@ export type CalloutFragment = {
             }
           | undefined;
         link?:
-          | { __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }
+          | {
+              __typename?: 'Reference';
+              id: string;
+              name: string;
+              uri: string;
+              description?: string | undefined;
+              authorization?:
+                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                | undefined;
+            }
           | undefined;
       }>
     | undefined;
@@ -16695,6 +16772,17 @@ export type ReferenceDetailsFragment = {
   name: string;
   uri: string;
   description?: string | undefined;
+};
+
+export type ReferenceDetailsWithAuthorizationFragment = {
+  __typename?: 'Reference';
+  id: string;
+  name: string;
+  uri: string;
+  description?: string | undefined;
+  authorization?:
+    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+    | undefined;
 };
 
 export type CreateTagsetOnProfileMutationVariables = Exact<{
