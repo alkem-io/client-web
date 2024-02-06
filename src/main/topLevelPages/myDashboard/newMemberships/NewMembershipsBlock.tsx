@@ -9,7 +9,10 @@ import {
 } from '../../../../domain/community/pendingMembership/PendingMemberships';
 import InvitationCardHorizontal from '../../../../domain/community/invitations/InvitationCardHorizontal/InvitationCardHorizontal';
 import React, { useMemo, useState } from 'react';
-import { useNewMembershipsQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import {
+  useLatestContributionsSpacesQuery,
+  useNewMembershipsQuery,
+} from '../../../../core/apollo/generated/apollo-hooks';
 import { groupBy, sortBy } from 'lodash';
 import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
@@ -78,12 +81,15 @@ const RECENT_MEMBERSHIP_STATES = ['approved', 'accepted'];
 
 interface NewMembershipsBlockProps {
   onOpenMemberships?: () => void;
+  halfWidth?: boolean;
 }
 
-const NewMembershipsBlock = ({ onOpenMemberships }: NewMembershipsBlockProps) => {
+const NewMembershipsBlock = ({ onOpenMemberships, halfWidth = false }: NewMembershipsBlockProps) => {
   const { t } = useTranslation();
 
   const { data } = useNewMembershipsQuery();
+  const { data: spacesData } = useLatestContributionsSpacesQuery();
+  const hasSpaceMemberships = !!spacesData?.me.spaceMemberships.length ?? false;
 
   const invitations = useMemo(
     () =>
@@ -175,9 +181,11 @@ const NewMembershipsBlock = ({ onOpenMemberships }: NewMembershipsBlockProps) =>
     </>
   );
 
+  if (!hasSpaceMemberships && pendingMemberships.length === 0) return null;
+
   return (
     <>
-      <PageContentBlock halfWidth>
+      <PageContentBlock halfWidth={halfWidth}>
         <PageContentBlockHeader title={blockHeader} />
         {pendingMemberships.length > 0 && (
           <>
@@ -271,7 +279,9 @@ const NewMembershipsBlock = ({ onOpenMemberships }: NewMembershipsBlockProps) =>
             </Gutters>
           </>
         )}
-        <SeeMore label="pages.home.sections.newMemberships.seeMore" onClick={handleClickSeeMore} />
+        {hasSpaceMemberships && (
+          <SeeMore label="pages.home.sections.newMemberships.seeMore" onClick={handleClickSeeMore} />
+        )}
       </PageContentBlock>
       <DialogWithGrid columns={12} open={openDialog?.type === DialogType.PendingMembershipsList} onClose={closeDialog}>
         <DialogHeader

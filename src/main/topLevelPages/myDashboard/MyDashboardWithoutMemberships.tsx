@@ -8,10 +8,13 @@ import MembershipSuggestions from './membershipSuggestions/MembershipSuggestions
 import TipsAndTricks from './tipsAndTricks/TipsAndTricks';
 import ExploreOtherChallenges from './exploreOtherChallenges/ExploreOtherChallenges';
 import { useColumns } from '../../../core/ui/grid/GridContext';
+import NewMembershipsBlock from './newMemberships/NewMembershipsBlock';
 
-interface MyDashboardWithoutMembershipsProps {}
+interface MyDashboardWithoutMembershipsProps {
+  onOpenMembershipsDialog: () => void;
+}
 
-const MyDashboardWithoutMemberships: FC<MyDashboardWithoutMembershipsProps> = () => {
+const MyDashboardWithoutMemberships: FC<MyDashboardWithoutMembershipsProps> = ({ onOpenMembershipsDialog }) => {
   const columns = useColumns();
   return (
     <>
@@ -21,6 +24,7 @@ const MyDashboardWithoutMemberships: FC<MyDashboardWithoutMembershipsProps> = ()
         <StartingSpace width="100%" />
       </PageContentColumn>
       <PageContentColumn columns={columns === 12 ? 4 : 8} flexDirection="column" alignSelf="stretch">
+        <NewMembershipsBlock onOpenMemberships={() => onOpenMembershipsDialog()} />
         <TipsAndTricks />
         <InnovationLibraryBlock />
         <RecentForumMessages />

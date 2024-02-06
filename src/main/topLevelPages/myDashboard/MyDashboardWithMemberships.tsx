@@ -31,7 +31,7 @@ const MyDashboardWithMemberships: FC<MyDashboardWithMembershipsProps> = ({ space
         <RecentForumMessages />
       </PageContentColumn>
       <PageContentColumn columns={8}>
-        <NewMembershipsBlock onOpenMemberships={() => onOpenMembershipsDialog()} />
+        <NewMembershipsBlock halfWidth onOpenMemberships={() => onOpenMembershipsDialog()} />
         <MyLatestContributions />
         <TipsAndTricks halfWidth />
         <InnovationLibraryBlock halfWidth />
