@@ -13,7 +13,7 @@ import {
   LatestContributionsQuery,
   LatestContributionsQueryVariables,
 } from '../../../../core/apollo/generated/graphql-schema';
-import { Box, SelectChangeEvent, Skeleton, useTheme } from '@mui/material';
+import { Box, SelectChangeEvent, Skeleton, Theme, useMediaQuery, useTheme } from '@mui/material';
 import React, { forwardRef, useMemo, useState } from 'react';
 import SeamlessSelect from '../../../../core/ui/forms/select/SeamlessSelect';
 import { SelectOption } from '@mui/base';
@@ -57,6 +57,7 @@ interface LatestContributionsProps {
 
 const LatestContributions = ({ spaceMemberships }: LatestContributionsProps) => {
   const { t } = useTranslation();
+  const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('lg'));
 
   const [filter, setFilter] = useState<{
     space: string;
@@ -125,7 +126,7 @@ const LatestContributions = ({ spaceMemberships }: LatestContributionsProps) => 
   }, [t]);
 
   return (
-    <PageContentBlock sx={{ flexGrow: 1, flexShrink: 1, flexBasis: 0 }}>
+    <PageContentBlock sx={{ flexGrow: 1, flexShrink: 1, flexBasis: isMobile ? gutters(30) : 0 }}>
       <PageContentBlockHeader title={t('pages.home.sections.latestContributions.title')} />
       <Box display="flex" justifyContent="end" alignItems="center">
         <SeamlessSelect
