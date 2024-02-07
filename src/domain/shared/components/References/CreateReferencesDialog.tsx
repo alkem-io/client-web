@@ -153,7 +153,6 @@ const CreateReferencesDialog: FC<CreateReferencesDialogProps> = ({
                               name={`${fieldName}.${index}.uri`}
                               title={t('common.url')}
                               fullWidth
-                              referenceID={reference.id}
                               helperText={tLinks('components.referenceSegment.url-helper-text', {
                                 terms: {
                                   href: locations?.terms,

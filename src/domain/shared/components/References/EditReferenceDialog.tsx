@@ -76,12 +76,7 @@ const EditReferenceDialog: FC<EditReferenceDialogProps> = ({
                   <Gutters row={!isMobile} disablePadding alignItems="start">
                     <FormikInputField name={'name'} title={t('common.title')} fullWidth={isMobile} />
                     <Box flexGrow={1} width={isMobile ? '100%' : undefined}>
-                      <FormikFileInput
-                        name={'uri'}
-                        title={t('common.url')}
-                        sx={{ flexGrow: 1 }}
-                        referenceID={values.id}
-                      />
+                      <FormikFileInput name={'uri'} title={t('common.url')} sx={{ flexGrow: 1 }} />
                     </Box>
                   </Gutters>
                   <Box>
