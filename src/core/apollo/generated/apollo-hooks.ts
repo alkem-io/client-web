@@ -544,12 +544,15 @@ export const WhiteboardRtDetailsFragmentDoc = gql`
   }
   ${WhiteboardProfileFragmentDoc}
 `;
-export const ReferenceDetailsWithAuthorizationFragmentDoc = gql`
-  fragment ReferenceDetailsWithAuthorization on Reference {
+export const LinkDetailsWithAuthorizationFragmentDoc = gql`
+  fragment LinkDetailsWithAuthorization on Link {
     id
-    name
     uri
-    description
+    profile {
+      id
+      displayName
+      description
+    }
     authorization {
       id
       myPrivileges
@@ -666,7 +669,7 @@ export const CalloutFragmentDoc = gql`
         ...WhiteboardDetails
       }
       link {
-        ...ReferenceDetailsWithAuthorization
+        ...LinkDetailsWithAuthorization
       }
     }
     comments {
@@ -682,7 +685,7 @@ export const CalloutFragmentDoc = gql`
   ${ReferenceDetailsFragmentDoc}
   ${WhiteboardDetailsFragmentDoc}
   ${WhiteboardRtDetailsFragmentDoc}
-  ${ReferenceDetailsWithAuthorizationFragmentDoc}
+  ${LinkDetailsWithAuthorizationFragmentDoc}
   ${CommentsWithMessagesFragmentDoc}
 `;
 export const CollaborationWithCalloutsFragmentDoc = gql`
@@ -1068,6 +1071,17 @@ export const CollaborationWithWhiteboardDetailsFragmentDoc = gql`
   }
   ${WhiteboardDetailsFragmentDoc}
   ${WhiteboardRtDetailsFragmentDoc}
+`;
+export const LinkDetailsFragmentDoc = gql`
+  fragment LinkDetails on Link {
+    id
+    uri
+    profile {
+      id
+      displayName
+      description
+    }
+  }
 `;
 export const DiscussionDetailsFragmentDoc = gql`
   fragment DiscussionDetails on Discussion {
@@ -7065,11 +7079,11 @@ export const CreateLinkOnCalloutDocument = gql`
   mutation createLinkOnCallout($input: CreateContributionOnCalloutInput!) {
     createContributionOnCallout(contributionData: $input) {
       link {
-        ...ReferenceDetails
+        ...LinkDetails
       }
     }
   }
-  ${ReferenceDetailsFragmentDoc}
+  ${LinkDetailsFragmentDoc}
 `;
 export type CreateLinkOnCalloutMutationFn = Apollo.MutationFunction<
   SchemaTypes.CreateLinkOnCalloutMutation,
@@ -7112,54 +7126,96 @@ export type CreateLinkOnCalloutMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateLinkOnCalloutMutation,
   SchemaTypes.CreateLinkOnCalloutMutationVariables
 >;
-export const UpdateReferenceDocument = gql`
-  mutation updateReference($input: UpdateReferenceInput!) {
-    updateReference(referenceData: $input) {
-      ...ReferenceDetails
+export const DeleteLinkDocument = gql`
+  mutation deleteLink($input: DeleteLinkInput!) {
+    deleteLink(deleteData: $input) {
+      id
     }
   }
-  ${ReferenceDetailsFragmentDoc}
 `;
-export type UpdateReferenceMutationFn = Apollo.MutationFunction<
-  SchemaTypes.UpdateReferenceMutation,
-  SchemaTypes.UpdateReferenceMutationVariables
+export type DeleteLinkMutationFn = Apollo.MutationFunction<
+  SchemaTypes.DeleteLinkMutation,
+  SchemaTypes.DeleteLinkMutationVariables
 >;
 
 /**
- * __useUpdateReferenceMutation__
+ * __useDeleteLinkMutation__
  *
- * To run a mutation, you first call `useUpdateReferenceMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateReferenceMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useDeleteLinkMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteLinkMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [updateReferenceMutation, { data, loading, error }] = useUpdateReferenceMutation({
+ * const [deleteLinkMutation, { data, loading, error }] = useDeleteLinkMutation({
  *   variables: {
  *      input: // value for 'input'
  *   },
  * });
  */
-export function useUpdateReferenceMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.UpdateReferenceMutation,
-    SchemaTypes.UpdateReferenceMutationVariables
-  >
+export function useDeleteLinkMutation(
+  baseOptions?: Apollo.MutationHookOptions<SchemaTypes.DeleteLinkMutation, SchemaTypes.DeleteLinkMutationVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.UpdateReferenceMutation, SchemaTypes.UpdateReferenceMutationVariables>(
-    UpdateReferenceDocument,
+  return Apollo.useMutation<SchemaTypes.DeleteLinkMutation, SchemaTypes.DeleteLinkMutationVariables>(
+    DeleteLinkDocument,
     options
   );
 }
 
-export type UpdateReferenceMutationHookResult = ReturnType<typeof useUpdateReferenceMutation>;
-export type UpdateReferenceMutationResult = Apollo.MutationResult<SchemaTypes.UpdateReferenceMutation>;
-export type UpdateReferenceMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.UpdateReferenceMutation,
-  SchemaTypes.UpdateReferenceMutationVariables
+export type DeleteLinkMutationHookResult = ReturnType<typeof useDeleteLinkMutation>;
+export type DeleteLinkMutationResult = Apollo.MutationResult<SchemaTypes.DeleteLinkMutation>;
+export type DeleteLinkMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.DeleteLinkMutation,
+  SchemaTypes.DeleteLinkMutationVariables
+>;
+export const UpdateLinkDocument = gql`
+  mutation updateLink($input: UpdateLinkInput!) {
+    updateLink(linkData: $input) {
+      ...LinkDetails
+    }
+  }
+  ${LinkDetailsFragmentDoc}
+`;
+export type UpdateLinkMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateLinkMutation,
+  SchemaTypes.UpdateLinkMutationVariables
+>;
+
+/**
+ * __useUpdateLinkMutation__
+ *
+ * To run a mutation, you first call `useUpdateLinkMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateLinkMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateLinkMutation, { data, loading, error }] = useUpdateLinkMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateLinkMutation(
+  baseOptions?: Apollo.MutationHookOptions<SchemaTypes.UpdateLinkMutation, SchemaTypes.UpdateLinkMutationVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.UpdateLinkMutation, SchemaTypes.UpdateLinkMutationVariables>(
+    UpdateLinkDocument,
+    options
+  );
+}
+
+export type UpdateLinkMutationHookResult = ReturnType<typeof useUpdateLinkMutation>;
+export type UpdateLinkMutationResult = Apollo.MutationResult<SchemaTypes.UpdateLinkMutation>;
+export type UpdateLinkMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateLinkMutation,
+  SchemaTypes.UpdateLinkMutationVariables
 >;
 export const CalloutPostCreatedDocument = gql`
   subscription CalloutPostCreated($calloutId: UUID!) {

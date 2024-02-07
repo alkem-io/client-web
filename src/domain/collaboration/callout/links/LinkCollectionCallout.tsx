@@ -13,8 +13,8 @@ import CreateReferencesDialog, {
 import { Box, IconButton, Link } from '@mui/material';
 import {
   useCreateLinkOnCalloutMutation,
-  useDeleteReferenceMutation,
-  useUpdateReferenceMutation,
+  useDeleteLinkMutation,
+  useUpdateLinkMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import AddIcon from '@mui/icons-material/Add';
 import References from '../../../shared/components/References/References';
@@ -28,6 +28,18 @@ import { compact } from 'lodash';
 
 const MAX_LINKS_NORMALVIEW = 3;
 
+export interface LinkDetails {
+  id: string;
+  uri: string;
+  profile: {
+    displayName: string;
+    description?: string;
+  };
+  authorization?: {
+    myPrivileges: AuthorizationPrivilege[];
+  };
+}
+
 interface LinkCollectionCalloutProps extends BaseCalloutViewProps {
   callout: CalloutLayoutProps['callout'];
   calloutNames: string[];
@@ -40,12 +52,12 @@ const LinkCollectionCallout = forwardRef<HTMLDivElement, LinkCollectionCalloutPr
   ) => {
     const { t } = useTranslation();
     const [createLinkOnCallout] = useCreateLinkOnCalloutMutation();
-    const [updateReference] = useUpdateReferenceMutation();
-    const [deleteReference] = useDeleteReferenceMutation();
+    const [updateLink] = useUpdateLinkMutation();
+    const [deleteLink] = useDeleteLinkMutation();
 
     const [addNewReferenceDialogOpen, setAddNewReferenceDialogOpen] = useState<boolean>(false);
     const [editReference, setEditReference] = useState<EditReferenceFormValues>();
-    const [deletingReferenceId, setDeletingReferenceId] = useState<string>();
+    const [deletingLinkId, setDeletingLinkId] = useState<string>();
 
     const closeAddNewDialog = () => setAddNewReferenceDialogOpen(false);
     const closeEditDialog = () => setEditReference(undefined);
@@ -57,19 +69,20 @@ const LinkCollectionCallout = forwardRef<HTMLDivElement, LinkCollectionCalloutPr
     const canAddLinks = isContributionAllowed || calloutPrivileges.includes(AuthorizationPrivilege.Update);
     const canDeleteLinks = calloutPrivileges.includes(AuthorizationPrivilege.Update);
 
-    // New References:
-    const getNewReferenceId = useCallback(async () => {
+    // New Links:
+    const getNewLinkId = useCallback(async () => {
       const { data } = await createLinkOnCallout({
         variables: {
           input: {
             calloutID: callout.id,
             link: {
-              // References names have to be unique, if everything goes well this name will never be shown:
-              name: t('callout.link-collection.new-temporary-reference', {
-                temp: nanoid(4),
-              }),
-              description: '',
               uri: '',
+              profile: {
+                // Link names have to be unique, if everything goes well this name will never be shown:
+                displayName: t('callout.link-collection.new-temporary-reference', {
+                  temp: nanoid(4),
+                }),
+              },
             },
           },
         },
@@ -80,26 +93,29 @@ const LinkCollectionCallout = forwardRef<HTMLDivElement, LinkCollectionCalloutPr
       return data.createContributionOnCallout.link?.id;
     }, [createLinkOnCallout, callout]);
 
-    const removeNewReference = (referenceId: string) =>
-      deleteReference({
+    const removeNewLink = (linkId: string) =>
+      deleteLink({
         variables: {
           input: {
-            ID: referenceId,
+            ID: linkId,
           },
         },
-        update: (cache, { data }) =>
-          data?.deleteReference && evictFromCache(cache, data.deleteReference.id, 'Reference'),
+        update: (cache, { data }) => data?.deleteLink && evictFromCache(cache, data.deleteLink.id, 'Link'),
       });
 
     const handleSaveNewLinks = useCallback(
       async (references: CreateReferenceFormValues[]) => {
         await Promise.all(
-          references.map(({ id, ...rest }) =>
-            updateReference({
+          references.map(reference =>
+            updateLink({
               variables: {
                 input: {
-                  ID: id,
-                  ...rest,
+                  ID: reference.id,
+                  uri: reference.uri,
+                  profile: {
+                    displayName: reference.name,
+                    description: reference.description,
+                  },
                 },
               },
             })
@@ -109,47 +125,58 @@ const LinkCollectionCallout = forwardRef<HTMLDivElement, LinkCollectionCalloutPr
         onCalloutUpdate?.();
         closeAddNewDialog();
       },
-      [updateReference, closeAddNewDialog, onCalloutUpdate, callout]
+      [updateLink, closeAddNewDialog, onCalloutUpdate, callout]
     );
 
-    // Edit existing References:
+    // Edit existing Links:
     const handleEditLink = useCallback(
-      async ({ id, ...rest }: EditReferenceFormValues) => {
-        await updateReference({
+      async (reference: EditReferenceFormValues) => {
+        await updateLink({
           variables: {
             input: {
-              ID: id,
-              ...rest,
+              ID: reference.id,
+              uri: reference.uri,
+              profile: {
+                displayName: reference.name,
+                description: reference.description,
+              },
             },
           },
         });
         onCalloutUpdate?.();
         closeEditDialog();
       },
-      [closeEditDialog, onCalloutUpdate, updateReference, callout]
+      [closeEditDialog, onCalloutUpdate, updateLink, callout]
     );
 
     const handleDeleteLink = useCallback(async () => {
-      if (!deletingReferenceId) {
+      if (!deletingLinkId) {
         return;
       }
-      await deleteReference({
+      await deleteLink({
         variables: {
           input: {
-            ID: deletingReferenceId,
+            ID: deletingLinkId,
           },
         },
       });
       onCalloutUpdate?.();
-      setDeletingReferenceId(undefined);
+      setDeletingLinkId(undefined);
       closeEditDialog();
-    }, [deletingReferenceId, closeEditDialog, setDeletingReferenceId, onCalloutUpdate, deleteReference, callout]);
+    }, [deletingLinkId, closeEditDialog, setDeletingLinkId, onCalloutUpdate, deleteLink, callout]);
 
-    const links = useMemo(() => compact(callout.contributions?.map(contribution => contribution.link)), [callout]);
-    const limitedLinks = useMemo(
-      () => compact(callout.contributions?.map(contribution => contribution.link))?.slice(0, MAX_LINKS_NORMALVIEW),
+    const referencesFromLinks = useMemo(
+      () =>
+        compact(callout.contributions?.map(contribution => contribution.link)).map(link => ({
+          id: link.id,
+          uri: link.uri,
+          name: link.profile.displayName,
+          description: link.profile.description,
+          authorization: link.authorization,
+        })),
       [callout]
     );
+    const limitedLinks = useMemo(() => referencesFromLinks?.slice(0, MAX_LINKS_NORMALVIEW), [callout]);
     const isListTruncated = useMemo(
       () =>
         (compact(callout.contributions?.map(contribution => contribution.link))?.length ?? 0) > MAX_LINKS_NORMALVIEW,
@@ -177,7 +204,7 @@ const LinkCollectionCallout = forwardRef<HTMLDivElement, LinkCollectionCalloutPr
             disableMarginal
           >
             <References
-              references={expanded ? links : limitedLinks}
+              references={expanded ? referencesFromLinks : limitedLinks}
               noItemsView={<CaptionSmall>{t('callout.link-collection.no-links-yet')}</CaptionSmall>}
               onEdit={ref => setEditReference(ref)}
             />
@@ -188,7 +215,7 @@ const LinkCollectionCallout = forwardRef<HTMLDivElement, LinkCollectionCalloutPr
             >
               {isListTruncated && !expanded && (
                 <Caption component={Link} onClick={onExpand} sx={{ cursor: 'pointer' }}>
-                  {t('callout.link-collection.more-links', { count: links.length })}
+                  {t('callout.link-collection.more-links', { count: referencesFromLinks.length })}
                 </Caption>
               )}
               {canAddLinks && (
@@ -205,8 +232,8 @@ const LinkCollectionCallout = forwardRef<HTMLDivElement, LinkCollectionCalloutPr
               open={addNewReferenceDialogOpen}
               title={<Box>{t('callout.link-collection.add-link', { title: callout.framing.profile.displayName })}</Box>}
               onClose={closeAddNewDialog}
-              onAddMore={getNewReferenceId}
-              onRemove={removeNewReference}
+              onAddMore={getNewLinkId}
+              onRemove={removeNewLink}
               onSave={handleSaveNewLinks}
             />
             <EditReferenceDialog
@@ -216,15 +243,15 @@ const LinkCollectionCallout = forwardRef<HTMLDivElement, LinkCollectionCalloutPr
               reference={editReference!}
               onSave={values => handleEditLink(values)}
               canDelete={canDeleteLinks}
-              onDelete={() => setDeletingReferenceId(editReference?.id)}
+              onDelete={() => setDeletingLinkId(editReference?.id)}
             />
             <ConfirmationDialog
               actions={{
                 onConfirm: handleDeleteLink,
-                onCancel: () => setDeletingReferenceId(undefined),
+                onCancel: () => setDeletingLinkId(undefined),
               }}
               options={{
-                show: Boolean(deletingReferenceId),
+                show: Boolean(deletingLinkId),
               }}
               entities={{
                 titleId: 'callout.link-collection.delete-confirm-title',
