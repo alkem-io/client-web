@@ -289,6 +289,7 @@ class Collab extends PureComponent<Props, CollabState> {
           }
 
           case WS_SCENE_EVENT_TYPES.UPDATE: {
+            console.log('Received update', decryptedData.payload.elements);
             this.handleRemoteSceneUpdate(this.reconcileElements(decryptedData.payload.elements));
             break;
           }

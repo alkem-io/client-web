@@ -141,6 +141,7 @@ class Portal {
     for (const syncableElement of syncableElements) {
       this.broadcastedElementVersions.set(syncableElement.id, syncableElement.version);
     }
+    console.log('Broadcasting my changes', data);
 
     this._broadcastSocketData(data as SocketUpdateData);
   };
