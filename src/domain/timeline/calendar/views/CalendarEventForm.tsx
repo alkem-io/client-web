@@ -154,7 +154,6 @@ const CalendarEventForm = ({
             <Actions justifyContent="space-between" padding={gutters()}>
               {actions}
               <LoadingButton
-                type="submit"
                 variant="contained"
                 disabled={!isValid}
                 loading={isSubmitting}

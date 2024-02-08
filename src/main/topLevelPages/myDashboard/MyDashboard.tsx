@@ -42,7 +42,7 @@ export const MyDashboard = () => {
         </PageContent>
       ) : (
         <PageContent gridContainerProps={{ flexDirection: 'row' }}>
-          <MyDashboardWithoutMemberships />
+          <MyDashboardWithoutMemberships onOpenMembershipsDialog={() => setIsMyMembershipsDialogOpen(true)} />
         </PageContent>
       )}
     </HomePageLayout>

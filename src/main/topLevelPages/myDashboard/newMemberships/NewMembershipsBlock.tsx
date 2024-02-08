@@ -10,7 +10,7 @@ import {
 import InvitationCardHorizontal from '../../../../domain/community/invitations/InvitationCardHorizontal/InvitationCardHorizontal';
 import React, { useMemo, useState } from 'react';
 import { useNewMembershipsQuery } from '../../../../core/apollo/generated/apollo-hooks';
-import { groupBy, sortBy } from 'lodash';
+import { sortBy } from 'lodash';
 import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import Gutters from '../../../../core/ui/grid/Gutters';
@@ -77,13 +77,19 @@ export const mapApiDataToContributionItem = <Incoming extends JourneyLocationApi
 const RECENT_MEMBERSHIP_STATES = ['approved', 'accepted'];
 
 interface NewMembershipsBlockProps {
+  halfWidth?: boolean;
+  hiddenIfEmpty?: boolean;
   onOpenMemberships?: () => void;
 }
 
-const NewMembershipsBlock = ({ onOpenMemberships }: NewMembershipsBlockProps) => {
+const NewMembershipsBlock = ({
+  halfWidth = false,
+  hiddenIfEmpty = false,
+  onOpenMemberships,
+}: NewMembershipsBlockProps) => {
   const { t } = useTranslation();
 
-  const { data } = useNewMembershipsQuery();
+  const { data, refetch: refetchNewMembershipsQuery } = useNewMembershipsQuery();
 
   const invitations = useMemo(
     () =>
@@ -95,6 +101,15 @@ const NewMembershipsBlock = ({ onOpenMemberships }: NewMembershipsBlockProps) =>
           } as const)
       ) ?? [],
     [data?.me.invitations]
+  );
+
+  const pendingInvitations = useMemo(
+    () =>
+      sortBy(
+        invitations.filter(invitation => !RECENT_MEMBERSHIP_STATES.includes(invitation.state)),
+        ({ createdDate }) => createdDate
+      ).reverse(),
+    [invitations]
   );
 
   const applications = useMemo(
@@ -109,20 +124,27 @@ const NewMembershipsBlock = ({ onOpenMemberships }: NewMembershipsBlockProps) =>
     [data?.me.applications]
   );
 
-  const { approvedMemberships: _approvedMemberships, pendingMemberships: _pendingMemberships } = useMemo(
+  const pendingApplications = useMemo(
     () =>
-      groupBy([...invitations, ...applications], ({ state }) =>
-        RECENT_MEMBERSHIP_STATES.includes(state) ? 'approvedMemberships' : 'pendingMemberships'
-      ),
-    [invitations, applications]
-  );
-
-  const pendingMemberships = useMemo(
-    () =>
-      sortBy(_pendingMemberships, ({ createdDate }) => createdDate)
+      sortBy(
+        applications.filter(invitation => !RECENT_MEMBERSHIP_STATES.includes(invitation.state)),
+        ({ createdDate }) => createdDate
+      )
         .reverse()
-        .slice(0, PENDING_MEMBERSHIPS_MAX_ITEMS),
-    [_pendingMemberships]
+        .slice(0, Math.max(0, PENDING_MEMBERSHIPS_MAX_ITEMS - pendingInvitations.length)),
+    [applications]
+  );
+  const pendingMembershipsCount = pendingInvitations.length + pendingApplications.length;
+
+  const recentMemberships = useMemo(
+    () =>
+      sortBy(
+        [...invitations, ...applications].filter(({ state }) => RECENT_MEMBERSHIP_STATES.includes(state)),
+        ({ createdDate }) => createdDate
+      )
+        .reverse()
+        .slice(0, Math.max(0, PENDING_MEMBERSHIPS_MAX_ITEMS - pendingMembershipsCount - 1)),
+    [invitations, applications]
   );
 
   const [openDialog, setOpenDialog] = useState<PendingMembershipsListDialogDetails | InvitationViewDialogDetails>();
@@ -150,128 +172,112 @@ const NewMembershipsBlock = ({ onOpenMemberships }: NewMembershipsBlockProps) =>
     });
   };
 
-  const approvedMemberships = useMemo(
-    () =>
-      pendingMemberships.length < PENDING_MEMBERSHIPS_MAX_ITEMS - 1
-        ? sortBy(_approvedMemberships, ({ createdDate }) => createdDate)
-            .reverse()
-            .slice(0, PENDING_MEMBERSHIPS_MAX_ITEMS - 1 - pendingMemberships.length)
-        : [],
-    [_approvedMemberships, pendingMemberships]
-  );
-
-  const handleClickSeeMore = () => {
-    if (approvedMemberships.length > 0) {
-      onOpenMemberships?.();
-    } else {
-      setOpenDialog({ type: DialogType.PendingMembershipsList });
-    }
-  };
-
-  const blockHeader = (
-    <>
-      {t('pages.home.sections.newMemberships.title')}
-      {pendingMemberships.length > 0 && <BadgeCounter count={pendingMemberships.length} />}
-    </>
-  );
+  if (pendingMembershipsCount === 0 && hiddenIfEmpty) {
+    return null;
+  }
 
   return (
     <>
-      <PageContentBlock halfWidth>
-        <PageContentBlockHeader title={blockHeader} />
-        {pendingMemberships.length > 0 && (
+      <PageContentBlock halfWidth={halfWidth}>
+        <PageContentBlockHeader title={t('pages.home.sections.newMemberships.title')} />
+        {pendingInvitations.length > 0 && (
           <>
-            <Caption marginTop={gutters(-1)}>{t('pages.home.sections.newMemberships.openMemberships')}</Caption>
-            <Gutters disablePadding>
-              {pendingMemberships.map(pendingMembership => {
-                switch (pendingMembership.type) {
-                  case PendingMembershipItemType.Invitation:
-                    return (
-                      <InvitationHydrator
-                        key={pendingMembership.id}
-                        invitation={mapApiDataToContributionItem(pendingMembership)}
-                        withJourneyDetails
-                        visualType={VisualType.Avatar}
-                      >
-                        {({ invitation }) => (
-                          <NewMembershipCard
-                            membership={invitation}
-                            onClick={() => invitation && handleInvitationCardClick(invitation, 'card')}
-                            membershipType="invitation"
-                          />
-                        )}
-                      </InvitationHydrator>
-                    );
-                  case PendingMembershipItemType.Application:
-                    return (
-                      <ApplicationHydrator
-                        key={pendingMembership.id}
-                        application={mapApiDataToContributionItem(pendingMembership)}
-                        visualType={VisualType.Avatar}
-                      >
-                        {({ application: hydratedApplication }) => (
-                          <NewMembershipCard
-                            membership={hydratedApplication}
-                            to={hydratedApplication?.journeyUri ?? ''}
-                            membershipType="application"
-                          />
-                        )}
-                      </ApplicationHydrator>
-                    );
-                  default:
-                    return null;
-                }
-              })}
-            </Gutters>
+            <Caption marginTop={gutters(-1)}>
+              {t('pages.home.sections.newMemberships.openInvitations')}
+              <BadgeCounter count={pendingInvitations.length} size="small" />
+            </Caption>
+            {pendingInvitations.slice(0, PENDING_MEMBERSHIPS_MAX_ITEMS).map(pendingInvitation => (
+              <InvitationHydrator
+                key={pendingInvitation.id}
+                invitation={mapApiDataToContributionItem(pendingInvitation)}
+                withJourneyDetails
+                visualType={VisualType.Avatar}
+              >
+                {({ invitation }) => (
+                  <NewMembershipCard
+                    membership={invitation}
+                    onClick={() => invitation && handleInvitationCardClick(invitation, 'card')}
+                    membershipType="invitation"
+                  />
+                )}
+              </InvitationHydrator>
+            ))}
           </>
         )}
-        {approvedMemberships.length > 0 && (
+        {pendingApplications.length > 0 && (
+          <>
+            <Caption marginTop={pendingInvitations.length === 0 ? gutters(-1) : undefined}>
+              {t('pages.home.sections.newMemberships.openApplications')}
+            </Caption>
+            {pendingApplications.map(pendingApplication => (
+              <ApplicationHydrator
+                key={pendingApplication.id}
+                application={mapApiDataToContributionItem(pendingApplication)}
+                visualType={VisualType.Avatar}
+              >
+                {({ application: hydratedApplication }) => (
+                  <NewMembershipCard
+                    membership={hydratedApplication}
+                    to={hydratedApplication?.journeyUri ?? ''}
+                    membershipType="application"
+                  />
+                )}
+              </ApplicationHydrator>
+            ))}
+          </>
+        )}
+        {recentMemberships.length > 0 && (
           <>
             <Caption>{t('pages.home.sections.newMemberships.recentlyJoined')}</Caption>
-            <Gutters disablePadding>
-              {approvedMemberships.map(membership => {
-                switch (membership.type) {
-                  case PendingMembershipItemType.Invitation:
-                    return (
-                      <InvitationHydrator
-                        key={membership.id}
-                        invitation={mapApiDataToContributionItem(membership)}
-                        withJourneyDetails
-                        visualType={VisualType.Avatar}
-                      >
-                        {({ invitation }) => (
-                          <NewMembershipCard
-                            membership={invitation}
-                            to={invitation?.journeyUri}
-                            membershipType="membership"
-                          />
-                        )}
-                      </InvitationHydrator>
-                    );
-                  case PendingMembershipItemType.Application:
-                    return (
-                      <ApplicationHydrator
-                        key={membership.id}
-                        application={mapApiDataToContributionItem(membership)}
-                        visualType={VisualType.Avatar}
-                      >
-                        {({ application: hydratedApplication }) => (
-                          <NewMembershipCard
-                            membership={hydratedApplication}
-                            to={hydratedApplication?.journeyUri}
-                            membershipType="membership"
-                          />
-                        )}
-                      </ApplicationHydrator>
-                    );
-                  default:
-                    return null;
-                }
-              })}
-            </Gutters>
+            {recentMemberships.map(membership => {
+              switch (membership.type) {
+                case PendingMembershipItemType.Invitation:
+                  return (
+                    <InvitationHydrator
+                      key={membership.id}
+                      invitation={mapApiDataToContributionItem(membership)}
+                      withJourneyDetails
+                      visualType={VisualType.Avatar}
+                    >
+                      {({ invitation }) => (
+                        <NewMembershipCard
+                          membership={invitation}
+                          to={invitation?.journeyUri}
+                          membershipType="membership"
+                        />
+                      )}
+                    </InvitationHydrator>
+                  );
+                case PendingMembershipItemType.Application:
+                  return (
+                    <ApplicationHydrator
+                      key={membership.id}
+                      application={mapApiDataToContributionItem(membership)}
+                      visualType={VisualType.Avatar}
+                    >
+                      {({ application: hydratedApplication }) => (
+                        <NewMembershipCard
+                          membership={hydratedApplication}
+                          to={hydratedApplication?.journeyUri}
+                          membershipType="membership"
+                        />
+                      )}
+                    </ApplicationHydrator>
+                  );
+                default:
+                  return null;
+              }
+            })}
           </>
         )}
-        <SeeMore label="pages.home.sections.newMemberships.seeMore" onClick={handleClickSeeMore} />
+        {pendingMembershipsCount > 0 ? (
+          <SeeMore
+            label="pages.home.sections.newMemberships.seeMore"
+            onClick={() => setOpenDialog({ type: DialogType.PendingMembershipsList })}
+          />
+        ) : (
+          <SeeMore label="pages.home.sections.newMemberships.seeAll" onClick={() => onOpenMemberships?.()} />
+        )}
       </PageContentBlock>
       <DialogWithGrid columns={12} open={openDialog?.type === DialogType.PendingMembershipsList} onClose={closeDialog}>
         <DialogHeader
@@ -284,10 +290,13 @@ const NewMembershipsBlock = ({ onOpenMemberships }: NewMembershipsBlockProps) =>
           onClose={closeDialog}
         />
         <Gutters paddingTop={0}>
-          {invitations && invitations.length > 0 && (
+          {pendingInvitations && pendingInvitations.length > 0 && (
             <>
-              <BlockSectionTitle>{t('community.pendingMembership.invitationsSectionTitle')}</BlockSectionTitle>
-              {invitations?.map(invitation => (
+              <BlockSectionTitle>
+                {t('community.pendingMembership.invitationsSectionTitle')}
+                <BadgeCounter count={pendingInvitations.length} size="small" />
+              </BlockSectionTitle>
+              {pendingInvitations?.map(invitation => (
                 <InvitationHydrator key={invitation.id} invitation={mapApiDataToContributionItem(invitation)}>
                   {({ invitation }) => (
                     <InvitationCardHorizontal
@@ -329,7 +338,12 @@ const NewMembershipsBlock = ({ onOpenMemberships }: NewMembershipsBlockProps) =>
           )}
         </Gutters>
       </DialogWithGrid>
-      <InvitationActionsContainer onUpdate={() => setOpenDialog({ type: DialogType.PendingMembershipsList })}>
+      <InvitationActionsContainer
+        onUpdate={() => {
+          setOpenDialog({ type: DialogType.PendingMembershipsList });
+          refetchNewMembershipsQuery();
+        }}
+      >
         {props => (
           <InvitationDialog
             open={openDialog?.type === DialogType.InvitationView}
