@@ -5,6 +5,13 @@ mutation UploadFileOnReference($file: Upload!, $uploadData: StorageBucketUploadF
   }
 }
 
+mutation UploadFileOnLink($file: Upload!, $uploadData: StorageBucketUploadFileOnLinkInput!) {
+  uploadFileOnLink(uploadData: $uploadData, file: $file) {
+    id
+    uri
+  }
+}
+
 mutation UploadFile($file: Upload!, $uploadData: StorageBucketUploadFileInput!) {
   uploadFileOnStorageBucket(uploadData: $uploadData, file: $file)
 }

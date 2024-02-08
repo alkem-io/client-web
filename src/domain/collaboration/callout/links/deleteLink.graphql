@@ -1,0 +1,5 @@
+mutation deleteLink($input: DeleteLinkInput!) {
+  deleteLink(deleteData: $input) {
+    id
+  }
+}

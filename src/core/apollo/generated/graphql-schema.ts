@@ -799,7 +799,7 @@ export type CalloutContribution = {
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** The Link that was contributed. */
-  link?: Maybe<Reference>;
+  link?: Maybe<Link>;
   /** The Post that was contributed. */
   post?: Maybe<Post>;
   /** The Whiteboard that was contributed. */
@@ -1468,7 +1468,7 @@ export type CreateContextInput = {
 
 export type CreateContributionOnCalloutInput = {
   calloutID: Scalars['UUID'];
-  link?: InputMaybe<CreateReferenceInput>;
+  link?: InputMaybe<CreateLinkInput>;
   post?: InputMaybe<CreatePostInput>;
   whiteboard?: InputMaybe<CreateWhiteboardInput>;
 };
@@ -1525,6 +1525,11 @@ export type CreateInvitationExternalUserOnCommunityInput = {
   firstName?: InputMaybe<Scalars['String']>;
   lastName?: InputMaybe<Scalars['String']>;
   welcomeMessage?: InputMaybe<Scalars['String']>;
+};
+
+export type CreateLinkInput = {
+  profile: CreateProfileInput;
+  uri?: InputMaybe<Scalars['String']>;
 };
 
 export type CreateLocationInput = {
@@ -1778,6 +1783,10 @@ export type DeleteInvitationExternalInput = {
 };
 
 export type DeleteInvitationInput = {
+  ID: Scalars['UUID'];
+};
+
+export type DeleteLinkInput = {
   ID: Scalars['UUID'];
 };
 
@@ -2238,6 +2247,18 @@ export type Lifecycle = {
   templateName?: Maybe<Scalars['String']>;
 };
 
+export type Link = {
+  __typename?: 'Link';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** The Profile for framing the associated Link Contribution. */
+  profile: Profile;
+  /** URI of the Link */
+  uri: Scalars['String'];
+};
+
 export type Location = {
   __typename?: 'Location';
   addressLine1: Scalars['String'];
@@ -2600,6 +2621,8 @@ export type Mutation = {
   deleteInvitation: Invitation;
   /** Removes the specified User invitationExternal. */
   deleteInvitationExternal: InvitationExternal;
+  /** Deletes the specified Link. */
+  deleteLink: Link;
   /** Deletes the specified Opportunity. */
   deleteOpportunity: Opportunity;
   /** Deletes the specified Organization. */
@@ -2732,6 +2755,8 @@ export type Mutation = {
   updateInnovationHub: InnovationHub;
   /** Updates the InnovationPack. */
   updateInnovationPack: InnovationPack;
+  /** Updates the specified Link. */
+  updateLink: Link;
   /** Updates the specified Opportunity. */
   updateOpportunity: Opportunity;
   /** Updates the specified Organization. */
@@ -2774,6 +2799,8 @@ export type Mutation = {
   updateWhiteboardRt: WhiteboardRt;
   /** Updates the specified WhiteboardTemplate. */
   updateWhiteboardTemplate: WhiteboardTemplate;
+  /** Create a new Document on the Storage and return the value as part of the returned Link. */
+  uploadFileOnLink: Link;
   /** Create a new Document on the Storage and return the value as part of the returned Reference. */
   uploadFileOnReference: Reference;
   /** Create a new Document on the Storage and return the public Url. */
@@ -3024,6 +3051,10 @@ export type MutationDeleteInvitationArgs = {
 
 export type MutationDeleteInvitationExternalArgs = {
   deleteData: DeleteInvitationExternalInput;
+};
+
+export type MutationDeleteLinkArgs = {
+  deleteData: DeleteLinkInput;
 };
 
 export type MutationDeleteOpportunityArgs = {
@@ -3282,6 +3313,10 @@ export type MutationUpdateInnovationPackArgs = {
   innovationPackData: UpdateInnovationPackInput;
 };
 
+export type MutationUpdateLinkArgs = {
+  linkData: UpdateLinkInput;
+};
+
 export type MutationUpdateOpportunityArgs = {
   opportunityData: UpdateOpportunityInput;
 };
@@ -3364,6 +3399,11 @@ export type MutationUpdateWhiteboardRtArgs = {
 
 export type MutationUpdateWhiteboardTemplateArgs = {
   whiteboardTemplateInput: UpdateWhiteboardTemplateInput;
+};
+
+export type MutationUploadFileOnLinkArgs = {
+  file: Scalars['Upload'];
+  uploadData: StorageBucketUploadFileOnLinkInput;
 };
 
 export type MutationUploadFileOnReferenceArgs = {
@@ -3825,6 +3865,7 @@ export enum ProfileType {
   CalloutFraming = 'CALLOUT_FRAMING',
   CalloutTemplate = 'CALLOUT_TEMPLATE',
   Challenge = 'CHALLENGE',
+  ContributionLink = 'CONTRIBUTION_LINK',
   Discussion = 'DISCUSSION',
   InnovationFlow = 'INNOVATION_FLOW',
   InnovationFlowTemplate = 'INNOVATION_FLOW_TEMPLATE',
@@ -4788,6 +4829,10 @@ export type StorageBucketUploadFileInput = {
   storageBucketId: Scalars['String'];
 };
 
+export type StorageBucketUploadFileOnLinkInput = {
+  linkID: Scalars['String'];
+};
+
 export type StorageBucketUploadFileOnReferenceInput = {
   referenceID: Scalars['String'];
 };
@@ -5213,6 +5258,13 @@ export type UpdateLicenseInput = {
   featureFlags?: InputMaybe<Array<UpdateFeatureFlagInput>>;
   /** Visibility of the Space. */
   visibility?: InputMaybe<SpaceVisibility>;
+};
+
+export type UpdateLinkInput = {
+  ID: Scalars['UUID'];
+  /** The Profile of the Link. */
+  profile?: InputMaybe<UpdateProfileInput>;
+  uri?: InputMaybe<Scalars['String']>;
 };
 
 export type UpdateLocationInput = {
@@ -5825,6 +5877,16 @@ export type UploadFileOnReferenceMutation = {
   uploadFileOnReference: { __typename?: 'Reference'; id: string; uri: string };
 };
 
+export type UploadFileOnLinkMutationVariables = Exact<{
+  file: Scalars['Upload'];
+  uploadData: StorageBucketUploadFileOnLinkInput;
+}>;
+
+export type UploadFileOnLinkMutation = {
+  __typename?: 'Mutation';
+  uploadFileOnLink: { __typename?: 'Link'; id: string; uri: string };
+};
+
 export type UploadFileMutationVariables = Exact<{
   file: Scalars['Upload'];
   uploadData: StorageBucketUploadFileInput;
@@ -6316,11 +6378,15 @@ export type CalloutPageCalloutQuery = {
                         | undefined;
                       link?:
                         | {
-                            __typename?: 'Reference';
+                            __typename?: 'Link';
                             id: string;
-                            name: string;
                             uri: string;
-                            description?: string | undefined;
+                            profile: {
+                              __typename?: 'Profile';
+                              id: string;
+                              displayName: string;
+                              description?: string | undefined;
+                            };
                             authorization?:
                               | {
                                   __typename?: 'Authorization';
@@ -6747,11 +6813,15 @@ export type CalloutPageCalloutQuery = {
                           | undefined;
                         link?:
                           | {
-                              __typename?: 'Reference';
+                              __typename?: 'Link';
                               id: string;
-                              name: string;
                               uri: string;
-                              description?: string | undefined;
+                              profile: {
+                                __typename?: 'Profile';
+                                id: string;
+                                displayName: string;
+                                description?: string | undefined;
+                              };
                               authorization?:
                                 | {
                                     __typename?: 'Authorization';
@@ -7181,11 +7251,15 @@ export type CalloutPageCalloutQuery = {
                           | undefined;
                         link?:
                           | {
-                              __typename?: 'Reference';
+                              __typename?: 'Link';
                               id: string;
-                              name: string;
                               uri: string;
-                              description?: string | undefined;
+                              profile: {
+                                __typename?: 'Profile';
+                                id: string;
+                                displayName: string;
+                                description?: string | undefined;
+                              };
                               authorization?:
                                 | {
                                     __typename?: 'Authorization';
@@ -10701,11 +10775,10 @@ export type CreateCalloutMutation = {
             | undefined;
           link?:
             | {
-                __typename?: 'Reference';
+                __typename?: 'Link';
                 id: string;
-                name: string;
                 uri: string;
-                description?: string | undefined;
+                profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
                 authorization?:
                   | {
                       __typename?: 'Authorization';
@@ -10942,23 +11015,33 @@ export type CreateLinkOnCalloutMutation = {
   createContributionOnCallout: {
     __typename?: 'CalloutContribution';
     link?:
-      | { __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }
+      | {
+          __typename?: 'Link';
+          id: string;
+          uri: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+        }
       | undefined;
   };
 };
 
-export type UpdateReferenceMutationVariables = Exact<{
-  input: UpdateReferenceInput;
+export type DeleteLinkMutationVariables = Exact<{
+  input: DeleteLinkInput;
 }>;
 
-export type UpdateReferenceMutation = {
+export type DeleteLinkMutation = { __typename?: 'Mutation'; deleteLink: { __typename?: 'Link'; id: string } };
+
+export type UpdateLinkMutationVariables = Exact<{
+  input: UpdateLinkInput;
+}>;
+
+export type UpdateLinkMutation = {
   __typename?: 'Mutation';
-  updateReference: {
-    __typename?: 'Reference';
+  updateLink: {
+    __typename?: 'Link';
     id: string;
-    name: string;
     uri: string;
-    description?: string | undefined;
+    profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
   };
 };
 
@@ -11467,11 +11550,15 @@ export type CalloutsQuery = {
                         | undefined;
                       link?:
                         | {
-                            __typename?: 'Reference';
+                            __typename?: 'Link';
                             id: string;
-                            name: string;
                             uri: string;
-                            description?: string | undefined;
+                            profile: {
+                              __typename?: 'Profile';
+                              id: string;
+                              displayName: string;
+                              description?: string | undefined;
+                            };
                             authorization?:
                               | {
                                   __typename?: 'Authorization';
@@ -11902,11 +11989,15 @@ export type CalloutsQuery = {
                           | undefined;
                         link?:
                           | {
-                              __typename?: 'Reference';
+                              __typename?: 'Link';
                               id: string;
-                              name: string;
                               uri: string;
-                              description?: string | undefined;
+                              profile: {
+                                __typename?: 'Profile';
+                                id: string;
+                                displayName: string;
+                                description?: string | undefined;
+                              };
                               authorization?:
                                 | {
                                     __typename?: 'Authorization';
@@ -12340,11 +12431,15 @@ export type CalloutsQuery = {
                           | undefined;
                         link?:
                           | {
-                              __typename?: 'Reference';
+                              __typename?: 'Link';
                               id: string;
-                              name: string;
                               uri: string;
-                              description?: string | undefined;
+                              profile: {
+                                __typename?: 'Profile';
+                                id: string;
+                                displayName: string;
+                                description?: string | undefined;
+                              };
                               authorization?:
                                 | {
                                     __typename?: 'Authorization';
@@ -12766,11 +12861,15 @@ export type CollaborationWithCalloutsFragment = {
                 | undefined;
               link?:
                 | {
-                    __typename?: 'Reference';
+                    __typename?: 'Link';
                     id: string;
-                    name: string;
                     uri: string;
-                    description?: string | undefined;
+                    profile: {
+                      __typename?: 'Profile';
+                      id: string;
+                      displayName: string;
+                      description?: string | undefined;
+                    };
                     authorization?:
                       | {
                           __typename?: 'Authorization';
@@ -13167,11 +13266,10 @@ export type CalloutFragment = {
           | undefined;
         link?:
           | {
-              __typename?: 'Reference';
+              __typename?: 'Link';
               id: string;
-              name: string;
               uri: string;
-              description?: string | undefined;
+              profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
               authorization?:
                 | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
                 | undefined;
@@ -16630,6 +16728,23 @@ export type UpdateWhiteboardRtContentUpdatePolicyMutation = {
   updateWhiteboardRt: { __typename?: 'WhiteboardRt'; id: string; contentUpdatePolicy: ContentUpdatePolicy };
 };
 
+export type LinkDetailsFragment = {
+  __typename?: 'Link';
+  id: string;
+  uri: string;
+  profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+};
+
+export type LinkDetailsWithAuthorizationFragment = {
+  __typename?: 'Link';
+  id: string;
+  uri: string;
+  profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+  authorization?:
+    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+    | undefined;
+};
+
 export type ChallengePreferencesQueryVariables = Exact<{
   spaceNameId: Scalars['UUID_NAMEID'];
   challengeNameId: Scalars['UUID_NAMEID'];
@@ -16772,17 +16887,6 @@ export type ReferenceDetailsFragment = {
   name: string;
   uri: string;
   description?: string | undefined;
-};
-
-export type ReferenceDetailsWithAuthorizationFragment = {
-  __typename?: 'Reference';
-  id: string;
-  name: string;
-  uri: string;
-  description?: string | undefined;
-  authorization?:
-    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-    | undefined;
 };
 
 export type CreateTagsetOnProfileMutationVariables = Exact<{
