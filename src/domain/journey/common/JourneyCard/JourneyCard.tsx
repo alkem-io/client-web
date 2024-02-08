@@ -64,8 +64,6 @@ const JourneyCard = ({
       } as const)
     : {};
 
-  console.log(banner, defaultCardBanner);
-
   return (
     <ContributeCard {...containerProps}>
       <Box {...wrapperProps}>
