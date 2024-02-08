@@ -1,7 +1,6 @@
 import { Callout, CalloutVisibility } from '../../../core/apollo/generated/graphql-schema';
 import { CalloutDeleteType, CalloutEditType } from './edit/CalloutEditType';
 import { CoreEntityIdTypes } from '../../shared/types/CoreEntityIds';
-import { PageContentBlockProps } from '../../../core/ui/content/PageContentBlock';
 import { JourneyTypeName } from '../../journey/JourneyTypeName';
 
 export interface CalloutSortEvents {
@@ -37,6 +36,5 @@ export interface BaseCalloutViewProps extends CoreEntityIdTypes, CalloutLayoutEv
   onExpand?: () => void;
   onClose?: () => void;
   onCalloutUpdate?: () => void;
-  blockProps?: Partial<PageContentBlockProps>;
   disableMarginal?: boolean;
 }

@@ -1,7 +1,7 @@
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ApolloError } from '@apollo/client';
-import { Box, Dialog, DialogContent } from '@mui/material';
+import { Box, DialogContent } from '@mui/material';
 import {
   LifecycleContextTabFragment,
   ReferenceDetailsFragment,
@@ -30,7 +30,6 @@ import { JourneyTypeName } from '../../../JourneyTypeName';
 import { gutters } from '../../../../../core/ui/grid/utils';
 import { Actions } from '../../../../../core/ui/actions/Actions';
 import PageContentBlockHeaderWithDialogAction from '../../../../../core/ui/content/PageContentBlockHeaderWithDialogAction';
-import DialogTitle from '../../../../../core/ui/dialog/deprecated/DialogTitle';
 import useScrollToElement from '../../../../shared/utils/scroll/useScrollToElement';
 import { useChallenge } from '../../../challenge/hooks/useChallenge';
 import OverflowGradient from '../../../../../core/ui/overflow/OverflowGradient';
@@ -38,6 +37,8 @@ import SeeMore from '../../../../../core/ui/content/SeeMore';
 import { EntityPageSection } from '../../../../shared/layout/EntityPageSection';
 import { buildUpdatesUrl } from '../../../../../main/routing/urlBuilders';
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
+import DialogWithGrid from '../../../../../core/ui/dialog/DialogWithGrid';
+import DialogHeader from '../../../../../core/ui/dialog/DialogHeader';
 
 export interface AboutSectionProps extends EntityDashboardContributors, EntityDashboardLeads {
   journeyTypeName: JourneyTypeName;
@@ -245,8 +246,8 @@ export const AboutSection: FC<AboutSectionProps> = ({
           )}
         </PageContentColumn>
       </PageContent>
-      <Dialog open={isDialogOpen} fullWidth maxWidth={false} onClose={closeDialog}>
-        <DialogTitle onClose={closeDialog}>{t('common.context')}</DialogTitle>
+      <DialogWithGrid open={isDialogOpen} columns={12} onClose={closeDialog}>
+        <DialogHeader title={t('common.context')} onClose={closeDialog} />
         <DialogContent>
           {[
             JourneyContextField.Vision,
@@ -262,7 +263,7 @@ export const AboutSection: FC<AboutSectionProps> = ({
             </Box>
           ))}
         </DialogContent>
-      </Dialog>
+      </DialogWithGrid>
     </>
   );
 };

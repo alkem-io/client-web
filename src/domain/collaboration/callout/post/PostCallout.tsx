@@ -1,4 +1,4 @@
-import React, { forwardRef, Ref, useMemo, useState } from 'react';
+import React, { forwardRef, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CalloutLayout, { CalloutLayoutProps } from '../../CalloutBlock/CalloutLayout';
 import ScrollableCardsLayout from '../../../../core/ui/card/cardsLayout/ScrollableCardsLayout';
@@ -11,7 +11,6 @@ import { BaseCalloutViewProps } from '../CalloutViewTypes';
 import { gutters } from '../../../../core/ui/grid/utils';
 import CalloutBlockFooter from '../../CalloutBlock/CalloutBlockFooter';
 import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
-import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 
 interface PostCalloutProps extends BaseCalloutViewProps {
   callout: CalloutLayoutProps['callout'];
@@ -34,7 +33,6 @@ const PostCallout = forwardRef<Element, PostCalloutProps>(
       challengeNameId,
       opportunityNameId,
       contributionsCount,
-      blockProps,
       ...calloutLayoutProps
     },
     ref
@@ -67,21 +65,24 @@ const PostCallout = forwardRef<Element, PostCalloutProps>(
 
     return (
       <>
-        <PageContentBlock ref={ref as Ref<HTMLDivElement>} disablePadding disableGap {...blockProps}>
-          <CalloutLayout callout={callout} contributionsCount={contributionsCount} {...calloutLayoutProps}>
-            <ScrollableCardsLayout
-              items={loading ? [undefined, undefined] : posts ?? []}
-              deps={[spaceNameId, challengeNameId, opportunityNameId]}
-              createButton={!isMobile && createButton}
-              maxHeight={gutters(22)}
-            >
-              {post => <PostCard post={post} onClick={navigateToPost} />}
-            </ScrollableCardsLayout>
-            {isMobile && canCreate && callout.contributionPolicy.state !== CalloutState.Closed && (
-              <CalloutBlockFooter contributionsCount={contributionsCount} onCreate={openCreateDialog} />
-            )}
-          </CalloutLayout>
-        </PageContentBlock>
+        <CalloutLayout
+          contentRef={ref}
+          callout={callout}
+          contributionsCount={contributionsCount}
+          {...calloutLayoutProps}
+        >
+          <ScrollableCardsLayout
+            items={loading ? [undefined, undefined] : posts ?? []}
+            deps={[spaceNameId, challengeNameId, opportunityNameId]}
+            createButton={!isMobile && createButton}
+            maxHeight={gutters(22)}
+          >
+            {post => <PostCard post={post} onClick={navigateToPost} />}
+          </ScrollableCardsLayout>
+          {isMobile && canCreate && callout.contributionPolicy.state !== CalloutState.Closed && (
+            <CalloutBlockFooter contributionsCount={contributionsCount} onCreate={openCreateDialog} />
+          )}
+        </CalloutLayout>
         <PostCreationDialog
           open={postDialogOpen}
           onClose={closeCreateDialog}
