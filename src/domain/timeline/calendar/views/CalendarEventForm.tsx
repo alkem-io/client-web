@@ -102,8 +102,8 @@ const CalendarEventForm = ({
       <DialogHeader onClose={onClose}>
         <BlockTitle>{dialogTitle}</BlockTitle>
       </DialogHeader>
-      <Formik initialValues={initialValues} onSubmit={() => {}} validationSchema={validationSchema}>
-        {({ isValid, values }) => (
+      <Formik initialValues={initialValues} onSubmit={handleSubmit} validationSchema={validationSchema}>
+        {({ isValid, handleSubmit }) => (
           <>
             <DialogContent>
               <Form>
@@ -157,7 +157,7 @@ const CalendarEventForm = ({
                 variant="contained"
                 disabled={!isValid}
                 loading={isSubmitting}
-                onClick={() => handleSubmit(values)}
+                onClick={() => handleSubmit()}
               >
                 {t('buttons.save')}
               </LoadingButton>

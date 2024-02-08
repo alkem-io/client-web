@@ -23,10 +23,9 @@ import KnowledgeBaseContainer from './KnowledgeBaseContainer';
 
 interface KnowledgeBasePageProps {
   journeyTypeName: JourneyTypeName;
-  scrollToCallout?: boolean;
 }
 
-const KnowledgeBasePage = ({ journeyTypeName, scrollToCallout = false }: PropsWithChildren<KnowledgeBasePageProps>) => {
+const KnowledgeBasePage = ({ journeyTypeName }: PropsWithChildren<KnowledgeBasePageProps>) => {
   const PageLayout = usePageLayoutByEntity(journeyTypeName);
   const { spaceNameId, challengeNameId, opportunityNameId } = useUrlParams();
 
@@ -114,7 +113,6 @@ const KnowledgeBasePage = ({ journeyTypeName, scrollToCallout = false }: PropsWi
                     calloutNames={calloutNames}
                     onSortOrderUpdate={onCalloutsSortOrderUpdate}
                     onCalloutUpdate={refetchCallout}
-                    scrollToCallout={scrollToCallout}
                     displayLocation={CalloutDisplayLocation.Knowledge}
                   />
                 </PageContentColumn>

@@ -1,16 +1,15 @@
 import React, { useMemo } from 'react';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
-import useScrollToElement from '../../../shared/utils/scroll/useScrollToElement';
 import { useCalloutEdit } from '../edit/useCalloutEdit/useCalloutEdit';
 import { OrderUpdate, TypedCallout } from '../useCallouts/useCallouts';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import { CalloutSortEvents, CalloutSortProps } from '../CalloutViewTypes';
-import CalloutView, { CalloutViewProps } from '../CalloutView/CalloutView';
+import CalloutView from '../CalloutView/CalloutView';
 import { useNavigate } from 'react-router-dom';
 import { buildCalloutUrl } from '../../../../main/routing/urlBuilders';
 import { LocationStateCachedCallout, LocationStateKeyCachedCallout } from '../../CalloutPage/CalloutPage';
 import { CardHeader, Skeleton } from '@mui/material';
-import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
+import PageContentBlock, { PageContentBlockProps } from '../../../../core/ui/content/PageContentBlock';
 import ContributeCard from '../../../../core/ui/card/ContributeCard';
 import CardFooter from '../../../../core/ui/card/CardFooter';
 import { gutters } from '../../../../core/ui/grid/utils';
@@ -32,14 +31,13 @@ const CalloutsViewSkeleton = () => (
 export interface CalloutsViewProps {
   callouts: TypedCallout[] | undefined;
   journeyTypeName: JourneyTypeName;
-  scrollToCallout?: boolean;
   onSortOrderUpdate?: (movedCalloutId: string) => (update: OrderUpdate) => Promise<unknown>;
   onCalloutUpdate?: (calloutId: string) => void;
   loading?: boolean;
   calloutNames: string[];
   blockProps?:
-    | CalloutViewProps['blockProps']
-    | ((callout: TypedCallout, index: number) => CalloutViewProps['blockProps']);
+    | Partial<PageContentBlockProps>
+    | ((callout: TypedCallout, index: number) => Partial<PageContentBlockProps> | undefined);
   disableMarginal?: boolean;
 }
 
@@ -47,23 +45,19 @@ const CalloutsView = ({
   callouts,
   journeyTypeName,
   calloutNames,
-  scrollToCallout = false,
   loading = false,
   onSortOrderUpdate,
   onCalloutUpdate,
   blockProps,
   disableMarginal,
 }: CalloutsViewProps) => {
-  const { spaceNameId, challengeNameId, opportunityNameId, calloutNameId } = useUrlParams();
+  const { spaceNameId, challengeNameId, opportunityNameId } = useUrlParams();
 
   if (!spaceNameId) {
     throw new Error('Must be within a Space');
   }
 
   const { handleEdit, handleVisibilityChange, handleDelete } = useCalloutEdit();
-
-  // Scroll to Callout handler:
-  const { scrollable } = useScrollToElement(calloutNameId, { enabled: scrollToCallout });
 
   const sortedCallouts = useMemo(() => callouts?.sort((a, b) => a.sortOrder - b.sortOrder), [callouts]);
 
@@ -137,30 +131,27 @@ const CalloutsView = ({
           });
 
           return (
-            <CalloutView
-              key={callout.id}
-              ref={scrollable(callout.nameID)}
-              callout={callout}
-              calloutNames={calloutNames}
-              contributionsCount={callout.activity}
-              spaceNameId={spaceNameId}
-              challengeNameId={challengeNameId}
-              opportunityNameId={opportunityNameId}
-              journeyTypeName={journeyTypeName}
-              onCalloutEdit={handleEdit}
-              onCalloutUpdate={() => onCalloutUpdate?.(callout.id)}
-              onVisibilityChange={handleVisibilityChange}
-              onCalloutDelete={handleDelete}
-              calloutUri={calloutUri}
-              onExpand={() => handleExpand(callout)}
-              blockProps={{
-                ...(typeof blockProps === 'function' ? blockProps(callout, index) : blockProps),
-                anchor: `callout-${callout.nameID}`,
-              }}
-              disableMarginal={disableMarginal}
-              {...sortEvents}
-              {...sortProps}
-            />
+            <PageContentBlock disablePadding disableGap {...blockProps}>
+              <CalloutView
+                key={callout.id}
+                callout={callout}
+                calloutNames={calloutNames}
+                contributionsCount={callout.activity}
+                spaceNameId={spaceNameId}
+                challengeNameId={challengeNameId}
+                opportunityNameId={opportunityNameId}
+                journeyTypeName={journeyTypeName}
+                onCalloutEdit={handleEdit}
+                onCalloutUpdate={() => onCalloutUpdate?.(callout.id)}
+                onVisibilityChange={handleVisibilityChange}
+                onCalloutDelete={handleDelete}
+                calloutUri={calloutUri}
+                onExpand={() => handleExpand(callout)}
+                disableMarginal={disableMarginal}
+                {...sortEvents}
+                {...sortProps}
+              />
+            </PageContentBlock>
           );
         })}
     </>

@@ -10,8 +10,7 @@ import {
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { useInView } from 'react-intersection-observer';
 import { SimpleContainerProps } from '../../../../core/container/SimpleContainer';
-import { forwardRef, Ref } from 'react';
-import { useCombinedRefs } from '../../../shared/utils/useCombinedRefs';
+import { Ref } from 'react';
 import { DEFAULT_TAGSET } from '../../../common/tags/tagset.constants';
 
 interface PostCalloutContainerProvided {
@@ -26,7 +25,7 @@ interface PostCalloutContainerProps extends SimpleContainerProps<PostCalloutCont
   calloutId: string;
 }
 
-const PostCalloutContainer = forwardRef<Element, PostCalloutContainerProps>(({ calloutId, children }, ref) => {
+const PostCalloutContainer = ({ calloutId, children }: PostCalloutContainerProps) => {
   const { ref: intersectionObserverRef, inView } = useInView({
     delay: 500,
     trackVisibility: true,
@@ -121,12 +120,10 @@ const PostCalloutContainer = forwardRef<Element, PostCalloutContainerProps>(({ c
     return nameID ? { nameID } : undefined;
   };
 
-  const combinedRef = useCombinedRefs(null, ref, intersectionObserverRef);
-
   return (
     <>
       {children({
-        ref: combinedRef,
+        ref: intersectionObserverRef,
         posts,
         loading,
         creatingPost: isCreatingPost,
@@ -134,6 +131,6 @@ const PostCalloutContainer = forwardRef<Element, PostCalloutContainerProps>(({ c
       })}
     </>
   );
-});
+};
 
 export default PostCalloutContainer;

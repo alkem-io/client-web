@@ -1,6 +1,6 @@
-import { FC, ReactNode, useEffect, useMemo, useState } from 'react';
+import { FC, ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { CalloutType, Reference } from '../../../../core/apollo/generated/graphql-schema';
-import { Box, Button, Dialog, DialogContent, IconButton, Link, Tooltip } from '@mui/material';
+import { Box, Button, DialogContent, IconButton, Link, Tooltip } from '@mui/material';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import { useTranslation } from 'react-i18next';
 import Gutters from '../../../../core/ui/grid/Gutters';
@@ -11,7 +11,7 @@ import * as yup from 'yup';
 import { referenceSegmentSchema } from '../../../platform/admin/components/Common/ReferenceSegment';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import AddIcon from '@mui/icons-material/Add';
-import { BlockSectionTitle, BlockTitle } from '../../../../core/ui/typography';
+import { BlockSectionTitle } from '../../../../core/ui/typography';
 import { Actions } from '../../../../core/ui/actions/Actions';
 import { gutters } from '../../../../core/ui/grid/utils';
 import calloutIcons from '../../../collaboration/callout/utils/calloutIcons';
@@ -20,6 +20,7 @@ import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
 import FormikFileInput from '../../../../core/ui/forms/FormikFileInput/FormikFileInput';
 import { TranslateWithElements } from '../../i18n/TranslateWithElements';
 import { useConfig } from '../../../platform/config/useConfig';
+import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
 import { ReferenceType } from '../../../../core/ui/upload/FileUpload/FileUpload';
 
 export interface CreateReferenceFormValues extends Pick<Reference, 'id' | 'name' | 'uri' | 'description'> {}
@@ -106,44 +107,50 @@ const CreateReferencesDialog: FC<CreateReferencesDialogProps> = ({
     references: referenceSegmentSchema,
   });
 
+  const [nextReferenceId, setNextReferenceId] = useState<string>();
+
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    contentRef.current?.querySelector(`[data-reference="${nextReferenceId}"]`)?.scrollIntoView({ behavior: 'smooth' });
+  }, [nextReferenceId]);
+
   return (
     <>
-      <Dialog open={open} aria-labelledby="reference-creation" fullWidth maxWidth="lg">
-        <DialogHeader onClose={handleOnClose}>
-          <Box display="flex" alignItems="center" gap={gutters(0.5)}>
-            <CalloutIcon />
-            <BlockTitle>{title}</BlockTitle>
-          </Box>
-        </DialogHeader>
-        <DialogContent>
-          <Formik
-            initialValues={initialValues}
-            validationSchema={validationSchema}
-            enableReinitialize
-            validateOnMount
-            onSubmit={() => {}}
-          >
-            {formikState => {
-              const { values, setFieldValue } = formikState;
-              const { references: currentReferences } = values;
+      <DialogWithGrid columns={12} open={open} aria-labelledby="reference-creation">
+        <DialogHeader icon={<CalloutIcon />} title={title} onClose={handleOnClose} />
+        <Formik
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          enableReinitialize
+          validateOnMount
+          onSubmit={() => {}}
+        >
+          {formikState => {
+            const { values, setFieldValue } = formikState;
+            const { references: currentReferences } = values;
 
-              const handleAddMore = async () => {
-                const newId = await onAddMore();
-                setHangingReferenceIds([...hangingReferenceIds, newId]);
+            const handleAddMore = async () => {
+              const newId = await onAddMore();
+              setHangingReferenceIds([...hangingReferenceIds, newId]);
 
-                const newReference: CreateReferenceFormValues = {
-                  id: newId,
-                  name: newReferenceName(currentReferences.length),
-                  uri: '',
-                  description: '',
-                };
-                setFieldValue('references', [...currentReferences, newReference]);
+              const newReference: CreateReferenceFormValues = {
+                id: newId,
+                name: newReferenceName(currentReferences.length),
+                uri: '',
+                description: '',
               };
 
-              return (
-                <>
+              setFieldValue('references', [...currentReferences, newReference]);
+
+              setNextReferenceId(newId);
+            };
+
+            return (
+              <>
+                <DialogContent ref={contentRef}>
                   {currentReferences?.map((reference, index) => (
-                    <Gutters key={reference.id}>
+                    <Gutters key={reference.id} data-reference={reference.id}>
                       <Gutters row={!isMobile} disablePadding alignItems="start">
                         <FormikInputField
                           name={`${fieldName}.${index}.name`}
@@ -201,30 +208,30 @@ const CreateReferencesDialog: FC<CreateReferencesDialogProps> = ({
                       </Box>
                     </Gutters>
                   ))}
-                  <Box display="flex" justifyContent="end" padding={gutters()}>
-                    <BlockSectionTitle>
-                      {t('callout.link-collection.add-another')}
-                      <IconButton
-                        onClick={handleAddMore}
-                        color="primary"
-                        aria-label={t('callout.link-collection.add-another')}
-                      >
-                        <AddIcon />
-                      </IconButton>
-                    </BlockSectionTitle>
-                  </Box>
-                  <Actions paddingX={gutters()} justifyContent="space-between">
-                    <Button onClick={handleOnClose}>{t('buttons.cancel')}</Button>
-                    <Button variant="contained" onClick={() => handleSave(currentReferences)}>
-                      {t('buttons.save')}
-                    </Button>
-                  </Actions>
-                </>
-              );
-            }}
-          </Formik>
-        </DialogContent>
-      </Dialog>
+                </DialogContent>
+                <Box display="flex" justifyContent="end" padding={gutters()} paddingBottom={0}>
+                  <BlockSectionTitle>
+                    {t('callout.link-collection.add-another')}
+                    <IconButton
+                      onClick={handleAddMore}
+                      color="primary"
+                      aria-label={t('callout.link-collection.add-another')}
+                    >
+                      <AddIcon />
+                    </IconButton>
+                  </BlockSectionTitle>
+                </Box>
+                <Actions padding={gutters()} justifyContent="space-between">
+                  <Button onClick={handleOnClose}>{t('buttons.cancel')}</Button>
+                  <Button variant="contained" onClick={() => handleSave(currentReferences)}>
+                    {t('buttons.save')}
+                  </Button>
+                </Actions>
+              </>
+            );
+          }}
+        </Formik>
+      </DialogWithGrid>
       <ConfirmationDialog
         actions={{
           onConfirm: handleConfirmCancelling,
