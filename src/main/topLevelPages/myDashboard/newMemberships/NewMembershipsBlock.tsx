@@ -1,7 +1,7 @@
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
 import { useTranslation } from 'react-i18next';
-import { BlockSectionTitle, Caption } from '../../../../core/ui/typography';
+import { BlockSectionTitle, Caption, CaptionSmall } from '../../../../core/ui/typography';
 import { gutters } from '../../../../core/ui/grid/utils';
 import {
   ApplicationHydrator,
@@ -27,6 +27,7 @@ import NewMembershipCard from './NewMembershipCard';
 import SeeMore from '../../../../core/ui/content/SeeMore';
 import { VisualType } from '../../../../core/apollo/generated/graphql-schema';
 import BadgeCounter from '../../../../core/ui/icon/BadgeCounter';
+import { Box, useTheme } from '@mui/material';
 
 enum PendingMembershipItemType {
   Invitation,
@@ -88,6 +89,7 @@ const NewMembershipsBlock = ({
   onOpenMemberships,
 }: NewMembershipsBlockProps) => {
   const { t } = useTranslation();
+  const theme = useTheme();
 
   const { data, refetch: refetchNewMembershipsQuery } = useNewMembershipsQuery();
 
@@ -180,96 +182,103 @@ const NewMembershipsBlock = ({
     <>
       <PageContentBlock halfWidth={halfWidth}>
         <PageContentBlockHeader title={t('pages.home.sections.newMemberships.title')} />
-        {pendingInvitations.length > 0 && (
-          <>
-            <Caption marginTop={gutters(-1)}>
-              {t('pages.home.sections.newMemberships.openInvitations')}
-              <BadgeCounter count={pendingInvitations.length} size="small" />
-            </Caption>
-            {pendingInvitations.slice(0, PENDING_MEMBERSHIPS_MAX_ITEMS).map(pendingInvitation => (
-              <InvitationHydrator
-                key={pendingInvitation.id}
-                invitation={mapApiDataToContributionItem(pendingInvitation)}
-                withJourneyDetails
-                visualType={VisualType.Avatar}
-              >
-                {({ invitation }) => (
-                  <NewMembershipCard
-                    membership={invitation}
-                    onClick={() => invitation && handleInvitationCardClick(invitation, 'card')}
-                    membershipType="invitation"
-                  />
-                )}
-              </InvitationHydrator>
-            ))}
-          </>
-        )}
-        {pendingApplications.length > 0 && (
-          <>
-            <Caption marginTop={pendingInvitations.length === 0 ? gutters(-1) : undefined}>
-              {t('pages.home.sections.newMemberships.openApplications')}
-            </Caption>
-            {pendingApplications.map(pendingApplication => (
-              <ApplicationHydrator
-                key={pendingApplication.id}
-                application={mapApiDataToContributionItem(pendingApplication)}
-                visualType={VisualType.Avatar}
-              >
-                {({ application: hydratedApplication }) => (
-                  <NewMembershipCard
-                    membership={hydratedApplication}
-                    to={hydratedApplication?.journeyUri ?? ''}
-                    membershipType="application"
-                  />
-                )}
-              </ApplicationHydrator>
-            ))}
-          </>
-        )}
-        {recentMemberships.length > 0 && (
-          <>
-            <Caption>{t('pages.home.sections.newMemberships.recentlyJoined')}</Caption>
-            {recentMemberships.map(membership => {
-              switch (membership.type) {
-                case PendingMembershipItemType.Invitation:
-                  return (
-                    <InvitationHydrator
-                      key={membership.id}
-                      invitation={mapApiDataToContributionItem(membership)}
-                      withJourneyDetails
-                      visualType={VisualType.Avatar}
-                    >
-                      {({ invitation }) => (
-                        <NewMembershipCard
-                          membership={invitation}
-                          to={invitation?.journeyUri}
-                          membershipType="membership"
-                        />
-                      )}
-                    </InvitationHydrator>
-                  );
-                case PendingMembershipItemType.Application:
-                  return (
-                    <ApplicationHydrator
-                      key={membership.id}
-                      application={mapApiDataToContributionItem(membership)}
-                      visualType={VisualType.Avatar}
-                    >
-                      {({ application: hydratedApplication }) => (
-                        <NewMembershipCard
-                          membership={hydratedApplication}
-                          to={hydratedApplication?.journeyUri}
-                          membershipType="membership"
-                        />
-                      )}
-                    </ApplicationHydrator>
-                  );
-                default:
-                  return null;
-              }
-            })}
-          </>
-        )}
+        <Box height="100%">
+          {pendingInvitations.length === 0 && pendingApplications.length === 0 && (
+            <CaptionSmall color={theme.palette.neutral.light} marginTop={gutters(-1)} marginBottom={gutters(0.5)}>
+              {'No open invitations'}
+            </CaptionSmall>
+          )}
+          {pendingInvitations.length > 0 && (
+            <>
+              <Caption marginTop={gutters(-1)}>
+                {t('pages.home.sections.newMemberships.openInvitations')}
+                <BadgeCounter count={pendingInvitations.length} size="small" />
+              </Caption>
+              {pendingInvitations.slice(0, PENDING_MEMBERSHIPS_MAX_ITEMS).map(pendingInvitation => (
+                <InvitationHydrator
+                  key={pendingInvitation.id}
+                  invitation={mapApiDataToContributionItem(pendingInvitation)}
+                  withJourneyDetails
+                  visualType={VisualType.Avatar}
+                >
+                  {({ invitation }) => (
+                    <NewMembershipCard
+                      membership={invitation}
+                      onClick={() => invitation && handleInvitationCardClick(invitation, 'card')}
+                      membershipType="invitation"
+                    />
+                  )}
+                </InvitationHydrator>
+              ))}
+            </>
+          )}
+          {pendingApplications.length > 0 && (
+            <>
+              <Caption marginTop={pendingInvitations.length === 0 ? gutters(-1) : undefined}>
+                {t('pages.home.sections.newMemberships.openApplications')}
+              </Caption>
+              {pendingApplications.map(pendingApplication => (
+                <ApplicationHydrator
+                  key={pendingApplication.id}
+                  application={mapApiDataToContributionItem(pendingApplication)}
+                  visualType={VisualType.Avatar}
+                >
+                  {({ application: hydratedApplication }) => (
+                    <NewMembershipCard
+                      membership={hydratedApplication}
+                      to={hydratedApplication?.journeyUri ?? ''}
+                      membershipType="application"
+                    />
+                  )}
+                </ApplicationHydrator>
+              ))}
+            </>
+          )}
+          {recentMemberships.length > 0 && (
+            <>
+              <Caption>{t('pages.home.sections.newMemberships.recentlyJoined')}</Caption>
+              {recentMemberships.map(membership => {
+                switch (membership.type) {
+                  case PendingMembershipItemType.Invitation:
+                    return (
+                      <InvitationHydrator
+                        key={membership.id}
+                        invitation={mapApiDataToContributionItem(membership)}
+                        withJourneyDetails
+                        visualType={VisualType.Avatar}
+                      >
+                        {({ invitation }) => (
+                          <NewMembershipCard
+                            membership={invitation}
+                            to={invitation?.journeyUri}
+                            membershipType="membership"
+                          />
+                        )}
+                      </InvitationHydrator>
+                    );
+                  case PendingMembershipItemType.Application:
+                    return (
+                      <ApplicationHydrator
+                        key={membership.id}
+                        application={mapApiDataToContributionItem(membership)}
+                        visualType={VisualType.Avatar}
+                      >
+                        {({ application: hydratedApplication }) => (
+                          <NewMembershipCard
+                            membership={hydratedApplication}
+                            to={hydratedApplication?.journeyUri}
+                            membershipType="membership"
+                          />
+                        )}
+                      </ApplicationHydrator>
+                    );
+                  default:
+                    return null;
+                }
+              })}
+            </>
+          )}
+        </Box>
         {pendingMembershipsCount > 0 ? (
           <SeeMore
             label="pages.home.sections.newMemberships.seeMore"

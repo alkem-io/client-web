@@ -3,7 +3,7 @@ import { JourneyDetails } from '../../../../domain/community/pendingMembership/P
 import { Avatar, ButtonBase, ListItemButton, ListItemButtonProps, ListItemButtonTypeMap } from '@mui/material';
 import { Caption } from '../../../../core/ui/typography';
 import { Trans, useTranslation } from 'react-i18next';
-import JourneyIcon from '../../../../domain/shared/components/JourneyIcon/JourneyIcon';
+import { gutters } from '../../../../core/ui/grid/utils';
 
 interface NewMembershipCardProps {
   membership: JourneyDetails | undefined;
@@ -19,22 +19,19 @@ const Wrapper = <D extends React.ElementType = ListItemButtonTypeMap['defaultCom
 const NewMembershipCard = ({ membership, to, onClick, membershipType }: NewMembershipCardProps) => {
   const { t } = useTranslation();
 
-  const JourneyIconComponent = membership && JourneyIcon[membership.journeyTypeName];
-
   return (
     <BadgeCardView
       component={Wrapper}
       visual={<Avatar src={membership?.journeyVisual?.uri} />}
       to={to}
       onClick={onClick}
-      sx={{ textAlign: 'left' }}
+      sx={{ textAlign: 'left', paddingLeft: gutters(0.5), width: '100%' }}
     >
       <Caption whiteSpace="nowrap" overflow="hidden" textOverflow="ellipsis">
         <Trans
           t={t}
           i18nKey={`pages.home.sections.newMemberships.${membershipType}.message` as const}
           components={{
-            journeyicon: JourneyIconComponent ? <JourneyIconComponent fontSize="inherit" /> : <span />,
             b: <strong />,
           }}
           values={{
@@ -42,7 +39,7 @@ const NewMembershipCard = ({ membership, to, onClick, membershipType }: NewMembe
           }}
         />
       </Caption>
-      <Caption>
+      <Caption color={theme => theme.palette.neutral.light}>
         {t(`pages.home.sections.newMemberships.${membershipType}.caption` as const, {
           tagline: membership?.journeyTagline,
         })}
