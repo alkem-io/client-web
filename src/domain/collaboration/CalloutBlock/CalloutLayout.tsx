@@ -49,6 +49,7 @@ import { CalloutTemplateFormSubmittedValues } from '../../platform/admin/templat
 import { useCreateCalloutTemplate } from '../../platform/admin/templates/CalloutTemplates/useCreateCalloutTemplate';
 import SkipLink from '../../../core/ui/keyboardNavigation/SkipLink';
 import { useNextBlockAnchor } from '../../../core/ui/keyboardNavigation/NextBlockAnchor';
+import { LinkDetails } from '../callout/links/LinkCollectionCallout';
 
 export interface CalloutLayoutProps extends CalloutLayoutEvents, Partial<CalloutSortProps> {
   callout: {
@@ -81,7 +82,7 @@ export interface CalloutLayoutProps extends CalloutLayoutEvents, Partial<Callout
       whiteboardContent?: string;
     };
     contributions?: {
-      link?: Reference;
+      link?: LinkDetails;
       post?: ContributeTabPostFragment;
       whiteboard?: WhiteboardDetailsFragment;
     }[];

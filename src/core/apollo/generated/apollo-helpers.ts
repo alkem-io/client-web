@@ -1289,6 +1289,13 @@ export type LifecycleFieldPolicy = {
   stateIsFinal?: FieldPolicy<any> | FieldReadFunction<any>;
   templateName?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type LinkKeySpecifier = ('authorization' | 'id' | 'profile' | 'uri' | LinkKeySpecifier)[];
+export type LinkFieldPolicy = {
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  uri?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type LocationKeySpecifier = (
   | 'addressLine1'
   | 'addressLine2'
@@ -1463,6 +1470,7 @@ export type MutationKeySpecifier = (
   | 'deleteInnovationPack'
   | 'deleteInvitation'
   | 'deleteInvitationExternal'
+  | 'deleteLink'
   | 'deleteOpportunity'
   | 'deleteOrganization'
   | 'deletePost'
@@ -1529,6 +1537,7 @@ export type MutationKeySpecifier = (
   | 'updateInnovationFlowTemplate'
   | 'updateInnovationHub'
   | 'updateInnovationPack'
+  | 'updateLink'
   | 'updateOpportunity'
   | 'updateOrganization'
   | 'updatePost'
@@ -1550,6 +1559,7 @@ export type MutationKeySpecifier = (
   | 'updateWhiteboardContentRt'
   | 'updateWhiteboardRt'
   | 'updateWhiteboardTemplate'
+  | 'uploadFileOnLink'
   | 'uploadFileOnReference'
   | 'uploadFileOnStorageBucket'
   | 'uploadImageOnVisual'
@@ -1621,6 +1631,7 @@ export type MutationFieldPolicy = {
   deleteInnovationPack?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteInvitation?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteInvitationExternal?: FieldPolicy<any> | FieldReadFunction<any>;
+  deleteLink?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteOpportunity?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   deletePost?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1687,6 +1698,7 @@ export type MutationFieldPolicy = {
   updateInnovationFlowTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   updateInnovationHub?: FieldPolicy<any> | FieldReadFunction<any>;
   updateInnovationPack?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateLink?: FieldPolicy<any> | FieldReadFunction<any>;
   updateOpportunity?: FieldPolicy<any> | FieldReadFunction<any>;
   updateOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   updatePost?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1708,6 +1720,7 @@ export type MutationFieldPolicy = {
   updateWhiteboardContentRt?: FieldPolicy<any> | FieldReadFunction<any>;
   updateWhiteboardRt?: FieldPolicy<any> | FieldReadFunction<any>;
   updateWhiteboardTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
+  uploadFileOnLink?: FieldPolicy<any> | FieldReadFunction<any>;
   uploadFileOnReference?: FieldPolicy<any> | FieldReadFunction<any>;
   uploadFileOnStorageBucket?: FieldPolicy<any> | FieldReadFunction<any>;
   uploadImageOnVisual?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3322,6 +3335,10 @@ export type StrictTypedTypePolicies = {
   Lifecycle?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | LifecycleKeySpecifier | (() => undefined | LifecycleKeySpecifier);
     fields?: LifecycleFieldPolicy;
+  };
+  Link?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | LinkKeySpecifier | (() => undefined | LinkKeySpecifier);
+    fields?: LinkFieldPolicy;
   };
   Location?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | LocationKeySpecifier | (() => undefined | LocationKeySpecifier);

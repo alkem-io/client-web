@@ -20,6 +20,7 @@ import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
 import FormikFileInput from '../../../../core/ui/forms/FormikFileInput/FormikFileInput';
 import { TranslateWithElements } from '../../i18n/TranslateWithElements';
 import { useConfig } from '../../../platform/config/useConfig';
+import { ReferenceType } from '../../../../core/ui/upload/FileUpload/FileUpload';
 
 export interface CreateReferenceFormValues extends Pick<Reference, 'id' | 'name' | 'uri' | 'description'> {}
 
@@ -31,6 +32,7 @@ interface CreateReferencesDialogProps {
   open: boolean;
   onClose: () => void;
   title: ReactNode;
+  referenceType?: ReferenceType;
   onAddMore: () => Promise<string>;
   onRemove: (referenceId: string) => Promise<unknown>;
   onSave: (references: CreateReferenceFormValues[]) => Promise<void>;
@@ -42,6 +44,7 @@ const CreateReferencesDialog: FC<CreateReferencesDialogProps> = ({
   open,
   onClose,
   title,
+  referenceType,
   onAddMore,
   onRemove,
   onSave,
@@ -154,6 +157,7 @@ const CreateReferencesDialog: FC<CreateReferencesDialogProps> = ({
                               title={t('common.url')}
                               fullWidth
                               referenceID={reference.id}
+                              referenceType={referenceType}
                               helperText={tLinks('components.referenceSegment.url-helper-text', {
                                 terms: {
                                   href: locations?.terms,

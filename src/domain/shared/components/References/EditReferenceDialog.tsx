@@ -14,6 +14,7 @@ import { Actions } from '../../../../core/ui/actions/Actions';
 import { gutters } from '../../../../core/ui/grid/utils';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FormikFileInput from '../../../../core/ui/forms/FormikFileInput/FormikFileInput';
+import { ReferenceType } from '../../../../core/ui/upload/FileUpload/FileUpload';
 
 export interface EditReferenceFormValues extends Pick<Reference, 'id' | 'name' | 'uri' | 'description'> {}
 
@@ -29,6 +30,7 @@ interface EditReferenceDialogProps {
   onClose: () => void;
   title: ReactNode;
   reference: EditReferenceFormValues;
+  referenceType?: ReferenceType;
   onSave: (values: EditReferenceFormValues) => Promise<void>;
   canDelete?: boolean;
   onDelete: () => void;
@@ -39,6 +41,7 @@ const EditReferenceDialog: FC<EditReferenceDialogProps> = ({
   onClose,
   title,
   reference,
+  referenceType,
   onSave,
   canDelete,
   onDelete,
@@ -81,6 +84,7 @@ const EditReferenceDialog: FC<EditReferenceDialogProps> = ({
                         title={t('common.url')}
                         sx={{ flexGrow: 1 }}
                         referenceID={values.id}
+                        referenceType={referenceType}
                       />
                     </Box>
                   </Gutters>
