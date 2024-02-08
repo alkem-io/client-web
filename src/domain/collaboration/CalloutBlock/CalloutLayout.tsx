@@ -1,8 +1,8 @@
-import React, { PropsWithChildren, useCallback, useMemo, useState } from 'react';
+import React, { PropsWithChildren, Ref, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import DownloadForOfflineOutlinedIcon from '@mui/icons-material/DownloadForOfflineOutlined';
-import { Box, IconButton, Menu } from '@mui/material';
+import { Box, DialogContent, IconButton, Menu } from '@mui/material';
 import {
   Authorization,
   AuthorizationPrivilege,
@@ -103,6 +103,7 @@ export interface CalloutLayoutProps extends CalloutLayoutEvents, Partial<Callout
   skipReferences?: boolean;
   disableMarginal?: boolean;
   journeyTypeName: JourneyTypeName;
+  contentRef?: Ref<Element>;
 }
 
 const CalloutLayout = ({
@@ -126,6 +127,7 @@ const CalloutLayout = ({
   skipReferences,
   disableMarginal = false,
   journeyTypeName,
+  contentRef,
 }: PropsWithChildren<CalloutLayoutProps>) => {
   const { t } = useTranslation();
 
@@ -256,17 +258,19 @@ const CalloutLayout = ({
         {!hasCalloutDetails && <BlockTitle noWrap>{callout.framing.profile.displayName}</BlockTitle>}
         <SkipLink anchor={nextBlockAnchor} sx={{ position: 'absolute', right: 0, top: 0, zIndex: 99999 }} />
       </DialogHeader>
-      <Gutters minHeight={0} paddingTop={0}>
-        {hasCalloutDetails && <BlockTitle>{callout.framing.profile.displayName}</BlockTitle>}
-        <Box sx={{ wordWrap: 'break-word' }}>
-          <WrapperMarkdown>{callout.framing.profile.description ?? ''}</WrapperMarkdown>
-        </Box>
-        {!skipReferences && <References compact references={callout.framing.profile.references} />}
-        {callout.framing.profile.tagset?.tags && callout.framing.profile.tagset?.tags.length > 0 ? (
-          <TagsComponent tags={callout.framing.profile.tagset?.tags} />
-        ) : undefined}
-        {children}
-      </Gutters>
+      <DialogContent ref={contentRef} sx={{ paddingTop: 0 }}>
+        <Gutters disablePadding>
+          {hasCalloutDetails && <BlockTitle>{callout.framing.profile.displayName}</BlockTitle>}
+          <Box sx={{ wordWrap: 'break-word' }}>
+            <WrapperMarkdown>{callout.framing.profile.description ?? ''}</WrapperMarkdown>
+          </Box>
+          {!skipReferences && <References compact references={callout.framing.profile.references} />}
+          {callout.framing.profile.tagset?.tags && callout.framing.profile.tagset?.tags.length > 0 ? (
+            <TagsComponent tags={callout.framing.profile.tagset?.tags} />
+          ) : undefined}
+          {children}
+        </Gutters>
+      </DialogContent>
       {calloutNotOpenStateName && (
         <CalloutBlockMarginal variant="footer">{calloutNotOpenStateName}</CalloutBlockMarginal>
       )}
