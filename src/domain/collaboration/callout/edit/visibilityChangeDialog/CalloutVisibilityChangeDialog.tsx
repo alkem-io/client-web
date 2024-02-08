@@ -7,10 +7,10 @@ import { LoadingButton } from '@mui/lab';
 import { CalloutIcon } from '../../icon/CalloutIcon';
 import { DialogContent } from '../../../../../core/ui/dialog/deprecated';
 import { CalloutType, CalloutVisibility } from '../../../../../core/apollo/generated/graphql-schema';
-import { Form, Formik } from 'formik';
+import { Formik } from 'formik';
 import DialogHeader from '../../../../../core/ui/dialog/DialogHeader';
 import { Actions } from '../../../../../core/ui/actions/Actions';
-import { BlockTitle, Text, PageTitle } from '../../../../../core/ui/typography/components';
+import { BlockTitle, Text } from '../../../../../core/ui/typography/components';
 import WrapperMarkdown from '../../../../../core/ui/markdown/WrapperMarkdown';
 import FormRow from '../../../../../core/ui/forms/FormRow';
 import { FormikSwitch } from '../../../../../core/ui/forms/FormikSwitch';
@@ -66,15 +66,10 @@ const CalloutVisibilityChangeDialog: FC<CalloutVisibilityChangeDialogProps> = ({
   return (
     <Dialog open={open} maxWidth="md" fullWidth aria-labelledby="callout-visibility-dialog-title" onClose={onClose}>
       <Formik initialValues={initialValues} enableReinitialize validateOnMount onSubmit={handleVisibilityChanged}>
-        {() => (
-          <Form>
-            <DialogHeader onClose={onClose}>
-              <Box display="flex" alignItems="center">
-                <CalloutIcon sx={{ marginRight: theme => theme.spacing(1) }} />
-                <PageTitle>{title}</PageTitle>
-              </Box>
-            </DialogHeader>
-            <DialogContent dividers>
+        {({ handleSubmit }) => (
+          <>
+            <DialogHeader icon={<CalloutIcon />} title={title} onClose={onClose} />
+            <DialogContent>
               <Gutters paddingTop={0}>
                 <Box>
                   <BlockTitle>{t('common.title')}</BlockTitle>
@@ -96,11 +91,11 @@ const CalloutVisibilityChangeDialog: FC<CalloutVisibilityChangeDialogProps> = ({
               <Button onClick={onClose} disabled={loading} variant="text">
                 {t('buttons.cancel')}
               </Button>
-              <LoadingButton type="submit" loading={loading} variant="contained">
+              <LoadingButton type="submit" loading={loading} variant="contained" onClick={() => handleSubmit()}>
                 {t(`buttons.${callout?.draft ? '' : 'un'}publish` as const)}
               </LoadingButton>
             </Actions>
-          </Form>
+          </>
         )}
       </Formik>
     </Dialog>
