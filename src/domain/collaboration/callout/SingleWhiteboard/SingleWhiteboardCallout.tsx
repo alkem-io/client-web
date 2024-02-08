@@ -18,7 +18,6 @@ const SingleWhiteboardCallout = ({
   opportunityNameId,
   journeyTypeName,
   contributionsCount,
-  blockProps,
   onExpand,
   onClose,
   expanded,

@@ -25,7 +25,6 @@ const SingleWhiteboardRtCallout = ({
   opportunityNameId,
   journeyTypeName,
   contributionsCount,
-  blockProps,
   onExpand,
   onClose,
   expanded,

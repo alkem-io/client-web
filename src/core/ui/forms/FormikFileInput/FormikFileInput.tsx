@@ -1,7 +1,7 @@
 import React from 'react';
 import { useField } from 'formik';
 import FormikInputField, { FormikInputFieldProps } from '../FormikInputField/FormikInputField';
-import FileUploadButton from '../../upload/FileUpload/FileUpload';
+import FileUploadButton, { ReferenceType } from '../../upload/FileUpload/FileUpload';
 import { useStorageConfigContext } from '../../../../domain/storage/StorageBucket/StorageConfigContext';
 
 const DEFAULT_PROTOCOL = 'https';
@@ -9,10 +9,17 @@ const MATCH_PROTOCOL_REGEX = /^[a-z][a-z0-9+_-]{0,500}:\/\//i;
 
 type FormikFileInputProps = FormikInputFieldProps & {
   referenceID?: string;
+  referenceType?: ReferenceType;
   defaultProtocol?: string;
 };
 
-const FormikFileInput = ({ name, referenceID, defaultProtocol = DEFAULT_PROTOCOL, ...props }: FormikFileInputProps) => {
+const FormikFileInput = ({
+  name,
+  referenceID,
+  defaultProtocol = DEFAULT_PROTOCOL,
+  referenceType,
+  ...props
+}: FormikFileInputProps) => {
   const [field, , helpers] = useField(name);
 
   const storageConfig = useStorageConfigContext();
@@ -37,7 +44,12 @@ const FormikFileInput = ({ name, referenceID, defaultProtocol = DEFAULT_PROTOCOL
       endAdornment={
         storageConfig &&
         storageConfig.canUpload && (
-          <FileUploadButton onUpload={helpers.setValue} referenceID={referenceID} storageConfig={storageConfig} />
+          <FileUploadButton
+            onUpload={helpers.setValue}
+            referenceID={referenceID}
+            referenceType={referenceType}
+            storageConfig={storageConfig}
+          />
         )
       }
       {...props}
