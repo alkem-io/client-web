@@ -172,14 +172,6 @@ const NewMembershipsBlock = ({
     });
   };
 
-  const handleClickSeeMore = () => {
-    if (recentMemberships.length > 0) {
-      onOpenMemberships?.();
-    } else {
-      setOpenDialog({ type: DialogType.PendingMembershipsList });
-    }
-  };
-
   if (pendingMembershipsCount === 0 && hiddenIfEmpty) {
     return null;
   }
@@ -278,7 +270,14 @@ const NewMembershipsBlock = ({
             })}
           </>
         )}
-        <SeeMore label="pages.home.sections.newMemberships.seeMore" onClick={handleClickSeeMore} />
+        {pendingMembershipsCount > 0 ? (
+          <SeeMore
+            label="pages.home.sections.newMemberships.seeMore"
+            onClick={() => setOpenDialog({ type: DialogType.PendingMembershipsList })}
+          />
+        ) : (
+          <SeeMore label="pages.home.sections.newMemberships.seeAll" onClick={() => onOpenMemberships?.()} />
+        )}
       </PageContentBlock>
       <DialogWithGrid columns={12} open={openDialog?.type === DialogType.PendingMembershipsList} onClose={closeDialog}>
         <DialogHeader
