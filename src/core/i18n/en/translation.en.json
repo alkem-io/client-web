@@ -1997,6 +1997,7 @@
           "openApplications": "Open applications",
           "recentlyJoined": "Recently joined",
           "seeMore": "All pending memberships",
+          "seeAll": "See all my memberships",
           "invitation": {
             "message": "<journeyicon /> {{journey}}",
             "caption": "Click here to see the invitation"
