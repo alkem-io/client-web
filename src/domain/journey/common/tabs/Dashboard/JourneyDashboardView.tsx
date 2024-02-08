@@ -212,6 +212,7 @@ const JourneyDashboardView = ({
           onCalloutUpdate={callouts.refetchCallout}
           displayLocation={CalloutDisplayLocation.HomeRight}
           blockProps={(callout, index) => {
+            console.log(callout.nameID, index);
             if (index === 0) {
               return {
                 halfWidth: true,
