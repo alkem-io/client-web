@@ -2,8 +2,7 @@ import React, { ReactNode, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { displayNameValidator } from '../../../../core/ui/forms/validator';
-import { Form, Formik, FormikProps } from 'formik';
-import { DialogActions, DialogContent } from '@mui/material';
+import { Formik, FormikProps } from 'formik';
 import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
 import { TagsetField } from '../components/Common/TagsetSegment';
 import VisualUpload from '../../../../core/ui/upload/VisualUpload/VisualUpload';
@@ -77,28 +76,26 @@ const TemplateForm = <Values extends TemplateProfileValues>({
       validationSchema={validationSchema}
     >
       {formState => (
-        <Form>
-          <DialogContent>
-            <FormCols>
-              <TemplateFormRows>
-                <FormikInputField name="displayName" title={t('common.title')} />
-                <FormikMarkdownField
-                  name="description"
-                  title={t('common.description')}
-                  maxLength={MARKDOWN_TEXT_LENGTH}
-                />
-                <TagsetField
-                  name="tags"
-                  title={t('common.tags')}
-                  helpTextIcon={t('components.post-creation.info-step.tags-help-text')}
-                />
-                {visual && <VisualUpload visual={visual} />}
-              </TemplateFormRows>
-              {renderChildren(formState)}
-            </FormCols>
-          </DialogContent>
-          {actions && <DialogActions sx={{ p: 3 }}>{renderActions(formState)}</DialogActions>}
-        </Form>
+        <>
+          <FormCols>
+            <TemplateFormRows>
+              <FormikInputField name="displayName" title={t('common.title')} />
+              <FormikMarkdownField
+                name="description"
+                title={t('common.description')}
+                maxLength={MARKDOWN_TEXT_LENGTH}
+              />
+              <TagsetField
+                name="tags"
+                title={t('common.tags')}
+                helpTextIcon={t('components.post-creation.info-step.tags-help-text')}
+              />
+              {visual && <VisualUpload visual={visual} />}
+            </TemplateFormRows>
+            {renderChildren(formState)}
+          </FormCols>
+          {renderActions(formState)}
+        </>
       )}
     </Formik>
   );
