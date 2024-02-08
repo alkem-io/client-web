@@ -2799,6 +2799,8 @@ export type Mutation = {
   updateWhiteboardRt: WhiteboardRt;
   /** Updates the specified WhiteboardTemplate. */
   updateWhiteboardTemplate: WhiteboardTemplate;
+  /** Create a new Document on the Storage and return the value as part of the returned Link. */
+  uploadFileOnLink: Link;
   /** Create a new Document on the Storage and return the value as part of the returned Reference. */
   uploadFileOnReference: Reference;
   /** Create a new Document on the Storage and return the public Url. */
@@ -3397,6 +3399,11 @@ export type MutationUpdateWhiteboardRtArgs = {
 
 export type MutationUpdateWhiteboardTemplateArgs = {
   whiteboardTemplateInput: UpdateWhiteboardTemplateInput;
+};
+
+export type MutationUploadFileOnLinkArgs = {
+  file: Scalars['Upload'];
+  uploadData: StorageBucketUploadFileOnLinkInput;
 };
 
 export type MutationUploadFileOnReferenceArgs = {
@@ -4822,6 +4829,10 @@ export type StorageBucketUploadFileInput = {
   storageBucketId: Scalars['String'];
 };
 
+export type StorageBucketUploadFileOnLinkInput = {
+  linkID: Scalars['String'];
+};
+
 export type StorageBucketUploadFileOnReferenceInput = {
   referenceID: Scalars['String'];
 };
@@ -5864,6 +5875,16 @@ export type UploadFileOnReferenceMutationVariables = Exact<{
 export type UploadFileOnReferenceMutation = {
   __typename?: 'Mutation';
   uploadFileOnReference: { __typename?: 'Reference'; id: string; uri: string };
+};
+
+export type UploadFileOnLinkMutationVariables = Exact<{
+  file: Scalars['Upload'];
+  uploadData: StorageBucketUploadFileOnLinkInput;
+}>;
+
+export type UploadFileOnLinkMutation = {
+  __typename?: 'Mutation';
+  uploadFileOnLink: { __typename?: 'Link'; id: string; uri: string };
 };
 
 export type UploadFileMutationVariables = Exact<{

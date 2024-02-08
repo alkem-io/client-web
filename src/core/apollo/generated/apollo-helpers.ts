@@ -1559,6 +1559,7 @@ export type MutationKeySpecifier = (
   | 'updateWhiteboardContentRt'
   | 'updateWhiteboardRt'
   | 'updateWhiteboardTemplate'
+  | 'uploadFileOnLink'
   | 'uploadFileOnReference'
   | 'uploadFileOnStorageBucket'
   | 'uploadImageOnVisual'
@@ -1719,6 +1720,7 @@ export type MutationFieldPolicy = {
   updateWhiteboardContentRt?: FieldPolicy<any> | FieldReadFunction<any>;
   updateWhiteboardRt?: FieldPolicy<any> | FieldReadFunction<any>;
   updateWhiteboardTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
+  uploadFileOnLink?: FieldPolicy<any> | FieldReadFunction<any>;
   uploadFileOnReference?: FieldPolicy<any> | FieldReadFunction<any>;
   uploadFileOnStorageBucket?: FieldPolicy<any> | FieldReadFunction<any>;
   uploadImageOnVisual?: FieldPolicy<any> | FieldReadFunction<any>;

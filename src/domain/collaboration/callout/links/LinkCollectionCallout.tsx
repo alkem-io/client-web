@@ -231,6 +231,7 @@ const LinkCollectionCallout = forwardRef<HTMLDivElement, LinkCollectionCalloutPr
             <CreateReferencesDialog
               open={addNewReferenceDialogOpen}
               title={<Box>{t('callout.link-collection.add-link', { title: callout.framing.profile.displayName })}</Box>}
+              referenceType="link"
               onClose={closeAddNewDialog}
               onAddMore={getNewLinkId}
               onRemove={removeNewLink}
@@ -241,6 +242,7 @@ const LinkCollectionCallout = forwardRef<HTMLDivElement, LinkCollectionCalloutPr
               onClose={closeEditDialog}
               title={<Box>{t('callout.link-collection.edit-link', { title: editReference?.name })}</Box>}
               reference={editReference!}
+              referenceType="link"
               onSave={values => handleEditLink(values)}
               canDelete={canDeleteLinks}
               onDelete={() => setDeletingLinkId(editReference?.id)}

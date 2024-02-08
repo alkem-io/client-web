@@ -4360,6 +4360,56 @@ export type UploadFileOnReferenceMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UploadFileOnReferenceMutation,
   SchemaTypes.UploadFileOnReferenceMutationVariables
 >;
+export const UploadFileOnLinkDocument = gql`
+  mutation UploadFileOnLink($file: Upload!, $uploadData: StorageBucketUploadFileOnLinkInput!) {
+    uploadFileOnLink(uploadData: $uploadData, file: $file) {
+      id
+      uri
+    }
+  }
+`;
+export type UploadFileOnLinkMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UploadFileOnLinkMutation,
+  SchemaTypes.UploadFileOnLinkMutationVariables
+>;
+
+/**
+ * __useUploadFileOnLinkMutation__
+ *
+ * To run a mutation, you first call `useUploadFileOnLinkMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUploadFileOnLinkMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [uploadFileOnLinkMutation, { data, loading, error }] = useUploadFileOnLinkMutation({
+ *   variables: {
+ *      file: // value for 'file'
+ *      uploadData: // value for 'uploadData'
+ *   },
+ * });
+ */
+export function useUploadFileOnLinkMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UploadFileOnLinkMutation,
+    SchemaTypes.UploadFileOnLinkMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.UploadFileOnLinkMutation, SchemaTypes.UploadFileOnLinkMutationVariables>(
+    UploadFileOnLinkDocument,
+    options
+  );
+}
+
+export type UploadFileOnLinkMutationHookResult = ReturnType<typeof useUploadFileOnLinkMutation>;
+export type UploadFileOnLinkMutationResult = Apollo.MutationResult<SchemaTypes.UploadFileOnLinkMutation>;
+export type UploadFileOnLinkMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UploadFileOnLinkMutation,
+  SchemaTypes.UploadFileOnLinkMutationVariables
+>;
 export const UploadFileDocument = gql`
   mutation UploadFile($file: Upload!, $uploadData: StorageBucketUploadFileInput!) {
     uploadFileOnStorageBucket(uploadData: $uploadData, file: $file)
