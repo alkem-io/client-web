@@ -4,6 +4,7 @@ import React, {
   Dispatch,
   FC,
   PropsWithChildren,
+  ReactElement,
   SetStateAction,
   useContext,
   useLayoutEffect,
@@ -15,7 +16,20 @@ interface LayoutState<P> {
   props: P;
 }
 
-const createLayoutHolder = () => {
+type LayoutRenderOrderProps = PropsWithChildren<{
+  layout: ReactElement | undefined;
+}>;
+
+const DefaultLayoutRenderOrder = ({ layout, children }: LayoutRenderOrderProps) => {
+  return (
+    <>
+      {layout}
+      {children}
+    </>
+  );
+};
+
+const createLayoutHolder = (RenderOrder: ComponentType<LayoutRenderOrderProps> = DefaultLayoutRenderOrder) => {
   const LayoutContext = createContext<Dispatch<SetStateAction<LayoutState<Record<string, unknown>> | undefined>>>(
     () => {
       throw new Error('Not within the LayoutHolder.');
@@ -28,10 +42,9 @@ const createLayoutHolder = () => {
     const Component = layout?.component!;
 
     return (
-      <>
-        {layout && <Component {...layout.props} />}
+      <RenderOrder layout={layout && <Component {...layout.props} />}>
         <LayoutContext.Provider value={setLayout}>{children}</LayoutContext.Provider>
-      </>
+      </RenderOrder>
     );
   };
 

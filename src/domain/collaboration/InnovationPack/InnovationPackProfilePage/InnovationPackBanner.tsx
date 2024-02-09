@@ -1,10 +1,11 @@
 import React, { ReactNode } from 'react';
 import { Box, styled } from '@mui/material';
-import { DEFAULT_BANNER_URL } from '../../../journey/space/layout/SpacePageBanner';
 import hexToRGBA from '../../../../core/utils/hexToRGBA';
 import PageContent from '../../../../core/ui/content/PageContent';
 import { PageTitle, Tagline } from '../../../../core/ui/typography';
 import ContributorCardHorizontal from '../../../../core/ui/card/ContributorCardHorizontal';
+
+const BANNER_URL = '/alkemio-banner/alkemio-banner-xl.png';
 
 // This is a helper function to build a CSS rule with a background gradient + the background image
 // The returned result will be something like: linear-gradient(90deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%), url('...'), #FFF
@@ -32,7 +33,7 @@ const Root = styled(Box)(({ theme }) => ({
       { color: theme.palette.neutralLight.main, opacity: 0.9, position: 50 },
       { color: theme.palette.neutralLight.main, opacity: 0, position: 100 },
     ],
-    DEFAULT_BANNER_URL,
+    BANNER_URL,
     theme.palette.neutralLight.main
   ),
   backgroundSize: 'cover',

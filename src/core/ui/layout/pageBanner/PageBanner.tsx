@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next';
 import { ComponentType, ReactElement, ReactNode, useState } from 'react';
 import { Visual } from '../../../../domain/common/visual/Visual';
 import { Box, Skeleton } from '@mui/material';
-import { DEFAULT_BANNER_URL } from '../../../../domain/journey/space/layout/SpacePageBanner';
 import GridProvider from '../../grid/GridProvider';
 import GridItem from '../../grid/GridItem';
 import { useColumns } from '../../grid/GridContext';
@@ -73,7 +72,7 @@ const PageBanner = <CardProps extends { maxWidth?: number | string }>({
         {ribbon}
         <Overlay fade={fade}>
           <ImageBlurredSides
-            src={banner?.uri || DEFAULT_BANNER_URL}
+            src={banner?.uri}
             alt={t('visuals-alt-text.banner.page.text', { altText: banner?.alternativeText })}
             onLoad={() => setImageLoading(false)}
             onError={imageLoadError}

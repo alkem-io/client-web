@@ -1,8 +1,8 @@
-import React, { PropsWithChildren, useCallback, useMemo, useState } from 'react';
+import React, { PropsWithChildren, Ref, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import DownloadForOfflineOutlinedIcon from '@mui/icons-material/DownloadForOfflineOutlined';
-import { Box, IconButton, Menu } from '@mui/material';
+import { Box, DialogContent, IconButton, Menu } from '@mui/material';
 import {
   Authorization,
   AuthorizationPrivilege,
@@ -23,7 +23,6 @@ import CalloutBlockMarginal from '../callout/Contribute/CalloutBlockMarginal';
 import { BlockTitle } from '../../../core/ui/typography';
 import { CalloutLayoutEvents, CalloutSortProps } from '../callout/CalloutViewTypes';
 import Gutters from '../../../core/ui/grid/Gutters';
-import { useCalloutFormTemplatesFromSpaceLazyQuery } from '../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../core/routing/useUrlParams';
 import { Ribbon } from '../../../core/ui/card/Ribbon';
 import Authorship from '../../../core/ui/authorship/Authorship';
@@ -50,6 +49,7 @@ import { CalloutTemplateFormSubmittedValues } from '../../platform/admin/templat
 import { useCreateCalloutTemplate } from '../../platform/admin/templates/CalloutTemplates/useCreateCalloutTemplate';
 import SkipLink from '../../../core/ui/keyboardNavigation/SkipLink';
 import { useNextBlockAnchor } from '../../../core/ui/keyboardNavigation/NextBlockAnchor';
+import { LinkDetails } from '../callout/links/LinkCollectionCallout';
 
 export interface CalloutLayoutProps extends CalloutLayoutEvents, Partial<CalloutSortProps> {
   callout: {
@@ -82,7 +82,7 @@ export interface CalloutLayoutProps extends CalloutLayoutEvents, Partial<Callout
       whiteboardContent?: string;
     };
     contributions?: {
-      link?: Reference;
+      link?: LinkDetails;
       post?: ContributeTabPostFragment;
       whiteboard?: WhiteboardDetailsFragment;
     }[];
@@ -104,6 +104,7 @@ export interface CalloutLayoutProps extends CalloutLayoutEvents, Partial<Callout
   skipReferences?: boolean;
   disableMarginal?: boolean;
   journeyTypeName: JourneyTypeName;
+  contentRef?: Ref<Element>;
 }
 
 const CalloutLayout = ({
@@ -127,6 +128,7 @@ const CalloutLayout = ({
   skipReferences,
   disableMarginal = false,
   journeyTypeName,
+  contentRef,
 }: PropsWithChildren<CalloutLayoutProps>) => {
   const { t } = useTranslation();
 
@@ -135,13 +137,6 @@ const CalloutLayout = ({
   if (!spaceNameId) {
     throw new Error('Must be within a Space');
   }
-
-  const [fetchTemplates, { data: templatesData }] = useCalloutFormTemplatesFromSpaceLazyQuery();
-  const getTemplates = () => fetchTemplates({ variables: { spaceId: spaceNameId! } });
-
-  const postTemplates = templatesData?.space.templates?.postTemplates ?? [];
-  const whiteboardTemplates = templatesData?.space.templates?.whiteboardTemplates ?? [];
-  const templates = { postTemplates, whiteboardTemplates };
 
   const [settingsAnchorEl, setSettingsAnchorEl] = useState<null | HTMLElement>(null);
   const settingsOpened = Boolean(settingsAnchorEl);
@@ -175,7 +170,6 @@ const CalloutLayout = ({
   };
   const [editDialogOpened, setEditDialogOpened] = useState(false);
   const handleEditDialogOpen = () => {
-    getTemplates();
     setSettingsAnchorEl(null);
     setEditDialogOpened(true);
   };
@@ -265,17 +259,19 @@ const CalloutLayout = ({
         {!hasCalloutDetails && <BlockTitle noWrap>{callout.framing.profile.displayName}</BlockTitle>}
         <SkipLink anchor={nextBlockAnchor} sx={{ position: 'absolute', right: 0, top: 0, zIndex: 99999 }} />
       </DialogHeader>
-      <Gutters minHeight={0} paddingTop={0}>
-        {hasCalloutDetails && <BlockTitle>{callout.framing.profile.displayName}</BlockTitle>}
-        <Box sx={{ wordWrap: 'break-word' }}>
-          <WrapperMarkdown>{callout.framing.profile.description ?? ''}</WrapperMarkdown>
-        </Box>
-        {!skipReferences && <References compact references={callout.framing.profile.references} />}
-        {callout.framing.profile.tagset?.tags && callout.framing.profile.tagset?.tags.length > 0 ? (
-          <TagsComponent tags={callout.framing.profile.tagset?.tags} />
-        ) : undefined}
-        {children}
-      </Gutters>
+      <DialogContent ref={contentRef} sx={{ paddingTop: 0 }}>
+        <Gutters disablePadding>
+          {hasCalloutDetails && <BlockTitle>{callout.framing.profile.displayName}</BlockTitle>}
+          <Box sx={{ wordWrap: 'break-word' }}>
+            <WrapperMarkdown>{callout.framing.profile.description ?? ''}</WrapperMarkdown>
+          </Box>
+          {!skipReferences && <References compact references={callout.framing.profile.references} />}
+          {callout.framing.profile.tagset?.tags && callout.framing.profile.tagset?.tags.length > 0 ? (
+            <TagsComponent tags={callout.framing.profile.tagset?.tags} />
+          ) : undefined}
+          {children}
+        </Gutters>
+      </DialogContent>
       {calloutNotOpenStateName && (
         <CalloutBlockMarginal variant="footer">{calloutNotOpenStateName}</CalloutBlockMarginal>
       )}
@@ -371,7 +367,6 @@ const CalloutLayout = ({
           onDelete={onCalloutDelete}
           canChangeCalloutLocation
           calloutNames={calloutNames}
-          templates={templates}
           journeyTypeName={journeyTypeName}
         />
       )}

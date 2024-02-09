@@ -5,18 +5,32 @@ import { useTranslation } from 'react-i18next';
 import 'react-image-crop/dist/ReactCrop.css';
 import UploadButton from '../../button/UploadButton';
 import { StorageConfig } from '../../../../domain/storage/StorageBucket/useStorageConfig';
-import { useUploadFileMutation, useUploadFileOnReferenceMutation } from '../../../apollo/generated/apollo-hooks';
+import {
+  useUploadFileMutation,
+  useUploadFileOnLinkMutation,
+  useUploadFileOnReferenceMutation,
+} from '../../../apollo/generated/apollo-hooks';
 import { useNotification } from '../../notifications/useNotification';
+
+const DEFAULT_REFERENCE_TYPE = 'reference';
+
+export type ReferenceType = 'reference' | 'link';
 
 interface FileUploadProps {
   onUpload?: (fileCID: string) => void;
   referenceID?: string;
+  referenceType?: ReferenceType;
   storageConfig: StorageConfig;
 }
 
 const bytesInMegabyte = Math.pow(1024, 2);
 
-const FileUploadButton: FC<FileUploadProps> = ({ onUpload, referenceID, storageConfig }) => {
+const FileUploadButton: FC<FileUploadProps> = ({
+  onUpload,
+  referenceID,
+  referenceType = DEFAULT_REFERENCE_TYPE,
+  storageConfig,
+}) => {
   const { t } = useTranslation();
   const notify = useNotification();
 
@@ -29,6 +43,12 @@ const FileUploadButton: FC<FileUploadProps> = ({ onUpload, referenceID, storageC
       onUpload?.(data.uploadFileOnReference.uri);
     },
   });
+  const [uploadFileOnLink, { loading: loadingOnLink }] = useUploadFileOnLinkMutation({
+    onCompleted: data => {
+      notify(t('components.file-upload.file-upload-success'), 'success');
+      onUpload?.(data.uploadFileOnLink.uri);
+    },
+  });
 
   const [uploadFile, { loading: loadingOnStorageBucket }] = useUploadFileMutation({
     onCompleted: data => {
@@ -36,7 +56,7 @@ const FileUploadButton: FC<FileUploadProps> = ({ onUpload, referenceID, storageC
       onUpload?.(data.uploadFileOnStorageBucket);
     },
   });
-  const loading = loadingOnReference || loadingOnStorageBucket;
+  const loading = loadingOnReference || loadingOnLink || loadingOnStorageBucket;
 
   const handleSubmit = async (selectedFile: File) => {
     if (!selectedFile) return;
@@ -45,12 +65,21 @@ const FileUploadButton: FC<FileUploadProps> = ({ onUpload, referenceID, storageC
       notify(t('components.file-upload.file-size-error', { limit: maxFileSizeMb }), 'error');
       return;
     }
-    if (referenceID) {
+    if (referenceID && referenceType === 'reference') {
       await uploadFileOnReference({
         variables: {
           file: selectedFile,
           uploadData: {
             referenceID,
+          },
+        },
+      });
+    } else if (referenceID && referenceType === 'link') {
+      await uploadFileOnLink({
+        variables: {
+          file: selectedFile,
+          uploadData: {
+            linkID: referenceID,
           },
         },
       });

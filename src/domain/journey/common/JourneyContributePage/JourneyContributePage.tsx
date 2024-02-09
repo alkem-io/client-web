@@ -7,10 +7,9 @@ import JourneyContributePageContainer from './JourneyContributePageContainer';
 
 interface ContributePageProps {
   journeyTypeName: JourneyTypeName;
-  scrollToCallout?: boolean;
 }
 
-const JourneyContributePage = ({ journeyTypeName, scrollToCallout = false }: ContributePageProps) => {
+const JourneyContributePage = ({ journeyTypeName }: ContributePageProps) => {
   const PageLayout = usePageLayoutByEntity(journeyTypeName);
 
   return (
@@ -18,7 +17,6 @@ const JourneyContributePage = ({ journeyTypeName, scrollToCallout = false }: Con
       <JourneyContributePageContainer>
         {({ innovationFlowStates, callouts, spaceNameId, challengeNameId, opportunityNameId }) => (
           <JourneyCalloutsTabView
-            scrollToCallout={scrollToCallout}
             journeyTypeName={journeyTypeName}
             {...innovationFlowStates}
             {...callouts}

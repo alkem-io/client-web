@@ -20,6 +20,7 @@ import Gutters from '../../../core/ui/grid/Gutters';
 import { ROUTE_HOME } from '../../platform/routes/constants';
 import { useConfig } from '../../platform/config/useConfig';
 import TopLevelLayout from '../../../main/ui/layout/TopLevelLayout';
+import TopLevelPageBreadcrumbs from '../../../main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
 
 interface InnovationHubHomePageProps {
   innovationHub: InnovationHubAttrs;
@@ -48,6 +49,7 @@ const InnovationHubHomePage = ({ innovationHub }: InnovationHubHomePageProps) =>
           tagline={innovationHub.tagline}
         />
       }
+      breadcrumbs={<TopLevelPageBreadcrumbs />}
     >
       <PageContent>
         <PageContentBlock>

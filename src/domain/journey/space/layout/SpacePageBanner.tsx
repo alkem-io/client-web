@@ -14,8 +14,8 @@ import { BoxProps } from '@mui/system';
 import { useTranslation } from 'react-i18next';
 import { env } from '../../../../main/env';
 import { BasePageBannerProps } from '../../common/EntityPageLayout/EntityPageLayoutTypes';
+import defaultJourneyBanner from '../../defaultVisuals/Banner.jpg';
 
-export const DEFAULT_BANNER_URL = '/alkemio-banner/alkemio-banner-xl.png';
 export const TITLE_HEIGHT = 6;
 
 const ALKEMIO_DOMAIN = env?.VITE_APP_ALKEMIO_DOMAIN ?? '/';
@@ -154,7 +154,6 @@ const SpacePageBanner: FC<JourneyPageBannerProps> = ({
 }) => {
   const { t } = useTranslation();
   const { containerReference, addAutomaticTooltip } = useAutomaticTooltip();
-  bannerUrl = bannerUrl || DEFAULT_BANNER_URL;
 
   const [imageLoading, setImageLoading] = useState(true);
 
@@ -173,7 +172,7 @@ const SpacePageBanner: FC<JourneyPageBannerProps> = ({
           </TopNotices>
           <Box>
             <ImageBlurredSides
-              src={bannerUrl}
+              src={bannerUrl || defaultJourneyBanner}
               alt={t('visuals-alt-text.banner.page.text', { altText: bannerAltText })}
               onLoad={() => setImageLoading(false)}
               onError={imageLoadError}

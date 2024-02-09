@@ -26,7 +26,9 @@ interface MyJourneysDialogProps {
 const MyMembershipsDialog = ({ open, onClose }: MyJourneysDialogProps) => {
   const { t } = useTranslation();
 
-  const { data, loading } = useMyMembershipsQuery();
+  const { data, loading } = useMyMembershipsQuery({
+    skip: !open,
+  });
 
   const landingUrl = useLandingUrl();
 

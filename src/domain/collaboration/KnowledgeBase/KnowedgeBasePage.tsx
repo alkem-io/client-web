@@ -15,8 +15,6 @@ import { TypedCallout } from '../callout/useCallouts/useCallouts';
 import { useTranslation } from 'react-i18next';
 import EllipsableWithCount from '../../../core/ui/typography/EllipsableWithCount';
 import { useCalloutCreationWithPreviewImages } from '../callout/creationDialog/useCalloutCreation/useCalloutCreationWithPreviewImages';
-import { useSpace } from '../../journey/space/SpaceContext/useSpace';
-import { useCalloutFormTemplatesFromSpaceLazyQuery } from '../../../core/apollo/generated/apollo-hooks';
 import { CalloutDisplayLocation } from '../../../core/apollo/generated/graphql-schema';
 import calloutIcons from '../callout/utils/calloutIcons';
 import CalloutsGroupView from '../callout/CalloutsInContext/CalloutsGroupView';
@@ -25,10 +23,9 @@ import KnowledgeBaseContainer from './KnowledgeBaseContainer';
 
 interface KnowledgeBasePageProps {
   journeyTypeName: JourneyTypeName;
-  scrollToCallout?: boolean;
 }
 
-const KnowledgeBasePage = ({ journeyTypeName, scrollToCallout = false }: PropsWithChildren<KnowledgeBasePageProps>) => {
+const KnowledgeBasePage = ({ journeyTypeName }: PropsWithChildren<KnowledgeBasePageProps>) => {
   const PageLayout = usePageLayoutByEntity(journeyTypeName);
   const { spaceNameId, challengeNameId, opportunityNameId } = useUrlParams();
 
@@ -50,18 +47,7 @@ const KnowledgeBasePage = ({ journeyTypeName, scrollToCallout = false }: PropsWi
     loading: loadingCalloutCreation,
   } = useCalloutCreationWithPreviewImages();
 
-  const { spaceId } = useSpace();
-
-  const [fetchTemplates, { data: templatesData }] = useCalloutFormTemplatesFromSpaceLazyQuery({
-    variables: { spaceId },
-  });
-
-  const postTemplates = templatesData?.space.templates?.postTemplates ?? [];
-  const whiteboardTemplates = templatesData?.space.templates?.whiteboardTemplates ?? [];
-  const templates = { postTemplates, whiteboardTemplates };
-
   const handleCreate = () => {
-    fetchTemplates();
     handleCreateCalloutOpened();
   };
 
@@ -127,7 +113,6 @@ const KnowledgeBasePage = ({ journeyTypeName, scrollToCallout = false }: PropsWi
                     calloutNames={calloutNames}
                     onSortOrderUpdate={onCalloutsSortOrderUpdate}
                     onCalloutUpdate={refetchCallout}
-                    scrollToCallout={scrollToCallout}
                     displayLocation={CalloutDisplayLocation.Knowledge}
                   />
                 </PageContentColumn>
@@ -140,7 +125,6 @@ const KnowledgeBasePage = ({ journeyTypeName, scrollToCallout = false }: PropsWi
               canCreateCalloutFromTemplate={canCreateCalloutFromTemplate}
               loading={loadingCalloutCreation}
               calloutNames={calloutNames}
-              templates={templates}
               displayLocation={CalloutDisplayLocation.Knowledge}
               journeyTypeName={journeyTypeName}
             />

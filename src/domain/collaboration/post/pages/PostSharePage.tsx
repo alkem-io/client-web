@@ -4,6 +4,7 @@ import { PostLayout } from '../views/PostLayoutWithOutlet';
 import { PostDialogSection } from '../views/PostDialogSection';
 import PostDashboardContainer from '../containers/PostDashboardContainer/PostDashboardContainer';
 import PostDashboardView from '../views/PostDashboardView';
+import { DialogFooter } from '../../../../core/ui/dialog/DialogWithGrid';
 
 export interface PostSharePageProps {
   onClose: () => void;
@@ -36,6 +37,7 @@ const PostSharePage: FC<PostSharePageProps> = ({ onClose }) => {
           />
         )}
       </PostDashboardContainer>
+      <DialogFooter />
     </PostLayout>
   );
 };

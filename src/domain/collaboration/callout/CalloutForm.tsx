@@ -202,10 +202,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
     tags: true,
     postTemplate: calloutType === CalloutType.PostCollection,
     whiteboardTemplate: calloutType === CalloutType.WhiteboardCollection,
-    newResponses:
-      calloutType !== CalloutType.LinkCollection &&
-      calloutType !== CalloutType.Whiteboard &&
-      calloutType !== CalloutType.WhiteboardRt,
+    newResponses: calloutType !== CalloutType.Whiteboard && calloutType !== CalloutType.WhiteboardRt,
     locationChange: editMode && Boolean(canChangeCalloutLocation),
     whiteboard: calloutType === CalloutType.Whiteboard || calloutType === CalloutType.WhiteboardRt,
   };

@@ -20,7 +20,6 @@ import JourneyCalloutsListItemTitle from './JourneyCalloutsListItemTitle';
 
 interface JourneyCalloutsTabViewProps extends JourneyLocation {
   journeyTypeName: JourneyTypeName;
-  scrollToCallout?: boolean;
   innovationFlowStates: string[] | undefined;
   currentInnovationFlowState: string | undefined;
   canEditInnovationFlow: boolean | undefined;
@@ -39,7 +38,6 @@ const JourneyCalloutsTabView = ({
   innovationFlowStates,
   currentInnovationFlowState,
   canEditInnovationFlow,
-  scrollToCallout,
   callouts: allCallouts,
   groupedCallouts,
   canCreateCallout,
@@ -109,7 +107,6 @@ const JourneyCalloutsTabView = ({
               calloutNames={calloutNames}
               onSortOrderUpdate={onCalloutsSortOrderUpdate}
               onCalloutUpdate={refetchCallout}
-              scrollToCallout={scrollToCallout}
               displayLocation={CalloutDisplayLocation.ContributeLeft}
               flowState={selectedInnovationFlowState}
             />
@@ -136,7 +133,6 @@ const JourneyCalloutsTabView = ({
               calloutNames={calloutNames}
               onSortOrderUpdate={onCalloutsSortOrderUpdate}
               onCalloutUpdate={refetchCallout}
-              scrollToCallout={scrollToCallout}
               displayLocation={CalloutDisplayLocation.ContributeRight}
               createButtonPlace="top"
               flowState={selectedInnovationFlowState}

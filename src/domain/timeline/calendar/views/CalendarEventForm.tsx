@@ -2,7 +2,7 @@ import React, { ReactNode, useMemo } from 'react';
 import { Form, Formik } from 'formik';
 import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
-import { Box, Theme, useMediaQuery } from '@mui/material';
+import { Box, DialogContent, Theme, useMediaQuery } from '@mui/material';
 import DialogHeader, { DialogHeaderProps } from '../../../../core/ui/dialog/DialogHeader';
 import { BlockTitle } from '../../../../core/ui/typography';
 import FormikDatePicker from '../../../../core/ui/forms/DatePicker/FormikDatePicker';
@@ -103,53 +103,66 @@ const CalendarEventForm = ({
         <BlockTitle>{dialogTitle}</BlockTitle>
       </DialogHeader>
       <Formik initialValues={initialValues} onSubmit={handleSubmit} validationSchema={validationSchema}>
-        {({ isValid }) => (
-          <Form>
-            <Gutters paddingTop={0}>
-              <Box display="flex" gap={gutters()}>
-                <GridItem columns={4}>
-                  <Box>
-                    <FormikDatePicker name="startDate" label={t('common.date')} minDate={new Date()} />
-                  </Box>
-                </GridItem>
-                <Box flexGrow={1}>
-                  <FormikInputField name="displayName" title={t('fields.displayName')} />
-                </Box>
-              </Box>
-              <Box display="flex" gap={gutters()} flexWrap="wrap">
-                <GridItem columns={isMobile ? undefined : 4}>
+        {({ isValid, handleSubmit }) => (
+          <>
+            <DialogContent>
+              <Form>
+                <Gutters disablePadding>
                   <Box display="flex" gap={gutters()}>
-                    <FormikTimePicker name="startDate" label={t('fields.startTime')} containerProps={{ flexGrow: 1 }} />
-                    <FormikDurationMinutes
-                      name="durationMinutes"
-                      startTimeFieldName="startDate"
-                      label={t('fields.endTime')}
-                      containerProps={{ flexGrow: 1 }}
+                    <GridItem columns={4}>
+                      <Box>
+                        <FormikDatePicker name="startDate" label={t('common.date')} minDate={new Date()} />
+                      </Box>
+                    </GridItem>
+                    <Box flexGrow={1}>
+                      <FormikInputField name="displayName" title={t('fields.displayName')} />
+                    </Box>
+                  </Box>
+                  <Box display="flex" gap={gutters()} flexWrap="wrap">
+                    <GridItem columns={isMobile ? undefined : 4}>
+                      <Box display="flex" gap={gutters()}>
+                        <FormikTimePicker
+                          name="startDate"
+                          label={t('fields.startTime')}
+                          containerProps={{ flexGrow: 1 }}
+                        />
+                        <FormikDurationMinutes
+                          name="durationMinutes"
+                          startTimeFieldName="startDate"
+                          label={t('fields.endTime')}
+                          containerProps={{ flexGrow: 1 }}
+                        />
+                      </Box>
+                    </GridItem>
+                    <FormikAutocomplete
+                      name="type"
+                      label={t('calendar.event.type')}
+                      values={typeOptions}
+                      sx={{ flexGrow: 1 }}
                     />
                   </Box>
-                </GridItem>
-                <FormikAutocomplete
-                  name="type"
-                  label={t('calendar.event.type')}
-                  values={typeOptions}
-                  sx={{ flexGrow: 1 }}
-                />
-              </Box>
-              <FormikMarkdownField
-                name="description"
-                title={t('common.description')}
-                maxLength={MARKDOWN_TEXT_LENGTH}
-                sx={{ marginBottom: gutters(-1) }}
-              />
-              <TagsetField name="tags" title={t('common.tags')} />
-              <Actions justifyContent="space-between">
-                {actions}
-                <LoadingButton type="submit" variant="contained" disabled={!isValid} loading={isSubmitting}>
-                  {t('buttons.save')}
-                </LoadingButton>
-              </Actions>
-            </Gutters>
-          </Form>
+                  <FormikMarkdownField
+                    name="description"
+                    title={t('common.description')}
+                    maxLength={MARKDOWN_TEXT_LENGTH}
+                    sx={{ marginBottom: gutters(-1) }}
+                  />
+                  <TagsetField name="tags" title={t('common.tags')} />
+                </Gutters>
+              </Form>
+            </DialogContent>
+            <Actions justifyContent="space-between" padding={gutters()}>
+              {actions}
+              <LoadingButton
+                variant="contained"
+                disabled={!isValid}
+                loading={isSubmitting}
+                onClick={() => handleSubmit()}
+              >
+                {t('buttons.save')}
+              </LoadingButton>
+            </Actions>
+          </>
         )}
       </Formik>
     </GridProvider>

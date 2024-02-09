@@ -4,7 +4,6 @@ import { IWhiteboardRtActions } from '../containers/WhiteboardRtActionsContainer
 import WhiteboardRtDialog from '../WhiteboardDialog/WhiteboardRtDialog';
 import WhiteboardRtContentContainer from '../containers/WhiteboardRtContentContainer';
 import {
-  CreateWhiteboardWhiteboardTemplateFragment,
   WhiteboardRtContentFragment,
   WhiteboardRtDetailsFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
@@ -25,7 +24,6 @@ export interface WhiteboardManagementViewEntities extends ActiveWhiteboardIdHold
   calloutId: string;
   contextSource: JourneyTypeName;
   whiteboard: WhiteboardRtDetailsFragment | undefined;
-  templates: CreateWhiteboardWhiteboardTemplateFragment[];
   templateListHeader?: string;
   templateListSubheader?: string;
 }

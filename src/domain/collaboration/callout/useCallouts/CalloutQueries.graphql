@@ -93,7 +93,7 @@ fragment Callout on Callout {
       ...WhiteboardDetails
     }
     link {
-      ...ReferenceDetails
+      ...LinkDetailsWithAuthorization
     }
   }
   comments {

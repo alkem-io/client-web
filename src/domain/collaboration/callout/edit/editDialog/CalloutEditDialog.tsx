@@ -1,7 +1,5 @@
 import React, { FC, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box } from '@mui/material';
-import Dialog from '@mui/material/Dialog';
 import { LoadingButton } from '@mui/lab';
 import calloutIcons from '../../utils/calloutIcons';
 import { DialogActions, DialogContent } from '../../../../../core/ui/dialog/deprecated';
@@ -9,12 +7,7 @@ import DialogHeader from '../../../../../core/ui/dialog/DialogHeader';
 import ConfirmationDialog, { ConfirmationDialogProps } from '../../../../../core/ui/dialogs/ConfirmationDialog';
 import { CalloutDeleteType, CalloutEditType } from '../CalloutEditType';
 import CalloutForm, { CalloutFormInput, CalloutFormOutput } from '../../CalloutForm';
-import {
-  CalloutType,
-  PostTemplateCardFragment,
-  TagsetType,
-  WhiteboardTemplateCardFragment,
-} from '../../../../../core/apollo/generated/graphql-schema';
+import { CalloutType, TagsetType } from '../../../../../core/apollo/generated/graphql-schema';
 import { useWhiteboardTemplateContentLazyQuery } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import { CalloutLayoutProps } from '../../../CalloutBlock/CalloutLayout';
@@ -23,6 +16,7 @@ import { getCalloutDisplayLocationValue } from '../../utils/getCalloutDisplayLoc
 import { JourneyTypeName } from '../../../../journey/JourneyTypeName';
 import { StorageConfigContextProvider } from '../../../../storage/StorageBucket/StorageConfigContext';
 import { DEFAULT_TAGSET } from '../../../../common/tags/tagset.constants';
+import DialogWithGrid from '../../../../../core/ui/dialog/DialogWithGrid';
 
 export interface CalloutEditDialogProps {
   open: boolean;
@@ -33,7 +27,6 @@ export interface CalloutEditDialogProps {
   onCalloutEdit: (callout: CalloutEditType) => Promise<void>;
   canChangeCalloutLocation?: boolean;
   calloutNames: string[];
-  templates: { postTemplates: PostTemplateCardFragment[]; whiteboardTemplates: WhiteboardTemplateCardFragment[] };
   journeyTypeName: JourneyTypeName;
 }
 
@@ -46,7 +39,6 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
   onCalloutEdit,
   canChangeCalloutLocation,
   calloutNames,
-  templates,
   journeyTypeName,
 }) => {
   const { t } = useTranslation();
@@ -106,7 +98,7 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
       displayLocation: newCallout.displayLocation,
     });
     setLoading(false);
-  }, [callout, fetchWhiteboardTemplateContent, newCallout, spaceNameId, onCalloutEdit, templates]);
+  }, [callout, fetchWhiteboardTemplateContent, newCallout, spaceNameId, onCalloutEdit]);
 
   const handleDelete = useCallback(async () => {
     setLoading(true);
@@ -140,16 +132,15 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
 
   return (
     <>
-      <Dialog open={open} maxWidth="md" fullWidth aria-labelledby="callout-visibility-dialog-title" onClose={onClose}>
-        <DialogHeader onClose={onClose}>
-          <Box display="flex" alignItems="center" gap={1}>
-            {CalloutIcon && <CalloutIcon />}
-            {t('components.calloutEdit.titleWithType', {
-              type: t(`components.calloutTypeSelect.label.${calloutType}` as const),
-            })}
-          </Box>
-        </DialogHeader>
-        <DialogContent dividers>
+      <DialogWithGrid open={open} columns={8} aria-labelledby="callout-visibility-dialog-title" onClose={onClose}>
+        <DialogHeader
+          icon={CalloutIcon && <CalloutIcon />}
+          title={t('components.calloutEdit.titleWithType', {
+            type: t(`components.calloutTypeSelect.label.${calloutType}` as const),
+          })}
+          onClose={onClose}
+        />
+        <DialogContent>
           <StorageConfigContextProvider
             locationType="callout"
             journeyTypeName={journeyTypeName}
@@ -188,7 +179,7 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
             {t('buttons.save')}
           </LoadingButton>
         </DialogActions>
-      </Dialog>
+      </DialogWithGrid>
       <ConfirmationDialog {...confirmationDialogProps} />
     </>
   );

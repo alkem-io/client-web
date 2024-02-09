@@ -1,10 +1,10 @@
 import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
 import { JourneyDetails } from '../../../../domain/community/pendingMembership/PendingMemberships';
-import { Avatar, ButtonBase } from '@mui/material';
-import { Caption, CaptionSmall } from '../../../../core/ui/typography';
+import { Avatar, ButtonBase, ListItemButton, ListItemButtonProps, ListItemButtonTypeMap } from '@mui/material';
+import { Caption } from '../../../../core/ui/typography';
 import { Trans, useTranslation } from 'react-i18next';
 import JourneyIcon from '../../../../domain/shared/components/JourneyIcon/JourneyIcon';
-import RouterLink from '../../../../core/ui/link/RouterLink';
+import defaultJourneyAvatar from '../../../../domain/journey/defaultVisuals/Avatar.jpg';
 
 interface NewMembershipCardProps {
   membership: JourneyDetails | undefined;
@@ -13,6 +13,10 @@ interface NewMembershipCardProps {
   membershipType: 'application' | 'invitation' | 'membership';
 }
 
+const Wrapper = <D extends React.ElementType = ListItemButtonTypeMap['defaultComponent'], P = {}>({
+  ...props
+}: ListItemButtonProps<D, P>) => <ListItemButton component={ButtonBase} {...props} />;
+
 const NewMembershipCard = ({ membership, to, onClick, membershipType }: NewMembershipCardProps) => {
   const { t } = useTranslation();
 
@@ -20,13 +24,13 @@ const NewMembershipCard = ({ membership, to, onClick, membershipType }: NewMembe
 
   return (
     <BadgeCardView
-      component={to ? RouterLink : ButtonBase}
-      visual={<Avatar src={membership?.journeyVisual?.uri} />}
+      component={Wrapper}
+      visual={<Avatar src={membership?.journeyVisual?.uri || defaultJourneyAvatar} />}
       to={to}
       onClick={onClick}
       sx={{ textAlign: 'left' }}
     >
-      <Caption>
+      <Caption whiteSpace="nowrap" overflow="hidden" textOverflow="ellipsis">
         <Trans
           t={t}
           i18nKey={`pages.home.sections.newMemberships.${membershipType}.message` as const}
@@ -39,11 +43,11 @@ const NewMembershipCard = ({ membership, to, onClick, membershipType }: NewMembe
           }}
         />
       </Caption>
-      <CaptionSmall>
+      <Caption>
         {t(`pages.home.sections.newMemberships.${membershipType}.caption` as const, {
           tagline: membership?.journeyTagline,
         })}
-      </CaptionSmall>
+      </Caption>
     </BadgeCardView>
   );
 };
