@@ -1,10 +1,9 @@
-import React, { FC, useCallback, useMemo, useState } from 'react';
+import React, { FC, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { LoadingButton } from '@mui/lab';
 import calloutIcons from '../../utils/calloutIcons';
 import { DialogActions, DialogContent } from '../../../../../core/ui/dialog/deprecated';
 import DialogHeader from '../../../../../core/ui/dialog/DialogHeader';
-import ConfirmationDialog, { ConfirmationDialogProps } from '../../../../../core/ui/dialogs/ConfirmationDialog';
 import { CalloutDeleteType, CalloutEditType } from '../CalloutEditType';
 import CalloutForm, { CalloutFormInput, CalloutFormOutput } from '../../CalloutForm';
 import { CalloutType, TagsetType } from '../../../../../core/apollo/generated/graphql-schema';
@@ -23,7 +22,7 @@ export interface CalloutEditDialogProps {
   calloutType: CalloutType;
   callout: CalloutLayoutProps['callout'];
   onClose: () => void;
-  onDelete: (callout: CalloutDeleteType) => Promise<void>;
+  onDelete: (callout: CalloutDeleteType) => void;
   onCalloutEdit: (callout: CalloutEditType) => Promise<void>;
   canChangeCalloutLocation?: boolean;
   calloutNames: string[];
@@ -100,34 +99,6 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
     setLoading(false);
   }, [callout, fetchWhiteboardTemplateContent, newCallout, spaceNameId, onCalloutEdit]);
 
-  const handleDelete = useCallback(async () => {
-    setLoading(true);
-    await onDelete(callout);
-    setLoading(false);
-  }, [onDelete, callout]);
-
-  const handleDialogDelete = () => setConfirmDialogOpened(true);
-
-  const [confirmDialogOpened, setConfirmDialogOpened] = useState(false);
-
-  const confirmationDialogProps = useMemo<ConfirmationDialogProps>(
-    () => ({
-      entities: {
-        titleId: 'callout.delete-confirm-title',
-        contentId: 'callout.delete-confirm-text',
-        confirmButtonTextId: 'buttons.delete',
-      },
-      options: {
-        show: confirmDialogOpened,
-      },
-      actions: {
-        onConfirm: handleDelete,
-        onCancel: () => setConfirmDialogOpened(false),
-      },
-    }),
-    [confirmDialogOpened, handleDelete, setConfirmDialogOpened]
-  );
-
   const CalloutIcon = calloutType ? calloutIcons[calloutType] : undefined;
 
   return (
@@ -164,7 +135,7 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
             loading={loading}
             disabled={loading}
             variant="outlined"
-            onClick={handleDialogDelete}
+            onClick={() => onDelete(callout)}
             aria-label={t('buttons.delete')}
           >
             {t('buttons.delete')}
@@ -180,7 +151,6 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
           </LoadingButton>
         </DialogActions>
       </DialogWithGrid>
-      <ConfirmationDialog {...confirmationDialogProps} />
     </>
   );
 };
