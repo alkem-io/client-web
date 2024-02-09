@@ -27,7 +27,7 @@ import NewMembershipCard from './NewMembershipCard';
 import SeeMore from '../../../../core/ui/content/SeeMore';
 import { VisualType } from '../../../../core/apollo/generated/graphql-schema';
 import BadgeCounter from '../../../../core/ui/icon/BadgeCounter';
-import { Box, useTheme } from '@mui/material';
+import { Box } from '@mui/material';
 
 enum PendingMembershipItemType {
   Invitation,
@@ -89,7 +89,6 @@ const NewMembershipsBlock = ({
   onOpenMemberships,
 }: NewMembershipsBlockProps) => {
   const { t } = useTranslation();
-  const theme = useTheme();
 
   const { data, refetch: refetchNewMembershipsQuery } = useNewMembershipsQuery();
 
@@ -184,8 +183,12 @@ const NewMembershipsBlock = ({
         <PageContentBlockHeader title={t('pages.home.sections.newMemberships.title')} />
         <Box height="100%">
           {pendingInvitations.length === 0 && pendingApplications.length === 0 && (
-            <CaptionSmall color={theme.palette.neutral.light} marginTop={gutters(-1)} marginBottom={gutters(0.5)}>
-              {'pages.home.sections.newMemberships.noOpenInvitations'}
+            <CaptionSmall
+              color={theme => theme.palette.neutral.light}
+              marginTop={gutters(-1)}
+              marginBottom={gutters(0.5)}
+            >
+              {t('pages.home.sections.newMemberships.noOpenInvitations')}
             </CaptionSmall>
           )}
           {pendingInvitations.length > 0 && (
