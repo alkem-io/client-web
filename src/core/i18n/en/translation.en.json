@@ -1994,20 +1994,21 @@
         "newMemberships": {
           "title": "New Memberships",
           "openInvitations": "Open invitations",
+          "noOpenInvitations": "No open invitations",
           "openApplications": "Open applications",
           "recentlyJoined": "Recently joined",
           "seeMore": "All pending memberships",
           "seeAll": "See all my memberships",
           "invitation": {
-            "message": "<journeyicon /> {{journey}}",
+            "message": "{{journey}}",
             "caption": "Click here to see the invitation"
           },
           "application": {
-            "message": "<journeyicon /> {{journey}}",
+            "message": "{{journey}}",
             "caption": "Your application still has to be approved"
           },
           "membership": {
-            "message": "<journeyicon /> {{journey}}",
+            "message": "{{journey}}",
             "caption": "{{tagline}}"
           }
         },
