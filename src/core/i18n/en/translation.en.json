@@ -1994,6 +1994,7 @@
         "newMemberships": {
           "title": "New Memberships",
           "openInvitations": "Open invitations",
+          "noOpenInvitations": "No open invitations",
           "openApplications": "Open applications",
           "recentlyJoined": "Recently joined",
           "seeMore": "All pending memberships",

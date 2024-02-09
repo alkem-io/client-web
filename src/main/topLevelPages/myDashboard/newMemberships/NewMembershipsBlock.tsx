@@ -185,7 +185,7 @@ const NewMembershipsBlock = ({
         <Box height="100%">
           {pendingInvitations.length === 0 && pendingApplications.length === 0 && (
             <CaptionSmall color={theme.palette.neutral.light} marginTop={gutters(-1)} marginBottom={gutters(0.5)}>
-              {'No open invitations'}
+              {'pages.home.sections.newMemberships.noOpenInvitations'}
             </CaptionSmall>
           )}
           {pendingInvitations.length > 0 && (
