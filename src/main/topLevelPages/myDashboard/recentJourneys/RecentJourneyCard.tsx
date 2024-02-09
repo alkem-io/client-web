@@ -14,6 +14,7 @@ import webkitLineClamp from '../../../../core/ui/utils/webkitLineClamp';
 import { BlockTitle } from '../../../../core/ui/typography';
 import { useColumns } from '../../../../core/ui/grid/GridContext';
 import InsertPhotoOutlinedIcon from '@mui/icons-material/InsertPhotoOutlined';
+import defaultJourneyCardBanner from '../../../../domain/journey/defaultVisuals/Card.jpg';
 
 interface RecentJourneyCardProps {
   journey:
@@ -55,7 +56,7 @@ const RecentJourneyCard = ({ journey, journeyTypeName }: RecentJourneyCardProps)
       >
         {journey && (
           <Avatar
-            src={journey.profile.cardBanner?.uri}
+            src={journey.profile.cardBanner?.uri || defaultJourneyCardBanner}
             sx={{ width: '100%', height: 'auto', aspectRatio: RECENT_JOURNEY_CARD_ASPECT_RATIO }}
             variant="square"
           >

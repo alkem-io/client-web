@@ -130,8 +130,10 @@ const CalloutsView = ({
             opportunityNameId,
           });
 
+          const computedBlockProps = typeof blockProps === 'function' ? blockProps(callout, index) : blockProps;
+
           return (
-            <PageContentBlock disablePadding disableGap {...blockProps}>
+            <PageContentBlock disablePadding disableGap {...computedBlockProps}>
               <CalloutView
                 key={callout.id}
                 callout={callout}

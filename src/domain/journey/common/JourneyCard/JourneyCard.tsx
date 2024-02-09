@@ -14,6 +14,7 @@ import CardMemberIcon from '../../../community/membership/CardMemberIcon/CardMem
 import CardBanner from '../../../../core/ui/card/CardImageHeader';
 import { useTranslation } from 'react-i18next';
 import { JourneyCardBanner } from './Banner';
+import defaultCardBanner from '../../defaultVisuals/Card.jpg';
 
 export interface JourneyCardProps extends ContributeCardProps {
   iconComponent: ComponentType<SvgIconProps>;
@@ -67,7 +68,7 @@ const JourneyCard = ({
     <ContributeCard {...containerProps}>
       <Box {...wrapperProps}>
         <CardBanner
-          src={banner?.uri}
+          src={banner?.uri || defaultCardBanner}
           alt={t('visuals-alt-text.banner.card.text', { altText: banner?.alternativeText })}
           overlay={
             <>

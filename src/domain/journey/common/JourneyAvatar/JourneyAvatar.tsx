@@ -4,6 +4,7 @@ import React from 'react';
 import journeyIcon from '../../../shared/components/JourneyIcon/JourneyIcon';
 import { JourneyTypeName } from '../../JourneyTypeName';
 import Avatar, { SizeableAvatarProps } from '../../../../core/ui/avatar/Avatar';
+import defaultJourneyAvatar from '../../defaultVisuals/Avatar.jpg';
 
 interface JourneyAvatarProps extends SizeableAvatarProps {
   journeyTypeName: JourneyTypeName;
@@ -18,7 +19,7 @@ const JourneyAvatar = ({ visualUri, journeyTypeName, hideJourneyIcon = false, si
     <Box position="relative">
       <Avatar
         size={size}
-        src={visualUri}
+        src={visualUri || defaultJourneyAvatar}
         sx={{
           '.MuiAvatar-img': hideJourneyIcon ? undefined : { filter: 'blur(1.5px)', opacity: '50%' },
           '.MuiAvatar-fallback': { display: 'none' },
