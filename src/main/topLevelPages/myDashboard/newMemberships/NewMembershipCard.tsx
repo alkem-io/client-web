@@ -4,6 +4,7 @@ import { Avatar, ButtonBase, ListItemButton, ListItemButtonProps, ListItemButton
 import { Caption } from '../../../../core/ui/typography';
 import { Trans, useTranslation } from 'react-i18next';
 import JourneyIcon from '../../../../domain/shared/components/JourneyIcon/JourneyIcon';
+import defaultJourneyAvatar from '../../../../domain/journey/defaultVisuals/Avatar.jpg';
 
 interface NewMembershipCardProps {
   membership: JourneyDetails | undefined;
@@ -24,7 +25,7 @@ const NewMembershipCard = ({ membership, to, onClick, membershipType }: NewMembe
   return (
     <BadgeCardView
       component={Wrapper}
-      visual={<Avatar src={membership?.journeyVisual?.uri} />}
+      visual={<Avatar src={membership?.journeyVisual?.uri || defaultJourneyAvatar} />}
       to={to}
       onClick={onClick}
       sx={{ textAlign: 'left' }}
