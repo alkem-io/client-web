@@ -1,6 +1,10 @@
 import React, { FC } from 'react';
 import WhiteboardRtActionsContainer from '../containers/WhiteboardRtActionsContainer';
-import { AuthorizationPrivilege, WhiteboardRtContentFragment, WhiteboardRtDetailsFragment } from '../../../../core/apollo/generated/graphql-schema';
+import {
+  AuthorizationPrivilege,
+  WhiteboardRtContentFragment,
+  WhiteboardRtDetailsFragment,
+} from '../../../../core/apollo/generated/graphql-schema';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import WhiteboardRtContentContainer from '../containers/WhiteboardRtContentContainer';
 import WhiteboardRtDialog from '../WhiteboardDialog/WhiteboardRtDialog';
@@ -18,7 +22,7 @@ export interface WhiteboardNavigationMethods {
   backToWhiteboards: () => void;
 }
 
-export interface WhiteboardsRtManagementViewWrapperProps extends ActiveWhiteboardIdHolder, WhiteboardNavigationMethods {
+export interface WhiteboardRtManagementViewProps extends ActiveWhiteboardIdHolder, WhiteboardNavigationMethods {
   journeyTypeName: JourneyTypeName;
   whiteboard: WhiteboardRtDetailsFragment | undefined;
   calloutId: string | undefined;
@@ -28,7 +32,7 @@ export interface WhiteboardsRtManagementViewWrapperProps extends ActiveWhiteboar
   loadingWhiteboards: boolean;
 }
 
-const WhiteboardsRtManagementViewWrapper: FC<WhiteboardsRtManagementViewWrapperProps> = ({
+const WhiteboardRtManagementView: FC<WhiteboardRtManagementViewProps> = ({
   whiteboardNameId,
   calloutId,
   whiteboard,
@@ -65,7 +69,6 @@ const WhiteboardsRtManagementViewWrapper: FC<WhiteboardsRtManagementViewWrapperP
     return null;
   }
 
-
   return (
     <WhiteboardRtActionsContainer>
       {(_, actionsState, actions) => (
@@ -83,11 +86,12 @@ const WhiteboardsRtManagementViewWrapper: FC<WhiteboardsRtManagementViewWrapperP
                 options={{
                   canEdit: hasUpdateContentPrivileges,
                   show: Boolean(whiteboardNameId),
-                  fixedDialogTitle: hasUpdatePrivileges && !readOnlyDisplayName ? undefined : (
-                    <BlockTitle display="flex" alignItems="center">
-                      {whiteboard?.profile.displayName}
-                    </BlockTitle>
-                  ),
+                  fixedDialogTitle:
+                    hasUpdatePrivileges && !readOnlyDisplayName ? undefined : (
+                      <BlockTitle display="flex" alignItems="center">
+                        {whiteboard?.profile.displayName}
+                      </BlockTitle>
+                    ),
                   fullscreen,
                   headerActions: (
                     <>
@@ -112,10 +116,9 @@ const WhiteboardsRtManagementViewWrapper: FC<WhiteboardsRtManagementViewWrapperP
             );
           }}
         </WhiteboardRtContentContainer>
-
       )}
     </WhiteboardRtActionsContainer>
   );
 };
 
-export default WhiteboardsRtManagementViewWrapper;
+export default WhiteboardRtManagementView;
