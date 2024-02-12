@@ -17,7 +17,7 @@ import WhiteboardShareSettings from '../share/WhiteboardShareSettings';
 import useWhiteboardRtContentUpdatePolicy from '../whiteboardRt/contentUpdatePolicy/WhiteboardRtContentUpdatePolicy';
 
 export interface ActiveWhiteboardIdHolder {
-  whiteboardNameId?: string;
+  whiteboardId?: string;
 }
 
 export interface WhiteboardManagementViewEntities extends ActiveWhiteboardIdHolder {
@@ -67,7 +67,7 @@ const WhiteboardRtManagementView: FC<WhiteboardManagementViewProps> = ({
   options,
   backToWhiteboards,
 }) => {
-  const { whiteboardNameId, whiteboard, contextSource } = entities;
+  const { whiteboardId, whiteboard, contextSource } = entities;
   const { fullscreen, setFullscreen } = useFullscreen();
 
   const handleCancel = (/*whiteboard: WhiteboardRtDetailsFragment*/) => {
@@ -97,7 +97,7 @@ const WhiteboardRtManagementView: FC<WhiteboardManagementViewProps> = ({
               }}
               options={{
                 canEdit: options.canUpdateContent,
-                show: Boolean(whiteboardNameId),
+                show: Boolean(whiteboardId),
                 fixedDialogTitle: options.canUpdateDisplayName ? undefined : (
                   <BlockTitle display="flex" alignItems="center">
                     {whiteboard?.profile.displayName}
