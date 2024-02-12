@@ -33,6 +33,7 @@ import {
   ArrowUpwardOutlined,
   CheckCircleOutlined,
   Close,
+  DeleteOutline,
   EditOutlined,
   UnpublishedOutlined,
   VerticalAlignBottomOutlined,
@@ -50,6 +51,8 @@ import { useCreateCalloutTemplate } from '../../platform/admin/templates/Callout
 import SkipLink from '../../../core/ui/keyboardNavigation/SkipLink';
 import { useNextBlockAnchor } from '../../../core/ui/keyboardNavigation/NextBlockAnchor';
 import { LinkDetails } from '../callout/links/LinkCollectionCallout';
+import ConfirmationDialog from '../../../core/ui/dialogs/ConfirmationDialog';
+import useLoadingState from '../../shared/utils/useLoadingState';
 
 export interface CalloutLayoutProps extends CalloutLayoutEvents, Partial<CalloutSortProps> {
   callout: {
@@ -156,6 +159,16 @@ const CalloutLayout = ({
     await onVisibilityChange?.(callout.id, visibility, sendNotification);
     setVisibilityDialogOpen(false);
   };
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const handleDeleteDialogOpen = () => {
+    setDeleteDialogOpen(true);
+    setSettingsAnchorEl(null);
+  };
+
+  const [handleDelete, loadingDelete] = useLoadingState(async () => {
+    await onCalloutDelete?.(callout);
+    setDeleteDialogOpen(false);
+  });
 
   const [saveAsTemplateDialogOpen, setSaveAsTemplateDialogOpen] = useState(false);
   const handleSaveAsTemplateDialogOpen = () => {
@@ -296,6 +309,9 @@ const CalloutLayout = ({
         >
           {t(`buttons.${callout.draft ? '' : 'un'}publish` as const)}
         </MenuItemWithIcon>
+        <MenuItemWithIcon key="delete" iconComponent={DeleteOutline} onClick={handleDeleteDialogOpen}>
+          {t('buttons.delete')}
+        </MenuItemWithIcon>
         {callout.canSaveAsTemplate && (
           <MenuItemWithIcon
             key="saveAsTemplate"
@@ -364,12 +380,29 @@ const CalloutLayout = ({
           calloutType={callout.type}
           callout={callout}
           onCalloutEdit={handleCalloutEdit}
-          onDelete={onCalloutDelete}
+          onDelete={() => setDeleteDialogOpen(true)}
           canChangeCalloutLocation
           calloutNames={calloutNames}
           journeyTypeName={journeyTypeName}
         />
       )}
+      <ConfirmationDialog
+        entities={{
+          titleId: 'callout.delete-confirm-title',
+          contentId: 'callout.delete-confirm-text',
+          confirmButtonTextId: 'buttons.delete',
+        }}
+        options={{
+          show: deleteDialogOpen,
+        }}
+        actions={{
+          onConfirm: handleDelete,
+          onCancel: () => setDeleteDialogOpen(false),
+        }}
+        state={{
+          isLoading: loadingDelete,
+        }}
+      />
     </>
   );
 };
