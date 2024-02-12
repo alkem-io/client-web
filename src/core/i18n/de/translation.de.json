@@ -2000,19 +2000,7 @@
           "title": "New Memberships",
           "openMemberships": "Open applications & invitations",
           "recentlyJoined": "Recently joined",
-          "seeMore": "Show all my memberships",
-          "invitation": {
-            "message": "You are <b>invited</b> to join <journeyicon /> {{journey}}",
-            "caption": "Click here to see the invitation"
-          },
-          "application": {
-            "message": "You <b>applied</b> to join <journeyicon /> {{journey}}",
-            "caption": "Your application still has to be approved"
-          },
-          "membership": {
-            "message": "<journeyicon /> {{journey}}",
-            "caption": "{{tagline}}"
-          }
+          "seeMore": "Show all my memberships"
         },
         "welcome": {
           "welcomeUnauthenticated": "Welcome at Alkemio!",
@@ -2046,8 +2034,7 @@
           "body1": "Für Benutzer stehen Hubs kostenlos zur Verfügung. Erkunden Sie die Mitgliedschaftsoptionen, einschließlich für öffentliche und private Hubs."
         },
         "startingSpace": {
-          "title": "<big>🎉 Starting a Space</big> <small>Ready to build a community on Alkemio? Click here to get started!</small>",
-          "url": "https://alkemio.foundation/contact/"
+          "title": "<big>🎉 Starting a Space</big> <small>Ready to build a community on Alkemio? Click here to get started!</small>"
         },
         "my-spaces": {
           "header": "Meine Räume ({{mySpacesCount}})"

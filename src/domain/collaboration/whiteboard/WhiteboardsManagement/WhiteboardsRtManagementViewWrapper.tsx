@@ -18,7 +18,7 @@ export interface WhiteboardsRtManagementViewWrapperProps extends ActiveWhiteboar
 }
 
 const WhiteboardsRtManagementViewWrapper: FC<WhiteboardsRtManagementViewWrapperProps> = ({
-  whiteboardNameId,
+  whiteboardId,
   calloutId,
   whiteboard,
   authorization,
@@ -47,7 +47,7 @@ const WhiteboardsRtManagementViewWrapper: FC<WhiteboardsRtManagementViewWrapperP
           entities={{
             whiteboard,
             calloutId,
-            whiteboardNameId,
+            whiteboardId,
             contextSource: journeyTypeName,
           }}
           actions={actions}
