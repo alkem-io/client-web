@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useState } from 'react';
-import { useNavigate, useResolvedPath } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Autocomplete, Button, DialogActions, TextField } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import Box from '@mui/material/Box';
@@ -37,7 +37,6 @@ export interface PostSettingsPageProps {
 const PostSettingsPage: FC<PostSettingsPageProps> = ({ journeyTypeName, onClose }) => {
   const { t } = useTranslation();
   const { spaceNameId = '', challengeNameId, opportunityNameId, postNameId = '', calloutNameId = '' } = useUrlParams();
-  const resolved = useResolvedPath('.');
   const navigate = useNavigate();
 
   const [post, setPost] = useState<PostFormOutput>();
@@ -54,9 +53,6 @@ const PostSettingsPage: FC<PostSettingsPageProps> = ({ journeyTypeName, onClose 
       },
       references: post?.profile.references,
     };
-
-  const postIndex = resolved.pathname.indexOf('/posts');
-  const contributeUrl = resolved.pathname.substring(0, postIndex);
 
   const postSettings = usePostSettings({
     postNameId,
@@ -101,7 +97,7 @@ const PostSettingsPage: FC<PostSettingsPageProps> = ({ journeyTypeName, onClose 
     }
 
     await postSettings.handleDelete(postSettings.post.id);
-    navigate(contributeUrl);
+    onClose();
   };
 
   const [handleUpdate, loading] = useLoadingState(async (shouldUpdate: boolean) => {

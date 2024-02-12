@@ -2002,16 +2002,10 @@
           "recentlyJoined": "Recent toegetreden",
           "seeMore": "Toon al mijn lidmaatschappen",
           "invitation": {
-            "message": "Je bent <b>uitgenodigd</b> om je aan te sluiten bij <journeyicon /> {{journey}}",
             "caption": "Klik hier om de uitnodiging te zien"
           },
           "application": {
-            "message": "Je hebt een <b>aanmelding</b> ingediend om lid te worden van <journeyicon /> {{journey}}",
             "caption": "Je aanvraag moet nog goedgekeurd worden"
-          },
-          "membership": {
-            "message": "<journeyicon /> {{journey}}",
-            "caption": "{{tagline}}"
           }
         },
         "welcome": {
@@ -2046,8 +2040,7 @@
           "body1": "Individuele gebruikers kunnen zich aansluiten bij één of meerdere Spaces. Deze Spaces kunnen zowel openbaar als privé zijn."
         },
         "startingSpace": {
-          "title": "<big>🎉 Start jouw Space</big> <small>Klaar om een community te bouwen op Alkemio? Klik hier om te starten!</small>",
-          "url": "https://alkemio.foundation/contact/"
+          "title": "<big>🎉 Start jouw Space</big> <small>Klaar om een community te bouwen op Alkemio? Klik hier om te starten!</small>"
         },
         "my-spaces": {
           "header": "Mijn Spaces ({{mySpacesCount}})"
