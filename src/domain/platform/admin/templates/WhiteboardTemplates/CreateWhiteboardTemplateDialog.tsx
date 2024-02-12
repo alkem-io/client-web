@@ -3,11 +3,12 @@ import WhiteboardTemplateForm, {
   WhiteboardTemplateFormSubmittedValuesWithPreviewImages,
   WhiteboardTemplateFormValues,
 } from './WhiteboardTemplateForm';
-import DialogWithGrid from '../../../../../core/ui/dialog/DialogWithGrid';
+import DialogWithGrid, { DialogFooter } from '../../../../../core/ui/dialog/DialogWithGrid';
 import DialogHeader, { DialogHeaderProps } from '../../../../../core/ui/dialog/DialogHeader';
 import React from 'react';
-import FormikSubmitButton from '../../../../shared/components/forms/FormikSubmitButton';
+import { FormikSubmitButtonPure } from '../../../../shared/components/forms/FormikSubmitButton';
 import EmptyWhiteboard from '../../../../common/whiteboard/EmptyWhiteboard';
+import { DialogActions, DialogContent } from '@mui/material';
 
 export interface CreateWhiteboardTemplateDialogProps {
   open: boolean;
@@ -26,21 +27,26 @@ const CreateWhiteboardTemplateDialog = ({ open, onClose, onSubmit }: CreateWhite
   };
 
   return (
-    <DialogWithGrid
-      open={open}
-      onClose={onClose}
-      PaperProps={{ sx: { backgroundColor: 'background.default', width: theme => theme.spacing(128) } }}
-      maxWidth={false}
-    >
-      <DialogHeader onClose={onClose}>
-        {t('common.create-new-entity', { entity: t('templateLibrary.whiteboardTemplates.name') })}
-      </DialogHeader>
-
-      <WhiteboardTemplateForm
-        initialValues={initialValues}
-        onSubmit={onSubmit}
-        actions={<FormikSubmitButton variant="contained">{t('common.create')}</FormikSubmitButton>}
+    <DialogWithGrid columns={12} open={open} onClose={onClose}>
+      <DialogHeader
+        title={t('common.create-new-entity', { entity: t('templateLibrary.whiteboardTemplates.name') })}
+        onClose={onClose}
       />
+      <DialogContent>
+        <WhiteboardTemplateForm
+          initialValues={initialValues}
+          onSubmit={onSubmit}
+          actions={formik => (
+            <DialogFooter>
+              <DialogActions>
+                <FormikSubmitButtonPure variant="contained" formik={formik} onClick={() => formik.handleSubmit()}>
+                  {t('common.create')}
+                </FormikSubmitButtonPure>
+              </DialogActions>
+            </DialogFooter>
+          )}
+        />
+      </DialogContent>
     </DialogWithGrid>
   );
 };
