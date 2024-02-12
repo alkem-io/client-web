@@ -65,9 +65,15 @@ export const useApolloErrorHandler = (severity: Severity = 'error') => {
 export const isApolloNotFoundError = (error: ApolloError | undefined) => {
   if (error && error.graphQLErrors) {
     const extensions = error.graphQLErrors.map(graphQLError => graphQLError.extensions);
-    if (extensions.find(extension => extension.code === 'ENTITY_NOT_FOUND')) {
-      return true;
-    }
+    return extensions.some(extension => extension.code === 'ENTITY_NOT_FOUND');
+  }
+  return false;
+};
+
+export const isApolloForbiddenError = (error: ApolloError | undefined) => {
+  if (error && error.graphQLErrors) {
+    const extensions = error.graphQLErrors.map(graphQLError => graphQLError.extensions);
+    return extensions.find(extension => extension.code === 'FORBIDDEN');
   }
   return false;
 };
