@@ -25,7 +25,9 @@ const PostRoute: FC<PostRouteProps> = ({ parentPagePath, journeyTypeName }) => {
         <Route path={PostDialogSection.Share} element={<PostSharePage onClose={onClose} />} />
         <Route
           path={PostDialogSection.Settings}
-          element={<PostSettingsPage onClose={onClose} journeyTypeName={journeyTypeName} />}
+          element={
+            <PostSettingsPage onClose={onClose} journeyTypeName={journeyTypeName} parentPagePath={parentPagePath} />
+          }
         />
       </Route>
     </Routes>
