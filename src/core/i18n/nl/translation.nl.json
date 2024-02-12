@@ -2046,8 +2046,7 @@
           "body1": "Individuele gebruikers kunnen zich aansluiten bij één of meerdere Spaces. Deze Spaces kunnen zowel openbaar als privé zijn."
         },
         "startingSpace": {
-          "title": "<big>🎉 Start jouw Space</big> <small>Klaar om een community te bouwen op Alkemio? Klik hier om te starten!</small>",
-          "url": "https://alkemio.foundation/contact/"
+          "title": "<big>🎉 Start jouw Space</big> <small>Klaar om een community te bouwen op Alkemio? Klik hier om te starten!</small>"
         },
         "my-spaces": {
           "header": "Mijn Spaces ({{mySpacesCount}})"
