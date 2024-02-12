@@ -79,7 +79,7 @@ const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: Cal
       includeChallenge: journeyTypeName === 'challenge',
       includeOpportunity: journeyTypeName === 'opportunity',
     },
-    fetchPolicy: 'cache-first',
+    fetchPolicy: 'cache-and-network',
     errorPolicy: 'all',
   });
 
@@ -130,25 +130,14 @@ const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: Cal
     );
   }
 
-  if (!typedCallout) {
-    return renderPage();
-  }
-
-  const calloutDisplayLocation = getCalloutDisplayLocationValue(
-    typedCallout.framing.profile.displayLocationTagset?.tags
-  );
+  const calloutDisplayLocation =
+    typedCallout && getCalloutDisplayLocationValue(typedCallout.framing.profile.displayLocationTagset?.tags);
 
   const parentPagePath = typeof parentRoute === 'function' ? parentRoute(calloutDisplayLocation) : parentRoute;
 
   const handleClose = () => {
     backOrElse(parentPagePath);
   };
-
-  const calloutUri = buildCalloutUrl(typedCallout.nameID, {
-    spaceNameId,
-    challengeNameId,
-    opportunityNameId,
-  });
 
   if (isApolloForbiddenError(error)) {
     return (
@@ -163,6 +152,16 @@ const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: Cal
       </>
     );
   }
+
+  if (!typedCallout) {
+    return renderPage();
+  }
+
+  const calloutUri = buildCalloutUrl(typedCallout.nameID, {
+    spaceNameId,
+    challengeNameId,
+    opportunityNameId,
+  });
 
   return (
     <>
