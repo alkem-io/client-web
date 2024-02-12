@@ -32,10 +32,9 @@ import { DialogFooter } from '../../../../core/ui/dialog/DialogWithGrid';
 export interface PostSettingsPageProps {
   onClose: () => void;
   journeyTypeName: JourneyTypeName;
-  parentPagePath: string;
 }
 
-const PostSettingsPage: FC<PostSettingsPageProps> = ({ journeyTypeName, onClose, parentPagePath }) => {
+const PostSettingsPage: FC<PostSettingsPageProps> = ({ journeyTypeName, onClose }) => {
   const { t } = useTranslation();
   const { spaceNameId = '', challengeNameId, opportunityNameId, postNameId = '', calloutNameId = '' } = useUrlParams();
   const navigate = useNavigate();
@@ -98,7 +97,7 @@ const PostSettingsPage: FC<PostSettingsPageProps> = ({ journeyTypeName, onClose,
     }
 
     await postSettings.handleDelete(postSettings.post.id);
-    navigate(parentPagePath);
+    onClose();
   };
 
   const [handleUpdate, loading] = useLoadingState(async (shouldUpdate: boolean) => {
