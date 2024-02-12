@@ -153,22 +153,6 @@ fragment CalloutWithWhiteboard on Callout {
   }
 }
 
-fragment CalloutWithWhiteboardRt on Callout {
-  id
-  nameID
-  type
-  authorization {
-    id
-    anonymousReadAccess
-    myPrivileges
-  }
-  framing {
-    whiteboardRt {
-      ...WhiteboardRtDetails
-    }
-  }
-}
-
 fragment CollaborationWithWhiteboardDetails on Collaboration {
   id
   callouts {
@@ -197,14 +181,6 @@ query WhiteboardFromCallout($calloutId: UUID!, $whiteboardId: UUID_NAMEID!) {
   lookup {
     callout(ID: $calloutId) {
       ...CalloutWithWhiteboard
-    }
-  }
-}
-
-query WhiteboardRtFromCallout($calloutId: UUID!) {
-  lookup {
-    callout(ID: $calloutId) {
-      ...CalloutWithWhiteboardRt
     }
   }
 }

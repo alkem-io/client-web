@@ -37,8 +37,8 @@
     "icon": "🎉",
     "releaseUpdates": {
       "3": {
-        "title": "Introducing... My Dashboard!",
-        "content": "We're very excited to welcome you at your new Alkemio \"Homepage\": <b>My Dashboard</b>. Here you can easily resume your work and stay updated on your communities. Have a look at these new features:<br/><br/>🚀 <b>Quick access to your favorite communities</b> You’ll see the last 5 places that you’ve contributed to, whether they are Spaces, Challenges, or Opportunities. To see more, just click on the button on the right.<br/><br/>🔔 <b>All the latest activities in one place</b> The Recent Contributions panel shows you everything that’s going on in your communities. You can filter by Spaces and by your role in them.<br/><br/><b>...and there is more:</b><br/><ul><li>Don’t miss any invitations: they are now shown in the New Memberships block</li><li>Keep track of your own latest activities with My Latest Contributions</li><li>Discover new templates from the Innovation Library</li><li>Make the most out of Alkemio with the ‘Tips and Tricks’</li><li>Good to know: The exact layout of your Dashboard depends on whether you're signed in or not, and whether you have any memberships. </li></ul>Scroll down to explore what else is on your new Dashboard, and <b>tell us what you think</b>! We’ve created a discussion on the [forum](/forum) to hear your feedback."
+        "title": "We introduceren... Mijn Dashboard!",
+        "content": "Welkom op je nieuwe Alkemio “Homepage”: <b>Mijn Dashboard</b>! Hier kun je gemakkelijk je werk hervatten en op de hoogte blijven van je communities. Bekijk deze nieuwe functies:<br/><br/>🚀 <b>Snel toegang tot je favoriete communities</b> Je ziet de laatste 5 plaatsen waar je aan hebt bijgedragen, of het nu Spaces, Challenges of Opportunities zijn. Om meer te zien, klik je op de knop rechts.<br/><br/>🔔 <b>Alle laatste activiteiten op één plek</b> Het Recent Contributions panel laat je alles zien wat er gebeurt in je communities. Je kunt filteren op Spaces en op je rol in hen.<br/><br/><b>…en er is meer:</b><br/><ul><li>Mis geen enkele uitnodiging: ze worden nu getoond in het New Memberships blok</li><li>Houd je eigen laatste activiteiten bij met My Latest Contributions</li><li>Ontdek nieuwe templates uit de Innovation Library</li><li>Haal het meeste uit Alkemio met de ‘Tips and Tricks’</li><li>Goed om te weten: De exacte indeling van je Dashboard hangt af van of je ingelogd bent of niet, en of je wel of geen lid bent van een Space. </li></ul>Scroll naar beneden om te ontdekken wat er nog meer op je nieuwe Dashboard staat, en <b>vertel ons wat je ervan vindt</b>! We hebben een discussie op het [forum](/forum) gemaakt om alle feedback te verzamelen."
       },
       "2": {
         "title": "We hebben spannend nieuws, er is een nieuwe release vol interessante functionaliteiten uit!",
@@ -604,9 +604,9 @@
       "maxLeadsWarning": "Let op dat er een <b>maximum aantal leads</b> is voor de communities. Als het maximale aantal wordt bereikt, wordt deze optie voor anderen uitgeschakeld.",
       "removeMember": {
         "sectionTitle": "Lid verwijderen",
-        "remove": "Klik hier om deze gebruiker uit deze Space te verwijderen. Wees voorzichtig, deze actie kan niet ongedaan worden gemaakt.",
+        "remove": "Klik hier om deze gebruiker uit de Community te verwijderen. Wees voorzichtig, deze actie kan niet ongedaan worden gemaakt.",
         "dialogTitle": "Weet je zeker dat je dit lid wilt verwijderen?",
-        "dialogContent": "Door op 'bevestigen' te klikken zal {{member}} worden verwijderd uit deze Space en alle onderliggende Challenges en Opportunities waar {{memberFirstName}} lid van is. De bijdragen van {{memberFirstName}} blijven wel zichtbaar."
+        "dialogContent": "Door op 'bevestigen' te klikken zal {{member}} worden verwijderd uit deze Community en alle onderliggende Challenges en Opportunities waar {{memberFirstName}} lid van is. De bijdragen van {{memberFirstName}} blijven wel zichtbaar."
       }
     }
   },
@@ -628,7 +628,6 @@
       "add-another": "Voeg nog een link toe",
       "delete-link": "Klik hier om deze link te verwijderen",
       "save-to-add": "Klik op 'Opslaan als concept' of 'Publiceren' om links toe te voegen.",
-      "click-to-see": "{{count}} links, klik hier voor alle links",
       "no-links-yet": "Er zijn nog geen links, voeg nu de eerste toe!",
       "delete-confirm-title": "Deze link verwijderen?",
       "delete-confirm": "Weet je zeker dat je deze link uit {{title}} wilt verwijderen?",
@@ -915,7 +914,7 @@
       "title": "Challenges en Opportunities in {{space}}",
       "help": "Deze Space bevat de volgende Challenges. Ook zijn de eventuele onderliggende Opportunities zichtbaar.",
       "privateChallenge": "Dit is een gesloten Challenge. Om de inhoud en eventuele onderliggende Opportunities te bekijken, kun je je aanmelden voor de Challenge.",
-      "showAll": "Toon alle Challenges en Opportunities in deze Space"
+      "showAll": "Toon alles"
     },
     "dashboardRecentContributions": {
       "title": "Bijdragen",
@@ -1119,7 +1118,7 @@
         "POST": "Post",
         "POST_COLLECTION": "Oproep voor Posts",
         "WHITEBOARD_COLLECTION": "Oproep voor Whiteboards",
-        "LINK_COLLECTION": "Collectie van links",
+        "LINK_COLLECTION": "Collectie van links en documenten",
         "WHITEBOARD": "Whiteboard",
         "WHITEBOARD_RT": "Whiteboard RealTime"
       },
@@ -1975,7 +1974,7 @@
         },
         "recentJourneys": {
           "seeMore": {
-            "full": "Bekijk al je Spaces, Challenges en Opportunities",
+            "full": "Bekijk al je Spaces",
             "short": "Bekijk al je Spaces"
           }
         },
@@ -1998,19 +1997,22 @@
         },
         "newMemberships": {
           "title": "Nieuwe Lidmaatschappen",
-          "openMemberships": "Openstaande aanmeldingen & uitnodigingen",
+          "openInvitations": "Openstaande uitnodigingen",
+          "noOpenInvitations": "Geen openstaande uitnodigingen",
+          "openApplications": "Openstaande aanmeldingen",
           "recentlyJoined": "Recent toegetreden",
-          "seeMore": "Toon al mijn lidmaatschappen",
+          "seeMore": "Alle openstaande lidmaatschappen",
+          "seeAll": "Al mijn lidmaatschappen",
           "invitation": {
-            "message": "Je bent <b>uitgenodigd</b> om je aan te sluiten bij <journeyicon /> {{journey}}",
+            "message": "{{journey}}",
             "caption": "Klik hier om de uitnodiging te zien"
           },
           "application": {
-            "message": "Je hebt een <b>aanmelding</b> ingediend om lid te worden van <journeyicon /> {{journey}}",
+            "message": "{{journey}}",
             "caption": "Je aanvraag moet nog goedgekeurd worden"
           },
           "membership": {
-            "message": "<journeyicon /> {{journey}}",
+            "message": "{{journey}}",
             "caption": "{{tagline}}"
           }
         },
@@ -2047,7 +2049,7 @@
         },
         "startingSpace": {
           "title": "<big>🎉 Start jouw Space</big> <small>Klaar om een community te bouwen op Alkemio? Klik hier om te starten!</small>",
-          "url": "https://alkemio.foundation/contact/"
+          "url": "https://welcome.alkem.io/want-to-own-space/"
         },
         "my-spaces": {
           "header": "Mijn Spaces ({{mySpacesCount}})"
@@ -2069,28 +2071,34 @@
           "findMoreUrl": "https://welcome.alkem.io/blog/",
           "items": [
             {
-              "title": "Nieuw hier? 👋 Welkom op het platform!",
-              "description": "Begin meteen met deze snelle stappen",
-              "imageUrl": "https://alkem.io/api/private/rest/storage/document/cd53aebe-cb43-4d04-98c6-04888bad1c9f",
-              "url": "https://alkem.io/building-alkemio-org/challenges/welcomealkemio-6154/dashboard"
+              "title": "👋 Welkom bij de Welcome@Alkemio Space",
+              "description": "Bekijk de voorbeelden, best practices, tips en trucs",
+              "imageUrl": "/my-dashboard/tipsntricks-welcome.webp",
+              "url": "https://alkem.io/welcome-space/dashboard"
             },
             {
-              "title": "Begeleid je Challenge in eenvoudige stappen",
-              "description": "Hoe je de innovation flow kan gebruiken om je proces te structureren",
-              "imageUrl": "https://welcome.alkem.io/blog/2023-07-nadine-intro/featured_hu3d03a01dcc18bc5be0e67db3d8d209a6_2619486_808x455_fill_q75_h2_lanczos_smart1_3.webp",
-              "url": "https://alkem.io/building-alkemio-org/challenges/welcomealkemio-6154/dashboard"
+              "title": "💭 Neem een kijkje in de FAQ",
+              "description": "Vind een antwoord op de veelgestelde vragen",
+              "imageUrl": "/my-dashboard/tipsntricks-faq.webp",
+              "url": "https://welcome.alkem.io/faq/"
             },
             {
-              "title": "🧑‍🎨 Whiteboards gebruiken als een pro",
-              "description": "De sneltoetsen die je leven veranderen",
-              "imageUrl": "https://alkem.io/api/private/rest/storage/document/6ec5cc25-ea56-4eff-8470-3adc576ed7b5",
-              "url": "https://alkem.io/building-alkemio-org/challenges/welcomealkemio-6154/dashboard"
+              "title": "⚒️ Een nieuwe Space starten",
+              "description": "Een plek om met elkaar aan de slag te gaan",
+              "imageUrl": "/my-dashboard/tipsntricks-space.webp",
+              "url": "https://welcome.alkem.io/want-to-own-space/"
             },
             {
-              "title": "Een nieuwe Space starten",
-              "description": "👍 Bekijk de mogelijkheden hier! ",
-              "imageUrl": "https://alkem.io/api/private/rest/storage/document/51f4e9f8-758d-412a-9026-48e348384c04",
-              "url": "https://alkem.io/building-alkemio-org/challenges/welcomealkemio-6154/dashboard"
+              "title": "📑 Lees meer over de kernconcepten",
+              "description": "Voor een soepele start op het platform",
+              "imageUrl": "/my-dashboard/tipsntricks-concepts.webp",
+              "url": "https://welcome.alkem.io/help/key-concepts/"
+            },
+            {
+              "title": "💬 Powered by Generative AI",
+              "description": "De introductie van Alkemio's Automated Guidance Chat",
+              "imageUrl": "/my-dashboard/tipsntricks-genai.webp",
+              "url": "https://welcome.alkem.io/blog/2024-01-19-chatbot/"
             }
           ]
         },

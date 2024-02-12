@@ -628,7 +628,6 @@
       "add-another": "Adicionar outro link",
       "delete-link": "Clique aqui para excluir este link",
       "save-to-add": "Clique em ‘Salvar como rascunho’ ou ‘Publicar’ para começar a adicionar links.",
-      "click-to-see": "Links {{count}}, clique aqui para mostrar todos",
       "no-links-yet": "Ainda não há links, seja o primeiro a adicionar um!",
       "delete-confirm-title": "Excluir este link?",
       "delete-confirm": "Tem certeza que deseja remover este link do {{title}}?",
@@ -915,7 +914,7 @@
       "title": "Desafios e Oportunidades em {{space}}",
       "help": "Este espaço possui os seguintes Desafios. Quando estes Desafios tiverem Oportunidades, estes também serão visíveis.",
       "privateChallenge": "Este é um Desafio privado. Para visualizar seu conteúdo e oportunidades potenciais, visite o Desafio e inscreva-se para se tornar um membro.",
-      "showAll": "Mostrar todos os Desafios e Oportunidades neste Espaço"
+      "showAll": "Show all"
     },
     "dashboardRecentContributions": {
       "title": "Contribuições",
@@ -1119,7 +1118,7 @@
         "POST": "Post",
         "POST_COLLECTION": "Chamada para Posts",
         "WHITEBOARD_COLLECTION": "Chamada para Whiteboards",
-        "LINK_COLLECTION": "Coleção de Links",
+        "LINK_COLLECTION": "Collection of Links and Documents",
         "WHITEBOARD": "Whiteboard",
         "WHITEBOARD_RT": "Whiteboard em tempo real"
       },
@@ -1975,7 +1974,7 @@
         },
         "recentJourneys": {
           "seeMore": {
-            "full": "Explore all your Spaces, Challenges, and Opportunities",
+            "full": "Explore all your Spaces",
             "short": "Explore all your Spaces"
           }
         },
@@ -1998,19 +1997,22 @@
         },
         "newMemberships": {
           "title": "New Memberships",
-          "openMemberships": "Open applications & invitations",
+          "openInvitations": "Open invitations",
+          "noOpenInvitations": "No open invitations",
+          "openApplications": "Open applications",
           "recentlyJoined": "Recently joined",
-          "seeMore": "Show all my memberships",
+          "seeMore": "All pending memberships",
+          "seeAll": "See all my memberships",
           "invitation": {
-            "message": "You are <b>invited</b> to join <journeyicon /> {{journey}}",
+            "message": "{{journey}}",
             "caption": "Click here to see the invitation"
           },
           "application": {
-            "message": "You <b>applied</b> to join <journeyicon /> {{journey}}",
+            "message": "{{journey}}",
             "caption": "Your application still has to be approved"
           },
           "membership": {
-            "message": "<journeyicon /> {{journey}}",
+            "message": "{{journey}}",
             "caption": "{{tagline}}"
           }
         },
@@ -2047,7 +2049,7 @@
         },
         "startingSpace": {
           "title": "<big>🎉 Starting a Space</big> <small>Ready to build a community on Alkemio? Click here to get started!</small>",
-          "url": "https://alkemio.foundation/contact/"
+          "url": "https://welcome.alkem.io/want-to-own-space/"
         },
         "my-spaces": {
           "header": "Meus Espaços ({{mySpacesCount}})"
@@ -2069,28 +2071,34 @@
           "findMoreUrl": "https://welcome.alkem.io/blog/",
           "items": [
             {
-              "title": "New here? 👋 Welcome at the platform!",
-              "description": "Click here for some quick steps to get started",
-              "imageUrl": "https://alkem.io/api/private/rest/storage/document/cd53aebe-cb43-4d04-98c6-04888bad1c9f",
-              "url": "https://alkem.io/building-alkemio-org/challenges/welcomealkemio-6154/dashboard"
+              "title": "👋 Join the Welcome@Alkemio Space",
+              "description": "To find examples, best practices, tips and tricks",
+              "imageUrl": "/my-dashboard/tipsntricks-welcome.webp",
+              "url": "https://alkem.io/welcome-space/dashboard"
             },
             {
-              "title": "Guiding your Challenge step by step",
-              "description": "How to use the innovation flow to structure your process",
-              "imageUrl": "https://welcome.alkem.io/blog/2023-07-nadine-intro/featured_hu3d03a01dcc18bc5be0e67db3d8d209a6_2619486_808x455_fill_q75_h2_lanczos_smart1_3.webp",
-              "url": "https://alkem.io/building-alkemio-org/challenges/welcomealkemio-6154/dashboard"
+              "title": "💭 Have a look at the FAQ",
+              "description": "To find answers to your most urgent questions",
+              "imageUrl": "/my-dashboard/tipsntricks-faq.webp",
+              "url": "https://welcome.alkem.io/faq/"
             },
             {
-              "title": "🧑‍🎨 Using whiteboards like a pro",
-              "description": "The keyboard-shortcuts that will change your life",
-              "imageUrl": "https://alkem.io/api/private/rest/storage/document/6ec5cc25-ea56-4eff-8470-3adc576ed7b5",
-              "url": "https://alkem.io/building-alkemio-org/challenges/welcomealkemio-6154/dashboard"
+              "title": "⚒️ Start a new Space",
+              "description": "To gather contributors for your envisioned change",
+              "imageUrl": "/my-dashboard/tipsntricks-space.webp",
+              "url": "https://welcome.alkem.io/want-to-own-space/"
             },
             {
-              "title": "Starting a new Space",
-              "description": "👍 Have a look at the possibilities here! ",
-              "imageUrl": "https://alkem.io/api/private/rest/storage/document/51f4e9f8-758d-412a-9026-48e348384c04",
-              "url": "https://alkem.io/building-alkemio-org/challenges/welcomealkemio-6154/dashboard"
+              "title": "📑 Read more about the Key concepts",
+              "description": "To help you get started smoothly on the platform",
+              "imageUrl": "/my-dashboard/tipsntricks-concepts.webp",
+              "url": "https://welcome.alkem.io/help/key-concepts/"
+            },
+            {
+              "title": "💬 Powered by Generative AI",
+              "description": "Introducing Alkemio's Automated Guidance Chat",
+              "imageUrl": "/my-dashboard/tipsntricks-genai.webp",
+              "url": "https://welcome.alkem.io/blog/2024-01-19-chatbot/"
             }
           ]
         },

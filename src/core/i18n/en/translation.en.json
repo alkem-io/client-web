@@ -2049,7 +2049,7 @@
         },
         "startingSpace": {
           "title": "<big>🎉 Starting a Space</big> <small>Ready to build a community on Alkemio? Click here to get started!</small>",
-          "url": "https://alkemio.foundation/contact/"
+          "url": "https://welcome.alkem.io/want-to-own-space/"
         },
         "my-spaces": {
           "header": "My Spaces ({{mySpacesCount}})"
