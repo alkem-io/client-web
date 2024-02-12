@@ -153,7 +153,7 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
   const prepareWhiteboardForUpdate = async (
     whiteboard: WhiteboardRtWithContent,
     state: RelevantExcalidrawState | undefined,
-    shouldUploadPreviewImages = false
+    shouldUploadPreviewImages = true
   ): Promise<{
     whiteboard: Whiteboard;
     previewImages?: WhiteboardPreviewImage[];
@@ -213,15 +213,14 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
     };
   };
 
-  const handleSave = async () => {
+  const handleManualSave = async () => {
     if (!whiteboard) {
       throw new Error('Whiteboard not defined');
     }
     const whiteboardState = await getWhiteboardState();
     const { whiteboard: updatedWhiteboard, previewImages } = await prepareWhiteboardForUpdate(
       whiteboard,
-      whiteboardState,
-      true
+      whiteboardState
     );
     return submitUpdate(updatedWhiteboard, previewImages);
   };
@@ -229,8 +228,11 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
   const onClose = async () => {
     if (editModeEnabled && collaborationEnabled && whiteboard) {
       const whiteboardState = await getWhiteboardState();
-      const { whiteboard: updatedWhiteboard } = await prepareWhiteboardForUpdate(whiteboard, whiteboardState);
-      submitUpdate(updatedWhiteboard);
+      const { whiteboard: updatedWhiteboard, previewImages } = await prepareWhiteboardForUpdate(
+        whiteboard,
+        whiteboardState
+      );
+      submitUpdate(updatedWhiteboard, previewImages);
     }
     actions.onCancel(whiteboard!);
   };
@@ -276,7 +278,7 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
         <Formik
           innerRef={formikRef}
           initialValues={initialValues}
-          onSubmit={() => { }}
+          onSubmit={() => {}}
           validationSchema={whiteboardSchema}
         >
           {() => (
@@ -320,8 +322,12 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
                     actions={{
                       onInitApi: setExcalidrawAPI,
                       onUpdate: async state => {
-                        const { whiteboard: updatedWhiteboard } = await prepareWhiteboardForUpdate(whiteboard, state);
-                        return submitUpdate(updatedWhiteboard);
+                        const { whiteboard: updatedWhiteboard, previewImages } = await prepareWhiteboardForUpdate(
+                          whiteboard,
+                          state,
+                          false
+                        );
+                        return submitUpdate(updatedWhiteboard, previewImages);
                       },
                       onSavedToDatabase: () => {
                         refetchLastSaved({
@@ -341,7 +347,7 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
               </DialogContent>
               <WhiteboardDialogFooter
                 lastSavedDate={lastSavedDate}
-                onSave={handleSave}
+                onSave={handleManualSave}
                 canUpdateContent={options.canEdit!}
                 updating={state?.updatingWhiteboardContent}
                 createdBy={whiteboard?.createdBy}
