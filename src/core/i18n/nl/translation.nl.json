@@ -2002,16 +2002,10 @@
           "recentlyJoined": "Recent toegetreden",
           "seeMore": "Toon al mijn lidmaatschappen",
           "invitation": {
-            "message": "Je bent <b>uitgenodigd</b> om je aan te sluiten bij <journeyicon /> {{journey}}",
             "caption": "Klik hier om de uitnodiging te zien"
           },
           "application": {
-            "message": "Je hebt een <b>aanmelding</b> ingediend om lid te worden van <journeyicon /> {{journey}}",
             "caption": "Je aanvraag moet nog goedgekeurd worden"
-          },
-          "membership": {
-            "message": "<journeyicon /> {{journey}}",
-            "caption": "{{tagline}}"
           }
         },
         "welcome": {
