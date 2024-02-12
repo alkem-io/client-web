@@ -73,7 +73,7 @@ export const isApolloNotFoundError = (error: ApolloError | undefined) => {
 export const isApolloForbiddenError = (error: ApolloError | undefined) => {
   if (error && error.graphQLErrors) {
     const extensions = error.graphQLErrors.map(graphQLError => graphQLError.extensions);
-    return extensions.find(extension => extension.code === 'FORBIDDEN');
+    return extensions.some(extension => extension.code === 'FORBIDDEN');
   }
   return false;
 };
