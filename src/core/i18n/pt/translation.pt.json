@@ -2046,8 +2046,7 @@
           "body1": "Para usuários, os Espaços são livres para entrar. Explore as opções, inclusive para espaços públicos e privados."
         },
         "startingSpace": {
-          "title": "<big>🎉 Starting a Space</big> <small>Ready to build a community on Alkemio? Click here to get started!</small>",
-          "url": "https://alkemio.foundation/contact/"
+          "title": "<big>🎉 Starting a Space</big> <small>Ready to build a community on Alkemio? Click here to get started!</small>"
         },
         "my-spaces": {
           "header": "Meus Espaços ({{mySpacesCount}})"

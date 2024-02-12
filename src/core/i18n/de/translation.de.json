@@ -2046,8 +2046,7 @@
           "body1": "Für Benutzer stehen Hubs kostenlos zur Verfügung. Erkunden Sie die Mitgliedschaftsoptionen, einschließlich für öffentliche und private Hubs."
         },
         "startingSpace": {
-          "title": "<big>🎉 Starting a Space</big> <small>Ready to build a community on Alkemio? Click here to get started!</small>",
-          "url": "https://alkemio.foundation/contact/"
+          "title": "<big>🎉 Starting a Space</big> <small>Ready to build a community on Alkemio? Click here to get started!</small>"
         },
         "my-spaces": {
           "header": "Meine Räume ({{mySpacesCount}})"
