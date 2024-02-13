@@ -16,7 +16,7 @@ import useWhiteboardRtContentUpdatePolicy from '../whiteboardRt/contentUpdatePol
 import WhiteboardShareSettings from '../share/WhiteboardShareSettings';
 
 export interface ActiveWhiteboardIdHolder {
-  whiteboardNameId?: string;
+  whiteboardId?: string;
 }
 export interface WhiteboardNavigationMethods {
   backToWhiteboards: () => void;
@@ -33,7 +33,7 @@ export interface WhiteboardRtManagementViewProps extends ActiveWhiteboardIdHolde
 }
 
 const WhiteboardRtManagementView: FC<WhiteboardRtManagementViewProps> = ({
-  whiteboardNameId,
+  whiteboardId,
   calloutId,
   whiteboard,
   authorization,
@@ -85,7 +85,7 @@ const WhiteboardRtManagementView: FC<WhiteboardRtManagementViewProps> = ({
                 }}
                 options={{
                   canEdit: hasUpdateContentPrivileges,
-                  show: Boolean(whiteboardNameId),
+                  show: Boolean(whiteboardId),
                   fixedDialogTitle:
                     hasUpdatePrivileges && !readOnlyDisplayName ? undefined : (
                       <BlockTitle display="flex" alignItems="center">

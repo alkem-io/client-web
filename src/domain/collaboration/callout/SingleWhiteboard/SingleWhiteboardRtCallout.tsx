@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import CalloutLayout, { CalloutLayoutProps } from '../../CalloutBlock/CalloutLayout';
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
-import { WhiteboardRtProvider } from '../../whiteboard/containers/WhiteboardRtProvider';
 import WhiteboardRtManagementView from '../../whiteboard/WhiteboardsManagement/WhiteboardRtManagementView';
 import { buildCalloutUrl } from '../../../../main/routing/urlBuilders';
 import WhiteboardPreview from '../../whiteboard/whiteboardPreview/WhiteboardPreview';
@@ -49,29 +48,21 @@ const SingleWhiteboardRtCallout = ({
         onClick={() => setIsWhiteboardDialogOpen(true)}
       />
       {isWhiteboardDialogOpen && (
-        <WhiteboardRtProvider
-          {...{
-            spaceId: spaceNameId, // TODO: Should be spaceId in the future, but for now it works
-            calloutId: callout.id,
-            whiteboardNameId: callout.framing.whiteboardRt.id,
-          }}
-        >
-          {(entities, state) => (
-            <WhiteboardRtManagementView
-              whiteboardNameId={callout.framing.whiteboardRt?.id}
-              backToWhiteboards={handleCloseWhiteboardDialog}
-              journeyTypeName={journeyTypeName}
-              whiteboardShareUrl={buildCalloutUrl(callout.nameID, {
-                spaceNameId,
-                challengeNameId,
-                opportunityNameId,
-              })}
-              readOnlyDisplayName
-              {...entities}
-              {...state}
-            />
-          )}
-        </WhiteboardRtProvider>
+        <WhiteboardRtManagementView
+          whiteboardId={callout.framing.whiteboardRt?.id}
+          backToWhiteboards={handleCloseWhiteboardDialog}
+          journeyTypeName={journeyTypeName}
+          whiteboardShareUrl={buildCalloutUrl(callout.nameID, {
+            spaceNameId,
+            challengeNameId,
+            opportunityNameId,
+          })}
+          readOnlyDisplayName
+          calloutId={callout.id}
+          whiteboard={callout.framing.whiteboardRt}
+          authorization={callout.framing.whiteboardRt.authorization}
+          loadingWhiteboards={false}
+        />
       )}
     </CalloutLayout>
   );
