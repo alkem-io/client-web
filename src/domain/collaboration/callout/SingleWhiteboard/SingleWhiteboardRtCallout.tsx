@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import CalloutLayout, { CalloutLayoutProps } from '../../CalloutBlock/CalloutLayout';
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
-import WhiteboardRtManagementView from '../../whiteboard/WhiteboardsManagement/WhiteboardRtManagementView';
+import WhiteboardRtView from '../../whiteboard/WhiteboardsManagement/WhiteboardRtView';
 import { buildCalloutUrl } from '../../../../main/routing/urlBuilders';
 import WhiteboardPreview from '../../whiteboard/whiteboardPreview/WhiteboardPreview';
 
@@ -48,7 +48,7 @@ const SingleWhiteboardRtCallout = ({
         onClick={() => setIsWhiteboardDialogOpen(true)}
       />
       {isWhiteboardDialogOpen && (
-        <WhiteboardRtManagementView
+        <WhiteboardRtView
           whiteboardId={callout.framing.whiteboardRt?.id}
           backToWhiteboards={handleCloseWhiteboardDialog}
           journeyTypeName={journeyTypeName}

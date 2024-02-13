@@ -22,7 +22,7 @@ export interface WhiteboardNavigationMethods {
   backToWhiteboards: () => void;
 }
 
-export interface WhiteboardRtManagementViewProps extends ActiveWhiteboardIdHolder, WhiteboardNavigationMethods {
+export interface WhiteboardRtViewProps extends ActiveWhiteboardIdHolder, WhiteboardNavigationMethods {
   journeyTypeName: JourneyTypeName;
   whiteboard: WhiteboardRtDetailsFragment | undefined;
   authorization: WhiteboardRtDetailsFragment['authorization'];
@@ -31,7 +31,7 @@ export interface WhiteboardRtManagementViewProps extends ActiveWhiteboardIdHolde
   loadingWhiteboards: boolean;
 }
 
-const WhiteboardRtManagementView: FC<WhiteboardRtManagementViewProps> = ({
+const WhiteboardRtView: FC<WhiteboardRtViewProps> = ({
   whiteboardId,
   whiteboard,
   authorization,
@@ -115,4 +115,4 @@ const WhiteboardRtManagementView: FC<WhiteboardRtManagementViewProps> = ({
   );
 };
 
-export default WhiteboardRtManagementView;
+export default WhiteboardRtView;
