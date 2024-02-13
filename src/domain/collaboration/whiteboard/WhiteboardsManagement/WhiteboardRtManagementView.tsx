@@ -25,7 +25,6 @@ export interface WhiteboardNavigationMethods {
 export interface WhiteboardRtManagementViewProps extends ActiveWhiteboardIdHolder, WhiteboardNavigationMethods {
   journeyTypeName: JourneyTypeName;
   whiteboard: WhiteboardRtDetailsFragment | undefined;
-  calloutId: string | undefined;
   authorization: WhiteboardRtDetailsFragment['authorization'];
   whiteboardShareUrl: string;
   readOnlyDisplayName?: boolean;
@@ -34,7 +33,6 @@ export interface WhiteboardRtManagementViewProps extends ActiveWhiteboardIdHolde
 
 const WhiteboardRtManagementView: FC<WhiteboardRtManagementViewProps> = ({
   whiteboardId,
-  calloutId,
   whiteboard,
   authorization,
   journeyTypeName,
@@ -64,10 +62,6 @@ const WhiteboardRtManagementView: FC<WhiteboardRtManagementViewProps> = ({
     whiteboardId: whiteboard?.id,
     skip: !hasUpdatePrivileges,
   });
-
-  if (!calloutId) {
-    return null;
-  }
 
   return (
     <WhiteboardRtActionsContainer>
