@@ -24,15 +24,11 @@ const CreateInnovationTemplateDialog = ({ open, onClose, onSubmit }: CreatePostT
   };
 
   return (
-    <DialogWithGrid
-      open={open}
-      onClose={onClose}
-      PaperProps={{ sx: { backgroundColor: 'background.default', minWidth: theme => theme.spacing(128) } }}
-      maxWidth={false}
-    >
-      <DialogHeader onClose={onClose}>
-        {t('common.create-new-entity', { entity: t('templateLibrary.innovationFlowTemplates.name') })}
-      </DialogHeader>
+    <DialogWithGrid columns={12} open={open} onClose={onClose}>
+      <DialogHeader
+        title={t('common.create-new-entity', { entity: t('templateLibrary.innovationFlowTemplates.name') })}
+        onClose={onClose}
+      />
       <DialogContent>
         <InnovationTemplateForm
           initialValues={values}
