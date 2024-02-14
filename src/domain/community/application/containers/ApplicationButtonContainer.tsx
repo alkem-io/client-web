@@ -50,7 +50,9 @@ export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = (
   const { data: _communityPrivileges, loading: communityPrivilegesLoading } = useCommunityUserPrivilegesQuery({
     variables: {
       spaceNameId,
+      challengeNameId,
       includeSpaceCommunity: true,
+      includeChallenge: true,
     },
     skip: !communityId,
   });
