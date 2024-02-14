@@ -1204,9 +1204,11 @@
         "full": "You are invited to become a member of this Space, please click here to accept",
         "short": "Accept Invitation"
       },
-      "joinParentFirst": {
-        "full": "To become a member of this Opportunity, first become a member of the parent Challenge",
-        "short": "Please join parent Challenge first"
+      "challenge": {
+        "joinParentFirst": {
+          "full": "To become a member of this Challenge, first become a member of the parent Space",
+          "short": "Please join parent Space first"
+        }
       },
       "opportunity": {
         "joinParentFirst": {
