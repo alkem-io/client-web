@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { ApplicationButtonProps } from '../applicationButton/OpportunityApplicationButton';
 
 import { useSpace } from '../../../journey/space/SpaceContext/useSpace';
-import { useCommunityUserPrivilegesQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { useCommunityUserPrivilegesWithParentCommunityQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
 import { buildChallengeUrl, buildSpaceUrl } from '../../../../main/routing/urlBuilders';
 import { CommunityMembershipStatus } from '../../../../core/apollo/generated/graphql-schema';
@@ -48,16 +48,17 @@ export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = (
   const includeChallenge = journeyTypeName === 'challenge' || journeyTypeName === 'opportunity';
   const includeOpportunity = journeyTypeName === 'opportunity';
 
-  const { data: _communityPrivileges, loading: communityPrivilegesLoading } = useCommunityUserPrivilegesQuery({
-    variables: {
-      spaceNameId,
-      challengeNameId,
-      opportunityNameId,
-      includeSpaceCommunity,
-      includeChallenge,
-      includeOpportunity,
-    },
-  });
+  const { data: _communityPrivileges, loading: communityPrivilegesLoading } =
+    useCommunityUserPrivilegesWithParentCommunityQuery({
+      variables: {
+        spaceNameId,
+        challengeNameId,
+        opportunityNameId,
+        includeSpaceCommunity,
+        includeChallenge,
+        includeOpportunity,
+      },
+    });
 
   const hasCommunityParent = journeyTypeName === 'challenge' || journeyTypeName === 'opportunity';
 

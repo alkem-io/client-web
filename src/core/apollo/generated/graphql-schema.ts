@@ -17715,7 +17715,7 @@ export type PlatformUpdatesRoomQuery = {
   };
 };
 
-export type CommunityUserPrivilegesQueryVariables = Exact<{
+export type CommunityUserPrivilegesWithParentCommunityQueryVariables = Exact<{
   spaceNameId: Scalars['UUID_NAMEID'];
   challengeNameId?: InputMaybe<Scalars['UUID_NAMEID']>;
   opportunityNameId?: InputMaybe<Scalars['UUID_NAMEID']>;
@@ -17724,7 +17724,7 @@ export type CommunityUserPrivilegesQueryVariables = Exact<{
   includeOpportunity?: InputMaybe<Scalars['Boolean']>;
 }>;
 
-export type CommunityUserPrivilegesQuery = {
+export type CommunityUserPrivilegesWithParentCommunityQuery = {
   __typename?: 'Query';
   space: {
     __typename?: 'Space';
@@ -17799,6 +17799,38 @@ export type CommunityUserPrivilegesQuery = {
           }
         | undefined;
     };
+  };
+};
+
+export type CommunityUserPrivilegesQueryVariables = Exact<{
+  spaceNameId: Scalars['UUID_NAMEID'];
+  communityId: Scalars['UUID'];
+}>;
+
+export type CommunityUserPrivilegesQuery = {
+  __typename?: 'Query';
+  space: {
+    __typename?: 'Space';
+    id: string;
+    spaceCommunity?:
+      | {
+          __typename?: 'Community';
+          id: string;
+          myMembershipStatus?: CommunityMembershipStatus | undefined;
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
+        }
+      | undefined;
+    applicationCommunity?:
+      | {
+          __typename?: 'Community';
+          id: string;
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
+        }
+      | undefined;
   };
 };
 

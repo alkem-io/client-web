@@ -1,79 +1,19 @@
-query communityUserPrivileges(
-  $spaceNameId: UUID_NAMEID!
-  $challengeNameId: UUID_NAMEID = "mockid"
-  $opportunityNameId: UUID_NAMEID = "mockid"
-  $includeSpaceCommunity: Boolean = false
-  $includeChallenge: Boolean = false
-  $includeOpportunity: Boolean = false
-) {
+query communityUserPrivileges($spaceNameId: UUID_NAMEID!, $communityId: UUID!) {
   space(ID: $spaceNameId) {
     id
-    community @include(if: $includeSpaceCommunity) {
+    spaceCommunity: community {
       id
       myMembershipStatus
       authorization {
         id
         myPrivileges
       }
-      leadUsers: usersInRole(role: LEAD) {
-        id
-        profile {
-          id
-          displayName
-          avatar: visual(type: AVATAR) {
-            ...VisualUri
-          }
-          location {
-            id
-            country
-            city
-          }
-        }
-      }
     }
-    challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
+    applicationCommunity: community(ID: $communityId) {
       id
       authorization {
         id
         myPrivileges
-      }
-      community {
-        id
-        myMembershipStatus
-        authorization {
-          id
-          myPrivileges
-        }
-        leadUsers: usersInRole(role: LEAD) {
-          id
-          profile {
-            id
-            displayName
-            avatar: visual(type: AVATAR) {
-              ...VisualUri
-            }
-            location {
-              id
-              country
-              city
-            }
-          }
-        }
-      }
-    }
-    opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
-      id
-      authorization {
-        id
-        myPrivileges
-      }
-      community {
-        id
-        myMembershipStatus
-        authorization {
-          id
-          myPrivileges
-        }
       }
     }
   }

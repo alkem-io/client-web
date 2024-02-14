@@ -11158,8 +11158,8 @@ export function refetchPlatformUpdatesRoomQuery(variables?: SchemaTypes.Platform
   return { query: PlatformUpdatesRoomDocument, variables: variables };
 }
 
-export const CommunityUserPrivilegesDocument = gql`
-  query communityUserPrivileges(
+export const CommunityUserPrivilegesWithParentCommunityDocument = gql`
+  query communityUserPrivilegesWithParentCommunity(
     $spaceNameId: UUID_NAMEID!
     $challengeNameId: UUID_NAMEID = "mockid"
     $opportunityNameId: UUID_NAMEID = "mockid"
@@ -11243,6 +11243,92 @@ export const CommunityUserPrivilegesDocument = gql`
 `;
 
 /**
+ * __useCommunityUserPrivilegesWithParentCommunityQuery__
+ *
+ * To run a query within a React component, call `useCommunityUserPrivilegesWithParentCommunityQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCommunityUserPrivilegesWithParentCommunityQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCommunityUserPrivilegesWithParentCommunityQuery({
+ *   variables: {
+ *      spaceNameId: // value for 'spaceNameId'
+ *      challengeNameId: // value for 'challengeNameId'
+ *      opportunityNameId: // value for 'opportunityNameId'
+ *      includeSpaceCommunity: // value for 'includeSpaceCommunity'
+ *      includeChallenge: // value for 'includeChallenge'
+ *      includeOpportunity: // value for 'includeOpportunity'
+ *   },
+ * });
+ */
+export function useCommunityUserPrivilegesWithParentCommunityQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.CommunityUserPrivilegesWithParentCommunityQuery,
+    SchemaTypes.CommunityUserPrivilegesWithParentCommunityQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.CommunityUserPrivilegesWithParentCommunityQuery,
+    SchemaTypes.CommunityUserPrivilegesWithParentCommunityQueryVariables
+  >(CommunityUserPrivilegesWithParentCommunityDocument, options);
+}
+
+export function useCommunityUserPrivilegesWithParentCommunityLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CommunityUserPrivilegesWithParentCommunityQuery,
+    SchemaTypes.CommunityUserPrivilegesWithParentCommunityQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.CommunityUserPrivilegesWithParentCommunityQuery,
+    SchemaTypes.CommunityUserPrivilegesWithParentCommunityQueryVariables
+  >(CommunityUserPrivilegesWithParentCommunityDocument, options);
+}
+
+export type CommunityUserPrivilegesWithParentCommunityQueryHookResult = ReturnType<
+  typeof useCommunityUserPrivilegesWithParentCommunityQuery
+>;
+export type CommunityUserPrivilegesWithParentCommunityLazyQueryHookResult = ReturnType<
+  typeof useCommunityUserPrivilegesWithParentCommunityLazyQuery
+>;
+export type CommunityUserPrivilegesWithParentCommunityQueryResult = Apollo.QueryResult<
+  SchemaTypes.CommunityUserPrivilegesWithParentCommunityQuery,
+  SchemaTypes.CommunityUserPrivilegesWithParentCommunityQueryVariables
+>;
+export function refetchCommunityUserPrivilegesWithParentCommunityQuery(
+  variables: SchemaTypes.CommunityUserPrivilegesWithParentCommunityQueryVariables
+) {
+  return { query: CommunityUserPrivilegesWithParentCommunityDocument, variables: variables };
+}
+
+export const CommunityUserPrivilegesDocument = gql`
+  query communityUserPrivileges($spaceNameId: UUID_NAMEID!, $communityId: UUID!) {
+    space(ID: $spaceNameId) {
+      id
+      spaceCommunity: community {
+        id
+        myMembershipStatus
+        authorization {
+          id
+          myPrivileges
+        }
+      }
+      applicationCommunity: community(ID: $communityId) {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+      }
+    }
+  }
+`;
+
+/**
  * __useCommunityUserPrivilegesQuery__
  *
  * To run a query within a React component, call `useCommunityUserPrivilegesQuery` and pass it any options that fit your needs.
@@ -11255,11 +11341,7 @@ export const CommunityUserPrivilegesDocument = gql`
  * const { data, loading, error } = useCommunityUserPrivilegesQuery({
  *   variables: {
  *      spaceNameId: // value for 'spaceNameId'
- *      challengeNameId: // value for 'challengeNameId'
- *      opportunityNameId: // value for 'opportunityNameId'
- *      includeSpaceCommunity: // value for 'includeSpaceCommunity'
- *      includeChallenge: // value for 'includeChallenge'
- *      includeOpportunity: // value for 'includeOpportunity'
+ *      communityId: // value for 'communityId'
  *   },
  * });
  */

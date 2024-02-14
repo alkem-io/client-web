@@ -48,16 +48,11 @@ export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = (
   const { communityId, myMembershipStatus } = useCommunityContext();
 
   const { data: _communityPrivileges, loading: communityPrivilegesLoading } = useCommunityUserPrivilegesQuery({
-    variables: {
-      spaceNameId,
-      challengeNameId,
-      includeSpaceCommunity: true,
-      includeChallenge: true,
-    },
+    variables: { spaceNameId, communityId },
     skip: !communityId,
   });
 
-  const hasCommunityParent = _communityPrivileges?.space?.community?.id !== communityId;
+  const hasCommunityParent = _communityPrivileges?.space?.spaceCommunity?.id !== communityId;
 
   const [joinCommunity, { loading: joiningCommunity }] = useJoinCommunityMutation({
     update: cache => clearCacheForType(cache, 'Authorization'),
@@ -81,7 +76,7 @@ export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = (
   const isMember = myMembershipStatus === CommunityMembershipStatus.Member;
   const isParentMember =
     hasCommunityParent &&
-    _communityPrivileges?.space?.community?.myMembershipStatus === CommunityMembershipStatus.Member;
+    _communityPrivileges?.space?.spaceCommunity?.myMembershipStatus === CommunityMembershipStatus.Member;
 
   const applyUrl =
     challengeId && challengeNameId
@@ -89,20 +84,14 @@ export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = (
       : buildSpaceApplyUrl(spaceNameId);
   const joinParentUrl = challengeNameId && buildSpaceUrl(spaceNameId);
 
-  const opportunityCommunityPrivileges =
-    _communityPrivileges?.space?.opportunity?.community?.authorization?.myPrivileges;
-  const challengeCommunityPrivileges = _communityPrivileges?.space?.challenge?.community?.authorization?.myPrivileges;
-  const spaceCommunityPrivileges = _communityPrivileges?.space?.community?.authorization?.myPrivileges;
-  const communityPrivileges =
-    opportunityCommunityPrivileges ?? challengeCommunityPrivileges ?? spaceCommunityPrivileges ?? [];
-
+  const communityPrivileges = _communityPrivileges?.space?.applicationCommunity?.authorization?.myPrivileges ?? [];
   const canJoinCommunity = communityPrivileges.includes(AuthorizationPrivilege.CommunityJoin);
   const canAcceptInvitation =
-    _communityPrivileges?.space?.community?.myMembershipStatus === CommunityMembershipStatus.InvitationPending;
+    _communityPrivileges?.space?.spaceCommunity?.myMembershipStatus === CommunityMembershipStatus.InvitationPending;
   const canApplyToCommunity = communityPrivileges.includes(AuthorizationPrivilege.CommunityApply);
 
   const parentCommunityPrivileges = hasCommunityParent
-    ? _communityPrivileges?.space?.community?.authorization?.myPrivileges ?? []
+    ? _communityPrivileges?.space?.spaceCommunity?.authorization?.myPrivileges ?? []
     : [];
   const canJoinParentCommunity = parentCommunityPrivileges.includes(AuthorizationPrivilege.CommunityJoin);
   const canApplyToParentCommunity = parentCommunityPrivileges.includes(AuthorizationPrivilege.CommunityApply);
