@@ -11159,26 +11159,87 @@ export function refetchPlatformUpdatesRoomQuery(variables?: SchemaTypes.Platform
 }
 
 export const CommunityUserPrivilegesDocument = gql`
-  query communityUserPrivileges($spaceNameId: UUID_NAMEID!, $communityId: UUID!) {
+  query communityUserPrivileges(
+    $spaceNameId: UUID_NAMEID!
+    $challengeNameId: UUID_NAMEID = "mockid"
+    $opportunityNameId: UUID_NAMEID = "mockid"
+    $includeSpaceCommunity: Boolean = false
+    $includeChallenge: Boolean = false
+    $includeOpportunity: Boolean = false
+  ) {
     space(ID: $spaceNameId) {
       id
-      spaceCommunity: community {
+      community @include(if: $includeSpaceCommunity) {
         id
         myMembershipStatus
         authorization {
           id
           myPrivileges
         }
+        leadUsers: usersInRole(role: LEAD) {
+          id
+          profile {
+            id
+            displayName
+            avatar: visual(type: AVATAR) {
+              ...VisualUri
+            }
+            location {
+              id
+              country
+              city
+            }
+          }
+        }
       }
-      applicationCommunity: community(ID: $communityId) {
+      challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
         id
         authorization {
           id
           myPrivileges
         }
+        community {
+          id
+          myMembershipStatus
+          authorization {
+            id
+            myPrivileges
+          }
+          leadUsers: usersInRole(role: LEAD) {
+            id
+            profile {
+              id
+              displayName
+              avatar: visual(type: AVATAR) {
+                ...VisualUri
+              }
+              location {
+                id
+                country
+                city
+              }
+            }
+          }
+        }
+      }
+      opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+        community {
+          id
+          myMembershipStatus
+          authorization {
+            id
+            myPrivileges
+          }
+        }
       }
     }
   }
+  ${VisualUriFragmentDoc}
 `;
 
 /**
@@ -11194,7 +11255,11 @@ export const CommunityUserPrivilegesDocument = gql`
  * const { data, loading, error } = useCommunityUserPrivilegesQuery({
  *   variables: {
  *      spaceNameId: // value for 'spaceNameId'
- *      communityId: // value for 'communityId'
+ *      challengeNameId: // value for 'challengeNameId'
+ *      opportunityNameId: // value for 'opportunityNameId'
+ *      includeSpaceCommunity: // value for 'includeSpaceCommunity'
+ *      includeChallenge: // value for 'includeChallenge'
+ *      includeOpportunity: // value for 'includeOpportunity'
  *   },
  * });
  */

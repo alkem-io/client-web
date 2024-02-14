@@ -1436,6 +1436,8 @@ export type CreateCalloutTemplateOnTemplatesSetInput = {
 
 export type CreateChallengeOnChallengeInput = {
   challengeID: Scalars['UUID'];
+  /** The ID of the Challenge to use for setting up the collaboration the Challenge. */
+  collaborationTemplateChallengeID?: InputMaybe<Scalars['UUID']>;
   context?: InputMaybe<CreateContextInput>;
   /** The Innovation Flow template to use for the Challenge. */
   innovationFlowTemplateID?: InputMaybe<Scalars['UUID']>;
@@ -1448,6 +1450,8 @@ export type CreateChallengeOnChallengeInput = {
 };
 
 export type CreateChallengeOnSpaceInput = {
+  /** The ID of the Challenge to use for setting up the collaboration the Challenge. */
+  collaborationTemplateChallengeID?: InputMaybe<Scalars['UUID']>;
   context?: InputMaybe<CreateContextInput>;
   /** The Innovation Flow template to use for the Challenge. */
   innovationFlowTemplateID?: InputMaybe<Scalars['UUID']>;
@@ -1549,6 +1553,8 @@ export type CreateNvpInput = {
 
 export type CreateOpportunityInput = {
   challengeID: Scalars['UUID'];
+  /** The ID of the Opportunity to use for setting up the collaboration of the Opportunity. */
+  collaborationTemplateOpportunityID?: InputMaybe<Scalars['UUID']>;
   context?: InputMaybe<CreateContextInput>;
   /** The Innovation Flow template to use for the Opportunity. */
   innovationFlowTemplateID?: InputMaybe<Scalars['UUID']>;
@@ -17711,7 +17717,11 @@ export type PlatformUpdatesRoomQuery = {
 
 export type CommunityUserPrivilegesQueryVariables = Exact<{
   spaceNameId: Scalars['UUID_NAMEID'];
-  communityId: Scalars['UUID'];
+  challengeNameId?: InputMaybe<Scalars['UUID_NAMEID']>;
+  opportunityNameId?: InputMaybe<Scalars['UUID_NAMEID']>;
+  includeSpaceCommunity?: InputMaybe<Scalars['Boolean']>;
+  includeChallenge?: InputMaybe<Scalars['Boolean']>;
+  includeOpportunity?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 export type CommunityUserPrivilegesQuery = {
@@ -17719,7 +17729,7 @@ export type CommunityUserPrivilegesQuery = {
   space: {
     __typename?: 'Space';
     id: string;
-    spaceCommunity?:
+    community?:
       | {
           __typename?: 'Community';
           id: string;
@@ -17727,17 +17737,68 @@ export type CommunityUserPrivilegesQuery = {
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
-        }
-      | undefined;
-    applicationCommunity?:
-      | {
-          __typename?: 'Community';
-          id: string;
-          authorization?:
-            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+          leadUsers?:
+            | Array<{
+                __typename?: 'User';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
+                };
+              }>
             | undefined;
         }
       | undefined;
+    challenge?: {
+      __typename?: 'Challenge';
+      id: string;
+      authorization?:
+        | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+        | undefined;
+      community?:
+        | {
+            __typename?: 'Community';
+            id: string;
+            myMembershipStatus?: CommunityMembershipStatus | undefined;
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
+            leadUsers?:
+              | Array<{
+                  __typename?: 'User';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                    location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
+                  };
+                }>
+              | undefined;
+          }
+        | undefined;
+    };
+    opportunity?: {
+      __typename?: 'Opportunity';
+      id: string;
+      authorization?:
+        | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+        | undefined;
+      community?:
+        | {
+            __typename?: 'Community';
+            id: string;
+            myMembershipStatus?: CommunityMembershipStatus | undefined;
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
+          }
+        | undefined;
+    };
   };
 };
 

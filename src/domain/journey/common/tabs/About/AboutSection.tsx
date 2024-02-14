@@ -1,7 +1,7 @@
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ApolloError } from '@apollo/client';
-import { Box, DialogContent } from '@mui/material';
+import { Box, DialogContent, Theme, useMediaQuery } from '@mui/material';
 import {
   LifecycleContextTabFragment,
   ReferenceDetailsFragment,
@@ -17,8 +17,8 @@ import { BlockTitle, Tagline } from '../../../../../core/ui/typography';
 import PageContentBlock, { PageContentBlockProps } from '../../../../../core/ui/content/PageContentBlock';
 import TagsComponent from '../../../../shared/components/TagsComponent/TagsComponent';
 import InnovationFlow from '../../../../platform/admin/templates/InnovationTemplates/InnovationFlow/InnovationFlow';
-import { ApplicationButton } from '../../../../community/application/applicationButton/ApplicationButton';
-import ApplicationButtonContainer from '../../../../community/application/containers/ApplicationButtonContainer';
+import { ApplicationButton } from '../../../../community/application/applicationButton/OpportunityApplicationButton';
+import ApplicationButtonContainer from '../../../../community/application/containers/OpportunityApplicationButtonContainer';
 import EntityDashboardContributorsSection from '../../../../community/community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';
 import WrapperMarkdown, { MarkdownProps } from '../../../../../core/ui/markdown/WrapperMarkdown';
 import ActivityView from '../../../../platform/metrics/views/MetricsView';
@@ -39,6 +39,7 @@ import { buildUpdatesUrl } from '../../../../../main/routing/urlBuilders';
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import DialogWithGrid from '../../../../../core/ui/dialog/DialogWithGrid';
 import DialogHeader from '../../../../../core/ui/dialog/DialogHeader';
+import FullWidthButton from '../../../../../core/ui/button/FullWidthButton';
 
 export interface AboutSectionProps extends EntityDashboardContributors, EntityDashboardLeads {
   journeyTypeName: JourneyTypeName;
@@ -116,11 +117,7 @@ export const AboutSection: FC<AboutSectionProps> = ({
     : 'community.leading-organizations';
   const usersHeader = isSpace ? 'community.host' : 'community.leads';
 
-  const {
-    challengeId,
-    challengeNameId,
-    profile: { displayName: challengeName },
-  } = useChallenge();
+  const { challengeNameId } = useChallenge();
 
   const { opportunityNameId } = useUrlParams();
 
@@ -143,6 +140,8 @@ export const AboutSection: FC<AboutSectionProps> = ({
     who,
   } as const;
 
+  const hasExtendedApplicationButton = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
+
   if (!spaceNameId) {
     throw new Error('Must be within a Space route.');
   }
@@ -151,27 +150,35 @@ export const AboutSection: FC<AboutSectionProps> = ({
   return (
     <>
       <PageContent>
+        <ApplicationButtonContainer
+          parentJourneyNameId={challengeNameId}
+          journeyNameId={opportunityNameId}
+          journeyTypeName="opportunity"
+        >
+          {({ applicationButtonProps }, { loading }) => {
+            if (loading || applicationButtonProps.isMember) {
+              return null;
+            }
+
+            return (
+              <PageContentColumn columns={12}>
+                <ApplicationButton
+                  {...applicationButtonProps}
+                  loading={loading}
+                  component={FullWidthButton}
+                  extended={hasExtendedApplicationButton}
+                  journeyTypeName="opportunity"
+                />
+              </PageContentColumn>
+            );
+          }}
+        </ApplicationButtonContainer>
         <PageContentColumn columns={4}>
           <PageContentBlock accent>
             <PageContentBlockHeader title={name} />
             <Tagline>{tagline}</Tagline>
             <TagsComponent tags={tags} variant="filled" loading={loading} />
-            <Actions justifyContent="end">
-              {lifecycle && <InnovationFlow lifecycle={lifecycle} />}
-              <ApplicationButtonContainer
-                challengeId={challengeId}
-                challengeNameId={challengeNameId}
-                challengeName={challengeName}
-              >
-                {(e, s) => (
-                  <ApplicationButton
-                    {...e?.applicationButtonProps}
-                    loading={s.loading}
-                    journeyTypeName={journeyTypeName}
-                  />
-                )}
-              </ApplicationButtonContainer>
-            </Actions>
+            <Actions justifyContent="end">{lifecycle && <InnovationFlow lifecycle={lifecycle} />}</Actions>
           </PageContentBlock>
           {communityReadAccess && (
             <EntityDashboardLeadsSection
