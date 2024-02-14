@@ -83,7 +83,7 @@ export const OpportunityApplicationButton = forwardRef<
               variant="contained"
               sx={{ textTransform: 'none' }}
             >
-              {t(`components.application-button.opportunity.joinParentFirst.${extended ? 'full' : 'short'}` as const)}
+              {t(`components.application-button.joinChallengeFirst.${extended ? 'full' : 'short'}` as const)}
             </Button>
           )
         );
@@ -97,7 +97,7 @@ export const OpportunityApplicationButton = forwardRef<
           variant="contained"
           sx={extended ? { textTransform: 'none' } : undefined}
         >
-          {t(`components.application-button.opportunity.contactParentLeads.${extended ? 'full' : 'short'}` as const)}
+          {t(`components.application-button.contactChallengeLeads.${extended ? 'full' : 'short'}` as const)}
         </Button>
       );
     };

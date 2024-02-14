@@ -194,7 +194,7 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
                 variant="contained"
                 sx={{ textTransform: 'none' }}
               >
-                {t(`components.application-button.challenge.joinParentFirst.${extended ? 'full' : 'short'}` as const)}
+                {t(`components.application-button.joinSpaceFirst.${extended ? 'full' : 'short'}` as const)}
               </Button>
             )
           );
