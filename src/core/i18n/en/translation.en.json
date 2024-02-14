@@ -2335,8 +2335,10 @@
       "continue": "Continue to the platform",
       "tooltip": "Please read and accept the Terms of Use and Privacy Policy before you continue"
     },
-    "registration-success": {
-      "header": "Hi, thank you for signing up!"
+    "registrationSuccess": {
+      "header": "Nearly there…",
+      "message": "The last step is to verify your email address. Please check your inbox for an email with instructions.<br>If you have not received an email, <resend>click here to send it again.</resend>",
+      "continue": "…or continue to the platform without signing in"
     },
     "verification-success": {
       "header": "Thank you for verifying your email address!",
