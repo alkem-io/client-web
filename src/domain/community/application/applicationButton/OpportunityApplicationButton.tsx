@@ -26,6 +26,9 @@ export interface ApplicationButtonProps {
   journeyTypeName: JourneyTypeName;
 }
 
+// TODO: This component should be rafactored to be the application button for all journey types.
+// src/domain/community/application/containers/ApplicationButtonContainer.tsx and src/domain/community/application/applicationButton/ApplicationButton.tsx
+// should be removed with https://app.zenhub.com/workspaces/alkemio-development-5ecb98b262ebd9f4aec4194c/issues/gh/alkem-io/client-web/4858
 export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElement, ApplicationButtonProps>(
   (
     {
@@ -33,8 +36,7 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
       isMember = false,
       isParentMember = false,
       parentUrl,
-      journeyTypeName,
-      parentLeadUsers: leadUsers,
+      parentLeadUsers,
       loading = false,
       component: Button = MuiButton,
       extended = false,
@@ -47,7 +49,7 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
     });
 
     const handleSendMessageToParentLeads = () => {
-      sendMessage('user', ...leadUsers);
+      sendMessage('user', ...parentLeadUsers);
     };
 
     const renderApplicationButton = () => {
@@ -72,7 +74,7 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
         return null;
       }
 
-      if (journeyTypeName === 'opportunity' && !isParentMember) {
+      if (!isParentMember) {
         return (
           parentUrl && (
             <Button
@@ -89,7 +91,7 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
         );
       }
 
-      if (journeyTypeName === 'opportunity' && isParentMember) {
+      if (isParentMember) {
         return (
           <Button
             ref={ref as Ref<HTMLButtonElement>}
