@@ -1,14 +1,7 @@
-/**
- * Just a copy from SingleWhiteboardCallout with:
- * - Added Rt suffix
- * - Changed whiteboards from WhiteboardCardWhiteboard[] to WhiteboardCardWhiteboard
- * - Use WhiteboardRtProvider instead of WhiteboardProvider
- * - WhiteboardsRtManagementViewWrapper
- */
 import { useState } from 'react';
 import CalloutLayout, { CalloutLayoutProps } from '../../CalloutBlock/CalloutLayout';
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
-import WhiteboardsRtManagementViewWrapper from '../../whiteboard/WhiteboardsManagement/WhiteboardsRtManagementViewWrapper';
+import WhiteboardRtView from '../../whiteboard/WhiteboardsManagement/WhiteboardRtView';
 import { buildCalloutUrl } from '../../../../main/routing/urlBuilders';
 import WhiteboardPreview from '../../whiteboard/whiteboardPreview/WhiteboardPreview';
 
@@ -55,7 +48,7 @@ const SingleWhiteboardRtCallout = ({
         onClick={() => setIsWhiteboardDialogOpen(true)}
       />
       {isWhiteboardDialogOpen && (
-        <WhiteboardsRtManagementViewWrapper
+        <WhiteboardRtView
           whiteboardId={callout.framing.whiteboardRt?.id}
           backToWhiteboards={handleCloseWhiteboardDialog}
           journeyTypeName={journeyTypeName}
@@ -65,7 +58,6 @@ const SingleWhiteboardRtCallout = ({
             opportunityNameId,
           })}
           readOnlyDisplayName
-          calloutId={callout.id}
           whiteboard={callout.framing.whiteboardRt}
           authorization={callout.framing.whiteboardRt.authorization}
           loadingWhiteboards={false}
