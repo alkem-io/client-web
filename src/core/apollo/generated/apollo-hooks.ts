@@ -1027,24 +1027,6 @@ export const CalloutWithWhiteboardFragmentDoc = gql`
   }
   ${WhiteboardDetailsFragmentDoc}
 `;
-export const CalloutWithWhiteboardRtFragmentDoc = gql`
-  fragment CalloutWithWhiteboardRt on Callout {
-    id
-    nameID
-    type
-    authorization {
-      id
-      anonymousReadAccess
-      myPrivileges
-    }
-    framing {
-      whiteboardRt {
-        ...WhiteboardRtDetails
-      }
-    }
-  }
-  ${WhiteboardRtDetailsFragmentDoc}
-`;
 export const CollaborationWithWhiteboardDetailsFragmentDoc = gql`
   fragment CollaborationWithWhiteboardDetails on Collaboration {
     id
@@ -8771,69 +8753,6 @@ export type WhiteboardFromCalloutQueryResult = Apollo.QueryResult<
 >;
 export function refetchWhiteboardFromCalloutQuery(variables: SchemaTypes.WhiteboardFromCalloutQueryVariables) {
   return { query: WhiteboardFromCalloutDocument, variables: variables };
-}
-
-export const WhiteboardRtFromCalloutDocument = gql`
-  query WhiteboardRtFromCallout($calloutId: UUID!) {
-    lookup {
-      callout(ID: $calloutId) {
-        ...CalloutWithWhiteboardRt
-      }
-    }
-  }
-  ${CalloutWithWhiteboardRtFragmentDoc}
-`;
-
-/**
- * __useWhiteboardRtFromCalloutQuery__
- *
- * To run a query within a React component, call `useWhiteboardRtFromCalloutQuery` and pass it any options that fit your needs.
- * When your component renders, `useWhiteboardRtFromCalloutQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useWhiteboardRtFromCalloutQuery({
- *   variables: {
- *      calloutId: // value for 'calloutId'
- *   },
- * });
- */
-export function useWhiteboardRtFromCalloutQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.WhiteboardRtFromCalloutQuery,
-    SchemaTypes.WhiteboardRtFromCalloutQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.WhiteboardRtFromCalloutQuery, SchemaTypes.WhiteboardRtFromCalloutQueryVariables>(
-    WhiteboardRtFromCalloutDocument,
-    options
-  );
-}
-
-export function useWhiteboardRtFromCalloutLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.WhiteboardRtFromCalloutQuery,
-    SchemaTypes.WhiteboardRtFromCalloutQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.WhiteboardRtFromCalloutQuery,
-    SchemaTypes.WhiteboardRtFromCalloutQueryVariables
-  >(WhiteboardRtFromCalloutDocument, options);
-}
-
-export type WhiteboardRtFromCalloutQueryHookResult = ReturnType<typeof useWhiteboardRtFromCalloutQuery>;
-export type WhiteboardRtFromCalloutLazyQueryHookResult = ReturnType<typeof useWhiteboardRtFromCalloutLazyQuery>;
-export type WhiteboardRtFromCalloutQueryResult = Apollo.QueryResult<
-  SchemaTypes.WhiteboardRtFromCalloutQuery,
-  SchemaTypes.WhiteboardRtFromCalloutQueryVariables
->;
-export function refetchWhiteboardRtFromCalloutQuery(variables: SchemaTypes.WhiteboardRtFromCalloutQueryVariables) {
-  return { query: WhiteboardRtFromCalloutDocument, variables: variables };
 }
 
 export const WhiteboardWithContentDocument = gql`

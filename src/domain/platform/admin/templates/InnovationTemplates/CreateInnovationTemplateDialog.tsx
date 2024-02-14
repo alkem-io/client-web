@@ -3,11 +3,12 @@ import InnovationTemplateForm, {
   InnovationTemplateFormValues,
 } from './InnovationTemplateForm';
 import { useTranslation } from 'react-i18next';
-import DialogWithGrid from '../../../../../core/ui/dialog/DialogWithGrid';
+import DialogWithGrid, { DialogFooter } from '../../../../../core/ui/dialog/DialogWithGrid';
 import DialogHeader, { DialogHeaderProps } from '../../../../../core/ui/dialog/DialogHeader';
 import React from 'react';
-import FormikSubmitButton from '../../../../shared/components/forms/FormikSubmitButton';
+import { FormikSubmitButtonPure } from '../../../../shared/components/forms/FormikSubmitButton';
 import { InnovationFlowType } from '../../../../../core/apollo/generated/graphql-schema';
+import { DialogActions, DialogContent } from '@mui/material';
 
 interface CreatePostTemplateDialogProps {
   open: boolean;
@@ -23,20 +24,26 @@ const CreateInnovationTemplateDialog = ({ open, onClose, onSubmit }: CreatePostT
   };
 
   return (
-    <DialogWithGrid
-      open={open}
-      onClose={onClose}
-      PaperProps={{ sx: { backgroundColor: 'background.default', minWidth: theme => theme.spacing(128) } }}
-      maxWidth={false}
-    >
-      <DialogHeader onClose={onClose}>
-        {t('common.create-new-entity', { entity: t('templateLibrary.innovationFlowTemplates.name') })}
-      </DialogHeader>
-      <InnovationTemplateForm
-        initialValues={values}
-        onSubmit={onSubmit}
-        actions={<FormikSubmitButton variant="contained">{t('common.create')}</FormikSubmitButton>}
+    <DialogWithGrid columns={12} open={open} onClose={onClose}>
+      <DialogHeader
+        title={t('common.create-new-entity', { entity: t('templateLibrary.innovationFlowTemplates.name') })}
+        onClose={onClose}
       />
+      <DialogContent>
+        <InnovationTemplateForm
+          initialValues={values}
+          onSubmit={onSubmit}
+          actions={formik => (
+            <DialogFooter>
+              <DialogActions>
+                <FormikSubmitButtonPure variant="contained" formik={formik} onClick={() => formik.handleSubmit()}>
+                  {t('common.create')}
+                </FormikSubmitButtonPure>
+              </DialogActions>
+            </DialogFooter>
+          )}
+        />
+      </DialogContent>
     </DialogWithGrid>
   );
 };

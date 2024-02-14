@@ -1,13 +1,14 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Dialog, Grid, Link, styled, Typography } from '@mui/material';
+import { Box, Dialog, Grid, Link, styled } from '@mui/material';
 import QuizOutlinedIzon from '@mui/icons-material/QuizOutlined';
 import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
 import FiberNewTwoToneIcon from '@mui/icons-material/FiberNewTwoTone';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import { DialogActions, DialogContent, DialogTitle } from '../../ui/dialog/deprecated';
+import { DialogContent } from '../../ui/dialog/deprecated';
 import WrapperMarkdown from '../../ui/markdown/WrapperMarkdown';
 import { useConfig } from '../../../domain/platform/config/useConfig';
+import DialogHeader from '../../ui/dialog/DialogHeader';
 
 interface HelpDialogProps {
   open: boolean;
@@ -61,9 +62,7 @@ const HelpDialog: FC<HelpDialogProps> = ({ open, onClose }) => {
 
   return (
     <Dialog open={open} onClose={handleClose} maxWidth={'xl'}>
-      <DialogTitle onClose={handleClose}>
-        <Typography variant="h3">{t('pages.help-dialog.title')}</Typography>
-      </DialogTitle>
+      <DialogHeader title={t('pages.help-dialog.title')} onClose={handleClose} />
       <HelpDialogContent>
         <WrapperMarkdown>{t('pages.help-dialog.text')}</WrapperMarkdown>
         <Grid container columns={{ xs: 4, sm: 6 }}>
@@ -91,7 +90,6 @@ const HelpDialog: FC<HelpDialogProps> = ({ open, onClose }) => {
           {t('pages.help-dialog.tips-and-tricks')}
         </FooterLink>
       </HelpDialogContent>
-      <DialogActions />
     </Dialog>
   );
 };

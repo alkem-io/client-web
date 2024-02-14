@@ -9,15 +9,18 @@ import { TypedCallout } from '../callout/useCallouts/useCallouts';
 import DialogWithGrid from '../../../core/ui/dialog/DialogWithGrid';
 import { useLocation } from 'react-router-dom';
 import { buildCalloutUrl } from '../../../main/routing/urlBuilders';
-import { Theme, useMediaQuery } from '@mui/material';
+import { DialogContent, Theme, useMediaQuery } from '@mui/material';
 import { getCalloutDisplayLocationValue } from '../callout/utils/getCalloutDisplayLocationValue';
 import Loading from '../../../core/ui/loading/Loading';
-import { isApolloNotFoundError } from '../../../core/apollo/hooks/useApolloErrorHandler';
+import { isApolloForbiddenError, isApolloNotFoundError } from '../../../core/apollo/hooks/useApolloErrorHandler';
 import { NotFoundPageLayout } from '../../journey/common/EntityPageLayout';
 import { Error404 } from '../../../core/pages/Errors/Error404';
 import useBackToPath from '../../../core/routing/useBackToPath';
 import usePageLayoutByEntity from '../../shared/utils/usePageLayoutByEntity';
 import { EntityPageSection } from '../../shared/layout/EntityPageSection';
+import DialogHeader from '../../../core/ui/dialog/DialogHeader';
+import { Text } from '../../../core/ui/typography';
+import { useTranslation } from 'react-i18next';
 
 interface CalloutLocation {
   journeyTypeName: JourneyTypeName;
@@ -51,6 +54,8 @@ const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: Cal
 
   const locationState = (useLocation().state ?? {}) as LocationStateCachedCallout;
 
+  const { t } = useTranslation();
+
   if (!spaceNameId) {
     throw new Error('Must be within a Space');
   }
@@ -74,7 +79,8 @@ const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: Cal
       includeChallenge: journeyTypeName === 'challenge',
       includeOpportunity: journeyTypeName === 'opportunity',
     },
-    fetchPolicy: 'cache-first',
+    fetchPolicy: 'cache-and-network',
+    errorPolicy: 'all',
   });
 
   const [callout] =
@@ -124,19 +130,32 @@ const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: Cal
     );
   }
 
-  if (!typedCallout) {
-    return renderPage();
-  }
-
-  const calloutDisplayLocation = getCalloutDisplayLocationValue(
-    typedCallout.framing.profile.displayLocationTagset?.tags
-  );
+  const calloutDisplayLocation =
+    typedCallout && getCalloutDisplayLocationValue(typedCallout.framing.profile.displayLocationTagset?.tags);
 
   const parentPagePath = typeof parentRoute === 'function' ? parentRoute(calloutDisplayLocation) : parentRoute;
 
   const handleClose = () => {
     backOrElse(parentPagePath);
   };
+
+  if (isApolloForbiddenError(error)) {
+    return (
+      <>
+        {renderPage(calloutDisplayLocation)}
+        <DialogWithGrid open onClose={handleClose}>
+          <DialogHeader title={t('callout.accessForbidden.title')} onClose={handleClose} />
+          <DialogContent sx={{ paddingTop: 0 }}>
+            <Text>{t('callout.accessForbidden.description')}</Text>
+          </DialogContent>
+        </DialogWithGrid>
+      </>
+    );
+  }
+
+  if (!typedCallout) {
+    return renderPage();
+  }
 
   const calloutUri = buildCalloutUrl(typedCallout.nameID, {
     spaceNameId,
