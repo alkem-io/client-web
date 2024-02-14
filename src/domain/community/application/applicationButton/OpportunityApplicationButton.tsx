@@ -5,10 +5,9 @@ import { Link as RouterLink } from 'react-router-dom';
 import { buildLoginUrl } from '../../../../main/routing/urlBuilders';
 import { AddOutlined } from '@mui/icons-material';
 import RootThemeProvider from '../../../../core/ui/themes/RootThemeProvider';
-import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import useDirectMessageDialog from '../../../communication/messaging/DirectMessaging/useDirectMessageDialog';
 
-export interface ApplicationButtonProps {
+export interface OpportunityApplicationButtonProps {
   isAuthenticated?: boolean;
   isMember: boolean;
   isParentMember?: boolean;
@@ -23,13 +22,12 @@ export interface ApplicationButtonProps {
   loading: boolean;
   component?: typeof MuiButton;
   extended?: boolean;
-  journeyTypeName: JourneyTypeName;
 }
 
-// TODO: This component should be rafactored to be the application button for all journey types.
-// src/domain/community/application/containers/ApplicationButtonContainer.tsx and src/domain/community/application/applicationButton/ApplicationButton.tsx
-// should be removed with https://app.zenhub.com/workspaces/alkemio-development-5ecb98b262ebd9f4aec4194c/issues/gh/alkem-io/client-web/4858
-export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElement, ApplicationButtonProps>(
+export const OpportunityApplicationButton = forwardRef<
+  HTMLButtonElement | HTMLAnchorElement,
+  OpportunityApplicationButtonProps
+>(
   (
     {
       isAuthenticated,
@@ -91,23 +89,15 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
         );
       }
 
-      if (isParentMember) {
-        return (
-          <Button
-            ref={ref as Ref<HTMLButtonElement>}
-            startIcon={extended ? <AddOutlined /> : undefined}
-            onClick={handleSendMessageToParentLeads}
-            variant="contained"
-            sx={extended ? { textTransform: 'none' } : undefined}
-          >
-            {t(`components.application-button.opportunity.contactParentLeads.${extended ? 'full' : 'short'}` as const)}
-          </Button>
-        );
-      }
-
       return (
-        <Button ref={ref as Ref<HTMLButtonElement>} disabled variant={'contained'}>
-          {t('components.application-button.apply-disabled')}
+        <Button
+          ref={ref as Ref<HTMLButtonElement>}
+          startIcon={extended ? <AddOutlined /> : undefined}
+          onClick={handleSendMessageToParentLeads}
+          variant="contained"
+          sx={extended ? { textTransform: 'none' } : undefined}
+        >
+          {t(`components.application-button.opportunity.contactParentLeads.${extended ? 'full' : 'short'}` as const)}
         </Button>
       );
     };
@@ -121,4 +111,4 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
   }
 );
 
-export default ApplicationButton;
+export default OpportunityApplicationButton;

@@ -17,8 +17,8 @@ import { BlockTitle, Tagline } from '../../../../../core/ui/typography';
 import PageContentBlock, { PageContentBlockProps } from '../../../../../core/ui/content/PageContentBlock';
 import TagsComponent from '../../../../shared/components/TagsComponent/TagsComponent';
 import InnovationFlow from '../../../../platform/admin/templates/InnovationTemplates/InnovationFlow/InnovationFlow';
-import { ApplicationButton } from '../../../../community/application/applicationButton/OpportunityApplicationButton';
-import ApplicationButtonContainer from '../../../../community/application/containers/OpportunityApplicationButtonContainer';
+import { OpportunityApplicationButton } from '../../../../community/application/applicationButton/OpportunityApplicationButton';
+import OpportunityApplicationButtonContainer from '../../../../community/application/containers/OpportunityApplicationButtonContainer';
 import EntityDashboardContributorsSection from '../../../../community/community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';
 import WrapperMarkdown, { MarkdownProps } from '../../../../../core/ui/markdown/WrapperMarkdown';
 import ActivityView from '../../../../platform/metrics/views/MetricsView';
@@ -150,29 +150,24 @@ export const AboutSection: FC<AboutSectionProps> = ({
   return (
     <>
       <PageContent>
-        <ApplicationButtonContainer
-          parentJourneyNameId={challengeNameId}
-          journeyNameId={opportunityNameId}
-          journeyTypeName="opportunity"
-        >
-          {({ applicationButtonProps }, { loading }) => {
+        <OpportunityApplicationButtonContainer challengeNameId={challengeNameId} opportunityNameId={opportunityNameId}>
+          {({ applicationButtonProps, state: { loading } }) => {
             if (loading || applicationButtonProps.isMember) {
               return null;
             }
 
             return (
               <PageContentColumn columns={12}>
-                <ApplicationButton
+                <OpportunityApplicationButton
                   {...applicationButtonProps}
                   loading={loading}
                   component={FullWidthButton}
                   extended={hasExtendedApplicationButton}
-                  journeyTypeName="opportunity"
                 />
               </PageContentColumn>
             );
           }}
-        </ApplicationButtonContainer>
+        </OpportunityApplicationButtonContainer>
         <PageContentColumn columns={4}>
           <PageContentBlock accent>
             <PageContentBlockHeader title={name} />
