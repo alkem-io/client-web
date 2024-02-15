@@ -38,7 +38,7 @@ const MyLatestContributions = () => {
   >({
     useQuery: useLatestContributionsQuery,
     getPageInfo: data => data.activityFeed.pageInfo,
-    pageSize: 1,
+    pageSize: MY_LATEST_CONTRIBUTIONS_COUNT,
     firstPageSize: MY_LATEST_CONTRIBUTIONS_COUNT,
     variables: {
       filter: {
