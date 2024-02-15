@@ -227,11 +227,9 @@ const useWhiteboardFilesManager = ({
 
   /**
    * Returns all the files in the whiteboard that are in the fileStore
-   * if filesInExcalidraw is not provided the excalidrawAPI will be used to get the files in the whiteboard
    */
-  const getUploadedFiles = async (filesInExcalidraw?: BinaryFiles): Promise<BinaryFilesWithUrl> => {
+  const getUploadedFiles = async (files: BinaryFiles): Promise<BinaryFilesWithUrl> => {
     const result: BinaryFilesWithUrl = {};
-    const files = filesInExcalidraw ?? excalidrawAPI?.getFiles();
     if (!files) {
       return result;
     }
