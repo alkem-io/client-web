@@ -97,7 +97,7 @@ const LoginPage = ({ flow }: LoginPageProps) => {
       <AuthPageContentContainer>
         <FixedHeightLogo />
         <SubHeading textAlign="center">{t('pages.login.title')}</SubHeading>
-        <Text textAlign="center" marginY={3}>
+        <Text textAlign="center" marginBottom={2}>
           {tLink('pages.login.register', {
             signup: { to: AUTH_SIGN_UP_PATH },
           })}
