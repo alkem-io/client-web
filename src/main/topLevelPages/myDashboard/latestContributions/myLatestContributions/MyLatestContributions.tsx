@@ -1,5 +1,4 @@
 import { useEffect, useMemo } from 'react';
-import { uniqBy } from 'lodash';
 import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 import { useTranslation } from 'react-i18next';
 import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
@@ -10,7 +9,6 @@ import {
   LatestContributionsQuery,
   LatestContributionsQueryVariables,
 } from '../../../../../core/apollo/generated/graphql-schema';
-import { Identifiable } from '../../../../../core/utils/Identifiable';
 import usePaginatedQuery from '../../../../../domain/shared/pagination/usePaginatedQuery';
 import { Box } from '@mui/material';
 import {
@@ -51,9 +49,7 @@ const MyLatestContributions = () => {
   });
 
   const activities = useMemo(() => {
-    return uniqBy(data?.activityFeed.activityFeed, activityItem => {
-      return (activityItem as { callout?: Identifiable }).callout?.id;
-    }).slice(0, MY_LATEST_CONTRIBUTIONS_COUNT);
+    return data?.activityFeed.activityFeed.slice(0, MY_LATEST_CONTRIBUTIONS_COUNT);
   }, [data?.activityFeed.activityFeed]);
 
   useEffect(() => {
