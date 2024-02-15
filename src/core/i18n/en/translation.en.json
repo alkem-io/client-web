@@ -1204,9 +1204,17 @@
         "full": "You are invited to become a member of this Space, please click here to accept",
         "short": "Accept Invitation"
       },
-      "joinParentFirst": {
+      "joinSpaceFirst": {
         "full": "To become a member of this Challenge, first become a member of the parent Space",
         "short": "Please join parent Space first"
+      },
+      "joinChallengeFirst": {
+        "full": "To become a member of this Opportunity, first become a member of the parent Challenge",
+        "short": "Please join parent Challenge first"
+      },
+      "contactChallengeLeads": {
+        "full": "Send a message to Challenge leads to become a member",
+        "short": "Send a message to Challenge leads to become a member"
       },
       "goToSpace": "Go to $t(common.space)",
       "goToChallenge": "Go to $t(common.challenge)",
