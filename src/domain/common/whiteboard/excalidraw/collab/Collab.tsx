@@ -60,7 +60,7 @@ class Collab extends PureComponent<Props, CollabState> {
   private lastBroadcastedOrReceivedSceneVersion: number = -1;
   private collaborators = new Map<string, Collaborator>();
   private onSavedToDatabase: (() => void) | undefined;
-  private onCloseConnection: () => void;
+  // private onCloseConnection: () => void;
   private alreadySharedFiles: string[] = [];
 
   constructor(props: Props) {
@@ -71,15 +71,15 @@ class Collab extends PureComponent<Props, CollabState> {
       activeRoomLink: '',
     };
     this.portal = new Portal({
-      collab: this,
-      filesManager: props.filesManager,
       onSaveRequest: props.onSaveRequest,
+      onRoomUserChange: this.setCollaborators,
+      getSceneElements: this.getSceneElementsIncludingDeleted,
       onCloseConnection: this.handleCloseConnection,
     });
     this.excalidrawAPI = props.excalidrawAPI;
     this.filesManager = props.filesManager;
     this.onSavedToDatabase = props.onSavedToDatabase;
-    this.onCloseConnection = props.onCloseConnection;
+    // this.onCloseConnection = props.onCloseConnection;
     this.alreadySharedFiles.push(...Object.keys(this.excalidrawAPI.getFiles()));
   }
 
@@ -134,7 +134,7 @@ class Collab extends PureComponent<Props, CollabState> {
 
   private handleCloseConnection = () => {
     this.setCollaborators([]);
-    this.onCloseConnection();
+    this.props.onCloseConnection();
   };
 
   stopCollaboration = () => {
@@ -216,7 +216,8 @@ class Collab extends PureComponent<Props, CollabState> {
 
         this.portal.socket.once('connect_error', fallbackInitializationHandler);
       } catch (error) {
-        console.error(error); // eslint-disable no-console
+        // eslint-disable-next-line no-console
+        console.error(error);
         this.setState({ errorMessage: (error as { message: string } | undefined)?.message ?? '' });
         return null;
       }
@@ -310,11 +311,10 @@ class Collab extends PureComponent<Props, CollabState> {
             const payload = decryptedData.payload as SocketUpdateDataSource['FILE_REQUEST']['payload'];
             const currentFiles = this.excalidrawAPI.getFiles();
             if (payload.fileIds && payload.fileIds.length > 0) {
-              payload.fileIds.forEach(id => {
+              payload.fileIds.forEach(async id => {
                 if (currentFiles[id]) {
-                  this.filesManager
-                    .convertLocalFileToRemote(currentFiles[id])
-                    .then(file => file && this.portal.broadcastFile(file));
+                  const file = await this.filesManager.convertLocalFileToRemote(currentFiles[id]);
+                  file && this.portal.broadcastFile(file);
                 }
               });
             }
@@ -401,7 +401,8 @@ class Collab extends PureComponent<Props, CollabState> {
         this.queueBroadcastAllElements();
       } catch (error: unknown) {
         // log the error and move on. other peers will sync us the scene.
-        console.error(error); // eslint-disable no-console
+        // eslint-disable-next-line no-console
+        console.error(error);
       } finally {
         this.portal.socketInitialized = true;
       }
@@ -493,7 +494,7 @@ class Collab extends PureComponent<Props, CollabState> {
     document.addEventListener(EVENT.VISIBILITY_CHANGE, this.onVisibilityChange);
   };
 
-  setCollaborators(sockets: string[]) {
+  private setCollaborators = (sockets: string[]) => {
     const collaborators: InstanceType<typeof Collab>['collaborators'] = new Map();
 
     for (const socketId of sockets) {
@@ -506,7 +507,7 @@ class Collab extends PureComponent<Props, CollabState> {
 
     this.collaborators = collaborators;
     this.excalidrawAPI.updateScene({ collaborators });
-  }
+  };
 
   public setLastBroadcastedOrReceivedSceneVersion = (version: number) => {
     this.lastBroadcastedOrReceivedSceneVersion = version;
@@ -526,18 +527,24 @@ class Collab extends PureComponent<Props, CollabState> {
       button: SocketUpdateDataSource['MOUSE_LOCATION']['payload']['button'];
       pointersMap: Gesture['pointers'];
     }) => {
-      payload.pointersMap.size < 2 && this.portal.socket && this.portal.broadcastMouseLocation(payload);
+      payload.pointersMap.size < 2 &&
+        this.portal.socket &&
+        this.portal.broadcastMouseLocation({
+          ...payload,
+          username: this.state.username,
+          selectedElementIds: this.excalidrawAPI.getAppState().selectedElementIds,
+        });
     },
     CURSOR_SYNC_TIMEOUT
   );
 
   onIdleStateChange = (userState: UserIdleState) => {
-    this.portal.broadcastIdleChange(userState);
+    this.portal.broadcastIdleChange(userState, this.state.username);
   };
 
   broadcastElements = (elements: readonly ExcalidrawElement[]) => {
     if (getSceneVersion(elements) > this.getLastBroadcastedOrReceivedSceneVersion()) {
-      this.portal.broadcastScene(WS_SCENE_EVENT_TYPES.UPDATE, elements, false);
+      this.portal.broadcastScene(WS_SCENE_EVENT_TYPES.UPDATE, elements);
       this.lastBroadcastedOrReceivedSceneVersion = getSceneVersion(elements);
       this.queueBroadcastAllElements();
     }
@@ -562,15 +569,13 @@ class Collab extends PureComponent<Props, CollabState> {
   };
 
   notifySavedToDatabase = () => {
-    this.portal.broadcastSavedEvent();
+    this.portal.broadcastSavedEvent(this.state.username);
   };
 
   queueBroadcastAllElements = throttle(() => {
-    this.portal.broadcastScene(
-      WS_SCENE_EVENT_TYPES.UPDATE,
-      this.excalidrawAPI.getSceneElementsIncludingDeleted(),
-      true
-    );
+    this.portal.broadcastScene(WS_SCENE_EVENT_TYPES.UPDATE, this.excalidrawAPI.getSceneElementsIncludingDeleted(), {
+      syncAll: true,
+    });
     const currentVersion = this.getLastBroadcastedOrReceivedSceneVersion();
     const newVersion = Math.max(currentVersion, getSceneVersion(this.getSceneElementsIncludingDeleted()));
     this.setLastBroadcastedOrReceivedSceneVersion(newVersion);
