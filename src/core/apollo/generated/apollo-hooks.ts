@@ -1670,15 +1670,15 @@ export const PendingMembershipsJourneyProfileFragmentDoc = gql`
   fragment PendingMembershipsJourneyProfile on Profile {
     id
     displayName
+    visual(type: $visualType) {
+      id
+      uri
+    }
     ... on Profile @include(if: $fetchDetails) {
       tagline
       tagset {
         id
         tags
-      }
-      visual(type: $visualType) {
-        id
-        uri
       }
     }
   }
@@ -11075,6 +11075,153 @@ export type PlatformUpdatesRoomQueryResult = Apollo.QueryResult<
 >;
 export function refetchPlatformUpdatesRoomQuery(variables?: SchemaTypes.PlatformUpdatesRoomQueryVariables) {
   return { query: PlatformUpdatesRoomDocument, variables: variables };
+}
+
+export const CommunityUserPrivilegesWithParentCommunityDocument = gql`
+  query communityUserPrivilegesWithParentCommunity(
+    $spaceNameId: UUID_NAMEID!
+    $challengeNameId: UUID_NAMEID = "mockid"
+    $opportunityNameId: UUID_NAMEID = "mockid"
+    $includeSpaceCommunity: Boolean = false
+    $includeChallenge: Boolean = false
+    $includeOpportunity: Boolean = false
+  ) {
+    space(ID: $spaceNameId) {
+      id
+      community @include(if: $includeSpaceCommunity) {
+        id
+        myMembershipStatus
+        authorization {
+          id
+          myPrivileges
+        }
+        leadUsers: usersInRole(role: LEAD) {
+          id
+          profile {
+            id
+            displayName
+            avatar: visual(type: AVATAR) {
+              ...VisualUri
+            }
+            location {
+              id
+              country
+              city
+            }
+          }
+        }
+      }
+      challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+        community {
+          id
+          myMembershipStatus
+          authorization {
+            id
+            myPrivileges
+          }
+          leadUsers: usersInRole(role: LEAD) {
+            id
+            profile {
+              id
+              displayName
+              avatar: visual(type: AVATAR) {
+                ...VisualUri
+              }
+              location {
+                id
+                country
+                city
+              }
+            }
+          }
+        }
+      }
+      opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+        community {
+          id
+          myMembershipStatus
+          authorization {
+            id
+            myPrivileges
+          }
+        }
+      }
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
+
+/**
+ * __useCommunityUserPrivilegesWithParentCommunityQuery__
+ *
+ * To run a query within a React component, call `useCommunityUserPrivilegesWithParentCommunityQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCommunityUserPrivilegesWithParentCommunityQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCommunityUserPrivilegesWithParentCommunityQuery({
+ *   variables: {
+ *      spaceNameId: // value for 'spaceNameId'
+ *      challengeNameId: // value for 'challengeNameId'
+ *      opportunityNameId: // value for 'opportunityNameId'
+ *      includeSpaceCommunity: // value for 'includeSpaceCommunity'
+ *      includeChallenge: // value for 'includeChallenge'
+ *      includeOpportunity: // value for 'includeOpportunity'
+ *   },
+ * });
+ */
+export function useCommunityUserPrivilegesWithParentCommunityQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.CommunityUserPrivilegesWithParentCommunityQuery,
+    SchemaTypes.CommunityUserPrivilegesWithParentCommunityQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.CommunityUserPrivilegesWithParentCommunityQuery,
+    SchemaTypes.CommunityUserPrivilegesWithParentCommunityQueryVariables
+  >(CommunityUserPrivilegesWithParentCommunityDocument, options);
+}
+
+export function useCommunityUserPrivilegesWithParentCommunityLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CommunityUserPrivilegesWithParentCommunityQuery,
+    SchemaTypes.CommunityUserPrivilegesWithParentCommunityQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.CommunityUserPrivilegesWithParentCommunityQuery,
+    SchemaTypes.CommunityUserPrivilegesWithParentCommunityQueryVariables
+  >(CommunityUserPrivilegesWithParentCommunityDocument, options);
+}
+
+export type CommunityUserPrivilegesWithParentCommunityQueryHookResult = ReturnType<
+  typeof useCommunityUserPrivilegesWithParentCommunityQuery
+>;
+export type CommunityUserPrivilegesWithParentCommunityLazyQueryHookResult = ReturnType<
+  typeof useCommunityUserPrivilegesWithParentCommunityLazyQuery
+>;
+export type CommunityUserPrivilegesWithParentCommunityQueryResult = Apollo.QueryResult<
+  SchemaTypes.CommunityUserPrivilegesWithParentCommunityQuery,
+  SchemaTypes.CommunityUserPrivilegesWithParentCommunityQueryVariables
+>;
+export function refetchCommunityUserPrivilegesWithParentCommunityQuery(
+  variables: SchemaTypes.CommunityUserPrivilegesWithParentCommunityQueryVariables
+) {
+  return { query: CommunityUserPrivilegesWithParentCommunityDocument, variables: variables };
 }
 
 export const CommunityUserPrivilegesDocument = gql`
