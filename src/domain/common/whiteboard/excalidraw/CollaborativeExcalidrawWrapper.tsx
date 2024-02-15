@@ -41,7 +41,7 @@ export interface WhiteboardWhiteboardEvents {
   onCollaborationEnabledChange?: (collaborationEnabled: boolean) => void;
 }
 
-export interface WhiteboardWhiteboardOptions extends ExcalidrawProps { }
+export interface WhiteboardWhiteboardOptions extends ExcalidrawProps {}
 
 export interface WhiteboardWhiteboardProps {
   entities: WhiteboardWhiteboardEntities;
@@ -120,9 +120,9 @@ const CollaborativeExcalidrawWrapper = ({
 
   const mergedUIOptions = useMemo(() => merge(UIOptions, externalUIOptions), [UIOptions, externalUIOptions]);
 
-  const onChange = (elements: readonly ExcalidrawElement[], _appState: AppState, files: BinaryFiles) => {
-    collabAPI?.syncElements(elements);
-    collabAPI?.syncFiles(files);
+  const onChange = async (elements: readonly ExcalidrawElement[], _appState: AppState, files: BinaryFiles) => {
+    const uploadedFiles = await filesManager.getUploadedFiles(files);
+    collabAPI?.syncElements(elements, uploadedFiles);
   };
 
   useEffect(() => {

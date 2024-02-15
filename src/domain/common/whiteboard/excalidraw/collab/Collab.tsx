@@ -1,6 +1,6 @@
 import { throttle } from 'lodash';
 import { MutableRefObject, PureComponent, RefCallback } from 'react';
-import { BinaryFiles, Collaborator, ExcalidrawImperativeAPI, Gesture } from '@alkemio/excalidraw/types/types';
+import { Collaborator, ExcalidrawImperativeAPI, Gesture } from '@alkemio/excalidraw/types/types';
 import {
   ACTIVE_THRESHOLD,
   CURSOR_SYNC_TIMEOUT,
@@ -17,7 +17,7 @@ import { isImageElement, UserIdleState } from './utils';
 import { generateCollaborationLinkData, getCollabServer, SocketUpdateDataSource } from './data';
 import Portal from './Portal';
 import { ReconciledElements, reconcileElements as _reconcileElements } from './reconciliation';
-import { WhiteboardFilesManager } from '../useWhiteboardFilesManager';
+import { BinaryFilesWithUrl, WhiteboardFilesManager } from '../useWhiteboardFilesManager';
 
 interface CollabState {
   errorMessage: string;
@@ -33,7 +33,6 @@ export interface CollabAPI {
   startCollaboration: CollabInstance['startCollaboration'];
   stopCollaboration: CollabInstance['stopCollaboration'];
   syncElements: CollabInstance['syncElements'];
-  syncFiles: CollabInstance['syncFiles'];
   notifySavedToDatabase: () => void; // Notify rest of the members in the room that I have saved the whiteboard
 }
 
@@ -61,7 +60,6 @@ class Collab extends PureComponent<Props, CollabState> {
   private collaborators = new Map<string, Collaborator>();
   private onSavedToDatabase: (() => void) | undefined;
   private onCloseConnection: () => void;
-  private alreadySharedFiles: string[] = [];
 
   constructor(props: Props) {
     super(props);
@@ -80,7 +78,6 @@ class Collab extends PureComponent<Props, CollabState> {
     this.filesManager = props.filesManager;
     this.onSavedToDatabase = props.onSavedToDatabase;
     this.onCloseConnection = props.onCloseConnection;
-    this.alreadySharedFiles.push(...Object.keys(this.excalidrawAPI.getFiles()));
   }
 
   componentDidMount() {
@@ -90,7 +87,6 @@ class Collab extends PureComponent<Props, CollabState> {
       onPointerUpdate: this.onPointerUpdate,
       startCollaboration: this.startCollaboration,
       syncElements: this.syncElements,
-      syncFiles: this.syncFiles,
       stopCollaboration: this.stopCollaboration,
       notifySavedToDatabase: this.notifySavedToDatabase,
     };
@@ -99,16 +95,6 @@ class Collab extends PureComponent<Props, CollabState> {
       this.props.collabAPIRef(collabAPI);
     } else if (this.props.collabAPIRef) {
       this.props.collabAPIRef.current = collabAPI;
-    }
-
-    if (import.meta.env.MODE === 'development') {
-      window.collab = window.collab || ({} as Window['collab']);
-      Object.defineProperties(window, {
-        collab: {
-          configurable: true,
-          value: this,
-        },
-      });
     }
   }
 
@@ -256,68 +242,19 @@ class Collab extends PureComponent<Props, CollabState> {
             if (!this.portal.socketInitialized) {
               this.initializeRoom({ fetchScene: false });
               const remoteElements = decryptedData.payload.elements;
-              const reconciledElements = this.reconcileElements(remoteElements);
-              this.handleRemoteSceneUpdate(reconciledElements, {
+              const remoteFiles = decryptedData.payload.files;
+              this.handleRemoteSceneUpdate(this.reconcileElements(remoteElements, remoteFiles), {
                 init: true,
               });
-              // noop if already resolved via init from firebase
-              resolve({
-                elements: reconciledElements,
-                scrollToContent: true,
-              });
-
-              // Download files from the storageBucket here:
-              // Files included in the canvas:
-              const requiredFilesIds = reconciledElements.reduce<string[]>((files, element) => {
-                if (element.type === 'image' && element.fileId) {
-                  files.push(element.fileId);
-                }
-                return files;
-              }, []);
-              // Files missing in this client:
-              const currentFiles = Object.keys(this.excalidrawAPI.getFiles());
-              const missingFiles = requiredFilesIds.filter(fileId => !currentFiles.includes(fileId));
-
-              if (missingFiles.length > 0) {
-                this.portal.broadcastFileRequest(missingFiles);
-              }
-
-              this.filesManager.loadFiles({ files: this.excalidrawAPI.getFiles() });
             }
 
             break;
           }
 
           case WS_SCENE_EVENT_TYPES.UPDATE: {
-            this.handleRemoteSceneUpdate(this.reconcileElements(decryptedData.payload.elements));
-            break;
-          }
-
-          case 'FILE_UPLOAD': {
-            const payload = decryptedData.payload as SocketUpdateDataSource['FILE_UPLOAD']['payload'];
-            const currentFiles = this.excalidrawAPI.getFiles();
-
-            if (!currentFiles[payload.file.id]) {
-              this.alreadySharedFiles.push(payload.file.id);
-              this.excalidrawAPI.addFiles([payload.file]);
-              this.filesManager.loadFiles({ files: { [payload.file.id]: payload.file } });
-            }
-
-            break;
-          }
-
-          case 'FILE_REQUEST': {
-            const payload = decryptedData.payload as SocketUpdateDataSource['FILE_REQUEST']['payload'];
-            const currentFiles = this.excalidrawAPI.getFiles();
-            if (payload.fileIds && payload.fileIds.length > 0) {
-              payload.fileIds.forEach(id => {
-                if (currentFiles[id]) {
-                  this.filesManager
-                    .convertLocalFileToRemote(currentFiles[id])
-                    .then(file => file && this.portal.broadcastFile(file));
-                }
-              });
-            }
+            this.handleRemoteSceneUpdate(
+              this.reconcileElements(decryptedData.payload.elements, decryptedData.payload.files)
+            );
             break;
           }
 
@@ -395,8 +332,6 @@ class Collab extends PureComponent<Props, CollabState> {
     }
 
     if (fetchScene && roomLinkData && this.portal.socket) {
-      //this.excalidrawAPI.resetScene();
-
       try {
         this.queueBroadcastAllElements();
       } catch (error: unknown) {
@@ -412,13 +347,19 @@ class Collab extends PureComponent<Props, CollabState> {
     return null;
   };
 
-  private reconcileElements = (remoteElements: readonly ExcalidrawElement[]): ReconciledElements => {
+  private reconcileElements = (
+    remoteElements: readonly ExcalidrawElement[],
+    remoteFiles: BinaryFilesWithUrl
+  ): ReconciledElements => {
     const localElements = this.getSceneElementsIncludingDeleted();
     const appState = this.excalidrawAPI.getAppState();
 
     remoteElements = restoreElements(remoteElements, null);
 
     const reconciledElements = _reconcileElements(localElements, remoteElements, appState);
+
+    // Download the files that this instance is missing:
+    this.filesManager.loadFiles({ files: remoteFiles });
 
     // Avoid broadcasting to the rest of the collaborators the scene
     // we just received!
@@ -434,6 +375,7 @@ class Collab extends PureComponent<Props, CollabState> {
       elements,
       commitToHistory: !!init,
     });
+    this.filesManager.pushFilesToExcalidraw();
 
     // We haven't yet implemented multiplayer undo functionality, so we clear the undo stack
     // when we receive any messages from another peer. This UX can be pretty rough -- if you
@@ -520,6 +462,10 @@ class Collab extends PureComponent<Props, CollabState> {
     return this.excalidrawAPI.getSceneElementsIncludingDeleted();
   };
 
+  public getFiles = () => {
+    return this.filesManager.getUploadedFiles(this.excalidrawAPI.getFiles());
+  };
+
   onPointerUpdate = throttle(
     (payload: {
       pointer: SocketUpdateDataSource['MOUSE_LOCATION']['payload']['pointer'];
@@ -535,29 +481,11 @@ class Collab extends PureComponent<Props, CollabState> {
     this.portal.broadcastIdleChange(userState);
   };
 
-  broadcastElements = (elements: readonly ExcalidrawElement[]) => {
+  syncElements = async (elements: readonly ExcalidrawElement[], files: BinaryFilesWithUrl) => {
     if (getSceneVersion(elements) > this.getLastBroadcastedOrReceivedSceneVersion()) {
-      this.portal.broadcastScene(WS_SCENE_EVENT_TYPES.UPDATE, elements, false);
+      this.portal.broadcastScene(WS_SCENE_EVENT_TYPES.UPDATE, elements, files, false);
       this.lastBroadcastedOrReceivedSceneVersion = getSceneVersion(elements);
       this.queueBroadcastAllElements();
-    }
-  };
-
-  syncElements = (elements: readonly ExcalidrawElement[]) => {
-    this.broadcastElements(elements);
-  };
-
-  syncFiles = async (files: BinaryFiles) => {
-    for (const id of Object.keys(files)) {
-      if (!this.alreadySharedFiles.includes(id)) {
-        const file = files[id];
-        const fileWithUrl = await this.filesManager.convertLocalFileToRemote(file);
-
-        if (fileWithUrl) {
-          this.portal.broadcastFile(fileWithUrl);
-          this.alreadySharedFiles.push(id);
-        }
-      }
     }
   };
 
@@ -565,10 +493,11 @@ class Collab extends PureComponent<Props, CollabState> {
     this.portal.broadcastSavedEvent();
   };
 
-  queueBroadcastAllElements = throttle(() => {
+  queueBroadcastAllElements = throttle(async () => {
     this.portal.broadcastScene(
       WS_SCENE_EVENT_TYPES.UPDATE,
       this.excalidrawAPI.getSceneElementsIncludingDeleted(),
+      await this.filesManager.getUploadedFiles(this.excalidrawAPI.getFiles()),
       true
     );
     const currentVersion = this.getLastBroadcastedOrReceivedSceneVersion();
