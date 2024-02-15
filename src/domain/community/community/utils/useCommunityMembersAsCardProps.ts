@@ -10,6 +10,7 @@ import {
   DashboardContributingUserFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { EntityDashboardContributors } from '../EntityDashboardContributorsSection/Types';
+import { ContributorType } from '../../contributor/CommunityContributorsBlockWide/CommunityContributorsBlockWideContent';
 
 interface CommunityMembers {
   memberUsers?: DashboardContributingUserFragment[];
@@ -39,6 +40,7 @@ const mapUserToContributorCardProps = (
     country: user.profile.location?.country ? COUNTRIES_BY_CODE[user.profile.location.country] : undefined,
   },
   isContactable: user.isContactable,
+  contributorType: ContributorType.People,
 });
 
 export const mapUserCardPropsToContributorCardProps = (user: UserCardProps): WithId<ContributorCardSquareProps> => ({
@@ -52,6 +54,7 @@ export const mapUserCardPropsToContributorCardProps = (user: UserCardProps): Wit
     country: user.country,
   },
   isContactable: user.isContactable ?? true,
+  contributorType: ContributorType.People,
 });
 
 const mapOrganizationToContributorCardProps = (
@@ -65,6 +68,7 @@ const mapOrganizationToContributorCardProps = (
     tags: org.profile.tagsets?.flatMap(x => x.tags.map(t => t)) ?? [],
   },
   isContactable: true,
+  contributorType: ContributorType.Organizations,
 });
 
 const applyLimit = <Item>(items: Item[] | undefined, limit?: number): Item[] | undefined =>
