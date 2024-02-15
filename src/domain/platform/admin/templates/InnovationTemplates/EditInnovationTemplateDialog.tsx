@@ -4,11 +4,12 @@ import InnovationTemplateForm, {
   InnovationTemplateFormSubmittedValues,
   InnovationTemplateFormValues,
 } from './InnovationTemplateForm';
-import DialogWithGrid from '../../../../../core/ui/dialog/DialogWithGrid';
+import DialogWithGrid, { DialogFooter } from '../../../../../core/ui/dialog/DialogWithGrid';
 import DialogHeader, { DialogHeaderProps } from '../../../../../core/ui/dialog/DialogHeader';
 import React from 'react';
 import DeleteButton from '../../../../shared/components/DeleteButton';
-import FormikSubmitButton from '../../../../shared/components/forms/FormikSubmitButton';
+import { FormikSubmitButtonPure } from '../../../../shared/components/forms/FormikSubmitButton';
+import { DialogActions, DialogContent } from '@mui/material';
 
 interface EditInnovationTemplateDialogProps {
   open: boolean;
@@ -47,27 +48,29 @@ const EditInnovationTemplateDialog = ({
   };
 
   return (
-    <DialogWithGrid
-      open={open}
-      onClose={onClose}
-      PaperProps={{ sx: { backgroundColor: 'background.default', minWidth: theme => theme.spacing(128) } }}
-      maxWidth={false}
-    >
-      <DialogHeader onClose={onClose}>
-        {t('common.edit-entity', { entity: t('templateLibrary.innovationFlowTemplates.name') })}
-      </DialogHeader>
-      <InnovationTemplateForm
-        initialValues={values}
-        visual={template.profile.visual}
-        onSubmit={handleSubmit}
-        editMode
-        actions={
-          <>
-            <DeleteButton onClick={onDelete} />
-            <FormikSubmitButton variant="contained">{t('common.update')}</FormikSubmitButton>
-          </>
-        }
+    <DialogWithGrid columns={12} open={open} onClose={onClose}>
+      <DialogHeader
+        title={t('common.edit-entity', { entity: t('templateLibrary.innovationFlowTemplates.name') })}
+        onClose={onClose}
       />
+      <DialogContent>
+        <InnovationTemplateForm
+          initialValues={values}
+          visual={template.profile.visual}
+          onSubmit={handleSubmit}
+          editMode
+          actions={formik => (
+            <DialogFooter>
+              <DialogActions>
+                <DeleteButton onClick={onDelete} />
+                <FormikSubmitButtonPure variant="contained" formik={formik} onClick={() => formik.handleSubmit()}>
+                  {t('common.update')}
+                </FormikSubmitButtonPure>
+              </DialogActions>
+            </DialogFooter>
+          )}
+        />
+      </DialogContent>
     </DialogWithGrid>
   );
 };

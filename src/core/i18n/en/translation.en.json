@@ -611,6 +611,10 @@
     }
   },
   "callout": {
+    "accessForbidden": {
+      "title": "Content not available",
+      "description": "We apologize, but the content you requested is not available. It may have been deleted, or you may not have the permission to access it, such as if it was put in draft mode."
+    },
     "createFull": "Add collaboration tool",
     "contributions": "{{count}} Contribution",
     "contributions_plural": "{{count}} Contributions",
@@ -1200,9 +1204,17 @@
         "full": "You are invited to become a member of this Space, please click here to accept",
         "short": "Accept Invitation"
       },
-      "joinParentFirst": {
+      "joinSpaceFirst": {
         "full": "To become a member of this Challenge, first become a member of the parent Space",
         "short": "Please join parent Space first"
+      },
+      "joinChallengeFirst": {
+        "full": "To become a member of this Opportunity, first become a member of the parent Challenge",
+        "short": "Please join parent Challenge first"
+      },
+      "contactChallengeLeads": {
+        "full": "Send a message to Challenge leads to become a member",
+        "short": "Send a message to Challenge leads to become a member"
       },
       "goToSpace": "Go to $t(common.space)",
       "goToChallenge": "Go to $t(common.challenge)",
@@ -2319,8 +2331,10 @@
       "continue": "Continue to the platform",
       "tooltip": "Please read and accept the Terms of Use and Privacy Policy before you continue"
     },
-    "registration-success": {
-      "header": "Hi, thank you for signing up!"
+    "registrationSuccess": {
+      "header": "Nearly there…",
+      "message": "The last step is to verify your email address. Please check your inbox for an email with instructions.<br>If you have not received an email, <resend>click here to send it again.</resend>",
+      "continue": "…or continue to the platform without signing in"
     },
     "verification-success": {
       "header": "Thank you for verifying your email address!",
