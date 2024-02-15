@@ -5,10 +5,11 @@ import WhiteboardTemplateForm, {
   WhiteboardTemplateFormSubmittedValuesWithPreviewImages,
   WhiteboardTemplateFormValues,
 } from './WhiteboardTemplateForm';
-import DialogWithGrid from '../../../../../core/ui/dialog/DialogWithGrid';
+import DialogWithGrid, { DialogFooter } from '../../../../../core/ui/dialog/DialogWithGrid';
 import DialogHeader, { DialogHeaderProps } from '../../../../../core/ui/dialog/DialogHeader';
 import DeleteButton from '../../../../shared/components/DeleteButton';
-import FormikSubmitButton from '../../../../shared/components/forms/FormikSubmitButton';
+import { FormikSubmitButtonPure } from '../../../../shared/components/forms/FormikSubmitButton';
+import { DialogActions, DialogContent } from '@mui/material';
 
 export interface EditWhiteboardTemplateDialogProps {
   open: boolean;
@@ -58,26 +59,28 @@ const EditWhiteboardTemplateDialog = ({
   };
 
   return (
-    <DialogWithGrid
-      open={open}
-      onClose={onClose}
-      PaperProps={{ sx: { backgroundColor: 'background.default', minWidth: theme => theme.spacing(128) } }}
-      maxWidth={false}
-    >
-      <DialogHeader onClose={onClose}>
-        {t('common.edit-entity', { entity: t('templateLibrary.whiteboardTemplates.name') })}
-      </DialogHeader>
-      <WhiteboardTemplateForm
-        initialValues={initialValues}
-        visual={template?.profile?.visual}
-        onSubmit={handleSubmit}
-        actions={
-          <>
-            <DeleteButton onClick={onDelete} />
-            <FormikSubmitButton variant="contained">{t('common.update')}</FormikSubmitButton>
-          </>
-        }
+    <DialogWithGrid columns={12} open={open} onClose={onClose}>
+      <DialogHeader
+        title={t('common.edit-entity', { entity: t('templateLibrary.whiteboardTemplates.name') })}
+        onClose={onClose}
       />
+      <DialogContent>
+        <WhiteboardTemplateForm
+          initialValues={initialValues}
+          visual={template?.profile?.visual}
+          onSubmit={handleSubmit}
+          actions={formik => (
+            <DialogFooter>
+              <DialogActions>
+                <DeleteButton onClick={onDelete} />
+                <FormikSubmitButtonPure variant="contained" formik={formik} onClick={() => formik.handleSubmit()}>
+                  {t('common.update')}
+                </FormikSubmitButtonPure>
+              </DialogActions>
+            </DialogFooter>
+          )}
+        />
+      </DialogContent>
     </DialogWithGrid>
   );
 };

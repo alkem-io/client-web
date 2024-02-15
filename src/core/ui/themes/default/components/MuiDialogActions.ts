@@ -4,7 +4,7 @@ import { gutters } from '../../../grid/utils';
 const MuiDialogActions: Components<Theme>['MuiDialogActions'] = {
   styleOverrides: {
     root: ({ theme }) => ({
-      padding: gutters(0.5)(theme),
+      padding: gutters()(theme),
     }),
   },
 };
