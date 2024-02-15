@@ -21,7 +21,7 @@ const InvitationCardHorizontal = ({ invitation, onClick }: InvitationCardHorizon
   return (
     <BadgeCardView
       component={LinkButton}
-      visual={<JourneyAvatar journeyTypeName="space" visualUri={undefined} />}
+      visual={<JourneyAvatar journeyTypeName="space" visualUri={invitation.journeyVisual?.uri} />}
       onClick={onClick}
       outlined
     >
