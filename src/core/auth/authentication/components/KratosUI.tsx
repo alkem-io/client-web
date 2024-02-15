@@ -12,7 +12,7 @@ import { KratosInputExtraProps } from './Kratos/KratosProps';
 import { useKratosT } from './Kratos/messages';
 import isAcceptTermsCheckbox from '../utils/isAcceptTermsCheckbox';
 import KratosAcceptTermsCheckbox from './Kratos/KratosAcceptTermsCheckbox';
-import Paragraph from '../../../../domain/shared/components/Text/Paragraph';
+import { Text } from '../../../ui/typography';
 import AuthActionButton, { AuthActionButtonProps } from './Button';
 import { UiNodeInput } from './Kratos/UiNodeTypes';
 import { KratosAcceptTermsProps } from '../pages/AcceptTerms';
@@ -193,9 +193,9 @@ export const KratosUI: FC<KratosUIProps> = ({
         <Box alignSelf="center" display="flex" flexDirection="column" alignItems="stretch" gap={2} marginTop={2}>
           {nodesByGroup.submit.map(toUiControl)}
           {nodesByGroup.submit.length > 0 && nodesByGroup.oidc.length > 0 && (
-            <Paragraph textAlign="center" marginY={2} textTransform="uppercase">
+            <Text textAlign="center" textTransform="uppercase">
               {t('common.or')}
-            </Paragraph>
+            </Text>
           )}
           {nodesByGroup.oidc.map(toUiControl)}
           {children}
