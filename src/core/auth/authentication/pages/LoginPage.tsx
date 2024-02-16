@@ -2,7 +2,7 @@ import { Box } from '@mui/material';
 import produce from 'immer';
 import AuthPageContentContainer from '../../../../domain/shared/layout/AuthPageContentContainer';
 import SubHeading from '../../../../domain/shared/components/Text/SubHeading';
-import Paragraph from '../../../../domain/shared/components/Text/Paragraph';
+import { Text } from '../../../ui/typography';
 import FixedHeightLogo from '../components/FixedHeightLogo';
 import useKratosFlow, { FlowTypeName } from '../hooks/useKratosFlow';
 import KratosUI from '../components/KratosUI';
@@ -90,19 +90,19 @@ const LoginPage = ({ flow }: LoginPageProps) => {
     </Box>
   );
 
-  const tLink = translateWithElements(<Link to="" />);
+  const tLink = translateWithElements(<Link to="" style={{ whiteSpace: 'nowrap' }} />);
 
   return (
     <KratosForm ui={loginUi}>
       <AuthPageContentContainer>
         <FixedHeightLogo />
         <SubHeading textAlign="center">{t('pages.login.title')}</SubHeading>
-        <KratosUI ui={loginUi} resetPasswordElement={resetPassword} />
-        <Paragraph textAlign="center" marginTop={5}>
+        <Text textAlign="center" marginBottom={2}>
           {tLink('pages.login.register', {
             signup: { to: AUTH_SIGN_UP_PATH },
           })}
-        </Paragraph>
+        </Text>
+        <KratosUI ui={loginUi} resetPasswordElement={resetPassword} />
       </AuthPageContentContainer>
     </KratosForm>
   );
