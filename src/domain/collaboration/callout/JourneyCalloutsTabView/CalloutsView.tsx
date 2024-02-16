@@ -110,6 +110,7 @@ const CalloutsView = ({
     });
     const state: LocationStateCachedCallout = {
       [LocationStateKeyCachedCallout]: callout,
+      keepScroll: true,
     };
     return navigate(uri, { state });
   };
