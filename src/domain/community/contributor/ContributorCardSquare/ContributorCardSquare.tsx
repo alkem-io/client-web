@@ -87,7 +87,8 @@ export const ContributorCardSquare: FC<ContributorCardSquareProps> = props => {
             },
           },
         });
-      } else {
+      }
+      if (contributorType === ContributorType.Organizations) {
         await sendMessageToOrganization({
           variables: {
             messageData: {
