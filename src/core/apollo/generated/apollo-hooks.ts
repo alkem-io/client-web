@@ -1670,15 +1670,15 @@ export const PendingMembershipsJourneyProfileFragmentDoc = gql`
   fragment PendingMembershipsJourneyProfile on Profile {
     id
     displayName
+    visual(type: $visualType) {
+      id
+      uri
+    }
     ... on Profile @include(if: $fetchDetails) {
       tagline
       tagset {
         id
         tags
-      }
-      visual(type: $visualType) {
-        id
-        uri
       }
     }
   }
