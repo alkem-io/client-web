@@ -11,7 +11,7 @@ import ReferenceSegment, { referenceSegmentSchema } from '../../../platform/admi
 import { PushFunc, RemoveFunc } from '../../../common/reference/useEditReference';
 import { Reference } from '../../../common/profile/Profile';
 import { displayNameValidator } from '../../../../core/ui/forms/validator';
-import { MARKDOWN_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
+import { LONG_MARKDOWN_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import FormikMarkdownField from '../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
@@ -109,7 +109,7 @@ const PostForm: FC<PostFormProps> = ({
 
   const validationSchema = yup.object().shape({
     name: displayNameValidator.concat(uniqueNameValidator),
-    description: MarkdownValidator(MARKDOWN_TEXT_LENGTH).required(),
+    description: MarkdownValidator(LONG_MARKDOWN_TEXT_LENGTH).required(),
     tagsets: tagsetSegmentSchema,
     references: referenceSegmentSchema,
   });
@@ -150,7 +150,7 @@ const PostForm: FC<PostFormProps> = ({
               placeholder={t('components.post-creation.info-step.description-placeholder')}
               rows={7}
               required
-              maxLength={MARKDOWN_TEXT_LENGTH}
+              maxLength={LONG_MARKDOWN_TEXT_LENGTH}
               loading={loading}
             />
             <TagsetSegment
