@@ -1,5 +1,4 @@
 import { throttle } from 'lodash';
-import { MutableRefObject, PureComponent, RefCallback } from 'react';
 import { BinaryFiles, Collaborator, ExcalidrawImperativeAPI, Gesture } from '@alkemio/excalidraw/types/types';
 import {
   ACTIVE_THRESHOLD,
@@ -14,7 +13,7 @@ import { ImportedDataState } from '@alkemio/excalidraw/types/data/types';
 import { ExcalidrawElement } from '@alkemio/excalidraw/types/element/types';
 import { getSceneVersion, newElementWith, restoreElements } from '@alkemio/excalidraw';
 import { isImageElement, UserIdleState } from './utils';
-import { generateCollaborationLinkData, getCollabServer, SocketUpdateDataSource } from './data';
+import { getCollabServer, SocketUpdateDataSource } from './data';
 import Portal from './Portal';
 import { ReconciledElements, reconcileElements as _reconcileElements } from './reconciliation';
 import { WhiteboardFilesManager } from '../useWhiteboardFilesManager';
@@ -37,22 +36,20 @@ export interface CollabAPI {
   notifySavedToDatabase: () => void; // Notify rest of the members in the room that I have saved the whiteboard
 }
 
-interface PublicProps {
-  excalidrawAPI: ExcalidrawImperativeAPI;
+export interface CollabProps {
+  excalidrawApi: ExcalidrawImperativeAPI;
   username: string;
-  collabAPIRef?: MutableRefObject<CollabAPI | null> | RefCallback<CollabAPI | null>;
   onSavedToDatabase?: () => void; // Someone in your room saved the whiteboard to the database
   filesManager: WhiteboardFilesManager;
   onSaveRequest: () => Promise<{ success: boolean; errors?: string[] }>;
   onCloseConnection: () => void;
 }
 
-type Props = PublicProps;
-
-class Collab extends PureComponent<Props, CollabState> {
+class Collab {
   portal: Portal;
-  excalidrawAPI: Props['excalidrawAPI'];
-  filesManager: Props['filesManager'];
+  state: CollabState;
+  excalidrawAPI: ExcalidrawImperativeAPI;
+  filesManager: WhiteboardFilesManager;
   activeIntervalId: number | null = null;
   idleTimeoutId: number | null = null;
 
@@ -63,30 +60,29 @@ class Collab extends PureComponent<Props, CollabState> {
   private onCloseConnection: () => void;
   private alreadySharedFiles: string[] = [];
 
-  constructor(props: Props) {
-    super(props);
+  constructor(props: CollabProps) {
     this.state = {
       errorMessage: '',
       username: props.username,
       activeRoomLink: '',
     };
     this.portal = new Portal({
-      collab: this,
-      filesManager: props.filesManager,
       onSaveRequest: props.onSaveRequest,
+      onRoomUserChange: this.setCollaborators,
+      getSceneElements: this.getSceneElementsIncludingDeleted,
       onCloseConnection: this.handleCloseConnection,
     });
-    this.excalidrawAPI = props.excalidrawAPI;
+    this.onCloseConnection = props.onCloseConnection;
+    this.excalidrawAPI = props.excalidrawApi;
     this.filesManager = props.filesManager;
     this.onSavedToDatabase = props.onSavedToDatabase;
-    this.onCloseConnection = props.onCloseConnection;
     this.alreadySharedFiles.push(...Object.keys(this.excalidrawAPI.getFiles()));
   }
 
-  componentDidMount() {
+  init(): CollabAPI {
     window.addEventListener(EVENT.UNLOAD, this.onUnload);
 
-    const collabAPI: CollabAPI = {
+    return {
       onPointerUpdate: this.onPointerUpdate,
       startCollaboration: this.startCollaboration,
       syncElements: this.syncElements,
@@ -94,25 +90,9 @@ class Collab extends PureComponent<Props, CollabState> {
       stopCollaboration: this.stopCollaboration,
       notifySavedToDatabase: this.notifySavedToDatabase,
     };
-
-    if (typeof this.props.collabAPIRef === 'function') {
-      this.props.collabAPIRef(collabAPI);
-    } else if (this.props.collabAPIRef) {
-      this.props.collabAPIRef.current = collabAPI;
-    }
-
-    if (import.meta.env.MODE === 'development') {
-      window.collab = window.collab || ({} as Window['collab']);
-      Object.defineProperties(window, {
-        collab: {
-          configurable: true,
-          value: this,
-        },
-      });
-    }
   }
 
-  componentWillUnmount() {
+  destroy() {
     window.removeEventListener(EVENT.UNLOAD, this.onUnload);
     window.removeEventListener(EVENT.POINTER_MOVE, this.onPointerMove);
     window.removeEventListener(EVENT.VISIBILITY_CHANGE, this.onVisibilityChange);
@@ -164,9 +144,7 @@ class Collab extends PureComponent<Props, CollabState> {
     this.portal.close();
 
     if (!opts?.isUnload) {
-      this.setState({
-        activeRoomLink: '',
-      });
+      this.state.activeRoomLink = '';
       this.collaborators = new Map();
       this.excalidrawAPI.updateScene({
         collaborators: this.collaborators,
@@ -176,19 +154,13 @@ class Collab extends PureComponent<Props, CollabState> {
 
   private fallbackInitializationHandler: null | (() => unknown) = null;
 
-  startCollaboration = async (existingRoomLinkData: null | { roomId: string }): Promise<ImportedDataState | null> =>
+  startCollaboration = async (existingRoomLinkData: { roomId: string }): Promise<ImportedDataState | null> =>
     new Promise(async resolve => {
       if (this.portal.socket) {
         return null;
       }
 
-      let roomId;
-
-      if (existingRoomLinkData) {
-        ({ roomId } = existingRoomLinkData);
-      } else {
-        ({ roomId } = await generateCollaborationLinkData());
-      }
+      const { roomId } = existingRoomLinkData;
 
       const { default: socketIOClient } = await import('socket.io-client');
 
@@ -216,8 +188,9 @@ class Collab extends PureComponent<Props, CollabState> {
 
         this.portal.socket.once('connect_error', fallbackInitializationHandler);
       } catch (error) {
-        console.error(error); // eslint-disable no-console
-        this.setState({ errorMessage: (error as { message: string } | undefined)?.message ?? '' });
+        // eslint-disable-next-line no-console
+        console.error(error);
+        this.state.errorMessage = (error as { message: string } | undefined)?.message ?? '';
         return null;
       }
 
@@ -310,11 +283,10 @@ class Collab extends PureComponent<Props, CollabState> {
             const payload = decryptedData.payload as SocketUpdateDataSource['FILE_REQUEST']['payload'];
             const currentFiles = this.excalidrawAPI.getFiles();
             if (payload.fileIds && payload.fileIds.length > 0) {
-              payload.fileIds.forEach(id => {
+              payload.fileIds.forEach(async id => {
                 if (currentFiles[id]) {
-                  this.filesManager
-                    .convertLocalFileToRemote(currentFiles[id])
-                    .then(file => file && this.portal.broadcastFile(file));
+                  const file = await this.filesManager.convertLocalFileToRemote(currentFiles[id]);
+                  file && this.portal.broadcastFile(file);
                 }
               });
             }
@@ -374,9 +346,7 @@ class Collab extends PureComponent<Props, CollabState> {
 
       this.initializeIdleDetector();
 
-      this.setState({
-        activeRoomLink: window.location.href,
-      });
+      this.state.activeRoomLink = window.location.href;
     });
 
   private initializeRoom = async ({
@@ -401,7 +371,8 @@ class Collab extends PureComponent<Props, CollabState> {
         this.queueBroadcastAllElements();
       } catch (error: unknown) {
         // log the error and move on. other peers will sync us the scene.
-        console.error(error); // eslint-disable no-console
+        // eslint-disable-next-line no-console
+        console.error(error);
       } finally {
         this.portal.socketInitialized = true;
       }
@@ -493,7 +464,7 @@ class Collab extends PureComponent<Props, CollabState> {
     document.addEventListener(EVENT.VISIBILITY_CHANGE, this.onVisibilityChange);
   };
 
-  setCollaborators(sockets: string[]) {
+  private setCollaborators = (sockets: string[]) => {
     const collaborators: InstanceType<typeof Collab>['collaborators'] = new Map();
 
     for (const socketId of sockets) {
@@ -506,7 +477,7 @@ class Collab extends PureComponent<Props, CollabState> {
 
     this.collaborators = collaborators;
     this.excalidrawAPI.updateScene({ collaborators });
-  }
+  };
 
   public setLastBroadcastedOrReceivedSceneVersion = (version: number) => {
     this.lastBroadcastedOrReceivedSceneVersion = version;
@@ -526,18 +497,24 @@ class Collab extends PureComponent<Props, CollabState> {
       button: SocketUpdateDataSource['MOUSE_LOCATION']['payload']['button'];
       pointersMap: Gesture['pointers'];
     }) => {
-      payload.pointersMap.size < 2 && this.portal.socket && this.portal.broadcastMouseLocation(payload);
+      payload.pointersMap.size < 2 &&
+        this.portal.socket &&
+        this.portal.broadcastMouseLocation({
+          ...payload,
+          username: this.state.username,
+          selectedElementIds: this.excalidrawAPI.getAppState().selectedElementIds,
+        });
     },
     CURSOR_SYNC_TIMEOUT
   );
 
   onIdleStateChange = (userState: UserIdleState) => {
-    this.portal.broadcastIdleChange(userState);
+    this.portal.broadcastIdleChange(userState, this.state.username);
   };
 
   broadcastElements = (elements: readonly ExcalidrawElement[]) => {
     if (getSceneVersion(elements) > this.getLastBroadcastedOrReceivedSceneVersion()) {
-      this.portal.broadcastScene(WS_SCENE_EVENT_TYPES.UPDATE, elements, false);
+      this.portal.broadcastScene(WS_SCENE_EVENT_TYPES.UPDATE, elements);
       this.lastBroadcastedOrReceivedSceneVersion = getSceneVersion(elements);
       this.queueBroadcastAllElements();
     }
@@ -562,35 +539,17 @@ class Collab extends PureComponent<Props, CollabState> {
   };
 
   notifySavedToDatabase = () => {
-    this.portal.broadcastSavedEvent();
+    this.portal.broadcastSavedEvent(this.state.username);
   };
 
   queueBroadcastAllElements = throttle(() => {
-    this.portal.broadcastScene(
-      WS_SCENE_EVENT_TYPES.UPDATE,
-      this.excalidrawAPI.getSceneElementsIncludingDeleted(),
-      true
-    );
+    this.portal.broadcastScene(WS_SCENE_EVENT_TYPES.UPDATE, this.excalidrawAPI.getSceneElementsIncludingDeleted(), {
+      syncAll: true,
+    });
     const currentVersion = this.getLastBroadcastedOrReceivedSceneVersion();
     const newVersion = Math.max(currentVersion, getSceneVersion(this.getSceneElementsIncludingDeleted()));
     this.setLastBroadcastedOrReceivedSceneVersion(newVersion);
   }, SYNC_FULL_SCENE_INTERVAL_MS);
-
-  render() {
-    return null;
-  }
-}
-
-declare global {
-  interface Window {
-    collab: InstanceType<typeof Collab>;
-  }
-}
-
-if (import.meta.env.MODE === 'development') {
-  window.collab = window.collab || ({} as Window['collab']);
 }
 
 export default Collab;
-
-export type TCollabClass = Collab;

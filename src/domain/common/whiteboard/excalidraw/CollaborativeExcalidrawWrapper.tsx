@@ -7,9 +7,10 @@ import React, { Ref, useCallback, useEffect, useMemo, useRef, useState } from 'r
 import { useCombinedRefs } from '../../../shared/utils/useCombinedRefs';
 import EmptyWhiteboard from '../EmptyWhiteboard';
 import { ExcalidrawElement } from '@alkemio/excalidraw/types/element/types';
-import Collab, { CollabAPI } from './collab/Collab';
+import { CollabAPI } from './collab/Collab';
 import { useUserContext } from '../../../community/user';
 import { WhiteboardFilesManager } from './useWhiteboardFilesManager';
+import useCollab from './collab/useCollab';
 
 const useActorWhiteboardStyles = makeStyles(theme => ({
   container: {
@@ -41,11 +42,13 @@ export interface WhiteboardWhiteboardEvents {
   onCollaborationEnabledChange?: (collaborationEnabled: boolean) => void;
 }
 
-export interface WhiteboardWhiteboardOptions extends ExcalidrawProps { }
+export interface WhiteboardWhiteboardOptions extends ExcalidrawProps {
+  collaborationEnabled: boolean;
+}
 
 export interface WhiteboardWhiteboardProps {
   entities: WhiteboardWhiteboardEntities;
-  options?: WhiteboardWhiteboardOptions;
+  options: WhiteboardWhiteboardOptions;
   actions: WhiteboardWhiteboardActions;
   events: WhiteboardWhiteboardEvents;
   collabApiRef?: Ref<CollabAPI | null>;
@@ -62,12 +65,9 @@ const CollaborativeExcalidrawWrapper = ({
 }: WhiteboardWhiteboardProps) => {
   const { whiteboard, filesManager } = entities;
 
-  const [collabAPI, setCollabAPI] = useState<CollabAPI | null>(null);
   const combinedCollabApiRef = useCombinedRefs<CollabAPI | null>(null, collabApiRef);
 
   const styles = useActorWhiteboardStyles();
-
-  const [collaborationEnabled, setCollaborationEnabled] = useState(true);
 
   const { user } = useUserContext();
   const username = user?.user.profile.displayName ?? 'User';
@@ -92,7 +92,7 @@ const CollaborativeExcalidrawWrapper = ({
 
   const handleScroll = useRef(
     debounce(async () => {
-      excalidrawApiRef.current?.refresh();
+      excalidrawApi?.refresh();
     }, WINDOW_SCROLL_HANDLER_DEBOUNCE_INTERVAL)
   ).current;
 
@@ -116,39 +116,55 @@ const CollaborativeExcalidrawWrapper = ({
     []
   );
 
-  const { UIOptions: externalUIOptions, ...restOptions } = options || {};
+  const { UIOptions: externalUIOptions, collaborationEnabled, ...restOptions } = options;
 
   const mergedUIOptions = useMemo(() => merge(UIOptions, externalUIOptions), [UIOptions, externalUIOptions]);
 
+  const [collabApi, initializeCollab] = useCollab({
+    username,
+    onSavedToDatabase: actions.onSavedToDatabase,
+    filesManager,
+    onSaveRequest: async () => {
+      if (excalidrawApi) {
+        const state = {
+          ...(data as ExportedDataState),
+          elements: excalidrawApi.getSceneElements(),
+          files: excalidrawApi.getFiles(),
+          appState: excalidrawApi.getAppState(),
+        };
+        const result = await actions.onUpdate?.(state);
+        return result ?? { success: false, errors: ['Update handler not defined'] };
+      }
+      return { success: false, errors: ['ExcalidrawAPI not yet ready'] };
+    },
+    onCloseConnection: () => {
+      events.onCollaborationEnabledChange?.(false);
+    },
+    onInitialize: collabApi => {
+      combinedCollabApiRef.current = collabApi;
+      events.onCollaborationEnabledChange?.(true);
+    },
+  });
+
   const onChange = (elements: readonly ExcalidrawElement[], _appState: AppState, files: BinaryFiles) => {
-    collabAPI?.syncElements(elements);
-    collabAPI?.syncFiles(files);
+    collabApi?.syncElements(elements);
+    collabApi?.syncFiles(files);
   };
 
+  const [excalidrawApi, setExcalidrawApi] = useState<ExcalidrawImperativeAPI | null>(null);
+
   useEffect(() => {
-    if (collabAPI && whiteboard?.id) {
-      collabAPI.startCollaboration({
+    if (excalidrawApi && whiteboard?.id) {
+      return initializeCollab({
+        excalidrawApi,
         roomId: whiteboard.id,
       });
-      setCollaborationEnabled(true);
-      events.onCollaborationEnabledChange?.(true);
     }
-    return () => {
-      setCollaborationEnabled(false);
-      events.onCollaborationEnabledChange?.(false);
-      collabAPI?.stopCollaboration();
-    };
-  }, [collabAPI, whiteboard?.id]);
+  }, [excalidrawApi, whiteboard?.id]);
 
-  const collabRef = useCallback((collabApi: CollabAPI | null) => {
-    combinedCollabApiRef.current = collabApi;
-    setCollabAPI(collabApi);
-  }, []);
-
-  const excalidrawApiRef = useRef<ExcalidrawImperativeAPI | null>(null);
   const handleInitializeApi = useCallback(
     (excalidrawApi: ExcalidrawImperativeAPI) => {
-      excalidrawApiRef.current = excalidrawApi;
+      setExcalidrawApi(excalidrawApi);
       actions.onInitApi?.(excalidrawApi);
     },
     [actions.onInitApi]
@@ -166,7 +182,7 @@ const CollaborativeExcalidrawWrapper = ({
           viewModeEnabled={!collaborationEnabled}
           gridModeEnabled
           onChange={onChange}
-          onPointerUpdate={collabAPI?.onPointerUpdate}
+          onPointerUpdate={collabApi?.onPointerUpdate}
           detectScroll={false}
           autoFocus
           generateIdForFile={addNewFile}
@@ -174,32 +190,6 @@ const CollaborativeExcalidrawWrapper = ({
               return <LiveCollaborationStatus />;
             }}*/
           {...restOptions}
-        />
-      )}
-      {excalidrawApiRef.current && (
-        <Collab
-          username={username}
-          excalidrawAPI={excalidrawApiRef.current}
-          collabAPIRef={collabRef}
-          onSavedToDatabase={actions.onSavedToDatabase}
-          filesManager={filesManager}
-          onSaveRequest={async () => {
-            if (excalidrawApiRef.current) {
-              const state = {
-                ...(data as ExportedDataState),
-                elements: excalidrawApiRef.current.getSceneElements(),
-                files: excalidrawApiRef.current.getFiles(),
-                appState: excalidrawApiRef.current.getAppState(),
-              };
-              const result = await actions.onUpdate?.(state);
-              return result ?? { success: false, errors: ['Update handler not defined'] };
-            }
-            return { success: false, errors: ['ExcalidrawAPI not yet ready'] };
-          }}
-          onCloseConnection={() => {
-            setCollaborationEnabled(false);
-            events.onCollaborationEnabledChange?.(false);
-          }}
         />
       )}
     </div>

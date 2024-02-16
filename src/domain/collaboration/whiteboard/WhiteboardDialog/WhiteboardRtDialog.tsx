@@ -310,6 +310,7 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
                     entities={{ whiteboard, filesManager }}
                     collabApiRef={collabApiRef}
                     options={{
+                      collaborationEnabled,
                       viewModeEnabled: !editModeEnabled,
                       UIOptions: {
                         canvasActions: {
