@@ -1,8 +1,7 @@
 import { ExcalidrawElement } from '@alkemio/excalidraw/types/element/types';
-import { DELETED_ELEMENT_TIMEOUT, ROOM_ID_BYTES } from '../excalidrawAppConstants';
+import { DELETED_ELEMENT_TIMEOUT } from '../excalidrawAppConstants';
 import { isInvisiblySmallElement } from '@alkemio/excalidraw';
 import { AppState, UserIdleState } from '@alkemio/excalidraw/types/types';
-import { bytesToHexString } from '../utils';
 import { env } from '../../../../../../main/env';
 import { BinaryFileDataWithUrl } from '../../useWhiteboardFilesManager';
 
@@ -15,12 +14,6 @@ export const isSyncableElement = (element: ExcalidrawElement): element is Syncab
     return element.updated > Date.now() - DELETED_ELEMENT_TIMEOUT;
   }
   return !isInvisiblySmallElement(element);
-};
-
-const generateRoomId = async () => {
-  const buffer = new Uint8Array(ROOM_ID_BYTES);
-  window.crypto.getRandomValues(buffer);
-  return bytesToHexString(buffer);
 };
 
 /**
@@ -99,10 +92,4 @@ export type SocketUpdateDataSource = {
 
 export type SocketUpdateData = SocketUpdateDataSource[keyof SocketUpdateDataSource] & {
   _brand: 'socketUpdateData';
-};
-
-export const generateCollaborationLinkData = async () => {
-  const roomId = await generateRoomId();
-
-  return { roomId };
 };
