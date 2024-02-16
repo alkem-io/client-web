@@ -1,8 +1,12 @@
 import { useMemo, useRef, useState } from 'react';
 import { useUploadFileMutation } from '../../../../core/apollo/generated/apollo-hooks';
-import { BinaryFileData, DataURL, ExcalidrawImperativeAPI } from '@alkemio/excalidraw/types/types';
+import { BinaryFileData, BinaryFiles, DataURL, ExcalidrawImperativeAPI } from '@alkemio/excalidraw/types/types';
 import { excalidrawFileMimeType, generateIdFromFile } from './collab/utils';
 import Semaphore from 'ts-semaphore';
+
+export type BinaryFileDataWithUrl = BinaryFileData & { url: string };
+export type BinaryFileDataWithOptionalUrl = BinaryFileData & { url?: string };
+export type BinaryFilesWithUrl = Record<string, BinaryFileDataWithUrl>;
 
 const isValidDataURL = (url: string) =>
   url.match(/^(data:)([\w/+-]*)(;charset=[\w-]+|;base64){0,1},[A-Za-z0-9+/=]+$/gi) !== null;
@@ -49,9 +53,6 @@ const fetchFileToDataURL = async (url: string): Promise<string> => {
   return blobToDataURL(blob);
 };
 
-export type BinaryFileDataWithUrl = BinaryFileData & { url: string };
-export type BinaryFileDataWithOptionalUrl = BinaryFileData & { url?: string };
-
 interface Props {
   storageBucketId?: string; // FilesManagers without storageBucketId will throw an exception on file upload
   excalidrawAPI: ExcalidrawImperativeAPI | null;
@@ -66,6 +67,7 @@ interface WhiteboardWithFiles {
 export interface WhiteboardFilesManager {
   addNewFile: (file: File) => Promise<string>;
   loadFiles: (data: WhiteboardWithFiles) => Promise<void>;
+  getUploadedFiles: (filesInExcalidraw: BinaryFiles) => Promise<BinaryFilesWithUrl>;
   pushFilesToExcalidraw: () => Promise<void>;
   convertLocalFilesToRemoteInWhiteboard: <W extends WhiteboardWithFiles>(whiteboard: W) => Promise<W>;
   convertLocalFileToRemote: (file: BinaryFileData & { url?: string }) => Promise<BinaryFileDataWithUrl | undefined>;
@@ -194,7 +196,7 @@ const useWhiteboardFilesManager = ({
 
     const pendingFileIds = Object.keys(files).filter(fileId => !files[fileId]?.dataURL);
     log('I need to download these files', pendingFileIds);
-    const newFiles: Record<string, BinaryFileDataWithUrl> = {};
+    const newFiles: BinaryFilesWithUrl = {};
 
     setDownloadingFiles(true);
 
@@ -220,6 +222,32 @@ const useWhiteboardFilesManager = ({
     } finally {
       setDownloadingFiles(false);
     }
+  };
+
+  /**
+   * Returns all the files uploaded to the fileStore.
+   * Argument `files` should be the files that are currently in the whiteboard, can be obtained from Excalidraw's API.
+   * if any of the passed files is not in the fileStore, it will be uploaded to the storageBucket.
+   *
+   * @returns {BinaryFilesWithUrl} - The files with their URLs in the storage bucket.
+   * Property `dataURL` is can contain the base64 data of the file if it was coming in the parameter `files`.
+   */
+  const getUploadedFiles = async (files: BinaryFiles): Promise<BinaryFilesWithUrl> => {
+    const result: BinaryFilesWithUrl = {};
+    if (!files) {
+      return result;
+    }
+    for (const id of Object.keys(files)) {
+      if (fileStore.current[id]) {
+        result[id] = fileStore.current[id];
+      } else {
+        const file = await convertLocalFileToRemote(files[id]);
+        if (file) {
+          result[id] = file;
+        }
+      }
+    }
+    return result;
   };
 
   /**
@@ -315,6 +343,7 @@ const useWhiteboardFilesManager = ({
     () => ({
       addNewFile,
       loadFiles, // Load external files into Excalidraw
+      getUploadedFiles,
       pushFilesToExcalidraw,
       convertLocalFileToRemote,
       convertLocalFilesToRemoteInWhiteboard,
