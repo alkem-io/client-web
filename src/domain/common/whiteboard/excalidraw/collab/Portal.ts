@@ -1,33 +1,40 @@
 import { isSyncableElement, SocketUpdateData, SocketUpdateDataSource } from './data';
-import { TCollabClass } from './Collab';
 import { ExcalidrawElement } from '@alkemio/excalidraw/types/element/types';
-import { WS_EVENTS, WS_SCENE_EVENT_TYPES, PRECEDING_ELEMENT_KEY } from './excalidrawAppConstants';
+import { PRECEDING_ELEMENT_KEY, WS_EVENTS, WS_SCENE_EVENT_TYPES } from './excalidrawAppConstants';
 import { UserIdleState } from './utils';
 import { BroadcastedExcalidrawElement } from './reconciliation';
 import { Socket } from 'socket.io-client';
-import { BinaryFileDataWithUrl, WhiteboardFilesManager } from '../useWhiteboardFilesManager';
+import { BinaryFileDataWithUrl } from '../useWhiteboardFilesManager';
 
 interface PortalProps {
-  collab: TCollabClass;
-  filesManager: WhiteboardFilesManager;
   onSaveRequest: () => Promise<{ success: boolean; errors?: string[] }>;
   onCloseConnection: () => void;
+  onRoomUserChange: (clients: string[]) => void;
+  getSceneElements: () => readonly ExcalidrawElement[];
+}
+
+interface BroadcastOptions {
+  volatile?: boolean;
+}
+
+interface BroadcastSceneOptions {
+  syncAll?: boolean;
 }
 
 class Portal {
-  collab: TCollabClass;
-  filesManager: WhiteboardFilesManager;
   onSaveRequest: () => Promise<{ success: boolean; errors?: string[] }>;
   onCloseConnection: () => void;
+  onRoomUserChange: (clients: string[]) => void;
+  getSceneElements: () => readonly ExcalidrawElement[];
   socket: Socket | null = null;
   socketInitialized: boolean = false; // we don't want the socket to emit any updates until it is fully initialized
   roomId: string | null = null;
   broadcastedElementVersions: Map<string, number> = new Map();
 
-  constructor({ collab, filesManager, onSaveRequest, onCloseConnection }: PortalProps) {
-    this.collab = collab;
-    this.filesManager = filesManager;
+  constructor({ onSaveRequest, onRoomUserChange, getSceneElements, onCloseConnection }: PortalProps) {
     this.onSaveRequest = onSaveRequest;
+    this.onRoomUserChange = onRoomUserChange;
+    this.getSceneElements = getSceneElements;
     this.onCloseConnection = onCloseConnection;
   }
 
@@ -43,15 +50,11 @@ class Portal {
     });
 
     this.socket.on('new-user', async (_socketId: string) => {
-      this.broadcastScene(
-        WS_SCENE_EVENT_TYPES.INIT,
-        this.collab.getSceneElementsIncludingDeleted(),
-        /* syncAll */ true
-      );
+      this.broadcastScene(WS_SCENE_EVENT_TYPES.INIT, this.getSceneElements(), { syncAll: true });
     });
 
     this.socket.on('room-user-change', (clients: string[]) => {
-      this.collab.setCollaborators(clients);
+      this.onRoomUserChange(clients);
     });
 
     this.socket.on('save-request', async callback => {
@@ -86,7 +89,7 @@ class Portal {
     return !!(this.socketInitialized && this.socket && this.roomId);
   }
 
-  private _broadcastSocketData(data: SocketUpdateData, volatile: boolean = false) {
+  private _broadcastSocketData(data: SocketUpdateData, { volatile = false }: BroadcastOptions = {}) {
     if (this.isOpen()) {
       const jsonStr = JSON.stringify(data);
       const encryptedBuffer = new TextEncoder().encode(jsonStr).buffer;
@@ -105,7 +108,7 @@ class Portal {
   broadcastScene = async (
     updateType: WS_SCENE_EVENT_TYPES.INIT | WS_SCENE_EVENT_TYPES.UPDATE,
     allElements: readonly ExcalidrawElement[],
-    syncAll: boolean
+    { syncAll = false }: BroadcastSceneOptions = {}
   ) => {
     if (updateType === WS_SCENE_EVENT_TYPES.INIT && !syncAll) {
       throw new Error('syncAll must be true when sending SCENE.INIT');
@@ -147,19 +150,15 @@ class Portal {
 
   broadcastFile = async (file: BinaryFileDataWithUrl) => {
     if (this.socket?.id) {
-      const fileWithUrl = await this.filesManager.convertLocalFileToRemote(file);
+      const data: SocketUpdateDataSource['FILE_UPLOAD'] = {
+        type: 'FILE_UPLOAD',
+        payload: {
+          socketId: this.socket.id,
+          file,
+        },
+      };
 
-      if (fileWithUrl) {
-        const data: SocketUpdateDataSource['FILE_UPLOAD'] = {
-          type: 'FILE_UPLOAD',
-          payload: {
-            socketId: this.socket.id,
-            file: fileWithUrl,
-          },
-        };
-
-        this._broadcastRequestData(data as SocketUpdateData);
-      }
+      this._broadcastRequestData(data as SocketUpdateData);
     }
   };
 
@@ -177,58 +176,50 @@ class Portal {
     }
   };
 
-  broadcastIdleChange = (userState: UserIdleState) => {
+  broadcastIdleChange = (userState: UserIdleState, username: string) => {
     if (this.socket?.id) {
       const data: SocketUpdateDataSource['IDLE_STATUS'] = {
         type: 'IDLE_STATUS',
         payload: {
           socketId: this.socket.id,
           userState,
-          username: this.collab.state.username,
+          username,
         },
       };
-      return this._broadcastSocketData(
-        data as SocketUpdateData,
-        true // volatile
-      );
+      return this._broadcastSocketData(data as SocketUpdateData, { volatile: true });
     }
   };
 
   broadcastMouseLocation = (payload: {
     pointer: SocketUpdateDataSource['MOUSE_LOCATION']['payload']['pointer'];
     button: SocketUpdateDataSource['MOUSE_LOCATION']['payload']['button'];
+    selectedElementIds: Readonly<{
+      [id: string]: true;
+    }>;
+    username: string;
   }) => {
     if (this.socket?.id) {
       const data: SocketUpdateDataSource['MOUSE_LOCATION'] = {
         type: 'MOUSE_LOCATION',
         payload: {
           socketId: this.socket.id,
-          pointer: payload.pointer,
-          button: payload.button || 'up',
-          selectedElementIds: this.collab.excalidrawAPI.getAppState().selectedElementIds,
-          username: this.collab.state.username,
+          ...payload,
         },
       };
-      return this._broadcastSocketData(
-        data as SocketUpdateData,
-        true // volatile
-      );
+      return this._broadcastSocketData(data as SocketUpdateData, { volatile: true });
     }
   };
 
-  broadcastSavedEvent = () => {
+  broadcastSavedEvent = (username: string) => {
     if (this.socket?.id) {
       const data: SocketUpdateDataSource['SAVED'] = {
         type: 'SAVED',
         payload: {
           socketId: this.socket.id,
-          username: this.collab.state.username,
+          username,
         },
       };
-      return this._broadcastSocketData(
-        data as SocketUpdateData,
-        false // volatile
-      );
+      return this._broadcastSocketData(data as SocketUpdateData);
     }
   };
 }

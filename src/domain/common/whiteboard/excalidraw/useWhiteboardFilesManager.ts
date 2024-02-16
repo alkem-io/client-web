@@ -4,8 +4,6 @@ import { BinaryFileData, DataURL, ExcalidrawImperativeAPI } from '@alkemio/excal
 import { excalidrawFileMimeType, generateIdFromFile } from './collab/utils';
 import Semaphore from 'ts-semaphore';
 
-const semaphore = new Semaphore(1);
-
 const isValidDataURL = (url: string) =>
   url.match(/^(data:)([\w/+-]*)(;charset=[\w-]+|;base64){0,1},[A-Za-z0-9+/=]+$/gi) !== null;
 
@@ -214,6 +212,7 @@ const useWhiteboardFilesManager = ({
             newFiles[fileId] = { ...file, dataURL } as BinaryFileDataWithUrl;
             fileStoreAddFile(fileId, newFiles[fileId]);
           } else {
+            // eslint-disable-next-line no-console
             console.error('Cannot download', file);
           }
         })
@@ -278,9 +277,11 @@ const useWhiteboardFilesManager = ({
     return { files: filesNext, ...rest } as W;
   };
 
+  const semaphore = useRef(new Semaphore(1)).current;
+
   /**
    * Finds a file in the fileStore and prepares it to be sent:
-   * - Ensures that it has a url
+   * - Ensures that it has a URL
    * - Removes dataURL
    *
    * A Semaphore is required in this function because it can be called multiple times in parallel by Collab.syncFiles
