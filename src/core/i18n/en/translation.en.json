@@ -1726,7 +1726,7 @@
         "community": {
           "preferences": {
             "title": "Membership",
-            "subtitle": "This section allows you to modify the $t(common.challenge) membership preferences"
+            "subtitle": "This section allows you to modify the $t(common.challenge) membership preferences. If both switches are turned off, new members can only be added manually. If both switches are turned on, members of the Space don't have to apply but can directly join."
           }
         },
         "sections": {
