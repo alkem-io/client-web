@@ -1554,6 +1554,7 @@ export type MutationKeySpecifier = (
   | 'updateTagset'
   | 'updateUser'
   | 'updateUserGroup'
+  | 'updateUserPlatformSettings'
   | 'updateVisual'
   | 'updateWhiteboard'
   | 'updateWhiteboardContentRt'
@@ -1715,6 +1716,7 @@ export type MutationFieldPolicy = {
   updateTagset?: FieldPolicy<any> | FieldReadFunction<any>;
   updateUser?: FieldPolicy<any> | FieldReadFunction<any>;
   updateUserGroup?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateUserPlatformSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   updateVisual?: FieldPolicy<any> | FieldReadFunction<any>;
   updateWhiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
   updateWhiteboardContentRt?: FieldPolicy<any> | FieldReadFunction<any>;
