@@ -21,6 +21,17 @@ interface BroadcastSceneOptions {
   syncAll?: boolean;
 }
 
+interface ConnectionOptions {
+  url: string;
+  roomId: string;
+  polling?: boolean;
+}
+
+interface SocketEventHandlers {
+  'client-broadcast': (encryptedData: ArrayBuffer) => void;
+  'first-in-room': () => void;
+}
+
 class Portal {
   onSaveRequest: () => Promise<{ success: boolean; errors?: string[] }>;
   onCloseConnection: () => void;
@@ -38,9 +49,17 @@ class Portal {
     this.onCloseConnection = onCloseConnection;
   }
 
-  open(socket: Socket, id: string) {
+  async open(connectionOptions: ConnectionOptions, eventHandlers: SocketEventHandlers) {
+    const { default: socketIOClient } = await import('socket.io-client');
+
+    const socket = socketIOClient(connectionOptions.url, {
+      transports: connectionOptions.polling ? ['websocket', 'polling'] : ['websocket'],
+      path: '/api/private/ws/socket.io',
+      retries: 0,
+    });
+
     this.socket = socket;
-    this.roomId = id;
+    this.roomId = connectionOptions.roomId;
 
     // Initialize socket listeners
     this.socket.on('init-room', () => {
@@ -63,6 +82,13 @@ class Portal {
       } catch (ex) {
         callback({ success: false, errors: [ex?.message ?? ex] });
       }
+    });
+
+    this.socket.on('client-broadcast', eventHandlers['client-broadcast']);
+
+    this.socket.on('first-in-room', () => {
+      socket.off('first-in-room');
+      eventHandlers['first-in-room']();
     });
 
     this.socket.on('disconnect', () => {
