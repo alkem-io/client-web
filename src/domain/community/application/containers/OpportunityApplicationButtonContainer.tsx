@@ -8,6 +8,7 @@ import { CommunityMembershipStatus } from '../../../../core/apollo/generated/gra
 import { useCommunityContext } from '../../community/CommunityContext';
 import { useAuthenticationContext } from '../../../../core/auth/authentication/hooks/useAuthenticationContext';
 import { SimpleContainerProps } from '../../../../core/container/SimpleContainer';
+import useSendMessageToCommunityLeads from '../../CommunityLeads/useSendMessageToCommunityLeads';
 
 interface ApplicationContainerState {
   loading: boolean;
@@ -48,7 +49,6 @@ export const OpportunityApplicationButtonContainer: FC<OpportunityApplicationBut
 
   const parentUrl = challengeNameId ? buildChallengeUrl(spaceNameId, challengeNameId) : buildSpaceUrl(spaceNameId);
   const communityLeadUsers = _communityPrivileges?.space?.opportunity?.community?.leadUsers ?? [];
-  const communityAdminUsers = _communityPrivileges?.space?.opportunity?.community?.adminUsers ?? [];
   const leadUsers = communityLeadUsers.map(user => ({
     id: user.id,
     displayName: user.profile.displayName,
@@ -56,13 +56,8 @@ export const OpportunityApplicationButtonContainer: FC<OpportunityApplicationBut
     city: user.profile.location?.city,
     avatarUri: user.profile.avatar?.uri,
   }));
-  const adminUsers = communityAdminUsers.map(user => ({
-    id: user.id,
-    displayName: user.profile.displayName,
-    country: user.profile.location?.country,
-    city: user.profile.location?.city,
-    avatarUri: user.profile.avatar?.uri,
-  }));
+  const communityId = _communityPrivileges?.space.opportunity?.community?.id;
+  const sendMessageToCommunityLeads = useSendMessageToCommunityLeads(communityId);
 
   const loading = communityPrivilegesLoading;
 
@@ -70,8 +65,8 @@ export const OpportunityApplicationButtonContainer: FC<OpportunityApplicationBut
     isAuthenticated,
     isMember,
     isParentMember,
+    sendMessageToCommunityLeads,
     leadUsers,
-    adminUsers,
     parentUrl,
     loading,
   };

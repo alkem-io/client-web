@@ -11140,21 +11140,6 @@ export const CommunityUserPrivilegesWithParentCommunityDocument = gql`
               }
             }
           }
-          adminUsers: usersInRole(role: ADMIN) {
-            id
-            profile {
-              id
-              displayName
-              avatar: visual(type: AVATAR) {
-                ...VisualUri
-              }
-              location {
-                id
-                country
-                city
-              }
-            }
-          }
         }
       }
     }
