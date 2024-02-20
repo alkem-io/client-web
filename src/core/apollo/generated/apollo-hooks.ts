@@ -2754,6 +2754,7 @@ export const InnovationFlowTemplateCardFragmentDoc = gql`
     profile {
       ...TemplateCardProfileInfo
     }
+    definition
   }
   ${TemplateCardProfileInfoFragmentDoc}
 `;

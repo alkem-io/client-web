@@ -7889,6 +7889,7 @@ export type InnovationFlowTemplateCardFragment = {
   __typename?: 'InnovationFlowTemplate';
   id: string;
   type: InnovationFlowType;
+  definition: string;
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -7925,6 +7926,7 @@ export type SpaceInnovationFlowTemplatesLibraryQuery = {
             __typename?: 'InnovationFlowTemplate';
             id: string;
             type: InnovationFlowType;
+            definition: string;
             profile: {
               __typename?: 'Profile';
               id: string;
@@ -7997,6 +7999,7 @@ export type PlatformInnovationFlowTemplatesLibraryQuery = {
                 __typename?: 'InnovationFlowTemplate';
                 id: string;
                 type: InnovationFlowType;
+                definition: string;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
@@ -8169,6 +8172,7 @@ export type InnovationPackProfilePageQuery = {
                     __typename?: 'InnovationFlowTemplate';
                     id: string;
                     type: InnovationFlowType;
+                    definition: string;
                     profile: {
                       __typename?: 'Profile';
                       id: string;
@@ -26386,6 +26390,7 @@ export type InnovationFlowTemplatesFromSpaceQuery = {
             __typename?: 'InnovationFlowTemplate';
             id: string;
             type: InnovationFlowType;
+            definition: string;
             profile: {
               __typename?: 'Profile';
               id: string;
@@ -26463,6 +26468,7 @@ export type SpaceTemplatesFragment = {
           __typename?: 'InnovationFlowTemplate';
           id: string;
           type: InnovationFlowType;
+          definition: string;
           profile: {
             __typename?: 'Profile';
             id: string;

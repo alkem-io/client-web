@@ -31,7 +31,7 @@ export type TemplatePreview =
       templateType: TemplateType.PostTemplate;
     }
   | {
-      template: TemplateBase & Identifiable;
+      template: TemplateBase & { definition: string } & Identifiable;
       templateType: TemplateType.InnovationFlowTemplate;
     }
   | {
