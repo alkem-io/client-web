@@ -1213,8 +1213,8 @@
         "short": "Please join parent Challenge first"
       },
       "contactChallengeLeads": {
-        "full": "Send a message to Challenge leads to become a member",
-        "short": "Send a message to Challenge leads to become a member"
+        "full": "Send a message to Opportunity leads to become a member",
+        "short": "Send a message to Opportunity leads to become a member"
       },
       "goToSpace": "Go to $t(common.space)",
       "goToChallenge": "Go to $t(common.challenge)",

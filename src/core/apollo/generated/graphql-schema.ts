@@ -2795,6 +2795,8 @@ export type Mutation = {
   updateUser: User;
   /** Updates the specified User Group. */
   updateUserGroup: UserGroup;
+  /** Update the platform settings, such as nameID, email, for the specified User. */
+  updateUserPlatformSettings: User;
   /** Updates the image URI for the specified Visual. */
   updateVisual: Visual;
   /** Updates the specified Whiteboard. */
@@ -3385,6 +3387,10 @@ export type MutationUpdateUserArgs = {
 
 export type MutationUpdateUserGroupArgs = {
   userGroupData: UpdateUserGroupInput;
+};
+
+export type MutationUpdateUserPlatformSettingsArgs = {
+  updateData: UpdateUserPlatformSettingsInput;
 };
 
 export type MutationUpdateVisualArgs = {
@@ -5423,6 +5429,14 @@ export type UpdateUserInput = {
   profileData?: InputMaybe<UpdateProfileInput>;
   /** Set this user profile as being used as a service account or not. */
   serviceProfile?: InputMaybe<Scalars['Boolean']>;
+};
+
+export type UpdateUserPlatformSettingsInput = {
+  email?: InputMaybe<Scalars['String']>;
+  /** Upate the URL path for the User. */
+  nameID?: InputMaybe<Scalars['NameID']>;
+  /** The identifier for the User whose platform managed information is to be updated. */
+  userID: Scalars['String'];
 };
 
 export type UpdateUserPreferenceInput = {
@@ -17533,23 +17547,27 @@ export type CommunityUserPrivilegesWithParentCommunityQuery = {
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
-          leadUsers?:
-            | Array<{
-                __typename?: 'User';
-                id: string;
-                profile: {
-                  __typename?: 'Profile';
-                  id: string;
-                  displayName: string;
-                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                  location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
-                };
-              }>
-            | undefined;
         }
       | undefined;
     challenge?: {
       __typename?: 'Challenge';
+      id: string;
+      authorization?:
+        | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+        | undefined;
+      community?:
+        | {
+            __typename?: 'Community';
+            id: string;
+            myMembershipStatus?: CommunityMembershipStatus | undefined;
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
+          }
+        | undefined;
+    };
+    opportunity?: {
+      __typename?: 'Opportunity';
       id: string;
       authorization?:
         | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -17575,22 +17593,18 @@ export type CommunityUserPrivilegesWithParentCommunityQuery = {
                   };
                 }>
               | undefined;
-          }
-        | undefined;
-    };
-    opportunity?: {
-      __typename?: 'Opportunity';
-      id: string;
-      authorization?:
-        | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-        | undefined;
-      community?:
-        | {
-            __typename?: 'Community';
-            id: string;
-            myMembershipStatus?: CommunityMembershipStatus | undefined;
-            authorization?:
-              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            adminUsers?:
+              | Array<{
+                  __typename?: 'User';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                    location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
+                  };
+                }>
               | undefined;
           }
         | undefined;

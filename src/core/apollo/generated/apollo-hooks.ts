@@ -11095,23 +11095,23 @@ export const CommunityUserPrivilegesWithParentCommunityDocument = gql`
           id
           myPrivileges
         }
-        leadUsers: usersInRole(role: LEAD) {
+      }
+      challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
+        id
+        authorization {
           id
-          profile {
+          myPrivileges
+        }
+        community {
+          id
+          myMembershipStatus
+          authorization {
             id
-            displayName
-            avatar: visual(type: AVATAR) {
-              ...VisualUri
-            }
-            location {
-              id
-              country
-              city
-            }
+            myPrivileges
           }
         }
       }
-      challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
+      opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
         id
         authorization {
           id
@@ -11139,20 +11139,20 @@ export const CommunityUserPrivilegesWithParentCommunityDocument = gql`
               }
             }
           }
-        }
-      }
-      opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
-        id
-        authorization {
-          id
-          myPrivileges
-        }
-        community {
-          id
-          myMembershipStatus
-          authorization {
+          adminUsers: usersInRole(role: ADMIN) {
             id
-            myPrivileges
+            profile {
+              id
+              displayName
+              avatar: visual(type: AVATAR) {
+                ...VisualUri
+              }
+              location {
+                id
+                country
+                city
+              }
+            }
           }
         }
       }
