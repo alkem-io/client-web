@@ -39,7 +39,6 @@ export const ACTIVE_THRESHOLD = 3_000;
 
 // time constants (ms)
 export const SAVE_TO_LOCAL_STORAGE_TIMEOUT = 300;
-export const INITIAL_SCENE_UPDATE_TIMEOUT = 5000;
 export const FILE_UPLOAD_TIMEOUT = 300;
 export const LOAD_IMAGES_TIMEOUT = 500;
 export const SYNC_FULL_SCENE_INTERVAL_MS = 20000;
@@ -58,7 +57,10 @@ export const WS_EVENTS = {
 
 export enum WS_SCENE_EVENT_TYPES {
   INIT = 'SCENE_INIT',
-  UPDATE = 'SCENE_UPDATE',
+  SCENE_UPDATE = 'SCENE_UPDATE',
+  MOUSE_LOCATION = 'MOUSE_LOCATION',
+  IDLE_STATUS = 'IDLE_STATUS',
+  SAVED = 'SAVED',
 }
 
 export const ROOM_ID_BYTES = 10;

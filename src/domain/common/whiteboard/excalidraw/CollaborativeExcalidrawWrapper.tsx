@@ -7,10 +7,18 @@ import React, { Ref, useCallback, useEffect, useMemo, useRef, useState } from 'r
 import { useCombinedRefs } from '../../../shared/utils/useCombinedRefs';
 import EmptyWhiteboard from '../EmptyWhiteboard';
 import { ExcalidrawElement } from '@alkemio/excalidraw/types/element/types';
-import { CollabAPI } from './collab/Collab';
 import { useUserContext } from '../../../community/user';
 import { WhiteboardFilesManager } from './useWhiteboardFilesManager';
-import useCollab from './collab/useCollab';
+import useCollab, { CollabAPI } from './collab/useCollab';
+import Dialog from '@mui/material/Dialog';
+import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
+import { DialogContent } from '../../../../core/ui/dialog/deprecated';
+import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
+import { Text } from '../../../../core/ui/typography';
+import { formatTimeElapsed } from '../../../shared/utils/formatTimeElapsed';
+import { Button, DialogActions } from '@mui/material';
+import { useTranslation } from 'react-i18next';
+import { LoadingButton } from '@mui/lab';
 
 const useActorWhiteboardStyles = makeStyles(theme => ({
   container: {
@@ -30,6 +38,7 @@ const useActorWhiteboardStyles = makeStyles(theme => ({
 export interface WhiteboardWhiteboardEntities {
   whiteboard: { id?: string; content: string } | undefined;
   filesManager: WhiteboardFilesManager;
+  lastSavedDate: Date | undefined;
 }
 
 export interface WhiteboardWhiteboardActions {
@@ -38,32 +47,22 @@ export interface WhiteboardWhiteboardActions {
   onSavedToDatabase?: () => void;
 }
 
-export interface WhiteboardWhiteboardEvents {
-  onCollaborationEnabledChange?: (collaborationEnabled: boolean) => void;
-}
+export interface WhiteboardWhiteboardEvents {}
 
-export interface WhiteboardWhiteboardOptions extends ExcalidrawProps {
-  collaborationEnabled: boolean;
-}
+export interface WhiteboardWhiteboardOptions extends ExcalidrawProps {}
 
 export interface WhiteboardWhiteboardProps {
   entities: WhiteboardWhiteboardEntities;
   options: WhiteboardWhiteboardOptions;
   actions: WhiteboardWhiteboardActions;
-  events: WhiteboardWhiteboardEvents;
+  events?: WhiteboardWhiteboardEvents;
   collabApiRef?: Ref<CollabAPI | null>;
 }
 
 const WINDOW_SCROLL_HANDLER_DEBOUNCE_INTERVAL = 100;
 
-const CollaborativeExcalidrawWrapper = ({
-  entities,
-  actions,
-  options,
-  events,
-  collabApiRef,
-}: WhiteboardWhiteboardProps) => {
-  const { whiteboard, filesManager } = entities;
+const CollaborativeExcalidrawWrapper = ({ entities, actions, options, collabApiRef }: WhiteboardWhiteboardProps) => {
+  const { whiteboard, filesManager, lastSavedDate } = entities;
 
   const combinedCollabApiRef = useCombinedRefs<CollabAPI | null>(null, collabApiRef);
 
@@ -116,11 +115,11 @@ const CollaborativeExcalidrawWrapper = ({
     []
   );
 
-  const { UIOptions: externalUIOptions, collaborationEnabled, ...restOptions } = options;
+  const { UIOptions: externalUIOptions, ...restOptions } = options;
 
   const mergedUIOptions = useMemo(() => merge(UIOptions, externalUIOptions), [UIOptions, externalUIOptions]);
 
-  const [collabApi, initializeCollab] = useCollab({
+  const [collabApi, initializeCollab, { connecting, collaborating }] = useCollab({
     username,
     onSavedToDatabase: actions.onSavedToDatabase,
     filesManager,
@@ -138,29 +137,40 @@ const CollaborativeExcalidrawWrapper = ({
       return { success: false, errors: ['ExcalidrawAPI not yet ready'] };
     },
     onCloseConnection: () => {
-      events.onCollaborationEnabledChange?.(false);
+      setCollaborationStoppedNoticeOpen(true);
     },
     onInitialize: collabApi => {
       combinedCollabApiRef.current = collabApi;
-      events.onCollaborationEnabledChange?.(true);
     },
   });
 
-  const onChange = (elements: readonly ExcalidrawElement[], _appState: AppState, files: BinaryFiles) => {
-    collabApi?.syncElements(elements);
-    collabApi?.syncFiles(files);
+  const onChange = async (elements: readonly ExcalidrawElement[], _appState: AppState, files: BinaryFiles) => {
+    const uploadedFiles = await filesManager.getUploadedFiles(files);
+    collabApi?.syncScene(elements, uploadedFiles);
   };
 
   const [excalidrawApi, setExcalidrawApi] = useState<ExcalidrawImperativeAPI | null>(null);
 
+  const [collaborationStartTime, setCollaborationStartTime] = useState<number | null>(Date.now());
+
+  const restartCollaboration = () => {
+    setCollaborationStartTime(Date.now());
+  };
+
   useEffect(() => {
-    if (excalidrawApi && whiteboard?.id) {
+    if (!connecting && collaborating) {
+      setCollaborationStoppedNoticeOpen(false);
+    }
+  }, [connecting, collaborating]);
+
+  useEffect(() => {
+    if (excalidrawApi && whiteboard?.id && collaborationStartTime !== null) {
       return initializeCollab({
         excalidrawApi,
         roomId: whiteboard.id,
       });
     }
-  }, [excalidrawApi, whiteboard?.id]);
+  }, [excalidrawApi, whiteboard?.id, collaborationStartTime]);
 
   const handleInitializeApi = useCallback(
     (excalidrawApi: ExcalidrawImperativeAPI) => {
@@ -170,29 +180,68 @@ const CollaborativeExcalidrawWrapper = ({
     [actions.onInitApi]
   );
 
+  const [collaborationStoppedNoticeOpen, setCollaborationStoppedNoticeOpen] = useState(false);
+
+  const { t } = useTranslation();
+
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
+
+  useEffect(() => {
+    const handleOnlineChange = () => setIsOnline(navigator.onLine);
+    window.addEventListener('online', handleOnlineChange);
+    window.addEventListener('offline', handleOnlineChange);
+    setIsOnline(navigator.onLine);
+    return () => {
+      window.removeEventListener('online', handleOnlineChange);
+      window.removeEventListener('offline', handleOnlineChange);
+    };
+  }, []);
+
   return (
-    <div className={styles.container}>
-      {whiteboard && (
-        <Excalidraw
-          key={whiteboard.id} // initializing a fresh Excalidraw for each whiteboard
-          excalidrawAPI={handleInitializeApi}
-          initialData={data}
-          UIOptions={mergedUIOptions}
-          isCollaborating={collaborationEnabled}
-          viewModeEnabled={!collaborationEnabled}
-          gridModeEnabled
-          onChange={onChange}
-          onPointerUpdate={collabApi?.onPointerUpdate}
-          detectScroll={false}
-          autoFocus
-          generateIdForFile={addNewFile}
-          /*renderTopRightUI={_isMobile => {
-              return <LiveCollaborationStatus />;
-            }}*/
-          {...restOptions}
-        />
-      )}
-    </div>
+    <>
+      <div className={styles.container}>
+        {whiteboard && (
+          <Excalidraw
+            key={whiteboard.id} // initializing a fresh Excalidraw for each whiteboard
+            excalidrawAPI={handleInitializeApi}
+            initialData={data}
+            UIOptions={mergedUIOptions}
+            isCollaborating={collaborating}
+            viewModeEnabled={!collaborating}
+            gridModeEnabled
+            onChange={onChange}
+            onPointerUpdate={collabApi?.onPointerUpdate}
+            detectScroll={false}
+            autoFocus
+            generateIdForFile={addNewFile}
+            /*renderTopRightUI={_isMobile => {
+                return <LiveCollaborationStatus />;
+              }}*/
+            {...restOptions}
+          />
+        )}
+      </div>
+      <Dialog open={collaborationStoppedNoticeOpen} onClose={() => setCollaborationStoppedNoticeOpen(false)}>
+        <DialogHeader title={t('pages.whiteboard.whiteboardDisconnected.title')} />
+        <DialogContent>
+          {isOnline && <WrapperMarkdown>{t('pages.whiteboard.whiteboardDisconnected.message')}</WrapperMarkdown>}
+          {!isOnline && <WrapperMarkdown>{t('pages.whiteboard.whiteboardDisconnected.offline')}</WrapperMarkdown>}
+          {lastSavedDate && (
+            <Text>
+              {t('pages.whiteboard.whiteboardDisconnected.lastSaved', {
+                lastSaved: formatTimeElapsed(lastSavedDate, t),
+              })}
+            </Text>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <LoadingButton onClick={restartCollaboration} disabled={!isOnline} loading={connecting}>
+            Reconnect
+          </LoadingButton>
+          <Button onClick={() => setCollaborationStoppedNoticeOpen(false)}>{t('buttons.ok')}</Button>
+        </DialogActions>
+      </Dialog>
+    </>
   );
 };
 

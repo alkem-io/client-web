@@ -4,4 +4,5 @@ fragment InnovationFlowTemplateCard on InnovationFlowTemplate {
   profile {
     ...TemplateCardProfileInfo
   }
+  definition
 }

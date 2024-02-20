@@ -4,13 +4,15 @@ import { PRECEDING_ELEMENT_KEY, WS_EVENTS, WS_SCENE_EVENT_TYPES } from './excali
 import { UserIdleState } from './utils';
 import { BroadcastedExcalidrawElement } from './reconciliation';
 import { Socket } from 'socket.io-client';
-import { BinaryFileDataWithUrl } from '../useWhiteboardFilesManager';
+import { BinaryFileDataWithUrl, BinaryFilesWithUrl } from '../useWhiteboardFilesManager';
+import { DataURL } from '@alkemio/excalidraw/types/types';
 
 interface PortalProps {
   onSaveRequest: () => Promise<{ success: boolean; errors?: string[] }>;
   onCloseConnection: () => void;
   onRoomUserChange: (clients: string[]) => void;
   getSceneElements: () => readonly ExcalidrawElement[];
+  getFiles: () => Promise<BinaryFilesWithUrl>;
 }
 
 interface BroadcastOptions {
@@ -21,56 +23,105 @@ interface BroadcastSceneOptions {
   syncAll?: boolean;
 }
 
+interface ConnectionOptions {
+  url: string;
+  roomId: string;
+  polling?: boolean;
+}
+
+interface SocketEventHandlers {
+  'client-broadcast': (encryptedData: ArrayBuffer) => void;
+  'first-in-room': () => void;
+}
+
 class Portal {
   onSaveRequest: () => Promise<{ success: boolean; errors?: string[] }>;
   onCloseConnection: () => void;
   onRoomUserChange: (clients: string[]) => void;
   getSceneElements: () => readonly ExcalidrawElement[];
+  getFiles: () => Promise<BinaryFilesWithUrl>;
   socket: Socket | null = null;
   socketInitialized: boolean = false; // we don't want the socket to emit any updates until it is fully initialized
   roomId: string | null = null;
   broadcastedElementVersions: Map<string, number> = new Map();
+  broadcastedFiles: Set<string> = new Set();
 
-  constructor({ onSaveRequest, onRoomUserChange, getSceneElements, onCloseConnection }: PortalProps) {
+  constructor({ onSaveRequest, onRoomUserChange, getSceneElements, getFiles, onCloseConnection }: PortalProps) {
     this.onSaveRequest = onSaveRequest;
     this.onRoomUserChange = onRoomUserChange;
     this.getSceneElements = getSceneElements;
+    this.getFiles = getFiles;
     this.onCloseConnection = onCloseConnection;
   }
 
-  open(socket: Socket, id: string) {
-    this.socket = socket;
-    this.roomId = id;
+  open(connectionOptions: ConnectionOptions, eventHandlers: SocketEventHandlers) {
+    if (this.socket) {
+      throw new Error('Socket already open');
+    }
 
-    // Initialize socket listeners
-    this.socket.on('init-room', () => {
-      if (this.socket) {
-        this.socket.emit('join-room', this.roomId);
-      }
+    return new Promise(async (resolve, reject) => {
+      const { default: socketIOClient } = await import('socket.io-client');
+
+      const socket = socketIOClient(connectionOptions.url, {
+        transports: connectionOptions.polling ? ['websocket', 'polling'] : ['websocket'],
+        path: '/api/private/ws/socket.io',
+        retries: 0,
+        reconnection: false,
+      });
+
+      this.socket = socket;
+      this.roomId = connectionOptions.roomId;
+
+      // Initialize socket listeners
+      this.socket.on('init-room', () => {
+        if (this.socket) {
+          this.socket.emit('join-room', this.roomId);
+        }
+      });
+
+      this.socket.on('new-user', async (_socketId: string) => {
+        this.broadcastScene(WS_SCENE_EVENT_TYPES.INIT, this.getSceneElements(), await this.getFiles(), { syncAll: true });
+      });
+
+      this.socket.on('room-user-change', (clients: string[]) => {
+        this.onRoomUserChange(clients);
+      });
+
+      this.socket.on('save-request', async callback => {
+        try {
+          callback(await this.onSaveRequest());
+        } catch (ex) {
+          callback({ success: false, errors: [(ex as { message?: string })?.message ?? ex] });
+        }
+      });
+
+      this.socket.on('client-broadcast', eventHandlers['client-broadcast']);
+
+      this.socket.on('first-in-room', () => {
+        socket.off('first-in-room');
+        eventHandlers['first-in-room']();
+      });
+
+      this.socket.on('connect', () => {
+        resolve(socket);
+      });
+
+      this.socket.on('connect_error', () => {
+        reject(new Error('Socket could not connect'));
+        this.close();
+        this.onCloseConnection();
+      });
+
+      this.socket.on('disconnect', reason => {
+        if (reason === 'io client disconnect') {
+          // disconnected intentionally
+          return;
+        }
+        reject(new Error('Socket disconnected'));
+        this.close();
+        this.onCloseConnection();
+      });
     });
-
-    this.socket.on('new-user', async (_socketId: string) => {
-      this.broadcastScene(WS_SCENE_EVENT_TYPES.INIT, this.getSceneElements(), { syncAll: true });
-    });
-
-    this.socket.on('room-user-change', (clients: string[]) => {
-      this.onRoomUserChange(clients);
-    });
-
-    this.socket.on('save-request', async callback => {
-      try {
-        callback(await this.onSaveRequest());
-      } catch (ex) {
-        callback({ success: false, errors: [ex?.message ?? ex] });
-      }
-    });
-
-    this.socket.on('disconnect', () => {
-      this.close();
-      this.onCloseConnection();
-    });
-
-    return socket;
   }
 
   close() {
@@ -106,8 +157,9 @@ class Portal {
   }
 
   broadcastScene = async (
-    updateType: WS_SCENE_EVENT_TYPES.INIT | WS_SCENE_EVENT_TYPES.UPDATE,
+    updateType: WS_SCENE_EVENT_TYPES.INIT | WS_SCENE_EVENT_TYPES.SCENE_UPDATE,
     allElements: readonly ExcalidrawElement[],
+    allFiles: BinaryFilesWithUrl,
     { syncAll = false }: BroadcastSceneOptions = {}
   ) => {
     if (updateType === WS_SCENE_EVENT_TYPES.INIT && !syncAll) {
@@ -134,10 +186,21 @@ class Portal {
       return acc;
     }, [] as BroadcastedExcalidrawElement[]);
 
+    const emptyDataURL = '' as DataURL;
+    const syncableFiles = Object.keys(allFiles).reduce<Record<string, BinaryFileDataWithUrl>>((result, fileId) => {
+      if (syncAll || !this.broadcastedFiles.has(fileId)) {
+        const file = { ...allFiles[fileId], dataURL: emptyDataURL };
+        result[fileId] = file;
+        this.broadcastedFiles.add(fileId);
+      }
+      return result;
+    }, {});
+
     const data: SocketUpdateDataSource[typeof updateType] = {
       type: updateType,
       payload: {
         elements: syncableElements,
+        files: syncableFiles,
       },
     };
 
@@ -146,34 +209,6 @@ class Portal {
     }
 
     this._broadcastSocketData(data as SocketUpdateData);
-  };
-
-  broadcastFile = async (file: BinaryFileDataWithUrl) => {
-    if (this.socket?.id) {
-      const data: SocketUpdateDataSource['FILE_UPLOAD'] = {
-        type: 'FILE_UPLOAD',
-        payload: {
-          socketId: this.socket.id,
-          file,
-        },
-      };
-
-      this._broadcastRequestData(data as SocketUpdateData);
-    }
-  };
-
-  broadcastFileRequest = (fileIds: string[]) => {
-    if (this.socket?.id) {
-      const data: SocketUpdateDataSource['FILE_REQUEST'] = {
-        type: 'FILE_REQUEST',
-        payload: {
-          socketId: this.socket.id,
-          fileIds,
-        },
-      };
-
-      this._broadcastRequestData(data as SocketUpdateData);
-    }
   };
 
   broadcastIdleChange = (userState: UserIdleState, username: string) => {
