@@ -8,7 +8,6 @@ import {
   SYNC_FULL_SCENE_INTERVAL_MS,
   WS_SCENE_EVENT_TYPES,
 } from './excalidrawAppConstants';
-import { ImportedDataState } from '@alkemio/excalidraw/types/data/types';
 import { ExcalidrawElement } from '@alkemio/excalidraw/types/element/types';
 import { getSceneVersion, newElementWith, restoreElements } from '@alkemio/excalidraw';
 import { isImageElement, UserIdleState } from './utils';
@@ -129,7 +128,7 @@ class Collab {
     }
   };
 
-  startCollaboration = async (existingRoomLinkData: { roomId: string }): Promise<ImportedDataState | null> =>
+  startCollaboration = async (existingRoomLinkData: { roomId: string }): Promise<void> =>
     new Promise(async (resolve, reject) => {
       const { roomId } = existingRoomLinkData;
 
@@ -158,6 +157,7 @@ class Collab {
                       init: true,
                     });
                   }
+                  resolve();
                   break;
                 }
                 case WS_SCENE_EVENT_TYPES.SCENE_UPDATE: {
@@ -206,12 +206,12 @@ class Collab {
               }
             },
             'first-in-room': async () => {
-              const sceneData = await this.initializeRoom({
+              await this.initializeRoom({
                 fetchScene: true,
                 roomLinkData: existingRoomLinkData,
               });
 
-              resolve(sceneData);
+              resolve();
             },
           }
         );
@@ -251,8 +251,6 @@ class Collab {
     } else {
       this.portal.socketInitialized = true;
     }
-
-    return null;
   };
 
   private reconcileElements = (
