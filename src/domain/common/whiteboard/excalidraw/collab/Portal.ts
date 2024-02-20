@@ -4,13 +4,15 @@ import { PRECEDING_ELEMENT_KEY, WS_EVENTS, WS_SCENE_EVENT_TYPES } from './excali
 import { UserIdleState } from './utils';
 import { BroadcastedExcalidrawElement } from './reconciliation';
 import { Socket } from 'socket.io-client';
-import { BinaryFileDataWithUrl } from '../useWhiteboardFilesManager';
+import { BinaryFileDataWithUrl, BinaryFilesWithUrl } from '../useWhiteboardFilesManager';
+import { DataURL } from '@alkemio/excalidraw/types/types';
 
 interface PortalProps {
   onSaveRequest: () => Promise<{ success: boolean; errors?: string[] }>;
   onCloseConnection: () => void;
   onRoomUserChange: (clients: string[]) => void;
   getSceneElements: () => readonly ExcalidrawElement[];
+  getFiles: () => Promise<BinaryFilesWithUrl>;
 }
 
 interface BroadcastOptions {
@@ -37,15 +39,18 @@ class Portal {
   onCloseConnection: () => void;
   onRoomUserChange: (clients: string[]) => void;
   getSceneElements: () => readonly ExcalidrawElement[];
+  getFiles: () => Promise<BinaryFilesWithUrl>;
   socket: Socket | null = null;
   socketInitialized: boolean = false; // we don't want the socket to emit any updates until it is fully initialized
   roomId: string | null = null;
   broadcastedElementVersions: Map<string, number> = new Map();
+  broadcastedFiles: Set<string> = new Set();
 
-  constructor({ onSaveRequest, onRoomUserChange, getSceneElements, onCloseConnection }: PortalProps) {
+  constructor({ onSaveRequest, onRoomUserChange, getSceneElements, getFiles, onCloseConnection }: PortalProps) {
     this.onSaveRequest = onSaveRequest;
     this.onRoomUserChange = onRoomUserChange;
     this.getSceneElements = getSceneElements;
+    this.getFiles = getFiles;
     this.onCloseConnection = onCloseConnection;
   }
 
@@ -75,7 +80,7 @@ class Portal {
       });
 
       this.socket.on('new-user', async (_socketId: string) => {
-        this.broadcastScene(WS_SCENE_EVENT_TYPES.INIT, this.getSceneElements(), { syncAll: true });
+        this.broadcastScene(WS_SCENE_EVENT_TYPES.INIT, this.getSceneElements(), await this.getFiles(), { syncAll: true });
       });
 
       this.socket.on('room-user-change', (clients: string[]) => {
@@ -86,7 +91,7 @@ class Portal {
         try {
           callback(await this.onSaveRequest());
         } catch (ex) {
-          callback({ success: false, errors: [ex?.message ?? ex] });
+          callback({ success: false, errors: [(ex as { message?: string })?.message ?? ex] });
         }
       });
 
@@ -152,8 +157,9 @@ class Portal {
   }
 
   broadcastScene = async (
-    updateType: WS_SCENE_EVENT_TYPES.INIT | WS_SCENE_EVENT_TYPES.UPDATE,
+    updateType: WS_SCENE_EVENT_TYPES.INIT | WS_SCENE_EVENT_TYPES.SCENE_UPDATE,
     allElements: readonly ExcalidrawElement[],
+    allFiles: BinaryFilesWithUrl,
     { syncAll = false }: BroadcastSceneOptions = {}
   ) => {
     if (updateType === WS_SCENE_EVENT_TYPES.INIT && !syncAll) {
@@ -180,10 +186,21 @@ class Portal {
       return acc;
     }, [] as BroadcastedExcalidrawElement[]);
 
+    const emptyDataURL = '' as DataURL;
+    const syncableFiles = Object.keys(allFiles).reduce<Record<string, BinaryFileDataWithUrl>>((result, fileId) => {
+      if (syncAll || !this.broadcastedFiles.has(fileId)) {
+        const file = { ...allFiles[fileId], dataURL: emptyDataURL };
+        result[fileId] = file;
+        this.broadcastedFiles.add(fileId);
+      }
+      return result;
+    }, {});
+
     const data: SocketUpdateDataSource[typeof updateType] = {
       type: updateType,
       payload: {
         elements: syncableElements,
+        files: syncableFiles,
       },
     };
 
@@ -192,34 +209,6 @@ class Portal {
     }
 
     this._broadcastSocketData(data as SocketUpdateData);
-  };
-
-  broadcastFile = async (file: BinaryFileDataWithUrl) => {
-    if (this.socket?.id) {
-      const data: SocketUpdateDataSource['FILE_UPLOAD'] = {
-        type: 'FILE_UPLOAD',
-        payload: {
-          socketId: this.socket.id,
-          file,
-        },
-      };
-
-      this._broadcastRequestData(data as SocketUpdateData);
-    }
-  };
-
-  broadcastFileRequest = (fileIds: string[]) => {
-    if (this.socket?.id) {
-      const data: SocketUpdateDataSource['FILE_REQUEST'] = {
-        type: 'FILE_REQUEST',
-        payload: {
-          socketId: this.socket.id,
-          fileIds,
-        },
-      };
-
-      this._broadcastRequestData(data as SocketUpdateData);
-    }
   };
 
   broadcastIdleChange = (userState: UserIdleState, username: string) => {

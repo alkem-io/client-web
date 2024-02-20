@@ -1,5 +1,5 @@
 import { throttle } from 'lodash';
-import { BinaryFiles, Collaborator, ExcalidrawImperativeAPI, Gesture } from '@alkemio/excalidraw/types/types';
+import { Collaborator, ExcalidrawImperativeAPI, Gesture } from '@alkemio/excalidraw/types/types';
 import {
   ACTIVE_THRESHOLD,
   CURSOR_SYNC_TIMEOUT,
@@ -15,12 +15,24 @@ import { isImageElement, UserIdleState } from './utils';
 import { getCollabServer, SocketUpdateDataSource } from './data';
 import Portal from './Portal';
 import { ReconciledElements, reconcileElements as _reconcileElements } from './reconciliation';
-import { WhiteboardFilesManager } from '../useWhiteboardFilesManager';
+import { BinaryFilesWithUrl, WhiteboardFilesManager } from '../useWhiteboardFilesManager';
 
 interface CollabState {
   errorMessage: string;
   username: string;
   activeRoomLink: string;
+}
+
+type CollabInstance = InstanceType<typeof Collab>;
+
+export interface CollabAPI {
+  /** function so that we can access the latest value from stale callbacks */
+  onPointerUpdate: CollabInstance['onPointerUpdate'];
+  startCollaboration: CollabInstance['startCollaboration'];
+  stopCollaboration: CollabInstance['stopCollaboration'];
+  syncElements: CollabInstance['syncElements'];
+  syncFiles: CollabInstance['syncFiles'];
+  notifySavedToDatabase: () => void; // Notify rest of the members in the room that I have saved the whiteboard
 }
 
 export interface CollabProps {
@@ -45,7 +57,6 @@ class Collab {
   private collaborators = new Map<string, Collaborator>();
   private onSavedToDatabase: (() => void) | undefined;
   private onCloseConnection: () => void;
-  private alreadySharedFiles: string[] = [];
 
   constructor(props: CollabProps) {
     this.state = {
@@ -57,13 +68,13 @@ class Collab {
       onSaveRequest: props.onSaveRequest,
       onRoomUserChange: this.setCollaborators,
       getSceneElements: this.getSceneElementsIncludingDeleted,
+      getFiles: this.getFiles,
       onCloseConnection: this.handleCloseConnection,
     });
     this.onCloseConnection = props.onCloseConnection;
     this.excalidrawAPI = props.excalidrawApi;
     this.filesManager = props.filesManager;
     this.onSavedToDatabase = props.onSavedToDatabase;
-    this.alreadySharedFiles.push(...Object.keys(this.excalidrawAPI.getFiles()));
   }
 
   init() {
@@ -190,6 +201,12 @@ class Collab {
                   this.handleRemoteSceneUpdate(this.reconcileElements(decryptedData.payload.elements));
                   break;
                 }
+                case WS_SCENE_EVENT_TYPES.SCENE_UPDATE: {
+                  const remoteElements = decryptedData.payload.elements;
+                  const remoteFiles = decryptedData.payload.files;
+                  this.handleRemoteSceneUpdate(this.reconcileElements(remoteElements, remoteFiles));
+                  break;
+                }
 
                 case 'FILE_UPLOAD': {
                   const payload = decryptedData.payload as SocketUpdateDataSource['FILE_UPLOAD']['payload'];
@@ -224,6 +241,12 @@ class Collab {
                     decryptedData.payload.socketId ||
                     // @ts-ignore legacy, see #2094 (#2097)
                     decryptedData.payload.socketID;
+          case WS_SCENE_EVENT_TYPES.MOUSE_LOCATION: {
+                  const { pointer, button, username, selectedElementIds } = decryptedData.payload;
+                  const socketId: SocketUpdateDataSource['MOUSE_LOCATION']['payload']['socketId'] =
+                    decryptedData.payload.socketId ||
+                    // @ts-ignore legacy, see #2094 (#2097)
+                    decryptedData.payload.socketID;
 
                   const collaborators = new Map(this.collaborators);
                   const user = collaborators.get(socketId) || {}!;
@@ -238,7 +261,7 @@ class Collab {
                   break;
                 }
 
-                case 'IDLE_STATUS': {
+                case WS_SCENE_EVENT_TYPES.IDLE_STATUS: {
                   const { userState, socketId, username } = decryptedData.payload;
                   const collaborators = new Map(this.collaborators);
                   const user = collaborators.get(socketId) || {}!;
@@ -250,46 +273,46 @@ class Collab {
                   break;
                 }
 
-                case 'SAVED': {
+                case WS_SCENE_EVENT_TYPES.SAVED: {
                   this.onSavedToDatabase?.();
                   break;
                 }
               }
-            },
-            'first-in-room': async () => {
-              const sceneData = await this.initializeRoom({
-                fetchScene: true,
-                roomLinkData: existingRoomLinkData,
-              });
+            });
 
-              resolve(sceneData);
-            },
+        this.portal.socket.on('first-in-room', async () => {
+          if (this.portal.socket) {
+            this.portal.socket.off('first-in-room');
           }
-        );
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.error(error);
-        this.state.errorMessage = (error as { message: string } | undefined)?.message ?? '';
-        reject(error);
-      }
 
-      this.initializeIdleDetector();
+          const sceneData = await this.initializeRoom({
+            fetchScene: true,
+            roomLinkData: existingRoomLinkData,
+          });
+          resolve(sceneData);
+        });
 
-      this.state.activeRoomLink = window.location.href;
-    });
+        this.initializeIdleDetector();
+
+        this.state.activeRoomLink = window.location.href;
+      });
 
   private initializeRoom = async ({
     fetchScene,
     roomLinkData,
   }:
     | {
-        fetchScene: true;
-        roomLinkData: { roomId: string } | null;
-      }
+      fetchScene: true;
+      roomLinkData: { roomId: string } | null;
+    }
     | { fetchScene: false; roomLinkData?: null }) => {
     clearTimeout(this.socketInitializationTimer!);
 
-    if (fetchScene && roomLinkData) {
+    if (this.portal.socket && this.fallbackInitializationHandler) {
+      this.portal.socket.off('connect_error', this.fallbackInitializationHandler);
+    }
+
+    if (fetchScene && roomLinkData && this.portal.socket) {
       //this.excalidrawAPI.resetScene();
 
       try {
@@ -308,13 +331,19 @@ class Collab {
     return null;
   };
 
-  private reconcileElements = (remoteElements: readonly ExcalidrawElement[]): ReconciledElements => {
+  private reconcileElements = (
+    remoteElements: readonly ExcalidrawElement[],
+    remoteFiles: BinaryFilesWithUrl
+  ): ReconciledElements => {
     const localElements = this.getSceneElementsIncludingDeleted();
     const appState = this.excalidrawAPI.getAppState();
 
     remoteElements = restoreElements(remoteElements, null);
 
     const reconciledElements = _reconcileElements(localElements, remoteElements, appState);
+
+    // Download the files that this instance is missing:
+    this.filesManager.loadFiles({ files: remoteFiles });
 
     // Avoid broadcasting to the rest of the collaborators the scene
     // we just received!
@@ -330,6 +359,8 @@ class Collab {
       elements,
       commitToHistory: !!init,
     });
+
+    this.filesManager.pushFilesToExcalidraw();
 
     // We haven't yet implemented multiplayer undo functionality, so we clear the undo stack
     // when we receive any messages from another peer. This UX can be pretty rough -- if you
@@ -404,19 +435,23 @@ class Collab {
     this.excalidrawAPI.updateScene({ collaborators });
   };
 
-  public setLastBroadcastedOrReceivedSceneVersion = (version: number) => {
+  private setLastBroadcastedOrReceivedSceneVersion = (version: number) => {
     this.lastBroadcastedOrReceivedSceneVersion = version;
   };
 
-  public getLastBroadcastedOrReceivedSceneVersion = () => {
+  private getLastBroadcastedOrReceivedSceneVersion = () => {
     return this.lastBroadcastedOrReceivedSceneVersion;
   };
 
-  public getSceneElementsIncludingDeleted = () => {
+  private getSceneElementsIncludingDeleted = () => {
     return this.excalidrawAPI.getSceneElementsIncludingDeleted();
   };
 
-  onPointerUpdate = throttle(
+  private getFiles = () => {
+    return this.filesManager.getUploadedFiles(this.excalidrawAPI.getFiles());
+  };
+
+  private onPointerUpdate = throttle(
     (payload: {
       pointer: SocketUpdateDataSource['MOUSE_LOCATION']['payload']['pointer'];
       button: SocketUpdateDataSource['MOUSE_LOCATION']['payload']['button'];
@@ -433,44 +468,26 @@ class Collab {
     CURSOR_SYNC_TIMEOUT
   );
 
-  onIdleStateChange = (userState: UserIdleState) => {
+  private onIdleStateChange = (userState: UserIdleState) => {
     this.portal.broadcastIdleChange(userState, this.state.username);
   };
 
-  broadcastElements = (elements: readonly ExcalidrawElement[]) => {
+  private syncScene = async (elements: readonly ExcalidrawElement[], files: BinaryFilesWithUrl) => {
     if (getSceneVersion(elements) > this.getLastBroadcastedOrReceivedSceneVersion()) {
-      this.portal.broadcastScene(WS_SCENE_EVENT_TYPES.UPDATE, elements);
+      this.portal.broadcastScene(WS_SCENE_EVENT_TYPES.SCENE_UPDATE, elements, files, { syncAll: false });
       this.lastBroadcastedOrReceivedSceneVersion = getSceneVersion(elements);
       this.queueBroadcastAllElements();
     }
   };
 
-  syncElements = (elements: readonly ExcalidrawElement[]) => {
-    this.broadcastElements(elements);
-  };
-
-  syncFiles = async (files: BinaryFiles) => {
-    for (const id of Object.keys(files)) {
-      if (!this.alreadySharedFiles.includes(id)) {
-        const file = files[id];
-        const fileWithUrl = await this.filesManager.convertLocalFileToRemote(file);
-
-        if (fileWithUrl) {
-          this.portal.broadcastFile(fileWithUrl);
-          this.alreadySharedFiles.push(id);
-        }
-      }
-    }
-  };
-
-  notifySavedToDatabase = () => {
+  private notifySavedToDatabase = () => {
     this.portal.broadcastSavedEvent(this.state.username);
   };
 
-  queueBroadcastAllElements = throttle(() => {
-    this.portal.broadcastScene(WS_SCENE_EVENT_TYPES.UPDATE, this.excalidrawAPI.getSceneElementsIncludingDeleted(), {
-      syncAll: true,
-    });
+  private queueBroadcastAllElements = throttle(async () => {
+    const elements = this.excalidrawAPI.getSceneElementsIncludingDeleted();
+    const files = await this.filesManager.getUploadedFiles(this.excalidrawAPI.getFiles());
+    this.portal.broadcastScene(WS_SCENE_EVENT_TYPES.SCENE_UPDATE, elements, files, { syncAll: true });
     const currentVersion = this.getLastBroadcastedOrReceivedSceneVersion();
     const newVersion = Math.max(currentVersion, getSceneVersion(this.getSceneElementsIncludingDeleted()));
     this.setLastBroadcastedOrReceivedSceneVersion(newVersion);

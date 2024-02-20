@@ -144,9 +144,9 @@ const CollaborativeExcalidrawWrapper = ({ entities, actions, options, collabApiR
     },
   });
 
-  const onChange = (elements: readonly ExcalidrawElement[], _appState: AppState, files: BinaryFiles) => {
-    collabApi?.syncElements(elements);
-    collabApi?.syncFiles(files);
+  const onChange = async (elements: readonly ExcalidrawElement[], _appState: AppState, files: BinaryFiles) => {
+    const uploadedFiles = await filesManager.getUploadedFiles(files);
+    collabApi?.syncScene(elements, uploadedFiles);
   };
 
   const [excalidrawApi, setExcalidrawApi] = useState<ExcalidrawImperativeAPI | null>(null);
