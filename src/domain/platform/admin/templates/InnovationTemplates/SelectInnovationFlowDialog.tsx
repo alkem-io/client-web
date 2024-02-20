@@ -13,6 +13,9 @@ import { InnovationFlowType } from '../../../../../core/apollo/generated/graphql
 export interface InnovationFlowTemplateProfile {
   id: string;
   displayName: string;
+  tagset?: {
+    tags: string[];
+  };
 }
 export interface InnovationFlowTemplate {
   definition: string;

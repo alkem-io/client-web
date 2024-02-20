@@ -17,6 +17,7 @@ import { Identifiable } from '../../../../core/utils/Identifiable';
 
 interface InnovationFlowTemplate extends TemplateBase {
   type: InnovationFlowType;
+  definition: string;
 }
 
 export interface InnovationFlowTemplatesLibraryProps {
