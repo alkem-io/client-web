@@ -111,7 +111,7 @@ export const OpportunityApplicationButton = forwardRef<
           variant="contained"
           sx={extended ? { textTransform: 'none' } : undefined}
         >
-          {t(`components.application-button.contactChallengeLeads.${extended ? 'full' : 'short'}` as const)}
+          {t(`components.application-button.contactOpportunityLeads.${extended ? 'full' : 'short'}` as const)}
         </Button>
       );
     };

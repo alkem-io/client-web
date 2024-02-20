@@ -1212,7 +1212,7 @@
         "full": "To become a member of this Opportunity, first become a member of the parent Challenge",
         "short": "Please join parent Challenge first"
       },
-      "contactChallengeLeads": {
+      "contactOpportunityLeads": {
         "full": "Send a message to Opportunity leads to become a member",
         "short": "Send a message to Opportunity leads to become a member"
       },
