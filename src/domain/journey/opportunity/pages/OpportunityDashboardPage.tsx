@@ -15,6 +15,11 @@ import JourneyDashboardWelcomeBlock from '../../common/journeyDashboardWelcomeBl
 import useDirectMessageDialog from '../../../communication/messaging/DirectMessaging/useDirectMessageDialog';
 import { useTranslation } from 'react-i18next';
 import { buildUpdatesUrl } from '../../../../main/routing/urlBuilders';
+import OpportunityApplicationButtonContainer from '../../../community/application/containers/OpportunityApplicationButtonContainer';
+import OpportunityApplicationButton from '../../../community/application/applicationButton/OpportunityApplicationButton';
+import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
+import FullWidthButton from '../../../../core/ui/button/FullWidthButton';
+import { Theme, useMediaQuery } from '@mui/material';
 
 export interface OpportunityDashboardPageProps {
   dialog?: 'updates' | 'contributors' | 'calendar';
@@ -37,6 +42,7 @@ const OpportunityDashboardPage: FC<OpportunityDashboardPageProps> = ({ dialog })
     throw new Error('Must be within a Space route.');
   }
   const shareUpdatesUrl = buildUpdatesUrl({ spaceNameId, challengeNameId, opportunityNameId });
+  const hasExtendedApplicationButton = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
 
   return (
     <OpportunityPageLayout currentSection={EntityPageSection.Dashboard}>
@@ -45,6 +51,29 @@ const OpportunityDashboardPage: FC<OpportunityDashboardPageProps> = ({ dialog })
         {({ callouts, ...entities }, state) => (
           <>
             <JourneyDashboardView
+              ribbon={
+                <OpportunityApplicationButtonContainer
+                  challengeNameId={challengeNameId}
+                  opportunityNameId={opportunityNameId}
+                >
+                  {({ applicationButtonProps, state: { loading } }) => {
+                    if (loading || applicationButtonProps.isMember) {
+                      return null;
+                    }
+
+                    return (
+                      <PageContentColumn columns={12}>
+                        <OpportunityApplicationButton
+                          {...applicationButtonProps}
+                          loading={loading}
+                          component={FullWidthButton}
+                          extended={hasExtendedApplicationButton}
+                        />
+                      </PageContentColumn>
+                    );
+                  }}
+                </OpportunityApplicationButtonContainer>
+              }
               welcome={
                 <JourneyDashboardWelcomeBlock
                   vision={entities.opportunity?.context?.vision ?? ''}

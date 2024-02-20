@@ -47,8 +47,16 @@ export const OpportunityApplicationButtonContainer: FC<OpportunityApplicationBut
     _communityPrivileges?.space?.challenge?.community?.myMembershipStatus === CommunityMembershipStatus.Member;
 
   const parentUrl = challengeNameId ? buildChallengeUrl(spaceNameId, challengeNameId) : buildSpaceUrl(spaceNameId);
-  const parentCommunityLeadUsers = _communityPrivileges?.space?.challenge?.community?.leadUsers ?? [];
-  const parentLeadUsers = parentCommunityLeadUsers?.map(user => ({
+  const communityLeadUsers = _communityPrivileges?.space?.opportunity?.community?.leadUsers ?? [];
+  const communityAdminUsers = _communityPrivileges?.space?.opportunity?.community?.adminUsers ?? [];
+  const leadUsers = communityLeadUsers.map(user => ({
+    id: user.id,
+    displayName: user.profile.displayName,
+    country: user.profile.location?.country,
+    city: user.profile.location?.city,
+    avatarUri: user.profile.avatar?.uri,
+  }));
+  const adminUsers = communityAdminUsers.map(user => ({
     id: user.id,
     displayName: user.profile.displayName,
     country: user.profile.location?.country,
@@ -62,7 +70,8 @@ export const OpportunityApplicationButtonContainer: FC<OpportunityApplicationBut
     isAuthenticated,
     isMember,
     isParentMember,
-    parentLeadUsers,
+    leadUsers,
+    adminUsers,
     parentUrl,
     loading,
   };
