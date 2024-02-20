@@ -64,7 +64,7 @@ export const UserProfileView: FC<UserProfileViewProps> = ({ entities: { userMeta
           noItemsView={<CardText color="neutral.main">{t('common.no-references')}</CardText>}
         />
       </Grid>
-      <Grid item>
+      <Grid item display="flex" flexGrow={1} justifyContent="end">
         <SocialLinks items={socialLinks} />
       </Grid>
     </PageContentBlock>
