@@ -23,18 +23,6 @@ interface CollabState {
   activeRoomLink: string;
 }
 
-type CollabInstance = InstanceType<typeof Collab>;
-
-export interface CollabAPI {
-  /** function so that we can access the latest value from stale callbacks */
-  onPointerUpdate: CollabInstance['onPointerUpdate'];
-  startCollaboration: CollabInstance['startCollaboration'];
-  stopCollaboration: CollabInstance['stopCollaboration'];
-  syncElements: CollabInstance['syncElements'];
-  syncFiles: CollabInstance['syncFiles'];
-  notifySavedToDatabase: () => void; // Notify rest of the members in the room that I have saved the whiteboard
-}
-
 export interface CollabProps {
   excalidrawApi: ExcalidrawImperativeAPI;
   username: string;
@@ -78,17 +66,8 @@ class Collab {
     this.alreadySharedFiles.push(...Object.keys(this.excalidrawAPI.getFiles()));
   }
 
-  init(): CollabAPI {
+  init() {
     window.addEventListener(EVENT.UNLOAD, this.onUnload);
-
-    return {
-      onPointerUpdate: this.onPointerUpdate,
-      startCollaboration: this.startCollaboration,
-      syncElements: this.syncElements,
-      syncFiles: this.syncFiles,
-      stopCollaboration: this.stopCollaboration,
-      notifySavedToDatabase: this.notifySavedToDatabase,
-    };
   }
 
   destroy() {
@@ -134,6 +113,10 @@ class Collab {
     });
   };
 
+  public isCollaborating = () => {
+    return this.portal.isOpen();
+  };
+
   private destroySocketClient = (opts?: { isUnload: boolean }) => {
     this.lastBroadcastedOrReceivedSceneVersion = -1;
     this.portal.close();
@@ -148,11 +131,7 @@ class Collab {
   };
 
   startCollaboration = async (existingRoomLinkData: { roomId: string }): Promise<ImportedDataState | null> =>
-    new Promise(async resolve => {
-      if (this.portal.socket) {
-        return null;
-      }
-
+    new Promise(async (resolve, reject) => {
       const { roomId } = existingRoomLinkData;
 
       try {
@@ -287,13 +266,11 @@ class Collab {
             },
           }
         );
-
-        // this.portal.socket.once('connect_error', fallbackInitializationHandler);
       } catch (error) {
         // eslint-disable-next-line no-console
         console.error(error);
         this.state.errorMessage = (error as { message: string } | undefined)?.message ?? '';
-        return null;
+        reject(error);
       }
 
       this.initializeIdleDetector();
