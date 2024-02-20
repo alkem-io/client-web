@@ -230,7 +230,7 @@ const useWhiteboardFilesManager = ({
    * if any of the passed files is not in the fileStore, it will be uploaded to the storageBucket.
    *
    * @returns {BinaryFilesWithUrl} - The files with their URLs in the storage bucket.
-   * Property `dataURL` is can contain the base64 data of the file if it was coming in the parameter `files`.
+   * Property `dataURL` can contain the base64 data of the file if it was coming in the parameter `files`.
    */
   const getUploadedFiles = async (files: BinaryFiles): Promise<BinaryFilesWithUrl> => {
     const result: BinaryFilesWithUrl = {};

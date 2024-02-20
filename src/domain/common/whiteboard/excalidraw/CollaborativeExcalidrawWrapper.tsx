@@ -147,7 +147,6 @@ const CollaborativeExcalidrawWrapper = ({
   });
 
   const onChange = async (elements: readonly ExcalidrawElement[], _appState: AppState, files: BinaryFiles) => {
-    // Myabe I need a semaphore here too
     const uploadedFiles = await filesManager.getUploadedFiles(files);
     collabApi?.syncScene(elements, uploadedFiles);
   };
