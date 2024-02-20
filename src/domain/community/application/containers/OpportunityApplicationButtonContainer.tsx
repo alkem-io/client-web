@@ -49,15 +49,7 @@ export const OpportunityApplicationButtonContainer: FC<OpportunityApplicationBut
 
   const parentUrl = challengeNameId ? buildChallengeUrl(spaceNameId, challengeNameId) : buildSpaceUrl(spaceNameId);
   const communityLeadUsers = _communityPrivileges?.space?.opportunity?.community?.leadUsers ?? [];
-  const communityAdminUsers = _communityPrivileges?.space?.opportunity?.community?.adminUsers ?? [];
   const leadUsers = communityLeadUsers.map(user => ({
-    id: user.id,
-    displayName: user.profile.displayName,
-    country: user.profile.location?.country,
-    city: user.profile.location?.city,
-    avatarUri: user.profile.avatar?.uri,
-  }));
-  const adminUsers = communityAdminUsers.map(user => ({
     id: user.id,
     displayName: user.profile.displayName,
     country: user.profile.location?.country,
@@ -75,7 +67,6 @@ export const OpportunityApplicationButtonContainer: FC<OpportunityApplicationBut
     isParentMember,
     sendMessageToCommunityLeads,
     leadUsers,
-    adminUsers,
     parentUrl,
     loading,
   };

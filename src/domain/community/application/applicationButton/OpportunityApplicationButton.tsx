@@ -19,13 +19,6 @@ export interface OpportunityApplicationButtonProps {
     country?: string;
     avatarUri?: string;
   }[];
-  adminUsers: {
-    id: string;
-    displayName?: string;
-    city?: string;
-    country?: string;
-    avatarUri?: string;
-  }[];
   loading: boolean;
   component?: typeof MuiButton;
   extended?: boolean;
