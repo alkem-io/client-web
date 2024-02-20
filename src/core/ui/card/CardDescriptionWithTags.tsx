@@ -14,9 +14,9 @@ export const CardDescriptionWithTags = ({
   ...props
 }: CardDescriptionWithTagsProps) => {
   const descriptionHeight =
-    heightGutters ?? tags.length > 0
-      ? DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS
-      : DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS + 2;
+    heightGutters ??
+    (tags.length > 0 ? DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS : DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS + 2);
+
   return (
     <>
       <CardDescription heightGutters={descriptionHeight} {...props} />
