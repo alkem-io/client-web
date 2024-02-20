@@ -433,23 +433,23 @@ class Collab {
     this.excalidrawAPI.updateScene({ collaborators });
   };
 
-  public setLastBroadcastedOrReceivedSceneVersion = (version: number) => {
+  private setLastBroadcastedOrReceivedSceneVersion = (version: number) => {
     this.lastBroadcastedOrReceivedSceneVersion = version;
   };
 
-  public getLastBroadcastedOrReceivedSceneVersion = () => {
+  private getLastBroadcastedOrReceivedSceneVersion = () => {
     return this.lastBroadcastedOrReceivedSceneVersion;
   };
 
-  public getSceneElementsIncludingDeleted = () => {
+  private getSceneElementsIncludingDeleted = () => {
     return this.excalidrawAPI.getSceneElementsIncludingDeleted();
   };
 
-  public getFiles = () => {
+  private getFiles = () => {
     return this.filesManager.getUploadedFiles(this.excalidrawAPI.getFiles());
   };
 
-  onPointerUpdate = throttle(
+  private onPointerUpdate = throttle(
     (payload: {
       pointer: SocketUpdateDataSource['MOUSE_LOCATION']['payload']['pointer'];
       button: SocketUpdateDataSource['MOUSE_LOCATION']['payload']['button'];
@@ -466,11 +466,11 @@ class Collab {
     CURSOR_SYNC_TIMEOUT
   );
 
-  onIdleStateChange = (userState: UserIdleState) => {
+  private onIdleStateChange = (userState: UserIdleState) => {
     this.portal.broadcastIdleChange(userState, this.state.username);
   };
 
-  syncScene = async (elements: readonly ExcalidrawElement[], files: BinaryFilesWithUrl) => {
+  private syncScene = async (elements: readonly ExcalidrawElement[], files: BinaryFilesWithUrl) => {
     if (getSceneVersion(elements) > this.getLastBroadcastedOrReceivedSceneVersion()) {
       this.portal.broadcastScene(WS_SCENE_EVENT_TYPES.SCENE_UPDATE, elements, files, { syncAll: false });
       this.lastBroadcastedOrReceivedSceneVersion = getSceneVersion(elements);
@@ -478,11 +478,11 @@ class Collab {
     }
   };
 
-  notifySavedToDatabase = () => {
+  private notifySavedToDatabase = () => {
     this.portal.broadcastSavedEvent(this.state.username);
   };
 
-  queueBroadcastAllElements = throttle(async () => {
+  private queueBroadcastAllElements = throttle(async () => {
     const elements = this.excalidrawAPI.getSceneElementsIncludingDeleted();
     const files = await this.filesManager.getUploadedFiles(this.excalidrawAPI.getFiles());
     this.portal.broadcastScene(WS_SCENE_EVENT_TYPES.SCENE_UPDATE, elements, files, { syncAll: true });
