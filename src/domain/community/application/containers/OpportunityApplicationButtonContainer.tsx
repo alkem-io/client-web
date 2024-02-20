@@ -8,6 +8,7 @@ import { CommunityMembershipStatus } from '../../../../core/apollo/generated/gra
 import { useCommunityContext } from '../../community/CommunityContext';
 import { useAuthenticationContext } from '../../../../core/auth/authentication/hooks/useAuthenticationContext';
 import { SimpleContainerProps } from '../../../../core/container/SimpleContainer';
+import useSendMessageToCommunityLeads from '../../CommunityLeads/useSendMessageToCommunityLeads';
 
 interface ApplicationContainerState {
   loading: boolean;
@@ -63,6 +64,8 @@ export const OpportunityApplicationButtonContainer: FC<OpportunityApplicationBut
     city: user.profile.location?.city,
     avatarUri: user.profile.avatar?.uri,
   }));
+  const communityId = _communityPrivileges?.space.opportunity?.community?.id;
+  const sendMessageToCommunityLeads = useSendMessageToCommunityLeads(communityId);
 
   const loading = communityPrivilegesLoading;
 
@@ -70,6 +73,7 @@ export const OpportunityApplicationButtonContainer: FC<OpportunityApplicationBut
     isAuthenticated,
     isMember,
     isParentMember,
+    sendMessageToCommunityLeads,
     leadUsers,
     adminUsers,
     parentUrl,
