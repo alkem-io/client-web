@@ -12,7 +12,14 @@ export interface OpportunityApplicationButtonProps {
   isMember: boolean;
   isParentMember?: boolean;
   parentUrl?: string;
-  parentLeadUsers: {
+  leadUsers: {
+    id: string;
+    displayName?: string;
+    city?: string;
+    country?: string;
+    avatarUri?: string;
+  }[];
+  adminUsers: {
     id: string;
     displayName?: string;
     city?: string;
@@ -34,7 +41,8 @@ export const OpportunityApplicationButton = forwardRef<
       isMember = false,
       isParentMember = false,
       parentUrl,
-      parentLeadUsers,
+      leadUsers,
+      adminUsers,
       loading = false,
       component: Button = MuiButton,
       extended = false,
@@ -46,8 +54,10 @@ export const OpportunityApplicationButton = forwardRef<
       dialogTitle: t('send-message-dialog.direct-message-title'),
     });
 
+    const contactUsers = leadUsers.length > 0 ? leadUsers : adminUsers;
+
     const handleSendMessageToParentLeads = () => {
-      sendMessage('user', ...parentLeadUsers);
+      sendMessage('user', ...contactUsers);
     };
 
     const renderApplicationButton = () => {
@@ -89,6 +99,10 @@ export const OpportunityApplicationButton = forwardRef<
         );
       }
 
+      if (contactUsers.length === 0) {
+        return null;
+      }
+
       return (
         <Button
           ref={ref as Ref<HTMLButtonElement>}
@@ -97,7 +111,7 @@ export const OpportunityApplicationButton = forwardRef<
           variant="contained"
           sx={extended ? { textTransform: 'none' } : undefined}
         >
-          {t(`components.application-button.contactChallengeLeads.${extended ? 'full' : 'short'}` as const)}
+          {t(`components.application-button.contactOpportunityLeads.${extended ? 'full' : 'short'}` as const)}
         </Button>
       );
     };

@@ -45,7 +45,6 @@ class Collab {
   private collaborators = new Map<string, Collaborator>();
   private onSavedToDatabase: (() => void) | undefined;
   private onCloseConnection: () => void;
-  private alreadySharedFiles: string[] = [];
 
   constructor(props: CollabProps) {
     this.state = {
@@ -64,7 +63,6 @@ class Collab {
     this.excalidrawAPI = props.excalidrawApi;
     this.filesManager = props.filesManager;
     this.onSavedToDatabase = props.onSavedToDatabase;
-    this.alreadySharedFiles.push(...Object.keys(this.excalidrawAPI.getFiles()));
   }
 
   init() {
