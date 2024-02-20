@@ -6,9 +6,13 @@ import TagsComponent from '../../../../shared/components/TagsComponent/TagsCompo
 import References from '../../../../shared/components/References/References';
 import { styled } from '@mui/styles';
 import { UserMetadata } from '../../../user/hooks/useUserMetadataWrapper';
-import { isSocialNetworkSupported } from '../../../../shared/components/SocialLinks/models/SocialNetworks';
+import {
+  isSocialNetworkSupported,
+  toSocialNetworkEnum,
+} from '../../../../shared/components/SocialLinks/models/SocialNetworks';
 import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 import { BlockSectionTitle, CardText } from '../../../../../core/ui/typography';
+import SocialLinks, { isSocialLink } from '../../../../shared/components/SocialLinks/SocialLinks';
 
 export interface UserProfileViewProps {
   entities: {
@@ -26,6 +30,12 @@ export const UserProfileView: FC<UserProfileViewProps> = ({ entities: { userMeta
   const { user, keywords, skills } = userMetadata;
   const references = user.profile.references;
   const bio = user.profile.description;
+  const socialLinks = (user.profile.references || [])
+    .map(s => ({
+      type: toSocialNetworkEnum(s.name),
+      url: s.uri,
+    }))
+    .filter(isSocialLink);
 
   const nonSocialReferences = useMemo(() => {
     return references?.filter(x => !isSocialNetworkSupported(x.name));
@@ -53,6 +63,9 @@ export const UserProfileView: FC<UserProfileViewProps> = ({ entities: { userMeta
           references={nonSocialReferences}
           noItemsView={<CardText color="neutral.main">{t('common.no-references')}</CardText>}
         />
+      </Grid>
+      <Grid item>
+        <SocialLinks items={socialLinks} />
       </Grid>
     </PageContentBlock>
   );
