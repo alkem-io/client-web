@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, ReactNode } from 'react';
 import WhiteboardActionsContainer from '../containers/WhiteboardActionsContainer';
 import {
   AuthorizationPrivilege,
@@ -11,7 +11,6 @@ import WhiteboardDialog from '../WhiteboardDialog/WhiteboardRtDialog';
 import { useFullscreen } from '../../../../core/ui/fullscreen/useFullscreen';
 import FullscreenButton from '../../../../core/ui/button/FullscreenButton';
 import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
-import { BlockTitle } from '../../../../core/ui/typography';
 import useWhiteboardContentUpdatePolicy from '../contentUpdatePolicy/WhiteboardContentUpdatePolicy';
 import WhiteboardShareSettings from '../share/WhiteboardShareSettings';
 
@@ -27,6 +26,7 @@ export interface WhiteboardViewProps extends ActiveWhiteboardIdHolder, Whiteboar
   whiteboard: WhiteboardDetailsFragment | undefined;
   authorization: WhiteboardDetailsFragment['authorization'];
   whiteboardShareUrl: string;
+  displayName?: ReactNode;
   readOnlyDisplayName?: boolean;
   loadingWhiteboards: boolean;
 }
@@ -39,6 +39,7 @@ const WhiteboardView: FC<WhiteboardViewProps> = ({
   backToWhiteboards,
   loadingWhiteboards,
   whiteboardShareUrl,
+  displayName,
   readOnlyDisplayName,
   ...whiteboardsState
 }) => {
@@ -80,12 +81,8 @@ const WhiteboardView: FC<WhiteboardViewProps> = ({
                 options={{
                   canEdit: hasUpdateContentPrivileges,
                   show: Boolean(whiteboardId),
-                  fixedDialogTitle:
-                    hasUpdatePrivileges && !readOnlyDisplayName ? undefined : (
-                      <BlockTitle display="flex" alignItems="center">
-                        {whiteboard?.profile.displayName}
-                      </BlockTitle>
-                    ),
+                  dialogTitle: displayName,
+                  readOnlyDisplayName: readOnlyDisplayName || !hasUpdatePrivileges,
                   fullscreen,
                   headerActions: (
                     <>

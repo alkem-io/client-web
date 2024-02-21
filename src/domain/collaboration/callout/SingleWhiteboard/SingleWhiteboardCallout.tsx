@@ -58,6 +58,7 @@ const SingleWhiteboardCallout = ({
             opportunityNameId,
           })}
           readOnlyDisplayName
+          displayName={callout.framing.profile.displayName}
           whiteboard={callout.framing.whiteboard}
           authorization={callout.framing.whiteboard.authorization}
           loadingWhiteboards={false}

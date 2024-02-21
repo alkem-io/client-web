@@ -48,9 +48,10 @@ interface WhiteboardDialogProps<Whiteboard extends WhiteboardWithContent> {
     canEdit?: boolean;
     canDelete?: boolean;
     headerActions?: ReactNode;
-    fixedDialogTitle?: ReactNode;
+    dialogTitle: ReactNode;
     fullscreen?: boolean;
     allowFilesAttached?: boolean;
+    readOnlyDisplayName?: boolean;
   };
   state?: {
     updatingWhiteboardContent?: boolean;
@@ -283,11 +284,10 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
               <DialogHeader
                 actions={options.headerActions}
                 onClose={onClose}
+                title={options.readOnlyDisplayName && options.dialogTitle}
                 titleContainerProps={{ flexDirection: 'row' }}
               >
-                {options.fixedDialogTitle ? (
-                  options.fixedDialogTitle
-                ) : (
+                {!options.readOnlyDisplayName && (
                   <Box
                     component={FormikInputField}
                     title={t('fields.displayName')}
