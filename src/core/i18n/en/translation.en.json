@@ -2233,7 +2233,7 @@
     "whiteboard": {
       "header": "Whiteboards in this {{blockName}}",
       "subheader": "Create your custom visualization and share it with others.",
-      "add-whiteboard": "Create whiteboard",
+      "createWhiteboard": "Create whiteboard",
       "no-whiteboards": "No whiteboards have been created yet. Be the first to add one.",
       "locked-by": "{{user}} is currently editing this Whiteboard",
       "savingWhiteboard": "Saving whiteboard...",

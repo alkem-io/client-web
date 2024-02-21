@@ -15,6 +15,7 @@ import CalloutBlockFooter from '../../CalloutBlock/CalloutBlockFooter';
 import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
 import WhiteboardDialog from '../../whiteboard/WhiteboardDialog/WhiteboardRtDialog';
 import { useFullscreen } from '../../../../core/ui/fullscreen/useFullscreen';
+import { useTranslation } from 'react-i18next';
 
 interface WhiteboardCollectionCalloutProps extends BaseCalloutViewProps {
   callout: CalloutLayoutProps['callout'];
@@ -30,6 +31,7 @@ const WhiteboardCollectionCallout = ({
   contributionsCount,
   ...calloutLayoutProps
 }: WhiteboardCollectionCalloutProps) => {
+  const { t } = useTranslation();
   const [showCreateWhiteboardDialog, setShowCreateWhiteboardDialog] = useState(false);
   const navigate = useNavigate();
   const { fullscreen, setFullscreen } = useFullscreen();
@@ -135,6 +137,7 @@ const WhiteboardCollectionCallout = ({
             }}
             options={{
               show: showCreateWhiteboardDialog,
+              dialogTitle: t('pages.whiteboard.createWhiteboard'),
               canEdit: true,
               allowFilesAttached: true,
               fullscreen,
