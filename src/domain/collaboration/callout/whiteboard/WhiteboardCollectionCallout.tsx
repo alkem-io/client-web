@@ -13,9 +13,8 @@ import { BaseCalloutViewProps } from '../CalloutViewTypes';
 import { gutters } from '../../../../core/ui/grid/utils';
 import CalloutBlockFooter from '../../CalloutBlock/CalloutBlockFooter';
 import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
-import WhiteboardDialog from '../../whiteboard/WhiteboardDialog/WhiteboardRtDialog';
 import { useFullscreen } from '../../../../core/ui/fullscreen/useFullscreen';
-import { useTranslation } from 'react-i18next';
+import SingleUserWhiteboardDialog from '../../whiteboard/WhiteboardDialog/SingleUserWhiteboardDialog';
 
 interface WhiteboardCollectionCalloutProps extends BaseCalloutViewProps {
   callout: CalloutLayoutProps['callout'];
@@ -31,7 +30,6 @@ const WhiteboardCollectionCallout = ({
   contributionsCount,
   ...calloutLayoutProps
 }: WhiteboardCollectionCalloutProps) => {
-  const { t } = useTranslation();
   const [showCreateWhiteboardDialog, setShowCreateWhiteboardDialog] = useState(false);
   const navigate = useNavigate();
   const { fullscreen, setFullscreen } = useFullscreen();
@@ -99,53 +97,54 @@ const WhiteboardCollectionCallout = ({
           <CalloutBlockFooter contributionsCount={contributionsCount} onCreate={openCreateDialog} />
         )}
       </CalloutLayout>
-      <WhiteboardActionsContainer>
-        {(entities, actionsState, actions) => (
-          <WhiteboardDialog
-            entities={{
-              whiteboard: {
-                profile: {
-                  id: '',
-                  displayName: '',
-                  storageBucket: {
-                    // TODO: When creating a whiteboard a StorageBucketId is needed if we want to allow image uploading
-                    // For now we are allowing files attached to the newly created whiteboards, so we can pass
-                    // an empty string here, and allowFilesAttached = true in the options
+      {showCreateWhiteboardDialog && (
+        <WhiteboardActionsContainer>
+          {(entities, actionsState, actions) => (
+            <SingleUserWhiteboardDialog
+              entities={{
+                whiteboard: {
+                  profile: {
                     id: '',
-                  },
-                },
-                content: callout.contributionDefaults.whiteboardContent ?? '',
-              },
-            }}
-            actions={{
-              onCancel: closeCreateDialog,
-              onUpdate: (input, previewImages) => {
-                setShowCreateWhiteboardDialog(false);
-                return actions.onCreate(
-                  {
-                    whiteboard: {
-                      content: input.content,
-                      profileData: {
-                        displayName: input.profile.displayName,
-                      },
+                    displayName: '',
+                    storageBucket: {
+                      // TODO: When creating a whiteboard a StorageBucketId is needed if we want to allow image uploading
+                      // For now we are allowing files attached to the newly created whiteboards, so we can pass
+                      // an empty string here, and allowFilesAttached = true in the options
+                      id: '',
                     },
-                    calloutID: callout.id,
-                  } as CreateContributionOnCalloutInput,
-                  previewImages
-                );
-              },
-            }}
-            options={{
-              show: showCreateWhiteboardDialog,
-              dialogTitle: t('pages.whiteboard.createWhiteboard'),
-              canEdit: true,
-              allowFilesAttached: true,
-              fullscreen,
-            }}
-            state={{}}
-          />
-        )}
-      </WhiteboardActionsContainer>
+                  },
+                  content: callout.contributionDefaults.whiteboardContent ?? '',
+                },
+              }}
+              actions={{
+                onCancel: closeCreateDialog,
+                onUpdate: (input, previewImages) => {
+                  setShowCreateWhiteboardDialog(false);
+                  return actions.onCreate(
+                    {
+                      whiteboard: {
+                        content: input.content,
+                        profileData: {
+                          displayName: input.profile.displayName,
+                        },
+                      },
+                      calloutID: callout.id,
+                    } as CreateContributionOnCalloutInput,
+                    previewImages
+                  );
+                },
+              }}
+              options={{
+                show: showCreateWhiteboardDialog,
+                canEdit: true,
+                allowFilesAttached: true,
+                fullscreen,
+              }}
+              state={{}}
+            />
+          )}
+        </WhiteboardActionsContainer>
+      )}
     </>
   );
 };

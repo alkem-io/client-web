@@ -297,9 +297,6 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
                   />
                 )}
                 {editModeEnabled && <WhiteboardTemplatesLibrary onImportTemplate={handleImportTemplate} />}
-                <span>
-                  RT2<sup title=":)">beta</sup>
-                </span>
               </DialogHeader>
               <DialogContent classes={{ root: styles.dialogContent }}>
                 {!state?.loadingWhiteboardValue && whiteboard && (

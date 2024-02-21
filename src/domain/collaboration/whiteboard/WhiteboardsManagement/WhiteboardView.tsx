@@ -7,7 +7,7 @@ import {
 } from '../../../../core/apollo/generated/graphql-schema';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import WhiteboardContentContainer from '../containers/WhiteboardContentContainer';
-import WhiteboardDialog from '../WhiteboardDialog/WhiteboardRtDialog';
+import WhiteboardDialog from '../WhiteboardDialog/WhiteboardDialog';
 import { useFullscreen } from '../../../../core/ui/fullscreen/useFullscreen';
 import FullscreenButton from '../../../../core/ui/button/FullscreenButton';
 import ShareButton from '../../../shared/components/ShareDialog/ShareButton';

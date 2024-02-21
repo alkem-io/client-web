@@ -5,18 +5,14 @@ import { FormikProps } from 'formik/dist/types';
 import { serializeAsJSON } from '@alkemio/excalidraw';
 import { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/types/types';
 import { Delete, Save } from '@mui/icons-material';
-import LockClockIcon from '@mui/icons-material/LockClock';
 import Dialog from '@mui/material/Dialog';
 import { makeStyles } from '@mui/styles';
-import { LockedByDetailsFragment } from '../../../../core/apollo/generated/graphql-schema';
-import TranslationKey from '../../../../core/i18n/utils/TranslationKey';
 import Loading from '../../../../core/ui/loading/Loading';
 import { DialogContent } from '../../../../core/ui/dialog/deprecated';
 import ExcalidrawWrapper from '../../../common/whiteboard/excalidraw/ExcalidrawWrapper';
 import { ExportedDataState } from '@alkemio/excalidraw/types/data/types';
-import Authorship from '../../../../core/ui/authorship/Authorship';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
-import { Box, Button, ButtonProps } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { Actions } from '../../../../core/ui/actions/Actions';
 import { gutters } from '../../../../core/ui/grid/utils';
@@ -24,7 +20,6 @@ import FlexSpacer from '../../../../core/ui/utils/FlexSpacer';
 import whiteboardSchema from '../validation/whiteboardSchema';
 import isWhiteboardContentEqual from '../utils/isWhiteboardContentEqual';
 import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
-import { PageTitle } from '../../../../core/ui/typography';
 import WhiteboardTemplatesLibrary from '../WhiteboardTemplatesLibrary/WhiteboardTemplatesLibrary';
 import { WhiteboardTemplateWithContent } from '../WhiteboardTemplateCard/WhiteboardTemplate';
 import mergeWhiteboard from '../utils/mergeWhiteboard';
@@ -40,21 +35,16 @@ import useWhiteboardFilesManager from '../../../common/whiteboard/excalidraw/use
 interface SingleUserWhiteboardDialogProps<Whiteboard extends WhiteboardWithContent> {
   entities: {
     whiteboard?: Whiteboard;
-    lockedBy?: LockedByDetailsFragment;
   };
   actions: {
     onCancel: (whiteboard: WhiteboardWithoutContent<Whiteboard>) => void;
-    onCheckin?: (whiteboard: WhiteboardWithoutContent<Whiteboard>) => void;
-    onCheckout?: (whiteboard: WhiteboardWithoutContent<Whiteboard>) => void;
     onUpdate: (whiteboard: Whiteboard, previewImages?: WhiteboardPreviewImage[]) => void;
     onDelete?: (whiteboard: WhiteboardWithoutContent<Whiteboard>) => void;
   };
   options: {
     show: boolean;
-    canCheckout?: boolean;
     canEdit?: boolean;
     canDelete?: boolean;
-    checkedOutByMe: boolean;
     headerActions?: ReactNode;
     fixedDialogTitle?: ReactNode;
     fullscreen?: boolean;
@@ -90,13 +80,6 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-interface Option extends Omit<ButtonProps, 'disabled'> {
-  label: TranslationKey;
-  disabled: (formik: Pick<FormikProps<unknown>, 'isValid'>) => ButtonProps['disabled'];
-}
-
-type WhiteboardAction = 'save-and-checkin' | 'checkout';
-
 type RelevantExcalidrawState = Pick<ExportedDataState, 'appState' | 'elements' | 'files'>;
 
 const SingleUserWhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
@@ -107,7 +90,7 @@ const SingleUserWhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
 }: SingleUserWhiteboardDialogProps<Whiteboard>) => {
   const { t } = useTranslation();
   const notify = useNotification();
-  const { whiteboard, lockedBy } = entities;
+  const { whiteboard } = entities;
   const [excalidrawAPI, setExcalidrawAPI] = useState<ExcalidrawImperativeAPI | null>(null);
 
   const styles = useStyles();
@@ -158,17 +141,12 @@ const SingleUserWhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
     );
   };
 
-  const actionMap: { [key in keyof typeof whiteboardActions]: ((whiteboard: Whiteboard) => void) | undefined } = {
-    'save-and-checkin': async whiteboard => {
-      const state = getExcalidrawStateFromApi();
+  const handleSave = async whiteboard => {
+    const state = getExcalidrawStateFromApi();
 
-      formikRef.current?.setTouched({ displayName: true }, true);
+    formikRef.current?.setTouched({ displayName: true }, true);
 
-      await handleUpdate(whiteboard, state);
-
-      await actions.onCheckin?.(whiteboard);
-    },
-    checkout: actions.onCheckout,
+    await handleUpdate(whiteboard, state);
   };
 
   const onClose = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -193,7 +171,7 @@ const SingleUserWhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
   };
 
   const handleImportTemplate = async (template: WhiteboardTemplateWithContent) => {
-    if (excalidrawAPI && options.canEdit && options.checkedOutByMe) {
+    if (excalidrawAPI && options.canEdit) {
       try {
         mergeWhiteboard(excalidrawAPI, template.content);
       } catch (err) {
@@ -203,8 +181,6 @@ const SingleUserWhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
       }
     }
   };
-
-  const currentAction: WhiteboardAction = options.checkedOutByMe ? 'save-and-checkin' : 'checkout';
 
   const formikRef = useRef<FormikProps<{ displayName: string }>>(null);
 
@@ -218,19 +194,6 @@ const SingleUserWhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
       values: initialValues,
     });
   }, [initialValues]);
-
-  const whiteboardActions: Record<WhiteboardAction, Option> = {
-    'save-and-checkin': {
-      label: 'pages.whiteboard.state-actions.save',
-      disabled: ({ isValid }) => !isValid,
-      startIcon: <Save />,
-    },
-    checkout: {
-      label: 'pages.whiteboard.state-actions.check-out',
-      disabled: () => !options.canCheckout,
-      startIcon: <LockClockIcon />,
-    },
-  };
 
   return (
     <Dialog
@@ -255,35 +218,20 @@ const SingleUserWhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
             <DialogHeader
               actions={options.headerActions}
               onClose={onClose}
-              titleContainerProps={{ flexDirection: options.checkedOutByMe ? 'row' : 'column' }}
+              titleContainerProps={{ flexDirection: 'row' }}
             >
-              {options.checkedOutByMe ? (
-                <>
-                  {options.fixedDialogTitle ? (
-                    options.fixedDialogTitle
-                  ) : (
-                    <Box
-                      component={FormikInputField}
-                      title={t('fields.displayName')}
-                      name="displayName"
-                      size="small"
-                      maxWidth={gutters(30)}
-                    />
-                  )}
-                  <WhiteboardTemplatesLibrary onImportTemplate={handleImportTemplate} />
-                </>
+              {options.fixedDialogTitle ? (
+                options.fixedDialogTitle
               ) : (
-                <>
-                  <Authorship
-                    authorAvatarUri={whiteboard?.createdBy?.profile.avatar?.uri}
-                    authorName={whiteboard?.createdBy?.profile.displayName}
-                    date={whiteboard?.createdDate}
-                  >
-                    {whiteboard?.createdBy?.profile.displayName}
-                  </Authorship>
-                  <PageTitle>{whiteboard?.profile?.displayName}</PageTitle>
-                </>
+                <Box
+                  component={FormikInputField}
+                  title={t('fields.displayName')}
+                  name="displayName"
+                  size="small"
+                  maxWidth={gutters(30)}
+                />
               )}
+              <WhiteboardTemplatesLibrary onImportTemplate={handleImportTemplate} />
             </DialogHeader>
             <DialogContent classes={{ root: styles.dialogContent }}>
               {!state?.loadingWhiteboardContent && whiteboard && (
@@ -315,26 +263,21 @@ const SingleUserWhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
               {state?.loadingWhiteboardContent && <Loading text="Loading whiteboard..." />}
             </DialogContent>
             <Actions padding={gutters()} paddingTop={0} justifyContent="space-between">
-              {options.checkedOutByMe && actions.onDelete && (
+              {actions.onDelete && (
                 <Button startIcon={<Delete />} onClick={() => actions.onDelete!(whiteboard!)} color="error">
                   {t('pages.whiteboard.state-actions.delete')}
                 </Button>
               )}
               <FlexSpacer />
-              {lockedBy && (
-                <Authorship authorAvatarUri={lockedBy.profile.visual?.uri} authorName={lockedBy.profile.displayName}>
-                  {t('pages.whiteboard.locked-by', { user: lockedBy.profile.displayName })}
-                </Authorship>
-              )}
               <LoadingButton
-                startIcon={whiteboardActions[currentAction].startIcon}
-                onClick={() => actionMap[currentAction]?.(whiteboard!)}
+                startIcon={<Save />}
+                onClick={() => handleSave(whiteboard!)}
                 loadingPosition="start"
                 variant="contained"
                 loading={state?.changingWhiteboardLockState || state?.updatingWhiteboard}
-                disabled={whiteboardActions[currentAction].disabled({ isValid })}
+                disabled={!isValid}
               >
-                {t(whiteboardActions[currentAction].label)}
+                {t('pages.whiteboard.state-actions.save')}
               </LoadingButton>
             </Actions>
           </>
