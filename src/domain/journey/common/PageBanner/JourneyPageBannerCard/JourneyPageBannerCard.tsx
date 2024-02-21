@@ -28,9 +28,7 @@ const JourneyPageBannerCard = ({
 
   return (
     <PageBannerCardWithVisual
-      visual={
-        <JourneyAvatar visualUri={avatar?.uri} journeyTypeName={journeyTypeName} hideJourneyIcon={!!avatar?.uri} />
-      }
+      visual={<JourneyAvatar src={avatar?.uri} />}
       title={
         <>
           <JourneyIcon fontSize="inherit" sx={{ marginRight: gutters(0.25), verticalAlign: 'bottom' }} />
