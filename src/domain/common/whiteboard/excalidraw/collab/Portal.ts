@@ -23,6 +23,17 @@ interface BroadcastSceneOptions {
   syncAll?: boolean;
 }
 
+interface ConnectionOptions {
+  url: string;
+  roomId: string;
+  polling?: boolean;
+}
+
+interface SocketEventHandlers {
+  'client-broadcast': (encryptedData: ArrayBuffer) => void;
+  'first-in-room': () => void;
+}
+
 class Portal {
   onSaveRequest: () => Promise<{ success: boolean; errors?: string[] }>;
   onCloseConnection: () => void;
@@ -43,39 +54,74 @@ class Portal {
     this.onCloseConnection = onCloseConnection;
   }
 
-  open(socket: Socket, id: string) {
-    this.socket = socket;
-    this.roomId = id;
+  open(connectionOptions: ConnectionOptions, eventHandlers: SocketEventHandlers) {
+    if (this.socket) {
+      throw new Error('Socket already open');
+    }
 
-    // Initialize socket listeners
-    this.socket.on('init-room', () => {
-      if (this.socket) {
-        this.socket.emit('join-room', this.roomId);
-      }
+    return new Promise(async (resolve, reject) => {
+      const { default: socketIOClient } = await import('socket.io-client');
+
+      const socket = socketIOClient(connectionOptions.url, {
+        transports: connectionOptions.polling ? ['websocket', 'polling'] : ['websocket'],
+        path: '/api/private/ws/socket.io',
+        retries: 0,
+        reconnection: false,
+      });
+
+      this.socket = socket;
+      this.roomId = connectionOptions.roomId;
+
+      // Initialize socket listeners
+      this.socket.on('init-room', () => {
+        if (this.socket) {
+          this.socket.emit('join-room', this.roomId);
+        }
+      });
+
+      this.socket.on('new-user', async (_socketId: string) => {
+        this.broadcastScene(WS_SCENE_EVENT_TYPES.INIT, this.getSceneElements(), await this.getFiles(), { syncAll: true });
+      });
+
+      this.socket.on('room-user-change', (clients: string[]) => {
+        this.onRoomUserChange(clients);
+      });
+
+      this.socket.on('save-request', async callback => {
+        try {
+          callback(await this.onSaveRequest());
+        } catch (ex) {
+          callback({ success: false, errors: [(ex as { message?: string })?.message ?? ex] });
+        }
+      });
+
+      this.socket.on('client-broadcast', eventHandlers['client-broadcast']);
+
+      this.socket.on('first-in-room', () => {
+        socket.off('first-in-room');
+        eventHandlers['first-in-room']();
+      });
+
+      this.socket.on('connect', () => {
+        resolve(socket);
+      });
+
+      this.socket.on('connect_error', () => {
+        reject(new Error('Socket could not connect'));
+        this.close();
+        this.onCloseConnection();
+      });
+
+      this.socket.on('disconnect', reason => {
+        if (reason === 'io client disconnect') {
+          // disconnected intentionally
+          return;
+        }
+        reject(new Error('Socket disconnected'));
+        this.close();
+        this.onCloseConnection();
+      });
     });
-
-    this.socket.on('new-user', async (_socketId: string) => {
-      this.broadcastScene(WS_SCENE_EVENT_TYPES.INIT, this.getSceneElements(), await this.getFiles(), { syncAll: true });
-    });
-
-    this.socket.on('room-user-change', (clients: string[]) => {
-      this.onRoomUserChange(clients);
-    });
-
-    this.socket.on('save-request', async callback => {
-      try {
-        callback(await this.onSaveRequest());
-      } catch (ex) {
-        callback({ success: false, errors: [(ex as { message?: string })?.message ?? ex] });
-      }
-    });
-
-    this.socket.on('disconnect', () => {
-      this.close();
-      this.onCloseConnection();
-    });
-
-    return socket;
   }
 
   close() {

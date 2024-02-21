@@ -6,15 +6,12 @@ import WrapperTypography from '../../../../core/ui/typography/deprecated/Wrapper
 import GitHub from './icons/GitHub';
 import LinkedIn from './icons/LinkedIn';
 import Twitter from './icons/Twitter';
-import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import * as yup from 'yup';
 
 interface SocialLinksProps {
   title?: string;
   items?: SocialLinkItem[];
   iconSize?: SvgIconProps['fontSize'];
-  isContactable: boolean;
-  onContact: () => void;
 }
 
 const getSocialIcon = (type: SocialNetworkEnum, fontSize: SvgIconProps['fontSize'] = 'large') => {
@@ -52,7 +49,7 @@ export interface SocialLinkItem {
 
 const schema = yup.string().url();
 
-export const SocialLinks: FC<SocialLinksProps> = ({ title, items, iconSize, isContactable, onContact }) => {
+export const SocialLinks: FC<SocialLinksProps> = ({ title, items, iconSize }) => {
   const filteredSortedItems = useMemo(
     () =>
       items
@@ -79,17 +76,6 @@ export const SocialLinks: FC<SocialLinksProps> = ({ title, items, iconSize, isCo
           {getSocialIcon(item.type, iconSize)}
         </Link>
       ))}
-
-      {isContactable && (
-        <Link
-          key="icon-contact"
-          sx={{ cursor: 'pointer' }} // Links without href don't change cursor
-          onClick={onContact}
-          aria-label="social-link"
-        >
-          <EmailOutlinedIcon />
-        </Link>
-      )}
     </Box>
   );
 };
