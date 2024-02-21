@@ -107,12 +107,9 @@ const FormikWhiteboardPreview: FC<FormikWhiteboardPreviewProps> = ({
               <SingleUserWhiteboardDialog
                 entities={{
                   whiteboard: whiteboardFromTemplate,
-                  lockedBy: undefined,
                 }}
                 actions={{
                   onCancel: handleClose,
-                  onCheckin: undefined,
-                  onCheckout: undefined,
                   onUpdate: (whiteboard, previewImages) => {
                     helpers.setValue(whiteboard.content);
                     if (previewImagesName) {
@@ -125,10 +122,8 @@ const FormikWhiteboardPreview: FC<FormikWhiteboardPreviewProps> = ({
                 }}
                 options={{
                   show: editDialogOpen,
-                  canCheckout: false,
                   canEdit: true,
                   canDelete: false,
-                  checkedOutByMe: true,
                   headerActions: undefined,
                   allowFilesAttached: true,
                   fixedDialogTitle: (
