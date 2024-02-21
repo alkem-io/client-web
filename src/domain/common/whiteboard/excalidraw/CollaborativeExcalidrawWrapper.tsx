@@ -14,11 +14,14 @@ import Dialog from '@mui/material/Dialog';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import { DialogContent } from '../../../../core/ui/dialog/deprecated';
 import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
-import { Text } from '../../../../core/ui/typography';
+import { Caption, Text } from '../../../../core/ui/typography';
 import { formatTimeElapsed } from '../../../shared/utils/formatTimeElapsed';
 import { Button, DialogActions } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { LoadingButton } from '@mui/lab';
+import useOnlineStatus from '../../../../core/utils/onlineStatus';
+import Reconnectable from '../../../../core/utils/reconnectable';
+import { useTick } from '../../../../core/utils/time/tick';
 
 const useActorWhiteboardStyles = makeStyles(theme => ({
   container: {
@@ -60,6 +63,8 @@ export interface WhiteboardWhiteboardProps {
 }
 
 const WINDOW_SCROLL_HANDLER_DEBOUNCE_INTERVAL = 100;
+
+const useReconnectable = Reconnectable();
 
 const CollaborativeExcalidrawWrapper = ({ entities, actions, options, collabApiRef }: WhiteboardWhiteboardProps) => {
   const { whiteboard, filesManager, lastSavedDate } = entities;
@@ -138,6 +143,9 @@ const CollaborativeExcalidrawWrapper = ({ entities, actions, options, collabApiR
     },
     onCloseConnection: () => {
       setCollaborationStoppedNoticeOpen(true);
+      if (isOnline) {
+        setupReconnectTimeout();
+      }
     },
     onInitialize: collabApi => {
       combinedCollabApiRef.current = collabApi;
@@ -153,9 +161,23 @@ const CollaborativeExcalidrawWrapper = ({ entities, actions, options, collabApiR
 
   const [collaborationStartTime, setCollaborationStartTime] = useState<number | null>(Date.now());
 
+  const [collaborationStoppedNoticeOpen, setCollaborationStoppedNoticeOpen] = useState(false);
+
+  const isOnline = useOnlineStatus();
+
   const restartCollaboration = () => {
     setCollaborationStartTime(Date.now());
   };
+
+  const { autoReconnectTime, setupReconnectTimeout } = useReconnectable({
+    isOnline,
+    reconnect: restartCollaboration,
+    skip: !collaborationStoppedNoticeOpen || collaborating,
+  });
+
+  const time = useTick({
+    skip: autoReconnectTime === null,
+  });
 
   useEffect(() => {
     if (!connecting && collaborating) {
@@ -180,22 +202,7 @@ const CollaborativeExcalidrawWrapper = ({ entities, actions, options, collabApiR
     [actions.onInitApi]
   );
 
-  const [collaborationStoppedNoticeOpen, setCollaborationStoppedNoticeOpen] = useState(false);
-
   const { t } = useTranslation();
-
-  const [isOnline, setIsOnline] = useState(navigator.onLine);
-
-  useEffect(() => {
-    const handleOnlineChange = () => setIsOnline(navigator.onLine);
-    window.addEventListener('online', handleOnlineChange);
-    window.addEventListener('offline', handleOnlineChange);
-    setIsOnline(navigator.onLine);
-    return () => {
-      window.removeEventListener('online', handleOnlineChange);
-      window.removeEventListener('offline', handleOnlineChange);
-    };
-  }, []);
 
   return (
     <>
@@ -237,6 +244,11 @@ const CollaborativeExcalidrawWrapper = ({ entities, actions, options, collabApiR
         <DialogActions>
           <LoadingButton onClick={restartCollaboration} disabled={!isOnline} loading={connecting}>
             Reconnect
+            <Caption textTransform="none">
+              {autoReconnectTime !== null &&
+                autoReconnectTime - time > 0 &&
+                ` (${Math.ceil((autoReconnectTime - time) / 1000)}s)`}
+            </Caption>
           </LoadingButton>
           <Button onClick={() => setCollaborationStoppedNoticeOpen(false)}>{t('buttons.ok')}</Button>
         </DialogActions>
