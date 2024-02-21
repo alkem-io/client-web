@@ -82,7 +82,7 @@ const WhiteboardRtView: FC<WhiteboardRtViewProps> = ({
                   canEdit: hasUpdateContentPrivileges,
                   show: Boolean(whiteboardId),
                   dialogTitle: displayName,
-                  readOnlyDisplayName,
+                  readOnlyDisplayName: readOnlyDisplayName || !hasUpdatePrivileges,
                   fullscreen,
                   headerActions: (
                     <>

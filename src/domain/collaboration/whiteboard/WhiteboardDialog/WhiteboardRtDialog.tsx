@@ -282,7 +282,7 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
               <DialogHeader
                 actions={options.headerActions}
                 onClose={onClose}
-                title={options.dialogTitle}
+                title={options.readOnlyDisplayName && options.dialogTitle}
                 titleContainerProps={{ flexDirection: 'row' }}
               >
                 {!options.readOnlyDisplayName && (
