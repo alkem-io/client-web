@@ -17597,19 +17597,6 @@ export type CommunityUserPrivilegesWithParentCommunityQuery = {
                   };
                 }>
               | undefined;
-            adminUsers?:
-              | Array<{
-                  __typename?: 'User';
-                  id: string;
-                  profile: {
-                    __typename?: 'Profile';
-                    id: string;
-                    displayName: string;
-                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                    location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
-                  };
-                }>
-              | undefined;
           }
         | undefined;
     };
