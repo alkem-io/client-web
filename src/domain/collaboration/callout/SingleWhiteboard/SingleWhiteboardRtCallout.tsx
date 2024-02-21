@@ -57,6 +57,7 @@ const SingleWhiteboardRtCallout = ({
             challengeNameId,
             opportunityNameId,
           })}
+          displayName={callout.framing.profile.displayName}
           readOnlyDisplayName
           whiteboard={callout.framing.whiteboardRt}
           authorization={callout.framing.whiteboardRt.authorization}
