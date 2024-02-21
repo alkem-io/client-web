@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, ReactNode } from 'react';
 import WhiteboardRtActionsContainer from '../containers/WhiteboardRtActionsContainer';
 import {
   AuthorizationPrivilege,
@@ -11,7 +11,6 @@ import WhiteboardRtDialog from '../WhiteboardDialog/WhiteboardRtDialog';
 import { useFullscreen } from '../../../../core/ui/fullscreen/useFullscreen';
 import FullscreenButton from '../../../../core/ui/button/FullscreenButton';
 import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
-import { BlockTitle } from '../../../../core/ui/typography';
 import useWhiteboardRtContentUpdatePolicy from '../whiteboardRt/contentUpdatePolicy/WhiteboardRtContentUpdatePolicy';
 import WhiteboardShareSettings from '../share/WhiteboardShareSettings';
 
@@ -27,6 +26,7 @@ export interface WhiteboardRtViewProps extends ActiveWhiteboardIdHolder, Whitebo
   whiteboard: WhiteboardRtDetailsFragment | undefined;
   authorization: WhiteboardRtDetailsFragment['authorization'];
   whiteboardShareUrl: string;
+  displayName?: ReactNode;
   readOnlyDisplayName?: boolean;
   loadingWhiteboards: boolean;
 }
@@ -39,6 +39,7 @@ const WhiteboardRtView: FC<WhiteboardRtViewProps> = ({
   backToWhiteboards,
   loadingWhiteboards,
   whiteboardShareUrl,
+  displayName,
   readOnlyDisplayName,
   ...whiteboardsState
 }) => {
@@ -80,12 +81,8 @@ const WhiteboardRtView: FC<WhiteboardRtViewProps> = ({
                 options={{
                   canEdit: hasUpdateContentPrivileges,
                   show: Boolean(whiteboardId),
-                  fixedDialogTitle:
-                    hasUpdatePrivileges && !readOnlyDisplayName ? undefined : (
-                      <BlockTitle display="flex" alignItems="center">
-                        {whiteboard?.profile.displayName}
-                      </BlockTitle>
-                    ),
+                  dialogTitle: displayName,
+                  readOnlyDisplayName: readOnlyDisplayName || !hasUpdatePrivileges,
                   fullscreen,
                   headerActions: (
                     <>
