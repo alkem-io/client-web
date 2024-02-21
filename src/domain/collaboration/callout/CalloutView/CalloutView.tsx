@@ -1,13 +1,12 @@
 import React from 'react';
 import { AuthorizationPrivilege, CalloutType } from '../../../../core/apollo/generated/graphql-schema';
 import PostCallout from '../post/PostCallout';
-import WhiteboardCallout from '../whiteboard/WhiteboardCallout';
+import WhiteboardCollectionCallout from '../whiteboard/WhiteboardCollectionCallout';
 import CommentsCallout from '../comments/CommentsCallout';
 import { TypedCallout } from '../useCallouts/useCallouts';
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
 import LinkCollectionCallout from '../links/LinkCollectionCallout';
 import SingleWhiteboardCallout from '../SingleWhiteboard/SingleWhiteboardCallout';
-import SingleWhiteboardRtCallout from '../SingleWhiteboard/SingleWhiteboardRtCallout';
 import PostCalloutContainer from '../post/PostCalloutContainer';
 
 export interface CalloutViewProps extends Omit<BaseCalloutViewProps, 'canCreate'> {
@@ -33,7 +32,7 @@ const CalloutView = ({ callout, ...props }: CalloutViewProps) => {
       );
     case CalloutType.WhiteboardCollection:
       return (
-        <WhiteboardCallout
+        <WhiteboardCollectionCallout
           callout={callout}
           canCreate={canCreate(AuthorizationPrivilege.CreateWhiteboard)}
           {...props}
@@ -45,8 +44,6 @@ const CalloutView = ({ callout, ...props }: CalloutViewProps) => {
       return <LinkCollectionCallout callout={callout} {...props} />;
     case CalloutType.Whiteboard:
       return <SingleWhiteboardCallout callout={callout} {...props} />;
-    case CalloutType.WhiteboardRt:
-      return <SingleWhiteboardRtCallout callout={callout} {...props} />;
     default:
       throw new Error(`Unexpected Callout type "${callout['type']}"`);
   }

@@ -13,14 +13,14 @@ import { BaseCalloutViewProps } from '../CalloutViewTypes';
 import { gutters } from '../../../../core/ui/grid/utils';
 import CalloutBlockFooter from '../../CalloutBlock/CalloutBlockFooter';
 import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
-import WhiteboardDialog from '../../whiteboard/WhiteboardDialog/WhiteboardDialog';
+import WhiteboardDialog from '../../whiteboard/WhiteboardDialog/WhiteboardRtDialog';
 import { useFullscreen } from '../../../../core/ui/fullscreen/useFullscreen';
 
-interface WhiteboardCalloutProps extends BaseCalloutViewProps {
+interface WhiteboardCollectionCalloutProps extends BaseCalloutViewProps {
   callout: CalloutLayoutProps['callout'];
 }
 
-const WhiteboardCallout = ({
+const WhiteboardCollectionCallout = ({
   callout,
   spaceNameId,
   loading,
@@ -29,7 +29,7 @@ const WhiteboardCallout = ({
   canCreate = false,
   contributionsCount,
   ...calloutLayoutProps
-}: WhiteboardCalloutProps) => {
+}: WhiteboardCollectionCalloutProps) => {
   const [showCreateWhiteboardDialog, setShowCreateWhiteboardDialog] = useState(false);
   const navigate = useNavigate();
   const { fullscreen, setFullscreen } = useFullscreen();
@@ -118,7 +118,8 @@ const WhiteboardCallout = ({
             actions={{
               onCancel: closeCreateDialog,
               onUpdate: (input, previewImages) => {
-                actions.onCreate(
+                setShowCreateWhiteboardDialog(false);
+                return actions.onCreate(
                   {
                     whiteboard: {
                       content: input.content,
@@ -130,13 +131,11 @@ const WhiteboardCallout = ({
                   } as CreateContributionOnCalloutInput,
                   previewImages
                 );
-                setShowCreateWhiteboardDialog(false);
               },
             }}
             options={{
               show: showCreateWhiteboardDialog,
               canEdit: true,
-              checkedOutByMe: true,
               allowFilesAttached: true,
               fullscreen,
             }}
@@ -148,4 +147,4 @@ const WhiteboardCallout = ({
   );
 };
 
-export default WhiteboardCallout;
+export default WhiteboardCollectionCallout;

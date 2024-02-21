@@ -15,7 +15,6 @@ const calloutIcons: Record<CalloutType, ComponentType<SvgIconProps>> = {
   [CalloutType.Post]: NotesOutlined,
   [CalloutType.LinkCollection]: FormatListBulletedOutlined,
   [CalloutType.Whiteboard]: WhiteboardIcon,
-  [CalloutType.WhiteboardRt]: WhiteboardIcon,
 } as const;
 
 export default calloutIcons;

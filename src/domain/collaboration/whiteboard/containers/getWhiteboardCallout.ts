@@ -6,8 +6,5 @@ export const getWhiteboardCallout = <T extends { type: CalloutType; nameID: stri
 ) =>
   callouts?.find(
     x =>
-      (x.type === CalloutType.WhiteboardCollection ||
-        x.type === CalloutType.Whiteboard ||
-        x.type === CalloutType.WhiteboardRt) &&
-      x.nameID === calloutNameId
+      (x.type === CalloutType.WhiteboardCollection || x.type === CalloutType.Whiteboard) && x.nameID === calloutNameId
   );
