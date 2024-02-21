@@ -20,24 +20,24 @@ import { WhiteboardTemplateWithContent } from '../WhiteboardTemplateCard/Whitebo
 import mergeWhiteboard from '../utils/mergeWhiteboard';
 import { error as logError } from '../../../../core/logging/sentry/log';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
-import { WhiteboardRtWithContent, WhiteboardRtWithoutContent } from '../containers/WhiteboardRtContentContainer';
+import { WhiteboardWithContent, WhiteboardWithoutContent } from '../containers/WhiteboardContentContainer';
 import {
   generateWhiteboardPreviewImages,
   WhiteboardPreviewImage,
 } from '../WhiteboardPreviewImages/WhiteboardPreviewImages';
-import { useWhiteboardRtLastUpdatedDateQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { useWhiteboardLastUpdatedDateQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { CollabAPI } from '../../../common/whiteboard/excalidraw/collab/useCollab';
 import useWhiteboardFilesManager from '../../../common/whiteboard/excalidraw/useWhiteboardFilesManager';
 import WhiteboardDialogFooter from './WhiteboardDialogFooter';
 import { useLocation } from 'react-router-dom';
 import { ExcalidrawElement, ExcalidrawImageElement } from '@alkemio/excalidraw/types/element/types';
 
-interface WhiteboardDialogProps<Whiteboard extends WhiteboardRtWithContent> {
+interface WhiteboardDialogProps<Whiteboard extends WhiteboardWithContent> {
   entities: {
     whiteboard?: Whiteboard;
   };
   actions: {
-    onCancel: (whiteboard: WhiteboardRtWithoutContent<Whiteboard>) => void;
+    onCancel: (whiteboard: WhiteboardWithoutContent<Whiteboard>) => void;
     onUpdate: (
       whiteboard: Whiteboard,
       previewImages?: WhiteboardPreviewImage[]
@@ -50,6 +50,7 @@ interface WhiteboardDialogProps<Whiteboard extends WhiteboardRtWithContent> {
     headerActions?: ReactNode;
     fixedDialogTitle?: ReactNode;
     fullscreen?: boolean;
+    allowFilesAttached?: boolean;
   };
   state?: {
     updatingWhiteboardContent?: boolean;
@@ -104,7 +105,7 @@ const checkWhiteboardConsistency = (
   return true;
 };
 
-const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
+const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
   entities,
   actions,
   options,
@@ -130,23 +131,24 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
 
   const styles = useStyles();
 
-  const { data: lastSaved, refetch: refetchLastSaved } = useWhiteboardRtLastUpdatedDateQuery({
+  const { data: lastSaved, refetch: refetchLastSaved } = useWhiteboardLastUpdatedDateQuery({
     variables: { whiteboardId: whiteboard?.id! },
     skip: !whiteboard?.id,
   });
 
   const lastSavedDate = useMemo(
-    () => lastSaved?.lookup.whiteboardRt?.updatedDate && new Date(lastSaved.lookup.whiteboardRt.updatedDate),
-    [lastSaved?.lookup.whiteboardRt?.updatedDate]
+    () => lastSaved?.lookup.whiteboard?.updatedDate && new Date(lastSaved.lookup.whiteboard.updatedDate),
+    [lastSaved?.lookup.whiteboard?.updatedDate]
   );
 
   const filesManager = useWhiteboardFilesManager({
     excalidrawAPI,
     storageBucketId: whiteboard?.profile?.storageBucket.id ?? '',
+    allowFallbackToAttached: options.allowFilesAttached,
   });
 
   const prepareWhiteboardForUpdate = async (
-    whiteboard: WhiteboardRtWithContent,
+    whiteboard: WhiteboardWithContent,
     state: RelevantExcalidrawState | undefined,
     shouldUploadPreviewImages = true
   ): Promise<{
@@ -296,7 +298,7 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
                 )}
                 {editModeEnabled && <WhiteboardTemplatesLibrary onImportTemplate={handleImportTemplate} />}
                 <span>
-                  RT<sup title=":)">beta</sup>
+                  RT2<sup title=":)">beta</sup>
                 </span>
               </DialogHeader>
               <DialogContent classes={{ root: styles.dialogContent }}>
@@ -349,4 +351,4 @@ const WhiteboardRtDialog = <Whiteboard extends WhiteboardRtWithContent>({
   );
 };
 
-export default WhiteboardRtDialog;
+export default WhiteboardDialog;

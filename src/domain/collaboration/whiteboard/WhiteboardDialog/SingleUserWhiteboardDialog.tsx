@@ -37,7 +37,7 @@ import {
 } from '../WhiteboardPreviewImages/WhiteboardPreviewImages';
 import useWhiteboardFilesManager from '../../../common/whiteboard/excalidraw/useWhiteboardFilesManager';
 
-interface WhiteboardDialogProps<Whiteboard extends WhiteboardWithContent> {
+interface SingleUserWhiteboardDialogProps<Whiteboard extends WhiteboardWithContent> {
   entities: {
     whiteboard?: Whiteboard;
     lockedBy?: LockedByDetailsFragment;
@@ -99,12 +99,12 @@ type WhiteboardAction = 'save-and-checkin' | 'checkout';
 
 type RelevantExcalidrawState = Pick<ExportedDataState, 'appState' | 'elements' | 'files'>;
 
-const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
+const SingleUserWhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
   entities,
   actions,
   options,
   state,
-}: WhiteboardDialogProps<Whiteboard>) => {
+}: SingleUserWhiteboardDialogProps<Whiteboard>) => {
   const { t } = useTranslation();
   const notify = useNotification();
   const { whiteboard, lockedBy } = entities;
@@ -275,7 +275,7 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
               ) : (
                 <>
                   <Authorship
-                    authorAvatarUri={whiteboard?.createdBy?.profile.visual?.uri}
+                    authorAvatarUri={whiteboard?.createdBy?.profile.avatar?.uri}
                     authorName={whiteboard?.createdBy?.profile.displayName}
                     date={whiteboard?.createdDate}
                   >
@@ -344,4 +344,4 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
   );
 };
 
-export default WhiteboardDialog;
+export default SingleUserWhiteboardDialog;

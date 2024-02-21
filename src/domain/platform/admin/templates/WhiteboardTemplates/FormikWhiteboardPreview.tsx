@@ -2,7 +2,7 @@ import { Box, BoxProps, Button, Skeleton, styled } from '@mui/material';
 import { useField } from 'formik';
 import React, { FC, MouseEventHandler, useMemo, useState } from 'react';
 import ExcalidrawWrapper from '../../../../common/whiteboard/excalidraw/ExcalidrawWrapper';
-import WhiteboardDialog from '../../../../collaboration/whiteboard/WhiteboardDialog/WhiteboardDialog';
+import SingleUserWhiteboardDialog from '../../../../collaboration/whiteboard/WhiteboardDialog/SingleUserWhiteboardDialog';
 import { useTranslation } from 'react-i18next';
 import { BlockTitle } from '../../../../../core/ui/typography';
 import { WhiteboardPreviewImage } from '../../../../collaboration/whiteboard/WhiteboardPreviewImages/WhiteboardPreviewImages';
@@ -104,7 +104,7 @@ const FormikWhiteboardPreview: FC<FormikWhiteboardPreviewProps> = ({
                   {t('buttons.edit')}
                 </Button>
               </EditTemplateButtonContainer>
-              <WhiteboardDialog
+              <SingleUserWhiteboardDialog
                 entities={{
                   whiteboard: whiteboardFromTemplate,
                   lockedBy: undefined,

@@ -1,18 +1,18 @@
 import React, { FC } from 'react';
-import WhiteboardRtActionsContainer from '../containers/WhiteboardRtActionsContainer';
+import WhiteboardActionsContainer from '../containers/WhiteboardActionsContainer';
 import {
   AuthorizationPrivilege,
-  WhiteboardRtContentFragment,
-  WhiteboardRtDetailsFragment,
+  WhiteboardContentFragment,
+  WhiteboardDetailsFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
-import WhiteboardRtContentContainer from '../containers/WhiteboardRtContentContainer';
-import WhiteboardRtDialog from '../WhiteboardDialog/WhiteboardRtDialog';
+import WhiteboardContentContainer from '../containers/WhiteboardContentContainer';
+import WhiteboardDialog from '../WhiteboardDialog/WhiteboardRtDialog';
 import { useFullscreen } from '../../../../core/ui/fullscreen/useFullscreen';
 import FullscreenButton from '../../../../core/ui/button/FullscreenButton';
 import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
 import { BlockTitle } from '../../../../core/ui/typography';
-import useWhiteboardRtContentUpdatePolicy from '../whiteboardRt/contentUpdatePolicy/WhiteboardRtContentUpdatePolicy';
+import useWhiteboardContentUpdatePolicy from '../contentUpdatePolicy/WhiteboardContentUpdatePolicy';
 import WhiteboardShareSettings from '../share/WhiteboardShareSettings';
 
 export interface ActiveWhiteboardIdHolder {
@@ -22,16 +22,16 @@ export interface WhiteboardNavigationMethods {
   backToWhiteboards: () => void;
 }
 
-export interface WhiteboardRtViewProps extends ActiveWhiteboardIdHolder, WhiteboardNavigationMethods {
+export interface WhiteboardViewProps extends ActiveWhiteboardIdHolder, WhiteboardNavigationMethods {
   journeyTypeName: JourneyTypeName;
-  whiteboard: WhiteboardRtDetailsFragment | undefined;
-  authorization: WhiteboardRtDetailsFragment['authorization'];
+  whiteboard: WhiteboardDetailsFragment | undefined;
+  authorization: WhiteboardDetailsFragment['authorization'];
   whiteboardShareUrl: string;
   readOnlyDisplayName?: boolean;
   loadingWhiteboards: boolean;
 }
 
-const WhiteboardRtView: FC<WhiteboardRtViewProps> = ({
+const WhiteboardView: FC<WhiteboardViewProps> = ({
   whiteboardId,
   whiteboard,
   authorization,
@@ -58,20 +58,20 @@ const WhiteboardRtView: FC<WhiteboardRtViewProps> = ({
   const hasUpdatePrivileges = authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
   const hasUpdateContentPrivileges = authorization?.myPrivileges?.includes(AuthorizationPrivilege.UpdateContent);
 
-  const contentUpdatePolicyProvided = useWhiteboardRtContentUpdatePolicy({
+  const contentUpdatePolicyProvided = useWhiteboardContentUpdatePolicy({
     whiteboardId: whiteboard?.id,
     skip: !hasUpdatePrivileges,
   });
 
   return (
-    <WhiteboardRtActionsContainer>
+    <WhiteboardActionsContainer>
       {(_, actionsState, actions) => (
-        <WhiteboardRtContentContainer whiteboardId={whiteboard?.id}>
+        <WhiteboardContentContainer whiteboardId={whiteboard?.id}>
           {entities => {
             return (
-              <WhiteboardRtDialog
+              <WhiteboardDialog
                 entities={{
-                  whiteboard: entities.whiteboard as WhiteboardRtContentFragment & WhiteboardRtDetailsFragment,
+                  whiteboard: entities.whiteboard as WhiteboardContentFragment & WhiteboardDetailsFragment,
                 }}
                 actions={{
                   onCancel: handleCancel,
@@ -109,10 +109,10 @@ const WhiteboardRtView: FC<WhiteboardRtViewProps> = ({
               />
             );
           }}
-        </WhiteboardRtContentContainer>
+        </WhiteboardContentContainer>
       )}
-    </WhiteboardRtActionsContainer>
+    </WhiteboardActionsContainer>
   );
 };
 
-export default WhiteboardRtView;
+export default WhiteboardView;
