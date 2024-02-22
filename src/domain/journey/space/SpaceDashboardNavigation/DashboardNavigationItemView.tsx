@@ -6,9 +6,9 @@ import Gutters from '../../../../core/ui/grid/Gutters';
 import { gutters } from '../../../../core/ui/grid/utils';
 import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
 import { Caption } from '../../../../core/ui/typography';
-import LinkNoUnderline from '../../../shared/components/LinkNoUnderline';
 import { DashboardNavigationItem } from './useSpaceDashboardNavigation';
 import JourneyAvatar from '../../common/JourneyAvatar/JourneyAvatar';
+import RouterLink from '../../../../core/ui/link/RouterLink';
 
 interface DashboardNavigationItemViewProps
   extends Omit<DashboardNavigationItem, 'id' | 'nameId' | 'member' | 'children'> {
@@ -22,7 +22,6 @@ const DashboardNavigationItemView = ({
   displayName,
   visualUri,
   url,
-  journeyTypeName,
   children,
   private: isPrivate = false,
   tooltip,
@@ -46,9 +45,9 @@ const DashboardNavigationItemView = ({
     <Box>
       <Tooltip title={tooltip ?? <Skeleton />} PopperProps={{ sx: { '.MuiTooltip-tooltip': { padding: 0 } } }}>
         <BadgeCardView
-          component={LinkNoUnderline}
+          component={RouterLink}
           to={url ?? ''}
-          visual={<JourneyAvatar visualUri={visualUri} journeyTypeName={journeyTypeName} size="medium" />}
+          visual={<JourneyAvatar src={visualUri} size="medium" />}
           visualRight={
             isPrivate ? (
               <Tooltip
