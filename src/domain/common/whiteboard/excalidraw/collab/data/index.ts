@@ -36,6 +36,12 @@ export const getCollabServer = async (): Promise<{
   throw new Error('errors.cannotResolveCollabServer');
 };
 
+export type SocketIdleStateDataSource = {
+  socketId: string;
+  userState: UserIdleState;
+  username: string;
+};
+
 export type SocketUpdateDataSource = {
   SCENE_INIT: {
     type: 'SCENE_INIT';
@@ -58,14 +64,6 @@ export type SocketUpdateDataSource = {
       pointer: { x: number; y: number };
       button: 'down' | 'up';
       selectedElementIds: AppState['selectedElementIds'];
-      username: string;
-    };
-  };
-  IDLE_STATUS: {
-    type: 'IDLE_STATUS';
-    payload: {
-      socketId: string;
-      userState: UserIdleState;
       username: string;
     };
   };

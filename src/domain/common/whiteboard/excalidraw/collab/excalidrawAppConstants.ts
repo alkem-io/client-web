@@ -53,14 +53,14 @@ export const WS_EVENTS = {
   SERVER_VOLATILE: 'server-volatile-broadcast',
   SERVER: 'server-broadcast',
   SERVER_REQUEST_BROADCAST: 'server-request-broadcast',
+  IDLE_STATE: 'idle-state',
 };
 
 export enum WS_SCENE_EVENT_TYPES {
   INIT = 'SCENE_INIT',
   SCENE_UPDATE = 'SCENE_UPDATE',
   MOUSE_LOCATION = 'MOUSE_LOCATION',
-  IDLE_STATUS = 'IDLE_STATUS',
-  SAVED = 'SAVED',
+  // SAVED = 'SAVED',
 }
 
 export const ROOM_ID_BYTES = 10;

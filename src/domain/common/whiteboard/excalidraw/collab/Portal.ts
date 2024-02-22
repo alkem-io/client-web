@@ -1,4 +1,4 @@
-import { isSyncableElement, SocketUpdateData, SocketUpdateDataSource } from './data';
+import { isSyncableElement, SocketIdleStateDataSource, SocketUpdateData, SocketUpdateDataSource } from './data';
 import { ExcalidrawElement } from '@alkemio/excalidraw/types/element/types';
 import { PRECEDING_ELEMENT_KEY, WS_EVENTS, WS_SCENE_EVENT_TYPES } from './excalidrawAppConstants';
 import { UserIdleState } from './utils';
@@ -31,7 +31,9 @@ interface ConnectionOptions {
 
 interface SocketEventHandlers {
   'client-broadcast': (encryptedData: ArrayBuffer) => void;
+  'idle-state': (encryptedData: ArrayBuffer) => void;
   'first-in-room': () => void;
+  saved: () => void;
 }
 
 class Portal {
@@ -80,7 +82,9 @@ class Portal {
       });
 
       this.socket.on('new-user', async (_socketId: string) => {
-        this.broadcastScene(WS_SCENE_EVENT_TYPES.INIT, this.getSceneElements(), await this.getFiles(), { syncAll: true });
+        this.broadcastScene(WS_SCENE_EVENT_TYPES.INIT, this.getSceneElements(), await this.getFiles(), {
+          syncAll: true,
+        });
       });
 
       this.socket.on('room-user-change', (clients: string[]) => {
@@ -95,7 +99,11 @@ class Portal {
         }
       });
 
+      this.socket.on('idle-state', eventHandlers['idle-state']);
+
       this.socket.on('client-broadcast', eventHandlers['client-broadcast']);
+
+      this.socket.on('saved', eventHandlers.saved);
 
       this.socket.on('first-in-room', () => {
         socket.off('first-in-room');
@@ -145,14 +153,6 @@ class Portal {
       const jsonStr = JSON.stringify(data);
       const encryptedBuffer = new TextEncoder().encode(jsonStr).buffer;
       this.socket?.emit(volatile ? WS_EVENTS.SERVER_VOLATILE : WS_EVENTS.SERVER, this.roomId, encryptedBuffer);
-    }
-  }
-
-  private _broadcastRequestData(data: SocketUpdateData) {
-    if (this.isOpen()) {
-      const jsonStr = JSON.stringify(data);
-      const buffer = new TextEncoder().encode(jsonStr).buffer;
-      this.socket?.emit(WS_EVENTS.SERVER_REQUEST_BROADCAST, this.roomId, buffer);
     }
   }
 
@@ -213,15 +213,16 @@ class Portal {
 
   broadcastIdleChange = (userState: UserIdleState, username: string) => {
     if (this.socket?.id) {
-      const data: SocketUpdateDataSource['IDLE_STATUS'] = {
-        type: 'IDLE_STATUS',
-        payload: {
-          socketId: this.socket.id,
-          userState,
-          username,
-        },
+      const data: SocketIdleStateDataSource = {
+        socketId: this.socket.id,
+        userState,
+        username,
       };
-      return this._broadcastSocketData(data as SocketUpdateData, { volatile: true });
+      if (this.isOpen()) {
+        const jsonStr = JSON.stringify(data);
+        const encryptedBuffer = new TextEncoder().encode(jsonStr).buffer;
+        this.socket.emit(WS_EVENTS.IDLE_STATE, this.roomId, encryptedBuffer);
+      }
     }
   };
 
@@ -245,18 +246,18 @@ class Portal {
     }
   };
 
-  broadcastSavedEvent = (username: string) => {
-    if (this.socket?.id) {
-      const data: SocketUpdateDataSource['SAVED'] = {
-        type: 'SAVED',
-        payload: {
-          socketId: this.socket.id,
-          username,
-        },
-      };
-      return this._broadcastSocketData(data as SocketUpdateData);
-    }
-  };
+  // broadcastSavedEvent = (username: string) => {
+  //   if (this.socket?.id) {
+  //     const data: SocketUpdateDataSource['SAVED'] = {
+  //       type: 'SAVED',
+  //       payload: {
+  //         socketId: this.socket.id,
+  //         username,
+  //       },
+  //     };
+  //     return this._broadcastSocketData(data as SocketUpdateData);
+  //   }
+  // };
 }
 
 export default Portal;

@@ -187,23 +187,28 @@ class Collab {
                   break;
                 }
 
-                case WS_SCENE_EVENT_TYPES.IDLE_STATUS: {
-                  const { userState, socketId, username } = decryptedData.payload;
-                  const collaborators = new Map(this.collaborators);
-                  const user = collaborators.get(socketId) || {}!;
-                  user.userState = userState;
-                  user.username = username;
-                  this.excalidrawAPI.updateScene({
-                    collaborators,
-                  });
-                  break;
-                }
-
-                case WS_SCENE_EVENT_TYPES.SAVED: {
-                  this.onSavedToDatabase?.();
-                  break;
-                }
+                // case WS_SCENE_EVENT_TYPES.SAVED: {
+                //   this.onSavedToDatabase?.();
+                //   break;
+                // }
               }
+            },
+            'idle-state': async encryptedData => {
+              console.log('idle state change');
+              const decodedData = new TextDecoder().decode(encryptedData);
+              const decryptedData = JSON.parse(decodedData);
+
+              const { userState, socketId, username } = decryptedData;
+              const collaborators = new Map(this.collaborators);
+              const user = collaborators.get(socketId) || {}!;
+              user.userState = userState;
+              user.username = username;
+              this.excalidrawAPI.updateScene({
+                collaborators,
+              });
+            },
+            saved: async () => {
+              this.onSavedToDatabase?.();
             },
             'first-in-room': async () => {
               await this.initializeRoom({
@@ -402,9 +407,9 @@ class Collab {
     }
   };
 
-  public notifySavedToDatabase = () => {
-    this.portal.broadcastSavedEvent(this.state.username);
-  };
+  // public notifySavedToDatabase = () => {
+  //   this.portal.broadcastSavedEvent(this.state.username);
+  // };
 
   private queueBroadcastAllElements = throttle(async () => {
     const elements = this.excalidrawAPI.getSceneElementsIncludingDeleted();
