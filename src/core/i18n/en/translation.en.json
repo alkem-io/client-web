@@ -915,7 +915,6 @@
       "title": "{{journey}} statistics"
     },
     "dashboardNavigation": {
-      "title": "Challenges and Opportunities in {{space}}",
       "help": "This Space holds the following Challenges. When these Challenges have Opportunities, these are visible as well.",
       "privateChallenge": "This is a private Challenge. To view it’s content and potential Opportunities, visit the Challenge and apply to become a member.",
       "showAll": "Show all"
@@ -1547,7 +1546,7 @@
     "feedback": "Feedback",
     "support": "Support",
     "about": "About",
-    "copyright": "© 2023 Alkemio B.V."
+    "copyright": "© 2024 Alkemio B.V."
   },
   "innovationHub": {
     "selectedSpaces": "{{space}} Spaces",

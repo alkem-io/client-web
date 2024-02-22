@@ -2,7 +2,6 @@ import {
   useSpaceDashboardNavigationChallengesQuery,
   useSpaceDashboardNavigationOpportunitiesQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
-import { JourneyTypeName } from '../../JourneyTypeName';
 import {
   Authorization,
   AuthorizationPrivilege,
@@ -31,7 +30,6 @@ export interface DashboardNavigationItem {
   displayName: string;
   tagline: string;
   vision?: string;
-  journeyTypeName: JourneyTypeName;
   avatar?: {
     uri: string;
     alternativeText?: string;
@@ -47,34 +45,31 @@ export interface DashboardNavigationItem {
   children?: DashboardNavigationItem[];
 }
 
-const DashboardNavigationItemPropsGetter =
-  (journeyTypeName: JourneyTypeName) =>
-  (
-    journey: {
-      id: string;
-      nameID: string;
-      profile: SpaceDashboardNavigationProfileFragment;
-      context?: SpaceDashboardNavigationContextFragment;
-      lifecycle?: SpaceDashboardNavigationLifecycleFragment;
-      community?: SpaceDashboardNavigationCommunityFragment;
-    },
-    disabled?: boolean
-  ): DashboardNavigationItem => {
-    return {
-      id: journey.id,
-      nameId: journey.nameID,
-      displayName: journey.profile.displayName,
-      tagline: journey.profile.tagline,
-      vision: journey.context?.vision,
-      avatar: journey.profile.avatar,
-      cardBanner: journey.profile.cardBanner,
-      tags: journey.profile.tagset?.tags,
-      lifecycleState: journey.lifecycle?.state,
-      private: disabled,
-      member: journey.community?.myMembershipStatus === CommunityMembershipStatus.Member,
-      journeyTypeName,
-    };
+const getDashboardNavigationItemProps = (
+  journey: {
+    id: string;
+    nameID: string;
+    profile: SpaceDashboardNavigationProfileFragment;
+    context?: SpaceDashboardNavigationContextFragment;
+    lifecycle?: SpaceDashboardNavigationLifecycleFragment;
+    community?: SpaceDashboardNavigationCommunityFragment;
+  },
+  disabled?: boolean
+): DashboardNavigationItem => {
+  return {
+    id: journey.id,
+    nameId: journey.nameID,
+    displayName: journey.profile.displayName,
+    tagline: journey.profile.tagline,
+    vision: journey.context?.vision,
+    avatar: journey.profile.avatar,
+    cardBanner: journey.profile.cardBanner,
+    tags: journey.profile.tagset?.tags,
+    lifecycleState: journey.lifecycle?.state,
+    private: disabled,
+    member: journey.community?.myMembershipStatus === CommunityMembershipStatus.Member,
   };
+};
 
 const isReadable = ({ authorization }: { authorization?: Partial<Authorization> }) =>
   authorization?.myPrivileges?.includes(AuthorizationPrivilege.Read);
@@ -101,9 +96,6 @@ const useSpaceDashboardNavigation = ({
       skip: !readableChallengeIds || skip,
     });
 
-  const challengeToItem = DashboardNavigationItemPropsGetter('challenge');
-  const opportunityToItem = DashboardNavigationItemPropsGetter('opportunity');
-
   const challengesWithOpportunitiesById = useMemo(
     () => keyBy(opportunitiesQueryData?.space.challenges, 'id'),
     [opportunitiesQueryData]
@@ -117,8 +109,8 @@ const useSpaceDashboardNavigation = ({
         const opportunities = challengesWithOpportunitiesById[challenge.id]?.opportunities ?? [];
 
         return {
-          ...challengeToItem(challenge, !isReadable(challenge)),
-          children: opportunities.map(opportunity => opportunityToItem(opportunity)),
+          ...getDashboardNavigationItemProps(challenge, !isReadable(challenge)),
+          children: opportunities.map(opportunity => getDashboardNavigationItemProps(opportunity)),
         };
       }),
     [challengesQueryData, opportunitiesQueryData]
