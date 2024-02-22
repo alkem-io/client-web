@@ -29,6 +29,7 @@ import { Actions } from '../../../../core/ui/actions/Actions';
 import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
 import SpaceProfileFixedInformation, { SpaceProfileFixedInformationProps } from './SpaceProfileFixedInformation';
 import { DEFAULT_TAGSET } from '../../../common/tags/tagset.constants';
+import { Caption } from '../../../../core/ui/typography';
 
 interface Props {
   context?: Context;
@@ -154,7 +155,9 @@ const SpaceEditForm: FC<Props> = ({
             </PageContentBlockSeamless>
             {edit && (
               <PageContentBlock>
-                <PageContentBlockHeader title={t('components.referenceSegment.title')} />
+                <PageContentBlockHeader title={t('components.referenceSegment.title')}>
+                  <Caption>{t('components.referenceSegment.description')}</Caption>
+                </PageContentBlockHeader>
                 <ContextReferenceSegment references={references} profileId={profileId} />
                 <Actions justifyContent="end">
                   <SaveButton onClick={handleSubmit} loading={loading} />
