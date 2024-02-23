@@ -77,6 +77,7 @@ const WhiteboardView: FC<WhiteboardViewProps> = ({
                 actions={{
                   onCancel: handleCancel,
                   onUpdate: actions.onUpdate,
+                  onChangeDisplayName: actions.onChangeDisplayName,
                 }}
                 options={{
                   canEdit: hasUpdateContentPrivileges,

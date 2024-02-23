@@ -4,6 +4,7 @@ import {
   useCreateWhiteboardOnCalloutMutation,
   useDeleteWhiteboardMutation,
   useUpdateWhiteboardContentMutation,
+  useUpdateWhiteboardMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
 import {
@@ -26,6 +27,8 @@ export interface IWhiteboardActions {
     whiteboard: WhiteboardContentFragment & WhiteboardDetailsFragment,
     previewImages?: WhiteboardPreviewImage[]
   ) => Promise<{ success: boolean; errors?: string[] }>;
+
+  onChangeDisplayName: (whiteboardId: string | undefined, displayName: string) => Promise<void>;
 }
 
 export interface WhiteboardActionsContainerState {
@@ -146,11 +149,32 @@ const WhiteboardActionsContainer: FC<WhiteboardActionsContainerProps> = ({ child
     [updateWhiteboardContent]
   );
 
+  const [updateWhiteboard, { loading: updatingWhiteboard }] = useUpdateWhiteboardMutation({});
+  const handleChangeDisplayName = useCallback(
+    async (whiteboardId: string | undefined, displayName: string) => {
+      if (!whiteboardId) {
+        return;
+      }
+      await updateWhiteboard({
+        variables: {
+          input: {
+            ID: whiteboardId,
+            profileData: {
+              displayName,
+            },
+          },
+        },
+      });
+    },
+    [updateWhiteboard]
+  );
+
   const actions = useMemo<IWhiteboardActions>(
     () => ({
       onCreate: handleCreateWhiteboard,
       onDelete: handleDeleteWhiteboard,
       onUpdate: handleUpdateWhiteboardContent,
+      onChangeDisplayName: handleChangeDisplayName,
     }),
     [handleUpdateWhiteboardContent]
   );
@@ -163,6 +187,7 @@ const WhiteboardActionsContainer: FC<WhiteboardActionsContainerProps> = ({ child
           creatingWhiteboard,
           deletingWhiteboard,
           updatingWhiteboardContent,
+          updatingWhiteboard,
           uploadingVisuals,
         },
         actions

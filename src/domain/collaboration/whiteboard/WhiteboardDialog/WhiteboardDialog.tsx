@@ -11,10 +11,7 @@ import { DialogContent } from '../../../../core/ui/dialog/deprecated';
 import CollaborativeExcalidrawWrapper from '../../../common/whiteboard/excalidraw/CollaborativeExcalidrawWrapper';
 import { ExportedDataState } from '@alkemio/excalidraw/types/data/types';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
-import { Box } from '@mui/material';
-import { gutters } from '../../../../core/ui/grid/utils';
 import whiteboardSchema from '../validation/whiteboardSchema';
-import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
 import WhiteboardTemplatesLibrary from '../WhiteboardTemplatesLibrary/WhiteboardTemplatesLibrary';
 import { WhiteboardTemplateWithContent } from '../WhiteboardTemplateCard/WhiteboardTemplate';
 import mergeWhiteboard from '../utils/mergeWhiteboard';
@@ -31,6 +28,7 @@ import useWhiteboardFilesManager from '../../../common/whiteboard/excalidraw/use
 import WhiteboardDialogFooter from './WhiteboardDialogFooter';
 import { useLocation } from 'react-router-dom';
 import { ExcalidrawElement, ExcalidrawImageElement } from '@alkemio/excalidraw/types/element/types';
+import WhiteboardDisplayName from './WhiteboardDisplayName';
 
 interface WhiteboardDialogProps<Whiteboard extends WhiteboardWithContent> {
   entities: {
@@ -42,6 +40,7 @@ interface WhiteboardDialogProps<Whiteboard extends WhiteboardWithContent> {
       whiteboard: Whiteboard,
       previewImages?: WhiteboardPreviewImage[]
     ) => Promise<{ success: boolean; errors?: string[] }>;
+    onChangeDisplayName: (whiteboardId: string | undefined, newDisplayName: string) => Promise<void>;
   };
   options: {
     show: boolean;
@@ -52,6 +51,7 @@ interface WhiteboardDialogProps<Whiteboard extends WhiteboardWithContent> {
     fullscreen?: boolean;
     allowFilesAttached?: boolean;
     readOnlyDisplayName?: boolean;
+    editDisplayName?: boolean;
   };
   state?: {
     updatingWhiteboardContent?: boolean;
@@ -284,18 +284,16 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
               <DialogHeader
                 actions={options.headerActions}
                 onClose={onClose}
-                title={options.readOnlyDisplayName && options.dialogTitle}
+                title={
+                  <WhiteboardDisplayName
+                    displayName={whiteboard?.profile?.displayName}
+                    readOnlyDisplayName={options.readOnlyDisplayName}
+                    editDisplayName={options.editDisplayName}
+                    onChangeDisplayName={newDisplayName => actions.onChangeDisplayName(whiteboard?.id, newDisplayName)}
+                  />
+                }
                 titleContainerProps={{ flexDirection: 'row' }}
               >
-                {!options.readOnlyDisplayName && (
-                  <Box
-                    component={FormikInputField}
-                    title={t('fields.displayName')}
-                    name="displayName"
-                    size="small"
-                    maxWidth={gutters(30)}
-                  />
-                )}
                 {editModeEnabled && <WhiteboardTemplatesLibrary onImportTemplate={handleImportTemplate} />}
               </DialogHeader>
               <DialogContent classes={{ root: styles.dialogContent }}>
