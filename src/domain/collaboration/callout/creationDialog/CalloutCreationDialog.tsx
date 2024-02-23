@@ -58,17 +58,6 @@ export interface CalloutCreationDialogProps {
   canCreateCalloutFromTemplate?: boolean;
 }
 
-export interface TemplateProfile {
-  description?: string;
-  displayName: string;
-  tagset?: {
-    tags: string[];
-  };
-  visual?: {
-    uri: string;
-  };
-}
-
 const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
   open,
   onClose,

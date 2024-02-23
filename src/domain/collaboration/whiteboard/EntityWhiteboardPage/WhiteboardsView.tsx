@@ -12,9 +12,7 @@ export interface WhiteboardsPageProps extends JourneyLocation {
   parentUrl: string;
   journeyTypeName: JourneyTypeName;
 }
-/**
- * @deprecated See if this is still needed  //!!
- */
+
 const WhiteboardsView: FC<WhiteboardsPageProps> = ({
   whiteboardNameId,
   parentUrl,
@@ -52,23 +50,6 @@ const WhiteboardsView: FC<WhiteboardsPageProps> = ({
     data?.space.challenge?.collaboration?.callouts?.[0].id ??
     data?.space.opportunity?.collaboration?.callouts?.[0].id;
 
-  /*
-    const old = (<WhiteboardProvider whiteboardNameId={whiteboardNameId} calloutId={calloutId} spaceId={spaceNameId}>
-      {(entities, state) => (
-        <WhiteboardsManagementViewWrapper
-          whiteboardNameId={whiteboardNameId}
-          backToWhiteboards={backToWhiteboards}
-          whiteboardShareUrl={whiteboardShareUrl}
-          journeyTypeName={journeyTypeName}
-          {...entities}
-          {...state}
-          {...props}
-        />
-      )}
-    </WhiteboardProvider>
-    );
-  */
-
   return (
     <WhiteboardProvider whiteboardNameId={whiteboardNameId} calloutId={calloutId} spaceId={spaceNameId}>
       {(entities, state) => (
@@ -77,7 +58,6 @@ const WhiteboardsView: FC<WhiteboardsPageProps> = ({
           backToWhiteboards={backToWhiteboards}
           journeyTypeName={journeyTypeName}
           whiteboardShareUrl={whiteboardShareUrl}
-          readOnlyDisplayName
           whiteboard={entities.whiteboard}
           authorization={entities.whiteboard?.authorization}
           loadingWhiteboards={state.loadingWhiteboards}
