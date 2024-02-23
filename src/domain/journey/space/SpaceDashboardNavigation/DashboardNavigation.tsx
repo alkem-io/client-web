@@ -1,4 +1,4 @@
-import { ExpandMore, HelpOutlineOutlined, HubOutlined } from '@mui/icons-material';
+import { ExpandMore, HelpOutlineOutlined } from '@mui/icons-material';
 import { Box, ButtonBase, Collapse, IconButton, Skeleton, Tooltip, useMediaQuery, useTheme } from '@mui/material';
 import { Theme } from '@mui/material/styles';
 import { useMemo, useState } from 'react';
@@ -59,10 +59,9 @@ const DashboardNavigation = ({
   return (
     <PageContentBlock>
       <PageContentBlockHeader
-        icon={<HubOutlined />}
         title={
-          <Tooltip title={<Caption>{t('components.dashboardNavigation.title', { space: displayName })}</Caption>}>
-            <Box component="span">{t('components.dashboardNavigation.title', { space: displayName })}</Box>
+          <Tooltip title={<Caption>{displayName}</Caption>}>
+            <Box component="span">{displayName}</Box>
           </Tooltip>
         }
         actions={
