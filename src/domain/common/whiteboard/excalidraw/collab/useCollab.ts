@@ -7,7 +7,6 @@ export interface CollabAPI {
   /** function so that we can access the latest value from stale callbacks */
   onPointerUpdate: CollabInstance['onPointerUpdate'];
   syncScene: CollabInstance['syncScene'];
-  // notifySavedToDatabase: () => void; // Notify rest of the members in the room that I have saved the whiteboard
   isCollaborating: () => boolean;
 }
 
@@ -55,7 +54,6 @@ const useCollab = ({ onInitialize, onCloseConnection, ...collabProps }: UseColla
     const collabApi: CollabAPI = {
       onPointerUpdate: collabRef.current.onPointerUpdate,
       syncScene: collabRef.current.syncScene,
-      // notifySavedToDatabase: collabRef.current.notifySavedToDatabase,
       isCollaborating: collabRef.current.isCollaborating,
     };
 

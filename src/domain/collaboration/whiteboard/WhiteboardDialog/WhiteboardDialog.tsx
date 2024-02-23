@@ -193,7 +193,6 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
 
   const submitUpdate = async (whiteboard: Whiteboard, previewImages?: WhiteboardPreviewImage[]) => {
     const result = await actions.onUpdate(whiteboard, previewImages);
-    // collabApiRef.current?.notifySavedToDatabase(); // Notify rest of the users that I have saved this whiteboard
     await refetchLastSaved(); // And update the caption
     return result;
   };

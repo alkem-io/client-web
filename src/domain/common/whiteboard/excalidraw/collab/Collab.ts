@@ -186,15 +186,9 @@ class Collab {
                   });
                   break;
                 }
-
-                // case WS_SCENE_EVENT_TYPES.SAVED: {
-                //   this.onSavedToDatabase?.();
-                //   break;
-                // }
               }
             },
             'idle-state': async encryptedData => {
-              console.log('idle state change');
               const decodedData = new TextDecoder().decode(encryptedData);
               const decryptedData = JSON.parse(decodedData);
 
@@ -406,10 +400,6 @@ class Collab {
       this.queueBroadcastAllElements();
     }
   };
-
-  // public notifySavedToDatabase = () => {
-  //   this.portal.broadcastSavedEvent(this.state.username);
-  // };
 
   private queueBroadcastAllElements = throttle(async () => {
     const elements = this.excalidrawAPI.getSceneElementsIncludingDeleted();

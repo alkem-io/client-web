@@ -245,19 +245,6 @@ class Portal {
       return this._broadcastSocketData(data as SocketUpdateData, { volatile: true });
     }
   };
-
-  // broadcastSavedEvent = (username: string) => {
-  //   if (this.socket?.id) {
-  //     const data: SocketUpdateDataSource['SAVED'] = {
-  //       type: 'SAVED',
-  //       payload: {
-  //         socketId: this.socket.id,
-  //         username,
-  //       },
-  //     };
-  //     return this._broadcastSocketData(data as SocketUpdateData);
-  //   }
-  // };
 }
 
 export default Portal;
