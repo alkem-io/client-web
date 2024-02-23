@@ -30,8 +30,8 @@ interface ConnectionOptions {
 }
 
 interface SocketEventHandlers {
-  'client-broadcast': (encryptedData: ArrayBuffer) => void;
-  'idle-state': (encryptedData: ArrayBuffer) => void;
+  'client-broadcast': (bufferedData: ArrayBuffer) => void;
+  'idle-state': (bufferedData: ArrayBuffer) => void;
   'first-in-room': () => void;
   saved: () => void;
 }
@@ -220,8 +220,8 @@ class Portal {
       };
       if (this.isOpen()) {
         const jsonStr = JSON.stringify(data);
-        const encryptedBuffer = new TextEncoder().encode(jsonStr).buffer;
-        this.socket.emit(WS_EVENTS.IDLE_STATE, this.roomId, encryptedBuffer);
+        const dataBuffer = new TextEncoder().encode(jsonStr).buffer;
+        this.socket.emit(WS_EVENTS.IDLE_STATE, this.roomId, dataBuffer);
       }
     }
   };

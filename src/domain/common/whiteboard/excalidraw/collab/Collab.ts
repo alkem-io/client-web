@@ -141,8 +141,8 @@ class Collab {
             roomId,
           },
           {
-            'client-broadcast': async (encryptedData: ArrayBuffer) => {
-              const decodedData = new TextDecoder().decode(encryptedData);
+            'client-broadcast': async (bufferedData: ArrayBuffer) => {
+              const decodedData = new TextDecoder().decode(bufferedData);
               const decryptedData = JSON.parse(decodedData);
 
               switch (decryptedData.type) {
@@ -188,8 +188,8 @@ class Collab {
                 }
               }
             },
-            'idle-state': async encryptedData => {
-              const decodedData = new TextDecoder().decode(encryptedData);
+            'idle-state': async bufferedData => {
+              const decodedData = new TextDecoder().decode(bufferedData);
               const decryptedData = JSON.parse(decodedData);
 
               const { userState, socketId, username } = decryptedData;
