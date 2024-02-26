@@ -303,7 +303,7 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
         },
       }}
     >
-      {({ children, mode }) => {
+      {({ children, mode, modeReason }) => {
         return (
           <Formik
             innerRef={formikRef}
@@ -340,7 +340,7 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
               <DialogContent classes={{ root: styles.dialogContent }}>{children}</DialogContent>
               <WhiteboardDialogFooter
                 collaboratorMode={mode}
-                collaboratorModeReason={null /* TODO: Add reason */}
+                collaboratorModeReason={modeReason}
                 lastSavedDate={lastSavedDate}
                 onSave={handleManualSave}
                 onDelete={() => setDeleteDialogOpen(true)}

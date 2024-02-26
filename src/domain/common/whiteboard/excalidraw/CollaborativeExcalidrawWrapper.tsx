@@ -133,7 +133,7 @@ const CollaborativeExcalidrawWrapper = ({
 
   const mergedUIOptions = useMemo(() => merge(UIOptions, externalUIOptions), [UIOptions, externalUIOptions]);
 
-  const [collabApi, initializeCollab, { connecting, collaborating, mode }] = useCollab({
+  const [collabApi, initializeCollab, { connecting, collaborating, mode, modeReason }] = useCollab({
     username,
     onSavedToDatabase: actions.onSavedToDatabase,
     filesManager,
@@ -240,7 +240,7 @@ const CollaborativeExcalidrawWrapper = ({
 
   return (
     <>
-      {renderChildren({ children, collaborating, connecting, mode })}
+      {renderChildren({ children, collaborating, connecting, mode, modeReason })}
       <Dialog open={collaborationStoppedNoticeOpen} onClose={() => setCollaborationStoppedNoticeOpen(false)}>
         <DialogHeader title={t('pages.whiteboard.whiteboardDisconnected.title')} />
         <DialogContent>
