@@ -102,12 +102,11 @@ export const ActivityComponent: FC<ActivityComponentProps> = ({
             : journeyLocation;
           const activityOriginJourneyUrl = buildJourneyUrl(activityOriginJourneyLocation);
           const author = buildAuthorFromUser(activity.triggeredBy);
-          console.log('author', author);
 
           return (
             <ActivityViewChooser
               activity={activity}
-              displayName={'blabla'}
+              displayName={author.displayName}
               avatarUrl={author.avatarUrl}
               journeyUrl={activityOriginJourneyUrl}
               key={activity.id}
@@ -128,8 +127,6 @@ interface ActivityViewChooserProps
 }
 
 export const ActivityViewChooser = ({ activity, ...rest }: ActivityViewChooserProps) => {
-  console.log('rest', rest);
-
   switch (activity.type) {
     case ActivityEventType.CalloutPublished:
       return <ActivityCalloutPublishedView {...activity} {...rest} />;
