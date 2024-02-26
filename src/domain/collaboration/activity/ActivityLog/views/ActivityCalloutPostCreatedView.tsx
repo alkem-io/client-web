@@ -13,7 +13,8 @@ interface ActivityCalloutPostCreatedViewProps extends ActivityViewProps {
 }
 
 export const ActivityCalloutPostCreatedView: FC<ActivityCalloutPostCreatedViewProps> = ({
-  author,
+  displayName,
+  avatarUrl,
   loading,
   createdDate,
   callout,
@@ -23,7 +24,8 @@ export const ActivityCalloutPostCreatedView: FC<ActivityCalloutPostCreatedViewPr
 }) => {
   return (
     <ActivityBaseView
-      author={author}
+      displayName={displayName}
+      avatarUrl={avatarUrl}
       loading={loading}
       type={type}
       title={<ActivityDescriptionByType activityType={type} subject={post.profile.displayName} />}

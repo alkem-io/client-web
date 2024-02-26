@@ -1,6 +1,5 @@
 import React, { ComponentType, FC, ReactNode } from 'react';
 import Skeleton from '@mui/material/Skeleton';
-import { Author } from '../../../../shared/components/AuthorAvatar/models/author';
 import { Caption } from '../../../../../core/ui/typography';
 import BadgeCardView from '../../../../../core/ui/list/BadgeCardView';
 import RouterLink, { RouterLinkProps } from '../../../../../core/ui/link/RouterLink';
@@ -13,7 +12,8 @@ import ListItemButton, { ListItemButtonTypeMap } from '@mui/material/ListItemBut
 
 export interface ActivityBaseViewProps {
   title: ReactNode;
-  author: Author | undefined; // TODO reduce type
+  displayName?: string;
+  avatarUrl?: string;
   loading?: boolean;
   url: string;
   footerComponent: ComponentType<{
@@ -30,7 +30,8 @@ const Wrapper = <D extends React.ElementType = ListItemButtonTypeMap['defaultCom
 ) => <ListItemButton component={RouterLink} {...props} />;
 
 export const ActivityBaseView: FC<ActivityBaseViewProps & (Activity | { type: undefined })> = ({
-  author,
+  displayName,
+  avatarUrl,
   title,
   loading,
   url,
@@ -78,7 +79,7 @@ export const ActivityBaseView: FC<ActivityBaseViewProps & (Activity | { type: un
               }}
             />
           ) : (
-            <Avatar src={author?.avatarUrl} sx={{ borderRadius: 1.2 }} />
+            <Avatar src={avatarUrl} sx={{ borderRadius: 1.2 }} />
           )}
         </Badge>
       }
@@ -87,7 +88,7 @@ export const ActivityBaseView: FC<ActivityBaseViewProps & (Activity | { type: un
       {loading && <Skeleton />}
       {!loading && (
         <Footer
-          authorDisplayName={author?.displayName ?? ''}
+          authorDisplayName={displayName ?? ''}
           contextDisplayName={contextDisplayName}
           createdDate={createdDate}
         />
