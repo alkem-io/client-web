@@ -1772,7 +1772,7 @@
           "license-features": {
             "title": "Space Features",
             "features": {
-              "WHITEBOART_RT": "RealTime Whiteboards",
+              "WHITEBOARD_MULTI_USER": "Multiuser Whiteboards",
               "CALLOUT_TO_CALLOUT_TEMPLATE": "Create template from callout"
             }
           },
