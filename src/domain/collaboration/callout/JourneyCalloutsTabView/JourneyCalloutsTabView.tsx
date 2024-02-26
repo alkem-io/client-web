@@ -66,6 +66,9 @@ const JourneyCalloutsTabView = ({
 
   const handleSelectInnovationFlowState = (state: InnovationFlowState) => setSelectedInnovationFlowState(state);
 
+  const contributeLefCalloutsIds =
+    groupedCallouts[CalloutDisplayLocation.ContributeLeft]?.map(callout => callout.id) ?? [];
+
   return (
     <>
       <MembershipBackdrop show={!loading && !allCallouts} blockName={t(`common.${journeyTypeName}` as const)}>
@@ -81,7 +84,14 @@ const JourneyCalloutsTabView = ({
                   const CalloutIcon = calloutIcons[callout.type];
                   return {
                     id: callout.id,
-                    title: <JourneyCalloutsListItemTitle callout={callout} />,
+                    title: (
+                      <JourneyCalloutsListItemTitle
+                        callout={{
+                          ...callout,
+                          flowStates: contributeLefCalloutsIds.includes(callout.id) ? [] : callout.flowStates,
+                        }}
+                      />
+                    ),
                     icon: <CalloutIcon />,
                     uri: buildCalloutUrl(callout.nameID, {
                       spaceNameId,
@@ -98,7 +108,7 @@ const JourneyCalloutsTabView = ({
               />
             </PageContentBlock>
             <CalloutsGroupView
-              callouts={filterCallouts(groupedCallouts[CalloutDisplayLocation.ContributeLeft])}
+              callouts={groupedCallouts[CalloutDisplayLocation.ContributeLeft]}
               spaceId={spaceNameId}
               canCreateCallout={canCreateCallout}
               canCreateCalloutFromTemplate={canCreateCalloutFromTemplate}
