@@ -274,104 +274,109 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
   }
 
   return (
-    <CollaborativeExcalidrawWrapper
-      entities={{ whiteboard, filesManager, lastSavedDate }}
-      collabApiRef={collabApiRef}
-      options={{
-        UIOptions: {
-          canvasActions: {
-            export: {
-              saveFileToDisk: true,
+    <>
+      <CollaborativeExcalidrawWrapper
+        entities={{ whiteboard, filesManager, lastSavedDate }}
+        collabApiRef={collabApiRef}
+        options={{
+          UIOptions: {
+            canvasActions: {
+              export: {
+                saveFileToDisk: true,
+              },
             },
           },
-        },
-      }}
-      actions={{
-        onInitApi: setExcalidrawAPI,
-        onUpdate: async state => {
-          const { whiteboard: updatedWhiteboard, previewImages } = await prepareWhiteboardForUpdate(
-            whiteboard,
-            state,
-            false
-          );
-          return actions.onUpdate(updatedWhiteboard, previewImages);
-        },
-        onSavedToDatabase: () => {
-          refetchLastSaved({
-            whiteboardId: whiteboard.id,
-          });
-        },
-      }}
-    >
-      {({ children, mode, modeReason }) => {
-        return (
-          <Formik
-            innerRef={formikRef}
-            initialValues={initialValues}
-            onSubmit={() => {}}
-            validationSchema={whiteboardSchema}
-          >
-            <Dialog
-              open={options.show}
-              aria-labelledby="whiteboard-dialog"
-              maxWidth={false}
-              fullWidth
-              classes={{
-                paper: options.fullscreen ? styles.dialogFullscreen : styles.dialogRoot,
-              }}
-              onClose={onClose}
-              fullScreen={options.fullscreen}
+        }}
+        actions={{
+          onInitApi: setExcalidrawAPI,
+          onUpdate: async state => {
+            const { whiteboard: updatedWhiteboard, previewImages } = await prepareWhiteboardForUpdate(
+              whiteboard,
+              state,
+              false
+            );
+            return actions.onUpdate(updatedWhiteboard, previewImages);
+          },
+          onSavedToDatabase: () => {
+            refetchLastSaved({
+              whiteboardId: whiteboard.id,
+            });
+          },
+        }}
+      >
+        {({ children, mode, modeReason }) => {
+          return (
+            <Formik
+              innerRef={formikRef}
+              initialValues={initialValues}
+              onSubmit={() => {}}
+              validationSchema={whiteboardSchema}
             >
-              <DialogHeader
-                actions={options.headerActions}
+              <Dialog
+                open={options.show}
+                aria-labelledby="whiteboard-dialog"
+                maxWidth={false}
+                fullWidth
+                classes={{
+                  paper: options.fullscreen ? styles.dialogFullscreen : styles.dialogRoot,
+                }}
                 onClose={onClose}
-                title={
-                  <WhiteboardDisplayName
-                    displayName={whiteboard?.profile?.displayName}
-                    readOnlyDisplayName={options.readOnlyDisplayName}
-                    editDisplayName={options.editDisplayName}
-                    onChangeDisplayName={newDisplayName => actions.onChangeDisplayName(whiteboard?.id, newDisplayName)}
-                  />
-                }
-                titleContainerProps={{ flexDirection: 'row' }}
+                fullScreen={options.fullscreen}
               >
-                {editModeEnabled && <WhiteboardTemplatesLibrary onImportTemplate={handleImportTemplate} />}
-              </DialogHeader>
-              <DialogContent classes={{ root: styles.dialogContent }}>{children}</DialogContent>
-              <WhiteboardDialogFooter
-                collaboratorMode={mode}
-                collaboratorModeReason={modeReason}
-                lastSavedDate={lastSavedDate}
-                onSave={handleManualSave}
-                onDelete={() => setDeleteDialogOpen(true)}
-                canDelete={options.canDelete}
-                canUpdateContent={options.canEdit!}
-                updating={state?.updatingWhiteboardContent}
-                createdBy={whiteboard?.createdBy}
-                contentUpdatePolicy={whiteboard?.contentUpdatePolicy}
-              />
-            </Dialog>
-            <ConfirmationDialog
-              actions={{
-                onConfirm: handleDelete,
-                onCancel: () => setDeleteDialogOpen(false),
-              }}
-              options={{
-                show: deleteDialogOpen,
-              }}
-              entities={{
-                title: t('pages.whiteboard.delete.confirmationTitle'),
-                content: t('pages.whiteboard.delete.confirmationText'),
-                confirmButtonTextId: 'buttons.delete',
-              }}
-              state={{
-                isLoading: isDeleting,
-              }}
-            />
-          </Formik>
-        );
-      }}
-    </CollaborativeExcalidrawWrapper>
+                <DialogHeader
+                  actions={options.headerActions}
+                  onClose={onClose}
+                  title={
+                    <WhiteboardDisplayName
+                      displayName={whiteboard?.profile?.displayName}
+                      readOnlyDisplayName={options.readOnlyDisplayName}
+                      editDisplayName={options.editDisplayName}
+                      onChangeDisplayName={newDisplayName =>
+                        actions.onChangeDisplayName(whiteboard?.id, newDisplayName)
+                      }
+                    />
+                  }
+                  titleContainerProps={{ flexDirection: 'row' }}
+                >
+                  {editModeEnabled && <WhiteboardTemplatesLibrary onImportTemplate={handleImportTemplate} />}
+                </DialogHeader>
+                <DialogContent classes={{ root: styles.dialogContent }}>{children}</DialogContent>
+                <WhiteboardDialogFooter
+                  collaboratorMode={mode}
+                  collaboratorModeReason={modeReason}
+                  lastSavedDate={lastSavedDate}
+                  onSave={handleManualSave}
+                  onDelete={() => setDeleteDialogOpen(true)}
+                  canDelete={options.canDelete}
+                  canUpdateContent={options.canEdit!}
+                  updating={state?.updatingWhiteboardContent}
+                  createdBy={whiteboard?.createdBy}
+                  contentUpdatePolicy={whiteboard?.contentUpdatePolicy}
+                />
+              </Dialog>
+            </Formik>
+          );
+        }}
+      </CollaborativeExcalidrawWrapper>
+
+      <ConfirmationDialog
+        actions={{
+          onConfirm: handleDelete,
+          onCancel: () => setDeleteDialogOpen(false),
+        }}
+        options={{
+          show: deleteDialogOpen,
+        }}
+        entities={{
+          title: t('pages.whiteboard.delete.confirmationTitle'),
+          content: t('pages.whiteboard.delete.confirmationText'),
+          confirmButtonTextId: 'buttons.delete',
+        }}
+        state={{
+          isLoading: isDeleting,
+        }}
+      />
+    </>
   );
 };
 
