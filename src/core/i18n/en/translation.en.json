@@ -2238,20 +2238,15 @@
       "locked-by": "{{user}} is currently editing this Whiteboard",
       "savingWhiteboard": "Saving whiteboard...",
       "saveTooltip": "Please note that the whiteboards are also automatically saved",
-      "state": {
-        "checkedout": "Someone else is currently editing this Whiteboard"
-      },
       "state-actions": {
-        "check-out": "Edit",
-        "check-in": "Check-in",
         "save-as-template": "Save as template",
         "save-and-check-in": "Save & stop editing",
         "save": "Save",
         "delete": "Delete"
       },
       "delete": {
-        "confirmation-title": "Deleting <b>{{ blockName }}</b>",
-        "confirmation-text": "Are you sure you want to delete this whiteboard? The action is irreversible."
+        "confirmationTitle": "Deleting Whiteboard",
+        "confirmationText": "Are you sure you want to delete this whiteboard? The action is irreversible."
       },
       "template": {
         "header": "Templates defined in Alkemio",

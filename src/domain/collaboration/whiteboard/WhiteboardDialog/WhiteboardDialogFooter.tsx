@@ -1,8 +1,8 @@
-import React, { MouseEventHandler, useEffect, useState } from 'react';
+import React, { FC, MouseEventHandler, useEffect, useState, forwardRef } from 'react';
 import { gutters } from '../../../../core/ui/grid/utils';
-import { CircularProgress, DialogContent, IconButton, Tooltip, useTheme } from '@mui/material';
+import { Button, ButtonProps, CircularProgress, DialogContent, Tooltip, useTheme } from '@mui/material';
 import { Caption } from '../../../../core/ui/typography';
-import { EditOffOutlined, LockOutlined, SaveOutlined } from '@mui/icons-material';
+import { DeleteOutline, EditOffOutlined, LockOutlined, SaveOutlined, SvgIconComponent } from '@mui/icons-material';
 import { Actions } from '../../../../core/ui/actions/Actions';
 import { Trans, useTranslation } from 'react-i18next';
 import { useAuthenticationContext } from '../../../../core/auth/authentication/hooks/useAuthenticationContext';
@@ -30,6 +30,8 @@ interface WhiteboardDialogFooterProps {
   onSave: () => void;
   lastSavedDate: Date | undefined;
   canUpdateContent: boolean;
+  onDelete: () => void;
+  canDelete?: boolean;
   updating?: boolean;
   createdBy:
     | (Identifiable & {
@@ -52,10 +54,31 @@ enum ReadonlyReason {
   Unauthenticated = 'unauthenticated',
 }
 
+const FooterButton: FC<ButtonProps & { iconComponent: SvgIconComponent }> = forwardRef(
+  ({ children, iconComponent: Icon, sx, ...props }, ref) => {
+    const mergedSx: ButtonProps['sx'] = {
+      textTransform: 'none',
+      '& .MuiTypography-caption': {
+        color: theme => (props.disabled ? theme.palette.text.disabled : theme.palette.text.primary),
+        marginLeft: gutters(0.5),
+      },
+      ...sx,
+    };
+    return (
+      <Button ref={ref} {...props} sx={mergedSx}>
+        <Icon fontSize="small" />
+        {children}
+      </Button>
+    );
+  }
+);
+
 const WhiteboardDialogFooter = ({
   lastSavedDate,
   onSave,
   canUpdateContent,
+  onDelete,
+  canDelete,
   contentUpdatePolicy,
   createdBy,
   collaboratorMode,
@@ -151,42 +174,56 @@ const WhiteboardDialogFooter = ({
         justifyContent="start"
         alignItems="center"
       >
+        {canDelete && (
+          <FooterButton
+            color="error"
+            iconComponent={DeleteOutline}
+            onClick={onDelete}
+            disabled={!canUpdateContent || updating}
+            aria-label={t('buttons.delete')}
+          >
+            <Caption>{t('buttons.delete')}</Caption>
+          </FooterButton>
+        )}
         <Tooltip placement="right" arrow title={<Caption>{t('pages.whiteboard.saveTooltip')}</Caption>}>
-          <IconButton
+          <FooterButton
             color="primary"
             size="small"
             sx={{ marginLeft: -0.5 }}
             onClick={onSave}
             disabled={!canUpdateContent || collaboratorMode !== 'write' || updating}
+            iconComponent={
+              !readonlyReason
+                ? SaveOutlined
+                : readonlyReason === ReadonlyReason.Readonly
+                ? EditOffOutlined
+                : LockOutlined
+            }
           >
-            {!readonlyReason && <SaveOutlined />}
-            {readonlyReason === ReadonlyReason.Readonly && <EditOffOutlined />}
-            {readonlyReason && readonlyReason !== ReadonlyReason.Readonly && <LockOutlined />}
-          </IconButton>
+            {readonlyReason ? (
+              <Trans
+                i18nKey={`pages.whiteboard.readonlyReason.${readonlyReason}` as const}
+                values={{
+                  journeyType: journeyTypeName && t(`common.${journeyTypeName}` as const),
+                  ownerName: createdBy?.profile.displayName,
+                }}
+                components={{
+                  ownerlink: createdBy ? (
+                    <RouterLink to={createdBy.profile.url} underline="always" onClick={handleAuthorClick} />
+                  ) : (
+                    <span />
+                  ),
+                  journeylink: journeyProfile ? <RouterLink to={journeyProfile.url} underline="always" /> : <span />,
+                  signinlink: <RouterLink to={buildLoginUrl(pathname)} state={{}} underline="always" />,
+                  learnwhy: <RouterLink to="" underline="always" onClick={handleLearnWhyClick} />,
+                }}
+              />
+            ) : (
+              <LastSavedCaption saving={updating} date={lastSavedDate} />
+            )}
+          </FooterButton>
         </Tooltip>
-        {readonlyReason ? (
-          <Caption>
-            <Trans
-              i18nKey={`pages.whiteboard.readonlyReason.${readonlyReason}` as const}
-              values={{
-                journeyType: journeyTypeName && t(`common.${journeyTypeName}` as const),
-                ownerName: createdBy?.profile.displayName,
-              }}
-              components={{
-                ownerlink: createdBy ? (
-                  <RouterLink to={createdBy.profile.url} underline="always" onClick={handleAuthorClick} />
-                ) : (
-                  <span />
-                ),
-                journeylink: journeyProfile ? <RouterLink to={journeyProfile.url} underline="always" /> : <span />,
-                signinlink: <RouterLink to={buildLoginUrl(pathname)} state={{}} underline="always" />,
-                learnwhy: <RouterLink to="" underline="always" onClick={handleLearnWhyClick} />,
-              }}
-            />
-          </Caption>
-        ) : (
-          <LastSavedCaption saving={updating} date={lastSavedDate} />
-        )}
+
         {directMessageDialog}
       </Actions>
       <DialogWithGrid open={isLearnWhyDialogOpen} onClose={() => setIsLearnWhyDialogOpen(false)}>
@@ -226,16 +263,18 @@ const LastSavedCaption = ({ date, saving }: { date: Date | undefined; saving: bo
     return null;
   }
 
-  return saving ? (
-    <Caption title={`${date.toLocaleDateString()} ${date.toLocaleTimeString()}`}>
-      <CircularProgress size={gutters(0.5)(theme)} sx={{ marginRight: gutters(0.5) }} />
-      {t('pages.whiteboard.savingWhiteboard')}
-    </Caption>
-  ) : (
-    <Caption title={`${date.toLocaleDateString()} ${date.toLocaleTimeString()}`}>
-      {t('common.last-saved', {
-        datetime: formattedTime,
-      })}
+  return (
+    <Caption>
+      {saving ? (
+        <>
+          <CircularProgress size={gutters(0.5)(theme)} sx={{ marginRight: gutters(0.5) }} />
+          {t('pages.whiteboard.savingWhiteboard')}
+        </>
+      ) : (
+        t('common.last-saved', {
+          datetime: formattedTime,
+        })
+      )}
     </Caption>
   );
 };

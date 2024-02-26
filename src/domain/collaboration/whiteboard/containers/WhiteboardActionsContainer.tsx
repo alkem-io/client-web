@@ -11,17 +11,17 @@ import {
   WhiteboardDetailsFragment,
   WhiteboardContentFragment,
   CreateContributionOnCalloutInput,
-  DeleteWhiteboardInput,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { evictFromCache } from '../../../../core/apollo/utils/removeFromCache';
 import { WhiteboardPreviewImage, useUploadWhiteboardVisuals } from '../WhiteboardPreviewImages/WhiteboardPreviewImages';
+import { Identifiable } from '../../../../core/utils/Identifiable';
 
 export interface IWhiteboardActions {
   onCreate: (
     whiteboard: CreateContributionOnCalloutInput,
     previewImages?: WhiteboardPreviewImage[]
   ) => Promise<{ success: boolean; errors?: string[] }>;
-  onDelete: (whiteboard: DeleteWhiteboardInput) => Promise<void>;
+  onDelete: (whiteboard: Identifiable) => Promise<void>;
 
   onUpdate: (
     whiteboard: WhiteboardContentFragment & WhiteboardDetailsFragment,
@@ -99,8 +99,8 @@ const WhiteboardActionsContainer: FC<WhiteboardActionsContainerProps> = ({ child
   const [deleteWhiteboard, { loading: deletingWhiteboard }] = useDeleteWhiteboardMutation({});
 
   const handleDeleteWhiteboard = useCallback(
-    async (whiteboard: DeleteWhiteboardInput) => {
-      if (!whiteboard.ID) {
+    async (whiteboard: Identifiable) => {
+      if (!whiteboard.id) {
         throw new Error('[whiteboard:onDelete]: Missing whiteboard ID');
       }
 
@@ -112,7 +112,9 @@ const WhiteboardActionsContainer: FC<WhiteboardActionsContainerProps> = ({ child
           }
         },
         variables: {
-          input: whiteboard,
+          input: {
+            ID: whiteboard.id,
+          },
         },
       });
     },
