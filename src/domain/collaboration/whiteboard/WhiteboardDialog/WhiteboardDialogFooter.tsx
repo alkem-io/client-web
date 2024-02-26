@@ -1,8 +1,8 @@
-import React, { FC, MouseEventHandler, useEffect, useState, forwardRef } from 'react';
+import React, { MouseEventHandler, useEffect, useState } from 'react';
 import { gutters } from '../../../../core/ui/grid/utils';
-import { Button, ButtonProps, CircularProgress, DialogContent, Tooltip, useTheme } from '@mui/material';
+import { Button, CircularProgress, DialogContent, IconButton, Tooltip, useTheme } from '@mui/material';
 import { Caption } from '../../../../core/ui/typography';
-import { DeleteOutline, EditOffOutlined, LockOutlined, SaveOutlined, SvgIconComponent } from '@mui/icons-material';
+import { DeleteOutline, EditOffOutlined, LockOutlined, SaveOutlined } from '@mui/icons-material';
 import { Actions } from '../../../../core/ui/actions/Actions';
 import { Trans, useTranslation } from 'react-i18next';
 import { useAuthenticationContext } from '../../../../core/auth/authentication/hooks/useAuthenticationContext';
@@ -53,25 +53,6 @@ enum ReadonlyReason {
   NoMembership = 'noMembership',
   Unauthenticated = 'unauthenticated',
 }
-
-const FooterButton: FC<ButtonProps & { iconComponent: SvgIconComponent }> = forwardRef(
-  ({ children, iconComponent: Icon, sx, ...props }, ref) => {
-    const mergedSx: ButtonProps['sx'] = {
-      textTransform: 'none',
-      '& .MuiTypography-caption': {
-        color: theme => (props.disabled ? theme.palette.text.disabled : theme.palette.text.primary),
-        marginLeft: gutters(0.5),
-      },
-      ...sx,
-    };
-    return (
-      <Button ref={ref} {...props} sx={mergedSx}>
-        <Icon fontSize="small" />
-        {children}
-      </Button>
-    );
-  }
-);
 
 const WhiteboardDialogFooter = ({
   lastSavedDate,
@@ -175,55 +156,52 @@ const WhiteboardDialogFooter = ({
         alignItems="center"
       >
         {canDelete && (
-          <FooterButton
+          <Button
             color="error"
-            iconComponent={DeleteOutline}
+            startIcon={<DeleteOutline />}
             onClick={onDelete}
             disabled={!canUpdateContent || updating}
+            sx={{ textTransform: 'none' }}
             aria-label={t('buttons.delete')}
           >
             <Caption>{t('buttons.delete')}</Caption>
-          </FooterButton>
+          </Button>
         )}
         <Tooltip placement="right" arrow title={<Caption>{t('pages.whiteboard.saveTooltip')}</Caption>}>
-          <FooterButton
+          <IconButton
             color="primary"
             size="small"
-            sx={{ marginLeft: -0.5 }}
             onClick={onSave}
             disabled={!canUpdateContent || collaboratorMode !== 'write' || updating}
-            iconComponent={
-              !readonlyReason
-                ? SaveOutlined
-                : readonlyReason === ReadonlyReason.Readonly
-                ? EditOffOutlined
-                : LockOutlined
-            }
           >
-            {readonlyReason ? (
-              <Trans
-                i18nKey={`pages.whiteboard.readonlyReason.${readonlyReason}` as const}
-                values={{
-                  journeyType: journeyTypeName && t(`common.${journeyTypeName}` as const),
-                  ownerName: createdBy?.profile.displayName,
-                }}
-                components={{
-                  ownerlink: createdBy ? (
-                    <RouterLink to={createdBy.profile.url} underline="always" onClick={handleAuthorClick} />
-                  ) : (
-                    <span />
-                  ),
-                  journeylink: journeyProfile ? <RouterLink to={journeyProfile.url} underline="always" /> : <span />,
-                  signinlink: <RouterLink to={buildLoginUrl(pathname)} state={{}} underline="always" />,
-                  learnwhy: <RouterLink to="" underline="always" onClick={handleLearnWhyClick} />,
-                }}
-              />
-            ) : (
-              <LastSavedCaption saving={updating} date={lastSavedDate} />
-            )}
-          </FooterButton>
+            {!readonlyReason && <SaveOutlined />}
+            {readonlyReason === ReadonlyReason.Readonly && <EditOffOutlined />}
+            {readonlyReason && readonlyReason !== ReadonlyReason.Readonly && <LockOutlined />}
+          </IconButton>
         </Tooltip>
-
+        {readonlyReason ? (
+          <Caption>
+            <Trans
+              i18nKey={`pages.whiteboard.readonlyReason.${readonlyReason}` as const}
+              values={{
+                journeyType: journeyTypeName && t(`common.${journeyTypeName}` as const),
+                ownerName: createdBy?.profile.displayName,
+              }}
+              components={{
+                ownerlink: createdBy ? (
+                  <RouterLink to={createdBy.profile.url} underline="always" onClick={handleAuthorClick} />
+                ) : (
+                  <span />
+                ),
+                journeylink: journeyProfile ? <RouterLink to={journeyProfile.url} underline="always" /> : <span />,
+                signinlink: <RouterLink to={buildLoginUrl(pathname)} state={{}} underline="always" />,
+                learnwhy: <RouterLink to="" underline="always" onClick={handleLearnWhyClick} />,
+              }}
+            />
+          </Caption>
+        ) : (
+          <LastSavedCaption saving={updating} date={lastSavedDate} />
+        )}
         {directMessageDialog}
       </Actions>
       <DialogWithGrid open={isLearnWhyDialogOpen} onClose={() => setIsLearnWhyDialogOpen(false)}>
