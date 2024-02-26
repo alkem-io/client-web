@@ -10,6 +10,7 @@ import { BlockAnchorProvider } from '../keyboardNavigation/NextBlockAnchor';
 import { v4 as uuid } from 'uuid';
 
 export interface BasePageContentBlockProps {
+  flex?: boolean;
   disablePadding?: boolean;
   disableGap?: boolean;
   halfWidth?: boolean;
@@ -24,11 +25,11 @@ type BasePageContentBlockWithChildrenProps<Props extends { id?: string; sx?: SxP
   padding: SystemCssProperties<Theme>['padding'];
 } & Props;
 
-const getFlexDirection = ({ row, disableGap }: { row: boolean; disableGap: boolean }) => {
+const getFlexDirection = ({ row, flex }: { row: boolean; flex: boolean }) => {
   if (row) {
     return 'row';
   }
-  if (!disableGap) {
+  if (flex) {
     return 'column';
   }
   return undefined;
@@ -40,6 +41,7 @@ const BasePageContentBlock = forwardRef(
     {
       disablePadding = false,
       disableGap = false,
+      flex = !disableGap,
       halfWidth = false,
       row = false,
       flexWrap,
@@ -60,8 +62,8 @@ const BasePageContentBlock = forwardRef(
 
     const mergedSx: Partial<SxProps<Theme>> = {
       padding: disablePadding ? undefined : padding,
-      display: disableGap ? undefined : 'flex',
-      flexDirection: getFlexDirection({ row, disableGap }),
+      display: flex ? 'flex' : undefined,
+      flexDirection: getFlexDirection({ row, flex }),
       flexWrap,
       gap: disableGap ? undefined : gutters(),
       ...getGridItemStyle(columnsTaken),
