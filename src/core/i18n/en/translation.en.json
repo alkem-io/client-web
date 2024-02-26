@@ -1251,6 +1251,7 @@
     },
     "referenceSegment": {
       "title": "References",
+      "description": "Please keep in mind that all the files you attach here become publicly available. If you only want the members of this Space to be able to access the files, attach it to a post or a collection of links on one of the member pages.",
       "missing-refereneces": "No references yet",
       "tooltips": {
         "add-reference": "Add a reference",
@@ -1637,10 +1638,10 @@
       "generic": {
         "sections": {
           "profile": {
-            "description": "Here you can edit the profile for this {{entity}}."
+            "description": "Here you can edit the public profile for this {{entity}}. This information is also visible to non-members."
           },
           "context": {
-            "description": "Here you can edit the context for this {{entity}}."
+            "description": "Here you can edit the context for this {{entity}}, which is publicly visible. This information is also visible to non-members."
           },
           "community": {
             "description": "Here you can edit the community settings for this {{entity}}."
@@ -1767,7 +1768,7 @@
           "visibility": {
             "title": "Visibility",
             "public": "<b>Public:</b> this space and its contents are visible for everyone on the platform. Users can only contribute if they are a member.",
-            "private": "<b>Private:</b> this space is visible for everyone on the platform, but the content is only visible for members."
+            "private": "<b>Private:</b> this space is visible to everyone on the platform, but the content is only visible to members. Please note that both the information in the profile and the context are publicly visible."
           },
           "license-features": {
             "title": "Space Features",
