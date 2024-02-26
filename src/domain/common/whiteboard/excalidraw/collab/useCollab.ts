@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import Collab, { CollabProps } from './Collab';
-import { CollaboratorMode } from './excalidrawAppConstants';
+import { CollaboratorMode, CollaboratorModeReasons } from './excalidrawAppConstants';
 
 type CollabInstance = InstanceType<typeof Collab>;
 
@@ -25,6 +25,7 @@ export interface CollabState {
   collaborating: boolean;
   connecting: boolean;
   mode: CollaboratorMode | null;
+  modeReason: CollaboratorModeReasons | null;
 }
 
 const useCollab = ({ onInitialize, onCloseConnection, ...collabProps }: UseCollabProps): UseCollabProvided => {
@@ -37,6 +38,8 @@ const useCollab = ({ onInitialize, onCloseConnection, ...collabProps }: UseColla
   const [isCollaborating, setIsCollaborating] = useState(false);
 
   const [collaboratorMode, setCollaboratorMode] = useState<CollaboratorMode | null>(null);
+
+  const [collaboratorModeReason, setCollaboratorModeReason] = useState<CollaboratorModeReasons | null>(null);
 
   const handleCloseConnection = () => {
     try {
@@ -51,7 +54,10 @@ const useCollab = ({ onInitialize, onCloseConnection, ...collabProps }: UseColla
       ...collabProps,
       excalidrawApi,
       onCloseConnection: handleCloseConnection,
-      onCollaboratorModeChange: setCollaboratorMode,
+      onCollaboratorModeChange: ({ mode, reason }) => {
+        setCollaboratorMode(mode);
+        setCollaboratorModeReason(reason);
+      },
     });
 
     collabRef.current.init();
@@ -86,7 +92,12 @@ const useCollab = ({ onInitialize, onCloseConnection, ...collabProps }: UseColla
   return [
     collabApiRef.current,
     initialize,
-    { connecting: isConnecting, collaborating: isCollaborating && collaboratorMode !== null, mode: collaboratorMode },
+    {
+      connecting: isConnecting,
+      collaborating: isCollaborating && collaboratorMode !== null,
+      mode: collaboratorMode,
+      modeReason: collaboratorModeReason,
+    },
   ];
 };
 

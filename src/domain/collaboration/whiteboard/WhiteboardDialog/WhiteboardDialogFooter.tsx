@@ -18,7 +18,10 @@ import { buildLoginUrl } from '../../../../main/routing/urlBuilders';
 import useDirectMessageDialog from '../../../communication/messaging/DirectMessaging/useDirectMessageDialog';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 import { Visual } from '../../../common/visual/Visual';
-import { CollaboratorMode } from '../../../common/whiteboard/excalidraw/collab/excalidrawAppConstants';
+import {
+  CollaboratorMode,
+  CollaboratorModeReasons,
+} from '../../../common/whiteboard/excalidraw/collab/excalidrawAppConstants';
 import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
@@ -39,6 +42,7 @@ interface WhiteboardDialogFooterProps {
     | undefined;
   contentUpdatePolicy: ContentUpdatePolicy | undefined;
   collaboratorMode: CollaboratorMode | null;
+  collaboratorModeReason: CollaboratorModeReasons | null;
 }
 
 enum ReadonlyReason {
@@ -55,6 +59,7 @@ const WhiteboardDialogFooter = ({
   contentUpdatePolicy,
   createdBy,
   collaboratorMode,
+  collaboratorModeReason,
   updating = false,
 }: WhiteboardDialogFooterProps) => {
   const { t } = useTranslation();
@@ -190,7 +195,9 @@ const WhiteboardDialogFooter = ({
           onClose={() => setIsLearnWhyDialogOpen(false)}
         />
         <DialogContent sx={{ paddingTop: 0 }}>
-          <WrapperMarkdown>{t('pages.whiteboard.readonlyDialog.content')}</WrapperMarkdown>
+          <WrapperMarkdown>
+            {t(`pages.whiteboard.readonlyDialog.reason.${collaboratorModeReason ?? 'generic'}` as const)}
+          </WrapperMarkdown>
         </DialogContent>
       </DialogWithGrid>
     </>

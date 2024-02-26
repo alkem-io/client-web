@@ -2,7 +2,7 @@ import { throttle } from 'lodash';
 import { Collaborator, ExcalidrawImperativeAPI, Gesture } from '@alkemio/excalidraw/types/types';
 import {
   ACTIVE_THRESHOLD,
-  CollaboratorMode,
+  CollaboratorModeEvent,
   CURSOR_SYNC_TIMEOUT,
   EVENT,
   IDLE_THRESHOLD,
@@ -30,7 +30,7 @@ export interface CollabProps {
   filesManager: WhiteboardFilesManager;
   onSaveRequest: () => Promise<{ success: boolean; errors?: string[] }>;
   onCloseConnection: () => void;
-  onCollaboratorModeChange: (collaboratorMode: CollaboratorMode) => void;
+  onCollaboratorModeChange: (event: CollaboratorModeEvent) => void;
 }
 
 class Collab {
@@ -46,7 +46,7 @@ class Collab {
   private collaborators = new Map<string, Collaborator>();
   private onSavedToDatabase: (() => void) | undefined;
   private onCloseConnection: () => void;
-  private onCollaboratorModeChange: (collaboratorMode: CollaboratorMode) => void;
+  private onCollaboratorModeChange: (event: CollaboratorModeEvent) => void;
 
   constructor(props: CollabProps) {
     this.state = {
@@ -203,8 +203,8 @@ class Collab {
             saved: () => {
               this.onSavedToDatabase?.();
             },
-            'collaborator-mode': ({ mode }) => {
-              this.onCollaboratorModeChange(mode);
+            'collaborator-mode': event => {
+              this.onCollaboratorModeChange(event);
             },
             'idle-state': ({ userState, socketId, username }) => {
               const collaborators = new Map(this.collaborators);

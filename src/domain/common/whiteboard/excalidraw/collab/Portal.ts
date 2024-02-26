@@ -1,6 +1,11 @@
 import { isSyncableElement, SocketUpdateData, SocketUpdateDataSource } from './data';
 import { ExcalidrawElement } from '@alkemio/excalidraw/types/element/types';
-import { PRECEDING_ELEMENT_KEY, WS_EVENTS, WS_SCENE_EVENT_TYPES } from './excalidrawAppConstants';
+import {
+  CollaboratorModeEvent,
+  PRECEDING_ELEMENT_KEY,
+  WS_EVENTS,
+  WS_SCENE_EVENT_TYPES,
+} from './excalidrawAppConstants';
 import { UserIdleState } from './utils';
 import { BroadcastedExcalidrawElement } from './reconciliation';
 import { Socket } from 'socket.io-client';
@@ -32,7 +37,7 @@ interface ConnectionOptions {
 interface SocketEventHandlers {
   'client-broadcast': (encryptedData: ArrayBuffer) => void;
   'first-in-room': () => void;
-  'collaborator-mode': ({ mode: CollaboratorMode }) => void;
+  'collaborator-mode': (event: CollaboratorModeEvent) => void;
   saved: () => void;
   'idle-state': (payload: SocketUpdateDataSource['IDLE_STATUS']['payload']) => void;
 }

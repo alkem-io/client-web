@@ -61,6 +61,17 @@ export enum WS_SCENE_EVENT_TYPES {
   MOUSE_LOCATION = 'MOUSE_LOCATION',
 }
 
+export enum CollaboratorModeReasons {
+  ROOM_CAPACITY_REACHED = 'roomCapacityReached',
+  MULTI_USER_NOT_ALLOWED = 'multiUserNotAllowed',
+  INACTIVITY = 'inactivity',
+}
+
+export interface CollaboratorModeEvent {
+  mode: CollaboratorMode;
+  reason: CollaboratorModeReasons;
+}
+
 export const ROOM_ID_BYTES = 10;
 
 export const STORAGE_KEYS = {
