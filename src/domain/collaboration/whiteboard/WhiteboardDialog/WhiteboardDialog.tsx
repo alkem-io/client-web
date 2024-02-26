@@ -194,13 +194,6 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
     };
   };
 
-  const submitUpdate = async (whiteboard: Whiteboard, previewImages?: WhiteboardPreviewImage[]) => {
-    const result = await actions.onUpdate(whiteboard, previewImages);
-    collabApiRef.current?.notifySavedToDatabase(); // Notify rest of the users that I have saved this whiteboard
-    await refetchLastSaved(); // And update the caption
-    return result;
-  };
-
   const getWhiteboardState = async () => {
     if (!whiteboard || !excalidrawAPI) {
       return;
@@ -223,7 +216,7 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
       whiteboard,
       whiteboardState
     );
-    return submitUpdate(updatedWhiteboard, previewImages);
+    return actions.onUpdate(updatedWhiteboard, previewImages);
   };
 
   const onClose = async () => {
@@ -233,7 +226,7 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
         whiteboard,
         whiteboardState
       );
-      submitUpdate(updatedWhiteboard, previewImages);
+      actions.onUpdate(updatedWhiteboard, previewImages);
     }
     actions.onCancel();
   };
@@ -249,6 +242,7 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
       }
     }
   };
+
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [handleDelete, isDeleting] = useLoadingState(async () => {
     if (whiteboard) {
@@ -271,90 +265,100 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
     });
   }, [initialValues]);
 
+  if (state?.loadingWhiteboardValue) {
+    return <Loading text="Loading whiteboard..." />;
+  }
+
+  if (!whiteboard) {
+    return null;
+  }
+
   return (
     <>
-      <Dialog
-        open={options.show}
-        aria-labelledby="whiteboard-dialog"
-        maxWidth={false}
-        fullWidth
-        classes={{
-          paper: options.fullscreen ? styles.dialogFullscreen : styles.dialogRoot,
+      <CollaborativeExcalidrawWrapper
+        entities={{ whiteboard, filesManager, lastSavedDate }}
+        collabApiRef={collabApiRef}
+        options={{
+          UIOptions: {
+            canvasActions: {
+              export: {
+                saveFileToDisk: true,
+              },
+            },
+          },
         }}
-        onClose={onClose}
-        fullScreen={options.fullscreen}
+        actions={{
+          onInitApi: setExcalidrawAPI,
+          onUpdate: async state => {
+            const { whiteboard: updatedWhiteboard, previewImages } = await prepareWhiteboardForUpdate(
+              whiteboard,
+              state,
+              false
+            );
+            return actions.onUpdate(updatedWhiteboard, previewImages);
+          },
+          onSavedToDatabase: () => {
+            refetchLastSaved({
+              whiteboardId: whiteboard.id,
+            });
+          },
+        }}
       >
-        <Formik
-          innerRef={formikRef}
-          initialValues={initialValues}
-          onSubmit={() => {}}
-          validationSchema={whiteboardSchema}
-        >
-          {() => (
-            <>
-              <DialogHeader
-                actions={options.headerActions}
+        {({ children, mode, modeReason }) => {
+          return (
+            <Formik
+              innerRef={formikRef}
+              initialValues={initialValues}
+              onSubmit={() => {}}
+              validationSchema={whiteboardSchema}
+            >
+              <Dialog
+                open={options.show}
+                aria-labelledby="whiteboard-dialog"
+                maxWidth={false}
+                fullWidth
+                classes={{
+                  paper: options.fullscreen ? styles.dialogFullscreen : styles.dialogRoot,
+                }}
                 onClose={onClose}
-                title={
-                  <WhiteboardDisplayName
-                    displayName={whiteboard?.profile?.displayName}
-                    readOnlyDisplayName={options.readOnlyDisplayName}
-                    editDisplayName={options.editDisplayName}
-                    onChangeDisplayName={newDisplayName => actions.onChangeDisplayName(whiteboard?.id, newDisplayName)}
-                  />
-                }
-                titleContainerProps={{ flexDirection: 'row' }}
+                fullScreen={options.fullscreen}
               >
-                {editModeEnabled && <WhiteboardTemplatesLibrary onImportTemplate={handleImportTemplate} />}
-              </DialogHeader>
-              <DialogContent classes={{ root: styles.dialogContent }}>
-                {!state?.loadingWhiteboardValue && whiteboard && (
-                  <CollaborativeExcalidrawWrapper
-                    entities={{ whiteboard, filesManager, lastSavedDate }}
-                    collabApiRef={collabApiRef}
-                    options={{
-                      UIOptions: {
-                        canvasActions: {
-                          export: {
-                            saveFileToDisk: true,
-                          },
-                        },
-                      },
-                    }}
-                    actions={{
-                      onInitApi: setExcalidrawAPI,
-                      onUpdate: async state => {
-                        const { whiteboard: updatedWhiteboard, previewImages } = await prepareWhiteboardForUpdate(
-                          whiteboard,
-                          state,
-                          false
-                        );
-                        return submitUpdate(updatedWhiteboard, previewImages);
-                      },
-                      onSavedToDatabase: () => {
-                        refetchLastSaved({
-                          whiteboardId: whiteboard.id,
-                        });
-                      },
-                    }}
-                  />
-                )}
-                {state?.loadingWhiteboardValue && <Loading text="Loading whiteboard..." />}
-              </DialogContent>
-              <WhiteboardDialogFooter
-                lastSavedDate={lastSavedDate}
-                onSave={handleManualSave}
-                onDelete={() => setDeleteDialogOpen(true)}
-                canDelete={options.canDelete}
-                canUpdateContent={options.canEdit!}
-                updating={state?.updatingWhiteboardContent}
-                createdBy={whiteboard?.createdBy}
-                contentUpdatePolicy={whiteboard?.contentUpdatePolicy}
-              />
-            </>
-          )}
-        </Formik>
-      </Dialog>
+                <DialogHeader
+                  actions={options.headerActions}
+                  onClose={onClose}
+                  title={
+                    <WhiteboardDisplayName
+                      displayName={whiteboard?.profile?.displayName}
+                      readOnlyDisplayName={options.readOnlyDisplayName}
+                      editDisplayName={options.editDisplayName}
+                      onChangeDisplayName={newDisplayName =>
+                        actions.onChangeDisplayName(whiteboard?.id, newDisplayName)
+                      }
+                    />
+                  }
+                  titleContainerProps={{ flexDirection: 'row' }}
+                >
+                  {editModeEnabled && <WhiteboardTemplatesLibrary onImportTemplate={handleImportTemplate} />}
+                </DialogHeader>
+                <DialogContent classes={{ root: styles.dialogContent }}>{children}</DialogContent>
+                <WhiteboardDialogFooter
+                  collaboratorMode={mode}
+                  collaboratorModeReason={modeReason}
+                  lastSavedDate={lastSavedDate}
+                  onSave={handleManualSave}
+                  onDelete={() => setDeleteDialogOpen(true)}
+                  canDelete={options.canDelete}
+                  canUpdateContent={options.canEdit!}
+                  updating={state?.updatingWhiteboardContent}
+                  createdBy={whiteboard?.createdBy}
+                  contentUpdatePolicy={whiteboard?.contentUpdatePolicy}
+                />
+              </Dialog>
+            </Formik>
+          );
+        }}
+      </CollaborativeExcalidrawWrapper>
+
       <ConfirmationDialog
         actions={{
           onConfirm: handleDelete,

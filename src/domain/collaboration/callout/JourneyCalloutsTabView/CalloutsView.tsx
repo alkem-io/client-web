@@ -134,9 +134,8 @@ const CalloutsView = ({
           const computedBlockProps = typeof blockProps === 'function' ? blockProps(callout, index) : blockProps;
 
           return (
-            <PageContentBlock disablePadding disableGap {...computedBlockProps}>
+            <PageContentBlock key={callout.id} disablePadding disableGap {...computedBlockProps}>
               <CalloutView
-                key={callout.id}
                 callout={callout}
                 calloutNames={calloutNames}
                 contributionsCount={callout.activity}

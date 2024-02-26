@@ -1,28 +1,37 @@
-import { DeleteOutline, LockOutlined, SaveOutlined, SvgIconComponent } from '@mui/icons-material';
-import { Button, ButtonProps, CircularProgress, Tooltip, TooltipProps, useTheme } from '@mui/material';
-import { FC, MouseEventHandler, forwardRef, useEffect, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router-dom';
-import { CommunityMembershipStatus, ContentUpdatePolicy } from '../../../../core/apollo/generated/graphql-schema';
-import { useAuthenticationContext } from '../../../../core/auth/authentication/hooks/useAuthenticationContext';
-import { Actions } from '../../../../core/ui/actions/Actions';
+import React, { MouseEventHandler, useEffect, useState } from 'react';
 import { gutters } from '../../../../core/ui/grid/utils';
-import RouterLink from '../../../../core/ui/link/RouterLink';
+import { Button, CircularProgress, DialogContent, IconButton, Tooltip, useTheme } from '@mui/material';
 import { Caption } from '../../../../core/ui/typography';
-import { Identifiable } from '../../../../core/utils/Identifiable';
-import { buildLoginUrl } from '../../../../main/routing/urlBuilders';
-import { Visual } from '../../../common/visual/Visual';
-import useDirectMessageDialog from '../../../communication/messaging/DirectMessaging/useDirectMessageDialog';
-import { getJourneyTypeName } from '../../../journey/JourneyTypeName';
+import { DeleteOutline, EditOffOutlined, LockOutlined, SaveOutlined } from '@mui/icons-material';
+import { Actions } from '../../../../core/ui/actions/Actions';
+import { Trans, useTranslation } from 'react-i18next';
+import { useAuthenticationContext } from '../../../../core/auth/authentication/hooks/useAuthenticationContext';
+import { CommunityMembershipStatus, ContentUpdatePolicy } from '../../../../core/apollo/generated/graphql-schema';
+import { formatTimeElapsed } from '../../../shared/utils/formatTimeElapsed';
+import { useSpace } from '../../../journey/space/SpaceContext/useSpace';
 import { useChallenge } from '../../../journey/challenge/hooks/useChallenge';
 import { useOpportunity } from '../../../journey/opportunity/hooks/useOpportunity';
-import { useSpace } from '../../../journey/space/SpaceContext/useSpace';
-import { formatTimeElapsed } from '../../../shared/utils/formatTimeElapsed';
+import { getJourneyTypeName } from '../../../journey/JourneyTypeName';
+import RouterLink from '../../../../core/ui/link/RouterLink';
+import { useLocation } from 'react-router-dom';
+import { buildLoginUrl } from '../../../../main/routing/urlBuilders';
+import useDirectMessageDialog from '../../../communication/messaging/DirectMessaging/useDirectMessageDialog';
+import { Identifiable } from '../../../../core/utils/Identifiable';
+import { Visual } from '../../../common/visual/Visual';
+import {
+  CollaboratorMode,
+  CollaboratorModeReasons,
+} from '../../../common/whiteboard/excalidraw/collab/excalidrawAppConstants';
+import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
+import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
+import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 
 interface WhiteboardDialogFooterProps {
   onSave: () => void;
   lastSavedDate: Date | undefined;
   canUpdateContent: boolean;
+  onDelete: () => void;
+  canDelete?: boolean;
   updating?: boolean;
   createdBy:
     | (Identifiable & {
@@ -34,34 +43,16 @@ interface WhiteboardDialogFooterProps {
       })
     | undefined;
   contentUpdatePolicy: ContentUpdatePolicy | undefined;
-  onDelete: () => void;
-  canDelete?: boolean;
+  collaboratorMode: CollaboratorMode | null;
+  collaboratorModeReason: CollaboratorModeReasons | null;
 }
 
 enum ReadonlyReason {
+  Readonly = 'readonly',
   ContentUpdatePolicy = 'contentUpdatePolicy',
   NoMembership = 'noMembership',
   Unauthenticated = 'unauthenticated',
 }
-
-const FooterButton: FC<ButtonProps & { iconComponent: SvgIconComponent; tooltip?: TooltipProps }> = forwardRef(
-  ({ children, iconComponent: Icon, tooltip, sx, ...props }, ref) => {
-    const mergedSx: ButtonProps['sx'] = {
-      textTransform: 'none',
-      '& .MuiTypography-caption': {
-        color: theme => (props.disabled ? theme.palette.text.disabled : theme.palette.text.primary),
-        marginLeft: gutters(0.5),
-      },
-      ...sx,
-    };
-    return (
-      <Button ref={ref} {...props} sx={mergedSx}>
-        <Icon fontSize="small" />
-        {children}
-      </Button>
-    );
-  }
-);
 
 const WhiteboardDialogFooter = ({
   lastSavedDate,
@@ -71,6 +62,8 @@ const WhiteboardDialogFooter = ({
   canDelete,
   contentUpdatePolicy,
   createdBy,
+  collaboratorMode,
+  collaboratorModeReason,
   updating = false,
 }: WhiteboardDialogFooterProps) => {
   const { t } = useTranslation();
@@ -114,20 +107,23 @@ const WhiteboardDialogFooter = ({
 
   const journeyProfile = getJourneyProfile();
 
-  const readonlyReason = canUpdateContent
-    ? null
-    : (() => {
-        if (!isAuthenticated) {
-          return ReadonlyReason.Unauthenticated;
-        }
-        if (
-          contentUpdatePolicy === ContentUpdatePolicy.Contributors &&
-          getMyMembershipStatus() !== CommunityMembershipStatus.Member
-        ) {
-          return ReadonlyReason.NoMembership;
-        }
-        return ReadonlyReason.ContentUpdatePolicy;
-      })();
+  const getReadonlyReason = () => {
+    if (canUpdateContent) {
+      return collaboratorMode === 'read' ? ReadonlyReason.Readonly : null;
+    }
+    if (!isAuthenticated) {
+      return ReadonlyReason.Unauthenticated;
+    }
+    if (
+      contentUpdatePolicy === ContentUpdatePolicy.Contributors &&
+      getMyMembershipStatus() !== CommunityMembershipStatus.Member
+    ) {
+      return ReadonlyReason.NoMembership;
+    }
+    return ReadonlyReason.ContentUpdatePolicy;
+  };
+
+  const readonlyReason = getReadonlyReason();
 
   const { sendMessage, directMessageDialog } = useDirectMessageDialog({
     dialogTitle: t('send-message-dialog.direct-message-title'),
@@ -142,60 +138,84 @@ const WhiteboardDialogFooter = ({
     });
   };
 
+  const [isLearnWhyDialogOpen, setIsLearnWhyDialogOpen] = useState(false);
+
+  const handleLearnWhyClick: MouseEventHandler = event => {
+    event.preventDefault();
+    setIsLearnWhyDialogOpen(true);
+  };
+
   return (
-    <Actions
-      minHeight={gutters(3)}
-      paddingX={gutters()}
-      marginTop={gutters(-1)}
-      gap={gutters(0.5)}
-      justifyContent="start"
-      alignItems="center"
-    >
-      {canDelete && (
-        <FooterButton
-          color="error"
-          iconComponent={DeleteOutline}
-          onClick={onDelete}
-          disabled={!canUpdateContent || updating}
-          aria-label={t('buttons.delete')}
-        >
-          <Caption>{t('buttons.delete')}</Caption>
-        </FooterButton>
-      )}
-      <Tooltip placement="right" arrow title={<Caption>{t('pages.whiteboard.saveTooltip')}</Caption>}>
-        <FooterButton
-          color="primary"
-          iconComponent={canUpdateContent ? SaveOutlined : LockOutlined}
-          aria-label={canUpdateContent ? t('buttons.save') : ''}
-          onClick={onSave}
-          disabled={!canUpdateContent || updating}
-        >
-          {readonlyReason ? (
-            <Caption>
-              <Trans
-                i18nKey={`pages.whiteboard.readonlyReason.${readonlyReason}` as const}
-                values={{
-                  journeyType: journeyTypeName && t(`common.${journeyTypeName}` as const),
-                  ownerName: createdBy?.profile.displayName,
-                }}
-                components={{
-                  ownerlink: createdBy ? (
-                    <RouterLink to={createdBy.profile.url} underline="always" onClick={handleAuthorClick} />
-                  ) : (
-                    <span />
-                  ),
-                  journeylink: journeyProfile ? <RouterLink to={journeyProfile.url} underline="always" /> : <span />,
-                  signinlink: <RouterLink to={buildLoginUrl(pathname)} state={{}} underline="always" />,
-                }}
-              />
-            </Caption>
-          ) : (
-            <LastSavedCaption saving={updating} date={lastSavedDate} />
-          )}
-        </FooterButton>
-      </Tooltip>
-      {directMessageDialog}
-    </Actions>
+    <>
+      <Actions
+        minHeight={gutters(3)}
+        paddingX={gutters()}
+        marginTop={gutters(-1)}
+        gap={gutters(0.5)}
+        justifyContent="start"
+        alignItems="center"
+      >
+        {canDelete && (
+          <Button
+            color="error"
+            startIcon={<DeleteOutline />}
+            onClick={onDelete}
+            disabled={!canUpdateContent || updating}
+            sx={{ textTransform: 'none' }}
+            aria-label={t('buttons.delete')}
+          >
+            <Caption>{t('buttons.delete')}</Caption>
+          </Button>
+        )}
+        <Tooltip placement="right" arrow title={<Caption>{t('pages.whiteboard.saveTooltip')}</Caption>}>
+          <IconButton
+            color="primary"
+            size="small"
+            onClick={onSave}
+            disabled={!canUpdateContent || collaboratorMode !== 'write' || updating}
+          >
+            {!readonlyReason && <SaveOutlined />}
+            {readonlyReason === ReadonlyReason.Readonly && <EditOffOutlined />}
+            {readonlyReason && readonlyReason !== ReadonlyReason.Readonly && <LockOutlined />}
+          </IconButton>
+        </Tooltip>
+        {readonlyReason ? (
+          <Caption>
+            <Trans
+              i18nKey={`pages.whiteboard.readonlyReason.${readonlyReason}` as const}
+              values={{
+                journeyType: journeyTypeName && t(`common.${journeyTypeName}` as const),
+                ownerName: createdBy?.profile.displayName,
+              }}
+              components={{
+                ownerlink: createdBy ? (
+                  <RouterLink to={createdBy.profile.url} underline="always" onClick={handleAuthorClick} />
+                ) : (
+                  <span />
+                ),
+                journeylink: journeyProfile ? <RouterLink to={journeyProfile.url} underline="always" /> : <span />,
+                signinlink: <RouterLink to={buildLoginUrl(pathname)} state={{}} underline="always" />,
+                learnwhy: <RouterLink to="" underline="always" onClick={handleLearnWhyClick} />,
+              }}
+            />
+          </Caption>
+        ) : (
+          <LastSavedCaption saving={updating} date={lastSavedDate} />
+        )}
+        {directMessageDialog}
+      </Actions>
+      <DialogWithGrid open={isLearnWhyDialogOpen} onClose={() => setIsLearnWhyDialogOpen(false)}>
+        <DialogHeader
+          title={t('pages.whiteboard.readonlyDialog.title')}
+          onClose={() => setIsLearnWhyDialogOpen(false)}
+        />
+        <DialogContent sx={{ paddingTop: 0 }}>
+          <WrapperMarkdown>
+            {t(`pages.whiteboard.readonlyDialog.reason.${collaboratorModeReason ?? 'generic'}` as const)}
+          </WrapperMarkdown>
+        </DialogContent>
+      </DialogWithGrid>
+    </>
   );
 };
 

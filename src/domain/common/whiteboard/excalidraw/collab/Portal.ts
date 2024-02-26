@@ -1,6 +1,11 @@
 import { isSyncableElement, SocketUpdateData, SocketUpdateDataSource } from './data';
 import { ExcalidrawElement } from '@alkemio/excalidraw/types/element/types';
-import { PRECEDING_ELEMENT_KEY, WS_EVENTS, WS_SCENE_EVENT_TYPES } from './excalidrawAppConstants';
+import {
+  CollaboratorModeEvent,
+  PRECEDING_ELEMENT_KEY,
+  WS_EVENTS,
+  WS_SCENE_EVENT_TYPES,
+} from './excalidrawAppConstants';
 import { UserIdleState } from './utils';
 import { BroadcastedExcalidrawElement } from './reconciliation';
 import { Socket } from 'socket.io-client';
@@ -32,6 +37,9 @@ interface ConnectionOptions {
 interface SocketEventHandlers {
   'client-broadcast': (encryptedData: ArrayBuffer) => void;
   'first-in-room': () => void;
+  'collaborator-mode': (event: CollaboratorModeEvent) => void;
+  saved: () => void;
+  'idle-state': (payload: SocketUpdateDataSource['IDLE_STATUS']['payload']) => void;
 }
 
 class Portal {
@@ -79,12 +87,27 @@ class Portal {
         }
       });
 
+      this.socket.on('first-in-room', () => {
+        socket.off('first-in-room');
+        eventHandlers['first-in-room']();
+      });
+
+      this.socket.on('collaborator-mode', eventHandlers['collaborator-mode']);
+
       this.socket.on('new-user', async (_socketId: string) => {
-        this.broadcastScene(WS_SCENE_EVENT_TYPES.INIT, this.getSceneElements(), await this.getFiles(), { syncAll: true });
+        this.broadcastScene(WS_SCENE_EVENT_TYPES.INIT, this.getSceneElements(), await this.getFiles(), {
+          syncAll: true,
+        });
       });
 
       this.socket.on('room-user-change', (clients: string[]) => {
         this.onRoomUserChange(clients);
+      });
+
+      this.socket.on('idle-state', (encryptedData: ArrayBuffer) => {
+        const decodedData = new TextDecoder().decode(encryptedData);
+        const decryptedData = JSON.parse(decodedData);
+        eventHandlers['idle-state'](decryptedData.payload);
       });
 
       this.socket.on('save-request', async callback => {
@@ -95,12 +118,9 @@ class Portal {
         }
       });
 
-      this.socket.on('client-broadcast', eventHandlers['client-broadcast']);
+      this.socket.on('saved', eventHandlers.saved);
 
-      this.socket.on('first-in-room', () => {
-        socket.off('first-in-room');
-        eventHandlers['first-in-room']();
-      });
+      this.socket.on('client-broadcast', eventHandlers['client-broadcast']);
 
       this.socket.on('connect', () => {
         resolve(socket);
@@ -141,18 +161,14 @@ class Portal {
   }
 
   private _broadcastSocketData(data: SocketUpdateData, { volatile = false }: BroadcastOptions = {}) {
-    if (this.isOpen()) {
-      const jsonStr = JSON.stringify(data);
-      const encryptedBuffer = new TextEncoder().encode(jsonStr).buffer;
-      this.socket?.emit(volatile ? WS_EVENTS.SERVER_VOLATILE : WS_EVENTS.SERVER, this.roomId, encryptedBuffer);
-    }
+    return this._broadcastEvent(volatile ? WS_EVENTS.SERVER_VOLATILE : WS_EVENTS.SERVER, data);
   }
 
-  private _broadcastRequestData(data: SocketUpdateData) {
+  private _broadcastEvent(eventName: typeof WS_EVENTS[keyof typeof WS_EVENTS], data: SocketUpdateData) {
     if (this.isOpen()) {
       const jsonStr = JSON.stringify(data);
       const buffer = new TextEncoder().encode(jsonStr).buffer;
-      this.socket?.emit(WS_EVENTS.SERVER_REQUEST_BROADCAST, this.roomId, buffer);
+      this.socket?.emit(eventName, this.roomId, buffer);
     }
   }
 
@@ -221,7 +237,7 @@ class Portal {
           username,
         },
       };
-      return this._broadcastSocketData(data as SocketUpdateData, { volatile: true });
+      return this._broadcastEvent(WS_EVENTS.IDLE_STATE, data as SocketUpdateData);
     }
   };
 
@@ -242,19 +258,6 @@ class Portal {
         },
       };
       return this._broadcastSocketData(data as SocketUpdateData, { volatile: true });
-    }
-  };
-
-  broadcastSavedEvent = (username: string) => {
-    if (this.socket?.id) {
-      const data: SocketUpdateDataSource['SAVED'] = {
-        type: 'SAVED',
-        payload: {
-          socketId: this.socket.id,
-          username,
-        },
-      };
-      return this._broadcastSocketData(data as SocketUpdateData);
     }
   };
 }
