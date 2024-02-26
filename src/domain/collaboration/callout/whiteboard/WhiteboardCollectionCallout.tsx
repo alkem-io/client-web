@@ -1,10 +1,9 @@
-import React, { useMemo, useState } from 'react';
+import React, { forwardRef, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CalloutLayout, { CalloutLayoutProps } from '../../CalloutBlock/CalloutLayout';
 import ScrollableCardsLayout from '../../../../core/ui/card/cardsLayout/ScrollableCardsLayout';
-import WhiteboardActionsContainer from '../../whiteboard/containers/WhiteboardActionsContainer';
 import CreateCalloutItemButton from '../CreateCalloutItemButton';
-import { CalloutState, CreateContributionOnCalloutInput } from '../../../../core/apollo/generated/graphql-schema';
+import { CalloutState, WhiteboardDetailsFragment } from '../../../../core/apollo/generated/graphql-schema';
 import { Skeleton } from '@mui/material';
 import WhiteboardCard from './WhiteboardCard';
 import { buildWhiteboardUrl } from '../../../../main/routing/urlBuilders';
@@ -13,70 +12,76 @@ import { BaseCalloutViewProps } from '../CalloutViewTypes';
 import { gutters } from '../../../../core/ui/grid/utils';
 import CalloutBlockFooter from '../../CalloutBlock/CalloutBlockFooter';
 import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
-import { useFullscreen } from '../../../../core/ui/fullscreen/useFullscreen';
-import SingleUserWhiteboardDialog from '../../whiteboard/WhiteboardDialog/SingleUserWhiteboardDialog';
+import { compact } from 'lodash';
 
 interface WhiteboardCollectionCalloutProps extends BaseCalloutViewProps {
   callout: CalloutLayoutProps['callout'];
+  whiteboards: WhiteboardDetailsFragment[];
+  createNewWhiteboard: () => Promise<{ nameID: string } | undefined>;
 }
 
-const WhiteboardCollectionCallout = ({
-  callout,
-  spaceNameId,
-  loading,
-  challengeNameId,
-  opportunityNameId,
-  canCreate = false,
-  contributionsCount,
-  ...calloutLayoutProps
-}: WhiteboardCollectionCalloutProps) => {
-  const [showCreateWhiteboardDialog, setShowCreateWhiteboardDialog] = useState(false);
-  const navigate = useNavigate();
-  const { fullscreen, setFullscreen } = useFullscreen();
+const WhiteboardCollectionCallout = forwardRef<Element, WhiteboardCollectionCalloutProps>(
+  (
+    {
+      callout,
+      whiteboards,
+      spaceNameId,
+      loading,
+      challengeNameId,
+      opportunityNameId,
+      canCreate = false,
+      contributionsCount,
+      createNewWhiteboard,
+      ...calloutLayoutProps
+    },
+    ref
+  ) => {
+    const navigate = useNavigate();
 
-  const openCreateDialog = () => {
-    setShowCreateWhiteboardDialog(true);
-  };
-  const closeCreateDialog = () => {
-    setShowCreateWhiteboardDialog(false);
-    if (fullscreen) {
-      setFullscreen(false);
-    }
-  };
+    const handleCreate = async () => {
+      const result = await createNewWhiteboard();
+      if (result?.nameID) {
+        navigate(
+          buildWhiteboardUrl(callout.nameID, result?.nameID, { spaceNameId, challengeNameId, opportunityNameId })
+        );
+      }
+    };
 
-  const createButton = canCreate && callout.contributionPolicy.state !== CalloutState.Closed && (
-    <CreateCalloutItemButton onClick={openCreateDialog} />
-  );
-
-  const navigateToWhiteboard = (whiteboard: WhiteboardCardWhiteboard) => {
-    navigate(
-      buildWhiteboardUrl(whiteboard.calloutNameId, whiteboard.nameID, {
-        spaceNameId: spaceNameId!,
-        challengeNameId,
-        opportunityNameId,
-      })
+    const createButton = canCreate && callout.contributionPolicy.state !== CalloutState.Closed && (
+      <CreateCalloutItemButton onClick={handleCreate} />
     );
-  };
 
-  const calloutWhiteboards =
-    callout.contributions
-      ?.map(contribution =>
-        contribution.whiteboard ? { ...contribution.whiteboard, calloutNameId: callout.nameID } : undefined
-      )
-      .filter(w => w !== undefined) ?? [];
+    const navigateToWhiteboard = (whiteboard: WhiteboardCardWhiteboard) => {
+      navigate(
+        buildWhiteboardUrl(whiteboard.calloutNameId, whiteboard.nameID, {
+          spaceNameId: spaceNameId!,
+          challengeNameId,
+          opportunityNameId,
+        })
+      );
+    };
 
-  const showCards = useMemo(
-    () => (!loading && calloutWhiteboards.length > 0) || callout.contributionPolicy.state !== CalloutState.Closed,
-    [loading, calloutWhiteboards.length, callout.contributionPolicy.state]
-  );
+    const calloutWhiteboards = compact(
+      whiteboards.map(whiteboard => (whiteboard ? { ...whiteboard, calloutNameId: callout.nameID } : undefined))
+    );
 
-  const breakpoint = useCurrentBreakpoint();
+    const showCards = useMemo(
+      () => (!loading && calloutWhiteboards.length > 0) || callout.contributionPolicy.state !== CalloutState.Closed,
+      [loading, calloutWhiteboards.length, callout.contributionPolicy.state]
+    );
 
-  const isMobile = breakpoint === 'xs';
+    const breakpoint = useCurrentBreakpoint();
 
-  return (
-    <>
-      <CalloutLayout callout={callout} contributionsCount={contributionsCount} {...calloutLayoutProps} disableMarginal>
+    const isMobile = breakpoint === 'xs';
+
+    return (
+      <CalloutLayout
+        contentRef={ref}
+        callout={callout}
+        contributionsCount={contributionsCount}
+        {...calloutLayoutProps}
+        disableMarginal
+      >
         {showCards && (
           <ScrollableCardsLayout
             items={loading ? [undefined, undefined] : calloutWhiteboards}
@@ -94,59 +99,11 @@ const WhiteboardCollectionCallout = ({
           </ScrollableCardsLayout>
         )}
         {isMobile && canCreate && callout.contributionPolicy.state !== CalloutState.Closed && (
-          <CalloutBlockFooter contributionsCount={contributionsCount} onCreate={openCreateDialog} />
+          <CalloutBlockFooter contributionsCount={contributionsCount} onCreate={handleCreate} />
         )}
       </CalloutLayout>
-      {showCreateWhiteboardDialog && (
-        <WhiteboardActionsContainer>
-          {(entities, actionsState, actions) => (
-            <SingleUserWhiteboardDialog
-              entities={{
-                whiteboard: {
-                  profile: {
-                    id: '',
-                    displayName: '',
-                    storageBucket: {
-                      // TODO: When creating a whiteboard a StorageBucketId is needed if we want to allow image uploading
-                      // For now we are allowing files attached to the newly created whiteboards, so we can pass
-                      // an empty string here, and allowFilesAttached = true in the options
-                      id: '',
-                    },
-                  },
-                  content: callout.contributionDefaults.whiteboardContent ?? '',
-                },
-              }}
-              actions={{
-                onCancel: closeCreateDialog,
-                onUpdate: (input, previewImages) => {
-                  setShowCreateWhiteboardDialog(false);
-                  return actions.onCreate(
-                    {
-                      whiteboard: {
-                        content: input.content,
-                        profileData: {
-                          displayName: input.profile.displayName,
-                        },
-                      },
-                      calloutID: callout.id,
-                    } as CreateContributionOnCalloutInput,
-                    previewImages
-                  );
-                },
-              }}
-              options={{
-                show: showCreateWhiteboardDialog,
-                canEdit: true,
-                allowFilesAttached: true,
-                fullscreen,
-              }}
-              state={{}}
-            />
-          )}
-        </WhiteboardActionsContainer>
-      )}
-    </>
-  );
-};
+    );
+  }
+);
 
 export default WhiteboardCollectionCallout;

@@ -1,5 +1,6 @@
 import { useCalloutPosts } from './useCalloutPosts';
 import {
+  AuthorizationPrivilege,
   ContributeTabPostFragment,
   CreatePostInput,
   TagsetType,
@@ -14,18 +15,25 @@ import { Ref } from 'react';
 import { DEFAULT_TAGSET } from '../../../common/tags/tagset.constants';
 
 interface PostCalloutContainerProvided {
-  posts: ContributeTabPostFragment[];
   ref: Ref<Element>;
+  posts: ContributeTabPostFragment[];
   loading: boolean;
-  creatingPost: boolean;
   onCreatePost: (post: CreatePostInput) => Promise<{ nameID: string } | undefined>;
+  creatingPost: boolean;
+  canCreate: boolean;
 }
 
 interface PostCalloutContainerProps extends SimpleContainerProps<PostCalloutContainerProvided> {
-  calloutId: string;
+  callout: {
+    id: string;
+    authorization?: {
+      myPrivileges?: AuthorizationPrivilege[];
+    };
+  };
 }
 
-const PostCalloutContainer = ({ calloutId, children }: PostCalloutContainerProps) => {
+const PostCalloutContainer = ({ callout, children }: PostCalloutContainerProps) => {
+  const calloutId = callout.id;
   const { ref: intersectionObserverRef, inView } = useInView({
     delay: 500,
     trackVisibility: true,
@@ -127,6 +135,7 @@ const PostCalloutContainer = ({ calloutId, children }: PostCalloutContainerProps
         posts,
         loading,
         creatingPost: isCreatingPost,
+        canCreate: callout.authorization?.myPrivileges?.includes(AuthorizationPrivilege.CreatePost) ?? false,
         onCreatePost,
       })}
     </>

@@ -86,9 +86,6 @@ fragment Callout on Callout {
   sortOrder
   activity
   contributions {
-    whiteboard {
-      ...WhiteboardDetails
-    }
     link {
       ...LinkDetailsWithAuthorization
     }

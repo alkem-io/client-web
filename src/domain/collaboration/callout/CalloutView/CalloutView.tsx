@@ -1,5 +1,5 @@
 import React from 'react';
-import { AuthorizationPrivilege, CalloutType } from '../../../../core/apollo/generated/graphql-schema';
+import { CalloutType } from '../../../../core/apollo/generated/graphql-schema';
 import PostCallout from '../post/PostCallout';
 import WhiteboardCollectionCallout from '../whiteboard/WhiteboardCollectionCallout';
 import CommentsCallout from '../comments/CommentsCallout';
@@ -8,35 +8,25 @@ import { BaseCalloutViewProps } from '../CalloutViewTypes';
 import LinkCollectionCallout from '../links/LinkCollectionCallout';
 import SingleWhiteboardCallout from '../SingleWhiteboard/SingleWhiteboardCallout';
 import PostCalloutContainer from '../post/PostCalloutContainer';
+import WhiteboardCollectionCalloutContainer from '../whiteboard/WhiteboardCollectionCalloutContainer';
 
 export interface CalloutViewProps extends Omit<BaseCalloutViewProps, 'canCreate'> {
   callout: TypedCallout;
 }
 
 const CalloutView = ({ callout, ...props }: CalloutViewProps) => {
-  const canCreate = (privilege: AuthorizationPrivilege) => callout.authorization?.myPrivileges?.includes(privilege);
-
   switch (callout.type) {
     case CalloutType.PostCollection:
       return (
-        <PostCalloutContainer calloutId={callout.id}>
-          {containerProps => (
-            <PostCallout
-              callout={callout}
-              canCreate={canCreate(AuthorizationPrivilege.CreatePost)}
-              {...containerProps}
-              {...props}
-            />
-          )}
+        <PostCalloutContainer callout={callout}>
+          {containerProps => <PostCallout callout={callout} {...containerProps} {...props} />}
         </PostCalloutContainer>
       );
     case CalloutType.WhiteboardCollection:
       return (
-        <WhiteboardCollectionCallout
-          callout={callout}
-          canCreate={canCreate(AuthorizationPrivilege.CreateWhiteboard)}
-          {...props}
-        />
+        <WhiteboardCollectionCalloutContainer callout={callout}>
+          {containerProps => <WhiteboardCollectionCallout callout={callout} {...containerProps} {...props} />}
+        </WhiteboardCollectionCalloutContainer>
       );
     case CalloutType.Post:
       return <CommentsCallout callout={callout} {...props} />;
