@@ -3,13 +3,13 @@ import { ExportedDataState } from '@alkemio/excalidraw/types/data/types';
 import { AppState, BinaryFiles, ExcalidrawImperativeAPI, ExcalidrawProps } from '@alkemio/excalidraw/types/types';
 import { makeStyles } from '@mui/styles';
 import { debounce, merge } from 'lodash';
-import React, { Ref, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { PropsWithChildren, Ref, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useCombinedRefs } from '../../../shared/utils/useCombinedRefs';
 import EmptyWhiteboard from '../EmptyWhiteboard';
 import { ExcalidrawElement } from '@alkemio/excalidraw/types/element/types';
 import { useUserContext } from '../../../community/user';
 import { WhiteboardFilesManager } from './useWhiteboardFilesManager';
-import useCollab, { CollabAPI } from './collab/useCollab';
+import useCollab, { CollabAPI, CollabState } from './collab/useCollab';
 import Dialog from '@mui/material/Dialog';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import { DialogContent } from '../../../../core/ui/dialog/deprecated';
@@ -54,19 +54,28 @@ export interface WhiteboardWhiteboardEvents {}
 
 export interface WhiteboardWhiteboardOptions extends ExcalidrawProps {}
 
+interface CollaborativeExcalidrawWrapperProvided extends CollabState {}
+
 export interface WhiteboardWhiteboardProps {
   entities: WhiteboardWhiteboardEntities;
   options: WhiteboardWhiteboardOptions;
   actions: WhiteboardWhiteboardActions;
   events?: WhiteboardWhiteboardEvents;
   collabApiRef?: Ref<CollabAPI | null>;
+  children: (props: PropsWithChildren<CollaborativeExcalidrawWrapperProvided>) => React.ReactNode;
 }
 
 const WINDOW_SCROLL_HANDLER_DEBOUNCE_INTERVAL = 100;
 
 const useReconnectable = Reconnectable();
 
-const CollaborativeExcalidrawWrapper = ({ entities, actions, options, collabApiRef }: WhiteboardWhiteboardProps) => {
+const CollaborativeExcalidrawWrapper = ({
+  entities,
+  actions,
+  options,
+  collabApiRef,
+  children: renderChildren,
+}: WhiteboardWhiteboardProps) => {
   const { whiteboard, filesManager, lastSavedDate } = entities;
 
   const combinedCollabApiRef = useCombinedRefs<CollabAPI | null>(null, collabApiRef);
@@ -124,7 +133,7 @@ const CollaborativeExcalidrawWrapper = ({ entities, actions, options, collabApiR
 
   const mergedUIOptions = useMemo(() => merge(UIOptions, externalUIOptions), [UIOptions, externalUIOptions]);
 
-  const [collabApi, initializeCollab, { connecting, collaborating }] = useCollab({
+  const [collabApi, initializeCollab, { connecting, collaborating, mode }] = useCollab({
     username,
     onSavedToDatabase: actions.onSavedToDatabase,
     filesManager,
@@ -204,30 +213,34 @@ const CollaborativeExcalidrawWrapper = ({ entities, actions, options, collabApiR
 
   const { t } = useTranslation();
 
+  const children = (
+    <div className={styles.container}>
+      {whiteboard && (
+        <Excalidraw
+          key={whiteboard.id} // initializing a fresh Excalidraw for each whiteboard
+          excalidrawAPI={handleInitializeApi}
+          initialData={data}
+          UIOptions={mergedUIOptions}
+          isCollaborating={collaborating}
+          viewModeEnabled={!collaborating || mode === 'read'}
+          gridModeEnabled
+          onChange={onChange}
+          onPointerUpdate={collabApi?.onPointerUpdate}
+          detectScroll={false}
+          autoFocus
+          generateIdForFile={addNewFile}
+          /*renderTopRightUI={_isMobile => {
+              return <LiveCollaborationStatus />;
+            }}*/
+          {...restOptions}
+        />
+      )}
+    </div>
+  );
+
   return (
     <>
-      <div className={styles.container}>
-        {whiteboard && (
-          <Excalidraw
-            key={whiteboard.id} // initializing a fresh Excalidraw for each whiteboard
-            excalidrawAPI={handleInitializeApi}
-            initialData={data}
-            UIOptions={mergedUIOptions}
-            isCollaborating={collaborating}
-            viewModeEnabled={!collaborating}
-            gridModeEnabled
-            onChange={onChange}
-            onPointerUpdate={collabApi?.onPointerUpdate}
-            detectScroll={false}
-            autoFocus
-            generateIdForFile={addNewFile}
-            /*renderTopRightUI={_isMobile => {
-                return <LiveCollaborationStatus />;
-              }}*/
-            {...restOptions}
-          />
-        )}
-      </div>
+      {renderChildren({ children, collaborating, connecting, mode })}
       <Dialog open={collaborationStoppedNoticeOpen} onClose={() => setCollaborationStoppedNoticeOpen(false)}>
         <DialogHeader title={t('pages.whiteboard.whiteboardDisconnected.title')} />
         <DialogContent>

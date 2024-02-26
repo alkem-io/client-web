@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
 import Collab, { CollabProps } from './Collab';
+import { CollaboratorMode } from './excalidrawAppConstants';
 
 type CollabInstance = InstanceType<typeof Collab>;
 
@@ -7,13 +8,12 @@ export interface CollabAPI {
   /** function so that we can access the latest value from stale callbacks */
   onPointerUpdate: CollabInstance['onPointerUpdate'];
   syncScene: CollabInstance['syncScene'];
-  notifySavedToDatabase: () => void; // Notify rest of the members in the room that I have saved the whiteboard
   isCollaborating: () => boolean;
 }
 
 type UseCollabProvided = [CollabAPI | null, (initProps: InitProps) => void, CollabState];
 
-interface UseCollabProps extends Omit<CollabProps, 'excalidrawApi'> {
+interface UseCollabProps extends Omit<CollabProps, 'excalidrawApi' | 'onCollaboratorModeChange'> {
   onInitialize?: (collabApi: CollabAPI) => void;
 }
 
@@ -21,9 +21,10 @@ interface InitProps extends Pick<CollabProps, 'excalidrawApi'> {
   roomId: string;
 }
 
-interface CollabState {
+export interface CollabState {
   collaborating: boolean;
   connecting: boolean;
+  mode: CollaboratorMode | null;
 }
 
 const useCollab = ({ onInitialize, onCloseConnection, ...collabProps }: UseCollabProps): UseCollabProvided => {
@@ -34,6 +35,8 @@ const useCollab = ({ onInitialize, onCloseConnection, ...collabProps }: UseColla
   const [isConnecting, setIsConnecting] = useState(false);
 
   const [isCollaborating, setIsCollaborating] = useState(false);
+
+  const [collaboratorMode, setCollaboratorMode] = useState<CollaboratorMode | null>(null);
 
   const handleCloseConnection = () => {
     try {
@@ -48,6 +51,7 @@ const useCollab = ({ onInitialize, onCloseConnection, ...collabProps }: UseColla
       ...collabProps,
       excalidrawApi,
       onCloseConnection: handleCloseConnection,
+      onCollaboratorModeChange: setCollaboratorMode,
     });
 
     collabRef.current.init();
@@ -55,7 +59,6 @@ const useCollab = ({ onInitialize, onCloseConnection, ...collabProps }: UseColla
     const collabApi: CollabAPI = {
       onPointerUpdate: collabRef.current.onPointerUpdate,
       syncScene: collabRef.current.syncScene,
-      notifySavedToDatabase: collabRef.current.notifySavedToDatabase,
       isCollaborating: collabRef.current.isCollaborating,
     };
 
@@ -80,7 +83,11 @@ const useCollab = ({ onInitialize, onCloseConnection, ...collabProps }: UseColla
     };
   };
 
-  return [collabApiRef.current, initialize, { connecting: isConnecting, collaborating: isCollaborating }];
+  return [
+    collabApiRef.current,
+    initialize,
+    { connecting: isConnecting, collaborating: isCollaborating && collaboratorMode !== null, mode: collaboratorMode },
+  ];
 };
 
 export default useCollab;
