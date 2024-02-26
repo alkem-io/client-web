@@ -17,7 +17,7 @@ import { WhiteboardTemplateWithContent } from '../WhiteboardTemplateCard/Whitebo
 import mergeWhiteboard from '../utils/mergeWhiteboard';
 import { error as logError } from '../../../../core/logging/sentry/log';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
-import { WhiteboardWithContent, WhiteboardWithoutContent } from '../containers/WhiteboardContentContainer';
+import { WhiteboardWithContent } from '../containers/WhiteboardContentContainer';
 import {
   generateWhiteboardPreviewImages,
   WhiteboardPreviewImage,
@@ -29,18 +29,21 @@ import WhiteboardDialogFooter from './WhiteboardDialogFooter';
 import { useLocation } from 'react-router-dom';
 import { ExcalidrawElement, ExcalidrawImageElement } from '@alkemio/excalidraw/types/element/types';
 import WhiteboardDisplayName from './WhiteboardDisplayName';
+import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
+import useLoadingState from '../../../shared/utils/useLoadingState';
 
 interface WhiteboardDialogProps<Whiteboard extends WhiteboardWithContent> {
   entities: {
     whiteboard?: Whiteboard;
   };
   actions: {
-    onCancel: (whiteboard: WhiteboardWithoutContent<Whiteboard>) => void;
+    onCancel: () => void;
     onUpdate: (
       whiteboard: Whiteboard,
       previewImages?: WhiteboardPreviewImage[]
     ) => Promise<{ success: boolean; errors?: string[] }>;
     onChangeDisplayName: (whiteboardId: string | undefined, newDisplayName: string) => Promise<void>;
+    onDelete: (whiteboard: Whiteboard) => Promise<void>;
   };
   options: {
     show: boolean;
@@ -232,7 +235,7 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
       );
       submitUpdate(updatedWhiteboard, previewImages);
     }
-    actions.onCancel(whiteboard!);
+    actions.onCancel();
   };
 
   const handleImportTemplate = async (template: WhiteboardTemplateWithContent) => {
@@ -246,6 +249,14 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
       }
     }
   };
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [handleDelete, isDeleting] = useLoadingState(async () => {
+    if (whiteboard) {
+      await actions.onDelete(whiteboard);
+      setDeleteDialogOpen(false);
+      actions.onCancel();
+    }
+  });
 
   const formikRef = useRef<FormikProps<{ displayName: string }>>(null);
 
@@ -333,6 +344,8 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
               <WhiteboardDialogFooter
                 lastSavedDate={lastSavedDate}
                 onSave={handleManualSave}
+                onDelete={() => setDeleteDialogOpen(true)}
+                canDelete={options.canDelete}
                 canUpdateContent={options.canEdit!}
                 updating={state?.updatingWhiteboardContent}
                 createdBy={whiteboard?.createdBy}
@@ -342,6 +355,23 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
           )}
         </Formik>
       </Dialog>
+      <ConfirmationDialog
+        actions={{
+          onConfirm: handleDelete,
+          onCancel: () => setDeleteDialogOpen(false),
+        }}
+        options={{
+          show: deleteDialogOpen,
+        }}
+        entities={{
+          title: t('pages.whiteboard.delete.confirmationTitle'),
+          content: t('pages.whiteboard.delete.confirmationText'),
+          confirmButtonTextId: 'buttons.delete',
+        }}
+        state={{
+          isLoading: isDeleting,
+        }}
+      />
     </>
   );
 };

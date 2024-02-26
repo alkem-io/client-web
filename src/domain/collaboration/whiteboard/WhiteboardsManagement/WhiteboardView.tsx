@@ -58,6 +58,7 @@ const WhiteboardView: FC<WhiteboardViewProps> = ({
   // to update an existing whiteboard
   const hasUpdatePrivileges = authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
   const hasUpdateContentPrivileges = authorization?.myPrivileges?.includes(AuthorizationPrivilege.UpdateContent);
+  const hasDeletePrivileges = authorization?.myPrivileges?.includes(AuthorizationPrivilege.Delete);
 
   const contentUpdatePolicyProvided = useWhiteboardContentUpdatePolicy({
     whiteboardId: whiteboard?.id,
@@ -77,10 +78,12 @@ const WhiteboardView: FC<WhiteboardViewProps> = ({
                 actions={{
                   onCancel: handleCancel,
                   onUpdate: actions.onUpdate,
+                  onDelete: actions.onDelete,
                   onChangeDisplayName: actions.onChangeDisplayName,
                 }}
                 options={{
                   canEdit: hasUpdateContentPrivileges,
+                  canDelete: hasDeletePrivileges,
                   show: Boolean(whiteboardId),
                   dialogTitle: displayName,
                   readOnlyDisplayName: readOnlyDisplayName || !hasUpdatePrivileges,

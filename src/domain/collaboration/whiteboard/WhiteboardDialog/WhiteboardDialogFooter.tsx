@@ -1,23 +1,23 @@
-import React, { MouseEventHandler, useEffect, useState } from 'react';
-import { gutters } from '../../../../core/ui/grid/utils';
-import { CircularProgress, IconButton, Tooltip, useTheme } from '@mui/material';
-import { Caption } from '../../../../core/ui/typography';
-import { LockOutlined, SaveOutlined } from '@mui/icons-material';
-import { Actions } from '../../../../core/ui/actions/Actions';
+import { DeleteOutline, LockOutlined, SaveOutlined, SvgIconComponent } from '@mui/icons-material';
+import { Button, ButtonProps, CircularProgress, Tooltip, TooltipProps, useTheme } from '@mui/material';
+import { FC, MouseEventHandler, forwardRef, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { useAuthenticationContext } from '../../../../core/auth/authentication/hooks/useAuthenticationContext';
+import { useLocation } from 'react-router-dom';
 import { CommunityMembershipStatus, ContentUpdatePolicy } from '../../../../core/apollo/generated/graphql-schema';
-import { formatTimeElapsed } from '../../../shared/utils/formatTimeElapsed';
-import { useSpace } from '../../../journey/space/SpaceContext/useSpace';
+import { useAuthenticationContext } from '../../../../core/auth/authentication/hooks/useAuthenticationContext';
+import { Actions } from '../../../../core/ui/actions/Actions';
+import { gutters } from '../../../../core/ui/grid/utils';
+import RouterLink from '../../../../core/ui/link/RouterLink';
+import { Caption } from '../../../../core/ui/typography';
+import { Identifiable } from '../../../../core/utils/Identifiable';
+import { buildLoginUrl } from '../../../../main/routing/urlBuilders';
+import { Visual } from '../../../common/visual/Visual';
+import useDirectMessageDialog from '../../../communication/messaging/DirectMessaging/useDirectMessageDialog';
+import { getJourneyTypeName } from '../../../journey/JourneyTypeName';
 import { useChallenge } from '../../../journey/challenge/hooks/useChallenge';
 import { useOpportunity } from '../../../journey/opportunity/hooks/useOpportunity';
-import { getJourneyTypeName } from '../../../journey/JourneyTypeName';
-import RouterLink from '../../../../core/ui/link/RouterLink';
-import { useLocation } from 'react-router-dom';
-import { buildLoginUrl } from '../../../../main/routing/urlBuilders';
-import useDirectMessageDialog from '../../../communication/messaging/DirectMessaging/useDirectMessageDialog';
-import { Identifiable } from '../../../../core/utils/Identifiable';
-import { Visual } from '../../../common/visual/Visual';
+import { useSpace } from '../../../journey/space/SpaceContext/useSpace';
+import { formatTimeElapsed } from '../../../shared/utils/formatTimeElapsed';
 
 interface WhiteboardDialogFooterProps {
   onSave: () => void;
@@ -34,6 +34,8 @@ interface WhiteboardDialogFooterProps {
       })
     | undefined;
   contentUpdatePolicy: ContentUpdatePolicy | undefined;
+  onDelete: () => void;
+  canDelete?: boolean;
 }
 
 enum ReadonlyReason {
@@ -42,10 +44,31 @@ enum ReadonlyReason {
   Unauthenticated = 'unauthenticated',
 }
 
+const FooterButton: FC<ButtonProps & { iconComponent: SvgIconComponent; tooltip?: TooltipProps }> = forwardRef(
+  ({ children, iconComponent: Icon, tooltip, sx, ...props }, ref) => {
+    const mergedSx: ButtonProps['sx'] = {
+      textTransform: 'none',
+      '& .MuiTypography-caption': {
+        color: theme => (props.disabled ? theme.palette.text.disabled : theme.palette.text.primary),
+        marginLeft: gutters(0.5),
+      },
+      ...sx,
+    };
+    return (
+      <Button ref={ref} {...props} sx={mergedSx}>
+        <Icon fontSize="small" />
+        {children}
+      </Button>
+    );
+  }
+);
+
 const WhiteboardDialogFooter = ({
   lastSavedDate,
   onSave,
   canUpdateContent,
+  onDelete,
+  canDelete,
   contentUpdatePolicy,
   createdBy,
   updating = false,
@@ -128,39 +151,49 @@ const WhiteboardDialogFooter = ({
       justifyContent="start"
       alignItems="center"
     >
+      {canDelete && (
+        <FooterButton
+          color="error"
+          iconComponent={DeleteOutline}
+          onClick={onDelete}
+          disabled={!canUpdateContent || updating}
+          aria-label={t('buttons.delete')}
+        >
+          <Caption>{t('buttons.delete')}</Caption>
+        </FooterButton>
+      )}
       <Tooltip placement="right" arrow title={<Caption>{t('pages.whiteboard.saveTooltip')}</Caption>}>
-        <IconButton
+        <FooterButton
           color="primary"
-          size="small"
-          sx={{ marginLeft: -0.5 }}
+          iconComponent={canUpdateContent ? SaveOutlined : LockOutlined}
+          aria-label={canUpdateContent ? t('buttons.save') : ''}
           onClick={onSave}
           disabled={!canUpdateContent || updating}
         >
-          {canUpdateContent ? <SaveOutlined /> : <LockOutlined />}
-        </IconButton>
+          {readonlyReason ? (
+            <Caption>
+              <Trans
+                i18nKey={`pages.whiteboard.readonlyReason.${readonlyReason}` as const}
+                values={{
+                  journeyType: journeyTypeName && t(`common.${journeyTypeName}` as const),
+                  ownerName: createdBy?.profile.displayName,
+                }}
+                components={{
+                  ownerlink: createdBy ? (
+                    <RouterLink to={createdBy.profile.url} underline="always" onClick={handleAuthorClick} />
+                  ) : (
+                    <span />
+                  ),
+                  journeylink: journeyProfile ? <RouterLink to={journeyProfile.url} underline="always" /> : <span />,
+                  signinlink: <RouterLink to={buildLoginUrl(pathname)} state={{}} underline="always" />,
+                }}
+              />
+            </Caption>
+          ) : (
+            <LastSavedCaption saving={updating} date={lastSavedDate} />
+          )}
+        </FooterButton>
       </Tooltip>
-      {readonlyReason ? (
-        <Caption>
-          <Trans
-            i18nKey={`pages.whiteboard.readonlyReason.${readonlyReason}` as const}
-            values={{
-              journeyType: journeyTypeName && t(`common.${journeyTypeName}` as const),
-              ownerName: createdBy?.profile.displayName,
-            }}
-            components={{
-              ownerlink: createdBy ? (
-                <RouterLink to={createdBy.profile.url} underline="always" onClick={handleAuthorClick} />
-              ) : (
-                <span />
-              ),
-              journeylink: journeyProfile ? <RouterLink to={journeyProfile.url} underline="always" /> : <span />,
-              signinlink: <RouterLink to={buildLoginUrl(pathname)} state={{}} underline="always" />,
-            }}
-          />
-        </Caption>
-      ) : (
-        <LastSavedCaption saving={updating} date={lastSavedDate} />
-      )}
       {directMessageDialog}
     </Actions>
   );
@@ -188,16 +221,18 @@ const LastSavedCaption = ({ date, saving }: { date: Date | undefined; saving: bo
     return null;
   }
 
-  return saving ? (
-    <Caption title={`${date.toLocaleDateString()} ${date.toLocaleTimeString()}`}>
-      <CircularProgress size={gutters(0.5)(theme)} sx={{ marginRight: gutters(0.5) }} />
-      {t('pages.whiteboard.savingWhiteboard')}
-    </Caption>
-  ) : (
-    <Caption title={`${date.toLocaleDateString()} ${date.toLocaleTimeString()}`}>
-      {t('common.last-saved', {
-        datetime: formattedTime,
-      })}
+  return (
+    <Caption>
+      {saving ? (
+        <>
+          <CircularProgress size={gutters(0.5)(theme)} sx={{ marginRight: gutters(0.5) }} />
+          {t('pages.whiteboard.savingWhiteboard')}
+        </>
+      ) : (
+        t('common.last-saved', {
+          datetime: formattedTime,
+        })
+      )}
     </Caption>
   );
 };
