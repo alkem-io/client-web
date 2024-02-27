@@ -214,6 +214,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
     const references = template.type === CalloutType.LinkCollection ? undefined : template.framing.profile.references;
 
     setCallout({
+      displayName: template.framing.profile.displayName,
       description: template.framing.profile.description,
       tags: template.framing.profile.tagset?.tags,
       references,
