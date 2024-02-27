@@ -66,7 +66,7 @@ const JourneyCalloutsTabView = ({
 
   const handleSelectInnovationFlowState = (state: InnovationFlowState) => setSelectedInnovationFlowState(state);
 
-  const contributeLefCalloutsIds =
+  const contributeLeftCalloutsIds =
     groupedCallouts[CalloutDisplayLocation.ContributeLeft]?.map(callout => callout.id) ?? [];
 
   return (
@@ -88,7 +88,7 @@ const JourneyCalloutsTabView = ({
                       <JourneyCalloutsListItemTitle
                         callout={{
                           ...callout,
-                          flowStates: contributeLefCalloutsIds.includes(callout.id) ? [] : callout.flowStates,
+                          flowStates: contributeLeftCalloutsIds.includes(callout.id) ? [] : callout.flowStates,
                         }}
                       />
                     ),
