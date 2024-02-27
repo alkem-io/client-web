@@ -17,7 +17,7 @@ const useReleaseNotes = (latestNoteUrl: string) => {
     }
   };
 
-  const checkLatestNoteViewed = () => {
+  const hasViewedLastNote = () => {
     const data = localStorage.getItem(LOCALSTORAGE_RELEASE_NOTES_KEY);
     if (!data) {
       return false;
@@ -29,7 +29,7 @@ const useReleaseNotes = (latestNoteUrl: string) => {
     return releaseNotesData.lastSeenNoteId === latestNoteUrl;
   };
 
-  const [isOpen, setIsOpen] = useState(!checkLatestNoteViewed());
+  const [isOpen, setIsOpen] = useState(!hasViewedLastNote());
 
   const handleClose = () => {
     setIsOpen(false);
