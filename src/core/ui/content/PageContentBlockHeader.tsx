@@ -50,7 +50,7 @@ const PageContentBlockHeader = ({
         {disclaimer && <CaptionSmall>{disclaimer}</CaptionSmall>}
         {children}
       </Box>
-      <Actions height={gutters()}>
+      <Actions height={gutters(2)}>
         {actions}
         {dialogAction}
       </Actions>
