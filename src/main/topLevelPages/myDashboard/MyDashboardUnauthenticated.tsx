@@ -25,7 +25,7 @@ const MyDashboardUnauthenticated: FC<MyDashboardUnauthenticatedProps> = () => {
       </PageContentColumn>
       <PageContentColumn columns={8}>
         <ExploreOtherChallenges />
-        <StartingSpace width="100%" />
+        <StartingSpace />
         <MoreAboutAlkemio />
       </PageContentColumn>
     </>
