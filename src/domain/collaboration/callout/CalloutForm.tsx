@@ -211,6 +211,9 @@ const CalloutForm: FC<CalloutFormProps> = ({
     <Formik
       initialValues={initialValues}
       validationSchema={validationSchema}
+      initialTouched={{
+        displayName: true,
+      }}
       enableReinitialize
       validateOnMount
       onSubmit={() => {}}
