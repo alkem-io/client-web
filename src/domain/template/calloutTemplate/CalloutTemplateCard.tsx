@@ -41,7 +41,6 @@ const getCalloutTypeIcon = (template: CalloutTemplate) => {
     case CalloutType.Post:
       return template.contributionPolicy.state === CalloutState.Open ? ForumOutlined : BlockOutlined;
     case CalloutType.Whiteboard:
-    case CalloutType.WhiteboardRt:
       return WhiteboardIcon;
   }
 };

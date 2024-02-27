@@ -1,17 +1,17 @@
 import React, { FC, ReactNode } from 'react';
-import WhiteboardRtActionsContainer from '../containers/WhiteboardRtActionsContainer';
+import WhiteboardActionsContainer from '../containers/WhiteboardActionsContainer';
 import {
   AuthorizationPrivilege,
-  WhiteboardRtContentFragment,
-  WhiteboardRtDetailsFragment,
+  WhiteboardContentFragment,
+  WhiteboardDetailsFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
-import WhiteboardRtContentContainer from '../containers/WhiteboardRtContentContainer';
-import WhiteboardRtDialog from '../WhiteboardDialog/WhiteboardRtDialog';
+import WhiteboardContentContainer from '../containers/WhiteboardContentContainer';
+import WhiteboardDialog from '../WhiteboardDialog/WhiteboardDialog';
 import { useFullscreen } from '../../../../core/ui/fullscreen/useFullscreen';
 import FullscreenButton from '../../../../core/ui/button/FullscreenButton';
 import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
-import useWhiteboardRtContentUpdatePolicy from '../whiteboardRt/contentUpdatePolicy/WhiteboardRtContentUpdatePolicy';
+import useWhiteboardContentUpdatePolicy from '../contentUpdatePolicy/WhiteboardContentUpdatePolicy';
 import WhiteboardShareSettings from '../share/WhiteboardShareSettings';
 
 export interface ActiveWhiteboardIdHolder {
@@ -21,17 +21,17 @@ export interface WhiteboardNavigationMethods {
   backToWhiteboards: () => void;
 }
 
-export interface WhiteboardRtViewProps extends ActiveWhiteboardIdHolder, WhiteboardNavigationMethods {
+export interface WhiteboardViewProps extends ActiveWhiteboardIdHolder, WhiteboardNavigationMethods {
   journeyTypeName: JourneyTypeName;
-  whiteboard: WhiteboardRtDetailsFragment | undefined;
-  authorization: WhiteboardRtDetailsFragment['authorization'];
+  whiteboard: WhiteboardDetailsFragment | undefined;
+  authorization: WhiteboardDetailsFragment['authorization'];
   whiteboardShareUrl: string;
   displayName?: ReactNode;
   readOnlyDisplayName?: boolean;
   loadingWhiteboards: boolean;
 }
 
-const WhiteboardRtView: FC<WhiteboardRtViewProps> = ({
+const WhiteboardView: FC<WhiteboardViewProps> = ({
   whiteboardId,
   whiteboard,
   authorization,
@@ -58,28 +58,32 @@ const WhiteboardRtView: FC<WhiteboardRtViewProps> = ({
   // to update an existing whiteboard
   const hasUpdatePrivileges = authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
   const hasUpdateContentPrivileges = authorization?.myPrivileges?.includes(AuthorizationPrivilege.UpdateContent);
+  const hasDeletePrivileges = authorization?.myPrivileges?.includes(AuthorizationPrivilege.Delete);
 
-  const contentUpdatePolicyProvided = useWhiteboardRtContentUpdatePolicy({
+  const contentUpdatePolicyProvided = useWhiteboardContentUpdatePolicy({
     whiteboardId: whiteboard?.id,
     skip: !hasUpdatePrivileges,
   });
 
   return (
-    <WhiteboardRtActionsContainer>
+    <WhiteboardActionsContainer>
       {(_, actionsState, actions) => (
-        <WhiteboardRtContentContainer whiteboardId={whiteboard?.id}>
+        <WhiteboardContentContainer whiteboardId={whiteboard?.id}>
           {entities => {
             return (
-              <WhiteboardRtDialog
+              <WhiteboardDialog
                 entities={{
-                  whiteboard: entities.whiteboard as WhiteboardRtContentFragment & WhiteboardRtDetailsFragment,
+                  whiteboard: entities.whiteboard as WhiteboardContentFragment & WhiteboardDetailsFragment,
                 }}
                 actions={{
                   onCancel: handleCancel,
                   onUpdate: actions.onUpdate,
+                  onDelete: actions.onDelete,
+                  onChangeDisplayName: actions.onChangeDisplayName,
                 }}
                 options={{
                   canEdit: hasUpdateContentPrivileges,
+                  canDelete: hasDeletePrivileges,
                   show: Boolean(whiteboardId),
                   dialogTitle: displayName,
                   readOnlyDisplayName: readOnlyDisplayName || !hasUpdatePrivileges,
@@ -106,10 +110,10 @@ const WhiteboardRtView: FC<WhiteboardRtViewProps> = ({
               />
             );
           }}
-        </WhiteboardRtContentContainer>
+        </WhiteboardContentContainer>
       )}
-    </WhiteboardRtActionsContainer>
+    </WhiteboardActionsContainer>
   );
 };
 
-export default WhiteboardRtView;
+export default WhiteboardView;

@@ -74,9 +74,6 @@ fragment Callout on Callout {
     whiteboard {
       ...WhiteboardDetails
     }
-    whiteboardRt {
-      ...WhiteboardRtDetails
-    }
   }
   contributionPolicy {
     state
@@ -89,9 +86,6 @@ fragment Callout on Callout {
   sortOrder
   activity
   contributions {
-    whiteboard {
-      ...WhiteboardDetails
-    }
     link {
       ...LinkDetailsWithAuthorization
     }

@@ -2,7 +2,6 @@ import { useCallback } from 'react';
 import {
   useCreateCalloutTemplateMutation,
   useSpaceTemplateSetIdLazyQuery,
-  useWhiteboardRtWithContentLazyQuery,
   useWhiteboardWithContentLazyQuery,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import {
@@ -29,8 +28,6 @@ export const useCreateCalloutTemplate = (): CalloutCreationUtils => {
 
   const [fetchWhiteboardWithContent] = useWhiteboardWithContentLazyQuery();
 
-  const [fetchWhiteboardRtWithContent] = useWhiteboardRtWithContentLazyQuery();
-
   const handleCreateCalloutTemplate = useCallback(
     async (values: CalloutTemplateFormSubmittedValues, callout: CalloutLayoutProps['callout'], spaceNameId: string) => {
       const { data: templatesData } = await fetchTemplateSetId({ variables: { spaceId: spaceNameId } });
@@ -52,14 +49,6 @@ export const useCreateCalloutTemplate = (): CalloutCreationUtils => {
           variables: { whiteboardId: callout.framing.whiteboard.id },
         });
         whiteboardContent = whiteboardWithContent?.lookup.whiteboard?.content ?? '';
-      }
-
-      let whiteboardRtContent = '';
-      if (callout.type === CalloutType.WhiteboardRt && callout.framing.whiteboardRt) {
-        const { data: whiteboardRtWithContent } = await fetchWhiteboardRtWithContent({
-          variables: { whiteboardId: callout.framing.whiteboardRt.id },
-        });
-        whiteboardRtContent = whiteboardRtWithContent?.lookup.whiteboardRt?.content ?? '';
       }
 
       const res = await createCalloutTemplate({
@@ -84,13 +73,6 @@ export const useCreateCalloutTemplate = (): CalloutCreationUtils => {
               profileData: {
                 displayName: callout.framing.whiteboard.profile.displayName,
                 description: callout.framing.whiteboard.profile.description,
-              },
-            },
-            whiteboardRt: callout.framing.whiteboardRt && {
-              content: whiteboardRtContent,
-              profileData: {
-                displayName: callout.framing.whiteboardRt.profile.displayName,
-                description: callout.framing.whiteboardRt.profile.description,
               },
             },
           },

@@ -3,66 +3,62 @@ import { useTranslation } from 'react-i18next';
 import { Formik } from 'formik';
 import { FormikProps } from 'formik/dist/types';
 import { serializeAsJSON } from '@alkemio/excalidraw';
-import { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/types/types';
-import { Delete, Save } from '@mui/icons-material';
-import LockClockIcon from '@mui/icons-material/LockClock';
+import { BinaryFileData, ExcalidrawImperativeAPI } from '@alkemio/excalidraw/types/types';
 import Dialog from '@mui/material/Dialog';
 import { makeStyles } from '@mui/styles';
-import { LockedByDetailsFragment } from '../../../../core/apollo/generated/graphql-schema';
-import TranslationKey from '../../../../core/i18n/utils/TranslationKey';
 import Loading from '../../../../core/ui/loading/Loading';
 import { DialogContent } from '../../../../core/ui/dialog/deprecated';
-import ExcalidrawWrapper from '../../../common/whiteboard/excalidraw/ExcalidrawWrapper';
+import CollaborativeExcalidrawWrapper from '../../../common/whiteboard/excalidraw/CollaborativeExcalidrawWrapper';
 import { ExportedDataState } from '@alkemio/excalidraw/types/data/types';
-import Authorship from '../../../../core/ui/authorship/Authorship';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
-import { Box, Button, ButtonProps } from '@mui/material';
-import { LoadingButton } from '@mui/lab';
-import { Actions } from '../../../../core/ui/actions/Actions';
-import { gutters } from '../../../../core/ui/grid/utils';
-import FlexSpacer from '../../../../core/ui/utils/FlexSpacer';
 import whiteboardSchema from '../validation/whiteboardSchema';
-import isWhiteboardContentEqual from '../utils/isWhiteboardContentEqual';
-import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
-import { PageTitle } from '../../../../core/ui/typography';
 import WhiteboardTemplatesLibrary from '../WhiteboardTemplatesLibrary/WhiteboardTemplatesLibrary';
 import { WhiteboardTemplateWithContent } from '../WhiteboardTemplateCard/WhiteboardTemplate';
 import mergeWhiteboard from '../utils/mergeWhiteboard';
 import { error as logError } from '../../../../core/logging/sentry/log';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
-import { WhiteboardWithContent, WhiteboardWithoutContent } from '../containers/WhiteboardContentContainer';
+import { WhiteboardWithContent } from '../containers/WhiteboardContentContainer';
 import {
   generateWhiteboardPreviewImages,
   WhiteboardPreviewImage,
 } from '../WhiteboardPreviewImages/WhiteboardPreviewImages';
+import { useWhiteboardLastUpdatedDateQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { CollabAPI } from '../../../common/whiteboard/excalidraw/collab/useCollab';
 import useWhiteboardFilesManager from '../../../common/whiteboard/excalidraw/useWhiteboardFilesManager';
+import WhiteboardDialogFooter from './WhiteboardDialogFooter';
+import { useLocation } from 'react-router-dom';
+import { ExcalidrawElement, ExcalidrawImageElement } from '@alkemio/excalidraw/types/element/types';
+import WhiteboardDisplayName from './WhiteboardDisplayName';
+import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
+import useLoadingState from '../../../shared/utils/useLoadingState';
 
 interface WhiteboardDialogProps<Whiteboard extends WhiteboardWithContent> {
   entities: {
     whiteboard?: Whiteboard;
-    lockedBy?: LockedByDetailsFragment;
   };
   actions: {
-    onCancel: (whiteboard: WhiteboardWithoutContent<Whiteboard>) => void;
-    onCheckin?: (whiteboard: WhiteboardWithoutContent<Whiteboard>) => void;
-    onCheckout?: (whiteboard: WhiteboardWithoutContent<Whiteboard>) => void;
-    onUpdate: (whiteboard: Whiteboard, previewImages?: WhiteboardPreviewImage[]) => void;
-    onDelete?: (whiteboard: WhiteboardWithoutContent<Whiteboard>) => void;
+    onCancel: () => void;
+    onUpdate: (
+      whiteboard: Whiteboard,
+      previewImages?: WhiteboardPreviewImage[]
+    ) => Promise<{ success: boolean; errors?: string[] }>;
+    onChangeDisplayName: (whiteboardId: string | undefined, newDisplayName: string) => Promise<void>;
+    onDelete: (whiteboard: Whiteboard) => Promise<void>;
   };
   options: {
     show: boolean;
-    canCheckout?: boolean;
     canEdit?: boolean;
     canDelete?: boolean;
-    checkedOutByMe: boolean;
     headerActions?: ReactNode;
-    fixedDialogTitle?: ReactNode;
+    dialogTitle: ReactNode;
     fullscreen?: boolean;
     allowFilesAttached?: boolean;
+    readOnlyDisplayName?: boolean;
+    editDisplayName?: boolean;
   };
   state?: {
-    updatingWhiteboard?: boolean;
-    loadingWhiteboardContent?: boolean;
+    updatingWhiteboardContent?: boolean;
+    loadingWhiteboardValue?: boolean;
     changingWhiteboardLockState?: boolean;
   };
 }
@@ -90,14 +86,28 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-interface Option extends Omit<ButtonProps, 'disabled'> {
-  label: TranslationKey;
-  disabled: (formik: Pick<FormikProps<unknown>, 'isValid'>) => ButtonProps['disabled'];
-}
-
-type WhiteboardAction = 'save-and-checkin' | 'checkout';
-
 type RelevantExcalidrawState = Pick<ExportedDataState, 'appState' | 'elements' | 'files'>;
+
+const checkWhiteboardConsistency = (
+  whiteboardId: string | undefined,
+  elements: readonly ExcalidrawElement[],
+  files: Record<BinaryFileData['id'], BinaryFileData & { url?: string }>
+) => {
+  const missingImages = elements.filter(
+    element =>
+      element.type === 'image' && (!element.fileId || !files || !files[element.fileId] || !files[element.fileId].url)
+  ) as ExcalidrawImageElement[];
+
+  if (missingImages.length > 0) {
+    logError(
+      new Error(
+        `Whiteboard is missing images '${whiteboardId}':[${missingImages.map(image => image.fileId).join(', ')}]`
+      )
+    );
+    return false;
+  }
+  return true;
+};
 
 const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
   entities,
@@ -107,22 +117,33 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
 }: WhiteboardDialogProps<Whiteboard>) => {
   const { t } = useTranslation();
   const notify = useNotification();
-  const { whiteboard, lockedBy } = entities;
+  const { whiteboard } = entities;
+
+  const { pathname } = useLocation();
+
+  const initialPathname = useRef(pathname).current;
+
+  useEffect(() => {
+    if (pathname !== initialPathname) {
+      onClose();
+    }
+  }, [pathname]);
+
   const [excalidrawAPI, setExcalidrawAPI] = useState<ExcalidrawImperativeAPI | null>(null);
+  const collabApiRef = useRef<CollabAPI>(null);
+  const editModeEnabled = options.canEdit;
 
   const styles = useStyles();
 
-  const getExcalidrawStateFromApi = () => {
-    if (!excalidrawAPI) {
-      return;
-    }
+  const { data: lastSaved, refetch: refetchLastSaved } = useWhiteboardLastUpdatedDateQuery({
+    variables: { whiteboardId: whiteboard?.id! },
+    skip: !whiteboard?.id,
+  });
 
-    const appState = excalidrawAPI.getAppState();
-    const elements = excalidrawAPI.getSceneElements();
-    const files = excalidrawAPI.getFiles();
-
-    return { appState, elements, files };
-  };
+  const lastSavedDate = useMemo(
+    () => lastSaved?.lookup.whiteboard?.updatedDate && new Date(lastSaved.lookup.whiteboard.updatedDate),
+    [lastSaved?.lookup.whiteboard?.updatedDate]
+  );
 
   const filesManager = useWhiteboardFilesManager({
     excalidrawAPI,
@@ -130,23 +151,37 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
     allowFallbackToAttached: options.allowFilesAttached,
   });
 
-  const handleUpdate = async (whiteboard: WhiteboardWithContent, state: RelevantExcalidrawState | undefined) => {
+  const prepareWhiteboardForUpdate = async (
+    whiteboard: WhiteboardWithContent,
+    state: RelevantExcalidrawState | undefined,
+    shouldUploadPreviewImages = true
+  ): Promise<{
+    whiteboard: Whiteboard;
+    previewImages?: WhiteboardPreviewImage[];
+    whiteboardIsConsistent: boolean;
+  }> => {
     if (!state) {
-      return;
+      throw new Error('Excalidraw state not defined');
     }
+
     const { appState, elements, files } = await filesManager.convertLocalFilesToRemoteInWhiteboard(state);
 
-    const previewImages = await generateWhiteboardPreviewImages(whiteboard, state);
+    const previewImages =
+      shouldUploadPreviewImages && !filesManager.loading.downloadingFiles
+        ? await generateWhiteboardPreviewImages(whiteboard, state)
+        : undefined;
+
     const content = serializeAsJSON(elements, appState, files ?? {}, 'local');
+    const whiteboardIsConsistent = checkWhiteboardConsistency(whiteboard.id, elements, files ?? {});
 
     if (!formikRef.current?.isValid) {
-      return;
+      throw new Error('Form not valid');
     }
 
     const displayName = formikRef.current?.values.displayName ?? whiteboard?.profile?.displayName;
 
-    return actions.onUpdate(
-      {
+    return {
+      whiteboard: {
         ...whiteboard,
         profile: {
           ...whiteboard.profile,
@@ -154,46 +189,50 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
         },
         content,
       } as Whiteboard,
-      previewImages
-    );
+      previewImages,
+      whiteboardIsConsistent,
+    };
   };
 
-  const actionMap: { [key in keyof typeof whiteboardActions]: ((whiteboard: Whiteboard) => void) | undefined } = {
-    'save-and-checkin': async whiteboard => {
-      const state = getExcalidrawStateFromApi();
-
-      formikRef.current?.setTouched({ displayName: true }, true);
-
-      await handleUpdate(whiteboard, state);
-
-      await actions.onCheckin?.(whiteboard);
-    },
-    checkout: actions.onCheckout,
-  };
-
-  const onClose = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    if (excalidrawAPI && options.canEdit) {
-      const elements = excalidrawAPI.getSceneElements();
-      const appState = excalidrawAPI.getAppState();
-      const files = excalidrawAPI.getFiles();
-      const content = serializeAsJSON(elements, appState, files, 'local');
-
-      if (!isWhiteboardContentEqual(whiteboard?.content, content) || formikRef.current?.dirty) {
-        if (
-          !window.confirm('It seems you have unsaved changes which will be lost. Are you sure you want to continue?')
-        ) {
-          event.stopPropagation();
-          event.preventDefault();
-          return;
-        }
-      }
+  const getWhiteboardState = async () => {
+    if (!whiteboard || !excalidrawAPI) {
+      return;
     }
+    const content = JSON.parse(whiteboard.content) as RelevantExcalidrawState;
+    return {
+      ...content,
+      elements: excalidrawAPI.getSceneElements(),
+      appState: excalidrawAPI.getAppState(),
+      files: excalidrawAPI.getFiles(),
+    };
+  };
 
-    actions.onCancel(whiteboard!);
+  const handleManualSave = async () => {
+    if (!whiteboard) {
+      throw new Error('Whiteboard not defined');
+    }
+    const whiteboardState = await getWhiteboardState();
+    const { whiteboard: updatedWhiteboard, previewImages } = await prepareWhiteboardForUpdate(
+      whiteboard,
+      whiteboardState
+    );
+    return actions.onUpdate(updatedWhiteboard, previewImages);
+  };
+
+  const onClose = async () => {
+    if (editModeEnabled && collabApiRef.current?.isCollaborating() && whiteboard) {
+      const whiteboardState = await getWhiteboardState();
+      const { whiteboard: updatedWhiteboard, previewImages } = await prepareWhiteboardForUpdate(
+        whiteboard,
+        whiteboardState
+      );
+      actions.onUpdate(updatedWhiteboard, previewImages);
+    }
+    actions.onCancel();
   };
 
   const handleImportTemplate = async (template: WhiteboardTemplateWithContent) => {
-    if (excalidrawAPI && options.canEdit && options.checkedOutByMe) {
+    if (excalidrawAPI) {
       try {
         mergeWhiteboard(excalidrawAPI, template.content);
       } catch (err) {
@@ -204,7 +243,14 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
     }
   };
 
-  const currentAction: WhiteboardAction = options.checkedOutByMe ? 'save-and-checkin' : 'checkout';
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [handleDelete, isDeleting] = useLoadingState(async () => {
+    if (whiteboard) {
+      await actions.onDelete(whiteboard);
+      setDeleteDialogOpen(false);
+      actions.onCancel();
+    }
+  });
 
   const formikRef = useRef<FormikProps<{ displayName: string }>>(null);
 
@@ -219,128 +265,118 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
     });
   }, [initialValues]);
 
-  const whiteboardActions: Record<WhiteboardAction, Option> = {
-    'save-and-checkin': {
-      label: 'pages.whiteboard.state-actions.save',
-      disabled: ({ isValid }) => !isValid,
-      startIcon: <Save />,
-    },
-    checkout: {
-      label: 'pages.whiteboard.state-actions.check-out',
-      disabled: () => !options.canCheckout,
-      startIcon: <LockClockIcon />,
-    },
-  };
+  if (state?.loadingWhiteboardValue) {
+    return <Loading text="Loading whiteboard..." />;
+  }
+
+  if (!whiteboard) {
+    return null;
+  }
 
   return (
-    <Dialog
-      open={options.show}
-      aria-labelledby="whiteboard-dialog"
-      maxWidth={false}
-      fullWidth
-      classes={{
-        paper: options.fullscreen ? styles.dialogFullscreen : styles.dialogRoot,
-      }}
-      onClose={onClose}
-      fullScreen={options.fullscreen}
-    >
-      <Formik
-        innerRef={formikRef}
-        initialValues={initialValues}
-        onSubmit={() => {}}
-        validationSchema={whiteboardSchema}
+    <>
+      <CollaborativeExcalidrawWrapper
+        entities={{ whiteboard, filesManager, lastSavedDate }}
+        collabApiRef={collabApiRef}
+        options={{
+          UIOptions: {
+            canvasActions: {
+              export: {
+                saveFileToDisk: true,
+              },
+            },
+          },
+        }}
+        actions={{
+          onInitApi: setExcalidrawAPI,
+          onUpdate: async state => {
+            const { whiteboard: updatedWhiteboard, previewImages } = await prepareWhiteboardForUpdate(
+              whiteboard,
+              state,
+              false
+            );
+            return actions.onUpdate(updatedWhiteboard, previewImages);
+          },
+          onSavedToDatabase: () => {
+            refetchLastSaved({
+              whiteboardId: whiteboard.id,
+            });
+          },
+        }}
       >
-        {({ isValid }) => (
-          <>
-            <DialogHeader
-              actions={options.headerActions}
-              onClose={onClose}
-              titleContainerProps={{ flexDirection: options.checkedOutByMe ? 'row' : 'column' }}
+        {({ children, mode, modeReason }) => {
+          return (
+            <Formik
+              innerRef={formikRef}
+              initialValues={initialValues}
+              onSubmit={() => {}}
+              validationSchema={whiteboardSchema}
             >
-              {options.checkedOutByMe ? (
-                <>
-                  {options.fixedDialogTitle ? (
-                    options.fixedDialogTitle
-                  ) : (
-                    <Box
-                      component={FormikInputField}
-                      title={t('fields.displayName')}
-                      name="displayName"
-                      size="small"
-                      maxWidth={gutters(30)}
-                    />
-                  )}
-                  <WhiteboardTemplatesLibrary onImportTemplate={handleImportTemplate} />
-                </>
-              ) : (
-                <>
-                  <Authorship
-                    authorAvatarUri={whiteboard?.createdBy?.profile.visual?.uri}
-                    authorName={whiteboard?.createdBy?.profile.displayName}
-                    date={whiteboard?.createdDate}
-                  >
-                    {whiteboard?.createdBy?.profile.displayName}
-                  </Authorship>
-                  <PageTitle>{whiteboard?.profile?.displayName}</PageTitle>
-                </>
-              )}
-            </DialogHeader>
-            <DialogContent classes={{ root: styles.dialogContent }}>
-              {!state?.loadingWhiteboardContent && whiteboard && (
-                <ExcalidrawWrapper
-                  entities={{
-                    whiteboard,
-                    filesManager,
-                  }}
-                  options={{
-                    viewModeEnabled: !options.canEdit,
-                    UIOptions: {
-                      canvasActions: {
-                        export: options.canEdit
-                          ? {
-                              saveFileToDisk: true,
-                            }
-                          : false,
-                      },
-                    },
-                  }}
-                  actions={{
-                    onUpdate: state => {
-                      handleUpdate(whiteboard, state);
-                    },
-                    onInitApi: setExcalidrawAPI,
-                  }}
-                />
-              )}
-              {state?.loadingWhiteboardContent && <Loading text="Loading whiteboard..." />}
-            </DialogContent>
-            <Actions padding={gutters()} paddingTop={0} justifyContent="space-between">
-              {options.checkedOutByMe && actions.onDelete && (
-                <Button startIcon={<Delete />} onClick={() => actions.onDelete!(whiteboard!)} color="error">
-                  {t('pages.whiteboard.state-actions.delete')}
-                </Button>
-              )}
-              <FlexSpacer />
-              {lockedBy && (
-                <Authorship authorAvatarUri={lockedBy.profile.visual?.uri} authorName={lockedBy.profile.displayName}>
-                  {t('pages.whiteboard.locked-by', { user: lockedBy.profile.displayName })}
-                </Authorship>
-              )}
-              <LoadingButton
-                startIcon={whiteboardActions[currentAction].startIcon}
-                onClick={() => actionMap[currentAction]?.(whiteboard!)}
-                loadingPosition="start"
-                variant="contained"
-                loading={state?.changingWhiteboardLockState || state?.updatingWhiteboard}
-                disabled={whiteboardActions[currentAction].disabled({ isValid })}
+              <Dialog
+                open={options.show}
+                aria-labelledby="whiteboard-dialog"
+                maxWidth={false}
+                fullWidth
+                classes={{
+                  paper: options.fullscreen ? styles.dialogFullscreen : styles.dialogRoot,
+                }}
+                onClose={onClose}
+                fullScreen={options.fullscreen}
               >
-                {t(whiteboardActions[currentAction].label)}
-              </LoadingButton>
-            </Actions>
-          </>
-        )}
-      </Formik>
-    </Dialog>
+                <DialogHeader
+                  actions={options.headerActions}
+                  onClose={onClose}
+                  title={
+                    <WhiteboardDisplayName
+                      displayName={whiteboard?.profile?.displayName}
+                      readOnlyDisplayName={options.readOnlyDisplayName}
+                      editDisplayName={options.editDisplayName}
+                      onChangeDisplayName={newDisplayName =>
+                        actions.onChangeDisplayName(whiteboard?.id, newDisplayName)
+                      }
+                    />
+                  }
+                  titleContainerProps={{ flexDirection: 'row' }}
+                >
+                  {editModeEnabled && <WhiteboardTemplatesLibrary onImportTemplate={handleImportTemplate} />}
+                </DialogHeader>
+                <DialogContent classes={{ root: styles.dialogContent }}>{children}</DialogContent>
+                <WhiteboardDialogFooter
+                  collaboratorMode={mode}
+                  collaboratorModeReason={modeReason}
+                  lastSavedDate={lastSavedDate}
+                  onSave={handleManualSave}
+                  onDelete={() => setDeleteDialogOpen(true)}
+                  canDelete={options.canDelete}
+                  canUpdateContent={options.canEdit!}
+                  updating={state?.updatingWhiteboardContent}
+                  createdBy={whiteboard?.createdBy}
+                  contentUpdatePolicy={whiteboard?.contentUpdatePolicy}
+                />
+              </Dialog>
+            </Formik>
+          );
+        }}
+      </CollaborativeExcalidrawWrapper>
+
+      <ConfirmationDialog
+        actions={{
+          onConfirm: handleDelete,
+          onCancel: () => setDeleteDialogOpen(false),
+        }}
+        options={{
+          show: deleteDialogOpen,
+        }}
+        entities={{
+          title: t('pages.whiteboard.delete.confirmationTitle'),
+          content: t('pages.whiteboard.delete.confirmationText'),
+          confirmButtonTextId: 'buttons.delete',
+        }}
+        state={{
+          isLoading: isDeleting,
+        }}
+      />
+    </>
   );
 };
 

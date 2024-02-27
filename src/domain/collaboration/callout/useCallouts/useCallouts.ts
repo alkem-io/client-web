@@ -12,7 +12,6 @@ import {
   CalloutType,
   CalloutVisibility,
   WhiteboardDetailsFragment,
-  WhiteboardRtDetailsFragment,
   CommentsWithMessagesFragment,
   ContributeTabPostFragment,
   CalloutContributionPolicy,
@@ -29,7 +28,6 @@ import { useCollaborationAuthorization } from '../../authorization/useCollaborat
 export type PostFragmentWithCallout = ContributeTabPostFragment & { calloutNameId: string };
 
 export type WhiteboardFragmentWithCallout = WhiteboardDetailsFragment & { calloutNameId: string };
-export type WhiteboardRtFragmentWithCallout = WhiteboardRtDetailsFragment & { calloutNameId: string };
 
 export type CommentsWithMessagesFragmentWithCallout = CommentsWithMessagesFragment & { calloutNameId: string };
 
@@ -49,7 +47,6 @@ export type TypedCallout = Pick<
       };
     };
     whiteboard: WhiteboardFragmentWithCallout;
-    whiteboardRt: WhiteboardRtFragmentWithCallout;
   };
   contribution?: Pick<CalloutContribution, 'link' | 'post' | 'whiteboard'>;
   type: CalloutType;
@@ -157,9 +154,6 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
             profile: callout.framing.profile,
             whiteboard: callout.framing.whiteboard
               ? { ...callout.framing.whiteboard, calloutNameId: callout.nameID }
-              : undefined,
-            whiteboardRt: callout.framing.whiteboardRt
-              ? { ...callout.framing.whiteboardRt, calloutNameId: callout.nameID }
               : undefined,
           },
           comments: callout.comments ? { ...callout.comments, calloutNameId: callout.nameID } : undefined,
