@@ -10,7 +10,6 @@ import {
   CreateTagsetInput,
 } from '../../../../../core/apollo/generated/graphql-schema';
 import { WhiteboardFieldSubmittedValues } from '../CalloutWhiteboardField/CalloutWhiteboardField';
-import { WhiteboardRtFieldSubmittedValues } from '../CalloutWhiteboardField/CalloutWhiteboardRtField';
 import { useCollaborationAuthorization } from '../../../authorization/useCollaborationAuthorization';
 
 export interface CalloutCreationType {
@@ -22,7 +21,6 @@ export interface CalloutCreationType {
       tagsets?: CreateTagsetInput[];
     };
     whiteboard?: WhiteboardFieldSubmittedValues;
-    whiteboardRt?: WhiteboardRtFieldSubmittedValues;
     tags?: string[];
   };
   contributionDefaults?: {

@@ -1,0 +1,12 @@
+query CalloutWhiteboards($calloutId: UUID!) {
+  lookup {
+    callout(ID: $calloutId) {
+      id
+      contributions {
+        whiteboard {
+          ...WhiteboardDetails
+        }
+      }
+    }
+  }
+}

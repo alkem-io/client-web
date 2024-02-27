@@ -24,7 +24,7 @@ const CalloutTemplatePreview = ({ template }: CalloutTemplatePreviewProps) => {
 
   const { framing } = data.lookup.calloutTemplate;
 
-  const whiteboard = data.lookup.calloutTemplate.framing.whiteboard ?? data.lookup.calloutTemplate.framing.whiteboardRt;
+  const { whiteboard } = data.lookup.calloutTemplate.framing;
 
   return (
     <PageContentBlock>

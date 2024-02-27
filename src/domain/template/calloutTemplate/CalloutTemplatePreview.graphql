@@ -24,9 +24,6 @@ fragment CalloutTemplatePreview on CalloutTemplate {
     whiteboard {
       ...WhiteboardDetails
     }
-    whiteboardRt {
-      ...WhiteboardRtDetails
-    }
   }
   contributionPolicy {
     state

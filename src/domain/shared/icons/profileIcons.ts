@@ -55,8 +55,6 @@ export const getProfileIcon = (profileType: ProfileType): ComponentType<SvgIconP
       return PeopleAltOutlined;
     case ProfileType.Whiteboard:
       return calloutIcons.WHITEBOARD;
-    case ProfileType.WhiteboardRt:
-      return calloutIcons.WHITEBOARD_RT;
     case ProfileType.WhiteboardTemplate:
       return calloutIcons.WHITEBOARD_COLLECTION;
     case ProfileType.ContributionLink:

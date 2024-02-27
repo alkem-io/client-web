@@ -44,7 +44,7 @@ import { Reference, Tagset } from '../../common/profile/Profile';
 import References from '../../shared/components/References/References';
 import TagsComponent from '../../shared/components/TagsComponent/TagsComponent';
 import { JourneyTypeName } from '../../journey/JourneyTypeName';
-import { WhiteboardFragmentWithCallout, WhiteboardRtFragmentWithCallout } from '../callout/useCallouts/useCallouts';
+import { WhiteboardFragmentWithCallout } from '../callout/useCallouts/useCallouts';
 import CreateCalloutTemplateDialog from '../../platform/admin/templates/CalloutTemplates/CreateCalloutTemplateDialog';
 import { CalloutTemplateFormSubmittedValues } from '../../platform/admin/templates/CalloutTemplates/CalloutTemplateForm';
 import { useCreateCalloutTemplate } from '../../platform/admin/templates/CalloutTemplates/useCreateCalloutTemplate';
@@ -71,7 +71,6 @@ export interface CalloutLayoutProps extends CalloutLayoutEvents, Partial<Callout
         };
       };
       whiteboard?: WhiteboardFragmentWithCallout;
-      whiteboardRt?: WhiteboardRtFragmentWithCallout;
     };
     comments?: {
       messages: MessageDetailsFragment[] | undefined;
