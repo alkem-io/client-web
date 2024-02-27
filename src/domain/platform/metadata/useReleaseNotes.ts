@@ -1,5 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useEffect, useState } from 'react';
 
 const LOCALSTORAGE_RELEASE_NOTES_KEY = 'releaseNotes';
 
@@ -7,26 +6,7 @@ interface ReleaseNotesData {
   lastSeenNoteId: string;
 }
 
-type NoteType = {
-  id: string;
-  icon: string;
-  title: string;
-  content: string;
-};
-
-export const useReleaseNotes = () => {
-  const { t } = useTranslation();
-  const notes = t('notifications.releaseUpdates', { returnObjects: true });
-  // get only the value and reverse it to get the latest note first
-  // json object keys are ordered in alphanumerical order
-  const [latestNote, ...previousNotes]: NoteType[] = Object.entries(notes)
-    .reverse()
-    .map(([key, note]) => ({
-      ...note,
-      id: key,
-      icon: t('notifications.icon'),
-    }));
-
+const useReleaseNotes = (latestNoteUrl: string) => {
   const checkLatestNoteViewed = () => {
     const data = localStorage.getItem(LOCALSTORAGE_RELEASE_NOTES_KEY);
     if (!data) {
@@ -34,28 +14,18 @@ export const useReleaseNotes = () => {
     }
     try {
       const { lastSeenNoteId } = JSON.parse(data) as ReleaseNotesData;
-      return lastSeenNoteId === latestNote.id;
+      return lastSeenNoteId === latestNoteUrl;
     } catch {
       return false;
     }
   };
 
-  const [isLatestNoteViewed, setIsLatestNoteViewed] = useState(checkLatestNoteViewed());
+  const [isOpen, setIsOpen] = useState(!checkLatestNoteViewed());
 
-  const _setIsLatestNoteViewed = useCallback(
-    (isViewed: boolean) => {
-      if (isViewed) {
-        const data: ReleaseNotesData = {
-          lastSeenNoteId: latestNote.id,
-        };
-        localStorage.setItem(LOCALSTORAGE_RELEASE_NOTES_KEY, JSON.stringify(data));
-      } else {
-        localStorage.removeItem(LOCALSTORAGE_RELEASE_NOTES_KEY);
-      }
-      setIsLatestNoteViewed(isViewed);
-    },
-    [setIsLatestNoteViewed]
-  );
+  const handleClose = () => {
+    setIsOpen(false);
+    localStorage.setItem(LOCALSTORAGE_RELEASE_NOTES_KEY, JSON.stringify({ lastSeenNoteId: latestNoteUrl }));
+  };
 
   useEffect(() => {
     // Detect value changes on other tabs:
@@ -64,17 +34,18 @@ export const useReleaseNotes = () => {
         return;
       }
 
-      setIsLatestNoteViewed(e.newValue === latestNote.id);
+      setIsOpen(e.newValue === latestNoteUrl);
     };
+
     window.addEventListener('storage', onStorageChange);
 
     return () => window.removeEventListener('storage', onStorageChange);
   }, []);
 
   return {
-    latestNote,
-    previousNotes,
-    isLatestNoteViewed,
-    setIsLatestNoteViewed: _setIsLatestNoteViewed,
+    open: isOpen,
+    onClose: handleClose,
   };
 };
+
+export default useReleaseNotes;

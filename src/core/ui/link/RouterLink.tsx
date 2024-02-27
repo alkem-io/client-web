@@ -3,7 +3,7 @@ import { Link as ReactRouterLink, LinkProps as ReactRouterLinkProps } from 'reac
 import { isAbsoluteUrl, normalizeLink } from '../../utils/links';
 import { forwardRef } from 'react';
 
-export interface RouterLinkProps extends Omit<ReactRouterLinkProps, 'target'>, Pick<MuiLinkProps, 'underline'> {
+export interface RouterLinkProps extends Omit<ReactRouterLinkProps, 'target'>, Pick<MuiLinkProps, 'underline' | 'sx'> {
   to: string;
   strict?: boolean;
   raw?: boolean;
