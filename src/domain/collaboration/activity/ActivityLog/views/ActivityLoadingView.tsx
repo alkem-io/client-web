@@ -17,7 +17,8 @@ export const ActivityLoadingView: FC<ActivityLoadingViewProps> = ({ rows }) => {
           key={`_activity_log_loading_view_row_${i}`}
           loading
           type={undefined}
-          author={undefined}
+          displayName={undefined}
+          avatarUrl={undefined}
           title=""
           url=""
           footerComponent={Footer}
