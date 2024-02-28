@@ -12,6 +12,7 @@ import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import LoadingIconButton from '../../../../core/ui/button/LoadingIconButton';
 
 interface Entity extends Identifiable {
+  email: string;
   profile: {
     displayName: string;
   };
@@ -62,7 +63,7 @@ const CommunityAddMembersDialog: FC<CommunityAddMembersDialogProps> = ({ onClose
       field: 'profile.displayName',
       headerName: t('common.name'),
       renderHeader: () => <>{t('common.name')}</>,
-      renderCell: ({ row }: RenderParams) => <>{row.profile.displayName}</>,
+      renderCell: ({ row }: RenderParams) => <>{`${row.profile.displayName} (${row.email})`}</>,
       valueGetter: ({ row }: GetterParams) => row.profile.displayName,
       filterable: false,
       resizable: true,
