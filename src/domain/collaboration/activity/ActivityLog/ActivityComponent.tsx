@@ -101,10 +101,13 @@ export const ActivityComponent: FC<ActivityComponentProps> = ({
               }
             : journeyLocation;
           const activityOriginJourneyUrl = buildJourneyUrl(activityOriginJourneyLocation);
+          const author = buildAuthorFromUser(activity.triggeredBy);
 
           return (
             <ActivityViewChooser
               activity={activity}
+              displayName={author.displayName}
+              avatarUrl={author.avatarUrl}
               journeyUrl={activityOriginJourneyUrl}
               key={activity.id}
               footerComponent={footerComponent}
@@ -118,36 +121,36 @@ export const ActivityComponent: FC<ActivityComponentProps> = ({
   return <>{display ?? <ActivityLoadingView rows={3} />}</>;
 };
 
-interface ActivityViewChooserProps extends Pick<ActivityViewProps, 'journeyUrl' | 'footerComponent'> {
+interface ActivityViewChooserProps
+  extends Pick<ActivityViewProps, 'journeyUrl' | 'displayName' | 'avatarUrl' | 'footerComponent'> {
   activity: ActivityLogResultType;
 }
 
 export const ActivityViewChooser = ({ activity, ...rest }: ActivityViewChooserProps) => {
-  const author = buildAuthorFromUser(activity.triggeredBy);
   switch (activity.type) {
     case ActivityEventType.CalloutPublished:
-      return <ActivityCalloutPublishedView author={author} {...activity} {...rest} />;
+      return <ActivityCalloutPublishedView {...activity} {...rest} />;
     case ActivityEventType.CalloutWhiteboardCreated:
-      return <ActivityCalloutWhiteboardCreatedView author={author} {...activity} {...rest} />;
+      return <ActivityCalloutWhiteboardCreatedView {...activity} {...rest} />;
     case ActivityEventType.CalloutPostComment:
-      return <ActivityCalloutPostCommentCreatedView author={author} {...activity} {...rest} />;
+      return <ActivityCalloutPostCommentCreatedView {...activity} {...rest} />;
     case ActivityEventType.CalloutPostCreated:
-      return <ActivityCalloutPostCreatedView author={author} {...activity} {...rest} />;
+      return <ActivityCalloutPostCreatedView {...activity} {...rest} />;
     case ActivityEventType.CalloutLinkCreated:
-      return <ActivityCalloutLinkCreatedView author={author} {...activity} {...rest} />;
+      return <ActivityCalloutLinkCreatedView {...activity} {...rest} />;
     case ActivityEventType.DiscussionComment:
-      return <ActivityDiscussionCommentCreatedView author={author} {...activity} {...rest} />;
+      return <ActivityDiscussionCommentCreatedView {...activity} {...rest} />;
     case ActivityEventType.MemberJoined:
       const userAuthor = buildAuthorFromUser(activity.user);
-      return <ActivityMemberJoinedView member={userAuthor} author={author} {...activity} {...rest} />;
+      return <ActivityMemberJoinedView member={userAuthor} {...activity} {...rest} />;
     case ActivityEventType.ChallengeCreated:
-      return <ActivityChallengeCreatedView author={author} {...activity} {...rest} />;
+      return <ActivityChallengeCreatedView {...activity} {...rest} />;
     case ActivityEventType.OpportunityCreated:
-      return <ActivityOpportunityCreatedView author={author} {...activity} {...rest} />;
+      return <ActivityOpportunityCreatedView {...activity} {...rest} />;
     case ActivityEventType.CalendarEventCreated:
-      return <ActivityCalendarEventCreatedView author={author} {...activity} {...rest} />;
+      return <ActivityCalendarEventCreatedView {...activity} {...rest} />;
     case ActivityEventType.UpdateSent:
-      return <ActivityUpdateSentView author={author} {...activity} {...rest} />;
+      return <ActivityUpdateSentView {...activity} {...rest} />;
   }
   throw new Error(`Unable to choose a view for activity type: ${activity['type']}`);
 };

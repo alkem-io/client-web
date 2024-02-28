@@ -17,6 +17,8 @@ import {
 } from '../../../../../domain/collaboration/activity/ActivityLog/ActivityComponent';
 import MyActivityViewFooter from '../../../../../domain/collaboration/activity/ActivityLog/views/MyActivityViewFooter';
 import { CaptionSmall } from '../../../../../core/ui/typography/components';
+import defaultJourneyAvatar from '../../../../../domain/journey/defaultVisuals/Avatar.jpg';
+import { buildAuthorFromUser } from '../../../../../domain/community/user/utils/buildAuthorFromUser';
 
 const MY_LATEST_CONTRIBUTIONS_COUNT = 4;
 
@@ -67,15 +69,20 @@ const MyLatestContributions = () => {
       <PageContentBlockHeader title={t('pages.home.sections.myLatestContributions.title')} />
       <ScrollerWithGradient>
         <Box padding={1}>
-          {activities && activities?.length > 0 ? (
-            activities.map(activity => (
-              <ActivityViewChooser
-                key={activity.id}
-                activity={activity as ActivityLogResultType}
-                journeyUrl={activity.journey?.profile.url ?? ''}
-                footerComponent={MyActivityViewFooter}
-              />
-            ))
+          {activities && activities.length > 0 ? (
+            activities.map(activity => {
+              const author = buildAuthorFromUser((activity as ActivityLogResultType).triggeredBy);
+              return (
+                <ActivityViewChooser
+                  key={activity.id}
+                  activity={activity as ActivityLogResultType}
+                  journeyUrl={activity.journey?.profile.url ?? ''}
+                  displayName={author.displayName}
+                  avatarUrl={activity.journey?.profile.avatar?.uri || defaultJourneyAvatar}
+                  footerComponent={MyActivityViewFooter}
+                />
+              );
+            })
           ) : (
             <CaptionSmall padding={1}>{t('pages.home.sections.myLatestContributions.noContributions')}</CaptionSmall>
           )}

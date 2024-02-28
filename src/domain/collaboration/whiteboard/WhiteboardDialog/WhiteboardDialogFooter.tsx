@@ -148,9 +148,8 @@ const WhiteboardDialogFooter = ({
   return (
     <>
       <Actions
-        minHeight={gutters(3)}
         paddingX={gutters()}
-        marginTop={gutters(-1)}
+        paddingY={gutters(0.5)}
         gap={gutters(0.5)}
         justifyContent="start"
         alignItems="center"
@@ -168,16 +167,18 @@ const WhiteboardDialogFooter = ({
           </Button>
         )}
         <Tooltip placement="right" arrow title={<Caption>{t('pages.whiteboard.saveTooltip')}</Caption>}>
-          <IconButton
-            color="primary"
-            size="small"
-            onClick={onSave}
-            disabled={!canUpdateContent || collaboratorMode !== 'write' || updating}
-          >
-            {!readonlyReason && <SaveOutlined />}
-            {readonlyReason === ReadonlyReason.Readonly && <EditOffOutlined />}
-            {readonlyReason && readonlyReason !== ReadonlyReason.Readonly && <LockOutlined />}
-          </IconButton>
+          <span>
+            <IconButton
+              color="primary"
+              size="small"
+              onClick={onSave}
+              disabled={!canUpdateContent || collaboratorMode !== 'write' || updating}
+            >
+              {!readonlyReason && <SaveOutlined />}
+              {readonlyReason === ReadonlyReason.Readonly && <EditOffOutlined />}
+              {readonlyReason && readonlyReason !== ReadonlyReason.Readonly && <LockOutlined />}
+            </IconButton>
+          </span>
         </Tooltip>
         {readonlyReason ? (
           <Caption>
