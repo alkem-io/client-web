@@ -162,7 +162,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
     type: yup.string().required(t('common.field-required')),
     opened: yup.boolean().required(),
     whiteboardContent: yup.string().when('type', {
-      is: CalloutType.Whiteboard || CalloutType.WhiteboardRt,
+      is: CalloutType.Whiteboard,
       then: yup.string().required(),
     }),
   });
@@ -202,15 +202,18 @@ const CalloutForm: FC<CalloutFormProps> = ({
     tags: true,
     postTemplate: calloutType === CalloutType.PostCollection,
     whiteboardTemplate: calloutType === CalloutType.WhiteboardCollection,
-    newResponses: calloutType !== CalloutType.Whiteboard && calloutType !== CalloutType.WhiteboardRt,
+    newResponses: calloutType !== CalloutType.Whiteboard,
     locationChange: editMode && Boolean(canChangeCalloutLocation),
-    whiteboard: calloutType === CalloutType.Whiteboard || calloutType === CalloutType.WhiteboardRt,
+    whiteboard: calloutType === CalloutType.Whiteboard,
   };
 
   return (
     <Formik
       initialValues={initialValues}
       validationSchema={validationSchema}
+      initialTouched={{
+        displayName: initialValues.displayName !== '',
+      }}
       enableReinitialize
       validateOnMount
       onSubmit={() => {}}

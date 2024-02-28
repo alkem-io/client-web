@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import ReleaseUpdatesDialog from '../../../domain/platform/notifications/ReleaseUpdates/ReleaseUpdatesDialog';
 import HomePageLayout from '../Home/HomePageLayout';
 import PageContent from '../../../core/ui/content/PageContent';
 import MyMembershipsDialog from './myMemberships/MyMembershipsDialog';
@@ -27,7 +26,6 @@ export const MyDashboard = () => {
 
   return (
     <HomePageLayout>
-      <ReleaseUpdatesDialog />
       <MyMembershipsDialog open={isMyMembershipsDialogOpen} onClose={() => setIsMyMembershipsDialogOpen(false)} />
       {!isAuthenticated && !isLoadingAuthentication ? (
         <PageContent gridContainerProps={{ flexDirection: 'row-reverse' }}>

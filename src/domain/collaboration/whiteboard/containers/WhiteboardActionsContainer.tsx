@@ -1,31 +1,34 @@
 import { FC, useCallback, useMemo } from 'react';
 import {
   WhiteboardDetailsFragmentDoc,
-  refetchWhiteboardWithContentQuery,
-  useCheckoutWhiteboardMutation,
   useCreateWhiteboardOnCalloutMutation,
   useDeleteWhiteboardMutation,
+  useUpdateWhiteboardContentMutation,
   useUpdateWhiteboardMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
 import {
   WhiteboardDetailsFragment,
   WhiteboardContentFragment,
-  DeleteWhiteboardInput,
   CreateContributionOnCalloutInput,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { evictFromCache } from '../../../../core/apollo/utils/removeFromCache';
 import { WhiteboardPreviewImage, useUploadWhiteboardVisuals } from '../WhiteboardPreviewImages/WhiteboardPreviewImages';
+import { Identifiable } from '../../../../core/utils/Identifiable';
 
 export interface IWhiteboardActions {
-  onCreate: (whiteboard: CreateContributionOnCalloutInput, previewImages?: WhiteboardPreviewImage[]) => Promise<void>;
-  onDelete: (whiteboard: DeleteWhiteboardInput) => Promise<void>;
-  onCheckout: (whiteboard: WhiteboardDetailsFragment) => Promise<void>;
-  onCheckin: (whiteboard: WhiteboardDetailsFragment) => Promise<void>;
+  onCreate: (
+    whiteboard: CreateContributionOnCalloutInput,
+    previewImages?: WhiteboardPreviewImage[]
+  ) => Promise<{ success: boolean; errors?: string[] }>;
+  onDelete: (whiteboard: Identifiable) => Promise<void>;
+
   onUpdate: (
     whiteboard: WhiteboardContentFragment & WhiteboardDetailsFragment,
     previewImages?: WhiteboardPreviewImage[]
-  ) => Promise<void>;
+  ) => Promise<{ success: boolean; errors?: string[] }>;
+
+  onChangeDisplayName: (whiteboardId: string | undefined, displayName: string) => Promise<void>;
 }
 
 export interface WhiteboardActionsContainerState {
@@ -33,6 +36,8 @@ export interface WhiteboardActionsContainerState {
   deletingWhiteboard?: boolean;
   changingWhiteboardLockState?: boolean;
   updatingWhiteboard?: boolean;
+  updatingWhiteboardContent?: boolean;
+  uploadingVisuals?: boolean;
 }
 
 export interface WhiteboardActionsContainerProps
@@ -83,6 +88,10 @@ const WhiteboardActionsContainer: FC<WhiteboardActionsContainerProps> = ({ child
         },
         whiteboardContribution.whiteboard?.nameID
       );
+      return {
+        success: !result.errors || result.errors.length === 0,
+        errors: result.errors?.map(({ message }) => message),
+      };
     },
     [createWhiteboard]
   );
@@ -90,8 +99,8 @@ const WhiteboardActionsContainer: FC<WhiteboardActionsContainerProps> = ({ child
   const [deleteWhiteboard, { loading: deletingWhiteboard }] = useDeleteWhiteboardMutation({});
 
   const handleDeleteWhiteboard = useCallback(
-    async (whiteboard: DeleteWhiteboardInput) => {
-      if (!whiteboard.ID) {
+    async (whiteboard: Identifiable) => {
+      if (!whiteboard.id) {
         throw new Error('[whiteboard:onDelete]: Missing whiteboard ID');
       }
 
@@ -103,43 +112,18 @@ const WhiteboardActionsContainer: FC<WhiteboardActionsContainerProps> = ({ child
           }
         },
         variables: {
-          input: whiteboard,
+          input: {
+            ID: whiteboard.id,
+          },
         },
       });
     },
     [deleteWhiteboard]
   );
 
-  const [checkoutWhiteboard, { loading: checkingoutWhiteboard }] = useCheckoutWhiteboardMutation({});
+  const [updateWhiteboardContent, { loading: updatingWhiteboardContent }] = useUpdateWhiteboardContentMutation({});
 
-  const LifecycleEventHandler =
-    (eventName: 'CHECKIN' | 'CHECKOUT') => async (whiteboard: WhiteboardDetailsFragment) => {
-      if (!whiteboard.checkout?.id) {
-        throw new Error('[whiteboard:onCheckInOut]: Missing whiteboard.checkout.id');
-      }
-
-      await checkoutWhiteboard({
-        variables: {
-          input: {
-            whiteboardCheckoutID: whiteboard.checkout?.id,
-            eventName,
-            errorOnFailedTransition: false,
-          },
-        },
-        refetchQueries: [
-          refetchWhiteboardWithContentQuery({
-            whiteboardId: whiteboard.id,
-          }),
-        ],
-      });
-    };
-
-  const handleCheckin = useCallback(LifecycleEventHandler('CHECKIN'), [checkoutWhiteboard]);
-  const handleCheckout = useCallback(LifecycleEventHandler('CHECKOUT'), [checkoutWhiteboard]);
-
-  const [updateWhiteboard, { loading: updatingWhiteboard }] = useUpdateWhiteboardMutation({});
-
-  const handleUpdateWhiteboard = useCallback(
+  const handleUpdateWhiteboardContent = useCallback(
     async (
       whiteboard: WhiteboardContentFragment & WhiteboardDetailsFragment,
       previewImages?: WhiteboardPreviewImage[]
@@ -151,30 +135,50 @@ const WhiteboardActionsContainer: FC<WhiteboardActionsContainerProps> = ({ child
           whiteboard.nameID
         );
       }
-      await updateWhiteboard({
+      const result = await updateWhiteboardContent({
         variables: {
           input: {
             ID: whiteboard.id,
             content: whiteboard.content,
+          },
+        },
+      });
+      return {
+        success: !result.errors || result.errors.length === 0,
+        errors: result.errors?.map(({ message }) => message),
+      };
+    },
+    [updateWhiteboardContent]
+  );
+
+  const [updateWhiteboard, { loading: updatingWhiteboard }] = useUpdateWhiteboardMutation({});
+  const handleChangeDisplayName = useCallback(
+    async (whiteboardId: string | undefined, displayName: string) => {
+      if (!whiteboardId) {
+        return;
+      }
+      await updateWhiteboard({
+        variables: {
+          input: {
+            ID: whiteboardId,
             profileData: {
-              displayName: whiteboard.profile.displayName,
+              displayName,
             },
           },
         },
       });
     },
-    [updateWhiteboard, uploadVisuals]
+    [updateWhiteboard]
   );
 
   const actions = useMemo<IWhiteboardActions>(
     () => ({
       onCreate: handleCreateWhiteboard,
       onDelete: handleDeleteWhiteboard,
-      onCheckin: handleCheckin,
-      onCheckout: handleCheckout,
-      onUpdate: handleUpdateWhiteboard,
+      onUpdate: handleUpdateWhiteboardContent,
+      onChangeDisplayName: handleChangeDisplayName,
     }),
-    [handleCreateWhiteboard, handleDeleteWhiteboard, handleCheckin, handleCheckout, handleUpdateWhiteboard]
+    [handleUpdateWhiteboardContent]
   );
 
   return (
@@ -184,8 +188,9 @@ const WhiteboardActionsContainer: FC<WhiteboardActionsContainerProps> = ({ child
         {
           creatingWhiteboard,
           deletingWhiteboard,
-          changingWhiteboardLockState: checkingoutWhiteboard,
-          updatingWhiteboard: updatingWhiteboard || uploadingVisuals,
+          updatingWhiteboardContent,
+          updatingWhiteboard,
+          uploadingVisuals,
         },
         actions
       )}

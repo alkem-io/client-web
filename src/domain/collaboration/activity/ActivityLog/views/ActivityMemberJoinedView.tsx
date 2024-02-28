@@ -21,7 +21,8 @@ export const ActivityMemberJoinedView: FC<ActivityMemberJoinedViewProps> = ({
   return (
     <ActivityBaseView
       type={type}
-      author={member} // Important to show the user that joined, not the person that triggered it
+      displayName={member.displayName} // Important to show the user that joined, not the person that triggered it
+      avatarUrl={member.avatarUrl}
       loading={loading}
       title={<ActivityDescriptionByType activityType={type} subject={member.displayName} />}
       url={member.url}
