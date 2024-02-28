@@ -31,6 +31,8 @@ import { ExcalidrawElement, ExcalidrawImageElement } from '@alkemio/excalidraw/t
 import WhiteboardDisplayName from './WhiteboardDisplayName';
 import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
 import useLoadingState from '../../../shared/utils/useLoadingState';
+import { Box } from '@mui/material';
+import { gutters } from '../../../../core/ui/grid/utils';
 
 interface WhiteboardDialogProps<Whiteboard extends WhiteboardWithContent> {
   entities: {
@@ -72,13 +74,6 @@ const useStyles = makeStyles(theme => ({
     alignItems: 'center',
     padding: `${theme.spacing(0)} ${theme.spacing(1)}`,
     zIndex: 2,
-  },
-  dialogContent: {
-    padding: theme.spacing(2),
-    paddingTop: 0,
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   dialogFullscreen: {
     height: '100%',
@@ -326,21 +321,21 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
                 <DialogHeader
                   actions={options.headerActions}
                   onClose={onClose}
-                  title={
-                    <WhiteboardDisplayName
-                      displayName={whiteboard?.profile?.displayName}
-                      readOnlyDisplayName={options.readOnlyDisplayName}
-                      editDisplayName={options.editDisplayName}
-                      onChangeDisplayName={newDisplayName =>
-                        actions.onChangeDisplayName(whiteboard?.id, newDisplayName)
-                      }
-                    />
-                  }
                   titleContainerProps={{ flexDirection: 'row' }}
                 >
-                  {editModeEnabled && <WhiteboardTemplatesLibrary onImportTemplate={handleImportTemplate} />}
+                  <WhiteboardDisplayName
+                    displayName={whiteboard?.profile?.displayName}
+                    readOnlyDisplayName={options.readOnlyDisplayName}
+                    editDisplayName={options.editDisplayName}
+                    onChangeDisplayName={newDisplayName => actions.onChangeDisplayName(whiteboard?.id, newDisplayName)}
+                  />
+                  {editModeEnabled && (
+                    <Box height={gutters()} display="flex" alignItems="center">
+                      <WhiteboardTemplatesLibrary onImportTemplate={handleImportTemplate} />
+                    </Box>
+                  )}
                 </DialogHeader>
-                <DialogContent classes={{ root: styles.dialogContent }}>{children}</DialogContent>
+                <DialogContent sx={{ paddingY: 0 }}>{children}</DialogContent>
                 <WhiteboardDialogFooter
                   collaboratorMode={mode}
                   collaboratorModeReason={modeReason}
