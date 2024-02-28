@@ -77,9 +77,7 @@ const MyLatestContributions = () => {
               />
             ))
           ) : (
-            <Box padding={1}>
-              <CaptionSmall>{t('pages.home.sections.myLatestContributions.noContributions')}</CaptionSmall>
-            </Box>
+            <CaptionSmall padding={1}>{t('pages.home.sections.myLatestContributions.noContributions')}</CaptionSmall>
           )}
         </Box>
       </ScrollerWithGradient>
