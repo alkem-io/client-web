@@ -3,7 +3,6 @@ import ScrollableCardsLayoutContainer from '../../../../core/ui/card/cardsLayout
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
 import SpaceCard, { SpaceCardProps } from '../../../journey/space/SpaceCard/SpaceCard';
-import { buildSpaceUrl } from '../../../../main/routing/urlBuilders';
 import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
 import { MetricType } from '../../../platform/metrics/MetricType';
 import { Nvp, SpaceVisibility } from '../../../../core/apollo/generated/graphql-schema';
@@ -14,9 +13,9 @@ import { Caption } from '../../../../core/ui/typography';
 import { useTranslation } from 'react-i18next';
 
 export interface SpaceAttrs extends Identifiable {
-  nameID: string;
   context?: { vision?: string };
   profile: {
+    url: string;
     displayName: string;
     tagline: string;
     tagset?: {
@@ -62,7 +61,7 @@ const DashboardSpacesSection = <ExtraAttrs extends {}>({
             banner={space.profile.cardBanner}
             spaceId={space.id}
             displayName={space.profile.displayName}
-            journeyUri={buildSpaceUrl(space.nameID)}
+            journeyUri={space.profile.url}
             vision={space.context?.vision!}
             membersCount={getMetricCount(space.metrics, MetricType.Member)}
             tagline={space.profile.tagline!}
