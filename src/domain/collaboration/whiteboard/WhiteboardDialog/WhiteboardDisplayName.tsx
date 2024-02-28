@@ -44,7 +44,7 @@ const WhiteboardDisplayName: FC<WhiteboardDisplayNameProps> = ({
 
   return (
     <>
-      {readOnlyDisplayName && displayName}
+      {readOnlyDisplayName && <BlockTitle>{displayName}</BlockTitle>}
       {!readOnlyDisplayName && !isEditing && (
         <>
           <BlockTitle>{displayName}</BlockTitle>
