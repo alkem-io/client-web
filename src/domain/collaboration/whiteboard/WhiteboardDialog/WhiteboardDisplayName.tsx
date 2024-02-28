@@ -35,7 +35,6 @@ const WhiteboardDisplayName: FC<WhiteboardDisplayNameProps> = ({
     setIsEditing(true);
     setTimeout(() => textFieldRef.current?.focus(), 10);
   };
-  console.log(textFieldRef.current);
 
   const [handleSave, loading] = useLoadingState(async (newDisplayName: string) => {
     await onChangeDisplayName?.(newDisplayName);
