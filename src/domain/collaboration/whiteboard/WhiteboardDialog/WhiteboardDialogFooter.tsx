@@ -230,7 +230,7 @@ const LastSavedCaption = ({ date, saving }: { date: Date | undefined; saving: bo
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setFormattedTime(date && formatTimeElapsed(date, t));
+      setFormattedTime(date && formatTimeElapsed(date, t, 'long'));
     }, 500);
     return () => {
       clearInterval(interval);

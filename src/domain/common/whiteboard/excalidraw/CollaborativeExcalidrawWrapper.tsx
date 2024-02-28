@@ -249,7 +249,7 @@ const CollaborativeExcalidrawWrapper = ({
           {lastSavedDate && (
             <Text>
               {t('pages.whiteboard.whiteboardDisconnected.lastSaved', {
-                lastSaved: formatTimeElapsed(lastSavedDate, t),
+                lastSaved: formatTimeElapsed(lastSavedDate, t, 'long'),
               })}
             </Text>
           )}
