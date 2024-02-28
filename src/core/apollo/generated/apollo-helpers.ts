@@ -2861,6 +2861,7 @@ export type WhiteboardKeySpecifier = (
   | 'createdBy'
   | 'createdDate'
   | 'id'
+  | 'isMultiUser'
   | 'nameID'
   | 'profile'
   | 'updatedDate'
@@ -2873,6 +2874,7 @@ export type WhiteboardFieldPolicy = {
   createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  isMultiUser?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;

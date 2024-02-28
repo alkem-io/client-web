@@ -14,7 +14,6 @@ import { CommunityMembershipStatus } from '../../../core/apollo/generated/graphq
 import SpaceCard from '../../journey/space/SpaceCard/SpaceCard';
 import getMetricCount from '../../platform/metrics/utils/getMetricCount';
 import { MetricType } from '../../platform/metrics/MetricType';
-import { buildSpaceUrl } from '../../../main/routing/urlBuilders';
 import RouterLink from '../../../core/ui/link/RouterLink';
 import Gutters from '../../../core/ui/grid/Gutters';
 import { ROUTE_HOME } from '../../platform/routes/constants';
@@ -32,7 +31,7 @@ const isMember = (journey: { community?: { myMembershipStatus?: CommunityMembers
 const InnovationHubHomePage = ({ innovationHub }: InnovationHubHomePageProps) => {
   const { t } = useTranslation();
 
-  const { data: spacesData } = useDashboardSpacesQuery({});
+  const { data: spacesData } = useDashboardSpacesQuery();
 
   const allSpaces = spacesData?.spaces;
 
@@ -60,13 +59,13 @@ const InnovationHubHomePage = ({ innovationHub }: InnovationHubHomePageProps) =>
           <ScrollableCardsLayoutContainer orientation="horizontal" cards>
             {allSpaces?.map(space => (
               <SpaceCard
-                banner={space.profile?.cardBanner}
-                displayName={space.profile?.displayName!}
+                banner={space.profile.cardBanner}
+                displayName={space.profile.displayName!}
                 vision={space.context?.vision!}
                 membersCount={getMetricCount(space.metrics, MetricType.Member)}
-                tagline={space.profile?.tagline!}
-                tags={space.profile?.tagset?.tags ?? []}
-                journeyUri={buildSpaceUrl(space.nameID)}
+                tagline={space.profile.tagline!}
+                tags={space.profile.tagset?.tags ?? []}
+                journeyUri={space.profile.url}
                 member={isMember(space)}
                 spaceVisibility={space.license.visibility}
               />
