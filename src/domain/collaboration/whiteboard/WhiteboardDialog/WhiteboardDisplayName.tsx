@@ -1,10 +1,12 @@
 import { Box, Button, TextField } from '@mui/material';
-import React, { FC, useEffect, useRef, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import useLoadingState from '../../../shared/utils/useLoadingState';
 import { LoadingButton } from '@mui/lab';
 import { useTranslation } from 'react-i18next';
+import { gutters } from '../../../../core/ui/grid/utils';
+import { BlockTitle } from '../../../../core/ui/typography';
 
 interface WhiteboardDisplayNameProps {
   displayName: string | undefined;
@@ -20,9 +22,9 @@ const WhiteboardDisplayName: FC<WhiteboardDisplayNameProps> = ({
   onChangeDisplayName,
 }) => {
   const { t } = useTranslation();
-  const textFieldRef = useRef<HTMLInputElement>(null);
   const [isEditing, setIsEditing] = useState(editDisplayName);
   const [newDisplayName, setNewDisplayName] = useState(displayName);
+
   useEffect(() => {
     // Keep the newDisplayName in sync with the displayName
     setNewDisplayName(displayName);
@@ -30,9 +32,8 @@ const WhiteboardDisplayName: FC<WhiteboardDisplayNameProps> = ({
 
   const handleClickEdit = () => {
     setIsEditing(true);
-    console.log(textFieldRef.current);
-    setTimeout(() => textFieldRef.current?.focus(), 1000);
   };
+
   const [handleSave, loading] = useLoadingState(async (newDisplayName: string) => {
     await onChangeDisplayName?.(newDisplayName);
     setIsEditing(false);
@@ -40,23 +41,20 @@ const WhiteboardDisplayName: FC<WhiteboardDisplayNameProps> = ({
 
   return (
     <>
-      {readOnlyDisplayName && displayName}
+      {readOnlyDisplayName && <BlockTitle>{displayName}</BlockTitle>}
       {!readOnlyDisplayName && !isEditing && (
         <>
-          {displayName}
-          <Button onClick={handleClickEdit} aria-label={t('pages.whiteboard.editDisplayName')}>
-            {t('pages.whiteboard.editDisplayName')}
-          </Button>
+          <BlockTitle>{displayName}</BlockTitle>
+          <Box display="flex" alignItems="center" height={gutters()}>
+            <Button onClick={handleClickEdit} aria-label={t('pages.whiteboard.editDisplayName')}>
+              {t('pages.whiteboard.editDisplayName')}
+            </Button>
+          </Box>
         </>
       )}
       {!readOnlyDisplayName && isEditing && (
-        <Box display="flex" alignItems="center">
-          <TextField
-            ref={textFieldRef}
-            value={newDisplayName}
-            onChange={e => setNewDisplayName(e.target.value)}
-            size="small"
-          />
+        <Box display="flex" alignItems="center" height={gutters()}>
+          <TextField value={newDisplayName} onChange={e => setNewDisplayName(e.target.value)} size="small" autoFocus />
           <Box sx={{ marginX: 1 }}>
             <LoadingButton
               aria-label={t('buttons.save')}
