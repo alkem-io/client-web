@@ -148,9 +148,8 @@ const WhiteboardDialogFooter = ({
   return (
     <>
       <Actions
-        minHeight={gutters(3)}
         paddingX={gutters()}
-        marginTop={gutters(-1)}
+        paddingY={gutters(0.5)}
         gap={gutters(0.5)}
         justifyContent="start"
         alignItems="center"
