@@ -212,7 +212,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
       initialValues={initialValues}
       validationSchema={validationSchema}
       initialTouched={{
-        displayName: true,
+        displayName: initialValues.displayName !== '',
       }}
       enableReinitialize
       validateOnMount
