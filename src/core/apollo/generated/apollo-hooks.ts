@@ -1817,6 +1817,14 @@ export const UserRolesDetailsFragmentDoc = gql`
     }
   }
 `;
+export const ContextDetailsProviderFragmentDoc = gql`
+  fragment ContextDetailsProvider on Context {
+    id
+    vision
+    impact
+    who
+  }
+`;
 export const InnovationHubProfileFragmentDoc = gql`
   fragment InnovationHubProfile on Profile {
     id
@@ -2450,6 +2458,45 @@ export const NewOpportunityFragmentDoc = gql`
     }
   }
 `;
+export const SpaceCardFragmentDoc = gql`
+  fragment SpaceCard on Space {
+    id
+    profile {
+      id
+      url
+      displayName
+      tagline
+      tagset {
+        ...TagsetDetails
+      }
+      cardBanner: visual(type: CARD) {
+        ...VisualUri
+      }
+    }
+    authorization {
+      id
+      anonymousReadAccess
+    }
+    metrics {
+      name
+      value
+    }
+    community {
+      id
+      myMembershipStatus
+    }
+    context {
+      id
+      vision
+    }
+    license {
+      id
+      visibility
+    }
+  }
+  ${TagsetDetailsFragmentDoc}
+  ${VisualUriFragmentDoc}
+`;
 export const CommunityPageCommunityFragmentDoc = gql`
   fragment CommunityPageCommunity on Community {
     id
@@ -2769,53 +2816,6 @@ export const ChallengesOnSpaceFragmentDoc = gql`
     }
   }
   ${ChallengeCardFragmentDoc}
-`;
-export const ContextDetailsProviderFragmentDoc = gql`
-  fragment ContextDetailsProvider on Context {
-    id
-    vision
-    impact
-    who
-  }
-`;
-export const SpaceDetailsProviderFragmentDoc = gql`
-  fragment SpaceDetailsProvider on Space {
-    id
-    nameID
-    profile {
-      id
-      displayName
-      tagline
-      tagset {
-        ...TagsetDetails
-      }
-      cardBanner: visual(type: CARD) {
-        ...VisualUri
-      }
-    }
-    authorization {
-      id
-      anonymousReadAccess
-    }
-    metrics {
-      name
-      value
-    }
-    community {
-      id
-      myMembershipStatus
-    }
-    context {
-      ...ContextDetailsProvider
-    }
-    license {
-      id
-      visibility
-    }
-  }
-  ${TagsetDetailsFragmentDoc}
-  ${VisualUriFragmentDoc}
-  ${ContextDetailsProviderFragmentDoc}
 `;
 export const AdminSpaceFragmentDoc = gql`
   fragment AdminSpace on Space {
@@ -20300,10 +20300,10 @@ export function refetchSpaceApplicationTemplateQuery(variables: SchemaTypes.Spac
 export const SpaceCardDocument = gql`
   query spaceCard($spaceId: UUID_NAMEID!) {
     space(ID: $spaceId) {
-      ...SpaceDetailsProvider
+      ...SpaceCard
     }
   }
-  ${SpaceDetailsProviderFragmentDoc}
+  ${SpaceCardFragmentDoc}
 `;
 
 /**
@@ -24432,10 +24432,10 @@ export function refetchChallengeExplorerDataQuery(variables?: SchemaTypes.Challe
 export const DashboardSpacesDocument = gql`
   query DashboardSpaces($visibilities: [SpaceVisibility!] = [ACTIVE]) {
     spaces(filter: { visibilities: $visibilities }) {
-      ...SpaceDetailsProvider
+      ...SpaceCard
     }
   }
-  ${SpaceDetailsProviderFragmentDoc}
+  ${SpaceCardFragmentDoc}
 `;
 
 /**
@@ -24488,14 +24488,14 @@ export const DashboardSpacesPaginatedDocument = gql`
   query DashboardSpacesPaginated($first: Int!, $after: UUID, $visibilities: [SpaceVisibility!] = [ACTIVE]) {
     spacesPaginated(first: $first, after: $after, filter: { visibilities: $visibilities }) {
       spaces {
-        ...SpaceDetailsProvider
+        ...SpaceCard
       }
       pageInfo {
         ...PageInfo
       }
     }
   }
-  ${SpaceDetailsProviderFragmentDoc}
+  ${SpaceCardFragmentDoc}
   ${PageInfoFragmentDoc}
 `;
 
