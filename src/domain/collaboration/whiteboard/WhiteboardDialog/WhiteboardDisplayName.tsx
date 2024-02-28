@@ -33,7 +33,6 @@ const WhiteboardDisplayName: FC<WhiteboardDisplayNameProps> = ({
 
   const handleClickEdit = () => {
     setIsEditing(true);
-    setTimeout(() => textFieldRef.current?.focus(), 10);
   };
 
   const [handleSave, loading] = useLoadingState(async (newDisplayName: string) => {
@@ -61,6 +60,7 @@ const WhiteboardDisplayName: FC<WhiteboardDisplayNameProps> = ({
             value={newDisplayName}
             onChange={e => setNewDisplayName(e.target.value)}
             size="small"
+            autoFocus
           />
           <Box sx={{ marginX: 1 }}>
             <LoadingButton
