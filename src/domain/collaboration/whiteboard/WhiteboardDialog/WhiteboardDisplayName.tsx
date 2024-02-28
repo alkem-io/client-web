@@ -33,9 +33,9 @@ const WhiteboardDisplayName: FC<WhiteboardDisplayNameProps> = ({
 
   const handleClickEdit = () => {
     setIsEditing(true);
-    console.log(textFieldRef.current);
-    setTimeout(() => textFieldRef.current?.focus(), 1000);
+    setTimeout(() => textFieldRef.current?.focus(), 10);
   };
+  console.log(textFieldRef.current);
 
   const [handleSave, loading] = useLoadingState(async (newDisplayName: string) => {
     await onChangeDisplayName?.(newDisplayName);
@@ -58,7 +58,7 @@ const WhiteboardDisplayName: FC<WhiteboardDisplayNameProps> = ({
       {!readOnlyDisplayName && isEditing && (
         <Box display="flex" alignItems="center" height={gutters()}>
           <TextField
-            ref={textFieldRef}
+            inputRef={textFieldRef}
             value={newDisplayName}
             onChange={e => setNewDisplayName(e.target.value)}
             size="small"
