@@ -11,7 +11,8 @@ interface ActivityOpportunityCreatedViewProps extends ActivityViewProps {
 }
 
 export const ActivityOpportunityCreatedView: FC<ActivityOpportunityCreatedViewProps> = ({
-  author,
+  displayName,
+  avatarUrl,
   loading,
   createdDate,
   journeyDisplayName,
@@ -22,7 +23,8 @@ export const ActivityOpportunityCreatedView: FC<ActivityOpportunityCreatedViewPr
   return (
     <ActivityBaseView
       type={type}
-      author={author}
+      displayName={displayName}
+      avatarUrl={avatarUrl}
       loading={loading}
       title={<ActivityDescriptionByType activityType={type} subject={opportunity.profile.displayName} />}
       url={opportunity.profile.url}

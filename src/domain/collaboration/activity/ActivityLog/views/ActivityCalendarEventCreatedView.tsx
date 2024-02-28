@@ -15,7 +15,8 @@ export interface ActivityCalendarEventCreatedViewProps extends ActivityViewProps
 }
 
 export const ActivityCalendarEventCreatedView: FC<ActivityCalendarEventCreatedViewProps> = ({
-  author,
+  displayName,
+  avatarUrl,
   loading,
   createdDate,
   journeyDisplayName,
@@ -25,7 +26,8 @@ export const ActivityCalendarEventCreatedView: FC<ActivityCalendarEventCreatedVi
 }) => {
   return (
     <ActivityBaseView
-      author={author}
+      displayName={displayName}
+      avatarUrl={avatarUrl}
       loading={loading}
       type={type}
       title={<ActivityDescriptionByType activityType={type} subject={calendarEvent.profile.displayName} />}
