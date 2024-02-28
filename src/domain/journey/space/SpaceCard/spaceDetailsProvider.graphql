@@ -1,8 +1,8 @@
-fragment SpaceDetailsProvider on Space {
+fragment SpaceCard on Space {
   id
-  nameID
   profile {
     id
+    url
     displayName
     tagline
     tagset {
@@ -25,7 +25,8 @@ fragment SpaceDetailsProvider on Space {
     myMembershipStatus
   }
   context {
-    ...ContextDetailsProvider
+    id
+    vision
   }
   license {
     id
