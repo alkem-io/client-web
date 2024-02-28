@@ -1,5 +1,5 @@
 import { Box, Button, TextField } from '@mui/material';
-import React, { FC, useEffect, useRef, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import useLoadingState from '../../../shared/utils/useLoadingState';
@@ -22,7 +22,6 @@ const WhiteboardDisplayName: FC<WhiteboardDisplayNameProps> = ({
   onChangeDisplayName,
 }) => {
   const { t } = useTranslation();
-  const textFieldRef = useRef<HTMLInputElement>(null);
   const [isEditing, setIsEditing] = useState(editDisplayName);
   const [newDisplayName, setNewDisplayName] = useState(displayName);
 
@@ -55,13 +54,7 @@ const WhiteboardDisplayName: FC<WhiteboardDisplayNameProps> = ({
       )}
       {!readOnlyDisplayName && isEditing && (
         <Box display="flex" alignItems="center" height={gutters()}>
-          <TextField
-            inputRef={textFieldRef}
-            value={newDisplayName}
-            onChange={e => setNewDisplayName(e.target.value)}
-            size="small"
-            autoFocus
-          />
+          <TextField value={newDisplayName} onChange={e => setNewDisplayName(e.target.value)} size="small" autoFocus />
           <Box sx={{ marginX: 1 }}>
             <LoadingButton
               aria-label={t('buttons.save')}
