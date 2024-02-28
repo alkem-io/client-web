@@ -1,24 +1,21 @@
 import React from 'react';
-import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import { BlockTitle, Caption } from '../../../../core/ui/typography';
 import { Trans, useTranslation } from 'react-i18next';
-import { Link, LinkProps } from '@mui/material';
+import DashboardBanner from '../../../../core/ui/content/DashboardBanner';
 
-const StartingSpace = (props: LinkProps) => {
+const StartingSpace = () => {
   const { t } = useTranslation();
 
   return (
-    <Link href={t('pages.home.sections.startingSpace.url')} {...props}>
-      <PageContentBlock accent row flexWrap="wrap">
-        <Trans
-          i18nKey="pages.home.sections.startingSpace.title"
-          components={{
-            big: <BlockTitle />,
-            small: <Caption />,
-          }}
-        />
-      </PageContentBlock>
-    </Link>
+    <DashboardBanner to={t('pages.home.sections.startingSpace.url')}>
+      <Trans
+        i18nKey="pages.home.sections.startingSpace.title"
+        components={{
+          big: <BlockTitle />,
+          small: <Caption />,
+        }}
+      />
+    </DashboardBanner>
   );
 };
 
