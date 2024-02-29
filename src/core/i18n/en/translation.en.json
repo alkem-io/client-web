@@ -1981,7 +1981,8 @@
           "title": "My Latest Contributions",
           "card": {
             "journey": "in: <journeyicon /> {{journey}}"
-          }
+          },
+          "noContributions": "Your contributions will appear here once you participate in a Space. You can contribute by posting, commenting, or doing other activities."
         },
         "createAccountBanner": {
           "message": "<big>🚀 Click here to create your account and get started!</big> <small>Already a member? <signin>Sign in here</signin></small>"
