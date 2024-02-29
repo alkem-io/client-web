@@ -47,7 +47,7 @@ const InnovationFlowTemplateCard = ({
         <CardDescription heightGutters={descriptionHeightGutters}>{template?.profile.description}</CardDescription>
       </CardDetails>
       <CardDetails>
-        <CardContent marginTop={0}>
+        <CardContent>
           <Caption sx={webkitLineClamp(2, { keepMinHeight: true })}>{states.join(' · ')}</Caption>
         </CardContent>
       </CardDetails>
