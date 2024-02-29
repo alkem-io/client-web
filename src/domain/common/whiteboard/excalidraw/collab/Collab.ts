@@ -161,7 +161,6 @@ class Collab {
                       init: true,
                     });
                   }
-                  resolve();
                   break;
                 }
                 case WS_SCENE_EVENT_TYPES.SCENE_UPDATE: {
@@ -197,13 +196,12 @@ class Collab {
                 fetchScene: true,
                 roomLinkData: existingRoomLinkData,
               });
-
-              resolve();
             },
             saved: () => {
               this.onSavedToDatabase?.();
             },
             'collaborator-mode': event => {
+              resolve();
               this.onCollaboratorModeChange(event);
             },
             'idle-state': ({ userState, socketId, username }) => {
