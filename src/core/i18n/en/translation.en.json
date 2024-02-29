@@ -504,19 +504,36 @@
       "all-contributing-users": "all contributing users"
     },
     "time": {
-      "timeAgo": "{{time}} ago",
-      "second": "{{count}} second",
-      "second_plural": "{{count}} seconds",
-      "minute": "{{count}} minute",
-      "minute_plural": "{{count}} minutes",
-      "hour": "{{count}} hour",
-      "hour_plural": "{{count}} hours",
-      "day": "{{count}} day",
-      "day_plural": "{{count}} days",
-      "month": "{{count}} month",
-      "month_plural": "{{count}} months",
-      "year": "{{count}} year",
-      "year_plural": "{{count}} years"
+      "short": {
+        "timeAgo": "{{time}}",
+        "second": "{{count}}s",
+        "second_plural": "{{count}}s",
+        "minute": "{{count}}m",
+        "minute_plural": "{{count}}m",
+        "hour": "{{count}}h",
+        "hour_plural": "{{count}}h",
+        "day": "{{count}}d",
+        "day_plural": "{{count}}d",
+        "month": "{{count}}mo",
+        "month_plural": "{{count}}mo",
+        "year": "{{count}}y",
+        "year_plural": "{{count}}y"
+      },
+      "long": {
+        "timeAgo": "{{time}} ago",
+        "second": "{{count}} second",
+        "second_plural": "{{count}} seconds",
+        "minute": "{{count}} minute",
+        "minute_plural": "{{count}} minutes",
+        "hour": "{{count}} hour",
+        "hour_plural": "{{count}} hours",
+        "day": "{{count}} day",
+        "day_plural": "{{count}} days",
+        "month": "{{count}} month",
+        "month_plural": "{{count}} months",
+        "year": "{{count}} year",
+        "year_plural": "{{count}} years"
+      }
     }
   },
   "community": {
