@@ -6,8 +6,6 @@ import CreateCalloutItemButton from '../CreateCalloutItemButton';
 import { CalloutState } from '../../../../core/apollo/generated/graphql-schema';
 import { Skeleton } from '@mui/material';
 import WhiteboardCard, { WhiteboardCardWhiteboard } from './WhiteboardCard';
-// import { buildWhiteboardUrl } from '../../../../main/routing/urlBuilders';
-// import { WhiteboardCardWhiteboard } from './types';
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
 import { gutters } from '../../../../core/ui/grid/utils';
 import CalloutBlockFooter from '../../CalloutBlock/CalloutBlockFooter';
