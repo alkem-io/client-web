@@ -504,19 +504,36 @@
       "all-contributing-users": "all contributing users"
     },
     "time": {
-      "timeAgo": "{{time}} ago",
-      "second": "{{count}} second",
-      "second_plural": "{{count}} seconds",
-      "minute": "{{count}} minute",
-      "minute_plural": "{{count}} minutes",
-      "hour": "{{count}} hour",
-      "hour_plural": "{{count}} hours",
-      "day": "{{count}} day",
-      "day_plural": "{{count}} days",
-      "month": "{{count}} month",
-      "month_plural": "{{count}} months",
-      "year": "{{count}} year",
-      "year_plural": "{{count}} years"
+      "short": {
+        "timeAgo": "{{time}}",
+        "second": "{{count}}s",
+        "second_plural": "{{count}}s",
+        "minute": "{{count}}m",
+        "minute_plural": "{{count}}m",
+        "hour": "{{count}}h",
+        "hour_plural": "{{count}}h",
+        "day": "{{count}}d",
+        "day_plural": "{{count}}d",
+        "month": "{{count}}mo",
+        "month_plural": "{{count}}mo",
+        "year": "{{count}}y",
+        "year_plural": "{{count}}y"
+      },
+      "long": {
+        "timeAgo": "{{time}} ago",
+        "second": "{{count}} second",
+        "second_plural": "{{count}} seconds",
+        "minute": "{{count}} minute",
+        "minute_plural": "{{count}} minutes",
+        "hour": "{{count}} hour",
+        "hour_plural": "{{count}} hours",
+        "day": "{{count}} day",
+        "day_plural": "{{count}} days",
+        "month": "{{count}} month",
+        "month_plural": "{{count}} months",
+        "year": "{{count}} year",
+        "year_plural": "{{count}} years"
+      }
     }
   },
   "community": {
@@ -1964,7 +1981,8 @@
           "title": "My Latest Contributions",
           "card": {
             "journey": "in: <journeyicon /> {{journey}}"
-          }
+          },
+          "noContributions": "Your contributions will appear here once you participate in a Space. You can contribute by posting, commenting, or doing other activities."
         },
         "createAccountBanner": {
           "message": "<big>🚀 Click here to create your account and get started!</big> <small>Already a member? <signin>Sign in here</signin></small>"
@@ -2266,7 +2284,7 @@
       "readonlyDialog": {
         "title": "View only mode",
         "reason": {
-          "inactivity": "You can’t edit this Whiteboard because you were inactive for 2 hours or more",
+          "inactivity": "You can’t edit this Whiteboard because you were inactive for too long. Please try reopening the whiteboard to continue editing.",
           "multiUserNotAllowed": "You can’t edit this Whiteboard because this Space only allows one whiteboard editor at a time",
           "roomCapacityReached": "You can’t edit this Whiteboard because this Space allows for multiple editors simultaneously, but the maximum is reached",
           "generic": "You can’t edit this Whiteboard for one of the following reasons:\n\n- You were inactive for 2 hours or more\n- You are not a member of the Space\n- This Space only allows one whiteboard editor at a time\n- This Space allows for more editors, but the maximum is reached"
