@@ -6758,10 +6758,10 @@ export type UpdateCalloutMutationOptions = Apollo.BaseMutationOptions<
 export const UpdateCalloutVisibilityDocument = gql`
   mutation UpdateCalloutVisibility($calloutData: UpdateCalloutVisibilityInput!) {
     updateCalloutVisibility(calloutData: $calloutData) {
-      id
-      visibility
+      ...Callout
     }
   }
+  ${CalloutFragmentDoc}
 `;
 export type UpdateCalloutVisibilityMutationFn = Apollo.MutationFunction<
   SchemaTypes.UpdateCalloutVisibilityMutation,

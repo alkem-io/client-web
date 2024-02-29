@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 import {
+  CalloutFragmentDoc,
   useDeleteCalloutMutation,
   useUpdateCalloutMutation,
   useUpdateCalloutVisibilityMutation,
@@ -7,6 +8,7 @@ import {
 import { Callout, CalloutVisibility } from '../../../../../core/apollo/generated/graphql-schema';
 import { CalloutDeleteType, CalloutEditType } from '../CalloutEditType';
 import removeFromCache from '../../../../../core/apollo/utils/removeFromCache';
+import { useApolloClient } from '@apollo/client';
 
 type UseCalloutEditReturnType = {
   handleVisibilityChange: (
@@ -22,18 +24,27 @@ export const useCalloutEdit = (): UseCalloutEditReturnType => {
   const [updateCallout] = useUpdateCalloutMutation();
   const [updateCalloutVisibility] = useUpdateCalloutVisibilityMutation();
 
+  const apolloClient = useApolloClient();
+
   const handleVisibilityChange = useCallback(
     async (calloutId: string, visibility: CalloutVisibility, sendNotification: boolean) => {
       await updateCalloutVisibility({
         variables: {
           calloutData: { calloutID: calloutId, visibility, sendNotification },
         },
-        optimisticResponse: {
-          updateCalloutVisibility: {
-            __typename: 'Callout',
-            id: calloutId,
-            visibility,
-          },
+        optimisticResponse: () => {
+          const callout = apolloClient.readFragment({
+            id: `Callout:${calloutId}`,
+            fragment: CalloutFragmentDoc,
+            fragmentName: 'Callout',
+          });
+
+          return {
+            updateCalloutVisibility: {
+              ...callout,
+              visibility,
+            },
+          };
         },
       });
     },
