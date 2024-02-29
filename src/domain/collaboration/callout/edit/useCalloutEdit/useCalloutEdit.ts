@@ -39,6 +39,7 @@ export const useCalloutEdit = (): UseCalloutEditReturnType => {
     },
     [updateCalloutVisibility]
   );
+
   const handleEdit = useCallback(
     async (callout: CalloutEditType) => {
       await updateCallout({
@@ -76,9 +77,11 @@ export const useCalloutEdit = (): UseCalloutEditReturnType => {
     },
     [updateCallout]
   );
+
   const [deleteCallout] = useDeleteCalloutMutation({
     update: removeFromCache,
   });
+
   const handleDelete = useCallback(
     async (callout: CalloutDeleteType) => {
       await deleteCallout({

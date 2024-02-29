@@ -3,21 +3,25 @@ import { useNavigate } from 'react-router-dom';
 import CalloutLayout, { CalloutLayoutProps } from '../../CalloutBlock/CalloutLayout';
 import ScrollableCardsLayout from '../../../../core/ui/card/cardsLayout/ScrollableCardsLayout';
 import CreateCalloutItemButton from '../CreateCalloutItemButton';
-import { CalloutState, WhiteboardDetailsFragment } from '../../../../core/apollo/generated/graphql-schema';
+import { CalloutState } from '../../../../core/apollo/generated/graphql-schema';
 import { Skeleton } from '@mui/material';
-import WhiteboardCard from './WhiteboardCard';
-import { buildWhiteboardUrl } from '../../../../main/routing/urlBuilders';
-import { WhiteboardCardWhiteboard } from './types';
+import WhiteboardCard, { WhiteboardCardWhiteboard } from './WhiteboardCard';
+// import { buildWhiteboardUrl } from '../../../../main/routing/urlBuilders';
+// import { WhiteboardCardWhiteboard } from './types';
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
 import { gutters } from '../../../../core/ui/grid/utils';
 import CalloutBlockFooter from '../../CalloutBlock/CalloutBlockFooter';
 import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
 import { compact } from 'lodash';
+import { Identifiable } from '../../../../core/utils/Identifiable';
+import { normalizeLink } from '../../../../core/utils/links';
+import { LocationStateKeyCachedCallout } from '../../CalloutPage/CalloutPage';
+import { TypedCallout } from '../useCallouts/useCallouts';
 
 interface WhiteboardCollectionCalloutProps extends BaseCalloutViewProps {
   callout: CalloutLayoutProps['callout'];
-  whiteboards: WhiteboardDetailsFragment[];
-  createNewWhiteboard: () => Promise<{ nameID: string } | undefined>;
+  whiteboards: (Identifiable & WhiteboardCardWhiteboard)[];
+  createNewWhiteboard: () => Promise<{ profile: { url: string } } | undefined>;
 }
 
 const WhiteboardCollectionCallout = forwardRef<Element, WhiteboardCollectionCalloutProps>(
@@ -40,26 +44,19 @@ const WhiteboardCollectionCallout = forwardRef<Element, WhiteboardCollectionCall
 
     const handleCreate = async () => {
       const result = await createNewWhiteboard();
-      if (result?.nameID) {
-        navigate(
-          buildWhiteboardUrl(callout.nameID, result?.nameID, { spaceNameId, challengeNameId, opportunityNameId })
-        );
+      if (result) {
+        navigate(normalizeLink(result.profile.url), {
+          state: {
+            [LocationStateKeyCachedCallout]: callout,
+            keepScroll: true,
+          },
+        });
       }
     };
 
     const createButton = canCreate && callout.contributionPolicy.state !== CalloutState.Closed && (
       <CreateCalloutItemButton onClick={handleCreate} />
     );
-
-    const navigateToWhiteboard = (whiteboard: WhiteboardCardWhiteboard) => {
-      navigate(
-        buildWhiteboardUrl(whiteboard.calloutNameId, whiteboard.nameID, {
-          spaceNameId: spaceNameId!,
-          challengeNameId,
-          opportunityNameId,
-        })
-      );
-    };
 
     const calloutWhiteboards = compact(
       whiteboards.map(whiteboard => (whiteboard ? { ...whiteboard, calloutNameId: callout.nameID } : undefined))
@@ -91,7 +88,7 @@ const WhiteboardCollectionCallout = forwardRef<Element, WhiteboardCollectionCall
           >
             {whiteboard =>
               whiteboard ? (
-                <WhiteboardCard key={whiteboard.id} whiteboard={whiteboard} onClick={navigateToWhiteboard} />
+                <WhiteboardCard key={whiteboard.id} whiteboard={whiteboard} callout={callout as TypedCallout} />
               ) : (
                 <Skeleton />
               )

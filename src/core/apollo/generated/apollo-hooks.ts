@@ -655,6 +655,21 @@ export const VisualUriFragmentDoc = gql`
     name
   }
 `;
+export const WhiteboardCollectionCalloutCardFragmentDoc = gql`
+  fragment WhiteboardCollectionCalloutCard on Whiteboard {
+    id
+    profile {
+      id
+      url
+      displayName
+      visual(type: CARD) {
+        ...VisualUri
+      }
+    }
+    createdDate
+  }
+  ${VisualUriFragmentDoc}
+`;
 export const PostDashboardFragmentDoc = gql`
   fragment PostDashboard on Post {
     id
@@ -7375,14 +7390,15 @@ export const CalloutWhiteboardsDocument = gql`
       callout(ID: $calloutId) {
         id
         contributions {
+          id
           whiteboard {
-            ...WhiteboardDetails
+            ...WhiteboardCollectionCalloutCard
           }
         }
       }
     }
   }
-  ${WhiteboardDetailsFragmentDoc}
+  ${WhiteboardCollectionCalloutCardFragmentDoc}
 `;
 
 /**
@@ -8970,6 +8986,9 @@ export const CreateWhiteboardOnCalloutDocument = gql`
     createContributionOnCallout(contributionData: $input) {
       whiteboard {
         ...WhiteboardDetails
+        profile {
+          url
+        }
       }
     }
   }

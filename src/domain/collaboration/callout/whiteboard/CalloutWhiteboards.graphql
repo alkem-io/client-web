@@ -3,10 +3,24 @@ query CalloutWhiteboards($calloutId: UUID!) {
     callout(ID: $calloutId) {
       id
       contributions {
+        id
         whiteboard {
-          ...WhiteboardDetails
+          ...WhiteboardCollectionCalloutCard
         }
       }
     }
   }
+}
+
+fragment WhiteboardCollectionCalloutCard on Whiteboard {
+  id
+  profile {
+    id
+    url
+    displayName
+    visual(type: CARD) {
+      ...VisualUri
+    }
+  }
+  createdDate
 }
