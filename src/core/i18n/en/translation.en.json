@@ -2284,7 +2284,7 @@
       "readonlyDialog": {
         "title": "View only mode",
         "reason": {
-          "inactivity": "You can’t edit this Whiteboard because you were inactive for 2 hours or more",
+          "inactivity": "You can’t edit this Whiteboard because  you were inactive for too long. Please try reopening the whiteboard to continue editing.",
           "multiUserNotAllowed": "You can’t edit this Whiteboard because this Space only allows one whiteboard editor at a time",
           "roomCapacityReached": "You can’t edit this Whiteboard because this Space allows for multiple editors simultaneously, but the maximum is reached",
           "generic": "You can’t edit this Whiteboard for one of the following reasons:\n\n- You were inactive for 2 hours or more\n- You are not a member of the Space\n- This Space only allows one whiteboard editor at a time\n- This Space allows for more editors, but the maximum is reached"
