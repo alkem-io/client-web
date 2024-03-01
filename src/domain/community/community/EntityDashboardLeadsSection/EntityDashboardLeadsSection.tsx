@@ -58,17 +58,26 @@ const EntityDashboardLeadsSection = ({
     }));
   }, [leadUsers]);
 
+  const leadUsersSectionVisible = !!leadUsersMapped && leadUsersMapped.length > 0;
+  const leadOrganizationsSectionVisible = !!leadOrganizationsMapped && leadOrganizationsMapped.length > 0;
+
+  if (!leadUsersSectionVisible && !leadOrganizationsSectionVisible) return null;
+
   return (
     <PageContentBlock>
-      {!!leadUsersMapped && leadUsersMapped.length > 0 && usersHeader && (
+      {leadUsersSectionVisible && usersHeader && (
         <DashboardLeadUsers headerText={usersHeader} users={leadUsersMapped} />
       )}
-      <PageContentBlockHeader title={organizationsHeader}>{organizationsHeaderIcon}</PageContentBlockHeader>
-      <AssociatedOrganizationsView
-        organizations={leadOrganizationsMapped}
-        organizationCardComponent={OrganizationCardTransparent}
-        entityName={t('community.leading-organizations')}
-      />
+      {leadOrganizationsSectionVisible && organizationsHeader && (
+        <>
+          <PageContentBlockHeader title={organizationsHeader}>{organizationsHeaderIcon}</PageContentBlockHeader>
+          <AssociatedOrganizationsView
+            organizations={leadOrganizationsMapped}
+            organizationCardComponent={OrganizationCardTransparent}
+            entityName={t('community.leading-organizations')}
+          />
+        </>
+      )}
       {children}
     </PageContentBlock>
   );
