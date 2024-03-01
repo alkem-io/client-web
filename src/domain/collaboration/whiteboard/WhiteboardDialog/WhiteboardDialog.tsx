@@ -241,9 +241,9 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [handleDelete, isDeleting] = useLoadingState(async () => {
     if (whiteboard) {
-      await actions.onDelete(whiteboard);
       setDeleteDialogOpen(false);
       actions.onCancel();
+      await actions.onDelete(whiteboard);
     }
   });
 
