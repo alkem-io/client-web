@@ -1,5 +1,5 @@
 import { Button, ButtonProps, DialogContent, DialogProps, Skeleton } from '@mui/material';
-import Dialog from '@mui/material/Dialog';
+import DialogWithGrid from '../../../../../core/ui/dialog/DialogWithGrid';
 import React, { cloneElement, ComponentType, ReactElement, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DialogActions, DialogTitleWithIcon } from '../../../../../core/ui/dialog/deprecated';
@@ -61,12 +61,7 @@ const ImportTemplatesDialog = <T extends Template, V extends T>({
   };
 
   return (
-    <Dialog
-      open={open}
-      onClose={handleClose}
-      PaperProps={{ sx: { backgroundColor: 'background.default', width: theme => theme.spacing(150) } }}
-      maxWidth={false}
-    >
+    <DialogWithGrid open={open} columns={12} onClose={handleClose}>
       <DialogTitleWithIcon subtitle={dialogSubtitle} onClose={handleClose} icon={<LibraryIcon />}>
         {headerText}
       </DialogTitleWithIcon>
@@ -95,7 +90,7 @@ const ImportTemplatesDialog = <T extends Template, V extends T>({
       <DialogActions>
         <Button onClick={handleClose}>{t('buttons.cancel')}</Button>
       </DialogActions>
-    </Dialog>
+    </DialogWithGrid>
   );
 };
 
