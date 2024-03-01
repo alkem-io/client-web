@@ -21,7 +21,6 @@ import useLazyLoading from '../../../../domain/shared/pagination/useLazyLoading'
 import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
 import { gutters } from '../../../../core/ui/grid/utils';
 import { Identifiable } from '../../../../core/utils/Identifiable';
-import ActivityViewFooter from '../../../../domain/collaboration/activity/ActivityLog/views/ActivityViewFooter';
 import { buildAuthorFromUser } from '../../../../domain/community/user/utils/buildAuthorFromUser';
 
 const ROLE_OPTION_ALL = 'ROLE_OPTION_ALL';
@@ -151,10 +150,8 @@ const LatestContributions = ({ spaceMemberships }: LatestContributionsProps) => 
               <ActivityViewChooser
                 key={activity.id}
                 activity={activity as ActivityLogResultType}
-                displayName={author.displayName}
                 avatarUrl={author.avatarUrl}
                 journeyUrl={activity.journey?.profile.url ?? ''}
-                footerComponent={ActivityViewFooter}
               />
             );
           })}

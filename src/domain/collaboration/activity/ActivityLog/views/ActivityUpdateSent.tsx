@@ -11,7 +11,6 @@ export interface ActivityUpdateSentViewProps extends ActivityViewProps {
 }
 
 export const ActivityUpdateSentView: FC<ActivityUpdateSentViewProps> = ({
-  displayName,
   avatarUrl,
   loading,
   createdDate,
@@ -19,19 +18,16 @@ export const ActivityUpdateSentView: FC<ActivityUpdateSentViewProps> = ({
   journeyDisplayName,
   message,
   type,
-  footerComponent,
 }) => {
   const url = buildUpdatesUrl(journeyUrl);
 
   return (
     <ActivityBaseView
       type={type}
-      displayName={displayName}
       avatarUrl={avatarUrl}
       loading={loading}
       title={<ActivitySubjectMarkdown>{message}</ActivitySubjectMarkdown>}
       url={url}
-      footerComponent={footerComponent}
       contextDisplayName={journeyDisplayName}
       createdDate={createdDate}
     />
