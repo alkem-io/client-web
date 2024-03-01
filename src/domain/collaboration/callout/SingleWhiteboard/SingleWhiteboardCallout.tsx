@@ -59,6 +59,7 @@ const SingleWhiteboardCallout = ({
           })}
           readOnlyDisplayName
           displayName={callout.framing.profile.displayName}
+          preventWhiteboardDeletion
           whiteboard={callout.framing.whiteboard}
           authorization={callout.framing.whiteboard.authorization}
           loadingWhiteboards={false}
