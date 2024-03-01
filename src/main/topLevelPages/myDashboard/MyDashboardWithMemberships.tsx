@@ -12,6 +12,7 @@ import NewMembershipsBlock from './newMemberships/NewMembershipsBlock';
 import ExploreOtherChallenges from './exploreOtherChallenges/ExploreOtherChallenges';
 import { LatestContributionsSpacesQuery } from '../../../core/apollo/generated/graphql-schema';
 import { useColumns } from '../../../core/ui/grid/GridContext';
+import ReleaseNotesBanner from './releaseNotesBanner/ReleaseNotesBanner';
 
 interface MyDashboardWithMembershipsProps {
   spacesData: LatestContributionsSpacesQuery | undefined;
@@ -31,12 +32,13 @@ const MyDashboardWithMemberships: FC<MyDashboardWithMembershipsProps> = ({ space
         <RecentForumMessages />
       </PageContentColumn>
       <PageContentColumn columns={8}>
+        <ReleaseNotesBanner />
         <NewMembershipsBlock halfWidth onOpenMemberships={onOpenMembershipsDialog} />
         <MyLatestContributions />
         <TipsAndTricks halfWidth />
         <InnovationLibraryBlock halfWidth />
         <ExploreOtherChallenges />
-        <StartingSpace width="100%" />
+        <StartingSpace />
         <MoreAboutAlkemio />
       </PageContentColumn>
     </>

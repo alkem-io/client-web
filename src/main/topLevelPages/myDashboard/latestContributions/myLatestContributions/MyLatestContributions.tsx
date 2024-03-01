@@ -15,7 +15,8 @@ import {
   ActivityLogResultType,
   ActivityViewChooser,
 } from '../../../../../domain/collaboration/activity/ActivityLog/ActivityComponent';
-import MyActivityViewFooter from '../../../../../domain/collaboration/activity/ActivityLog/views/MyActivityViewFooter';
+import { CaptionSmall } from '../../../../../core/ui/typography/components';
+import defaultJourneyAvatar from '../../../../../domain/journey/defaultVisuals/Avatar.jpg';
 
 const MY_LATEST_CONTRIBUTIONS_COUNT = 4;
 
@@ -66,14 +67,20 @@ const MyLatestContributions = () => {
       <PageContentBlockHeader title={t('pages.home.sections.myLatestContributions.title')} />
       <ScrollerWithGradient>
         <Box padding={1}>
-          {activities?.map(activity => (
-            <ActivityViewChooser
-              key={activity.id}
-              activity={activity as ActivityLogResultType}
-              journeyUrl={activity.journey?.profile.url ?? ''}
-              footerComponent={MyActivityViewFooter}
-            />
-          ))}
+          {activities && activities.length > 0 ? (
+            activities.map(activity => {
+              return (
+                <ActivityViewChooser
+                  key={activity.id}
+                  activity={activity as ActivityLogResultType}
+                  journeyUrl={activity.journey?.profile.url ?? ''}
+                  avatarUrl={activity.journey?.profile.avatar?.uri || defaultJourneyAvatar}
+                />
+              );
+            })
+          ) : (
+            <CaptionSmall padding={1}>{t('pages.home.sections.myLatestContributions.noContributions')}</CaptionSmall>
+          )}
         </Box>
       </ScrollerWithGradient>
     </PageContentBlock>

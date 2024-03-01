@@ -14,22 +14,20 @@ interface ActivityCalloutLinkCreatedViewProps extends ActivityViewProps {
 }
 
 export const ActivityCalloutLinkCreatedView: FC<ActivityCalloutLinkCreatedViewProps> = ({
-  author,
+  avatarUrl,
   loading,
   createdDate,
   callout,
   reference,
   type,
-  footerComponent,
 }) => {
   return (
     <ActivityBaseView
-      author={author}
+      avatarUrl={avatarUrl}
       loading={loading}
       type={type}
       title={<ActivityDescriptionByType activityType={type} subject={reference.name} />}
       url={callout.framing.profile.url}
-      footerComponent={footerComponent}
       contextDisplayName={callout.framing.profile.displayName}
       createdDate={createdDate}
     />

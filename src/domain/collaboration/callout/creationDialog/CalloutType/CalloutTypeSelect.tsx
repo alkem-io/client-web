@@ -22,11 +22,12 @@ interface CalloutTypeSelectProps {
 type CalloutTypeEnabledFunction = (privileges: AuthorizationPrivilege[]) => boolean;
 
 const availableCalloutTypes: Record<CalloutType, CalloutTypeEnabledFunction> = {
-  [CalloutType.Post]: () => true, // Always visible
-  // Show normal Whiteboards if RT whiteboards are disabled, otherwise show only RT whiteboards
-  [CalloutType.Whiteboard]: privileges => !privileges.includes(AuthorizationPrivilege.CreateWhiteboardRt),
-  [CalloutType.WhiteboardRt]: privileges => privileges.includes(AuthorizationPrivilege.CreateWhiteboardRt),
+  // Example of a callout type that depends on the user's privileges:
+  // [CalloutType.AnotherCalloutType]: privileges => !privileges.includes(AuthorizationPrivilege.CreateWhiteboard),
+
   // Always visible
+  [CalloutType.Post]: () => true,
+  [CalloutType.Whiteboard]: () => true,
   [CalloutType.LinkCollection]: () => true,
   [CalloutType.PostCollection]: () => true,
   [CalloutType.WhiteboardCollection]: () => true,

@@ -12,22 +12,20 @@ interface ActivityDiscussionCommentCreatedViewProps extends ActivityViewProps {
 }
 
 export const ActivityDiscussionCommentCreatedView: FC<ActivityDiscussionCommentCreatedViewProps> = ({
-  author,
+  avatarUrl,
   loading,
   createdDate,
   callout,
   description,
   type,
-  footerComponent,
 }) => {
   return (
     <ActivityBaseView
-      author={author}
+      avatarUrl={avatarUrl}
       loading={loading}
       type={type}
       title={<ActivitySubjectMarkdown>{description}</ActivitySubjectMarkdown>}
       url={callout.framing.profile.url}
-      footerComponent={footerComponent}
       contextDisplayName={callout.framing.profile.displayName}
       createdDate={createdDate}
     />

@@ -1,8 +1,8 @@
 import React, { MouseEventHandler, useEffect, useState } from 'react';
 import { gutters } from '../../../../core/ui/grid/utils';
-import { CircularProgress, IconButton, Tooltip, useTheme } from '@mui/material';
+import { Button, CircularProgress, DialogContent, IconButton, Tooltip, useTheme } from '@mui/material';
 import { Caption } from '../../../../core/ui/typography';
-import { LockOutlined, SaveOutlined } from '@mui/icons-material';
+import { DeleteOutline, EditOffOutlined, LockOutlined, SaveOutlined } from '@mui/icons-material';
 import { Actions } from '../../../../core/ui/actions/Actions';
 import { Trans, useTranslation } from 'react-i18next';
 import { useAuthenticationContext } from '../../../../core/auth/authentication/hooks/useAuthenticationContext';
@@ -18,11 +18,20 @@ import { buildLoginUrl } from '../../../../main/routing/urlBuilders';
 import useDirectMessageDialog from '../../../communication/messaging/DirectMessaging/useDirectMessageDialog';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 import { Visual } from '../../../common/visual/Visual';
+import {
+  CollaboratorMode,
+  CollaboratorModeReasons,
+} from '../../../common/whiteboard/excalidraw/collab/excalidrawAppConstants';
+import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
+import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
+import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 
 interface WhiteboardDialogFooterProps {
   onSave: () => void;
   lastSavedDate: Date | undefined;
   canUpdateContent: boolean;
+  onDelete: () => void;
+  canDelete?: boolean;
   updating?: boolean;
   createdBy:
     | (Identifiable & {
@@ -34,9 +43,12 @@ interface WhiteboardDialogFooterProps {
       })
     | undefined;
   contentUpdatePolicy: ContentUpdatePolicy | undefined;
+  collaboratorMode: CollaboratorMode | null;
+  collaboratorModeReason: CollaboratorModeReasons | null;
 }
 
 enum ReadonlyReason {
+  Readonly = 'readonly',
   ContentUpdatePolicy = 'contentUpdatePolicy',
   NoMembership = 'noMembership',
   Unauthenticated = 'unauthenticated',
@@ -46,8 +58,12 @@ const WhiteboardDialogFooter = ({
   lastSavedDate,
   onSave,
   canUpdateContent,
+  onDelete,
+  canDelete,
   contentUpdatePolicy,
   createdBy,
+  collaboratorMode,
+  collaboratorModeReason,
   updating = false,
 }: WhiteboardDialogFooterProps) => {
   const { t } = useTranslation();
@@ -91,20 +107,23 @@ const WhiteboardDialogFooter = ({
 
   const journeyProfile = getJourneyProfile();
 
-  const readonlyReason = canUpdateContent
-    ? null
-    : (() => {
-        if (!isAuthenticated) {
-          return ReadonlyReason.Unauthenticated;
-        }
-        if (
-          contentUpdatePolicy === ContentUpdatePolicy.Contributors &&
-          getMyMembershipStatus() !== CommunityMembershipStatus.Member
-        ) {
-          return ReadonlyReason.NoMembership;
-        }
-        return ReadonlyReason.ContentUpdatePolicy;
-      })();
+  const getReadonlyReason = () => {
+    if (canUpdateContent) {
+      return collaboratorMode === 'read' ? ReadonlyReason.Readonly : null;
+    }
+    if (!isAuthenticated) {
+      return ReadonlyReason.Unauthenticated;
+    }
+    if (
+      contentUpdatePolicy === ContentUpdatePolicy.Contributors &&
+      getMyMembershipStatus() !== CommunityMembershipStatus.Member
+    ) {
+      return ReadonlyReason.NoMembership;
+    }
+    return ReadonlyReason.ContentUpdatePolicy;
+  };
+
+  const readonlyReason = getReadonlyReason();
 
   const { sendMessage, directMessageDialog } = useDirectMessageDialog({
     dialogTitle: t('send-message-dialog.direct-message-title'),
@@ -119,50 +138,85 @@ const WhiteboardDialogFooter = ({
     });
   };
 
+  const [isLearnWhyDialogOpen, setIsLearnWhyDialogOpen] = useState(false);
+
+  const handleLearnWhyClick: MouseEventHandler = event => {
+    event.preventDefault();
+    setIsLearnWhyDialogOpen(true);
+  };
+
   return (
-    <Actions
-      minHeight={gutters(3)}
-      paddingX={gutters()}
-      marginTop={gutters(-1)}
-      gap={gutters(0.5)}
-      justifyContent="start"
-      alignItems="center"
-    >
-      <Tooltip placement="right" arrow title={<Caption>{t('pages.whiteboard.saveTooltip')}</Caption>}>
-        <IconButton
-          color="primary"
-          size="small"
-          sx={{ marginLeft: -0.5 }}
-          onClick={onSave}
-          disabled={!canUpdateContent || updating}
-        >
-          {canUpdateContent ? <SaveOutlined /> : <LockOutlined />}
-        </IconButton>
-      </Tooltip>
-      {readonlyReason ? (
-        <Caption>
-          <Trans
-            i18nKey={`pages.whiteboard.readonlyReason.${readonlyReason}` as const}
-            values={{
-              journeyType: journeyTypeName && t(`common.${journeyTypeName}` as const),
-              ownerName: createdBy?.profile.displayName,
-            }}
-            components={{
-              ownerlink: createdBy ? (
-                <RouterLink to={createdBy.profile.url} underline="always" onClick={handleAuthorClick} />
-              ) : (
-                <span />
-              ),
-              journeylink: journeyProfile ? <RouterLink to={journeyProfile.url} underline="always" /> : <span />,
-              signinlink: <RouterLink to={buildLoginUrl(pathname)} state={{}} underline="always" />,
-            }}
-          />
-        </Caption>
-      ) : (
-        <LastSavedCaption saving={updating} date={lastSavedDate} />
-      )}
-      {directMessageDialog}
-    </Actions>
+    <>
+      <Actions
+        paddingX={gutters()}
+        paddingY={gutters(0.5)}
+        gap={gutters(0.5)}
+        justifyContent="start"
+        alignItems="center"
+      >
+        {canDelete && (
+          <Button
+            color="error"
+            startIcon={<DeleteOutline />}
+            onClick={onDelete}
+            disabled={!canUpdateContent || updating}
+            sx={{ textTransform: 'none' }}
+            aria-label={t('buttons.delete')}
+          >
+            <Caption>{t('buttons.delete')}</Caption>
+          </Button>
+        )}
+        <Tooltip placement="right" arrow title={<Caption>{t('pages.whiteboard.saveTooltip')}</Caption>}>
+          <span>
+            <IconButton
+              color="primary"
+              size="small"
+              onClick={onSave}
+              disabled={!canUpdateContent || collaboratorMode !== 'write' || updating}
+            >
+              {!readonlyReason && <SaveOutlined />}
+              {readonlyReason === ReadonlyReason.Readonly && <EditOffOutlined />}
+              {readonlyReason && readonlyReason !== ReadonlyReason.Readonly && <LockOutlined />}
+            </IconButton>
+          </span>
+        </Tooltip>
+        {readonlyReason ? (
+          <Caption>
+            <Trans
+              i18nKey={`pages.whiteboard.readonlyReason.${readonlyReason}` as const}
+              values={{
+                journeyType: journeyTypeName && t(`common.${journeyTypeName}` as const),
+                ownerName: createdBy?.profile.displayName,
+              }}
+              components={{
+                ownerlink: createdBy ? (
+                  <RouterLink to={createdBy.profile.url} underline="always" onClick={handleAuthorClick} />
+                ) : (
+                  <span />
+                ),
+                journeylink: journeyProfile ? <RouterLink to={journeyProfile.url} underline="always" /> : <span />,
+                signinlink: <RouterLink to={buildLoginUrl(pathname)} state={{}} underline="always" />,
+                learnwhy: <RouterLink to="" underline="always" onClick={handleLearnWhyClick} />,
+              }}
+            />
+          </Caption>
+        ) : (
+          <LastSavedCaption saving={updating} date={lastSavedDate} />
+        )}
+        {directMessageDialog}
+      </Actions>
+      <DialogWithGrid open={isLearnWhyDialogOpen} onClose={() => setIsLearnWhyDialogOpen(false)}>
+        <DialogHeader
+          title={t('pages.whiteboard.readonlyDialog.title')}
+          onClose={() => setIsLearnWhyDialogOpen(false)}
+        />
+        <DialogContent sx={{ paddingTop: 0 }}>
+          <WrapperMarkdown>
+            {t(`pages.whiteboard.readonlyDialog.reason.${collaboratorModeReason ?? 'generic'}` as const)}
+          </WrapperMarkdown>
+        </DialogContent>
+      </DialogWithGrid>
+    </>
   );
 };
 
@@ -177,7 +231,7 @@ const LastSavedCaption = ({ date, saving }: { date: Date | undefined; saving: bo
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setFormattedTime(date && formatTimeElapsed(date, t));
+      setFormattedTime(date && formatTimeElapsed(date, t, 'long'));
     }, 500);
     return () => {
       clearInterval(interval);
@@ -188,16 +242,18 @@ const LastSavedCaption = ({ date, saving }: { date: Date | undefined; saving: bo
     return null;
   }
 
-  return saving ? (
-    <Caption title={`${date.toLocaleDateString()} ${date.toLocaleTimeString()}`}>
-      <CircularProgress size={gutters(0.5)(theme)} sx={{ marginRight: gutters(0.5) }} />
-      {t('pages.whiteboard.savingWhiteboard')}
-    </Caption>
-  ) : (
-    <Caption title={`${date.toLocaleDateString()} ${date.toLocaleTimeString()}`}>
-      {t('common.last-saved', {
-        datetime: formattedTime,
-      })}
+  return (
+    <Caption>
+      {saving ? (
+        <>
+          <CircularProgress size={gutters(0.5)(theme)} sx={{ marginRight: gutters(0.5) }} />
+          {t('pages.whiteboard.savingWhiteboard')}
+        </>
+      ) : (
+        t('common.last-saved', {
+          datetime: formattedTime,
+        })
+      )}
     </Caption>
   );
 };

@@ -9,6 +9,8 @@ import { Caption } from '../../../../core/ui/typography/components';
 import InnovationPackIcon from '../../InnovationPack/InnovationPackIcon';
 import { WhiteboardIcon } from '../icon/WhiteboardIcon';
 import { TemplateBase, TemplateCardBaseProps } from '../../templates/CollaborationTemplatesLibrary/TemplateBase';
+import CardTags from '../../../../core/ui/card/CardTags';
+import { gutters } from '../../../../core/ui/grid/utils';
 
 interface WhiteboardTemplateCardProps extends TemplateCardBaseProps<TemplateBase> {}
 
@@ -25,6 +27,13 @@ const WhiteboardTemplateCard: FC<WhiteboardTemplateCardProps> = ({ template, inn
         src={template?.profile.visual?.uri}
         alt={template?.profile.displayName}
         defaultImage={<WhiteboardIcon />}
+      />
+      <CardTags
+        position="relative"
+        top={gutters(-1)}
+        marginY={gutters(-0.5)}
+        tags={template?.profile.tagset?.tags ?? []}
+        hideIfEmpty
       />
       {innovationPack && (
         <CardSegmentCaption icon={<InnovationPackIcon />}>

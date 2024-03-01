@@ -2,6 +2,7 @@ import { throttle } from 'lodash';
 import { Collaborator, ExcalidrawImperativeAPI, Gesture } from '@alkemio/excalidraw/types/types';
 import {
   ACTIVE_THRESHOLD,
+  CollaboratorModeEvent,
   CURSOR_SYNC_TIMEOUT,
   EVENT,
   IDLE_THRESHOLD,
@@ -29,6 +30,7 @@ export interface CollabProps {
   filesManager: WhiteboardFilesManager;
   onSaveRequest: () => Promise<{ success: boolean; errors?: string[] }>;
   onCloseConnection: () => void;
+  onCollaboratorModeChange: (event: CollaboratorModeEvent) => void;
 }
 
 class Collab {
@@ -44,6 +46,7 @@ class Collab {
   private collaborators = new Map<string, Collaborator>();
   private onSavedToDatabase: (() => void) | undefined;
   private onCloseConnection: () => void;
+  private onCollaboratorModeChange: (event: CollaboratorModeEvent) => void;
 
   constructor(props: CollabProps) {
     this.state = {
@@ -62,6 +65,7 @@ class Collab {
     this.excalidrawAPI = props.excalidrawApi;
     this.filesManager = props.filesManager;
     this.onSavedToDatabase = props.onSavedToDatabase;
+    this.onCollaboratorModeChange = props.onCollaboratorModeChange;
   }
 
   init() {
@@ -157,7 +161,6 @@ class Collab {
                       init: true,
                     });
                   }
-                  resolve();
                   break;
                 }
                 case WS_SCENE_EVENT_TYPES.SCENE_UPDATE: {
@@ -186,23 +189,6 @@ class Collab {
                   });
                   break;
                 }
-
-                case WS_SCENE_EVENT_TYPES.IDLE_STATUS: {
-                  const { userState, socketId, username } = decryptedData.payload;
-                  const collaborators = new Map(this.collaborators);
-                  const user = collaborators.get(socketId) || {}!;
-                  user.userState = userState;
-                  user.username = username;
-                  this.excalidrawAPI.updateScene({
-                    collaborators,
-                  });
-                  break;
-                }
-
-                case WS_SCENE_EVENT_TYPES.SAVED: {
-                  this.onSavedToDatabase?.();
-                  break;
-                }
               }
             },
             'first-in-room': async () => {
@@ -210,8 +196,22 @@ class Collab {
                 fetchScene: true,
                 roomLinkData: existingRoomLinkData,
               });
-
+            },
+            saved: () => {
+              this.onSavedToDatabase?.();
+            },
+            'collaborator-mode': event => {
               resolve();
+              this.onCollaboratorModeChange(event);
+            },
+            'idle-state': ({ userState, socketId, username }) => {
+              const collaborators = new Map(this.collaborators);
+              const user = collaborators.get(socketId) || {}!;
+              user.userState = userState;
+              user.username = username;
+              this.excalidrawAPI.updateScene({
+                collaborators,
+              });
             },
           }
         );
@@ -400,10 +400,6 @@ class Collab {
       this.lastBroadcastedOrReceivedSceneVersion = getSceneVersion(elements);
       this.queueBroadcastAllElements();
     }
-  };
-
-  public notifySavedToDatabase = () => {
-    this.portal.broadcastSavedEvent(this.state.username);
   };
 
   private queueBroadcastAllElements = throttle(async () => {

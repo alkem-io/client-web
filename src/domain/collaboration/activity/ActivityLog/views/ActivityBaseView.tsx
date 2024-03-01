@@ -1,6 +1,5 @@
-import React, { ComponentType, FC, ReactNode } from 'react';
+import React, { FC, ReactNode } from 'react';
 import Skeleton from '@mui/material/Skeleton';
-import { Author } from '../../../../shared/components/AuthorAvatar/models/author';
 import { Caption } from '../../../../../core/ui/typography';
 import BadgeCardView from '../../../../../core/ui/list/BadgeCardView';
 import RouterLink, { RouterLinkProps } from '../../../../../core/ui/link/RouterLink';
@@ -10,17 +9,13 @@ import { Badge, ListItemButtonProps, Paper } from '@mui/material';
 import SwapColors from '../../../../../core/ui/palette/SwapColors';
 import getActivityIcon, { Activity } from './ActivityIcon';
 import ListItemButton, { ListItemButtonTypeMap } from '@mui/material/ListItemButton/ListItemButton';
+import ActivityViewFooter from './ActivityViewFooter';
 
 export interface ActivityBaseViewProps {
   title: ReactNode;
-  author: Author | undefined; // TODO reduce type
+  avatarUrl?: string;
   loading?: boolean;
   url: string;
-  footerComponent: ComponentType<{
-    authorDisplayName: ReactNode;
-    contextDisplayName: ReactNode;
-    createdDate: Date | string;
-  }>;
   createdDate: Date | string;
   contextDisplayName: ReactNode;
 }
@@ -30,12 +25,11 @@ const Wrapper = <D extends React.ElementType = ListItemButtonTypeMap['defaultCom
 ) => <ListItemButton component={RouterLink} {...props} />;
 
 export const ActivityBaseView: FC<ActivityBaseViewProps & (Activity | { type: undefined })> = ({
-  author,
+  avatarUrl,
   title,
   loading,
   url,
   children,
-  footerComponent: Footer,
   createdDate,
   contextDisplayName,
   ...activity
@@ -78,20 +72,15 @@ export const ActivityBaseView: FC<ActivityBaseViewProps & (Activity | { type: un
               }}
             />
           ) : (
-            <Avatar src={author?.avatarUrl} sx={{ borderRadius: 1.2 }} />
+            <Avatar src={avatarUrl} sx={{ borderRadius: 1.2 }} />
           )}
         </Badge>
       }
     >
       <Caption>{loading ? <Skeleton width="60%" /> : title}</Caption>
       {loading && <Skeleton />}
-      {!loading && (
-        <Footer
-          authorDisplayName={author?.displayName ?? ''}
-          contextDisplayName={contextDisplayName}
-          createdDate={createdDate}
-        />
-      )}
+      {!loading && <ActivityViewFooter contextDisplayName={contextDisplayName} createdDate={createdDate} />}
+      {loading && <Skeleton />}
     </BadgeCardView>
   );
 };

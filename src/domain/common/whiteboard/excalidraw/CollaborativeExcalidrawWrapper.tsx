@@ -3,22 +3,25 @@ import { ExportedDataState } from '@alkemio/excalidraw/types/data/types';
 import { AppState, BinaryFiles, ExcalidrawImperativeAPI, ExcalidrawProps } from '@alkemio/excalidraw/types/types';
 import { makeStyles } from '@mui/styles';
 import { debounce, merge } from 'lodash';
-import React, { Ref, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { PropsWithChildren, Ref, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useCombinedRefs } from '../../../shared/utils/useCombinedRefs';
 import EmptyWhiteboard from '../EmptyWhiteboard';
 import { ExcalidrawElement } from '@alkemio/excalidraw/types/element/types';
 import { useUserContext } from '../../../community/user';
 import { WhiteboardFilesManager } from './useWhiteboardFilesManager';
-import useCollab, { CollabAPI } from './collab/useCollab';
+import useCollab, { CollabAPI, CollabState } from './collab/useCollab';
 import Dialog from '@mui/material/Dialog';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import { DialogContent } from '../../../../core/ui/dialog/deprecated';
 import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
-import { Text } from '../../../../core/ui/typography';
+import { Caption, Text } from '../../../../core/ui/typography';
 import { formatTimeElapsed } from '../../../shared/utils/formatTimeElapsed';
 import { Button, DialogActions } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { LoadingButton } from '@mui/lab';
+import useOnlineStatus from '../../../../core/utils/onlineStatus';
+import Reconnectable from '../../../../core/utils/reconnectable';
+import { useTick } from '../../../../core/utils/time/tick';
 
 const useActorWhiteboardStyles = makeStyles(theme => ({
   container: {
@@ -51,17 +54,28 @@ export interface WhiteboardWhiteboardEvents {}
 
 export interface WhiteboardWhiteboardOptions extends ExcalidrawProps {}
 
+interface CollaborativeExcalidrawWrapperProvided extends CollabState {}
+
 export interface WhiteboardWhiteboardProps {
   entities: WhiteboardWhiteboardEntities;
   options: WhiteboardWhiteboardOptions;
   actions: WhiteboardWhiteboardActions;
   events?: WhiteboardWhiteboardEvents;
   collabApiRef?: Ref<CollabAPI | null>;
+  children: (props: PropsWithChildren<CollaborativeExcalidrawWrapperProvided>) => React.ReactNode;
 }
 
 const WINDOW_SCROLL_HANDLER_DEBOUNCE_INTERVAL = 100;
 
-const CollaborativeExcalidrawWrapper = ({ entities, actions, options, collabApiRef }: WhiteboardWhiteboardProps) => {
+const useReconnectable = Reconnectable();
+
+const CollaborativeExcalidrawWrapper = ({
+  entities,
+  actions,
+  options,
+  collabApiRef,
+  children: renderChildren,
+}: WhiteboardWhiteboardProps) => {
   const { whiteboard, filesManager, lastSavedDate } = entities;
 
   const combinedCollabApiRef = useCombinedRefs<CollabAPI | null>(null, collabApiRef);
@@ -119,7 +133,7 @@ const CollaborativeExcalidrawWrapper = ({ entities, actions, options, collabApiR
 
   const mergedUIOptions = useMemo(() => merge(UIOptions, externalUIOptions), [UIOptions, externalUIOptions]);
 
-  const [collabApi, initializeCollab, { connecting, collaborating }] = useCollab({
+  const [collabApi, initializeCollab, { connecting, collaborating, mode, modeReason }] = useCollab({
     username,
     onSavedToDatabase: actions.onSavedToDatabase,
     filesManager,
@@ -138,6 +152,9 @@ const CollaborativeExcalidrawWrapper = ({ entities, actions, options, collabApiR
     },
     onCloseConnection: () => {
       setCollaborationStoppedNoticeOpen(true);
+      if (isOnline) {
+        setupReconnectTimeout();
+      }
     },
     onInitialize: collabApi => {
       combinedCollabApiRef.current = collabApi;
@@ -153,9 +170,23 @@ const CollaborativeExcalidrawWrapper = ({ entities, actions, options, collabApiR
 
   const [collaborationStartTime, setCollaborationStartTime] = useState<number | null>(Date.now());
 
+  const [collaborationStoppedNoticeOpen, setCollaborationStoppedNoticeOpen] = useState(false);
+
+  const isOnline = useOnlineStatus();
+
   const restartCollaboration = () => {
     setCollaborationStartTime(Date.now());
   };
+
+  const { autoReconnectTime, setupReconnectTimeout } = useReconnectable({
+    isOnline,
+    reconnect: restartCollaboration,
+    skip: !collaborationStoppedNoticeOpen || collaborating,
+  });
+
+  const time = useTick({
+    skip: autoReconnectTime === null,
+  });
 
   useEffect(() => {
     if (!connecting && collaborating) {
@@ -180,47 +211,36 @@ const CollaborativeExcalidrawWrapper = ({ entities, actions, options, collabApiR
     [actions.onInitApi]
   );
 
-  const [collaborationStoppedNoticeOpen, setCollaborationStoppedNoticeOpen] = useState(false);
-
   const { t } = useTranslation();
 
-  const [isOnline, setIsOnline] = useState(navigator.onLine);
-
-  useEffect(() => {
-    const handleOnlineChange = () => setIsOnline(navigator.onLine);
-    window.addEventListener('online', handleOnlineChange);
-    window.addEventListener('offline', handleOnlineChange);
-    setIsOnline(navigator.onLine);
-    return () => {
-      window.removeEventListener('online', handleOnlineChange);
-      window.removeEventListener('offline', handleOnlineChange);
-    };
-  }, []);
+  const children = (
+    <div className={styles.container}>
+      {whiteboard && (
+        <Excalidraw
+          key={whiteboard.id} // initializing a fresh Excalidraw for each whiteboard
+          excalidrawAPI={handleInitializeApi}
+          initialData={data}
+          UIOptions={mergedUIOptions}
+          isCollaborating={collaborating}
+          viewModeEnabled={!collaborating || mode === 'read'}
+          gridModeEnabled
+          onChange={onChange}
+          onPointerUpdate={collabApi?.onPointerUpdate}
+          detectScroll={false}
+          autoFocus
+          generateIdForFile={addNewFile}
+          /*renderTopRightUI={_isMobile => {
+              return <LiveCollaborationStatus />;
+            }}*/
+          {...restOptions}
+        />
+      )}
+    </div>
+  );
 
   return (
     <>
-      <div className={styles.container}>
-        {whiteboard && (
-          <Excalidraw
-            key={whiteboard.id} // initializing a fresh Excalidraw for each whiteboard
-            excalidrawAPI={handleInitializeApi}
-            initialData={data}
-            UIOptions={mergedUIOptions}
-            isCollaborating={collaborating}
-            viewModeEnabled={!collaborating}
-            gridModeEnabled
-            onChange={onChange}
-            onPointerUpdate={collabApi?.onPointerUpdate}
-            detectScroll={false}
-            autoFocus
-            generateIdForFile={addNewFile}
-            /*renderTopRightUI={_isMobile => {
-                return <LiveCollaborationStatus />;
-              }}*/
-            {...restOptions}
-          />
-        )}
-      </div>
+      {renderChildren({ children, collaborating, connecting, mode, modeReason })}
       <Dialog open={collaborationStoppedNoticeOpen} onClose={() => setCollaborationStoppedNoticeOpen(false)}>
         <DialogHeader title={t('pages.whiteboard.whiteboardDisconnected.title')} />
         <DialogContent>
@@ -229,7 +249,7 @@ const CollaborativeExcalidrawWrapper = ({ entities, actions, options, collabApiR
           {lastSavedDate && (
             <Text>
               {t('pages.whiteboard.whiteboardDisconnected.lastSaved', {
-                lastSaved: formatTimeElapsed(lastSavedDate, t),
+                lastSaved: formatTimeElapsed(lastSavedDate, t, 'long'),
               })}
             </Text>
           )}
@@ -237,6 +257,11 @@ const CollaborativeExcalidrawWrapper = ({ entities, actions, options, collabApiR
         <DialogActions>
           <LoadingButton onClick={restartCollaboration} disabled={!isOnline} loading={connecting}>
             Reconnect
+            <Caption textTransform="none">
+              {autoReconnectTime !== null &&
+                autoReconnectTime - time > 0 &&
+                ` (${Math.ceil((autoReconnectTime - time) / 1000)}s)`}
+            </Caption>
           </LoadingButton>
           <Button onClick={() => setCollaborationStoppedNoticeOpen(false)}>{t('buttons.ok')}</Button>
         </DialogActions>

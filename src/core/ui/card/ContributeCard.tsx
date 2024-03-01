@@ -14,18 +14,26 @@ export interface ContributeCardProps {
   sx?: SxProps<Theme>;
   columns?: number;
   to?: string;
+  state?: Record<string, unknown>;
 }
 
 export const CONTRIBUTE_CARD_COLUMNS = 3;
 
 const ContributeCard = forwardRef<HTMLDivElement, PropsWithChildren<ContributeCardProps>>(
-  ({ columns = CONTRIBUTE_CARD_COLUMNS, to, onClick, sx, highlighted, children }, ref) => {
-    const getComponent = () => {
+  ({ columns = CONTRIBUTE_CARD_COLUMNS, to, state, onClick, sx, highlighted, children }, ref) => {
+    const getBaseComponentProps = () => {
       if (onClick) {
-        return ButtonBaseAlignReset;
+        return {
+          component: ButtonBaseAlignReset,
+          onClick,
+        };
       }
       if (to) {
-        return RouterLink;
+        return {
+          component: RouterLink,
+          to,
+          state,
+        };
       }
       return Paper;
     };
@@ -33,7 +41,7 @@ const ContributeCard = forwardRef<HTMLDivElement, PropsWithChildren<ContributeCa
     return (
       <GridItem columns={columns}>
         <ElevatedPaper
-          component={getComponent()}
+          {...getBaseComponentProps()}
           sx={{
             background: theme => (highlighted ? theme.palette.background.default : theme.palette.background.paper),
             display: 'flex',
@@ -42,8 +50,6 @@ const ContributeCard = forwardRef<HTMLDivElement, PropsWithChildren<ContributeCa
             cursor: onClick ? 'pointer' : 'default',
             ...sx,
           }}
-          onClick={onClick}
-          to={to}
           ref={ref}
         >
           {children}
