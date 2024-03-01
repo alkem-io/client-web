@@ -1,4 +1,4 @@
-import React, { ComponentType, FC, ReactNode } from 'react';
+import React, { FC, ReactNode } from 'react';
 import Skeleton from '@mui/material/Skeleton';
 import { Caption } from '../../../../../core/ui/typography';
 import BadgeCardView from '../../../../../core/ui/list/BadgeCardView';
@@ -9,18 +9,13 @@ import { Badge, ListItemButtonProps, Paper } from '@mui/material';
 import SwapColors from '../../../../../core/ui/palette/SwapColors';
 import getActivityIcon, { Activity } from './ActivityIcon';
 import ListItemButton, { ListItemButtonTypeMap } from '@mui/material/ListItemButton/ListItemButton';
+import ActivityViewFooter from './ActivityViewFooter';
 
 export interface ActivityBaseViewProps {
   title: ReactNode;
-  displayName?: string;
   avatarUrl?: string;
   loading?: boolean;
   url: string;
-  footerComponent: ComponentType<{
-    authorDisplayName: ReactNode;
-    contextDisplayName: ReactNode;
-    createdDate: Date | string;
-  }>;
   createdDate: Date | string;
   contextDisplayName: ReactNode;
 }
@@ -30,13 +25,11 @@ const Wrapper = <D extends React.ElementType = ListItemButtonTypeMap['defaultCom
 ) => <ListItemButton component={RouterLink} {...props} />;
 
 export const ActivityBaseView: FC<ActivityBaseViewProps & (Activity | { type: undefined })> = ({
-  displayName,
   avatarUrl,
   title,
   loading,
   url,
   children,
-  footerComponent: Footer,
   createdDate,
   contextDisplayName,
   ...activity
@@ -86,13 +79,8 @@ export const ActivityBaseView: FC<ActivityBaseViewProps & (Activity | { type: un
     >
       <Caption>{loading ? <Skeleton width="60%" /> : title}</Caption>
       {loading && <Skeleton />}
-      {!loading && (
-        <Footer
-          authorDisplayName={displayName ?? ''}
-          contextDisplayName={contextDisplayName}
-          createdDate={createdDate}
-        />
-      )}
+      {!loading && <ActivityViewFooter contextDisplayName={contextDisplayName} createdDate={createdDate} />}
+      {loading && <Skeleton />}
     </BadgeCardView>
   );
 };
