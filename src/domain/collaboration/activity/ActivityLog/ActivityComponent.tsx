@@ -32,7 +32,6 @@ import { buildAuthorFromUser } from '../../../community/user/utils/buildAuthorFr
 import { ActivityUpdateSentView } from './views/ActivityUpdateSent';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import { ActivityCalendarEventCreatedView } from './views/ActivityCalendarEventCreatedView';
-import ActivityViewFooter from './views/ActivityViewFooter';
 
 export type ActivityLogResult<T> = T &
   Omit<ActivityLogEntry, 'parentDisplayName'> & {
@@ -63,7 +62,6 @@ export interface ActivityComponentProps {
   activities: ActivityLogResultType[] | undefined;
   journeyLocation: JourneyLocation | undefined;
   limit?: number;
-  footerComponent?: ActivityViewProps['footerComponent'];
 }
 
 const getActivityOriginJourneyTypeName = (
@@ -79,12 +77,7 @@ const getActivityOriginJourneyTypeName = (
   return 'challenge';
 };
 
-export const ActivityComponent: FC<ActivityComponentProps> = ({
-  activities,
-  journeyLocation,
-  limit,
-  footerComponent = ActivityViewFooter,
-}) => {
+export const ActivityComponent: FC<ActivityComponentProps> = ({ activities, journeyLocation, limit }) => {
   const display = useMemo(() => {
     if (!activities || !journeyLocation) {
       return null;
@@ -106,11 +99,9 @@ export const ActivityComponent: FC<ActivityComponentProps> = ({
           return (
             <ActivityViewChooser
               activity={activity}
-              displayName={author.displayName}
               avatarUrl={author.avatarUrl}
               journeyUrl={activityOriginJourneyUrl}
               key={activity.id}
-              footerComponent={footerComponent}
             />
           );
         })}
@@ -121,8 +112,7 @@ export const ActivityComponent: FC<ActivityComponentProps> = ({
   return <>{display ?? <ActivityLoadingView rows={3} />}</>;
 };
 
-interface ActivityViewChooserProps
-  extends Pick<ActivityViewProps, 'journeyUrl' | 'displayName' | 'avatarUrl' | 'footerComponent'> {
+interface ActivityViewChooserProps extends Pick<ActivityViewProps, 'journeyUrl' | 'avatarUrl'> {
   activity: ActivityLogResultType;
 }
 
