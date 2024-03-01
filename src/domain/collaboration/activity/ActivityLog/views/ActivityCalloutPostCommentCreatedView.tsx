@@ -12,24 +12,20 @@ interface ActivityCalloutPostCommentCreatedViewProps extends ActivityViewProps {
 }
 
 export const ActivityCalloutPostCommentCreatedView: FC<ActivityCalloutPostCommentCreatedViewProps> = ({
-  displayName,
   avatarUrl,
   loading,
   createdDate,
   post,
   description,
   type,
-  footerComponent,
 }) => {
   return (
     <ActivityBaseView
-      displayName={displayName}
       avatarUrl={avatarUrl}
       loading={loading}
       type={type}
       title={<ActivitySubjectMarkdown>{description}</ActivitySubjectMarkdown>}
       url={post.profile.url}
-      footerComponent={footerComponent}
       contextDisplayName={post.profile.displayName}
       createdDate={createdDate}
     />
