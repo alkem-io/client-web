@@ -41,7 +41,7 @@ const ConfigProvider: FC<ConfigProviderProps> = ({ children, url }) => {
     requestConfig(url);
   }, [url]);
 
-  if (!config || loading) {
+  if (loading || (!config && !error)) {
     return <Loading text={'Loading configuration ...'} />;
   }
 
