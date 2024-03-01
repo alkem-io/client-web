@@ -1,5 +1,5 @@
 import { Box, Button, ButtonProps, DialogContent, Link } from '@mui/material';
-import React, { ComponentType, useState } from 'react';
+import React, { ComponentType, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { LibraryIcon } from '../LibraryIcon';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
@@ -16,6 +16,7 @@ import { gutters } from '../../../../core/ui/grid/utils';
 import { Identifiable, Identifiables } from '../../../../core/utils/Identifiable';
 import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
 import { identity } from 'lodash';
+import Spacer from '../../../../core/ui/content/Spacer';
 
 enum TemplateSource {
   Space,
@@ -97,18 +98,23 @@ const CollaborationTemplatesLibrary = <
 }: CollaborationTemplatesLibraryProps<Template, TemplateWithContent, TemplatePreview>) => {
   const { t } = useTranslation();
 
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const handleOpen = () => {
-    if (fetchTemplatesFromSpace && fetchSpaceTemplatesOnLoad) {
-      fetchTemplatesFromSpace();
+  const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      if (fetchTemplatesFromSpace && fetchSpaceTemplatesOnLoad) {
+        fetchTemplatesFromSpace();
+      }
+      if (fetchTemplatesFromPlatform) {
+        if (!fetchSpaceTemplatesOnLoad || templatesFromSpace?.length === 0) {
+          fetchTemplatesFromPlatform();
+        }
+      }
     }
-    if (fetchTemplatesFromPlatform && !fetchSpaceTemplatesOnLoad) {
-      fetchTemplatesFromPlatform();
-    }
-    setDialogOpen(true);
-  };
+  }, [isOpen, fetchTemplatesFromSpace, fetchTemplatesFromPlatform, fetchSpaceTemplatesOnLoad, templatesFromSpace]);
+
   const handleClose = () => {
-    setDialogOpen(false);
+    setIsOpen(false);
     handleClosePreview();
   };
 
@@ -141,8 +147,8 @@ const CollaborationTemplatesLibrary = <
 
   return (
     <>
-      <Button variant="outlined" startIcon={<LibraryIcon />} onClick={handleOpen} {...buttonProps} />
-      <DialogWithGrid open={dialogOpen} onClose={handleClose} columns={12}>
+      <Button variant="outlined" startIcon={<LibraryIcon />} onClick={() => setIsOpen(true)} {...buttonProps} />
+      <DialogWithGrid open={isOpen} onClose={handleClose} columns={12}>
         <DialogHeader title={dialogTitle} onClose={handleClose} titleContainerProps={{ alignItems: 'center' }}>
           {!previewTemplate && (
             <MultipleSelect
@@ -170,6 +176,7 @@ const CollaborationTemplatesLibrary = <
                   />
                 </>
               )}
+              <Spacer />
               {(!templatesFromPlatform || templatesFromPlatform.length === 0) &&
               !loadingTemplatesFromPlatform &&
               fetchTemplatesFromPlatform ? (

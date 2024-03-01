@@ -4,7 +4,7 @@ import { TemplateBase, TemplateCardBaseProps } from './TemplateBase';
 import { useTranslation } from 'react-i18next';
 import GridProvider from '../../../../core/ui/grid/GridProvider';
 import CardsLayout from '../../../../core/ui/card/cardsLayout/CardsLayout';
-import { Text } from '../../../../core/ui/typography';
+import { Caption } from '../../../../core/ui/typography';
 import { gutters } from '../../../../core/ui/grid/utils';
 import { times } from 'lodash';
 import { Identifiable } from '../../../../core/utils/Identifiable';
@@ -37,7 +37,7 @@ const CollaborationTemplatesLibraryGallery = <Template extends TemplateBase>({
   return (
     <GridProvider columns={12} force>
       {(loading || !templates) && <GallerySkeleton />}
-      {!loading && templates && (
+      {!loading && templates && templates.length > 0 && (
         <CardsLayout items={templates} deps={[templates]} disablePadding cards={false}>
           {template => (
             <TemplateCard key={template.id} template={template} onClick={() => onPreviewTemplate(template)} />
@@ -45,7 +45,7 @@ const CollaborationTemplatesLibraryGallery = <Template extends TemplateBase>({
         </CardsLayout>
       )}
       {!loading && templates && templates.length === 0 && (
-        <Text>{t('pages.admin.generic.sections.templates.import.no-templates')}</Text>
+        <Caption>{t('pages.admin.generic.sections.templates.import.no-templates')}</Caption>
       )}
     </GridProvider>
   );
