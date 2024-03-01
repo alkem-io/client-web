@@ -1,4 +1,7 @@
-import { AuthorizationPrivilege, WhiteboardDetailsFragment } from '../../../../core/apollo/generated/graphql-schema';
+import {
+  AuthorizationPrivilege,
+  WhiteboardCollectionCalloutCardFragment,
+} from '../../../../core/apollo/generated/graphql-schema';
 import {
   useCalloutWhiteboardsQuery,
   useCreateWhiteboardOnCalloutMutation,
@@ -12,8 +15,8 @@ import { compact } from 'lodash';
 
 interface WhiteboardCollectionCalloutContainerProvided {
   ref: Ref<Element>;
-  whiteboards: WhiteboardDetailsFragment[];
-  createNewWhiteboard: () => Promise<{ nameID: string } | undefined>;
+  whiteboards: WhiteboardCollectionCalloutCardFragment[];
+  createNewWhiteboard: () => Promise<{ profile: { url: string } } | undefined>;
   loading: boolean;
   canCreate: boolean;
   isCreatingWhiteboard: boolean;
@@ -71,9 +74,7 @@ const WhiteboardCollectionCalloutContainer = ({ callout, children }: WhiteboardC
       },
     });
 
-    const nameID = data?.createContributionOnCallout.whiteboard?.nameID;
-
-    return nameID ? { nameID } : undefined;
+    return data?.createContributionOnCallout.whiteboard;
   };
 
   return (
