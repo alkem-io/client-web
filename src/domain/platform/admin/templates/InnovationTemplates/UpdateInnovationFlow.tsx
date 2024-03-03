@@ -1,8 +1,7 @@
 import React, { FC, useCallback, useState } from 'react';
 import { Button, Grid, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { AuthorizationPrivilege, Lifecycle } from '../../../../../core/apollo/generated/graphql-schema';
-import InnovationFlowVisualizer from './InnovationFlowVisualizer';
+import { AuthorizationPrivilege, InnovationFlow } from '../../../../../core/apollo/generated/graphql-schema';
 import SelectInnovationFlowDialog, {
   InnovationFlowTemplate,
   SelectInnovationFlowFormValuesType,
@@ -10,33 +9,31 @@ import SelectInnovationFlowDialog, {
 import InnovationFlowUpdateConfirmDialog from './InnovationFlowUpdateConfirmDialog';
 import { useInnovationFlowAuthorizationQuery } from '../../../../../core/apollo/generated/apollo-hooks';
 
-interface EditLifecycleProps {
-  lifecycle: Lifecycle | undefined;
+interface UpdateInnovationFlowProps {
+  innovationFlow: InnovationFlow | undefined; // TODO: fix type to be a model, not from graphql
   entityId: string;
-  onSetNewState: (id: string, newState: string) => void;
   innovationFlowTemplates: InnovationFlowTemplate[] | undefined;
   onSubmit: (formData: SelectInnovationFlowFormValuesType) => void;
 }
 
-const UpdateInnovationFlow: FC<EditLifecycleProps> = ({
-  lifecycle,
+const UpdateInnovationFlow: FC<UpdateInnovationFlowProps> = ({
+  innovationFlow,
   entityId,
-  onSetNewState,
   innovationFlowTemplates,
   onSubmit,
 }) => {
   const { t } = useTranslation();
   const [isSelectInnovationFlowDialogOpen, setSelectInnovationFlowDialogOpen] = useState(false);
   const [isConfirmationDialogOpen, setConfirmationDialogOpen] = useState(false);
-  const nextEvents = lifecycle?.nextEvents || [];
 
   const openSelectInnovationFlowDialog = useCallback(() => setSelectInnovationFlowDialogOpen(true), []);
   const closeSelectInnovationFlowDialog = useCallback(() => setSelectInnovationFlowDialogOpen(false), []);
   const openConfirmationDialog = useCallback(() => setConfirmationDialogOpen(true), []);
   const closeConfirmationDialog = useCallback(() => setConfirmationDialogOpen(false), []);
 
+  // TODO: not sure what this logic was doing before.
   const innovationFlowTemplate = innovationFlowTemplates?.find(
-    template => lifecycle && lifecycle.templateName && template.definition.includes(lifecycle.templateName)
+    template => innovationFlow && template.profile.displayName
   );
   const { data } = useInnovationFlowAuthorizationQuery({
     variables: { innovationFlowId: entityId! },
@@ -76,8 +73,7 @@ const UpdateInnovationFlow: FC<EditLifecycleProps> = ({
           }`}
         </Typography>
       )}
-      {lifecycle && <InnovationFlowVisualizer lifecycle={lifecycle} />}
-      {nextEvents && privileges.canUpdate && (
+      {privileges.canUpdate && (
         <>
           <Grid container>
             <Grid item xs>
@@ -89,18 +85,6 @@ const UpdateInnovationFlow: FC<EditLifecycleProps> = ({
                 {t('buttons.change-template')}
               </Button>
             </Grid>
-            {nextEvents.map((stateName, i) => (
-              <Grid key={i} item>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={() => onSetNewState(entityId, stateName)}
-                  sx={{ alignSelf: 'end', marginX: 0.5 }}
-                >
-                  {stateName}
-                </Button>
-              </Grid>
-            ))}
           </Grid>
         </>
       )}
