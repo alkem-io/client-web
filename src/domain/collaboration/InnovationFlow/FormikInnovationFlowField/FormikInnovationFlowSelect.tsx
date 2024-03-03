@@ -8,11 +8,10 @@ import TranslationKey from '../../../../core/i18n/utils/TranslationKey';
 import { BlockSectionTitle, BlockTitle, Caption, Text } from '../../../../core/ui/typography';
 import { useTranslation } from 'react-i18next';
 import InnovationFlowTemplatesLibrary from '../InnovationFlowTemplatesLibrary/InnovationFlowTemplatesLibrary';
-import { useInnovationFlowTemplateDefinitionQuery } from '../../../../core/apollo/generated/apollo-hooks';
-import { InnovationFlowType } from '../../../../core/apollo/generated/graphql-schema';
 import { SafeInnovationFlowVisualizer } from '../../../platform/admin/templates/InnovationTemplates/SafeInnovationFlowVisualizer';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import { Identifiable } from '../../../../core/utils/Identifiable';
+import { useInnovationFlowTemplateStatesQuery } from '../../../../core/apollo/generated/apollo-hooks';
 
 const DiagramContainer = styled(Box)(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
@@ -30,7 +29,6 @@ const DiagramContainer = styled(Box)(({ theme }) => ({
 export type FormikInnovationFlowSelectProps = DistributiveOmit<TextFieldProps, 'variant'> & {
   title: string;
   name: string;
-  type: InnovationFlowType;
   disabled?: boolean;
   loading?: boolean;
 };
@@ -38,7 +36,6 @@ export type FormikInnovationFlowSelectProps = DistributiveOmit<TextFieldProps, '
 export const FormikInnovationFlowSelect: FC<FormikInnovationFlowSelectProps> = ({
   title,
   name,
-  type,
   disabled = false,
   loading,
 }) => {
@@ -55,7 +52,7 @@ export const FormikInnovationFlowSelect: FC<FormikInnovationFlowSelectProps> = (
     helpers.setValue(template.id);
   };
 
-  const { data: innovationFlowData, loading: loadingInnovationFlow } = useInnovationFlowTemplateDefinitionQuery({
+  const { data: innovationFlowData, loading: loadingInnovationFlow } = useInnovationFlowTemplateStatesQuery({
     variables: { innovationFlowTemplateID: field.value },
     skip: !field.value,
   });
@@ -66,7 +63,7 @@ export const FormikInnovationFlowSelect: FC<FormikInnovationFlowSelectProps> = (
     <Box>
       <Box display="flex" alignItems="center" justifyContent="space-between">
         <BlockTitle>{title}</BlockTitle>
-        <InnovationFlowTemplatesLibrary onImportTemplate={handleSelectTemplate} filterType={type} disabled={disabled} />
+        <InnovationFlowTemplatesLibrary onImportTemplate={handleSelectTemplate} disabled={disabled} />
       </Box>
       {(loadingInnovationFlow || loading) && <CircularProgress size={20} />}
       {template && (
@@ -75,7 +72,7 @@ export const FormikInnovationFlowSelect: FC<FormikInnovationFlowSelectProps> = (
           <Text>{template.profile.description}</Text>
           <BlockSectionTitle>{t('components.innovationFlowTemplateSelect.states')}</BlockSectionTitle>
           <DiagramContainer>
-            <SafeInnovationFlowVisualizer definition={template.definition} />
+            <SafeInnovationFlowVisualizer definition={JSON.stringify(template.states)} />
           </DiagramContainer>
           {helperText && <Caption color="error">{helperText}</Caption>}
         </Gutters>

@@ -7,6 +7,7 @@ query opportunityInnovationFlow($opportunityId: UUID!) {
         states {
           displayName
           description
+          sortOrder
         }
       }
     }

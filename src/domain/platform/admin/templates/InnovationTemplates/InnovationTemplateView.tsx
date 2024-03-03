@@ -20,7 +20,6 @@ const InnovationTemplateView = ({ template }: PostInnovationViewProps) => {
 
   const {
     profile: { tagset: { tags } = {}, description = '' },
-    type: templateType,
     definition = '',
   } = template;
 
@@ -35,12 +34,6 @@ const InnovationTemplateView = ({ template }: PostInnovationViewProps) => {
       <Box>
         <TypographyTitle>{t('common.tags')}</TypographyTitle>
         <TagsComponent tags={tags || []} />
-      </Box>
-      <Box>
-        <TypographyTitle>{t('templateLibrary.innovationFlowTemplates.type')}</TypographyTitle>
-        <Typography variant="h6" color="primary">
-          {templateType}
-        </Typography>
       </Box>
       <Box>
         <TypographyTitle>{t('innovation-templates.definition.title')}</TypographyTitle>

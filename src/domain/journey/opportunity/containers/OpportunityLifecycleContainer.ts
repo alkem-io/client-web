@@ -1,48 +1,45 @@
 import { FC } from 'react';
 import {
-  useEventOnOpportunityMutation,
   useOpportunityInnovationFlowQuery,
+  useUpdateInnovationFlowStateMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
-import { Lifecycle } from '../../../../core/apollo/generated/graphql-schema';
 import { ComponentOrChildrenFn, renderComponentOrChildrenFn } from '../../../../core/container/ComponentOrChildrenFn';
+import { InnovationFlowState } from '../../../../core/apollo/generated/graphql-schema';
 
 interface OpportunityLifecycleContainerProvided {
-  lifecycle: Lifecycle | undefined;
+  states: InnovationFlowState[] | undefined;
   loading: boolean;
   onSetNewState: (innovationFlowId: string, nextState: string) => void;
 }
 
 type OpportunityLifecycleContainerProps = ComponentOrChildrenFn<OpportunityLifecycleContainerProvided> & {
-  spaceNameId: string;
-  opportunityNameId: string;
+  opportunityId: string;
 };
 
-const OpportunityLifecycleContainer: FC<OpportunityLifecycleContainerProps> = ({
-  spaceNameId,
-  opportunityNameId,
-  ...rendered
-}) => {
+const OpportunityLifecycleContainer: FC<OpportunityLifecycleContainerProps> = ({ opportunityId, ...rendered }) => {
   const { data, loading } = useOpportunityInnovationFlowQuery({
-    variables: { spaceId: spaceNameId, opportunityId: opportunityNameId },
+    variables: { opportunityId: opportunityId },
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
   });
 
-  const innovationFlow = data?.space.opportunity?.innovationFlow;
-  const lifecycle = innovationFlow?.lifecycle;
+  const innovationFlow = data?.lookup.opportunity?.innovationFlow;
+  const states = innovationFlow?.states;
 
-  const [updateOpportunityLifecycle] = useEventOnOpportunityMutation({});
+  const [updateOpportunityLifecycle] = useUpdateInnovationFlowStateMutation({});
 
-  const setNextState = (innovationFlowId: string, nextState: string) =>
+  const setNextState = (innovationFlowID: string, nextState: string) =>
     updateOpportunityLifecycle({
       variables: {
-        innovationFlowId,
-        eventName: nextState,
+        input: {
+          innovationFlowID,
+          selectedState: nextState,
+        },
       },
     });
 
   return renderComponentOrChildrenFn(rendered, {
-    lifecycle,
+    states,
     loading,
     onSetNewState: setNextState,
   });

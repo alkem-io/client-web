@@ -12,7 +12,6 @@ import FormikEffectFactory from '../../../../core/ui/forms/FormikEffect';
 import { JourneyCreationForm } from '../../../shared/components/JorneyCreationDialog/JourneyCreationForm';
 import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
 import FormikInnovationFlowSelect from '../../../collaboration/InnovationFlow/FormikInnovationFlowField/FormikInnovationFlowSelect';
-import { InnovationFlowType } from '../../../../core/apollo/generated/graphql-schema';
 import useDefaultInnovationFlowTemplate from '../../../collaboration/InnovationFlow/DefaultInnovationFlow/useDefaultInnovationFlowTemplate';
 
 const FormikEffect = FormikEffectFactory<FormValues>();
@@ -30,7 +29,7 @@ interface CreateChallengeFormProps extends JourneyCreationForm {}
 
 export const CreateChallengeForm: FC<CreateChallengeFormProps> = ({ isSubmitting, onValidChanged, onChanged }) => {
   const { t } = useTranslation();
-  const { defaultInnovationFlowTemplateId } = useDefaultInnovationFlowTemplate(InnovationFlowType.Challenge);
+  const { defaultInnovationFlowTemplateId } = useDefaultInnovationFlowTemplate();
 
   const validationRequiredString = t('forms.validations.required');
   const validationRequiredInnovationFlowString = t('components.innovationFlowTemplateSelect.required');
@@ -124,7 +123,6 @@ export const CreateChallengeForm: FC<CreateChallengeFormProps> = ({ isSubmitting
             <FormikInnovationFlowSelect
               name="innovationFlowTemplateID"
               title={t('context.challenge.innovationFlow.title')}
-              type={InnovationFlowType.Challenge}
               disabled={isSubmitting}
             />
           </Gutters>

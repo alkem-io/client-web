@@ -1,11 +1,10 @@
 import {
   refetchInnovationFlowSettingsQuery,
-  useChallengeInnovationFlowEventMutation,
   useInnovationFlowSettingsQuery,
-  useOpportunityInnovationFlowEventMutation,
   useUpdateCalloutFlowStateMutation,
   useUpdateCalloutsSortOrderMutation,
   useUpdateInnovationFlowMutation,
+  useUpdateInnovationFlowStateMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { CoreEntityIdTypes } from '../../../shared/types/CoreEntityIds';
 import { CalloutType, Tagset, UpdateProfileInput } from '../../../../core/apollo/generated/graphql-schema';
@@ -43,22 +42,12 @@ const mapFlowState = (tagset: Tagset | undefined): GroupedCallout['flowState'] =
     : undefined;
 };
 
-const useInnovationFlowSettings = ({
-  spaceNameId,
-  challengeNameId,
-  opportunityNameId,
-}: useInnovationFlowSettingsProps) => {
-  const isChallenge = !opportunityNameId;
-
+const useInnovationFlowSettings = ({ innovationFlowId, collaborationId }: useInnovationFlowSettingsProps) => {
   const { data, loading: loadingData } = useInnovationFlowSettingsQuery({
     variables: {
-      spaceNameId,
-      challengeNameId,
-      opportunityNameId,
-      includeChallenge: isChallenge,
-      includeOpportunity: !isChallenge,
+      innovationFlowId,
+      collaborationId,
     },
-    skip: !spaceNameId || (!challengeNameId && !opportunityNameId),
   });
 
   const innovationFlow = data?.space.challenge?.innovationFlow ?? data?.space.opportunity?.innovationFlow;
@@ -85,50 +74,23 @@ const useInnovationFlowSettings = ({
 
   const flowStateAllowedValues = uniq(compact(callouts?.flatMap(callout => callout.flowState?.allowedValues))) ?? [];
 
-  const [challengeEvent, { loading: loadingChallengeEvent }] = useChallengeInnovationFlowEventMutation({
+  const [{ loading: loadingChallengeEvent }] = useUpdateInnovationFlowStateMutation({
     refetchQueries: [
       refetchInnovationFlowSettingsQuery({
-        spaceNameId,
-        challengeNameId,
-        opportunityNameId,
-        includeChallenge: isChallenge,
-        includeOpportunity: !isChallenge,
+        innovationFlowId,
+        collaborationId,
       }),
     ],
   });
 
-  const [opportunityEvent, { loading: loadingOpportunityEvent }] = useOpportunityInnovationFlowEventMutation({
+  const [{ loading: loadingOpportunityEvent }] = useUpdateInnovationFlowStateMutation({
     refetchQueries: [
       refetchInnovationFlowSettingsQuery({
-        spaceNameId,
-        challengeNameId,
-        opportunityNameId,
-        includeChallenge: isChallenge,
-        includeOpportunity: !isChallenge,
+        innovationFlowId,
+        collaborationId,
       }),
     ],
   });
-
-  const handleLifecycleNextEvent = async (nextEvent: string) => {
-    if (!innovationFlow?.id) {
-      return;
-    }
-    if (isChallenge) {
-      await challengeEvent({
-        variables: {
-          eventName: nextEvent,
-          innovationFlowID: innovationFlow?.id,
-        },
-      });
-    } else {
-      await opportunityEvent({
-        variables: {
-          eventName: nextEvent,
-          innovationFlowID: innovationFlow?.id,
-        },
-      });
-    }
-  };
 
   const [updateInnovationFlow, { loading: loadingUpdateInnovationFlow }] = useUpdateInnovationFlowMutation();
   const handleUpdateInnovationFlowProfile = async (innovationFlowID: string, profileData: UpdateProfileInput) =>
@@ -141,11 +103,8 @@ const useInnovationFlowSettings = ({
       },
       refetchQueries: [
         refetchInnovationFlowSettingsQuery({
-          spaceNameId,
-          challengeNameId,
-          opportunityNameId,
-          includeChallenge: isChallenge,
-          includeOpportunity: !isChallenge,
+          innovationFlowId,
+          collaborationId,
         }),
       ],
     });
@@ -211,11 +170,8 @@ const useInnovationFlowSettings = ({
       },
       refetchQueries: [
         refetchInnovationFlowSettingsQuery({
-          spaceNameId,
-          challengeNameId,
-          opportunityNameId,
-          includeChallenge: isChallenge,
-          includeOpportunity: !isChallenge,
+          innovationFlowId,
+          collaborationId,
         }),
       ],
     });
@@ -228,7 +184,6 @@ const useInnovationFlowSettings = ({
       flowStateAllowedValues,
     },
     actions: {
-      nextEvent: handleLifecycleNextEvent,
       updateInnovationFlowProfile: handleUpdateInnovationFlowProfile,
       updateCalloutFlowState: handleUpdateCalloutFlowState,
     },

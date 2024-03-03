@@ -7,7 +7,6 @@ import DialogWithGrid, { DialogFooter } from '../../../../../core/ui/dialog/Dial
 import DialogHeader, { DialogHeaderProps } from '../../../../../core/ui/dialog/DialogHeader';
 import React from 'react';
 import { FormikSubmitButtonPure } from '../../../../shared/components/forms/FormikSubmitButton';
-import { InnovationFlowType } from '../../../../../core/apollo/generated/graphql-schema';
 import { DialogActions, DialogContent } from '@mui/material';
 
 interface CreatePostTemplateDialogProps {
@@ -19,9 +18,7 @@ interface CreatePostTemplateDialogProps {
 const CreateInnovationTemplateDialog = ({ open, onClose, onSubmit }: CreatePostTemplateDialogProps) => {
   const { t } = useTranslation();
 
-  const values: Partial<InnovationTemplateFormValues> = {
-    type: InnovationFlowType.Challenge,
-  };
+  const values: Partial<InnovationTemplateFormValues> = {};
 
   return (
     <DialogWithGrid columns={12} open={open} onClose={onClose}>

@@ -1,46 +1,26 @@
 query InnovationFlowSettings(
-  $spaceNameId: UUID_NAMEID!
-  $includeChallenge: Boolean = false
-  $includeOpportunity: Boolean = false
-  $challengeNameId: UUID_NAMEID = "mockid" # workaround for mandatory param working in conjection with @include or @skip
-  $opportunityNameId: UUID_NAMEID = "mockid" # workaround for mandatory param working in conjection with @include or @skip
+  $innovationFlowId: UUID!
+  $collaborationId: UUID!
 ) {
-  space(ID: $spaceNameId) {
-    id
-    challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
+  lookup {
+    innovationFlow(ID: $innovationFlowId) {
       id
-      nameID
-      innovationFlow {
-        id
-        profile {
-          ...LifecycleProfile
-        }
-        states {
-          displayName
-        }
+      profile {
+        ...LifecycleProfile
       }
-      collaboration {
-        ...InnovationFlowCollaboration
+      states {
+        displayName
+        description
+        sortOrder
       }
     }
-    opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
-      id
-      nameID
-      innovationFlow {
-        id
-        profile {
-          ...LifecycleProfile
-        }
-        states {
-          displayName
-        }
-      }
-      collaboration {
-        ...InnovationFlowCollaboration
-      }
+    collaboration(ID: $collaborationId) {
+      ...InnovationFlowCollaboration
     }
   }
 }
+
+
 
 fragment LifecycleProfile on Profile {
   id

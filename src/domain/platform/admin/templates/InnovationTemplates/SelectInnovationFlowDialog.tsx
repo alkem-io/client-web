@@ -8,7 +8,7 @@ import { DialogActions, DialogContent, DialogTitle } from '../../../../../core/u
 import PolylineOutlinedIcon from '@mui/icons-material/PolylineOutlined';
 import { InnovationFlowTemplateSegment } from '../../components/Common/InnovationFlowTemplateSegment';
 import { FormikSelectValue } from '../../../../../core/ui/forms/FormikSelect';
-import { InnovationFlowType } from '../../../../../core/apollo/generated/graphql-schema';
+import { InnovationFlowState } from '../../../../collaboration/InnovationFlow/InnovationFlowStates/InnovationFlowStates';
 
 export interface InnovationFlowTemplateProfile {
   id: string;
@@ -18,9 +18,8 @@ export interface InnovationFlowTemplateProfile {
   };
 }
 export interface InnovationFlowTemplate {
-  definition: string;
+  states: InnovationFlowState[]; // TODO: create a model for this, not direct graphql type
   id: string;
-  type: InnovationFlowType;
   profile: InnovationFlowTemplateProfile;
 }
 export interface SelectInnovationFlowFormValuesType {
@@ -98,7 +97,7 @@ const SelectInnovationFlowDialog: FC<SelectInnovationFlowDialogProps> = ({
               return (
                 <InnovationFlowTemplateSegment
                   innovationFlowTemplateOptions={innovationFlowTemplateOptions}
-                  definition={selectedInnovationFlowTemplate?.definition}
+                  states={selectedInnovationFlowTemplate?.states || []}
                   required
                 />
               );

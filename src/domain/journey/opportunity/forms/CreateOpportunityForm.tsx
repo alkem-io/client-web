@@ -11,7 +11,6 @@ import { TagsetField } from '../../../platform/admin/components/Common/TagsetSeg
 import FormikEffectFactory from '../../../../core/ui/forms/FormikEffect';
 import { JourneyCreationForm } from '../../../shared/components/JorneyCreationDialog/JourneyCreationForm';
 import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
-import { InnovationFlowType } from '../../../../core/apollo/generated/graphql-schema';
 import FormikInnovationFlowSelect from '../../../collaboration/InnovationFlow/FormikInnovationFlowField/FormikInnovationFlowSelect';
 import useDefaultInnovationFlowTemplate from '../../../collaboration/InnovationFlow/DefaultInnovationFlow/useDefaultInnovationFlowTemplate';
 
@@ -30,7 +29,7 @@ interface CreateOpportunityFormProps extends JourneyCreationForm {}
 export const CreateOpportunityForm: FC<CreateOpportunityFormProps> = ({ isSubmitting, onValidChanged, onChanged }) => {
   const { t } = useTranslation();
 
-  const { defaultInnovationFlowTemplateId } = useDefaultInnovationFlowTemplate(InnovationFlowType.Opportunity);
+  const { defaultInnovationFlowTemplateId } = useDefaultInnovationFlowTemplate();
 
   const validationRequiredString = t('forms.validations.required');
   const validationRequiredInnovationFlowString = t('components.innovationFlowTemplateSelect.required');
@@ -113,7 +112,6 @@ export const CreateOpportunityForm: FC<CreateOpportunityFormProps> = ({ isSubmit
             <FormikInnovationFlowSelect
               name="innovationFlowTemplateID"
               title={t('context.opportunity.innovationFlow.title')}
-              type={InnovationFlowType.Opportunity}
               disabled={isSubmitting}
             />
           </Gutters>

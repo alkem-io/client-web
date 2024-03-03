@@ -4,6 +4,9 @@ query opportunityProfileInfo($spaceId: UUID_NAMEID!, $opportunityId: UUID_NAMEID
     opportunity(ID: $opportunityId) {
       id
       nameID
+      collaboration {
+        id
+      }
       profile {
         id
         displayName

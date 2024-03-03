@@ -1,13 +1,13 @@
 import { FC } from 'react';
 import {
   useChallengeInnovationFlowQuery,
-  useEventOnChallengeMutation,
+  useUpdateInnovationFlowStateMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
-import { Lifecycle } from '../../../../core/apollo/generated/graphql-schema';
 import { ComponentOrChildrenFn, renderComponentOrChildrenFn } from '../../../../core/container/ComponentOrChildrenFn';
+import { InnovationFlowState } from '../../../../core/apollo/generated/graphql-schema';
 
 interface ChallengeLifecycleContainerProvided {
-  lifecycle: Lifecycle | undefined;
+  states: InnovationFlowState[] | undefined;
   loading: boolean;
   onSetNewState: (innovationFlowID: string, newState: string) => void;
 }
@@ -23,27 +23,27 @@ const ChallengeLifecycleContainer: FC<ChallengeLifecycleContainerProps> = ({
   ...rendered
 }) => {
   const { data, loading } = useChallengeInnovationFlowQuery({
-    variables: { spaceId: spaceNameId, challengeId: challengeNameId },
+    variables: { challengeId: challengeNameId },
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
   });
 
-  const lifecycle = data?.space.challenge?.innovationFlow?.lifecycle;
+  const states = data?.lookup.challenge?.innovationFlow?.states;
 
-  const [updateChallengeLifecycle] = useEventOnChallengeMutation({});
+  const [updateChallengeLifecycle] = useUpdateInnovationFlowStateMutation({});
 
   const setNextState = (innovationFlowID: string, nextState: string) =>
     updateChallengeLifecycle({
       variables: {
         input: {
           innovationFlowID,
-          eventName: nextState,
+          selectedState: nextState,
         },
       },
     });
 
   return renderComponentOrChildrenFn(rendered, {
-    lifecycle,
+    states,
     loading,
     onSetNewState: setNextState,
   });

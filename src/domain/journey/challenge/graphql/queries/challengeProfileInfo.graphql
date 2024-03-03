@@ -4,6 +4,9 @@ query challengeProfileInfo($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
     challenge(ID: $challengeId) {
       id
       nameID
+      collaboration {
+        id
+      }
       profile {
         id
         displayName

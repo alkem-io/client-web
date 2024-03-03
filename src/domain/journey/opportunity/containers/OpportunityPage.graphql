@@ -42,6 +42,7 @@ fragment OpportunityPage on Opportunity {
     states {
       displayName
       description
+      sortOrder
     }
     currentState {
       displayName

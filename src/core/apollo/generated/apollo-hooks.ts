@@ -2086,6 +2086,7 @@ export const ChallengeProfileFragmentDoc = gql`
       states {
         displayName
         description
+        sortOrder
       }
       currentState {
         displayName
@@ -2338,6 +2339,7 @@ export const OpportunityPageFragmentDoc = gql`
       states {
         displayName
         description
+        sortOrder
       }
       currentState {
         displayName
@@ -2710,6 +2712,7 @@ export const InnovationFlowTemplateCardFragmentDoc = gql`
     states {
       displayName
       description
+      sortOrder
     }
   }
   ${TemplateCardProfileInfoFragmentDoc}
@@ -4936,46 +4939,21 @@ export function refetchDefaultInnovationFlowTemplateQuery(
 }
 
 export const InnovationFlowSettingsDocument = gql`
-  query InnovationFlowSettings(
-    $spaceNameId: UUID_NAMEID!
-    $includeChallenge: Boolean = false
-    $includeOpportunity: Boolean = false
-    $challengeNameId: UUID_NAMEID = "mockid"
-    $opportunityNameId: UUID_NAMEID = "mockid"
-  ) {
-    space(ID: $spaceNameId) {
-      id
-      challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
+  query InnovationFlowSettings($innovationFlowId: UUID!, $collaborationId: UUID!) {
+    lookup {
+      innovationFlow(ID: $innovationFlowId) {
         id
-        nameID
-        innovationFlow {
-          id
-          profile {
-            ...LifecycleProfile
-          }
-          states {
-            displayName
-          }
+        profile {
+          ...LifecycleProfile
         }
-        collaboration {
-          ...InnovationFlowCollaboration
+        states {
+          displayName
+          description
+          sortOrder
         }
       }
-      opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
-        id
-        nameID
-        innovationFlow {
-          id
-          profile {
-            ...LifecycleProfile
-          }
-          states {
-            displayName
-          }
-        }
-        collaboration {
-          ...InnovationFlowCollaboration
-        }
+      collaboration(ID: $collaborationId) {
+        ...InnovationFlowCollaboration
       }
     }
   }
@@ -4995,11 +4973,8 @@ export const InnovationFlowSettingsDocument = gql`
  * @example
  * const { data, loading, error } = useInnovationFlowSettingsQuery({
  *   variables: {
- *      spaceNameId: // value for 'spaceNameId'
- *      includeChallenge: // value for 'includeChallenge'
- *      includeOpportunity: // value for 'includeOpportunity'
- *      challengeNameId: // value for 'challengeNameId'
- *      opportunityNameId: // value for 'opportunityNameId'
+ *      innovationFlowId: // value for 'innovationFlowId'
+ *      collaborationId: // value for 'collaborationId'
  *   },
  * });
  */
@@ -5293,6 +5268,58 @@ export function refetchOpportunityInnovationFlowStatesAllowedValuesQuery(
   return { query: OpportunityInnovationFlowStatesAllowedValuesDocument, variables: variables };
 }
 
+export const UpdateInnovationFlowStateDocument = gql`
+  mutation updateInnovationFlowState($input: UpdateInnovationFlowSelectedStateInput!) {
+    updateInnovationFlowState(innovationFlowStateData: $input) {
+      id
+      currentState {
+        displayName
+      }
+    }
+  }
+`;
+export type UpdateInnovationFlowStateMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateInnovationFlowStateMutation,
+  SchemaTypes.UpdateInnovationFlowStateMutationVariables
+>;
+
+/**
+ * __useUpdateInnovationFlowStateMutation__
+ *
+ * To run a mutation, you first call `useUpdateInnovationFlowStateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateInnovationFlowStateMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateInnovationFlowStateMutation, { data, loading, error }] = useUpdateInnovationFlowStateMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateInnovationFlowStateMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateInnovationFlowStateMutation,
+    SchemaTypes.UpdateInnovationFlowStateMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.UpdateInnovationFlowStateMutation,
+    SchemaTypes.UpdateInnovationFlowStateMutationVariables
+  >(UpdateInnovationFlowStateDocument, options);
+}
+
+export type UpdateInnovationFlowStateMutationHookResult = ReturnType<typeof useUpdateInnovationFlowStateMutation>;
+export type UpdateInnovationFlowStateMutationResult =
+  Apollo.MutationResult<SchemaTypes.UpdateInnovationFlowStateMutation>;
+export type UpdateInnovationFlowStateMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateInnovationFlowStateMutation,
+  SchemaTypes.UpdateInnovationFlowStateMutationVariables
+>;
 export const SpaceInnovationFlowTemplatesLibraryDocument = gql`
   query SpaceInnovationFlowTemplatesLibrary($spaceId: UUID_NAMEID!) {
     space(ID: $spaceId) {
@@ -17147,6 +17174,7 @@ export const ChallengeInnovationFlowDocument = gql`
           states {
             displayName
             description
+            sortOrder
           }
           currentState {
             displayName
@@ -17216,6 +17244,9 @@ export const ChallengeProfileInfoDocument = gql`
       challenge(ID: $challengeId) {
         id
         nameID
+        collaboration {
+          id
+        }
         profile {
           id
           displayName
@@ -18839,6 +18870,7 @@ export const OpportunityInnovationFlowDocument = gql`
           states {
             displayName
             description
+            sortOrder
           }
         }
       }
@@ -18905,6 +18937,9 @@ export const OpportunityProfileInfoDocument = gql`
       opportunity(ID: $opportunityId) {
         id
         nameID
+        collaboration {
+          id
+        }
         profile {
           id
           displayName

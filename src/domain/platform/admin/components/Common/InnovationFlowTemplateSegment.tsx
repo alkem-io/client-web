@@ -3,16 +3,17 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SafeInnovationFlowVisualizer } from '../../templates/InnovationTemplates/SafeInnovationFlowVisualizer';
 import FormikSelect, { FormikSelectValue } from '../../../../../core/ui/forms/FormikSelect';
+import { InnovationFlowState } from '../../../../collaboration/InnovationFlow/InnovationFlowStates/InnovationFlowStates';
 
 interface InnovationFlowTemplateSegmentProps {
   innovationFlowTemplateOptions: FormikSelectValue[];
-  definition: string | undefined;
+  states: InnovationFlowState[];
   required: boolean;
 }
 
 export const InnovationFlowTemplateSegment: FC<InnovationFlowTemplateSegmentProps> = ({
   innovationFlowTemplateOptions,
-  definition = '',
+  states = [],
   required,
 }) => {
   const { t } = useTranslation();
@@ -25,7 +26,7 @@ export const InnovationFlowTemplateSegment: FC<InnovationFlowTemplateSegmentProp
         required={required}
         helpText={t('components.innovation-flow-template-segment.help-text.title')}
       />
-      {definition !== '' && <SafeInnovationFlowVisualizer definition={definition} />}
+      {false && <SafeInnovationFlowVisualizer definition={JSON.stringify(states)} />}
     </Grid>
   );
 };

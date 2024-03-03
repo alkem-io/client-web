@@ -851,8 +851,7 @@
     },
     "innovationFlowTemplates": {
       "name": "Innovation Flow template",
-      "title": "Template Library: Innovation Flows",
-      "type": "Type"
+      "title": "Template Library: Innovation Flows"
     },
     "spaceTemplates": "Templates selected by the host of this community",
     "platformTemplates": "Platform Templates",

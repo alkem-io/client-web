@@ -10,24 +10,19 @@ import CollaborationTemplatesLibrary from '../../templates/CollaborationTemplate
 import InnovationFlowTemplateCard from '../InnovationFlowTemplateCard/InnovationFlowTemplateCard';
 import InnovationFlowTemplatePreview from './InnovationFlowTemplatePreview';
 import { Autorenew } from '@mui/icons-material';
-import { InnovationFlowType } from '../../../../core/apollo/generated/graphql-schema';
 import { TemplateBase } from '../../templates/CollaborationTemplatesLibrary/TemplateBase';
 import { TemplateWithInnovationPack } from '../../../platform/admin/templates/InnovationPacks/ImportTemplatesDialogGalleryStep';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 
 interface InnovationFlowTemplate extends TemplateBase {
-  type: InnovationFlowType;
   definition: string;
 }
 
 export interface InnovationFlowTemplatesLibraryProps {
   onImportTemplate: (template: Identifiable) => void;
-  filterType?: InnovationFlowType;
+
   disabled?: boolean;
 }
-
-const filterByType = (filter: InnovationFlowType | undefined) =>
-  !filter ? () => true : <T extends InnovationFlowTemplate>(template: T) => template.type === filter;
 
 const filterByText = (filter: string[]) => {
   if (filter.length === 0) {
@@ -41,11 +36,7 @@ const filterByText = (filter: string[]) => {
   };
 };
 
-const InnovationFlowTemplatesLibrary: FC<InnovationFlowTemplatesLibraryProps> = ({
-  onImportTemplate,
-  filterType,
-  disabled,
-}) => {
+const InnovationFlowTemplatesLibrary: FC<InnovationFlowTemplatesLibraryProps> = ({ onImportTemplate, disabled }) => {
   const { t } = useTranslation();
   const { spaceNameId } = useUrlParams();
   const [filter, setFilter] = useState<string[]>([]);
@@ -71,9 +62,8 @@ const InnovationFlowTemplatesLibrary: FC<InnovationFlowTemplatesLibraryProps> = 
             provider: spaceData?.space.host,
           },
         }))
-        .filter(filterByType(filterType))
         .filter(filterByText(filter)),
-    [spaceData, filterType, filter]
+    [spaceData, filter]
   );
 
   // Platform Templates:
@@ -91,9 +81,8 @@ const InnovationFlowTemplatesLibrary: FC<InnovationFlowTemplatesLibraryProps> = 
             }))
           )
         )
-        .filter(filterByType(filterType))
         .filter(filterByText(filter)),
-    [platformData, filterType, filter]
+    [platformData, filter]
   );
 
   // InnovationFlow templates include the value (definition), so no need to go to the server and fetch like we do with Whiteboards
