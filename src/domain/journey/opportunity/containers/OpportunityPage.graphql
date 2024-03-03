@@ -38,12 +38,13 @@ fragment OpportunityPage on Opportunity {
     value
   }
   innovationFlow {
-    lifecycle {
-      id
-      machineDef
-      state
-      nextEvents
-      stateIsFinal
+    id
+    states {
+      displayName
+      description
+    }
+    currentState {
+      displayName
     }
   }
   collaboration {
@@ -73,11 +74,3 @@ fragment OpportunityPage on Opportunity {
   }
 }
 
-fragment OpportunityPageRelations on Relation {
-  id
-  type
-  actorRole
-  actorName
-  actorType
-  description
-}

@@ -15,9 +15,8 @@ query InnovationFlowSettings(
         profile {
           ...LifecycleProfile
         }
-        type
-        lifecycle {
-          ...LifecycleDetails
+        states {
+          displayName
         }
       }
       collaboration {
@@ -32,9 +31,8 @@ query InnovationFlowSettings(
         profile {
           ...LifecycleProfile
         }
-        type
-        lifecycle {
-          ...LifecycleDetails
+        states {
+          displayName
         }
       }
       collaboration {
@@ -65,12 +63,6 @@ fragment LifecycleProfile on Profile {
   }
 }
 
-fragment LifecycleDetails on Lifecycle {
-  id
-  state
-  nextEvents
-  stateIsFinal
-}
 
 fragment InnovationFlowCollaboration on Collaboration {
   id

@@ -22,10 +22,7 @@ query OpportunityInnovationFlowStatesAllowedValues($id: UUID!) {
 
 fragment JourneyInnovationFlowStatesAllowedValues on InnovationFlow {
   id
-  lifecycle {
-    id
-    state
-  }
+
   authorization {
     id
     myPrivileges

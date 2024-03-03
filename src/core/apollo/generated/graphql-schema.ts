@@ -439,11 +439,6 @@ export type ActorGroup = {
   name: Scalars['String'];
 };
 
-export type AdminInnovationFlowSynchronizeStatesInput = {
-  /** ID of the Innovation Flow */
-  innovationFlowID: Scalars['UUID'];
-};
-
 export type Agent = {
   __typename?: 'Agent';
   /** The authorization rules for the entity */
@@ -1479,13 +1474,10 @@ export type CreateFeedbackOnCommunityContextInput = {
 };
 
 export type CreateInnovationFlowTemplateOnTemplatesSetInput = {
-  /** The XState definition for this InnovationFlowTemplate. */
-  definition: Scalars['LifecycleDefinition'];
   profile: CreateProfileInput;
+  states?: InputMaybe<Array<UpdateInnovationFlowStateInput>>;
   tags?: InputMaybe<Array<Scalars['String']>>;
   templatesSetID: Scalars['UUID'];
-  /** The type of the InnovationFlows that this Template supports. */
-  type: InnovationFlowType;
   visualUri?: InputMaybe<Scalars['String']>;
 };
 
@@ -2016,39 +2008,37 @@ export type InnovationFlow = {
   __typename?: 'InnovationFlow';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
+  /** The currently selected state for this Flow. */
+  currentState: InnovationFlowState;
   /** The ID of the entity */
   id: Scalars['UUID'];
-  /** The Lifecycle being used by this InnovationFlow */
-  lifecycle?: Maybe<Lifecycle>;
   /** The Profile for this InnovationFlow. */
   profile: Profile;
-  /** The InnovationFlow type, e.g. Challenge, Opportunity */
-  type: InnovationFlowType;
+  /** The set of States in use in this Flow. */
+  states: Array<InnovationFlowState>;
 };
 
-export type InnovationFlowEvent = {
-  eventName: Scalars['String'];
-  innovationFlowID: Scalars['UUID'];
+export type InnovationFlowState = {
+  __typename?: 'InnovationFlowState';
+  /** The explation text to clarify the state. */
+  description: Scalars['Markdown'];
+  /** The display name for the State */
+  displayName: Scalars['String'];
+  /** The sort order of this question in a wider set of questions. */
+  sortOrder: Scalars['Float'];
 };
 
 export type InnovationFlowTemplate = {
   __typename?: 'InnovationFlowTemplate';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
-  /** The XState definition for this InnovationFlowTemplate. */
-  definition: Scalars['LifecycleDefinition'];
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** The Profile for this template. */
   profile: Profile;
-  /** The type for this InnovationFlowTemplate. */
-  type: InnovationFlowType;
+  /** The set of States in use in this Flow. */
+  states: Array<InnovationFlowState>;
 };
-
-export enum InnovationFlowType {
-  Challenge = 'CHALLENGE',
-  Opportunity = 'OPPORTUNITY',
-}
 
 export type InnovationHub = {
   __typename?: 'InnovationHub';
@@ -2488,8 +2478,6 @@ export type Mutation = {
   adminCommunicationRemoveOrphanedRoom: Scalars['Boolean'];
   /** Allow updating the rule for joining rooms: public or invite. */
   adminCommunicationUpdateRoomsJoinRule: Scalars['Boolean'];
-  /** Updates the States tagset to be synchronized with the Lifecycle states. */
-  adminInnovationFlowSynchronizeStates: Tagset;
   /** Apply to join the specified Community as a member. */
   applyForCommunityMembership: Application;
   /** Assigns an Organization a Role in the specified Community. */
@@ -2642,12 +2630,8 @@ export type Mutation = {
   deleteWhiteboardTemplate: WhiteboardTemplate;
   /** Trigger an event on the Application. */
   eventOnApplication: Application;
-  /** Trigger an event on the InnovationFlow for a Challenge. */
-  eventOnChallenge: InnovationFlow;
   /** Trigger an event on the Invitation. */
   eventOnCommunityInvitation: Invitation;
-  /** Trigger an event on the InnovationFlow for an Opportunity. */
-  eventOnOpportunity: InnovationFlow;
   /** Trigger an event on the Organization Verification. */
   eventOnOrganizationVerification: OrganizationVerification;
   /** Trigger an event on the Project. */
@@ -2734,8 +2718,8 @@ export type Mutation = {
   updateEcosystemModel: EcosystemModel;
   /** Updates the InnovationFlow. */
   updateInnovationFlow: InnovationFlow;
-  /** Updates the template for the specified Innovation Flow. */
-  updateInnovationFlowLifecycleTemplate: InnovationFlow;
+  /** Updates the InnovationFlow. */
+  updateInnovationFlowState: InnovationFlow;
   /** Updates the specified InnovationFlowTemplate. */
   updateInnovationFlowTemplate: InnovationFlowTemplate;
   /** Update Innovation Hub. */
@@ -2768,6 +2752,8 @@ export type Mutation = {
   updateReference: Reference;
   /** Updates the Space. */
   updateSpace: Space;
+  /** Updates the specified SpaceDefaults. */
+  updateSpaceDefaults: SpaceDefaults;
   /** Update the platform settings, such as license, of the specified Space. */
   updateSpacePlatformSettings: Space;
   /** Updates the specified Tagset. */
@@ -2810,10 +2796,6 @@ export type MutationAdminCommunicationRemoveOrphanedRoomArgs = {
 
 export type MutationAdminCommunicationUpdateRoomsJoinRuleArgs = {
   changeRoomAccessData: CommunicationAdminUpdateRoomsJoinRuleInput;
-};
-
-export type MutationAdminInnovationFlowSynchronizeStatesArgs = {
-  innovationFlowData: AdminInnovationFlowSynchronizeStatesInput;
 };
 
 export type MutationApplyForCommunityMembershipArgs = {
@@ -3104,16 +3086,8 @@ export type MutationEventOnApplicationArgs = {
   applicationEventData: ApplicationEventInput;
 };
 
-export type MutationEventOnChallengeArgs = {
-  innovationFlowEventData: InnovationFlowEvent;
-};
-
 export type MutationEventOnCommunityInvitationArgs = {
   invitationEventData: InvitationEventInput;
-};
-
-export type MutationEventOnOpportunityArgs = {
-  innovationFlowEventData: InnovationFlowEvent;
 };
 
 export type MutationEventOnOrganizationVerificationArgs = {
@@ -3280,8 +3254,8 @@ export type MutationUpdateInnovationFlowArgs = {
   innovationFlowData: UpdateInnovationFlowInput;
 };
 
-export type MutationUpdateInnovationFlowLifecycleTemplateArgs = {
-  innovationFlowData: UpdateInnovationFlowLifecycleTemplateInput;
+export type MutationUpdateInnovationFlowStateArgs = {
+  innovationFlowStateData: UpdateInnovationFlowSelectedStateInput;
 };
 
 export type MutationUpdateInnovationFlowTemplateArgs = {
@@ -3346,6 +3320,10 @@ export type MutationUpdateReferenceArgs = {
 
 export type MutationUpdateSpaceArgs = {
   spaceData: UpdateSpaceInput;
+};
+
+export type MutationUpdateSpaceDefaultsArgs = {
+  spaceDefaultsData: UpdateSpaceDefaultsInput;
 };
 
 export type MutationUpdateSpacePlatformSettingsArgs = {
@@ -4116,6 +4094,8 @@ export type RelayPaginatedSpace = Journey & {
   community?: Maybe<Community>;
   /** The context for the space. */
   context?: Maybe<Context>;
+  /** The defaults in use by this Space */
+  defaults?: Maybe<SpaceDefaults>;
   /** The user group with the specified id anywhere in the space */
   group: UserGroup;
   /** The User Groups on this Space */
@@ -4643,6 +4623,8 @@ export type Space = Journey & {
   community?: Maybe<Community>;
   /** The context for the space. */
   context?: Maybe<Context>;
+  /** The defaults in use by this Space */
+  defaults?: Maybe<SpaceDefaults>;
   /** The user group with the specified id anywhere in the space */
   group: UserGroup;
   /** The User Groups on this Space */
@@ -4708,6 +4690,16 @@ export type SpaceProjectArgs = {
 export type SpaceAuthorizationResetInput = {
   /** The identifier of the Space whose Authorization Policy should be reset. */
   spaceID: Scalars['UUID_NAMEID'];
+};
+
+export type SpaceDefaults = {
+  __typename?: 'SpaceDefaults';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** The innovation flow template to use for new Challenges / Opportunities. */
+  innovationFlowTemplate?: Maybe<InnovationFlowTemplate>;
 };
 
 export type SpaceFilterInput = {
@@ -4969,8 +4961,6 @@ export type TemplatesSet = {
   innovationFlowTemplates: Array<InnovationFlowTemplate>;
   /** The total number of InnovationFlowTemplates in this TemplatesSet. */
   innovationFlowTemplatesCount: Scalars['Float'];
-  /** The policy for this TemplatesSet. */
-  policy?: Maybe<TemplatesSetPolicy>;
   /** A single PostTemplate */
   postTemplate?: Maybe<PostTemplate>;
   /** The PostTemplates in this TemplatesSet. */
@@ -4995,11 +4985,6 @@ export type TemplatesSetPostTemplateArgs = {
 
 export type TemplatesSetWhiteboardTemplateArgs = {
   ID: Scalars['UUID'];
-};
-
-export type TemplatesSetPolicy = {
-  __typename?: 'TemplatesSetPolicy';
-  minInnovationFlow: Scalars['Float'];
 };
 
 export type Timeline = {
@@ -5186,23 +5171,30 @@ export type UpdateInnovationFlowInput = {
   innovationFlowID: Scalars['UUID'];
   /** The Profile of this entity. */
   profileData?: InputMaybe<UpdateProfileInput>;
-  /** The states on this InnovationFlow that should be selectable. */
-  visibleStates?: InputMaybe<Array<Scalars['String']>>;
+  states?: InputMaybe<Array<UpdateInnovationFlowStateInput>>;
 };
 
-export type UpdateInnovationFlowLifecycleTemplateInput = {
+export type UpdateInnovationFlowSelectedStateInput = {
   /** ID of the Innovation Flow */
   innovationFlowID: Scalars['UUID'];
-  /** The Innovation Flow Template to use for updating the lifecycle used in this Innovation Flow. */
-  innovationFlowTemplateID: Scalars['UUID'];
+  /** The State that the Innovation Flow is in */
+  selectedState: Scalars['String'];
+};
+
+export type UpdateInnovationFlowStateInput = {
+  /** The explation text to clarify the State. */
+  description: Scalars['Markdown'];
+  /** The display name for the State */
+  displayName: Scalars['String'];
+  /** The sort order of this question in a wider set of questions. */
+  sortOrder: Scalars['Float'];
 };
 
 export type UpdateInnovationFlowTemplateInput = {
   ID: Scalars['UUID'];
-  /** The XState definition for this InnovationFlowTemplate. */
-  definition?: InputMaybe<Scalars['LifecycleDefinition']>;
   /** The Profile of the Template. */
   profile?: InputMaybe<UpdateProfileInput>;
+  states?: InputMaybe<Array<UpdateInnovationFlowStateInput>>;
 };
 
 export type UpdateInnovationHubInput = {
@@ -5337,6 +5329,13 @@ export type UpdateReferenceInput = {
   description?: InputMaybe<Scalars['String']>;
   name?: InputMaybe<Scalars['String']>;
   uri?: InputMaybe<Scalars['String']>;
+};
+
+export type UpdateSpaceDefaultsInput = {
+  /** The ID for the InnovationFlowtemplate to use for new Challenges and Opportunities. */
+  flowTemplateID: Scalars['UUID'];
+  /** The identifier for the Space whose Defaaults are to be updated. */
+  spaceID: Scalars['UUID'];
 };
 
 export type UpdateSpaceInput = {
@@ -6755,39 +6754,20 @@ export type DefaultInnovationFlowTemplateQuery = {
   space: {
     __typename?: 'Space';
     id: string;
-    templates?:
+    defaults?:
       | {
-          __typename?: 'TemplatesSet';
+          __typename?: 'SpaceDefaults';
           id: string;
-          innovationFlowTemplates: Array<{
-            __typename?: 'InnovationFlowTemplate';
-            id: string;
-            type: InnovationFlowType;
-            profile: { __typename?: 'Profile'; id: string; displayName: string };
-          }>;
+          innovationFlowTemplate?:
+            | {
+                __typename?: 'InnovationFlowTemplate';
+                id: string;
+                profile: { __typename?: 'Profile'; id: string; displayName: string };
+              }
+            | undefined;
         }
       | undefined;
   };
-};
-
-export type ChallengeInnovationFlowEventMutationVariables = Exact<{
-  eventName: Scalars['String'];
-  innovationFlowID: Scalars['UUID'];
-}>;
-
-export type ChallengeInnovationFlowEventMutation = {
-  __typename?: 'Mutation';
-  eventOnChallenge: { __typename?: 'InnovationFlow'; id: string };
-};
-
-export type OpportunityInnovationFlowEventMutationVariables = Exact<{
-  eventName: Scalars['String'];
-  innovationFlowID: Scalars['UUID'];
-}>;
-
-export type OpportunityInnovationFlowEventMutation = {
-  __typename?: 'Mutation';
-  eventOnOpportunity: { __typename?: 'InnovationFlow'; id: string };
 };
 
 export type InnovationFlowSettingsQueryVariables = Exact<{
@@ -6811,7 +6791,6 @@ export type InnovationFlowSettingsQuery = {
         | {
             __typename?: 'InnovationFlow';
             id: string;
-            type: InnovationFlowType;
             profile: {
               __typename?: 'Profile';
               id: string;
@@ -6852,15 +6831,7 @@ export type InnovationFlowSettingsQuery = {
                   }
                 | undefined;
             };
-            lifecycle?:
-              | {
-                  __typename?: 'Lifecycle';
-                  id: string;
-                  state?: string | undefined;
-                  nextEvents?: Array<string> | undefined;
-                  stateIsFinal: boolean;
-                }
-              | undefined;
+            states: Array<{ __typename?: 'InnovationFlowState'; displayName: string }>;
           }
         | undefined;
       collaboration?:
@@ -6909,7 +6880,6 @@ export type InnovationFlowSettingsQuery = {
         | {
             __typename?: 'InnovationFlow';
             id: string;
-            type: InnovationFlowType;
             profile: {
               __typename?: 'Profile';
               id: string;
@@ -6950,15 +6920,7 @@ export type InnovationFlowSettingsQuery = {
                   }
                 | undefined;
             };
-            lifecycle?:
-              | {
-                  __typename?: 'Lifecycle';
-                  id: string;
-                  state?: string | undefined;
-                  nextEvents?: Array<string> | undefined;
-                  stateIsFinal: boolean;
-                }
-              | undefined;
+            states: Array<{ __typename?: 'InnovationFlowState'; displayName: string }>;
           }
         | undefined;
       collaboration?:
@@ -7035,14 +6997,6 @@ export type LifecycleProfileFragment = {
         alternativeText?: string | undefined;
       }
     | undefined;
-};
-
-export type LifecycleDetailsFragment = {
-  __typename?: 'Lifecycle';
-  id: string;
-  state?: string | undefined;
-  nextEvents?: Array<string> | undefined;
-  stateIsFinal: boolean;
 };
 
 export type InnovationFlowCollaborationFragment = {
@@ -7138,7 +7092,6 @@ export type ChallengeInnovationFlowStatesAllowedValuesQuery = {
             | {
                 __typename?: 'InnovationFlow';
                 id: string;
-                lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
                 authorization?:
                   | {
                       __typename?: 'Authorization';
@@ -7176,7 +7129,6 @@ export type OpportunityInnovationFlowStatesAllowedValuesQuery = {
             | {
                 __typename?: 'InnovationFlow';
                 id: string;
-                lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
                 authorization?:
                   | {
                       __typename?: 'Authorization';
@@ -7201,7 +7153,6 @@ export type OpportunityInnovationFlowStatesAllowedValuesQuery = {
 export type JourneyInnovationFlowStatesAllowedValuesFragment = {
   __typename?: 'InnovationFlow';
   id: string;
-  lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
@@ -7215,8 +7166,6 @@ export type JourneyInnovationFlowStatesAllowedValuesFragment = {
 export type InnovationFlowTemplateCardFragment = {
   __typename?: 'InnovationFlowTemplate';
   id: string;
-  type: InnovationFlowType;
-  definition: string;
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -7234,6 +7183,7 @@ export type InnovationFlowTemplateCardFragment = {
       | undefined;
     visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
   };
+  states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
 };
 
 export type SpaceInnovationFlowTemplatesLibraryQueryVariables = Exact<{
@@ -7252,8 +7202,6 @@ export type SpaceInnovationFlowTemplatesLibraryQuery = {
           innovationFlowTemplates: Array<{
             __typename?: 'InnovationFlowTemplate';
             id: string;
-            type: InnovationFlowType;
-            definition: string;
             profile: {
               __typename?: 'Profile';
               id: string;
@@ -7271,6 +7219,7 @@ export type SpaceInnovationFlowTemplatesLibraryQuery = {
                 | undefined;
               visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
             };
+            states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
           }>;
         }
       | undefined;
@@ -7325,8 +7274,6 @@ export type PlatformInnovationFlowTemplatesLibraryQuery = {
               innovationFlowTemplates: Array<{
                 __typename?: 'InnovationFlowTemplate';
                 id: string;
-                type: InnovationFlowType;
-                definition: string;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
@@ -7344,6 +7291,7 @@ export type PlatformInnovationFlowTemplatesLibraryQuery = {
                     | undefined;
                   visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
+                states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
               }>;
             }
           | undefined;
@@ -7352,11 +7300,11 @@ export type PlatformInnovationFlowTemplatesLibraryQuery = {
   };
 };
 
-export type InnovationFlowTemplateDefinitionQueryVariables = Exact<{
+export type InnovationFlowTemplateStatesQueryVariables = Exact<{
   innovationFlowTemplateID: Scalars['UUID'];
 }>;
 
-export type InnovationFlowTemplateDefinitionQuery = {
+export type InnovationFlowTemplateStatesQuery = {
   __typename?: 'Query';
   lookup: {
     __typename?: 'LookupQueryResults';
@@ -7364,8 +7312,12 @@ export type InnovationFlowTemplateDefinitionQuery = {
       | {
           __typename?: 'InnovationFlowTemplate';
           id: string;
-          definition: string;
-          type: InnovationFlowType;
+          states: Array<{
+            __typename?: 'InnovationFlowState';
+            displayName: string;
+            description: string;
+            sortOrder: number;
+          }>;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -7498,8 +7450,6 @@ export type InnovationPackProfilePageQuery = {
                   innovationFlowTemplates: Array<{
                     __typename?: 'InnovationFlowTemplate';
                     id: string;
-                    type: InnovationFlowType;
-                    definition: string;
                     profile: {
                       __typename?: 'Profile';
                       id: string;
@@ -7517,6 +7467,7 @@ export type InnovationPackProfilePageQuery = {
                         | undefined;
                       visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                     };
+                    states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
                   }>;
                 }
               | undefined;
@@ -15738,21 +15689,6 @@ export type EventOnApplicationMutation = {
   };
 };
 
-export type EventOnChallengeMutationVariables = Exact<{
-  input: InnovationFlowEvent;
-}>;
-
-export type EventOnChallengeMutation = {
-  __typename?: 'Mutation';
-  eventOnChallenge: {
-    __typename?: 'InnovationFlow';
-    id: string;
-    lifecycle?:
-      | { __typename?: 'Lifecycle'; id: string; nextEvents?: Array<string> | undefined; state?: string | undefined }
-      | undefined;
-  };
-};
-
 export type ChallengeApplicationQueryVariables = Exact<{
   spaceId: Scalars['UUID_NAMEID'];
   challengeId: Scalars['UUID_NAMEID'];
@@ -19947,7 +19883,7 @@ export type ChallengeCardFragment = {
     | {
         __typename?: 'InnovationFlow';
         id: string;
-        lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
+        currentState: { __typename?: 'InnovationFlowState'; displayName: string };
       }
     | undefined;
   community?:
@@ -20009,7 +19945,7 @@ export type ChallengeOpportunityCardsQuery = {
               | {
                   __typename?: 'InnovationFlow';
                   id: string;
-                  lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
+                  currentState: { __typename?: 'InnovationFlowState'; displayName: string };
                 }
               | undefined;
             context?:
@@ -20028,20 +19964,6 @@ export type ChallengeOpportunityCardsQuery = {
                       }
                     | undefined;
                 }
-              | undefined;
-            projects?:
-              | Array<{
-                  __typename?: 'Project';
-                  id: string;
-                  nameID: string;
-                  profile: {
-                    __typename?: 'Profile';
-                    id: string;
-                    displayName: string;
-                    description?: string | undefined;
-                  };
-                  lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
-                }>
               | undefined;
             community?:
               | { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined }
@@ -20103,16 +20025,8 @@ export type ChallengePageQuery = {
         | {
             __typename?: 'InnovationFlow';
             id: string;
-            lifecycle?:
-              | {
-                  __typename?: 'Lifecycle';
-                  id: string;
-                  machineDef: string;
-                  state?: string | undefined;
-                  nextEvents?: Array<string> | undefined;
-                  stateIsFinal: boolean;
-                }
-              | undefined;
+            states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
+            currentState: { __typename?: 'InnovationFlowState'; displayName: string };
           }
         | undefined;
       context?:
@@ -20318,16 +20232,8 @@ export type ChallengeProfileFragment = {
     | {
         __typename?: 'InnovationFlow';
         id: string;
-        lifecycle?:
-          | {
-              __typename?: 'Lifecycle';
-              id: string;
-              machineDef: string;
-              state?: string | undefined;
-              nextEvents?: Array<string> | undefined;
-              stateIsFinal: boolean;
-            }
-          | undefined;
+        states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
+        currentState: { __typename?: 'InnovationFlowState'; displayName: string };
       }
     | undefined;
   context?:
@@ -20713,7 +20619,7 @@ export type OpportunitiesOnChallengeFragment = {
           | {
               __typename?: 'InnovationFlow';
               id: string;
-              lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
+              currentState: { __typename?: 'InnovationFlowState'; displayName: string };
             }
           | undefined;
         context?:
@@ -20732,15 +20638,6 @@ export type OpportunitiesOnChallengeFragment = {
                   }
                 | undefined;
             }
-          | undefined;
-        projects?:
-          | Array<{
-              __typename?: 'Project';
-              id: string;
-              nameID: string;
-              profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
-              lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
-            }>
           | undefined;
         community?:
           | { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined }
@@ -20784,7 +20681,7 @@ export type CreateChallengeMutation = {
       | {
           __typename?: 'InnovationFlow';
           id: string;
-          lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
+          currentState: { __typename?: 'InnovationFlowState'; displayName: string };
         }
       | undefined;
     community?:
@@ -20867,36 +20764,27 @@ export type ChallengeApplicationTemplateQuery = {
 };
 
 export type ChallengeInnovationFlowQueryVariables = Exact<{
-  spaceId: Scalars['UUID_NAMEID'];
-  challengeId: Scalars['UUID_NAMEID'];
+  challengeId: Scalars['UUID'];
 }>;
 
 export type ChallengeInnovationFlowQuery = {
   __typename?: 'Query';
-  space: {
-    __typename?: 'Space';
-    id: string;
-    challenge: {
-      __typename?: 'Challenge';
-      id: string;
-      innovationFlow?:
-        | {
-            __typename?: 'InnovationFlow';
-            id: string;
-            lifecycle?:
-              | {
-                  __typename?: 'Lifecycle';
-                  id: string;
-                  machineDef: string;
-                  state?: string | undefined;
-                  nextEvents?: Array<string> | undefined;
-                  stateIsFinal: boolean;
-                  templateName?: string | undefined;
-                }
-              | undefined;
-          }
-        | undefined;
-    };
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    challenge?:
+      | {
+          __typename?: 'Challenge';
+          id: string;
+          innovationFlow?:
+            | {
+                __typename?: 'InnovationFlow';
+                id: string;
+                states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
+                currentState: { __typename?: 'InnovationFlowState'; displayName: string };
+              }
+            | undefined;
+        }
+      | undefined;
   };
 };
 
@@ -20963,7 +20851,7 @@ export type ChallengeProfileInfoQuery = {
         | {
             __typename?: 'InnovationFlow';
             id: string;
-            lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
+            currentState: { __typename?: 'InnovationFlowState'; displayName: string };
           }
         | undefined;
       context?:
@@ -21035,7 +20923,7 @@ export type OpportunityCreatedSubscription = {
         | {
             __typename?: 'InnovationFlow';
             id: string;
-            lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
+            currentState: { __typename?: 'InnovationFlowState'; displayName: string };
           }
         | undefined;
       context?:
@@ -21055,32 +20943,10 @@ export type OpportunityCreatedSubscription = {
               | undefined;
           }
         | undefined;
-      projects?:
-        | Array<{
-            __typename?: 'Project';
-            id: string;
-            nameID: string;
-            profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
-            lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
-          }>
-        | undefined;
       community?:
         | { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined }
         | undefined;
     };
-  };
-};
-
-export type UpdateInnovationFlowLifecycleTemplateMutationVariables = Exact<{
-  input: UpdateInnovationFlowLifecycleTemplateInput;
-}>;
-
-export type UpdateInnovationFlowLifecycleTemplateMutation = {
-  __typename?: 'Mutation';
-  updateInnovationFlowLifecycleTemplate: {
-    __typename?: 'InnovationFlow';
-    id: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string };
   };
 };
 
@@ -21093,13 +20959,6 @@ export type ContextTabFragment = {
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
-};
-
-export type LifecycleContextTabFragment = {
-  __typename?: 'Lifecycle';
-  id: string;
-  state?: string | undefined;
-  machineDef: string;
 };
 
 export type MetricsItemFragment = { __typename?: 'NVP'; id: string; name: string; value: string };
@@ -21231,9 +21090,7 @@ export type AboutPageNonMembersQuery = {
         | {
             __typename?: 'InnovationFlow';
             id: string;
-            lifecycle?:
-              | { __typename?: 'Lifecycle'; id: string; state?: string | undefined; machineDef: string }
-              | undefined;
+            currentState: { __typename?: 'InnovationFlowState'; displayName: string };
           }
         | undefined;
       context?:
@@ -21297,9 +21154,7 @@ export type AboutPageNonMembersQuery = {
         | {
             __typename?: 'InnovationFlow';
             id: string;
-            lifecycle?:
-              | { __typename?: 'Lifecycle'; id: string; state?: string | undefined; machineDef: string }
-              | undefined;
+            currentState: { __typename?: 'InnovationFlowState'; displayName: string };
           }
         | undefined;
       context?:
@@ -22311,16 +22166,9 @@ export type OpportunityPageQuery = {
       innovationFlow?:
         | {
             __typename?: 'InnovationFlow';
-            lifecycle?:
-              | {
-                  __typename?: 'Lifecycle';
-                  id: string;
-                  machineDef: string;
-                  state?: string | undefined;
-                  nextEvents?: Array<string> | undefined;
-                  stateIsFinal: boolean;
-                }
-              | undefined;
+            id: string;
+            states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
+            currentState: { __typename?: 'InnovationFlowState'; displayName: string };
           }
         | undefined;
       collaboration?:
@@ -22530,16 +22378,9 @@ export type OpportunityPageFragment = {
   innovationFlow?:
     | {
         __typename?: 'InnovationFlow';
-        lifecycle?:
-          | {
-              __typename?: 'Lifecycle';
-              id: string;
-              machineDef: string;
-              state?: string | undefined;
-              nextEvents?: Array<string> | undefined;
-              stateIsFinal: boolean;
-            }
-          | undefined;
+        id: string;
+        states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
+        currentState: { __typename?: 'InnovationFlowState'; displayName: string };
       }
     | undefined;
   collaboration?:
@@ -22701,32 +22542,6 @@ export type OpportunityPageFragment = {
           | undefined;
       }
     | undefined;
-};
-
-export type OpportunityPageRelationsFragment = {
-  __typename?: 'Relation';
-  id: string;
-  type: string;
-  actorRole: string;
-  actorName: string;
-  actorType: string;
-  description: string;
-};
-
-export type EventOnOpportunityMutationVariables = Exact<{
-  innovationFlowId: Scalars['UUID'];
-  eventName: Scalars['String'];
-}>;
-
-export type EventOnOpportunityMutation = {
-  __typename?: 'Mutation';
-  eventOnOpportunity: {
-    __typename?: 'InnovationFlow';
-    id: string;
-    lifecycle?:
-      | { __typename?: 'Lifecycle'; id: string; nextEvents?: Array<string> | undefined; state?: string | undefined }
-      | undefined;
-  };
 };
 
 export type OpportunityProviderQueryVariables = Exact<{
@@ -22919,7 +22734,7 @@ export type OpportunityCardFragment = {
     | {
         __typename?: 'InnovationFlow';
         id: string;
-        lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
+        currentState: { __typename?: 'InnovationFlowState'; displayName: string };
       }
     | undefined;
   context?:
@@ -22938,15 +22753,6 @@ export type OpportunityCardFragment = {
             }
           | undefined;
       }
-    | undefined;
-  projects?:
-    | Array<{
-        __typename?: 'Project';
-        id: string;
-        nameID: string;
-        profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
-        lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
-      }>
     | undefined;
   community?:
     | { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined }
@@ -22999,7 +22805,7 @@ export type CreateOpportunityMutation = {
       | {
           __typename?: 'InnovationFlow';
           id: string;
-          lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
+          currentState: { __typename?: 'InnovationFlowState'; displayName: string };
         }
       | undefined;
     context?:
@@ -23018,15 +22824,6 @@ export type CreateOpportunityMutation = {
               }
             | undefined;
         }
-      | undefined;
-    projects?:
-      | Array<{
-          __typename?: 'Project';
-          id: string;
-          nameID: string;
-          profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
-          lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
-        }>
       | undefined;
     community?:
       | { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined }
@@ -23095,36 +22892,26 @@ export type OpportunitiesQuery = {
 };
 
 export type OpportunityInnovationFlowQueryVariables = Exact<{
-  spaceId: Scalars['UUID_NAMEID'];
-  opportunityId: Scalars['UUID_NAMEID'];
+  opportunityId: Scalars['UUID'];
 }>;
 
 export type OpportunityInnovationFlowQuery = {
   __typename?: 'Query';
-  space: {
-    __typename?: 'Space';
-    id: string;
-    opportunity: {
-      __typename?: 'Opportunity';
-      id: string;
-      innovationFlow?:
-        | {
-            __typename?: 'InnovationFlow';
-            id: string;
-            lifecycle?:
-              | {
-                  __typename?: 'Lifecycle';
-                  id: string;
-                  machineDef: string;
-                  state?: string | undefined;
-                  nextEvents?: Array<string> | undefined;
-                  stateIsFinal: boolean;
-                  templateName?: string | undefined;
-                }
-              | undefined;
-          }
-        | undefined;
-    };
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    opportunity?:
+      | {
+          __typename?: 'Opportunity';
+          id: string;
+          innovationFlow?:
+            | {
+                __typename?: 'InnovationFlow';
+                id: string;
+                states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
+              }
+            | undefined;
+        }
+      | undefined;
   };
 };
 
@@ -24241,13 +24028,6 @@ export type SpaceDashboardNavigationChallengesQuery = {
               | undefined;
           };
           context?: { __typename?: 'Context'; id: string; vision?: string | undefined } | undefined;
-          innovationFlow?:
-            | {
-                __typename?: 'InnovationFlow';
-                id: string;
-                lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
-              }
-            | undefined;
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
@@ -24302,13 +24082,6 @@ export type SpaceDashboardNavigationOpportunitiesQuery = {
                     | undefined;
                 };
                 context?: { __typename?: 'Context'; id: string; vision?: string | undefined } | undefined;
-                innovationFlow?:
-                  | {
-                      __typename?: 'InnovationFlow';
-                      id: string;
-                      lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
-                    }
-                  | undefined;
                 community?:
                   | { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined }
                   | undefined;
@@ -24342,12 +24115,6 @@ export type SpaceDashboardNavigationContextFragment = {
   __typename?: 'Context';
   id: string;
   vision?: string | undefined;
-};
-
-export type SpaceDashboardNavigationLifecycleFragment = {
-  __typename?: 'Lifecycle';
-  id: string;
-  state?: string | undefined;
 };
 
 export type SpaceDashboardNavigationCommunityFragment = {
@@ -24473,8 +24240,6 @@ export type InnovationFlowTemplatesFromSpaceQuery = {
           innovationFlowTemplates: Array<{
             __typename?: 'InnovationFlowTemplate';
             id: string;
-            type: InnovationFlowType;
-            definition: string;
             profile: {
               __typename?: 'Profile';
               id: string;
@@ -24492,6 +24257,7 @@ export type InnovationFlowTemplatesFromSpaceQuery = {
                 | undefined;
               visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
             };
+            states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
           }>;
         }
       | undefined;
@@ -24551,8 +24317,6 @@ export type SpaceTemplatesFragment = {
         innovationFlowTemplates: Array<{
           __typename?: 'InnovationFlowTemplate';
           id: string;
-          type: InnovationFlowType;
-          definition: string;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -24570,6 +24334,7 @@ export type SpaceTemplatesFragment = {
               | undefined;
             visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
           };
+          states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
         }>;
       }
     | undefined;
@@ -24614,7 +24379,7 @@ export type SpaceChallengeCardsQuery = {
             | {
                 __typename?: 'InnovationFlow';
                 id: string;
-                lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
+                currentState: { __typename?: 'InnovationFlowState'; displayName: string };
               }
             | undefined;
           community?:
@@ -24658,7 +24423,7 @@ export type ChallengesOnSpaceFragment = {
           | {
               __typename?: 'InnovationFlow';
               id: string;
-              lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
+              currentState: { __typename?: 'InnovationFlowState'; displayName: string };
             }
           | undefined;
         community?:
@@ -24979,9 +24744,13 @@ export type SpaceInnovationFlowTemplatesQuery = {
           id: string;
           innovationFlowTemplates: Array<{
             __typename?: 'InnovationFlowTemplate';
-            definition: string;
             id: string;
-            type: InnovationFlowType;
+            states: Array<{
+              __typename?: 'InnovationFlowState';
+              displayName: string;
+              description: string;
+              sortOrder: number;
+            }>;
             profile: { __typename?: 'Profile'; id: string; displayName: string };
           }>;
         }
@@ -25026,7 +24795,7 @@ export type ChallengeCreatedSubscription = {
         | {
             __typename?: 'InnovationFlow';
             id: string;
-            lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
+            currentState: { __typename?: 'InnovationFlowState'; displayName: string };
           }
         | undefined;
       community?:
@@ -25642,8 +25411,12 @@ export type AdminSpaceTemplatesQuery = {
           innovationFlowTemplates: Array<{
             __typename?: 'InnovationFlowTemplate';
             id: string;
-            definition: string;
-            type: InnovationFlowType;
+            states: Array<{
+              __typename?: 'InnovationFlowState';
+              displayName: string;
+              description: string;
+              sortOrder: number;
+            }>;
             profile: {
               __typename?: 'Profile';
               id: string;
@@ -25795,8 +25568,7 @@ export type AdminWhiteboardTemplateFragment = {
 export type AdminInnovationFlowTemplateFragment = {
   __typename?: 'InnovationFlowTemplate';
   id: string;
-  definition: string;
-  type: InnovationFlowType;
+  states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string; sortOrder: number }>;
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -26002,8 +25774,12 @@ export type InnovationPacksQuery = {
               innovationFlowTemplates: Array<{
                 __typename?: 'InnovationFlowTemplate';
                 id: string;
-                definition: string;
-                type: InnovationFlowType;
+                states: Array<{
+                  __typename?: 'InnovationFlowState';
+                  displayName: string;
+                  description: string;
+                  sortOrder: number;
+                }>;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
@@ -26148,8 +25924,7 @@ export type AdminInnovationPackTemplatesFragment = {
   innovationFlowTemplates: Array<{
     __typename?: 'InnovationFlowTemplate';
     id: string;
-    definition: string;
-    type: InnovationFlowType;
+    states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string; sortOrder: number }>;
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -26319,8 +26094,12 @@ export type AdminInnovationPackQuery = {
                   innovationFlowTemplates: Array<{
                     __typename?: 'InnovationFlowTemplate';
                     id: string;
-                    definition: string;
-                    type: InnovationFlowType;
+                    states: Array<{
+                      __typename?: 'InnovationFlowState';
+                      displayName: string;
+                      description: string;
+                      sortOrder: number;
+                    }>;
                     profile: {
                       __typename?: 'Profile';
                       id: string;
@@ -26423,7 +26202,7 @@ export type UpdateInnovationPackMutation = {
 export type UpdateInnovationFlowTemplateMutationVariables = Exact<{
   templateId: Scalars['UUID'];
   profile: UpdateProfileInput;
-  definition: Scalars['LifecycleDefinition'];
+  states?: InputMaybe<Array<UpdateInnovationFlowStateInput> | UpdateInnovationFlowStateInput>;
 }>;
 
 export type UpdateInnovationFlowTemplateMutation = {
@@ -26434,8 +26213,7 @@ export type UpdateInnovationFlowTemplateMutation = {
 export type CreateInnovationFlowTemplateMutationVariables = Exact<{
   templatesSetId: Scalars['UUID'];
   profile: CreateProfileInput;
-  definition: Scalars['LifecycleDefinition'];
-  type: InnovationFlowType;
+  states?: InputMaybe<Array<UpdateInnovationFlowStateInput> | UpdateInnovationFlowStateInput>;
   tags?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
 }>;
 
@@ -29368,8 +29146,6 @@ export type InnovationLibraryQuery = {
               innovationFlowTemplates: Array<{
                 __typename?: 'InnovationFlowTemplate';
                 id: string;
-                definition: string;
-                type: InnovationFlowType;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
@@ -29387,6 +29163,12 @@ export type InnovationLibraryQuery = {
                       }
                     | undefined;
                 };
+                states: Array<{
+                  __typename?: 'InnovationFlowState';
+                  displayName: string;
+                  description: string;
+                  sortOrder: number;
+                }>;
               }>;
             }
           | undefined;
@@ -29482,8 +29264,6 @@ export type InnovationPackDataFragment = {
         innovationFlowTemplates: Array<{
           __typename?: 'InnovationFlowTemplate';
           id: string;
-          definition: string;
-          type: InnovationFlowType;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -29501,6 +29281,12 @@ export type InnovationPackDataFragment = {
                 }
               | undefined;
           };
+          states: Array<{
+            __typename?: 'InnovationFlowState';
+            displayName: string;
+            description: string;
+            sortOrder: number;
+          }>;
         }>;
       }
     | undefined;
@@ -29572,8 +29358,6 @@ export type LibraryTemplatesFragment = {
   innovationFlowTemplates: Array<{
     __typename?: 'InnovationFlowTemplate';
     id: string;
-    definition: string;
-    type: InnovationFlowType;
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -29591,6 +29375,7 @@ export type LibraryTemplatesFragment = {
           }
         | undefined;
     };
+    states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string; sortOrder: number }>;
   }>;
 };
 

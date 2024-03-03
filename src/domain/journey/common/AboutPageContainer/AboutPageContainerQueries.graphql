@@ -9,12 +9,7 @@ fragment ContextTab on Context {
   impact
   who
 }
-#
-fragment LifecycleContextTab on Lifecycle {
-  id
-  state
-  machineDef
-}
+
 fragment MetricsItem on NVP {
   id
   name
@@ -84,9 +79,9 @@ query AboutPageNonMembers(
 
       innovationFlow {
           id
-          lifecycle {
-          ...LifecycleContextTab
-        }
+          currentState {
+            displayName
+          }
       }
       context {
         ...ContextTab
@@ -119,8 +114,8 @@ query AboutPageNonMembers(
       }
       innovationFlow {
         id
-        lifecycle {
-          ...LifecycleContextTab
+        currentState {
+          displayName
         }
       }
       context {

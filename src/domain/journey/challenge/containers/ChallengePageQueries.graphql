@@ -32,12 +32,12 @@ fragment ChallengeProfile on Challenge {
   }
   innovationFlow {
     id
-    lifecycle {
-      id
-      machineDef
-      state
-      nextEvents
-      stateIsFinal
+    states {
+      displayName
+      description
+    }
+    currentState {
+      displayName
     }
   }
   context {

@@ -76,8 +76,11 @@ fragment LibraryTemplates on TemplatesSet {
         ...TagsetDetails
       }
     }
-    definition
-    type
+    states {
+      displayName
+      description
+      sortOrder
+    }
   }
   innovationFlowTemplatesCount
 }

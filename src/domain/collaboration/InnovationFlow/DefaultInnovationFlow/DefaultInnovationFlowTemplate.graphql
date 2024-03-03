@@ -1,11 +1,10 @@
 query DefaultInnovationFlowTemplate($spaceNameId: UUID_NAMEID!) {
   space(ID: $spaceNameId) {
     id
-    templates {
+    defaults {
       id
-      innovationFlowTemplates {
+      innovationFlowTemplate {
         id
-        type
         profile {
           id
           displayName

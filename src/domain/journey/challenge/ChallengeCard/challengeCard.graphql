@@ -28,9 +28,8 @@ fragment ChallengeCard on Challenge {
   }
   innovationFlow {
     id
-    lifecycle {
-      id
-      state
+    currentState {
+      displayName
     }
   }
   community {

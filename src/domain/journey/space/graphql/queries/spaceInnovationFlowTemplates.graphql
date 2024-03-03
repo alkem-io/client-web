@@ -4,9 +4,12 @@ query spaceInnovationFlowTemplates($spaceId: UUID_NAMEID!) {
     templates {
       id
       innovationFlowTemplates {
-        definition
         id
-        type
+        states {
+          displayName
+          description
+          sortOrder
+        }
         profile {
           id
           displayName

@@ -1,17 +1,12 @@
-query opportunityInnovationFlow($spaceId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
-  space(ID: $spaceId) {
-    id
+query opportunityInnovationFlow($opportunityId: UUID!) {
+  lookup {
     opportunity(ID: $opportunityId) {
       id
       innovationFlow {
         id
-        lifecycle {
-          id
-          machineDef
-          state
-          nextEvents
-          stateIsFinal
-          templateName
+        states {
+          displayName
+          description
         }
       }
     }
