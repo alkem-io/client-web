@@ -2,12 +2,15 @@ query opportunityInnovationFlow($opportunityId: UUID!) {
   lookup {
     opportunity(ID: $opportunityId) {
       id
-      innovationFlow {
+      collaboration {
         id
-        states {
-          displayName
-          description
-          sortOrder
+        innovationFlow {
+          id
+          states {
+            displayName
+            description
+            sortOrder
+          }
         }
       }
     }

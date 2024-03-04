@@ -104,23 +104,6 @@ export const InnovationFlowCollaborationFragmentDoc = gql`
   }
   ${TagsetDetailsFragmentDoc}
 `;
-export const JourneyInnovationFlowStatesAllowedValuesFragmentDoc = gql`
-  fragment JourneyInnovationFlowStatesAllowedValues on InnovationFlow {
-    id
-    authorization {
-      id
-      myPrivileges
-    }
-    profile {
-      id
-      tagsets {
-        id
-        name
-        allowedValues
-      }
-    }
-  }
-`;
 export const ActivityLogMemberJoinedFragmentDoc = gql`
   fragment ActivityLogMemberJoined on ActivityLogEntryMemberJoined {
     communityType
@@ -2081,17 +2064,6 @@ export const ChallengeProfileFragmentDoc = gql`
       id
       myPrivileges
     }
-    innovationFlow {
-      id
-      states {
-        displayName
-        description
-        sortOrder
-      }
-      currentState {
-        displayName
-      }
-    }
     context {
       id
       vision
@@ -2103,6 +2075,17 @@ export const ChallengeProfileFragmentDoc = gql`
     }
     collaboration {
       id
+      innovationFlow {
+        id
+        states {
+          displayName
+          description
+          sortOrder
+        }
+        currentState {
+          displayName
+        }
+      }
       ...DashboardTopCallouts
       ...DashboardTimelineAuthorization
     }
@@ -2210,10 +2193,13 @@ export const OpportunityCardFragmentDoc = gql`
       name
       value
     }
-    innovationFlow {
+    collaboration {
       id
-      currentState {
-        displayName
+      innovationFlow {
+        id
+        currentState {
+          displayName
+        }
       }
     }
     context {
@@ -2334,26 +2320,18 @@ export const OpportunityPageFragmentDoc = gql`
       name
       value
     }
-    innovationFlow {
-      id
-      states {
-        displayName
-        description
-        sortOrder
-      }
-      currentState {
-        displayName
-      }
-    }
     collaboration {
       id
-      relations {
+      innovationFlow {
         id
-        type
-        actorRole
-        actorName
-        actorType
-        description
+        states {
+          displayName
+          description
+          sortOrder
+        }
+        currentState {
+          displayName
+        }
       }
       ...DashboardTopCallouts
       ...DashboardTimelineAuthorization
@@ -2765,10 +2743,13 @@ export const ChallengeCardFragmentDoc = gql`
       id
       vision
     }
-    innovationFlow {
+    collaboration {
       id
-      currentState {
-        displayName
+      innovationFlow {
+        id
+        currentState {
+          displayName
+        }
       }
     }
     community {
@@ -4761,35 +4742,10 @@ export function refetchCalloutPageCalloutQuery(variables: SchemaTypes.CalloutPag
 }
 
 export const InnovationFlowBlockDocument = gql`
-  query InnovationFlowBlock(
-    $spaceNameId: UUID_NAMEID!
-    $includeChallenge: Boolean = false
-    $includeOpportunity: Boolean = false
-    $challengeNameId: UUID_NAMEID = "mockid"
-    $opportunityNameId: UUID_NAMEID = "mockid"
-  ) {
-    space(ID: $spaceNameId) {
-      id
-      challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
+  query InnovationFlowBlock($collaborationId: UUID!) {
+    lookup {
+      collaboration(ID: $collaborationId) {
         id
-        nameID
-        innovationFlow {
-          id
-          profile {
-            id
-            displayName
-            cardBanner: visual(type: CARD) {
-              id
-              name
-              uri
-              alternativeText
-            }
-          }
-        }
-      }
-      opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
-        id
-        nameID
         innovationFlow {
           id
           profile {
@@ -4820,11 +4776,7 @@ export const InnovationFlowBlockDocument = gql`
  * @example
  * const { data, loading, error } = useInnovationFlowBlockQuery({
  *   variables: {
- *      spaceNameId: // value for 'spaceNameId'
- *      includeChallenge: // value for 'includeChallenge'
- *      includeOpportunity: // value for 'includeOpportunity'
- *      challengeNameId: // value for 'challengeNameId'
- *      opportunityNameId: // value for 'opportunityNameId'
+ *      collaborationId: // value for 'collaborationId'
  *   },
  * });
  */
@@ -4939,20 +4891,20 @@ export function refetchDefaultInnovationFlowTemplateQuery(
 }
 
 export const InnovationFlowSettingsDocument = gql`
-  query InnovationFlowSettings($innovationFlowId: UUID!, $collaborationId: UUID!) {
+  query InnovationFlowSettings($collaborationId: UUID!) {
     lookup {
-      innovationFlow(ID: $innovationFlowId) {
-        id
-        profile {
-          ...LifecycleProfile
-        }
-        states {
-          displayName
-          description
-          sortOrder
-        }
-      }
       collaboration(ID: $collaborationId) {
+        innovationFlow {
+          id
+          profile {
+            ...LifecycleProfile
+          }
+          states {
+            displayName
+            description
+            sortOrder
+          }
+        }
         ...InnovationFlowCollaboration
       }
     }
@@ -4973,7 +4925,6 @@ export const InnovationFlowSettingsDocument = gql`
  * @example
  * const { data, loading, error } = useInnovationFlowSettingsQuery({
  *   variables: {
- *      innovationFlowId: // value for 'innovationFlowId'
  *      collaborationId: // value for 'collaborationId'
  *   },
  * });
@@ -5124,148 +5075,84 @@ export type UpdateCalloutFlowStateMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateCalloutFlowStateMutation,
   SchemaTypes.UpdateCalloutFlowStateMutationVariables
 >;
-export const ChallengeInnovationFlowStatesAllowedValuesDocument = gql`
-  query ChallengeInnovationFlowStatesAllowedValues($id: UUID!) {
+export const InnovationFlowStatesAllowedValuesDocument = gql`
+  query InnovationFlowStatesAllowedValues($id: UUID!) {
     lookup {
-      journey: challenge(ID: $id) {
+      innovationFlow(ID: $id) {
         id
-        innovationFlow {
-          ...JourneyInnovationFlowStatesAllowedValues
+        authorization {
+          id
+          myPrivileges
+        }
+        profile {
+          id
+          tagsets {
+            id
+            name
+            allowedValues
+          }
         }
       }
     }
   }
-  ${JourneyInnovationFlowStatesAllowedValuesFragmentDoc}
 `;
 
 /**
- * __useChallengeInnovationFlowStatesAllowedValuesQuery__
+ * __useInnovationFlowStatesAllowedValuesQuery__
  *
- * To run a query within a React component, call `useChallengeInnovationFlowStatesAllowedValuesQuery` and pass it any options that fit your needs.
- * When your component renders, `useChallengeInnovationFlowStatesAllowedValuesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useInnovationFlowStatesAllowedValuesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useInnovationFlowStatesAllowedValuesQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useChallengeInnovationFlowStatesAllowedValuesQuery({
+ * const { data, loading, error } = useInnovationFlowStatesAllowedValuesQuery({
  *   variables: {
  *      id: // value for 'id'
  *   },
  * });
  */
-export function useChallengeInnovationFlowStatesAllowedValuesQuery(
+export function useInnovationFlowStatesAllowedValuesQuery(
   baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.ChallengeInnovationFlowStatesAllowedValuesQuery,
-    SchemaTypes.ChallengeInnovationFlowStatesAllowedValuesQueryVariables
+    SchemaTypes.InnovationFlowStatesAllowedValuesQuery,
+    SchemaTypes.InnovationFlowStatesAllowedValuesQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<
-    SchemaTypes.ChallengeInnovationFlowStatesAllowedValuesQuery,
-    SchemaTypes.ChallengeInnovationFlowStatesAllowedValuesQueryVariables
-  >(ChallengeInnovationFlowStatesAllowedValuesDocument, options);
+    SchemaTypes.InnovationFlowStatesAllowedValuesQuery,
+    SchemaTypes.InnovationFlowStatesAllowedValuesQueryVariables
+  >(InnovationFlowStatesAllowedValuesDocument, options);
 }
 
-export function useChallengeInnovationFlowStatesAllowedValuesLazyQuery(
+export function useInnovationFlowStatesAllowedValuesLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.ChallengeInnovationFlowStatesAllowedValuesQuery,
-    SchemaTypes.ChallengeInnovationFlowStatesAllowedValuesQueryVariables
+    SchemaTypes.InnovationFlowStatesAllowedValuesQuery,
+    SchemaTypes.InnovationFlowStatesAllowedValuesQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<
-    SchemaTypes.ChallengeInnovationFlowStatesAllowedValuesQuery,
-    SchemaTypes.ChallengeInnovationFlowStatesAllowedValuesQueryVariables
-  >(ChallengeInnovationFlowStatesAllowedValuesDocument, options);
+    SchemaTypes.InnovationFlowStatesAllowedValuesQuery,
+    SchemaTypes.InnovationFlowStatesAllowedValuesQueryVariables
+  >(InnovationFlowStatesAllowedValuesDocument, options);
 }
 
-export type ChallengeInnovationFlowStatesAllowedValuesQueryHookResult = ReturnType<
-  typeof useChallengeInnovationFlowStatesAllowedValuesQuery
+export type InnovationFlowStatesAllowedValuesQueryHookResult = ReturnType<
+  typeof useInnovationFlowStatesAllowedValuesQuery
 >;
-export type ChallengeInnovationFlowStatesAllowedValuesLazyQueryHookResult = ReturnType<
-  typeof useChallengeInnovationFlowStatesAllowedValuesLazyQuery
+export type InnovationFlowStatesAllowedValuesLazyQueryHookResult = ReturnType<
+  typeof useInnovationFlowStatesAllowedValuesLazyQuery
 >;
-export type ChallengeInnovationFlowStatesAllowedValuesQueryResult = Apollo.QueryResult<
-  SchemaTypes.ChallengeInnovationFlowStatesAllowedValuesQuery,
-  SchemaTypes.ChallengeInnovationFlowStatesAllowedValuesQueryVariables
+export type InnovationFlowStatesAllowedValuesQueryResult = Apollo.QueryResult<
+  SchemaTypes.InnovationFlowStatesAllowedValuesQuery,
+  SchemaTypes.InnovationFlowStatesAllowedValuesQueryVariables
 >;
-export function refetchChallengeInnovationFlowStatesAllowedValuesQuery(
-  variables: SchemaTypes.ChallengeInnovationFlowStatesAllowedValuesQueryVariables
+export function refetchInnovationFlowStatesAllowedValuesQuery(
+  variables: SchemaTypes.InnovationFlowStatesAllowedValuesQueryVariables
 ) {
-  return { query: ChallengeInnovationFlowStatesAllowedValuesDocument, variables: variables };
-}
-
-export const OpportunityInnovationFlowStatesAllowedValuesDocument = gql`
-  query OpportunityInnovationFlowStatesAllowedValues($id: UUID!) {
-    lookup {
-      journey: opportunity(ID: $id) {
-        id
-        innovationFlow {
-          ...JourneyInnovationFlowStatesAllowedValues
-        }
-      }
-    }
-  }
-  ${JourneyInnovationFlowStatesAllowedValuesFragmentDoc}
-`;
-
-/**
- * __useOpportunityInnovationFlowStatesAllowedValuesQuery__
- *
- * To run a query within a React component, call `useOpportunityInnovationFlowStatesAllowedValuesQuery` and pass it any options that fit your needs.
- * When your component renders, `useOpportunityInnovationFlowStatesAllowedValuesQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useOpportunityInnovationFlowStatesAllowedValuesQuery({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useOpportunityInnovationFlowStatesAllowedValuesQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.OpportunityInnovationFlowStatesAllowedValuesQuery,
-    SchemaTypes.OpportunityInnovationFlowStatesAllowedValuesQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    SchemaTypes.OpportunityInnovationFlowStatesAllowedValuesQuery,
-    SchemaTypes.OpportunityInnovationFlowStatesAllowedValuesQueryVariables
-  >(OpportunityInnovationFlowStatesAllowedValuesDocument, options);
-}
-
-export function useOpportunityInnovationFlowStatesAllowedValuesLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.OpportunityInnovationFlowStatesAllowedValuesQuery,
-    SchemaTypes.OpportunityInnovationFlowStatesAllowedValuesQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.OpportunityInnovationFlowStatesAllowedValuesQuery,
-    SchemaTypes.OpportunityInnovationFlowStatesAllowedValuesQueryVariables
-  >(OpportunityInnovationFlowStatesAllowedValuesDocument, options);
-}
-
-export type OpportunityInnovationFlowStatesAllowedValuesQueryHookResult = ReturnType<
-  typeof useOpportunityInnovationFlowStatesAllowedValuesQuery
->;
-export type OpportunityInnovationFlowStatesAllowedValuesLazyQueryHookResult = ReturnType<
-  typeof useOpportunityInnovationFlowStatesAllowedValuesLazyQuery
->;
-export type OpportunityInnovationFlowStatesAllowedValuesQueryResult = Apollo.QueryResult<
-  SchemaTypes.OpportunityInnovationFlowStatesAllowedValuesQuery,
-  SchemaTypes.OpportunityInnovationFlowStatesAllowedValuesQueryVariables
->;
-export function refetchOpportunityInnovationFlowStatesAllowedValuesQuery(
-  variables: SchemaTypes.OpportunityInnovationFlowStatesAllowedValuesQueryVariables
-) {
-  return { query: OpportunityInnovationFlowStatesAllowedValuesDocument, variables: variables };
+  return { query: InnovationFlowStatesAllowedValuesDocument, variables: variables };
 }
 
 export const UpdateInnovationFlowStateDocument = gql`
@@ -17169,15 +17056,18 @@ export const ChallengeInnovationFlowDocument = gql`
     lookup {
       challenge(ID: $challengeId) {
         id
-        innovationFlow {
+        collaboration {
           id
-          states {
-            displayName
-            description
-            sortOrder
-          }
-          currentState {
-            displayName
+          innovationFlow {
+            id
+            states {
+              displayName
+              description
+              sortOrder
+            }
+            currentState {
+              displayName
+            }
           }
         }
       }
@@ -17268,10 +17158,13 @@ export const ChallengeProfileInfoDocument = gql`
             ...fullLocation
           }
         }
-        innovationFlow {
+        collaboration {
           id
-          currentState {
-            displayName
+          innovationFlow {
+            id
+            currentState {
+              displayName
+            }
           }
         }
         context {
@@ -17443,10 +17336,13 @@ export const AboutPageNonMembersDocument = gql`
           id
           myPrivileges
         }
-        innovationFlow {
+        collaboration {
           id
-          currentState {
-            displayName
+          innovationFlow {
+            id
+            currentState {
+              displayName
+            }
           }
         }
         context {
@@ -17478,10 +17374,13 @@ export const AboutPageNonMembersDocument = gql`
             ...VisualFull
           }
         }
-        innovationFlow {
+        collaboration {
           id
-          currentState {
-            displayName
+          innovationFlow {
+            id
+            currentState {
+              displayName
+            }
           }
         }
         context {
@@ -18865,12 +18764,15 @@ export const OpportunityInnovationFlowDocument = gql`
     lookup {
       opportunity(ID: $opportunityId) {
         id
-        innovationFlow {
+        collaboration {
           id
-          states {
-            displayName
-            description
-            sortOrder
+          innovationFlow {
+            id
+            states {
+              displayName
+              description
+              sortOrder
+            }
           }
         }
       }
@@ -18939,6 +18841,9 @@ export const OpportunityProfileInfoDocument = gql`
         nameID
         collaboration {
           id
+          innovationFlow {
+            id
+          }
         }
         profile {
           id
@@ -18963,9 +18868,6 @@ export const OpportunityProfileInfoDocument = gql`
         }
         context {
           ...ContextDetails
-        }
-        innovationFlow {
-          id
         }
       }
     }

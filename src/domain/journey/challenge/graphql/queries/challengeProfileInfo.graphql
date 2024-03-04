@@ -28,10 +28,14 @@ query challengeProfileInfo($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
           ...fullLocation
         }
       }
-      innovationFlow {
+      collaboration {
         id
-        currentState {
-          displayName
+
+        innovationFlow {
+          id
+          currentState {
+            displayName
+          }
         }
       }
       context {

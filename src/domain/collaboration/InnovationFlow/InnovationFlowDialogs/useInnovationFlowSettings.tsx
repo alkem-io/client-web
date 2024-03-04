@@ -42,18 +42,15 @@ const mapFlowState = (tagset: Tagset | undefined): GroupedCallout['flowState'] =
     : undefined;
 };
 
-const useInnovationFlowSettings = ({ innovationFlowId, collaborationId }: useInnovationFlowSettingsProps) => {
+const useInnovationFlowSettings = ({ collaborationId }: useInnovationFlowSettingsProps) => {
   const { data, loading: loadingData } = useInnovationFlowSettingsQuery({
-    variables: {
-      innovationFlowId,
-      collaborationId,
-    },
+    variables: { collaborationId },
   });
 
-  const innovationFlow = data?.space.challenge?.innovationFlow ?? data?.space.opportunity?.innovationFlow;
+  const collaboration = data?.lookup.collaboration;
+  const innovationFlow = collaboration?.innovationFlow;
 
   // Collaboration
-  const collaboration = data?.space.challenge?.collaboration ?? data?.space.opportunity?.collaboration;
   const callouts = useMemo(
     () =>
       collaboration?.callouts
@@ -75,21 +72,11 @@ const useInnovationFlowSettings = ({ innovationFlowId, collaborationId }: useInn
   const flowStateAllowedValues = uniq(compact(callouts?.flatMap(callout => callout.flowState?.allowedValues))) ?? [];
 
   const [{ loading: loadingChallengeEvent }] = useUpdateInnovationFlowStateMutation({
-    refetchQueries: [
-      refetchInnovationFlowSettingsQuery({
-        innovationFlowId,
-        collaborationId,
-      }),
-    ],
+    refetchQueries: [refetchInnovationFlowSettingsQuery({ collaborationId })],
   });
 
   const [{ loading: loadingOpportunityEvent }] = useUpdateInnovationFlowStateMutation({
-    refetchQueries: [
-      refetchInnovationFlowSettingsQuery({
-        innovationFlowId,
-        collaborationId,
-      }),
-    ],
+    refetchQueries: [refetchInnovationFlowSettingsQuery({ collaborationId })],
   });
 
   const [updateInnovationFlow, { loading: loadingUpdateInnovationFlow }] = useUpdateInnovationFlowMutation();
@@ -97,16 +84,10 @@ const useInnovationFlowSettings = ({ innovationFlowId, collaborationId }: useInn
     updateInnovationFlow({
       variables: {
         updateInnovationFlowData: {
-          innovationFlowID,
           profileData,
         },
       },
-      refetchQueries: [
-        refetchInnovationFlowSettingsQuery({
-          innovationFlowId,
-          collaborationId,
-        }),
-      ],
+      refetchQueries: [refetchInnovationFlowSettingsQuery({ collaborationId })],
     });
 
   const [updateCalloutFlowState, { loading: loadingUpdateCallout }] = useUpdateCalloutFlowStateMutation();
@@ -168,12 +149,7 @@ const useInnovationFlowSettings = ({ innovationFlowId, collaborationId }: useInn
         collaborationId: collaboration.id,
         calloutIds: sortedCalloutIds,
       },
-      refetchQueries: [
-        refetchInnovationFlowSettingsQuery({
-          innovationFlowId,
-          collaborationId,
-        }),
-      ],
+      refetchQueries: [refetchInnovationFlowSettingsQuery({ collaborationId })],
     });
   };
 

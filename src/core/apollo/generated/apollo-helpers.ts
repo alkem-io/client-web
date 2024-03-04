@@ -692,7 +692,6 @@ export type ChallengeKeySpecifier = (
   | 'community'
   | 'context'
   | 'id'
-  | 'innovationFlow'
   | 'metrics'
   | 'nameID'
   | 'opportunities'
@@ -710,7 +709,6 @@ export type ChallengeFieldPolicy = {
   community?: FieldPolicy<any> | FieldReadFunction<any>;
   context?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
-  innovationFlow?: FieldPolicy<any> | FieldReadFunction<any>;
   metrics?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   opportunities?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -746,6 +744,7 @@ export type CollaborationKeySpecifier = (
   | 'authorization'
   | 'callouts'
   | 'id'
+  | 'innovationFlow'
   | 'relations'
   | 'tagsetTemplates'
   | 'timeline'
@@ -755,6 +754,7 @@ export type CollaborationFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   callouts?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  innovationFlow?: FieldPolicy<any> | FieldReadFunction<any>;
   relations?: FieldPolicy<any> | FieldReadFunction<any>;
   tagsetTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
   timeline?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1741,7 +1741,6 @@ export type OpportunityKeySpecifier = (
   | 'community'
   | 'context'
   | 'id'
-  | 'innovationFlow'
   | 'metrics'
   | 'nameID'
   | 'parentNameID'
@@ -1756,7 +1755,6 @@ export type OpportunityFieldPolicy = {
   community?: FieldPolicy<any> | FieldReadFunction<any>;
   context?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
-  innovationFlow?: FieldPolicy<any> | FieldReadFunction<any>;
   metrics?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   parentNameID?: FieldPolicy<any> | FieldReadFunction<any>;

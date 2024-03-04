@@ -19,16 +19,16 @@ type ChallengeLifecycleContainerProps = ComponentOrChildrenFn<ChallengeLifecycle
 
 const ChallengeLifecycleContainer: FC<ChallengeLifecycleContainerProps> = ({
   spaceNameId,
-  challengeNameId,
+  challengeId,
   ...rendered
 }) => {
   const { data, loading } = useChallengeInnovationFlowQuery({
-    variables: { challengeId: challengeNameId },
+    variables: { challengeId },
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
   });
 
-  const states = data?.lookup.challenge?.innovationFlow?.states;
+  const states = data?.lookup.challenge?.collaboration?.innovationFlow?.states;
 
   const [updateChallengeLifecycle] = useUpdateInnovationFlowStateMutation({});
 

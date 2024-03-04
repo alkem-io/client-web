@@ -76,12 +76,14 @@ query AboutPageNonMembers(
         id
         myPrivileges
       }
-
-      innovationFlow {
+      collaboration {
+        id
+        innovationFlow {
           id
           currentState {
             displayName
           }
+        }
       }
       context {
         ...ContextTab
@@ -112,10 +114,13 @@ query AboutPageNonMembers(
           ...VisualFull
         }
       }
-      innovationFlow {
+      collaboration {
         id
-        currentState {
-          displayName
+        innovationFlow {
+          id
+          currentState {
+            displayName
+          }
         }
       }
       context {

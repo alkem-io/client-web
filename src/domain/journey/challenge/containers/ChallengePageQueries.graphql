@@ -30,17 +30,7 @@ fragment ChallengeProfile on Challenge {
     id
     myPrivileges
   }
-  innovationFlow {
-    id
-    states {
-      displayName
-      description
-      sortOrder
-    }
-    currentState {
-      displayName
-    }
-  }
+
   context {
     id
     vision
@@ -52,6 +42,17 @@ fragment ChallengeProfile on Challenge {
   }
   collaboration {
     id
+    innovationFlow {
+      id
+      states {
+        displayName
+        description
+        sortOrder
+      }
+      currentState {
+        displayName
+      }
+    }
     ...DashboardTopCallouts
     ...DashboardTimelineAuthorization
   }

@@ -1,38 +1,19 @@
-query ChallengeInnovationFlowStatesAllowedValues($id: UUID!) {
+query InnovationFlowStatesAllowedValues($id: UUID!) {
   lookup {
-    journey: challenge(ID: $id) {
+    innovationFlow(ID: $id) {
       id
-      innovationFlow {
-        ...JourneyInnovationFlowStatesAllowedValues
+      authorization {
+        id
+        myPrivileges
       }
-    }
-  }
-}
-
-query OpportunityInnovationFlowStatesAllowedValues($id: UUID!) {
-  lookup {
-    journey: opportunity(ID: $id) {
-      id
-      innovationFlow {
-        ...JourneyInnovationFlowStatesAllowedValues
+      profile {
+        id
+        tagsets {
+          id
+          name
+          allowedValues
+        }
       }
-    }
-  }
-}
-
-fragment JourneyInnovationFlowStatesAllowedValues on InnovationFlow {
-  id
-
-  authorization {
-    id
-    myPrivileges
-  }
-  profile {
-    id
-    tagsets {
-      id
-      name
-      allowedValues
     }
   }
 }

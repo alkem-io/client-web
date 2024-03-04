@@ -6,6 +6,9 @@ query opportunityProfileInfo($spaceId: UUID_NAMEID!, $opportunityId: UUID_NAMEID
       nameID
       collaboration {
         id
+        innovationFlow {
+          id
+        }
       }
       profile {
         id
@@ -30,9 +33,6 @@ query opportunityProfileInfo($spaceId: UUID_NAMEID!, $opportunityId: UUID_NAMEID
       }
       context {
         ...ContextDetails
-      }
-      innovationFlow {
-        id
       }
     }
   }

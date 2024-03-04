@@ -26,10 +26,13 @@ fragment ChallengeCard on Challenge {
     id
     vision
   }
-  innovationFlow {
+  collaboration {
     id
-    currentState {
-      displayName
+    innovationFlow {
+      id
+      currentState {
+        displayName
+      }
     }
   }
   community {

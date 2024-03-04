@@ -17,10 +17,13 @@ fragment OpportunityCard on Opportunity {
     name
     value
   }
-  innovationFlow{
+  collaboration {
     id
-    currentState {
-      displayName
+    innovationFlow {
+      id
+      currentState {
+        displayName
+      }
     }
   }
   context {

@@ -25,14 +25,13 @@ const ChallengeInnovationFlowView: FC = () => {
     skip: !spaceNameId || !challengeNameId,
   });
   const challenge = challengeProfile?.space?.challenge;
-  const innovationFlowId = challenge?.innovationFlow?.id || ''; // TODO
+  const innovationFlowId = challenge?.collaboration?.innovationFlow?.id || ''; // TODO
   const collaborationId = challenge?.collaboration?.id || ''; // TODO;
 
   const [updateChallengeInnovationFlowTemplate] = useUpdateInnovationFlowLifecycleTemplateMutation({
     refetchQueries: [
-      refetchChallengeInnovationFlowQuery({ challengeId: challengeNameId }),
+      refetchChallengeInnovationFlowQuery({ challengeId }),
       refetchInnovationFlowSettingsQuery({
-        innovationFlowId,
         collaborationId,
       }),
     ],

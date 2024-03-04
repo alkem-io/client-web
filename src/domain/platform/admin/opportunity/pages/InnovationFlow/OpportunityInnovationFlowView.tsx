@@ -27,16 +27,13 @@ const OpportunityInnovationFlowView: FC = () => {
 
   const opportunity = opportunityProfile?.space?.opportunity;
   const opportunityId = opportunity?.id || ''; // TODO
-  const innovationFlowId = opportunity?.innovationFlow?.id || ''; // TODO
+  const innovationFlowId = opportunity?.collaboration?.innovationFlow?.id || ''; // TODO
   const collaborationId = opportunity?.collaboration?.id || ''; // TODO;
 
   const [updateOpportunityInnovationFlow] = useUpdateInnovationFlowLifecycleTemplateMutation({
     refetchQueries: [
       refetchOpportunityInnovationFlowQuery({ opportunityId: opportunityNameId }),
-      refetchInnovationFlowSettingsQuery({
-        innovationFlowId,
-        collaborationId,
-      }),
+      refetchInnovationFlowSettingsQuery({ collaborationId }),
     ],
     awaitRefetchQueries: true,
   });

@@ -37,26 +37,18 @@ fragment OpportunityPage on Opportunity {
     name
     value
   }
-  innovationFlow {
-    id
-    states {
-      displayName
-      description
-      sortOrder
-    }
-    currentState {
-      displayName
-    }
-  }
   collaboration {
     id
-    relations {
+    innovationFlow {
       id
-      type
-      actorRole
-      actorName
-      actorType
-      description
+      states {
+        displayName
+        description
+        sortOrder
+      }
+      currentState {
+        displayName
+      }
     }
     ...DashboardTopCallouts
     ...DashboardTimelineAuthorization
@@ -74,4 +66,3 @@ fragment OpportunityPage on Opportunity {
     ...EntityDashboardCommunity
   }
 }
-

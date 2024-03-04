@@ -28,13 +28,8 @@ export const ContributeInnovationFlowBlock: FC<ContributeInnovationFlowBlockProp
 
   const { data, loading } = useInnovationFlowBlockQuery({
     variables: {
-      spaceNameId,
-      challengeNameId,
-      opportunityNameId,
-      includeChallenge: journeyTypeName === 'challenge',
-      includeOpportunity: journeyTypeName === 'opportunity',
+      collaborationId,
     },
-    skip: !challengeNameId && !opportunityNameId,
   });
 
   const innovationFlow = data?.space.challenge?.innovationFlow ?? data?.space.opportunity?.innovationFlow;

@@ -2,15 +2,18 @@ query challengeInnovationFlow($challengeId: UUID!) {
   lookup {
     challenge(ID: $challengeId) {
       id
-      innovationFlow {
+      collaboration {
         id
-        states {
-          displayName
-          description
-          sortOrder
-        }
-        currentState {
-          displayName
+        innovationFlow {
+          id
+          states {
+            displayName
+            description
+            sortOrder
+          }
+          currentState {
+            displayName
+          }
         }
       }
     }
