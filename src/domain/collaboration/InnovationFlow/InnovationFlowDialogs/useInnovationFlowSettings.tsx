@@ -6,13 +6,14 @@ import {
   useUpdateInnovationFlowMutation,
   useUpdateInnovationFlowStateMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
-import { CoreEntityIdTypes } from '../../../shared/types/CoreEntityIds';
 import { CalloutType, Tagset, UpdateProfileInput } from '../../../../core/apollo/generated/graphql-schema';
 import { compact, uniq } from 'lodash';
 import { sortCallouts } from '../utils/sortCallouts';
 import { useMemo } from 'react';
 
-interface useInnovationFlowSettingsProps extends CoreEntityIdTypes {}
+interface useInnovationFlowSettingsProps {
+  collaborationId: string;
+}
 
 export interface GroupedCallout {
   id: string;
@@ -84,6 +85,7 @@ const useInnovationFlowSettings = ({ collaborationId }: useInnovationFlowSetting
     updateInnovationFlow({
       variables: {
         updateInnovationFlowData: {
+          innovationFlowID,
           profileData,
         },
       },
