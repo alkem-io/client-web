@@ -6,7 +6,7 @@ import { JourneyTypeName } from '../../../JourneyTypeName';
 import { ApolloError } from '@apollo/client';
 import {
   AssociatedOrganizationDetailsFragment,
-  LifecycleContextTabFragment,
+  InnovationFlowDetailsFragment,
   MetricsItemFragment,
   ReferenceDetailsFragment,
 } from '../../../../../core/apollo/generated/graphql-schema';
@@ -26,7 +26,7 @@ export interface AboutSectionProps extends EntityDashboardContributors, EntityDa
   communityId: string | undefined;
   references: ReferenceDetailsFragment[] | undefined;
   metricsItems: MetricItem[];
-  lifecycle?: LifecycleContextTabFragment;
+  innovationFlow: InnovationFlowDetailsFragment;
   loading?: boolean;
   error?: ApolloError;
 }

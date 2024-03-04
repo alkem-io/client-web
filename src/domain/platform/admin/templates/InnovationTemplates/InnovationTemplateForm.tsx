@@ -9,17 +9,17 @@ import TemplateForm from '../TemplateForm';
 import Typography from '@mui/material/Typography';
 import { Box } from '@mui/material';
 import { SafeInnovationFlowVisualizer } from './SafeInnovationFlowVisualizer';
-import { LifecycleDataProvider } from '@alkemio/visualization';
+import { InnovationFlowState } from '../../../../collaboration/InnovationFlow/InnovationFlowStates/InnovationFlowStates';
 
 export interface InnovationTemplateFormValues {
   displayName: string;
   description: string;
   tags: string[];
-  definition: string;
+  states: InnovationFlowState[];
 }
 
 export interface InnovationTemplateFormSubmittedValues {
-  definition: string;
+  states: InnovationFlowState[];
   profile: CreateProfileInput;
 }
 
@@ -31,13 +31,7 @@ interface InnovationTemplateFormProps {
   editMode?: boolean;
 }
 
-const validator = {
-  definition: yup
-    .string()
-    .required()
-    .test('is-renderable', 'Invalid definition provided', value =>
-      value ? LifecycleDataProvider.validateLifecycleDefinition(value) : false
-    ),
+const validator = { // TODO validate states
 };
 
 const InnovationTemplateForm = ({ initialValues, visual, onSubmit, actions }: InnovationTemplateFormProps) => {
@@ -61,7 +55,7 @@ const InnovationTemplateForm = ({ initialValues, visual, onSubmit, actions }: In
           />
           <Typography>{t('common.preview')}</Typography>
           <Box sx={{ maxWidth: theme => theme.spacing(64) }}>
-            <SafeInnovationFlowVisualizer definition={values.definition} />
+            <SafeInnovationFlowVisualizer states={values.states} />
           </Box>
         </FormRows>
       )}

@@ -9,25 +9,18 @@ import useInnovationFlowSettings from './useInnovationFlowSettings';
 import LifecycleStateSelector from '../LifecycleState/LifecycleStateSelector';
 import InnovationFlowCollaborationToolsBlock from './InnovationFlowCollaborationToolsBlock';
 import Gutters from '../../../../core/ui/grid/Gutters';
-import { useUrlParams } from '../../../../core/routing/useUrlParams';
 
 interface InnovationFlowSettingsDialogProps {
   open?: boolean;
   onClose: () => void;
+  collaborationId: string;
 }
 
-const InnovationFlowSettingsDialog: FC<InnovationFlowSettingsDialogProps> = ({ open = false, onClose }) => {
+const InnovationFlowSettingsDialog: FC<InnovationFlowSettingsDialogProps> = ({ open = false, onClose, collaborationId }) => {
   const { t } = useTranslation();
 
-  const { spaceNameId, challengeNameId, opportunityNameId } = useUrlParams();
-  if (!spaceNameId) {
-    throw new Error('Must be within a Space route.');
-  }
-
   const { data, actions, state } = useInnovationFlowSettings({
-    spaceNameId: spaceNameId!,
-    challengeNameId,
-    opportunityNameId,
+    collaborationId
   });
 
   const { innovationFlow, callouts, flowStateAllowedValues } = data;
@@ -44,9 +37,9 @@ const InnovationFlowSettingsDialog: FC<InnovationFlowSettingsDialogProps> = ({ o
             editable
           >
             <LifecycleStateSelector
-              currentState={innovationFlow?.lifecycle?.state}
-              nextEvents={innovationFlow?.lifecycle?.nextEvents}
-              onNextEventClick={nextEvent => actions.nextEvent(nextEvent)}
+              currentState={innovationFlow?.currentState.displayName}
+              states={innovationFlow?.states}
+              onStateChange={nextState => actions.changeCurrentState(nextState)}
             />
           </InnovationFlowProfileBlock>
           <InnovationFlowCollaborationToolsBlock

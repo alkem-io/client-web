@@ -33,8 +33,7 @@ const EditInnovationTemplateDialog = ({
   }
 
   const values: Partial<InnovationTemplateFormValues> = {
-    type: template.type,
-    definition: template.definition,
+    states: template.states,
     displayName: template.profile.displayName,
     description: template.profile.description,
     tags: template.profile.tagset?.tags,

@@ -121,7 +121,9 @@ export const useJourneyCreation = () => {
               description: value.background,
             },
             tags: value.tags,
-            innovationFlowTemplateID: value.innovationFlowTemplateID,
+            collaborationData: {
+              innovationFlowTemplateID: value.innovationFlowTemplateID,
+            }
           },
         },
         optimisticResponse: {
@@ -176,7 +178,9 @@ export const useJourneyCreation = () => {
               tagline: value.tagline,
             },
             tags: value.tags,
-            innovationFlowTemplateID: value.innovationFlowTemplateID,
+            collaborationData: {
+              innovationFlowTemplateID: value.innovationFlowTemplateID,
+            }
           },
         },
         optimisticResponse: {

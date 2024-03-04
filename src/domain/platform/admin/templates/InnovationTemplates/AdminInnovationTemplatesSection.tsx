@@ -54,7 +54,7 @@ const AdminInnovationTemplatesSection = ({ refetchQueries, ...props }: AdminInno
         return updateInnovationFlowTemplate({
           variables: {
             ...variables,
-            definition: variables.definition!,
+            states: variables.states!,
           },
           refetchQueries,
         });

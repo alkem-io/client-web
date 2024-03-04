@@ -2,18 +2,25 @@ query InnovationFlowSettings($collaborationId: UUID!) {
   lookup {
     collaboration(ID: $collaborationId) {
       innovationFlow {
-        id
-        profile {
-          ...LifecycleProfile
-        }
-        states {
-          displayName
-          description
-          sortOrder
-        }
+        ...InnovationFlowDetails
       }
       ...InnovationFlowCollaboration
     }
+  }
+}
+
+fragment InnovationFlowDetails on InnovationFlow {
+  id
+  profile {
+    ...LifecycleProfile
+  }
+  states {
+    displayName
+    description
+    sortOrder
+  }
+  currentState {
+    displayName
   }
 }
 

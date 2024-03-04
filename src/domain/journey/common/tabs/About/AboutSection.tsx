@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { ApolloError } from '@apollo/client';
 import { Box, DialogContent, Theme, useMediaQuery } from '@mui/material';
 import {
-  LifecycleContextTabFragment,
+  InnovationFlowDetailsFragment,
   ReferenceDetailsFragment,
 } from '../../../../../core/apollo/generated/graphql-schema';
 import {
@@ -57,7 +57,7 @@ export interface AboutSectionProps extends EntityDashboardContributors, EntityDa
   communityId: string | undefined;
   references: ReferenceDetailsFragment[] | undefined;
   metricsItems: MetricItem[];
-  lifecycle?: LifecycleContextTabFragment;
+  innovationFlow?: InnovationFlowDetailsFragment;
 }
 
 const BLOCK_HEIGHT_GUTTERS = 13;
@@ -106,7 +106,7 @@ export const AboutSection: FC<AboutSectionProps> = ({
   communityId,
   references,
   metricsItems,
-  lifecycle,
+  innovationFlow,
 }) => {
   const { t } = useTranslation();
   const [dialogSectionName, setDialogSectionName] = useState<JourneyContextField>();
@@ -173,7 +173,7 @@ export const AboutSection: FC<AboutSectionProps> = ({
             <PageContentBlockHeader title={name} />
             <Tagline>{tagline}</Tagline>
             <TagsComponent tags={tags} variant="filled" loading={loading} />
-            <Actions justifyContent="end">{lifecycle && <InnovationFlow lifecycle={lifecycle} />}</Actions>
+            <Actions justifyContent="end">{innovationFlow && <InnovationFlow lifecycle={lifecycle} />}</Actions>
           </PageContentBlock>
           {communityReadAccess && (
             <EntityDashboardLeadsSection

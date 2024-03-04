@@ -72,7 +72,7 @@ export const FormikInnovationFlowSelect: FC<FormikInnovationFlowSelectProps> = (
           <Text>{template.profile.description}</Text>
           <BlockSectionTitle>{t('components.innovationFlowTemplateSelect.states')}</BlockSectionTitle>
           <DiagramContainer>
-            <SafeInnovationFlowVisualizer definition={JSON.stringify(template.states)} />
+            <SafeInnovationFlowVisualizer states={template.states} />
           </DiagramContainer>
           {helperText && <Caption color="error">{helperText}</Caption>}
         </Gutters>

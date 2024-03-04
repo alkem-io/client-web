@@ -20,7 +20,7 @@ const InnovationTemplateView = ({ template }: PostInnovationViewProps) => {
 
   const {
     profile: { tagset: { tags } = {}, description = '' },
-    definition = '',
+    states,
   } = template;
 
   return (
@@ -38,7 +38,7 @@ const InnovationTemplateView = ({ template }: PostInnovationViewProps) => {
       <Box>
         <TypographyTitle>{t('innovation-templates.definition.title')}</TypographyTitle>
         <Typography variant="body2" component="div">
-          <SafeInnovationFlowVisualizer definition={definition} />
+          <SafeInnovationFlowVisualizer states={states} />
         </Typography>
       </Box>
     </>

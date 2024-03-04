@@ -1,0 +1,8 @@
+mutation updateInnovationFlowUpdateStatesFromTemplate($input: UpdateInnovationFlowSelectedStateInput!) {
+  updateInnovationFlowUpdateStatesFromTemplate(innovationFlowStateData: $input) {
+    id
+    currentState {
+      displayName
+    }
+  }
+}

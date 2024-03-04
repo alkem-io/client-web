@@ -15,7 +15,7 @@ interface OpportunityLifecycleContainerProvided {
 type OpportunityLifecycleContainerProps = ComponentOrChildrenFn<OpportunityLifecycleContainerProvided> & {
   opportunityId: string;
 };
-
+// TODO: Join with ChallengeLifecycleContainer
 const OpportunityLifecycleContainer: FC<OpportunityLifecycleContainerProps> = ({ opportunityId, ...rendered }) => {
   const { data, loading } = useOpportunityInnovationFlowQuery({
     variables: { opportunityId: opportunityId },
@@ -23,7 +23,7 @@ const OpportunityLifecycleContainer: FC<OpportunityLifecycleContainerProps> = ({
     nextFetchPolicy: 'cache-first',
   });
 
-  const innovationFlow = data?.lookup.opportunity?.innovationFlow;
+  const innovationFlow = data?.lookup.opportunity?.collaboration?.innovationFlow;
   const states = innovationFlow?.states;
 
   const [updateOpportunityLifecycle] = useUpdateInnovationFlowStateMutation({});

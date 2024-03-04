@@ -25,21 +25,21 @@ export interface GroupedCallout {
     displayName: string;
   };
   flowState:
-    | {
-        tagsetId: string;
-        currentState: string | undefined;
-        allowedValues: string[];
-      }
-    | undefined;
+  | {
+    tagsetId: string;
+    currentState: string | undefined;
+    allowedValues: string[];
+  }
+  | undefined;
 }
 
 const mapFlowState = (tagset: Tagset | undefined): GroupedCallout['flowState'] => {
   return tagset
     ? {
-        tagsetId: tagset.id,
-        currentState: tagset.tags[0],
-        allowedValues: tagset.allowedValues,
-      }
+      tagsetId: tagset.id,
+      currentState: tagset.tags[0],
+      allowedValues: tagset.allowedValues,
+    }
     : undefined;
 };
 
@@ -72,13 +72,22 @@ const useInnovationFlowSettings = ({ collaborationId }: useInnovationFlowSetting
 
   const flowStateAllowedValues = uniq(compact(callouts?.flatMap(callout => callout.flowState?.allowedValues))) ?? [];
 
-  const [{ loading: loadingChallengeEvent }] = useUpdateInnovationFlowStateMutation({
+  const [updateInnovationFlowSelectedState, { loading: changingState }] = useUpdateInnovationFlowStateMutation({  // TODO: Not used?
     refetchQueries: [refetchInnovationFlowSettingsQuery({ collaborationId })],
   });
-
-  const [{ loading: loadingOpportunityEvent }] = useUpdateInnovationFlowStateMutation({
-    refetchQueries: [refetchInnovationFlowSettingsQuery({ collaborationId })],
-  });
+  const handleInnovationFlowStateChange = async (newState: string) => {
+    if (!innovationFlow) {
+      return;
+    }
+    await updateInnovationFlowSelectedState({
+      variables: {
+        input: {
+          innovationFlowID: innovationFlow?.id,
+          selectedState: newState
+        }
+      },
+    });
+  }
 
   const [updateInnovationFlow, { loading: loadingUpdateInnovationFlow }] = useUpdateInnovationFlowMutation();
   const handleUpdateInnovationFlowProfile = async (innovationFlowID: string, profileData: UpdateProfileInput) =>
@@ -162,12 +171,13 @@ const useInnovationFlowSettings = ({ collaborationId }: useInnovationFlowSetting
       flowStateAllowedValues,
     },
     actions: {
+      updateInnovationFlowState: handleInnovationFlowStateChange,
       updateInnovationFlowProfile: handleUpdateInnovationFlowProfile,
       updateCalloutFlowState: handleUpdateCalloutFlowState,
     },
     state: {
       loading: loadingData || loadingUpdateInnovationFlow || loadingUpdateCallout || loadingSortOrder,
-      loadingLifecycleEvents: loadingChallengeEvent || loadingOpportunityEvent,
+      changingState,
     },
   };
 };

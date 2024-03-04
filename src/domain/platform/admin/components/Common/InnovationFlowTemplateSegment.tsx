@@ -26,7 +26,7 @@ export const InnovationFlowTemplateSegment: FC<InnovationFlowTemplateSegmentProp
         required={required}
         helpText={t('components.innovation-flow-template-segment.help-text.title')}
       />
-      {false && <SafeInnovationFlowVisualizer definition={JSON.stringify(states)} />}
+      {false && <SafeInnovationFlowVisualizer states={states} />}
     </Grid>
   );
 };

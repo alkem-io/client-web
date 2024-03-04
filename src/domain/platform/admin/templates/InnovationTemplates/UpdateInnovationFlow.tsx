@@ -10,7 +10,7 @@ import InnovationFlowUpdateConfirmDialog from './InnovationFlowUpdateConfirmDial
 import { useInnovationFlowAuthorizationQuery } from '../../../../../core/apollo/generated/apollo-hooks';
 
 interface UpdateInnovationFlowProps {
-  innovationFlow: InnovationFlow | undefined; // TODO: fix type to be a model, not from graphql
+  innovationFlow: InnovationFlow | undefined;
   entityId: string;
   innovationFlowTemplates: InnovationFlowTemplate[] | undefined;
   onSubmit: (formData: SelectInnovationFlowFormValuesType) => void;
@@ -68,9 +68,8 @@ const UpdateInnovationFlow: FC<UpdateInnovationFlowProps> = ({
     <>
       {innovationFlowTemplate?.profile.displayName && (
         <Typography variant="h5" color="black" fontWeight={600}>
-          {`${t('components.update-innovation-flow.template-label.title')}: ${
-            innovationFlowTemplate?.profile.displayName
-          }`}
+          {`${t('components.update-innovation-flow.template-label.title')}: ${innovationFlowTemplate?.profile.displayName
+            }`}
         </Typography>
       )}
       {privileges.canUpdate && (

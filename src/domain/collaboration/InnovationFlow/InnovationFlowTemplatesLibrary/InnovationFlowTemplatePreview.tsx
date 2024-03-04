@@ -4,6 +4,7 @@ import { Box, CircularProgress } from '@mui/material';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import { useInnovationFlowTemplateStatesQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { InnovationFlowState } from '../InnovationFlowStates/InnovationFlowStates';
 
 interface InnovationFlowTemplatePreviewProps {
   template?: Identifiable;
@@ -17,9 +18,9 @@ const InnovationFlowTemplatePreview: FC<InnovationFlowTemplatePreviewProps> = ({
     skip: !template?.id,
   });
 
-  const templateStates = JSON.stringify(data?.lookup.innovationFlowTemplate?.states);
+  const templateStates: InnovationFlowState[] = data?.lookup.innovationFlowTemplate?.states ?? [];
 
-  if (loading || !templateStates) {
+  if (loading || templateStates.length === 0) {  //!!
     return (
       <Box textAlign="center">
         <CircularProgress />
@@ -29,7 +30,7 @@ const InnovationFlowTemplatePreview: FC<InnovationFlowTemplatePreviewProps> = ({
 
   return (
     <PageContentBlock>
-      <SafeInnovationFlowVisualizer definition={templateStates} />
+      <SafeInnovationFlowVisualizer states={templateStates} />
     </PageContentBlock>
   );
 };

@@ -79,6 +79,23 @@ export const LifecycleProfileFragmentDoc = gql`
   ${TagsetDetailsFragmentDoc}
   ${VisualFullFragmentDoc}
 `;
+export const InnovationFlowDetailsFragmentDoc = gql`
+  fragment InnovationFlowDetails on InnovationFlow {
+    id
+    profile {
+      ...LifecycleProfile
+    }
+    states {
+      displayName
+      description
+      sortOrder
+    }
+    currentState {
+      displayName
+    }
+  }
+  ${LifecycleProfileFragmentDoc}
+`;
 export const InnovationFlowCollaborationFragmentDoc = gql`
   fragment InnovationFlowCollaboration on Collaboration {
     id
@@ -4895,21 +4912,13 @@ export const InnovationFlowSettingsDocument = gql`
     lookup {
       collaboration(ID: $collaborationId) {
         innovationFlow {
-          id
-          profile {
-            ...LifecycleProfile
-          }
-          states {
-            displayName
-            description
-            sortOrder
-          }
+          ...InnovationFlowDetails
         }
         ...InnovationFlowCollaboration
       }
     }
   }
-  ${LifecycleProfileFragmentDoc}
+  ${InnovationFlowDetailsFragmentDoc}
   ${InnovationFlowCollaborationFragmentDoc}
 `;
 

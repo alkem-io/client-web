@@ -20,24 +20,25 @@ import DialogContent from '../../../core/ui/dialog/DialogContent';
 import { Identifiable } from '../../../core/utils/Identifiable';
 import CalloutTemplatePreview from '../calloutTemplate/CalloutTemplatePreview';
 import CalloutTemplateCard, { CalloutTemplate } from '../calloutTemplate/CalloutTemplateCard';
+import { InnovationFlowState } from '../../collaboration/InnovationFlow/InnovationFlowStates/InnovationFlowStates';
 
 export type TemplatePreview =
   | {
-      template: TemplateBase & { content?: string };
-      templateType: TemplateType.WhiteboardTemplate;
-    }
+    template: TemplateBase & { content?: string };
+    templateType: TemplateType.WhiteboardTemplate;
+  }
   | {
-      template: PostTemplate;
-      templateType: TemplateType.PostTemplate;
-    }
+    template: PostTemplate;
+    templateType: TemplateType.PostTemplate;
+  }
   | {
-      template: TemplateBase & { definition: string } & Identifiable;
-      templateType: TemplateType.InnovationFlowTemplate;
-    }
+    template: TemplateBase & { states: InnovationFlowState[] } & Identifiable;
+    templateType: TemplateType.InnovationFlowTemplate;
+  }
   | {
-      template: CalloutTemplate & Identifiable;
-      templateType: TemplateType.CalloutTemplate;
-    };
+    template: CalloutTemplate & Identifiable;
+    templateType: TemplateType.CalloutTemplate;
+  };
 
 const Noop = () => null;
 

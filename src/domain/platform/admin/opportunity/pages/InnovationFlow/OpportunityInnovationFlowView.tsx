@@ -6,6 +6,7 @@ import {
   useSpaceInnovationFlowTemplatesQuery,
   useOpportunityProfileInfoQuery,
   refetchInnovationFlowSettingsQuery,
+  useUpdateInnovationFlowTemplateMutation,
 } from '../../../../../../core/apollo/generated/apollo-hooks';
 import Loading from '../../../../../../core/ui/loading/Loading';
 import UpdateInnovationFlow from '../../../templates/InnovationTemplates/UpdateInnovationFlow';
@@ -30,7 +31,7 @@ const OpportunityInnovationFlowView: FC = () => {
   const innovationFlowId = opportunity?.collaboration?.innovationFlow?.id || ''; // TODO
   const collaborationId = opportunity?.collaboration?.id || ''; // TODO;
 
-  const [updateOpportunityInnovationFlow] = useUpdateInnovationFlowLifecycleTemplateMutation({
+  const [updateOpportunityInnovationFlow] = useUpdateInnovationFlowTemplateMutation({
     refetchQueries: [
       refetchOpportunityInnovationFlowQuery({ opportunityId: opportunityNameId }),
       refetchInnovationFlowSettingsQuery({ collaborationId }),
@@ -42,6 +43,7 @@ const OpportunityInnovationFlowView: FC = () => {
     const { innovationFlowTemplateID } = values;
 
     if (innovationFlowId) {
+      //!! TODO: Update the innovation flow states of this opportunity copying them from the selected template
       updateOpportunityInnovationFlow({
         variables: {
           input: {
