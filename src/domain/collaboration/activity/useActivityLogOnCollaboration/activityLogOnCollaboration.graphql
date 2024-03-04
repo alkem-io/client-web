@@ -147,9 +147,11 @@ fragment ActivityLogCalloutLinkCreated on ActivityLogEntryCalloutLinkCreated {
       }
     }
   }
-  reference {
+  link {
     id
-    name
+    profile {
+      displayName
+    }
     uri
   }
 }

@@ -216,9 +216,11 @@ export const ActivityLogCalloutLinkCreatedFragmentDoc = gql`
         }
       }
     }
-    reference {
+    link {
       id
-      name
+      profile {
+        displayName
+      }
       uri
     }
   }
