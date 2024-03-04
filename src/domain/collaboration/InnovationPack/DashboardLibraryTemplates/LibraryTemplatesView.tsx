@@ -74,6 +74,7 @@ const LibraryTemplatesView = ({
               minLength={2}
               size="xsmall"
               containerProps={{ sx: { flexGrow: isMobile ? 1 : undefined } }}
+              inlineTerms
             />
           </Box>
         }

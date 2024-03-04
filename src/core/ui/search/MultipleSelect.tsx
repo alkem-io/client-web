@@ -27,6 +27,7 @@ export interface MultipleSelectProps {
   size?: 'medium' | 'small' | 'xsmall';
   containerProps?: BoxProps;
   autoShrink?: boolean;
+  inlineTerms?: boolean;
 }
 
 const filterTerms = (values: string[] | undefined) => {
@@ -38,6 +39,7 @@ interface SelectedTermsProps {
   disabled?: boolean;
   handleRemove: (term: string) => void;
   maxTermsVisible?: number;
+  inlineTerms?: boolean;
 }
 
 const SelectedTerms: FC<SelectedTermsProps> = ({
@@ -45,15 +47,15 @@ const SelectedTerms: FC<SelectedTermsProps> = ({
   maxTermsVisible = selectedTerms.length,
   disabled,
   handleRemove,
+  inlineTerms,
 }) => {
   return (
     <Box
       display="flex"
       flexWrap="wrap"
-      justifyContent="flex-end"
       gap={gutters(0.5)}
       margin={gutters(0.5)}
-      maxWidth="40%"
+      maxWidth={inlineTerms ? '40%' : '100%'}
     >
       {selectedTerms.slice(0, maxTermsVisible).map((term, index) => (
         <Chip key={index} label={term} color="primary" onDelete={() => (disabled ? undefined : handleRemove(term))} />
@@ -76,6 +78,7 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
   autoFocus,
   size = 'medium',
   autoShrink,
+  inlineTerms,
   containerProps,
   children,
 }) => {
@@ -194,12 +197,15 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
                   disabled: disabled,
                   endAdornment: (
                     <>
-                      <SelectedTerms
-                        selectedTerms={normalizedValue}
-                        disabled={disabled}
-                        handleRemove={handleRemove}
-                        maxTermsVisible={isMobile ? 1 : MAX_TERMS_SEARCH}
-                      />
+                      {inlineTerms && (
+                        <SelectedTerms
+                          selectedTerms={normalizedValue}
+                          disabled={disabled}
+                          handleRemove={handleRemove}
+                          maxTermsVisible={isMobile ? 1 : MAX_TERMS_SEARCH}
+                          inlineTerms={inlineTerms}
+                        />
+                      )}
                       <IconButton
                         onClick={() => handleSearch(textInput)}
                         disabled={disabled}
@@ -231,6 +237,13 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
                 size={size === 'xsmall' ? 'small' : size}
                 inputRef={inputRef}
               />
+              {!inlineTerms && (
+                <SelectedTerms
+                  selectedTerms={normalizedValue}
+                  handleRemove={handleRemove}
+                  maxTermsVisible={isMobile ? 1 : MAX_TERMS_SEARCH}
+                />
+              )}
             </Box>
           </Tooltip>
           {children}

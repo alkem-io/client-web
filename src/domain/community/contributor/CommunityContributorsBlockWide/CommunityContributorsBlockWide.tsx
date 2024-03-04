@@ -60,6 +60,7 @@ const CommunityContributorsBlockWide = ({ users, organizations }: CommunityContr
                 marginLeft: theme => theme.spacing(2),
               }}
               size="xsmall"
+              inlineTerms
             />
           }
         >
