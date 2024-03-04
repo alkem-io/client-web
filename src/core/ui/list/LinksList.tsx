@@ -1,7 +1,8 @@
-import React, { FC, ReactNode, useEffect, useState } from 'react';
+import React, { FC, ReactNode, useState } from 'react';
 import { styled } from '@mui/styles';
 import {
   Box,
+  Collapse,
   List as MuiList,
   ListItem as MuiListItem,
   ListItemIcon as MuiListItemIcon,
@@ -44,31 +45,18 @@ const COLLAPSED_LIST_ITEM_LIMIT = 5;
 
 const LinksList: FC<LinksListProps> = ({ items = [], emptyListCaption, loading = false }) => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const [itemsToShow, setItemsToShow] = useState<Item[]>([]);
 
   const handleExpand = () => {
-    if (!isExpanded) {
-      setItemsToShow(items);
-    } else {
-      setItemsToShow(items.slice(0, COLLAPSED_LIST_ITEM_LIMIT));
-    }
     setIsExpanded(!isExpanded);
   };
-
-  useEffect(() => {
-    if (loading) {
-      return;
-    }
-    setItemsToShow(items.slice(0, COLLAPSED_LIST_ITEM_LIMIT));
-  }, [items, loading]);
 
   return (
     <List>
       {loading && times(3, i => <ListItem key={i} component={Skeleton} />)}
       {!loading && items.length === 0 && emptyListCaption && <CaptionSmall>{emptyListCaption}</CaptionSmall>}
       {!loading &&
-        itemsToShow.length > 0 &&
-        itemsToShow.map(item => (
+        items.length > 0 &&
+        items.slice(0, COLLAPSED_LIST_ITEM_LIMIT).map(item => (
           <ListItem key={item.id} component={RouterLink} to={item.uri}>
             <ListItemIcon>{item.icon}</ListItemIcon>
             <BlockSectionTitle minWidth={0} noWrap>
@@ -76,7 +64,26 @@ const LinksList: FC<LinksListProps> = ({ items = [], emptyListCaption, loading =
             </BlockSectionTitle>
           </ListItem>
         ))}
-      <Box flexGrow={1} display="flex" justifyContent="end" paddingX={1.5} onClick={handleExpand}>
+      {!loading && items.length > COLLAPSED_LIST_ITEM_LIMIT && (
+        <Collapse in={isExpanded}>
+          {items.slice(COLLAPSED_LIST_ITEM_LIMIT).map(item => (
+            <ListItem key={item.id} component={RouterLink} to={item.uri}>
+              <ListItemIcon>{item.icon}</ListItemIcon>
+              <BlockSectionTitle minWidth={0} noWrap>
+                {item.title}
+              </BlockSectionTitle>
+            </ListItem>
+          ))}
+        </Collapse>
+      )}
+      <Box
+        flexGrow={1}
+        display="flex"
+        justifyContent="end"
+        paddingX={1.5}
+        sx={{ cursor: 'pointer' }}
+        onClick={handleExpand}
+      >
         {!loading && items.length > COLLAPSED_LIST_ITEM_LIMIT && <CardExpandButton expanded={isExpanded} />}
       </Box>
     </List>
