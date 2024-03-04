@@ -29,6 +29,7 @@ export interface WhiteboardViewProps extends ActiveWhiteboardIdHolder, Whiteboar
   displayName?: ReactNode;
   readOnlyDisplayName?: boolean;
   loadingWhiteboards: boolean;
+  preventWhiteboardDeletion?: boolean; // TODO: Temporary solution to avoid single-whiteboard callouts to lose their whiteboard
 }
 
 const WhiteboardView: FC<WhiteboardViewProps> = ({
@@ -41,6 +42,7 @@ const WhiteboardView: FC<WhiteboardViewProps> = ({
   whiteboardShareUrl,
   displayName,
   readOnlyDisplayName,
+  preventWhiteboardDeletion,
   ...whiteboardsState
 }) => {
   const { fullscreen, setFullscreen } = useFullscreen();
@@ -58,7 +60,8 @@ const WhiteboardView: FC<WhiteboardViewProps> = ({
   // to update an existing whiteboard
   const hasUpdatePrivileges = authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
   const hasUpdateContentPrivileges = authorization?.myPrivileges?.includes(AuthorizationPrivilege.UpdateContent);
-  const hasDeletePrivileges = authorization?.myPrivileges?.includes(AuthorizationPrivilege.Delete);
+  const hasDeletePrivileges =
+    !preventWhiteboardDeletion && authorization?.myPrivileges?.includes(AuthorizationPrivilege.Delete);
 
   const contentUpdatePolicyProvided = useWhiteboardContentUpdatePolicy({
     whiteboardId: whiteboard?.id,

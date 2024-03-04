@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useMemo } from 'react';
 import { Box, styled } from '@mui/material';
 import AutoGraphOutlinedIcon from '@mui/icons-material/AutoGraphOutlined';
 import ContributeCard from '../../../../core/ui/card/ContributeCard';
@@ -7,12 +7,23 @@ import CardFooter from '../../../../core/ui/card/CardFooter';
 import CardFooterDate from '../../../../core/ui/card/CardFooterDate';
 import CardImage from '../../../../core/ui/card/CardImage';
 import { WhiteboardIcon } from '../../whiteboard/icon/WhiteboardIcon';
-import { WhiteboardCardWhiteboard } from './types';
 import { useTranslation } from 'react-i18next';
+import { Visual } from '../../../common/visual/Visual';
+import { TypedCallout } from '../useCallouts/useCallouts';
+import { LocationStateKeyCachedCallout } from '../../CalloutPage/CalloutPage';
+
+export interface WhiteboardCardWhiteboard {
+  profile: {
+    displayName: string;
+    visual?: Visual;
+    url: string;
+  };
+  createdDate?: Date | string;
+}
 
 interface WhiteboardCardProps {
   whiteboard: WhiteboardCardWhiteboard | undefined;
-  onClick: (whiteboard: WhiteboardCardWhiteboard) => void;
+  callout?: TypedCallout;
 }
 
 const WHITEBOARD_IMAGE_ASPECT_RATIO = '23/12';
@@ -35,14 +46,20 @@ const WhiteboardDefaultImage = () => {
   );
 };
 
-const WhiteboardCard = ({ whiteboard, onClick }: WhiteboardCardProps) => {
+const WhiteboardCard = ({ whiteboard, callout }: WhiteboardCardProps) => {
   const { t } = useTranslation();
-  const handleClick = useCallback(() => whiteboard && onClick(whiteboard), [onClick, whiteboard]);
+
+  const linkState = useMemo(() => {
+    return {
+      [LocationStateKeyCachedCallout]: callout,
+      keepScroll: true,
+    };
+  }, [callout]);
 
   return (
-    <ContributeCard onClick={handleClick}>
+    <ContributeCard to={whiteboard?.profile.url} state={linkState}>
       <CardHeader title={whiteboard?.profile.displayName} iconComponent={WhiteboardIcon} />
-      {whiteboard?.profile?.visual?.uri ? (
+      {whiteboard?.profile.visual?.uri ? (
         <CardImage
           aspectRatio={WHITEBOARD_IMAGE_ASPECT_RATIO}
           src={whiteboard?.profile?.visual?.uri}

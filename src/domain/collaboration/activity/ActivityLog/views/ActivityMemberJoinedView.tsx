@@ -16,17 +16,14 @@ export const ActivityMemberJoinedView: FC<ActivityMemberJoinedViewProps> = ({
   journeyDisplayName,
   member,
   type,
-  footerComponent,
 }) => {
   return (
     <ActivityBaseView
       type={type}
-      displayName={member.displayName} // Important to show the user that joined, not the person that triggered it
       avatarUrl={member.avatarUrl}
       loading={loading}
       title={<ActivityDescriptionByType activityType={type} subject={member.displayName} />}
       url={member.url}
-      footerComponent={footerComponent}
       contextDisplayName={journeyDisplayName}
       createdDate={createdDate}
     />

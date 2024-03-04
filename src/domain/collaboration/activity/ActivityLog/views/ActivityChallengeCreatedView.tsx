@@ -11,24 +11,20 @@ interface ActivityChallengeCreatedViewProps extends ActivityViewProps {
 }
 
 export const ActivityChallengeCreatedView: FC<ActivityChallengeCreatedViewProps> = ({
-  displayName,
   avatarUrl,
   loading,
   createdDate,
   journeyDisplayName,
   challenge,
   type,
-  footerComponent,
 }) => {
   return (
     <ActivityBaseView
-      displayName={displayName}
       avatarUrl={avatarUrl}
       loading={loading}
       type={type}
       title={<ActivityDescriptionByType activityType={type} subject={challenge.profile.displayName} />}
       url={challenge.profile.url}
-      footerComponent={footerComponent}
       contextDisplayName={journeyDisplayName}
       createdDate={createdDate}
     />
