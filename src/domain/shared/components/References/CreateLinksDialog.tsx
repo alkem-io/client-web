@@ -1,5 +1,5 @@
 import { FC, ReactNode, useEffect, useMemo, useRef, useState } from 'react';
-import { CalloutType, Reference } from '../../../../core/apollo/generated/graphql-schema';
+import { CalloutType } from '../../../../core/apollo/generated/graphql-schema';
 import { Box, Button, DialogContent, IconButton, Link, Tooltip } from '@mui/material';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import { useTranslation } from 'react-i18next';
@@ -14,33 +14,36 @@ import { BlockSectionTitle } from '../../../../core/ui/typography';
 import { Actions } from '../../../../core/ui/actions/Actions';
 import { gutters } from '../../../../core/ui/grid/utils';
 import calloutIcons from '../../../collaboration/callout/utils/calloutIcons';
-import { newReferenceName } from '../../../common/reference/newReferenceName';
 import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
 import FormikFileInput from '../../../../core/ui/forms/FormikFileInput/FormikFileInput';
 import { TranslateWithElements } from '../../i18n/TranslateWithElements';
 import { useConfig } from '../../../platform/config/useConfig';
 import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
-import { ReferenceType } from '../../../../core/ui/upload/FileUpload/FileUpload';
 import { MessageWithPayload } from '../../i18n/ValidationMessageTranslation';
-import { MID_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
+import { LONG_TEXT_LENGTH, MID_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
+import { newLinkName } from '../../../common/link/newLinkName';
 
-export interface CreateReferenceFormValues extends Pick<Reference, 'id' | 'name' | 'uri' | 'description'> {}
-
-interface FormValueType {
-  references: CreateReferenceFormValues[];
+export interface CreateLinkFormValues {
+  id: string;
+  name: string;
+  uri: string;
+  description: string;
 }
 
-interface CreateReferencesDialogProps {
+interface FormValueType {
+  links: CreateLinkFormValues[];
+}
+
+interface CreateLinksDialogProps {
   open: boolean;
   onClose: () => void;
   title: ReactNode;
-  referenceType?: ReferenceType;
   onAddMore: () => Promise<string>;
-  onRemove: (referenceId: string) => Promise<unknown>;
-  onSave: (references: CreateReferenceFormValues[]) => Promise<void>;
+  onRemove: (linkId: string) => Promise<unknown>;
+  onSave: (links: CreateLinkFormValues[]) => Promise<void>;
 }
 
-const fieldName = 'references';
+const fieldName = 'links';
 
 export const linkSegmentValidationObject = yup.object().shape({
   name: yup
@@ -49,18 +52,11 @@ export const linkSegmentValidationObject = yup.object().shape({
     .min(3, MessageWithPayload('forms.validations.minLength'))
     .max(SMALL_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength')),
   uri: yup.string().max(MID_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength')),
+  description: yup.string().max(LONG_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength')),
 });
 export const linkSegmentSchema = yup.array().of(linkSegmentValidationObject);
 
-const CreateLinksDialog: FC<CreateReferencesDialogProps> = ({
-  open,
-  onClose,
-  title,
-  referenceType,
-  onAddMore,
-  onRemove,
-  onSave,
-}) => {
+const CreateLinksDialog: FC<CreateLinksDialogProps> = ({ open, onClose, title, onAddMore, onRemove, onSave }) => {
   const { t } = useTranslation();
   const tLinks = TranslateWithElements(<Link target="_blank" />);
   const { locations } = useConfig();
@@ -68,30 +64,30 @@ const CreateLinksDialog: FC<CreateReferencesDialogProps> = ({
   const isMobile = ['xs', 'sm'].includes(breakpoint);
 
   const CalloutIcon = calloutIcons[CalloutType.LinkCollection];
-  const [newReferenceId, setNewReferenceId] = useState<string>();
-  const [hangingReferenceIds, setHangingReferenceIds] = useState<string[]>([]);
+  const [newLinkId, setNewLinkId] = useState<string>();
+  const [hangingLinkIds, setHangingLinkIds] = useState<string[]>([]);
   const [isCancelling, setCancelling] = useState(false);
 
   const handleOnClose = () => setCancelling(true);
   const handleConfirmCancelling = async () => {
-    for (const referenceId of hangingReferenceIds) {
-      await onRemove(referenceId);
+    for (const linkId of hangingLinkIds) {
+      await onRemove(linkId);
     }
-    setHangingReferenceIds([]);
+    setHangingLinkIds([]);
     setCancelling(false);
     onClose();
   };
 
-  const handleSave = (currentReferences: CreateReferenceFormValues[]) => {
-    setHangingReferenceIds([]);
-    onSave(currentReferences);
+  const handleSave = (currentLinks: CreateLinkFormValues[]) => {
+    setHangingLinkIds([]);
+    onSave(currentLinks);
   };
 
   useEffect(() => {
     const run = async () => {
       const newId = await onAddMore();
-      setNewReferenceId(newId);
-      setHangingReferenceIds([...hangingReferenceIds, newId]);
+      setNewLinkId(newId);
+      setHangingLinkIds([...hangingLinkIds, newId]);
     };
     if (open) {
       run();
@@ -100,35 +96,35 @@ const CreateLinksDialog: FC<CreateReferencesDialogProps> = ({
 
   const initialValues: FormValueType = useMemo(
     () => ({
-      references: newReferenceId
+      links: newLinkId
         ? [
             {
-              id: newReferenceId,
-              name: newReferenceName(0),
+              id: newLinkId,
+              name: newLinkName(0),
               uri: '',
               description: '',
             },
           ]
         : [],
     }),
-    [newReferenceId]
+    [newLinkId]
   );
 
   const validationSchema = yup.object().shape({
-    references: linkSegmentSchema,
+    links: linkSegmentSchema,
   });
 
-  const [nextReferenceId, setNextReferenceId] = useState<string>();
+  const [nextLinkId, setNextLinkId] = useState<string>();
 
   const contentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    contentRef.current?.querySelector(`[data-reference="${nextReferenceId}"]`)?.scrollIntoView({ behavior: 'smooth' });
-  }, [nextReferenceId]);
+    contentRef.current?.querySelector(`[data-link="${nextLinkId}"]`)?.scrollIntoView({ behavior: 'smooth' });
+  }, [nextLinkId]);
 
   return (
     <>
-      <DialogWithGrid columns={12} open={open} aria-labelledby="reference-creation">
+      <DialogWithGrid columns={12} open={open} aria-labelledby="link-creation">
         <DialogHeader icon={<CalloutIcon />} title={title} onClose={handleOnClose} />
         <Formik
           initialValues={initialValues}
@@ -139,22 +135,22 @@ const CreateLinksDialog: FC<CreateReferencesDialogProps> = ({
         >
           {formikState => {
             const { values, setFieldValue, isValid } = formikState;
-            const { references: currentReferences } = values;
+            const { links: currentLinks } = values;
 
             const handleAddMore = async () => {
               const newId = await onAddMore();
-              setHangingReferenceIds([...hangingReferenceIds, newId]);
+              setHangingLinkIds([...hangingLinkIds, newId]);
 
-              const newReference: CreateReferenceFormValues = {
+              const newLink: CreateLinkFormValues = {
                 id: newId,
-                name: newReferenceName(currentReferences.length),
+                name: newLinkName(currentLinks.length),
                 uri: '',
                 description: '',
               };
 
-              setFieldValue('references', [...currentReferences, newReference]);
+              setFieldValue(fieldName, [...currentLinks, newLink]);
 
-              setNextReferenceId(newId);
+              setNextLinkId(newId);
             };
 
             return (
@@ -162,8 +158,8 @@ const CreateLinksDialog: FC<CreateReferencesDialogProps> = ({
                 <DialogContent ref={contentRef}>
                   <FieldArray name={fieldName}>
                     {() =>
-                      currentReferences?.map((reference, index) => (
-                        <Gutters key={reference.id} data-reference={reference.id}>
+                      currentLinks?.map((link, index) => (
+                        <Gutters key={link.id} data-reference={link.id}>
                           <Gutters row={!isMobile} disablePadding alignItems="start">
                             <FormikInputField
                               name={`${fieldName}.${index}.name`}
@@ -176,8 +172,8 @@ const CreateLinksDialog: FC<CreateReferencesDialogProps> = ({
                                   name={`${fieldName}.${index}.uri`}
                                   title={t('common.url')}
                                   fullWidth
-                                  referenceID={reference.id}
-                                  referenceType={referenceType}
+                                  entityID={link.id}
+                                  entityType={'link'}
                                   helperText={tLinks('components.referenceSegment.url-helper-text', {
                                     terms: {
                                       href: locations?.terms,
@@ -188,21 +184,21 @@ const CreateLinksDialog: FC<CreateReferencesDialogProps> = ({
                                 <Box>
                                   <Tooltip
                                     title={t('components.referenceSegment.tooltips.remove-reference') || ''}
-                                    id={'remove a reference'}
+                                    id={'remove-link'}
                                     placement={'bottom'}
                                   >
                                     <IconButton
                                       aria-label={t('buttons.delete')}
                                       onClick={async () => {
-                                        if (currentReferences.length > 1) {
-                                          // Remove the temporary reference from the server:
-                                          await onRemove(reference.id);
-                                          // Remove the id from the list of pending to confirm references:
-                                          const nextHangingReferenceIds = [...hangingReferenceIds];
-                                          nextHangingReferenceIds.splice(index, 1);
-                                          setHangingReferenceIds(nextHangingReferenceIds);
-                                          // Remove the reference from the Formik Field value
-                                          const nextValue = [...currentReferences];
+                                        if (currentLinks.length > 1) {
+                                          // Remove the temporary link from the server:
+                                          await onRemove(link.id);
+                                          // Remove the id from the list of pending to confirm links:
+                                          const nextHangingLinkIds = [...hangingLinkIds];
+                                          nextHangingLinkIds.splice(index, 1);
+                                          setHangingLinkIds(nextHangingLinkIds);
+                                          // Remove the link from the Formik Field value
+                                          const nextValue = [...currentLinks];
                                           nextValue.splice(index, 1);
                                           setFieldValue(fieldName, nextValue);
                                         }
@@ -238,7 +234,7 @@ const CreateLinksDialog: FC<CreateReferencesDialogProps> = ({
                 </Box>
                 <Actions padding={gutters()} justifyContent="space-between">
                   <Button onClick={handleOnClose}>{t('buttons.cancel')}</Button>
-                  <Button variant="contained" onClick={() => handleSave(currentReferences)} disabled={!isValid}>
+                  <Button variant="contained" onClick={() => handleSave(currentLinks)} disabled={!isValid}>
                     {t('buttons.save')}
                   </Button>
                 </Actions>

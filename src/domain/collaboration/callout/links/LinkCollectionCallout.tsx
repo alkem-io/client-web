@@ -3,12 +3,8 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
 import { Caption, CaptionSmall } from '../../../../core/ui/typography';
 import { useTranslation } from 'react-i18next';
-import EditReferenceDialog, {
-  EditReferenceFormValues,
-} from '../../../shared/components/References/EditReferenceDialog';
-import CreateLinksDialog, {
-  CreateReferenceFormValues,
-} from '../../../shared/components/References/CreateReferencesDialog';
+import EditLinkDialog, { EditLinkFormValues } from '../../../shared/components/References/EditLinkDialog';
+import CreateLinksDialog, { CreateLinkFormValues } from '../../../shared/components/References/CreateLinksDialog';
 import { Box, IconButton, Link } from '@mui/material';
 import {
   useCreateLinkOnCalloutMutation,
@@ -58,12 +54,12 @@ const LinkCollectionCallout = ({
   const [updateLink] = useUpdateLinkMutation();
   const [deleteLink] = useDeleteLinkMutation();
 
-  const [addNewReferenceDialogOpen, setAddNewReferenceDialogOpen] = useState<boolean>(false);
-  const [editReference, setEditReference] = useState<EditReferenceFormValues>();
+  const [addNewLinkDialogOpen, setAddNewLinkDialogOpen] = useState<boolean>(false);
+  const [editLink, setEditLink] = useState<EditLinkFormValues>();
   const [deletingLinkId, setDeletingLinkId] = useState<string>();
 
-  const closeAddNewDialog = () => setAddNewReferenceDialogOpen(false);
-  const closeEditDialog = () => setEditReference(undefined);
+  const closeAddNewDialog = () => setAddNewLinkDialogOpen(false);
+  const closeEditDialog = () => setEditLink(undefined);
 
   const calloutPrivileges = callout?.authorization?.myPrivileges ?? [];
   const isContributionAllowed =
@@ -107,17 +103,17 @@ const LinkCollectionCallout = ({
     });
 
   const handleSaveNewLinks = useCallback(
-    async (references: CreateReferenceFormValues[]) => {
+    async (links: CreateLinkFormValues[]) => {
       await Promise.all(
-        references.map(reference =>
+        links.map(link =>
           updateLink({
             variables: {
               input: {
-                ID: reference.id,
-                uri: reference.uri,
+                ID: link.id,
+                uri: link.uri,
                 profile: {
-                  displayName: reference.name,
-                  description: reference.description,
+                  displayName: link.name,
+                  description: link.description,
                 },
               },
             },
@@ -133,15 +129,15 @@ const LinkCollectionCallout = ({
 
   // Edit existing Links:
   const handleEditLink = useCallback(
-    async (reference: EditReferenceFormValues) => {
+    async (link: EditLinkFormValues) => {
       await updateLink({
         variables: {
           input: {
-            ID: reference.id,
-            uri: reference.uri,
+            ID: link.id,
+            uri: link.uri,
             profile: {
-              displayName: reference.name,
-              description: reference.description,
+              displayName: link.name,
+              description: link.description,
             },
           },
         },
@@ -168,7 +164,7 @@ const LinkCollectionCallout = ({
     closeEditDialog();
   }, [deletingLinkId, closeEditDialog, setDeletingLinkId, onCalloutUpdate, deleteLink, callout]);
 
-  const referencesFromLinks = useMemo(
+  const formatedLinks = useMemo(
     () =>
       compact(callout.contributions?.map(contribution => contribution.link)).map(link => ({
         id: link.id,
@@ -179,7 +175,7 @@ const LinkCollectionCallout = ({
       })),
     [callout]
   );
-  const limitedLinks = useMemo(() => referencesFromLinks?.slice(0, MAX_LINKS_NORMALVIEW), [callout]);
+  const limitedLinks = useMemo(() => formatedLinks?.slice(0, MAX_LINKS_NORMALVIEW), [callout]);
   const isListTruncated = useMemo(
     () => (compact(callout.contributions?.map(contribution => contribution.link))?.length ?? 0) > MAX_LINKS_NORMALVIEW,
     [callout]
@@ -193,7 +189,7 @@ const LinkCollectionCallout = ({
       spaceNameId={calloutLayoutProps.spaceNameId}
       challengeNameId={calloutLayoutProps.challengeNameId}
       opportunityNameId={calloutLayoutProps.opportunityNameId}
-      skip={!addNewReferenceDialogOpen && !editReference}
+      skip={!addNewLinkDialogOpen && !editLink}
     >
       <CalloutLayout
         callout={callout}
@@ -205,40 +201,38 @@ const LinkCollectionCallout = ({
         disableMarginal
       >
         <References
-          references={expanded ? referencesFromLinks : limitedLinks}
+          references={expanded ? formatedLinks : limitedLinks}
           noItemsView={<CaptionSmall>{t('callout.link-collection.no-links-yet')}</CaptionSmall>}
-          onEdit={ref => setEditReference(ref)}
+          onEdit={ref => setEditLink(ref)}
         />
         <Box display="flex" justifyContent={isListTruncated && !expanded ? 'space-between' : 'end'} alignItems="end">
           {isListTruncated && !expanded && (
             <Caption component={Link} onClick={onExpand} sx={{ cursor: 'pointer' }}>
-              {t('callout.link-collection.more-links', { count: referencesFromLinks.length })}
+              {t('callout.link-collection.more-links', { count: formatedLinks.length })}
             </Caption>
           )}
           {canAddLinks && (
-            <IconButton aria-label={t('common.add')} size="small" onClick={() => setAddNewReferenceDialogOpen(true)}>
+            <IconButton aria-label={t('common.add')} size="small" onClick={() => setAddNewLinkDialogOpen(true)}>
               <RoundedIcon component={AddIcon} size="medium" iconSize="small" />
             </IconButton>
           )}
         </Box>
         <CreateLinksDialog
-          open={addNewReferenceDialogOpen}
+          open={addNewLinkDialogOpen}
           title={<Box>{t('callout.link-collection.add-link', { title: callout.framing.profile.displayName })}</Box>}
-          referenceType="link"
           onClose={closeAddNewDialog}
           onAddMore={getNewLinkId}
           onRemove={removeNewLink}
           onSave={handleSaveNewLinks}
         />
-        <EditReferenceDialog
-          open={Boolean(editReference)}
+        <EditLinkDialog
+          open={Boolean(editLink)}
           onClose={closeEditDialog}
-          title={<Box>{t('callout.link-collection.edit-link', { title: editReference?.name })}</Box>}
-          reference={editReference!}
-          referenceType="link"
+          title={<Box>{t('callout.link-collection.edit-link', { title: editLink?.name })}</Box>}
+          link={editLink!}
           onSave={values => handleEditLink(values)}
           canDelete={canDeleteLinks}
-          onDelete={() => setDeletingLinkId(editReference?.id)}
+          onDelete={() => setDeletingLinkId(editLink?.id)}
         />
         <ConfirmationDialog
           actions={{
