@@ -16,6 +16,15 @@ query search($searchData: SearchInput!) {
       }
     }
     journeyResultsCount
+    calloutResults {
+      id
+      score
+      terms
+      type
+      ... on SearchResultCallout {
+        ...SearchResultCallout
+      }
+    }
     contributorResults {
       id
       score
@@ -132,6 +141,38 @@ fragment SearchResultUser on SearchResultUser {
       displayName
       ...SearchResultProfile
     }
+  }
+}
+
+fragment SearchResultCallout on SearchResultCallout {
+  callout {
+    id
+    nameID
+    type
+    framing {
+      id
+      # profile {
+      #   id
+      #   displayName
+      #   description
+      #   url
+      #   tagset {
+      #     ...TagsetDetails
+      #   }
+      # }
+    }
+    # contributions {
+    #   id
+    #   post {
+    #     id
+    #   }
+    #   whiteboard {
+    #     id
+    #   }
+    #   link {
+    #     id
+    #   }
+    # }
   }
 }
 
