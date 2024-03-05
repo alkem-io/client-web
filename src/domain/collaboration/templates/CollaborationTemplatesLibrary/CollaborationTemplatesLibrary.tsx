@@ -151,6 +151,7 @@ const CollaborationTemplatesLibrary = <
               marginLeft: 'auto',
             }}
             size="small"
+            inlineTerms
           />
         )}
       </DialogHeader>
