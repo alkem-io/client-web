@@ -1,3 +1,5 @@
-export const newLinkName = (count: number) => {
-  return count === 0 ? 'New link' : `New link (${count + 1})`;
+import { TFunction } from 'react-i18next';
+
+export const newLinkName = (t: TFunction<'translation', undefined>, count: number) => {
+  return t('components.referenceSegment.newLink', { count: count + 1 });
 };

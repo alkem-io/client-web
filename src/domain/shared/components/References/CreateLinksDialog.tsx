@@ -100,7 +100,7 @@ const CreateLinksDialog: FC<CreateLinksDialogProps> = ({ open, onClose, title, o
         ? [
             {
               id: newLinkId,
-              name: newLinkName(0),
+              name: newLinkName(t, 0),
               uri: '',
               description: '',
             },
@@ -143,7 +143,7 @@ const CreateLinksDialog: FC<CreateLinksDialogProps> = ({ open, onClose, title, o
 
               const newLink: CreateLinkFormValues = {
                 id: newId,
-                name: newLinkName(currentLinks.length),
+                name: newLinkName(t, currentLinks.length),
                 uri: '',
                 description: '',
               };
