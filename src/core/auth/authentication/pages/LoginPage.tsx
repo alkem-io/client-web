@@ -66,7 +66,7 @@ const LoginPage = ({ flow }: LoginPageProps) => {
     }
   }, [loginFlow, navigate]);
 
-  if (loading) {
+  if (loading || (!loginFlow && !error)) {
     return <Loading text={t('kratos.loading-flow')} />;
   }
 
