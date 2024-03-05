@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { ApolloError } from '@apollo/client';
 import { Box, DialogContent, Theme, useMediaQuery } from '@mui/material';
 import {
-  InnovationFlowDetailsFragment,
   ReferenceDetailsFragment,
 } from '../../../../../core/apollo/generated/graphql-schema';
 import {
@@ -16,7 +15,6 @@ import PageContent from '../../../../../core/ui/content/PageContent';
 import { BlockTitle, Tagline } from '../../../../../core/ui/typography';
 import PageContentBlock, { PageContentBlockProps } from '../../../../../core/ui/content/PageContentBlock';
 import TagsComponent from '../../../../shared/components/TagsComponent/TagsComponent';
-import InnovationFlow from '../../../../collaboration/InnovationFlow/InnovationFlowIcon/InnovationFlow';
 import { OpportunityApplicationButton } from '../../../../community/application/applicationButton/OpportunityApplicationButton';
 import OpportunityApplicationButtonContainer from '../../../../community/application/containers/OpportunityApplicationButtonContainer';
 import EntityDashboardContributorsSection from '../../../../community/community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';
@@ -41,6 +39,7 @@ import DialogWithGrid from '../../../../../core/ui/dialog/DialogWithGrid';
 import DialogHeader from '../../../../../core/ui/dialog/DialogHeader';
 import FullWidthButton from '../../../../../core/ui/button/FullWidthButton';
 import { InnovationFlowDetails } from '../../../../collaboration/InnovationFlow/InnovationFlow';
+import InnovationFlowVisualizer from '../../../../platform/admin/templates/InnovationTemplates/InnovationFlowVisualizer';
 
 export interface AboutSectionProps extends EntityDashboardContributors, EntityDashboardLeads {
   journeyTypeName: JourneyTypeName;
@@ -174,7 +173,7 @@ export const AboutSection: FC<AboutSectionProps> = ({
             <PageContentBlockHeader title={name} />
             <Tagline>{tagline}</Tagline>
             <TagsComponent tags={tags} variant="filled" loading={loading} />
-            <Actions justifyContent="end">{innovationFlow && <InnovationFlow lifecycle={lifecycle} />}</Actions>
+            <Actions justifyContent="end">{innovationFlow && <InnovationFlowVisualizer states={innovationFlow.states} currentState={innovationFlow.currentState} />}</Actions>
           </PageContentBlock>
           {communityReadAccess && (
             <EntityDashboardLeadsSection

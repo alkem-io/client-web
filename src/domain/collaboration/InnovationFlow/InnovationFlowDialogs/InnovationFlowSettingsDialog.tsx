@@ -13,14 +13,14 @@ import Gutters from '../../../../core/ui/grid/Gutters';
 interface InnovationFlowSettingsDialogProps {
   open?: boolean;
   onClose: () => void;
-  collaborationId: string;
+  collaborationId: string | undefined;
 }
 
 const InnovationFlowSettingsDialog: FC<InnovationFlowSettingsDialogProps> = ({ open = false, onClose, collaborationId }) => {
   const { t } = useTranslation();
 
   const { data, actions, state } = useInnovationFlowSettings({
-    collaborationId
+    collaborationId,
   });
 
   const { innovationFlow, callouts, flowStateAllowedValues } = data;

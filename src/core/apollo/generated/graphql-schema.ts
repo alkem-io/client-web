@@ -176,12 +176,12 @@ export type ActivityLogEntryCalloutLinkCreated = ActivityLogEntry & {
   id: Scalars['UUID'];
   /** The journey where the activity happened */
   journey?: Maybe<Journey>;
-  /** The Link that was created. */
-  link: Link;
   /** The display name of the parent */
   parentDisplayName: Scalars['String'];
   /** The nameID of the parent */
   parentNameID: Scalars['NameID'];
+  /** The Reference that was created. */
+  reference: Reference;
   /** The user that triggered this Activity. */
   triggeredBy: User;
   /** The event type for this Activity. */
@@ -6872,13 +6872,81 @@ export type InnovationFlowSettingsQuery = {
 };
 
 export type InnovationFlowDetailsQueryVariables = Exact<{
-  innovationFlowId: Scalars['UUID'];
+  collaborationId?: Scalars['UUID'];
+  innovationFlowId?: Scalars['UUID'];
+  includeCollaboration?: InputMaybe<Scalars['Boolean']>;
+  includeInnovationFlow?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 export type InnovationFlowDetailsQuery = {
   __typename?: 'Query';
   lookup: {
     __typename?: 'LookupQueryResults';
+    collaboration?:
+      | {
+          __typename?: 'Collaboration';
+          innovationFlow?:
+            | {
+                __typename?: 'InnovationFlow';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  description?: string | undefined;
+                  tagsets?:
+                    | Array<{
+                        __typename?: 'Tagset';
+                        id: string;
+                        name: string;
+                        tags: Array<string>;
+                        allowedValues: Array<string>;
+                        type: TagsetType;
+                      }>
+                    | undefined;
+                  references?:
+                    | Array<{
+                        __typename?: 'Reference';
+                        id: string;
+                        name: string;
+                        description?: string | undefined;
+                        uri: string;
+                      }>
+                    | undefined;
+                  bannerNarrow?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        allowedTypes: Array<string>;
+                        aspectRatio: number;
+                        maxHeight: number;
+                        maxWidth: number;
+                        minHeight: number;
+                        minWidth: number;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                };
+                states: Array<{
+                  __typename?: 'InnovationFlowState';
+                  displayName: string;
+                  description: string;
+                  sortOrder: number;
+                }>;
+                currentState: { __typename?: 'InnovationFlowState'; displayName: string };
+                authorization?:
+                  | {
+                      __typename?: 'Authorization';
+                      id: string;
+                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                    }
+                  | undefined;
+              }
+            | undefined;
+        }
+      | undefined;
     innovationFlow?:
       | {
           __typename?: 'InnovationFlow';
@@ -7094,19 +7162,6 @@ export type UpdateCalloutFlowStateMutation = {
   };
 };
 
-export type UpdateInnovationFlowStateMutationVariables = Exact<{
-  input: UpdateInnovationFlowSelectedStateInput;
-}>;
-
-export type UpdateInnovationFlowStateMutation = {
-  __typename?: 'Mutation';
-  updateInnovationFlowState: {
-    __typename?: 'InnovationFlow';
-    id: string;
-    currentState: { __typename?: 'InnovationFlowState'; displayName: string };
-  };
-};
-
 export type UpdateInnovationFlowStatesFromTemplateMutationVariables = Exact<{
   input: UpdateInnovationFlowFromTemplateInput;
 }>;
@@ -7304,6 +7359,39 @@ export type InnovationFlowTemplateStatesQuery = {
           };
         }
       | undefined;
+  };
+};
+
+export type InnovationFlowQueryVariables = Exact<{
+  innovationFlowId: Scalars['UUID'];
+}>;
+
+export type InnovationFlowQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    innovationFlow?:
+      | {
+          __typename?: 'InnovationFlow';
+          id: string;
+          states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
+          currentState: { __typename?: 'InnovationFlowState'; displayName: string };
+        }
+      | undefined;
+  };
+};
+
+export type UpdateInnovationFlowStateMutationVariables = Exact<{
+  innovationFlowId: Scalars['UUID'];
+  selectedState: Scalars['String'];
+}>;
+
+export type UpdateInnovationFlowStateMutation = {
+  __typename?: 'Mutation';
+  updateInnovationFlowState: {
+    __typename?: 'InnovationFlow';
+    id: string;
+    currentState: { __typename?: 'InnovationFlowState'; displayName: string };
   };
 };
 
@@ -7587,12 +7675,7 @@ export type ActivityCreatedSubscription = {
               profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
             };
           };
-          link: {
-            __typename?: 'Link';
-            id: string;
-            uri: string;
-            profile: { __typename?: 'Profile'; id: string; displayName: string };
-          };
+          link: { __typename?: 'Reference'; id: string; uri: string };
         }
       | {
           __typename: 'ActivityLogEntryCalloutPostComment';
@@ -8094,12 +8177,7 @@ type ActivityLogOnCollaboration_ActivityLogEntryCalloutLinkCreated_Fragment = {
       profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
     };
   };
-  link: {
-    __typename?: 'Link';
-    id: string;
-    uri: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string };
-  };
+  link: { __typename?: 'Reference'; id: string; uri: string };
 };
 
 type ActivityLogOnCollaboration_ActivityLogEntryCalloutPostComment_Fragment = {
@@ -8627,12 +8705,7 @@ export type ActivityLogOnCollaborationQuery = {
             profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
           };
         };
-        link: {
-          __typename?: 'Link';
-          id: string;
-          uri: string;
-          profile: { __typename?: 'Profile'; id: string; displayName: string };
-        };
+        link: { __typename?: 'Reference'; id: string; uri: string };
       }
     | {
         __typename: 'ActivityLogEntryCalloutPostComment';
@@ -9078,12 +9151,7 @@ export type ActivityLogCalloutLinkCreatedFragment = {
       profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
     };
   };
-  link: {
-    __typename?: 'Link';
-    id: string;
-    uri: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string };
-  };
+  link: { __typename?: 'Reference'; id: string; uri: string };
 };
 
 export type ActivityLogCalloutPostCommentFragment = {
@@ -21144,6 +21212,7 @@ export type AboutPageNonMembersQuery = {
                   __typename?: 'InnovationFlow';
                   id: string;
                   currentState: { __typename?: 'InnovationFlowState'; displayName: string };
+                  states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
                 }
               | undefined;
           }
@@ -21214,6 +21283,7 @@ export type AboutPageNonMembersQuery = {
                   __typename?: 'InnovationFlow';
                   id: string;
                   currentState: { __typename?: 'InnovationFlowState'; displayName: string };
+                  states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
                 }
               | undefined;
           }
@@ -21641,6 +21711,33 @@ export type CreateFeedbackOnCommunityContextMutationVariables = Exact<{
 export type CreateFeedbackOnCommunityContextMutation = {
   __typename?: 'Mutation';
   createFeedbackOnCommunityContext: boolean;
+};
+
+export type CollaborationIdentityQueryVariables = Exact<{
+  spaceNameId: Scalars['UUID_NAMEID'];
+  challengeNameId?: InputMaybe<Scalars['UUID_NAMEID']>;
+  opportunityNameId?: InputMaybe<Scalars['UUID_NAMEID']>;
+  isChallenge?: InputMaybe<Scalars['Boolean']>;
+  isOpportunity?: InputMaybe<Scalars['Boolean']>;
+}>;
+
+export type CollaborationIdentityQuery = {
+  __typename?: 'Query';
+  space: {
+    __typename?: 'Space';
+    id: string;
+    collaboration?: { __typename?: 'Collaboration'; id: string } | undefined;
+    challenge?: {
+      __typename?: 'Challenge';
+      id: string;
+      collaboration?: { __typename?: 'Collaboration'; id: string } | undefined;
+    };
+    opportunity?: {
+      __typename?: 'Opportunity';
+      id: string;
+      collaboration?: { __typename?: 'Collaboration'; id: string } | undefined;
+    };
+  };
 };
 
 export type JourneyIdentityQueryVariables = Exact<{
@@ -22949,41 +23046,6 @@ export type OpportunitiesQuery = {
           }>
         | undefined;
     };
-  };
-};
-
-export type OpportunityInnovationFlowQueryVariables = Exact<{
-  opportunityId: Scalars['UUID'];
-}>;
-
-export type OpportunityInnovationFlowQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    opportunity?:
-      | {
-          __typename?: 'Opportunity';
-          id: string;
-          collaboration?:
-            | {
-                __typename?: 'Collaboration';
-                id: string;
-                innovationFlow?:
-                  | {
-                      __typename?: 'InnovationFlow';
-                      id: string;
-                      states: Array<{
-                        __typename?: 'InnovationFlowState';
-                        displayName: string;
-                        description: string;
-                        sortOrder: number;
-                      }>;
-                    }
-                  | undefined;
-              }
-            | undefined;
-        }
-      | undefined;
   };
 };
 
@@ -30071,12 +30133,7 @@ export type LatestContributionsQuery = {
               profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
             };
           };
-          link: {
-            __typename?: 'Link';
-            id: string;
-            uri: string;
-            profile: { __typename?: 'Profile'; id: string; displayName: string };
-          };
+          link: { __typename?: 'Reference'; id: string; uri: string };
         }
       | {
           __typename?: 'ActivityLogEntryCalloutPostComment';

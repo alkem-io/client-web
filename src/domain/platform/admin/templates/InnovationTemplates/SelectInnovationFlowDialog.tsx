@@ -18,7 +18,7 @@ export interface InnovationFlowTemplateProfile {
   };
 }
 export interface InnovationFlowTemplate {
-  states: InnovationFlowState[]; // TODO: create a model for this, not direct graphql type
+  states: InnovationFlowState[];
   id: string;
   profile: InnovationFlowTemplateProfile;
 }

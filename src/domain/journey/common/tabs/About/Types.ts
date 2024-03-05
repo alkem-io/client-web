@@ -26,7 +26,7 @@ export interface AboutSectionProps extends EntityDashboardContributors, EntityDa
   communityId: string | undefined;
   references: ReferenceDetailsFragment[] | undefined;
   metricsItems: MetricItem[];
-  innovationFlow: InnovationFlowDetails;
+  innovationFlow: InnovationFlowDetails | undefined;
   loading?: boolean;
   error?: ApolloError;
 }

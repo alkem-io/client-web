@@ -8,9 +8,20 @@ query InnovationFlowSettings($collaborationId: UUID!) {
     }
   }
 }
-query InnovationFlowDetails($innovationFlowId: UUID!) {
+
+query InnovationFlowDetails(
+  $collaborationId: UUID! = "mockid"
+  $innovationFlowId: UUID! = "mockid"
+  $includeCollaboration: Boolean = false
+  $includeInnovationFlow: Boolean = false
+) {
   lookup {
-    innovationFlow(ID: $innovationFlowId) {
+    collaboration(ID: $collaborationId) @include(if: $includeCollaboration) {
+      innovationFlow {
+        ...InnovationFlowDetails
+      }
+    }
+    innovationFlow(ID: $innovationFlowId) @include(if: $includeInnovationFlow) {
       ...InnovationFlowDetails
     }
   }

@@ -1,8 +1,0 @@
-mutation updateInnovationFlowState($input: UpdateInnovationFlowSelectedStateInput!) {
-  updateInnovationFlowState(innovationFlowStateData: $input) {
-    id
-    currentState {
-      displayName
-    }
-  }
-}

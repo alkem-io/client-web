@@ -13,7 +13,7 @@ import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import { InnovationFlowState } from '../InnovationFlow';
 
 interface InnovationFlowStatesProps {
-  collaborationId: string;
+  collaborationId: string | undefined;
   states: InnovationFlowState[];
   currentState: string;
   selectedState: string;

@@ -13,7 +13,7 @@ import { times } from 'lodash';
 import InnovationFlowPreviewDialog from '../InnovationFlowDialogs/InnovationFlowPreviewDialog';
 
 interface ContributeInnovationFlowBlockProps {
-  collaborationId: string;
+  collaborationId: string | undefined;
   journeyTypeName: JourneyTypeName;
 }
 
@@ -22,9 +22,9 @@ export const ContributeInnovationFlowBlock: FC<ContributeInnovationFlowBlockProp
 
   const { data, loading } = useInnovationFlowBlockQuery({
     variables: {
-
-      collaborationId,
+      collaborationId: collaborationId!,
     },
+    skip: !collaborationId,
   });
 
   const innovationFlow = data?.lookup.collaboration?.innovationFlow;

@@ -2,15 +2,17 @@ import { Grid } from '@mui/material';
 import React, { FC } from 'react';
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import {
-  refetchChallengeInnovationFlowQuery,
+  refetchInnovationFlowQuery,
   refetchInnovationFlowSettingsQuery,
   useChallengeProfileInfoQuery,
   useSpaceInnovationFlowTemplatesQuery,
+  useUpdateInnovationFlowStatesFromTemplateMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import Loading from '../../../../../core/ui/loading/Loading';
 import UpdateInnovationFlow from '../../../../platform/admin/templates/InnovationTemplates/UpdateInnovationFlow';
-import ChallengeLifecycleContainer from '../../containers/ChallengeLifecycleContainer';
+
 import { SelectInnovationFlowFormValuesType } from '../../../../platform/admin/templates/InnovationTemplates/SelectInnovationFlowDialog';
+import InnovationFlowContainer from '../../../../collaboration/InnovationFlow/containers/InnovationFlowContainer';
 
 const ChallengeInnovationFlowView: FC = () => {
   const { challengeNameId = '', spaceNameId = '' } = useUrlParams();
@@ -25,28 +27,25 @@ const ChallengeInnovationFlowView: FC = () => {
     skip: !spaceNameId || !challengeNameId,
   });
   const challenge = challengeProfile?.space?.challenge;
-  const innovationFlowId = challenge?.collaboration?.innovationFlow?.id || ''; // TODO
-  const collaborationId = challenge?.collaboration?.id || ''; // TODO;
+  const collaborationId = challenge?.collaboration?.id;
+  const innovationFlowId = challenge?.collaboration?.innovationFlow?.id;
 
-  const [updateChallengeInnovationFlowTemplate] = useUpdateInnovationFlowLifecycleTemplateMutation({
+
+  const [updateChallengeInnovationFlow] = useUpdateInnovationFlowStatesFromTemplateMutation({
     refetchQueries: [
-      refetchChallengeInnovationFlowQuery({ challengeId }),
-      refetchInnovationFlowSettingsQuery({
-        collaborationId,
-      }),
+      refetchInnovationFlowQuery({ innovationFlowId: innovationFlowId! }),
+      refetchInnovationFlowSettingsQuery({ collaborationId: collaborationId! }),
     ],
     awaitRefetchQueries: true,
   });
 
   const onSubmit = async (values: SelectInnovationFlowFormValuesType) => {
-    const { innovationFlowTemplateID } = values;
-
     if (innovationFlowId) {
-      updateChallengeInnovationFlowTemplate({
+      updateChallengeInnovationFlow({
         variables: {
           input: {
             innovationFlowID: innovationFlowId,
-            innovationFlowTemplateID,
+            inovationFlowTemplateID: values.innovationFlowTemplateID,
           },
         },
       });
@@ -55,7 +54,7 @@ const ChallengeInnovationFlowView: FC = () => {
 
   return (
     <Grid container spacing={2}>
-      <ChallengeLifecycleContainer spaceNameId={spaceNameId} challengeNameId={challengeNameId}>
+      <InnovationFlowContainer innovationFlowId={innovationFlowId}>
         {({ loading, ...provided }) => {
           if (loading || !innovationFlowId) {
             return <Loading text="Loading" />;
@@ -70,7 +69,7 @@ const ChallengeInnovationFlowView: FC = () => {
             />
           );
         }}
-      </ChallengeLifecycleContainer>
+      </InnovationFlowContainer>
     </Grid>
   );
 };

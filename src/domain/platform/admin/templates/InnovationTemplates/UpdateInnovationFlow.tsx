@@ -1,23 +1,29 @@
 import React, { FC, useCallback, useState } from 'react';
 import { Button, Grid, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { AuthorizationPrivilege, InnovationFlow } from '../../../../../core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege } from '../../../../../core/apollo/generated/graphql-schema';
 import SelectInnovationFlowDialog, {
   InnovationFlowTemplate,
   SelectInnovationFlowFormValuesType,
 } from './SelectInnovationFlowDialog';
 import InnovationFlowUpdateConfirmDialog from './InnovationFlowUpdateConfirmDialog';
 import { useInnovationFlowAuthorizationQuery } from '../../../../../core/apollo/generated/apollo-hooks';
+import { InnovationFlowState } from '../../../../collaboration/InnovationFlow/InnovationFlow';
+import InnovationFlowVisualizer from './InnovationFlowVisualizer';
 
 interface UpdateInnovationFlowProps {
-  innovationFlow: InnovationFlow | undefined;
+  states: InnovationFlowState[] | undefined;
+  currentState: string | undefined;
+  onSetNewState: (selectedState: string) => Promise<unknown> | undefined;
   entityId: string;
   innovationFlowTemplates: InnovationFlowTemplate[] | undefined;
   onSubmit: (formData: SelectInnovationFlowFormValuesType) => void;
 }
 
 const UpdateInnovationFlow: FC<UpdateInnovationFlowProps> = ({
-  innovationFlow,
+  states,
+  currentState,
+  onSetNewState,
   entityId,
   innovationFlowTemplates,
   onSubmit,
@@ -31,10 +37,12 @@ const UpdateInnovationFlow: FC<UpdateInnovationFlowProps> = ({
   const openConfirmationDialog = useCallback(() => setConfirmationDialogOpen(true), []);
   const closeConfirmationDialog = useCallback(() => setConfirmationDialogOpen(false), []);
 
-  // TODO: not sure what this logic was doing before.
-  const innovationFlowTemplate = innovationFlowTemplates?.find(
-    template => innovationFlow && template.profile.displayName
-  );
+  //!! TODO: This was looking for the innovationFlowTemplate by name. I don't think this is a correct way to do it
+  const innovationFlowTemplate = innovationFlowTemplates?.[0];
+  // .find(
+  //   template => innovationFlow && template.profile.displayName
+  // );
+
   const { data } = useInnovationFlowAuthorizationQuery({
     variables: { innovationFlowId: entityId! },
     skip: !entityId,
@@ -72,6 +80,7 @@ const UpdateInnovationFlow: FC<UpdateInnovationFlowProps> = ({
             }`}
         </Typography>
       )}
+      <InnovationFlowVisualizer states={states} currentState={currentState} />
       {privileges.canUpdate && (
         <>
           <Grid container>

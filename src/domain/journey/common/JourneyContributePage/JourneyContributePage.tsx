@@ -15,7 +15,7 @@ const JourneyContributePage = ({ journeyTypeName }: ContributePageProps) => {
   return (
     <PageLayout currentSection={EntityPageSection.Contribute}>
       <JourneyContributePageContainer>
-        {({ innovationFlowStates, callouts, spaceNameId, challengeNameId, opportunityNameId }) => (
+        {({ innovationFlowStates, callouts, spaceNameId, challengeNameId, opportunityNameId, collaborationId }) => (
           <JourneyCalloutsTabView
             journeyTypeName={journeyTypeName}
             {...innovationFlowStates}
@@ -23,6 +23,7 @@ const JourneyContributePage = ({ journeyTypeName }: ContributePageProps) => {
             spaceNameId={spaceNameId}
             challengeNameId={challengeNameId}
             opportunityNameId={opportunityNameId}
+            collaborationId={collaborationId}
           />
         )}
       </JourneyContributePageContainer>

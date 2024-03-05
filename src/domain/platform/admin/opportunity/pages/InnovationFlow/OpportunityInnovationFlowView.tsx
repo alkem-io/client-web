@@ -2,15 +2,15 @@ import { Grid } from '@mui/material';
 import React, { FC } from 'react';
 import { useUrlParams } from '../../../../../../core/routing/useUrlParams';
 import {
-  refetchOpportunityInnovationFlowQuery,
   useSpaceInnovationFlowTemplatesQuery,
   useOpportunityProfileInfoQuery,
   refetchInnovationFlowSettingsQuery,
-  useUpdateInnovationFlowTemplateMutation,
+  useUpdateInnovationFlowStatesFromTemplateMutation,
+  refetchInnovationFlowQuery,
 } from '../../../../../../core/apollo/generated/apollo-hooks';
 import Loading from '../../../../../../core/ui/loading/Loading';
 import UpdateInnovationFlow from '../../../templates/InnovationTemplates/UpdateInnovationFlow';
-import OpportunityLifecycleContainer from '../../../../../journey/opportunity/containers/OpportunityLifecycleContainer';
+import InnovationFlowContainer from '../../../../../collaboration/InnovationFlow/containers/InnovationFlowContainer';
 import { SelectInnovationFlowFormValuesType } from '../../../templates/InnovationTemplates/SelectInnovationFlowDialog';
 
 const OpportunityInnovationFlowView: FC = () => {
@@ -27,34 +27,33 @@ const OpportunityInnovationFlowView: FC = () => {
   });
 
   const opportunity = opportunityProfile?.space?.opportunity;
-  const opportunityId = opportunity?.id || ''; // TODO
-  const innovationFlowId = opportunity?.collaboration?.innovationFlow?.id || ''; // TODO
-  const collaborationId = opportunity?.collaboration?.id || ''; // TODO;
+  const collaborationId = opportunity?.collaboration?.id;
+  const innovationFlowId = opportunity?.collaboration?.innovationFlow?.id;
 
-  const [updateOpportunityInnovationFlow] = useUpdateInnovationFlowTemplateMutation({
+  const [updateOpportunityInnovationFlow] = useUpdateInnovationFlowStatesFromTemplateMutation({
     refetchQueries: [
-      refetchOpportunityInnovationFlowQuery({ opportunityId: opportunityNameId }),
-      refetchInnovationFlowSettingsQuery({ collaborationId }),
+      refetchInnovationFlowQuery({ innovationFlowId: innovationFlowId! }),
+      refetchInnovationFlowSettingsQuery({ collaborationId: collaborationId! }),
     ],
     awaitRefetchQueries: true,
   });
 
   const onSubmit = async (values: SelectInnovationFlowFormValuesType) => {
-    const { innovationFlowTemplateID } = values;
-
     if (innovationFlowId) {
-      //!! TODO: Update the innovation flow states of this opportunity copying them from the selected template
       updateOpportunityInnovationFlow({
         variables: {
-          templateId: innovationFlowTemplateID,
-        },
+          input: {
+            innovationFlowID: innovationFlowId,
+            inovationFlowTemplateID: values.innovationFlowTemplateID,
+          },
+        }
       });
     }
   };
 
   return (
     <Grid container spacing={2}>
-      <OpportunityLifecycleContainer opportunityId={opportunityId}>
+      <InnovationFlowContainer innovationFlowId={innovationFlowId}>
         {({ loading, ...provided }) => {
           if (loading || !innovationFlowId) {
             return <Loading text="Loading" />;
@@ -69,7 +68,7 @@ const OpportunityInnovationFlowView: FC = () => {
             />
           );
         }}
-      </OpportunityLifecycleContainer>
+      </InnovationFlowContainer>
     </Grid>
   );
 };

@@ -83,6 +83,10 @@ query AboutPageNonMembers(
           currentState {
             displayName
           }
+          states {
+            displayName
+            description
+          }
         }
       }
       context {
@@ -120,6 +124,10 @@ query AboutPageNonMembers(
           id
           currentState {
             displayName
+          }
+          states {
+            displayName
+            description
           }
         }
       }

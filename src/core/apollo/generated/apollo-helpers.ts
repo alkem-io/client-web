@@ -106,9 +106,9 @@ export type ActivityLogEntryCalloutLinkCreatedKeySpecifier = (
   | 'description'
   | 'id'
   | 'journey'
-  | 'link'
   | 'parentDisplayName'
   | 'parentNameID'
+  | 'reference'
   | 'triggeredBy'
   | 'type'
   | ActivityLogEntryCalloutLinkCreatedKeySpecifier
@@ -121,9 +121,9 @@ export type ActivityLogEntryCalloutLinkCreatedFieldPolicy = {
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   journey?: FieldPolicy<any> | FieldReadFunction<any>;
-  link?: FieldPolicy<any> | FieldReadFunction<any>;
   parentDisplayName?: FieldPolicy<any> | FieldReadFunction<any>;
   parentNameID?: FieldPolicy<any> | FieldReadFunction<any>;
+  reference?: FieldPolicy<any> | FieldReadFunction<any>;
   triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };

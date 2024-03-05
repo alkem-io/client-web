@@ -1,6 +1,6 @@
 export interface InnovationFlowDetails {
   id: string;
-  states: InnovationFlowState[];
+  states: InnovationFlowState[] | undefined;
   currentState: string | undefined;
 }
 

@@ -209,12 +209,8 @@ export const ActivityLogCalloutLinkCreatedFragmentDoc = gql`
         }
       }
     }
-    link {
+    link: reference {
       id
-      profile {
-        id
-        displayName
-      }
       uri
     }
   }
@@ -4983,9 +4979,19 @@ export function refetchInnovationFlowSettingsQuery(variables: SchemaTypes.Innova
 }
 
 export const InnovationFlowDetailsDocument = gql`
-  query InnovationFlowDetails($innovationFlowId: UUID!) {
+  query InnovationFlowDetails(
+    $collaborationId: UUID! = "mockid"
+    $innovationFlowId: UUID! = "mockid"
+    $includeCollaboration: Boolean = false
+    $includeInnovationFlow: Boolean = false
+  ) {
     lookup {
-      innovationFlow(ID: $innovationFlowId) {
+      collaboration(ID: $collaborationId) @include(if: $includeCollaboration) {
+        innovationFlow {
+          ...InnovationFlowDetails
+        }
+      }
+      innovationFlow(ID: $innovationFlowId) @include(if: $includeInnovationFlow) {
         ...InnovationFlowDetails
       }
     }
@@ -5005,12 +5011,15 @@ export const InnovationFlowDetailsDocument = gql`
  * @example
  * const { data, loading, error } = useInnovationFlowDetailsQuery({
  *   variables: {
+ *      collaborationId: // value for 'collaborationId'
  *      innovationFlowId: // value for 'innovationFlowId'
+ *      includeCollaboration: // value for 'includeCollaboration'
+ *      includeInnovationFlow: // value for 'includeInnovationFlow'
  *   },
  * });
  */
 export function useInnovationFlowDetailsQuery(
-  baseOptions: Apollo.QueryHookOptions<
+  baseOptions?: Apollo.QueryHookOptions<
     SchemaTypes.InnovationFlowDetailsQuery,
     SchemaTypes.InnovationFlowDetailsQueryVariables
   >
@@ -5041,7 +5050,7 @@ export type InnovationFlowDetailsQueryResult = Apollo.QueryResult<
   SchemaTypes.InnovationFlowDetailsQuery,
   SchemaTypes.InnovationFlowDetailsQueryVariables
 >;
-export function refetchInnovationFlowDetailsQuery(variables: SchemaTypes.InnovationFlowDetailsQueryVariables) {
+export function refetchInnovationFlowDetailsQuery(variables?: SchemaTypes.InnovationFlowDetailsQueryVariables) {
   return { query: InnovationFlowDetailsDocument, variables: variables };
 }
 
@@ -5154,58 +5163,6 @@ export type UpdateCalloutFlowStateMutationResult = Apollo.MutationResult<SchemaT
 export type UpdateCalloutFlowStateMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateCalloutFlowStateMutation,
   SchemaTypes.UpdateCalloutFlowStateMutationVariables
->;
-export const UpdateInnovationFlowStateDocument = gql`
-  mutation updateInnovationFlowState($input: UpdateInnovationFlowSelectedStateInput!) {
-    updateInnovationFlowState(innovationFlowStateData: $input) {
-      id
-      currentState {
-        displayName
-      }
-    }
-  }
-`;
-export type UpdateInnovationFlowStateMutationFn = Apollo.MutationFunction<
-  SchemaTypes.UpdateInnovationFlowStateMutation,
-  SchemaTypes.UpdateInnovationFlowStateMutationVariables
->;
-
-/**
- * __useUpdateInnovationFlowStateMutation__
- *
- * To run a mutation, you first call `useUpdateInnovationFlowStateMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateInnovationFlowStateMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateInnovationFlowStateMutation, { data, loading, error }] = useUpdateInnovationFlowStateMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useUpdateInnovationFlowStateMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.UpdateInnovationFlowStateMutation,
-    SchemaTypes.UpdateInnovationFlowStateMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.UpdateInnovationFlowStateMutation,
-    SchemaTypes.UpdateInnovationFlowStateMutationVariables
-  >(UpdateInnovationFlowStateDocument, options);
-}
-
-export type UpdateInnovationFlowStateMutationHookResult = ReturnType<typeof useUpdateInnovationFlowStateMutation>;
-export type UpdateInnovationFlowStateMutationResult =
-  Apollo.MutationResult<SchemaTypes.UpdateInnovationFlowStateMutation>;
-export type UpdateInnovationFlowStateMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.UpdateInnovationFlowStateMutation,
-  SchemaTypes.UpdateInnovationFlowStateMutationVariables
 >;
 export const UpdateInnovationFlowStatesFromTemplateDocument = gql`
   mutation updateInnovationFlowStatesFromTemplate($input: UpdateInnovationFlowFromTemplateInput!) {
@@ -5506,6 +5463,124 @@ export function refetchInnovationFlowTemplateStatesQuery(
   return { query: InnovationFlowTemplateStatesDocument, variables: variables };
 }
 
+export const InnovationFlowDocument = gql`
+  query InnovationFlow($innovationFlowId: UUID!) {
+    lookup {
+      innovationFlow(ID: $innovationFlowId) {
+        id
+        states {
+          displayName
+          description
+        }
+        currentState {
+          displayName
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useInnovationFlowQuery__
+ *
+ * To run a query within a React component, call `useInnovationFlowQuery` and pass it any options that fit your needs.
+ * When your component renders, `useInnovationFlowQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useInnovationFlowQuery({
+ *   variables: {
+ *      innovationFlowId: // value for 'innovationFlowId'
+ *   },
+ * });
+ */
+export function useInnovationFlowQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.InnovationFlowQuery, SchemaTypes.InnovationFlowQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.InnovationFlowQuery, SchemaTypes.InnovationFlowQueryVariables>(
+    InnovationFlowDocument,
+    options
+  );
+}
+
+export function useInnovationFlowLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.InnovationFlowQuery, SchemaTypes.InnovationFlowQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.InnovationFlowQuery, SchemaTypes.InnovationFlowQueryVariables>(
+    InnovationFlowDocument,
+    options
+  );
+}
+
+export type InnovationFlowQueryHookResult = ReturnType<typeof useInnovationFlowQuery>;
+export type InnovationFlowLazyQueryHookResult = ReturnType<typeof useInnovationFlowLazyQuery>;
+export type InnovationFlowQueryResult = Apollo.QueryResult<
+  SchemaTypes.InnovationFlowQuery,
+  SchemaTypes.InnovationFlowQueryVariables
+>;
+export function refetchInnovationFlowQuery(variables: SchemaTypes.InnovationFlowQueryVariables) {
+  return { query: InnovationFlowDocument, variables: variables };
+}
+
+export const UpdateInnovationFlowStateDocument = gql`
+  mutation updateInnovationFlowState($innovationFlowId: UUID!, $selectedState: String!) {
+    updateInnovationFlowState(
+      innovationFlowStateData: { innovationFlowID: $innovationFlowId, selectedState: $selectedState }
+    ) {
+      id
+      currentState {
+        displayName
+      }
+    }
+  }
+`;
+export type UpdateInnovationFlowStateMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateInnovationFlowStateMutation,
+  SchemaTypes.UpdateInnovationFlowStateMutationVariables
+>;
+
+/**
+ * __useUpdateInnovationFlowStateMutation__
+ *
+ * To run a mutation, you first call `useUpdateInnovationFlowStateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateInnovationFlowStateMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateInnovationFlowStateMutation, { data, loading, error }] = useUpdateInnovationFlowStateMutation({
+ *   variables: {
+ *      innovationFlowId: // value for 'innovationFlowId'
+ *      selectedState: // value for 'selectedState'
+ *   },
+ * });
+ */
+export function useUpdateInnovationFlowStateMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateInnovationFlowStateMutation,
+    SchemaTypes.UpdateInnovationFlowStateMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.UpdateInnovationFlowStateMutation,
+    SchemaTypes.UpdateInnovationFlowStateMutationVariables
+  >(UpdateInnovationFlowStateDocument, options);
+}
+
+export type UpdateInnovationFlowStateMutationHookResult = ReturnType<typeof useUpdateInnovationFlowStateMutation>;
+export type UpdateInnovationFlowStateMutationResult =
+  Apollo.MutationResult<SchemaTypes.UpdateInnovationFlowStateMutation>;
+export type UpdateInnovationFlowStateMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateInnovationFlowStateMutation,
+  SchemaTypes.UpdateInnovationFlowStateMutationVariables
+>;
 export const InnovationPackProfilePageDocument = gql`
   query InnovationPackProfilePage($innovationPackId: UUID_NAMEID!) {
     platform {
@@ -17397,6 +17472,10 @@ export const AboutPageNonMembersDocument = gql`
             currentState {
               displayName
             }
+            states {
+              displayName
+              description
+            }
           }
         }
         context {
@@ -17434,6 +17513,10 @@ export const AboutPageNonMembersDocument = gql`
             id
             currentState {
               displayName
+            }
+            states {
+              displayName
+              description
             }
           }
         }
@@ -17750,6 +17833,91 @@ export type CreateFeedbackOnCommunityContextMutationOptions = Apollo.BaseMutatio
   SchemaTypes.CreateFeedbackOnCommunityContextMutation,
   SchemaTypes.CreateFeedbackOnCommunityContextMutationVariables
 >;
+export const CollaborationIdentityDocument = gql`
+  query CollaborationIdentity(
+    $spaceNameId: UUID_NAMEID!
+    $challengeNameId: UUID_NAMEID = "_"
+    $opportunityNameId: UUID_NAMEID = "_"
+    $isChallenge: Boolean = false
+    $isOpportunity: Boolean = false
+  ) {
+    space(ID: $spaceNameId) {
+      id
+      collaboration {
+        id
+      }
+      challenge(ID: $challengeNameId) @include(if: $isChallenge) {
+        id
+        collaboration {
+          id
+        }
+      }
+      opportunity(ID: $opportunityNameId) @include(if: $isOpportunity) {
+        id
+        collaboration {
+          id
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useCollaborationIdentityQuery__
+ *
+ * To run a query within a React component, call `useCollaborationIdentityQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCollaborationIdentityQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCollaborationIdentityQuery({
+ *   variables: {
+ *      spaceNameId: // value for 'spaceNameId'
+ *      challengeNameId: // value for 'challengeNameId'
+ *      opportunityNameId: // value for 'opportunityNameId'
+ *      isChallenge: // value for 'isChallenge'
+ *      isOpportunity: // value for 'isOpportunity'
+ *   },
+ * });
+ */
+export function useCollaborationIdentityQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.CollaborationIdentityQuery,
+    SchemaTypes.CollaborationIdentityQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.CollaborationIdentityQuery, SchemaTypes.CollaborationIdentityQueryVariables>(
+    CollaborationIdentityDocument,
+    options
+  );
+}
+
+export function useCollaborationIdentityLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CollaborationIdentityQuery,
+    SchemaTypes.CollaborationIdentityQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.CollaborationIdentityQuery, SchemaTypes.CollaborationIdentityQueryVariables>(
+    CollaborationIdentityDocument,
+    options
+  );
+}
+
+export type CollaborationIdentityQueryHookResult = ReturnType<typeof useCollaborationIdentityQuery>;
+export type CollaborationIdentityLazyQueryHookResult = ReturnType<typeof useCollaborationIdentityLazyQuery>;
+export type CollaborationIdentityQueryResult = Apollo.QueryResult<
+  SchemaTypes.CollaborationIdentityQuery,
+  SchemaTypes.CollaborationIdentityQueryVariables
+>;
+export function refetchCollaborationIdentityQuery(variables: SchemaTypes.CollaborationIdentityQueryVariables) {
+  return { query: CollaborationIdentityDocument, variables: variables };
+}
+
 export const JourneyIdentityDocument = gql`
   query JourneyIdentity(
     $spaceNameId: UUID_NAMEID!
@@ -18811,79 +18979,6 @@ export type OpportunitiesQueryResult = Apollo.QueryResult<
 >;
 export function refetchOpportunitiesQuery(variables: SchemaTypes.OpportunitiesQueryVariables) {
   return { query: OpportunitiesDocument, variables: variables };
-}
-
-export const OpportunityInnovationFlowDocument = gql`
-  query opportunityInnovationFlow($opportunityId: UUID!) {
-    lookup {
-      opportunity(ID: $opportunityId) {
-        id
-        collaboration {
-          id
-          innovationFlow {
-            id
-            states {
-              displayName
-              description
-              sortOrder
-            }
-          }
-        }
-      }
-    }
-  }
-`;
-
-/**
- * __useOpportunityInnovationFlowQuery__
- *
- * To run a query within a React component, call `useOpportunityInnovationFlowQuery` and pass it any options that fit your needs.
- * When your component renders, `useOpportunityInnovationFlowQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useOpportunityInnovationFlowQuery({
- *   variables: {
- *      opportunityId: // value for 'opportunityId'
- *   },
- * });
- */
-export function useOpportunityInnovationFlowQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.OpportunityInnovationFlowQuery,
-    SchemaTypes.OpportunityInnovationFlowQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    SchemaTypes.OpportunityInnovationFlowQuery,
-    SchemaTypes.OpportunityInnovationFlowQueryVariables
-  >(OpportunityInnovationFlowDocument, options);
-}
-
-export function useOpportunityInnovationFlowLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.OpportunityInnovationFlowQuery,
-    SchemaTypes.OpportunityInnovationFlowQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.OpportunityInnovationFlowQuery,
-    SchemaTypes.OpportunityInnovationFlowQueryVariables
-  >(OpportunityInnovationFlowDocument, options);
-}
-
-export type OpportunityInnovationFlowQueryHookResult = ReturnType<typeof useOpportunityInnovationFlowQuery>;
-export type OpportunityInnovationFlowLazyQueryHookResult = ReturnType<typeof useOpportunityInnovationFlowLazyQuery>;
-export type OpportunityInnovationFlowQueryResult = Apollo.QueryResult<
-  SchemaTypes.OpportunityInnovationFlowQuery,
-  SchemaTypes.OpportunityInnovationFlowQueryVariables
->;
-export function refetchOpportunityInnovationFlowQuery(variables: SchemaTypes.OpportunityInnovationFlowQueryVariables) {
-  return { query: OpportunityInnovationFlowDocument, variables: variables };
 }
 
 export const OpportunityProfileInfoDocument = gql`

@@ -10,7 +10,7 @@ import useInnovationFlowSettings from './useInnovationFlowSettings';
 import LifecycleStateSelector from '../LifecycleState/LifecycleStateSelector';
 
 interface InnovationFlowPreviewDialogProps {
-  collaborationId: string;
+  collaborationId: string | undefined;
   open?: boolean;
   onClose: () => void;
 }

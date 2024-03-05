@@ -14,14 +14,14 @@ import { TemplateBase } from '../../templates/CollaborationTemplatesLibrary/Temp
 import { TemplateWithInnovationPack } from '../../../platform/admin/templates/InnovationPacks/ImportTemplatesDialogGalleryStep';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 import CollaborationTemplatesLibraryButton from '../../templates/CollaborationTemplatesLibrary/CollaborationTemplatesLibraryButton';
+import { InnovationFlowState } from '../InnovationFlow';
 
 interface InnovationFlowTemplate extends TemplateBase {
-  definition: string;
+  states: InnovationFlowState[];
 }
 
 export interface InnovationFlowTemplatesLibraryProps {
   onImportTemplate: (template: Identifiable) => void;
-
   disabled?: boolean;
 }
 

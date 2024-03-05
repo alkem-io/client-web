@@ -18,7 +18,7 @@ import JourneyCalloutsListItemTitle from './JourneyCalloutsListItemTitle';
 import { InnovationFlowState } from '../../InnovationFlow/InnovationFlow';
 
 interface JourneyCalloutsTabViewProps extends JourneyLocation {
-  collaborationId: string;
+  collaborationId: string | undefined;
   innovationFlowStates: InnovationFlowState[] | undefined;
   currentInnovationFlowState: string | undefined;
   canEditInnovationFlow: boolean | undefined;

@@ -1,4 +1,4 @@
-query JourneyIdentity(
+query CollaborationIdentity(
   $spaceNameId: UUID_NAMEID!
   $challengeNameId: UUID_NAMEID = "_"
   $opportunityNameId: UUID_NAMEID = "_"
@@ -7,11 +7,20 @@ query JourneyIdentity(
 ) {
   space(ID: $spaceNameId) {
     id
+    collaboration {
+      id
+    }
     challenge(ID: $challengeNameId) @include(if: $isChallenge) {
       id
+      collaboration {
+        id
+      }
     }
     opportunity(ID: $opportunityNameId) @include(if: $isOpportunity) {
       id
+      collaboration {
+        id
+      }
     }
   }
 }

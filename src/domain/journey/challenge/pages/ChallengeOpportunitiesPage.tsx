@@ -18,7 +18,7 @@ import ChallengePageLayout from '../layout/ChallengePageLayout';
 import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
 import { CalloutDisplayLocation, CommunityMembershipStatus } from '../../../../core/apollo/generated/graphql-schema';
 
-export interface ChallengeOpportunitiesPageProps {}
+export interface ChallengeOpportunitiesPageProps { }
 
 const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
   const { t } = useTranslation();
@@ -73,7 +73,7 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
                 displayName={opportunity.profile.displayName}
                 tagline={opportunity.profile.tagline!}
                 vision={opportunity.context?.vision!}
-                innovationFlowState={opportunity.innovationFlow?.lifecycle?.state}
+                innovationFlowState={opportunity.collaboration?.innovationFlow?.currentState.displayName}
                 tags={opportunity.profile.tagset?.tags!}
                 banner={opportunity.profile.cardBanner}
                 journeyUri={buildOpportunityUrl(spaceNameId, challengeNameId, opportunity.nameID)}

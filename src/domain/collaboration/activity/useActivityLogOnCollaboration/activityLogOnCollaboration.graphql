@@ -147,12 +147,13 @@ fragment ActivityLogCalloutLinkCreated on ActivityLogEntryCalloutLinkCreated {
       }
     }
   }
-  link {
+  link: reference {
+    # TODO//!!: link {
     id
-    profile {
-      id
-      displayName
-    }
+    # profile {
+    #   id
+    #   displayName
+    # }
     uri
   }
 }
