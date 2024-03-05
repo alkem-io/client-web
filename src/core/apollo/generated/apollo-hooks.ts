@@ -464,54 +464,8 @@ export const WhiteboardProfileFragmentDoc = gql`
   ${VisualFullFragmentDoc}
   ${TagsetDetailsFragmentDoc}
 `;
-export const CheckoutDetailsFragmentDoc = gql`
-  fragment CheckoutDetails on WhiteboardCheckout {
-    id
-    lockedBy
-    status
-    lifecycle {
-      id
-      nextEvents
-    }
-    authorization {
-      id
-      myPrivileges
-    }
-  }
-`;
 export const WhiteboardDetailsFragmentDoc = gql`
   fragment WhiteboardDetails on Whiteboard {
-    id
-    nameID
-    createdDate
-    profile {
-      ...WhiteboardProfile
-    }
-    authorization {
-      id
-      myPrivileges
-      anonymousReadAccess
-    }
-    checkout {
-      ...CheckoutDetails
-    }
-    createdBy {
-      id
-      profile {
-        id
-        displayName
-        visual(type: AVATAR) {
-          id
-          uri
-        }
-      }
-    }
-  }
-  ${WhiteboardProfileFragmentDoc}
-  ${CheckoutDetailsFragmentDoc}
-`;
-export const WhiteboardRtDetailsFragmentDoc = gql`
-  fragment WhiteboardRtDetails on WhiteboardRt {
     id
     nameID
     createdDate
@@ -650,9 +604,6 @@ export const CalloutFragmentDoc = gql`
       whiteboard {
         ...WhiteboardDetails
       }
-      whiteboardRt {
-        ...WhiteboardRtDetails
-      }
     }
     contributionPolicy {
       state
@@ -665,9 +616,6 @@ export const CalloutFragmentDoc = gql`
     sortOrder
     activity
     contributions {
-      whiteboard {
-        ...WhiteboardDetails
-      }
       link {
         ...LinkDetailsWithAuthorization
       }
@@ -684,7 +632,6 @@ export const CalloutFragmentDoc = gql`
   ${TagsetDetailsFragmentDoc}
   ${ReferenceDetailsFragmentDoc}
   ${WhiteboardDetailsFragmentDoc}
-  ${WhiteboardRtDetailsFragmentDoc}
   ${LinkDetailsWithAuthorizationFragmentDoc}
   ${CommentsWithMessagesFragmentDoc}
 `;
@@ -707,6 +654,21 @@ export const VisualUriFragmentDoc = gql`
     uri
     name
   }
+`;
+export const WhiteboardCollectionCalloutCardFragmentDoc = gql`
+  fragment WhiteboardCollectionCalloutCard on Whiteboard {
+    id
+    profile {
+      id
+      url
+      displayName
+      visual(type: CARD) {
+        ...VisualUri
+      }
+    }
+    createdDate
+  }
+  ${VisualUriFragmentDoc}
 `;
 export const PostDashboardFragmentDoc = gql`
   fragment PostDashboard on Post {
@@ -987,12 +949,6 @@ export const WhiteboardContentFragmentDoc = gql`
     content
   }
 `;
-export const WhiteboardRtContentFragmentDoc = gql`
-  fragment WhiteboardRtContent on WhiteboardRt {
-    id
-    content
-  }
-`;
 export const CreateWhiteboardWhiteboardTemplateFragmentDoc = gql`
   fragment CreateWhiteboardWhiteboardTemplate on WhiteboardTemplate {
     id
@@ -1045,14 +1001,13 @@ export const CollaborationWithWhiteboardDetailsFragmentDoc = gql`
         }
       }
       framing {
-        whiteboardRt {
-          ...WhiteboardRtDetails
+        whiteboard {
+          ...WhiteboardDetails
         }
       }
     }
   }
   ${WhiteboardDetailsFragmentDoc}
-  ${WhiteboardRtDetailsFragmentDoc}
 `;
 export const LinkDetailsFragmentDoc = gql`
   fragment LinkDetails on Link {
@@ -1877,6 +1832,14 @@ export const UserRolesDetailsFragmentDoc = gql`
     }
   }
 `;
+export const ContextDetailsProviderFragmentDoc = gql`
+  fragment ContextDetailsProvider on Context {
+    id
+    vision
+    impact
+    who
+  }
+`;
 export const InnovationHubProfileFragmentDoc = gql`
   fragment InnovationHubProfile on Profile {
     id
@@ -2510,6 +2473,45 @@ export const NewOpportunityFragmentDoc = gql`
     }
   }
 `;
+export const SpaceCardFragmentDoc = gql`
+  fragment SpaceCard on Space {
+    id
+    profile {
+      id
+      url
+      displayName
+      tagline
+      tagset {
+        ...TagsetDetails
+      }
+      cardBanner: visual(type: CARD) {
+        ...VisualUri
+      }
+    }
+    authorization {
+      id
+      anonymousReadAccess
+    }
+    metrics {
+      name
+      value
+    }
+    community {
+      id
+      myMembershipStatus
+    }
+    context {
+      id
+      vision
+    }
+    license {
+      id
+      visibility
+    }
+  }
+  ${TagsetDetailsFragmentDoc}
+  ${VisualUriFragmentDoc}
+`;
 export const CommunityPageCommunityFragmentDoc = gql`
   fragment CommunityPageCommunity on Community {
     id
@@ -2754,6 +2756,7 @@ export const InnovationFlowTemplateCardFragmentDoc = gql`
     profile {
       ...TemplateCardProfileInfo
     }
+    definition
   }
   ${TemplateCardProfileInfoFragmentDoc}
 `;
@@ -2828,53 +2831,6 @@ export const ChallengesOnSpaceFragmentDoc = gql`
     }
   }
   ${ChallengeCardFragmentDoc}
-`;
-export const ContextDetailsProviderFragmentDoc = gql`
-  fragment ContextDetailsProvider on Context {
-    id
-    vision
-    impact
-    who
-  }
-`;
-export const SpaceDetailsProviderFragmentDoc = gql`
-  fragment SpaceDetailsProvider on Space {
-    id
-    nameID
-    profile {
-      id
-      displayName
-      tagline
-      tagset {
-        ...TagsetDetails
-      }
-      cardBanner: visual(type: CARD) {
-        ...VisualUri
-      }
-    }
-    authorization {
-      id
-      anonymousReadAccess
-    }
-    metrics {
-      name
-      value
-    }
-    community {
-      id
-      myMembershipStatus
-    }
-    context {
-      ...ContextDetailsProvider
-    }
-    license {
-      id
-      visibility
-    }
-  }
-  ${TagsetDetailsFragmentDoc}
-  ${VisualUriFragmentDoc}
-  ${ContextDetailsProviderFragmentDoc}
 `;
 export const AdminSpaceFragmentDoc = gql`
   fragment AdminSpace on Space {
@@ -3484,9 +3440,6 @@ export const CalloutTemplatePreviewFragmentDoc = gql`
       whiteboard {
         ...WhiteboardDetails
       }
-      whiteboardRt {
-        ...WhiteboardRtDetails
-      }
     }
     contributionPolicy {
       state
@@ -3499,7 +3452,6 @@ export const CalloutTemplatePreviewFragmentDoc = gql`
   }
   ${TagsetDetailsFragmentDoc}
   ${WhiteboardDetailsFragmentDoc}
-  ${WhiteboardRtDetailsFragmentDoc}
 `;
 export const EventProfileFragmentDoc = gql`
   fragment EventProfile on Profile {
@@ -6405,10 +6357,6 @@ export const CalloutTemplateContentDocument = gql`
             ...WhiteboardDetails
             ...WhiteboardContent
           }
-          whiteboardRt {
-            ...WhiteboardRtDetails
-            ...WhiteboardRtContent
-          }
         }
         contributionPolicy {
           state
@@ -6426,8 +6374,6 @@ export const CalloutTemplateContentDocument = gql`
   ${ReferenceDetailsFragmentDoc}
   ${WhiteboardDetailsFragmentDoc}
   ${WhiteboardContentFragmentDoc}
-  ${WhiteboardRtDetailsFragmentDoc}
-  ${WhiteboardRtContentFragmentDoc}
 `;
 
 /**
@@ -6812,10 +6758,10 @@ export type UpdateCalloutMutationOptions = Apollo.BaseMutationOptions<
 export const UpdateCalloutVisibilityDocument = gql`
   mutation UpdateCalloutVisibility($calloutData: UpdateCalloutVisibilityInput!) {
     updateCalloutVisibility(calloutData: $calloutData) {
-      id
-      visibility
+      ...Callout
     }
   }
+  ${CalloutFragmentDoc}
 `;
 export type UpdateCalloutVisibilityMutationFn = Apollo.MutationFunction<
   SchemaTypes.UpdateCalloutVisibilityMutation,
@@ -7436,6 +7382,75 @@ export type CalloutsLazyQueryHookResult = ReturnType<typeof useCalloutsLazyQuery
 export type CalloutsQueryResult = Apollo.QueryResult<SchemaTypes.CalloutsQuery, SchemaTypes.CalloutsQueryVariables>;
 export function refetchCalloutsQuery(variables: SchemaTypes.CalloutsQueryVariables) {
   return { query: CalloutsDocument, variables: variables };
+}
+
+export const CalloutWhiteboardsDocument = gql`
+  query CalloutWhiteboards($calloutId: UUID!) {
+    lookup {
+      callout(ID: $calloutId) {
+        id
+        contributions {
+          id
+          whiteboard {
+            ...WhiteboardCollectionCalloutCard
+          }
+        }
+      }
+    }
+  }
+  ${WhiteboardCollectionCalloutCardFragmentDoc}
+`;
+
+/**
+ * __useCalloutWhiteboardsQuery__
+ *
+ * To run a query within a React component, call `useCalloutWhiteboardsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCalloutWhiteboardsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCalloutWhiteboardsQuery({
+ *   variables: {
+ *      calloutId: // value for 'calloutId'
+ *   },
+ * });
+ */
+export function useCalloutWhiteboardsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.CalloutWhiteboardsQuery,
+    SchemaTypes.CalloutWhiteboardsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.CalloutWhiteboardsQuery, SchemaTypes.CalloutWhiteboardsQueryVariables>(
+    CalloutWhiteboardsDocument,
+    options
+  );
+}
+
+export function useCalloutWhiteboardsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CalloutWhiteboardsQuery,
+    SchemaTypes.CalloutWhiteboardsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.CalloutWhiteboardsQuery, SchemaTypes.CalloutWhiteboardsQueryVariables>(
+    CalloutWhiteboardsDocument,
+    options
+  );
+}
+
+export type CalloutWhiteboardsQueryHookResult = ReturnType<typeof useCalloutWhiteboardsQuery>;
+export type CalloutWhiteboardsLazyQueryHookResult = ReturnType<typeof useCalloutWhiteboardsLazyQuery>;
+export type CalloutWhiteboardsQueryResult = Apollo.QueryResult<
+  SchemaTypes.CalloutWhiteboardsQuery,
+  SchemaTypes.CalloutWhiteboardsQueryVariables
+>;
+export function refetchCalloutWhiteboardsQuery(variables: SchemaTypes.CalloutWhiteboardsQueryVariables) {
+  return { query: CalloutWhiteboardsDocument, variables: variables };
 }
 
 export const SpacePostTemplatesLibraryDocument = gql`
@@ -8820,75 +8835,10 @@ export function refetchWhiteboardWithContentQuery(variables: SchemaTypes.Whitebo
   return { query: WhiteboardWithContentDocument, variables: variables };
 }
 
-export const WhiteboardRtWithContentDocument = gql`
-  query whiteboardRtWithContent($whiteboardId: UUID!) {
+export const WhiteboardLastUpdatedDateDocument = gql`
+  query whiteboardLastUpdatedDate($whiteboardId: UUID!) {
     lookup {
-      whiteboardRt(ID: $whiteboardId) {
-        ...WhiteboardRtDetails
-        ...WhiteboardRtContent
-      }
-    }
-  }
-  ${WhiteboardRtDetailsFragmentDoc}
-  ${WhiteboardRtContentFragmentDoc}
-`;
-
-/**
- * __useWhiteboardRtWithContentQuery__
- *
- * To run a query within a React component, call `useWhiteboardRtWithContentQuery` and pass it any options that fit your needs.
- * When your component renders, `useWhiteboardRtWithContentQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useWhiteboardRtWithContentQuery({
- *   variables: {
- *      whiteboardId: // value for 'whiteboardId'
- *   },
- * });
- */
-export function useWhiteboardRtWithContentQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.WhiteboardRtWithContentQuery,
-    SchemaTypes.WhiteboardRtWithContentQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.WhiteboardRtWithContentQuery, SchemaTypes.WhiteboardRtWithContentQueryVariables>(
-    WhiteboardRtWithContentDocument,
-    options
-  );
-}
-
-export function useWhiteboardRtWithContentLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.WhiteboardRtWithContentQuery,
-    SchemaTypes.WhiteboardRtWithContentQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.WhiteboardRtWithContentQuery,
-    SchemaTypes.WhiteboardRtWithContentQueryVariables
-  >(WhiteboardRtWithContentDocument, options);
-}
-
-export type WhiteboardRtWithContentQueryHookResult = ReturnType<typeof useWhiteboardRtWithContentQuery>;
-export type WhiteboardRtWithContentLazyQueryHookResult = ReturnType<typeof useWhiteboardRtWithContentLazyQuery>;
-export type WhiteboardRtWithContentQueryResult = Apollo.QueryResult<
-  SchemaTypes.WhiteboardRtWithContentQuery,
-  SchemaTypes.WhiteboardRtWithContentQueryVariables
->;
-export function refetchWhiteboardRtWithContentQuery(variables: SchemaTypes.WhiteboardRtWithContentQueryVariables) {
-  return { query: WhiteboardRtWithContentDocument, variables: variables };
-}
-
-export const WhiteboardRtLastUpdatedDateDocument = gql`
-  query whiteboardRtLastUpdatedDate($whiteboardId: UUID!) {
-    lookup {
-      whiteboardRt(ID: $whiteboardId) {
+      whiteboard(ID: $whiteboardId) {
         id
         updatedDate
       }
@@ -8897,57 +8847,55 @@ export const WhiteboardRtLastUpdatedDateDocument = gql`
 `;
 
 /**
- * __useWhiteboardRtLastUpdatedDateQuery__
+ * __useWhiteboardLastUpdatedDateQuery__
  *
- * To run a query within a React component, call `useWhiteboardRtLastUpdatedDateQuery` and pass it any options that fit your needs.
- * When your component renders, `useWhiteboardRtLastUpdatedDateQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useWhiteboardLastUpdatedDateQuery` and pass it any options that fit your needs.
+ * When your component renders, `useWhiteboardLastUpdatedDateQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useWhiteboardRtLastUpdatedDateQuery({
+ * const { data, loading, error } = useWhiteboardLastUpdatedDateQuery({
  *   variables: {
  *      whiteboardId: // value for 'whiteboardId'
  *   },
  * });
  */
-export function useWhiteboardRtLastUpdatedDateQuery(
+export function useWhiteboardLastUpdatedDateQuery(
   baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.WhiteboardRtLastUpdatedDateQuery,
-    SchemaTypes.WhiteboardRtLastUpdatedDateQueryVariables
+    SchemaTypes.WhiteboardLastUpdatedDateQuery,
+    SchemaTypes.WhiteboardLastUpdatedDateQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<
-    SchemaTypes.WhiteboardRtLastUpdatedDateQuery,
-    SchemaTypes.WhiteboardRtLastUpdatedDateQueryVariables
-  >(WhiteboardRtLastUpdatedDateDocument, options);
+    SchemaTypes.WhiteboardLastUpdatedDateQuery,
+    SchemaTypes.WhiteboardLastUpdatedDateQueryVariables
+  >(WhiteboardLastUpdatedDateDocument, options);
 }
 
-export function useWhiteboardRtLastUpdatedDateLazyQuery(
+export function useWhiteboardLastUpdatedDateLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.WhiteboardRtLastUpdatedDateQuery,
-    SchemaTypes.WhiteboardRtLastUpdatedDateQueryVariables
+    SchemaTypes.WhiteboardLastUpdatedDateQuery,
+    SchemaTypes.WhiteboardLastUpdatedDateQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<
-    SchemaTypes.WhiteboardRtLastUpdatedDateQuery,
-    SchemaTypes.WhiteboardRtLastUpdatedDateQueryVariables
-  >(WhiteboardRtLastUpdatedDateDocument, options);
+    SchemaTypes.WhiteboardLastUpdatedDateQuery,
+    SchemaTypes.WhiteboardLastUpdatedDateQueryVariables
+  >(WhiteboardLastUpdatedDateDocument, options);
 }
 
-export type WhiteboardRtLastUpdatedDateQueryHookResult = ReturnType<typeof useWhiteboardRtLastUpdatedDateQuery>;
-export type WhiteboardRtLastUpdatedDateLazyQueryHookResult = ReturnType<typeof useWhiteboardRtLastUpdatedDateLazyQuery>;
-export type WhiteboardRtLastUpdatedDateQueryResult = Apollo.QueryResult<
-  SchemaTypes.WhiteboardRtLastUpdatedDateQuery,
-  SchemaTypes.WhiteboardRtLastUpdatedDateQueryVariables
+export type WhiteboardLastUpdatedDateQueryHookResult = ReturnType<typeof useWhiteboardLastUpdatedDateQuery>;
+export type WhiteboardLastUpdatedDateLazyQueryHookResult = ReturnType<typeof useWhiteboardLastUpdatedDateLazyQuery>;
+export type WhiteboardLastUpdatedDateQueryResult = Apollo.QueryResult<
+  SchemaTypes.WhiteboardLastUpdatedDateQuery,
+  SchemaTypes.WhiteboardLastUpdatedDateQueryVariables
 >;
-export function refetchWhiteboardRtLastUpdatedDateQuery(
-  variables: SchemaTypes.WhiteboardRtLastUpdatedDateQueryVariables
-) {
-  return { query: WhiteboardRtLastUpdatedDateDocument, variables: variables };
+export function refetchWhiteboardLastUpdatedDateQuery(variables: SchemaTypes.WhiteboardLastUpdatedDateQueryVariables) {
+  return { query: WhiteboardLastUpdatedDateDocument, variables: variables };
 }
 
 export const PlatformTemplateWhiteboardContentsDocument = gql`
@@ -9038,6 +8986,9 @@ export const CreateWhiteboardOnCalloutDocument = gql`
     createContributionOnCallout(contributionData: $input) {
       whiteboard {
         ...WhiteboardDetails
+        profile {
+          url
+        }
       }
     }
   }
@@ -9134,10 +9085,9 @@ export type DeleteWhiteboardMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteWhiteboardMutationVariables
 >;
 export const UpdateWhiteboardDocument = gql`
-  mutation updateWhiteboard($input: UpdateWhiteboardDirectInput!) {
+  mutation updateWhiteboard($input: UpdateWhiteboardInput!) {
     updateWhiteboard(whiteboardData: $input) {
       id
-      content
       profile {
         id
         displayName
@@ -9186,202 +9136,59 @@ export type UpdateWhiteboardMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateWhiteboardMutation,
   SchemaTypes.UpdateWhiteboardMutationVariables
 >;
-export const UpdateWhiteboardRtDocument = gql`
-  mutation updateWhiteboardRt($input: UpdateWhiteboardRtInput!) {
-    updateWhiteboardRt(whiteboardData: $input) {
-      id
-      profile {
-        id
-        displayName
-      }
-    }
-  }
-`;
-export type UpdateWhiteboardRtMutationFn = Apollo.MutationFunction<
-  SchemaTypes.UpdateWhiteboardRtMutation,
-  SchemaTypes.UpdateWhiteboardRtMutationVariables
->;
-
-/**
- * __useUpdateWhiteboardRtMutation__
- *
- * To run a mutation, you first call `useUpdateWhiteboardRtMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateWhiteboardRtMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateWhiteboardRtMutation, { data, loading, error }] = useUpdateWhiteboardRtMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useUpdateWhiteboardRtMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.UpdateWhiteboardRtMutation,
-    SchemaTypes.UpdateWhiteboardRtMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.UpdateWhiteboardRtMutation, SchemaTypes.UpdateWhiteboardRtMutationVariables>(
-    UpdateWhiteboardRtDocument,
-    options
-  );
-}
-
-export type UpdateWhiteboardRtMutationHookResult = ReturnType<typeof useUpdateWhiteboardRtMutation>;
-export type UpdateWhiteboardRtMutationResult = Apollo.MutationResult<SchemaTypes.UpdateWhiteboardRtMutation>;
-export type UpdateWhiteboardRtMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.UpdateWhiteboardRtMutation,
-  SchemaTypes.UpdateWhiteboardRtMutationVariables
->;
-export const UpdateWhiteboardContentRtDocument = gql`
-  mutation updateWhiteboardContentRt($input: UpdateWhiteboardContentRtInput!) {
-    updateWhiteboardContentRt(whiteboardData: $input) {
+export const UpdateWhiteboardContentDocument = gql`
+  mutation updateWhiteboardContent($input: UpdateWhiteboardContentInput!) {
+    updateWhiteboardContent(whiteboardData: $input) {
       id
       content
     }
   }
 `;
-export type UpdateWhiteboardContentRtMutationFn = Apollo.MutationFunction<
-  SchemaTypes.UpdateWhiteboardContentRtMutation,
-  SchemaTypes.UpdateWhiteboardContentRtMutationVariables
+export type UpdateWhiteboardContentMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateWhiteboardContentMutation,
+  SchemaTypes.UpdateWhiteboardContentMutationVariables
 >;
 
 /**
- * __useUpdateWhiteboardContentRtMutation__
+ * __useUpdateWhiteboardContentMutation__
  *
- * To run a mutation, you first call `useUpdateWhiteboardContentRtMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateWhiteboardContentRtMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useUpdateWhiteboardContentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateWhiteboardContentMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [updateWhiteboardContentRtMutation, { data, loading, error }] = useUpdateWhiteboardContentRtMutation({
+ * const [updateWhiteboardContentMutation, { data, loading, error }] = useUpdateWhiteboardContentMutation({
  *   variables: {
  *      input: // value for 'input'
  *   },
  * });
  */
-export function useUpdateWhiteboardContentRtMutation(
+export function useUpdateWhiteboardContentMutation(
   baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.UpdateWhiteboardContentRtMutation,
-    SchemaTypes.UpdateWhiteboardContentRtMutationVariables
+    SchemaTypes.UpdateWhiteboardContentMutation,
+    SchemaTypes.UpdateWhiteboardContentMutationVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
-    SchemaTypes.UpdateWhiteboardContentRtMutation,
-    SchemaTypes.UpdateWhiteboardContentRtMutationVariables
-  >(UpdateWhiteboardContentRtDocument, options);
+    SchemaTypes.UpdateWhiteboardContentMutation,
+    SchemaTypes.UpdateWhiteboardContentMutationVariables
+  >(UpdateWhiteboardContentDocument, options);
 }
 
-export type UpdateWhiteboardContentRtMutationHookResult = ReturnType<typeof useUpdateWhiteboardContentRtMutation>;
-export type UpdateWhiteboardContentRtMutationResult =
-  Apollo.MutationResult<SchemaTypes.UpdateWhiteboardContentRtMutation>;
-export type UpdateWhiteboardContentRtMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.UpdateWhiteboardContentRtMutation,
-  SchemaTypes.UpdateWhiteboardContentRtMutationVariables
+export type UpdateWhiteboardContentMutationHookResult = ReturnType<typeof useUpdateWhiteboardContentMutation>;
+export type UpdateWhiteboardContentMutationResult = Apollo.MutationResult<SchemaTypes.UpdateWhiteboardContentMutation>;
+export type UpdateWhiteboardContentMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateWhiteboardContentMutation,
+  SchemaTypes.UpdateWhiteboardContentMutationVariables
 >;
-export const CheckoutWhiteboardDocument = gql`
-  mutation checkoutWhiteboard($input: WhiteboardCheckoutEventInput!) {
-    eventOnWhiteboardCheckout(whiteboardCheckoutEventData: $input) {
-      ...CheckoutDetails
-    }
-  }
-  ${CheckoutDetailsFragmentDoc}
-`;
-export type CheckoutWhiteboardMutationFn = Apollo.MutationFunction<
-  SchemaTypes.CheckoutWhiteboardMutation,
-  SchemaTypes.CheckoutWhiteboardMutationVariables
->;
-
-/**
- * __useCheckoutWhiteboardMutation__
- *
- * To run a mutation, you first call `useCheckoutWhiteboardMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCheckoutWhiteboardMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [checkoutWhiteboardMutation, { data, loading, error }] = useCheckoutWhiteboardMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useCheckoutWhiteboardMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.CheckoutWhiteboardMutation,
-    SchemaTypes.CheckoutWhiteboardMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.CheckoutWhiteboardMutation, SchemaTypes.CheckoutWhiteboardMutationVariables>(
-    CheckoutWhiteboardDocument,
-    options
-  );
-}
-
-export type CheckoutWhiteboardMutationHookResult = ReturnType<typeof useCheckoutWhiteboardMutation>;
-export type CheckoutWhiteboardMutationResult = Apollo.MutationResult<SchemaTypes.CheckoutWhiteboardMutation>;
-export type CheckoutWhiteboardMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.CheckoutWhiteboardMutation,
-  SchemaTypes.CheckoutWhiteboardMutationVariables
->;
-export const WhiteboardContentUpdatedDocument = gql`
-  subscription whiteboardContentUpdated($whiteboardIDs: [UUID!]!) {
-    whiteboardContentUpdated(whiteboardIDs: $whiteboardIDs) {
-      whiteboardID
-      content
-    }
-  }
-`;
-
-/**
- * __useWhiteboardContentUpdatedSubscription__
- *
- * To run a query within a React component, call `useWhiteboardContentUpdatedSubscription` and pass it any options that fit your needs.
- * When your component renders, `useWhiteboardContentUpdatedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useWhiteboardContentUpdatedSubscription({
- *   variables: {
- *      whiteboardIDs: // value for 'whiteboardIDs'
- *   },
- * });
- */
-export function useWhiteboardContentUpdatedSubscription(
-  baseOptions: Apollo.SubscriptionHookOptions<
-    SchemaTypes.WhiteboardContentUpdatedSubscription,
-    SchemaTypes.WhiteboardContentUpdatedSubscriptionVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useSubscription<
-    SchemaTypes.WhiteboardContentUpdatedSubscription,
-    SchemaTypes.WhiteboardContentUpdatedSubscriptionVariables
-  >(WhiteboardContentUpdatedDocument, options);
-}
-
-export type WhiteboardContentUpdatedSubscriptionHookResult = ReturnType<typeof useWhiteboardContentUpdatedSubscription>;
-export type WhiteboardContentUpdatedSubscriptionResult =
-  Apollo.SubscriptionResult<SchemaTypes.WhiteboardContentUpdatedSubscription>;
-export const WhiteboardRtContentUpdatePolicyDocument = gql`
-  query WhiteboardRtContentUpdatePolicy($whiteboardId: UUID!) {
+export const WhiteboardContentUpdatePolicyDocument = gql`
+  query WhiteboardContentUpdatePolicy($whiteboardId: UUID!) {
     lookup {
-      whiteboardRt(ID: $whiteboardId) {
+      whiteboard(ID: $whiteboardId) {
         id
         contentUpdatePolicy
       }
@@ -9390,113 +9197,113 @@ export const WhiteboardRtContentUpdatePolicyDocument = gql`
 `;
 
 /**
- * __useWhiteboardRtContentUpdatePolicyQuery__
+ * __useWhiteboardContentUpdatePolicyQuery__
  *
- * To run a query within a React component, call `useWhiteboardRtContentUpdatePolicyQuery` and pass it any options that fit your needs.
- * When your component renders, `useWhiteboardRtContentUpdatePolicyQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useWhiteboardContentUpdatePolicyQuery` and pass it any options that fit your needs.
+ * When your component renders, `useWhiteboardContentUpdatePolicyQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useWhiteboardRtContentUpdatePolicyQuery({
+ * const { data, loading, error } = useWhiteboardContentUpdatePolicyQuery({
  *   variables: {
  *      whiteboardId: // value for 'whiteboardId'
  *   },
  * });
  */
-export function useWhiteboardRtContentUpdatePolicyQuery(
+export function useWhiteboardContentUpdatePolicyQuery(
   baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.WhiteboardRtContentUpdatePolicyQuery,
-    SchemaTypes.WhiteboardRtContentUpdatePolicyQueryVariables
+    SchemaTypes.WhiteboardContentUpdatePolicyQuery,
+    SchemaTypes.WhiteboardContentUpdatePolicyQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<
-    SchemaTypes.WhiteboardRtContentUpdatePolicyQuery,
-    SchemaTypes.WhiteboardRtContentUpdatePolicyQueryVariables
-  >(WhiteboardRtContentUpdatePolicyDocument, options);
+    SchemaTypes.WhiteboardContentUpdatePolicyQuery,
+    SchemaTypes.WhiteboardContentUpdatePolicyQueryVariables
+  >(WhiteboardContentUpdatePolicyDocument, options);
 }
 
-export function useWhiteboardRtContentUpdatePolicyLazyQuery(
+export function useWhiteboardContentUpdatePolicyLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.WhiteboardRtContentUpdatePolicyQuery,
-    SchemaTypes.WhiteboardRtContentUpdatePolicyQueryVariables
+    SchemaTypes.WhiteboardContentUpdatePolicyQuery,
+    SchemaTypes.WhiteboardContentUpdatePolicyQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<
-    SchemaTypes.WhiteboardRtContentUpdatePolicyQuery,
-    SchemaTypes.WhiteboardRtContentUpdatePolicyQueryVariables
-  >(WhiteboardRtContentUpdatePolicyDocument, options);
+    SchemaTypes.WhiteboardContentUpdatePolicyQuery,
+    SchemaTypes.WhiteboardContentUpdatePolicyQueryVariables
+  >(WhiteboardContentUpdatePolicyDocument, options);
 }
 
-export type WhiteboardRtContentUpdatePolicyQueryHookResult = ReturnType<typeof useWhiteboardRtContentUpdatePolicyQuery>;
-export type WhiteboardRtContentUpdatePolicyLazyQueryHookResult = ReturnType<
-  typeof useWhiteboardRtContentUpdatePolicyLazyQuery
+export type WhiteboardContentUpdatePolicyQueryHookResult = ReturnType<typeof useWhiteboardContentUpdatePolicyQuery>;
+export type WhiteboardContentUpdatePolicyLazyQueryHookResult = ReturnType<
+  typeof useWhiteboardContentUpdatePolicyLazyQuery
 >;
-export type WhiteboardRtContentUpdatePolicyQueryResult = Apollo.QueryResult<
-  SchemaTypes.WhiteboardRtContentUpdatePolicyQuery,
-  SchemaTypes.WhiteboardRtContentUpdatePolicyQueryVariables
+export type WhiteboardContentUpdatePolicyQueryResult = Apollo.QueryResult<
+  SchemaTypes.WhiteboardContentUpdatePolicyQuery,
+  SchemaTypes.WhiteboardContentUpdatePolicyQueryVariables
 >;
-export function refetchWhiteboardRtContentUpdatePolicyQuery(
-  variables: SchemaTypes.WhiteboardRtContentUpdatePolicyQueryVariables
+export function refetchWhiteboardContentUpdatePolicyQuery(
+  variables: SchemaTypes.WhiteboardContentUpdatePolicyQueryVariables
 ) {
-  return { query: WhiteboardRtContentUpdatePolicyDocument, variables: variables };
+  return { query: WhiteboardContentUpdatePolicyDocument, variables: variables };
 }
 
-export const UpdateWhiteboardRtContentUpdatePolicyDocument = gql`
-  mutation UpdateWhiteboardRtContentUpdatePolicy($whiteboardId: UUID!, $contentUpdatePolicy: ContentUpdatePolicy!) {
-    updateWhiteboardRt(whiteboardData: { ID: $whiteboardId, contentUpdatePolicy: $contentUpdatePolicy }) {
+export const UpdateWhiteboardContentUpdatePolicyDocument = gql`
+  mutation UpdateWhiteboardContentUpdatePolicy($whiteboardId: UUID!, $contentUpdatePolicy: ContentUpdatePolicy!) {
+    updateWhiteboard(whiteboardData: { ID: $whiteboardId, contentUpdatePolicy: $contentUpdatePolicy }) {
       id
       contentUpdatePolicy
     }
   }
 `;
-export type UpdateWhiteboardRtContentUpdatePolicyMutationFn = Apollo.MutationFunction<
-  SchemaTypes.UpdateWhiteboardRtContentUpdatePolicyMutation,
-  SchemaTypes.UpdateWhiteboardRtContentUpdatePolicyMutationVariables
+export type UpdateWhiteboardContentUpdatePolicyMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateWhiteboardContentUpdatePolicyMutation,
+  SchemaTypes.UpdateWhiteboardContentUpdatePolicyMutationVariables
 >;
 
 /**
- * __useUpdateWhiteboardRtContentUpdatePolicyMutation__
+ * __useUpdateWhiteboardContentUpdatePolicyMutation__
  *
- * To run a mutation, you first call `useUpdateWhiteboardRtContentUpdatePolicyMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateWhiteboardRtContentUpdatePolicyMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useUpdateWhiteboardContentUpdatePolicyMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateWhiteboardContentUpdatePolicyMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [updateWhiteboardRtContentUpdatePolicyMutation, { data, loading, error }] = useUpdateWhiteboardRtContentUpdatePolicyMutation({
+ * const [updateWhiteboardContentUpdatePolicyMutation, { data, loading, error }] = useUpdateWhiteboardContentUpdatePolicyMutation({
  *   variables: {
  *      whiteboardId: // value for 'whiteboardId'
  *      contentUpdatePolicy: // value for 'contentUpdatePolicy'
  *   },
  * });
  */
-export function useUpdateWhiteboardRtContentUpdatePolicyMutation(
+export function useUpdateWhiteboardContentUpdatePolicyMutation(
   baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.UpdateWhiteboardRtContentUpdatePolicyMutation,
-    SchemaTypes.UpdateWhiteboardRtContentUpdatePolicyMutationVariables
+    SchemaTypes.UpdateWhiteboardContentUpdatePolicyMutation,
+    SchemaTypes.UpdateWhiteboardContentUpdatePolicyMutationVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
-    SchemaTypes.UpdateWhiteboardRtContentUpdatePolicyMutation,
-    SchemaTypes.UpdateWhiteboardRtContentUpdatePolicyMutationVariables
-  >(UpdateWhiteboardRtContentUpdatePolicyDocument, options);
+    SchemaTypes.UpdateWhiteboardContentUpdatePolicyMutation,
+    SchemaTypes.UpdateWhiteboardContentUpdatePolicyMutationVariables
+  >(UpdateWhiteboardContentUpdatePolicyDocument, options);
 }
 
-export type UpdateWhiteboardRtContentUpdatePolicyMutationHookResult = ReturnType<
-  typeof useUpdateWhiteboardRtContentUpdatePolicyMutation
+export type UpdateWhiteboardContentUpdatePolicyMutationHookResult = ReturnType<
+  typeof useUpdateWhiteboardContentUpdatePolicyMutation
 >;
-export type UpdateWhiteboardRtContentUpdatePolicyMutationResult =
-  Apollo.MutationResult<SchemaTypes.UpdateWhiteboardRtContentUpdatePolicyMutation>;
-export type UpdateWhiteboardRtContentUpdatePolicyMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.UpdateWhiteboardRtContentUpdatePolicyMutation,
-  SchemaTypes.UpdateWhiteboardRtContentUpdatePolicyMutationVariables
+export type UpdateWhiteboardContentUpdatePolicyMutationResult =
+  Apollo.MutationResult<SchemaTypes.UpdateWhiteboardContentUpdatePolicyMutation>;
+export type UpdateWhiteboardContentUpdatePolicyMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateWhiteboardContentUpdatePolicyMutation,
+  SchemaTypes.UpdateWhiteboardContentUpdatePolicyMutationVariables
 >;
 export const ChallengePreferencesDocument = gql`
   query challengePreferences($spaceNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!) {
@@ -11095,23 +10902,23 @@ export const CommunityUserPrivilegesWithParentCommunityDocument = gql`
           id
           myPrivileges
         }
-        leadUsers: usersInRole(role: LEAD) {
+      }
+      challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
+        id
+        authorization {
           id
-          profile {
+          myPrivileges
+        }
+        community {
+          id
+          myMembershipStatus
+          authorization {
             id
-            displayName
-            avatar: visual(type: AVATAR) {
-              ...VisualUri
-            }
-            location {
-              id
-              country
-              city
-            }
+            myPrivileges
           }
         }
       }
-      challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
+      opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
         id
         authorization {
           id
@@ -11138,21 +10945,6 @@ export const CommunityUserPrivilegesWithParentCommunityDocument = gql`
                 city
               }
             }
-          }
-        }
-      }
-      opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
-        id
-        authorization {
-          id
-          myPrivileges
-        }
-        community {
-          id
-          myMembershipStatus
-          authorization {
-            id
-            myPrivileges
           }
         }
       }
@@ -20527,10 +20319,10 @@ export function refetchSpaceApplicationTemplateQuery(variables: SchemaTypes.Spac
 export const SpaceCardDocument = gql`
   query spaceCard($spaceId: UUID_NAMEID!) {
     space(ID: $spaceId) {
-      ...SpaceDetailsProvider
+      ...SpaceCard
     }
   }
-  ${SpaceDetailsProviderFragmentDoc}
+  ${SpaceCardFragmentDoc}
 `;
 
 /**
@@ -24659,10 +24451,10 @@ export function refetchChallengeExplorerDataQuery(variables?: SchemaTypes.Challe
 export const DashboardSpacesDocument = gql`
   query DashboardSpaces($visibilities: [SpaceVisibility!] = [ACTIVE]) {
     spaces(filter: { visibilities: $visibilities }) {
-      ...SpaceDetailsProvider
+      ...SpaceCard
     }
   }
-  ${SpaceDetailsProviderFragmentDoc}
+  ${SpaceCardFragmentDoc}
 `;
 
 /**
@@ -24715,14 +24507,14 @@ export const DashboardSpacesPaginatedDocument = gql`
   query DashboardSpacesPaginated($first: Int!, $after: UUID, $visibilities: [SpaceVisibility!] = [ACTIVE]) {
     spacesPaginated(first: $first, after: $after, filter: { visibilities: $visibilities }) {
       spaces {
-        ...SpaceDetailsProvider
+        ...SpaceCard
       }
       pageInfo {
         ...PageInfo
       }
     }
   }
-  ${SpaceDetailsProviderFragmentDoc}
+  ${SpaceCardFragmentDoc}
   ${PageInfoFragmentDoc}
 `;
 

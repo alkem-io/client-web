@@ -1,10 +1,9 @@
 import { ExcalidrawElement } from '@alkemio/excalidraw/types/element/types';
-import { DELETED_ELEMENT_TIMEOUT, ROOM_ID_BYTES } from '../excalidrawAppConstants';
+import { DELETED_ELEMENT_TIMEOUT } from '../excalidrawAppConstants';
 import { isInvisiblySmallElement } from '@alkemio/excalidraw';
 import { AppState, UserIdleState } from '@alkemio/excalidraw/types/types';
-import { bytesToHexString } from '../utils';
 import { env } from '../../../../../../main/env';
-import { BinaryFileDataWithUrl } from '../../useWhiteboardFilesManager';
+import { BinaryFilesWithUrl } from '../../useWhiteboardFilesManager';
 
 export type SyncableExcalidrawElement = ExcalidrawElement & {
   _brand: 'SyncableExcalidrawElement';
@@ -15,12 +14,6 @@ export const isSyncableElement = (element: ExcalidrawElement): element is Syncab
     return element.updated > Date.now() - DELETED_ELEMENT_TIMEOUT;
   }
   return !isInvisiblySmallElement(element);
-};
-
-const generateRoomId = async () => {
-  const buffer = new Uint8Array(ROOM_ID_BYTES);
-  window.crypto.getRandomValues(buffer);
-  return bytesToHexString(buffer);
 };
 
 /**
@@ -48,12 +41,14 @@ export type SocketUpdateDataSource = {
     type: 'SCENE_INIT';
     payload: {
       elements: readonly ExcalidrawElement[];
+      files: BinaryFilesWithUrl;
     };
   };
   SCENE_UPDATE: {
     type: 'SCENE_UPDATE';
     payload: {
       elements: readonly ExcalidrawElement[];
+      files: BinaryFilesWithUrl;
     };
   };
   MOUSE_LOCATION: {
@@ -81,28 +76,8 @@ export type SocketUpdateDataSource = {
       username: string;
     };
   };
-  FILE_UPLOAD: {
-    type: 'FILE_UPLOAD';
-    payload: {
-      socketId: string;
-      file: BinaryFileDataWithUrl;
-    };
-  };
-  FILE_REQUEST: {
-    type: 'FILE_REQUEST';
-    payload: {
-      socketId: string;
-      fileIds: string[];
-    };
-  };
 };
 
 export type SocketUpdateData = SocketUpdateDataSource[keyof SocketUpdateDataSource] & {
   _brand: 'socketUpdateData';
-};
-
-export const generateCollaborationLinkData = async () => {
-  const roomId = await generateRoomId();
-
-  return { roomId };
 };

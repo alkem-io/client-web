@@ -21,6 +21,7 @@ import { EntityPageSection } from '../../shared/layout/EntityPageSection';
 import DialogHeader from '../../../core/ui/dialog/DialogHeader';
 import { Text } from '../../../core/ui/typography';
 import { useTranslation } from 'react-i18next';
+import { NavigationState } from '../../../core/routing/ScrollToTop';
 
 interface CalloutLocation {
   journeyTypeName: JourneyTypeName;
@@ -36,7 +37,7 @@ export interface CalloutPageProps {
 
 export const LocationStateKeyCachedCallout = 'LocationStateKeyCachedCallout';
 
-export interface LocationStateCachedCallout {
+export interface LocationStateCachedCallout extends NavigationState {
   [LocationStateKeyCachedCallout]?: TypedCallout;
 }
 
@@ -114,7 +115,7 @@ const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: Cal
 
   const PageLayout = usePageLayoutByEntity(journeyTypeName);
 
-  if (isCalloutLoading) {
+  if (isCalloutLoading && !typedCallout) {
     return (
       <PageLayout currentSection={EntityPageSection.Contribute}>
         <Loading />

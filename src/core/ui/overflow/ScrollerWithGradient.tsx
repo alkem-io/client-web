@@ -70,7 +70,13 @@ const ScrollerWithGradient = <ScrollerEl extends HTMLElement>({
   ...props
 }: PropsWithChildren<ScrollerWithGradientProps<ScrollerEl>> & BoxProps) => {
   return (
-    <Box position="relative" margin={gutters(-1)} {...VERTICAL_SCROLL_CONTAINER_SX} {...props}>
+    <Box
+      position="relative"
+      margin={gutters(-1)}
+      marginTop={gutters(-0.5)}
+      {...VERTICAL_SCROLL_CONTAINER_SX}
+      {...props}
+    >
       <Box
         ref={scrollerRef}
         maxHeight={maxHeight}

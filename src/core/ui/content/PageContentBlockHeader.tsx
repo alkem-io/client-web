@@ -1,4 +1,4 @@
-import { Box, SvgIconProps, Theme, useMediaQuery } from '@mui/material';
+import { Box, SvgIconProps } from '@mui/material';
 import { CaptionSmall } from '../typography';
 import { PropsWithChildren, ReactElement, ReactNode } from 'react';
 import { Actions } from '../actions/Actions';
@@ -25,50 +25,36 @@ const PageContentBlockHeader = ({
   fullWidth,
   children,
 }: PropsWithChildren<PageContentBlockHeaderProps>) => {
-  const isSmallScreen = useMediaQuery((theme: Theme) => theme.breakpoints.down('lg'));
-  const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
-
   const nextBlock = useNextBlockAnchor();
 
   return (
-    <>
+    <Box
+      display="flex"
+      flexDirection="row"
+      alignItems="center"
+      gap={gutters(0.5)}
+      position="relative"
+      width={fullWidth ? '100%' : undefined}
+    >
+      <SkipLink anchor={nextBlock} sx={{ position: 'absolute', right: 0, top: 0 }} />
       <Box
+        flexGrow={1}
+        minWidth={0}
         display="flex"
         flexDirection="row"
-        alignItems={isSmallScreen ? 'start' : 'center'}
-        gap={gutters(0.5)}
-        position="relative"
-        width={fullWidth ? '100%' : undefined}
+        rowGap={gutters(0.5)}
+        justifyContent="space-between"
+        flexWrap="wrap"
       >
-        <SkipLink anchor={nextBlock} sx={{ position: 'absolute', right: 0, top: 0 }} />
-        <Box
-          flexGrow={1}
-          minWidth={0}
-          display="flex"
-          flexDirection="row"
-          rowGap={gutters(0.5)}
-          justifyContent="space-between"
-          flexWrap="wrap"
-        >
-          <BlockTitleWithIcon title={title} icon={icon} />
-          {disclaimer && <CaptionSmall>{disclaimer}</CaptionSmall>}
-          {children}
-        </Box>
-        {!isMobile && (
-          // In desktop the expand button and the actions go in the same row
-          <Actions>
-            {actions}
-            {dialogAction}
-          </Actions>
-        )}
-        {isMobile && <Actions>{dialogAction}</Actions>}
+        <BlockTitleWithIcon title={title} icon={icon} />
+        {disclaimer && <CaptionSmall>{disclaimer}</CaptionSmall>}
+        {children}
       </Box>
-      {isMobile && (
-        <Actions marginTop={gutters(-0.5)} flexDirection="row">
-          {actions}
-        </Actions>
-      )}
-    </>
+      <Actions height={gutters()}>
+        {actions}
+        {dialogAction}
+      </Actions>
+    </Box>
   );
 };
 

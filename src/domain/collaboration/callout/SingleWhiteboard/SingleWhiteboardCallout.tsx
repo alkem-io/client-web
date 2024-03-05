@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import CalloutLayout, { CalloutLayoutProps } from '../../CalloutBlock/CalloutLayout';
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
-import { WhiteboardProvider } from '../../whiteboard/containers/WhiteboardProvider';
-import WhiteboardsManagementViewWrapper from '../../whiteboard/WhiteboardsManagement/WhiteboardsManagementViewWrapper';
+import WhiteboardView from '../../whiteboard/WhiteboardsManagement/WhiteboardView';
 import { buildCalloutUrl } from '../../../../main/routing/urlBuilders';
 import WhiteboardPreview from '../../whiteboard/whiteboardPreview/WhiteboardPreview';
 
@@ -24,7 +23,6 @@ const SingleWhiteboardCallout = ({
   ...calloutLayoutProps
 }: SingleWhiteboardCalloutProps) => {
   const [isWhiteboardDialogOpen, setIsWhiteboardDialogOpen] = useState(false);
-
   const handleCloseWhiteboardDialog = () => {
     onClose?.();
     setIsWhiteboardDialogOpen(false);
@@ -33,8 +31,6 @@ const SingleWhiteboardCallout = ({
   if (!callout.framing.whiteboard) {
     return null;
   }
-
-  const firstWhiteboard = callout.framing.whiteboard;
 
   return (
     <CalloutLayout
@@ -47,34 +43,27 @@ const SingleWhiteboardCallout = ({
       journeyTypeName={journeyTypeName}
     >
       <WhiteboardPreview
-        whiteboard={firstWhiteboard}
+        whiteboard={callout.framing.whiteboard}
         displayName={callout.framing.profile.displayName}
         onClick={() => setIsWhiteboardDialogOpen(true)}
       />
       {isWhiteboardDialogOpen && (
-        <WhiteboardProvider
-          {...{
-            spaceId: spaceNameId, // TODO: Should be spaceId in the future, but for now it works
-            calloutId: callout.id,
-            whiteboardNameId: firstWhiteboard.id,
-          }}
-        >
-          {(entities, state) => (
-            <WhiteboardsManagementViewWrapper
-              whiteboardNameId={firstWhiteboard.id}
-              backToWhiteboards={handleCloseWhiteboardDialog}
-              journeyTypeName={journeyTypeName}
-              whiteboardShareUrl={buildCalloutUrl(callout.nameID, {
-                spaceNameId,
-                challengeNameId,
-                opportunityNameId,
-              })}
-              readOnlyDisplayName
-              {...entities}
-              {...state}
-            />
-          )}
-        </WhiteboardProvider>
+        <WhiteboardView
+          whiteboardId={callout.framing.whiteboard?.id}
+          backToWhiteboards={handleCloseWhiteboardDialog}
+          journeyTypeName={journeyTypeName}
+          whiteboardShareUrl={buildCalloutUrl(callout.nameID, {
+            spaceNameId,
+            challengeNameId,
+            opportunityNameId,
+          })}
+          readOnlyDisplayName
+          displayName={callout.framing.profile.displayName}
+          preventWhiteboardDeletion
+          whiteboard={callout.framing.whiteboard}
+          authorization={callout.framing.whiteboard.authorization}
+          loadingWhiteboards={false}
+        />
       )}
     </CalloutLayout>
   );

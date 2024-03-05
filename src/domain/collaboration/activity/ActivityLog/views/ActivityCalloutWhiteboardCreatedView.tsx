@@ -13,22 +13,20 @@ interface ActivityCalloutWhiteboardCreatedViewProps extends ActivityViewProps {
 }
 
 export const ActivityCalloutWhiteboardCreatedView: FC<ActivityCalloutWhiteboardCreatedViewProps> = ({
-  author,
+  avatarUrl,
   loading,
   createdDate,
   callout,
   whiteboard,
   type,
-  footerComponent,
 }) => {
   return (
     <ActivityBaseView
-      author={author}
+      avatarUrl={avatarUrl}
       loading={loading}
       type={type}
       title={<ActivityDescriptionByType activityType={type} subject={whiteboard.profile.displayName} />}
       url={whiteboard.profile.url}
-      footerComponent={footerComponent}
       contextDisplayName={callout.framing.profile.displayName}
       createdDate={createdDate}
     />

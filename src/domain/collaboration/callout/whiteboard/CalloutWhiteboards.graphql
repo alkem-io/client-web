@@ -1,0 +1,26 @@
+query CalloutWhiteboards($calloutId: UUID!) {
+  lookup {
+    callout(ID: $calloutId) {
+      id
+      contributions {
+        id
+        whiteboard {
+          ...WhiteboardCollectionCalloutCard
+        }
+      }
+    }
+  }
+}
+
+fragment WhiteboardCollectionCalloutCard on Whiteboard {
+  id
+  profile {
+    id
+    url
+    displayName
+    visual(type: CARD) {
+      ...VisualUri
+    }
+  }
+  createdDate
+}

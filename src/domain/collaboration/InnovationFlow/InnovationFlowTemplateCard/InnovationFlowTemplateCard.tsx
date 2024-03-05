@@ -9,10 +9,18 @@ import ContributeCard from '../../../../core/ui/card/ContributeCard';
 import { Caption } from '../../../../core/ui/typography/components';
 import InnovationPackIcon from '../../InnovationPack/InnovationPackIcon';
 import { InnovationFlowIcon } from '../../../platform/admin/templates/InnovationTemplates/InnovationFlow/InnovationFlowIcon';
-import { TemplateCardBaseProps } from '../../templates/CollaborationTemplatesLibrary/TemplateBase';
-import CardDescriptionWithTags from '../../../../core/ui/card/CardDescriptionWithTags';
+import { TemplateBase, TemplateCardBaseProps } from '../../templates/CollaborationTemplatesLibrary/TemplateBase';
+import useInnovationFlowStatesReader from '../../../platform/admin/templates/InnovationTemplates/useInnovationFlowStatesReader';
+import CardDescription, { DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS } from '../../../../core/ui/card/CardDescription';
+import CardContent from '../../../../core/ui/card/CardContent';
+import CardTags from '../../../../core/ui/card/CardTags';
+import webkitLineClamp from '../../../../core/ui/utils/webkitLineClamp';
 
-interface InnovationFlowTemplateCardProps extends TemplateCardBaseProps {}
+interface InnovationFlowTemplate extends TemplateBase {
+  definition: string;
+}
+
+interface InnovationFlowTemplateCardProps extends TemplateCardBaseProps<InnovationFlowTemplate> {}
 
 const InnovationFlowTemplateCard = ({
   template,
@@ -20,6 +28,13 @@ const InnovationFlowTemplateCard = ({
   loading,
   onClick,
 }: InnovationFlowTemplateCardProps) => {
+  const { states } = useInnovationFlowStatesReader({ definition: template?.definition });
+
+  const hasTags = (template?.profile.tagset?.tags ?? []).length > 0;
+  const descriptionHeightGutters = hasTags
+    ? DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS - 2
+    : DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS;
+
   return (
     <ContributeCard onClick={onClick}>
       <CardHeader title={template?.profile.displayName} iconComponent={InnovationFlowIcon as SvgIconComponent}>
@@ -29,9 +44,15 @@ const InnovationFlowTemplateCard = ({
         </CardHeaderCaption>
       </CardHeader>
       <CardDetails>
-        <CardDescriptionWithTags tags={template?.profile.tagset?.tags}>
-          {template?.profile.description}
-        </CardDescriptionWithTags>
+        <CardDescription heightGutters={descriptionHeightGutters}>{template?.profile.description}</CardDescription>
+      </CardDetails>
+      <CardDetails>
+        <CardContent>
+          <Caption sx={webkitLineClamp(2, { keepMinHeight: true })}>{states.join(' · ')}</Caption>
+        </CardContent>
+      </CardDetails>
+      <CardDetails>
+        <CardTags tags={template?.profile.tagset?.tags ?? []} marginY={1} hideIfEmpty />
       </CardDetails>
       {innovationPack && (
         <CardSegmentCaption icon={<InnovationPackIcon />}>

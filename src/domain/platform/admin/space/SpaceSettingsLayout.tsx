@@ -29,11 +29,6 @@ const tabs: TabDefinition<SettingsSection>[] = [
     icon: PeopleOutlinedIcon,
   },
   {
-    section: SettingsSection.SpaceSettings,
-    route: 'settings',
-    icon: GppGoodOutlinedIcon,
-  },
-  {
     section: SettingsSection.Context,
     route: 'context',
     icon: ListOutlinedIcon,
@@ -62,6 +57,11 @@ const tabs: TabDefinition<SettingsSection>[] = [
     section: SettingsSection.Storage,
     route: 'storage',
     icon: Inventory2OutlinedIcon,
+  },
+  {
+    section: SettingsSection.SpaceSettings,
+    route: 'settings',
+    icon: GppGoodOutlinedIcon,
   },
 ];
 

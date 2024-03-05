@@ -28,34 +28,6 @@ fragment WhiteboardDetails on Whiteboard {
     myPrivileges
     anonymousReadAccess
   }
-  checkout {
-    ...CheckoutDetails
-  }
-  createdBy {
-    id
-    profile {
-      id
-      displayName
-      visual(type: AVATAR) {
-        id
-        uri
-      }
-    }
-  }
-}
-
-fragment WhiteboardRtDetails on WhiteboardRt {
-  id
-  nameID
-  createdDate
-  profile {
-    ...WhiteboardProfile
-  }
-  authorization {
-    id
-    myPrivileges
-    anonymousReadAccess
-  }
   contentUpdatePolicy
   createdBy {
     id
@@ -89,25 +61,6 @@ fragment WhiteboardSummary on Whiteboard {
 fragment WhiteboardContent on Whiteboard {
   id
   content
-}
-
-fragment WhiteboardRtContent on WhiteboardRt {
-  id
-  content
-}
-
-fragment CheckoutDetails on WhiteboardCheckout {
-  id
-  lockedBy
-  status
-  lifecycle {
-    id
-    nextEvents
-  }
-  authorization {
-    id
-    myPrivileges
-  }
 }
 
 query whiteboardTemplates($spaceId: UUID_NAMEID!) {
@@ -170,8 +123,8 @@ fragment CollaborationWithWhiteboardDetails on Collaboration {
       }
     }
     framing {
-      whiteboardRt {
-        ...WhiteboardRtDetails
+      whiteboard {
+        ...WhiteboardDetails
       }
     }
   }
@@ -194,18 +147,9 @@ query WhiteboardWithContent($whiteboardId: UUID!) {
   }
 }
 
-query whiteboardRtWithContent($whiteboardId: UUID!) {
+query whiteboardLastUpdatedDate($whiteboardId: UUID!) {
   lookup {
-    whiteboardRt(ID: $whiteboardId) {
-      ...WhiteboardRtDetails
-      ...WhiteboardRtContent
-    }
-  }
-}
-
-query whiteboardRtLastUpdatedDate($whiteboardId: UUID!) {
-  lookup {
-    whiteboardRt(ID: $whiteboardId) {
+    whiteboard(ID: $whiteboardId) {
       id
       updatedDate
     }
@@ -237,6 +181,9 @@ mutation createWhiteboardOnCallout($input: CreateContributionOnCalloutInput!) {
   createContributionOnCallout(contributionData: $input) {
     whiteboard {
       ...WhiteboardDetails
+      profile {
+        url
+      }
     }
   }
 }
@@ -247,10 +194,9 @@ mutation deleteWhiteboard($input: DeleteWhiteboardInput!) {
   }
 }
 
-mutation updateWhiteboard($input: UpdateWhiteboardDirectInput!) {
+mutation updateWhiteboard($input: UpdateWhiteboardInput!) {
   updateWhiteboard(whiteboardData: $input) {
     id
-    content
     profile {
       id
       displayName
@@ -258,32 +204,9 @@ mutation updateWhiteboard($input: UpdateWhiteboardDirectInput!) {
   }
 }
 
-mutation updateWhiteboardRt($input: UpdateWhiteboardRtInput!) {
-  updateWhiteboardRt(whiteboardData: $input) {
+mutation updateWhiteboardContent($input: UpdateWhiteboardContentInput!) {
+  updateWhiteboardContent(whiteboardData: $input) {
     id
-    profile {
-      id
-      displayName
-    }
-  }
-}
-
-mutation updateWhiteboardContentRt($input: UpdateWhiteboardContentRtInput!) {
-  updateWhiteboardContentRt(whiteboardData: $input) {
-    id
-    content
-  }
-}
-
-mutation checkoutWhiteboard($input: WhiteboardCheckoutEventInput!) {
-  eventOnWhiteboardCheckout(whiteboardCheckoutEventData: $input) {
-    ...CheckoutDetails
-  }
-}
-
-subscription whiteboardContentUpdated($whiteboardIDs: [UUID!]!) {
-  whiteboardContentUpdated(whiteboardIDs: $whiteboardIDs) {
-    whiteboardID
     content
   }
 }

@@ -1,18 +1,18 @@
 import { Button as MuiButton, CircularProgress } from '@mui/material';
-import React, { forwardRef, Ref } from 'react';
+import React, { forwardRef, Ref, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router-dom';
 import { buildLoginUrl } from '../../../../main/routing/urlBuilders';
 import { AddOutlined } from '@mui/icons-material';
-import RootThemeProvider from '../../../../core/ui/themes/RootThemeProvider';
-import useDirectMessageDialog from '../../../communication/messaging/DirectMessaging/useDirectMessageDialog';
+import { DirectMessageDialog } from '../../../communication/messaging/DirectMessaging/DirectMessageDialog';
 
 export interface OpportunityApplicationButtonProps {
   isAuthenticated?: boolean;
   isMember: boolean;
   isParentMember?: boolean;
   parentUrl?: string;
-  parentLeadUsers: {
+  sendMessageToCommunityLeads: (message: string) => Promise<void>;
+  leadUsers: {
     id: string;
     displayName?: string;
     city?: string;
@@ -34,7 +34,8 @@ export const OpportunityApplicationButton = forwardRef<
       isMember = false,
       isParentMember = false,
       parentUrl,
-      parentLeadUsers,
+      sendMessageToCommunityLeads,
+      leadUsers,
       loading = false,
       component: Button = MuiButton,
       extended = false,
@@ -42,12 +43,12 @@ export const OpportunityApplicationButton = forwardRef<
     ref
   ) => {
     const { t } = useTranslation();
-    const { sendMessage, directMessageDialog } = useDirectMessageDialog({
-      dialogTitle: t('send-message-dialog.direct-message-title'),
-    });
-
-    const handleSendMessageToParentLeads = () => {
-      sendMessage('user', ...parentLeadUsers);
+    const [isContactLeadUsersDialogOpen, setIsContactLeadUsersDialogOpen] = useState(false);
+    const openContactLeadsDialog = () => {
+      setIsContactLeadUsersDialogOpen(true);
+    };
+    const closeContactLeadsDialog = () => {
+      setIsContactLeadUsersDialogOpen(false);
     };
 
     const renderApplicationButton = () => {
@@ -89,25 +90,33 @@ export const OpportunityApplicationButton = forwardRef<
         );
       }
 
+      if (leadUsers.length === 0) {
+        return null;
+      }
+
       return (
-        <Button
-          ref={ref as Ref<HTMLButtonElement>}
-          startIcon={extended ? <AddOutlined /> : undefined}
-          onClick={handleSendMessageToParentLeads}
-          variant="contained"
-          sx={extended ? { textTransform: 'none' } : undefined}
-        >
-          {t(`components.application-button.contactChallengeLeads.${extended ? 'full' : 'short'}` as const)}
-        </Button>
+        <>
+          <Button
+            ref={ref as Ref<HTMLButtonElement>}
+            startIcon={extended ? <AddOutlined /> : undefined}
+            onClick={openContactLeadsDialog}
+            variant="contained"
+            sx={extended ? { textTransform: 'none' } : undefined}
+          >
+            {t(`components.application-button.contactOpportunityLeads.${extended ? 'full' : 'short'}` as const)}
+          </Button>
+          <DirectMessageDialog
+            title={t('send-message-dialog.community-message-title', { contact: t('community.leads') })}
+            open={isContactLeadUsersDialogOpen}
+            onClose={closeContactLeadsDialog}
+            onSendMessage={sendMessageToCommunityLeads}
+            messageReceivers={leadUsers}
+          />
+        </>
       );
     };
 
-    return (
-      <>
-        {renderApplicationButton()}
-        <RootThemeProvider>{directMessageDialog}</RootThemeProvider>
-      </>
-    );
+    return <>{renderApplicationButton()}</>;
   }
 );
 

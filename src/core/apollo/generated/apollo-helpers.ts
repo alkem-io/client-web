@@ -652,7 +652,6 @@ export type CalloutFramingKeySpecifier = (
   | 'id'
   | 'profile'
   | 'whiteboard'
-  | 'whiteboardRt'
   | CalloutFramingKeySpecifier
 )[];
 export type CalloutFramingFieldPolicy = {
@@ -660,7 +659,6 @@ export type CalloutFramingFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
-  whiteboardRt?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CalloutPostCreatedKeySpecifier = ('calloutID' | 'post' | CalloutPostCreatedKeySpecifier)[];
 export type CalloutPostCreatedFieldPolicy = {
@@ -1337,7 +1335,6 @@ export type LookupQueryResultsKeySpecifier = (
   | 'room'
   | 'storageAggregator'
   | 'whiteboard'
-  | 'whiteboardRt'
   | 'whiteboardTemplate'
   | LookupQueryResultsKeySpecifier
 )[];
@@ -1363,7 +1360,6 @@ export type LookupQueryResultsFieldPolicy = {
   room?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
-  whiteboardRt?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboardTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type MeQueryResultsKeySpecifier = (
@@ -1491,7 +1487,6 @@ export type MutationKeySpecifier = (
   | 'eventOnOpportunity'
   | 'eventOnOrganizationVerification'
   | 'eventOnProject'
-  | 'eventOnWhiteboardCheckout'
   | 'grantCredentialToOrganization'
   | 'grantCredentialToUser'
   | 'ingest'
@@ -1554,10 +1549,10 @@ export type MutationKeySpecifier = (
   | 'updateTagset'
   | 'updateUser'
   | 'updateUserGroup'
+  | 'updateUserPlatformSettings'
   | 'updateVisual'
   | 'updateWhiteboard'
-  | 'updateWhiteboardContentRt'
-  | 'updateWhiteboardRt'
+  | 'updateWhiteboardContent'
   | 'updateWhiteboardTemplate'
   | 'uploadFileOnLink'
   | 'uploadFileOnReference'
@@ -1652,7 +1647,6 @@ export type MutationFieldPolicy = {
   eventOnOpportunity?: FieldPolicy<any> | FieldReadFunction<any>;
   eventOnOrganizationVerification?: FieldPolicy<any> | FieldReadFunction<any>;
   eventOnProject?: FieldPolicy<any> | FieldReadFunction<any>;
-  eventOnWhiteboardCheckout?: FieldPolicy<any> | FieldReadFunction<any>;
   grantCredentialToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   grantCredentialToUser?: FieldPolicy<any> | FieldReadFunction<any>;
   ingest?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1715,10 +1709,10 @@ export type MutationFieldPolicy = {
   updateTagset?: FieldPolicy<any> | FieldReadFunction<any>;
   updateUser?: FieldPolicy<any> | FieldReadFunction<any>;
   updateUserGroup?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateUserPlatformSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   updateVisual?: FieldPolicy<any> | FieldReadFunction<any>;
   updateWhiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
-  updateWhiteboardContentRt?: FieldPolicy<any> | FieldReadFunction<any>;
-  updateWhiteboardRt?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateWhiteboardContent?: FieldPolicy<any> | FieldReadFunction<any>;
   updateWhiteboardTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   uploadFileOnLink?: FieldPolicy<any> | FieldReadFunction<any>;
   uploadFileOnReference?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2638,7 +2632,6 @@ export type SubscriptionKeySpecifier = (
   | 'opportunityCreated'
   | 'profileVerifiedCredential'
   | 'roomEvents'
-  | 'whiteboardContentUpdated'
   | SubscriptionKeySpecifier
 )[];
 export type SubscriptionFieldPolicy = {
@@ -2649,7 +2642,6 @@ export type SubscriptionFieldPolicy = {
   opportunityCreated?: FieldPolicy<any> | FieldReadFunction<any>;
   profileVerifiedCredential?: FieldPolicy<any> | FieldReadFunction<any>;
   roomEvents?: FieldPolicy<any> | FieldReadFunction<any>;
-  whiteboardContentUpdated?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type TagsetKeySpecifier = (
   | 'allowedValues'
@@ -2864,68 +2856,25 @@ export type VisualFieldPolicy = {
 };
 export type WhiteboardKeySpecifier = (
   | 'authorization'
-  | 'checkout'
-  | 'content'
-  | 'createdBy'
-  | 'createdDate'
-  | 'id'
-  | 'nameID'
-  | 'profile'
-  | WhiteboardKeySpecifier
-)[];
-export type WhiteboardFieldPolicy = {
-  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  checkout?: FieldPolicy<any> | FieldReadFunction<any>;
-  content?: FieldPolicy<any> | FieldReadFunction<any>;
-  createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
-  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-  nameID?: FieldPolicy<any> | FieldReadFunction<any>;
-  profile?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type WhiteboardCheckoutKeySpecifier = (
-  | 'authorization'
-  | 'id'
-  | 'lifecycle'
-  | 'lockedBy'
-  | 'status'
-  | WhiteboardCheckoutKeySpecifier
-)[];
-export type WhiteboardCheckoutFieldPolicy = {
-  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-  lifecycle?: FieldPolicy<any> | FieldReadFunction<any>;
-  lockedBy?: FieldPolicy<any> | FieldReadFunction<any>;
-  status?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type WhiteboardContentUpdatedKeySpecifier = (
-  | 'content'
-  | 'whiteboardID'
-  | WhiteboardContentUpdatedKeySpecifier
-)[];
-export type WhiteboardContentUpdatedFieldPolicy = {
-  content?: FieldPolicy<any> | FieldReadFunction<any>;
-  whiteboardID?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type WhiteboardRtKeySpecifier = (
-  | 'authorization'
   | 'content'
   | 'contentUpdatePolicy'
   | 'createdBy'
   | 'createdDate'
   | 'id'
+  | 'isMultiUser'
   | 'nameID'
   | 'profile'
   | 'updatedDate'
-  | WhiteboardRtKeySpecifier
+  | WhiteboardKeySpecifier
 )[];
-export type WhiteboardRtFieldPolicy = {
+export type WhiteboardFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   content?: FieldPolicy<any> | FieldReadFunction<any>;
   contentUpdatePolicy?: FieldPolicy<any> | FieldReadFunction<any>;
   createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  isMultiUser?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3669,18 +3618,6 @@ export type StrictTypedTypePolicies = {
   Whiteboard?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | WhiteboardKeySpecifier | (() => undefined | WhiteboardKeySpecifier);
     fields?: WhiteboardFieldPolicy;
-  };
-  WhiteboardCheckout?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | WhiteboardCheckoutKeySpecifier | (() => undefined | WhiteboardCheckoutKeySpecifier);
-    fields?: WhiteboardCheckoutFieldPolicy;
-  };
-  WhiteboardContentUpdated?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | WhiteboardContentUpdatedKeySpecifier | (() => undefined | WhiteboardContentUpdatedKeySpecifier);
-    fields?: WhiteboardContentUpdatedFieldPolicy;
-  };
-  WhiteboardRt?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | WhiteboardRtKeySpecifier | (() => undefined | WhiteboardRtKeySpecifier);
-    fields?: WhiteboardRtFieldPolicy;
   };
   WhiteboardTemplate?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | WhiteboardTemplateKeySpecifier | (() => undefined | WhiteboardTemplateKeySpecifier);

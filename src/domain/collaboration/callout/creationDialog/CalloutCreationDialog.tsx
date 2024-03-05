@@ -58,17 +58,6 @@ export interface CalloutCreationDialogProps {
   canCreateCalloutFromTemplate?: boolean;
 }
 
-export interface TemplateProfile {
-  description?: string;
-  displayName: string;
-  tagset?: {
-    tags: string[];
-  };
-  visual?: {
-    uri: string;
-  };
-}
-
 const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
   open,
   onClose,
@@ -151,9 +140,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
               })),
               tagsets: flowState ? [{ name: INNOVATION_FLOW_STATES_TAGSET_NAME, tags: [flowState] }] : [],
             },
-            whiteboard: callout.type === CalloutType.Whiteboard ? callout.whiteboard : undefined,
-            whiteboardRt:
-              callout.type === CalloutType.WhiteboardRt && callout.whiteboard ? callout.whiteboard : undefined,
+            whiteboard: callout.type === CalloutType.Whiteboard && callout.whiteboard ? callout.whiteboard : undefined,
             tags: callout.tags ?? [],
           },
           contributionDefaults: {
@@ -204,16 +191,12 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
       throw new Error("Couldn't load CalloutTemplate");
     }
 
-    const whiteboard =
-      template.type === CalloutType.Whiteboard
-        ? template.framing.whiteboard
-        : template.type === CalloutType.WhiteboardRt
-        ? template.framing.whiteboardRt
-        : undefined;
+    const whiteboard = template.type === CalloutType.Whiteboard ? template.framing.whiteboard : undefined;
 
     const references = template.type === CalloutType.LinkCollection ? undefined : template.framing.profile.references;
 
     setCallout({
+      displayName: template.framing.profile.displayName,
       description: template.framing.profile.description,
       tags: template.framing.profile.tagset?.tags,
       references,

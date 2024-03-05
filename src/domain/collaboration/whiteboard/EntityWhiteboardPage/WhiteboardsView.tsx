@@ -1,10 +1,10 @@
 import React, { FC } from 'react';
-import WhiteboardsManagementViewWrapper from '../WhiteboardsManagement/WhiteboardsManagementViewWrapper';
 import useBackToParentPage from '../../../../core/routing/deprecated/useBackToParentPage';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
-import { WhiteboardProvider } from '../containers/WhiteboardProvider';
 import { buildWhiteboardUrl, JourneyLocation } from '../../../../main/routing/urlBuilders';
 import { useCalloutIdQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import WhiteboardView from '../WhiteboardsManagement/WhiteboardView';
+import { WhiteboardProvider } from '../containers/WhiteboardProvider';
 
 export interface WhiteboardsPageProps extends JourneyLocation {
   whiteboardNameId: string;
@@ -53,13 +53,14 @@ const WhiteboardsView: FC<WhiteboardsPageProps> = ({
   return (
     <WhiteboardProvider whiteboardNameId={whiteboardNameId} calloutId={calloutId} spaceId={spaceNameId}>
       {(entities, state) => (
-        <WhiteboardsManagementViewWrapper
-          whiteboardNameId={whiteboardNameId}
+        <WhiteboardView
+          whiteboardId={entities.whiteboard?.id}
           backToWhiteboards={backToWhiteboards}
-          whiteboardShareUrl={whiteboardShareUrl}
           journeyTypeName={journeyTypeName}
-          {...entities}
-          {...state}
+          whiteboardShareUrl={whiteboardShareUrl}
+          whiteboard={entities.whiteboard}
+          authorization={entities.whiteboard?.authorization}
+          loadingWhiteboards={state.loadingWhiteboards}
           {...props}
         />
       )}

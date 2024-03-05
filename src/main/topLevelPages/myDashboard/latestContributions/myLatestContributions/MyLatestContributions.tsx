@@ -1,5 +1,4 @@
 import { useEffect, useMemo } from 'react';
-import { uniqBy } from 'lodash';
 import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 import { useTranslation } from 'react-i18next';
 import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
@@ -10,14 +9,14 @@ import {
   LatestContributionsQuery,
   LatestContributionsQueryVariables,
 } from '../../../../../core/apollo/generated/graphql-schema';
-import { Identifiable } from '../../../../../core/utils/Identifiable';
 import usePaginatedQuery from '../../../../../domain/shared/pagination/usePaginatedQuery';
 import { Box } from '@mui/material';
 import {
   ActivityLogResultType,
   ActivityViewChooser,
 } from '../../../../../domain/collaboration/activity/ActivityLog/ActivityComponent';
-import MyActivityViewFooter from '../../../../../domain/collaboration/activity/ActivityLog/views/MyActivityViewFooter';
+import { CaptionSmall } from '../../../../../core/ui/typography/components';
+import defaultJourneyAvatar from '../../../../../domain/journey/defaultVisuals/Avatar.jpg';
 
 const MY_LATEST_CONTRIBUTIONS_COUNT = 4;
 
@@ -41,7 +40,7 @@ const MyLatestContributions = () => {
     useQuery: useLatestContributionsQuery,
     getPageInfo: data => data.activityFeed.pageInfo,
     pageSize: 1,
-    firstPageSize: MY_LATEST_CONTRIBUTIONS_COUNT,
+    firstPageSize: MY_LATEST_CONTRIBUTIONS_COUNT * 2, ////magic number, should not be needed. toDo Fix in https://app.zenhub.com/workspaces/alkemio-development-5ecb98b262ebd9f4aec4194c/issues/gh/alkem-io/server/3626
     variables: {
       filter: {
         myActivity: true,
@@ -51,9 +50,7 @@ const MyLatestContributions = () => {
   });
 
   const activities = useMemo(() => {
-    return uniqBy(data?.activityFeed.activityFeed, activityItem => {
-      return (activityItem as { callout?: Identifiable }).callout?.id;
-    }).slice(0, MY_LATEST_CONTRIBUTIONS_COUNT);
+    return data?.activityFeed.activityFeed.slice(0, MY_LATEST_CONTRIBUTIONS_COUNT);
   }, [data?.activityFeed.activityFeed]);
 
   useEffect(() => {
@@ -70,14 +67,20 @@ const MyLatestContributions = () => {
       <PageContentBlockHeader title={t('pages.home.sections.myLatestContributions.title')} />
       <ScrollerWithGradient>
         <Box padding={1}>
-          {activities?.map(activity => (
-            <ActivityViewChooser
-              key={activity.id}
-              activity={activity as ActivityLogResultType}
-              journeyUrl={activity.journey?.profile.url ?? ''}
-              footerComponent={MyActivityViewFooter}
-            />
-          ))}
+          {activities && activities.length > 0 ? (
+            activities.map(activity => {
+              return (
+                <ActivityViewChooser
+                  key={activity.id}
+                  activity={activity as ActivityLogResultType}
+                  journeyUrl={activity.journey?.profile.url ?? ''}
+                  avatarUrl={activity.journey?.profile.avatar?.uri || defaultJourneyAvatar}
+                />
+              );
+            })
+          ) : (
+            <CaptionSmall padding={1}>{t('pages.home.sections.myLatestContributions.noContributions')}</CaptionSmall>
+          )}
         </Box>
       </ScrollerWithGradient>
     </PageContentBlock>
