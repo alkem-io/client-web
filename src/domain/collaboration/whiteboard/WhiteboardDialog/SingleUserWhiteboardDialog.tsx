@@ -20,7 +20,7 @@ import FlexSpacer from '../../../../core/ui/utils/FlexSpacer';
 import whiteboardSchema from '../validation/whiteboardSchema';
 import isWhiteboardContentEqual from '../utils/isWhiteboardContentEqual';
 import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
-import WhiteboardTemplatesLibrary from '../WhiteboardTemplatesLibrary/WhiteboardTemplatesLibrary';
+import WhiteboardDialogTemplatesLibrary from './WhiteboardDialogTemplatesLibrary';
 import { WhiteboardTemplateWithContent } from '../WhiteboardTemplateCard/WhiteboardTemplate';
 import mergeWhiteboard from '../utils/mergeWhiteboard';
 import { error as logError } from '../../../../core/logging/sentry/log';
@@ -231,7 +231,7 @@ const SingleUserWhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
                   maxWidth={gutters(30)}
                 />
               )}
-              <WhiteboardTemplatesLibrary onImportTemplate={handleImportTemplate} />
+              <WhiteboardDialogTemplatesLibrary editModeEnabled onImportTemplate={handleImportTemplate} />
             </DialogHeader>
             <DialogContent classes={{ root: styles.dialogContent }}>
               {!state?.loadingWhiteboardContent && whiteboard && (

@@ -13,6 +13,7 @@ import {
   useSpaceCalloutTemplatesLibraryLazyQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import TipsAndUpdatesOutlinedIcon from '@mui/icons-material/TipsAndUpdatesOutlined';
+import CollaborationTemplatesLibraryButton from '../../templates/CollaborationTemplatesLibrary/CollaborationTemplatesLibraryButton';
 
 export interface CalloutTemplatesLibraryProps {
   onImportTemplate: (template: Identifiable) => void;
@@ -34,6 +35,7 @@ const applyFilter = <T extends TemplateWithInnovationPack<TemplateBase>>(
 
 const CalloutTemplatesLibrary: FC<CalloutTemplatesLibraryProps> = ({ onImportTemplate }) => {
   const { t } = useTranslation();
+  const [isOpen, setIsOpen] = useState(false);
   const { spaceNameId } = useUrlParams();
   const [filter, setFilter] = useState<string[]>([]);
 
@@ -81,28 +83,34 @@ const CalloutTemplatesLibrary: FC<CalloutTemplatesLibraryProps> = ({ onImportTem
   );
 
   return (
-    <CollaborationTemplatesLibrary<CalloutTemplate, Identifiable, Identifiable>
-      dialogTitle={t('templateLibrary.calloutTemplates.title')}
-      onImportTemplate={onImportTemplate}
-      templateCardComponent={CalloutTemplateCard}
-      templatePreviewComponent={CalloutTemplatePreview}
-      filter={filter}
-      onFilterChange={setFilter}
-      fetchSpaceTemplatesOnLoad={Boolean(spaceNameId)}
-      fetchTemplatesFromSpace={fetchTemplatesFromSpace}
-      templatesFromSpace={templatesFromSpace}
-      loadingTemplatesFromSpace={loadingTemplatesFromSpace}
-      fetchTemplatesFromPlatform={fetchPlatformTemplates}
-      templatesFromPlatform={templatesFromPlatform}
-      loadingTemplatesFromPlatform={loadingTemplatesFromPlatform}
-      buttonProps={{
-        size: 'large',
-        startIcon: <TipsAndUpdatesOutlinedIcon />,
-        variant: 'outlined',
-        sx: { textTransform: 'none', justifyContent: 'start' },
-        children: <>{t('components.calloutTypeSelect.callout-templates-library' as const)}</>,
-      }}
-    />
+    <>
+      <CollaborationTemplatesLibraryButton
+        size="large"
+        startIcon={<TipsAndUpdatesOutlinedIcon />}
+        variant="outlined"
+        sx={{ textTransform: 'none', justifyContent: 'start' }}
+        onClick={() => setIsOpen(true)}
+      >
+        {t('components.calloutTypeSelect.callout-templates-library')}
+      </CollaborationTemplatesLibraryButton>
+      <CollaborationTemplatesLibrary<CalloutTemplate, Identifiable, Identifiable>
+        open={isOpen}
+        onClose={() => setIsOpen(false)}
+        dialogTitle={t('templateLibrary.calloutTemplates.title')}
+        onImportTemplate={onImportTemplate}
+        templateCardComponent={CalloutTemplateCard}
+        templatePreviewComponent={CalloutTemplatePreview}
+        filter={filter}
+        onFilterChange={setFilter}
+        fetchSpaceTemplatesOnLoad={Boolean(spaceNameId)}
+        fetchTemplatesFromSpace={fetchTemplatesFromSpace}
+        templatesFromSpace={templatesFromSpace}
+        loadingTemplatesFromSpace={loadingTemplatesFromSpace}
+        fetchTemplatesFromPlatform={fetchPlatformTemplates}
+        templatesFromPlatform={templatesFromPlatform}
+        loadingTemplatesFromPlatform={loadingTemplatesFromPlatform}
+      />
+    </>
   );
 };
 
