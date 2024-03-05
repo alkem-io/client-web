@@ -1,23 +1,23 @@
 import React from 'react';
 import { useField } from 'formik';
 import FormikInputField, { FormikInputFieldProps } from '../FormikInputField/FormikInputField';
-import FileUploadButton, { ReferenceType } from '../../upload/FileUpload/FileUpload';
+import FileUploadButton, { FileUploadEntityType } from '../../upload/FileUpload/FileUpload';
 import { useStorageConfigContext } from '../../../../domain/storage/StorageBucket/StorageConfigContext';
 
 const DEFAULT_PROTOCOL = 'https';
 const MATCH_PROTOCOL_REGEX = /^[a-z][a-z0-9+_-]{0,500}:\/\//i;
 
 type FormikFileInputProps = FormikInputFieldProps & {
-  referenceID?: string;
-  referenceType?: ReferenceType;
+  entityID?: string;
+  entityType?: FileUploadEntityType;
   defaultProtocol?: string;
 };
 
 const FormikFileInput = ({
   name,
-  referenceID,
+  entityID,
   defaultProtocol = DEFAULT_PROTOCOL,
-  referenceType,
+  entityType,
   ...props
 }: FormikFileInputProps) => {
   const [field, , helpers] = useField(name);
@@ -46,8 +46,8 @@ const FormikFileInput = ({
         storageConfig.canUpload && (
           <FileUploadButton
             onUpload={helpers.setValue}
-            referenceID={referenceID}
-            referenceType={referenceType}
+            entityID={entityID}
+            entityType={entityType}
             storageConfig={storageConfig}
           />
         )

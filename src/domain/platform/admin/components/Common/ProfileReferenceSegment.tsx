@@ -3,12 +3,14 @@ import { PushFunc, RemoveFunc, useEditReference } from '../../../../common/refer
 import { Reference } from '../../../../common/profile/Profile';
 import { newReferenceName } from '../../../../common/reference/newReferenceName';
 import ReferenceSegment, { ReferenceSegmentProps } from './ReferenceSegment';
+import { useTranslation } from 'react-i18next';
 
 interface ProfileReferenceSegmentProps extends ReferenceSegmentProps {
   profileId?: string;
 }
 
 export const ProfileReferenceSegment: FC<ProfileReferenceSegmentProps> = ({ profileId, readOnly, ...rest }) => {
+  const { t } = useTranslation();
   const { addReference, deleteReference, setPush, setRemove } = useEditReference();
 
   // TODO REMOVE CALLBACK FROM SIGNATURE!
@@ -17,7 +19,7 @@ export const ProfileReferenceSegment: FC<ProfileReferenceSegmentProps> = ({ prof
     if (profileId) {
       addReference({
         profileId,
-        name: newReferenceName(rest.references.length),
+        name: newReferenceName(t, rest.references.length),
         description: '',
         uri: '',
       });
