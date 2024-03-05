@@ -8,11 +8,18 @@ query InnovationFlowSettings($collaborationId: UUID!) {
     }
   }
 }
+query InnovationFlowDetails($innovationFlowId: UUID!) {
+  lookup {
+    innovationFlow(ID: $innovationFlowId) {
+      ...InnovationFlowDetails
+    }
+  }
+}
 
 fragment InnovationFlowDetails on InnovationFlow {
   id
   profile {
-    ...LifecycleProfile
+    ...InnovationFlowProfile
   }
   states {
     displayName
@@ -22,9 +29,13 @@ fragment InnovationFlowDetails on InnovationFlow {
   currentState {
     displayName
   }
+  authorization {
+    id
+    myPrivileges
+  }
 }
 
-fragment LifecycleProfile on Profile {
+fragment InnovationFlowProfile on Profile {
   id
   displayName
   description
@@ -48,6 +59,7 @@ fragment LifecycleProfile on Profile {
 fragment InnovationFlowCollaboration on Collaboration {
   id
   authorization {
+    id
     myPrivileges
   }
   callouts(displayLocations: [CONTRIBUTE_LEFT, CONTRIBUTE_RIGHT]) {

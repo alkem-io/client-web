@@ -10,14 +10,10 @@ import { useState } from 'react';
 import InnovationFlowSettingsDialog from '../InnovationFlowDialogs/InnovationFlowSettingsDialog';
 import { useGlobalGridColumns } from '../../../../core/ui/grid/constants';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
-
-export type InnovationFlowState = {
-  displayName: string;
-  description: string;
-  sortOrder: number;
-};
+import { InnovationFlowState } from '../InnovationFlow';
 
 interface InnovationFlowStatesProps {
+  collaborationId: string;
   states: InnovationFlowState[];
   currentState: string;
   selectedState: string;
@@ -27,6 +23,7 @@ interface InnovationFlowStatesProps {
 }
 
 const InnovationFlowStates = ({
+  collaborationId,
   states,
   currentState,
   selectedState,
@@ -111,7 +108,7 @@ const InnovationFlowStates = ({
           />
         </Caption>
       )}
-      <InnovationFlowSettingsDialog open={showSettingsDialog} onClose={() => setShowSettingsDialog(false)} />
+      <InnovationFlowSettingsDialog collaborationId={collaborationId} open={showSettingsDialog} onClose={() => setShowSettingsDialog(false)} />
     </PageContentBlockSeamless>
   );
 };

@@ -4,7 +4,7 @@ import { Box, CircularProgress } from '@mui/material';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import { useInnovationFlowTemplateStatesQuery } from '../../../../core/apollo/generated/apollo-hooks';
-import { InnovationFlowState } from '../InnovationFlowStates/InnovationFlowStates';
+import { InnovationFlowState } from '../InnovationFlow';
 
 interface InnovationFlowTemplatePreviewProps {
   template?: Identifiable;

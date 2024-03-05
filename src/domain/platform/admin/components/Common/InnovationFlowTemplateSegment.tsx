@@ -3,7 +3,7 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SafeInnovationFlowVisualizer } from '../../templates/InnovationTemplates/SafeInnovationFlowVisualizer';
 import FormikSelect, { FormikSelectValue } from '../../../../../core/ui/forms/FormikSelect';
-import { InnovationFlowState } from '../../../../collaboration/InnovationFlow/InnovationFlowStates/InnovationFlowStates';
+import { InnovationFlowState } from '../../../../collaboration/InnovationFlow/InnovationFlow';
 
 interface InnovationFlowTemplateSegmentProps {
   innovationFlowTemplateOptions: FormikSelectValue[];

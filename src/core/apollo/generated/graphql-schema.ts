@@ -1450,9 +1450,9 @@ export type CreateChallengeOnSpaceInput = {
 };
 
 export type CreateCollaborationInput = {
-  /** The ID of the Collaboration to use for setting up the collaboration of the Opportunity. */
+  /** The ID of the Collaboration to use for setting up the collaboration of the Collaboration. */
   collaborationTemplateID?: InputMaybe<Scalars['UUID']>;
-  /** The Innovation Flow template to use for the Opportunity. */
+  /** The Innovation Flow template to use for the Collaboration. */
   innovationFlowTemplateID?: InputMaybe<Scalars['UUID']>;
 };
 
@@ -2719,6 +2719,8 @@ export type Mutation = {
   updateInnovationFlow: InnovationFlow;
   /** Updates the InnovationFlow. */
   updateInnovationFlowState: InnovationFlow;
+  /** Updates the InnovationFlow states from the specified template. */
+  updateInnovationFlowStatesFromTemplate: InnovationFlow;
   /** Updates the specified InnovationFlowTemplate. */
   updateInnovationFlowTemplate: InnovationFlowTemplate;
   /** Update Innovation Hub. */
@@ -3255,6 +3257,10 @@ export type MutationUpdateInnovationFlowArgs = {
 
 export type MutationUpdateInnovationFlowStateArgs = {
   innovationFlowStateData: UpdateInnovationFlowSelectedStateInput;
+};
+
+export type MutationUpdateInnovationFlowStatesFromTemplateArgs = {
+  innovationFlowData: UpdateInnovationFlowFromTemplateInput;
 };
 
 export type MutationUpdateInnovationFlowTemplateArgs = {
@@ -5163,6 +5169,13 @@ export type UpdateFormQuestionInput = {
   sortOrder: Scalars['Float'];
 };
 
+export type UpdateInnovationFlowFromTemplateInput = {
+  /** ID of the Innovation Flow */
+  innovationFlowID: Scalars['UUID'];
+  /** The InnovationFlow template whose State definition will be used for the Innovation Flow */
+  inovationFlowTemplateID: Scalars['UUID'];
+};
+
 export type UpdateInnovationFlowInput = {
   /** ID of the Innovation Flow */
   innovationFlowID: Scalars['UUID'];
@@ -6813,10 +6826,17 @@ export type InnovationFlowSettingsQuery = {
                   sortOrder: number;
                 }>;
                 currentState: { __typename?: 'InnovationFlowState'; displayName: string };
+                authorization?:
+                  | {
+                      __typename?: 'Authorization';
+                      id: string;
+                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                    }
+                  | undefined;
               }
             | undefined;
           authorization?:
-            | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
           callouts?:
             | Array<{
@@ -6845,6 +6865,73 @@ export type InnovationFlowSettingsQuery = {
                   };
                 };
               }>
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type InnovationFlowDetailsQueryVariables = Exact<{
+  innovationFlowId: Scalars['UUID'];
+}>;
+
+export type InnovationFlowDetailsQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    innovationFlow?:
+      | {
+          __typename?: 'InnovationFlow';
+          id: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            description?: string | undefined;
+            tagsets?:
+              | Array<{
+                  __typename?: 'Tagset';
+                  id: string;
+                  name: string;
+                  tags: Array<string>;
+                  allowedValues: Array<string>;
+                  type: TagsetType;
+                }>
+              | undefined;
+            references?:
+              | Array<{
+                  __typename?: 'Reference';
+                  id: string;
+                  name: string;
+                  description?: string | undefined;
+                  uri: string;
+                }>
+              | undefined;
+            bannerNarrow?:
+              | {
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: string;
+                  allowedTypes: Array<string>;
+                  aspectRatio: number;
+                  maxHeight: number;
+                  maxWidth: number;
+                  minHeight: number;
+                  minWidth: number;
+                  alternativeText?: string | undefined;
+                }
+              | undefined;
+          };
+          states: Array<{
+            __typename?: 'InnovationFlowState';
+            displayName: string;
+            description: string;
+            sortOrder: number;
+          }>;
+          currentState: { __typename?: 'InnovationFlowState'; displayName: string };
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
         }
       | undefined;
@@ -6890,9 +6977,12 @@ export type InnovationFlowDetailsFragment = {
   };
   states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string; sortOrder: number }>;
   currentState: { __typename?: 'InnovationFlowState'; displayName: string };
+  authorization?:
+    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+    | undefined;
 };
 
-export type LifecycleProfileFragment = {
+export type InnovationFlowProfileFragment = {
   __typename?: 'Profile';
   id: string;
   displayName: string;
@@ -6931,7 +7021,7 @@ export type InnovationFlowCollaborationFragment = {
   __typename?: 'Collaboration';
   id: string;
   authorization?:
-    | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
   callouts?:
     | Array<{
@@ -7004,33 +7094,6 @@ export type UpdateCalloutFlowStateMutation = {
   };
 };
 
-export type InnovationFlowStatesAllowedValuesQueryVariables = Exact<{
-  id: Scalars['UUID'];
-}>;
-
-export type InnovationFlowStatesAllowedValuesQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    innovationFlow?:
-      | {
-          __typename?: 'InnovationFlow';
-          id: string;
-          authorization?:
-            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-            | undefined;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            tagsets?:
-              | Array<{ __typename?: 'Tagset'; id: string; name: string; allowedValues: Array<string> }>
-              | undefined;
-          };
-        }
-      | undefined;
-  };
-};
-
 export type UpdateInnovationFlowStateMutationVariables = Exact<{
   input: UpdateInnovationFlowSelectedStateInput;
 }>;
@@ -7038,6 +7101,19 @@ export type UpdateInnovationFlowStateMutationVariables = Exact<{
 export type UpdateInnovationFlowStateMutation = {
   __typename?: 'Mutation';
   updateInnovationFlowState: {
+    __typename?: 'InnovationFlow';
+    id: string;
+    currentState: { __typename?: 'InnovationFlowState'; displayName: string };
+  };
+};
+
+export type UpdateInnovationFlowStatesFromTemplateMutationVariables = Exact<{
+  input: UpdateInnovationFlowFromTemplateInput;
+}>;
+
+export type UpdateInnovationFlowStatesFromTemplateMutation = {
+  __typename?: 'Mutation';
+  updateInnovationFlowStatesFromTemplate: {
     __typename?: 'InnovationFlow';
     id: string;
     currentState: { __typename?: 'InnovationFlowState'; displayName: string };

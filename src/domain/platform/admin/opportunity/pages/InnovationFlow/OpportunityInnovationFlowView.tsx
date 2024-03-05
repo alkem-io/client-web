@@ -46,10 +46,7 @@ const OpportunityInnovationFlowView: FC = () => {
       //!! TODO: Update the innovation flow states of this opportunity copying them from the selected template
       updateOpportunityInnovationFlow({
         variables: {
-          input: {
-            innovationFlowId,
-            innovationFlowTemplateID,
-          },
+          templateId: innovationFlowTemplateID,
         },
       });
     }

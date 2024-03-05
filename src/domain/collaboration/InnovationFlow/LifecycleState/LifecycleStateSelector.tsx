@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import useLoadingState from '../../../shared/utils/useLoadingState';
 import { gutters } from '../../../../core/ui/grid/utils';
-import { InnovationFlowState } from '../InnovationFlowStates/InnovationFlowStates';
+import { InnovationFlowState } from '../InnovationFlow';
 
 interface LifecycleStateSelectorProps {
   currentState: string | undefined;

@@ -1,47 +1,38 @@
-import { useChallengeInnovationFlowStatesAllowedValuesQuery } from '../../../../core/apollo/generated/apollo-hooks';
-import { useOpportunityInnovationFlowStatesAllowedValuesQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { useInnovationFlowDetailsQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
+import { InnovationFlowState } from '../InnovationFlow';
 
 interface UseInnovationFlowStatesParams {
-  journeyId: string | undefined;
+  innovationFlowId: string | undefined;
   journeyTypeName: JourneyTypeName;
 }
 
-export const INNOVATION_FLOW_STATES_TAGSET_NAME = 'flow-state';
-
 export interface UseInnovationFlowStatesProvided {
-  innovationFlowStates: string[] | undefined;
+  innovationFlowStates: InnovationFlowState[] | undefined;
   currentInnovationFlowState: string | undefined;
   canEditInnovationFlow: boolean | undefined;
 }
 
 const useInnovationFlowStates = ({
-  journeyId,
-  journeyTypeName,
+  innovationFlowId,
 }: UseInnovationFlowStatesParams): UseInnovationFlowStatesProvided => {
-  const { data: challengeFlowStatesData } = useChallengeInnovationFlowStatesAllowedValuesQuery({
-    variables: { id: journeyId! },
-    skip: !journeyId || journeyTypeName !== 'challenge',
+  const { data } = useInnovationFlowDetailsQuery({
+    variables: {
+      innovationFlowId: innovationFlowId!
+    },
+    skip: !innovationFlowId
   });
 
-  const { data: opportunityFlowStatesData } = useOpportunityInnovationFlowStatesAllowedValuesQuery({
-    variables: { id: journeyId! },
-    skip: !journeyId || journeyTypeName !== 'opportunity',
-  });
+  const innovationFlow = data?.lookup.innovationFlow;
 
-  const { lookup } = opportunityFlowStatesData ?? challengeFlowStatesData ?? {};
 
-  const flowStatesTagset = lookup?.journey?.innovationFlow?.profile.tagsets?.find(
-    tagset => tagset.name === INNOVATION_FLOW_STATES_TAGSET_NAME
-  );
-  const currentInnovationFlowState = lookup?.journey?.innovationFlow?.lifecycle?.state;
-  const myPrivilleges = lookup?.journey?.innovationFlow?.authorization?.myPrivileges;
+  const currentInnovationFlowState = innovationFlow?.currentState.displayName;
+  const myPrivilleges = innovationFlow?.authorization?.myPrivileges;
   const canEditInnovationFlow = myPrivilleges?.includes(AuthorizationPrivilege.Update);
-  const flowStates = flowStatesTagset?.allowedValues;
 
   return {
-    innovationFlowStates: flowStates,
+    innovationFlowStates: innovationFlow?.states,
     currentInnovationFlowState,
     canEditInnovationFlow,
   };

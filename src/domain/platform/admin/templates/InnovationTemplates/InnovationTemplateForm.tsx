@@ -9,7 +9,7 @@ import TemplateForm from '../TemplateForm';
 import Typography from '@mui/material/Typography';
 import { Box } from '@mui/material';
 import { SafeInnovationFlowVisualizer } from './SafeInnovationFlowVisualizer';
-import { InnovationFlowState } from '../../../../collaboration/InnovationFlow/InnovationFlowStates/InnovationFlowStates';
+import { InnovationFlowState } from '../../../../collaboration/InnovationFlow/InnovationFlow';
 
 export interface InnovationTemplateFormValues {
   displayName: string;

@@ -1,7 +1,7 @@
 import { Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { BlockSectionTitle, Caption } from '../../../../../core/ui/typography';
-import { InnovationFlowState } from '../../../../collaboration/InnovationFlow/InnovationFlowStates/InnovationFlowStates';
+import { InnovationFlowState } from '../../../../collaboration/InnovationFlow/InnovationFlow';
 
 export const SafeInnovationFlowVisualizer = ({ states }: { states: InnovationFlowState[] }) => {
   const { t } = useTranslation();

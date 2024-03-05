@@ -3,7 +3,7 @@ import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
-import { InnovationFlowIcon } from '../../../platform/admin/templates/InnovationTemplates/InnovationFlow/InnovationFlowIcon';
+import { InnovationFlowIcon } from '../InnovationFlowIcon/InnovationFlowIcon';
 import InnovationFlowProfileBlock from './InnovationFlowProfileBlock';
 import useInnovationFlowSettings from './useInnovationFlowSettings';
 import LifecycleStateSelector from '../LifecycleState/LifecycleStateSelector';
@@ -39,7 +39,7 @@ const InnovationFlowSettingsDialog: FC<InnovationFlowSettingsDialogProps> = ({ o
             <LifecycleStateSelector
               currentState={innovationFlow?.currentState.displayName}
               states={innovationFlow?.states}
-              onStateChange={nextState => actions.changeCurrentState(nextState)}
+              onStateChange={actions.updateInnovationFlowState}
             />
           </InnovationFlowProfileBlock>
           <InnovationFlowCollaborationToolsBlock

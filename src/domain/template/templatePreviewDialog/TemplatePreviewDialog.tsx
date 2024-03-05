@@ -20,7 +20,7 @@ import DialogContent from '../../../core/ui/dialog/DialogContent';
 import { Identifiable } from '../../../core/utils/Identifiable';
 import CalloutTemplatePreview from '../calloutTemplate/CalloutTemplatePreview';
 import CalloutTemplateCard, { CalloutTemplate } from '../calloutTemplate/CalloutTemplateCard';
-import { InnovationFlowState } from '../../collaboration/InnovationFlow/InnovationFlowStates/InnovationFlowStates';
+import { InnovationFlowState } from '../../collaboration/InnovationFlow/InnovationFlow';
 
 export type TemplatePreview =
   | {

@@ -16,7 +16,7 @@ import PageContent from '../../../../../core/ui/content/PageContent';
 import { BlockTitle, Tagline } from '../../../../../core/ui/typography';
 import PageContentBlock, { PageContentBlockProps } from '../../../../../core/ui/content/PageContentBlock';
 import TagsComponent from '../../../../shared/components/TagsComponent/TagsComponent';
-import InnovationFlow from '../../../../platform/admin/templates/InnovationTemplates/InnovationFlow/InnovationFlow';
+import InnovationFlow from '../../../../collaboration/InnovationFlow/InnovationFlowIcon/InnovationFlow';
 import { OpportunityApplicationButton } from '../../../../community/application/applicationButton/OpportunityApplicationButton';
 import OpportunityApplicationButtonContainer from '../../../../community/application/containers/OpportunityApplicationButtonContainer';
 import EntityDashboardContributorsSection from '../../../../community/community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';
@@ -40,6 +40,7 @@ import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import DialogWithGrid from '../../../../../core/ui/dialog/DialogWithGrid';
 import DialogHeader from '../../../../../core/ui/dialog/DialogHeader';
 import FullWidthButton from '../../../../../core/ui/button/FullWidthButton';
+import { InnovationFlowDetails } from '../../../../collaboration/InnovationFlow/InnovationFlow';
 
 export interface AboutSectionProps extends EntityDashboardContributors, EntityDashboardLeads {
   journeyTypeName: JourneyTypeName;
@@ -57,7 +58,7 @@ export interface AboutSectionProps extends EntityDashboardContributors, EntityDa
   communityId: string | undefined;
   references: ReferenceDetailsFragment[] | undefined;
   metricsItems: MetricItem[];
-  innovationFlow?: InnovationFlowDetailsFragment;
+  innovationFlow?: InnovationFlowDetails;
 }
 
 const BLOCK_HEIGHT_GUTTERS = 13;

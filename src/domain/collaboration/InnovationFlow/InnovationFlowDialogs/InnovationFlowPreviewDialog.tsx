@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
 import { BlockTitle } from '../../../../core/ui/typography';
-import { InnovationFlowIcon } from '../../../platform/admin/templates/InnovationTemplates/InnovationFlow/InnovationFlowIcon';
+import { InnovationFlowIcon } from '../InnovationFlowIcon/InnovationFlowIcon';
 import InnovationFlowProfileBlock from './InnovationFlowProfileBlock';
 import useInnovationFlowSettings from './useInnovationFlowSettings';
 import LifecycleStateSelector from '../LifecycleState/LifecycleStateSelector';

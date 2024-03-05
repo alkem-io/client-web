@@ -8,13 +8,13 @@ import CardSegmentCaption from '../../../../core/ui/card/CardSegmentCaption';
 import ContributeCard from '../../../../core/ui/card/ContributeCard';
 import { Caption } from '../../../../core/ui/typography/components';
 import InnovationPackIcon from '../../InnovationPack/InnovationPackIcon';
-import { InnovationFlowIcon } from '../../../platform/admin/templates/InnovationTemplates/InnovationFlow/InnovationFlowIcon';
+import { InnovationFlowIcon } from '../InnovationFlowIcon/InnovationFlowIcon';
 import { TemplateBase, TemplateCardBaseProps } from '../../templates/CollaborationTemplatesLibrary/TemplateBase';
 import CardDescription, { DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS } from '../../../../core/ui/card/CardDescription';
 import CardContent from '../../../../core/ui/card/CardContent';
 import CardTags from '../../../../core/ui/card/CardTags';
 import webkitLineClamp from '../../../../core/ui/utils/webkitLineClamp';
-import { InnovationFlowState } from '../InnovationFlowStates/InnovationFlowStates';
+import { InnovationFlowState } from '../InnovationFlow';
 
 interface InnovationFlowTemplate extends TemplateBase {
   states: InnovationFlowState[];

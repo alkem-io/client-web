@@ -6,11 +6,11 @@ import { JourneyTypeName } from '../../../JourneyTypeName';
 import { ApolloError } from '@apollo/client';
 import {
   AssociatedOrganizationDetailsFragment,
-  InnovationFlowDetailsFragment,
   MetricsItemFragment,
   ReferenceDetailsFragment,
 } from '../../../../../core/apollo/generated/graphql-schema';
 import { MetricItem } from '../../../../platform/metrics/views/Metrics';
+import { InnovationFlowDetails } from '../../../../collaboration/InnovationFlow/InnovationFlow';
 
 export interface AboutSectionProps extends EntityDashboardContributors, EntityDashboardLeads {
   journeyTypeName: JourneyTypeName;
@@ -26,7 +26,7 @@ export interface AboutSectionProps extends EntityDashboardContributors, EntityDa
   communityId: string | undefined;
   references: ReferenceDetailsFragment[] | undefined;
   metricsItems: MetricItem[];
-  innovationFlow: InnovationFlowDetailsFragment;
+  innovationFlow: InnovationFlowDetails;
   loading?: boolean;
   error?: ApolloError;
 }

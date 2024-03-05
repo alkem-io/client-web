@@ -8,7 +8,7 @@ import { DialogActions, DialogContent, DialogTitle } from '../../../../../core/u
 import PolylineOutlinedIcon from '@mui/icons-material/PolylineOutlined';
 import { InnovationFlowTemplateSegment } from '../../components/Common/InnovationFlowTemplateSegment';
 import { FormikSelectValue } from '../../../../../core/ui/forms/FormikSelect';
-import { InnovationFlowState } from '../../../../collaboration/InnovationFlow/InnovationFlowStates/InnovationFlowStates';
+import { InnovationFlowState } from '../../../../collaboration/InnovationFlow/InnovationFlow';
 
 export interface InnovationFlowTemplateProfile {
   id: string;

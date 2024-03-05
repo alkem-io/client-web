@@ -2,7 +2,7 @@ import React from 'react';
 import { TemplateImportCardComponentProps } from '../InnovationPacks/ImportTemplatesDialogGalleryStep';
 import InnovationFlowTemplateCard from '../../../../collaboration/InnovationFlow/InnovationFlowTemplateCard/InnovationFlowTemplateCard';
 import { Template } from '../AdminTemplatesSection';
-import { InnovationFlowState } from '../../../../collaboration/InnovationFlow/InnovationFlowStates/InnovationFlowStates';
+import { InnovationFlowState } from '../../../../collaboration/InnovationFlow/InnovationFlow';
 
 interface InnovationFlowTemplate extends Template {
   states: InnovationFlowState[];
