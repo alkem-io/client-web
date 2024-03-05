@@ -150,6 +150,7 @@ fragment ActivityLogCalloutLinkCreated on ActivityLogEntryCalloutLinkCreated {
   link {
     id
     profile {
+      id
       displayName
     }
     uri

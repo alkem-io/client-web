@@ -219,6 +219,7 @@ export const ActivityLogCalloutLinkCreatedFragmentDoc = gql`
     link {
       id
       profile {
+        id
         displayName
       }
       uri

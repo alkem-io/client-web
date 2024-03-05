@@ -7668,7 +7668,7 @@ export type ActivityCreatedSubscription = {
             __typename?: 'Link';
             id: string;
             uri: string;
-            profile: { __typename?: 'Profile'; displayName: string };
+            profile: { __typename?: 'Profile'; id: string; displayName: string };
           };
         }
       | {
@@ -8171,7 +8171,12 @@ type ActivityLogOnCollaboration_ActivityLogEntryCalloutLinkCreated_Fragment = {
       profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
     };
   };
-  link: { __typename?: 'Link'; id: string; uri: string; profile: { __typename?: 'Profile'; displayName: string } };
+  link: {
+    __typename?: 'Link';
+    id: string;
+    uri: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
+  };
 };
 
 type ActivityLogOnCollaboration_ActivityLogEntryCalloutPostComment_Fragment = {
@@ -8703,7 +8708,7 @@ export type ActivityLogOnCollaborationQuery = {
           __typename?: 'Link';
           id: string;
           uri: string;
-          profile: { __typename?: 'Profile'; displayName: string };
+          profile: { __typename?: 'Profile'; id: string; displayName: string };
         };
       }
     | {
@@ -9150,7 +9155,12 @@ export type ActivityLogCalloutLinkCreatedFragment = {
       profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
     };
   };
-  link: { __typename?: 'Link'; id: string; uri: string; profile: { __typename?: 'Profile'; displayName: string } };
+  link: {
+    __typename?: 'Link';
+    id: string;
+    uri: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
+  };
 };
 
 export type ActivityLogCalloutPostCommentFragment = {
@@ -30194,7 +30204,7 @@ export type LatestContributionsQuery = {
             __typename?: 'Link';
             id: string;
             uri: string;
-            profile: { __typename?: 'Profile'; displayName: string };
+            profile: { __typename?: 'Profile'; id: string; displayName: string };
           };
         }
       | {
