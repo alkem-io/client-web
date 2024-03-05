@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import EditReferenceDialog, {
   EditReferenceFormValues,
 } from '../../../shared/components/References/EditReferenceDialog';
-import CreateReferencesDialog, {
+import CreateLinksDialog, {
   CreateReferenceFormValues,
 } from '../../../shared/components/References/CreateReferencesDialog';
 import { Box, IconButton, Link } from '@mui/material';
@@ -221,7 +221,7 @@ const LinkCollectionCallout = ({
             </IconButton>
           )}
         </Box>
-        <CreateReferencesDialog
+        <CreateLinksDialog
           open={addNewReferenceDialogOpen}
           title={<Box>{t('callout.link-collection.add-link', { title: callout.framing.profile.displayName })}</Box>}
           referenceType="link"

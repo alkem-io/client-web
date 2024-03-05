@@ -6,9 +6,8 @@ import { useTranslation } from 'react-i18next';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
 import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
-import { Formik } from 'formik';
+import { FieldArray, Formik } from 'formik';
 import * as yup from 'yup';
-import { referenceSegmentSchema } from '../../../platform/admin/components/Common/ReferenceSegment';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import AddIcon from '@mui/icons-material/Add';
 import { BlockSectionTitle } from '../../../../core/ui/typography';
@@ -22,6 +21,8 @@ import { TranslateWithElements } from '../../i18n/TranslateWithElements';
 import { useConfig } from '../../../platform/config/useConfig';
 import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
 import { ReferenceType } from '../../../../core/ui/upload/FileUpload/FileUpload';
+import { MessageWithPayload } from '../../i18n/ValidationMessageTranslation';
+import { MID_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 
 export interface CreateReferenceFormValues extends Pick<Reference, 'id' | 'name' | 'uri' | 'description'> {}
 
@@ -41,7 +42,17 @@ interface CreateReferencesDialogProps {
 
 const fieldName = 'references';
 
-const CreateReferencesDialog: FC<CreateReferencesDialogProps> = ({
+export const linkSegmentValidationObject = yup.object().shape({
+  name: yup
+    .string()
+    .required(MessageWithPayload('forms.validations.required'))
+    .min(3, MessageWithPayload('forms.validations.minLength'))
+    .max(SMALL_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength')),
+  uri: yup.string().max(MID_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength')),
+});
+export const linkSegmentSchema = yup.array().of(linkSegmentValidationObject);
+
+const CreateLinksDialog: FC<CreateReferencesDialogProps> = ({
   open,
   onClose,
   title,
@@ -104,7 +115,7 @@ const CreateReferencesDialog: FC<CreateReferencesDialogProps> = ({
   );
 
   const validationSchema = yup.object().shape({
-    references: referenceSegmentSchema,
+    references: linkSegmentSchema,
   });
 
   const [nextReferenceId, setNextReferenceId] = useState<string>();
@@ -127,7 +138,7 @@ const CreateReferencesDialog: FC<CreateReferencesDialogProps> = ({
           onSubmit={() => {}}
         >
           {formikState => {
-            const { values, setFieldValue } = formikState;
+            const { values, setFieldValue, isValid } = formikState;
             const { references: currentReferences } = values;
 
             const handleAddMore = async () => {
@@ -149,65 +160,69 @@ const CreateReferencesDialog: FC<CreateReferencesDialogProps> = ({
             return (
               <>
                 <DialogContent ref={contentRef}>
-                  {currentReferences?.map((reference, index) => (
-                    <Gutters key={reference.id} data-reference={reference.id}>
-                      <Gutters row={!isMobile} disablePadding alignItems="start">
-                        <FormikInputField
-                          name={`${fieldName}.${index}.name`}
-                          title={t('common.title')}
-                          fullWidth={isMobile}
-                        />
-                        <Box flexGrow={1} width={isMobile ? '100%' : undefined}>
-                          <Box display="flex">
-                            <FormikFileInput
-                              name={`${fieldName}.${index}.uri`}
-                              title={t('common.url')}
-                              fullWidth
-                              referenceID={reference.id}
-                              referenceType={referenceType}
-                              helperText={tLinks('components.referenceSegment.url-helper-text', {
-                                terms: {
-                                  href: locations?.terms,
-                                  'aria-label': t('components.referenceSegment.plaintext-helper-text'),
-                                },
-                              })}
+                  <FieldArray name={fieldName}>
+                    {() =>
+                      currentReferences?.map((reference, index) => (
+                        <Gutters key={reference.id} data-reference={reference.id}>
+                          <Gutters row={!isMobile} disablePadding alignItems="start">
+                            <FormikInputField
+                              name={`${fieldName}.${index}.name`}
+                              title={t('common.title')}
+                              fullWidth={isMobile}
                             />
-                            <Box>
-                              <Tooltip
-                                title={t('components.referenceSegment.tooltips.remove-reference') || ''}
-                                id={'remove a reference'}
-                                placement={'bottom'}
-                              >
-                                <IconButton
-                                  aria-label={t('buttons.delete')}
-                                  onClick={async () => {
-                                    if (currentReferences.length > 1) {
-                                      // Remove the temporary reference from the server:
-                                      await onRemove(reference.id);
-                                      // Remove the id from the list of pending to confirm references:
-                                      const nextHangingReferenceIds = [...hangingReferenceIds];
-                                      nextHangingReferenceIds.splice(index, 1);
-                                      setHangingReferenceIds(nextHangingReferenceIds);
-                                      // Remove the reference from the Formik Field value
-                                      const nextValue = [...currentReferences];
-                                      nextValue.splice(index, 1);
-                                      setFieldValue(fieldName, nextValue);
-                                    }
-                                  }}
-                                  size="large"
-                                >
-                                  <DeleteOutlineIcon />
-                                </IconButton>
-                              </Tooltip>
+                            <Box flexGrow={1} width={isMobile ? '100%' : undefined}>
+                              <Box display="flex">
+                                <FormikFileInput
+                                  name={`${fieldName}.${index}.uri`}
+                                  title={t('common.url')}
+                                  fullWidth
+                                  referenceID={reference.id}
+                                  referenceType={referenceType}
+                                  helperText={tLinks('components.referenceSegment.url-helper-text', {
+                                    terms: {
+                                      href: locations?.terms,
+                                      'aria-label': t('components.referenceSegment.plaintext-helper-text'),
+                                    },
+                                  })}
+                                />
+                                <Box>
+                                  <Tooltip
+                                    title={t('components.referenceSegment.tooltips.remove-reference') || ''}
+                                    id={'remove a reference'}
+                                    placement={'bottom'}
+                                  >
+                                    <IconButton
+                                      aria-label={t('buttons.delete')}
+                                      onClick={async () => {
+                                        if (currentReferences.length > 1) {
+                                          // Remove the temporary reference from the server:
+                                          await onRemove(reference.id);
+                                          // Remove the id from the list of pending to confirm references:
+                                          const nextHangingReferenceIds = [...hangingReferenceIds];
+                                          nextHangingReferenceIds.splice(index, 1);
+                                          setHangingReferenceIds(nextHangingReferenceIds);
+                                          // Remove the reference from the Formik Field value
+                                          const nextValue = [...currentReferences];
+                                          nextValue.splice(index, 1);
+                                          setFieldValue(fieldName, nextValue);
+                                        }
+                                      }}
+                                      size="large"
+                                    >
+                                      <DeleteOutlineIcon />
+                                    </IconButton>
+                                  </Tooltip>
+                                </Box>
+                              </Box>
                             </Box>
+                          </Gutters>
+                          <Box>
+                            <FormikInputField name={`${fieldName}.${index}.description`} title={'Description'} />
                           </Box>
-                        </Box>
-                      </Gutters>
-                      <Box>
-                        <FormikInputField name={`${fieldName}.${index}.description`} title={'Description'} />
-                      </Box>
-                    </Gutters>
-                  ))}
+                        </Gutters>
+                      ))
+                    }
+                  </FieldArray>
                 </DialogContent>
                 <Box display="flex" justifyContent="end" padding={gutters()} paddingBottom={0}>
                   <BlockSectionTitle>
@@ -223,7 +238,7 @@ const CreateReferencesDialog: FC<CreateReferencesDialogProps> = ({
                 </Box>
                 <Actions padding={gutters()} justifyContent="space-between">
                   <Button onClick={handleOnClose}>{t('buttons.cancel')}</Button>
-                  <Button variant="contained" onClick={() => handleSave(currentReferences)}>
+                  <Button variant="contained" onClick={() => handleSave(currentReferences)} disabled={!isValid}>
                     {t('buttons.save')}
                   </Button>
                 </Actions>
@@ -250,4 +265,4 @@ const CreateReferencesDialog: FC<CreateReferencesDialogProps> = ({
   );
 };
 
-export default CreateReferencesDialog;
+export default CreateLinksDialog;

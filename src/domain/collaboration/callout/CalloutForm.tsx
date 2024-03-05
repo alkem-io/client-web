@@ -18,7 +18,7 @@ import WhiteboardTemplatesChooser from './creationDialog/CalloutTemplate/Whitebo
 import MarkdownValidator from '../../../core/ui/forms/MarkdownInput/MarkdownValidator';
 import FormikMarkdownField from '../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
 import { TagsetSegment } from '../../platform/admin/components/Common/TagsetSegment';
-import ReferenceSegment from '../../platform/admin/components/Common/ReferenceSegment';
+import ReferenceSegment, { referenceSegmentSchema } from '../../platform/admin/components/Common/ReferenceSegment';
 import { Reference } from '../../common/profile/Profile';
 import { ProfileReferenceSegment } from '../../platform/admin/components/Common/ProfileReferenceSegment';
 import PostTemplatesChooser from './creationDialog/CalloutTemplate/PostTemplateChooser';
@@ -165,6 +165,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
       is: CalloutType.Whiteboard,
       then: yup.string().required(),
     }),
+    references: referenceSegmentSchema,
   });
 
   const handleChange = (values: FormValueType) => {
