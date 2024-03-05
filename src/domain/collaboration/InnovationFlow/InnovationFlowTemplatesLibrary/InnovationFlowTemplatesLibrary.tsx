@@ -13,6 +13,7 @@ import { Autorenew } from '@mui/icons-material';
 import { TemplateBase } from '../../templates/CollaborationTemplatesLibrary/TemplateBase';
 import { TemplateWithInnovationPack } from '../../../platform/admin/templates/InnovationPacks/ImportTemplatesDialogGalleryStep';
 import { Identifiable } from '../../../../core/utils/Identifiable';
+import CollaborationTemplatesLibraryButton from '../../templates/CollaborationTemplatesLibrary/CollaborationTemplatesLibraryButton';
 
 interface InnovationFlowTemplate extends TemplateBase {
   definition: string;
@@ -38,6 +39,7 @@ const filterByText = (filter: string[]) => {
 
 const InnovationFlowTemplatesLibrary: FC<InnovationFlowTemplatesLibraryProps> = ({ onImportTemplate, disabled }) => {
   const { t } = useTranslation();
+  const [isOpen, setIsOpen] = useState(false);
   const { spaceNameId } = useUrlParams();
   const [filter, setFilter] = useState<string[]>([]);
 
@@ -93,29 +95,35 @@ const InnovationFlowTemplatesLibrary: FC<InnovationFlowTemplatesLibraryProps> = 
   };
 
   return (
-    <CollaborationTemplatesLibrary<InnovationFlowTemplate, Identifiable, Identifiable>
-      dialogTitle={t('templateLibrary.innovationFlowTemplates.title')}
-      onImportTemplate={onImportTemplate}
-      templateCardComponent={InnovationFlowTemplateCard}
-      templatePreviewComponent={InnovationFlowTemplatePreview}
-      filter={filter}
-      onFilterChange={setFilter}
-      fetchSpaceTemplatesOnLoad={Boolean(spaceNameId)}
-      fetchTemplatesFromSpace={fetchTemplatesFromSpace}
-      getTemplateWithContent={getInnovationFlowTemplateDefinition}
-      templatesFromSpace={templatesFromSpace}
-      loadingTemplatesFromSpace={loadingTemplatesFromSpace}
-      fetchTemplatesFromPlatform={fetchPlatformTemplates}
-      templatesFromPlatform={templatesFromPlatform}
-      loadingTemplatesFromPlatform={loadingTemplatesFromPlatform}
-      disableUsePlatformTemplates
-      buttonProps={{
-        variant: 'text',
-        disabled,
-        children: t('components.innovationFlowTemplateSelect.select'),
-        startIcon: <Autorenew />,
-      }}
-    />
+    <>
+      <CollaborationTemplatesLibraryButton
+        variant="text"
+        disabled={disabled}
+        startIcon={<Autorenew />}
+        onClick={() => setIsOpen(true)}
+      >
+        {t('components.innovationFlowTemplateSelect.select')}
+      </CollaborationTemplatesLibraryButton>
+      <CollaborationTemplatesLibrary<InnovationFlowTemplate, Identifiable, Identifiable>
+        open={isOpen}
+        onClose={() => setIsOpen(false)}
+        dialogTitle={t('templateLibrary.innovationFlowTemplates.title')}
+        onImportTemplate={onImportTemplate}
+        templateCardComponent={InnovationFlowTemplateCard}
+        templatePreviewComponent={InnovationFlowTemplatePreview}
+        filter={filter}
+        onFilterChange={setFilter}
+        fetchSpaceTemplatesOnLoad={Boolean(spaceNameId)}
+        fetchTemplatesFromSpace={fetchTemplatesFromSpace}
+        getTemplateWithContent={getInnovationFlowTemplateDefinition}
+        templatesFromSpace={templatesFromSpace}
+        loadingTemplatesFromSpace={loadingTemplatesFromSpace}
+        fetchTemplatesFromPlatform={fetchPlatformTemplates}
+        templatesFromPlatform={templatesFromPlatform}
+        loadingTemplatesFromPlatform={loadingTemplatesFromPlatform}
+        disableUsePlatformTemplates
+      />
+    </>
   );
 };
 

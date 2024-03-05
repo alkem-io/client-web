@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useField } from 'formik';
 // import { Caption, CardText } from '../../../../../core/ui/typography/components';
@@ -9,6 +9,7 @@ import EmptyWhiteboard from '../../../../common/whiteboard/EmptyWhiteboard';
 import WhiteboardTemplatesLibrary from '../../../whiteboard/WhiteboardTemplatesLibrary/WhiteboardTemplatesLibrary';
 import { WhiteboardTemplateWithContent } from '../../../whiteboard/WhiteboardTemplateCard/WhiteboardTemplate';
 import { gutters } from '../../../../../core/ui/grid/utils';
+import CollaborationTemplatesLibraryButton from '../../../templates/CollaborationTemplatesLibrary/CollaborationTemplatesLibraryButton';
 
 interface WhiteboardTemplatesChooserProps {
   name: string;
@@ -16,6 +17,7 @@ interface WhiteboardTemplatesChooserProps {
 
 export const WhiteboardTemplatesChooser: FC<WhiteboardTemplatesChooserProps> = ({ name }) => {
   const { t } = useTranslation();
+  const [isOpen, setIsOpen] = useState(false);
   const [, , helpers] = useField<String>(name);
   const handleResetWhiteboardTemplate = () => {
     helpers.setValue(JSON.stringify(EmptyWhiteboard));
@@ -44,7 +46,12 @@ export const WhiteboardTemplatesChooser: FC<WhiteboardTemplatesChooserProps> = (
           <Button onClick={handleResetWhiteboardTemplate} startIcon={<RestartAltIcon />}>
             {t('components.callout-creation.template-step.whiteboard-reset-template')}
           </Button>
-          <WhiteboardTemplatesLibrary onImportTemplate={handleSelectTemplate} />
+          <CollaborationTemplatesLibraryButton onClick={() => setIsOpen(true)} />
+          <WhiteboardTemplatesLibrary
+            open={isOpen}
+            onClose={() => setIsOpen(false)}
+            onImportTemplate={handleSelectTemplate}
+          />
         </Box>
       </Box>
       <FormikWhiteboardPreview

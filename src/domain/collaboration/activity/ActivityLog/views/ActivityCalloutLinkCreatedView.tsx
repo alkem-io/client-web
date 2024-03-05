@@ -7,8 +7,10 @@ import { ActivityEventType } from '../../../../../core/apollo/generated/graphql-
 
 interface ActivityCalloutLinkCreatedViewProps extends ActivityViewProps {
   callout: ActivityCalloutValues;
-  reference: {
-    name: string;
+  link: {
+    profile: {
+      displayName: string;
+    };
   };
   type: ActivityEventType.CalloutLinkCreated;
 }
@@ -18,7 +20,7 @@ export const ActivityCalloutLinkCreatedView: FC<ActivityCalloutLinkCreatedViewPr
   loading,
   createdDate,
   callout,
-  reference,
+  link,
   type,
 }) => {
   return (
@@ -26,7 +28,7 @@ export const ActivityCalloutLinkCreatedView: FC<ActivityCalloutLinkCreatedViewPr
       avatarUrl={avatarUrl}
       loading={loading}
       type={type}
-      title={<ActivityDescriptionByType activityType={type} subject={reference.name} />}
+      title={<ActivityDescriptionByType activityType={type} subject={link.profile.displayName} />}
       url={callout.framing.profile.url}
       contextDisplayName={callout.framing.profile.displayName}
       createdDate={createdDate}
