@@ -13,6 +13,7 @@ import PostTemplatePreview from './PostTemplatePreview';
 import { TemplateCardBaseProps } from '../../templates/CollaborationTemplatesLibrary/TemplateBase';
 import { TemplateWithInnovationPack } from '../../../platform/admin/templates/InnovationPacks/ImportTemplatesDialogGalleryStep';
 import { Identifiable } from '../../../../core/utils/Identifiable';
+import CollaborationTemplatesLibraryButton from '../../templates/CollaborationTemplatesLibrary/CollaborationTemplatesLibraryButton';
 
 export interface PostTemplatesLibraryProps {
   onSelectTemplate: (template: PostTemplateWithValue) => void;
@@ -34,6 +35,7 @@ const applyFilter = <T extends TemplateWithInnovationPack<PostTemplate>>(
 
 const PostTemplatesLibrary: FC<PostTemplatesLibraryProps> = ({ onSelectTemplate }) => {
   const { t } = useTranslation();
+  const [isOpen, setIsOpen] = useState(false);
   const { spaceNameId } = useUrlParams();
   const [filter, setFilter] = useState<string[]>([]);
 
@@ -88,22 +90,27 @@ const PostTemplatesLibrary: FC<PostTemplatesLibraryProps> = ({ onSelectTemplate 
   };
 
   return (
-    <CollaborationTemplatesLibrary
-      dialogTitle={t('templateLibrary.postTemplates.title')}
-      onImportTemplate={onSelectTemplate}
-      templateCardComponent={PostTemplateCard as ComponentType<TemplateCardBaseProps<PostTemplate>>}
-      templatePreviewComponent={PostTemplatePreview}
-      filter={filter}
-      onFilterChange={setFilter}
-      fetchSpaceTemplatesOnLoad={Boolean(spaceNameId)}
-      fetchTemplatesFromSpace={fetchTemplatesFromSpace}
-      templatesFromSpace={templatesFromSpace}
-      loadingTemplatesFromSpace={loadingTemplatesFromSpace}
-      getTemplateWithContent={getPostTemplateContent}
-      fetchTemplatesFromPlatform={fetchPlatformTemplates}
-      templatesFromPlatform={templatesFromPlatform}
-      loadingTemplatesFromPlatform={loadingTemplatesFromPlatform}
-    />
+    <>
+      <CollaborationTemplatesLibraryButton onClick={() => setIsOpen(true)} />
+      <CollaborationTemplatesLibrary
+        open={isOpen}
+        onClose={() => setIsOpen(false)}
+        dialogTitle={t('templateLibrary.postTemplates.title')}
+        onImportTemplate={onSelectTemplate}
+        templateCardComponent={PostTemplateCard as ComponentType<TemplateCardBaseProps<PostTemplate>>}
+        templatePreviewComponent={PostTemplatePreview}
+        filter={filter}
+        onFilterChange={setFilter}
+        fetchSpaceTemplatesOnLoad={Boolean(spaceNameId)}
+        fetchTemplatesFromSpace={fetchTemplatesFromSpace}
+        templatesFromSpace={templatesFromSpace}
+        loadingTemplatesFromSpace={loadingTemplatesFromSpace}
+        getTemplateWithContent={getPostTemplateContent}
+        fetchTemplatesFromPlatform={fetchPlatformTemplates}
+        templatesFromPlatform={templatesFromPlatform}
+        loadingTemplatesFromPlatform={loadingTemplatesFromPlatform}
+      />
+    </>
   );
 };
 

@@ -12,7 +12,6 @@ import CollaborativeExcalidrawWrapper from '../../../common/whiteboard/excalidra
 import { ExportedDataState } from '@alkemio/excalidraw/types/data/types';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import whiteboardSchema from '../validation/whiteboardSchema';
-import WhiteboardTemplatesLibrary from '../WhiteboardTemplatesLibrary/WhiteboardTemplatesLibrary';
 import { WhiteboardTemplateWithContent } from '../WhiteboardTemplateCard/WhiteboardTemplate';
 import mergeWhiteboard from '../utils/mergeWhiteboard';
 import { error as logError } from '../../../../core/logging/sentry/log';
@@ -31,8 +30,8 @@ import { ExcalidrawElement, ExcalidrawImageElement } from '@alkemio/excalidraw/t
 import WhiteboardDisplayName from './WhiteboardDisplayName';
 import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
 import useLoadingState from '../../../shared/utils/useLoadingState';
-import { Box } from '@mui/material';
-import { gutters } from '../../../../core/ui/grid/utils';
+import { useGlobalGridColumns } from '../../../../core/ui/grid/constants';
+import WhiteboardDialogTemplatesLibrary from './WhiteboardDialogTemplatesLibrary';
 
 interface WhiteboardDialogProps<Whiteboard extends WhiteboardWithContent> {
   entities: {
@@ -129,6 +128,7 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
   const editModeEnabled = options.canEdit;
 
   const styles = useStyles();
+  const columns = useGlobalGridColumns();
 
   const { data: lastSaved, refetch: refetchLastSaved } = useWhiteboardLastUpdatedDateQuery({
     variables: { whiteboardId: whiteboard?.id! },
@@ -316,12 +316,12 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
                   paper: options.fullscreen ? styles.dialogFullscreen : styles.dialogRoot,
                 }}
                 onClose={onClose}
-                fullScreen={options.fullscreen}
+                fullScreen={options.fullscreen || columns <= 4}
               >
                 <DialogHeader
                   actions={options.headerActions}
                   onClose={onClose}
-                  titleContainerProps={{ flexDirection: 'row' }}
+                  titleContainerProps={{ flexDirection: 'row', gap: 0, marginRight: -1 }}
                 >
                   <WhiteboardDisplayName
                     displayName={whiteboard?.profile?.displayName}
@@ -329,11 +329,10 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
                     editDisplayName={options.editDisplayName}
                     onChangeDisplayName={newDisplayName => actions.onChangeDisplayName(whiteboard?.id, newDisplayName)}
                   />
-                  {editModeEnabled && (
-                    <Box height={gutters()} display="flex" alignItems="center">
-                      <WhiteboardTemplatesLibrary onImportTemplate={handleImportTemplate} />
-                    </Box>
-                  )}
+                  <WhiteboardDialogTemplatesLibrary
+                    editModeEnabled={editModeEnabled}
+                    onImportTemplate={handleImportTemplate}
+                  />
                 </DialogHeader>
                 <DialogContent sx={{ paddingY: 0 }}>{children}</DialogContent>
                 <WhiteboardDialogFooter
