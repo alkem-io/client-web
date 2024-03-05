@@ -1,4 +1,4 @@
-import { Box, Button, TextField } from '@mui/material';
+import { Box, Button, IconButton, TextField } from '@mui/material';
 import React, { FC, useEffect, useState } from 'react';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
@@ -7,6 +7,8 @@ import { LoadingButton } from '@mui/lab';
 import { useTranslation } from 'react-i18next';
 import { gutters } from '../../../../core/ui/grid/utils';
 import { BlockTitle } from '../../../../core/ui/typography';
+import { Edit } from '@mui/icons-material';
+import { useGlobalGridColumns } from '../../../../core/ui/grid/constants';
 
 interface WhiteboardDisplayNameProps {
   displayName: string | undefined;
@@ -22,6 +24,8 @@ const WhiteboardDisplayName: FC<WhiteboardDisplayNameProps> = ({
   onChangeDisplayName,
 }) => {
   const { t } = useTranslation();
+  const columns = useGlobalGridColumns();
+
   const [isEditing, setIsEditing] = useState(editDisplayName);
   const [newDisplayName, setNewDisplayName] = useState(displayName);
 
@@ -39,18 +43,29 @@ const WhiteboardDisplayName: FC<WhiteboardDisplayNameProps> = ({
     setIsEditing(false);
   });
 
+  const editTitleButton =
+    columns <= 4 ? (
+      <IconButton onClick={handleClickEdit} aria-label={t('pages.whiteboard.editDisplayName')}>
+        <Edit fontSize="small" color="primary" />
+      </IconButton>
+    ) : (
+      <Button onClick={handleClickEdit} aria-label={t('pages.whiteboard.editDisplayName')}>
+        {t('pages.whiteboard.editDisplayName')}
+      </Button>
+    );
+
   return (
     <>
       {readOnlyDisplayName && <BlockTitle>{displayName}</BlockTitle>}
       {!readOnlyDisplayName && !isEditing && (
-        <>
-          <BlockTitle>{displayName}</BlockTitle>
+        <Box display="flex" minWidth={0}>
+          <BlockTitle whiteSpace="nowrap" overflow="hidden" textOverflow="ellipsis">
+            {displayName}
+          </BlockTitle>
           <Box display="flex" alignItems="center" height={gutters()}>
-            <Button onClick={handleClickEdit} aria-label={t('pages.whiteboard.editDisplayName')}>
-              {t('pages.whiteboard.editDisplayName')}
-            </Button>
+            {editTitleButton}
           </Box>
-        </>
+        </Box>
       )}
       {!readOnlyDisplayName && isEditing && (
         <Box display="flex" alignItems="center" height={gutters()}>
