@@ -106,14 +106,7 @@ const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: Cal
       draft,
       editable,
       comments: callout.comments ? { ...callout.comments, calloutNameId: callout.nameID } : undefined,
-      /*
-      // cannot remove that `as unknown` without mapping the whiteboard to add the calloutNameId to it
-      //!! TODO: These are missing? how does this work??
-            movable: false,
-            canSaveAsTemplate: false,
-            flowStates: undefined,
-            displayLocation: ''
-            */
+      // TODO: Try to remove this `as unknown`
     } as unknown as TypedCalloutDetails;
   }, [callout, locationState]);
 
