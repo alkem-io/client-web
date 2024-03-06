@@ -4,7 +4,6 @@ import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import DownloadForOfflineOutlinedIcon from '@mui/icons-material/DownloadForOfflineOutlined';
 import { Box, DialogContent, IconButton, Menu } from '@mui/material';
 import {
-  Authorization,
   AuthorizationPrivilege,
   CalloutState,
   CalloutType,
@@ -92,7 +91,9 @@ export interface CalloutLayoutProps extends CalloutLayoutEvents, Partial<Callout
     editable?: boolean;
     movable?: boolean;
     canSaveAsTemplate?: boolean;
-    authorization?: Authorization;
+    authorization?: {
+      myPrivileges?: AuthorizationPrivilege[];
+    };
     authorName?: string;
     authorAvatarUri?: string;
     publishedAt?: string;

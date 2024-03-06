@@ -438,6 +438,46 @@ export const ProfileDisplayNameFragmentDoc = gql`
     displayName
   }
 `;
+export const CalloutFragmentDoc = gql`
+  fragment Callout on Callout {
+    id
+    nameID
+    type
+    sortOrder
+    activity
+    authorization {
+      id
+      myPrivileges
+    }
+    framing {
+      profile {
+        id
+        displayName
+        innovationFlowTagset: tagset(tagsetName: FLOW_STATE) {
+          ...TagsetDetails
+        }
+        displayLocationTagset: tagset(tagsetName: CALLOUT_DISPLAY_LOCATION) {
+          ...TagsetDetails
+        }
+      }
+    }
+    visibility
+  }
+  ${TagsetDetailsFragmentDoc}
+`;
+export const CollaborationWithCalloutsFragmentDoc = gql`
+  fragment CollaborationWithCallouts on Collaboration {
+    id
+    authorization {
+      id
+      myPrivileges
+    }
+    callouts(displayLocations: $displayLocations, IDs: $calloutIds) {
+      ...Callout
+    }
+  }
+  ${CalloutFragmentDoc}
+`;
 export const ReferenceDetailsFragmentDoc = gql`
   fragment ReferenceDetails on Reference {
     id
@@ -578,8 +618,8 @@ export const CommentsWithMessagesFragmentDoc = gql`
   }
   ${MessageDetailsFragmentDoc}
 `;
-export const CalloutFragmentDoc = gql`
-  fragment Callout on Callout {
+export const CalloutDetailsFragmentDoc = gql`
+  fragment CalloutDetails on Callout {
     id
     nameID
     type
@@ -596,6 +636,9 @@ export const CalloutFragmentDoc = gql`
         }
         references {
           ...ReferenceDetails
+        }
+        innovationFlowTagset: tagset(tagsetName: FLOW_STATE) {
+          ...TagsetDetails
         }
         displayLocationTagset: tagset(tagsetName: CALLOUT_DISPLAY_LOCATION) {
           ...TagsetDetails
@@ -637,19 +680,6 @@ export const CalloutFragmentDoc = gql`
   ${WhiteboardDetailsFragmentDoc}
   ${LinkDetailsWithAuthorizationFragmentDoc}
   ${CommentsWithMessagesFragmentDoc}
-`;
-export const CollaborationWithCalloutsFragmentDoc = gql`
-  fragment CollaborationWithCallouts on Collaboration {
-    id
-    authorization {
-      id
-      myPrivileges
-    }
-    callouts(displayLocations: $displayLocations, IDs: $calloutIds) {
-      ...Callout
-    }
-  }
-  ${CalloutFragmentDoc}
 `;
 export const VisualUriFragmentDoc = gql`
   fragment VisualUri on Visual {
@@ -4717,7 +4747,7 @@ export const CalloutPageCalloutDocument = gql`
       collaboration @include(if: $includeSpace) {
         id
         callouts(IDs: [$calloutNameId]) {
-          ...Callout
+          ...CalloutDetails
         }
       }
       challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
@@ -4725,7 +4755,7 @@ export const CalloutPageCalloutDocument = gql`
         collaboration {
           id
           callouts(IDs: [$calloutNameId]) {
-            ...Callout
+            ...CalloutDetails
           }
         }
       }
@@ -4734,13 +4764,13 @@ export const CalloutPageCalloutDocument = gql`
         collaboration {
           id
           callouts(IDs: [$calloutNameId]) {
-            ...Callout
+            ...CalloutDetails
           }
         }
       }
     }
   }
-  ${CalloutFragmentDoc}
+  ${CalloutDetailsFragmentDoc}
 `;
 
 /**
@@ -6634,10 +6664,10 @@ export function refetchWhiteboardTemplatesOnCalloutCreationQuery(
 export const CreateCalloutDocument = gql`
   mutation createCallout($calloutData: CreateCalloutOnCollaborationInput!) {
     createCalloutOnCollaboration(calloutData: $calloutData) {
-      ...Callout
+      ...CalloutDetails
     }
   }
-  ${CalloutFragmentDoc}
+  ${CalloutDetailsFragmentDoc}
 `;
 export type CreateCalloutMutationFn = Apollo.MutationFunction<
   SchemaTypes.CreateCalloutMutation,
@@ -6761,10 +6791,10 @@ export type UpdateCalloutMutationOptions = Apollo.BaseMutationOptions<
 export const UpdateCalloutVisibilityDocument = gql`
   mutation UpdateCalloutVisibility($calloutData: UpdateCalloutVisibilityInput!) {
     updateCalloutVisibility(calloutData: $calloutData) {
-      ...Callout
+      ...CalloutDetails
     }
   }
-  ${CalloutFragmentDoc}
+  ${CalloutDetailsFragmentDoc}
 `;
 export type UpdateCalloutVisibilityMutationFn = Apollo.MutationFunction<
   SchemaTypes.UpdateCalloutVisibilityMutation,
@@ -7385,6 +7415,63 @@ export type CalloutsLazyQueryHookResult = ReturnType<typeof useCalloutsLazyQuery
 export type CalloutsQueryResult = Apollo.QueryResult<SchemaTypes.CalloutsQuery, SchemaTypes.CalloutsQueryVariables>;
 export function refetchCalloutsQuery(variables: SchemaTypes.CalloutsQueryVariables) {
   return { query: CalloutsDocument, variables: variables };
+}
+
+export const CalloutDetailsDocument = gql`
+  query CalloutDetails($calloutId: UUID!) {
+    lookup {
+      callout(ID: $calloutId) {
+        ...CalloutDetails
+      }
+    }
+  }
+  ${CalloutDetailsFragmentDoc}
+`;
+
+/**
+ * __useCalloutDetailsQuery__
+ *
+ * To run a query within a React component, call `useCalloutDetailsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCalloutDetailsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCalloutDetailsQuery({
+ *   variables: {
+ *      calloutId: // value for 'calloutId'
+ *   },
+ * });
+ */
+export function useCalloutDetailsQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.CalloutDetailsQuery, SchemaTypes.CalloutDetailsQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.CalloutDetailsQuery, SchemaTypes.CalloutDetailsQueryVariables>(
+    CalloutDetailsDocument,
+    options
+  );
+}
+
+export function useCalloutDetailsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.CalloutDetailsQuery, SchemaTypes.CalloutDetailsQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.CalloutDetailsQuery, SchemaTypes.CalloutDetailsQueryVariables>(
+    CalloutDetailsDocument,
+    options
+  );
+}
+
+export type CalloutDetailsQueryHookResult = ReturnType<typeof useCalloutDetailsQuery>;
+export type CalloutDetailsLazyQueryHookResult = ReturnType<typeof useCalloutDetailsLazyQuery>;
+export type CalloutDetailsQueryResult = Apollo.QueryResult<
+  SchemaTypes.CalloutDetailsQuery,
+  SchemaTypes.CalloutDetailsQueryVariables
+>;
+export function refetchCalloutDetailsQuery(variables: SchemaTypes.CalloutDetailsQueryVariables) {
+  return { query: CalloutDetailsDocument, variables: variables };
 }
 
 export const CalloutWhiteboardsDocument = gql`

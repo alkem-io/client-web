@@ -50,6 +50,38 @@ fragment Callout on Callout {
   id
   nameID
   type
+  sortOrder
+  activity
+  authorization {
+    id
+    myPrivileges
+  }
+  framing {
+    profile {
+      id
+      displayName
+      innovationFlowTagset: tagset(tagsetName: FLOW_STATE) {
+        ...TagsetDetails
+      }
+      displayLocationTagset: tagset(tagsetName: CALLOUT_DISPLAY_LOCATION) {
+        ...TagsetDetails
+      }
+    }
+  }
+  visibility
+}
+
+query CalloutDetails($calloutId: UUID!) {
+  lookup {
+    callout(ID: $calloutId) {
+      ...CalloutDetails
+    }
+  }
+}
+fragment CalloutDetails on Callout {
+  id
+  nameID
+  type
   framing {
     profile {
       id
@@ -63,6 +95,9 @@ fragment Callout on Callout {
       }
       references {
         ...ReferenceDetails
+      }
+      innovationFlowTagset: tagset(tagsetName: FLOW_STATE) {
+        ...TagsetDetails
       }
       displayLocationTagset: tagset(tagsetName: CALLOUT_DISPLAY_LOCATION) {
         ...TagsetDetails

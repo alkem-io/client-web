@@ -1,19 +1,20 @@
 import React, { useMemo } from 'react';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { useCalloutEdit } from '../edit/useCalloutEdit/useCalloutEdit';
-import { OrderUpdate, TypedCallout } from '../useCallouts/useCallouts';
+import { OrderUpdate, TypedCallout, TypedCalloutDetails } from '../useCallouts/useCallouts';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import { CalloutSortEvents, CalloutSortProps } from '../CalloutViewTypes';
 import CalloutView from '../CalloutView/CalloutView';
 import { useNavigate } from 'react-router-dom';
 import { buildCalloutUrl } from '../../../../main/routing/urlBuilders';
 import { LocationStateCachedCallout, LocationStateKeyCachedCallout } from '../../CalloutPage/CalloutPage';
-import { CardHeader, Skeleton } from '@mui/material';
+import { Box, CardHeader, Skeleton } from '@mui/material';
 import PageContentBlock, { PageContentBlockProps } from '../../../../core/ui/content/PageContentBlock';
 import ContributeCard from '../../../../core/ui/card/ContributeCard';
 import CardFooter from '../../../../core/ui/card/CardFooter';
 import { gutters } from '../../../../core/ui/grid/utils';
 import { without } from 'lodash';
+import CalloutDetailsContainer from '../useCallouts/CalloutDetailsContainer';
 
 const CalloutsViewSkeleton = () => (
   <PageContentBlock>
@@ -102,7 +103,7 @@ const CalloutsView = ({
 
   const navigate = useNavigate();
 
-  const handleExpand = (callout: TypedCallout) => {
+  const handleExpand = (callout: TypedCalloutDetails) => {
     const uri = buildCalloutUrl(callout.nameID, {
       spaceNameId,
       challengeNameId,
@@ -135,24 +136,33 @@ const CalloutsView = ({
 
           return (
             <PageContentBlock key={callout.id} disablePadding disableGap {...computedBlockProps}>
-              <CalloutView
-                callout={callout}
-                calloutNames={calloutNames}
-                contributionsCount={callout.activity}
-                spaceNameId={spaceNameId}
-                challengeNameId={challengeNameId}
-                opportunityNameId={opportunityNameId}
-                journeyTypeName={journeyTypeName}
-                onCalloutEdit={handleEdit}
-                onCalloutUpdate={() => onCalloutUpdate?.(callout.id)}
-                onVisibilityChange={handleVisibilityChange}
-                onCalloutDelete={handleDelete}
-                calloutUri={calloutUri}
-                onExpand={() => handleExpand(callout)}
-                disableMarginal={disableMarginal}
-                {...sortEvents}
-                {...sortProps}
-              />
+              <CalloutDetailsContainer callout={callout}>
+                {({ ref, callout: calloutDetails, loading }) => (
+                  <Box ref={ref}>
+                    {loading || (!calloutDetails && <CalloutsViewSkeleton />)}
+                    {!loading && calloutDetails && (
+                      <CalloutView
+                        callout={calloutDetails}
+                        calloutNames={calloutNames}
+                        contributionsCount={callout.activity}
+                        spaceNameId={spaceNameId}
+                        challengeNameId={challengeNameId}
+                        opportunityNameId={opportunityNameId}
+                        journeyTypeName={journeyTypeName}
+                        onCalloutEdit={handleEdit}
+                        onCalloutUpdate={() => onCalloutUpdate?.(callout.id)}
+                        onVisibilityChange={handleVisibilityChange}
+                        onCalloutDelete={handleDelete}
+                        calloutUri={calloutUri}
+                        onExpand={() => handleExpand(calloutDetails)}
+                        disableMarginal={disableMarginal}
+                        {...sortEvents}
+                        {...sortProps}
+                      />
+                    )}
+                  </Box>
+                )}
+              </CalloutDetailsContainer>
             </PageContentBlock>
           );
         })}

@@ -14,7 +14,6 @@ import { compact } from 'lodash';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 import { normalizeLink } from '../../../../core/utils/links';
 import { LocationStateKeyCachedCallout } from '../../CalloutPage/CalloutPage';
-import { TypedCallout } from '../useCallouts/useCallouts';
 
 interface WhiteboardCollectionCalloutProps extends BaseCalloutViewProps {
   callout: CalloutLayoutProps['callout'];
@@ -86,7 +85,7 @@ const WhiteboardCollectionCallout = forwardRef<Element, WhiteboardCollectionCall
           >
             {whiteboard =>
               whiteboard ? (
-                <WhiteboardCard key={whiteboard.id} whiteboard={whiteboard} callout={callout as TypedCallout} />
+                <WhiteboardCard key={whiteboard.id} whiteboard={whiteboard} callout={callout} />
               ) : (
                 <Skeleton />
               )
