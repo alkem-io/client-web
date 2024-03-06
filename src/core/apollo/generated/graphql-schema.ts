@@ -5173,7 +5173,7 @@ export type UpdateInnovationFlowFromTemplateInput = {
   /** ID of the Innovation Flow */
   innovationFlowID: Scalars['UUID'];
   /** The InnovationFlow template whose State definition will be used for the Innovation Flow */
-  inovationFlowTemplateID: Scalars['UUID'];
+  innovationFlowTemplateID: Scalars['UUID'];
 };
 
 export type UpdateInnovationFlowInput = {

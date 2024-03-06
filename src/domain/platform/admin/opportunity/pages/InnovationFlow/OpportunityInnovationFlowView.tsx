@@ -44,9 +44,9 @@ const OpportunityInnovationFlowView: FC = () => {
         variables: {
           input: {
             innovationFlowID: innovationFlowId,
-            inovationFlowTemplateID: values.innovationFlowTemplateID,
+            innovationFlowTemplateID: values.innovationFlowTemplateID,
           },
-        }
+        },
       });
     }
   };

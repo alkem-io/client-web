@@ -30,7 +30,6 @@ const ChallengeInnovationFlowView: FC = () => {
   const collaborationId = challenge?.collaboration?.id;
   const innovationFlowId = challenge?.collaboration?.innovationFlow?.id;
 
-
   const [updateChallengeInnovationFlow] = useUpdateInnovationFlowStatesFromTemplateMutation({
     refetchQueries: [
       refetchInnovationFlowQuery({ innovationFlowId: innovationFlowId! }),
@@ -45,7 +44,7 @@ const ChallengeInnovationFlowView: FC = () => {
         variables: {
           input: {
             innovationFlowID: innovationFlowId,
-            inovationFlowTemplateID: values.innovationFlowTemplateID,
+            innovationFlowTemplateID: values.innovationFlowTemplateID,
           },
         },
       });
