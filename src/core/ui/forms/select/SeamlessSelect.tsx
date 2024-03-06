@@ -45,8 +45,8 @@ const SeamlessSelect = <Option extends string | number>({
       )}
       {...props}
     >
-      {options.map(({ value, label }) => (
-        <MenuItem value={value}>
+      {options.map(({ value, label }, index) => (
+        <MenuItem value={value} key={`option_${index}`}>
           <Typography textTransform="none">{label}</Typography>
         </MenuItem>
       ))}

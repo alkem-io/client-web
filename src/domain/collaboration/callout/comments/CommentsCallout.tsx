@@ -17,7 +17,7 @@ export type CommentsCalloutData = Pick<CommentsWithMessagesFragmentWithCallout, 
 
 interface CommentsCalloutProps extends BaseCalloutViewProps {
   callout: CalloutLayoutProps['callout'] & {
-    comments: CommentsCalloutData;
+    comments: CommentsCalloutData | undefined;
   };
   calloutNames: string[];
 }
@@ -35,7 +35,7 @@ const CommentsCallout = ({
   const { user: userMetadata, isAuthenticated } = useUserContext();
   const user = userMetadata?.user;
 
-  const commentsId = callout.comments.id;
+  const commentsId = callout.comments?.id;
   const fetchedMessages = useMemo(() => callout?.comments?.messages ?? [], [callout]);
   const messages = useMessages(fetchedMessages);
 
