@@ -1,6 +1,5 @@
 import React, { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import * as yup from 'yup';
 import { FormikProps } from 'formik';
 import FormikInputField from '../../../../../core/ui/forms/FormikInputField/FormikInputField';
 import { CreateProfileInput, Visual } from '../../../../../core/apollo/generated/graphql-schema';
@@ -31,7 +30,8 @@ interface InnovationTemplateFormProps {
   editMode?: boolean;
 }
 
-const validator = { // TODO validate states
+const validator = {
+  // TODO validate states
 };
 
 const InnovationTemplateForm = ({ initialValues, visual, onSubmit, actions }: InnovationTemplateFormProps) => {
@@ -49,8 +49,8 @@ const InnovationTemplateForm = ({ initialValues, visual, onSubmit, actions }: In
         <FormRows>
           <FormikInputField
             name="definition"
-            title={t('innovation-templates.definition.title')}
-            placeholder={t('innovation-templates.definition.placeholder')}
+            title={t('innovation-templates.states.title')}
+            placeholder={t('innovation-templates.states.placeholder')}
             rows={11}
           />
           <Typography>{t('common.preview')}</Typography>
