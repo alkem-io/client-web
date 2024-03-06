@@ -12,7 +12,7 @@ query CalloutPageCallout(
     collaboration @include(if: $includeSpace) {
       id
       callouts(IDs: [$calloutNameId]) {
-        ...Callout
+        ...CalloutDetails
       }
     }
     challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
@@ -20,7 +20,7 @@ query CalloutPageCallout(
       collaboration {
         id
         callouts(IDs: [$calloutNameId]) {
-          ...Callout
+          ...CalloutDetails
         }
       }
     }
@@ -29,7 +29,7 @@ query CalloutPageCallout(
       collaboration {
         id
         callouts(IDs: [$calloutNameId]) {
-          ...Callout
+          ...CalloutDetails
         }
       }
     }
