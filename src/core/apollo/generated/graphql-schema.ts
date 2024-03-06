@@ -176,12 +176,12 @@ export type ActivityLogEntryCalloutLinkCreated = ActivityLogEntry & {
   id: Scalars['UUID'];
   /** The journey where the activity happened */
   journey?: Maybe<Journey>;
+  /** The Link that was created. */
+  link: Link;
   /** The display name of the parent */
   parentDisplayName: Scalars['String'];
   /** The nameID of the parent */
   parentNameID: Scalars['NameID'];
-  /** The Reference that was created. */
-  reference: Reference;
   /** The user that triggered this Activity. */
   triggeredBy: User;
   /** The event type for this Activity. */
@@ -7684,7 +7684,12 @@ export type ActivityCreatedSubscription = {
               profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
             };
           };
-          reference: { __typename?: 'Reference'; id: string; name: string; uri: string };
+          link: {
+            __typename?: 'Link';
+            id: string;
+            uri: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string };
+          };
         }
       | {
           __typename: 'ActivityLogEntryCalloutPostComment';
@@ -8186,7 +8191,12 @@ type ActivityLogOnCollaboration_ActivityLogEntryCalloutLinkCreated_Fragment = {
       profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
     };
   };
-  reference: { __typename?: 'Reference'; id: string; name: string; uri: string };
+  link: {
+    __typename?: 'Link';
+    id: string;
+    uri: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
+  };
 };
 
 type ActivityLogOnCollaboration_ActivityLogEntryCalloutPostComment_Fragment = {
@@ -8714,7 +8724,12 @@ export type ActivityLogOnCollaborationQuery = {
             profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
           };
         };
-        reference: { __typename?: 'Reference'; id: string; name: string; uri: string };
+        link: {
+          __typename?: 'Link';
+          id: string;
+          uri: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string };
+        };
       }
     | {
         __typename: 'ActivityLogEntryCalloutPostComment';
@@ -9160,7 +9175,12 @@ export type ActivityLogCalloutLinkCreatedFragment = {
       profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
     };
   };
-  reference: { __typename?: 'Reference'; id: string; name: string; uri: string };
+  link: {
+    __typename?: 'Link';
+    id: string;
+    uri: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
+  };
 };
 
 export type ActivityLogCalloutPostCommentFragment = {
@@ -30262,7 +30282,12 @@ export type LatestContributionsQuery = {
               profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
             };
           };
-          reference: { __typename?: 'Reference'; id: string; name: string; uri: string };
+          link: {
+            __typename?: 'Link';
+            id: string;
+            uri: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string };
+          };
         }
       | {
           __typename?: 'ActivityLogEntryCalloutPostComment';

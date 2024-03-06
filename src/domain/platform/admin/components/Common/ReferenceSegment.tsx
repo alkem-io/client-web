@@ -16,6 +16,8 @@ import { Caption, BlockSectionTitle } from '../../../../../core/ui/typography';
 import Gutters from '../../../../../core/ui/grid/Gutters';
 import useCurrentBreakpoint from '../../../../../core/ui/utils/useCurrentBreakpoint';
 import FormikFileInput from '../../../../../core/ui/forms/FormikFileInput/FormikFileInput';
+import { MessageWithPayload } from '../../../../shared/i18n/ValidationMessageTranslation';
+import { MID_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '../../../../../core/ui/forms/field-length.constants';
 
 export interface ReferenceSegmentProps extends BoxProps {
   fieldName?: string;
@@ -29,8 +31,11 @@ export interface ReferenceSegmentProps extends BoxProps {
 }
 
 export const referenceSegmentValidationObject = yup.object().shape({
-  name: yup.string(),
-  uri: yup.string(),
+  name: yup
+    .string()
+    .min(3, MessageWithPayload('forms.validations.minLength'))
+    .max(SMALL_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength')),
+  uri: yup.string().max(MID_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength')),
 });
 export const referenceSegmentSchema = yup.array().of(referenceSegmentValidationObject);
 
@@ -108,7 +113,7 @@ export const ReferenceSegment: FC<ReferenceSegmentProps> = ({
                       title={t('common.url')}
                       readOnly={readOnly}
                       disabled={disabled || isRemoving(index)}
-                      referenceID={attachment.id}
+                      entityID={attachment.id}
                       helperText={tLinks('components.referenceSegment.url-helper-text', {
                         terms: {
                           href: locations?.terms,

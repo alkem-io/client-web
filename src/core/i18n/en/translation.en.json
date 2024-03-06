@@ -1261,7 +1261,11 @@
         "remove-reference": "Remove the reference"
       },
       "url-helper-text": "<terms>Click here</terms> for the terms and conditions.",
-      "plaintext-helper-text": "Click here for the terms and conditions."
+      "plaintext-helper-text": "Click here for the terms and conditions.",
+      "newReference": "New reference",
+      "newReference_plural": "New reference ({{count}})",
+      "newLink": "New link",
+      "newLink_plural": "New link ({{count}})"
     },
     "file-upload": {
       "uploadFile": "Upload file",
