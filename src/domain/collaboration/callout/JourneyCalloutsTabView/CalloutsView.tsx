@@ -139,7 +139,7 @@ const CalloutsView = ({
               <CalloutDetailsContainer callout={callout}>
                 {({ ref, callout: calloutDetails, loading }) => (
                   <Box ref={ref}>
-                    {loading || (!calloutDetails && <CalloutsViewSkeleton />)}
+                    {(loading || !calloutDetails) && <CalloutsViewSkeleton />}
                     {!loading && calloutDetails && (
                       <CalloutView
                         callout={calloutDetails}

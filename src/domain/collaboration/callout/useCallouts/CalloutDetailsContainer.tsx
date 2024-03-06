@@ -20,7 +20,6 @@ const CalloutDetailsContainer = ({ callout, children }: CalloutDetailsContainerP
     trackVisibility: true,
     triggerOnce: true,
   });
-  console.log('CalloutDetailsContainer', { intersectionObserverRef, inView });
 
   const { data, loading } = useCalloutDetailsQuery({
     variables: {
