@@ -10,7 +10,6 @@ import DialogWithGrid from '../../../core/ui/dialog/DialogWithGrid';
 import { useLocation } from 'react-router-dom';
 import { buildCalloutUrl } from '../../../main/routing/urlBuilders';
 import { DialogContent, Theme, useMediaQuery } from '@mui/material';
-import { getCalloutDisplayLocationValue } from '../callout/utils/getCalloutDisplayLocationValue';
 import Loading from '../../../core/ui/loading/Loading';
 import { isApolloForbiddenError, isApolloNotFoundError } from '../../../core/apollo/hooks/useApolloErrorHandler';
 import { NotFoundPageLayout } from '../../journey/common/EntityPageLayout';
@@ -132,9 +131,7 @@ const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: Cal
     );
   }
 
-  const calloutDisplayLocation =
-    typedCalloutDetails &&
-    getCalloutDisplayLocationValue(typedCalloutDetails.framing.profile.displayLocationTagset?.tags);
+  const calloutDisplayLocation = typedCalloutDetails && typedCalloutDetails.displayLocation;
 
   const parentPagePath = typeof parentRoute === 'function' ? parentRoute(calloutDisplayLocation) : parentRoute;
 
