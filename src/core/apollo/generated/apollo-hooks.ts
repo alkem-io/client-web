@@ -453,10 +453,7 @@ export const CalloutFragmentDoc = gql`
       profile {
         id
         displayName
-        innovationFlowTagset: tagset(tagsetName: FLOW_STATE) {
-          ...TagsetDetails
-        }
-        displayLocationTagset: tagset(tagsetName: CALLOUT_DISPLAY_LOCATION) {
+        tagsets {
           ...TagsetDetails
         }
       }
@@ -636,12 +633,6 @@ export const CalloutDetailsFragmentDoc = gql`
         }
         references {
           ...ReferenceDetails
-        }
-        innovationFlowTagset: tagset(tagsetName: FLOW_STATE) {
-          ...TagsetDetails
-        }
-        displayLocationTagset: tagset(tagsetName: CALLOUT_DISPLAY_LOCATION) {
-          ...TagsetDetails
         }
         storageBucket {
           id

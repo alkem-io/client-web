@@ -23,6 +23,7 @@ import { Tagset } from '../../../common/profile/Profile';
 import { getCalloutDisplayLocationValue } from '../utils/getCalloutDisplayLocationValue';
 import { getJourneyTypeName } from '../../../journey/JourneyTypeName';
 import { useCollaborationAuthorization } from '../../authorization/useCollaborationAuthorization';
+import { INNOVATION_FLOW_STATES_TAGSET_NAME } from '../../InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
 
 export type PostFragmentWithCallout = ContributeTabPostFragment & { calloutNameId: string };
 
@@ -91,6 +92,8 @@ export interface UseCalloutsProvided {
 }
 
 const UNGROUPED_CALLOUTS_GROUP = Symbol('undefined');
+const CALLOUT_DISPLAY_LOCATION_TAGSET_NAME = 'callout-display-location';
+
 /**
  * If you need Callouts without a group, don't specify displayLocations at all.
  */
@@ -149,8 +152,12 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
         const draft = callout?.visibility === CalloutVisibility.Draft;
         const editable = authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
         const movable = collaboration.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
-        const innovationFlowTagset = callout.framing.profile.innovationFlowTagset;
-        const displayLocationTagset = callout.framing.profile.displayLocationTagset;
+        const innovationFlowTagset = callout.framing.profile.tagsets?.find(
+          tagset => tagset.name === INNOVATION_FLOW_STATES_TAGSET_NAME
+        );
+        const displayLocationTagset = callout.framing.profile.tagsets?.find(
+          tagset => tagset.name === CALLOUT_DISPLAY_LOCATION_TAGSET_NAME
+        );
         const flowStates = innovationFlowTagset?.tags;
         return {
           ...callout,

@@ -7,11 +7,16 @@ interface CardHeaderCaptionProps extends TypographyProps {
   logoUrl?: string;
 }
 
-const CardHeaderCaption = ({ logoUrl, children, ...containerProps }: PropsWithChildren<CardHeaderCaptionProps>) => {
+const CardHeaderCaption = ({
+  logoUrl,
+  noWrap,
+  children,
+  ...containerProps
+}: PropsWithChildren<CardHeaderCaptionProps>) => {
   return (
     <Box display="flex" alignItems="center" gap={gutters(0.5)} {...containerProps}>
       {logoUrl && <Box component="img" src={logoUrl} maxHeight={gutters()} maxWidth={gutters()} />}
-      <Caption noWrap>{children}</Caption>
+      <Caption noWrap={noWrap}>{children}</Caption>
     </Box>
   );
 };

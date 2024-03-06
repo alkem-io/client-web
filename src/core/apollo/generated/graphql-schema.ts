@@ -6004,26 +6004,6 @@ export type CalloutPageCalloutQuery = {
                           description?: string | undefined;
                         }>
                       | undefined;
-                    innovationFlowTagset?:
-                      | {
-                          __typename?: 'Tagset';
-                          id: string;
-                          name: string;
-                          tags: Array<string>;
-                          allowedValues: Array<string>;
-                          type: TagsetType;
-                        }
-                      | undefined;
-                    displayLocationTagset?:
-                      | {
-                          __typename?: 'Tagset';
-                          id: string;
-                          name: string;
-                          tags: Array<string>;
-                          allowedValues: Array<string>;
-                          type: TagsetType;
-                        }
-                      | undefined;
                     storageBucket: { __typename?: 'StorageBucket'; id: string };
                   };
                   whiteboard?:
@@ -6258,26 +6238,6 @@ export type CalloutPageCalloutQuery = {
                             uri: string;
                             description?: string | undefined;
                           }>
-                        | undefined;
-                      innovationFlowTagset?:
-                        | {
-                            __typename?: 'Tagset';
-                            id: string;
-                            name: string;
-                            tags: Array<string>;
-                            allowedValues: Array<string>;
-                            type: TagsetType;
-                          }
-                        | undefined;
-                      displayLocationTagset?:
-                        | {
-                            __typename?: 'Tagset';
-                            id: string;
-                            name: string;
-                            tags: Array<string>;
-                            allowedValues: Array<string>;
-                            type: TagsetType;
-                          }
                         | undefined;
                       storageBucket: { __typename?: 'StorageBucket'; id: string };
                     };
@@ -6516,26 +6476,6 @@ export type CalloutPageCalloutQuery = {
                             uri: string;
                             description?: string | undefined;
                           }>
-                        | undefined;
-                      innovationFlowTagset?:
-                        | {
-                            __typename?: 'Tagset';
-                            id: string;
-                            name: string;
-                            tags: Array<string>;
-                            allowedValues: Array<string>;
-                            type: TagsetType;
-                          }
-                        | undefined;
-                      displayLocationTagset?:
-                        | {
-                            __typename?: 'Tagset';
-                            id: string;
-                            name: string;
-                            tags: Array<string>;
-                            allowedValues: Array<string>;
-                            type: TagsetType;
-                          }
                         | undefined;
                       storageBucket: { __typename?: 'StorageBucket'; id: string };
                     };
@@ -9803,26 +9743,6 @@ export type CreateCalloutMutation = {
         references?:
           | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
           | undefined;
-        innovationFlowTagset?:
-          | {
-              __typename?: 'Tagset';
-              id: string;
-              name: string;
-              tags: Array<string>;
-              allowedValues: Array<string>;
-              type: TagsetType;
-            }
-          | undefined;
-        displayLocationTagset?:
-          | {
-              __typename?: 'Tagset';
-              id: string;
-              name: string;
-              tags: Array<string>;
-              allowedValues: Array<string>;
-              type: TagsetType;
-            }
-          | undefined;
         storageBucket: { __typename?: 'StorageBucket'; id: string };
       };
       whiteboard?:
@@ -10086,26 +10006,6 @@ export type UpdateCalloutVisibilityMutation = {
           | undefined;
         references?:
           | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
-          | undefined;
-        innovationFlowTagset?:
-          | {
-              __typename?: 'Tagset';
-              id: string;
-              name: string;
-              tags: Array<string>;
-              allowedValues: Array<string>;
-              type: TagsetType;
-            }
-          | undefined;
-        displayLocationTagset?:
-          | {
-              __typename?: 'Tagset';
-              id: string;
-              name: string;
-              tags: Array<string>;
-              allowedValues: Array<string>;
-              type: TagsetType;
-            }
           | undefined;
         storageBucket: { __typename?: 'StorageBucket'; id: string };
       };
@@ -10597,25 +10497,15 @@ export type CalloutsQuery = {
                     __typename?: 'Profile';
                     id: string;
                     displayName: string;
-                    innovationFlowTagset?:
-                      | {
+                    tagsets?:
+                      | Array<{
                           __typename?: 'Tagset';
                           id: string;
                           name: string;
                           tags: Array<string>;
                           allowedValues: Array<string>;
                           type: TagsetType;
-                        }
-                      | undefined;
-                    displayLocationTagset?:
-                      | {
-                          __typename?: 'Tagset';
-                          id: string;
-                          name: string;
-                          tags: Array<string>;
-                          allowedValues: Array<string>;
-                          type: TagsetType;
-                        }
+                        }>
                       | undefined;
                   };
                 };
@@ -10656,25 +10546,15 @@ export type CalloutsQuery = {
                       __typename?: 'Profile';
                       id: string;
                       displayName: string;
-                      innovationFlowTagset?:
-                        | {
+                      tagsets?:
+                        | Array<{
                             __typename?: 'Tagset';
                             id: string;
                             name: string;
                             tags: Array<string>;
                             allowedValues: Array<string>;
                             type: TagsetType;
-                          }
-                        | undefined;
-                      displayLocationTagset?:
-                        | {
-                            __typename?: 'Tagset';
-                            id: string;
-                            name: string;
-                            tags: Array<string>;
-                            allowedValues: Array<string>;
-                            type: TagsetType;
-                          }
+                          }>
                         | undefined;
                     };
                   };
@@ -10716,25 +10596,15 @@ export type CalloutsQuery = {
                       __typename?: 'Profile';
                       id: string;
                       displayName: string;
-                      innovationFlowTagset?:
-                        | {
+                      tagsets?:
+                        | Array<{
                             __typename?: 'Tagset';
                             id: string;
                             name: string;
                             tags: Array<string>;
                             allowedValues: Array<string>;
                             type: TagsetType;
-                          }
-                        | undefined;
-                      displayLocationTagset?:
-                        | {
-                            __typename?: 'Tagset';
-                            id: string;
-                            name: string;
-                            tags: Array<string>;
-                            allowedValues: Array<string>;
-                            type: TagsetType;
-                          }
+                          }>
                         | undefined;
                     };
                   };
@@ -10770,25 +10640,15 @@ export type CollaborationWithCalloutsFragment = {
             __typename?: 'Profile';
             id: string;
             displayName: string;
-            innovationFlowTagset?:
-              | {
+            tagsets?:
+              | Array<{
                   __typename?: 'Tagset';
                   id: string;
                   name: string;
                   tags: Array<string>;
                   allowedValues: Array<string>;
                   type: TagsetType;
-                }
-              | undefined;
-            displayLocationTagset?:
-              | {
-                  __typename?: 'Tagset';
-                  id: string;
-                  name: string;
-                  tags: Array<string>;
-                  allowedValues: Array<string>;
-                  type: TagsetType;
-                }
+                }>
               | undefined;
           };
         };
@@ -10813,25 +10673,15 @@ export type CalloutFragment = {
       __typename?: 'Profile';
       id: string;
       displayName: string;
-      innovationFlowTagset?:
-        | {
+      tagsets?:
+        | Array<{
             __typename?: 'Tagset';
             id: string;
             name: string;
             tags: Array<string>;
             allowedValues: Array<string>;
             type: TagsetType;
-          }
-        | undefined;
-      displayLocationTagset?:
-        | {
-            __typename?: 'Tagset';
-            id: string;
-            name: string;
-            tags: Array<string>;
-            allowedValues: Array<string>;
-            type: TagsetType;
-          }
+          }>
         | undefined;
     };
   };
@@ -10889,26 +10739,6 @@ export type CalloutDetailsQuery = {
                     uri: string;
                     description?: string | undefined;
                   }>
-                | undefined;
-              innovationFlowTagset?:
-                | {
-                    __typename?: 'Tagset';
-                    id: string;
-                    name: string;
-                    tags: Array<string>;
-                    allowedValues: Array<string>;
-                    type: TagsetType;
-                  }
-                | undefined;
-              displayLocationTagset?:
-                | {
-                    __typename?: 'Tagset';
-                    id: string;
-                    name: string;
-                    tags: Array<string>;
-                    allowedValues: Array<string>;
-                    type: TagsetType;
-                  }
                 | undefined;
               storageBucket: { __typename?: 'StorageBucket'; id: string };
             };
@@ -11123,26 +10953,6 @@ export type CalloutDetailsFragment = {
         | undefined;
       references?:
         | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
-        | undefined;
-      innovationFlowTagset?:
-        | {
-            __typename?: 'Tagset';
-            id: string;
-            name: string;
-            tags: Array<string>;
-            allowedValues: Array<string>;
-            type: TagsetType;
-          }
-        | undefined;
-      displayLocationTagset?:
-        | {
-            __typename?: 'Tagset';
-            id: string;
-            name: string;
-            tags: Array<string>;
-            allowedValues: Array<string>;
-            type: TagsetType;
-          }
         | undefined;
       storageBucket: { __typename?: 'StorageBucket'; id: string };
     };

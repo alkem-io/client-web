@@ -60,10 +60,7 @@ fragment Callout on Callout {
     profile {
       id
       displayName
-      innovationFlowTagset: tagset(tagsetName: FLOW_STATE) {
-        ...TagsetDetails
-      }
-      displayLocationTagset: tagset(tagsetName: CALLOUT_DISPLAY_LOCATION) {
+      tagsets {
         ...TagsetDetails
       }
     }
@@ -95,12 +92,6 @@ fragment CalloutDetails on Callout {
       }
       references {
         ...ReferenceDetails
-      }
-      innovationFlowTagset: tagset(tagsetName: FLOW_STATE) {
-        ...TagsetDetails
-      }
-      displayLocationTagset: tagset(tagsetName: CALLOUT_DISPLAY_LOCATION) {
-        ...TagsetDetails
       }
       storageBucket {
         id
