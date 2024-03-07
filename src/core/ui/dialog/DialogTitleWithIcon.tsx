@@ -4,7 +4,7 @@ import MuiDialogTitle from '@mui/material/DialogTitle';
 import { DialogTitleProps } from '@mui/material/DialogTitle';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
-import Typography from '@mui/material/Typography';
+import { BlockTitle, Caption } from '../typography';
 import { Box, Divider } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
@@ -12,7 +12,7 @@ const Root = styled(MuiDialogTitle)(({ theme }) => ({
   margin: 0,
   padding: theme.spacing(3, 3, 2, 3),
   display: 'flex',
-  alignItems: 'center',
+  alignItems: 'start',
 }));
 
 const Icon = styled(Box)(({ theme }) => ({
@@ -30,12 +30,9 @@ const Icon = styled(Box)(({ theme }) => ({
     width: theme.spacing(5),
     height: theme.spacing(5),
   },
-}));
-
-const TitleBar = styled(Box)(() => ({
-  display: 'flex',
-  flexDirection: 'column',
-  flexGrow: 1,
+  [theme.breakpoints.down('sm')]: {
+    display: 'none',
+  },
 }));
 
 export interface DialogTitleWithIconProps extends DialogTitleProps {
@@ -51,10 +48,10 @@ const DialogTitleWithIcon = (props: DialogTitleWithIconProps) => {
     <>
       <Root component={Box} {...rest}>
         {icon && <Icon>{icon}</Icon>}
-        <TitleBar>
-          <Typography variant={'h4'}>{children}</Typography>
-          {subtitle ? <Typography variant={'h6'}>{subtitle}</Typography> : null}
-        </TitleBar>
+        <Box display="flex" flexDirection="column" flexGrow={1}>
+          <BlockTitle>{children}</BlockTitle>
+          {subtitle ? <Caption>{subtitle}</Caption> : null}
+        </Box>
         {onClose ? (
           <IconButton onClick={onClose} size="medium" aria-label={t('buttons.close')}>
             <CloseIcon />

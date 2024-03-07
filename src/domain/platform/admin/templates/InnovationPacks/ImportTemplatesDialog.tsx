@@ -2,13 +2,14 @@ import { Button, ButtonProps, DialogContent, DialogProps, Skeleton } from '@mui/
 import DialogWithGrid from '../../../../../core/ui/dialog/DialogWithGrid';
 import React, { cloneElement, ComponentType, ReactElement, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { DialogActions, DialogTitleWithIcon } from '../../../../../core/ui/dialog/deprecated';
+import { DialogActions } from '../../../../../core/ui/dialog/deprecated';
 import { LibraryIcon } from '../../../../collaboration/templates/LibraryIcon';
 import { Template, TemplatePreviewProps } from '../AdminTemplatesSection';
 import { InnovationPack } from './InnovationPack';
 import ImportTemplatesDialogPreviewStep from './ImportTemplatesDialogPreviewStep';
 import ImportTemplatesDialogGalleryStep, { TemplateImportCardComponentProps } from './ImportTemplatesDialogGalleryStep';
 import { Identifiable } from '../../../../../core/utils/Identifiable';
+import DialogTitleWithIcon from '../../../../../core/ui/dialog/DialogTitleWithIcon';
 
 export interface ImportTemplatesDialogProps<T extends Template, V extends T> {
   headerText: string;
