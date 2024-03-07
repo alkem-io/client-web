@@ -4,8 +4,8 @@ import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import DownloadForOfflineOutlinedIcon from '@mui/icons-material/DownloadForOfflineOutlined';
 import { Box, DialogContent, IconButton, Menu } from '@mui/material';
 import {
-  Authorization,
   AuthorizationPrivilege,
+  CalloutDisplayLocation,
   CalloutState,
   CalloutType,
   CalloutVisibility,
@@ -65,7 +65,6 @@ export interface CalloutLayoutProps extends CalloutLayoutEvents, Partial<Callout
         description?: string;
         references?: Reference[];
         tagset?: Tagset;
-        displayLocationTagset?: Tagset;
         storageBucket: {
           id: string;
         };
@@ -76,6 +75,7 @@ export interface CalloutLayoutProps extends CalloutLayoutEvents, Partial<Callout
       messages: MessageDetailsFragment[] | undefined;
     };
     type: CalloutType;
+    displayLocation: CalloutDisplayLocation;
     contributionPolicy: {
       state: CalloutState;
     };
@@ -92,7 +92,9 @@ export interface CalloutLayoutProps extends CalloutLayoutEvents, Partial<Callout
     editable?: boolean;
     movable?: boolean;
     canSaveAsTemplate?: boolean;
-    authorization?: Authorization;
+    authorization?: {
+      myPrivileges?: AuthorizationPrivilege[];
+    };
     authorName?: string;
     authorAvatarUri?: string;
     publishedAt?: string;
