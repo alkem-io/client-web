@@ -79,11 +79,13 @@ const ImportTemplatesDialogGalleryStep = <T extends Template /*, Q extends T & T
   return (
     <GridProvider columns={12}>
       {loading && <Skeleton />}
-      <ScrollableCardsLayoutContainer>
-        {templates.map(template => (
-          <TemplateCard key={template.id} template={template} onClick={() => onPreviewTemplate(template)} />
-        ))}
-      </ScrollableCardsLayoutContainer>
+      {templates.length > 0 && (
+        <ScrollableCardsLayoutContainer>
+          {templates.map(template => (
+            <TemplateCard key={template.id} template={template} onClick={() => onPreviewTemplate(template)} />
+          ))}
+        </ScrollableCardsLayoutContainer>
+      )}
       {!loading && templates.length === 0 && (
         <Caption>{t('pages.admin.generic.sections.templates.import.no-templates')}</Caption>
       )}
