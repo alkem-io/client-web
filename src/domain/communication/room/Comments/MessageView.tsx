@@ -1,5 +1,5 @@
 import React, { PropsWithChildren, ReactNode } from 'react';
-import { DeleteOutlined } from '@mui/icons-material';
+import { DeleteOutlined, EditOutlined } from '@mui/icons-material';
 import { Box, IconButton, Paper, styled, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
@@ -43,6 +43,8 @@ export interface MessageViewProps {
   message: MaybeDeletedMessage;
   canDelete: boolean;
   onDelete?: (discussionId: string, msgId?: string) => Promise<void> | void;
+  canUpdate?: boolean;
+  onUpdate?: (discussionId: string, msgId?: string) => Promise<void> | void;
   root?: boolean;
   actions?: ReactNode;
   canAddReaction?: boolean;
@@ -54,6 +56,8 @@ export const MessageView = ({
   message,
   canDelete,
   onDelete,
+  canUpdate,
+  onUpdate,
   root = false,
   actions,
   canAddReaction = true,
@@ -77,11 +81,18 @@ export const MessageView = ({
           {!message.deleted && (
             <Box display="flex" height={gutters()} justifyContent="space-between" alignItems="center">
               <Caption>{author?.displayName}</Caption>
-              {canDelete && onDelete && (
-                <IconButton onClick={() => onDelete(id)} size="small" aria-label={t('buttons.delete')}>
-                  <DeleteOutlined fontSize="inherit" />
-                </IconButton>
-              )}
+              <Box display="flex" height={gutters()} justifyContent="end" alignItems="center">
+                {root && canUpdate && onUpdate && (
+                  <IconButton onClick={() => onUpdate(id)} size="small" aria-label={t('common.update')}>
+                    <EditOutlined fontSize="inherit" />
+                  </IconButton>
+                )}
+                {canDelete && onDelete && (
+                  <IconButton onClick={() => onDelete(id)} size="small" aria-label={t('buttons.delete')}>
+                    <DeleteOutlined fontSize="inherit" />
+                  </IconButton>
+                )}
+              </Box>
             </Box>
           )}
           <MessageContentWrapper>

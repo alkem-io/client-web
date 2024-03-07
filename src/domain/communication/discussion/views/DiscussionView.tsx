@@ -22,6 +22,7 @@ export interface DiscussionViewProps {
   currentUserId?: string;
   postMessage: (comment: string) => Promise<FetchResult<unknown>> | void;
   postReply: (reply: { messageText: string; threadId: string }) => void;
+  onUpdateDiscussion?: () => void;
   onDeleteDiscussion?: () => void;
   onDeleteComment?: (id: string) => void;
 }
@@ -31,6 +32,7 @@ export const DiscussionView: FC<DiscussionViewProps> = ({
   currentUserId,
   postMessage,
   postReply,
+  onUpdateDiscussion,
   onDeleteDiscussion,
   onDeleteComment,
 }) => {
@@ -40,6 +42,7 @@ export const DiscussionView: FC<DiscussionViewProps> = ({
 
   const canPost = comments.myPrivileges?.includes(AuthorizationPrivilege.CreateMessage) ?? false;
   const canDeleteDiscussion = myPrivileges?.includes(AuthorizationPrivilege.Delete) ?? false;
+  const canUpdateDiscussion = myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false;
   const canDeleteComment = (authorId?: string) =>
     (currentUserId && authorId && authorId === currentUserId) || canDeleteDiscussion;
   const canAddReaction = comments.myPrivileges?.includes(AuthorizationPrivilege.CreateMessageReaction) ?? false;
@@ -69,7 +72,14 @@ export const DiscussionView: FC<DiscussionViewProps> = ({
             <BlockTitle height={gutters(3)}>{discussion.title}</BlockTitle>
             <ShareButton url={discussionUrl} entityTypeName="discussion" />
           </Box>
-          <MessageView message={initialComment} canDelete={canDeleteDiscussion} onDelete={onDeleteDiscussion} root />
+          <MessageView
+            message={initialComment}
+            canDelete={canDeleteDiscussion}
+            onDelete={onDeleteDiscussion}
+            canUpdate={canUpdateDiscussion}
+            onUpdate={onUpdateDiscussion}
+            root
+          />
         </Grid>
         <Grid item>
           {comments && (
