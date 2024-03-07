@@ -1996,6 +1996,8 @@ export type Groupable = {
 
 export type ISearchResults = {
   __typename?: 'ISearchResults';
+  /** The search results for Callouts. */
+  calloutResults: Array<SearchResult>;
   /** The search results for contributions (Posts, Whiteboards etc). */
   contributionResults: Array<SearchResult>;
   /** The total number of search results for contributions (Posts, Whiteboards etc). */
@@ -4484,7 +4486,20 @@ export type SearchResult = {
   score: Scalars['Float'];
   /** The terms that were matched for this result */
   terms: Array<Scalars['String']>;
-  /** The event type for this Activity. */
+  /** The type of returned result for this search. */
+  type: SearchResultType;
+};
+
+export type SearchResultCallout = SearchResult & {
+  __typename?: 'SearchResultCallout';
+  /** The Callout that was found. */
+  callout: Callout;
+  id: Scalars['UUID'];
+  /** The score for this search result; more matches means a higher score. */
+  score: Scalars['Float'];
+  /** The terms that were matched for this result */
+  terms: Array<Scalars['String']>;
+  /** The type of returned result for this search. */
   type: SearchResultType;
 };
 
@@ -4499,7 +4514,7 @@ export type SearchResultChallenge = SearchResult & {
   space: Space;
   /** The terms that were matched for this result */
   terms: Array<Scalars['String']>;
-  /** The event type for this Activity. */
+  /** The type of returned result for this search. */
   type: SearchResultType;
 };
 
@@ -4516,7 +4531,7 @@ export type SearchResultOpportunity = SearchResult & {
   space: Space;
   /** The terms that were matched for this result */
   terms: Array<Scalars['String']>;
-  /** The event type for this Activity. */
+  /** The type of returned result for this search. */
   type: SearchResultType;
 };
 
@@ -4529,7 +4544,7 @@ export type SearchResultOrganization = SearchResult & {
   score: Scalars['Float'];
   /** The terms that were matched for this result */
   terms: Array<Scalars['String']>;
-  /** The event type for this Activity. */
+  /** The type of returned result for this search. */
   type: SearchResultType;
 };
 
@@ -4550,7 +4565,7 @@ export type SearchResultPost = SearchResult & {
   space: Space;
   /** The terms that were matched for this result */
   terms: Array<Scalars['String']>;
-  /** The event type for this Activity. */
+  /** The type of returned result for this search. */
   type: SearchResultType;
 };
 
@@ -4563,11 +4578,12 @@ export type SearchResultSpace = SearchResult & {
   space: Space;
   /** The terms that were matched for this result */
   terms: Array<Scalars['String']>;
-  /** The event type for this Activity. */
+  /** The type of returned result for this search. */
   type: SearchResultType;
 };
 
 export enum SearchResultType {
+  Callout = 'CALLOUT',
   Challenge = 'CHALLENGE',
   Opportunity = 'OPPORTUNITY',
   Organization = 'ORGANIZATION',
@@ -4584,7 +4600,7 @@ export type SearchResultUser = SearchResult & {
   score: Scalars['Float'];
   /** The terms that were matched for this result */
   terms: Array<Scalars['String']>;
-  /** The event type for this Activity. */
+  /** The type of returned result for this search. */
   type: SearchResultType;
   /** The User that was found. */
   user: User;
@@ -4597,7 +4613,7 @@ export type SearchResultUserGroup = SearchResult & {
   score: Scalars['Float'];
   /** The terms that were matched for this result */
   terms: Array<Scalars['String']>;
-  /** The event type for this Activity. */
+  /** The type of returned result for this search. */
   type: SearchResultType;
   /** The User Group that was found. */
   userGroup: UserGroup;
@@ -26158,6 +26174,7 @@ export type SearchQuery = {
     contributorResultsCount: number;
     contributionResultsCount: number;
     journeyResults: Array<
+      | { __typename?: 'SearchResultCallout'; id: string; score: number; terms: Array<string>; type: SearchResultType }
       | {
           __typename?: 'SearchResultChallenge';
           id: string;
@@ -26301,7 +26318,55 @@ export type SearchQuery = {
           type: SearchResultType;
         }
     >;
+    calloutResults: Array<
+      | {
+          __typename?: 'SearchResultCallout';
+          id: string;
+          score: number;
+          terms: Array<string>;
+          type: SearchResultType;
+          callout: {
+            __typename?: 'Callout';
+            id: string;
+            nameID: string;
+            type: CalloutType;
+            framing: { __typename?: 'CalloutFraming'; id: string };
+          };
+        }
+      | {
+          __typename?: 'SearchResultChallenge';
+          id: string;
+          score: number;
+          terms: Array<string>;
+          type: SearchResultType;
+        }
+      | {
+          __typename?: 'SearchResultOpportunity';
+          id: string;
+          score: number;
+          terms: Array<string>;
+          type: SearchResultType;
+        }
+      | {
+          __typename?: 'SearchResultOrganization';
+          id: string;
+          score: number;
+          terms: Array<string>;
+          type: SearchResultType;
+        }
+      | { __typename?: 'SearchResultPost'; id: string; score: number; terms: Array<string>; type: SearchResultType }
+      | { __typename?: 'SearchResultSpace'; id: string; score: number; terms: Array<string>; type: SearchResultType }
+      | { __typename?: 'SearchResultUser'; id: string; score: number; terms: Array<string>; type: SearchResultType }
+      | {
+          __typename?: 'SearchResultUserGroup';
+          id: string;
+          score: number;
+          terms: Array<string>;
+          type: SearchResultType;
+        }
+    >;
     contributorResults: Array<
+      | { __typename?: 'SearchResultCallout'; id: string; score: number; terms: Array<string>; type: SearchResultType }
       | {
           __typename?: 'SearchResultChallenge';
           id: string;
@@ -26387,6 +26452,7 @@ export type SearchQuery = {
         }
     >;
     contributionResults: Array<
+      | { __typename?: 'SearchResultCallout'; id: string; score: number; terms: Array<string>; type: SearchResultType }
       | {
           __typename?: 'SearchResultChallenge';
           id: string;
@@ -26617,6 +26683,17 @@ export type SearchResultUserFragment = {
         | undefined;
       visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
     };
+  };
+};
+
+export type SearchResultCalloutFragment = {
+  __typename?: 'SearchResultCallout';
+  callout: {
+    __typename?: 'Callout';
+    id: string;
+    nameID: string;
+    type: CalloutType;
+    framing: { __typename?: 'CalloutFraming'; id: string };
   };
 };
 
@@ -29102,6 +29179,7 @@ export type ChallengeExplorerSearchQuery = {
   search: {
     __typename?: 'ISearchResults';
     journeyResults: Array<
+      | { __typename?: 'SearchResultCallout'; id: string; type: SearchResultType; terms: Array<string> }
       | {
           __typename?: 'SearchResultChallenge';
           id: string;

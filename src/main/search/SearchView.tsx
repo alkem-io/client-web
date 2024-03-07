@@ -6,6 +6,7 @@ import { useSearchQuery, useSearchScopeDetailsSpaceQuery } from '../../core/apol
 import {
   SearchQuery,
   SearchResult,
+  SearchResultCalloutFragment,
   SearchResultChallengeFragment,
   SearchResultOpportunityFragment,
   SearchResultOrganizationFragment,
@@ -47,6 +48,7 @@ export type SearchResultMetaType = SearchResultT<
   | SearchResultSpaceFragment
   | SearchResultChallengeFragment
   | SearchResultOpportunityFragment
+  | SearchResultCalloutFragment
 >;
 
 interface SearchViewProps {
@@ -254,5 +256,10 @@ const toResultType = (query?: SearchQuery): SearchResultMetaType[] => {
     )
     .sort((a, b) => (b?.score || 0) - (a?.score || 0));
 
-  return contributorResults.concat(journeyResults).concat(contributionResults);
+  const calloutResults = (query.search.calloutResults || []).map<SearchResultMetaType>(
+    ({ score, terms, ...rest }) => ({ ...rest, score: score || 0, terms: terms || [] } as SearchResultMetaType),
+    []
+  );
+
+  return calloutResults.concat(contributorResults).concat(journeyResults).concat(contributionResults);
 };

@@ -3242,6 +3242,18 @@ export const SearchResultUserFragmentDoc = gql`
   }
   ${SearchResultProfileFragmentDoc}
 `;
+export const SearchResultCalloutFragmentDoc = gql`
+  fragment SearchResultCallout on SearchResultCallout {
+    callout {
+      id
+      nameID
+      type
+      framing {
+        id
+      }
+    }
+  }
+`;
 export const SearchResultOrganizationFragmentDoc = gql`
   fragment SearchResultOrganization on SearchResultOrganization {
     organization {
@@ -22491,6 +22503,15 @@ export const SearchDocument = gql`
         }
       }
       journeyResultsCount
+      calloutResults {
+        id
+        score
+        terms
+        type
+        ... on SearchResultCallout {
+          ...SearchResultCallout
+        }
+      }
       contributorResults {
         id
         score
@@ -22519,6 +22540,7 @@ export const SearchDocument = gql`
   ${SearchResultSpaceFragmentDoc}
   ${SearchResultChallengeFragmentDoc}
   ${SearchResultOpportunityFragmentDoc}
+  ${SearchResultCalloutFragmentDoc}
   ${SearchResultUserFragmentDoc}
   ${SearchResultOrganizationFragmentDoc}
   ${SearchResultPostFragmentDoc}
