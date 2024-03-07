@@ -1079,6 +1079,7 @@ export type GroupableFieldPolicy = {
   groups?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ISearchResultsKeySpecifier = (
+  | 'calloutResults'
   | 'contributionResults'
   | 'contributionResultsCount'
   | 'contributorResults'
@@ -1089,6 +1090,7 @@ export type ISearchResultsKeySpecifier = (
   | ISearchResultsKeySpecifier
 )[];
 export type ISearchResultsFieldPolicy = {
+  calloutResults?: FieldPolicy<any> | FieldReadFunction<any>;
   contributionResults?: FieldPolicy<any> | FieldReadFunction<any>;
   contributionResultsCount?: FieldPolicy<any> | FieldReadFunction<any>;
   contributorResults?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2373,6 +2375,21 @@ export type SearchResultFieldPolicy = {
   terms?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type SearchResultCalloutKeySpecifier = (
+  | 'callout'
+  | 'id'
+  | 'score'
+  | 'terms'
+  | 'type'
+  | SearchResultCalloutKeySpecifier
+)[];
+export type SearchResultCalloutFieldPolicy = {
+  callout?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  score?: FieldPolicy<any> | FieldReadFunction<any>;
+  terms?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type SearchResultChallengeKeySpecifier = (
   | 'challenge'
   | 'id'
@@ -3514,6 +3531,10 @@ export type StrictTypedTypePolicies = {
   SearchResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SearchResultKeySpecifier | (() => undefined | SearchResultKeySpecifier);
     fields?: SearchResultFieldPolicy;
+  };
+  SearchResultCallout?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | SearchResultCalloutKeySpecifier | (() => undefined | SearchResultCalloutKeySpecifier);
+    fields?: SearchResultCalloutFieldPolicy;
   };
   SearchResultChallenge?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SearchResultChallengeKeySpecifier | (() => undefined | SearchResultChallengeKeySpecifier);
