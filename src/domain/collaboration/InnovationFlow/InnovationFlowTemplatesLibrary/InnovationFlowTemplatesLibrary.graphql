@@ -55,7 +55,6 @@ query InnovationFlowTemplateStates($innovationFlowTemplateID: UUID!) {
       states {
         displayName
         description
-        sortOrder
       }
     }
   }

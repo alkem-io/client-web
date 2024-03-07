@@ -1112,16 +1112,10 @@ export type InnovationFlowFieldPolicy = {
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   states?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type InnovationFlowStateKeySpecifier = (
-  | 'description'
-  | 'displayName'
-  | 'sortOrder'
-  | InnovationFlowStateKeySpecifier
-)[];
+export type InnovationFlowStateKeySpecifier = ('description' | 'displayName' | InnovationFlowStateKeySpecifier)[];
 export type InnovationFlowStateFieldPolicy = {
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
-  sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type InnovationFlowTemplateKeySpecifier = (
   | 'authorization'

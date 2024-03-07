@@ -47,7 +47,6 @@ fragment ChallengeProfile on Challenge {
       states {
         displayName
         description
-        sortOrder
       }
       currentState {
         displayName

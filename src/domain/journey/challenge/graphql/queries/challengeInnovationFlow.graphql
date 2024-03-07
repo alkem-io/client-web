@@ -9,7 +9,6 @@ query challengeInnovationFlow($challengeId: UUID!) {
           states {
             displayName
             description
-            sortOrder
           }
           currentState {
             displayName

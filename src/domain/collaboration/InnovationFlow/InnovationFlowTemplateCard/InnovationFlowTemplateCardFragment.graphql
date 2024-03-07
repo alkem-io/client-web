@@ -6,6 +6,5 @@ fragment InnovationFlowTemplateCard on InnovationFlowTemplate {
   states {
     displayName
     description
-    sortOrder
   }
 }

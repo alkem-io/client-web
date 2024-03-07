@@ -79,7 +79,6 @@ fragment LibraryTemplates on TemplatesSet {
     states {
       displayName
       description
-      sortOrder
     }
   }
   innovationFlowTemplatesCount

@@ -52,7 +52,6 @@ fragment AdminInnovationFlowTemplate on InnovationFlowTemplate {
   states {
     displayName
     description
-    sortOrder
   }
   profile {
     ...ProfileInfoWithVisual

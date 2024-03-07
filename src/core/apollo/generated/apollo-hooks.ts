@@ -88,7 +88,6 @@ export const InnovationFlowDetailsFragmentDoc = gql`
     states {
       displayName
       description
-      sortOrder
     }
     currentState {
       displayName
@@ -2126,7 +2125,6 @@ export const ChallengeProfileFragmentDoc = gql`
         states {
           displayName
           description
-          sortOrder
         }
         currentState {
           displayName
@@ -2373,7 +2371,6 @@ export const OpportunityPageFragmentDoc = gql`
         states {
           displayName
           description
-          sortOrder
         }
         currentState {
           displayName
@@ -2736,7 +2733,6 @@ export const InnovationFlowTemplateCardFragmentDoc = gql`
     states {
       displayName
       description
-      sortOrder
     }
   }
   ${TemplateCardProfileInfoFragmentDoc}
@@ -2985,7 +2981,6 @@ export const AdminInnovationFlowTemplateFragmentDoc = gql`
     states {
       displayName
       description
-      sortOrder
     }
     profile {
       ...ProfileInfoWithVisual
@@ -3568,7 +3563,6 @@ export const LibraryTemplatesFragmentDoc = gql`
       states {
         displayName
         description
-        sortOrder
       }
     }
     innovationFlowTemplatesCount
@@ -5424,7 +5418,6 @@ export const InnovationFlowTemplateStatesDocument = gql`
         states {
           displayName
           description
-          sortOrder
         }
       }
     }
@@ -17274,7 +17267,6 @@ export const ChallengeInnovationFlowDocument = gql`
             states {
               displayName
               description
-              sortOrder
             }
             currentState {
               displayName
@@ -20271,7 +20263,6 @@ export const SpaceInnovationFlowTemplatesDocument = gql`
           states {
             displayName
             description
-            sortOrder
           }
           profile {
             id

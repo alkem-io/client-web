@@ -35,7 +35,6 @@ fragment InnovationFlowDetails on InnovationFlow {
   states {
     displayName
     description
-    sortOrder
   }
   currentState {
     displayName
