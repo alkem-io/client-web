@@ -1,38 +1,34 @@
 import React, { FC } from 'react';
 import { DialogContent } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { DiscussionCategory } from '../../../../core/apollo/generated/graphql-schema';
 import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import {
   refetchPlatformDiscussionsQuery,
-  useCreateDiscussionMutation,
+  useUpdateDiscussionMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
-import { buildDiscussionUrl } from '../../../../main/routing/urlBuilders';
-import { useNavigate } from 'react-router-dom';
+import { Discussion } from '../models/Discussion';
 import DiscussionForm, { DiscussionFormValues } from '../forms/DiscussionForm';
 
-export interface NewDiscussionDialogProps {
+export interface UpdateDiscussionDialogProps {
   open: boolean;
   onClose: () => void;
-  communicationId: string;
-  categories: DiscussionCategory[];
+  discussion: Discussion;
 }
 
-const NewDiscussionDialog: FC<NewDiscussionDialogProps> = ({ open, onClose, communicationId, categories }) => {
+const UpdateDiscussionDialog: FC<UpdateDiscussionDialogProps> = ({ open, onClose, discussion }) => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
 
-  const [createDiscussion] = useCreateDiscussionMutation({
+  const [updateDiscussion] = useUpdateDiscussionMutation({
     refetchQueries: [refetchPlatformDiscussionsQuery()],
   });
 
   const handleSubmit = async (values: DiscussionFormValues) => {
-    const { data } = await createDiscussion({
+    await updateDiscussion({
       variables: {
         input: {
-          communicationID: communicationId,
-          profile: {
+          ID: discussion.id,
+          profileData: {
             description: values.description,
             displayName: values.title,
           },
@@ -41,19 +37,16 @@ const NewDiscussionDialog: FC<NewDiscussionDialogProps> = ({ open, onClose, comm
       },
     });
     onClose();
-    if (data?.createDiscussion) {
-      navigate(buildDiscussionUrl('/forum', data.createDiscussion.nameID), { replace: true });
-    }
   };
 
   return (
     <DialogWithGrid open={open} onClose={onClose} fullScreen>
       <DialogHeader onClose={onClose}>{t('pages.forum.new-title')}</DialogHeader>
       <DialogContent>
-        <DiscussionForm onSubmit={handleSubmit} categories={categories} />
+        <DiscussionForm onSubmit={handleSubmit} discussion={discussion} categories={[discussion.category]} editMode />
       </DialogContent>
     </DialogWithGrid>
   );
 };
 
-export default NewDiscussionDialog;
+export default UpdateDiscussionDialog;

@@ -4116,6 +4116,8 @@ export type RelayPaginatedSpace = Journey & {
   community?: Maybe<Community>;
   /** The context for the space. */
   context?: Maybe<Context>;
+  /** The date for the creation of this Space. */
+  createdDate?: Maybe<Scalars['DateTime']>;
   /** The user group with the specified id anywhere in the space */
   group: UserGroup;
   /** The User Groups on this Space */
@@ -4643,6 +4645,8 @@ export type Space = Journey & {
   community?: Maybe<Community>;
   /** The context for the space. */
   context?: Maybe<Context>;
+  /** The date for the creation of this Space. */
+  createdDate?: Maybe<Scalars['DateTime']>;
   /** The user group with the specified id anywhere in the space */
   group: UserGroup;
   /** The User Groups on this Space */
@@ -14887,6 +14891,74 @@ export type CreateDiscussionMutationVariables = Exact<{
 export type CreateDiscussionMutation = {
   __typename?: 'Mutation';
   createDiscussion: {
+    __typename?: 'Discussion';
+    id: string;
+    nameID: string;
+    createdBy?: string | undefined;
+    timestamp?: number | undefined;
+    category: DiscussionCategory;
+    profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+    comments: {
+      __typename?: 'Room';
+      id: string;
+      messagesCount: number;
+      authorization?:
+        | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+        | undefined;
+      messages: Array<{
+        __typename?: 'Message';
+        id: string;
+        message: string;
+        timestamp: number;
+        threadID?: string | undefined;
+        reactions: Array<{
+          __typename?: 'Reaction';
+          id: string;
+          emoji: string;
+          sender?: { __typename?: 'User'; id: string; firstName: string; lastName: string } | undefined;
+        }>;
+        sender?:
+          | {
+              __typename?: 'User';
+              id: string;
+              nameID: string;
+              firstName: string;
+              lastName: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                url: string;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                tagsets?:
+                  | Array<{
+                      __typename?: 'Tagset';
+                      id: string;
+                      name: string;
+                      tags: Array<string>;
+                      allowedValues: Array<string>;
+                      type: TagsetType;
+                    }>
+                  | undefined;
+                location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+              };
+            }
+          | undefined;
+      }>;
+    };
+    authorization?:
+      | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+      | undefined;
+  };
+};
+
+export type UpdateDiscussionMutationVariables = Exact<{
+  input: UpdateDiscussionInput;
+}>;
+
+export type UpdateDiscussionMutation = {
+  __typename?: 'Mutation';
+  updateDiscussion: {
     __typename?: 'Discussion';
     id: string;
     nameID: string;
