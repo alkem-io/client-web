@@ -1482,7 +1482,7 @@
         "mentions": "Type a few characters to find relevant users"
       }
     },
-    "new-discussion": {
+    "discussionForm": {
       "title": {
         "title": "Title",
         "placeholder": "Discussion title"
@@ -1493,7 +1493,14 @@
       "description": {
         "title": "Further information",
         "placeholder": "Add further information on the discussion here"
-      },
+      }
+    },
+    "updateDiscussion": {
+      "buttons": {
+        "post": "Update discussion"
+      }
+    },
+    "newDiscussion": {
       "buttons": {
         "post": "Create discussion"
       }

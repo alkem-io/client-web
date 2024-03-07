@@ -26,6 +26,7 @@ import useSubscribeOnRoomEvents from '../../../collaboration/callout/useSubscrib
 import { ForumOutlined } from '@mui/icons-material';
 import BreadcrumbsItem from '../../../../core/ui/navigation/BreadcrumbsItem';
 import TopLevelPageBreadcrumbs from '../../../../main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
+import UpdateDiscussionDialog from '../views/UpdateDiscussionDialog';
 
 interface DiscussionPageProps {}
 
@@ -86,6 +87,7 @@ export const DiscussionPage: FC<DiscussionPageProps> = () => {
     isSubscribedToMessages: isSubscribedToMessages,
   });
 
+  const [updateDiscussionId, setUpdateDiscussionId] = useState<string>();
   const [deleteDiscussionId, setDeleteDiscussionId] = useState<string>();
   const [deleteCommentId, setDeleteCommentId] = useState<string>();
 
@@ -169,6 +171,7 @@ export const DiscussionPage: FC<DiscussionPageProps> = () => {
             discussion={discussion}
             postMessage={postMessage}
             postReply={postReply}
+            onUpdateDiscussion={() => setUpdateDiscussionId(discussion.id)}
             onDeleteDiscussion={() => setDeleteDiscussionId(discussion.id)}
             onDeleteComment={setDeleteCommentId}
           />
@@ -186,6 +189,13 @@ export const DiscussionPage: FC<DiscussionPageProps> = () => {
         onConfirm={handleDeleteComment}
         text={t('components.discussion.delete-comment')}
       />
+      {discussion && (
+        <UpdateDiscussionDialog
+          open={Boolean(updateDiscussionId)}
+          onClose={() => setUpdateDiscussionId(undefined)}
+          discussion={discussion}
+        />
+      )}
     </TopLevelPageLayout>
   );
 };

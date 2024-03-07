@@ -9948,6 +9948,55 @@ export type CreateDiscussionMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateDiscussionMutation,
   SchemaTypes.CreateDiscussionMutationVariables
 >;
+export const UpdateDiscussionDocument = gql`
+  mutation updateDiscussion($input: UpdateDiscussionInput!) {
+    updateDiscussion(updateData: $input) {
+      ...DiscussionDetails
+    }
+  }
+  ${DiscussionDetailsFragmentDoc}
+`;
+export type UpdateDiscussionMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateDiscussionMutation,
+  SchemaTypes.UpdateDiscussionMutationVariables
+>;
+
+/**
+ * __useUpdateDiscussionMutation__
+ *
+ * To run a mutation, you first call `useUpdateDiscussionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateDiscussionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateDiscussionMutation, { data, loading, error }] = useUpdateDiscussionMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateDiscussionMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateDiscussionMutation,
+    SchemaTypes.UpdateDiscussionMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.UpdateDiscussionMutation, SchemaTypes.UpdateDiscussionMutationVariables>(
+    UpdateDiscussionDocument,
+    options
+  );
+}
+
+export type UpdateDiscussionMutationHookResult = ReturnType<typeof useUpdateDiscussionMutation>;
+export type UpdateDiscussionMutationResult = Apollo.MutationResult<SchemaTypes.UpdateDiscussionMutation>;
+export type UpdateDiscussionMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateDiscussionMutation,
+  SchemaTypes.UpdateDiscussionMutationVariables
+>;
 export const DeleteDiscussionDocument = gql`
   mutation deleteDiscussion($deleteData: DeleteDiscussionInput!) {
     deleteDiscussion(deleteData: $deleteData) {
