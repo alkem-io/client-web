@@ -1674,7 +1674,7 @@
             "delete-confirmation": "Are you sure you want to delete {{template}} from the Space? You can also edit the information of this template.",
             "import": {
               "title": "Template Library: {{templateType}}",
-              "subtitle": "Find templates to use in your Space, Challenge or opportunity. Select the template and click ‘select’ to add it to your Template set.",
+              "subtitle": "Find templates to use in your Space, Challenge or opportunity. Select the template and click `Import` to add it to your Template set.",
               "callout-template-import-subtitle": "Find a template for people to use when contributing to your $t(common.callout)",
               "no-templates": "No templates found in this Space, find further platform templates below",
               "imported-successfully-notification": "Template imported successfully"
