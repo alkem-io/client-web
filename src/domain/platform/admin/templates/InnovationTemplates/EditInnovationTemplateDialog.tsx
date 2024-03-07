@@ -57,7 +57,6 @@ const EditInnovationTemplateDialog = ({
           initialValues={values}
           visual={template.profile.visual}
           onSubmit={handleSubmit}
-          editMode
           actions={formik => (
             <DialogFooter>
               <DialogActions>

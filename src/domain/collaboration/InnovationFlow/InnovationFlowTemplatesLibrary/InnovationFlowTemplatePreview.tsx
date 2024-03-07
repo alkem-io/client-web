@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { SafeInnovationFlowVisualizer } from '../../../platform/admin/templates/InnovationTemplates/SafeInnovationFlowVisualizer';
+import InnovationFlowVisualizer from '../../../platform/admin/templates/InnovationTemplates/InnovationFlowVisualizer';
 import { Box, CircularProgress } from '@mui/material';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
@@ -20,7 +20,8 @@ const InnovationFlowTemplatePreview: FC<InnovationFlowTemplatePreviewProps> = ({
 
   const templateStates: InnovationFlowState[] = data?.lookup.innovationFlowTemplate?.states ?? [];
 
-  if (loading || templateStates.length === 0) {  //!!
+  if (loading || templateStates.length === 0) {
+    //!!
     return (
       <Box textAlign="center">
         <CircularProgress />
@@ -30,7 +31,7 @@ const InnovationFlowTemplatePreview: FC<InnovationFlowTemplatePreviewProps> = ({
 
   return (
     <PageContentBlock>
-      <SafeInnovationFlowVisualizer states={templateStates} />
+      <InnovationFlowVisualizer states={templateStates} />
     </PageContentBlock>
   );
 };

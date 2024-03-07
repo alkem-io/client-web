@@ -8,7 +8,7 @@ import TranslationKey from '../../../../core/i18n/utils/TranslationKey';
 import { BlockSectionTitle, BlockTitle, Caption, Text } from '../../../../core/ui/typography';
 import { useTranslation } from 'react-i18next';
 import InnovationFlowTemplatesLibrary from '../InnovationFlowTemplatesLibrary/InnovationFlowTemplatesLibrary';
-import { SafeInnovationFlowVisualizer } from '../../../platform/admin/templates/InnovationTemplates/SafeInnovationFlowVisualizer';
+import InnovationFlowVisualizer from '../../../platform/admin/templates/InnovationTemplates/InnovationFlowVisualizer';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 import { useInnovationFlowTemplateStatesQuery } from '../../../../core/apollo/generated/apollo-hooks';
@@ -72,7 +72,7 @@ export const FormikInnovationFlowSelect: FC<FormikInnovationFlowSelectProps> = (
           <Text>{template.profile.description}</Text>
           <BlockSectionTitle>{t('components.innovationFlowTemplateSelect.states')}</BlockSectionTitle>
           <DiagramContainer>
-            <SafeInnovationFlowVisualizer states={template.states} />
+            <InnovationFlowVisualizer states={template.states} />
           </DiagramContainer>
           {helperText && <Caption color="error">{helperText}</Caption>}
         </Gutters>

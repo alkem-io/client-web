@@ -20,7 +20,7 @@ interface InnovationFlowTemplate extends TemplateBase {
   states: InnovationFlowState[];
 }
 
-interface InnovationFlowTemplateCardProps extends TemplateCardBaseProps<InnovationFlowTemplate> { }
+interface InnovationFlowTemplateCardProps extends TemplateCardBaseProps<InnovationFlowTemplate> {}
 
 const InnovationFlowTemplateCard = ({
   template,
@@ -48,7 +48,9 @@ const InnovationFlowTemplateCard = ({
       </CardDetails>
       <CardDetails>
         <CardContent>
-          <Caption sx={webkitLineClamp(2, { keepMinHeight: true })}>{states?.join(' · ')}</Caption>
+          <Caption sx={webkitLineClamp(2, { keepMinHeight: true })}>
+            {states?.map(state => state.displayName)?.join(' · ')}
+          </Caption>
         </CardContent>
       </CardDetails>
       <CardDetails>

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { AdminInnovationFlowTemplateFragment } from '../../../../../core/apollo/generated/graphql-schema';
 import TagsComponent from '../../../../shared/components/TagsComponent/TagsComponent';
 import WrapperMarkdown from '../../../../../core/ui/markdown/WrapperMarkdown';
-import { SafeInnovationFlowVisualizer } from './SafeInnovationFlowVisualizer';
+import InnovationFlowVisualizer from './InnovationFlowVisualizer';
 
 const TypographyTitle = styled(props => <Typography variant="h6" {...props} />)(() => ({
   fontWeight: 'bold',
@@ -38,7 +38,7 @@ const InnovationTemplateView = ({ template }: PostInnovationViewProps) => {
       <Box>
         <TypographyTitle>{t('innovation-templates.states.title')}</TypographyTitle>
         <Typography variant="body2" component="div">
-          <SafeInnovationFlowVisualizer states={states} />
+          <InnovationFlowVisualizer states={states} />
         </Typography>
       </Box>
     </>
