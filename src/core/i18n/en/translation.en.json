@@ -621,7 +621,7 @@
     "createFull": "Add collaboration tool",
     "contributions": "{{count}} Contribution",
     "contributions_plural": "{{count}} Contributions",
-    "draftNotice": "DRAFT - This Callout is only visible for admins.",
+    "draftNotice": "DRAFT - Only visible for admins",
     "closed": "This Callout is closed. You can still comment on the individual Posts.",
     "delete-confirm-title": "Delete Callout?",
     "delete-confirm-text": "All Posts, Whiteboards and messages under the Callout will also be deleted.",
@@ -1261,7 +1261,11 @@
         "remove-reference": "Remove the reference"
       },
       "url-helper-text": "<terms>Click here</terms> for the terms and conditions.",
-      "plaintext-helper-text": "Click here for the terms and conditions."
+      "plaintext-helper-text": "Click here for the terms and conditions.",
+      "newReference": "New reference",
+      "newReference_plural": "New reference ({{count}})",
+      "newLink": "New link",
+      "newLink_plural": "New link ({{count}})"
     },
     "file-upload": {
       "uploadFile": "Upload file",
@@ -1592,7 +1596,7 @@
         },
         "subentities": {
           "description": "Here you can explore the **{{entities}}** hosted in this {{parentEntity}}. Filter by key words to show just the topics you care about.",
-          "list": "List of {{entities}}",
+          "list": "List view",
           "empty": "No {{entities}} found in this {{parentEntity}}.",
           "empty-list": "There are no {{entities}} in this {{parentEntity}} yet."
         },

@@ -9,8 +9,8 @@ import CardImage from '../../../../core/ui/card/CardImage';
 import { WhiteboardIcon } from '../../whiteboard/icon/WhiteboardIcon';
 import { useTranslation } from 'react-i18next';
 import { Visual } from '../../../common/visual/Visual';
-import { TypedCallout } from '../useCallouts/useCallouts';
 import { LocationStateKeyCachedCallout } from '../../CalloutPage/CalloutPage';
+import { CalloutLayoutProps } from '../../CalloutBlock/CalloutLayout';
 
 export interface WhiteboardCardWhiteboard {
   profile: {
@@ -23,7 +23,7 @@ export interface WhiteboardCardWhiteboard {
 
 interface WhiteboardCardProps {
   whiteboard: WhiteboardCardWhiteboard | undefined;
-  callout?: TypedCallout;
+  callout?: CalloutLayoutProps['callout'];
 }
 
 const WHITEBOARD_IMAGE_ASPECT_RATIO = '23/12';

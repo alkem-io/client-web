@@ -3,8 +3,8 @@ import { Box, BoxProps, Skeleton } from '@mui/material';
 import { TemplateBase, TemplateCardBaseProps } from './TemplateBase';
 import { useTranslation } from 'react-i18next';
 import GridProvider from '../../../../core/ui/grid/GridProvider';
-import CardsLayout from '../../../../core/ui/card/cardsLayout/CardsLayout';
-import { Text } from '../../../../core/ui/typography';
+import ScrollableCardsLayoutContainer from '../../../../core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
+import { Caption } from '../../../../core/ui/typography';
 import { gutters } from '../../../../core/ui/grid/utils';
 import { times } from 'lodash';
 import { Identifiable } from '../../../../core/utils/Identifiable';
@@ -35,17 +35,17 @@ const CollaborationTemplatesLibraryGallery = <Template extends TemplateBase>({
   const { t } = useTranslation();
 
   return (
-    <GridProvider columns={12} force>
+    <GridProvider columns={12}>
       {(loading || !templates) && <GallerySkeleton />}
-      {!loading && templates && (
-        <CardsLayout items={templates} deps={[templates]} disablePadding cards={false}>
-          {template => (
+      {!loading && templates && templates.length > 0 && (
+        <ScrollableCardsLayoutContainer>
+          {templates.map(template => (
             <TemplateCard key={template.id} template={template} onClick={() => onPreviewTemplate(template)} />
-          )}
-        </CardsLayout>
+          ))}
+        </ScrollableCardsLayoutContainer>
       )}
       {!loading && templates && templates.length === 0 && (
-        <Text>{t('pages.admin.generic.sections.templates.import.no-templates')}</Text>
+        <Caption>{t('pages.admin.generic.sections.templates.import.no-templates')}</Caption>
       )}
     </GridProvider>
   );

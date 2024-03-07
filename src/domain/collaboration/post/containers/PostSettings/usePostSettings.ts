@@ -18,6 +18,7 @@ import { Reference } from '../../../../common/profile/Profile';
 import { newReferenceName } from '../../../../common/reference/newReferenceName';
 import removeFromCache from '../../../../../core/apollo/utils/removeFromCache';
 import { compact } from 'lodash';
+import { useTranslation } from 'react-i18next';
 
 type PostUpdateData = Pick<Post, 'id' | 'type'> & {
   displayName: Profile['displayName'];
@@ -65,6 +66,7 @@ const usePostSettings = ({
 }: PostSettingsContainerProps): PostSettingsContainerEntities &
   PostSettingsContainerActions &
   PostSettingsContainerState => {
+  const { t } = useTranslation();
   const notify = useNotification();
   const { addReference, deleteReference, setPush, setRemove } = useEditReference();
   const isPostDefined = postNameId && spaceNameId;
@@ -162,7 +164,7 @@ const usePostSettings = ({
     if (postContribution?.post) {
       addReference({
         profileId: postContribution.post.profile.id,
-        name: newReferenceName(referencesLength),
+        name: newReferenceName(t, referencesLength),
       });
     }
   };

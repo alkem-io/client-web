@@ -14,12 +14,12 @@ import { useNotification } from '../../notifications/useNotification';
 
 const DEFAULT_REFERENCE_TYPE = 'reference';
 
-export type ReferenceType = 'reference' | 'link';
+export type FileUploadEntityType = 'reference' | 'link';
 
 interface FileUploadProps {
   onUpload?: (fileCID: string) => void;
-  referenceID?: string;
-  referenceType?: ReferenceType;
+  entityID?: string;
+  entityType?: FileUploadEntityType;
   storageConfig: StorageConfig;
 }
 
@@ -27,8 +27,8 @@ const bytesInMegabyte = Math.pow(1024, 2);
 
 const FileUploadButton: FC<FileUploadProps> = ({
   onUpload,
-  referenceID,
-  referenceType = DEFAULT_REFERENCE_TYPE,
+  entityID,
+  entityType = DEFAULT_REFERENCE_TYPE,
   storageConfig,
 }) => {
   const { t } = useTranslation();
@@ -65,34 +65,37 @@ const FileUploadButton: FC<FileUploadProps> = ({
       notify(t('components.file-upload.file-size-error', { limit: maxFileSizeMb }), 'error');
       return;
     }
-    if (referenceID && referenceType === 'reference') {
+    if (entityID && entityType === 'reference') {
       await uploadFileOnReference({
         variables: {
           file: selectedFile,
           uploadData: {
-            referenceID,
+            referenceID: entityID,
           },
         },
       });
-    } else if (referenceID && referenceType === 'link') {
+      return;
+    }
+    if (entityID && entityType === 'link') {
       await uploadFileOnLink({
         variables: {
           file: selectedFile,
           uploadData: {
-            linkID: referenceID,
+            linkID: entityID,
           },
         },
       });
-    } else {
-      await uploadFile({
-        variables: {
-          file: selectedFile,
-          uploadData: {
-            storageBucketId: storageConfig.storageBucketId,
-          },
-        },
-      });
+      return;
     }
+
+    await uploadFile({
+      variables: {
+        file: selectedFile,
+        uploadData: {
+          storageBucketId: storageConfig.storageBucketId,
+        },
+      },
+    });
   };
 
   return (
