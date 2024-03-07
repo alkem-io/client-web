@@ -39,7 +39,6 @@ export type TypedCallout = Pick<Callout, 'id' | 'nameID' | 'activity' | 'sortOrd
     profile: {
       id: string;
       displayName: string;
-      displayLocationTagset?: Tagset;
     };
   };
   type: CalloutType;
@@ -48,7 +47,7 @@ export type TypedCallout = Pick<Callout, 'id' | 'nameID' | 'activity' | 'sortOrd
   movable: boolean;
   canSaveAsTemplate: boolean;
   flowStates: string[] | undefined;
-  displayLocation: string;
+  displayLocation: CalloutDisplayLocation;
 };
 
 export type TypedCalloutDetails = TypedCallout &
@@ -213,11 +212,10 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
   );
 
   const groupedCallouts = useMemo(() => {
-    return groupBy(
-      sortedCallouts,
-      callout =>
-        getCalloutDisplayLocationValue(callout.framing.profile.displayLocationTagset?.tags) ?? UNGROUPED_CALLOUTS_GROUP
-    ) as Record<CalloutDisplayLocation | typeof UNGROUPED_CALLOUTS_GROUP, TypedCallout[] | undefined>;
+    return groupBy(sortedCallouts, callout => callout.displayLocation) as Record<
+      CalloutDisplayLocation | typeof UNGROUPED_CALLOUTS_GROUP,
+      TypedCallout[] | undefined
+    >;
   }, [sortedCallouts]);
 
   const [updateCalloutsSortOrderMutation] = useUpdateCalloutsSortOrderMutation();
