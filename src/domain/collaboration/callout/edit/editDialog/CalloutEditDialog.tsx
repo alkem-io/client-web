@@ -11,7 +11,6 @@ import { useWhiteboardTemplateContentLazyQuery } from '../../../../../core/apoll
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import { CalloutLayoutProps } from '../../../CalloutBlock/CalloutLayout';
 import EmptyWhiteboard from '../../../../common/whiteboard/EmptyWhiteboard';
-import { getCalloutDisplayLocationValue } from '../../utils/getCalloutDisplayLocationValue';
 import { JourneyTypeName } from '../../../../journey/JourneyTypeName';
 import { StorageConfigContextProvider } from '../../../../storage/StorageBucket/StorageConfigContext';
 import { DEFAULT_TAGSET } from '../../../../common/tags/tagset.constants';
@@ -59,7 +58,7 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
     tags: callout.framing.profile.tagset?.tags,
     postDescription: callout.contributionDefaults.postDescription ?? '',
     whiteboardContent: callout.contributionDefaults?.whiteboardContent ?? JSON.stringify(EmptyWhiteboard),
-    displayLocation: getCalloutDisplayLocationValue(callout.framing.profile.displayLocationTagset?.tags),
+    displayLocation: callout.displayLocation,
   };
   const [newCallout, setNewCallout] = useState<CalloutFormInput>(initialValues);
   const [fetchWhiteboardTemplateContent] = useWhiteboardTemplateContentLazyQuery({
