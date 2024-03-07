@@ -1483,7 +1483,7 @@
         "mentions": "Type a few characters to find relevant users"
       }
     },
-    "discussion-form": {
+    "discussionForm": {
       "title": {
         "title": "Title",
         "placeholder": "Discussion title"
@@ -1496,12 +1496,12 @@
         "placeholder": "Add further information on the discussion here"
       }
     },
-    "update-discussion": {
+    "updateDiscussion": {
       "buttons": {
         "post": "Update discussion"
       }
     },
-    "new-discussion": {
+    "newDiscussion": {
       "buttons": {
         "post": "Create discussion"
       }

@@ -59,8 +59,8 @@ const DiscussionForm: FC<DiscussionFormProps> = ({ onSubmit, discussion, categor
             <Grid item xs={12} md={9}>
               <FormikInputField
                 name="title"
-                title={t('components.discussion-form.title.title')}
-                placeholder={t('components.discussion-form.title.placeholder')}
+                title={t('components.discussionForm.title.title')}
+                placeholder={t('components.discussionForm.title.placeholder')}
                 disabled={isSubmitting}
                 maxLength={SMALL_TEXT_LENGTH}
               />
@@ -68,7 +68,7 @@ const DiscussionForm: FC<DiscussionFormProps> = ({ onSubmit, discussion, categor
             <Grid item xs={12} md={3}>
               <FormikSelect
                 disabled={editMode}
-                title={t('components.discussion-form.category.title')}
+                title={t('components.discussionForm.category.title')}
                 name="category"
                 values={discussionCategories}
                 value={discussion ? discussion.category : null}
@@ -77,8 +77,8 @@ const DiscussionForm: FC<DiscussionFormProps> = ({ onSubmit, discussion, categor
             <Grid item xs={12}>
               <FormikMarkdownField
                 name="description"
-                title={t('components.discussion-form.description.title')}
-                placeholder={t('components.discussion-form.description.placeholder')}
+                title={t('components.discussionForm.description.title')}
+                placeholder={t('components.discussionForm.description.placeholder')}
                 rows={10}
                 multiline
                 disabled={isSubmitting}
@@ -90,8 +90,8 @@ const DiscussionForm: FC<DiscussionFormProps> = ({ onSubmit, discussion, categor
                 {isSubmitting
                   ? t('buttons.processing')
                   : editMode
-                  ? t('components.update-discussion.buttons.post')
-                  : t('components.new-discussion.buttons.post')}
+                  ? t('components.updateDiscussion.buttons.post')
+                  : t('components.newDiscussion.buttons.post')}
               </LoadingButton>
             </Grid>
           </Grid>
