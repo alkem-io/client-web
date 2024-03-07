@@ -64,6 +64,7 @@ export type TypedCalloutDetails = TypedCallout &
       };
       whiteboard?: WhiteboardFragmentWithCallout;
     };
+    displayLocation: CalloutDisplayLocation;
     contribution?: Pick<CalloutContribution, 'link' | 'post' | 'whiteboard'>;
     contributionPolicy: Pick<CalloutContributionPolicy, 'state'>;
     comments: CommentsWithMessagesFragmentWithCallout | undefined;
