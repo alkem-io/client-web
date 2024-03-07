@@ -83,7 +83,7 @@ export const MessageView = ({
               <Caption>{author?.displayName}</Caption>
               <Box display="flex" height={gutters()} justifyContent="end" alignItems="center">
                 {root && canUpdate && onUpdate && (
-                  <IconButton onClick={() => onUpdate(id)} size="small" aria-label={t('buttons.delete')}>
+                  <IconButton onClick={() => onUpdate(id)} size="small" aria-label={t('common.update')}>
                     <EditOutlined fontSize="inherit" />
                   </IconButton>
                 )}
