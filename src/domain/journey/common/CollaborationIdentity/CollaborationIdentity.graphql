@@ -1,7 +1,7 @@
 query CollaborationIdentity(
   $spaceNameId: UUID_NAMEID!
-  $challengeNameId: UUID_NAMEID = "_"
-  $opportunityNameId: UUID_NAMEID = "_"
+  $challengeNameId: UUID_NAMEID = "mockid"
+  $opportunityNameId: UUID_NAMEID = "mockid"
   $isChallenge: Boolean = false
   $isOpportunity: Boolean = false
 ) {

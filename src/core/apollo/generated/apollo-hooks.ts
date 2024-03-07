@@ -5010,20 +5010,12 @@ export function refetchInnovationFlowSettingsQuery(variables: SchemaTypes.Innova
 }
 
 export const InnovationFlowDetailsDocument = gql`
-  query InnovationFlowDetails(
-    $collaborationId: UUID! = "mockid"
-    $innovationFlowId: UUID! = "mockid"
-    $includeCollaboration: Boolean = false
-    $includeInnovationFlow: Boolean = false
-  ) {
+  query InnovationFlowDetails($collaborationId: UUID!) {
     lookup {
-      collaboration(ID: $collaborationId) @include(if: $includeCollaboration) {
+      collaboration(ID: $collaborationId) {
         innovationFlow {
           ...InnovationFlowDetails
         }
-      }
-      innovationFlow(ID: $innovationFlowId) @include(if: $includeInnovationFlow) {
-        ...InnovationFlowDetails
       }
     }
   }
@@ -5043,14 +5035,11 @@ export const InnovationFlowDetailsDocument = gql`
  * const { data, loading, error } = useInnovationFlowDetailsQuery({
  *   variables: {
  *      collaborationId: // value for 'collaborationId'
- *      innovationFlowId: // value for 'innovationFlowId'
- *      includeCollaboration: // value for 'includeCollaboration'
- *      includeInnovationFlow: // value for 'includeInnovationFlow'
  *   },
  * });
  */
 export function useInnovationFlowDetailsQuery(
-  baseOptions?: Apollo.QueryHookOptions<
+  baseOptions: Apollo.QueryHookOptions<
     SchemaTypes.InnovationFlowDetailsQuery,
     SchemaTypes.InnovationFlowDetailsQueryVariables
   >
@@ -5081,7 +5070,7 @@ export type InnovationFlowDetailsQueryResult = Apollo.QueryResult<
   SchemaTypes.InnovationFlowDetailsQuery,
   SchemaTypes.InnovationFlowDetailsQueryVariables
 >;
-export function refetchInnovationFlowDetailsQuery(variables?: SchemaTypes.InnovationFlowDetailsQueryVariables) {
+export function refetchInnovationFlowDetailsQuery(variables: SchemaTypes.InnovationFlowDetailsQueryVariables) {
   return { query: InnovationFlowDetailsDocument, variables: variables };
 }
 
@@ -17922,8 +17911,8 @@ export type CreateFeedbackOnCommunityContextMutationOptions = Apollo.BaseMutatio
 export const CollaborationIdentityDocument = gql`
   query CollaborationIdentity(
     $spaceNameId: UUID_NAMEID!
-    $challengeNameId: UUID_NAMEID = "_"
-    $opportunityNameId: UUID_NAMEID = "_"
+    $challengeNameId: UUID_NAMEID = "mockid"
+    $opportunityNameId: UUID_NAMEID = "mockid"
     $isChallenge: Boolean = false
     $isOpportunity: Boolean = false
   ) {
@@ -18007,8 +17996,8 @@ export function refetchCollaborationIdentityQuery(variables: SchemaTypes.Collabo
 export const JourneyIdentityDocument = gql`
   query JourneyIdentity(
     $spaceNameId: UUID_NAMEID!
-    $challengeNameId: UUID_NAMEID = "_"
-    $opportunityNameId: UUID_NAMEID = "_"
+    $challengeNameId: UUID_NAMEID = "mockid"
+    $opportunityNameId: UUID_NAMEID = "mockid"
     $isChallenge: Boolean = false
     $isOpportunity: Boolean = false
   ) {

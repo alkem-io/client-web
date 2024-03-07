@@ -36,18 +36,35 @@ interface InnovationTemplateFormProps {
 }
 
 const validator = {
-  displayName: yup.string().required().max(SMALL_TEXT_LENGTH),
-  description: yup.string().required().max(SMALL_TEXT_LENGTH),
-  // TODO: Fix this validation, it's not building
-  //tags: yup.array().of(yup.string().min(2)).notRequired(),
-  // states: yup.array().of(yup.object().shape({
-  //   displayName: yup.string().required().max(MAX_LENGTH_STATE_DISPLAY_NAME),
-  //   description: yup.string().max(MAX_LENGTH_STATE_DESCRIPTION),
-  // })),
+  states: yup
+    .array()
+    .of(
+      yup
+        .object()
+        .shape({
+          displayName: yup.string().required().max(MAX_LENGTH_STATE_DISPLAY_NAME),
+          description: yup.string().required().max(MAX_LENGTH_STATE_DESCRIPTION),
+        })
+        .required()
+    )
+    .min(1)
+    .max(MAX_NUMBER_OF_STATES),
 };
 
 // This function parses the states string array very carefully because this lets the users input any JSON.
 const parseStates = (jsonString: string) => {
+  const displayNames: Record<string, boolean> = {};
+  const isValidState = state => {
+    return (
+      typeof state.displayName === 'string' &&
+      state.displayName.length > 0 &&
+      state.displayName.length <= MAX_LENGTH_STATE_DISPLAY_NAME &&
+      typeof state.description === 'string' &&
+      state.description.length <= MAX_LENGTH_STATE_DESCRIPTION &&
+      !displayNames[state.displayName] // Avoid duplicated displayNames
+    );
+  };
+
   try {
     const data = JSON.parse(jsonString);
     const result: InnovationFlowState[] = [];
@@ -56,15 +73,10 @@ const parseStates = (jsonString: string) => {
         return { isValid: false, states: [], error: 'Too many states.' };
       }
       for (const state of data) {
-        if (
-          typeof state.displayName === 'string' &&
-          state.displayName.length > 0 &&
-          state.displayName.length <= MAX_LENGTH_STATE_DISPLAY_NAME &&
-          typeof state.description === 'string' &&
-          state.description.length <= MAX_LENGTH_STATE_DESCRIPTION
-        ) {
-          // State is valid, add it to the result array
+        if (isValidState(state)) {
+          // State is valid, add it to the result array and to the list of used displayNames
           result.push({ displayName: state.displayName, description: state.description });
+          displayNames[state.displayName] = true;
         } else {
           return { isValid: false, states: [], error: 'Invalid state.' };
         }
@@ -121,7 +133,8 @@ const InnovationTemplateForm = ({ initialValues, visual, onSubmit, actions }: In
               onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => {
                 const newStatesString = event.target.value;
                 setStatesString(newStatesString);
-                const { isValid, error } = parseStates(newStatesString);
+                const { states, isValid, error } = parseStates(newStatesString);
+                setFieldValue('states', states);
                 setFieldError('states', !isValid ? error : undefined);
               }}
               onBlur={() => {

@@ -3,8 +3,7 @@ import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphq
 import { InnovationFlowState } from '../InnovationFlow';
 
 interface UseInnovationFlowStatesParams {
-  collaborationId?: string;
-  innovationFlowId?: string;
+  collaborationId: string | undefined;
 }
 
 export const INNOVATION_FLOW_STATES_TAGSET_NAME = 'flow-state';
@@ -17,26 +16,16 @@ export interface UseInnovationFlowStatesProvided {
 
 // TODO: Maybe refactor to allow only one of them, not both
 const useInnovationFlowStates = ({
-  innovationFlowId,
   collaborationId,
 }: UseInnovationFlowStatesParams): UseInnovationFlowStatesProvided => {
-  if (innovationFlowId && collaborationId) {
-    throw new Error('Cannot provide both innovationFlowId and collaborationId');
-  }
-  const isCollaborationId = !!collaborationId;
-
   const { data } = useInnovationFlowDetailsQuery({
     variables: {
       collaborationId: collaborationId!,
-      innovationFlowId: innovationFlowId!,
-      includeCollaboration: isCollaborationId,
-      includeInnovationFlow: !isCollaborationId
     },
-    skip: !innovationFlowId && !collaborationId
+    skip: !collaborationId,
   });
 
-  const innovationFlow = isCollaborationId ? data?.lookup.collaboration?.innovationFlow : data?.lookup.innovationFlow;
-
+  const innovationFlow = data?.lookup.collaboration?.innovationFlow;
 
   const currentInnovationFlowState = innovationFlow?.currentState.displayName;
   const myPrivilleges = innovationFlow?.authorization?.myPrivileges;
