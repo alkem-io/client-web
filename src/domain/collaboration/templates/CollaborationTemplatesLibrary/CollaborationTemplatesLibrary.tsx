@@ -1,7 +1,6 @@
-import { Box, Button, ButtonProps, DialogContent, Link } from '@mui/material';
-import React, { ComponentType, useState } from 'react';
+import { Box, Button, DialogContent, Link } from '@mui/material';
+import React, { ComponentType, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { LibraryIcon } from '../LibraryIcon';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import CollaborationTemplatesLibraryGallery from './CollaborationTemplatesLibraryGallery';
 import CollaborationTemplatesLibraryPreview from './CollaborationTemplatesLibraryPreview';
@@ -16,6 +15,7 @@ import { gutters } from '../../../../core/ui/grid/utils';
 import { Identifiable, Identifiables } from '../../../../core/utils/Identifiable';
 import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
 import { identity } from 'lodash';
+import Spacer from '../../../../core/ui/content/Spacer';
 
 enum TemplateSource {
   Space,
@@ -37,6 +37,8 @@ export interface CollaborationTemplatesLibraryProps<
   TemplateWithContent extends {},
   TemplatePreview extends {}
 > {
+  open: boolean;
+  onClose: () => void;
   dialogTitle: string;
   onImportTemplate: (template: Template & TemplateWithContent) => void;
   // Components:
@@ -68,8 +70,6 @@ export interface CollaborationTemplatesLibraryProps<
   templatesFromPlatform?: Identifiables<Template>;
   loadingTemplatesFromPlatform?: boolean;
   disableUsePlatformTemplates?: boolean;
-
-  buttonProps?: ButtonProps;
 }
 
 const CollaborationTemplatesLibrary = <
@@ -77,6 +77,8 @@ const CollaborationTemplatesLibrary = <
   TemplateWithContent extends {},
   TemplatePreview extends {}
 >({
+  open: isOpen,
+  onClose,
   dialogTitle,
   onImportTemplate,
   templateCardComponent,
@@ -93,22 +95,24 @@ const CollaborationTemplatesLibrary = <
   templatesFromPlatform,
   loadingTemplatesFromPlatform = false,
   disableUsePlatformTemplates = false,
-  buttonProps = {},
 }: CollaborationTemplatesLibraryProps<Template, TemplateWithContent, TemplatePreview>) => {
   const { t } = useTranslation();
 
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const handleOpen = () => {
-    if (fetchTemplatesFromSpace && fetchSpaceTemplatesOnLoad) {
-      fetchTemplatesFromSpace();
+  useEffect(() => {
+    if (isOpen) {
+      if (fetchTemplatesFromSpace && fetchSpaceTemplatesOnLoad) {
+        fetchTemplatesFromSpace();
+      }
+      if (fetchTemplatesFromPlatform) {
+        if (!fetchSpaceTemplatesOnLoad || templatesFromSpace?.length === 0) {
+          fetchTemplatesFromPlatform();
+        }
+      }
     }
-    if (fetchTemplatesFromPlatform && !fetchSpaceTemplatesOnLoad) {
-      fetchTemplatesFromPlatform();
-    }
-    setDialogOpen(true);
-  };
+  }, [isOpen, fetchTemplatesFromSpace, fetchTemplatesFromPlatform, fetchSpaceTemplatesOnLoad, templatesFromSpace]);
+
   const handleClose = () => {
-    setDialogOpen(false);
+    onClose();
     handleClosePreview();
   };
 
@@ -135,91 +139,86 @@ const CollaborationTemplatesLibrary = <
   const loading = loadingTemplatesFromSpace || loadingTemplatesFromPlatform || loadingTemplateContent;
   const loadingPreview = loadingTemplateContent;
 
-  if (!buttonProps.children) {
-    buttonProps.children = <>{t('buttons.find-template')}</>;
-  }
-
   return (
-    <>
-      <Button variant="outlined" startIcon={<LibraryIcon />} onClick={handleOpen} {...buttonProps} />
-      <DialogWithGrid open={dialogOpen} onClose={handleClose} columns={12}>
-        <DialogHeader title={dialogTitle} onClose={handleClose} titleContainerProps={{ alignItems: 'center' }}>
-          {!previewTemplate && (
-            <MultipleSelect
-              onChange={onFilterChange}
-              value={filter}
-              minLength={2}
-              containerProps={{
-                marginLeft: 'auto',
-              }}
-              size="small"
-            />
-          )}
-        </DialogHeader>
-        <DialogContent>
-          {!previewTemplate && !loadingPreview ? (
-            <Gutters>
-              {templatesFromSpace && (
-                <>
-                  <BlockTitle>{t('templateLibrary.spaceTemplates')}</BlockTitle>
-                  <CollaborationTemplatesLibraryGallery
-                    templates={templatesFromSpace}
-                    templateCardComponent={templateCardComponent}
-                    onPreviewTemplate={template => handlePreviewTemplate(template, TemplateSource.Space)}
-                    loading={loadingTemplatesFromSpace}
-                  />
-                </>
-              )}
-              {(!templatesFromPlatform || templatesFromPlatform.length === 0) &&
-              !loadingTemplatesFromPlatform &&
-              fetchTemplatesFromPlatform ? (
-                <Link
-                  component={Caption}
-                  onClick={() => fetchTemplatesFromPlatform()}
-                  display="flex"
-                  alignItems="center"
-                  gap={1}
-                  sx={{ cursor: 'pointer' }}
-                >
-                  <SearchIcon /> {t('templateLibrary.loadPlatformTemplates')}
-                </Link>
-              ) : (
-                <>
-                  <BlockTitle>{t('templateLibrary.platformTemplates')}</BlockTitle>
-                  {disableUsePlatformTemplates && <Caption>{t('templateLibrary.platformUseDisabled')} </Caption>}
-                  <CollaborationTemplatesLibraryGallery
-                    templates={templatesFromPlatform}
-                    templateCardComponent={templateCardComponent}
-                    onPreviewTemplate={template => handlePreviewTemplate(template, TemplateSource.Platform)}
-                    loading={loadingTemplatesFromPlatform}
-                  />
-                </>
-              )}
-            </Gutters>
-          ) : (
-            <CollaborationTemplatesLibraryPreview
-              template={previewTemplate as unknown as Template & TemplatePreview}
-              templateCardComponent={templateCardComponent}
-              templatePreviewComponent={templatePreviewComponent}
-              templateInfo={templateUseDisabled ? <DisabledTemplateInfo /> : undefined}
-              loading={loadingPreview}
-              onClose={handleClosePreview}
-              actions={
-                <Button
-                  startIcon={<SystemUpdateAltIcon />}
-                  variant="contained"
-                  sx={{ marginLeft: theme => theme.spacing(1) }}
-                  disabled={loading || templateUseDisabled}
-                  onClick={handleSelectTemplate}
-                >
-                  {t('buttons.use')}
-                </Button>
-              }
-            />
-          )}
-        </DialogContent>
-      </DialogWithGrid>
-    </>
+    <DialogWithGrid open={isOpen} onClose={handleClose} columns={12}>
+      <DialogHeader title={dialogTitle} onClose={handleClose} titleContainerProps={{ alignItems: 'center' }}>
+        {!previewTemplate && (
+          <MultipleSelect
+            onChange={onFilterChange}
+            value={filter}
+            minLength={2}
+            containerProps={{
+              marginLeft: 'auto',
+            }}
+            size="small"
+            inlineTerms
+          />
+        )}
+      </DialogHeader>
+      <DialogContent>
+        {!previewTemplate && !loadingPreview ? (
+          <Gutters>
+            {templatesFromSpace && (
+              <>
+                <BlockTitle>{t('templateLibrary.spaceTemplates')}</BlockTitle>
+                <CollaborationTemplatesLibraryGallery
+                  templates={templatesFromSpace}
+                  templateCardComponent={templateCardComponent}
+                  onPreviewTemplate={template => handlePreviewTemplate(template, TemplateSource.Space)}
+                  loading={loadingTemplatesFromSpace}
+                />
+              </>
+            )}
+            <Spacer />
+            {(!templatesFromPlatform || templatesFromPlatform.length === 0) &&
+            !loadingTemplatesFromPlatform &&
+            fetchTemplatesFromPlatform ? (
+              <Link
+                component={Caption}
+                onClick={() => fetchTemplatesFromPlatform()}
+                display="flex"
+                alignItems="center"
+                gap={1}
+                sx={{ cursor: 'pointer' }}
+              >
+                <SearchIcon /> {t('templateLibrary.loadPlatformTemplates')}
+              </Link>
+            ) : (
+              <>
+                <BlockTitle>{t('templateLibrary.platformTemplates')}</BlockTitle>
+                {disableUsePlatformTemplates && <Caption>{t('templateLibrary.platformUseDisabled')} </Caption>}
+                <CollaborationTemplatesLibraryGallery
+                  templates={templatesFromPlatform}
+                  templateCardComponent={templateCardComponent}
+                  onPreviewTemplate={template => handlePreviewTemplate(template, TemplateSource.Platform)}
+                  loading={loadingTemplatesFromPlatform}
+                />
+              </>
+            )}
+          </Gutters>
+        ) : (
+          <CollaborationTemplatesLibraryPreview
+            template={previewTemplate as unknown as Template & TemplatePreview}
+            templateCardComponent={templateCardComponent}
+            templatePreviewComponent={templatePreviewComponent}
+            templateInfo={templateUseDisabled ? <DisabledTemplateInfo /> : undefined}
+            loading={loadingPreview}
+            onClose={handleClosePreview}
+            actions={
+              <Button
+                startIcon={<SystemUpdateAltIcon />}
+                variant="contained"
+                sx={{ marginLeft: theme => theme.spacing(1) }}
+                disabled={loading || templateUseDisabled}
+                onClick={handleSelectTemplate}
+              >
+                {t('buttons.use')}
+              </Button>
+            }
+          />
+        )}
+      </DialogContent>
+    </DialogWithGrid>
   );
 };
 

@@ -1,5 +1,5 @@
 import { FC, ReactNode, useMemo } from 'react';
-import { CalloutType, Reference } from '../../../../core/apollo/generated/graphql-schema';
+import { CalloutType } from '../../../../core/apollo/generated/graphql-schema';
 import { Box, Button, Dialog, DialogContent, IconButton } from '@mui/material';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import { useTranslation } from 'react-i18next';
@@ -14,48 +14,48 @@ import { Actions } from '../../../../core/ui/actions/Actions';
 import { gutters } from '../../../../core/ui/grid/utils';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FormikFileInput from '../../../../core/ui/forms/FormikFileInput/FormikFileInput';
-import { ReferenceType } from '../../../../core/ui/upload/FileUpload/FileUpload';
+import { MessageWithPayload } from '../../i18n/ValidationMessageTranslation';
+import { LONG_TEXT_LENGTH, MID_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 
-export interface EditReferenceFormValues extends Pick<Reference, 'id' | 'name' | 'uri' | 'description'> {}
+export interface EditLinkFormValues {
+  id: string;
+  name: string;
+  uri: string;
+  description?: string;
+}
 
 const validationSchema = yup.object().shape({
   id: yup.string().required(),
-  name: yup.string().required(),
-  description: yup.string(),
-  uri: yup.string().required(),
+  name: yup
+    .string()
+    .required(MessageWithPayload('forms.validations.required'))
+    .min(3, MessageWithPayload('forms.validations.minLength'))
+    .max(SMALL_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength')),
+  uri: yup.string().required().max(MID_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength')),
+  description: yup.string().max(LONG_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength')),
 });
 
-interface EditReferenceDialogProps {
+interface EditLinkDialogProps {
   open: boolean;
   onClose: () => void;
   title: ReactNode;
-  reference: EditReferenceFormValues;
-  referenceType?: ReferenceType;
-  onSave: (values: EditReferenceFormValues) => Promise<void>;
+  link: EditLinkFormValues;
+  onSave: (values: EditLinkFormValues) => Promise<void>;
   canDelete?: boolean;
   onDelete: () => void;
 }
 
-const EditReferenceDialog: FC<EditReferenceDialogProps> = ({
-  open,
-  onClose,
-  title,
-  reference,
-  referenceType,
-  onSave,
-  canDelete,
-  onDelete,
-}) => {
+const EditLinkDialog: FC<EditLinkDialogProps> = ({ open, onClose, title, link, onSave, canDelete, onDelete }) => {
   const { t } = useTranslation();
   const breakpoint = useCurrentBreakpoint();
   const isMobile = ['xs', 'sm'].includes(breakpoint);
 
   const CalloutIcon = calloutIcons[CalloutType.LinkCollection];
 
-  const initialValues: EditReferenceFormValues = useMemo(() => ({ ...reference }), [reference]);
+  const initialValues: EditLinkFormValues = useMemo(() => ({ ...link }), [link]);
 
   return (
-    <Dialog open={open} aria-labelledby="reference-edit" fullWidth maxWidth="lg">
+    <Dialog open={open} aria-labelledby="link-edit" fullWidth maxWidth="lg">
       <DialogHeader onClose={onClose}>
         <Box display="flex" alignItems="center">
           <CalloutIcon sx={{ marginRight: theme => theme.spacing(1) }} />
@@ -83,8 +83,8 @@ const EditReferenceDialog: FC<EditReferenceDialogProps> = ({
                         name={'uri'}
                         title={t('common.url')}
                         sx={{ flexGrow: 1 }}
-                        referenceID={values.id}
-                        referenceType={referenceType}
+                        entityID={values.id}
+                        entityType={'link'}
                       />
                     </Box>
                   </Gutters>
@@ -117,4 +117,4 @@ const EditReferenceDialog: FC<EditReferenceDialogProps> = ({
   );
 };
 
-export default EditReferenceDialog;
+export default EditLinkDialog;

@@ -106,9 +106,9 @@ export type ActivityLogEntryCalloutLinkCreatedKeySpecifier = (
   | 'description'
   | 'id'
   | 'journey'
+  | 'link'
   | 'parentDisplayName'
   | 'parentNameID'
-  | 'reference'
   | 'triggeredBy'
   | 'type'
   | ActivityLogEntryCalloutLinkCreatedKeySpecifier
@@ -121,9 +121,9 @@ export type ActivityLogEntryCalloutLinkCreatedFieldPolicy = {
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   journey?: FieldPolicy<any> | FieldReadFunction<any>;
+  link?: FieldPolicy<any> | FieldReadFunction<any>;
   parentDisplayName?: FieldPolicy<any> | FieldReadFunction<any>;
   parentNameID?: FieldPolicy<any> | FieldReadFunction<any>;
-  reference?: FieldPolicy<any> | FieldReadFunction<any>;
   triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -1079,6 +1079,7 @@ export type GroupableFieldPolicy = {
   groups?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ISearchResultsKeySpecifier = (
+  | 'calloutResults'
   | 'contributionResults'
   | 'contributionResultsCount'
   | 'contributorResults'
@@ -1089,6 +1090,7 @@ export type ISearchResultsKeySpecifier = (
   | ISearchResultsKeySpecifier
 )[];
 export type ISearchResultsFieldPolicy = {
+  calloutResults?: FieldPolicy<any> | FieldReadFunction<any>;
   contributionResults?: FieldPolicy<any> | FieldReadFunction<any>;
   contributionResultsCount?: FieldPolicy<any> | FieldReadFunction<any>;
   contributorResults?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2151,6 +2153,7 @@ export type RelayPaginatedSpaceKeySpecifier = (
   | 'collaboration'
   | 'community'
   | 'context'
+  | 'createdDate'
   | 'group'
   | 'groups'
   | 'host'
@@ -2176,6 +2179,7 @@ export type RelayPaginatedSpaceFieldPolicy = {
   collaboration?: FieldPolicy<any> | FieldReadFunction<any>;
   community?: FieldPolicy<any> | FieldReadFunction<any>;
   context?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   group?: FieldPolicy<any> | FieldReadFunction<any>;
   groups?: FieldPolicy<any> | FieldReadFunction<any>;
   host?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2370,6 +2374,21 @@ export type SearchResultFieldPolicy = {
   terms?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type SearchResultCalloutKeySpecifier = (
+  | 'callout'
+  | 'id'
+  | 'score'
+  | 'terms'
+  | 'type'
+  | SearchResultCalloutKeySpecifier
+)[];
+export type SearchResultCalloutFieldPolicy = {
+  callout?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  score?: FieldPolicy<any> | FieldReadFunction<any>;
+  terms?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type SearchResultChallengeKeySpecifier = (
   | 'challenge'
   | 'id'
@@ -2513,6 +2532,7 @@ export type SpaceKeySpecifier = (
   | 'collaboration'
   | 'community'
   | 'context'
+  | 'createdDate'
   | 'group'
   | 'groups'
   | 'host'
@@ -2538,6 +2558,7 @@ export type SpaceFieldPolicy = {
   collaboration?: FieldPolicy<any> | FieldReadFunction<any>;
   community?: FieldPolicy<any> | FieldReadFunction<any>;
   context?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   group?: FieldPolicy<any> | FieldReadFunction<any>;
   groups?: FieldPolicy<any> | FieldReadFunction<any>;
   host?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3498,6 +3519,10 @@ export type StrictTypedTypePolicies = {
   SearchResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SearchResultKeySpecifier | (() => undefined | SearchResultKeySpecifier);
     fields?: SearchResultFieldPolicy;
+  };
+  SearchResultCallout?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | SearchResultCalloutKeySpecifier | (() => undefined | SearchResultCalloutKeySpecifier);
+    fields?: SearchResultCalloutFieldPolicy;
   };
   SearchResultChallenge?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SearchResultChallengeKeySpecifier | (() => undefined | SearchResultChallengeKeySpecifier);

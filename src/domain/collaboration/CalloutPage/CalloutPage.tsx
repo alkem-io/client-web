@@ -5,12 +5,11 @@ import { JourneyTypeName } from '../../journey/JourneyTypeName';
 import CalloutView from '../callout/CalloutView/CalloutView';
 import { AuthorizationPrivilege, CalloutVisibility } from '../../../core/apollo/generated/graphql-schema';
 import { useCalloutEdit } from '../callout/edit/useCalloutEdit/useCalloutEdit';
-import { TypedCallout } from '../callout/useCallouts/useCallouts';
+import { TypedCalloutDetails } from '../callout/useCallouts/useCallouts';
 import DialogWithGrid from '../../../core/ui/dialog/DialogWithGrid';
 import { useLocation } from 'react-router-dom';
 import { buildCalloutUrl } from '../../../main/routing/urlBuilders';
 import { DialogContent, Theme, useMediaQuery } from '@mui/material';
-import { getCalloutDisplayLocationValue } from '../callout/utils/getCalloutDisplayLocationValue';
 import Loading from '../../../core/ui/loading/Loading';
 import { isApolloForbiddenError, isApolloNotFoundError } from '../../../core/apollo/hooks/useApolloErrorHandler';
 import { NotFoundPageLayout } from '../../journey/common/EntityPageLayout';
@@ -38,7 +37,7 @@ export interface CalloutPageProps {
 export const LocationStateKeyCachedCallout = 'LocationStateKeyCachedCallout';
 
 export interface LocationStateCachedCallout extends NavigationState {
-  [LocationStateKeyCachedCallout]?: TypedCallout;
+  [LocationStateKeyCachedCallout]?: TypedCalloutDetails;
 }
 
 /**
@@ -93,7 +92,7 @@ const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: Cal
 
   const { handleEdit, handleVisibilityChange, handleDelete } = useCalloutEdit();
 
-  const typedCallout = useMemo(() => {
+  const typedCalloutDetails = useMemo(() => {
     if (!callout) {
       return locationState[LocationStateKeyCachedCallout];
     }
@@ -106,7 +105,8 @@ const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: Cal
       draft,
       editable,
       comments: callout.comments ? { ...callout.comments, calloutNameId: callout.nameID } : undefined,
-    } as unknown as TypedCallout;
+      // TODO: Try to remove this `as unknown`
+    } as unknown as TypedCalloutDetails;
   }, [callout, locationState]);
 
   const backOrElse = useBackToPath();
@@ -115,7 +115,7 @@ const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: Cal
 
   const PageLayout = usePageLayoutByEntity(journeyTypeName);
 
-  if (isCalloutLoading && !typedCallout) {
+  if (isCalloutLoading && !typedCalloutDetails) {
     return (
       <PageLayout currentSection={EntityPageSection.Contribute}>
         <Loading />
@@ -131,8 +131,7 @@ const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: Cal
     );
   }
 
-  const calloutDisplayLocation =
-    typedCallout && getCalloutDisplayLocationValue(typedCallout.framing.profile.displayLocationTagset?.tags);
+  const calloutDisplayLocation = typedCalloutDetails && typedCalloutDetails.displayLocation;
 
   const parentPagePath = typeof parentRoute === 'function' ? parentRoute(calloutDisplayLocation) : parentRoute;
 
@@ -154,11 +153,11 @@ const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: Cal
     );
   }
 
-  if (!typedCallout) {
+  if (!typedCalloutDetails) {
     return renderPage();
   }
 
-  const calloutUri = buildCalloutUrl(typedCallout.nameID, {
+  const calloutUri = buildCalloutUrl(typedCalloutDetails.nameID, {
     spaceNameId,
     challengeNameId,
     opportunityNameId,
@@ -169,13 +168,13 @@ const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: Cal
       {renderPage(calloutDisplayLocation)}
       <DialogWithGrid open columns={12} onClose={handleClose} fullScreen={isSmallScreen}>
         <CalloutView
-          callout={typedCallout}
+          callout={typedCalloutDetails}
           spaceNameId={spaceNameId}
           challengeNameId={challengeNameId}
           opportunityNameId={opportunityNameId}
           journeyTypeName={journeyTypeName}
           calloutNames={[]}
-          contributionsCount={typedCallout.activity}
+          contributionsCount={typedCalloutDetails.activity}
           onVisibilityChange={handleVisibilityChange}
           onCalloutEdit={handleEdit}
           onCalloutUpdate={refetchCalloutData}

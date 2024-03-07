@@ -2,8 +2,8 @@ import React, { ComponentType, useMemo } from 'react';
 import { InnovationPack } from './InnovationPack';
 import { Template } from '../AdminTemplatesSection';
 import { useTranslation } from 'react-i18next';
-import CardsLayout from '../../../../../core/ui/card/cardsLayout/CardsLayout';
-import { Text } from '../../../../../core/ui/typography';
+import ScrollableCardsLayoutContainer from '../../../../../core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
+import { Caption } from '../../../../../core/ui/typography';
 import GridProvider from '../../../../../core/ui/grid/GridProvider';
 import { Skeleton } from '@mui/material';
 import { Visual } from '../../../../common/visual/Visual';
@@ -77,13 +77,15 @@ const ImportTemplatesDialogGalleryStep = <T extends Template /*, Q extends T & T
       <Grid item xs={12} md={9}>
 */
   return (
-    <GridProvider columns={12} force>
+    <GridProvider columns={12}>
       {loading && <Skeleton />}
-      <CardsLayout items={templates} deps={[templates]} disablePadding cards={false}>
-        {template => <TemplateCard key={template.id} template={template} onClick={() => onPreviewTemplate(template)} />}
-      </CardsLayout>
+      <ScrollableCardsLayoutContainer>
+        {templates.map(template => (
+          <TemplateCard key={template.id} template={template} onClick={() => onPreviewTemplate(template)} />
+        ))}
+      </ScrollableCardsLayoutContainer>
       {!loading && templates.length === 0 && (
-        <Text>{t('pages.admin.generic.sections.templates.import.no-templates')}</Text>
+        <Caption>{t('pages.admin.generic.sections.templates.import.no-templates')}</Caption>
       )}
     </GridProvider>
   );

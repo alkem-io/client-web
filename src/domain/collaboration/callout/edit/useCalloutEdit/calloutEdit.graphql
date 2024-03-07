@@ -35,7 +35,7 @@ mutation UpdateCallout($calloutData: UpdateCalloutInput!) {
 
 mutation UpdateCalloutVisibility($calloutData: UpdateCalloutVisibilityInput!) {
   updateCalloutVisibility(calloutData: $calloutData) {
-    ...Callout
+    ...CalloutDetails
   }
 }
 

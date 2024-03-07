@@ -34,8 +34,6 @@ const MAX_AVAILABLE_MEMBERS = 100;
 const buildUserFilterObject = (filter: string | undefined) =>
   filter
     ? {
-        firstName: filter,
-        lastName: filter,
         email: filter,
         displayName: filter,
       }
