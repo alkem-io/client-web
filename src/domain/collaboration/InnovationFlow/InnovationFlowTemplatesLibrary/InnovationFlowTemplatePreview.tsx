@@ -21,7 +21,6 @@ const InnovationFlowTemplatePreview: FC<InnovationFlowTemplatePreviewProps> = ({
   const templateStates: InnovationFlowState[] = data?.lookup.innovationFlowTemplate?.states ?? [];
 
   if (loading || templateStates.length === 0) {
-    //!!
     return (
       <Box textAlign="center">
         <CircularProgress />

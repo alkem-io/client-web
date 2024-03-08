@@ -97,7 +97,7 @@ const SelectInnovationFlowDialog: FC<SelectInnovationFlowDialogProps> = ({
               return (
                 <InnovationFlowTemplateSegment
                   innovationFlowTemplateOptions={innovationFlowTemplateOptions}
-                  states={selectedInnovationFlowTemplate?.states || []}
+                  selectedInnovationFlow={selectedInnovationFlowTemplate}
                   required
                 />
               );
