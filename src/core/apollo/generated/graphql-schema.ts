@@ -7242,7 +7242,6 @@ export type InnovationFlowTemplateStatesQuery = {
       | {
           __typename?: 'InnovationFlowTemplate';
           id: string;
-          states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -7260,6 +7259,7 @@ export type InnovationFlowTemplateStatesQuery = {
               | undefined;
             visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
           };
+          states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
         }
       | undefined;
   };

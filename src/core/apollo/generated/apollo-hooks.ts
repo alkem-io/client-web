@@ -5425,12 +5425,7 @@ export const InnovationFlowTemplateStatesDocument = gql`
   query InnovationFlowTemplateStates($innovationFlowTemplateID: UUID!) {
     lookup {
       innovationFlowTemplate(ID: $innovationFlowTemplateID) {
-        id
         ...InnovationFlowTemplateCard
-        states {
-          displayName
-          description
-        }
       }
     }
   }
