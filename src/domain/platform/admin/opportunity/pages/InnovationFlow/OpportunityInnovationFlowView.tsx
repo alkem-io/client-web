@@ -12,7 +12,9 @@ import Loading from '../../../../../../core/ui/loading/Loading';
 import UpdateInnovationFlow from '../../../templates/InnovationTemplates/UpdateInnovationFlow';
 import InnovationFlowContainer from '../../../../../collaboration/InnovationFlow/containers/InnovationFlowContainer';
 import { SelectInnovationFlowFormValuesType } from '../../../templates/InnovationTemplates/SelectInnovationFlowDialog';
-
+/**
+ * @deprecated This file is going to be removed in very soon
+ */
 const OpportunityInnovationFlowView: FC = () => {
   const { spaceNameId = '', opportunityNameId = '' } = useUrlParams();
 

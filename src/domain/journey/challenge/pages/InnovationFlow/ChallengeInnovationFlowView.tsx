@@ -13,7 +13,9 @@ import UpdateInnovationFlow from '../../../../platform/admin/templates/Innovatio
 
 import { SelectInnovationFlowFormValuesType } from '../../../../platform/admin/templates/InnovationTemplates/SelectInnovationFlowDialog';
 import InnovationFlowContainer from '../../../../collaboration/InnovationFlow/containers/InnovationFlowContainer';
-
+/**
+ * @deprecated This file is going to be removed in very soon
+ */
 const ChallengeInnovationFlowView: FC = () => {
   const { challengeNameId = '', spaceNameId = '' } = useUrlParams();
 
