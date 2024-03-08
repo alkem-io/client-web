@@ -18,7 +18,12 @@ interface CreatePostTemplateDialogProps {
 const CreateInnovationTemplateDialog = ({ open, onClose, onSubmit }: CreatePostTemplateDialogProps) => {
   const { t } = useTranslation();
 
-  const values: Partial<InnovationTemplateFormValues> = {};
+  const values: Partial<InnovationTemplateFormValues> = {
+    states: [],
+    displayName: '',
+    description: '',
+    tags: [],
+  };
 
   return (
     <DialogWithGrid columns={12} open={open} onClose={onClose}>
