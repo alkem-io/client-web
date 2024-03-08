@@ -14,7 +14,6 @@ export interface UseInnovationFlowStatesProvided {
   canEditInnovationFlow: boolean | undefined;
 }
 
-// TODO: Maybe refactor to allow only one of them, not both
 const useInnovationFlowStates = ({
   collaborationId,
 }: UseInnovationFlowStatesParams): UseInnovationFlowStatesProvided => {
