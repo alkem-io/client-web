@@ -27,6 +27,7 @@ const ACTIVITY_TYPES = [
   ActivityEventType.CalloutPostComment,
   ActivityEventType.CalloutLinkCreated,
   ActivityEventType.CalloutWhiteboardCreated,
+  ActivityEventType.CalloutWhiteboardContentModified,
   ActivityEventType.DiscussionComment,
 ];
 

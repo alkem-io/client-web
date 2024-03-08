@@ -51,6 +51,9 @@ query activityLogOnCollaboration($collaborationID: UUID!, $limit: Float!, $types
     ... on ActivityLogEntryCalloutWhiteboardCreated {
       ...ActivityLogCalloutWhiteboardCreated
     }
+    ... on ActivityLogEntryCalloutWhiteboardContentModified {
+      ...ActivityLogCalloutWhiteboardContentModified
+    }
     ... on ActivityLogEntryCalloutDiscussionComment {
       ...ActivityLogCalloutDiscussionComment
     }
@@ -170,6 +173,29 @@ fragment ActivityLogCalloutPostComment on ActivityLogEntryCalloutPostComment {
 }
 
 fragment ActivityLogCalloutWhiteboardCreated on ActivityLogEntryCalloutWhiteboardCreated {
+  callout {
+    id
+    nameID
+    framing {
+      profile {
+        id
+        displayName
+        url
+      }
+    }
+  }
+  whiteboard {
+    id
+    nameID
+    profile {
+      id
+      displayName
+      url
+    }
+  }
+}
+
+fragment ActivityLogCalloutWhiteboardContentModified on ActivityLogEntryCalloutWhiteboardContentModified {
   callout {
     id
     nameID

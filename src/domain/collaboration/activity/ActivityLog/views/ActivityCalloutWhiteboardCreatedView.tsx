@@ -9,7 +9,7 @@ import { ActivityEventType } from '../../../../../core/apollo/generated/graphql-
 interface ActivityCalloutWhiteboardCreatedViewProps extends ActivityViewProps {
   callout: ActivityCalloutValues;
   whiteboard: ActivitySubject;
-  type: ActivityEventType.CalloutWhiteboardCreated;
+  type: ActivityEventType.CalloutWhiteboardCreated | ActivityEventType.CalloutWhiteboardContentModified;
 }
 
 export const ActivityCalloutWhiteboardCreatedView: FC<ActivityCalloutWhiteboardCreatedViewProps> = ({
