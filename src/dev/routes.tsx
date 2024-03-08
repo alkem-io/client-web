@@ -4,6 +4,7 @@ import GridDemo from './ui/GridDemo';
 import DashboardComponentsDemo from './ui/DashboardComponentsDemo';
 import JourneyCardsDemo from './ui/JourneyCardsDemo';
 import TableDemo from './ui/TableDemo';
+import SearchCardsDemo from './ui/SearchCardsDemo';
 
 const devRoutes = () => {
   return (
@@ -13,6 +14,7 @@ const devRoutes = () => {
       <Route path="ui/dashboard" element={<DashboardComponentsDemo />} />
       <Route path="ui/cards" element={<JourneyCardsDemo />} />
       <Route path="ui/table" element={<TableDemo />} />
+      <Route path="ui/search-cards" element={<SearchCardsDemo />} />
     </Route>
   );
 };
