@@ -7,7 +7,7 @@ import { BlockTitle } from '../../../../core/ui/typography';
 import { InnovationFlowIcon } from '../InnovationFlowIcon/InnovationFlowIcon';
 import InnovationFlowProfileBlock from './InnovationFlowProfileBlock';
 import useInnovationFlowSettings from './useInnovationFlowSettings';
-import LifecycleStateSelector from '../LifecycleState/LifecycleStateSelector';
+import InnovationFlowStateSelector from '../InnovationFlowStateSelector/InnovationFlowStateSelector';
 
 interface InnovationFlowPreviewDialogProps {
   collaborationId: string | undefined;
@@ -28,7 +28,7 @@ const InnovationFlowPreviewDialog: FC<InnovationFlowPreviewDialogProps> = ({ ope
       </DialogHeader>
       <DialogContent sx={{ paddingTop: 0 }}>
         <InnovationFlowProfileBlock innovationFlow={innovationFlow} loading={state.loading} editable={false}>
-          <LifecycleStateSelector currentState={innovationFlow?.currentState.displayName} />
+          <InnovationFlowStateSelector currentState={innovationFlow?.currentState.displayName} />
         </InnovationFlowProfileBlock>
       </DialogContent>
     </DialogWithGrid>

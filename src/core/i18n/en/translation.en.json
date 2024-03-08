@@ -1054,7 +1054,7 @@
         "parentLink": " in <parentlink><parenticon /> {{journeyDisplayName}}</parentlink>"
       }
     },
-    "lifecycle": {
+    "innovationFlow": {
       "currentState": "Current State:",
       "changeState": "Change State to:",
       "error": "The definition was not able to be visualized"

@@ -6,7 +6,7 @@ import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
 import { InnovationFlowIcon } from '../InnovationFlowIcon/InnovationFlowIcon';
 import InnovationFlowProfileBlock from './InnovationFlowProfileBlock';
 import useInnovationFlowSettings from './useInnovationFlowSettings';
-import LifecycleStateSelector from '../LifecycleState/LifecycleStateSelector';
+import InnovationFlowStateSelector from '../InnovationFlowStateSelector/InnovationFlowStateSelector';
 import InnovationFlowCollaborationToolsBlock from './InnovationFlowCollaborationToolsBlock';
 import Gutters from '../../../../core/ui/grid/Gutters';
 
@@ -36,7 +36,7 @@ const InnovationFlowSettingsDialog: FC<InnovationFlowSettingsDialogProps> = ({ o
             onUpdate={actions.updateInnovationFlowProfile}
             editable
           >
-            <LifecycleStateSelector
+            <InnovationFlowStateSelector
               currentState={innovationFlow?.currentState.displayName}
               states={innovationFlow?.states}
               onStateChange={actions.updateInnovationFlowState}

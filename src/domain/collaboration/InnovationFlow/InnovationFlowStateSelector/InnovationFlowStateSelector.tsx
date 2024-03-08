@@ -7,13 +7,13 @@ import useLoadingState from '../../../shared/utils/useLoadingState';
 import { gutters } from '../../../../core/ui/grid/utils';
 import { InnovationFlowState } from '../InnovationFlow';
 
-interface LifecycleStateSelectorProps {
+interface InnovationFlowStateSelectorProps {
   currentState: string | undefined;
   states?: InnovationFlowState[];
   onStateChange?: (nextEvent: string) => Promise<unknown> | undefined;
 }
 
-const LifecycleStateSelector: FC<LifecycleStateSelectorProps> = ({ currentState, states, onStateChange }) => {
+const InnovationFlowStateSelector: FC<InnovationFlowStateSelectorProps> = ({ currentState, states, onStateChange }) => {
   const { t } = useTranslation();
 
   const [handleClick, loading] = useLoadingState(async (nextEvent: string) => {
@@ -22,13 +22,13 @@ const LifecycleStateSelector: FC<LifecycleStateSelectorProps> = ({ currentState,
 
   return (
     <Gutters>
-      <BlockSectionTitle>{t('components.lifecycle.currentState')}</BlockSectionTitle>
+      <BlockSectionTitle>{t('components.innovationFlow.currentState')}</BlockSectionTitle>
       <Box>
         <Chip variant="filled" label={currentState ?? <Skeleton />} color="primary" />
       </Box>
       {states && (
         <>
-          <BlockSectionTitle>{t('components.lifecycle.changeState')}</BlockSectionTitle>
+          <BlockSectionTitle>{t('components.innovationFlow.changeState')}</BlockSectionTitle>
           <Box display="flex" gap={gutters(0.5)}>
             {states?.map((state, index) => (
               <Chip
@@ -48,4 +48,4 @@ const LifecycleStateSelector: FC<LifecycleStateSelectorProps> = ({ currentState,
   );
 };
 
-export default LifecycleStateSelector;
+export default InnovationFlowStateSelector;

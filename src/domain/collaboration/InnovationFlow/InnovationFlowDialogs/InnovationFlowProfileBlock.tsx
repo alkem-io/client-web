@@ -39,11 +39,6 @@ export interface InnovationFlowProfileBlockProps {
   innovationFlow?: {
     id: string;
     profile: InnovationFlowProfile;
-    lifecycle?: {
-      state?: string;
-      stateIsFinal: boolean;
-      nextEvents?: string[];
-    };
   };
   editable?: boolean;
   onUpdate?: (innovationFlowID: string, profileData: UpdateProfileInput) => Promise<unknown> | void;
