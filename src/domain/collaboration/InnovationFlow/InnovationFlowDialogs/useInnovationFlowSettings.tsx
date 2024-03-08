@@ -89,11 +89,11 @@ const useInnovationFlowSettings = ({ collaborationId }: useInnovationFlowSetting
   }
 
   const [updateInnovationFlow, { loading: loadingUpdateInnovationFlow }] = useUpdateInnovationFlowMutation();
-  const handleUpdateInnovationFlowProfile = async (innovationFlowID: string, profileData: UpdateProfileInput) =>
+  const handleUpdateInnovationFlowProfile = async (innovationFlowId: string, profileData: UpdateProfileInput) =>
     updateInnovationFlow({
       variables: {
         updateInnovationFlowData: {
-          innovationFlowID,
+          innovationFlowID: innovationFlowId,
           profileData,
         },
       },

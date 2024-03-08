@@ -13,7 +13,7 @@ interface InnovationFlowTemplatePreviewProps {
 const InnovationFlowTemplatePreview: FC<InnovationFlowTemplatePreviewProps> = ({ template }) => {
   const { data, loading } = useInnovationFlowTemplateStatesQuery({
     variables: {
-      innovationFlowTemplateID: template?.id!,
+      innovationFlowTemplateId: template?.id!,
     },
     skip: !template?.id,
   });

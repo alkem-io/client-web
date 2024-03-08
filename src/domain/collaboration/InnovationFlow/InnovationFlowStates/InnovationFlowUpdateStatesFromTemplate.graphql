@@ -1,5 +1,7 @@
-mutation updateInnovationFlowStatesFromTemplate($input: UpdateInnovationFlowFromTemplateInput!) {
-  updateInnovationFlowStatesFromTemplate(innovationFlowData: $input) {
+mutation updateInnovationFlowStatesFromTemplate($innovationFlowId: UUID!, $innovationFlowTemplateId: UUID!) {
+  updateInnovationFlowStatesFromTemplate(
+    innovationFlowData: { innovationFlowID: $innovationFlowId, innovationFlowTemplateID: $innovationFlowTemplateId }
+  ) {
     id
     currentState {
       displayName

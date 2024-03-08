@@ -42,10 +42,8 @@ const OpportunityInnovationFlowView: FC = () => {
     if (innovationFlowId) {
       updateOpportunityInnovationFlow({
         variables: {
-          input: {
-            innovationFlowID: innovationFlowId,
-            innovationFlowTemplateID: values.innovationFlowTemplateID,
-          },
+          innovationFlowId,
+          innovationFlowTemplateId: values.innovationFlowTemplateId,
         },
       });
     }

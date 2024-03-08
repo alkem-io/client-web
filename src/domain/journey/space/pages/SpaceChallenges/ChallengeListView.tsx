@@ -84,7 +84,7 @@ export const ChallengeListView: FC = () => {
             },
             tags: value.tags,
             collaborationData: {
-              innovationFlowTemplateID: value.innovationFlowTemplateID,
+              innovationFlowTemplateID: value.innovationFlowTemplateId,
             }
           },
         },

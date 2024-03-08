@@ -40,7 +40,7 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
         tagline: value.tagline,
         vision: value.vision,
         tags: value.tags,
-        innovationFlowTemplateID: value.innovationFlowTemplateID,
+        innovationFlowTemplateId: value.innovationFlowTemplateId,
       });
 
       if (!result) {

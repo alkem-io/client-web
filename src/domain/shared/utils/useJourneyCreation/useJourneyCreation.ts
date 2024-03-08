@@ -19,7 +19,7 @@ interface ChallengeCreationInput {
   background: string;
   vision: string;
   tags: string[];
-  innovationFlowTemplateID: string;
+  innovationFlowTemplateId: string;
 }
 
 interface OpportunityCreationInput {
@@ -28,7 +28,7 @@ interface OpportunityCreationInput {
   tagline: string;
   vision: string;
   tags: string[];
-  innovationFlowTemplateID: string;
+  innovationFlowTemplateId: string;
 }
 
 export const useJourneyCreation = () => {
@@ -122,7 +122,7 @@ export const useJourneyCreation = () => {
             },
             tags: value.tags,
             collaborationData: {
-              innovationFlowTemplateID: value.innovationFlowTemplateID,
+              innovationFlowTemplateID: value.innovationFlowTemplateId,
             }
           },
         },
@@ -179,7 +179,7 @@ export const useJourneyCreation = () => {
             },
             tags: value.tags,
             collaborationData: {
-              innovationFlowTemplateID: value.innovationFlowTemplateID,
+              innovationFlowTemplateID: value.innovationFlowTemplateId,
             }
           },
         },

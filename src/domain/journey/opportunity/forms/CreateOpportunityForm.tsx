@@ -21,10 +21,10 @@ interface FormValues {
   tagline: string;
   vision: string;
   tags: string[];
-  innovationFlowTemplateID: string;
+  innovationFlowTemplateId: string;
 }
 
-interface CreateOpportunityFormProps extends JourneyCreationForm {}
+interface CreateOpportunityFormProps extends JourneyCreationForm { }
 
 export const CreateOpportunityForm: FC<CreateOpportunityFormProps> = ({ isSubmitting, onValidChanged, onChanged }) => {
   const { t } = useTranslation();
@@ -40,7 +40,7 @@ export const CreateOpportunityForm: FC<CreateOpportunityFormProps> = ({ isSubmit
       tagline: value.tagline,
       vision: value.vision,
       tags: value.tags,
-      innovationFlowTemplateID: value.innovationFlowTemplateID,
+      innovationFlowTemplateId: value.innovationFlowTemplateId,
     });
 
   const initialValues: FormValues = {
@@ -48,7 +48,7 @@ export const CreateOpportunityForm: FC<CreateOpportunityFormProps> = ({ isSubmit
     tagline: '',
     vision: '',
     tags: [],
-    innovationFlowTemplateID: defaultInnovationFlowTemplateId ?? '',
+    innovationFlowTemplateId: defaultInnovationFlowTemplateId ?? '',
   };
 
   const validationSchema = yup.object().shape({
@@ -66,7 +66,7 @@ export const CreateOpportunityForm: FC<CreateOpportunityFormProps> = ({ isSubmit
       .required(validationRequiredString),
     vision: MarkdownValidator(MARKDOWN_TEXT_LENGTH).trim().required(validationRequiredString),
     tags: yup.array().of(yup.string().min(2)).notRequired(),
-    innovationFlowTemplateID: yup.string().required(validationRequiredInnovationFlowString),
+    innovationFlowTemplateId: yup.string().required(validationRequiredInnovationFlowString),
   });
 
   return (
@@ -75,7 +75,7 @@ export const CreateOpportunityForm: FC<CreateOpportunityFormProps> = ({ isSubmit
       validationSchema={validationSchema}
       enableReinitialize
       validateOnMount
-      onSubmit={() => {}}
+      onSubmit={() => { }}
     >
       {() => (
         <Form noValidate>
@@ -110,7 +110,7 @@ export const CreateOpportunityForm: FC<CreateOpportunityFormProps> = ({ isSubmit
               helperText={t('context.opportunity.tags.description')}
             />
             <FormikInnovationFlowSelect
-              name="innovationFlowTemplateID"
+              name="innovationFlowTemplateId"
               title={t('context.opportunity.innovationFlow.title')}
               disabled={isSubmitting}
             />

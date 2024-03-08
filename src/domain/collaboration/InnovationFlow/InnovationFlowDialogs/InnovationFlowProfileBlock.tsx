@@ -41,7 +41,7 @@ export interface InnovationFlowProfileBlockProps {
     profile: InnovationFlowProfile;
   };
   editable?: boolean;
-  onUpdate?: (innovationFlowID: string, profileData: UpdateProfileInput) => Promise<unknown> | void;
+  onUpdate?: (innovationFlowId: string, profileData: UpdateProfileInput) => Promise<unknown> | void;
   loading?: boolean;
 }
 

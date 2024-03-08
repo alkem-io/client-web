@@ -5196,8 +5196,10 @@ export type UpdateCalloutFlowStateMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateCalloutFlowStateMutationVariables
 >;
 export const UpdateInnovationFlowStatesFromTemplateDocument = gql`
-  mutation updateInnovationFlowStatesFromTemplate($input: UpdateInnovationFlowFromTemplateInput!) {
-    updateInnovationFlowStatesFromTemplate(innovationFlowData: $input) {
+  mutation updateInnovationFlowStatesFromTemplate($innovationFlowId: UUID!, $innovationFlowTemplateId: UUID!) {
+    updateInnovationFlowStatesFromTemplate(
+      innovationFlowData: { innovationFlowID: $innovationFlowId, innovationFlowTemplateID: $innovationFlowTemplateId }
+    ) {
       id
       currentState {
         displayName
@@ -5223,7 +5225,8 @@ export type UpdateInnovationFlowStatesFromTemplateMutationFn = Apollo.MutationFu
  * @example
  * const [updateInnovationFlowStatesFromTemplateMutation, { data, loading, error }] = useUpdateInnovationFlowStatesFromTemplateMutation({
  *   variables: {
- *      input: // value for 'input'
+ *      innovationFlowId: // value for 'innovationFlowId'
+ *      innovationFlowTemplateId: // value for 'innovationFlowTemplateId'
  *   },
  * });
  */
@@ -5422,9 +5425,9 @@ export function refetchPlatformInnovationFlowTemplatesLibraryQuery(
 }
 
 export const InnovationFlowTemplateStatesDocument = gql`
-  query InnovationFlowTemplateStates($innovationFlowTemplateID: UUID!) {
+  query InnovationFlowTemplateStates($innovationFlowTemplateId: UUID!) {
     lookup {
-      innovationFlowTemplate(ID: $innovationFlowTemplateID) {
+      innovationFlowTemplate(ID: $innovationFlowTemplateId) {
         ...InnovationFlowTemplateCard
       }
     }
@@ -5444,7 +5447,7 @@ export const InnovationFlowTemplateStatesDocument = gql`
  * @example
  * const { data, loading, error } = useInnovationFlowTemplateStatesQuery({
  *   variables: {
- *      innovationFlowTemplateID: // value for 'innovationFlowTemplateID'
+ *      innovationFlowTemplateId: // value for 'innovationFlowTemplateId'
  *   },
  * });
  */

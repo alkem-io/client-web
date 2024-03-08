@@ -53,7 +53,7 @@ export const FormikInnovationFlowSelect: FC<FormikInnovationFlowSelectProps> = (
   };
 
   const { data: innovationFlowData, loading: loadingInnovationFlow } = useInnovationFlowTemplateStatesQuery({
-    variables: { innovationFlowTemplateID: field.value },
+    variables: { innovationFlowTemplateId: field.value },
     skip: !field.value,
   });
 

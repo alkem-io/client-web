@@ -23,7 +23,7 @@ export const InnovationFlowTemplateSegment: FC<InnovationFlowTemplateSegmentProp
   return (
     <Gutters>
       <FormikSelect
-        name="innovationFlowTemplateID"
+        name="innovationFlowTemplateId"
         values={innovationFlowTemplateOptions}
         required={required}
         helpText={t('components.innovation-flow-template-segment.help-text.title')}

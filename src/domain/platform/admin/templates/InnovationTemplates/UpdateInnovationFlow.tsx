@@ -99,7 +99,7 @@ const UpdateInnovationFlow: FC<UpdateInnovationFlowProps> = ({
           onSubmitForm={handleSelectInnovationFlowFormSubmit}
           wireSubmit={submit => (wiredSubmit = submit)}
           onSubmitDialog={handleSelectInnovationFlowDialogSubmit}
-          innovationFlowTemplateID={innovationFlowTemplate?.id}
+          innovationFlowTemplateId={innovationFlowTemplate?.id}
           innovationFlowTemplates={innovationFlowTemplates}
         />
         <InnovationFlowUpdateConfirmDialog

@@ -47,9 +47,9 @@ query PlatformInnovationFlowTemplatesLibrary {
   }
 }
 
-query InnovationFlowTemplateStates($innovationFlowTemplateID: UUID!) {
+query InnovationFlowTemplateStates($innovationFlowTemplateId: UUID!) {
   lookup {
-    innovationFlowTemplate(ID: $innovationFlowTemplateID) {
+    innovationFlowTemplate(ID: $innovationFlowTemplateId) {
       ...InnovationFlowTemplateCard
     }
   }

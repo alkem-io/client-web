@@ -22,10 +22,10 @@ interface FormValues {
   background: string;
   vision: string;
   tags: string[];
-  innovationFlowTemplateID: string;
+  innovationFlowTemplateId: string;
 }
 
-interface CreateChallengeFormProps extends JourneyCreationForm {}
+interface CreateChallengeFormProps extends JourneyCreationForm { }
 
 export const CreateChallengeForm: FC<CreateChallengeFormProps> = ({ isSubmitting, onValidChanged, onChanged }) => {
   const { t } = useTranslation();
@@ -41,7 +41,7 @@ export const CreateChallengeForm: FC<CreateChallengeFormProps> = ({ isSubmitting
       background: value.background,
       vision: value.vision,
       tags: value.tags,
-      innovationFlowTemplateID: value.innovationFlowTemplateID,
+      innovationFlowTemplateId: value.innovationFlowTemplateId,
     });
 
   const initialValues: FormValues = {
@@ -50,7 +50,7 @@ export const CreateChallengeForm: FC<CreateChallengeFormProps> = ({ isSubmitting
     background: '',
     vision: '',
     tags: [],
-    innovationFlowTemplateID: defaultInnovationFlowTemplateId ?? '',
+    innovationFlowTemplateId: defaultInnovationFlowTemplateId ?? '',
   };
 
   const validationSchema = yup.object().shape({
@@ -69,7 +69,7 @@ export const CreateChallengeForm: FC<CreateChallengeFormProps> = ({ isSubmitting
     background: MarkdownValidator(MARKDOWN_TEXT_LENGTH).trim().required(validationRequiredString),
     vision: MarkdownValidator(MARKDOWN_TEXT_LENGTH).trim().required(validationRequiredString),
     tags: yup.array().of(yup.string().min(2)).notRequired(),
-    innovationFlowTemplateID: yup.string().required(validationRequiredInnovationFlowString),
+    innovationFlowTemplateId: yup.string().required(validationRequiredInnovationFlowString),
   });
 
   return (
@@ -78,7 +78,7 @@ export const CreateChallengeForm: FC<CreateChallengeFormProps> = ({ isSubmitting
       validationSchema={validationSchema}
       enableReinitialize
       validateOnMount
-      onSubmit={() => {}}
+      onSubmit={() => { }}
     >
       {() => (
         <Form noValidate>
@@ -121,7 +121,7 @@ export const CreateChallengeForm: FC<CreateChallengeFormProps> = ({ isSubmitting
               helperText={t('context.challenge.tags.description')}
             />
             <FormikInnovationFlowSelect
-              name="innovationFlowTemplateID"
+              name="innovationFlowTemplateId"
               title={t('context.challenge.innovationFlow.title')}
               disabled={isSubmitting}
             />

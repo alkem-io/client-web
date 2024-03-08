@@ -23,14 +23,14 @@ export interface InnovationFlowTemplate {
   profile: InnovationFlowTemplateProfile;
 }
 export interface SelectInnovationFlowFormValuesType {
-  innovationFlowTemplateID: string;
+  innovationFlowTemplateId: string;
 }
 
 export interface SelectInnovationFlowDialogProps {
   isOpen: boolean;
   onClose: () => void;
   innovationFlowTemplates: InnovationFlowTemplate[] | undefined;
-  innovationFlowTemplateID: string | undefined;
+  innovationFlowTemplateId: string | undefined;
   onSubmitForm: (formData: SelectInnovationFlowFormValuesType) => void;
   wireSubmit: (setter: () => void) => void;
   onSubmitDialog: () => void;
@@ -43,7 +43,7 @@ const SelectInnovationFlowDialog: FC<SelectInnovationFlowDialogProps> = ({
   wireSubmit,
   onSubmitDialog,
   innovationFlowTemplates,
-  innovationFlowTemplateID = '',
+  innovationFlowTemplateId = '',
 }) => {
   const { t } = useTranslation();
 
@@ -57,11 +57,11 @@ const SelectInnovationFlowDialog: FC<SelectInnovationFlowDialogProps> = ({
   );
 
   const initialValues: SelectInnovationFlowFormValuesType = {
-    innovationFlowTemplateID,
+    innovationFlowTemplateId,
   };
 
   const validationSchema = yup.object().shape({
-    innovationFlowTemplateID: yup.string().required(t('forms.validations.required')),
+    innovationFlowTemplateId: yup.string().required(t('forms.validations.required')),
   });
 
   let isSubmitWired = false;
@@ -84,14 +84,14 @@ const SelectInnovationFlowDialog: FC<SelectInnovationFlowDialogProps> = ({
               onSubmitForm(values);
             }}
           >
-            {({ values: { innovationFlowTemplateID }, handleSubmit }) => {
+            {({ values: { innovationFlowTemplateId }, handleSubmit }) => {
               if (!isSubmitWired) {
                 wireSubmit(handleSubmit);
                 isSubmitWired = true;
               }
 
               const selectedInnovationFlowTemplate = innovationFlowTemplates?.find(
-                template => template.id === innovationFlowTemplateID
+                template => template.id === innovationFlowTemplateId
               );
 
               return (

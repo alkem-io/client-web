@@ -7081,7 +7081,8 @@ export type UpdateCalloutFlowStateMutation = {
 };
 
 export type UpdateInnovationFlowStatesFromTemplateMutationVariables = Exact<{
-  input: UpdateInnovationFlowFromTemplateInput;
+  innovationFlowId: Scalars['UUID'];
+  innovationFlowTemplateId: Scalars['UUID'];
 }>;
 
 export type UpdateInnovationFlowStatesFromTemplateMutation = {
@@ -7231,7 +7232,7 @@ export type PlatformInnovationFlowTemplatesLibraryQuery = {
 };
 
 export type InnovationFlowTemplateStatesQueryVariables = Exact<{
-  innovationFlowTemplateID: Scalars['UUID'];
+  innovationFlowTemplateId: Scalars['UUID'];
 }>;
 
 export type InnovationFlowTemplateStatesQuery = {
