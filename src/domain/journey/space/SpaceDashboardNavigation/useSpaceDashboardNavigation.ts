@@ -6,6 +6,7 @@ import {
   Authorization,
   AuthorizationPrivilege,
   CommunityMembershipStatus,
+  SpaceDashboardNavigationCollaborationFragment,
   SpaceDashboardNavigationCommunityFragment,
   SpaceDashboardNavigationContextFragment,
   SpaceDashboardNavigationProfileFragment,
@@ -51,6 +52,7 @@ const getDashboardNavigationItemProps = (
     profile: SpaceDashboardNavigationProfileFragment;
     context?: SpaceDashboardNavigationContextFragment;
     community?: SpaceDashboardNavigationCommunityFragment;
+    collaboration?: SpaceDashboardNavigationCollaborationFragment;
   },
   disabled?: boolean
 ): DashboardNavigationItem => {
@@ -63,7 +65,7 @@ const getDashboardNavigationItemProps = (
     avatar: journey.profile.avatar,
     cardBanner: journey.profile.cardBanner,
     tags: journey.profile.tagset?.tags,
-    innovationFlowState: '', //!! journey.lifecycle?.state, // TODO
+    innovationFlowState: journey.collaboration?.innovationFlow?.currentState.displayName,
     private: disabled,
     member: journey.community?.myMembershipStatus === CommunityMembershipStatus.Member,
   };
