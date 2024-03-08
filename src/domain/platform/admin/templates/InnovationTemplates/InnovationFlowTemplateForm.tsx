@@ -33,7 +33,7 @@ export interface InnovationTemplateFormSubmittedValues {
   profile: CreateProfileInput;
 }
 
-interface InnovationTemplateFormProps {
+interface InnovationFlowTemplateFormProps {
   initialValues: Partial<InnovationTemplateFormValues>;
   visual?: Visual;
   onSubmit: (values: InnovationTemplateFormSubmittedValues) => void;
@@ -95,7 +95,7 @@ const parseStates = (jsonString: string) => {
   }
 };
 
-const InnovationTemplateForm = ({ initialValues, visual, onSubmit, actions }: InnovationTemplateFormProps) => {
+const InnovationFlowTemplateForm = ({ initialValues, visual, onSubmit, actions }: InnovationFlowTemplateFormProps) => {
   const { t } = useTranslation();
   const theme = useTheme();
 
@@ -165,4 +165,4 @@ const InnovationTemplateForm = ({ initialValues, visual, onSubmit, actions }: In
   );
 };
 
-export default InnovationTemplateForm;
+export default InnovationFlowTemplateForm;

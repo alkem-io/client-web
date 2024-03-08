@@ -1,7 +1,7 @@
-import InnovationTemplateForm, {
+import InnovationFlowTemplateForm, {
   InnovationTemplateFormSubmittedValues,
   InnovationTemplateFormValues,
-} from './InnovationTemplateForm';
+} from './InnovationFlowTemplateForm';
 import { useTranslation } from 'react-i18next';
 import DialogWithGrid, { DialogFooter } from '../../../../../core/ui/dialog/DialogWithGrid';
 import DialogHeader, { DialogHeaderProps } from '../../../../../core/ui/dialog/DialogHeader';

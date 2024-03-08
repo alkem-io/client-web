@@ -50,18 +50,8 @@ const AdminInnovationTemplatesSection = ({ refetchQueries, ...props }: AdminInno
       createTemplateDialogComponent={CreateInnovationTemplateDialog}
       editTemplateDialogComponent={EditInnovationTemplateDialog}
       onCreateTemplate={variables => createInnovationFlowTemplate({ variables, refetchQueries })}
-      onUpdateTemplate={variables => {
-        return updateInnovationFlowTemplate({
-          variables: {
-            ...variables,
-            states: variables.states!,
-          },
-          refetchQueries,
-        });
-      }}
-      onDeleteTemplate={async variables => {
-        await deleteInnovationFlowTemplate({ variables, refetchQueries });
-      }}
+      onUpdateTemplate={variables => updateInnovationFlowTemplate({ variables, refetchQueries })}
+      onDeleteTemplate={variables => deleteInnovationFlowTemplate({ variables, refetchQueries })}
     />
   );
 };

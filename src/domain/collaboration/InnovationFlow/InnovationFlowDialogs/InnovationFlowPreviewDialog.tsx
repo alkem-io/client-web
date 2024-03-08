@@ -15,7 +15,7 @@ interface InnovationFlowPreviewDialogProps {
   onClose: () => void;
 }
 
-const InnovationFlowPreviewDialog: FC<InnovationFlowPreviewDialogProps> = ({ open = false, onClose, collaborationId, }) => {
+const InnovationFlowPreviewDialog: FC<InnovationFlowPreviewDialogProps> = ({ open = false, onClose, collaborationId }) => {
   const { t } = useTranslation();
   const { data, state } = useInnovationFlowSettings({ collaborationId });
   const { innovationFlow } = data;
