@@ -17316,81 +17316,6 @@ export function refetchChallengeApplicationTemplateQuery(
   return { query: ChallengeApplicationTemplateDocument, variables: variables };
 }
 
-export const ChallengeInnovationFlowDocument = gql`
-  query challengeInnovationFlow($challengeId: UUID!) {
-    lookup {
-      challenge(ID: $challengeId) {
-        id
-        collaboration {
-          id
-          innovationFlow {
-            id
-            states {
-              displayName
-              description
-            }
-            currentState {
-              displayName
-            }
-          }
-        }
-      }
-    }
-  }
-`;
-
-/**
- * __useChallengeInnovationFlowQuery__
- *
- * To run a query within a React component, call `useChallengeInnovationFlowQuery` and pass it any options that fit your needs.
- * When your component renders, `useChallengeInnovationFlowQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useChallengeInnovationFlowQuery({
- *   variables: {
- *      challengeId: // value for 'challengeId'
- *   },
- * });
- */
-export function useChallengeInnovationFlowQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.ChallengeInnovationFlowQuery,
-    SchemaTypes.ChallengeInnovationFlowQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.ChallengeInnovationFlowQuery, SchemaTypes.ChallengeInnovationFlowQueryVariables>(
-    ChallengeInnovationFlowDocument,
-    options
-  );
-}
-
-export function useChallengeInnovationFlowLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.ChallengeInnovationFlowQuery,
-    SchemaTypes.ChallengeInnovationFlowQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.ChallengeInnovationFlowQuery,
-    SchemaTypes.ChallengeInnovationFlowQueryVariables
-  >(ChallengeInnovationFlowDocument, options);
-}
-
-export type ChallengeInnovationFlowQueryHookResult = ReturnType<typeof useChallengeInnovationFlowQuery>;
-export type ChallengeInnovationFlowLazyQueryHookResult = ReturnType<typeof useChallengeInnovationFlowLazyQuery>;
-export type ChallengeInnovationFlowQueryResult = Apollo.QueryResult<
-  SchemaTypes.ChallengeInnovationFlowQuery,
-  SchemaTypes.ChallengeInnovationFlowQueryVariables
->;
-export function refetchChallengeInnovationFlowQuery(variables: SchemaTypes.ChallengeInnovationFlowQueryVariables) {
-  return { query: ChallengeInnovationFlowDocument, variables: variables };
-}
-
 export const ChallengeProfileInfoDocument = gql`
   query challengeProfileInfo($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
     space(ID: $spaceId) {
@@ -19123,12 +19048,6 @@ export const OpportunityProfileInfoDocument = gql`
       opportunity(ID: $opportunityId) {
         id
         nameID
-        collaboration {
-          id
-          innovationFlow {
-            id
-          }
-        }
         profile {
           id
           displayName
@@ -19152,6 +19071,12 @@ export const OpportunityProfileInfoDocument = gql`
         }
         context {
           ...ContextDetails
+        }
+        collaboration {
+          id
+          innovationFlow {
+            id
+          }
         }
       }
     }

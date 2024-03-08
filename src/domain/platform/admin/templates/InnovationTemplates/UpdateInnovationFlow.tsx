@@ -23,6 +23,9 @@ interface UpdateInnovationFlowProps {
   onSubmit: (formData: SelectInnovationFlowFormValuesType) => void;
 }
 
+/**
+ * @deprecated This file will be gone soon
+ */
 const UpdateInnovationFlow: FC<UpdateInnovationFlowProps> = ({
   states,
   currentState,
@@ -39,11 +42,7 @@ const UpdateInnovationFlow: FC<UpdateInnovationFlowProps> = ({
   const openConfirmationDialog = useCallback(() => setConfirmationDialogOpen(true), []);
   const closeConfirmationDialog = useCallback(() => setConfirmationDialogOpen(false), []);
 
-  //!! TODO: This was looking for the innovationFlowTemplate by name. I don't think this is a correct way to do it
   const innovationFlowTemplate = innovationFlowTemplates?.[0];
-  // .find(
-  //   template => innovationFlow && template.profile.displayName
-  // );
 
   const { data } = useInnovationFlowAuthorizationQuery({
     variables: { innovationFlowId: entityId! },

@@ -53,7 +53,7 @@ const EditInnovationTemplateDialog = ({
         onClose={onClose}
       />
       <DialogContent>
-        <InnovationTemplateForm
+        <InnovationFlowTemplateForm
           initialValues={values}
           visual={template.profile.visual}
           onSubmit={handleSubmit}

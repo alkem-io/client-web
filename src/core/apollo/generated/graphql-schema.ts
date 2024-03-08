@@ -20263,37 +20263,6 @@ export type ChallengeApplicationTemplateQuery = {
   };
 };
 
-export type ChallengeInnovationFlowQueryVariables = Exact<{
-  challengeId: Scalars['UUID'];
-}>;
-
-export type ChallengeInnovationFlowQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    challenge?:
-      | {
-          __typename?: 'Challenge';
-          id: string;
-          collaboration?:
-            | {
-                __typename?: 'Collaboration';
-                id: string;
-                innovationFlow?:
-                  | {
-                      __typename?: 'InnovationFlow';
-                      id: string;
-                      states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
-                      currentState: { __typename?: 'InnovationFlowState'; displayName: string };
-                    }
-                  | undefined;
-              }
-            | undefined;
-        }
-      | undefined;
-  };
-};
-
 export type ChallengeProfileInfoQueryVariables = Exact<{
   spaceId: Scalars['UUID_NAMEID'];
   challengeId: Scalars['UUID_NAMEID'];
@@ -22454,13 +22423,6 @@ export type OpportunityProfileInfoQuery = {
       __typename?: 'Opportunity';
       id: string;
       nameID: string;
-      collaboration?:
-        | {
-            __typename?: 'Collaboration';
-            id: string;
-            innovationFlow?: { __typename?: 'InnovationFlow'; id: string } | undefined;
-          }
-        | undefined;
       profile: {
         __typename?: 'Profile';
         id: string;
@@ -22521,6 +22483,13 @@ export type OpportunityProfileInfoQuery = {
                   anonymousReadAccess: boolean;
                 }
               | undefined;
+          }
+        | undefined;
+      collaboration?:
+        | {
+            __typename?: 'Collaboration';
+            id: string;
+            innovationFlow?: { __typename?: 'InnovationFlow'; id: string } | undefined;
           }
         | undefined;
     };

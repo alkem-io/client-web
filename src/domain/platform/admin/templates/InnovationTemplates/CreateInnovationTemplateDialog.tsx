@@ -32,7 +32,7 @@ const CreateInnovationTemplateDialog = ({ open, onClose, onSubmit }: CreatePostT
         onClose={onClose}
       />
       <DialogContent>
-        <InnovationTemplateForm
+        <InnovationFlowTemplateForm
           initialValues={values}
           onSubmit={onSubmit}
           actions={formik => (
