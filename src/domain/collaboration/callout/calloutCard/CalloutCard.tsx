@@ -56,7 +56,7 @@ const CalloutCard = ({
     <ContributeCard {...cardProps}>
       <CardHeader title={callout?.profile.displayName} iconComponent={CalloutIcon}>
         {loading && <Skeleton />}
-        <CardHeaderCaption noWrap logoUrl={author?.profile.avatar?.uri}>
+        <CardHeaderCaption logoUrl={author?.profile.avatar?.uri}>
           {author?.profile.displayName}
         </CardHeaderCaption>
       </CardHeader>

@@ -1,9 +1,9 @@
-import { Box, TypographyProps } from '@mui/material';
+import { Box, BoxProps } from '@mui/material';
 import React, { PropsWithChildren } from 'react';
 import { gutters } from '../grid/utils';
 import { Caption } from '../typography';
 
-interface CardHeaderCaptionProps extends TypographyProps {
+interface CardHeaderCaptionProps extends BoxProps {
   logoUrl?: string;
 }
 

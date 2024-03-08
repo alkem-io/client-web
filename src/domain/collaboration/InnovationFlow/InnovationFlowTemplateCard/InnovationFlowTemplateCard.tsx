@@ -20,7 +20,7 @@ interface InnovationFlowTemplate extends TemplateBase {
   states: InnovationFlowState[];
 }
 
-interface InnovationFlowTemplateCardProps extends TemplateCardBaseProps<InnovationFlowTemplate> {}
+interface InnovationFlowTemplateCardProps extends TemplateCardBaseProps<InnovationFlowTemplate> { }
 
 const InnovationFlowTemplateCard = ({
   template,
@@ -39,7 +39,7 @@ const InnovationFlowTemplateCard = ({
     <ContributeCard onClick={onClick}>
       <CardHeader title={template?.profile.displayName} iconComponent={InnovationFlowIcon as SvgIconComponent}>
         {loading && <Skeleton />}
-        <CardHeaderCaption noWrap logoUrl={innovationPack?.provider?.profile.avatar?.uri}>
+        <CardHeaderCaption logoUrl={innovationPack?.provider?.profile.avatar?.uri}>
           {innovationPack?.provider?.profile.displayName}
         </CardHeaderCaption>
       </CardHeader>
