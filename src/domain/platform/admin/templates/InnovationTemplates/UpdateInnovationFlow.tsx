@@ -23,7 +23,6 @@ interface UpdateInnovationFlowProps {
 const UpdateInnovationFlow: FC<UpdateInnovationFlowProps> = ({
   states,
   currentState,
-  onSetNewState,
   entityId,
   innovationFlowTemplates,
   onSubmit,

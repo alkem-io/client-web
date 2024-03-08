@@ -16,15 +16,20 @@ const MAX_NUMBER_OF_STATES = 100;
 const MAX_LENGTH_STATE_DISPLAY_NAME = SMALL_TEXT_LENGTH;
 const MAX_LENGTH_STATE_DESCRIPTION = LONG_TEXT_LENGTH;
 
+// To allow some flexibility when writing the states manually as JSON, probably can be removed when we make a better UI for editing states
+interface InnovationFlowStateWithOptionalDescription extends Omit<InnovationFlowState, 'description'> {
+  description: string | undefined;
+}
+
 export interface InnovationTemplateFormValues {
   displayName: string;
   description: string;
   tags: string[];
-  states: InnovationFlowState[];
+  states: InnovationFlowStateWithOptionalDescription[];
 }
 
 export interface InnovationTemplateFormSubmittedValues {
-  states: InnovationFlowState[];
+  states: InnovationFlowStateWithOptionalDescription[];
   profile: CreateProfileInput;
 }
 
@@ -43,7 +48,7 @@ const validator = {
         .object()
         .shape({
           displayName: yup.string().required().max(MAX_LENGTH_STATE_DISPLAY_NAME),
-          description: yup.string().required().max(MAX_LENGTH_STATE_DESCRIPTION),
+          description: yup.string().max(MAX_LENGTH_STATE_DESCRIPTION),
         })
         .required()
     )
@@ -59,8 +64,9 @@ const parseStates = (jsonString: string) => {
       typeof state.displayName === 'string' &&
       state.displayName.length > 0 &&
       state.displayName.length <= MAX_LENGTH_STATE_DISPLAY_NAME &&
-      typeof state.description === 'string' &&
-      state.description.length <= MAX_LENGTH_STATE_DESCRIPTION &&
+      (typeof state.description === 'string' &&
+        state.description.length <= MAX_LENGTH_STATE_DESCRIPTION ||
+        typeof state.description === 'undefined') &&
       !displayNames[state.displayName] // Avoid duplicated displayNames
     );
   };
@@ -75,7 +81,7 @@ const parseStates = (jsonString: string) => {
       for (const state of data) {
         if (isValidState(state)) {
           // State is valid, add it to the result array and to the list of used displayNames
-          result.push({ displayName: state.displayName, description: state.description });
+          result.push({ displayName: state.displayName, description: state.description ?? '' });
           displayNames[state.displayName] = true;
         } else {
           return { isValid: false, states: [], error: 'Invalid state.' };
@@ -151,7 +157,7 @@ const InnovationTemplateForm = ({ initialValues, visual, onSubmit, actions }: In
           </FormLabel>
           <BlockSectionTitle>{t('common.preview')}</BlockSectionTitle>
           <Box sx={{ maxWidth: theme => theme.spacing(64) }}>
-            <InnovationFlowVisualizer states={values.states} />
+            <InnovationFlowVisualizer states={values.states.map(state => ({ displayName: state.displayName, description: state.description ?? '' }))} />
           </Box>
         </FormRows>
       )}
