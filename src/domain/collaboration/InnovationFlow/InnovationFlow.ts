@@ -1,7 +1,9 @@
 export interface InnovationFlowDetails {
   id: string;
   states: InnovationFlowState[] | undefined;
-  currentState: string | undefined;
+  currentState: {
+    displayName: string | undefined;
+  }
 }
 
 export type InnovationFlowState = {

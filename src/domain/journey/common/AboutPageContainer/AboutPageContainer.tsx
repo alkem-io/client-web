@@ -125,11 +125,6 @@ const AboutPageContainer: FC<AboutPageContainerProps> = ({
 
   const tagset = nonMemberJourney?.profile?.tagset;
   const collaboration = (nonMembersData?.space?.opportunity ?? nonMembersData?.space?.challenge)?.collaboration;
-  //TODO: This can be cleaner
-  const innovationFlow = collaboration?.innovationFlow ? {
-    ...collaboration?.innovationFlow,
-    currentState: collaboration?.innovationFlow?.currentState.displayName,
-  } : undefined;
 
   const hostOrganization = nonMembersData?.space?.host;
   const community = {
@@ -177,7 +172,7 @@ const AboutPageContainer: FC<AboutPageContainerProps> = ({
           context,
           profile,
           tagset,
-          innovationFlow,
+          innovationFlow: collaboration?.innovationFlow,
           permissions,
           metrics,
           leadUsers,

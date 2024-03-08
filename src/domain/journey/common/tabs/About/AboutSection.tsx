@@ -173,7 +173,7 @@ export const AboutSection: FC<AboutSectionProps> = ({
             <PageContentBlockHeader title={name} />
             <Tagline>{tagline}</Tagline>
             <TagsComponent tags={tags} variant="filled" loading={loading} />
-            <Actions justifyContent="end">{innovationFlow && <InnovationFlowVisualizer states={innovationFlow.states} currentState={innovationFlow.currentState} />}</Actions>
+            <Actions justifyContent="end">{innovationFlow && <InnovationFlowVisualizer states={innovationFlow.states} currentState={innovationFlow.currentState.displayName} />}</Actions>
           </PageContentBlock>
           {communityReadAccess && (
             <EntityDashboardLeadsSection
