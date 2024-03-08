@@ -12,7 +12,6 @@ const TypographyTitle = styled(props => <Typography variant="h6" {...props} />)(
 
 interface PostInnovationViewProps {
   template: AdminInnovationFlowTemplateFragment;
-  // TODO: Add getTemplateValue here and apply the same lazyQuery aproach it's done on Whiteboards if we don't want to load the full IF definition in the index query
 }
 
 const InnovationTemplateView = ({ template }: PostInnovationViewProps) => {

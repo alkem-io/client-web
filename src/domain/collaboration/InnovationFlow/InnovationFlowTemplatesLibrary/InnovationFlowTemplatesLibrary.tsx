@@ -87,11 +87,11 @@ const InnovationFlowTemplatesLibrary: FC<InnovationFlowTemplatesLibraryProps> = 
     [platformData, filter]
   );
 
-  // InnovationFlow templates include the value (definition), so no need to go to the server and fetch like we do with Whiteboards
-  const getInnovationFlowTemplateDefinition = (
+  // InnovationFlow templates includes the states, so no need to go to the server and fetch like we do with Whiteboards
+  const getInnovationFlowTemplateData = (
     template: InnovationFlowTemplate & Identifiable
   ): Promise<InnovationFlowTemplate & Identifiable> => {
-    return Promise.resolve(template);
+    return Promise.resolve(template); // Just resolve it as it is
   };
 
   return (
@@ -115,7 +115,7 @@ const InnovationFlowTemplatesLibrary: FC<InnovationFlowTemplatesLibraryProps> = 
         onFilterChange={setFilter}
         fetchSpaceTemplatesOnLoad={Boolean(spaceNameId)}
         fetchTemplatesFromSpace={fetchTemplatesFromSpace}
-        getTemplateWithContent={getInnovationFlowTemplateDefinition}
+        getTemplateWithContent={getInnovationFlowTemplateData}
         templatesFromSpace={templatesFromSpace}
         loadingTemplatesFromSpace={loadingTemplatesFromSpace}
         fetchTemplatesFromPlatform={fetchPlatformTemplates}

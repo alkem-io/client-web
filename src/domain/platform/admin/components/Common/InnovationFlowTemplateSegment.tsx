@@ -1,4 +1,3 @@
-import { Grid } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import InnovationFlowVisualizer from '../../templates/InnovationTemplates/InnovationFlowVisualizer';
