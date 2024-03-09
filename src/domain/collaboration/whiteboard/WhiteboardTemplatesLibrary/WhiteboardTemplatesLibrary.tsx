@@ -55,14 +55,14 @@ const WhiteboardTemplatesLibrary: FC<WhiteboardTemplatesLibraryProps> = ({ open,
     () =>
       applyFilter(
         filter,
-        spaceData?.space.templates?.whiteboardTemplates.map(template => ({
+        spaceData?.space.account.library?.whiteboardTemplates.map(template => ({
           ...template,
           innovationPack: {
             // TODO ???
             profile: {
               displayName: '',
             },
-            provider: spaceData?.space.host,
+            provider: spaceData?.space.account.host,
           },
         }))
       ),

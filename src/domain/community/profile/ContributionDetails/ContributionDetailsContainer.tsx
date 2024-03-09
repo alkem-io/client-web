@@ -88,7 +88,7 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
         journeyUri: buildSpaceUrl(spaceData.space.nameID),
         communityId: spaceData.space.community?.id,
         tagline: spaceData.space.profile.tagline ?? '',
-        spaceVisibility: spaceData.space.license.visibility,
+        spaceVisibility: spaceData.space.account.license.visibility,
       };
     }
 
@@ -101,7 +101,7 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
         journeyUri: buildChallengeUrl(challengeData.space.nameID, challengeData.space.challenge.nameID),
         communityId: challengeData.space.challenge.community?.id,
         tagline: challengeData.space.challenge.profile.tagline ?? '',
-        spaceVisibility: challengeData.space.license.visibility,
+        spaceVisibility: challengeData.space.account.license.visibility,
       };
     }
 
@@ -118,7 +118,7 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
         ),
         communityId: opportunityData.space.opportunity.community?.id,
         tagline: opportunityData.space.opportunity.profile.tagline ?? '',
-        spaceVisibility: opportunityData.space.license.visibility,
+        spaceVisibility: opportunityData.space.account.license.visibility,
       };
     }
   }, [spaceData, challengeData, opportunityData]);

@@ -1813,7 +1813,6 @@ export const UserRolesDetailsFragmentDoc = gql`
     spaces {
       id
       nameID
-      spaceID
       displayName
       roles
       visibility

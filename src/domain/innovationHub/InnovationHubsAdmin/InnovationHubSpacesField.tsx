@@ -13,7 +13,6 @@ import TableCell from '@mui/material/TableCell';
 import TableBody from '@mui/material/TableBody';
 import React, { useState } from 'react';
 import { useInnovationHubAvailableSpacesQuery } from '../../../core/apollo/generated/apollo-hooks';
-import { SpaceVisibility } from '../../../core/apollo/generated/graphql-schema';
 import { GridColDef, GridRenderCellParams, GridValueGetterParams } from '@mui/x-data-grid';
 import { useTranslation } from 'react-i18next';
 import { Identifiable } from '../../../core/utils/Identifiable';
@@ -22,19 +21,13 @@ import { BlockSectionTitle, BlockTitle } from '../../../core/ui/typography';
 import { Remove, Search } from '@mui/icons-material';
 import DialogWithGrid from '../../../core/ui/dialog/DialogWithGrid';
 import Gutters from '../../../core/ui/grid/Gutters';
+import { Account } from '../../journey/account/Account';
 
 export interface Space extends Identifiable {
   id: string;
-  license: {
-    visibility: SpaceVisibility;
-  };
+  account: Account;
   profile: {
     displayName: string;
-  };
-  host?: {
-    profile: {
-      displayName: string;
-    };
   };
 }
 
@@ -82,8 +75,8 @@ const InnovationHubSpacesField = ({ spaces, onChange }: InnovationHubSpacesField
       field: 'visibility',
       headerName: t('pages.admin.space.settings.visibility.title'),
       renderHeader: () => <>{t('pages.admin.space.settings.visibility.title')}</>,
-      renderCell: ({ row }: GridRenderCellParams<string, Space>) => <>{row.license.visibility}</>,
-      valueGetter: ({ row }: GridValueGetterParams<string, Space>) => row.license.visibility,
+      renderCell: ({ row }: GridRenderCellParams<string, Space>) => <>{row.account.license.visibility}</>,
+      valueGetter: ({ row }: GridValueGetterParams<string, Space>) => row.account.license.visibility,
       filterable: false,
       resizable: true,
     },
@@ -91,8 +84,8 @@ const InnovationHubSpacesField = ({ spaces, onChange }: InnovationHubSpacesField
       field: 'host.profile.displayName',
       headerName: t('pages.admin.innovationHubs.fields.host'),
       renderHeader: () => <>{t('pages.admin.innovationHubs.fields.host')}</>,
-      renderCell: ({ row }: GridRenderCellParams<string, Space>) => <>{row.host?.profile.displayName}</>,
-      valueGetter: ({ row }: GridValueGetterParams<string, Space>) => row.host?.profile.displayName,
+      renderCell: ({ row }: GridRenderCellParams<string, Space>) => <>{row.account.host?.profile.displayName}</>,
+      valueGetter: ({ row }: GridValueGetterParams<string, Space>) => row.account.host?.profile.displayName,
       filterable: false,
       resizable: true,
     },
@@ -198,8 +191,8 @@ const InnovationHubSpacesField = ({ spaces, onChange }: InnovationHubSpacesField
                           sx={{ display: snapshot.isDragging ? 'table' : undefined }}
                         >
                           <TableCell>{space.profile.displayName}</TableCell>
-                          <TableCell>{space.license.visibility}</TableCell>
-                          <TableCell>{space.host?.profile.displayName}</TableCell>
+                          <TableCell>{space.account.license.visibility}</TableCell>
+                          <TableCell>{space.account.host?.profile.displayName}</TableCell>
                           <TableCell>
                             <IconButton
                               color="warning"

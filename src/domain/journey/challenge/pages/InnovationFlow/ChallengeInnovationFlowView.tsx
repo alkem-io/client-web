@@ -22,7 +22,7 @@ const ChallengeInnovationFlowView: FC = () => {
   const { data: spaceInnovationFlowTemplates } = useSpaceInnovationFlowTemplatesQuery({
     variables: { spaceId: spaceNameId },
   });
-  const innovationFlowTemplates = spaceInnovationFlowTemplates?.space?.templates?.innovationFlowTemplates;
+  const innovationFlowTemplates = spaceInnovationFlowTemplates?.space?.account.library?.innovationFlowTemplates;
 
   const { data: challengeProfile } = useChallengeProfileInfoQuery({
     variables: { spaceId: spaceNameId, challengeId: challengeNameId },

@@ -12,7 +12,7 @@ const useDefaultInnovationFlowTemplate = () => {
   });
 
   return {
-    defaultInnovationFlowTemplateId: data?.space.defaults?.innovationFlowTemplate?.id,
+    defaultInnovationFlowTemplateId: data?.space.account.defaults?.innovationFlowTemplate?.id,
     loading,
   };
 };

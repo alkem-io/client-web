@@ -21,7 +21,7 @@ const OpportunityInnovationFlowView: FC = () => {
   const { data: spaceInnovationFlowTemplates } = useSpaceInnovationFlowTemplatesQuery({
     variables: { spaceId: spaceNameId },
   });
-  const innovationFlowTemplates = spaceInnovationFlowTemplates?.space?.templates?.innovationFlowTemplates;
+  const innovationFlowTemplates = spaceInnovationFlowTemplates?.space?.account.library?.innovationFlowTemplates;
 
   const { data: opportunityProfile } = useOpportunityProfileInfoQuery({
     variables: { spaceId: spaceNameId, opportunityId: opportunityNameId },
