@@ -4,6 +4,25 @@ export type APMFieldPolicy = {
   endpoint?: FieldPolicy<any> | FieldReadFunction<any>;
   rumEnabled?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type AccountKeySpecifier = (
+  | 'authorization'
+  | 'defaults'
+  | 'host'
+  | 'id'
+  | 'library'
+  | 'license'
+  | 'spaceID'
+  | AccountKeySpecifier
+)[];
+export type AccountFieldPolicy = {
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  defaults?: FieldPolicy<any> | FieldReadFunction<any>;
+  host?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  library?: FieldPolicy<any> | FieldReadFunction<any>;
+  license?: FieldPolicy<any> | FieldReadFunction<any>;
+  spaceID?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type ActivityCreatedSubscriptionResultKeySpecifier = (
   | 'activity'
   | ActivityCreatedSubscriptionResultKeySpecifier
@@ -685,9 +704,9 @@ export type CalloutTemplateFieldPolicy = {
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ChallengeKeySpecifier = (
+  | 'account'
   | 'agent'
   | 'authorization'
-  | 'challenges'
   | 'collaboration'
   | 'community'
   | 'context'
@@ -697,14 +716,13 @@ export type ChallengeKeySpecifier = (
   | 'opportunities'
   | 'preferences'
   | 'profile'
-  | 'spaceID'
   | 'storageAggregator'
   | ChallengeKeySpecifier
 )[];
 export type ChallengeFieldPolicy = {
+  account?: FieldPolicy<any> | FieldReadFunction<any>;
   agent?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  challenges?: FieldPolicy<any> | FieldReadFunction<any>;
   collaboration?: FieldPolicy<any> | FieldReadFunction<any>;
   community?: FieldPolicy<any> | FieldReadFunction<any>;
   context?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -714,7 +732,6 @@ export type ChallengeFieldPolicy = {
   opportunities?: FieldPolicy<any> | FieldReadFunction<any>;
   preferences?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
-  spaceID?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ChallengeCreatedKeySpecifier = ('challenge' | 'spaceID' | ChallengeCreatedKeySpecifier)[];
@@ -1435,7 +1452,6 @@ export type MutationKeySpecifier = (
   | 'createCalloutOnCollaboration'
   | 'createCalloutTemplate'
   | 'createChallenge'
-  | 'createChildChallenge'
   | 'createContributionOnCallout'
   | 'createDiscussion'
   | 'createEventOnCalendar'
@@ -1448,7 +1464,6 @@ export type MutationKeySpecifier = (
   | 'createOpportunity'
   | 'createOrganization'
   | 'createPostTemplate'
-  | 'createProject'
   | 'createReferenceOnProfile'
   | 'createRelationOnCollaboration'
   | 'createSpace'
@@ -1475,7 +1490,6 @@ export type MutationKeySpecifier = (
   | 'deleteOrganization'
   | 'deletePost'
   | 'deletePostTemplate'
-  | 'deleteProject'
   | 'deleteReference'
   | 'deleteRelation'
   | 'deleteSpace'
@@ -1488,7 +1502,6 @@ export type MutationKeySpecifier = (
   | 'eventOnApplication'
   | 'eventOnCommunityInvitation'
   | 'eventOnOrganizationVerification'
-  | 'eventOnProject'
   | 'grantCredentialToOrganization'
   | 'grantCredentialToUser'
   | 'ingest'
@@ -1545,10 +1558,8 @@ export type MutationKeySpecifier = (
   | 'updatePreferenceOnSpace'
   | 'updatePreferenceOnUser'
   | 'updateProfile'
-  | 'updateProject'
   | 'updateReference'
   | 'updateSpace'
-  | 'updateSpaceDefaults'
   | 'updateSpacePlatformSettings'
   | 'updateTagset'
   | 'updateUser'
@@ -1594,7 +1605,6 @@ export type MutationFieldPolicy = {
   createCalloutOnCollaboration?: FieldPolicy<any> | FieldReadFunction<any>;
   createCalloutTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   createChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
-  createChildChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
   createContributionOnCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   createDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
   createEventOnCalendar?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1607,7 +1617,6 @@ export type MutationFieldPolicy = {
   createOpportunity?: FieldPolicy<any> | FieldReadFunction<any>;
   createOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   createPostTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
-  createProject?: FieldPolicy<any> | FieldReadFunction<any>;
   createReferenceOnProfile?: FieldPolicy<any> | FieldReadFunction<any>;
   createRelationOnCollaboration?: FieldPolicy<any> | FieldReadFunction<any>;
   createSpace?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1634,7 +1643,6 @@ export type MutationFieldPolicy = {
   deleteOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   deletePost?: FieldPolicy<any> | FieldReadFunction<any>;
   deletePostTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
-  deleteProject?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteReference?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteRelation?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteSpace?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1647,7 +1655,6 @@ export type MutationFieldPolicy = {
   eventOnApplication?: FieldPolicy<any> | FieldReadFunction<any>;
   eventOnCommunityInvitation?: FieldPolicy<any> | FieldReadFunction<any>;
   eventOnOrganizationVerification?: FieldPolicy<any> | FieldReadFunction<any>;
-  eventOnProject?: FieldPolicy<any> | FieldReadFunction<any>;
   grantCredentialToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   grantCredentialToUser?: FieldPolicy<any> | FieldReadFunction<any>;
   ingest?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1704,10 +1711,8 @@ export type MutationFieldPolicy = {
   updatePreferenceOnSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   updatePreferenceOnUser?: FieldPolicy<any> | FieldReadFunction<any>;
   updateProfile?: FieldPolicy<any> | FieldReadFunction<any>;
-  updateProject?: FieldPolicy<any> | FieldReadFunction<any>;
   updateReference?: FieldPolicy<any> | FieldReadFunction<any>;
   updateSpace?: FieldPolicy<any> | FieldReadFunction<any>;
-  updateSpaceDefaults?: FieldPolicy<any> | FieldReadFunction<any>;
   updateSpacePlatformSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   updateTagset?: FieldPolicy<any> | FieldReadFunction<any>;
   updateUser?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1734,6 +1739,7 @@ export type NVPFieldPolicy = {
   value?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type OpportunityKeySpecifier = (
+  | 'account'
   | 'authorization'
   | 'collaboration'
   | 'community'
@@ -1743,11 +1749,11 @@ export type OpportunityKeySpecifier = (
   | 'nameID'
   | 'parentNameID'
   | 'profile'
-  | 'projects'
   | 'storageAggregator'
   | OpportunityKeySpecifier
 )[];
 export type OpportunityFieldPolicy = {
+  account?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   collaboration?: FieldPolicy<any> | FieldReadFunction<any>;
   community?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1757,7 +1763,6 @@ export type OpportunityFieldPolicy = {
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   parentNameID?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
-  projects?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type OpportunityCreatedKeySpecifier = ('challengeID' | 'opportunity' | OpportunityCreatedKeySpecifier)[];
@@ -2035,14 +2040,6 @@ export type ProfileCredentialVerifiedFieldPolicy = {
   userEmail?: FieldPolicy<any> | FieldReadFunction<any>;
   vc?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type ProjectKeySpecifier = ('authorization' | 'id' | 'lifecycle' | 'nameID' | 'profile' | ProjectKeySpecifier)[];
-export type ProjectFieldPolicy = {
-  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-  lifecycle?: FieldPolicy<any> | FieldReadFunction<any>;
-  nameID?: FieldPolicy<any> | FieldReadFunction<any>;
-  profile?: FieldPolicy<any> | FieldReadFunction<any>;
-};
 export type QueryKeySpecifier = (
   | 'activityFeed'
   | 'activityLogOnCollaboration'
@@ -2145,6 +2142,7 @@ export type RelationFieldPolicy = {
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type RelayPaginatedSpaceKeySpecifier = (
+  | 'account'
   | 'agent'
   | 'authorization'
   | 'challenge'
@@ -2153,25 +2151,21 @@ export type RelayPaginatedSpaceKeySpecifier = (
   | 'community'
   | 'context'
   | 'createdDate'
-  | 'defaults'
   | 'group'
   | 'groups'
   | 'host'
   | 'id'
-  | 'license'
   | 'metrics'
   | 'nameID'
   | 'opportunities'
   | 'opportunity'
   | 'preferences'
   | 'profile'
-  | 'project'
-  | 'projects'
   | 'storageAggregator'
-  | 'templates'
   | RelayPaginatedSpaceKeySpecifier
 )[];
 export type RelayPaginatedSpaceFieldPolicy = {
+  account?: FieldPolicy<any> | FieldReadFunction<any>;
   agent?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   challenge?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2180,22 +2174,17 @@ export type RelayPaginatedSpaceFieldPolicy = {
   community?: FieldPolicy<any> | FieldReadFunction<any>;
   context?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
-  defaults?: FieldPolicy<any> | FieldReadFunction<any>;
   group?: FieldPolicy<any> | FieldReadFunction<any>;
   groups?: FieldPolicy<any> | FieldReadFunction<any>;
   host?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
-  license?: FieldPolicy<any> | FieldReadFunction<any>;
   metrics?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   opportunities?: FieldPolicy<any> | FieldReadFunction<any>;
   opportunity?: FieldPolicy<any> | FieldReadFunction<any>;
   preferences?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
-  project?: FieldPolicy<any> | FieldReadFunction<any>;
-  projects?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
-  templates?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type RelayPaginatedSpaceEdgeKeySpecifier = ('node' | RelayPaginatedSpaceEdgeKeySpecifier)[];
 export type RelayPaginatedSpaceEdgeFieldPolicy = {
@@ -2526,6 +2515,7 @@ export type SourceFieldPolicy = {
   uri?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type SpaceKeySpecifier = (
+  | 'account'
   | 'agent'
   | 'authorization'
   | 'challenge'
@@ -2534,25 +2524,21 @@ export type SpaceKeySpecifier = (
   | 'community'
   | 'context'
   | 'createdDate'
-  | 'defaults'
   | 'group'
   | 'groups'
   | 'host'
   | 'id'
-  | 'license'
   | 'metrics'
   | 'nameID'
   | 'opportunities'
   | 'opportunity'
   | 'preferences'
   | 'profile'
-  | 'project'
-  | 'projects'
   | 'storageAggregator'
-  | 'templates'
   | SpaceKeySpecifier
 )[];
 export type SpaceFieldPolicy = {
+  account?: FieldPolicy<any> | FieldReadFunction<any>;
   agent?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   challenge?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2561,22 +2547,17 @@ export type SpaceFieldPolicy = {
   community?: FieldPolicy<any> | FieldReadFunction<any>;
   context?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
-  defaults?: FieldPolicy<any> | FieldReadFunction<any>;
   group?: FieldPolicy<any> | FieldReadFunction<any>;
   groups?: FieldPolicy<any> | FieldReadFunction<any>;
   host?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
-  license?: FieldPolicy<any> | FieldReadFunction<any>;
   metrics?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   opportunities?: FieldPolicy<any> | FieldReadFunction<any>;
   opportunity?: FieldPolicy<any> | FieldReadFunction<any>;
   preferences?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
-  project?: FieldPolicy<any> | FieldReadFunction<any>;
-  projects?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
-  templates?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type SpaceDefaultsKeySpecifier = (
   | 'authorization'
@@ -2925,6 +2906,10 @@ export type StrictTypedTypePolicies = {
   APM?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | APMKeySpecifier | (() => undefined | APMKeySpecifier);
     fields?: APMFieldPolicy;
+  };
+  Account?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | AccountKeySpecifier | (() => undefined | AccountKeySpecifier);
+    fields?: AccountFieldPolicy;
   };
   ActivityCreatedSubscriptionResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:
@@ -3428,10 +3413,6 @@ export type StrictTypedTypePolicies = {
       | ProfileCredentialVerifiedKeySpecifier
       | (() => undefined | ProfileCredentialVerifiedKeySpecifier);
     fields?: ProfileCredentialVerifiedFieldPolicy;
-  };
-  Project?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | ProjectKeySpecifier | (() => undefined | ProjectKeySpecifier);
-    fields?: ProjectFieldPolicy;
   };
   Query?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | QueryKeySpecifier | (() => undefined | QueryKeySpecifier);

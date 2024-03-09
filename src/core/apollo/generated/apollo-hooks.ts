@@ -1875,9 +1875,12 @@ export const InnovationHubProfileFragmentDoc = gql`
 export const InnovationHubSpaceFragmentDoc = gql`
   fragment InnovationHubSpace on Space {
     id
-    license {
+    account {
       id
-      visibility
+      license {
+        id
+        visibility
+      }
     }
     profile {
       id
@@ -2485,9 +2488,12 @@ export const SpaceCardFragmentDoc = gql`
       id
       vision
     }
-    license {
+    account {
       id
-      visibility
+      license {
+        id
+        visibility
+      }
     }
   }
   ${TagsetDetailsFragmentDoc}
@@ -2578,9 +2584,12 @@ export const SpaceInfoFragmentDoc = gql`
         myPrivileges
       }
     }
-    license {
+    account {
       id
-      visibility
+      license {
+        id
+        visibility
+      }
     }
   }
   ${SpaceDetailsFragmentDoc}
@@ -2604,9 +2613,12 @@ export const SpacePageFragmentDoc = gql`
   fragment SpacePage on Space {
     id
     nameID
-    license {
+    account {
       id
-      visibility
+      license {
+        id
+        visibility
+      }
     }
     metrics {
       id
@@ -2750,16 +2762,19 @@ export const InnovationFlowTemplateCardFragmentDoc = gql`
 `;
 export const SpaceTemplatesFragmentDoc = gql`
   fragment SpaceTemplates on Space {
-    templates {
+    account {
       id
-      postTemplates {
-        ...PostTemplateCard
-      }
-      whiteboardTemplates {
-        ...WhiteboardTemplateCard
-      }
-      innovationFlowTemplates {
-        ...InnovationFlowTemplateCard
+      library {
+        id
+        postTemplates {
+          ...PostTemplateCard
+        }
+        whiteboardTemplates {
+          ...WhiteboardTemplateCard
+        }
+        innovationFlowTemplates {
+          ...InnovationFlowTemplateCard
+        }
       }
     }
   }
@@ -2826,12 +2841,15 @@ export const AdminSpaceFragmentDoc = gql`
   fragment AdminSpace on Space {
     id
     nameID
-    license {
+    account {
       id
-      visibility
-      featureFlags {
-        name
-        enabled
+      license {
+        id
+        visibility
+        featureFlags {
+          name
+          enabled
+        }
       }
     }
     profile {
@@ -3098,9 +3116,12 @@ export const PostParentFragmentDoc = gql`
     space {
       id
       nameID
-      license {
+      account {
         id
-        visibility
+        license {
+          id
+          visibility
+        }
       }
       profile {
         id
@@ -3263,9 +3284,12 @@ export const SearchResultSpaceFragmentDoc = gql`
         id
         myMembershipStatus
       }
-      license {
+      account {
         id
-        visibility
+        license {
+          id
+          visibility
+        }
       }
     }
   }
@@ -3288,7 +3312,9 @@ export const SearchResultChallengeFragmentDoc = gql`
           ...VisualUri
         }
       }
-      spaceID
+      account {
+        spaceID
+      }
       context {
         id
         vision
@@ -3314,9 +3340,12 @@ export const SearchResultChallengeFragmentDoc = gql`
         id
         anonymousReadAccess
       }
-      license {
+      account {
         id
-        visibility
+        license {
+          id
+          visibility
+        }
       }
     }
   }
@@ -3371,9 +3400,12 @@ export const SearchResultOpportunityFragmentDoc = gql`
         id
         displayName
       }
-      license {
+      account {
         id
-        visibility
+        license {
+          id
+          visibility
+        }
       }
     }
   }
@@ -4883,13 +4915,16 @@ export const DefaultInnovationFlowTemplateDocument = gql`
   query DefaultInnovationFlowTemplate($spaceNameId: UUID_NAMEID!) {
     space(ID: $spaceNameId) {
       id
-      defaults {
+      account {
         id
-        innovationFlowTemplate {
+        defaults {
           id
-          profile {
+          innovationFlowTemplate {
             id
-            displayName
+            profile {
+              id
+              displayName
+            }
           }
         }
       }
@@ -5256,17 +5291,20 @@ export const SpaceInnovationFlowTemplatesLibraryDocument = gql`
   query SpaceInnovationFlowTemplatesLibrary($spaceId: UUID_NAMEID!) {
     space(ID: $spaceId) {
       id
-      templates {
+      account {
         id
-        innovationFlowTemplates {
-          ...InnovationFlowTemplateCard
+        library {
+          id
+          innovationFlowTemplates {
+            ...InnovationFlowTemplateCard
+          }
         }
-      }
-      host {
-        id
-        nameID
-        profile {
-          ...TemplateProviderProfile
+        host {
+          id
+          nameID
+          profile {
+            ...TemplateProviderProfile
+          }
         }
       }
     }
@@ -6088,17 +6126,20 @@ export const SpaceCalloutTemplatesLibraryDocument = gql`
   query SpaceCalloutTemplatesLibrary($spaceId: UUID_NAMEID!) {
     space(ID: $spaceId) {
       id
-      templates {
+      account {
         id
-        calloutTemplates {
-          ...CalloutTemplateCard
+        library {
+          id
+          calloutTemplates {
+            ...CalloutTemplateCard
+          }
         }
-      }
-      host {
-        id
-        nameID
-        profile {
-          ...TemplateProviderProfile
+        host {
+          id
+          nameID
+          profile {
+            ...TemplateProviderProfile
+          }
         }
       }
     }
@@ -6408,12 +6449,15 @@ export const PostTemplatesOnCalloutCreationDocument = gql`
   query PostTemplatesOnCalloutCreation($spaceId: UUID_NAMEID!) {
     space(ID: $spaceId) {
       id
-      templates {
+      account {
         id
-        postTemplates {
+        library {
           id
-          profile {
-            ...ProfileDisplayName
+          postTemplates {
+            id
+            profile {
+              ...ProfileDisplayName
+            }
           }
         }
       }
@@ -6482,12 +6526,15 @@ export const WhiteboardTemplatesOnCalloutCreationDocument = gql`
   query WhiteboardTemplatesOnCalloutCreation($spaceId: UUID_NAMEID!) {
     space(ID: $spaceId) {
       id
-      templates {
+      account {
         id
-        whiteboardTemplates {
+        library {
           id
-          profile {
-            ...ProfileDisplayName
+          whiteboardTemplates {
+            id
+            profile {
+              ...ProfileDisplayName
+            }
           }
         }
       }
@@ -7440,17 +7487,20 @@ export const SpacePostTemplatesLibraryDocument = gql`
   query SpacePostTemplatesLibrary($spaceId: UUID_NAMEID!) {
     space(ID: $spaceId) {
       id
-      templates {
+      account {
         id
-        postTemplates {
-          ...PostTemplateCard
+        library {
+          id
+          postTemplates {
+            ...PostTemplateCard
+          }
         }
-      }
-      host {
-        id
-        nameID
-        profile {
-          ...TemplateProviderProfile
+        host {
+          id
+          nameID
+          profile {
+            ...TemplateProviderProfile
+          }
         }
       }
     }
@@ -8395,17 +8445,20 @@ export const SpaceWhiteboardTemplatesLibraryDocument = gql`
   query SpaceWhiteboardTemplatesLibrary($spaceId: UUID_NAMEID!) {
     space(ID: $spaceId) {
       id
-      templates {
+      account {
         id
-        whiteboardTemplates {
-          ...WhiteboardTemplateCard
+        library {
+          id
+          whiteboardTemplates {
+            ...WhiteboardTemplateCard
+          }
         }
-      }
-      host {
-        id
-        nameID
-        profile {
-          ...TemplateProviderProfile
+        host {
+          id
+          nameID
+          profile {
+            ...TemplateProviderProfile
+          }
         }
       }
     }
@@ -8626,10 +8679,13 @@ export const WhiteboardTemplatesDocument = gql`
   query whiteboardTemplates($spaceId: UUID_NAMEID!) {
     space(ID: $spaceId) {
       id
-      templates {
+      account {
         id
-        whiteboardTemplates {
-          ...CreateWhiteboardWhiteboardTemplate
+        library {
+          id
+          whiteboardTemplates {
+            ...CreateWhiteboardWhiteboardTemplate
+          }
         }
       }
     }
@@ -14713,9 +14769,12 @@ export const SpaceContributionDetailsDocument = gql`
     space(ID: $spaceId) {
       id
       nameID
-      license {
+      account {
         id
-        visibility
+        license {
+          id
+          visibility
+        }
       }
       profile {
         id
@@ -14818,9 +14877,12 @@ export const ChallengeContributionDetailsDocument = gql`
           id
         }
       }
-      license {
+      account {
         id
-        visibility
+        license {
+          id
+          visibility
+        }
       }
     }
   }
@@ -14912,9 +14974,12 @@ export const OpportunityContributionDetailsDocument = gql`
           id
         }
       }
-      license {
+      account {
         id
-        visibility
+        license {
+          id
+          visibility
+        }
       }
     }
   }
@@ -19481,9 +19546,12 @@ export const SpaceDashboardNavigationChallengesDocument = gql`
           ...SpaceDashboardNavigationCommunity
         }
       }
-      license {
+      account {
         id
-        visibility
+        license {
+          id
+          visibility
+        }
       }
     }
   }
@@ -19645,13 +19713,16 @@ export const CalloutFormTemplatesFromSpaceDocument = gql`
   query CalloutFormTemplatesFromSpace($spaceId: UUID_NAMEID!) {
     space(ID: $spaceId) {
       id
-      templates {
+      account {
         id
-        postTemplates {
-          ...PostTemplateCard
-        }
-        whiteboardTemplates {
-          ...WhiteboardTemplateCard
+        library {
+          id
+          postTemplates {
+            ...PostTemplateCard
+          }
+          whiteboardTemplates {
+            ...WhiteboardTemplateCard
+          }
         }
       }
     }
@@ -19720,10 +19791,13 @@ export const WhiteboardTemplatesFromSpaceDocument = gql`
   query WhiteboardTemplatesFromSpace($spaceId: UUID_NAMEID!) {
     space(ID: $spaceId) {
       id
-      templates {
+      account {
         id
-        whiteboardTemplates {
-          ...WhiteboardTemplateCard
+        library {
+          id
+          whiteboardTemplates {
+            ...WhiteboardTemplateCard
+          }
         }
       }
     }
@@ -19791,10 +19865,13 @@ export const InnovationFlowTemplatesFromSpaceDocument = gql`
   query InnovationFlowTemplatesFromSpace($spaceId: UUID_NAMEID!) {
     space(ID: $spaceId) {
       id
-      templates {
+      account {
         id
-        innovationFlowTemplates {
-          ...InnovationFlowTemplateCard
+        library {
+          id
+          innovationFlowTemplates {
+            ...InnovationFlowTemplateCard
+          }
         }
       }
     }
@@ -20248,17 +20325,20 @@ export const SpaceInnovationFlowTemplatesDocument = gql`
   query spaceInnovationFlowTemplates($spaceId: UUID_NAMEID!) {
     space(ID: $spaceId) {
       id
-      templates {
+      account {
         id
-        innovationFlowTemplates {
+        library {
           id
-          states {
-            displayName
-            description
-          }
-          profile {
+          innovationFlowTemplates {
             id
-            displayName
+            states {
+              displayName
+              description
+            }
+            profile {
+              id
+              displayName
+            }
           }
         }
       }
@@ -20519,21 +20599,24 @@ export const UpdateSpacePlatformSettingsDocument = gql`
     $license: UpdateLicenseInput
   ) {
     updateSpacePlatformSettings(
-      updateData: { spaceID: $spaceID, hostID: $hostID, nameID: $nameID, license: $license }
+      updateData: { spaceID: $spaceID, nameID: $nameID, account: { hostID: $hostID, license: $license } }
     ) {
       id
-      license {
+      account {
         id
-        visibility
-        featureFlags {
-          name
-          enabled
+        license {
+          id
+          visibility
+          featureFlags {
+            name
+            enabled
+          }
+        }
+        host {
+          id
         }
       }
       nameID
-      host {
-        id
-      }
     }
   }
 `;
@@ -20819,23 +20902,26 @@ export const AdminSpaceTemplatesDocument = gql`
   query AdminSpaceTemplates($spaceId: UUID_NAMEID!) {
     space(ID: $spaceId) {
       id
-      templates {
+      account {
         id
-        authorization {
+        library {
           id
-          myPrivileges
-        }
-        calloutTemplates {
-          ...AdminCalloutTemplate
-        }
-        postTemplates {
-          ...AdminPostTemplate
-        }
-        whiteboardTemplates {
-          ...AdminWhiteboardTemplate
-        }
-        innovationFlowTemplates {
-          ...AdminInnovationFlowTemplate
+          authorization {
+            id
+            myPrivileges
+          }
+          calloutTemplates {
+            ...AdminCalloutTemplate
+          }
+          postTemplates {
+            ...AdminPostTemplate
+          }
+          whiteboardTemplates {
+            ...AdminWhiteboardTemplate
+          }
+          innovationFlowTemplates {
+            ...AdminInnovationFlowTemplate
+          }
         }
       }
     }
@@ -20974,8 +21060,11 @@ export const SpaceTemplateSetIdDocument = gql`
   query SpaceTemplateSetId($spaceId: UUID_NAMEID!) {
     space(ID: $spaceId) {
       id
-      templates {
+      account {
         id
+        library {
+          id
+        }
       }
     }
   }
@@ -23922,9 +24011,12 @@ export const SearchScopeDetailsSpaceDocument = gql`
           uri
         }
       }
-      license {
+      account {
         id
-        visibility
+        license {
+          id
+          visibility
+        }
       }
     }
   }
@@ -24184,9 +24276,12 @@ export const ChallengeExplorerDataDocument = gql`
         tagline
         displayName
       }
-      license {
+      account {
         id
-        visibility
+        license {
+          id
+          visibility
+        }
       }
       challenges {
         id
@@ -24772,8 +24867,12 @@ export const MyMembershipsDocument = gql`
     me {
       spaceMemberships {
         id
-        license {
-          visibility
+        account {
+          id
+          license {
+            id
+            visibility
+          }
         }
         metrics {
           name

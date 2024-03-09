@@ -1,12 +1,15 @@
 query PostTemplatesOnCalloutCreation($spaceId: UUID_NAMEID!) {
   space(ID: $spaceId) {
     id
-    templates {
+    account {
       id
-      postTemplates {
+      library {
         id
-        profile {
-          ...ProfileDisplayName
+        postTemplates {
+          id
+          profile {
+            ...ProfileDisplayName
+          }
         }
       }
     }
@@ -16,13 +19,16 @@ query PostTemplatesOnCalloutCreation($spaceId: UUID_NAMEID!) {
 query WhiteboardTemplatesOnCalloutCreation($spaceId: UUID_NAMEID!) {
   space(ID: $spaceId) {
     id
-    templates {
+    account {
       id
+      library {
+        id
       whiteboardTemplates {
         id
         profile {
           ...ProfileDisplayName
         }
+      }
       }
     }
   }
