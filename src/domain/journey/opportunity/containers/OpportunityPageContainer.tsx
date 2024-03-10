@@ -135,6 +135,7 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
   } = useActivityOnCollaboration(collaborationID, {
     skip: !permissions.opportunityReadAccess || !permissions.readUsers,
     limit: RECENT_ACTIVITIES_LIMIT_INITIAL,
+    deDuplicateActivityEvents: true,
   });
 
   const { profile, collaboration, metrics = [] } = opportunity ?? {};

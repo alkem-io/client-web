@@ -1,6 +1,17 @@
-query activityLogOnCollaboration($collaborationID: UUID!, $limit: Float!, $types: [ActivityEventType!]) {
+query activityLogOnCollaboration(
+  $collaborationID: UUID!
+  $limit: Float!
+  $types: [ActivityEventType!]
+  $deDuplicateActivityEvents: Boolean
+) {
   activityLogOnCollaboration(
-    queryData: { collaborationID: $collaborationID, limit: $limit, types: $types, includeChild: true }
+    queryData: {
+      collaborationID: $collaborationID
+      limit: $limit
+      types: $types
+      includeChild: true
+      deDuplicateActivityEvents: $deDuplicateActivityEvents
+    }
   ) {
     id
     collaborationID

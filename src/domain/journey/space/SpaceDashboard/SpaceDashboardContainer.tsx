@@ -113,6 +113,7 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ children 
     skip: !permissions.spaceReadAccess || !permissions.readUsers,
     types: activityTypes,
     limit: RECENT_ACTIVITIES_LIMIT_INITIAL,
+    deDuplicateActivityEvents: true,
   });
 
   const { dashboardNavigation, loading: dashboardNavigationLoading } = useSpaceDashboardNavigation({

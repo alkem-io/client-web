@@ -22,13 +22,13 @@ const MY_LATEST_CONTRIBUTIONS_COUNT = 4;
 
 const ACTIVITY_TYPES = [
   // Callout-related activities only
-  ActivityEventType.CalloutPublished,
-  ActivityEventType.CalloutPostCreated,
-  ActivityEventType.CalloutPostComment,
-  ActivityEventType.CalloutLinkCreated,
+  // ActivityEventType.CalloutPublished,
+  // ActivityEventType.CalloutPostCreated,
+  // ActivityEventType.CalloutPostComment,
+  // ActivityEventType.CalloutLinkCreated,
   ActivityEventType.CalloutWhiteboardCreated,
   ActivityEventType.CalloutWhiteboardContentModified,
-  ActivityEventType.DiscussionComment,
+  // ActivityEventType.DiscussionComment,
 ];
 
 const MyLatestContributions = () => {
@@ -46,11 +46,14 @@ const MyLatestContributions = () => {
       filter: {
         myActivity: true,
         types: ACTIVITY_TYPES,
+        deDuplicateActivityEvents: true,
       },
     },
   });
+  console.log(data?.activityFeed.activityFeed);
 
   const activities = useMemo(() => {
+    // const filteredActivities = data?.activityFeed.activityFeed.filter(activity => activity.type !== ActivityEventType.CalloutWhiteboardCreated && data?.activityFeed.activityFeed.find(ac => ac.type === ActivityEventType.CalloutWhiteboardContentModified && ac.));
     return data?.activityFeed.activityFeed.slice(0, MY_LATEST_CONTRIBUTIONS_COUNT);
   }, [data?.activityFeed.activityFeed]);
 

@@ -100,6 +100,7 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
   } = useActivityOnCollaboration(collaborationID, {
     skip: !permissions.challengeReadAccess || !permissions.readUsers,
     limit: RECENT_ACTIVITIES_LIMIT_INITIAL,
+    deDuplicateActivityEvents: true,
   });
 
   const canReadReferences = _challenge?.space?.challenge?.context?.authorization?.myPrivileges?.includes(
