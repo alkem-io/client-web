@@ -4,7 +4,7 @@ import { SvgIconProps } from '@mui/material';
 import { CalendarIcon } from '../../timeline/calendar/icons/CalendarIcon';
 import { ChallengeIcon } from '../../journey/challenge/icon/ChallengeIcon';
 import { OpportunityIcon } from '../../journey/opportunity/icon/OpportunityIcon';
-import { InnovationFlowIcon } from '../../platform/admin/templates/InnovationTemplates/InnovationFlow/InnovationFlowIcon';
+import { InnovationFlowIcon } from '../../collaboration/InnovationFlow/InnovationFlowIcon/InnovationFlowIcon';
 import { CalloutIcon } from '../../collaboration/callout/icon/CalloutIcon';
 import {
   Campaign,

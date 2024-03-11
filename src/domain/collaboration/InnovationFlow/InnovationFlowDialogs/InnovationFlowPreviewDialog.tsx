@@ -4,20 +4,20 @@ import { useTranslation } from 'react-i18next';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
 import { BlockTitle } from '../../../../core/ui/typography';
-import { InnovationFlowIcon } from '../../../platform/admin/templates/InnovationTemplates/InnovationFlow/InnovationFlowIcon';
-import { CoreEntityIdTypes } from '../../../shared/types/CoreEntityIds';
+import { InnovationFlowIcon } from '../InnovationFlowIcon/InnovationFlowIcon';
 import InnovationFlowProfileBlock from './InnovationFlowProfileBlock';
 import useInnovationFlowSettings from './useInnovationFlowSettings';
-import LifecycleStateSelector from '../LifecycleState/LifecycleStateSelector';
+import InnovationFlowStateSelector from '../InnovationFlowStateSelector/InnovationFlowStateSelector';
 
-interface InnovationFlowPreviewDialogProps extends CoreEntityIdTypes {
+interface InnovationFlowPreviewDialogProps {
+  collaborationId: string | undefined;
   open?: boolean;
   onClose: () => void;
 }
 
-const InnovationFlowPreviewDialog: FC<InnovationFlowPreviewDialogProps> = ({ open = false, onClose, ...location }) => {
+const InnovationFlowPreviewDialog: FC<InnovationFlowPreviewDialogProps> = ({ open = false, onClose, collaborationId }) => {
   const { t } = useTranslation();
-  const { data, state } = useInnovationFlowSettings(location);
+  const { data, state } = useInnovationFlowSettings({ collaborationId });
   const { innovationFlow } = data;
   return (
     <DialogWithGrid open={open} columns={12} onClose={onClose}>
@@ -28,7 +28,7 @@ const InnovationFlowPreviewDialog: FC<InnovationFlowPreviewDialogProps> = ({ ope
       </DialogHeader>
       <DialogContent sx={{ paddingTop: 0 }}>
         <InnovationFlowProfileBlock innovationFlow={innovationFlow} loading={state.loading} editable={false}>
-          <LifecycleStateSelector currentState={innovationFlow?.lifecycle?.state} />
+          <InnovationFlowStateSelector currentState={innovationFlow?.currentState.displayName} />
         </InnovationFlowProfileBlock>
       </DialogContent>
     </DialogWithGrid>

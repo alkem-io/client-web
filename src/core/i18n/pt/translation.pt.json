@@ -854,7 +854,7 @@
     "disabledTemplateInfo": "Por favor, note que você só pode usar os templates selecionados para esta comunidade, e o selecionado não faz parte. Se você quiser usar esse template abaixo, por favor peça ao administrador ou ao líder do Espaço para adicioná-los na seção template das Configurações do Espaço."
   },
   "innovation-templates": {
-    "definition": {
+    "states": {
       "title": "Definição",
       "placeholder": "Aqui você pode colar a descrição do Visualizador Xstate com os vários estados do ciclo de vida"
     }

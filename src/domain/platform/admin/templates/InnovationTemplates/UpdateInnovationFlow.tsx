@@ -1,43 +1,49 @@
 import React, { FC, useCallback, useState } from 'react';
-import { Button, Grid, Typography } from '@mui/material';
+import { Button } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { AuthorizationPrivilege, Lifecycle } from '../../../../../core/apollo/generated/graphql-schema';
-import InnovationFlowVisualizer from './InnovationFlowVisualizer';
+import { AuthorizationPrivilege } from '../../../../../core/apollo/generated/graphql-schema';
 import SelectInnovationFlowDialog, {
   InnovationFlowTemplate,
   SelectInnovationFlowFormValuesType,
 } from './SelectInnovationFlowDialog';
 import InnovationFlowUpdateConfirmDialog from './InnovationFlowUpdateConfirmDialog';
 import { useInnovationFlowAuthorizationQuery } from '../../../../../core/apollo/generated/apollo-hooks';
+import { InnovationFlowState } from '../../../../collaboration/InnovationFlow/InnovationFlow';
+import InnovationFlowVisualizer from './InnovationFlowVisualizer';
+import Gutters from '../../../../../core/ui/grid/Gutters';
+import { BlockTitle } from '../../../../../core/ui/typography';
+import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 
-interface EditLifecycleProps {
-  lifecycle: Lifecycle | undefined;
+interface UpdateInnovationFlowProps {
+  states: InnovationFlowState[] | undefined;
+  currentState: string | undefined;
+  onSetNewState: (selectedState: string) => Promise<unknown> | undefined;
   entityId: string;
-  onSetNewState: (id: string, newState: string) => void;
   innovationFlowTemplates: InnovationFlowTemplate[] | undefined;
   onSubmit: (formData: SelectInnovationFlowFormValuesType) => void;
 }
 
-const UpdateInnovationFlow: FC<EditLifecycleProps> = ({
-  lifecycle,
+/**
+ * @deprecated This file will be gone soon
+ */
+const UpdateInnovationFlow: FC<UpdateInnovationFlowProps> = ({
+  states,
+  currentState,
   entityId,
-  onSetNewState,
   innovationFlowTemplates,
   onSubmit,
 }) => {
   const { t } = useTranslation();
   const [isSelectInnovationFlowDialogOpen, setSelectInnovationFlowDialogOpen] = useState(false);
   const [isConfirmationDialogOpen, setConfirmationDialogOpen] = useState(false);
-  const nextEvents = lifecycle?.nextEvents || [];
 
   const openSelectInnovationFlowDialog = useCallback(() => setSelectInnovationFlowDialogOpen(true), []);
   const closeSelectInnovationFlowDialog = useCallback(() => setSelectInnovationFlowDialogOpen(false), []);
   const openConfirmationDialog = useCallback(() => setConfirmationDialogOpen(true), []);
   const closeConfirmationDialog = useCallback(() => setConfirmationDialogOpen(false), []);
 
-  const innovationFlowTemplate = innovationFlowTemplates?.find(
-    template => lifecycle && lifecycle.templateName && template.definition.includes(lifecycle.templateName)
-  );
+  const innovationFlowTemplate = innovationFlowTemplates?.[0];
+
   const { data } = useInnovationFlowAuthorizationQuery({
     variables: { innovationFlowId: entityId! },
     skip: !entityId,
@@ -68,57 +74,41 @@ const UpdateInnovationFlow: FC<EditLifecycleProps> = ({
   }, [openConfirmationDialog]);
 
   return (
-    <>
-      {innovationFlowTemplate?.profile.displayName && (
-        <Typography variant="h5" color="black" fontWeight={600}>
-          {`${t('components.update-innovation-flow.template-label.title')}: ${
-            innovationFlowTemplate?.profile.displayName
-          }`}
-        </Typography>
-      )}
-      {lifecycle && <InnovationFlowVisualizer lifecycle={lifecycle} />}
-      {nextEvents && privileges.canUpdate && (
-        <>
-          <Grid container>
-            <Grid item xs>
-              <Button
-                variant="outlined"
-                onClick={openSelectInnovationFlowDialog}
-                sx={{ alignSelf: 'start', marginX: 1 }}
-              >
-                {t('buttons.change-template')}
-              </Button>
-            </Grid>
-            {nextEvents.map((stateName, i) => (
-              <Grid key={i} item>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={() => onSetNewState(entityId, stateName)}
-                  sx={{ alignSelf: 'end', marginX: 0.5 }}
-                >
-                  {stateName}
-                </Button>
-              </Grid>
-            ))}
-          </Grid>
-        </>
-      )}
-      <SelectInnovationFlowDialog
-        isOpen={isSelectInnovationFlowDialogOpen}
-        onClose={closeSelectInnovationFlowDialog}
-        onSubmitForm={handleSelectInnovationFlowFormSubmit}
-        wireSubmit={submit => (wiredSubmit = submit)}
-        onSubmitDialog={handleSelectInnovationFlowDialogSubmit}
-        innovationFlowTemplateID={innovationFlowTemplate?.id}
-        innovationFlowTemplates={innovationFlowTemplates}
-      />
-      <InnovationFlowUpdateConfirmDialog
-        isOpen={isConfirmationDialogOpen}
-        onClose={closeConfirmationDialog}
-        onSubmit={handleConfirmDialogSubmit}
-      />
-    </>
+    <PageContentBlock>
+      <Gutters>
+        {innovationFlowTemplate?.profile.displayName && (
+          <BlockTitle>
+            {`${t('components.update-innovation-flow.template-label.title')}: ${innovationFlowTemplate?.profile.displayName
+              }`}
+          </BlockTitle>
+        )}
+        <InnovationFlowVisualizer states={states} currentState={currentState} />
+
+        {privileges.canUpdate && (
+          <Button
+            variant="outlined"
+            onClick={openSelectInnovationFlowDialog}
+            sx={{ alignSelf: 'start', marginX: 1 }}
+          >
+            {t('buttons.change-template')}
+          </Button>
+        )}
+        <SelectInnovationFlowDialog
+          isOpen={isSelectInnovationFlowDialogOpen}
+          onClose={closeSelectInnovationFlowDialog}
+          onSubmitForm={handleSelectInnovationFlowFormSubmit}
+          wireSubmit={submit => (wiredSubmit = submit)}
+          onSubmitDialog={handleSelectInnovationFlowDialogSubmit}
+          innovationFlowTemplateId={innovationFlowTemplate?.id}
+          innovationFlowTemplates={innovationFlowTemplates}
+        />
+        <InnovationFlowUpdateConfirmDialog
+          isOpen={isConfirmationDialogOpen}
+          onClose={closeConfirmationDialog}
+          onSubmit={handleConfirmDialogSubmit}
+        />
+      </Gutters>
+    </PageContentBlock>
   );
 };
 

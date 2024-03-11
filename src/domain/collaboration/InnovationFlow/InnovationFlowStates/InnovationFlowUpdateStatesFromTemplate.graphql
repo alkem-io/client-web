@@ -1,0 +1,10 @@
+mutation updateInnovationFlowStatesFromTemplate($innovationFlowId: UUID!, $innovationFlowTemplateId: UUID!) {
+  updateInnovationFlowStatesFromTemplate(
+    innovationFlowData: { innovationFlowID: $innovationFlowId, innovationFlowTemplateID: $innovationFlowTemplateId }
+  ) {
+    id
+    currentState {
+      displayName
+    }
+  }
+}

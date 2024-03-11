@@ -28,7 +28,7 @@ import { GraphQLError } from 'graphql';
 /**
  * @deprecated TODO remove
  */
-export interface Template extends TemplateBase {}
+export interface Template extends TemplateBase { }
 
 interface CreateTemplateDialogProps<SubmittedValues extends {}> {
   open: boolean;
@@ -100,15 +100,15 @@ type AdminTemplatesSectionProps<
   importedTemplateContent?: V | undefined;
   createTemplateDialogComponent: ComponentType<DialogProps & CreateTemplateDialogProps<SubmittedValues>> | undefined;
   editTemplateDialogComponent:
-    | ComponentType<
-        DialogProps & EditTemplateDialogProps<T, V, SubmittedValues & { tags?: string[]; tagsetId: string | undefined }>
-      >
-    | undefined;
+  | ComponentType<
+    DialogProps & EditTemplateDialogProps<T, V, SubmittedValues & { tags?: string[]; tagsetId: string | undefined }>
+  >
+  | undefined;
   onCreateTemplate: (template: SubmittedValues & { templatesSetId: string }) => MutationResult<TemplateCreationResult>;
   onUpdateTemplate: (
     template: Partial<SubmittedValues> & ProfileUpdate & { templateId: string }
   ) => MutationResult<TemplateUpdateResult>;
-  onDeleteTemplate: (template: { templateId: string; templatesSetId?: string }) => Promise<void>;
+  onDeleteTemplate: (template: { templateId: string; templatesSetId?: string }) => Promise<unknown>;
   onTemplateCreated?: (
     mutationResult: TemplateCreationResult | null | undefined,
     previewImages?: WhiteboardPreviewImage[]
@@ -151,8 +151,8 @@ const AdminTemplatesSection = <
   editTemplateDialogComponent,
   canImportTemplates,
   // Some Templates (Post, InnovationFlow...) come with the value included, and some others (Whiteboards) need to call this function to retrieve the data
-  getWhiteboardTemplateContent = () => {},
-  getImportedWhiteboardTemplateContent = () => {},
+  getWhiteboardTemplateContent = () => { },
+  getImportedWhiteboardTemplateContent = () => { },
   ...dialogProps
 }: AdminTemplatesSectionProps<T, V, SubmittedValues, CreateM, UpdateM, DialogProps>) => {
   const CreateTemplateDialog = (createTemplateDialogComponent ?? (() => null)) as ComponentType<

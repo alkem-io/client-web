@@ -17,28 +17,17 @@ fragment OpportunityCard on Opportunity {
     name
     value
   }
-  innovationFlow{
+  collaboration {
     id
-    lifecycle {
+    innovationFlow {
       id
-      state
+      currentState {
+        displayName
+      }
     }
   }
   context {
     ...ContextDetails
-  }
-  projects {
-    id
-    nameID
-    profile {
-      id
-      displayName
-      description
-    }
-    lifecycle {
-      id
-      state
-    }
   }
   community {
     id

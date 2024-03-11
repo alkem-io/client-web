@@ -77,7 +77,7 @@ const SpaceTemplatesAdminPage: FC<SpaceTemplatesAdminPageProps> = ({
       }));
   }, [innovationPacks]);
 
-  const lifecycleInnovationPacks = useMemo(() => {
+  const innovationFlowInnovationPacks = useMemo(() => {
     if (!innovationPacks) return [];
     return innovationPacks?.platform.library.innovationPacks
       .filter(pack => pack.templates && pack.templates?.innovationFlowTemplates.length > 0)
@@ -139,7 +139,7 @@ const SpaceTemplatesAdminPage: FC<SpaceTemplatesAdminPageProps> = ({
           edit={edit}
           loadInnovationPacks={loadInnovationPacks}
           loadingInnovationPacks={loadingInnovationPacks}
-          innovationPacks={lifecycleInnovationPacks}
+          innovationPacks={innovationFlowInnovationPacks}
           canImportTemplates={canImportTemplates}
         />
       </Gutters>

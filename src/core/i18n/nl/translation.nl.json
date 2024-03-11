@@ -854,7 +854,7 @@
     "disabledTemplateInfo": "Houd er rekening mee dat je alleen de templates kunt gebruiken die zijn geselecteerd voor deze community. Dit template is nog niet geselecteerd. Neem contact op met de adminstrator of lead van deze Space om de templates hieronder te selecteren in the Space instellingen."
   },
   "innovation-templates": {
-    "definition": {
+    "states": {
       "title": "Definitie",
       "placeholder": "Hier kun je de omschrijving van Xstate Visualizer plakken met de verschillende Innovation Flow states."
     }

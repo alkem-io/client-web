@@ -8,19 +8,19 @@ import CardSegmentCaption from '../../../../core/ui/card/CardSegmentCaption';
 import ContributeCard from '../../../../core/ui/card/ContributeCard';
 import { Caption } from '../../../../core/ui/typography/components';
 import InnovationPackIcon from '../../InnovationPack/InnovationPackIcon';
-import { InnovationFlowIcon } from '../../../platform/admin/templates/InnovationTemplates/InnovationFlow/InnovationFlowIcon';
+import { InnovationFlowIcon } from '../InnovationFlowIcon/InnovationFlowIcon';
 import { TemplateBase, TemplateCardBaseProps } from '../../templates/CollaborationTemplatesLibrary/TemplateBase';
-import useInnovationFlowStatesReader from '../../../platform/admin/templates/InnovationTemplates/useInnovationFlowStatesReader';
 import CardDescription, { DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS } from '../../../../core/ui/card/CardDescription';
 import CardContent from '../../../../core/ui/card/CardContent';
 import CardTags from '../../../../core/ui/card/CardTags';
 import webkitLineClamp from '../../../../core/ui/utils/webkitLineClamp';
+import { InnovationFlowState } from '../InnovationFlow';
 
 interface InnovationFlowTemplate extends TemplateBase {
-  definition: string;
+  states: InnovationFlowState[];
 }
 
-interface InnovationFlowTemplateCardProps extends TemplateCardBaseProps<InnovationFlowTemplate> {}
+interface InnovationFlowTemplateCardProps extends TemplateCardBaseProps<InnovationFlowTemplate> { }
 
 const InnovationFlowTemplateCard = ({
   template,
@@ -28,7 +28,7 @@ const InnovationFlowTemplateCard = ({
   loading,
   onClick,
 }: InnovationFlowTemplateCardProps) => {
-  const { states } = useInnovationFlowStatesReader({ definition: template?.definition });
+  const states = template?.states;
 
   const hasTags = (template?.profile.tagset?.tags ?? []).length > 0;
   const descriptionHeightGutters = hasTags
@@ -39,7 +39,7 @@ const InnovationFlowTemplateCard = ({
     <ContributeCard onClick={onClick}>
       <CardHeader title={template?.profile.displayName} iconComponent={InnovationFlowIcon as SvgIconComponent}>
         {loading && <Skeleton />}
-        <CardHeaderCaption noWrap logoUrl={innovationPack?.provider?.profile.avatar?.uri}>
+        <CardHeaderCaption logoUrl={innovationPack?.provider?.profile.avatar?.uri}>
           {innovationPack?.provider?.profile.displayName}
         </CardHeaderCaption>
       </CardHeader>
@@ -48,7 +48,9 @@ const InnovationFlowTemplateCard = ({
       </CardDetails>
       <CardDetails>
         <CardContent>
-          <Caption sx={webkitLineClamp(2, { keepMinHeight: true })}>{states.join(' · ')}</Caption>
+          <Caption sx={webkitLineClamp(2, { keepMinHeight: true })}>
+            {states?.map(state => state.displayName)?.join(' · ')}
+          </Caption>
         </CardContent>
       </CardDetails>
       <CardDetails>
