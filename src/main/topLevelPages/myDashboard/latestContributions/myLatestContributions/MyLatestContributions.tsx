@@ -6,6 +6,8 @@ import ScrollerWithGradient from '../../../../../core/ui/overflow/ScrollerWithGr
 import { useLatestContributionsQuery } from '../../../../../core/apollo/generated/apollo-hooks';
 import {
   ActivityEventType,
+  ActivityLogCalloutWhiteboardContentModifiedFragment,
+  ActivityLogCalloutWhiteboardCreatedFragment,
   LatestContributionsQuery,
   LatestContributionsQueryVariables,
 } from '../../../../../core/apollo/generated/graphql-schema';
@@ -22,14 +24,26 @@ const MY_LATEST_CONTRIBUTIONS_COUNT = 4;
 
 const ACTIVITY_TYPES = [
   // Callout-related activities only
-  // ActivityEventType.CalloutPublished,
-  // ActivityEventType.CalloutPostCreated,
-  // ActivityEventType.CalloutPostComment,
-  // ActivityEventType.CalloutLinkCreated,
+  ActivityEventType.CalloutPublished,
+  ActivityEventType.CalloutPostCreated,
+  ActivityEventType.CalloutPostComment,
+  ActivityEventType.CalloutLinkCreated,
   ActivityEventType.CalloutWhiteboardCreated,
   ActivityEventType.CalloutWhiteboardContentModified,
-  // ActivityEventType.DiscussionComment,
+  ActivityEventType.DiscussionComment,
 ];
+
+const containsWhiteboardUpdateActivity = (activities: ActivityLogResultType[], whiteboardId: string) => {
+  if (
+    activities.find(
+      ac =>
+        ac.type === ActivityEventType.CalloutWhiteboardContentModified &&
+        (ac as ActivityLogCalloutWhiteboardContentModifiedFragment).whiteboard?.id === whiteboardId
+    )
+  )
+    return true;
+  return false;
+};
 
 const MyLatestContributions = () => {
   const { t } = useTranslation();
@@ -50,11 +64,18 @@ const MyLatestContributions = () => {
       },
     },
   });
-  console.log(data?.activityFeed.activityFeed);
 
   const activities = useMemo(() => {
-    // const filteredActivities = data?.activityFeed.activityFeed.filter(activity => activity.type !== ActivityEventType.CalloutWhiteboardCreated && data?.activityFeed.activityFeed.find(ac => ac.type === ActivityEventType.CalloutWhiteboardContentModified && ac.));
-    return data?.activityFeed.activityFeed.slice(0, MY_LATEST_CONTRIBUTIONS_COUNT);
+    // Filter out whiteboard created activities if we have an content modified activity for the same whiteboard
+    const filteredActivities = data?.activityFeed.activityFeed.filter(activity =>
+      activity.type === ActivityEventType.CalloutWhiteboardCreated
+        ? !containsWhiteboardUpdateActivity(
+            data?.activityFeed.activityFeed as ActivityLogResultType[],
+            (activity as ActivityLogCalloutWhiteboardCreatedFragment).whiteboard?.id ?? ''
+          )
+        : true
+    );
+    return filteredActivities?.slice(0, MY_LATEST_CONTRIBUTIONS_COUNT);
   }, [data?.activityFeed.activityFeed]);
 
   useEffect(() => {
