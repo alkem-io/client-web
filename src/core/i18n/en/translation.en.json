@@ -851,7 +851,8 @@
     },
     "innovationFlowTemplates": {
       "name": "Innovation Flow template",
-      "title": "Template Library: Innovation Flows"
+      "title": "Template Library: Innovation Flows",
+      "innovationFlowSettings": "Innovation Flow Settings"
     },
     "spaceTemplates": "Templates selected by the host of this community",
     "platformTemplates": "Platform Templates",
@@ -1057,7 +1058,8 @@
     "innovationFlow": {
       "currentState": "Current State:",
       "changeState": "Change State to:",
-      "error": "The definition was not able to be visualized"
+      "error": "The definition was not able to be visualized",
+      "innovationFlowSettings": "Innovation Flow Settings"
     },
     "activity-tooltip": {
       "headline": "Alkemio is growing! In total, the platform now hosts:"
@@ -1515,25 +1517,6 @@
         "explore": "Explore discussions"
       }
     },
-    "update-innovation-flow": {
-      "template-label": {
-        "title": "Template"
-      }
-    },
-    "select-innovation-flow": {
-      "title": "Change Innovation Flow",
-      "innovationFlowSettings": "Innovation Flow Settings"
-    },
-    "innovation-flow-template-segment": {
-      "help-text": {
-        "title": "Be careful! By updating the Innovation Flow, the current state will be (re)set to the first state of the selected flow."
-      }
-    },
-    "confirm-innovation-flow": {
-      "description": {
-        "title": "Are you sure you want to change the innovation flow? This may change the set of states for this challenge/opportunity and will (re)set the state to the first state of the selected Innovation Flow."
-      }
-    },
     "innovationFlowTemplateSelect": {
       "select": "Select different Flow",
       "states": "States",
@@ -1741,14 +1724,6 @@
             "subtitle": "This section allows you to modify the $t(common.challenge) membership preferences. If both switches are turned off, new members can only be added manually. If both switches are turned on, members of the Space don't have to apply but can directly join."
           }
         },
-        "sections": {
-          "opportunities": {
-            "description": "Here you can edit opportunities for this challenge."
-          },
-          "innovation-flow": {
-            "description": "Here you change the status of this Challenge or choose a different Flow Template to follow."
-          }
-        },
         "notifications": {
           "challenge-created": "Challenge created successfully.",
           "challenge-removed": "Challenge removed successfully.",
@@ -1810,11 +1785,6 @@
           "opportunity-created": "Opportunity created successfully.",
           "opportunity-removed": "Opportunity removed successfully.",
           "opportunity-updated": "Opportunity updated successfully."
-        },
-        "sections": {
-          "innovation-flow": {
-            "description": "Here you change the status of this Opportunity or choose a different Flow Template to follow."
-          }
         }
       },
       "users": {
@@ -1964,11 +1934,6 @@
         "leading-placeholder": "Search in name or tags",
         "available-placeholder": "Search in name"
       }
-    },
-    "activity": {
-      "title": "{{blockName}} Activity",
-      "spaces": "Challenge Spaces",
-      "innovation-flow-info": "Click to display the Innovation Flow"
     },
     "home": {
       "title": "My Dashboard",

@@ -1,3 +1,4 @@
+# Use this somewhere else or delete it //!!
 mutation updateInnovationFlowStatesFromTemplate($innovationFlowId: UUID!, $innovationFlowTemplateId: UUID!) {
   updateInnovationFlowStatesFromTemplate(
     innovationFlowData: { innovationFlowID: $innovationFlowId, innovationFlowTemplateID: $innovationFlowTemplateId }

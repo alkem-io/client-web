@@ -104,3 +104,14 @@ mutation UpdateCalloutFlowState($calloutId: UUID!, $flowStateTagsetId: UUID!, $v
     }
   }
 }
+
+mutation updateInnovationFlowState($innovationFlowId: UUID!, $selectedState: String!) {
+  updateInnovationFlowState(
+    innovationFlowStateData: { innovationFlowID: $innovationFlowId, selectedState: $selectedState }
+  ) {
+    id
+    currentState {
+      displayName
+    }
+  }
+}

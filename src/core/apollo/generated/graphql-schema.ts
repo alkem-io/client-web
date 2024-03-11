@@ -7080,6 +7080,20 @@ export type UpdateCalloutFlowStateMutation = {
   };
 };
 
+export type UpdateInnovationFlowStateMutationVariables = Exact<{
+  innovationFlowId: Scalars['UUID'];
+  selectedState: Scalars['String'];
+}>;
+
+export type UpdateInnovationFlowStateMutation = {
+  __typename?: 'Mutation';
+  updateInnovationFlowState: {
+    __typename?: 'InnovationFlow';
+    id: string;
+    currentState: { __typename?: 'InnovationFlowState'; displayName: string };
+  };
+};
+
 export type UpdateInnovationFlowStatesFromTemplateMutationVariables = Exact<{
   innovationFlowId: Scalars['UUID'];
   innovationFlowTemplateId: Scalars['UUID'];
@@ -7263,39 +7277,6 @@ export type InnovationFlowTemplateStatesQuery = {
           states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
         }
       | undefined;
-  };
-};
-
-export type InnovationFlowQueryVariables = Exact<{
-  innovationFlowId: Scalars['UUID'];
-}>;
-
-export type InnovationFlowQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    innovationFlow?:
-      | {
-          __typename?: 'InnovationFlow';
-          id: string;
-          states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
-          currentState: { __typename?: 'InnovationFlowState'; displayName: string };
-        }
-      | undefined;
-  };
-};
-
-export type UpdateInnovationFlowStateMutationVariables = Exact<{
-  innovationFlowId: Scalars['UUID'];
-  selectedState: Scalars['String'];
-}>;
-
-export type UpdateInnovationFlowStateMutation = {
-  __typename?: 'Mutation';
-  updateInnovationFlowState: {
-    __typename?: 'InnovationFlow';
-    id: string;
-    currentState: { __typename?: 'InnovationFlowState'; displayName: string };
   };
 };
 
@@ -25766,26 +25747,6 @@ export type DeleteInnovationFlowTemplateMutationVariables = Exact<{
 export type DeleteInnovationFlowTemplateMutation = {
   __typename?: 'Mutation';
   deleteInnovationFlowTemplate: { __typename?: 'InnovationFlowTemplate'; id: string };
-};
-
-export type InnovationFlowAuthorizationQueryVariables = Exact<{
-  innovationFlowId: Scalars['UUID'];
-}>;
-
-export type InnovationFlowAuthorizationQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    innovationFlow?:
-      | {
-          __typename?: 'InnovationFlow';
-          id: string;
-          authorization?:
-            | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-            | undefined;
-        }
-      | undefined;
-  };
 };
 
 export type UpdatePostTemplateMutationVariables = Exact<{

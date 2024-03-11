@@ -7,7 +7,7 @@ import { TemplateType } from '../InnovationPackProfilePage/InnovationPackProfile
 import { PostTemplate } from '../../post/PostTemplateCard/PostTemplate';
 import { TemplateBase } from '../../templates/CollaborationTemplatesLibrary/TemplateBase';
 import { TemplateWithInnovationPack } from '../../../platform/admin/templates/InnovationPacks/ImportTemplatesDialogGalleryStep';
-import { InnovationFlowTemplate } from '../../../platform/admin/templates/InnovationTemplates/SelectInnovationFlowDialog';
+import { InnovationFlowTemplate } from '../../InnovationFlow/InnovationFlow';
 
 export type LibraryTemplateCardProps = Identifiable &
   TemplateWithInnovationPack<

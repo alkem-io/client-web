@@ -88,7 +88,7 @@ const InnovationFlowStates = ({
           <IconButton
             color="primary"
             onClick={() => setShowSettingsDialog(true)}
-            aria-label={t('components.select-innovation-flow.innovationFlowSettings')}
+            aria-label={t('components.innovationFlow.innovationFlowSettings')}
           >
             <SettingsIcon />
           </IconButton>
@@ -108,7 +108,11 @@ const InnovationFlowStates = ({
           />
         </Caption>
       )}
-      <InnovationFlowSettingsDialog collaborationId={collaborationId} open={showSettingsDialog} onClose={() => setShowSettingsDialog(false)} />
+      <InnovationFlowSettingsDialog
+        collaborationId={collaborationId}
+        open={showSettingsDialog}
+        onClose={() => setShowSettingsDialog(false)}
+      />
     </PageContentBlockSeamless>
   );
 };
