@@ -39,14 +39,13 @@ interface UseActivityOnCollaborationOptions {
   types?: ActivityEventType[];
   limit: number;
   skip?: boolean;
-  deDuplicateActivityEvents?: boolean;
 }
 
 const useActivityOnCollaboration = (
   collaborationID: string | undefined,
   options: UseActivityOnCollaborationOptions
 ): ActivityOnCollaborationReturnType => {
-  const { types, skip, limit, deDuplicateActivityEvents } = options;
+  const { types, skip, limit } = options;
 
   const {
     data: activityLogData,
@@ -58,7 +57,6 @@ const useActivityOnCollaboration = (
       collaborationID: collaborationID!,
       types,
       limit,
-      deDuplicateActivityEvents,
     },
     skip: !collaborationID || skip,
     fetchPolicy: 'cache-and-network',

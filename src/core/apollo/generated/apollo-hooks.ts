@@ -5885,20 +5885,9 @@ export function useActivityCreatedSubscription(
 export type ActivityCreatedSubscriptionHookResult = ReturnType<typeof useActivityCreatedSubscription>;
 export type ActivityCreatedSubscriptionResult = Apollo.SubscriptionResult<SchemaTypes.ActivityCreatedSubscription>;
 export const ActivityLogOnCollaborationDocument = gql`
-  query activityLogOnCollaboration(
-    $collaborationID: UUID!
-    $limit: Float!
-    $types: [ActivityEventType!]
-    $deDuplicateActivityEvents: Boolean
-  ) {
+  query activityLogOnCollaboration($collaborationID: UUID!, $limit: Float!, $types: [ActivityEventType!]) {
     activityLogOnCollaboration(
-      queryData: {
-        collaborationID: $collaborationID
-        limit: $limit
-        types: $types
-        includeChild: true
-        deDuplicateActivityEvents: $deDuplicateActivityEvents
-      }
+      queryData: { collaborationID: $collaborationID, limit: $limit, types: $types, includeChild: true }
     ) {
       id
       collaborationID
@@ -5999,7 +5988,6 @@ export const ActivityLogOnCollaborationDocument = gql`
  *      collaborationID: // value for 'collaborationID'
  *      limit: // value for 'limit'
  *      types: // value for 'types'
- *      deDuplicateActivityEvents: // value for 'deDuplicateActivityEvents'
  *   },
  * });
  */

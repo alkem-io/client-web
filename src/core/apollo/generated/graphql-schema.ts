@@ -72,12 +72,10 @@ export type ActivityFeed = {
 };
 
 export type ActivityFeedQueryArgs = {
-  /** De-duplicates activity events per entity and activity event type. */
-  deDuplicateActivityEvents?: InputMaybe<Scalars['Boolean']>;
-  /** Option to exclude update activity events. */
-  excludeUpdateActivityEvents?: InputMaybe<Scalars['Boolean']>;
   /** Returns only events that the current user triggered; Includes all by default. */
   myActivity?: InputMaybe<Scalars['Boolean']>;
+  /** Group activity events per entity and activity event type and return the latest. */
+  onlyUnique?: InputMaybe<Scalars['Boolean']>;
   /** Activity from which Spaces to include; Includes all by default. */
   roles?: InputMaybe<Array<ActivityFeedRoles>>;
   /** Activity from which Spaces to include; Includes all by default. */
@@ -435,8 +433,6 @@ export type ActivityLogEntryUpdateSent = ActivityLogEntry & {
 export type ActivityLogInput = {
   /** Display the activityLog results for the specified Collaboration. */
   collaborationID: Scalars['UUID'];
-  /** De-duplicates activity events per entity and activity event type. */
-  deDuplicateActivityEvents?: InputMaybe<Scalars['Boolean']>;
   /** Include entries happened on child Collaborations. */
   includeChild?: InputMaybe<Scalars['Boolean']>;
   /** The number of ActivityLog entries to return; if omitted return all. */
@@ -8696,7 +8692,6 @@ export type ActivityLogOnCollaborationQueryVariables = Exact<{
   collaborationID: Scalars['UUID'];
   limit: Scalars['Float'];
   types?: InputMaybe<Array<ActivityEventType> | ActivityEventType>;
-  deDuplicateActivityEvents?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 export type ActivityLogOnCollaborationQuery = {

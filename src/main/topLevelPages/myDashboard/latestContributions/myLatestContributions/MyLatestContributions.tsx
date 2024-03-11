@@ -46,7 +46,7 @@ const MyLatestContributions = () => {
       filter: {
         myActivity: true,
         types: ACTIVITY_TYPES,
-        deDuplicateActivityEvents: true,
+        onlyUnique: true,
       },
     },
   });
