@@ -6,6 +6,8 @@ import ScrollerWithGradient from '../../../../../core/ui/overflow/ScrollerWithGr
 import { useLatestContributionsQuery } from '../../../../../core/apollo/generated/apollo-hooks';
 import {
   ActivityEventType,
+  ActivityLogCalloutWhiteboardContentModifiedFragment,
+  ActivityLogCalloutWhiteboardCreatedFragment,
   LatestContributionsQuery,
   LatestContributionsQueryVariables,
 } from '../../../../../core/apollo/generated/graphql-schema';
@@ -27,6 +29,7 @@ const ACTIVITY_TYPES = [
   ActivityEventType.CalloutPostComment,
   ActivityEventType.CalloutLinkCreated,
   ActivityEventType.CalloutWhiteboardCreated,
+  ActivityEventType.CalloutWhiteboardContentModified,
   ActivityEventType.DiscussionComment,
 ];
 
@@ -45,12 +48,25 @@ const MyLatestContributions = () => {
       filter: {
         myActivity: true,
         types: ACTIVITY_TYPES,
+        onlyUnique: true,
       },
     },
   });
 
   const activities = useMemo(() => {
-    return data?.activityFeed.activityFeed.slice(0, MY_LATEST_CONTRIBUTIONS_COUNT);
+    // Filter out whiteboard created activities if we have an content modified activity for the same whiteboard
+    const updatedWhiteboards: Record<string, true> = {};
+    const filteredActivities = data?.activityFeed.activityFeed.filter(activity => {
+      if (activity.type === ActivityEventType.CalloutWhiteboardContentModified) {
+        updatedWhiteboards[(activity as ActivityLogCalloutWhiteboardContentModifiedFragment).whiteboard.id] = true;
+      }
+      if (activity.type !== ActivityEventType.CalloutWhiteboardCreated) {
+        return true;
+      }
+      return !updatedWhiteboards[(activity as ActivityLogCalloutWhiteboardCreatedFragment).whiteboard.id];
+    });
+
+    return filteredActivities?.slice(0, MY_LATEST_CONTRIBUTIONS_COUNT);
   }, [data?.activityFeed.activityFeed]);
 
   useEffect(() => {
