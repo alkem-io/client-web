@@ -72,6 +72,8 @@ export type ActivityFeed = {
 };
 
 export type ActivityFeedQueryArgs = {
+  /** What events to exclude. */
+  excludeTypes?: InputMaybe<Array<ActivityEventType>>;
   /** Returns only events that the current user triggered; Includes all by default. */
   myActivity?: InputMaybe<Scalars['Boolean']>;
   /** Group activity events per entity and activity event type and return the latest. */
