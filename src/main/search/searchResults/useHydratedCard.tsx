@@ -7,7 +7,7 @@ import {
   SearchResultSpaceFragment,
   SearchResultUserFragment,
   UserRolesSearchCardsQuery,
-} from '../../../../core/apollo/generated/graphql-schema';
+} from '../../../core/apollo/generated/graphql-schema';
 import React from 'react';
 import {
   buildCalloutUrl,
@@ -17,23 +17,27 @@ import {
   buildPostUrl,
   buildSpaceUrl,
   buildUserProfileUrl,
-} from '../../../../main/routing/urlBuilders';
-import { SearchChallengeCard, SearchOpportunityCard, SearchSpaceCard } from '../../../shared/components/search-cards';
-import { RoleType } from '../../../community/user/constants/RoleType';
-import { getVisualByType } from '../../../common/visual/utils/visuals.utils';
-import { useUserRolesSearchCardsQuery } from '../../../../core/apollo/generated/apollo-hooks';
-import { useUserContext } from '../../../community/user/hooks/useUserContext';
-import { SearchResultMetaType, SearchResultT } from '../../../../main/search/SearchView';
-import { SearchContributionCardCard } from '../../../shared/components/search-cards/SearchContributionPostCard';
-import { OpportunityIcon } from '../../../journey/opportunity/icon/OpportunityIcon';
-import { ChallengeIcon } from '../../../journey/challenge/icon/ChallengeIcon';
-import { SpaceIcon } from '../../../journey/space/icon/SpaceIcon';
-import ContributingUserCard from '../../../community/user/ContributingUserCard/ContributingUserCard';
-import CardContent from '../../../../core/ui/card/CardContent';
-import ContributingOrganizationCard from '../../../community/contributor/organization/ContributingOrganizationCard/ContributingOrganizationCard';
-import CardParentJourneySegment from '../../../journey/common/SpaceChildJourneyCard/CardParentJourneySegment';
-import { CalloutIcon } from '../../../collaboration/callout/icon/CalloutIcon';
-import { VisualName } from '../../../common/visual/constants/visuals.constants';
+} from '../../routing/urlBuilders';
+import {
+  SearchChallengeCard,
+  SearchOpportunityCard,
+  SearchSpaceCard,
+} from '../../../domain/shared/components/search-cards';
+import { RoleType } from '../../../domain/community/user/constants/RoleType';
+import { getVisualByType } from '../../../domain/common/visual/utils/visuals.utils';
+import { useUserRolesSearchCardsQuery } from '../../../core/apollo/generated/apollo-hooks';
+import { useUserContext } from '../../../domain/community/user/hooks/useUserContext';
+import { SearchResultMetaType, SearchResultT } from '../SearchView';
+import { SearchContributionCardCard } from '../../../domain/shared/components/search-cards/SearchContributionPostCard';
+import { OpportunityIcon } from '../../../domain/journey/opportunity/icon/OpportunityIcon';
+import { ChallengeIcon } from '../../../domain/journey/challenge/icon/ChallengeIcon';
+import { SpaceIcon } from '../../../domain/journey/space/icon/SpaceIcon';
+import ContributingUserCard from '../../../domain/community/user/ContributingUserCard/ContributingUserCard';
+import CardContent from '../../../core/ui/card/CardContent';
+import ContributingOrganizationCard from '../../../domain/community/contributor/organization/ContributingOrganizationCard/ContributingOrganizationCard';
+import CardParentJourneySegment from '../../../domain/journey/common/SpaceChildJourneyCard/CardParentJourneySegment';
+import { CalloutIcon } from '../../../domain/collaboration/callout/icon/CalloutIcon';
+import { VisualName } from '../../../domain/common/visual/constants/visuals.constants';
 
 const _hydrateUserCard = (data: SearchResultT<SearchResultUserFragment>) => {
   if (!data?.user) {

@@ -192,6 +192,7 @@
     }
   },
   "common": {
+    "all": "All",
     "knowledge-base": "Knowledge base",
     "or": "Or",
     "permission": "Permission",
@@ -497,6 +498,13 @@
         "InnovationFlowTemplate_plural": "Innovation Flows",
         "CalloutTemplate": "Callout Template",
         "CalloutTemplate_plural": "Callout Templates"
+      },
+      "calloutType": {
+        "LINK_COLLECTION": "Link Collection",
+        "POST": "Post",
+        "POST_COLLECTION": "Post Collection",
+        "WHITEBOARD": "Whiteboard",
+        "WHITEBOARD_COLLECTION": "Whiteboard Collection"
       }
     },
     "blocks": {
