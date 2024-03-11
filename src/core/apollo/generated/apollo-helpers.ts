@@ -231,6 +231,35 @@ export type ActivityLogEntryCalloutPublishedFieldPolicy = {
   triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type ActivityLogEntryCalloutWhiteboardContentModifiedKeySpecifier = (
+  | 'callout'
+  | 'child'
+  | 'collaborationID'
+  | 'createdDate'
+  | 'description'
+  | 'id'
+  | 'journey'
+  | 'parentDisplayName'
+  | 'parentNameID'
+  | 'triggeredBy'
+  | 'type'
+  | 'whiteboard'
+  | ActivityLogEntryCalloutWhiteboardContentModifiedKeySpecifier
+)[];
+export type ActivityLogEntryCalloutWhiteboardContentModifiedFieldPolicy = {
+  callout?: FieldPolicy<any> | FieldReadFunction<any>;
+  child?: FieldPolicy<any> | FieldReadFunction<any>;
+  collaborationID?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  description?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  journey?: FieldPolicy<any> | FieldReadFunction<any>;
+  parentDisplayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  parentNameID?: FieldPolicy<any> | FieldReadFunction<any>;
+  triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+  whiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type ActivityLogEntryCalloutWhiteboardCreatedKeySpecifier = (
   | 'callout'
   | 'child'
@@ -2967,6 +2996,13 @@ export type StrictTypedTypePolicies = {
       | ActivityLogEntryCalloutPublishedKeySpecifier
       | (() => undefined | ActivityLogEntryCalloutPublishedKeySpecifier);
     fields?: ActivityLogEntryCalloutPublishedFieldPolicy;
+  };
+  ActivityLogEntryCalloutWhiteboardContentModified?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | ActivityLogEntryCalloutWhiteboardContentModifiedKeySpecifier
+      | (() => undefined | ActivityLogEntryCalloutWhiteboardContentModifiedKeySpecifier);
+    fields?: ActivityLogEntryCalloutWhiteboardContentModifiedFieldPolicy;
   };
   ActivityLogEntryCalloutWhiteboardCreated?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:

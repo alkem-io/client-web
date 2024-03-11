@@ -255,6 +255,30 @@ export const ActivityLogCalloutWhiteboardCreatedFragmentDoc = gql`
     }
   }
 `;
+export const ActivityLogCalloutWhiteboardContentModifiedFragmentDoc = gql`
+  fragment ActivityLogCalloutWhiteboardContentModified on ActivityLogEntryCalloutWhiteboardContentModified {
+    callout {
+      id
+      nameID
+      framing {
+        profile {
+          id
+          displayName
+          url
+        }
+      }
+    }
+    whiteboard {
+      id
+      nameID
+      profile {
+        id
+        displayName
+        url
+      }
+    }
+  }
+`;
 export const ActivityLogCalloutDiscussionCommentFragmentDoc = gql`
   fragment ActivityLogCalloutDiscussionComment on ActivityLogEntryCalloutDiscussionComment {
     callout {
@@ -366,6 +390,9 @@ export const ActivityLogOnCollaborationFragmentDoc = gql`
     ... on ActivityLogEntryCalloutWhiteboardCreated {
       ...ActivityLogCalloutWhiteboardCreated
     }
+    ... on ActivityLogEntryCalloutWhiteboardContentModified {
+      ...ActivityLogCalloutWhiteboardContentModified
+    }
     ... on ActivityLogEntryCalloutDiscussionComment {
       ...ActivityLogCalloutDiscussionComment
     }
@@ -389,6 +416,7 @@ export const ActivityLogOnCollaborationFragmentDoc = gql`
   ${ActivityLogCalloutLinkCreatedFragmentDoc}
   ${ActivityLogCalloutPostCommentFragmentDoc}
   ${ActivityLogCalloutWhiteboardCreatedFragmentDoc}
+  ${ActivityLogCalloutWhiteboardContentModifiedFragmentDoc}
   ${ActivityLogCalloutDiscussionCommentFragmentDoc}
   ${ActivityLogChallengeCreatedFragmentDoc}
   ${ActivityLogOpportunityCreatedFragmentDoc}
@@ -5837,6 +5865,9 @@ export const ActivityLogOnCollaborationDocument = gql`
       ... on ActivityLogEntryCalloutWhiteboardCreated {
         ...ActivityLogCalloutWhiteboardCreated
       }
+      ... on ActivityLogEntryCalloutWhiteboardContentModified {
+        ...ActivityLogCalloutWhiteboardContentModified
+      }
       ... on ActivityLogEntryCalloutDiscussionComment {
         ...ActivityLogCalloutDiscussionComment
       }
@@ -5861,6 +5892,7 @@ export const ActivityLogOnCollaborationDocument = gql`
   ${ActivityLogCalloutLinkCreatedFragmentDoc}
   ${ActivityLogCalloutPostCommentFragmentDoc}
   ${ActivityLogCalloutWhiteboardCreatedFragmentDoc}
+  ${ActivityLogCalloutWhiteboardContentModifiedFragmentDoc}
   ${ActivityLogCalloutDiscussionCommentFragmentDoc}
   ${ActivityLogChallengeCreatedFragmentDoc}
   ${ActivityLogOpportunityCreatedFragmentDoc}
@@ -24629,6 +24661,9 @@ export const LatestContributionsDocument = gql`
         ... on ActivityLogEntryCalloutWhiteboardCreated {
           ...ActivityLogCalloutWhiteboardCreated
         }
+        ... on ActivityLogEntryCalloutWhiteboardContentModified {
+          ...ActivityLogCalloutWhiteboardContentModified
+        }
         ... on ActivityLogEntryCalloutDiscussionComment {
           ...ActivityLogCalloutDiscussionComment
         }
@@ -24660,6 +24695,7 @@ export const LatestContributionsDocument = gql`
   ${ActivityLogCalloutLinkCreatedFragmentDoc}
   ${ActivityLogCalloutPostCommentFragmentDoc}
   ${ActivityLogCalloutWhiteboardCreatedFragmentDoc}
+  ${ActivityLogCalloutWhiteboardContentModifiedFragmentDoc}
   ${ActivityLogCalloutDiscussionCommentFragmentDoc}
   ${ActivityLogChallengeCreatedFragmentDoc}
   ${ActivityLogOpportunityCreatedFragmentDoc}
