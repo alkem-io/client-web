@@ -33,18 +33,6 @@ const ACTIVITY_TYPES = [
   ActivityEventType.DiscussionComment,
 ];
 
-const containsWhiteboardUpdateActivity = (activities: ActivityLogResultType[], whiteboardId: string) => {
-  if (
-    activities.find(
-      ac =>
-        ac.type === ActivityEventType.CalloutWhiteboardContentModified &&
-        (ac as ActivityLogCalloutWhiteboardContentModifiedFragment).whiteboard?.id === whiteboardId
-    )
-  )
-    return true;
-  return false;
-};
-
 const MyLatestContributions = () => {
   const { t } = useTranslation();
 
@@ -67,14 +55,17 @@ const MyLatestContributions = () => {
 
   const activities = useMemo(() => {
     // Filter out whiteboard created activities if we have an content modified activity for the same whiteboard
-    const filteredActivities = data?.activityFeed.activityFeed.filter(activity =>
-      activity.type === ActivityEventType.CalloutWhiteboardCreated
-        ? !containsWhiteboardUpdateActivity(
-            data?.activityFeed.activityFeed as ActivityLogResultType[],
-            (activity as ActivityLogCalloutWhiteboardCreatedFragment).whiteboard?.id ?? ''
-          )
-        : true
-    );
+    const updatedWhiteboards: Record<string, true> = {};
+    const filteredActivities = data?.activityFeed.activityFeed.filter(activity => {
+      if (activity.type === ActivityEventType.CalloutWhiteboardContentModified) {
+        updatedWhiteboards[(activity as ActivityLogCalloutWhiteboardContentModifiedFragment).whiteboard.id] = true;
+      }
+      if (activity.type !== ActivityEventType.CalloutWhiteboardCreated) {
+        return true;
+      }
+      return !updatedWhiteboards[(activity as ActivityLogCalloutWhiteboardCreatedFragment).whiteboard.id];
+    });
+
     return filteredActivities?.slice(0, MY_LATEST_CONTRIBUTIONS_COUNT);
   }, [data?.activityFeed.activityFeed]);
 
