@@ -27,6 +27,7 @@ import { ForumOutlined } from '@mui/icons-material';
 import BreadcrumbsItem from '../../../../core/ui/navigation/BreadcrumbsItem';
 import TopLevelPageBreadcrumbs from '../../../../main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
 import UpdateDiscussionDialog from '../views/UpdateDiscussionDialog';
+import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
 
 interface DiscussionPageProps {}
 
@@ -141,62 +142,64 @@ export const DiscussionPage: FC<DiscussionPageProps> = () => {
   const { pathname } = useLocation();
 
   return (
-    <TopLevelPageLayout
-      title={t('pages.forum.title')}
-      subtitle={t('pages.forum.subtitle')}
-      iconComponent={ForumOutlined}
-      breadcrumbs={
-        <TopLevelPageBreadcrumbs>
-          <BreadcrumbsItem uri="/forum" iconComponent={ForumOutlined}>
-            {t('pages.forum.shortName')}
-          </BreadcrumbsItem>
-          <BreadcrumbsItem uri={pathname} iconComponent={ForumOutlined}>
-            {discussion?.title}
-          </BreadcrumbsItem>
-        </TopLevelPageBreadcrumbs>
-      }
-    >
-      <DiscussionsLayout
-        backButton={
-          <BackButton component={RouterLink} to="/forum">
-            {t('pages.forum.back')}
-          </BackButton>
+    <StorageConfigContextProvider locationType="platform">
+      <TopLevelPageLayout
+        title={t('pages.forum.title')}
+        subtitle={t('pages.forum.subtitle')}
+        iconComponent={ForumOutlined}
+        breadcrumbs={
+          <TopLevelPageBreadcrumbs>
+            <BreadcrumbsItem uri="/forum" iconComponent={ForumOutlined}>
+              {t('pages.forum.shortName')}
+            </BreadcrumbsItem>
+            <BreadcrumbsItem uri={pathname} iconComponent={ForumOutlined}>
+              {discussion?.title}
+            </BreadcrumbsItem>
+          </TopLevelPageBreadcrumbs>
         }
       >
-        {loadingDiscussion || !discussion ? (
-          <Skeleton />
-        ) : (
-          <DiscussionView
-            currentUserId={user?.user.id}
+        <DiscussionsLayout
+          backButton={
+            <BackButton component={RouterLink} to="/forum">
+              {t('pages.forum.back')}
+            </BackButton>
+          }
+        >
+          {loadingDiscussion || !discussion ? (
+            <Skeleton />
+          ) : (
+            <DiscussionView
+              currentUserId={user?.user.id}
+              discussion={discussion}
+              postMessage={postMessage}
+              postReply={postReply}
+              onUpdateDiscussion={() => setUpdateDiscussionId(discussion.id)}
+              onDeleteDiscussion={() => setDeleteDiscussionId(discussion.id)}
+              onDeleteComment={setDeleteCommentId}
+            />
+          )}
+        </DiscussionsLayout>
+        <RemoveModal
+          show={Boolean(deleteDiscussionId)}
+          onCancel={onCancelDeleteModal}
+          onConfirm={handleDeleteDiscussion}
+          text={t('components.discussion.delete-discussion')}
+        />
+        <RemoveModal
+          show={Boolean(deleteCommentId)}
+          onCancel={onCancelDeleteModal}
+          onConfirm={handleDeleteComment}
+          text={t('components.discussion.delete-comment')}
+        />
+        {discussion && (
+          <UpdateDiscussionDialog
+            open={Boolean(updateDiscussionId)}
+            onClose={() => setUpdateDiscussionId(undefined)}
             discussion={discussion}
-            postMessage={postMessage}
-            postReply={postReply}
-            onUpdateDiscussion={() => setUpdateDiscussionId(discussion.id)}
-            onDeleteDiscussion={() => setDeleteDiscussionId(discussion.id)}
-            onDeleteComment={setDeleteCommentId}
           />
         )}
-      </DiscussionsLayout>
-      <RemoveModal
-        show={Boolean(deleteDiscussionId)}
-        onCancel={onCancelDeleteModal}
-        onConfirm={handleDeleteDiscussion}
-        text={t('components.discussion.delete-discussion')}
-      />
-      <RemoveModal
-        show={Boolean(deleteCommentId)}
-        onCancel={onCancelDeleteModal}
-        onConfirm={handleDeleteComment}
-        text={t('components.discussion.delete-comment')}
-      />
-      {discussion && (
-        <UpdateDiscussionDialog
-          open={Boolean(updateDiscussionId)}
-          onClose={() => setUpdateDiscussionId(undefined)}
-          discussion={discussion}
-        />
-      )}
-    </TopLevelPageLayout>
+      </TopLevelPageLayout>
+    </StorageConfigContextProvider>
   );
 };
 
