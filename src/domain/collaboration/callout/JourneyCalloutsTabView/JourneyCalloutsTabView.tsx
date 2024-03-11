@@ -10,17 +10,16 @@ import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import MembershipBackdrop from '../../../shared/components/Backdrops/MembershipBackdrop';
 import { CalloutDisplayLocation } from '../../../../core/apollo/generated/graphql-schema';
 import { ContributeInnovationFlowBlock } from '../../InnovationFlow/ContributeInnovationFlowBlock/ContributeInnovationFlowBlock';
-import InnovationFlowStates, {
-  InnovationFlowState,
-} from '../../InnovationFlow/InnovationFlowStates/InnovationFlowStates';
+import InnovationFlowStates from '../../InnovationFlow/InnovationFlowStates/InnovationFlowStates';
 import CalloutsGroupView from '../CalloutsInContext/CalloutsGroupView';
 import { OrderUpdate, TypedCallout } from '../useCallouts/useCallouts';
 import calloutIcons from '../utils/calloutIcons';
 import JourneyCalloutsListItemTitle from './JourneyCalloutsListItemTitle';
+import { InnovationFlowState } from '../../InnovationFlow/InnovationFlow';
 
 interface JourneyCalloutsTabViewProps extends JourneyLocation {
-  journeyTypeName: JourneyTypeName;
-  innovationFlowStates: string[] | undefined;
+  collaborationId: string | undefined;
+  innovationFlowStates: InnovationFlowState[] | undefined;
   currentInnovationFlowState: string | undefined;
   canEditInnovationFlow: boolean | undefined;
   callouts: TypedCallout[] | undefined;
@@ -31,10 +30,11 @@ interface JourneyCalloutsTabViewProps extends JourneyLocation {
   loading: boolean;
   refetchCallout: (calloutId: string) => void;
   onCalloutsSortOrderUpdate: (movedCalloutId: string) => (update: OrderUpdate) => Promise<unknown>;
+  journeyTypeName: JourneyTypeName;
 }
 
 const JourneyCalloutsTabView = ({
-  journeyTypeName,
+  collaborationId,
   innovationFlowStates,
   currentInnovationFlowState,
   canEditInnovationFlow,
@@ -46,6 +46,7 @@ const JourneyCalloutsTabView = ({
   loading,
   onCalloutsSortOrderUpdate,
   refetchCallout,
+  journeyTypeName,
   spaceNameId,
   challengeNameId,
   opportunityNameId,
@@ -64,7 +65,7 @@ const JourneyCalloutsTabView = ({
 
   const { t } = useTranslation();
 
-  const handleSelectInnovationFlowState = (state: InnovationFlowState) => setSelectedInnovationFlowState(state);
+  const handleSelectInnovationFlowState = (state: InnovationFlowState) => setSelectedInnovationFlowState(state.displayName);
 
   const contributeLeftCalloutsIds =
     groupedCallouts[CalloutDisplayLocation.ContributeLeft]?.map(callout => callout.id) ?? [];
@@ -74,7 +75,7 @@ const JourneyCalloutsTabView = ({
       <MembershipBackdrop show={!loading && !allCallouts} blockName={t(`common.${journeyTypeName}` as const)}>
         <PageContent>
           <PageContentColumn columns={4}>
-            <ContributeInnovationFlowBlock />
+            <ContributeInnovationFlowBlock collaborationId={collaborationId} journeyTypeName={journeyTypeName} />
             <PageContentBlock>
               <PageContentBlockHeader
                 title={t('pages.generic.sections.subentities.list', { entities: t('common.callouts') })}
@@ -125,6 +126,7 @@ const JourneyCalloutsTabView = ({
           <PageContentColumn columns={8}>
             {innovationFlowStates && currentInnovationFlowState && selectedInnovationFlowState && (
               <InnovationFlowStates
+                collaborationId={collaborationId}
                 states={innovationFlowStates}
                 currentState={currentInnovationFlowState}
                 selectedState={selectedInnovationFlowState}

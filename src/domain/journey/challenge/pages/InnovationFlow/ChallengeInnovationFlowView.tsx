@@ -2,18 +2,20 @@ import { Grid } from '@mui/material';
 import React, { FC } from 'react';
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import {
-  refetchChallengeInnovationFlowQuery,
+  refetchInnovationFlowQuery,
   refetchInnovationFlowSettingsQuery,
   useChallengeProfileInfoQuery,
   useSpaceInnovationFlowTemplatesQuery,
-  useUpdateInnovationFlowLifecycleTemplateMutation,
+  useUpdateInnovationFlowStatesFromTemplateMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import Loading from '../../../../../core/ui/loading/Loading';
 import UpdateInnovationFlow from '../../../../platform/admin/templates/InnovationTemplates/UpdateInnovationFlow';
-import ChallengeLifecycleContainer from '../../containers/ChallengeLifecycleContainer';
-import { InnovationFlowType } from '../../../../../core/apollo/generated/graphql-schema';
-import { SelectInnovationFlowFormValuesType } from '../../../../platform/admin/templates/InnovationTemplates/SelectInnovationFlowDialog';
 
+import { SelectInnovationFlowFormValuesType } from '../../../../platform/admin/templates/InnovationTemplates/SelectInnovationFlowDialog';
+import InnovationFlowContainer from '../../../../collaboration/InnovationFlow/containers/InnovationFlowContainer';
+/**
+ * @deprecated This file is going to be removed in very soon
+ */
 const ChallengeInnovationFlowView: FC = () => {
   const { challengeNameId = '', spaceNameId = '' } = useUrlParams();
 
@@ -21,40 +23,29 @@ const ChallengeInnovationFlowView: FC = () => {
     variables: { spaceId: spaceNameId },
   });
   const innovationFlowTemplates = spaceInnovationFlowTemplates?.space?.templates?.innovationFlowTemplates;
-  const filteredInnovationFlowTemplates = innovationFlowTemplates?.filter(
-    template => template.type === InnovationFlowType.Challenge
-  );
 
   const { data: challengeProfile } = useChallengeProfileInfoQuery({
     variables: { spaceId: spaceNameId, challengeId: challengeNameId },
     skip: !spaceNameId || !challengeNameId,
   });
   const challenge = challengeProfile?.space?.challenge;
-  const innovationFlowID = challenge?.innovationFlow?.id;
+  const collaborationId = challenge?.collaboration?.id;
+  const innovationFlowId = challenge?.collaboration?.innovationFlow?.id;
 
-  const [updateChallengeInnovationFlowTemplate] = useUpdateInnovationFlowLifecycleTemplateMutation({
+  const [updateChallengeInnovationFlow] = useUpdateInnovationFlowStatesFromTemplateMutation({
     refetchQueries: [
-      refetchChallengeInnovationFlowQuery({ spaceId: spaceNameId, challengeId: challengeNameId }),
-      refetchInnovationFlowSettingsQuery({
-        spaceNameId,
-        challengeNameId,
-        includeChallenge: true,
-        includeOpportunity: false,
-      }),
+      refetchInnovationFlowQuery({ innovationFlowId: innovationFlowId! }),
+      refetchInnovationFlowSettingsQuery({ collaborationId: collaborationId! }),
     ],
     awaitRefetchQueries: true,
   });
 
   const onSubmit = async (values: SelectInnovationFlowFormValuesType) => {
-    const { innovationFlowTemplateID } = values;
-
-    if (innovationFlowID) {
-      updateChallengeInnovationFlowTemplate({
+    if (innovationFlowId) {
+      updateChallengeInnovationFlow({
         variables: {
-          input: {
-            innovationFlowID,
-            innovationFlowTemplateID,
-          },
+          innovationFlowId,
+          innovationFlowTemplateId: values.innovationFlowTemplateId,
         },
       });
     }
@@ -62,22 +53,22 @@ const ChallengeInnovationFlowView: FC = () => {
 
   return (
     <Grid container spacing={2}>
-      <ChallengeLifecycleContainer spaceNameId={spaceNameId} challengeNameId={challengeNameId}>
+      <InnovationFlowContainer innovationFlowId={innovationFlowId}>
         {({ loading, ...provided }) => {
-          if (loading || !innovationFlowID) {
+          if (loading || !innovationFlowId) {
             return <Loading text="Loading" />;
           }
 
           return (
             <UpdateInnovationFlow
-              entityId={innovationFlowID}
-              innovationFlowTemplates={filteredInnovationFlowTemplates}
+              entityId={innovationFlowId}
+              innovationFlowTemplates={innovationFlowTemplates}
               onSubmit={onSubmit}
               {...provided}
             />
           );
         }}
-      </ChallengeLifecycleContainer>
+      </InnovationFlowContainer>
     </Grid>
   );
 };

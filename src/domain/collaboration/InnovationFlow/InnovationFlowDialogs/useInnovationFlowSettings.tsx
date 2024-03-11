@@ -1,19 +1,19 @@
 import {
   refetchInnovationFlowSettingsQuery,
-  useChallengeInnovationFlowEventMutation,
   useInnovationFlowSettingsQuery,
-  useOpportunityInnovationFlowEventMutation,
   useUpdateCalloutFlowStateMutation,
   useUpdateCalloutsSortOrderMutation,
   useUpdateInnovationFlowMutation,
+  useUpdateInnovationFlowStateMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
-import { CoreEntityIdTypes } from '../../../shared/types/CoreEntityIds';
 import { CalloutType, Tagset, UpdateProfileInput } from '../../../../core/apollo/generated/graphql-schema';
 import { compact, uniq } from 'lodash';
 import { sortCallouts } from '../utils/sortCallouts';
 import { useMemo } from 'react';
 
-interface useInnovationFlowSettingsProps extends CoreEntityIdTypes {}
+interface useInnovationFlowSettingsProps {
+  collaborationId: string | undefined;
+}
 
 export interface GroupedCallout {
   id: string;
@@ -25,46 +25,34 @@ export interface GroupedCallout {
     displayName: string;
   };
   flowState:
-    | {
-        tagsetId: string;
-        currentState: string | undefined;
-        allowedValues: string[];
-      }
-    | undefined;
+  | {
+    tagsetId: string;
+    currentState: string | undefined;
+    allowedValues: string[];
+  }
+  | undefined;
 }
 
 const mapFlowState = (tagset: Tagset | undefined): GroupedCallout['flowState'] => {
   return tagset
     ? {
-        tagsetId: tagset.id,
-        currentState: tagset.tags[0],
-        allowedValues: tagset.allowedValues,
-      }
+      tagsetId: tagset.id,
+      currentState: tagset.tags[0],
+      allowedValues: tagset.allowedValues,
+    }
     : undefined;
 };
 
-const useInnovationFlowSettings = ({
-  spaceNameId,
-  challengeNameId,
-  opportunityNameId,
-}: useInnovationFlowSettingsProps) => {
-  const isChallenge = !opportunityNameId;
-
+const useInnovationFlowSettings = ({ collaborationId }: useInnovationFlowSettingsProps) => {
   const { data, loading: loadingData } = useInnovationFlowSettingsQuery({
-    variables: {
-      spaceNameId,
-      challengeNameId,
-      opportunityNameId,
-      includeChallenge: isChallenge,
-      includeOpportunity: !isChallenge,
-    },
-    skip: !spaceNameId || (!challengeNameId && !opportunityNameId),
+    variables: { collaborationId: collaborationId! },
+    skip: !collaborationId
   });
 
-  const innovationFlow = data?.space.challenge?.innovationFlow ?? data?.space.opportunity?.innovationFlow;
+  const collaboration = data?.lookup.collaboration;
+  const innovationFlow = collaboration?.innovationFlow;
 
   // Collaboration
-  const collaboration = data?.space.challenge?.collaboration ?? data?.space.opportunity?.collaboration;
   const callouts = useMemo(
     () =>
       collaboration?.callouts
@@ -85,69 +73,31 @@ const useInnovationFlowSettings = ({
 
   const flowStateAllowedValues = uniq(compact(callouts?.flatMap(callout => callout.flowState?.allowedValues))) ?? [];
 
-  const [challengeEvent, { loading: loadingChallengeEvent }] = useChallengeInnovationFlowEventMutation({
-    refetchQueries: [
-      refetchInnovationFlowSettingsQuery({
-        spaceNameId,
-        challengeNameId,
-        opportunityNameId,
-        includeChallenge: isChallenge,
-        includeOpportunity: !isChallenge,
-      }),
-    ],
+  const [updateInnovationFlowSelectedState, { loading: changingState }] = useUpdateInnovationFlowStateMutation({  // TODO: Not used?
+    refetchQueries: [refetchInnovationFlowSettingsQuery({ collaborationId: collaborationId! })],
   });
-
-  const [opportunityEvent, { loading: loadingOpportunityEvent }] = useOpportunityInnovationFlowEventMutation({
-    refetchQueries: [
-      refetchInnovationFlowSettingsQuery({
-        spaceNameId,
-        challengeNameId,
-        opportunityNameId,
-        includeChallenge: isChallenge,
-        includeOpportunity: !isChallenge,
-      }),
-    ],
-  });
-
-  const handleLifecycleNextEvent = async (nextEvent: string) => {
-    if (!innovationFlow?.id) {
+  const handleInnovationFlowStateChange = async (newState: string) => {
+    if (!innovationFlow) {
       return;
     }
-    if (isChallenge) {
-      await challengeEvent({
-        variables: {
-          eventName: nextEvent,
-          innovationFlowID: innovationFlow?.id,
-        },
-      });
-    } else {
-      await opportunityEvent({
-        variables: {
-          eventName: nextEvent,
-          innovationFlowID: innovationFlow?.id,
-        },
-      });
-    }
-  };
+    await updateInnovationFlowSelectedState({
+      variables: {
+        innovationFlowId: innovationFlow.id,
+        selectedState: newState
+      },
+    });
+  }
 
   const [updateInnovationFlow, { loading: loadingUpdateInnovationFlow }] = useUpdateInnovationFlowMutation();
-  const handleUpdateInnovationFlowProfile = async (innovationFlowID: string, profileData: UpdateProfileInput) =>
+  const handleUpdateInnovationFlowProfile = async (innovationFlowId: string, profileData: UpdateProfileInput) =>
     updateInnovationFlow({
       variables: {
         updateInnovationFlowData: {
-          innovationFlowID,
+          innovationFlowID: innovationFlowId,
           profileData,
         },
       },
-      refetchQueries: [
-        refetchInnovationFlowSettingsQuery({
-          spaceNameId,
-          challengeNameId,
-          opportunityNameId,
-          includeChallenge: isChallenge,
-          includeOpportunity: !isChallenge,
-        }),
-      ],
+      refetchQueries: [refetchInnovationFlowSettingsQuery({ collaborationId: collaborationId! })],
     });
 
   const [updateCalloutFlowState, { loading: loadingUpdateCallout }] = useUpdateCalloutFlowStateMutation();
@@ -209,15 +159,7 @@ const useInnovationFlowSettings = ({
         collaborationId: collaboration.id,
         calloutIds: sortedCalloutIds,
       },
-      refetchQueries: [
-        refetchInnovationFlowSettingsQuery({
-          spaceNameId,
-          challengeNameId,
-          opportunityNameId,
-          includeChallenge: isChallenge,
-          includeOpportunity: !isChallenge,
-        }),
-      ],
+      refetchQueries: [refetchInnovationFlowSettingsQuery({ collaborationId: collaborationId! })],
     });
   };
 
@@ -228,13 +170,13 @@ const useInnovationFlowSettings = ({
       flowStateAllowedValues,
     },
     actions: {
-      nextEvent: handleLifecycleNextEvent,
+      updateInnovationFlowState: handleInnovationFlowStateChange,
       updateInnovationFlowProfile: handleUpdateInnovationFlowProfile,
       updateCalloutFlowState: handleUpdateCalloutFlowState,
     },
     state: {
       loading: loadingData || loadingUpdateInnovationFlow || loadingUpdateCallout || loadingSortOrder,
-      loadingLifecycleEvents: loadingChallengeEvent || loadingOpportunityEvent,
+      changingState,
     },
   };
 };

@@ -851,8 +851,7 @@
     },
     "innovationFlowTemplates": {
       "name": "Innovation Flow template",
-      "title": "Template Library: Innovation Flows",
-      "type": "Type"
+      "title": "Template Library: Innovation Flows"
     },
     "spaceTemplates": "Templates selected by the host of this community",
     "platformTemplates": "Platform Templates",
@@ -861,9 +860,9 @@
     "disabledTemplateInfo": "Please note that you can only use the templates that are selected for this community, which this is not. If you would like to use this template, please ask the administrator or the lead of the Space to add it in the template section of the Space Settings."
   },
   "innovation-templates": {
-    "definition": {
+    "states": {
       "title": "Definition",
-      "placeholder": "Here you can paste the description from Xstate Visualizer with the various lifecycle states"
+      "placeholder": "Here you can paste the description of the states to use for this Innovation Flow"
     }
   },
   "components": {
@@ -1055,7 +1054,7 @@
         "parentLink": " in <parentlink><parenticon /> {{journeyDisplayName}}</parentlink>"
       }
     },
-    "lifecycle": {
+    "innovationFlow": {
       "currentState": "Current State:",
       "changeState": "Change State to:",
       "error": "The definition was not able to be visualized"
@@ -1483,7 +1482,7 @@
         "mentions": "Type a few characters to find relevant users"
       }
     },
-    "new-discussion": {
+    "discussionForm": {
       "title": {
         "title": "Title",
         "placeholder": "Discussion title"
@@ -1494,7 +1493,14 @@
       "description": {
         "title": "Further information",
         "placeholder": "Add further information on the discussion here"
-      },
+      }
+    },
+    "updateDiscussion": {
+      "buttons": {
+        "post": "Update discussion"
+      }
+    },
+    "newDiscussion": {
       "buttons": {
         "post": "Create discussion"
       }

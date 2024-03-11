@@ -72,7 +72,9 @@ const ChallengeProfileView: FC<ChallengeProfileViewProps> = ({ mode }) => {
               },
               spaceID: spaceNameId,
               tags: tagsets.flatMap(x => x.tags),
-              innovationFlowTemplateID: '',
+              collaborationData: {
+                innovationFlowTemplateID: ''
+              }
             },
           },
         });

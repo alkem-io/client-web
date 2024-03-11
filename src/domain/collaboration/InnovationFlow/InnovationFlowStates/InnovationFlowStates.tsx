@@ -10,10 +10,10 @@ import { useState } from 'react';
 import InnovationFlowSettingsDialog from '../InnovationFlowDialogs/InnovationFlowSettingsDialog';
 import { useGlobalGridColumns } from '../../../../core/ui/grid/constants';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
-
-export type InnovationFlowState = string;
+import { InnovationFlowState } from '../InnovationFlow';
 
 interface InnovationFlowStatesProps {
+  collaborationId: string | undefined;
   states: InnovationFlowState[];
   currentState: string;
   selectedState: string;
@@ -23,6 +23,7 @@ interface InnovationFlowStatesProps {
 }
 
 const InnovationFlowStates = ({
+  collaborationId,
   states,
   currentState,
   selectedState,
@@ -34,17 +35,17 @@ const InnovationFlowStates = ({
   const [showSettingsDialog, setShowSettingsDialog] = useState(false);
 
   const getStateButtonVariant = (state: InnovationFlowState) => {
-    if (state === selectedState) {
+    if (state.displayName === selectedState) {
       return 'contained';
     }
     return 'outlined';
   };
 
   const getStateButtonSx = (state: InnovationFlowState) => {
-    if (state === selectedState) {
+    if (state.displayName === selectedState) {
       return {};
     }
-    if (state === currentState) {
+    if (state.displayName === currentState) {
       return {
         backgroundColor: theme.palette.highlight.light,
       };
@@ -56,10 +57,10 @@ const InnovationFlowStates = ({
 
   const theme = useTheme();
 
-  const getStateName = (state: InnovationFlowState) =>
-    i18n.exists(`common.enums.innovationFlowState.${state}`)
-      ? t(`common.enums.innovationFlowState.${state}` as TranslationKey)
-      : state;
+  const getStateName = (stateName: string) =>
+    i18n.exists(`common.enums.innovationFlowState.${stateName}`)
+      ? t(`common.enums.innovationFlowState.${stateName}` as TranslationKey)
+      : stateName;
 
   const columns = useGlobalGridColumns();
 
@@ -69,7 +70,7 @@ const InnovationFlowStates = ({
         <Gutters row={columns > 4} disablePadding flexGrow={1} flexShrink={1} justifyContent="start" flexWrap="wrap">
           {states.map(state => (
             <Button
-              key={state}
+              key={state.displayName}
               variant={getStateButtonVariant(state)}
               disableElevation
               sx={{
@@ -79,7 +80,7 @@ const InnovationFlowStates = ({
               }}
               onClick={() => onSelectState?.(state)}
             >
-              <BlockTitle fontWeight="bold">{getStateName(state)}</BlockTitle>
+              <BlockTitle fontWeight="bold">{getStateName(state.displayName)}</BlockTitle>
             </Button>
           ))}
         </Gutters>
@@ -107,7 +108,7 @@ const InnovationFlowStates = ({
           />
         </Caption>
       )}
-      <InnovationFlowSettingsDialog open={showSettingsDialog} onClose={() => setShowSettingsDialog(false)} />
+      <InnovationFlowSettingsDialog collaborationId={collaborationId} open={showSettingsDialog} onClose={() => setShowSettingsDialog(false)} />
     </PageContentBlockSeamless>
   );
 };

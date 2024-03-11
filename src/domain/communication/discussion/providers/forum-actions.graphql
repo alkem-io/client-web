@@ -4,10 +4,14 @@ mutation createDiscussion($input: CommunicationCreateDiscussionInput!) {
   }
 }
 
+mutation updateDiscussion($input: UpdateDiscussionInput!) {
+  updateDiscussion(updateData: $input) {
+    ...DiscussionDetails
+  }
+}
+
 mutation deleteDiscussion($deleteData: DeleteDiscussionInput!) {
   deleteDiscussion(deleteData: $deleteData) {
     id
   }
 }
-
-

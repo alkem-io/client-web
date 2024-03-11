@@ -10,7 +10,7 @@ import {
 import { AdminInnovationFlowTemplateFragment } from '../../../../../core/apollo/generated/graphql-schema';
 import { LinkWithState } from '../../../../shared/types/LinkWithState';
 import { InternalRefetchQueriesInclude } from '@apollo/client/core/types';
-import InnovationTemplateView from './InnovationTemplateView';
+import InnovationFlowTemplateView from './InnovationFlowTemplateView';
 import AdminTemplatesSection from '../AdminTemplatesSection';
 import { useTranslation } from 'react-i18next';
 import { InnovationPack } from '../InnovationPacks/InnovationPack';
@@ -46,22 +46,12 @@ const AdminInnovationTemplatesSection = ({ refetchQueries, ...props }: AdminInno
       })}
       templateCardComponent={InnovationTemplateCard}
       templateImportCardComponent={InnovationImportTemplateCard}
-      templatePreviewComponent={InnovationTemplateView}
+      templatePreviewComponent={InnovationFlowTemplateView}
       createTemplateDialogComponent={CreateInnovationTemplateDialog}
       editTemplateDialogComponent={EditInnovationTemplateDialog}
       onCreateTemplate={variables => createInnovationFlowTemplate({ variables, refetchQueries })}
-      onUpdateTemplate={variables => {
-        return updateInnovationFlowTemplate({
-          variables: {
-            ...variables,
-            definition: variables.definition!,
-          },
-          refetchQueries,
-        });
-      }}
-      onDeleteTemplate={async variables => {
-        await deleteInnovationFlowTemplate({ variables, refetchQueries });
-      }}
+      onUpdateTemplate={variables => updateInnovationFlowTemplate({ variables, refetchQueries })}
+      onDeleteTemplate={variables => deleteInnovationFlowTemplate({ variables, refetchQueries })}
     />
   );
 };

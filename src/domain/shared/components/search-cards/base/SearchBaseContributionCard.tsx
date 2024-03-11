@@ -29,7 +29,7 @@ const SearchBaseContributionCard: FC<PropsWithChildren<SearchBaseContributionCar
     <ContributeCard>
       <Box component={RouterLink} to={url}>
         <CardHeader title={name} iconComponent={icon}>
-          <CardHeaderCaption noWrap>{label}</CardHeaderCaption>
+          <CardHeaderCaption>{label}</CardHeaderCaption>
         </CardHeader>
       </Box>
       {children}

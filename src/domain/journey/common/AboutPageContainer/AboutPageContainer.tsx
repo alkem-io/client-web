@@ -6,7 +6,6 @@ import {
   Community,
   ContextTabFragment,
   DashboardLeadUserFragment,
-  LifecycleContextTabFragment,
   MetricsItemFragment,
   Profile,
   ReferenceDetailsFragment,
@@ -20,6 +19,7 @@ import { useAboutPageMembersQuery, useAboutPageNonMembersQuery } from '../../../
 import { CoreEntityIdTypes } from '../../../shared/types/CoreEntityIds';
 import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
 import { MetricType } from '../../../platform/metrics/MetricType';
+import { InnovationFlowDetails } from '../../../collaboration/InnovationFlow/InnovationFlow';
 
 interface AboutPagePermissions {
   canCreateCommunityContextReview: boolean;
@@ -30,7 +30,7 @@ export interface AboutPageContainerEntities {
   context?: ContextTabFragment;
   profile: Omit<Profile, 'storageBucket' | 'url'>;
   tagset?: Tagset;
-  lifecycle?: LifecycleContextTabFragment;
+  innovationFlow: InnovationFlowDetails | undefined;
   permissions: AboutPagePermissions;
   metrics: MetricsItemFragment[] | undefined;
   memberUsers: WithId<ContributorCardSquareProps>[] | undefined;
@@ -43,7 +43,7 @@ export interface AboutPageContainerEntities {
   references: ReferenceDetailsFragment[] | undefined;
 }
 
-export interface AboutPageContainerActions {}
+export interface AboutPageContainerActions { }
 
 export interface AboutPageContainerState {
   loading: boolean;
@@ -52,7 +52,7 @@ export interface AboutPageContainerState {
 
 export interface AboutPageContainerProps
   extends ContainerChildProps<AboutPageContainerEntities, AboutPageContainerActions, AboutPageContainerState>,
-    CoreEntityIdTypes {}
+  CoreEntityIdTypes { }
 
 const AboutPageContainer: FC<AboutPageContainerProps> = ({
   children,
@@ -124,7 +124,8 @@ const AboutPageContainer: FC<AboutPageContainerProps> = ({
   const memberJourney = membersData?.space?.opportunity ?? membersData?.space?.challenge ?? membersData?.space;
 
   const tagset = nonMemberJourney?.profile?.tagset;
-  const lifecycle = (nonMembersData?.space?.opportunity ?? nonMembersData?.space?.challenge)?.innovationFlow?.lifecycle;
+  const collaboration = (nonMembersData?.space?.opportunity ?? nonMembersData?.space?.challenge)?.collaboration;
+
   const hostOrganization = nonMembersData?.space?.host;
   const community = {
     ...nonMemberJourney?.community,
@@ -171,7 +172,7 @@ const AboutPageContainer: FC<AboutPageContainerProps> = ({
           context,
           profile,
           tagset,
-          lifecycle,
+          innovationFlow: collaboration?.innovationFlow,
           permissions,
           metrics,
           leadUsers,

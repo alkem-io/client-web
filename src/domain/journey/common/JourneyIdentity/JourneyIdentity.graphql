@@ -1,8 +1,8 @@
 query JourneyIdentity(
-  $spaceNameId: UUID_NAMEID!,
-  $challengeNameId: UUID_NAMEID = "_",
-  $opportunityNameId: UUID_NAMEID = "_",
-  $isChallenge: Boolean = false,
+  $spaceNameId: UUID_NAMEID!
+  $challengeNameId: UUID_NAMEID = "mockid"
+  $opportunityNameId: UUID_NAMEID = "mockid"
+  $isChallenge: Boolean = false
   $isOpportunity: Boolean = false
 ) {
   space(ID: $spaceNameId) {

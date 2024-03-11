@@ -692,7 +692,6 @@ export type ChallengeKeySpecifier = (
   | 'community'
   | 'context'
   | 'id'
-  | 'innovationFlow'
   | 'metrics'
   | 'nameID'
   | 'opportunities'
@@ -710,7 +709,6 @@ export type ChallengeFieldPolicy = {
   community?: FieldPolicy<any> | FieldReadFunction<any>;
   context?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
-  innovationFlow?: FieldPolicy<any> | FieldReadFunction<any>;
   metrics?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   opportunities?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -746,6 +744,7 @@ export type CollaborationKeySpecifier = (
   | 'authorization'
   | 'callouts'
   | 'id'
+  | 'innovationFlow'
   | 'relations'
   | 'tagsetTemplates'
   | 'timeline'
@@ -755,6 +754,7 @@ export type CollaborationFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   callouts?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  innovationFlow?: FieldPolicy<any> | FieldReadFunction<any>;
   relations?: FieldPolicy<any> | FieldReadFunction<any>;
   tagsetTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
   timeline?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1101,33 +1101,36 @@ export type ISearchResultsFieldPolicy = {
 };
 export type InnovationFlowKeySpecifier = (
   | 'authorization'
+  | 'currentState'
   | 'id'
-  | 'lifecycle'
   | 'profile'
-  | 'type'
+  | 'states'
   | InnovationFlowKeySpecifier
 )[];
 export type InnovationFlowFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  currentState?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
-  lifecycle?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
-  type?: FieldPolicy<any> | FieldReadFunction<any>;
+  states?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type InnovationFlowStateKeySpecifier = ('description' | 'displayName' | InnovationFlowStateKeySpecifier)[];
+export type InnovationFlowStateFieldPolicy = {
+  description?: FieldPolicy<any> | FieldReadFunction<any>;
+  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type InnovationFlowTemplateKeySpecifier = (
   | 'authorization'
-  | 'definition'
   | 'id'
   | 'profile'
-  | 'type'
+  | 'states'
   | InnovationFlowTemplateKeySpecifier
 )[];
 export type InnovationFlowTemplateFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  definition?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
-  type?: FieldPolicy<any> | FieldReadFunction<any>;
+  states?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type InnovationHubKeySpecifier = (
   | 'authorization'
@@ -1407,7 +1410,6 @@ export type MutationKeySpecifier = (
   | 'adminCommunicationEnsureAccessToCommunications'
   | 'adminCommunicationRemoveOrphanedRoom'
   | 'adminCommunicationUpdateRoomsJoinRule'
-  | 'adminInnovationFlowSynchronizeStates'
   | 'applyForCommunityMembership'
   | 'assignCommunityRoleToOrganization'
   | 'assignCommunityRoleToUser'
@@ -1484,9 +1486,7 @@ export type MutationKeySpecifier = (
   | 'deleteWhiteboard'
   | 'deleteWhiteboardTemplate'
   | 'eventOnApplication'
-  | 'eventOnChallenge'
   | 'eventOnCommunityInvitation'
-  | 'eventOnOpportunity'
   | 'eventOnOrganizationVerification'
   | 'eventOnProject'
   | 'grantCredentialToOrganization'
@@ -1530,7 +1530,8 @@ export type MutationKeySpecifier = (
   | 'updateDocument'
   | 'updateEcosystemModel'
   | 'updateInnovationFlow'
-  | 'updateInnovationFlowLifecycleTemplate'
+  | 'updateInnovationFlowState'
+  | 'updateInnovationFlowStatesFromTemplate'
   | 'updateInnovationFlowTemplate'
   | 'updateInnovationHub'
   | 'updateInnovationPack'
@@ -1547,6 +1548,7 @@ export type MutationKeySpecifier = (
   | 'updateProject'
   | 'updateReference'
   | 'updateSpace'
+  | 'updateSpaceDefaults'
   | 'updateSpacePlatformSettings'
   | 'updateTagset'
   | 'updateUser'
@@ -1567,7 +1569,6 @@ export type MutationFieldPolicy = {
   adminCommunicationEnsureAccessToCommunications?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationRemoveOrphanedRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationUpdateRoomsJoinRule?: FieldPolicy<any> | FieldReadFunction<any>;
-  adminInnovationFlowSynchronizeStates?: FieldPolicy<any> | FieldReadFunction<any>;
   applyForCommunityMembership?: FieldPolicy<any> | FieldReadFunction<any>;
   assignCommunityRoleToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   assignCommunityRoleToUser?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1644,9 +1645,7 @@ export type MutationFieldPolicy = {
   deleteWhiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteWhiteboardTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   eventOnApplication?: FieldPolicy<any> | FieldReadFunction<any>;
-  eventOnChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
   eventOnCommunityInvitation?: FieldPolicy<any> | FieldReadFunction<any>;
-  eventOnOpportunity?: FieldPolicy<any> | FieldReadFunction<any>;
   eventOnOrganizationVerification?: FieldPolicy<any> | FieldReadFunction<any>;
   eventOnProject?: FieldPolicy<any> | FieldReadFunction<any>;
   grantCredentialToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1690,7 +1689,8 @@ export type MutationFieldPolicy = {
   updateDocument?: FieldPolicy<any> | FieldReadFunction<any>;
   updateEcosystemModel?: FieldPolicy<any> | FieldReadFunction<any>;
   updateInnovationFlow?: FieldPolicy<any> | FieldReadFunction<any>;
-  updateInnovationFlowLifecycleTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateInnovationFlowState?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateInnovationFlowStatesFromTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   updateInnovationFlowTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   updateInnovationHub?: FieldPolicy<any> | FieldReadFunction<any>;
   updateInnovationPack?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1707,6 +1707,7 @@ export type MutationFieldPolicy = {
   updateProject?: FieldPolicy<any> | FieldReadFunction<any>;
   updateReference?: FieldPolicy<any> | FieldReadFunction<any>;
   updateSpace?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateSpaceDefaults?: FieldPolicy<any> | FieldReadFunction<any>;
   updateSpacePlatformSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   updateTagset?: FieldPolicy<any> | FieldReadFunction<any>;
   updateUser?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1738,7 +1739,6 @@ export type OpportunityKeySpecifier = (
   | 'community'
   | 'context'
   | 'id'
-  | 'innovationFlow'
   | 'metrics'
   | 'nameID'
   | 'parentNameID'
@@ -1753,7 +1753,6 @@ export type OpportunityFieldPolicy = {
   community?: FieldPolicy<any> | FieldReadFunction<any>;
   context?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
-  innovationFlow?: FieldPolicy<any> | FieldReadFunction<any>;
   metrics?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   parentNameID?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2154,6 +2153,7 @@ export type RelayPaginatedSpaceKeySpecifier = (
   | 'community'
   | 'context'
   | 'createdDate'
+  | 'defaults'
   | 'group'
   | 'groups'
   | 'host'
@@ -2180,6 +2180,7 @@ export type RelayPaginatedSpaceFieldPolicy = {
   community?: FieldPolicy<any> | FieldReadFunction<any>;
   context?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  defaults?: FieldPolicy<any> | FieldReadFunction<any>;
   group?: FieldPolicy<any> | FieldReadFunction<any>;
   groups?: FieldPolicy<any> | FieldReadFunction<any>;
   host?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2533,6 +2534,7 @@ export type SpaceKeySpecifier = (
   | 'community'
   | 'context'
   | 'createdDate'
+  | 'defaults'
   | 'group'
   | 'groups'
   | 'host'
@@ -2559,6 +2561,7 @@ export type SpaceFieldPolicy = {
   community?: FieldPolicy<any> | FieldReadFunction<any>;
   context?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  defaults?: FieldPolicy<any> | FieldReadFunction<any>;
   group?: FieldPolicy<any> | FieldReadFunction<any>;
   groups?: FieldPolicy<any> | FieldReadFunction<any>;
   host?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2574,6 +2577,17 @@ export type SpaceFieldPolicy = {
   projects?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
   templates?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type SpaceDefaultsKeySpecifier = (
+  | 'authorization'
+  | 'id'
+  | 'innovationFlowTemplate'
+  | SpaceDefaultsKeySpecifier
+)[];
+export type SpaceDefaultsFieldPolicy = {
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  innovationFlowTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type StorageAggregatorKeySpecifier = (
   | 'authorization'
@@ -2736,7 +2750,6 @@ export type TemplatesSetKeySpecifier = (
   | 'innovationFlowTemplate'
   | 'innovationFlowTemplates'
   | 'innovationFlowTemplatesCount'
-  | 'policy'
   | 'postTemplate'
   | 'postTemplates'
   | 'postTemplatesCount'
@@ -2752,17 +2765,12 @@ export type TemplatesSetFieldPolicy = {
   innovationFlowTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationFlowTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationFlowTemplatesCount?: FieldPolicy<any> | FieldReadFunction<any>;
-  policy?: FieldPolicy<any> | FieldReadFunction<any>;
   postTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   postTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
   postTemplatesCount?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboardTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboardTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboardTemplatesCount?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type TemplatesSetPolicyKeySpecifier = ('minInnovationFlow' | TemplatesSetPolicyKeySpecifier)[];
-export type TemplatesSetPolicyFieldPolicy = {
-  minInnovationFlow?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type TimelineKeySpecifier = ('authorization' | 'calendar' | 'id' | TimelineKeySpecifier)[];
 export type TimelineFieldPolicy = {
@@ -3262,6 +3270,10 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | InnovationFlowKeySpecifier | (() => undefined | InnovationFlowKeySpecifier);
     fields?: InnovationFlowFieldPolicy;
   };
+  InnovationFlowState?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | InnovationFlowStateKeySpecifier | (() => undefined | InnovationFlowStateKeySpecifier);
+    fields?: InnovationFlowStateFieldPolicy;
+  };
   InnovationFlowTemplate?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | InnovationFlowTemplateKeySpecifier | (() => undefined | InnovationFlowTemplateKeySpecifier);
     fields?: InnovationFlowTemplateFieldPolicy;
@@ -3568,6 +3580,10 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | SpaceKeySpecifier | (() => undefined | SpaceKeySpecifier);
     fields?: SpaceFieldPolicy;
   };
+  SpaceDefaults?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | SpaceDefaultsKeySpecifier | (() => undefined | SpaceDefaultsKeySpecifier);
+    fields?: SpaceDefaultsFieldPolicy;
+  };
   StorageAggregator?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | StorageAggregatorKeySpecifier | (() => undefined | StorageAggregatorKeySpecifier);
     fields?: StorageAggregatorFieldPolicy;
@@ -3611,10 +3627,6 @@ export type StrictTypedTypePolicies = {
   TemplatesSet?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | TemplatesSetKeySpecifier | (() => undefined | TemplatesSetKeySpecifier);
     fields?: TemplatesSetFieldPolicy;
-  };
-  TemplatesSetPolicy?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | TemplatesSetPolicyKeySpecifier | (() => undefined | TemplatesSetPolicyKeySpecifier);
-    fields?: TemplatesSetPolicyFieldPolicy;
   };
   Timeline?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | TimelineKeySpecifier | (() => undefined | TimelineKeySpecifier);

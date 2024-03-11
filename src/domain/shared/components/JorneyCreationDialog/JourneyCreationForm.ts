@@ -4,7 +4,7 @@ export interface JourneyFormValues {
   vision: string;
   tags: string[];
   background?: string;
-  innovationFlowTemplateID: string;
+  innovationFlowTemplateId: string;
 }
 
 export interface JourneyCreationForm {

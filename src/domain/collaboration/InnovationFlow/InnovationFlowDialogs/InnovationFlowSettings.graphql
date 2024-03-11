@@ -1,50 +1,43 @@
-query InnovationFlowSettings(
-  $spaceNameId: UUID_NAMEID!
-  $includeChallenge: Boolean = false
-  $includeOpportunity: Boolean = false
-  $challengeNameId: UUID_NAMEID = "mockid" # workaround for mandatory param working in conjection with @include or @skip
-  $opportunityNameId: UUID_NAMEID = "mockid" # workaround for mandatory param working in conjection with @include or @skip
-) {
-  space(ID: $spaceNameId) {
-    id
-    challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
-      id
-      nameID
+query InnovationFlowSettings($collaborationId: UUID!) {
+  lookup {
+    collaboration(ID: $collaborationId) {
       innovationFlow {
-        id
-        profile {
-          ...LifecycleProfile
-        }
-        type
-        lifecycle {
-          ...LifecycleDetails
-        }
+        ...InnovationFlowDetails
       }
-      collaboration {
-        ...InnovationFlowCollaboration
-      }
+      ...InnovationFlowCollaboration
     }
-    opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
-      id
-      nameID
+  }
+}
+
+query InnovationFlowDetails($collaborationId: UUID!) {
+  lookup {
+    collaboration(ID: $collaborationId) {
       innovationFlow {
-        id
-        profile {
-          ...LifecycleProfile
-        }
-        type
-        lifecycle {
-          ...LifecycleDetails
-        }
-      }
-      collaboration {
-        ...InnovationFlowCollaboration
+        ...InnovationFlowDetails
       }
     }
   }
 }
 
-fragment LifecycleProfile on Profile {
+fragment InnovationFlowDetails on InnovationFlow {
+  id
+  profile {
+    ...InnovationFlowProfile
+  }
+  states {
+    displayName
+    description
+  }
+  currentState {
+    displayName
+  }
+  authorization {
+    id
+    myPrivileges
+  }
+}
+
+fragment InnovationFlowProfile on Profile {
   id
   displayName
   description
@@ -65,16 +58,10 @@ fragment LifecycleProfile on Profile {
   }
 }
 
-fragment LifecycleDetails on Lifecycle {
-  id
-  state
-  nextEvents
-  stateIsFinal
-}
-
 fragment InnovationFlowCollaboration on Collaboration {
   id
   authorization {
+    id
     myPrivileges
   }
   callouts(displayLocations: [CONTRIBUTE_LEFT, CONTRIBUTE_RIGHT]) {
