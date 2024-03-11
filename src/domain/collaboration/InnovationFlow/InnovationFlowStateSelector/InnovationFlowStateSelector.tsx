@@ -5,39 +5,40 @@ import { useTranslation } from 'react-i18next';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import useLoadingState from '../../../shared/utils/useLoadingState';
 import { gutters } from '../../../../core/ui/grid/utils';
+import { InnovationFlowState } from '../InnovationFlow';
 
-interface LifecycleStateSelectorProps {
+interface InnovationFlowStateSelectorProps {
   currentState: string | undefined;
-  nextEvents?: string[];
-  onNextEventClick?: (nextEvent: string) => Promise<unknown> | undefined;
+  states?: InnovationFlowState[];
+  onStateChange?: (nextEvent: string) => Promise<unknown> | undefined;
 }
 
-const LifecycleStateSelector: FC<LifecycleStateSelectorProps> = ({ currentState, nextEvents, onNextEventClick }) => {
+const InnovationFlowStateSelector: FC<InnovationFlowStateSelectorProps> = ({ currentState, states, onStateChange }) => {
   const { t } = useTranslation();
 
   const [handleClick, loading] = useLoadingState(async (nextEvent: string) => {
-    await onNextEventClick?.(nextEvent);
+    await onStateChange?.(nextEvent);
   });
 
   return (
     <Gutters>
-      <BlockSectionTitle>{t('components.lifecycle.currentState')}</BlockSectionTitle>
+      <BlockSectionTitle>{t('components.innovationFlow.currentState')}</BlockSectionTitle>
       <Box>
         <Chip variant="filled" label={currentState ?? <Skeleton />} color="primary" />
       </Box>
-      {nextEvents && (
+      {states && (
         <>
-          <BlockSectionTitle>{t('components.lifecycle.changeState')}</BlockSectionTitle>
+          <BlockSectionTitle>{t('components.innovationFlow.changeState')}</BlockSectionTitle>
           <Box display="flex" gap={gutters(0.5)}>
-            {nextEvents?.map(nextEvent => (
+            {states?.map((state, index) => (
               <Chip
-                key={nextEvent}
+                key={`state_${index}`}
                 disabled={loading}
                 sx={{ cursor: loading ? 'progress' : 'pointer' }}
                 variant="outlined"
-                label={nextEvent}
+                label={state.displayName}
                 color="primary"
-                onClick={() => handleClick(nextEvent)}
+                onClick={() => handleClick(state.displayName)}
               />
             ))}
           </Box>
@@ -47,4 +48,4 @@ const LifecycleStateSelector: FC<LifecycleStateSelectorProps> = ({ currentState,
   );
 };
 
-export default LifecycleStateSelector;
+export default InnovationFlowStateSelector;

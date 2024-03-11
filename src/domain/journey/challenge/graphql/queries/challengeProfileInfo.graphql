@@ -4,6 +4,9 @@ query challengeProfileInfo($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
     challenge(ID: $challengeId) {
       id
       nameID
+      collaboration {
+        id
+      }
       profile {
         id
         displayName
@@ -25,11 +28,14 @@ query challengeProfileInfo($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
           ...fullLocation
         }
       }
-      innovationFlow {
+      collaboration {
         id
-        lifecycle {
+
+        innovationFlow {
           id
-          state
+          currentState {
+            displayName
+          }
         }
       }
       context {

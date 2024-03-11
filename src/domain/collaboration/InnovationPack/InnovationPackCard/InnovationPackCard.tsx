@@ -9,7 +9,7 @@ import CardFooterBadge from '../../../../core/ui/card/CardFooterBadge';
 import { Box } from '@mui/material';
 import { WhiteboardIcon } from '../../whiteboard/icon/WhiteboardIcon';
 import { PostIcon } from '../../post/icon/PostIcon';
-import { InnovationFlowIcon } from '../../../platform/admin/templates/InnovationTemplates/InnovationFlow/InnovationFlowIcon';
+import { InnovationFlowIcon } from '../../InnovationFlow/InnovationFlowIcon/InnovationFlowIcon';
 import CardFooterCountWithBadge from '../../../../core/ui/card/CardFooterCountWithBadge';
 import { gutters } from '../../../../core/ui/grid/utils';
 

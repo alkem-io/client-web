@@ -1,32 +1,7 @@
-query InnovationFlowBlock(
-  $spaceNameId: UUID_NAMEID!
-  $includeChallenge: Boolean = false
-  $includeOpportunity: Boolean = false
-  $challengeNameId: UUID_NAMEID = "mockid" # workaround for mandatory param working in conjection with @include or @skip
-  $opportunityNameId: UUID_NAMEID = "mockid" # workaround for mandatory param working in conjection with @include or @skip
-) {
-  space(ID: $spaceNameId) {
-    id
-    challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
+query InnovationFlowBlock($collaborationId: UUID!) {
+  lookup {
+    collaboration(ID: $collaborationId) {
       id
-      nameID
-      innovationFlow {
-        id
-        profile {
-          id
-          displayName
-          cardBanner: visual(type: CARD) {
-            id
-            name
-            uri
-            alternativeText
-          }
-        }
-      }
-    }
-    opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
-      id
-      nameID
       innovationFlow {
         id
         profile {

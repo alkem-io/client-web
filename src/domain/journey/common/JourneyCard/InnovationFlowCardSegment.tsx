@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { InnovationFlowIcon } from '../../../platform/admin/templates/InnovationTemplates/InnovationFlow/InnovationFlowIcon';
+import { InnovationFlowIcon } from '../../../collaboration/InnovationFlow/InnovationFlowIcon/InnovationFlowIcon';
 import CardSegmentCaption from '../../../../core/ui/card/CardSegmentCaption';
 
 interface InnovationFlowCardSegmentProps {

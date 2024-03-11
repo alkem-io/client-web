@@ -11,14 +11,14 @@ import CardDetails from '../../../../core/ui/card/CardDetails';
 import { TemplateBase, TemplateCardBaseProps } from '../../templates/CollaborationTemplatesLibrary/TemplateBase';
 import { WhiteboardIcon } from '../../whiteboard/icon/WhiteboardIcon';
 
-interface CalloutTemplateCardProps extends TemplateCardBaseProps<TemplateBase> {}
+interface CalloutTemplateCardProps extends TemplateCardBaseProps<TemplateBase> { }
 
 const CalloutTemplateCard: FC<CalloutTemplateCardProps> = ({ template, innovationPack, loading, onClick }) => {
   return (
     <ContributeCard onClick={onClick}>
       <CardHeader title={template?.profile.displayName} iconComponent={WhiteboardIcon}>
         {loading && <Skeleton />}
-        <CardHeaderCaption noWrap logoUrl={innovationPack?.provider?.profile.avatar?.uri}>
+        <CardHeaderCaption logoUrl={innovationPack?.provider?.profile.avatar?.uri}>
           {innovationPack?.provider?.profile.displayName}
         </CardHeaderCaption>
       </CardHeader>

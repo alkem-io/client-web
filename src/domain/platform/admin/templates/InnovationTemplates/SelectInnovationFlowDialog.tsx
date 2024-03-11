@@ -8,7 +8,7 @@ import { DialogActions, DialogContent, DialogTitle } from '../../../../../core/u
 import PolylineOutlinedIcon from '@mui/icons-material/PolylineOutlined';
 import { InnovationFlowTemplateSegment } from '../../components/Common/InnovationFlowTemplateSegment';
 import { FormikSelectValue } from '../../../../../core/ui/forms/FormikSelect';
-import { InnovationFlowType } from '../../../../../core/apollo/generated/graphql-schema';
+import { InnovationFlowState } from '../../../../collaboration/InnovationFlow/InnovationFlow';
 
 export interface InnovationFlowTemplateProfile {
   id: string;
@@ -18,20 +18,19 @@ export interface InnovationFlowTemplateProfile {
   };
 }
 export interface InnovationFlowTemplate {
-  definition: string;
+  states: InnovationFlowState[];
   id: string;
-  type: InnovationFlowType;
   profile: InnovationFlowTemplateProfile;
 }
 export interface SelectInnovationFlowFormValuesType {
-  innovationFlowTemplateID: string;
+  innovationFlowTemplateId: string;
 }
 
 export interface SelectInnovationFlowDialogProps {
   isOpen: boolean;
   onClose: () => void;
   innovationFlowTemplates: InnovationFlowTemplate[] | undefined;
-  innovationFlowTemplateID: string | undefined;
+  innovationFlowTemplateId: string | undefined;
   onSubmitForm: (formData: SelectInnovationFlowFormValuesType) => void;
   wireSubmit: (setter: () => void) => void;
   onSubmitDialog: () => void;
@@ -44,7 +43,7 @@ const SelectInnovationFlowDialog: FC<SelectInnovationFlowDialogProps> = ({
   wireSubmit,
   onSubmitDialog,
   innovationFlowTemplates,
-  innovationFlowTemplateID = '',
+  innovationFlowTemplateId = '',
 }) => {
   const { t } = useTranslation();
 
@@ -58,11 +57,11 @@ const SelectInnovationFlowDialog: FC<SelectInnovationFlowDialogProps> = ({
   );
 
   const initialValues: SelectInnovationFlowFormValuesType = {
-    innovationFlowTemplateID,
+    innovationFlowTemplateId,
   };
 
   const validationSchema = yup.object().shape({
-    innovationFlowTemplateID: yup.string().required(t('forms.validations.required')),
+    innovationFlowTemplateId: yup.string().required(t('forms.validations.required')),
   });
 
   let isSubmitWired = false;
@@ -85,20 +84,20 @@ const SelectInnovationFlowDialog: FC<SelectInnovationFlowDialogProps> = ({
               onSubmitForm(values);
             }}
           >
-            {({ values: { innovationFlowTemplateID }, handleSubmit }) => {
+            {({ values: { innovationFlowTemplateId }, handleSubmit }) => {
               if (!isSubmitWired) {
                 wireSubmit(handleSubmit);
                 isSubmitWired = true;
               }
 
               const selectedInnovationFlowTemplate = innovationFlowTemplates?.find(
-                template => template.id === innovationFlowTemplateID
+                template => template.id === innovationFlowTemplateId
               );
 
               return (
                 <InnovationFlowTemplateSegment
                   innovationFlowTemplateOptions={innovationFlowTemplateOptions}
-                  definition={selectedInnovationFlowTemplate?.definition}
+                  selectedInnovationFlow={selectedInnovationFlowTemplate}
                   required
                 />
               );

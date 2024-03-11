@@ -13,7 +13,6 @@ import {
   CalloutDisplayLocation,
   DashboardTopCalloutFragment,
   OpportunityPageFragment,
-  OpportunityPageRelationsFragment,
   Reference,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { buildAdminOpportunityUrl } from '../../../../main/routing/urlBuilders';
@@ -39,8 +38,6 @@ export interface OpportunityContainerEntities extends EntityDashboardContributor
     editActorGroup: boolean;
     editActors: boolean;
     removeRelations: boolean;
-    isMemberOfOpportunity: boolean;
-    isNoRelations: boolean;
     isAuthenticated: boolean;
     communityReadAccess: boolean;
     opportunityReadAccess: boolean;
@@ -53,11 +50,6 @@ export interface OpportunityContainerEntities extends EntityDashboardContributor
   url: string | undefined;
   meme?: Reference;
   links: Reference[];
-  availableActorGroupNames: string[];
-  relations: {
-    incoming: OpportunityPageRelationsFragment[];
-    outgoing: OpportunityPageRelationsFragment[];
-  };
   references: Reference[] | undefined;
   activities: ActivityLogResultType[] | undefined;
   fetchMoreActivities: (limit: number) => void;
@@ -81,7 +73,7 @@ export interface OpportunityContainerState {
 }
 
 export interface OpportunityPageContainerProps
-  extends ContainerChildProps<OpportunityContainerEntities, OpportunityContainerActions, OpportunityContainerState> {}
+  extends ContainerChildProps<OpportunityContainerEntities, OpportunityContainerActions, OpportunityContainerState> { }
 
 const NO_PRIVILEGES = [];
 
@@ -95,8 +87,6 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
 
   const { isAuthenticated } = useAuthenticationContext();
   const { user } = useUserContext();
-
-  const userName = user?.user.profile.displayName;
 
   const {
     data: query,
@@ -144,21 +134,11 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
   });
 
   const { profile, collaboration, metrics = [] } = opportunity ?? {};
-  const relations = useMemo(() => collaboration?.relations ?? [], [collaboration?.relations]);
-  // const actorGroups = context?.ecosystemModel?.actorGroups ?? [];
 
   const { references } = profile ?? {};
 
   const meme = references?.find(x => x.name === 'meme') as Reference;
   const links = (references?.filter(x => ['poster', 'meme'].indexOf(x.name) === -1) ?? []) as Reference[];
-  const isMemberOfOpportunity = !!relations.find(r => r.actorName === userName);
-
-  const incoming = useMemo(() => relations.filter(x => x.type === 'incoming'), [relations]);
-  const outgoing = useMemo(() => relations.filter(x => x.type === 'outgoing'), [relations]);
-  const isNoRelations = !(incoming && incoming.length > 0) && !(outgoing && outgoing.length > 0);
-
-  // const existingActorGroupTypes = actorGroups?.map(ag => ag.name);
-  const availableActorGroupNames = []; // actorGroupTypes?.filter(ag => !existingActorGroupTypes?.includes(ag)) || [];
 
   const membersCount = getMetricCount(metrics, MetricType.Member);
   const memberUsersCount = membersCount - (opportunity?.community?.memberOrganizations?.length ?? 0);
@@ -206,18 +186,11 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
           links,
           permissions: {
             ...permissions,
-            isMemberOfOpportunity,
-            isNoRelations,
             isAuthenticated,
           },
           hideMeme,
           showInterestModal,
           showActorGroupModal,
-          availableActorGroupNames,
-          relations: {
-            incoming,
-            outgoing,
-          },
           references,
           ...contributors,
           activities,

@@ -49,8 +49,10 @@ fragment AdminWhiteboardTemplate on WhiteboardTemplate {
 
 fragment AdminInnovationFlowTemplate on InnovationFlowTemplate {
   id
-  definition
-  type
+  states {
+    displayName
+    description
+  }
   profile {
     ...ProfileInfoWithVisual
   }

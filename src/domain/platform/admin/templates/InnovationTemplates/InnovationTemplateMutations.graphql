@@ -1,9 +1,9 @@
 mutation updateInnovationFlowTemplate(
   $templateId: UUID!
   $profile: UpdateProfileInput!
-  $definition: LifecycleDefinition!
+  $states: [UpdateInnovationFlowStateInput!]
 ) {
-  updateInnovationFlowTemplate(innovationFlowTemplateInput: { ID: $templateId, profile: $profile, definition: $definition }) {
+  updateInnovationFlowTemplate(innovationFlowTemplateInput: { ID: $templateId, profile: $profile, states: $states }) {
     id
   }
 }
@@ -11,16 +11,14 @@ mutation updateInnovationFlowTemplate(
 mutation createInnovationFlowTemplate(
   $templatesSetId: UUID!
   $profile: CreateProfileInput!
-  $definition: LifecycleDefinition!
-  $type: InnovationFlowType!
+  $states: [UpdateInnovationFlowStateInput!]
   $tags: [String!]
 ) {
   createInnovationFlowTemplate(
     innovationFlowTemplateInput: {
       templatesSetID: $templatesSetId
       profile: $profile
-      type: $type
-      definition: $definition
+      states: $states
       tags: $tags
     }
   ) {
