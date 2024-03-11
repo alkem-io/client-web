@@ -854,7 +854,7 @@
     "disabledTemplateInfo": "crwdns9246:0crwdne9246:0"
   },
   "innovation-templates": {
-    "definition": {
+    "states": {
       "title": "crwdns9248:0crwdne9248:0",
       "placeholder": "crwdns9250:0crwdne9250:0"
     }

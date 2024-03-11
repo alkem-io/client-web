@@ -45,7 +45,7 @@ const PostCard = ({ post, onClick }: PostCardProps) => {
   return (
     <ContributeCard onClick={handleClick}>
       <CardHeader title={post.profile.displayName} iconComponent={PostIcon}>
-        <CardHeaderCaption noWrap>{post.createdBy?.profile.displayName}</CardHeaderCaption>
+        <CardHeaderCaption>{post.createdBy?.profile.displayName}</CardHeaderCaption>
       </CardHeader>
       <CardDetails>
         <CardDescriptionWithTags tags={post.profile.tagset?.tags}>{post.profile.description}</CardDescriptionWithTags>

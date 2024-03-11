@@ -3,31 +3,24 @@ import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
-import { InnovationFlowIcon } from '../../../platform/admin/templates/InnovationTemplates/InnovationFlow/InnovationFlowIcon';
+import { InnovationFlowIcon } from '../InnovationFlowIcon/InnovationFlowIcon';
 import InnovationFlowProfileBlock from './InnovationFlowProfileBlock';
 import useInnovationFlowSettings from './useInnovationFlowSettings';
-import LifecycleStateSelector from '../LifecycleState/LifecycleStateSelector';
+import InnovationFlowStateSelector from '../InnovationFlowStateSelector/InnovationFlowStateSelector';
 import InnovationFlowCollaborationToolsBlock from './InnovationFlowCollaborationToolsBlock';
 import Gutters from '../../../../core/ui/grid/Gutters';
-import { useUrlParams } from '../../../../core/routing/useUrlParams';
 
 interface InnovationFlowSettingsDialogProps {
   open?: boolean;
   onClose: () => void;
+  collaborationId: string | undefined;
 }
 
-const InnovationFlowSettingsDialog: FC<InnovationFlowSettingsDialogProps> = ({ open = false, onClose }) => {
+const InnovationFlowSettingsDialog: FC<InnovationFlowSettingsDialogProps> = ({ open = false, onClose, collaborationId }) => {
   const { t } = useTranslation();
 
-  const { spaceNameId, challengeNameId, opportunityNameId } = useUrlParams();
-  if (!spaceNameId) {
-    throw new Error('Must be within a Space route.');
-  }
-
   const { data, actions, state } = useInnovationFlowSettings({
-    spaceNameId: spaceNameId!,
-    challengeNameId,
-    opportunityNameId,
+    collaborationId,
   });
 
   const { innovationFlow, callouts, flowStateAllowedValues } = data;
@@ -43,10 +36,10 @@ const InnovationFlowSettingsDialog: FC<InnovationFlowSettingsDialogProps> = ({ o
             onUpdate={actions.updateInnovationFlowProfile}
             editable
           >
-            <LifecycleStateSelector
-              currentState={innovationFlow?.lifecycle?.state}
-              nextEvents={innovationFlow?.lifecycle?.nextEvents}
-              onNextEventClick={nextEvent => actions.nextEvent(nextEvent)}
+            <InnovationFlowStateSelector
+              currentState={innovationFlow?.currentState.displayName}
+              states={innovationFlow?.states}
+              onStateChange={actions.updateInnovationFlowState}
             />
           </InnovationFlowProfileBlock>
           <InnovationFlowCollaborationToolsBlock

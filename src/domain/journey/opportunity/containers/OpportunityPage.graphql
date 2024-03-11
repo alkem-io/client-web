@@ -37,24 +37,17 @@ fragment OpportunityPage on Opportunity {
     name
     value
   }
-  innovationFlow {
-    lifecycle {
-      id
-      machineDef
-      state
-      nextEvents
-      stateIsFinal
-    }
-  }
   collaboration {
     id
-    relations {
+    innovationFlow {
       id
-      type
-      actorRole
-      actorName
-      actorType
-      description
+      states {
+        displayName
+        description
+      }
+      currentState {
+        displayName
+      }
     }
     ...DashboardTopCallouts
     ...DashboardTimelineAuthorization
@@ -71,13 +64,4 @@ fragment OpportunityPage on Opportunity {
   community {
     ...EntityDashboardCommunity
   }
-}
-
-fragment OpportunityPageRelations on Relation {
-  id
-  type
-  actorRole
-  actorName
-  actorType
-  description
 }

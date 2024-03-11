@@ -1,25 +1,26 @@
 import { FC } from 'react';
-import { SafeInnovationFlowVisualizer } from '../../../platform/admin/templates/InnovationTemplates/SafeInnovationFlowVisualizer';
-import { useInnovationFlowTemplateDefinitionQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import InnovationFlowVisualizer from '../../../platform/admin/templates/InnovationTemplates/InnovationFlowVisualizer';
 import { Box, CircularProgress } from '@mui/material';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
+import { useInnovationFlowTemplateStatesQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { InnovationFlowState } from '../InnovationFlow';
 
 interface InnovationFlowTemplatePreviewProps {
   template?: Identifiable;
 }
 
 const InnovationFlowTemplatePreview: FC<InnovationFlowTemplatePreviewProps> = ({ template }) => {
-  const { data, loading } = useInnovationFlowTemplateDefinitionQuery({
+  const { data, loading } = useInnovationFlowTemplateStatesQuery({
     variables: {
-      innovationFlowTemplateID: template?.id!,
+      innovationFlowTemplateId: template?.id!,
     },
     skip: !template?.id,
   });
 
-  const templateDefinition = data?.lookup.innovationFlowTemplate?.definition;
+  const templateStates: InnovationFlowState[] = data?.lookup.innovationFlowTemplate?.states ?? [];
 
-  if (loading || !templateDefinition) {
+  if (loading || templateStates.length === 0) {
     return (
       <Box textAlign="center">
         <CircularProgress />
@@ -29,7 +30,7 @@ const InnovationFlowTemplatePreview: FC<InnovationFlowTemplatePreviewProps> = ({
 
   return (
     <PageContentBlock>
-      <SafeInnovationFlowVisualizer definition={templateDefinition} />
+      <InnovationFlowVisualizer states={templateStates} />
     </PageContentBlock>
   );
 };

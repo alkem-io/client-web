@@ -1,13 +1,12 @@
-import InnovationTemplateForm, {
+import InnovationFlowTemplateForm, {
   InnovationTemplateFormSubmittedValues,
   InnovationTemplateFormValues,
-} from './InnovationTemplateForm';
+} from './InnovationFlowTemplateForm';
 import { useTranslation } from 'react-i18next';
 import DialogWithGrid, { DialogFooter } from '../../../../../core/ui/dialog/DialogWithGrid';
 import DialogHeader, { DialogHeaderProps } from '../../../../../core/ui/dialog/DialogHeader';
 import React from 'react';
 import { FormikSubmitButtonPure } from '../../../../shared/components/forms/FormikSubmitButton';
-import { InnovationFlowType } from '../../../../../core/apollo/generated/graphql-schema';
 import { DialogActions, DialogContent } from '@mui/material';
 
 interface CreatePostTemplateDialogProps {
@@ -20,7 +19,10 @@ const CreateInnovationTemplateDialog = ({ open, onClose, onSubmit }: CreatePostT
   const { t } = useTranslation();
 
   const values: Partial<InnovationTemplateFormValues> = {
-    type: InnovationFlowType.Challenge,
+    states: [],
+    displayName: '',
+    description: '',
+    tags: [],
   };
 
   return (
@@ -30,7 +32,7 @@ const CreateInnovationTemplateDialog = ({ open, onClose, onSubmit }: CreatePostT
         onClose={onClose}
       />
       <DialogContent>
-        <InnovationTemplateForm
+        <InnovationFlowTemplateForm
           initialValues={values}
           onSubmit={onSubmit}
           actions={formik => (

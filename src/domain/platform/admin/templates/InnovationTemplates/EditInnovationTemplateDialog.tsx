@@ -1,9 +1,9 @@
 import { AdminInnovationFlowTemplateFragment } from '../../../../../core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
-import InnovationTemplateForm, {
+import InnovationFlowTemplateForm, {
   InnovationTemplateFormSubmittedValues,
   InnovationTemplateFormValues,
-} from './InnovationTemplateForm';
+} from './InnovationFlowTemplateForm';
 import DialogWithGrid, { DialogFooter } from '../../../../../core/ui/dialog/DialogWithGrid';
 import DialogHeader, { DialogHeaderProps } from '../../../../../core/ui/dialog/DialogHeader';
 import React from 'react';
@@ -33,8 +33,7 @@ const EditInnovationTemplateDialog = ({
   }
 
   const values: Partial<InnovationTemplateFormValues> = {
-    type: template.type,
-    definition: template.definition,
+    states: template.states,
     displayName: template.profile.displayName,
     description: template.profile.description,
     tags: template.profile.tagset?.tags,
@@ -54,11 +53,10 @@ const EditInnovationTemplateDialog = ({
         onClose={onClose}
       />
       <DialogContent>
-        <InnovationTemplateForm
+        <InnovationFlowTemplateForm
           initialValues={values}
           visual={template.profile.visual}
           onSubmit={handleSubmit}
-          editMode
           actions={formik => (
             <DialogFooter>
               <DialogActions>
