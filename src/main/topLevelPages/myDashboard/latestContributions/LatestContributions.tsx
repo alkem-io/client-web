@@ -9,6 +9,7 @@ import {
   ActivityViewChooser,
 } from '../../../../domain/collaboration/activity/ActivityLog/ActivityComponent';
 import {
+  ActivityEventType,
   ActivityFeedRoles,
   LatestContributionsQuery,
   LatestContributionsQueryVariables,
@@ -105,6 +106,7 @@ const LatestContributions = ({ spaceMemberships }: LatestContributionsProps) => 
       filter: {
         spaceIds: filter.space === SPACE_OPTION_ALL ? undefined : [filter.space],
         roles: filter.role === ROLE_OPTION_ALL ? undefined : [filter.role],
+        excludeTypes: [ActivityEventType.CalloutWhiteboardContentModified],
       },
     },
   });

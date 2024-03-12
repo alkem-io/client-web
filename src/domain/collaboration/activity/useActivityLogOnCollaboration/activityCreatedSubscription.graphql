@@ -56,6 +56,9 @@ fragment ActivityLogOnCollaboration on ActivityLogEntry {
   ... on ActivityLogEntryCalloutWhiteboardCreated {
     ...ActivityLogCalloutWhiteboardCreated
   }
+  ... on ActivityLogEntryCalloutWhiteboardContentModified {
+    ...ActivityLogCalloutWhiteboardContentModified
+  }
   ... on ActivityLogEntryCalloutDiscussionComment {
     ...ActivityLogCalloutDiscussionComment
   }
