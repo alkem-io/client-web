@@ -9,6 +9,7 @@ import {
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
 import {
+  ActivityEventType,
   AuthorizationPrivilege,
   CalloutDisplayLocation,
   ChallengeProfileFragment,
@@ -93,12 +94,17 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
     readUsers: user?.hasPlatformPrivilege(AuthorizationPrivilege.ReadUsers) ?? false,
   };
 
+  const activityTypes = Object.values(ActivityEventType).filter(
+    activityType => activityType !== ActivityEventType.CalloutWhiteboardContentModified
+  );
+
   const {
     activities,
     loading: activityLoading,
     fetchMoreActivities,
   } = useActivityOnCollaboration(collaborationID, {
     skip: !permissions.challengeReadAccess || !permissions.readUsers,
+    types: activityTypes,
     limit: RECENT_ACTIVITIES_LIMIT_INITIAL,
   });
 

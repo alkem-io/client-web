@@ -103,7 +103,11 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ children 
     readUsers: user?.hasPlatformPrivilege(AuthorizationPrivilege.ReadUsers) || false,
   };
 
-  const activityTypes = Object.values(ActivityEventType).filter(x => x !== ActivityEventType.MemberJoined);
+  const activityTypes = Object.values(ActivityEventType).filter(
+    activityType =>
+      activityType !== ActivityEventType.MemberJoined &&
+      activityType !== ActivityEventType.CalloutWhiteboardContentModified
+  );
 
   const {
     activities,

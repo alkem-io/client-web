@@ -8,6 +8,7 @@ import {
   ActivityLogCalloutPostCreatedFragment,
   ActivityLogCalloutPublishedFragment,
   ActivityLogCalloutWhiteboardCreatedFragment,
+  ActivityLogCalloutWhiteboardContentModifiedFragment,
   ActivityLogChallengeCreatedFragment,
   ActivityLogEntry,
   ActivityLogMemberJoinedFragment,
@@ -41,6 +42,7 @@ export type ActivityLogResult<T> = T &
 type TypedActivityLogResults = {
   [ActivityEventType.CalloutPublished]: ActivityLogCalloutPublishedFragment;
   [ActivityEventType.CalloutWhiteboardCreated]: ActivityLogCalloutWhiteboardCreatedFragment;
+  [ActivityEventType.CalloutWhiteboardContentModified]: ActivityLogCalloutWhiteboardContentModifiedFragment;
   [ActivityEventType.CalloutPostCreated]: ActivityLogCalloutPostCreatedFragment;
   [ActivityEventType.CalloutLinkCreated]: ActivityLogCalloutLinkCreatedFragment;
   [ActivityEventType.CalloutPostComment]: ActivityLogCalloutPostCommentFragment;
@@ -121,6 +123,9 @@ export const ActivityViewChooser = ({ activity, ...rest }: ActivityViewChooserPr
     case ActivityEventType.CalloutPublished:
       return <ActivityCalloutPublishedView {...activity} {...rest} />;
     case ActivityEventType.CalloutWhiteboardCreated:
+      return <ActivityCalloutWhiteboardCreatedView {...activity} {...rest} />;
+    case ActivityEventType.CalloutWhiteboardContentModified:
+      // we use the same view for whiteboard created and whiteboard content modified events
       return <ActivityCalloutWhiteboardCreatedView {...activity} {...rest} />;
     case ActivityEventType.CalloutPostComment:
       return <ActivityCalloutPostCommentCreatedView {...activity} {...rest} />;

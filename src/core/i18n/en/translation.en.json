@@ -1048,6 +1048,7 @@
         "CALLOUT_LINK_CREATED": "{{subject}}",
         "UPDATE_SENT": "{{subject}}",
         "CALLOUT_WHITEBOARD_CREATED": "{{subject}}",
+        "CALLOUT_WHITEBOARD_CONTENT_MODIFIED": "{{subject}}",
         "CALENDAR_EVENT_CREATED": "{{subject}}"
       },
       "detailedDescription": {
