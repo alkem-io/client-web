@@ -930,7 +930,10 @@
       }
     },
     "innovationFlowSettings": {
-      "title": "Innovation Flow Settings"
+      "title": "Innovation Flow Settings",
+      "editProfileDialog": {
+        "title": "Edit Details: Innovation Flow"
+      }
     },
     "innovationFlowStateSelector": {
       "selectedStateNotice": "This {{journeyType}} is currently in the <strong>{{currentState}}</strong> state. You can already have a look at the tools for the <strong>{{selectedState}}</strong> state here."

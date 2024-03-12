@@ -1,9 +1,8 @@
 import React, { ComponentType, FC, forwardRef } from 'react';
-import { BlockTitle, Caption } from '../../../../core/ui/typography';
+import { Caption } from '../../../../core/ui/typography';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import { useTranslation } from 'react-i18next';
-import { Box, BoxProps, SvgIconProps } from '@mui/material';
-import { GroupedCallout } from './useInnovationFlowSettings';
+import { Box, BoxProps, IconButton, SvgIconProps } from '@mui/material';
 import { groupBy } from 'lodash';
 import calloutIcons from '../../callout/utils/calloutIcons';
 import ScrollableCardsLayoutContainer from '../../../../core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
@@ -12,10 +11,31 @@ import Gutters from '../../../../core/ui/grid/Gutters';
 import i18n from '../../../../core/i18n/config';
 import TranslationKey from '../../../../core/i18n/utils/TranslationKey';
 import { gutters } from '../../../../core/ui/grid/utils';
+import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { CalloutType } from '../../../../core/apollo/generated/graphql-schema';
+
+const STATES_DROPPABLE_ID = '__states';
 
 interface InnovationFlowCollaborationToolsBlockProps {
-  callouts: GroupedCallout[];
+  callouts: {
+    id: string;
+    nameID: string;
+    type: CalloutType;
+    activity: number;
+    profile: {
+      displayName: string;
+    };
+    flowState:
+      | {
+          tagsetId: string;
+          currentState: string | undefined;
+          allowedValues: string[];
+        }
+      | undefined;
+  }[];
   flowStateAllowedValues: string[];
+  onUpdateFlowStateOrder: (flowState: string, sortOrder: number) => Promise<unknown> | void;
   onUpdateCalloutFlowState: (calloutId: string, newState: string, index: number) => Promise<unknown> | void;
 }
 
@@ -40,15 +60,23 @@ const ListItem = forwardRef<HTMLDivElement, ListItemProps>(
 
 const InnovationFlowCollaborationToolsBlock: FC<InnovationFlowCollaborationToolsBlockProps> = ({
   callouts,
+  onUpdateFlowStateOrder,
   onUpdateCalloutFlowState,
   flowStateAllowedValues,
 }) => {
   const { t } = useTranslation();
   const groupedCallouts = groupBy(callouts, callout => callout.flowState?.currentState);
 
-  const handleDragEnd: OnDragEndResponder = ({ draggableId, destination }) => {
-    if (onUpdateCalloutFlowState && destination) {
-      onUpdateCalloutFlowState(draggableId, destination.droppableId, destination.index);
+  const handleDragEnd: OnDragEndResponder = ({ draggableId, source, destination }) => {
+    console.log('handleDragEnd', draggableId, source, destination);
+    if (destination?.droppableId === STATES_DROPPABLE_ID) {
+      if (onUpdateFlowStateOrder && destination) {
+        onUpdateFlowStateOrder(draggableId, destination.index);
+      }
+    } else {
+      if (onUpdateCalloutFlowState && destination) {
+        onUpdateCalloutFlowState(draggableId, destination.droppableId, destination.index);
+      }
     }
   };
 
@@ -59,37 +87,56 @@ const InnovationFlowCollaborationToolsBlock: FC<InnovationFlowCollaborationTools
 
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
-      <PageContentBlock sx={{ minHeight: gutters(10) }}>
-        <BlockTitle>{t('common.collaborationTools')}</BlockTitle>
-        <ScrollableCardsLayoutContainer orientation="horizontal" alignItems="stretch">
-          {flowStateAllowedValues.map(state => (
-            <PageContentBlock key={state} columns={3}>
-              <Caption>{getStateName(state)}</Caption>
-              <Droppable droppableId={state}>
-                {provided => (
-                  <Gutters ref={provided.innerRef} disablePadding flexGrow={1} {...provided.droppableProps}>
-                    {groupedCallouts[state]?.map((callout, index) => (
-                      <Draggable key={callout.id} draggableId={callout.id} index={index}>
+      <Droppable droppableId={STATES_DROPPABLE_ID} type="droppableItem" direction="horizontal">
+        {parentDroppableProvided => (
+          <Box ref={parentDroppableProvided.innerRef}>
+            <ScrollableCardsLayoutContainer orientation="horizontal" alignItems="stretch">
+              {flowStateAllowedValues.map((state, index) => (
+                <Draggable key={state} draggableId={state} index={index}>
+                  {parentProvider => (
+                    <PageContentBlock
+                      key={state}
+                      columns={3}
+                      ref={parentProvider.innerRef}
+                      {...parentProvider.draggableProps}
+                    >
+                      <PageContentBlockHeader
+                        title={<Caption {...parentProvider.dragHandleProps}>{getStateName(state)}</Caption>}
+                      >
+                        <IconButton size="small" sx={{ padding: 0 }} onClick={() => {}}>
+                          <MoreVertIcon fontSize="small" sx={{ padding: 0 }} />
+                        </IconButton>
+                      </PageContentBlockHeader>
+                      <Droppable droppableId={state}>
                         {provided => (
-                          <ListItem
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                            displayName={callout.profile.displayName}
-                            icon={calloutIcons[callout.type]}
-                            activity={callout.activity}
-                          />
+                          <Gutters ref={provided.innerRef} disablePadding flexGrow={1} {...provided.droppableProps}>
+                            {groupedCallouts[state]?.map((callout, index) => (
+                              <Draggable key={callout.id} draggableId={callout.id} index={index}>
+                                {provider => (
+                                  <ListItem
+                                    ref={provider.innerRef}
+                                    {...provider.draggableProps}
+                                    {...provider.dragHandleProps}
+                                    displayName={callout.profile.displayName}
+                                    icon={calloutIcons[callout.type]}
+                                    activity={callout.activity}
+                                  />
+                                )}
+                              </Draggable>
+                            ))}
+                            {provided.placeholder}
+                          </Gutters>
                         )}
-                      </Draggable>
-                    ))}
-                    {provided.placeholder}
-                  </Gutters>
-                )}
-              </Droppable>
-            </PageContentBlock>
-          ))}
-        </ScrollableCardsLayoutContainer>
-      </PageContentBlock>
+                      </Droppable>
+                    </PageContentBlock>
+                  )}
+                </Draggable>
+              ))}
+              {parentDroppableProvided.placeholder}
+            </ScrollableCardsLayoutContainer>
+          </Box>
+        )}
+      </Droppable>
     </DragDropContext>
   );
 };

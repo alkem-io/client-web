@@ -73,7 +73,7 @@ const InnovationFlowProfileBlock: FC<InnovationFlowProfileBlockProps> = ({
 
   return (
     <>
-      <PageContentBlock>
+      <PageContentBlock disableGap>
         <PageContentBlockHeader title={innovationFlow?.profile.displayName}>
           {canEdit && (
             <IconButton size="small" onClick={() => setIsEditing(true)} aria-label={t('buttons.edit')}>
@@ -98,7 +98,6 @@ const InnovationFlowProfileBlock: FC<InnovationFlowProfileBlockProps> = ({
           />
         </DialogContent>
       </DialogWithGrid>
-      )
     </>
   );
 };

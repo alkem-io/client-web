@@ -6,9 +6,7 @@ import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
 import { InnovationFlowIcon } from '../InnovationFlowIcon/InnovationFlowIcon';
 import InnovationFlowProfileBlock from './InnovationFlowProfileBlock';
 import useInnovationFlowSettings from './useInnovationFlowSettings';
-import InnovationFlowStateSelector from '../InnovationFlowStateSelector/InnovationFlowStateSelector';
 import InnovationFlowCollaborationToolsBlock from './InnovationFlowCollaborationToolsBlock';
-import Gutters from '../../../../core/ui/grid/Gutters';
 
 interface InnovationFlowSettingsDialogProps {
   open?: boolean;
@@ -16,10 +14,14 @@ interface InnovationFlowSettingsDialogProps {
   collaborationId: string | undefined;
 }
 
-const InnovationFlowSettingsDialog: FC<InnovationFlowSettingsDialogProps> = ({ open = false, onClose, collaborationId }) => {
+const InnovationFlowSettingsDialog: FC<InnovationFlowSettingsDialogProps> = ({
+  open = false,
+  onClose,
+  collaborationId,
+}) => {
   const { t } = useTranslation();
 
-  const { data, actions, state } = useInnovationFlowSettings({
+  const { data, actions, authorization, state } = useInnovationFlowSettings({
     collaborationId,
   });
 
@@ -27,27 +29,25 @@ const InnovationFlowSettingsDialog: FC<InnovationFlowSettingsDialogProps> = ({ o
 
   return (
     <DialogWithGrid open={open} columns={12} onClose={onClose}>
-      <DialogHeader icon={<InnovationFlowIcon />} title={t('common.innovation-flow')} onClose={onClose} />
-      <DialogContent sx={{ paddingTop: 0 }}>
-        <Gutters disablePadding>
-          <InnovationFlowProfileBlock
-            innovationFlow={innovationFlow}
-            loading={state.loading}
-            onUpdate={actions.updateInnovationFlowProfile}
-            editable
-          >
-            <InnovationFlowStateSelector
-              currentState={innovationFlow?.currentState.displayName}
-              states={innovationFlow?.states}
-              onStateChange={actions.updateInnovationFlowState}
-            />
-          </InnovationFlowProfileBlock>
+      <DialogHeader
+        icon={<InnovationFlowIcon />}
+        title={t('components.innovationFlowSettings.title')}
+        onClose={onClose}
+      />
+      <DialogContent>
+        <InnovationFlowProfileBlock
+          innovationFlow={innovationFlow}
+          loading={state.loading}
+          onUpdate={actions.updateInnovationFlowProfile}
+          canEdit={authorization.canEditInnovationFlow}
+        >
           <InnovationFlowCollaborationToolsBlock
             flowStateAllowedValues={flowStateAllowedValues}
             callouts={callouts}
+            onUpdateFlowStateOrder={actions.updateInnovationFlowStateOrder}
             onUpdateCalloutFlowState={actions.updateCalloutFlowState}
           />
-        </Gutters>
+        </InnovationFlowProfileBlock>
       </DialogContent>
     </DialogWithGrid>
   );

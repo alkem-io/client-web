@@ -55,6 +55,7 @@ export enum ActivityEventType {
   CalloutPostComment = 'CALLOUT_POST_COMMENT',
   CalloutPostCreated = 'CALLOUT_POST_CREATED',
   CalloutPublished = 'CALLOUT_PUBLISHED',
+  CalloutWhiteboardContentModified = 'CALLOUT_WHITEBOARD_CONTENT_MODIFIED',
   CalloutWhiteboardCreated = 'CALLOUT_WHITEBOARD_CREATED',
   ChallengeCreated = 'CHALLENGE_CREATED',
   DiscussionComment = 'DISCUSSION_COMMENT',
@@ -71,8 +72,12 @@ export type ActivityFeed = {
 };
 
 export type ActivityFeedQueryArgs = {
+  /** What events to exclude. */
+  excludeTypes?: InputMaybe<Array<ActivityEventType>>;
   /** Returns only events that the current user triggered; Includes all by default. */
   myActivity?: InputMaybe<Scalars['Boolean']>;
+  /** Group activity events per entity and activity event type and return the latest. */
+  onlyUnique?: InputMaybe<Scalars['Boolean']>;
   /** Activity from which Spaces to include; Includes all by default. */
   roles?: InputMaybe<Array<ActivityFeedRoles>>;
   /** Activity from which Spaces to include; Includes all by default. */
@@ -265,6 +270,33 @@ export type ActivityLogEntryCalloutPublished = ActivityLogEntry & {
   triggeredBy: User;
   /** The event type for this Activity. */
   type: ActivityEventType;
+};
+
+export type ActivityLogEntryCalloutWhiteboardContentModified = ActivityLogEntry & {
+  __typename?: 'ActivityLogEntryCalloutWhiteboardContentModified';
+  /** The Callout in which the Whiteboard was updated. */
+  callout: Callout;
+  /** Indicates if this Activity happened on a child Collaboration. Child results can be included via the "includeChild" parameter. */
+  child: Scalars['Boolean'];
+  /** The id of the Collaboration entity within which the Activity was generated. */
+  collaborationID: Scalars['UUID'];
+  /** The timestamp for the Activity. */
+  createdDate: Scalars['DateTime'];
+  /** The text details for this Activity. */
+  description: Scalars['String'];
+  id: Scalars['UUID'];
+  /** The journey where the activity happened */
+  journey?: Maybe<Journey>;
+  /** The display name of the parent */
+  parentDisplayName: Scalars['String'];
+  /** The nameID of the parent */
+  parentNameID: Scalars['NameID'];
+  /** The user that triggered this Activity. */
+  triggeredBy: User;
+  /** The event type for this Activity. */
+  type: ActivityEventType;
+  /** The Whiteboard that was updated. */
+  whiteboard: Whiteboard;
 };
 
 export type ActivityLogEntryCalloutWhiteboardCreated = ActivityLogEntry & {
@@ -7080,17 +7112,31 @@ export type UpdateCalloutFlowStateMutation = {
   };
 };
 
-export type UpdateInnovationFlowStateMutationVariables = Exact<{
+export type UpdateInnovationFlowSelectedStateMutationVariables = Exact<{
   innovationFlowId: Scalars['UUID'];
   selectedState: Scalars['String'];
 }>;
 
-export type UpdateInnovationFlowStateMutation = {
+export type UpdateInnovationFlowSelectedStateMutation = {
   __typename?: 'Mutation';
   updateInnovationFlowState: {
     __typename?: 'InnovationFlow';
     id: string;
     currentState: { __typename?: 'InnovationFlowState'; displayName: string };
+  };
+};
+
+export type UpdateInnovationFlowStatesMutationVariables = Exact<{
+  innovationFlowId: Scalars['UUID'];
+  states: Array<UpdateInnovationFlowStateInput> | UpdateInnovationFlowStateInput;
+}>;
+
+export type UpdateInnovationFlowStatesMutation = {
+  __typename?: 'Mutation';
+  updateInnovationFlow: {
+    __typename?: 'InnovationFlow';
+    id: string;
+    states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
   };
 };
 
@@ -7700,6 +7746,41 @@ export type ActivityCreatedSubscription = {
           };
         }
       | {
+          __typename: 'ActivityLogEntryCalloutWhiteboardContentModified';
+          id: string;
+          collaborationID: string;
+          createdDate: Date;
+          description: string;
+          type: ActivityEventType;
+          child: boolean;
+          parentNameID: string;
+          journeyDisplayName: string;
+          triggeredBy: {
+            __typename?: 'User';
+            id: string;
+            nameID: string;
+            firstName: string;
+            lastName: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              tagsets?:
+                | Array<{
+                    __typename?: 'Tagset';
+                    id: string;
+                    name: string;
+                    tags: Array<string>;
+                    allowedValues: Array<string>;
+                    type: TagsetType;
+                  }>
+                | undefined;
+              location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+            };
+          };
+        }
+      | {
           __typename: 'ActivityLogEntryCalloutWhiteboardCreated';
           id: string;
           collaborationID: string;
@@ -8210,6 +8291,42 @@ type ActivityLogOnCollaboration_ActivityLogEntryCalloutPublished_Fragment = {
   };
 };
 
+type ActivityLogOnCollaboration_ActivityLogEntryCalloutWhiteboardContentModified_Fragment = {
+  __typename: 'ActivityLogEntryCalloutWhiteboardContentModified';
+  id: string;
+  collaborationID: string;
+  createdDate: Date;
+  description: string;
+  type: ActivityEventType;
+  child: boolean;
+  parentNameID: string;
+  journeyDisplayName: string;
+  triggeredBy: {
+    __typename?: 'User';
+    id: string;
+    nameID: string;
+    firstName: string;
+    lastName: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+      tagsets?:
+        | Array<{
+            __typename?: 'Tagset';
+            id: string;
+            name: string;
+            tags: Array<string>;
+            allowedValues: Array<string>;
+            type: TagsetType;
+          }>
+        | undefined;
+      location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+    };
+  };
+};
+
 type ActivityLogOnCollaboration_ActivityLogEntryCalloutWhiteboardCreated_Fragment = {
   __typename: 'ActivityLogEntryCalloutWhiteboardCreated';
   id: string;
@@ -8451,6 +8568,7 @@ export type ActivityLogOnCollaborationFragment =
   | ActivityLogOnCollaboration_ActivityLogEntryCalloutPostComment_Fragment
   | ActivityLogOnCollaboration_ActivityLogEntryCalloutPostCreated_Fragment
   | ActivityLogOnCollaboration_ActivityLogEntryCalloutPublished_Fragment
+  | ActivityLogOnCollaboration_ActivityLogEntryCalloutWhiteboardContentModified_Fragment
   | ActivityLogOnCollaboration_ActivityLogEntryCalloutWhiteboardCreated_Fragment
   | ActivityLogOnCollaboration_ActivityLogEntryChallengeCreated_Fragment
   | ActivityLogOnCollaboration_ActivityLogEntryMemberJoined_Fragment
@@ -8736,6 +8854,41 @@ export type ActivityLogOnCollaborationQuery = {
           framing: {
             __typename?: 'CalloutFraming';
             profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+          };
+        };
+      }
+    | {
+        __typename: 'ActivityLogEntryCalloutWhiteboardContentModified';
+        id: string;
+        collaborationID: string;
+        createdDate: Date;
+        description: string;
+        type: ActivityEventType;
+        child: boolean;
+        parentNameID: string;
+        journeyDisplayName: string;
+        triggeredBy: {
+          __typename?: 'User';
+          id: string;
+          nameID: string;
+          firstName: string;
+          lastName: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            tagsets?:
+              | Array<{
+                  __typename?: 'Tagset';
+                  id: string;
+                  name: string;
+                  tags: Array<string>;
+                  allowedValues: Array<string>;
+                  type: TagsetType;
+                }>
+              | undefined;
+            location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
           };
         };
       }
@@ -29806,6 +29959,91 @@ export type LatestContributionsQuery = {
             framing: {
               __typename?: 'CalloutFraming';
               profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+            };
+          };
+        }
+      | {
+          __typename?: 'ActivityLogEntryCalloutWhiteboardContentModified';
+          id: string;
+          collaborationID: string;
+          createdDate: Date;
+          description: string;
+          type: ActivityEventType;
+          child: boolean;
+          parentNameID: string;
+          journeyDisplayName: string;
+          journey?:
+            | {
+                __typename?: 'Challenge';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              }
+            | {
+                __typename?: 'Opportunity';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              }
+            | {
+                __typename?: 'RelayPaginatedSpace';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              }
+            | {
+                __typename?: 'Space';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              }
+            | undefined;
+          triggeredBy: {
+            __typename?: 'User';
+            id: string;
+            nameID: string;
+            firstName: string;
+            lastName: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              tagsets?:
+                | Array<{
+                    __typename?: 'Tagset';
+                    id: string;
+                    name: string;
+                    tags: Array<string>;
+                    allowedValues: Array<string>;
+                    type: TagsetType;
+                  }>
+                | undefined;
+              location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
             };
           };
         }

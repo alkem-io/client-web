@@ -4,7 +4,8 @@ import {
   useUpdateCalloutFlowStateMutation,
   useUpdateCalloutsSortOrderMutation,
   useUpdateInnovationFlowMutation,
-  useUpdateInnovationFlowStateMutation,
+  useUpdateInnovationFlowSelectedStateMutation,
+  useUpdateInnovationFlowStatesMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
@@ -78,8 +79,7 @@ const useInnovationFlowSettings = ({ collaborationId }: useInnovationFlowSetting
 
   const flowStateAllowedValues = uniq(compact(callouts?.flatMap(callout => callout.flowState?.allowedValues))) ?? [];
 
-  const [updateInnovationFlowSelectedState, { loading: changingState }] = useUpdateInnovationFlowStateMutation({
-    // TODO: Not used?
+  const [updateInnovationFlowSelectedState, { loading: changingState }] = useUpdateInnovationFlowSelectedStateMutation({
     refetchQueries: [refetchInnovationFlowSettingsQuery({ collaborationId: collaborationId! })],
   });
   const handleInnovationFlowStateChange = async (newState: string) => {
@@ -169,6 +169,38 @@ const useInnovationFlowSettings = ({ collaborationId }: useInnovationFlowSetting
     });
   };
 
+  const [updateInnovationFlowStates] = useUpdateInnovationFlowStatesMutation();
+
+  const handleInnovationFlowStateOrder = async (displayName: string, sortOrder: number) => {
+    const innovationFlowId = innovationFlow?.id;
+    if (!innovationFlowId) {
+      throw new Error('Innovation flow still not loaded.');
+    }
+    const states = innovationFlow?.states ?? [];
+    // Remove the flowState from its current position
+    const movedState = states.find(state => state.displayName === displayName);
+    if (!movedState) {
+      throw new Error('Moved state not found.');
+    }
+    const statesWithoutMovedState = states.filter(state => state.displayName !== displayName);
+
+    // Insert the flowState at the new position
+    const nextStates = [
+      ...statesWithoutMovedState.slice(0, sortOrder),
+      movedState,
+      ...statesWithoutMovedState.slice(sortOrder),
+    ];
+    return updateInnovationFlowStates({
+      variables: { innovationFlowId, states: nextStates },
+      optimisticResponse: {
+        updateInnovationFlow: {
+          id: innovationFlowId,
+          states: nextStates,
+        },
+      },
+    });
+  };
+
   return {
     data: {
       innovationFlow,
@@ -183,6 +215,7 @@ const useInnovationFlowSettings = ({ collaborationId }: useInnovationFlowSetting
     actions: {
       updateInnovationFlowState: handleInnovationFlowStateChange,
       updateInnovationFlowProfile: handleUpdateInnovationFlowProfile,
+      updateInnovationFlowStateOrder: handleInnovationFlowStateOrder,
       updateCalloutFlowState: handleUpdateCalloutFlowState,
     },
     state: {
