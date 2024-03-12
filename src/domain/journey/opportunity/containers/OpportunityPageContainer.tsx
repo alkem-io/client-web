@@ -8,6 +8,7 @@ import {
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
 import {
+  ActivityEventType,
   AuthorizationPrivilege,
   CalloutDisplayLocation,
   DashboardTopCalloutFragment,
@@ -72,7 +73,7 @@ export interface OpportunityContainerState {
 }
 
 export interface OpportunityPageContainerProps
-  extends ContainerChildProps<OpportunityContainerEntities, OpportunityContainerActions, OpportunityContainerState> { }
+  extends ContainerChildProps<OpportunityContainerEntities, OpportunityContainerActions, OpportunityContainerState> {}
 
 const NO_PRIVILEGES = [];
 
@@ -118,12 +119,17 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
     };
   }, [opportunityPrivileges, communityPrivileges, user]);
 
+  const activityTypes = Object.values(ActivityEventType).filter(
+    activityType => activityType !== ActivityEventType.CalloutWhiteboardContentModified
+  );
+
   const {
     activities,
     loading: activityLoading,
     fetchMoreActivities,
   } = useActivityOnCollaboration(collaborationID, {
     skip: !permissions.opportunityReadAccess || !permissions.readUsers,
+    types: activityTypes,
     limit: RECENT_ACTIVITIES_LIMIT_INITIAL,
   });
 

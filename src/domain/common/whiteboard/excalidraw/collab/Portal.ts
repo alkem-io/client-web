@@ -224,6 +224,10 @@ class Portal {
       this.broadcastedElementVersions.set(syncableElement.id, syncableElement.version);
     }
 
+    if (updateType === WS_SCENE_EVENT_TYPES.INIT) {
+      return this._broadcastEvent(WS_EVENTS.SCENE_INIT, data as SocketUpdateData);
+    }
+
     this._broadcastSocketData(data as SocketUpdateData);
   };
 
@@ -257,7 +261,7 @@ class Portal {
           ...payload,
         },
       };
-      return this._broadcastSocketData(data as SocketUpdateData, { volatile: true });
+      return this._broadcastEvent(WS_EVENTS.SERVER_VOLATILE, data as SocketUpdateData);
     }
   };
 }

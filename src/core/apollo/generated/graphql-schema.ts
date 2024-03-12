@@ -7779,6 +7779,21 @@ export type ActivityCreatedSubscription = {
               location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
             };
           };
+          callout: {
+            __typename?: 'Callout';
+            id: string;
+            nameID: string;
+            framing: {
+              __typename?: 'CalloutFraming';
+              profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+            };
+          };
+          whiteboard: {
+            __typename?: 'Whiteboard';
+            id: string;
+            nameID: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+          };
         }
       | {
           __typename: 'ActivityLogEntryCalloutWhiteboardCreated';
@@ -8324,6 +8339,21 @@ type ActivityLogOnCollaboration_ActivityLogEntryCalloutWhiteboardContentModified
         | undefined;
       location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
     };
+  };
+  callout: {
+    __typename?: 'Callout';
+    id: string;
+    nameID: string;
+    framing: {
+      __typename?: 'CalloutFraming';
+      profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+    };
+  };
+  whiteboard: {
+    __typename?: 'Whiteboard';
+    id: string;
+    nameID: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
   };
 };
 
@@ -8891,6 +8921,21 @@ export type ActivityLogOnCollaborationQuery = {
             location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
           };
         };
+        callout: {
+          __typename?: 'Callout';
+          id: string;
+          nameID: string;
+          framing: {
+            __typename?: 'CalloutFraming';
+            profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+          };
+        };
+        whiteboard: {
+          __typename?: 'Whiteboard';
+          id: string;
+          nameID: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+        };
       }
     | {
         __typename: 'ActivityLogEntryCalloutWhiteboardCreated';
@@ -9219,6 +9264,25 @@ export type ActivityLogCalloutPostCommentFragment = {
 
 export type ActivityLogCalloutWhiteboardCreatedFragment = {
   __typename?: 'ActivityLogEntryCalloutWhiteboardCreated';
+  callout: {
+    __typename?: 'Callout';
+    id: string;
+    nameID: string;
+    framing: {
+      __typename?: 'CalloutFraming';
+      profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+    };
+  };
+  whiteboard: {
+    __typename?: 'Whiteboard';
+    id: string;
+    nameID: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+  };
+};
+
+export type ActivityLogCalloutWhiteboardContentModifiedFragment = {
+  __typename?: 'ActivityLogEntryCalloutWhiteboardContentModified';
   callout: {
     __typename?: 'Callout';
     id: string;
@@ -19490,19 +19554,6 @@ export type ChallengeCardFragment = {
       | undefined;
   };
   context?: { __typename?: 'Context'; id: string; vision?: string | undefined } | undefined;
-  collaboration?:
-    | {
-        __typename?: 'Collaboration';
-        id: string;
-        innovationFlow?:
-          | {
-              __typename?: 'InnovationFlow';
-              id: string;
-              currentState: { __typename?: 'InnovationFlowState'; displayName: string };
-            }
-          | undefined;
-      }
-    | undefined;
   community?:
     | { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined }
     | undefined;
@@ -20306,19 +20357,6 @@ export type CreateChallengeMutation = {
         | undefined;
     };
     context?: { __typename?: 'Context'; id: string; vision?: string | undefined } | undefined;
-    collaboration?:
-      | {
-          __typename?: 'Collaboration';
-          id: string;
-          innovationFlow?:
-            | {
-                __typename?: 'InnovationFlow';
-                id: string;
-                currentState: { __typename?: 'InnovationFlowState'; displayName: string };
-              }
-            | undefined;
-        }
-      | undefined;
     community?:
       | { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined }
       | undefined;
@@ -23663,19 +23701,6 @@ export type SpaceDashboardNavigationChallengesQuery = {
               | undefined;
           };
           context?: { __typename?: 'Context'; id: string; vision?: string | undefined } | undefined;
-          collaboration?:
-            | {
-                __typename?: 'Collaboration';
-                id: string;
-                innovationFlow?:
-                  | {
-                      __typename?: 'InnovationFlow';
-                      id: string;
-                      currentState: { __typename?: 'InnovationFlowState'; displayName: string };
-                    }
-                  | undefined;
-              }
-            | undefined;
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
@@ -23730,19 +23755,6 @@ export type SpaceDashboardNavigationOpportunitiesQuery = {
                     | undefined;
                 };
                 context?: { __typename?: 'Context'; id: string; vision?: string | undefined } | undefined;
-                collaboration?:
-                  | {
-                      __typename?: 'Collaboration';
-                      id: string;
-                      innovationFlow?:
-                        | {
-                            __typename?: 'InnovationFlow';
-                            id: string;
-                            currentState: { __typename?: 'InnovationFlowState'; displayName: string };
-                          }
-                        | undefined;
-                    }
-                  | undefined;
                 community?:
                   | { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined }
                   | undefined;
@@ -23782,18 +23794,6 @@ export type SpaceDashboardNavigationCommunityFragment = {
   __typename?: 'Community';
   id: string;
   myMembershipStatus?: CommunityMembershipStatus | undefined;
-};
-
-export type SpaceDashboardNavigationCollaborationFragment = {
-  __typename?: 'Collaboration';
-  id: string;
-  innovationFlow?:
-    | {
-        __typename?: 'InnovationFlow';
-        id: string;
-        currentState: { __typename?: 'InnovationFlowState'; displayName: string };
-      }
-    | undefined;
 };
 
 export type CalloutFormTemplatesFromSpaceQueryVariables = Exact<{
@@ -24048,19 +24048,6 @@ export type SpaceChallengeCardsQuery = {
               | undefined;
           };
           context?: { __typename?: 'Context'; id: string; vision?: string | undefined } | undefined;
-          collaboration?:
-            | {
-                __typename?: 'Collaboration';
-                id: string;
-                innovationFlow?:
-                  | {
-                      __typename?: 'InnovationFlow';
-                      id: string;
-                      currentState: { __typename?: 'InnovationFlowState'; displayName: string };
-                    }
-                  | undefined;
-              }
-            | undefined;
           community?:
             | { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined }
             | undefined;
@@ -24098,19 +24085,6 @@ export type ChallengesOnSpaceFragment = {
             | undefined;
         };
         context?: { __typename?: 'Context'; id: string; vision?: string | undefined } | undefined;
-        collaboration?:
-          | {
-              __typename?: 'Collaboration';
-              id: string;
-              innovationFlow?:
-                | {
-                    __typename?: 'InnovationFlow';
-                    id: string;
-                    currentState: { __typename?: 'InnovationFlowState'; displayName: string };
-                  }
-                | undefined;
-            }
-          | undefined;
         community?:
           | { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined }
           | undefined;
@@ -24471,19 +24445,6 @@ export type ChallengeCreatedSubscription = {
           | undefined;
       };
       context?: { __typename?: 'Context'; id: string; vision?: string | undefined } | undefined;
-      collaboration?:
-        | {
-            __typename?: 'Collaboration';
-            id: string;
-            innovationFlow?:
-              | {
-                  __typename?: 'InnovationFlow';
-                  id: string;
-                  currentState: { __typename?: 'InnovationFlowState'; displayName: string };
-                }
-              | undefined;
-          }
-        | undefined;
       community?:
         | { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined }
         | undefined;
@@ -30045,6 +30006,21 @@ export type LatestContributionsQuery = {
                 | undefined;
               location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
             };
+          };
+          callout: {
+            __typename?: 'Callout';
+            id: string;
+            nameID: string;
+            framing: {
+              __typename?: 'CalloutFraming';
+              profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+            };
+          };
+          whiteboard: {
+            __typename?: 'Whiteboard';
+            id: string;
+            nameID: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
           };
         }
       | {
