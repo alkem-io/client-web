@@ -88,7 +88,7 @@ const InnovationFlowStates = ({
           <IconButton
             color="primary"
             onClick={() => setShowSettingsDialog(true)}
-            aria-label={t('components.innovationFlow.innovationFlowSettings')}
+            aria-label={t('components.innovationFlowSettings.title')}
           >
             <SettingsIcon />
           </IconButton>

@@ -15,7 +15,11 @@ interface InnovationFlowPreviewDialogProps {
   onClose: () => void;
 }
 
-const InnovationFlowPreviewDialog: FC<InnovationFlowPreviewDialogProps> = ({ open = false, onClose, collaborationId }) => {
+const InnovationFlowPreviewDialog: FC<InnovationFlowPreviewDialogProps> = ({
+  open = false,
+  onClose,
+  collaborationId,
+}) => {
   const { t } = useTranslation();
   const { data, state } = useInnovationFlowSettings({ collaborationId });
   const { innovationFlow } = data;
@@ -27,7 +31,7 @@ const InnovationFlowPreviewDialog: FC<InnovationFlowPreviewDialogProps> = ({ ope
         </BlockTitle>
       </DialogHeader>
       <DialogContent sx={{ paddingTop: 0 }}>
-        <InnovationFlowProfileBlock innovationFlow={innovationFlow} loading={state.loading} editable={false}>
+        <InnovationFlowProfileBlock innovationFlow={innovationFlow} loading={state.loading}>
           <InnovationFlowStateSelector currentState={innovationFlow?.currentState.displayName} />
         </InnovationFlowProfileBlock>
       </DialogContent>

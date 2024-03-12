@@ -6,7 +6,12 @@ import {
   useUpdateInnovationFlowMutation,
   useUpdateInnovationFlowStateMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
-import { CalloutType, Tagset, UpdateProfileInput } from '../../../../core/apollo/generated/graphql-schema';
+import {
+  AuthorizationPrivilege,
+  CalloutType,
+  Tagset,
+  UpdateProfileInput,
+} from '../../../../core/apollo/generated/graphql-schema';
 import { compact, uniq } from 'lodash';
 import { sortCallouts } from '../utils/sortCallouts';
 import { useMemo } from 'react';
@@ -25,28 +30,28 @@ export interface GroupedCallout {
     displayName: string;
   };
   flowState:
-  | {
-    tagsetId: string;
-    currentState: string | undefined;
-    allowedValues: string[];
-  }
-  | undefined;
+    | {
+        tagsetId: string;
+        currentState: string | undefined;
+        allowedValues: string[];
+      }
+    | undefined;
 }
 
 const mapFlowState = (tagset: Tagset | undefined): GroupedCallout['flowState'] => {
   return tagset
     ? {
-      tagsetId: tagset.id,
-      currentState: tagset.tags[0],
-      allowedValues: tagset.allowedValues,
-    }
+        tagsetId: tagset.id,
+        currentState: tagset.tags[0],
+        allowedValues: tagset.allowedValues,
+      }
     : undefined;
 };
 
 const useInnovationFlowSettings = ({ collaborationId }: useInnovationFlowSettingsProps) => {
   const { data, loading: loadingData } = useInnovationFlowSettingsQuery({
     variables: { collaborationId: collaborationId! },
-    skip: !collaborationId
+    skip: !collaborationId,
   });
 
   const collaboration = data?.lookup.collaboration;
@@ -73,7 +78,8 @@ const useInnovationFlowSettings = ({ collaborationId }: useInnovationFlowSetting
 
   const flowStateAllowedValues = uniq(compact(callouts?.flatMap(callout => callout.flowState?.allowedValues))) ?? [];
 
-  const [updateInnovationFlowSelectedState, { loading: changingState }] = useUpdateInnovationFlowStateMutation({  // TODO: Not used?
+  const [updateInnovationFlowSelectedState, { loading: changingState }] = useUpdateInnovationFlowStateMutation({
+    // TODO: Not used?
     refetchQueries: [refetchInnovationFlowSettingsQuery({ collaborationId: collaborationId! })],
   });
   const handleInnovationFlowStateChange = async (newState: string) => {
@@ -83,10 +89,10 @@ const useInnovationFlowSettings = ({ collaborationId }: useInnovationFlowSetting
     await updateInnovationFlowSelectedState({
       variables: {
         innovationFlowId: innovationFlow.id,
-        selectedState: newState
+        selectedState: newState,
       },
     });
-  }
+  };
 
   const [updateInnovationFlow, { loading: loadingUpdateInnovationFlow }] = useUpdateInnovationFlowMutation();
   const handleUpdateInnovationFlowProfile = async (innovationFlowId: string, profileData: UpdateProfileInput) =>
@@ -168,6 +174,11 @@ const useInnovationFlowSettings = ({ collaborationId }: useInnovationFlowSetting
       innovationFlow,
       callouts,
       flowStateAllowedValues,
+    },
+    authorization: {
+      canEditInnovationFlow: collaboration?.innovationFlow?.authorization?.myPrivileges?.includes(
+        AuthorizationPrivilege.Update
+      ),
     },
     actions: {
       updateInnovationFlowState: handleInnovationFlowStateChange,

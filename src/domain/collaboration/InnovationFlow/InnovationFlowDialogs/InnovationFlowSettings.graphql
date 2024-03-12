@@ -41,9 +41,7 @@ fragment InnovationFlowProfile on Profile {
   id
   displayName
   description
-  # tags: tagset {
-  #   ...TagsetDetails
-  # }
+  # //!!TODO: Add tags to each InnovationFlow profile
   tagsets {
     ...TagsetDetails
   }
