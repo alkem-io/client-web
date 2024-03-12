@@ -1,6 +1,6 @@
 {
   "name": "@alkemio/client-web",
-  "version": "0.55.1",
+  "version": "0.55.1p1",
   "description": "Alkemio client, enabling users to interact with Challenges hosted on the Alkemio platform.",
   "author": "Alkemio Foundation",
   "repository": {
