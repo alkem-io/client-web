@@ -775,6 +775,9 @@
         "description": "Enter words that are key to the Challenge to make it stand out and easier to find.",
         "placeholder": ""
       },
+      "addDefaultCallouts": {
+        "title": "Add default collaboration tools"
+      },
       "innovationFlow": {
         "title": "Challenge Flow"
       }
@@ -814,6 +817,9 @@
         "title": "Tags",
         "description": "Enter words that are key to your Opportunity to make it stand out and easier to find.",
         "placeholder": ""
+      },
+      "addDefaultCallouts": {
+        "title": "Add default collaboration tools"
       },
       "innovationFlow": {
         "title": "Opportunity Flow"
