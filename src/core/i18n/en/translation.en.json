@@ -946,7 +946,7 @@
         "editState": "Edit Details",
         "deleteState": "Delete",
         "addState": "Add State",
-        "noRepeatedStates": "A State with the same name already exists",
+        "noRepeatedStates": "A State with the same name already exists.",
         "createDialog": {
           "title": "Create Flow State"
         },
@@ -1088,8 +1088,7 @@
     "innovationFlow": {
       "currentState": "Current State:",
       "changeState": "Change State to:",
-      "error": "The definition was not able to be visualized",
-      "innovationFlowSettings": "Innovation Flow Settings"
+      "error": "The definition was not able to be visualized"
     },
     "activity-tooltip": {
       "headline": "Alkemio is growing! In total, the platform now hosts:"
