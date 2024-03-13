@@ -73,7 +73,6 @@ const SpaceChallengesPage: FC<SpaceChallengesPageProps> = () => {
                 tags={challenge.profile.tagset?.tags!}
                 tagline={challenge.profile.tagline!}
                 vision={challenge.context?.vision!}
-                innovationFlowState={challenge.collaboration?.innovationFlow?.currentState?.displayName}
                 journeyUri={buildChallengeUrl(spaceNameId, challenge.nameID)}
                 locked={!challenge.authorization?.anonymousReadAccess}
                 spaceVisibility={spaceVisibility}

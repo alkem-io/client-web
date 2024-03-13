@@ -2732,17 +2732,6 @@ export const SpaceDashboardNavigationCommunityFragmentDoc = gql`
     myMembershipStatus
   }
 `;
-export const SpaceDashboardNavigationCollaborationFragmentDoc = gql`
-  fragment SpaceDashboardNavigationCollaboration on Collaboration {
-    id
-    innovationFlow {
-      id
-      currentState {
-        displayName
-      }
-    }
-  }
-`;
 export const PostTemplateCardFragmentDoc = gql`
   fragment PostTemplateCard on PostTemplate {
     id
@@ -2823,15 +2812,6 @@ export const ChallengeCardFragmentDoc = gql`
     context {
       id
       vision
-    }
-    collaboration {
-      id
-      innovationFlow {
-        id
-        currentState {
-          displayName
-        }
-      }
     }
     community {
       id
@@ -19502,9 +19482,6 @@ export const SpaceDashboardNavigationChallengesDocument = gql`
         context {
           ...SpaceDashboardNavigationContext
         }
-        collaboration {
-          ...SpaceDashboardNavigationCollaboration
-        }
         authorization {
           id
           myPrivileges
@@ -19521,7 +19498,6 @@ export const SpaceDashboardNavigationChallengesDocument = gql`
   }
   ${SpaceDashboardNavigationProfileFragmentDoc}
   ${SpaceDashboardNavigationContextFragmentDoc}
-  ${SpaceDashboardNavigationCollaborationFragmentDoc}
   ${SpaceDashboardNavigationCommunityFragmentDoc}
 `;
 
@@ -19598,9 +19574,6 @@ export const SpaceDashboardNavigationOpportunitiesDocument = gql`
           context {
             ...SpaceDashboardNavigationContext
           }
-          collaboration {
-            ...SpaceDashboardNavigationCollaboration
-          }
           community {
             ...SpaceDashboardNavigationCommunity
           }
@@ -19610,7 +19583,6 @@ export const SpaceDashboardNavigationOpportunitiesDocument = gql`
   }
   ${SpaceDashboardNavigationProfileFragmentDoc}
   ${SpaceDashboardNavigationContextFragmentDoc}
-  ${SpaceDashboardNavigationCollaborationFragmentDoc}
   ${SpaceDashboardNavigationCommunityFragmentDoc}
 `;
 
