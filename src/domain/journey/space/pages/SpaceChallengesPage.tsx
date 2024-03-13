@@ -17,7 +17,7 @@ import SpacePageLayout from '../layout/SpacePageLayout';
 import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
 import { CalloutDisplayLocation, CommunityMembershipStatus } from '../../../../core/apollo/generated/graphql-schema';
 
-export interface SpaceChallengesPageProps { }
+export interface SpaceChallengesPageProps {}
 
 const SpaceChallengesPage: FC<SpaceChallengesPageProps> = () => {
   const { t } = useTranslation();
@@ -38,6 +38,7 @@ const SpaceChallengesPage: FC<SpaceChallengesPageProps> = () => {
         background: value.background ?? '',
         vision: value.vision,
         tags: value.tags,
+        addDefaultCallouts: value.addDefaultCallouts,
         innovationFlowTemplateId: value.innovationFlowTemplateId,
       });
 
