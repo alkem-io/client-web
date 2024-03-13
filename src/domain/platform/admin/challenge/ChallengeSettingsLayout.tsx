@@ -10,7 +10,6 @@ import FlagOutlinedIcon from '@mui/icons-material/FlagOutlined';
 import EntitySettingsLayout from '../layout/EntitySettingsLayout/EntitySettingsLayout';
 import ChallengePageBanner from '../../../journey/challenge/layout/ChallengePageBanner';
 import ChallengeTabs from '../../../journey/challenge/layout/ChallengeTabs';
-import PolylineOutlinedIcon from '@mui/icons-material/PolylineOutlined';
 import JourneyBreadcrumbs from '../../../journey/common/journeyBreadcrumbs/JourneyBreadcrumbs';
 
 interface ChallengeSettingsLayoutProps {
@@ -48,11 +47,6 @@ const tabs: TabDefinition<SettingsSection>[] = [
     section: SettingsSection.Opportunities,
     route: 'opportunities',
     icon: FlagOutlinedIcon,
-  },
-  {
-    section: SettingsSection.InnovationFlow,
-    route: 'innovation-flow',
-    icon: PolylineOutlinedIcon,
   },
 ];
 
