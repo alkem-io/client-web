@@ -38,6 +38,7 @@ const SpaceChallengesPage: FC<SpaceChallengesPageProps> = () => {
         background: value.background ?? '',
         vision: value.vision,
         tags: value.tags,
+        addDefaultCallouts: value.addDefaultCallouts,
         innovationFlowTemplateId: value.innovationFlowTemplateId,
       });
 
