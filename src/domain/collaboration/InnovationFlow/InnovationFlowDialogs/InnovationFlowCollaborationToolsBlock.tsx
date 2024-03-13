@@ -114,7 +114,7 @@ const InnovationFlowCollaborationToolsBlock: FC<InnovationFlowCollaborationTools
     <DragDropContext onDragEnd={handleDragEnd}>
       <Droppable droppableId={STATES_DROPPABLE_ID} type="droppableItem" direction="horizontal">
         {parentDroppableProvided => (
-          <Box ref={parentDroppableProvided.innerRef}>
+          <Box ref={parentDroppableProvided.innerRef} sx={{ userSelect: 'none' }}>
             <ScrollableCardsLayoutContainer orientation="horizontal" alignItems="stretch">
               {innovationFlowStates?.map((state, index) => (
                 <Draggable key={state.displayName} draggableId={state.displayName} index={index}>
