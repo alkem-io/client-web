@@ -1,4 +1,4 @@
-# Use this somewhere else or delete it //!!
+# TODO: This will be used by #5683 or deleted
 mutation updateInnovationFlowStatesFromTemplate($innovationFlowId: UUID!, $innovationFlowTemplateId: UUID!) {
   updateInnovationFlowStatesFromTemplate(
     innovationFlowData: { innovationFlowID: $innovationFlowId, innovationFlowTemplateID: $innovationFlowTemplateId }
