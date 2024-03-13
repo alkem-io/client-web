@@ -20,7 +20,7 @@ import { InnovationFlowState } from '../InnovationFlow';
 import InnovationFlowStateMenu from './InnovationFlowStateMenu';
 
 const STATES_DROPPABLE_ID = '__states';
-export const LAST_STATE = Symbol('__LAST_STATE'); // See implementation of innovationFlowSettings handleCreateState, if the state __LAST is not found it will put the new state at the end of the list.
+export const LAST_STATE = Symbol('__LAST_STATE');
 
 interface InnovationFlowCollaborationToolsBlockProps {
   callouts: {
