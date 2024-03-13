@@ -1,9 +1,5 @@
 query LatestContributions($first: Int!, $after: UUID, $filter: ActivityFeedQueryArgs) {
-  activityFeed(
-    after: $after
-    first: $first
-    args: $filter
-  ) {
+  activityFeed(after: $after, first: $first, args: $filter) {
     activityFeed {
       id
       collaborationID
@@ -15,22 +11,22 @@ query LatestContributions($first: Int!, $after: UUID, $filter: ActivityFeedQuery
       journeyDisplayName: parentDisplayName
       journey {
         id
-        ...on Space {
+        ... on Space {
           profile {
             ...RecentContributionsSpaceProfile
           }
         }
-        ...on RelayPaginatedSpace {
+        ... on RelayPaginatedSpace {
           profile {
             ...RecentContributionsSpaceProfile
           }
         }
-        ...on Challenge {
+        ... on Challenge {
           profile {
             ...RecentContributionsChildJourneyProfile
           }
         }
-        ...on Opportunity {
+        ... on Opportunity {
           profile {
             ...RecentContributionsChildJourneyProfile
           }
@@ -75,6 +71,9 @@ query LatestContributions($first: Int!, $after: UUID, $filter: ActivityFeedQuery
       }
       ... on ActivityLogEntryCalloutWhiteboardCreated {
         ...ActivityLogCalloutWhiteboardCreated
+      }
+      ... on ActivityLogEntryCalloutWhiteboardContentModified {
+        ...ActivityLogCalloutWhiteboardContentModified
       }
       ... on ActivityLogEntryCalloutDiscussionComment {
         ...ActivityLogCalloutDiscussionComment
