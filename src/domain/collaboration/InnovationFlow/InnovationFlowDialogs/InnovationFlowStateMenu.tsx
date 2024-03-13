@@ -3,7 +3,7 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { Divider, IconButton, ListItemIcon } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { AddCircleOutline, Delete, Edit, MoreVert, ToggleOn } from '@mui/icons-material';
+import { AddCircleOutline, DeleteOutlined, EditOutlined, MoreVert, ToggleOn } from '@mui/icons-material';
 
 interface InnovationFlowStateMenuProps {
   state: string;
@@ -67,7 +67,7 @@ export default function InnovationFlowStateMenu({
           }}
         >
           <ListItemIcon>
-            <Edit fontSize="small" />
+            <EditOutlined fontSize="small" />
           </ListItemIcon>
           {t('components.innovationFlowSettings.stateEditor.editState')}
         </MenuItem>
@@ -78,7 +78,7 @@ export default function InnovationFlowStateMenu({
           }}
         >
           <ListItemIcon>
-            <Delete fontSize="small" />
+            <DeleteOutlined fontSize="small" />
           </ListItemIcon>
           {t('components.innovationFlowSettings.stateEditor.deleteState')}
         </MenuItem>

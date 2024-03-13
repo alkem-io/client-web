@@ -9,7 +9,7 @@ import useInnovationFlowSettings from './useInnovationFlowSettings';
 import InnovationFlowCollaborationToolsBlock, { LAST_STATE } from './InnovationFlowCollaborationToolsBlock';
 import { InnovationFlowState } from '../InnovationFlow';
 import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
-import { Edit } from '@mui/icons-material';
+import { EditOutlined } from '@mui/icons-material';
 import InnovationFlowStateForm from './InnovationFlowStateForm';
 
 interface InnovationFlowSettingsDialogProps {
@@ -76,7 +76,7 @@ const InnovationFlowSettingsDialog: FC<InnovationFlowSettingsDialogProps> = ({
       </DialogWithGrid>
       <DialogWithGrid open={createDialogOpen}>
         <DialogHeader
-          icon={<Edit />}
+          icon={<EditOutlined />}
           title={t('components.innovationFlowSettings.stateEditor.createDialog.title')}
           onClose={() => {
             setCreateStateAfter(undefined);
@@ -100,7 +100,7 @@ const InnovationFlowSettingsDialog: FC<InnovationFlowSettingsDialogProps> = ({
       </DialogWithGrid>
       <DialogWithGrid open={Boolean(editState)}>
         <DialogHeader
-          icon={<Edit />}
+          icon={<EditOutlined />}
           title={t('components.innovationFlowSettings.stateEditor.editDialog.title')}
           onClose={() => setEditState(undefined)}
         />
