@@ -32,6 +32,7 @@ export const JourneyCreationDialog: FC<JourneyCreationDialogProps> = ({
     tagline: '',
     vision: '',
     tags: [],
+    addDefaultCallouts: true,
     innovationFlowTemplateId: '',
   });
 

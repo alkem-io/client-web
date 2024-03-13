@@ -13,6 +13,7 @@ import { JourneyCreationForm } from '../../../shared/components/JorneyCreationDi
 import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
 import FormikInnovationFlowSelect from '../../../collaboration/InnovationFlow/FormikInnovationFlowField/FormikInnovationFlowSelect';
 import useDefaultInnovationFlowTemplate from '../../../collaboration/InnovationFlow/DefaultInnovationFlow/useDefaultInnovationFlowTemplate';
+import { FormikSwitch } from '../../../../core/ui/forms/FormikSwitch';
 
 const FormikEffect = FormikEffectFactory<FormValues>();
 
@@ -21,10 +22,11 @@ interface FormValues {
   tagline: string;
   vision: string;
   tags: string[];
+  addDefaultCallouts: boolean;
   innovationFlowTemplateId: string;
 }
 
-interface CreateOpportunityFormProps extends JourneyCreationForm { }
+interface CreateOpportunityFormProps extends JourneyCreationForm {}
 
 export const CreateOpportunityForm: FC<CreateOpportunityFormProps> = ({ isSubmitting, onValidChanged, onChanged }) => {
   const { t } = useTranslation();
@@ -40,6 +42,7 @@ export const CreateOpportunityForm: FC<CreateOpportunityFormProps> = ({ isSubmit
       tagline: value.tagline,
       vision: value.vision,
       tags: value.tags,
+      addDefaultCallouts: value.addDefaultCallouts,
       innovationFlowTemplateId: value.innovationFlowTemplateId,
     });
 
@@ -48,6 +51,7 @@ export const CreateOpportunityForm: FC<CreateOpportunityFormProps> = ({ isSubmit
     tagline: '',
     vision: '',
     tags: [],
+    addDefaultCallouts: true,
     innovationFlowTemplateId: defaultInnovationFlowTemplateId ?? '',
   };
 
@@ -75,7 +79,7 @@ export const CreateOpportunityForm: FC<CreateOpportunityFormProps> = ({ isSubmit
       validationSchema={validationSchema}
       enableReinitialize
       validateOnMount
-      onSubmit={() => { }}
+      onSubmit={() => {}}
     >
       {() => (
         <Form noValidate>
@@ -109,6 +113,7 @@ export const CreateOpportunityForm: FC<CreateOpportunityFormProps> = ({ isSubmit
               title={t('context.opportunity.tags.title')}
               helperText={t('context.opportunity.tags.description')}
             />
+            <FormikSwitch name="addDefaultCallouts" title={t('context.opportunity.addDefaultCallouts.title')} />
             <FormikInnovationFlowSelect
               name="innovationFlowTemplateId"
               title={t('context.opportunity.innovationFlow.title')}
