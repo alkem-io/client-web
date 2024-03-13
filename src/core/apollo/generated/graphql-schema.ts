@@ -7132,12 +7132,12 @@ export type UpdateCalloutFlowStateMutation = {
   };
 };
 
-export type UpdateInnovationFlowSelectedStateMutationVariables = Exact<{
+export type UpdateInnovationFlowCurrentStateMutationVariables = Exact<{
   innovationFlowId: Scalars['UUID'];
-  selectedState: Scalars['String'];
+  currentState: Scalars['String'];
 }>;
 
-export type UpdateInnovationFlowSelectedStateMutation = {
+export type UpdateInnovationFlowCurrentStateMutation = {
   __typename?: 'Mutation';
   updateInnovationFlowState: {
     __typename?: 'InnovationFlow';

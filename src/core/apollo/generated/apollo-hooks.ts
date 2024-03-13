@@ -5206,10 +5206,10 @@ export type UpdateCalloutFlowStateMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateCalloutFlowStateMutation,
   SchemaTypes.UpdateCalloutFlowStateMutationVariables
 >;
-export const UpdateInnovationFlowSelectedStateDocument = gql`
-  mutation updateInnovationFlowSelectedState($innovationFlowId: UUID!, $selectedState: String!) {
+export const UpdateInnovationFlowCurrentStateDocument = gql`
+  mutation updateInnovationFlowCurrentState($innovationFlowId: UUID!, $currentState: String!) {
     updateInnovationFlowState(
-      innovationFlowStateData: { innovationFlowID: $innovationFlowId, selectedState: $selectedState }
+      innovationFlowStateData: { innovationFlowID: $innovationFlowId, selectedState: $currentState }
     ) {
       id
       currentState {
@@ -5218,50 +5218,50 @@ export const UpdateInnovationFlowSelectedStateDocument = gql`
     }
   }
 `;
-export type UpdateInnovationFlowSelectedStateMutationFn = Apollo.MutationFunction<
-  SchemaTypes.UpdateInnovationFlowSelectedStateMutation,
-  SchemaTypes.UpdateInnovationFlowSelectedStateMutationVariables
+export type UpdateInnovationFlowCurrentStateMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateInnovationFlowCurrentStateMutation,
+  SchemaTypes.UpdateInnovationFlowCurrentStateMutationVariables
 >;
 
 /**
- * __useUpdateInnovationFlowSelectedStateMutation__
+ * __useUpdateInnovationFlowCurrentStateMutation__
  *
- * To run a mutation, you first call `useUpdateInnovationFlowSelectedStateMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateInnovationFlowSelectedStateMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useUpdateInnovationFlowCurrentStateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateInnovationFlowCurrentStateMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [updateInnovationFlowSelectedStateMutation, { data, loading, error }] = useUpdateInnovationFlowSelectedStateMutation({
+ * const [updateInnovationFlowCurrentStateMutation, { data, loading, error }] = useUpdateInnovationFlowCurrentStateMutation({
  *   variables: {
  *      innovationFlowId: // value for 'innovationFlowId'
- *      selectedState: // value for 'selectedState'
+ *      currentState: // value for 'currentState'
  *   },
  * });
  */
-export function useUpdateInnovationFlowSelectedStateMutation(
+export function useUpdateInnovationFlowCurrentStateMutation(
   baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.UpdateInnovationFlowSelectedStateMutation,
-    SchemaTypes.UpdateInnovationFlowSelectedStateMutationVariables
+    SchemaTypes.UpdateInnovationFlowCurrentStateMutation,
+    SchemaTypes.UpdateInnovationFlowCurrentStateMutationVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
-    SchemaTypes.UpdateInnovationFlowSelectedStateMutation,
-    SchemaTypes.UpdateInnovationFlowSelectedStateMutationVariables
-  >(UpdateInnovationFlowSelectedStateDocument, options);
+    SchemaTypes.UpdateInnovationFlowCurrentStateMutation,
+    SchemaTypes.UpdateInnovationFlowCurrentStateMutationVariables
+  >(UpdateInnovationFlowCurrentStateDocument, options);
 }
 
-export type UpdateInnovationFlowSelectedStateMutationHookResult = ReturnType<
-  typeof useUpdateInnovationFlowSelectedStateMutation
+export type UpdateInnovationFlowCurrentStateMutationHookResult = ReturnType<
+  typeof useUpdateInnovationFlowCurrentStateMutation
 >;
-export type UpdateInnovationFlowSelectedStateMutationResult =
-  Apollo.MutationResult<SchemaTypes.UpdateInnovationFlowSelectedStateMutation>;
-export type UpdateInnovationFlowSelectedStateMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.UpdateInnovationFlowSelectedStateMutation,
-  SchemaTypes.UpdateInnovationFlowSelectedStateMutationVariables
+export type UpdateInnovationFlowCurrentStateMutationResult =
+  Apollo.MutationResult<SchemaTypes.UpdateInnovationFlowCurrentStateMutation>;
+export type UpdateInnovationFlowCurrentStateMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateInnovationFlowCurrentStateMutation,
+  SchemaTypes.UpdateInnovationFlowCurrentStateMutationVariables
 >;
 export const UpdateInnovationFlowStatesDocument = gql`
   mutation updateInnovationFlowStates($innovationFlowId: UUID!, $states: [UpdateInnovationFlowStateInput!]!) {

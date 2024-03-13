@@ -4,7 +4,7 @@ import {
   useUpdateCalloutFlowStateMutation,
   useUpdateCalloutsSortOrderMutation,
   useUpdateInnovationFlowMutation,
-  useUpdateInnovationFlowSelectedStateMutation,
+  useUpdateInnovationFlowCurrentStateMutation,
   useUpdateInnovationFlowStatesMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import {
@@ -88,17 +88,17 @@ const useInnovationFlowSettings = ({ collaborationId, skip }: useInnovationFlowS
     [collaboration?.callouts]
   );
 
-  const [updateInnovationFlowSelectedState, { loading: changingState }] = useUpdateInnovationFlowSelectedStateMutation({
+  const [updateInnovationFlowCurrentState, { loading: changingState }] = useUpdateInnovationFlowCurrentStateMutation({
     refetchQueries: [refetchInnovationFlowSettingsQuery({ collaborationId: collaborationId! })],
   });
   const handleInnovationFlowCurrentStateChange = (newState: string) => {
     if (!innovationFlow) {
       return;
     }
-    return updateInnovationFlowSelectedState({
+    return updateInnovationFlowCurrentState({
       variables: {
         innovationFlowId: innovationFlow.id,
-        selectedState: newState,
+        currentState: newState,
       },
       refetchQueries: [refetchInnovationFlowSettingsQuery({ collaborationId: collaborationId! })],
     });
