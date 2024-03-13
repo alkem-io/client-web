@@ -97,7 +97,6 @@ type AdminTemplatesSectionProps<
   innovationPacks: InnovationPack<T>[];
   templateCardComponent: ComponentType<Omit<SimpleCardProps, 'iconComponent'>>;
   templateImportCardComponent: ComponentType<TemplateImportCardComponentProps<T>>;
-  // templatePreviewComponent: ComponentType<TemplatePreviewProps<T, V>>;
   getWhiteboardTemplateContent?: (template: T) => void;
   getImportedWhiteboardTemplateContent?: (template: TemplateWithInnovationPack<T>) => void;
   whiteboardTemplateContent?: V | undefined;
