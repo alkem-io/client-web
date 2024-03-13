@@ -939,6 +939,24 @@
       "title": "Innovation Flow Settings",
       "editProfileDialog": {
         "title": "Edit Details: Innovation Flow"
+      },
+      "stateEditor": {
+        "activeState": "Active State",
+        "setActiveState": "Set as Active State",
+        "editState": "Edit Details",
+        "deleteState": "Delete",
+        "addState": "Add State",
+        "noRepeatedStates": "A State with the same name already exists",
+        "createDialog": {
+          "title": "Create Flow State"
+        },
+        "editDialog": {
+          "title": "Edit Details: Flow State"
+        },
+        "deleteDialog": {
+          "title": "Delete State?",
+          "text": "This action cannot be undone."
+        }
       }
     },
     "innovationFlowStateSelector": {

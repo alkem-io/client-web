@@ -14,6 +14,7 @@ import {
   UpdateProfileInput,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { CalloutDisplayLocationValuesMap } from '../../callout/CalloutsInContext/CalloutsGroup';
+import { InnovationFlowState } from '../InnovationFlow';
 import { sortCallouts } from '../utils/sortCallouts';
 import { useMemo } from 'react';
 
@@ -89,21 +90,22 @@ const useInnovationFlowSettings = ({ collaborationId }: useInnovationFlowSetting
   const [updateInnovationFlowSelectedState, { loading: changingState }] = useUpdateInnovationFlowSelectedStateMutation({
     refetchQueries: [refetchInnovationFlowSettingsQuery({ collaborationId: collaborationId! })],
   });
-  const handleInnovationFlowStateChange = async (newState: string) => {
+  const handleInnovationFlowCurrentStateChange = (newState: string) => {
     if (!innovationFlow) {
       return;
     }
-    await updateInnovationFlowSelectedState({
+    return updateInnovationFlowSelectedState({
       variables: {
         innovationFlowId: innovationFlow.id,
         selectedState: newState,
       },
+      refetchQueries: [refetchInnovationFlowSettingsQuery({ collaborationId: collaborationId! })],
     });
   };
 
   const [updateInnovationFlow, { loading: loadingUpdateInnovationFlow }] = useUpdateInnovationFlowMutation();
-  const handleUpdateInnovationFlowProfile = async (innovationFlowId: string, profileData: UpdateProfileInput) =>
-    updateInnovationFlow({
+  const handleUpdateInnovationFlowProfile = async (innovationFlowId: string, profileData: UpdateProfileInput) => {
+    return updateInnovationFlow({
       variables: {
         updateInnovationFlowData: {
           innovationFlowID: innovationFlowId,
@@ -112,6 +114,7 @@ const useInnovationFlowSettings = ({ collaborationId }: useInnovationFlowSetting
       },
       refetchQueries: [refetchInnovationFlowSettingsQuery({ collaborationId: collaborationId! })],
     });
+  };
 
   const [updateCalloutFlowState, { loading: loadingUpdateCallout }] = useUpdateCalloutFlowStateMutation();
   const [updateCalloutsSortOrder, { loading: loadingSortOrder }] = useUpdateCalloutsSortOrderMutation();
@@ -176,13 +179,7 @@ const useInnovationFlowSettings = ({ collaborationId }: useInnovationFlowSetting
     });
   };
 
-  const [updateInnovationFlowStates] = useUpdateInnovationFlowStatesMutation();
-
   const handleInnovationFlowStateOrder = async (displayName: string, sortOrder: number) => {
-    const innovationFlowId = innovationFlow?.id;
-    if (!innovationFlowId) {
-      throw new Error('Innovation flow still not loaded.');
-    }
     const states = innovationFlow?.states ?? [];
     // Remove the flowState from its current position
     const movedState = states.find(state => state.displayName === displayName);
@@ -197,6 +194,45 @@ const useInnovationFlowSettings = ({ collaborationId }: useInnovationFlowSetting
       movedState,
       ...statesWithoutMovedState.slice(sortOrder),
     ];
+    callUpdateInnovationFlowStates(nextStates);
+  };
+
+  const handleCreateState = (newState: InnovationFlowState, stateBefore?: string) => {
+    const states = innovationFlow?.states ?? [];
+    const stateBeforeIndex = states.findIndex(state => state.displayName === stateBefore);
+
+    const nextStates =
+      stateBeforeIndex === -1
+        ? [...states, newState] // if stateBefore not found or undefined, just append the newState to the end
+        : [...states.slice(0, stateBeforeIndex + 1), newState, ...states.slice(stateBeforeIndex + 1)];
+
+    callUpdateInnovationFlowStates(nextStates);
+  };
+
+  const handleEditState = (oldState: InnovationFlowState, newState: InnovationFlowState) => {
+    const states = innovationFlow?.states ?? [];
+    const oldStateIndex = states.findIndex(state => state.displayName === oldState.displayName);
+
+    if (oldStateIndex === -1) {
+      throw new Error('Old state not found.');
+    }
+
+    const nextStates = [...states.slice(0, oldStateIndex), newState, ...states.slice(oldStateIndex + 1)];
+    callUpdateInnovationFlowStates(nextStates);
+  };
+
+  const handleDeleteState = (stateDisplayName: string) => {
+    const states = innovationFlow?.states ?? [];
+    const nextStates = states.filter(state => state.displayName !== stateDisplayName);
+    callUpdateInnovationFlowStates(nextStates);
+  };
+
+  const [updateInnovationFlowStates] = useUpdateInnovationFlowStatesMutation();
+  const callUpdateInnovationFlowStates = (nextStates: InnovationFlowState[]) => {
+    const innovationFlowId = innovationFlow?.id;
+    if (!innovationFlowId) {
+      throw new Error('Innovation flow still not loaded.');
+    }
     return updateInnovationFlowStates({
       variables: { innovationFlowId, states: nextStates },
       optimisticResponse: {
@@ -221,7 +257,6 @@ const useInnovationFlowSettings = ({ collaborationId }: useInnovationFlowSetting
         });
       },
       refetchQueries: [refetchInnovationFlowSettingsQuery({ collaborationId: collaborationId! })],
-      awaitRefetchQueries: true,
     });
   };
 
@@ -236,10 +271,13 @@ const useInnovationFlowSettings = ({ collaborationId }: useInnovationFlowSetting
       ),
     },
     actions: {
-      updateInnovationFlowState: handleInnovationFlowStateChange,
+      updateInnovationFlowCurrentState: handleInnovationFlowCurrentStateChange,
       updateInnovationFlowProfile: handleUpdateInnovationFlowProfile,
       updateInnovationFlowStateOrder: handleInnovationFlowStateOrder,
       updateCalloutFlowState: handleUpdateCalloutFlowState,
+      createState: handleCreateState,
+      editState: handleEditState,
+      deleteState: handleDeleteState,
     },
     state: {
       loading: loadingData || loadingUpdateInnovationFlow || loadingUpdateCallout || loadingSortOrder,
