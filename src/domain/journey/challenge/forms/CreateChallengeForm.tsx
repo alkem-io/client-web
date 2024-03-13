@@ -13,6 +13,7 @@ import { JourneyCreationForm } from '../../../shared/components/JorneyCreationDi
 import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
 import FormikInnovationFlowSelect from '../../../collaboration/InnovationFlow/FormikInnovationFlowField/FormikInnovationFlowSelect';
 import useDefaultInnovationFlowTemplate from '../../../collaboration/InnovationFlow/DefaultInnovationFlow/useDefaultInnovationFlowTemplate';
+import { FormikSwitch } from '../../../../core/ui/forms/FormikSwitch';
 
 const FormikEffect = FormikEffectFactory<FormValues>();
 
@@ -22,10 +23,11 @@ interface FormValues {
   background: string;
   vision: string;
   tags: string[];
+  addDefaultCallouts: boolean;
   innovationFlowTemplateId: string;
 }
 
-interface CreateChallengeFormProps extends JourneyCreationForm { }
+interface CreateChallengeFormProps extends JourneyCreationForm {}
 
 export const CreateChallengeForm: FC<CreateChallengeFormProps> = ({ isSubmitting, onValidChanged, onChanged }) => {
   const { t } = useTranslation();
@@ -41,6 +43,7 @@ export const CreateChallengeForm: FC<CreateChallengeFormProps> = ({ isSubmitting
       background: value.background,
       vision: value.vision,
       tags: value.tags,
+      addDefaultCallouts: value.addDefaultCallouts,
       innovationFlowTemplateId: value.innovationFlowTemplateId,
     });
 
@@ -50,6 +53,7 @@ export const CreateChallengeForm: FC<CreateChallengeFormProps> = ({ isSubmitting
     background: '',
     vision: '',
     tags: [],
+    addDefaultCallouts: true,
     innovationFlowTemplateId: defaultInnovationFlowTemplateId ?? '',
   };
 
@@ -78,7 +82,7 @@ export const CreateChallengeForm: FC<CreateChallengeFormProps> = ({ isSubmitting
       validationSchema={validationSchema}
       enableReinitialize
       validateOnMount
-      onSubmit={() => { }}
+      onSubmit={() => {}}
     >
       {() => (
         <Form noValidate>
@@ -120,6 +124,7 @@ export const CreateChallengeForm: FC<CreateChallengeFormProps> = ({ isSubmitting
               title={t('context.challenge.tags.title')}
               helperText={t('context.challenge.tags.description')}
             />
+            <FormikSwitch name="addDefaultCallouts" title={t('context.challenge.addDefaultCallouts.title')} />
             <FormikInnovationFlowSelect
               name="innovationFlowTemplateId"
               title={t('context.challenge.innovationFlow.title')}
