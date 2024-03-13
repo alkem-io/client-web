@@ -27,6 +27,7 @@ const InnovationFlowSettingsDialog: FC<InnovationFlowSettingsDialogProps> = ({
 
   const { data, actions, authorization, state } = useInnovationFlowSettings({
     collaborationId,
+    skip: !open,
   });
   const { innovationFlow, callouts } = data;
 

@@ -20,6 +20,7 @@ import { useMemo } from 'react';
 
 interface useInnovationFlowSettingsProps {
   collaborationId: string | undefined;
+  skip?: boolean;
 }
 
 export interface GroupedCallout {
@@ -54,10 +55,10 @@ const getCalloutDisplayLocation = (tagset: Tagset | undefined) => {
   return tagset?.tags[0] as CalloutDisplayLocationValuesMap;
 };
 
-const useInnovationFlowSettings = ({ collaborationId }: useInnovationFlowSettingsProps) => {
+const useInnovationFlowSettings = ({ collaborationId, skip }: useInnovationFlowSettingsProps) => {
   const { data, loading: loadingData } = useInnovationFlowSettingsQuery({
     variables: { collaborationId: collaborationId! },
-    skip: !collaborationId,
+    skip: skip || !collaborationId,
   });
 
   const collaboration = data?.lookup.collaboration;

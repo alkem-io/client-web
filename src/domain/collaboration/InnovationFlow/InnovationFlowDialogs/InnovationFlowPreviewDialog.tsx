@@ -21,7 +21,7 @@ const InnovationFlowPreviewDialog: FC<InnovationFlowPreviewDialogProps> = ({
   collaborationId,
 }) => {
   const { t } = useTranslation();
-  const { data, state } = useInnovationFlowSettings({ collaborationId });
+  const { data, state } = useInnovationFlowSettings({ collaborationId, skip: !open });
   const { innovationFlow } = data;
   return (
     <DialogWithGrid open={open} columns={12} onClose={onClose}>
