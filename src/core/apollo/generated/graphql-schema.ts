@@ -6866,6 +6866,16 @@ export type InnovationFlowSettingsQuery = {
                     __typename?: 'Profile';
                     id: string;
                     displayName: string;
+                    calloutDisplayLocation?:
+                      | {
+                          __typename?: 'Tagset';
+                          id: string;
+                          name: string;
+                          tags: Array<string>;
+                          allowedValues: Array<string>;
+                          type: TagsetType;
+                        }
+                      | undefined;
                     flowState?:
                       | {
                           __typename?: 'Tagset';
@@ -7055,6 +7065,16 @@ export type InnovationFlowCollaborationFragment = {
             __typename?: 'Profile';
             id: string;
             displayName: string;
+            calloutDisplayLocation?:
+              | {
+                  __typename?: 'Tagset';
+                  id: string;
+                  name: string;
+                  tags: Array<string>;
+                  allowedValues: Array<string>;
+                  type: TagsetType;
+                }
+              | undefined;
             flowState?:
               | {
                   __typename?: 'Tagset';

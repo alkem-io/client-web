@@ -25,7 +25,7 @@ const InnovationFlowSettingsDialog: FC<InnovationFlowSettingsDialogProps> = ({
     collaborationId,
   });
 
-  const { innovationFlow, callouts, flowStateAllowedValues } = data;
+  const { innovationFlow, callouts } = data;
 
   return (
     <DialogWithGrid open={open} columns={12} onClose={onClose}>
@@ -42,7 +42,7 @@ const InnovationFlowSettingsDialog: FC<InnovationFlowSettingsDialogProps> = ({
           canEdit={authorization.canEditInnovationFlow}
         >
           <InnovationFlowCollaborationToolsBlock
-            flowStateAllowedValues={flowStateAllowedValues}
+            innovationFlowStates={innovationFlow?.states}
             callouts={callouts}
             onUpdateFlowStateOrder={actions.updateInnovationFlowStateOrder}
             onUpdateCalloutFlowState={actions.updateCalloutFlowState}

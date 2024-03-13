@@ -13,7 +13,7 @@ import {
   Tagset,
   UpdateProfileInput,
 } from '../../../../core/apollo/generated/graphql-schema';
-import { compact, uniq } from 'lodash';
+import { CalloutDisplayLocationValuesMap } from '../../callout/CalloutsInContext/CalloutsGroup';
 import { sortCallouts } from '../utils/sortCallouts';
 import { useMemo } from 'react';
 
@@ -49,6 +49,10 @@ const mapFlowState = (tagset: Tagset | undefined): GroupedCallout['flowState'] =
     : undefined;
 };
 
+const getCalloutDisplayLocation = (tagset: Tagset | undefined) => {
+  return tagset?.tags[0] as CalloutDisplayLocationValuesMap;
+};
+
 const useInnovationFlowSettings = ({ collaborationId }: useInnovationFlowSettingsProps) => {
   const { data, loading: loadingData } = useInnovationFlowSettingsQuery({
     variables: { collaborationId: collaborationId! },
@@ -62,6 +66,11 @@ const useInnovationFlowSettings = ({ collaborationId }: useInnovationFlowSetting
   const callouts = useMemo(
     () =>
       collaboration?.callouts
+        ?.filter(
+          callout =>
+            getCalloutDisplayLocation(callout.framing.profile.calloutDisplayLocation) ===
+            CalloutDisplayLocationValuesMap.ContributeRight
+        )
         ?.map<GroupedCallout>(callout => ({
           id: callout.id,
           nameID: callout.nameID,
@@ -76,8 +85,6 @@ const useInnovationFlowSettings = ({ collaborationId }: useInnovationFlowSetting
         .sort((a, b) => a.sortOrder - b.sortOrder) ?? [],
     [collaboration?.callouts]
   );
-
-  const flowStateAllowedValues = uniq(compact(callouts?.flatMap(callout => callout.flowState?.allowedValues))) ?? [];
 
   const [updateInnovationFlowSelectedState, { loading: changingState }] = useUpdateInnovationFlowSelectedStateMutation({
     refetchQueries: [refetchInnovationFlowSettingsQuery({ collaborationId: collaborationId! })],
@@ -198,6 +205,23 @@ const useInnovationFlowSettings = ({ collaborationId }: useInnovationFlowSetting
           states: nextStates,
         },
       },
+      update: cache => {
+        const id = cache.identify({
+          id: innovationFlowId,
+          __typename: 'InnovationFlow',
+        });
+
+        cache.modify({
+          id,
+          fields: {
+            states() {
+              return nextStates;
+            },
+          },
+        });
+      },
+      refetchQueries: [refetchInnovationFlowSettingsQuery({ collaborationId: collaborationId! })],
+      awaitRefetchQueries: true,
     });
   };
 
@@ -205,7 +229,6 @@ const useInnovationFlowSettings = ({ collaborationId }: useInnovationFlowSetting
     data: {
       innovationFlow,
       callouts,
-      flowStateAllowedValues,
     },
     authorization: {
       canEditInnovationFlow: collaboration?.innovationFlow?.authorization?.myPrivileges?.includes(

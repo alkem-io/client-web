@@ -2,7 +2,7 @@ import React, { ComponentType, FC, forwardRef } from 'react';
 import { Caption } from '../../../../core/ui/typography';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import { useTranslation } from 'react-i18next';
-import { Box, BoxProps, IconButton, SvgIconProps } from '@mui/material';
+import { Box, BoxProps, IconButton, IconButtonProps, SvgIconProps } from '@mui/material';
 import { groupBy } from 'lodash';
 import calloutIcons from '../../callout/utils/calloutIcons';
 import ScrollableCardsLayoutContainer from '../../../../core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
@@ -14,6 +14,10 @@ import { gutters } from '../../../../core/ui/grid/utils';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { CalloutType } from '../../../../core/apollo/generated/graphql-schema';
+import { InnovationFlowState } from '../InnovationFlow';
+import CroppedMarkdown from '../../../../core/ui/markdown/CroppedMarkdown';
+import AddIcon from '@mui/icons-material/Add';
+import RoundedIcon from '../../../../core/ui/icon/RoundedIcon';
 
 const STATES_DROPPABLE_ID = '__states';
 
@@ -34,7 +38,7 @@ interface InnovationFlowCollaborationToolsBlockProps {
         }
       | undefined;
   }[];
-  flowStateAllowedValues: string[];
+  innovationFlowStates: InnovationFlowState[] | undefined;
   onUpdateFlowStateOrder: (flowState: string, sortOrder: number) => Promise<unknown> | void;
   onUpdateCalloutFlowState: (calloutId: string, newState: string, index: number) => Promise<unknown> | void;
 }
@@ -44,6 +48,17 @@ interface ListItemProps extends BoxProps {
   icon?: ComponentType<SvgIconProps>;
   activity?: number;
 }
+
+const AddButton = ({ onClick }: IconButtonProps) => {
+  const { t } = useTranslation();
+  return (
+    <Box>
+      <IconButton aria-label={t('common.add')} size="small" onClick={onClick}>
+        <RoundedIcon component={AddIcon} size="medium" iconSize="small" />
+      </IconButton>
+    </Box>
+  );
+};
 
 const ListItem = forwardRef<HTMLDivElement, ListItemProps>(
   ({ displayName, icon: Icon, activity = 0, ...boxProps }, ref) => {
@@ -62,7 +77,7 @@ const InnovationFlowCollaborationToolsBlock: FC<InnovationFlowCollaborationTools
   callouts,
   onUpdateFlowStateOrder,
   onUpdateCalloutFlowState,
-  flowStateAllowedValues,
+  innovationFlowStates,
 }) => {
   const { t } = useTranslation();
   const groupedCallouts = groupBy(callouts, callout => callout.flowState?.currentState);
@@ -91,26 +106,29 @@ const InnovationFlowCollaborationToolsBlock: FC<InnovationFlowCollaborationTools
         {parentDroppableProvided => (
           <Box ref={parentDroppableProvided.innerRef}>
             <ScrollableCardsLayoutContainer orientation="horizontal" alignItems="stretch">
-              {flowStateAllowedValues.map((state, index) => (
-                <Draggable key={state} draggableId={state} index={index}>
+              {innovationFlowStates?.map((state, index) => (
+                <Draggable key={state.displayName} draggableId={state.displayName} index={index}>
                   {parentProvider => (
                     <PageContentBlock
-                      key={state}
+                      key={state.displayName}
                       columns={3}
                       ref={parentProvider.innerRef}
                       {...parentProvider.draggableProps}
                     >
                       <PageContentBlockHeader
-                        title={<Caption {...parentProvider.dragHandleProps}>{getStateName(state)}</Caption>}
+                        title={<Caption {...parentProvider.dragHandleProps}>{getStateName(state.displayName)}</Caption>}
                       >
                         <IconButton size="small" sx={{ padding: 0 }} onClick={() => {}}>
                           <MoreVertIcon fontSize="small" sx={{ padding: 0 }} />
                         </IconButton>
                       </PageContentBlockHeader>
-                      <Droppable droppableId={state}>
+                      <CroppedMarkdown backgroundColor="paper" heightGutters={3}>
+                        {state.description}
+                      </CroppedMarkdown>
+                      <Droppable droppableId={state.displayName}>
                         {provided => (
                           <Gutters ref={provided.innerRef} disablePadding flexGrow={1} {...provided.droppableProps}>
-                            {groupedCallouts[state]?.map((callout, index) => (
+                            {groupedCallouts[state.displayName]?.map((callout, index) => (
                               <Draggable key={callout.id} draggableId={callout.id} index={index}>
                                 {provider => (
                                   <ListItem
@@ -133,6 +151,7 @@ const InnovationFlowCollaborationToolsBlock: FC<InnovationFlowCollaborationTools
                 </Draggable>
               ))}
               {parentDroppableProvided.placeholder}
+              <AddButton />
             </ScrollableCardsLayoutContainer>
           </Box>
         )}
