@@ -206,10 +206,10 @@ const useInnovationFlowSettings = ({ collaborationId }: useInnovationFlowSetting
         ? [...states, newState] // if stateBefore not found or undefined, just append the newState to the end
         : [...states.slice(0, stateBeforeIndex + 1), newState, ...states.slice(stateBeforeIndex + 1)];
 
-    callUpdateInnovationFlowStates(nextStates);
+    return callUpdateInnovationFlowStates(nextStates);
   };
 
-  const handleEditState = (oldState: InnovationFlowState, newState: InnovationFlowState) => {
+  const handleEditState = async (oldState: InnovationFlowState, newState: InnovationFlowState) => {
     const states = innovationFlow?.states ?? [];
     const oldStateIndex = states.findIndex(state => state.displayName === oldState.displayName);
 
@@ -218,13 +218,24 @@ const useInnovationFlowSettings = ({ collaborationId }: useInnovationFlowSetting
     }
 
     const nextStates = [...states.slice(0, oldStateIndex), newState, ...states.slice(oldStateIndex + 1)];
-    callUpdateInnovationFlowStates(nextStates);
+
+    // Callouts in this state should be moved to the new state if the displayName changes
+    const oldCallouts = collaboration?.callouts
+      ?.filter(callout => callout.framing.profile.flowState?.tags[0] === oldState.displayName)
+      .sort((a, b) => a.sortOrder - b.sortOrder)
+      .map(callout => callout.id);
+
+    await callUpdateInnovationFlowStates(nextStates);
+
+    oldCallouts?.map(
+      async (calloutId, index) => await handleUpdateCalloutFlowState(calloutId, newState.displayName, index)
+    );
   };
 
   const handleDeleteState = (stateDisplayName: string) => {
     const states = innovationFlow?.states ?? [];
     const nextStates = states.filter(state => state.displayName !== stateDisplayName);
-    callUpdateInnovationFlowStates(nextStates);
+    return callUpdateInnovationFlowStates(nextStates);
   };
 
   const [updateInnovationFlowStates] = useUpdateInnovationFlowStatesMutation();
