@@ -1,33 +1,35 @@
 import Gutters from '../../../../core/ui/grid/Gutters';
-import { Button, IconButton, useTheme } from '@mui/material';
+import { Button, IconButton, styled, useTheme } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/SettingsOutlined';
-import { BlockTitle, Caption } from '../../../../core/ui/typography';
+import { BlockTitle } from '../../../../core/ui/typography';
 import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
-import { Trans, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import TranslationKey from '../../../../core/i18n/utils/TranslationKey';
 import { gutters } from '../../../../core/ui/grid/utils';
 import { useState } from 'react';
 import InnovationFlowSettingsDialog from '../InnovationFlowDialogs/InnovationFlowSettingsDialog';
 import { useGlobalGridColumns } from '../../../../core/ui/grid/constants';
-import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import { InnovationFlowState } from '../InnovationFlow';
+import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 
 interface InnovationFlowStatesProps {
   collaborationId: string | undefined;
   states: InnovationFlowState[];
   currentState: string;
   selectedState: string;
-  journeyTypeName: JourneyTypeName;
   showSettings?: boolean;
   onSelectState?: (state: InnovationFlowState) => void;
 }
+
+const FlowStateDescription = styled(WrapperMarkdown)(() => ({
+  textAlign: 'center',
+}));
 
 const InnovationFlowStates = ({
   collaborationId,
   states,
   currentState,
   selectedState,
-  journeyTypeName,
   showSettings = false,
   onSelectState,
 }: InnovationFlowStatesProps) => {
@@ -63,6 +65,7 @@ const InnovationFlowStates = ({
       : stateName;
 
   const columns = useGlobalGridColumns();
+  const selectedStateDescription = states.find(state => state.displayName === selectedState)?.description;
 
   return (
     <PageContentBlockSeamless disablePadding>
@@ -94,20 +97,7 @@ const InnovationFlowStates = ({
           </IconButton>
         )}
       </Gutters>
-      {selectedState !== currentState && (
-        <Caption fontStyle="italic">
-          <Trans
-            i18nKey="components.innovationFlowStateSelector.selectedStateNotice"
-            values={{
-              journeyType: t(`common.journeyTypes.${journeyTypeName}` as const),
-              currentState: getStateName(currentState),
-              selectedState: getStateName(selectedState),
-            }}
-            components={{ strong: <strong /> }}
-            t={t}
-          />
-        </Caption>
-      )}
+      {selectedStateDescription && <FlowStateDescription>{selectedStateDescription}</FlowStateDescription>}
       <InnovationFlowSettingsDialog
         collaborationId={collaborationId}
         open={showSettingsDialog}
