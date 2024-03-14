@@ -9,6 +9,8 @@ query communityUserPrivileges($spaceNameId: UUID_NAMEID!, $communityId: UUID!) {
         myPrivileges
       }
     }
+  }
+  lookup {
     applicationCommunity: community(ID: $communityId) {
       id
       authorization {

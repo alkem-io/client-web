@@ -44,7 +44,7 @@ export type Account = {
   host?: Maybe<Organization>;
   /** The ID of the entity */
   id: Scalars['UUID'];
-  /** The templates in use by this Account */
+  /** The Library in use by this Account */
   library?: Maybe<TemplatesSet>;
   /** The License governing platform functionality in use by this Account */
   license: License;
@@ -4068,7 +4068,7 @@ export type RelayPaginatedSpace = Journey & {
   challenges?: Maybe<Array<Challenge>>;
   /** Collaboration object for the Journey */
   collaboration?: Maybe<Collaboration>;
-  /** Get a Community within the Space. Defaults to the Community for the Space itself. */
+  /** Get the Community for the Space.  */
   community?: Maybe<Community>;
   /** The context for the space. */
   context?: Maybe<Context>;
@@ -4106,10 +4106,6 @@ export type RelayPaginatedSpaceChallengesArgs = {
   IDs?: InputMaybe<Array<Scalars['UUID']>>;
   limit?: InputMaybe<Scalars['Float']>;
   shuffle?: InputMaybe<Scalars['Boolean']>;
-};
-
-export type RelayPaginatedSpaceCommunityArgs = {
-  ID?: InputMaybe<Scalars['UUID']>;
 };
 
 export type RelayPaginatedSpaceGroupArgs = {
@@ -4601,7 +4597,7 @@ export type Space = Journey & {
   challenges?: Maybe<Array<Challenge>>;
   /** Collaboration object for the Journey */
   collaboration?: Maybe<Collaboration>;
-  /** Get a Community within the Space. Defaults to the Community for the Space itself. */
+  /** Get the Community for the Space.  */
   community?: Maybe<Community>;
   /** The context for the space. */
   context?: Maybe<Context>;
@@ -4639,10 +4635,6 @@ export type SpaceChallengesArgs = {
   IDs?: InputMaybe<Array<Scalars['UUID']>>;
   limit?: InputMaybe<Scalars['Float']>;
   shuffle?: InputMaybe<Scalars['Boolean']>;
-};
-
-export type SpaceCommunityArgs = {
-  ID?: InputMaybe<Scalars['UUID']>;
 };
 
 export type SpaceGroupArgs = {
@@ -15258,6 +15250,9 @@ export type CommunityUserPrivilegesQuery = {
             | undefined;
         }
       | undefined;
+  };
+  lookup: {
+    __typename?: 'LookupQueryResults';
     applicationCommunity?:
       | {
           __typename?: 'Community';

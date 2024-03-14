@@ -11127,6 +11127,8 @@ export const CommunityUserPrivilegesDocument = gql`
           myPrivileges
         }
       }
+    }
+    lookup {
       applicationCommunity: community(ID: $communityId) {
         id
         authorization {
