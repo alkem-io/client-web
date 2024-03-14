@@ -5,7 +5,6 @@ export interface JourneyFormValues {
   tags: string[];
   background?: string;
   addDefaultCallouts: boolean;
-  innovationFlowTemplateId: string;
 }
 
 export interface JourneyCreationForm {
