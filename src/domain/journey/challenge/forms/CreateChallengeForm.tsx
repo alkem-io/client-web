@@ -11,7 +11,6 @@ import { TagsetField } from '../../../platform/admin/components/Common/TagsetSeg
 import FormikEffectFactory from '../../../../core/ui/forms/FormikEffect';
 import { JourneyCreationForm } from '../../../shared/components/JorneyCreationDialog/JourneyCreationForm';
 import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
-import useDefaultInnovationFlowTemplate from '../../../collaboration/InnovationFlow/DefaultInnovationFlow/useDefaultInnovationFlowTemplate';
 import { FormikSwitch } from '../../../../core/ui/forms/FormikSwitch';
 
 const FormikEffect = FormikEffectFactory<FormValues>();
@@ -23,17 +22,14 @@ interface FormValues {
   vision: string;
   tags: string[];
   addDefaultCallouts: boolean;
-  innovationFlowTemplateId: string;
 }
 
 interface CreateChallengeFormProps extends JourneyCreationForm {}
 
 export const CreateChallengeForm: FC<CreateChallengeFormProps> = ({ isSubmitting, onValidChanged, onChanged }) => {
   const { t } = useTranslation();
-  const { defaultInnovationFlowTemplateId } = useDefaultInnovationFlowTemplate();
 
   const validationRequiredString = t('forms.validations.required');
-  const validationRequiredInnovationFlowString = t('components.innovationFlowTemplateSelect.required');
 
   const handleChanged = (value: FormValues) =>
     onChanged({
@@ -43,7 +39,6 @@ export const CreateChallengeForm: FC<CreateChallengeFormProps> = ({ isSubmitting
       vision: value.vision,
       tags: value.tags,
       addDefaultCallouts: value.addDefaultCallouts,
-      innovationFlowTemplateId: value.innovationFlowTemplateId,
     });
 
   const initialValues: FormValues = {
@@ -53,7 +48,6 @@ export const CreateChallengeForm: FC<CreateChallengeFormProps> = ({ isSubmitting
     vision: '',
     tags: [],
     addDefaultCallouts: true,
-    innovationFlowTemplateId: defaultInnovationFlowTemplateId ?? '',
   };
 
   const validationSchema = yup.object().shape({
@@ -72,7 +66,6 @@ export const CreateChallengeForm: FC<CreateChallengeFormProps> = ({ isSubmitting
     background: MarkdownValidator(MARKDOWN_TEXT_LENGTH).trim().required(validationRequiredString),
     vision: MarkdownValidator(MARKDOWN_TEXT_LENGTH).trim().required(validationRequiredString),
     tags: yup.array().of(yup.string().min(2)).notRequired(),
-    innovationFlowTemplateId: yup.string().required(validationRequiredInnovationFlowString),
   });
 
   return (

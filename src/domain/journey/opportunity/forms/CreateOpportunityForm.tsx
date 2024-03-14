@@ -11,7 +11,6 @@ import { TagsetField } from '../../../platform/admin/components/Common/TagsetSeg
 import FormikEffectFactory from '../../../../core/ui/forms/FormikEffect';
 import { JourneyCreationForm } from '../../../shared/components/JorneyCreationDialog/JourneyCreationForm';
 import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
-import useDefaultInnovationFlowTemplate from '../../../collaboration/InnovationFlow/DefaultInnovationFlow/useDefaultInnovationFlowTemplate';
 import { FormikSwitch } from '../../../../core/ui/forms/FormikSwitch';
 
 const FormikEffect = FormikEffectFactory<FormValues>();
@@ -22,7 +21,6 @@ interface FormValues {
   vision: string;
   tags: string[];
   addDefaultCallouts: boolean;
-  innovationFlowTemplateId: string;
 }
 
 interface CreateOpportunityFormProps extends JourneyCreationForm {}
@@ -30,10 +28,7 @@ interface CreateOpportunityFormProps extends JourneyCreationForm {}
 export const CreateOpportunityForm: FC<CreateOpportunityFormProps> = ({ isSubmitting, onValidChanged, onChanged }) => {
   const { t } = useTranslation();
 
-  const { defaultInnovationFlowTemplateId } = useDefaultInnovationFlowTemplate();
-
   const validationRequiredString = t('forms.validations.required');
-  const validationRequiredInnovationFlowString = t('components.innovationFlowTemplateSelect.required');
 
   const handleChanged = (value: FormValues) =>
     onChanged({
@@ -42,7 +37,6 @@ export const CreateOpportunityForm: FC<CreateOpportunityFormProps> = ({ isSubmit
       vision: value.vision,
       tags: value.tags,
       addDefaultCallouts: value.addDefaultCallouts,
-      innovationFlowTemplateId: value.innovationFlowTemplateId,
     });
 
   const initialValues: FormValues = {
@@ -51,7 +45,6 @@ export const CreateOpportunityForm: FC<CreateOpportunityFormProps> = ({ isSubmit
     vision: '',
     tags: [],
     addDefaultCallouts: true,
-    innovationFlowTemplateId: defaultInnovationFlowTemplateId ?? '',
   };
 
   const validationSchema = yup.object().shape({
@@ -69,7 +62,6 @@ export const CreateOpportunityForm: FC<CreateOpportunityFormProps> = ({ isSubmit
       .required(validationRequiredString),
     vision: MarkdownValidator(MARKDOWN_TEXT_LENGTH).trim().required(validationRequiredString),
     tags: yup.array().of(yup.string().min(2)).notRequired(),
-    innovationFlowTemplateId: yup.string().required(validationRequiredInnovationFlowString),
   });
 
   return (
