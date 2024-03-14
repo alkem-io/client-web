@@ -2,12 +2,13 @@ import { ContributeCardProps } from '../../../../core/ui/card/ContributeCard';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 import PostTemplateCard from '../../post/PostTemplateCard/PostTemplateCard';
 import WhiteboardTemplateCard from '../../whiteboard/WhiteboardTemplateCard/WhiteboardTemplateCard';
-import InnovationFlowTemplateCard from '../../InnovationFlow/InnovationFlowTemplateCard/InnovationFlowTemplateCard';
+import InnovationFlowTemplateCard, {
+  InnovationFlowTemplate,
+} from '../../InnovationFlow/InnovationFlowTemplateCard/InnovationFlowTemplateCard';
 import { TemplateType } from '../InnovationPackProfilePage/InnovationPackProfilePage';
 import { PostTemplate } from '../../post/PostTemplateCard/PostTemplate';
 import { TemplateBase } from '../../templates/CollaborationTemplatesLibrary/TemplateBase';
 import { TemplateWithInnovationPack } from '../../../platform/admin/templates/InnovationPacks/ImportTemplatesDialogGalleryStep';
-import { InnovationFlowTemplate } from '../../InnovationFlow/InnovationFlow';
 
 export type LibraryTemplateCardProps = Identifiable &
   TemplateWithInnovationPack<

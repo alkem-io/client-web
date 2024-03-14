@@ -7,18 +7,15 @@ import {
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import CollaborationTemplatesLibrary from '../../templates/CollaborationTemplatesLibrary/CollaborationTemplatesLibrary';
-import InnovationFlowTemplateCard from '../InnovationFlowTemplateCard/InnovationFlowTemplateCard';
+import InnovationFlowTemplateCard, {
+  InnovationFlowTemplate,
+} from '../InnovationFlowTemplateCard/InnovationFlowTemplateCard';
 import InnovationFlowTemplatePreview from './InnovationFlowTemplatePreview';
 import { Autorenew } from '@mui/icons-material';
 import { TemplateBase } from '../../templates/CollaborationTemplatesLibrary/TemplateBase';
 import { TemplateWithInnovationPack } from '../../../platform/admin/templates/InnovationPacks/ImportTemplatesDialogGalleryStep';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 import CollaborationTemplatesLibraryButton from '../../templates/CollaborationTemplatesLibrary/CollaborationTemplatesLibraryButton';
-import { InnovationFlowState } from '../InnovationFlow';
-
-interface InnovationFlowTemplate extends TemplateBase {
-  states: InnovationFlowState[];
-}
 
 export interface InnovationFlowTemplatesLibraryProps {
   onImportTemplate: (template: Identifiable) => void;

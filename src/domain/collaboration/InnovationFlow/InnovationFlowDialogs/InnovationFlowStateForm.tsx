@@ -16,14 +16,14 @@ export interface InnovationFlowStateFormValues extends InnovationFlowState {}
 
 interface InnovationFlowStateFormProps {
   state?: InnovationFlowState;
-  forbiddenStateNames?: string[];
-  onSubmit: (formData: InnovationFlowStateFormValues) => Promise<unknown> | void;
+  forbiddenFlowStateNames?: string[];
+  onSubmit: (formData: InnovationFlowStateFormValues) => Promise<unknown>;
   onCancel?: () => void;
 }
 
 const InnovationFlowStateForm: FC<InnovationFlowStateFormProps> = ({
   state,
-  forbiddenStateNames = [],
+  forbiddenFlowStateNames = [],
   onSubmit,
   onCancel,
 }) => {
@@ -39,13 +39,11 @@ const InnovationFlowStateForm: FC<InnovationFlowStateFormProps> = ({
       .string()
       .required()
       .max(SMALL_TEXT_LENGTH)
-      .notOneOf(forbiddenStateNames, t('components.innovationFlowSettings.stateEditor.noRepeatedStates')),
+      .notOneOf(forbiddenFlowStateNames, t('components.innovationFlowSettings.stateEditor.noRepeatedStates')),
     description: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
   });
 
-  const [handleSave, loading] = useLoadingState(async (profileData: InnovationFlowStateFormValues) => {
-    await onSubmit(profileData);
-  });
+  const [handleSave, loading] = useLoadingState(onSubmit);
 
   return (
     <Formik initialValues={initialValues} validationSchema={validationSchema} enableReinitialize onSubmit={handleSave}>

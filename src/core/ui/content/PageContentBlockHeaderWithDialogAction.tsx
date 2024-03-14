@@ -22,17 +22,21 @@ const PageContentBlockHeaderWithDialogAction = ({
   ...headerProps
 }: PropsWithChildren<PageContentBlockHeaderWithDialogActionProps>) => {
   const { t } = useTranslation();
+  //!! maybe actions last
   const dialogAction = (
-    <IconButton
-      onClick={expanded ? onDialogClose : onDialogOpen}
-      sx={{ svg: { width: iconSize, height: iconSize } }}
-      aria-label={t('buttons.expandWindow')}
-    >
-      {expanded ? <Close /> : <ExpandContentIcon />}
-    </IconButton>
+    <>
+      {actions}
+      <IconButton
+        onClick={expanded ? onDialogClose : onDialogOpen}
+        sx={{ svg: { width: iconSize, height: iconSize } }}
+        aria-label={t('buttons.expandWindow')}
+      >
+        {expanded ? <Close /> : <ExpandContentIcon />}
+      </IconButton>
+    </>
   );
 
-  return <PageContentBlockHeader {...headerProps} actions={actions} dialogAction={dialogAction} />;
+  return <PageContentBlockHeader {...headerProps} actions={dialogAction} />;
 };
 
 export default PageContentBlockHeaderWithDialogAction;

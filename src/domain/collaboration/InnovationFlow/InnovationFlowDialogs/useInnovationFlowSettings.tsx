@@ -51,8 +51,13 @@ const mapFlowState = (tagset: Tagset | undefined): GroupedCallout['flowState'] =
     : undefined;
 };
 
-const getCalloutDisplayLocation = (tagset: Tagset | undefined) => {
-  return tagset?.tags[0] as CalloutDisplayLocationValuesMap;
+// Only return callouts that are dependent on an innovation flow state.
+// And for the moment that is the callouts that are in ContributeRight displayLocation
+const isCalloutConnectedToFlowState = (callout: { framing: { profile: { calloutDisplayLocation?: Tagset } } }) => {
+  const calloutDisplayLocation = callout.framing.profile.calloutDisplayLocation?.tags?.[0] as
+    | CalloutDisplayLocationValuesMap
+    | undefined;
+  return calloutDisplayLocation === CalloutDisplayLocationValuesMap.ContributeRight;
 };
 
 const useInnovationFlowSettings = ({ collaborationId, skip }: useInnovationFlowSettingsProps) => {
@@ -68,11 +73,7 @@ const useInnovationFlowSettings = ({ collaborationId, skip }: useInnovationFlowS
   const callouts = useMemo(
     () =>
       collaboration?.callouts
-        ?.filter(
-          callout =>
-            getCalloutDisplayLocation(callout.framing.profile.calloutDisplayLocation) ===
-            CalloutDisplayLocationValuesMap.ContributeRight
-        )
+        ?.filter(isCalloutConnectedToFlowState)
         ?.map<GroupedCallout>(callout => ({
           id: callout.id,
           nameID: callout.nameID,
@@ -104,9 +105,9 @@ const useInnovationFlowSettings = ({ collaborationId, skip }: useInnovationFlowS
     });
   };
 
-  const [updateInnovationFlow, { loading: loadingUpdateInnovationFlow }] = useUpdateInnovationFlowMutation();
+  const [updateInnovationFlowProfile, { loading: loadingUpdateInnovationFlow }] = useUpdateInnovationFlowMutation();
   const handleUpdateInnovationFlowProfile = async (innovationFlowId: string, profileData: UpdateProfileInput) => {
-    return updateInnovationFlow({
+    return updateInnovationFlowProfile({
       variables: {
         updateInnovationFlowData: {
           innovationFlowID: innovationFlowId,
@@ -195,19 +196,19 @@ const useInnovationFlowSettings = ({ collaborationId, skip }: useInnovationFlowS
       movedState,
       ...statesWithoutMovedState.slice(sortOrder),
     ];
-    callUpdateInnovationFlowStates(nextStates);
+    updateInnovationFlowStates(nextStates);
   };
 
   const handleCreateState = (newState: InnovationFlowState, stateBefore?: string) => {
     const states = innovationFlow?.states ?? [];
-    const stateBeforeIndex = states.findIndex(state => state.displayName === stateBefore);
+    const stateBeforeIndex = !stateBefore ? -1 : states.findIndex(state => state.displayName === stateBefore);
 
     const nextStates =
       stateBeforeIndex === -1
         ? [...states, newState] // if stateBefore not found or undefined, just append the newState to the end
         : [...states.slice(0, stateBeforeIndex + 1), newState, ...states.slice(stateBeforeIndex + 1)];
 
-    return callUpdateInnovationFlowStates(nextStates);
+    return updateInnovationFlowStates(nextStates);
   };
 
   const handleEditState = async (oldState: InnovationFlowState, newState: InnovationFlowState) => {
@@ -220,32 +221,33 @@ const useInnovationFlowSettings = ({ collaborationId, skip }: useInnovationFlowS
 
     const nextStates = [...states.slice(0, oldStateIndex), newState, ...states.slice(oldStateIndex + 1)];
 
-    // Callouts in this state should be moved to the new state if the displayName changes
-    const oldCallouts = collaboration?.callouts
-      ?.filter(callout => callout.framing.profile.flowState?.tags[0] === oldState.displayName)
-      .sort((a, b) => a.sortOrder - b.sortOrder)
-      .map(callout => callout.id);
+    // Callouts in this state should be moved to the new state if the displayName change
+    // TODO: This should be handled by the backend, created task #3708
+    const oldCallouts =
+      collaboration?.callouts
+        ?.filter(callout => callout.framing.profile.flowState?.tags[0] === oldState.displayName)
+        .sort((a, b) => a.sortOrder - b.sortOrder)
+        .map(callout => callout.id) ?? [];
 
-    await callUpdateInnovationFlowStates(nextStates);
-
-    oldCallouts?.map(
-      async (calloutId, index) => await handleUpdateCalloutFlowState(calloutId, newState.displayName, index)
+    await updateInnovationFlowStates(nextStates);
+    await Promise.all(
+      oldCallouts.map((calloutId, index) => handleUpdateCalloutFlowState(calloutId, newState.displayName, index))
     );
   };
 
   const handleDeleteState = (stateDisplayName: string) => {
     const states = innovationFlow?.states ?? [];
     const nextStates = states.filter(state => state.displayName !== stateDisplayName);
-    return callUpdateInnovationFlowStates(nextStates);
+    return updateInnovationFlowStates(nextStates);
   };
 
-  const [updateInnovationFlowStates] = useUpdateInnovationFlowStatesMutation();
-  const callUpdateInnovationFlowStates = (nextStates: InnovationFlowState[]) => {
+  const [updateInnovationFlow] = useUpdateInnovationFlowStatesMutation();
+  const updateInnovationFlowStates = (nextStates: InnovationFlowState[]) => {
     const innovationFlowId = innovationFlow?.id;
     if (!innovationFlowId) {
       throw new Error('Innovation flow still not loaded.');
     }
-    return updateInnovationFlowStates({
+    return updateInnovationFlow({
       variables: { innovationFlowId, states: nextStates },
       optimisticResponse: {
         updateInnovationFlow: {
@@ -269,6 +271,7 @@ const useInnovationFlowSettings = ({ collaborationId, skip }: useInnovationFlowS
         });
       },
       refetchQueries: [refetchInnovationFlowSettingsQuery({ collaborationId: collaborationId! })],
+      awaitRefetchQueries: true,
     });
   };
 

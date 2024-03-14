@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import Menu from '@mui/material/Menu';
+import React from 'react';
 import MenuItem from '@mui/material/MenuItem';
-import { Divider, IconButton, ListItemIcon } from '@mui/material';
+import { Divider, ListItemIcon } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { AddCircleOutline, DeleteOutlined, EditOutlined, MoreVert, ToggleOn } from '@mui/icons-material';
+import { AddCircleOutline, DeleteOutlined, EditOutlined, ToggleOn } from '@mui/icons-material';
+import PageContentBlockContextualMenu from '../../../../core/ui/content/PageContentBlockContextualMenu';
 
 interface InnovationFlowStateMenuProps {
   state: string;
@@ -11,7 +11,7 @@ interface InnovationFlowStateMenuProps {
   onUpdateCurrentState: (state: string) => void;
   onEdit: (state: string) => void;
   onDelete: (state: string) => void;
-  onAddState: (stateBefore: string) => void;
+  onAddStateAfter: (stateBefore: string) => void;
 }
 
 export default function InnovationFlowStateMenu({
@@ -20,81 +20,56 @@ export default function InnovationFlowStateMenu({
   onUpdateCurrentState,
   onEdit,
   onDelete,
-  onAddState,
+  onAddStateAfter,
 }: InnovationFlowStateMenuProps) {
-  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const { t } = useTranslation();
 
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
   return (
-    <>
-      <IconButton
-        aria-haspopup="true"
-        size="small"
-        sx={{ padding: 0 }}
-        onClick={event => setAnchorEl(event.currentTarget)}
-      >
-        <MoreVert fontSize="small" sx={{ padding: 0 }} />
-      </IconButton>
-      <Menu anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
-        {isCurrentState ? (
-          <MenuItem disabled>
-            <ListItemIcon>
-              <ToggleOn fontSize="small" color="primary" />
-            </ListItemIcon>
-            {t('components.innovationFlowSettings.stateEditor.activeState')}
-          </MenuItem>
-        ) : (
-          <MenuItem
-            onClick={() => {
-              onUpdateCurrentState(state);
-              setAnchorEl(null);
-            }}
-          >
-            <ListItemIcon>
-              <ToggleOn fontSize="small" />
-            </ListItemIcon>
-            {t('components.innovationFlowSettings.stateEditor.setActiveState')}
-          </MenuItem>
-        )}
-        <MenuItem
-          onClick={() => {
-            onEdit(state);
-            setAnchorEl(null);
-          }}
-        >
-          <ListItemIcon>
-            <EditOutlined fontSize="small" />
-          </ListItemIcon>
-          {t('components.innovationFlowSettings.stateEditor.editState')}
-        </MenuItem>
-        <MenuItem
-          onClick={() => {
-            onDelete(state);
-            setAnchorEl(null);
-          }}
-        >
-          <ListItemIcon>
-            <DeleteOutlined fontSize="small" />
-          </ListItemIcon>
-          {t('components.innovationFlowSettings.stateEditor.deleteState')}
-        </MenuItem>
-        <Divider />
-        <MenuItem
-          onClick={() => {
-            onAddState(state);
-            setAnchorEl(null);
-          }}
-        >
-          <ListItemIcon>
-            <AddCircleOutline fontSize="small" />
-          </ListItemIcon>
-          {t('components.innovationFlowSettings.stateEditor.addState')}
-        </MenuItem>
-      </Menu>
-    </>
+    <PageContentBlockContextualMenu>
+      {({ closeMenu }) => {
+        const createMenuAction = (menuAction: (state: string) => void) => () => {
+          menuAction(state);
+          closeMenu();
+        };
+        return (
+          <>
+            {isCurrentState ? (
+              <MenuItem disabled>
+                <ListItemIcon>
+                  <ToggleOn fontSize="small" color="primary" />
+                </ListItemIcon>
+                {t('components.innovationFlowSettings.stateEditor.activeState')}
+              </MenuItem>
+            ) : (
+              <MenuItem onClick={createMenuAction(onUpdateCurrentState)}>
+                <ListItemIcon>
+                  <ToggleOn fontSize="small" />
+                </ListItemIcon>
+                {t('components.innovationFlowSettings.stateEditor.setActiveState')}
+              </MenuItem>
+            )}
+            <MenuItem onClick={createMenuAction(onEdit)}>
+              <ListItemIcon>
+                <EditOutlined fontSize="small" />
+              </ListItemIcon>
+              {t('components.innovationFlowSettings.stateEditor.editState')}
+            </MenuItem>
+            <MenuItem onClick={createMenuAction(onDelete)}>
+              <ListItemIcon>
+                <DeleteOutlined fontSize="small" />
+              </ListItemIcon>
+              {t('components.innovationFlowSettings.stateEditor.deleteState')}
+            </MenuItem>
+            <Divider />
+            <MenuItem onClick={createMenuAction(onAddStateAfter)}>
+              <ListItemIcon>
+                <AddCircleOutline fontSize="small" />
+              </ListItemIcon>
+              {t('components.innovationFlowSettings.stateEditor.addState')}
+            </MenuItem>
+          </>
+        );
+      }}
+    </PageContentBlockContextualMenu>
   );
 }

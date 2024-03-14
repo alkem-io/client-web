@@ -6,7 +6,7 @@ import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
 import { InnovationFlowIcon } from '../InnovationFlowIcon/InnovationFlowIcon';
 import InnovationFlowProfileBlock from './InnovationFlowProfileBlock';
 import useInnovationFlowSettings from './useInnovationFlowSettings';
-import InnovationFlowCollaborationToolsBlock, { LAST_STATE } from './InnovationFlowCollaborationToolsBlock';
+import InnovationFlowCollaborationToolsBlock from './InnovationFlowCollaborationToolsBlock';
 import { InnovationFlowState } from '../InnovationFlow';
 import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
 import { EditOutlined } from '@mui/icons-material';
@@ -31,11 +31,12 @@ const InnovationFlowSettingsDialog: FC<InnovationFlowSettingsDialogProps> = ({
   });
   const { innovationFlow, callouts } = data;
 
-  // Dialogs for state management:
-  const [createDialogOpen, setCreateDialogOpen] = useState<boolean>(false);
-  const [createStateAfter, setCreateStateAfter] = useState<string | undefined>(); // Stores the previous state to create a new state after it.
-  const [editState, setEditState] = useState<InnovationFlowState | undefined>();
-  const [deleteState, setDeleteState] = useState<string | undefined>();
+  // Dialogs for Flow States management:
+
+  // Stores the previous flow state to create a new state after it. If undefined it will create the state at the end of the flow
+  const [createFlowState, setCreateFlowState] = useState<{ after: string | undefined } | undefined>(undefined);
+  const [editFlowState, setEditFlowState] = useState<InnovationFlowState | undefined>();
+  const [deleteFlowState, setDeleteFlowState] = useState<string | undefined>();
 
   return (
     <>
@@ -59,75 +60,65 @@ const InnovationFlowSettingsDialog: FC<InnovationFlowSettingsDialogProps> = ({
               onUpdateCurrentState={actions.updateInnovationFlowCurrentState}
               onUpdateFlowStateOrder={actions.updateInnovationFlowStateOrder}
               onUpdateCalloutFlowState={actions.updateCalloutFlowState}
-              onCreateStateAfter={state => {
-                setCreateDialogOpen(true);
-                if (state !== LAST_STATE) {
-                  setCreateStateAfter(state);
-                }
+              onCreateFlowState={({ after }) => {
+                setCreateFlowState({ after });
               }}
-              onEditState={stateDisplayName => {
+              onEditFlowState={stateDisplayName => {
                 const state = data.innovationFlow?.states.find(state => state.displayName === stateDisplayName);
-                setEditState(state);
+                setEditFlowState(state);
               }}
-              onDeleteState={state => setDeleteState(state)}
+              onDeleteFlowState={state => setDeleteFlowState(state)}
             />
           </InnovationFlowProfileBlock>
         </DialogContent>
       </DialogWithGrid>
-      <DialogWithGrid open={createDialogOpen}>
+      <DialogWithGrid open={Boolean(createFlowState)}>
         <DialogHeader
           icon={<EditOutlined />}
           title={t('components.innovationFlowSettings.stateEditor.createDialog.title')}
-          onClose={() => {
-            setCreateStateAfter(undefined);
-            setCreateDialogOpen(false);
-          }}
+          onClose={() => setCreateFlowState(undefined)}
         />
         <DialogContent>
           <InnovationFlowStateForm
-            forbiddenStateNames={innovationFlow?.states.map(state => state.displayName)}
-            onSubmit={newState => {
-              actions.createState(newState, createStateAfter);
-              setCreateStateAfter(undefined);
-              setCreateDialogOpen(false);
+            forbiddenFlowStateNames={innovationFlow?.states.map(state => state.displayName)}
+            onSubmit={async newState => {
+              await actions.createState(newState, createFlowState?.after);
+              setCreateFlowState(undefined);
             }}
-            onCancel={() => {
-              setCreateStateAfter(undefined);
-              setCreateDialogOpen(false);
-            }}
+            onCancel={() => setCreateFlowState(undefined)}
           />
         </DialogContent>
       </DialogWithGrid>
-      <DialogWithGrid open={Boolean(editState)}>
+      <DialogWithGrid open={Boolean(editFlowState)}>
         <DialogHeader
           icon={<EditOutlined />}
           title={t('components.innovationFlowSettings.stateEditor.editDialog.title')}
-          onClose={() => setEditState(undefined)}
+          onClose={() => setEditFlowState(undefined)}
         />
         <DialogContent>
           <InnovationFlowStateForm
-            state={editState}
-            forbiddenStateNames={innovationFlow?.states
-              .filter(state => state.displayName !== editState?.displayName)
+            state={editFlowState}
+            forbiddenFlowStateNames={innovationFlow?.states
+              .filter(state => state.displayName !== editFlowState?.displayName)
               .map(state => state.displayName)}
-            onSubmit={newState => {
-              actions.editState(editState!, newState);
-              setEditState(undefined);
+            onSubmit={async newState => {
+              await actions.editState(editFlowState!, newState);
+              setEditFlowState(undefined);
             }}
-            onCancel={() => setEditState(undefined)}
+            onCancel={() => setEditFlowState(undefined)}
           />
         </DialogContent>
       </DialogWithGrid>
       <ConfirmationDialog
         actions={{
           onConfirm: () => {
-            actions.deleteState(deleteState!);
-            setDeleteState(undefined);
+            actions.deleteState(deleteFlowState!);
+            setDeleteFlowState(undefined);
           },
-          onCancel: () => setDeleteState(undefined),
+          onCancel: () => setDeleteFlowState(undefined),
         }}
         options={{
-          show: Boolean(deleteState),
+          show: Boolean(deleteFlowState),
         }}
         entities={{
           titleId: 'components.innovationFlowSettings.stateEditor.deleteDialog.title',

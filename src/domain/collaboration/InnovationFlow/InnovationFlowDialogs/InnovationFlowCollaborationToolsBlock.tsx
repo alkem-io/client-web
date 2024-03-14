@@ -20,7 +20,6 @@ import { InnovationFlowState } from '../InnovationFlow';
 import InnovationFlowStateMenu from './InnovationFlowStateMenu';
 
 const STATES_DROPPABLE_ID = '__states';
-export const LAST_STATE = Symbol('__LAST_STATE');
 
 interface InnovationFlowCollaborationToolsBlockProps {
   callouts: {
@@ -44,9 +43,9 @@ interface InnovationFlowCollaborationToolsBlockProps {
   onUpdateFlowStateOrder: (flowState: string, sortOrder: number) => Promise<unknown> | void;
   onUpdateCalloutFlowState: (calloutId: string, newState: string, index: number) => Promise<unknown> | void;
   onUpdateCurrentState: (state: string) => void;
-  onCreateStateAfter: (stateBefore?: string | typeof LAST_STATE) => void;
-  onEditState: (state: string) => void;
-  onDeleteState: (state: string) => void;
+  onCreateFlowState: (options: { after?: string }) => void;
+  onEditFlowState: (state: string) => void;
+  onDeleteFlowState: (state: string) => void;
 }
 
 interface ListItemProps extends BoxProps {
@@ -86,9 +85,9 @@ const InnovationFlowCollaborationToolsBlock: FC<InnovationFlowCollaborationTools
   onUpdateFlowStateOrder,
   onUpdateCalloutFlowState,
   onUpdateCurrentState,
-  onCreateStateAfter,
-  onEditState,
-  onDeleteState,
+  onCreateFlowState,
+  onEditFlowState,
+  onDeleteFlowState,
 }) => {
   const { t } = useTranslation();
   const groupedCallouts = groupBy(callouts, callout => callout.flowState?.currentState);
@@ -137,9 +136,9 @@ const InnovationFlowCollaborationToolsBlock: FC<InnovationFlowCollaborationTools
                             state={state.displayName}
                             isCurrentState={isCurrentState}
                             onUpdateCurrentState={onUpdateCurrentState}
-                            onAddState={onCreateStateAfter}
-                            onEdit={onEditState}
-                            onDelete={onDeleteState}
+                            onAddStateAfter={stateBefore => onCreateFlowState({ after: stateBefore })}
+                            onEdit={onEditFlowState}
+                            onDelete={onDeleteFlowState}
                           />
                         </PageContentBlockHeader>
                         <CroppedMarkdown backgroundColor="paper" heightGutters={3}>
@@ -172,7 +171,7 @@ const InnovationFlowCollaborationToolsBlock: FC<InnovationFlowCollaborationTools
                 </Draggable>
               ))}
               {parentDroppableProvided.placeholder}
-              <AddButton onClick={() => onCreateStateAfter(LAST_STATE)} />
+              <AddButton onClick={() => onCreateFlowState({ after: undefined })} />
             </ScrollableCardsLayoutContainer>
           </Box>
         )}
