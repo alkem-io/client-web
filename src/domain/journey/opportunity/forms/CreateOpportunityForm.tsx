@@ -11,7 +11,6 @@ import { TagsetField } from '../../../platform/admin/components/Common/TagsetSeg
 import FormikEffectFactory from '../../../../core/ui/forms/FormikEffect';
 import { JourneyCreationForm } from '../../../shared/components/JorneyCreationDialog/JourneyCreationForm';
 import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
-import FormikInnovationFlowSelect from '../../../collaboration/InnovationFlow/FormikInnovationFlowField/FormikInnovationFlowSelect';
 import useDefaultInnovationFlowTemplate from '../../../collaboration/InnovationFlow/DefaultInnovationFlow/useDefaultInnovationFlowTemplate';
 import { FormikSwitch } from '../../../../core/ui/forms/FormikSwitch';
 
@@ -114,11 +113,6 @@ export const CreateOpportunityForm: FC<CreateOpportunityFormProps> = ({ isSubmit
               helperText={t('context.opportunity.tags.description')}
             />
             <FormikSwitch name="addDefaultCallouts" title={t('context.opportunity.addDefaultCallouts.title')} />
-            <FormikInnovationFlowSelect
-              name="innovationFlowTemplateId"
-              title={t('context.opportunity.innovationFlow.title')}
-              disabled={isSubmitting}
-            />
           </Gutters>
         </Form>
       )}
