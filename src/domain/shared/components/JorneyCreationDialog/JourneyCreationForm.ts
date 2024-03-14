@@ -4,6 +4,7 @@ export interface JourneyFormValues {
   vision: string;
   tags: string[];
   background?: string;
+  addDefaultCallouts: boolean;
   innovationFlowTemplateId: string;
 }
 

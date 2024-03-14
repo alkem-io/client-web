@@ -10,9 +10,6 @@ query SpaceDashboardNavigationChallenges($spaceId: UUID_NAMEID!) {
       context {
         ...SpaceDashboardNavigationContext
       }
-      collaboration {
-        ...SpaceDashboardNavigationCollaboration
-      }
       authorization {
         id
         myPrivileges
@@ -44,9 +41,6 @@ query SpaceDashboardNavigationOpportunities($spaceId: UUID_NAMEID!, $challengeId
         }
         context {
           ...SpaceDashboardNavigationContext
-        }
-        collaboration {
-          ...SpaceDashboardNavigationCollaboration
         }
         community {
           ...SpaceDashboardNavigationCommunity
@@ -83,14 +77,4 @@ fragment SpaceDashboardNavigationContext on Context {
 fragment SpaceDashboardNavigationCommunity on Community {
   id
   myMembershipStatus
-}
-
-fragment SpaceDashboardNavigationCollaboration on Collaboration {
-  id
-  innovationFlow {
-    id
-    currentState {
-      displayName
-    }
-  }
 }

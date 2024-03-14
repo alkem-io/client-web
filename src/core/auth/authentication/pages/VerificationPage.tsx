@@ -42,7 +42,7 @@ export const VerificationPage: FC<RegisterPageProps> = ({ flow }) => {
         if (!continueButton) {
           return;
         }
-        (continueButton as UiNodeAnchor).attributes.href = returnUrl;
+        (continueButton as UiNodeAnchor).attributes.href = verificationFlow.ui.action ?? returnUrl;
       })
     );
   }, [verificationFlow]);
