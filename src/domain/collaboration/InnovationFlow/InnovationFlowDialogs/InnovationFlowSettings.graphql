@@ -41,9 +41,6 @@ fragment InnovationFlowProfile on Profile {
   id
   displayName
   description
-  # tags: tagset {
-  #   ...TagsetDetails
-  # }
   tagsets {
     ...TagsetDetails
   }
@@ -74,6 +71,9 @@ fragment InnovationFlowCollaboration on Collaboration {
       profile {
         id
         displayName
+        calloutDisplayLocation: tagset(tagsetName: CALLOUT_DISPLAY_LOCATION) {
+          ...TagsetDetails
+        }
         flowState: tagset(tagsetName: FLOW_STATE) {
           ...TagsetDetails
         }
@@ -101,6 +101,27 @@ mutation UpdateCalloutFlowState($calloutId: UUID!, $flowStateTagsetId: UUID!, $v
           ...TagsetDetails
         }
       }
+    }
+  }
+}
+
+mutation updateInnovationFlowCurrentState($innovationFlowId: UUID!, $currentState: String!) {
+  updateInnovationFlowState(
+    innovationFlowStateData: { innovationFlowID: $innovationFlowId, selectedState: $currentState }
+  ) {
+    id
+    currentState {
+      displayName
+    }
+  }
+}
+
+mutation updateInnovationFlowStates($innovationFlowId: UUID!, $states: [UpdateInnovationFlowStateInput!]!) {
+  updateInnovationFlow(innovationFlowData: { innovationFlowID: $innovationFlowId, states: $states }) {
+    id
+    states {
+      displayName
+      description
     }
   }
 }

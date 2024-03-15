@@ -122,7 +122,7 @@ const OrganizationCard: FC<OrganizationCardProps> = ({
       )}
       {enableLeave && (
         <Dialog open={isDialogOpened} maxWidth="xs" aria-labelledby="confirm-leave-organization">
-          <DialogTitle id="confirm-innovation-flow">
+          <DialogTitle>
             {t('components.associated-organization.confirmation-dialog.title', { organization: name })}
           </DialogTitle>
           <DialogContent sx={{ paddingX: 2 }}>

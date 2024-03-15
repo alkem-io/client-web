@@ -1,33 +1,38 @@
 import Gutters from '../../../../core/ui/grid/Gutters';
-import { Button, IconButton, useTheme } from '@mui/material';
+import { Button, IconButton, Tooltip, styled, useTheme } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/SettingsOutlined';
-import { BlockTitle, Caption } from '../../../../core/ui/typography';
 import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
-import { Trans, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import TranslationKey from '../../../../core/i18n/utils/TranslationKey';
-import { gutters } from '../../../../core/ui/grid/utils';
 import { useState } from 'react';
 import InnovationFlowSettingsDialog from '../InnovationFlowDialogs/InnovationFlowSettingsDialog';
 import { useGlobalGridColumns } from '../../../../core/ui/grid/constants';
-import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import { InnovationFlowState } from '../InnovationFlow';
+import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
+import { ArrowRight } from '@mui/icons-material';
 
 interface InnovationFlowStatesProps {
   collaborationId: string | undefined;
   states: InnovationFlowState[];
   currentState: string;
   selectedState: string;
-  journeyTypeName: JourneyTypeName;
   showSettings?: boolean;
   onSelectState?: (state: InnovationFlowState) => void;
 }
+
+const FlowStateDescription = styled(WrapperMarkdown)(() => ({
+  img: {
+    display: 'block',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+  },
+}));
 
 const InnovationFlowStates = ({
   collaborationId,
   states,
   currentState,
   selectedState,
-  journeyTypeName,
   showSettings = false,
   onSelectState,
 }: InnovationFlowStatesProps) => {
@@ -43,15 +48,24 @@ const InnovationFlowStates = ({
 
   const getStateButtonSx = (state: InnovationFlowState) => {
     if (state.displayName === selectedState) {
-      return {};
+      return {
+        '& .MuiButton-startIcon': {
+          marginRight: 0,
+        },
+      };
     }
     if (state.displayName === currentState) {
       return {
-        backgroundColor: theme.palette.highlight.light,
+        backgroundColor: theme.palette.background.paper,
+        borderColor: theme.palette.primary.main,
+        '& .MuiButton-startIcon': {
+          marginRight: 0,
+        },
       };
     }
     return {
       backgroundColor: theme.palette.background.paper,
+      borderColor: theme.palette.divider,
     };
   };
 
@@ -62,11 +76,17 @@ const InnovationFlowStates = ({
       ? t(`common.enums.innovationFlowState.${stateName}` as TranslationKey)
       : stateName;
 
+  const getStateAriaLabel = (stateName: string) =>
+    stateName === currentState
+      ? t('components.innovationFlowVisualizer.currentStateName', { state: getStateName(stateName) })
+      : (getStateName(stateName) as string);
+
   const columns = useGlobalGridColumns();
+  const selectedStateDescription = states.find(state => state.displayName === selectedState)?.description;
 
   return (
     <PageContentBlockSeamless disablePadding>
-      <Gutters row disablePadding alignItems="center" overflow="hidden">
+      <Gutters row disablePadding alignItems="start" overflow="hidden">
         <Gutters row={columns > 4} disablePadding flexGrow={1} flexShrink={1} justifyContent="start" flexWrap="wrap">
           {states.map(state => (
             <Button
@@ -74,13 +94,19 @@ const InnovationFlowStates = ({
               variant={getStateButtonVariant(state)}
               disableElevation
               sx={{
-                textTransform: 'none',
-                minHeight: gutters(2),
                 ...getStateButtonSx(state),
               }}
+              startIcon={
+                state.displayName === currentState && (
+                  <Tooltip title={t('components.innovationFlowVisualizer.currentState')}>
+                    <ArrowRight />
+                  </Tooltip>
+                )
+              }
+              aria-label={getStateAriaLabel(state.displayName)}
               onClick={() => onSelectState?.(state)}
             >
-              <BlockTitle fontWeight="bold">{getStateName(state.displayName)}</BlockTitle>
+              {getStateName(state.displayName)}
             </Button>
           ))}
         </Gutters>
@@ -88,27 +114,18 @@ const InnovationFlowStates = ({
           <IconButton
             color="primary"
             onClick={() => setShowSettingsDialog(true)}
-            aria-label={t('components.select-innovation-flow.innovationFlowSettings')}
+            aria-label={t('components.innovationFlowSettings.title')}
           >
             <SettingsIcon />
           </IconButton>
         )}
       </Gutters>
-      {selectedState !== currentState && (
-        <Caption fontStyle="italic">
-          <Trans
-            i18nKey="components.innovationFlowStateSelector.selectedStateNotice"
-            values={{
-              journeyType: t(`common.journeyTypes.${journeyTypeName}` as const),
-              currentState: getStateName(currentState),
-              selectedState: getStateName(selectedState),
-            }}
-            components={{ strong: <strong /> }}
-            t={t}
-          />
-        </Caption>
-      )}
-      <InnovationFlowSettingsDialog collaborationId={collaborationId} open={showSettingsDialog} onClose={() => setShowSettingsDialog(false)} />
+      {selectedStateDescription && <FlowStateDescription>{selectedStateDescription}</FlowStateDescription>}
+      <InnovationFlowSettingsDialog
+        collaborationId={collaborationId}
+        open={showSettingsDialog}
+        onClose={() => setShowSettingsDialog(false)}
+      />
     </PageContentBlockSeamless>
   );
 };

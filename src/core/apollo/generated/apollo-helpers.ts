@@ -2186,7 +2186,6 @@ export type RelayPaginatedSpaceKeySpecifier = (
   | 'id'
   | 'metrics'
   | 'nameID'
-  | 'opportunities'
   | 'opportunity'
   | 'preferences'
   | 'profile'
@@ -2209,7 +2208,6 @@ export type RelayPaginatedSpaceFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   metrics?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
-  opportunities?: FieldPolicy<any> | FieldReadFunction<any>;
   opportunity?: FieldPolicy<any> | FieldReadFunction<any>;
   preferences?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2559,7 +2557,6 @@ export type SpaceKeySpecifier = (
   | 'id'
   | 'metrics'
   | 'nameID'
-  | 'opportunities'
   | 'opportunity'
   | 'preferences'
   | 'profile'
@@ -2582,7 +2579,6 @@ export type SpaceFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   metrics?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
-  opportunities?: FieldPolicy<any> | FieldReadFunction<any>;
   opportunity?: FieldPolicy<any> | FieldReadFunction<any>;
   preferences?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
