@@ -1,25 +1,25 @@
 import { FilterConfig, FilterDefinition } from './Filter';
-import React, { FC, ReactNode, useMemo } from 'react';
+import React, { ComponentType, ReactNode, useMemo } from 'react';
 import { EntityFilter } from './EntityFilter';
-import CardsLayout from '../../../core/ui/card/cardsLayout/CardsLayout';
-import SearchResultPostChooser from './SearchResultPostChooser';
-import { SearchResultMetaType } from '../../../main/search/SearchView';
-import PageContentBlock from '../../../core/ui/content/PageContentBlock';
-import PageContentBlockHeader from '../../../core/ui/content/PageContentBlockHeader';
+import CardsLayout from '../../core/ui/card/cardsLayout/CardsLayout';
+import PageContentBlock from '../../core/ui/content/PageContentBlock';
+import PageContentBlockHeader from '../../core/ui/content/PageContentBlockHeader';
 import { useTranslation } from 'react-i18next';
+import { Identifiable } from '../../core/utils/Identifiable';
 
-interface ResultSectionProps {
+interface ResultSectionProps<Result extends Identifiable> {
   title: ReactNode;
-  results: SearchResultMetaType[] | undefined;
+  results: Result[] | undefined;
   filterTitle?: string;
   count?: number;
   filterConfig: FilterConfig;
   currentFilter: FilterDefinition;
   onFilterChange: (value: FilterDefinition) => void;
   loading?: boolean;
+  cardComponent: ComponentType<{ result: Result | undefined }>;
 }
 
-const SearchResultSection: FC<ResultSectionProps> = ({
+const SearchResultSection = <Result extends Identifiable>({
   title,
   results = [],
   filterTitle,
@@ -28,7 +28,8 @@ const SearchResultSection: FC<ResultSectionProps> = ({
   currentFilter,
   onFilterChange,
   loading,
-}) => {
+  cardComponent: Card,
+}: ResultSectionProps<Result>) => {
   const titleWithCount = useMemo(() => `${title} (${count})`, [title, results.length]);
   const { t } = useTranslation();
   const resultDisclaimer = results.length >= 8 ? t('pages.search.results-disclaimer') : undefined;
@@ -52,7 +53,7 @@ const SearchResultSection: FC<ResultSectionProps> = ({
         cards={false}
         disablePadding
       >
-        {result => <SearchResultPostChooser result={result} />}
+        {result => <Card result={result} />}
       </CardsLayout>
     </PageContentBlock>
   );
