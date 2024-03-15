@@ -93,7 +93,7 @@ const SpaceChallengesPage: FC<SpaceChallengesPageProps> = () => {
             }
             childrenLeft={
               <CalloutsGroupView
-                callouts={callouts.groupedCallouts[CalloutGroupName.SubspacesLeft]}
+                callouts={callouts.groupedCallouts[CalloutGroupName.Subspaces_1]}
                 spaceId={spaceNameId}
                 canCreateCallout={callouts.canCreateCallout}
                 canCreateCalloutFromTemplate={callouts.canCreateCalloutFromTemplate}
@@ -102,12 +102,12 @@ const SpaceChallengesPage: FC<SpaceChallengesPageProps> = () => {
                 calloutNames={callouts.calloutNames}
                 onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
                 onCalloutUpdate={callouts.refetchCallout}
-                groupName={CalloutGroupName.SubspacesLeft}
+                groupName={CalloutGroupName.Subspaces_1}
               />
             }
             childrenRight={
               <CalloutsGroupView
-                callouts={callouts.groupedCallouts[CalloutGroupName.SubspacesRight]}
+                callouts={callouts.groupedCallouts[CalloutGroupName.Subspaces_2]}
                 spaceId={spaceNameId}
                 canCreateCallout={callouts.canCreateCallout}
                 canCreateCalloutFromTemplate={callouts.canCreateCalloutFromTemplate}
@@ -116,7 +116,7 @@ const SpaceChallengesPage: FC<SpaceChallengesPageProps> = () => {
                 calloutNames={callouts.calloutNames}
                 onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
                 onCalloutUpdate={callouts.refetchCallout}
-                groupName={CalloutGroupName.SubspacesRight}
+                groupName={CalloutGroupName.Subspaces_2}
               />
             }
           />

@@ -11,14 +11,14 @@ import ChallengeOpportunitiesPage from '../pages/ChallengeOpportunitiesPage';
 
 const renderPage = (calloutGroup: string | undefined) => {
   switch (calloutGroup) {
-    case CalloutGroupName.HomeLeft:
-    case CalloutGroupName.HomeRight:
+    case CalloutGroupName.Home_1:
+    case CalloutGroupName.Home_2:
       return <ChallengeDashboardPage />;
-    case CalloutGroupName.ContributeLeft:
-    case CalloutGroupName.ContributeRight:
+    case CalloutGroupName.Contribute_1:
+    case CalloutGroupName.Contribute_2:
       return <JourneyContributePage journeyTypeName="challenge" />;
-    case CalloutGroupName.SubspacesLeft:
-    case CalloutGroupName.SubspacesRight:
+    case CalloutGroupName.Subspaces_1:
+    case CalloutGroupName.Subspaces_2:
       return <ChallengeOpportunitiesPage />;
     default:
       return <JourneyContributePage journeyTypeName="challenge" />;
@@ -27,14 +27,14 @@ const renderPage = (calloutGroup: string | undefined) => {
 
 const getPageSection = (calloutGroup: string | undefined): EntityPageSection => {
   switch (calloutGroup) {
-    case CalloutGroupName.HomeLeft:
-    case CalloutGroupName.HomeRight:
+    case CalloutGroupName.Home_1:
+    case CalloutGroupName.Home_2:
       return EntityPageSection.Dashboard;
-    case CalloutGroupName.ContributeLeft:
-    case CalloutGroupName.ContributeRight:
+    case CalloutGroupName.Contribute_1:
+    case CalloutGroupName.Contribute_2:
       return EntityPageSection.Contribute;
-    case CalloutGroupName.SubspacesLeft:
-    case CalloutGroupName.SubspacesRight:
+    case CalloutGroupName.Subspaces_1:
+    case CalloutGroupName.Subspaces_2:
       return EntityPageSection.Opportunities;
     default:
       return EntityPageSection.Contribute;

@@ -175,7 +175,7 @@ const JourneyDashboardView = ({
           </EntityDashboardContributorsSection>
         )}
         <CalloutsGroupView
-          callouts={callouts.groupedCallouts[CalloutGroupName.HomeLeft]}
+          callouts={callouts.groupedCallouts[CalloutGroupName.Home_1]}
           spaceId={spaceNameId!}
           canCreateCallout={callouts.canCreateCallout}
           canCreateCalloutFromTemplate={callouts.canCreateCalloutFromTemplate}
@@ -184,13 +184,13 @@ const JourneyDashboardView = ({
           calloutNames={callouts.calloutNames}
           onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
           onCalloutUpdate={callouts.refetchCallout}
-          groupName={CalloutGroupName.HomeLeft}
+          groupName={CalloutGroupName.Home_1}
         />
       </PageContentColumn>
 
       <PageContentColumn columns={8}>
         <DashboardRecentContributionsBlock
-          halfWidth={(callouts.groupedCallouts[CalloutGroupName.HomeRight]?.length ?? 0) > 0}
+          halfWidth={(callouts.groupedCallouts[CalloutGroupName.Home_2]?.length ?? 0) > 0}
           readUsersAccess={readUsersAccess}
           entityReadAccess={entityReadAccess}
           activitiesLoading={activityLoading}
@@ -201,7 +201,7 @@ const JourneyDashboardView = ({
           onActivitiesDialogOpen={() => fetchMoreActivities(RECENT_ACTIVITIES_LIMIT_EXPANDED)}
         />
         <CalloutsGroupView
-          callouts={callouts.groupedCallouts[CalloutGroupName.HomeRight]}
+          callouts={callouts.groupedCallouts[CalloutGroupName.Home_2]}
           spaceId={spaceNameId!}
           canCreateCallout={callouts.canCreateCallout}
           canCreateCalloutFromTemplate={callouts.canCreateCalloutFromTemplate}
@@ -210,7 +210,7 @@ const JourneyDashboardView = ({
           calloutNames={callouts.calloutNames}
           onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
           onCalloutUpdate={callouts.refetchCallout}
-          groupName={CalloutGroupName.HomeRight}
+          groupName={CalloutGroupName.Home_2}
           blockProps={(callout, index) => {
             if (index === 0) {
               return {

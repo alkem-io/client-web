@@ -13,7 +13,7 @@ interface SpaceCommunityContainerProvided {
 const SpaceCommunityContainer = ({ spaceNameId, children }: SpaceCommunityContainerProps) => {
   const callouts = useCallouts({
     spaceNameId,
-    groupNames: [CalloutGroupName.CommunityLeft, CalloutGroupName.CommunityRight],
+    groupNames: [CalloutGroupName.Community_1, CalloutGroupName.Community_2],
   });
 
   return <>{children({ callouts })}</>;

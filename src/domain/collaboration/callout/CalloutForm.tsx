@@ -190,7 +190,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
     if (editMode) {
       return locations.map(key => ({
         id: key,
-        name: t(`callout.callout-groups.${key}` as const),
+        name: t(`callout.callout-group.${key}` as const),
       }));
     }
     return [];

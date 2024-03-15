@@ -150,7 +150,7 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ children 
 
   const callouts = useCallouts({
     spaceNameId,
-    groupNames: [CalloutGroupName.HomeLeft, CalloutGroupName.HomeRight],
+    groupNames: [CalloutGroupName.Home_1, CalloutGroupName.Home_2],
   });
 
   return (

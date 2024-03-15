@@ -68,7 +68,7 @@ const JourneyCalloutsTabView = ({
   const handleSelectInnovationFlowState = (state: InnovationFlowState) =>
     setSelectedInnovationFlowState(state.displayName);
 
-  const contributeLeftCalloutsIds = groupedCallouts[CalloutGroupName.ContributeLeft]?.map(callout => callout.id) ?? [];
+  const contributeLeftCalloutsIds = groupedCallouts[CalloutGroupName.Contribute_1]?.map(callout => callout.id) ?? [];
 
   return (
     <>
@@ -109,7 +109,7 @@ const JourneyCalloutsTabView = ({
               />
             </PageContentBlock>
             <CalloutsGroupView
-              callouts={groupedCallouts[CalloutGroupName.ContributeLeft]}
+              callouts={groupedCallouts[CalloutGroupName.Contribute_1]}
               spaceId={spaceNameId}
               canCreateCallout={canCreateCallout}
               canCreateCalloutFromTemplate={canCreateCalloutFromTemplate}
@@ -118,7 +118,7 @@ const JourneyCalloutsTabView = ({
               calloutNames={calloutNames}
               onSortOrderUpdate={onCalloutsSortOrderUpdate}
               onCalloutUpdate={refetchCallout}
-              groupName={CalloutGroupName.ContributeLeft}
+              groupName={CalloutGroupName.Contribute_1}
               flowState={selectedInnovationFlowState}
             />
           </PageContentColumn>
@@ -136,7 +136,7 @@ const JourneyCalloutsTabView = ({
               />
             )}
             <CalloutsGroupView
-              callouts={filterCallouts(groupedCallouts[CalloutGroupName.ContributeRight])}
+              callouts={filterCallouts(groupedCallouts[CalloutGroupName.Contribute_2])}
               spaceId={spaceNameId}
               canCreateCallout={canCreateCallout}
               canCreateCalloutFromTemplate={canCreateCalloutFromTemplate}
@@ -145,7 +145,7 @@ const JourneyCalloutsTabView = ({
               calloutNames={calloutNames}
               onSortOrderUpdate={onCalloutsSortOrderUpdate}
               onCalloutUpdate={refetchCallout}
-              groupName={CalloutGroupName.ContributeRight}
+              groupName={CalloutGroupName.Contribute_2}
               createButtonPlace="top"
               flowState={selectedInnovationFlowState}
             />

@@ -31,7 +31,7 @@ const JourneyContributePageContainer = ({ children }: SimpleContainerProps<Journ
     spaceNameId,
     challengeNameId,
     opportunityNameId,
-    groupNames: [CalloutGroupName.ContributeLeft, CalloutGroupName.ContributeRight],
+    groupNames: [CalloutGroupName.Contribute_1, CalloutGroupName.Contribute_2],
   });
 
   return (

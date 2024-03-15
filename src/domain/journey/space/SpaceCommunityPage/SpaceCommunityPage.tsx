@@ -111,7 +111,7 @@ const SpaceCommunityPage = () => {
                 messageReceivers={messageReceivers}
               />
               <CalloutsGroupView
-                callouts={callouts.groupedCallouts[CalloutGroupName.CommunityLeft]}
+                callouts={callouts.groupedCallouts[CalloutGroupName.Community_1]}
                 spaceId={spaceNameId!}
                 canCreateCallout={callouts.canCreateCallout}
                 canCreateCalloutFromTemplate={callouts.canCreateCalloutFromTemplate}
@@ -120,7 +120,7 @@ const SpaceCommunityPage = () => {
                 calloutNames={callouts.calloutNames}
                 onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
                 onCalloutUpdate={callouts.refetchCallout}
-                groupName={CalloutGroupName.CommunityLeft}
+                groupName={CalloutGroupName.Community_1}
               />
             </PageContentColumn>
             <PageContentColumn columns={8}>
@@ -146,7 +146,7 @@ const SpaceCommunityPage = () => {
                 </DialogWithGrid>
               </PageContentBlock>
               <CalloutsGroupView
-                callouts={callouts.groupedCallouts[CalloutGroupName.CommunityRight]}
+                callouts={callouts.groupedCallouts[CalloutGroupName.Community_2]}
                 spaceId={spaceNameId!}
                 canCreateCallout={callouts.canCreateCallout}
                 canCreateCalloutFromTemplate={callouts.canCreateCalloutFromTemplate}
@@ -155,7 +155,7 @@ const SpaceCommunityPage = () => {
                 calloutNames={callouts.calloutNames}
                 onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
                 onCalloutUpdate={callouts.refetchCallout}
-                groupName={CalloutGroupName.CommunityRight}
+                groupName={CalloutGroupName.Community_2}
               />
             </PageContentColumn>
           </PageContent>

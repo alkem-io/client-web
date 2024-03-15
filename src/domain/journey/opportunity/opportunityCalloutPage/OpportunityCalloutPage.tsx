@@ -10,11 +10,11 @@ import { CalloutGroupName } from '../../../../core/apollo/generated/graphql-sche
 
 const renderPage = (calloutGroup: string | undefined) => {
   switch (calloutGroup) {
-    case CalloutGroupName.HomeLeft:
-    case CalloutGroupName.HomeRight:
+    case CalloutGroupName.Home_1:
+    case CalloutGroupName.Home_2:
       return <OpportunityDashboardPage />;
-    case CalloutGroupName.ContributeLeft:
-    case CalloutGroupName.ContributeRight:
+    case CalloutGroupName.Contribute_1:
+    case CalloutGroupName.Contribute_2:
       return <JourneyContributePage journeyTypeName="opportunity" />;
     default:
       return <JourneyContributePage journeyTypeName="opportunity" />;
@@ -23,11 +23,11 @@ const renderPage = (calloutGroup: string | undefined) => {
 
 const getPageSection = (calloutGroup: string | undefined): EntityPageSection => {
   switch (calloutGroup) {
-    case CalloutGroupName.HomeLeft:
-    case CalloutGroupName.HomeRight:
+    case CalloutGroupName.Home_1:
+    case CalloutGroupName.Home_2:
       return EntityPageSection.Dashboard;
-    case CalloutGroupName.ContributeLeft:
-    case CalloutGroupName.ContributeRight:
+    case CalloutGroupName.Contribute_1:
+    case CalloutGroupName.Contribute_2:
       return EntityPageSection.Contribute;
     default:
       return EntityPageSection.Contribute;

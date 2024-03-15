@@ -170,7 +170,7 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
   const callouts = useCallouts({
     spaceNameId,
     opportunityNameId,
-    groupNames: [CalloutGroupName.HomeLeft, CalloutGroupName.HomeRight],
+    groupNames: [CalloutGroupName.Home_1, CalloutGroupName.Home_2],
   });
 
   return (

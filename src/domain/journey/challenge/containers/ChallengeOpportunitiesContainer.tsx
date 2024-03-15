@@ -50,7 +50,7 @@ export const ChallengeOpportunitiesContainer: FC<ChallengeOpportunitiesContainer
   const callouts = useCallouts({
     spaceNameId,
     challengeNameId,
-    groupNames: [CalloutGroupName.SubspacesLeft, CalloutGroupName.SubspacesRight],
+    groupNames: [CalloutGroupName.Subspaces_1, CalloutGroupName.Subspaces_2],
   });
 
   return (

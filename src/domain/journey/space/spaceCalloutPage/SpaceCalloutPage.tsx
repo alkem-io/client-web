@@ -12,14 +12,14 @@ import SpaceCommunityPage from '../SpaceCommunityPage/SpaceCommunityPage';
 
 const getPageSection = (calloutGroup: string | undefined): EntityPageSection => {
   switch (calloutGroup) {
-    case CalloutGroupName.HomeLeft:
-    case CalloutGroupName.HomeRight:
+    case CalloutGroupName.Home_1:
+    case CalloutGroupName.Home_2:
       return EntityPageSection.Dashboard;
-    case CalloutGroupName.CommunityLeft:
-    case CalloutGroupName.CommunityRight:
+    case CalloutGroupName.Community_1:
+    case CalloutGroupName.Community_2:
       return EntityPageSection.Community;
-    case CalloutGroupName.SubspacesLeft:
-    case CalloutGroupName.SubspacesRight:
+    case CalloutGroupName.Subspaces_1:
+    case CalloutGroupName.Subspaces_2:
       return EntityPageSection.Challenges;
     default:
       return EntityPageSection.KnowledgeBase;
@@ -28,13 +28,13 @@ const getPageSection = (calloutGroup: string | undefined): EntityPageSection => 
 
 const renderPage = (calloutGroup: string | undefined) => {
   switch (calloutGroup) {
-    case CalloutGroupName.HomeLeft:
-    case CalloutGroupName.HomeRight:
+    case CalloutGroupName.Home_1:
+    case CalloutGroupName.Home_2:
       return <SpaceDashboardPage />;
-    case CalloutGroupName.SubspacesLeft:
+    case CalloutGroupName.Subspaces_1:
       return <SpaceChallengesPage />;
-    case CalloutGroupName.CommunityLeft:
-    case CalloutGroupName.CommunityRight:
+    case CalloutGroupName.Community_1:
+    case CalloutGroupName.Community_2:
       return <SpaceCommunityPage />;
     default:
       return <KnowedgeBasePage journeyTypeName="space" />;

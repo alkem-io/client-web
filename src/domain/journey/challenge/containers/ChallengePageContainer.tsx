@@ -137,7 +137,7 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
   const callouts = useCallouts({
     spaceNameId,
     challengeNameId,
-    groupNames: [CalloutGroupName.HomeLeft, CalloutGroupName.HomeRight],
+    groupNames: [CalloutGroupName.Home_1, CalloutGroupName.Home_2],
   });
 
   const isMember = _challenge?.space.challenge.community?.myMembershipStatus === CommunityMembershipStatus.Member;
