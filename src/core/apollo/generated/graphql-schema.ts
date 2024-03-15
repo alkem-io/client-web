@@ -6841,6 +6841,16 @@ export type InnovationFlowSettingsQuery = {
                     __typename?: 'Profile';
                     id: string;
                     displayName: string;
+                    calloutDisplayLocation?:
+                      | {
+                          __typename?: 'Tagset';
+                          id: string;
+                          name: string;
+                          tags: Array<string>;
+                          allowedValues: Array<string>;
+                          type: TagsetType;
+                        }
+                      | undefined;
                     flowState?:
                       | {
                           __typename?: 'Tagset';
@@ -7030,6 +7040,16 @@ export type InnovationFlowCollaborationFragment = {
             __typename?: 'Profile';
             id: string;
             displayName: string;
+            calloutDisplayLocation?:
+              | {
+                  __typename?: 'Tagset';
+                  id: string;
+                  name: string;
+                  tags: Array<string>;
+                  allowedValues: Array<string>;
+                  type: TagsetType;
+                }
+              | undefined;
             flowState?:
               | {
                   __typename?: 'Tagset';
@@ -7084,6 +7104,34 @@ export type UpdateCalloutFlowStateMutation = {
           | undefined;
       };
     };
+  };
+};
+
+export type UpdateInnovationFlowCurrentStateMutationVariables = Exact<{
+  innovationFlowId: Scalars['UUID'];
+  currentState: Scalars['String'];
+}>;
+
+export type UpdateInnovationFlowCurrentStateMutation = {
+  __typename?: 'Mutation';
+  updateInnovationFlowState: {
+    __typename?: 'InnovationFlow';
+    id: string;
+    currentState: { __typename?: 'InnovationFlowState'; displayName: string };
+  };
+};
+
+export type UpdateInnovationFlowStatesMutationVariables = Exact<{
+  innovationFlowId: Scalars['UUID'];
+  states: Array<UpdateInnovationFlowStateInput> | UpdateInnovationFlowStateInput;
+}>;
+
+export type UpdateInnovationFlowStatesMutation = {
+  __typename?: 'Mutation';
+  updateInnovationFlow: {
+    __typename?: 'InnovationFlow';
+    id: string;
+    states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
   };
 };
 
@@ -7270,39 +7318,6 @@ export type InnovationFlowTemplateStatesQuery = {
           states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
         }
       | undefined;
-  };
-};
-
-export type InnovationFlowQueryVariables = Exact<{
-  innovationFlowId: Scalars['UUID'];
-}>;
-
-export type InnovationFlowQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    innovationFlow?:
-      | {
-          __typename?: 'InnovationFlow';
-          id: string;
-          states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
-          currentState: { __typename?: 'InnovationFlowState'; displayName: string };
-        }
-      | undefined;
-  };
-};
-
-export type UpdateInnovationFlowStateMutationVariables = Exact<{
-  innovationFlowId: Scalars['UUID'];
-  selectedState: Scalars['String'];
-}>;
-
-export type UpdateInnovationFlowStateMutation = {
-  __typename?: 'Mutation';
-  updateInnovationFlowState: {
-    __typename?: 'InnovationFlow';
-    id: string;
-    currentState: { __typename?: 'InnovationFlowState'; displayName: string };
   };
 };
 
@@ -25841,26 +25856,6 @@ export type DeleteInnovationFlowTemplateMutationVariables = Exact<{
 export type DeleteInnovationFlowTemplateMutation = {
   __typename?: 'Mutation';
   deleteInnovationFlowTemplate: { __typename?: 'InnovationFlowTemplate'; id: string };
-};
-
-export type InnovationFlowAuthorizationQueryVariables = Exact<{
-  innovationFlowId: Scalars['UUID'];
-}>;
-
-export type InnovationFlowAuthorizationQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    innovationFlow?:
-      | {
-          __typename?: 'InnovationFlow';
-          id: string;
-          authorization?:
-            | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-            | undefined;
-        }
-      | undefined;
-  };
 };
 
 export type UpdatePostTemplateMutationVariables = Exact<{

@@ -943,8 +943,33 @@
         "topCallouts": "Most Active"
       }
     },
-    "innovationFlowStateSelector": {
-      "selectedStateNotice": "This {{journeyType}} is currently in the <strong>{{currentState}}</strong> state. You can already have a look at the tools for the <strong>{{selectedState}}</strong> state here."
+    "innovationFlowVisualizer": {
+      "currentState": "Current State",
+      "currentStateName": "Current State: {{state}}"
+    },
+    "innovationFlowSettings": {
+      "title": "Innovation Flow Settings",
+      "editProfileDialog": {
+        "title": "Edit Details: Innovation Flow"
+      },
+      "stateEditor": {
+        "activeState": "Active State",
+        "setActiveState": "Set as Active State",
+        "editState": "Edit Details",
+        "deleteState": "Delete",
+        "addState": "Add State",
+        "noRepeatedStates": "A State with the same name already exists.",
+        "createDialog": {
+          "title": "Create Flow State"
+        },
+        "editDialog": {
+          "title": "Edit Details: Flow State"
+        },
+        "deleteDialog": {
+          "title": "Delete State?",
+          "text": "This action cannot be undone."
+        }
+      }
     },
     "invitations": {
       "inviteOthers": "Invite others",
@@ -1530,25 +1555,6 @@
         "explore": "Explore discussions"
       }
     },
-    "update-innovation-flow": {
-      "template-label": {
-        "title": "Template"
-      }
-    },
-    "select-innovation-flow": {
-      "title": "Change Innovation Flow",
-      "innovationFlowSettings": "Innovation Flow Settings"
-    },
-    "innovation-flow-template-segment": {
-      "help-text": {
-        "title": "Be careful! By updating the Innovation Flow, the current state will be (re)set to the first state of the selected flow."
-      }
-    },
-    "confirm-innovation-flow": {
-      "description": {
-        "title": "Are you sure you want to change the innovation flow? This may change the set of states for this challenge/opportunity and will (re)set the state to the first state of the selected Innovation Flow."
-      }
-    },
     "innovationFlowTemplateSelect": {
       "select": "Select different Flow",
       "states": "States",
@@ -1756,14 +1762,6 @@
             "subtitle": "This section allows you to modify the $t(common.challenge) membership preferences. If both switches are turned off, new members can only be added manually. If both switches are turned on, members of the Space don't have to apply but can directly join."
           }
         },
-        "sections": {
-          "opportunities": {
-            "description": "Here you can edit opportunities for this challenge."
-          },
-          "innovation-flow": {
-            "description": "Here you change the status of this Challenge or choose a different Flow Template to follow."
-          }
-        },
         "notifications": {
           "challenge-created": "Challenge created successfully.",
           "challenge-removed": "Challenge removed successfully.",
@@ -1825,11 +1823,6 @@
           "opportunity-created": "Opportunity created successfully.",
           "opportunity-removed": "Opportunity removed successfully.",
           "opportunity-updated": "Opportunity updated successfully."
-        },
-        "sections": {
-          "innovation-flow": {
-            "description": "Here you change the status of this Opportunity or choose a different Flow Template to follow."
-          }
         }
       },
       "users": {
@@ -1979,11 +1972,6 @@
         "leading-placeholder": "Search in name or tags",
         "available-placeholder": "Search in name"
       }
-    },
-    "activity": {
-      "title": "{{blockName}} Activity",
-      "spaces": "Challenge Spaces",
-      "innovation-flow-info": "Click to display the Innovation Flow"
     },
     "home": {
       "title": "My Dashboard",

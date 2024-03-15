@@ -11,7 +11,6 @@ export interface PageContentBlockHeaderProps {
   title: ReactNode;
   icon?: ReactElement<SvgIconProps>;
   actions?: ReactNode;
-  dialogAction?: ReactNode;
   disclaimer?: ReactNode;
   fullWidth?: boolean;
 }
@@ -20,7 +19,6 @@ const PageContentBlockHeader = ({
   title,
   icon,
   actions,
-  dialogAction,
   disclaimer,
   fullWidth,
   children,
@@ -50,10 +48,7 @@ const PageContentBlockHeader = ({
         {disclaimer && <CaptionSmall>{disclaimer}</CaptionSmall>}
         {children}
       </Box>
-      <Actions height={gutters()}>
-        {actions}
-        {dialogAction}
-      </Actions>
+      {actions && <Actions height={gutters()}>{actions}</Actions>}
     </Box>
   );
 };

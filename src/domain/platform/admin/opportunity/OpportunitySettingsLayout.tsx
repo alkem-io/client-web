@@ -5,7 +5,6 @@ import EntitySettingsLayout from '../layout/EntitySettingsLayout/EntitySettingsL
 import OpportunityPageBanner from '../../../journey/opportunity/layout/OpportunityPageBanner';
 import OpportunityTabs from '../../../journey/opportunity/layout/OpportunityTabs';
 import { TabDefinition } from '../layout/EntitySettingsLayout/EntitySettingsTabs';
-import PolylineOutlinedIcon from '@mui/icons-material/PolylineOutlined';
 import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
 import ListOutlinedIcon from '@mui/icons-material/ListOutlined';
 import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
@@ -36,11 +35,6 @@ const tabs: TabDefinition<SettingsSection>[] = [
     section: SettingsSection.Communications,
     route: 'communications',
     icon: ForumOutlinedIcon,
-  },
-  {
-    section: SettingsSection.InnovationFlow,
-    route: 'innovation-flow',
-    icon: PolylineOutlinedIcon,
   },
 ];
 

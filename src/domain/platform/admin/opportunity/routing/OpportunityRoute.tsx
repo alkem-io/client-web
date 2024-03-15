@@ -8,7 +8,6 @@ import OpportunityCommunicationsPage from '../pages/OpportunityCommunications/Op
 import OpportunityContextPage from '../pages/OpportunityContext/OpportunityContextPage';
 import OpportunityProfilePage from '../pages/OpportunityProfile/OpportunityProfilePage';
 import CommunityGroupsRoute from '../../community/routes/CommunityGroupsAdminRoutes';
-import OpportunityInnovationFlowPage from '../pages/InnovationFlow/OpportunityInnovationFlowPage';
 import { StorageConfigContextProvider } from '../../../../storage/StorageBucket/StorageConfigContext';
 import { useSpace } from '../../../../journey/space/SpaceContext/useSpace';
 
@@ -48,7 +47,6 @@ export const OpportunityRoute: FC = () => {
             />
           }
         />
-        <Route path="innovation-flow/*" element={<OpportunityInnovationFlowPage />} />
         <Route path="*" element={<Error404 />} />
       </Routes>
     </StorageConfigContextProvider>

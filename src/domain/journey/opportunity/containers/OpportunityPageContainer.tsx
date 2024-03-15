@@ -73,7 +73,7 @@ export interface OpportunityContainerState {
 }
 
 export interface OpportunityPageContainerProps
-  extends ContainerChildProps<OpportunityContainerEntities, OpportunityContainerActions, OpportunityContainerState> { }
+  extends ContainerChildProps<OpportunityContainerEntities, OpportunityContainerActions, OpportunityContainerState> {}
 
 const NO_PRIVILEGES = [];
 
