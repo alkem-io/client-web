@@ -85,7 +85,6 @@ export const ChallengeListView: FC = () => {
             tags: value.tags,
             collaborationData: {
               addDefaultCallouts: value.addDefaultCallouts,
-              innovationFlowTemplateID: value.innovationFlowTemplateId,
             },
           },
         },

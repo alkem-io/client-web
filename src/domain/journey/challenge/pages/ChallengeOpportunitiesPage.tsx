@@ -41,7 +41,6 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
         vision: value.vision,
         tags: value.tags,
         addDefaultCallouts: value.addDefaultCallouts,
-        innovationFlowTemplateId: value.innovationFlowTemplateId,
       });
 
       if (!result) {

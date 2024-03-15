@@ -123,7 +123,7 @@ const InnovationHubSpacesField = ({ spaces, onChange }: InnovationHubSpacesField
         }
         actions={
           <Button variant="contained" onClick={() => setIsAddDialogOpen(true)}>
-            Add
+            {t('common.add')}
           </Button>
         }
       />

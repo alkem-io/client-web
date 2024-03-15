@@ -130,7 +130,6 @@ const JourneyCalloutsTabView = ({
                 states={innovationFlowStates}
                 currentState={currentInnovationFlowState}
                 selectedState={selectedInnovationFlowState}
-                journeyTypeName={journeyTypeName}
                 showSettings={canEditInnovationFlow}
                 onSelectState={handleSelectInnovationFlowState}
               />
