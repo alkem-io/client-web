@@ -13,7 +13,7 @@ import {
   Tagset,
   UpdateProfileInput,
 } from '../../../../core/apollo/generated/graphql-schema';
-import { CalloutDisplayLocationValuesMap } from '../../callout/CalloutsInContext/CalloutsGroup';
+import { CalloutGroupNameValuesMap } from '../../callout/CalloutsInContext/CalloutsGroup';
 import { InnovationFlowState } from '../InnovationFlow';
 import { sortCallouts } from '../utils/sortCallouts';
 import { useMemo } from 'react';
@@ -55,9 +55,9 @@ const mapFlowState = (tagset: Tagset | undefined): GroupedCallout['flowState'] =
 // And for the moment that is the callouts that are in ContributeRight displayLocation
 const isCalloutConnectedToFlowState = (callout: { framing: { profile: { calloutDisplayLocation?: Tagset } } }) => {
   const calloutDisplayLocation = callout.framing.profile.calloutDisplayLocation?.tags?.[0] as
-    | CalloutDisplayLocationValuesMap
+    | CalloutGroupNameValuesMap
     | undefined;
-  return calloutDisplayLocation === CalloutDisplayLocationValuesMap.ContributeRight;
+  return calloutDisplayLocation === CalloutGroupNameValuesMap.Contribute_2;
 };
 
 const useInnovationFlowSettings = ({ collaborationId, skip }: useInnovationFlowSettingsProps) => {

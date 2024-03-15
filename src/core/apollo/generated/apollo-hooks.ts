@@ -116,7 +116,7 @@ export const InnovationFlowCollaborationFragmentDoc = gql`
         profile {
           id
           displayName
-          calloutDisplayLocation: tagset(tagsetName: CALLOUT_DISPLAY_LOCATION) {
+          calloutDisplayLocation: tagset(tagsetName: CALLOUT_GROUP) {
             ...TagsetDetails
           }
           flowState: tagset(tagsetName: FLOW_STATE) {
