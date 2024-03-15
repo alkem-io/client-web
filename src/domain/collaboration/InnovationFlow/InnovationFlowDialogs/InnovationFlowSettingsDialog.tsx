@@ -62,9 +62,7 @@ const InnovationFlowSettingsDialog: FC<InnovationFlowSettingsDialogProps> = ({
               onUpdateCurrentState={actions.updateInnovationFlowCurrentState}
               onUpdateFlowStateOrder={actions.updateInnovationFlowStateOrder}
               onUpdateCalloutFlowState={actions.updateCalloutFlowState}
-              onCreateFlowState={createFlowStateOptions => {
-                setCreateFlowState(createFlowStateOptions);
-              }}
+              onCreateFlowState={setCreateFlowState}
               onEditFlowState={stateDisplayName => {
                 const state = data.innovationFlow?.states.find(state => state.displayName === stateDisplayName);
                 setEditFlowState(state);
