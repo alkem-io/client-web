@@ -1,4 +1,5 @@
-import TranslationKey from '../../../core/i18n/utils/TranslationKey';
+import TranslationKey from '../../core/i18n/utils/TranslationKey';
+import { CalloutType } from '../../core/apollo/generated/graphql-schema';
 
 export interface FilterDefinition {
   title: TranslationKey;
@@ -34,10 +35,30 @@ export const journeyFilterConfig: FilterConfig = {
   },
 };
 
+export const calloutFilterConfig: FilterConfig = Object.values(CalloutType).reduce(
+  (filterConfig, calloutType) => {
+    return {
+      ...filterConfig,
+      [calloutType]: {
+        title: `common.enums.calloutType.${calloutType}`,
+        value: [calloutType],
+        typename: calloutType,
+      },
+    } as FilterConfig;
+  },
+  {
+    all: {
+      title: 'common.all',
+      value: Object.values(CalloutType),
+      typename: 'all',
+    },
+  } as FilterConfig
+);
+
 export const contributionFilterConfig: FilterConfig = {
   all: {
     title: 'pages.search.filter.key.all',
-    value: ['post'], // , 'whiteboard', 'callout'], // TODO: Enable 'whiteboard' and 'callout' when server is ready
+    value: ['post'],
     typename: 'all',
   },
   post: {

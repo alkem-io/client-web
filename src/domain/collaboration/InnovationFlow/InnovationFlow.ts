@@ -3,7 +3,7 @@ export interface InnovationFlowDetails {
   states: InnovationFlowState[] | undefined;
   currentState: {
     displayName: string | undefined;
-  }
+  };
 }
 
 export type InnovationFlowState = {

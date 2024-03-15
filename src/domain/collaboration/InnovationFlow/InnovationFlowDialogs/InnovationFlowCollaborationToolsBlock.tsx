@@ -1,22 +1,51 @@
-import React, { ComponentType, FC, forwardRef } from 'react';
-import { BlockTitle, Caption } from '../../../../core/ui/typography';
-import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
-import { useTranslation } from 'react-i18next';
-import { Box, BoxProps, SvgIconProps } from '@mui/material';
-import { GroupedCallout } from './useInnovationFlowSettings';
+import AddIcon from '@mui/icons-material/Add';
+import { Box, BoxProps, IconButton, IconButtonProps, SvgIconProps } from '@mui/material';
 import { groupBy } from 'lodash';
-import calloutIcons from '../../callout/utils/calloutIcons';
-import ScrollableCardsLayoutContainer from '../../../../core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
-import { DragDropContext, Droppable, Draggable, OnDragEndResponder } from 'react-beautiful-dnd';
-import Gutters from '../../../../core/ui/grid/Gutters';
+import { ComponentType, FC, forwardRef } from 'react';
+import { DragDropContext, Draggable, Droppable, OnDragEndResponder } from 'react-beautiful-dnd';
+import { useTranslation } from 'react-i18next';
+import { CalloutType } from '../../../../core/apollo/generated/graphql-schema';
 import i18n from '../../../../core/i18n/config';
 import TranslationKey from '../../../../core/i18n/utils/TranslationKey';
+import ScrollableCardsLayoutContainer from '../../../../core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
+import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
+import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
+import Gutters from '../../../../core/ui/grid/Gutters';
 import { gutters } from '../../../../core/ui/grid/utils';
+import RoundedIcon from '../../../../core/ui/icon/RoundedIcon';
+import CroppedMarkdown from '../../../../core/ui/markdown/CroppedMarkdown';
+import { Caption } from '../../../../core/ui/typography';
+import calloutIcons from '../../callout/utils/calloutIcons';
+import { InnovationFlowState } from '../InnovationFlow';
+import InnovationFlowStateMenu from './InnovationFlowStateMenu';
+
+const STATES_DROPPABLE_ID = '__states';
 
 interface InnovationFlowCollaborationToolsBlockProps {
-  callouts: GroupedCallout[];
-  flowStateAllowedValues: string[];
+  callouts: {
+    id: string;
+    nameID: string;
+    type: CalloutType;
+    activity: number;
+    profile: {
+      displayName: string;
+    };
+    flowState:
+      | {
+          tagsetId: string;
+          currentState: string | undefined;
+          allowedValues: string[];
+        }
+      | undefined;
+  }[];
+  innovationFlowStates: InnovationFlowState[] | undefined;
+  currentState: string | undefined;
+  onUpdateFlowStateOrder: (flowState: string, sortOrder: number) => Promise<unknown> | void;
   onUpdateCalloutFlowState: (calloutId: string, newState: string, index: number) => Promise<unknown> | void;
+  onUpdateCurrentState: (state: string) => void;
+  onCreateFlowState: (options: { after: string; last: false } | { after?: never; last: true }) => void;
+  onEditFlowState: (state: string) => void;
+  onDeleteFlowState: (state: string) => void;
 }
 
 interface ListItemProps extends BoxProps {
@@ -24,6 +53,17 @@ interface ListItemProps extends BoxProps {
   icon?: ComponentType<SvgIconProps>;
   activity?: number;
 }
+
+const AddButton = ({ onClick }: IconButtonProps) => {
+  const { t } = useTranslation();
+  return (
+    <Box>
+      <IconButton aria-label={t('common.add')} size="small" onClick={onClick}>
+        <RoundedIcon component={AddIcon} size="medium" iconSize="small" />
+      </IconButton>
+    </Box>
+  );
+};
 
 const ListItem = forwardRef<HTMLDivElement, ListItemProps>(
   ({ displayName, icon: Icon, activity = 0, ...boxProps }, ref) => {
@@ -40,15 +80,27 @@ const ListItem = forwardRef<HTMLDivElement, ListItemProps>(
 
 const InnovationFlowCollaborationToolsBlock: FC<InnovationFlowCollaborationToolsBlockProps> = ({
   callouts,
+  innovationFlowStates,
+  currentState,
+  onUpdateFlowStateOrder,
   onUpdateCalloutFlowState,
-  flowStateAllowedValues,
+  onUpdateCurrentState,
+  onCreateFlowState,
+  onEditFlowState,
+  onDeleteFlowState,
 }) => {
   const { t } = useTranslation();
   const groupedCallouts = groupBy(callouts, callout => callout.flowState?.currentState);
 
   const handleDragEnd: OnDragEndResponder = ({ draggableId, destination }) => {
-    if (onUpdateCalloutFlowState && destination) {
-      onUpdateCalloutFlowState(draggableId, destination.droppableId, destination.index);
+    if (destination?.droppableId === STATES_DROPPABLE_ID) {
+      if (onUpdateFlowStateOrder && destination) {
+        onUpdateFlowStateOrder(draggableId, destination.index);
+      }
+    } else {
+      if (onUpdateCalloutFlowState && destination) {
+        onUpdateCalloutFlowState(draggableId, destination.droppableId, destination.index);
+      }
     }
   };
 
@@ -59,37 +111,80 @@ const InnovationFlowCollaborationToolsBlock: FC<InnovationFlowCollaborationTools
 
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
-      <PageContentBlock sx={{ minHeight: gutters(10) }}>
-        <BlockTitle>{t('common.collaborationTools')}</BlockTitle>
-        <ScrollableCardsLayoutContainer orientation="horizontal" alignItems="stretch">
-          {flowStateAllowedValues.map(state => (
-            <PageContentBlock key={state} columns={3}>
-              <Caption>{getStateName(state)}</Caption>
-              <Droppable droppableId={state}>
-                {provided => (
-                  <Gutters ref={provided.innerRef} disablePadding flexGrow={1} {...provided.droppableProps}>
-                    {groupedCallouts[state]?.map((callout, index) => (
-                      <Draggable key={callout.id} draggableId={callout.id} index={index}>
-                        {provided => (
-                          <ListItem
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                            displayName={callout.profile.displayName}
-                            icon={calloutIcons[callout.type]}
-                            activity={callout.activity}
-                          />
+      <Droppable droppableId={STATES_DROPPABLE_ID} type="droppableItem" direction="horizontal">
+        {parentDroppableProvided => (
+          <Box ref={parentDroppableProvided.innerRef} sx={{ userSelect: 'none' }}>
+            <ScrollableCardsLayoutContainer orientation="horizontal" alignItems="stretch">
+              {innovationFlowStates?.map((state, index) => (
+                <Draggable key={state.displayName} draggableId={state.displayName} index={index}>
+                  {parentProvider => {
+                    const isCurrentState = currentState === state.displayName;
+                    return (
+                      <PageContentBlock
+                        key={state.displayName}
+                        columns={3}
+                        ref={parentProvider.innerRef}
+                        sx={{ borderColor: isCurrentState ? 'primary.main' : undefined }}
+                        {...parentProvider.draggableProps}
+                      >
+                        <PageContentBlockHeader
+                          title={
+                            <Caption {...parentProvider.dragHandleProps}>{getStateName(state.displayName)}</Caption>
+                          }
+                          actions={
+                            <InnovationFlowStateMenu
+                              state={state.displayName}
+                              isCurrentState={isCurrentState}
+                              onUpdateCurrentState={onUpdateCurrentState}
+                              onAddStateAfter={stateBefore => onCreateFlowState({ after: stateBefore, last: false })}
+                              onEdit={onEditFlowState}
+                              onDelete={onDeleteFlowState}
+                            />
+                          }
+                        />
+                        {state.description?.trim() && (
+                          <CroppedMarkdown backgroundColor="paper" maxHeightGutters={3}>
+                            {state.description}
+                          </CroppedMarkdown>
                         )}
-                      </Draggable>
-                    ))}
-                    {provided.placeholder}
-                  </Gutters>
-                )}
-              </Droppable>
-            </PageContentBlock>
-          ))}
-        </ScrollableCardsLayoutContainer>
-      </PageContentBlock>
+                        <Droppable droppableId={state.displayName}>
+                          {provided => (
+                            <Gutters
+                              ref={provided.innerRef}
+                              disablePadding
+                              flexGrow={1}
+                              minHeight={gutters(1)}
+                              {...provided.droppableProps}
+                            >
+                              {groupedCallouts[state.displayName]?.map((callout, index) => (
+                                <Draggable key={callout.id} draggableId={callout.id} index={index}>
+                                  {provider => (
+                                    <ListItem
+                                      ref={provider.innerRef}
+                                      {...provider.draggableProps}
+                                      {...provider.dragHandleProps}
+                                      displayName={callout.profile.displayName}
+                                      icon={calloutIcons[callout.type]}
+                                      activity={callout.activity}
+                                    />
+                                  )}
+                                </Draggable>
+                              ))}
+                              {provided.placeholder}
+                            </Gutters>
+                          )}
+                        </Droppable>
+                      </PageContentBlock>
+                    );
+                  }}
+                </Draggable>
+              ))}
+              {parentDroppableProvided.placeholder}
+              <AddButton onClick={() => onCreateFlowState({ last: true })} />
+            </ScrollableCardsLayoutContainer>
+          </Box>
+        )}
+      </Droppable>
     </DragDropContext>
   );
 };

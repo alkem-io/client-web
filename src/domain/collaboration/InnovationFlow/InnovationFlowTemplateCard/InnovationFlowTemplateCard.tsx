@@ -16,11 +16,11 @@ import CardTags from '../../../../core/ui/card/CardTags';
 import webkitLineClamp from '../../../../core/ui/utils/webkitLineClamp';
 import { InnovationFlowState } from '../InnovationFlow';
 
-interface InnovationFlowTemplate extends TemplateBase {
+export interface InnovationFlowTemplate extends TemplateBase {
   states: InnovationFlowState[];
 }
 
-interface InnovationFlowTemplateCardProps extends TemplateCardBaseProps<InnovationFlowTemplate> { }
+interface InnovationFlowTemplateCardProps extends TemplateCardBaseProps<InnovationFlowTemplate> {}
 
 const InnovationFlowTemplateCard = ({
   template,

@@ -81,7 +81,7 @@ const ContributionDetailsCard = ({
       </JourneyCard>
       {enableLeave && (
         <Dialog open={leavingCommunityDialogOpen} maxWidth="xs" aria-labelledby="confirm-leave-organization">
-          <DialogTitle id="confirm-innovation-flow">
+          <DialogTitle>
             {t('components.associated-organization.confirmation-dialog.title', {
               organization: displayName,
             })}
