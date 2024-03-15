@@ -199,6 +199,9 @@ const useInnovationFlowSettings = ({ collaborationId, skip }: useInnovationFlowS
     updateInnovationFlowStates(nextStates);
   };
 
+  /**
+   * if stateBefore is undefined, the new state will be appended to the end of the list
+   */
   const handleCreateState = (newState: InnovationFlowState, stateBefore?: string) => {
     const states = innovationFlow?.states ?? [];
     const stateBeforeIndex = !stateBefore ? -1 : states.findIndex(state => state.displayName === stateBefore);

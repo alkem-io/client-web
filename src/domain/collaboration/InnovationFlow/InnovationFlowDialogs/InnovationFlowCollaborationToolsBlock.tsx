@@ -43,7 +43,7 @@ interface InnovationFlowCollaborationToolsBlockProps {
   onUpdateFlowStateOrder: (flowState: string, sortOrder: number) => Promise<unknown> | void;
   onUpdateCalloutFlowState: (calloutId: string, newState: string, index: number) => Promise<unknown> | void;
   onUpdateCurrentState: (state: string) => void;
-  onCreateFlowState: (options: { after?: string }) => void;
+  onCreateFlowState: (options: { after: string; last: false } | { after?: never; last: true }) => void;
   onEditFlowState: (state: string) => void;
   onDeleteFlowState: (state: string) => void;
 }
@@ -131,22 +131,31 @@ const InnovationFlowCollaborationToolsBlock: FC<InnovationFlowCollaborationTools
                           title={
                             <Caption {...parentProvider.dragHandleProps}>{getStateName(state.displayName)}</Caption>
                           }
-                        >
-                          <InnovationFlowStateMenu
-                            state={state.displayName}
-                            isCurrentState={isCurrentState}
-                            onUpdateCurrentState={onUpdateCurrentState}
-                            onAddStateAfter={stateBefore => onCreateFlowState({ after: stateBefore })}
-                            onEdit={onEditFlowState}
-                            onDelete={onDeleteFlowState}
-                          />
-                        </PageContentBlockHeader>
-                        <CroppedMarkdown backgroundColor="paper" heightGutters={3}>
-                          {state.description}
-                        </CroppedMarkdown>
+                          actions={
+                            <InnovationFlowStateMenu
+                              state={state.displayName}
+                              isCurrentState={isCurrentState}
+                              onUpdateCurrentState={onUpdateCurrentState}
+                              onAddStateAfter={stateBefore => onCreateFlowState({ after: stateBefore, last: false })}
+                              onEdit={onEditFlowState}
+                              onDelete={onDeleteFlowState}
+                            />
+                          }
+                        />
+                        {state.description?.trim() && (
+                          <CroppedMarkdown backgroundColor="paper" maxHeightGutters={3}>
+                            {state.description}
+                          </CroppedMarkdown>
+                        )}
                         <Droppable droppableId={state.displayName}>
                           {provided => (
-                            <Gutters ref={provided.innerRef} disablePadding flexGrow={1} {...provided.droppableProps}>
+                            <Gutters
+                              ref={provided.innerRef}
+                              disablePadding
+                              flexGrow={1}
+                              minHeight={gutters(1)}
+                              {...provided.droppableProps}
+                            >
                               {groupedCallouts[state.displayName]?.map((callout, index) => (
                                 <Draggable key={callout.id} draggableId={callout.id} index={index}>
                                   {provider => (
@@ -171,7 +180,7 @@ const InnovationFlowCollaborationToolsBlock: FC<InnovationFlowCollaborationTools
                 </Draggable>
               ))}
               {parentDroppableProvided.placeholder}
-              <AddButton onClick={() => onCreateFlowState({ after: undefined })} />
+              <AddButton onClick={() => onCreateFlowState({ last: true })} />
             </ScrollableCardsLayoutContainer>
           </Box>
         )}

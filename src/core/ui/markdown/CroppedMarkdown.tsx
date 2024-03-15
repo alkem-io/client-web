@@ -7,17 +7,17 @@ import { DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS } from '../card/CardDescription'
 interface CroppedMarkdownProps extends MarkdownProps {
   children: string;
   backgroundColor?: OverflowGradientProps['backgroundColor'];
-  heightGutters?: number;
+  maxHeightGutters?: number;
 }
 
 const CroppedMarkdown = ({
   children,
-  heightGutters = DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS,
+  maxHeightGutters = DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS,
   backgroundColor = 'default',
   ...props
 }: CroppedMarkdownProps) => {
   return (
-    <OverflowGradient height={gutters(heightGutters)} backgroundColor={backgroundColor}>
+    <OverflowGradient maxHeight={gutters(maxHeightGutters)} backgroundColor={backgroundColor}>
       <WrapperMarkdown card {...props}>
         {children}
       </WrapperMarkdown>

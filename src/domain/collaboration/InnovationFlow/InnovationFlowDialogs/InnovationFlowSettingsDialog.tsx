@@ -34,7 +34,9 @@ const InnovationFlowSettingsDialog: FC<InnovationFlowSettingsDialogProps> = ({
   // Dialogs for Flow States management:
 
   // Stores the previous flow state to create a new state after it. If undefined it will create the state at the end of the flow
-  const [createFlowState, setCreateFlowState] = useState<{ after: string | undefined } | undefined>(undefined);
+  const [createFlowState, setCreateFlowState] = useState<
+    { after: string; last: false } | { after?: never; last: true } | undefined
+  >(undefined);
   const [editFlowState, setEditFlowState] = useState<InnovationFlowState | undefined>();
   const [deleteFlowState, setDeleteFlowState] = useState<string | undefined>();
 
@@ -60,8 +62,8 @@ const InnovationFlowSettingsDialog: FC<InnovationFlowSettingsDialogProps> = ({
               onUpdateCurrentState={actions.updateInnovationFlowCurrentState}
               onUpdateFlowStateOrder={actions.updateInnovationFlowStateOrder}
               onUpdateCalloutFlowState={actions.updateCalloutFlowState}
-              onCreateFlowState={({ after }) => {
-                setCreateFlowState({ after });
+              onCreateFlowState={createFlowStateOptions => {
+                setCreateFlowState(createFlowStateOptions);
               }}
               onEditFlowState={stateDisplayName => {
                 const state = data.innovationFlow?.states.find(state => state.displayName === stateDisplayName);

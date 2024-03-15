@@ -943,6 +943,10 @@
         "topCallouts": "Most Active"
       }
     },
+    "innovationFlowVisualizer": {
+      "currentState": "Current State",
+      "currentStateName": "Current State: {{state}}"
+    },
     "innovationFlowSettings": {
       "title": "Innovation Flow Settings",
       "editProfileDialog": {
