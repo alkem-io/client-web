@@ -11,7 +11,7 @@ import { ContainerChildProps } from '../../../../core/container/container';
 import {
   ActivityEventType,
   AuthorizationPrivilege,
-  CalloutDisplayLocation,
+  CalloutGroupName,
   ChallengeProfileFragment,
   CommunityMembershipStatus,
   DashboardTopCalloutFragment,
@@ -137,7 +137,7 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
   const callouts = useCallouts({
     spaceNameId,
     challengeNameId,
-    displayLocations: [CalloutDisplayLocation.HomeLeft, CalloutDisplayLocation.HomeRight],
+    groupNames: [CalloutGroupName.HomeLeft, CalloutGroupName.HomeRight],
   });
 
   const isMember = _challenge?.space.challenge.community?.myMembershipStatus === CommunityMembershipStatus.Member;

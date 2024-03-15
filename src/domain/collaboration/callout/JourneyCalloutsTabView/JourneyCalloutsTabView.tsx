@@ -8,7 +8,7 @@ import LinksList from '../../../../core/ui/list/LinksList';
 import useStateWithAsyncDefault from '../../../../core/utils/useStateWithAsyncDefault';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import MembershipBackdrop from '../../../shared/components/Backdrops/MembershipBackdrop';
-import { CalloutDisplayLocation } from '../../../../core/apollo/generated/graphql-schema';
+import { CalloutGroupName } from '../../../../core/apollo/generated/graphql-schema';
 import { ContributeInnovationFlowBlock } from '../../InnovationFlow/ContributeInnovationFlowBlock/ContributeInnovationFlowBlock';
 import InnovationFlowStates from '../../InnovationFlow/InnovationFlowStates/InnovationFlowStates';
 import CalloutsGroupView from '../CalloutsInContext/CalloutsGroupView';
@@ -23,7 +23,7 @@ interface JourneyCalloutsTabViewProps extends JourneyLocation {
   currentInnovationFlowState: string | undefined;
   canEditInnovationFlow: boolean | undefined;
   callouts: TypedCallout[] | undefined;
-  groupedCallouts: Record<CalloutDisplayLocation, TypedCallout[] | undefined>;
+  groupedCallouts: Record<CalloutGroupName, TypedCallout[] | undefined>;
   canCreateCallout: boolean;
   canCreateCalloutFromTemplate: boolean;
   calloutNames: string[];
@@ -65,10 +65,10 @@ const JourneyCalloutsTabView = ({
 
   const { t } = useTranslation();
 
-  const handleSelectInnovationFlowState = (state: InnovationFlowState) => setSelectedInnovationFlowState(state.displayName);
+  const handleSelectInnovationFlowState = (state: InnovationFlowState) =>
+    setSelectedInnovationFlowState(state.displayName);
 
-  const contributeLeftCalloutsIds =
-    groupedCallouts[CalloutDisplayLocation.ContributeLeft]?.map(callout => callout.id) ?? [];
+  const contributeLeftCalloutsIds = groupedCallouts[CalloutGroupName.ContributeLeft]?.map(callout => callout.id) ?? [];
 
   return (
     <>
@@ -109,7 +109,7 @@ const JourneyCalloutsTabView = ({
               />
             </PageContentBlock>
             <CalloutsGroupView
-              callouts={groupedCallouts[CalloutDisplayLocation.ContributeLeft]}
+              callouts={groupedCallouts[CalloutGroupName.ContributeLeft]}
               spaceId={spaceNameId}
               canCreateCallout={canCreateCallout}
               canCreateCalloutFromTemplate={canCreateCalloutFromTemplate}
@@ -118,7 +118,7 @@ const JourneyCalloutsTabView = ({
               calloutNames={calloutNames}
               onSortOrderUpdate={onCalloutsSortOrderUpdate}
               onCalloutUpdate={refetchCallout}
-              displayLocation={CalloutDisplayLocation.ContributeLeft}
+              groupName={CalloutGroupName.ContributeLeft}
               flowState={selectedInnovationFlowState}
             />
           </PageContentColumn>
@@ -136,7 +136,7 @@ const JourneyCalloutsTabView = ({
               />
             )}
             <CalloutsGroupView
-              callouts={filterCallouts(groupedCallouts[CalloutDisplayLocation.ContributeRight])}
+              callouts={filterCallouts(groupedCallouts[CalloutGroupName.ContributeRight])}
               spaceId={spaceNameId}
               canCreateCallout={canCreateCallout}
               canCreateCalloutFromTemplate={canCreateCalloutFromTemplate}
@@ -145,7 +145,7 @@ const JourneyCalloutsTabView = ({
               calloutNames={calloutNames}
               onSortOrderUpdate={onCalloutsSortOrderUpdate}
               onCalloutUpdate={refetchCallout}
-              displayLocation={CalloutDisplayLocation.ContributeRight}
+              groupName={CalloutGroupName.ContributeRight}
               createButtonPlace="top"
               flowState={selectedInnovationFlowState}
             />

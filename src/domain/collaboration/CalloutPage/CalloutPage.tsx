@@ -21,7 +21,7 @@ import DialogHeader from '../../../core/ui/dialog/DialogHeader';
 import { Text } from '../../../core/ui/typography';
 import { useTranslation } from 'react-i18next';
 import { NavigationState } from '../../../core/routing/ScrollToTop';
-import { getCalloutDisplayLocationValue } from '../callout/utils/getCalloutDisplayLocationValue';
+import { getCalloutGroupNameValue } from '../callout/utils/getCalloutGroupValue';
 
 interface CalloutLocation {
   journeyTypeName: JourneyTypeName;
@@ -106,8 +106,8 @@ const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: Cal
       draft,
       editable,
       comments: callout.comments ? { ...callout.comments, calloutNameId: callout.nameID } : undefined,
-      displayLocation: getCalloutDisplayLocationValue(
-        callout.framing.profile.tagsets?.find(tagset => tagset.name === 'callout-display-location')?.tags
+      groupName: getCalloutGroupNameValue(
+        callout.framing.profile.tagsets?.find(tagset => tagset.name === 'callout-group')?.tags
       ),
       // TODO: Try to remove this `as unknown`
     } as unknown as TypedCalloutDetails;
@@ -135,7 +135,7 @@ const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: Cal
     );
   }
 
-  const calloutDisplayLocation = typedCalloutDetails && typedCalloutDetails.displayLocation;
+  const calloutDisplayLocation = typedCalloutDetails && typedCalloutDetails.groupName;
 
   const parentPagePath = typeof parentRoute === 'function' ? parentRoute(calloutDisplayLocation) : parentRoute;
 

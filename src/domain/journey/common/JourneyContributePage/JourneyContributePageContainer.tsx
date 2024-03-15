@@ -4,7 +4,7 @@ import useInnovationFlowStates, {
   UseInnovationFlowStatesProvided,
 } from '../../../collaboration/InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
 import useCallouts, { UseCalloutsProvided } from '../../../collaboration/callout/useCallouts/useCallouts';
-import { CalloutDisplayLocation } from '../../../../core/apollo/generated/graphql-schema';
+import { CalloutGroupName } from '../../../../core/apollo/generated/graphql-schema';
 import { JourneyLocation } from '../../../../main/routing/urlBuilders';
 import useCollaborationIdentity from '../CollaborationIdentity/useCollaborationIdentity';
 
@@ -24,17 +24,21 @@ const JourneyContributePageContainer = ({ children }: SimpleContainerProps<Journ
   const { collaborationId } = useCollaborationIdentity({ spaceNameId, challengeNameId, opportunityNameId });
 
   const innovationFlowStates = useInnovationFlowStates({
-    collaborationId
+    collaborationId,
   });
 
   const callouts = useCallouts({
     spaceNameId,
     challengeNameId,
     opportunityNameId,
-    displayLocations: [CalloutDisplayLocation.ContributeLeft, CalloutDisplayLocation.ContributeRight],
+    groupNames: [CalloutGroupName.ContributeLeft, CalloutGroupName.ContributeRight],
   });
 
-  return <>{children({ innovationFlowStates, callouts, spaceNameId, challengeNameId, opportunityNameId, collaborationId })}</>;
+  return (
+    <>
+      {children({ innovationFlowStates, callouts, spaceNameId, challengeNameId, opportunityNameId, collaborationId })}
+    </>
+  );
 };
 
 export default JourneyContributePageContainer;

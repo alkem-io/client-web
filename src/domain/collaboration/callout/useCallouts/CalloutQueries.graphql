@@ -5,7 +5,7 @@ query Callouts(
   $includeOpportunity: Boolean = false
   $challengeNameId: UUID_NAMEID = "mockid"
   $opportunityNameId: UUID_NAMEID = "mockid"
-  $displayLocations: [CalloutDisplayLocation!]
+  $groups: [String!]
   $calloutIds: [UUID_NAMEID!]
 ) {
   space(ID: $spaceNameId) {
@@ -41,7 +41,7 @@ fragment CollaborationWithCallouts on Collaboration {
     id
     myPrivileges
   }
-  callouts(displayLocations: $displayLocations, IDs: $calloutIds) {
+  callouts(groups: $groups, IDs: $calloutIds) {
     ...Callout
   }
 }

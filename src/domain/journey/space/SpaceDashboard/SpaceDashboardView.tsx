@@ -2,7 +2,7 @@ import React, { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   AssociatedOrganizationDetailsFragment,
-  CalloutDisplayLocation,
+  CalloutGroupName,
   CalloutsQueryVariables,
   DashboardLeadUserFragment,
   DashboardTopCalloutFragment,
@@ -63,7 +63,7 @@ interface SpaceDashboardViewProps extends Partial<CoreEntityIdTypes> {
   loading: boolean;
   shareUpdatesUrl: string;
   callouts: {
-    groupedCallouts: Record<CalloutDisplayLocation, TypedCallout[] | undefined>;
+    groupedCallouts: Record<CalloutGroupName, TypedCallout[] | undefined>;
     canCreateCallout: boolean;
     canCreateCalloutFromTemplate: boolean;
     calloutNames: string[];
@@ -171,7 +171,7 @@ const SpaceDashboardView = ({
             <DashboardUpdatesSection entities={{ spaceId: spaceNameId, communityId }} shareUrl={shareUpdatesUrl} />
           )}
           <CalloutsGroupView
-            callouts={callouts.groupedCallouts[CalloutDisplayLocation.HomeLeft]}
+            callouts={callouts.groupedCallouts[CalloutGroupName.HomeLeft]}
             spaceId={spaceNameId!}
             canCreateCallout={callouts.canCreateCallout}
             canCreateCalloutFromTemplate={callouts.canCreateCalloutFromTemplate}
@@ -180,13 +180,13 @@ const SpaceDashboardView = ({
             calloutNames={callouts.calloutNames}
             onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
             onCalloutUpdate={callouts.refetchCallout}
-            displayLocation={CalloutDisplayLocation.HomeLeft}
+            groupName={CalloutGroupName.HomeLeft}
           />
         </PageContentColumn>
 
         <PageContentColumn columns={8}>
           <DashboardRecentContributionsBlock
-            halfWidth={(callouts.groupedCallouts[CalloutDisplayLocation.HomeRight]?.length ?? 0) > 0}
+            halfWidth={(callouts.groupedCallouts[CalloutGroupName.HomeRight]?.length ?? 0) > 0}
             readUsersAccess={readUsersAccess}
             entityReadAccess={entityReadAccess}
             activitiesLoading={activityLoading}
@@ -197,7 +197,7 @@ const SpaceDashboardView = ({
             onActivitiesDialogOpen={() => fetchMoreActivities(RECENT_ACTIVITIES_LIMIT_EXPANDED)}
           />
           <CalloutsGroupView
-            callouts={callouts.groupedCallouts[CalloutDisplayLocation.HomeRight]}
+            callouts={callouts.groupedCallouts[CalloutGroupName.HomeRight]}
             spaceId={spaceNameId!}
             canCreateCallout={callouts.canCreateCallout}
             canCreateCalloutFromTemplate={callouts.canCreateCalloutFromTemplate}
@@ -206,7 +206,7 @@ const SpaceDashboardView = ({
             calloutNames={callouts.calloutNames}
             onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
             onCalloutUpdate={callouts.refetchCallout}
-            displayLocation={CalloutDisplayLocation.HomeRight}
+            groupName={CalloutGroupName.HomeRight}
             blockProps={(callout, index) => {
               if (index === 0) {
                 return {

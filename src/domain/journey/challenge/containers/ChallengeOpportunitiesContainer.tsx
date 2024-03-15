@@ -2,7 +2,7 @@ import { ApolloError } from '@apollo/client';
 import React, { FC } from 'react';
 import { useChallengeOpportunityCardsQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
-import { CalloutDisplayLocation, OpportunityCardFragment } from '../../../../core/apollo/generated/graphql-schema';
+import { CalloutGroupName, OpportunityCardFragment } from '../../../../core/apollo/generated/graphql-schema';
 import useOpportunityCreatedSubscription from '../hooks/useOpportunityCreatedSubscription';
 import useCallouts, { UseCalloutsProvided } from '../../../collaboration/callout/useCallouts/useCallouts';
 
@@ -50,7 +50,7 @@ export const ChallengeOpportunitiesContainer: FC<ChallengeOpportunitiesContainer
   const callouts = useCallouts({
     spaceNameId,
     challengeNameId,
-    displayLocations: [CalloutDisplayLocation.OpportunitiesLeft, CalloutDisplayLocation.OpportunitiesRight],
+    groupNames: [CalloutGroupName.SubspacesLeft, CalloutGroupName.SubspacesRight],
   });
 
   return (

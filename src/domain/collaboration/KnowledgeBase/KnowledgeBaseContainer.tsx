@@ -1,6 +1,6 @@
 import { SimpleContainerProps } from '../../../core/container/SimpleContainer';
 import useCallouts, { UseCalloutsProvided } from '../callout/useCallouts/useCallouts';
-import { CalloutDisplayLocation } from '../../../core/apollo/generated/graphql-schema';
+import { CalloutGroupName } from '../../../core/apollo/generated/graphql-schema';
 
 interface KnowledgeBaseContainerProps
   extends SimpleContainerProps<{
@@ -21,7 +21,7 @@ const KnowledgeBaseContainer = ({
     spaceNameId,
     challengeNameId,
     opportunityNameId,
-    displayLocations: [CalloutDisplayLocation.Knowledge],
+    groupNames: [CalloutGroupName.Knowledge],
   });
 
   return <>{children({ callouts })}</>;

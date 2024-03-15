@@ -708,6 +708,11 @@ export type CalloutFramingFieldPolicy = {
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type CalloutGroupKeySpecifier = ('description' | 'displayName' | CalloutGroupKeySpecifier)[];
+export type CalloutGroupFieldPolicy = {
+  description?: FieldPolicy<any> | FieldReadFunction<any>;
+  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type CalloutPostCreatedKeySpecifier = ('calloutID' | 'post' | CalloutPostCreatedKeySpecifier)[];
 export type CalloutPostCreatedFieldPolicy = {
   calloutID?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -789,6 +794,7 @@ export type ChatGuidanceResultFieldPolicy = {
 export type CollaborationKeySpecifier = (
   | 'authorization'
   | 'callouts'
+  | 'groups'
   | 'id'
   | 'innovationFlow'
   | 'relations'
@@ -799,6 +805,7 @@ export type CollaborationKeySpecifier = (
 export type CollaborationFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   callouts?: FieldPolicy<any> | FieldReadFunction<any>;
+  groups?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationFlow?: FieldPolicy<any> | FieldReadFunction<any>;
   relations?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2186,7 +2193,6 @@ export type RelayPaginatedSpaceKeySpecifier = (
   | 'id'
   | 'metrics'
   | 'nameID'
-  | 'opportunities'
   | 'opportunity'
   | 'preferences'
   | 'profile'
@@ -2209,7 +2215,6 @@ export type RelayPaginatedSpaceFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   metrics?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
-  opportunities?: FieldPolicy<any> | FieldReadFunction<any>;
   opportunity?: FieldPolicy<any> | FieldReadFunction<any>;
   preferences?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2559,7 +2564,6 @@ export type SpaceKeySpecifier = (
   | 'id'
   | 'metrics'
   | 'nameID'
-  | 'opportunities'
   | 'opportunity'
   | 'preferences'
   | 'profile'
@@ -2582,7 +2586,6 @@ export type SpaceFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   metrics?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
-  opportunities?: FieldPolicy<any> | FieldReadFunction<any>;
   opportunity?: FieldPolicy<any> | FieldReadFunction<any>;
   preferences?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3142,6 +3145,10 @@ export type StrictTypedTypePolicies = {
   CalloutFraming?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CalloutFramingKeySpecifier | (() => undefined | CalloutFramingKeySpecifier);
     fields?: CalloutFramingFieldPolicy;
+  };
+  CalloutGroup?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CalloutGroupKeySpecifier | (() => undefined | CalloutGroupKeySpecifier);
+    fields?: CalloutGroupFieldPolicy;
   };
   CalloutPostCreated?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CalloutPostCreatedKeySpecifier | (() => undefined | CalloutPostCreatedKeySpecifier);

@@ -12,7 +12,7 @@ import {
   ActivityEventType,
   AssociatedOrganizationDetailsFragment,
   AuthorizationPrivilege,
-  CalloutDisplayLocation,
+  CalloutGroupName,
   CommunityMembershipStatus,
   DashboardTopCalloutFragment,
   Reference,
@@ -150,7 +150,7 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ children 
 
   const callouts = useCallouts({
     spaceNameId,
-    displayLocations: [CalloutDisplayLocation.HomeLeft, CalloutDisplayLocation.HomeRight],
+    groupNames: [CalloutGroupName.HomeLeft, CalloutGroupName.HomeRight],
   });
 
   return (

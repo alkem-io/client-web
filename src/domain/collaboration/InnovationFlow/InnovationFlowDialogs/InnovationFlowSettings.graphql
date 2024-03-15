@@ -64,7 +64,7 @@ fragment InnovationFlowCollaboration on Collaboration {
     id
     myPrivileges
   }
-  callouts(displayLocations: [CONTRIBUTE_LEFT, CONTRIBUTE_RIGHT]) {
+  callouts(groups: ["CONTRIBUTE_1", "CONTRIBUTE_2"]) {
     id
     nameID
     type

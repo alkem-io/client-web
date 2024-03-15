@@ -10,7 +10,7 @@ import { ContainerChildProps } from '../../../../core/container/container';
 import {
   ActivityEventType,
   AuthorizationPrivilege,
-  CalloutDisplayLocation,
+  CalloutGroupName,
   DashboardTopCalloutFragment,
   OpportunityPageFragment,
   Reference,
@@ -170,7 +170,7 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
   const callouts = useCallouts({
     spaceNameId,
     opportunityNameId,
-    displayLocations: [CalloutDisplayLocation.HomeLeft, CalloutDisplayLocation.HomeRight],
+    groupNames: [CalloutGroupName.HomeLeft, CalloutGroupName.HomeRight],
   });
 
   return (

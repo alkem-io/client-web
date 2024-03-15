@@ -1,42 +1,40 @@
-import { CalloutDisplayLocation } from '../../../../core/apollo/generated/graphql-schema';
+import { CalloutGroupName } from '../../../../core/apollo/generated/graphql-schema';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 
-export enum CalloutDisplayLocationValuesMap {
+export enum CalloutGroupNameValuesMap {
   HomeLeft = 'HOME_1',
   HomeRight = 'HOME_2',
   ContributeLeft = 'CONTRIBUTE_1',
   ContributeRight = 'CONTRIBUTE_2',
   CommunityLeft = 'COMMUNITY_1',
   CommunityRight = 'COMMUNITY_2',
-  ChallengesLeft = 'CHALLENGES_1',
-  ChallengesRight = 'CHALLENGES_2',
-  OpportunitiesLeft = 'OPPORTUNITIES_1',
-  OpportunitiesRight = 'OPPORTUNITIES_2',
+  SubspacesLeft = 'SUBSPACES_1',
+  SubspacesRight = 'SUBSPACES_2',
   Knowledge = 'KNOWLEDGE',
 }
 
-export const JourneyCalloutDisplayLocationOptions: Record<JourneyTypeName, CalloutDisplayLocation[]> = {
+export const JourneyCalloutGroupNameOptions: Record<JourneyTypeName, CalloutGroupName[]> = {
   space: [
-    CalloutDisplayLocation.HomeLeft,
-    CalloutDisplayLocation.HomeRight,
-    CalloutDisplayLocation.CommunityLeft,
-    CalloutDisplayLocation.CommunityRight,
-    CalloutDisplayLocation.ChallengesLeft,
-    CalloutDisplayLocation.ChallengesRight,
-    CalloutDisplayLocation.Knowledge,
+    CalloutGroupName.HomeLeft,
+    CalloutGroupName.HomeRight,
+    CalloutGroupName.CommunityLeft,
+    CalloutGroupName.CommunityRight,
+    CalloutGroupName.SubspacesLeft,
+    CalloutGroupName.SubspacesRight,
+    CalloutGroupName.Knowledge,
   ],
   challenge: [
-    CalloutDisplayLocation.HomeLeft,
-    CalloutDisplayLocation.HomeRight,
-    CalloutDisplayLocation.ContributeLeft,
-    CalloutDisplayLocation.ContributeRight,
-    CalloutDisplayLocation.OpportunitiesLeft,
-    CalloutDisplayLocation.OpportunitiesRight,
+    CalloutGroupName.HomeLeft,
+    CalloutGroupName.HomeRight,
+    CalloutGroupName.ContributeLeft,
+    CalloutGroupName.ContributeRight,
+    CalloutGroupName.SubspacesLeft,
+    CalloutGroupName.SubspacesRight,
   ],
   opportunity: [
-    CalloutDisplayLocation.HomeLeft,
-    CalloutDisplayLocation.HomeRight,
-    CalloutDisplayLocation.ContributeLeft,
-    CalloutDisplayLocation.ContributeRight,
+    CalloutGroupName.HomeLeft,
+    CalloutGroupName.HomeRight,
+    CalloutGroupName.ContributeLeft,
+    CalloutGroupName.ContributeRight,
   ],
 };

@@ -654,10 +654,8 @@
       "CONTRIBUTE_RIGHT": "Contribute Right",
       "COMMUNITY_LEFT": "Community Left",
       "COMMUNITY_RIGHT": "Community Right",
-      "CHALLENGES_LEFT": "Challenges Left",
-      "CHALLENGES_RIGHT": "Challenges Right",
-      "OPPORTUNITIES_LEFT": "Opportunities Left",
-      "OPPORTUNITIES_RIGHT": "Opportunities Right",
+      "SUBSPACES_LEFT": "Subspaces Left",
+      "SUBSPACES_RIGHT": "Subspaces Right",
       "KNOWLEDGE": "Knowledge Base"
     }
   },

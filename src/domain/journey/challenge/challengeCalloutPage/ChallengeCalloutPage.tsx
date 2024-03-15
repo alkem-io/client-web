@@ -6,19 +6,19 @@ import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { buildChallengeUrl } from '../../../../main/routing/urlBuilders';
 import { JourneyCalloutDialogProps } from '../../common/JourneyCalloutDialog/JourneyCalloutDialog';
 import ChallengeDashboardPage from '../pages/ChallengeDashboardPage';
-import { CalloutDisplayLocation } from '../../../../core/apollo/generated/graphql-schema';
+import { CalloutGroupName } from '../../../../core/apollo/generated/graphql-schema';
 import ChallengeOpportunitiesPage from '../pages/ChallengeOpportunitiesPage';
 
 const renderPage = (calloutGroup: string | undefined) => {
   switch (calloutGroup) {
-    case CalloutDisplayLocation.HomeLeft:
-    case CalloutDisplayLocation.HomeRight:
+    case CalloutGroupName.HomeLeft:
+    case CalloutGroupName.HomeRight:
       return <ChallengeDashboardPage />;
-    case CalloutDisplayLocation.ContributeLeft:
-    case CalloutDisplayLocation.ContributeRight:
+    case CalloutGroupName.ContributeLeft:
+    case CalloutGroupName.ContributeRight:
       return <JourneyContributePage journeyTypeName="challenge" />;
-    case CalloutDisplayLocation.OpportunitiesLeft:
-    case CalloutDisplayLocation.OpportunitiesRight:
+    case CalloutGroupName.SubspacesLeft:
+    case CalloutGroupName.SubspacesRight:
       return <ChallengeOpportunitiesPage />;
     default:
       return <JourneyContributePage journeyTypeName="challenge" />;
@@ -27,14 +27,14 @@ const renderPage = (calloutGroup: string | undefined) => {
 
 const getPageSection = (calloutGroup: string | undefined): EntityPageSection => {
   switch (calloutGroup) {
-    case CalloutDisplayLocation.HomeLeft:
-    case CalloutDisplayLocation.HomeRight:
+    case CalloutGroupName.HomeLeft:
+    case CalloutGroupName.HomeRight:
       return EntityPageSection.Dashboard;
-    case CalloutDisplayLocation.ContributeLeft:
-    case CalloutDisplayLocation.ContributeRight:
+    case CalloutGroupName.ContributeLeft:
+    case CalloutGroupName.ContributeRight:
       return EntityPageSection.Contribute;
-    case CalloutDisplayLocation.OpportunitiesLeft:
-    case CalloutDisplayLocation.OpportunitiesRight:
+    case CalloutGroupName.SubspacesLeft:
+    case CalloutGroupName.SubspacesRight:
       return EntityPageSection.Opportunities;
     default:
       return EntityPageSection.Contribute;

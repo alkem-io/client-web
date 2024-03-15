@@ -106,7 +106,7 @@ export const InnovationFlowCollaborationFragmentDoc = gql`
       id
       myPrivileges
     }
-    callouts(displayLocations: [CONTRIBUTE_LEFT, CONTRIBUTE_RIGHT]) {
+    callouts(groups: ["CONTRIBUTE_1", "CONTRIBUTE_2"]) {
       id
       nameID
       type
@@ -489,7 +489,7 @@ export const CollaborationWithCalloutsFragmentDoc = gql`
       id
       myPrivileges
     }
-    callouts(displayLocations: $displayLocations, IDs: $calloutIds) {
+    callouts(groups: $groups, IDs: $calloutIds) {
       ...Callout
     }
   }
@@ -6673,7 +6673,7 @@ export const UpdateCalloutDocument = gql`
           tagset {
             ...TagsetDetails
           }
-          displayLocationTagset: tagset(tagsetName: CALLOUT_DISPLAY_LOCATION) {
+          groupNameTagset: tagset(tagsetName: CALLOUT_GROUP) {
             ...TagsetDetails
           }
           references {
@@ -7292,7 +7292,7 @@ export const CalloutsDocument = gql`
     $includeOpportunity: Boolean = false
     $challengeNameId: UUID_NAMEID = "mockid"
     $opportunityNameId: UUID_NAMEID = "mockid"
-    $displayLocations: [CalloutDisplayLocation!]
+    $groups: [String!]
     $calloutIds: [UUID_NAMEID!]
   ) {
     space(ID: $spaceNameId) {
@@ -7342,7 +7342,7 @@ export const CalloutsDocument = gql`
  *      includeOpportunity: // value for 'includeOpportunity'
  *      challengeNameId: // value for 'challengeNameId'
  *      opportunityNameId: // value for 'opportunityNameId'
- *      displayLocations: // value for 'displayLocations'
+ *      groups: // value for 'groups'
  *      calloutIds: // value for 'calloutIds'
  *   },
  * });
