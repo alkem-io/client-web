@@ -12,10 +12,10 @@ import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 import { ArrowRight } from '@mui/icons-material';
 
 interface InnovationFlowStatesProps {
-  collaborationId: string | undefined;
-  states: InnovationFlowState[];
-  currentState: string;
-  selectedState: string;
+  collaborationId?: string; // required if showSettings = true
+  states: InnovationFlowState[] | undefined;
+  currentState?: string;
+  selectedState: string | undefined;
   showSettings?: boolean;
   onSelectState?: (state: InnovationFlowState) => void;
 }
@@ -30,7 +30,7 @@ const FlowStateDescription = styled(WrapperMarkdown)(() => ({
 
 const InnovationFlowStates = ({
   collaborationId,
-  states,
+  states = [],
   currentState,
   selectedState,
   showSettings = false,

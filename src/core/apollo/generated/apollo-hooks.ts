@@ -3094,6 +3094,161 @@ export const ConfigurationFragmentDoc = gql`
     }
   }
 `;
+export const ProfileStorageConfigFragmentDoc = gql`
+  fragment ProfileStorageConfig on Profile {
+    id
+    storageBucket {
+      id
+      allowedMimeTypes
+      maxFileSize
+      authorization {
+        id
+        myPrivileges
+      }
+    }
+  }
+`;
+export const CalloutOnCollaborationWithStorageConfigFragmentDoc = gql`
+  fragment CalloutOnCollaborationWithStorageConfig on Collaboration {
+    id
+    callouts(IDs: [$calloutId]) {
+      id
+      framing {
+        profile {
+          ...ProfileStorageConfig
+        }
+      }
+    }
+  }
+  ${ProfileStorageConfigFragmentDoc}
+`;
+export const PostInCalloutOnCollaborationWithStorageConfigFragmentDoc = gql`
+  fragment PostInCalloutOnCollaborationWithStorageConfig on Collaboration {
+    id
+    callouts(IDs: [$calloutId]) {
+      id
+      contributions(filter: { postIDs: [$postId] }) {
+        post {
+          id
+          profile {
+            ...ProfileStorageConfig
+          }
+        }
+      }
+    }
+  }
+  ${ProfileStorageConfigFragmentDoc}
+`;
+export const CalloutTemplatePreviewFragmentDoc = gql`
+  fragment CalloutTemplatePreview on CalloutTemplate {
+    id
+    type
+    framing {
+      profile {
+        id
+        displayName
+        description
+        tagset {
+          ...TagsetDetails
+        }
+        storageBucket {
+          id
+        }
+      }
+      whiteboard {
+        ...WhiteboardDetails
+      }
+    }
+    contributionPolicy {
+      state
+    }
+    contributionDefaults {
+      id
+      postDescription
+      whiteboardContent
+    }
+  }
+  ${TagsetDetailsFragmentDoc}
+  ${WhiteboardDetailsFragmentDoc}
+`;
+export const EventProfileFragmentDoc = gql`
+  fragment EventProfile on Profile {
+    id
+    displayName
+    description
+    tagset {
+      ...TagsetDetails
+    }
+    references {
+      id
+      name
+      uri
+      description
+    }
+  }
+  ${TagsetDetailsFragmentDoc}
+`;
+export const CalendarEventInfoFragmentDoc = gql`
+  fragment CalendarEventInfo on CalendarEvent {
+    id
+    nameID
+    startDate
+    durationDays
+    durationMinutes
+    wholeDay
+    multipleDays
+    profile {
+      ...EventProfile
+    }
+  }
+  ${EventProfileFragmentDoc}
+`;
+export const CollaborationTimelineInfoFragmentDoc = gql`
+  fragment CollaborationTimelineInfo on Collaboration {
+    id
+    timeline {
+      id
+      calendar {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+        events(limit: $limit) {
+          ...CalendarEventInfo
+        }
+      }
+    }
+  }
+  ${CalendarEventInfoFragmentDoc}
+`;
+export const CalendarEventDetailsFragmentDoc = gql`
+  fragment CalendarEventDetails on CalendarEvent {
+    ...CalendarEventInfo
+    type
+    createdBy {
+      id
+      profile {
+        id
+        displayName
+        visual(type: AVATAR) {
+          id
+          uri
+        }
+        tagsets {
+          ...TagsetDetails
+        }
+      }
+    }
+    createdDate
+    comments {
+      ...CommentsWithMessages
+    }
+  }
+  ${CalendarEventInfoFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
+  ${CommentsWithMessagesFragmentDoc}
+`;
 export const SearchResultPostProfileFragmentDoc = gql`
   fragment SearchResultPostProfile on Profile {
     id
@@ -3390,161 +3545,6 @@ export const SearchResultOpportunityFragmentDoc = gql`
   }
   ${TagsetDetailsFragmentDoc}
   ${VisualUriFragmentDoc}
-`;
-export const ProfileStorageConfigFragmentDoc = gql`
-  fragment ProfileStorageConfig on Profile {
-    id
-    storageBucket {
-      id
-      allowedMimeTypes
-      maxFileSize
-      authorization {
-        id
-        myPrivileges
-      }
-    }
-  }
-`;
-export const CalloutOnCollaborationWithStorageConfigFragmentDoc = gql`
-  fragment CalloutOnCollaborationWithStorageConfig on Collaboration {
-    id
-    callouts(IDs: [$calloutId]) {
-      id
-      framing {
-        profile {
-          ...ProfileStorageConfig
-        }
-      }
-    }
-  }
-  ${ProfileStorageConfigFragmentDoc}
-`;
-export const PostInCalloutOnCollaborationWithStorageConfigFragmentDoc = gql`
-  fragment PostInCalloutOnCollaborationWithStorageConfig on Collaboration {
-    id
-    callouts(IDs: [$calloutId]) {
-      id
-      contributions(filter: { postIDs: [$postId] }) {
-        post {
-          id
-          profile {
-            ...ProfileStorageConfig
-          }
-        }
-      }
-    }
-  }
-  ${ProfileStorageConfigFragmentDoc}
-`;
-export const CalloutTemplatePreviewFragmentDoc = gql`
-  fragment CalloutTemplatePreview on CalloutTemplate {
-    id
-    type
-    framing {
-      profile {
-        id
-        displayName
-        description
-        tagset {
-          ...TagsetDetails
-        }
-        storageBucket {
-          id
-        }
-      }
-      whiteboard {
-        ...WhiteboardDetails
-      }
-    }
-    contributionPolicy {
-      state
-    }
-    contributionDefaults {
-      id
-      postDescription
-      whiteboardContent
-    }
-  }
-  ${TagsetDetailsFragmentDoc}
-  ${WhiteboardDetailsFragmentDoc}
-`;
-export const EventProfileFragmentDoc = gql`
-  fragment EventProfile on Profile {
-    id
-    displayName
-    description
-    tagset {
-      ...TagsetDetails
-    }
-    references {
-      id
-      name
-      uri
-      description
-    }
-  }
-  ${TagsetDetailsFragmentDoc}
-`;
-export const CalendarEventInfoFragmentDoc = gql`
-  fragment CalendarEventInfo on CalendarEvent {
-    id
-    nameID
-    startDate
-    durationDays
-    durationMinutes
-    wholeDay
-    multipleDays
-    profile {
-      ...EventProfile
-    }
-  }
-  ${EventProfileFragmentDoc}
-`;
-export const CollaborationTimelineInfoFragmentDoc = gql`
-  fragment CollaborationTimelineInfo on Collaboration {
-    id
-    timeline {
-      id
-      calendar {
-        id
-        authorization {
-          id
-          myPrivileges
-        }
-        events(limit: $limit) {
-          ...CalendarEventInfo
-        }
-      }
-    }
-  }
-  ${CalendarEventInfoFragmentDoc}
-`;
-export const CalendarEventDetailsFragmentDoc = gql`
-  fragment CalendarEventDetails on CalendarEvent {
-    ...CalendarEventInfo
-    type
-    createdBy {
-      id
-      profile {
-        id
-        displayName
-        visual(type: AVATAR) {
-          id
-          uri
-        }
-        tagsets {
-          ...TagsetDetails
-        }
-      }
-    }
-    createdDate
-    comments {
-      ...CommentsWithMessages
-    }
-  }
-  ${CalendarEventInfoFragmentDoc}
-  ${TagsetDetailsFragmentDoc}
-  ${CommentsWithMessagesFragmentDoc}
 `;
 export const LibraryTemplatesFragmentDoc = gql`
   fragment LibraryTemplates on TemplatesSet {
@@ -5243,63 +5243,74 @@ export type UpdateInnovationFlowStatesMutationOptions = Apollo.BaseMutationOptio
   SchemaTypes.UpdateInnovationFlowStatesMutation,
   SchemaTypes.UpdateInnovationFlowStatesMutationVariables
 >;
-export const UpdateInnovationFlowStatesFromTemplateDocument = gql`
-  mutation updateInnovationFlowStatesFromTemplate($innovationFlowId: UUID!, $innovationFlowTemplateId: UUID!) {
-    updateInnovationFlowStatesFromTemplate(
-      innovationFlowData: { innovationFlowID: $innovationFlowId, innovationFlowTemplateID: $innovationFlowTemplateId }
-    ) {
-      id
-      currentState {
-        displayName
+export const SpaceInnovationFlowsDocument = gql`
+  query SpaceInnovationFlows($spaceId: UUID_NAMEID!) {
+    space(ID: $spaceId) {
+      templates {
+        innovationFlowTemplates {
+          id
+          profile {
+            id
+            displayName
+          }
+        }
       }
     }
   }
 `;
-export type UpdateInnovationFlowStatesFromTemplateMutationFn = Apollo.MutationFunction<
-  SchemaTypes.UpdateInnovationFlowStatesFromTemplateMutation,
-  SchemaTypes.UpdateInnovationFlowStatesFromTemplateMutationVariables
->;
 
 /**
- * __useUpdateInnovationFlowStatesFromTemplateMutation__
+ * __useSpaceInnovationFlowsQuery__
  *
- * To run a mutation, you first call `useUpdateInnovationFlowStatesFromTemplateMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateInnovationFlowStatesFromTemplateMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
+ * To run a query within a React component, call `useSpaceInnovationFlowsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSpaceInnovationFlowsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
  *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const [updateInnovationFlowStatesFromTemplateMutation, { data, loading, error }] = useUpdateInnovationFlowStatesFromTemplateMutation({
+ * const { data, loading, error } = useSpaceInnovationFlowsQuery({
  *   variables: {
- *      innovationFlowId: // value for 'innovationFlowId'
- *      innovationFlowTemplateId: // value for 'innovationFlowTemplateId'
+ *      spaceId: // value for 'spaceId'
  *   },
  * });
  */
-export function useUpdateInnovationFlowStatesFromTemplateMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.UpdateInnovationFlowStatesFromTemplateMutation,
-    SchemaTypes.UpdateInnovationFlowStatesFromTemplateMutationVariables
+export function useSpaceInnovationFlowsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.SpaceInnovationFlowsQuery,
+    SchemaTypes.SpaceInnovationFlowsQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.UpdateInnovationFlowStatesFromTemplateMutation,
-    SchemaTypes.UpdateInnovationFlowStatesFromTemplateMutationVariables
-  >(UpdateInnovationFlowStatesFromTemplateDocument, options);
+  return Apollo.useQuery<SchemaTypes.SpaceInnovationFlowsQuery, SchemaTypes.SpaceInnovationFlowsQueryVariables>(
+    SpaceInnovationFlowsDocument,
+    options
+  );
 }
 
-export type UpdateInnovationFlowStatesFromTemplateMutationHookResult = ReturnType<
-  typeof useUpdateInnovationFlowStatesFromTemplateMutation
+export function useSpaceInnovationFlowsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.SpaceInnovationFlowsQuery,
+    SchemaTypes.SpaceInnovationFlowsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.SpaceInnovationFlowsQuery, SchemaTypes.SpaceInnovationFlowsQueryVariables>(
+    SpaceInnovationFlowsDocument,
+    options
+  );
+}
+
+export type SpaceInnovationFlowsQueryHookResult = ReturnType<typeof useSpaceInnovationFlowsQuery>;
+export type SpaceInnovationFlowsLazyQueryHookResult = ReturnType<typeof useSpaceInnovationFlowsLazyQuery>;
+export type SpaceInnovationFlowsQueryResult = Apollo.QueryResult<
+  SchemaTypes.SpaceInnovationFlowsQuery,
+  SchemaTypes.SpaceInnovationFlowsQueryVariables
 >;
-export type UpdateInnovationFlowStatesFromTemplateMutationResult =
-  Apollo.MutationResult<SchemaTypes.UpdateInnovationFlowStatesFromTemplateMutation>;
-export type UpdateInnovationFlowStatesFromTemplateMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.UpdateInnovationFlowStatesFromTemplateMutation,
-  SchemaTypes.UpdateInnovationFlowStatesFromTemplateMutationVariables
->;
+export function refetchSpaceInnovationFlowsQuery(variables: SchemaTypes.SpaceInnovationFlowsQueryVariables) {
+  return { query: SpaceInnovationFlowsDocument, variables: variables };
+}
+
 export const SpaceInnovationFlowTemplatesLibraryDocument = gql`
   query SpaceInnovationFlowTemplatesLibrary($spaceId: UUID_NAMEID!) {
     space(ID: $spaceId) {
@@ -12050,74 +12061,6 @@ export type CreateGroupOnCommunityMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateGroupOnCommunityMutation,
   SchemaTypes.CreateGroupOnCommunityMutationVariables
 >;
-export const ChallengesWithProfileDocument = gql`
-  query challengesWithProfile($spaceId: UUID_NAMEID!) {
-    space(ID: $spaceId) {
-      id
-      challenges {
-        id
-        nameID
-        profile {
-          id
-          displayName
-        }
-      }
-    }
-  }
-`;
-
-/**
- * __useChallengesWithProfileQuery__
- *
- * To run a query within a React component, call `useChallengesWithProfileQuery` and pass it any options that fit your needs.
- * When your component renders, `useChallengesWithProfileQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useChallengesWithProfileQuery({
- *   variables: {
- *      spaceId: // value for 'spaceId'
- *   },
- * });
- */
-export function useChallengesWithProfileQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.ChallengesWithProfileQuery,
-    SchemaTypes.ChallengesWithProfileQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.ChallengesWithProfileQuery, SchemaTypes.ChallengesWithProfileQueryVariables>(
-    ChallengesWithProfileDocument,
-    options
-  );
-}
-
-export function useChallengesWithProfileLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.ChallengesWithProfileQuery,
-    SchemaTypes.ChallengesWithProfileQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.ChallengesWithProfileQuery, SchemaTypes.ChallengesWithProfileQueryVariables>(
-    ChallengesWithProfileDocument,
-    options
-  );
-}
-
-export type ChallengesWithProfileQueryHookResult = ReturnType<typeof useChallengesWithProfileQuery>;
-export type ChallengesWithProfileLazyQueryHookResult = ReturnType<typeof useChallengesWithProfileLazyQuery>;
-export type ChallengesWithProfileQueryResult = Apollo.QueryResult<
-  SchemaTypes.ChallengesWithProfileQuery,
-  SchemaTypes.ChallengesWithProfileQueryVariables
->;
-export function refetchChallengesWithProfileQuery(variables: SchemaTypes.ChallengesWithProfileQueryVariables) {
-  return { query: ChallengesWithProfileDocument, variables: variables };
-}
-
 export const CommunityGroupsDocument = gql`
   query communityGroups($communityId: UUID!) {
     lookup {
@@ -20360,6 +20303,139 @@ export function refetchBannerInnovationHubQuery(variables?: SchemaTypes.BannerIn
   return { query: BannerInnovationHubDocument, variables: variables };
 }
 
+export const AdminSpaceChallengesPageDocument = gql`
+  query AdminSpaceChallengesPage($spaceId: UUID_NAMEID!) {
+    space(ID: $spaceId) {
+      id
+      challenges {
+        id
+        nameID
+        profile {
+          id
+          displayName
+        }
+      }
+      defaults {
+        innovationFlowTemplate {
+          id
+          profile {
+            ...InnovationFlowProfile
+          }
+          states {
+            displayName
+            description
+          }
+        }
+      }
+    }
+  }
+  ${InnovationFlowProfileFragmentDoc}
+`;
+
+/**
+ * __useAdminSpaceChallengesPageQuery__
+ *
+ * To run a query within a React component, call `useAdminSpaceChallengesPageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAdminSpaceChallengesPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAdminSpaceChallengesPageQuery({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *   },
+ * });
+ */
+export function useAdminSpaceChallengesPageQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.AdminSpaceChallengesPageQuery,
+    SchemaTypes.AdminSpaceChallengesPageQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.AdminSpaceChallengesPageQuery, SchemaTypes.AdminSpaceChallengesPageQueryVariables>(
+    AdminSpaceChallengesPageDocument,
+    options
+  );
+}
+
+export function useAdminSpaceChallengesPageLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.AdminSpaceChallengesPageQuery,
+    SchemaTypes.AdminSpaceChallengesPageQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.AdminSpaceChallengesPageQuery,
+    SchemaTypes.AdminSpaceChallengesPageQueryVariables
+  >(AdminSpaceChallengesPageDocument, options);
+}
+
+export type AdminSpaceChallengesPageQueryHookResult = ReturnType<typeof useAdminSpaceChallengesPageQuery>;
+export type AdminSpaceChallengesPageLazyQueryHookResult = ReturnType<typeof useAdminSpaceChallengesPageLazyQuery>;
+export type AdminSpaceChallengesPageQueryResult = Apollo.QueryResult<
+  SchemaTypes.AdminSpaceChallengesPageQuery,
+  SchemaTypes.AdminSpaceChallengesPageQueryVariables
+>;
+export function refetchAdminSpaceChallengesPageQuery(variables: SchemaTypes.AdminSpaceChallengesPageQueryVariables) {
+  return { query: AdminSpaceChallengesPageDocument, variables: variables };
+}
+
+export const UpdateSpaceDefaultInnovationFlowTemplateDocument = gql`
+  mutation UpdateSpaceDefaultInnovationFlowTemplate($spaceId: UUID!, $innovationFlowTemplateId: UUID!) {
+    updateSpaceDefaults(spaceDefaultsData: { spaceID: $spaceId, flowTemplateID: $innovationFlowTemplateId }) {
+      id
+    }
+  }
+`;
+export type UpdateSpaceDefaultInnovationFlowTemplateMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateSpaceDefaultInnovationFlowTemplateMutation,
+  SchemaTypes.UpdateSpaceDefaultInnovationFlowTemplateMutationVariables
+>;
+
+/**
+ * __useUpdateSpaceDefaultInnovationFlowTemplateMutation__
+ *
+ * To run a mutation, you first call `useUpdateSpaceDefaultInnovationFlowTemplateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateSpaceDefaultInnovationFlowTemplateMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateSpaceDefaultInnovationFlowTemplateMutation, { data, loading, error }] = useUpdateSpaceDefaultInnovationFlowTemplateMutation({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *      innovationFlowTemplateId: // value for 'innovationFlowTemplateId'
+ *   },
+ * });
+ */
+export function useUpdateSpaceDefaultInnovationFlowTemplateMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateSpaceDefaultInnovationFlowTemplateMutation,
+    SchemaTypes.UpdateSpaceDefaultInnovationFlowTemplateMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.UpdateSpaceDefaultInnovationFlowTemplateMutation,
+    SchemaTypes.UpdateSpaceDefaultInnovationFlowTemplateMutationVariables
+  >(UpdateSpaceDefaultInnovationFlowTemplateDocument, options);
+}
+
+export type UpdateSpaceDefaultInnovationFlowTemplateMutationHookResult = ReturnType<
+  typeof useUpdateSpaceDefaultInnovationFlowTemplateMutation
+>;
+export type UpdateSpaceDefaultInnovationFlowTemplateMutationResult =
+  Apollo.MutationResult<SchemaTypes.UpdateSpaceDefaultInnovationFlowTemplateMutation>;
+export type UpdateSpaceDefaultInnovationFlowTemplateMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateSpaceDefaultInnovationFlowTemplateMutation,
+  SchemaTypes.UpdateSpaceDefaultInnovationFlowTemplateMutationVariables
+>;
 export const AdminGlobalOrganizationsListDocument = gql`
   query adminGlobalOrganizationsList($first: Int!, $after: UUID, $filter: OrganizationFilterInput) {
     organizationsPaginated(first: $first, after: $after, filter: $filter) {
@@ -22013,181 +22089,6 @@ export function refetchServerMetadataQuery(variables?: SchemaTypes.ServerMetadat
   return { query: ServerMetadataDocument, variables: variables };
 }
 
-export const SearchDocument = gql`
-  query search($searchData: SearchInput!) {
-    search(searchData: $searchData) {
-      journeyResults {
-        id
-        score
-        terms
-        type
-        ... on SearchResultSpace {
-          ...SearchResultSpace
-        }
-        ... on SearchResultChallenge {
-          ...SearchResultChallenge
-        }
-        ... on SearchResultOpportunity {
-          ...SearchResultOpportunity
-        }
-      }
-      journeyResultsCount
-      calloutResults {
-        id
-        score
-        terms
-        type
-        ... on SearchResultCallout {
-          ...SearchResultCallout
-        }
-      }
-      contributorResults {
-        id
-        score
-        terms
-        type
-        ... on SearchResultUser {
-          ...SearchResultUser
-        }
-        ... on SearchResultOrganization {
-          ...SearchResultOrganization
-        }
-      }
-      contributorResultsCount
-      contributionResults {
-        id
-        score
-        terms
-        type
-        ... on SearchResultPost {
-          ...SearchResultPost
-        }
-      }
-      contributionResultsCount
-    }
-  }
-  ${SearchResultSpaceFragmentDoc}
-  ${SearchResultChallengeFragmentDoc}
-  ${SearchResultOpportunityFragmentDoc}
-  ${SearchResultCalloutFragmentDoc}
-  ${SearchResultUserFragmentDoc}
-  ${SearchResultOrganizationFragmentDoc}
-  ${SearchResultPostFragmentDoc}
-`;
-
-/**
- * __useSearchQuery__
- *
- * To run a query within a React component, call `useSearchQuery` and pass it any options that fit your needs.
- * When your component renders, `useSearchQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useSearchQuery({
- *   variables: {
- *      searchData: // value for 'searchData'
- *   },
- * });
- */
-export function useSearchQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.SearchQuery, SchemaTypes.SearchQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.SearchQuery, SchemaTypes.SearchQueryVariables>(SearchDocument, options);
-}
-
-export function useSearchLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.SearchQuery, SchemaTypes.SearchQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.SearchQuery, SchemaTypes.SearchQueryVariables>(SearchDocument, options);
-}
-
-export type SearchQueryHookResult = ReturnType<typeof useSearchQuery>;
-export type SearchLazyQueryHookResult = ReturnType<typeof useSearchLazyQuery>;
-export type SearchQueryResult = Apollo.QueryResult<SchemaTypes.SearchQuery, SchemaTypes.SearchQueryVariables>;
-export function refetchSearchQuery(variables: SchemaTypes.SearchQueryVariables) {
-  return { query: SearchDocument, variables: variables };
-}
-
-export const UserRolesSearchCardsDocument = gql`
-  query userRolesSearchCards($userId: UUID_NAMEID_EMAIL!) {
-    rolesUser(rolesData: { userID: $userId, filter: { visibilities: [ACTIVE, DEMO] } }) {
-      spaces {
-        id
-        roles
-        challenges {
-          id
-          nameID
-          roles
-        }
-        opportunities {
-          id
-          roles
-        }
-      }
-      organizations {
-        id
-        roles
-      }
-    }
-  }
-`;
-
-/**
- * __useUserRolesSearchCardsQuery__
- *
- * To run a query within a React component, call `useUserRolesSearchCardsQuery` and pass it any options that fit your needs.
- * When your component renders, `useUserRolesSearchCardsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useUserRolesSearchCardsQuery({
- *   variables: {
- *      userId: // value for 'userId'
- *   },
- * });
- */
-export function useUserRolesSearchCardsQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.UserRolesSearchCardsQuery,
-    SchemaTypes.UserRolesSearchCardsQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.UserRolesSearchCardsQuery, SchemaTypes.UserRolesSearchCardsQueryVariables>(
-    UserRolesSearchCardsDocument,
-    options
-  );
-}
-
-export function useUserRolesSearchCardsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.UserRolesSearchCardsQuery,
-    SchemaTypes.UserRolesSearchCardsQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.UserRolesSearchCardsQuery, SchemaTypes.UserRolesSearchCardsQueryVariables>(
-    UserRolesSearchCardsDocument,
-    options
-  );
-}
-
-export type UserRolesSearchCardsQueryHookResult = ReturnType<typeof useUserRolesSearchCardsQuery>;
-export type UserRolesSearchCardsLazyQueryHookResult = ReturnType<typeof useUserRolesSearchCardsLazyQuery>;
-export type UserRolesSearchCardsQueryResult = Apollo.QueryResult<
-  SchemaTypes.UserRolesSearchCardsQuery,
-  SchemaTypes.UserRolesSearchCardsQueryVariables
->;
-export function refetchUserRolesSearchCardsQuery(variables: SchemaTypes.UserRolesSearchCardsQueryVariables) {
-  return { query: UserRolesSearchCardsDocument, variables: variables };
-}
-
 export const ShareLinkWithUserDocument = gql`
   mutation shareLinkWithUser($messageData: CommunicationSendMessageToUserInput!) {
     sendMessageToUser(messageData: $messageData)
@@ -23767,6 +23668,181 @@ export type AskChatGuidanceQuestionQueryResult = Apollo.QueryResult<
 >;
 export function refetchAskChatGuidanceQuestionQuery(variables: SchemaTypes.AskChatGuidanceQuestionQueryVariables) {
   return { query: AskChatGuidanceQuestionDocument, variables: variables };
+}
+
+export const SearchDocument = gql`
+  query search($searchData: SearchInput!) {
+    search(searchData: $searchData) {
+      journeyResults {
+        id
+        score
+        terms
+        type
+        ... on SearchResultSpace {
+          ...SearchResultSpace
+        }
+        ... on SearchResultChallenge {
+          ...SearchResultChallenge
+        }
+        ... on SearchResultOpportunity {
+          ...SearchResultOpportunity
+        }
+      }
+      journeyResultsCount
+      calloutResults {
+        id
+        score
+        terms
+        type
+        ... on SearchResultCallout {
+          ...SearchResultCallout
+        }
+      }
+      contributorResults {
+        id
+        score
+        terms
+        type
+        ... on SearchResultUser {
+          ...SearchResultUser
+        }
+        ... on SearchResultOrganization {
+          ...SearchResultOrganization
+        }
+      }
+      contributorResultsCount
+      contributionResults {
+        id
+        score
+        terms
+        type
+        ... on SearchResultPost {
+          ...SearchResultPost
+        }
+      }
+      contributionResultsCount
+    }
+  }
+  ${SearchResultSpaceFragmentDoc}
+  ${SearchResultChallengeFragmentDoc}
+  ${SearchResultOpportunityFragmentDoc}
+  ${SearchResultCalloutFragmentDoc}
+  ${SearchResultUserFragmentDoc}
+  ${SearchResultOrganizationFragmentDoc}
+  ${SearchResultPostFragmentDoc}
+`;
+
+/**
+ * __useSearchQuery__
+ *
+ * To run a query within a React component, call `useSearchQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSearchQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSearchQuery({
+ *   variables: {
+ *      searchData: // value for 'searchData'
+ *   },
+ * });
+ */
+export function useSearchQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.SearchQuery, SchemaTypes.SearchQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.SearchQuery, SchemaTypes.SearchQueryVariables>(SearchDocument, options);
+}
+
+export function useSearchLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.SearchQuery, SchemaTypes.SearchQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.SearchQuery, SchemaTypes.SearchQueryVariables>(SearchDocument, options);
+}
+
+export type SearchQueryHookResult = ReturnType<typeof useSearchQuery>;
+export type SearchLazyQueryHookResult = ReturnType<typeof useSearchLazyQuery>;
+export type SearchQueryResult = Apollo.QueryResult<SchemaTypes.SearchQuery, SchemaTypes.SearchQueryVariables>;
+export function refetchSearchQuery(variables: SchemaTypes.SearchQueryVariables) {
+  return { query: SearchDocument, variables: variables };
+}
+
+export const UserRolesSearchCardsDocument = gql`
+  query userRolesSearchCards($userId: UUID_NAMEID_EMAIL!) {
+    rolesUser(rolesData: { userID: $userId, filter: { visibilities: [ACTIVE, DEMO] } }) {
+      spaces {
+        id
+        roles
+        challenges {
+          id
+          nameID
+          roles
+        }
+        opportunities {
+          id
+          roles
+        }
+      }
+      organizations {
+        id
+        roles
+      }
+    }
+  }
+`;
+
+/**
+ * __useUserRolesSearchCardsQuery__
+ *
+ * To run a query within a React component, call `useUserRolesSearchCardsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserRolesSearchCardsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserRolesSearchCardsQuery({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *   },
+ * });
+ */
+export function useUserRolesSearchCardsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.UserRolesSearchCardsQuery,
+    SchemaTypes.UserRolesSearchCardsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.UserRolesSearchCardsQuery, SchemaTypes.UserRolesSearchCardsQueryVariables>(
+    UserRolesSearchCardsDocument,
+    options
+  );
+}
+
+export function useUserRolesSearchCardsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.UserRolesSearchCardsQuery,
+    SchemaTypes.UserRolesSearchCardsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.UserRolesSearchCardsQuery, SchemaTypes.UserRolesSearchCardsQueryVariables>(
+    UserRolesSearchCardsDocument,
+    options
+  );
+}
+
+export type UserRolesSearchCardsQueryHookResult = ReturnType<typeof useUserRolesSearchCardsQuery>;
+export type UserRolesSearchCardsLazyQueryHookResult = ReturnType<typeof useUserRolesSearchCardsLazyQuery>;
+export type UserRolesSearchCardsQueryResult = Apollo.QueryResult<
+  SchemaTypes.UserRolesSearchCardsQuery,
+  SchemaTypes.UserRolesSearchCardsQueryVariables
+>;
+export function refetchUserRolesSearchCardsQuery(variables: SchemaTypes.UserRolesSearchCardsQueryVariables) {
+  return { query: UserRolesSearchCardsDocument, variables: variables };
 }
 
 export const SearchScopeDetailsSpaceDocument = gql`

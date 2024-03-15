@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useState } from 'react';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -7,10 +7,11 @@ import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import SearchableList, { SearchableListItem } from '../../../../platform/admin/components/SearchableList';
 import Loading from '../../../../../core/ui/loading/Loading';
 import {
-  refetchChallengesWithProfileQuery,
-  useChallengesWithProfileQuery,
+  refetchAdminSpaceChallengesPageQuery,
+  useAdminSpaceChallengesPageQuery,
   useCreateChallengeMutation,
   useDeleteChallengeMutation,
+  useUpdateSpaceDefaultInnovationFlowTemplateMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import { useSpace } from '../../SpaceContext/useSpace';
@@ -19,22 +20,36 @@ import { ChallengeIcon } from '../../../challenge/icon/ChallengeIcon';
 import { JourneyFormValues } from '../../../../shared/components/JorneyCreationDialog/JourneyCreationForm';
 import { buildAdminChallengeUrl } from '../../../../../main/routing/urlBuilders';
 import { CreateChallengeForm } from '../../../challenge/forms/CreateChallengeForm';
+import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
+import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
+import { BlockSectionTitle, Caption } from '../../../../../core/ui/typography';
+import InnovationFlowProfileView from '../../../../collaboration/InnovationFlow/InnovationFlowDialogs/InnovationFlowProfileView';
+import InnovationFlowStates from '../../../../collaboration/InnovationFlow/InnovationFlowStates/InnovationFlowStates';
+import { Actions } from '../../../../../core/ui/actions/Actions';
+import { Cached } from '@mui/icons-material';
+import SelectDefaultInnovationFlowDialog from '../../../../collaboration/InnovationFlow/InnovationFlowDialogs/SelectDefaultInnovationFlow/SelectDefaultInnovationFlowDialog';
 
 export const ChallengeListView: FC = () => {
   const { t } = useTranslation();
   const notify = useNotification();
-  const { spaceNameId } = useSpace();
+  const { spaceNameId, spaceId } = useSpace();
   const navigate = useNavigate();
-  const [open, setOpen] = useState(false);
+  const [journeyCreationDialogOpen, setJourneyCreationDialogOpen] = useState(false);
+  const [innovationFlowDialogOpen, setInnovationFlowDialogOpen] = useState(false);
 
-  const { data: challengesListQuery, loading } = useChallengesWithProfileQuery({
+  const { data, loading } = useAdminSpaceChallengesPageQuery({
     variables: {
       spaceId: spaceNameId,
     },
   });
+  const defaultInnovationFlow = data?.space.defaults?.innovationFlowTemplate;
+  const [selectedState, setSelectedState] = useState<string | undefined>(undefined);
+  useEffect(() => {
+    setSelectedState(defaultInnovationFlow?.states[0].displayName);
+  }, [defaultInnovationFlow?.states?.[0]?.displayName]);
 
   const challengeList =
-    challengesListQuery?.space?.challenges?.map(c => ({
+    data?.space?.challenges?.map(c => ({
       id: c.id,
       value: c.profile.displayName,
       url: `${c.nameID}`,
@@ -42,7 +57,7 @@ export const ChallengeListView: FC = () => {
 
   const [deleteChallenge] = useDeleteChallengeMutation({
     refetchQueries: [
-      refetchChallengesWithProfileQuery({
+      refetchAdminSpaceChallengesPageQuery({
         spaceId: spaceNameId,
       }),
     ],
@@ -64,7 +79,7 @@ export const ChallengeListView: FC = () => {
     onCompleted: () => {
       notify(t('pages.admin.challenge.notifications.challenge-created'), 'success');
     },
-    refetchQueries: [refetchChallengesWithProfileQuery({ spaceId: spaceNameId })],
+    refetchQueries: [refetchAdminSpaceChallengesPageQuery({ spaceId: spaceNameId })],
     awaitRefetchQueries: true,
   });
 
@@ -99,26 +114,72 @@ export const ChallengeListView: FC = () => {
     [navigate, createChallenge, spaceNameId]
   );
 
+  const [updateInnovationFlow] = useUpdateSpaceDefaultInnovationFlowTemplateMutation();
+  const handleSelectInnovationFlow = async (innovationFlowTemplateId: string) => {
+    await updateInnovationFlow({
+      variables: {
+        spaceId: spaceId,
+        innovationFlowTemplateId,
+      },
+      refetchQueries: [
+        refetchAdminSpaceChallengesPageQuery({
+          spaceId: spaceNameId,
+        }),
+      ],
+      awaitRefetchQueries: true,
+    });
+    setInnovationFlowDialogOpen(false);
+  };
+
   if (loading) return <Loading text={'Loading challenges'} />;
 
   return (
     <>
-      <Box display="flex" flexDirection="column">
-        <Button
-          startIcon={<AddOutlinedIcon />}
-          variant="contained"
-          onClick={() => setOpen(true)}
-          sx={{ alignSelf: 'end', marginBottom: 2 }}
-        >
-          {t('buttons.create')}
-        </Button>
-        <SearchableList data={challengeList} onDelete={handleDelete} />
-      </Box>
+      <PageContentBlock>
+        <PageContentBlockHeader title={t('pages.admin.space.sections.challenges.defaultSettings.title')} />
+        <Caption>{t('pages.admin.space.sections.challenges.defaultSettings.description')}</Caption>
+        <PageContentBlock>
+          <PageContentBlockHeader title={t('common.innovation-flow')} />
+          <BlockSectionTitle>{defaultInnovationFlow?.profile.displayName}</BlockSectionTitle>
+          <InnovationFlowProfileView innovationFlow={defaultInnovationFlow} />
+          <InnovationFlowStates
+            states={defaultInnovationFlow?.states}
+            selectedState={selectedState}
+            onSelectState={state => setSelectedState(state.displayName)}
+          />
+          <Actions justifyContent="end">
+            <Button variant="outlined" startIcon={<Cached />} onClick={() => setInnovationFlowDialogOpen(true)}>
+              {t('pages.admin.space.sections.challenges.defaultSettings.defaultInnovationFlow.selectDifferentFlow')}
+            </Button>
+          </Actions>
+        </PageContentBlock>
+      </PageContentBlock>
+      <PageContentBlock>
+        <PageContentBlockHeader title={'Challenges'} />
+        <Box display="flex" flexDirection="column">
+          <Button
+            startIcon={<AddOutlinedIcon />}
+            variant="contained"
+            onClick={() => setJourneyCreationDialogOpen(true)}
+            sx={{ alignSelf: 'end', marginBottom: 2 }}
+          >
+            {t('buttons.create')}
+          </Button>
+          <SearchableList data={challengeList} onDelete={handleDelete} />
+        </Box>
+      </PageContentBlock>
+      <SelectDefaultInnovationFlowDialog
+        spaceId={spaceId}
+        open={innovationFlowDialogOpen}
+        defaultInnovationFlowId={defaultInnovationFlow?.id}
+        onClose={() => setInnovationFlowDialogOpen(false)}
+        onSelectInnovationFlow={handleSelectInnovationFlow}
+      />
       <JourneyCreationDialog
-        open={open}
+        open={journeyCreationDialogOpen}
         icon={<ChallengeIcon />}
         journeyName={t('common.challenge')}
-        onClose={() => setOpen(false)}
+        onClose={() => setJourneyCreationDialogOpen(false)}
         OnCreate={handleCreate}
         formComponent={CreateChallengeForm}
       />
