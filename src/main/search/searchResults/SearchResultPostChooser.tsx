@@ -1,7 +1,7 @@
 import React from 'react';
 import Skeleton from '@mui/material/Skeleton';
-import { useHydrateCard } from './hooks/useHydratedCard';
-import { SearchResultMetaType } from '../../../main/search/SearchView';
+import { useHydrateCard } from './useHydratedCard';
+import { SearchResultMetaType } from '../SearchView';
 import { SearchResultType } from '../../../core/apollo/generated/graphql-schema';
 
 const SearchResultPostChooser = ({
@@ -40,12 +40,6 @@ const SearchResultPostChooser = ({
       return hydrateOrganizationCard();
     case SearchResultType.Post:
       return hydrateContributionCard();
-    /* TODO:
-    case SearchResultType.Whiteboard:
-      return hydrateWhiteboardCard();
-    case SearchResultType.Callout:
-      return hydrateCalloutCard();
-    */
   }
   throw new Error(`Unrecognized result typename: ${result.__typename}`);
 };

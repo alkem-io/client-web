@@ -2,7 +2,7 @@ import DialogWithGrid from '../../core/ui/dialog/DialogWithGrid';
 import { useQueryParams } from '../../core/routing/useQueryParams';
 import { SEARCH_TERMS_URL_PARAM } from './constants';
 import SearchView from './SearchView';
-import { journeyFilterConfig } from '../../domain/platform/search/Filter';
+import { journeyFilterConfig } from './Filter';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import DialogHeader from '../../core/ui/dialog/DialogHeader';
