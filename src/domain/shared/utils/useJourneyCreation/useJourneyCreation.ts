@@ -20,7 +20,6 @@ interface ChallengeCreationInput {
   vision: string;
   tags: string[];
   addDefaultCallouts: boolean;
-  innovationFlowTemplateId: string;
 }
 
 interface OpportunityCreationInput {
@@ -30,7 +29,6 @@ interface OpportunityCreationInput {
   vision: string;
   tags: string[];
   addDefaultCallouts: boolean;
-  innovationFlowTemplateId: string;
 }
 
 export const useJourneyCreation = () => {
@@ -125,7 +123,6 @@ export const useJourneyCreation = () => {
             tags: value.tags,
             collaborationData: {
               addDefaultCallouts: value.addDefaultCallouts,
-              innovationFlowTemplateID: value.innovationFlowTemplateId,
             },
           },
         },
@@ -183,7 +180,6 @@ export const useJourneyCreation = () => {
             tags: value.tags,
             collaborationData: {
               addDefaultCallouts: value.addDefaultCallouts,
-              innovationFlowTemplateID: value.innovationFlowTemplateId,
             },
           },
         },

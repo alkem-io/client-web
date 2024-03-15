@@ -6757,31 +6757,6 @@ export type InnovationFlowBlockQuery = {
   };
 };
 
-export type DefaultInnovationFlowTemplateQueryVariables = Exact<{
-  spaceNameId: Scalars['UUID_NAMEID'];
-}>;
-
-export type DefaultInnovationFlowTemplateQuery = {
-  __typename?: 'Query';
-  space: {
-    __typename?: 'Space';
-    id: string;
-    defaults?:
-      | {
-          __typename?: 'SpaceDefaults';
-          id: string;
-          innovationFlowTemplate?:
-            | {
-                __typename?: 'InnovationFlowTemplate';
-                id: string;
-                profile: { __typename?: 'Profile'; id: string; displayName: string };
-              }
-            | undefined;
-        }
-      | undefined;
-  };
-};
-
 export type InnovationFlowSettingsQueryVariables = Exact<{
   collaborationId: Scalars['UUID'];
 }>;
