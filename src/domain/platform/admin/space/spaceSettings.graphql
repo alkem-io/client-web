@@ -1,0 +1,19 @@
+query spaceSettings($spaceNameId: UUID_NAMEID!) {
+  space(ID: $spaceNameId) {
+    id
+    settings {
+      privacy {
+        mode
+      }
+      membership {
+        policy
+        trustedOrganizations
+      }
+      collaboration {
+        allowMembersToCreateCallouts
+        allowMembersToCreateSubspaces
+        inheritMembershipRights
+      }
+    }
+  }
+}

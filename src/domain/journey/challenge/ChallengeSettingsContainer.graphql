@@ -1,0 +1,42 @@
+query challengeSettings($spaceNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!) {
+  space(ID: $spaceNameId) {
+    id
+    challenge(ID: $challengeNameId) {
+      id
+      settings {
+        privacy {
+          mode
+        }
+        membership {
+          policy
+          trustedOrganizations
+        }
+        collaboration {
+          allowMembersToCreateCallouts
+          allowMembersToCreateSubspaces
+          inheritMembershipRights
+        }
+      }
+    }
+  }
+}
+
+mutation updateChallengeSettings($settingsData: UpdateChallengeSettingsInput!) {
+  updateChallengeSettings(settingsData: $settingsData) {
+    id
+    settings {
+      privacy {
+        mode
+      }
+      membership {
+        policy
+        trustedOrganizations
+      }
+      collaboration {
+        allowMembersToCreateCallouts
+        allowMembersToCreateSubspaces
+        inheritMembershipRights
+      }
+    }
+  }
+}

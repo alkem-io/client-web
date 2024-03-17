@@ -724,8 +724,8 @@ export type ChallengeKeySpecifier = (
   | 'metrics'
   | 'nameID'
   | 'opportunities'
-  | 'preferences'
   | 'profile'
+  | 'settings'
   | 'spaceID'
   | 'storageAggregator'
   | ChallengeKeySpecifier
@@ -741,8 +741,8 @@ export type ChallengeFieldPolicy = {
   metrics?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   opportunities?: FieldPolicy<any> | FieldReadFunction<any>;
-  preferences?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  settings?: FieldPolicy<any> | FieldReadFunction<any>;
   spaceID?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -1554,6 +1554,7 @@ export type MutationKeySpecifier = (
   | 'updateCalloutVisibility'
   | 'updateCalloutsSortOrder'
   | 'updateChallenge'
+  | 'updateChallengeSettings'
   | 'updateCommunityApplicationForm'
   | 'updateDiscussion'
   | 'updateDocument'
@@ -1569,9 +1570,7 @@ export type MutationKeySpecifier = (
   | 'updateOrganization'
   | 'updatePost'
   | 'updatePostTemplate'
-  | 'updatePreferenceOnChallenge'
   | 'updatePreferenceOnOrganization'
-  | 'updatePreferenceOnSpace'
   | 'updatePreferenceOnUser'
   | 'updateProfile'
   | 'updateProject'
@@ -1579,6 +1578,7 @@ export type MutationKeySpecifier = (
   | 'updateSpace'
   | 'updateSpaceDefaults'
   | 'updateSpacePlatformSettings'
+  | 'updateSpaceSettings'
   | 'updateTagset'
   | 'updateUser'
   | 'updateUserGroup'
@@ -1713,6 +1713,7 @@ export type MutationFieldPolicy = {
   updateCalloutVisibility?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCalloutsSortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
   updateChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateChallengeSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCommunityApplicationForm?: FieldPolicy<any> | FieldReadFunction<any>;
   updateDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
   updateDocument?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1728,9 +1729,7 @@ export type MutationFieldPolicy = {
   updateOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   updatePost?: FieldPolicy<any> | FieldReadFunction<any>;
   updatePostTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
-  updatePreferenceOnChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
   updatePreferenceOnOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
-  updatePreferenceOnSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   updatePreferenceOnUser?: FieldPolicy<any> | FieldReadFunction<any>;
   updateProfile?: FieldPolicy<any> | FieldReadFunction<any>;
   updateProject?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1738,6 +1737,7 @@ export type MutationFieldPolicy = {
   updateSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   updateSpaceDefaults?: FieldPolicy<any> | FieldReadFunction<any>;
   updateSpacePlatformSettings?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateSpaceSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   updateTagset?: FieldPolicy<any> | FieldReadFunction<any>;
   updateUser?: FieldPolicy<any> | FieldReadFunction<any>;
   updateUserGroup?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2192,10 +2192,10 @@ export type RelayPaginatedSpaceKeySpecifier = (
   | 'nameID'
   | 'opportunities'
   | 'opportunity'
-  | 'preferences'
   | 'profile'
   | 'project'
   | 'projects'
+  | 'settings'
   | 'storageAggregator'
   | 'templates'
   | RelayPaginatedSpaceKeySpecifier
@@ -2219,10 +2219,10 @@ export type RelayPaginatedSpaceFieldPolicy = {
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   opportunities?: FieldPolicy<any> | FieldReadFunction<any>;
   opportunity?: FieldPolicy<any> | FieldReadFunction<any>;
-  preferences?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   project?: FieldPolicy<any> | FieldReadFunction<any>;
   projects?: FieldPolicy<any> | FieldReadFunction<any>;
+  settings?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
   templates?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -2573,10 +2573,10 @@ export type SpaceKeySpecifier = (
   | 'nameID'
   | 'opportunities'
   | 'opportunity'
-  | 'preferences'
   | 'profile'
   | 'project'
   | 'projects'
+  | 'settings'
   | 'storageAggregator'
   | 'templates'
   | SpaceKeySpecifier
@@ -2600,10 +2600,10 @@ export type SpaceFieldPolicy = {
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   opportunities?: FieldPolicy<any> | FieldReadFunction<any>;
   opportunity?: FieldPolicy<any> | FieldReadFunction<any>;
-  preferences?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   project?: FieldPolicy<any> | FieldReadFunction<any>;
   projects?: FieldPolicy<any> | FieldReadFunction<any>;
+  settings?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
   templates?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -2617,6 +2617,36 @@ export type SpaceDefaultsFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationFlowTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type SpaceSettingsKeySpecifier = ('collaboration' | 'membership' | 'privacy' | SpaceSettingsKeySpecifier)[];
+export type SpaceSettingsFieldPolicy = {
+  collaboration?: FieldPolicy<any> | FieldReadFunction<any>;
+  membership?: FieldPolicy<any> | FieldReadFunction<any>;
+  privacy?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type SpaceSettingsCollaborationKeySpecifier = (
+  | 'allowMembersToCreateCallouts'
+  | 'allowMembersToCreateSubspaces'
+  | 'inheritMembershipRights'
+  | SpaceSettingsCollaborationKeySpecifier
+)[];
+export type SpaceSettingsCollaborationFieldPolicy = {
+  allowMembersToCreateCallouts?: FieldPolicy<any> | FieldReadFunction<any>;
+  allowMembersToCreateSubspaces?: FieldPolicy<any> | FieldReadFunction<any>;
+  inheritMembershipRights?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type SpaceSettingsMembershipKeySpecifier = (
+  | 'policy'
+  | 'trustedOrganizations'
+  | SpaceSettingsMembershipKeySpecifier
+)[];
+export type SpaceSettingsMembershipFieldPolicy = {
+  policy?: FieldPolicy<any> | FieldReadFunction<any>;
+  trustedOrganizations?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type SpaceSettingsPrivacyKeySpecifier = ('mode' | SpaceSettingsPrivacyKeySpecifier)[];
+export type SpaceSettingsPrivacyFieldPolicy = {
+  mode?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type StorageAggregatorKeySpecifier = (
   | 'authorization'
@@ -3619,6 +3649,25 @@ export type StrictTypedTypePolicies = {
   SpaceDefaults?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SpaceDefaultsKeySpecifier | (() => undefined | SpaceDefaultsKeySpecifier);
     fields?: SpaceDefaultsFieldPolicy;
+  };
+  SpaceSettings?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | SpaceSettingsKeySpecifier | (() => undefined | SpaceSettingsKeySpecifier);
+    fields?: SpaceSettingsFieldPolicy;
+  };
+  SpaceSettingsCollaboration?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | SpaceSettingsCollaborationKeySpecifier
+      | (() => undefined | SpaceSettingsCollaborationKeySpecifier);
+    fields?: SpaceSettingsCollaborationFieldPolicy;
+  };
+  SpaceSettingsMembership?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | SpaceSettingsMembershipKeySpecifier | (() => undefined | SpaceSettingsMembershipKeySpecifier);
+    fields?: SpaceSettingsMembershipFieldPolicy;
+  };
+  SpaceSettingsPrivacy?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | SpaceSettingsPrivacyKeySpecifier | (() => undefined | SpaceSettingsPrivacyKeySpecifier);
+    fields?: SpaceSettingsPrivacyFieldPolicy;
   };
   StorageAggregator?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | StorageAggregatorKeySpecifier | (() => undefined | StorageAggregatorKeySpecifier);

@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import ChallengePreferenceContainer from '../../../common/preference/challenge/ChallengePreferenceContainer';
+import ChallengePreferenceContainer from '../../../journey/challenge/ChallengeSettingsContainer';
 import ChallengeMembershipPreferenceView from '../../../journey/challenge/views/ChallengeMembershipPreferenceView';
 
 interface Props {
