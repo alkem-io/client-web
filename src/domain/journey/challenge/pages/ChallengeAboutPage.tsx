@@ -13,9 +13,12 @@ import ChallengeContributorsDialogContent from '../../../community/community/ent
 import SeeMore from '../../../../core/ui/content/SeeMore';
 import { useTranslation } from 'react-i18next';
 import { buildAboutUrl } from '../../../../main/routing/urlBuilders';
+import { useUrlParams } from '../../../../core/routing/useUrlParams';
 
 const ChallengeAboutPage: FC = () => {
-  const { spaceNameId, profile, challengeNameId, communityId } = useChallenge();
+  const { communityId, profile } = useChallenge();
+
+  const { spaceNameId = '', challengeNameId } = useUrlParams();
 
   const [backToParentPage] = useBackToParentPage('../dashboard');
 

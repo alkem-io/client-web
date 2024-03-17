@@ -9,9 +9,12 @@ import { SettingsSection } from '../../../platform/admin/layout/EntitySettingsLa
 import { SettingsPageProps } from '../../../platform/admin/layout/EntitySettingsLayout/types';
 import { useOpportunity } from '../hooks/useOpportunity';
 import OpportunitySettingsLayout from '../../../platform/admin/opportunity/OpportunitySettingsLayout';
+import { useUrlParams } from '../../../../core/routing/useUrlParams';
 
 const AdminOpportunityCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
-  const { spaceId, loading: isLoadingChallenge, communityId, opportunityId } = useOpportunity();
+  const { loading: isLoadingChallenge, communityId, opportunityId } = useOpportunity();
+
+  const { spaceNameId } = useUrlParams();
 
   const {
     users,
@@ -28,9 +31,9 @@ const AdminOpportunityCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '.
     getAvailableUsers,
     getAvailableOrganizations,
     loading,
-  } = useCommunityAdmin({ spaceId, opportunityId, communityId });
+  } = useCommunityAdmin({ spaceId: spaceNameId, opportunityId, communityId });
 
-  if (!spaceId || isLoadingChallenge) {
+  if (!spaceNameId || isLoadingChallenge) {
     return null;
   }
 

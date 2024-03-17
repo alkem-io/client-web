@@ -20113,87 +20113,94 @@ export type ChallengeDashboardReferencesQuery = {
 };
 
 export type ChallengeInfoQueryVariables = Exact<{
-  spaceId: Scalars['UUID_NAMEID'];
-  challengeId: Scalars['UUID_NAMEID'];
+  challengeId: Scalars['UUID'];
 }>;
 
 export type ChallengeInfoQuery = {
   __typename?: 'Query';
-  space: {
-    __typename?: 'Space';
-    id: string;
-    nameID: string;
-    challenge: {
-      __typename?: 'Challenge';
-      id: string;
-      nameID: string;
-      profile: {
-        __typename?: 'Profile';
-        id: string;
-        displayName: string;
-        tagline: string;
-        description?: string | undefined;
-        url: string;
-        tagset?:
-          | {
-              __typename?: 'Tagset';
-              id: string;
-              name: string;
-              tags: Array<string>;
-              allowedValues: Array<string>;
-              type: TagsetType;
-            }
-          | undefined;
-        references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
-        visuals: Array<{
-          __typename?: 'Visual';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    challenge?:
+      | {
+          __typename?: 'Challenge';
           id: string;
-          uri: string;
-          name: string;
-          allowedTypes: Array<string>;
-          aspectRatio: number;
-          maxHeight: number;
-          maxWidth: number;
-          minHeight: number;
-          minWidth: number;
-          alternativeText?: string | undefined;
-        }>;
-        location?:
-          | {
-              __typename?: 'Location';
+          nameID: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            tagline: string;
+            description?: string | undefined;
+            url: string;
+            tagset?:
+              | {
+                  __typename?: 'Tagset';
+                  id: string;
+                  name: string;
+                  tags: Array<string>;
+                  allowedValues: Array<string>;
+                  type: TagsetType;
+                }
+              | undefined;
+            references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+            visuals: Array<{
+              __typename?: 'Visual';
               id: string;
-              country: string;
-              city: string;
-              addressLine1: string;
-              addressLine2: string;
-              stateOrProvince: string;
-              postalCode: string;
-            }
-          | undefined;
-      };
-      community?:
-        | {
-            __typename?: 'Community';
-            id: string;
-            myMembershipStatus?: CommunityMembershipStatus | undefined;
-            authorization?:
-              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              uri: string;
+              name: string;
+              allowedTypes: Array<string>;
+              aspectRatio: number;
+              maxHeight: number;
+              maxWidth: number;
+              minHeight: number;
+              minWidth: number;
+              alternativeText?: string | undefined;
+            }>;
+            location?:
+              | {
+                  __typename?: 'Location';
+                  id: string;
+                  country: string;
+                  city: string;
+                  addressLine1: string;
+                  addressLine2: string;
+                  stateOrProvince: string;
+                  postalCode: string;
+                }
               | undefined;
-          }
-        | undefined;
-      authorization?:
-        | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-        | undefined;
-      context?:
-        | {
-            __typename?: 'Context';
-            id: string;
-            authorization?:
-              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-              | undefined;
-          }
-        | undefined;
-    };
+          };
+          community?:
+            | {
+                __typename?: 'Community';
+                id: string;
+                myMembershipStatus?: CommunityMembershipStatus | undefined;
+                authorization?:
+                  | {
+                      __typename?: 'Authorization';
+                      id: string;
+                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                    }
+                  | undefined;
+              }
+            | undefined;
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
+          context?:
+            | {
+                __typename?: 'Context';
+                id: string;
+                authorization?:
+                  | {
+                      __typename?: 'Authorization';
+                      id: string;
+                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                    }
+                  | undefined;
+              }
+            | undefined;
+        }
+      | undefined;
   };
 };
 
@@ -22271,80 +22278,83 @@ export type OpportunityPageFragment = {
 };
 
 export type OpportunityProviderQueryVariables = Exact<{
-  spaceId: Scalars['UUID_NAMEID'];
-  opportunityId: Scalars['UUID_NAMEID'];
+  opportunityId: Scalars['UUID'];
 }>;
 
 export type OpportunityProviderQuery = {
   __typename?: 'Query';
-  space: {
-    __typename?: 'Space';
-    id: string;
-    nameID: string;
-    opportunity: {
-      __typename?: 'Opportunity';
-      id: string;
-      nameID: string;
-      profile: {
-        __typename?: 'Profile';
-        id: string;
-        displayName: string;
-        description?: string | undefined;
-        tagline: string;
-        url: string;
-        visuals: Array<{
-          __typename?: 'Visual';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    opportunity?:
+      | {
+          __typename?: 'Opportunity';
           id: string;
-          uri: string;
-          name: string;
-          allowedTypes: Array<string>;
-          aspectRatio: number;
-          maxHeight: number;
-          maxWidth: number;
-          minHeight: number;
-          minWidth: number;
-          alternativeText?: string | undefined;
-        }>;
-        tagset?:
-          | {
-              __typename?: 'Tagset';
-              id: string;
-              name: string;
-              tags: Array<string>;
-              allowedValues: Array<string>;
-              type: TagsetType;
-            }
-          | undefined;
-        location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
-      };
-      authorization?:
-        | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-        | undefined;
-      context?:
-        | {
-            __typename?: 'Context';
+          nameID: string;
+          profile: {
+            __typename?: 'Profile';
             id: string;
-            authorization?:
+            displayName: string;
+            description?: string | undefined;
+            tagline: string;
+            url: string;
+            visuals: Array<{
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: string;
+              allowedTypes: Array<string>;
+              aspectRatio: number;
+              maxHeight: number;
+              maxWidth: number;
+              minHeight: number;
+              minWidth: number;
+              alternativeText?: string | undefined;
+            }>;
+            tagset?:
               | {
-                  __typename?: 'Authorization';
+                  __typename?: 'Tagset';
                   id: string;
-                  myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                  anonymousReadAccess: boolean;
+                  name: string;
+                  tags: Array<string>;
+                  allowedValues: Array<string>;
+                  type: TagsetType;
                 }
               | undefined;
-          }
-        | undefined;
-      community?:
-        | {
-            __typename?: 'Community';
-            id: string;
-            myMembershipStatus?: CommunityMembershipStatus | undefined;
-            authorization?:
-              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-              | undefined;
-          }
-        | undefined;
-    };
+            location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
+          };
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
+          context?:
+            | {
+                __typename?: 'Context';
+                id: string;
+                authorization?:
+                  | {
+                      __typename?: 'Authorization';
+                      id: string;
+                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                      anonymousReadAccess: boolean;
+                    }
+                  | undefined;
+              }
+            | undefined;
+          community?:
+            | {
+                __typename?: 'Community';
+                id: string;
+                myMembershipStatus?: CommunityMembershipStatus | undefined;
+                authorization?:
+                  | {
+                      __typename?: 'Authorization';
+                      id: string;
+                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                    }
+                  | undefined;
+              }
+            | undefined;
+        }
+      | undefined;
   };
 };
 
@@ -26105,9 +26115,9 @@ export type PageInfoFragment = {
 };
 
 export type JourneyStorageConfigQueryVariables = Exact<{
-  spaceNameId: Scalars['UUID_NAMEID'];
-  challengeNameId?: InputMaybe<Scalars['UUID_NAMEID']>;
-  opportunityNameId?: InputMaybe<Scalars['UUID_NAMEID']>;
+  spaceId?: InputMaybe<Scalars['UUID_NAMEID']>;
+  challengeId?: InputMaybe<Scalars['UUID']>;
+  opportunityId?: InputMaybe<Scalars['UUID']>;
   includeSpace?: InputMaybe<Scalars['Boolean']>;
   includeChallenge?: InputMaybe<Scalars['Boolean']>;
   includeOpportunity?: InputMaybe<Scalars['Boolean']>;
@@ -26115,10 +26125,10 @@ export type JourneyStorageConfigQueryVariables = Exact<{
 
 export type JourneyStorageConfigQuery = {
   __typename?: 'Query';
-  space: {
+  space?: {
     __typename?: 'Space';
     id: string;
-    profile?: {
+    profile: {
       __typename?: 'Profile';
       id: string;
       storageBucket: {
@@ -26131,48 +26141,55 @@ export type JourneyStorageConfigQuery = {
           | undefined;
       };
     };
-    challenge?: {
-      __typename?: 'Challenge';
-      id: string;
-      profile: {
-        __typename?: 'Profile';
-        id: string;
-        storageBucket: {
-          __typename?: 'StorageBucket';
+  };
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    challenge?:
+      | {
+          __typename?: 'Challenge';
           id: string;
-          allowedMimeTypes: Array<string>;
-          maxFileSize: number;
-          authorization?:
-            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-            | undefined;
-        };
-      };
-    };
-    opportunity?: {
-      __typename?: 'Opportunity';
-      id: string;
-      profile: {
-        __typename?: 'Profile';
-        id: string;
-        storageBucket: {
-          __typename?: 'StorageBucket';
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            storageBucket: {
+              __typename?: 'StorageBucket';
+              id: string;
+              allowedMimeTypes: Array<string>;
+              maxFileSize: number;
+              authorization?:
+                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                | undefined;
+            };
+          };
+        }
+      | undefined;
+    opportunity?:
+      | {
+          __typename?: 'Opportunity';
           id: string;
-          allowedMimeTypes: Array<string>;
-          maxFileSize: number;
-          authorization?:
-            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-            | undefined;
-        };
-      };
-    };
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            storageBucket: {
+              __typename?: 'StorageBucket';
+              id: string;
+              allowedMimeTypes: Array<string>;
+              maxFileSize: number;
+              authorization?:
+                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                | undefined;
+            };
+          };
+        }
+      | undefined;
   };
 };
 
 export type CalloutStorageConfigQueryVariables = Exact<{
   calloutId: Scalars['UUID_NAMEID'];
-  spaceNameId: Scalars['UUID_NAMEID'];
-  challengeNameId?: InputMaybe<Scalars['UUID_NAMEID']>;
-  opportunityNameId?: InputMaybe<Scalars['UUID_NAMEID']>;
+  spaceId?: InputMaybe<Scalars['UUID_NAMEID']>;
+  challengeId?: InputMaybe<Scalars['UUID']>;
+  opportunityId?: InputMaybe<Scalars['UUID']>;
   includeSpace?: InputMaybe<Scalars['Boolean']>;
   includeChallenge?: InputMaybe<Scalars['Boolean']>;
   includeOpportunity?: InputMaybe<Scalars['Boolean']>;
@@ -26180,7 +26197,7 @@ export type CalloutStorageConfigQueryVariables = Exact<{
 
 export type CalloutStorageConfigQuery = {
   __typename?: 'Query';
-  space: {
+  space?: {
     __typename?: 'Space';
     id: string;
     collaboration?:
@@ -26215,87 +26232,94 @@ export type CalloutStorageConfigQuery = {
             | undefined;
         }
       | undefined;
-    challenge?: {
-      __typename?: 'Challenge';
-      id: string;
-      collaboration?:
-        | {
-            __typename?: 'Collaboration';
-            id: string;
-            callouts?:
-              | Array<{
-                  __typename?: 'Callout';
-                  id: string;
-                  framing: {
-                    __typename?: 'CalloutFraming';
-                    profile: {
-                      __typename?: 'Profile';
+  };
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    challenge?:
+      | {
+          __typename?: 'Challenge';
+          id: string;
+          collaboration?:
+            | {
+                __typename?: 'Collaboration';
+                id: string;
+                callouts?:
+                  | Array<{
+                      __typename?: 'Callout';
                       id: string;
-                      storageBucket: {
-                        __typename?: 'StorageBucket';
-                        id: string;
-                        allowedMimeTypes: Array<string>;
-                        maxFileSize: number;
-                        authorization?:
-                          | {
-                              __typename?: 'Authorization';
-                              id: string;
-                              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                            }
-                          | undefined;
+                      framing: {
+                        __typename?: 'CalloutFraming';
+                        profile: {
+                          __typename?: 'Profile';
+                          id: string;
+                          storageBucket: {
+                            __typename?: 'StorageBucket';
+                            id: string;
+                            allowedMimeTypes: Array<string>;
+                            maxFileSize: number;
+                            authorization?:
+                              | {
+                                  __typename?: 'Authorization';
+                                  id: string;
+                                  myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                                }
+                              | undefined;
+                          };
+                        };
                       };
-                    };
-                  };
-                }>
-              | undefined;
-          }
-        | undefined;
-    };
-    opportunity?: {
-      __typename?: 'Opportunity';
-      id: string;
-      collaboration?:
-        | {
-            __typename?: 'Collaboration';
-            id: string;
-            callouts?:
-              | Array<{
-                  __typename?: 'Callout';
-                  id: string;
-                  framing: {
-                    __typename?: 'CalloutFraming';
-                    profile: {
-                      __typename?: 'Profile';
+                    }>
+                  | undefined;
+              }
+            | undefined;
+        }
+      | undefined;
+    opportunity?:
+      | {
+          __typename?: 'Opportunity';
+          id: string;
+          collaboration?:
+            | {
+                __typename?: 'Collaboration';
+                id: string;
+                callouts?:
+                  | Array<{
+                      __typename?: 'Callout';
                       id: string;
-                      storageBucket: {
-                        __typename?: 'StorageBucket';
-                        id: string;
-                        allowedMimeTypes: Array<string>;
-                        maxFileSize: number;
-                        authorization?:
-                          | {
-                              __typename?: 'Authorization';
-                              id: string;
-                              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                            }
-                          | undefined;
+                      framing: {
+                        __typename?: 'CalloutFraming';
+                        profile: {
+                          __typename?: 'Profile';
+                          id: string;
+                          storageBucket: {
+                            __typename?: 'StorageBucket';
+                            id: string;
+                            allowedMimeTypes: Array<string>;
+                            maxFileSize: number;
+                            authorization?:
+                              | {
+                                  __typename?: 'Authorization';
+                                  id: string;
+                                  myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                                }
+                              | undefined;
+                          };
+                        };
                       };
-                    };
-                  };
-                }>
-              | undefined;
-          }
-        | undefined;
-    };
+                    }>
+                  | undefined;
+              }
+            | undefined;
+        }
+      | undefined;
   };
 };
 
 export type CalloutPostStorageConfigQueryVariables = Exact<{
   postId: Scalars['UUID_NAMEID'];
   calloutId: Scalars['UUID_NAMEID'];
-  spaceNameId: Scalars['UUID_NAMEID'];
-  challengeNameId?: InputMaybe<Scalars['UUID_NAMEID']>;
-  opportunityNameId?: InputMaybe<Scalars['UUID_NAMEID']>;
+  spaceId?: InputMaybe<Scalars['UUID_NAMEID']>;
+  challengeId?: InputMaybe<Scalars['UUID']>;
+  opportunityId?: InputMaybe<Scalars['UUID']>;
   includeSpace?: InputMaybe<Scalars['Boolean']>;
   includeChallenge?: InputMaybe<Scalars['Boolean']>;
   includeOpportunity?: InputMaybe<Scalars['Boolean']>;
@@ -26303,7 +26327,7 @@ export type CalloutPostStorageConfigQueryVariables = Exact<{
 
 export type CalloutPostStorageConfigQuery = {
   __typename?: 'Query';
-  space: {
+  space?: {
     __typename?: 'Space';
     id: string;
     collaboration?:
@@ -26346,94 +26370,101 @@ export type CalloutPostStorageConfigQuery = {
             | undefined;
         }
       | undefined;
-    challenge?: {
-      __typename?: 'Challenge';
-      id: string;
-      collaboration?:
-        | {
-            __typename?: 'Collaboration';
-            id: string;
-            callouts?:
-              | Array<{
-                  __typename?: 'Callout';
-                  id: string;
-                  contributions?:
-                    | Array<{
-                        __typename?: 'CalloutContribution';
-                        post?:
-                          | {
-                              __typename?: 'Post';
-                              id: string;
-                              profile: {
-                                __typename?: 'Profile';
-                                id: string;
-                                storageBucket: {
-                                  __typename?: 'StorageBucket';
+  };
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    challenge?:
+      | {
+          __typename?: 'Challenge';
+          id: string;
+          collaboration?:
+            | {
+                __typename?: 'Collaboration';
+                id: string;
+                callouts?:
+                  | Array<{
+                      __typename?: 'Callout';
+                      id: string;
+                      contributions?:
+                        | Array<{
+                            __typename?: 'CalloutContribution';
+                            post?:
+                              | {
+                                  __typename?: 'Post';
                                   id: string;
-                                  allowedMimeTypes: Array<string>;
-                                  maxFileSize: number;
-                                  authorization?:
-                                    | {
-                                        __typename?: 'Authorization';
-                                        id: string;
-                                        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                                      }
-                                    | undefined;
-                                };
-                              };
-                            }
-                          | undefined;
-                      }>
-                    | undefined;
-                }>
-              | undefined;
-          }
-        | undefined;
-    };
-    opportunity?: {
-      __typename?: 'Opportunity';
-      id: string;
-      collaboration?:
-        | {
-            __typename?: 'Collaboration';
-            id: string;
-            callouts?:
-              | Array<{
-                  __typename?: 'Callout';
-                  id: string;
-                  contributions?:
-                    | Array<{
-                        __typename?: 'CalloutContribution';
-                        post?:
-                          | {
-                              __typename?: 'Post';
-                              id: string;
-                              profile: {
-                                __typename?: 'Profile';
-                                id: string;
-                                storageBucket: {
-                                  __typename?: 'StorageBucket';
+                                  profile: {
+                                    __typename?: 'Profile';
+                                    id: string;
+                                    storageBucket: {
+                                      __typename?: 'StorageBucket';
+                                      id: string;
+                                      allowedMimeTypes: Array<string>;
+                                      maxFileSize: number;
+                                      authorization?:
+                                        | {
+                                            __typename?: 'Authorization';
+                                            id: string;
+                                            myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                                          }
+                                        | undefined;
+                                    };
+                                  };
+                                }
+                              | undefined;
+                          }>
+                        | undefined;
+                    }>
+                  | undefined;
+              }
+            | undefined;
+        }
+      | undefined;
+    opportunity?:
+      | {
+          __typename?: 'Opportunity';
+          id: string;
+          collaboration?:
+            | {
+                __typename?: 'Collaboration';
+                id: string;
+                callouts?:
+                  | Array<{
+                      __typename?: 'Callout';
+                      id: string;
+                      contributions?:
+                        | Array<{
+                            __typename?: 'CalloutContribution';
+                            post?:
+                              | {
+                                  __typename?: 'Post';
                                   id: string;
-                                  allowedMimeTypes: Array<string>;
-                                  maxFileSize: number;
-                                  authorization?:
-                                    | {
-                                        __typename?: 'Authorization';
-                                        id: string;
-                                        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                                      }
-                                    | undefined;
-                                };
-                              };
-                            }
-                          | undefined;
-                      }>
-                    | undefined;
-                }>
-              | undefined;
-          }
-        | undefined;
-    };
+                                  profile: {
+                                    __typename?: 'Profile';
+                                    id: string;
+                                    storageBucket: {
+                                      __typename?: 'StorageBucket';
+                                      id: string;
+                                      allowedMimeTypes: Array<string>;
+                                      maxFileSize: number;
+                                      authorization?:
+                                        | {
+                                            __typename?: 'Authorization';
+                                            id: string;
+                                            myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                                          }
+                                        | undefined;
+                                    };
+                                  };
+                                }
+                              | undefined;
+                          }>
+                        | undefined;
+                    }>
+                  | undefined;
+              }
+            | undefined;
+        }
+      | undefined;
   };
 };
 

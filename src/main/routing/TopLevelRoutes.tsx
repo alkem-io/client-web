@@ -1,5 +1,4 @@
-import React, { FC, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
+import React, { FC } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import App from '../ui/layout/topLevelWrappers/App';
 import { CommunityContextProvider } from '../../domain/community/community/CommunityContext';
@@ -33,10 +32,6 @@ import { NotFoundPageLayout } from '../../domain/journey/common/EntityPageLayout
 import RedirectToWelcomeSite from '../../domain/platform/routes/RedirectToWelcomeSite';
 
 export const TopLevelRoutes: FC = () => {
-  const { t } = useTranslation();
-
-  const paths = useMemo(() => [{ value: '/', name: t('common.home'), real: true }], [t]);
-
   useRedirectToIdentityDomain();
 
   return (
@@ -68,7 +63,7 @@ export const TopLevelRoutes: FC = () => {
               <WithApmTransaction path={`:${nameOfUrl.spaceNameId}/*`}>
                 <SpaceContextProvider>
                   <CommunityContextProvider>
-                    <SpaceRoute paths={paths} />
+                    <SpaceRoute />
                   </CommunityContextProvider>
                 </SpaceContextProvider>
               </WithApmTransaction>

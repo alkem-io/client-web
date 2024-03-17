@@ -77,13 +77,13 @@ const WhiteboardDialogFooter = ({
   const opportunityContext = useOpportunity();
 
   const getMyMembershipStatus = () => {
-    if (opportunityContext.opportunityNameId) {
+    if (opportunityContext.opportunity) {
       return opportunityContext.myMembershipStatus;
     }
-    if (challengeContext.challengeNameId) {
+    if (challengeContext.challenge) {
       return challengeContext.myMembershipStatus;
     }
-    if (spaceContext.spaceNameId) {
+    if (spaceContext.profile) {
       return spaceContext.myMembershipStatus;
     }
   };

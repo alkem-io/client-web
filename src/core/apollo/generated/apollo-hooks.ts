@@ -16910,10 +16910,8 @@ export function refetchChallengeDashboardReferencesQuery(
 }
 
 export const ChallengeInfoDocument = gql`
-  query challengeInfo($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
-    space(ID: $spaceId) {
-      id
-      nameID
+  query challengeInfo($challengeId: UUID!) {
+    lookup {
       challenge(ID: $challengeId) {
         ...ChallengeInfo
       }
@@ -16934,7 +16932,6 @@ export const ChallengeInfoDocument = gql`
  * @example
  * const { data, loading, error } = useChallengeInfoQuery({
  *   variables: {
- *      spaceId: // value for 'spaceId'
  *      challengeId: // value for 'challengeId'
  *   },
  * });
@@ -18647,10 +18644,8 @@ export function refetchOpportunityPageQuery(variables: SchemaTypes.OpportunityPa
 }
 
 export const OpportunityProviderDocument = gql`
-  query opportunityProvider($spaceId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
-    space(ID: $spaceId) {
-      id
-      nameID
+  query opportunityProvider($opportunityId: UUID!) {
+    lookup {
       opportunity(ID: $opportunityId) {
         ...OpportunityProvider
       }
@@ -18671,7 +18666,6 @@ export const OpportunityProviderDocument = gql`
  * @example
  * const { data, loading, error } = useOpportunityProviderQuery({
  *   variables: {
- *      spaceId: // value for 'spaceId'
  *      opportunityId: // value for 'opportunityId'
  *   },
  * });
@@ -22071,27 +22065,27 @@ export type ShareLinkWithUserMutationOptions = Apollo.BaseMutationOptions<
 >;
 export const JourneyStorageConfigDocument = gql`
   query JourneyStorageConfig(
-    $spaceNameId: UUID_NAMEID!
-    $challengeNameId: UUID_NAMEID = "mockid"
-    $opportunityNameId: UUID_NAMEID = "mockid"
+    $spaceId: UUID_NAMEID = "mockid"
+    $challengeId: UUID = "mockid"
+    $opportunityId: UUID = "mockid"
     $includeSpace: Boolean = false
     $includeChallenge: Boolean = false
     $includeOpportunity: Boolean = false
   ) {
-    space(ID: $spaceNameId) {
+    space(ID: $spaceId) @include(if: $includeSpace) {
       id
-      ... on Space @include(if: $includeSpace) {
-        profile {
-          ...ProfileStorageConfig
-        }
+      profile {
+        ...ProfileStorageConfig
       }
-      challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
+    }
+    lookup {
+      challenge(ID: $challengeId) @include(if: $includeChallenge) {
         id
         profile {
           ...ProfileStorageConfig
         }
       }
-      opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
+      opportunity(ID: $opportunityId) @include(if: $includeOpportunity) {
         id
         profile {
           ...ProfileStorageConfig
@@ -22114,9 +22108,9 @@ export const JourneyStorageConfigDocument = gql`
  * @example
  * const { data, loading, error } = useJourneyStorageConfigQuery({
  *   variables: {
- *      spaceNameId: // value for 'spaceNameId'
- *      challengeNameId: // value for 'challengeNameId'
- *      opportunityNameId: // value for 'opportunityNameId'
+ *      spaceId: // value for 'spaceId'
+ *      challengeId: // value for 'challengeId'
+ *      opportunityId: // value for 'opportunityId'
  *      includeSpace: // value for 'includeSpace'
  *      includeChallenge: // value for 'includeChallenge'
  *      includeOpportunity: // value for 'includeOpportunity'
@@ -22124,7 +22118,7 @@ export const JourneyStorageConfigDocument = gql`
  * });
  */
 export function useJourneyStorageConfigQuery(
-  baseOptions: Apollo.QueryHookOptions<
+  baseOptions?: Apollo.QueryHookOptions<
     SchemaTypes.JourneyStorageConfigQuery,
     SchemaTypes.JourneyStorageConfigQueryVariables
   >
@@ -22155,34 +22149,34 @@ export type JourneyStorageConfigQueryResult = Apollo.QueryResult<
   SchemaTypes.JourneyStorageConfigQuery,
   SchemaTypes.JourneyStorageConfigQueryVariables
 >;
-export function refetchJourneyStorageConfigQuery(variables: SchemaTypes.JourneyStorageConfigQueryVariables) {
+export function refetchJourneyStorageConfigQuery(variables?: SchemaTypes.JourneyStorageConfigQueryVariables) {
   return { query: JourneyStorageConfigDocument, variables: variables };
 }
 
 export const CalloutStorageConfigDocument = gql`
   query CalloutStorageConfig(
     $calloutId: UUID_NAMEID!
-    $spaceNameId: UUID_NAMEID!
-    $challengeNameId: UUID_NAMEID = "mockid"
-    $opportunityNameId: UUID_NAMEID = "mockid"
+    $spaceId: UUID_NAMEID = "mockid"
+    $challengeId: UUID = "mockid"
+    $opportunityId: UUID = "mockid"
     $includeSpace: Boolean = false
     $includeChallenge: Boolean = false
     $includeOpportunity: Boolean = false
   ) {
-    space(ID: $spaceNameId) {
+    space(ID: $spaceId) @include(if: $includeSpace) {
       id
-      ... on Space @include(if: $includeSpace) {
-        collaboration {
-          ...CalloutOnCollaborationWithStorageConfig
-        }
+      collaboration {
+        ...CalloutOnCollaborationWithStorageConfig
       }
-      challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
+    }
+    lookup {
+      challenge(ID: $challengeId) @include(if: $includeChallenge) {
         id
         collaboration {
           ...CalloutOnCollaborationWithStorageConfig
         }
       }
-      opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
+      opportunity(ID: $opportunityId) @include(if: $includeOpportunity) {
         id
         collaboration {
           ...CalloutOnCollaborationWithStorageConfig
@@ -22206,9 +22200,9 @@ export const CalloutStorageConfigDocument = gql`
  * const { data, loading, error } = useCalloutStorageConfigQuery({
  *   variables: {
  *      calloutId: // value for 'calloutId'
- *      spaceNameId: // value for 'spaceNameId'
- *      challengeNameId: // value for 'challengeNameId'
- *      opportunityNameId: // value for 'opportunityNameId'
+ *      spaceId: // value for 'spaceId'
+ *      challengeId: // value for 'challengeId'
+ *      opportunityId: // value for 'opportunityId'
  *      includeSpace: // value for 'includeSpace'
  *      includeChallenge: // value for 'includeChallenge'
  *      includeOpportunity: // value for 'includeOpportunity'
@@ -22255,27 +22249,27 @@ export const CalloutPostStorageConfigDocument = gql`
   query CalloutPostStorageConfig(
     $postId: UUID_NAMEID!
     $calloutId: UUID_NAMEID!
-    $spaceNameId: UUID_NAMEID!
-    $challengeNameId: UUID_NAMEID = "mockid"
-    $opportunityNameId: UUID_NAMEID = "mockid"
+    $spaceId: UUID_NAMEID = "mockid"
+    $challengeId: UUID = "mockid"
+    $opportunityId: UUID = "mockid"
     $includeSpace: Boolean = false
     $includeChallenge: Boolean = false
     $includeOpportunity: Boolean = false
   ) {
-    space(ID: $spaceNameId) {
+    space(ID: $spaceId) @include(if: $includeSpace) {
       id
-      ... on Space @include(if: $includeSpace) {
-        collaboration {
-          ...PostInCalloutOnCollaborationWithStorageConfig
-        }
+      collaboration {
+        ...PostInCalloutOnCollaborationWithStorageConfig
       }
-      challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
+    }
+    lookup {
+      challenge(ID: $challengeId) @include(if: $includeChallenge) {
         id
         collaboration {
           ...PostInCalloutOnCollaborationWithStorageConfig
         }
       }
-      opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
+      opportunity(ID: $opportunityId) @include(if: $includeOpportunity) {
         id
         collaboration {
           ...PostInCalloutOnCollaborationWithStorageConfig
@@ -22300,9 +22294,9 @@ export const CalloutPostStorageConfigDocument = gql`
  *   variables: {
  *      postId: // value for 'postId'
  *      calloutId: // value for 'calloutId'
- *      spaceNameId: // value for 'spaceNameId'
- *      challengeNameId: // value for 'challengeNameId'
- *      opportunityNameId: // value for 'opportunityNameId'
+ *      spaceId: // value for 'spaceId'
+ *      challengeId: // value for 'challengeId'
+ *      opportunityId: // value for 'opportunityId'
  *      includeSpace: // value for 'includeSpace'
  *      includeChallenge: // value for 'includeChallenge'
  *      includeOpportunity: // value for 'includeOpportunity'

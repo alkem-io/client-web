@@ -18,6 +18,7 @@ import {
   ChallengePreferencesDocument,
   UpdatePreferenceOnChallengeDocument,
 } from '../../../../../core/apollo/generated/apollo-hooks';
+import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 
 const selectedGroups = ['Authorization', 'Privileges'];
 
@@ -28,7 +29,8 @@ interface ChallengeAuthorizationPageProps extends SettingsPageProps {}
 const ChallengeAuthorizationPage: FC<ChallengeAuthorizationPageProps> = ({ routePrefix = '../' }) => {
   const { t } = useTranslation();
   const { spaceNameId } = useSpace();
-  const { challengeNameId, challengeId } = useChallenge();
+  const { challengeId } = useChallenge();
+  const { challengeNameId = '' } = useUrlParams();
 
   // todo: how can these two be extracted in a util
   const queryVariables: ChallengePreferencesQueryVariables = { spaceNameId, challengeNameId };

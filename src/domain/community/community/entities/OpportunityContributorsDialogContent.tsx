@@ -7,9 +7,12 @@ import useOrganizationCardProps from '../utils/useOrganizationCardProps';
 import useUserCardProps from '../utils/useUserCardProps';
 import NoOrganizations from '../CommunityContributors/NoOrganizations';
 import { ContributorsDialogContentProps } from '../ContributorsDialog/ContributorsDialog';
+import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 
 const OpportunityContributorsDialogContent: FC<ContributorsDialogContentProps> = ({ dialogOpen }) => {
-  const { spaceId, opportunityId } = useOpportunity();
+  const { opportunityId } = useOpportunity();
+
+  const { spaceId } = useRouteResolver();
 
   const { loading, memberUsers, memberOrganizations } = useCommunityContributors(
     useOpportunityCommunityContributorsQuery,

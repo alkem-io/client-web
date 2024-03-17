@@ -210,7 +210,8 @@ export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({
   );
 
   return (
-    <StorageConfigContextProvider spaceNameId={spaceId} locationType="journey" journeyTypeName="space">
+    // TODO verify that StorageConfig must be fetched for the Space always
+    <StorageConfigContextProvider journeyId={spaceId} locationType="journey" journeyTypeName="space">
       {children(
         { events, privileges },
         { createEvent, updateEvent, deleteEvent },

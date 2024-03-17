@@ -7,10 +7,13 @@ import useOrganizationCardProps from '../utils/useOrganizationCardProps';
 import useUserCardProps from '../utils/useUserCardProps';
 import NoOrganizations from '../CommunityContributors/NoOrganizations';
 import { ContributorsDialogContentProps } from '../ContributorsDialog/ContributorsDialog';
+import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 
 const ChallengeContributorsDialogContent: FC<ContributorsDialogContentProps> = ({ dialogOpen }) => {
-  const { challenge, spaceId } = useChallenge();
+  const { challenge } = useChallenge();
   const challengeId = challenge?.id;
+
+  const { spaceId } = useRouteResolver();
 
   const { loading, memberUsers, memberOrganizations } = useCommunityContributors(
     useChallengeCommunityContributorsQuery,

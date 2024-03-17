@@ -143,9 +143,7 @@ const PostSettingsPage: FC<PostSettingsPageProps> = ({ journeyTypeName, onClose 
         postId={postNameId}
         calloutId={calloutNameId}
         journeyTypeName={journeyTypeName}
-        spaceNameId={spaceNameId}
-        challengeNameId={challengeNameId}
-        opportunityNameId={opportunityNameId}
+        journeyId={journeyId}
       >
         <PostForm
           edit

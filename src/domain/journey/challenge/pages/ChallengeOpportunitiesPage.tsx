@@ -17,6 +17,7 @@ import { useChallenge } from '../hooks/useChallenge';
 import ChallengePageLayout from '../layout/ChallengePageLayout';
 import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
 import { CalloutDisplayLocation, CommunityMembershipStatus } from '../../../../core/apollo/generated/graphql-schema';
+import { useUrlParams } from '../../../../core/routing/useUrlParams';
 
 export interface ChallengeOpportunitiesPageProps {}
 
@@ -26,7 +27,8 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
 
   const { spaceNameId, license } = useSpace();
   const spaceVisibility = license.visibility;
-  const { challengeId, challengeNameId, permissions } = useChallenge();
+  const { challengeId, permissions } = useChallenge();
+  const { challengeNameId = '' } = useUrlParams();
 
   const [isCreateDialogOpen, setCreateDialogOpen] = useState(false);
 

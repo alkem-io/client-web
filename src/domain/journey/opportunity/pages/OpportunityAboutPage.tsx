@@ -4,13 +4,15 @@ import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import { useOpportunity } from '../hooks/useOpportunity';
 import OpportunityPageLayout from '../layout/OpportunityPageLayout';
 import { OpportunityAboutView } from '../views/OpportunityAboutView';
+import { useUrlParams } from '../../../../core/routing/useUrlParams';
 
 const OpportunityAboutPage: FC = () => {
-  const { spaceNameId, opportunityNameId, communityId } = useOpportunity();
+  const { spaceNameId, opportunityNameId } = useUrlParams();
+  const { communityId } = useOpportunity();
 
   return (
     <OpportunityPageLayout currentSection={EntityPageSection.About}>
-      <AboutPageContainer spaceNameId={spaceNameId} opportunityNameId={opportunityNameId}>
+      <AboutPageContainer spaceNameId={spaceNameId ?? ''} opportunityNameId={opportunityNameId}>
         {({ context, profile, tagset, permissions, ...rest }, state) => (
           <OpportunityAboutView
             name={profile?.displayName ?? ''}

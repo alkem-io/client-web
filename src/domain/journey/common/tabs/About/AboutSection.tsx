@@ -2,9 +2,7 @@ import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ApolloError } from '@apollo/client';
 import { Box, DialogContent, Theme, useMediaQuery } from '@mui/material';
-import {
-  ReferenceDetailsFragment,
-} from '../../../../../core/apollo/generated/graphql-schema';
+import { ReferenceDetailsFragment } from '../../../../../core/apollo/generated/graphql-schema';
 import {
   EntityDashboardContributors,
   EntityDashboardLeads,
@@ -29,7 +27,6 @@ import { gutters } from '../../../../../core/ui/grid/utils';
 import { Actions } from '../../../../../core/ui/actions/Actions';
 import PageContentBlockHeaderWithDialogAction from '../../../../../core/ui/content/PageContentBlockHeaderWithDialogAction';
 import useScrollToElement from '../../../../shared/utils/scroll/useScrollToElement';
-import { useChallenge } from '../../../challenge/hooks/useChallenge';
 import OverflowGradient from '../../../../../core/ui/overflow/OverflowGradient';
 import SeeMore from '../../../../../core/ui/content/SeeMore';
 import { EntityPageSection } from '../../../../shared/layout/EntityPageSection';
@@ -117,9 +114,7 @@ export const AboutSection: FC<AboutSectionProps> = ({
     : 'community.leading-organizations';
   const usersHeader = isSpace ? 'community.host' : 'community.leads';
 
-  const { challengeNameId } = useChallenge();
-
-  const { opportunityNameId } = useUrlParams();
+  const { challengeNameId, opportunityNameId } = useUrlParams();
 
   const { scrollable } = useScrollToElement(dialogSectionName, { method: 'element', defer: true });
 
@@ -173,7 +168,14 @@ export const AboutSection: FC<AboutSectionProps> = ({
             <PageContentBlockHeader title={name} />
             <Tagline>{tagline}</Tagline>
             <TagsComponent tags={tags} variant="filled" loading={loading} />
-            <Actions justifyContent="end">{innovationFlow && <InnovationFlowVisualizer states={innovationFlow.states} currentState={innovationFlow.currentState.displayName} />}</Actions>
+            <Actions justifyContent="end">
+              {innovationFlow && (
+                <InnovationFlowVisualizer
+                  states={innovationFlow.states}
+                  currentState={innovationFlow.currentState.displayName}
+                />
+              )}
+            </Actions>
           </PageContentBlock>
           {communityReadAccess && (
             <EntityDashboardLeadsSection

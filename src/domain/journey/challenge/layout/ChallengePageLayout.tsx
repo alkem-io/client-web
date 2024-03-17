@@ -7,6 +7,7 @@ import JourneyUnauthorizedDialogContainer from '../../common/JourneyUnauthorized
 import { useChallenge } from '../hooks/useChallenge';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import JourneyBreadcrumbs from '../../common/journeyBreadcrumbs/JourneyBreadcrumbs';
+import { useUrlParams } from '../../../../core/routing/useUrlParams';
 
 export interface ChallengePageLayoutProps {
   currentSection: EntityPageSection;
@@ -18,7 +19,9 @@ const ChallengePageLayout = ({
   currentSection,
   children,
 }: PropsWithChildren<ChallengePageLayoutProps>) => {
-  const { challengeId, challengeNameId, profile } = useChallenge();
+  const { challengeId, profile } = useChallenge();
+
+  const { challengeNameId } = useUrlParams();
 
   return (
     <EntityPageLayout
