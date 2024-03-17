@@ -96,7 +96,6 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
             childrenLeft={
               <CalloutsGroupView
                 callouts={callouts.groupedCallouts[CalloutDisplayLocation.OpportunitiesLeft]}
-                spaceId={spaceNameId!}
                 canCreateCallout={callouts.canCreateCallout}
                 canCreateCalloutFromTemplate={callouts.canCreateCalloutFromTemplate}
                 loading={callouts.loading}
@@ -110,7 +109,6 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
             childrenRight={
               <CalloutsGroupView
                 callouts={callouts.groupedCallouts[CalloutDisplayLocation.OpportunitiesRight]}
-                spaceId={spaceNameId!}
                 canCreateCallout={callouts.canCreateCallout}
                 canCreateCalloutFromTemplate={callouts.canCreateCalloutFromTemplate}
                 loading={callouts.loading}

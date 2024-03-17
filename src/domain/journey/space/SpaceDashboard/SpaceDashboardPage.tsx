@@ -15,6 +15,7 @@ import { IconButton } from '@mui/material';
 import { Close } from '@mui/icons-material';
 import { buildAboutUrl, buildUpdatesUrl } from '../../../../main/routing/urlBuilders';
 import { useTranslation } from 'react-i18next';
+import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 
 export interface SpaceDashboardPageProps {
   dialog?: 'about' | 'updates' | 'contributors' | 'calendar';
@@ -28,6 +29,8 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
 
   const { spaceNameId } = useUrlParams();
 
+  const { spaceId } = useRouteResolver();
+
   if (!spaceNameId) {
     throw new Error('Param :spaceNameId is missing');
   }
@@ -37,7 +40,7 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
 
   return (
     <SpacePageLayout currentSection={EntityPageSection.Dashboard}>
-      <SpaceDashboardContainer>
+      <SpaceDashboardContainer spaceId={spaceId}>
         {({ callouts, dashboardNavigation, ...entities }, state) => (
           <>
             <SpaceDashboardView

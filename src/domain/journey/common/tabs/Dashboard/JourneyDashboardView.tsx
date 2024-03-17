@@ -176,7 +176,6 @@ const JourneyDashboardView = ({
         )}
         <CalloutsGroupView
           callouts={callouts.groupedCallouts[CalloutDisplayLocation.HomeLeft]}
-          spaceId={spaceNameId!}
           canCreateCallout={callouts.canCreateCallout}
           canCreateCalloutFromTemplate={callouts.canCreateCalloutFromTemplate}
           loading={callouts.loading}
@@ -202,7 +201,6 @@ const JourneyDashboardView = ({
         />
         <CalloutsGroupView
           callouts={callouts.groupedCallouts[CalloutDisplayLocation.HomeRight]}
-          spaceId={spaceNameId!}
           canCreateCallout={callouts.canCreateCallout}
           canCreateCalloutFromTemplate={callouts.canCreateCalloutFromTemplate}
           loading={callouts.loading}

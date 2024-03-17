@@ -9,8 +9,6 @@ import { ContributeCreationBlock } from '../../journey/common/tabs/Contribute/Co
 import PageContentBlock from '../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../core/ui/content/PageContentBlockHeader';
 import LinksList from '../../../core/ui/list/LinksList';
-import { buildCalloutUrl } from '../../../main/routing/urlBuilders';
-import { useUrlParams } from '../../../core/routing/useUrlParams';
 import { TypedCallout } from '../callout/useCallouts/useCallouts';
 import { useTranslation } from 'react-i18next';
 import EllipsableWithCount from '../../../core/ui/typography/EllipsableWithCount';
@@ -20,6 +18,7 @@ import calloutIcons from '../callout/utils/calloutIcons';
 import CalloutsGroupView from '../callout/CalloutsInContext/CalloutsGroupView';
 import CalloutCreationDialog from '../callout/creationDialog/CalloutCreationDialog';
 import KnowledgeBaseContainer from './KnowledgeBaseContainer';
+import { useRouteResolver } from '../../../main/routing/resolvers/RouteResolver';
 
 interface KnowledgeBasePageProps {
   journeyTypeName: JourneyTypeName;
@@ -27,11 +26,8 @@ interface KnowledgeBasePageProps {
 
 const KnowledgeBasePage = ({ journeyTypeName }: PropsWithChildren<KnowledgeBasePageProps>) => {
   const PageLayout = usePageLayoutByEntity(journeyTypeName);
-  const { spaceNameId, challengeNameId, opportunityNameId } = useUrlParams();
 
-  if (!spaceNameId) {
-    throw new Error('Must be within a Space');
-  }
+  const { journeyId } = useRouteResolver();
 
   const { t } = useTranslation();
 
@@ -53,11 +49,7 @@ const KnowledgeBasePage = ({ journeyTypeName }: PropsWithChildren<KnowledgeBaseP
 
   return (
     <PageLayout currentSection={EntityPageSection.KnowledgeBase}>
-      <KnowledgeBaseContainer
-        spaceNameId={spaceNameId}
-        challengeNameId={challengeNameId}
-        opportunityNameId={opportunityNameId}
-      >
+      <KnowledgeBaseContainer journeyId={journeyId} journeyTypeName={journeyTypeName}>
         {({
           callouts: {
             loading,
@@ -86,11 +78,7 @@ const KnowledgeBasePage = ({ journeyTypeName }: PropsWithChildren<KnowledgeBaseP
                           id: callout.id,
                           title: buildCalloutTitle(callout),
                           icon: <CalloutIcon />,
-                          uri: buildCalloutUrl(callout.nameID, {
-                            spaceNameId,
-                            challengeNameId,
-                            opportunityNameId,
-                          }),
+                          uri: callout.framing.profile.url,
                         };
                       })}
                       emptyListCaption={t('pages.generic.sections.subentities.empty-list', {
@@ -105,7 +93,6 @@ const KnowledgeBasePage = ({ journeyTypeName }: PropsWithChildren<KnowledgeBaseP
                 <PageContentColumn columns={8}>
                   <CalloutsGroupView
                     callouts={groupedCallouts[CalloutDisplayLocation.Knowledge]}
-                    spaceId={spaceNameId!}
                     canCreateCallout={canCreateCallout}
                     canCreateCalloutFromTemplate={canCreateCalloutFromTemplate}
                     loading={loading}

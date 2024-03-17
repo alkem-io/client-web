@@ -28,6 +28,7 @@ import useLoadingState from '../../../shared/utils/useLoadingState';
 import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
 import { normalizeLink } from '../../../../core/utils/links';
 import { DialogFooter } from '../../../../core/ui/dialog/DialogWithGrid';
+import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 
 export interface PostSettingsPageProps {
   onClose: () => void;
@@ -76,10 +77,11 @@ const PostSettingsPage: FC<PostSettingsPageProps> = ({ journeyTypeName, onClose 
 
   const isMoveEnabled = Boolean(targetCalloutId) && targetCalloutId !== postSettings.parentCallout?.id;
 
+  const { journeyId } = useRouteResolver();
+
   const { callouts, refetchCallouts } = useCallouts({
-    spaceNameId,
-    challengeNameId,
-    opportunityNameId,
+    journeyId,
+    journeyTypeName,
   });
 
   const calloutsOfTypePost = callouts?.filter(({ type }) => type === CalloutType.PostCollection);

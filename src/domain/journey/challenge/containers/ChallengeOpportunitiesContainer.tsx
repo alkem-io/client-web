@@ -48,8 +48,8 @@ export const ChallengeOpportunitiesContainer: FC<ChallengeOpportunitiesContainer
   useOpportunityCreatedSubscription(_challenge, data => data?.space?.challenge, subscribeToMore);
 
   const callouts = useCallouts({
-    spaceNameId,
-    challengeNameId,
+    journeyId: _challenge?.space.challenge.id,
+    journeyTypeName: 'challenge',
     displayLocations: [CalloutDisplayLocation.OpportunitiesLeft, CalloutDisplayLocation.OpportunitiesRight],
   });
 
