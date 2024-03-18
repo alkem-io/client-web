@@ -1,16 +1,11 @@
-query spaceInnovationFlowTemplates($spaceId: UUID_NAMEID!) {
+query SpaceInnovationFlows($spaceId: UUID_NAMEID!) {
   space(ID: $spaceId) {
-    id
     account {
       id
       library {
         id
         innovationFlowTemplates {
           id
-          states {
-            displayName
-            description
-          }
           profile {
             id
             displayName

@@ -26,9 +26,12 @@ query SpaceDashboardReferences($spaceId: UUID_NAMEID!) {
 fragment SpacePage on Space {
   id
   nameID
-  license {
+  account {
     id
-    visibility
+    license {
+      id
+      visibility
+    }
   }
   metrics {
     id

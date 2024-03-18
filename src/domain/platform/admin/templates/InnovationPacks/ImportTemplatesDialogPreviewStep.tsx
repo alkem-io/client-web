@@ -1,60 +1,59 @@
-import { Box, Button, Grid } from '@mui/material';
-import React, { ComponentType, ReactNode, useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { TemplateImportCardComponentProps } from './ImportTemplatesDialogGalleryStep';
-import { Template, TemplatePreviewProps } from '../AdminTemplatesSection';
-import GridProvider from '../../../../../core/ui/grid/GridProvider';
+import React, { ReactNode, useEffect, useMemo } from 'react';
 import { Identifiable } from '../../../../../core/utils/Identifiable';
+import TemplatePreviewDialog, {
+  TemplatePreviewDialogProps,
+} from '../../../../template/templatePreviewDialog/TemplatePreviewDialog';
+import { TemplateType } from '../../../../collaboration/InnovationPack/InnovationPackProfilePage/InnovationPackProfilePage';
+import { TemplateBase } from '../../../../collaboration/templates/CollaborationTemplatesLibrary/TemplateBase';
 
-export interface ImportTemplatesDialogPreviewStepProps<T extends Template, V extends T> {
+export interface ImportTemplatesDialogPreviewStepProps<T extends TemplateBase, V extends T> {
   onClose: () => void;
   template: T & Identifiable;
-  templatePreviewCardComponent: ComponentType<TemplateImportCardComponentProps<T & Identifiable>>;
-  templatePreviewComponent: ComponentType<TemplatePreviewProps<T, V>>;
   getImportedTemplateContent?: (template: T) => void;
   importedTemplateContent?: V | undefined;
   actions?: ReactNode;
+  templateType: TemplateType;
 }
 
-const ImportTemplatesDialogPreviewStep = <T extends Template, V extends T>({
+const ImportTemplatesDialogPreviewStep = <T extends TemplateBase, V extends T>({
   template,
-  templatePreviewCardComponent: TemplateCard,
-  templatePreviewComponent: TemplatePreview,
   getImportedTemplateContent,
   importedTemplateContent,
   actions,
   onClose,
+  templateType,
 }: ImportTemplatesDialogPreviewStepProps<T, V>) => {
-  const { t } = useTranslation();
+  const templateWithValue = useMemo(() => {
+    const templateWithValue =
+      templateType === TemplateType.WhiteboardTemplate
+        ? {
+            ...template,
+            ...(importedTemplateContent as V),
+          }
+        : template;
 
-  const getTemplateContent = useCallback(
-    () => (getImportedTemplateContent ? getImportedTemplateContent(template) : undefined),
-    [getImportedTemplateContent, template]
-  );
+    return templateWithValue as unknown as V;
+  }, [template, templateType]);
 
-  return (
-    <Grid container spacing={2}>
-      <Grid item xs={12} md={3} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-        <GridProvider columns={3}>
-          <TemplateCard template={template} />
-        </GridProvider>
-        <Box sx={{ display: 'flex', marginY: theme => theme.spacing(2), justifyContent: 'end' }}>
-          <Button startIcon={<ArrowBackIcon />} variant="text" onClick={() => onClose()}>
-            {t('buttons.back')}
-          </Button>
-          {actions}
-        </Box>
-      </Grid>
-      <Grid item xs={12} md={9}>
-        <TemplatePreview
-          template={template}
-          getTemplateContent={getTemplateContent}
-          templateContent={importedTemplateContent}
-        />
-      </Grid>
-    </Grid>
-  );
+  const templatePreview = useMemo(() => {
+    if (!templateWithValue) {
+      return undefined;
+    }
+
+    return {
+      template: templateWithValue,
+      templateType,
+      // TODO make sure that templateType matches the actual type of the template
+    } as TemplatePreviewDialogProps['templatePreview'];
+  }, [templateWithValue]);
+
+  useEffect(() => {
+    if (templateType === TemplateType.WhiteboardTemplate && getImportedTemplateContent) {
+      getImportedTemplateContent(template);
+    }
+  }, [template, templateType, getImportedTemplateContent]);
+
+  return <TemplatePreviewDialog open templatePreview={templatePreview} actions={actions} onClose={onClose} />;
 };
 
 export default ImportTemplatesDialogPreviewStep;

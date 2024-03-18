@@ -42,12 +42,12 @@ export const SpaceList: FC = () => {
           (space.authorization?.myPrivileges ?? []).find(privilege => privilege === AuthorizationPrivilege.Update)
         )
         .map(space => {
-          if (space.license.visibility !== SpaceVisibility.Active) {
+          if (space.account.license.visibility !== SpaceVisibility.Active) {
             return {
               ...space,
               profile: {
                 ...space.profile,
-                displayName: `${space.profile.displayName} [${space.license.visibility.toUpperCase()}]`,
+                displayName: `${space.profile.displayName} [${space.account.license.visibility.toUpperCase()}]`,
               },
             };
           }
@@ -61,11 +61,11 @@ export const SpaceList: FC = () => {
         .map(space => ({
           ...searchableListItemMapper()(space),
           spaceId: space.id,
-          visibility: space.license.visibility,
+          visibility: space.account.license.visibility,
           hostID: space.host?.id,
           nameID: space.nameID,
           features: Object.values(LicenseFeatureFlagName).reduce((acc, licenseFeature) => {
-            acc[licenseFeature] = licenseHasFeature(licenseFeature, space.license);
+            acc[licenseFeature] = licenseHasFeature(licenseFeature, space.account.license);
             return acc;
           }, {} as Record<LicenseFeatureFlagName, boolean>),
           organizations,

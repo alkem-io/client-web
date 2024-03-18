@@ -1771,7 +1771,16 @@
       "space": {
         "sections": {
           "challenges": {
-            "description": "Here you can edit challenges for this Space."
+            "description": "Here you can edit challenges for this Space.",
+            "defaultSettings": {
+              "title": "Default settings",
+              "description": "Choose the default settings that will apply when creating a new Challenge or Opportunity within this Space. These settings can be modified during the creation process or at a later time.",
+              "defaultInnovationFlow": {
+                "selectDifferentFlow": "Select different Flow",
+                "title": "Selecting the Default Innovation Flow",
+                "description": "Customize the default flow for newly created Challenges and Opportunities. Admins can modify it later in the Innovation flow settings. \n\nBelow you can choose between the templates collected in the Space Templates library. If you’re looking to create new flows or explore additional templates, click here to access this library."
+              }
+            }
           }
         },
         "authorization": {

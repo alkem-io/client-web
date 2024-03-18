@@ -7,7 +7,7 @@ import AdminTemplatesSection from '../AdminTemplatesSection';
 import { InnovationPack } from '../InnovationPacks/InnovationPack';
 import CalloutTemplateCard from './CalloutTemplateCard';
 import CalloutImportTemplateCard from './CalloutImportTemplateCard';
-import CalloutTemplateView from './CalloutTemplateView';
+import { TemplateType } from '../../../../collaboration/InnovationPack/InnovationPackProfilePage/InnovationPackProfilePage';
 
 interface AdminCalloutTemplatesSectionProps {
   templateId: string | undefined;
@@ -37,7 +37,6 @@ const AdminCalloutTemplatesSection = ({ refetchQueries, ...props }: AdminCallout
       })}
       templateCardComponent={CalloutTemplateCard}
       templateImportCardComponent={CalloutImportTemplateCard}
-      templatePreviewComponent={CalloutTemplateView}
       createTemplateDialogComponent={undefined}
       editTemplateDialogComponent={undefined}
       onCreateTemplate={() => Promise.resolve({ data: null, errors: [] })}
@@ -45,6 +44,7 @@ const AdminCalloutTemplatesSection = ({ refetchQueries, ...props }: AdminCallout
       onDeleteTemplate={async variables => {
         await deleteCalloutTemplate({ variables, refetchQueries });
       }}
+      templateType={TemplateType.CalloutTemplate}
     />
   );
 };
