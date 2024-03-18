@@ -25046,6 +25046,11 @@ export type AdminSpaceTemplatesQuery = {
                   }
                 | undefined;
             };
+            contributionPolicy: {
+              __typename?: 'CalloutContributionPolicy';
+              id: string;
+              allowedContributionTypes: Array<CalloutContributionType>;
+            };
           }>;
           postTemplates: Array<{
             __typename?: 'PostTemplate';
@@ -25194,6 +25199,11 @@ export type AdminCalloutTemplateFragment = {
           alternativeText?: string | undefined;
         }
       | undefined;
+  };
+  contributionPolicy: {
+    __typename?: 'CalloutContributionPolicy';
+    id: string;
+    allowedContributionTypes: Array<CalloutContributionType>;
   };
 };
 

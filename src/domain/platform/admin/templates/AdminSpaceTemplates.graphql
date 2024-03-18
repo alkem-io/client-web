@@ -29,6 +29,10 @@ fragment AdminCalloutTemplate on CalloutTemplate {
   profile {
     ...ProfileInfoWithVisual
   }
+  contributionPolicy {
+    id
+    allowedContributionTypes
+  }
 }
 
 fragment AdminPostTemplate on PostTemplate {
