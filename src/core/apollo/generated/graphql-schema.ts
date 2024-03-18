@@ -7069,17 +7069,29 @@ export type UpdateInnovationFlowSingleStateMutation = {
   };
 };
 
-export type UpdateInnovationFlowStatesFromTemplateMutationVariables = Exact<{
-  innovationFlowId: Scalars['UUID'];
-  innovationFlowTemplateId: Scalars['UUID'];
+export type SpaceInnovationFlowsQueryVariables = Exact<{
+  spaceId: Scalars['UUID_NAMEID'];
 }>;
 
-export type UpdateInnovationFlowStatesFromTemplateMutation = {
-  __typename?: 'Mutation';
-  updateInnovationFlowStatesFromTemplate: {
-    __typename?: 'InnovationFlow';
-    id: string;
-    currentState: { __typename?: 'InnovationFlowState'; displayName: string };
+export type SpaceInnovationFlowsQuery = {
+  __typename?: 'Query';
+  space: {
+    __typename?: 'Space';
+    account: {
+      __typename?: 'Account';
+      id: string;
+      library?:
+        | {
+            __typename?: 'TemplatesSet';
+            id: string;
+            innovationFlowTemplates: Array<{
+              __typename?: 'InnovationFlowTemplate';
+              id: string;
+              profile: { __typename?: 'Profile'; id: string; displayName: string };
+            }>;
+          }
+        | undefined;
+    };
   };
 };
 
@@ -16356,26 +16368,6 @@ export type CreateGroupOnCommunityMutation = {
   };
 };
 
-export type ChallengesWithProfileQueryVariables = Exact<{
-  spaceId: Scalars['UUID_NAMEID'];
-}>;
-
-export type ChallengesWithProfileQuery = {
-  __typename?: 'Query';
-  space: {
-    __typename?: 'Space';
-    id: string;
-    challenges?:
-      | Array<{
-          __typename?: 'Challenge';
-          id: string;
-          nameID: string;
-          profile: { __typename?: 'Profile'; id: string; displayName: string };
-        }>
-      | undefined;
-  };
-};
-
 export type CommunityGroupsQueryVariables = Exact<{
   communityId: Scalars['UUID'];
 }>;
@@ -24511,6 +24503,82 @@ export type BannerInnovationHubQuery = {
           spaceListFilter?: Array<{ __typename?: 'Space'; id: string }> | undefined;
         }
       | undefined;
+  };
+};
+
+export type AdminSpaceChallengesPageQueryVariables = Exact<{
+  spaceId: Scalars['UUID_NAMEID'];
+}>;
+
+export type AdminSpaceChallengesPageQuery = {
+  __typename?: 'Query';
+  space: {
+    __typename?: 'Space';
+    id: string;
+    challenges?:
+      | Array<{
+          __typename?: 'Challenge';
+          id: string;
+          nameID: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string };
+        }>
+      | undefined;
+    account: {
+      __typename?: 'Account';
+      id: string;
+      defaults?:
+        | {
+            __typename?: 'SpaceDefaults';
+            innovationFlowTemplate?:
+              | {
+                  __typename?: 'InnovationFlowTemplate';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    description?: string | undefined;
+                    tagsets?:
+                      | Array<{
+                          __typename?: 'Tagset';
+                          id: string;
+                          name: string;
+                          tags: Array<string>;
+                          allowedValues: Array<string>;
+                          type: TagsetType;
+                        }>
+                      | undefined;
+                    references?:
+                      | Array<{
+                          __typename?: 'Reference';
+                          id: string;
+                          name: string;
+                          description?: string | undefined;
+                          uri: string;
+                        }>
+                      | undefined;
+                    bannerNarrow?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: string;
+                          allowedTypes: Array<string>;
+                          aspectRatio: number;
+                          maxHeight: number;
+                          maxWidth: number;
+                          minHeight: number;
+                          minWidth: number;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                  };
+                  states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
+                }
+              | undefined;
+          }
+        | undefined;
+    };
   };
 };
 
