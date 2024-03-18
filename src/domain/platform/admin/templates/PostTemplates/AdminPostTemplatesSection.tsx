@@ -10,11 +10,11 @@ import {
 import { AdminPostTemplateFragment } from '../../../../../core/apollo/generated/graphql-schema';
 import { LinkWithState } from '../../../../shared/types/LinkWithState';
 import { InternalRefetchQueriesInclude } from '@apollo/client/core/types';
-import PostTemplateView from './PostTemplateView';
 import AdminTemplatesSection from '../AdminTemplatesSection';
 import { useTranslation } from 'react-i18next';
 import { InnovationPack } from '../InnovationPacks/InnovationPack';
 import PostImportTemplateCard from './PostImportTemplateCard';
+import { TemplateType } from '../../../../collaboration/InnovationPack/InnovationPackProfilePage/InnovationPackProfilePage';
 
 interface AdminPostTemplatesSectionProps {
   templateId: string | undefined;
@@ -46,7 +46,6 @@ const AdminPostTemplatesSection = ({ refetchQueries, ...props }: AdminPostTempla
       })}
       templateCardComponent={PostTemplateCard}
       templateImportCardComponent={PostImportTemplateCard}
-      templatePreviewComponent={PostTemplateView}
       createTemplateDialogComponent={CreatePostTemplateDialog}
       editTemplateDialogComponent={EditPostTemplateDialog}
       onCreateTemplate={variables => createPostTemplate({ variables, refetchQueries })}
@@ -54,6 +53,7 @@ const AdminPostTemplatesSection = ({ refetchQueries, ...props }: AdminPostTempla
       onDeleteTemplate={async variables => {
         await deletePostTemplate({ variables, refetchQueries });
       }}
+      templateType={TemplateType.PostTemplate}
     />
   );
 };
