@@ -2764,7 +2764,9 @@ export type Mutation = {
   /** Updates the InnovationFlow. */
   updateInnovationFlow: InnovationFlow;
   /** Updates the InnovationFlow. */
-  updateInnovationFlowState: InnovationFlow;
+  updateInnovationFlowSelectedState: InnovationFlow;
+  /** Updates the specified InnovationFlowState. */
+  updateInnovationFlowSingleState: InnovationFlow;
   /** Updates the InnovationFlow states from the specified template. */
   updateInnovationFlowStatesFromTemplate: InnovationFlow;
   /** Updates the specified InnovationFlowTemplate. */
@@ -3301,8 +3303,12 @@ export type MutationUpdateInnovationFlowArgs = {
   innovationFlowData: UpdateInnovationFlowInput;
 };
 
-export type MutationUpdateInnovationFlowStateArgs = {
+export type MutationUpdateInnovationFlowSelectedStateArgs = {
   innovationFlowStateData: UpdateInnovationFlowSelectedStateInput;
+};
+
+export type MutationUpdateInnovationFlowSingleStateArgs = {
+  innovationFlowStateData: UpdateInnovationFlowSingleStateInput;
 };
 
 export type MutationUpdateInnovationFlowStatesFromTemplateArgs = {
@@ -5261,6 +5267,14 @@ export type UpdateInnovationFlowSelectedStateInput = {
   selectedState: Scalars['String'];
 };
 
+export type UpdateInnovationFlowSingleStateInput = {
+  /** ID of the Innovation Flow */
+  innovationFlowID: Scalars['UUID'];
+  /** The name of the Innovation Flow State to be updated */
+  stateDisplayName: Scalars['String'];
+  stateUpdatedData: UpdateInnovationFlowStateInput;
+};
+
 export type UpdateInnovationFlowStateInput = {
   /** The explation text to clarify the State. */
   description: Scalars['Markdown'];
@@ -7133,7 +7147,7 @@ export type UpdateInnovationFlowCurrentStateMutationVariables = Exact<{
 
 export type UpdateInnovationFlowCurrentStateMutation = {
   __typename?: 'Mutation';
-  updateInnovationFlowState: {
+  updateInnovationFlowSelectedState: {
     __typename?: 'InnovationFlow';
     id: string;
     currentState: { __typename?: 'InnovationFlowState'; displayName: string };
@@ -7151,6 +7165,22 @@ export type UpdateInnovationFlowStatesMutation = {
     __typename?: 'InnovationFlow';
     id: string;
     states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
+  };
+};
+
+export type UpdateInnovationFlowSingleStateMutationVariables = Exact<{
+  innovationFlowId: Scalars['UUID'];
+  stateName: Scalars['String'];
+  stateUpdatedData: UpdateInnovationFlowStateInput;
+}>;
+
+export type UpdateInnovationFlowSingleStateMutation = {
+  __typename?: 'Mutation';
+  updateInnovationFlowSingleState: {
+    __typename?: 'InnovationFlow';
+    id: string;
+    states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
+    currentState: { __typename?: 'InnovationFlowState'; displayName: string; description: string };
   };
 };
 
