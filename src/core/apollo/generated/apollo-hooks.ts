@@ -2965,6 +2965,10 @@ export const AdminCalloutTemplateFragmentDoc = gql`
     profile {
       ...ProfileInfoWithVisual
     }
+    contributionPolicy {
+      id
+      allowedContributionTypes
+    }
   }
   ${ProfileInfoWithVisualFragmentDoc}
 `;

@@ -16,7 +16,6 @@ import AdminTemplatesSection from '../AdminTemplatesSection';
 import EditWhiteboardTemplateDialog from './EditWhiteboardTemplateDialog';
 import WhiteboardTemplateCard from './WhiteboardTemplateCard';
 import CreateWhiteboardTemplateDialog from './CreateWhiteboardTemplateDialog';
-import AdminWhiteboardTemplatePreview from './AdminWhiteboardTemplatePreview';
 import { useTranslation } from 'react-i18next';
 import { InnovationPack } from '../InnovationPacks/InnovationPack';
 import WhiteboardImportTemplateCard from './WhitebaordImportTemplateCard';
@@ -25,6 +24,7 @@ import {
   WhiteboardPreviewImage,
 } from '../../../../collaboration/whiteboard/WhiteboardPreviewImages/WhiteboardPreviewImages';
 import { Identifiable } from '../../../../../core/utils/Identifiable';
+import { TemplateType } from '../../../../collaboration/InnovationPack/InnovationPackProfilePage/InnovationPackProfilePage';
 
 interface AdminWhiteboardTemplatesSectionProps {
   templateId: string | undefined;
@@ -92,7 +92,6 @@ const AdminWhiteboardTemplatesSection = ({ refetchQueries, ...props }: AdminWhit
       })}
       templateCardComponent={WhiteboardTemplateCard}
       templateImportCardComponent={WhiteboardImportTemplateCard}
-      templatePreviewComponent={AdminWhiteboardTemplatePreview}
       getWhiteboardTemplateContent={getWhiteboardTemplateContent}
       getImportedWhiteboardTemplateContent={getImportedWhiteboardTemplateContent}
       whiteboardTemplateContent={whiteboardContent?.lookup.whiteboardTemplate}
@@ -110,6 +109,7 @@ const AdminWhiteboardTemplatesSection = ({ refetchQueries, ...props }: AdminWhit
       onTemplateUpdated={(mutationResult: UpdateWhiteboardTemplateMutation | undefined | null, previewImages) =>
         onMutationCalled(mutationResult?.updateWhiteboardTemplate, previewImages)
       }
+      templateType={TemplateType.WhiteboardTemplate}
     />
   );
 };

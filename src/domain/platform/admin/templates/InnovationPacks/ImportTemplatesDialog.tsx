@@ -4,17 +4,17 @@ import React, { cloneElement, ComponentType, ReactElement, useState } from 'reac
 import { useTranslation } from 'react-i18next';
 import { DialogActions } from '../../../../../core/ui/dialog/deprecated';
 import { LibraryIcon } from '../../../../collaboration/templates/LibraryIcon';
-import { Template, TemplatePreviewProps } from '../AdminTemplatesSection';
+import { Template } from '../AdminTemplatesSection';
 import { InnovationPack } from './InnovationPack';
 import ImportTemplatesDialogPreviewStep from './ImportTemplatesDialogPreviewStep';
 import ImportTemplatesDialogGalleryStep, { TemplateImportCardComponentProps } from './ImportTemplatesDialogGalleryStep';
 import { Identifiable } from '../../../../../core/utils/Identifiable';
 import DialogTitleWithIcon from '../../../../../core/ui/dialog/DialogTitleWithIcon';
+import { TemplateType } from '../../../../collaboration/InnovationPack/InnovationPackProfilePage/InnovationPackProfilePage';
 
 export interface ImportTemplatesDialogProps<T extends Template, V extends T> {
   headerText: string;
   templateImportCardComponent: ComponentType<TemplateImportCardComponentProps<T>>;
-  templatePreviewComponent: ComponentType<TemplatePreviewProps<T, V>>;
   getImportedTemplateContent?: (template: T) => void;
   importedTemplateContent?: V | undefined;
   innovationPacks: InnovationPack<T>[];
@@ -24,12 +24,12 @@ export interface ImportTemplatesDialogProps<T extends Template, V extends T> {
   loading?: boolean;
   dialogSubtitle: string;
   actionButton: ReactElement<ButtonProps>;
+  templateType: TemplateType;
 }
 
 const ImportTemplatesDialog = <T extends Template, V extends T>({
   headerText,
   templateImportCardComponent,
-  templatePreviewComponent,
   getImportedTemplateContent,
   importedTemplateContent,
   innovationPacks,
@@ -39,6 +39,7 @@ const ImportTemplatesDialog = <T extends Template, V extends T>({
   onImportTemplate,
   dialogSubtitle,
   actionButton,
+  templateType,
 }: ImportTemplatesDialogProps<T, V>) => {
   const { t } = useTranslation();
   const [previewTemplate, setPreviewTemplate] = useState<T & Identifiable>();
@@ -61,6 +62,19 @@ const ImportTemplatesDialog = <T extends Template, V extends T>({
     handleClosePreview();
   };
 
+  if (!loading && previewTemplate) {
+    return (
+      <ImportTemplatesDialogPreviewStep
+        template={previewTemplate}
+        onClose={handleClosePreview}
+        getImportedTemplateContent={getImportedTemplateContent}
+        importedTemplateContent={importedTemplateContent}
+        actions={cloneElement(actionButton, { onClick: handleImportTemplate })}
+        templateType={templateType}
+      />
+    );
+  }
+
   return (
     <DialogWithGrid open={open} columns={12} onClose={handleClose}>
       <DialogTitleWithIcon subtitle={dialogSubtitle} onClose={handleClose} icon={<LibraryIcon />}>
@@ -68,25 +82,14 @@ const ImportTemplatesDialog = <T extends Template, V extends T>({
       </DialogTitleWithIcon>
       <DialogContent>
         {loading && <Skeleton variant="rectangular" />}
-        {!loading &&
-          (!previewTemplate ? (
-            <ImportTemplatesDialogGalleryStep
-              innovationPacks={innovationPacks}
-              onPreviewTemplate={handlePreviewTemplate}
-              templateImportCardComponent={templateImportCardComponent}
-              loading={loading}
-            />
-          ) : (
-            <ImportTemplatesDialogPreviewStep
-              template={previewTemplate}
-              onClose={handleClosePreview}
-              templatePreviewCardComponent={templateImportCardComponent}
-              templatePreviewComponent={templatePreviewComponent}
-              getImportedTemplateContent={getImportedTemplateContent}
-              importedTemplateContent={importedTemplateContent}
-              actions={cloneElement(actionButton, { onClick: handleImportTemplate })}
-            />
-          ))}
+        {!loading && (
+          <ImportTemplatesDialogGalleryStep
+            innovationPacks={innovationPacks}
+            onPreviewTemplate={handlePreviewTemplate}
+            templateImportCardComponent={templateImportCardComponent}
+            loading={loading}
+          />
+        )}
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>{t('buttons.cancel')}</Button>

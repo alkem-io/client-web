@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import DialogHeader from '../../../core/ui/dialog/DialogHeader';
 import DialogWithGrid from '../../../core/ui/dialog/DialogWithGrid';
@@ -24,21 +24,21 @@ import { InnovationFlowState } from '../../collaboration/InnovationFlow/Innovati
 
 export type TemplatePreview =
   | {
-    template: TemplateBase & { content?: string };
-    templateType: TemplateType.WhiteboardTemplate;
-  }
+      template: TemplateBase & { content?: string };
+      templateType: TemplateType.WhiteboardTemplate;
+    }
   | {
-    template: PostTemplate;
-    templateType: TemplateType.PostTemplate;
-  }
+      template: PostTemplate;
+      templateType: TemplateType.PostTemplate;
+    }
   | {
-    template: TemplateBase & { states: InnovationFlowState[] } & Identifiable;
-    templateType: TemplateType.InnovationFlowTemplate;
-  }
+      template: TemplateBase & { states: InnovationFlowState[] } & Identifiable;
+      templateType: TemplateType.InnovationFlowTemplate;
+    }
   | {
-    template: CalloutTemplate & Identifiable;
-    templateType: TemplateType.CalloutTemplate;
-  };
+      template: CalloutTemplate & Identifiable;
+      templateType: TemplateType.CalloutTemplate;
+    };
 
 const Noop = () => null;
 
@@ -121,6 +121,7 @@ export interface TemplatePreviewDialogProps {
   templatePreview: TemplatePreviewChooserProps['templatePreview'];
   innovationPack?: TemplatePreviewChooserProps['innovationPack'];
   loadingTemplateContent?: boolean;
+  actions?: ReactNode;
 }
 
 const TemplatePreviewDialog: FC<TemplatePreviewDialogProps> = ({
@@ -129,6 +130,7 @@ const TemplatePreviewDialog: FC<TemplatePreviewDialogProps> = ({
   innovationPack,
   loadingTemplateContent,
   templatePreview,
+  actions,
   ...props
 }) => {
   const { t } = useTranslation();
@@ -146,7 +148,7 @@ const TemplatePreviewDialog: FC<TemplatePreviewDialogProps> = ({
           innovationPack={innovationPack}
           loading={loadingTemplateContent}
           onClose={onClose}
-          actions={<DisabledUseButton />}
+          actions={actions ?? <DisabledUseButton />}
           {...props}
         />
       </DialogContent>
