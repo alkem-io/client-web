@@ -48,8 +48,8 @@ export type Account = {
   library?: Maybe<TemplatesSet>;
   /** The License governing platform functionality in use by this Account */
   license: License;
-  /** The ID of the associated root Space. */
-  spaceID: Scalars['String'];
+  /** The space of the associated root Space. */
+  space: Space;
 };
 
 export type ActivityCreatedSubscriptionInput = {
@@ -28037,7 +28037,7 @@ export type SearchQuery = {
                 | undefined;
               visuals: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }>;
             };
-            account: { __typename?: 'Account'; spaceID: string };
+            account: { __typename?: 'Account'; space: { __typename?: 'Space'; id: string } };
             context?: { __typename?: 'Context'; id: string; vision?: string | undefined } | undefined;
             authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
             community?:
@@ -28676,7 +28676,7 @@ export type SearchResultChallengeFragment = {
         | undefined;
       visuals: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }>;
     };
-    account: { __typename?: 'Account'; spaceID: string };
+    account: { __typename?: 'Account'; space: { __typename?: 'Space'; id: string } };
     context?: { __typename?: 'Context'; id: string; vision?: string | undefined } | undefined;
     authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
     community?:
@@ -29138,7 +29138,7 @@ export type ChallengeExplorerSearchQuery = {
                 | undefined;
               visuals: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }>;
             };
-            account: { __typename?: 'Account'; spaceID: string };
+            account: { __typename?: 'Account'; space: { __typename?: 'Space'; id: string } };
             context?: { __typename?: 'Context'; id: string; vision?: string | undefined } | undefined;
             authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
             community?:

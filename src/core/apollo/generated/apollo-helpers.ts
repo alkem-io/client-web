@@ -11,7 +11,7 @@ export type AccountKeySpecifier = (
   | 'id'
   | 'library'
   | 'license'
-  | 'spaceID'
+  | 'space'
   | AccountKeySpecifier
 )[];
 export type AccountFieldPolicy = {
@@ -21,7 +21,7 @@ export type AccountFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   library?: FieldPolicy<any> | FieldReadFunction<any>;
   license?: FieldPolicy<any> | FieldReadFunction<any>;
-  spaceID?: FieldPolicy<any> | FieldReadFunction<any>;
+  space?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ActivityCreatedSubscriptionResultKeySpecifier = (
   | 'activity'
