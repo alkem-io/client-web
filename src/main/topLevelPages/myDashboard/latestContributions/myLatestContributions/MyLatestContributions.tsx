@@ -38,7 +38,7 @@ const MyLatestContributions = () => {
       filter: {
         myActivity: true,
         types: ACTIVITY_TYPES,
-        limit: MY_LATEST_CONTRIBUTIONS_COUNT * 2, ////magic number, should not be needed. toDo Fix in https://app.zenhub.com/workspaces/alkemio-development-5ecb98b262ebd9f4aec4194c/issues/gh/alkem-io/server/3626
+        limit: MY_LATEST_CONTRIBUTIONS_COUNT,
       },
     },
   });
