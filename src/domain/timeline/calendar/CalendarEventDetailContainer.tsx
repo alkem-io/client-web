@@ -16,7 +16,6 @@ import useSubscribeOnRoomEvents from '../../collaboration/callout/useSubscribeOn
 export type CalendarEventDetailData = CalendarEventDetailsFragment;
 
 interface EventIds {
-  spaceNameId: string;
   eventId: string | undefined;
 }
 
@@ -45,7 +44,7 @@ export type CalendarEventDetailContainerProps = ContainerPropsWithProvided<Event
 
 // TODO: VERY BASED ON domain/collaboration/post/containers/PostDashboardContainer/PostDashboardContainer.tsx
 // Maybe put common logic together
-const CalendarEventDetailContainer: FC<CalendarEventDetailContainerProps> = ({ spaceNameId, eventId, ...rendered }) => {
+const CalendarEventDetailContainer: FC<CalendarEventDetailContainerProps> = ({ eventId, ...rendered }) => {
   const { user: userMetadata, isAuthenticated } = useUserContext();
   const user = userMetadata?.user;
 
@@ -55,7 +54,7 @@ const CalendarEventDetailContainer: FC<CalendarEventDetailContainerProps> = ({ s
     error,
   } = useCalendarEventDetailsQuery({
     variables: { eventId: eventId! },
-    skip: !spaceNameId || !eventId,
+    skip: !eventId,
     fetchPolicy: 'cache-and-network',
   });
   const loading = !eventId || loadingEvent;

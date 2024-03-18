@@ -203,7 +203,14 @@ const EventsTooltip: FC<EventsTooltipProps> = ({ events = [] }) => (
 );
 
 export interface FullCalendarProps {
-  events: Pick<CalendarEventDetailsFragment, 'nameID' | 'startDate' | 'profile'>[];
+  events: {
+    id: string;
+    nameID: string;
+    startDate?: Date;
+    profile: {
+      displayName: string;
+    };
+  }[];
   onClickHighlightedDate: (date: Date, events: Pick<CalendarEvent, 'nameID'>[]) => void;
   selectedDate?: Date | null;
   sx?: BoxProps['sx'];

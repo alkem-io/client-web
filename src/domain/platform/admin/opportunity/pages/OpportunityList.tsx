@@ -32,11 +32,11 @@ export const OpportunityList: FC = () => {
   const [open, setOpen] = useState(false);
 
   const { data: challengesListQuery, loading } = useOpportunitiesQuery({
-    variables: { spaceId: spaceNameId, challengeId: challengeNameId },
+    variables: { challengeId },
   });
 
   const opportunityList =
-    challengesListQuery?.space?.challenge?.opportunities?.map(o => ({
+    challengesListQuery?.lookup.challenge?.opportunities?.map(o => ({
       id: o.id,
       value: o.profile.displayName,
       url: `${o.nameID}`,
@@ -45,8 +45,7 @@ export const OpportunityList: FC = () => {
   const [deleteOpportunity] = useDeleteOpportunityMutation({
     refetchQueries: [
       refetchOpportunitiesQuery({
-        spaceId: spaceNameId,
-        challengeId: challengeNameId,
+        challengeId,
       }),
     ],
     awaitRefetchQueries: true,
@@ -64,7 +63,7 @@ export const OpportunityList: FC = () => {
   };
 
   const [createOpportunity] = useCreateOpportunityMutation({
-    refetchQueries: [refetchOpportunitiesQuery({ spaceId: spaceNameId, challengeId: challengeNameId })],
+    refetchQueries: [refetchOpportunitiesQuery({ challengeId })],
     awaitRefetchQueries: true,
     onCompleted: () => {
       notify(t('pages.admin.opportunity.notifications.opportunity-created'), 'success');

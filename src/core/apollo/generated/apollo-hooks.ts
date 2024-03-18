@@ -3139,6 +3139,7 @@ export const CalloutTemplatePreviewFragmentDoc = gql`
 export const EventProfileFragmentDoc = gql`
   fragment EventProfile on Profile {
     id
+    url
     displayName
     description
     tagset {
@@ -3195,6 +3196,7 @@ export const CalendarEventDetailsFragmentDoc = gql`
       id
       profile {
         id
+        url
         displayName
         visual(type: AVATAR) {
           id

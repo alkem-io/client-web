@@ -22,23 +22,22 @@ import CalendarEventForm from './views/CalendarEventForm';
 import CalendarEventsList from './views/CalendarEventsList';
 import dayjs from 'dayjs';
 import DialogWithGrid from '../../../core/ui/dialog/DialogWithGrid';
+import { JourneyTypeName } from '../../journey/JourneyTypeName';
 
 // If url params contains `highlight=YYYY-MM-DD` events in that date will be highlighted
 export const HIGHLIGHT_PARAM_NAME = 'highlight';
 
 export interface CalendarDialogProps {
   open: boolean;
-  spaceNameId: string | undefined;
-  challengeNameId?: string | undefined;
-  opportunityNameId?: string | undefined;
+  journeyId: string | undefined;
+  journeyTypeName: JourneyTypeName;
   onClose: () => void;
 }
 
 const CalendarDialog: FC<CalendarDialogProps> = ({
   open,
-  spaceNameId,
-  challengeNameId,
-  opportunityNameId,
+  journeyId,
+  journeyTypeName,
   onClose,
 }) => {
   const { t } = useTranslation();
@@ -72,6 +71,7 @@ const CalendarDialog: FC<CalendarDialogProps> = ({
       durationMinutes: 30,
       profile: {
         id: '',
+        url: '',
         displayName: '',
         description: t('calendar.defaultEventDescription'),
         references: [],
@@ -92,9 +92,7 @@ const CalendarDialog: FC<CalendarDialogProps> = ({
       aria-labelledby="calendar-events-dialog-title"
       PaperProps={{ sx: { padding: 0, display: 'flex', flexDirection: 'column' } }}
     >
-      {!spaceNameId && <Skeleton variant="rectangular" />}
-      {spaceNameId && (
-        <CalendarEventsContainer spaceId={spaceNameId} challengeId={challengeNameId} opportunityId={opportunityNameId}>
+      <CalendarEventsContainer journeyId={journeyId} journeyTypeName={journeyTypeName}>
           {(
             { events, privileges },
             { createEvent, updateEvent, deleteEvent },
@@ -166,7 +164,7 @@ const CalendarDialog: FC<CalendarDialogProps> = ({
               };
 
               return (
-                <CalendarEventDetailContainer spaceNameId={spaceNameId} eventId={event.id}>
+                <CalendarEventDetailContainer eventId={event.id}>
                   {({ event: eventDetail }) => (
                     <CalendarEventForm
                       dialogTitle={t('calendar.edit-event')}
@@ -203,7 +201,6 @@ const CalendarDialog: FC<CalendarDialogProps> = ({
                 const event = events.find(event => event.nameID === calendarEventNameId);
                 return (
                   <CalendarEventDetail
-                    spaceNameId={spaceNameId}
                     eventId={event?.id}
                     onClose={onClose}
                     canEdit={privileges.canEditEvents}
@@ -217,7 +214,6 @@ const CalendarDialog: FC<CalendarDialogProps> = ({
             }
           }}
         </CalendarEventsContainer>
-      )}
     </DialogWithGrid>
   );
 };

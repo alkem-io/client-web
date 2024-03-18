@@ -26060,6 +26060,7 @@ export type SpaceDashboardCalendarEventsQuery = {
                         profile: {
                           __typename?: 'Profile';
                           id: string;
+                          url: string;
                           displayName: string;
                           description?: string | undefined;
                           tagset?:
@@ -26136,6 +26137,7 @@ export type ChallengeDashboardCalendarEventsQuery = {
                               profile: {
                                 __typename?: 'Profile';
                                 id: string;
+                                url: string;
                                 displayName: string;
                                 description?: string | undefined;
                                 tagset?:
@@ -26214,6 +26216,7 @@ export type OpportunityDashboardCalendarEventsQuery = {
                               profile: {
                                 __typename?: 'Profile';
                                 id: string;
+                                url: string;
                                 displayName: string;
                                 description?: string | undefined;
                                 tagset?:
@@ -26274,6 +26277,7 @@ export type CollaborationTimelineInfoFragment = {
                 profile: {
                   __typename?: 'Profile';
                   id: string;
+                  url: string;
                   displayName: string;
                   description?: string | undefined;
                   tagset?:
@@ -26328,6 +26332,7 @@ export type CalendarEventInfoFragment = {
   profile: {
     __typename?: 'Profile';
     id: string;
+    url: string;
     displayName: string;
     description?: string | undefined;
     tagset?:
@@ -26387,6 +26392,7 @@ export type SpaceCalendarEventsQuery = {
                         profile: {
                           __typename?: 'Profile';
                           id: string;
+                          url: string;
                           displayName: string;
                           description?: string | undefined;
                           tagset?:
@@ -26463,6 +26469,7 @@ export type ChallengeCalendarEventsQuery = {
                               profile: {
                                 __typename?: 'Profile';
                                 id: string;
+                                url: string;
                                 displayName: string;
                                 description?: string | undefined;
                                 tagset?:
@@ -26541,6 +26548,7 @@ export type OpportunityCalendarEventsQuery = {
                               profile: {
                                 __typename?: 'Profile';
                                 id: string;
+                                url: string;
                                 displayName: string;
                                 description?: string | undefined;
                                 tagset?:
@@ -26602,6 +26610,7 @@ export type CalendarEventDetailsQuery = {
                 profile: {
                   __typename?: 'Profile';
                   id: string;
+                  url: string;
                   displayName: string;
                   visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                   tagsets?:
@@ -26673,6 +26682,7 @@ export type CalendarEventDetailsQuery = {
           profile: {
             __typename?: 'Profile';
             id: string;
+            url: string;
             displayName: string;
             description?: string | undefined;
             tagset?:
@@ -26718,6 +26728,7 @@ export type CalendarEventDetailsFragment = {
         profile: {
           __typename?: 'Profile';
           id: string;
+          url: string;
           displayName: string;
           visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
           tagsets?:
@@ -26789,6 +26800,7 @@ export type CalendarEventDetailsFragment = {
   profile: {
     __typename?: 'Profile';
     id: string;
+    url: string;
     displayName: string;
     description?: string | undefined;
     tagset?:
@@ -26810,6 +26822,7 @@ export type CalendarEventDetailsFragment = {
 export type EventProfileFragment = {
   __typename?: 'Profile';
   id: string;
+  url: string;
   displayName: string;
   description?: string | undefined;
   tagset?:
@@ -26851,6 +26864,7 @@ export type CreateCalendarEventMutation = {
           profile: {
             __typename?: 'Profile';
             id: string;
+            url: string;
             displayName: string;
             visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
             tagsets?:
@@ -26922,6 +26936,7 @@ export type CreateCalendarEventMutation = {
     profile: {
       __typename?: 'Profile';
       id: string;
+      url: string;
       displayName: string;
       description?: string | undefined;
       tagset?:
@@ -26965,6 +26980,7 @@ export type UpdateCalendarEventMutation = {
           profile: {
             __typename?: 'Profile';
             id: string;
+            url: string;
             displayName: string;
             visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
             tagsets?:
@@ -27036,6 +27052,7 @@ export type UpdateCalendarEventMutation = {
     profile: {
       __typename?: 'Profile';
       id: string;
+      url: string;
       displayName: string;
       description?: string | undefined;
       tagset?:

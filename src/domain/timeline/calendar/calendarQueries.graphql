@@ -115,6 +115,7 @@ fragment CalendarEventDetails on CalendarEvent {
     id
     profile {
       id
+      url
       displayName
       visual(type: AVATAR) {
         id
@@ -133,6 +134,7 @@ fragment CalendarEventDetails on CalendarEvent {
 
 fragment EventProfile on Profile {
   id
+  url
   displayName
   description
   tagset {

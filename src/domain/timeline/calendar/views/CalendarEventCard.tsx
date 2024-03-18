@@ -4,7 +4,7 @@ import CardDetails from '../../../../core/ui/card/CardDetails';
 import CardDescription from '../../../../core/ui/card/CardDescription';
 import CardFooter from '../../../../core/ui/card/CardFooter';
 import { CalendarEventDetailsFragment } from '../../../../core/apollo/generated/graphql-schema';
-import EventCardHeader from './EventCardHeader';
+import EventCardHeader, { EventCardHeaderProps } from './EventCardHeader';
 import { gutters } from '../../../../core/ui/grid/utils';
 import { CaptionSmall } from '../../../../core/ui/typography';
 import { useTranslation } from 'react-i18next';
@@ -23,12 +23,17 @@ import { useTranslation } from 'react-i18next';
 //   createdBy?: { displayName: string };
 //   createdDate: string | Date; // Apollo says Date while actually it's a string
 // };
-export type CalendarEventCardData = CalendarEventDetailsFragment;
+// export type CalendarEventCardData = CalendarEventDetailsFragment;
 
-interface CalendarEventCardProps {
-  event: CalendarEventCardData;
+export interface CalendarEventCardProps {
+  event: NonNullable<EventCardHeaderProps['event']> & {
+    profile: NonNullable<EventCardHeaderProps['event']>['profile'] & {
+      url: string;
+      description?: string;
+    };
+  };
   highlighted?: boolean;
-  onClick: (event: CalendarEventCardData) => void;
+  onClick: (event: { profile: { url: string; } }) => void;
 }
 
 const CalendarEventCard = forwardRef<HTMLDivElement, CalendarEventCardProps>(({ event, highlighted, onClick }, ref) => {
@@ -40,7 +45,7 @@ const CalendarEventCard = forwardRef<HTMLDivElement, CalendarEventCardProps>(({ 
       <EventCardHeader event={event} />
       <CardDetails transparent>
         <CardDescription marginLeft={gutters(2.5)} paddingY={0} overflow="hidden" overflowGradientColor="paper">
-          {event.profile.description!}
+          {event.profile.description ?? ''}
         </CardDescription>
       </CardDetails>
       <CardFooter flexDirection="row-reverse">
