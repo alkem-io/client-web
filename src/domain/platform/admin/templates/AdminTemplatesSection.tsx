@@ -7,8 +7,6 @@ import { useTranslation } from 'react-i18next';
 import { LinkWithState } from '../../../shared/types/LinkWithState';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 import { SimpleCardProps } from '../../../shared/components/SimpleCard';
-import * as Apollo from '@apollo/client';
-import { MutationTuple } from '@apollo/client/react/types/types';
 import { InnovationPack } from './InnovationPacks/InnovationPack';
 import { LibraryIcon } from '../../../collaboration/templates/LibraryIcon';
 import ImportTemplatesDialog from './InnovationPacks/ImportTemplatesDialog';
@@ -48,16 +46,6 @@ interface EditTemplateDialogProps<T extends TemplateBase, V extends T, Submitted
   template: T | undefined;
   getTemplateContent: (template: T) => void;
   templateContent: V | undefined;
-}
-
-export interface TemplatePreviewProps<T extends TemplateBase, V extends T> {
-  template: T;
-  getTemplateContent: (template: T) => void;
-  templateContent: V | undefined;
-}
-
-export interface MutationHook<Variables, MutationResult> {
-  (baseOptions?: Apollo.MutationHookOptions<MutationResult, Variables>): MutationTuple<MutationResult, Variables>;
 }
 
 export interface ProfileUpdate {
@@ -149,7 +137,6 @@ const AdminTemplatesSection = <
   onTemplateUpdated,
   templateCardComponent: TemplateCard,
   templateImportCardComponent: TemplateImportCard,
-  // templatePreviewComponent: TemplatePreview,
   createTemplateDialogComponent,
   editTemplateDialogComponent,
   canImportTemplates,
@@ -407,14 +394,11 @@ const AdminTemplatesSection = <
         />
       )}
       {selectedTemplate && !edit && (
-        // TODO provide innovationPack???
         <TemplatePreviewDialog
           open
           onClose={onCloseTemplateDialog}
           templatePreview={templatePreview}
           actions={editTemplateButton}
-          // innovationPack={innovationPack}
-          // loadingTemplateContent={loadingWhiteboardTemplateContent}
         />
       )}
       {deletingTemplateId && (
