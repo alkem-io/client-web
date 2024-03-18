@@ -2079,6 +2079,7 @@ export type QueryKeySpecifier = (
   | 'adminCommunicationOrphanedUsage'
   | 'askChatGuidanceQuestion'
   | 'getSupportedVerifiedCredentialMetadata'
+  | 'groupedActivityFeed'
   | 'lookup'
   | 'me'
   | 'organization'
@@ -2107,6 +2108,7 @@ export type QueryFieldPolicy = {
   adminCommunicationOrphanedUsage?: FieldPolicy<any> | FieldReadFunction<any>;
   askChatGuidanceQuestion?: FieldPolicy<any> | FieldReadFunction<any>;
   getSupportedVerifiedCredentialMetadata?: FieldPolicy<any> | FieldReadFunction<any>;
+  groupedActivityFeed?: FieldPolicy<any> | FieldReadFunction<any>;
   lookup?: FieldPolicy<any> | FieldReadFunction<any>;
   me?: FieldPolicy<any> | FieldReadFunction<any>;
   organization?: FieldPolicy<any> | FieldReadFunction<any>;

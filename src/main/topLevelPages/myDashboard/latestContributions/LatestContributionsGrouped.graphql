@@ -1,0 +1,116 @@
+query LatestContributionsGrouped($filter: GroupedActivityFeedQueryArgs) {
+  groupedActivityFeed(args: $filter) {
+    id
+    collaborationID
+    createdDate
+    description
+    type
+    child
+    parentNameID
+    journeyDisplayName: parentDisplayName
+    journey {
+      id
+      ... on Space {
+        profile {
+          ...RecentContributionsSpaceProfile
+        }
+      }
+      ... on RelayPaginatedSpace {
+        profile {
+          ...RecentContributionsSpaceProfile
+        }
+      }
+      ... on Challenge {
+        profile {
+          ...RecentContributionsChildJourneyProfile
+        }
+      }
+      ... on Opportunity {
+        profile {
+          ...RecentContributionsChildJourneyProfile
+        }
+      }
+    }
+    triggeredBy {
+      id
+      nameID
+      firstName
+      lastName
+      profile {
+        id
+        displayName
+        avatar: visual(type: AVATAR) {
+          id
+          uri
+        }
+        tagsets {
+          ...TagsetDetails
+        }
+        location {
+          id
+          city
+          country
+        }
+      }
+    }
+    ... on ActivityLogEntryMemberJoined {
+      ...ActivityLogMemberJoined
+    }
+    ... on ActivityLogEntryCalloutPublished {
+      ...ActivityLogCalloutPublished
+    }
+    ... on ActivityLogEntryCalloutPostCreated {
+      ...ActivityLogCalloutPostCreated
+    }
+    ... on ActivityLogEntryCalloutLinkCreated {
+      ...ActivityLogCalloutLinkCreated
+    }
+    ... on ActivityLogEntryCalloutPostComment {
+      ...ActivityLogCalloutPostComment
+    }
+    ... on ActivityLogEntryCalloutWhiteboardCreated {
+      ...ActivityLogCalloutWhiteboardCreated
+    }
+    ... on ActivityLogEntryCalloutWhiteboardContentModified {
+      ...ActivityLogCalloutWhiteboardContentModified
+    }
+    ... on ActivityLogEntryCalloutDiscussionComment {
+      ...ActivityLogCalloutDiscussionComment
+    }
+    ... on ActivityLogEntryChallengeCreated {
+      ...ActivityLogChallengeCreated
+    }
+    ... on ActivityLogEntryOpportunityCreated {
+      ...ActivityLogOpportunityCreated
+    }
+    ... on ActivityLogEntryUpdateSent {
+      ...ActivityLogUpdateSent
+    }
+    ... on ActivityLogEntryCalendarEventCreated {
+      ...ActivityLogCalendarEventCreated
+    }
+  }
+}
+
+fragment RecentContributionsJourneyProfile on Profile {
+  id
+  url
+  displayName
+  type
+}
+
+fragment RecentContributionsSpaceProfile on Profile {
+  ...RecentContributionsJourneyProfile
+  avatar: visual(type: CARD) {
+    id
+    uri
+  }
+}
+
+fragment RecentContributionsChildJourneyProfile on Profile {
+  ...RecentContributionsJourneyProfile
+  avatar: visual(type: AVATAR) {
+    id
+    uri
+  }
+}
