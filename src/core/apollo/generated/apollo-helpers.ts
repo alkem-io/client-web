@@ -2074,6 +2074,7 @@ export type ProjectFieldPolicy = {
 };
 export type QueryKeySpecifier = (
   | 'activityFeed'
+  | 'activityFeedGrouped'
   | 'activityLogOnCollaboration'
   | 'adminCommunicationMembership'
   | 'adminCommunicationOrphanedUsage'
@@ -2102,6 +2103,7 @@ export type QueryKeySpecifier = (
 )[];
 export type QueryFieldPolicy = {
   activityFeed?: FieldPolicy<any> | FieldReadFunction<any>;
+  activityFeedGrouped?: FieldPolicy<any> | FieldReadFunction<any>;
   activityLogOnCollaboration?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationMembership?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationOrphanedUsage?: FieldPolicy<any> | FieldReadFunction<any>;
