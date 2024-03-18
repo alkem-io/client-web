@@ -6757,6 +6757,30 @@ export type InnovationFlowBlockQuery = {
   };
 };
 
+export type SpaceInnovationFlowTemplatesQueryVariables = Exact<{
+  spaceId: Scalars['UUID_NAMEID'];
+}>;
+
+export type SpaceInnovationFlowTemplatesQuery = {
+  __typename?: 'Query';
+  space: {
+    __typename?: 'Space';
+    id: string;
+    templates?:
+      | {
+          __typename?: 'TemplatesSet';
+          id: string;
+          innovationFlowTemplates: Array<{
+            __typename?: 'InnovationFlowTemplate';
+            id: string;
+            states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
+            profile: { __typename?: 'Profile'; id: string; displayName: string };
+          }>;
+        }
+      | undefined;
+  };
+};
+
 export type InnovationFlowSettingsQueryVariables = Exact<{
   collaborationId: Scalars['UUID'];
 }>;
@@ -7132,6 +7156,21 @@ export type UpdateInnovationFlowStatesMutation = {
     __typename?: 'InnovationFlow';
     id: string;
     states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
+  };
+};
+
+export type UpdateInnovationFlowStatesFromTemplateMutationVariables = Exact<{
+  innovationFlowId: Scalars['UUID'];
+  innovationFlowTemplateId: Scalars['UUID'];
+}>;
+
+export type UpdateInnovationFlowStatesFromTemplateMutation = {
+  __typename?: 'Mutation';
+  updateInnovationFlowStatesFromTemplate: {
+    __typename?: 'InnovationFlow';
+    id: string;
+    states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
+    currentState: { __typename?: 'InnovationFlowState'; displayName: string; description: string };
   };
 };
 
@@ -24367,30 +24406,6 @@ export type SpaceGroupQuery = {
           }
         | undefined;
     };
-  };
-};
-
-export type SpaceInnovationFlowTemplatesQueryVariables = Exact<{
-  spaceId: Scalars['UUID_NAMEID'];
-}>;
-
-export type SpaceInnovationFlowTemplatesQuery = {
-  __typename?: 'Query';
-  space: {
-    __typename?: 'Space';
-    id: string;
-    templates?:
-      | {
-          __typename?: 'TemplatesSet';
-          id: string;
-          innovationFlowTemplates: Array<{
-            __typename?: 'InnovationFlowTemplate';
-            id: string;
-            states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
-            profile: { __typename?: 'Profile'; id: string; displayName: string };
-          }>;
-        }
-      | undefined;
   };
 };
 

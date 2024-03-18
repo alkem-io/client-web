@@ -1,4 +1,4 @@
-import { DialogContent } from '@mui/material';
+import { DialogContent, ListItemIcon, MenuItem } from '@mui/material';
 import { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
@@ -11,6 +11,9 @@ import { InnovationFlowState } from '../InnovationFlow';
 import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
 import { EditOutlined } from '@mui/icons-material';
 import InnovationFlowStateForm from './InnovationFlowStateForm';
+import PageContentBlockContextualMenu from '../../../../core/ui/content/PageContentBlockContextualMenu';
+import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
+import ImportInnovationFlowDialog from './ImportInnovationFlowDialog/ImportInnovationFlowDialog';
 
 interface InnovationFlowSettingsDialogProps {
   open?: boolean;
@@ -39,6 +42,13 @@ const InnovationFlowSettingsDialog: FC<InnovationFlowSettingsDialogProps> = ({
   >(undefined);
   const [editFlowState, setEditFlowState] = useState<InnovationFlowState | undefined>();
   const [deleteFlowState, setDeleteFlowState] = useState<string | undefined>();
+  const [importInnovationFlowConfirmDialogOpen, setImportInnovationFlowConfirmDialogOpen] = useState(false);
+  const [importInnovationFlowDialogOpen, setImportInnovationFlowDialogOpen] = useState(false);
+
+  const handleImportTemplate = async (templateId: string) => {
+    await actions.importInnovationFlow(templateId);
+    setImportInnovationFlowDialogOpen(false);
+  };
 
   return (
     <>
@@ -47,6 +57,25 @@ const InnovationFlowSettingsDialog: FC<InnovationFlowSettingsDialogProps> = ({
           icon={<InnovationFlowIcon />}
           title={t('components.innovationFlowSettings.title')}
           onClose={onClose}
+          actions={
+            <PageContentBlockContextualMenu>
+              {({ closeMenu }) => {
+                return (
+                  <MenuItem
+                    onClick={() => {
+                      setImportInnovationFlowConfirmDialogOpen(true);
+                      closeMenu();
+                    }}
+                  >
+                    <ListItemIcon>
+                      <InnovationFlowIcon />
+                    </ListItemIcon>
+                    {t('components.innovationFlowSettings.stateEditor.selectDifferentFlow.title')}
+                  </MenuItem>
+                );
+              }}
+            </PageContentBlockContextualMenu>
+          }
         />
         <DialogContent>
           <InnovationFlowProfileBlock
@@ -125,6 +154,32 @@ const InnovationFlowSettingsDialog: FC<InnovationFlowSettingsDialogProps> = ({
           contentId: 'components.innovationFlowSettings.stateEditor.deleteDialog.text',
           confirmButtonTextId: 'buttons.delete',
         }}
+      />
+      <ConfirmationDialog
+        actions={{
+          onConfirm: () => {
+            setImportInnovationFlowDialogOpen(true);
+            setImportInnovationFlowConfirmDialogOpen(false);
+          },
+          onCancel: () => setImportInnovationFlowConfirmDialogOpen(false),
+        }}
+        options={{
+          show: importInnovationFlowConfirmDialogOpen,
+        }}
+        entities={{
+          titleId: 'components.innovationFlowSettings.stateEditor.selectDifferentFlow.confirmationDialog.title',
+          content: (
+            <WrapperMarkdown>
+              {t('components.innovationFlowSettings.stateEditor.selectDifferentFlow.confirmationDialog.description')}
+            </WrapperMarkdown>
+          ),
+          confirmButtonTextId: 'buttons.continue',
+        }}
+      />
+      <ImportInnovationFlowDialog
+        open={importInnovationFlowDialogOpen}
+        onClose={() => setImportInnovationFlowDialogOpen(false)}
+        handleImportTemplate={handleImportTemplate}
       />
     </>
   );

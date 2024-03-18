@@ -6,6 +6,7 @@ import {
   useUpdateInnovationFlowMutation,
   useUpdateInnovationFlowCurrentStateMutation,
   useUpdateInnovationFlowStatesMutation,
+  useUpdateInnovationFlowStatesFromTemplateMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
@@ -278,6 +279,21 @@ const useInnovationFlowSettings = ({ collaborationId, skip }: useInnovationFlowS
     });
   };
 
+  const [importInnovationFlow] = useUpdateInnovationFlowStatesFromTemplateMutation();
+  const handleImportInnovationFlow = (innovationFlowTemplateId: string) => {
+    const innovationFlowId = innovationFlow?.id;
+    if (!innovationFlowId) {
+      throw new Error('Innovation flow still not loaded.');
+    }
+    return importInnovationFlow({
+      variables: {
+        innovationFlowId,
+        innovationFlowTemplateId,
+      },
+      refetchQueries: [refetchInnovationFlowSettingsQuery({ collaborationId: collaborationId! })],
+    });
+  };
+
   return {
     data: {
       innovationFlow,
@@ -293,6 +309,7 @@ const useInnovationFlowSettings = ({ collaborationId, skip }: useInnovationFlowS
       updateInnovationFlowProfile: handleUpdateInnovationFlowProfile,
       updateInnovationFlowStateOrder: handleInnovationFlowStateOrder,
       updateCalloutFlowState: handleUpdateCalloutFlowState,
+      importInnovationFlow: handleImportInnovationFlow,
       createState: handleCreateState,
       editState: handleEditState,
       deleteState: handleDeleteState,
