@@ -82,9 +82,12 @@ fragment PostParent on SearchResultPost {
   space {
     id
     nameID
-    license {
+    account {
       id
-      visibility
+      license {
+        id
+        visibility
+      }
     }
     profile {
       id
@@ -238,9 +241,12 @@ fragment SearchResultSpace on SearchResultSpace {
       id
       myMembershipStatus
     }
-    license {
+    account {
       id
-      visibility
+      license {
+        id
+        visibility
+      }
     }
   }
 }
@@ -260,7 +266,9 @@ fragment SearchResultChallenge on SearchResultChallenge {
         ...VisualUri
       }
     }
-    spaceID
+    account {
+      spaceID
+    }
     context {
       id
       vision
@@ -286,9 +294,12 @@ fragment SearchResultChallenge on SearchResultChallenge {
       id
       anonymousReadAccess
     }
-    license {
+    account {
       id
-      visibility
+      license {
+        id
+        visibility
+      }
     }
   }
 }
@@ -340,9 +351,12 @@ fragment SearchResultOpportunity on SearchResultOpportunity {
       id
       displayName
     }
-    license {
+    account {
       id
-      visibility
+      license {
+        id
+        visibility
+      }
     }
   }
 }
