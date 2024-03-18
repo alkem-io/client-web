@@ -18,9 +18,12 @@ query SpaceDashboardNavigationChallenges($spaceId: UUID_NAMEID!) {
         ...SpaceDashboardNavigationCommunity
       }
     }
-    license {
+    account {
       id
-      visibility
+      license {
+        id
+        visibility
+      }
     }
   }
 }

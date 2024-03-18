@@ -1844,7 +1844,6 @@ export const UserRolesDetailsFragmentDoc = gql`
     spaces {
       id
       nameID
-      spaceID
       displayName
       roles
       visibility
@@ -1906,9 +1905,12 @@ export const InnovationHubProfileFragmentDoc = gql`
 export const InnovationHubSpaceFragmentDoc = gql`
   fragment InnovationHubSpace on Space {
     id
-    license {
+    account {
       id
-      visibility
+      license {
+        id
+        visibility
+      }
     }
     profile {
       id
@@ -2516,9 +2518,12 @@ export const SpaceCardFragmentDoc = gql`
       id
       vision
     }
-    license {
+    account {
       id
-      visibility
+      license {
+        id
+        visibility
+      }
     }
   }
   ${TagsetDetailsFragmentDoc}
@@ -2609,9 +2614,12 @@ export const SpaceInfoFragmentDoc = gql`
         myPrivileges
       }
     }
-    license {
+    account {
       id
-      visibility
+      license {
+        id
+        visibility
+      }
     }
   }
   ${SpaceDetailsFragmentDoc}
@@ -2635,9 +2643,12 @@ export const SpacePageFragmentDoc = gql`
   fragment SpacePage on Space {
     id
     nameID
-    license {
+    account {
       id
-      visibility
+      license {
+        id
+        visibility
+      }
     }
     metrics {
       id
@@ -2770,16 +2781,19 @@ export const InnovationFlowTemplateCardFragmentDoc = gql`
 `;
 export const SpaceTemplatesFragmentDoc = gql`
   fragment SpaceTemplates on Space {
-    templates {
+    account {
       id
-      postTemplates {
-        ...PostTemplateCard
-      }
-      whiteboardTemplates {
-        ...WhiteboardTemplateCard
-      }
-      innovationFlowTemplates {
-        ...InnovationFlowTemplateCard
+      library {
+        id
+        postTemplates {
+          ...PostTemplateCard
+        }
+        whiteboardTemplates {
+          ...WhiteboardTemplateCard
+        }
+        innovationFlowTemplates {
+          ...InnovationFlowTemplateCard
+        }
       }
     }
   }
@@ -2837,12 +2851,15 @@ export const AdminSpaceFragmentDoc = gql`
   fragment AdminSpace on Space {
     id
     nameID
-    license {
+    account {
       id
-      visibility
-      featureFlags {
-        name
-        enabled
+      license {
+        id
+        visibility
+        featureFlags {
+          name
+          enabled
+        }
       }
     }
     profile {
@@ -3268,9 +3285,12 @@ export const PostParentFragmentDoc = gql`
     space {
       id
       nameID
-      license {
+      account {
         id
-        visibility
+        license {
+          id
+          visibility
+        }
       }
       profile {
         id
@@ -3433,9 +3453,12 @@ export const SearchResultSpaceFragmentDoc = gql`
         id
         myMembershipStatus
       }
-      license {
+      account {
         id
-        visibility
+        license {
+          id
+          visibility
+        }
       }
     }
   }
@@ -3458,7 +3481,9 @@ export const SearchResultChallengeFragmentDoc = gql`
           ...VisualUri
         }
       }
-      spaceID
+      account {
+        spaceID
+      }
       context {
         id
         vision
@@ -3484,9 +3509,12 @@ export const SearchResultChallengeFragmentDoc = gql`
         id
         anonymousReadAccess
       }
-      license {
+      account {
         id
-        visibility
+        license {
+          id
+          visibility
+        }
       }
     }
   }
@@ -3541,9 +3569,12 @@ export const SearchResultOpportunityFragmentDoc = gql`
         id
         displayName
       }
-      license {
+      account {
         id
-        visibility
+        license {
+          id
+          visibility
+        }
       }
     }
   }
@@ -5138,7 +5169,7 @@ export type UpdateCalloutFlowStateMutationOptions = Apollo.BaseMutationOptions<
 >;
 export const UpdateInnovationFlowCurrentStateDocument = gql`
   mutation updateInnovationFlowCurrentState($innovationFlowId: UUID!, $currentState: String!) {
-    updateInnovationFlowState(
+    updateInnovationFlowSelectedState(
       innovationFlowStateData: { innovationFlowID: $innovationFlowId, selectedState: $currentState }
     ) {
       id
@@ -5247,15 +5278,90 @@ export type UpdateInnovationFlowStatesMutationOptions = Apollo.BaseMutationOptio
   SchemaTypes.UpdateInnovationFlowStatesMutation,
   SchemaTypes.UpdateInnovationFlowStatesMutationVariables
 >;
+export const UpdateInnovationFlowSingleStateDocument = gql`
+  mutation updateInnovationFlowSingleState(
+    $innovationFlowId: UUID!
+    $stateName: String!
+    $stateUpdatedData: UpdateInnovationFlowStateInput!
+  ) {
+    updateInnovationFlowSingleState(
+      innovationFlowStateData: {
+        innovationFlowID: $innovationFlowId
+        stateDisplayName: $stateName
+        stateUpdatedData: $stateUpdatedData
+      }
+    ) {
+      id
+      states {
+        displayName
+        description
+      }
+      currentState {
+        displayName
+        description
+      }
+    }
+  }
+`;
+export type UpdateInnovationFlowSingleStateMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateInnovationFlowSingleStateMutation,
+  SchemaTypes.UpdateInnovationFlowSingleStateMutationVariables
+>;
+
+/**
+ * __useUpdateInnovationFlowSingleStateMutation__
+ *
+ * To run a mutation, you first call `useUpdateInnovationFlowSingleStateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateInnovationFlowSingleStateMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateInnovationFlowSingleStateMutation, { data, loading, error }] = useUpdateInnovationFlowSingleStateMutation({
+ *   variables: {
+ *      innovationFlowId: // value for 'innovationFlowId'
+ *      stateName: // value for 'stateName'
+ *      stateUpdatedData: // value for 'stateUpdatedData'
+ *   },
+ * });
+ */
+export function useUpdateInnovationFlowSingleStateMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateInnovationFlowSingleStateMutation,
+    SchemaTypes.UpdateInnovationFlowSingleStateMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.UpdateInnovationFlowSingleStateMutation,
+    SchemaTypes.UpdateInnovationFlowSingleStateMutationVariables
+  >(UpdateInnovationFlowSingleStateDocument, options);
+}
+
+export type UpdateInnovationFlowSingleStateMutationHookResult = ReturnType<
+  typeof useUpdateInnovationFlowSingleStateMutation
+>;
+export type UpdateInnovationFlowSingleStateMutationResult =
+  Apollo.MutationResult<SchemaTypes.UpdateInnovationFlowSingleStateMutation>;
+export type UpdateInnovationFlowSingleStateMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateInnovationFlowSingleStateMutation,
+  SchemaTypes.UpdateInnovationFlowSingleStateMutationVariables
+>;
 export const SpaceInnovationFlowsDocument = gql`
   query SpaceInnovationFlows($spaceId: UUID_NAMEID!) {
     space(ID: $spaceId) {
-      templates {
-        innovationFlowTemplates {
+      account {
+        id
+        library {
           id
-          profile {
+          innovationFlowTemplates {
             id
-            displayName
+            profile {
+              id
+              displayName
+            }
           }
         }
       }
@@ -5319,17 +5425,20 @@ export const SpaceInnovationFlowTemplatesLibraryDocument = gql`
   query SpaceInnovationFlowTemplatesLibrary($spaceId: UUID_NAMEID!) {
     space(ID: $spaceId) {
       id
-      templates {
+      account {
         id
-        innovationFlowTemplates {
-          ...InnovationFlowTemplateCard
+        library {
+          id
+          innovationFlowTemplates {
+            ...InnovationFlowTemplateCard
+          }
         }
-      }
-      host {
-        id
-        nameID
-        profile {
-          ...TemplateProviderProfile
+        host {
+          id
+          nameID
+          profile {
+            ...TemplateProviderProfile
+          }
         }
       }
     }
@@ -6037,17 +6146,20 @@ export const SpaceCalloutTemplatesLibraryDocument = gql`
   query SpaceCalloutTemplatesLibrary($spaceId: UUID_NAMEID!) {
     space(ID: $spaceId) {
       id
-      templates {
+      account {
         id
-        calloutTemplates {
-          ...CalloutTemplateCard
+        library {
+          id
+          calloutTemplates {
+            ...CalloutTemplateCard
+          }
         }
-      }
-      host {
-        id
-        nameID
-        profile {
-          ...TemplateProviderProfile
+        host {
+          id
+          nameID
+          profile {
+            ...TemplateProviderProfile
+          }
         }
       }
     }
@@ -6357,12 +6469,15 @@ export const PostTemplatesOnCalloutCreationDocument = gql`
   query PostTemplatesOnCalloutCreation($spaceId: UUID_NAMEID!) {
     space(ID: $spaceId) {
       id
-      templates {
+      account {
         id
-        postTemplates {
+        library {
           id
-          profile {
-            ...ProfileDisplayName
+          postTemplates {
+            id
+            profile {
+              ...ProfileDisplayName
+            }
           }
         }
       }
@@ -6431,12 +6546,15 @@ export const WhiteboardTemplatesOnCalloutCreationDocument = gql`
   query WhiteboardTemplatesOnCalloutCreation($spaceId: UUID_NAMEID!) {
     space(ID: $spaceId) {
       id
-      templates {
+      account {
         id
-        whiteboardTemplates {
+        library {
           id
-          profile {
-            ...ProfileDisplayName
+          whiteboardTemplates {
+            id
+            profile {
+              ...ProfileDisplayName
+            }
           }
         }
       }
@@ -7389,17 +7507,20 @@ export const SpacePostTemplatesLibraryDocument = gql`
   query SpacePostTemplatesLibrary($spaceId: UUID_NAMEID!) {
     space(ID: $spaceId) {
       id
-      templates {
+      account {
         id
-        postTemplates {
-          ...PostTemplateCard
+        library {
+          id
+          postTemplates {
+            ...PostTemplateCard
+          }
         }
-      }
-      host {
-        id
-        nameID
-        profile {
-          ...TemplateProviderProfile
+        host {
+          id
+          nameID
+          profile {
+            ...TemplateProviderProfile
+          }
         }
       }
     }
@@ -8344,17 +8465,20 @@ export const SpaceWhiteboardTemplatesLibraryDocument = gql`
   query SpaceWhiteboardTemplatesLibrary($spaceId: UUID_NAMEID!) {
     space(ID: $spaceId) {
       id
-      templates {
+      account {
         id
-        whiteboardTemplates {
-          ...WhiteboardTemplateCard
+        library {
+          id
+          whiteboardTemplates {
+            ...WhiteboardTemplateCard
+          }
         }
-      }
-      host {
-        id
-        nameID
-        profile {
-          ...TemplateProviderProfile
+        host {
+          id
+          nameID
+          profile {
+            ...TemplateProviderProfile
+          }
         }
       }
     }
@@ -8575,10 +8699,13 @@ export const WhiteboardTemplatesDocument = gql`
   query whiteboardTemplates($spaceId: UUID_NAMEID!) {
     space(ID: $spaceId) {
       id
-      templates {
+      account {
         id
-        whiteboardTemplates {
-          ...CreateWhiteboardWhiteboardTemplate
+        library {
+          id
+          whiteboardTemplates {
+            ...CreateWhiteboardWhiteboardTemplate
+          }
         }
       }
     }
@@ -11009,6 +11136,8 @@ export const CommunityUserPrivilegesDocument = gql`
           myPrivileges
         }
       }
+    }
+    lookup {
       applicationCommunity: community(ID: $communityId) {
         id
         authorization {
@@ -14594,9 +14723,12 @@ export const SpaceContributionDetailsDocument = gql`
     space(ID: $spaceId) {
       id
       nameID
-      license {
+      account {
         id
-        visibility
+        license {
+          id
+          visibility
+        }
       }
       profile {
         id
@@ -14699,9 +14831,12 @@ export const ChallengeContributionDetailsDocument = gql`
           id
         }
       }
-      license {
+      account {
         id
-        visibility
+        license {
+          id
+          visibility
+        }
       }
     }
   }
@@ -14793,9 +14928,12 @@ export const OpportunityContributionDetailsDocument = gql`
           id
         }
       }
-      license {
+      account {
         id
-        visibility
+        license {
+          id
+          visibility
+        }
       }
     }
   }
@@ -19359,9 +19497,12 @@ export const SpaceDashboardNavigationChallengesDocument = gql`
           ...SpaceDashboardNavigationCommunity
         }
       }
-      license {
+      account {
         id
-        visibility
+        license {
+          id
+          visibility
+        }
       }
     }
   }
@@ -19518,13 +19659,16 @@ export const CalloutFormTemplatesFromSpaceDocument = gql`
   query CalloutFormTemplatesFromSpace($spaceId: UUID_NAMEID!) {
     space(ID: $spaceId) {
       id
-      templates {
+      account {
         id
-        postTemplates {
-          ...PostTemplateCard
-        }
-        whiteboardTemplates {
-          ...WhiteboardTemplateCard
+        library {
+          id
+          postTemplates {
+            ...PostTemplateCard
+          }
+          whiteboardTemplates {
+            ...WhiteboardTemplateCard
+          }
         }
       }
     }
@@ -19593,10 +19737,13 @@ export const WhiteboardTemplatesFromSpaceDocument = gql`
   query WhiteboardTemplatesFromSpace($spaceId: UUID_NAMEID!) {
     space(ID: $spaceId) {
       id
-      templates {
+      account {
         id
-        whiteboardTemplates {
-          ...WhiteboardTemplateCard
+        library {
+          id
+          whiteboardTemplates {
+            ...WhiteboardTemplateCard
+          }
         }
       }
     }
@@ -19664,10 +19811,13 @@ export const InnovationFlowTemplatesFromSpaceDocument = gql`
   query InnovationFlowTemplatesFromSpace($spaceId: UUID_NAMEID!) {
     space(ID: $spaceId) {
       id
-      templates {
+      account {
         id
-        innovationFlowTemplates {
-          ...InnovationFlowTemplateCard
+        library {
+          id
+          innovationFlowTemplates {
+            ...InnovationFlowTemplateCard
+          }
         }
       }
     }
@@ -20121,17 +20271,20 @@ export const SpaceInnovationFlowTemplatesDocument = gql`
   query spaceInnovationFlowTemplates($spaceId: UUID_NAMEID!) {
     space(ID: $spaceId) {
       id
-      templates {
+      account {
         id
-        innovationFlowTemplates {
+        library {
           id
-          states {
-            displayName
-            description
-          }
-          profile {
+          innovationFlowTemplates {
             id
-            displayName
+            states {
+              displayName
+              description
+            }
+            profile {
+              id
+              displayName
+            }
           }
         }
       }
@@ -20319,15 +20472,18 @@ export const AdminSpaceChallengesPageDocument = gql`
           displayName
         }
       }
-      defaults {
-        innovationFlowTemplate {
-          id
-          profile {
-            ...InnovationFlowProfile
-          }
-          states {
-            displayName
-            description
+      account {
+        id
+        defaults {
+          innovationFlowTemplate {
+            id
+            profile {
+              ...InnovationFlowProfile
+            }
+            states {
+              displayName
+              description
+            }
           }
         }
       }
@@ -20388,58 +20544,6 @@ export function refetchAdminSpaceChallengesPageQuery(variables: SchemaTypes.Admi
   return { query: AdminSpaceChallengesPageDocument, variables: variables };
 }
 
-export const UpdateSpaceDefaultInnovationFlowTemplateDocument = gql`
-  mutation UpdateSpaceDefaultInnovationFlowTemplate($spaceId: UUID!, $innovationFlowTemplateId: UUID!) {
-    updateSpaceDefaults(spaceDefaultsData: { spaceID: $spaceId, flowTemplateID: $innovationFlowTemplateId }) {
-      id
-    }
-  }
-`;
-export type UpdateSpaceDefaultInnovationFlowTemplateMutationFn = Apollo.MutationFunction<
-  SchemaTypes.UpdateSpaceDefaultInnovationFlowTemplateMutation,
-  SchemaTypes.UpdateSpaceDefaultInnovationFlowTemplateMutationVariables
->;
-
-/**
- * __useUpdateSpaceDefaultInnovationFlowTemplateMutation__
- *
- * To run a mutation, you first call `useUpdateSpaceDefaultInnovationFlowTemplateMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateSpaceDefaultInnovationFlowTemplateMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateSpaceDefaultInnovationFlowTemplateMutation, { data, loading, error }] = useUpdateSpaceDefaultInnovationFlowTemplateMutation({
- *   variables: {
- *      spaceId: // value for 'spaceId'
- *      innovationFlowTemplateId: // value for 'innovationFlowTemplateId'
- *   },
- * });
- */
-export function useUpdateSpaceDefaultInnovationFlowTemplateMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.UpdateSpaceDefaultInnovationFlowTemplateMutation,
-    SchemaTypes.UpdateSpaceDefaultInnovationFlowTemplateMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.UpdateSpaceDefaultInnovationFlowTemplateMutation,
-    SchemaTypes.UpdateSpaceDefaultInnovationFlowTemplateMutationVariables
-  >(UpdateSpaceDefaultInnovationFlowTemplateDocument, options);
-}
-
-export type UpdateSpaceDefaultInnovationFlowTemplateMutationHookResult = ReturnType<
-  typeof useUpdateSpaceDefaultInnovationFlowTemplateMutation
->;
-export type UpdateSpaceDefaultInnovationFlowTemplateMutationResult =
-  Apollo.MutationResult<SchemaTypes.UpdateSpaceDefaultInnovationFlowTemplateMutation>;
-export type UpdateSpaceDefaultInnovationFlowTemplateMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.UpdateSpaceDefaultInnovationFlowTemplateMutation,
-  SchemaTypes.UpdateSpaceDefaultInnovationFlowTemplateMutationVariables
->;
 export const AdminGlobalOrganizationsListDocument = gql`
   query adminGlobalOrganizationsList($first: Int!, $after: UUID, $filter: OrganizationFilterInput) {
     organizationsPaginated(first: $first, after: $after, filter: $filter) {
@@ -20525,21 +20629,24 @@ export const UpdateSpacePlatformSettingsDocument = gql`
     $license: UpdateLicenseInput
   ) {
     updateSpacePlatformSettings(
-      updateData: { spaceID: $spaceID, hostID: $hostID, nameID: $nameID, license: $license }
+      updateData: { spaceID: $spaceID, nameID: $nameID, account: { hostID: $hostID, license: $license } }
     ) {
       id
-      license {
+      account {
         id
-        visibility
-        featureFlags {
-          name
-          enabled
+        license {
+          id
+          visibility
+          featureFlags {
+            name
+            enabled
+          }
+        }
+        host {
+          id
         }
       }
       nameID
-      host {
-        id
-      }
     }
   }
 `;
@@ -20825,23 +20932,26 @@ export const AdminSpaceTemplatesDocument = gql`
   query AdminSpaceTemplates($spaceId: UUID_NAMEID!) {
     space(ID: $spaceId) {
       id
-      templates {
+      account {
         id
-        authorization {
+        library {
           id
-          myPrivileges
-        }
-        calloutTemplates {
-          ...AdminCalloutTemplate
-        }
-        postTemplates {
-          ...AdminPostTemplate
-        }
-        whiteboardTemplates {
-          ...AdminWhiteboardTemplate
-        }
-        innovationFlowTemplates {
-          ...AdminInnovationFlowTemplate
+          authorization {
+            id
+            myPrivileges
+          }
+          calloutTemplates {
+            ...AdminCalloutTemplate
+          }
+          postTemplates {
+            ...AdminPostTemplate
+          }
+          whiteboardTemplates {
+            ...AdminWhiteboardTemplate
+          }
+          innovationFlowTemplates {
+            ...AdminInnovationFlowTemplate
+          }
         }
       }
     }
@@ -20980,8 +21090,11 @@ export const SpaceTemplateSetIdDocument = gql`
   query SpaceTemplateSetId($spaceId: UUID_NAMEID!) {
     space(ID: $spaceId) {
       id
-      templates {
+      account {
         id
+        library {
+          id
+        }
       }
     }
   }
@@ -23861,9 +23974,12 @@ export const SearchScopeDetailsSpaceDocument = gql`
           uri
         }
       }
-      license {
+      account {
         id
-        visibility
+        license {
+          id
+          visibility
+        }
       }
     }
   }
@@ -24123,9 +24239,12 @@ export const ChallengeExplorerDataDocument = gql`
         tagline
         displayName
       }
-      license {
+      account {
         id
-        visibility
+        license {
+          id
+          visibility
+        }
       }
       challenges {
         id
@@ -24880,8 +24999,12 @@ export const MyMembershipsDocument = gql`
     me {
       spaceMemberships {
         id
-        license {
-          visibility
+        account {
+          id
+          license {
+            id
+            visibility
+          }
         }
         metrics {
           name

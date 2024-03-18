@@ -43,7 +43,8 @@ const SelectDefaultInnovationFlowDialog = ({
   });
 
   const initialValues: FormValues = {
-    innovationFlowSelectedId: defaultInnovationFlowId ?? data?.space.templates?.innovationFlowTemplates[0]?.id ?? '',
+    innovationFlowSelectedId:
+      defaultInnovationFlowId ?? data?.space.account.library?.innovationFlowTemplates[0]?.id ?? '',
   };
 
   const validationSchema = yup.object().shape({
@@ -52,11 +53,11 @@ const SelectDefaultInnovationFlowDialog = ({
 
   const innovationFlowTemplates = useMemo(
     () =>
-      data?.space.templates?.innovationFlowTemplates.map(template => ({
+      data?.space.account.library?.innovationFlowTemplates.map(template => ({
         id: template.id,
         name: template.profile.displayName,
       })),
-    [data?.space.templates?.innovationFlowTemplates]
+    [data?.space.account.library?.innovationFlowTemplates]
   );
 
   return (

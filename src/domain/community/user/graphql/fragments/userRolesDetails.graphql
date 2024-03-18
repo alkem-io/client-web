@@ -2,7 +2,6 @@ fragment UserRolesDetails on ContributorRoles {
   spaces {
     id
     nameID
-    spaceID
     displayName
     roles
     visibility

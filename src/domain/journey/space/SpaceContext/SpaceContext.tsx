@@ -94,8 +94,8 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
   const space = data?.space;
   const spaceId = space?.id || '';
   const license = {
-    id: space?.license.id || '',
-    visibility: space?.license?.visibility || SpaceVisibility.Active,
+    id: space?.account.license.id || '',
+    visibility: space?.account.license?.visibility || SpaceVisibility.Active,
     featureFlags: [],
   };
   const communityId = space?.community?.id ?? '';

@@ -11,7 +11,7 @@ import {
   useAdminSpaceChallengesPageQuery,
   useCreateChallengeMutation,
   useDeleteChallengeMutation,
-  useUpdateSpaceDefaultInnovationFlowTemplateMutation,
+  //useUpdateSpaceDefaultInnovationFlowTemplateMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import { useSpace } from '../../SpaceContext/useSpace';
@@ -42,7 +42,7 @@ export const ChallengeListView: FC = () => {
       spaceId: spaceNameId,
     },
   });
-  const defaultInnovationFlow = data?.space.defaults?.innovationFlowTemplate;
+  const defaultInnovationFlow = data?.space.account.defaults?.innovationFlowTemplate;
   const [selectedState, setSelectedState] = useState<string | undefined>(undefined);
   useEffect(() => {
     setSelectedState(defaultInnovationFlow?.states[0].displayName);
@@ -114,7 +114,8 @@ export const ChallengeListView: FC = () => {
     [navigate, createChallenge, spaceNameId]
   );
 
-  const [updateInnovationFlow] = useUpdateSpaceDefaultInnovationFlowTemplateMutation();
+  //const [updateInnovationFlow] = useUpdateSpaceDefaultInnovationFlowTemplateMutation();
+  const updateInnovationFlow = _any => Promise.resolve(); //!! TODO
   const handleSelectInnovationFlow = async (innovationFlowTemplateId: string) => {
     await updateInnovationFlow({
       variables: {

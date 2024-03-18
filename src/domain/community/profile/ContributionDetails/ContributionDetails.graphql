@@ -3,9 +3,12 @@ query spaceContributionDetails($spaceId: UUID_NAMEID!) {
     id
     nameID
 
-    license {
+    account {
       id
-      visibility
+      license {
+        id
+        visibility
+      }
     }
     profile {
       id
@@ -52,9 +55,12 @@ query challengeContributionDetails($spaceId: UUID_NAMEID!, $challengeId: UUID_NA
         id
       }
     }
-    license {
+    account {
       id
-      visibility
+      license {
+        id
+        visibility
+      }
     }
   }
 }
@@ -85,9 +91,12 @@ query opportunityContributionDetails($spaceId: UUID_NAMEID!, $opportunityId: UUI
         id
       }
     }
-    license {
+    account {
       id
-      visibility
+      license {
+        id
+        visibility
+      }
     }
   }
 }

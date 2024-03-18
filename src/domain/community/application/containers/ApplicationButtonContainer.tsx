@@ -84,7 +84,7 @@ export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = (
       : buildSpaceApplyUrl(spaceNameId);
   const joinParentUrl = challengeNameId && buildSpaceUrl(spaceNameId);
 
-  const communityPrivileges = _communityPrivileges?.space?.applicationCommunity?.authorization?.myPrivileges ?? [];
+  const communityPrivileges = _communityPrivileges?.lookup?.applicationCommunity?.authorization?.myPrivileges ?? [];
   const canJoinCommunity = communityPrivileges.includes(AuthorizationPrivilege.CommunityJoin);
   const canAcceptInvitation =
     _communityPrivileges?.space?.spaceCommunity?.myMembershipStatus === CommunityMembershipStatus.InvitationPending;
