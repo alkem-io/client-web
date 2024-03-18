@@ -2,9 +2,7 @@ import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ApolloError } from '@apollo/client';
 import { Box, DialogContent, Theme, useMediaQuery } from '@mui/material';
-import {
-  ReferenceDetailsFragment,
-} from '../../../../../core/apollo/generated/graphql-schema';
+import { ReferenceDetailsFragment } from '../../../../../core/apollo/generated/graphql-schema';
 import {
   EntityDashboardContributors,
   EntityDashboardLeads,
@@ -39,7 +37,7 @@ import DialogWithGrid from '../../../../../core/ui/dialog/DialogWithGrid';
 import DialogHeader from '../../../../../core/ui/dialog/DialogHeader';
 import FullWidthButton from '../../../../../core/ui/button/FullWidthButton';
 import { InnovationFlowDetails } from '../../../../collaboration/InnovationFlow/InnovationFlow';
-import InnovationFlowVisualizer from '../../../../platform/admin/templates/InnovationTemplates/InnovationFlowVisualizer';
+import InnovationFlowStates from '../../../../collaboration/InnovationFlow/InnovationFlowStates/InnovationFlowStates';
 
 export interface AboutSectionProps extends EntityDashboardContributors, EntityDashboardLeads {
   journeyTypeName: JourneyTypeName;
@@ -110,6 +108,7 @@ export const AboutSection: FC<AboutSectionProps> = ({
 }) => {
   const { t } = useTranslation();
   const [dialogSectionName, setDialogSectionName] = useState<JourneyContextField>();
+  const [selectedState, setSelectedState] = useState<string | undefined>(undefined);
 
   const isSpace = journeyTypeName === 'space';
   const organizationsHeader = isSpace
@@ -173,7 +172,16 @@ export const AboutSection: FC<AboutSectionProps> = ({
             <PageContentBlockHeader title={name} />
             <Tagline>{tagline}</Tagline>
             <TagsComponent tags={tags} variant="filled" loading={loading} />
-            <Actions justifyContent="end">{innovationFlow && <InnovationFlowVisualizer states={innovationFlow.states} currentState={innovationFlow.currentState.displayName} />}</Actions>
+            <Actions justifyContent="end">
+              {innovationFlow && (
+                <InnovationFlowStates
+                  states={innovationFlow.states}
+                  currentState={innovationFlow.currentState.displayName}
+                  selectedState={selectedState}
+                  onSelectState={state => setSelectedState(state.displayName)}
+                />
+              )}
+            </Actions>
           </PageContentBlock>
           {communityReadAccess && (
             <EntityDashboardLeadsSection

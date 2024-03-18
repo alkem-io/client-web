@@ -11,14 +11,24 @@ import { InnovationFlowState } from '../InnovationFlow';
 import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 import { ArrowRight } from '@mui/icons-material';
 
-interface InnovationFlowStatesProps {
-  collaborationId: string | undefined;
-  states: InnovationFlowState[];
-  currentState: string;
-  selectedState: string;
-  showSettings?: boolean;
+interface Props {
+  states: InnovationFlowState[] | undefined;
+  currentState?: string;
+  selectedState: string | undefined;
   onSelectState?: (state: InnovationFlowState) => void;
 }
+
+type InnovationFlowStatesProps = Props &
+  (
+    | {
+        showSettings?: false;
+        collaborationId?: undefined;
+      }
+    | {
+        showSettings: true;
+        collaborationId: string;
+      }
+  );
 
 const FlowStateDescription = styled(WrapperMarkdown)(() => ({
   img: {
@@ -30,7 +40,7 @@ const FlowStateDescription = styled(WrapperMarkdown)(() => ({
 
 const InnovationFlowStates = ({
   collaborationId,
-  states,
+  states = [],
   currentState,
   selectedState,
   showSettings = false,

@@ -7,7 +7,7 @@ import FormRows from '../../../../shared/components/FormRows';
 import TemplateForm from '../TemplateForm';
 import { BlockSectionTitle } from '../../../../../core/ui/typography';
 import { Box, FormLabel, TextareaAutosize, useTheme } from '@mui/material';
-import InnovationFlowVisualizer from './InnovationFlowVisualizer';
+import InnovationFlowStates from '../../../../collaboration/InnovationFlow/InnovationFlowStates/InnovationFlowStates';
 import { InnovationFlowState } from '../../../../collaboration/InnovationFlow/InnovationFlow';
 import { gutters } from '../../../../../core/ui/grid/utils';
 import { LONG_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '../../../../../core/ui/forms/field-length.constants';
@@ -64,8 +64,7 @@ const parseStates = (jsonString: string) => {
       typeof state.displayName === 'string' &&
       state.displayName.length > 0 &&
       state.displayName.length <= MAX_LENGTH_STATE_DISPLAY_NAME &&
-      (typeof state.description === 'string' &&
-        state.description.length <= MAX_LENGTH_STATE_DESCRIPTION ||
+      ((typeof state.description === 'string' && state.description.length <= MAX_LENGTH_STATE_DESCRIPTION) ||
         typeof state.description === 'undefined') &&
       !displayNames[state.displayName] // Avoid duplicated displayNames
     );
@@ -108,6 +107,7 @@ const InnovationFlowTemplateForm = ({ initialValues, visual, onSubmit, actions }
     };
   };
 
+  const [selectedState, setSelectedState] = useState<string | undefined>(undefined);
   const [statesString, setStatesString] = useState(
     JSON.stringify(
       initialValues.states?.map(state => ({ displayName: state.displayName, description: state.description }))
@@ -157,7 +157,14 @@ const InnovationFlowTemplateForm = ({ initialValues, visual, onSubmit, actions }
           </FormLabel>
           <BlockSectionTitle>{t('common.preview')}</BlockSectionTitle>
           <Box sx={{ maxWidth: theme => theme.spacing(64) }}>
-            <InnovationFlowVisualizer states={values.states.map(state => ({ displayName: state.displayName, description: state.description ?? '' }))} />
+            <InnovationFlowStates
+              states={values.states.map(state => ({
+                displayName: state.displayName,
+                description: state.description ?? '',
+              }))}
+              selectedState={selectedState}
+              onSelectState={state => setSelectedState(state.displayName)}
+            />
           </Box>
         </FormRows>
       )}
