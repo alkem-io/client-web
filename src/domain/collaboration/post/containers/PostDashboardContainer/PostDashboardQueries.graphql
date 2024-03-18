@@ -1,41 +1,17 @@
-query SpacePost($spaceNameId: UUID_NAMEID!, $postNameId: UUID_NAMEID!, $calloutNameId: UUID_NAMEID!) {
-  space(ID: $spaceNameId) {
-    id
-    collaboration {
-      ...PostDashboardData
-    }
-  }
-}
-
-query ChallengePost(
-  $spaceNameId: UUID_NAMEID!
-  $challengeNameId: UUID_NAMEID!
+query Post(
+  $calloutId: UUID!
   $postNameId: UUID_NAMEID!
-  $calloutNameId: UUID_NAMEID!
 ) {
-  space(ID: $spaceNameId) {
-    id
-    challenge(ID: $challengeNameId) {
+  lookup {
+    callout(ID: $calloutId) {
       id
-      collaboration {
-        ...PostDashboardData
-      }
-    }
-  }
-}
-
-query OpportunityPost(
-  $spaceNameId: UUID_NAMEID!
-  $opportunityNameId: UUID_NAMEID!
-  $postNameId: UUID_NAMEID!
-  $calloutNameId: UUID_NAMEID!
-) {
-  space(ID: $spaceNameId) {
-    id
-    opportunity(ID: $opportunityNameId) {
-      id
-      collaboration {
-        ...PostDashboardData
+      nameID
+      type
+      contributions(filter: { postIDs: [$postNameId] }) {
+        id
+        post {
+          ...PostDashboard
+        }
       }
     }
   }

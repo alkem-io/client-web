@@ -1,26 +1,24 @@
 query CommunityApplicationForm(
-  $spaceId: UUID_NAMEID!
-  $challengeId: UUID_NAMEID = "mockid" # workaround for mandatory param working in conjection with @include or @skip
+  $spaceId: UUID_NAMEID = "mockid"
+  $challengeId: UUID = "mockid"
   $isSpace: Boolean = false
   $isChallenge: Boolean = false
 ) {
-  space(ID: $spaceId) {
+  space(ID: $spaceId) @include(if: $isSpace) {
     id
-    ... on Space @include(if: $isSpace) {
+    community {
+      id
+      applicationForm {
+        ...ApplicationForm
+      }
+    }
+  }
+  lookup {
+    challenge(ID: $challengeId) @include(if: $isChallenge) {
       community {
         id
         applicationForm {
           ...ApplicationForm
-        }
-      }
-    }
-    ... on Space @include(if: $isChallenge) {
-      challenge(ID: $challengeId) {
-        community {
-          id
-          applicationForm {
-            ...ApplicationForm
-          }
         }
       }
     }

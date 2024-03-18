@@ -1,6 +1,5 @@
-query opportunityCommunity($spaceId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!, $includeDetails: Boolean = false) {
-  space(ID: $spaceId) {
-    id
+query opportunityCommunity($opportunityId: UUID!, $includeDetails: Boolean = false) {
+  lookup {
     opportunity(ID: $opportunityId) {
       id
       profile {

@@ -1,6 +1,5 @@
-query opportunityProfileInfo($spaceId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
-  space(ID: $spaceId) {
-    id
+query opportunityProfileInfo($opportunityId: UUID!) {
+  lookup {
     opportunity(ID: $opportunityId) {
       id
       nameID

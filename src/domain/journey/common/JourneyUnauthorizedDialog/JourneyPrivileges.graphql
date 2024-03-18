@@ -1,27 +1,27 @@
 query JourneyPrivileges(
-  $spaceNameId: UUID_NAMEID!
+  $spaceId: UUID_NAMEID = "mockid"
   $includeSpace: Boolean = false
   $includeChallenge: Boolean = false
   $includeOpportunity: Boolean = false
-  $challengeNameId: UUID_NAMEID = "mockid" # workaround for mandatory param
-  $opportunityNameId: UUID_NAMEID = "mockid" # workaround for mandatory param
+  $challengeId: UUID = "mockid"
+  $opportunityId: UUID = "mockid"
 ) {
-  space(ID: $spaceNameId) {
+  space(ID: $spaceId) @include(if: $includeSpace) {
     id
-    ... on Space @include(if: $includeSpace) {
-      authorization {
-        id
-        myPrivileges
-      }
+    authorization {
+      id
+      myPrivileges
     }
-    challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
+  }
+  lookup {
+    challenge(ID: $challengeId) @include(if: $includeChallenge) {
       id
       authorization {
         id
         myPrivileges
       }
     }
-    opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
+    opportunity(ID: $opportunityId) @include(if: $includeOpportunity) {
       id
       authorization {
         id

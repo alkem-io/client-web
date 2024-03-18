@@ -1,14 +1,14 @@
 query communityUserPrivilegesWithParentCommunity(
-  $spaceNameId: UUID_NAMEID!
-  $challengeNameId: UUID_NAMEID = "mockid"
-  $opportunityNameId: UUID_NAMEID = "mockid"
+  $spaceId: UUID_NAMEID = "mockid"
+  $challengeId: UUID = "mockid"
+  $opportunityId: UUID = "mockid"
   $includeSpaceCommunity: Boolean = false
   $includeChallenge: Boolean = false
   $includeOpportunity: Boolean = false
 ) {
-  space(ID: $spaceNameId) {
+  space(ID: $spaceId) @include(if: $includeSpaceCommunity) {
     id
-    community @include(if: $includeSpaceCommunity) {
+    community {
       id
       myMembershipStatus
       authorization {
@@ -16,7 +16,9 @@ query communityUserPrivilegesWithParentCommunity(
         myPrivileges
       }
     }
-    challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
+  }
+  lookup {
+    challenge(ID: $challengeId) @include(if: $includeChallenge) {
       id
       authorization {
         id
@@ -31,7 +33,7 @@ query communityUserPrivilegesWithParentCommunity(
         }
       }
     }
-    opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
+    opportunity(ID: $opportunityId) @include(if: $includeOpportunity) {
       id
       authorization {
         id
