@@ -38,7 +38,7 @@ const MyLatestContributions = () => {
       filter: {
         myActivity: true,
         types: ACTIVITY_TYPES,
-        limit: MY_LATEST_CONTRIBUTIONS_COUNT,
+        limit: MY_LATEST_CONTRIBUTIONS_COUNT + 3, // Fetch 3 extra in case that last 8 events are whiteboard creation and modification
       },
     },
   });
