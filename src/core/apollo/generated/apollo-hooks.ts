@@ -24491,8 +24491,8 @@ export function refetchLatestContributionsQuery(variables: SchemaTypes.LatestCon
 }
 
 export const LatestContributionsGroupedDocument = gql`
-  query LatestContributionsGrouped($filter: GroupedActivityFeedQueryArgs) {
-    groupedActivityFeed(args: $filter) {
+  query LatestContributionsGrouped($filter: ActivityFeedGroupedQueryArgs) {
+    activityFeedGrouped(args: $filter) {
       id
       collaborationID
       createdDate

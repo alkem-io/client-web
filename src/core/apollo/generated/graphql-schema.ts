@@ -71,13 +71,26 @@ export type ActivityFeed = {
   total: Scalars['Float'];
 };
 
+export type ActivityFeedGroupedQueryArgs = {
+  /** What events to exclude. */
+  excludeTypes?: InputMaybe<Array<ActivityEventType>>;
+  /** Number of activities to return. */
+  limit?: InputMaybe<Scalars['Float']>;
+  /** Returns only events that the current user triggered; Includes all by default. */
+  myActivity?: InputMaybe<Scalars['Boolean']>;
+  /** Activity from which Spaces to include; Includes all by default. */
+  roles?: InputMaybe<Array<ActivityFeedRoles>>;
+  /** Activity from which Spaces to include; Includes all by default. */
+  spaceIds?: InputMaybe<Array<Scalars['UUID']>>;
+  /** What events to include; Includes all by default. */
+  types?: InputMaybe<Array<ActivityEventType>>;
+};
+
 export type ActivityFeedQueryArgs = {
   /** What events to exclude. */
   excludeTypes?: InputMaybe<Array<ActivityEventType>>;
   /** Returns only events that the current user triggered; Includes all by default. */
   myActivity?: InputMaybe<Scalars['Boolean']>;
-  /** Group activity events per entity and activity event type and return the latest. */
-  onlyUnique?: InputMaybe<Scalars['Boolean']>;
   /** Activity from which Spaces to include; Includes all by default. */
   roles?: InputMaybe<Array<ActivityFeedRoles>>;
   /** Activity from which Spaces to include; Includes all by default. */
@@ -2018,19 +2031,6 @@ export type Groupable = {
   groups?: Maybe<Array<UserGroup>>;
 };
 
-export type GroupedActivityFeedQueryArgs = {
-  /** Number of activities to return. */
-  limit?: InputMaybe<Scalars['Float']>;
-  /** Returns only events that the current user triggered; Includes all by default. */
-  myActivity?: InputMaybe<Scalars['Boolean']>;
-  /** Activity from which Spaces to include; Includes all by default. */
-  roles?: InputMaybe<Array<ActivityFeedRoles>>;
-  /** Activity from which Spaces to include; Includes all by default. */
-  spaceIds?: InputMaybe<Array<Scalars['UUID']>>;
-  /** What events to include; Includes all by default. */
-  types?: InputMaybe<Array<ActivityEventType>>;
-};
-
 export type ISearchResults = {
   __typename?: 'ISearchResults';
   /** The search results for Callouts. */
@@ -3917,6 +3917,8 @@ export type Query = {
   __typename?: 'Query';
   /** Activity events related to the current user. */
   activityFeed: ActivityFeed;
+  /** Activity events related to the current user grouped by Activity type and resource. */
+  activityFeedGrouped: Array<ActivityLogEntry>;
   /** Retrieve the ActivityLog for the specified Collaboration */
   activityLogOnCollaboration: Array<ActivityLogEntry>;
   /** All Users that are members of a given room */
@@ -3927,8 +3929,6 @@ export type Query = {
   askChatGuidanceQuestion: ChatGuidanceResult;
   /** Get supported credential metadata */
   getSupportedVerifiedCredentialMetadata: Array<CredentialMetadataOutput>;
-  /** Activity events related to the current user. */
-  groupedActivityFeed: Array<ActivityLogEntry>;
   /** Allow direct lookup of entities from the domain model */
   lookup: LookupQueryResults;
   /** Information about the current authenticated user */
@@ -3977,6 +3977,10 @@ export type QueryActivityFeedArgs = {
   last?: InputMaybe<Scalars['Int']>;
 };
 
+export type QueryActivityFeedGroupedArgs = {
+  args?: InputMaybe<ActivityFeedGroupedQueryArgs>;
+};
+
 export type QueryActivityLogOnCollaborationArgs = {
   queryData: ActivityLogInput;
 };
@@ -3987,10 +3991,6 @@ export type QueryAdminCommunicationMembershipArgs = {
 
 export type QueryAskChatGuidanceQuestionArgs = {
   chatData: ChatGuidanceInput;
-};
-
-export type QueryGroupedActivityFeedArgs = {
-  args?: InputMaybe<GroupedActivityFeedQueryArgs>;
 };
 
 export type QueryOrganizationArgs = {
@@ -30548,12 +30548,12 @@ export type RecentContributionsChildJourneyProfileFragment = {
 };
 
 export type LatestContributionsGroupedQueryVariables = Exact<{
-  filter?: InputMaybe<GroupedActivityFeedQueryArgs>;
+  filter?: InputMaybe<ActivityFeedGroupedQueryArgs>;
 }>;
 
 export type LatestContributionsGroupedQuery = {
   __typename?: 'Query';
-  groupedActivityFeed: Array<
+  activityFeedGrouped: Array<
     | {
         __typename?: 'ActivityLogEntryCalendarEventCreated';
         id: string;

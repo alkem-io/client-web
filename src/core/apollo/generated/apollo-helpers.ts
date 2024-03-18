@@ -2074,12 +2074,12 @@ export type ProjectFieldPolicy = {
 };
 export type QueryKeySpecifier = (
   | 'activityFeed'
+  | 'activityFeedGrouped'
   | 'activityLogOnCollaboration'
   | 'adminCommunicationMembership'
   | 'adminCommunicationOrphanedUsage'
   | 'askChatGuidanceQuestion'
   | 'getSupportedVerifiedCredentialMetadata'
-  | 'groupedActivityFeed'
   | 'lookup'
   | 'me'
   | 'organization'
@@ -2103,12 +2103,12 @@ export type QueryKeySpecifier = (
 )[];
 export type QueryFieldPolicy = {
   activityFeed?: FieldPolicy<any> | FieldReadFunction<any>;
+  activityFeedGrouped?: FieldPolicy<any> | FieldReadFunction<any>;
   activityLogOnCollaboration?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationMembership?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationOrphanedUsage?: FieldPolicy<any> | FieldReadFunction<any>;
   askChatGuidanceQuestion?: FieldPolicy<any> | FieldReadFunction<any>;
   getSupportedVerifiedCredentialMetadata?: FieldPolicy<any> | FieldReadFunction<any>;
-  groupedActivityFeed?: FieldPolicy<any> | FieldReadFunction<any>;
   lookup?: FieldPolicy<any> | FieldReadFunction<any>;
   me?: FieldPolicy<any> | FieldReadFunction<any>;
   organization?: FieldPolicy<any> | FieldReadFunction<any>;

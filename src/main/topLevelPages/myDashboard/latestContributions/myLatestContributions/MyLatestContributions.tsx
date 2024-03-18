@@ -46,7 +46,7 @@ const MyLatestContributions = () => {
   const activities = useMemo(() => {
     // Filter out whiteboard created activities if we have an content modified activity for the same whiteboard
     const updatedWhiteboards: Record<string, true> = {};
-    const filteredActivities = data?.groupedActivityFeed.filter(activity => {
+    const filteredActivities = data?.activityFeedGrouped.filter(activity => {
       if (activity.type === ActivityEventType.CalloutWhiteboardContentModified) {
         updatedWhiteboards[(activity as ActivityLogCalloutWhiteboardContentModifiedFragment).whiteboard.id] = true;
       }
@@ -57,7 +57,7 @@ const MyLatestContributions = () => {
     });
 
     return filteredActivities?.slice(0, MY_LATEST_CONTRIBUTIONS_COUNT);
-  }, [data?.groupedActivityFeed]);
+  }, [data?.activityFeedGrouped]);
 
   return (
     <PageContentBlock halfWidth>

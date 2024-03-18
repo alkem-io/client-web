@@ -1,5 +1,5 @@
-query LatestContributionsGrouped($filter: GroupedActivityFeedQueryArgs) {
-  groupedActivityFeed(args: $filter) {
+query LatestContributionsGrouped($filter: ActivityFeedGroupedQueryArgs) {
+  activityFeedGrouped(args: $filter) {
     id
     collaborationID
     createdDate
