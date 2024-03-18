@@ -1,8 +1,11 @@
 fragment InnovationHubSpace on Space {
   id
-  license {
+  account {
     id
-    visibility
+    license {
+      id
+      visibility
+    }
   }
   profile {
     id

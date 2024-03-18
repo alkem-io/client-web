@@ -106,7 +106,7 @@ mutation UpdateCalloutFlowState($calloutId: UUID!, $flowStateTagsetId: UUID!, $v
 }
 
 mutation updateInnovationFlowCurrentState($innovationFlowId: UUID!, $currentState: String!) {
-  updateInnovationFlowState(
+  updateInnovationFlowSelectedState(
     innovationFlowStateData: { innovationFlowID: $innovationFlowId, selectedState: $currentState }
   ) {
     id
@@ -120,6 +120,29 @@ mutation updateInnovationFlowStates($innovationFlowId: UUID!, $states: [UpdateIn
   updateInnovationFlow(innovationFlowData: { innovationFlowID: $innovationFlowId, states: $states }) {
     id
     states {
+      displayName
+      description
+    }
+  }
+}
+mutation updateInnovationFlowSingleState(
+  $innovationFlowId: UUID!
+  $stateName: String!
+  $stateUpdatedData: UpdateInnovationFlowStateInput!
+) {
+  updateInnovationFlowSingleState(
+    innovationFlowStateData: {
+      innovationFlowID: $innovationFlowId
+      stateDisplayName: $stateName
+      stateUpdatedData: $stateUpdatedData
+    }
+  ) {
+    id
+    states {
+      displayName
+      description
+    }
+    currentState {
       displayName
       description
     }
