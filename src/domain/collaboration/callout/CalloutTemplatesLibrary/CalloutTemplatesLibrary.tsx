@@ -51,11 +51,11 @@ const CalloutTemplatesLibrary: FC<CalloutTemplatesLibraryProps> = ({ onImportTem
     () =>
       applyFilter(
         filter,
-        spaceData?.space.templates?.calloutTemplates.map(template => ({
+        spaceData?.space.account.library?.calloutTemplates.map(template => ({
           ...template,
           innovationPack: {
             profile: { displayName: '' },
-            provider: spaceData?.space.host,
+            provider: spaceData?.space.account.host,
           },
         }))
       ),

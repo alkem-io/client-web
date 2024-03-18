@@ -31,7 +31,7 @@ export const useCreateCalloutTemplate = (): CalloutCreationUtils => {
   const handleCreateCalloutTemplate = useCallback(
     async (values: CalloutTemplateFormSubmittedValues, callout: CalloutLayoutProps['callout'], spaceNameId: string) => {
       const { data: templatesData } = await fetchTemplateSetId({ variables: { spaceId: spaceNameId } });
-      const templatesSetId = templatesData?.space.templates?.id;
+      const templatesSetId = templatesData?.space.account.library?.id;
       if (!templatesSetId) {
         throw new TypeError('TemplateSet not found!');
       }

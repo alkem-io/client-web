@@ -28,8 +28,11 @@ fragment SpaceCard on Space {
     id
     vision
   }
-  license {
+  account {
+      id
+      license {
     id
     visibility
+  }
   }
 }
