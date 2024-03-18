@@ -5169,7 +5169,7 @@ export type UpdateCalloutFlowStateMutationOptions = Apollo.BaseMutationOptions<
 >;
 export const UpdateInnovationFlowCurrentStateDocument = gql`
   mutation updateInnovationFlowCurrentState($innovationFlowId: UUID!, $currentState: String!) {
-    updateInnovationFlowState(
+    updateInnovationFlowSelectedState(
       innovationFlowStateData: { innovationFlowID: $innovationFlowId, selectedState: $currentState }
     ) {
       id
@@ -5277,6 +5277,77 @@ export type UpdateInnovationFlowStatesMutationResult =
 export type UpdateInnovationFlowStatesMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateInnovationFlowStatesMutation,
   SchemaTypes.UpdateInnovationFlowStatesMutationVariables
+>;
+export const UpdateInnovationFlowSingleStateDocument = gql`
+  mutation updateInnovationFlowSingleState(
+    $innovationFlowId: UUID!
+    $stateName: String!
+    $stateUpdatedData: UpdateInnovationFlowStateInput!
+  ) {
+    updateInnovationFlowSingleState(
+      innovationFlowStateData: {
+        innovationFlowID: $innovationFlowId
+        stateDisplayName: $stateName
+        stateUpdatedData: $stateUpdatedData
+      }
+    ) {
+      id
+      states {
+        displayName
+        description
+      }
+      currentState {
+        displayName
+        description
+      }
+    }
+  }
+`;
+export type UpdateInnovationFlowSingleStateMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateInnovationFlowSingleStateMutation,
+  SchemaTypes.UpdateInnovationFlowSingleStateMutationVariables
+>;
+
+/**
+ * __useUpdateInnovationFlowSingleStateMutation__
+ *
+ * To run a mutation, you first call `useUpdateInnovationFlowSingleStateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateInnovationFlowSingleStateMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateInnovationFlowSingleStateMutation, { data, loading, error }] = useUpdateInnovationFlowSingleStateMutation({
+ *   variables: {
+ *      innovationFlowId: // value for 'innovationFlowId'
+ *      stateName: // value for 'stateName'
+ *      stateUpdatedData: // value for 'stateUpdatedData'
+ *   },
+ * });
+ */
+export function useUpdateInnovationFlowSingleStateMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateInnovationFlowSingleStateMutation,
+    SchemaTypes.UpdateInnovationFlowSingleStateMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.UpdateInnovationFlowSingleStateMutation,
+    SchemaTypes.UpdateInnovationFlowSingleStateMutationVariables
+  >(UpdateInnovationFlowSingleStateDocument, options);
+}
+
+export type UpdateInnovationFlowSingleStateMutationHookResult = ReturnType<
+  typeof useUpdateInnovationFlowSingleStateMutation
+>;
+export type UpdateInnovationFlowSingleStateMutationResult =
+  Apollo.MutationResult<SchemaTypes.UpdateInnovationFlowSingleStateMutation>;
+export type UpdateInnovationFlowSingleStateMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateInnovationFlowSingleStateMutation,
+  SchemaTypes.UpdateInnovationFlowSingleStateMutationVariables
 >;
 export const UpdateInnovationFlowStatesFromTemplateDocument = gql`
   mutation updateInnovationFlowStatesFromTemplate($innovationFlowId: UUID!, $innovationFlowTemplateId: UUID!) {
@@ -24585,6 +24656,171 @@ export type LatestContributionsQueryResult = Apollo.QueryResult<
 >;
 export function refetchLatestContributionsQuery(variables: SchemaTypes.LatestContributionsQueryVariables) {
   return { query: LatestContributionsDocument, variables: variables };
+}
+
+export const LatestContributionsGroupedDocument = gql`
+  query LatestContributionsGrouped($filter: ActivityFeedGroupedQueryArgs) {
+    activityFeedGrouped(args: $filter) {
+      id
+      collaborationID
+      createdDate
+      description
+      type
+      child
+      parentNameID
+      journeyDisplayName: parentDisplayName
+      journey {
+        id
+        ... on Space {
+          profile {
+            ...RecentContributionsSpaceProfile
+          }
+        }
+        ... on RelayPaginatedSpace {
+          profile {
+            ...RecentContributionsSpaceProfile
+          }
+        }
+        ... on Challenge {
+          profile {
+            ...RecentContributionsChildJourneyProfile
+          }
+        }
+        ... on Opportunity {
+          profile {
+            ...RecentContributionsChildJourneyProfile
+          }
+        }
+      }
+      triggeredBy {
+        id
+        nameID
+        firstName
+        lastName
+        profile {
+          id
+          displayName
+          avatar: visual(type: AVATAR) {
+            id
+            uri
+          }
+          tagsets {
+            ...TagsetDetails
+          }
+          location {
+            id
+            city
+            country
+          }
+        }
+      }
+      ... on ActivityLogEntryMemberJoined {
+        ...ActivityLogMemberJoined
+      }
+      ... on ActivityLogEntryCalloutPublished {
+        ...ActivityLogCalloutPublished
+      }
+      ... on ActivityLogEntryCalloutPostCreated {
+        ...ActivityLogCalloutPostCreated
+      }
+      ... on ActivityLogEntryCalloutLinkCreated {
+        ...ActivityLogCalloutLinkCreated
+      }
+      ... on ActivityLogEntryCalloutPostComment {
+        ...ActivityLogCalloutPostComment
+      }
+      ... on ActivityLogEntryCalloutWhiteboardCreated {
+        ...ActivityLogCalloutWhiteboardCreated
+      }
+      ... on ActivityLogEntryCalloutWhiteboardContentModified {
+        ...ActivityLogCalloutWhiteboardContentModified
+      }
+      ... on ActivityLogEntryCalloutDiscussionComment {
+        ...ActivityLogCalloutDiscussionComment
+      }
+      ... on ActivityLogEntryChallengeCreated {
+        ...ActivityLogChallengeCreated
+      }
+      ... on ActivityLogEntryOpportunityCreated {
+        ...ActivityLogOpportunityCreated
+      }
+      ... on ActivityLogEntryUpdateSent {
+        ...ActivityLogUpdateSent
+      }
+      ... on ActivityLogEntryCalendarEventCreated {
+        ...ActivityLogCalendarEventCreated
+      }
+    }
+  }
+  ${RecentContributionsSpaceProfileFragmentDoc}
+  ${RecentContributionsChildJourneyProfileFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
+  ${ActivityLogMemberJoinedFragmentDoc}
+  ${ActivityLogCalloutPublishedFragmentDoc}
+  ${ActivityLogCalloutPostCreatedFragmentDoc}
+  ${ActivityLogCalloutLinkCreatedFragmentDoc}
+  ${ActivityLogCalloutPostCommentFragmentDoc}
+  ${ActivityLogCalloutWhiteboardCreatedFragmentDoc}
+  ${ActivityLogCalloutWhiteboardContentModifiedFragmentDoc}
+  ${ActivityLogCalloutDiscussionCommentFragmentDoc}
+  ${ActivityLogChallengeCreatedFragmentDoc}
+  ${ActivityLogOpportunityCreatedFragmentDoc}
+  ${ActivityLogUpdateSentFragmentDoc}
+  ${ActivityLogCalendarEventCreatedFragmentDoc}
+`;
+
+/**
+ * __useLatestContributionsGroupedQuery__
+ *
+ * To run a query within a React component, call `useLatestContributionsGroupedQuery` and pass it any options that fit your needs.
+ * When your component renders, `useLatestContributionsGroupedQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useLatestContributionsGroupedQuery({
+ *   variables: {
+ *      filter: // value for 'filter'
+ *   },
+ * });
+ */
+export function useLatestContributionsGroupedQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.LatestContributionsGroupedQuery,
+    SchemaTypes.LatestContributionsGroupedQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.LatestContributionsGroupedQuery,
+    SchemaTypes.LatestContributionsGroupedQueryVariables
+  >(LatestContributionsGroupedDocument, options);
+}
+
+export function useLatestContributionsGroupedLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.LatestContributionsGroupedQuery,
+    SchemaTypes.LatestContributionsGroupedQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.LatestContributionsGroupedQuery,
+    SchemaTypes.LatestContributionsGroupedQueryVariables
+  >(LatestContributionsGroupedDocument, options);
+}
+
+export type LatestContributionsGroupedQueryHookResult = ReturnType<typeof useLatestContributionsGroupedQuery>;
+export type LatestContributionsGroupedLazyQueryHookResult = ReturnType<typeof useLatestContributionsGroupedLazyQuery>;
+export type LatestContributionsGroupedQueryResult = Apollo.QueryResult<
+  SchemaTypes.LatestContributionsGroupedQuery,
+  SchemaTypes.LatestContributionsGroupedQueryVariables
+>;
+export function refetchLatestContributionsGroupedQuery(
+  variables?: SchemaTypes.LatestContributionsGroupedQueryVariables
+) {
+  return { query: LatestContributionsGroupedDocument, variables: variables };
 }
 
 export const LatestContributionsSpacesDocument = gql`
