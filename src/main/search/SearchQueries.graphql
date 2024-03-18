@@ -267,9 +267,7 @@ fragment SearchResultChallenge on SearchResultChallenge {
       }
     }
     account {
-      space {
-        id
-      }
+      spaceID
     }
     context {
       id

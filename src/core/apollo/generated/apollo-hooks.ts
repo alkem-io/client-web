@@ -3478,9 +3478,7 @@ export const SearchResultChallengeFragmentDoc = gql`
         }
       }
       account {
-        space {
-          id
-        }
+        spaceID
       }
       context {
         id
