@@ -26,10 +26,10 @@ import { compact } from 'lodash';
 
 interface EntityIds {
   postNameId: Scalars['UUID_NAMEID'];
-  spaceNameId: Scalars['UUID_NAMEID'];
-  challengeNameId?: Scalars['UUID_NAMEID'];
-  opportunityNameId?: Scalars['UUID_NAMEID'];
-  calloutNameId: Scalars['UUID_NAMEID'];
+  // spaceNameId: Scalars['UUID_NAMEID'];
+  // challengeNameId?: Scalars['UUID_NAMEID'];
+  // opportunityNameId?: Scalars['UUID_NAMEID'];
+  calloutId: string;
 }
 
 interface Provided {
@@ -55,6 +55,8 @@ interface Provided {
 
 export type PostDashboardContainerProps = ContainerPropsWithProvided<EntityIds, Provided>;
 
+// useCalloutId
+// query post
 const PostDashboardContainer: FC<PostDashboardContainerProps> = ({
   spaceNameId,
   postNameId,
