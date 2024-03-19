@@ -10,7 +10,6 @@ interface InnovationFlowTemplatePreviewProps {
   template?: Identifiable;
 }
 
-// TODO: We are not using this. Shall it stay?
 const InnovationFlowTemplatePreview: FC<InnovationFlowTemplatePreviewProps> = ({ template }) => {
   const [selectedState, setSelectedState] = useState<string | undefined>(undefined);
   const { data, loading } = useInnovationFlowTemplateStatesQuery({
