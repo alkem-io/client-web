@@ -173,9 +173,6 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ opportuni
     <>
       {children(
         {
-          // spaceId,
-          // spaceNameId,
-          // challengeNameId,
           opportunity,
           url: `admin/${opportunity?.profile.url}`, //opportunity && buildAdminOpportunityUrl(spaceNameId, challengeNameId, opportunity.nameID),
           meme,

@@ -46,10 +46,7 @@ const JourneyCalloutsTabView = ({
   onCalloutsSortOrderUpdate,
   refetchCallout,
   journeyTypeName,
-}: // spaceNameId,
-// challengeNameId,
-// opportunityNameId,
-JourneyCalloutsTabViewProps) => {
+}: JourneyCalloutsTabViewProps) => {
   const [selectedInnovationFlowState, setSelectedInnovationFlowState] =
     useStateWithAsyncDefault(currentInnovationFlowState);
 

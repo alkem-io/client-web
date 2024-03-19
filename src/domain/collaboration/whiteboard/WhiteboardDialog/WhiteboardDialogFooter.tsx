@@ -76,23 +76,22 @@ const WhiteboardDialogFooter = ({
   const challengeContext = useChallenge();
   const opportunityContext = useOpportunity();
 
-  const getMyMembershipStatus = () => {
-    if (opportunityContext.opportunity) {
-      return opportunityContext.myMembershipStatus;
-    }
-    if (challengeContext.challenge) {
-      return challengeContext.myMembershipStatus;
-    }
-    if (spaceContext.profile) {
-      return spaceContext.myMembershipStatus;
-    }
-  };
-
   const journeyTypeName = getJourneyTypeName({
     ...opportunityContext,
     ...challengeContext,
     ...spaceContext,
   });
+
+  const getMyMembershipStatus = () => {
+    switch (journeyTypeName) {
+      case 'space':
+        return spaceContext.myMembershipStatus;
+      case 'challenge':
+        return challengeContext.myMembershipStatus;
+      case 'opportunity':
+        return opportunityContext.myMembershipStatus;
+    }
+  };
 
   const getJourneyProfile = () => {
     switch (journeyTypeName) {
