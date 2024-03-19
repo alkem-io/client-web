@@ -7,12 +7,15 @@ query adminSpacesList {
 fragment AdminSpace on Space {
   id
   nameID
-  license {
+  account {
     id
-    visibility
-    featureFlags {
-      name
-      enabled
+    license {
+      id
+      visibility
+      featureFlags {
+        name
+        enabled
+      }
     }
   }
   profile {

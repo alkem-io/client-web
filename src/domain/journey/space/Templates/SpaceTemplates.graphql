@@ -1,13 +1,16 @@
 query CalloutFormTemplatesFromSpace($spaceId: UUID_NAMEID!) {
   space(ID: $spaceId) {
     id
-    templates {
+    account {
       id
-      postTemplates {
-        ...PostTemplateCard
-      }
-      whiteboardTemplates {
-        ...WhiteboardTemplateCard
+      library {
+        id
+        postTemplates {
+          ...PostTemplateCard
+        }
+        whiteboardTemplates {
+          ...WhiteboardTemplateCard
+        }
       }
     }
   }
@@ -16,10 +19,13 @@ query CalloutFormTemplatesFromSpace($spaceId: UUID_NAMEID!) {
 query WhiteboardTemplatesFromSpace($spaceId: UUID_NAMEID!) {
   space(ID: $spaceId) {
     id
-    templates {
+    account {
       id
-      whiteboardTemplates {
-        ...WhiteboardTemplateCard
+      library {
+        id
+        whiteboardTemplates {
+          ...WhiteboardTemplateCard
+        }
       }
     }
   }
@@ -28,26 +34,32 @@ query WhiteboardTemplatesFromSpace($spaceId: UUID_NAMEID!) {
 query InnovationFlowTemplatesFromSpace($spaceId: UUID_NAMEID!) {
   space(ID: $spaceId) {
     id
-    templates {
+    account {
       id
-      innovationFlowTemplates {
-        ...InnovationFlowTemplateCard
+      library {
+        id
+        innovationFlowTemplates {
+          ...InnovationFlowTemplateCard
+        }
       }
     }
   }
 }
 
 fragment SpaceTemplates on Space {
-  templates {
+  account {
     id
-    postTemplates {
-      ...PostTemplateCard
-    }
-    whiteboardTemplates {
-      ...WhiteboardTemplateCard
-    }
-    innovationFlowTemplates {
-      ...InnovationFlowTemplateCard
+    library {
+      id
+      postTemplates {
+        ...PostTemplateCard
+      }
+      whiteboardTemplates {
+        ...WhiteboardTemplateCard
+      }
+      innovationFlowTemplates {
+        ...InnovationFlowTemplateCard
+      }
     }
   }
 }

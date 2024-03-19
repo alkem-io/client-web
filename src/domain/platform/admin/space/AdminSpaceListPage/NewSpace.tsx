@@ -68,7 +68,9 @@ export const NewSpace: FC<NewSpaceProps> = ({ paths }) => {
       variables: {
         input: {
           nameID,
-          hostID: host,
+          accountData: {
+            hostID: host,
+          },
           profileData: {
             displayName: name,
             tagline: values.tagline,

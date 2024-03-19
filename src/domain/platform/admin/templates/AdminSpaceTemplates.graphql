@@ -1,8 +1,10 @@
 query AdminSpaceTemplates($spaceId: UUID_NAMEID!) {
   space(ID: $spaceId) {
     id
-    templates {
+    account {
       id
+      library {
+        id
       authorization {
         id
         myPrivileges
@@ -20,6 +22,7 @@ query AdminSpaceTemplates($spaceId: UUID_NAMEID!) {
         ...AdminInnovationFlowTemplate
       }
     }
+  }
   }
 }
 

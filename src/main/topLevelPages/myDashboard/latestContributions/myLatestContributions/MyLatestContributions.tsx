@@ -1,17 +1,14 @@
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 import { useTranslation } from 'react-i18next';
 import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
 import ScrollerWithGradient from '../../../../../core/ui/overflow/ScrollerWithGradient';
-import { useLatestContributionsQuery } from '../../../../../core/apollo/generated/apollo-hooks';
+import { useLatestContributionsGroupedQuery } from '../../../../../core/apollo/generated/apollo-hooks';
 import {
   ActivityEventType,
   ActivityLogCalloutWhiteboardContentModifiedFragment,
   ActivityLogCalloutWhiteboardCreatedFragment,
-  LatestContributionsQuery,
-  LatestContributionsQueryVariables,
 } from '../../../../../core/apollo/generated/graphql-schema';
-import usePaginatedQuery from '../../../../../domain/shared/pagination/usePaginatedQuery';
 import { Box } from '@mui/material';
 import {
   ActivityLogResultType,
@@ -36,19 +33,12 @@ const ACTIVITY_TYPES = [
 const MyLatestContributions = () => {
   const { t } = useTranslation();
 
-  const { data, hasMore, loading, fetchMore } = usePaginatedQuery<
-    LatestContributionsQuery,
-    LatestContributionsQueryVariables
-  >({
-    useQuery: useLatestContributionsQuery,
-    getPageInfo: data => data.activityFeed.pageInfo,
-    pageSize: 1,
-    firstPageSize: MY_LATEST_CONTRIBUTIONS_COUNT * 2, ////magic number, should not be needed. toDo Fix in https://app.zenhub.com/workspaces/alkemio-development-5ecb98b262ebd9f4aec4194c/issues/gh/alkem-io/server/3626
+  const { data } = useLatestContributionsGroupedQuery({
     variables: {
       filter: {
         myActivity: true,
         types: ACTIVITY_TYPES,
-        onlyUnique: true,
+        limit: MY_LATEST_CONTRIBUTIONS_COUNT + 3, // Fetch 3 extra in case that last 8 events are whiteboard creation and modification
       },
     },
   });
@@ -56,7 +46,7 @@ const MyLatestContributions = () => {
   const activities = useMemo(() => {
     // Filter out whiteboard created activities if we have an content modified activity for the same whiteboard
     const updatedWhiteboards: Record<string, true> = {};
-    const filteredActivities = data?.activityFeed.activityFeed.filter(activity => {
+    const filteredActivities = data?.activityFeedGrouped.filter(activity => {
       if (activity.type === ActivityEventType.CalloutWhiteboardContentModified) {
         updatedWhiteboards[(activity as ActivityLogCalloutWhiteboardContentModifiedFragment).whiteboard.id] = true;
       }
@@ -67,16 +57,7 @@ const MyLatestContributions = () => {
     });
 
     return filteredActivities?.slice(0, MY_LATEST_CONTRIBUTIONS_COUNT);
-  }, [data?.activityFeed.activityFeed]);
-
-  useEffect(() => {
-    if (!activities || !hasMore || loading) {
-      return;
-    }
-    if (activities.length < MY_LATEST_CONTRIBUTIONS_COUNT) {
-      fetchMore();
-    }
-  }, [activities, hasMore, loading]);
+  }, [data?.activityFeedGrouped]);
 
   return (
     <PageContentBlock halfWidth>

@@ -1,0 +1,34 @@
+query AdminSpaceChallengesPage($spaceId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
+    id
+    challenges {
+      id
+      nameID
+      profile {
+        id
+        displayName
+      }
+    }
+    account {
+      id
+      defaults {
+        innovationFlowTemplate {
+          id
+          profile {
+            ...InnovationFlowProfile
+          }
+          states {
+            displayName
+            description
+          }
+        }
+      }
+    }
+  }
+}
+
+# mutation UpdateSpaceDefaultInnovationFlowTemplate($spaceId: UUID!, $innovationFlowTemplateId: UUID!) {
+#   updateSpaceDefaults(spaceDefaultsData: { spaceID: $spaceId, flowTemplateID: $innovationFlowTemplateId }) {
+#     id
+#   }
+# }
