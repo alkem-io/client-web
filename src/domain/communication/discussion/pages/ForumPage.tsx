@@ -61,13 +61,17 @@ interface ForumPageProps {
 export const ForumPage: FC<ForumPageProps> = ({ dialog }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { isAuthenticated, loading: loadingUser } = useUserContext();
+  const { user: { hasPlatformPrivilege } = {}, isAuthenticated, loading: loadingUser } = useUserContext();
 
   const [categorySelected, setCategorySelected] = useState<DiscussionCategoryExt>(ALL_CATEGORIES);
   const { data, loading: loadingDiscussions, subscribeToMore } = usePlatformDiscussionsQuery();
   useSubscriptionToCommunication(data, data => data?.platform.communication, subscribeToMore);
 
-  const validCategories = data?.platform.communication.discussionCategories ?? [];
+  const isGlobalAdmin = hasPlatformPrivilege?.(AuthorizationPrivilege.GrantGlobalAdmins);
+  const validCategories =
+    (isGlobalAdmin
+      ? data?.platform.communication.discussionCategories
+      : data?.platform.communication.discussionCategories?.filter(category => category !== 'RELEASES')) ?? [];
   const communicationId = data?.platform.communication.id;
 
   const canCreateDiscussion =
