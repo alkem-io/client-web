@@ -36,7 +36,7 @@ const JourneyCalloutsTabView = ({
   collaborationId,
   innovationFlowStates,
   currentInnovationFlowState,
-  canEditInnovationFlow,
+  canEditInnovationFlow = false,
   callouts: allCallouts,
   groupedCallouts,
   canCreateCallout,
@@ -119,16 +119,26 @@ JourneyCalloutsTabViewProps) => {
           </PageContentColumn>
 
           <PageContentColumn columns={8}>
-            {innovationFlowStates && currentInnovationFlowState && selectedInnovationFlowState && (
-              <InnovationFlowStates
-                collaborationId={collaborationId}
-                states={innovationFlowStates}
-                currentState={currentInnovationFlowState}
-                selectedState={selectedInnovationFlowState}
-                showSettings={canEditInnovationFlow}
-                onSelectState={handleSelectInnovationFlowState}
-              />
-            )}
+            {innovationFlowStates &&
+              currentInnovationFlowState &&
+              selectedInnovationFlowState &&
+              (canEditInnovationFlow ? (
+                <InnovationFlowStates
+                  collaborationId={collaborationId!}
+                  states={innovationFlowStates}
+                  currentState={currentInnovationFlowState}
+                  selectedState={selectedInnovationFlowState}
+                  showSettings
+                  onSelectState={handleSelectInnovationFlowState}
+                />
+              ) : (
+                <InnovationFlowStates
+                  states={innovationFlowStates}
+                  currentState={currentInnovationFlowState}
+                  selectedState={selectedInnovationFlowState}
+                  onSelectState={handleSelectInnovationFlowState}
+                />
+              ))}
             <CalloutsGroupView
               callouts={filterCallouts(groupedCallouts[CalloutDisplayLocation.ContributeRight])}
               canCreateCallout={canCreateCallout}

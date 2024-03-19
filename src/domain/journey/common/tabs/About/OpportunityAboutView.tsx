@@ -33,7 +33,7 @@ import DialogWithGrid from '../../../../../core/ui/dialog/DialogWithGrid';
 import DialogHeader from '../../../../../core/ui/dialog/DialogHeader';
 import FullWidthButton from '../../../../../core/ui/button/FullWidthButton';
 import { InnovationFlowDetails } from '../../../../collaboration/InnovationFlow/InnovationFlow';
-import InnovationFlowVisualizer from '../../../../platform/admin/templates/InnovationTemplates/InnovationFlowVisualizer';
+import InnovationFlowChips from '../../../../collaboration/InnovationFlow/InnovationFlowChips/InnovationFlowChips';
 import useMetricsItems from '../../../../platform/metrics/utils/useMetricsItems';
 import OpportunityMetrics from '../../../opportunity/utils/useOpportunityMetricsItems';
 import { Metric } from '../../../../platform/metrics/utils/getMetricCount';
@@ -109,6 +109,7 @@ const OpportunityAboutView: FC<OpportunityAboutViewProps> = ({
 }) => {
   const { t } = useTranslation();
   const [dialogSectionName, setDialogSectionName] = useState<JourneyContextField>();
+  const [selectedState, setSelectedState] = useState<string | undefined>(undefined);
 
   const metricsItems = useMetricsItems(metrics, OpportunityMetrics);
 
@@ -169,10 +170,12 @@ const OpportunityAboutView: FC<OpportunityAboutViewProps> = ({
             <Tagline>{tagline}</Tagline>
             <TagsComponent tags={tags} variant="filled" loading={loading} />
             <Actions justifyContent="end">
-              {innovationFlow && (
-                <InnovationFlowVisualizer
+              {innovationFlow && innovationFlow.states && (
+                <InnovationFlowChips
                   states={innovationFlow.states}
                   currentState={innovationFlow.currentState.displayName}
+                  selectedState={selectedState}
+                  onSelectState={state => setSelectedState(state.displayName)}
                 />
               )}
             </Actions>

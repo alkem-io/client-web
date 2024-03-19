@@ -2,8 +2,12 @@ query MyMemberships {
   me {
     spaceMemberships {
       id
-      license {
-        visibility
+      account {
+        id
+        license {
+          id
+          visibility
+        }
       }
       metrics {
         name

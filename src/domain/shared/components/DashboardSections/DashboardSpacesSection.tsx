@@ -5,12 +5,13 @@ import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlock
 import SpaceCard, { SpaceCardProps } from '../../../journey/space/SpaceCard/SpaceCard';
 import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
 import { MetricType } from '../../../platform/metrics/MetricType';
-import { Nvp, SpaceVisibility } from '../../../../core/apollo/generated/graphql-schema';
+import { Nvp } from '../../../../core/apollo/generated/graphql-schema';
 import { Visual } from '../../../common/visual/Visual';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 import { Link } from '@mui/material';
 import { Caption } from '../../../../core/ui/typography';
 import { useTranslation } from 'react-i18next';
+import { Account } from '../../../journey/account/Account';
 
 export interface SpaceAttrs extends Identifiable {
   context?: { vision?: string };
@@ -24,9 +25,7 @@ export interface SpaceAttrs extends Identifiable {
     };
     cardBanner?: Visual;
   };
-  license: {
-    visibility?: SpaceVisibility;
-  };
+  account: Account;
   metrics?: Pick<Nvp, 'name' | 'value'>[];
 }
 
@@ -66,7 +65,7 @@ const DashboardSpacesSection = <ExtraAttrs extends {}>({
             membersCount={getMetricCount(space.metrics, MetricType.Member)}
             tagline={space.profile.tagline!}
             tags={space.profile.tagset?.tags!}
-            spaceVisibility={space.license.visibility}
+            spaceVisibility={space.account.license.visibility}
             {...getSpaceCardProps?.(space)}
           />
         ))}

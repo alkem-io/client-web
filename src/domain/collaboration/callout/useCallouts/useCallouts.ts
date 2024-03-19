@@ -101,6 +101,7 @@ const CALLOUT_DISPLAY_LOCATION_TAGSET_NAME = 'callout-display-location';
  */
 const useCallouts = ({ journeyTypeName, ...params }: UseCalloutsParams): UseCalloutsProvided => {
   const {
+    collaborationId,
     canReadCollaboration,
     canCreateCallout,
     canCreateCalloutFromTemplate,
@@ -110,12 +111,7 @@ const useCallouts = ({ journeyTypeName, ...params }: UseCalloutsParams): UseCall
   } = useCollaborationAuthorization();
 
   const variables = {
-    spaceId: params.journeyId,
-    challengeId: params.journeyId,
-    opportunityId: params.journeyId,
-    includeSpace: journeyTypeName === 'space',
-    includeChallenge: journeyTypeName === 'challenge',
-    includeOpportunity: journeyTypeName === 'opportunity',
+    collaborationId: collaborationId!,
     displayLocations: params.displayLocations,
   } as const;
 
@@ -126,7 +122,7 @@ const useCallouts = ({ journeyTypeName, ...params }: UseCalloutsParams): UseCall
   } = useCalloutsQuery({
     variables,
     fetchPolicy: 'cache-and-network',
-    skip: !canReadCollaboration || !params.journeyId,
+    skip: !canReadCollaboration || !collaborationId,
   });
 
   const [getCallouts] = useCalloutsLazyQuery({
@@ -143,8 +139,7 @@ const useCallouts = ({ journeyTypeName, ...params }: UseCalloutsParams): UseCall
     });
   };
 
-  const collaboration = (calloutsData?.lookup.opportunity ?? calloutsData?.lookup.challenge ?? calloutsData?.space)
-    ?.collaboration;
+  const collaboration = calloutsData?.lookup.collaboration;
 
   const callouts = useMemo(
     () =>
