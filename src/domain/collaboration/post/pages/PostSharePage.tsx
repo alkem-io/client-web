@@ -5,22 +5,26 @@ import { PostDialogSection } from '../views/PostDialogSection';
 import PostDashboardContainer from '../containers/PostDashboardContainer/PostDashboardContainer';
 import PostDashboardView from '../views/PostDashboardView';
 import { DialogFooter } from '../../../../core/ui/dialog/DialogWithGrid';
+import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 
 export interface PostSharePageProps {
   onClose: () => void;
 }
 
 const PostSharePage: FC<PostSharePageProps> = ({ onClose }) => {
-  const { spaceNameId = '', challengeNameId, opportunityNameId, postNameId = '', calloutNameId = '' } = useUrlParams();
+  const { postNameId} = useUrlParams();
+
+  const { calloutId } = useRouteResolver();
+
+  if (!postNameId) {
+    throw new Error('Must be within a Post route');
+  }
 
   return (
     <PostLayout currentSection={PostDialogSection.Share} onClose={onClose}>
       <PostDashboardContainer
-        spaceNameId={spaceNameId}
+        calloutId={calloutId}
         postNameId={postNameId}
-        challengeNameId={challengeNameId}
-        opportunityNameId={opportunityNameId}
-        calloutNameId={calloutNameId}
       >
         {({ post, messages, roomId, ...rest }) => (
           <PostDashboardView

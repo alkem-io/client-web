@@ -11,29 +11,26 @@ import {
 import { useTranslation } from 'react-i18next';
 import PreferenceSection from '../../../../../main/ui/settings/PreferenceSection';
 import { PreferenceTypes } from '../../../../common/preference/preference-types';
-import { useSpace } from '../../../space/SpaceContext/useSpace';
 import { useChallenge } from '../../hooks/useChallenge';
 import { usePreferences } from '../../../../common/preference/usePreferences';
 import {
   ChallengePreferencesDocument,
   UpdatePreferenceOnChallengeDocument,
 } from '../../../../../core/apollo/generated/apollo-hooks';
-import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 
 const selectedGroups = ['Authorization', 'Privileges'];
 
-const querySelector = (query: ChallengePreferencesQuery) => query.space.challenge.preferences;
+const querySelector = (query: ChallengePreferencesQuery) => query.lookup.challenge?.preferences;
 
 interface ChallengeAuthorizationPageProps extends SettingsPageProps {}
 
 const ChallengeAuthorizationPage: FC<ChallengeAuthorizationPageProps> = ({ routePrefix = '../' }) => {
   const { t } = useTranslation();
-  const { spaceNameId } = useSpace();
   const { challengeId } = useChallenge();
-  const { challengeNameId = '' } = useUrlParams();
 
   // todo: how can these two be extracted in a util
-  const queryVariables: ChallengePreferencesQueryVariables = { spaceNameId, challengeNameId };
+  const queryVariables: ChallengePreferencesQueryVariables = { challengeId };
+
   const mutationVariables = (
     queryVariables: ChallengePreferencesQueryVariables,
     type: PreferenceTypes,

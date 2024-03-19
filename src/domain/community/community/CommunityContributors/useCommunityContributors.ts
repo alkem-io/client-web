@@ -14,6 +14,13 @@ interface Query<Data, Variables extends EntityIds> {
   (options: Apollo.QueryHookOptions<Data, Variables>): QueryResult<Data, Variables>;
 }
 
+/**
+ * REMOVE
+ * @param query
+ * @param selector
+ * @param variables
+ * @param skip
+ */
 const useCommunityContributors = <Data, Variables extends EntityIds, ProvidedContributors extends {}>(
   query: Query<Data, Variables>,
   selector: (data: Data | undefined) => ProvidedContributors,

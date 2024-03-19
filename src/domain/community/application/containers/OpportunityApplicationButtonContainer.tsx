@@ -3,7 +3,7 @@ import { OpportunityApplicationButtonProps } from '../applicationButton/Opportun
 
 import { useSpace } from '../../../journey/space/SpaceContext/useSpace';
 import { useCommunityUserPrivilegesWithParentCommunityQuery } from '../../../../core/apollo/generated/apollo-hooks';
-import { buildChallengeUrl, buildSpaceUrl } from '../../../../main/routing/urlBuilders';
+import { buildChallengeUrl } from '../../../../main/routing/urlBuilders';
 import { CommunityMembershipStatus } from '../../../../core/apollo/generated/graphql-schema';
 import { useCommunityContext } from '../../community/CommunityContext';
 import { useAuthenticationContext } from '../../../../core/auth/authentication/hooks/useAuthenticationContext';
@@ -19,13 +19,15 @@ export interface OpportunityApplicationButtonContainerProps
     applicationButtonProps: OpportunityApplicationButtonProps;
     state: ApplicationContainerState;
   }> {
+  challengeId: string | undefined;
+  opportunityId: string | undefined;
   challengeNameId?: string;
-  opportunityNameId?: string;
 }
 
 export const OpportunityApplicationButtonContainer: FC<OpportunityApplicationButtonContainerProps> = ({
+  challengeId,
+  opportunityId,
   challengeNameId,
-  opportunityNameId,
   children,
 }) => {
   const { isAuthenticated } = useAuthenticationContext();
@@ -35,20 +37,20 @@ export const OpportunityApplicationButtonContainer: FC<OpportunityApplicationBut
   const { data: _communityPrivileges, loading: communityPrivilegesLoading } =
     useCommunityUserPrivilegesWithParentCommunityQuery({
       variables: {
-        spaceNameId,
-        challengeNameId,
-        opportunityNameId,
+        challengeId,
+        opportunityId,
         includeChallenge: true,
         includeOpportunity: true,
       },
+      skip: !challengeId || !opportunityId,
     });
 
   const isMember = myMembershipStatus === CommunityMembershipStatus.Member;
   const isParentMember =
-    _communityPrivileges?.space?.challenge?.community?.myMembershipStatus === CommunityMembershipStatus.Member;
+    _communityPrivileges?.lookup.challenge?.community?.myMembershipStatus === CommunityMembershipStatus.Member;
 
-  const parentUrl = challengeNameId ? buildChallengeUrl(spaceNameId, challengeNameId) : buildSpaceUrl(spaceNameId);
-  const communityLeadUsers = _communityPrivileges?.space?.opportunity?.community?.leadUsers ?? [];
+  const parentUrl = challengeNameId ? buildChallengeUrl(spaceNameId, challengeNameId) : '';
+  const communityLeadUsers = _communityPrivileges?.lookup.opportunity?.community?.leadUsers ?? [];
   const leadUsers = communityLeadUsers.map(user => ({
     id: user.id,
     displayName: user.profile.displayName,
@@ -56,7 +58,7 @@ export const OpportunityApplicationButtonContainer: FC<OpportunityApplicationBut
     city: user.profile.location?.city,
     avatarUri: user.profile.avatar?.uri,
   }));
-  const communityId = _communityPrivileges?.space.opportunity?.community?.id;
+  const communityId = _communityPrivileges?.lookup.opportunity?.community?.id;
   const sendMessageToCommunityLeads = useSendMessageToCommunityLeads(communityId);
 
   const loading = communityPrivilegesLoading;

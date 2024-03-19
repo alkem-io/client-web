@@ -16,11 +16,8 @@ const PostDashboardPage: FC<PostDashboardPageProps> = ({ onClose }) => {
   return (
     <PostLayout currentSection={PostDialogSection.Dashboard} onClose={onClose}>
       <PostDashboardContainer
-        spaceNameId={spaceNameId}
         postNameId={postNameId}
-        challengeNameId={challengeNameId}
-        opportunityNameId={opportunityNameId}
-        calloutNameId={calloutNameId}
+        calloutId={calloutNameId}
       >
         {({ post, messages, roomId, ...rest }) => (
           <PostDashboardView

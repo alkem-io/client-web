@@ -58,7 +58,7 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
 
   return (
     <ChallengePageLayout currentSection={EntityPageSection.Opportunities}>
-      <ChallengeOpportunitiesContainer spaceNameId={spaceNameId} challengeNameId={challengeNameId}>
+      <ChallengeOpportunitiesContainer challengeId={challengeId}>
         {({ callouts, ...entities }, state) => (
           <ChildJourneyView
             spaceNameId={spaceNameId}

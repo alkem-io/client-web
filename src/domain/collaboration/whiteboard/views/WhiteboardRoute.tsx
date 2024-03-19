@@ -3,6 +3,7 @@ import { Route, Routes } from 'react-router-dom';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import WhiteboardsView from '../EntityWhiteboardPage/WhiteboardsView';
+import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 
 export interface WhiteboardRouteProps {
   parentPagePath: string;
@@ -11,6 +12,8 @@ export interface WhiteboardRouteProps {
 
 const WhiteboardRoute: FC<WhiteboardRouteProps> = ({ parentPagePath, journeyTypeName }) => {
   const { calloutNameId, whiteboardNameId, spaceNameId, challengeNameId, opportunityNameId } = useUrlParams();
+
+  const { journeyId } = useRouteResolver();
 
   if (!calloutNameId) {
     throw new Error('Must be within a Callout');
@@ -30,6 +33,7 @@ const WhiteboardRoute: FC<WhiteboardRouteProps> = ({ parentPagePath, journeyType
         path="/"
         element={
           <WhiteboardsView
+            journeyId={journeyId}
             whiteboardNameId={whiteboardNameId}
             calloutNameId={calloutNameId}
             spaceNameId={spaceNameId}

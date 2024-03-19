@@ -10,7 +10,7 @@ import { useUserContext } from '../user';
 import { Visual } from '../../common/visual/Visual';
 import { ContributionItem } from '../user/contribution';
 import { InvitationItem } from '../user/providers/UserProvider/InvitationItem';
-import { buildJourneyUrl, JourneyLocation } from '../../../main/routing/urlBuilders';
+import { JourneyLocation } from '../../../main/routing/urlBuilders';
 import { VisualType } from '../../../core/apollo/generated/graphql-schema';
 
 export interface JourneyDetails {
@@ -96,7 +96,6 @@ export const InvitationHydrator = ({
 
   const { data: challengeData } = usePendingMembershipsChallengeQuery({
     variables: {
-      spaceId: invitation.spaceId,
       challengeId: invitation.challengeId!,
       fetchDetails: withJourneyDetails,
       visualType,
@@ -106,7 +105,6 @@ export const InvitationHydrator = ({
 
   const { data: opportunityData } = usePendingMembershipsOpportunityQuery({
     variables: {
-      spaceId: invitation.spaceId,
       opportunityId: invitation.opportunityId!,
       fetchDetails: withJourneyDetails,
       visualType,
@@ -114,7 +112,7 @@ export const InvitationHydrator = ({
     skip: !invitation.opportunityId,
   });
 
-  const journey = opportunityData?.space.opportunity ?? challengeData?.space.challenge ?? spaceData?.space;
+  const journey = opportunityData?.lookup.opportunity ?? challengeData?.lookup.challenge ?? spaceData?.space;
 
   const { data: userData } = usePendingMembershipsUserQuery({
     variables: {
@@ -138,11 +136,7 @@ export const InvitationHydrator = ({
         challengeNameId: invitation.challengeId,
         opportunityNameId: invitation.opportunityId,
       }),
-      journeyUri: buildJourneyUrl({
-        spaceNameId: spaceData?.space.nameID ?? challengeData?.space.nameID ?? opportunityData?.space.nameID ?? '',
-        challengeNameId: challengeData?.space.challenge.nameID ?? opportunityData?.space.opportunity.parentNameID,
-        opportunityNameId: opportunityData?.space.opportunity.nameID,
-      }),
+      journeyUri: journey.profile.url,
       journeyTagline: journey.profile.tagline,
       journeyTags: journey.profile.tagset?.tags,
       journeyVisual: journey.profile.visual,
@@ -174,7 +168,6 @@ export const ApplicationHydrator = ({ application, visualType, children }: Appli
 
   const { data: challengeData } = usePendingMembershipsChallengeQuery({
     variables: {
-      spaceId: application.spaceId,
       challengeId: application.challengeId!,
       fetchDetails: true,
       visualType,
@@ -184,7 +177,6 @@ export const ApplicationHydrator = ({ application, visualType, children }: Appli
 
   const { data: opportunityData } = usePendingMembershipsOpportunityQuery({
     variables: {
-      spaceId: application.spaceId,
       opportunityId: application.opportunityId!,
       fetchDetails: true,
       visualType,
@@ -192,7 +184,7 @@ export const ApplicationHydrator = ({ application, visualType, children }: Appli
     skip: !application.opportunityId,
   });
 
-  const journey = opportunityData?.space.opportunity ?? challengeData?.space.challenge ?? spaceData?.space;
+  const journey = opportunityData?.lookup.opportunity ?? challengeData?.lookup.challenge ?? spaceData?.space;
 
   const hydratedApplication = useMemo<ApplicationWithMeta | undefined>(() => {
     if (!application || !journey) {
@@ -205,11 +197,7 @@ export const ApplicationHydrator = ({ application, visualType, children }: Appli
         challengeNameId: application.challengeId,
         opportunityNameId: application.opportunityId,
       }),
-      journeyUri: buildJourneyUrl({
-        spaceNameId: spaceData?.space.nameID ?? challengeData?.space.nameID ?? opportunityData?.space.nameID ?? '',
-        challengeNameId: challengeData?.space.challenge.nameID ?? opportunityData?.space.opportunity.parentNameID,
-        opportunityNameId: opportunityData?.space.opportunity.nameID,
-      }),
+      journeyUri: journey.profile.url,
       journeyTagline: journey.profile.tagline,
       journeyTags: journey.profile.tagset?.tags,
       journeyVisual: journey.profile.visual,

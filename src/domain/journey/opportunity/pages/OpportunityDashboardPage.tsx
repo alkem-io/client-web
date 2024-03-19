@@ -45,7 +45,7 @@ const OpportunityDashboardPage: FC<OpportunityDashboardPageProps> = ({ dialog })
   const shareUpdatesUrl = buildUpdatesUrl({ spaceNameId, challengeNameId, opportunityNameId });
   const hasExtendedApplicationButton = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
 
-  const { opportunityId } = useRouteResolver();
+  const { challengeId, opportunityId } = useRouteResolver();
 
   return (
     <OpportunityPageLayout currentSection={EntityPageSection.Dashboard}>
@@ -54,10 +54,12 @@ const OpportunityDashboardPage: FC<OpportunityDashboardPageProps> = ({ dialog })
         {({ callouts, ...entities }, state) => (
           <>
             <JourneyDashboardView
+              journeyId={opportunityId}
               ribbon={
                 <OpportunityApplicationButtonContainer
+                  challengeId={challengeId}
+                  opportunityId={opportunityId}
                   challengeNameId={challengeNameId}
-                  opportunityNameId={opportunityNameId}
                 >
                   {({ applicationButtonProps, state: { loading } }) => {
                     if (loading || applicationButtonProps.isMember) {
@@ -129,8 +131,8 @@ const OpportunityDashboardPage: FC<OpportunityDashboardPageProps> = ({ dialog })
               <CalendarDialog
                 open={dialog === 'calendar'}
                 onClose={backToDashboard}
-                spaceNameId={spaceNameId}
-                opportunityNameId={entities.opportunity?.nameID}
+                journeyId={opportunityId}
+                journeyTypeName="opportunity"
               />
             )}
           </>

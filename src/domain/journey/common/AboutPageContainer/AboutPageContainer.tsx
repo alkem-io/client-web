@@ -20,6 +20,7 @@ import { CoreEntityIdTypes } from '../../../shared/types/CoreEntityIds';
 import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
 import { MetricType } from '../../../platform/metrics/MetricType';
 import { InnovationFlowDetails } from '../../../collaboration/InnovationFlow/InnovationFlow';
+import { JourneyTypeName } from '../../JourneyTypeName';
 
 interface AboutPagePermissions {
   canCreateCommunityContextReview: boolean;
@@ -28,7 +29,7 @@ interface AboutPagePermissions {
 
 export interface AboutPageContainerEntities {
   context?: ContextTabFragment;
-  profile: Omit<Profile, 'storageBucket' | 'url'>;
+  profile: Omit<Profile, 'storageBucket'>;
   tagset?: Tagset;
   innovationFlow: InnovationFlowDetails | undefined;
   permissions: AboutPagePermissions;
@@ -51,18 +52,19 @@ export interface AboutPageContainerState {
 }
 
 export interface AboutPageContainerProps
-  extends ContainerChildProps<AboutPageContainerEntities, AboutPageContainerActions, AboutPageContainerState>,
-  CoreEntityIdTypes { }
+  extends ContainerChildProps<AboutPageContainerEntities, AboutPageContainerActions, AboutPageContainerState> {
+  journeyId: string | undefined;
+  journeyTypeName: JourneyTypeName;
+}
 
 const AboutPageContainer: FC<AboutPageContainerProps> = ({
+  journeyId,
+  journeyTypeName,
   children,
-  spaceNameId,
-  challengeNameId,
-  opportunityNameId,
 }) => {
-  const includeSpace = !(challengeNameId || opportunityNameId);
-  const includeChallenge = !!challengeNameId;
-  const includeOpportunity = !!opportunityNameId;
+  const includeSpace = journeyTypeName === 'space';
+  const includeChallenge = journeyTypeName === 'challenge';
+  const includeOpportunity = journeyTypeName === 'opportunity';
 
   const {
     data: nonMembersData,
@@ -70,25 +72,25 @@ const AboutPageContainer: FC<AboutPageContainerProps> = ({
     error: nonMembersDataError,
   } = useAboutPageNonMembersQuery({
     variables: {
-      spaceNameId,
-      challengeNameId,
-      opportunityNameId,
+      spaceId: journeyId,
+      challengeId: journeyId,
+      opportunityId: journeyId,
       includeSpace,
       includeChallenge,
       includeOpportunity,
     },
   });
   const nonMemberContext =
-    nonMembersData?.space?.opportunity?.context ??
-    nonMembersData?.space?.challenge?.context ??
+    nonMembersData?.lookup.opportunity?.context ??
+    nonMembersData?.lookup.challenge?.context ??
     nonMembersData?.space?.context;
   const nonMemberProfile =
-    nonMembersData?.space?.opportunity?.profile ??
-    nonMembersData?.space?.challenge?.profile ??
+    nonMembersData?.lookup.opportunity?.profile ??
+    nonMembersData?.lookup.challenge?.profile ??
     nonMembersData?.space?.profile;
   const nonMemberCommunity =
-    nonMembersData?.space?.opportunity?.community ??
-    nonMembersData?.space?.challenge?.community ??
+    nonMembersData?.lookup.opportunity?.community ??
+    nonMembersData?.lookup.challenge?.community ??
     nonMembersData?.space?.community;
 
   const referencesReadAccess =
@@ -102,9 +104,9 @@ const AboutPageContainer: FC<AboutPageContainerProps> = ({
     error: membersDataError,
   } = useAboutPageMembersQuery({
     variables: {
-      spaceNameId,
-      challengeNameId,
-      opportunityNameId,
+      spaceId: journeyId,
+      challengeId: journeyId,
+      opportunityId: journeyId,
       includeSpace,
       includeChallenge,
       includeOpportunity,
@@ -115,16 +117,17 @@ const AboutPageContainer: FC<AboutPageContainerProps> = ({
   });
 
   const memberProfile =
-    membersData?.space?.opportunity?.profile ?? membersData?.space?.challenge?.profile ?? membersData?.space?.profile;
+    membersData?.lookup.opportunity?.profile ?? membersData?.lookup.challenge?.profile ?? membersData?.space?.profile;
 
   const context = nonMemberContext;
 
   const nonMemberJourney =
-    nonMembersData?.space?.opportunity ?? nonMembersData?.space?.challenge ?? nonMembersData?.space;
-  const memberJourney = membersData?.space?.opportunity ?? membersData?.space?.challenge ?? membersData?.space;
+    nonMembersData?.lookup.opportunity ?? nonMembersData?.lookup.challenge ?? nonMembersData?.space;
+  const memberJourney = membersData?.lookup.opportunity ?? membersData?.lookup.challenge ?? membersData?.space;
 
   const tagset = nonMemberJourney?.profile?.tagset;
-  const collaboration = (nonMembersData?.space?.opportunity ?? nonMembersData?.space?.challenge)?.collaboration;
+  // TODO looks like space is missing
+  const collaboration = (nonMembersData?.lookup.opportunity ?? nonMembersData?.lookup.challenge)?.collaboration;
 
   const hostOrganization = nonMembersData?.space?.host;
   const community = {
@@ -142,7 +145,7 @@ const AboutPageContainer: FC<AboutPageContainerProps> = ({
   const contributors = useCommunityMembersAsCardProps(community, { memberUsersCount });
 
   const canCreateCommunityContextReview =
-    nonMembersData?.space?.challenge?.authorization?.myPrivileges?.includes(
+    nonMembersData?.lookup.challenge?.authorization?.myPrivileges?.includes(
       AuthorizationPrivilege.CommunityContextReview
     ) ?? false;
 
@@ -162,6 +165,7 @@ const AboutPageContainer: FC<AboutPageContainerProps> = ({
       tagset: nonMemberProfile?.tagset,
       visuals: nonMemberProfile?.visuals ?? [],
       tagline: nonMemberProfile?.tagline ?? '',
+      url: nonMemberProfile?.url ?? '',
     };
   }, [nonMemberProfile]);
 

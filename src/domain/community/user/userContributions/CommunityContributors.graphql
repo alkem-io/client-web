@@ -1,0 +1,59 @@
+query SpaceCommunityContributors($spaceId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
+    id
+    host {
+      ...OrganizationCard
+    }
+    community {
+      id
+      leadUsers: usersInRole(role: LEAD) {
+        ...UserCard
+      }
+      memberUsers {
+        ...UserCard
+      }
+      memberOrganizations: organizationsInRole(role: MEMBER)  {
+        ...OrganizationCard
+      }
+    }
+  }
+}
+
+query ChallengeCommunityContributors($challengeId: UUID!) {
+  lookup {
+    challenge(ID: $challengeId) {
+      id
+      community {
+        id
+        ...CommunityMembers
+      }
+    }
+  }
+}
+
+query OpportunityCommunityContributors($opportunityId: UUID!) {
+  lookup {
+    opportunity(ID: $opportunityId) {
+      id
+      community {
+        id
+        ...CommunityMembers
+      }
+    }
+  }
+}
+
+fragment CommunityMembers on Community {
+  leadUsers: usersInRole(role: LEAD) {
+    ...UserCard
+  }
+  memberUsers {
+    ...UserCard
+  }
+  leadOrganizations: organizationsInRole(role: LEAD) {
+    ...OrganizationCard
+  }
+  memberOrganizations: organizationsInRole(role: MEMBER)  {
+    ...OrganizationCard
+  }
+}

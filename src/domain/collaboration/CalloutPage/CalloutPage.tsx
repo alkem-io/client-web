@@ -22,6 +22,7 @@ import { Text } from '../../../core/ui/typography';
 import { useTranslation } from 'react-i18next';
 import { NavigationState } from '../../../core/routing/ScrollToTop';
 import { getCalloutDisplayLocationValue } from '../callout/utils/getCalloutDisplayLocationValue';
+import { useRouteResolver } from '../../../main/routing/resolvers/RouteResolver';
 
 interface CalloutLocation {
   journeyTypeName: JourneyTypeName;
@@ -53,6 +54,8 @@ export interface LocationStateCachedCallout extends NavigationState {
 const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: CalloutPageProps) => {
   const { calloutNameId, spaceNameId, challengeNameId, opportunityNameId } = useUrlParams();
 
+  const { calloutId } = useRouteResolver();
+
   const locationState = (useLocation().state ?? {}) as LocationStateCachedCallout;
 
   const { t } = useTranslation();
@@ -72,24 +75,13 @@ const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: Cal
     error,
   } = useCalloutPageCalloutQuery({
     variables: {
-      calloutNameId,
-      spaceNameId,
-      challengeNameId,
-      opportunityNameId,
-      includeSpace: journeyTypeName === 'space',
-      includeChallenge: journeyTypeName === 'challenge',
-      includeOpportunity: journeyTypeName === 'opportunity',
+      calloutId: calloutId!,
     },
     fetchPolicy: 'cache-and-network',
     errorPolicy: 'all',
   });
 
-  const [callout] =
-    (
-      calloutData?.space.opportunity?.collaboration ??
-      calloutData?.space.challenge?.collaboration ??
-      calloutData?.space.collaboration
-    )?.callouts ?? [];
+  const callout = calloutData?.lookup.callout;
 
   const { handleEdit, handleVisibilityChange, handleDelete } = useCalloutEdit();
 
