@@ -1,10 +1,10 @@
 query JourneyCommunityPrivileges(
-  $spaceId: UUID_NAMEID = "mockid"
+  $spaceId: UUID_NAMEID = "00000000-0000-0000-0000-000000000000"
   $includeSpace: Boolean = false
   $includeChallenge: Boolean = false
   $includeOpportunity: Boolean = false
-  $challengeId: UUID = "mockid"
-  $opportunityId: UUID = "mockid"
+  $challengeId: UUID = "00000000-0000-0000-0000-000000000000"
+  $opportunityId: UUID = "00000000-0000-0000-0000-000000000000"
 ) {
   space(ID: $spaceId) @include(if: $includeSpace) {
     id

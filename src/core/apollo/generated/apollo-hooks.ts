@@ -5736,9 +5736,9 @@ export function refetchActivityLogOnCollaborationQuery(
 
 export const CollaborationAuthorizationDocument = gql`
   query CollaborationAuthorization(
-    $spaceId: UUID_NAMEID = "mockid"
-    $challengeId: UUID = "mockid"
-    $opportunityId: UUID = "mockid"
+    $spaceId: UUID_NAMEID = "00000000-0000-0000-0000-000000000000"
+    $challengeId: UUID = "00000000-0000-0000-0000-000000000000"
+    $opportunityId: UUID = "00000000-0000-0000-0000-000000000000"
     $includeSpace: Boolean = false
     $includeChallenge: Boolean = false
     $includeOpportunity: Boolean = false
@@ -5830,9 +5830,9 @@ export function refetchCollaborationAuthorizationQuery(
 
 export const CollaborationPrivilegesDocument = gql`
   query CollaborationPrivileges(
-    $spaceId: UUID_NAMEID = "mockid"
-    $challengeId: UUID = "mockid"
-    $opportunityId: UUID = "mockid"
+    $spaceId: UUID_NAMEID = "00000000-0000-0000-0000-000000000000"
+    $challengeId: UUID = "00000000-0000-0000-0000-000000000000"
+    $opportunityId: UUID = "00000000-0000-0000-0000-000000000000"
     $includeSpace: Boolean = false
     $includeChallenge: Boolean = false
     $includeOpportunity: Boolean = false
@@ -6615,9 +6615,9 @@ export type DeleteCalloutMutationOptions = Apollo.BaseMutationOptions<
 export const CalloutIdDocument = gql`
   query CalloutId(
     $calloutNameId: UUID_NAMEID!
-    $spaceId: UUID_NAMEID = "mockid"
-    $challengeId: UUID = "mockid"
-    $opportunityId: UUID = "mockid"
+    $spaceId: UUID_NAMEID = "00000000-0000-0000-0000-000000000000"
+    $challengeId: UUID = "00000000-0000-0000-0000-000000000000"
+    $opportunityId: UUID = "00000000-0000-0000-0000-000000000000"
     $isSpace: Boolean = false
     $isChallenge: Boolean = false
     $isOpportunity: Boolean = false
@@ -7064,9 +7064,9 @@ export function refetchCalloutPostsQuery(variables: SchemaTypes.CalloutPostsQuer
 
 export const CalloutsDocument = gql`
   query Callouts(
-    $spaceId: UUID_NAMEID = ""
-    $challengeId: UUID = ""
-    $opportunityId: UUID = ""
+    $spaceId: UUID_NAMEID = "00000000-0000-0000-0000-000000000000"
+    $challengeId: UUID = "00000000-0000-0000-0000-000000000000"
+    $opportunityId: UUID = "00000000-0000-0000-0000-000000000000"
     $includeSpace: Boolean = false
     $includeChallenge: Boolean = false
     $includeOpportunity: Boolean = false
@@ -10314,9 +10314,9 @@ export function refetchPlatformUpdatesRoomQuery(variables?: SchemaTypes.Platform
 
 export const CommunityUserPrivilegesWithParentCommunityDocument = gql`
   query communityUserPrivilegesWithParentCommunity(
-    $spaceId: UUID_NAMEID = "mockid"
-    $challengeId: UUID = "mockid"
-    $opportunityId: UUID = "mockid"
+    $spaceId: UUID_NAMEID = "00000000-0000-0000-0000-000000000000"
+    $challengeId: UUID = "00000000-0000-0000-0000-000000000000"
+    $opportunityId: UUID = "00000000-0000-0000-0000-000000000000"
     $includeSpaceCommunity: Boolean = false
     $includeChallenge: Boolean = false
     $includeOpportunity: Boolean = false
@@ -10887,8 +10887,8 @@ export function refetchCommunityApplicationsInvitationsQuery(
 
 export const CommunityApplicationFormDocument = gql`
   query CommunityApplicationForm(
-    $spaceId: UUID_NAMEID = "mockid"
-    $challengeId: UUID = "mockid"
+    $spaceId: UUID_NAMEID = "00000000-0000-0000-0000-000000000000"
+    $challengeId: UUID = "00000000-0000-0000-0000-000000000000"
     $isSpace: Boolean = false
     $isChallenge: Boolean = false
   ) {
@@ -11539,7 +11539,7 @@ export function refetchAvailableUsersQuery(variables: SchemaTypes.AvailableUsers
 export const CommunityMembersListDocument = gql`
   query CommunityMembersList(
     $communityId: UUID!
-    $spaceId: UUID_NAMEID = "mockid"
+    $spaceId: UUID_NAMEID = "00000000-0000-0000-0000-000000000000"
     $includeSpaceHost: Boolean = false
   ) {
     space(ID: $spaceId) @include(if: $includeSpaceHost) {
@@ -16802,12 +16802,12 @@ export type OpportunityCreatedSubscriptionResult =
   Apollo.SubscriptionResult<SchemaTypes.OpportunityCreatedSubscription>;
 export const AboutPageNonMembersDocument = gql`
   query AboutPageNonMembers(
-    $spaceId: UUID_NAMEID = "mockid"
+    $spaceId: UUID_NAMEID = "00000000-0000-0000-0000-000000000000"
     $includeSpace: Boolean = false
     $includeChallenge: Boolean = false
     $includeOpportunity: Boolean = false
-    $challengeId: UUID = "mockid"
-    $opportunityId: UUID = "mockid"
+    $challengeId: UUID = "00000000-0000-0000-0000-000000000000"
+    $opportunityId: UUID = "00000000-0000-0000-0000-000000000000"
   ) {
     space(ID: $spaceId) @include(if: $includeSpace) {
       id
@@ -16998,14 +16998,14 @@ export function refetchAboutPageNonMembersQuery(variables?: SchemaTypes.AboutPag
 
 export const AboutPageMembersDocument = gql`
   query AboutPageMembers(
-    $spaceId: UUID_NAMEID = "mockid"
+    $spaceId: UUID_NAMEID = "00000000-0000-0000-0000-000000000000"
     $includeSpace: Boolean = false
     $includeChallenge: Boolean = false
     $includeOpportunity: Boolean = false
     $communityReadAccess: Boolean!
     $referencesReadAccess: Boolean!
-    $challengeId: UUID = "mockid"
-    $opportunityId: UUID = "mockid"
+    $challengeId: UUID = "00000000-0000-0000-0000-000000000000"
+    $opportunityId: UUID = "00000000-0000-0000-0000-000000000000"
   ) {
     space(ID: $spaceId) @include(if: $includeSpace) {
       id
@@ -17231,9 +17231,9 @@ export type CreateFeedbackOnCommunityContextMutationOptions = Apollo.BaseMutatio
 >;
 export const CollaborationIdentityDocument = gql`
   query CollaborationIdentity(
-    $spaceId: UUID_NAMEID = ""
-    $challengeId: UUID = ""
-    $opportunityId: UUID = ""
+    $spaceId: UUID_NAMEID = "00000000-0000-0000-0000-000000000000"
+    $challengeId: UUID = "00000000-0000-0000-0000-000000000000"
+    $opportunityId: UUID = "00000000-0000-0000-0000-000000000000"
     $isSpace: Boolean = false
     $isChallenge: Boolean = false
     $isOpportunity: Boolean = false
@@ -17320,12 +17320,12 @@ export function refetchCollaborationIdentityQuery(variables?: SchemaTypes.Collab
 
 export const JourneyCommunityPrivilegesDocument = gql`
   query JourneyCommunityPrivileges(
-    $spaceId: UUID_NAMEID = "mockid"
+    $spaceId: UUID_NAMEID = "00000000-0000-0000-0000-000000000000"
     $includeSpace: Boolean = false
     $includeChallenge: Boolean = false
     $includeOpportunity: Boolean = false
-    $challengeId: UUID = "mockid"
-    $opportunityId: UUID = "mockid"
+    $challengeId: UUID = "00000000-0000-0000-0000-000000000000"
+    $opportunityId: UUID = "00000000-0000-0000-0000-000000000000"
   ) {
     space(ID: $spaceId) @include(if: $includeSpace) {
       id
@@ -17423,9 +17423,9 @@ export function refetchJourneyCommunityPrivilegesQuery(
 
 export const JourneyDataDocument = gql`
   query JourneyData(
-    $spaceId: UUID_NAMEID = "mockid"
-    $challengeId: UUID = "mockid"
-    $opportunityId: UUID = "mockid"
+    $spaceId: UUID_NAMEID = "00000000-0000-0000-0000-000000000000"
+    $challengeId: UUID = "00000000-0000-0000-0000-000000000000"
+    $opportunityId: UUID = "00000000-0000-0000-0000-000000000000"
     $includeSpace: Boolean = false
     $includeChallenge: Boolean = false
     $includeOpportunity: Boolean = false
@@ -17543,12 +17543,12 @@ export function refetchJourneyDataQuery(variables?: SchemaTypes.JourneyDataQuery
 
 export const JourneyPrivilegesDocument = gql`
   query JourneyPrivileges(
-    $spaceId: UUID_NAMEID = "mockid"
+    $spaceId: UUID_NAMEID = "00000000-0000-0000-0000-000000000000"
     $includeSpace: Boolean = false
     $includeChallenge: Boolean = false
     $includeOpportunity: Boolean = false
-    $challengeId: UUID = "mockid"
-    $opportunityId: UUID = "mockid"
+    $challengeId: UUID = "00000000-0000-0000-0000-000000000000"
+    $opportunityId: UUID = "00000000-0000-0000-0000-000000000000"
   ) {
     space(ID: $spaceId) @include(if: $includeSpace) {
       id
@@ -21387,9 +21387,9 @@ export type ShareLinkWithUserMutationOptions = Apollo.BaseMutationOptions<
 >;
 export const JourneyStorageConfigDocument = gql`
   query JourneyStorageConfig(
-    $spaceId: UUID_NAMEID = "mockid"
-    $challengeId: UUID = "mockid"
-    $opportunityId: UUID = "mockid"
+    $spaceId: UUID_NAMEID = "00000000-0000-0000-0000-000000000000"
+    $challengeId: UUID = "00000000-0000-0000-0000-000000000000"
+    $opportunityId: UUID = "00000000-0000-0000-0000-000000000000"
     $includeSpace: Boolean = false
     $includeChallenge: Boolean = false
     $includeOpportunity: Boolean = false
@@ -21478,9 +21478,9 @@ export function refetchJourneyStorageConfigQuery(variables?: SchemaTypes.Journey
 export const CalloutStorageConfigDocument = gql`
   query CalloutStorageConfig(
     $calloutId: UUID_NAMEID!
-    $spaceId: UUID_NAMEID = "mockid"
-    $challengeId: UUID = "mockid"
-    $opportunityId: UUID = "mockid"
+    $spaceId: UUID_NAMEID = "00000000-0000-0000-0000-000000000000"
+    $challengeId: UUID = "00000000-0000-0000-0000-000000000000"
+    $opportunityId: UUID = "00000000-0000-0000-0000-000000000000"
     $includeSpace: Boolean = false
     $includeChallenge: Boolean = false
     $includeOpportunity: Boolean = false
@@ -22893,8 +22893,8 @@ export function refetchAskChatGuidanceQuestionQuery(variables: SchemaTypes.AskCh
 export const JourneyRouteResolverDocument = gql`
   query JourneyRouteResolver(
     $spaceNameId: UUID_NAMEID!
-    $challengeNameId: UUID_NAMEID! = ""
-    $opportunityNameId: UUID_NAMEID! = ""
+    $challengeNameId: UUID_NAMEID! = "00000000-0000-0000-0000-000000000000"
+    $opportunityNameId: UUID_NAMEID! = "00000000-0000-0000-0000-000000000000"
     $includeChallenge: Boolean = false
     $includeOpportunity: Boolean = false
   ) {

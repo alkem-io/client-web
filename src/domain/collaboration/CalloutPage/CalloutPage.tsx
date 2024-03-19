@@ -77,6 +77,7 @@ const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: Cal
     variables: {
       calloutId: calloutId!,
     },
+    skip: !calloutId,
     fetchPolicy: 'cache-and-network',
     errorPolicy: 'all',
   });

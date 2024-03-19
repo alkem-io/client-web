@@ -110,14 +110,14 @@ const useCallouts = ({ journeyTypeName, ...params }: UseCalloutsParams): UseCall
   } = useCollaborationAuthorization();
 
   const variables = {
-    spaceNameId: params.journeyId,
-    challengeNameId: params.journeyId,
-    opportunityNameId: params.journeyId,
+    spaceId: params.journeyId,
+    challengeId: params.journeyId,
+    opportunityId: params.journeyId,
     includeSpace: journeyTypeName === 'space',
     includeChallenge: journeyTypeName === 'challenge',
     includeOpportunity: journeyTypeName === 'opportunity',
     displayLocations: params.displayLocations,
-  };
+  } as const;
 
   const {
     data: calloutsData,

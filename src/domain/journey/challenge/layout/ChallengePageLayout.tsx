@@ -8,6 +8,7 @@ import { useChallenge } from '../hooks/useChallenge';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import JourneyBreadcrumbs from '../../common/journeyBreadcrumbs/JourneyBreadcrumbs';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
+import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 
 export interface ChallengePageLayoutProps {
   currentSection: EntityPageSection;
@@ -19,9 +20,11 @@ const ChallengePageLayout = ({
   currentSection,
   children,
 }: PropsWithChildren<ChallengePageLayoutProps>) => {
-  const { challengeId, profile } = useChallenge();
+  const { profile } = useChallenge();
 
   const { challengeNameId } = useUrlParams();
+
+  const { challengeId, loading } = useRouteResolver();
 
   return (
     <EntityPageLayout
@@ -31,7 +34,7 @@ const ChallengePageLayout = ({
       tabsComponent={ChallengeTabs}
     >
       {children}
-      <JourneyUnauthorizedDialogContainer journeyId={challengeId} journeyTypeName="challenge">
+      <JourneyUnauthorizedDialogContainer journeyId={challengeId} journeyTypeName="challenge" loading={loading}>
         {({ vision, ...props }) => (
           <JourneyUnauthorizedDialog
             journeyTypeName="challenge"

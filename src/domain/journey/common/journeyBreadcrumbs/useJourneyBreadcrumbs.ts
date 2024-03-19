@@ -19,7 +19,7 @@ export interface BreadcrumbsItem {
 const JOURNEY_NESTING: JourneyTypeName[] = ['space', 'challenge', 'opportunity'];
 
 export const useJourneyBreadcrumbs = () => {
-  const { spaceId, challengeId, opportunityId, journeyTypeName } = useRouteResolver();
+  const { spaceId, challengeId, opportunityId, journeyTypeName, loading } = useRouteResolver();
 
   const currentJourneyIndex = journeyTypeName && JOURNEY_NESTING.indexOf(journeyTypeName);
 
@@ -35,21 +35,21 @@ export const useJourneyBreadcrumbs = () => {
     variables: {
       spaceId: spaceId!,
     },
-    skip: !shouldFetchJourney('space'),
+    skip: !shouldFetchJourney('space') || loading,
   });
 
   const { data: _challenge, loading: isLoadingChallenge } = useJourneyBreadcrumbsChallengeQuery({
     variables: {
       challengeId: challengeId!,
     },
-    skip: !shouldFetchJourney('challenge'),
+    skip: !shouldFetchJourney('challenge') || loading,
   });
 
   const { data: _opportunity, loading: isLoadingOpportunity } = useJourneyBreadcrumbsOpportunityQuery({
     variables: {
       opportunityId: opportunityId!,
     },
-    skip: !shouldFetchJourney('opportunity'),
+    skip: !shouldFetchJourney('opportunity') || loading,
   });
 
   const getJourneyProfile = (journey: JourneyTypeName) => {

@@ -1,7 +1,7 @@
 query JourneyRouteResolver(
   $spaceNameId: UUID_NAMEID!
-  $challengeNameId: UUID_NAMEID! = ""
-  $opportunityNameId: UUID_NAMEID! = ""
+  $challengeNameId: UUID_NAMEID! = "00000000-0000-0000-0000-000000000000"
+  $opportunityNameId: UUID_NAMEID! = "00000000-0000-0000-0000-000000000000"
   $includeChallenge: Boolean = false
   $includeOpportunity: Boolean = false
 ) {

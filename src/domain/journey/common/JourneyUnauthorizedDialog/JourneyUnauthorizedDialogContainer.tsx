@@ -20,7 +20,6 @@ interface JourneyUnauthorizedDialogContainerProvided extends EntityDashboardLead
   references: Reference[] | undefined;
   sendMessageToCommunityLeads: (message: string) => Promise<void>;
   metrics: MetricsItemFragment[] | undefined;
-  privilegesLoading: boolean;
   authorized: boolean | undefined;
   vision: string | undefined;
   background: string | undefined;
@@ -33,6 +32,7 @@ interface JourneyUnauthorizedDialogContainerProvided extends EntityDashboardLead
 interface JourneyUnauthorizedDialogContainerProps {
   journeyId: string | undefined;
   journeyTypeName: JourneyTypeName;
+  loading?: boolean;
   children: (provided: JourneyUnauthorizedDialogContainerProvided) => ReactNode;
 }
 
@@ -43,6 +43,7 @@ const fetchJourneyData = mainQuery(useJourneyDataQuery);
 const JourneyUnauthorizedDialogContainer = ({
   journeyId,
   journeyTypeName,
+  loading = false,
   children,
 }: JourneyUnauthorizedDialogContainerProps) => {
   const {
@@ -58,6 +59,7 @@ const JourneyUnauthorizedDialogContainer = ({
       includeChallenge: journeyTypeName === 'challenge',
       includeOpportunity: journeyTypeName === 'opportunity',
     },
+    skip: !journeyId,
   });
 
   const { authorization } =
@@ -83,7 +85,7 @@ const JourneyUnauthorizedDialogContainer = ({
       includeChallenge: journeyTypeName === 'challenge',
       includeOpportunity: journeyTypeName === 'opportunity',
     },
-    skip: shouldSkipJourneyCommunityPrivileges,
+    skip: shouldSkipJourneyCommunityPrivileges || !journeyId,
   });
 
   const { authorization: communityAuthorization } =
@@ -105,6 +107,7 @@ const JourneyUnauthorizedDialogContainer = ({
       includeCommunity: communityReadAccess,
     },
     skip:
+      !journeyId ||
       shouldSkipJourneyCommunityPrivileges ||
       journeyCommunityPrivilegesLoading ||
       Boolean(journeyCommunityPrivilegesError),
@@ -138,7 +141,6 @@ const JourneyUnauthorizedDialogContainer = ({
 
   const provided: JourneyUnauthorizedDialogContainerProvided = {
     authorized: isAuthorized,
-    privilegesLoading,
     background: profile?.description,
     displayName: profile?.displayName,
     tagline: profile?.tagline,
@@ -151,7 +153,7 @@ const JourneyUnauthorizedDialogContainer = ({
     hostOrganizations: journeyTypeName === 'space' ? hostOrganizations : undefined,
     leadOrganizations: community?.leadOrganizations,
     leadUsers: community?.leadUsers,
-    loading: privilegesLoading,
+    loading: privilegesLoading || loading,
     error: privilegesError ?? journeyCommunityPrivilegesError ?? journeyDataError,
   };
 

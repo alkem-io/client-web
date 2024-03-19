@@ -13,7 +13,7 @@ interface OpportunityPageLayoutProps {
 }
 
 const OpportunityPageLayout = ({ currentSection, children }: PropsWithChildren<OpportunityPageLayoutProps>) => {
-  const { opportunityId } = useRouteResolver();
+  const { opportunityId, loading } = useRouteResolver();
 
   return (
     <EntityPageLayout
@@ -23,7 +23,7 @@ const OpportunityPageLayout = ({ currentSection, children }: PropsWithChildren<O
       tabsComponent={OpportunityTabs}
     >
       {children}
-      <JourneyUnauthorizedDialogContainer journeyId={opportunityId} journeyTypeName="opportunity">
+      <JourneyUnauthorizedDialogContainer journeyId={opportunityId} journeyTypeName="opportunity" loading={loading}>
         {({ vision, ...props }) => (
           <JourneyUnauthorizedDialog journeyTypeName="opportunity" description={vision} {...props} />
         )}

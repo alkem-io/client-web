@@ -1,6 +1,6 @@
 query CommunityApplicationForm(
-  $spaceId: UUID_NAMEID = "mockid"
-  $challengeId: UUID = "mockid"
+  $spaceId: UUID_NAMEID = "00000000-0000-0000-0000-000000000000"
+  $challengeId: UUID = "00000000-0000-0000-0000-000000000000"
   $isSpace: Boolean = false
   $isChallenge: Boolean = false
 ) {

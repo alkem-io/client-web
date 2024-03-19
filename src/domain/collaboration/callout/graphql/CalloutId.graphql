@@ -1,8 +1,8 @@
 query CalloutId(
   $calloutNameId: UUID_NAMEID!
-  $spaceId: UUID_NAMEID = "mockid" # workaround for mandatory param
-  $challengeId: UUID = "mockid" # workaround for mandatory param
-  $opportunityId: UUID = "mockid" # workaround for mandatory param
+  $spaceId: UUID_NAMEID = "00000000-0000-0000-0000-000000000000" # workaround for mandatory param
+  $challengeId: UUID = "00000000-0000-0000-0000-000000000000" # workaround for mandatory param
+  $opportunityId: UUID = "00000000-0000-0000-0000-000000000000" # workaround for mandatory param
   $isSpace: Boolean = false
   $isChallenge: Boolean = false
   $isOpportunity: Boolean = false
