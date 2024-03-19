@@ -3081,6 +3081,7 @@ export const ConfigurationFragmentDoc = gql`
       about
       blog
       feedback
+      forumreleases
       privacy
       security
       support

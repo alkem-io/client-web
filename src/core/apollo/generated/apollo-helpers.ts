@@ -1934,6 +1934,7 @@ export type PlatformLocationsKeySpecifier = (
   | 'domain'
   | 'environment'
   | 'feedback'
+  | 'forumreleases'
   | 'foundation'
   | 'help'
   | 'impact'
@@ -1958,6 +1959,7 @@ export type PlatformLocationsFieldPolicy = {
   domain?: FieldPolicy<any> | FieldReadFunction<any>;
   environment?: FieldPolicy<any> | FieldReadFunction<any>;
   feedback?: FieldPolicy<any> | FieldReadFunction<any>;
+  forumreleases?: FieldPolicy<any> | FieldReadFunction<any>;
   foundation?: FieldPolicy<any> | FieldReadFunction<any>;
   help?: FieldPolicy<any> | FieldReadFunction<any>;
   impact?: FieldPolicy<any> | FieldReadFunction<any>;
