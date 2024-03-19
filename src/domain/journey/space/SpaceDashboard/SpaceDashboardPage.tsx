@@ -44,8 +44,9 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
         {({ callouts, dashboardNavigation, ...entities }, state) => (
           <>
             <SpaceDashboardView
-              vision={entities.space?.context?.vision}
+              spaceId={spaceId}
               spaceNameId={entities.space?.nameID}
+              vision={entities.space?.context?.vision}
               displayName={entities.space?.profile.displayName}
               dashboardNavigation={dashboardNavigation}
               dashboardNavigationLoading={state.loading}
@@ -83,7 +84,8 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
               <CalendarDialog
                 open={dialog === 'calendar'}
                 onClose={backToDashboard}
-                spaceNameId={entities.space?.nameID}
+                journeyId={spaceId}
+                journeyTypeName="space"
               />
             )}
             <JourneyAboutDialog

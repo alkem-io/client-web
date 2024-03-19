@@ -1,12 +1,11 @@
 import { useMemo } from 'react';
-import { useUrlParams } from '../../../../core/routing/useUrlParams';
-import { buildJourneyUrlByJourneyTypeName } from '../../../../main/routing/urlBuilders';
 import {
   useJourneyBreadcrumbsChallengeQuery,
   useJourneyBreadcrumbsOpportunityQuery,
   useJourneyBreadcrumbsSpaceQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
-import { getJourneyTypeName, JourneyTypeName } from '../../JourneyTypeName';
+import { JourneyTypeName } from '../../JourneyTypeName';
+import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 
 export interface BreadcrumbsItem {
   displayName: string;
@@ -20,9 +19,7 @@ export interface BreadcrumbsItem {
 const JOURNEY_NESTING: JourneyTypeName[] = ['space', 'challenge', 'opportunity'];
 
 export const useJourneyBreadcrumbs = () => {
-  const { spaceNameId, challengeNameId, opportunityNameId } = useUrlParams();
-
-  const journeyTypeName = getJourneyTypeName({ spaceNameId, challengeNameId, opportunityNameId });
+  const { spaceId, challengeId, opportunityId, journeyTypeName } = useRouteResolver();
 
   const currentJourneyIndex = journeyTypeName && JOURNEY_NESTING.indexOf(journeyTypeName);
 
@@ -36,23 +33,21 @@ export const useJourneyBreadcrumbs = () => {
 
   const { data: _space, loading: isLoadingSpace } = useJourneyBreadcrumbsSpaceQuery({
     variables: {
-      spaceNameId: spaceNameId!,
+      spaceId: spaceId!,
     },
     skip: !shouldFetchJourney('space'),
   });
 
   const { data: _challenge, loading: isLoadingChallenge } = useJourneyBreadcrumbsChallengeQuery({
     variables: {
-      spaceNameId: spaceNameId!,
-      challengeNameId: challengeNameId!,
+      challengeId: challengeId!,
     },
     skip: !shouldFetchJourney('challenge'),
   });
 
   const { data: _opportunity, loading: isLoadingOpportunity } = useJourneyBreadcrumbsOpportunityQuery({
     variables: {
-      spaceNameId: spaceNameId!,
-      opportunityNameId: opportunityNameId!,
+      opportunityId: opportunityId!,
     },
     skip: !shouldFetchJourney('opportunity'),
   });
@@ -62,9 +57,9 @@ export const useJourneyBreadcrumbs = () => {
       case 'space':
         return _space?.space.profile;
       case 'challenge':
-        return _challenge?.space.challenge.profile;
+        return _challenge?.lookup.challenge?.profile;
       case 'opportunity':
-        return _opportunity?.space.opportunity.profile;
+        return _opportunity?.lookup.opportunity?.profile;
     }
   };
 
@@ -78,10 +73,7 @@ export const useJourneyBreadcrumbs = () => {
     return JOURNEY_NESTING.slice(0, currentJourneyIndex! + 1).map(journey => {
       const profile = getJourneyProfile(journey);
       const displayName = profile?.displayName!;
-      const journeyUri = buildJourneyUrlByJourneyTypeName(
-        { spaceNameId, challengeNameId, opportunityNameId },
-        journey
-      )!;
+      const journeyUri = profile?.url!;
       return {
         displayName,
         uri: journeyUri,

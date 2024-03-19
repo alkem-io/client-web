@@ -13,6 +13,7 @@ import { MetricItem } from '../../../../platform/metrics/views/Metrics';
 import { InnovationFlowDetails } from '../../../../collaboration/InnovationFlow/InnovationFlow';
 
 export interface AboutSectionProps extends EntityDashboardContributors, EntityDashboardLeads {
+  journeyId: string | undefined;
   journeyTypeName: JourneyTypeName;
   name: string;
   tagline: string | undefined;

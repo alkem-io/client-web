@@ -31,7 +31,7 @@ const ChallengePageLayout = ({
       tabsComponent={ChallengeTabs}
     >
       {children}
-      <JourneyUnauthorizedDialogContainer journeyTypeName="challenge">
+      <JourneyUnauthorizedDialogContainer journeyId={challengeId} journeyTypeName="challenge">
         {({ vision, ...props }) => (
           <JourneyUnauthorizedDialog
             journeyTypeName="challenge"

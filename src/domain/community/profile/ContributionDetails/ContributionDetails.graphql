@@ -1,10 +1,6 @@
 query spaceContributionDetails($spaceId: UUID_NAMEID!) {
   space(ID: $spaceId) {
     id
-    license {
-      id
-      visibility
-    }
     profile {
       id
       url
@@ -49,10 +45,6 @@ query challengeContributionDetails($challengeId: UUID!) {
         id
       }
     }
-    #license {
-    #  id
-    #  visibility
-    #}
   }
 }
 
@@ -79,9 +71,5 @@ query opportunityContributionDetails($opportunityId: UUID!) {
         id
       }
     }
-    #license {
-    #  id
-    #  visibility
-    #}
   }
 }

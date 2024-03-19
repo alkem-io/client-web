@@ -1,5 +1,5 @@
 import { Grid } from '@mui/material';
-import React, { FC, useMemo } from 'react';
+import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
@@ -19,6 +19,7 @@ import EditVisualsView from '../../../../common/visual/EditVisuals/EditVisualsVi
 import { formatDatabaseLocation } from '../../../../common/location/LocationUtils';
 import Gutters from '../../../../../core/ui/grid/Gutters';
 import { VisualType } from '../../../../../core/apollo/generated/graphql-schema';
+import { useRouteResolver } from '../../../../../main/routing/resolvers/RouteResolver';
 
 interface ChallengeProfileViewProps {
   mode: FormMode;
@@ -30,7 +31,9 @@ const ChallengeProfileView: FC<ChallengeProfileViewProps> = ({ mode }) => {
   const notify = useNotification();
   const onSuccess = (message: string) => notify(message, 'success');
 
-  const { challengeNameId = '', spaceNameId = '' } = useUrlParams();
+  const { spaceNameId = '' } = useUrlParams();
+
+  const { challengeId } = useRouteResolver();
 
   const [createChallenge, { loading: isCreating }] = useCreateChallengeMutation({
     onCompleted: data => {
@@ -43,16 +46,16 @@ const ChallengeProfileView: FC<ChallengeProfileViewProps> = ({ mode }) => {
 
   const [updateChallenge, { loading: isUpdating }] = useUpdateChallengeMutation({
     onCompleted: () => onSuccess('Successfully updated'),
-    refetchQueries: [refetchChallengeProfileInfoQuery({ spaceId: spaceNameId, challengeId: challengeNameId })],
+    refetchQueries: [refetchChallengeProfileInfoQuery({ challengeId: challengeId! })],
     awaitRefetchQueries: true,
   });
 
   const { data: challengeProfile } = useChallengeProfileInfoQuery({
-    variables: { spaceId: spaceNameId, challengeId: challengeNameId },
-    skip: mode === FormMode.create,
+    variables: { challengeId: challengeId! },
+    skip: mode === FormMode.create || !challengeId,
   });
-  const challenge = challengeProfile?.space?.challenge;
-  const challengeId = useMemo(() => challenge?.id || '', [challenge]);
+
+  const challenge = challengeProfile?.lookup.challenge;
 
   const isLoading = isCreating || isUpdating;
 
@@ -73,13 +76,16 @@ const ChallengeProfileView: FC<ChallengeProfileViewProps> = ({ mode }) => {
               spaceID: spaceNameId,
               tags: tagsets.flatMap(x => x.tags),
               collaborationData: {
-                innovationFlowTemplateID: ''
-              }
+                innovationFlowTemplateID: '',
+              },
             },
           },
         });
         break;
-      case FormMode.update:
+      case FormMode.update: {
+        if (!challengeId) {
+          throw new Error('Challenge ID is required for update');
+        }
         updateChallenge({
           variables: {
             input: {
@@ -101,6 +107,7 @@ const ChallengeProfileView: FC<ChallengeProfileViewProps> = ({ mode }) => {
           },
         });
         break;
+      }
       default:
         throw new Error(`Submit mode expected: (${mode}) found`);
     }

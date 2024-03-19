@@ -61,31 +61,18 @@ query CalloutStorageConfig(
 
 query CalloutPostStorageConfig(
   $postId: UUID_NAMEID!
-  $calloutId: UUID_NAMEID!
-  $spaceId: UUID_NAMEID = "mockid" # workaround for mandatory param
-  $challengeId: UUID = "mockid" # workaround for mandatory param
-  $opportunityId: UUID = "mockid" # workaround for mandatory param
-  $includeSpace: Boolean = false
-  $includeChallenge: Boolean = false
-  $includeOpportunity: Boolean = false
+  $calloutId: UUID!
 ) {
-  space(ID: $spaceId) @include(if: $includeSpace) {
-    id
-    collaboration {
-      ...PostInCalloutOnCollaborationWithStorageConfig
-    }
-  }
   lookup {
-    challenge(ID: $challengeId) @include(if: $includeChallenge) {
+    callout(ID: $calloutId) {
       id
-      collaboration {
-        ...PostInCalloutOnCollaborationWithStorageConfig
-      }
-    }
-    opportunity(ID: $opportunityId) @include(if: $includeOpportunity) {
-      id
-      collaboration {
-        ...PostInCalloutOnCollaborationWithStorageConfig
+      contributions(filter: { postIDs: [$postId] }) {
+        post {
+          id
+          profile {
+            ...ProfileStorageConfig
+          }
+        }
       }
     }
   }
@@ -177,21 +164,6 @@ fragment CalloutOnCollaborationWithStorageConfig on Collaboration {
     framing {
       profile {
         ...ProfileStorageConfig
-      }
-    }
-  }
-}
-
-fragment PostInCalloutOnCollaborationWithStorageConfig on Collaboration {
-  id
-  callouts(IDs: [$calloutId]) {
-    id
-    contributions(filter: { postIDs: [$postId] }) {
-      post {
-        id
-        profile {
-          ...ProfileStorageConfig
-        }
       }
     }
   }

@@ -1,9 +1,9 @@
-query JourneyBreadcrumbsSpace($spaceNameId: UUID_NAMEID!) {
-  space(ID: $spaceNameId) {
+query JourneyBreadcrumbsSpace($spaceId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
     id
     profile {
       id
-      # url?
+      url
       displayName
       avatar: visual(type: BANNER) {
         id
@@ -37,7 +37,7 @@ query JourneyBreadcrumbsOpportunity($opportunityId: UUID!) {
 
 fragment JourneyBreadcrumbsProfile on Profile {
   id
-  # url?
+  url
   displayName
   avatar: visual(type: AVATAR) {
     id

@@ -86,7 +86,7 @@ const AdminChallengeCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../
         </PageContentColumn>
       </PageContent>
       <PageContentBlockSeamless>
-        <ChallengeCommunityAdminMembershipPreferencesSection spaceId={spaceId} challengeId={challengeId} />
+        <ChallengeCommunityAdminMembershipPreferencesSection challengeId={challengeId} />
         <CommunityApplicationForm spaceId={spaceId} challengeId={challengeId} />
       </PageContentBlockSeamless>
     </ChallengeSettingsLayout>

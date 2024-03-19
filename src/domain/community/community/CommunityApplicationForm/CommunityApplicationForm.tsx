@@ -64,14 +64,14 @@ const CommunityApplicationForm: FC<CommunityApplicationFormProps> = ({ spaceId, 
 
   const data = useMemo(
     () => ({
-      communityId: isSpace ? rawData?.space.community?.id : rawData?.space.challenge?.community?.id,
+      communityId: isSpace ? rawData?.space?.community?.id : rawData?.lookup.challenge?.community?.id,
       description: isSpace
-        ? rawData?.space.community?.applicationForm?.description
-        : rawData?.space.challenge?.community?.applicationForm?.description,
+        ? rawData?.space?.community?.applicationForm?.description
+        : rawData?.lookup.challenge?.community?.applicationForm?.description,
       questions: sortBy(
         isSpace
-          ? rawData?.space.community?.applicationForm?.questions
-          : rawData?.space.challenge?.community?.applicationForm?.questions,
+          ? rawData?.space?.community?.applicationForm?.questions
+          : rawData?.lookup.challenge?.community?.applicationForm?.questions,
         q => q.sortOrder
       ),
     }),

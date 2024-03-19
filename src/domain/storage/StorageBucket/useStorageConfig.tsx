@@ -49,9 +49,7 @@ interface UseStorageConfigOptionsCallout extends UseStorageConfigOptionsBase {
 
 interface UseStorageConfigOptionsPost extends UseStorageConfigOptionsBase {
   postId: string | undefined;
-  calloutId: string;
-  journeyId: string | undefined;
-  journeyTypeName: JourneyTypeName;
+  calloutId: string | undefined;
   locationType: 'post';
 }
 
@@ -128,15 +126,9 @@ const useStorageConfig = ({ locationType, skip, ...options }: StorageConfigOptio
   const { data: postStorageConfigData } = useCalloutPostStorageConfigQuery({
     variables: {
       postId: postOptions.postId!, // ensured by skip
-      calloutId: postOptions.calloutId,
-      spaceId: journeyOptions.journeyId,
-      challengeId: journeyOptions.journeyId,
-      opportunityId: journeyOptions.journeyId,
-      includeSpace: journeyTypeName === 'space',
-      includeChallenge: journeyTypeName === 'challenge',
-      includeOpportunity: journeyTypeName === 'opportunity',
+      calloutId: postOptions.calloutId!, // ensured by skip
     },
-    skip: skip || locationType !== 'post' || !postOptions.postId || !journeyOptions.journeyId,
+    skip: skip || locationType !== 'post' || !postOptions.postId || !postOptions.calloutId,
   });
 
   const userOptions = options as UseStorageConfigOptionsUser;
@@ -185,12 +177,7 @@ const useStorageConfig = ({ locationType, skip, ...options }: StorageConfigOptio
       calloutStorageConfigData?.space?.collaboration
     )?.callouts ?? [];
 
-  const [contribution] =
-    (
-      postStorageConfigData?.lookup.opportunity?.collaboration ??
-      postStorageConfigData?.lookup.challenge?.collaboration ??
-      postStorageConfigData?.space?.collaboration
-    )?.callouts?.[0]?.contributions ?? [];
+  const [contribution] = postStorageConfigData?.lookup.callout?.contributions ?? [];
 
   const { profile } =
     journey ??

@@ -37,7 +37,9 @@ export interface PostSettingsPageProps {
 
 const PostSettingsPage: FC<PostSettingsPageProps> = ({ journeyTypeName, onClose }) => {
   const { t } = useTranslation();
-  const { spaceNameId = '', challengeNameId, opportunityNameId, postNameId = '', calloutNameId = '' } = useUrlParams();
+  const { postNameId } = useUrlParams();
+  const { calloutId } = useRouteResolver();
+
   const navigate = useNavigate();
 
   const [post, setPost] = useState<PostFormOutput>();
@@ -57,10 +59,7 @@ const PostSettingsPage: FC<PostSettingsPageProps> = ({ journeyTypeName, onClose 
 
   const postSettings = usePostSettings({
     postNameId,
-    spaceNameId,
-    challengeNameId,
-    opportunityNameId,
-    calloutNameId,
+    calloutId,
   });
 
   const notify = useNotification();
@@ -138,13 +137,7 @@ const PostSettingsPage: FC<PostSettingsPageProps> = ({ journeyTypeName, onClose 
 
   return (
     <PostLayout currentSection={PostDialogSection.Settings} onClose={onClose}>
-      <StorageConfigContextProvider
-        locationType="post"
-        postId={postNameId}
-        calloutId={calloutNameId}
-        journeyTypeName={journeyTypeName}
-        journeyId={journeyId}
-      >
+      <StorageConfigContextProvider locationType="post" postId={postNameId} calloutId={calloutId}>
         <PostForm
           edit
           loading={postSettings.loading || postSettings.updating || isMovingContribution}

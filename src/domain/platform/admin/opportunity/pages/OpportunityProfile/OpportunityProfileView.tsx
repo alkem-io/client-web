@@ -1,17 +1,15 @@
 import { Grid, Typography } from '@mui/material';
-import React, { FC, useMemo } from 'react';
+import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import FormMode from '../../../components/FormMode';
 import ProfileForm, { ProfileFormValues } from '../../../../../common/profile/ProfileForm';
 import { useNotification } from '../../../../../../core/ui/notifications/useNotification';
-import { useChallenge } from '../../../../../journey/challenge/hooks/useChallenge';
-import { useUrlParams } from '../../../../../../core/routing/useUrlParams';
 import {
-  useCreateOpportunityMutation,
   refetchOpportunitiesQuery,
-  useUpdateOpportunityMutation,
   refetchOpportunityProfileInfoQuery,
+  useCreateOpportunityMutation,
   useOpportunityProfileInfoQuery,
+  useUpdateOpportunityMutation,
 } from '../../../../../../core/apollo/generated/apollo-hooks';
 import { useNavigateToEdit } from '../../../../../../core/routing/useNavigateToEdit';
 import EditVisualsView from '../../../../../common/visual/EditVisuals/EditVisualsView';
@@ -19,6 +17,7 @@ import { formatDatabaseLocation } from '../../../../../common/location/LocationU
 import SaveButton from '../../../../../../core/ui/actions/SaveButton';
 import Gutters from '../../../../../../core/ui/grid/Gutters';
 import { VisualType } from '../../../../../../core/apollo/generated/graphql-schema';
+import { useRouteResolver } from '../../../../../../main/routing/resolvers/RouteResolver';
 
 interface Props {
   mode: FormMode;
@@ -30,36 +29,38 @@ const OpportunityProfileView: FC<Props> = ({ mode }) => {
   const notify = useNotification();
   const onSuccess = (message: string) => notify(message, 'success');
 
-  const { challengeId } = useChallenge();
-
-  const { spaceNameId = '', opportunityNameId = '', challengeNameId = '' } = useUrlParams();
+  const { challengeId, opportunityId } = useRouteResolver();
 
   const [createOpportunity, { loading: isCreating }] = useCreateOpportunityMutation({
-    refetchQueries: [refetchOpportunitiesQuery({ spaceId: spaceNameId, challengeId: challengeNameId })],
+    refetchQueries: [refetchOpportunitiesQuery({ challengeId: challengeId! })],
     awaitRefetchQueries: true,
     onCompleted: data => {
       onSuccess('Successfully created');
       navigateToEdit(data.createOpportunity.nameID);
     },
   });
+
   const [updateOpportunity, { loading: isUpdating }] = useUpdateOpportunityMutation({
     onCompleted: () => onSuccess('Successfully updated'),
-    refetchQueries: [refetchOpportunityProfileInfoQuery({ spaceId: spaceNameId, opportunityId: opportunityNameId })],
+    refetchQueries: [refetchOpportunityProfileInfoQuery({ opportunityId: opportunityId! })],
     awaitRefetchQueries: true,
   });
 
   const { data: opportunityProfile } = useOpportunityProfileInfoQuery({
-    variables: { spaceId: spaceNameId, opportunityId: opportunityNameId },
+    variables: { opportunityId: opportunityId! },
     skip: mode === FormMode.create,
   });
 
-  const opportunity = opportunityProfile?.space?.opportunity;
-  const opportunityId = useMemo(() => opportunity?.id || '', [opportunity]);
+  const opportunity = opportunityProfile?.lookup.opportunity;
 
   const isLoading = isCreating || isUpdating;
 
   const onSubmit = async (values: ProfileFormValues) => {
     const { name: displayName, tagline, nameID, tagsets, references } = values;
+
+    if (!challengeId) {
+      throw new Error('Challenge ID is required');
+    }
 
     switch (mode) {
       case FormMode.create:
@@ -75,17 +76,21 @@ const OpportunityProfileView: FC<Props> = ({ mode }) => {
               tags: tagsets.flatMap(x => x.tags),
               collaborationData: {
                 innovationFlowTemplateID: '',
-              }
+              },
             },
           },
         });
         break;
-      case FormMode.update:
+      case FormMode.update: {
+        if (!opportunity) {
+          throw new Error('Opportunity is not loaded');
+        }
+
         updateOpportunity({
           variables: {
             input: {
               nameID: nameID,
-              ID: opportunityId,
+              ID: opportunity.id,
               profileData: {
                 displayName,
                 tagline,
@@ -102,6 +107,7 @@ const OpportunityProfileView: FC<Props> = ({ mode }) => {
           },
         });
         break;
+      }
       default:
         throw new Error(`Submit mode expected: (${mode}) found`);
     }

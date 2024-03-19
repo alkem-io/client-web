@@ -1,7 +1,5 @@
 import React, { FC } from 'react';
-import { useChallenge } from '../../../journey/challenge/hooks/useChallenge';
 import { useChallengeCommunityContributorsQuery } from '../../../../core/apollo/generated/apollo-hooks';
-import useCommunityContributors from '../CommunityContributors/useCommunityContributors';
 import CommunityContributorsView from '../CommunityContributors/CommunityContributorsView';
 import useOrganizationCardProps from '../utils/useOrganizationCardProps';
 import useUserCardProps from '../utils/useUserCardProps';
@@ -10,23 +8,16 @@ import { ContributorsDialogContentProps } from '../ContributorsDialog/Contributo
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 
 const ChallengeContributorsDialogContent: FC<ContributorsDialogContentProps> = ({ dialogOpen }) => {
-  const { challenge } = useChallenge();
-  const challengeId = challenge?.id;
+  const { challengeId } = useRouteResolver();
 
-  const { spaceId } = useRouteResolver();
+  const { loading, data } = useChallengeCommunityContributorsQuery({
+    variables: {
+      challengeId: challengeId!,
+    },
+    skip: !dialogOpen || !challengeId,
+  });
 
-  const { loading, memberUsers, memberOrganizations } = useCommunityContributors(
-    useChallengeCommunityContributorsQuery,
-    data => {
-      const { memberUsers, memberOrganizations } = data?.space.challenge.community || {};
-      return { memberUsers, memberOrganizations };
-    },
-    {
-      spaceId,
-      challengeId,
-    },
-    !dialogOpen
-  );
+  const { memberUsers, memberOrganizations } = data?.lookup.challenge?.community ?? {};
 
   return (
     <CommunityContributorsView

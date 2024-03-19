@@ -3,15 +3,14 @@ import ChallengePreferenceContainer from '../../../common/preference/challenge/C
 import ChallengeMembershipPreferenceView from '../../../journey/challenge/views/ChallengeMembershipPreferenceView';
 
 interface Props {
-  spaceId: string;
-  challengeId: string;
+  challengeId: string | undefined;
 }
 
 // TODO remove this "wrapper" component after migration from PreferenceContainer to a hook
 // It's only here in order not to put a massive block in parent's rendered JSX
-const ChallengeCommunityAdminMembershipPreferencesSection: FC<Props> = ({ spaceId, challengeId }) => {
+const ChallengeCommunityAdminMembershipPreferencesSection: FC<Props> = ({ challengeId }) => {
   return (
-    <ChallengePreferenceContainer spaceId={spaceId} challengeId={challengeId}>
+    <ChallengePreferenceContainer challengeId={challengeId}>
       {(entities, state, actions) => {
         const authPrefs = entities.preferences.filter(x => x.definition.group === 'MembershipChallenge');
         return (

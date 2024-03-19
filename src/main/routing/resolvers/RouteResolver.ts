@@ -1,8 +1,6 @@
 import { useUrlParams } from '../../../core/routing/useUrlParams';
-import { useJourneyRouteResolverQuery } from '../../../core/apollo/generated/apollo-hooks';
+import { useCalloutIdQuery, useJourneyRouteResolverQuery } from '../../../core/apollo/generated/apollo-hooks';
 import { getJourneyTypeName, JourneyTypeName } from '../../../domain/journey/JourneyTypeName';
-// import { JourneyLocation } from '../urlBuilders';
-// import { takeWhile } from 'lodash';
 
 enum RouteType {
   Journey = 'Journey',
@@ -17,11 +15,21 @@ interface JourneyRouteParams {
   journeyTypeName: JourneyTypeName;
 }
 
+interface JourneyCalloutRouteParams extends JourneyRouteParams {
+  calloutId: string | undefined;
+}
+
 interface RouteResolverState {
   loading: boolean;
 }
 
-type RouteParams = RouteResolverState & JourneyRouteParams;
+type AllParams = JourneyRouteParams & JourneyCalloutRouteParams;
+
+type LazyParams<Params extends {}> = {
+  [K in keyof AllParams]: K extends keyof Params ? Params[K] : undefined;
+};
+
+type RouteParams = RouteResolverState & (LazyParams<JourneyRouteParams> | LazyParams<JourneyCalloutRouteParams>);
 
 // type JourneyLevel = 0 | 1 | 2;
 
@@ -33,9 +41,9 @@ type RouteParams = RouteResolverState & JourneyRouteParams;
 // };
 
 export const useRouteResolver = (): RouteParams => {
-  const { spaceNameId, challengeNameId, opportunityNameId } = useUrlParams();
+  const { spaceNameId, challengeNameId, opportunityNameId, calloutNameId } = useUrlParams();
 
-  const { data, loading } = useJourneyRouteResolverQuery({
+  const { data, loading: loadingJourney } = useJourneyRouteResolverQuery({
     variables: {
       spaceNameId: spaceNameId!,
       challengeNameId,
@@ -46,13 +54,40 @@ export const useRouteResolver = (): RouteParams => {
     skip: !spaceNameId,
   });
 
-  return {
-    loading,
+  const resolvedJourney: JourneyRouteParams = {
     spaceId: data?.space.id,
     challengeId: data?.space.challenge?.id,
     opportunityId: data?.space.opportunity?.id,
     type: RouteType.Journey,
     journeyId: data?.space.opportunity?.id ?? data?.space.challenge?.id ?? data?.space.id,
     journeyTypeName: getJourneyTypeName({ spaceNameId, challengeNameId, opportunityNameId })!,
+  };
+
+  const { data: calloutData, loading: loadingCallout } = useCalloutIdQuery({
+    variables: {
+      calloutNameId: calloutNameId!,
+      spaceId: resolvedJourney.spaceId,
+      challengeId: resolvedJourney.challengeId,
+      opportunityId: resolvedJourney.opportunityId,
+      isSpace: resolvedJourney.journeyTypeName === 'space',
+      isChallenge: resolvedJourney.journeyTypeName === 'challenge',
+      isOpportunity: resolvedJourney.journeyTypeName === 'opportunity',
+    },
+    skip: !resolvedJourney.journeyId || !calloutNameId,
+  });
+
+  const collaboration =
+    calloutData?.lookup.opportunity?.collaboration ??
+    calloutData?.lookup.challenge?.collaboration ??
+    calloutData?.space?.collaboration;
+
+  const calloutId = collaboration?.callouts?.[0]?.id;
+
+  const loading = loadingJourney || loadingCallout;
+
+  return {
+    loading,
+    ...resolvedJourney,
+    calloutId,
   };
 };

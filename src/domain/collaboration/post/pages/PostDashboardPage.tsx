@@ -11,17 +11,11 @@ export interface PostDashboardPageProps {
 }
 
 const PostDashboardPage: FC<PostDashboardPageProps> = ({ onClose }) => {
-  const { spaceNameId = '', challengeNameId, opportunityNameId, postNameId = '', calloutNameId = '' } = useUrlParams();
+  const { postNameId, calloutNameId } = useUrlParams();
 
   return (
     <PostLayout currentSection={PostDialogSection.Dashboard} onClose={onClose}>
-      <PostDashboardContainer
-        spaceNameId={spaceNameId}
-        postNameId={postNameId}
-        challengeNameId={challengeNameId}
-        opportunityNameId={opportunityNameId}
-        calloutNameId={calloutNameId}
-      >
+      <PostDashboardContainer postNameId={postNameId} calloutId={calloutNameId}>
         {({ post, messages, roomId, ...rest }) => (
           <PostDashboardView
             mode="messages"

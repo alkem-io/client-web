@@ -57,6 +57,7 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
         {({ callouts, ...entities }, state) => (
           <>
             <JourneyDashboardView
+              journeyId={challengeId}
               ribbon={
                 <ApplicationButtonContainer
                   challengeId={entities.challenge?.id}
@@ -140,8 +141,8 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
               <CalendarDialog
                 open={dialog === 'calendar'}
                 onClose={backToDashboard}
-                spaceNameId={spaceNameId}
-                challengeNameId={entities.challenge?.nameID}
+                journeyId={challengeId}
+                journeyTypeName="challenge"
               />
             )}
           </>
