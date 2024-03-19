@@ -4,7 +4,7 @@ import { Identifiable } from '../../../../core/utils/Identifiable';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import { useInnovationFlowTemplateStatesQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { InnovationFlowState } from '../InnovationFlow';
-import InnovationFlowStates from '../InnovationFlowStates/InnovationFlowStates';
+import InnovationFlowChips from '../InnovationFlowChips/InnovationFlowChips';
 
 interface InnovationFlowTemplatePreviewProps {
   template?: Identifiable;
@@ -32,7 +32,7 @@ const InnovationFlowTemplatePreview: FC<InnovationFlowTemplatePreviewProps> = ({
 
   return (
     <PageContentBlock>
-      <InnovationFlowStates
+      <InnovationFlowChips
         states={templateStates}
         selectedState={selectedState}
         onSelectState={state => setSelectedState(state.displayName)}

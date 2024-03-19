@@ -37,7 +37,7 @@ import DialogWithGrid from '../../../../../core/ui/dialog/DialogWithGrid';
 import DialogHeader from '../../../../../core/ui/dialog/DialogHeader';
 import FullWidthButton from '../../../../../core/ui/button/FullWidthButton';
 import { InnovationFlowDetails } from '../../../../collaboration/InnovationFlow/InnovationFlow';
-import InnovationFlowStates from '../../../../collaboration/InnovationFlow/InnovationFlowStates/InnovationFlowStates';
+import InnovationFlowChips from '../../../../collaboration/InnovationFlow/InnovationFlowChips/InnovationFlowChips';
 
 export interface AboutSectionProps extends EntityDashboardContributors, EntityDashboardLeads {
   journeyTypeName: JourneyTypeName;
@@ -173,8 +173,8 @@ export const AboutSection: FC<AboutSectionProps> = ({
             <Tagline>{tagline}</Tagline>
             <TagsComponent tags={tags} variant="filled" loading={loading} />
             <Actions justifyContent="end">
-              {innovationFlow && (
-                <InnovationFlowStates
+              {innovationFlow && innovationFlow.states && (
+                <InnovationFlowChips
                   states={innovationFlow.states}
                   currentState={innovationFlow.currentState.displayName}
                   selectedState={selectedState}

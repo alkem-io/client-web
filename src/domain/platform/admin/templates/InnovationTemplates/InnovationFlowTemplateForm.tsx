@@ -7,7 +7,7 @@ import FormRows from '../../../../shared/components/FormRows';
 import TemplateForm from '../TemplateForm';
 import { BlockSectionTitle } from '../../../../../core/ui/typography';
 import { Box, FormLabel, TextareaAutosize, useTheme } from '@mui/material';
-import InnovationFlowStates from '../../../../collaboration/InnovationFlow/InnovationFlowStates/InnovationFlowStates';
+import InnovationFlowChips from '../../../../collaboration/InnovationFlow/InnovationFlowChips/InnovationFlowChips';
 import { InnovationFlowState } from '../../../../collaboration/InnovationFlow/InnovationFlow';
 import { gutters } from '../../../../../core/ui/grid/utils';
 import { LONG_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '../../../../../core/ui/forms/field-length.constants';
@@ -157,7 +157,7 @@ const InnovationFlowTemplateForm = ({ initialValues, visual, onSubmit, actions }
           </FormLabel>
           <BlockSectionTitle>{t('common.preview')}</BlockSectionTitle>
           <Box sx={{ maxWidth: theme => theme.spacing(64) }}>
-            <InnovationFlowStates
+            <InnovationFlowChips
               states={values.states.map(state => ({
                 displayName: state.displayName,
                 description: state.description ?? '',
