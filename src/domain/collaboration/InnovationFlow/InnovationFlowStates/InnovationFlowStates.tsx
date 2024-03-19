@@ -28,6 +28,7 @@ const InnovationFlowStates = ({
   states = [],
   currentState,
   selectedState,
+  showSettings = false,
   onSelectState,
 }: InnovationFlowStatesProps) => {
   const [showSettingsDialog, setShowSettingsDialog] = useState(false);
@@ -38,6 +39,8 @@ const InnovationFlowStates = ({
         states={states}
         currentState={currentState}
         selectedState={selectedState}
+        showSettings={showSettings}
+        onSettingsOpen={() => setShowSettingsDialog(true)}
         onSelectState={onSelectState}
       />
       <InnovationFlowSettingsDialog

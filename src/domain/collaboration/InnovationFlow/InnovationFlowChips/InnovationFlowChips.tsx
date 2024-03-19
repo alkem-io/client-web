@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, IconButton, Tooltip, styled, useTheme } from '@mui/material';
 import { ArrowRight } from '@mui/icons-material';
@@ -14,6 +14,8 @@ interface InnovationFlowChipsProps {
   states: InnovationFlowState[];
   currentState?: string;
   selectedState: string | undefined;
+  showSettings?: boolean;
+  onSettingsOpen?: () => void;
   onSelectState?: (state: InnovationFlowState) => void;
 }
 
@@ -25,9 +27,14 @@ const FlowStateDescription = styled(WrapperMarkdown)(() => ({
   },
 }));
 
-const InnovationFlowChips = ({ states, currentState, selectedState, onSelectState }: InnovationFlowChipsProps) => {
-  const [showSettingsDialog, setShowSettingsDialog] = useState(false);
-
+const InnovationFlowChips = ({
+  states,
+  currentState,
+  selectedState,
+  showSettings,
+  onSettingsOpen,
+  onSelectState,
+}: InnovationFlowChipsProps) => {
   const { t } = useTranslation();
 
   const columns = useGlobalGridColumns();
@@ -101,10 +108,10 @@ const InnovationFlowChips = ({ states, currentState, selectedState, onSelectStat
             </Button>
           ))}
         </Gutters>
-        {showSettingsDialog && (
+        {showSettings && (
           <IconButton
             color="primary"
-            onClick={() => setShowSettingsDialog(true)}
+            onClick={onSettingsOpen}
             aria-label={t('components.innovationFlowSettings.title')}
           >
             <SettingsIcon />
