@@ -144,7 +144,6 @@ const InnovationFlowTemplateForm = ({ initialValues, onSubmit, actions }: Innova
               onCreateFlowState={(newState, options) => onCreateState(values.states, newState, options, setStates)}
               onEditFlowState={(oldState, newState) => onEditState(values.states, oldState, newState, setStates)}
               onDeleteFlowState={stateName => onDeleteState(values.states, stateName, setStates)}
-              onUpdateCurrentState={() => {}}
               onUpdateFlowStateOrder={(states, sortOrder) => onSortStates(values.states, states, sortOrder, setStates)}
               currentState={undefined}
             />

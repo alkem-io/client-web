@@ -30,7 +30,7 @@ export interface InnovationFlowDragNDropEditorProps {
   currentState: string | undefined;
   croppedDescriptions?: boolean;
   onUpdateFlowStateOrder: (flowState: string, sortOrder: number) => Promise<unknown> | void;
-  onUpdateCurrentState: (state: string) => void;
+  onUpdateCurrentState?: (state: string) => void;
   onCreateFlowState: (
     newState: InnovationFlowState,
     options: { after: string; last: false } | { after?: never; last: true }
