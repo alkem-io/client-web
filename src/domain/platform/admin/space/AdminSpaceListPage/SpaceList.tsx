@@ -17,7 +17,7 @@ import {
 } from '../../../../../core/apollo/generated/graphql-schema';
 import { useResolvedPath } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { buildAdminSpaceUrl } from '../../../../../main/routing/urlBuilders';
+import { buildJourneyAdminUrl } from '../../../../../main/routing/urlBuilders';
 import SpaceListItem from './SpaceListItem';
 import { sortBy } from 'lodash';
 import { licenseHasFeature } from '../../../../journey/space/license/useLicenseFeatures';
@@ -56,7 +56,7 @@ export const SpaceList: FC = () => {
         .map(space => ({
           ...space,
           displayName: space.profile.displayName,
-          url: buildAdminSpaceUrl(space.nameID),
+          url: buildJourneyAdminUrl(space.nameID),
         }))
         .map(space => ({
           ...searchableListItemMapper()(space),

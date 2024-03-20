@@ -2226,6 +2226,7 @@ export const OpportunityCardFragmentDoc = gql`
       cardBanner: visual(type: CARD) {
         ...VisualFull
       }
+      url
     }
     metrics {
       id
@@ -2789,6 +2790,7 @@ export const ChallengeCardFragmentDoc = gql`
       tagset {
         ...TagsetDetails
       }
+      url
     }
     context {
       id
