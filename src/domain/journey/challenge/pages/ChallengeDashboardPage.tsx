@@ -21,6 +21,7 @@ import FullWidthButton from '../../../../core/ui/button/FullWidthButton';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { Theme } from '@mui/material';
 import { buildUpdatesUrl } from '../../../../main/routing/urlBuilders';
+import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 
 export interface ChallengeDashboardPageProps {
   dialog?: 'updates' | 'contributors' | 'calendar';
@@ -41,18 +42,22 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
 
   const hasExtendedApplicationButton = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
 
+  const { spaceId, challengeId } = useRouteResolver();
+
   if (!spaceNameId) {
     throw new Error('Must be within a Space route.');
   }
+
   const shareUpdatesUrl = buildUpdatesUrl({ spaceNameId, challengeNameId });
 
   return (
     <ChallengePageLayout currentSection={EntityPageSection.Dashboard}>
       {directMessageDialog}
-      <ChallengePageContainer>
+      <ChallengePageContainer challengeId={challengeId}>
         {({ callouts, ...entities }, state) => (
           <>
             <JourneyDashboardView
+              journeyId={challengeId}
               ribbon={
                 <ApplicationButtonContainer
                   challengeId={entities.challenge?.id}
@@ -97,7 +102,7 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
                   )}
                 </JourneyDashboardWelcomeBlock>
               }
-              spaceNameId={entities.spaceNameId}
+              spaceNameId={spaceNameId}
               challengeNameId={entities.challenge?.nameID}
               communityId={entities.challenge?.community?.id}
               communityReadAccess={entities.permissions.communityReadAccess}
@@ -122,7 +127,7 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
             <CommunityUpdatesDialog
               open={dialog === 'updates'}
               onClose={backToDashboard}
-              spaceId={entities.spaceId}
+              spaceId={spaceId}
               communityId={entities.challenge?.community?.id}
               shareUrl={shareUpdatesUrl}
               loading={state.loading}
@@ -136,8 +141,8 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
               <CalendarDialog
                 open={dialog === 'calendar'}
                 onClose={backToDashboard}
-                spaceNameId={spaceNameId}
-                challengeNameId={entities.challenge?.nameID}
+                journeyId={challengeId}
+                journeyTypeName="challenge"
               />
             )}
           </>

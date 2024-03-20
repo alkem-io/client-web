@@ -708,6 +708,11 @@ export type CalloutFramingFieldPolicy = {
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type CalloutGroupKeySpecifier = ('description' | 'displayName' | CalloutGroupKeySpecifier)[];
+export type CalloutGroupFieldPolicy = {
+  description?: FieldPolicy<any> | FieldReadFunction<any>;
+  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type CalloutPostCreatedKeySpecifier = ('calloutID' | 'post' | CalloutPostCreatedKeySpecifier)[];
 export type CalloutPostCreatedFieldPolicy = {
   calloutID?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -743,6 +748,7 @@ export type ChallengeKeySpecifier = (
   | 'metrics'
   | 'nameID'
   | 'opportunities'
+  | 'opportunity'
   | 'profile'
   | 'settings'
   | 'storageAggregator'
@@ -759,6 +765,7 @@ export type ChallengeFieldPolicy = {
   metrics?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   opportunities?: FieldPolicy<any> | FieldReadFunction<any>;
+  opportunity?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   settings?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -789,6 +796,7 @@ export type ChatGuidanceResultFieldPolicy = {
 export type CollaborationKeySpecifier = (
   | 'authorization'
   | 'callouts'
+  | 'groups'
   | 'id'
   | 'innovationFlow'
   | 'relations'
@@ -799,6 +807,7 @@ export type CollaborationKeySpecifier = (
 export type CollaborationFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   callouts?: FieldPolicy<any> | FieldReadFunction<any>;
+  groups?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationFlow?: FieldPolicy<any> | FieldReadFunction<any>;
   relations?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1589,6 +1598,7 @@ export type MutationKeySpecifier = (
   | 'updateProfile'
   | 'updateReference'
   | 'updateSpace'
+  | 'updateSpaceDefaults'
   | 'updateSpacePlatformSettings'
   | 'updateSpaceSettings'
   | 'updateTagset'
@@ -1743,6 +1753,7 @@ export type MutationFieldPolicy = {
   updateProfile?: FieldPolicy<any> | FieldReadFunction<any>;
   updateReference?: FieldPolicy<any> | FieldReadFunction<any>;
   updateSpace?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateSpaceDefaults?: FieldPolicy<any> | FieldReadFunction<any>;
   updateSpacePlatformSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   updateSpaceSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   updateTagset?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1934,6 +1945,7 @@ export type PlatformLocationsKeySpecifier = (
   | 'domain'
   | 'environment'
   | 'feedback'
+  | 'forumreleases'
   | 'foundation'
   | 'help'
   | 'impact'
@@ -1958,6 +1970,7 @@ export type PlatformLocationsFieldPolicy = {
   domain?: FieldPolicy<any> | FieldReadFunction<any>;
   environment?: FieldPolicy<any> | FieldReadFunction<any>;
   feedback?: FieldPolicy<any> | FieldReadFunction<any>;
+  forumreleases?: FieldPolicy<any> | FieldReadFunction<any>;
   foundation?: FieldPolicy<any> | FieldReadFunction<any>;
   help?: FieldPolicy<any> | FieldReadFunction<any>;
   impact?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2190,7 +2203,6 @@ export type RelayPaginatedSpaceKeySpecifier = (
   | 'id'
   | 'metrics'
   | 'nameID'
-  | 'opportunity'
   | 'profile'
   | 'settings'
   | 'storageAggregator'
@@ -2212,7 +2224,6 @@ export type RelayPaginatedSpaceFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   metrics?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
-  opportunity?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   settings?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2561,7 +2572,6 @@ export type SpaceKeySpecifier = (
   | 'id'
   | 'metrics'
   | 'nameID'
-  | 'opportunity'
   | 'profile'
   | 'settings'
   | 'storageAggregator'
@@ -2583,7 +2593,6 @@ export type SpaceFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   metrics?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
-  opportunity?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   settings?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3172,6 +3181,10 @@ export type StrictTypedTypePolicies = {
   CalloutFraming?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CalloutFramingKeySpecifier | (() => undefined | CalloutFramingKeySpecifier);
     fields?: CalloutFramingFieldPolicy;
+  };
+  CalloutGroup?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CalloutGroupKeySpecifier | (() => undefined | CalloutGroupKeySpecifier);
+    fields?: CalloutGroupFieldPolicy;
   };
   CalloutPostCreated?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CalloutPostCreatedKeySpecifier | (() => undefined | CalloutPostCreatedKeySpecifier);

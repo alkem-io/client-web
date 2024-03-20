@@ -15,17 +15,12 @@ import { StorageConfigContextProvider } from '../../../../storage/StorageBucket/
 import AdminChallengeCommunityPage from '../../../../journey/challenge/pages/AdminChallengeCommunityPage';
 
 export const ChallengeRoute: FC = () => {
-  const { spaceId, communityId: spaceCommunityId } = useSpace();
-  const { challenge, challengeNameId } = useChallenge();
+  const { communityId: spaceCommunityId } = useSpace();
+  const { challenge } = useChallenge();
   const communityId = challenge?.community?.id;
 
   return (
-    <StorageConfigContextProvider
-      locationType="journey"
-      journeyTypeName="challenge"
-      spaceNameId={spaceId}
-      challengeNameId={challengeNameId}
-    >
+    <StorageConfigContextProvider locationType="journey" journeyTypeName="challenge" journeyId={challenge?.id}>
       <Routes>
         <Route path={'/'}>
           <Route index element={<Navigate to="profile" replace />} />

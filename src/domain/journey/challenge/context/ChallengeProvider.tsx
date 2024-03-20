@@ -5,7 +5,7 @@ import {
   ChallengeInfoFragment,
   CommunityMembershipStatus,
 } from '../../../../core/apollo/generated/graphql-schema';
-import { useUrlParams } from '../../../../core/routing/useUrlParams';
+import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 
 interface ChallengePermissions {
   canUpdate: boolean;
@@ -18,10 +18,7 @@ interface ChallengePermissions {
 interface ChallengeContextProps {
   challenge?: ChallengeInfoFragment;
   challengeId: string;
-  challengeNameId: string;
   communityId: string;
-  spaceId: string;
-  spaceNameId: string;
   loading: boolean;
   permissions: ChallengePermissions;
   profile: ChallengeInfoFragment['profile'];
@@ -31,10 +28,7 @@ interface ChallengeContextProps {
 const ChallengeContext = React.createContext<ChallengeContextProps>({
   loading: true,
   challengeId: '',
-  challengeNameId: '',
   communityId: '',
-  spaceId: '',
-  spaceNameId: '',
   permissions: {
     canUpdate: false,
     canCreate: false,
@@ -55,15 +49,15 @@ const ChallengeContext = React.createContext<ChallengeContextProps>({
 interface ChallengeProviderProps {}
 
 const ChallengeProvider: FC<ChallengeProviderProps> = ({ children }) => {
-  const { spaceNameId = '', challengeNameId = '' } = useUrlParams();
+  const { challengeId } = useRouteResolver();
+
   const { data, loading } = useChallengeInfoQuery({
-    variables: { spaceId: spaceNameId, challengeId: challengeNameId },
+    variables: { challengeId: challengeId! },
     errorPolicy: 'all',
-    skip: !spaceNameId || !challengeNameId,
+    skip: !challengeId,
   });
-  const spaceId = data?.space?.id || '';
-  const challenge = data?.space?.challenge;
-  const challengeId = challenge?.id || '';
+
+  const challenge = data?.lookup.challenge;
   const communityId = challenge?.community?.id ?? '';
 
   const myPrivileges = useMemo(
@@ -103,11 +97,8 @@ const ChallengeProvider: FC<ChallengeProviderProps> = ({ children }) => {
     <ChallengeContext.Provider
       value={{
         challenge,
-        challengeId,
-        challengeNameId,
+        challengeId: challengeId ?? '',
         communityId,
-        spaceId,
-        spaceNameId,
         permissions,
         profile,
         loading,

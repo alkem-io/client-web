@@ -26,28 +26,30 @@ export interface ChallengePreferenceContainerProps
     ChallengePreferenceContainerActions,
     ChallengePreferenceContainerState
   > {
-  spaceId: string;
-  challengeId: string;
+  challengeId: string | undefined;
 }
 
 const excludedPreferences = [PreferenceType.MembershipFeedbackOnChallengeContext];
 
-const ChallengePreferenceContainer: FC<ChallengePreferenceContainerProps> = ({ children, spaceId, challengeId }) => {
+const ChallengePreferenceContainer: FC<ChallengePreferenceContainerProps> = ({ children, challengeId }) => {
   const { data, loading, error } = useChallengePreferencesQuery({
-    variables: { spaceNameId: spaceId, challengeNameId: challengeId },
+    variables: { challengeId: challengeId! },
     fetchPolicy: 'network-only',
     nextFetchPolicy: 'cache-first',
-    skip: !spaceId,
+    skip: !challengeId,
   });
 
   const [updatePreference] = useUpdatePreferenceOnChallengeMutation({});
 
-  const preferences = (data?.space?.challenge?.preferences ?? []).filter(
+  const preferences = (data?.lookup.challenge?.preferences ?? []).filter(
     p => !excludedPreferences.includes(p.definition.type)
   );
 
   const onUpdate = useCallback(
     (id: string, type: ChallengePreferenceType, checked: boolean) => {
+      if (!challengeId) {
+        throw new Error('Challenge ID is required for updating challenge preferences');
+      }
       updatePreference({
         variables: {
           preferenceData: {

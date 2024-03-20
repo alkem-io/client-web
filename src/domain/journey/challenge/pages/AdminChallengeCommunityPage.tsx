@@ -13,9 +13,12 @@ import ChallengeSettingsLayout from '../../../platform/admin/challenge/Challenge
 import ChallengeCommunityAdminMembershipPreferencesSection from '../../../platform/admin/challenge/ChallengeCommunityAdminMembershipPreferencesSection';
 import CommunityApplicationForm from '../../../community/community/CommunityApplicationForm/CommunityApplicationForm';
 import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
+import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 
 const AdminChallengeCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
-  const { spaceId, loading: isLoadingChallenge, communityId, challengeId } = useChallenge();
+  const { loading: isLoadingChallenge, communityId, challengeId } = useChallenge();
+
+  const { spaceId } = useRouteResolver();
 
   const {
     users,
@@ -83,7 +86,7 @@ const AdminChallengeCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../
         </PageContentColumn>
       </PageContent>
       <PageContentBlockSeamless>
-        <ChallengeCommunityAdminMembershipPreferencesSection spaceId={spaceId} challengeId={challengeId} />
+        <ChallengeCommunityAdminMembershipPreferencesSection challengeId={challengeId} />
         <CommunityApplicationForm spaceId={spaceId} challengeId={challengeId} />
       </PageContentBlockSeamless>
     </ChallengeSettingsLayout>

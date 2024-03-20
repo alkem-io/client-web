@@ -2,7 +2,7 @@ import { ApolloError } from '@apollo/client';
 import React, { FC } from 'react';
 import { useChallengeOpportunityCardsQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
-import { CalloutDisplayLocation, OpportunityCardFragment } from '../../../../core/apollo/generated/graphql-schema';
+import { CalloutGroupName, OpportunityCardFragment } from '../../../../core/apollo/generated/graphql-schema';
 import useOpportunityCreatedSubscription from '../hooks/useOpportunityCreatedSubscription';
 import useCallouts, { UseCalloutsProvided } from '../../../collaboration/callout/useCallouts/useCallouts';
 
@@ -24,13 +24,11 @@ export interface ChallengeOpportunitiesContainerProps
     OpportunityCardsContainerActions,
     OpportunityCardsContainerState
   > {
-  spaceNameId: string;
-  challengeNameId: string;
+  challengeId: string | undefined;
 }
 
 export const ChallengeOpportunitiesContainer: FC<ChallengeOpportunitiesContainerProps> = ({
-  spaceNameId,
-  challengeNameId,
+  challengeId,
   children,
 }) => {
   const {
@@ -39,25 +37,25 @@ export const ChallengeOpportunitiesContainer: FC<ChallengeOpportunitiesContainer
     subscribeToMore,
   } = useChallengeOpportunityCardsQuery({
     variables: {
-      spaceId: spaceNameId,
-      challengeId: challengeNameId,
+      challengeId: challengeId!,
     },
+    skip: !challengeId,
     errorPolicy: 'all',
   });
 
-  useOpportunityCreatedSubscription(_challenge, data => data?.space?.challenge, subscribeToMore);
+  useOpportunityCreatedSubscription(_challenge, data => data?.lookup.challenge, subscribeToMore);
 
   const callouts = useCallouts({
-    spaceNameId,
-    challengeNameId,
-    displayLocations: [CalloutDisplayLocation.OpportunitiesLeft, CalloutDisplayLocation.OpportunitiesRight],
+    journeyId: _challenge?.lookup.challenge?.id,
+    journeyTypeName: 'challenge',
+    groupNames: [CalloutGroupName.Subspaces_1, CalloutGroupName.Subspaces_2],
   });
 
   return (
     <>
       {children(
         {
-          opportunities: _challenge?.space.challenge.opportunities ?? [],
+          opportunities: _challenge?.lookup.challenge?.opportunities ?? [],
           callouts,
         },
         { loading },

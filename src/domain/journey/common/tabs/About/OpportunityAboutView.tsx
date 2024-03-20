@@ -2,14 +2,11 @@ import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ApolloError } from '@apollo/client';
 import { Box, DialogContent, Theme, useMediaQuery } from '@mui/material';
-import {
-  ReferenceDetailsFragment,
-} from '../../../../../core/apollo/generated/graphql-schema';
+import { ReferenceDetailsFragment } from '../../../../../core/apollo/generated/graphql-schema';
 import {
   EntityDashboardContributors,
   EntityDashboardLeads,
 } from '../../../../community/community/EntityDashboardContributorsSection/Types';
-import { MetricItem } from '../../../../platform/metrics/views/Metrics';
 import PageContentColumn from '../../../../../core/ui/content/PageContentColumn';
 import PageContent from '../../../../../core/ui/content/PageContent';
 import { BlockTitle, Tagline } from '../../../../../core/ui/typography';
@@ -24,25 +21,28 @@ import DashboardUpdatesSection from '../../../../shared/components/DashboardSect
 import References from '../../../../shared/components/References/References';
 import EntityDashboardLeadsSection from '../../../../community/community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';
 import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
-import { JourneyTypeName } from '../../../JourneyTypeName';
 import { gutters } from '../../../../../core/ui/grid/utils';
 import { Actions } from '../../../../../core/ui/actions/Actions';
 import PageContentBlockHeaderWithDialogAction from '../../../../../core/ui/content/PageContentBlockHeaderWithDialogAction';
 import useScrollToElement from '../../../../shared/utils/scroll/useScrollToElement';
-import { useChallenge } from '../../../challenge/hooks/useChallenge';
 import OverflowGradient from '../../../../../core/ui/overflow/OverflowGradient';
 import SeeMore from '../../../../../core/ui/content/SeeMore';
 import { EntityPageSection } from '../../../../shared/layout/EntityPageSection';
 import { buildUpdatesUrl } from '../../../../../main/routing/urlBuilders';
-import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import DialogWithGrid from '../../../../../core/ui/dialog/DialogWithGrid';
 import DialogHeader from '../../../../../core/ui/dialog/DialogHeader';
 import FullWidthButton from '../../../../../core/ui/button/FullWidthButton';
 import { InnovationFlowDetails } from '../../../../collaboration/InnovationFlow/InnovationFlow';
-import InnovationFlowVisualizer from '../../../../platform/admin/templates/InnovationTemplates/InnovationFlowVisualizer';
+import InnovationFlowChips from '../../../../collaboration/InnovationFlow/InnovationFlowChips/InnovationFlowChips';
+import useMetricsItems from '../../../../platform/metrics/utils/useMetricsItems';
+import OpportunityMetrics from '../../../opportunity/utils/useOpportunityMetricsItems';
+import { Metric } from '../../../../platform/metrics/utils/getMetricCount';
 
-export interface AboutSectionProps extends EntityDashboardContributors, EntityDashboardLeads {
-  journeyTypeName: JourneyTypeName;
+export interface OpportunityAboutViewProps extends EntityDashboardContributors, EntityDashboardLeads {
+  challengeId: string | undefined;
+  opportunityId: string | undefined;
+  challengeNameId: string | undefined;
+  opportunityUrl: string;
   name: string;
   tagline: string | undefined;
   tags: string[] | undefined;
@@ -56,7 +56,7 @@ export interface AboutSectionProps extends EntityDashboardContributors, EntityDa
   spaceNameId: string | undefined;
   communityId: string | undefined;
   references: ReferenceDetailsFragment[] | undefined;
-  metricsItems: MetricItem[];
+  metrics: Metric[] | undefined;
   innovationFlow?: InnovationFlowDetails;
 }
 
@@ -79,14 +79,13 @@ enum JourneyContextField {
   Who = 'who',
 }
 
-/**
- * todos
- * - info block tags
- * - loading
- * - error
- */
-export const AboutSection: FC<AboutSectionProps> = ({
-  journeyTypeName,
+const journeyTypeName = 'opportunity';
+
+const OpportunityAboutView: FC<OpportunityAboutViewProps> = ({
+  opportunityId,
+  challengeId,
+  challengeNameId,
+  opportunityUrl,
   name,
   tagline,
   tags = [],
@@ -105,21 +104,17 @@ export const AboutSection: FC<AboutSectionProps> = ({
   spaceNameId,
   communityId,
   references,
-  metricsItems,
+  metrics,
   innovationFlow,
 }) => {
   const { t } = useTranslation();
   const [dialogSectionName, setDialogSectionName] = useState<JourneyContextField>();
+  const [selectedState, setSelectedState] = useState<string | undefined>(undefined);
 
-  const isSpace = journeyTypeName === 'space';
-  const organizationsHeader = isSpace
-    ? 'pages.space.sections.dashboard.organization'
-    : 'community.leading-organizations';
-  const usersHeader = isSpace ? 'community.host' : 'community.leads';
+  const metricsItems = useMetricsItems(metrics, OpportunityMetrics);
 
-  const { challengeNameId } = useChallenge();
-
-  const { opportunityNameId } = useUrlParams();
+  const organizationsHeader = 'community.leading-organizations';
+  const usersHeader = 'community.leads';
 
   const { scrollable } = useScrollToElement(dialogSectionName, { method: 'element', defer: true });
 
@@ -142,15 +137,16 @@ export const AboutSection: FC<AboutSectionProps> = ({
 
   const hasExtendedApplicationButton = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
 
-  if (!spaceNameId) {
-    throw new Error('Must be within a Space route.');
-  }
-  const shareUpdatesUrl = buildUpdatesUrl({ spaceNameId, challengeNameId, opportunityNameId });
+  const shareUpdatesUrl = buildUpdatesUrl(opportunityUrl);
 
   return (
     <>
       <PageContent>
-        <OpportunityApplicationButtonContainer challengeNameId={challengeNameId} opportunityNameId={opportunityNameId}>
+        <OpportunityApplicationButtonContainer
+          challengeNameId={challengeNameId}
+          opportunityId={opportunityId}
+          challengeId={challengeId}
+        >
           {({ applicationButtonProps, state: { loading } }) => {
             if (loading || applicationButtonProps.isMember) {
               return null;
@@ -173,7 +169,16 @@ export const AboutSection: FC<AboutSectionProps> = ({
             <PageContentBlockHeader title={name} />
             <Tagline>{tagline}</Tagline>
             <TagsComponent tags={tags} variant="filled" loading={loading} />
-            <Actions justifyContent="end">{innovationFlow && <InnovationFlowVisualizer states={innovationFlow.states} currentState={innovationFlow.currentState.displayName} />}</Actions>
+            <Actions justifyContent="end">
+              {innovationFlow && innovationFlow.states && (
+                <InnovationFlowChips
+                  states={innovationFlow.states}
+                  currentState={innovationFlow.currentState.displayName}
+                  selectedState={selectedState}
+                  onSelectState={state => setSelectedState(state.displayName)}
+                />
+              )}
+            </Actions>
           </PageContentBlock>
           {communityReadAccess && (
             <EntityDashboardLeadsSection
@@ -269,3 +274,5 @@ export const AboutSection: FC<AboutSectionProps> = ({
     </>
   );
 };
+
+export default OpportunityAboutView;

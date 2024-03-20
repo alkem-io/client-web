@@ -7,9 +7,8 @@ query spaceDashboardCalendarEvents($spaceId: UUID_NAMEID!, $limit: Float) {
   }
 }
 
-query challengeDashboardCalendarEvents($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!, $limit: Float) {
-  space(ID: $spaceId) {
-    id
+query challengeDashboardCalendarEvents($challengeId: UUID!, $limit: Float) {
+  lookup {
     challenge(ID: $challengeId) {
       id
       collaboration {
@@ -19,9 +18,8 @@ query challengeDashboardCalendarEvents($spaceId: UUID_NAMEID!, $challengeId: UUI
   }
 }
 
-query opportunityDashboardCalendarEvents($spaceId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!, $limit: Float) {
-  space(ID: $spaceId) {
-    id
+query opportunityDashboardCalendarEvents($opportunityId: UUID!, $limit: Float) {
+  lookup {
     opportunity(ID: $opportunityId) {
       id
       collaboration {
@@ -80,9 +78,8 @@ query spaceCalendarEvents($spaceId: UUID_NAMEID!, $limit: Float) {
   }
 }
 
-query challengeCalendarEvents($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!, $limit: Float) {
-  space(ID: $spaceId) {
-    id
+query challengeCalendarEvents($challengeId: UUID!, $limit: Float) {
+  lookup {
     challenge(ID: $challengeId) {
       id
       collaboration {
@@ -92,9 +89,8 @@ query challengeCalendarEvents($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!
   }
 }
 
-query opportunityCalendarEvents($spaceId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!, $limit: Float) {
-  space(ID: $spaceId) {
-    id
+query opportunityCalendarEvents($opportunityId: UUID!, $limit: Float) {
+  lookup {
     opportunity(ID: $opportunityId) {
       id
       collaboration {
@@ -119,6 +115,7 @@ fragment CalendarEventDetails on CalendarEvent {
     id
     profile {
       id
+      url
       displayName
       visual(type: AVATAR) {
         id
@@ -137,6 +134,7 @@ fragment CalendarEventDetails on CalendarEvent {
 
 fragment EventProfile on Profile {
   id
+  url
   displayName
   description
   tagset {

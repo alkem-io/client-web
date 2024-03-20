@@ -31,7 +31,7 @@ const InnovationFlowStateForm: FC<InnovationFlowStateFormProps> = ({
 
   const initialValues: InnovationFlowStateFormValues = {
     displayName: state?.displayName ?? '',
-    description: state?.description ?? '',
+    description: state?.description ?? '\n',
   };
 
   const validationSchema = yup.object().shape({
@@ -40,7 +40,7 @@ const InnovationFlowStateForm: FC<InnovationFlowStateFormProps> = ({
       .required()
       .max(SMALL_TEXT_LENGTH)
       .notOneOf(forbiddenFlowStateNames, t('components.innovationFlowSettings.stateEditor.noRepeatedStates')),
-    description: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
+    description: MarkdownValidator(MARKDOWN_TEXT_LENGTH).required(),
   });
 
   const [handleSave, loading] = useLoadingState(onSubmit);

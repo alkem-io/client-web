@@ -1,17 +1,9 @@
 query spaceContributionDetails($spaceId: UUID_NAMEID!) {
   space(ID: $spaceId) {
     id
-    nameID
-
-    account {
-      id
-      license {
-        id
-        visibility
-      }
-    }
     profile {
       id
+      url
       displayName
       tagline
       visuals {
@@ -30,15 +22,13 @@ query spaceContributionDetails($spaceId: UUID_NAMEID!) {
   }
 }
 
-query challengeContributionDetails($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
-  space(ID: $spaceId) {
-    id
-    nameID
+query challengeContributionDetails($challengeId: UUID!) {
+  lookup {
     challenge(ID: $challengeId) {
       id
-      nameID
       profile {
         id
+        url
         displayName
         tagset {
           ...TagsetDetails
@@ -53,27 +43,18 @@ query challengeContributionDetails($spaceId: UUID_NAMEID!, $challengeId: UUID_NA
       }
       community {
         id
-      }
-    }
-    account {
-      id
-      license {
-        id
-        visibility
       }
     }
   }
 }
 
-query opportunityContributionDetails($spaceId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
-  space(ID: $spaceId) {
-    id
-    nameID
+query opportunityContributionDetails($opportunityId: UUID!) {
+  lookup {
     opportunity(ID: $opportunityId) {
       id
-      nameID
       profile {
         id
+        url
         displayName
         tagset {
           ...TagsetDetails
@@ -83,19 +64,11 @@ query opportunityContributionDetails($spaceId: UUID_NAMEID!, $opportunityId: UUI
           ...VisualUri
         }
       }
-      parentNameID
       context {
         id
       }
       community {
         id
-      }
-    }
-    account {
-      id
-      license {
-        id
-        visibility
       }
     }
   }

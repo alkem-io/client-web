@@ -8,8 +8,8 @@ import ChildJourneyPageBanner from '../../common/childJourneyPageBanner/ChildJou
 import { BasePageBannerProps } from '../../common/EntityPageLayout/EntityPageLayoutTypes';
 
 const ChallengePageBanner = (props: BasePageBannerProps) => {
-  const { profile: spaceProfile } = useSpace();
-  const { challenge, spaceId } = useChallenge();
+  const { profile: spaceProfile, spaceId } = useSpace();
+  const { challenge } = useChallenge();
   const banner = getVisualByType(VisualName.BANNER, spaceProfile?.visuals);
   const avatar = getVisualByType(VisualName.AVATAR, challenge?.profile.visuals);
   const cardImage = getVisualByType(VisualName.CARD, challenge?.profile.visuals);

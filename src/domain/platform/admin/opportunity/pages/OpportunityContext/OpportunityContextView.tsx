@@ -1,39 +1,38 @@
 import { Grid } from '@mui/material';
-import React, { FC, useMemo } from 'react';
+import React, { FC } from 'react';
 import { ContextForm, ContextFormValues } from '../../../../../context/ContextForm';
 import { useNotification } from '../../../../../../core/ui/notifications/useNotification';
-import { useUrlParams } from '../../../../../../core/routing/useUrlParams';
 import {
-  useUpdateOpportunityMutation,
   refetchOpportunityProfileInfoQuery,
   useOpportunityProfileInfoQuery,
+  useUpdateOpportunityMutation,
 } from '../../../../../../core/apollo/generated/apollo-hooks';
 import { OpportunityContextSegment } from '../../OpportunityContextSegment';
 import SaveButton from '../../../../../../core/ui/actions/SaveButton';
+import { useRouteResolver } from '../../../../../../main/routing/resolvers/RouteResolver';
 
 const OpportunityContextView: FC = () => {
   const notify = useNotification();
   const onSuccess = (message: string) => notify(message, 'success');
 
-  const { spaceNameId = '', opportunityNameId = '' } = useUrlParams();
+  const { opportunityId } = useRouteResolver();
 
   const [updateOpportunity, { loading: isUpdating }] = useUpdateOpportunityMutation({
     onCompleted: () => onSuccess('Successfully updated'),
-    refetchQueries: [refetchOpportunityProfileInfoQuery({ spaceId: spaceNameId, opportunityId: opportunityNameId })],
+    refetchQueries: [refetchOpportunityProfileInfoQuery({ opportunityId: opportunityId! })],
     awaitRefetchQueries: true,
   });
 
   const { data: opportunityProfile, loading } = useOpportunityProfileInfoQuery({
-    variables: { spaceId: spaceNameId, opportunityId: opportunityNameId },
+    variables: { opportunityId: opportunityId! },
     skip: false,
   });
 
-  const opportunity = opportunityProfile?.space?.opportunity;
-  const opportunityId = useMemo(() => opportunity?.id, [opportunity]);
+  const opportunity = opportunityProfile?.lookup.opportunity;
 
   const onSubmit = async (values: ContextFormValues) => {
-    if (!opportunityId) {
-      throw new TypeError('Missing Opportunity ID');
+    if (!opportunity) {
+      throw new TypeError('Opportunity is not loaded');
     }
     await updateOpportunity({
       variables: {
@@ -46,7 +45,7 @@ const OpportunityContextView: FC = () => {
           profileData: {
             description: values.background,
           },
-          ID: opportunityId,
+          ID: opportunity.id,
         },
       },
     });

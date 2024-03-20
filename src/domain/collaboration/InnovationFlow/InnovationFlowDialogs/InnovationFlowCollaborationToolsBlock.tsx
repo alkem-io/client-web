@@ -1,27 +1,17 @@
-import AddIcon from '@mui/icons-material/Add';
-import { Box, BoxProps, IconButton, IconButtonProps, SvgIconProps } from '@mui/material';
+import { Box, BoxProps, SvgIconProps } from '@mui/material';
 import { groupBy } from 'lodash';
 import { ComponentType, FC, forwardRef } from 'react';
-import { DragDropContext, Draggable, Droppable, OnDragEndResponder } from 'react-beautiful-dnd';
-import { useTranslation } from 'react-i18next';
+import { Draggable, Droppable, OnDragEndResponder } from 'react-beautiful-dnd';
 import { CalloutType } from '../../../../core/apollo/generated/graphql-schema';
-import i18n from '../../../../core/i18n/config';
-import TranslationKey from '../../../../core/i18n/utils/TranslationKey';
-import ScrollableCardsLayoutContainer from '../../../../core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
-import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
-import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import { gutters } from '../../../../core/ui/grid/utils';
-import RoundedIcon from '../../../../core/ui/icon/RoundedIcon';
-import CroppedMarkdown from '../../../../core/ui/markdown/CroppedMarkdown';
 import { Caption } from '../../../../core/ui/typography';
 import calloutIcons from '../../callout/utils/calloutIcons';
-import { InnovationFlowState } from '../InnovationFlow';
-import InnovationFlowStateMenu from './InnovationFlowStateMenu';
+import InnovationFlowDragNDropEditor, {
+  InnovationFlowDragNDropEditorProps,
+} from '../InnovationFlowDragNDropEditor/InnovationFlowDragNDropEditor';
 
-const STATES_DROPPABLE_ID = '__states';
-
-interface InnovationFlowCollaborationToolsBlockProps {
+interface InnovationFlowCollaborationToolsBlockProps extends Omit<InnovationFlowDragNDropEditorProps, 'children'> {
   callouts: {
     id: string;
     nameID: string;
@@ -38,14 +28,7 @@ interface InnovationFlowCollaborationToolsBlockProps {
         }
       | undefined;
   }[];
-  innovationFlowStates: InnovationFlowState[] | undefined;
-  currentState: string | undefined;
-  onUpdateFlowStateOrder: (flowState: string, sortOrder: number) => Promise<unknown> | void;
   onUpdateCalloutFlowState: (calloutId: string, newState: string, index: number) => Promise<unknown> | void;
-  onUpdateCurrentState: (state: string) => void;
-  onCreateFlowState: (options: { after: string; last: false } | { after?: never; last: true }) => void;
-  onEditFlowState: (state: string) => void;
-  onDeleteFlowState: (state: string) => void;
 }
 
 interface ListItemProps extends BoxProps {
@@ -53,17 +36,6 @@ interface ListItemProps extends BoxProps {
   icon?: ComponentType<SvgIconProps>;
   activity?: number;
 }
-
-const AddButton = ({ onClick }: IconButtonProps) => {
-  const { t } = useTranslation();
-  return (
-    <Box>
-      <IconButton aria-label={t('common.add')} size="small" onClick={onClick}>
-        <RoundedIcon component={AddIcon} size="medium" iconSize="small" />
-      </IconButton>
-    </Box>
-  );
-};
 
 const ListItem = forwardRef<HTMLDivElement, ListItemProps>(
   ({ displayName, icon: Icon, activity = 0, ...boxProps }, ref) => {
@@ -82,110 +54,58 @@ const InnovationFlowCollaborationToolsBlock: FC<InnovationFlowCollaborationTools
   callouts,
   innovationFlowStates,
   currentState,
-  onUpdateFlowStateOrder,
   onUpdateCalloutFlowState,
-  onUpdateCurrentState,
-  onCreateFlowState,
-  onEditFlowState,
-  onDeleteFlowState,
+  onUnhandledDragEnd,
+  ...statesActions
 }) => {
-  const { t } = useTranslation();
   const groupedCallouts = groupBy(callouts, callout => callout.flowState?.currentState);
 
-  const handleDragEnd: OnDragEndResponder = ({ draggableId, destination }) => {
-    if (destination?.droppableId === STATES_DROPPABLE_ID) {
-      if (onUpdateFlowStateOrder && destination) {
-        onUpdateFlowStateOrder(draggableId, destination.index);
-      }
-    } else {
-      if (onUpdateCalloutFlowState && destination) {
-        onUpdateCalloutFlowState(draggableId, destination.droppableId, destination.index);
-      }
+  const handleDragEnd: OnDragEndResponder = (result, provided) => {
+    const { draggableId, destination } = result;
+    if (onUpdateCalloutFlowState && destination) {
+      return onUpdateCalloutFlowState(draggableId, destination.droppableId, destination.index);
     }
+    onUnhandledDragEnd?.(result, provided);
   };
 
-  const getStateName = (state: string) =>
-    i18n.exists(`common.enums.innovationFlowState.${state}`)
-      ? t(`common.enums.innovationFlowState.${state}` as TranslationKey)
-      : state;
-
   return (
-    <DragDropContext onDragEnd={handleDragEnd}>
-      <Droppable droppableId={STATES_DROPPABLE_ID} type="droppableItem" direction="horizontal">
-        {parentDroppableProvided => (
-          <Box ref={parentDroppableProvided.innerRef} sx={{ userSelect: 'none' }}>
-            <ScrollableCardsLayoutContainer orientation="horizontal" alignItems="stretch">
-              {innovationFlowStates?.map((state, index) => (
-                <Draggable key={state.displayName} draggableId={state.displayName} index={index}>
-                  {parentProvider => {
-                    const isCurrentState = currentState === state.displayName;
-                    return (
-                      <PageContentBlock
-                        key={state.displayName}
-                        columns={3}
-                        ref={parentProvider.innerRef}
-                        sx={{ borderColor: isCurrentState ? 'primary.main' : undefined }}
-                        {...parentProvider.draggableProps}
-                      >
-                        <PageContentBlockHeader
-                          title={
-                            <Caption {...parentProvider.dragHandleProps}>{getStateName(state.displayName)}</Caption>
-                          }
-                          actions={
-                            <InnovationFlowStateMenu
-                              state={state.displayName}
-                              isCurrentState={isCurrentState}
-                              onUpdateCurrentState={onUpdateCurrentState}
-                              onAddStateAfter={stateBefore => onCreateFlowState({ after: stateBefore, last: false })}
-                              onEdit={onEditFlowState}
-                              onDelete={onDeleteFlowState}
-                            />
-                          }
-                        />
-                        {state.description?.trim() && (
-                          <CroppedMarkdown backgroundColor="paper" maxHeightGutters={3}>
-                            {state.description}
-                          </CroppedMarkdown>
-                        )}
-                        <Droppable droppableId={state.displayName}>
-                          {provided => (
-                            <Gutters
-                              ref={provided.innerRef}
-                              disablePadding
-                              flexGrow={1}
-                              minHeight={gutters(1)}
-                              {...provided.droppableProps}
-                            >
-                              {groupedCallouts[state.displayName]?.map((callout, index) => (
-                                <Draggable key={callout.id} draggableId={callout.id} index={index}>
-                                  {provider => (
-                                    <ListItem
-                                      ref={provider.innerRef}
-                                      {...provider.draggableProps}
-                                      {...provider.dragHandleProps}
-                                      displayName={callout.profile.displayName}
-                                      icon={calloutIcons[callout.type]}
-                                      activity={callout.activity}
-                                    />
-                                  )}
-                                </Draggable>
-                              ))}
-                              {provided.placeholder}
-                            </Gutters>
-                          )}
-                        </Droppable>
-                      </PageContentBlock>
-                    );
-                  }}
+    <InnovationFlowDragNDropEditor
+      onUnhandledDragEnd={handleDragEnd}
+      currentState={currentState}
+      innovationFlowStates={innovationFlowStates}
+      croppedDescriptions
+      {...statesActions}
+    >
+      {state => (
+        <Droppable droppableId={state.displayName}>
+          {provided => (
+            <Gutters
+              ref={provided.innerRef}
+              disablePadding
+              flexGrow={1}
+              minHeight={gutters(1)}
+              {...provided.droppableProps}
+            >
+              {groupedCallouts[state.displayName]?.map((callout, index) => (
+                <Draggable key={callout.id} draggableId={callout.id} index={index}>
+                  {provider => (
+                    <ListItem
+                      ref={provider.innerRef}
+                      {...provider.draggableProps}
+                      {...provider.dragHandleProps}
+                      displayName={callout.profile.displayName}
+                      icon={calloutIcons[callout.type]}
+                      activity={callout.activity}
+                    />
+                  )}
                 </Draggable>
               ))}
-              {parentDroppableProvided.placeholder}
-              <AddButton onClick={() => onCreateFlowState({ last: true })} />
-            </ScrollableCardsLayoutContainer>
-          </Box>
-        )}
-      </Droppable>
-    </DragDropContext>
+              {provided.placeholder}
+            </Gutters>
+          )}
+        </Droppable>
+      )}
+    </InnovationFlowDragNDropEditor>
   );
 };
 

@@ -1,19 +1,20 @@
 import useCallouts, { UseCalloutsProvided } from '../../../collaboration/callout/useCallouts/useCallouts';
 import { SimpleContainerProps } from '../../../../core/container/SimpleContainer';
-import { CalloutDisplayLocation } from '../../../../core/apollo/generated/graphql-schema';
+import { CalloutGroupName } from '../../../../core/apollo/generated/graphql-schema';
 
 interface SpaceCommunityContainerProps extends SimpleContainerProps<SpaceCommunityContainerProvided> {
-  spaceNameId: string;
+  spaceId: string | undefined;
 }
 
 interface SpaceCommunityContainerProvided {
   callouts: UseCalloutsProvided;
 }
 
-const SpaceCommunityContainer = ({ spaceNameId, children }: SpaceCommunityContainerProps) => {
+const SpaceCommunityContainer = ({ spaceId, children }: SpaceCommunityContainerProps) => {
   const callouts = useCallouts({
-    spaceNameId,
-    displayLocations: [CalloutDisplayLocation.CommunityLeft, CalloutDisplayLocation.CommunityRight],
+    journeyId: spaceId,
+    journeyTypeName: 'space',
+    groupNames: [CalloutGroupName.Community_1, CalloutGroupName.Community_2],
   });
 
   return <>{children({ callouts })}</>;

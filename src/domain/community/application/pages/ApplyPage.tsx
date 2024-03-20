@@ -10,7 +10,6 @@ import WrapperButton from '../../../../core/ui/button/deprecated/WrapperButton';
 import ErrorBlock from '../../../../core/ui/error/ErrorBlock';
 import { Loading } from '../../../../core/ui/loading/Loading';
 import { useApplicationCommunityQuery } from '../containers/useApplicationCommunityQuery';
-import { useUpdateNavigation } from '../../../../core/routing/useNavigation';
 import {
   refetchUserProviderQuery,
   useApplyForCommunityMembershipMutation,
@@ -18,9 +17,8 @@ import {
 import { ApplicationTypeEnum } from '../constants/ApplicationType';
 import { CreateNvpInput } from '../../../../core/apollo/generated/graphql-schema';
 import getApplicationTypeKey from '../utils/getApplicationTypeKey';
-import { PageProps } from '../../../shared/types/PageProps';
 import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
-import { PageTitle, BlockTitle } from '../../../../core/ui/typography';
+import { BlockTitle, PageTitle } from '../../../../core/ui/typography';
 import SaveButton from '../../../../core/ui/actions/SaveButton';
 import PageContent from '../../../../core/ui/content/PageContent';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
@@ -47,14 +45,11 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-interface ApplyPageProps extends PageProps {
+interface ApplyPageProps {
   type: ApplicationTypeEnum;
 }
 
-const ApplyPage: FC<ApplyPageProps> = ({ paths, type }): React.ReactElement => {
-  const currentPaths = useMemo(() => [...paths, { value: '', name: 'apply', real: true }], [paths]);
-  useUpdateNavigation({ currentPaths });
-
+const ApplyPage: FC<ApplyPageProps> = ({ type }) => {
   const { t } = useTranslation();
   const styles = useStyles();
 

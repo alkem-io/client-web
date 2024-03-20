@@ -1,7 +1,7 @@
 import React, { FC, useMemo } from 'react';
 import { Formik, FormikConfig } from 'formik';
 import {
-  CalloutDisplayLocation,
+  CalloutGroupName,
   CalloutState,
   CalloutType,
   Tagset,
@@ -34,7 +34,7 @@ import CalloutWhiteboardField, {
   WhiteboardFieldSubmittedValuesWithPreviewImages,
 } from './creationDialog/CalloutWhiteboardField/CalloutWhiteboardField';
 import { JourneyTypeName } from '../../journey/JourneyTypeName';
-import { JourneyCalloutDisplayLocationOptions } from './CalloutsInContext/CalloutsGroup';
+import { JourneyCalloutGroupNameOptions } from './CalloutsInContext/CalloutsGroup';
 import { DEFAULT_TAGSET } from '../../common/tags/tagset.constants';
 
 type FormValueType = {
@@ -44,7 +44,7 @@ type FormValueType = {
   tagsets: Tagset[];
   references: Reference[];
   opened: boolean;
-  displayLocation: CalloutDisplayLocation;
+  groupName: CalloutGroupName;
   postDescription?: string;
   whiteboardContent?: string;
   whiteboard?: WhiteboardFieldSubmittedValuesWithPreviewImages;
@@ -60,7 +60,7 @@ export type CalloutFormInput = {
   references?: Reference[];
   type?: CalloutType;
   state?: CalloutState;
-  displayLocation?: CalloutDisplayLocation;
+  groupName?: CalloutGroupName;
   postDescription?: string;
   whiteboardContent?: string;
   whiteboard?: WhiteboardFieldSubmittedValues;
@@ -74,7 +74,7 @@ export type CalloutFormOutput = {
   references: Reference[];
   type: CalloutType;
   state: CalloutState;
-  displayLocation: CalloutDisplayLocation;
+  groupName: CalloutGroupName;
   postDescription?: string;
   whiteboardContent?: string;
   whiteboard?: WhiteboardFieldSubmittedValuesWithPreviewImages;
@@ -126,7 +126,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
       tagsets,
       references: callout?.references ?? [],
       opened: (callout?.state ?? CalloutState.Open) === CalloutState.Open,
-      displayLocation: callout?.displayLocation ?? CalloutDisplayLocation.Knowledge,
+      groupName: callout?.groupName ?? CalloutGroupName.Knowledge,
       postDescription: callout.postDescription ?? '',
       whiteboardContent: callout.whiteboardContent ?? JSON.stringify(EmptyWhiteboard),
       whiteboard: callout?.whiteboard
@@ -176,7 +176,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
       references: values.references,
       type: calloutType,
       state: values.opened ? CalloutState.Open : CalloutState.Closed,
-      displayLocation: values.displayLocation,
+      groupName: values.groupName,
       postDescription: values.postDescription,
       whiteboardContent: values.whiteboardContent,
       whiteboard: values.whiteboard,
@@ -185,12 +185,12 @@ const CalloutForm: FC<CalloutFormProps> = ({
   };
 
   const calloutsGroups = useMemo<FormikSelectValue[]>(() => {
-    const locations = JourneyCalloutDisplayLocationOptions[journeyTypeName];
+    const locations = JourneyCalloutGroupNameOptions[journeyTypeName];
 
     if (editMode) {
       return locations.map(key => ({
         id: key,
-        name: t(`callout.callout-groups.${key}` as const),
+        name: t(`callout.callout-group.${key}` as const),
       }));
     }
     return [];
@@ -259,7 +259,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
               <FormControlLabel
                 sx={{ margin: 0, '& > span': { marginRight: theme => theme.spacing(2) } }}
                 labelPlacement="start"
-                control={<FormikSelect name="displayLocation" values={calloutsGroups} />}
+                control={<FormikSelect name="groupName" values={calloutsGroups} />}
                 label={t('callout.callout-location')}
               />
             )}

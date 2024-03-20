@@ -31,6 +31,7 @@ interface TemplateFormProps<Values extends TemplateProfileValues> {
   actions: ReactNode | ((formState: FormikProps<Values & TemplateProfileValues>) => ReactNode);
   children?: ReactNode | ((formState: FormikProps<Values & TemplateProfileValues>) => ReactNode);
   validator: yup.ObjectSchemaDefinition<Partial<Values>>;
+  verticalLayout?: boolean;
 }
 
 const TemplateForm = <Values extends TemplateProfileValues>({
@@ -40,6 +41,7 @@ const TemplateForm = <Values extends TemplateProfileValues>({
   actions,
   children,
   validator,
+  verticalLayout = false,
 }: TemplateFormProps<Values>) => {
   const { t } = useTranslation();
 
@@ -92,8 +94,9 @@ const TemplateForm = <Values extends TemplateProfileValues>({
               />
               {visual && <VisualUpload visual={visual} />}
             </TemplateFormRows>
-            {renderChildren(formState)}
+            {!verticalLayout && renderChildren(formState)}
           </FormCols>
+          {verticalLayout && renderChildren(formState)}
           {renderActions(formState)}
         </>
       )}

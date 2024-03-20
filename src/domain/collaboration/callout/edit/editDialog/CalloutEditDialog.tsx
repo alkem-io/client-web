@@ -8,13 +8,13 @@ import { CalloutDeleteType, CalloutEditType } from '../CalloutEditType';
 import CalloutForm, { CalloutFormInput, CalloutFormOutput } from '../../CalloutForm';
 import { CalloutType, TagsetType } from '../../../../../core/apollo/generated/graphql-schema';
 import { useWhiteboardTemplateContentLazyQuery } from '../../../../../core/apollo/generated/apollo-hooks';
-import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import { CalloutLayoutProps } from '../../../CalloutBlock/CalloutLayout';
 import EmptyWhiteboard from '../../../../common/whiteboard/EmptyWhiteboard';
 import { JourneyTypeName } from '../../../../journey/JourneyTypeName';
 import { StorageConfigContextProvider } from '../../../../storage/StorageBucket/StorageConfigContext';
 import { DEFAULT_TAGSET } from '../../../../common/tags/tagset.constants';
 import DialogWithGrid from '../../../../../core/ui/dialog/DialogWithGrid';
+import { useRouteResolver } from '../../../../../main/routing/resolvers/RouteResolver';
 
 export interface CalloutEditDialogProps {
   open: boolean;
@@ -40,11 +40,8 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
   journeyTypeName,
 }) => {
   const { t } = useTranslation();
-  const { spaceNameId, challengeNameId, opportunityNameId } = useUrlParams();
 
-  if (!spaceNameId) {
-    throw new Error('Must be within a Space route.');
-  }
+  const { journeyId } = useRouteResolver();
 
   const [loading, setLoading] = useState(false);
   const [valid, setValid] = useState(true);
@@ -58,7 +55,7 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
     tags: callout.framing.profile.tagset?.tags,
     postDescription: callout.contributionDefaults.postDescription ?? '',
     whiteboardContent: callout.contributionDefaults?.whiteboardContent ?? JSON.stringify(EmptyWhiteboard),
-    displayLocation: callout.displayLocation,
+    groupName: callout.groupName,
   };
   const [newCallout, setNewCallout] = useState<CalloutFormInput>(initialValues);
   const [fetchWhiteboardTemplateContent] = useWhiteboardTemplateContentLazyQuery({
@@ -93,10 +90,10 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
         whiteboardContent: callout.type === CalloutType.WhiteboardCollection ? newCallout.whiteboardContent : undefined,
       },
       state: newCallout.state,
-      displayLocation: newCallout.displayLocation,
+      groupName: newCallout.groupName,
     });
     setLoading(false);
-  }, [callout, fetchWhiteboardTemplateContent, newCallout, spaceNameId, onCalloutEdit]);
+  }, [callout, fetchWhiteboardTemplateContent, newCallout, onCalloutEdit]);
 
   const CalloutIcon = calloutType ? calloutIcons[calloutType] : undefined;
 
@@ -114,7 +111,7 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
           <StorageConfigContextProvider
             locationType="callout"
             journeyTypeName={journeyTypeName}
-            {...{ spaceNameId, challengeNameId, opportunityNameId }}
+            journeyId={journeyId}
             calloutId={callout.nameID}
           >
             <CalloutForm
