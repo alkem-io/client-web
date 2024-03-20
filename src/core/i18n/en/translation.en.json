@@ -238,6 +238,7 @@
     "forum": "Forum",
     "email": "Email",
     "state": "State",
+    "states": "States",
     "post": "Post",
     "posts": "Posts",
     "status": "Status",
@@ -1556,7 +1557,6 @@
     },
     "innovationFlowTemplateSelect": {
       "select": "Select different Flow",
-      "states": "States",
       "required": "Please select an Innovation Flow"
     }
   },
