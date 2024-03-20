@@ -998,7 +998,7 @@ export type Challenge = Journey & {
   nameID: Scalars['NameID'];
   /** The Opportunities for the challenge. */
   opportunities?: Maybe<Array<Opportunity>>;
-  /** A particular Opportunity, either by its ID or nameID, in the same account */
+  /** A particular Opportunity, either by its ID or nameID, in the same account as the parent Challenge */
   opportunity: Opportunity;
   /** The Profile for the  Challenge. */
   profile: Profile;
@@ -1226,6 +1226,8 @@ export type Community = Groupable & {
   availableMemberUsers?: Maybe<PaginatedUsers>;
   /** The Communications for this Community. */
   communication?: Maybe<Communication>;
+  /** The user group with the specified id anywhere in the space */
+  group: UserGroup;
   /** Groups of users related to a Community. */
   groups?: Maybe<Array<UserGroup>>;
   /** The ID of the entity */
@@ -1262,6 +1264,10 @@ export type CommunityAvailableMemberUsersArgs = {
   filter?: InputMaybe<UserFilterInput>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
+};
+
+export type CommunityGroupArgs = {
+  ID: Scalars['UUID'];
 };
 
 export type CommunityMemberUsersArgs = {
@@ -4105,10 +4111,6 @@ export type RelayPaginatedSpace = Journey & {
   context?: Maybe<Context>;
   /** The date for the creation of this Space. */
   createdDate?: Maybe<Scalars['DateTime']>;
-  /** The user group with the specified id anywhere in the space */
-  group: UserGroup;
-  /** The User Groups on this Space */
-  groups: Array<UserGroup>;
   /** The Space host. */
   host?: Maybe<Organization>;
   /** The ID of the Journey */
@@ -4133,10 +4135,6 @@ export type RelayPaginatedSpaceChallengesArgs = {
   IDs?: InputMaybe<Array<Scalars['UUID']>>;
   limit?: InputMaybe<Scalars['Float']>;
   shuffle?: InputMaybe<Scalars['Boolean']>;
-};
-
-export type RelayPaginatedSpaceGroupArgs = {
-  ID: Scalars['UUID'];
 };
 
 export type RelayPaginatedSpaceEdge = {
@@ -4622,10 +4620,6 @@ export type Space = Journey & {
   context?: Maybe<Context>;
   /** The date for the creation of this Space. */
   createdDate?: Maybe<Scalars['DateTime']>;
-  /** The user group with the specified id anywhere in the space */
-  group: UserGroup;
-  /** The User Groups on this Space */
-  groups: Array<UserGroup>;
   /** The Space host. */
   host?: Maybe<Organization>;
   /** The ID of the Journey */
@@ -4650,10 +4644,6 @@ export type SpaceChallengesArgs = {
   IDs?: InputMaybe<Array<Scalars['UUID']>>;
   limit?: InputMaybe<Scalars['Float']>;
   shuffle?: InputMaybe<Scalars['Boolean']>;
-};
-
-export type SpaceGroupArgs = {
-  ID: Scalars['UUID'];
 };
 
 export type SpaceAuthorizationResetInput = {
@@ -23150,54 +23140,60 @@ export type SpaceGroupQuery = {
   space: {
     __typename?: 'Space';
     id: string;
-    group: {
-      __typename?: 'UserGroup';
-      id: string;
-      name: string;
-      profile?:
-        | {
-            __typename?: 'Profile';
+    community?:
+      | {
+          __typename?: 'Community';
+          id: string;
+          group: {
+            __typename?: 'UserGroup';
             id: string;
-            displayName: string;
-            description?: string | undefined;
-            tagline: string;
-            visual?:
+            name: string;
+            profile?:
               | {
-                  __typename?: 'Visual';
+                  __typename?: 'Profile';
                   id: string;
-                  uri: string;
-                  name: string;
-                  allowedTypes: Array<string>;
-                  aspectRatio: number;
-                  maxHeight: number;
-                  maxWidth: number;
-                  minHeight: number;
-                  minWidth: number;
-                  alternativeText?: string | undefined;
+                  displayName: string;
+                  description?: string | undefined;
+                  tagline: string;
+                  visual?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        allowedTypes: Array<string>;
+                        aspectRatio: number;
+                        maxHeight: number;
+                        maxWidth: number;
+                        minHeight: number;
+                        minWidth: number;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                  references?:
+                    | Array<{
+                        __typename?: 'Reference';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        description?: string | undefined;
+                      }>
+                    | undefined;
+                  tagsets?:
+                    | Array<{
+                        __typename?: 'Tagset';
+                        id: string;
+                        name: string;
+                        tags: Array<string>;
+                        allowedValues: Array<string>;
+                        type: TagsetType;
+                      }>
+                    | undefined;
                 }
               | undefined;
-            references?:
-              | Array<{
-                  __typename?: 'Reference';
-                  id: string;
-                  uri: string;
-                  name: string;
-                  description?: string | undefined;
-                }>
-              | undefined;
-            tagsets?:
-              | Array<{
-                  __typename?: 'Tagset';
-                  id: string;
-                  name: string;
-                  tags: Array<string>;
-                  allowedValues: Array<string>;
-                  type: TagsetType;
-                }>
-              | undefined;
-          }
-        | undefined;
-    };
+          };
+        }
+      | undefined;
   };
 };
 

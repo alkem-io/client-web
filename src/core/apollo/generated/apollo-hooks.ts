@@ -19382,8 +19382,11 @@ export const SpaceGroupDocument = gql`
   query spaceGroup($spaceId: UUID_NAMEID!, $groupId: UUID!) {
     space(ID: $spaceId) {
       id
-      group(ID: $groupId) {
-        ...GroupInfo
+      community {
+        id
+        group(ID: $groupId) {
+          ...GroupInfo
+        }
       }
     }
   }

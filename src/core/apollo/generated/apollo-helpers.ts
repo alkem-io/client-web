@@ -892,6 +892,7 @@ export type CommunityKeySpecifier = (
   | 'availableLeadUsers'
   | 'availableMemberUsers'
   | 'communication'
+  | 'group'
   | 'groups'
   | 'id'
   | 'invitations'
@@ -911,6 +912,7 @@ export type CommunityFieldPolicy = {
   availableLeadUsers?: FieldPolicy<any> | FieldReadFunction<any>;
   availableMemberUsers?: FieldPolicy<any> | FieldReadFunction<any>;
   communication?: FieldPolicy<any> | FieldReadFunction<any>;
+  group?: FieldPolicy<any> | FieldReadFunction<any>;
   groups?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   invitations?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2197,8 +2199,6 @@ export type RelayPaginatedSpaceKeySpecifier = (
   | 'community'
   | 'context'
   | 'createdDate'
-  | 'group'
-  | 'groups'
   | 'host'
   | 'id'
   | 'metrics'
@@ -2218,8 +2218,6 @@ export type RelayPaginatedSpaceFieldPolicy = {
   community?: FieldPolicy<any> | FieldReadFunction<any>;
   context?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
-  group?: FieldPolicy<any> | FieldReadFunction<any>;
-  groups?: FieldPolicy<any> | FieldReadFunction<any>;
   host?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   metrics?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2566,8 +2564,6 @@ export type SpaceKeySpecifier = (
   | 'community'
   | 'context'
   | 'createdDate'
-  | 'group'
-  | 'groups'
   | 'host'
   | 'id'
   | 'metrics'
@@ -2587,8 +2583,6 @@ export type SpaceFieldPolicy = {
   community?: FieldPolicy<any> | FieldReadFunction<any>;
   context?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
-  group?: FieldPolicy<any> | FieldReadFunction<any>;
-  groups?: FieldPolicy<any> | FieldReadFunction<any>;
   host?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   metrics?: FieldPolicy<any> | FieldReadFunction<any>;
