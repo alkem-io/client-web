@@ -55,7 +55,6 @@ const CustomNewIcon = styled(FiberNewTwoToneIcon)(() => ({
 const HelpDialog: FC<HelpDialogProps> = ({ open, onClose }) => {
   const { t } = useTranslation();
   const { locations } = useConfig();
-  console.log('locations', locations);
   const handleClose = () => (onClose ? onClose() : undefined);
   const faq = `${locations?.help}`;
   const contactUs = `${locations?.support}`;
