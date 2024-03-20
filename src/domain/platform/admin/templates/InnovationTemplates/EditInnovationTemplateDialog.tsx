@@ -55,7 +55,6 @@ const EditInnovationTemplateDialog = ({
       <DialogContent>
         <InnovationFlowTemplateForm
           initialValues={values}
-          visual={template.profile.visual}
           onSubmit={handleSubmit}
           actions={formik => (
             <DialogFooter>
