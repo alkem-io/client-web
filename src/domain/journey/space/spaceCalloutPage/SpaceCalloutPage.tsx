@@ -7,19 +7,19 @@ import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { buildSpaceUrl } from '../../../../main/routing/urlBuilders';
 import { JourneyCalloutDialogProps } from '../../common/JourneyCalloutDialog/JourneyCalloutDialog';
-import { CalloutDisplayLocation } from '../../../../core/apollo/generated/graphql-schema';
+import { CalloutGroupName } from '../../../../core/apollo/generated/graphql-schema';
 import SpaceCommunityPage from '../SpaceCommunityPage/SpaceCommunityPage';
 
 const getPageSection = (calloutGroup: string | undefined): EntityPageSection => {
   switch (calloutGroup) {
-    case CalloutDisplayLocation.HomeLeft:
-    case CalloutDisplayLocation.HomeRight:
+    case CalloutGroupName.Home_1:
+    case CalloutGroupName.Home_2:
       return EntityPageSection.Dashboard;
-    case CalloutDisplayLocation.CommunityLeft:
-    case CalloutDisplayLocation.CommunityRight:
+    case CalloutGroupName.Community_1:
+    case CalloutGroupName.Community_2:
       return EntityPageSection.Community;
-    case CalloutDisplayLocation.ChallengesLeft:
-    case CalloutDisplayLocation.ChallengesRight:
+    case CalloutGroupName.Subspaces_1:
+    case CalloutGroupName.Subspaces_2:
       return EntityPageSection.Challenges;
     default:
       return EntityPageSection.KnowledgeBase;
@@ -28,13 +28,13 @@ const getPageSection = (calloutGroup: string | undefined): EntityPageSection => 
 
 const renderPage = (calloutGroup: string | undefined) => {
   switch (calloutGroup) {
-    case CalloutDisplayLocation.HomeLeft:
-    case CalloutDisplayLocation.HomeRight:
+    case CalloutGroupName.Home_1:
+    case CalloutGroupName.Home_2:
       return <SpaceDashboardPage />;
-    case CalloutDisplayLocation.ChallengesLeft:
+    case CalloutGroupName.Subspaces_1:
       return <SpaceChallengesPage />;
-    case CalloutDisplayLocation.CommunityLeft:
-    case CalloutDisplayLocation.CommunityRight:
+    case CalloutGroupName.Community_1:
+    case CalloutGroupName.Community_2:
       return <SpaceCommunityPage />;
     default:
       return <KnowedgeBasePage journeyTypeName="space" />;

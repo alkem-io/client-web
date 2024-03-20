@@ -9,7 +9,7 @@ mutation UpdateCallout($calloutData: UpdateCalloutInput!) {
         tagset {
           ...TagsetDetails
         }
-        displayLocationTagset: tagset(tagsetName: CALLOUT_DISPLAY_LOCATION) {
+        groupNameTagset: tagset(tagsetName: CALLOUT_GROUP) {
           ...TagsetDetails
         }
         references {

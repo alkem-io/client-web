@@ -1,6 +1,5 @@
-query challengeApplicationTemplate($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
-  space(ID: $spaceId) {
-    id
+query challengeApplicationTemplate($challengeId: UUID!) {
+  lookup {
     challenge(ID: $challengeId) {
       id
       community {

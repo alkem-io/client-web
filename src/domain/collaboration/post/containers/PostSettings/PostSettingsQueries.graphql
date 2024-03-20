@@ -1,51 +1,7 @@
-query SpacePostSettings($spaceNameId: UUID_NAMEID!, $postNameId: UUID_NAMEID!, $calloutNameId: UUID_NAMEID!) {
-  space(ID: $spaceNameId) {
-    id
-    collaboration {
-      id
-      callouts(IDs: [$calloutNameId]) {
-        ...PostSettingsCallout
-      }
-    }
-  }
-}
-
-query ChallengePostSettings(
-  $spaceNameId: UUID_NAMEID!
-  $challengeNameId: UUID_NAMEID!
-  $postNameId: UUID_NAMEID!
-  $calloutNameId: UUID_NAMEID!
-) {
-  space(ID: $spaceNameId) {
-    id
-    challenge(ID: $challengeNameId) {
-      id
-      collaboration {
-        id
-        callouts(IDs: [$calloutNameId]) {
-          ...PostSettingsCallout
-        }
-      }
-    }
-  }
-}
-
-query OpportunityPostSettings(
-  $spaceNameId: UUID_NAMEID!
-  $opportunityNameId: UUID_NAMEID!
-  $postNameId: UUID_NAMEID!
-  $calloutNameId: UUID_NAMEID!
-) {
-  space(ID: $spaceNameId) {
-    id
-    opportunity(ID: $opportunityNameId) {
-      id
-      collaboration {
-        id
-        callouts(IDs: [$calloutNameId]) {
-          ...PostSettingsCallout
-        }
-      }
+query PostSettings($postNameId: UUID_NAMEID!, $calloutId: UUID!) {
+  lookup {
+    callout(ID: $calloutId) {
+      ...PostSettingsCallout
     }
   }
 }

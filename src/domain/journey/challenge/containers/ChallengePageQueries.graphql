@@ -1,6 +1,5 @@
-query challengePage($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
-  space(ID: $spaceId) {
-    id
+query challengePage($challengeId: UUID!) {
+  lookup {
     challenge(ID: $challengeId) {
       ...ChallengeProfile
     }
@@ -17,6 +16,7 @@ fragment ChallengeProfile on Challenge {
   }
   profile {
     id
+    url
     tagline
     displayName
     visuals {
@@ -62,9 +62,8 @@ fragment ChallengeProfile on Challenge {
   }
 }
 
-query ChallengeDashboardReferences($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
-  space(ID: $spaceId) {
-    id
+query ChallengeDashboardReferences($challengeId: UUID!) {
+  lookup {
     challenge(ID: $challengeId) {
       id
       profile {

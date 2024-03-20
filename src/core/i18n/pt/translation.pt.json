@@ -639,7 +639,7 @@
     "singleWhiteboard": {
       "clickToSee": "Clique para ver o quadro completo"
     },
-    "callout-groups": {
+    "callout-group": {
       "HOME_TOP": "Recomendações do painel",
       "HOME_LEFT": "Painel à Esquerda",
       "HOME_RIGHT": "Painel à direita",

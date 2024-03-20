@@ -28,6 +28,7 @@ import useLoadingState from '../../../shared/utils/useLoadingState';
 import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
 import { normalizeLink } from '../../../../core/utils/links';
 import { DialogFooter } from '../../../../core/ui/dialog/DialogWithGrid';
+import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 
 export interface PostSettingsPageProps {
   onClose: () => void;
@@ -36,7 +37,9 @@ export interface PostSettingsPageProps {
 
 const PostSettingsPage: FC<PostSettingsPageProps> = ({ journeyTypeName, onClose }) => {
   const { t } = useTranslation();
-  const { spaceNameId = '', challengeNameId, opportunityNameId, postNameId = '', calloutNameId = '' } = useUrlParams();
+  const { postNameId } = useUrlParams();
+  const { calloutId } = useRouteResolver();
+
   const navigate = useNavigate();
 
   const [post, setPost] = useState<PostFormOutput>();
@@ -56,10 +59,7 @@ const PostSettingsPage: FC<PostSettingsPageProps> = ({ journeyTypeName, onClose 
 
   const postSettings = usePostSettings({
     postNameId,
-    spaceNameId,
-    challengeNameId,
-    opportunityNameId,
-    calloutNameId,
+    calloutId,
   });
 
   const notify = useNotification();
@@ -76,10 +76,11 @@ const PostSettingsPage: FC<PostSettingsPageProps> = ({ journeyTypeName, onClose 
 
   const isMoveEnabled = Boolean(targetCalloutId) && targetCalloutId !== postSettings.parentCallout?.id;
 
+  const { journeyId } = useRouteResolver();
+
   const { callouts, refetchCallouts } = useCallouts({
-    spaceNameId,
-    challengeNameId,
-    opportunityNameId,
+    journeyId,
+    journeyTypeName,
   });
 
   const calloutsOfTypePost = callouts?.filter(({ type }) => type === CalloutType.PostCollection);
@@ -136,15 +137,7 @@ const PostSettingsPage: FC<PostSettingsPageProps> = ({ journeyTypeName, onClose 
 
   return (
     <PostLayout currentSection={PostDialogSection.Settings} onClose={onClose}>
-      <StorageConfigContextProvider
-        locationType="post"
-        postId={postNameId}
-        calloutId={calloutNameId}
-        journeyTypeName={journeyTypeName}
-        spaceNameId={spaceNameId}
-        challengeNameId={challengeNameId}
-        opportunityNameId={opportunityNameId}
-      >
+      <StorageConfigContextProvider locationType="post" postId={postNameId} calloutId={calloutId}>
         <PostForm
           edit
           loading={postSettings.loading || postSettings.updating || isMovingContribution}

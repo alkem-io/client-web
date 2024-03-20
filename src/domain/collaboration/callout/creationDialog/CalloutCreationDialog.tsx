@@ -5,7 +5,7 @@ import {
   CalloutState,
   CalloutType,
   CalloutVisibility,
-  CalloutDisplayLocation,
+  CalloutGroupName,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { CalloutCreationTypeWithPreviewImages } from './useCalloutCreation/useCalloutCreationWithPreviewImages';
 import { Box, Button, Checkbox, FormControlLabel } from '@mui/material';
@@ -52,7 +52,7 @@ export interface CalloutCreationDialogProps {
   onCreateCallout: (callout: CalloutCreationTypeWithPreviewImages) => Promise<Identifiable | undefined>;
   loading: boolean;
   calloutNames: string[];
-  displayLocation: CalloutDisplayLocation;
+  groupName: CalloutGroupName;
   flowState?: string;
   journeyTypeName: JourneyTypeName;
   canCreateCalloutFromTemplate?: boolean;
@@ -64,7 +64,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
   onCreateCallout,
   loading,
   calloutNames,
-  displayLocation,
+  groupName,
   flowState,
   journeyTypeName,
   canCreateCalloutFromTemplate = false,
@@ -152,7 +152,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
           contributionPolicy: {
             state: callout.state!,
           },
-          displayLocation,
+          groupName,
           visibility,
           sendNotification: visibility === CalloutVisibility.Published && sendNotification,
         };

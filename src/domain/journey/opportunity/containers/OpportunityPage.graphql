@@ -1,6 +1,5 @@
-query opportunityPage($spaceId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
-  space(ID: $spaceId) {
-    id
+query opportunityPage($opportunityId: UUID!) {
+  lookup {
     opportunity(ID: $opportunityId) {
       ...OpportunityPage
     }
@@ -12,6 +11,7 @@ fragment OpportunityPage on Opportunity {
   nameID
   profile {
     id
+    url
     displayName
     tagset {
       ...TagsetDetails
@@ -31,7 +31,6 @@ fragment OpportunityPage on Opportunity {
     anonymousReadAccess
     myPrivileges
   }
-
   metrics {
     id
     name
