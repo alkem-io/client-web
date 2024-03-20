@@ -1,7 +1,7 @@
-import React, { FC, useMemo, useState } from 'react';
+import React, { FC, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Theme, useMediaQuery } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import CategorySelector from '../components/CategorySelector';
 import DiscussionsLayout from '../layout/DiscussionsLayout';
 import { DiscussionListView } from '../views/DiscussionsListView';
@@ -17,7 +17,6 @@ import {
   CommunicationDiscussionUpdatedSubscription,
   CommunicationDiscussionUpdatedSubscriptionVariables,
   DiscussionCategory,
-  DiscussionCategoryPlatform,
   PlatformDiscussionsQuery,
 } from '../../../../core/apollo/generated/graphql-schema';
 import DiscussionIcon from '../views/DiscussionIcon';
@@ -57,7 +56,16 @@ const useSubscriptionToCommunication = UseSubscriptionToSubEntity<
 });
 
 interface ForumPageProps {
-  dialog?: 'new' | keyof typeof DiscussionCategory;
+  dialog?: 'new';
+}
+
+enum DiscussionCategoryPlatform {
+  RELEASES = 'releases',
+  PLATFORM_FUNCTIONALITIES = 'platform-functionalities',
+  COMMUNITY_BUILDING = 'community-building',
+  CHALLENGE_CENTRIC = 'challenge-centric',
+  HELP = 'help',
+  OTHER = 'other',
 }
 
 export const ForumPage: FC<ForumPageProps> = ({ dialog }) => {
@@ -65,7 +73,22 @@ export const ForumPage: FC<ForumPageProps> = ({ dialog }) => {
   const navigate = useNavigate();
   const { user: { hasPlatformPrivilege } = {}, isAuthenticated, loading: loadingUser } = useUserContext();
 
-  const [categorySelected, setCategorySelected] = useState<DiscussionCategoryExt>(ALL_CATEGORIES);
+  const { pathname } = useLocation();
+  const initialPathname = useRef(pathname);
+
+  const path = pathname.substring(pathname.lastIndexOf('/') + 1);
+  const category = (Object.keys(DiscussionCategoryPlatform)[
+    Object.values(DiscussionCategoryPlatform).indexOf(path as unknown as DiscussionCategoryPlatform)
+  ] ?? ALL_CATEGORIES) as DiscussionCategoryExt;
+
+  useEffect(() => {
+    if (pathname !== initialPathname.current) {
+      setCategorySelected(category as DiscussionCategoryExt);
+      initialPathname.current = pathname;
+    }
+  }, [pathname]);
+
+  const [categorySelected, setCategorySelected] = useState<DiscussionCategoryExt>(category || ALL_CATEGORIES);
   const { data, loading: loadingDiscussions, subscribeToMore } = usePlatformDiscussionsQuery();
   useSubscriptionToCommunication(data, data => data?.platform.communication, subscribeToMore);
 
@@ -157,12 +180,9 @@ export const ForumPage: FC<ForumPageProps> = ({ dialog }) => {
               <CategorySelector
                 categories={categories}
                 onSelect={category => {
-                  setCategorySelected(category);
                   navigate(
                     Object.keys(DiscussionCategoryPlatform).includes(category)
-                      ? category === DiscussionCategory.Releases
-                        ? `/forum/${DiscussionCategoryPlatform[category]}/latest`
-                        : `/forum/${DiscussionCategoryPlatform[category]}`
+                      ? `/forum/${DiscussionCategoryPlatform[category]}`
                       : '/forum'
                   );
                 }}

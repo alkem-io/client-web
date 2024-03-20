@@ -748,15 +748,6 @@ export enum AuthorizationPrivilege {
   UpdateWhiteboard = 'UPDATE_WHITEBOARD',
 }
 
-export enum DiscussionCategoryPlatform {
-  RELEASES = 'releases',
-  PLATFORM_FUNCTIONALITIES = 'platform-functionalities',
-  COMMUNITY_BUILDING = 'community-building',
-  CHALLENGE_CENTRIC = 'challenge-centric',
-  HELP = 'help',
-  OTHER = 'other',
-}
-
 export type Calendar = {
   __typename?: 'Calendar';
   /** The authorization rules for the entity */

@@ -15,12 +15,13 @@ export const ForumRoute: FC<ForumRouteProps> = () => {
         <Route index element={<ForumPage />} />
         <Route path="/new" element={<ForumPage dialog="new" />} />
         <Route path={`discussion/:${nameOfUrl.discussionNameId}`} element={<DiscussionPage />} />
-        <Route path={'/releases/latest'} element={<ForumPage dialog="Releases" />} />
-        <Route path={'/platform-functionalities'} element={<ForumPage dialog="PlatformFunctionalities" />} />
-        <Route path={'/community-building'} element={<ForumPage dialog="CommunityBuilding" />} />
-        <Route path={'/challenge-centric'} element={<ForumPage dialog="ChallengeCentric" />} />
-        <Route path={'/help'} element={<ForumPage dialog="Help" />} />
-        <Route path={'/other'} element={<ForumPage dialog="Other" />} />
+        <Route path={'/releases'} element={<ForumPage />} />
+        <Route path={'/releases/latest'} element={<ForumPage />} />
+        <Route path={'/platform-functionalities'} element={<ForumPage />} />
+        <Route path={'/community-building'} element={<ForumPage />} />
+        <Route path={'/challenge-centric'} element={<ForumPage />} />
+        <Route path={'/help'} element={<ForumPage />} />
+        <Route path={'/other'} element={<ForumPage />} />
         <Route
           path="*"
           element={
