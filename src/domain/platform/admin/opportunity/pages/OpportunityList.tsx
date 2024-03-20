@@ -18,7 +18,7 @@ import { useChallenge } from '../../../../journey/challenge/hooks/useChallenge';
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import { JourneyCreationDialog } from '../../../../shared/components/JorneyCreationDialog';
 import { CreateOpportunityForm } from '../../../../journey/opportunity/forms/CreateOpportunityForm';
-import { buildAdminOpportunityUrl } from '../../../../../main/routing/urlBuilders';
+import { buildJourneyAdminUrl } from '../../../../../main/routing/urlBuilders';
 import { JourneyFormValues } from '../../../../shared/components/JorneyCreationDialog/JourneyCreationForm';
 import { OpportunityIcon } from '../../../../journey/opportunity/icon/OpportunityIcon';
 
@@ -94,8 +94,9 @@ export const OpportunityList: FC = () => {
       if (!data?.createOpportunity) {
         return;
       }
-
-      navigate(buildAdminOpportunityUrl(spaceNameId, challengeNameId, data?.createOpportunity.nameID));
+      if (data?.createOpportunity.profile.url) {
+        navigate(buildJourneyAdminUrl(data?.createOpportunity.profile.url));
+      }
     },
     [navigate, createOpportunity, spaceNameId, challengeId, challengeNameId]
   );
