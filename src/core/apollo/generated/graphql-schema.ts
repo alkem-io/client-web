@@ -1912,6 +1912,7 @@ export enum DiscussionCategory {
   Other = 'OTHER',
   PlatformFunctionalities = 'PLATFORM_FUNCTIONALITIES',
   Questions = 'QUESTIONS',
+  Releases = 'RELEASES',
   Sharing = 'SHARING',
 }
 
@@ -2788,6 +2789,8 @@ export type Mutation = {
   updateReference: Reference;
   /** Updates the Space. */
   updateSpace: Space;
+  /** Updates the specified SpaceDefaults. */
+  updateSpaceDefaults: SpaceDefaults;
   /** Update the platform settings, such as license, of the specified Space. */
   updateSpacePlatformSettings: Space;
   /** Updates the specified Tagset. */
@@ -3342,6 +3345,10 @@ export type MutationUpdateReferenceArgs = {
 
 export type MutationUpdateSpaceArgs = {
   spaceData: UpdateSpaceInput;
+};
+
+export type MutationUpdateSpaceDefaultsArgs = {
+  spaceDefaultsData: UpdateSpaceDefaultsInput;
 };
 
 export type MutationUpdateSpacePlatformSettingsArgs = {
@@ -5318,6 +5325,13 @@ export type UpdateReferenceInput = {
   description?: InputMaybe<Scalars['String']>;
   name?: InputMaybe<Scalars['String']>;
   uri?: InputMaybe<Scalars['String']>;
+};
+
+export type UpdateSpaceDefaultsInput = {
+  /** The ID for the InnovationFlowtemplate to use for new Challenges and Opportunities. */
+  flowTemplateID: Scalars['UUID'];
+  /** The identifier for the Space whose Defaaults are to be updated. */
+  spaceID: Scalars['UUID'];
 };
 
 export type UpdateSpaceInput = {
@@ -24582,6 +24596,16 @@ export type AdminSpaceChallengesPageQuery = {
         | undefined;
     };
   };
+};
+
+export type UpdateSpaceDefaultInnovationFlowTemplateMutationVariables = Exact<{
+  spaceId: Scalars['UUID'];
+  innovationFlowTemplateId: Scalars['UUID'];
+}>;
+
+export type UpdateSpaceDefaultInnovationFlowTemplateMutation = {
+  __typename?: 'Mutation';
+  updateSpaceDefaults: { __typename?: 'SpaceDefaults'; id: string };
 };
 
 export type AdminGlobalOrganizationsListQueryVariables = Exact<{
