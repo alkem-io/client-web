@@ -972,18 +972,9 @@ export type ConfigFieldPolicy = {
   storage?: FieldPolicy<any> | FieldReadFunction<any>;
   template?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type ContextKeySpecifier = (
-  | 'authorization'
-  | 'ecosystemModel'
-  | 'id'
-  | 'impact'
-  | 'vision'
-  | 'who'
-  | ContextKeySpecifier
-)[];
+export type ContextKeySpecifier = ('authorization' | 'id' | 'impact' | 'vision' | 'who' | ContextKeySpecifier)[];
 export type ContextFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  ecosystemModel?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   impact?: FieldPolicy<any> | FieldReadFunction<any>;
   vision?: FieldPolicy<any> | FieldReadFunction<any>;

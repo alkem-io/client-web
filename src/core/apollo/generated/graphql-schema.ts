@@ -1373,8 +1373,6 @@ export type Context = {
   __typename?: 'Context';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
-  /** The EcosystemModel for this Context. */
-  ecosystemModel?: Maybe<EcosystemModel>;
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** What is the potential impact? */
