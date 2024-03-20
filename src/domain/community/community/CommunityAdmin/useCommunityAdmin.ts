@@ -59,7 +59,7 @@ const adminCredentialByJourneyType = (journeyType: JourneyTypeName) => {
 // TODO: Inherit from CoreEntityIds when they are not NameIds
 interface useCommunityAdminParams {
   communityId: string;
-  spaceId: string;
+  spaceId?: string;
   challengeId?: string;
   opportunityId?: string;
 }

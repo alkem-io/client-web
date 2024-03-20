@@ -1,25 +1,25 @@
 query JourneyStorageConfig(
-  $spaceNameId: UUID_NAMEID!
-  $challengeNameId: UUID_NAMEID = "mockid" # workaround for mandatory param
-  $opportunityNameId: UUID_NAMEID = "mockid" # workaround for mandatory param
+  $spaceId: UUID_NAMEID = "00000000-0000-0000-0000-000000000000" # workaround for mandatory param
+  $challengeId: UUID = "00000000-0000-0000-0000-000000000000" # workaround for mandatory param
+  $opportunityId: UUID = "00000000-0000-0000-0000-000000000000" # workaround for mandatory param
   $includeSpace: Boolean = false
   $includeChallenge: Boolean = false
   $includeOpportunity: Boolean = false
 ) {
-  space(ID: $spaceNameId) {
+  space(ID: $spaceId) @include(if: $includeSpace) {
     id
-    ... on Space @include(if: $includeSpace) {
-      profile {
-        ...ProfileStorageConfig
-      }
+    profile {
+      ...ProfileStorageConfig
     }
-    challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
+  }
+  lookup {
+    challenge(ID: $challengeId) @include(if: $includeChallenge) {
       id
       profile {
         ...ProfileStorageConfig
       }
     }
-    opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
+    opportunity(ID: $opportunityId) @include(if: $includeOpportunity) {
       id
       profile {
         ...ProfileStorageConfig
@@ -30,27 +30,27 @@ query JourneyStorageConfig(
 
 query CalloutStorageConfig(
   $calloutId: UUID_NAMEID!
-  $spaceNameId: UUID_NAMEID!
-  $challengeNameId: UUID_NAMEID = "mockid" # workaround for mandatory param
-  $opportunityNameId: UUID_NAMEID = "mockid" # workaround for mandatory param
+  $spaceId: UUID_NAMEID = "00000000-0000-0000-0000-000000000000" # workaround for mandatory param
+  $challengeId: UUID = "00000000-0000-0000-0000-000000000000" # workaround for mandatory param
+  $opportunityId: UUID = "00000000-0000-0000-0000-000000000000" # workaround for mandatory param
   $includeSpace: Boolean = false
   $includeChallenge: Boolean = false
   $includeOpportunity: Boolean = false
 ) {
-  space(ID: $spaceNameId) {
+  space(ID: $spaceId) @include(if: $includeSpace) {
     id
-    ... on Space @include(if: $includeSpace) {
-      collaboration {
-        ...CalloutOnCollaborationWithStorageConfig
-      }
+    collaboration {
+      ...CalloutOnCollaborationWithStorageConfig
     }
-    challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
+  }
+  lookup {
+    challenge(ID: $challengeId) @include(if: $includeChallenge) {
       id
       collaboration {
         ...CalloutOnCollaborationWithStorageConfig
       }
     }
-    opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
+    opportunity(ID: $opportunityId) @include(if: $includeOpportunity) {
       id
       collaboration {
         ...CalloutOnCollaborationWithStorageConfig
@@ -61,31 +61,18 @@ query CalloutStorageConfig(
 
 query CalloutPostStorageConfig(
   $postId: UUID_NAMEID!
-  $calloutId: UUID_NAMEID!
-  $spaceNameId: UUID_NAMEID!
-  $challengeNameId: UUID_NAMEID = "mockid" # workaround for mandatory param
-  $opportunityNameId: UUID_NAMEID = "mockid" # workaround for mandatory param
-  $includeSpace: Boolean = false
-  $includeChallenge: Boolean = false
-  $includeOpportunity: Boolean = false
+  $calloutId: UUID!
 ) {
-  space(ID: $spaceNameId) {
-    id
-    ... on Space @include(if: $includeSpace) {
-      collaboration {
-        ...PostInCalloutOnCollaborationWithStorageConfig
-      }
-    }
-    challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
+  lookup {
+    callout(ID: $calloutId) {
       id
-      collaboration {
-        ...PostInCalloutOnCollaborationWithStorageConfig
-      }
-    }
-    opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
-      id
-      collaboration {
-        ...PostInCalloutOnCollaborationWithStorageConfig
+      contributions(filter: { postIDs: [$postId] }) {
+        post {
+          id
+          profile {
+            ...ProfileStorageConfig
+          }
+        }
       }
     }
   }
@@ -177,21 +164,6 @@ fragment CalloutOnCollaborationWithStorageConfig on Collaboration {
     framing {
       profile {
         ...ProfileStorageConfig
-      }
-    }
-  }
-}
-
-fragment PostInCalloutOnCollaborationWithStorageConfig on Collaboration {
-  id
-  callouts(IDs: [$calloutId]) {
-    id
-    contributions(filter: { postIDs: [$postId] }) {
-      post {
-        id
-        profile {
-          ...ProfileStorageConfig
-        }
       }
     }
   }

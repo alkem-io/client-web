@@ -1,6 +1,5 @@
-query challengeCommunity($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!, $includeDetails: Boolean = false) {
-  space(ID: $spaceId) {
-    id
+query challengeCommunity($challengeId: UUID!, $includeDetails: Boolean = false) {
+  lookup {
     challenge(ID: $challengeId) {
       id
       profile {

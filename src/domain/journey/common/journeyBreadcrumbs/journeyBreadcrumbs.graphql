@@ -1,9 +1,9 @@
-query JourneyBreadcrumbsSpace($spaceNameId: UUID_NAMEID!) {
-  space(ID: $spaceNameId) {
+query JourneyBreadcrumbsSpace($spaceId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
     id
-    #nameID
     profile {
       id
+      url
       displayName
       avatar: visual(type: BANNER) {
         id
@@ -13,24 +13,9 @@ query JourneyBreadcrumbsSpace($spaceNameId: UUID_NAMEID!) {
   }
 }
 
-query JourneyBreadcrumbsChallenge($spaceNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!) {
-  space(ID: $spaceNameId) {
-    id
-    #nameID
-    challenge(ID: $challengeNameId) {
-      id
-      #nameID
-      profile {
-        ...JourneyBreadcrumbsProfile
-      }
-    }
-  }
-}
-
-query JourneyBreadcrumbsOpportunity($spaceNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAMEID!) {
-  space(ID: $spaceNameId) {
-    id
-    opportunity(ID: $opportunityNameId) {
+query JourneyBreadcrumbsChallenge($challengeId: UUID!) {
+  lookup {
+    challenge(ID: $challengeId) {
       id
       profile {
         ...JourneyBreadcrumbsProfile
@@ -39,9 +24,20 @@ query JourneyBreadcrumbsOpportunity($spaceNameId: UUID_NAMEID!, $opportunityName
   }
 }
 
+query JourneyBreadcrumbsOpportunity($opportunityId: UUID!) {
+  lookup {
+    opportunity(ID: $opportunityId) {
+      id
+      profile {
+        ...JourneyBreadcrumbsProfile
+      }
+    }
+  }
+}
 
 fragment JourneyBreadcrumbsProfile on Profile {
   id
+  url
   displayName
   avatar: visual(type: AVATAR) {
     id

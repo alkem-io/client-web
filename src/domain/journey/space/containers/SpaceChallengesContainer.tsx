@@ -24,13 +24,13 @@ export interface SpaceChallengesContainerProps
     ChallengesCardContainerActions,
     ChallengesCardContainerState
   > {
-  spaceNameId: string;
+  spaceId: string | undefined;
 }
 
-export const SpaceChallengesContainer: FC<SpaceChallengesContainerProps> = ({ spaceNameId, children }) => {
+export const SpaceChallengesContainer: FC<SpaceChallengesContainerProps> = ({ spaceId, children }) => {
   const { data, error, loading, subscribeToMore } = useSpaceChallengeCardsQuery({
-    variables: { spaceId: spaceNameId },
-    skip: !spaceNameId,
+    variables: { spaceId: spaceId! },
+    skip: !spaceId,
   });
 
   useChallengeCreatedSubscription(data, data => data?.space, subscribeToMore);
@@ -38,7 +38,8 @@ export const SpaceChallengesContainer: FC<SpaceChallengesContainerProps> = ({ sp
   const challenges = data?.space?.challenges ?? [];
 
   const callouts = useCallouts({
-    spaceNameId,
+    journeyId: spaceId,
+    journeyTypeName: 'space',
     displayLocations: [CalloutDisplayLocation.ChallengesLeft, CalloutDisplayLocation.ChallengesRight],
   });
 

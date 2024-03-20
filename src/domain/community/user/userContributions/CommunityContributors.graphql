@@ -19,9 +19,8 @@ query SpaceCommunityContributors($spaceId: UUID_NAMEID!) {
   }
 }
 
-query ChallengeCommunityContributors($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
-  space(ID: $spaceId) {
-    id
+query ChallengeCommunityContributors($challengeId: UUID!) {
+  lookup {
     challenge(ID: $challengeId) {
       id
       community {
@@ -32,9 +31,8 @@ query ChallengeCommunityContributors($spaceId: UUID_NAMEID!, $challengeId: UUID_
   }
 }
 
-query OpportunityCommunityContributors($spaceId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
-  space(ID: $spaceId) {
-    id
+query OpportunityCommunityContributors($opportunityId: UUID!) {
+  lookup {
     opportunity(ID: $opportunityId) {
       id
       community {

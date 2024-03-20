@@ -1,5 +1,4 @@
-import { JourneyLocation } from '../../../../main/routing/urlBuilders';
-import { getJourneyTypeName } from '../../JourneyTypeName';
+import { JourneyTypeName } from '../../JourneyTypeName';
 import { useCollaborationIdentityQuery } from '../../../../core/apollo/generated/apollo-hooks';
 
 export interface CollaborationIdentity {
@@ -7,25 +6,34 @@ export interface CollaborationIdentity {
   loading: boolean;
 }
 
-const useCollaborationIdentity = (journeyLocation: JourneyLocation): CollaborationIdentity => {
-  const journeyTypeName = getJourneyTypeName(journeyLocation)!;
+interface CollaborationIdentityParams {
+  journeyId: string | undefined;
+  journeyTypeName: JourneyTypeName;
+}
 
+const useCollaborationIdentity = ({
+  journeyId,
+  journeyTypeName,
+}: CollaborationIdentityParams): CollaborationIdentity => {
   const { data: CollaborationIdentityData, loading } = useCollaborationIdentityQuery({
     variables: {
-      ...journeyLocation,
+      spaceId: journeyId,
+      challengeId: journeyId,
+      opportunityId: journeyId,
+      isSpace: journeyTypeName === 'space',
       isChallenge: journeyTypeName === 'challenge',
       isOpportunity: journeyTypeName === 'opportunity',
     },
   });
 
   const collaborationId =
-    CollaborationIdentityData?.space.opportunity?.collaboration?.id ??
-    CollaborationIdentityData?.space.challenge?.collaboration?.id ??
-    CollaborationIdentityData?.space.collaboration?.id;
+    CollaborationIdentityData?.lookup.opportunity?.collaboration?.id ??
+    CollaborationIdentityData?.lookup.challenge?.collaboration?.id ??
+    CollaborationIdentityData?.space?.collaboration?.id;
 
   return {
     collaborationId,
-    loading
+    loading,
   };
 };
 
