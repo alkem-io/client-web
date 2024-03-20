@@ -1,22 +1,25 @@
 query CollaborationIdentity(
-  $spaceNameId: UUID_NAMEID!
-  $challengeNameId: UUID_NAMEID = "mockid"
-  $opportunityNameId: UUID_NAMEID = "mockid"
+  $spaceId: UUID_NAMEID = "00000000-0000-0000-0000-000000000000"
+  $challengeId: UUID = "00000000-0000-0000-0000-000000000000"
+  $opportunityId: UUID = "00000000-0000-0000-0000-000000000000"
+  $isSpace: Boolean = false
   $isChallenge: Boolean = false
   $isOpportunity: Boolean = false
 ) {
-  space(ID: $spaceNameId) {
+  space(ID: $spaceId) @include(if: $isSpace) {
     id
     collaboration {
       id
     }
-    challenge(ID: $challengeNameId) @include(if: $isChallenge) {
+  }
+  lookup {
+    challenge(ID: $challengeId) @include(if: $isChallenge) {
       id
       collaboration {
         id
       }
     }
-    opportunity(ID: $opportunityNameId) @include(if: $isOpportunity) {
+    opportunity(ID: $opportunityId) @include(if: $isOpportunity) {
       id
       collaboration {
         id

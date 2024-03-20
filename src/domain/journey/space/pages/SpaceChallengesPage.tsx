@@ -16,12 +16,14 @@ import { useSpace } from '../SpaceContext/useSpace';
 import SpacePageLayout from '../layout/SpacePageLayout';
 import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
 import { CalloutGroupName, CommunityMembershipStatus } from '../../../../core/apollo/generated/graphql-schema';
+import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 
 export interface SpaceChallengesPageProps {}
 
 const SpaceChallengesPage: FC<SpaceChallengesPageProps> = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { spaceId } = useRouteResolver();
   const { spaceNameId, permissions, license } = useSpace();
   const spaceVisibility = license.visibility;
 
@@ -53,7 +55,7 @@ const SpaceChallengesPage: FC<SpaceChallengesPageProps> = () => {
 
   return (
     <SpacePageLayout currentSection={EntityPageSection.Challenges}>
-      <SpaceChallengesContainer spaceNameId={spaceNameId}>
+      <SpaceChallengesContainer spaceId={spaceId}>
         {({ callouts, ...entities }, state) => (
           <ChildJourneyView
             spaceNameId={spaceNameId}
@@ -93,7 +95,6 @@ const SpaceChallengesPage: FC<SpaceChallengesPageProps> = () => {
             childrenLeft={
               <CalloutsGroupView
                 callouts={callouts.groupedCallouts[CalloutGroupName.Subspaces_1]}
-                spaceId={spaceNameId}
                 canCreateCallout={callouts.canCreateCallout}
                 canCreateCalloutFromTemplate={callouts.canCreateCalloutFromTemplate}
                 loading={callouts.loading}
@@ -107,7 +108,6 @@ const SpaceChallengesPage: FC<SpaceChallengesPageProps> = () => {
             childrenRight={
               <CalloutsGroupView
                 callouts={callouts.groupedCallouts[CalloutGroupName.Subspaces_2]}
-                spaceId={spaceNameId}
                 canCreateCallout={callouts.canCreateCallout}
                 canCreateCalloutFromTemplate={callouts.canCreateCalloutFromTemplate}
                 loading={callouts.loading}

@@ -2,10 +2,8 @@ import { ApolloError } from '@apollo/client';
 import { PushFunc, RemoveFunc, useEditReference } from '../../../../common/reference/useEditReference';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import {
-  useChallengePostSettingsQuery,
   useDeletePostMutation,
-  useOpportunityPostSettingsQuery,
-  useSpacePostSettingsQuery,
+  usePostSettingsQuery,
   useUpdatePostMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import {
@@ -50,67 +48,35 @@ export interface PostSettingsContainerState {
 }
 
 export interface PostSettingsContainerProps {
-  spaceNameId: string;
-  challengeNameId?: string;
-  opportunityNameId?: string;
-  postNameId: string;
-  calloutNameId: string;
+  postNameId: string | undefined;
+  calloutId: string | undefined;
 }
 
 const usePostSettings = ({
-  spaceNameId,
   postNameId,
-  challengeNameId,
-  opportunityNameId,
-  calloutNameId,
+  calloutId,
 }: PostSettingsContainerProps): PostSettingsContainerEntities &
   PostSettingsContainerActions &
   PostSettingsContainerState => {
   const { t } = useTranslation();
   const notify = useNotification();
   const { addReference, deleteReference, setPush, setRemove } = useEditReference();
-  const isPostDefined = postNameId && spaceNameId;
 
-  const {
-    data: spaceData,
-    loading: spaceLoading,
-    error: spaceError,
-  } = useSpacePostSettingsQuery({
-    variables: { spaceNameId, postNameId, calloutNameId },
-    skip: !calloutNameId || !isPostDefined || !!(challengeNameId || opportunityNameId),
+  const { data, loading, error } = usePostSettingsQuery({
+    variables: {
+      postNameId: postNameId!,
+      calloutId: calloutId!,
+    },
+    skip: !calloutId || !postNameId,
   });
 
-  const {
-    data: challengeData,
-    loading: challengeLoading,
-    error: challengeError,
-  } = useChallengePostSettingsQuery({
-    variables: { spaceNameId, challengeNameId: challengeNameId ?? '', postNameId, calloutNameId },
-    skip: !calloutNameId || !isPostDefined || !challengeNameId || !!opportunityNameId,
-  });
+  const parentCallout = data?.lookup.callout;
 
-  const {
-    data: opportunityData,
-    loading: opportunityLoading,
-    error: opportunityError,
-  } = useOpportunityPostSettingsQuery({
-    variables: { spaceNameId, opportunityNameId: opportunityNameId ?? '', postNameId, calloutNameId },
-    skip: !calloutNameId || !isPostDefined || !opportunityNameId,
-  });
-
-  const collaborationCallouts =
-    spaceData?.space?.collaboration?.callouts ??
-    challengeData?.space?.challenge?.collaboration?.callouts ??
-    opportunityData?.space?.opportunity?.collaboration?.callouts;
-
-  const parentCallout = collaborationCallouts?.find(c => c.nameID === calloutNameId);
   const parentCalloutPostNames = compact(
     parentCallout?.postNames?.map(contribution => contribution.post?.profile.displayName)
   );
 
   const postContribution = parentCallout?.contributions?.find(x => x.post && x.post.nameID === postNameId);
-  const loading = spaceLoading || challengeLoading || opportunityLoading;
-  const error = spaceError ?? challengeError ?? opportunityError;
 
   const [updatePost, { loading: updating, error: updateError }] = useUpdatePostMutation({
     onCompleted: () => notify('Post updated successfully', 'success'),

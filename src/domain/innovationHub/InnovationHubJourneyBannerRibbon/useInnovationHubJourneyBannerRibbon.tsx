@@ -4,7 +4,7 @@ import { JourneyTypeName } from '../../journey/JourneyTypeName';
 import PageContentRibbon from '../../../core/ui/content/PageContentRibbon';
 
 interface UseInnovationHubJourneyBannerRibbonOptions {
-  spaceId: string;
+  spaceId: string | undefined;
   journeyTypeName: JourneyTypeName;
 }
 

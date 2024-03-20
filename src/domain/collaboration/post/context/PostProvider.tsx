@@ -1,12 +1,9 @@
 import React, { FC, useContext } from 'react';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
-import {
-  useChallengePostProviderQuery,
-  useSpacePostProviderQuery,
-  useOpportunityPostProviderQuery,
-} from '../../../../core/apollo/generated/apollo-hooks';
+import { usePostProviderQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { ApolloError } from '@apollo/client';
 import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
+import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 
 interface PostPermissions {
   canUpdate: boolean;
@@ -29,55 +26,24 @@ const PostContext = React.createContext<PostContextProps>({
 });
 
 const PostProvider: FC = ({ children }) => {
-  const {
-    spaceNameId = '',
-    challengeNameId = '',
-    opportunityNameId = '',
-    postNameId = '',
-    calloutNameId = '',
-  } = useUrlParams();
+  const { postNameId } = useUrlParams();
 
-  const isPostDefined = postNameId && spaceNameId;
+  const { calloutId } = useRouteResolver();
 
-  const {
-    data: spaceData,
-    loading: spaceLoading,
-    error: spaceError,
-  } = useSpacePostProviderQuery({
-    variables: { spaceNameId, postNameId, calloutNameId },
-    skip: !calloutNameId || !isPostDefined || !!(challengeNameId || opportunityNameId),
+  const { data, loading, error } = usePostProviderQuery({
+    variables: {
+      postNameId: postNameId!,
+      calloutId: calloutId!,
+    },
+    skip: !calloutId || !postNameId,
   });
 
-  const {
-    data: challengeData,
-    loading: challengeLoading,
-    error: challengeError,
-  } = useChallengePostProviderQuery({
-    variables: { spaceNameId, challengeNameId, postNameId, calloutNameId },
-    skip: !calloutNameId || !isPostDefined || !challengeNameId || !!opportunityNameId,
-  });
-
-  const {
-    data: opportunityData,
-    loading: opportunityLoading,
-    error: opportunityError,
-  } = useOpportunityPostProviderQuery({
-    variables: { spaceNameId, opportunityNameId, postNameId, calloutNameId },
-    skip: !calloutNameId || !isPostDefined || !opportunityNameId,
-  });
-
-  const collaborationCallouts =
-    spaceData?.space?.collaboration?.callouts ??
-    challengeData?.space?.challenge?.collaboration?.callouts ??
-    opportunityData?.space?.opportunity?.collaboration?.callouts;
-
-  const parentCallout = collaborationCallouts?.find(c => c.nameID === calloutNameId);
+  const parentCallout = data?.lookup.callout;
 
   const post = parentCallout?.contributions?.find(x => x.post && x.post.nameID === postNameId)?.post;
-  const loading = spaceLoading || challengeLoading || opportunityLoading;
-  const error = spaceError ?? challengeError ?? opportunityError;
 
   const myPrivileges = post?.authorization?.myPrivileges;
+
   const permissions: PostPermissions = {
     canUpdate: myPrivileges?.includes(AuthorizationPrivilege.Update) ?? true,
   };

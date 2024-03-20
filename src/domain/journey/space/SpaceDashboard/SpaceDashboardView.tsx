@@ -14,7 +14,6 @@ import DashboardUpdatesSection from '../../../shared/components/DashboardSection
 import { ActivityLogResultType } from '../../../collaboration/activity/ActivityLog/ActivityComponent';
 import PageContent from '../../../../core/ui/content/PageContent';
 import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
-import { CoreEntityIdTypes } from '../../../shared/types/CoreEntityIds';
 import { JourneyTypeName } from '../../JourneyTypeName';
 import DashboardCalendarSection from '../../../shared/components/DashboardSections/DashboardCalendarSection';
 import ApplicationButtonContainer from '../../../community/application/containers/ApplicationButtonContainer';
@@ -39,8 +38,10 @@ interface SpaceWelcomeBlockContributor {
   profile: SpaceWelcomeBlockContributorProfileFragment;
 }
 
-interface SpaceDashboardViewProps extends Partial<CoreEntityIdTypes> {
+interface SpaceDashboardViewProps {
+  spaceId: string | undefined;
   displayName: string | undefined;
+  spaceNameId: string | undefined; // TODO remove
   dashboardNavigation: DashboardNavigationItem[] | undefined;
   dashboardNavigationLoading: boolean;
   spaceVisibility?: SpaceVisibility;
@@ -75,14 +76,13 @@ interface SpaceDashboardViewProps extends Partial<CoreEntityIdTypes> {
 }
 
 const SpaceDashboardView = ({
+  spaceId,
   vision = '',
   displayName,
   dashboardNavigation,
   dashboardNavigationLoading,
   spaceVisibility,
   spaceNameId,
-  challengeNameId,
-  opportunityNameId,
   communityId = '',
   communityReadAccess = false,
   timelineReadAccess = false,
@@ -105,8 +105,6 @@ const SpaceDashboardView = ({
       ? undefined
       : {
           spaceNameId,
-          challengeNameId,
-          opportunityNameId,
         };
 
   const hasExtendedApplicationButton = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
@@ -166,13 +164,12 @@ const SpaceDashboardView = ({
             dashboardNavigation={dashboardNavigation}
             loading={dashboardNavigationLoading}
           />
-          {timelineReadAccess && <DashboardCalendarSection journeyLocation={journeyLocation} />}
+          {timelineReadAccess && <DashboardCalendarSection journeyId={spaceId} journeyTypeName={journeyTypeName} />}
           {communityReadAccess && (
             <DashboardUpdatesSection entities={{ spaceId: spaceNameId, communityId }} shareUrl={shareUpdatesUrl} />
           )}
           <CalloutsGroupView
             callouts={callouts.groupedCallouts[CalloutGroupName.Home_1]}
-            spaceId={spaceNameId!}
             canCreateCallout={callouts.canCreateCallout}
             canCreateCalloutFromTemplate={callouts.canCreateCalloutFromTemplate}
             loading={callouts.loading}
@@ -198,7 +195,6 @@ const SpaceDashboardView = ({
           />
           <CalloutsGroupView
             callouts={callouts.groupedCallouts[CalloutGroupName.Home_2]}
-            spaceId={spaceNameId!}
             canCreateCallout={callouts.canCreateCallout}
             canCreateCalloutFromTemplate={callouts.canCreateCalloutFromTemplate}
             loading={callouts.loading}

@@ -1,7 +1,6 @@
-import React, { FC, useMemo } from 'react';
-import { Navigate, Route, Routes, useResolvedPath } from 'react-router-dom';
+import React from 'react';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import { useConfig } from '../../../platform/config/useConfig';
-import { PageProps } from '../../../shared/types/PageProps';
 import { Error404 } from '../../../../core/pages/Errors/Error404';
 import { EntityPageLayoutHolder } from '../../../journey/common/EntityPageLayout';
 import EditUserProfilePage from '../pages/EditUserProfilePage';
@@ -11,11 +10,7 @@ import UserNotificationsPage from '../pages/UserNotificationsPage';
 import UserOrganizationsPage from '../pages/UserOrganizationsPage';
 import { PlatformFeatureFlagName } from '../../../../core/apollo/generated/graphql-schema';
 
-interface UserSettingsProps extends PageProps {}
-
-export const UserSettingsRoute: FC<UserSettingsProps> = ({ paths }) => {
-  const { pathname: url } = useResolvedPath('.');
-  const currentPaths = useMemo(() => [...paths, { value: url, name: 'settings', real: false }], [paths, url]);
+export const UserSettingsRoute = () => {
   const { isFeatureEnabled } = useConfig();
 
   return (
@@ -24,10 +19,10 @@ export const UserSettingsRoute: FC<UserSettingsProps> = ({ paths }) => {
         <Route index element={<Navigate to={'profile'} />} />
         <Route path={'profile'} element={<EditUserProfilePage />} />
         <Route path={'membership'} element={<UserMembershipPage />} />
-        <Route path={'organizations'} element={<UserOrganizationsPage paths={currentPaths} />} />
-        <Route path={'notifications'} element={<UserNotificationsPage paths={currentPaths} />} />
+        <Route path={'organizations'} element={<UserOrganizationsPage />} />
+        <Route path={'notifications'} element={<UserNotificationsPage />} />
         {isFeatureEnabled(PlatformFeatureFlagName.Ssi) && (
-          <Route path={'credentials'} element={<UserCredentialsPage paths={currentPaths} />} />
+          <Route path={'credentials'} element={<UserCredentialsPage />} />
         )}
         <Route path="*" element={<Error404 />} />
       </Route>

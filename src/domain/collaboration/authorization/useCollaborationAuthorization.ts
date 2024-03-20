@@ -3,9 +3,7 @@ import {
   useCollaborationPrivilegesQuery,
 } from '../../../core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege } from '../../../core/apollo/generated/graphql-schema';
-import { useUrlParams } from '../../../core/routing/useUrlParams';
-import { getJourneyTypeName } from '../../journey/JourneyTypeName';
-import { CoreEntityIdTypes } from '../../shared/types/CoreEntityIds';
+import { useRouteResolver } from '../../../main/routing/resolvers/RouteResolver';
 
 interface CollaborationAuthorization {
   collaborationId: string | undefined;
@@ -18,11 +16,9 @@ interface CollaborationAuthorization {
   loading: boolean;
 }
 
-export const useCollaborationAuthorization = (journeyLocation?: CoreEntityIdTypes): CollaborationAuthorization => {
-  const urlParams = useUrlParams();
-  const { spaceNameId, challengeNameId, opportunityNameId } = journeyLocation ?? urlParams;
+export const useCollaborationAuthorization = (): CollaborationAuthorization => {
+  const { journeyId, journeyTypeName } = useRouteResolver();
 
-  const journeyTypeName = getJourneyTypeName(urlParams);
   const [includeSpace, includeChallenge, includeOpportunity] = [
     journeyTypeName === 'space',
     journeyTypeName === 'challenge',
@@ -31,38 +27,40 @@ export const useCollaborationAuthorization = (journeyLocation?: CoreEntityIdType
 
   const { data: authorizationData, loading: loadingAuthorization } = useCollaborationAuthorizationQuery({
     variables: {
-      spaceNameId: spaceNameId!,
-      challengeNameId: challengeNameId,
-      opportunityNameId: opportunityNameId,
+      spaceId: journeyId,
+      challengeId: journeyId,
+      opportunityId: journeyId,
       includeSpace,
       includeChallenge,
       includeOpportunity,
     },
-    skip: !spaceNameId,
+    skip: !journeyId,
   });
+
   const authorization = (
-    authorizationData?.space.opportunity ??
-    authorizationData?.space.challenge ??
+    authorizationData?.lookup.opportunity ??
+    authorizationData?.lookup.challenge ??
     authorizationData?.space
   )?.authorization;
+
   const canReadCollaboration = (authorization?.myPrivileges ?? []).includes(AuthorizationPrivilege.Read);
 
   const { data: collaborationData, loading: loadingCollaboration } = useCollaborationPrivilegesQuery({
     variables: {
-      spaceNameId: spaceNameId!,
-      challengeNameId: challengeNameId,
-      opportunityNameId: opportunityNameId,
+      spaceId: journeyId,
+      challengeId: journeyId,
+      opportunityId: journeyId,
       includeSpace,
       includeChallenge,
       includeOpportunity,
     },
-    skip: !spaceNameId || !canReadCollaboration,
+    skip: !journeyId || !canReadCollaboration,
   });
 
   const collaboration =
-    collaborationData?.space.collaboration ??
-    collaborationData?.space.challenge?.collaboration ??
-    collaborationData?.space.opportunity?.collaboration;
+    collaborationData?.space?.collaboration ??
+    collaborationData?.lookup.challenge?.collaboration ??
+    collaborationData?.lookup.opportunity?.collaboration;
 
   const collaborationId = collaboration?.id;
   const collaborationPrivileges = collaboration?.authorization?.myPrivileges ?? [];

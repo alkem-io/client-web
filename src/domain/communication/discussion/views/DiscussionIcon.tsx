@@ -9,6 +9,7 @@ import {
   LightbulbOutlined as LightbulbOutlinedIcon,
   QuestionAnswerOutlined as QuestionAnswerOutlinedIcon,
   ShareOutlined as ShareOutlinedIcon,
+  Celebration as CelebrationIcon,
 } from '@mui/icons-material';
 
 import { SvgIconProps } from '@mui/material';
@@ -23,6 +24,8 @@ export interface DiscussionIconProps extends SvgIconProps {
 export const DiscussionIcon: FC<DiscussionIconProps> = ({ category, ...rest }) => {
   const categoryIcon = useMemo(() => {
     switch (category) {
+      case DiscussionCategory.Releases:
+        return CelebrationIcon;
       case DiscussionCategory.PlatformFunctionalities:
         return CategoryIcon;
       case DiscussionCategory.ChallengeCentric:

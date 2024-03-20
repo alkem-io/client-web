@@ -3,16 +3,17 @@ import { SimpleContainerProps } from '../../../../core/container/SimpleContainer
 import { CalloutGroupName } from '../../../../core/apollo/generated/graphql-schema';
 
 interface SpaceCommunityContainerProps extends SimpleContainerProps<SpaceCommunityContainerProvided> {
-  spaceNameId: string;
+  spaceId: string | undefined;
 }
 
 interface SpaceCommunityContainerProvided {
   callouts: UseCalloutsProvided;
 }
 
-const SpaceCommunityContainer = ({ spaceNameId, children }: SpaceCommunityContainerProps) => {
+const SpaceCommunityContainer = ({ spaceId, children }: SpaceCommunityContainerProps) => {
   const callouts = useCallouts({
-    spaceNameId,
+    journeyId: spaceId,
+    journeyTypeName: 'space',
     groupNames: [CalloutGroupName.Community_1, CalloutGroupName.Community_2],
   });
 

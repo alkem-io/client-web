@@ -5,23 +5,20 @@ import PostDashboardContainer from '../containers/PostDashboardContainer/PostDas
 import { PostLayout } from '../views/PostLayoutWithOutlet';
 import { PostDialogSection } from '../views/PostDialogSection';
 import { DialogFooter } from '../../../../core/ui/dialog/DialogWithGrid';
+import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 
 export interface PostDashboardPageProps {
   onClose: () => void;
 }
 
 const PostDashboardPage: FC<PostDashboardPageProps> = ({ onClose }) => {
-  const { spaceNameId = '', challengeNameId, opportunityNameId, postNameId = '', calloutNameId = '' } = useUrlParams();
+  const { postNameId } = useUrlParams();
+
+  const { calloutId } = useRouteResolver();
 
   return (
     <PostLayout currentSection={PostDialogSection.Dashboard} onClose={onClose}>
-      <PostDashboardContainer
-        spaceNameId={spaceNameId}
-        postNameId={postNameId}
-        challengeNameId={challengeNameId}
-        opportunityNameId={opportunityNameId}
-        calloutNameId={calloutNameId}
-      >
+      <PostDashboardContainer postNameId={postNameId} calloutId={calloutId}>
         {({ post, messages, roomId, ...rest }) => (
           <PostDashboardView
             mode="messages"

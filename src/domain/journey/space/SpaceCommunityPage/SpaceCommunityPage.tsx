@@ -28,9 +28,12 @@ import SeeMore from '../../../../core/ui/content/SeeMore';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
 import { Box } from '@mui/material';
+import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 
 const SpaceCommunityPage = () => {
   const { spaceNameId } = useUrlParams();
+
+  const { spaceId } = useRouteResolver();
 
   const { t } = useTranslation();
 
@@ -90,7 +93,7 @@ const SpaceCommunityPage = () => {
 
   return (
     <SpacePageLayout currentSection={EntityPageSection.Community}>
-      <SpaceCommunityContainer spaceNameId={spaceNameId}>
+      <SpaceCommunityContainer spaceId={spaceId}>
         {({ callouts }) => (
           <PageContent>
             <PageContentColumn columns={4}>
@@ -112,7 +115,6 @@ const SpaceCommunityPage = () => {
               />
               <CalloutsGroupView
                 callouts={callouts.groupedCallouts[CalloutGroupName.Community_1]}
-                spaceId={spaceNameId!}
                 canCreateCallout={callouts.canCreateCallout}
                 canCreateCalloutFromTemplate={callouts.canCreateCalloutFromTemplate}
                 loading={callouts.loading}
@@ -147,7 +149,6 @@ const SpaceCommunityPage = () => {
               </PageContentBlock>
               <CalloutsGroupView
                 callouts={callouts.groupedCallouts[CalloutGroupName.Community_2]}
-                spaceId={spaceNameId!}
                 canCreateCallout={callouts.canCreateCallout}
                 canCreateCalloutFromTemplate={callouts.canCreateCalloutFromTemplate}
                 loading={callouts.loading}

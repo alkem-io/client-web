@@ -24,13 +24,11 @@ export interface ChallengeOpportunitiesContainerProps
     OpportunityCardsContainerActions,
     OpportunityCardsContainerState
   > {
-  spaceNameId: string;
-  challengeNameId: string;
+  challengeId: string | undefined;
 }
 
 export const ChallengeOpportunitiesContainer: FC<ChallengeOpportunitiesContainerProps> = ({
-  spaceNameId,
-  challengeNameId,
+  challengeId,
   children,
 }) => {
   const {
@@ -39,17 +37,17 @@ export const ChallengeOpportunitiesContainer: FC<ChallengeOpportunitiesContainer
     subscribeToMore,
   } = useChallengeOpportunityCardsQuery({
     variables: {
-      spaceId: spaceNameId,
-      challengeId: challengeNameId,
+      challengeId: challengeId!,
     },
+    skip: !challengeId,
     errorPolicy: 'all',
   });
 
-  useOpportunityCreatedSubscription(_challenge, data => data?.space?.challenge, subscribeToMore);
+  useOpportunityCreatedSubscription(_challenge, data => data?.lookup.challenge, subscribeToMore);
 
   const callouts = useCallouts({
-    spaceNameId,
-    challengeNameId,
+    journeyId: _challenge?.lookup.challenge?.id,
+    journeyTypeName: 'challenge',
     groupNames: [CalloutGroupName.Subspaces_1, CalloutGroupName.Subspaces_2],
   });
 
@@ -57,7 +55,7 @@ export const ChallengeOpportunitiesContainer: FC<ChallengeOpportunitiesContainer
     <>
       {children(
         {
-          opportunities: _challenge?.space.challenge.opportunities ?? [],
+          opportunities: _challenge?.lookup.challenge?.opportunities ?? [],
           callouts,
         },
         { loading },

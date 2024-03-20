@@ -4,6 +4,9 @@ type Required<SourceType extends {}, Props extends keyof SourceType> = {
   [P in Exclude<keyof SourceType, Props>]?: undefined;
 };
 
+/**
+ * @deprecated - switch to UUIDs/RouteResolver
+ */
 export interface CoreEntityIdTypes {
   spaceNameId: string;
   challengeNameId?: string;

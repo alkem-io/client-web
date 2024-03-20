@@ -8,7 +8,6 @@ import { useColumns } from '../../../../core/ui/grid/GridContext';
 import { useTranslation } from 'react-i18next';
 
 interface CalloutsGroupProps extends CalloutsViewProps {
-  spaceId: string;
   canCreateCallout: boolean;
   canCreateCalloutFromTemplate: boolean;
   groupName: CalloutGroupName;
@@ -17,7 +16,6 @@ interface CalloutsGroupProps extends CalloutsViewProps {
 }
 
 const CalloutsGroupView = ({
-  spaceId,
   calloutNames,
   canCreateCallout,
   canCreateCalloutFromTemplate,

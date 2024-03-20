@@ -1,36 +1,11 @@
 query Callouts(
-  $spaceNameId: UUID_NAMEID!
-  $includeSpace: Boolean = false
-  $includeChallenge: Boolean = false
-  $includeOpportunity: Boolean = false
-  $challengeNameId: UUID_NAMEID = "mockid"
-  $opportunityNameId: UUID_NAMEID = "mockid"
+  $collaborationId: UUID!
   $groups: [String!]
   $calloutIds: [UUID_NAMEID!]
 ) {
-  space(ID: $spaceNameId) {
-    id
-    ... on Space @include(if: $includeSpace) {
-      nameID
-      collaboration {
-        ...CollaborationWithCallouts
-      }
-    }
-    challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
-      id
-      nameID
-      ... on Challenge @skip(if: $includeOpportunity) {
-        collaboration {
-          ...CollaborationWithCallouts
-        }
-      }
-    }
-    opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
-      id
-      nameID
-      collaboration {
-        ...CollaborationWithCallouts
-      }
+  lookup {
+    collaboration(ID: $collaborationId) {
+      ...CollaborationWithCallouts
     }
   }
 }
@@ -59,6 +34,7 @@ fragment Callout on Callout {
   framing {
     profile {
       id
+      url
       displayName
       tagsets {
         ...TagsetDetails
@@ -75,6 +51,7 @@ query CalloutDetails($calloutId: UUID!) {
     }
   }
 }
+
 fragment CalloutDetails on Callout {
   id
   nameID

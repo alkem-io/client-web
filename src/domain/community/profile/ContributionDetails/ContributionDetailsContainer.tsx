@@ -1,13 +1,12 @@
 import React, { FC, useCallback, useMemo } from 'react';
 import {
   useChallengeContributionDetailsQuery,
-  useSpaceContributionDetailsQuery,
   useOpportunityContributionDetailsQuery,
   useRemoveUserAsCommunityMemberMutation,
+  useSpaceContributionDetailsQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
 import { ContributionItem } from '../../user/contribution';
-import { buildChallengeUrl, buildSpaceUrl, buildOpportunityUrl } from '../../../../main/routing/urlBuilders';
 import { getVisualByType } from '../../../common/visual/utils/visuals.utils';
 import { useUserContext } from '../../user/hooks/useUserContext';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
@@ -46,7 +45,6 @@ export interface ContributionDetails {
   journeyUri: string;
   communityId?: string;
   tagline: string;
-  isDemoSpace?: boolean;
 }
 
 const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entities, children }) => {
@@ -62,16 +60,14 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
 
   const { data: challengeData, loading: challengeLoading } = useChallengeContributionDetailsQuery({
     variables: {
-      spaceId: spaceId,
-      challengeId: challengeId || '',
+      challengeId: challengeId!,
     },
     skip: !challengeId || Boolean(opportunityId),
   });
 
   const { data: opportunityData, loading: opportunityLoading } = useOpportunityContributionDetailsQuery({
     variables: {
-      spaceId: spaceId,
-      opportunityId: opportunityId || '',
+      opportunityId: opportunityId!,
     },
     skip: !opportunityId,
   });
@@ -85,40 +81,33 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
         journeyTypeName: 'space',
         banner: getVisualByType(VisualName.CARD, spaceData.space.profile.visuals),
         tags: spaceData.space.profile.tagset?.tags ?? [],
-        journeyUri: buildSpaceUrl(spaceData.space.nameID),
+        journeyUri: spaceData.space.profile.url,
         communityId: spaceData.space.community?.id,
         tagline: spaceData.space.profile.tagline ?? '',
-        spaceVisibility: spaceData.space.account.license.visibility,
       };
     }
 
     if (challengeData) {
       return {
-        displayName: challengeData.space.challenge.profile.displayName,
+        displayName: challengeData.lookup.challenge?.profile.displayName!,
         journeyTypeName: 'challenge',
-        banner: getVisualByType(VisualName.CARD, challengeData.space.challenge.profile.visuals),
-        tags: challengeData.space.challenge.profile.tagset?.tags ?? [],
-        journeyUri: buildChallengeUrl(challengeData.space.nameID, challengeData.space.challenge.nameID),
-        communityId: challengeData.space.challenge.community?.id,
-        tagline: challengeData.space.challenge.profile.tagline ?? '',
-        spaceVisibility: challengeData.space.account.license.visibility,
+        banner: getVisualByType(VisualName.CARD, challengeData.lookup.challenge?.profile.visuals),
+        tags: challengeData.lookup.challenge?.profile.tagset?.tags ?? [],
+        journeyUri: challengeData.lookup.challenge?.profile.url!,
+        communityId: challengeData.lookup.challenge?.community?.id,
+        tagline: challengeData.lookup.challenge?.profile.tagline ?? '',
       };
     }
 
     if (opportunityData) {
       return {
-        displayName: opportunityData.space.opportunity.profile.displayName,
+        displayName: opportunityData.lookup.opportunity?.profile.displayName!,
         journeyTypeName: 'opportunity',
-        banner: getVisualByType(VisualName.CARD, opportunityData.space.opportunity.profile.visuals),
-        tags: opportunityData.space.opportunity.profile.tagset?.tags ?? [],
-        journeyUri: buildOpportunityUrl(
-          opportunityData.space.nameID,
-          opportunityData.space.opportunity.parentNameID || '',
-          opportunityData.space.opportunity.nameID
-        ),
-        communityId: opportunityData.space.opportunity.community?.id,
-        tagline: opportunityData.space.opportunity.profile.tagline ?? '',
-        spaceVisibility: opportunityData.space.account.license.visibility,
+        banner: getVisualByType(VisualName.CARD, opportunityData.lookup.opportunity?.profile.visuals),
+        tags: opportunityData.lookup.opportunity?.profile.tagset?.tags ?? [],
+        journeyUri: opportunityData.lookup.opportunity?.profile.url!,
+        communityId: opportunityData.lookup.opportunity?.community?.id,
+        tagline: opportunityData.lookup.opportunity?.profile.tagline ?? '',
       };
     }
   }, [spaceData, challengeData, opportunityData]);

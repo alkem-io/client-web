@@ -9,6 +9,7 @@ export interface Configuration {
     about: string;
     blog: string;
     feedback: string;
+    forumreleases: string;
     privacy: string;
     security: string;
     support: string;
