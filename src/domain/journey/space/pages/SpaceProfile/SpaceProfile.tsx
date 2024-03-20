@@ -62,7 +62,7 @@ export const SpaceProfile: FC = () => {
   const organizationsSorted = useMemo(() => sortBy(organizations, org => org.name), [organizations]);
 
   const host = useMemo(() => {
-    const host = hostOrganization?.space.host;
+    const host = hostOrganization?.space.account.host;
     if (!host) {
       return undefined;
     }
@@ -81,7 +81,7 @@ export const SpaceProfile: FC = () => {
         edit
         name={space.profile.displayName}
         nameID={spaceNameId}
-        hostID={hostOrganization?.space.host?.id}
+        hostID={hostOrganization?.space.account.host?.id}
         tagset={space.profile.tagset}
         context={space.context}
         profile={space.profile}

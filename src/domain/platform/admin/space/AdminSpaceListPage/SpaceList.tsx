@@ -62,7 +62,7 @@ export const SpaceList: FC = () => {
           ...searchableListItemMapper()(space),
           spaceId: space.id,
           visibility: space.account.license.visibility,
-          hostID: space.host?.id,
+          hostID: space.account.host?.id,
           nameID: space.nameID,
           features: Object.values(LicenseFeatureFlagName).reduce((acc, licenseFeature) => {
             acc[licenseFeature] = licenseHasFeature(licenseFeature, space.account.license);

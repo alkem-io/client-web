@@ -69,7 +69,10 @@ const SpaceCommunityPage = () => {
     [leadUsers]
   );
 
-  const hostOrganizations = useMemo(() => data?.space.host && [data?.space.host], [data?.space.host]);
+  const hostOrganizations = useMemo(
+    () => data?.space.account.host && [data?.space.account.host],
+    [data?.space.account.host]
+  );
 
   const { activities, fetchMoreActivities } = useActivityOnCollaboration(data?.space.collaboration?.id, {
     types: [ActivityEventType.MemberJoined],
