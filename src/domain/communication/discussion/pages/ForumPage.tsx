@@ -16,6 +16,7 @@ import {
   AuthorizationPrivilege,
   CommunicationDiscussionUpdatedSubscription,
   CommunicationDiscussionUpdatedSubscriptionVariables,
+  DiscussionCategory,
   PlatformDiscussionsQuery,
 } from '../../../../core/apollo/generated/graphql-schema';
 import DiscussionIcon from '../views/DiscussionIcon';
@@ -71,7 +72,9 @@ export const ForumPage: FC<ForumPageProps> = ({ dialog }) => {
   const validCategories =
     (isGlobalAdmin
       ? data?.platform.communication.discussionCategories
-      : data?.platform.communication.discussionCategories?.filter(category => category !== 'RELEASES')) ?? [];
+      : data?.platform.communication.discussionCategories?.filter(
+          category => category !== DiscussionCategory.Releases
+        )) ?? [];
   const communicationId = data?.platform.communication.id;
 
   const canCreateDiscussion =
