@@ -2,15 +2,14 @@ import React, { ReactNode } from 'react';
 import * as yup from 'yup';
 import { FormikProps } from 'formik';
 import { CreateProfileInput } from '../../../../../core/apollo/generated/graphql-schema';
-import FormRows from '../../../../shared/components/FormRows';
 import TemplateForm from '../TemplateForm';
 import { InnovationFlowState } from '../../../../collaboration/InnovationFlow/InnovationFlow';
-import { LONG_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '../../../../../core/ui/forms/field-length.constants';
+import { MARKDOWN_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '../../../../../core/ui/forms/field-length.constants';
 import InnovationFlowDragNDropEditor from '../../../../collaboration/InnovationFlow/InnovationFlowDragNDropEditor/InnovationFlowDragNDropEditor';
+import { BlockSectionTitle } from '../../../../../core/ui/typography';
+import { useTranslation } from 'react-i18next';
 
-const MAX_NUMBER_OF_STATES = 100;
-const MAX_LENGTH_STATE_DISPLAY_NAME = SMALL_TEXT_LENGTH;
-const MAX_LENGTH_STATE_DESCRIPTION = LONG_TEXT_LENGTH;
+export const MAX_INNOVATIONFLOW_STATES = 100;
 
 export interface InnovationTemplateFormValues {
   displayName: string;
@@ -33,20 +32,23 @@ interface InnovationFlowTemplateFormProps {
 const validator = {
   states: yup
     .array()
+    .required()
     .of(
       yup
         .object()
         .shape({
-          displayName: yup.string().required().max(MAX_LENGTH_STATE_DISPLAY_NAME),
-          description: yup.string().required().max(MAX_LENGTH_STATE_DESCRIPTION),
+          displayName: yup.string().required().max(SMALL_TEXT_LENGTH),
+          description: yup.string().required().max(MARKDOWN_TEXT_LENGTH),
         })
         .required()
     )
     .min(1)
-    .max(MAX_NUMBER_OF_STATES),
+    .max(MAX_INNOVATIONFLOW_STATES),
 };
 
 const InnovationFlowTemplateForm = ({ initialValues, onSubmit, actions }: InnovationFlowTemplateFormProps) => {
+  const { t } = useTranslation();
+
   const onCreateState = (
     currentStates: InnovationFlowState[],
     newState: InnovationFlowState,
@@ -135,7 +137,8 @@ const InnovationFlowTemplateForm = ({ initialValues, onSubmit, actions }: Innova
         };
 
         return (
-          <FormRows>
+          <>
+            <BlockSectionTitle>{t('common.states')}</BlockSectionTitle>
             <InnovationFlowDragNDropEditor
               innovationFlowStates={values.states}
               onCreateFlowState={(newState, options) => onCreateState(values.states, newState, options, setStates)}
@@ -145,7 +148,7 @@ const InnovationFlowTemplateForm = ({ initialValues, onSubmit, actions }: Innova
               onUpdateFlowStateOrder={(states, sortOrder) => onSortStates(values.states, states, sortOrder, setStates)}
               currentState={undefined}
             />
-          </FormRows>
+          </>
         );
       }}
     </TemplateForm>

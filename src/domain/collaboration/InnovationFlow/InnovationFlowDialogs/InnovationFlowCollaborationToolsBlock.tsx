@@ -73,6 +73,7 @@ const InnovationFlowCollaborationToolsBlock: FC<InnovationFlowCollaborationTools
       onUnhandledDragEnd={handleDragEnd}
       currentState={currentState}
       innovationFlowStates={innovationFlowStates}
+      croppedDescriptions
       {...statesActions}
     >
       {state => (

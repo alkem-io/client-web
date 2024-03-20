@@ -18,6 +18,8 @@ import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import { EditOutlined } from '@mui/icons-material';
 import InnovationFlowStateForm from './InnovationFlowStateForm';
 import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
+import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
+import { MAX_INNOVATIONFLOW_STATES } from '../../../platform/admin/templates/InnovationTemplates/InnovationFlowTemplateForm';
 
 const STATES_DROPPABLE_ID = '__states';
 
@@ -26,6 +28,7 @@ export interface InnovationFlowDragNDropEditorProps {
   children?: (state: InnovationFlowState) => React.ReactNode;
   innovationFlowStates: InnovationFlowState[] | undefined;
   currentState: string | undefined;
+  croppedDescriptions?: boolean;
   onUpdateFlowStateOrder: (flowState: string, sortOrder: number) => Promise<unknown> | void;
   onUpdateCurrentState: (state: string) => void;
   onCreateFlowState: (
@@ -36,12 +39,17 @@ export interface InnovationFlowDragNDropEditorProps {
   onDeleteFlowState: (state: string) => Promise<unknown> | void;
 }
 
-const AddButton = ({ onClick }: IconButtonProps) => {
+const AddButton = (props: IconButtonProps) => {
   const { t } = useTranslation();
   return (
     <Box>
-      <IconButton aria-label={t('common.add')} size="small" onClick={onClick}>
-        <RoundedIcon component={AddIcon} size="medium" iconSize="small" />
+      <IconButton aria-label={t('common.add')} size="small" {...props}>
+        <RoundedIcon
+          component={AddIcon}
+          size="medium"
+          iconSize="small"
+          color={props.disabled ? 'muted.main' : 'primary.main'}
+        />
       </IconButton>
     </Box>
   );
@@ -51,6 +59,7 @@ const InnovationFlowDragNDropEditor: FC<InnovationFlowDragNDropEditorProps> = ({
   innovationFlowStates,
   children,
   currentState,
+  croppedDescriptions,
   onUnhandledDragEnd,
   onUpdateFlowStateOrder,
   onUpdateCurrentState,
@@ -120,11 +129,14 @@ const InnovationFlowDragNDropEditor: FC<InnovationFlowDragNDropEditorProps> = ({
                               />
                             }
                           />
-                          {state.description?.trim() && (
-                            <CroppedMarkdown backgroundColor="paper" maxHeightGutters={3}>
-                              {state.description}
-                            </CroppedMarkdown>
-                          )}
+                          {state.description?.trim() &&
+                            (croppedDescriptions ? (
+                              <CroppedMarkdown backgroundColor="paper" maxHeightGutters={3}>
+                                {state.description}
+                              </CroppedMarkdown>
+                            ) : (
+                              <WrapperMarkdown card>{state.description}</WrapperMarkdown>
+                            ))}
                           {children?.(state)}
                         </PageContentBlock>
                       );
@@ -132,7 +144,10 @@ const InnovationFlowDragNDropEditor: FC<InnovationFlowDragNDropEditorProps> = ({
                   </Draggable>
                 ))}
                 {parentDroppableProvided.placeholder}
-                <AddButton onClick={() => setCreateFlowState({ last: true })} />
+                <AddButton
+                  onClick={() => setCreateFlowState({ last: true })}
+                  disabled={(innovationFlowStates ?? [])?.length >= MAX_INNOVATIONFLOW_STATES}
+                />
               </ScrollableCardsLayoutContainer>
             </Box>
           )}
