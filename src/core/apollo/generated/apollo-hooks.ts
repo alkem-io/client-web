@@ -1872,17 +1872,17 @@ export const InnovationHubSpaceFragmentDoc = gql`
         id
         visibility
       }
+      host {
+        id
+        profile {
+          id
+          displayName
+        }
+      }
     }
     profile {
       id
       displayName
-    }
-    host {
-      id
-      profile {
-        id
-        displayName
-      }
     }
   }
 `;
@@ -2540,8 +2540,10 @@ export const SpaceDetailsFragmentDoc = gql`
         ...fullLocation
       }
     }
-    host {
-      id
+    account {
+      host {
+        id
+      }
     }
     authorization {
       id
@@ -2613,6 +2615,12 @@ export const SpacePageFragmentDoc = gql`
         id
         visibility
       }
+      host {
+        ...AssociatedOrganizationDetails
+        profile {
+          ...SpaceWelcomeBlockContributorProfile
+        }
+      }
     }
     metrics {
       id
@@ -2623,12 +2631,6 @@ export const SpacePageFragmentDoc = gql`
       id
       anonymousReadAccess
       myPrivileges
-    }
-    host {
-      ...AssociatedOrganizationDetails
-      profile {
-        ...SpaceWelcomeBlockContributorProfile
-      }
     }
     profile {
       id
@@ -2825,6 +2827,13 @@ export const AdminSpaceFragmentDoc = gql`
           enabled
         }
       }
+      host {
+        id
+        profile {
+          id
+          displayName
+        }
+      }
     }
     profile {
       id
@@ -2833,13 +2842,6 @@ export const AdminSpaceFragmentDoc = gql`
     authorization {
       id
       myPrivileges
-    }
-    host {
-      id
-      profile {
-        id
-        displayName
-      }
     }
   }
 `;
@@ -11335,8 +11337,10 @@ export const CommunityMembersListDocument = gql`
     $includeSpaceHost: Boolean = false
   ) {
     space(ID: $spaceId) @include(if: $includeSpaceHost) {
-      host {
-        ...OrganizationDetails
+      account {
+        host {
+          ...OrganizationDetails
+        }
       }
     }
     lookup {
@@ -15078,8 +15082,10 @@ export const SpaceCommunityContributorsDocument = gql`
   query SpaceCommunityContributors($spaceId: UUID_NAMEID!) {
     space(ID: $spaceId) {
       id
-      host {
-        ...OrganizationCard
+      account {
+        host {
+          ...OrganizationCard
+        }
       }
       community {
         id
@@ -16753,8 +16759,10 @@ export const AboutPageNonMembersDocument = gql`
           ...VisualFull
         }
       }
-      host {
-        ...AssociatedOrganizationDetails
+      account {
+        host {
+          ...AssociatedOrganizationDetails
+        }
       }
       metrics {
         ...MetricsItem
@@ -17374,8 +17382,10 @@ export const JourneyDataDocument = gql`
       metrics {
         ...MetricsItem
       }
-      host {
-        ...AssociatedOrganizationDetails
+      account {
+        host {
+          ...AssociatedOrganizationDetails
+        }
       }
     }
     lookup {
@@ -18331,8 +18341,11 @@ export const SpaceCommunityPageDocument = gql`
   query SpaceCommunityPage($spaceNameId: UUID_NAMEID!) {
     space(ID: $spaceNameId) {
       id
-      host {
-        ...AssociatedOrganizationDetails
+      account {
+        id
+        host {
+          ...AssociatedOrganizationDetails
+        }
       }
       community {
         ...CommunityPageCommunity
@@ -18457,24 +18470,27 @@ export const SpaceHostDocument = gql`
   query spaceHost($spaceId: UUID_NAMEID!) {
     space(ID: $spaceId) {
       id
-      host {
+      account {
         id
-        nameID
-        profile {
+        host {
           id
-          displayName
-          avatar: visual(type: AVATAR) {
+          nameID
+          profile {
             id
-            uri
-          }
-          location {
-            id
-            city
-            country
-          }
-          tagsets {
-            id
-            tags
+            displayName
+            avatar: visual(type: AVATAR) {
+              id
+              uri
+            }
+            location {
+              id
+              city
+              country
+            }
+            tagsets {
+              id
+              tags
+            }
           }
         }
       }

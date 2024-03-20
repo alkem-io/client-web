@@ -1,7 +1,13 @@
-query CommunityMembersList($communityId: UUID!, $spaceId: UUID_NAMEID = "00000000-0000-0000-0000-000000000000", $includeSpaceHost: Boolean = false) {
+query CommunityMembersList(
+  $communityId: UUID!
+  $spaceId: UUID_NAMEID = "00000000-0000-0000-0000-000000000000"
+  $includeSpaceHost: Boolean = false
+) {
   space(ID: $spaceId) @include(if: $includeSpaceHost) {
-    host {
-      ...OrganizationDetails
+    account {
+      host {
+        ...OrganizationDetails
+      }
     }
   }
   lookup {
