@@ -1912,7 +1912,6 @@ export enum DiscussionCategory {
   Other = 'OTHER',
   PlatformFunctionalities = 'PLATFORM_FUNCTIONALITIES',
   Questions = 'QUESTIONS',
-  Releases = 'RELEASES',
   Sharing = 'SHARING',
 }
 
