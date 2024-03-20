@@ -27,7 +27,7 @@ export interface InnovationFlowDragNDropEditorProps {
   onUnhandledDragEnd?: OnDragEndResponder;
   children?: (state: InnovationFlowState) => React.ReactNode;
   innovationFlowStates: InnovationFlowState[] | undefined;
-  currentState: string | undefined;
+  currentState?: string | undefined;
   croppedDescriptions?: boolean;
   onUpdateFlowStateOrder: (flowState: string, sortOrder: number) => Promise<unknown> | void;
   onUpdateCurrentState?: (state: string) => void;
