@@ -1912,6 +1912,7 @@ export enum DiscussionCategory {
   Other = 'OTHER',
   PlatformFunctionalities = 'PLATFORM_FUNCTIONALITIES',
   Questions = 'QUESTIONS',
+  Releases = 'RELEASES',
   Sharing = 'SHARING',
 }
 
@@ -3652,6 +3653,8 @@ export type PlatformLocations = {
   environment: Scalars['String'];
   /** URL to a form for providing feedback */
   feedback: Scalars['String'];
+  /** URL to latest forum release discussion where users can get information about the latest release */
+  forumreleases: Scalars['String'];
   /** URL for the link Foundation in the HomePage of the application */
   foundation: Scalars['String'];
   /** URL where users can get help */
@@ -24873,6 +24876,7 @@ export type ConfigurationQuery = {
         about: string;
         blog: string;
         feedback: string;
+        forumreleases: string;
         privacy: string;
         security: string;
         support: string;
@@ -24918,6 +24922,7 @@ export type ConfigurationFragment = {
     about: string;
     blog: string;
     feedback: string;
+    forumreleases: string;
     privacy: string;
     security: string;
     support: string;
