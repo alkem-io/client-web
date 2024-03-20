@@ -25,7 +25,7 @@ const STATES_DROPPABLE_ID = '__states';
 
 export interface InnovationFlowDragNDropEditorProps {
   onUnhandledDragEnd?: OnDragEndResponder;
-  children?: (state: InnovationFlowState) => React.ReactNode;
+  children?: (props: { state: InnovationFlowState }) => React.ReactNode;
   innovationFlowStates: InnovationFlowState[] | undefined;
   currentState?: string | undefined;
   croppedDescriptions?: boolean;
@@ -137,7 +137,7 @@ const InnovationFlowDragNDropEditor: FC<InnovationFlowDragNDropEditorProps> = ({
                             ) : (
                               <WrapperMarkdown card>{state.description}</WrapperMarkdown>
                             ))}
-                          {children?.(state)}
+                          {children?.({ state })}
                         </PageContentBlock>
                       );
                     }}

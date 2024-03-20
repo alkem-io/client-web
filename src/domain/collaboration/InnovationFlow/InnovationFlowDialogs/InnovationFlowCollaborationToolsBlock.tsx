@@ -76,7 +76,7 @@ const InnovationFlowCollaborationToolsBlock: FC<InnovationFlowCollaborationTools
       croppedDescriptions
       {...statesActions}
     >
-      {state => (
+      {({ state }) => (
         <Droppable droppableId={state.displayName}>
           {provided => (
             <Gutters
