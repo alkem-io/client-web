@@ -61,7 +61,7 @@ fragment InnovationFlowCollaboration on Collaboration {
     id
     myPrivileges
   }
-  callouts(displayLocations: [CONTRIBUTE_LEFT, CONTRIBUTE_RIGHT]) {
+  callouts(groups: ["CONTRIBUTE_1", "CONTRIBUTE_2"]) {
     id
     nameID
     type
@@ -71,7 +71,7 @@ fragment InnovationFlowCollaboration on Collaboration {
       profile {
         id
         displayName
-        calloutDisplayLocation: tagset(tagsetName: CALLOUT_DISPLAY_LOCATION) {
+        calloutGroupName: tagset(tagsetName: CALLOUT_GROUP) {
           ...TagsetDetails
         }
         flowState: tagset(tagsetName: FLOW_STATE) {

@@ -1,7 +1,7 @@
 import React, { ReactNode, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  CalloutDisplayLocation,
+  CalloutGroupName,
   CalloutsQueryVariables,
   Reference,
 } from '../../../../../core/apollo/generated/graphql-schema';
@@ -59,7 +59,7 @@ export interface JourneyDashboardViewProps
   sendMessageToCommunityLeads: (message: string) => Promise<void>;
   shareUpdatesUrl: string;
   callouts: {
-    groupedCallouts: Record<CalloutDisplayLocation, TypedCallout[] | undefined>;
+    groupedCallouts: Record<CalloutGroupName, TypedCallout[] | undefined>;
     canCreateCallout: boolean;
     canCreateCalloutFromTemplate: boolean;
     calloutNames: string[];
@@ -177,7 +177,7 @@ const JourneyDashboardView = ({
           </EntityDashboardContributorsSection>
         )}
         <CalloutsGroupView
-          callouts={callouts.groupedCallouts[CalloutDisplayLocation.HomeLeft]}
+          callouts={callouts.groupedCallouts[CalloutGroupName.Home_1]}
           canCreateCallout={callouts.canCreateCallout}
           canCreateCalloutFromTemplate={callouts.canCreateCalloutFromTemplate}
           loading={callouts.loading}
@@ -185,13 +185,13 @@ const JourneyDashboardView = ({
           calloutNames={callouts.calloutNames}
           onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
           onCalloutUpdate={callouts.refetchCallout}
-          displayLocation={CalloutDisplayLocation.HomeLeft}
+          groupName={CalloutGroupName.Home_1}
         />
       </PageContentColumn>
 
       <PageContentColumn columns={8}>
         <DashboardRecentContributionsBlock
-          halfWidth={(callouts.groupedCallouts[CalloutDisplayLocation.HomeRight]?.length ?? 0) > 0}
+          halfWidth={(callouts.groupedCallouts[CalloutGroupName.Home_2]?.length ?? 0) > 0}
           readUsersAccess={readUsersAccess}
           entityReadAccess={entityReadAccess}
           activitiesLoading={activityLoading}
@@ -202,7 +202,7 @@ const JourneyDashboardView = ({
           onActivitiesDialogOpen={() => fetchMoreActivities(RECENT_ACTIVITIES_LIMIT_EXPANDED)}
         />
         <CalloutsGroupView
-          callouts={callouts.groupedCallouts[CalloutDisplayLocation.HomeRight]}
+          callouts={callouts.groupedCallouts[CalloutGroupName.Home_2]}
           canCreateCallout={callouts.canCreateCallout}
           canCreateCalloutFromTemplate={callouts.canCreateCalloutFromTemplate}
           loading={callouts.loading}
@@ -210,7 +210,7 @@ const JourneyDashboardView = ({
           calloutNames={callouts.calloutNames}
           onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
           onCalloutUpdate={callouts.refetchCallout}
-          displayLocation={CalloutDisplayLocation.HomeRight}
+          groupName={CalloutGroupName.Home_2}
           blockProps={(callout, index) => {
             if (index === 0) {
               return {

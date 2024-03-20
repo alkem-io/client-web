@@ -1,6 +1,6 @@
 query Callouts(
   $collaborationId: UUID!
-  $displayLocations: [CalloutDisplayLocation!]
+  $groups: [String!]
   $calloutIds: [UUID_NAMEID!]
 ) {
   lookup {
@@ -16,7 +16,7 @@ fragment CollaborationWithCallouts on Collaboration {
     id
     myPrivileges
   }
-  callouts(displayLocations: $displayLocations, IDs: $calloutIds) {
+  callouts(groups: $groups, IDs: $calloutIds) {
     ...Callout
   }
 }

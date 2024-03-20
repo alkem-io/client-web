@@ -55,7 +55,7 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
     tags: callout.framing.profile.tagset?.tags,
     postDescription: callout.contributionDefaults.postDescription ?? '',
     whiteboardContent: callout.contributionDefaults?.whiteboardContent ?? JSON.stringify(EmptyWhiteboard),
-    displayLocation: callout.displayLocation,
+    groupName: callout.groupName,
   };
   const [newCallout, setNewCallout] = useState<CalloutFormInput>(initialValues);
   const [fetchWhiteboardTemplateContent] = useWhiteboardTemplateContentLazyQuery({
@@ -90,7 +90,7 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
         whiteboardContent: callout.type === CalloutType.WhiteboardCollection ? newCallout.whiteboardContent : undefined,
       },
       state: newCallout.state,
-      displayLocation: newCallout.displayLocation,
+      groupName: newCallout.groupName,
     });
     setLoading(false);
   }, [callout, fetchWhiteboardTemplateContent, newCallout, onCalloutEdit]);

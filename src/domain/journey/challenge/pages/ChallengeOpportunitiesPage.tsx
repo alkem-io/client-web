@@ -16,8 +16,8 @@ import ChallengeOpportunitiesContainer from '../containers/ChallengeOpportunitie
 import { useChallenge } from '../hooks/useChallenge';
 import ChallengePageLayout from '../layout/ChallengePageLayout';
 import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
-import { CalloutDisplayLocation, CommunityMembershipStatus } from '../../../../core/apollo/generated/graphql-schema';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
+import { CalloutGroupName, CommunityMembershipStatus } from '../../../../core/apollo/generated/graphql-schema';
 
 export interface ChallengeOpportunitiesPageProps {}
 
@@ -97,7 +97,7 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
             }
             childrenLeft={
               <CalloutsGroupView
-                callouts={callouts.groupedCallouts[CalloutDisplayLocation.OpportunitiesLeft]}
+                callouts={callouts.groupedCallouts[CalloutGroupName.Subspaces_1]}
                 canCreateCallout={callouts.canCreateCallout}
                 canCreateCalloutFromTemplate={callouts.canCreateCalloutFromTemplate}
                 loading={callouts.loading}
@@ -105,12 +105,12 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
                 calloutNames={callouts.calloutNames}
                 onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
                 onCalloutUpdate={callouts.refetchCallout}
-                displayLocation={CalloutDisplayLocation.OpportunitiesLeft}
+                groupName={CalloutGroupName.Subspaces_1}
               />
             }
             childrenRight={
               <CalloutsGroupView
-                callouts={callouts.groupedCallouts[CalloutDisplayLocation.OpportunitiesRight]}
+                callouts={callouts.groupedCallouts[CalloutGroupName.Subspaces_2]}
                 canCreateCallout={callouts.canCreateCallout}
                 canCreateCalloutFromTemplate={callouts.canCreateCalloutFromTemplate}
                 loading={callouts.loading}
@@ -118,7 +118,7 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
                 calloutNames={callouts.calloutNames}
                 onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
                 onCalloutUpdate={callouts.refetchCallout}
-                displayLocation={CalloutDisplayLocation.OpportunitiesRight}
+                groupName={CalloutGroupName.Subspaces_2}
               />
             }
           />

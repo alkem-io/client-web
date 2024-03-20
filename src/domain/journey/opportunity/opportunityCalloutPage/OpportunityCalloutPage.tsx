@@ -6,15 +6,15 @@ import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { buildOpportunityUrl } from '../../../../main/routing/urlBuilders';
 import { JourneyCalloutDialogProps } from '../../common/JourneyCalloutDialog/JourneyCalloutDialog';
 import OpportunityDashboardPage from '../pages/OpportunityDashboardPage';
-import { CalloutDisplayLocation } from '../../../../core/apollo/generated/graphql-schema';
+import { CalloutGroupName } from '../../../../core/apollo/generated/graphql-schema';
 
 const renderPage = (calloutGroup: string | undefined) => {
   switch (calloutGroup) {
-    case CalloutDisplayLocation.HomeLeft:
-    case CalloutDisplayLocation.HomeRight:
+    case CalloutGroupName.Home_1:
+    case CalloutGroupName.Home_2:
       return <OpportunityDashboardPage />;
-    case CalloutDisplayLocation.ContributeLeft:
-    case CalloutDisplayLocation.ContributeRight:
+    case CalloutGroupName.Contribute_1:
+    case CalloutGroupName.Contribute_2:
       return <JourneyContributePage journeyTypeName="opportunity" />;
     default:
       return <JourneyContributePage journeyTypeName="opportunity" />;
@@ -23,11 +23,11 @@ const renderPage = (calloutGroup: string | undefined) => {
 
 const getPageSection = (calloutGroup: string | undefined): EntityPageSection => {
   switch (calloutGroup) {
-    case CalloutDisplayLocation.HomeLeft:
-    case CalloutDisplayLocation.HomeRight:
+    case CalloutGroupName.Home_1:
+    case CalloutGroupName.Home_2:
       return EntityPageSection.Dashboard;
-    case CalloutDisplayLocation.ContributeLeft:
-    case CalloutDisplayLocation.ContributeRight:
+    case CalloutGroupName.Contribute_1:
+    case CalloutGroupName.Contribute_2:
       return EntityPageSection.Contribute;
     default:
       return EntityPageSection.Contribute;

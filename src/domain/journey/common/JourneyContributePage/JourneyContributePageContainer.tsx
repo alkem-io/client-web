@@ -3,7 +3,7 @@ import useInnovationFlowStates, {
   UseInnovationFlowStatesProvided,
 } from '../../../collaboration/InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
 import useCallouts, { UseCalloutsProvided } from '../../../collaboration/callout/useCallouts/useCallouts';
-import { CalloutDisplayLocation } from '../../../../core/apollo/generated/graphql-schema';
+import { CalloutGroupName } from '../../../../core/apollo/generated/graphql-schema';
 import useCollaborationIdentity from '../CollaborationIdentity/useCollaborationIdentity';
 import { JourneyTypeName } from '../../JourneyTypeName';
 
@@ -32,7 +32,7 @@ const JourneyContributePageContainer = ({
   const callouts = useCallouts({
     journeyId,
     journeyTypeName,
-    displayLocations: [CalloutDisplayLocation.ContributeLeft, CalloutDisplayLocation.ContributeRight],
+    groupNames: [CalloutGroupName.Contribute_1, CalloutGroupName.Contribute_2],
   });
 
   return <>{children({ innovationFlowStates, callouts, collaborationId })}</>;

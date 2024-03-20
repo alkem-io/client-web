@@ -9,7 +9,7 @@ import { ContainerChildProps } from '../../../../core/container/container';
 import {
   ActivityEventType,
   AuthorizationPrivilege,
-  CalloutDisplayLocation,
+  CalloutGroupName,
   ChallengeProfileFragment,
   CommunityMembershipStatus,
   DashboardTopCalloutFragment,
@@ -129,7 +129,7 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ challe
   const callouts = useCallouts({
     journeyId: challengeId,
     journeyTypeName: 'challenge',
-    displayLocations: [CalloutDisplayLocation.HomeLeft, CalloutDisplayLocation.HomeRight],
+    groupNames: [CalloutGroupName.Home_1, CalloutGroupName.Home_2],
   });
 
   const isMember = _challenge?.lookup.challenge?.community?.myMembershipStatus === CommunityMembershipStatus.Member;

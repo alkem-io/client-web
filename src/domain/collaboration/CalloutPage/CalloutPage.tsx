@@ -21,8 +21,8 @@ import DialogHeader from '../../../core/ui/dialog/DialogHeader';
 import { Text } from '../../../core/ui/typography';
 import { useTranslation } from 'react-i18next';
 import { NavigationState } from '../../../core/routing/ScrollToTop';
-import { getCalloutDisplayLocationValue } from '../callout/utils/getCalloutDisplayLocationValue';
 import { useRouteResolver } from '../../../main/routing/resolvers/RouteResolver';
+import { getCalloutGroupNameValue } from '../callout/utils/getCalloutGroupValue';
 
 interface CalloutLocation {
   journeyTypeName: JourneyTypeName;
@@ -31,7 +31,7 @@ interface CalloutLocation {
 
 export interface CalloutPageProps {
   journeyTypeName: JourneyTypeName;
-  renderPage: (calloutDisplayLocation?: string) => ReactElement;
+  renderPage: (calloutGroupName?: string) => ReactElement;
   parentRoute: string | ((calloutGroup: string | undefined) => string);
   children?: (props: CalloutLocation) => ReactNode;
 }
@@ -99,8 +99,8 @@ const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: Cal
       draft,
       editable,
       comments: callout.comments ? { ...callout.comments, calloutNameId: callout.nameID } : undefined,
-      displayLocation: getCalloutDisplayLocationValue(
-        callout.framing.profile.tagsets?.find(tagset => tagset.name === 'callout-display-location')?.tags
+      groupName: getCalloutGroupNameValue(
+        callout.framing.profile.tagsets?.find(tagset => tagset.name === 'callout-group')?.tags
       ),
       // TODO: Try to remove this `as unknown`
     } as unknown as TypedCalloutDetails;
@@ -128,9 +128,9 @@ const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: Cal
     );
   }
 
-  const calloutDisplayLocation = typedCalloutDetails && typedCalloutDetails.displayLocation;
+  const calloutGroupName = typedCalloutDetails && typedCalloutDetails.groupName;
 
-  const parentPagePath = typeof parentRoute === 'function' ? parentRoute(calloutDisplayLocation) : parentRoute;
+  const parentPagePath = typeof parentRoute === 'function' ? parentRoute(calloutGroupName) : parentRoute;
 
   const handleClose = () => {
     backOrElse(parentPagePath);
@@ -139,7 +139,7 @@ const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: Cal
   if (isApolloForbiddenError(error)) {
     return (
       <>
-        {renderPage(calloutDisplayLocation)}
+        {renderPage(calloutGroupName)}
         <DialogWithGrid open onClose={handleClose}>
           <DialogHeader title={t('callout.accessForbidden.title')} onClose={handleClose} />
           <DialogContent sx={{ paddingTop: 0 }}>
@@ -162,7 +162,7 @@ const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: Cal
 
   return (
     <>
-      {renderPage(calloutDisplayLocation)}
+      {renderPage(calloutGroupName)}
       <DialogWithGrid open columns={12} onClose={handleClose} fullScreen={isSmallScreen}>
         <CalloutView
           callout={typedCalloutDetails}

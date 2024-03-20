@@ -13,7 +13,7 @@ import { TypedCallout } from '../callout/useCallouts/useCallouts';
 import { useTranslation } from 'react-i18next';
 import EllipsableWithCount from '../../../core/ui/typography/EllipsableWithCount';
 import { useCalloutCreationWithPreviewImages } from '../callout/creationDialog/useCalloutCreation/useCalloutCreationWithPreviewImages';
-import { CalloutDisplayLocation } from '../../../core/apollo/generated/graphql-schema';
+import { CalloutGroupName } from '../../../core/apollo/generated/graphql-schema';
 import calloutIcons from '../callout/utils/calloutIcons';
 import CalloutsGroupView from '../callout/CalloutsInContext/CalloutsGroupView';
 import CalloutCreationDialog from '../callout/creationDialog/CalloutCreationDialog';
@@ -72,7 +72,7 @@ const KnowledgeBasePage = ({ journeyTypeName }: PropsWithChildren<KnowledgeBaseP
                       title={t('pages.generic.sections.subentities.list', { entities: t('common.callouts') })}
                     />
                     <LinksList
-                      items={groupedCallouts[CalloutDisplayLocation.Knowledge]?.map(callout => {
+                      items={groupedCallouts[CalloutGroupName.Knowledge]?.map(callout => {
                         const CalloutIcon = calloutIcons[callout.type];
                         return {
                           id: callout.id,
@@ -92,7 +92,7 @@ const KnowledgeBasePage = ({ journeyTypeName }: PropsWithChildren<KnowledgeBaseP
 
                 <PageContentColumn columns={8}>
                   <CalloutsGroupView
-                    callouts={groupedCallouts[CalloutDisplayLocation.Knowledge]}
+                    callouts={groupedCallouts[CalloutGroupName.Knowledge]}
                     canCreateCallout={canCreateCallout}
                     canCreateCalloutFromTemplate={canCreateCalloutFromTemplate}
                     loading={loading}
@@ -100,7 +100,7 @@ const KnowledgeBasePage = ({ journeyTypeName }: PropsWithChildren<KnowledgeBaseP
                     calloutNames={calloutNames}
                     onSortOrderUpdate={onCalloutsSortOrderUpdate}
                     onCalloutUpdate={refetchCallout}
-                    displayLocation={CalloutDisplayLocation.Knowledge}
+                    groupName={CalloutGroupName.Knowledge}
                   />
                 </PageContentColumn>
               </PageContent>
@@ -112,7 +112,7 @@ const KnowledgeBasePage = ({ journeyTypeName }: PropsWithChildren<KnowledgeBaseP
               canCreateCalloutFromTemplate={canCreateCalloutFromTemplate}
               loading={loadingCalloutCreation}
               calloutNames={calloutNames}
-              displayLocation={CalloutDisplayLocation.Knowledge}
+              groupName={CalloutGroupName.Knowledge}
               journeyTypeName={journeyTypeName}
             />
           </>

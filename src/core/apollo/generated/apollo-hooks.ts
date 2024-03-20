@@ -106,7 +106,7 @@ export const InnovationFlowCollaborationFragmentDoc = gql`
       id
       myPrivileges
     }
-    callouts(displayLocations: [CONTRIBUTE_LEFT, CONTRIBUTE_RIGHT]) {
+    callouts(groups: ["CONTRIBUTE_1", "CONTRIBUTE_2"]) {
       id
       nameID
       type
@@ -116,7 +116,7 @@ export const InnovationFlowCollaborationFragmentDoc = gql`
         profile {
           id
           displayName
-          calloutDisplayLocation: tagset(tagsetName: CALLOUT_DISPLAY_LOCATION) {
+          calloutGroupName: tagset(tagsetName: CALLOUT_GROUP) {
             ...TagsetDetails
           }
           flowState: tagset(tagsetName: FLOW_STATE) {
@@ -502,7 +502,7 @@ export const CollaborationWithCalloutsFragmentDoc = gql`
       id
       myPrivileges
     }
-    callouts(displayLocations: $displayLocations, IDs: $calloutIds) {
+    callouts(groups: $groups, IDs: $calloutIds) {
       ...Callout
     }
   }
@@ -6583,7 +6583,7 @@ export const UpdateCalloutDocument = gql`
           tagset {
             ...TagsetDetails
           }
-          displayLocationTagset: tagset(tagsetName: CALLOUT_DISPLAY_LOCATION) {
+          groupNameTagset: tagset(tagsetName: CALLOUT_GROUP) {
             ...TagsetDetails
           }
           references {
@@ -7197,7 +7197,7 @@ export function refetchCalloutPostsQuery(variables: SchemaTypes.CalloutPostsQuer
 }
 
 export const CalloutsDocument = gql`
-  query Callouts($collaborationId: UUID!, $displayLocations: [CalloutDisplayLocation!], $calloutIds: [UUID_NAMEID!]) {
+  query Callouts($collaborationId: UUID!, $groups: [String!], $calloutIds: [UUID_NAMEID!]) {
     lookup {
       collaboration(ID: $collaborationId) {
         ...CollaborationWithCallouts
@@ -7220,7 +7220,7 @@ export const CalloutsDocument = gql`
  * const { data, loading, error } = useCalloutsQuery({
  *   variables: {
  *      collaborationId: // value for 'collaborationId'
- *      displayLocations: // value for 'displayLocations'
+ *      groups: // value for 'groups'
  *      calloutIds: // value for 'calloutIds'
  *   },
  * });

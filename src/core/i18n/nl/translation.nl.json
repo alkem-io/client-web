@@ -639,7 +639,7 @@
     "singleWhiteboard": {
       "clickToSee": "Klik hier om het volledige whiteboard te zien"
     },
-    "callout-groups": {
+    "callout-group": {
       "HOME_TOP": "Dashboard - aanbevelingen",
       "HOME_LEFT": "Dashboard - links",
       "HOME_RIGHT": "Dashboard - rechts",
