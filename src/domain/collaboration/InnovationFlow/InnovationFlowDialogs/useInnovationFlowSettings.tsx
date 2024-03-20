@@ -6,6 +6,7 @@ import {
   useUpdateInnovationFlowMutation,
   useUpdateInnovationFlowCurrentStateMutation,
   useUpdateInnovationFlowStatesMutation,
+  useUpdateInnovationFlowSingleStateMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
@@ -214,28 +215,20 @@ const useInnovationFlowSettings = ({ collaborationId, skip }: useInnovationFlowS
     return updateInnovationFlowStates(nextStates);
   };
 
+  const [updateInnovationFlowState] = useUpdateInnovationFlowSingleStateMutation();
   const handleEditState = async (oldState: InnovationFlowState, newState: InnovationFlowState) => {
-    const states = innovationFlow?.states ?? [];
-    const oldStateIndex = states.findIndex(state => state.displayName === oldState.displayName);
-
-    if (oldStateIndex === -1) {
-      throw new Error('Old state not found.');
+    const innovationFlowId = innovationFlow?.id;
+    if (!innovationFlowId) {
+      throw new Error('Innovation flow still not loaded.');
     }
-
-    const nextStates = [...states.slice(0, oldStateIndex), newState, ...states.slice(oldStateIndex + 1)];
-
-    // Callouts in this state should be moved to the new state if the displayName change
-    // TODO: This should be handled by the backend, created task #3708
-    const oldCallouts =
-      collaboration?.callouts
-        ?.filter(callout => callout.framing.profile.flowState?.tags[0] === oldState.displayName)
-        .sort((a, b) => a.sortOrder - b.sortOrder)
-        .map(callout => callout.id) ?? [];
-
-    await updateInnovationFlowStates(nextStates);
-    await Promise.all(
-      oldCallouts.map((calloutId, index) => handleUpdateCalloutFlowState(calloutId, newState.displayName, index))
-    );
+    return updateInnovationFlowState({
+      variables: {
+        innovationFlowId,
+        stateName: oldState.displayName,
+        stateUpdatedData: newState,
+      },
+      refetchQueries: [refetchInnovationFlowSettingsQuery({ collaborationId: collaborationId! })],
+    });
   };
 
   const handleDeleteState = (stateDisplayName: string) => {

@@ -2,13 +2,11 @@ import DashboardGenericSection from '../../../shared/components/DashboardSection
 import { Box, Button, DialogProps } from '@mui/material';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import SimpleCardsList from '../../../shared/components/SimpleCardsList';
-import React, { ComponentType, useCallback, useState } from 'react';
+import React, { ComponentType, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { LinkWithState } from '../../../shared/types/LinkWithState';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 import { SimpleCardProps } from '../../../shared/components/SimpleCard';
-import * as Apollo from '@apollo/client';
-import { MutationTuple } from '@apollo/client/react/types/types';
 import { InnovationPack } from './InnovationPacks/InnovationPack';
 import { LibraryIcon } from '../../../collaboration/templates/LibraryIcon';
 import ImportTemplatesDialog from './InnovationPacks/ImportTemplatesDialog';
@@ -16,7 +14,6 @@ import {
   TemplateImportCardComponentProps,
   TemplateWithInnovationPack,
 } from './InnovationPacks/ImportTemplatesDialogGalleryStep';
-import TemplateViewDialog from './TemplateViewDialog';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
 import { UpdateProfileInput } from '../../../../core/apollo/generated/graphql-schema';
 import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
@@ -24,11 +21,16 @@ import { WhiteboardPreviewImage } from '../../../collaboration/whiteboard/Whiteb
 import { TemplateBase } from '../../../collaboration/templates/CollaborationTemplatesLibrary/TemplateBase';
 import useLoadingState from '../../../shared/utils/useLoadingState';
 import { GraphQLError } from 'graphql';
+import TemplatePreviewDialog, {
+  TemplatePreviewDialogProps,
+} from '../../../template/templatePreviewDialog/TemplatePreviewDialog';
+import { TemplateType } from '../../../collaboration/InnovationPack/InnovationPackProfilePage/InnovationPackProfilePage';
+import { Link } from 'react-router-dom';
 
 /**
  * @deprecated TODO remove
  */
-export interface Template extends TemplateBase { }
+export interface Template extends TemplateBase {}
 
 interface CreateTemplateDialogProps<SubmittedValues extends {}> {
   open: boolean;
@@ -36,7 +38,7 @@ interface CreateTemplateDialogProps<SubmittedValues extends {}> {
   onSubmit: (values: SubmittedValues) => void;
 }
 
-interface EditTemplateDialogProps<T extends Template, V extends T, SubmittedValues extends {}> {
+interface EditTemplateDialogProps<T extends TemplateBase, V extends T, SubmittedValues extends {}> {
   open: boolean;
   onClose: DialogProps['onClose'];
   onSubmit: (values: SubmittedValues) => void;
@@ -44,16 +46,6 @@ interface EditTemplateDialogProps<T extends Template, V extends T, SubmittedValu
   template: T | undefined;
   getTemplateContent: (template: T) => void;
   templateContent: V | undefined;
-}
-
-export interface TemplatePreviewProps<T extends Template, V extends T> {
-  template: T;
-  getTemplateContent: (template: T) => void;
-  templateContent: V | undefined;
-}
-
-export interface MutationHook<Variables, MutationResult> {
-  (baseOptions?: Apollo.MutationHookOptions<MutationResult, Variables>): MutationTuple<MutationResult, Variables>;
 }
 
 export interface ProfileUpdate {
@@ -66,7 +58,7 @@ type MutationResult<Data> = Promise<{
 }>;
 
 type AdminTemplatesSectionProps<
-  T extends Template,
+  T extends TemplateBase,
   V extends T,
   // TODO There must be either introduced a minimal common subtype between the received and submitted values,
   // so that that one in not constructed from the other by removing fields, OR
@@ -93,17 +85,16 @@ type AdminTemplatesSectionProps<
   innovationPacks: InnovationPack<T>[];
   templateCardComponent: ComponentType<Omit<SimpleCardProps, 'iconComponent'>>;
   templateImportCardComponent: ComponentType<TemplateImportCardComponentProps<T>>;
-  templatePreviewComponent: ComponentType<TemplatePreviewProps<T, V>>;
   getWhiteboardTemplateContent?: (template: T) => void;
   getImportedWhiteboardTemplateContent?: (template: TemplateWithInnovationPack<T>) => void;
   whiteboardTemplateContent?: V | undefined;
   importedTemplateContent?: V | undefined;
   createTemplateDialogComponent: ComponentType<DialogProps & CreateTemplateDialogProps<SubmittedValues>> | undefined;
   editTemplateDialogComponent:
-  | ComponentType<
-    DialogProps & EditTemplateDialogProps<T, V, SubmittedValues & { tags?: string[]; tagsetId: string | undefined }>
-  >
-  | undefined;
+    | ComponentType<
+        DialogProps & EditTemplateDialogProps<T, V, SubmittedValues & { tags?: string[]; tagsetId: string | undefined }>
+      >
+    | undefined;
   onCreateTemplate: (template: SubmittedValues & { templatesSetId: string }) => MutationResult<TemplateCreationResult>;
   onUpdateTemplate: (
     template: Partial<SubmittedValues> & ProfileUpdate & { templateId: string }
@@ -117,11 +108,11 @@ type AdminTemplatesSectionProps<
     mutationResult: TemplateUpdateResult | null | undefined,
     previewImages?: WhiteboardPreviewImage[]
   ) => void;
+  templateType: TemplateType;
 };
 
 const AdminTemplatesSection = <
-  T extends Template,
-  // Q extends T & TemplateInnovationPackMetaInfo,
+  T extends TemplateBase,
   V extends T,
   SubmittedValues extends Omit<T, 'profile'> & Omit<V, 'id'>,
   CreateM,
@@ -146,13 +137,13 @@ const AdminTemplatesSection = <
   onTemplateUpdated,
   templateCardComponent: TemplateCard,
   templateImportCardComponent: TemplateImportCard,
-  templatePreviewComponent: TemplatePreview,
   createTemplateDialogComponent,
   editTemplateDialogComponent,
   canImportTemplates,
   // Some Templates (Post, InnovationFlow...) come with the value included, and some others (Whiteboards) need to call this function to retrieve the data
-  getWhiteboardTemplateContent = () => { },
-  getImportedWhiteboardTemplateContent = () => { },
+  getWhiteboardTemplateContent = () => {},
+  getImportedWhiteboardTemplateContent = () => {},
+  templateType,
   ...dialogProps
 }: AdminTemplatesSectionProps<T, V, SubmittedValues, CreateM, UpdateM, DialogProps>) => {
   const CreateTemplateDialog = (createTemplateDialogComponent ?? (() => null)) as ComponentType<
@@ -262,16 +253,19 @@ const AdminTemplatesSection = <
   const selectedTemplate = templateId ? templates?.find(({ id }) => id === templateId) : undefined;
   const deletingTemplate = deletingTemplateId ? templates?.find(({ id }) => id === deletingTemplateId) : undefined;
 
-  const buildTemplateEditLink = (template: T) => {
-    if (!editTemplateDialogComponent) {
+  const editTemplateButton = useMemo(() => {
+    if (!editTemplateDialogComponent || !selectedTemplate) {
       return;
     }
-    const viewLink = buildTemplateLink(template);
-    return {
-      editUrl: `${viewLink.to}/edit`,
-      editLinkState: viewLink.state,
-    };
-  };
+
+    const { to, state } = buildTemplateLink(selectedTemplate);
+
+    return (
+      <Button component={Link} variant="contained" to={`${to}/edit`} state={state}>
+        {t('common.update')}
+      </Button>
+    );
+  }, [selectedTemplate, buildTemplateLink, editTemplateDialogComponent]);
 
   const [handleTemplateDeletion, isDeletingTemplate] = useLoadingState(async () => {
     if (!deletingTemplateId) {
@@ -289,6 +283,40 @@ const AdminTemplatesSection = <
 
     setDeletingTemplateId(undefined);
   });
+
+  const templateWithValue = useMemo(() => {
+    if (!selectedTemplate) {
+      return undefined;
+    }
+
+    const template =
+      templateType === TemplateType.WhiteboardTemplate
+        ? {
+            ...selectedTemplate,
+            ...(dialogProps.whiteboardTemplateContent as V),
+          }
+        : selectedTemplate;
+
+    return template as unknown as V;
+  }, [selectedTemplate, templateType]);
+
+  const templatePreview = useMemo(() => {
+    if (!templateWithValue) {
+      return undefined;
+    }
+
+    return {
+      template: templateWithValue,
+      templateType,
+      // TODO make sure that templateType matches the actual type of the template
+    } as TemplatePreviewDialogProps['templatePreview'];
+  }, [templateWithValue]);
+
+  useEffect(() => {
+    if (selectedTemplate && templateType === TemplateType.WhiteboardTemplate) {
+      getWhiteboardTemplateContent(selectedTemplate);
+    }
+  }, [selectedTemplate, templateType, getWhiteboardTemplateContent]);
 
   return (
     <>
@@ -336,7 +364,6 @@ const AdminTemplatesSection = <
         headerText={importDialogHeaderText}
         dialogSubtitle={t('pages.admin.generic.sections.templates.import.subtitle')}
         templateImportCardComponent={TemplateImportCard}
-        templatePreviewComponent={TemplatePreview}
         getImportedTemplateContent={getImportedWhiteboardTemplateContent}
         open={isImportTemplatesDialogOpen}
         onClose={closeImportTemplatesDialog}
@@ -352,11 +379,12 @@ const AdminTemplatesSection = <
             {t('buttons.import')}
           </Button>
         }
+        templateType={templateType}
       />
-      {selectedTemplate && (
+      {selectedTemplate && edit && (
         <EditTemplateDialog
           {...dialogProps}
-          open={edit}
+          open
           onClose={onCloseTemplateDialog}
           template={selectedTemplate}
           onSubmit={handleTemplateUpdate}
@@ -365,19 +393,13 @@ const AdminTemplatesSection = <
           templateContent={dialogProps.whiteboardTemplateContent}
         />
       )}
-      {selectedTemplate && (
-        <TemplateViewDialog
-          open={!edit}
-          template={selectedTemplate}
+      {selectedTemplate && !edit && (
+        <TemplatePreviewDialog
+          open
           onClose={onCloseTemplateDialog}
-          {...buildTemplateEditLink(selectedTemplate)}
-        >
-          <TemplatePreview
-            template={selectedTemplate}
-            getTemplateContent={getWhiteboardTemplateContent}
-            templateContent={dialogProps.whiteboardTemplateContent}
-          />
-        </TemplateViewDialog>
+          templatePreview={templatePreview}
+          actions={editTemplateButton}
+        />
       )}
       {deletingTemplateId && (
         <ConfirmationDialog
