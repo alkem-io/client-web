@@ -20544,6 +20544,58 @@ export function refetchAdminSpaceChallengesPageQuery(variables: SchemaTypes.Admi
   return { query: AdminSpaceChallengesPageDocument, variables: variables };
 }
 
+export const UpdateSpaceDefaultInnovationFlowTemplateDocument = gql`
+  mutation UpdateSpaceDefaultInnovationFlowTemplate($spaceId: UUID!, $innovationFlowTemplateId: UUID!) {
+    updateSpaceDefaults(spaceDefaultsData: { spaceID: $spaceId, flowTemplateID: $innovationFlowTemplateId }) {
+      id
+    }
+  }
+`;
+export type UpdateSpaceDefaultInnovationFlowTemplateMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateSpaceDefaultInnovationFlowTemplateMutation,
+  SchemaTypes.UpdateSpaceDefaultInnovationFlowTemplateMutationVariables
+>;
+
+/**
+ * __useUpdateSpaceDefaultInnovationFlowTemplateMutation__
+ *
+ * To run a mutation, you first call `useUpdateSpaceDefaultInnovationFlowTemplateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateSpaceDefaultInnovationFlowTemplateMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateSpaceDefaultInnovationFlowTemplateMutation, { data, loading, error }] = useUpdateSpaceDefaultInnovationFlowTemplateMutation({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *      innovationFlowTemplateId: // value for 'innovationFlowTemplateId'
+ *   },
+ * });
+ */
+export function useUpdateSpaceDefaultInnovationFlowTemplateMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateSpaceDefaultInnovationFlowTemplateMutation,
+    SchemaTypes.UpdateSpaceDefaultInnovationFlowTemplateMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.UpdateSpaceDefaultInnovationFlowTemplateMutation,
+    SchemaTypes.UpdateSpaceDefaultInnovationFlowTemplateMutationVariables
+  >(UpdateSpaceDefaultInnovationFlowTemplateDocument, options);
+}
+
+export type UpdateSpaceDefaultInnovationFlowTemplateMutationHookResult = ReturnType<
+  typeof useUpdateSpaceDefaultInnovationFlowTemplateMutation
+>;
+export type UpdateSpaceDefaultInnovationFlowTemplateMutationResult =
+  Apollo.MutationResult<SchemaTypes.UpdateSpaceDefaultInnovationFlowTemplateMutation>;
+export type UpdateSpaceDefaultInnovationFlowTemplateMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateSpaceDefaultInnovationFlowTemplateMutation,
+  SchemaTypes.UpdateSpaceDefaultInnovationFlowTemplateMutationVariables
+>;
 export const AdminGlobalOrganizationsListDocument = gql`
   query adminGlobalOrganizationsList($first: Int!, $after: UUID, $filter: OrganizationFilterInput) {
     organizationsPaginated(first: $first, after: $after, filter: $filter) {
