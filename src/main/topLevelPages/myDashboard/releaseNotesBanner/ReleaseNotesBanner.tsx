@@ -7,7 +7,7 @@ import useReleaseNotes from '../../../../domain/platform/metadata/useReleaseNote
 const ReleaseNotesBanner = () => {
   const { t } = useTranslation();
 
-  const releaseNotesUrl = t('releaseNotes.url');
+  const releaseNotesUrl = t('releaseNotes.forumreleases');
 
   const { open, onClose } = useReleaseNotes(releaseNotesUrl);
 

@@ -17,6 +17,7 @@ import {
   CommunicationDiscussionUpdatedSubscription,
   CommunicationDiscussionUpdatedSubscriptionVariables,
   DiscussionCategory,
+  DiscussionCategoryPlatform,
   PlatformDiscussionsQuery,
 } from '../../../../core/apollo/generated/graphql-schema';
 import DiscussionIcon from '../views/DiscussionIcon';
@@ -155,7 +156,16 @@ export const ForumPage: FC<ForumPageProps> = ({ dialog }) => {
             categorySelector={
               <CategorySelector
                 categories={categories}
-                onSelect={setCategorySelected}
+                onSelect={category => {
+                  setCategorySelected(category);
+                  navigate(
+                    Object.keys(DiscussionCategoryPlatform).includes(category)
+                      ? category === DiscussionCategory.Releases
+                        ? `/forum/${DiscussionCategoryPlatform[category]}/latest`
+                        : `/forum/${DiscussionCategoryPlatform[category]}`
+                      : '/forum'
+                  );
+                }}
                 value={categorySelected}
                 showLabels={!mediumScreen}
               />
