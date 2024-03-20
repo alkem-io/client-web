@@ -8,6 +8,7 @@ import { MARKDOWN_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '../../../../../core/ui/
 import InnovationFlowDragNDropEditor from '../../../../collaboration/InnovationFlow/InnovationFlowDragNDropEditor/InnovationFlowDragNDropEditor';
 import { BlockSectionTitle } from '../../../../../core/ui/typography';
 import { useTranslation } from 'react-i18next';
+import { Box, Chip } from '@mui/material';
 
 export const MAX_INNOVATIONFLOW_STATES = 100;
 
@@ -16,10 +17,12 @@ export interface InnovationTemplateFormValues {
   description: string;
   tags: string[];
   states: InnovationFlowState[];
+  defaultActiveState: string;
 }
 
 export interface InnovationTemplateFormSubmittedValues {
   states: InnovationFlowState[];
+  defaultActiveState: string;
   profile: CreateProfileInput;
 }
 
@@ -44,83 +47,84 @@ const validator = {
     )
     .min(1)
     .max(MAX_INNOVATIONFLOW_STATES),
+  defaultActiveState: yup.string().required(),
+};
+
+const onCreateState = (
+  currentStates: InnovationFlowState[],
+  newState: InnovationFlowState,
+  options: { after: string; last: false } | { after?: never; last: true },
+  setStates: (value: InnovationFlowState[]) => void
+) => {
+  let newStates: InnovationFlowState[];
+
+  if (options.last) {
+    newStates = [...currentStates, newState];
+  } else {
+    const index = currentStates.findIndex(state => state.displayName === options.after);
+    if (index !== -1) {
+      newStates = [...currentStates.slice(0, index + 1), newState, ...currentStates.slice(index + 1)];
+    } else {
+      throw new Error(`State with displayName "${options.after}" not found`);
+    }
+  }
+
+  setStates(newStates);
+};
+
+const onEditState = (
+  currentStates: InnovationFlowState[],
+  editedState: InnovationFlowState,
+  newState: InnovationFlowState,
+  setStates: (value: InnovationFlowState[]) => void
+) => {
+  const index = currentStates.findIndex(state => state.displayName === editedState.displayName);
+  if (index !== -1) {
+    const newStates = [...currentStates];
+    newStates[index] = newState;
+    setStates(newStates);
+  } else {
+    throw new Error(`State with displayName "${editedState}" not found`);
+  }
+};
+
+const onDeleteState = (
+  currentStates: InnovationFlowState[],
+  stateToDelete: string,
+  setStates: (value: InnovationFlowState[]) => void
+) => {
+  const index = currentStates.findIndex(state => state.displayName === stateToDelete);
+  if (index !== -1) {
+    const newStates = [...currentStates.slice(0, index), ...currentStates.slice(index + 1)];
+    setStates(newStates);
+  } else {
+    throw new Error(`State with displayName "${stateToDelete}" not found`);
+  }
+};
+
+const onSortStates = (
+  currentStates: InnovationFlowState[],
+  stateMoved: string,
+  sortOrder: number,
+  setStates: (value: InnovationFlowState[]) => void
+) => {
+  const movedState = currentStates.find(state => state.displayName === stateMoved);
+  if (!movedState) {
+    throw new Error('Moved state not found.');
+  }
+  const statesWithoutMovedState = currentStates.filter(state => state.displayName !== stateMoved);
+
+  // Insert the flowState at the new position
+  const newStates = [
+    ...statesWithoutMovedState.slice(0, sortOrder),
+    movedState,
+    ...statesWithoutMovedState.slice(sortOrder),
+  ];
+  setStates(newStates);
 };
 
 const InnovationFlowTemplateForm = ({ initialValues, onSubmit, actions }: InnovationFlowTemplateFormProps) => {
   const { t } = useTranslation();
-
-  const onCreateState = (
-    currentStates: InnovationFlowState[],
-    newState: InnovationFlowState,
-    options: { after: string; last: false } | { after?: never; last: true },
-    setStates: (value: InnovationFlowState[]) => void
-  ) => {
-    let newStates: InnovationFlowState[];
-
-    if (options.last) {
-      newStates = [...currentStates, newState];
-    } else {
-      const index = currentStates.findIndex(state => state.displayName === options.after);
-      if (index !== -1) {
-        newStates = [...currentStates.slice(0, index + 1), newState, ...currentStates.slice(index + 1)];
-      } else {
-        throw new Error(`State with displayName "${options.after}" not found`);
-      }
-    }
-
-    setStates(newStates);
-  };
-
-  const onEditState = (
-    currentStates: InnovationFlowState[],
-    editedState: InnovationFlowState,
-    newState: InnovationFlowState,
-    setStates: (value: InnovationFlowState[]) => void
-  ) => {
-    const index = currentStates.findIndex(state => state.displayName === editedState.displayName);
-    if (index !== -1) {
-      const newStates = [...currentStates];
-      newStates[index] = newState;
-      setStates(newStates);
-    } else {
-      throw new Error(`State with displayName "${editedState}" not found`);
-    }
-  };
-
-  const onDeleteState = (
-    currentStates: InnovationFlowState[],
-    stateToDelete: string,
-    setStates: (value: InnovationFlowState[]) => void
-  ) => {
-    const index = currentStates.findIndex(state => state.displayName === stateToDelete);
-    if (index !== -1) {
-      const newStates = [...currentStates.slice(0, index), ...currentStates.slice(index + 1)];
-      setStates(newStates);
-    } else {
-      throw new Error(`State with displayName "${stateToDelete}" not found`);
-    }
-  };
-
-  const onSortStates = (
-    currentStates: InnovationFlowState[],
-    stateMoved: string,
-    sortOrder: number,
-    setStates: (value: InnovationFlowState[]) => void
-  ) => {
-    const movedState = currentStates.find(state => state.displayName === stateMoved);
-    if (!movedState) {
-      throw new Error('Moved state not found.');
-    }
-    const statesWithoutMovedState = currentStates.filter(state => state.displayName !== stateMoved);
-
-    // Insert the flowState at the new position
-    const newStates = [
-      ...statesWithoutMovedState.slice(0, sortOrder),
-      movedState,
-      ...statesWithoutMovedState.slice(sortOrder),
-    ];
-    setStates(newStates);
-  };
 
   return (
     <TemplateForm
@@ -134,6 +138,13 @@ const InnovationFlowTemplateForm = ({ initialValues, onSubmit, actions }: Innova
         const setStates = (states: InnovationFlowState[]) => {
           setFieldTouched('states', true);
           setFieldValue('states', states);
+          validateDefaultActiveState(states);
+        };
+        const validateDefaultActiveState = (states: InnovationFlowState[]) => {
+          const validStates = states.map(state => state.displayName);
+          if (!values.defaultActiveState || !validStates.includes(values.defaultActiveState)) {
+            setFieldValue('defaultActiveState', validStates[0]);
+          }
         };
 
         return (
@@ -145,7 +156,21 @@ const InnovationFlowTemplateForm = ({ initialValues, onSubmit, actions }: Innova
               onEditFlowState={(oldState, newState) => onEditState(values.states, oldState, newState, setStates)}
               onDeleteFlowState={stateName => onDeleteState(values.states, stateName, setStates)}
               onUpdateFlowStateOrder={(states, sortOrder) => onSortStates(values.states, states, sortOrder, setStates)}
-            />
+              onUpdateCurrentState={state => setFieldValue('defaultActiveState', state)}
+              currentState={values.defaultActiveState}
+            >
+              {({ state }) =>
+                state.displayName === values.defaultActiveState && (
+                  <Box textAlign="right">
+                    <Chip
+                      variant="filled"
+                      color="primary"
+                      label={t('components.innovationFlowSettings.stateEditor.activeState')}
+                    />
+                  </Box>
+                )
+              }
+            </InnovationFlowDragNDropEditor>
           </>
         );
       }}
