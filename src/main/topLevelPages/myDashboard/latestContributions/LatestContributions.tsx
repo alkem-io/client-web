@@ -153,7 +153,6 @@ const LatestContributions = ({ spaceMemberships }: LatestContributionsProps) => 
                 key={activity.id}
                 activity={activity as ActivityLogResultType}
                 avatarUrl={author.avatarUrl}
-                journeyUrl={activity.journey?.profile.url ?? ''}
               />
             );
           })}

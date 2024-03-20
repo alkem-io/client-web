@@ -1,9 +1,6 @@
 import React, { FC } from 'react';
 import { OpportunityApplicationButtonProps } from '../applicationButton/OpportunityApplicationButton';
-
-import { useSpace } from '../../../journey/space/SpaceContext/useSpace';
 import { useCommunityUserPrivilegesWithParentCommunityQuery } from '../../../../core/apollo/generated/apollo-hooks';
-import { buildChallengeUrl } from '../../../../main/routing/urlBuilders';
 import { CommunityMembershipStatus } from '../../../../core/apollo/generated/graphql-schema';
 import { useCommunityContext } from '../../community/CommunityContext';
 import { useAuthenticationContext } from '../../../../core/auth/authentication/hooks/useAuthenticationContext';
@@ -21,18 +18,15 @@ export interface OpportunityApplicationButtonContainerProps
   }> {
   challengeId: string | undefined;
   opportunityId: string | undefined;
-  challengeNameId?: string;
 }
 
 export const OpportunityApplicationButtonContainer: FC<OpportunityApplicationButtonContainerProps> = ({
   challengeId,
   opportunityId,
-  challengeNameId,
   children,
 }) => {
   const { isAuthenticated } = useAuthenticationContext();
   const { myMembershipStatus } = useCommunityContext();
-  const { spaceNameId } = useSpace();
 
   const { data: _communityPrivileges, loading: communityPrivilegesLoading } =
     useCommunityUserPrivilegesWithParentCommunityQuery({
@@ -49,7 +43,7 @@ export const OpportunityApplicationButtonContainer: FC<OpportunityApplicationBut
   const isParentMember =
     _communityPrivileges?.lookup.challenge?.community?.myMembershipStatus === CommunityMembershipStatus.Member;
 
-  const parentUrl = challengeNameId ? buildChallengeUrl(spaceNameId, challengeNameId) : '';
+  const parentUrl = _communityPrivileges?.lookup.challenge?.profile.url;
   const communityLeadUsers = _communityPrivileges?.lookup.opportunity?.community?.leadUsers ?? [];
   const leadUsers = communityLeadUsers.map(user => ({
     id: user.id,

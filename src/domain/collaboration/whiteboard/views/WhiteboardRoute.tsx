@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
-import WhiteboardsView from '../EntityWhiteboardPage/WhiteboardsView';
+import WhiteboardPage from '../EntityWhiteboardPage/WhiteboardPage';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 
 export interface WhiteboardRouteProps {
@@ -11,7 +11,7 @@ export interface WhiteboardRouteProps {
 }
 
 const WhiteboardRoute: FC<WhiteboardRouteProps> = ({ parentPagePath, journeyTypeName }) => {
-  const { calloutNameId, whiteboardNameId, spaceNameId, challengeNameId, opportunityNameId } = useUrlParams();
+  const { calloutNameId, whiteboardNameId } = useUrlParams();
 
   const { journeyId } = useRouteResolver();
 
@@ -23,22 +23,15 @@ const WhiteboardRoute: FC<WhiteboardRouteProps> = ({ parentPagePath, journeyType
     throw new Error('Must be within a Whiteboard.');
   }
 
-  if (!spaceNameId) {
-    throw new Error('Must be within a Space.');
-  }
-
   return (
     <Routes>
       <Route
         path="/"
         element={
-          <WhiteboardsView
+          <WhiteboardPage
             journeyId={journeyId}
             whiteboardNameId={whiteboardNameId}
             calloutNameId={calloutNameId}
-            spaceNameId={spaceNameId}
-            challengeNameId={challengeNameId}
-            opportunityNameId={opportunityNameId}
             parentUrl={parentPagePath}
             journeyTypeName={journeyTypeName}
           />

@@ -270,5 +270,6 @@ fragment ActivityLogCalendarEventCreated on ActivityLogEntryCalendarEventCreated
 }
 
 fragment ActivityLogUpdateSent on ActivityLogEntryUpdateSent {
+  id
   message
 }

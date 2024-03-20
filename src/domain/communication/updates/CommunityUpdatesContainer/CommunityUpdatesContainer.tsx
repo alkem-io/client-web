@@ -6,16 +6,13 @@ import {
   useRemoveMessageOnRoomMutation,
   useSendMessageToRoomMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
-import { Community, Space, Message, PlatformFeatureFlagName } from '../../../../core/apollo/generated/graphql-schema';
+import { Community, Message, PlatformFeatureFlagName } from '../../../../core/apollo/generated/graphql-schema';
 import { Author } from '../../../shared/components/AuthorAvatar/models/author';
 import { buildAuthorFromUser } from '../../../community/user/utils/buildAuthorFromUser';
 import useSubscribeOnRoomEvents from '../../../collaboration/callout/useSubscribeOnRoomEvents';
 
 export interface CommunityUpdatesContainerProps {
-  entities: {
-    communityId?: Community['id'];
-    spaceId?: Space['id'];
-  };
+  communityId: string | undefined;
   children: (
     entities: CommunityUpdatesEntities,
     actions: CommunityUpdatesActions,
@@ -42,22 +39,23 @@ export interface CommunityUpdatesEntities {
 
 const EMPTY = [];
 
-export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ entities, children }) => {
+export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ communityId, children }) => {
   const { isFeatureEnabled } = useConfig();
-  const { communityId, spaceId } = entities;
+
   const { data, loading } = useCommunityUpdatesQuery({
     variables: {
       communityId: communityId!,
     },
-    skip: !spaceId || !communityId,
+    skip: !communityId,
   });
+
   useSubscribeOnRoomEvents(data?.lookup.community?.communication?.updates.id);
 
   const roomID = data?.lookup.community?.communication?.updates?.id;
 
   const [sendUpdate, { loading: loadingSendUpdate }] = useSendMessageToRoomMutation({
     refetchQueries:
-      isFeatureEnabled(PlatformFeatureFlagName.Subscriptions) || !spaceId || !communityId
+      isFeatureEnabled(PlatformFeatureFlagName.Subscriptions) || !communityId
         ? []
         : [refetchCommunityUpdatesQuery({ communityId })],
   });
@@ -84,11 +82,11 @@ export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ 
       }
       const update = await removeUpdate({
         variables: { messageData: { messageID, roomID } },
-        refetchQueries: spaceId && communityId ? [refetchCommunityUpdatesQuery({ communityId })] : [],
+        refetchQueries: communityId ? [refetchCommunityUpdatesQuery({ communityId })] : [],
       });
       return update.data?.removeMessageOnRoom;
     },
-    [communityId, roomID, spaceId, removeUpdate]
+    [communityId, roomID, removeUpdate]
   );
 
   const onLoadMore = () => {

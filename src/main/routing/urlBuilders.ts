@@ -1,52 +1,19 @@
 import { _AUTH_LOGIN_PATH } from '../../core/auth/authentication/constants/authentication.constants';
 import { EntityPageSection } from '../../domain/shared/layout/EntityPageSection';
-import {
-  CoreEntityIdTypes,
-  isChallengeId,
-  isChallengeOpportunityIds,
-  isSpaceId,
-} from '../../domain/shared/types/CoreEntityIds';
-import { JourneyTypeName } from '../../domain/journey/JourneyTypeName';
 import { ROUTE_HOME } from '../../domain/platform/routes/constants';
-
-export const buildSpaceUrl = (spaceNameId: string) => `/${spaceNameId}`;
-
-export const addChallengeUrl = (spaceUrl: string, challengeNameId: string) =>
-  spaceUrl.concat(`/challenges/${challengeNameId}`);
-
-export const buildChallengeUrl = (spaceNameId: string, challengeNameId: string) =>
-  addChallengeUrl(buildSpaceUrl(spaceNameId), challengeNameId);
-
-export const addOpportunityUrl = (challengeUrl: string, opportunityNameId: string) =>
-  challengeUrl.concat(`/opportunities/${opportunityNameId}`);
-
-export const buildOpportunityUrl = (spaceNameId: string, challengeNameId: string, opportunityNameId: string) =>
-  addOpportunityUrl(buildChallengeUrl(spaceNameId, challengeNameId), opportunityNameId);
+import { normalizeLink } from '../../core/utils/links';
 
 export const buildOrganizationUrl = (organizationNameId: string) => `/organization/${organizationNameId}`;
 
 export const buildJourneyAdminUrl = (journeyProfileUrl: string) => {
-  try {
-    const url = new URL(journeyProfileUrl, 'http://relativeurl');
-    // if journeyProfileUrl is an absolute URL, http://relativeurl will be ignored.
-    if (url.hostname === 'relativeurl') {
-      // Relative URL
-      return `/admin/spaces/${journeyProfileUrl}`;
-    } else {
-      // Absolute URL
-      const pathParts = url.pathname.split('/').filter(part => part !== '');
-      pathParts.splice(0, 0, 'admin', 'spaces'); // Insert `/admin/spaces` at the beginning of the path
-      url.pathname = pathParts.join('/');
-      return url.toString();
-    }
-  } catch (e) {
-    return journeyProfileUrl;
-  }
+  const relativeUrl = normalizeLink(journeyProfileUrl);
+  return `/admin/spaces/${relativeUrl}`;
 };
 
 export const buildAdminOrganizationUrl = (organizationNameId: string) => `/admin/organizations/${organizationNameId}`;
 
 export const buildUserProfileUrl = (userNameId: string) => `/user/${userNameId}`;
+
 export const buildUserProfileSettingsUrl = (userNameId: string) =>
   `${buildUserProfileUrl(userNameId)}/settings/profile`;
 
@@ -59,141 +26,17 @@ export const buildLoginUrl = (returnUrl?: string) => {
   return `${_AUTH_LOGIN_PATH}${buildReturnUrlParam(returnUrl)}`;
 };
 
-export const buildSpaceApplyUrl = (spaceNameId: string) => `${buildSpaceUrl(spaceNameId)}/apply`;
-
-export const buildChallengeApplyUrl = (spaceNameId: string, challengeNameId: string) =>
-  `${buildChallengeUrl(spaceNameId, challengeNameId)}/apply`;
-
-export const buildProjectUrl = (
-  spaceNameId: string,
-  challengeNameId: string,
-  opportunityNameId: string,
-  projectNameId: string
-) => `${buildOpportunityUrl(spaceNameId, challengeNameId, opportunityNameId)}/projects/${projectNameId}`;
-
-export const buildDiscussionUrl = (url: string, id: string) => {
-  const stripUrl = url.replaceAll(/\/discussion|\/new/g, '');
-  return `${stripUrl}/discussion/${id}`;
-};
-
-export const buildDiscussionsUrl = (url: string) => {
-  const stripUrl = url.replace(/\/discussion\/.*/g, '');
-  return `${stripUrl}/discussion/`;
-};
-
-export const buildNewDiscussionUrl = (url: string) => {
-  const stripUrl = url.replace('/discussion', '');
-  return `${stripUrl}/discussion/new`;
-};
+export const buildJourneyApplyUrl = (journeyUrl: string) => `${journeyUrl}/apply`;
 
 export const buildNewOrganizationUrl = () => {
   return '/admin/organizations/new';
 };
 
-export type JourneyLocation = CoreEntityIdTypes;
-
-interface JourneyLocationApiData {
-  spaceID: string;
-  challengeID?: string;
-  opportunityID?: string;
-}
-
-export const mapApiDataToJourneyLocation = <Incoming extends JourneyLocationApiData>({
-  spaceID,
-  challengeID,
-  opportunityID,
-  ...apiData
-}: Incoming): Omit<Incoming, keyof JourneyLocationApiData> & JourneyLocation => {
-  return {
-    ...apiData,
-    spaceNameId: spaceID,
-    challengeNameId: challengeID,
-    opportunityNameId: opportunityID,
-  };
-};
-
-export const getJourneyLocationKey = (journeyTypeName: JourneyTypeName): keyof JourneyLocation => {
-  switch (journeyTypeName) {
-    case 'space':
-      return 'spaceNameId';
-    case 'challenge':
-      return 'challengeNameId';
-    case 'opportunity':
-      return 'opportunityNameId';
-  }
-};
-
-export const buildJourneyUrl = (journeyLocation: JourneyLocation | string) => {
-  if (typeof journeyLocation === 'string') {
-    return journeyLocation;
-  }
-  if (isSpaceId(journeyLocation)) {
-    return buildSpaceUrl(journeyLocation.spaceNameId);
-  }
-  if (isChallengeId(journeyLocation)) {
-    return buildChallengeUrl(journeyLocation.spaceNameId, journeyLocation.challengeNameId);
-  }
-  if (isChallengeOpportunityIds(journeyLocation)) {
-    return buildOpportunityUrl(
-      journeyLocation.spaceNameId,
-      journeyLocation.challengeNameId,
-      journeyLocation.opportunityNameId
-    );
-  }
-  return undefined as never;
-};
-
-export const buildJourneyUrlByJourneyTypeName = (
-  journeyLocation: Partial<JourneyLocation>,
-  journeyTypeName: JourneyTypeName
-) => {
-  if (journeyTypeName === 'space') {
-    return buildSpaceUrl(journeyLocation.spaceNameId!);
-  }
-  if (journeyTypeName === 'challenge') {
-    return buildChallengeUrl(journeyLocation.spaceNameId!, journeyLocation.challengeNameId!);
-  }
-  if (journeyTypeName === 'opportunity') {
-    return buildOpportunityUrl(
-      journeyLocation.spaceNameId!,
-      journeyLocation.challengeNameId!,
-      journeyLocation.opportunityNameId!
-    );
-  }
-};
-
-export const buildCalloutUrl = (calloutNameId: string, journeyLocation: JourneyLocation | string) => {
-  const calloutUrl = `/${EntityPageSection.Collaboration}/${calloutNameId}`;
-  return `${buildJourneyUrl(journeyLocation)}${calloutUrl}`;
-};
-
-export const buildUpdatesUrl = (journeyLocation: JourneyLocation | string) => {
+export const buildUpdatesUrl = (journeyLocation: string) => {
   const updatesPath = `/${EntityPageSection.Dashboard}/updates`;
-  return `${buildJourneyUrl(journeyLocation)}${updatesPath}`;
+  return `${journeyLocation}${updatesPath}`;
 };
 
-export const buildAboutUrl = (journeyLocation: JourneyLocation) => {
-  return `${buildJourneyUrl(journeyLocation)}/about`;
+export const buildAboutUrl = (journeyLocation: string | undefined) => {
+  return journeyLocation && `${journeyLocation}/about`;
 };
-
-export const buildPostUrl = (calloutNameId: string, postNameId: string, journeyLocation: JourneyLocation | string) => {
-  const postUrl = `/${EntityPageSection.Collaboration}/${calloutNameId}/posts/${postNameId}`;
-  return `${buildJourneyUrl(journeyLocation)}${postUrl}`;
-};
-
-export const buildWhiteboardUrl = (
-  calloutNameId: string,
-  whiteboardNameId: string,
-  journeyLocation: JourneyLocation | string
-) => {
-  const whiteboardUrl = `/${EntityPageSection.Collaboration}/${calloutNameId}/whiteboards/${whiteboardNameId}`;
-  return `${buildJourneyUrl(journeyLocation)}${whiteboardUrl}`;
-};
-
-export const buildEventUrl = (eventNameId: string, journeyLocation: JourneyLocation | string) => {
-  const eventUrl = `/${EntityPageSection.Dashboard}/calendar/${eventNameId}`;
-  return `${buildJourneyUrl(journeyLocation)}${eventUrl}`;
-};
-
-export const buildDocumentUrl = (platformDomain: string, documentId: string) =>
-  `//${platformDomain}/api/private/rest/storage/document/${documentId}`;

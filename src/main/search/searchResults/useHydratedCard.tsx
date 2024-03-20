@@ -9,15 +9,7 @@ import {
   UserRolesSearchCardsQuery,
 } from '../../../core/apollo/generated/graphql-schema';
 import React from 'react';
-import {
-  buildCalloutUrl,
-  buildChallengeUrl,
-  buildOpportunityUrl,
-  buildOrganizationUrl,
-  buildPostUrl,
-  buildSpaceUrl,
-  buildUserProfileUrl,
-} from '../../routing/urlBuilders';
+import { buildOrganizationUrl, buildUserProfileUrl } from '../../routing/urlBuilders';
 import {
   SearchChallengeCard,
   SearchOpportunityCard,
@@ -104,7 +96,6 @@ const _hydrateSpaceCard = (data: SearchResultT<SearchResultSpaceFragment>) => {
   const space = data.space;
   const tagline = space.profile?.tagline ?? '';
   const name = space.profile.displayName;
-  const url = buildSpaceUrl(space.nameID);
   const tags = data.terms; // TODO: add terms field to journey card
   const vision = space.context?.vision ?? '';
 
@@ -116,7 +107,7 @@ const _hydrateSpaceCard = (data: SearchResultT<SearchResultSpaceFragment>) => {
       member={isMember}
       displayName={name}
       tagline={tagline}
-      journeyUri={url}
+      journeyUri={space.profile.url}
       tags={tags}
       matchedTerms
       vision={vision}
@@ -135,13 +126,8 @@ const useHydrateChallengeCard = (data: SearchResultT<SearchResultChallengeFragme
   const tagline = challenge.profile.tagline || '';
   const name = challenge.profile.displayName;
   const matchedTerms = data?.terms ?? [];
-  const spaceNameId = containingSpace.nameID;
   const spaceDisplayName = containingSpace.profile.displayName;
   const vision = challenge.context?.vision || '';
-
-  const nameID = challenge.nameID;
-
-  const url = buildChallengeUrl(spaceNameId, nameID);
 
   const isMember = challenge.community?.myMembershipStatus === CommunityMembershipStatus.Member;
 
@@ -153,13 +139,13 @@ const useHydrateChallengeCard = (data: SearchResultT<SearchResultChallengeFragme
       tagline={tagline}
       tags={matchedTerms}
       matchedTerms
-      journeyUri={url}
+      journeyUri={challenge.profile.url}
       vision={vision}
       locked={!challenge.authorization?.anonymousReadAccess}
       parentSegment={
         <CardParentJourneySegment
           iconComponent={SpaceIcon}
-          parentJourneyUri={buildSpaceUrl(spaceNameId)}
+          parentJourneyUri={containingSpace.profile.url}
           locked={!containingSpace.authorization?.anonymousReadAccess}
         >
           {spaceDisplayName}
@@ -180,13 +166,8 @@ const useHydrateOpportunityCard = (data: SearchResultT<SearchResultOpportunityFr
   const tagline = opportunity.profile.tagline || '';
   const name = opportunity.profile.displayName;
   const matchedTerms = data?.terms ?? [];
-  const challengeNameId = containingChallenge.nameID;
   const challengeDisplayName = containingChallenge.profile.displayName;
-  const spaceNameID = containingSpace.nameID;
-  const nameID = opportunity.nameID;
   const vision = opportunity.context?.vision ?? '';
-
-  const url = buildOpportunityUrl(spaceNameID, challengeNameId, nameID);
 
   const isMember = opportunity.community?.myMembershipStatus === CommunityMembershipStatus.Member;
 
@@ -198,13 +179,13 @@ const useHydrateOpportunityCard = (data: SearchResultT<SearchResultOpportunityFr
       tagline={tagline}
       tags={matchedTerms}
       matchedTerms
-      journeyUri={url}
+      journeyUri={opportunity.profile.url}
       vision={vision}
       locked={!opportunity.authorization?.anonymousReadAccess}
       parentSegment={
         <CardParentJourneySegment
           iconComponent={ChallengeIcon}
-          parentJourneyUri={buildChallengeUrl(spaceNameID, challengeNameId)}
+          parentJourneyUri={containingChallenge.profile.url}
           locked={!containingChallenge.authorization?.anonymousReadAccess}
         >
           {challengeDisplayName}
@@ -216,26 +197,26 @@ const useHydrateOpportunityCard = (data: SearchResultT<SearchResultOpportunityFr
 };
 
 const getContributionParentInformation = (data: SearchResultT<SearchResultPostFragment>) => {
-  if (data.opportunity?.nameID && data.challenge?.nameID) {
+  if (data.opportunity) {
     return {
       icon: OpportunityIcon,
       displayName: data.opportunity?.profile.displayName,
       locked: !data.opportunity?.authorization?.anonymousReadAccess,
-      url: buildOpportunityUrl(data.space.nameID, data.challenge?.nameID, data.opportunity?.nameID),
+      url: data.opportunity.profile.url,
     };
-  } else if (data.challenge?.nameID) {
+  } else if (data.challenge) {
     return {
       icon: ChallengeIcon,
       displayName: data.challenge?.profile.displayName,
       locked: !data.challenge?.authorization?.anonymousReadAccess,
-      url: buildChallengeUrl(data.space.nameID, data.challenge?.nameID),
+      url: data.challenge.profile.url,
     };
   } else {
     return {
       icon: SpaceIcon,
       displayName: data.space.profile.displayName,
       locked: !data.space?.authorization?.anonymousReadAccess,
-      url: buildSpaceUrl(data.space.nameID),
+      url: data.space.profile.url,
     };
   }
 };
@@ -246,11 +227,7 @@ const _hydrateContributionPost = (data: SearchResultT<SearchResultPostFragment> 
   }
 
   const card = data.post;
-  const url = buildPostUrl(data.callout.nameID, card.nameID, {
-    spaceNameId: data.space.nameID,
-    challengeNameId: data.challenge?.nameID,
-    opportunityNameId: data.opportunity?.nameID,
-  });
+
   const parent = getContributionParentInformation(data);
 
   return (
@@ -262,17 +239,10 @@ const _hydrateContributionPost = (data: SearchResultT<SearchResultPostFragment> 
       createdDate={card.createdDate}
       commentsCount={card.comments?.messagesCount}
       matchedTerms={data.terms}
-      url={url}
+      url={data.post.profile.url}
       parentSegment={
         <CardContent>
-          <CardParentJourneySegment
-            iconComponent={CalloutIcon}
-            parentJourneyUri={buildCalloutUrl(data.callout.nameID, {
-              spaceNameId: data.space.nameID,
-              challengeNameId: data.challenge?.nameID,
-              opportunityNameId: data.opportunity?.nameID,
-            })}
-          >
+          <CardParentJourneySegment iconComponent={CalloutIcon} parentJourneyUri={data.callout.framing.profile.url}>
             {data.callout.framing.profile.displayName}
           </CardParentJourneySegment>
           <CardParentJourneySegment iconComponent={parent.icon} parentJourneyUri={parent.url} locked={parent.locked}>

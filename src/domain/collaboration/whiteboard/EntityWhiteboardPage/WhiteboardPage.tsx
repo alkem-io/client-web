@@ -1,12 +1,11 @@
 import React, { FC } from 'react';
 import useBackToParentPage from '../../../../core/routing/deprecated/useBackToParentPage';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
-import { buildWhiteboardUrl, JourneyLocation } from '../../../../main/routing/urlBuilders';
 import { useCalloutIdQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import WhiteboardView from '../WhiteboardsManagement/WhiteboardView';
 import { WhiteboardProvider } from '../containers/WhiteboardProvider';
 
-export interface WhiteboardsPageProps extends JourneyLocation {
+export interface WhiteboardPageProps {
   journeyId: string | undefined;
   whiteboardNameId: string;
   calloutNameId: string;
@@ -14,25 +13,16 @@ export interface WhiteboardsPageProps extends JourneyLocation {
   journeyTypeName: JourneyTypeName;
 }
 
-const WhiteboardsView: FC<WhiteboardsPageProps> = ({
+const WhiteboardPage: FC<WhiteboardPageProps> = ({
   journeyId,
   whiteboardNameId,
   parentUrl,
   calloutNameId,
-  spaceNameId,
-  challengeNameId,
-  opportunityNameId,
   journeyTypeName,
   ...props
 }) => {
   const [backToExplore] = useBackToParentPage(parentUrl, { keepScroll: true });
   const backToWhiteboards = () => backToExplore();
-
-  const whiteboardShareUrl = buildWhiteboardUrl(calloutNameId, whiteboardNameId, {
-    spaceNameId,
-    challengeNameId,
-    opportunityNameId,
-  });
 
   const { data } = useCalloutIdQuery({
     variables: {
@@ -44,7 +34,7 @@ const WhiteboardsView: FC<WhiteboardsPageProps> = ({
       isChallenge: journeyTypeName === 'challenge',
       isOpportunity: journeyTypeName === 'opportunity',
     },
-    skip: !spaceNameId || !calloutNameId,
+    skip: !calloutNameId || !journeyId,
   });
 
   const calloutId =
@@ -53,13 +43,13 @@ const WhiteboardsView: FC<WhiteboardsPageProps> = ({
     data?.lookup.opportunity?.collaboration?.callouts?.[0].id;
 
   return (
-    <WhiteboardProvider whiteboardNameId={whiteboardNameId} calloutId={calloutId} spaceId={spaceNameId}>
+    <WhiteboardProvider whiteboardNameId={whiteboardNameId} calloutId={calloutId}>
       {(entities, state) => (
         <WhiteboardView
           whiteboardId={entities.whiteboard?.id}
           backToWhiteboards={backToWhiteboards}
           journeyTypeName={journeyTypeName}
-          whiteboardShareUrl={whiteboardShareUrl}
+          whiteboardShareUrl={entities.whiteboard?.profile.url ?? ''}
           whiteboard={entities.whiteboard}
           authorization={entities.whiteboard?.authorization}
           loadingWhiteboards={state.loadingWhiteboards}
@@ -70,4 +60,4 @@ const WhiteboardsView: FC<WhiteboardsPageProps> = ({
   );
 };
 
-export default WhiteboardsView;
+export default WhiteboardPage;

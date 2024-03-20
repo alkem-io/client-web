@@ -29,31 +29,16 @@ query JourneyStorageConfig(
 }
 
 query CalloutStorageConfig(
-  $calloutId: UUID_NAMEID!
-  $spaceId: UUID_NAMEID = "00000000-0000-0000-0000-000000000000" # workaround for mandatory param
-  $challengeId: UUID = "00000000-0000-0000-0000-000000000000" # workaround for mandatory param
-  $opportunityId: UUID = "00000000-0000-0000-0000-000000000000" # workaround for mandatory param
-  $includeSpace: Boolean = false
-  $includeChallenge: Boolean = false
-  $includeOpportunity: Boolean = false
+  $calloutId: UUID!
 ) {
-  space(ID: $spaceId) @include(if: $includeSpace) {
-    id
-    collaboration {
-      ...CalloutOnCollaborationWithStorageConfig
-    }
-  }
   lookup {
-    challenge(ID: $challengeId) @include(if: $includeChallenge) {
+    callout(ID: $calloutId) {
       id
-      collaboration {
-        ...CalloutOnCollaborationWithStorageConfig
-      }
-    }
-    opportunity(ID: $opportunityId) @include(if: $includeOpportunity) {
-      id
-      collaboration {
-        ...CalloutOnCollaborationWithStorageConfig
+      framing {
+        id
+        profile {
+          ...ProfileStorageConfig
+        }
       }
     }
   }

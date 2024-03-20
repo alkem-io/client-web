@@ -11,7 +11,6 @@ import PageContentBlock, { PageContentBlockProps } from '../../../../core/ui/con
 import { useTranslation } from 'react-i18next';
 import { JourneyTypeName } from '../../JourneyTypeName';
 import TopCalloutDetails from '../../../collaboration/callout/TopCallout/TopCalloutDetails';
-import { buildCalloutUrl } from '../../../../main/routing/urlBuilders';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 import { gutters } from '../../../../core/ui/grid/utils';
 import AltToggle from '../../../../core/ui/forms/AltToggle/AltToggle';
@@ -28,11 +27,11 @@ export interface DashboardRecentContributionsBlockProps extends PageContentBlock
   onActivitiesDialogOpen: () => void;
   topCallouts:
     | (Identifiable & {
-        nameID: string;
         activity: number;
         type: CalloutType;
         framing: {
           profile: {
+            url: string;
             displayName: string;
             description?: string;
           };
@@ -54,7 +53,6 @@ const DashboardRecentContributionsBlock = ({
   activitiesLoading,
   onActivitiesDialogOpen,
   topCallouts,
-  journeyLocation,
   journeyTypeName,
   ...blockProps
 }: DashboardRecentContributionsBlockProps) => {
@@ -105,7 +103,7 @@ const DashboardRecentContributionsBlock = ({
               {readUsersAccess && entityReadAccess && showActivities && (
                 <>
                   <OverflowGradient sx={{ margin: -1 }}>
-                    <ActivityComponent activities={activities} journeyLocation={journeyLocation} />
+                    <ActivityComponent activities={activities} />
                   </OverflowGradient>
                   <SeeMore subject={t('common.contributions')} onClick={() => setIsActivitiesDialogOpen(true)} />
                   <DialogWithGrid
@@ -118,7 +116,7 @@ const DashboardRecentContributionsBlock = ({
                       onClose={() => setIsActivitiesDialogOpen(false)}
                     />
                     <Gutters>
-                      <ActivityComponent activities={activities} journeyLocation={journeyLocation} />
+                      <ActivityComponent activities={activities} />
                     </Gutters>
                   </DialogWithGrid>
                 </>
@@ -153,7 +151,7 @@ const DashboardRecentContributionsBlock = ({
                     description={callout.framing.profile.description ?? ''}
                     activity={callout.activity}
                     type={callout.type}
-                    calloutUri={journeyLocation && buildCalloutUrl(callout.nameID, journeyLocation)}
+                    calloutUri={callout.framing.profile.url}
                   />
                 ))}
               </Gutters>

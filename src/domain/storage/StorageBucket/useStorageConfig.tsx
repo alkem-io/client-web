@@ -112,14 +112,8 @@ const useStorageConfig = ({ locationType, skip, ...options }: StorageConfigOptio
   const { data: calloutStorageConfigData } = useCalloutStorageConfigQuery({
     variables: {
       calloutId: calloutOptions.calloutId,
-      spaceId: journeyOptions.journeyId,
-      challengeId: journeyOptions.journeyId,
-      opportunityId: journeyOptions.journeyId,
-      includeSpace: journeyTypeName === 'space',
-      includeChallenge: journeyTypeName === 'challenge',
-      includeOpportunity: journeyTypeName === 'opportunity',
     },
-    skip: skip || locationType !== 'callout' || !journeyOptions.journeyId,
+    skip: skip || locationType !== 'callout',
   });
 
   const postOptions = options as UseStorageConfigOptionsPost;
@@ -170,12 +164,7 @@ const useStorageConfig = ({ locationType, skip, ...options }: StorageConfigOptio
     journeyStorageConfigData?.lookup.challenge ??
     journeyStorageConfigData?.space;
 
-  const [callout] =
-    (
-      calloutStorageConfigData?.lookup.opportunity?.collaboration ??
-      calloutStorageConfigData?.lookup.challenge?.collaboration ??
-      calloutStorageConfigData?.space?.collaboration
-    )?.callouts ?? [];
+  const callout = calloutStorageConfigData?.lookup.callout;
 
   const [contribution] = postStorageConfigData?.lookup.callout?.contributions ?? [];
 

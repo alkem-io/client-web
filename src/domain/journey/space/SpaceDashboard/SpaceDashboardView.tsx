@@ -9,7 +9,6 @@ import {
   SpaceVisibility,
   SpaceWelcomeBlockContributorProfileFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
-import { JourneyLocation } from '../../../../main/routing/urlBuilders';
 import DashboardUpdatesSection from '../../../shared/components/DashboardSections/DashboardUpdatesSection';
 import { ActivityLogResultType } from '../../../collaboration/activity/ActivityLog/ActivityComponent';
 import PageContent from '../../../../core/ui/content/PageContent';
@@ -41,7 +40,7 @@ interface SpaceWelcomeBlockContributor {
 interface SpaceDashboardViewProps {
   spaceId: string | undefined;
   displayName: string | undefined;
-  spaceNameId: string | undefined; // TODO remove
+  spaceUrl: string | undefined;
   dashboardNavigation: DashboardNavigationItem[] | undefined;
   dashboardNavigationLoading: boolean;
   spaceVisibility?: SpaceVisibility;
@@ -82,7 +81,7 @@ const SpaceDashboardView = ({
   dashboardNavigation,
   dashboardNavigationLoading,
   spaceVisibility,
-  spaceNameId,
+  spaceUrl,
   communityId = '',
   communityReadAccess = false,
   timelineReadAccess = false,
@@ -99,13 +98,6 @@ const SpaceDashboardView = ({
   shareUpdatesUrl,
 }: SpaceDashboardViewProps) => {
   const { t } = useTranslation();
-
-  const journeyLocation: JourneyLocation | undefined =
-    typeof spaceNameId === 'undefined'
-      ? undefined
-      : {
-          spaceNameId,
-        };
 
   const hasExtendedApplicationButton = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
 
@@ -158,16 +150,14 @@ const SpaceDashboardView = ({
             {t('common.aboutThis', { entity: translatedJourneyTypeName })}
           </FullWidthButton>
           <DashboardNavigation
-            spaceNameId={spaceNameId}
+            spaceUrl={spaceUrl}
             spaceVisibility={spaceVisibility}
             displayName={displayName}
             dashboardNavigation={dashboardNavigation}
             loading={dashboardNavigationLoading}
           />
           {timelineReadAccess && <DashboardCalendarSection journeyId={spaceId} journeyTypeName={journeyTypeName} />}
-          {communityReadAccess && (
-            <DashboardUpdatesSection entities={{ spaceId: spaceNameId, communityId }} shareUrl={shareUpdatesUrl} />
-          )}
+          {communityReadAccess && <DashboardUpdatesSection communityId={communityId} shareUrl={shareUpdatesUrl} />}
           <CalloutsGroupView
             callouts={callouts.groupedCallouts[CalloutGroupName.Home_1]}
             canCreateCallout={callouts.canCreateCallout}
@@ -190,7 +180,6 @@ const SpaceDashboardView = ({
             topCallouts={topCallouts}
             activities={activities}
             journeyTypeName={journeyTypeName}
-            journeyLocation={journeyLocation}
             onActivitiesDialogOpen={() => fetchMoreActivities(RECENT_ACTIVITIES_LIMIT_EXPANDED)}
           />
           <CalloutsGroupView

@@ -7,7 +7,6 @@ import OpportunityContributorsDialogContent from '../../../community/community/e
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import OpportunityPageLayout from '../layout/OpportunityPageLayout';
 import JourneyDashboardView from '../../common/tabs/Dashboard/JourneyDashboardView';
-import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import CalendarDialog from '../../../timeline/calendar/CalendarDialog';
 import MembershipContainer from '../../../community/membership/membershipContainer/MembershipContainer';
 import JourneyDashboardWelcomeBlock from '../../common/journeyDashboardWelcomeBlock/JourneyDashboardWelcomeBlock';
@@ -33,16 +32,10 @@ const OpportunityDashboardPage: FC<OpportunityDashboardPageProps> = ({ dialog })
 
   const backToDashboard = useBackToStaticPath(`${currentPath.pathname}/dashboard`);
 
-  const { spaceNameId, challengeNameId, opportunityNameId } = useUrlParams();
-
   const { sendMessage, directMessageDialog } = useDirectMessageDialog({
     dialogTitle: t('send-message-dialog.direct-message-title'),
   });
 
-  if (!spaceNameId) {
-    throw new Error('Must be within a Space route.');
-  }
-  const shareUpdatesUrl = buildUpdatesUrl({ spaceNameId, challengeNameId, opportunityNameId });
   const hasExtendedApplicationButton = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
 
   const { challengeId, opportunityId } = useRouteResolver();
@@ -55,12 +48,9 @@ const OpportunityDashboardPage: FC<OpportunityDashboardPageProps> = ({ dialog })
           <>
             <JourneyDashboardView
               journeyId={opportunityId}
+              journeyUrl={entities.opportunity?.profile.url}
               ribbon={
-                <OpportunityApplicationButtonContainer
-                  challengeId={challengeId}
-                  opportunityId={opportunityId}
-                  challengeNameId={challengeNameId}
-                >
+                <OpportunityApplicationButtonContainer challengeId={challengeId} opportunityId={opportunityId}>
                   {({ applicationButtonProps, state: { loading } }) => {
                     if (loading || applicationButtonProps.isMember) {
                       return null;
@@ -91,9 +81,6 @@ const OpportunityDashboardPage: FC<OpportunityDashboardPageProps> = ({ dialog })
                   {props => <MembershipContainer {...props} />}
                 </JourneyDashboardWelcomeBlock>
               }
-              spaceNameId={spaceNameId}
-              challengeNameId={challengeNameId}
-              opportunityNameId={entities.opportunity?.nameID}
               communityId={entities.opportunity?.community?.id}
               communityReadAccess={entities.permissions.communityReadAccess}
               timelineReadAccess={entities.permissions.timelineReadAccess}
@@ -112,14 +99,13 @@ const OpportunityDashboardPage: FC<OpportunityDashboardPageProps> = ({ dialog })
               topCallouts={entities.topCallouts}
               callouts={callouts}
               sendMessageToCommunityLeads={entities.sendMessageToCommunityLeads}
-              shareUpdatesUrl={shareUpdatesUrl}
+              shareUpdatesUrl={buildUpdatesUrl(entities.opportunity?.profile.url ?? '')}
             />
             <CommunityUpdatesDialog
               open={dialog === 'updates'}
               onClose={backToDashboard}
-              spaceId={spaceNameId}
               communityId={entities.opportunity?.community?.id}
-              shareUrl={shareUpdatesUrl}
+              shareUrl={buildUpdatesUrl(entities.opportunity?.profile.url ?? '')}
               loading={state.loading}
             />
             <ContributorsDialog

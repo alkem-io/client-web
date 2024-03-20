@@ -26,7 +26,6 @@ const JourneyUnauthorizedDialog = ({
   loading = false,
   disabled = false,
   challengeId,
-  challengeNameId,
   challengeName,
   journeyTypeName,
   ...aboutDialogProps
@@ -51,7 +50,7 @@ const JourneyUnauthorizedDialog = ({
       open={!disabled && !loading && !authorized}
       startButton={canGoBack && <BackButton onClick={() => navigate(-1)} />}
       endButton={
-        <ApplicationButtonContainer {...{ challengeId, challengeNameId, challengeName }}>
+        <ApplicationButtonContainer {...{ challengeId, challengeName }}>
           {(e, s) => (
             <ApplicationButton
               ref={applicationButtonRef}

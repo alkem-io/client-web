@@ -7,8 +7,8 @@ import {
   ActivityLogCalloutPostCommentFragment,
   ActivityLogCalloutPostCreatedFragment,
   ActivityLogCalloutPublishedFragment,
-  ActivityLogCalloutWhiteboardCreatedFragment,
   ActivityLogCalloutWhiteboardContentModifiedFragment,
+  ActivityLogCalloutWhiteboardCreatedFragment,
   ActivityLogChallengeCreatedFragment,
   ActivityLogEntry,
   ActivityLogMemberJoinedFragment,
@@ -28,10 +28,8 @@ import {
   ActivityOpportunityCreatedView,
   ActivityViewProps,
 } from './views';
-import { buildJourneyUrl, getJourneyLocationKey, JourneyLocation } from '../../../../main/routing/urlBuilders';
 import { buildAuthorFromUser } from '../../../community/user/utils/buildAuthorFromUser';
 import { ActivityUpdateSentView } from './views/ActivityUpdateSent';
-import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import { ActivityCalendarEventCreatedView } from './views/ActivityCalendarEventCreatedView';
 
 export type ActivityLogResult<T> = T &
@@ -62,59 +60,30 @@ export type ActivityLogResultType = TypedActivityLogResultWithType[keyof TypedAc
 
 export interface ActivityComponentProps {
   activities: ActivityLogResultType[] | undefined;
-  journeyLocation: JourneyLocation | undefined;
   limit?: number;
 }
 
-const getActivityOriginJourneyTypeName = (
-  activity: ActivityLogResultType,
-  journeyLocation: JourneyLocation
-): JourneyTypeName | undefined => {
-  if (!activity.child) {
-    return undefined;
-  }
-  if (journeyLocation.challengeNameId) {
-    return 'opportunity';
-  }
-  return 'challenge';
-};
-
-export const ActivityComponent: FC<ActivityComponentProps> = ({ activities, journeyLocation, limit }) => {
+export const ActivityComponent: FC<ActivityComponentProps> = ({ activities, limit }) => {
   const display = useMemo(() => {
-    if (!activities || !journeyLocation) {
+    if (!activities) {
       return null;
     }
 
     return (
       <>
         {activities.slice(0, limit).map(activity => {
-          const activityOriginJourneyTypeName = getActivityOriginJourneyTypeName(activity, journeyLocation);
-          const activityOriginJourneyLocation = activityOriginJourneyTypeName
-            ? {
-                ...journeyLocation,
-                [getJourneyLocationKey(activityOriginJourneyTypeName)]: activity.parentNameID,
-              }
-            : journeyLocation;
-          const activityOriginJourneyUrl = buildJourneyUrl(activityOriginJourneyLocation);
           const author = buildAuthorFromUser(activity.triggeredBy);
 
-          return (
-            <ActivityViewChooser
-              activity={activity}
-              avatarUrl={author.avatarUrl}
-              journeyUrl={activityOriginJourneyUrl}
-              key={activity.id}
-            />
-          );
+          return <ActivityViewChooser activity={activity} avatarUrl={author.avatarUrl} key={activity.id} />;
         })}
       </>
     );
-  }, [activities, journeyLocation]);
+  }, [activities]);
 
   return <>{display ?? <ActivityLoadingView rows={3} />}</>;
 };
 
-interface ActivityViewChooserProps extends Pick<ActivityViewProps, 'journeyUrl' | 'avatarUrl'> {
+interface ActivityViewChooserProps extends Pick<ActivityViewProps, 'avatarUrl'> {
   activity: ActivityLogResultType;
 }
 
@@ -145,7 +114,7 @@ export const ActivityViewChooser = ({ activity, ...rest }: ActivityViewChooserPr
     case ActivityEventType.CalendarEventCreated:
       return <ActivityCalendarEventCreatedView {...activity} {...rest} />;
     case ActivityEventType.UpdateSent:
-      return <ActivityUpdateSentView {...activity} {...rest} />;
+      return <ActivityUpdateSentView {...activity} {...rest} journeyUrl="" />; // TODO provide journeyUrl
   }
   throw new Error(`Unable to choose a view for activity type: ${activity['type']}`);
 };

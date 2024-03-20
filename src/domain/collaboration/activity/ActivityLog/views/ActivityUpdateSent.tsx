@@ -6,6 +6,7 @@ import { ActivityEventType } from '../../../../../core/apollo/generated/graphql-
 import ActivitySubjectMarkdown from './ActivitySubjectMarkdown';
 
 export interface ActivityUpdateSentViewProps extends ActivityViewProps {
+  journeyUrl: string;
   message: string;
   type: ActivityEventType.UpdateSent;
 }

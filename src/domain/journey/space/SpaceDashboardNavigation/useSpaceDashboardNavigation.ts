@@ -25,10 +25,10 @@ interface UseSpaceDashboardNavigationProvided {
 
 export interface DashboardNavigationItem {
   id: string;
-  nameId: string;
   displayName: string;
   tagline: string;
   vision?: string;
+  url: string;
   avatar?: {
     uri: string;
     alternativeText?: string;
@@ -47,7 +47,6 @@ export interface DashboardNavigationItem {
 const getDashboardNavigationItemProps = (
   journey: {
     id: string;
-    nameID: string;
     profile: SpaceDashboardNavigationProfileFragment;
     context?: SpaceDashboardNavigationContextFragment;
     community?: SpaceDashboardNavigationCommunityFragment;
@@ -56,7 +55,7 @@ const getDashboardNavigationItemProps = (
 ): DashboardNavigationItem => {
   return {
     id: journey.id,
-    nameId: journey.nameID,
+    url: journey.profile.url,
     displayName: journey.profile.displayName,
     tagline: journey.profile.tagline,
     vision: journey.context?.vision,
