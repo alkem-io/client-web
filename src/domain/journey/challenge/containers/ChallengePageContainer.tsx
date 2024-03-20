@@ -1,8 +1,6 @@
 import { ApolloError } from '@apollo/client';
 import React, { FC } from 'react';
 import { useUserContext } from '../../../community/user';
-import { useSpace } from '../../space/SpaceContext/useSpace';
-import { useChallenge } from '../hooks/useChallenge';
 import {
   useChallengeDashboardReferencesQuery,
   useChallengePageQuery,
@@ -16,7 +14,6 @@ import {
   CommunityMembershipStatus,
   DashboardTopCalloutFragment,
   Reference,
-  SpaceVisibility,
 } from '../../../../core/apollo/generated/graphql-schema';
 import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
 import { MetricType } from '../../../platform/metrics/MetricType';
@@ -29,10 +26,6 @@ import useSendMessageToCommunityLeads from '../../../community/CommunityLeads/us
 import { RECENT_ACTIVITIES_LIMIT_INITIAL, TOP_CALLOUTS_LIMIT } from '../../common/journeyDashboard/constants';
 
 export interface ChallengeContainerEntities extends EntityDashboardContributors {
-  spaceId: string;
-  spaceNameId: string;
-  spaceDisplayName: string;
-  spaceVisibility: SpaceVisibility;
   challenge?: ChallengeProfileFragment;
   references: Reference[] | undefined;
   permissions: {
@@ -60,33 +53,33 @@ export interface ChallengeContainerState {
 }
 
 export interface ChallengePageContainerProps
-  extends ContainerChildProps<ChallengeContainerEntities, ChallengeContainerActions, ChallengeContainerState> {}
+  extends ContainerChildProps<ChallengeContainerEntities, ChallengeContainerActions, ChallengeContainerState> {
+  challengeId: string | undefined;
+}
 
 const NO_PRIVILEGES = [];
 
-export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ children }) => {
+export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ challengeId, children }) => {
   const { user, isAuthenticated } = useUserContext();
-  const { loading: loadingSpaceContext, ...space } = useSpace();
-  const { spaceId, spaceNameId, challengeNameId, loading } = useChallenge();
 
   const { data: _challenge, loading: loadingProfile } = useChallengePageQuery({
     variables: {
-      spaceId: spaceNameId,
-      challengeId: challengeNameId,
+      challengeId: challengeId!,
     },
+    skip: !challengeId,
   });
 
-  const collaborationID = _challenge?.space?.challenge?.collaboration?.id;
+  const collaborationID = _challenge?.lookup.challenge?.collaboration?.id;
 
-  const challengePrivileges = _challenge?.space?.challenge?.authorization?.myPrivileges ?? NO_PRIVILEGES;
+  const challengePrivileges = _challenge?.lookup.challenge?.authorization?.myPrivileges ?? NO_PRIVILEGES;
 
   const timelineReadAccess = (
-    _challenge?.space.challenge?.collaboration?.timeline?.authorization?.myPrivileges ?? []
+    _challenge?.lookup.challenge?.collaboration?.timeline?.authorization?.myPrivileges ?? []
   ).includes(AuthorizationPrivilege.Read);
 
   const permissions = {
     canEdit: challengePrivileges.includes(AuthorizationPrivilege.Update),
-    communityReadAccess: (_challenge?.space?.challenge?.community?.authorization?.myPrivileges || []).some(
+    communityReadAccess: (_challenge?.lookup.challenge?.community?.authorization?.myPrivileges || []).some(
       x => x === AuthorizationPrivilege.Read
     ),
     challengeReadAccess: challengePrivileges.includes(AuthorizationPrivilege.Read),
@@ -108,49 +101,44 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
     limit: RECENT_ACTIVITIES_LIMIT_INITIAL,
   });
 
-  const canReadReferences = _challenge?.space?.challenge?.context?.authorization?.myPrivileges?.includes(
+  const canReadReferences = _challenge?.lookup.challenge?.context?.authorization?.myPrivileges?.includes(
     AuthorizationPrivilege.Read
   );
 
   const { data: referenceData } = useChallengeDashboardReferencesQuery({
     variables: {
-      spaceId: spaceNameId,
-      challengeId: challengeNameId,
+      challengeId: challengeId!, // canReadReferences implies challengeId is provided
     },
     skip: !canReadReferences,
   });
 
-  const { metrics = [] } = _challenge?.space.challenge || {};
+  const { metrics = [] } = _challenge?.lookup.challenge || {};
 
   const membersCount = getMetricCount(metrics, MetricType.Member);
-  const memberUsersCount = membersCount - (_challenge?.space.challenge.community?.memberOrganizations?.length ?? 0);
-  const contributors = useCommunityMembersAsCardProps(_challenge?.space.challenge.community, { memberUsersCount });
+  const memberUsersCount = membersCount - (_challenge?.lookup.challenge?.community?.memberOrganizations?.length ?? 0);
+  const contributors = useCommunityMembersAsCardProps(_challenge?.lookup.challenge?.community, { memberUsersCount });
 
-  const references = referenceData?.space?.challenge?.profile.references;
+  const references = referenceData?.lookup.challenge?.profile.references;
 
-  const topCallouts = _challenge?.space.challenge.collaboration?.callouts?.slice(0, TOP_CALLOUTS_LIMIT);
+  const topCallouts = _challenge?.lookup.challenge?.collaboration?.callouts?.slice(0, TOP_CALLOUTS_LIMIT);
 
-  const communityId = _challenge?.space.challenge.community?.id ?? '';
+  const communityId = _challenge?.lookup.challenge?.community?.id ?? '';
 
   const sendMessageToCommunityLeads = useSendMessageToCommunityLeads(communityId);
 
   const callouts = useCallouts({
-    spaceNameId,
-    challengeNameId,
+    journeyId: challengeId,
+    journeyTypeName: 'challenge',
     displayLocations: [CalloutDisplayLocation.HomeLeft, CalloutDisplayLocation.HomeRight],
   });
 
-  const isMember = _challenge?.space.challenge.community?.myMembershipStatus === CommunityMembershipStatus.Member;
+  const isMember = _challenge?.lookup.challenge?.community?.myMembershipStatus === CommunityMembershipStatus.Member;
 
   return (
     <>
       {children(
         {
-          spaceId,
-          spaceNameId,
-          spaceDisplayName: space.profile.displayName,
-          spaceVisibility: space.license.visibility,
-          challenge: _challenge?.space.challenge,
+          challenge: _challenge?.lookup.challenge,
           permissions,
           isAuthenticated,
           references,
@@ -162,7 +150,7 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
           sendMessageToCommunityLeads,
           callouts,
         },
-        { loading: loading || loadingProfile || loadingSpaceContext, activityLoading },
+        { loading: loadingProfile, activityLoading },
         {}
       )}
     </>

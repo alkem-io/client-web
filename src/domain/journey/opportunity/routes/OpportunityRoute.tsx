@@ -1,9 +1,7 @@
-import React, { FC, useMemo } from 'react';
+import React from 'react';
 import { Route, Routes } from 'react-router';
-import { Navigate, useResolvedPath } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import Loading from '../../../../core/ui/loading/Loading';
-import { useOpportunity } from '../hooks/useOpportunity';
-import { PageProps } from '../../../shared/types/PageProps';
 import { Error404 } from '../../../../core/pages/Errors/Error404';
 import OpportunityAgreementsPage from '../pages/OpportunityAgreementsPage';
 import { nameOfUrl } from '../../../../main/routing/urlParams';
@@ -16,33 +14,17 @@ import JourneyContributePage from '../../common/JourneyContributePage/JourneyCon
 import Redirect from '../../../../core/routing/Redirect';
 import OpportunityCalloutPage from '../opportunityCalloutPage/OpportunityCalloutPage';
 import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
+import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 
-interface OpportunityRootProps extends PageProps {}
-
-const OpportunityRoute: FC<OpportunityRootProps> = ({ paths: _paths }) => {
-  const {
-    profile: { displayName },
-    opportunityNameId,
-    spaceNameId,
-    challengeNameId,
-    loading,
-  } = useOpportunity();
-  const resolved = useResolvedPath('.');
-  const currentPaths = useMemo(
-    () => (displayName ? [..._paths, { value: resolved.pathname, name: displayName, real: true }] : _paths),
-    [_paths, displayName, resolved]
-  );
+const OpportunityRoute = () => {
+  const { journeyId, loading } = useRouteResolver();
 
   if (loading) {
     return <Loading text={'Loading opportunity'} />;
   }
 
   return (
-    <StorageConfigContextProvider
-      locationType="journey"
-      journeyTypeName="opportunity"
-      {...{ spaceNameId, challengeNameId, opportunityNameId }}
-    >
+    <StorageConfigContextProvider locationType="journey" journeyTypeName="opportunity" journeyId={journeyId}>
       <Routes>
         <Route path={'/'} element={<EntityPageLayoutHolder />}>
           <Route index element={<Navigate replace to={routes.Dashboard} />} />
@@ -64,7 +46,7 @@ const OpportunityRoute: FC<OpportunityRootProps> = ({ paths: _paths }) => {
             element={<OpportunityCalloutPage>{props => <CalloutRoute {...props} />}</OpportunityCalloutPage>}
           />
           <Route path={routes.About} element={<OpportunityAboutPage />} />
-          <Route path={routes.Agreements} element={<OpportunityAgreementsPage paths={currentPaths} />} />
+          <Route path={routes.Agreements} element={<OpportunityAgreementsPage />} />
           <Route
             path="*"
             element={

@@ -4,7 +4,6 @@ import React, { FC } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import AlkemioApolloProvider from './core/apollo/context/ApolloProvider';
 import { GlobalStateProvider } from './core/state/GlobalStateProvider';
-import { NavigationProvider } from './core/routing/NavigationProvider';
 import SentryErrorBoundaryProvider from './core/analytics/SentryErrorBoundaryProvider';
 import ServerMetadataProvider from './domain/platform/metadata/ServerMetadataProvider';
 import RootThemeProvider from './core/ui/themes/RootThemeProvider';
@@ -79,13 +78,11 @@ const Root: FC = () => {
                           <UserGeoProvider>
                             <ApmProvider>
                               <AlkemioApolloProvider apiUrl={privateGraphQLEndpoint}>
-                                <NavigationProvider>
-                                  <UserProvider>
-                                    <ApmUserSetter />
-                                    <ScrollToTop />
-                                    <TopLevelRoutes />
-                                  </UserProvider>
-                                </NavigationProvider>
+                                <UserProvider>
+                                  <ApmUserSetter />
+                                  <ScrollToTop />
+                                  <TopLevelRoutes />
+                                </UserProvider>
                               </AlkemioApolloProvider>
                             </ApmProvider>
                           </UserGeoProvider>

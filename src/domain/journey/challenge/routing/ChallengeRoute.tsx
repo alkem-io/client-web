@@ -1,10 +1,8 @@
-import React, { FC, useMemo } from 'react';
+import React from 'react';
 import { Route, Routes } from 'react-router';
-import { Navigate, useResolvedPath } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import Loading from '../../../../core/ui/loading/Loading';
-import { useChallenge } from '../hooks/useChallenge';
 import { ApplicationTypeEnum } from '../../../community/application/constants/ApplicationType';
-import { PageProps } from '../../../shared/types/PageProps';
 import { Error404 } from '../../../../core/pages/Errors/Error404';
 import ApplyRoute from '../../../community/application/routing/ApplyRoute';
 import { nameOfUrl } from '../../../../main/routing/urlParams';
@@ -23,32 +21,17 @@ import ChallengePageLayout from '../layout/ChallengePageLayout';
 import Redirect from '../../../../core/routing/Redirect';
 import ChallengeCalloutPage from '../challengeCalloutPage/ChallengeCalloutPage';
 import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
+import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 
-interface ChallengeRootProps extends PageProps {}
-
-const ChallengeRoute: FC<ChallengeRootProps> = ({ paths: _paths }) => {
-  const {
-    challengeNameId,
-    spaceNameId,
-    profile: { displayName },
-    loading,
-  } = useChallenge();
-  const resolved = useResolvedPath('.');
-  const currentPaths = useMemo(
-    () => (displayName ? [..._paths, { value: resolved.pathname, name: displayName, real: true }] : _paths),
-    [_paths, displayName, resolved]
-  );
+const ChallengeRoute = () => {
+  const { journeyId, loading } = useRouteResolver();
 
   if (loading) {
     return <Loading text="Loading challenge" />;
   }
 
   return (
-    <StorageConfigContextProvider
-      locationType="journey"
-      journeyTypeName="challenge"
-      {...{ spaceNameId, challengeNameId }}
-    >
+    <StorageConfigContextProvider locationType="journey" journeyTypeName="challenge" journeyId={journeyId}>
       <Routes>
         <Route path="/" element={<EntityPageLayoutHolder />}>
           <Route index element={<Navigate replace to={routes.Dashboard} />} />
@@ -80,21 +63,15 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths: _paths }) => {
         </Route>
         <Route
           path="apply/*"
-          element={
-            <ApplyRoute
-              paths={currentPaths}
-              type={ApplicationTypeEnum.challenge}
-              journeyPageLayoutComponent={ChallengePageLayout}
-            />
-          }
+          element={<ApplyRoute type={ApplicationTypeEnum.challenge} journeyPageLayoutComponent={ChallengePageLayout} />}
         />
-        <Route path="feedback/*" element={<CommunityFeedbackRoute paths={currentPaths} />} />
+        <Route path="feedback/*" element={<CommunityFeedbackRoute />} />
         <Route
           path={`${routes.Opportunities}/:${nameOfUrl.opportunityNameId}/*`}
           element={
             <OpportunityProvider>
               <CommunityContextProvider>
-                <OpportunityRoute paths={currentPaths} />
+                <OpportunityRoute />
               </CommunityContextProvider>
             </OpportunityProvider>
           }

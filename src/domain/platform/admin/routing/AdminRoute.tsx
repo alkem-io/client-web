@@ -1,5 +1,5 @@
-import React, { FC, useMemo } from 'react';
-import { Route, Routes, Navigate, useResolvedPath } from 'react-router-dom';
+import React, { FC } from 'react';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import { useTransactionScope } from '../../../../core/analytics/SentryTransactionScopeContext';
 import { Error404 } from '../../../../core/pages/Errors/Error404';
 import NonAdminRedirect from '../../../../core/routing/NonAdminRedirect';
@@ -13,15 +13,13 @@ import AdminInnovationHubsRoutes from '../../../innovationHub/InnovationHubsAdmi
 
 export const AdminRoute: FC = () => {
   useTransactionScope({ type: 'admin' });
-  const { pathname: url } = useResolvedPath('.');
-  const currentPaths = useMemo(() => [{ value: url, name: 'admin', real: true }], [url]);
 
   return (
     <NoIdentityRedirect>
       <NonAdminRedirect>
         <Routes>
           <Route index element={<Navigate to="spaces" replace />} />
-          <Route path="spaces/*" element={<SpacesRoute paths={currentPaths} />} />
+          <Route path="spaces/*" element={<SpacesRoute />} />
           <Route path="users/*" element={<UsersRoute />} />
           <Route path="authorization/*" element={<GlobalAuthorizationRoute />} />
           <Route path="organizations/*" element={<AdminOrganizationsRoutes />} />

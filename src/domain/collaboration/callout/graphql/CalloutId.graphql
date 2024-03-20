@@ -1,13 +1,13 @@
 query CalloutId(
   $calloutNameId: UUID_NAMEID!
-  $spaceNameId: UUID_NAMEID!
-  $challengeNameId: UUID_NAMEID = "mockid" # workaround for mandatory param
-  $opportunityNameId: UUID_NAMEID = "mockid" # workaround for mandatory param
+  $spaceId: UUID_NAMEID = "00000000-0000-0000-0000-000000000000" # workaround for mandatory param
+  $challengeId: UUID = "00000000-0000-0000-0000-000000000000" # workaround for mandatory param
+  $opportunityId: UUID = "00000000-0000-0000-0000-000000000000" # workaround for mandatory param
   $isSpace: Boolean = false
   $isChallenge: Boolean = false
   $isOpportunity: Boolean = false
 ) {
-  space(ID: $spaceNameId) {
+  space(ID: $spaceId) {
     id
     ... on Space @include(if: $isSpace) {
       collaboration {
@@ -17,7 +17,9 @@ query CalloutId(
         }
       }
     }
-    challenge(ID: $challengeNameId) @include(if: $isChallenge) {
+  }
+  lookup {
+    challenge(ID: $challengeId) @include(if: $isChallenge) {
       id
       collaboration {
         id
@@ -26,7 +28,7 @@ query CalloutId(
         }
       }
     }
-    opportunity(ID: $opportunityNameId) @include(if: $isOpportunity) {
+    opportunity(ID: $opportunityId) @include(if: $isOpportunity) {
       id
       collaboration {
         id

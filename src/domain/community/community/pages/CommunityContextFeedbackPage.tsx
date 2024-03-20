@@ -1,13 +1,8 @@
-import React, { FC, useMemo } from 'react';
+import React from 'react';
 import CommunityContextFeedbackContainer from '../../../journey/common/AboutPageContainer/feedback/CommunityFeedbackContainer';
-import { PageProps } from '../../../shared/types/PageProps';
-import { useUpdateNavigation } from '../../../../core/routing/useNavigation';
 import CommunityFeedbackView from '../../../journey/challenge/views/CommunityFeedbackView';
 
-const CommunityContextFeedbackPage: FC<PageProps> = ({ paths }) => {
-  const currentPaths = useMemo(() => [...paths, { value: '', name: 'feedback', real: false }], [paths]);
-  useUpdateNavigation({ currentPaths });
-
+const CommunityContextFeedbackPage = () => {
   return (
     <CommunityContextFeedbackContainer>
       {(entities, state, actions) => (

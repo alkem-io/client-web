@@ -40,6 +40,7 @@ export interface JourneyDashboardViewProps
   extends EntityDashboardContributors,
     Omit<EntityDashboardLeads, 'leadOrganizations'>,
     Partial<CoreEntityIdTypes> {
+  journeyId: string | undefined;
   welcome?: ReactNode;
   ribbon?: ReactNode;
   communityId?: string;
@@ -72,6 +73,7 @@ export interface JourneyDashboardViewProps
 const JourneyDashboardView = ({
   welcome,
   ribbon,
+  journeyId,
   spaceNameId,
   challengeNameId,
   opportunityNameId,
@@ -160,7 +162,7 @@ const JourneyDashboardView = ({
           onSendMessage={sendMessageToCommunityLeads}
           messageReceivers={contactLeadsMessageReceivers}
         />
-        {timelineReadAccess && <DashboardCalendarSection journeyLocation={journeyLocation} />}
+        {timelineReadAccess && <DashboardCalendarSection journeyId={journeyId} journeyTypeName={journeyTypeName} />}
         {communityReadAccess && (
           <DashboardUpdatesSection entities={{ spaceId: spaceNameId, communityId }} shareUrl={shareUpdatesUrl} />
         )}
@@ -176,7 +178,6 @@ const JourneyDashboardView = ({
         )}
         <CalloutsGroupView
           callouts={callouts.groupedCallouts[CalloutDisplayLocation.HomeLeft]}
-          spaceId={spaceNameId!}
           canCreateCallout={callouts.canCreateCallout}
           canCreateCalloutFromTemplate={callouts.canCreateCalloutFromTemplate}
           loading={callouts.loading}
@@ -202,7 +203,6 @@ const JourneyDashboardView = ({
         />
         <CalloutsGroupView
           callouts={callouts.groupedCallouts[CalloutDisplayLocation.HomeRight]}
-          spaceId={spaceNameId!}
           canCreateCallout={callouts.canCreateCallout}
           canCreateCalloutFromTemplate={callouts.canCreateCalloutFromTemplate}
           loading={callouts.loading}

@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
 import { useNavigate } from 'react-router-dom';
 import { groupBy, sortBy, times } from 'lodash';
-import { JourneyLocation } from '../../../../main/routing/urlBuilders';
 import {
   useChallengeDashboardCalendarEventsQuery,
   useOpportunityDashboardCalendarEventsQuery,
@@ -20,6 +19,7 @@ import PageContentBlockFooter from '../../../../core/ui/content/PageContentBlock
 import FullCalendar, { INTERNAL_DATE_FORMAT } from '../../../timeline/calendar/components/FullCalendar';
 import { HIGHLIGHT_PARAM_NAME } from '../../../timeline/calendar/CalendarDialog';
 import { useQueryParams } from '../../../../core/routing/useQueryParams';
+import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 
 const MAX_NUMBER_OF_EVENTS = 3;
 
@@ -39,55 +39,45 @@ const CalendarSkeleton = () => {
 };
 
 export interface DashboardCalendarSectionProps {
-  journeyLocation: JourneyLocation | undefined;
+  journeyId: string | undefined;
+  journeyTypeName: JourneyTypeName;
 }
 
-const DashboardCalendarSection: FC<DashboardCalendarSectionProps> = ({ journeyLocation }) => {
+const DashboardCalendarSection: FC<DashboardCalendarSectionProps> = ({ journeyId, journeyTypeName }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const urlQueryParams = useQueryParams();
 
   const [isCalendarView, setCalendarView] = useState(false);
 
-  const spaceResults = useSpaceDashboardCalendarEventsQuery({
-    variables: { spaceId: journeyLocation?.spaceNameId! },
-    skip:
-      !journeyLocation ||
-      !journeyLocation.spaceNameId ||
-      !!journeyLocation.challengeNameId ||
-      !!journeyLocation.opportunityNameId,
+  const { data: spaceData, loading: loadingSpace } = useSpaceDashboardCalendarEventsQuery({
+    variables: { spaceId: journeyId! },
+    skip: !journeyId || journeyTypeName !== 'space',
   });
 
-  const challengeResults = useChallengeDashboardCalendarEventsQuery({
-    variables: { spaceId: journeyLocation?.spaceNameId!, challengeId: journeyLocation?.challengeNameId! },
-    skip: !journeyLocation || !journeyLocation.spaceNameId || !journeyLocation.challengeNameId,
+  const { data: challengeData, loading: loadingChallenge } = useChallengeDashboardCalendarEventsQuery({
+    variables: { challengeId: journeyId! },
+    skip: !journeyId || journeyTypeName !== 'challenge',
   });
 
-  const opportunityResults = useOpportunityDashboardCalendarEventsQuery({
-    variables: { spaceId: journeyLocation?.spaceNameId!, opportunityId: journeyLocation?.opportunityNameId! },
-    skip: !journeyLocation || !journeyLocation.spaceNameId || !journeyLocation.opportunityNameId,
+  const { data: opportunityData, loading: loadingOpportunity } = useOpportunityDashboardCalendarEventsQuery({
+    variables: { opportunityId: journeyId! },
+    skip: !journeyId || journeyTypeName !== 'opportunity',
   });
 
-  const activeResults = journeyLocation?.opportunityNameId
-    ? opportunityResults
-    : journeyLocation?.challengeNameId
-    ? challengeResults
-    : spaceResults;
-  const { data, loading } = activeResults;
-  let collaboration;
-  if (journeyLocation?.opportunityNameId) {
-    collaboration = opportunityResults.data?.space.opportunity?.collaboration;
-  } else if (journeyLocation?.challengeNameId) {
-    collaboration = challengeResults.data?.space.challenge?.collaboration;
-  } else {
-    collaboration = spaceResults.data?.space.collaboration;
-  }
+  const loading = loadingOpportunity || loadingChallenge || loadingSpace;
+
+  const collaboration =
+    opportunityData?.lookup.opportunity?.collaboration ??
+    challengeData?.lookup.challenge?.collaboration ??
+    spaceData?.space.collaboration;
 
   // TODO: Move this to serverside
   const allEvents = useMemo(
     () => sortBy(collaboration?.timeline?.calendar.events ?? [], event => event.startDate),
-    [data]
+    [collaboration]
   );
+
   const events = useMemo(() => {
     const eventGroups = groupBy(allEvents, event =>
       dayjs(event.startDate).isBefore(dayjs().startOf('day')) ? 'past' : 'future'

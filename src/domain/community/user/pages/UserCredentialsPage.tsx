@@ -2,9 +2,8 @@ import AddModeratorIcon from '@mui/icons-material/AddModerator';
 import { Typography } from '@mui/material';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
-import React, { FC, useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useResolvedPath } from 'react-router-dom';
 import CredentialCard from '../../../agent/credential/CredentialCard';
 import OfferAlkemioCommunityCredentialDialog from '../../../agent/credential/OfferAlkemioCommunityCredentialDialog';
 import RequestCredentialDialog from '../../../agent/credential/RequestCredentialDialog';
@@ -12,12 +11,10 @@ import QRCodeDialog from '../../../../core/ui/qrCode/QRCodeDialog';
 import Loading from '../../../../core/ui/loading/Loading';
 import UserCredentialsContainer from '../../../agent/credential/verifiedCredentials/UserCredentialsContainer';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
-import { useUpdateNavigation } from '../../../../core/routing/useNavigation';
 import {
-  useUserSsiLazyQuery,
   useProfileVerifiedCredentialSubscription,
+  useUserSsiLazyQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
-import { PageProps } from '../../../shared/types/PageProps';
 import { SettingsSection } from '../../../platform/admin/layout/EntitySettingsLayout/constants';
 import UserSettingsLayout from '../../../platform/admin/user/layout/UserSettingsLayout';
 import DashboardGenericSection from '../../../shared/components/DashboardSections/DashboardGenericSection';
@@ -26,17 +23,12 @@ import { useUserContext } from '../hooks/useUserContext';
 import useUserContributions from '../userContributions/useUserContributions';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 
-interface UserCredentialsPageProps extends PageProps {}
-
-export const UserCredentialsPage: FC<UserCredentialsPageProps> = ({ paths }) => {
+export const UserCredentialsPage = () => {
   const { t } = useTranslation();
   const notify = useNotification();
-  const { pathname: url } = useResolvedPath('.');
   const { userNameId = '' } = useUrlParams();
 
   const { user: currentUser, loading: loadingUserContext } = useUserContext();
-  const currentPaths = useMemo(() => [...paths, { value: url, name: 'profile', real: true }], [url, paths]);
-  useUpdateNavigation({ currentPaths });
 
   const [requestCredentialDialogOpen, setRequestCredentialDialogOpen] = useState(false);
   const [communityCredentialOfferDialogOpen, setCommunityCredentialOfferDialogOpen] = useState(false);

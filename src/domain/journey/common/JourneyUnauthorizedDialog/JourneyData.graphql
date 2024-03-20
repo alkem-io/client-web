@@ -1,32 +1,32 @@
 query JourneyData(
-  $spaceNameId: UUID_NAMEID!
-  $challengeNameId: UUID_NAMEID = "mockid" # workaround for mandatory param
-  $opportunityNameId: UUID_NAMEID = "mockid" # workaround for mandatory param
+  $spaceId: UUID_NAMEID = "00000000-0000-0000-0000-000000000000"
+  $challengeId: UUID = "00000000-0000-0000-0000-000000000000"
+  $opportunityId: UUID = "00000000-0000-0000-0000-000000000000"
   $includeSpace: Boolean = false
   $includeChallenge: Boolean = false
   $includeOpportunity: Boolean = false
   $includeCommunity: Boolean = false
 ) {
-  space(ID: $spaceNameId) {
+  space(ID: $spaceId) @include(if: $includeSpace) {
     id
-    ... on Space @include(if: $includeSpace) {
-      profile {
-        ...ProfileJourneyData
-      }
-      context {
-        ...ContextJourneyData
-      }
-      community @include(if: $includeCommunity) {
-        ...JourneyCommunity
-      }
-      metrics {
-        ...MetricsItem
-      }
-      host {
-        ...AssociatedOrganizationDetails
-      }
+    profile {
+      ...ProfileJourneyData
     }
-    challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
+    context {
+      ...ContextJourneyData
+    }
+    community @include(if: $includeCommunity) {
+      ...JourneyCommunity
+    }
+    metrics {
+      ...MetricsItem
+    }
+    host {
+      ...AssociatedOrganizationDetails
+    }
+  }
+  lookup {
+    challenge(ID: $challengeId) @include(if: $includeChallenge) {
       id
       profile {
         ...ProfileJourneyData
@@ -41,7 +41,7 @@ query JourneyData(
         ...MetricsItem
       }
     }
-    opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
+    opportunity(ID: $opportunityId) @include(if: $includeOpportunity) {
       id
       profile {
         ...ProfileJourneyData

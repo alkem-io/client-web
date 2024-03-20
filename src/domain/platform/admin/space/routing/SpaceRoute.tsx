@@ -17,10 +17,11 @@ import AdminSpaceCommunityPage from '../../../../journey/space/pages/AdminSpaceC
 
 export const SpaceRoute: FC = () => {
   useTransactionScope({ type: 'admin' });
+
   const { spaceId, communityId } = useSpace();
 
   return (
-    <StorageConfigContextProvider locationType="journey" journeyTypeName="space" spaceNameId={spaceId}>
+    <StorageConfigContextProvider locationType="journey" journeyTypeName="space" journeyId={spaceId}>
       <Routes>
         <Route index element={<Navigate to="profile" replace />} />
         <Route path="profile" element={<SpaceProfilePage />} />

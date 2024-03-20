@@ -1,5 +1,4 @@
 import { useTranslation } from 'react-i18next';
-import { buildCalloutUrl, JourneyLocation } from '../../../../main/routing/urlBuilders';
 import PageContent from '../../../../core/ui/content/PageContent';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
@@ -17,7 +16,7 @@ import calloutIcons from '../utils/calloutIcons';
 import JourneyCalloutsListItemTitle from './JourneyCalloutsListItemTitle';
 import { InnovationFlowState } from '../../InnovationFlow/InnovationFlow';
 
-interface JourneyCalloutsTabViewProps extends JourneyLocation {
+interface JourneyCalloutsTabViewProps {
   collaborationId: string | undefined;
   innovationFlowStates: InnovationFlowState[] | undefined;
   currentInnovationFlowState: string | undefined;
@@ -47,9 +46,6 @@ const JourneyCalloutsTabView = ({
   onCalloutsSortOrderUpdate,
   refetchCallout,
   journeyTypeName,
-  spaceNameId,
-  challengeNameId,
-  opportunityNameId,
 }: JourneyCalloutsTabViewProps) => {
   const [selectedInnovationFlowState, setSelectedInnovationFlowState] =
     useStateWithAsyncDefault(currentInnovationFlowState);
@@ -95,11 +91,7 @@ const JourneyCalloutsTabView = ({
                       />
                     ),
                     icon: <CalloutIcon />,
-                    uri: buildCalloutUrl(callout.nameID, {
-                      spaceNameId,
-                      challengeNameId,
-                      opportunityNameId,
-                    }),
+                    uri: callout.framing.profile.url,
                   };
                 })}
                 emptyListCaption={t('pages.generic.sections.subentities.empty-list', {
@@ -111,7 +103,6 @@ const JourneyCalloutsTabView = ({
             </PageContentBlock>
             <CalloutsGroupView
               callouts={groupedCallouts[CalloutDisplayLocation.ContributeLeft]}
-              spaceId={spaceNameId}
               canCreateCallout={canCreateCallout}
               canCreateCalloutFromTemplate={canCreateCalloutFromTemplate}
               loading={loading}
@@ -147,7 +138,6 @@ const JourneyCalloutsTabView = ({
               ))}
             <CalloutsGroupView
               callouts={filterCallouts(groupedCallouts[CalloutDisplayLocation.ContributeRight])}
-              spaceId={spaceNameId}
               canCreateCallout={canCreateCallout}
               canCreateCalloutFromTemplate={canCreateCalloutFromTemplate}
               loading={loading}

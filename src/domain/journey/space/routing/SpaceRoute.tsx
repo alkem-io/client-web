@@ -1,13 +1,11 @@
-import React, { FC, useMemo } from 'react';
-import { Navigate, Route, Routes, useResolvedPath } from 'react-router-dom';
+import React from 'react';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import { ChallengeProvider } from '../../challenge/context/ChallengeProvider';
 import { CommunityContextProvider } from '../../../community/community/CommunityContext';
-import { useSpace } from '../SpaceContext/useSpace';
 import { ApplicationTypeEnum } from '../../../community/application/constants/ApplicationType';
 import ApplyRoute from '../../../community/application/routing/ApplyRoute';
 import { nameOfUrl } from '../../../../main/routing/urlParams';
 import ChallengeRoute from '../../challenge/routing/ChallengeRoute';
-import { PageProps } from '../../../shared/types/PageProps';
 import { Error404 } from '../../../../core/pages/Errors/Error404';
 import SpaceChallengesPage from '../pages/SpaceChallengesPage';
 import { routes } from '../routes/spaceRoutes';
@@ -20,20 +18,13 @@ import SpaceCalloutPage from '../spaceCalloutPage/SpaceCalloutPage';
 import SpaceCommunityPage from '../SpaceCommunityPage/SpaceCommunityPage';
 import KnowledgeBasePage from '../../../collaboration/KnowledgeBase/KnowedgeBasePage';
 import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
+import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 
-export const SpaceRoute: FC<PageProps> = ({ paths: _paths }) => {
-  const {
-    spaceNameId,
-    profile: { displayName },
-  } = useSpace();
-  const resolved = useResolvedPath('.');
-  const currentPaths = useMemo(
-    () => (displayName ? [..._paths, { value: resolved.pathname, name: displayName, real: true }] : _paths),
-    [_paths, displayName, resolved]
-  );
+export const SpaceRoute = () => {
+  const { journeyId } = useRouteResolver();
 
   return (
-    <StorageConfigContextProvider locationType="journey" journeyTypeName="space" spaceNameId={spaceNameId}>
+    <StorageConfigContextProvider locationType="journey" journeyTypeName="space" journeyId={journeyId}>
       <Routes>
         <Route path="/" element={<EntityPageLayoutHolder />}>
           <Route index element={<Navigate replace to={routes.Dashboard} />} />
@@ -65,20 +56,14 @@ export const SpaceRoute: FC<PageProps> = ({ paths: _paths }) => {
         </Route>
         <Route
           path="apply"
-          element={
-            <ApplyRoute
-              paths={currentPaths}
-              type={ApplicationTypeEnum.space}
-              journeyPageLayoutComponent={SpacePageLayout}
-            />
-          }
+          element={<ApplyRoute type={ApplicationTypeEnum.space} journeyPageLayoutComponent={SpacePageLayout} />}
         />
         <Route
           path={`challenges/:${nameOfUrl.challengeNameId}/*`}
           element={
             <ChallengeProvider>
               <CommunityContextProvider>
-                <ChallengeRoute paths={currentPaths} />
+                <ChallengeRoute />
               </CommunityContextProvider>
             </ChallengeProvider>
           }

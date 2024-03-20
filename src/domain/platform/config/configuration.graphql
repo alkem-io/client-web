@@ -29,6 +29,7 @@ fragment Configuration on Config {
     about
     blog
     feedback
+    forumreleases
     privacy
     security
     support

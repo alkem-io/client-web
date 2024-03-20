@@ -17,6 +17,7 @@ import { useChallenge } from '../hooks/useChallenge';
 import ChallengePageLayout from '../layout/ChallengePageLayout';
 import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
 import { CalloutDisplayLocation, CommunityMembershipStatus } from '../../../../core/apollo/generated/graphql-schema';
+import { useUrlParams } from '../../../../core/routing/useUrlParams';
 
 export interface ChallengeOpportunitiesPageProps {}
 
@@ -26,7 +27,8 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
 
   const { spaceNameId, license } = useSpace();
   const spaceVisibility = license.visibility;
-  const { challengeId, challengeNameId, permissions } = useChallenge();
+  const { challengeId, permissions } = useChallenge();
+  const { challengeNameId = '' } = useUrlParams();
 
   const [isCreateDialogOpen, setCreateDialogOpen] = useState(false);
 
@@ -56,7 +58,7 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
 
   return (
     <ChallengePageLayout currentSection={EntityPageSection.Opportunities}>
-      <ChallengeOpportunitiesContainer spaceNameId={spaceNameId} challengeNameId={challengeNameId}>
+      <ChallengeOpportunitiesContainer challengeId={challengeId}>
         {({ callouts, ...entities }, state) => (
           <ChildJourneyView
             spaceNameId={spaceNameId}
@@ -96,7 +98,6 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
             childrenLeft={
               <CalloutsGroupView
                 callouts={callouts.groupedCallouts[CalloutDisplayLocation.OpportunitiesLeft]}
-                spaceId={spaceNameId!}
                 canCreateCallout={callouts.canCreateCallout}
                 canCreateCalloutFromTemplate={callouts.canCreateCalloutFromTemplate}
                 loading={callouts.loading}
@@ -110,7 +111,6 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
             childrenRight={
               <CalloutsGroupView
                 callouts={callouts.groupedCallouts[CalloutDisplayLocation.OpportunitiesRight]}
-                spaceId={spaceNameId!}
                 canCreateCallout={callouts.canCreateCallout}
                 canCreateCalloutFromTemplate={callouts.canCreateCalloutFromTemplate}
                 loading={callouts.loading}

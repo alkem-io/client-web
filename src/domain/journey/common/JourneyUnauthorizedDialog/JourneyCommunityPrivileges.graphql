@@ -1,23 +1,23 @@
 query JourneyCommunityPrivileges(
-  $spaceNameId: UUID_NAMEID!
+  $spaceId: UUID_NAMEID = "00000000-0000-0000-0000-000000000000"
   $includeSpace: Boolean = false
   $includeChallenge: Boolean = false
   $includeOpportunity: Boolean = false
-  $challengeNameId: UUID_NAMEID = "mockid" # workaround for mandatory param
-  $opportunityNameId: UUID_NAMEID = "mockid" # workaround for mandatory param
+  $challengeId: UUID = "00000000-0000-0000-0000-000000000000"
+  $opportunityId: UUID = "00000000-0000-0000-0000-000000000000"
 ) {
-  space(ID: $spaceNameId) {
+  space(ID: $spaceId) @include(if: $includeSpace) {
     id
-    ... on Space @include(if: $includeSpace) {
-      community {
+    community {
+      id
+      authorization {
         id
-        authorization {
-          id
-          myPrivileges
-        }
+        myPrivileges
       }
     }
-    challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
+  }
+  lookup {
+    challenge(ID: $challengeId) @include(if: $includeChallenge) {
       id
       community {
         id
@@ -27,7 +27,7 @@ query JourneyCommunityPrivileges(
         }
       }
     }
-    opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
+    opportunity(ID: $opportunityId) @include(if: $includeOpportunity) {
       id
       community {
         id

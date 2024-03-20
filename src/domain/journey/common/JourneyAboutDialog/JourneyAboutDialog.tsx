@@ -50,7 +50,7 @@ export interface JourneyAboutDialogProps extends EntityDashboardLeads {
   background: string | undefined;
   who: string | undefined;
   impact: string | undefined;
-  loading: boolean;
+  loading?: boolean;
   leftColumnChildren?: ReactNode;
   shareUrl?: string;
 }
@@ -95,7 +95,7 @@ const JourneyAboutDialog = ({
   background,
   who,
   impact,
-  loading,
+  loading = false,
   startButton,
   endButton,
   leftColumnChildren,

@@ -1,28 +1,23 @@
 import React, { FC } from 'react';
-import { useOpportunity } from '../../../journey/opportunity/hooks/useOpportunity';
 import { useOpportunityCommunityContributorsQuery } from '../../../../core/apollo/generated/apollo-hooks';
-import useCommunityContributors from '../CommunityContributors/useCommunityContributors';
 import CommunityContributorsView from '../CommunityContributors/CommunityContributorsView';
 import useOrganizationCardProps from '../utils/useOrganizationCardProps';
 import useUserCardProps from '../utils/useUserCardProps';
 import NoOrganizations from '../CommunityContributors/NoOrganizations';
 import { ContributorsDialogContentProps } from '../ContributorsDialog/ContributorsDialog';
+import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 
 const OpportunityContributorsDialogContent: FC<ContributorsDialogContentProps> = ({ dialogOpen }) => {
-  const { spaceId, opportunityId } = useOpportunity();
+  const { opportunityId } = useRouteResolver();
 
-  const { loading, memberUsers, memberOrganizations } = useCommunityContributors(
-    useOpportunityCommunityContributorsQuery,
-    data => {
-      const { memberUsers, memberOrganizations } = data?.space.opportunity.community || {};
-      return { memberUsers, memberOrganizations };
+  const { loading, data } = useOpportunityCommunityContributorsQuery({
+    variables: {
+      opportunityId: opportunityId!,
     },
-    {
-      spaceId,
-      opportunityId,
-    },
-    !dialogOpen
-  );
+    skip: !dialogOpen || !opportunityId,
+  });
+
+  const { memberUsers, memberOrganizations } = data?.lookup.opportunity?.community ?? {};
 
   return (
     <CommunityContributorsView
