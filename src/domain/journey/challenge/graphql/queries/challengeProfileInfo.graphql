@@ -1,6 +1,5 @@
-query challengeProfileInfo($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
-  space(ID: $spaceId) {
-    id
+query challengeProfileInfo($challengeId: UUID!) {
+  lookup {
     challenge(ID: $challengeId) {
       id
       nameID
@@ -30,7 +29,6 @@ query challengeProfileInfo($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
       }
       collaboration {
         id
-
         innovationFlow {
           id
           currentState {

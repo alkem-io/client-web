@@ -5,7 +5,7 @@ import DownloadForOfflineOutlinedIcon from '@mui/icons-material/DownloadForOffli
 import { Box, DialogContent, IconButton, Menu } from '@mui/material';
 import {
   AuthorizationPrivilege,
-  CalloutDisplayLocation,
+  CalloutGroupName,
   CalloutState,
   CalloutType,
   CalloutVisibility,
@@ -75,7 +75,7 @@ export interface CalloutLayoutProps extends CalloutLayoutEvents, Partial<Callout
       messages: MessageDetailsFragment[] | undefined;
     };
     type: CalloutType;
-    displayLocation: CalloutDisplayLocation;
+    groupName: CalloutGroupName;
     contributionPolicy: {
       state: CalloutState;
     };

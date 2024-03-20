@@ -13,9 +13,13 @@ import ChallengeContributorsDialogContent from '../../../community/community/ent
 import SeeMore from '../../../../core/ui/content/SeeMore';
 import { useTranslation } from 'react-i18next';
 import { buildAboutUrl } from '../../../../main/routing/urlBuilders';
+import { useUrlParams } from '../../../../core/routing/useUrlParams';
+import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 
 const ChallengeAboutPage: FC = () => {
-  const { spaceNameId, profile, challengeNameId, communityId } = useChallenge();
+  const { communityId, profile } = useChallenge();
+
+  const { spaceNameId = '', challengeNameId } = useUrlParams();
 
   const [backToParentPage] = useBackToParentPage('../dashboard');
 
@@ -27,10 +31,12 @@ const ChallengeAboutPage: FC = () => {
 
   const shareAboutUrl = buildAboutUrl({ spaceNameId, challengeNameId });
 
+  const { journeyId } = useRouteResolver();
+
   return (
     <>
       <ChallengeDashboardPage />
-      <AboutPageContainer spaceNameId={spaceNameId} challengeNameId={challengeNameId}>
+      <AboutPageContainer journeyId={journeyId} journeyTypeName="challenge">
         {(
           {
             context,

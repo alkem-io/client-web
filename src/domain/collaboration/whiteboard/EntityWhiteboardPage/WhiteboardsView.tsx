@@ -7,6 +7,7 @@ import WhiteboardView from '../WhiteboardsManagement/WhiteboardView';
 import { WhiteboardProvider } from '../containers/WhiteboardProvider';
 
 export interface WhiteboardsPageProps extends JourneyLocation {
+  journeyId: string | undefined;
   whiteboardNameId: string;
   calloutNameId: string;
   parentUrl: string;
@@ -14,6 +15,7 @@ export interface WhiteboardsPageProps extends JourneyLocation {
 }
 
 const WhiteboardsView: FC<WhiteboardsPageProps> = ({
+  journeyId,
   whiteboardNameId,
   parentUrl,
   calloutNameId,
@@ -35,9 +37,9 @@ const WhiteboardsView: FC<WhiteboardsPageProps> = ({
   const { data } = useCalloutIdQuery({
     variables: {
       calloutNameId,
-      spaceNameId,
-      challengeNameId,
-      opportunityNameId,
+      spaceId: journeyId,
+      challengeId: journeyId,
+      opportunityId: journeyId,
       isSpace: journeyTypeName === 'space',
       isChallenge: journeyTypeName === 'challenge',
       isOpportunity: journeyTypeName === 'opportunity',
@@ -47,8 +49,8 @@ const WhiteboardsView: FC<WhiteboardsPageProps> = ({
 
   const calloutId =
     data?.space.collaboration?.callouts?.[0].id ??
-    data?.space.challenge?.collaboration?.callouts?.[0].id ??
-    data?.space.opportunity?.collaboration?.callouts?.[0].id;
+    data?.lookup.challenge?.collaboration?.callouts?.[0].id ??
+    data?.lookup.opportunity?.collaboration?.callouts?.[0].id;
 
   return (
     <WhiteboardProvider whiteboardNameId={whiteboardNameId} calloutId={calloutId} spaceId={spaceNameId}>

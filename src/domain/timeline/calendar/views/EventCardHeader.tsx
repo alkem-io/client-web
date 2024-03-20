@@ -8,11 +8,17 @@ import { BlockSectionTitle } from '../../../../core/ui/typography';
 import { formatLongDate, formatTimeAndDuration } from '../../../../core/utils/time/utils';
 import { CalendarIcon } from '../icons/CalendarIcon';
 import { ClockIcon } from '../icons/ClockIcon';
-import { CalendarEventCardData } from './CalendarEventCard';
 import CalendarEventBadge from './CalendarEventBadge';
 
-interface EventCardHeaderProps {
-  event: CalendarEventCardData | undefined;
+export interface EventCardHeaderProps {
+  event:
+    | {
+        startDate?: Date;
+        profile: {
+          displayName: string;
+        };
+      }
+    | undefined;
 }
 
 const EventCardHeader = ({ event, children }: PropsWithChildren<EventCardHeaderProps>) => {

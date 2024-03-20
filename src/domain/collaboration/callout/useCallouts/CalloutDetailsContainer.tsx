@@ -30,10 +30,18 @@ const CalloutDetailsContainer = ({ callout, children }: CalloutDetailsContainerP
 
   const result: TypedCalloutDetails | undefined = useMemo(() => {
     const calloutDetails = data?.lookup.callout;
-    if (!calloutDetails) return;
+
+    if (!calloutDetails) {
+      return;
+    }
+
     const framing = {
       ...callout.framing,
       ...calloutDetails.framing,
+      profile: {
+        ...callout.framing.profile,
+        ...calloutDetails.framing.profile,
+      },
       whiteboard: calloutDetails.framing.whiteboard
         ? { ...calloutDetails.framing.whiteboard, calloutNameId: callout.nameID }
         : undefined,

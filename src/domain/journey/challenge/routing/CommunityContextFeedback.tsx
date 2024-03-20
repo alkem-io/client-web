@@ -1,11 +1,10 @@
-import React, { FC } from 'react';
+import React from 'react';
 import { Route, Routes } from 'react-router-dom';
-import { PageProps } from '../../../shared/types/PageProps';
 import { Error404 } from '../../../../core/pages/Errors/Error404';
 import CommunityContextFeedbackPage from '../../../community/community/pages/CommunityContextFeedbackPage';
 import NoIdentityRedirect from '../../../../core/routing/NoIdentityRedirect';
 
-const CommunityFeedbackRoute: FC<PageProps> = ({ paths }) => {
+const CommunityFeedbackRoute = () => {
   return (
     <Routes>
       <Route path={'/'}>
@@ -13,7 +12,7 @@ const CommunityFeedbackRoute: FC<PageProps> = ({ paths }) => {
           index
           element={
             <NoIdentityRedirect>
-              <CommunityContextFeedbackPage paths={paths} />
+              <CommunityContextFeedbackPage />
             </NoIdentityRedirect>
           }
         />

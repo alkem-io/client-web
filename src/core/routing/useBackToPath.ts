@@ -25,4 +25,10 @@ const useBackToPath = () => {
   }, []);
 };
 
+export const useBackToStaticPath = (parentPagePath: string) => {
+  const backToPath = useBackToPath();
+
+  return useCallback(() => backToPath(parentPagePath), [parentPagePath]);
+};
+
 export default useBackToPath;

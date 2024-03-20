@@ -1,7 +1,6 @@
 import React, { ComponentType, FC } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { ApplicationTypeEnum } from '../constants/ApplicationType';
-import { PageProps } from '../../../shared/types/PageProps';
 import { Error404 } from '../../../../core/pages/Errors/Error404';
 import ApplyPage from '../pages/ApplyPage';
 import NoIdentityRedirect from '../../../../core/routing/NoIdentityRedirect';
@@ -10,12 +9,12 @@ import { ChallengePageLayoutProps } from '../../../journey/challenge/layout/Chal
 import { SpacePageLayoutProps } from '../../../journey/space/layout/SpacePageLayout';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 
-interface Props extends PageProps {
+interface Props {
   type: ApplicationTypeEnum;
   journeyPageLayoutComponent: ComponentType<SpacePageLayoutProps | ChallengePageLayoutProps>;
 }
 
-const ApplyRoute: FC<Props> = ({ paths, journeyPageLayoutComponent: JourneyPageLayout, type }) => {
+const ApplyRoute: FC<Props> = ({ journeyPageLayoutComponent: JourneyPageLayout, type }) => {
   return (
     <Routes>
       <Route path="/" element={<EntityPageLayoutHolder />}>
@@ -24,7 +23,7 @@ const ApplyRoute: FC<Props> = ({ paths, journeyPageLayoutComponent: JourneyPageL
           element={
             <NoIdentityRedirect>
               <JourneyPageLayout currentSection={EntityPageSection.Dashboard} unauthorizedDialogDisabled>
-                <ApplyPage paths={paths} type={type} />
+                <ApplyPage type={type} />
               </JourneyPageLayout>
             </NoIdentityRedirect>
           }

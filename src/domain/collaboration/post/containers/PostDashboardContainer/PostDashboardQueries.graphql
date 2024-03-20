@@ -1,60 +1,17 @@
-query SpacePost($spaceNameId: UUID_NAMEID!, $postNameId: UUID_NAMEID!, $calloutNameId: UUID_NAMEID!) {
-  space(ID: $spaceNameId) {
-    id
-    collaboration {
-      ...PostDashboardData
-    }
-  }
-}
-
-query ChallengePost(
-  $spaceNameId: UUID_NAMEID!
-  $challengeNameId: UUID_NAMEID!
+query Post(
+  $calloutId: UUID!
   $postNameId: UUID_NAMEID!
-  $calloutNameId: UUID_NAMEID!
 ) {
-  space(ID: $spaceNameId) {
-    id
-    challenge(ID: $challengeNameId) {
+  lookup {
+    callout(ID: $calloutId) {
       id
-      collaboration {
-        ...PostDashboardData
-      }
-    }
-  }
-}
-
-query OpportunityPost(
-  $spaceNameId: UUID_NAMEID!
-  $opportunityNameId: UUID_NAMEID!
-  $postNameId: UUID_NAMEID!
-  $calloutNameId: UUID_NAMEID!
-) {
-  space(ID: $spaceNameId) {
-    id
-    opportunity(ID: $opportunityNameId) {
-      id
-      collaboration {
-        ...PostDashboardData
-      }
-    }
-  }
-}
-
-fragment PostDashboardData on Collaboration {
-  id
-  authorization {
-    id
-    myPrivileges
-  }
-  callouts(IDs: [$calloutNameId]) {
-    id
-    nameID
-    type
-    contributions(filter: { postIDs: [$postNameId] }) {
-      id
-      post {
-        ...PostDashboard
+      nameID
+      type
+      contributions(filter: { postIDs: [$postNameId] }) {
+        id
+        post {
+          ...PostDashboard
+        }
       }
     }
   }
@@ -64,25 +21,10 @@ fragment PostDashboard on Post {
   id
   nameID
   type
-
-  createdBy {
-    id
-    profile {
-      id
-      displayName
-      avatar: visual(type: AVATAR) {
-        id
-        uri
-      }
-      tagsets {
-        ...TagsetDetails
-      }
-    }
-  }
   createdDate
-
   profile {
     id
+    url
     displayName
     description
     tagset {
@@ -96,6 +38,20 @@ fragment PostDashboard on Post {
     }
     visual(type: BANNER) {
       ...VisualUri
+    }
+  }
+  createdBy {
+    id
+    profile {
+      id
+      displayName
+      avatar: visual(type: AVATAR) {
+        id
+        uri
+      }
+      tagsets {
+        ...TagsetDetails
+      }
     }
   }
   comments {

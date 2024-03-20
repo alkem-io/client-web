@@ -20,7 +20,7 @@ import { useSpaceCommunityPageQuery } from '../../../../core/apollo/generated/ap
 import useActivityOnCollaboration from '../../../collaboration/activity/useActivityLogOnCollaboration/useActivityOnCollaboration';
 import useSendMessageToCommunityLeads from '../../../community/CommunityLeads/useSendMessageToCommunityLeads';
 import useCommunityMembersAsCardProps from '../../../community/community/utils/useCommunityMembersAsCardProps';
-import { ActivityEventType, CalloutDisplayLocation } from '../../../../core/apollo/generated/graphql-schema';
+import { ActivityEventType, CalloutGroupName } from '../../../../core/apollo/generated/graphql-schema';
 import SpaceCommunityContainer from './SpaceCommunityContainer';
 import SpacePageLayout from '../layout/SpacePageLayout';
 import { RECENT_ACTIVITIES_LIMIT_EXPANDED } from '../../common/journeyDashboard/constants';
@@ -28,9 +28,12 @@ import SeeMore from '../../../../core/ui/content/SeeMore';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
 import { Box } from '@mui/material';
+import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 
 const SpaceCommunityPage = () => {
   const { spaceNameId } = useUrlParams();
+
+  const { spaceId } = useRouteResolver();
 
   const { t } = useTranslation();
 
@@ -90,7 +93,7 @@ const SpaceCommunityPage = () => {
 
   return (
     <SpacePageLayout currentSection={EntityPageSection.Community}>
-      <SpaceCommunityContainer spaceNameId={spaceNameId}>
+      <SpaceCommunityContainer spaceId={spaceId}>
         {({ callouts }) => (
           <PageContent>
             <PageContentColumn columns={4}>
@@ -111,8 +114,7 @@ const SpaceCommunityPage = () => {
                 messageReceivers={messageReceivers}
               />
               <CalloutsGroupView
-                callouts={callouts.groupedCallouts[CalloutDisplayLocation.CommunityLeft]}
-                spaceId={spaceNameId!}
+                callouts={callouts.groupedCallouts[CalloutGroupName.Community_1]}
                 canCreateCallout={callouts.canCreateCallout}
                 canCreateCalloutFromTemplate={callouts.canCreateCalloutFromTemplate}
                 loading={callouts.loading}
@@ -120,7 +122,7 @@ const SpaceCommunityPage = () => {
                 calloutNames={callouts.calloutNames}
                 onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
                 onCalloutUpdate={callouts.refetchCallout}
-                displayLocation={CalloutDisplayLocation.CommunityLeft}
+                groupName={CalloutGroupName.Community_1}
               />
             </PageContentColumn>
             <PageContentColumn columns={8}>
@@ -146,8 +148,7 @@ const SpaceCommunityPage = () => {
                 </DialogWithGrid>
               </PageContentBlock>
               <CalloutsGroupView
-                callouts={callouts.groupedCallouts[CalloutDisplayLocation.CommunityRight]}
-                spaceId={spaceNameId!}
+                callouts={callouts.groupedCallouts[CalloutGroupName.Community_2]}
                 canCreateCallout={callouts.canCreateCallout}
                 canCreateCalloutFromTemplate={callouts.canCreateCalloutFromTemplate}
                 loading={callouts.loading}
@@ -155,7 +156,7 @@ const SpaceCommunityPage = () => {
                 calloutNames={callouts.calloutNames}
                 onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
                 onCalloutUpdate={callouts.refetchCallout}
-                displayLocation={CalloutDisplayLocation.CommunityRight}
+                groupName={CalloutGroupName.Community_2}
               />
             </PageContentColumn>
           </PageContent>

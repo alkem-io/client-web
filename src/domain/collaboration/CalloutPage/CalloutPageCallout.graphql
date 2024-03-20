@@ -1,37 +1,9 @@
 query CalloutPageCallout(
-  $calloutNameId: UUID_NAMEID!
-  $spaceNameId: UUID_NAMEID!
-  $challengeNameId: UUID_NAMEID = "mockid" # workaround for mandatory param
-  $opportunityNameId: UUID_NAMEID = "mockid" # workaround for mandatory param
-  $includeSpace: Boolean = false
-  $includeChallenge: Boolean = false
-  $includeOpportunity: Boolean = false
+  $calloutId: UUID!
 ) {
-  space(ID: $spaceNameId) {
-    id
-    collaboration @include(if: $includeSpace) {
-      id
-      callouts(IDs: [$calloutNameId]) {
-        ...CalloutDetails
-      }
-    }
-    challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
-      id
-      collaboration {
-        id
-        callouts(IDs: [$calloutNameId]) {
-          ...CalloutDetails
-        }
-      }
-    }
-    opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
-      id
-      collaboration {
-        id
-        callouts(IDs: [$calloutNameId]) {
-          ...CalloutDetails
-        }
-      }
+  lookup {
+    callout(ID: $calloutId) {
+      ...CalloutDetails
     }
   }
 }

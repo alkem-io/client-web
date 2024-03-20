@@ -1,4 +1,3 @@
-import { OptionalCoreEntityIds } from '../../../shared/types/CoreEntityIds';
 import {
   useCalloutsLazyQuery,
   useCalloutsQuery,
@@ -7,7 +6,7 @@ import {
 import {
   AuthorizationPrivilege,
   Callout,
-  CalloutDisplayLocation,
+  CalloutGroupName,
   CalloutsQueryVariables,
   CalloutType,
   CalloutVisibility,
@@ -20,10 +19,10 @@ import {
 import { useCallback, useMemo } from 'react';
 import { groupBy } from 'lodash';
 import { Tagset } from '../../../common/profile/Profile';
-import { getCalloutDisplayLocationValue } from '../utils/getCalloutDisplayLocationValue';
-import { getJourneyTypeName } from '../../../journey/JourneyTypeName';
+import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import { useCollaborationAuthorization } from '../../authorization/useCollaborationAuthorization';
 import { INNOVATION_FLOW_STATES_TAGSET_NAME } from '../../InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
+import { getCalloutGroupNameValue } from '../utils/getCalloutGroupValue';
 
 export type PostFragmentWithCallout = ContributeTabPostFragment & { calloutNameId: string };
 
@@ -38,6 +37,7 @@ export type TypedCallout = Pick<Callout, 'id' | 'nameID' | 'activity' | 'sortOrd
   framing: {
     profile: {
       id: string;
+      url: string;
       displayName: string;
     };
   };
@@ -47,7 +47,7 @@ export type TypedCallout = Pick<Callout, 'id' | 'nameID' | 'activity' | 'sortOrd
   movable: boolean;
   canSaveAsTemplate: boolean;
   flowStates: string[] | undefined;
-  displayLocation: CalloutDisplayLocation;
+  groupName: CalloutGroupName;
 };
 
 export type TypedCalloutDetails = TypedCallout &
@@ -64,14 +64,16 @@ export type TypedCalloutDetails = TypedCallout &
       };
       whiteboard?: WhiteboardFragmentWithCallout;
     };
-    displayLocation: CalloutDisplayLocation;
+    groupName: CalloutGroupName;
     contribution?: Pick<CalloutContribution, 'link' | 'post' | 'whiteboard'>;
     contributionPolicy: Pick<CalloutContributionPolicy, 'state'>;
     comments: CommentsWithMessagesFragmentWithCallout | undefined;
   };
 
-interface UseCalloutsParams extends OptionalCoreEntityIds {
-  displayLocations?: CalloutDisplayLocation[];
+interface UseCalloutsParams {
+  journeyId: string | undefined;
+  journeyTypeName: JourneyTypeName;
+  groupNames?: CalloutGroupName[];
 }
 
 export interface OrderUpdate {
@@ -80,7 +82,7 @@ export interface OrderUpdate {
 
 export interface UseCalloutsProvided {
   callouts: TypedCallout[] | undefined;
-  groupedCallouts: Record<CalloutDisplayLocation, TypedCallout[] | undefined>;
+  groupedCallouts: Record<CalloutGroupName, TypedCallout[] | undefined>;
   canCreateCallout: boolean;
   canCreateCalloutFromTemplate: boolean;
   canReadCallout: boolean;
@@ -92,15 +94,15 @@ export interface UseCalloutsProvided {
 }
 
 const UNGROUPED_CALLOUTS_GROUP = Symbol('undefined');
-const CALLOUT_DISPLAY_LOCATION_TAGSET_NAME = 'callout-display-location';
+const CALLOUT_DISPLAY_LOCATION_TAGSET_NAME = 'callout-group';
 
 /**
- * If you need Callouts without a group, don't specify displayLocations at all.
+ * If you need Callouts without a group, don't specify groupNames at all.
  */
-const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
-  const journeyTypeName = getJourneyTypeName(params);
 
+const useCallouts = ({ journeyTypeName, ...params }: UseCalloutsParams): UseCalloutsProvided => {
   const {
+    collaborationId,
     canReadCollaboration,
     canCreateCallout,
     canCreateCalloutFromTemplate,
@@ -110,14 +112,9 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
   } = useCollaborationAuthorization();
 
   const variables = {
-    spaceNameId: params.spaceNameId!,
-    challengeNameId: params.challengeNameId,
-    opportunityNameId: params.opportunityNameId,
-    includeSpace: journeyTypeName === 'space',
-    includeChallenge: journeyTypeName === 'challenge',
-    includeOpportunity: journeyTypeName === 'opportunity',
-    displayLocations: params.displayLocations,
-  };
+    collaborationId: collaborationId!,
+    groupNames: params.groupNames,
+  } as const;
 
   const {
     data: calloutsData,
@@ -126,7 +123,7 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
   } = useCalloutsQuery({
     variables,
     fetchPolicy: 'cache-and-network',
-    skip: !canReadCollaboration || !params.spaceNameId,
+    skip: !canReadCollaboration || !collaborationId,
   });
 
   const [getCallouts] = useCalloutsLazyQuery({
@@ -143,8 +140,7 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
     });
   };
 
-  const collaboration = (calloutsData?.space.opportunity ?? calloutsData?.space.challenge ?? calloutsData?.space)
-    ?.collaboration;
+  const collaboration = calloutsData?.lookup.collaboration;
 
   const callouts = useMemo(
     () =>
@@ -155,7 +151,7 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
         const innovationFlowTagset = callout.framing.profile.tagsets?.find(
           tagset => tagset.name === INNOVATION_FLOW_STATES_TAGSET_NAME
         );
-        const displayLocationTagset = callout.framing.profile.tagsets?.find(
+        const groupNameTagset = callout.framing.profile.tagsets?.find(
           tagset => tagset.name === CALLOUT_DISPLAY_LOCATION_TAGSET_NAME
         );
         const flowStates = innovationFlowTagset?.tags;
@@ -170,7 +166,7 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
           movable,
           canSaveAsTemplate,
           flowStates,
-          displayLocation: getCalloutDisplayLocationValue(displayLocationTagset?.tags),
+          groupName: getCalloutGroupNameValue(groupNameTagset?.tags),
         } as TypedCallout;
       }),
     [collaboration]
@@ -198,10 +194,9 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
   const onCalloutsSortOrderUpdate = useCallback(
     (movedCalloutId: string) => {
       const flowState = callouts?.find(callout => callout.id === movedCalloutId)?.flowStates?.[0];
-      const displayLocation = callouts?.find(callout => callout.id === movedCalloutId)?.displayLocation;
+      const groupName = callouts?.find(callout => callout.id === movedCalloutId)?.groupName;
       const relatedCallouts = callouts?.filter(
-        callout =>
-          (!flowState || callout.flowStates?.includes(flowState)) && callout.displayLocation === displayLocation
+        callout => (!flowState || callout.flowStates?.includes(flowState)) && callout.groupName === groupName
       );
       const relatedCalloutIds = relatedCallouts?.map(callout => callout.id) ?? [];
       return (update: OrderUpdate) => {
@@ -213,8 +208,8 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
   );
 
   const groupedCallouts = useMemo(() => {
-    return groupBy(sortedCallouts, callout => callout.displayLocation) as Record<
-      CalloutDisplayLocation | typeof UNGROUPED_CALLOUTS_GROUP,
+    return groupBy(sortedCallouts, callout => callout.groupName) as Record<
+      CalloutGroupName | typeof UNGROUPED_CALLOUTS_GROUP,
       TypedCallout[] | undefined
     >;
   }, [sortedCallouts]);

@@ -18,22 +18,22 @@ const useUserContributions = (userNameId: string) => {
     }
 
     const spaces = data?.rolesUser.spaces.map<ContributionItem>(e => ({
-      spaceId: e.nameID,
+      spaceId: e.id,
       id: e.id,
     }));
 
     const challenges = data?.rolesUser.spaces.flatMap<ContributionItem>(e =>
       e.challenges.map(c => ({
-        spaceId: e.nameID,
-        challengeId: c.nameID,
+        spaceId: e.id,
+        challengeId: c.id,
         id: c.id,
       }))
     );
 
     const opportunities = data?.rolesUser.spaces.flatMap<ContributionItem>(e =>
       e.opportunities.map(o => ({
-        spaceId: e.nameID,
-        opportunityId: o.nameID,
+        spaceId: e.id,
+        opportunityId: o.id,
         id: o.id,
       }))
     );

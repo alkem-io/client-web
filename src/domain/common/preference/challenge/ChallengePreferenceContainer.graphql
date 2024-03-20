@@ -1,7 +1,6 @@
-query challengePreferences($spaceNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!) {
-  space(ID: $spaceNameId) {
-    id
-    challenge(ID: $challengeNameId) {
+query ChallengePreferences($challengeId: UUID!) {
+  lookup {
+    challenge(ID: $challengeId) {
       id
       preferences {
         id

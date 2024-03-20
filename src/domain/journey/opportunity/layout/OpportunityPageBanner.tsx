@@ -6,13 +6,16 @@ import useInnovationHubJourneyBannerRibbon from '../../../innovationHub/Innovati
 import ChildJourneyPageBanner from '../../common/childJourneyPageBanner/ChildJourneyPageBanner';
 import { useSpace } from '../../space/SpaceContext/useSpace';
 import { BasePageBannerProps } from '../../common/EntityPageLayout/EntityPageLayoutTypes';
+import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 
 const OpportunityPageBanner = (props: BasePageBannerProps) => {
   const { profile: spaceProfile } = useSpace();
-  const { opportunity, spaceId } = useOpportunity();
+  const { opportunity } = useOpportunity();
   const banner = getVisualByType(VisualName.BANNER, spaceProfile?.visuals);
   const avatar = getVisualByType(VisualName.AVATAR, opportunity?.profile?.visuals);
   const cardImage = getVisualByType(VisualName.CARD, opportunity?.profile?.visuals);
+
+  const { spaceId } = useRouteResolver();
 
   const ribbon = useInnovationHubJourneyBannerRibbon({
     spaceId,

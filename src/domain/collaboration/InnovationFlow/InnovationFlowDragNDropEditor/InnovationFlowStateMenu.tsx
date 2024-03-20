@@ -8,7 +8,7 @@ import PageContentBlockContextualMenu from '../../../../core/ui/content/PageCont
 interface InnovationFlowStateMenuProps {
   state: string;
   isCurrentState: boolean;
-  onUpdateCurrentState: (state: string) => void;
+  onUpdateCurrentState?: (state: string) => void;
   onEdit: (state: string) => void;
   onDelete: (state: string) => void;
   onAddStateAfter: (stateBefore: string) => void;
@@ -41,12 +41,14 @@ export default function InnovationFlowStateMenu({
                 {t('components.innovationFlowSettings.stateEditor.activeState')}
               </MenuItem>
             ) : (
-              <MenuItem onClick={createMenuAction(onUpdateCurrentState)}>
-                <ListItemIcon>
-                  <ToggleOn fontSize="small" />
-                </ListItemIcon>
-                {t('components.innovationFlowSettings.stateEditor.setActiveState')}
-              </MenuItem>
+              onUpdateCurrentState && (
+                <MenuItem onClick={createMenuAction(onUpdateCurrentState)}>
+                  <ListItemIcon>
+                    <ToggleOn fontSize="small" />
+                  </ListItemIcon>
+                  {t('components.innovationFlowSettings.stateEditor.setActiveState')}
+                </MenuItem>
+              )
             )}
             <MenuItem onClick={createMenuAction(onEdit)}>
               <ListItemIcon>

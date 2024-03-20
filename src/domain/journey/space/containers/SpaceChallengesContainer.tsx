@@ -3,7 +3,7 @@ import React, { FC } from 'react';
 import useChallengeCreatedSubscription from '../hooks/useChallengeCreatedSubscription';
 import { useSpaceChallengeCardsQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
-import { CalloutDisplayLocation, ChallengeCardFragment } from '../../../../core/apollo/generated/graphql-schema';
+import { CalloutGroupName, ChallengeCardFragment } from '../../../../core/apollo/generated/graphql-schema';
 import useCallouts, { UseCalloutsProvided } from '../../../collaboration/callout/useCallouts/useCallouts';
 
 export interface ChallengesCardContainerEntities {
@@ -24,13 +24,13 @@ export interface SpaceChallengesContainerProps
     ChallengesCardContainerActions,
     ChallengesCardContainerState
   > {
-  spaceNameId: string;
+  spaceId: string | undefined;
 }
 
-export const SpaceChallengesContainer: FC<SpaceChallengesContainerProps> = ({ spaceNameId, children }) => {
+export const SpaceChallengesContainer: FC<SpaceChallengesContainerProps> = ({ spaceId, children }) => {
   const { data, error, loading, subscribeToMore } = useSpaceChallengeCardsQuery({
-    variables: { spaceId: spaceNameId },
-    skip: !spaceNameId,
+    variables: { spaceId: spaceId! },
+    skip: !spaceId,
   });
 
   useChallengeCreatedSubscription(data, data => data?.space, subscribeToMore);
@@ -38,8 +38,9 @@ export const SpaceChallengesContainer: FC<SpaceChallengesContainerProps> = ({ sp
   const challenges = data?.space?.challenges ?? [];
 
   const callouts = useCallouts({
-    spaceNameId,
-    displayLocations: [CalloutDisplayLocation.ChallengesLeft, CalloutDisplayLocation.ChallengesRight],
+    journeyId: spaceId,
+    journeyTypeName: 'space',
+    groupNames: [CalloutGroupName.Subspaces_1, CalloutGroupName.Subspaces_2],
   });
 
   return <>{children({ challenges, callouts }, { loading, error }, {})}</>;

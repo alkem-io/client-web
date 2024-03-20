@@ -1,7 +1,6 @@
 query PendingMembershipsSpace($spaceId: UUID_NAMEID!, $fetchDetails: Boolean! = false, $visualType: VisualType!) {
   space(ID: $spaceId) {
     id
-    nameID
     profile {
       ...PendingMembershipsJourneyProfile
     }
@@ -9,17 +8,13 @@ query PendingMembershipsSpace($spaceId: UUID_NAMEID!, $fetchDetails: Boolean! = 
 }
 
 query PendingMembershipsChallenge(
-  $spaceId: UUID_NAMEID!
-  $challengeId: UUID_NAMEID!
+  $challengeId: UUID!
   $fetchDetails: Boolean! = false
   $visualType: VisualType!
 ) {
-  space(ID: $spaceId) {
-    id
-    nameID
+  lookup {
     challenge(ID: $challengeId) {
       id
-      nameID
       profile {
         ...PendingMembershipsJourneyProfile
       }
@@ -28,18 +23,13 @@ query PendingMembershipsChallenge(
 }
 
 query PendingMembershipsOpportunity(
-  $spaceId: UUID_NAMEID!
-  $opportunityId: UUID_NAMEID!
+  $opportunityId: UUID!
   $fetchDetails: Boolean! = false
   $visualType: VisualType!
 ) {
-  space(ID: $spaceId) {
-    id
-    nameID
+  lookup {
     opportunity(ID: $opportunityId) {
       id
-      nameID
-      parentNameID
       profile {
         ...PendingMembershipsJourneyProfile
       }
@@ -59,6 +49,7 @@ query PendingMembershipsUser($userId: UUID_NAMEID_EMAIL!) {
 
 fragment PendingMembershipsJourneyProfile on Profile {
   id
+  url
   displayName
   visual(type: $visualType) {
     id
