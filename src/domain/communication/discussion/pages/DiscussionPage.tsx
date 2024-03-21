@@ -44,7 +44,7 @@ export const DiscussionPage: FC<DiscussionPageProps> = ({ releaseId }) => {
     variables: {
       discussionId: releaseId ?? discussionNameId!,
     },
-    skip: !releaseId ?? !discussionNameId,
+    skip: !releaseId && !discussionNameId,
   });
 
   const isSubscribedToMessages = useSubscribeOnRoomEvents(data?.platform.communication.discussion?.comments.id);
