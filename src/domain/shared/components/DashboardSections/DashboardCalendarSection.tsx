@@ -2,7 +2,7 @@ import { Box, FormControlLabel, Skeleton, Switch, useTheme } from '@mui/material
 import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
-import { useNavigate } from 'react-router-dom';
+import useNavigate from '../../../../core/routing/useNavigate';
 import { groupBy, sortBy, times } from 'lodash';
 import {
   useChallengeDashboardCalendarEventsQuery,

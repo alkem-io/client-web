@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import useNavigate from './useNavigate';
 
 export const useNavigateToEdit = () => {
   const navigate = useNavigate();

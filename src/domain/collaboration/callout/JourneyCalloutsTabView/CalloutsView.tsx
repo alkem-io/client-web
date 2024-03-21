@@ -4,7 +4,7 @@ import { OrderUpdate, TypedCallout, TypedCalloutDetails } from '../useCallouts/u
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import { CalloutSortEvents, CalloutSortProps } from '../CalloutViewTypes';
 import CalloutView from '../CalloutView/CalloutView';
-import { useNavigate } from 'react-router-dom';
+import useNavigate from '../../../../core/routing/useNavigate';
 import { LocationStateCachedCallout, LocationStateKeyCachedCallout } from '../../CalloutPage/CalloutPage';
 import { Box, CardHeader, Skeleton } from '@mui/material';
 import PageContentBlock, { PageContentBlockProps } from '../../../../core/ui/content/PageContentBlock';

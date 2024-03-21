@@ -1,7 +1,7 @@
 import { ReactNode, useEffect, useMemo, useState } from 'react';
 import { Box, Link } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router';
+import useNavigate from '../../core/routing/useNavigate';
 import { useSearchQuery, useSearchScopeDetailsSpaceQuery } from '../../core/apollo/generated/apollo-hooks';
 import {
   SearchQuery,
