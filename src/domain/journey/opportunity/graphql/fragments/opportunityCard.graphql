@@ -1,8 +1,8 @@
 fragment OpportunityCard on Opportunity {
   id
-  nameID
   profile {
     id
+    url
     displayName
     tagline
     tagset {

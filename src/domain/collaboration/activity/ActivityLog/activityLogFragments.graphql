@@ -1,0 +1,141 @@
+fragment ActivityLogMemberJoined on ActivityLogEntryMemberJoined {
+  user {
+    id
+    firstName
+    lastName
+    profile {
+      id
+      url
+      displayName
+      visual(type: AVATAR) {
+        id
+        uri
+      }
+    }
+  }
+}
+
+fragment ActivityLogCalloutPublished on ActivityLogEntryCalloutPublished {
+  callout {
+    ...ActivityCalloutContext
+    type
+  }
+}
+
+fragment ActivityLogCalloutPostCreated on ActivityLogEntryCalloutPostCreated {
+  callout {
+    ...ActivityCalloutContext
+  }
+  post {
+    id
+    nameID
+    profile {
+      id
+      url
+      displayName
+    }
+  }
+}
+
+fragment ActivityLogCalloutLinkCreated on ActivityLogEntryCalloutLinkCreated {
+  callout {
+    ...ActivityCalloutContext
+  }
+  link {
+    id
+    profile {
+      id
+      displayName
+    }
+  }
+}
+
+fragment ActivityLogCalloutPostComment on ActivityLogEntryCalloutPostComment {
+  description
+  post {
+    id
+    profile {
+      ...ActivitySubjectProfile
+    }
+  }
+}
+
+fragment ActivityLogCalloutWhiteboardCreated on ActivityLogEntryCalloutWhiteboardCreated {
+  callout {
+    ...ActivityCalloutContext
+  }
+  whiteboard {
+    id
+    profile {
+      ...ActivitySubjectProfile
+    }
+  }
+}
+
+fragment ActivityLogCalloutWhiteboardContentModified on ActivityLogEntryCalloutWhiteboardContentModified {
+  callout {
+    ...ActivityCalloutContext
+  }
+  whiteboard {
+    id
+    profile {
+      ...ActivitySubjectProfile
+    }
+  }
+}
+
+fragment ActivityLogChallengeCreated on ActivityLogEntryChallengeCreated {
+  challenge {
+    id
+    profile {
+      ...ActivitySubjectProfile
+    }
+  }
+}
+
+fragment ActivityLogOpportunityCreated on ActivityLogEntryOpportunityCreated {
+  opportunity {
+    id
+    profile {
+      ...ActivitySubjectProfile
+    }
+  }
+}
+
+fragment ActivityLogCalloutDiscussionComment on ActivityLogEntryCalloutDiscussionComment {
+  description
+  callout {
+    ...ActivityCalloutContext
+  }
+}
+
+fragment ActivityLogCalendarEventCreated on ActivityLogEntryCalendarEventCreated {
+  calendarEvent {
+    id
+    profile {
+      ...ActivitySubjectProfile
+    }
+  }
+}
+
+fragment ActivityLogUpdateSent on ActivityLogEntryUpdateSent {
+  message
+}
+
+fragment ActivitySubjectProfile on Profile {
+  id
+  displayName
+  url
+}
+
+fragment ActivityCalloutContext on Callout {
+  id
+  framing {
+    id
+    profile {
+      id
+      displayName
+      url
+    }
+  }
+}

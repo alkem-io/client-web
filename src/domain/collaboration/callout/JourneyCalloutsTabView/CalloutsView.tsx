@@ -1,12 +1,10 @@
 import React, { useMemo } from 'react';
-import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { useCalloutEdit } from '../edit/useCalloutEdit/useCalloutEdit';
 import { OrderUpdate, TypedCallout, TypedCalloutDetails } from '../useCallouts/useCallouts';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import { CalloutSortEvents, CalloutSortProps } from '../CalloutViewTypes';
 import CalloutView from '../CalloutView/CalloutView';
 import { useNavigate } from 'react-router-dom';
-import { buildCalloutUrl } from '../../../../main/routing/urlBuilders';
 import { LocationStateCachedCallout, LocationStateKeyCachedCallout } from '../../CalloutPage/CalloutPage';
 import { Box, CardHeader, Skeleton } from '@mui/material';
 import PageContentBlock, { PageContentBlockProps } from '../../../../core/ui/content/PageContentBlock';
@@ -52,12 +50,6 @@ const CalloutsView = ({
   blockProps,
   disableMarginal,
 }: CalloutsViewProps) => {
-  const { spaceNameId, challengeNameId, opportunityNameId } = useUrlParams();
-
-  if (!spaceNameId) {
-    throw new Error('Must be within a Space');
-  }
-
   const { handleEdit, handleVisibilityChange, handleDelete } = useCalloutEdit();
 
   const sortedCallouts = useMemo(() => callouts?.sort((a, b) => a.sortOrder - b.sortOrder), [callouts]);
@@ -104,16 +96,11 @@ const CalloutsView = ({
   const navigate = useNavigate();
 
   const handleExpand = (callout: TypedCalloutDetails) => {
-    const uri = buildCalloutUrl(callout.nameID, {
-      spaceNameId,
-      challengeNameId,
-      opportunityNameId,
-    });
     const state: LocationStateCachedCallout = {
       [LocationStateKeyCachedCallout]: callout,
       keepScroll: true,
     };
-    return navigate(uri, { state });
+    return navigate(callout.framing.profile.url, { state });
   };
 
   return (
@@ -125,12 +112,6 @@ const CalloutsView = ({
             topCallout: index === 0,
             bottomCallout: index === sortedCallouts.length - 1,
           };
-
-          const calloutUri = buildCalloutUrl(callout.nameID, {
-            spaceNameId,
-            challengeNameId,
-            opportunityNameId,
-          });
 
           const computedBlockProps = typeof blockProps === 'function' ? blockProps(callout, index) : blockProps;
 
@@ -145,15 +126,11 @@ const CalloutsView = ({
                         callout={calloutDetails}
                         calloutNames={calloutNames}
                         contributionsCount={callout.activity}
-                        spaceNameId={spaceNameId}
-                        challengeNameId={challengeNameId}
-                        opportunityNameId={opportunityNameId}
                         journeyTypeName={journeyTypeName}
                         onCalloutEdit={handleEdit}
                         onCalloutUpdate={() => onCalloutUpdate?.(callout.id)}
                         onVisibilityChange={handleVisibilityChange}
                         onCalloutDelete={handleDelete}
-                        calloutUri={calloutUri}
                         onExpand={() => handleExpand(calloutDetails)}
                         disableMarginal={disableMarginal}
                         {...sortEvents}

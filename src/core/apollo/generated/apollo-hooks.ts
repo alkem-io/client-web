@@ -130,62 +130,48 @@ export const InnovationFlowCollaborationFragmentDoc = gql`
 `;
 export const ActivityLogMemberJoinedFragmentDoc = gql`
   fragment ActivityLogMemberJoined on ActivityLogEntryMemberJoined {
-    communityType
     user {
       id
-      nameID
       firstName
       lastName
       profile {
         id
-        displayName
         url
+        displayName
         visual(type: AVATAR) {
           id
           uri
         }
-        tagsets {
-          ...TagsetDetails
-        }
-        location {
-          id
-          city
-          country
-        }
       }
     }
   }
-  ${TagsetDetailsFragmentDoc}
+`;
+export const ActivityCalloutContextFragmentDoc = gql`
+  fragment ActivityCalloutContext on Callout {
+    id
+    framing {
+      id
+      profile {
+        id
+        displayName
+        url
+      }
+    }
+  }
 `;
 export const ActivityLogCalloutPublishedFragmentDoc = gql`
   fragment ActivityLogCalloutPublished on ActivityLogEntryCalloutPublished {
     callout {
-      id
-      nameID
+      ...ActivityCalloutContext
       type
-      framing {
-        profile {
-          id
-          displayName
-          url
-        }
-      }
     }
   }
+  ${ActivityCalloutContextFragmentDoc}
 `;
 export const ActivityLogCalloutPostCreatedFragmentDoc = gql`
   fragment ActivityLogCalloutPostCreated on ActivityLogEntryCalloutPostCreated {
     callout {
-      id
-      nameID
-      type
-      framing {
-        profile {
-          id
-          displayName
-          url
-        }
-      }
+      ...ActivityCalloutContext
     }
     post {
       id
@@ -197,19 +183,12 @@ export const ActivityLogCalloutPostCreatedFragmentDoc = gql`
       }
     }
   }
+  ${ActivityCalloutContextFragmentDoc}
 `;
 export const ActivityLogCalloutLinkCreatedFragmentDoc = gql`
   fragment ActivityLogCalloutLinkCreated on ActivityLogEntryCalloutLinkCreated {
     callout {
-      id
-      nameID
-      framing {
-        profile {
-          id
-          displayName
-          url
-        }
-      }
+      ...ActivityCalloutContext
     }
     link {
       id
@@ -217,112 +196,89 @@ export const ActivityLogCalloutLinkCreatedFragmentDoc = gql`
         id
         displayName
       }
-      uri
     }
+  }
+  ${ActivityCalloutContextFragmentDoc}
+`;
+export const ActivitySubjectProfileFragmentDoc = gql`
+  fragment ActivitySubjectProfile on Profile {
+    id
+    displayName
+    url
   }
 `;
 export const ActivityLogCalloutPostCommentFragmentDoc = gql`
   fragment ActivityLogCalloutPostComment on ActivityLogEntryCalloutPostComment {
+    description
     post {
       id
-      nameID
       profile {
-        id
-        displayName
-        url
+        ...ActivitySubjectProfile
       }
     }
   }
+  ${ActivitySubjectProfileFragmentDoc}
 `;
 export const ActivityLogCalloutWhiteboardCreatedFragmentDoc = gql`
   fragment ActivityLogCalloutWhiteboardCreated on ActivityLogEntryCalloutWhiteboardCreated {
     callout {
-      id
-      nameID
-      framing {
-        profile {
-          id
-          displayName
-          url
-        }
-      }
+      ...ActivityCalloutContext
     }
     whiteboard {
       id
-      nameID
       profile {
-        id
-        displayName
-        url
+        ...ActivitySubjectProfile
       }
     }
   }
+  ${ActivityCalloutContextFragmentDoc}
+  ${ActivitySubjectProfileFragmentDoc}
 `;
 export const ActivityLogCalloutWhiteboardContentModifiedFragmentDoc = gql`
   fragment ActivityLogCalloutWhiteboardContentModified on ActivityLogEntryCalloutWhiteboardContentModified {
     callout {
-      id
-      nameID
-      framing {
-        profile {
-          id
-          displayName
-          url
-        }
-      }
+      ...ActivityCalloutContext
     }
     whiteboard {
       id
-      nameID
       profile {
-        id
-        displayName
-        url
+        ...ActivitySubjectProfile
       }
     }
   }
+  ${ActivityCalloutContextFragmentDoc}
+  ${ActivitySubjectProfileFragmentDoc}
 `;
 export const ActivityLogCalloutDiscussionCommentFragmentDoc = gql`
   fragment ActivityLogCalloutDiscussionComment on ActivityLogEntryCalloutDiscussionComment {
+    description
     callout {
-      id
-      nameID
-      type
-      framing {
-        profile {
-          id
-          displayName
-          url
-        }
-      }
+      ...ActivityCalloutContext
     }
   }
+  ${ActivityCalloutContextFragmentDoc}
 `;
 export const ActivityLogChallengeCreatedFragmentDoc = gql`
   fragment ActivityLogChallengeCreated on ActivityLogEntryChallengeCreated {
     challenge {
       id
-      nameID
       profile {
-        id
-        displayName
-        url
+        ...ActivitySubjectProfile
       }
     }
   }
+  ${ActivitySubjectProfileFragmentDoc}
 `;
 export const ActivityLogOpportunityCreatedFragmentDoc = gql`
   fragment ActivityLogOpportunityCreated on ActivityLogEntryOpportunityCreated {
     opportunity {
       id
-      nameID
       profile {
-        id
-        displayName
-        url
+        ...ActivitySubjectProfile
       }
     }
   }
+  ${ActivitySubjectProfileFragmentDoc}
 `;
 export const ActivityLogUpdateSentFragmentDoc = gql`
   fragment ActivityLogUpdateSent on ActivityLogEntryUpdateSent {
@@ -333,48 +289,18 @@ export const ActivityLogCalendarEventCreatedFragmentDoc = gql`
   fragment ActivityLogCalendarEventCreated on ActivityLogEntryCalendarEventCreated {
     calendarEvent {
       id
-      nameID
       profile {
-        id
-        displayName
-        url
+        ...ActivitySubjectProfile
       }
     }
   }
+  ${ActivitySubjectProfileFragmentDoc}
 `;
 export const ActivityLogOnCollaborationFragmentDoc = gql`
   fragment ActivityLogOnCollaboration on ActivityLogEntry {
     id
-    collaborationID
     createdDate
-    description
     type
-    child
-    parentNameID
-    journeyDisplayName: parentDisplayName
-    __typename
-    triggeredBy {
-      id
-      nameID
-      firstName
-      lastName
-      profile {
-        id
-        displayName
-        avatar: visual(type: AVATAR) {
-          id
-          uri
-        }
-        tagsets {
-          ...TagsetDetails
-        }
-        location {
-          id
-          city
-          country
-        }
-      }
-    }
     ... on ActivityLogEntryMemberJoined {
       ...ActivityLogMemberJoined
     }
@@ -412,7 +338,6 @@ export const ActivityLogOnCollaborationFragmentDoc = gql`
       ...ActivityLogCalendarEventCreated
     }
   }
-  ${TagsetDetailsFragmentDoc}
   ${ActivityLogMemberJoinedFragmentDoc}
   ${ActivityLogCalloutPublishedFragmentDoc}
   ${ActivityLogCalloutPostCreatedFragmentDoc}
@@ -470,6 +395,54 @@ export const ProfileDisplayNameFragmentDoc = gql`
     displayName
   }
 `;
+export const PostCardFragmentDoc = gql`
+  fragment PostCard on Post {
+    id
+    type
+    createdBy {
+      id
+      profile {
+        id
+        displayName
+      }
+    }
+    createdDate
+    comments {
+      id
+      messagesCount
+    }
+    profile {
+      id
+      url
+      displayName
+      description
+      visuals {
+        ...VisualFull
+      }
+      tagset {
+        ...TagsetDetails
+      }
+      references {
+        id
+        name
+        uri
+        description
+      }
+    }
+  }
+  ${VisualFullFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
+`;
+export const ContributeTabPostFragmentDoc = gql`
+  fragment ContributeTabPost on Post {
+    ...PostCard
+    authorization {
+      id
+      myPrivileges
+    }
+  }
+  ${PostCardFragmentDoc}
+`;
 export const CalloutFragmentDoc = gql`
   fragment Callout on Callout {
     id
@@ -519,6 +492,7 @@ export const ReferenceDetailsFragmentDoc = gql`
 export const WhiteboardProfileFragmentDoc = gql`
   fragment WhiteboardProfile on Profile {
     id
+    url
     displayName
     description
     visual(type: CARD) {
@@ -851,54 +825,6 @@ export const PostProvidedFragmentDoc = gql`
     }
   }
 `;
-export const PostCardFragmentDoc = gql`
-  fragment PostCard on Post {
-    id
-    nameID
-    type
-    createdBy {
-      id
-      profile {
-        id
-        displayName
-      }
-    }
-    createdDate
-    comments {
-      id
-      messagesCount
-    }
-    profile {
-      id
-      displayName
-      description
-      visuals {
-        ...VisualFull
-      }
-      tagset {
-        ...TagsetDetails
-      }
-      references {
-        id
-        name
-        uri
-        description
-      }
-    }
-  }
-  ${VisualFullFragmentDoc}
-  ${TagsetDetailsFragmentDoc}
-`;
-export const ContributeTabPostFragmentDoc = gql`
-  fragment ContributeTabPost on Post {
-    ...PostCard
-    authorization {
-      id
-      myPrivileges
-    }
-  }
-  ${PostCardFragmentDoc}
-`;
 export const TemplateProviderProfileFragmentDoc = gql`
   fragment TemplateProviderProfile on Profile {
     id
@@ -1030,9 +956,9 @@ export const LinkDetailsFragmentDoc = gql`
 export const DiscussionDetailsFragmentDoc = gql`
   fragment DiscussionDetails on Discussion {
     id
-    nameID
     profile {
       id
+      url
       displayName
       description
     }
@@ -1058,9 +984,9 @@ export const DiscussionDetailsFragmentDoc = gql`
 export const DiscussionCardFragmentDoc = gql`
   fragment DiscussionCard on Discussion {
     id
-    nameID
     profile {
       id
+      url
       displayName
       description
       tagline
@@ -1922,10 +1848,10 @@ export const InnovationHubHomeInnovationHubFragmentDoc = gql`
 export const DashboardTopCalloutFragmentDoc = gql`
   fragment DashboardTopCallout on Callout {
     id
-    nameID
     framing {
       profile {
         id
+        url
         displayName
         description
       }
@@ -2215,9 +2141,9 @@ export const ContextDetailsFragmentDoc = gql`
 export const OpportunityCardFragmentDoc = gql`
   fragment OpportunityCard on Opportunity {
     id
-    nameID
     profile {
       id
+      url
       displayName
       tagline
       tagset {
@@ -2633,6 +2559,7 @@ export const SpacePageFragmentDoc = gql`
     }
     profile {
       id
+      url
       displayName
       description
       tagline
@@ -2681,6 +2608,7 @@ export const SpacePageFragmentDoc = gql`
 export const SpaceDashboardNavigationProfileFragmentDoc = gql`
   fragment SpaceDashboardNavigationProfile on Profile {
     id
+    url
     displayName
     tagline
     tagset {
@@ -2769,7 +2697,6 @@ export const SpaceTemplatesFragmentDoc = gql`
 export const ChallengeCardFragmentDoc = gql`
   fragment ChallengeCard on Challenge {
     id
-    nameID
     authorization {
       id
       anonymousReadAccess
@@ -2781,6 +2708,7 @@ export const ChallengeCardFragmentDoc = gql`
     }
     profile {
       id
+      url
       tagline
       displayName
       description
@@ -3236,7 +3164,6 @@ export const PostParentFragmentDoc = gql`
   fragment PostParent on SearchResultPost {
     space {
       id
-      nameID
       account {
         id
         license {
@@ -3246,6 +3173,7 @@ export const PostParentFragmentDoc = gql`
       }
       profile {
         id
+        url
         displayName
       }
       authorization {
@@ -3255,9 +3183,9 @@ export const PostParentFragmentDoc = gql`
     }
     challenge {
       id
-      nameID
       profile {
         id
+        url
         displayName
       }
       authorization {
@@ -3267,9 +3195,9 @@ export const PostParentFragmentDoc = gql`
     }
     opportunity {
       id
-      nameID
       profile {
         id
+        url
         displayName
       }
       authorization {
@@ -3279,10 +3207,10 @@ export const PostParentFragmentDoc = gql`
     }
     callout {
       id
-      nameID
       framing {
         profile {
           id
+          url
           displayName
         }
       }
@@ -3293,8 +3221,9 @@ export const SearchResultPostFragmentDoc = gql`
   fragment SearchResultPost on SearchResultPost {
     post {
       id
-      nameID
       profile {
+        id
+        url
         displayName
         visual(type: CARD) {
           ...VisualUri
@@ -3381,9 +3310,9 @@ export const SearchResultSpaceFragmentDoc = gql`
   fragment SearchResultSpace on SearchResultSpace {
     space {
       id
-      nameID
       profile {
         id
+        url
         displayName
         tagset {
           ...TagsetDetails
@@ -3421,9 +3350,9 @@ export const SearchResultChallengeFragmentDoc = gql`
   fragment SearchResultChallenge on SearchResultChallenge {
     challenge {
       id
-      nameID
       profile {
         id
+        url
         displayName
         tagset {
           ...TagsetDetails
@@ -3451,9 +3380,9 @@ export const SearchResultChallengeFragmentDoc = gql`
     }
     space {
       id
-      nameID
       profile {
         id
+        url
         displayName
         tagline
       }
@@ -3477,9 +3406,9 @@ export const SearchResultOpportunityFragmentDoc = gql`
   fragment SearchResultOpportunity on SearchResultOpportunity {
     opportunity {
       id
-      nameID
       profile {
         id
+        url
         displayName
         tagset {
           ...TagsetDetails
@@ -3504,9 +3433,9 @@ export const SearchResultOpportunityFragmentDoc = gql`
     }
     challenge {
       id
-      nameID
       profile {
         id
+        url
         displayName
       }
       authorization {
@@ -3516,11 +3445,6 @@ export const SearchResultOpportunityFragmentDoc = gql`
     }
     space {
       id
-      nameID
-      profile {
-        id
-        displayName
-      }
       account {
         id
         license {
@@ -5722,33 +5646,16 @@ export const ActivityLogOnCollaborationDocument = gql`
       queryData: { collaborationID: $collaborationID, limit: $limit, types: $types, includeChild: true }
     ) {
       id
-      collaborationID
       createdDate
-      description
       type
-      child
-      parentNameID
-      journeyDisplayName: parentDisplayName
-      __typename
       triggeredBy {
         id
-        nameID
-        firstName
-        lastName
         profile {
           id
           displayName
           avatar: visual(type: AVATAR) {
             id
             uri
-          }
-          tagsets {
-            ...TagsetDetails
-          }
-          location {
-            id
-            city
-            country
           }
         }
       }
@@ -5790,7 +5697,6 @@ export const ActivityLogOnCollaborationDocument = gql`
       }
     }
   }
-  ${TagsetDetailsFragmentDoc}
   ${ActivityLogMemberJoinedFragmentDoc}
   ${ActivityLogCalloutPublishedFragmentDoc}
   ${ActivityLogCalloutPostCreatedFragmentDoc}
@@ -10414,6 +10320,76 @@ export function refetchPlatformUpdatesRoomQuery(variables?: SchemaTypes.Platform
   return { query: PlatformUpdatesRoomDocument, variables: variables };
 }
 
+export const ChallengeApplicationDocument = gql`
+  query challengeApplication($challengeId: UUID!) {
+    lookup {
+      challenge(ID: $challengeId) {
+        id
+        profile {
+          id
+          url
+          displayName
+        }
+        community {
+          id
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useChallengeApplicationQuery__
+ *
+ * To run a query within a React component, call `useChallengeApplicationQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChallengeApplicationQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChallengeApplicationQuery({
+ *   variables: {
+ *      challengeId: // value for 'challengeId'
+ *   },
+ * });
+ */
+export function useChallengeApplicationQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.ChallengeApplicationQuery,
+    SchemaTypes.ChallengeApplicationQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.ChallengeApplicationQuery, SchemaTypes.ChallengeApplicationQueryVariables>(
+    ChallengeApplicationDocument,
+    options
+  );
+}
+
+export function useChallengeApplicationLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.ChallengeApplicationQuery,
+    SchemaTypes.ChallengeApplicationQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.ChallengeApplicationQuery, SchemaTypes.ChallengeApplicationQueryVariables>(
+    ChallengeApplicationDocument,
+    options
+  );
+}
+
+export type ChallengeApplicationQueryHookResult = ReturnType<typeof useChallengeApplicationQuery>;
+export type ChallengeApplicationLazyQueryHookResult = ReturnType<typeof useChallengeApplicationLazyQuery>;
+export type ChallengeApplicationQueryResult = Apollo.QueryResult<
+  SchemaTypes.ChallengeApplicationQuery,
+  SchemaTypes.ChallengeApplicationQueryVariables
+>;
+export function refetchChallengeApplicationQuery(variables: SchemaTypes.ChallengeApplicationQueryVariables) {
+  return { query: ChallengeApplicationDocument, variables: variables };
+}
+
 export const CommunityUserPrivilegesWithParentCommunityDocument = gql`
   query communityUserPrivilegesWithParentCommunity(
     $spaceId: UUID_NAMEID = "00000000-0000-0000-0000-000000000000"
@@ -10437,6 +10413,10 @@ export const CommunityUserPrivilegesWithParentCommunityDocument = gql`
     lookup {
       challenge(ID: $challengeId) @include(if: $includeChallenge) {
         id
+        profile {
+          id
+          url
+        }
         authorization {
           id
           myPrivileges
@@ -10674,6 +10654,71 @@ export type JoinCommunityMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.JoinCommunityMutation,
   SchemaTypes.JoinCommunityMutationVariables
 >;
+export const SpaceApplicationDocument = gql`
+  query spaceApplication($spaceId: UUID_NAMEID!) {
+    space(ID: $spaceId) {
+      id
+      profile {
+        id
+        url
+        displayName
+      }
+      community {
+        id
+      }
+    }
+  }
+`;
+
+/**
+ * __useSpaceApplicationQuery__
+ *
+ * To run a query within a React component, call `useSpaceApplicationQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSpaceApplicationQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSpaceApplicationQuery({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *   },
+ * });
+ */
+export function useSpaceApplicationQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.SpaceApplicationQuery, SchemaTypes.SpaceApplicationQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.SpaceApplicationQuery, SchemaTypes.SpaceApplicationQueryVariables>(
+    SpaceApplicationDocument,
+    options
+  );
+}
+
+export function useSpaceApplicationLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.SpaceApplicationQuery,
+    SchemaTypes.SpaceApplicationQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.SpaceApplicationQuery, SchemaTypes.SpaceApplicationQueryVariables>(
+    SpaceApplicationDocument,
+    options
+  );
+}
+
+export type SpaceApplicationQueryHookResult = ReturnType<typeof useSpaceApplicationQuery>;
+export type SpaceApplicationLazyQueryHookResult = ReturnType<typeof useSpaceApplicationLazyQuery>;
+export type SpaceApplicationQueryResult = Apollo.QueryResult<
+  SchemaTypes.SpaceApplicationQuery,
+  SchemaTypes.SpaceApplicationQueryVariables
+>;
+export function refetchSpaceApplicationQuery(variables: SchemaTypes.SpaceApplicationQueryVariables) {
+  return { query: SpaceApplicationDocument, variables: variables };
+}
+
 export const ApplyForCommunityMembershipDocument = gql`
   mutation applyForCommunityMembership($input: CommunityApplyInput!) {
     applyForCommunityMembership(applicationData: $input) {
@@ -10776,139 +10821,6 @@ export type EventOnApplicationMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.EventOnApplicationMutation,
   SchemaTypes.EventOnApplicationMutationVariables
 >;
-export const ChallengeApplicationDocument = gql`
-  query challengeApplication($challengeId: UUID!) {
-    lookup {
-      challenge(ID: $challengeId) {
-        id
-        profile {
-          id
-          displayName
-        }
-        community {
-          id
-        }
-      }
-    }
-  }
-`;
-
-/**
- * __useChallengeApplicationQuery__
- *
- * To run a query within a React component, call `useChallengeApplicationQuery` and pass it any options that fit your needs.
- * When your component renders, `useChallengeApplicationQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useChallengeApplicationQuery({
- *   variables: {
- *      challengeId: // value for 'challengeId'
- *   },
- * });
- */
-export function useChallengeApplicationQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.ChallengeApplicationQuery,
-    SchemaTypes.ChallengeApplicationQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.ChallengeApplicationQuery, SchemaTypes.ChallengeApplicationQueryVariables>(
-    ChallengeApplicationDocument,
-    options
-  );
-}
-
-export function useChallengeApplicationLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.ChallengeApplicationQuery,
-    SchemaTypes.ChallengeApplicationQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.ChallengeApplicationQuery, SchemaTypes.ChallengeApplicationQueryVariables>(
-    ChallengeApplicationDocument,
-    options
-  );
-}
-
-export type ChallengeApplicationQueryHookResult = ReturnType<typeof useChallengeApplicationQuery>;
-export type ChallengeApplicationLazyQueryHookResult = ReturnType<typeof useChallengeApplicationLazyQuery>;
-export type ChallengeApplicationQueryResult = Apollo.QueryResult<
-  SchemaTypes.ChallengeApplicationQuery,
-  SchemaTypes.ChallengeApplicationQueryVariables
->;
-export function refetchChallengeApplicationQuery(variables: SchemaTypes.ChallengeApplicationQueryVariables) {
-  return { query: ChallengeApplicationDocument, variables: variables };
-}
-
-export const SpaceApplicationDocument = gql`
-  query spaceApplication($spaceId: UUID_NAMEID!) {
-    space(ID: $spaceId) {
-      id
-      profile {
-        id
-        displayName
-      }
-      community {
-        id
-      }
-    }
-  }
-`;
-
-/**
- * __useSpaceApplicationQuery__
- *
- * To run a query within a React component, call `useSpaceApplicationQuery` and pass it any options that fit your needs.
- * When your component renders, `useSpaceApplicationQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useSpaceApplicationQuery({
- *   variables: {
- *      spaceId: // value for 'spaceId'
- *   },
- * });
- */
-export function useSpaceApplicationQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.SpaceApplicationQuery, SchemaTypes.SpaceApplicationQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.SpaceApplicationQuery, SchemaTypes.SpaceApplicationQueryVariables>(
-    SpaceApplicationDocument,
-    options
-  );
-}
-
-export function useSpaceApplicationLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.SpaceApplicationQuery,
-    SchemaTypes.SpaceApplicationQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.SpaceApplicationQuery, SchemaTypes.SpaceApplicationQueryVariables>(
-    SpaceApplicationDocument,
-    options
-  );
-}
-
-export type SpaceApplicationQueryHookResult = ReturnType<typeof useSpaceApplicationQuery>;
-export type SpaceApplicationLazyQueryHookResult = ReturnType<typeof useSpaceApplicationLazyQuery>;
-export type SpaceApplicationQueryResult = Apollo.QueryResult<
-  SchemaTypes.SpaceApplicationQuery,
-  SchemaTypes.SpaceApplicationQueryVariables
->;
-export function refetchSpaceApplicationQuery(variables: SchemaTypes.SpaceApplicationQueryVariables) {
-  return { query: SpaceApplicationDocument, variables: variables };
-}
-
 export const CommunityApplicationsInvitationsDocument = gql`
   query CommunityApplicationsInvitations($communityId: UUID!) {
     lookup {
@@ -16405,55 +16317,6 @@ export function refetchChallengeInfoQuery(variables: SchemaTypes.ChallengeInfoQu
   return { query: ChallengeInfoDocument, variables: variables };
 }
 
-export const CreateChallengeDocument = gql`
-  mutation createChallenge($input: CreateChallengeOnSpaceInput!) {
-    createChallenge(challengeData: $input) {
-      ...ChallengeCard
-    }
-  }
-  ${ChallengeCardFragmentDoc}
-`;
-export type CreateChallengeMutationFn = Apollo.MutationFunction<
-  SchemaTypes.CreateChallengeMutation,
-  SchemaTypes.CreateChallengeMutationVariables
->;
-
-/**
- * __useCreateChallengeMutation__
- *
- * To run a mutation, you first call `useCreateChallengeMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateChallengeMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createChallengeMutation, { data, loading, error }] = useCreateChallengeMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useCreateChallengeMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.CreateChallengeMutation,
-    SchemaTypes.CreateChallengeMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.CreateChallengeMutation, SchemaTypes.CreateChallengeMutationVariables>(
-    CreateChallengeDocument,
-    options
-  );
-}
-
-export type CreateChallengeMutationHookResult = ReturnType<typeof useCreateChallengeMutation>;
-export type CreateChallengeMutationResult = Apollo.MutationResult<SchemaTypes.CreateChallengeMutation>;
-export type CreateChallengeMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.CreateChallengeMutation,
-  SchemaTypes.CreateChallengeMutationVariables
->;
 export const DeleteChallengeDocument = gql`
   mutation deleteChallenge($input: DeleteChallengeInput!) {
     deleteChallenge(deleteData: $input) {
@@ -18068,55 +17931,6 @@ export function refetchOpportunityProviderQuery(variables: SchemaTypes.Opportuni
   return { query: OpportunityProviderDocument, variables: variables };
 }
 
-export const CreateOpportunityDocument = gql`
-  mutation createOpportunity($input: CreateOpportunityInput!) {
-    createOpportunity(opportunityData: $input) {
-      ...OpportunityCard
-    }
-  }
-  ${OpportunityCardFragmentDoc}
-`;
-export type CreateOpportunityMutationFn = Apollo.MutationFunction<
-  SchemaTypes.CreateOpportunityMutation,
-  SchemaTypes.CreateOpportunityMutationVariables
->;
-
-/**
- * __useCreateOpportunityMutation__
- *
- * To run a mutation, you first call `useCreateOpportunityMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateOpportunityMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createOpportunityMutation, { data, loading, error }] = useCreateOpportunityMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useCreateOpportunityMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.CreateOpportunityMutation,
-    SchemaTypes.CreateOpportunityMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.CreateOpportunityMutation, SchemaTypes.CreateOpportunityMutationVariables>(
-    CreateOpportunityDocument,
-    options
-  );
-}
-
-export type CreateOpportunityMutationHookResult = ReturnType<typeof useCreateOpportunityMutation>;
-export type CreateOpportunityMutationResult = Apollo.MutationResult<SchemaTypes.CreateOpportunityMutation>;
-export type CreateOpportunityMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.CreateOpportunityMutation,
-  SchemaTypes.CreateOpportunityMutationVariables
->;
 export const DeleteOpportunityDocument = gql`
   mutation deleteOpportunity($input: DeleteOpportunityInput!) {
     deleteOpportunity(deleteData: $input) {
@@ -18759,7 +18573,6 @@ export const SpaceDashboardNavigationChallengesDocument = gql`
       id
       challenges {
         id
-        nameID
         profile {
           ...SpaceDashboardNavigationProfile
         }
@@ -18854,7 +18667,6 @@ export const SpaceDashboardNavigationOpportunitiesDocument = gql`
         id
         opportunities {
           id
-          nameID
           profile {
             ...SpaceDashboardNavigationProfile
           }
@@ -21581,6 +21393,104 @@ export type ShareLinkWithUserMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.ShareLinkWithUserMutation,
   SchemaTypes.ShareLinkWithUserMutationVariables
 >;
+export const CreateChallengeDocument = gql`
+  mutation createChallenge($input: CreateChallengeOnSpaceInput!) {
+    createChallenge(challengeData: $input) {
+      ...ChallengeCard
+    }
+  }
+  ${ChallengeCardFragmentDoc}
+`;
+export type CreateChallengeMutationFn = Apollo.MutationFunction<
+  SchemaTypes.CreateChallengeMutation,
+  SchemaTypes.CreateChallengeMutationVariables
+>;
+
+/**
+ * __useCreateChallengeMutation__
+ *
+ * To run a mutation, you first call `useCreateChallengeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateChallengeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createChallengeMutation, { data, loading, error }] = useCreateChallengeMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateChallengeMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.CreateChallengeMutation,
+    SchemaTypes.CreateChallengeMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.CreateChallengeMutation, SchemaTypes.CreateChallengeMutationVariables>(
+    CreateChallengeDocument,
+    options
+  );
+}
+
+export type CreateChallengeMutationHookResult = ReturnType<typeof useCreateChallengeMutation>;
+export type CreateChallengeMutationResult = Apollo.MutationResult<SchemaTypes.CreateChallengeMutation>;
+export type CreateChallengeMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.CreateChallengeMutation,
+  SchemaTypes.CreateChallengeMutationVariables
+>;
+export const CreateOpportunityDocument = gql`
+  mutation createOpportunity($input: CreateOpportunityInput!) {
+    createOpportunity(opportunityData: $input) {
+      ...OpportunityCard
+    }
+  }
+  ${OpportunityCardFragmentDoc}
+`;
+export type CreateOpportunityMutationFn = Apollo.MutationFunction<
+  SchemaTypes.CreateOpportunityMutation,
+  SchemaTypes.CreateOpportunityMutationVariables
+>;
+
+/**
+ * __useCreateOpportunityMutation__
+ *
+ * To run a mutation, you first call `useCreateOpportunityMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateOpportunityMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createOpportunityMutation, { data, loading, error }] = useCreateOpportunityMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateOpportunityMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.CreateOpportunityMutation,
+    SchemaTypes.CreateOpportunityMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.CreateOpportunityMutation, SchemaTypes.CreateOpportunityMutationVariables>(
+    CreateOpportunityDocument,
+    options
+  );
+}
+
+export type CreateOpportunityMutationHookResult = ReturnType<typeof useCreateOpportunityMutation>;
+export type CreateOpportunityMutationResult = Apollo.MutationResult<SchemaTypes.CreateOpportunityMutation>;
+export type CreateOpportunityMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.CreateOpportunityMutation,
+  SchemaTypes.CreateOpportunityMutationVariables
+>;
 export const JourneyStorageConfigDocument = gql`
   query JourneyStorageConfig(
     $spaceId: UUID_NAMEID = "00000000-0000-0000-0000-000000000000"
@@ -21672,37 +21582,20 @@ export function refetchJourneyStorageConfigQuery(variables?: SchemaTypes.Journey
 }
 
 export const CalloutStorageConfigDocument = gql`
-  query CalloutStorageConfig(
-    $calloutId: UUID_NAMEID!
-    $spaceId: UUID_NAMEID = "00000000-0000-0000-0000-000000000000"
-    $challengeId: UUID = "00000000-0000-0000-0000-000000000000"
-    $opportunityId: UUID = "00000000-0000-0000-0000-000000000000"
-    $includeSpace: Boolean = false
-    $includeChallenge: Boolean = false
-    $includeOpportunity: Boolean = false
-  ) {
-    space(ID: $spaceId) @include(if: $includeSpace) {
-      id
-      collaboration {
-        ...CalloutOnCollaborationWithStorageConfig
-      }
-    }
+  query CalloutStorageConfig($calloutId: UUID!) {
     lookup {
-      challenge(ID: $challengeId) @include(if: $includeChallenge) {
+      callout(ID: $calloutId) {
         id
-        collaboration {
-          ...CalloutOnCollaborationWithStorageConfig
-        }
-      }
-      opportunity(ID: $opportunityId) @include(if: $includeOpportunity) {
-        id
-        collaboration {
-          ...CalloutOnCollaborationWithStorageConfig
+        framing {
+          id
+          profile {
+            ...ProfileStorageConfig
+          }
         }
       }
     }
   }
-  ${CalloutOnCollaborationWithStorageConfigFragmentDoc}
+  ${ProfileStorageConfigFragmentDoc}
 `;
 
 /**
@@ -21718,12 +21611,6 @@ export const CalloutStorageConfigDocument = gql`
  * const { data, loading, error } = useCalloutStorageConfigQuery({
  *   variables: {
  *      calloutId: // value for 'calloutId'
- *      spaceId: // value for 'spaceId'
- *      challengeId: // value for 'challengeId'
- *      opportunityId: // value for 'opportunityId'
- *      includeSpace: // value for 'includeSpace'
- *      includeChallenge: // value for 'includeChallenge'
- *      includeOpportunity: // value for 'includeOpportunity'
  *   },
  * });
  */
@@ -23608,9 +23495,9 @@ export const ChallengeExplorerDataDocument = gql`
   query ChallengeExplorerData($spaceIDs: [UUID!]) {
     spaces(IDs: $spaceIDs) {
       id
-      nameID
       profile {
         id
+        url
         tagline
         displayName
       }
@@ -23623,9 +23510,9 @@ export const ChallengeExplorerDataDocument = gql`
       }
       challenges {
         id
-        nameID
         profile {
           id
+          url
           tagline
           displayName
           description
@@ -23898,55 +23785,16 @@ export const LatestContributionsDocument = gql`
     activityFeed(after: $after, first: $first, args: $filter) {
       activityFeed {
         id
-        collaborationID
         createdDate
-        description
         type
-        child
-        parentNameID
-        journeyDisplayName: parentDisplayName
-        journey {
-          id
-          ... on Space {
-            profile {
-              ...RecentContributionsSpaceProfile
-            }
-          }
-          ... on RelayPaginatedSpace {
-            profile {
-              ...RecentContributionsSpaceProfile
-            }
-          }
-          ... on Challenge {
-            profile {
-              ...RecentContributionsChildJourneyProfile
-            }
-          }
-          ... on Opportunity {
-            profile {
-              ...RecentContributionsChildJourneyProfile
-            }
-          }
-        }
         triggeredBy {
           id
-          nameID
-          firstName
-          lastName
           profile {
             id
             displayName
             avatar: visual(type: AVATAR) {
               id
               uri
-            }
-            tagsets {
-              ...TagsetDetails
-            }
-            location {
-              id
-              city
-              country
             }
           }
         }
@@ -23993,9 +23841,6 @@ export const LatestContributionsDocument = gql`
       }
     }
   }
-  ${RecentContributionsSpaceProfileFragmentDoc}
-  ${RecentContributionsChildJourneyProfileFragmentDoc}
-  ${TagsetDetailsFragmentDoc}
   ${ActivityLogMemberJoinedFragmentDoc}
   ${ActivityLogCalloutPublishedFragmentDoc}
   ${ActivityLogCalloutPostCreatedFragmentDoc}
@@ -24068,13 +23913,8 @@ export const LatestContributionsGroupedDocument = gql`
   query LatestContributionsGrouped($filter: ActivityFeedGroupedQueryArgs) {
     activityFeedGrouped(args: $filter) {
       id
-      collaborationID
       createdDate
-      description
       type
-      child
-      parentNameID
-      journeyDisplayName: parentDisplayName
       journey {
         id
         ... on Space {
@@ -24095,28 +23935,6 @@ export const LatestContributionsGroupedDocument = gql`
         ... on Opportunity {
           profile {
             ...RecentContributionsChildJourneyProfile
-          }
-        }
-      }
-      triggeredBy {
-        id
-        nameID
-        firstName
-        lastName
-        profile {
-          id
-          displayName
-          avatar: visual(type: AVATAR) {
-            id
-            uri
-          }
-          tagsets {
-            ...TagsetDetails
-          }
-          location {
-            id
-            city
-            country
           }
         }
       }
@@ -24160,7 +23978,6 @@ export const LatestContributionsGroupedDocument = gql`
   }
   ${RecentContributionsSpaceProfileFragmentDoc}
   ${RecentContributionsChildJourneyProfileFragmentDoc}
-  ${TagsetDetailsFragmentDoc}
   ${ActivityLogMemberJoinedFragmentDoc}
   ${ActivityLogCalloutPublishedFragmentDoc}
   ${ActivityLogCalloutPostCreatedFragmentDoc}

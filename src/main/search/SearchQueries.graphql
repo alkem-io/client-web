@@ -54,8 +54,9 @@ query search($searchData: SearchInput!) {
 fragment SearchResultPost on SearchResultPost {
   post {
     id
-    nameID
     profile {
+      id
+      url
       displayName
       visual(type: CARD) {
         ...VisualUri
@@ -81,7 +82,6 @@ fragment SearchResultPost on SearchResultPost {
 fragment PostParent on SearchResultPost {
   space {
     id
-    nameID
     account {
       id
       license {
@@ -91,6 +91,7 @@ fragment PostParent on SearchResultPost {
     }
     profile {
       id
+      url
       displayName
     }
     authorization {
@@ -100,12 +101,11 @@ fragment PostParent on SearchResultPost {
   }
   challenge {
     id
-    nameID
     profile {
       id
+      url
       displayName
     }
-
     authorization {
       id
       anonymousReadAccess
@@ -113,12 +113,11 @@ fragment PostParent on SearchResultPost {
   }
   opportunity {
     id
-    nameID
     profile {
       id
+      url
       displayName
     }
-
     authorization {
       id
       anonymousReadAccess
@@ -126,10 +125,10 @@ fragment PostParent on SearchResultPost {
   }
   callout {
     id
-    nameID
     framing {
       profile {
         id
+        url
         displayName
       }
     }
@@ -217,9 +216,9 @@ fragment SearchResultPostProfile on Profile {
 fragment SearchResultSpace on SearchResultSpace {
   space {
     id
-    nameID
     profile {
       id
+      url
       displayName
       tagset {
         ...TagsetDetails
@@ -254,9 +253,9 @@ fragment SearchResultSpace on SearchResultSpace {
 fragment SearchResultChallenge on SearchResultChallenge {
   challenge {
     id
-    nameID
     profile {
       id
+      url
       displayName
       tagset {
         ...TagsetDetails
@@ -284,9 +283,9 @@ fragment SearchResultChallenge on SearchResultChallenge {
   }
   space {
     id
-    nameID
     profile {
       id
+      url
       displayName
       tagline
     }
@@ -307,9 +306,9 @@ fragment SearchResultChallenge on SearchResultChallenge {
 fragment SearchResultOpportunity on SearchResultOpportunity {
   opportunity {
     id
-    nameID
     profile {
       id
+      url
       displayName
       tagset {
         ...TagsetDetails
@@ -334,9 +333,9 @@ fragment SearchResultOpportunity on SearchResultOpportunity {
   }
   challenge {
     id
-    nameID
     profile {
       id
+      url
       displayName
     }
     authorization {
@@ -346,11 +345,6 @@ fragment SearchResultOpportunity on SearchResultOpportunity {
   }
   space {
     id
-    nameID
-    profile {
-      id
-      displayName
-    }
     account {
       id
       license {

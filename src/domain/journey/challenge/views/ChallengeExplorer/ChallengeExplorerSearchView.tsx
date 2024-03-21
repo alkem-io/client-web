@@ -2,7 +2,6 @@ import React, { FC } from 'react';
 import ChallengeExplorerGroupBy from './ChallengeExplorerGroupBy';
 import { SpaceIcon } from '../../../space/icon/SpaceIcon';
 import { SimpleChallengeWithSearchTerms } from '../../../../../main/topLevelPages/TopLevelChallenges/ChallengeExplorerContainer';
-import { buildChallengeUrl, buildSpaceUrl } from '../../../../../main/routing/urlBuilders';
 import { Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
@@ -56,15 +55,14 @@ const ChallengeExplorerSearchView: FC<ChallengeExplorerSearchViewProps> = ({
                     {values.map(challenge => (
                       <ChallengeCard
                         challengeId={challenge.id}
-                        challengeNameId={challenge.nameID}
                         banner={challenge.banner}
                         displayName={challenge.displayName}
                         tags={challenge.tags}
                         tagline={challenge.tagline}
                         vision={challenge.vision}
-                        journeyUri={buildChallengeUrl(challenge.spaceNameId, challenge.nameID)}
+                        journeyUri={challenge.profile.url}
                         spaceDisplayName={challenge.spaceDisplayName}
-                        spaceUri={buildSpaceUrl(challenge.spaceNameId)}
+                        spaceUri={challenge.spaceUrl}
                         spaceVisibility={challenge.spaceVisibility}
                         member={challenge.member}
                         hideJoin

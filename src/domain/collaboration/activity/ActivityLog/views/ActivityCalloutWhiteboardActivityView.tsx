@@ -6,13 +6,13 @@ import ActivityDescriptionByType from '../../../../shared/components/ActivityDes
 import { ActivityCalloutValues } from '../../../../shared/types/ActivityCalloutValues';
 import { ActivityEventType } from '../../../../../core/apollo/generated/graphql-schema';
 
-interface ActivityCalloutWhiteboardCreatedViewProps extends ActivityViewProps {
+interface ActivityCalloutWhiteboardActivityViewProps extends ActivityViewProps {
   callout: ActivityCalloutValues;
   whiteboard: ActivitySubject;
   type: ActivityEventType.CalloutWhiteboardCreated | ActivityEventType.CalloutWhiteboardContentModified;
 }
 
-export const ActivityCalloutWhiteboardCreatedView: FC<ActivityCalloutWhiteboardCreatedViewProps> = ({
+export const ActivityCalloutWhiteboardActivityView: FC<ActivityCalloutWhiteboardActivityViewProps> = ({
   avatarUrl,
   loading,
   createdDate,

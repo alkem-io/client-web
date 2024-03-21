@@ -4,11 +4,10 @@ import SpaceDashboardPage from '../SpaceDashboard/SpaceDashboardPage';
 import SpaceChallengesPage from '../pages/SpaceChallengesPage';
 import KnowedgeBasePage from '../../../collaboration/KnowledgeBase/KnowedgeBasePage';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
-import { useUrlParams } from '../../../../core/routing/useUrlParams';
-import { buildSpaceUrl } from '../../../../main/routing/urlBuilders';
 import { JourneyCalloutDialogProps } from '../../common/JourneyCalloutDialog/JourneyCalloutDialog';
 import { CalloutGroupName } from '../../../../core/apollo/generated/graphql-schema';
 import SpaceCommunityPage from '../SpaceCommunityPage/SpaceCommunityPage';
+import { useSpace } from '../SpaceContext/useSpace';
 
 const getPageSection = (calloutGroup: string | undefined): EntityPageSection => {
   switch (calloutGroup) {
@@ -42,14 +41,10 @@ const renderPage = (calloutGroup: string | undefined) => {
 };
 
 const SpaceCalloutPage = (props: JourneyCalloutDialogProps) => {
-  const { spaceNameId } = useUrlParams();
-
-  if (!spaceNameId) {
-    throw new Error('Must be within a Space');
-  }
+  const { profile } = useSpace();
 
   const getPageRoute = (calloutGroup: string | undefined) => {
-    return `${buildSpaceUrl(spaceNameId)}/${getPageSection(calloutGroup)}`;
+    return `${profile.url}/${getPageSection(calloutGroup)}`;
   };
 
   return <CalloutPage journeyTypeName="space" parentRoute={getPageRoute} renderPage={renderPage} {...props} />;

@@ -63,7 +63,7 @@ const FormikWhiteboardPreview: FC<FormikWhiteboardPreviewProps> = ({
     return {
       id: '__template',
       // Needed to pass yup validation of WhiteboardDialog
-      profile: { id: '__templateProfile', displayName: '__template', storageBucket: { id: '' } },
+      profile: { id: '__templateProfile', displayName: '__template', url: '', storageBucket: { id: '' } },
       content: field.value,
     };
   }, [field.value]);

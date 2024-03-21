@@ -5,7 +5,6 @@ import {
   CalloutsQueryVariables,
   Reference,
 } from '../../../../../core/apollo/generated/graphql-schema';
-import { buildJourneyUrl, JourneyLocation } from '../../../../../main/routing/urlBuilders';
 import EntityDashboardContributorsSection from '../../../../community/community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';
 import {
   EntityDashboardContributors,
@@ -18,7 +17,6 @@ import ShareButton from '../../../../shared/components/ShareDialog/ShareButton';
 import PageContent from '../../../../../core/ui/content/PageContent';
 import PageContentColumn from '../../../../../core/ui/content/PageContentColumn';
 import SeeMore from '../../../../../core/ui/content/SeeMore';
-import { CoreEntityIdTypes } from '../../../../shared/types/CoreEntityIds';
 import { JourneyTypeName } from '../../../JourneyTypeName';
 import DashboardCalendarSection from '../../../../shared/components/DashboardSections/DashboardCalendarSection';
 import ContactLeadsButton from '../../../../community/community/ContactLeadsButton/ContactLeadsButton';
@@ -38,9 +36,9 @@ import { RECENT_ACTIVITIES_LIMIT_EXPANDED } from '../../journeyDashboard/constan
 
 export interface JourneyDashboardViewProps
   extends EntityDashboardContributors,
-    Omit<EntityDashboardLeads, 'leadOrganizations'>,
-    Partial<CoreEntityIdTypes> {
+    Omit<EntityDashboardLeads, 'leadOrganizations'> {
   journeyId: string | undefined;
+  journeyUrl: string | undefined;
   welcome?: ReactNode;
   ribbon?: ReactNode;
   communityId?: string;
@@ -74,9 +72,7 @@ const JourneyDashboardView = ({
   welcome,
   ribbon,
   journeyId,
-  spaceNameId,
-  challengeNameId,
-  opportunityNameId,
+  journeyUrl,
   communityId = '',
   callouts,
   topCallouts,
@@ -104,15 +100,6 @@ const JourneyDashboardView = ({
   const closeContactLeadsDialog = () => {
     setIsOpenContactLeadUsersDialog(false);
   };
-
-  const journeyLocation: JourneyLocation | undefined =
-    typeof spaceNameId === 'undefined'
-      ? undefined
-      : {
-          spaceNameId,
-          challengeNameId,
-          opportunityNameId,
-        };
 
   const isSpace = journeyTypeName === 'space';
 
@@ -147,7 +134,7 @@ const JourneyDashboardView = ({
         </FullWidthButton>
         <ShareButton
           title={t('share-dialog.share-this', { entity: t(`common.${journeyTypeName}` as const) })}
-          url={journeyLocation && buildJourneyUrl(journeyLocation)}
+          url={journeyUrl}
           entityTypeName={journeyTypeName}
         />
         {communityReadAccess && contactLeadsMessageReceivers.length > 0 && (
@@ -163,9 +150,7 @@ const JourneyDashboardView = ({
           messageReceivers={contactLeadsMessageReceivers}
         />
         {timelineReadAccess && <DashboardCalendarSection journeyId={journeyId} journeyTypeName={journeyTypeName} />}
-        {communityReadAccess && (
-          <DashboardUpdatesSection entities={{ spaceId: spaceNameId, communityId }} shareUrl={shareUpdatesUrl} />
-        )}
+        {communityReadAccess && <DashboardUpdatesSection communityId={communityId} shareUrl={shareUpdatesUrl} />}
         {communityReadAccess && (
           <EntityDashboardContributorsSection
             memberUsers={memberUsers}
@@ -198,7 +183,6 @@ const JourneyDashboardView = ({
           topCallouts={topCallouts}
           activities={activities}
           journeyTypeName={journeyTypeName}
-          journeyLocation={journeyLocation}
           onActivitiesDialogOpen={() => fetchMoreActivities(RECENT_ACTIVITIES_LIMIT_EXPANDED)}
         />
         <CalloutsGroupView

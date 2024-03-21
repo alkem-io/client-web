@@ -10,7 +10,7 @@ import { Room } from '../../room/models/Room';
 
 export interface Discussion {
   id: string;
-  nameID: string;
+  url: string;
   title: string;
   category: DiscussionCategory;
   myPrivileges: AuthorizationPrivilege[] | undefined;
@@ -39,7 +39,7 @@ export const useDiscussionMapper = (allAuthorsIds: string[]): DiscussionMapper =
     () => ({
       discussionMapper: (discussion: DiscussionCardFragment) => ({
         id: discussion.id,
-        nameID: discussion.nameID,
+        url: discussion.profile.url,
         title: discussion.profile.displayName,
         category: discussion.category,
         myPrivileges: discussion.authorization?.myPrivileges,
