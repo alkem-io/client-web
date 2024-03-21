@@ -13,13 +13,10 @@ import ChallengeContributorsDialogContent from '../../../community/community/ent
 import SeeMore from '../../../../core/ui/content/SeeMore';
 import { useTranslation } from 'react-i18next';
 import { buildAboutUrl } from '../../../../main/routing/urlBuilders';
-import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 
 const ChallengeAboutPage: FC = () => {
   const { communityId, profile } = useChallenge();
-
-  const { spaceNameId = '', challengeNameId } = useUrlParams();
 
   const [backToParentPage] = useBackToParentPage('../dashboard');
 
@@ -28,8 +25,6 @@ const ChallengeAboutPage: FC = () => {
   const [isContributorsDialogOpen, setIsContributorsDialogOpen] = useState(false);
 
   const { t } = useTranslation();
-
-  const shareAboutUrl = buildAboutUrl({ spaceNameId, challengeNameId });
 
   const { journeyId } = useRouteResolver();
 
@@ -73,7 +68,7 @@ const ChallengeAboutPage: FC = () => {
                 <Close />
               </IconButton>
             }
-            shareUrl={shareAboutUrl}
+            shareUrl={buildAboutUrl(profile.url)}
             leftColumnChildren={
               <EntityDashboardContributorsSection
                 memberUsers={memberUsers}

@@ -11,23 +11,19 @@ interface ActivityCalloutPublishedViewProps extends ActivityViewProps {
 }
 
 export const ActivityCalloutPublishedView: FC<ActivityCalloutPublishedViewProps> = ({
-  avatarUrl,
-  loading,
-  createdDate,
   journeyDisplayName,
   callout,
   type,
+  ...rest
 }) => {
   return (
     <ActivityBaseView
-      avatarUrl={avatarUrl}
-      loading={loading}
       type={type}
       calloutType={callout.type}
       title={<ActivityDescriptionByType activityType={type} subject={callout.framing.profile.displayName} />}
       url={callout.framing.profile.url}
       contextDisplayName={journeyDisplayName}
-      createdDate={createdDate}
+      {...rest}
     />
   );
 };

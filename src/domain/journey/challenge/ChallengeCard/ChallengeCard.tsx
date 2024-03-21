@@ -16,7 +16,6 @@ interface ChallengeCardProps
   extends Omit<SpaceChildJourneyCardProps, 'iconComponent' | 'journeyTypeName' | 'parentSegment'> {
   tagline: string;
   challengeId?: string;
-  challengeNameId?: string;
   spaceUri?: string;
   spaceDisplayName?: ReactNode;
   spaceVisibility?: SpaceVisibility;
@@ -29,7 +28,6 @@ interface ChallengeCardProps
 
 const ChallengeCard = ({
   challengeId,
-  challengeNameId,
   spaceDisplayName,
   spaceUri,
   spaceVisibility,
@@ -57,12 +55,8 @@ const ChallengeCard = ({
       expansionActions={
         <CardActions>
           <JourneyCardGoToButton journeyUri={props.journeyUri} journeyTypeName="challenge" />
-          {!hideJoin && challengeId && challengeNameId && (
-            <JourneyCardJoinButton
-              challengeId={challengeId}
-              challengeNameId={challengeNameId}
-              challengeName={props.displayName}
-            />
+          {!hideJoin && challengeId && (
+            <JourneyCardJoinButton challengeId={challengeId} challengeName={props.displayName} />
           )}
         </CardActions>
       }

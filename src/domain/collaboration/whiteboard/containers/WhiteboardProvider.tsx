@@ -7,7 +7,6 @@ import {
 
 interface WhiteboardLocation {
   calloutId: string | undefined;
-  spaceId: string;
   whiteboardNameId: string;
 }
 

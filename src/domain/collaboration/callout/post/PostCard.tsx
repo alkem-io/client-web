@@ -8,18 +8,23 @@ import CardDescriptionWithTags from '../../../../core/ui/card/CardDescriptionWit
 import CardFooter from '../../../../core/ui/card/CardFooter';
 import CardFooterDate from '../../../../core/ui/card/CardFooterDate';
 import MessageCounter from '../../../../core/ui/card/MessageCounter';
-import { ContributeTabPostFragment, Room, VisualUriFragment } from '../../../../core/apollo/generated/graphql-schema';
+import { Room, VisualUriFragment } from '../../../../core/apollo/generated/graphql-schema';
 import CardHeaderCaption from '../../../../core/ui/card/CardHeaderCaption';
 import { gutters } from '../../../../core/ui/grid/utils';
+import { Identifiable } from '../../../../core/utils/Identifiable';
 
-type NeededFields = 'id' | 'nameID' | 'profile' | 'type';
-
-export type PostCardPost = Pick<ContributeTabPostFragment, NeededFields> & {
+export interface PostCardPost extends Identifiable {
+  profile: {
+    url: string;
+    displayName: string;
+    description?: string;
+    tagset?: { tags: string[] };
+  };
   bannerNarrow?: VisualUriFragment;
   createdBy?: { profile: { displayName: string } };
   comments?: Pick<Room, 'messagesCount'>;
   createdDate: string | Date; // Apollo says Date while actually it's a string
-};
+}
 
 interface PostCardProps {
   post: PostCardPost | undefined;

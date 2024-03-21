@@ -2,7 +2,6 @@ import { Box } from '@mui/material';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import ChallengeExplorerCardFilter from './ChallengeExplorerCardFilter';
-import { buildChallengeUrl, buildSpaceUrl } from '../../../../../main/routing/urlBuilders';
 import CheckboxesFilter from '../../../../shared/components/CheckboxesFilter/CheckboxesFilter';
 import {
   SimpleChallenge,
@@ -58,15 +57,14 @@ const ChallengeExplorerListView: FC<ChallengeExplorerListViewProps> = ({
                       <ChallengeCard
                         key={challenge.id}
                         challengeId={challenge.id}
-                        challengeNameId={challenge.nameID}
                         banner={challenge.banner}
                         displayName={challenge.displayName}
                         tags={challenge.tags}
                         tagline={challenge.tagline}
                         vision={challenge.vision}
-                        journeyUri={buildChallengeUrl(challenge.spaceNameId, challenge.nameID)}
+                        journeyUri={challenge.profile.url}
                         spaceDisplayName={challenge.spaceDisplayName}
-                        spaceUri={buildSpaceUrl(challenge.spaceNameId)}
+                        spaceUri={challenge.spaceUrl}
                         spaceVisibility={challenge.spaceVisibility}
                         member={challenge.member}
                         hideJoin

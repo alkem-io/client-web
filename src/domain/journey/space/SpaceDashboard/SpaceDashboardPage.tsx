@@ -35,9 +35,6 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
     throw new Error('Param :spaceNameId is missing');
   }
 
-  const shareUpdatesUrl = buildUpdatesUrl({ spaceNameId });
-  const shareAboutUrl = buildAboutUrl({ spaceNameId });
-
   return (
     <SpacePageLayout currentSection={EntityPageSection.Dashboard}>
       <SpaceDashboardContainer spaceId={spaceId}>
@@ -45,7 +42,7 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
           <>
             <SpaceDashboardView
               spaceId={spaceId}
-              spaceNameId={entities.space?.nameID}
+              spaceUrl={entities.space?.profile.url}
               vision={entities.space?.context?.vision}
               displayName={entities.space?.profile.displayName}
               dashboardNavigation={dashboardNavigation}
@@ -65,14 +62,13 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
               callouts={callouts}
               topCallouts={entities.topCallouts}
               journeyTypeName="space"
-              shareUpdatesUrl={shareUpdatesUrl}
+              shareUpdatesUrl={buildUpdatesUrl(entities.space?.profile.url ?? '')}
             />
             <CommunityUpdatesDialog
               open={dialog === 'updates'}
               onClose={backToDashboard}
-              spaceId={entities.space?.id}
               communityId={entities.space?.community?.id}
-              shareUrl={shareUpdatesUrl}
+              shareUrl={buildUpdatesUrl(entities.space?.profile.url ?? '')}
               loading={state.loading}
             />
             <ContributorsDialog
@@ -109,7 +105,7 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
                   <Close />
                 </IconButton>
               }
-              shareUrl={shareAboutUrl}
+              shareUrl={buildAboutUrl(entities.space?.profile.url)}
             />
           </>
         )}

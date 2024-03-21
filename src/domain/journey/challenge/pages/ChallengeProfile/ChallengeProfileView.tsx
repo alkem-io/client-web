@@ -4,13 +4,12 @@ import { useTranslation } from 'react-i18next';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import {
-  refetchChallengeProfileInfoQuery,
   refetchAdminSpaceChallengesPageQuery,
+  refetchChallengeProfileInfoQuery,
   useChallengeProfileInfoQuery,
   useCreateChallengeMutation,
   useUpdateChallengeMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
-import { useNavigateToEdit } from '../../../../../core/routing/useNavigateToEdit';
 import SaveButton from '../../../../../core/ui/actions/SaveButton';
 import WrapperTypography from '../../../../../core/ui/typography/deprecated/WrapperTypography';
 import FormMode from '../../../../platform/admin/components/FormMode';
@@ -20,6 +19,8 @@ import { formatDatabaseLocation } from '../../../../common/location/LocationUtil
 import Gutters from '../../../../../core/ui/grid/Gutters';
 import { VisualType } from '../../../../../core/apollo/generated/graphql-schema';
 import { useRouteResolver } from '../../../../../main/routing/resolvers/RouteResolver';
+import { useNavigate } from 'react-router-dom';
+import { buildJourneyAdminUrl } from '../../../../../main/routing/urlBuilders';
 
 interface ChallengeProfileViewProps {
   mode: FormMode;
@@ -27,7 +28,7 @@ interface ChallengeProfileViewProps {
 
 const ChallengeProfileView: FC<ChallengeProfileViewProps> = ({ mode }) => {
   const { t } = useTranslation();
-  const navigateToEdit = useNavigateToEdit();
+  const navigate = useNavigate();
   const notify = useNotification();
   const onSuccess = (message: string) => notify(message, 'success');
 
@@ -38,7 +39,7 @@ const ChallengeProfileView: FC<ChallengeProfileViewProps> = ({ mode }) => {
   const [createChallenge, { loading: isCreating }] = useCreateChallengeMutation({
     onCompleted: data => {
       onSuccess('Successfully created');
-      navigateToEdit(data.createChallenge.nameID);
+      navigate(buildJourneyAdminUrl(data.createChallenge.profile.url), { replace: true });
     },
     refetchQueries: [refetchAdminSpaceChallengesPageQuery({ spaceId: spaceNameId })],
     awaitRefetchQueries: true,

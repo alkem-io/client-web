@@ -2,12 +2,11 @@ import React from 'react';
 import CalloutPage from '../../../collaboration/CalloutPage/CalloutPage';
 import JourneyContributePage from '../../common/JourneyContributePage/JourneyContributePage';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
-import { useUrlParams } from '../../../../core/routing/useUrlParams';
-import { buildChallengeUrl } from '../../../../main/routing/urlBuilders';
 import { JourneyCalloutDialogProps } from '../../common/JourneyCalloutDialog/JourneyCalloutDialog';
 import ChallengeDashboardPage from '../pages/ChallengeDashboardPage';
 import { CalloutGroupName } from '../../../../core/apollo/generated/graphql-schema';
 import ChallengeOpportunitiesPage from '../pages/ChallengeOpportunitiesPage';
+import { useChallenge } from '../hooks/useChallenge';
 
 const renderPage = (calloutGroup: string | undefined) => {
   switch (calloutGroup) {
@@ -42,14 +41,10 @@ const getPageSection = (calloutGroup: string | undefined): EntityPageSection => 
 };
 
 const ChallengeCalloutPage = (props: JourneyCalloutDialogProps) => {
-  const { spaceNameId, challengeNameId } = useUrlParams();
-
-  if (!spaceNameId || !challengeNameId) {
-    throw new Error('Must be within a Challenge');
-  }
+  const { profile } = useChallenge();
 
   const getPageRoute = (calloutGroup: string | undefined) => {
-    return `${buildChallengeUrl(spaceNameId, challengeNameId)}/${getPageSection(calloutGroup)}`;
+    return `${profile.url}/${getPageSection(calloutGroup)}`;
   };
 
   return <CalloutPage journeyTypeName="challenge" parentRoute={getPageRoute} renderPage={renderPage} {...props} />;

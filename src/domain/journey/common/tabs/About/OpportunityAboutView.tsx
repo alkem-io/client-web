@@ -41,7 +41,6 @@ import { Metric } from '../../../../platform/metrics/utils/getMetricCount';
 export interface OpportunityAboutViewProps extends EntityDashboardContributors, EntityDashboardLeads {
   challengeId: string | undefined;
   opportunityId: string | undefined;
-  challengeNameId: string | undefined;
   opportunityUrl: string;
   name: string;
   tagline: string | undefined;
@@ -53,7 +52,6 @@ export interface OpportunityAboutViewProps extends EntityDashboardContributors, 
   loading?: boolean;
   error?: ApolloError;
   communityReadAccess: boolean;
-  spaceNameId: string | undefined;
   communityId: string | undefined;
   references: ReferenceDetailsFragment[] | undefined;
   metrics: Metric[] | undefined;
@@ -84,7 +82,6 @@ const journeyTypeName = 'opportunity';
 const OpportunityAboutView: FC<OpportunityAboutViewProps> = ({
   opportunityId,
   challengeId,
-  challengeNameId,
   opportunityUrl,
   name,
   tagline,
@@ -101,7 +98,6 @@ const OpportunityAboutView: FC<OpportunityAboutViewProps> = ({
   memberUsersCount,
   memberOrganizations,
   memberOrganizationsCount,
-  spaceNameId,
   communityId,
   references,
   metrics,
@@ -142,11 +138,7 @@ const OpportunityAboutView: FC<OpportunityAboutViewProps> = ({
   return (
     <>
       <PageContent>
-        <OpportunityApplicationButtonContainer
-          challengeNameId={challengeNameId}
-          opportunityId={opportunityId}
-          challengeId={challengeId}
-        >
+        <OpportunityApplicationButtonContainer opportunityId={opportunityId} challengeId={challengeId}>
           {({ applicationButtonProps, state: { loading } }) => {
             if (loading || applicationButtonProps.isMember) {
               return null;
@@ -236,9 +228,7 @@ const OpportunityAboutView: FC<OpportunityAboutViewProps> = ({
             />
             <FixedHeightBlockContent>{who}</FixedHeightBlockContent>
           </FixedHeightContentBlock>
-          {communityReadAccess && (
-            <DashboardUpdatesSection entities={{ spaceId: spaceNameId, communityId }} shareUrl={shareUpdatesUrl} />
-          )}
+          {communityReadAccess && <DashboardUpdatesSection communityId={communityId} shareUrl={shareUpdatesUrl} />}
           <PageContentBlock halfWidth>
             <PageContentBlockHeader title={t('common.references')} />
             <References references={references} noItemsView={t('common.no-references')} />

@@ -1,6 +1,5 @@
 fragment PostCard on Post {
   id
-  nameID
   type
   createdBy {
     id
@@ -17,6 +16,7 @@ fragment PostCard on Post {
 
   profile {
     id
+    url
     displayName
     description
     visuals {

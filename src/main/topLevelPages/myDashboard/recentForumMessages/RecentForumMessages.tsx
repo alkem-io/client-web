@@ -8,7 +8,6 @@ import { DiscussionListView } from '../../../../domain/communication/discussion/
 import { useDiscussionMapper } from '../../../../domain/communication/discussion/models/Discussion';
 import { compact } from 'lodash';
 import { useNavigate } from 'react-router-dom';
-import { buildDiscussionUrl } from '../../../routing/urlBuilders';
 
 interface RecentForumMessagesProps {}
 
@@ -21,8 +20,8 @@ const RecentForumMessages: FC<RecentForumMessagesProps> = () => {
     compact(data?.platform.communication.discussions?.map(d => d.createdBy))
   );
 
-  const handleClickDiscussion = (discussionNameId: string) => {
-    navigate(buildDiscussionUrl('/forum', discussionNameId));
+  const handleClickDiscussion = (discussionUrl: string) => {
+    navigate(discussionUrl);
   };
 
   return (
@@ -34,7 +33,7 @@ const RecentForumMessages: FC<RecentForumMessagesProps> = () => {
         }}
         state={{ loading: loadingDiscussions }}
         actions={{
-          onClickDiscussion: discussion => handleClickDiscussion(discussion.nameID),
+          onClickDiscussion: discussion => handleClickDiscussion(discussion.url),
         }}
         options={{ filterEnabled: false }}
       />

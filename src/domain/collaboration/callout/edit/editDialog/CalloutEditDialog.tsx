@@ -112,7 +112,7 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
             locationType="callout"
             journeyTypeName={journeyTypeName}
             journeyId={journeyId}
-            calloutId={callout.nameID}
+            calloutId={callout.id}
           >
             <CalloutForm
               calloutType={calloutType}

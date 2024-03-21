@@ -2,7 +2,6 @@ import React, { FC, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { journeyCardTagsGetter, journeyCardValueGetter } from '../../common/utils/journeyCardValueGetter';
-import { buildChallengeUrl } from '../../../../main/routing/urlBuilders';
 import { JourneyCreationDialog } from '../../../shared/components/JorneyCreationDialog';
 import { JourneyFormValues } from '../../../shared/components/JorneyCreationDialog/JourneyCreationForm';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
@@ -46,9 +45,8 @@ const SpaceChallengesPage: FC<SpaceChallengesPageProps> = () => {
       if (!result) {
         return;
       }
-      // delay the navigation so all other processes related to updating the cache,
-      // before closing the all subscriptions are completed
-      setTimeout(() => navigate(buildChallengeUrl(spaceNameId, result.nameID)), 100);
+
+      navigate(result.profile.url);
     },
     [navigate, createChallenge, spaceNameId]
   );
@@ -58,13 +56,11 @@ const SpaceChallengesPage: FC<SpaceChallengesPageProps> = () => {
       <SpaceChallengesContainer spaceId={spaceId}>
         {({ callouts, ...entities }, state) => (
           <ChildJourneyView
-            spaceNameId={spaceNameId}
             childEntities={entities.challenges}
             childEntitiesIcon={<ChallengeIcon />}
             childEntityReadAccess={permissions.canReadChallenges}
             childEntityValueGetter={journeyCardValueGetter}
             childEntityTagsGetter={journeyCardTagsGetter}
-            getChildEntityUrl={entity => buildChallengeUrl(spaceNameId, entity.nameID)}
             journeyTypeName="space"
             state={{ loading: state.loading, error: state.error }}
             renderChildEntityCard={challenge => (
@@ -74,7 +70,7 @@ const SpaceChallengesPage: FC<SpaceChallengesPageProps> = () => {
                 tags={challenge.profile.tagset?.tags!}
                 tagline={challenge.profile.tagline!}
                 vision={challenge.context?.vision!}
-                journeyUri={buildChallengeUrl(spaceNameId, challenge.nameID)}
+                journeyUri={challenge.profile.url}
                 locked={!challenge.authorization?.anonymousReadAccess}
                 spaceVisibility={spaceVisibility}
                 member={challenge.community?.myMembershipStatus === CommunityMembershipStatus.Member}

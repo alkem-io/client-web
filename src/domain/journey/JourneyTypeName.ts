@@ -1,7 +1,12 @@
-import { JourneyLocation } from '../../main/routing/urlBuilders';
 import { ProfileType } from '../../core/apollo/generated/graphql-schema';
 
 export type JourneyTypeName = 'space' | 'challenge' | 'opportunity';
+
+interface JourneyLocation {
+  spaceNameId: string;
+  challengeNameId: string;
+  opportunityNameId: string;
+}
 
 export const getJourneyTypeName = (
   journeyLocation: Partial<JourneyLocation> | ProfileType | undefined

@@ -12,8 +12,6 @@ import LinksList from '../../../../../core/ui/list/LinksList';
 import { Caption } from '../../../../../core/ui/typography';
 import MembershipBackdrop from '../../../../shared/components/Backdrops/MembershipBackdrop';
 import CardsLayout from '../../../../../core/ui/card/cardsLayout/CardsLayout';
-import { CoreEntityIdTypes } from '../../../../shared/types/CoreEntityIds';
-import { NameableEntity } from '../../../../shared/types/NameableEntity';
 import { JourneyTypeName } from '../../../JourneyTypeName';
 import ChildJourneyCreate from './ChildJourneyCreate';
 import Loading from '../../../../../core/ui/loading/Loading';
@@ -21,13 +19,21 @@ import PageContentBlockSeamless from '../../../../../core/ui/content/PageContent
 import JourneyFilter from '../../JourneyFilter/JourneyFilter';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import { Button } from '@mui/material';
+import { Identifiable } from '../../../../../core/utils/Identifiable';
 
 export interface JourneySubentitiesState {
   loading: boolean;
   error?: ApolloError;
 }
 
-export interface ChildJourneyViewProps<ChildEntity extends NameableEntity> extends Partial<CoreEntityIdTypes> {
+interface BaseChildEntity extends Identifiable {
+  profile: {
+    displayName: string;
+    url: string;
+  };
+}
+
+export interface ChildJourneyViewProps<ChildEntity extends BaseChildEntity> {
   journeyTypeName: JourneyTypeName;
   childEntities: ChildEntity[] | undefined;
   childEntitiesIcon: ReactElement;
@@ -35,7 +41,6 @@ export interface ChildJourneyViewProps<ChildEntity extends NameableEntity> exten
   renderChildEntityCard?: (childEntity: ChildEntity) => ReactElement;
   childEntityValueGetter: (childEntity: ChildEntity) => ValueType;
   childEntityTagsGetter: (childEntity: ChildEntity) => string[];
-  getChildEntityUrl: (childEntity: ChildEntity) => string;
   childEntityCreateAccess?: boolean;
   childEntityOnCreate?: () => void;
   createSubentityDialog?: ReactElement;
@@ -44,8 +49,7 @@ export interface ChildJourneyViewProps<ChildEntity extends NameableEntity> exten
   childrenRight?: ReactNode;
 }
 
-const ChildJourneyView = <ChildEntity extends NameableEntity>({
-  spaceNameId,
+const ChildJourneyView = <ChildEntity extends BaseChildEntity>({
   journeyTypeName,
   childEntities = [],
   childEntitiesIcon,
@@ -53,7 +57,6 @@ const ChildJourneyView = <ChildEntity extends NameableEntity>({
   renderChildEntityCard,
   childEntityValueGetter,
   childEntityTagsGetter,
-  getChildEntityUrl,
   childEntityCreateAccess = false,
   childEntityOnCreate,
   createSubentityDialog,
@@ -84,7 +87,7 @@ const ChildJourneyView = <ChildEntity extends NameableEntity>({
                 id: entity.id,
                 title: entity.profile.displayName,
                 icon: childEntitiesIcon,
-                uri: getChildEntityUrl(entity),
+                uri: entity.profile.url,
               }))}
               emptyListCaption={t('pages.generic.sections.subentities.empty-list', {
                 entities: getJourneyChildrenTranslation(t, journeyTypeName),
@@ -119,7 +122,7 @@ const ChildJourneyView = <ChildEntity extends NameableEntity>({
                   })}
                 >
                   {filteredEntities => (
-                    <CardsLayout items={filteredEntities} deps={[spaceNameId]} disablePadding>
+                    <CardsLayout items={filteredEntities} disablePadding>
                       {renderChildEntityCard}
                     </CardsLayout>
                   )}
