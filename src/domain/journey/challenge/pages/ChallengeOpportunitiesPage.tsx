@@ -2,7 +2,6 @@ import React, { FC, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { journeyCardTagsGetter, journeyCardValueGetter } from '../../common/utils/journeyCardValueGetter';
-import { buildOpportunityUrl } from '../../../../main/routing/urlBuilders';
 import { JourneyCreationDialog } from '../../../shared/components/JorneyCreationDialog';
 import { JourneyFormValues } from '../../../shared/components/JorneyCreationDialog/JourneyCreationForm';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
@@ -49,9 +48,7 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
         return;
       }
 
-      // delay the navigation so all other processes related to updating the cache
-      // and closing all subscriptions are completed
-      setTimeout(() => navigate(buildOpportunityUrl(spaceNameId, challengeNameId, result.nameID)), 100);
+      navigate(result.profile.url);
     },
     [navigate, createOpportunity, spaceNameId, challengeId, challengeNameId]
   );
@@ -61,11 +58,9 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
       <ChallengeOpportunitiesContainer challengeId={challengeId}>
         {({ callouts, ...entities }, state) => (
           <ChildJourneyView
-            spaceNameId={spaceNameId}
             childEntities={entities.opportunities ?? undefined}
             childEntitiesIcon={<OpportunityIcon />}
             childEntityReadAccess
-            getChildEntityUrl={entity => buildOpportunityUrl(spaceNameId, challengeNameId, entity.nameID)}
             childEntityValueGetter={journeyCardValueGetter}
             childEntityTagsGetter={journeyCardTagsGetter}
             journeyTypeName="challenge"
@@ -78,7 +73,7 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
                 innovationFlowState={opportunity.collaboration?.innovationFlow?.currentState.displayName}
                 tags={opportunity.profile.tagset?.tags!}
                 banner={opportunity.profile.cardBanner}
-                journeyUri={buildOpportunityUrl(spaceNameId, challengeNameId, opportunity.nameID)}
+                journeyUri={opportunity.profile.url}
                 spaceVisibility={spaceVisibility}
                 member={opportunity.community?.myMembershipStatus === CommunityMembershipStatus.Member}
               />

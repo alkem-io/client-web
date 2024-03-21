@@ -1,5 +1,6 @@
 fragment WhiteboardProfile on Profile {
   id
+  url
   displayName
   description
   visual(type: CARD) {

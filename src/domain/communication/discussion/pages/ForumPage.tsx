@@ -31,7 +31,6 @@ import { ForumOutlined } from '@mui/icons-material';
 import BreadcrumbsItem from '../../../../core/ui/navigation/BreadcrumbsItem';
 import TopLevelPageBreadcrumbs from '../../../../main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
 import { BlockTitle } from '../../../../core/ui/typography';
-import { buildDiscussionUrl } from '../../../../main/routing/urlBuilders';
 
 const ALL_CATEGORIES = DiscussionCategoryExtEnum.All;
 const FORUM_GRAYED_OUT_IMAGE = '/forum/forum-grayed.png';
@@ -114,8 +113,8 @@ export const ForumPage: FC<ForumPageProps> = ({ dialog }) => {
 
   const ribbon = useInnovationHubOutsideRibbon({ label: 'innovationHub.outsideOfSpace.forum' });
 
-  const handleClickDiscussion = (discussionNameId: string) => {
-    navigate(buildDiscussionUrl('/forum', discussionNameId));
+  const handleClickDiscussion = (discussionUrl: string) => {
+    navigate(discussionUrl);
   };
 
   return (
@@ -170,7 +169,7 @@ export const ForumPage: FC<ForumPageProps> = ({ dialog }) => {
                 loading: loading,
               }}
               actions={{
-                onClickDiscussion: discussion => handleClickDiscussion(discussion.nameID),
+                onClickDiscussion: discussion => handleClickDiscussion(discussion.url),
               }}
               options={{
                 filterEnabled: true,

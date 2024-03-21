@@ -10,9 +10,8 @@ import { DashboardNavigationItem } from './useSpaceDashboardNavigation';
 import JourneyAvatar from '../../common/JourneyAvatar/JourneyAvatar';
 import RouterLink from '../../../../core/ui/link/RouterLink';
 
-interface DashboardNavigationItemViewProps
-  extends Omit<DashboardNavigationItem, 'id' | 'nameId' | 'member' | 'children'> {
-  url?: string;
+interface DashboardNavigationItemViewProps extends Omit<DashboardNavigationItem, 'id' | 'member' | 'children'> {
+  url: string;
   visualUri?: string;
   tooltip?: ReactNode;
   tooltipPlacement?: TooltipProps['placement'];

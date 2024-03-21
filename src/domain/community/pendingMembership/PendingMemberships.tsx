@@ -10,7 +10,6 @@ import { useUserContext } from '../user';
 import { Visual } from '../../common/visual/Visual';
 import { ContributionItem } from '../user/contribution';
 import { InvitationItem } from '../user/providers/UserProvider/InvitationItem';
-import { JourneyLocation } from '../../../main/routing/urlBuilders';
 import { VisualType } from '../../../core/apollo/generated/graphql-schema';
 
 export interface JourneyDetails {
@@ -65,13 +64,13 @@ type InvitationHydratorProps = {
     }
 );
 
-type ChildJourneyLocation = Pick<JourneyLocation, 'challengeNameId' | 'opportunityNameId'>;
-
-const getChildJourneyTypeName = (journeyLocation: ChildJourneyLocation): JourneyTypeName => {
-  if (journeyLocation.opportunityNameId) {
+const getChildJourneyTypeName = (
+  membership: Pick<ContributionItem, 'challengeId' | 'opportunityId'>
+): JourneyTypeName => {
+  if (membership.opportunityId) {
     return 'opportunity';
   }
-  if (journeyLocation.challengeNameId) {
+  if (membership.challengeId) {
     return 'challenge';
   }
   return 'space';
@@ -132,10 +131,7 @@ export const InvitationHydrator = ({
       createdDate: invitation.createdDate,
       userDisplayName: createdBy?.profile.displayName,
       journeyDisplayName: journey.profile.displayName,
-      journeyTypeName: getChildJourneyTypeName({
-        challengeNameId: invitation.challengeId,
-        opportunityNameId: invitation.opportunityId,
-      }),
+      journeyTypeName: getChildJourneyTypeName(invitation),
       journeyUri: journey.profile.url,
       journeyTagline: journey.profile.tagline,
       journeyTags: journey.profile.tagset?.tags,
@@ -193,10 +189,7 @@ export const ApplicationHydrator = ({ application, visualType, children }: Appli
     return {
       id: application.id,
       journeyDisplayName: journey.profile.displayName,
-      journeyTypeName: getChildJourneyTypeName({
-        challengeNameId: application.challengeId,
-        opportunityNameId: application.opportunityId,
-      }),
+      journeyTypeName: getChildJourneyTypeName(application),
       journeyUri: journey.profile.url,
       journeyTagline: journey.profile.tagline,
       journeyTags: journey.profile.tagset?.tags,

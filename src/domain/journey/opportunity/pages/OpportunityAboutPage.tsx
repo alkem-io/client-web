@@ -4,15 +4,10 @@ import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import { useOpportunity } from '../hooks/useOpportunity';
 import OpportunityPageLayout from '../layout/OpportunityPageLayout';
 import OpportunityAboutView from '../../common/tabs/About/OpportunityAboutView';
-import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 
 const OpportunityAboutPage: FC = () => {
-  const { spaceNameId } = useUrlParams();
   const { communityId } = useOpportunity();
-
-  const { challengeNameId } = useUrlParams();
-
   const { challengeId, opportunityId } = useRouteResolver();
 
   return (
@@ -22,7 +17,6 @@ const OpportunityAboutPage: FC = () => {
           <OpportunityAboutView
             challengeId={challengeId}
             opportunityId={opportunityId}
-            challengeNameId={challengeNameId}
             opportunityUrl={profile?.url ?? ''}
             name={profile?.displayName ?? ''}
             tagline={profile?.tagline}
@@ -32,7 +26,6 @@ const OpportunityAboutPage: FC = () => {
             background={profile?.description}
             vision={context?.vision}
             communityReadAccess={permissions.communityReadAccess}
-            spaceNameId={spaceNameId}
             communityId={communityId}
             {...rest}
             {...state}

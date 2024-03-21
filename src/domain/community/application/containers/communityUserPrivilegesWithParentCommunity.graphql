@@ -20,6 +20,10 @@ query communityUserPrivilegesWithParentCommunity(
   lookup {
     challenge(ID: $challengeId) @include(if: $includeChallenge) {
       id
+      profile {
+        id
+        url
+      }
       authorization {
         id
         myPrivileges

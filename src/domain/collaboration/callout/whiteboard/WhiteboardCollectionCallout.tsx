@@ -10,7 +10,6 @@ import { BaseCalloutViewProps } from '../CalloutViewTypes';
 import { gutters } from '../../../../core/ui/grid/utils';
 import CalloutBlockFooter from '../../CalloutBlock/CalloutBlockFooter';
 import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
-import { compact } from 'lodash';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 import { normalizeLink } from '../../../../core/utils/links';
 import { LocationStateKeyCachedCallout } from '../../CalloutPage/CalloutPage';
@@ -26,10 +25,7 @@ const WhiteboardCollectionCallout = forwardRef<Element, WhiteboardCollectionCall
     {
       callout,
       whiteboards,
-      spaceNameId,
       loading,
-      challengeNameId,
-      opportunityNameId,
       canCreate = false,
       contributionsCount,
       createNewWhiteboard,
@@ -55,13 +51,9 @@ const WhiteboardCollectionCallout = forwardRef<Element, WhiteboardCollectionCall
       <CreateCalloutItemButton onClick={handleCreate} />
     );
 
-    const calloutWhiteboards = compact(
-      whiteboards.map(whiteboard => (whiteboard ? { ...whiteboard, calloutNameId: callout.nameID } : undefined))
-    );
-
     const showCards = useMemo(
-      () => (!loading && calloutWhiteboards.length > 0) || callout.contributionPolicy.state !== CalloutState.Closed,
-      [loading, calloutWhiteboards.length, callout.contributionPolicy.state]
+      () => (!loading && whiteboards.length > 0) || callout.contributionPolicy.state !== CalloutState.Closed,
+      [loading, whiteboards.length, callout.contributionPolicy.state]
     );
 
     const breakpoint = useCurrentBreakpoint();
@@ -78,8 +70,7 @@ const WhiteboardCollectionCallout = forwardRef<Element, WhiteboardCollectionCall
       >
         {showCards && (
           <ScrollableCardsLayout
-            items={loading ? [undefined, undefined] : calloutWhiteboards}
-            deps={[spaceNameId, challengeNameId, opportunityNameId]}
+            items={loading ? [undefined, undefined] : whiteboards}
             createButton={!isMobile && createButton}
             maxHeight={gutters(22)}
           >

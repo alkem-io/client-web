@@ -4,6 +4,7 @@ query challengeApplication($challengeId: UUID!) {
       id
       profile {
         id
+        url
         displayName
       }
       community {
