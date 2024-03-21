@@ -82,7 +82,7 @@ export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ 
       }
       const update = await removeUpdate({
         variables: { messageData: { messageID, roomID } },
-        refetchQueries: communityId ? [refetchCommunityUpdatesQuery({ communityId })] : [],
+        refetchQueries: [refetchCommunityUpdatesQuery({ communityId: communityId! })],
       });
       return update.data?.removeMessageOnRoom;
     },

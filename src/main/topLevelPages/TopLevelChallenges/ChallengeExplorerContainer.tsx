@@ -49,7 +49,6 @@ export const simpleChallengeTagsValueGetter = (c: SimpleChallenge): string[] => 
 
 export const simpleChallengeSpaceDataGetter = (c: SimpleChallenge) => ({
   id: c.spaceId,
-  // nameId: c.spaceNameId,
   displayName: c.spaceDisplayName,
 });
 
@@ -146,13 +145,13 @@ export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ se
         spaceId: space.id,
         spaceUrl: space.profile.url,
         spaceDisplayName: space.profile.displayName,
-        spaceTagline: space.profile.tagline || '',
+        spaceTagline: space.profile.tagline ?? '',
         spaceVisibility: space.account.license.visibility,
         displayName: ch.profile.displayName,
         banner: getVisualByType(VisualName.CARD, ch.profile.visuals),
-        tagline: ch.profile.tagline || '',
-        tags: ch.profile.tagset?.tags || [],
-        vision: ch.context?.vision || '',
+        tagline: ch.profile.tagline ?? '',
+        tags: ch.profile.tagset?.tags ?? [],
+        vision: ch.context?.vision ?? '',
         matchedTerms: entry.terms,
         member: ch.community?.myMembershipStatus === CommunityMembershipStatus.Member,
         profile: ch.profile,

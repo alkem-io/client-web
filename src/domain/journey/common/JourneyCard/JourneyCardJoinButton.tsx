@@ -7,7 +7,6 @@ import provideStaticProps from '../../../../core/utils/provideStaticProps';
 
 interface JourneyCardJoinButtonProps {
   challengeId?: string;
-  // challengeNameId?: string;
   challengeName?: string;
 }
 

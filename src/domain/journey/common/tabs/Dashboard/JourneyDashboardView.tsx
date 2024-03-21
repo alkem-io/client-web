@@ -101,15 +101,6 @@ const JourneyDashboardView = ({
     setIsOpenContactLeadUsersDialog(false);
   };
 
-  // const journeyLocation: JourneyLocation | undefined =
-  //   typeof spaceNameId === 'undefined'
-  //     ? undefined
-  //     : {
-  //         spaceNameId,
-  //         challengeNameId,
-  //         opportunityNameId,
-  //       };
-
   const isSpace = journeyTypeName === 'space';
 
   const leadUsersHeader = isSpace ? 'community.host' : 'community.leads';
