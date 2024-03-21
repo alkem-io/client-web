@@ -1,10 +1,14 @@
 import { _AUTH_LOGIN_PATH } from '../../core/auth/authentication/constants/authentication.constants';
 import { EntityPageSection } from '../../domain/shared/layout/EntityPageSection';
 import { ROUTE_HOME } from '../../domain/platform/routes/constants';
+import { normalizeLink } from '../../core/utils/links';
 
 export const buildOrganizationUrl = (organizationNameId: string) => `/organization/${organizationNameId}`;
 
-export const buildJourneyAdminUrl = (journeyProfileUrl: string) => `/admin/spaces/${journeyProfileUrl}`;
+export const buildJourneyAdminUrl = (journeyProfileUrl: string) => {
+  const relativeUrl = normalizeLink(journeyProfileUrl);
+  return `/admin/spaces/${relativeUrl}`;
+};
 
 export const buildAdminOrganizationUrl = (organizationNameId: string) => `/admin/organizations/${organizationNameId}`;
 
