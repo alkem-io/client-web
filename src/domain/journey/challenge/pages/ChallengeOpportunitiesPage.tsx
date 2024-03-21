@@ -48,8 +48,6 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
         return;
       }
 
-      console.log(result.profile.url);
-
       navigate(result.profile.url);
     },
     [navigate, createOpportunity, spaceNameId, challengeId, challengeNameId]
