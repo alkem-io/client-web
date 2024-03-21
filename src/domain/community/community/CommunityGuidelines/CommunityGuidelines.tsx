@@ -9,14 +9,17 @@ import {
   useUpdateCommunityGuidelinesMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import FormikMarkdownField from '../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
-import FormikSubmitButton from '../../../shared/components/forms/FormikSubmitButton';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
 import { MARKDOWN_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
-import { Tagset, TagsetType } from '../../../../core/apollo/generated/graphql-schema';
+import { Reference, Tagset, TagsetType } from '../../../../core/apollo/generated/graphql-schema';
 import { DEFAULT_TAGSET } from '../../../common/tags/tagset.constants';
+import { TagsetSegment, tagsetSegmentSchema } from '../../../platform/admin/components/Common/TagsetSegment';
+import { referenceSegmentSchema } from '../../../platform/admin/components/Common/ReferenceSegment';
+import LoadingButton from '@mui/lab/LoadingButton';
+import ProfileReferenceSegment from '../../../platform/admin/components/Common/ProfileReferenceSegment';
 
 interface CommunityGuidelinesProps {
   spaceId: string;
@@ -27,18 +30,20 @@ interface CommunityGuidelinesProps {
 interface FormValues {
   displayName: string;
   description: string;
+  references: Reference[];
+  tagsets: Tagset[];
 }
 
 const validationSchema = yup.object().shape({
-  title: yup.string().required(),
-  description: MarkdownValidator(MARKDOWN_TEXT_LENGTH).required(),
+  displayName: yup.string().required(),
+  description: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
+  references: referenceSegmentSchema,
+  tagsets: tagsetSegmentSchema,
 });
 
-const CommunityGuidelines: FC<CommunityGuidelinesProps> = ({ spaceId, challengeId, disabled }) => {
+const CommunityGuidelines: FC<CommunityGuidelinesProps> = ({ spaceId, disabled }) => {
   const { t } = useTranslation();
   const notify = useNotification();
-
-  const isSpace = !Boolean(challengeId);
 
   const { data: rawData, loading: loadingGuidelines } = useCommunityGuidelinesQuery({
     variables: {
@@ -50,10 +55,11 @@ const CommunityGuidelines: FC<CommunityGuidelinesProps> = ({ spaceId, challengeI
   const data = useMemo(
     () => ({
       communityGuidelinesId: rawData?.space?.community?.guidelines?.id,
-      title: rawData?.space?.community?.guidelines?.profile.displayName,
+      displayName: rawData?.space?.community?.guidelines?.profile.displayName,
       description: rawData?.space?.community?.guidelines?.profile.description,
+      profile: rawData?.space?.community?.guidelines?.profile,
       references: rawData?.space?.community?.guidelines?.profile.references,
-      tagset: rawData?.space?.community?.guidelines?.profile.tagset
+      tagsets: rawData?.space?.community?.guidelines?.profile.tagset
         ? [rawData?.space?.community?.guidelines?.profile.tagset]
         : ([
             {
@@ -72,8 +78,10 @@ const CommunityGuidelines: FC<CommunityGuidelinesProps> = ({ spaceId, challengeI
 
   const loading = loadingGuidelines || submittingGuidelines;
   const initialValues: FormValues = {
-    displayName: data.title ?? '',
+    displayName: data.displayName ?? '',
     description: data.description ?? '',
+    references: data.references || [],
+    tagsets: data.tagsets,
   };
 
   const onSubmit = (values: FormValues) => {
@@ -99,9 +107,9 @@ const CommunityGuidelines: FC<CommunityGuidelinesProps> = ({ spaceId, challengeI
 
   return (
     <Formik initialValues={initialValues} validationSchema={validationSchema} enableReinitialize onSubmit={onSubmit}>
-      {({ values, setFieldValue, handleSubmit }) => {
+      {({ values, handleSubmit, isValid }) => {
         return (
-          <>
+          <Gutters>
             <FormikInputField name="displayName" title={t('common.title')} placeholder={t('common.title')} />
             <FormikMarkdownField
               title={t('common.introduction')}
@@ -109,14 +117,14 @@ const CommunityGuidelines: FC<CommunityGuidelinesProps> = ({ spaceId, challengeI
               disabled={disabled || loading}
               maxLength={MARKDOWN_TEXT_LENGTH}
             />
-            <Gutters />
-
+            <ProfileReferenceSegment references={values.references} profileId={data?.profile?.id} />
+            <TagsetSegment tagsets={values.tagsets} />
             <Box display="flex" marginY={4} justifyContent="flex-end">
-              <FormikSubmitButton variant="contained" onClick={() => handleSubmit()} loading={loading}>
+              <LoadingButton disabled={!isValid} variant="contained" onClick={() => handleSubmit()} loading={loading}>
                 {t('common.update')}
-              </FormikSubmitButton>
+              </LoadingButton>
             </Box>
-          </>
+          </Gutters>
         );
       }}
     </Formik>
