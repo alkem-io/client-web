@@ -10,6 +10,7 @@ fragment CalloutTemplatePreview on CalloutTemplate {
   id
   type
   framing {
+    id
     profile {
       id
       displayName

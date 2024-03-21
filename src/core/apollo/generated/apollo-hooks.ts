@@ -113,6 +113,7 @@ export const InnovationFlowCollaborationFragmentDoc = gql`
       activity
       sortOrder
       framing {
+        id
         profile {
           id
           displayName
@@ -455,6 +456,7 @@ export const CalloutFragmentDoc = gql`
       myPrivileges
     }
     framing {
+      id
       profile {
         id
         url
@@ -628,6 +630,7 @@ export const CalloutDetailsFragmentDoc = gql`
     nameID
     type
     framing {
+      id
       profile {
         id
         displayName
@@ -644,6 +647,7 @@ export const CalloutDetailsFragmentDoc = gql`
         storageBucket {
           id
         }
+        url
       }
       whiteboard {
         ...WhiteboardDetails
@@ -904,6 +908,7 @@ export const CalloutWithWhiteboardFragmentDoc = gql`
       myPrivileges
     }
     framing {
+      id
       whiteboard {
         ...WhiteboardDetails
       }
@@ -934,6 +939,7 @@ export const CollaborationWithWhiteboardDetailsFragmentDoc = gql`
         }
       }
       framing {
+        id
         whiteboard {
           ...WhiteboardDetails
         }
@@ -1849,6 +1855,7 @@ export const DashboardTopCalloutFragmentDoc = gql`
   fragment DashboardTopCallout on Callout {
     id
     framing {
+      id
       profile {
         id
         url
@@ -3030,6 +3037,7 @@ export const CalloutOnCollaborationWithStorageConfigFragmentDoc = gql`
     callouts(IDs: [$calloutId]) {
       id
       framing {
+        id
         profile {
           ...ProfileStorageConfig
         }
@@ -3043,6 +3051,7 @@ export const CalloutTemplatePreviewFragmentDoc = gql`
     id
     type
     framing {
+      id
       profile {
         id
         displayName
@@ -3208,6 +3217,7 @@ export const PostParentFragmentDoc = gql`
     callout {
       id
       framing {
+        id
         profile {
           id
           url
@@ -4953,6 +4963,7 @@ export const UpdateCalloutFlowStateDocument = gql`
       id
       sortOrder
       framing {
+        id
         profile {
           id
           flowState: tagset(tagsetName: FLOW_STATE) {
@@ -6132,6 +6143,7 @@ export const CalloutTemplateContentDocument = gql`
           ...TemplateCardProfileInfo
         }
         framing {
+          id
           profile {
             id
             displayName
@@ -6484,6 +6496,7 @@ export const UpdateCalloutDocument = gql`
     updateCallout(calloutData: $calloutData) {
       id
       framing {
+        id
         profile {
           id
           description

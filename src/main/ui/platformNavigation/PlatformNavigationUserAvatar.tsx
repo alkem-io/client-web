@@ -27,49 +27,47 @@ const PlatformNavigationUserAvatar = ({ drawer, children }: PlatformNavigationUs
       drawer={drawer}
       placement="bottom-end"
       renderTrigger={({ ref, onClick, ...props }) => (
-        <SwapColors>
-          <NavigationItemContainer ref={ref as Ref<HTMLDivElement>} position="relative">
-            <Paper
-              component={Avatar}
-              src={user?.user.profile.avatar?.uri}
-              sx={{
-                padding: 0,
-                cursor: 'pointer',
-              }}
-              aria-label={t('buttons.userMenu')}
-              onClick={onClick}
-              {...props}
-            >
-              {loadingMe && (
-                <SwapColors>
-                  <CircularProgress size={gutters()(theme)} color="primary" />
-                </SwapColors>
-              )}
-              {!loadingMe && !isAuthenticated && <Person color="primary" />}
-            </Paper>
+        <NavigationItemContainer ref={ref as Ref<HTMLDivElement>} position="relative">
+          <Paper
+            component={Avatar}
+            src={user?.user.profile.avatar?.uri}
+            sx={{
+              padding: 0,
+              cursor: 'pointer',
+            }}
+            aria-label={t('buttons.userMenu')}
+            onClick={onClick}
+            {...props}
+          >
+            {loadingMe && (
+              <SwapColors>
+                <CircularProgress size={gutters()(theme)} color="primary" />
+              </SwapColors>
+            )}
+            {!loadingMe && !isAuthenticated && <Person color="primary" />}
+          </Paper>
+          <Box
+            position="absolute"
+            top={0}
+            bottom={0}
+            left={0}
+            right={0}
+            padding={gutters(0.25)}
+            display="flex"
+            alignItems="stretch"
+            sx={{ pointerEvents: 'none' }}
+          >
             <Box
-              position="absolute"
-              top={0}
-              bottom={0}
-              left={0}
-              right={0}
-              padding={gutters(0.25)}
-              display="flex"
-              alignItems="stretch"
-              sx={{ pointerEvents: 'none' }}
-            >
-              <Box
-                component="a"
-                flexGrow={1}
-                href=""
-                onClick={event => {
-                  event.preventDefault();
-                  onClick?.(event);
-                }}
-              />
-            </Box>
-          </NavigationItemContainer>
-        </SwapColors>
+              component="a"
+              flexGrow={1}
+              href=""
+              onClick={event => {
+                event.preventDefault();
+                onClick?.(event);
+              }}
+            />
+          </Box>
+        </NavigationItemContainer>
       )}
       zIndex={PLATFORM_NAVIGATION_MENU_Z_INDEX}
     >

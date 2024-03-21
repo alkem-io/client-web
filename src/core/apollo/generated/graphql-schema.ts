@@ -5955,11 +5955,13 @@ export type CalloutPageCalloutQuery = {
           visibility: CalloutVisibility;
           framing: {
             __typename?: 'CalloutFraming';
+            id: string;
             profile: {
               __typename?: 'Profile';
               id: string;
               displayName: string;
               description?: string | undefined;
+              url: string;
               tagset?:
                 | {
                     __typename?: 'Tagset';
@@ -6283,6 +6285,7 @@ export type InnovationFlowSettingsQuery = {
                 sortOrder: number;
                 framing: {
                   __typename?: 'CalloutFraming';
+                  id: string;
                   profile: {
                     __typename?: 'Profile';
                     id: string;
@@ -6482,6 +6485,7 @@ export type InnovationFlowCollaborationFragment = {
         sortOrder: number;
         framing: {
           __typename?: 'CalloutFraming';
+          id: string;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -6535,6 +6539,7 @@ export type UpdateCalloutFlowStateMutation = {
     sortOrder: number;
     framing: {
       __typename?: 'CalloutFraming';
+      id: string;
       profile: {
         __typename?: 'Profile';
         id: string;
@@ -8091,6 +8096,7 @@ export type CalloutTemplateContentQuery = {
           };
           framing: {
             __typename?: 'CalloutFraming';
+            id: string;
             profile: {
               __typename?: 'Profile';
               id: string;
@@ -8269,6 +8275,7 @@ export type DashboardTopCalloutsFragment = {
         activity: number;
         framing: {
           __typename?: 'CalloutFraming';
+          id: string;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -8289,6 +8296,7 @@ export type DashboardTopCalloutFragment = {
   activity: number;
   framing: {
     __typename?: 'CalloutFraming';
+    id: string;
     profile: { __typename?: 'Profile'; id: string; url: string; displayName: string; description?: string | undefined };
   };
 };
@@ -8365,11 +8373,13 @@ export type CreateCalloutMutation = {
     visibility: CalloutVisibility;
     framing: {
       __typename?: 'CalloutFraming';
+      id: string;
       profile: {
         __typename?: 'Profile';
         id: string;
         displayName: string;
         description?: string | undefined;
+        url: string;
         tagset?:
           | {
               __typename?: 'Tagset';
@@ -8576,6 +8586,7 @@ export type UpdateCalloutMutation = {
     visibility: CalloutVisibility;
     framing: {
       __typename?: 'CalloutFraming';
+      id: string;
       profile: {
         __typename?: 'Profile';
         id: string;
@@ -8630,11 +8641,13 @@ export type UpdateCalloutVisibilityMutation = {
     visibility: CalloutVisibility;
     framing: {
       __typename?: 'CalloutFraming';
+      id: string;
       profile: {
         __typename?: 'Profile';
         id: string;
         displayName: string;
         description?: string | undefined;
+        url: string;
         tagset?:
           | {
               __typename?: 'Tagset';
@@ -9236,6 +9249,7 @@ export type CalloutsQuery = {
                   | undefined;
                 framing: {
                   __typename?: 'CalloutFraming';
+                  id: string;
                   profile: {
                     __typename?: 'Profile';
                     id: string;
@@ -9280,6 +9294,7 @@ export type CollaborationWithCalloutsFragment = {
           | undefined;
         framing: {
           __typename?: 'CalloutFraming';
+          id: string;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -9314,6 +9329,7 @@ export type CalloutFragment = {
     | undefined;
   framing: {
     __typename?: 'CalloutFraming';
+    id: string;
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -9352,11 +9368,13 @@ export type CalloutDetailsQuery = {
           visibility: CalloutVisibility;
           framing: {
             __typename?: 'CalloutFraming';
+            id: string;
             profile: {
               __typename?: 'Profile';
               id: string;
               displayName: string;
               description?: string | undefined;
+              url: string;
               tagset?:
                 | {
                     __typename?: 'Tagset';
@@ -9573,11 +9591,13 @@ export type CalloutDetailsFragment = {
   visibility: CalloutVisibility;
   framing: {
     __typename?: 'CalloutFraming';
+    id: string;
     profile: {
       __typename?: 'Profile';
       id: string;
       displayName: string;
       description?: string | undefined;
+      url: string;
       tagset?:
         | {
             __typename?: 'Tagset';
@@ -10909,6 +10929,7 @@ export type CalloutWithWhiteboardFragment = {
     | undefined;
   framing: {
     __typename?: 'CalloutFraming';
+    id: string;
     whiteboard?:
       | {
           __typename?: 'Whiteboard';
@@ -11180,6 +11201,7 @@ export type CollaborationWithWhiteboardDetailsFragment = {
           | undefined;
         framing: {
           __typename?: 'CalloutFraming';
+          id: string;
           whiteboard?:
             | {
                 __typename?: 'Whiteboard';
@@ -11289,6 +11311,7 @@ export type WhiteboardFromCalloutQuery = {
             | undefined;
           framing: {
             __typename?: 'CalloutFraming';
+            id: string;
             whiteboard?:
               | {
                   __typename?: 'Whiteboard';
@@ -17367,6 +17390,7 @@ export type ChallengePageQuery = {
                       activity: number;
                       framing: {
                         __typename?: 'CalloutFraming';
+                        id: string;
                         profile: {
                           __typename?: 'Profile';
                           id: string;
@@ -17580,6 +17604,7 @@ export type ChallengeProfileFragment = {
               activity: number;
               framing: {
                 __typename?: 'CalloutFraming';
+                id: string;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
@@ -19613,6 +19638,7 @@ export type OpportunityPageQuery = {
                       activity: number;
                       framing: {
                         __typename?: 'CalloutFraming';
+                        id: string;
                         profile: {
                           __typename?: 'Profile';
                           id: string;
@@ -19820,6 +19846,7 @@ export type OpportunityPageFragment = {
               activity: number;
               framing: {
                 __typename?: 'CalloutFraming';
+                id: string;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
@@ -20987,6 +21014,7 @@ export type SpacePageQuery = {
                 activity: number;
                 framing: {
                   __typename?: 'CalloutFraming';
+                  id: string;
                   profile: {
                     __typename?: 'Profile';
                     id: string;
@@ -21225,6 +21253,7 @@ export type SpacePageFragment = {
               activity: number;
               framing: {
                 __typename?: 'CalloutFraming';
+                id: string;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
@@ -24339,6 +24368,7 @@ export type CalloutOnCollaborationWithStorageConfigFragment = {
         id: string;
         framing: {
           __typename?: 'CalloutFraming';
+          id: string;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -24372,6 +24402,7 @@ export type CalloutTemplatePreviewQuery = {
           type: CalloutType;
           framing: {
             __typename?: 'CalloutFraming';
+            id: string;
             profile: {
               __typename?: 'Profile';
               id: string;
@@ -24487,6 +24518,7 @@ export type CalloutTemplatePreviewFragment = {
   type: CalloutType;
   framing: {
     __typename?: 'CalloutFraming';
+    id: string;
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -26153,6 +26185,7 @@ export type SearchQuery = {
             id: string;
             framing: {
               __typename?: 'CalloutFraming';
+              id: string;
               profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
             };
           };
@@ -26231,6 +26264,7 @@ export type SearchResultPostFragment = {
     id: string;
     framing: {
       __typename?: 'CalloutFraming';
+      id: string;
       profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
     };
   };
@@ -26270,6 +26304,7 @@ export type PostParentFragment = {
     id: string;
     framing: {
       __typename?: 'CalloutFraming';
+      id: string;
       profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
     };
   };
