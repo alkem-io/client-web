@@ -29,9 +29,11 @@ import TopLevelPageBreadcrumbs from '../../../../main/topLevelPages/topLevelPage
 import UpdateDiscussionDialog from '../views/UpdateDiscussionDialog';
 import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
 
-interface DiscussionPageProps {}
+interface DiscussionPageProps {
+  releaseId?: string;
+}
 
-export const DiscussionPage: FC<DiscussionPageProps> = () => {
+export const DiscussionPage: FC<DiscussionPageProps> = ({ releaseId }) => {
   const { discussionNameId } = useUrlParams();
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -39,9 +41,9 @@ export const DiscussionPage: FC<DiscussionPageProps> = () => {
 
   const { data, loading: loadingDiscussion } = usePlatformDiscussionQuery({
     variables: {
-      discussionId: discussionNameId!,
+      discussionId: releaseId ?? discussionNameId!,
     },
-    skip: !discussionNameId,
+    skip: !releaseId ?? !discussionNameId,
   });
 
   const isSubscribedToMessages = useSubscribeOnRoomEvents(data?.platform.communication.discussion?.comments.id);

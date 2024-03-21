@@ -4,6 +4,7 @@ import { Error404 } from '../../../../core/pages/Errors/Error404';
 import { nameOfUrl } from '../../../../main/routing/urlParams';
 import DiscussionPage from '../pages/DiscussionPage';
 import ForumPage from '../pages/ForumPage';
+import LastReleaseDiscussionPage from '../pages/LastReleaseDiscussionPage';
 import TopLevelLayout from '../../../../main/ui/layout/TopLevelLayout';
 
 interface ForumRouteProps {}
@@ -16,7 +17,7 @@ export const ForumRoute: FC<ForumRouteProps> = () => {
         <Route path="/new" element={<ForumPage dialog="new" />} />
         <Route path={`discussion/:${nameOfUrl.discussionNameId}`} element={<DiscussionPage />} />
         <Route path={'/releases'} element={<ForumPage />} />
-        <Route path={'/releases/latest'} element={<ForumPage />} />
+        <Route path={'/releases/latest'} element={<LastReleaseDiscussionPage />} />
         <Route path={'/platform-functionalities'} element={<ForumPage />} />
         <Route path={'/community-building'} element={<ForumPage />} />
         <Route path={'/challenge-centric'} element={<ForumPage />} />
