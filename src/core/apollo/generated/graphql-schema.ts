@@ -1068,7 +1068,7 @@ export type Collaboration = {
   __typename?: 'Collaboration';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
-  /** List of callouts */
+  /** The list of Callouts for this Collaboration object. */
   callouts?: Maybe<Array<Callout>>;
   /** The set of CalloutGroups in use in this Collaboration. */
   groups: Array<CalloutGroup>;
@@ -1232,6 +1232,8 @@ export type Community = Groupable & {
   communication?: Maybe<Communication>;
   /** Groups of users related to a Community. */
   groups?: Maybe<Array<UserGroup>>;
+  /** The guidelines for members of this Community. */
+  guidelines?: Maybe<CommunityGuidelines>;
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** Invitations for this community. */
@@ -1283,6 +1285,16 @@ export type CommunityUsersInRoleArgs = {
 export type CommunityApplyInput = {
   communityID: Scalars['UUID'];
   questions: Array<CreateNvpInput>;
+};
+
+export type CommunityGuidelines = {
+  __typename?: 'CommunityGuidelines';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** The details of the guidelilnes */
+  profile: Profile;
 };
 
 export type CommunityJoinInput = {
@@ -2753,6 +2765,8 @@ export type Mutation = {
   updateChallenge: Challenge;
   /** Update the Application Form used by this Community. */
   updateCommunityApplicationForm: Community;
+  /** Updates the CommunityGuidelines. */
+  updateCommunityGuidelines: CommunityGuidelines;
   /** Updates the specified Discussion. */
   updateDiscussion: Discussion;
   /** Updates the specified Document. */
@@ -3265,6 +3279,10 @@ export type MutationUpdateChallengeArgs = {
 
 export type MutationUpdateCommunityApplicationFormArgs = {
   applicationFormData: UpdateCommunityApplicationFormInput;
+};
+
+export type MutationUpdateCommunityGuidelinesArgs = {
+  communityGuidelinesData: UpdateCommunityGuidelinesInput;
 };
 
 export type MutationUpdateDiscussionArgs = {
@@ -3859,6 +3877,7 @@ export enum ProfileType {
   CalloutFraming = 'CALLOUT_FRAMING',
   CalloutTemplate = 'CALLOUT_TEMPLATE',
   Challenge = 'CHALLENGE',
+  CommunityGuidelines = 'COMMUNITY_GUIDELINES',
   ContributionLink = 'CONTRIBUTION_LINK',
   Discussion = 'DISCUSSION',
   InnovationFlow = 'INNOVATION_FLOW',
@@ -5110,6 +5129,13 @@ export type UpdateCollaborationCalloutsSortOrderInput = {
 export type UpdateCommunityApplicationFormInput = {
   communityID: Scalars['UUID'];
   formData: UpdateFormInput;
+};
+
+export type UpdateCommunityGuidelinesInput = {
+  /** ID of the CommunityGuidelines */
+  communityGuidelinesID: Scalars['UUID'];
+  /** The Profile for this community guidelines. */
+  profile: UpdateProfileInput;
 };
 
 export type UpdateContextInput = {
@@ -14378,6 +14404,88 @@ export type SpaceCommunityQuery = {
         }
       | undefined;
   };
+};
+
+export type CommunityGuidelinesQueryVariables = Exact<{
+  spaceId?: InputMaybe<Scalars['UUID_NAMEID']>;
+}>;
+
+export type CommunityGuidelinesQuery = {
+  __typename?: 'Query';
+  space: {
+    __typename?: 'Space';
+    id: string;
+    community?:
+      | {
+          __typename?: 'Community';
+          id: string;
+          guidelines?:
+            | {
+                __typename?: 'CommunityGuidelines';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  description?: string | undefined;
+                  tagset?:
+                    | {
+                        __typename?: 'Tagset';
+                        id: string;
+                        name: string;
+                        tags: Array<string>;
+                        allowedValues: Array<string>;
+                        type: TagsetType;
+                      }
+                    | undefined;
+                  references?:
+                    | Array<{
+                        __typename?: 'Reference';
+                        id: string;
+                        name: string;
+                        uri: string;
+                        description?: string | undefined;
+                      }>
+                    | undefined;
+                };
+              }
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type CommunityGuidelinesDetailsFragment = {
+  __typename?: 'CommunityGuidelines';
+  id: string;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    description?: string | undefined;
+    tagset?:
+      | {
+          __typename?: 'Tagset';
+          id: string;
+          name: string;
+          tags: Array<string>;
+          allowedValues: Array<string>;
+          type: TagsetType;
+        }
+      | undefined;
+    references?:
+      | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
+      | undefined;
+  };
+};
+
+export type UpdateCommunityGuidelinesMutationVariables = Exact<{
+  communityGuidelinesData: UpdateCommunityGuidelinesInput;
+}>;
+
+export type UpdateCommunityGuidelinesMutation = {
+  __typename?: 'Mutation';
+  updateCommunityGuidelines: { __typename?: 'CommunityGuidelines'; id: string };
 };
 
 export type EntityDashboardCommunityFragment = {

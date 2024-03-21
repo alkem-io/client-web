@@ -1176,6 +1176,26 @@ export const CommunityDetailsFragmentDoc = gql`
     }
   }
 `;
+export const CommunityGuidelinesDetailsFragmentDoc = gql`
+  fragment CommunityGuidelinesDetails on CommunityGuidelines {
+    id
+    profile {
+      id
+      displayName
+      description
+      tagset {
+        ...TagsetDetails
+      }
+      references {
+        id
+        name
+        uri
+        description
+      }
+    }
+  }
+  ${TagsetDetailsFragmentDoc}
+`;
 export const CommunityPageMembersFragmentDoc = gql`
   fragment CommunityPageMembers on User {
     id
@@ -11334,6 +11354,122 @@ export function refetchSpaceCommunityQuery(variables: SchemaTypes.SpaceCommunity
   return { query: SpaceCommunityDocument, variables: variables };
 }
 
+export const CommunityGuidelinesDocument = gql`
+  query CommunityGuidelines($spaceId: UUID_NAMEID = "00000000-0000-0000-0000-000000000000") {
+    space(ID: $spaceId) {
+      id
+      community {
+        id
+        guidelines {
+          ...CommunityGuidelinesDetails
+        }
+      }
+    }
+  }
+  ${CommunityGuidelinesDetailsFragmentDoc}
+`;
+
+/**
+ * __useCommunityGuidelinesQuery__
+ *
+ * To run a query within a React component, call `useCommunityGuidelinesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCommunityGuidelinesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCommunityGuidelinesQuery({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *   },
+ * });
+ */
+export function useCommunityGuidelinesQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.CommunityGuidelinesQuery,
+    SchemaTypes.CommunityGuidelinesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.CommunityGuidelinesQuery, SchemaTypes.CommunityGuidelinesQueryVariables>(
+    CommunityGuidelinesDocument,
+    options
+  );
+}
+
+export function useCommunityGuidelinesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CommunityGuidelinesQuery,
+    SchemaTypes.CommunityGuidelinesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.CommunityGuidelinesQuery, SchemaTypes.CommunityGuidelinesQueryVariables>(
+    CommunityGuidelinesDocument,
+    options
+  );
+}
+
+export type CommunityGuidelinesQueryHookResult = ReturnType<typeof useCommunityGuidelinesQuery>;
+export type CommunityGuidelinesLazyQueryHookResult = ReturnType<typeof useCommunityGuidelinesLazyQuery>;
+export type CommunityGuidelinesQueryResult = Apollo.QueryResult<
+  SchemaTypes.CommunityGuidelinesQuery,
+  SchemaTypes.CommunityGuidelinesQueryVariables
+>;
+export function refetchCommunityGuidelinesQuery(variables?: SchemaTypes.CommunityGuidelinesQueryVariables) {
+  return { query: CommunityGuidelinesDocument, variables: variables };
+}
+
+export const UpdateCommunityGuidelinesDocument = gql`
+  mutation updateCommunityGuidelines($communityGuidelinesData: UpdateCommunityGuidelinesInput!) {
+    updateCommunityGuidelines(communityGuidelinesData: $communityGuidelinesData) {
+      id
+    }
+  }
+`;
+export type UpdateCommunityGuidelinesMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateCommunityGuidelinesMutation,
+  SchemaTypes.UpdateCommunityGuidelinesMutationVariables
+>;
+
+/**
+ * __useUpdateCommunityGuidelinesMutation__
+ *
+ * To run a mutation, you first call `useUpdateCommunityGuidelinesMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateCommunityGuidelinesMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateCommunityGuidelinesMutation, { data, loading, error }] = useUpdateCommunityGuidelinesMutation({
+ *   variables: {
+ *      communityGuidelinesData: // value for 'communityGuidelinesData'
+ *   },
+ * });
+ */
+export function useUpdateCommunityGuidelinesMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateCommunityGuidelinesMutation,
+    SchemaTypes.UpdateCommunityGuidelinesMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.UpdateCommunityGuidelinesMutation,
+    SchemaTypes.UpdateCommunityGuidelinesMutationVariables
+  >(UpdateCommunityGuidelinesDocument, options);
+}
+
+export type UpdateCommunityGuidelinesMutationHookResult = ReturnType<typeof useUpdateCommunityGuidelinesMutation>;
+export type UpdateCommunityGuidelinesMutationResult =
+  Apollo.MutationResult<SchemaTypes.UpdateCommunityGuidelinesMutation>;
+export type UpdateCommunityGuidelinesMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateCommunityGuidelinesMutation,
+  SchemaTypes.UpdateCommunityGuidelinesMutationVariables
+>;
 export const CreateGroupOnCommunityDocument = gql`
   mutation createGroupOnCommunity($input: CreateUserGroupInput!) {
     createGroupOnCommunity(groupData: $input) {

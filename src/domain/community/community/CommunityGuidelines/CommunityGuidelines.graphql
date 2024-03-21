@@ -1,0 +1,35 @@
+query CommunityGuidelines($spaceId: UUID_NAMEID = "00000000-0000-0000-0000-000000000000") {
+  space(ID: $spaceId) {
+    id
+    community {
+      id
+      guidelines {
+        ...CommunityGuidelinesDetails
+      }
+    }
+  }
+}
+
+fragment CommunityGuidelinesDetails on CommunityGuidelines {
+  id
+  profile {
+    id
+    displayName
+    description
+    tagset {
+      ...TagsetDetails
+    }
+    references {
+      id
+      name
+      uri
+      description
+    }
+  }
+}
+
+mutation updateCommunityGuidelines($communityGuidelinesData: UpdateCommunityGuidelinesInput!) {
+  updateCommunityGuidelines(communityGuidelinesData: $communityGuidelinesData) {
+    id
+  }
+}

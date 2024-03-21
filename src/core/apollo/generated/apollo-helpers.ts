@@ -891,6 +891,7 @@ export type CommunityKeySpecifier = (
   | 'availableMemberUsers'
   | 'communication'
   | 'groups'
+  | 'guidelines'
   | 'id'
   | 'invitations'
   | 'invitationsExternal'
@@ -910,6 +911,7 @@ export type CommunityFieldPolicy = {
   availableMemberUsers?: FieldPolicy<any> | FieldReadFunction<any>;
   communication?: FieldPolicy<any> | FieldReadFunction<any>;
   groups?: FieldPolicy<any> | FieldReadFunction<any>;
+  guidelines?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   invitations?: FieldPolicy<any> | FieldReadFunction<any>;
   invitationsExternal?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -919,6 +921,12 @@ export type CommunityFieldPolicy = {
   organizationsInRole?: FieldPolicy<any> | FieldReadFunction<any>;
   policy?: FieldPolicy<any> | FieldReadFunction<any>;
   usersInRole?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CommunityGuidelinesKeySpecifier = ('authorization' | 'id' | 'profile' | CommunityGuidelinesKeySpecifier)[];
+export type CommunityGuidelinesFieldPolicy = {
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  profile?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CommunityPolicyKeySpecifier = ('admin' | 'host' | 'id' | 'lead' | 'member' | CommunityPolicyKeySpecifier)[];
 export type CommunityPolicyFieldPolicy = {
@@ -1575,6 +1583,7 @@ export type MutationKeySpecifier = (
   | 'updateCalloutsSortOrder'
   | 'updateChallenge'
   | 'updateCommunityApplicationForm'
+  | 'updateCommunityGuidelines'
   | 'updateDiscussion'
   | 'updateDocument'
   | 'updateEcosystemModel'
@@ -1730,6 +1739,7 @@ export type MutationFieldPolicy = {
   updateCalloutsSortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
   updateChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCommunityApplicationForm?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateCommunityGuidelines?: FieldPolicy<any> | FieldReadFunction<any>;
   updateDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
   updateDocument?: FieldPolicy<any> | FieldReadFunction<any>;
   updateEcosystemModel?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3225,6 +3235,10 @@ export type StrictTypedTypePolicies = {
   Community?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CommunityKeySpecifier | (() => undefined | CommunityKeySpecifier);
     fields?: CommunityFieldPolicy;
+  };
+  CommunityGuidelines?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CommunityGuidelinesKeySpecifier | (() => undefined | CommunityGuidelinesKeySpecifier);
+    fields?: CommunityGuidelinesFieldPolicy;
   };
   CommunityPolicy?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CommunityPolicyKeySpecifier | (() => undefined | CommunityPolicyKeySpecifier);

@@ -568,6 +568,10 @@
       "delete-question": "Delete question",
       "updated-successfully": "Application form updated successfully."
     },
+    "communityGuidelines": {
+      "title": "Community Guidelines",
+      "updatedSuccessfully": "Community guidelines updated successfully."
+    },
     "applicationsHelp": "Here you can find everyone that applied to become a member of this Space. By clicking on them you can review their application and accept or reject them.",
     "applicationStatus": {
       "applicationReceived": "Application Received",
