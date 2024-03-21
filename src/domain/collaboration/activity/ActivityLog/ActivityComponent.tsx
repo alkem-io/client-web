@@ -92,7 +92,6 @@ export const ActivityViewChooser = ({ activity, ...rest }: ActivityViewChooserPr
     case ActivityEventType.CalloutPublished:
       return <ActivityCalloutPublishedView {...activity} {...rest} />;
     case ActivityEventType.CalloutWhiteboardCreated:
-      return <ActivityCalloutWhiteboardActivityView {...activity} {...rest} />;
     case ActivityEventType.CalloutWhiteboardContentModified:
       // we use the same view for whiteboard created and whiteboard content modified events
       return <ActivityCalloutWhiteboardActivityView {...activity} {...rest} />;
