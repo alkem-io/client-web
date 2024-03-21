@@ -6586,6 +6586,21 @@ export type UpdateInnovationFlowStatesMutation = {
   };
 };
 
+export type UpdateInnovationFlowStatesFromTemplateMutationVariables = Exact<{
+  innovationFlowId: Scalars['UUID'];
+  innovationFlowTemplateId: Scalars['UUID'];
+}>;
+
+export type UpdateInnovationFlowStatesFromTemplateMutation = {
+  __typename?: 'Mutation';
+  updateInnovationFlowStatesFromTemplate: {
+    __typename?: 'InnovationFlow';
+    id: string;
+    states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
+    currentState: { __typename?: 'InnovationFlowState'; displayName: string; description: string };
+  };
+};
+
 export type UpdateInnovationFlowSingleStateMutationVariables = Exact<{
   innovationFlowId: Scalars['UUID'];
   stateName: Scalars['String'];

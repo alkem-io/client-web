@@ -127,6 +127,23 @@ mutation updateInnovationFlowStates($innovationFlowId: UUID!, $states: [UpdateIn
     }
   }
 }
+
+mutation UpdateInnovationFlowStatesFromTemplate($innovationFlowId: UUID!, $innovationFlowTemplateId: UUID!) {
+  updateInnovationFlowStatesFromTemplate(
+    innovationFlowData: { innovationFlowID: $innovationFlowId, innovationFlowTemplateID: $innovationFlowTemplateId }
+  ) {
+    id
+    states {
+      displayName
+      description
+    }
+    currentState {
+      displayName
+      description
+    }
+  }
+}
+
 mutation updateInnovationFlowSingleState(
   $innovationFlowId: UUID!
   $stateName: String!
