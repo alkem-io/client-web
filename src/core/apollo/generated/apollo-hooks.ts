@@ -130,62 +130,48 @@ export const InnovationFlowCollaborationFragmentDoc = gql`
 `;
 export const ActivityLogMemberJoinedFragmentDoc = gql`
   fragment ActivityLogMemberJoined on ActivityLogEntryMemberJoined {
-    communityType
     user {
       id
-      nameID
       firstName
       lastName
       profile {
         id
-        displayName
         url
+        displayName
         visual(type: AVATAR) {
           id
           uri
         }
-        tagsets {
-          ...TagsetDetails
-        }
-        location {
-          id
-          city
-          country
-        }
       }
     }
   }
-  ${TagsetDetailsFragmentDoc}
+`;
+export const ActivityCalloutContextFragmentDoc = gql`
+  fragment ActivityCalloutContext on Callout {
+    id
+    framing {
+      id
+      profile {
+        id
+        displayName
+        url
+      }
+    }
+  }
 `;
 export const ActivityLogCalloutPublishedFragmentDoc = gql`
   fragment ActivityLogCalloutPublished on ActivityLogEntryCalloutPublished {
     callout {
-      id
-      nameID
+      ...ActivityCalloutContext
       type
-      framing {
-        profile {
-          id
-          displayName
-          url
-        }
-      }
     }
   }
+  ${ActivityCalloutContextFragmentDoc}
 `;
 export const ActivityLogCalloutPostCreatedFragmentDoc = gql`
   fragment ActivityLogCalloutPostCreated on ActivityLogEntryCalloutPostCreated {
     callout {
-      id
-      nameID
-      type
-      framing {
-        profile {
-          id
-          displayName
-          url
-        }
-      }
+      ...ActivityCalloutContext
     }
     post {
       id
@@ -197,19 +183,12 @@ export const ActivityLogCalloutPostCreatedFragmentDoc = gql`
       }
     }
   }
+  ${ActivityCalloutContextFragmentDoc}
 `;
 export const ActivityLogCalloutLinkCreatedFragmentDoc = gql`
   fragment ActivityLogCalloutLinkCreated on ActivityLogEntryCalloutLinkCreated {
     callout {
-      id
-      nameID
-      framing {
-        profile {
-          id
-          displayName
-          url
-        }
-      }
+      ...ActivityCalloutContext
     }
     link {
       id
@@ -217,116 +196,92 @@ export const ActivityLogCalloutLinkCreatedFragmentDoc = gql`
         id
         displayName
       }
-      uri
     }
+  }
+  ${ActivityCalloutContextFragmentDoc}
+`;
+export const ActivitySubjectProfileFragmentDoc = gql`
+  fragment ActivitySubjectProfile on Profile {
+    id
+    displayName
+    url
   }
 `;
 export const ActivityLogCalloutPostCommentFragmentDoc = gql`
   fragment ActivityLogCalloutPostComment on ActivityLogEntryCalloutPostComment {
+    description
     post {
       id
-      nameID
       profile {
-        id
-        displayName
-        url
+        ...ActivitySubjectProfile
       }
     }
   }
+  ${ActivitySubjectProfileFragmentDoc}
 `;
 export const ActivityLogCalloutWhiteboardCreatedFragmentDoc = gql`
   fragment ActivityLogCalloutWhiteboardCreated on ActivityLogEntryCalloutWhiteboardCreated {
     callout {
-      id
-      nameID
-      framing {
-        profile {
-          id
-          displayName
-          url
-        }
-      }
+      ...ActivityCalloutContext
     }
     whiteboard {
       id
-      nameID
       profile {
-        id
-        displayName
-        url
+        ...ActivitySubjectProfile
       }
     }
   }
+  ${ActivityCalloutContextFragmentDoc}
+  ${ActivitySubjectProfileFragmentDoc}
 `;
 export const ActivityLogCalloutWhiteboardContentModifiedFragmentDoc = gql`
   fragment ActivityLogCalloutWhiteboardContentModified on ActivityLogEntryCalloutWhiteboardContentModified {
     callout {
-      id
-      nameID
-      framing {
-        profile {
-          id
-          displayName
-          url
-        }
-      }
+      ...ActivityCalloutContext
     }
     whiteboard {
       id
-      nameID
       profile {
-        id
-        displayName
-        url
+        ...ActivitySubjectProfile
       }
     }
   }
+  ${ActivityCalloutContextFragmentDoc}
+  ${ActivitySubjectProfileFragmentDoc}
 `;
 export const ActivityLogCalloutDiscussionCommentFragmentDoc = gql`
   fragment ActivityLogCalloutDiscussionComment on ActivityLogEntryCalloutDiscussionComment {
+    description
     callout {
-      id
-      nameID
-      type
-      framing {
-        profile {
-          id
-          displayName
-          url
-        }
-      }
+      ...ActivityCalloutContext
     }
   }
+  ${ActivityCalloutContextFragmentDoc}
 `;
 export const ActivityLogChallengeCreatedFragmentDoc = gql`
   fragment ActivityLogChallengeCreated on ActivityLogEntryChallengeCreated {
     challenge {
       id
-      nameID
       profile {
-        id
-        displayName
-        url
+        ...ActivitySubjectProfile
       }
     }
   }
+  ${ActivitySubjectProfileFragmentDoc}
 `;
 export const ActivityLogOpportunityCreatedFragmentDoc = gql`
   fragment ActivityLogOpportunityCreated on ActivityLogEntryOpportunityCreated {
     opportunity {
       id
-      nameID
       profile {
-        id
-        displayName
-        url
+        ...ActivitySubjectProfile
       }
     }
   }
+  ${ActivitySubjectProfileFragmentDoc}
 `;
 export const ActivityLogUpdateSentFragmentDoc = gql`
   fragment ActivityLogUpdateSent on ActivityLogEntryUpdateSent {
-    id
     message
   }
 `;
@@ -334,48 +289,18 @@ export const ActivityLogCalendarEventCreatedFragmentDoc = gql`
   fragment ActivityLogCalendarEventCreated on ActivityLogEntryCalendarEventCreated {
     calendarEvent {
       id
-      nameID
       profile {
-        id
-        displayName
-        url
+        ...ActivitySubjectProfile
       }
     }
   }
+  ${ActivitySubjectProfileFragmentDoc}
 `;
 export const ActivityLogOnCollaborationFragmentDoc = gql`
   fragment ActivityLogOnCollaboration on ActivityLogEntry {
     id
-    collaborationID
     createdDate
-    description
     type
-    child
-    parentNameID
-    journeyDisplayName: parentDisplayName
-    __typename
-    triggeredBy {
-      id
-      nameID
-      firstName
-      lastName
-      profile {
-        id
-        displayName
-        avatar: visual(type: AVATAR) {
-          id
-          uri
-        }
-        tagsets {
-          ...TagsetDetails
-        }
-        location {
-          id
-          city
-          country
-        }
-      }
-    }
     ... on ActivityLogEntryMemberJoined {
       ...ActivityLogMemberJoined
     }
@@ -413,7 +338,6 @@ export const ActivityLogOnCollaborationFragmentDoc = gql`
       ...ActivityLogCalendarEventCreated
     }
   }
-  ${TagsetDetailsFragmentDoc}
   ${ActivityLogMemberJoinedFragmentDoc}
   ${ActivityLogCalloutPublishedFragmentDoc}
   ${ActivityLogCalloutPostCreatedFragmentDoc}
@@ -5722,33 +5646,16 @@ export const ActivityLogOnCollaborationDocument = gql`
       queryData: { collaborationID: $collaborationID, limit: $limit, types: $types, includeChild: true }
     ) {
       id
-      collaborationID
       createdDate
-      description
       type
-      child
-      parentNameID
-      journeyDisplayName: parentDisplayName
-      __typename
       triggeredBy {
         id
-        nameID
-        firstName
-        lastName
         profile {
           id
           displayName
           avatar: visual(type: AVATAR) {
             id
             uri
-          }
-          tagsets {
-            ...TagsetDetails
-          }
-          location {
-            id
-            city
-            country
           }
         }
       }
@@ -5790,7 +5697,6 @@ export const ActivityLogOnCollaborationDocument = gql`
       }
     }
   }
-  ${TagsetDetailsFragmentDoc}
   ${ActivityLogMemberJoinedFragmentDoc}
   ${ActivityLogCalloutPublishedFragmentDoc}
   ${ActivityLogCalloutPostCreatedFragmentDoc}
@@ -23879,55 +23785,16 @@ export const LatestContributionsDocument = gql`
     activityFeed(after: $after, first: $first, args: $filter) {
       activityFeed {
         id
-        collaborationID
         createdDate
-        description
         type
-        child
-        parentNameID
-        journeyDisplayName: parentDisplayName
-        journey {
-          id
-          ... on Space {
-            profile {
-              ...RecentContributionsSpaceProfile
-            }
-          }
-          ... on RelayPaginatedSpace {
-            profile {
-              ...RecentContributionsSpaceProfile
-            }
-          }
-          ... on Challenge {
-            profile {
-              ...RecentContributionsChildJourneyProfile
-            }
-          }
-          ... on Opportunity {
-            profile {
-              ...RecentContributionsChildJourneyProfile
-            }
-          }
-        }
         triggeredBy {
           id
-          nameID
-          firstName
-          lastName
           profile {
             id
             displayName
             avatar: visual(type: AVATAR) {
               id
               uri
-            }
-            tagsets {
-              ...TagsetDetails
-            }
-            location {
-              id
-              city
-              country
             }
           }
         }
@@ -23974,9 +23841,6 @@ export const LatestContributionsDocument = gql`
       }
     }
   }
-  ${RecentContributionsSpaceProfileFragmentDoc}
-  ${RecentContributionsChildJourneyProfileFragmentDoc}
-  ${TagsetDetailsFragmentDoc}
   ${ActivityLogMemberJoinedFragmentDoc}
   ${ActivityLogCalloutPublishedFragmentDoc}
   ${ActivityLogCalloutPostCreatedFragmentDoc}
@@ -24049,13 +23913,8 @@ export const LatestContributionsGroupedDocument = gql`
   query LatestContributionsGrouped($filter: ActivityFeedGroupedQueryArgs) {
     activityFeedGrouped(args: $filter) {
       id
-      collaborationID
       createdDate
-      description
       type
-      child
-      parentNameID
-      journeyDisplayName: parentDisplayName
       journey {
         id
         ... on Space {
@@ -24076,28 +23935,6 @@ export const LatestContributionsGroupedDocument = gql`
         ... on Opportunity {
           profile {
             ...RecentContributionsChildJourneyProfile
-          }
-        }
-      }
-      triggeredBy {
-        id
-        nameID
-        firstName
-        lastName
-        profile {
-          id
-          displayName
-          avatar: visual(type: AVATAR) {
-            id
-            uri
-          }
-          tagsets {
-            ...TagsetDetails
-          }
-          location {
-            id
-            city
-            country
           }
         }
       }
@@ -24141,7 +23978,6 @@ export const LatestContributionsGroupedDocument = gql`
   }
   ${RecentContributionsSpaceProfileFragmentDoc}
   ${RecentContributionsChildJourneyProfileFragmentDoc}
-  ${TagsetDetailsFragmentDoc}
   ${ActivityLogMemberJoinedFragmentDoc}
   ${ActivityLogCalloutPublishedFragmentDoc}
   ${ActivityLogCalloutPostCreatedFragmentDoc}

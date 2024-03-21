@@ -1,25 +1,15 @@
 fragment ActivityLogMemberJoined on ActivityLogEntryMemberJoined {
-  communityType
   user {
     id
-    nameID
     firstName
     lastName
     profile {
       id
-      displayName
       url
+      displayName
       visual(type: AVATAR) {
         id
         uri
-      }
-      tagsets {
-        ...TagsetDetails
-      }
-      location {
-        id
-        city
-        country
       }
     }
   }
@@ -27,31 +17,14 @@ fragment ActivityLogMemberJoined on ActivityLogEntryMemberJoined {
 
 fragment ActivityLogCalloutPublished on ActivityLogEntryCalloutPublished {
   callout {
-    id
-    nameID
+    ...ActivityCalloutContext
     type
-    framing {
-      profile {
-        id
-        displayName
-        url
-      }
-    }
   }
 }
 
 fragment ActivityLogCalloutPostCreated on ActivityLogEntryCalloutPostCreated {
   callout {
-    id
-    nameID
-    type
-    framing {
-      profile {
-        id
-        displayName
-        url
-      }
-    }
+    ...ActivityCalloutContext
   }
   post {
     id
@@ -66,15 +39,7 @@ fragment ActivityLogCalloutPostCreated on ActivityLogEntryCalloutPostCreated {
 
 fragment ActivityLogCalloutLinkCreated on ActivityLogEntryCalloutLinkCreated {
   callout {
-    id
-    nameID
-    framing {
-      profile {
-        id
-        displayName
-        url
-      }
-    }
+    ...ActivityCalloutContext
   }
   link {
     id
@@ -82,64 +47,39 @@ fragment ActivityLogCalloutLinkCreated on ActivityLogEntryCalloutLinkCreated {
       id
       displayName
     }
-    uri
   }
 }
 
 fragment ActivityLogCalloutPostComment on ActivityLogEntryCalloutPostComment {
+  description
   post {
     id
-    nameID
     profile {
-      id
-      displayName
-      url
+      ...ActivitySubjectProfile
     }
   }
 }
 
 fragment ActivityLogCalloutWhiteboardCreated on ActivityLogEntryCalloutWhiteboardCreated {
   callout {
-    id
-    nameID
-    framing {
-      profile {
-        id
-        displayName
-        url
-      }
-    }
+    ...ActivityCalloutContext
   }
   whiteboard {
     id
-    nameID
     profile {
-      id
-      displayName
-      url
+      ...ActivitySubjectProfile
     }
   }
 }
 
 fragment ActivityLogCalloutWhiteboardContentModified on ActivityLogEntryCalloutWhiteboardContentModified {
   callout {
-    id
-    nameID
-    framing {
-      profile {
-        id
-        displayName
-        url
-      }
-    }
+    ...ActivityCalloutContext
   }
   whiteboard {
     id
-    nameID
     profile {
-      id
-      displayName
-      url
+      ...ActivitySubjectProfile
     }
   }
 }
@@ -147,11 +87,8 @@ fragment ActivityLogCalloutWhiteboardContentModified on ActivityLogEntryCalloutW
 fragment ActivityLogChallengeCreated on ActivityLogEntryChallengeCreated {
   challenge {
     id
-    nameID
     profile {
-      id
-      displayName
-      url
+      ...ActivitySubjectProfile
     }
   }
 }
@@ -159,43 +96,46 @@ fragment ActivityLogChallengeCreated on ActivityLogEntryChallengeCreated {
 fragment ActivityLogOpportunityCreated on ActivityLogEntryOpportunityCreated {
   opportunity {
     id
-    nameID
     profile {
-      id
-      displayName
-      url
+      ...ActivitySubjectProfile
     }
   }
 }
 
 fragment ActivityLogCalloutDiscussionComment on ActivityLogEntryCalloutDiscussionComment {
+  description
   callout {
-    id
-    nameID
-    type
-    framing {
-      profile {
-        id
-        displayName
-        url
-      }
-    }
+    ...ActivityCalloutContext
   }
 }
 
 fragment ActivityLogCalendarEventCreated on ActivityLogEntryCalendarEventCreated {
   calendarEvent {
     id
-    nameID
+    profile {
+      ...ActivitySubjectProfile
+    }
+  }
+}
+
+fragment ActivityLogUpdateSent on ActivityLogEntryUpdateSent {
+  message
+}
+
+fragment ActivitySubjectProfile on Profile {
+  id
+  displayName
+  url
+}
+
+fragment ActivityCalloutContext on Callout {
+  id
+  framing {
+    id
     profile {
       id
       displayName
       url
     }
   }
-}
-
-fragment ActivityLogUpdateSent on ActivityLogEntryUpdateSent {
-  id
-  message
 }

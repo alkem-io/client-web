@@ -11,21 +11,19 @@ interface ActivityMemberJoinedViewProps extends ActivityViewProps {
 }
 
 export const ActivityMemberJoinedView: FC<ActivityMemberJoinedViewProps> = ({
-  loading,
-  createdDate,
   journeyDisplayName,
   member,
   type,
+  ...rest
 }) => {
   return (
     <ActivityBaseView
       type={type}
       avatarUrl={member.avatarUrl}
-      loading={loading}
       title={<ActivityDescriptionByType activityType={type} subject={member.displayName} />}
       url={member.url}
       contextDisplayName={journeyDisplayName}
-      createdDate={createdDate}
+      {...rest}
     />
   );
 };

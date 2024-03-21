@@ -3,33 +3,16 @@ query activityLogOnCollaboration($collaborationID: UUID!, $limit: Float!, $types
     queryData: { collaborationID: $collaborationID, limit: $limit, types: $types, includeChild: true }
   ) {
     id
-    collaborationID
     createdDate
-    description
     type
-    child
-    parentNameID
-    journeyDisplayName: parentDisplayName
-    __typename
     triggeredBy {
       id
-      nameID
-      firstName
-      lastName
       profile {
         id
         displayName
         avatar: visual(type: AVATAR) {
           id
           uri
-        }
-        tagsets {
-          ...TagsetDetails
-        }
-        location {
-          id
-          city
-          country
         }
       }
     }

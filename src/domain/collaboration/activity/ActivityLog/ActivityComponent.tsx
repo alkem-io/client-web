@@ -20,7 +20,7 @@ import {
   ActivityCalloutPostCommentCreatedView,
   ActivityCalloutPostCreatedView,
   ActivityCalloutPublishedView,
-  ActivityCalloutWhiteboardCreatedView,
+  ActivityCalloutWhiteboardActivityView,
   ActivityChallengeCreatedView,
   ActivityDiscussionCommentCreatedView,
   ActivityLoadingView,
@@ -72,9 +72,9 @@ export const ActivityComponent: FC<ActivityComponentProps> = ({ activities, limi
     return (
       <>
         {activities.slice(0, limit).map(activity => {
-          const author = buildAuthorFromUser(activity.triggeredBy);
-
-          return <ActivityViewChooser activity={activity} avatarUrl={author.avatarUrl} key={activity.id} />;
+          return (
+            <ActivityViewChooser activity={activity} avatarUrl={activity.triggeredBy.profile.url} key={activity.id} />
+          );
         })}
       </>
     );
@@ -92,10 +92,10 @@ export const ActivityViewChooser = ({ activity, ...rest }: ActivityViewChooserPr
     case ActivityEventType.CalloutPublished:
       return <ActivityCalloutPublishedView {...activity} {...rest} />;
     case ActivityEventType.CalloutWhiteboardCreated:
-      return <ActivityCalloutWhiteboardCreatedView {...activity} {...rest} />;
+      return <ActivityCalloutWhiteboardActivityView {...activity} {...rest} />;
     case ActivityEventType.CalloutWhiteboardContentModified:
       // we use the same view for whiteboard created and whiteboard content modified events
-      return <ActivityCalloutWhiteboardCreatedView {...activity} {...rest} />;
+      return <ActivityCalloutWhiteboardActivityView {...activity} {...rest} />;
     case ActivityEventType.CalloutPostComment:
       return <ActivityCalloutPostCommentCreatedView {...activity} {...rest} />;
     case ActivityEventType.CalloutPostCreated:
