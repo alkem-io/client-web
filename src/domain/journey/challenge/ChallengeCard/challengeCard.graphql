@@ -21,6 +21,7 @@ fragment ChallengeCard on Challenge {
     tagset {
       ...TagsetDetails
     }
+    url
   }
   context {
     id

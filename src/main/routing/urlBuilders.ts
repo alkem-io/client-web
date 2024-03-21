@@ -25,19 +25,24 @@ export const buildOpportunityUrl = (spaceNameId: string, challengeNameId: string
 
 export const buildOrganizationUrl = (organizationNameId: string) => `/organization/${organizationNameId}`;
 
-export const buildAdminSpaceUrl = (spaceNameId: string) => `/admin/spaces/${spaceNameId}`;
-
-export const buildAdminChallengeUrl = (spaceNameId: string, challengeNameId: string) =>
-  buildAdminSpaceUrl(spaceNameId).concat(`/challenges/${challengeNameId}`);
-
-export const buildAdminNewChallengeUrl = (spaceNameId: string) =>
-  buildAdminSpaceUrl(spaceNameId).concat('/challenges/new');
-
-export const buildAdminOpportunityUrl = (spaceNameId: string, challengeNameId: string, opportunityNameId: string) =>
-  buildAdminChallengeUrl(spaceNameId, challengeNameId).concat(`/opportunities/${opportunityNameId}`);
-
-export const buildAdminNewOpportunityUrl = (spaceNameId: string, challengeNameId: string) =>
-  buildAdminChallengeUrl(spaceNameId, challengeNameId).concat('/opportunities/new');
+export const buildJourneyAdminUrl = (journeyProfileUrl: string) => {
+  try {
+    const url = new URL(journeyProfileUrl, 'http://relativeurl');
+    // if journeyProfileUrl is an absolute URL, http://relativeurl will be ignored.
+    if (url.hostname === 'relativeurl') {
+      // Relative URL
+      return `/admin/spaces/${journeyProfileUrl}`;
+    } else {
+      // Absolute URL
+      const pathParts = url.pathname.split('/').filter(part => part !== '');
+      pathParts.splice(0, 0, 'admin', 'spaces'); // Insert `/admin/spaces` at the beginning of the path
+      url.pathname = pathParts.join('/');
+      return url.toString();
+    }
+  } catch (e) {
+    return journeyProfileUrl;
+  }
+};
 
 export const buildAdminOrganizationUrl = (organizationNameId: string) => `/admin/organizations/${organizationNameId}`;
 

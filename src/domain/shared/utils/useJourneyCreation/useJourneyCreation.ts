@@ -142,6 +142,7 @@ export const useJourneyCreation = () => {
               id: '',
               displayName: value.displayName ?? '',
               tagline: value.tagline,
+              url: '',
               cardBanner: {
                 id: '',
                 uri: '',
@@ -202,6 +203,7 @@ export const useJourneyCreation = () => {
               id: '',
               displayName: value.displayName ?? '',
               tagline: value.tagline,
+              url: '',
               cardBanner: {
                 id: '',
                 uri: '',

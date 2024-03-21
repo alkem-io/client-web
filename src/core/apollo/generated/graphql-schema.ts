@@ -18158,6 +18158,7 @@ export type ChallengeCardFragment = {
     tagline: string;
     displayName: string;
     description?: string | undefined;
+    url: string;
     cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
     tagset?:
       | {
@@ -18198,6 +18199,7 @@ export type ChallengeOpportunityCardsQuery = {
                   id: string;
                   displayName: string;
                   tagline: string;
+                  url: string;
                   tagset?:
                     | {
                         __typename?: 'Tagset';
@@ -18898,6 +18900,7 @@ export type OpportunitiesOnChallengeFragment = {
           id: string;
           displayName: string;
           tagline: string;
+          url: string;
           tagset?:
             | {
                 __typename?: 'Tagset';
@@ -18980,6 +18983,7 @@ export type CreateChallengeMutation = {
       tagline: string;
       displayName: string;
       description?: string | undefined;
+      url: string;
       cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
       tagset?:
         | {
@@ -19188,6 +19192,7 @@ export type OpportunityCreatedSubscription = {
         id: string;
         displayName: string;
         tagline: string;
+        url: string;
         tagset?:
           | {
               __typename?: 'Tagset';
@@ -21132,6 +21137,7 @@ export type OpportunityCardFragment = {
     id: string;
     displayName: string;
     tagline: string;
+    url: string;
     tagset?:
       | {
           __typename?: 'Tagset';
@@ -21209,6 +21215,7 @@ export type CreateOpportunityMutation = {
       id: string;
       displayName: string;
       tagline: string;
+      url: string;
       tagset?:
         | {
             __typename?: 'Tagset';
@@ -22831,6 +22838,7 @@ export type SpaceChallengeCardsQuery = {
             tagline: string;
             displayName: string;
             description?: string | undefined;
+            url: string;
             cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
             tagset?:
               | {
@@ -22868,6 +22876,7 @@ export type ChallengesOnSpaceFragment = {
           tagline: string;
           displayName: string;
           description?: string | undefined;
+          url: string;
           cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
           tagset?:
             | {
@@ -23236,6 +23245,7 @@ export type ChallengeCreatedSubscription = {
         tagline: string;
         displayName: string;
         description?: string | undefined;
+        url: string;
         cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
         tagset?:
           | {

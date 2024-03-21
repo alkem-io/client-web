@@ -11,6 +11,7 @@ fragment OpportunityCard on Opportunity {
     cardBanner: visual(type: CARD) {
       ...VisualFull
     }
+    url
   }
   metrics {
     id
