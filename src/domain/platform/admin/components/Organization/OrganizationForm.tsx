@@ -1,7 +1,7 @@
 import { Form, Formik } from 'formik';
 import React, { FC, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import useNavigate from '../../../../../core/routing/useNavigate';
 import * as yup from 'yup';
 import { Grid } from '@mui/material';
 import { Tagset, UpdateTagset } from '../../../../common/profile/Profile';

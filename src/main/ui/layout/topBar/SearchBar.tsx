@@ -1,5 +1,5 @@
 import React, { forwardRef, useCallback, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router';
+import useNavigate from '../../../../core/routing/useNavigate';
 import { useTranslation } from 'react-i18next';
 import TextField from '@mui/material/TextField';
 import { Box, BoxProps, InputAdornment } from '@mui/material';

@@ -1,7 +1,7 @@
 import { Button as MuiButton, CircularProgress } from '@mui/material';
 import React, { forwardRef, Ref, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 import { buildLoginUrl } from '../../../../main/routing/urlBuilders';
 import PreApplicationDialog from './PreApplicationDialog';
 import isApplicationPending from './isApplicationPending';
@@ -13,6 +13,7 @@ import { InvitationItem } from '../../user/providers/UserProvider/InvitationItem
 import InvitationActionsContainer from '../../invitations/InvitationActionsContainer';
 import InvitationDialog from '../../invitations/InvitationDialog';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
+import useNavigate from '../../../../core/routing/useNavigate';
 
 export interface ApplicationButtonProps {
   isAuthenticated?: boolean;
