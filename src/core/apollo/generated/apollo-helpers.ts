@@ -1914,6 +1914,7 @@ export type PlatformKeySpecifier = (
   | 'id'
   | 'innovationHub'
   | 'innovationHubs'
+  | 'latestReleaseDiscussionNameID'
   | 'library'
   | 'metadata'
   | 'storageAggregator'
@@ -1926,6 +1927,7 @@ export type PlatformFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationHub?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationHubs?: FieldPolicy<any> | FieldReadFunction<any>;
+  latestReleaseDiscussionNameID?: FieldPolicy<any> | FieldReadFunction<any>;
   library?: FieldPolicy<any> | FieldReadFunction<any>;
   metadata?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;

@@ -3613,6 +3613,8 @@ export type Platform = {
   innovationHub?: Maybe<InnovationHub>;
   /** List of Innovation Hubs on the platform */
   innovationHubs: Array<InnovationHub>;
+  /** The nameID of the latest release discussion. */
+  latestReleaseDiscussionNameID: Scalars['String'];
   /** The Innovation Library for the platform */
   library: Library;
   /** Alkemio Services Metadata. */
@@ -12032,6 +12034,13 @@ export type AuthorDetailsQuery = {
         | undefined;
     };
   }>;
+};
+
+export type LatestReleaseDiscussionNameIdQueryVariables = Exact<{ [key: string]: never }>;
+
+export type LatestReleaseDiscussionNameIdQuery = {
+  __typename?: 'Query';
+  platform: { __typename?: 'Platform'; latestReleaseDiscussionNameID: string };
 };
 
 export type CreateDiscussionMutationVariables = Exact<{

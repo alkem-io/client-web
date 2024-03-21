@@ -1,20 +1,15 @@
 import { FC } from 'react';
-import { usePlatformDiscussionsQuery } from '../../../../core/apollo/generated/apollo-hooks';
-import { DiscussionCategory } from '../../../../core/apollo/generated/graphql-schema';
+import { useLatestReleaseDiscussionNameIdQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import DiscussionPage from './DiscussionPage';
 
 interface LastReleaseDiscussionPageProps {}
 
 export const LastReleaseDiscussionPage: FC<LastReleaseDiscussionPageProps> = () => {
-  const { data } = usePlatformDiscussionsQuery();
+  const { data } = useLatestReleaseDiscussionNameIdQuery();
 
-  const lastRelease = data?.platform.communication.discussions
-    ?.filter(discussion => discussion.category === DiscussionCategory.Releases)
-    ?.reduce((prev, current) => {
-      return prev.timestamp && current.timestamp && prev.timestamp > current.timestamp ? prev : current;
-    });
+  const lastReleaseNameID = data?.platform.latestReleaseDiscussionNameID;
 
-  return <DiscussionPage releaseId={lastRelease?.nameID} />;
+  return <DiscussionPage releaseId={lastReleaseNameID} />;
 };
 
 export default LastReleaseDiscussionPage;

@@ -1,0 +1,5 @@
+query latestReleaseDiscussionNameID {
+  platform {
+    latestReleaseDiscussionNameID
+  }
+}
