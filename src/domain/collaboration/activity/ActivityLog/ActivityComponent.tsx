@@ -113,7 +113,7 @@ export const ActivityViewChooser = ({ activity, ...rest }: ActivityViewChooserPr
     case ActivityEventType.CalendarEventCreated:
       return <ActivityCalendarEventCreatedView {...activity} {...rest} />;
     case ActivityEventType.UpdateSent:
-      return <ActivityUpdateSentView {...activity} {...rest} journeyUrl="" />; // TODO provide journeyUrl  https://app.zenhub.com/workspaces/alkemio-development-5ecb98b262ebd9f4aec4194c/issues/gh/alkem-io/server/3741
+      return <ActivityUpdateSentView {...activity} {...rest} />;
   }
   throw new Error(`Unable to choose a view for activity type: ${activity['type']}`);
 };
