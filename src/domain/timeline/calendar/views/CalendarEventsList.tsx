@@ -20,7 +20,6 @@ import useScrollToElement from '../../../shared/utils/scroll/useScrollToElement'
 import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
 import { HIGHLIGHT_PARAM_NAME } from '../CalendarDialog';
 import { useQueryParams } from '../../../../core/routing/useQueryParams';
-import { normalizeLink } from '../../../../core/utils/links';
 
 interface CalendarEventsListProps {
   events: {
@@ -48,7 +47,7 @@ const CalendarEventsList = ({ events, highlightedDay, actions, onClose }: Calend
   const { scrollable } = useScrollToElement(scrollToElement, { enabled: Boolean(scrollToElement), method: 'element' });
 
   const handleClickOnEvent = (url: string) => {
-    navigate(normalizeLink(url));
+    navigate(url);
   };
 
   const { futureEvents = [], pastEvents = [] } = useMemo(() => {

@@ -11,7 +11,6 @@ import { gutters } from '../../../../core/ui/grid/utils';
 import CalloutBlockFooter from '../../CalloutBlock/CalloutBlockFooter';
 import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
 import { Identifiable } from '../../../../core/utils/Identifiable';
-import { normalizeLink } from '../../../../core/utils/links';
 import { LocationStateKeyCachedCallout } from '../../CalloutPage/CalloutPage';
 
 interface WhiteboardCollectionCalloutProps extends BaseCalloutViewProps {
@@ -38,7 +37,7 @@ const WhiteboardCollectionCallout = forwardRef<Element, WhiteboardCollectionCall
     const handleCreate = async () => {
       const result = await createNewWhiteboard();
       if (result) {
-        navigate(normalizeLink(result.profile.url), {
+        navigate(result.profile.url, {
           state: {
             [LocationStateKeyCachedCallout]: callout,
             keepScroll: true,

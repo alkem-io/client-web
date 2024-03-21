@@ -1,5 +1,6 @@
 import { TypedTypePolicies } from '../generated/apollo-helpers';
 import { paginationFieldPolicy } from './paginationPolicy';
+import { normalizeLink } from '../../utils/links';
 
 export const typePolicies: TypedTypePolicies = {
   LookupQueryResults: {
@@ -45,6 +46,15 @@ export const typePolicies: TypedTypePolicies = {
     fields: {
       references: {
         merge: false,
+      },
+    },
+  },
+  Profile: {
+    fields: {
+      url: {
+        merge(_existing, incoming) {
+          return normalizeLink(incoming);
+        },
       },
     },
   },

@@ -9,9 +9,9 @@ import usePostSettings from '../containers/PostSettings/usePostSettings';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
 import {
-  PostSettingsFragment,
   AuthorizationPrivilege,
   CalloutType,
+  PostSettingsFragment,
   Visual,
   VisualType,
 } from '../../../../core/apollo/generated/graphql-schema';
@@ -26,7 +26,6 @@ import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import { LoadingButton } from '@mui/lab';
 import useLoadingState from '../../../shared/utils/useLoadingState';
 import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
-import { normalizeLink } from '../../../../core/utils/links';
 import { DialogFooter } from '../../../../core/ui/dialog/DialogWithGrid';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 
@@ -129,7 +128,7 @@ const PostSettingsPage: FC<PostSettingsPageProps> = ({ journeyTypeName, onClose 
       } else if (!shouldUpdate) {
         notify(t('post-edit.postLocation.success'), 'success');
       }
-      const postURL = normalizeLink(data?.moveContributionToCallout.post?.profile.url ?? '');
+      const postURL = data?.moveContributionToCallout.post?.profile.url ?? '';
       await refetchCallouts();
       navigate(`${postURL}/settings`, { replace: true });
     }
