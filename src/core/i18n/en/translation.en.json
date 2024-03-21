@@ -1505,7 +1505,7 @@
       "delete-comment": "Delete comment?"
     },
     "message": {
-      "root": "started the discussion"
+      "root": ""
     },
     "post-comment": {
       "fields": {
@@ -2457,9 +2457,9 @@
       "tips-and-tricks": "Looking for tips & tricks? Find them in the blog posts here!"
     },
     "forum": {
-      "title": "Questions, suggestions, or feedback?",
-      "subtitle": "Get in touch with the Alkemio team or other users of the platform!",
-      "fullName": "Community help",
+      "title": "Welcome to the Alkemio Forum",
+      "subtitle": "Connect with others, ask questions, and stay updated with Alkemio's release notes",
+      "fullName": "Alkemio Forum",
       "shortName": "$t(common.forum)",
       "new-title": "Alkemio Forum - Initiate Discussion",
       "back": "See all discussions"
