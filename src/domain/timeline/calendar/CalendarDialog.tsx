@@ -2,7 +2,7 @@ import { Add } from '@mui/icons-material';
 import { Button, IconButton } from '@mui/material';
 import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import useNavigate from '../../../core/routing/useNavigate';
 import { DialogContent } from '../../../core/ui/dialog/deprecated';
 import RoundedIcon from '../../../core/ui/icon/RoundedIcon';
 import { CalendarEventDetailsFragment, TagsetType } from '../../../core/apollo/generated/graphql-schema';

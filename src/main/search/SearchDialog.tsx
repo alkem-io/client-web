@@ -4,11 +4,12 @@ import { SEARCH_TERMS_URL_PARAM } from './constants';
 import SearchView from './SearchView';
 import { journeyFilterConfig } from './Filter';
 import { useTranslation } from 'react-i18next';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import DialogHeader from '../../core/ui/dialog/DialogHeader';
 import { DialogContent } from '@mui/material';
 import { Search } from '@mui/icons-material';
 import { useTransactionScope } from '../../core/analytics/SentryTransactionScopeContext';
+import useNavigate from '../../core/routing/useNavigate';
 
 const SearchDialog = () => {
   const { pathname } = useLocation();

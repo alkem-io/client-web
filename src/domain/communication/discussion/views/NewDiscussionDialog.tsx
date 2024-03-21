@@ -8,7 +8,7 @@ import {
   refetchPlatformDiscussionsQuery,
   useCreateDiscussionMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
-import { useNavigate } from 'react-router-dom';
+import useNavigate from '../../../../core/routing/useNavigate';
 import DiscussionForm, { DiscussionFormValues } from '../forms/DiscussionForm';
 
 export interface NewDiscussionDialogProps {

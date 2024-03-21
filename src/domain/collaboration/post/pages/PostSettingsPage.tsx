@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import useNavigate from '../../../../core/routing/useNavigate';
 import { Autocomplete, Button, DialogActions, TextField } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import Box from '@mui/material/Box';

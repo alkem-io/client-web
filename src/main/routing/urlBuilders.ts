@@ -7,7 +7,7 @@ export const buildOrganizationUrl = (organizationNameId: string) => `/organizati
 
 export const buildJourneyAdminUrl = (journeyProfileUrl: string) => {
   const relativeUrl = normalizeLink(journeyProfileUrl);
-  return `/admin/spaces/${relativeUrl}`;
+  return `/admin/spaces/${relativeUrl.replace(/^\//, '')}`;
 };
 
 export const buildAdminOrganizationUrl = (organizationNameId: string) => `/admin/organizations/${organizationNameId}`;

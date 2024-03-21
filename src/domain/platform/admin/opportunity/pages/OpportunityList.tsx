@@ -1,6 +1,6 @@
 import React, { FC, useCallback, useState } from 'react';
 
-import { useNavigate } from 'react-router-dom';
+import useNavigate from '../../../../../core/routing/useNavigate';
 import { useTranslation } from 'react-i18next';
 import { Box, Button } from '@mui/material';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
