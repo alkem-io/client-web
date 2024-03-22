@@ -5720,8 +5720,36 @@ export const ActivityLogOnCollaborationDocument = gql`
       queryData: { collaborationID: $collaborationID, limit: $limit, types: $types, includeChild: true }
     ) {
       id
+      collaborationID
       createdDate
+      description
       type
+      child
+      parentNameID
+      journeyDisplayName: parentDisplayName
+      journey {
+        id
+        ... on Space {
+          profile {
+            ...RecentContributionsSpaceProfile
+          }
+        }
+        ... on RelayPaginatedSpace {
+          profile {
+            ...RecentContributionsSpaceProfile
+          }
+        }
+        ... on Challenge {
+          profile {
+            ...RecentContributionsChildJourneyProfile
+          }
+        }
+        ... on Opportunity {
+          profile {
+            ...RecentContributionsChildJourneyProfile
+          }
+        }
+      }
       triggeredBy {
         id
         profile {
@@ -5771,6 +5799,8 @@ export const ActivityLogOnCollaborationDocument = gql`
       }
     }
   }
+  ${RecentContributionsSpaceProfileFragmentDoc}
+  ${RecentContributionsChildJourneyProfileFragmentDoc}
   ${ActivityLogMemberJoinedFragmentDoc}
   ${ActivityLogCalloutPublishedFragmentDoc}
   ${ActivityLogCalloutPostCreatedFragmentDoc}
@@ -23859,8 +23889,36 @@ export const LatestContributionsDocument = gql`
     activityFeed(after: $after, first: $first, args: $filter) {
       activityFeed {
         id
+        collaborationID
         createdDate
+        description
         type
+        child
+        parentNameID
+        journeyDisplayName: parentDisplayName
+        journey {
+          id
+          ... on Space {
+            profile {
+              ...RecentContributionsSpaceProfile
+            }
+          }
+          ... on RelayPaginatedSpace {
+            profile {
+              ...RecentContributionsSpaceProfile
+            }
+          }
+          ... on Challenge {
+            profile {
+              ...RecentContributionsChildJourneyProfile
+            }
+          }
+          ... on Opportunity {
+            profile {
+              ...RecentContributionsChildJourneyProfile
+            }
+          }
+        }
         triggeredBy {
           id
           profile {
@@ -23915,6 +23973,8 @@ export const LatestContributionsDocument = gql`
       }
     }
   }
+  ${RecentContributionsSpaceProfileFragmentDoc}
+  ${RecentContributionsChildJourneyProfileFragmentDoc}
   ${ActivityLogMemberJoinedFragmentDoc}
   ${ActivityLogCalloutPublishedFragmentDoc}
   ${ActivityLogCalloutPostCreatedFragmentDoc}
