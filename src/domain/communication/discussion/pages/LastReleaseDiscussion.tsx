@@ -1,13 +1,13 @@
 import { FC } from 'react';
-import { useLatestReleaseDiscussionNameIdQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { useLatestReleaseDiscussionQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import DiscussionPage from './DiscussionPage';
 
 interface LastReleaseDiscussionPageProps {}
 
 export const LastReleaseDiscussion: FC<LastReleaseDiscussionPageProps> = () => {
-  const { data, loading } = useLatestReleaseDiscussionNameIdQuery();
+  const { data, loading } = useLatestReleaseDiscussionQuery();
 
-  const lastReleaseNameID = data?.platform.latestReleaseDiscussionNameID;
+  const lastReleaseNameID = data?.platform?.latestReleaseDiscussion?.nameID;
 
   if (loading) {
     return null;
@@ -17,7 +17,7 @@ export const LastReleaseDiscussion: FC<LastReleaseDiscussionPageProps> = () => {
     throw new Error('No release discussions found');
   }
 
-  return <DiscussionPage discussionNameId={lastReleaseNameID} />;
+  return <DiscussionPage discussionNameId={lastReleaseNameID!} />;
 };
 
 export default LastReleaseDiscussion;

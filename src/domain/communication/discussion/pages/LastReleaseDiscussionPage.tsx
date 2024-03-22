@@ -9,7 +9,7 @@ export const LastReleaseDiscussionPage: FC<LastReleaseDiscussionPageProps> = () 
     fetchPolicy: 'network-only',
   });
 
-  const lastReleaseNameID = data?.platform.latestReleaseDiscussion.nameID;
+  const lastReleaseNameID = data?.platform?.latestReleaseDiscussion?.nameID;
 
   return <DiscussionPage discussionNameId={lastReleaseNameID!} />;
 };

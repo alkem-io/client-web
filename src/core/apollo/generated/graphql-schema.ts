@@ -3622,7 +3622,7 @@ export type Platform = {
   /** List of Innovation Hubs on the platform */
   innovationHubs: Array<InnovationHub>;
   /** The latest release discussion. */
-  latestReleaseDiscussion: LatestReleaseDiscussion;
+  latestReleaseDiscussion?: Maybe<LatestReleaseDiscussion>;
   /** The Innovation Library for the platform */
   library: Library;
   /** Alkemio Services Metadata. */
@@ -12051,7 +12051,7 @@ export type LatestReleaseDiscussionQuery = {
   platform: {
     __typename?: 'Platform';
     id: string;
-    latestReleaseDiscussion: { __typename?: 'LatestReleaseDiscussion'; id: string; nameID: string };
+    latestReleaseDiscussion?: { __typename?: 'LatestReleaseDiscussion'; id: string; nameID: string } | undefined;
   };
 };
 
