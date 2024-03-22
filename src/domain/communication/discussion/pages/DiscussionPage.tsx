@@ -16,7 +16,6 @@ import { compact } from 'lodash';
 import { useAuthorsDetails } from '../../communication/useAuthorsDetails';
 import { Message } from '../../room/models/Message';
 import { Skeleton } from '@mui/material';
-import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import TopLevelPageLayout from '../../../../main/ui/layout/topLevelPageLayout/TopLevelPageLayout';
 import RouterLink from '../../../../core/ui/link/RouterLink';
 import BackButton from '../../../../core/ui/actions/BackButton';
@@ -31,20 +30,19 @@ import { StorageConfigContextProvider } from '../../../storage/StorageBucket/Sto
 import useNavigate from '../../../../core/routing/useNavigate';
 
 interface DiscussionPageProps {
-  releaseId?: string;
+  discussionNameId: string;
 }
 
-export const DiscussionPage: FC<DiscussionPageProps> = ({ releaseId }) => {
-  const { discussionNameId } = useUrlParams();
+export const DiscussionPage: FC<DiscussionPageProps> = ({ discussionNameId }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { user } = useUserContext();
 
   const { data, loading: loadingDiscussion } = usePlatformDiscussionQuery({
     variables: {
-      discussionId: releaseId ?? discussionNameId!,
+      discussionId: discussionNameId!,
     },
-    skip: !releaseId && !discussionNameId,
+    skip: !discussionNameId,
   });
 
   const isSubscribedToMessages = useSubscribeOnRoomEvents(data?.platform.communication.discussion?.comments.id);
