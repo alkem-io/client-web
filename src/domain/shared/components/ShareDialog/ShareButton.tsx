@@ -4,7 +4,8 @@ import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined';
 import { ShareDialog, ShareComponentProps } from './ShareDialog';
 import { useTranslation } from 'react-i18next';
 
-interface ShareButtonProps extends ShareComponentProps {
+interface ShareButtonProps extends Omit<ShareComponentProps, 'url'> {
+  url: string | undefined;
   disabled?: boolean;
   title?: ReactNode;
   tooltip?: string;
@@ -13,6 +14,7 @@ interface ShareButtonProps extends ShareComponentProps {
 }
 
 const ShareButton: FC<ShareButtonProps> = ({
+  url,
   disabled = false,
   title = undefined,
   tooltip = '',
@@ -22,6 +24,10 @@ const ShareButton: FC<ShareButtonProps> = ({
 }) => {
   const { t } = useTranslation();
   const [dialogOpen, setDialogOpen] = useState(false);
+
+  if (!url) {
+    return null;
+  }
 
   return (
     <>
@@ -57,7 +63,7 @@ const ShareButton: FC<ShareButtonProps> = ({
           )}
         </>
       </Tooltip>
-      <ShareDialog open={dialogOpen} {...dialogProps} onClose={() => setDialogOpen(false)} />
+      <ShareDialog open={dialogOpen} url={url} {...dialogProps} onClose={() => setDialogOpen(false)} />
     </>
   );
 };
