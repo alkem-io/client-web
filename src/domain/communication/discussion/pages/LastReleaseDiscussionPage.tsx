@@ -11,7 +11,7 @@ export const LastReleaseDiscussionPage: FC<LastReleaseDiscussionPageProps> = () 
 
   const lastReleaseNameID = data?.platform.latestReleaseDiscussion.nameID;
 
-  return <DiscussionPage releaseId={lastReleaseNameID} />;
+  return <DiscussionPage discussionNameId={lastReleaseNameID!} />;
 };
 
 export default LastReleaseDiscussionPage;
