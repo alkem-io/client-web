@@ -32,8 +32,6 @@ const useNavigate = () => {
 
       const normalizedTo = options?.strict ? to : normalizeTo(to);
 
-      console.log(normalizedTo);
-
       return navigate(normalizedTo, options);
     },
     [navigate]
