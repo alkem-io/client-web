@@ -1,4 +1,4 @@
-query spaceInnovationFlowTemplates($spaceId: UUID_NAMEID!) {
+query SpaceInnovationFlowTemplates($spaceId: UUID_NAMEID!) {
   space(ID: $spaceId) {
     id
     account {

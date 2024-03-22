@@ -113,6 +113,7 @@ export const InnovationFlowCollaborationFragmentDoc = gql`
       activity
       sortOrder
       framing {
+        id
         profile {
           id
           displayName
@@ -456,6 +457,7 @@ export const CalloutFragmentDoc = gql`
       myPrivileges
     }
     framing {
+      id
       profile {
         id
         url
@@ -629,6 +631,7 @@ export const CalloutDetailsFragmentDoc = gql`
     nameID
     type
     framing {
+      id
       profile {
         id
         displayName
@@ -645,6 +648,7 @@ export const CalloutDetailsFragmentDoc = gql`
         storageBucket {
           id
         }
+        url
       }
       whiteboard {
         ...WhiteboardDetails
@@ -905,6 +909,7 @@ export const CalloutWithWhiteboardFragmentDoc = gql`
       myPrivileges
     }
     framing {
+      id
       whiteboard {
         ...WhiteboardDetails
       }
@@ -935,6 +940,7 @@ export const CollaborationWithWhiteboardDetailsFragmentDoc = gql`
         }
       }
       framing {
+        id
         whiteboard {
           ...WhiteboardDetails
         }
@@ -1870,6 +1876,7 @@ export const DashboardTopCalloutFragmentDoc = gql`
   fragment DashboardTopCallout on Callout {
     id
     framing {
+      id
       profile {
         id
         url
@@ -3051,6 +3058,7 @@ export const CalloutOnCollaborationWithStorageConfigFragmentDoc = gql`
     callouts(IDs: [$calloutId]) {
       id
       framing {
+        id
         profile {
           ...ProfileStorageConfig
         }
@@ -3064,6 +3072,7 @@ export const CalloutTemplatePreviewFragmentDoc = gql`
     id
     type
     framing {
+      id
       profile {
         id
         displayName
@@ -3229,6 +3238,7 @@ export const PostParentFragmentDoc = gql`
     callout {
       id
       framing {
+        id
         profile {
           id
           url
@@ -4974,6 +4984,7 @@ export const UpdateCalloutFlowStateDocument = gql`
       id
       sortOrder
       framing {
+        id
         profile {
           id
           flowState: tagset(tagsetName: FLOW_STATE) {
@@ -5138,6 +5149,68 @@ export type UpdateInnovationFlowStatesMutationResult =
 export type UpdateInnovationFlowStatesMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateInnovationFlowStatesMutation,
   SchemaTypes.UpdateInnovationFlowStatesMutationVariables
+>;
+export const UpdateInnovationFlowStatesFromTemplateDocument = gql`
+  mutation UpdateInnovationFlowStatesFromTemplate($innovationFlowId: UUID!, $innovationFlowTemplateId: UUID!) {
+    updateInnovationFlowStatesFromTemplate(
+      innovationFlowData: { innovationFlowID: $innovationFlowId, innovationFlowTemplateID: $innovationFlowTemplateId }
+    ) {
+      id
+      states {
+        displayName
+        description
+      }
+      currentState {
+        displayName
+        description
+      }
+    }
+  }
+`;
+export type UpdateInnovationFlowStatesFromTemplateMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateInnovationFlowStatesFromTemplateMutation,
+  SchemaTypes.UpdateInnovationFlowStatesFromTemplateMutationVariables
+>;
+
+/**
+ * __useUpdateInnovationFlowStatesFromTemplateMutation__
+ *
+ * To run a mutation, you first call `useUpdateInnovationFlowStatesFromTemplateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateInnovationFlowStatesFromTemplateMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateInnovationFlowStatesFromTemplateMutation, { data, loading, error }] = useUpdateInnovationFlowStatesFromTemplateMutation({
+ *   variables: {
+ *      innovationFlowId: // value for 'innovationFlowId'
+ *      innovationFlowTemplateId: // value for 'innovationFlowTemplateId'
+ *   },
+ * });
+ */
+export function useUpdateInnovationFlowStatesFromTemplateMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateInnovationFlowStatesFromTemplateMutation,
+    SchemaTypes.UpdateInnovationFlowStatesFromTemplateMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.UpdateInnovationFlowStatesFromTemplateMutation,
+    SchemaTypes.UpdateInnovationFlowStatesFromTemplateMutationVariables
+  >(UpdateInnovationFlowStatesFromTemplateDocument, options);
+}
+
+export type UpdateInnovationFlowStatesFromTemplateMutationHookResult = ReturnType<
+  typeof useUpdateInnovationFlowStatesFromTemplateMutation
+>;
+export type UpdateInnovationFlowStatesFromTemplateMutationResult =
+  Apollo.MutationResult<SchemaTypes.UpdateInnovationFlowStatesFromTemplateMutation>;
+export type UpdateInnovationFlowStatesFromTemplateMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateInnovationFlowStatesFromTemplateMutation,
+  SchemaTypes.UpdateInnovationFlowStatesFromTemplateMutationVariables
 >;
 export const UpdateInnovationFlowSingleStateDocument = gql`
   mutation updateInnovationFlowSingleState(
@@ -6153,6 +6226,7 @@ export const CalloutTemplateContentDocument = gql`
           ...TemplateCardProfileInfo
         }
         framing {
+          id
           profile {
             id
             displayName
@@ -6505,6 +6579,7 @@ export const UpdateCalloutDocument = gql`
     updateCallout(calloutData: $calloutData) {
       id
       framing {
+        id
         profile {
           id
           description
@@ -6685,14 +6760,12 @@ export const CalloutIdDocument = gql`
     $isChallenge: Boolean = false
     $isOpportunity: Boolean = false
   ) {
-    space(ID: $spaceId) {
+    space(ID: $spaceId) @include(if: $isSpace) {
       id
-      ... on Space @include(if: $isSpace) {
-        collaboration {
+      collaboration {
+        id
+        callouts(IDs: [$calloutNameId]) {
           id
-          callouts(IDs: [$calloutNameId]) {
-            id
-          }
         }
       }
     }
@@ -19494,7 +19567,7 @@ export function refetchSpaceGroupQuery(variables: SchemaTypes.SpaceGroupQueryVar
 }
 
 export const SpaceInnovationFlowTemplatesDocument = gql`
-  query spaceInnovationFlowTemplates($spaceId: UUID_NAMEID!) {
+  query SpaceInnovationFlowTemplates($spaceId: UUID_NAMEID!) {
     space(ID: $spaceId) {
       id
       account {

@@ -54,7 +54,6 @@ const ReferenceView: FC<ReferenceViewProps> = ({ reference, canEdit, onClickEdit
       <BadgeCardView
         component={RouterLink}
         to={reference.uri}
-        loose
         visual={
           <RoundedBadge size="medium">
             {isFileAttachmentUrl(reference.uri) ? <AttachmentIcon /> : <ReferenceIcon />}
