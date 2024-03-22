@@ -92,6 +92,17 @@ const CommunityGuidelines: FC<CommunityGuidelinesProps> = ({ spaceId, disabled }
           profile: {
             displayName: values.displayName,
             description: values.description,
+            references: values.references.map(reference => ({
+              ID: reference.id,
+              name: reference.name,
+              description: reference.description,
+              uri: reference.uri,
+            })),
+            tagsets: values.tagsets.map(tagset => ({
+              ID: tagset.id,
+              name: tagset.name,
+              tags: tagset.tags,
+            })),
           },
         },
       },
@@ -117,8 +128,8 @@ const CommunityGuidelines: FC<CommunityGuidelinesProps> = ({ spaceId, disabled }
               disabled={disabled || loading}
               maxLength={MARKDOWN_TEXT_LENGTH}
             />
-            <ProfileReferenceSegment references={values.references} profileId={data?.profile?.id} />
             <TagsetSegment tagsets={values.tagsets} />
+            <ProfileReferenceSegment references={values.references} profileId={data?.profile?.id} />
             <Box display="flex" marginY={4} justifyContent="flex-end">
               <LoadingButton disabled={!isValid} variant="contained" onClick={() => handleSubmit()} loading={loading}>
                 {t('common.update')}
