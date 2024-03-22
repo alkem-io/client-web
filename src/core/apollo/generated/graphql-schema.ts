@@ -449,7 +449,7 @@ export type ActivityLogEntryUpdateSent = ActivityLogEntry & {
   id: Scalars['UUID'];
   /** The journey where the activity happened */
   journey?: Maybe<Journey>;
-  /** The url to the Community Journey. */
+  /** The url to the Journey. */
   journeyUrl: Scalars['String'];
   /** The Message that been sent to this Community. */
   message: Scalars['String'];
@@ -8883,7 +8883,7 @@ export type CalloutIdQueryVariables = Exact<{
 
 export type CalloutIdQuery = {
   __typename?: 'Query';
-  space: {
+  space?: {
     __typename?: 'Space';
     id: string;
     collaboration?:
