@@ -82,7 +82,7 @@
     "past-events": "Past Events",
     "show-calendar": "Show calendar",
     "defaultEventDescription": "$t(common.location):\n\n$t(common.url):\n\n$t(common.description):",
-    "admins-only": "Since there are no events, this block is only visible for admins and leads"
+    "adminsOnly": "Since there are no events, this block is only visible for admins and leads"
   },
   "buttons": {
     "leave": "Leave",

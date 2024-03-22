@@ -112,7 +112,7 @@ const DashboardCalendarSection: FC<DashboardCalendarSectionProps> = ({ journeyId
         )}
         {!loading && !isCalendarView && (
           <>
-            {events.length === 0 && <Text>{t('calendar.admins-only')}</Text>}
+            {events.length === 0 && <Text>{t('calendar.adminsOnly')}</Text>}
             {events.map(event => (
               <CalendarEventView key={event.id} {...event} />
             ))}
