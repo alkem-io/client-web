@@ -283,6 +283,7 @@ export const ActivityLogOpportunityCreatedFragmentDoc = gql`
 export const ActivityLogUpdateSentFragmentDoc = gql`
   fragment ActivityLogUpdateSent on ActivityLogEntryUpdateSent {
     message
+    journeyUrl
   }
 `;
 export const ActivityLogCalendarEventCreatedFragmentDoc = gql`
