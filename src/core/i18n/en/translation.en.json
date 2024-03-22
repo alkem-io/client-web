@@ -1504,9 +1504,6 @@
       "delete-discussion": "Delete discussion?",
       "delete-comment": "Delete comment?"
     },
-    "message": {
-      "root": ""
-    },
     "post-comment": {
       "fields": {
         "description": {
