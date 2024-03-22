@@ -6665,14 +6665,12 @@ export const CalloutIdDocument = gql`
     $isChallenge: Boolean = false
     $isOpportunity: Boolean = false
   ) {
-    space(ID: $spaceId) {
+    space(ID: $spaceId) @include(if: $isSpace) {
       id
-      ... on Space @include(if: $isSpace) {
-        collaboration {
+      collaboration {
+        id
+        callouts(IDs: [$calloutNameId]) {
           id
-          callouts(IDs: [$calloutNameId]) {
-            id
-          }
         }
       }
     }
