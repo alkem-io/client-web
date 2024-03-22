@@ -7,6 +7,7 @@ import { ShareOnAlkemioButton } from './platforms/ShareOnAlkemio';
 import { ShareOnClipboardButton } from './platforms/ShareOnClipboard';
 import { DialogContent } from '../../../../core/ui/dialog/deprecated';
 import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
+import { isAbsoluteUrl } from '../../../../core/utils/links';
 
 export interface ShareDialogProps extends ShareComponentProps {
   open: boolean;
@@ -43,7 +44,7 @@ export const ShareDialog: FC<ShareDialogProps> = ({ open, onClose, entityTypeNam
 };
 
 export interface ShareComponentProps {
-  url: string | undefined;
+  url: string;
   entityTypeName: ShareDialogProps['entityTypeName'];
   loading?: boolean;
   onClose?: () => void;
@@ -52,7 +53,7 @@ export interface ShareComponentProps {
 export const ShareComponent: FC<ShareComponentProps> = ({ url, entityTypeName, loading, onClose, children }) => {
   const { t } = useTranslation();
   const [ShareHandler, setShareHandler] = useState<ComponentType<ShareOnPlatformHandlerProps>>();
-  const fullUrl = window.location.protocol + '//' + window.location.host + url;
+  const fullUrl = isAbsoluteUrl(url) ? url : window.location.protocol + '//' + window.location.host + url;
 
   const handleClick = e => {
     e.target.select();
