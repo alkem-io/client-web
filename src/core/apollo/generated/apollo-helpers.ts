@@ -381,6 +381,7 @@ export type ActivityLogEntryUpdateSentKeySpecifier = (
   | 'description'
   | 'id'
   | 'journey'
+  | 'journeyUrl'
   | 'message'
   | 'parentDisplayName'
   | 'parentNameID'
@@ -396,6 +397,7 @@ export type ActivityLogEntryUpdateSentFieldPolicy = {
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   journey?: FieldPolicy<any> | FieldReadFunction<any>;
+  journeyUrl?: FieldPolicy<any> | FieldReadFunction<any>;
   message?: FieldPolicy<any> | FieldReadFunction<any>;
   parentDisplayName?: FieldPolicy<any> | FieldReadFunction<any>;
   parentNameID?: FieldPolicy<any> | FieldReadFunction<any>;

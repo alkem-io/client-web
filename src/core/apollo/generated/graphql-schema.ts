@@ -449,6 +449,8 @@ export type ActivityLogEntryUpdateSent = ActivityLogEntry & {
   id: Scalars['UUID'];
   /** The journey where the activity happened */
   journey?: Maybe<Journey>;
+  /** The url to the Community Journey. */
+  journeyUrl: Scalars['String'];
   /** The Message that been sent to this Community. */
   message: Scalars['String'];
   /** The display name of the parent */
@@ -7113,7 +7115,11 @@ export type ActivityLogCalendarEventCreatedFragment = {
   };
 };
 
-export type ActivityLogUpdateSentFragment = { __typename?: 'ActivityLogEntryUpdateSent'; message: string };
+export type ActivityLogUpdateSentFragment = {
+  __typename?: 'ActivityLogEntryUpdateSent';
+  message: string;
+  journeyUrl: string;
+};
 
 export type ActivitySubjectProfileFragment = { __typename?: 'Profile'; id: string; displayName: string; url: string };
 
@@ -7319,6 +7325,7 @@ export type ActivityCreatedSubscription = {
           createdDate: Date;
           type: ActivityEventType;
           message: string;
+          journeyUrl: string;
         };
   };
 };
@@ -7513,6 +7520,7 @@ type ActivityLogOnCollaboration_ActivityLogEntryUpdateSent_Fragment = {
   createdDate: Date;
   type: ActivityEventType;
   message: string;
+  journeyUrl: string;
 };
 
 export type ActivityLogOnCollaborationFragment =
@@ -7827,6 +7835,7 @@ export type ActivityLogOnCollaborationQuery = {
         createdDate: Date;
         type: ActivityEventType;
         message: string;
+        journeyUrl: string;
         triggeredBy: {
           __typename?: 'User';
           id: string;
@@ -27571,6 +27580,7 @@ export type LatestContributionsQuery = {
           createdDate: Date;
           type: ActivityEventType;
           message: string;
+          journeyUrl: string;
           triggeredBy: {
             __typename?: 'User';
             id: string;
@@ -28323,6 +28333,7 @@ export type LatestContributionsGroupedQuery = {
         createdDate: Date;
         type: ActivityEventType;
         message: string;
+        journeyUrl: string;
         journey?:
           | {
               __typename?: 'Challenge';
