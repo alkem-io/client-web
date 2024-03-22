@@ -28,7 +28,7 @@ import {
   ShareOutlined,
 } from '@mui/icons-material';
 import { CalloutIcon } from '../../collaboration/callout/icon/CalloutIcon';
-import { useNavigate } from 'react-router-dom';
+import useNavigate from '../../../core/routing/useNavigate';
 import getEntityColor from '../../shared/utils/getEntityColor';
 import { EntityTabsProps } from './EntityPageLayout';
 import { gutters } from '../../../core/ui/grid/utils';

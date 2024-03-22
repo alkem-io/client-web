@@ -1,7 +1,7 @@
 import React, { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Theme, useMediaQuery } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import useNavigate from '../../../../core/routing/useNavigate';
 import CategorySelector from '../components/CategorySelector';
 import DiscussionsLayout from '../layout/DiscussionsLayout';
 import { DiscussionListView } from '../views/DiscussionsListView';

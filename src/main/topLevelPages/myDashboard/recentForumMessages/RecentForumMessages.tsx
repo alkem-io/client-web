@@ -7,7 +7,7 @@ import SeeMore from '../../../../core/ui/content/SeeMore';
 import { DiscussionListView } from '../../../../domain/communication/discussion/views/DiscussionsListView';
 import { useDiscussionMapper } from '../../../../domain/communication/discussion/models/Discussion';
 import { compact } from 'lodash';
-import { useNavigate } from 'react-router-dom';
+import useNavigate from '../../../../core/routing/useNavigate';
 
 interface RecentForumMessagesProps {}
 

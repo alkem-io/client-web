@@ -1,5 +1,5 @@
 import React, { forwardRef, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import useNavigate from '../../../../core/routing/useNavigate';
 import CalloutLayout, { CalloutLayoutProps } from '../../CalloutBlock/CalloutLayout';
 import ScrollableCardsLayout from '../../../../core/ui/card/cardsLayout/ScrollableCardsLayout';
 import CreateCalloutItemButton from '../CreateCalloutItemButton';
