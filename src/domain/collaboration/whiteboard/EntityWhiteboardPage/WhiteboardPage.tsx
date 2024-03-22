@@ -38,9 +38,9 @@ const WhiteboardPage: FC<WhiteboardPageProps> = ({
   });
 
   const calloutId =
-    data?.space.collaboration?.callouts?.[0].id ??
+    data?.lookup.opportunity?.collaboration?.callouts?.[0].id ??
     data?.lookup.challenge?.collaboration?.callouts?.[0].id ??
-    data?.lookup.opportunity?.collaboration?.callouts?.[0].id;
+    data?.space?.collaboration?.callouts?.[0].id;
 
   return (
     <WhiteboardProvider whiteboardNameId={whiteboardNameId} calloutId={calloutId}>

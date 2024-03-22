@@ -113,7 +113,7 @@ const useCallouts = ({ journeyTypeName, ...params }: UseCalloutsParams): UseCall
 
   const variables = {
     collaborationId: collaborationId!,
-    groupNames: params.groupNames,
+    groups: params.groupNames,
   } as const;
 
   const {
