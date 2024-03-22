@@ -23,7 +23,7 @@ const DashboardUpdatesSection: FC<DashboardUpdatesSectionProps> = ({ communityId
         const [latestMessage] = messages.sort((a, b) => b.timestamp - a.timestamp);
         const latestMessageAuthor = latestMessage?.sender?.id ? buildAuthorFromUser(latestMessage.sender) : undefined;
 
-        return (
+        return entities.messages.length ? (
           <PageContentBlock>
             <PageContentBlockHeader
               title={t('dashboard-updates-section.title', { count: messages.length })}
@@ -43,6 +43,8 @@ const DashboardUpdatesSection: FC<DashboardUpdatesSectionProps> = ({ communityId
             )}
             <SeeMore subject={t('common.updates')} to="dashboard/updates" />
           </PageContentBlock>
+        ) : (
+          <></>
         );
       }}
     </CommunityUpdatesContainer>
