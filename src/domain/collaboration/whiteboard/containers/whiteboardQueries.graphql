@@ -99,6 +99,7 @@ fragment CalloutWithWhiteboard on Callout {
     myPrivileges
   }
   framing {
+    id
     whiteboard {
       ...WhiteboardDetails
     }
@@ -127,6 +128,7 @@ fragment CollaborationWithWhiteboardDetails on Collaboration {
       }
     }
     framing {
+      id
       whiteboard {
         ...WhiteboardDetails
       }

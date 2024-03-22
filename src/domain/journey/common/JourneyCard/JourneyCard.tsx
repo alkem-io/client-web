@@ -60,7 +60,6 @@ const JourneyCard = ({
     ? ({
         component: RouterLink,
         to: journeyUri,
-        loose: true,
       } as const)
     : {};
 

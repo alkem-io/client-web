@@ -2,6 +2,7 @@ mutation UpdateCallout($calloutData: UpdateCalloutInput!) {
   updateCallout(calloutData: $calloutData) {
     id
     framing {
+      id
       profile {
         id
         description

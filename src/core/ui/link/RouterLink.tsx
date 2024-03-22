@@ -13,7 +13,6 @@ export interface RouterLinkProps extends Omit<ReactRouterLinkProps, 'target'>, P
 /**
  * Constructs a link choosing between MUI Link and ReactRouter Link
  * @param to
- * @param loose - allows domain to be specified without protocol, good for user-submitted content
  * @constructor
  */
 const RouterLink = forwardRef<HTMLAnchorElement, RouterLinkProps>(

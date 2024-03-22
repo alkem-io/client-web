@@ -32,6 +32,7 @@ fragment Callout on Callout {
     myPrivileges
   }
   framing {
+    id
     profile {
       id
       url
@@ -57,6 +58,7 @@ fragment CalloutDetails on Callout {
   nameID
   type
   framing {
+    id
     profile {
       id
       displayName
@@ -73,6 +75,7 @@ fragment CalloutDetails on Callout {
       storageBucket {
         id
       }
+      url
     }
     whiteboard {
       ...WhiteboardDetails
