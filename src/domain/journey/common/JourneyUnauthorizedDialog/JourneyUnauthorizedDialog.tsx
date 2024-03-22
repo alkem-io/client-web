@@ -9,7 +9,7 @@ import ApplicationButtonContainer, {
 import PageContentRibbon from '../../../../core/ui/content/PageContentRibbon';
 import { LockOutlined } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import useNavigate from '../../../../core/routing/useNavigate';
 import JourneyAboutDialog, { JourneyAboutDialogProps } from '../JourneyAboutDialog/JourneyAboutDialog';
 import useCanGoBack from '../../../../core/routing/useCanGoBack';
 
@@ -26,7 +26,6 @@ const JourneyUnauthorizedDialog = ({
   loading = false,
   disabled = false,
   challengeId,
-  challengeNameId,
   challengeName,
   journeyTypeName,
   ...aboutDialogProps
@@ -51,7 +50,7 @@ const JourneyUnauthorizedDialog = ({
       open={!disabled && !loading && !authorized}
       startButton={canGoBack && <BackButton onClick={() => navigate(-1)} />}
       endButton={
-        <ApplicationButtonContainer {...{ challengeId, challengeNameId, challengeName }}>
+        <ApplicationButtonContainer {...{ challengeId, challengeName }}>
           {(e, s) => (
             <ApplicationButton
               ref={applicationButtonRef}

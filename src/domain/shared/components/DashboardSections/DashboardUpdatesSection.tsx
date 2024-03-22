@@ -1,9 +1,6 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  CommunityUpdatesContainer,
-  CommunityUpdatesContainerProps,
-} from '../../../communication/updates/CommunityUpdatesContainer/CommunityUpdatesContainer';
+import { CommunityUpdatesContainer } from '../../../communication/updates/CommunityUpdatesContainer/CommunityUpdatesContainer';
 import SingleUpdateView from '../../../communication/updates/views/SingleUpdateView';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import { buildAuthorFromUser } from '../../../community/user/utils/buildAuthorFromUser';
@@ -12,18 +9,15 @@ import SeeMore from '../../../../core/ui/content/SeeMore';
 import ShareButton from '../ShareDialog/ShareButton';
 
 export interface DashboardUpdatesSectionProps {
-  entities: CommunityUpdatesContainerProps['entities'];
+  communityId: string | undefined;
   shareUrl: string;
 }
 
-const DashboardUpdatesSection: FC<DashboardUpdatesSectionProps> = ({
-  entities: { spaceId, communityId },
-  shareUrl,
-}) => {
+const DashboardUpdatesSection: FC<DashboardUpdatesSectionProps> = ({ communityId, shareUrl }) => {
   const { t } = useTranslation();
 
   return (
-    <CommunityUpdatesContainer entities={{ spaceId, communityId }}>
+    <CommunityUpdatesContainer communityId={communityId}>
       {(entities, _, { retrievingUpdateMessages }) => {
         const messages = [...entities.messages];
         const [latestMessage] = messages.sort((a, b) => b.timestamp - a.timestamp);

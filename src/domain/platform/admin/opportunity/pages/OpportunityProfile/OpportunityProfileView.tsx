@@ -11,13 +11,14 @@ import {
   useOpportunityProfileInfoQuery,
   useUpdateOpportunityMutation,
 } from '../../../../../../core/apollo/generated/apollo-hooks';
-import { useNavigateToEdit } from '../../../../../../core/routing/useNavigateToEdit';
 import EditVisualsView from '../../../../../common/visual/EditVisuals/EditVisualsView';
 import { formatDatabaseLocation } from '../../../../../common/location/LocationUtils';
 import SaveButton from '../../../../../../core/ui/actions/SaveButton';
 import Gutters from '../../../../../../core/ui/grid/Gutters';
 import { VisualType } from '../../../../../../core/apollo/generated/graphql-schema';
 import { useRouteResolver } from '../../../../../../main/routing/resolvers/RouteResolver';
+import useNavigate from '../../../../../../core/routing/useNavigate';
+import { buildJourneyAdminUrl } from '../../../../../../main/routing/urlBuilders';
 
 interface Props {
   mode: FormMode;
@@ -25,7 +26,7 @@ interface Props {
 
 const OpportunityProfileView: FC<Props> = ({ mode }) => {
   const { t } = useTranslation();
-  const navigateToEdit = useNavigateToEdit();
+  const navigate = useNavigate();
   const notify = useNotification();
   const onSuccess = (message: string) => notify(message, 'success');
 
@@ -36,7 +37,7 @@ const OpportunityProfileView: FC<Props> = ({ mode }) => {
     awaitRefetchQueries: true,
     onCompleted: data => {
       onSuccess('Successfully created');
-      navigateToEdit(data.createOpportunity.nameID);
+      navigate(buildJourneyAdminUrl(data.createOpportunity.profile.url), { replace: true });
     },
   });
 

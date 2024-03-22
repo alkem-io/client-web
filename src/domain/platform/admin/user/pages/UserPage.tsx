@@ -1,5 +1,5 @@
 import React, { FC, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import useNavigate from '../../../../../core/routing/useNavigate';
 import UserRemoveModal from '../../components/User/UserRemoveModal';
 import UserForm from '../../../../community/user/userForm/UserForm';
 import { Loading } from '../../../../../core/ui/loading/Loading';

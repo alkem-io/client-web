@@ -19,9 +19,8 @@ import { VisualName } from '../../../domain/common/visual/constants/visuals.cons
 
 export type SimpleChallenge = {
   id: string;
-  nameID: string;
   spaceId: string;
-  spaceNameId: string;
+  spaceUrl: string;
   spaceDisplayName: string;
   spaceTagline: string;
   spaceVisibility: SpaceVisibility;
@@ -30,6 +29,9 @@ export type SimpleChallenge = {
   banner?: {
     uri: string;
     alternativeText?: string;
+  };
+  profile: {
+    url: string;
   };
   tags: string[];
   member: boolean;
@@ -47,7 +49,6 @@ export const simpleChallengeTagsValueGetter = (c: SimpleChallenge): string[] => 
 
 export const simpleChallengeSpaceDataGetter = (c: SimpleChallenge) => ({
   id: c.spaceId,
-  nameId: c.spaceNameId,
   displayName: c.spaceDisplayName,
 });
 
@@ -103,9 +104,8 @@ export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ se
     space =>
       space.challenges?.map<SimpleChallenge>(ch => ({
         id: ch.id,
-        nameID: ch.nameID,
         spaceId: space.id,
-        spaceNameId: space.nameID,
+        spaceUrl: space.profile.url,
         spaceDisplayName: space.profile.displayName,
         spaceVisibility: space.account.license.visibility,
         spaceTagline: space.profile.tagline || '',
@@ -115,6 +115,7 @@ export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ se
         tags: ch.profile.tagset?.tags || [],
         vision: ch.context?.vision || '',
         member: ch.community?.myMembershipStatus === CommunityMembershipStatus.Member,
+        profile: ch.profile,
       })) || []
   );
 
@@ -135,25 +136,25 @@ export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ se
   });
 
   const searchResults: SimpleChallengeWithSearchTerms[] | undefined =
-    rawSearchResults?.search?.journeyResults.flatMap(result => {
+    rawSearchResults?.search?.journeyResults.flatMap<SimpleChallengeWithSearchTerms>(result => {
       const entry = result as SearchResultT<SearchResultChallengeFragment>;
       const ch = entry.challenge;
       const space = entry.space;
       return {
         id: ch.id,
-        nameID: ch.nameID,
         spaceId: space.id,
-        spaceNameId: space.nameID,
+        spaceUrl: space.profile.url,
         spaceDisplayName: space.profile.displayName,
-        spaceTagline: space.profile.tagline || '',
+        spaceTagline: space.profile.tagline ?? '',
         spaceVisibility: space.account.license.visibility,
         displayName: ch.profile.displayName,
         banner: getVisualByType(VisualName.CARD, ch.profile.visuals),
-        tagline: ch.profile.tagline || '',
-        tags: ch.profile.tagset?.tags || [],
-        vision: ch.context?.vision || '',
+        tagline: ch.profile.tagline ?? '',
+        tags: ch.profile.tagset?.tags ?? [],
+        vision: ch.context?.vision ?? '',
         matchedTerms: entry.terms,
         member: ch.community?.myMembershipStatus === CommunityMembershipStatus.Member,
+        profile: ch.profile,
       };
     }) || [];
 

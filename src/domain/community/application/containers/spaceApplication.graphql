@@ -3,6 +3,7 @@ query spaceApplication($spaceId: UUID_NAMEID!) {
     id
     profile {
       id
+      url
       displayName
     }
     community {

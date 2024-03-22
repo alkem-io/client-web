@@ -14,7 +14,6 @@ import { useTranslation } from 'react-i18next';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
 import { ActivityComponent } from '../../../collaboration/activity/ActivityLog/ActivityComponent';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
-import { JourneyLocation } from '../../../../main/routing/urlBuilders';
 import CommunityContributorsBlockWide from '../../../community/contributor/CommunityContributorsBlockWide/CommunityContributorsBlockWide';
 import { useSpaceCommunityPageQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import useActivityOnCollaboration from '../../../collaboration/activity/useActivityLogOnCollaboration/useActivityOnCollaboration';
@@ -48,8 +47,6 @@ const SpaceCommunityPage = () => {
   const closeContactLeadsDialog = () => {
     setIsContactLeadUsersDialogOpen(false);
   };
-
-  const journeyLocation: JourneyLocation = { spaceNameId };
 
   const { data } = useSpaceCommunityPageQuery({
     variables: { spaceNameId },
@@ -130,7 +127,7 @@ const SpaceCommunityPage = () => {
               <PageContentBlock>
                 <PageContentBlockHeader title={t('common.activity')} />
                 <Box margin={-1}>
-                  <ActivityComponent activities={activities} journeyLocation={journeyLocation} limit={5} />
+                  <ActivityComponent activities={activities} limit={5} />
                 </Box>
                 <SeeMore subject={t('common.contributions')} onClick={() => setIsActivitiesDialogOpen(true)} />
                 <DialogWithGrid
@@ -143,7 +140,7 @@ const SpaceCommunityPage = () => {
                     onClose={() => setIsActivitiesDialogOpen(false)}
                   />
                   <Box padding={1}>
-                    <ActivityComponent activities={activities} journeyLocation={journeyLocation} />
+                    <ActivityComponent activities={activities} />
                   </Box>
                 </DialogWithGrid>
               </PageContentBlock>

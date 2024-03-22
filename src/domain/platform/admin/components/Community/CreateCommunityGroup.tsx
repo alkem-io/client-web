@@ -1,5 +1,5 @@
 import React, { FC, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import useNavigate from '../../../../../core/routing/useNavigate';
 import {
   GroupDetailsFragmentDoc,
   useCreateGroupOnCommunityMutation,

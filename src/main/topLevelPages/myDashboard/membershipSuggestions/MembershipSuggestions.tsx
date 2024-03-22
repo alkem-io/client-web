@@ -1,5 +1,5 @@
 import React, { FC, useState } from 'react';
-import { useNavigate } from 'react-router';
+import useNavigate from '../../../../core/routing/useNavigate';
 import { useLocation } from 'react-router-dom';
 import PageContentBlockGrid from '../../../../core/ui/content/PageContentBlockGrid';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';

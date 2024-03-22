@@ -1,5 +1,5 @@
 import React, { ReactNode, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import useNavigate from '../../../../core/routing/useNavigate';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 import filterFn, { ValueType } from '../../../../core/utils/filtering/filterFn';
 import { FILTER_PARAM_NAME } from '../../../../main/search/constants';

@@ -8,11 +8,12 @@ import {
   useUserProfileLazyQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
-import { buildChallengeApplyUrl, buildSpaceApplyUrl, buildSpaceUrl } from '../../../../main/routing/urlBuilders';
+import { buildJourneyApplyUrl } from '../../../../main/routing/urlBuilders';
 import { AuthorizationPrivilege, CommunityMembershipStatus } from '../../../../core/apollo/generated/graphql-schema';
 import { useCommunityContext } from '../../community/CommunityContext';
 import clearCacheForType from '../../../../core/apollo/utils/clearCacheForType';
 import { useAuthenticationContext } from '../../../../core/auth/authentication/hooks/useAuthenticationContext';
+import { useChallenge } from '../../../journey/challenge/hooks/useChallenge';
 
 interface ApplicationContainerEntities {
   applicationButtonProps: Omit<ApplicationButtonProps, 'journeyTypeName'>;
@@ -27,13 +28,11 @@ interface ApplicationContainerState {
 export interface ApplicationButtonContainerProps
   extends ContainerChildProps<ApplicationContainerEntities, ApplicationContainerActions, ApplicationContainerState> {
   challengeId?: string;
-  challengeNameId?: string;
   challengeName?: string;
 }
 
 export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = ({
   challengeId,
-  challengeNameId,
   challengeName,
   children,
 }) => {
@@ -44,6 +43,7 @@ export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = (
   const [getUserProfile, { loading: gettingUserProfile }] = useUserProfileLazyQuery({ variables: { input: userId } });
 
   const { spaceId, spaceNameId, profile: spaceProfile, refetchSpace } = useSpace();
+  const { profile: challengeProfile } = useChallenge();
 
   const { communityId, myMembershipStatus } = useCommunityContext();
 
@@ -78,11 +78,9 @@ export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = (
     hasCommunityParent &&
     _communityPrivileges?.space?.spaceCommunity?.myMembershipStatus === CommunityMembershipStatus.Member;
 
-  const applyUrl =
-    challengeId && challengeNameId
-      ? buildChallengeApplyUrl(spaceNameId, challengeNameId)
-      : buildSpaceApplyUrl(spaceNameId);
-  const joinParentUrl = challengeNameId && buildSpaceUrl(spaceNameId);
+  const applyUrl = buildJourneyApplyUrl(challengeId ? challengeProfile.url : spaceProfile.url);
+
+  const joinParentUrl = challengeId && spaceProfile.url;
 
   const communityPrivileges = _communityPrivileges?.lookup?.applicationCommunity?.authorization?.myPrivileges ?? [];
   const canJoinCommunity = communityPrivileges.includes(AuthorizationPrivilege.CommunityJoin);
@@ -111,7 +109,7 @@ export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = (
     isMember,
     isParentMember,
     applyUrl,
-    parentApplyUrl: buildSpaceApplyUrl(spaceNameId),
+    parentApplyUrl: buildJourneyApplyUrl(spaceProfile.url),
     joinParentUrl,
     applicationState: userApplication?.state,
     userInvitation,

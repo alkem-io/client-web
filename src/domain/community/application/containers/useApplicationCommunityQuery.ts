@@ -7,7 +7,6 @@ import {
   useSpaceApplicationTemplateQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { ApplicationTypeEnum } from '../constants/ApplicationType';
-import { buildChallengeUrl, buildSpaceUrl } from '../../../../main/routing/urlBuilders';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 
 export const useApplicationCommunityQuery = (type: ApplicationTypeEnum) => {
@@ -68,7 +67,7 @@ export const useApplicationCommunityQuery = (type: ApplicationTypeEnum) => {
         displayName: spaceData?.space.profile.displayName || '',
         description: spaceTemplateData?.space.community?.applicationForm?.description,
         questions: spaceTemplateData?.space.community?.applicationForm?.questions || [],
-        backUrl: buildSpaceUrl(spaceNameId),
+        backUrl: spaceData?.space.profile.url,
       };
     }
     if (type === ApplicationTypeEnum.challenge) {
@@ -77,7 +76,7 @@ export const useApplicationCommunityQuery = (type: ApplicationTypeEnum) => {
         displayName: challengeData?.lookup.challenge?.profile.displayName || '',
         description: challengeTemplateData?.lookup.challenge?.community?.applicationForm?.description,
         questions: challengeTemplateData?.lookup.challenge?.community?.applicationForm?.questions ?? [],
-        backUrl: buildChallengeUrl(spaceNameId, challengeNameId),
+        backUrl: challengeData?.lookup.challenge?.profile.url,
       };
     }
   }, [type, challengeData, challengeTemplateData, spaceData, spaceTemplateData, challengeNameId, spaceNameId]);
