@@ -53,7 +53,7 @@ export interface ShareComponentProps {
 export const ShareComponent: FC<ShareComponentProps> = ({ url, entityTypeName, loading, onClose, children }) => {
   const { t } = useTranslation();
   const [ShareHandler, setShareHandler] = useState<ComponentType<ShareOnPlatformHandlerProps>>();
-  const fullUrl = !url || isAbsoluteUrl(url) ? url : window.location.protocol + '//' + window.location.host + url;
+  const fullUrl = isAbsoluteUrl(url) ? url : window.location.protocol + '//' + window.location.host + url;
 
   const handleClick = e => {
     e.target.select();
