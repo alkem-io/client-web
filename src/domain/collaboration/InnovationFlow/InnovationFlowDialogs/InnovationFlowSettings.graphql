@@ -68,6 +68,7 @@ fragment InnovationFlowCollaboration on Collaboration {
     activity
     sortOrder
     framing {
+      id
       profile {
         id
         displayName
@@ -95,6 +96,7 @@ mutation UpdateCalloutFlowState($calloutId: UUID!, $flowStateTagsetId: UUID!, $v
     id
     sortOrder
     framing {
+      id
       profile {
         id
         flowState: tagset(tagsetName: FLOW_STATE) {
@@ -125,6 +127,23 @@ mutation updateInnovationFlowStates($innovationFlowId: UUID!, $states: [UpdateIn
     }
   }
 }
+
+mutation UpdateInnovationFlowStatesFromTemplate($innovationFlowId: UUID!, $innovationFlowTemplateId: UUID!) {
+  updateInnovationFlowStatesFromTemplate(
+    innovationFlowData: { innovationFlowID: $innovationFlowId, innovationFlowTemplateID: $innovationFlowTemplateId }
+  ) {
+    id
+    states {
+      displayName
+      description
+    }
+    currentState {
+      displayName
+      description
+    }
+  }
+}
+
 mutation updateInnovationFlowSingleState(
   $innovationFlowId: UUID!
   $stateName: String!

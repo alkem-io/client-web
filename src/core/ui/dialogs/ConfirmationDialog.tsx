@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog';
 import { LoadingButton } from '@mui/lab';
@@ -17,7 +17,7 @@ export interface ConfirmationDialogProps {
     titleId?: TranslationKey;
     title?: string | React.ReactNode;
     contentId?: TranslationKey;
-    content?: string;
+    content?: ReactNode;
     confirmButtonTextId?: TranslationKey;
     confirmButtonText?: string;
   };

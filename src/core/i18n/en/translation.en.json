@@ -97,6 +97,7 @@
     "save-draft": "Save as draft",
     "archive": "Archive",
     "save": "Save",
+    "continue": "Continue",
     "back": "Back",
     "next": "Next",
     "edit": "Edit",
@@ -968,6 +969,13 @@
         "deleteDialog": {
           "title": "Delete State?",
           "text": "This action cannot be undone."
+        },
+        "selectDifferentFlow": {
+          "title": "Select different Flow",
+          "confirmationDialog": {
+            "title": "Be careful when changing the flow!",
+            "description": "- By changing the Innovation Flow, **all changes made to the current flow will be lost**.\n- All existing collaboration tools will be grouped under the default state of the new flow."
+          }
         }
       }
     },
