@@ -1,7 +1,7 @@
 import { _AUTH_LOGIN_PATH } from '../../core/auth/authentication/constants/authentication.constants';
 import { EntityPageSection } from '../../domain/shared/layout/EntityPageSection';
 import { ROUTE_HOME } from '../../domain/platform/routes/constants';
-import { normalizeLink } from '../../core/utils/links';
+import { isAbsoluteUrl, normalizeLink } from '../../core/utils/links';
 
 export const buildOrganizationUrl = (organizationNameId: string) => `/organization/${organizationNameId}`;
 
@@ -18,7 +18,7 @@ export const buildUserProfileSettingsUrl = (userNameId: string) =>
   `${buildUserProfileUrl(userNameId)}/settings/profile`;
 
 export const buildReturnUrlParam = (returnUrl = ROUTE_HOME, origin = window.location.origin) => {
-  const fullReturnUrl = `${origin}${returnUrl}`;
+  const fullReturnUrl = isAbsoluteUrl(returnUrl) ? returnUrl : `${origin}${returnUrl}`;
   return `?returnUrl=${encodeURI(fullReturnUrl)}`;
 };
 
