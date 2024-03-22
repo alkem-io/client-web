@@ -39,6 +39,7 @@ function RadioSettingsGroup<T extends Record<string, { label: ReactNode }>>({
     >
       {Object.entries(options).map(([key, option]) => (
         <FormControlLabel
+          key={key}
           value={key}
           control={<LoadingRadio loading={itemLoading === key} disabled={Boolean(itemLoading)} />}
           label={option.label}

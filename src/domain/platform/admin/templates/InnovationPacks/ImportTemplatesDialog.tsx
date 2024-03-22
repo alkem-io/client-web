@@ -20,7 +20,7 @@ export interface ImportTemplatesDialogProps<T extends Template, V extends T> {
   innovationPacks: InnovationPack<T>[];
   open: boolean;
   onClose: DialogProps['onClose'];
-  onImportTemplate: (template: T & Identifiable, templateValue?: V) => Promise<void>;
+  onImportTemplate: (template: T & Identifiable, templateValue?: V) => Promise<unknown>;
   loading?: boolean;
   dialogSubtitle: string;
   actionButton: ReactElement<ButtonProps>;
