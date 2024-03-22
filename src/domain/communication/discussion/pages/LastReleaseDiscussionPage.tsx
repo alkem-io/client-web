@@ -1,13 +1,15 @@
 import { FC } from 'react';
-import { useLatestReleaseDiscussionNameIdQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { useLatestReleaseDiscussionQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import DiscussionPage from './DiscussionPage';
 
 interface LastReleaseDiscussionPageProps {}
 
 export const LastReleaseDiscussionPage: FC<LastReleaseDiscussionPageProps> = () => {
-  const { data } = useLatestReleaseDiscussionNameIdQuery();
+  const { data } = useLatestReleaseDiscussionQuery({
+    fetchPolicy: 'network-only',
+  });
 
-  const lastReleaseNameID = data?.platform.latestReleaseDiscussionNameID;
+  const lastReleaseNameID = data?.platform.latestReleaseDiscussion.nameID;
 
   return <DiscussionPage releaseId={lastReleaseNameID} />;
 };
