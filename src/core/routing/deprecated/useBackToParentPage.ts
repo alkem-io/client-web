@@ -1,6 +1,7 @@
-import { To, useLocation, useNavigate } from 'react-router-dom';
+import { To, useLocation } from 'react-router-dom';
 import { useCallback } from 'react';
 import { LinkWithState } from '../../../domain/shared/types/LinkWithState';
+import useNavigate from '../useNavigate';
 
 const LOCATION_STATE_PARAM_PARENT_PAGE = 'parentPage';
 

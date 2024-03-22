@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import useNavigate from '../../../../../core/routing/useNavigate';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import { useDeleteUserGroup } from './useDeleteUserGroup';
 import {

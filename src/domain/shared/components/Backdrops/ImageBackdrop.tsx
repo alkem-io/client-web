@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import useNavigate from '../../../../core/routing/useNavigate';
 import { BackdropProps } from './BackdropWithMessage';
 import {
   _AUTH_LOGIN_PATH,

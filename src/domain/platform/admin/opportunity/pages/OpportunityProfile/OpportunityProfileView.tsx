@@ -17,7 +17,7 @@ import SaveButton from '../../../../../../core/ui/actions/SaveButton';
 import Gutters from '../../../../../../core/ui/grid/Gutters';
 import { VisualType } from '../../../../../../core/apollo/generated/graphql-schema';
 import { useRouteResolver } from '../../../../../../main/routing/resolvers/RouteResolver';
-import { useNavigate } from 'react-router-dom';
+import useNavigate from '../../../../../../core/routing/useNavigate';
 import { buildJourneyAdminUrl } from '../../../../../../main/routing/urlBuilders';
 
 interface Props {

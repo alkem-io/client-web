@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { useNavigate } from 'react-router-dom';
+import useNavigate from '../../../../../core/routing/useNavigate';
 import { ApolloError } from '@apollo/client';
 import { ContainerChildProps } from '../../../../../core/container/container';
 import {
