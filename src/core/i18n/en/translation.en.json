@@ -82,7 +82,8 @@
     "no-upcoming-events": "Currently, there are no upcoming events to be displayed",
     "past-events": "Past Events",
     "show-calendar": "Show calendar",
-    "defaultEventDescription": "$t(common.location):\n\n$t(common.url):\n\n$t(common.description):"
+    "defaultEventDescription": "$t(common.location):\n\n$t(common.url):\n\n$t(common.description):",
+    "adminsOnly": "Since there are no events, this block is only visible for admins and leads"
   },
   "buttons": {
     "leave": "Leave",
@@ -98,6 +99,7 @@
     "save-draft": "Save as draft",
     "archive": "Archive",
     "save": "Save",
+    "continue": "Continue",
     "back": "Back",
     "next": "Next",
     "edit": "Edit",
@@ -969,6 +971,13 @@
         "deleteDialog": {
           "title": "Delete State?",
           "text": "This action cannot be undone."
+        },
+        "selectDifferentFlow": {
+          "title": "Select different Flow",
+          "confirmationDialog": {
+            "title": "Be careful when changing the flow!",
+            "description": "- By changing the Innovation Flow, **all changes made to the current flow will be lost**.\n- All existing collaboration tools will be grouped under the default state of the new flow."
+          }
         }
       }
     },

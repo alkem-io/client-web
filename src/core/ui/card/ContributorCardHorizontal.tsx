@@ -64,7 +64,6 @@ const ContributorCardHorizontal = ({
           }
           component={RouterLink}
           to={url}
-          loose
         >
           <BlockSectionTitle>{profile.displayName}</BlockSectionTitle>
           <BlockSectionTitle>{profile.location && getLocationString(profile.location)}</BlockSectionTitle>

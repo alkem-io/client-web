@@ -36,6 +36,7 @@ function SwitchSettingsGroup<T extends Record<string, { checked: boolean; label:
       {Object.entries(options).map(([key, option]) => {
         return (
           <FormControlLabel
+            key={key}
             value={key}
             control={
               <LoadingSwitch
