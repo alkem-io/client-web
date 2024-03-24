@@ -57,10 +57,10 @@ import useLoadingState from '../../shared/utils/useLoadingState';
 export interface CalloutLayoutProps extends CalloutLayoutEvents, Partial<CalloutSortProps> {
   callout: {
     id: string;
-    nameID: string;
     framing: {
       profile: {
         id: string;
+        url: string;
         displayName: string;
         description?: string;
         references?: Reference[];
@@ -102,7 +102,6 @@ export interface CalloutLayoutProps extends CalloutLayoutEvents, Partial<Callout
   calloutNames: string[];
   contributionsCount: number;
   expanded?: boolean;
-  calloutUri: string;
   onExpand?: () => void;
   onClose?: () => void;
   skipReferences?: boolean;
@@ -125,7 +124,6 @@ const CalloutLayout = ({
   onMoveDown,
   onMoveToTop,
   onMoveToBottom,
-  calloutUri,
   expanded = false,
   onExpand,
   onClose,
@@ -254,7 +252,7 @@ const CalloutLayout = ({
                 <SettingsOutlinedIcon />
               </IconButton>
             )}
-            <ShareButton url={calloutUri} entityTypeName="callout" />
+            <ShareButton url={callout.framing.profile.url} entityTypeName="callout" />
           </>
         }
         titleContainerProps={{ flexDirection: 'column', position: 'relative' }}

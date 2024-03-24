@@ -59,6 +59,7 @@ query CalloutTemplateContent($calloutTemplateId: UUID!) {
         ...TemplateCardProfileInfo
       }
       framing {
+        id
         profile {
           id
           displayName

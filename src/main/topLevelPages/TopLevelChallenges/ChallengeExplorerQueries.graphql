@@ -22,9 +22,9 @@ query ChallengeExplorerSearch($searchData: SearchInput!) {
 query ChallengeExplorerData($spaceIDs: [UUID!]) {
   spaces(IDs: $spaceIDs) {
     id
-    nameID
     profile {
       id
+      url
       tagline
       displayName
     }
@@ -37,9 +37,9 @@ query ChallengeExplorerData($spaceIDs: [UUID!]) {
     }
     challenges {
       id
-      nameID
       profile {
         id
+        url
         tagline
         displayName
         description

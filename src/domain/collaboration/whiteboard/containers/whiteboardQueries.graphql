@@ -1,5 +1,6 @@
 fragment WhiteboardProfile on Profile {
   id
+  url
   displayName
   description
   visual(type: CARD) {
@@ -98,6 +99,7 @@ fragment CalloutWithWhiteboard on Callout {
     myPrivileges
   }
   framing {
+    id
     whiteboard {
       ...WhiteboardDetails
     }
@@ -126,6 +128,7 @@ fragment CollaborationWithWhiteboardDetails on Collaboration {
       }
     }
     framing {
+      id
       whiteboard {
         ...WhiteboardDetails
       }

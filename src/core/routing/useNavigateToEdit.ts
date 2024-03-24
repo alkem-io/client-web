@@ -1,17 +1,9 @@
-import { useNavigate } from 'react-router-dom';
+import useNavigate from './useNavigate';
 
-interface Options {
-  editRoute?: string;
-}
-
-const defaultOptions: Options = {
-  editRoute: 'profile',
-};
-
-export const useNavigateToEdit = (options: Options = defaultOptions) => {
+export const useNavigateToEdit = () => {
   const navigate = useNavigate();
 
   return (id: string) => {
-    navigate(`../${id}/${options.editRoute}`, { replace: true });
+    navigate(`../${id}/profile`, { replace: true });
   };
 };

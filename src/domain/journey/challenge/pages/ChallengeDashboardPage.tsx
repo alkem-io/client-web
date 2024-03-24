@@ -9,7 +9,6 @@ import ContributorsDialog from '../../../community/community/ContributorsDialog/
 import ChallengeContributorsDialogContent from '../../../community/community/entities/ChallengeContributorsDialogContent';
 import JourneyDashboardView from '../../common/tabs/Dashboard/JourneyDashboardView';
 import { useTranslation } from 'react-i18next';
-import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import CalendarDialog from '../../../timeline/calendar/CalendarDialog';
 import JourneyDashboardWelcomeBlock from '../../common/journeyDashboardWelcomeBlock/JourneyDashboardWelcomeBlock';
 import useDirectMessageDialog from '../../../communication/messaging/DirectMessaging/useDirectMessageDialog';
@@ -34,21 +33,13 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
 
   const [backToDashboard] = useBackToParentPage(`${currentPath.pathname}/dashboard`);
 
-  const { spaceNameId, challengeNameId } = useUrlParams();
-
   const { sendMessage, directMessageDialog } = useDirectMessageDialog({
     dialogTitle: t('send-message-dialog.direct-message-title'),
   });
 
   const hasExtendedApplicationButton = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
 
-  const { spaceId, challengeId } = useRouteResolver();
-
-  if (!spaceNameId) {
-    throw new Error('Must be within a Space route.');
-  }
-
-  const shareUpdatesUrl = buildUpdatesUrl({ spaceNameId, challengeNameId });
+  const { challengeId } = useRouteResolver();
 
   return (
     <ChallengePageLayout currentSection={EntityPageSection.Dashboard}>
@@ -58,10 +49,10 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
           <>
             <JourneyDashboardView
               journeyId={challengeId}
+              journeyUrl={entities.challenge?.profile.url}
               ribbon={
                 <ApplicationButtonContainer
                   challengeId={entities.challenge?.id}
-                  challengeNameId={challengeNameId}
                   challengeName={entities.challenge?.profile.displayName}
                 >
                   {({ applicationButtonProps }, { loading }) => {
@@ -95,15 +86,12 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
                   {props => (
                     <MembershipContainer
                       challengeId={entities.challenge?.id}
-                      challengeNameId={challengeNameId}
                       challengeName={entities.challenge?.profile.displayName}
                       {...props}
                     />
                   )}
                 </JourneyDashboardWelcomeBlock>
               }
-              spaceNameId={spaceNameId}
-              challengeNameId={entities.challenge?.nameID}
               communityId={entities.challenge?.community?.id}
               communityReadAccess={entities.permissions.communityReadAccess}
               timelineReadAccess={entities.permissions.timelineReadAccess}
@@ -122,14 +110,13 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
               callouts={callouts}
               sendMessageToCommunityLeads={entities.sendMessageToCommunityLeads}
               journeyTypeName="challenge"
-              shareUpdatesUrl={shareUpdatesUrl}
+              shareUpdatesUrl={buildUpdatesUrl(entities.challenge?.profile.url ?? '')}
             />
             <CommunityUpdatesDialog
               open={dialog === 'updates'}
               onClose={backToDashboard}
-              spaceId={spaceId}
               communityId={entities.challenge?.community?.id}
-              shareUrl={shareUpdatesUrl}
+              shareUrl={buildUpdatesUrl(entities.challenge?.profile.url ?? '')}
               loading={state.loading}
             />
             <ContributorsDialog

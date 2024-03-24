@@ -130,7 +130,6 @@ export const useJourneyCreation = () => {
           createChallenge: {
             __typename: 'Challenge',
             id: '',
-            nameID: '',
             metrics: [
               {
                 id: '',
@@ -142,6 +141,7 @@ export const useJourneyCreation = () => {
               id: '',
               displayName: value.displayName ?? '',
               tagline: value.tagline,
+              url: '',
               cardBanner: {
                 id: '',
                 uri: '',
@@ -187,7 +187,6 @@ export const useJourneyCreation = () => {
           createOpportunity: {
             __typename: 'Opportunity',
             id: '',
-            nameID: '',
             metrics: [
               {
                 id: '',
@@ -202,6 +201,7 @@ export const useJourneyCreation = () => {
               id: '',
               displayName: value.displayName ?? '',
               tagline: value.tagline,
+              url: '',
               cardBanner: {
                 id: '',
                 uri: '',

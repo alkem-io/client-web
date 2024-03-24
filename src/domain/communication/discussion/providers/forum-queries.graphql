@@ -1,8 +1,8 @@
 fragment DiscussionDetails on Discussion {
   id
-  nameID
   profile {
     id
+    url
     displayName
     description
   }
@@ -44,9 +44,9 @@ query platformDiscussions {
 
 fragment DiscussionCard on Discussion {
   id
-  nameID
   profile {
     id
+    url
     displayName
     description
     tagline

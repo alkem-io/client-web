@@ -1,11 +1,10 @@
 import React, { forwardRef, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import useNavigate from '../../../../core/routing/useNavigate';
 import CalloutLayout, { CalloutLayoutProps } from '../../CalloutBlock/CalloutLayout';
 import ScrollableCardsLayout from '../../../../core/ui/card/cardsLayout/ScrollableCardsLayout';
 import PostCreationDialog from '../../post/PostCreationDialog/PostCreationDialog';
 import { CalloutState, CreatePostInput } from '../../../../core/apollo/generated/graphql-schema';
 import CreateCalloutItemButton from '../CreateCalloutItemButton';
-import { buildPostUrl } from '../../../../main/routing/urlBuilders';
 import PostCard, { PostCardPost } from './PostCard';
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
 import { gutters } from '../../../../core/ui/grid/utils';
@@ -29,9 +28,6 @@ const PostCallout = forwardRef<Element, PostCalloutProps>(
       creatingPost,
       onCreatePost,
       canCreate = false,
-      spaceNameId,
-      challengeNameId,
-      opportunityNameId,
       contributionsCount,
       ...calloutLayoutProps
     },
@@ -50,13 +46,7 @@ const PostCallout = forwardRef<Element, PostCalloutProps>(
     );
 
     const navigateToPost = (post: PostCardPost) => {
-      navigate(
-        buildPostUrl(callout.nameID, post.nameID, {
-          spaceNameId: spaceNameId!,
-          challengeNameId,
-          opportunityNameId,
-        })
-      );
+      navigate(post.profile.url);
     };
 
     const breakpoint = useCurrentBreakpoint();
@@ -73,7 +63,6 @@ const PostCallout = forwardRef<Element, PostCalloutProps>(
         >
           <ScrollableCardsLayout
             items={loading ? [undefined, undefined] : posts ?? []}
-            deps={[spaceNameId, challengeNameId, opportunityNameId]}
             createButton={!isMobile && createButton}
             maxHeight={gutters(22)}
           >
@@ -89,9 +78,6 @@ const PostCallout = forwardRef<Element, PostCalloutProps>(
           onCreate={onCreatePost}
           postNames={postNames}
           calloutDisplayName={callout.framing.profile.displayName}
-          spaceNameId={spaceNameId!}
-          challengeNameId={challengeNameId}
-          opportunityNameId={opportunityNameId}
           calloutId={callout.id}
           defaultDescription={callout.contributionDefaults.postDescription}
           creating={creatingPost}

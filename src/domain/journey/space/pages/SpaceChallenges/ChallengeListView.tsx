@@ -1,6 +1,6 @@
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
-import { useNavigate } from 'react-router-dom';
+import useNavigate from '../../../../../core/routing/useNavigate';
 import { useTranslation } from 'react-i18next';
 import Button from '@mui/material/Button';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
@@ -18,7 +18,7 @@ import { useSpace } from '../../SpaceContext/useSpace';
 import { JourneyCreationDialog } from '../../../../shared/components/JorneyCreationDialog';
 import { ChallengeIcon } from '../../../challenge/icon/ChallengeIcon';
 import { JourneyFormValues } from '../../../../shared/components/JorneyCreationDialog/JourneyCreationForm';
-import { buildAdminChallengeUrl } from '../../../../../main/routing/urlBuilders';
+import { buildJourneyAdminUrl } from '../../../../../main/routing/urlBuilders';
 import { CreateChallengeForm } from '../../../challenge/forms/CreateChallengeForm';
 import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
@@ -108,8 +108,9 @@ export const ChallengeListView: FC = () => {
       if (!data?.createChallenge) {
         return;
       }
-
-      navigate(buildAdminChallengeUrl(spaceNameId, data?.createChallenge.nameID));
+      if (data?.createChallenge.profile.url) {
+        navigate(buildJourneyAdminUrl(data?.createChallenge.profile.url));
+      }
     },
     [navigate, createChallenge, spaceNameId]
   );

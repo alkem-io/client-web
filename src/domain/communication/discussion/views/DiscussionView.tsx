@@ -8,11 +8,9 @@ import PostMessageToCommentsForm from '../../room/Comments/PostMessageToComments
 import { Message } from '../../room/models/Message';
 import { Discussion } from '../models/Discussion';
 import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
-import { BlockTitle, BlockSectionTitle } from '../../../../core/ui/typography';
+import { BlockSectionTitle, BlockTitle } from '../../../../core/ui/typography';
 import { gutters } from '../../../../core/ui/grid/utils';
 import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
-import { buildDiscussionUrl } from '../../../../main/routing/urlBuilders';
-import { useResolvedPath } from 'react-router-dom';
 import useCommentReactionsMutations from '../../room/Comments/useCommentReactionsMutations';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import MessagesThread from '../../room/Comments/MessagesThread';
@@ -38,7 +36,7 @@ export const DiscussionView: FC<DiscussionViewProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const { id, description, author, createdAt, comments, myPrivileges, nameID } = discussion;
+  const { id, description, author, createdAt, comments, myPrivileges } = discussion;
 
   const canPost = comments.myPrivileges?.includes(AuthorizationPrivilege.CreateMessage) ?? false;
   const canDeleteDiscussion = myPrivileges?.includes(AuthorizationPrivilege.Delete) ?? false;
@@ -59,9 +57,6 @@ export const DiscussionView: FC<DiscussionViewProps> = ({
     [id, author, createdAt, description]
   );
 
-  const { pathname } = useResolvedPath('..');
-  const discussionUrl = buildDiscussionUrl(pathname, nameID);
-
   const commentReactionsMutations = useCommentReactionsMutations(discussion.comments.id);
 
   return (
@@ -70,7 +65,7 @@ export const DiscussionView: FC<DiscussionViewProps> = ({
         <Grid item>
           <Box display="flex" justifyContent="space-between">
             <BlockTitle height={gutters(3)}>{discussion.title}</BlockTitle>
-            <ShareButton url={discussionUrl} entityTypeName="discussion" />
+            <ShareButton url={discussion.url} entityTypeName="discussion" />
           </Box>
           <MessageView
             message={initialComment}

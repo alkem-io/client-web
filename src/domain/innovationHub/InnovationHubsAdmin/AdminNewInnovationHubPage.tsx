@@ -3,7 +3,7 @@ import { Button } from '@mui/material';
 import { sortBy } from 'lodash';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import useNavigate from '../../../core/routing/useNavigate';
 import AdminLayout from '../../platform/admin/layout/toplevel/AdminLayout';
 import { AdminSection } from '../../platform/admin/layout/toplevel/constants';
 import RouterLink from '../../../core/ui/link/RouterLink';

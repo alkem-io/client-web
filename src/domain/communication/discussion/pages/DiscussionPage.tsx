@@ -20,7 +20,7 @@ import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import TopLevelPageLayout from '../../../../main/ui/layout/topLevelPageLayout/TopLevelPageLayout';
 import RouterLink from '../../../../core/ui/link/RouterLink';
 import BackButton from '../../../../core/ui/actions/BackButton';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import usePostMessageMutations from '../../room/Comments/usePostMessageMutations';
 import useSubscribeOnRoomEvents from '../../../collaboration/callout/useSubscribeOnRoomEvents';
 import { ForumOutlined } from '@mui/icons-material';
@@ -28,6 +28,7 @@ import BreadcrumbsItem from '../../../../core/ui/navigation/BreadcrumbsItem';
 import TopLevelPageBreadcrumbs from '../../../../main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
 import UpdateDiscussionDialog from '../views/UpdateDiscussionDialog';
 import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
+import useNavigate from '../../../../core/routing/useNavigate';
 
 interface DiscussionPageProps {}
 
@@ -47,6 +48,7 @@ export const DiscussionPage: FC<DiscussionPageProps> = () => {
   const isSubscribedToMessages = useSubscribeOnRoomEvents(data?.platform.communication.discussion?.comments.id);
 
   const rawDiscussion = data?.platform.communication.discussion;
+
   const authors = useAuthorsDetails(
     compact([rawDiscussion?.createdBy, ...compact(rawDiscussion?.comments.messages?.map(c => c.sender?.id))])
   );
@@ -56,7 +58,7 @@ export const DiscussionPage: FC<DiscussionPageProps> = () => {
       rawDiscussion
         ? {
             id: rawDiscussion.id,
-            nameID: rawDiscussion.nameID,
+            url: rawDiscussion.profile.url,
             title: rawDiscussion.profile.displayName,
             description: rawDiscussion.profile.description,
             category: rawDiscussion.category,
