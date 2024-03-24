@@ -3,10 +3,10 @@ import { Trans, useTranslation } from 'react-i18next';
 import scrollToTop from '../../../../../core/ui/utils/scrollToTop';
 import {
   useSpaceHostQuery,
-  useSpacePreferencesQuery,
-  useUpdatePreferenceOnSpaceMutation,
+  useSpaceSettingsQuery,
+  useUpdateSpaceSettingsMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
-import { SpacePreferenceType, PreferenceType } from '../../../../../core/apollo/generated/graphql-schema';
+import { CommunityMembershipPolicy, SpacePrivacyMode } from '../../../../../core/apollo/generated/graphql-schema';
 import PageContent from '../../../../../core/ui/content/PageContent';
 import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 import PageContentBlockCollapsible from '../../../../../core/ui/content/PageContentBlockCollapsible';
@@ -20,7 +20,6 @@ import CommunityApplicationForm from '../../../../community/community/CommunityA
 import { SettingsSection } from '../../../../platform/admin/layout/EntitySettingsLayout/constants';
 import { Box, CircularProgress } from '@mui/material';
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
-import { isEqual } from 'lodash';
 
 export const SpaceSettingsView: FC = () => {
   const { t } = useTranslation();
@@ -36,107 +35,50 @@ export const SpaceSettingsView: FC = () => {
 
   const notify = useNotification();
 
-  const { data: preferencesData, loading } = useSpacePreferencesQuery({
+  const { data: settingsData, loading } = useSpaceSettingsQuery({
     variables: {
       spaceNameId: spaceNameId,
     },
   });
-  const [updatePreference] = useUpdatePreferenceOnSpaceMutation();
+  const [updateSpaceSettings] = useUpdateSpaceSettingsMutation();
+  const settings = settingsData?.space.settings;
+  const trustedOrganizations = settings?.membership.trustedOrganizations || [];
 
-  const handleUpdatePreference = async (
-    preference: SpacePreferenceType,
-    newValue: string,
+  const handleUpdateSettings = async (
+    privacyModeUpdate?: SpacePrivacyMode,
+    membershipPolicyUpdate?: CommunityMembershipPolicy,
+    hostOrgTrustedUpdate?: boolean,
     showNotification: boolean = true
   ) => {
-    await updatePreference({
+    const privacyMode = privacyModeUpdate ? privacyModeUpdate : settings?.privacy.mode ?? SpacePrivacyMode.Public;
+    const membershipPolicy =
+      membershipPolicyUpdate ?? settings?.membership.policy ?? CommunityMembershipPolicy.Invitations;
+    const hostOrgArray = settings?.membership.trustedOrganizations ?? [];
+    const hostOrgTrusted = hostOrgTrustedUpdate ?? hostOrgArray.length > 0;
+    await updateSpaceSettings({
       variables: {
-        preferenceData: {
+        settingsData: {
           spaceID: spaceNameId,
-          type: preference,
-          value: newValue,
+          settings: {
+            privacy: {
+              mode: privacyMode,
+            },
+            membership: {
+              policy: membershipPolicy,
+              trustedOrganizations: hostOrgTrusted ? ['myHostOrgID-TODO'] : [],
+            },
+            collaboration: {
+              allowMembersToCreateCallouts: true,
+              allowMembersToCreateSubspaces: true,
+              inheritMembershipRights: true,
+            },
+          },
         },
       },
     });
     if (showNotification) {
       notify(t('pages.admin.space.settings.savedSuccessfully'), 'success');
     }
-  };
-
-  const getBooleanPreferenceValue = (preference: PreferenceType) => {
-    const value = preferencesData?.space.preferences?.find(pref => pref.definition.type === preference)?.value;
-    if (value === 'true') {
-      return true;
-    } else if (value === 'false') {
-      return false;
-    }
-    return undefined;
-  };
-
-  // Visibility:
-  const getVisibilityValue = () => {
-    const value = getBooleanPreferenceValue(PreferenceType.AuthorizationAnonymousReadAccess);
-    if (value === undefined) {
-      return undefined;
-    }
-    return value ? 'public' : 'private';
-  };
-
-  // Membership
-  enum MembershipOption {
-    noApplicationRequired = 'noApplicationRequired',
-    applicationRequired = 'applicationRequired',
-    invitationOnly = 'invitationOnly',
-  }
-  // There are 2 preferences for the 3 different options:
-  const membershipTruthTable = {
-    [MembershipOption.noApplicationRequired]: {
-      [PreferenceType.MembershipApplicationsFromAnyone]: false,
-      [PreferenceType.MembershipJoinSpaceFromAnyone]: true,
-    },
-    [MembershipOption.applicationRequired]: {
-      [PreferenceType.MembershipApplicationsFromAnyone]: true,
-      [PreferenceType.MembershipJoinSpaceFromAnyone]: false,
-    },
-    [MembershipOption.invitationOnly]: {
-      [PreferenceType.MembershipApplicationsFromAnyone]: false,
-      [PreferenceType.MembershipJoinSpaceFromAnyone]: false,
-    },
-  };
-
-  const getMembershipValue = () => {
-    const preferences = {
-      [PreferenceType.MembershipApplicationsFromAnyone]: getBooleanPreferenceValue(
-        PreferenceType.MembershipApplicationsFromAnyone
-      ),
-      [PreferenceType.MembershipJoinSpaceFromAnyone]: getBooleanPreferenceValue(
-        PreferenceType.MembershipJoinSpaceFromAnyone
-      ),
-    };
-
-    for (const [key, value] of Object.entries(membershipTruthTable)) {
-      if (isEqual(preferences, value)) {
-        return key as MembershipOption;
-      }
-    }
-  };
-
-  const onMembershipChange = async (value: MembershipOption) => {
-    const currentPreferences = {
-      [PreferenceType.MembershipApplicationsFromAnyone]: getBooleanPreferenceValue(
-        PreferenceType.MembershipApplicationsFromAnyone
-      ),
-      [PreferenceType.MembershipJoinSpaceFromAnyone]: getBooleanPreferenceValue(
-        PreferenceType.MembershipJoinSpaceFromAnyone
-      ),
-    };
-    const nextPreferences = membershipTruthTable[value];
-
-    for (const [key, value] of Object.entries(currentPreferences)) {
-      if (value !== nextPreferences[key]) {
-        await handleUpdatePreference(key as SpacePreferenceType, `${nextPreferences[key]}`, false);
-      }
-    }
-    notify(t('pages.admin.space.settings.savedSuccessfully'), 'success');
   };
 
   return (
@@ -146,45 +88,35 @@ export const SpaceSettingsView: FC = () => {
           <PageContentBlock>
             <BlockTitle>{t('pages.admin.space.settings.visibility.title')}</BlockTitle>
             <RadioSettingsGroup
-              value={getVisibilityValue()}
+              value={settings?.privacy.mode}
               options={{
-                public: {
+                [SpacePrivacyMode.Public]: {
                   label: (
                     <Trans i18nKey="pages.admin.space.settings.visibility.public" components={{ b: <strong /> }} />
                   ),
                 },
-                private: {
+                [SpacePrivacyMode.Private]: {
                   label: (
                     <Trans i18nKey="pages.admin.space.settings.visibility.private" components={{ b: <strong /> }} />
                   ),
                 },
               }}
-              onChange={newValue =>
-                handleUpdatePreference(
-                  SpacePreferenceType.AuthorizationAnonymousReadAccess,
-                  newValue === 'public' ? 'true' : 'false'
-                )
-              }
+              onChange={handleUpdateSettings()}
             />
           </PageContentBlock>
 
           <PageContentBlock>
             <BlockTitle>{t('pages.admin.space.settings.membership.title')}</BlockTitle>
             <RadioSettingsGroup
-              value={getMembershipValue()}
+              value={settings?.membership.policy}
               options={{
-                [MembershipOption.noApplicationRequired]: {
-                  label: (
-                    <Trans
-                      i18nKey="pages.admin.space.settings.membership.noApplicationRequired"
-                      components={{ b: <strong /> }}
-                    />
-                  ),
+                [CommunityMembershipPolicy.Open]: {
+                  label: <Trans i18nKey="pages.admin.space.settings.membership.open" components={{ b: <strong /> }} />,
                 },
-                [MembershipOption.applicationRequired]: {
+                [CommunityMembershipPolicy.Applications]: {
                   label: (
                     <Trans
-                      i18nKey="pages.admin.space.settings.membership.applicationRequired"
+                      i18nKey="pages.admin.space.settings.membership.applications"
                       components={{
                         b: <strong />,
                         community: <RouterLink to={`../${SettingsSection.Community}`} onClick={scrollToTop} />,
@@ -192,10 +124,10 @@ export const SpaceSettingsView: FC = () => {
                     />
                   ),
                 },
-                [MembershipOption.invitationOnly]: {
+                [CommunityMembershipPolicy.Invitations]: {
                   label: (
                     <Trans
-                      i18nKey="pages.admin.space.settings.membership.invitationOnly"
+                      i18nKey="pages.admin.space.settings.membership.invitations"
                       components={{
                         b: <strong />,
                         community: <RouterLink to={`../${SettingsSection.Community}`} onClick={scrollToTop} />,
@@ -204,15 +136,14 @@ export const SpaceSettingsView: FC = () => {
                   ),
                 },
               }}
-              onChange={newValue => onMembershipChange(newValue)}
+              onChange={handleUpdateSettings()}
             />
 
             <BlockSectionTitle>{t('pages.admin.space.settings.membership.trustedApplicants')}</BlockSectionTitle>
             <SwitchSettingsGroup
               options={{
                 trustHostOrganization: {
-                  checked:
-                    getBooleanPreferenceValue(PreferenceType.MembershipJoinSpaceFromHostOrganizationMembers) ?? false,
+                  checked: trustedOrganizations.length > 0 ? true : false,
                   label: (
                     <Trans
                       t={t}
@@ -225,14 +156,7 @@ export const SpaceSettingsView: FC = () => {
                   ),
                 },
               }}
-              onChange={(setting, newValue) => {
-                if (setting === 'trustHostOrganization') {
-                  return handleUpdatePreference(
-                    SpacePreferenceType.MembershipJoinSpaceFromHostOrganizationMembers,
-                    newValue ? 'true' : 'false'
-                  );
-                }
-              }}
+              onChange={handleUpdateSettings()}
             />
           </PageContentBlock>
 
@@ -248,7 +172,7 @@ export const SpaceSettingsView: FC = () => {
             <SwitchSettingsGroup
               options={{
                 createBlocks: {
-                  checked: getBooleanPreferenceValue(PreferenceType.AllowMembersToCreateCallouts) ?? false,
+                  checked: false,
                   label: (
                     <Trans
                       i18nKey="pages.admin.space.settings.memberActions.createBlocks"
@@ -257,27 +181,21 @@ export const SpaceSettingsView: FC = () => {
                   ),
                 },
                 createChallenges: {
-                  checked: getBooleanPreferenceValue(PreferenceType.AllowMembersToCreateChallenges) ?? false,
+                  checked: false,
                   label: (
                     <Trans
-                      i18nKey="pages.admin.space.settings.memberActions.createChallenges"
+                      i18nKey="pages.admin.space.settings.memberActions.createSubspaces"
                       components={{ b: <strong /> }}
                     />
                   ),
                 },
               }}
-              onChange={async (setting, newValue) => {
+              onChange={async setting => {
                 if (setting === 'createBlocks') {
-                  await handleUpdatePreference(
-                    SpacePreferenceType.AllowMembersToCreateCallouts,
-                    newValue ? 'true' : 'false'
-                  );
+                  await handleUpdateSettings();
                 }
                 if (setting === 'createChallenges') {
-                  await handleUpdatePreference(
-                    SpacePreferenceType.AllowMembersToCreateChallenges,
-                    newValue ? 'true' : 'false'
-                  );
+                  await handleUpdateSettings();
                 }
               }}
             />

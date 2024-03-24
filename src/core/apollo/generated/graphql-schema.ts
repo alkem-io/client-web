@@ -17192,34 +17192,34 @@ export type ChallengeCardFragment = {
 };
 
 export type ChallengeSettingsQueryVariables = Exact<{
-  spaceNameId: Scalars['UUID_NAMEID'];
-  challengeNameId: Scalars['UUID_NAMEID'];
+  challengeId: Scalars['UUID'];
 }>;
 
 export type ChallengeSettingsQuery = {
   __typename?: 'Query';
-  space: {
-    __typename?: 'Space';
-    id: string;
-    challenge: {
-      __typename?: 'Challenge';
-      id: string;
-      settings: {
-        __typename?: 'SpaceSettings';
-        privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
-        membership: {
-          __typename?: 'SpaceSettingsMembership';
-          policy: CommunityMembershipPolicy;
-          trustedOrganizations: Array<string>;
-        };
-        collaboration: {
-          __typename?: 'SpaceSettingsCollaboration';
-          allowMembersToCreateCallouts: boolean;
-          allowMembersToCreateSubspaces: boolean;
-          inheritMembershipRights: boolean;
-        };
-      };
-    };
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    challenge?:
+      | {
+          __typename?: 'Challenge';
+          id: string;
+          settings: {
+            __typename?: 'SpaceSettings';
+            privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
+            membership: {
+              __typename?: 'SpaceSettingsMembership';
+              policy: CommunityMembershipPolicy;
+              trustedOrganizations: Array<string>;
+            };
+            collaboration: {
+              __typename?: 'SpaceSettingsCollaboration';
+              allowMembersToCreateCallouts: boolean;
+              allowMembersToCreateSubspaces: boolean;
+              inheritMembershipRights: boolean;
+            };
+          };
+        }
+      | undefined;
   };
 };
 

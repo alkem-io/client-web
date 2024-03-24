@@ -1,7 +1,6 @@
-query challengeSettings($spaceNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!) {
-  space(ID: $spaceNameId) {
-    id
-    challenge(ID: $challengeNameId) {
+query challengeSettings($challengeId: UUID!) {
+  lookup {
+    challenge(ID: $challengeId) {
       id
       settings {
         privacy {

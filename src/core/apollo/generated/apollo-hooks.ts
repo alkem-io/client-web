@@ -15902,10 +15902,9 @@ export function refetchInnovationHubQuery(variables?: SchemaTypes.InnovationHubQ
 }
 
 export const ChallengeSettingsDocument = gql`
-  query challengeSettings($spaceNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!) {
-    space(ID: $spaceNameId) {
-      id
-      challenge(ID: $challengeNameId) {
+  query challengeSettings($challengeId: UUID!) {
+    lookup {
+      challenge(ID: $challengeId) {
         id
         settings {
           privacy {
@@ -15938,8 +15937,7 @@ export const ChallengeSettingsDocument = gql`
  * @example
  * const { data, loading, error } = useChallengeSettingsQuery({
  *   variables: {
- *      spaceNameId: // value for 'spaceNameId'
- *      challengeNameId: // value for 'challengeNameId'
+ *      challengeId: // value for 'challengeId'
  *   },
  * });
  */
