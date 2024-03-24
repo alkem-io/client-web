@@ -48,8 +48,13 @@ export type Account = {
   library?: Maybe<TemplatesSet>;
   /** The License governing platform functionality in use by this Account */
   license: License;
-  /** The ID of the associated root Space. */
-  spaceID: Scalars['String'];
+  /** The root Space for this Account */
+  space: Account;
+};
+
+export type AccountAuthorizationResetInput = {
+  /** The identifier of the Account whose Authorization Policy should be reset. */
+  accountID: Scalars['UUID_NAMEID'];
 };
 
 export type ActivityCreatedSubscriptionInput = {
@@ -449,8 +454,6 @@ export type ActivityLogEntryUpdateSent = ActivityLogEntry & {
   id: Scalars['UUID'];
   /** The journey where the activity happened */
   journey?: Maybe<Journey>;
-  /** The url to the Journey. */
-  journeyUrl: Scalars['String'];
   /** The Message that been sent to this Community. */
   message: Scalars['String'];
   /** The display name of the parent */
@@ -658,27 +661,22 @@ export type Authorization = {
 };
 
 export enum AuthorizationCredential {
+  AccountHost = 'ACCOUNT_HOST',
   BetaTester = 'BETA_TESTER',
-  ChallengeAdmin = 'CHALLENGE_ADMIN',
-  ChallengeHost = 'CHALLENGE_HOST',
-  ChallengeLead = 'CHALLENGE_LEAD',
-  ChallengeMember = 'CHALLENGE_MEMBER',
   GlobalAdmin = 'GLOBAL_ADMIN',
   GlobalAdminCommunity = 'GLOBAL_ADMIN_COMMUNITY',
   GlobalAdminSpaces = 'GLOBAL_ADMIN_SPACES',
   GlobalRegistered = 'GLOBAL_REGISTERED',
   InnovationPackProvider = 'INNOVATION_PACK_PROVIDER',
-  OpportunityAdmin = 'OPPORTUNITY_ADMIN',
-  OpportunityHost = 'OPPORTUNITY_HOST',
-  OpportunityLead = 'OPPORTUNITY_LEAD',
-  OpportunityMember = 'OPPORTUNITY_MEMBER',
   OrganizationAdmin = 'ORGANIZATION_ADMIN',
   OrganizationAssociate = 'ORGANIZATION_ASSOCIATE',
   OrganizationOwner = 'ORGANIZATION_OWNER',
   SpaceAdmin = 'SPACE_ADMIN',
-  SpaceHost = 'SPACE_HOST',
   SpaceLead = 'SPACE_LEAD',
   SpaceMember = 'SPACE_MEMBER',
+  SubspaceAdmin = 'SUBSPACE_ADMIN',
+  SubspaceLead = 'SUBSPACE_LEAD',
+  SubspaceMember = 'SUBSPACE_MEMBER',
   UserGroupMember = 'USER_GROUP_MEMBER',
   UserSelfManagement = 'USER_SELF_MANAGEMENT',
 }
@@ -719,16 +717,15 @@ export enum AuthorizationPrivilege {
   Contribute = 'CONTRIBUTE',
   Create = 'CREATE',
   CreateCallout = 'CREATE_CALLOUT',
-  CreateChallenge = 'CREATE_CHALLENGE',
   CreateDiscussion = 'CREATE_DISCUSSION',
   CreateMessage = 'CREATE_MESSAGE',
   CreateMessageReaction = 'CREATE_MESSAGE_REACTION',
   CreateMessageReply = 'CREATE_MESSAGE_REPLY',
-  CreateOpportunity = 'CREATE_OPPORTUNITY',
   CreateOrganization = 'CREATE_ORGANIZATION',
   CreatePost = 'CREATE_POST',
   CreateRelation = 'CREATE_RELATION',
   CreateSpace = 'CREATE_SPACE',
+  CreateSubspace = 'CREATE_SUBSPACE',
   CreateWhiteboard = 'CREATE_WHITEBOARD',
   CreateWhiteboardRt = 'CREATE_WHITEBOARD_RT',
   Delete = 'DELETE',
@@ -980,7 +977,7 @@ export enum CalloutVisibility {
 
 export type Challenge = Journey & {
   __typename?: 'Challenge';
-  /** The Account for this Challenge */
+  /** The Account that this Space is part of. */
   account: Account;
   /** The Agent representing this Challenge. */
   agent?: Maybe<Agent>;
@@ -1310,8 +1307,6 @@ export type CommunityPolicy = {
   __typename?: 'CommunityPolicy';
   /** The role policy that defines the Admins for this Community. */
   admin: CommunityRolePolicy;
-  /** The role policy that defines the hosts for this Community. */
-  host: CommunityRolePolicy;
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** The role policy that defines the leads for this Community. */
@@ -1322,7 +1317,6 @@ export type CommunityPolicy = {
 
 export enum CommunityRole {
   Admin = 'ADMIN',
-  Host = 'HOST',
   Lead = 'LEAD',
   Member = 'MEMBER',
 }
@@ -1515,7 +1509,7 @@ export type CreateChallengeOnSpaceInput = {
   /** A readable identifier, unique within the containing scope. */
   nameID?: InputMaybe<Scalars['NameID']>;
   profileData: CreateProfileInput;
-  spaceID?: Scalars['UUID_NAMEID'];
+  spaceID: Scalars['UUID_NAMEID'];
   tags?: InputMaybe<Array<Scalars['String']>>;
 };
 
@@ -1689,6 +1683,7 @@ export type CreateRelationOnCollaborationInput = {
 
 export type CreateSpaceInput = {
   accountData: CreateAccountInput;
+  collaborationData?: InputMaybe<CreateCollaborationInput>;
   context?: InputMaybe<CreateContextInput>;
   /** A readable identifier, unique within the containing scope. */
   nameID: Scalars['NameID'];
@@ -2559,12 +2554,12 @@ export type Mutation = {
   assignUserToOrganization: Organization;
   /** Reset the Authorization Policy on all entities */
   authorizationPolicyResetAll: Scalars['String'];
+  /** Reset the Authorization Policy on the specified Space. */
+  authorizationPolicyResetOnAccount: Space;
   /** Reset the Authorization Policy on the specified Organization. */
   authorizationPolicyResetOnOrganization: Organization;
   /** Reset the Authorization Policy on the specified Platform. */
   authorizationPolicyResetOnPlatform: Platform;
-  /** Reset the Authorization Policy on the specified Space. */
-  authorizationPolicyResetOnSpace: Space;
   /** Reset the Authorization policy on the specified User. */
   authorizationPolicyResetOnUser: User;
   /** Generate Alkemio user credential offer */
@@ -2741,6 +2736,8 @@ export type Mutation = {
   sendMessageToRoom: Message;
   /** Send message to a User. */
   sendMessageToUser: Scalars['Boolean'];
+  /** Update the platform settings, such as license, of the specified Account. */
+  updateAccountPlatformSettings: Space;
   /** Updates the specified Actor. */
   updateActor: Actor;
   /** User vote if a specific answer is relevant. */
@@ -2805,7 +2802,7 @@ export type Mutation = {
   updateSpace: Space;
   /** Updates the specified SpaceDefaults. */
   updateSpaceDefaults: SpaceDefaults;
-  /** Update the platform settings, such as license, of the specified Space. */
+  /** Update the platform settings, such as nameID, of the specified Space. */
   updateSpacePlatformSettings: Space;
   /** Updates one of the Setting on a Space */
   updateSpaceSettings: Space;
@@ -2891,12 +2888,12 @@ export type MutationAssignUserToOrganizationArgs = {
   membershipData: AssignOrganizationAssociateInput;
 };
 
-export type MutationAuthorizationPolicyResetOnOrganizationArgs = {
-  authorizationResetData: OrganizationAuthorizationResetInput;
+export type MutationAuthorizationPolicyResetOnAccountArgs = {
+  authorizationResetData: AccountAuthorizationResetInput;
 };
 
-export type MutationAuthorizationPolicyResetOnSpaceArgs = {
-  authorizationResetData: SpaceAuthorizationResetInput;
+export type MutationAuthorizationPolicyResetOnOrganizationArgs = {
+  authorizationResetData: OrganizationAuthorizationResetInput;
 };
 
 export type MutationAuthorizationPolicyResetOnUserArgs = {
@@ -3235,6 +3232,10 @@ export type MutationSendMessageToUserArgs = {
   messageData: CommunicationSendMessageToUserInput;
 };
 
+export type MutationUpdateAccountPlatformSettingsArgs = {
+  updateData: UpdateAccountPlatformSettingsInput;
+};
+
 export type MutationUpdateActorArgs = {
   actorData: UpdateActorInput;
 };
@@ -3445,7 +3446,7 @@ export type Nvp = {
 
 export type Opportunity = Journey & {
   __typename?: 'Opportunity';
-  /** The Account for this Opportunity */
+  /** The Account that this Space is part of. */
   account: Account;
   /** The authorization rules for the Journey */
   authorization?: Maybe<Authorization>;
@@ -3873,6 +3874,10 @@ export enum ProfileType {
 
 export type Query = {
   __typename?: 'Query';
+  /** An account. If no ID is specified then the first Account is returned. */
+  account: Account;
+  /** The Accounts on this platform; If accessed through an Innovation Hub will return ONLY the Accounts defined in it. */
+  accounts: Array<Account>;
   /** Activity events related to the current user. */
   activityFeed: ActivityFeed;
   /** Activity events related to the current user grouped by Activity type and resource. */
@@ -3925,6 +3930,10 @@ export type Query = {
   usersPaginated: PaginatedUsers;
   /** All Users that hold credentials matching the supplied criteria. */
   usersWithAuthorizationCredential: Array<User>;
+};
+
+export type QueryAccountArgs = {
+  ID: Scalars['UUID_NAMEID'];
 };
 
 export type QueryActivityFeedArgs = {
@@ -4093,7 +4102,7 @@ export type Relation = {
 
 export type RelayPaginatedSpace = Journey & {
   __typename?: 'RelayPaginatedSpace';
-  /** The Account for this space */
+  /** The Account that this Space is part of. */
   account: Account;
   /** The Agent representing this Space. */
   agent?: Maybe<Agent>;
@@ -4600,7 +4609,7 @@ export type Source = {
 
 export type Space = Journey & {
   __typename?: 'Space';
-  /** The Account for this space */
+  /** The Account that this Space is part of. */
   account: Account;
   /** The Agent representing this Space. */
   agent?: Maybe<Agent>;
@@ -4640,11 +4649,6 @@ export type SpaceChallengesArgs = {
   IDs?: InputMaybe<Array<Scalars['UUID']>>;
   limit?: InputMaybe<Scalars['Float']>;
   shuffle?: InputMaybe<Scalars['Boolean']>;
-};
-
-export type SpaceAuthorizationResetInput = {
-  /** The identifier of the Space whose Authorization Policy should be reset. */
-  spaceID: Scalars['UUID_NAMEID'];
 };
 
 export type SpaceDefaults = {
@@ -4982,7 +4986,9 @@ export type Timeline = {
   id: Scalars['UUID'];
 };
 
-export type UpdateAccountInput = {
+export type UpdateAccountPlatformSettingsInput = {
+  /** The identifier for the Account whose license etc is to be updated. */
+  accountID: Scalars['String'];
   /** Update the host Organization for the Account. */
   hostID?: InputMaybe<Scalars['UUID_NAMEID']>;
   /** Update the license settings for the Account. */
@@ -5335,18 +5341,20 @@ export type UpdateSpaceDefaultsInput = {
 };
 
 export type UpdateSpaceInput = {
-  /** The ID or NameID of the Space. */
-  ID: Scalars['UUID_NAMEID'];
+  ID: Scalars['UUID'];
   /** Update the contained Context entity. */
   context?: InputMaybe<UpdateContextInput>;
+  /** The Profile of the InnovationFlow of this entity. */
+  innovationFlowData?: InputMaybe<UpdateInnovationFlowInput>;
+  /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
+  nameID?: InputMaybe<Scalars['NameID']>;
   /** The Profile of this entity. */
   profileData?: InputMaybe<UpdateProfileInput>;
 };
 
 export type UpdateSpacePlatformSettingsInput = {
-  account?: InputMaybe<UpdateAccountInput>;
   /** Upate the URL path for the Space. */
-  nameID?: InputMaybe<Scalars['NameID']>;
+  nameID: Scalars['NameID'];
   /** The identifier for the Space whose license etc is to be updated. */
   spaceID: Scalars['String'];
 };
@@ -7124,11 +7132,7 @@ export type ActivityLogCalendarEventCreatedFragment = {
   };
 };
 
-export type ActivityLogUpdateSentFragment = {
-  __typename?: 'ActivityLogEntryUpdateSent';
-  message: string;
-  journeyUrl: string;
-};
+export type ActivityLogUpdateSentFragment = { __typename?: 'ActivityLogEntryUpdateSent'; message: string };
 
 export type ActivitySubjectProfileFragment = { __typename?: 'Profile'; id: string; displayName: string; url: string };
 
@@ -7334,7 +7338,6 @@ export type ActivityCreatedSubscription = {
           createdDate: Date;
           type: ActivityEventType;
           message: string;
-          journeyUrl: string;
         };
   };
 };
@@ -7529,7 +7532,6 @@ type ActivityLogOnCollaboration_ActivityLogEntryUpdateSent_Fragment = {
   createdDate: Date;
   type: ActivityEventType;
   message: string;
-  journeyUrl: string;
 };
 
 export type ActivityLogOnCollaborationFragment =
@@ -7844,7 +7846,6 @@ export type ActivityLogOnCollaborationQuery = {
         createdDate: Date;
         type: ActivityEventType;
         message: string;
-        journeyUrl: string;
         triggeredBy: {
           __typename?: 'User';
           id: string;
@@ -22389,16 +22390,15 @@ export type AdminGlobalOrganizationsListQuery = {
   };
 };
 
-export type UpdateSpacePlatformSettingsMutationVariables = Exact<{
-  spaceID: Scalars['String'];
+export type UpdateAccountPlatformSettingsMutationVariables = Exact<{
+  accountID: Scalars['String'];
   hostID?: InputMaybe<Scalars['UUID_NAMEID']>;
-  nameID?: InputMaybe<Scalars['NameID']>;
   license?: InputMaybe<UpdateLicenseInput>;
 }>;
 
-export type UpdateSpacePlatformSettingsMutation = {
+export type UpdateAccountPlatformSettingsMutation = {
   __typename?: 'Mutation';
-  updateSpacePlatformSettings: {
+  updateAccountPlatformSettings: {
     __typename?: 'Space';
     id: string;
     nameID: string;
@@ -22414,6 +22414,16 @@ export type UpdateSpacePlatformSettingsMutation = {
       host?: { __typename?: 'Organization'; id: string } | undefined;
     };
   };
+};
+
+export type UpdateSpacePlatformSettingsMutationVariables = Exact<{
+  spaceID: Scalars['String'];
+  nameID: Scalars['NameID'];
+}>;
+
+export type UpdateSpacePlatformSettingsMutation = {
+  __typename?: 'Mutation';
+  updateSpacePlatformSettings: { __typename?: 'Space'; id: string; nameID: string };
 };
 
 export type AdminSpacesListQueryVariables = Exact<{ [key: string]: never }>;
@@ -25944,7 +25954,7 @@ export type SearchQuery = {
                 | undefined;
               visuals: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }>;
             };
-            account: { __typename?: 'Account'; spaceID: string };
+            account: { __typename?: 'Account'; space: { __typename?: 'Account'; id: string } };
             context?: { __typename?: 'Context'; id: string; vision?: string | undefined } | undefined;
             authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
             community?:
@@ -26576,7 +26586,7 @@ export type SearchResultChallengeFragment = {
         | undefined;
       visuals: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }>;
     };
-    account: { __typename?: 'Account'; spaceID: string };
+    account: { __typename?: 'Account'; space: { __typename?: 'Account'; id: string } };
     context?: { __typename?: 'Context'; id: string; vision?: string | undefined } | undefined;
     authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
     community?:
@@ -27034,7 +27044,7 @@ export type ChallengeExplorerSearchQuery = {
                 | undefined;
               visuals: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }>;
             };
-            account: { __typename?: 'Account'; spaceID: string };
+            account: { __typename?: 'Account'; space: { __typename?: 'Account'; id: string } };
             context?: { __typename?: 'Context'; id: string; vision?: string | undefined } | undefined;
             authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
             community?:
@@ -27606,7 +27616,6 @@ export type LatestContributionsQuery = {
           createdDate: Date;
           type: ActivityEventType;
           message: string;
-          journeyUrl: string;
           triggeredBy: {
             __typename?: 'User';
             id: string;
@@ -28359,7 +28368,6 @@ export type LatestContributionsGroupedQuery = {
         createdDate: Date;
         type: ActivityEventType;
         message: string;
-        journeyUrl: string;
         journey?:
           | {
               __typename?: 'Challenge';

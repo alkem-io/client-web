@@ -1,28 +1,11 @@
 mutation UpdateSpacePlatformSettings(
   $spaceID: String!
-  $hostID: UUID_NAMEID
-  $nameID: NameID
-  $license: UpdateLicenseInput
+  $nameID: NameID!
 ) {
   updateSpacePlatformSettings(updateData: {
-    spaceID: $spaceID, nameID: $nameID, account: {
-    hostID: $hostID, license: $license }
-    }) {
+    spaceID: $spaceID, nameID: $nameID }
+    ) {
     id
-    account {
-      id
-      license {
-        id
-        visibility
-        featureFlags {
-          name
-          enabled
-        }
-      }
-      host {
-        id
-      }
-    }
     nameID
   }
 }

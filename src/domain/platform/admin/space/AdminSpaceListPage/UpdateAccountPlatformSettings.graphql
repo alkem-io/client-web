@@ -1,0 +1,20 @@
+mutation UpdateAccountPlatformSettings($accountID: String!, $hostID: UUID_NAMEID, $license: UpdateLicenseInput) {
+  updateAccountPlatformSettings(updateData: { accountID: $accountID, hostID: $hostID, license: $license }) {
+    id
+    account {
+      id
+      license {
+        id
+        visibility
+        featureFlags {
+          name
+          enabled
+        }
+      }
+      host {
+        id
+      }
+    }
+    nameID
+  }
+}

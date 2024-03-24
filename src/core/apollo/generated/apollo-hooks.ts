@@ -284,7 +284,6 @@ export const ActivityLogOpportunityCreatedFragmentDoc = gql`
 export const ActivityLogUpdateSentFragmentDoc = gql`
   fragment ActivityLogUpdateSent on ActivityLogEntryUpdateSent {
     message
-    journeyUrl
   }
 `;
 export const ActivityLogCalendarEventCreatedFragmentDoc = gql`
@@ -3376,7 +3375,9 @@ export const SearchResultChallengeFragmentDoc = gql`
         }
       }
       account {
-        spaceID
+        space {
+          id
+        }
       }
       context {
         id
@@ -19750,16 +19751,9 @@ export function refetchAdminGlobalOrganizationsListQuery(
   return { query: AdminGlobalOrganizationsListDocument, variables: variables };
 }
 
-export const UpdateSpacePlatformSettingsDocument = gql`
-  mutation UpdateSpacePlatformSettings(
-    $spaceID: String!
-    $hostID: UUID_NAMEID
-    $nameID: NameID
-    $license: UpdateLicenseInput
-  ) {
-    updateSpacePlatformSettings(
-      updateData: { spaceID: $spaceID, nameID: $nameID, account: { hostID: $hostID, license: $license } }
-    ) {
+export const UpdateAccountPlatformSettingsDocument = gql`
+  mutation UpdateAccountPlatformSettings($accountID: String!, $hostID: UUID_NAMEID, $license: UpdateLicenseInput) {
+    updateAccountPlatformSettings(updateData: { accountID: $accountID, hostID: $hostID, license: $license }) {
       id
       account {
         id
@@ -19775,6 +19769,60 @@ export const UpdateSpacePlatformSettingsDocument = gql`
           id
         }
       }
+      nameID
+    }
+  }
+`;
+export type UpdateAccountPlatformSettingsMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateAccountPlatformSettingsMutation,
+  SchemaTypes.UpdateAccountPlatformSettingsMutationVariables
+>;
+
+/**
+ * __useUpdateAccountPlatformSettingsMutation__
+ *
+ * To run a mutation, you first call `useUpdateAccountPlatformSettingsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateAccountPlatformSettingsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateAccountPlatformSettingsMutation, { data, loading, error }] = useUpdateAccountPlatformSettingsMutation({
+ *   variables: {
+ *      accountID: // value for 'accountID'
+ *      hostID: // value for 'hostID'
+ *      license: // value for 'license'
+ *   },
+ * });
+ */
+export function useUpdateAccountPlatformSettingsMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateAccountPlatformSettingsMutation,
+    SchemaTypes.UpdateAccountPlatformSettingsMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.UpdateAccountPlatformSettingsMutation,
+    SchemaTypes.UpdateAccountPlatformSettingsMutationVariables
+  >(UpdateAccountPlatformSettingsDocument, options);
+}
+
+export type UpdateAccountPlatformSettingsMutationHookResult = ReturnType<
+  typeof useUpdateAccountPlatformSettingsMutation
+>;
+export type UpdateAccountPlatformSettingsMutationResult =
+  Apollo.MutationResult<SchemaTypes.UpdateAccountPlatformSettingsMutation>;
+export type UpdateAccountPlatformSettingsMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateAccountPlatformSettingsMutation,
+  SchemaTypes.UpdateAccountPlatformSettingsMutationVariables
+>;
+export const UpdateSpacePlatformSettingsDocument = gql`
+  mutation UpdateSpacePlatformSettings($spaceID: String!, $nameID: NameID!) {
+    updateSpacePlatformSettings(updateData: { spaceID: $spaceID, nameID: $nameID }) {
+      id
       nameID
     }
   }
@@ -19798,9 +19846,7 @@ export type UpdateSpacePlatformSettingsMutationFn = Apollo.MutationFunction<
  * const [updateSpacePlatformSettingsMutation, { data, loading, error }] = useUpdateSpacePlatformSettingsMutation({
  *   variables: {
  *      spaceID: // value for 'spaceID'
- *      hostID: // value for 'hostID'
  *      nameID: // value for 'nameID'
- *      license: // value for 'license'
  *   },
  * });
  */
