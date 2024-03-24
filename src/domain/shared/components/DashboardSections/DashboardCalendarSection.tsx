@@ -19,6 +19,7 @@ import PageContentBlockFooter from '../../../../core/ui/content/PageContentBlock
 import FullCalendar, { INTERNAL_DATE_FORMAT } from '../../../timeline/calendar/components/FullCalendar';
 import { HIGHLIGHT_PARAM_NAME } from '../../../timeline/calendar/CalendarDialog';
 import { useQueryParams } from '../../../../core/routing/useQueryParams';
+import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 
 const MAX_NUMBER_OF_EVENTS = 3;
@@ -97,7 +98,11 @@ const DashboardCalendarSection: FC<DashboardCalendarSectionProps> = ({ journeyId
     navigate(`${EntityPageSection.Dashboard}/calendar?${nextUrlParams}`);
   };
 
-  return (
+  const alwaysShowEvents = spaceData?.space.collaboration?.timeline?.calendar.authorization?.myPrivileges?.includes(
+    AuthorizationPrivilege.Create
+  );
+
+  return events.length > 0 || alwaysShowEvents ? (
     <PageContentBlock disableGap={isCalendarView}>
       <PageContentBlockHeaderWithDialogAction title={t('common.events')} onDialogOpen={openDialog} />
       <Box display="flex" flexDirection="column" gap={gutters()}>
@@ -107,7 +112,7 @@ const DashboardCalendarSection: FC<DashboardCalendarSectionProps> = ({ journeyId
         )}
         {!loading && !isCalendarView && (
           <>
-            {events.length === 0 && <Text>{t('calendar.no-data')}</Text>}
+            {events.length === 0 && <Text>{t('calendar.adminsOnly')}</Text>}
             {events.map(event => (
               <CalendarEventView key={event.id} {...event} />
             ))}
@@ -121,6 +126,8 @@ const DashboardCalendarSection: FC<DashboardCalendarSectionProps> = ({ journeyId
         />
       </PageContentBlockFooter>
     </PageContentBlock>
+  ) : (
+    <></>
   );
 };
 

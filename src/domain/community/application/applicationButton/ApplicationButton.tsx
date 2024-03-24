@@ -1,7 +1,7 @@
 import { Button as MuiButton, CircularProgress } from '@mui/material';
 import React, { forwardRef, Ref, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link as RouterLink } from 'react-router-dom';
+import RouterLink from '../../../../core/ui/link/RouterLink';
 import { buildLoginUrl } from '../../../../main/routing/urlBuilders';
 import PreApplicationDialog from './PreApplicationDialog';
 import isApplicationPending from './isApplicationPending';
@@ -230,7 +230,6 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
 
       if (canApplyToCommunity && applyUrl) {
         const verb = extended ? t('components.application-button.applyTo') : t('buttons.apply');
-
         return (
           <Button
             ref={ref as Ref<HTMLAnchorElement>}
