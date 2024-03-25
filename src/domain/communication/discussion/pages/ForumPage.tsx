@@ -93,7 +93,8 @@ export const ForumPage: FC<ForumPageProps> = ({ dialog }) => {
   useSubscriptionToCommunication(data, data => data?.platform.communication, subscribeToMore);
 
   const isGlobalAdmin = hasPlatformPrivilege?.(AuthorizationPrivilege.GrantGlobalAdmins);
-  const validCategories =
+  const validCategories = data?.platform.communication.discussionCategories ?? [];
+  const discussionCreationCategories =
     (isGlobalAdmin
       ? data?.platform.communication.discussionCategories
       : data?.platform.communication.discussionCategories?.filter(
@@ -209,7 +210,7 @@ export const ForumPage: FC<ForumPageProps> = ({ dialog }) => {
             {!loading && communicationId && (
               <NewDiscussionDialog
                 communicationId={communicationId}
-                categories={validCategories}
+                categories={discussionCreationCategories}
                 open={dialog === 'new'}
                 onClose={() => navigate('/forum')}
               />
