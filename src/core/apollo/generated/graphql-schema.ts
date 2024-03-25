@@ -2222,6 +2222,14 @@ export type Journey = {
   nameID: Scalars['NameID'];
 };
 
+export type LatestReleaseDiscussion = {
+  __typename?: 'LatestReleaseDiscussion';
+  /** Id of the latest release discussion. */
+  id: Scalars['String'];
+  /** NameID of the latest release discussion. */
+  nameID: Scalars['String'];
+};
+
 export type Library = {
   __typename?: 'Library';
   /** The authorization rules for the entity */
@@ -3615,6 +3623,8 @@ export type Platform = {
   innovationHub?: Maybe<InnovationHub>;
   /** List of Innovation Hubs on the platform */
   innovationHubs: Array<InnovationHub>;
+  /** The latest release discussion. */
+  latestReleaseDiscussion?: Maybe<LatestReleaseDiscussion>;
   /** The Innovation Library for the platform */
   library: Library;
   /** Alkemio Services Metadata. */
@@ -12079,6 +12089,17 @@ export type AuthorDetailsQuery = {
         | undefined;
     };
   }>;
+};
+
+export type LatestReleaseDiscussionQueryVariables = Exact<{ [key: string]: never }>;
+
+export type LatestReleaseDiscussionQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    latestReleaseDiscussion?: { __typename?: 'LatestReleaseDiscussion'; id: string; nameID: string } | undefined;
+  };
 };
 
 export type CreateDiscussionMutationVariables = Exact<{

@@ -25,6 +25,7 @@ import {
   MEMBER_TRANSLATION_KEY,
   OWNER_TRANSLATION_KEY,
 } from '../../../user/constants/translation.constants';
+import { ContributorType } from '../../CommunityContributorsBlockWide/CommunityContributorsBlockWideContent';
 
 export interface OrganizationContainerEntities {
   organization?: OrganizationInfoFragment;
@@ -142,6 +143,7 @@ export const OrganizationPageContainer: FC<OrganizationPageContainerProps> = ({ 
         },
         url: buildUserProfileUrl(x.nameID),
         isContactable: x.isContactable,
+        contributorType: ContributorType.People,
       })) || []
     );
   }, [usersWithRoles]);
