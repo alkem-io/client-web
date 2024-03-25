@@ -19,7 +19,7 @@ const SearchResultPostChooser = ({
     // TODO: Enable when server is ready
     //hydrateWhiteboardCard,
     //hydrateCalloutCard,
-  } = useHydrateCard(result);
+  } = useHydrateCard();
 
   if (!result || !result.type) {
     return (
@@ -29,19 +29,18 @@ const SearchResultPostChooser = ({
 
   switch (result.type) {
     case SearchResultType.Space:
-      return hydrateSpaceCard();
+      return hydrateSpaceCard(result);
     case SearchResultType.Challenge:
-      return hydrateChallengeCard();
+      return hydrateChallengeCard(result);
     case SearchResultType.Opportunity:
-      return hydrateOpportunityCard();
+      return hydrateOpportunityCard(result);
     case SearchResultType.User:
-      return hydrateUserCard();
+      return hydrateUserCard(result);
     case SearchResultType.Organization:
-      return hydrateOrganizationCard();
+      return hydrateOrganizationCard(result);
     case SearchResultType.Post:
-      return hydrateContributionCard();
+      return hydrateContributionCard(result);
   }
-  throw new Error(`Unrecognized result typename: ${result.__typename}`);
 };
 
 export default SearchResultPostChooser;
