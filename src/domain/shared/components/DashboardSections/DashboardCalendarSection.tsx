@@ -98,7 +98,7 @@ const DashboardCalendarSection: FC<DashboardCalendarSectionProps> = ({ journeyId
     navigate(`${EntityPageSection.Dashboard}/calendar?${nextUrlParams}`);
   };
 
-  const alwaysShowEvents = spaceData?.space.collaboration?.timeline?.calendar.authorization?.myPrivileges?.includes(
+  const alwaysShowEvents = collaboration?.timeline?.calendar.authorization?.myPrivileges?.includes(
     AuthorizationPrivilege.Create
   );
 

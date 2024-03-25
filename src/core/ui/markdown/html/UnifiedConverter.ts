@@ -2,7 +2,7 @@ import { unified } from 'unified';
 import { Parent } from 'unist';
 // HTML to Markdown
 import rehypeParse from 'rehype-parse';
-import rehypeRemark, { defaultHandlers as defaultHTMLHandlers } from 'rehype-remark';
+import rehypeRemark, { defaultHandlers as defaultHTMLHandlers, H } from 'rehype-remark';
 import remarkStringify from 'remark-stringify';
 import { html } from 'mdast-builder';
 // Markdown to HTML
@@ -13,10 +13,28 @@ import rehypeSanitize from 'rehype-sanitize';
 import rehypeStringify from 'rehype-stringify';
 import { u } from 'unist-builder';
 import { HTML } from 'mdast-util-to-hast/lib/handlers/html';
-
 import { Converter } from './Converter';
+import { Element } from 'hast-util-to-mdast/lib/handlers/strong';
 
 const isEmptyLine = (node: HTML, parent: Parent | null) => node.value === '<br>' && parent?.type === 'root';
+
+const trimmer = (nodeType: 'strong' | 'em') => (state: H, element: Element) => {
+  if (element.children.length === 1) {
+    if (element.children[0].type === 'text') {
+      const value = element.children[0].value;
+      const trimmed = value.trim();
+      const space = '<span> </span>';
+      if (trimmed === '' && value !== trimmed) {
+        return html(space);
+      }
+      return html(
+        `${value.startsWith(' ') ? space : ''}<${nodeType}>${trimmed}</${nodeType}>${value.endsWith(' ') ? space : ''}`
+      );
+    }
+  }
+
+  return defaultHTMLHandlers[nodeType](state, element);
+};
 
 const UnifiedConverter = (): Converter => {
   const htmlToMarkdownPipeline = unified()
@@ -32,6 +50,8 @@ const UnifiedConverter = (): Converter => {
           }
           return defaultHTMLHandlers.p(state, element);
         },
+        strong: trimmer('strong'),
+        em: trimmer('em'),
       },
     })
     .use(remarkStringify);
