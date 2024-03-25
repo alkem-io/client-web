@@ -1485,6 +1485,7 @@ export type MutationKeySpecifier = (
   | 'authorizationPolicyResetOnPlatform'
   | 'authorizationPolicyResetOnSpace'
   | 'authorizationPolicyResetOnUser'
+  | 'authorizationPolicyResetToGlobalAdminsAccess'
   | 'beginAlkemioUserVerifiedCredentialOfferInteraction'
   | 'beginCommunityMemberVerifiedCredentialOfferInteraction'
   | 'beginVerifiedCredentialRequestInteraction'
@@ -1640,6 +1641,7 @@ export type MutationFieldPolicy = {
   authorizationPolicyResetOnPlatform?: FieldPolicy<any> | FieldReadFunction<any>;
   authorizationPolicyResetOnSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   authorizationPolicyResetOnUser?: FieldPolicy<any> | FieldReadFunction<any>;
+  authorizationPolicyResetToGlobalAdminsAccess?: FieldPolicy<any> | FieldReadFunction<any>;
   beginAlkemioUserVerifiedCredentialOfferInteraction?: FieldPolicy<any> | FieldReadFunction<any>;
   beginCommunityMemberVerifiedCredentialOfferInteraction?: FieldPolicy<any> | FieldReadFunction<any>;
   beginVerifiedCredentialRequestInteraction?: FieldPolicy<any> | FieldReadFunction<any>;

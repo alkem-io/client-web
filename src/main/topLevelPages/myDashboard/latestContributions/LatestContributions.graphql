@@ -6,8 +6,36 @@ query LatestContributions(
   activityFeed(after: $after, first: $first, args: $filter) {
     activityFeed {
       id
+      collaborationID
       createdDate
+      description
       type
+      child
+      parentNameID
+      journeyDisplayName: parentDisplayName
+      journey {
+        id
+        ... on Space {
+          profile {
+            ...RecentContributionsSpaceProfile
+          }
+        }
+        ... on RelayPaginatedSpace {
+          profile {
+            ...RecentContributionsSpaceProfile
+          }
+        }
+        ... on Challenge {
+          profile {
+            ...RecentContributionsChildJourneyProfile
+          }
+        }
+        ... on Opportunity {
+          profile {
+            ...RecentContributionsChildJourneyProfile
+          }
+        }
+      }
       triggeredBy {
         id
         profile {
@@ -60,5 +88,28 @@ query LatestContributions(
       hasNextPage
       endCursor
     }
+  }
+}
+
+fragment RecentContributionsJourneyProfile on Profile {
+  id
+  url
+  displayName
+  type
+}
+
+fragment RecentContributionsSpaceProfile on Profile {
+  ...RecentContributionsJourneyProfile
+  avatar: visual(type: CARD) {
+    id
+    uri
+  }
+}
+
+fragment RecentContributionsChildJourneyProfile on Profile {
+  ...RecentContributionsJourneyProfile
+  avatar: visual(type: AVATAR) {
+    id
+    uri
   }
 }

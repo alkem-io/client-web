@@ -35,6 +35,13 @@ import { ActivityCalendarEventCreatedView } from './views/ActivityCalendarEventC
 export type ActivityLogResult<T> = T &
   Omit<ActivityLogEntry, 'parentDisplayName'> & {
     journeyDisplayName: string;
+    triggeredBy: {
+      profile: {
+        avatar: {
+          uri: string;
+        };
+      };
+    };
   };
 
 type TypedActivityLogResults = {
@@ -73,7 +80,11 @@ export const ActivityComponent: FC<ActivityComponentProps> = ({ activities, limi
       <>
         {activities.slice(0, limit).map(activity => {
           return (
-            <ActivityViewChooser activity={activity} avatarUrl={activity.triggeredBy.profile.url} key={activity.id} />
+            <ActivityViewChooser
+              activity={activity}
+              avatarUrl={activity.triggeredBy.profile.avatar.uri}
+              key={activity.id}
+            />
           );
         })}
       </>
