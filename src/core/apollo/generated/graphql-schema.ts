@@ -12755,6 +12755,17 @@ export type AuthorDetailsQuery = {
   }>;
 };
 
+export type LatestReleaseDiscussionQueryVariables = Exact<{ [key: string]: never }>;
+
+export type LatestReleaseDiscussionQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    latestReleaseDiscussion?: { __typename?: 'LatestReleaseDiscussion'; id: string; nameID: string } | undefined;
+  };
+};
+
 export type CreateDiscussionMutationVariables = Exact<{
   input: CommunicationCreateDiscussionInput;
 }>;

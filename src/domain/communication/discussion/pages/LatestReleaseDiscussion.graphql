@@ -1,0 +1,9 @@
+query latestReleaseDiscussion {
+  platform {
+    id
+    latestReleaseDiscussion {
+      id
+      nameID
+    }
+  }
+}
