@@ -1,18 +1,13 @@
 import { Add } from '@mui/icons-material';
-import { Button, IconButton } from '@mui/material';
+import { IconButton } from '@mui/material';
 import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useNavigate from '../../../core/routing/useNavigate';
-import { DialogContent } from '../../../core/ui/dialog/deprecated';
 import RoundedIcon from '../../../core/ui/icon/RoundedIcon';
 import { CalendarEventDetailsFragment, TagsetType } from '../../../core/apollo/generated/graphql-schema';
 import { useUrlParams } from '../../../core/routing/useUrlParams';
 import { useQueryParams } from '../../../core/routing/useQueryParams';
-import { Actions } from '../../../core/ui/actions/Actions';
 import BackButton from '../../../core/ui/actions/BackButton';
-import DialogHeader from '../../../core/ui/dialog/DialogHeader';
-import { gutters } from '../../../core/ui/grid/utils';
-import { BlockTitle } from '../../../core/ui/typography';
 import { EntityPageSection } from '../../shared/layout/EntityPageSection';
 import { dateRounded } from '../../../core/utils/time/utils';
 import CalendarEventDetailContainer, { CalendarEventDetailData } from './CalendarEventDetailContainer';
@@ -22,6 +17,7 @@ import CalendarEventForm from './views/CalendarEventForm';
 import CalendarEventsList from './views/CalendarEventsList';
 import dayjs from 'dayjs';
 import DialogWithGrid from '../../../core/ui/dialog/DialogWithGrid';
+import ConfirmationDialog from '../../../core/ui/dialogs/ConfirmationDialog';
 import { JourneyTypeName } from '../../journey/JourneyTypeName';
 
 // If url params contains `highlight=YYYY-MM-DD` events in that date will be highlighted
@@ -85,13 +81,13 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, journeyId, journeyTypeN
       columns={12}
       open={open}
       aria-labelledby="calendar-events-dialog-title"
-      PaperProps={{ sx: { padding: 0, display: 'flex', flexDirection: 'column' } }}
+      PaperProps={{ sx: { padding: 0, display: `${deletingEvent ? 'none' : 'flex'}`, flexDirection: 'column' } }}
     >
       <CalendarEventsContainer journeyId={journeyId} journeyTypeName={journeyTypeName}>
         {(
           { events, privileges },
           { createEvent, updateEvent, deleteEvent },
-          { creatingCalendarEvent, updatingCalendarEvent, deletingCalendarEvent }
+          { creatingCalendarEvent, updatingCalendarEvent }
         ) => {
           // Deleting an event:
           if (deletingEvent) {
@@ -101,26 +97,25 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, journeyId, journeyTypeN
               navigate(`${EntityPageSection.Dashboard}/calendar`);
             };
             return (
-              <>
-                <DialogHeader onClose={() => setDeletingEvent(undefined)}>{t('calendar.delete-event')}</DialogHeader>
-                <DialogContent>
-                  <BlockTitle>
-                    {t('calendar.delete-confirmation', { title: deletingEvent.profile.displayName })}
-                  </BlockTitle>
-                  <Actions justifyContent="space-around" marginTop={gutters()}>
-                    <Button
-                      color="error"
-                      onClick={() => handleDeleteEvent(deletingEvent.id)}
-                      disabled={deletingCalendarEvent}
-                    >
-                      {t('buttons.delete')}
-                    </Button>
-                    <Button onClick={() => setDeletingEvent(undefined)} variant="contained">
-                      {t('buttons.cancel')}
-                    </Button>
-                  </Actions>
-                </DialogContent>
-              </>
+              <ConfirmationDialog
+                actions={{
+                  onCancel: () => setDeletingEvent(undefined),
+                  onConfirm: async () => {
+                    if (deletingEvent.id) {
+                      await handleDeleteEvent(deletingEvent.id);
+                    }
+                    setDeletingEvent(undefined);
+                  },
+                }}
+                entities={{
+                  confirmButtonTextId: 'buttons.delete',
+                  content: t('calendar.delete-confirmation', { title: deletingEvent.profile.displayName }),
+                  titleId: 'calendar.delete-event',
+                }}
+                options={{
+                  show: Boolean(deletingEvent),
+                }}
+              />
             );
 
             // Creating a new event:
