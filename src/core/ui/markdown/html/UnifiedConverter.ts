@@ -13,8 +13,8 @@ import rehypeSanitize from 'rehype-sanitize';
 import rehypeStringify from 'rehype-stringify';
 import { u } from 'unist-builder';
 import { HTML } from 'mdast-util-to-hast/lib/handlers/html';
-
 import { Converter } from './Converter';
+import { Element } from 'hast-util-to-mdast/lib/handlers/strong';
 
 const isEmptyLine = (node: HTML, parent: Parent | null) => node.value === '<br>' && parent?.type === 'root';
 
@@ -31,6 +31,23 @@ const UnifiedConverter = (): Converter => {
             return html('<br>');
           }
           return defaultHTMLHandlers.p(state, element);
+        },
+        strong: (state, element: Element) => {
+          if (element.children.length === 1) {
+            if (element.children[0].type === 'text') {
+              const value = element.children[0].value;
+              const trimmed = value.trim();
+              const space = '<span> </span>';
+              if (trimmed === '' && value !== trimmed) {
+                return html(space);
+              }
+              return html(
+                `${value.startsWith(' ') ? space : ''}<strong>${trimmed}</strong>${value.endsWith(' ') ? space : ''}`
+              );
+            }
+          }
+
+          return defaultHTMLHandlers.strong(state, element);
         },
       },
     })
