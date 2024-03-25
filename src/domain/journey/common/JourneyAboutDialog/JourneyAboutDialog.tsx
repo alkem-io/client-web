@@ -34,6 +34,8 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import useDirectMessageDialog from '../../../communication/messaging/DirectMessaging/useDirectMessageDialog';
 import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
+import CommunityGuidelinesBlock from '../../../community/community/CommunityGuidelines/CommunityGuidelinesBlock';
+import { useSpace } from '../../space/SpaceContext/useSpace';
 
 export interface JourneyAboutDialogProps extends EntityDashboardLeads {
   open: boolean;
@@ -102,6 +104,7 @@ const JourneyAboutDialog = ({
   shareUrl,
 }: JourneyAboutDialogProps) => {
   const { t } = useTranslation();
+  const { spaceId } = useSpace();
 
   const isSpace = journeyTypeName === 'space';
   const leadOrganizationsHeader = isSpace
@@ -203,6 +206,7 @@ const JourneyAboutDialog = ({
           </PageContentColumn>
           <PageContentColumn columns={4}>
             <PageContentBlockSeamless disablePadding order={1}>
+              {journeyTypeName === 'space' && <CommunityGuidelinesBlock spaceId={spaceId} />}
               <PageContentBlock>
                 <PageContentBlockHeader
                   title={t('components.journeyMetrics.title', { journey: t(`common.${journeyTypeName}` as const) })}
