@@ -29,7 +29,7 @@ export interface ContributorCardSquareProps {
   tooltip?: ContributorCardTooltip;
   url: string;
   isContactable?: boolean;
-  contributorType?: ContributorType;
+  contributorType: ContributorType;
   roleName?: ReactNode;
 }
 
