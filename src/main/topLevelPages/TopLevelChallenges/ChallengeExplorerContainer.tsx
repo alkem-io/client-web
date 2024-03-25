@@ -12,10 +12,11 @@ import { getVisualByType } from '../../../domain/common/visual/utils/visuals.uti
 import {
   CommunityMembershipStatus,
   SearchResultChallengeFragment,
+  SearchResultType,
   SpaceVisibility,
 } from '../../../core/apollo/generated/graphql-schema';
-import { SearchResultT } from '../../search/SearchView';
 import { VisualName } from '../../../domain/common/visual/constants/visuals.constants';
+import { TypedSearchResult } from '../../search/SearchView';
 
 export type SimpleChallenge = {
   id: string;
@@ -137,7 +138,7 @@ export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ se
 
   const searchResults: SimpleChallengeWithSearchTerms[] | undefined =
     rawSearchResults?.search?.journeyResults.flatMap<SimpleChallengeWithSearchTerms>(result => {
-      const entry = result as SearchResultT<SearchResultChallengeFragment>;
+      const entry = result as TypedSearchResult<SearchResultType.Challenge, SearchResultChallengeFragment>;
       const ch = entry.challenge;
       const space = entry.space;
       return {
