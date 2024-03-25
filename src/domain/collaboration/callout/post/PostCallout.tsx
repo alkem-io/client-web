@@ -1,6 +1,6 @@
 import React, { forwardRef, useMemo, useState } from 'react';
 import useNavigate from '../../../../core/routing/useNavigate';
-import CalloutLayout, { CalloutLayoutProps } from '../../CalloutBlock/CalloutLayout';
+import CalloutLayout from '../../CalloutBlock/CalloutLayout';
 import ScrollableCardsLayout from '../../../../core/ui/card/cardsLayout/ScrollableCardsLayout';
 import PostCreationDialog from '../../post/PostCreationDialog/PostCreationDialog';
 import { CalloutState, CreatePostInput } from '../../../../core/apollo/generated/graphql-schema';
@@ -10,9 +10,12 @@ import { BaseCalloutViewProps } from '../CalloutViewTypes';
 import { gutters } from '../../../../core/ui/grid/utils';
 import CalloutBlockFooter from '../../CalloutBlock/CalloutBlockFooter';
 import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
+import { LocationStateCachedCallout, LocationStateKeyCachedCallout } from '../../CalloutPage/CalloutPage';
+import { TypedCalloutDetails } from '../useCallouts/useCallouts';
+import { buildPostDashboardUrl } from './urlBuilders';
 
 interface PostCalloutProps extends BaseCalloutViewProps {
-  callout: CalloutLayoutProps['callout'];
+  callout: TypedCalloutDetails;
   posts: PostCardPost[] | undefined;
   loading: boolean;
   creatingPost: boolean;
@@ -46,7 +49,11 @@ const PostCallout = forwardRef<Element, PostCalloutProps>(
     );
 
     const navigateToPost = (post: PostCardPost) => {
-      navigate(post.profile.url);
+      const state: LocationStateCachedCallout = {
+        [LocationStateKeyCachedCallout]: callout,
+        keepScroll: true,
+      };
+      navigate(buildPostDashboardUrl(post.profile.url), { state });
     };
 
     const breakpoint = useCurrentBreakpoint();

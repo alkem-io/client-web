@@ -1,7 +1,7 @@
 import { Button as MuiButton, CircularProgress } from '@mui/material';
 import React, { forwardRef, Ref, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link as RouterLink } from 'react-router-dom';
+import RouterLink from '../../../../core/ui/link/RouterLink';
 import { buildLoginUrl } from '../../../../main/routing/urlBuilders';
 import { AddOutlined } from '@mui/icons-material';
 import { DirectMessageDialog } from '../../../communication/messaging/DirectMessaging/DirectMessageDialog';
