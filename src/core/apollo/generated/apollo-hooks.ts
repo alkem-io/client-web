@@ -9386,6 +9386,69 @@ export function refetchAuthorDetailsQuery(variables: SchemaTypes.AuthorDetailsQu
   return { query: AuthorDetailsDocument, variables: variables };
 }
 
+export const LatestReleaseDiscussionDocument = gql`
+  query latestReleaseDiscussion {
+    platform {
+      id
+      latestReleaseDiscussion {
+        id
+        nameID
+      }
+    }
+  }
+`;
+
+/**
+ * __useLatestReleaseDiscussionQuery__
+ *
+ * To run a query within a React component, call `useLatestReleaseDiscussionQuery` and pass it any options that fit your needs.
+ * When your component renders, `useLatestReleaseDiscussionQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useLatestReleaseDiscussionQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useLatestReleaseDiscussionQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.LatestReleaseDiscussionQuery,
+    SchemaTypes.LatestReleaseDiscussionQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.LatestReleaseDiscussionQuery, SchemaTypes.LatestReleaseDiscussionQueryVariables>(
+    LatestReleaseDiscussionDocument,
+    options
+  );
+}
+
+export function useLatestReleaseDiscussionLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.LatestReleaseDiscussionQuery,
+    SchemaTypes.LatestReleaseDiscussionQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.LatestReleaseDiscussionQuery,
+    SchemaTypes.LatestReleaseDiscussionQueryVariables
+  >(LatestReleaseDiscussionDocument, options);
+}
+
+export type LatestReleaseDiscussionQueryHookResult = ReturnType<typeof useLatestReleaseDiscussionQuery>;
+export type LatestReleaseDiscussionLazyQueryHookResult = ReturnType<typeof useLatestReleaseDiscussionLazyQuery>;
+export type LatestReleaseDiscussionQueryResult = Apollo.QueryResult<
+  SchemaTypes.LatestReleaseDiscussionQuery,
+  SchemaTypes.LatestReleaseDiscussionQueryVariables
+>;
+export function refetchLatestReleaseDiscussionQuery(variables?: SchemaTypes.LatestReleaseDiscussionQueryVariables) {
+  return { query: LatestReleaseDiscussionDocument, variables: variables };
+}
+
 export const CreateDiscussionDocument = gql`
   mutation createDiscussion($input: CommunicationCreateDiscussionInput!) {
     createDiscussion(createData: $input) {

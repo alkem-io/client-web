@@ -16,7 +16,6 @@ import { compact } from 'lodash';
 import { useAuthorsDetails } from '../../communication/useAuthorsDetails';
 import { Message } from '../../room/models/Message';
 import { Skeleton } from '@mui/material';
-import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import TopLevelPageLayout from '../../../../main/ui/layout/topLevelPageLayout/TopLevelPageLayout';
 import RouterLink from '../../../../core/ui/link/RouterLink';
 import BackButton from '../../../../core/ui/actions/BackButton';
@@ -30,10 +29,11 @@ import UpdateDiscussionDialog from '../views/UpdateDiscussionDialog';
 import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
 import useNavigate from '../../../../core/routing/useNavigate';
 
-interface DiscussionPageProps {}
+interface DiscussionPageProps {
+  discussionNameId: string;
+}
 
-export const DiscussionPage: FC<DiscussionPageProps> = () => {
-  const { discussionNameId } = useUrlParams();
+export const DiscussionPage: FC<DiscussionPageProps> = ({ discussionNameId }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { user } = useUserContext();
