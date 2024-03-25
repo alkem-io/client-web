@@ -8,36 +8,8 @@ subscription activityCreated($input: ActivityCreatedSubscriptionInput!) {
 
 fragment ActivityLogOnCollaboration on ActivityLogEntry {
   id
-  collaborationID
   createdDate
-  description
   type
-  child
-  parentNameID
-  journeyDisplayName: parentDisplayName
-  __typename
-  triggeredBy {
-    id
-    nameID
-    firstName
-    lastName
-    profile {
-      id
-      displayName
-      avatar: visual(type: AVATAR) {
-        id
-        uri
-      }
-      tagsets {
-        ...TagsetDetails
-      }
-      location {
-        id
-        city
-        country
-      }
-    }
-  }
   ... on ActivityLogEntryMemberJoined {
     ...ActivityLogMemberJoined
   }
@@ -55,6 +27,9 @@ fragment ActivityLogOnCollaboration on ActivityLogEntry {
   }
   ... on ActivityLogEntryCalloutWhiteboardCreated {
     ...ActivityLogCalloutWhiteboardCreated
+  }
+  ... on ActivityLogEntryCalloutWhiteboardContentModified {
+    ...ActivityLogCalloutWhiteboardContentModified
   }
   ... on ActivityLogEntryCalloutDiscussionComment {
     ...ActivityLogCalloutDiscussionComment

@@ -11,22 +11,16 @@ import { OpportunitiesRoute } from '../../opportunity/routing/OpportunitiesRoute
 import ChallengeAuthorizationRoute from './ChallengeAuthorizationRoute';
 import CommunityGroupsRoute from '../../community/routes/CommunityGroupsAdminRoutes';
 import ChallengeContextPage from '../../../../journey/challenge/pages/ChallengeContext/ChallengeContextPage';
-import ChallengeInnovationFlowPage from '../../../../journey/challenge/pages/InnovationFlow/ChallengeInnovationFlowPage';
 import { StorageConfigContextProvider } from '../../../../storage/StorageBucket/StorageConfigContext';
 import AdminChallengeCommunityPage from '../../../../journey/challenge/pages/AdminChallengeCommunityPage';
 
 export const ChallengeRoute: FC = () => {
-  const { spaceId, communityId: spaceCommunityId } = useSpace();
-  const { challenge, challengeNameId } = useChallenge();
+  const { communityId: spaceCommunityId } = useSpace();
+  const { challenge } = useChallenge();
   const communityId = challenge?.community?.id;
 
   return (
-    <StorageConfigContextProvider
-      locationType="journey"
-      journeyTypeName="challenge"
-      spaceNameId={spaceId}
-      challengeNameId={challengeNameId}
-    >
+    <StorageConfigContextProvider locationType="journey" journeyTypeName="challenge" journeyId={challenge?.id}>
       <Routes>
         <Route path={'/'}>
           <Route index element={<Navigate to="profile" replace />} />
@@ -46,7 +40,6 @@ export const ChallengeRoute: FC = () => {
           <Route path="community/applications/*" element={<ApplicationsAdminRoutes />} />
           <Route path="opportunities/*" element={<OpportunitiesRoute />} />
           <Route path="authorization/*" element={<ChallengeAuthorizationRoute />} />
-          <Route path="innovation-flow/*" element={<ChallengeInnovationFlowPage />} />
           <Route path="*" element={<Error404 />} />
         </Route>
       </Routes>

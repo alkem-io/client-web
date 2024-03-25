@@ -19,7 +19,7 @@ interface ChallengeCreationInput {
   background: string;
   vision: string;
   tags: string[];
-  innovationFlowTemplateId: string;
+  addDefaultCallouts: boolean;
 }
 
 interface OpportunityCreationInput {
@@ -28,7 +28,7 @@ interface OpportunityCreationInput {
   tagline: string;
   vision: string;
   tags: string[];
-  innovationFlowTemplateId: string;
+  addDefaultCallouts: boolean;
 }
 
 export const useJourneyCreation = () => {
@@ -122,15 +122,14 @@ export const useJourneyCreation = () => {
             },
             tags: value.tags,
             collaborationData: {
-              innovationFlowTemplateID: value.innovationFlowTemplateId,
-            }
+              addDefaultCallouts: value.addDefaultCallouts,
+            },
           },
         },
         optimisticResponse: {
           createChallenge: {
             __typename: 'Challenge',
             id: '',
-            nameID: '',
             metrics: [
               {
                 id: '',
@@ -142,6 +141,7 @@ export const useJourneyCreation = () => {
               id: '',
               displayName: value.displayName ?? '',
               tagline: value.tagline,
+              url: '',
               cardBanner: {
                 id: '',
                 uri: '',
@@ -179,15 +179,14 @@ export const useJourneyCreation = () => {
             },
             tags: value.tags,
             collaborationData: {
-              innovationFlowTemplateID: value.innovationFlowTemplateId,
-            }
+              addDefaultCallouts: value.addDefaultCallouts,
+            },
           },
         },
         optimisticResponse: {
           createOpportunity: {
             __typename: 'Opportunity',
             id: '',
-            nameID: '',
             metrics: [
               {
                 id: '',
@@ -202,6 +201,7 @@ export const useJourneyCreation = () => {
               id: '',
               displayName: value.displayName ?? '',
               tagline: value.tagline,
+              url: '',
               cardBanner: {
                 id: '',
                 uri: '',

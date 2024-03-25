@@ -8,8 +8,7 @@ import {
   refetchPlatformDiscussionsQuery,
   useCreateDiscussionMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
-import { buildDiscussionUrl } from '../../../../main/routing/urlBuilders';
-import { useNavigate } from 'react-router-dom';
+import useNavigate from '../../../../core/routing/useNavigate';
 import DiscussionForm, { DiscussionFormValues } from '../forms/DiscussionForm';
 
 export interface NewDiscussionDialogProps {
@@ -42,7 +41,7 @@ const NewDiscussionDialog: FC<NewDiscussionDialogProps> = ({ open, onClose, comm
     });
     onClose();
     if (data?.createDiscussion) {
-      navigate(buildDiscussionUrl('/forum', data.createDiscussion.nameID), { replace: true });
+      navigate(data.createDiscussion.profile.url, { replace: true });
     }
   };
 

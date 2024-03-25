@@ -9,6 +9,7 @@ import {
   ActivityViewChooser,
 } from '../../../../domain/collaboration/activity/ActivityLog/ActivityComponent';
 import {
+  ActivityEventType,
   ActivityFeedRoles,
   LatestContributionsQuery,
   LatestContributionsQueryVariables,
@@ -21,7 +22,6 @@ import useLazyLoading from '../../../../domain/shared/pagination/useLazyLoading'
 import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
 import { gutters } from '../../../../core/ui/grid/utils';
 import { Identifiable } from '../../../../core/utils/Identifiable';
-import { buildAuthorFromUser } from '../../../../domain/community/user/utils/buildAuthorFromUser';
 
 const ROLE_OPTION_ALL = 'ROLE_OPTION_ALL';
 const SPACE_OPTION_ALL = 'SPACE_OPTION_ALL';
@@ -105,6 +105,7 @@ const LatestContributions = ({ spaceMemberships }: LatestContributionsProps) => 
       filter: {
         spaceIds: filter.space === SPACE_OPTION_ALL ? undefined : [filter.space],
         roles: filter.role === ROLE_OPTION_ALL ? undefined : [filter.role],
+        excludeTypes: [ActivityEventType.CalloutWhiteboardContentModified],
       },
     },
   });
@@ -145,13 +146,11 @@ const LatestContributions = ({ spaceMemberships }: LatestContributionsProps) => 
       <ScrollerWithGradient>
         <Box padding={1}>
           {data?.activityFeed.activityFeed.map(activity => {
-            const author = buildAuthorFromUser((activity as ActivityLogResultType).triggeredBy);
             return (
               <ActivityViewChooser
                 key={activity.id}
                 activity={activity as ActivityLogResultType}
-                avatarUrl={author.avatarUrl}
-                journeyUrl={activity.journey?.profile.url ?? ''}
+                avatarUrl={activity.triggeredBy.profile.avatar?.uri}
               />
             );
           })}

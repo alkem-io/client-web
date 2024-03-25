@@ -3,7 +3,6 @@ import { Box, ButtonBase, Collapse, IconButton, Skeleton, Tooltip, useMediaQuery
 import { Theme } from '@mui/material/styles';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { buildChallengeUrl, buildOpportunityUrl, buildSpaceUrl } from '../../../../main/routing/urlBuilders';
 import { SpaceVisibility } from '../../../../core/apollo/generated/graphql-schema';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
@@ -16,7 +15,7 @@ import DashboardNavigationItemView from './DashboardNavigationItemView';
 import { DashboardNavigationItem } from './useSpaceDashboardNavigation';
 
 interface DashboardNavigationProps {
-  spaceNameId: string | undefined;
+  spaceUrl: string | undefined;
   spaceVisibility?: SpaceVisibility;
   displayName: string | undefined;
   dashboardNavigation: DashboardNavigationItem[] | undefined;
@@ -26,7 +25,7 @@ interface DashboardNavigationProps {
 const VISIBLE_ROWS_WHEN_COLLAPSED = 6;
 
 const DashboardNavigation = ({
-  spaceNameId,
+  spaceUrl,
   displayName,
   spaceVisibility,
   dashboardNavigation,
@@ -78,12 +77,10 @@ const DashboardNavigation = ({
       />
       <Collapse in={showAll} collapsedSize={allItemsFit ? 0 : theme.spacing(6 * VISIBLE_ROWS_WHEN_COLLAPSED - 2)}>
         <Gutters disablePadding>
-          {dashboardNavigation?.map(({ id, nameId: challengeNameId, avatar, cardBanner, member, ...challenge }) => {
-            if (!spaceNameId) {
+          {dashboardNavigation?.map(({ id, url: challengeUrl, avatar, cardBanner, member, ...challenge }) => {
+            if (loading) {
               return <Skeleton key={id} />;
             }
-            const challengeUrl = buildChallengeUrl(spaceNameId, challengeNameId);
-            const spaceUrl = buildSpaceUrl(spaceNameId);
             return (
               <DashboardNavigationItemView
                 key={id}
@@ -92,7 +89,6 @@ const DashboardNavigation = ({
                 tooltip={
                   <ChallengeCard
                     challengeId={id}
-                    challengeNameId={challengeNameId}
                     banner={cardBanner}
                     displayName={challenge.displayName}
                     tags={challenge.tags ?? []}
@@ -111,33 +107,31 @@ const DashboardNavigation = ({
                 {...challenge}
               >
                 {Boolean(challenge.children?.length) &&
-                  challenge.children?.map(
-                    ({ id, nameId: opportunityNameId, avatar, cardBanner, member, ...opportunity }) => (
-                      <DashboardNavigationItemView
-                        key={id}
-                        url={spaceNameId && buildOpportunityUrl(spaceNameId, challengeNameId, opportunityNameId)}
-                        visualUri={avatar?.uri}
-                        tooltip={
-                          <OpportunityCard
-                            opportunityId={id}
-                            banner={cardBanner}
-                            displayName={opportunity.displayName}
-                            tags={opportunity.tags ?? []}
-                            tagline={opportunity.tagline}
-                            vision={opportunity.vision ?? ''}
-                            innovationFlowState={opportunity.innovationFlowState}
-                            journeyUri={buildOpportunityUrl(spaceNameId, challengeNameId, opportunityNameId)}
-                            challengeDisplayName={challenge.displayName}
-                            challengeUri={challengeUrl}
-                            spaceVisibility={spaceVisibility}
-                            sx={{ width: gutters(15) }}
-                            member={member}
-                          />
-                        }
-                        {...opportunity}
-                      />
-                    )
-                  )}
+                  challenge.children?.map(({ id, url: opportunityUrl, avatar, cardBanner, member, ...opportunity }) => (
+                    <DashboardNavigationItemView
+                      key={id}
+                      url={opportunityUrl}
+                      visualUri={avatar?.uri}
+                      tooltip={
+                        <OpportunityCard
+                          opportunityId={id}
+                          banner={cardBanner}
+                          displayName={opportunity.displayName}
+                          tags={opportunity.tags ?? []}
+                          tagline={opportunity.tagline}
+                          vision={opportunity.vision ?? ''}
+                          innovationFlowState={opportunity.innovationFlowState}
+                          journeyUri={opportunityUrl}
+                          challengeDisplayName={challenge.displayName}
+                          challengeUri={challengeUrl}
+                          spaceVisibility={spaceVisibility}
+                          sx={{ width: gutters(15) }}
+                          member={member}
+                        />
+                      }
+                      {...opportunity}
+                    />
+                  ))}
               </DashboardNavigationItemView>
             );
           })}

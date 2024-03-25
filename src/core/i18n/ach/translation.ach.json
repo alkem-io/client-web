@@ -639,7 +639,7 @@
     "singleWhiteboard": {
       "clickToSee": "crwdns9004:0crwdne9004:0"
     },
-    "callout-groups": {
+    "callout-group": {
       "HOME_TOP": "crwdns9006:0crwdne9006:0",
       "HOME_LEFT": "crwdns9008:0crwdne9008:0",
       "HOME_RIGHT": "crwdns9010:0crwdne9010:0",

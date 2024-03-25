@@ -1,7 +1,7 @@
 import { ReactNode, useEffect, useMemo, useState } from 'react';
 import { Box, Link } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router';
+import useNavigate from '../../core/routing/useNavigate';
 import { useSearchQuery, useSearchScopeDetailsSpaceQuery } from '../../core/apollo/generated/apollo-hooks';
 import {
   SearchQuery,
@@ -18,13 +18,14 @@ import {
 import PageContentColumn from '../../core/ui/content/PageContentColumn';
 import { useUserContext } from '../../domain/community/user';
 import {
+  calloutFilterConfig,
   contributionFilterConfig,
   contributorFilterConfig,
   FilterConfig,
   FilterDefinition,
-} from '../../domain/platform/search/Filter';
+} from './Filter';
 import MultipleSelect from '../../core/ui/search/MultipleSelect';
-import SearchResultSection from '../../domain/platform/search/SearchResultSection';
+import SearchResultSection from './SearchResultSection';
 import { useQueryParams } from '../../core/routing/useQueryParams';
 import { buildLoginUrl } from '../routing/urlBuilders';
 import { SEARCH_SPACE_URL_PARAM, SEARCH_TERMS_URL_PARAM } from './constants';
@@ -33,29 +34,47 @@ import SearchResultsScope from '../../core/ui/search/SearchResultsScope';
 import SearchResultsScopeCard from '../../core/ui/search/SearchResultsScopeCard';
 import { ReactComponent as AlkemioLogo } from '../ui/logo/logoSmall.svg';
 import { SpaceIcon } from '../../domain/journey/space/icon/SpaceIcon';
-import { identity } from 'lodash';
+import { findKey, groupBy, identity } from 'lodash';
+import SearchResultPostChooser from './searchResults/SearchResultPostChooser';
+import SearchResultsCalloutCard from './searchResults/searchResultsCallout/SearchResultsCalloutCard';
+import { CalloutCardCallout } from '../../domain/collaboration/callout/calloutCard/CalloutCard';
+import { SearchResultsCalloutCardFooterProps } from './searchResults/searchResultsCallout/SearchResultsCalloutCardFooter';
+import { JourneyTypeName } from '../../domain/journey/JourneyTypeName';
 
 export const MAX_TERMS_SEARCH = 5;
 
 const tagsetNames = ['skills', 'keywords'];
 
-export type SearchResultT<T> = T & SearchResult;
+export type TypedSearchResult<Type extends SearchResultType, ResultFragment extends {}> = SearchResult &
+  ResultFragment & { type: Type };
 
-export type SearchResultMetaType = SearchResultT<
-  | SearchResultUserFragment
-  | SearchResultOrganizationFragment
-  | SearchResultPostFragment
-  | SearchResultSpaceFragment
-  | SearchResultChallengeFragment
-  | SearchResultOpportunityFragment
-  | SearchResultCalloutFragment
->;
+export type SearchResultMetaType =
+  | TypedSearchResult<SearchResultType.User, SearchResultUserFragment>
+  | TypedSearchResult<SearchResultType.Organization, SearchResultOrganizationFragment>
+  | TypedSearchResult<SearchResultType.Post, SearchResultPostFragment>
+  | TypedSearchResult<SearchResultType.Space, SearchResultSpaceFragment>
+  | TypedSearchResult<SearchResultType.Challenge, SearchResultChallengeFragment>
+  | TypedSearchResult<SearchResultType.Opportunity, SearchResultOpportunityFragment>;
 
 interface SearchViewProps {
   searchRoute: string;
   journeyFilterConfig: FilterConfig;
   journeyFilterTitle: ReactNode;
 }
+
+interface SearchViewSections {
+  journeyResults?: SearchResultMetaType[];
+  calloutResults?: SearchResultCalloutFragment[];
+  contributionResults?: SearchResultMetaType[];
+  contributorResults?: SearchResultMetaType[];
+}
+
+const searchResultSectionTypes: Record<keyof SearchViewSections, SearchResultType[]> = {
+  journeyResults: [SearchResultType.Space, SearchResultType.Challenge, SearchResultType.Opportunity],
+  calloutResults: [SearchResultType.Callout],
+  contributionResults: [SearchResultType.Post],
+  contributorResults: [SearchResultType.User, SearchResultType.Organization],
+};
 
 const Logo = () => <AlkemioLogo />;
 
@@ -84,6 +103,7 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
   const [journeyFilter, setJourneyFilter] = useState<FilterDefinition>(journeyFilterConfig.all);
   const [contributionFilter, setContributionFilter] = useState<FilterDefinition>(contributionFilterConfig.all);
   const [contributorFilter, setContributorFilter] = useState<FilterDefinition>(contributorFilterConfig.all);
+  const [calloutFilter, setCalloutFilter] = useState<FilterDefinition>(calloutFilterConfig.all);
 
   const resetFilters = () => {
     setJourneyFilter(journeyFilterConfig.all);
@@ -136,23 +156,14 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
 
   const results = termsFromUrl.length === 0 ? undefined : toResultType(data);
 
-  const { journeyResultsCount, contributorResultsCount, contributionResultsCount } = data?.search ?? {};
+  const { journeyResultsCount, /* calloutResultsCount,*/ contributorResultsCount, contributionResultsCount } =
+    data?.search ?? {};
 
-  const [journeyResults, contributionResults, contributorResults] = useMemo(
-    () => [
-      results?.filter(
-        ({ type }) =>
-          type === SearchResultType.Space ||
-          type === SearchResultType.Challenge ||
-          type === SearchResultType.Opportunity
-      ),
-      results?.filter(
-        ({ type }) =>
-          type ===
-          SearchResultType.Post /*|| type === SearchResultType.Whiteboard || type === SearchResultType.Callout*/
-      ),
-      results?.filter(({ type }) => type === SearchResultType.User || type === SearchResultType.Organization),
-    ],
+  const { journeyResults, calloutResults, contributionResults, contributorResults }: SearchViewSections = useMemo(
+    () =>
+      groupBy(results, ({ type }) => {
+        return findKey(searchResultSectionTypes, types => types.includes(type));
+      }),
     [results]
   );
 
@@ -202,6 +213,27 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
           currentFilter={journeyFilter}
           onFilterChange={setJourneyFilter}
           loading={isSearching}
+          cardComponent={SearchResultPostChooser}
+        />
+        <SearchResultSection
+          title={t('common.collaborationTools')}
+          filterTitle={t('common.type')}
+          count={calloutResults?.length}
+          filterConfig={calloutFilterConfig}
+          results={
+            calloutResults as unknown as {
+              // TODO remove this type cast when the server is updated
+              id: string;
+              callout: CalloutCardCallout & SearchResultsCalloutCardFooterProps['callout'];
+              matchedTerms: string[];
+              journeyTypeName: JourneyTypeName;
+              journeyDisplayName: string;
+            }[]
+          }
+          currentFilter={calloutFilter}
+          onFilterChange={setCalloutFilter}
+          loading={isSearching}
+          cardComponent={SearchResultsCalloutCard}
         />
         <SearchResultSection
           title={t('common.contributions')}
@@ -212,6 +244,7 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
           currentFilter={contributionFilter}
           onFilterChange={setContributionFilter}
           loading={isSearching}
+          cardComponent={SearchResultPostChooser}
         />
         <SearchResultSection
           title={t('common.contributors')}
@@ -222,6 +255,7 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
           currentFilter={contributorFilter}
           onFilterChange={setContributorFilter}
           loading={isSearching}
+          cardComponent={SearchResultPostChooser}
         />
       </PageContentColumn>
     </>

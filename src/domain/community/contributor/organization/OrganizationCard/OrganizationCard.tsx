@@ -2,9 +2,8 @@ import React, { FC, useState } from 'react';
 import { Avatar, Box, Button, CardHeader, Dialog, Skeleton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { LoadingButton } from '@mui/lab';
-import { useNavigate } from 'react-router-dom';
+import useNavigate from '../../../../../core/routing/useNavigate';
 import { useTranslation } from 'react-i18next';
-
 import { Caption, PageTitle } from '../../../../../core/ui/typography/components';
 import CircleTag from '../../../../../core/ui/tags/CircleTag';
 import { OrganizationVerifiedStatus } from '../../../organization/organizationVerifiedStatus/OrganizationVerifiedStatus';
@@ -122,7 +121,7 @@ const OrganizationCard: FC<OrganizationCardProps> = ({
       )}
       {enableLeave && (
         <Dialog open={isDialogOpened} maxWidth="xs" aria-labelledby="confirm-leave-organization">
-          <DialogTitle id="confirm-innovation-flow">
+          <DialogTitle>
             {t('components.associated-organization.confirmation-dialog.title', { organization: name })}
           </DialogTitle>
           <DialogContent sx={{ paddingX: 2 }}>

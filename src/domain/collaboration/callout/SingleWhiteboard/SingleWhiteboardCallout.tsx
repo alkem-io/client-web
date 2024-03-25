@@ -2,7 +2,6 @@ import { useState } from 'react';
 import CalloutLayout, { CalloutLayoutProps } from '../../CalloutBlock/CalloutLayout';
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
 import WhiteboardView from '../../whiteboard/WhiteboardsManagement/WhiteboardView';
-import { buildCalloutUrl } from '../../../../main/routing/urlBuilders';
 import WhiteboardPreview from '../../whiteboard/whiteboardPreview/WhiteboardPreview';
 
 interface SingleWhiteboardCalloutProps extends BaseCalloutViewProps {
@@ -11,10 +10,7 @@ interface SingleWhiteboardCalloutProps extends BaseCalloutViewProps {
 
 const SingleWhiteboardCallout = ({
   callout,
-  spaceNameId,
   loading,
-  challengeNameId,
-  opportunityNameId,
   journeyTypeName,
   contributionsCount,
   onExpand,
@@ -52,11 +48,7 @@ const SingleWhiteboardCallout = ({
           whiteboardId={callout.framing.whiteboard?.id}
           backToWhiteboards={handleCloseWhiteboardDialog}
           journeyTypeName={journeyTypeName}
-          whiteboardShareUrl={buildCalloutUrl(callout.nameID, {
-            spaceNameId,
-            challengeNameId,
-            opportunityNameId,
-          })}
+          whiteboardShareUrl={callout.framing.profile.url}
           readOnlyDisplayName
           displayName={callout.framing.profile.displayName}
           preventWhiteboardDeletion

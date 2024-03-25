@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import useNavigate from './useNavigate';
 import useCanGoBack from './useCanGoBack';
 
 /**
@@ -23,6 +23,12 @@ const useBackToPath = () => {
     window.addEventListener('popstate', handlePopState);
     navigate(-1);
   }, []);
+};
+
+export const useBackToStaticPath = (parentPagePath: string) => {
+  const backToPath = useBackToPath();
+
+  return useCallback(() => backToPath(parentPagePath), [parentPagePath]);
 };
 
 export default useBackToPath;

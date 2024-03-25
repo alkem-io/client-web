@@ -14,7 +14,7 @@ import Person from '@mui/icons-material/Person';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import React, { ComponentType, ElementType, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import useNavigate from '../../../core/routing/useNavigate';
 import { buildUserProfileUrl } from '../../routing/urlBuilders';
 import AlkemioAvatar from '../../../core/ui/image/AlkemioAvatar';
 import UserSegmentAvatar from '../../../domain/community/user/userSegmentAvatar/UserSegmentAvatar';

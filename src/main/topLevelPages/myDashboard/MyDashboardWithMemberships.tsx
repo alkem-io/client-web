@@ -13,6 +13,7 @@ import ExploreOtherChallenges from './exploreOtherChallenges/ExploreOtherChallen
 import { LatestContributionsSpacesQuery } from '../../../core/apollo/generated/graphql-schema';
 import { useColumns } from '../../../core/ui/grid/GridContext';
 import ReleaseNotesBanner from './releaseNotesBanner/ReleaseNotesBanner';
+import { useLatestReleaseDiscussionQuery } from '../../../core/apollo/generated/apollo-hooks';
 
 interface MyDashboardWithMembershipsProps {
   spacesData: LatestContributionsSpacesQuery | undefined;
@@ -21,6 +22,10 @@ interface MyDashboardWithMembershipsProps {
 
 const MyDashboardWithMemberships: FC<MyDashboardWithMembershipsProps> = ({ spacesData, onOpenMembershipsDialog }) => {
   const columns = useColumns();
+
+  const { data } = useLatestReleaseDiscussionQuery({
+    fetchPolicy: 'network-only',
+  });
 
   return (
     <>
@@ -32,7 +37,7 @@ const MyDashboardWithMemberships: FC<MyDashboardWithMembershipsProps> = ({ space
         <RecentForumMessages />
       </PageContentColumn>
       <PageContentColumn columns={8}>
-        <ReleaseNotesBanner />
+        {data?.platform.latestReleaseDiscussion && <ReleaseNotesBanner />}
         <NewMembershipsBlock halfWidth onOpenMemberships={onOpenMembershipsDialog} />
         <MyLatestContributions />
         <TipsAndTricks halfWidth />

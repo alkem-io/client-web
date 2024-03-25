@@ -2,7 +2,7 @@ import React from 'react';
 import { EntityTabsProps } from '../../common/EntityPageLayout';
 import SpacePageTabs from '../SpacePageTabs';
 import { useSpace } from '../SpaceContext/useSpace';
-import { buildAdminSpaceUrl, buildSpaceUrl } from '../../../../main/routing/urlBuilders';
+import { buildJourneyAdminUrl } from '../../../../main/routing/urlBuilders';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import { useTranslation } from 'react-i18next';
 import { ChallengeIcon } from '../../challenge/icon/ChallengeIcon';
@@ -10,9 +10,8 @@ import { ChallengeIcon } from '../../challenge/icon/ChallengeIcon';
 const SpaceTabs = (props: EntityTabsProps) => {
   const { t } = useTranslation();
 
-  const { spaceNameId, permissions } = useSpace();
-  const rootUrl = buildSpaceUrl(spaceNameId);
-  const settingsUrl = buildAdminSpaceUrl(spaceNameId);
+  const { profile, permissions } = useSpace();
+  const settingsUrl = buildJourneyAdminUrl(profile.url);
 
   return (
     <SpacePageTabs
@@ -20,8 +19,8 @@ const SpaceTabs = (props: EntityTabsProps) => {
       entityTypeName="space"
       showSettings={permissions.viewerCanUpdate}
       settingsUrl={settingsUrl}
-      rootUrl={rootUrl}
-      shareUrl={rootUrl}
+      rootUrl={profile.url}
+      shareUrl={profile.url}
       subEntityTab={{
         label: t('common.challenges'),
         section: EntityPageSection.Challenges,

@@ -29,7 +29,7 @@ export const DiscussionsLayout: FC<DiscussionsLayoutProps> = ({
             variant="contained"
             component={RouterLink}
             startIcon={<AddIcon />}
-            to="new"
+            to="/forum/new"
             sx={{ marginLeft: 'auto' }}
           >
             {t('components.discussion.initiate')}

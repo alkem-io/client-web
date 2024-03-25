@@ -1,14 +1,16 @@
-import { DialogContent } from '@mui/material';
-import { FC } from 'react';
+import { DialogContent, ListItemIcon, MenuItem } from '@mui/material';
+import { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
 import { InnovationFlowIcon } from '../InnovationFlowIcon/InnovationFlowIcon';
 import InnovationFlowProfileBlock from './InnovationFlowProfileBlock';
 import useInnovationFlowSettings from './useInnovationFlowSettings';
-import InnovationFlowStateSelector from '../InnovationFlowStateSelector/InnovationFlowStateSelector';
 import InnovationFlowCollaborationToolsBlock from './InnovationFlowCollaborationToolsBlock';
-import Gutters from '../../../../core/ui/grid/Gutters';
+import PageContentBlockContextualMenu from '../../../../core/ui/content/PageContentBlockContextualMenu';
+import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
+import ImportInnovationFlowDialog from './ImportInnovationFlow/ImportInnovationFlowDialog';
+import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
 
 interface InnovationFlowSettingsDialogProps {
   open?: boolean;
@@ -16,40 +18,102 @@ interface InnovationFlowSettingsDialogProps {
   collaborationId: string | undefined;
 }
 
-const InnovationFlowSettingsDialog: FC<InnovationFlowSettingsDialogProps> = ({ open = false, onClose, collaborationId }) => {
+const InnovationFlowSettingsDialog: FC<InnovationFlowSettingsDialogProps> = ({
+  open = false,
+  onClose,
+  collaborationId,
+}) => {
   const { t } = useTranslation();
 
-  const { data, actions, state } = useInnovationFlowSettings({
+  const { data, actions, authorization, state } = useInnovationFlowSettings({
     collaborationId,
+    skip: !open,
   });
+  const { innovationFlow, callouts } = data;
 
-  const { innovationFlow, callouts, flowStateAllowedValues } = data;
+  const [importInnovationFlowConfirmDialogOpen, setImportInnovationFlowConfirmDialogOpen] = useState(false);
+  const [importInnovationFlowDialogOpen, setImportInnovationFlowDialogOpen] = useState(false);
+
+  const handleImportTemplate = async (templateId: string) => {
+    await actions.importInnovationFlow(templateId);
+    setImportInnovationFlowDialogOpen(false);
+  };
 
   return (
-    <DialogWithGrid open={open} columns={12} onClose={onClose}>
-      <DialogHeader icon={<InnovationFlowIcon />} title={t('common.innovation-flow')} onClose={onClose} />
-      <DialogContent sx={{ paddingTop: 0 }}>
-        <Gutters disablePadding>
+    <>
+      <DialogWithGrid open={open} columns={12} onClose={onClose}>
+        <DialogHeader
+          icon={<InnovationFlowIcon />}
+          title={t('components.innovationFlowSettings.title')}
+          onClose={onClose}
+          actions={
+            <PageContentBlockContextualMenu>
+              {({ closeMenu }) => {
+                return (
+                  <MenuItem
+                    onClick={() => {
+                      setImportInnovationFlowConfirmDialogOpen(true);
+                      closeMenu();
+                    }}
+                  >
+                    <ListItemIcon>
+                      <InnovationFlowIcon />
+                    </ListItemIcon>
+                    {t('components.innovationFlowSettings.stateEditor.selectDifferentFlow.title')}
+                  </MenuItem>
+                );
+              }}
+            </PageContentBlockContextualMenu>
+          }
+        />
+        <DialogContent>
           <InnovationFlowProfileBlock
             innovationFlow={innovationFlow}
             loading={state.loading}
             onUpdate={actions.updateInnovationFlowProfile}
-            editable
+            canEdit={authorization.canEditInnovationFlow}
           >
-            <InnovationFlowStateSelector
+            <InnovationFlowCollaborationToolsBlock
+              callouts={callouts}
+              innovationFlowStates={innovationFlow?.states}
               currentState={innovationFlow?.currentState.displayName}
-              states={innovationFlow?.states}
-              onStateChange={actions.updateInnovationFlowState}
+              onUpdateCurrentState={actions.updateInnovationFlowCurrentState}
+              onUpdateFlowStateOrder={actions.updateInnovationFlowStateOrder}
+              onUpdateCalloutFlowState={actions.updateCalloutFlowState}
+              onCreateFlowState={(state, options) => actions.createState(state, options.after)}
+              onEditFlowState={actions.editState}
+              onDeleteFlowState={actions.deleteState}
             />
           </InnovationFlowProfileBlock>
-          <InnovationFlowCollaborationToolsBlock
-            flowStateAllowedValues={flowStateAllowedValues}
-            callouts={callouts}
-            onUpdateCalloutFlowState={actions.updateCalloutFlowState}
-          />
-        </Gutters>
-      </DialogContent>
-    </DialogWithGrid>
+        </DialogContent>
+      </DialogWithGrid>
+      <ConfirmationDialog
+        actions={{
+          onConfirm: () => {
+            setImportInnovationFlowDialogOpen(true);
+            setImportInnovationFlowConfirmDialogOpen(false);
+          },
+          onCancel: () => setImportInnovationFlowConfirmDialogOpen(false),
+        }}
+        options={{
+          show: importInnovationFlowConfirmDialogOpen,
+        }}
+        entities={{
+          titleId: 'components.innovationFlowSettings.stateEditor.selectDifferentFlow.confirmationDialog.title',
+          content: (
+            <WrapperMarkdown>
+              {t('components.innovationFlowSettings.stateEditor.selectDifferentFlow.confirmationDialog.description')}
+            </WrapperMarkdown>
+          ),
+          confirmButtonTextId: 'buttons.continue',
+        }}
+      />
+      <ImportInnovationFlowDialog
+        open={importInnovationFlowDialogOpen}
+        onClose={() => setImportInnovationFlowDialogOpen(false)}
+        handleImportTemplate={handleImportTemplate}
+      />
+    </>
   );
 };
 

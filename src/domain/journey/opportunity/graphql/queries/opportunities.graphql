@@ -1,6 +1,5 @@
-query opportunities($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
-  space(ID: $spaceId) {
-    id
+query opportunities($challengeId: UUID!) {
+  lookup {
     challenge(ID: $challengeId) {
       id
       opportunities {

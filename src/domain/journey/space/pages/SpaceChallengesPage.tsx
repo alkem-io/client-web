@@ -1,8 +1,7 @@
 import React, { FC, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import useNavigate from '../../../../core/routing/useNavigate';
 import { journeyCardTagsGetter, journeyCardValueGetter } from '../../common/utils/journeyCardValueGetter';
-import { buildChallengeUrl } from '../../../../main/routing/urlBuilders';
 import { JourneyCreationDialog } from '../../../shared/components/JorneyCreationDialog';
 import { JourneyFormValues } from '../../../shared/components/JorneyCreationDialog/JourneyCreationForm';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
@@ -15,13 +14,15 @@ import SpaceChallengesContainer from '../containers/SpaceChallengesContainer';
 import { useSpace } from '../SpaceContext/useSpace';
 import SpacePageLayout from '../layout/SpacePageLayout';
 import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
-import { CalloutDisplayLocation, CommunityMembershipStatus } from '../../../../core/apollo/generated/graphql-schema';
+import { CalloutGroupName, CommunityMembershipStatus } from '../../../../core/apollo/generated/graphql-schema';
+import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 
 export interface SpaceChallengesPageProps {}
 
 const SpaceChallengesPage: FC<SpaceChallengesPageProps> = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { spaceId } = useRouteResolver();
   const { spaceNameId, permissions, license } = useSpace();
   const spaceVisibility = license.visibility;
 
@@ -38,31 +39,28 @@ const SpaceChallengesPage: FC<SpaceChallengesPageProps> = () => {
         background: value.background ?? '',
         vision: value.vision,
         tags: value.tags,
-        innovationFlowTemplateId: value.innovationFlowTemplateId,
+        addDefaultCallouts: value.addDefaultCallouts,
       });
 
       if (!result) {
         return;
       }
-      // delay the navigation so all other processes related to updating the cache,
-      // before closing the all subscriptions are completed
-      setTimeout(() => navigate(buildChallengeUrl(spaceNameId, result.nameID)), 100);
+
+      navigate(result.profile.url);
     },
     [navigate, createChallenge, spaceNameId]
   );
 
   return (
     <SpacePageLayout currentSection={EntityPageSection.Challenges}>
-      <SpaceChallengesContainer spaceNameId={spaceNameId}>
+      <SpaceChallengesContainer spaceId={spaceId}>
         {({ callouts, ...entities }, state) => (
           <ChildJourneyView
-            spaceNameId={spaceNameId}
             childEntities={entities.challenges}
             childEntitiesIcon={<ChallengeIcon />}
             childEntityReadAccess={permissions.canReadChallenges}
             childEntityValueGetter={journeyCardValueGetter}
             childEntityTagsGetter={journeyCardTagsGetter}
-            getChildEntityUrl={entity => buildChallengeUrl(spaceNameId, entity.nameID)}
             journeyTypeName="space"
             state={{ loading: state.loading, error: state.error }}
             renderChildEntityCard={challenge => (
@@ -72,7 +70,7 @@ const SpaceChallengesPage: FC<SpaceChallengesPageProps> = () => {
                 tags={challenge.profile.tagset?.tags!}
                 tagline={challenge.profile.tagline!}
                 vision={challenge.context?.vision!}
-                journeyUri={buildChallengeUrl(spaceNameId, challenge.nameID)}
+                journeyUri={challenge.profile.url}
                 locked={!challenge.authorization?.anonymousReadAccess}
                 spaceVisibility={spaceVisibility}
                 member={challenge.community?.myMembershipStatus === CommunityMembershipStatus.Member}
@@ -92,8 +90,7 @@ const SpaceChallengesPage: FC<SpaceChallengesPageProps> = () => {
             }
             childrenLeft={
               <CalloutsGroupView
-                callouts={callouts.groupedCallouts[CalloutDisplayLocation.ChallengesLeft]}
-                spaceId={spaceNameId}
+                callouts={callouts.groupedCallouts[CalloutGroupName.Subspaces_1]}
                 canCreateCallout={callouts.canCreateCallout}
                 canCreateCalloutFromTemplate={callouts.canCreateCalloutFromTemplate}
                 loading={callouts.loading}
@@ -101,13 +98,12 @@ const SpaceChallengesPage: FC<SpaceChallengesPageProps> = () => {
                 calloutNames={callouts.calloutNames}
                 onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
                 onCalloutUpdate={callouts.refetchCallout}
-                displayLocation={CalloutDisplayLocation.ChallengesLeft}
+                groupName={CalloutGroupName.Subspaces_1}
               />
             }
             childrenRight={
               <CalloutsGroupView
-                callouts={callouts.groupedCallouts[CalloutDisplayLocation.ChallengesRight]}
-                spaceId={spaceNameId}
+                callouts={callouts.groupedCallouts[CalloutGroupName.Subspaces_2]}
                 canCreateCallout={callouts.canCreateCallout}
                 canCreateCalloutFromTemplate={callouts.canCreateCalloutFromTemplate}
                 loading={callouts.loading}
@@ -115,7 +111,7 @@ const SpaceChallengesPage: FC<SpaceChallengesPageProps> = () => {
                 calloutNames={callouts.calloutNames}
                 onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
                 onCalloutUpdate={callouts.refetchCallout}
-                displayLocation={CalloutDisplayLocation.ChallengesRight}
+                groupName={CalloutGroupName.Subspaces_2}
               />
             }
           />

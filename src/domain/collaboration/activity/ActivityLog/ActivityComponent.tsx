@@ -7,6 +7,7 @@ import {
   ActivityLogCalloutPostCommentFragment,
   ActivityLogCalloutPostCreatedFragment,
   ActivityLogCalloutPublishedFragment,
+  ActivityLogCalloutWhiteboardContentModifiedFragment,
   ActivityLogCalloutWhiteboardCreatedFragment,
   ActivityLogChallengeCreatedFragment,
   ActivityLogEntry,
@@ -19,7 +20,7 @@ import {
   ActivityCalloutPostCommentCreatedView,
   ActivityCalloutPostCreatedView,
   ActivityCalloutPublishedView,
-  ActivityCalloutWhiteboardCreatedView,
+  ActivityCalloutWhiteboardActivityView,
   ActivityChallengeCreatedView,
   ActivityDiscussionCommentCreatedView,
   ActivityLoadingView,
@@ -27,20 +28,26 @@ import {
   ActivityOpportunityCreatedView,
   ActivityViewProps,
 } from './views';
-import { buildJourneyUrl, getJourneyLocationKey, JourneyLocation } from '../../../../main/routing/urlBuilders';
 import { buildAuthorFromUser } from '../../../community/user/utils/buildAuthorFromUser';
 import { ActivityUpdateSentView } from './views/ActivityUpdateSent';
-import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import { ActivityCalendarEventCreatedView } from './views/ActivityCalendarEventCreatedView';
 
 export type ActivityLogResult<T> = T &
   Omit<ActivityLogEntry, 'parentDisplayName'> & {
     journeyDisplayName: string;
+    triggeredBy: {
+      profile: {
+        avatar: {
+          uri: string;
+        };
+      };
+    };
   };
 
 type TypedActivityLogResults = {
   [ActivityEventType.CalloutPublished]: ActivityLogCalloutPublishedFragment;
   [ActivityEventType.CalloutWhiteboardCreated]: ActivityLogCalloutWhiteboardCreatedFragment;
+  [ActivityEventType.CalloutWhiteboardContentModified]: ActivityLogCalloutWhiteboardContentModifiedFragment;
   [ActivityEventType.CalloutPostCreated]: ActivityLogCalloutPostCreatedFragment;
   [ActivityEventType.CalloutLinkCreated]: ActivityLogCalloutLinkCreatedFragment;
   [ActivityEventType.CalloutPostComment]: ActivityLogCalloutPostCommentFragment;
@@ -60,59 +67,34 @@ export type ActivityLogResultType = TypedActivityLogResultWithType[keyof TypedAc
 
 export interface ActivityComponentProps {
   activities: ActivityLogResultType[] | undefined;
-  journeyLocation: JourneyLocation | undefined;
   limit?: number;
 }
 
-const getActivityOriginJourneyTypeName = (
-  activity: ActivityLogResultType,
-  journeyLocation: JourneyLocation
-): JourneyTypeName | undefined => {
-  if (!activity.child) {
-    return undefined;
-  }
-  if (journeyLocation.challengeNameId) {
-    return 'opportunity';
-  }
-  return 'challenge';
-};
-
-export const ActivityComponent: FC<ActivityComponentProps> = ({ activities, journeyLocation, limit }) => {
+export const ActivityComponent: FC<ActivityComponentProps> = ({ activities, limit }) => {
   const display = useMemo(() => {
-    if (!activities || !journeyLocation) {
+    if (!activities) {
       return null;
     }
 
     return (
       <>
         {activities.slice(0, limit).map(activity => {
-          const activityOriginJourneyTypeName = getActivityOriginJourneyTypeName(activity, journeyLocation);
-          const activityOriginJourneyLocation = activityOriginJourneyTypeName
-            ? {
-                ...journeyLocation,
-                [getJourneyLocationKey(activityOriginJourneyTypeName)]: activity.parentNameID,
-              }
-            : journeyLocation;
-          const activityOriginJourneyUrl = buildJourneyUrl(activityOriginJourneyLocation);
-          const author = buildAuthorFromUser(activity.triggeredBy);
-
           return (
             <ActivityViewChooser
               activity={activity}
-              avatarUrl={author.avatarUrl}
-              journeyUrl={activityOriginJourneyUrl}
+              avatarUrl={activity.triggeredBy.profile.avatar.uri}
               key={activity.id}
             />
           );
         })}
       </>
     );
-  }, [activities, journeyLocation]);
+  }, [activities]);
 
   return <>{display ?? <ActivityLoadingView rows={3} />}</>;
 };
 
-interface ActivityViewChooserProps extends Pick<ActivityViewProps, 'journeyUrl' | 'avatarUrl'> {
+interface ActivityViewChooserProps extends Pick<ActivityViewProps, 'avatarUrl'> {
   activity: ActivityLogResultType;
 }
 
@@ -121,7 +103,9 @@ export const ActivityViewChooser = ({ activity, ...rest }: ActivityViewChooserPr
     case ActivityEventType.CalloutPublished:
       return <ActivityCalloutPublishedView {...activity} {...rest} />;
     case ActivityEventType.CalloutWhiteboardCreated:
-      return <ActivityCalloutWhiteboardCreatedView {...activity} {...rest} />;
+    case ActivityEventType.CalloutWhiteboardContentModified:
+      // we use the same view for whiteboard created and whiteboard content modified events
+      return <ActivityCalloutWhiteboardActivityView {...activity} {...rest} />;
     case ActivityEventType.CalloutPostComment:
       return <ActivityCalloutPostCommentCreatedView {...activity} {...rest} />;
     case ActivityEventType.CalloutPostCreated:

@@ -11,7 +11,6 @@ import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
 export interface CommunityUpdatesDialogProps {
   open: boolean;
   onClose: () => void;
-  spaceId?: string;
   communityId?: string;
   shareUrl: string;
   loading?: boolean;
@@ -20,7 +19,6 @@ export interface CommunityUpdatesDialogProps {
 const CommunityUpdatesDialog: FC<CommunityUpdatesDialogProps> = ({
   open,
   onClose,
-  spaceId,
   communityId = '',
   shareUrl,
   loading = false,
@@ -36,7 +34,7 @@ const CommunityUpdatesDialog: FC<CommunityUpdatesDialogProps> = ({
       />
       <DialogContent dividers>
         <Box marginBottom={2} marginTop={4}>
-          <CommunityUpdatesContainer entities={{ spaceId, communityId }}>
+          <CommunityUpdatesContainer communityId={communityId}>
             {({ messages, authors }, actions, { retrievingUpdateMessages }) => (
               <CommunityUpdatesView
                 entities={{ messages, authors }}

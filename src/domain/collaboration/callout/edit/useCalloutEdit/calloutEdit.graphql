@@ -2,6 +2,7 @@ mutation UpdateCallout($calloutData: UpdateCalloutInput!) {
   updateCallout(calloutData: $calloutData) {
     id
     framing {
+      id
       profile {
         id
         description
@@ -9,7 +10,7 @@ mutation UpdateCallout($calloutData: UpdateCalloutInput!) {
         tagset {
           ...TagsetDetails
         }
-        displayLocationTagset: tagset(tagsetName: CALLOUT_DISPLAY_LOCATION) {
+        groupNameTagset: tagset(tagsetName: CALLOUT_GROUP) {
           ...TagsetDetails
         }
         references {

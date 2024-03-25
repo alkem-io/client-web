@@ -1,40 +1,41 @@
 import { SimpleContainerProps } from '../../../../core/container/SimpleContainer';
-import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import useInnovationFlowStates, {
   UseInnovationFlowStatesProvided,
 } from '../../../collaboration/InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
 import useCallouts, { UseCalloutsProvided } from '../../../collaboration/callout/useCallouts/useCallouts';
-import { CalloutDisplayLocation } from '../../../../core/apollo/generated/graphql-schema';
-import { JourneyLocation } from '../../../../main/routing/urlBuilders';
+import { CalloutGroupName } from '../../../../core/apollo/generated/graphql-schema';
 import useCollaborationIdentity from '../CollaborationIdentity/useCollaborationIdentity';
+import { JourneyTypeName } from '../../JourneyTypeName';
 
-interface JourneyContributePageContainerProvided extends JourneyLocation {
+interface JourneyContributePageContainerProvided {
   collaborationId: string | undefined;
   innovationFlowStates: UseInnovationFlowStatesProvided;
   callouts: UseCalloutsProvided;
 }
 
-const JourneyContributePageContainer = ({ children }: SimpleContainerProps<JourneyContributePageContainerProvided>) => {
-  const { spaceNameId, challengeNameId, opportunityNameId } = useUrlParams();
+interface JourneyContributePageContainerProps extends SimpleContainerProps<JourneyContributePageContainerProvided> {
+  journeyId: string | undefined;
+  journeyTypeName: JourneyTypeName;
+}
 
-  if (!spaceNameId) {
-    throw new Error('Must be within a Space');
-  }
-
-  const { collaborationId } = useCollaborationIdentity({ spaceNameId, challengeNameId, opportunityNameId });
+const JourneyContributePageContainer = ({
+  journeyId,
+  journeyTypeName,
+  children,
+}: JourneyContributePageContainerProps) => {
+  const { collaborationId } = useCollaborationIdentity({ journeyId, journeyTypeName });
 
   const innovationFlowStates = useInnovationFlowStates({
-    collaborationId
+    collaborationId,
   });
 
   const callouts = useCallouts({
-    spaceNameId,
-    challengeNameId,
-    opportunityNameId,
-    displayLocations: [CalloutDisplayLocation.ContributeLeft, CalloutDisplayLocation.ContributeRight],
+    journeyId,
+    journeyTypeName,
+    groupNames: [CalloutGroupName.Contribute_1, CalloutGroupName.Contribute_2],
   });
 
-  return <>{children({ innovationFlowStates, callouts, spaceNameId, challengeNameId, opportunityNameId, collaborationId })}</>;
+  return <>{children({ innovationFlowStates, callouts, collaborationId })}</>;
 };
 
 export default JourneyContributePageContainer;

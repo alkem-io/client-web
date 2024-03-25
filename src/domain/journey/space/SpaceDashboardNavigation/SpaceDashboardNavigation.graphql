@@ -3,7 +3,6 @@ query SpaceDashboardNavigationChallenges($spaceId: UUID_NAMEID!) {
     id
     challenges {
       id
-      nameID
       profile {
         ...SpaceDashboardNavigationProfile
       }
@@ -18,9 +17,12 @@ query SpaceDashboardNavigationChallenges($spaceId: UUID_NAMEID!) {
         ...SpaceDashboardNavigationCommunity
       }
     }
-    license {
+    account {
       id
-      visibility
+      license {
+        id
+        visibility
+      }
     }
   }
 }
@@ -32,7 +34,6 @@ query SpaceDashboardNavigationOpportunities($spaceId: UUID_NAMEID!, $challengeId
       id
       opportunities {
         id
-        nameID
         profile {
           ...SpaceDashboardNavigationProfile
         }
@@ -49,6 +50,7 @@ query SpaceDashboardNavigationOpportunities($spaceId: UUID_NAMEID!, $challengeId
 
 fragment SpaceDashboardNavigationProfile on Profile {
   id
+  url
   displayName
   tagline
   tagset {

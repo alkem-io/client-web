@@ -3,16 +3,21 @@ import AboutPageContainer from '../../common/AboutPageContainer/AboutPageContain
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import { useOpportunity } from '../hooks/useOpportunity';
 import OpportunityPageLayout from '../layout/OpportunityPageLayout';
-import { OpportunityAboutView } from '../views/OpportunityAboutView';
+import OpportunityAboutView from '../../common/tabs/About/OpportunityAboutView';
+import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 
 const OpportunityAboutPage: FC = () => {
-  const { spaceNameId, opportunityNameId, communityId } = useOpportunity();
+  const { communityId } = useOpportunity();
+  const { challengeId, opportunityId } = useRouteResolver();
 
   return (
     <OpportunityPageLayout currentSection={EntityPageSection.About}>
-      <AboutPageContainer spaceNameId={spaceNameId} opportunityNameId={opportunityNameId}>
+      <AboutPageContainer journeyId={opportunityId} journeyTypeName="opportunity">
         {({ context, profile, tagset, permissions, ...rest }, state) => (
           <OpportunityAboutView
+            challengeId={challengeId}
+            opportunityId={opportunityId}
+            opportunityUrl={profile?.url ?? ''}
             name={profile?.displayName ?? ''}
             tagline={profile?.tagline}
             tags={tagset?.tags}
@@ -21,7 +26,6 @@ const OpportunityAboutPage: FC = () => {
             background={profile?.description}
             vision={context?.vision}
             communityReadAccess={permissions.communityReadAccess}
-            spaceNameId={spaceNameId}
             communityId={communityId}
             {...rest}
             {...state}

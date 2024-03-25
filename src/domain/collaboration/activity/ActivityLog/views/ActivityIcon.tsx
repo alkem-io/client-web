@@ -20,6 +20,7 @@ const ActivityIcon: Record<
 > = {
   [ActivityEventType.MemberJoined]: PersonOutlined,
   [ActivityEventType.CalloutWhiteboardCreated]: WhiteboardIcon,
+  [ActivityEventType.CalloutWhiteboardContentModified]: WhiteboardIcon,
   [ActivityEventType.CalloutPostCreated]: NotesOutlined,
   [ActivityEventType.CalloutPostComment]: ChatBubbleOutlineOutlined,
   [ActivityEventType.CalloutLinkCreated]: LinkOutlined,

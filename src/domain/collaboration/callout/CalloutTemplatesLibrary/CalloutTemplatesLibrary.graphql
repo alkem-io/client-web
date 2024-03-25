@@ -1,17 +1,20 @@
 query SpaceCalloutTemplatesLibrary($spaceId: UUID_NAMEID!) {
   space(ID: $spaceId) {
     id
-    templates {
+    account {
       id
-      calloutTemplates {
-        ...CalloutTemplateCard
+      library {
+        id
+        calloutTemplates {
+          ...CalloutTemplateCard
+        }
       }
-    }
-    host {
-      id
-      nameID
-      profile {
-        ...TemplateProviderProfile
+      host {
+        id
+        nameID
+        profile {
+          ...TemplateProviderProfile
+        }
       }
     }
   }
@@ -56,6 +59,7 @@ query CalloutTemplateContent($calloutTemplateId: UUID!) {
         ...TemplateCardProfileInfo
       }
       framing {
+        id
         profile {
           id
           displayName

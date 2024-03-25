@@ -10,26 +10,37 @@ query activityLogOnCollaboration($collaborationID: UUID!, $limit: Float!, $types
     child
     parentNameID
     journeyDisplayName: parentDisplayName
-    __typename
+    journey {
+      id
+      ... on Space {
+        profile {
+          ...RecentContributionsSpaceProfile
+        }
+      }
+      ... on RelayPaginatedSpace {
+        profile {
+          ...RecentContributionsSpaceProfile
+        }
+      }
+      ... on Challenge {
+        profile {
+          ...RecentContributionsChildJourneyProfile
+        }
+      }
+      ... on Opportunity {
+        profile {
+          ...RecentContributionsChildJourneyProfile
+        }
+      }
+    }
     triggeredBy {
       id
-      nameID
-      firstName
-      lastName
       profile {
         id
         displayName
         avatar: visual(type: AVATAR) {
           id
           uri
-        }
-        tagsets {
-          ...TagsetDetails
-        }
-        location {
-          id
-          city
-          country
         }
       }
     }
@@ -51,6 +62,9 @@ query activityLogOnCollaboration($collaborationID: UUID!, $limit: Float!, $types
     ... on ActivityLogEntryCalloutWhiteboardCreated {
       ...ActivityLogCalloutWhiteboardCreated
     }
+    ... on ActivityLogEntryCalloutWhiteboardContentModified {
+      ...ActivityLogCalloutWhiteboardContentModified
+    }
     ... on ActivityLogEntryCalloutDiscussionComment {
       ...ActivityLogCalloutDiscussionComment
     }
@@ -67,182 +81,4 @@ query activityLogOnCollaboration($collaborationID: UUID!, $limit: Float!, $types
       ...ActivityLogCalendarEventCreated
     }
   }
-}
-
-fragment ActivityLogMemberJoined on ActivityLogEntryMemberJoined {
-  communityType
-  user {
-    id
-    nameID
-    firstName
-    lastName
-    profile {
-      id
-      displayName
-      url
-      visual(type: AVATAR) {
-        id
-        uri
-      }
-      tagsets {
-        ...TagsetDetails
-      }
-      location {
-        id
-        city
-        country
-      }
-    }
-  }
-}
-
-fragment ActivityLogCalloutPublished on ActivityLogEntryCalloutPublished {
-  callout {
-    id
-    nameID
-    type
-    framing {
-      profile {
-        id
-        displayName
-        url
-      }
-    }
-  }
-}
-
-fragment ActivityLogCalloutPostCreated on ActivityLogEntryCalloutPostCreated {
-  callout {
-    id
-    nameID
-    type
-    framing {
-      profile {
-        id
-        displayName
-        url
-      }
-    }
-  }
-  post {
-    id
-    nameID
-    profile {
-      id
-      url
-      displayName
-    }
-  }
-}
-
-fragment ActivityLogCalloutLinkCreated on ActivityLogEntryCalloutLinkCreated {
-  callout {
-    id
-    nameID
-    framing {
-      profile {
-        id
-        displayName
-        url
-      }
-    }
-  }
-  link {
-    id
-    profile {
-      id
-      displayName
-    }
-    uri
-  }
-}
-
-fragment ActivityLogCalloutPostComment on ActivityLogEntryCalloutPostComment {
-  post {
-    id
-    nameID
-    profile {
-      id
-      displayName
-      url
-    }
-  }
-}
-
-fragment ActivityLogCalloutWhiteboardCreated on ActivityLogEntryCalloutWhiteboardCreated {
-  callout {
-    id
-    nameID
-    framing {
-      profile {
-        id
-        displayName
-        url
-      }
-    }
-  }
-  whiteboard {
-    id
-    nameID
-    profile {
-      id
-      displayName
-      url
-    }
-  }
-}
-
-fragment ActivityLogChallengeCreated on ActivityLogEntryChallengeCreated {
-  challenge {
-    id
-    nameID
-    profile {
-      id
-      displayName
-      url
-    }
-  }
-}
-
-fragment ActivityLogOpportunityCreated on ActivityLogEntryOpportunityCreated {
-  opportunity {
-    id
-    nameID
-    profile {
-      id
-      displayName
-      url
-    }
-  }
-}
-
-fragment ActivityLogCalloutDiscussionComment on ActivityLogEntryCalloutDiscussionComment {
-  callout {
-    id
-    nameID
-    type
-    framing {
-      profile {
-        id
-        displayName
-        url
-      }
-    }
-  }
-}
-
-fragment ActivityLogCalendarEventCreated on ActivityLogEntryCalendarEventCreated {
-  calendarEvent {
-    id
-    nameID
-    profile {
-      id
-      displayName
-      url
-    }
-  }
-}
-
-fragment ActivityLogUpdateSent on ActivityLogEntryUpdateSent {
-  message
 }

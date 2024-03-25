@@ -22,21 +22,24 @@ query ChallengeExplorerSearch($searchData: SearchInput!) {
 query ChallengeExplorerData($spaceIDs: [UUID!]) {
   spaces(IDs: $spaceIDs) {
     id
-    nameID
     profile {
       id
+      url
       tagline
       displayName
     }
-    license {
+    account {
       id
-      visibility
+      license {
+        id
+        visibility
+      }
     }
     challenges {
       id
-      nameID
       profile {
         id
+        url
         tagline
         displayName
         description

@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from 'react';
-import { useNavigate } from 'react-router';
+import useNavigate from '../../../../core/routing/useNavigate';
 import { UserForm } from '../userForm/UserForm';
 import Loading from '../../../../core/ui/loading/Loading';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';

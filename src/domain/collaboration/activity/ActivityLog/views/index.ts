@@ -1,5 +1,5 @@
 export * from './ActivityCalloutPublishedView';
-export * from './ActivityCalloutWhiteboardCreatedView';
+export * from './ActivityCalloutWhiteboardActivityView';
 export * from './ActivityCalloutPostCommentCreatedView';
 export * from './ActivityCalloutPostCreatedView';
 export * from './ActivityCalloutLinkCreatedView';

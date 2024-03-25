@@ -6,10 +6,11 @@ fragment DashboardTopCallouts on Collaboration {
 
 fragment DashboardTopCallout on Callout {
   id
-  nameID
   framing {
+    id
     profile {
       id
+      url
       displayName
       description
     }

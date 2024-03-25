@@ -1,0 +1,89 @@
+query LatestContributionsGrouped($filter: ActivityFeedGroupedQueryArgs) {
+  activityFeedGrouped(args: $filter) {
+    id
+    createdDate
+    type
+    journey {
+      id
+      ... on Space {
+        profile {
+          ...RecentContributionsSpaceProfile
+        }
+      }
+      ... on RelayPaginatedSpace {
+        profile {
+          ...RecentContributionsSpaceProfile
+        }
+      }
+      ... on Challenge {
+        profile {
+          ...RecentContributionsChildJourneyProfile
+        }
+      }
+      ... on Opportunity {
+        profile {
+          ...RecentContributionsChildJourneyProfile
+        }
+      }
+    }
+    ... on ActivityLogEntryMemberJoined {
+      ...ActivityLogMemberJoined
+    }
+    ... on ActivityLogEntryCalloutPublished {
+      ...ActivityLogCalloutPublished
+    }
+    ... on ActivityLogEntryCalloutPostCreated {
+      ...ActivityLogCalloutPostCreated
+    }
+    ... on ActivityLogEntryCalloutLinkCreated {
+      ...ActivityLogCalloutLinkCreated
+    }
+    ... on ActivityLogEntryCalloutPostComment {
+      ...ActivityLogCalloutPostComment
+    }
+    ... on ActivityLogEntryCalloutWhiteboardCreated {
+      ...ActivityLogCalloutWhiteboardCreated
+    }
+    ... on ActivityLogEntryCalloutWhiteboardContentModified {
+      ...ActivityLogCalloutWhiteboardContentModified
+    }
+    ... on ActivityLogEntryCalloutDiscussionComment {
+      ...ActivityLogCalloutDiscussionComment
+    }
+    ... on ActivityLogEntryChallengeCreated {
+      ...ActivityLogChallengeCreated
+    }
+    ... on ActivityLogEntryOpportunityCreated {
+      ...ActivityLogOpportunityCreated
+    }
+    ... on ActivityLogEntryUpdateSent {
+      ...ActivityLogUpdateSent
+    }
+    ... on ActivityLogEntryCalendarEventCreated {
+      ...ActivityLogCalendarEventCreated
+    }
+  }
+}
+
+fragment RecentContributionsJourneyProfile on Profile {
+  id
+  url
+  displayName
+  type
+}
+
+fragment RecentContributionsSpaceProfile on Profile {
+  ...RecentContributionsJourneyProfile
+  avatar: visual(type: CARD) {
+    id
+    uri
+  }
+}
+
+fragment RecentContributionsChildJourneyProfile on Profile {
+  ...RecentContributionsJourneyProfile
+  avatar: visual(type: AVATAR) {
+    id
+    uri
+  }
+}

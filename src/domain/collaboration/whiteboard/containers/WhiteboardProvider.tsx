@@ -7,7 +7,6 @@ import {
 
 interface WhiteboardLocation {
   calloutId: string | undefined;
-  spaceId: string;
   whiteboardNameId: string;
 }
 
@@ -24,9 +23,7 @@ export interface IProvidedEntities {
 export interface IProvidedEntitiesState {
   loadingWhiteboards: boolean;
 }
-/**
- * @deprecated See if this is still needed  //!!
- */
+
 const WhiteboardProvider: FC<WhiteboardProviderProps> = ({ calloutId, whiteboardNameId: whiteboardId, children }) => {
   const { data, loading } = useWhiteboardFromCalloutQuery({
     variables: { calloutId: calloutId!, whiteboardId },

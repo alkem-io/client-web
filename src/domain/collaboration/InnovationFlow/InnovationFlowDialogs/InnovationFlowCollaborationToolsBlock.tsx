@@ -1,21 +1,33 @@
-import React, { ComponentType, FC, forwardRef } from 'react';
-import { BlockTitle, Caption } from '../../../../core/ui/typography';
-import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
-import { useTranslation } from 'react-i18next';
 import { Box, BoxProps, SvgIconProps } from '@mui/material';
-import { GroupedCallout } from './useInnovationFlowSettings';
 import { groupBy } from 'lodash';
-import calloutIcons from '../../callout/utils/calloutIcons';
-import ScrollableCardsLayoutContainer from '../../../../core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
-import { DragDropContext, Droppable, Draggable, OnDragEndResponder } from 'react-beautiful-dnd';
+import { ComponentType, FC, forwardRef } from 'react';
+import { Draggable, Droppable, OnDragEndResponder } from 'react-beautiful-dnd';
+import { CalloutType } from '../../../../core/apollo/generated/graphql-schema';
 import Gutters from '../../../../core/ui/grid/Gutters';
-import i18n from '../../../../core/i18n/config';
-import TranslationKey from '../../../../core/i18n/utils/TranslationKey';
 import { gutters } from '../../../../core/ui/grid/utils';
+import { Caption } from '../../../../core/ui/typography';
+import calloutIcons from '../../callout/utils/calloutIcons';
+import InnovationFlowDragNDropEditor, {
+  InnovationFlowDragNDropEditorProps,
+} from '../InnovationFlowDragNDropEditor/InnovationFlowDragNDropEditor';
 
-interface InnovationFlowCollaborationToolsBlockProps {
-  callouts: GroupedCallout[];
-  flowStateAllowedValues: string[];
+interface InnovationFlowCollaborationToolsBlockProps extends Omit<InnovationFlowDragNDropEditorProps, 'children'> {
+  callouts: {
+    id: string;
+    nameID: string;
+    type: CalloutType;
+    activity: number;
+    profile: {
+      displayName: string;
+    };
+    flowState:
+      | {
+          tagsetId: string;
+          currentState: string | undefined;
+          allowedValues: string[];
+        }
+      | undefined;
+  }[];
   onUpdateCalloutFlowState: (calloutId: string, newState: string, index: number) => Promise<unknown> | void;
 }
 
@@ -40,57 +52,60 @@ const ListItem = forwardRef<HTMLDivElement, ListItemProps>(
 
 const InnovationFlowCollaborationToolsBlock: FC<InnovationFlowCollaborationToolsBlockProps> = ({
   callouts,
+  innovationFlowStates,
+  currentState,
   onUpdateCalloutFlowState,
-  flowStateAllowedValues,
+  onUnhandledDragEnd,
+  ...statesActions
 }) => {
-  const { t } = useTranslation();
   const groupedCallouts = groupBy(callouts, callout => callout.flowState?.currentState);
 
-  const handleDragEnd: OnDragEndResponder = ({ draggableId, destination }) => {
+  const handleDragEnd: OnDragEndResponder = (result, provided) => {
+    const { draggableId, destination } = result;
     if (onUpdateCalloutFlowState && destination) {
-      onUpdateCalloutFlowState(draggableId, destination.droppableId, destination.index);
+      return onUpdateCalloutFlowState(draggableId, destination.droppableId, destination.index);
     }
+    onUnhandledDragEnd?.(result, provided);
   };
 
-  const getStateName = (state: string) =>
-    i18n.exists(`common.enums.innovationFlowState.${state}`)
-      ? t(`common.enums.innovationFlowState.${state}` as TranslationKey)
-      : state;
-
   return (
-    <DragDropContext onDragEnd={handleDragEnd}>
-      <PageContentBlock sx={{ minHeight: gutters(10) }}>
-        <BlockTitle>{t('common.collaborationTools')}</BlockTitle>
-        <ScrollableCardsLayoutContainer orientation="horizontal" alignItems="stretch">
-          {flowStateAllowedValues.map(state => (
-            <PageContentBlock key={state} columns={3}>
-              <Caption>{getStateName(state)}</Caption>
-              <Droppable droppableId={state}>
-                {provided => (
-                  <Gutters ref={provided.innerRef} disablePadding flexGrow={1} {...provided.droppableProps}>
-                    {groupedCallouts[state]?.map((callout, index) => (
-                      <Draggable key={callout.id} draggableId={callout.id} index={index}>
-                        {provided => (
-                          <ListItem
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                            displayName={callout.profile.displayName}
-                            icon={calloutIcons[callout.type]}
-                            activity={callout.activity}
-                          />
-                        )}
-                      </Draggable>
-                    ))}
-                    {provided.placeholder}
-                  </Gutters>
-                )}
-              </Droppable>
-            </PageContentBlock>
-          ))}
-        </ScrollableCardsLayoutContainer>
-      </PageContentBlock>
-    </DragDropContext>
+    <InnovationFlowDragNDropEditor
+      onUnhandledDragEnd={handleDragEnd}
+      currentState={currentState}
+      innovationFlowStates={innovationFlowStates}
+      croppedDescriptions
+      {...statesActions}
+    >
+      {state => (
+        <Droppable droppableId={state.displayName}>
+          {provided => (
+            <Gutters
+              ref={provided.innerRef}
+              disablePadding
+              flexGrow={1}
+              minHeight={gutters(1)}
+              {...provided.droppableProps}
+            >
+              {groupedCallouts[state.displayName]?.map((callout, index) => (
+                <Draggable key={callout.id} draggableId={callout.id} index={index}>
+                  {provider => (
+                    <ListItem
+                      ref={provider.innerRef}
+                      {...provider.draggableProps}
+                      {...provider.dragHandleProps}
+                      displayName={callout.profile.displayName}
+                      icon={calloutIcons[callout.type]}
+                      activity={callout.activity}
+                    />
+                  )}
+                </Draggable>
+              ))}
+              {provided.placeholder}
+            </Gutters>
+          )}
+        </Droppable>
+      )}
+    </InnovationFlowDragNDropEditor>
   );
 };
 

@@ -25,9 +25,12 @@ fragment SpaceInfo on Space {
       myPrivileges
     }
   }
-  license {
+  account {
     id
-    visibility
+    license {
+      id
+      visibility
+    }
   }
 }
 

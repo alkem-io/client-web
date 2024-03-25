@@ -12,7 +12,7 @@ import {
   ActivityEventType,
   AssociatedOrganizationDetailsFragment,
   AuthorizationPrivilege,
-  CalloutDisplayLocation,
+  CalloutGroupName,
   CommunityMembershipStatus,
   DashboardTopCalloutFragment,
   Reference,
@@ -57,22 +57,24 @@ export interface SpaceContainerState {
 }
 
 export interface SpacePageContainerProps
-  extends ContainerChildProps<SpaceContainerEntities, SpaceContainerActions, SpaceContainerState> {}
+  extends ContainerChildProps<SpaceContainerEntities, SpaceContainerActions, SpaceContainerState> {
+  spaceId: string | undefined;
+}
 
 const NO_PRIVILEGES = [];
 
-export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ children }) => {
-  const { spaceId, spaceNameId, loading: loadingSpace, permissions: spacePermissions, isPrivate, error } = useSpace();
+export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ spaceId, children }) => {
+  const { loading: loadingSpace, permissions: spacePermissions, isPrivate, error } = useSpace();
   const { user, isAuthenticated } = useUserContext();
 
   const { data: _space, loading: loadingSpaceQuery } = useSpacePageQuery({
     variables: {
-      spaceId: spaceNameId,
+      spaceId: spaceId!,
       authorizedReadAccess: spacePermissions.canRead,
       authorizedReadAccessCommunity: spacePermissions.communityReadAccess,
     },
     errorPolicy: 'all',
-    skip: loadingSpace,
+    skip: !spaceId,
   });
 
   const collaborationID = _space?.space?.collaboration?.id;
@@ -81,7 +83,7 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ children 
 
   // don't load references without READ privilege on Context
   const { data: referencesData } = useSpaceDashboardReferencesQuery({
-    variables: { spaceId },
+    variables: { spaceId: spaceId! }, // having Read privilege implies presence of spaceId
     skip: !_space?.space?.context?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Read),
   });
 
@@ -103,7 +105,11 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ children 
     readUsers: user?.hasPlatformPrivilege(AuthorizationPrivilege.ReadUsers) || false,
   };
 
-  const activityTypes = Object.values(ActivityEventType).filter(x => x !== ActivityEventType.MemberJoined);
+  const activityTypes = Object.values(ActivityEventType).filter(
+    activityType =>
+      activityType !== ActivityEventType.MemberJoined &&
+      activityType !== ActivityEventType.CalloutWhiteboardContentModified
+  );
 
   const {
     activities,
@@ -116,7 +122,7 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ children 
   });
 
   const { dashboardNavigation, loading: dashboardNavigationLoading } = useSpaceDashboardNavigation({
-    spaceId: spaceNameId,
+    spaceId: spaceId!, // spaceReadAccess implies presence of spaceId
     skip: !permissions.spaceReadAccess,
   });
 
@@ -145,8 +151,9 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ children 
   );
 
   const callouts = useCallouts({
-    spaceNameId,
-    displayLocations: [CalloutDisplayLocation.HomeLeft, CalloutDisplayLocation.HomeRight],
+    journeyId: spaceId,
+    journeyTypeName: 'space',
+    groupNames: [CalloutGroupName.Home_1, CalloutGroupName.Home_2],
   });
 
   return (

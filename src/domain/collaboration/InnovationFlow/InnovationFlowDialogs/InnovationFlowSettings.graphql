@@ -41,9 +41,6 @@ fragment InnovationFlowProfile on Profile {
   id
   displayName
   description
-  # tags: tagset {
-  #   ...TagsetDetails
-  # }
   tagsets {
     ...TagsetDetails
   }
@@ -64,16 +61,20 @@ fragment InnovationFlowCollaboration on Collaboration {
     id
     myPrivileges
   }
-  callouts(displayLocations: [CONTRIBUTE_LEFT, CONTRIBUTE_RIGHT]) {
+  callouts(groups: ["CONTRIBUTE_1", "CONTRIBUTE_2"]) {
     id
     nameID
     type
     activity
     sortOrder
     framing {
+      id
       profile {
         id
         displayName
+        calloutGroupName: tagset(tagsetName: CALLOUT_GROUP) {
+          ...TagsetDetails
+        }
         flowState: tagset(tagsetName: FLOW_STATE) {
           ...TagsetDetails
         }
@@ -95,12 +96,74 @@ mutation UpdateCalloutFlowState($calloutId: UUID!, $flowStateTagsetId: UUID!, $v
     id
     sortOrder
     framing {
+      id
       profile {
         id
         flowState: tagset(tagsetName: FLOW_STATE) {
           ...TagsetDetails
         }
       }
+    }
+  }
+}
+
+mutation updateInnovationFlowCurrentState($innovationFlowId: UUID!, $currentState: String!) {
+  updateInnovationFlowSelectedState(
+    innovationFlowStateData: { innovationFlowID: $innovationFlowId, selectedState: $currentState }
+  ) {
+    id
+    currentState {
+      displayName
+    }
+  }
+}
+
+mutation updateInnovationFlowStates($innovationFlowId: UUID!, $states: [UpdateInnovationFlowStateInput!]!) {
+  updateInnovationFlow(innovationFlowData: { innovationFlowID: $innovationFlowId, states: $states }) {
+    id
+    states {
+      displayName
+      description
+    }
+  }
+}
+
+mutation UpdateInnovationFlowStatesFromTemplate($innovationFlowId: UUID!, $innovationFlowTemplateId: UUID!) {
+  updateInnovationFlowStatesFromTemplate(
+    innovationFlowData: { innovationFlowID: $innovationFlowId, innovationFlowTemplateID: $innovationFlowTemplateId }
+  ) {
+    id
+    states {
+      displayName
+      description
+    }
+    currentState {
+      displayName
+      description
+    }
+  }
+}
+
+mutation updateInnovationFlowSingleState(
+  $innovationFlowId: UUID!
+  $stateName: String!
+  $stateUpdatedData: UpdateInnovationFlowStateInput!
+) {
+  updateInnovationFlowSingleState(
+    innovationFlowStateData: {
+      innovationFlowID: $innovationFlowId
+      stateDisplayName: $stateName
+      stateUpdatedData: $stateUpdatedData
+    }
+  ) {
+    id
+    states {
+      displayName
+      description
+    }
+    currentState {
+      displayName
+      description
     }
   }
 }

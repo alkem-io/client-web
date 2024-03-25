@@ -1,24 +1,22 @@
 import React, { FC } from 'react';
 import { useOpportunity } from '../hooks/useOpportunity';
-import { buildAdminOpportunityUrl, buildOpportunityUrl } from '../../../../main/routing/urlBuilders';
 import { EntityTabsProps } from '../../common/EntityPageLayout';
 import JourneyPageTabs from '../../common/JourneyPageTabs';
+import { buildJourneyAdminUrl } from '../../../../main/routing/urlBuilders';
 
 export interface OpportunityTabsProps extends EntityTabsProps {}
 
 const OpportunityTabs: FC<OpportunityTabsProps> = props => {
-  const { spaceNameId, challengeNameId, opportunityNameId, permissions } = useOpportunity();
-  const rootUrl = buildOpportunityUrl(spaceNameId, challengeNameId, opportunityNameId);
-  const settingsUrl = buildAdminOpportunityUrl(spaceNameId, challengeNameId, opportunityNameId);
+  const { permissions, profile } = useOpportunity();
 
   return (
     <JourneyPageTabs
       {...props}
       entityTypeName="opportunity"
       showSettings={permissions.viewerCanUpdate}
-      settingsUrl={settingsUrl}
-      rootUrl={rootUrl}
-      shareUrl={rootUrl}
+      settingsUrl={buildJourneyAdminUrl(profile.url)}
+      rootUrl={profile.url}
+      shareUrl={profile.url}
       // TODO: Add specific subentity tab for opportunities,
       // and cleanup Agreements code if at the end is not agreements
     />

@@ -1,0 +1,379 @@
+query search($searchData: SearchInput!) {
+  search(searchData: $searchData) {
+    journeyResults {
+      id
+      score
+      terms
+      type
+      ... on SearchResultSpace {
+        ...SearchResultSpace
+      }
+      ... on SearchResultChallenge {
+        ...SearchResultChallenge
+      }
+      ... on SearchResultOpportunity {
+        ...SearchResultOpportunity
+      }
+    }
+    journeyResultsCount
+    calloutResults {
+      id
+      score
+      terms
+      type
+      ... on SearchResultCallout {
+        ...SearchResultCallout
+      }
+    }
+    contributorResults {
+      id
+      score
+      terms
+      type
+      ... on SearchResultUser {
+        ...SearchResultUser
+      }
+      ... on SearchResultOrganization {
+        ...SearchResultOrganization
+      }
+    }
+    contributorResultsCount
+    contributionResults {
+      id
+      score
+      terms
+      type
+      ... on SearchResultPost {
+        ...SearchResultPost
+      }
+    }
+    contributionResultsCount
+  }
+}
+
+fragment SearchResultPost on SearchResultPost {
+  post {
+    id
+    profile {
+      id
+      url
+      displayName
+      visual(type: CARD) {
+        ...VisualUri
+      }
+      ...SearchResultPostProfile
+    }
+    createdBy {
+      id
+      profile {
+        id
+        displayName
+      }
+    }
+    createdDate
+    comments {
+      id
+      messagesCount
+    }
+  }
+  ...PostParent
+}
+
+fragment PostParent on SearchResultPost {
+  space {
+    id
+    account {
+      id
+      license {
+        id
+        visibility
+      }
+    }
+    profile {
+      id
+      url
+      displayName
+    }
+    authorization {
+      id
+      anonymousReadAccess
+    }
+  }
+  challenge {
+    id
+    profile {
+      id
+      url
+      displayName
+    }
+    authorization {
+      id
+      anonymousReadAccess
+    }
+  }
+  opportunity {
+    id
+    profile {
+      id
+      url
+      displayName
+    }
+    authorization {
+      id
+      anonymousReadAccess
+    }
+  }
+  callout {
+    id
+    framing {
+      id
+      profile {
+        id
+        url
+        displayName
+      }
+    }
+  }
+}
+
+fragment SearchResultUser on SearchResultUser {
+  user {
+    id
+    nameID
+    profile {
+      displayName
+      ...SearchResultProfile
+    }
+  }
+}
+
+fragment SearchResultCallout on SearchResultCallout {
+  callout {
+    id
+    nameID
+    type
+    framing {
+      id
+      # profile {
+      #   id
+      #   displayName
+      #   description
+      #   url
+      #   tagset {
+      #     ...TagsetDetails
+      #   }
+      # }
+    }
+    # contributions {
+    #   id
+    #   post {
+    #     id
+    #   }
+    #   whiteboard {
+    #     id
+    #   }
+    #   link {
+    #     id
+    #   }
+    # }
+  }
+}
+
+fragment SearchResultOrganization on SearchResultOrganization {
+  organization {
+    id
+    nameID
+    profile {
+      displayName
+      ...SearchResultProfile
+    }
+  }
+}
+
+fragment SearchResultProfile on Profile {
+  id
+  description
+  location {
+    id
+    country
+    city
+  }
+  tagsets {
+    ...TagsetDetails
+  }
+  visual(type: AVATAR) {
+    ...VisualUri
+  }
+}
+
+fragment SearchResultPostProfile on Profile {
+  id
+  description
+  tagset {
+    ...TagsetDetails
+  }
+}
+
+fragment SearchResultSpace on SearchResultSpace {
+  space {
+    id
+    profile {
+      id
+      url
+      displayName
+      tagset {
+        ...TagsetDetails
+      }
+      tagline
+      visuals {
+        ...VisualUri
+      }
+    }
+    context {
+      id
+      vision
+    }
+    authorization {
+      id
+      anonymousReadAccess
+    }
+    community {
+      id
+      myMembershipStatus
+    }
+    account {
+      id
+      license {
+        id
+        visibility
+      }
+    }
+  }
+}
+
+fragment SearchResultChallenge on SearchResultChallenge {
+  challenge {
+    id
+    profile {
+      id
+      url
+      displayName
+      tagset {
+        ...TagsetDetails
+      }
+      tagline
+      visuals {
+        ...VisualUri
+      }
+    }
+    account {
+      spaceID
+    }
+    context {
+      id
+      vision
+    }
+    authorization {
+      id
+      anonymousReadAccess
+    }
+    community {
+      id
+      myMembershipStatus
+    }
+  }
+  space {
+    id
+    profile {
+      id
+      url
+      displayName
+      tagline
+    }
+    authorization {
+      id
+      anonymousReadAccess
+    }
+    account {
+      id
+      license {
+        id
+        visibility
+      }
+    }
+  }
+}
+
+fragment SearchResultOpportunity on SearchResultOpportunity {
+  opportunity {
+    id
+    profile {
+      id
+      url
+      displayName
+      tagset {
+        ...TagsetDetails
+      }
+      tagline
+      visuals {
+        ...VisualUri
+      }
+    }
+    context {
+      id
+      vision
+    }
+    authorization {
+      id
+      anonymousReadAccess
+    }
+    community {
+      id
+      myMembershipStatus
+    }
+  }
+  challenge {
+    id
+    profile {
+      id
+      url
+      displayName
+    }
+    authorization {
+      id
+      anonymousReadAccess
+    }
+  }
+  space {
+    id
+    account {
+      id
+      license {
+        id
+        visibility
+      }
+    }
+  }
+}
+
+query userRolesSearchCards($userId: UUID_NAMEID_EMAIL!) {
+  rolesUser(rolesData: { userID: $userId, filter: { visibilities: [ACTIVE, DEMO] } }) {
+    spaces {
+      id
+      roles
+      challenges {
+        id
+        nameID
+        roles
+      }
+      opportunities {
+        id
+        roles
+      }
+    }
+    organizations {
+      id
+      roles
+    }
+  }
+}

@@ -81,7 +81,8 @@
     "no-upcoming-events": "Currently, there are no upcoming events to be displayed",
     "past-events": "Past Events",
     "show-calendar": "Show calendar",
-    "defaultEventDescription": "$t(common.location):\n\n$t(common.url):\n\n$t(common.description):"
+    "defaultEventDescription": "$t(common.location):\n\n$t(common.url):\n\n$t(common.description):",
+    "adminsOnly": "Since there are no events, this block is only visible for admins and leads"
   },
   "buttons": {
     "leave": "Leave",
@@ -97,6 +98,7 @@
     "save-draft": "Save as draft",
     "archive": "Archive",
     "save": "Save",
+    "continue": "Continue",
     "back": "Back",
     "next": "Next",
     "edit": "Edit",
@@ -192,6 +194,7 @@
     }
   },
   "common": {
+    "all": "All",
     "knowledge-base": "Knowledge base",
     "or": "Or",
     "permission": "Permission",
@@ -237,6 +240,7 @@
     "forum": "Forum",
     "email": "Email",
     "state": "State",
+    "states": "States",
     "post": "Post",
     "posts": "Posts",
     "status": "Status",
@@ -478,6 +482,7 @@
         "read-only": "Read only"
       },
       "discussion-category": {
+        "RELEASES": "Releases",
         "GENERAL": "General",
         "IDEAS": "Ideas",
         "QUESTIONS": "Questions",
@@ -497,6 +502,13 @@
         "InnovationFlowTemplate_plural": "Innovation Flows",
         "CalloutTemplate": "Callout Template",
         "CalloutTemplate_plural": "Callout Templates"
+      },
+      "calloutType": {
+        "LINK_COLLECTION": "Link Collection",
+        "POST": "Post",
+        "POST_COLLECTION": "Post Collection",
+        "WHITEBOARD": "Whiteboard",
+        "WHITEBOARD_COLLECTION": "Whiteboard Collection"
       }
     },
     "blocks": {
@@ -646,18 +658,16 @@
     "singleWhiteboard": {
       "clickToSee": "Click to see the full whiteboard"
     },
-    "callout-groups": {
+    "callout-group": {
       "HOME_TOP": "Dashboard Recommendations",
-      "HOME_LEFT": "Dashboard Left",
-      "HOME_RIGHT": "Dashboard Right",
-      "CONTRIBUTE_LEFT": "Contribute Left",
-      "CONTRIBUTE_RIGHT": "Contribute Right",
-      "COMMUNITY_LEFT": "Community Left",
-      "COMMUNITY_RIGHT": "Community Right",
-      "CHALLENGES_LEFT": "Challenges Left",
-      "CHALLENGES_RIGHT": "Challenges Right",
-      "OPPORTUNITIES_LEFT": "Opportunities Left",
-      "OPPORTUNITIES_RIGHT": "Opportunities Right",
+      "HOME_1": "Dashboard Left",
+      "HOME_2": "Dashboard Right",
+      "CONTRIBUTE_1": "Contribute Left",
+      "CONTRIBUTE_2": "Contribute Right",
+      "COMMUNITY_1": "Community Left",
+      "COMMUNITY_2": "Community Right",
+      "SUBSPACES_1": "Subspaces Left",
+      "SUBSPACES_2": "Subspaces Right",
       "KNOWLEDGE": "Knowledge Base"
     }
   },
@@ -775,6 +785,9 @@
         "description": "Enter words that are key to the Challenge to make it stand out and easier to find.",
         "placeholder": ""
       },
+      "addDefaultCallouts": {
+        "title": "Add default collaboration tools"
+      },
       "innovationFlow": {
         "title": "Challenge Flow"
       }
@@ -814,6 +827,9 @@
         "title": "Tags",
         "description": "Enter words that are key to your Opportunity to make it stand out and easier to find.",
         "placeholder": ""
+      },
+      "addDefaultCallouts": {
+        "title": "Add default collaboration tools"
       },
       "innovationFlow": {
         "title": "Opportunity Flow"
@@ -929,8 +945,40 @@
         "topCallouts": "Most Active"
       }
     },
-    "innovationFlowStateSelector": {
-      "selectedStateNotice": "This {{journeyType}} is currently in the <strong>{{currentState}}</strong> state. You can already have a look at the tools for the <strong>{{selectedState}}</strong> state here."
+    "innovationFlowVisualizer": {
+      "currentState": "Current State",
+      "currentStateName": "Current State: {{state}}"
+    },
+    "innovationFlowSettings": {
+      "title": "Innovation Flow Settings",
+      "editProfileDialog": {
+        "title": "Edit Details: Innovation Flow"
+      },
+      "stateEditor": {
+        "activeState": "Active State",
+        "setActiveState": "Set as Active State",
+        "editState": "Edit Details",
+        "deleteState": "Delete",
+        "addState": "Add State",
+        "noRepeatedStates": "A State with the same name already exists.",
+        "createDialog": {
+          "title": "Create Flow State"
+        },
+        "editDialog": {
+          "title": "Edit Details: Flow State"
+        },
+        "deleteDialog": {
+          "title": "Delete State?",
+          "text": "This action cannot be undone."
+        },
+        "selectDifferentFlow": {
+          "title": "Select different Flow",
+          "confirmationDialog": {
+            "title": "Be careful when changing the flow!",
+            "description": "- By changing the Innovation Flow, **all changes made to the current flow will be lost**.\n- All existing collaboration tools will be grouped under the default state of the new flow."
+          }
+        }
+      }
     },
     "invitations": {
       "inviteOthers": "Invite others",
@@ -1048,6 +1096,7 @@
         "CALLOUT_LINK_CREATED": "{{subject}}",
         "UPDATE_SENT": "{{subject}}",
         "CALLOUT_WHITEBOARD_CREATED": "{{subject}}",
+        "CALLOUT_WHITEBOARD_CONTENT_MODIFIED": "{{subject}}",
         "CALENDAR_EVENT_CREATED": "{{subject}}"
       },
       "detailedDescription": {
@@ -1464,9 +1513,6 @@
       "delete-discussion": "Delete discussion?",
       "delete-comment": "Delete comment?"
     },
-    "message": {
-      "root": "started the discussion"
-    },
     "post-comment": {
       "fields": {
         "description": {
@@ -1515,28 +1561,8 @@
         "explore": "Explore discussions"
       }
     },
-    "update-innovation-flow": {
-      "template-label": {
-        "title": "Template"
-      }
-    },
-    "select-innovation-flow": {
-      "title": "Change Innovation Flow",
-      "innovationFlowSettings": "Innovation Flow Settings"
-    },
-    "innovation-flow-template-segment": {
-      "help-text": {
-        "title": "Be careful! By updating the Innovation Flow, the current state will be (re)set to the first state of the selected flow."
-      }
-    },
-    "confirm-innovation-flow": {
-      "description": {
-        "title": "Are you sure you want to change the innovation flow? This may change the set of states for this challenge/opportunity and will (re)set the state to the first state of the selected Innovation Flow."
-      }
-    },
     "innovationFlowTemplateSelect": {
       "select": "Select different Flow",
-      "states": "States",
       "required": "Please select an Innovation Flow"
     }
   },
@@ -1741,14 +1767,6 @@
             "subtitle": "This section allows you to modify the $t(common.challenge) membership preferences. If both switches are turned off, new members can only be added manually. If both switches are turned on, members of the Space don't have to apply but can directly join."
           }
         },
-        "sections": {
-          "opportunities": {
-            "description": "Here you can edit opportunities for this challenge."
-          },
-          "innovation-flow": {
-            "description": "Here you change the status of this Challenge or choose a different Flow Template to follow."
-          }
-        },
         "notifications": {
           "challenge-created": "Challenge created successfully.",
           "challenge-removed": "Challenge removed successfully.",
@@ -1758,7 +1776,16 @@
       "space": {
         "sections": {
           "challenges": {
-            "description": "Here you can edit challenges for this Space."
+            "description": "Here you can edit challenges for this Space.",
+            "defaultSettings": {
+              "title": "Default settings",
+              "description": "Choose the default settings that will apply when creating a new Challenge or Opportunity within this Space. These settings can be modified during the creation process or at a later time.",
+              "defaultInnovationFlow": {
+                "selectDifferentFlow": "Select different Flow",
+                "title": "Selecting the Default Innovation Flow",
+                "description": "Customize the default flow for newly created Challenges and Opportunities. Admins can modify it later in the Innovation flow settings. \n\nBelow you can choose between the templates collected in the Space Templates library. If you’re looking to create new flows or explore additional templates, click here to access this library."
+              }
+            }
           }
         },
         "authorization": {
@@ -1810,11 +1837,6 @@
           "opportunity-created": "Opportunity created successfully.",
           "opportunity-removed": "Opportunity removed successfully.",
           "opportunity-updated": "Opportunity updated successfully."
-        },
-        "sections": {
-          "innovation-flow": {
-            "description": "Here you change the status of this Opportunity or choose a different Flow Template to follow."
-          }
         }
       },
       "users": {
@@ -1964,11 +1986,6 @@
         "leading-placeholder": "Search in name or tags",
         "available-placeholder": "Search in name"
       }
-    },
-    "activity": {
-      "title": "{{blockName}} Activity",
-      "spaces": "Challenge Spaces",
-      "innovation-flow-info": "Click to display the Innovation Flow"
     },
     "home": {
       "title": "My Dashboard",
@@ -2287,7 +2304,7 @@
       },
       "readonlyReason": {
         "readonly": "<strong>View only mode</strong> <learnwhy>click here to learn why</learnwhy>",
-        "contentUpdatePolicy": "You don't have the rights to edit this whiteboard. Ask the owner, <ownerlink>{{ownerName}}</ownerlink>, to change the settings if you want to contribute.",
+        "contentUpdatePolicy": "You don't have the rights to edit this whiteboard. Ask the owner, <ownerlink>{{ownerName}}</ownerlink>, to change the Share settings if you want to contribute.",
         "noMembership": "You have to be a member of the {{journeyType}} this whiteboard is in, to be able to edit. Click here to <journeylink>join/apply</journeylink>",
         "unauthenticated": "You have to be signed in and a member of the {{journeyType}} this whiteboard is in, to be able to edit. Click here to <signinlink>sign in</signinlink>"
       },
@@ -2446,9 +2463,9 @@
       "tips-and-tricks": "Looking for tips & tricks? Find them in the blog posts here!"
     },
     "forum": {
-      "title": "Questions, suggestions, or feedback?",
-      "subtitle": "Get in touch with the Alkemio team or other users of the platform!",
-      "fullName": "Community help",
+      "title": "Welcome to the Alkemio Forum",
+      "subtitle": "Connect with others, ask questions, and stay updated with Alkemio's release notes",
+      "fullName": "Alkemio Forum",
       "shortName": "$t(common.forum)",
       "new-title": "Alkemio Forum - Initiate Discussion",
       "back": "See all discussions"

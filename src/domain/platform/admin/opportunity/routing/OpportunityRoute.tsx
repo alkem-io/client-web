@@ -8,23 +8,14 @@ import OpportunityCommunicationsPage from '../pages/OpportunityCommunications/Op
 import OpportunityContextPage from '../pages/OpportunityContext/OpportunityContextPage';
 import OpportunityProfilePage from '../pages/OpportunityProfile/OpportunityProfilePage';
 import CommunityGroupsRoute from '../../community/routes/CommunityGroupsAdminRoutes';
-import OpportunityInnovationFlowPage from '../pages/InnovationFlow/OpportunityInnovationFlowPage';
 import { StorageConfigContextProvider } from '../../../../storage/StorageBucket/StorageConfigContext';
-import { useSpace } from '../../../../journey/space/SpaceContext/useSpace';
 
 export const OpportunityRoute: FC = () => {
-  const { spaceNameId } = useSpace();
   const { challenge } = useChallenge();
   const { opportunity } = useOpportunity();
 
   return (
-    <StorageConfigContextProvider
-      locationType="journey"
-      journeyTypeName="opportunity"
-      spaceNameId={spaceNameId}
-      challengeNameId={challenge?.nameID}
-      opportunityNameId={opportunity?.nameID}
-    >
+    <StorageConfigContextProvider locationType="journey" journeyTypeName="opportunity" journeyId={opportunity?.id}>
       <Routes>
         <Route index element={<Navigate to="profile" replace />} />
         <Route path="profile" element={<OpportunityProfilePage />} />
@@ -48,7 +39,6 @@ export const OpportunityRoute: FC = () => {
             />
           }
         />
-        <Route path="innovation-flow/*" element={<OpportunityInnovationFlowPage />} />
         <Route path="*" element={<Error404 />} />
       </Routes>
     </StorageConfigContextProvider>

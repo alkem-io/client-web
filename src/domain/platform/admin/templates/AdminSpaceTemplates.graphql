@@ -1,8 +1,10 @@
 query AdminSpaceTemplates($spaceId: UUID_NAMEID!) {
   space(ID: $spaceId) {
     id
-    templates {
+    account {
       id
+      library {
+        id
       authorization {
         id
         myPrivileges
@@ -21,6 +23,7 @@ query AdminSpaceTemplates($spaceId: UUID_NAMEID!) {
       }
     }
   }
+  }
 }
 
 fragment AdminCalloutTemplate on CalloutTemplate {
@@ -28,6 +31,10 @@ fragment AdminCalloutTemplate on CalloutTemplate {
   type
   profile {
     ...ProfileInfoWithVisual
+  }
+  contributionPolicy {
+    id
+    allowedContributionTypes
   }
 }
 

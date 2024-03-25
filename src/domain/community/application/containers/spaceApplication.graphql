@@ -1,0 +1,13 @@
+query spaceApplication($spaceId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
+    id
+    profile {
+      id
+      url
+      displayName
+    }
+    community {
+      id
+    }
+  }
+}

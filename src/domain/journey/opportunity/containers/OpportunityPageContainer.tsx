@@ -1,6 +1,5 @@
 import { ApolloError } from '@apollo/client';
 import { FC, useCallback, useMemo, useState } from 'react';
-import { useOpportunity } from '../hooks/useOpportunity';
 import { useUserContext } from '../../../community/user';
 import {
   useOpportunityPageQuery,
@@ -8,13 +7,13 @@ import {
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
 import {
+  ActivityEventType,
   AuthorizationPrivilege,
-  CalloutDisplayLocation,
+  CalloutGroupName,
   DashboardTopCalloutFragment,
   OpportunityPageFragment,
   Reference,
 } from '../../../../core/apollo/generated/graphql-schema';
-import { buildAdminOpportunityUrl } from '../../../../main/routing/urlBuilders';
 import useCommunityMembersAsCardProps from '../../../community/community/utils/useCommunityMembersAsCardProps';
 import { EntityDashboardContributors } from '../../../community/community/EntityDashboardContributorsSection/Types';
 import useCallouts, { UseCalloutsProvided } from '../../../collaboration/callout/useCallouts/useCallouts';
@@ -26,9 +25,6 @@ import { MetricType } from '../../../platform/metrics/MetricType';
 import { RECENT_ACTIVITIES_LIMIT_INITIAL, TOP_CALLOUTS_LIMIT } from '../../common/journeyDashboard/constants';
 
 export interface OpportunityContainerEntities extends EntityDashboardContributors {
-  spaceId: string;
-  spaceNameId: string;
-  challengeNameId: string;
   opportunity: OpportunityPageFragment | undefined;
   permissions: {
     canEdit: boolean;
@@ -72,17 +68,17 @@ export interface OpportunityContainerState {
 }
 
 export interface OpportunityPageContainerProps
-  extends ContainerChildProps<OpportunityContainerEntities, OpportunityContainerActions, OpportunityContainerState> { }
+  extends ContainerChildProps<OpportunityContainerEntities, OpportunityContainerActions, OpportunityContainerState> {
+  opportunityId: string | undefined;
+}
 
 const NO_PRIVILEGES = [];
 
 // todo: Do cleanup when the post are extended further
-const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children }) => {
+const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ opportunityId, children }) => {
   const [hideMeme, setHideMeme] = useState<boolean>(false);
   const [showInterestModal, setShowInterestModal] = useState<boolean>(false);
   const [showActorGroupModal, setShowActorGroupModal] = useState<boolean>(false);
-  // TODO don't use context, fetch all the data with a query
-  const { spaceId, spaceNameId, challengeNameId, opportunityNameId } = useOpportunity();
 
   const { isAuthenticated } = useAuthenticationContext();
   const { user } = useUserContext();
@@ -92,17 +88,18 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
     loading: loadingOpportunity,
     error: errorOpportunity,
   } = useOpportunityPageQuery({
-    variables: { spaceId: spaceNameId, opportunityId: opportunityNameId },
+    variables: { opportunityId: opportunityId! },
+    skip: !opportunityId,
     errorPolicy: 'all',
   });
 
-  const opportunity = query?.space.opportunity;
+  const opportunity = query?.lookup.opportunity;
   const collaborationID = opportunity?.collaboration?.id;
   const opportunityPrivileges = opportunity?.authorization?.myPrivileges ?? NO_PRIVILEGES;
   const communityPrivileges = opportunity?.community?.authorization?.myPrivileges ?? NO_PRIVILEGES;
-  const timelineReadAccess = (
-    query?.space.opportunity?.collaboration?.timeline?.authorization?.myPrivileges ?? []
-  ).includes(AuthorizationPrivilege.Read);
+  const timelineReadAccess = (opportunity?.collaboration?.timeline?.authorization?.myPrivileges ?? []).includes(
+    AuthorizationPrivilege.Read
+  );
   const permissions = useMemo(() => {
     return {
       canEdit: opportunityPrivileges?.includes(AuthorizationPrivilege.Update),
@@ -118,12 +115,17 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
     };
   }, [opportunityPrivileges, communityPrivileges, user]);
 
+  const activityTypes = Object.values(ActivityEventType).filter(
+    activityType => activityType !== ActivityEventType.CalloutWhiteboardContentModified
+  );
+
   const {
     activities,
     loading: activityLoading,
     fetchMoreActivities,
   } = useActivityOnCollaboration(collaborationID, {
     skip: !permissions.opportunityReadAccess || !permissions.readUsers,
+    types: activityTypes,
     limit: RECENT_ACTIVITIES_LIMIT_INITIAL,
   });
 
@@ -162,20 +164,17 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
   );
 
   const callouts = useCallouts({
-    spaceNameId,
-    opportunityNameId,
-    displayLocations: [CalloutDisplayLocation.HomeLeft, CalloutDisplayLocation.HomeRight],
+    journeyId: opportunityId,
+    journeyTypeName: 'opportunity',
+    groupNames: [CalloutGroupName.Home_1, CalloutGroupName.Home_2],
   });
 
   return (
     <>
       {children(
         {
-          spaceId,
-          spaceNameId,
-          challengeNameId,
           opportunity,
-          url: opportunity && buildAdminOpportunityUrl(spaceNameId, challengeNameId, opportunity.nameID),
+          url: `admin/${opportunity?.profile.url}`, //opportunity && buildAdminOpportunityUrl(spaceNameId, challengeNameId, opportunity.nameID),
           meme,
           links,
           permissions: {

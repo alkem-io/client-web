@@ -1,28 +1,27 @@
 query CollaborationAuthorization(
-  $spaceNameId: UUID_NAMEID!
-  $challengeNameId: UUID_NAMEID = "mockid"
-  $opportunityNameId: UUID_NAMEID = "mockid"
+  $spaceId: UUID_NAMEID = "00000000-0000-0000-0000-000000000000"
+  $challengeId: UUID = "00000000-0000-0000-0000-000000000000"
+  $opportunityId: UUID = "00000000-0000-0000-0000-000000000000"
   $includeSpace: Boolean = false
   $includeChallenge: Boolean = false
   $includeOpportunity: Boolean = false
 ) {
-  space(ID: $spaceNameId) {
+  space(ID: $spaceId) @include(if: $includeSpace) {
     id
-    ... on Space @include(if: $includeSpace) {
+    authorization {
+      id
+      myPrivileges
+    }
+  }
+  lookup {
+    challenge(ID: $challengeId) @include(if: $includeChallenge) {
       id
       authorization {
         id
         myPrivileges
       }
     }
-    challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
-      id
-      authorization {
-        id
-        myPrivileges
-      }
-    }
-    opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
+    opportunity(ID: $opportunityId) @include(if: $includeOpportunity) {
       id
       authorization {
         id
@@ -33,44 +32,39 @@ query CollaborationAuthorization(
 }
 
 query CollaborationPrivileges(
-  $spaceNameId: UUID_NAMEID!
-  $challengeNameId: UUID_NAMEID = "mockid"
-  $opportunityNameId: UUID_NAMEID = "mockid"
+  $spaceId: UUID_NAMEID = "00000000-0000-0000-0000-000000000000"
+  $challengeId: UUID = "00000000-0000-0000-0000-000000000000"
+  $opportunityId: UUID = "00000000-0000-0000-0000-000000000000"
   $includeSpace: Boolean = false
   $includeChallenge: Boolean = false
   $includeOpportunity: Boolean = false
 ) {
-  space(ID: $spaceNameId) {
+  space(ID: $spaceId) @include(if: $includeSpace) {
     id
-    ... on Space @include(if: $includeSpace) {
+    collaboration {
+      ...CollaborationPrivileges
+    }
+  }
+  lookup {
+    challenge(ID: $challengeId) @include(if: $includeChallenge) {
       id
       collaboration {
-        id
-        authorization {
-          id
-          myPrivileges
-        }
+        ...CollaborationPrivileges
       }
     }
-    challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
+    opportunity(ID: $opportunityId) @include(if: $includeOpportunity) {
       id
       collaboration {
-        id
-        authorization {
-          id
-          myPrivileges
-        }
+        ...CollaborationPrivileges
       }
     }
-    opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
-      id
-      collaboration {
-        id
-        authorization {
-          id
-          myPrivileges
-        }
-      }
-    }
+  }
+}
+
+fragment CollaborationPrivileges on Collaboration {
+  id
+  authorization {
+    id
+    myPrivileges
   }
 }

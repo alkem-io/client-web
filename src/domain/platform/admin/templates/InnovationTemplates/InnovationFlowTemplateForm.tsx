@@ -1,41 +1,30 @@
-import React, { ReactNode, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import React, { ReactNode } from 'react';
 import * as yup from 'yup';
-import { FieldMetaProps, FormikProps } from 'formik';
-import { CreateProfileInput, Visual } from '../../../../../core/apollo/generated/graphql-schema';
-import FormRows from '../../../../shared/components/FormRows';
+import { FormikProps } from 'formik';
+import { CreateProfileInput } from '../../../../../core/apollo/generated/graphql-schema';
 import TemplateForm from '../TemplateForm';
-import { BlockSectionTitle } from '../../../../../core/ui/typography';
-import { Box, FormLabel, TextareaAutosize, useTheme } from '@mui/material';
-import InnovationFlowVisualizer from './InnovationFlowVisualizer';
 import { InnovationFlowState } from '../../../../collaboration/InnovationFlow/InnovationFlow';
-import { gutters } from '../../../../../core/ui/grid/utils';
-import { LONG_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '../../../../../core/ui/forms/field-length.constants';
+import { MARKDOWN_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '../../../../../core/ui/forms/field-length.constants';
+import InnovationFlowDragNDropEditor from '../../../../collaboration/InnovationFlow/InnovationFlowDragNDropEditor/InnovationFlowDragNDropEditor';
+import { BlockSectionTitle } from '../../../../../core/ui/typography';
+import { useTranslation } from 'react-i18next';
 
-const MAX_NUMBER_OF_STATES = 100;
-const MAX_LENGTH_STATE_DISPLAY_NAME = SMALL_TEXT_LENGTH;
-const MAX_LENGTH_STATE_DESCRIPTION = LONG_TEXT_LENGTH;
-
-// To allow some flexibility when writing the states manually as JSON, probably can be removed when we make a better UI for editing states
-interface InnovationFlowStateWithOptionalDescription extends Omit<InnovationFlowState, 'description'> {
-  description: string | undefined;
-}
+export const MAX_INNOVATIONFLOW_STATES = 100;
 
 export interface InnovationTemplateFormValues {
   displayName: string;
   description: string;
   tags: string[];
-  states: InnovationFlowStateWithOptionalDescription[];
+  states: InnovationFlowState[];
 }
 
 export interface InnovationTemplateFormSubmittedValues {
-  states: InnovationFlowStateWithOptionalDescription[];
+  states: InnovationFlowState[];
   profile: CreateProfileInput;
 }
 
 interface InnovationFlowTemplateFormProps {
   initialValues: Partial<InnovationTemplateFormValues>;
-  visual?: Visual;
   onSubmit: (values: InnovationTemplateFormSubmittedValues) => void;
   actions: ReactNode | ((formState: FormikProps<InnovationTemplateFormValues>) => ReactNode);
 }
@@ -43,124 +32,123 @@ interface InnovationFlowTemplateFormProps {
 const validator = {
   states: yup
     .array()
+    .required()
     .of(
       yup
         .object()
         .shape({
-          displayName: yup.string().required().max(MAX_LENGTH_STATE_DISPLAY_NAME),
-          description: yup.string().max(MAX_LENGTH_STATE_DESCRIPTION),
+          displayName: yup.string().required().max(SMALL_TEXT_LENGTH),
+          description: yup.string().required().max(MARKDOWN_TEXT_LENGTH),
         })
         .required()
     )
     .min(1)
-    .max(MAX_NUMBER_OF_STATES),
+    .max(MAX_INNOVATIONFLOW_STATES),
 };
 
-// This function parses the states string array very carefully because this lets the users input any JSON.
-const parseStates = (jsonString: string) => {
-  const displayNames: Record<string, boolean> = {};
-  const isValidState = state => {
-    return (
-      typeof state.displayName === 'string' &&
-      state.displayName.length > 0 &&
-      state.displayName.length <= MAX_LENGTH_STATE_DISPLAY_NAME &&
-      (typeof state.description === 'string' &&
-        state.description.length <= MAX_LENGTH_STATE_DESCRIPTION ||
-        typeof state.description === 'undefined') &&
-      !displayNames[state.displayName] // Avoid duplicated displayNames
-    );
-  };
-
-  try {
-    const data = JSON.parse(jsonString);
-    const result: InnovationFlowState[] = [];
-    if (Array.isArray(data) && data.length > 0) {
-      if (data.length > MAX_NUMBER_OF_STATES) {
-        return { isValid: false, states: [], error: 'Too many states.' };
-      }
-      for (const state of data) {
-        if (isValidState(state)) {
-          // State is valid, add it to the result array and to the list of used displayNames
-          result.push({ displayName: state.displayName, description: state.description ?? '' });
-          displayNames[state.displayName] = true;
-        } else {
-          return { isValid: false, states: [], error: 'Invalid state.' };
-        }
-      }
-      return { isValid: true, states: result };
-    }
-    return { isValid: false, states: [], error: 'Not valid states array.' };
-  } catch (ex) {
-    return { isValid: false, states: [], error: 'Error parsing states array.' };
-  }
-};
-
-const InnovationFlowTemplateForm = ({ initialValues, visual, onSubmit, actions }: InnovationFlowTemplateFormProps) => {
+const InnovationFlowTemplateForm = ({ initialValues, onSubmit, actions }: InnovationFlowTemplateFormProps) => {
   const { t } = useTranslation();
-  const theme = useTheme();
 
-  const textAreaStyle = ({ touched, error }: FieldMetaProps<unknown>) => {
-    return {
-      width: gutters(18)(theme),
-      maxWidth: gutters(18)(theme),
-      minWidth: gutters(18)(theme),
-      borderColor: touched && error ? `${theme.palette.error.main}` : undefined,
-    };
+  const onCreateState = (
+    currentStates: InnovationFlowState[],
+    newState: InnovationFlowState,
+    options: { after: string; last: false } | { after?: never; last: true },
+    setStates: (value: InnovationFlowState[]) => void
+  ) => {
+    let newStates: InnovationFlowState[];
+
+    if (options.last) {
+      newStates = [...currentStates, newState];
+    } else {
+      const index = currentStates.findIndex(state => state.displayName === options.after);
+      if (index !== -1) {
+        newStates = [...currentStates.slice(0, index + 1), newState, ...currentStates.slice(index + 1)];
+      } else {
+        throw new Error(`State with displayName "${options.after}" not found`);
+      }
+    }
+
+    setStates(newStates);
   };
 
-  const [statesString, setStatesString] = useState(
-    JSON.stringify(
-      initialValues.states?.map(state => ({ displayName: state.displayName, description: state.description }))
-    )
-  );
+  const onEditState = (
+    currentStates: InnovationFlowState[],
+    editedState: InnovationFlowState,
+    newState: InnovationFlowState,
+    setStates: (value: InnovationFlowState[]) => void
+  ) => {
+    const index = currentStates.findIndex(state => state.displayName === editedState.displayName);
+    if (index !== -1) {
+      const newStates = [...currentStates];
+      newStates[index] = newState;
+      setStates(newStates);
+    } else {
+      throw new Error(`State with displayName "${editedState}" not found`);
+    }
+  };
+
+  const onDeleteState = (
+    currentStates: InnovationFlowState[],
+    stateToDelete: string,
+    setStates: (value: InnovationFlowState[]) => void
+  ) => {
+    const index = currentStates.findIndex(state => state.displayName === stateToDelete);
+    if (index !== -1) {
+      const newStates = [...currentStates.slice(0, index), ...currentStates.slice(index + 1)];
+      setStates(newStates);
+    } else {
+      throw new Error(`State with displayName "${stateToDelete}" not found`);
+    }
+  };
+
+  const onSortStates = (
+    currentStates: InnovationFlowState[],
+    stateMoved: string,
+    sortOrder: number,
+    setStates: (value: InnovationFlowState[]) => void
+  ) => {
+    const movedState = currentStates.find(state => state.displayName === stateMoved);
+    if (!movedState) {
+      throw new Error('Moved state not found.');
+    }
+    const statesWithoutMovedState = currentStates.filter(state => state.displayName !== stateMoved);
+
+    // Insert the flowState at the new position
+    const newStates = [
+      ...statesWithoutMovedState.slice(0, sortOrder),
+      movedState,
+      ...statesWithoutMovedState.slice(sortOrder),
+    ];
+    setStates(newStates);
+  };
 
   return (
     <TemplateForm
       initialValues={initialValues}
-      visual={visual}
       onSubmit={onSubmit}
       actions={actions}
       validator={validator}
+      verticalLayout
     >
-      {({ values, setFieldValue, getFieldMeta, setFieldError, setFieldTouched }) => (
-        <FormRows>
-          <FormLabel title={t('innovation-templates.states.title')}>
-            <TextareaAutosize
-              placeholder={t('innovation-templates.states.placeholder')}
-              value={statesString}
-              maxRows={10}
-              minRows={10}
-              style={textAreaStyle(getFieldMeta('states'))}
-              onFocus={() => {
-                setFieldTouched('states', true);
-                const { isValid, error } = parseStates(statesString);
-                setFieldError('states', !isValid ? error : undefined);
-              }}
-              onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => {
-                const newStatesString = event.target.value;
-                setStatesString(newStatesString);
-                const { states, isValid, error } = parseStates(newStatesString);
-                setFieldValue('states', states);
-                setFieldError('states', !isValid ? error : undefined);
-              }}
-              onBlur={() => {
-                const { isValid, states, error } = parseStates(statesString);
-                if (isValid) {
-                  setFieldError('states', undefined);
-                  setFieldValue('states', states);
-                  setStatesString(JSON.stringify(states));
-                } else {
-                  setFieldError('states', error);
-                }
-              }}
+      {({ values, setFieldValue, setFieldTouched }) => {
+        const setStates = (states: InnovationFlowState[]) => {
+          setFieldTouched('states', true);
+          setFieldValue('states', states);
+        };
+
+        return (
+          <>
+            <BlockSectionTitle>{t('common.states')}</BlockSectionTitle>
+            <InnovationFlowDragNDropEditor
+              innovationFlowStates={values.states}
+              onCreateFlowState={(newState, options) => onCreateState(values.states, newState, options, setStates)}
+              onEditFlowState={(oldState, newState) => onEditState(values.states, oldState, newState, setStates)}
+              onDeleteFlowState={stateName => onDeleteState(values.states, stateName, setStates)}
+              onUpdateFlowStateOrder={(states, sortOrder) => onSortStates(values.states, states, sortOrder, setStates)}
             />
-          </FormLabel>
-          <BlockSectionTitle>{t('common.preview')}</BlockSectionTitle>
-          <Box sx={{ maxWidth: theme => theme.spacing(64) }}>
-            <InnovationFlowVisualizer states={values.states.map(state => ({ displayName: state.displayName, description: state.description ?? '' }))} />
-          </Box>
-        </FormRows>
-      )}
+          </>
+        );
+      }}
     </TemplateForm>
   );
 };

@@ -1,15 +1,14 @@
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 import { useTranslation } from 'react-i18next';
 import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
 import ScrollerWithGradient from '../../../../../core/ui/overflow/ScrollerWithGradient';
-import { useLatestContributionsQuery } from '../../../../../core/apollo/generated/apollo-hooks';
+import { useLatestContributionsGroupedQuery } from '../../../../../core/apollo/generated/apollo-hooks';
 import {
   ActivityEventType,
-  LatestContributionsQuery,
-  LatestContributionsQueryVariables,
+  ActivityLogCalloutWhiteboardContentModifiedFragment,
+  ActivityLogCalloutWhiteboardCreatedFragment,
 } from '../../../../../core/apollo/generated/graphql-schema';
-import usePaginatedQuery from '../../../../../domain/shared/pagination/usePaginatedQuery';
 import { Box } from '@mui/material';
 import {
   ActivityLogResultType,
@@ -27,40 +26,38 @@ const ACTIVITY_TYPES = [
   ActivityEventType.CalloutPostComment,
   ActivityEventType.CalloutLinkCreated,
   ActivityEventType.CalloutWhiteboardCreated,
+  ActivityEventType.CalloutWhiteboardContentModified,
   ActivityEventType.DiscussionComment,
 ];
 
 const MyLatestContributions = () => {
   const { t } = useTranslation();
 
-  const { data, hasMore, loading, fetchMore } = usePaginatedQuery<
-    LatestContributionsQuery,
-    LatestContributionsQueryVariables
-  >({
-    useQuery: useLatestContributionsQuery,
-    getPageInfo: data => data.activityFeed.pageInfo,
-    pageSize: 1,
-    firstPageSize: MY_LATEST_CONTRIBUTIONS_COUNT * 2, ////magic number, should not be needed. toDo Fix in https://app.zenhub.com/workspaces/alkemio-development-5ecb98b262ebd9f4aec4194c/issues/gh/alkem-io/server/3626
+  const { data } = useLatestContributionsGroupedQuery({
     variables: {
       filter: {
         myActivity: true,
         types: ACTIVITY_TYPES,
+        limit: MY_LATEST_CONTRIBUTIONS_COUNT + 3, // Fetch 3 extra in case that last 8 events are whiteboard creation and modification
       },
     },
   });
 
   const activities = useMemo(() => {
-    return data?.activityFeed.activityFeed.slice(0, MY_LATEST_CONTRIBUTIONS_COUNT);
-  }, [data?.activityFeed.activityFeed]);
+    // Filter out whiteboard created activities if we have an content modified activity for the same whiteboard
+    const updatedWhiteboards: Record<string, true> = {};
+    const filteredActivities = data?.activityFeedGrouped.filter(activity => {
+      if (activity.type === ActivityEventType.CalloutWhiteboardContentModified) {
+        updatedWhiteboards[(activity as ActivityLogCalloutWhiteboardContentModifiedFragment).whiteboard.id] = true;
+      }
+      if (activity.type !== ActivityEventType.CalloutWhiteboardCreated) {
+        return true;
+      }
+      return !updatedWhiteboards[(activity as ActivityLogCalloutWhiteboardCreatedFragment).whiteboard.id];
+    });
 
-  useEffect(() => {
-    if (!activities || !hasMore || loading) {
-      return;
-    }
-    if (activities.length < MY_LATEST_CONTRIBUTIONS_COUNT) {
-      fetchMore();
-    }
-  }, [activities, hasMore, loading]);
+    return filteredActivities?.slice(0, MY_LATEST_CONTRIBUTIONS_COUNT);
+  }, [data?.activityFeedGrouped]);
 
   return (
     <PageContentBlock halfWidth>
@@ -73,7 +70,6 @@ const MyLatestContributions = () => {
                 <ActivityViewChooser
                   key={activity.id}
                   activity={activity as ActivityLogResultType}
-                  journeyUrl={activity.journey?.profile.url ?? ''}
                   avatarUrl={activity.journey?.profile.avatar?.uri || defaultJourneyAvatar}
                 />
               );

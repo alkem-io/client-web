@@ -17,7 +17,7 @@ import {
 } from '../../../../../core/apollo/generated/graphql-schema';
 import { useResolvedPath } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { buildAdminSpaceUrl } from '../../../../../main/routing/urlBuilders';
+import { buildJourneyAdminUrl } from '../../../../../main/routing/urlBuilders';
 import SpaceListItem from './SpaceListItem';
 import { sortBy } from 'lodash';
 import { licenseHasFeature } from '../../../../journey/space/license/useLicenseFeatures';
@@ -42,12 +42,12 @@ export const SpaceList: FC = () => {
           (space.authorization?.myPrivileges ?? []).find(privilege => privilege === AuthorizationPrivilege.Update)
         )
         .map(space => {
-          if (space.license.visibility !== SpaceVisibility.Active) {
+          if (space.account.license.visibility !== SpaceVisibility.Active) {
             return {
               ...space,
               profile: {
                 ...space.profile,
-                displayName: `${space.profile.displayName} [${space.license.visibility.toUpperCase()}]`,
+                displayName: `${space.profile.displayName} [${space.account.license.visibility.toUpperCase()}]`,
               },
             };
           }
@@ -56,16 +56,16 @@ export const SpaceList: FC = () => {
         .map(space => ({
           ...space,
           displayName: space.profile.displayName,
-          url: buildAdminSpaceUrl(space.nameID),
+          url: buildJourneyAdminUrl(space.nameID),
         }))
         .map(space => ({
           ...searchableListItemMapper()(space),
           spaceId: space.id,
-          visibility: space.license.visibility,
+          visibility: space.account.license.visibility,
           hostID: space.host?.id,
           nameID: space.nameID,
           features: Object.values(LicenseFeatureFlagName).reduce((acc, licenseFeature) => {
-            acc[licenseFeature] = licenseHasFeature(licenseFeature, space.license);
+            acc[licenseFeature] = licenseHasFeature(licenseFeature, space.account.license);
             return acc;
           }, {} as Record<LicenseFeatureFlagName, boolean>),
           organizations,

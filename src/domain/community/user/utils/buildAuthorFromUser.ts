@@ -2,7 +2,6 @@ import { Author } from '../../../shared/components/AuthorAvatar/models/author';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 
 interface AuthorData extends Identifiable {
-  nameID: string;
   firstName: string;
   lastName: string;
   profile: {

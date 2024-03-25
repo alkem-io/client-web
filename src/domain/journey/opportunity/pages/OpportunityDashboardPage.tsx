@@ -5,10 +5,8 @@ import CommunityUpdatesDialog from '../../../community/community/CommunityUpdate
 import ContributorsDialog from '../../../community/community/ContributorsDialog/ContributorsDialog';
 import OpportunityContributorsDialogContent from '../../../community/community/entities/OpportunityContributorsDialogContent';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
-import useBackToParentPage from '../../../../core/routing/deprecated/useBackToParentPage';
 import OpportunityPageLayout from '../layout/OpportunityPageLayout';
 import JourneyDashboardView from '../../common/tabs/Dashboard/JourneyDashboardView';
-import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import CalendarDialog from '../../../timeline/calendar/CalendarDialog';
 import MembershipContainer from '../../../community/membership/membershipContainer/MembershipContainer';
 import JourneyDashboardWelcomeBlock from '../../common/journeyDashboardWelcomeBlock/JourneyDashboardWelcomeBlock';
@@ -20,6 +18,8 @@ import OpportunityApplicationButton from '../../../community/application/applica
 import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
 import FullWidthButton from '../../../../core/ui/button/FullWidthButton';
 import { Theme, useMediaQuery } from '@mui/material';
+import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
+import { useBackToStaticPath } from '../../../../core/routing/useBackToPath';
 
 export interface OpportunityDashboardPageProps {
   dialog?: 'updates' | 'contributors' | 'calendar';
@@ -30,32 +30,27 @@ const OpportunityDashboardPage: FC<OpportunityDashboardPageProps> = ({ dialog })
 
   const currentPath = useResolvedPath('..');
 
-  const [backToDashboard] = useBackToParentPage(`${currentPath.pathname}/dashboard`);
-
-  const { spaceNameId, challengeNameId, opportunityNameId } = useUrlParams();
+  const backToDashboard = useBackToStaticPath(`${currentPath.pathname}/dashboard`);
 
   const { sendMessage, directMessageDialog } = useDirectMessageDialog({
     dialogTitle: t('send-message-dialog.direct-message-title'),
   });
 
-  if (!spaceNameId) {
-    throw new Error('Must be within a Space route.');
-  }
-  const shareUpdatesUrl = buildUpdatesUrl({ spaceNameId, challengeNameId, opportunityNameId });
   const hasExtendedApplicationButton = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
+
+  const { challengeId, opportunityId } = useRouteResolver();
 
   return (
     <OpportunityPageLayout currentSection={EntityPageSection.Dashboard}>
       {directMessageDialog}
-      <OpportunityPageContainer>
+      <OpportunityPageContainer opportunityId={opportunityId}>
         {({ callouts, ...entities }, state) => (
           <>
             <JourneyDashboardView
+              journeyId={opportunityId}
+              journeyUrl={entities.opportunity?.profile.url}
               ribbon={
-                <OpportunityApplicationButtonContainer
-                  challengeNameId={challengeNameId}
-                  opportunityNameId={opportunityNameId}
-                >
+                <OpportunityApplicationButtonContainer challengeId={challengeId} opportunityId={opportunityId}>
                   {({ applicationButtonProps, state: { loading } }) => {
                     if (loading || applicationButtonProps.isMember) {
                       return null;
@@ -86,9 +81,6 @@ const OpportunityDashboardPage: FC<OpportunityDashboardPageProps> = ({ dialog })
                   {props => <MembershipContainer {...props} />}
                 </JourneyDashboardWelcomeBlock>
               }
-              spaceNameId={entities.spaceNameId}
-              challengeNameId={entities.challengeNameId}
-              opportunityNameId={entities.opportunity?.nameID}
               communityId={entities.opportunity?.community?.id}
               communityReadAccess={entities.permissions.communityReadAccess}
               timelineReadAccess={entities.permissions.timelineReadAccess}
@@ -107,14 +99,13 @@ const OpportunityDashboardPage: FC<OpportunityDashboardPageProps> = ({ dialog })
               topCallouts={entities.topCallouts}
               callouts={callouts}
               sendMessageToCommunityLeads={entities.sendMessageToCommunityLeads}
-              shareUpdatesUrl={shareUpdatesUrl}
+              shareUpdatesUrl={buildUpdatesUrl(entities.opportunity?.profile.url ?? '')}
             />
             <CommunityUpdatesDialog
               open={dialog === 'updates'}
               onClose={backToDashboard}
-              spaceId={entities.spaceId}
               communityId={entities.opportunity?.community?.id}
-              shareUrl={shareUpdatesUrl}
+              shareUrl={buildUpdatesUrl(entities.opportunity?.profile.url ?? '')}
               loading={state.loading}
             />
             <ContributorsDialog
@@ -126,8 +117,8 @@ const OpportunityDashboardPage: FC<OpportunityDashboardPageProps> = ({ dialog })
               <CalendarDialog
                 open={dialog === 'calendar'}
                 onClose={backToDashboard}
-                spaceNameId={spaceNameId}
-                opportunityNameId={entities.opportunity?.nameID}
+                journeyId={opportunityId}
+                journeyTypeName="opportunity"
               />
             )}
           </>

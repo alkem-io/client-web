@@ -1,0 +1,17 @@
+query JourneyRouteResolver(
+  $spaceNameId: UUID_NAMEID!
+  $challengeNameId: UUID_NAMEID! = "00000000-0000-0000-0000-000000000000"
+  $opportunityNameId: UUID_NAMEID! = "00000000-0000-0000-0000-000000000000"
+  $includeChallenge: Boolean = false
+  $includeOpportunity: Boolean = false
+) {
+  space(ID: $spaceNameId) {
+    id
+    challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
+      id
+    }
+    opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
+      id
+    }
+  }
+}

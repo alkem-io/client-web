@@ -1,16 +1,9 @@
-import React, { FC, useMemo } from 'react';
-import { PageProps } from '../../../shared/types/PageProps';
-import { useUpdateNavigation } from '../../../../core/routing/useNavigation';
+import React from 'react';
 import OpportunityPageLayout from '../layout/OpportunityPageLayout';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import OpportunityProjectsView from '../views/OpportunityProjectsView';
 
-export interface OpportunityProjectsPageProps extends PageProps {}
-
-const OpportunityAgreementsPage: FC<OpportunityProjectsPageProps> = ({ paths }) => {
-  const currentPaths = useMemo(() => [...paths, { value: '/projects', name: 'projects', real: false }], [paths]);
-  useUpdateNavigation({ currentPaths });
-
+const OpportunityAgreementsPage = () => {
   return (
     <OpportunityPageLayout currentSection={EntityPageSection.Agreements}>
       <OpportunityProjectsView />

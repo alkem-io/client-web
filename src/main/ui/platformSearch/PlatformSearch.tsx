@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import React, { forwardRef, PropsWithChildren, useCallback, useMemo, useState } from 'react';
 import { useSpace } from '../../../domain/journey/space/SpaceContext/useSpace';
 import SearchBox from '../../../core/ui/search/SearchBox';
-import { useNavigate } from 'react-router';
+import useNavigate from '../../../core/routing/useNavigate';
 import { useLocation } from 'react-router-dom';
 import { useQueryParams } from '../../../core/routing/useQueryParams';
 import { gutters } from '../../../core/ui/grid/utils';

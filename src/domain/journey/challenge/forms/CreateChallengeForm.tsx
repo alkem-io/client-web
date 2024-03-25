@@ -11,8 +11,7 @@ import { TagsetField } from '../../../platform/admin/components/Common/TagsetSeg
 import FormikEffectFactory from '../../../../core/ui/forms/FormikEffect';
 import { JourneyCreationForm } from '../../../shared/components/JorneyCreationDialog/JourneyCreationForm';
 import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
-import FormikInnovationFlowSelect from '../../../collaboration/InnovationFlow/FormikInnovationFlowField/FormikInnovationFlowSelect';
-import useDefaultInnovationFlowTemplate from '../../../collaboration/InnovationFlow/DefaultInnovationFlow/useDefaultInnovationFlowTemplate';
+import { FormikSwitch } from '../../../../core/ui/forms/FormikSwitch';
 
 const FormikEffect = FormikEffectFactory<FormValues>();
 
@@ -22,17 +21,15 @@ interface FormValues {
   background: string;
   vision: string;
   tags: string[];
-  innovationFlowTemplateId: string;
+  addDefaultCallouts: boolean;
 }
 
-interface CreateChallengeFormProps extends JourneyCreationForm { }
+interface CreateChallengeFormProps extends JourneyCreationForm {}
 
 export const CreateChallengeForm: FC<CreateChallengeFormProps> = ({ isSubmitting, onValidChanged, onChanged }) => {
   const { t } = useTranslation();
-  const { defaultInnovationFlowTemplateId } = useDefaultInnovationFlowTemplate();
 
   const validationRequiredString = t('forms.validations.required');
-  const validationRequiredInnovationFlowString = t('components.innovationFlowTemplateSelect.required');
 
   const handleChanged = (value: FormValues) =>
     onChanged({
@@ -41,7 +38,7 @@ export const CreateChallengeForm: FC<CreateChallengeFormProps> = ({ isSubmitting
       background: value.background,
       vision: value.vision,
       tags: value.tags,
-      innovationFlowTemplateId: value.innovationFlowTemplateId,
+      addDefaultCallouts: value.addDefaultCallouts,
     });
 
   const initialValues: FormValues = {
@@ -50,7 +47,7 @@ export const CreateChallengeForm: FC<CreateChallengeFormProps> = ({ isSubmitting
     background: '',
     vision: '',
     tags: [],
-    innovationFlowTemplateId: defaultInnovationFlowTemplateId ?? '',
+    addDefaultCallouts: true,
   };
 
   const validationSchema = yup.object().shape({
@@ -69,7 +66,6 @@ export const CreateChallengeForm: FC<CreateChallengeFormProps> = ({ isSubmitting
     background: MarkdownValidator(MARKDOWN_TEXT_LENGTH).trim().required(validationRequiredString),
     vision: MarkdownValidator(MARKDOWN_TEXT_LENGTH).trim().required(validationRequiredString),
     tags: yup.array().of(yup.string().min(2)).notRequired(),
-    innovationFlowTemplateId: yup.string().required(validationRequiredInnovationFlowString),
   });
 
   return (
@@ -78,7 +74,7 @@ export const CreateChallengeForm: FC<CreateChallengeFormProps> = ({ isSubmitting
       validationSchema={validationSchema}
       enableReinitialize
       validateOnMount
-      onSubmit={() => { }}
+      onSubmit={() => {}}
     >
       {() => (
         <Form noValidate>
@@ -120,11 +116,7 @@ export const CreateChallengeForm: FC<CreateChallengeFormProps> = ({ isSubmitting
               title={t('context.challenge.tags.title')}
               helperText={t('context.challenge.tags.description')}
             />
-            <FormikInnovationFlowSelect
-              name="innovationFlowTemplateId"
-              title={t('context.challenge.innovationFlow.title')}
-              disabled={isSubmitting}
-            />
+            <FormikSwitch name="addDefaultCallouts" title={t('context.challenge.addDefaultCallouts.title')} />
           </Gutters>
         </Form>
       )}

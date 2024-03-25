@@ -17,51 +17,51 @@ fragment MetricsItem on NVP {
 }
 #
 query AboutPageNonMembers(
-  $spaceNameId: UUID_NAMEID!
+  $spaceId: UUID_NAMEID = "00000000-0000-0000-0000-000000000000"
   $includeSpace: Boolean = false
   $includeChallenge: Boolean = false
   $includeOpportunity: Boolean = false
-  $challengeNameId: UUID_NAMEID = "mockid" # workaround for mandatory param working in conjection with @include or @skip
-  $opportunityNameId: UUID_NAMEID = "mockid" # workaround for mandatory param working in conjection with @include or @skip
+  $challengeId: UUID = "00000000-0000-0000-0000-000000000000"
+  $opportunityId: UUID = "00000000-0000-0000-0000-000000000000"
 ) {
-  space(ID: $spaceNameId) {
+  space(ID: $spaceId) @include(if: $includeSpace) {
     id
-    ... on Space @include(if: $includeSpace) {
-      nameID
-      profile {
-        id
-        displayName
-        tagline
-        description
-        tagset {
-          ...TagsetDetails
-        }
-        visuals {
-          ...VisualFull
-        }
+    profile {
+      id
+      url
+      displayName
+      tagline
+      description
+      tagset {
+        ...TagsetDetails
       }
-      host {
-        ...AssociatedOrganizationDetails
-      }
-      metrics {
-        ...MetricsItem
-      }
-      community {
-        id
-        authorization {
-          id
-          myPrivileges
-        }
-      }
-      context {
-        ...ContextTab
+      visuals {
+        ...VisualFull
       }
     }
-    challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
+    host {
+      ...AssociatedOrganizationDetails
+    }
+    metrics {
+      ...MetricsItem
+    }
+    community {
       id
-      nameID
+      authorization {
+        id
+        myPrivileges
+      }
+    }
+    context {
+      ...ContextTab
+    }
+  }
+  lookup {
+    challenge(ID: $challengeId) @include(if: $includeChallenge) {
+      id
       profile {
         id
+        url
         displayName
         tagline
         description
@@ -103,11 +103,11 @@ query AboutPageNonMembers(
         }
       }
     }
-    opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
+    opportunity(ID: $opportunityId) @include(if: $includeOpportunity) {
       id
-      nameID
       profile {
         id
+        url
         displayName
         tagline
         description
@@ -149,29 +149,29 @@ query AboutPageNonMembers(
 }
 #
 query AboutPageMembers(
-  $spaceNameId: UUID_NAMEID!
+  $spaceId: UUID_NAMEID = "00000000-0000-0000-0000-000000000000"
   $includeSpace: Boolean = false
   $includeChallenge: Boolean = false
   $includeOpportunity: Boolean = false
   $communityReadAccess: Boolean!
   $referencesReadAccess: Boolean!
-  $challengeNameId: UUID_NAMEID = "mockid" # workaround for mandatory param working in conjection with @include or @skip
-  $opportunityNameId: UUID_NAMEID = "mockid" # workaround for mandatory param working in conjection with @include or @skip
+  $challengeId: UUID = "00000000-0000-0000-0000-000000000000"
+  $opportunityId: UUID = "00000000-0000-0000-0000-000000000000"
 ) {
-  space(ID: $spaceNameId) {
+  space(ID: $spaceId) @include(if: $includeSpace) {
     id
-    ... on Space @include(if: $includeSpace) {
-      community @include(if: $communityReadAccess) {
-        ...EntityDashboardCommunity
-      }
-      profile {
-        id
-        references @include(if: $referencesReadAccess) {
-          ...ReferenceDetails
-        }
+    community @include(if: $communityReadAccess) {
+      ...EntityDashboardCommunity
+    }
+    profile {
+      id
+      references @include(if: $referencesReadAccess) {
+        ...ReferenceDetails
       }
     }
-    challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
+  }
+  lookup {
+    challenge(ID: $challengeId) @include(if: $includeChallenge) {
       id
       community @include(if: $communityReadAccess) {
         ...EntityDashboardCommunity
@@ -183,7 +183,7 @@ query AboutPageMembers(
         }
       }
     }
-    opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
+    opportunity(ID: $opportunityId) @include(if: $includeOpportunity) {
       id
       community @include(if: $communityReadAccess) {
         ...EntityDashboardCommunity

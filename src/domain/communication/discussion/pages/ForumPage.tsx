@@ -1,7 +1,8 @@
-import React, { FC, useMemo, useState } from 'react';
+import React, { FC, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Theme, useMediaQuery } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+import useNavigate from '../../../../core/routing/useNavigate';
 import CategorySelector from '../components/CategorySelector';
 import DiscussionsLayout from '../layout/DiscussionsLayout';
 import { DiscussionListView } from '../views/DiscussionsListView';
@@ -16,6 +17,7 @@ import {
   AuthorizationPrivilege,
   CommunicationDiscussionUpdatedSubscription,
   CommunicationDiscussionUpdatedSubscriptionVariables,
+  DiscussionCategory,
   PlatformDiscussionsQuery,
 } from '../../../../core/apollo/generated/graphql-schema';
 import DiscussionIcon from '../views/DiscussionIcon';
@@ -30,7 +32,6 @@ import { ForumOutlined } from '@mui/icons-material';
 import BreadcrumbsItem from '../../../../core/ui/navigation/BreadcrumbsItem';
 import TopLevelPageBreadcrumbs from '../../../../main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
 import { BlockTitle } from '../../../../core/ui/typography';
-import { buildDiscussionUrl } from '../../../../main/routing/urlBuilders';
 
 const ALL_CATEGORIES = DiscussionCategoryExtEnum.All;
 const FORUM_GRAYED_OUT_IMAGE = '/forum/forum-grayed.png';
@@ -58,16 +59,46 @@ interface ForumPageProps {
   dialog?: 'new';
 }
 
+enum DiscussionCategoryPlatform {
+  RELEASES = 'releases',
+  PLATFORM_FUNCTIONALITIES = 'platform-functionalities',
+  COMMUNITY_BUILDING = 'community-building',
+  CHALLENGE_CENTRIC = 'challenge-centric',
+  HELP = 'help',
+  OTHER = 'other',
+}
+
 export const ForumPage: FC<ForumPageProps> = ({ dialog }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { isAuthenticated, loading: loadingUser } = useUserContext();
+  const { user: { hasPlatformPrivilege } = {}, isAuthenticated, loading: loadingUser } = useUserContext();
 
-  const [categorySelected, setCategorySelected] = useState<DiscussionCategoryExt>(ALL_CATEGORIES);
+  const { pathname } = useLocation();
+  const initialPathname = useRef(pathname);
+
+  const path = pathname.substring(pathname.lastIndexOf('/') + 1);
+  const category = (Object.keys(DiscussionCategoryPlatform)[
+    Object.values(DiscussionCategoryPlatform).indexOf(path as unknown as DiscussionCategoryPlatform)
+  ] ?? ALL_CATEGORIES) as DiscussionCategoryExt;
+
+  useEffect(() => {
+    if (pathname !== initialPathname.current) {
+      setCategorySelected(category as DiscussionCategoryExt);
+      initialPathname.current = pathname;
+    }
+  }, [pathname]);
+
+  const [categorySelected, setCategorySelected] = useState<DiscussionCategoryExt>(category || ALL_CATEGORIES);
   const { data, loading: loadingDiscussions, subscribeToMore } = usePlatformDiscussionsQuery();
   useSubscriptionToCommunication(data, data => data?.platform.communication, subscribeToMore);
 
-  const validCategories = data?.platform.communication.discussionCategories ?? [];
+  const isGlobalAdmin = hasPlatformPrivilege?.(AuthorizationPrivilege.GrantGlobalAdmins);
+  const validCategories =
+    (isGlobalAdmin
+      ? data?.platform.communication.discussionCategories
+      : data?.platform.communication.discussionCategories?.filter(
+          category => category !== DiscussionCategory.Releases
+        )) ?? [];
   const communicationId = data?.platform.communication.id;
 
   const canCreateDiscussion =
@@ -107,8 +138,8 @@ export const ForumPage: FC<ForumPageProps> = ({ dialog }) => {
 
   const ribbon = useInnovationHubOutsideRibbon({ label: 'innovationHub.outsideOfSpace.forum' });
 
-  const handleClickDiscussion = (discussionNameId: string) => {
-    navigate(buildDiscussionUrl('/forum', discussionNameId));
+  const handleClickDiscussion = (discussionUrl: string) => {
+    navigate(discussionUrl);
   };
 
   return (
@@ -148,7 +179,13 @@ export const ForumPage: FC<ForumPageProps> = ({ dialog }) => {
             categorySelector={
               <CategorySelector
                 categories={categories}
-                onSelect={setCategorySelected}
+                onSelect={category => {
+                  navigate(
+                    Object.keys(DiscussionCategoryPlatform).includes(category)
+                      ? `/forum/${DiscussionCategoryPlatform[category]}`
+                      : '/forum'
+                  );
+                }}
                 value={categorySelected}
                 showLabels={!mediumScreen}
               />
@@ -163,7 +200,7 @@ export const ForumPage: FC<ForumPageProps> = ({ dialog }) => {
                 loading: loading,
               }}
               actions={{
-                onClickDiscussion: discussion => handleClickDiscussion(discussion.nameID),
+                onClickDiscussion: discussion => handleClickDiscussion(discussion.url),
               }}
               options={{
                 filterEnabled: true,

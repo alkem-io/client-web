@@ -15,6 +15,7 @@ import { IconButton } from '@mui/material';
 import { Close } from '@mui/icons-material';
 import { buildAboutUrl, buildUpdatesUrl } from '../../../../main/routing/urlBuilders';
 import { useTranslation } from 'react-i18next';
+import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 
 export interface SpaceDashboardPageProps {
   dialog?: 'about' | 'updates' | 'contributors' | 'calendar';
@@ -28,25 +29,25 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
 
   const { spaceNameId } = useUrlParams();
 
+  const { spaceId } = useRouteResolver();
+
   if (!spaceNameId) {
     throw new Error('Param :spaceNameId is missing');
   }
 
-  const shareUpdatesUrl = buildUpdatesUrl({ spaceNameId });
-  const shareAboutUrl = buildAboutUrl({ spaceNameId });
-
   return (
     <SpacePageLayout currentSection={EntityPageSection.Dashboard}>
-      <SpaceDashboardContainer>
+      <SpaceDashboardContainer spaceId={spaceId}>
         {({ callouts, dashboardNavigation, ...entities }, state) => (
           <>
             <SpaceDashboardView
+              spaceId={spaceId}
+              spaceUrl={entities.space?.profile.url}
               vision={entities.space?.context?.vision}
-              spaceNameId={entities.space?.nameID}
               displayName={entities.space?.profile.displayName}
               dashboardNavigation={dashboardNavigation}
               dashboardNavigationLoading={state.loading}
-              spaceVisibility={entities.space?.license.visibility}
+              spaceVisibility={entities.space?.account.license.visibility}
               loading={state.loading}
               communityId={entities.space?.community?.id}
               communityReadAccess={entities.permissions.communityReadAccess}
@@ -61,14 +62,13 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
               callouts={callouts}
               topCallouts={entities.topCallouts}
               journeyTypeName="space"
-              shareUpdatesUrl={shareUpdatesUrl}
+              shareUpdatesUrl={buildUpdatesUrl(entities.space?.profile.url ?? '')}
             />
             <CommunityUpdatesDialog
               open={dialog === 'updates'}
               onClose={backToDashboard}
-              spaceId={entities.space?.id}
               communityId={entities.space?.community?.id}
-              shareUrl={shareUpdatesUrl}
+              shareUrl={buildUpdatesUrl(entities.space?.profile.url ?? '')}
               loading={state.loading}
             />
             <ContributorsDialog
@@ -80,7 +80,8 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
               <CalendarDialog
                 open={dialog === 'calendar'}
                 onClose={backToDashboard}
-                spaceNameId={entities.space?.nameID}
+                journeyId={spaceId}
+                journeyTypeName="space"
               />
             )}
             <JourneyAboutDialog
@@ -104,7 +105,7 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
                   <Close />
                 </IconButton>
               }
-              shareUrl={shareAboutUrl}
+              shareUrl={buildAboutUrl(entities.space?.profile.url)}
             />
           </>
         )}

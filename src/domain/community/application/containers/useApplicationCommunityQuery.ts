@@ -7,10 +7,12 @@ import {
   useSpaceApplicationTemplateQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { ApplicationTypeEnum } from '../constants/ApplicationType';
-import { buildChallengeUrl, buildSpaceUrl } from '../../../../main/routing/urlBuilders';
+import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 
 export const useApplicationCommunityQuery = (type: ApplicationTypeEnum) => {
   const { spaceNameId = '', challengeNameId = '' } = useUrlParams();
+
+  const { challengeId } = useRouteResolver();
 
   const {
     data: challengeData,
@@ -18,11 +20,10 @@ export const useApplicationCommunityQuery = (type: ApplicationTypeEnum) => {
     error: challengeCommunityError,
   } = useChallengeApplicationQuery({
     variables: {
-      spaceId: spaceNameId,
-      challengeId: challengeNameId,
+      challengeId: challengeId!,
     },
     errorPolicy: 'all',
-    skip: type !== ApplicationTypeEnum.challenge,
+    skip: type !== ApplicationTypeEnum.challenge || !challengeId,
   });
 
   const {
@@ -30,11 +31,10 @@ export const useApplicationCommunityQuery = (type: ApplicationTypeEnum) => {
     loading: isChallengeTemplateLoading,
     error: challengeTemplateError,
   } = useChallengeApplicationTemplateQuery({
-    skip: type !== ApplicationTypeEnum.challenge,
     variables: {
-      spaceId: spaceNameId,
-      challengeId: challengeNameId,
+      challengeId: challengeId!,
     },
+    skip: type !== ApplicationTypeEnum.challenge || !challengeId,
   });
 
   const {
@@ -67,16 +67,16 @@ export const useApplicationCommunityQuery = (type: ApplicationTypeEnum) => {
         displayName: spaceData?.space.profile.displayName || '',
         description: spaceTemplateData?.space.community?.applicationForm?.description,
         questions: spaceTemplateData?.space.community?.applicationForm?.questions || [],
-        backUrl: buildSpaceUrl(spaceNameId),
+        backUrl: spaceData?.space.profile.url,
       };
     }
     if (type === ApplicationTypeEnum.challenge) {
       return {
-        communityId: challengeData?.space.challenge.community?.id || '',
-        displayName: challengeData?.space.challenge.profile.displayName || '',
-        description: challengeTemplateData?.space.challenge.community?.applicationForm?.description,
-        questions: challengeTemplateData?.space.challenge.community?.applicationForm?.questions || [],
-        backUrl: buildChallengeUrl(spaceNameId, challengeNameId),
+        communityId: challengeData?.lookup.challenge?.community?.id || '',
+        displayName: challengeData?.lookup.challenge?.profile.displayName || '',
+        description: challengeTemplateData?.lookup.challenge?.community?.applicationForm?.description,
+        questions: challengeTemplateData?.lookup.challenge?.community?.applicationForm?.questions ?? [],
+        backUrl: challengeData?.lookup.challenge?.profile.url,
       };
     }
   }, [type, challengeData, challengeTemplateData, spaceData, spaceTemplateData, challengeNameId, spaceNameId]);

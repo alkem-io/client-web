@@ -2,19 +2,17 @@ import React, { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   AssociatedOrganizationDetailsFragment,
-  CalloutDisplayLocation,
+  CalloutGroupName,
   CalloutsQueryVariables,
   DashboardLeadUserFragment,
   DashboardTopCalloutFragment,
   SpaceVisibility,
   SpaceWelcomeBlockContributorProfileFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
-import { JourneyLocation } from '../../../../main/routing/urlBuilders';
 import DashboardUpdatesSection from '../../../shared/components/DashboardSections/DashboardUpdatesSection';
 import { ActivityLogResultType } from '../../../collaboration/activity/ActivityLog/ActivityComponent';
 import PageContent from '../../../../core/ui/content/PageContent';
 import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
-import { CoreEntityIdTypes } from '../../../shared/types/CoreEntityIds';
 import { JourneyTypeName } from '../../JourneyTypeName';
 import DashboardCalendarSection from '../../../shared/components/DashboardSections/DashboardCalendarSection';
 import ApplicationButtonContainer from '../../../community/application/containers/ApplicationButtonContainer';
@@ -39,8 +37,10 @@ interface SpaceWelcomeBlockContributor {
   profile: SpaceWelcomeBlockContributorProfileFragment;
 }
 
-interface SpaceDashboardViewProps extends Partial<CoreEntityIdTypes> {
+interface SpaceDashboardViewProps {
+  spaceId: string | undefined;
   displayName: string | undefined;
+  spaceUrl: string | undefined;
   dashboardNavigation: DashboardNavigationItem[] | undefined;
   dashboardNavigationLoading: boolean;
   spaceVisibility?: SpaceVisibility;
@@ -63,7 +63,7 @@ interface SpaceDashboardViewProps extends Partial<CoreEntityIdTypes> {
   loading: boolean;
   shareUpdatesUrl: string;
   callouts: {
-    groupedCallouts: Record<CalloutDisplayLocation, TypedCallout[] | undefined>;
+    groupedCallouts: Record<CalloutGroupName, TypedCallout[] | undefined>;
     canCreateCallout: boolean;
     canCreateCalloutFromTemplate: boolean;
     calloutNames: string[];
@@ -75,14 +75,13 @@ interface SpaceDashboardViewProps extends Partial<CoreEntityIdTypes> {
 }
 
 const SpaceDashboardView = ({
+  spaceId,
   vision = '',
   displayName,
   dashboardNavigation,
   dashboardNavigationLoading,
   spaceVisibility,
-  spaceNameId,
-  challengeNameId,
-  opportunityNameId,
+  spaceUrl,
   communityId = '',
   communityReadAccess = false,
   timelineReadAccess = false,
@@ -99,15 +98,6 @@ const SpaceDashboardView = ({
   shareUpdatesUrl,
 }: SpaceDashboardViewProps) => {
   const { t } = useTranslation();
-
-  const journeyLocation: JourneyLocation | undefined =
-    typeof spaceNameId === 'undefined'
-      ? undefined
-      : {
-          spaceNameId,
-          challengeNameId,
-          opportunityNameId,
-        };
 
   const hasExtendedApplicationButton = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
 
@@ -160,19 +150,16 @@ const SpaceDashboardView = ({
             {t('common.aboutThis', { entity: translatedJourneyTypeName })}
           </FullWidthButton>
           <DashboardNavigation
-            spaceNameId={spaceNameId}
+            spaceUrl={spaceUrl}
             spaceVisibility={spaceVisibility}
             displayName={displayName}
             dashboardNavigation={dashboardNavigation}
             loading={dashboardNavigationLoading}
           />
-          {timelineReadAccess && <DashboardCalendarSection journeyLocation={journeyLocation} />}
-          {communityReadAccess && (
-            <DashboardUpdatesSection entities={{ spaceId: spaceNameId, communityId }} shareUrl={shareUpdatesUrl} />
-          )}
+          {timelineReadAccess && <DashboardCalendarSection journeyId={spaceId} journeyTypeName={journeyTypeName} />}
+          {communityReadAccess && <DashboardUpdatesSection communityId={communityId} shareUrl={shareUpdatesUrl} />}
           <CalloutsGroupView
-            callouts={callouts.groupedCallouts[CalloutDisplayLocation.HomeLeft]}
-            spaceId={spaceNameId!}
+            callouts={callouts.groupedCallouts[CalloutGroupName.Home_1]}
             canCreateCallout={callouts.canCreateCallout}
             canCreateCalloutFromTemplate={callouts.canCreateCalloutFromTemplate}
             loading={callouts.loading}
@@ -180,25 +167,23 @@ const SpaceDashboardView = ({
             calloutNames={callouts.calloutNames}
             onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
             onCalloutUpdate={callouts.refetchCallout}
-            displayLocation={CalloutDisplayLocation.HomeLeft}
+            groupName={CalloutGroupName.Home_1}
           />
         </PageContentColumn>
 
         <PageContentColumn columns={8}>
           <DashboardRecentContributionsBlock
-            halfWidth={(callouts.groupedCallouts[CalloutDisplayLocation.HomeRight]?.length ?? 0) > 0}
+            halfWidth={(callouts.groupedCallouts[CalloutGroupName.Home_1]?.length ?? 0) > 0}
             readUsersAccess={readUsersAccess}
             entityReadAccess={entityReadAccess}
             activitiesLoading={activityLoading}
             topCallouts={topCallouts}
             activities={activities}
             journeyTypeName={journeyTypeName}
-            journeyLocation={journeyLocation}
             onActivitiesDialogOpen={() => fetchMoreActivities(RECENT_ACTIVITIES_LIMIT_EXPANDED)}
           />
           <CalloutsGroupView
-            callouts={callouts.groupedCallouts[CalloutDisplayLocation.HomeRight]}
-            spaceId={spaceNameId!}
+            callouts={callouts.groupedCallouts[CalloutGroupName.Home_2]}
             canCreateCallout={callouts.canCreateCallout}
             canCreateCalloutFromTemplate={callouts.canCreateCalloutFromTemplate}
             loading={callouts.loading}
@@ -206,7 +191,7 @@ const SpaceDashboardView = ({
             calloutNames={callouts.calloutNames}
             onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
             onCalloutUpdate={callouts.refetchCallout}
-            displayLocation={CalloutDisplayLocation.HomeRight}
+            groupName={CalloutGroupName.Home_2}
             blockProps={(callout, index) => {
               if (index === 0) {
                 return {

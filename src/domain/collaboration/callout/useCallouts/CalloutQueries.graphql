@@ -1,36 +1,11 @@
 query Callouts(
-  $spaceNameId: UUID_NAMEID!
-  $includeSpace: Boolean = false
-  $includeChallenge: Boolean = false
-  $includeOpportunity: Boolean = false
-  $challengeNameId: UUID_NAMEID = "mockid"
-  $opportunityNameId: UUID_NAMEID = "mockid"
-  $displayLocations: [CalloutDisplayLocation!]
+  $collaborationId: UUID!
+  $groups: [String!]
   $calloutIds: [UUID_NAMEID!]
 ) {
-  space(ID: $spaceNameId) {
-    id
-    ... on Space @include(if: $includeSpace) {
-      nameID
-      collaboration {
-        ...CollaborationWithCallouts
-      }
-    }
-    challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
-      id
-      nameID
-      ... on Challenge @skip(if: $includeOpportunity) {
-        collaboration {
-          ...CollaborationWithCallouts
-        }
-      }
-    }
-    opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
-      id
-      nameID
-      collaboration {
-        ...CollaborationWithCallouts
-      }
+  lookup {
+    collaboration(ID: $collaborationId) {
+      ...CollaborationWithCallouts
     }
   }
 }
@@ -41,7 +16,7 @@ fragment CollaborationWithCallouts on Collaboration {
     id
     myPrivileges
   }
-  callouts(displayLocations: $displayLocations, IDs: $calloutIds) {
+  callouts(groups: $groups, IDs: $calloutIds) {
     ...Callout
   }
 }
@@ -57,8 +32,10 @@ fragment Callout on Callout {
     myPrivileges
   }
   framing {
+    id
     profile {
       id
+      url
       displayName
       tagsets {
         ...TagsetDetails
@@ -75,11 +52,13 @@ query CalloutDetails($calloutId: UUID!) {
     }
   }
 }
+
 fragment CalloutDetails on Callout {
   id
   nameID
   type
   framing {
+    id
     profile {
       id
       displayName
@@ -96,6 +75,7 @@ fragment CalloutDetails on Callout {
       storageBucket {
         id
       }
+      url
     }
     whiteboard {
       ...WhiteboardDetails

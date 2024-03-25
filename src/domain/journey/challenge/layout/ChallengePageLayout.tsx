@@ -7,6 +7,7 @@ import JourneyUnauthorizedDialogContainer from '../../common/JourneyUnauthorized
 import { useChallenge } from '../hooks/useChallenge';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import JourneyBreadcrumbs from '../../common/journeyBreadcrumbs/JourneyBreadcrumbs';
+import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 
 export interface ChallengePageLayoutProps {
   currentSection: EntityPageSection;
@@ -18,7 +19,9 @@ const ChallengePageLayout = ({
   currentSection,
   children,
 }: PropsWithChildren<ChallengePageLayoutProps>) => {
-  const { challengeId, challengeNameId, profile } = useChallenge();
+  const { profile } = useChallenge();
+
+  const { challengeId, loading } = useRouteResolver();
 
   return (
     <EntityPageLayout
@@ -28,12 +31,11 @@ const ChallengePageLayout = ({
       tabsComponent={ChallengeTabs}
     >
       {children}
-      <JourneyUnauthorizedDialogContainer journeyTypeName="challenge">
+      <JourneyUnauthorizedDialogContainer journeyId={challengeId} journeyTypeName="challenge" loading={loading}>
         {({ vision, ...props }) => (
           <JourneyUnauthorizedDialog
             journeyTypeName="challenge"
             challengeId={challengeId}
-            challengeNameId={challengeNameId}
             challengeName={profile.displayName}
             description={vision}
             disabled={unauthorizedDialogDisabled}

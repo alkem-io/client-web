@@ -1,5 +1,6 @@
 fragment WhiteboardProfile on Profile {
   id
+  url
   displayName
   description
   visual(type: CARD) {
@@ -66,11 +67,14 @@ fragment WhiteboardContent on Whiteboard {
 query whiteboardTemplates($spaceId: UUID_NAMEID!) {
   space(ID: $spaceId) {
     id
-    templates {
+    account {
       id
+      library {
+        id
       whiteboardTemplates {
         ...CreateWhiteboardWhiteboardTemplate
       }
+    }
     }
   }
 }
@@ -95,6 +99,7 @@ fragment CalloutWithWhiteboard on Callout {
     myPrivileges
   }
   framing {
+    id
     whiteboard {
       ...WhiteboardDetails
     }
@@ -123,6 +128,7 @@ fragment CollaborationWithWhiteboardDetails on Collaboration {
       }
     }
     framing {
+      id
       whiteboard {
         ...WhiteboardDetails
       }

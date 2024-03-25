@@ -5,8 +5,7 @@ import {
   CommunityMembershipStatus,
   OpportunityProviderFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
-import { useUrlParams } from '../../../../core/routing/useUrlParams';
-import { useChallenge } from '../../challenge/hooks/useChallenge';
+import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 
 interface OpportunityViewerPermissions {
   viewerCanUpdate: boolean;
@@ -17,12 +16,7 @@ interface OpportunityViewerPermissions {
 export interface OpportunityContextProps {
   opportunity?: OpportunityProviderFragment;
   opportunityId: string;
-  opportunityNameId: string;
   communityId: string;
-  challengeId: string;
-  challengeNameId: string;
-  spaceId: string;
-  spaceNameId: string;
   loading: boolean;
   permissions: OpportunityViewerPermissions;
   myMembershipStatus: CommunityMembershipStatus | undefined;
@@ -58,17 +52,17 @@ const OpportunityContext = React.createContext<OpportunityContextProps>(DEFAULT_
 interface OpportunityProviderProps {}
 
 const OpportunityProvider: FC<OpportunityProviderProps> = ({ children }) => {
-  const { spaceNameId = '', challengeNameId = '', opportunityNameId = '' } = useUrlParams();
+  const { opportunityId } = useRouteResolver();
+
   const { data, loading } = useOpportunityProviderQuery({
-    variables: { spaceId: spaceNameId, opportunityId: opportunityNameId },
+    variables: { opportunityId: opportunityId! },
+    skip: !opportunityId,
     errorPolicy: 'all',
   });
-  const spaceId = data?.space?.id || '';
-  const opportunity = data?.space?.opportunity;
-  const opportunityId = opportunity?.id || '';
+
+  const opportunity = data?.lookup.opportunity;
+
   const communityId = opportunity?.community?.id ?? '';
-  // using the challenge provider
-  const { challengeId } = useChallenge();
 
   const permissions = useMemo<OpportunityViewerPermissions>(
     () => ({
@@ -85,12 +79,7 @@ const OpportunityProvider: FC<OpportunityProviderProps> = ({ children }) => {
     <OpportunityContext.Provider
       value={{
         opportunity,
-        spaceId,
-        spaceNameId,
-        challengeId,
-        challengeNameId,
-        opportunityId,
-        opportunityNameId,
+        opportunityId: opportunityId ?? '',
         communityId,
         permissions,
         loading,

@@ -5,7 +5,6 @@ import SpaceEditForm, { SpaceEditFormValuesType } from '../../../../journey/spac
 import WrapperTypography from '../../../../../core/ui/typography/deprecated/WrapperTypography';
 import AdminLayout from '../../layout/toplevel/AdminLayout';
 import { AdminSection } from '../../layout/toplevel/constants';
-import { useUpdateNavigation } from '../../../../../core/routing/useNavigation';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import {
   SpaceDetailsFragmentDoc,
@@ -18,10 +17,8 @@ import { formatDatabaseLocation } from '../../../../common/location/LocationUtil
 
 interface NewSpaceProps extends PageProps {}
 
-export const NewSpace: FC<NewSpaceProps> = ({ paths }) => {
+export const NewSpace: FC<NewSpaceProps> = () => {
   const { t } = useTranslation();
-  const currentPaths = useMemo(() => [...paths, { value: '', name: 'new', real: false }], [paths]);
-  useUpdateNavigation({ currentPaths });
   const navigateToEdit = useNavigateToEdit();
   const notify = useNotification();
   const { data: organizationList } = useOrganizationsListQuery();
@@ -68,7 +65,9 @@ export const NewSpace: FC<NewSpaceProps> = ({ paths }) => {
       variables: {
         input: {
           nameID,
-          hostID: host,
+          accountData: {
+            hostID: host,
+          },
           profileData: {
             displayName: name,
             tagline: values.tagline,

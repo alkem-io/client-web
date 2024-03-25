@@ -1,7 +1,5 @@
-query challengeInfo($spaceId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
-  space(ID: $spaceId) {
-    id
-    nameID
+query challengeInfo($challengeId: UUID!) {
+  lookup {
     challenge(ID: $challengeId) {
       ...ChallengeInfo
     }

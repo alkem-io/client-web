@@ -1,8 +1,7 @@
 import React, { FC, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import useNavigate from '../../../../core/routing/useNavigate';
 import { journeyCardTagsGetter, journeyCardValueGetter } from '../../common/utils/journeyCardValueGetter';
-import { buildOpportunityUrl } from '../../../../main/routing/urlBuilders';
 import { JourneyCreationDialog } from '../../../shared/components/JorneyCreationDialog';
 import { JourneyFormValues } from '../../../shared/components/JorneyCreationDialog/JourneyCreationForm';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
@@ -16,9 +15,10 @@ import ChallengeOpportunitiesContainer from '../containers/ChallengeOpportunitie
 import { useChallenge } from '../hooks/useChallenge';
 import ChallengePageLayout from '../layout/ChallengePageLayout';
 import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
-import { CalloutDisplayLocation, CommunityMembershipStatus } from '../../../../core/apollo/generated/graphql-schema';
+import { useUrlParams } from '../../../../core/routing/useUrlParams';
+import { CalloutGroupName, CommunityMembershipStatus } from '../../../../core/apollo/generated/graphql-schema';
 
-export interface ChallengeOpportunitiesPageProps { }
+export interface ChallengeOpportunitiesPageProps {}
 
 const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
   const { t } = useTranslation();
@@ -26,7 +26,8 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
 
   const { spaceNameId, license } = useSpace();
   const spaceVisibility = license.visibility;
-  const { challengeId, challengeNameId, permissions } = useChallenge();
+  const { challengeId, permissions } = useChallenge();
+  const { challengeNameId = '' } = useUrlParams();
 
   const [isCreateDialogOpen, setCreateDialogOpen] = useState(false);
 
@@ -40,30 +41,26 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
         tagline: value.tagline,
         vision: value.vision,
         tags: value.tags,
-        innovationFlowTemplateId: value.innovationFlowTemplateId,
+        addDefaultCallouts: value.addDefaultCallouts,
       });
 
       if (!result) {
         return;
       }
 
-      // delay the navigation so all other processes related to updating the cache
-      // and closing all subscriptions are completed
-      setTimeout(() => navigate(buildOpportunityUrl(spaceNameId, challengeNameId, result.nameID)), 100);
+      navigate(result.profile.url);
     },
     [navigate, createOpportunity, spaceNameId, challengeId, challengeNameId]
   );
 
   return (
     <ChallengePageLayout currentSection={EntityPageSection.Opportunities}>
-      <ChallengeOpportunitiesContainer spaceNameId={spaceNameId} challengeNameId={challengeNameId}>
+      <ChallengeOpportunitiesContainer challengeId={challengeId}>
         {({ callouts, ...entities }, state) => (
           <ChildJourneyView
-            spaceNameId={spaceNameId}
             childEntities={entities.opportunities ?? undefined}
             childEntitiesIcon={<OpportunityIcon />}
             childEntityReadAccess
-            getChildEntityUrl={entity => buildOpportunityUrl(spaceNameId, challengeNameId, entity.nameID)}
             childEntityValueGetter={journeyCardValueGetter}
             childEntityTagsGetter={journeyCardTagsGetter}
             journeyTypeName="challenge"
@@ -76,7 +73,7 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
                 innovationFlowState={opportunity.collaboration?.innovationFlow?.currentState.displayName}
                 tags={opportunity.profile.tagset?.tags!}
                 banner={opportunity.profile.cardBanner}
-                journeyUri={buildOpportunityUrl(spaceNameId, challengeNameId, opportunity.nameID)}
+                journeyUri={opportunity.profile.url}
                 spaceVisibility={spaceVisibility}
                 member={opportunity.community?.myMembershipStatus === CommunityMembershipStatus.Member}
               />
@@ -95,8 +92,7 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
             }
             childrenLeft={
               <CalloutsGroupView
-                callouts={callouts.groupedCallouts[CalloutDisplayLocation.OpportunitiesLeft]}
-                spaceId={spaceNameId!}
+                callouts={callouts.groupedCallouts[CalloutGroupName.Subspaces_1]}
                 canCreateCallout={callouts.canCreateCallout}
                 canCreateCalloutFromTemplate={callouts.canCreateCalloutFromTemplate}
                 loading={callouts.loading}
@@ -104,13 +100,12 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
                 calloutNames={callouts.calloutNames}
                 onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
                 onCalloutUpdate={callouts.refetchCallout}
-                displayLocation={CalloutDisplayLocation.OpportunitiesLeft}
+                groupName={CalloutGroupName.Subspaces_1}
               />
             }
             childrenRight={
               <CalloutsGroupView
-                callouts={callouts.groupedCallouts[CalloutDisplayLocation.OpportunitiesRight]}
-                spaceId={spaceNameId!}
+                callouts={callouts.groupedCallouts[CalloutGroupName.Subspaces_2]}
                 canCreateCallout={callouts.canCreateCallout}
                 canCreateCalloutFromTemplate={callouts.canCreateCalloutFromTemplate}
                 loading={callouts.loading}
@@ -118,7 +113,7 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
                 calloutNames={callouts.calloutNames}
                 onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
                 onCalloutUpdate={callouts.refetchCallout}
-                displayLocation={CalloutDisplayLocation.OpportunitiesRight}
+                groupName={CalloutGroupName.Subspaces_2}
               />
             }
           />
