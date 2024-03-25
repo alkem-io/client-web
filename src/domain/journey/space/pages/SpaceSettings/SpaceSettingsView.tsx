@@ -101,7 +101,7 @@ export const SpaceSettingsView: FC = () => {
                   ),
                 },
               }}
-              onChange={handleUpdateSettings()}
+              onChange={value => handleUpdateSettings(value, undefined, undefined, false)}
             />
           </PageContentBlock>
 
@@ -136,7 +136,7 @@ export const SpaceSettingsView: FC = () => {
                   ),
                 },
               }}
-              onChange={handleUpdateSettings()}
+              onChange={value => handleUpdateSettings(undefined, value, undefined, false)}
             />
 
             <BlockSectionTitle>{t('pages.admin.space.settings.membership.trustedApplicants')}</BlockSectionTitle>
@@ -156,7 +156,9 @@ export const SpaceSettingsView: FC = () => {
                   ),
                 },
               }}
-              onChange={handleUpdateSettings()}
+              onChange={value =>
+                handleUpdateSettings(undefined, undefined, value === 'trustHostOrganization' ? true : false, false)
+              }
             />
           </PageContentBlock>
 
