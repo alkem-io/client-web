@@ -1,12 +1,10 @@
-import { Grid } from '@mui/material';
+import { Button, Grid } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { Formik } from 'formik';
 import React, { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
 import * as yup from 'yup';
 import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
-import WrapperButton from '../../../../core/ui/button/deprecated/WrapperButton';
 import ErrorBlock from '../../../../core/ui/error/ErrorBlock';
 import { Loading } from '../../../../core/ui/loading/Loading';
 import { useApplicationCommunityQuery } from '../containers/useApplicationCommunityQuery';
@@ -22,6 +20,7 @@ import { BlockTitle, PageTitle } from '../../../../core/ui/typography';
 import SaveButton from '../../../../core/ui/actions/SaveButton';
 import PageContent from '../../../../core/ui/content/PageContent';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
+import RouterLink from '../../../../core/ui/link/RouterLink';
 
 const useStyles = makeStyles(theme => ({
   thankYouDiv: {
@@ -129,7 +128,9 @@ const ApplyPage: FC<ApplyPageProps> = ({ type }) => {
               {t('pages.space.application.finish')}
               {communityName}
             </BlockTitle>
-            <WrapperButton as={Link} to={backUrl} text={t('pages.space.application.backButton')} />
+            <Button component={RouterLink} to={backUrl} variant="outlined">
+              {t('pages.space.application.backButton')}
+            </Button>
           </div>
         ) : (
           <>
