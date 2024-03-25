@@ -1,6 +1,6 @@
 import React, { FC, ReactNode, useState } from 'react';
 import { Alert, DialogActions } from '@mui/material';
-import { Formik } from 'formik';
+import { Formik, FormikState } from 'formik';
 import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
@@ -49,13 +49,18 @@ export const DirectMessageDialog: FC<MessageUserDialogProps> = ({
 
   const [isMessageSent, setMessageSent] = useState(false);
 
-  const [handleSendMessage, isLoading, error] = useLoadingState(async (values: SendMessageData, { resetForm }) => {
-    await onSendMessage(values.message);
-    if (!error) {
-      setMessageSent(true);
-      resetForm();
+  const [handleSendMessage, isLoading, error] = useLoadingState(
+    async (
+      values: SendMessageData,
+      { resetForm }: { resetForm: (nextState?: Partial<FormikState<SendMessageData>>) => void }
+    ) => {
+      await onSendMessage(values.message);
+      if (!error) {
+        setMessageSent(true);
+        resetForm();
+      }
     }
-  });
+  );
 
   const handleClose = () => {
     onClose();

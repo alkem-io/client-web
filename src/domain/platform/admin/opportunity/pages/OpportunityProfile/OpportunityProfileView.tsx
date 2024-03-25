@@ -49,7 +49,7 @@ const OpportunityProfileView: FC<Props> = ({ mode }) => {
 
   const { data: opportunityProfile } = useOpportunityProfileInfoQuery({
     variables: { opportunityId: opportunityId! },
-    skip: mode === FormMode.create,
+    skip: !opportunityId || mode === FormMode.create,
   });
 
   const opportunity = opportunityProfile?.lookup.opportunity;

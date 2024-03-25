@@ -5740,8 +5740,36 @@ export const ActivityLogOnCollaborationDocument = gql`
       queryData: { collaborationID: $collaborationID, limit: $limit, types: $types, includeChild: true }
     ) {
       id
+      collaborationID
       createdDate
+      description
       type
+      child
+      parentNameID
+      journeyDisplayName: parentDisplayName
+      journey {
+        id
+        ... on Space {
+          profile {
+            ...RecentContributionsSpaceProfile
+          }
+        }
+        ... on RelayPaginatedSpace {
+          profile {
+            ...RecentContributionsSpaceProfile
+          }
+        }
+        ... on Challenge {
+          profile {
+            ...RecentContributionsChildJourneyProfile
+          }
+        }
+        ... on Opportunity {
+          profile {
+            ...RecentContributionsChildJourneyProfile
+          }
+        }
+      }
       triggeredBy {
         id
         profile {
@@ -5791,6 +5819,8 @@ export const ActivityLogOnCollaborationDocument = gql`
       }
     }
   }
+  ${RecentContributionsSpaceProfileFragmentDoc}
+  ${RecentContributionsChildJourneyProfileFragmentDoc}
   ${ActivityLogMemberJoinedFragmentDoc}
   ${ActivityLogCalloutPublishedFragmentDoc}
   ${ActivityLogCalloutPostCreatedFragmentDoc}
@@ -9404,6 +9434,69 @@ export type AuthorDetailsQueryResult = Apollo.QueryResult<
 >;
 export function refetchAuthorDetailsQuery(variables: SchemaTypes.AuthorDetailsQueryVariables) {
   return { query: AuthorDetailsDocument, variables: variables };
+}
+
+export const LatestReleaseDiscussionDocument = gql`
+  query latestReleaseDiscussion {
+    platform {
+      id
+      latestReleaseDiscussion {
+        id
+        nameID
+      }
+    }
+  }
+`;
+
+/**
+ * __useLatestReleaseDiscussionQuery__
+ *
+ * To run a query within a React component, call `useLatestReleaseDiscussionQuery` and pass it any options that fit your needs.
+ * When your component renders, `useLatestReleaseDiscussionQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useLatestReleaseDiscussionQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useLatestReleaseDiscussionQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.LatestReleaseDiscussionQuery,
+    SchemaTypes.LatestReleaseDiscussionQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.LatestReleaseDiscussionQuery, SchemaTypes.LatestReleaseDiscussionQueryVariables>(
+    LatestReleaseDiscussionDocument,
+    options
+  );
+}
+
+export function useLatestReleaseDiscussionLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.LatestReleaseDiscussionQuery,
+    SchemaTypes.LatestReleaseDiscussionQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.LatestReleaseDiscussionQuery,
+    SchemaTypes.LatestReleaseDiscussionQueryVariables
+  >(LatestReleaseDiscussionDocument, options);
+}
+
+export type LatestReleaseDiscussionQueryHookResult = ReturnType<typeof useLatestReleaseDiscussionQuery>;
+export type LatestReleaseDiscussionLazyQueryHookResult = ReturnType<typeof useLatestReleaseDiscussionLazyQuery>;
+export type LatestReleaseDiscussionQueryResult = Apollo.QueryResult<
+  SchemaTypes.LatestReleaseDiscussionQuery,
+  SchemaTypes.LatestReleaseDiscussionQueryVariables
+>;
+export function refetchLatestReleaseDiscussionQuery(variables?: SchemaTypes.LatestReleaseDiscussionQueryVariables) {
+  return { query: LatestReleaseDiscussionDocument, variables: variables };
 }
 
 export const CreateDiscussionDocument = gql`
@@ -23995,8 +24088,36 @@ export const LatestContributionsDocument = gql`
     activityFeed(after: $after, first: $first, args: $filter) {
       activityFeed {
         id
+        collaborationID
         createdDate
+        description
         type
+        child
+        parentNameID
+        journeyDisplayName: parentDisplayName
+        journey {
+          id
+          ... on Space {
+            profile {
+              ...RecentContributionsSpaceProfile
+            }
+          }
+          ... on RelayPaginatedSpace {
+            profile {
+              ...RecentContributionsSpaceProfile
+            }
+          }
+          ... on Challenge {
+            profile {
+              ...RecentContributionsChildJourneyProfile
+            }
+          }
+          ... on Opportunity {
+            profile {
+              ...RecentContributionsChildJourneyProfile
+            }
+          }
+        }
         triggeredBy {
           id
           profile {
@@ -24051,6 +24172,8 @@ export const LatestContributionsDocument = gql`
       }
     }
   }
+  ${RecentContributionsSpaceProfileFragmentDoc}
+  ${RecentContributionsChildJourneyProfileFragmentDoc}
   ${ActivityLogMemberJoinedFragmentDoc}
   ${ActivityLogCalloutPublishedFragmentDoc}
   ${ActivityLogCalloutPostCreatedFragmentDoc}

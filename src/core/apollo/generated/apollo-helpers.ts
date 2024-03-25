@@ -1311,6 +1311,11 @@ export type JourneyFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type LatestReleaseDiscussionKeySpecifier = ('id' | 'nameID' | LatestReleaseDiscussionKeySpecifier)[];
+export type LatestReleaseDiscussionFieldPolicy = {
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  nameID?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type LibraryKeySpecifier = (
   | 'authorization'
   | 'id'
@@ -1488,6 +1493,7 @@ export type MutationKeySpecifier = (
   | 'authorizationPolicyResetOnPlatform'
   | 'authorizationPolicyResetOnSpace'
   | 'authorizationPolicyResetOnUser'
+  | 'authorizationPolicyResetToGlobalAdminsAccess'
   | 'beginAlkemioUserVerifiedCredentialOfferInteraction'
   | 'beginCommunityMemberVerifiedCredentialOfferInteraction'
   | 'beginVerifiedCredentialRequestInteraction'
@@ -1644,6 +1650,7 @@ export type MutationFieldPolicy = {
   authorizationPolicyResetOnPlatform?: FieldPolicy<any> | FieldReadFunction<any>;
   authorizationPolicyResetOnSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   authorizationPolicyResetOnUser?: FieldPolicy<any> | FieldReadFunction<any>;
+  authorizationPolicyResetToGlobalAdminsAccess?: FieldPolicy<any> | FieldReadFunction<any>;
   beginAlkemioUserVerifiedCredentialOfferInteraction?: FieldPolicy<any> | FieldReadFunction<any>;
   beginCommunityMemberVerifiedCredentialOfferInteraction?: FieldPolicy<any> | FieldReadFunction<any>;
   beginVerifiedCredentialRequestInteraction?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1926,6 +1933,7 @@ export type PlatformKeySpecifier = (
   | 'id'
   | 'innovationHub'
   | 'innovationHubs'
+  | 'latestReleaseDiscussion'
   | 'library'
   | 'metadata'
   | 'storageAggregator'
@@ -1938,6 +1946,7 @@ export type PlatformFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationHub?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationHubs?: FieldPolicy<any> | FieldReadFunction<any>;
+  latestReleaseDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
   library?: FieldPolicy<any> | FieldReadFunction<any>;
   metadata?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3353,6 +3362,10 @@ export type StrictTypedTypePolicies = {
   Journey?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | JourneyKeySpecifier | (() => undefined | JourneyKeySpecifier);
     fields?: JourneyFieldPolicy;
+  };
+  LatestReleaseDiscussion?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | LatestReleaseDiscussionKeySpecifier | (() => undefined | LatestReleaseDiscussionKeySpecifier);
+    fields?: LatestReleaseDiscussionFieldPolicy;
   };
   Library?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | LibraryKeySpecifier | (() => undefined | LibraryKeySpecifier);
