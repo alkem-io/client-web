@@ -57,7 +57,6 @@ export interface CalendarEventsState {
   loading: boolean;
   creatingCalendarEvent: boolean;
   updatingCalendarEvent: boolean;
-  deletingCalendarEvent: boolean;
 }
 
 export interface CalendarEventsEntities {
@@ -108,7 +107,7 @@ export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ jour
 
   const [updateCalendarEvent, { loading: updatingCalendarEvent }] = useUpdateCalendarEventMutation();
 
-  const [deleteCalendarEvent, { loading: deletingCalendarEvent }] = useDeleteCalendarEventMutation();
+  const [deleteCalendarEvent] = useDeleteCalendarEventMutation();
 
   let refetchQueriesList: MutationBaseOptions['refetchQueries'] = [];
 
@@ -209,7 +208,6 @@ export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ jour
           loading,
           creatingCalendarEvent,
           updatingCalendarEvent,
-          deletingCalendarEvent,
         }
       )}
     </StorageConfigContextProvider>
