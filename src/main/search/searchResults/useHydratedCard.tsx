@@ -5,6 +5,7 @@ import {
   SearchResultOrganizationFragment,
   SearchResultPostFragment,
   SearchResultSpaceFragment,
+  SearchResultType,
   SearchResultUserFragment,
   UserRolesSearchCardsQuery,
 } from '../../../core/apollo/generated/graphql-schema';
@@ -19,7 +20,7 @@ import { RoleType } from '../../../domain/community/user/constants/RoleType';
 import { getVisualByType } from '../../../domain/common/visual/utils/visuals.utils';
 import { useUserRolesSearchCardsQuery } from '../../../core/apollo/generated/apollo-hooks';
 import { useUserContext } from '../../../domain/community/user/hooks/useUserContext';
-import { SearchResultMetaType, SearchResultT } from '../SearchView';
+import { TypedSearchResult } from '../SearchView';
 import { SearchContributionCardCard } from '../../../domain/shared/components/search-cards/SearchContributionPostCard';
 import { OpportunityIcon } from '../../../domain/journey/opportunity/icon/OpportunityIcon';
 import { ChallengeIcon } from '../../../domain/journey/challenge/icon/ChallengeIcon';
@@ -31,10 +32,7 @@ import CardParentJourneySegment from '../../../domain/journey/common/SpaceChildJ
 import { CalloutIcon } from '../../../domain/collaboration/callout/icon/CalloutIcon';
 import { VisualName } from '../../../domain/common/visual/constants/visuals.constants';
 
-const _hydrateUserCard = (data: SearchResultT<SearchResultUserFragment>) => {
-  if (!data?.user) {
-    return null;
-  }
+const hydrateUserCard = (data: TypedSearchResult<SearchResultType.User, SearchResultUserFragment>) => {
   const user = data.user;
   const profile = user.profile;
   const avatarUri = profile.visual?.uri;
@@ -58,12 +56,9 @@ const _hydrateUserCard = (data: SearchResultT<SearchResultUserFragment>) => {
 };
 
 const _hydrateOrganizationCard = (
-  data: SearchResultT<SearchResultOrganizationFragment>,
+  data: TypedSearchResult<SearchResultType.Organization, SearchResultOrganizationFragment>,
   userRoles: UserRolesSearchCardsQuery['rolesUser'] | undefined
 ) => {
-  if (!data?.organization) {
-    return null;
-  }
   const organization = data.organization;
   const profile = data.organization.profile;
   const avatarUri = profile.visual?.uri;
@@ -89,10 +84,7 @@ const _hydrateOrganizationCard = (
   );
 };
 
-const _hydrateSpaceCard = (data: SearchResultT<SearchResultSpaceFragment>) => {
-  if (!data?.space) {
-    return null;
-  }
+const hydrateSpaceCard = (data: TypedSearchResult<SearchResultType.Space, SearchResultSpaceFragment>) => {
   const space = data.space;
   const tagline = space.profile?.tagline ?? '';
   const name = space.profile.displayName;
@@ -117,10 +109,7 @@ const _hydrateSpaceCard = (data: SearchResultT<SearchResultSpaceFragment>) => {
   );
 };
 
-const useHydrateChallengeCard = (data: SearchResultT<SearchResultChallengeFragment> | undefined) => {
-  if (!data?.challenge || !data?.space) {
-    return null;
-  }
+const hydrateChallengeCard = (data: TypedSearchResult<SearchResultType.Challenge, SearchResultChallengeFragment>) => {
   const challenge = data.challenge;
   const containingSpace = data.space;
   const tagline = challenge.profile.tagline || '';
@@ -156,10 +145,9 @@ const useHydrateChallengeCard = (data: SearchResultT<SearchResultChallengeFragme
   );
 };
 
-const useHydrateOpportunityCard = (data: SearchResultT<SearchResultOpportunityFragment> | undefined) => {
-  if (!data?.opportunity) {
-    return null;
-  }
+const hydrateOpportunityCard = (
+  data: TypedSearchResult<SearchResultType.Opportunity, SearchResultOpportunityFragment>
+) => {
   const opportunity = data.opportunity;
   const containingChallenge = data.challenge;
   const containingSpace = data.space;
@@ -196,7 +184,7 @@ const useHydrateOpportunityCard = (data: SearchResultT<SearchResultOpportunityFr
   );
 };
 
-const getContributionParentInformation = (data: SearchResultT<SearchResultPostFragment>) => {
+const getContributionParentInformation = (data: TypedSearchResult<SearchResultType.Post, SearchResultPostFragment>) => {
   if (data.opportunity) {
     return {
       icon: OpportunityIcon,
@@ -221,7 +209,7 @@ const getContributionParentInformation = (data: SearchResultT<SearchResultPostFr
   }
 };
 
-const _hydrateContributionPost = (data: SearchResultT<SearchResultPostFragment> | undefined) => {
+const hydrateContributionPost = (data: TypedSearchResult<SearchResultType.Post, SearchResultPostFragment>) => {
   if (!data?.post) {
     return null;
   }
@@ -254,20 +242,26 @@ const _hydrateContributionPost = (data: SearchResultT<SearchResultPostFragment> 
   );
 };
 
-interface HydratedCardGetter {
-  (): null | JSX.Element;
+interface HydratedCardGetter<Data> {
+  (data: Data): null | JSX.Element;
 }
 
 interface UseHydrateCardProvided {
-  hydrateUserCard: HydratedCardGetter;
-  hydrateOrganizationCard: HydratedCardGetter;
-  hydrateContributionCard: HydratedCardGetter;
-  hydrateSpaceCard: HydratedCardGetter;
-  hydrateChallengeCard: HydratedCardGetter;
-  hydrateOpportunityCard: HydratedCardGetter;
+  hydrateUserCard: HydratedCardGetter<TypedSearchResult<SearchResultType.User, SearchResultUserFragment>>;
+  hydrateOrganizationCard: HydratedCardGetter<
+    TypedSearchResult<SearchResultType.Organization, SearchResultOrganizationFragment>
+  >;
+  hydrateContributionCard: HydratedCardGetter<TypedSearchResult<SearchResultType.Post, SearchResultPostFragment>>;
+  hydrateSpaceCard: HydratedCardGetter<TypedSearchResult<SearchResultType.Space, SearchResultSpaceFragment>>;
+  hydrateChallengeCard: HydratedCardGetter<
+    TypedSearchResult<SearchResultType.Challenge, SearchResultChallengeFragment>
+  >;
+  hydrateOpportunityCard: HydratedCardGetter<
+    TypedSearchResult<SearchResultType.Opportunity, SearchResultOpportunityFragment>
+  >;
 }
 
-export const useHydrateCard = (result: SearchResultMetaType | undefined): UseHydrateCardProvided => {
+export const useHydrateCard = (): UseHydrateCardProvided => {
   const { user: userMetadata } = useUserContext();
   const userId = userMetadata?.user?.id;
 
@@ -277,32 +271,17 @@ export const useHydrateCard = (result: SearchResultMetaType | undefined): UseHyd
     },
     skip: !userId,
   });
+
   const userRoles = rolesData?.rolesUser;
 
-  // Contributor cards:
-  const hydrateUserCard = () => _hydrateUserCard(result as SearchResultT<SearchResultUserFragment>);
-
-  const hydrateOrganizationCard = () =>
-    _hydrateOrganizationCard(result as SearchResultT<SearchResultOrganizationFragment>, userRoles);
-
-  // Contribution cards:
-  const hydrateContributionCard = () => _hydrateContributionPost(result as SearchResultT<SearchResultPostFragment>);
-
-  // Journey cards:
-  const hydrateSpaceCard = () => _hydrateSpaceCard(result as SearchResultT<SearchResultSpaceFragment>);
-
-  const hydrateChallengeCardResult = useHydrateChallengeCard(result as SearchResultT<SearchResultChallengeFragment>);
-  const hydrateChallengeCard = () => hydrateChallengeCardResult;
-
-  const hydrateOpportunityCardResult = useHydrateOpportunityCard(
-    result as SearchResultT<SearchResultOpportunityFragment>
-  );
-  const hydrateOpportunityCard = () => hydrateOpportunityCardResult;
+  const hydrateOrganizationCard = (
+    result: TypedSearchResult<SearchResultType.Organization, SearchResultOrganizationFragment>
+  ) => _hydrateOrganizationCard(result, userRoles);
 
   return {
     hydrateSpaceCard,
     hydrateChallengeCard,
-    hydrateContributionCard,
+    hydrateContributionCard: hydrateContributionPost,
     hydrateOpportunityCard,
     hydrateUserCard,
     hydrateOrganizationCard,
