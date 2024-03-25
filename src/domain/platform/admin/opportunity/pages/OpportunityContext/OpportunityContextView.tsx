@@ -25,7 +25,7 @@ const OpportunityContextView: FC = () => {
 
   const { data: opportunityProfile, loading } = useOpportunityProfileInfoQuery({
     variables: { opportunityId: opportunityId! },
-    skip: false,
+    skip: !opportunityId,
   });
 
   const opportunity = opportunityProfile?.lookup.opportunity;

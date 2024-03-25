@@ -1,6 +1,7 @@
-import React, { FC, useMemo, useState } from 'react';
+import React, { FC, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Theme, useMediaQuery } from '@mui/material';
+import { useLocation } from 'react-router-dom';
 import useNavigate from '../../../../core/routing/useNavigate';
 import CategorySelector from '../components/CategorySelector';
 import DiscussionsLayout from '../layout/DiscussionsLayout';
@@ -58,17 +59,42 @@ interface ForumPageProps {
   dialog?: 'new';
 }
 
+enum DiscussionCategoryPlatform {
+  RELEASES = 'releases',
+  PLATFORM_FUNCTIONALITIES = 'platform-functionalities',
+  COMMUNITY_BUILDING = 'community-building',
+  CHALLENGE_CENTRIC = 'challenge-centric',
+  HELP = 'help',
+  OTHER = 'other',
+}
+
 export const ForumPage: FC<ForumPageProps> = ({ dialog }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { user: { hasPlatformPrivilege } = {}, isAuthenticated, loading: loadingUser } = useUserContext();
 
-  const [categorySelected, setCategorySelected] = useState<DiscussionCategoryExt>(ALL_CATEGORIES);
+  const { pathname } = useLocation();
+  const initialPathname = useRef(pathname);
+
+  const path = pathname.substring(pathname.lastIndexOf('/') + 1);
+  const category = (Object.keys(DiscussionCategoryPlatform)[
+    Object.values(DiscussionCategoryPlatform).indexOf(path as unknown as DiscussionCategoryPlatform)
+  ] ?? ALL_CATEGORIES) as DiscussionCategoryExt;
+
+  useEffect(() => {
+    if (pathname !== initialPathname.current) {
+      setCategorySelected(category as DiscussionCategoryExt);
+      initialPathname.current = pathname;
+    }
+  }, [pathname]);
+
+  const [categorySelected, setCategorySelected] = useState<DiscussionCategoryExt>(category || ALL_CATEGORIES);
   const { data, loading: loadingDiscussions, subscribeToMore } = usePlatformDiscussionsQuery();
   useSubscriptionToCommunication(data, data => data?.platform.communication, subscribeToMore);
 
   const isGlobalAdmin = hasPlatformPrivilege?.(AuthorizationPrivilege.GrantGlobalAdmins);
-  const validCategories =
+  const validCategories = data?.platform.communication.discussionCategories ?? [];
+  const discussionCreationCategories =
     (isGlobalAdmin
       ? data?.platform.communication.discussionCategories
       : data?.platform.communication.discussionCategories?.filter(
@@ -154,7 +180,13 @@ export const ForumPage: FC<ForumPageProps> = ({ dialog }) => {
             categorySelector={
               <CategorySelector
                 categories={categories}
-                onSelect={setCategorySelected}
+                onSelect={category => {
+                  navigate(
+                    Object.keys(DiscussionCategoryPlatform).includes(category)
+                      ? `/forum/${DiscussionCategoryPlatform[category]}`
+                      : '/forum'
+                  );
+                }}
                 value={categorySelected}
                 showLabels={!mediumScreen}
               />
@@ -178,7 +210,7 @@ export const ForumPage: FC<ForumPageProps> = ({ dialog }) => {
             {!loading && communicationId && (
               <NewDiscussionDialog
                 communicationId={communicationId}
-                categories={validCategories}
+                categories={discussionCreationCategories}
                 open={dialog === 'new'}
                 onClose={() => navigate('/forum')}
               />

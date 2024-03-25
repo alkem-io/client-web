@@ -45,16 +45,16 @@ export const MAX_TERMS_SEARCH = 5;
 
 const tagsetNames = ['skills', 'keywords'];
 
-export type SearchResultT<T> = T & SearchResult;
+export type TypedSearchResult<Type extends SearchResultType, ResultFragment extends {}> = SearchResult &
+  ResultFragment & { type: Type };
 
-export type SearchResultMetaType = SearchResultT<
-  | SearchResultUserFragment
-  | SearchResultOrganizationFragment
-  | SearchResultPostFragment
-  | SearchResultSpaceFragment
-  | SearchResultChallengeFragment
-  | SearchResultOpportunityFragment
->;
+export type SearchResultMetaType =
+  | TypedSearchResult<SearchResultType.User, SearchResultUserFragment>
+  | TypedSearchResult<SearchResultType.Organization, SearchResultOrganizationFragment>
+  | TypedSearchResult<SearchResultType.Post, SearchResultPostFragment>
+  | TypedSearchResult<SearchResultType.Space, SearchResultSpaceFragment>
+  | TypedSearchResult<SearchResultType.Challenge, SearchResultChallengeFragment>
+  | TypedSearchResult<SearchResultType.Opportunity, SearchResultOpportunityFragment>;
 
 interface SearchViewProps {
   searchRoute: string;
