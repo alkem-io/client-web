@@ -173,7 +173,7 @@ const SpaceDashboardView = ({
 
         <PageContentColumn columns={8}>
           <DashboardRecentContributionsBlock
-            halfWidth={(callouts.groupedCallouts[CalloutGroupName.Home_1]?.length ?? 0) > 0}
+            halfWidth={(callouts.groupedCallouts[CalloutGroupName.Home_2]?.length ?? 0) > 0}
             readUsersAccess={readUsersAccess}
             entityReadAccess={entityReadAccess}
             activitiesLoading={activityLoading}
