@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Dialog, DialogContent } from '@mui/material';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import Gutters from '../../../../core/ui/grid/Gutters';
+import { BlockTitle } from '../../../../core/ui/typography';
 
 export interface ApplicationSubmitedDialogProps {
   open: boolean;
@@ -12,10 +13,12 @@ export interface ApplicationSubmitedDialogProps {
 const ApplicationSubmitedDialog: FC<ApplicationSubmitedDialogProps> = ({ open, onClose }) => {
   const { t } = useTranslation();
   return (
-    <Dialog open={open}>
+    <Dialog open={open} maxWidth={'sm'} fullWidth>
       <DialogHeader onClose={onClose} />
-      <DialogContent>
-        <Gutters>{t('components.application-button.dialogApplicationSuccessful.apply.body')}</Gutters>
+      <DialogContent sx={{ paddingBottom: 6 }}>
+        <Gutters alignItems="center">
+          <BlockTitle>{t('components.application-button.dialogApplicationSuccessful.apply.body')}</BlockTitle>
+        </Gutters>
       </DialogContent>
     </Dialog>
   );
