@@ -52,6 +52,13 @@ const InnovationFlowChips = ({
     return 'outlined';
   };
 
+  const getStateButtonBackgroundColor = (state: InnovationFlowState) => {
+    if (state.displayName === selectedState) {
+      return 'primary.main';
+    }
+    return 'background.paper';
+  };
+
   const getStateAriaLabel = (stateName: string) =>
     stateName === currentState
       ? t('components.innovationFlowVisualizer.currentStateName', { state: getStateName(stateName) })
@@ -77,6 +84,7 @@ const InnovationFlowChips = ({
               variant={getStateButtonVariant(state)}
               disableElevation
               sx={{
+                backgroundColor: getStateButtonBackgroundColor(state),
                 '.MuiButton-startIcon': {
                   marginRight: 0,
                 },
