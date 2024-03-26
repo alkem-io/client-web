@@ -11,6 +11,7 @@ import { VisualName } from '../../../common/visual/constants/visuals.constants';
 import useInnovationHubJourneyBannerRibbon from '../../../innovationHub/InnovationHubJourneyBannerRibbon/useInnovationHubJourneyBannerRibbon';
 import SpacePageBanner from './SpacePageBanner';
 import { ApplicationTypeEnum } from '../../../community/application/constants/ApplicationType';
+import CommunityGuidelinesBlock from '../../../community/community/CommunityGuidelines/CommunityGuidelinesBlock';
 
 export interface SpacePageLayoutProps {
   currentSection: EntityPageSection;
@@ -55,6 +56,7 @@ const SpacePageLayout = ({
             journeyTypeName={ApplicationTypeEnum.space}
             description={vision}
             disabled={unauthorizedDialogDisabled}
+            leftColumnChildrenTop={<CommunityGuidelinesBlock spaceId={spaceId} />}
             {...props}
           />
         )}

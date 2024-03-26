@@ -51,7 +51,8 @@ export interface JourneyAboutDialogProps extends EntityDashboardLeads {
   who: string | undefined;
   impact: string | undefined;
   loading?: boolean;
-  leftColumnChildren?: ReactNode;
+  leftColumnChildrenTop?: ReactNode;
+  leftColumnChildrenBottom?: ReactNode;
   shareUrl?: string;
 }
 
@@ -98,7 +99,8 @@ const JourneyAboutDialog = ({
   loading = false,
   startButton,
   endButton,
-  leftColumnChildren,
+  leftColumnChildrenTop,
+  leftColumnChildrenBottom,
   shareUrl,
 }: JourneyAboutDialogProps) => {
   const { t } = useTranslation();
@@ -203,6 +205,7 @@ const JourneyAboutDialog = ({
           </PageContentColumn>
           <PageContentColumn columns={4}>
             <PageContentBlockSeamless disablePadding order={1}>
+              {leftColumnChildrenTop}
               <PageContentBlock>
                 <PageContentBlockHeader
                   title={t('components.journeyMetrics.title', { journey: t(`common.${journeyTypeName}` as const) })}
@@ -268,7 +271,7 @@ const JourneyAboutDialog = ({
                 </EntityDashboardLeadsSection>
               )}
             </PageContentBlockSeamless>
-            {leftColumnChildren}
+            {leftColumnChildrenBottom}
           </PageContentColumn>
         </Gutters>
       </Box>

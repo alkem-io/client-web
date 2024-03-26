@@ -17,6 +17,7 @@ import { buildAboutUrl, buildUpdatesUrl } from '../../../../main/routing/urlBuil
 import { useTranslation } from 'react-i18next';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 import { ApplicationTypeEnum } from '../../../community/application/constants/ApplicationType';
+import CommunityGuidelinesBlock from '../../../community/community/CommunityGuidelines/CommunityGuidelinesBlock';
 
 export interface SpaceDashboardPageProps {
   dialog?: 'about' | 'updates' | 'contributors' | 'calendar';
@@ -107,6 +108,7 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
                 </IconButton>
               }
               shareUrl={buildAboutUrl(entities.space?.profile.url)}
+              leftColumnChildrenTop={<CommunityGuidelinesBlock spaceId={spaceId} />}
             />
           </>
         )}

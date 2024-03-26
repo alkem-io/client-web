@@ -70,7 +70,7 @@ const ChallengeAboutPage: FC = () => {
               </IconButton>
             }
             shareUrl={buildAboutUrl(profile.url)}
-            leftColumnChildren={
+            leftColumnChildrenBottom={
               <EntityDashboardContributorsSection
                 memberUsers={memberUsers}
                 memberUsersCount={memberUsersCount}
