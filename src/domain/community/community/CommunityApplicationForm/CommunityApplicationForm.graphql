@@ -1,10 +1,10 @@
 query CommunityApplicationForm(
   $spaceId: UUID_NAMEID = "00000000-0000-0000-0000-000000000000"
   $challengeId: UUID = "00000000-0000-0000-0000-000000000000"
-  $isSpace: Boolean = false
-  $isChallenge: Boolean = false
+  $includeSpace: Boolean = false
+  $includeChallenge: Boolean = false
 ) {
-  space(ID: $spaceId) @include(if: $isSpace) {
+  space(ID: $spaceId) @include(if: $includeSpace) {
     id
     community {
       id
@@ -14,7 +14,7 @@ query CommunityApplicationForm(
     }
   }
   lookup {
-    challenge(ID: $challengeId) @include(if: $isChallenge) {
+    challenge(ID: $challengeId) @include(if: $includeChallenge) {
       community {
         id
         applicationForm {

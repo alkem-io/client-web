@@ -29,6 +29,7 @@ interface SpaceSettingsViewProps {
 
 export const SpaceSettingsView: FC<SpaceSettingsViewProps> = ({ journeyId, journeyTypeName }) => {
   const { t } = useTranslation();
+  const isSubspace = journeyTypeName === 'challenge' || journeyTypeName === 'opportunity';
 
   const { data: hostOrganization } = useSpaceHostQuery({
     variables: { spaceId: journeyId },
@@ -151,49 +152,55 @@ export const SpaceSettingsView: FC<SpaceSettingsViewProps> = ({ journeyId, journ
                     />
                   ),
                 },
-                [CommunityMembershipPolicy.Invitations]: {
-                  label: (
-                    <Trans
-                      i18nKey="pages.admin.space.settings.membership.invitations"
-                      components={{
-                        b: <strong />,
-                        community: <RouterLink to={`../${SettingsSection.Community}`} onClick={scrollToTop} />,
-                      }}
-                    />
-                  ),
-                },
+                ...(!isSubspace && {
+                  // Only show this option for top level spaces
+                  [CommunityMembershipPolicy.Invitations]: {
+                    label: (
+                      <Trans
+                        i18nKey="pages.admin.space.settings.membership.invitations"
+                        components={{
+                          b: <strong />,
+                          community: <RouterLink to={`../${SettingsSection.Community}`} onClick={scrollToTop} />,
+                        }}
+                      />
+                    ),
+                  },
+                }),
               }}
               onChange={value => handleUpdateSettings(undefined, value, undefined, false)}
             />
-
-            <BlockSectionTitle>{t('pages.admin.space.settings.membership.trustedApplicants')}</BlockSectionTitle>
-            <SwitchSettingsGroup
-              options={{
-                trustHostOrganization: {
-                  checked: trustedOrganizations.length > 0 ? true : false,
-                  label: (
-                    <Trans
-                      t={t}
-                      i18nKey="pages.admin.space.settings.membership.hostOrganizationJoin"
-                      values={{
-                        host: hostOrganization?.space?.account.host?.profile?.displayName,
-                      }}
-                      components={{ b: <strong />, i: <em /> }}
-                    />
-                  ),
-                },
-              }}
-              onChange={value =>
-                handleUpdateSettings(undefined, undefined, value === 'trustHostOrganization' ? true : false, false)
-              }
-            />
+            {!isSubspace && (
+              <>
+                <BlockSectionTitle>{t('pages.admin.space.settings.membership.trustedApplicants')}</BlockSectionTitle>
+                <SwitchSettingsGroup
+                  options={{
+                    trustHostOrganization: {
+                      checked: trustedOrganizations.length > 0 ? true : false,
+                      label: (
+                        <Trans
+                          t={t}
+                          i18nKey="pages.admin.space.settings.membership.hostOrganizationJoin"
+                          values={{
+                            host: hostOrganization?.space?.account.host?.profile?.displayName,
+                          }}
+                          components={{ b: <strong />, i: <em /> }}
+                        />
+                      ),
+                    },
+                  }}
+                  onChange={value =>
+                    handleUpdateSettings(undefined, undefined, value === 'trustHostOrganization' ? true : false, false)
+                  }
+                />
+              </>
+            )}
           </PageContentBlock>
 
           <PageContentBlockCollapsible header={<BlockTitle>{t('community.application-form.title')}</BlockTitle>}>
             <Text marginBottom={gutters(2)}>
               <Trans i18nKey="community.application-form.subtitle" components={{ b: <strong /> }} />
             </Text>
-            <CommunityApplicationForm spaceId={journeyId} />
+            <CommunityApplicationForm journeyId={journeyId} journeyTypeName={journeyTypeName} />
           </PageContentBlockCollapsible>
 
           <PageContentBlock>

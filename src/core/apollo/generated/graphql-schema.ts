@@ -13190,8 +13190,8 @@ export type AdminCommunityCandidateMemberFragment = {
 export type CommunityApplicationFormQueryVariables = Exact<{
   spaceId?: InputMaybe<Scalars['UUID_NAMEID']>;
   challengeId?: InputMaybe<Scalars['UUID']>;
-  isSpace?: InputMaybe<Scalars['Boolean']>;
-  isChallenge?: InputMaybe<Scalars['Boolean']>;
+  includeSpace?: InputMaybe<Scalars['Boolean']>;
+  includeChallenge?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 export type CommunityApplicationFormQuery = {
