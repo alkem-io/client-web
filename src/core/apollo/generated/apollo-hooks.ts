@@ -11437,6 +11437,10 @@ export const CommunityGuidelinesDocument = gql`
   query CommunityGuidelines($spaceId: UUID_NAMEID = "00000000-0000-0000-0000-000000000000") {
     space(ID: $spaceId) {
       id
+      profile {
+        id
+        displayName
+      }
       community {
         id
         guidelines {

@@ -10,6 +10,7 @@ import { getVisualByType } from '../../../common/visual/utils/visuals.utils';
 import { VisualName } from '../../../common/visual/constants/visuals.constants';
 import useInnovationHubJourneyBannerRibbon from '../../../innovationHub/InnovationHubJourneyBannerRibbon/useInnovationHubJourneyBannerRibbon';
 import SpacePageBanner from './SpacePageBanner';
+import { ApplicationTypeEnum } from '../../../community/application/constants/ApplicationType';
 
 export interface SpacePageLayoutProps {
   currentSection: EntityPageSection;
@@ -51,7 +52,7 @@ const SpacePageLayout = ({
       <JourneyUnauthorizedDialogContainer journeyId={spaceId} journeyTypeName="space" loading={loading}>
         {({ vision, ...props }) => (
           <JourneyUnauthorizedDialog
-            journeyTypeName="space"
+            journeyTypeName={ApplicationTypeEnum.space}
             description={vision}
             disabled={unauthorizedDialogDisabled}
             {...props}

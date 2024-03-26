@@ -10,7 +10,6 @@ import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
 import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 import EntityDashboardLeadsSection from '../../../community/community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';
-import { JourneyTypeName } from '../../JourneyTypeName';
 import { useTranslation } from 'react-i18next';
 import { EntityDashboardLeads } from '../../../community/community/EntityDashboardContributorsSection/Types';
 import ContactLeadsButton from '../../../community/community/ContactLeadsButton/ContactLeadsButton';
@@ -34,10 +33,11 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import useDirectMessageDialog from '../../../communication/messaging/DirectMessaging/useDirectMessageDialog';
 import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
+import { ApplicationTypeEnum } from '../../../community/application/constants/ApplicationType';
 
 export interface JourneyAboutDialogProps extends EntityDashboardLeads {
   open: boolean;
-  journeyTypeName: JourneyTypeName;
+  journeyTypeName: ApplicationTypeEnum;
   displayName: ReactNode;
   tagline: ReactNode;
   references: Reference[] | undefined;
@@ -63,13 +63,13 @@ const DialogHeaderItem = ({ align = 'center', ...props }: DialogHeaderItemProps)
   return <Box {...props} flexGrow={1} display="flex" justifyContent={align} alignItems="center" gap={gutters()} />;
 };
 
-const getMetricsSpec = (journeyTypeName: JourneyTypeName) => {
+const getMetricsSpec = (journeyTypeName: ApplicationTypeEnum) => {
   switch (journeyTypeName) {
-    case 'space':
+    case ApplicationTypeEnum.space:
       return SpaceMetrics;
-    case 'challenge':
+    case ApplicationTypeEnum.challenge:
       return ChallengeMetrics;
-    case 'opportunity':
+    case ApplicationTypeEnum.opportunity:
       return OpportunityMetrics;
   }
 };
@@ -103,7 +103,7 @@ const JourneyAboutDialog = ({
 }: JourneyAboutDialogProps) => {
   const { t } = useTranslation();
 
-  const isSpace = journeyTypeName === 'space';
+  const isSpace = journeyTypeName === ApplicationTypeEnum.space;
   const leadOrganizationsHeader = isSpace
     ? 'pages.space.sections.dashboard.leadingOrganizations'
     : 'community.leading-organizations';

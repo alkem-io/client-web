@@ -14,6 +14,7 @@ import SeeMore from '../../../../core/ui/content/SeeMore';
 import { useTranslation } from 'react-i18next';
 import { buildAboutUrl } from '../../../../main/routing/urlBuilders';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
+import { ApplicationTypeEnum } from '../../../community/application/constants/ApplicationType';
 
 const ChallengeAboutPage: FC = () => {
   const { communityId, profile } = useChallenge();
@@ -49,7 +50,7 @@ const ChallengeAboutPage: FC = () => {
         ) => (
           <JourneyAboutDialog
             open
-            journeyTypeName="challenge"
+            journeyTypeName={ApplicationTypeEnum.challenge}
             displayName={profile?.displayName}
             tagline={profile?.tagline}
             references={references}

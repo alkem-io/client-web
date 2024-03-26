@@ -7,6 +7,7 @@ import JourneyUnauthorizedDialog from '../../common/JourneyUnauthorizedDialog/Jo
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import JourneyBreadcrumbs from '../../common/journeyBreadcrumbs/JourneyBreadcrumbs';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
+import { ApplicationTypeEnum } from '../../../community/application/constants/ApplicationType';
 
 interface OpportunityPageLayoutProps {
   currentSection: EntityPageSection;
@@ -25,7 +26,11 @@ const OpportunityPageLayout = ({ currentSection, children }: PropsWithChildren<O
       {children}
       <JourneyUnauthorizedDialogContainer journeyId={opportunityId} journeyTypeName="opportunity" loading={loading}>
         {({ vision, ...props }) => (
-          <JourneyUnauthorizedDialog journeyTypeName="opportunity" description={vision} {...props} />
+          <JourneyUnauthorizedDialog
+            journeyTypeName={ApplicationTypeEnum.opportunity}
+            description={vision}
+            {...props}
+          />
         )}
       </JourneyUnauthorizedDialogContainer>
     </EntityPageLayout>

@@ -14,6 +14,8 @@ import { useCommunityContext } from '../../community/CommunityContext';
 import clearCacheForType from '../../../../core/apollo/utils/clearCacheForType';
 import { useAuthenticationContext } from '../../../../core/auth/authentication/hooks/useAuthenticationContext';
 import { useChallenge } from '../../../journey/challenge/hooks/useChallenge';
+import { useNotification } from '../../../../core/ui/notifications/useNotification';
+import { useTranslation } from 'react-i18next';
 
 interface ApplicationContainerEntities {
   applicationButtonProps: Omit<ApplicationButtonProps, 'journeyTypeName'>;
@@ -36,6 +38,8 @@ export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = (
   challengeName,
   children,
 }) => {
+  const { t } = useTranslation();
+  const notify = useNotification();
   const { isAuthenticated } = useAuthenticationContext();
   const { user, loadingMe: membershipLoading } = useUserContext();
   const userId = user?.user?.id ?? '';
@@ -102,6 +106,7 @@ export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = (
     });
     getUserProfile();
     refetchSpace();
+    notify(t('components.application-button.dialogApplicationSuccessful.join.body'), 'success');
   };
 
   const applicationButtonProps: Omit<ApplicationButtonProps, 'journeyTypeName'> = {

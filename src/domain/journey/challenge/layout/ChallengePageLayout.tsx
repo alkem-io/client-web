@@ -8,6 +8,7 @@ import { useChallenge } from '../hooks/useChallenge';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import JourneyBreadcrumbs from '../../common/journeyBreadcrumbs/JourneyBreadcrumbs';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
+import { ApplicationTypeEnum } from '../../../community/application/constants/ApplicationType';
 
 export interface ChallengePageLayoutProps {
   currentSection: EntityPageSection;
@@ -34,7 +35,7 @@ const ChallengePageLayout = ({
       <JourneyUnauthorizedDialogContainer journeyId={challengeId} journeyTypeName="challenge" loading={loading}>
         {({ vision, ...props }) => (
           <JourneyUnauthorizedDialog
-            journeyTypeName="challenge"
+            journeyTypeName={ApplicationTypeEnum.challenge}
             challengeId={challengeId}
             challengeName={profile.displayName}
             description={vision}

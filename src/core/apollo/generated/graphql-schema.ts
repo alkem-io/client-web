@@ -14166,6 +14166,7 @@ export type CommunityGuidelinesQuery = {
   space: {
     __typename?: 'Space';
     id: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
     community?:
       | {
           __typename?: 'Community';
