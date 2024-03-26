@@ -6,7 +6,7 @@ import { CheckOutlined, HdrStrongOutlined } from '@mui/icons-material';
 import JourneyCard from '../../journey/common/JourneyCard/JourneyCard';
 import journeyIcon from '../../shared/components/JourneyIcon/JourneyIcon';
 import JourneyCardTagline from '../../journey/common/JourneyCard/JourneyCardTagline';
-import { Caption, Text } from '../../../core/ui/typography';
+import { BlockSectionTitle, Caption, Text } from '../../../core/ui/typography';
 import DetailedActivityDescription from '../../shared/components/ActivityDescription/DetailedActivityDescription';
 import { Actions } from '../../../core/ui/actions/Actions';
 import { LoadingButton } from '@mui/lab';
@@ -15,6 +15,10 @@ import DialogWithGrid from '../../../core/ui/dialog/DialogWithGrid';
 import { InvitationItem } from '../user/providers/UserProvider/InvitationItem';
 import { useTranslation } from 'react-i18next';
 import { VisualType } from '../../../core/apollo/generated/graphql-schema';
+import { Box } from '@mui/material';
+import WrapperMarkdown from '../../../core/ui/markdown/WrapperMarkdown';
+import References from '../../shared/components/References/References';
+import { gutters } from '../../../core/ui/grid/utils';
 
 interface InvitationDialogProps {
   open: boolean;
@@ -42,8 +46,13 @@ const InvitationDialog = ({
   return (
     <DialogWithGrid columns={12} open={open} onClose={onClose}>
       {invitation && (
-        <InvitationHydrator invitation={invitation} withJourneyDetails visualType={VisualType.Card}>
-          {({ invitation }) =>
+        <InvitationHydrator
+          invitation={invitation}
+          withJourneyDetails
+          withCommunityGuidelines
+          visualType={VisualType.Card}
+        >
+          {({ invitation, communityGuidelines }) =>
             invitation && (
               <>
                 <DialogHeader
@@ -76,18 +85,25 @@ const InvitationDialog = ({
                       />
                     </Caption>
                     {invitation.welcomeMessage && <Text>{invitation.welcomeMessage}</Text>}
+                    {communityGuidelines && (
+                      <>
+                        <BlockSectionTitle paddingTop={gutters()}>
+                          {communityGuidelines.profile.displayName}
+                        </BlockSectionTitle>
+                        <Gutters disablePadding>
+                          <Box sx={{ wordWrap: 'break-word' }}>
+                            <WrapperMarkdown disableParagraphPadding>
+                              {communityGuidelines?.profile.description ?? ''}
+                            </WrapperMarkdown>
+                          </Box>
+                          <References compact references={communityGuidelines?.profile.references} />
+                        </Gutters>
+                      </>
+                    )}
                   </Gutters>
                 </Gutters>
                 <Gutters paddingTop={0}>
                   <Actions justifyContent="end">
-                    {/*<LoadingButton*/}
-                    {/*  startIcon={<VisibilityOffOutlined />}*/}
-                    {/*  onClick={() => hideInvitation(currentInvitation.id)}*/}
-                    {/*  loading={isHiding}*/}
-                    {/*  disabled={isChangingInvitationState && !isHiding}*/}
-                    {/*>*/}
-                    {/*  {t('community.pendingMembership.invitationDialog.actions.hide')}*/}
-                    {/*</LoadingButton>*/}
                     <LoadingButton
                       startIcon={<CloseOutlinedIcon />}
                       onClick={() => rejectInvitation(invitation.id)}
