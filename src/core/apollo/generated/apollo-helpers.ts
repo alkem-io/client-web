@@ -381,6 +381,7 @@ export type ActivityLogEntryUpdateSentKeySpecifier = (
   | 'description'
   | 'id'
   | 'journey'
+  | 'journeyUrl'
   | 'message'
   | 'parentDisplayName'
   | 'parentNameID'
@@ -396,6 +397,7 @@ export type ActivityLogEntryUpdateSentFieldPolicy = {
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   journey?: FieldPolicy<any> | FieldReadFunction<any>;
+  journeyUrl?: FieldPolicy<any> | FieldReadFunction<any>;
   message?: FieldPolicy<any> | FieldReadFunction<any>;
   parentDisplayName?: FieldPolicy<any> | FieldReadFunction<any>;
   parentNameID?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1295,6 +1297,11 @@ export type JourneyFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type LatestReleaseDiscussionKeySpecifier = ('id' | 'nameID' | LatestReleaseDiscussionKeySpecifier)[];
+export type LatestReleaseDiscussionFieldPolicy = {
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  nameID?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type LibraryKeySpecifier = (
   | 'authorization'
   | 'id'
@@ -1472,6 +1479,7 @@ export type MutationKeySpecifier = (
   | 'authorizationPolicyResetOnOrganization'
   | 'authorizationPolicyResetOnPlatform'
   | 'authorizationPolicyResetOnUser'
+  | 'authorizationPolicyResetToGlobalAdminsAccess'
   | 'beginAlkemioUserVerifiedCredentialOfferInteraction'
   | 'beginCommunityMemberVerifiedCredentialOfferInteraction'
   | 'beginVerifiedCredentialRequestInteraction'
@@ -1628,6 +1636,7 @@ export type MutationFieldPolicy = {
   authorizationPolicyResetOnOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   authorizationPolicyResetOnPlatform?: FieldPolicy<any> | FieldReadFunction<any>;
   authorizationPolicyResetOnUser?: FieldPolicy<any> | FieldReadFunction<any>;
+  authorizationPolicyResetToGlobalAdminsAccess?: FieldPolicy<any> | FieldReadFunction<any>;
   beginAlkemioUserVerifiedCredentialOfferInteraction?: FieldPolicy<any> | FieldReadFunction<any>;
   beginCommunityMemberVerifiedCredentialOfferInteraction?: FieldPolicy<any> | FieldReadFunction<any>;
   beginVerifiedCredentialRequestInteraction?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1910,6 +1919,7 @@ export type PlatformKeySpecifier = (
   | 'id'
   | 'innovationHub'
   | 'innovationHubs'
+  | 'latestReleaseDiscussion'
   | 'library'
   | 'metadata'
   | 'storageAggregator'
@@ -1922,6 +1932,7 @@ export type PlatformFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationHub?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationHubs?: FieldPolicy<any> | FieldReadFunction<any>;
+  latestReleaseDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
   library?: FieldPolicy<any> | FieldReadFunction<any>;
   metadata?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3351,6 +3362,10 @@ export type StrictTypedTypePolicies = {
   Journey?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | JourneyKeySpecifier | (() => undefined | JourneyKeySpecifier);
     fields?: JourneyFieldPolicy;
+  };
+  LatestReleaseDiscussion?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | LatestReleaseDiscussionKeySpecifier | (() => undefined | LatestReleaseDiscussionKeySpecifier);
+    fields?: LatestReleaseDiscussionFieldPolicy;
   };
   Library?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | LibraryKeySpecifier | (() => undefined | LibraryKeySpecifier);

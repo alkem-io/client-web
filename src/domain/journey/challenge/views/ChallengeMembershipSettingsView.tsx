@@ -28,12 +28,7 @@ export interface ChallengeMembershipSettingsViewProps
     ChallengeMembershipSettingsViewOptions
   > {}
 
-const ChallengeMembershipSettingsView: FC<ChallengeMembershipSettingsViewProps> = ({
-  entities,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  actions,
-  state,
-}) => {
+const ChallengeMembershipSettingsView: FC<ChallengeMembershipSettingsViewProps> = ({ entities, state }) => {
   const { t } = useTranslation();
   const { settings } = entities;
   const { loading } = state;
@@ -58,7 +53,7 @@ const ChallengeMembershipSettingsView: FC<ChallengeMembershipSettingsViewProps> 
                   ),
                 },
               }}
-              onChange={value => handleUpdateSettings(value, undefined, undefined, false)}
+              onChange={() => {}}
             />
           </PageContentBlock>
         </>

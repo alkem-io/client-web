@@ -6,7 +6,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import { useChallenge } from '../../hooks/useChallenge';
 import { CommunityMembershipPolicy, SpacePrivacyMode } from '../../../../../core/apollo/generated/graphql-schema';
 import {
-  useChallengeSettingsQuery,
+  useSpaceSettingsQuery,
   useUpdateChallengeSettingsMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { BlockTitle } from '../../../../../core/ui/typography/components';
@@ -18,13 +18,14 @@ interface ChallengeAuthorizationPageProps extends SettingsPageProps {}
 const ChallengeAuthorizationPage: FC<ChallengeAuthorizationPageProps> = ({ routePrefix = '../' }) => {
   const { t } = useTranslation();
   const { challengeId } = useChallenge();
-  const { data: settingsData, loading } = useChallengeSettingsQuery({
+  const { data: settingsData, loading } = useSpaceSettingsQuery({
     variables: {
       challengeId: challengeId,
+      includeChallenge: true,
     },
   });
   const [updateChallengeSettings] = useUpdateChallengeSettingsMutation();
-  const settings = settingsData?.lookup.challenge?.settings;
+  const settings = settingsData?.challenge.challenge?.settings;
 
   const handleUpdateSettings = async (
     privacyModeUpdate?: SpacePrivacyMode,
@@ -79,7 +80,7 @@ const ChallengeAuthorizationPage: FC<ChallengeAuthorizationPageProps> = ({ route
                   ),
                 },
               }}
-              onChange={handleUpdateSettings()}
+              onChange={handleUpdateSettings}
             />
           </PageContentBlock>
         </>

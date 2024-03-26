@@ -13,6 +13,7 @@ import CommunityGroupsRoute from '../../community/routes/CommunityGroupsAdminRou
 import ChallengeContextPage from '../../../../journey/challenge/pages/ChallengeContext/ChallengeContextPage';
 import { StorageConfigContextProvider } from '../../../../storage/StorageBucket/StorageConfigContext';
 import AdminChallengeCommunityPage from '../../../../journey/challenge/pages/AdminChallengeCommunityPage';
+import SpaceSettingsPage from '../../../../journey/space/pages/SpaceSettings/SpaceSettingsPage';
 
 export const ChallengeRoute: FC = () => {
   const { communityId: spaceCommunityId } = useSpace();
@@ -30,15 +31,16 @@ export const ChallengeRoute: FC = () => {
             path="communications"
             element={<ChallengeCommunicationsPage communityId={communityId} parentCommunityId={spaceCommunityId} />}
           />
-          <Route path="community" element={<AdminChallengeCommunityPage />} />
           <Route
             path="community/groups/*"
             element={
               <CommunityGroupsRoute communityId={challenge?.community?.id} parentCommunityId={spaceCommunityId} />
             }
           />
-          <Route path="community/applications/*" element={<ApplicationsAdminRoutes />} />
           <Route path="opportunities/*" element={<OpportunitiesRoute />} />
+          <Route path="community" element={<AdminChallengeCommunityPage />} />
+          <Route path="settings" element={<SpaceSettingsPage />} />
+          <Route path="community/applications/*" element={<ApplicationsAdminRoutes />} />
           <Route path="authorization/*" element={<ChallengeAuthorizationRoute />} />
           <Route path="*" element={<Error404 />} />
         </Route>

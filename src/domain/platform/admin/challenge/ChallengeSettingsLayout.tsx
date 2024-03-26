@@ -48,6 +48,11 @@ const tabs: TabDefinition<SettingsSection>[] = [
     route: 'opportunities',
     icon: FlagOutlinedIcon,
   },
+  {
+    section: SettingsSection.SpaceSettings,
+    route: 'settings',
+    icon: GppGoodOutlinedIcon,
+  },
 ];
 
 const ChallengeSettingsLayout: FC<ChallengeSettingsLayoutProps> = props => {

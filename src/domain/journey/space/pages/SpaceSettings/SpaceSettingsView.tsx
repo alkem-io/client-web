@@ -5,6 +5,7 @@ import {
   useSpaceHostQuery,
   useSpaceSettingsQuery,
   useUpdateSpaceSettingsMutation,
+  useUpdateChallengeSettingsMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { CommunityMembershipPolicy, SpacePrivacyMode } from '../../../../../core/apollo/generated/graphql-schema';
 import PageContent from '../../../../../core/ui/content/PageContent';
@@ -19,29 +20,36 @@ import { BlockSectionTitle, BlockTitle, Text } from '../../../../../core/ui/typo
 import CommunityApplicationForm from '../../../../community/community/CommunityApplicationForm/CommunityApplicationForm';
 import { SettingsSection } from '../../../../platform/admin/layout/EntitySettingsLayout/constants';
 import { Box, CircularProgress } from '@mui/material';
-import { useUrlParams } from '../../../../../core/routing/useUrlParams';
+import { JourneyTypeName } from '../../../JourneyTypeName';
 
-export const SpaceSettingsView: FC = () => {
+interface SpaceSettingsViewProps {
+  journeyId: string;
+  journeyTypeName: JourneyTypeName;
+}
+
+export const SpaceSettingsView: FC<SpaceSettingsViewProps> = ({ journeyId, journeyTypeName }) => {
   const { t } = useTranslation();
-  const { spaceNameId } = useUrlParams();
-
-  if (!spaceNameId) {
-    throw new Error('Must be within a Space route.');
-  }
 
   const { data: hostOrganization } = useSpaceHostQuery({
-    variables: { spaceId: spaceNameId },
+    variables: { spaceId: journeyId },
+    skip: journeyTypeName !== 'space',
   });
 
   const notify = useNotification();
 
   const { data: settingsData, loading } = useSpaceSettingsQuery({
     variables: {
-      spaceNameId: spaceNameId,
+      spaceId: journeyTypeName === 'space' ? journeyId : undefined,
+      challengeId: journeyTypeName === 'challenge' ? journeyId : undefined,
+      opportunityId: journeyTypeName === 'opportunity' ? journeyId : undefined,
+      includeSpace: journeyTypeName === 'space',
+      includeChallenge: journeyTypeName === 'challenge',
+      includeOpportunity: journeyTypeName === 'opportunity',
     },
   });
   const [updateSpaceSettings] = useUpdateSpaceSettingsMutation();
-  const settings = settingsData?.space.settings;
+  const [updateChallengeSettings] = useUpdateChallengeSettingsMutation();
+  const settings = settingsData?.space?.settings ?? settingsData?.challenge.challenge?.settings; // ?? settingsData?.opportunity?.opportunity?.settings;
   const trustedOrganizations = settings?.membership.trustedOrganizations || [];
 
   const handleUpdateSettings = async (
@@ -55,27 +63,46 @@ export const SpaceSettingsView: FC = () => {
       membershipPolicyUpdate ?? settings?.membership.policy ?? CommunityMembershipPolicy.Invitations;
     const hostOrgArray = settings?.membership.trustedOrganizations ?? [];
     const hostOrgTrusted = hostOrgTrustedUpdate ?? hostOrgArray.length > 0;
-    await updateSpaceSettings({
-      variables: {
-        settingsData: {
-          spaceID: spaceNameId,
-          settings: {
-            privacy: {
-              mode: privacyMode,
-            },
-            membership: {
-              policy: membershipPolicy,
-              trustedOrganizations: hostOrgTrusted ? ['myHostOrgID-TODO'] : [],
-            },
-            collaboration: {
-              allowMembersToCreateCallouts: true,
-              allowMembersToCreateSubspaces: true,
-              inheritMembershipRights: true,
+
+    const settingsVariable = {
+      privacy: {
+        mode: privacyMode,
+      },
+      membership: {
+        policy: membershipPolicy,
+        trustedOrganizations: hostOrgTrusted ? ['myHostOrgID-TODO'] : [],
+      },
+      collaboration: {
+        allowMembersToCreateCallouts: true,
+        allowMembersToCreateSubspaces: true,
+        inheritMembershipRights: true,
+      },
+    };
+
+    switch (journeyTypeName) {
+      case 'space': {
+        await updateSpaceSettings({
+          variables: {
+            settingsData: {
+              spaceID: journeyId,
+              settings: settingsVariable,
             },
           },
-        },
-      },
-    });
+        });
+        break;
+      }
+      case 'challenge': {
+        await updateChallengeSettings({
+          variables: {
+            settingsData: {
+              challengeID: journeyId,
+              settings: settingsVariable,
+            },
+          },
+        });
+        break;
+      }
+    }
     if (showNotification) {
       notify(t('pages.admin.space.settings.savedSuccessfully'), 'success');
     }
@@ -166,7 +193,7 @@ export const SpaceSettingsView: FC = () => {
             <Text marginBottom={gutters(2)}>
               <Trans i18nKey="community.application-form.subtitle" components={{ b: <strong /> }} />
             </Text>
-            <CommunityApplicationForm spaceId={spaceNameId} />
+            <CommunityApplicationForm spaceId={journeyId} />
           </PageContentBlockCollapsible>
 
           <PageContentBlock>

@@ -1,0 +1,47 @@
+query SpaceSettings(
+  $spaceId: UUID_NAMEID! = "00000000-0000-0000-0000-000000000000"
+  $challengeId: UUID! = "00000000-0000-0000-0000-000000000000"
+  $opportunityId: UUID! = "00000000-0000-0000-0000-000000000000"
+  $includeSpace: Boolean = false
+  $includeChallenge: Boolean = false
+  $includeOpportunity: Boolean = false
+) {
+  challenge: lookup @include(if: $includeChallenge) {
+    challenge(ID: $challengeId) {
+      id
+      settings {
+        ...SpaceSettings
+      }
+    }
+  }
+  opportunity: lookup @include(if: $includeOpportunity) {
+    opportunity(ID: $opportunityId) {
+      id
+      # TODO
+      # settings {
+      #   ...SpaceSettings
+      # }
+    }
+  }
+  space(ID: $spaceId) @include(if: $includeSpace) {
+    id
+    settings {
+      ...SpaceSettings
+    }
+  }
+}
+
+fragment SpaceSettings on SpaceSettings {
+  privacy {
+    mode
+  }
+  membership {
+    policy
+    trustedOrganizations
+  }
+  collaboration {
+    allowMembersToCreateCallouts
+    allowMembersToCreateSubspaces
+    inheritMembershipRights
+  }
+}

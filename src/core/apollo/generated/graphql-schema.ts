@@ -454,6 +454,8 @@ export type ActivityLogEntryUpdateSent = ActivityLogEntry & {
   id: Scalars['UUID'];
   /** The journey where the activity happened */
   journey?: Maybe<Journey>;
+  /** The url to the Journey. */
+  journeyUrl: Scalars['String'];
   /** The Message that been sent to this Community. */
   message: Scalars['String'];
   /** The display name of the parent */
@@ -2223,6 +2225,14 @@ export type Journey = {
   nameID: Scalars['NameID'];
 };
 
+export type LatestReleaseDiscussion = {
+  __typename?: 'LatestReleaseDiscussion';
+  /** Id of the latest release discussion. */
+  id: Scalars['String'];
+  /** NameID of the latest release discussion. */
+  nameID: Scalars['String'];
+};
+
 export type Library = {
   __typename?: 'Library';
   /** The authorization rules for the entity */
@@ -2562,6 +2572,8 @@ export type Mutation = {
   authorizationPolicyResetOnPlatform: Platform;
   /** Reset the Authorization policy on the specified User. */
   authorizationPolicyResetOnUser: User;
+  /** Reset the specified Authorization Policy to global admin privileges */
+  authorizationPolicyResetToGlobalAdminsAccess: Authorization;
   /** Generate Alkemio user credential offer */
   beginAlkemioUserVerifiedCredentialOfferInteraction: AgentBeginVerifiedCredentialOfferOutput;
   /** Generate community member credential offer */
@@ -2898,6 +2910,10 @@ export type MutationAuthorizationPolicyResetOnOrganizationArgs = {
 
 export type MutationAuthorizationPolicyResetOnUserArgs = {
   authorizationResetData: UserAuthorizationResetInput;
+};
+
+export type MutationAuthorizationPolicyResetToGlobalAdminsAccessArgs = {
+  authorizationID: Scalars['String'];
 };
 
 export type MutationBeginCommunityMemberVerifiedCredentialOfferInteractionArgs = {
@@ -3622,6 +3638,8 @@ export type Platform = {
   innovationHub?: Maybe<InnovationHub>;
   /** List of Innovation Hubs on the platform */
   innovationHubs: Array<InnovationHub>;
+  /** The latest release discussion. */
+  latestReleaseDiscussion?: Maybe<LatestReleaseDiscussion>;
   /** The Innovation Library for the platform */
   library: Library;
   /** Alkemio Services Metadata. */
@@ -17191,65 +17209,6 @@ export type ChallengeCardFragment = {
     | undefined;
 };
 
-export type ChallengeSettingsQueryVariables = Exact<{
-  challengeId: Scalars['UUID'];
-}>;
-
-export type ChallengeSettingsQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    challenge?:
-      | {
-          __typename?: 'Challenge';
-          id: string;
-          settings: {
-            __typename?: 'SpaceSettings';
-            privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
-            membership: {
-              __typename?: 'SpaceSettingsMembership';
-              policy: CommunityMembershipPolicy;
-              trustedOrganizations: Array<string>;
-            };
-            collaboration: {
-              __typename?: 'SpaceSettingsCollaboration';
-              allowMembersToCreateCallouts: boolean;
-              allowMembersToCreateSubspaces: boolean;
-              inheritMembershipRights: boolean;
-            };
-          };
-        }
-      | undefined;
-  };
-};
-
-export type UpdateChallengeSettingsMutationVariables = Exact<{
-  settingsData: UpdateChallengeSettingsInput;
-}>;
-
-export type UpdateChallengeSettingsMutation = {
-  __typename?: 'Mutation';
-  updateChallengeSettings: {
-    __typename?: 'Challenge';
-    id: string;
-    settings: {
-      __typename?: 'SpaceSettings';
-      privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
-      membership: {
-        __typename?: 'SpaceSettingsMembership';
-        policy: CommunityMembershipPolicy;
-        trustedOrganizations: Array<string>;
-      };
-      collaboration: {
-        __typename?: 'SpaceSettingsCollaboration';
-        allowMembersToCreateCallouts: boolean;
-        allowMembersToCreateSubspaces: boolean;
-        inheritMembershipRights: boolean;
-      };
-    };
-  };
-};
-
 export type ChallengeOpportunityCardsQueryVariables = Exact<{
   challengeId: Scalars['UUID'];
 }>;
@@ -22365,6 +22324,136 @@ export type UpdateSpaceDefaultInnovationFlowTemplateMutation = {
   updateSpaceDefaults: { __typename?: 'SpaceDefaults'; id: string };
 };
 
+export type SpaceSettingsQueryVariables = Exact<{
+  spaceId?: Scalars['UUID_NAMEID'];
+  challengeId?: Scalars['UUID'];
+  opportunityId?: Scalars['UUID'];
+  includeSpace?: InputMaybe<Scalars['Boolean']>;
+  includeChallenge?: InputMaybe<Scalars['Boolean']>;
+  includeOpportunity?: InputMaybe<Scalars['Boolean']>;
+}>;
+
+export type SpaceSettingsQuery = {
+  __typename?: 'Query';
+  challenge: {
+    __typename?: 'LookupQueryResults';
+    challenge?:
+      | {
+          __typename?: 'Challenge';
+          id: string;
+          settings: {
+            __typename?: 'SpaceSettings';
+            privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
+            membership: {
+              __typename?: 'SpaceSettingsMembership';
+              policy: CommunityMembershipPolicy;
+              trustedOrganizations: Array<string>;
+            };
+            collaboration: {
+              __typename?: 'SpaceSettingsCollaboration';
+              allowMembersToCreateCallouts: boolean;
+              allowMembersToCreateSubspaces: boolean;
+              inheritMembershipRights: boolean;
+            };
+          };
+        }
+      | undefined;
+  };
+  opportunity: {
+    __typename?: 'LookupQueryResults';
+    opportunity?: { __typename?: 'Opportunity'; id: string } | undefined;
+  };
+  space?: {
+    __typename?: 'Space';
+    id: string;
+    settings: {
+      __typename?: 'SpaceSettings';
+      privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
+      membership: {
+        __typename?: 'SpaceSettingsMembership';
+        policy: CommunityMembershipPolicy;
+        trustedOrganizations: Array<string>;
+      };
+      collaboration: {
+        __typename?: 'SpaceSettingsCollaboration';
+        allowMembersToCreateCallouts: boolean;
+        allowMembersToCreateSubspaces: boolean;
+        inheritMembershipRights: boolean;
+      };
+    };
+  };
+};
+
+export type SpaceSettingsFragment = {
+  __typename?: 'SpaceSettings';
+  privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
+  membership: {
+    __typename?: 'SpaceSettingsMembership';
+    policy: CommunityMembershipPolicy;
+    trustedOrganizations: Array<string>;
+  };
+  collaboration: {
+    __typename?: 'SpaceSettingsCollaboration';
+    allowMembersToCreateCallouts: boolean;
+    allowMembersToCreateSubspaces: boolean;
+    inheritMembershipRights: boolean;
+  };
+};
+
+export type UpdateChallengeSettingsMutationVariables = Exact<{
+  settingsData: UpdateChallengeSettingsInput;
+}>;
+
+export type UpdateChallengeSettingsMutation = {
+  __typename?: 'Mutation';
+  updateChallengeSettings: {
+    __typename?: 'Challenge';
+    id: string;
+    settings: {
+      __typename?: 'SpaceSettings';
+      privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
+      membership: {
+        __typename?: 'SpaceSettingsMembership';
+        policy: CommunityMembershipPolicy;
+        trustedOrganizations: Array<string>;
+      };
+      collaboration: {
+        __typename?: 'SpaceSettingsCollaboration';
+        allowMembersToCreateCallouts: boolean;
+        allowMembersToCreateSubspaces: boolean;
+        inheritMembershipRights: boolean;
+      };
+    };
+  };
+};
+
+export type UpdateSpaceSettingsMutationVariables = Exact<{
+  settingsData: UpdateSpaceSettingsOnSpaceInput;
+}>;
+
+export type UpdateSpaceSettingsMutation = {
+  __typename?: 'Mutation';
+  updateSpaceSettings: {
+    __typename?: 'Space';
+    id: string;
+    settings: {
+      __typename?: 'SpaceSettings';
+      privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
+      membership: {
+        __typename?: 'SpaceSettingsMembership';
+        policy: CommunityMembershipPolicy;
+        trustedOrganizations: Array<string>;
+      };
+      collaboration: {
+        __typename?: 'SpaceSettingsCollaboration';
+        allowMembersToCreateCallouts: boolean;
+        allowMembersToCreateSubspaces: boolean;
+        inheritMembershipRights: boolean;
+      };
+    };
+  };
+};
+
 export type AdminGlobalOrganizationsListQueryVariables = Exact<{
   first: Scalars['Int'];
   after?: InputMaybe<Scalars['UUID']>;
@@ -22483,33 +22572,6 @@ export type AdminSpaceFragment = {
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
-};
-
-export type SpaceSettingsQueryVariables = Exact<{
-  spaceNameId: Scalars['UUID_NAMEID'];
-}>;
-
-export type SpaceSettingsQuery = {
-  __typename?: 'Query';
-  space: {
-    __typename?: 'Space';
-    id: string;
-    settings: {
-      __typename?: 'SpaceSettings';
-      privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
-      membership: {
-        __typename?: 'SpaceSettingsMembership';
-        policy: CommunityMembershipPolicy;
-        trustedOrganizations: Array<string>;
-      };
-      collaboration: {
-        __typename?: 'SpaceSettingsCollaboration';
-        allowMembersToCreateCallouts: boolean;
-        allowMembersToCreateSubspaces: boolean;
-        inheritMembershipRights: boolean;
-      };
-    };
-  };
 };
 
 export type SpaceStorageAdminPageQueryVariables = Exact<{
@@ -22874,33 +22936,6 @@ export type DeleteDocumentMutationVariables = Exact<{
 export type DeleteDocumentMutation = {
   __typename?: 'Mutation';
   deleteDocument: { __typename?: 'Document'; id: string };
-};
-
-export type UpdateSpaceSettingsMutationVariables = Exact<{
-  settingsData: UpdateSpaceSettingsOnSpaceInput;
-}>;
-
-export type UpdateSpaceSettingsMutation = {
-  __typename?: 'Mutation';
-  updateSpaceSettings: {
-    __typename?: 'Space';
-    id: string;
-    settings: {
-      __typename?: 'SpaceSettings';
-      privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
-      membership: {
-        __typename?: 'SpaceSettingsMembership';
-        policy: CommunityMembershipPolicy;
-        trustedOrganizations: Array<string>;
-      };
-      collaboration: {
-        __typename?: 'SpaceSettingsCollaboration';
-        allowMembersToCreateCallouts: boolean;
-        allowMembersToCreateSubspaces: boolean;
-        inheritMembershipRights: boolean;
-      };
-    };
-  };
 };
 
 export type AdminSpaceTemplatesQueryVariables = Exact<{

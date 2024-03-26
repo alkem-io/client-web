@@ -1,5 +1,5 @@
-query spaceSettings($spaceNameId: UUID_NAMEID!) {
-  space(ID: $spaceNameId) {
+mutation UpdateChallengeSettings($settingsData: UpdateChallengeSettingsInput!) {
+  updateChallengeSettings(settingsData: $settingsData) {
     id
     settings {
       privacy {
