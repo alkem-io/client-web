@@ -24250,8 +24250,13 @@ export const LatestContributionsGroupedDocument = gql`
   query LatestContributionsGrouped($filter: ActivityFeedGroupedQueryArgs) {
     activityFeedGrouped(args: $filter) {
       id
+      collaborationID
       createdDate
+      description
       type
+      child
+      parentNameID
+      journeyDisplayName: parentDisplayName
       journey {
         id
         ... on Space {

@@ -29027,8 +29027,13 @@ export type LatestContributionsGroupedQuery = {
     | {
         __typename?: 'ActivityLogEntryCalendarEventCreated';
         id: string;
+        collaborationID: string;
         createdDate: Date;
+        description: string;
         type: ActivityEventType;
+        child: boolean;
+        parentNameID: string;
+        journeyDisplayName: string;
         journey?:
           | {
               __typename?: 'Challenge';
@@ -29088,9 +29093,13 @@ export type LatestContributionsGroupedQuery = {
     | {
         __typename?: 'ActivityLogEntryCalloutDiscussionComment';
         id: string;
+        collaborationID: string;
         createdDate: Date;
-        type: ActivityEventType;
         description: string;
+        type: ActivityEventType;
+        child: boolean;
+        parentNameID: string;
+        journeyDisplayName: string;
         journey?:
           | {
               __typename?: 'Challenge';
@@ -29154,8 +29163,13 @@ export type LatestContributionsGroupedQuery = {
     | {
         __typename?: 'ActivityLogEntryCalloutLinkCreated';
         id: string;
+        collaborationID: string;
         createdDate: Date;
+        description: string;
         type: ActivityEventType;
+        child: boolean;
+        parentNameID: string;
+        journeyDisplayName: string;
         journey?:
           | {
               __typename?: 'Challenge';
@@ -29220,9 +29234,13 @@ export type LatestContributionsGroupedQuery = {
     | {
         __typename?: 'ActivityLogEntryCalloutPostComment';
         id: string;
+        collaborationID: string;
         createdDate: Date;
-        type: ActivityEventType;
         description: string;
+        type: ActivityEventType;
+        child: boolean;
+        parentNameID: string;
+        journeyDisplayName: string;
         journey?:
           | {
               __typename?: 'Challenge';
@@ -29282,8 +29300,13 @@ export type LatestContributionsGroupedQuery = {
     | {
         __typename?: 'ActivityLogEntryCalloutPostCreated';
         id: string;
+        collaborationID: string;
         createdDate: Date;
+        description: string;
         type: ActivityEventType;
+        child: boolean;
+        parentNameID: string;
+        journeyDisplayName: string;
         journey?:
           | {
               __typename?: 'Challenge';
@@ -29353,8 +29376,13 @@ export type LatestContributionsGroupedQuery = {
     | {
         __typename?: 'ActivityLogEntryCalloutPublished';
         id: string;
+        collaborationID: string;
         createdDate: Date;
+        description: string;
         type: ActivityEventType;
+        child: boolean;
+        parentNameID: string;
+        journeyDisplayName: string;
         journey?:
           | {
               __typename?: 'Challenge';
@@ -29419,8 +29447,13 @@ export type LatestContributionsGroupedQuery = {
     | {
         __typename?: 'ActivityLogEntryCalloutWhiteboardContentModified';
         id: string;
+        collaborationID: string;
         createdDate: Date;
+        description: string;
         type: ActivityEventType;
+        child: boolean;
+        parentNameID: string;
+        journeyDisplayName: string;
         journey?:
           | {
               __typename?: 'Challenge';
@@ -29489,8 +29522,13 @@ export type LatestContributionsGroupedQuery = {
     | {
         __typename?: 'ActivityLogEntryCalloutWhiteboardCreated';
         id: string;
+        collaborationID: string;
         createdDate: Date;
+        description: string;
         type: ActivityEventType;
+        child: boolean;
+        parentNameID: string;
+        journeyDisplayName: string;
         journey?:
           | {
               __typename?: 'Challenge';
@@ -29559,8 +29597,13 @@ export type LatestContributionsGroupedQuery = {
     | {
         __typename?: 'ActivityLogEntryChallengeCreated';
         id: string;
+        collaborationID: string;
         createdDate: Date;
+        description: string;
         type: ActivityEventType;
+        child: boolean;
+        parentNameID: string;
+        journeyDisplayName: string;
         journey?:
           | {
               __typename?: 'Challenge';
@@ -29620,8 +29663,13 @@ export type LatestContributionsGroupedQuery = {
     | {
         __typename?: 'ActivityLogEntryMemberJoined';
         id: string;
+        collaborationID: string;
         createdDate: Date;
+        description: string;
         type: ActivityEventType;
+        child: boolean;
+        parentNameID: string;
+        journeyDisplayName: string;
         journey?:
           | {
               __typename?: 'Challenge';
@@ -29689,8 +29737,13 @@ export type LatestContributionsGroupedQuery = {
     | {
         __typename?: 'ActivityLogEntryOpportunityCreated';
         id: string;
+        collaborationID: string;
         createdDate: Date;
+        description: string;
         type: ActivityEventType;
+        child: boolean;
+        parentNameID: string;
+        journeyDisplayName: string;
         journey?:
           | {
               __typename?: 'Challenge';
@@ -29750,10 +29803,15 @@ export type LatestContributionsGroupedQuery = {
     | {
         __typename?: 'ActivityLogEntryUpdateSent';
         id: string;
+        collaborationID: string;
         createdDate: Date;
+        description: string;
         type: ActivityEventType;
+        child: boolean;
+        parentNameID: string;
         message: string;
         journeyUrl: string;
+        journeyDisplayName: string;
         journey?:
           | {
               __typename?: 'Challenge';
