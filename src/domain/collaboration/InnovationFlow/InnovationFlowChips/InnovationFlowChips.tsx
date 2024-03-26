@@ -85,6 +85,7 @@ const InnovationFlowChips = ({
               disableElevation
               sx={{
                 backgroundColor: getStateButtonBackgroundColor(state),
+                borderColor: 'divider',
                 '.MuiButton-startIcon': {
                   marginRight: 0,
                 },
