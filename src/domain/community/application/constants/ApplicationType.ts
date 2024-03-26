@@ -1,5 +1,5 @@
 export enum ApplicationTypeEnum {
-  space,
-  challenge,
-  opportunity,
+  space = 'space',
+  challenge = 'challenge',
+  opportunity = 'opportunity',
 }

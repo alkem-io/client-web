@@ -9,7 +9,7 @@ import {
 import { ApplicationTypeEnum } from '../constants/ApplicationType';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 
-export const useApplicationCommunityQuery = (type: ApplicationTypeEnum) => {
+export const useApplicationCommunityQuery = (type: ApplicationTypeEnum, canJoinCommunity: boolean) => {
   const { spaceNameId = '', challengeNameId = '' } = useUrlParams();
 
   const { challengeId } = useRouteResolver();
@@ -23,7 +23,7 @@ export const useApplicationCommunityQuery = (type: ApplicationTypeEnum) => {
       challengeId: challengeId!,
     },
     errorPolicy: 'all',
-    skip: type !== ApplicationTypeEnum.challenge || !challengeId,
+    skip: type !== ApplicationTypeEnum.challenge || !challengeId || canJoinCommunity,
   });
 
   const {
@@ -34,7 +34,7 @@ export const useApplicationCommunityQuery = (type: ApplicationTypeEnum) => {
     variables: {
       challengeId: challengeId!,
     },
-    skip: type !== ApplicationTypeEnum.challenge || !challengeId,
+    skip: type !== ApplicationTypeEnum.challenge || !challengeId || canJoinCommunity,
   });
 
   const {
@@ -46,7 +46,7 @@ export const useApplicationCommunityQuery = (type: ApplicationTypeEnum) => {
       spaceId: spaceNameId,
     },
     errorPolicy: 'all',
-    skip: type !== ApplicationTypeEnum.space,
+    skip: type !== ApplicationTypeEnum.space || canJoinCommunity,
   });
 
   const {
@@ -54,7 +54,7 @@ export const useApplicationCommunityQuery = (type: ApplicationTypeEnum) => {
     loading: isSpaceTemplateLoading,
     error: spaceTemplateError,
   } = useSpaceApplicationTemplateQuery({
-    skip: type !== ApplicationTypeEnum.space,
+    skip: type !== ApplicationTypeEnum.space || canJoinCommunity,
     variables: {
       spaceId: spaceNameId,
     },

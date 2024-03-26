@@ -2,9 +2,7 @@ import React from 'react';
 import { Route, Routes } from 'react-router';
 import { Navigate } from 'react-router-dom';
 import Loading from '../../../../core/ui/loading/Loading';
-import { ApplicationTypeEnum } from '../../../community/application/constants/ApplicationType';
 import { Error404 } from '../../../../core/pages/Errors/Error404';
-import ApplyRoute from '../../../community/application/routing/ApplyRoute';
 import { nameOfUrl } from '../../../../main/routing/urlParams';
 import { OpportunityProvider } from '../../opportunity/context/OpportunityProvider';
 import { CommunityContextProvider } from '../../../community/community/CommunityContext';
@@ -17,7 +15,6 @@ import CalloutRoute from '../../../collaboration/callout/routing/CalloutRoute';
 import ChallengeAboutPage from '../pages/ChallengeAboutPage';
 import ChallengeOpportunitiesPage from '../pages/ChallengeOpportunitiesPage';
 import JourneyContributePage from '../../common/JourneyContributePage/JourneyContributePage';
-import ChallengePageLayout from '../layout/ChallengePageLayout';
 import Redirect from '../../../../core/routing/Redirect';
 import ChallengeCalloutPage from '../challengeCalloutPage/ChallengeCalloutPage';
 import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
@@ -61,10 +58,6 @@ const ChallengeRoute = () => {
             }
           />
         </Route>
-        <Route
-          path="apply/*"
-          element={<ApplyRoute type={ApplicationTypeEnum.challenge} journeyPageLayoutComponent={ChallengePageLayout} />}
-        />
         <Route path="feedback/*" element={<CommunityFeedbackRoute />} />
         <Route
           path={`${routes.Opportunities}/:${nameOfUrl.opportunityNameId}/*`}
