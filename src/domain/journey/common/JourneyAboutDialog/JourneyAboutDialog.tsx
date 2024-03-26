@@ -34,8 +34,6 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import useDirectMessageDialog from '../../../communication/messaging/DirectMessaging/useDirectMessageDialog';
 import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
-import CommunityGuidelinesBlock from '../../../community/community/CommunityGuidelines/CommunityGuidelinesBlock';
-import { useSpace } from '../../space/SpaceContext/useSpace';
 
 export interface JourneyAboutDialogProps extends EntityDashboardLeads {
   open: boolean;
@@ -53,7 +51,8 @@ export interface JourneyAboutDialogProps extends EntityDashboardLeads {
   who: string | undefined;
   impact: string | undefined;
   loading?: boolean;
-  leftColumnChildren?: ReactNode;
+  leftColumnChildrenTop?: ReactNode;
+  leftColumnChildrenBottom?: ReactNode;
   shareUrl?: string;
 }
 
@@ -100,11 +99,11 @@ const JourneyAboutDialog = ({
   loading = false,
   startButton,
   endButton,
-  leftColumnChildren,
+  leftColumnChildrenTop,
+  leftColumnChildrenBottom,
   shareUrl,
 }: JourneyAboutDialogProps) => {
   const { t } = useTranslation();
-  const { spaceId } = useSpace();
 
   const isSpace = journeyTypeName === 'space';
   const leadOrganizationsHeader = isSpace
@@ -206,7 +205,7 @@ const JourneyAboutDialog = ({
           </PageContentColumn>
           <PageContentColumn columns={4}>
             <PageContentBlockSeamless disablePadding order={1}>
-              {journeyTypeName === 'space' && <CommunityGuidelinesBlock spaceId={spaceId} />}
+              {leftColumnChildrenTop}
               <PageContentBlock>
                 <PageContentBlockHeader
                   title={t('components.journeyMetrics.title', { journey: t(`common.${journeyTypeName}` as const) })}
@@ -272,7 +271,7 @@ const JourneyAboutDialog = ({
                 </EntityDashboardLeadsSection>
               )}
             </PageContentBlockSeamless>
-            {leftColumnChildren}
+            {leftColumnChildrenBottom}
           </PageContentColumn>
         </Gutters>
       </Box>
