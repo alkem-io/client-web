@@ -16,19 +16,19 @@ interface CommunityGuidelinesInfo {
 export interface CommunityGuidelinesInfoDialogProps {
   open: boolean;
   onClose: () => void;
-  guidelines: CommunityGuidelinesInfo;
+  guidelines: CommunityGuidelinesInfo | undefined;
 }
 
 const CommunityGuidelinesInfoDialog: FC<CommunityGuidelinesInfoDialogProps> = ({ open, onClose, guidelines }) => {
   return (
     <DialogWithGrid open={open} onClose={onClose} columns={8}>
-      <DialogHeader onClose={onClose} title={guidelines.displayName} />
+      <DialogHeader onClose={onClose} title={guidelines?.displayName} />
       <DialogContent>
         <Gutters disablePadding>
           <Box sx={{ wordWrap: 'break-word' }}>
-            <WrapperMarkdown disableParagraphPadding>{guidelines.description ?? ''}</WrapperMarkdown>
+            <WrapperMarkdown disableParagraphPadding>{guidelines?.description ?? ''}</WrapperMarkdown>
           </Box>
-          <References compact references={guidelines.references} />
+          <References compact references={guidelines?.references} />
         </Gutters>
       </DialogContent>
     </DialogWithGrid>
