@@ -1,5 +1,5 @@
 import { Box, Skeleton, useTheme } from '@mui/material';
-import { FC, useMemo, useState } from 'react';
+import { FC, useState } from 'react';
 import { useCommunityGuidelinesQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeaderWithDialogAction from '../../../../core/ui/content/PageContentBlockHeaderWithDialogAction';
@@ -30,19 +30,8 @@ const CommunityGuidelinesBlock: FC<CommunityGuidelinesBlockProps> = ({ spaceId }
 
   const { data, loading } = useCommunityGuidelinesQuery({
     variables: { spaceId: spaceId! },
-    skip: !spaceId || !isCommunityGuidelinesInfoDialogOpen,
+    skip: !spaceId,
   });
-
-  const communityGuidelines = useMemo(
-    () => ({
-      communityGuidelinesId: data?.space?.community?.guidelines?.id,
-      displayName: data?.space?.community?.guidelines?.profile.displayName,
-      description: data?.space?.community?.guidelines?.profile.description,
-      profile: data?.space?.community?.guidelines?.profile,
-      references: data?.space?.community?.guidelines?.profile.references,
-    }),
-    [data]
-  );
 
   const openDialog = () => setIsCommunityGuidelinesInfoDialogOpen(true);
   const closeDialog = () => setIsCommunityGuidelinesInfoDialogOpen(false);
@@ -51,7 +40,7 @@ const CommunityGuidelinesBlock: FC<CommunityGuidelinesBlockProps> = ({ spaceId }
     <>
       <PageContentBlock>
         <PageContentBlockHeaderWithDialogAction
-          title={communityGuidelines.displayName ?? ''}
+          title={data?.space?.community?.guidelines?.profile.displayName}
           onDialogOpen={openDialog}
         />
         <Box display="flex" flexDirection="column" gap={gutters()}>
@@ -59,7 +48,9 @@ const CommunityGuidelinesBlock: FC<CommunityGuidelinesBlockProps> = ({ spaceId }
           {!loading && (
             <OverflowGradient maxHeight={gutters(6)}>
               <Box sx={{ wordWrap: 'break-word' }}>
-                <WrapperMarkdown disableParagraphPadding>{communityGuidelines.description ?? ''}</WrapperMarkdown>
+                <WrapperMarkdown disableParagraphPadding>
+                  {data?.space?.community?.guidelines?.profile.description ?? ''}
+                </WrapperMarkdown>
               </Box>
             </OverflowGradient>
           )}
@@ -68,7 +59,7 @@ const CommunityGuidelinesBlock: FC<CommunityGuidelinesBlockProps> = ({ spaceId }
       <CommunityGuidelinesInfoDialog
         open={isCommunityGuidelinesInfoDialogOpen}
         onClose={closeDialog}
-        guidelines={communityGuidelines}
+        guidelines={data?.space?.community?.guidelines?.profile}
       />
     </>
   );
