@@ -30,7 +30,7 @@ const CommunityGuidelinesBlock: FC<CommunityGuidelinesBlockProps> = ({ spaceId }
 
   const { data, loading } = useCommunityGuidelinesQuery({
     variables: { spaceId: spaceId! },
-    skip: !spaceId,
+    skip: !spaceId || !isCommunityGuidelinesInfoDialogOpen,
   });
 
   const communityGuidelines = useMemo(
