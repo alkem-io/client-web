@@ -3,8 +3,36 @@ query activityLogOnCollaboration($collaborationID: UUID!, $limit: Float!, $types
     queryData: { collaborationID: $collaborationID, limit: $limit, types: $types, includeChild: true }
   ) {
     id
+    collaborationID
     createdDate
+    description
     type
+    child
+    parentNameID
+    journeyDisplayName: parentDisplayName
+    journey {
+      id
+      ... on Space {
+        profile {
+          ...RecentContributionsSpaceProfile
+        }
+      }
+      ... on RelayPaginatedSpace {
+        profile {
+          ...RecentContributionsSpaceProfile
+        }
+      }
+      ... on Challenge {
+        profile {
+          ...RecentContributionsChildJourneyProfile
+        }
+      }
+      ... on Opportunity {
+        profile {
+          ...RecentContributionsChildJourneyProfile
+        }
+      }
+    }
     triggeredBy {
       id
       profile {

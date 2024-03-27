@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, IconButton, Tooltip, styled, useTheme } from '@mui/material';
+import { Button, IconButton, styled, Tooltip } from '@mui/material';
 import { ArrowRight } from '@mui/icons-material';
 import SettingsIcon from '@mui/icons-material/SettingsOutlined';
 import Gutters from '../../../../core/ui/grid/Gutters';
@@ -9,6 +9,7 @@ import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 import TranslationKey from '../../../../core/i18n/utils/TranslationKey';
 import i18n from '../../../../core/i18n/config';
 import { InnovationFlowState } from '../InnovationFlow';
+import { Caption } from '../../../../core/ui/typography';
 
 interface InnovationFlowChipsProps {
   states: InnovationFlowState[];
@@ -38,7 +39,6 @@ const InnovationFlowChips = ({
   const { t } = useTranslation();
 
   const columns = useGlobalGridColumns();
-  const theme = useTheme();
 
   const getStateName = (stateName: string) =>
     i18n.exists(`common.enums.innovationFlowState.${stateName}`)
@@ -52,27 +52,11 @@ const InnovationFlowChips = ({
     return 'outlined';
   };
 
-  const getStateButtonSx = (state: InnovationFlowState) => {
+  const getStateButtonBackgroundColor = (state: InnovationFlowState) => {
     if (state.displayName === selectedState) {
-      return {
-        '& .MuiButton-startIcon': {
-          marginRight: 0,
-        },
-      };
+      return 'primary.main';
     }
-    if (state.displayName === currentState) {
-      return {
-        backgroundColor: theme.palette.background.paper,
-        borderColor: theme.palette.primary.main,
-        '& .MuiButton-startIcon': {
-          marginRight: 0,
-        },
-      };
-    }
-    return {
-      backgroundColor: theme.palette.background.paper,
-      borderColor: theme.palette.divider,
-    };
+    return 'background.paper';
   };
 
   const getStateAriaLabel = (stateName: string) =>
@@ -85,14 +69,26 @@ const InnovationFlowChips = ({
   return (
     <>
       <Gutters row disablePadding alignItems="start" overflow="hidden">
-        <Gutters row={columns > 4} disablePadding flexGrow={1} flexShrink={1} justifyContent="start" flexWrap="wrap">
+        <Gutters
+          row={columns > 4}
+          disablePadding
+          flexGrow={1}
+          flexShrink={1}
+          minWidth={0}
+          justifyContent="start"
+          flexWrap="wrap"
+        >
           {states.map(state => (
             <Button
               key={state.displayName}
               variant={getStateButtonVariant(state)}
               disableElevation
               sx={{
-                ...getStateButtonSx(state),
+                backgroundColor: getStateButtonBackgroundColor(state),
+                borderColor: 'divider',
+                '.MuiButton-startIcon': {
+                  marginRight: 0,
+                },
               }}
               startIcon={
                 state.displayName === currentState && (
@@ -104,7 +100,7 @@ const InnovationFlowChips = ({
               aria-label={getStateAriaLabel(state.displayName)}
               onClick={() => onSelectState?.(state)}
             >
-              {getStateName(state.displayName)}
+              <Caption noWrap>{getStateName(state.displayName)}</Caption>
             </Button>
           ))}
         </Gutters>

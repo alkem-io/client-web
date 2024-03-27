@@ -993,6 +993,8 @@ export type Challenge = Journey & {
   context?: Maybe<Context>;
   /** The ID of the Journey */
   id: Scalars['UUID'];
+  /** The level of this Space, representing the number of Spaces above this one. */
+  level: Scalars['Float'];
   /** Metrics about activity within this Challenge. */
   metrics?: Maybe<Array<Nvp>>;
   /** A name identifier of the Journey, unique within a given scope. */
@@ -1065,7 +1067,7 @@ export type Collaboration = {
   __typename?: 'Collaboration';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
-  /** List of callouts */
+  /** The list of Callouts for this Collaboration object. */
   callouts?: Maybe<Array<Callout>>;
   /** The set of CalloutGroups in use in this Collaboration. */
   groups: Array<CalloutGroup>;
@@ -1231,6 +1233,8 @@ export type Community = Groupable & {
   group: UserGroup;
   /** Groups of users related to a Community. */
   groups?: Maybe<Array<UserGroup>>;
+  /** The guidelines for members of this Community. */
+  guidelines?: Maybe<CommunityGuidelines>;
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** Invitations for this community. */
@@ -1286,6 +1290,16 @@ export type CommunityUsersInRoleArgs = {
 export type CommunityApplyInput = {
   communityID: Scalars['UUID'];
   questions: Array<CreateNvpInput>;
+};
+
+export type CommunityGuidelines = {
+  __typename?: 'CommunityGuidelines';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** The details of the guidelilnes */
+  profile: Profile;
 };
 
 export type CommunityJoinInput = {
@@ -1708,7 +1722,7 @@ export type CreateTagsetOnProfileInput = {
 
 export type CreateUserGroupInput = {
   parentID: Scalars['UUID'];
-  profileData: CreateProfileInput;
+  profile: CreateProfileInput;
 };
 
 export type CreateUserInput = {
@@ -2772,6 +2786,8 @@ export type Mutation = {
   updateChallengeSettings: Challenge;
   /** Update the Application Form used by this Community. */
   updateCommunityApplicationForm: Community;
+  /** Updates the CommunityGuidelines. */
+  updateCommunityGuidelines: CommunityGuidelines;
   /** Updates the specified Discussion. */
   updateDiscussion: Discussion;
   /** Updates the specified Document. */
@@ -3296,6 +3312,10 @@ export type MutationUpdateCommunityApplicationFormArgs = {
   applicationFormData: UpdateCommunityApplicationFormInput;
 };
 
+export type MutationUpdateCommunityGuidelinesArgs = {
+  communityGuidelinesData: UpdateCommunityGuidelinesInput;
+};
+
 export type MutationUpdateDiscussionArgs = {
   updateData: UpdateDiscussionInput;
 };
@@ -3474,6 +3494,8 @@ export type Opportunity = Journey & {
   context?: Maybe<Context>;
   /** The ID of the Journey */
   id: Scalars['UUID'];
+  /** The level of this Space, representing the number of Spaces above this one. */
+  level: Scalars['Float'];
   /** Metrics about the activity within this Opportunity. */
   metrics?: Maybe<Array<Nvp>>;
   /** A name identifier of the Journey, unique within a given scope. */
@@ -3873,6 +3895,7 @@ export enum ProfileType {
   CalloutFraming = 'CALLOUT_FRAMING',
   CalloutTemplate = 'CALLOUT_TEMPLATE',
   Challenge = 'CHALLENGE',
+  CommunityGuidelines = 'COMMUNITY_GUIDELINES',
   ContributionLink = 'CONTRIBUTION_LINK',
   Discussion = 'DISCUSSION',
   InnovationFlow = 'INNOVATION_FLOW',
@@ -4140,6 +4163,8 @@ export type RelayPaginatedSpace = Journey & {
   createdDate?: Maybe<Scalars['DateTime']>;
   /** The ID of the Journey */
   id: Scalars['UUID'];
+  /** The level of this Space, representing the number of Spaces above this one. */
+  level: Scalars['Float'];
   /** Metrics about activity within this Space. */
   metrics?: Maybe<Array<Nvp>>;
   /** A name identifier of the Journey, unique within a given scope. */
@@ -4647,6 +4672,8 @@ export type Space = Journey & {
   createdDate?: Maybe<Scalars['DateTime']>;
   /** The ID of the Journey */
   id: Scalars['UUID'];
+  /** The level of this Space, representing the number of Spaces above this one. */
+  level: Scalars['Float'];
   /** Metrics about activity within this Space. */
   metrics?: Maybe<Array<Nvp>>;
   /** A name identifier of the Journey, unique within a given scope. */
@@ -5128,6 +5155,13 @@ export type UpdateCommunityApplicationFormInput = {
   formData: UpdateFormInput;
 };
 
+export type UpdateCommunityGuidelinesInput = {
+  /** ID of the CommunityGuidelines */
+  communityGuidelinesID: Scalars['UUID'];
+  /** The Profile for this community guidelines. */
+  profile: UpdateProfileInput;
+};
+
 export type UpdateContextInput = {
   impact?: InputMaybe<Scalars['Markdown']>;
   vision?: InputMaybe<Scalars['Markdown']>;
@@ -5544,7 +5578,6 @@ export type UserGroup = {
   id: Scalars['UUID'];
   /** The Users that are members of this User Group. */
   members?: Maybe<Array<User>>;
-  name: Scalars['String'];
   /** Containing entity for this UserGroup. */
   parent?: Maybe<Groupable>;
   /** The profile for the user group */
@@ -7578,8 +7611,63 @@ export type ActivityLogOnCollaborationQuery = {
     | {
         __typename?: 'ActivityLogEntryCalendarEventCreated';
         id: string;
+        collaborationID: string;
         createdDate: Date;
+        description: string;
         type: ActivityEventType;
+        child: boolean;
+        parentNameID: string;
+        journeyDisplayName: string;
+        journey?:
+          | {
+              __typename?: 'Challenge';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                url: string;
+                displayName: string;
+                type?: ProfileType | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              };
+            }
+          | {
+              __typename?: 'Opportunity';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                url: string;
+                displayName: string;
+                type?: ProfileType | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              };
+            }
+          | {
+              __typename?: 'RelayPaginatedSpace';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                url: string;
+                displayName: string;
+                type?: ProfileType | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              };
+            }
+          | {
+              __typename?: 'Space';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                url: string;
+                displayName: string;
+                type?: ProfileType | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              };
+            }
+          | undefined;
         triggeredBy: {
           __typename?: 'User';
           id: string;
@@ -7599,9 +7687,63 @@ export type ActivityLogOnCollaborationQuery = {
     | {
         __typename?: 'ActivityLogEntryCalloutDiscussionComment';
         id: string;
+        collaborationID: string;
         createdDate: Date;
-        type: ActivityEventType;
         description: string;
+        type: ActivityEventType;
+        child: boolean;
+        parentNameID: string;
+        journeyDisplayName: string;
+        journey?:
+          | {
+              __typename?: 'Challenge';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                url: string;
+                displayName: string;
+                type?: ProfileType | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              };
+            }
+          | {
+              __typename?: 'Opportunity';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                url: string;
+                displayName: string;
+                type?: ProfileType | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              };
+            }
+          | {
+              __typename?: 'RelayPaginatedSpace';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                url: string;
+                displayName: string;
+                type?: ProfileType | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              };
+            }
+          | {
+              __typename?: 'Space';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                url: string;
+                displayName: string;
+                type?: ProfileType | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              };
+            }
+          | undefined;
         triggeredBy: {
           __typename?: 'User';
           id: string;
@@ -7625,8 +7767,63 @@ export type ActivityLogOnCollaborationQuery = {
     | {
         __typename?: 'ActivityLogEntryCalloutLinkCreated';
         id: string;
+        collaborationID: string;
         createdDate: Date;
+        description: string;
         type: ActivityEventType;
+        child: boolean;
+        parentNameID: string;
+        journeyDisplayName: string;
+        journey?:
+          | {
+              __typename?: 'Challenge';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                url: string;
+                displayName: string;
+                type?: ProfileType | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              };
+            }
+          | {
+              __typename?: 'Opportunity';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                url: string;
+                displayName: string;
+                type?: ProfileType | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              };
+            }
+          | {
+              __typename?: 'RelayPaginatedSpace';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                url: string;
+                displayName: string;
+                type?: ProfileType | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              };
+            }
+          | {
+              __typename?: 'Space';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                url: string;
+                displayName: string;
+                type?: ProfileType | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              };
+            }
+          | undefined;
         triggeredBy: {
           __typename?: 'User';
           id: string;
@@ -7651,9 +7848,63 @@ export type ActivityLogOnCollaborationQuery = {
     | {
         __typename?: 'ActivityLogEntryCalloutPostComment';
         id: string;
+        collaborationID: string;
         createdDate: Date;
-        type: ActivityEventType;
         description: string;
+        type: ActivityEventType;
+        child: boolean;
+        parentNameID: string;
+        journeyDisplayName: string;
+        journey?:
+          | {
+              __typename?: 'Challenge';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                url: string;
+                displayName: string;
+                type?: ProfileType | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              };
+            }
+          | {
+              __typename?: 'Opportunity';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                url: string;
+                displayName: string;
+                type?: ProfileType | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              };
+            }
+          | {
+              __typename?: 'RelayPaginatedSpace';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                url: string;
+                displayName: string;
+                type?: ProfileType | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              };
+            }
+          | {
+              __typename?: 'Space';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                url: string;
+                displayName: string;
+                type?: ProfileType | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              };
+            }
+          | undefined;
         triggeredBy: {
           __typename?: 'User';
           id: string;
@@ -7673,8 +7924,63 @@ export type ActivityLogOnCollaborationQuery = {
     | {
         __typename?: 'ActivityLogEntryCalloutPostCreated';
         id: string;
+        collaborationID: string;
         createdDate: Date;
+        description: string;
         type: ActivityEventType;
+        child: boolean;
+        parentNameID: string;
+        journeyDisplayName: string;
+        journey?:
+          | {
+              __typename?: 'Challenge';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                url: string;
+                displayName: string;
+                type?: ProfileType | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              };
+            }
+          | {
+              __typename?: 'Opportunity';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                url: string;
+                displayName: string;
+                type?: ProfileType | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              };
+            }
+          | {
+              __typename?: 'RelayPaginatedSpace';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                url: string;
+                displayName: string;
+                type?: ProfileType | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              };
+            }
+          | {
+              __typename?: 'Space';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                url: string;
+                displayName: string;
+                type?: ProfileType | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              };
+            }
+          | undefined;
         triggeredBy: {
           __typename?: 'User';
           id: string;
@@ -7704,8 +8010,63 @@ export type ActivityLogOnCollaborationQuery = {
     | {
         __typename?: 'ActivityLogEntryCalloutPublished';
         id: string;
+        collaborationID: string;
         createdDate: Date;
+        description: string;
         type: ActivityEventType;
+        child: boolean;
+        parentNameID: string;
+        journeyDisplayName: string;
+        journey?:
+          | {
+              __typename?: 'Challenge';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                url: string;
+                displayName: string;
+                type?: ProfileType | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              };
+            }
+          | {
+              __typename?: 'Opportunity';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                url: string;
+                displayName: string;
+                type?: ProfileType | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              };
+            }
+          | {
+              __typename?: 'RelayPaginatedSpace';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                url: string;
+                displayName: string;
+                type?: ProfileType | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              };
+            }
+          | {
+              __typename?: 'Space';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                url: string;
+                displayName: string;
+                type?: ProfileType | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              };
+            }
+          | undefined;
         triggeredBy: {
           __typename?: 'User';
           id: string;
@@ -7730,8 +8091,63 @@ export type ActivityLogOnCollaborationQuery = {
     | {
         __typename?: 'ActivityLogEntryCalloutWhiteboardContentModified';
         id: string;
+        collaborationID: string;
         createdDate: Date;
+        description: string;
         type: ActivityEventType;
+        child: boolean;
+        parentNameID: string;
+        journeyDisplayName: string;
+        journey?:
+          | {
+              __typename?: 'Challenge';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                url: string;
+                displayName: string;
+                type?: ProfileType | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              };
+            }
+          | {
+              __typename?: 'Opportunity';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                url: string;
+                displayName: string;
+                type?: ProfileType | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              };
+            }
+          | {
+              __typename?: 'RelayPaginatedSpace';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                url: string;
+                displayName: string;
+                type?: ProfileType | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              };
+            }
+          | {
+              __typename?: 'Space';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                url: string;
+                displayName: string;
+                type?: ProfileType | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              };
+            }
+          | undefined;
         triggeredBy: {
           __typename?: 'User';
           id: string;
@@ -7760,8 +8176,63 @@ export type ActivityLogOnCollaborationQuery = {
     | {
         __typename?: 'ActivityLogEntryCalloutWhiteboardCreated';
         id: string;
+        collaborationID: string;
         createdDate: Date;
+        description: string;
         type: ActivityEventType;
+        child: boolean;
+        parentNameID: string;
+        journeyDisplayName: string;
+        journey?:
+          | {
+              __typename?: 'Challenge';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                url: string;
+                displayName: string;
+                type?: ProfileType | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              };
+            }
+          | {
+              __typename?: 'Opportunity';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                url: string;
+                displayName: string;
+                type?: ProfileType | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              };
+            }
+          | {
+              __typename?: 'RelayPaginatedSpace';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                url: string;
+                displayName: string;
+                type?: ProfileType | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              };
+            }
+          | {
+              __typename?: 'Space';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                url: string;
+                displayName: string;
+                type?: ProfileType | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              };
+            }
+          | undefined;
         triggeredBy: {
           __typename?: 'User';
           id: string;
@@ -7790,8 +8261,63 @@ export type ActivityLogOnCollaborationQuery = {
     | {
         __typename?: 'ActivityLogEntryChallengeCreated';
         id: string;
+        collaborationID: string;
         createdDate: Date;
+        description: string;
         type: ActivityEventType;
+        child: boolean;
+        parentNameID: string;
+        journeyDisplayName: string;
+        journey?:
+          | {
+              __typename?: 'Challenge';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                url: string;
+                displayName: string;
+                type?: ProfileType | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              };
+            }
+          | {
+              __typename?: 'Opportunity';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                url: string;
+                displayName: string;
+                type?: ProfileType | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              };
+            }
+          | {
+              __typename?: 'RelayPaginatedSpace';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                url: string;
+                displayName: string;
+                type?: ProfileType | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              };
+            }
+          | {
+              __typename?: 'Space';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                url: string;
+                displayName: string;
+                type?: ProfileType | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              };
+            }
+          | undefined;
         triggeredBy: {
           __typename?: 'User';
           id: string;
@@ -7811,8 +8337,63 @@ export type ActivityLogOnCollaborationQuery = {
     | {
         __typename?: 'ActivityLogEntryMemberJoined';
         id: string;
+        collaborationID: string;
         createdDate: Date;
+        description: string;
         type: ActivityEventType;
+        child: boolean;
+        parentNameID: string;
+        journeyDisplayName: string;
+        journey?:
+          | {
+              __typename?: 'Challenge';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                url: string;
+                displayName: string;
+                type?: ProfileType | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              };
+            }
+          | {
+              __typename?: 'Opportunity';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                url: string;
+                displayName: string;
+                type?: ProfileType | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              };
+            }
+          | {
+              __typename?: 'RelayPaginatedSpace';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                url: string;
+                displayName: string;
+                type?: ProfileType | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              };
+            }
+          | {
+              __typename?: 'Space';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                url: string;
+                displayName: string;
+                type?: ProfileType | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              };
+            }
+          | undefined;
         triggeredBy: {
           __typename?: 'User';
           id: string;
@@ -7840,8 +8421,63 @@ export type ActivityLogOnCollaborationQuery = {
     | {
         __typename?: 'ActivityLogEntryOpportunityCreated';
         id: string;
+        collaborationID: string;
         createdDate: Date;
+        description: string;
         type: ActivityEventType;
+        child: boolean;
+        parentNameID: string;
+        journeyDisplayName: string;
+        journey?:
+          | {
+              __typename?: 'Challenge';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                url: string;
+                displayName: string;
+                type?: ProfileType | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              };
+            }
+          | {
+              __typename?: 'Opportunity';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                url: string;
+                displayName: string;
+                type?: ProfileType | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              };
+            }
+          | {
+              __typename?: 'RelayPaginatedSpace';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                url: string;
+                displayName: string;
+                type?: ProfileType | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              };
+            }
+          | {
+              __typename?: 'Space';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                url: string;
+                displayName: string;
+                type?: ProfileType | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              };
+            }
+          | undefined;
         triggeredBy: {
           __typename?: 'User';
           id: string;
@@ -7861,9 +8497,64 @@ export type ActivityLogOnCollaborationQuery = {
     | {
         __typename?: 'ActivityLogEntryUpdateSent';
         id: string;
+        collaborationID: string;
         createdDate: Date;
+        description: string;
         type: ActivityEventType;
+        child: boolean;
+        parentNameID: string;
         message: string;
+        journeyDisplayName: string;
+        journey?:
+          | {
+              __typename?: 'Challenge';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                url: string;
+                displayName: string;
+                type?: ProfileType | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              };
+            }
+          | {
+              __typename?: 'Opportunity';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                url: string;
+                displayName: string;
+                type?: ProfileType | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              };
+            }
+          | {
+              __typename?: 'RelayPaginatedSpace';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                url: string;
+                displayName: string;
+                type?: ProfileType | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              };
+            }
+          | {
+              __typename?: 'Space';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                url: string;
+                displayName: string;
+                type?: ProfileType | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              };
+            }
+          | undefined;
         triggeredBy: {
           __typename?: 'User';
           id: string;
@@ -12038,6 +12729,17 @@ export type AuthorDetailsQuery = {
   }>;
 };
 
+export type LatestReleaseDiscussionQueryVariables = Exact<{ [key: string]: never }>;
+
+export type LatestReleaseDiscussionQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    latestReleaseDiscussion?: { __typename?: 'LatestReleaseDiscussion'; id: string; nameID: string } | undefined;
+  };
+};
+
 export type CreateDiscussionMutationVariables = Exact<{
   input: CommunicationCreateDiscussionInput;
 }>;
@@ -13630,7 +14332,13 @@ export type CommunityGroupsQuery = {
       | {
           __typename?: 'Community';
           id: string;
-          groups?: Array<{ __typename?: 'UserGroup'; id: string; name: string }> | undefined;
+          groups?:
+            | Array<{
+                __typename?: 'UserGroup';
+                id: string;
+                profile?: { __typename?: 'Profile'; displayName: string } | undefined;
+              }>
+            | undefined;
         }
       | undefined;
   };
@@ -14900,7 +15608,6 @@ export type OrganizationGroupQuery = {
       | {
           __typename?: 'UserGroup';
           id: string;
-          name: string;
           profile?:
             | {
                 __typename?: 'Profile';
@@ -15460,7 +16167,6 @@ export type GroupDetailsFragment = {
 export type GroupInfoFragment = {
   __typename?: 'UserGroup';
   id: string;
-  name: string;
   profile?:
     | {
         __typename?: 'Profile';
@@ -15772,7 +16478,11 @@ export type DeleteGroupMutationVariables = Exact<{
 
 export type DeleteGroupMutation = {
   __typename?: 'Mutation';
-  deleteUserGroup: { __typename?: 'UserGroup'; id: string; name: string };
+  deleteUserGroup: {
+    __typename?: 'UserGroup';
+    id: string;
+    profile?: { __typename?: 'Profile'; displayName: string } | undefined;
+  };
 };
 
 export type DeleteUserMutationVariables = Exact<{
@@ -15790,7 +16500,7 @@ export type RemoveUserFromGroupMutation = {
   removeUserFromGroup: {
     __typename?: 'UserGroup';
     id: string;
-    name: string;
+    profile?: { __typename?: 'Profile'; displayName: string } | undefined;
     members?:
       | Array<{
           __typename?: 'User';
@@ -15813,11 +16523,11 @@ export type UpdateGroupMutation = {
   updateUserGroup: {
     __typename?: 'UserGroup';
     id: string;
-    name: string;
     profile?:
       | {
           __typename?: 'Profile';
           id: string;
+          displayName: string;
           description?: string | undefined;
           visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
           references?:
@@ -22100,7 +22810,6 @@ export type SpaceGroupQuery = {
           group: {
             __typename?: 'UserGroup';
             id: string;
-            name: string;
             profile?:
               | {
                   __typename?: 'Profile';
@@ -27361,8 +28070,63 @@ export type LatestContributionsQuery = {
       | {
           __typename?: 'ActivityLogEntryCalendarEventCreated';
           id: string;
+          collaborationID: string;
           createdDate: Date;
+          description: string;
           type: ActivityEventType;
+          child: boolean;
+          parentNameID: string;
+          journeyDisplayName: string;
+          journey?:
+            | {
+                __typename?: 'Challenge';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              }
+            | {
+                __typename?: 'Opportunity';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              }
+            | {
+                __typename?: 'RelayPaginatedSpace';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              }
+            | {
+                __typename?: 'Space';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              }
+            | undefined;
           triggeredBy: {
             __typename?: 'User';
             id: string;
@@ -27382,9 +28146,63 @@ export type LatestContributionsQuery = {
       | {
           __typename?: 'ActivityLogEntryCalloutDiscussionComment';
           id: string;
+          collaborationID: string;
           createdDate: Date;
-          type: ActivityEventType;
           description: string;
+          type: ActivityEventType;
+          child: boolean;
+          parentNameID: string;
+          journeyDisplayName: string;
+          journey?:
+            | {
+                __typename?: 'Challenge';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              }
+            | {
+                __typename?: 'Opportunity';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              }
+            | {
+                __typename?: 'RelayPaginatedSpace';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              }
+            | {
+                __typename?: 'Space';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              }
+            | undefined;
           triggeredBy: {
             __typename?: 'User';
             id: string;
@@ -27408,8 +28226,63 @@ export type LatestContributionsQuery = {
       | {
           __typename?: 'ActivityLogEntryCalloutLinkCreated';
           id: string;
+          collaborationID: string;
           createdDate: Date;
+          description: string;
           type: ActivityEventType;
+          child: boolean;
+          parentNameID: string;
+          journeyDisplayName: string;
+          journey?:
+            | {
+                __typename?: 'Challenge';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              }
+            | {
+                __typename?: 'Opportunity';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              }
+            | {
+                __typename?: 'RelayPaginatedSpace';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              }
+            | {
+                __typename?: 'Space';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              }
+            | undefined;
           triggeredBy: {
             __typename?: 'User';
             id: string;
@@ -27438,9 +28311,63 @@ export type LatestContributionsQuery = {
       | {
           __typename?: 'ActivityLogEntryCalloutPostComment';
           id: string;
+          collaborationID: string;
           createdDate: Date;
-          type: ActivityEventType;
           description: string;
+          type: ActivityEventType;
+          child: boolean;
+          parentNameID: string;
+          journeyDisplayName: string;
+          journey?:
+            | {
+                __typename?: 'Challenge';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              }
+            | {
+                __typename?: 'Opportunity';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              }
+            | {
+                __typename?: 'RelayPaginatedSpace';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              }
+            | {
+                __typename?: 'Space';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              }
+            | undefined;
           triggeredBy: {
             __typename?: 'User';
             id: string;
@@ -27460,8 +28387,63 @@ export type LatestContributionsQuery = {
       | {
           __typename?: 'ActivityLogEntryCalloutPostCreated';
           id: string;
+          collaborationID: string;
           createdDate: Date;
+          description: string;
           type: ActivityEventType;
+          child: boolean;
+          parentNameID: string;
+          journeyDisplayName: string;
+          journey?:
+            | {
+                __typename?: 'Challenge';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              }
+            | {
+                __typename?: 'Opportunity';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              }
+            | {
+                __typename?: 'RelayPaginatedSpace';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              }
+            | {
+                __typename?: 'Space';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              }
+            | undefined;
           triggeredBy: {
             __typename?: 'User';
             id: string;
@@ -27491,8 +28473,63 @@ export type LatestContributionsQuery = {
       | {
           __typename?: 'ActivityLogEntryCalloutPublished';
           id: string;
+          collaborationID: string;
           createdDate: Date;
+          description: string;
           type: ActivityEventType;
+          child: boolean;
+          parentNameID: string;
+          journeyDisplayName: string;
+          journey?:
+            | {
+                __typename?: 'Challenge';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              }
+            | {
+                __typename?: 'Opportunity';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              }
+            | {
+                __typename?: 'RelayPaginatedSpace';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              }
+            | {
+                __typename?: 'Space';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              }
+            | undefined;
           triggeredBy: {
             __typename?: 'User';
             id: string;
@@ -27517,8 +28554,63 @@ export type LatestContributionsQuery = {
       | {
           __typename?: 'ActivityLogEntryCalloutWhiteboardContentModified';
           id: string;
+          collaborationID: string;
           createdDate: Date;
+          description: string;
           type: ActivityEventType;
+          child: boolean;
+          parentNameID: string;
+          journeyDisplayName: string;
+          journey?:
+            | {
+                __typename?: 'Challenge';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              }
+            | {
+                __typename?: 'Opportunity';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              }
+            | {
+                __typename?: 'RelayPaginatedSpace';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              }
+            | {
+                __typename?: 'Space';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              }
+            | undefined;
           triggeredBy: {
             __typename?: 'User';
             id: string;
@@ -27547,8 +28639,63 @@ export type LatestContributionsQuery = {
       | {
           __typename?: 'ActivityLogEntryCalloutWhiteboardCreated';
           id: string;
+          collaborationID: string;
           createdDate: Date;
+          description: string;
           type: ActivityEventType;
+          child: boolean;
+          parentNameID: string;
+          journeyDisplayName: string;
+          journey?:
+            | {
+                __typename?: 'Challenge';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              }
+            | {
+                __typename?: 'Opportunity';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              }
+            | {
+                __typename?: 'RelayPaginatedSpace';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              }
+            | {
+                __typename?: 'Space';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              }
+            | undefined;
           triggeredBy: {
             __typename?: 'User';
             id: string;
@@ -27577,8 +28724,63 @@ export type LatestContributionsQuery = {
       | {
           __typename?: 'ActivityLogEntryChallengeCreated';
           id: string;
+          collaborationID: string;
           createdDate: Date;
+          description: string;
           type: ActivityEventType;
+          child: boolean;
+          parentNameID: string;
+          journeyDisplayName: string;
+          journey?:
+            | {
+                __typename?: 'Challenge';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              }
+            | {
+                __typename?: 'Opportunity';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              }
+            | {
+                __typename?: 'RelayPaginatedSpace';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              }
+            | {
+                __typename?: 'Space';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              }
+            | undefined;
           triggeredBy: {
             __typename?: 'User';
             id: string;
@@ -27598,8 +28800,63 @@ export type LatestContributionsQuery = {
       | {
           __typename?: 'ActivityLogEntryMemberJoined';
           id: string;
+          collaborationID: string;
           createdDate: Date;
+          description: string;
           type: ActivityEventType;
+          child: boolean;
+          parentNameID: string;
+          journeyDisplayName: string;
+          journey?:
+            | {
+                __typename?: 'Challenge';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              }
+            | {
+                __typename?: 'Opportunity';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              }
+            | {
+                __typename?: 'RelayPaginatedSpace';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              }
+            | {
+                __typename?: 'Space';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              }
+            | undefined;
           triggeredBy: {
             __typename?: 'User';
             id: string;
@@ -27627,8 +28884,63 @@ export type LatestContributionsQuery = {
       | {
           __typename?: 'ActivityLogEntryOpportunityCreated';
           id: string;
+          collaborationID: string;
           createdDate: Date;
+          description: string;
           type: ActivityEventType;
+          child: boolean;
+          parentNameID: string;
+          journeyDisplayName: string;
+          journey?:
+            | {
+                __typename?: 'Challenge';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              }
+            | {
+                __typename?: 'Opportunity';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              }
+            | {
+                __typename?: 'RelayPaginatedSpace';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              }
+            | {
+                __typename?: 'Space';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              }
+            | undefined;
           triggeredBy: {
             __typename?: 'User';
             id: string;
@@ -27648,9 +28960,64 @@ export type LatestContributionsQuery = {
       | {
           __typename?: 'ActivityLogEntryUpdateSent';
           id: string;
+          collaborationID: string;
           createdDate: Date;
+          description: string;
           type: ActivityEventType;
+          child: boolean;
+          parentNameID: string;
           message: string;
+          journeyDisplayName: string;
+          journey?:
+            | {
+                __typename?: 'Challenge';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              }
+            | {
+                __typename?: 'Opportunity';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              }
+            | {
+                __typename?: 'RelayPaginatedSpace';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              }
+            | {
+                __typename?: 'Space';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              }
+            | undefined;
           triggeredBy: {
             __typename?: 'User';
             id: string;
@@ -27667,6 +29034,32 @@ export type LatestContributionsQuery = {
   };
 };
 
+export type RecentContributionsJourneyProfileFragment = {
+  __typename?: 'Profile';
+  id: string;
+  url: string;
+  displayName: string;
+  type?: ProfileType | undefined;
+};
+
+export type RecentContributionsSpaceProfileFragment = {
+  __typename?: 'Profile';
+  id: string;
+  url: string;
+  displayName: string;
+  type?: ProfileType | undefined;
+  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+};
+
+export type RecentContributionsChildJourneyProfileFragment = {
+  __typename?: 'Profile';
+  id: string;
+  url: string;
+  displayName: string;
+  type?: ProfileType | undefined;
+  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+};
+
 export type LatestContributionsGroupedQueryVariables = Exact<{
   filter?: InputMaybe<ActivityFeedGroupedQueryArgs>;
 }>;
@@ -27677,8 +29070,13 @@ export type LatestContributionsGroupedQuery = {
     | {
         __typename?: 'ActivityLogEntryCalendarEventCreated';
         id: string;
+        collaborationID: string;
         createdDate: Date;
+        description: string;
         type: ActivityEventType;
+        child: boolean;
+        parentNameID: string;
+        journeyDisplayName: string;
         journey?:
           | {
               __typename?: 'Challenge';
@@ -27738,9 +29136,13 @@ export type LatestContributionsGroupedQuery = {
     | {
         __typename?: 'ActivityLogEntryCalloutDiscussionComment';
         id: string;
+        collaborationID: string;
         createdDate: Date;
-        type: ActivityEventType;
         description: string;
+        type: ActivityEventType;
+        child: boolean;
+        parentNameID: string;
+        journeyDisplayName: string;
         journey?:
           | {
               __typename?: 'Challenge';
@@ -27804,8 +29206,13 @@ export type LatestContributionsGroupedQuery = {
     | {
         __typename?: 'ActivityLogEntryCalloutLinkCreated';
         id: string;
+        collaborationID: string;
         createdDate: Date;
+        description: string;
         type: ActivityEventType;
+        child: boolean;
+        parentNameID: string;
+        journeyDisplayName: string;
         journey?:
           | {
               __typename?: 'Challenge';
@@ -27870,9 +29277,13 @@ export type LatestContributionsGroupedQuery = {
     | {
         __typename?: 'ActivityLogEntryCalloutPostComment';
         id: string;
+        collaborationID: string;
         createdDate: Date;
-        type: ActivityEventType;
         description: string;
+        type: ActivityEventType;
+        child: boolean;
+        parentNameID: string;
+        journeyDisplayName: string;
         journey?:
           | {
               __typename?: 'Challenge';
@@ -27932,8 +29343,13 @@ export type LatestContributionsGroupedQuery = {
     | {
         __typename?: 'ActivityLogEntryCalloutPostCreated';
         id: string;
+        collaborationID: string;
         createdDate: Date;
+        description: string;
         type: ActivityEventType;
+        child: boolean;
+        parentNameID: string;
+        journeyDisplayName: string;
         journey?:
           | {
               __typename?: 'Challenge';
@@ -28003,8 +29419,13 @@ export type LatestContributionsGroupedQuery = {
     | {
         __typename?: 'ActivityLogEntryCalloutPublished';
         id: string;
+        collaborationID: string;
         createdDate: Date;
+        description: string;
         type: ActivityEventType;
+        child: boolean;
+        parentNameID: string;
+        journeyDisplayName: string;
         journey?:
           | {
               __typename?: 'Challenge';
@@ -28069,8 +29490,13 @@ export type LatestContributionsGroupedQuery = {
     | {
         __typename?: 'ActivityLogEntryCalloutWhiteboardContentModified';
         id: string;
+        collaborationID: string;
         createdDate: Date;
+        description: string;
         type: ActivityEventType;
+        child: boolean;
+        parentNameID: string;
+        journeyDisplayName: string;
         journey?:
           | {
               __typename?: 'Challenge';
@@ -28139,8 +29565,13 @@ export type LatestContributionsGroupedQuery = {
     | {
         __typename?: 'ActivityLogEntryCalloutWhiteboardCreated';
         id: string;
+        collaborationID: string;
         createdDate: Date;
+        description: string;
         type: ActivityEventType;
+        child: boolean;
+        parentNameID: string;
+        journeyDisplayName: string;
         journey?:
           | {
               __typename?: 'Challenge';
@@ -28209,8 +29640,13 @@ export type LatestContributionsGroupedQuery = {
     | {
         __typename?: 'ActivityLogEntryChallengeCreated';
         id: string;
+        collaborationID: string;
         createdDate: Date;
+        description: string;
         type: ActivityEventType;
+        child: boolean;
+        parentNameID: string;
+        journeyDisplayName: string;
         journey?:
           | {
               __typename?: 'Challenge';
@@ -28270,8 +29706,13 @@ export type LatestContributionsGroupedQuery = {
     | {
         __typename?: 'ActivityLogEntryMemberJoined';
         id: string;
+        collaborationID: string;
         createdDate: Date;
+        description: string;
         type: ActivityEventType;
+        child: boolean;
+        parentNameID: string;
+        journeyDisplayName: string;
         journey?:
           | {
               __typename?: 'Challenge';
@@ -28339,8 +29780,13 @@ export type LatestContributionsGroupedQuery = {
     | {
         __typename?: 'ActivityLogEntryOpportunityCreated';
         id: string;
+        collaborationID: string;
         createdDate: Date;
+        description: string;
         type: ActivityEventType;
+        child: boolean;
+        parentNameID: string;
+        journeyDisplayName: string;
         journey?:
           | {
               __typename?: 'Challenge';
@@ -28400,9 +29846,14 @@ export type LatestContributionsGroupedQuery = {
     | {
         __typename?: 'ActivityLogEntryUpdateSent';
         id: string;
+        collaborationID: string;
         createdDate: Date;
+        description: string;
         type: ActivityEventType;
+        child: boolean;
+        parentNameID: string;
         message: string;
+        journeyDisplayName: string;
         journey?:
           | {
               __typename?: 'Challenge';
@@ -28455,32 +29906,6 @@ export type LatestContributionsGroupedQuery = {
           | undefined;
       }
   >;
-};
-
-export type RecentContributionsJourneyProfileFragment = {
-  __typename?: 'Profile';
-  id: string;
-  url: string;
-  displayName: string;
-  type?: ProfileType | undefined;
-};
-
-export type RecentContributionsSpaceProfileFragment = {
-  __typename?: 'Profile';
-  id: string;
-  url: string;
-  displayName: string;
-  type?: ProfileType | undefined;
-  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-};
-
-export type RecentContributionsChildJourneyProfileFragment = {
-  __typename?: 'Profile';
-  id: string;
-  url: string;
-  displayName: string;
-  type?: ProfileType | undefined;
-  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
 };
 
 export type LatestContributionsSpacesQueryVariables = Exact<{ [key: string]: never }>;

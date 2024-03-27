@@ -40,7 +40,8 @@ export const GroupPage: FC<GroupPageProps> = ({ group }) => {
   });
 
   const [updateGroup] = useUpdateGroupMutation({
-    onCompleted: data => success(t('operations.user-group.updated-successfuly', { name: data.updateUserGroup.name })),
+    onCompleted: data =>
+      success(t('operations.user-group.updated-successfuly', { name: data.updateUserGroup.profile?.displayName })),
   });
 
   const [createTagset] = useCreateTagsetOnProfileMutation({
@@ -73,7 +74,6 @@ export const GroupPage: FC<GroupPageProps> = ({ group }) => {
       variables: {
         input: {
           ID: group.id,
-          name: group.name,
           profileData: getUpdateProfileInput(group.profile),
         },
       },
@@ -84,7 +84,7 @@ export const GroupPage: FC<GroupPageProps> = ({ group }) => {
     <OrganizationAdminLayout currentTab={SettingsSection.Community} tabRoutePrefix="../../../../">
       <GroupForm
         title={t('components.groupForm.title')}
-        group={group || { id: '-1', name: '' }}
+        group={group || { id: '-1' }}
         members={members}
         onSave={handleSave}
         onDelete={handleDelete}

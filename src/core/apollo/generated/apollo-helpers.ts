@@ -747,6 +747,7 @@ export type ChallengeKeySpecifier = (
   | 'community'
   | 'context'
   | 'id'
+  | 'level'
   | 'metrics'
   | 'nameID'
   | 'opportunities'
@@ -764,6 +765,7 @@ export type ChallengeFieldPolicy = {
   community?: FieldPolicy<any> | FieldReadFunction<any>;
   context?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  level?: FieldPolicy<any> | FieldReadFunction<any>;
   metrics?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   opportunities?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -896,6 +898,7 @@ export type CommunityKeySpecifier = (
   | 'communication'
   | 'group'
   | 'groups'
+  | 'guidelines'
   | 'id'
   | 'invitations'
   | 'invitationsExternal'
@@ -916,6 +919,7 @@ export type CommunityFieldPolicy = {
   communication?: FieldPolicy<any> | FieldReadFunction<any>;
   group?: FieldPolicy<any> | FieldReadFunction<any>;
   groups?: FieldPolicy<any> | FieldReadFunction<any>;
+  guidelines?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   invitations?: FieldPolicy<any> | FieldReadFunction<any>;
   invitationsExternal?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -925,6 +929,12 @@ export type CommunityFieldPolicy = {
   organizationsInRole?: FieldPolicy<any> | FieldReadFunction<any>;
   policy?: FieldPolicy<any> | FieldReadFunction<any>;
   usersInRole?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CommunityGuidelinesKeySpecifier = ('authorization' | 'id' | 'profile' | CommunityGuidelinesKeySpecifier)[];
+export type CommunityGuidelinesFieldPolicy = {
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  profile?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CommunityPolicyKeySpecifier = ('admin' | 'id' | 'lead' | 'member' | CommunityPolicyKeySpecifier)[];
 export type CommunityPolicyFieldPolicy = {
@@ -1579,6 +1589,7 @@ export type MutationKeySpecifier = (
   | 'updateChallenge'
   | 'updateChallengeSettings'
   | 'updateCommunityApplicationForm'
+  | 'updateCommunityGuidelines'
   | 'updateDiscussion'
   | 'updateDocument'
   | 'updateEcosystemModel'
@@ -1736,6 +1747,7 @@ export type MutationFieldPolicy = {
   updateChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
   updateChallengeSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCommunityApplicationForm?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateCommunityGuidelines?: FieldPolicy<any> | FieldReadFunction<any>;
   updateDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
   updateDocument?: FieldPolicy<any> | FieldReadFunction<any>;
   updateEcosystemModel?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1790,6 +1802,7 @@ export type OpportunityKeySpecifier = (
   | 'community'
   | 'context'
   | 'id'
+  | 'level'
   | 'metrics'
   | 'nameID'
   | 'parentNameID'
@@ -1804,6 +1817,7 @@ export type OpportunityFieldPolicy = {
   community?: FieldPolicy<any> | FieldReadFunction<any>;
   context?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  level?: FieldPolicy<any> | FieldReadFunction<any>;
   metrics?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   parentNameID?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2207,6 +2221,7 @@ export type RelayPaginatedSpaceKeySpecifier = (
   | 'context'
   | 'createdDate'
   | 'id'
+  | 'level'
   | 'metrics'
   | 'nameID'
   | 'profile'
@@ -2225,6 +2240,7 @@ export type RelayPaginatedSpaceFieldPolicy = {
   context?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  level?: FieldPolicy<any> | FieldReadFunction<any>;
   metrics?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2570,6 +2586,7 @@ export type SpaceKeySpecifier = (
   | 'context'
   | 'createdDate'
   | 'id'
+  | 'level'
   | 'metrics'
   | 'nameID'
   | 'profile'
@@ -2588,6 +2605,7 @@ export type SpaceFieldPolicy = {
   context?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  level?: FieldPolicy<any> | FieldReadFunction<any>;
   metrics?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2865,7 +2883,6 @@ export type UserGroupKeySpecifier = (
   | 'authorization'
   | 'id'
   | 'members'
-  | 'name'
   | 'parent'
   | 'profile'
   | UserGroupKeySpecifier
@@ -2874,7 +2891,6 @@ export type UserGroupFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   members?: FieldPolicy<any> | FieldReadFunction<any>;
-  name?: FieldPolicy<any> | FieldReadFunction<any>;
   parent?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -3250,6 +3266,10 @@ export type StrictTypedTypePolicies = {
   Community?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CommunityKeySpecifier | (() => undefined | CommunityKeySpecifier);
     fields?: CommunityFieldPolicy;
+  };
+  CommunityGuidelines?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CommunityGuidelinesKeySpecifier | (() => undefined | CommunityGuidelinesKeySpecifier);
+    fields?: CommunityGuidelinesFieldPolicy;
   };
   CommunityPolicy?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CommunityPolicyKeySpecifier | (() => undefined | CommunityPolicyKeySpecifier);

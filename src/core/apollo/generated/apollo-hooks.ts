@@ -1563,7 +1563,6 @@ export const GroupDetailsFragmentDoc = gql`
 export const GroupInfoFragmentDoc = gql`
   fragment GroupInfo on UserGroup {
     id
-    name
     profile {
       id
       displayName
@@ -5739,8 +5738,36 @@ export const ActivityLogOnCollaborationDocument = gql`
       queryData: { collaborationID: $collaborationID, limit: $limit, types: $types, includeChild: true }
     ) {
       id
+      collaborationID
       createdDate
+      description
       type
+      child
+      parentNameID
+      journeyDisplayName: parentDisplayName
+      journey {
+        id
+        ... on Space {
+          profile {
+            ...RecentContributionsSpaceProfile
+          }
+        }
+        ... on RelayPaginatedSpace {
+          profile {
+            ...RecentContributionsSpaceProfile
+          }
+        }
+        ... on Challenge {
+          profile {
+            ...RecentContributionsChildJourneyProfile
+          }
+        }
+        ... on Opportunity {
+          profile {
+            ...RecentContributionsChildJourneyProfile
+          }
+        }
+      }
       triggeredBy {
         id
         profile {
@@ -5790,6 +5817,8 @@ export const ActivityLogOnCollaborationDocument = gql`
       }
     }
   }
+  ${RecentContributionsSpaceProfileFragmentDoc}
+  ${RecentContributionsChildJourneyProfileFragmentDoc}
   ${ActivityLogMemberJoinedFragmentDoc}
   ${ActivityLogCalloutPublishedFragmentDoc}
   ${ActivityLogCalloutPostCreatedFragmentDoc}
@@ -9163,6 +9192,69 @@ export function refetchAuthorDetailsQuery(variables: SchemaTypes.AuthorDetailsQu
   return { query: AuthorDetailsDocument, variables: variables };
 }
 
+export const LatestReleaseDiscussionDocument = gql`
+  query latestReleaseDiscussion {
+    platform {
+      id
+      latestReleaseDiscussion {
+        id
+        nameID
+      }
+    }
+  }
+`;
+
+/**
+ * __useLatestReleaseDiscussionQuery__
+ *
+ * To run a query within a React component, call `useLatestReleaseDiscussionQuery` and pass it any options that fit your needs.
+ * When your component renders, `useLatestReleaseDiscussionQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useLatestReleaseDiscussionQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useLatestReleaseDiscussionQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.LatestReleaseDiscussionQuery,
+    SchemaTypes.LatestReleaseDiscussionQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.LatestReleaseDiscussionQuery, SchemaTypes.LatestReleaseDiscussionQueryVariables>(
+    LatestReleaseDiscussionDocument,
+    options
+  );
+}
+
+export function useLatestReleaseDiscussionLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.LatestReleaseDiscussionQuery,
+    SchemaTypes.LatestReleaseDiscussionQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.LatestReleaseDiscussionQuery,
+    SchemaTypes.LatestReleaseDiscussionQueryVariables
+  >(LatestReleaseDiscussionDocument, options);
+}
+
+export type LatestReleaseDiscussionQueryHookResult = ReturnType<typeof useLatestReleaseDiscussionQuery>;
+export type LatestReleaseDiscussionLazyQueryHookResult = ReturnType<typeof useLatestReleaseDiscussionLazyQuery>;
+export type LatestReleaseDiscussionQueryResult = Apollo.QueryResult<
+  SchemaTypes.LatestReleaseDiscussionQuery,
+  SchemaTypes.LatestReleaseDiscussionQueryVariables
+>;
+export function refetchLatestReleaseDiscussionQuery(variables?: SchemaTypes.LatestReleaseDiscussionQueryVariables) {
+  return { query: LatestReleaseDiscussionDocument, variables: variables };
+}
+
 export const CreateDiscussionDocument = gql`
   mutation createDiscussion($input: CommunicationCreateDiscussionInput!) {
     createDiscussion(createData: $input) {
@@ -11153,7 +11245,9 @@ export const CommunityGroupsDocument = gql`
         id
         groups {
           id
-          name
+          profile {
+            displayName
+          }
         }
       }
     }
@@ -14313,7 +14407,9 @@ export const DeleteGroupDocument = gql`
   mutation deleteGroup($input: DeleteUserGroupInput!) {
     deleteUserGroup(deleteData: $input) {
       id
-      name
+      profile {
+        displayName
+      }
     }
   }
 `;
@@ -14404,7 +14500,9 @@ export const RemoveUserFromGroupDocument = gql`
   mutation removeUserFromGroup($input: RemoveUserGroupMemberInput!) {
     removeUserFromGroup(membershipData: $input) {
       id
-      name
+      profile {
+        displayName
+      }
       members {
         ...GroupMembers
       }
@@ -14457,9 +14555,9 @@ export const UpdateGroupDocument = gql`
   mutation updateGroup($input: UpdateUserGroupInput!) {
     updateUserGroup(userGroupData: $input) {
       id
-      name
       profile {
         id
+        displayName
         visual(type: AVATAR) {
           ...VisualUri
         }
@@ -23905,8 +24003,36 @@ export const LatestContributionsDocument = gql`
     activityFeed(after: $after, first: $first, args: $filter) {
       activityFeed {
         id
+        collaborationID
         createdDate
+        description
         type
+        child
+        parentNameID
+        journeyDisplayName: parentDisplayName
+        journey {
+          id
+          ... on Space {
+            profile {
+              ...RecentContributionsSpaceProfile
+            }
+          }
+          ... on RelayPaginatedSpace {
+            profile {
+              ...RecentContributionsSpaceProfile
+            }
+          }
+          ... on Challenge {
+            profile {
+              ...RecentContributionsChildJourneyProfile
+            }
+          }
+          ... on Opportunity {
+            profile {
+              ...RecentContributionsChildJourneyProfile
+            }
+          }
+        }
         triggeredBy {
           id
           profile {
@@ -23961,6 +24087,8 @@ export const LatestContributionsDocument = gql`
       }
     }
   }
+  ${RecentContributionsSpaceProfileFragmentDoc}
+  ${RecentContributionsChildJourneyProfileFragmentDoc}
   ${ActivityLogMemberJoinedFragmentDoc}
   ${ActivityLogCalloutPublishedFragmentDoc}
   ${ActivityLogCalloutPostCreatedFragmentDoc}
@@ -24033,8 +24161,13 @@ export const LatestContributionsGroupedDocument = gql`
   query LatestContributionsGrouped($filter: ActivityFeedGroupedQueryArgs) {
     activityFeedGrouped(args: $filter) {
       id
+      collaborationID
       createdDate
+      description
       type
+      child
+      parentNameID
+      journeyDisplayName: parentDisplayName
       journey {
         id
         ... on Space {
