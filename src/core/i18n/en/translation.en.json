@@ -250,9 +250,11 @@
     "lead": "Lead",
     "space": "Space",
     "spaces": "Spaces",
+    "subspace": "Subspace",
+    "subspaces": "Subspaces",
     "challenge": "Challenge",
     "challenges": "Challenges",
-    "all-entities": "All {{entityType}} ({{count}})",
+    "entitiesWithCount": "{{entityType}} ({{count}})",
     "contributors": "Contributors",
     "opportunity": "Opportunity",
     "opportunities": "Opportunities",
@@ -348,6 +350,8 @@
     "journeyTypes": {
       "space": "$t(common.space)",
       "space_plural": "$t(common.spaces)",
+      "subspace": "$t(common.subspace)",
+      "subspace_plural": "$t(common.subspaces)",
       "challenge": "$t(common.challenge)",
       "challenge_plural": "$t(common.challenges)",
       "opportunity": "$t(common.opportunity)",
@@ -1634,10 +1638,10 @@
           "description": ""
         },
         "subentities": {
-          "description": "Here you can explore the **{{entities}}** hosted in this {{parentEntity}}. Filter by key words to show just the topics you care about.",
+          "description": "Here you can explore the hosted **{{entities}}**. Filter by key words to show just the topics you care about.",
           "list": "List view",
-          "empty": "No {{entities}} found in this {{parentEntity}}.",
-          "empty-list": "There are no {{entities}} in this {{parentEntity}} yet."
+          "empty": "No {{entities}} found.",
+          "empty-list": "There are no {{entities}} yet."
         },
         "recommendations": {
           "title": "Recommended by the Host"
