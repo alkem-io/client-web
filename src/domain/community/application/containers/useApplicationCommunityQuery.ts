@@ -23,7 +23,7 @@ export const useApplicationCommunityQuery = (type: JourneyTypeName, canJoinCommu
       challengeId: challengeId!,
     },
     errorPolicy: 'all',
-    skip: type !== 'challenge' || !challengeId || canJoinCommunity,
+    skip: type !== 'challenge' || !challengeId,
   });
 
   const {
@@ -46,7 +46,7 @@ export const useApplicationCommunityQuery = (type: JourneyTypeName, canJoinCommu
       spaceId: spaceNameId,
     },
     errorPolicy: 'all',
-    skip: type !== 'space' || canJoinCommunity,
+    skip: type !== 'space',
   });
 
   const {

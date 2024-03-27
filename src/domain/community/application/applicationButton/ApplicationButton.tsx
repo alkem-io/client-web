@@ -84,6 +84,7 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
     const handleClose = () => {
       setIsApplyParentDialogOpen(false);
       setIsJoinParentDialogOpen(false);
+      setIsApplicationDialogOpen(false);
       setIsInvitationDialogOpen(false);
     };
 
