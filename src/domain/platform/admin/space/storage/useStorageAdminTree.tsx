@@ -11,7 +11,7 @@ import {
   DocumentDataFragment,
   LoadableStorageAggregatorFragment,
   StorageAggregatorFragment,
-  StorageAggregatorParentType,
+  SpaceType,
   StorageBucketFragment,
 } from '../../../../../core/apollo/generated/graphql-schema';
 import ImageIcon from '@mui/icons-material/Image';
@@ -54,13 +54,13 @@ interface Provided {
   reload: () => void;
 }
 
-export const getStorageAggregatorParentIcon = (type: StorageAggregatorParentType) => {
+export const getStorageAggregatorParentIcon = (type: SpaceType) => {
   switch (type) {
-    case StorageAggregatorParentType.Space:
+    case SpaceType.Space:
       return SpaceIcon;
-    case StorageAggregatorParentType.Challenge:
+    case SpaceType.Challenge:
       return ChallengeIcon;
-    case StorageAggregatorParentType.Opportunity:
+    case SpaceType.Opportunity:
       return OpportunityIcon;
   }
 };

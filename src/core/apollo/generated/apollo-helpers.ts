@@ -755,6 +755,7 @@ export type ChallengeKeySpecifier = (
   | 'profile'
   | 'settings'
   | 'storageAggregator'
+  | 'type'
   | ChallengeKeySpecifier
 )[];
 export type ChallengeFieldPolicy = {
@@ -773,6 +774,7 @@ export type ChallengeFieldPolicy = {
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   settings?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ChallengeCreatedKeySpecifier = ('challenge' | 'spaceID' | ChallengeCreatedKeySpecifier)[];
 export type ChallengeCreatedFieldPolicy = {
@@ -1808,6 +1810,7 @@ export type OpportunityKeySpecifier = (
   | 'parentNameID'
   | 'profile'
   | 'storageAggregator'
+  | 'type'
   | OpportunityKeySpecifier
 )[];
 export type OpportunityFieldPolicy = {
@@ -1823,6 +1826,7 @@ export type OpportunityFieldPolicy = {
   parentNameID?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type OpportunityCreatedKeySpecifier = ('challengeID' | 'opportunity' | OpportunityCreatedKeySpecifier)[];
 export type OpportunityCreatedFieldPolicy = {
@@ -2227,6 +2231,7 @@ export type RelayPaginatedSpaceKeySpecifier = (
   | 'profile'
   | 'settings'
   | 'storageAggregator'
+  | 'type'
   | RelayPaginatedSpaceKeySpecifier
 )[];
 export type RelayPaginatedSpaceFieldPolicy = {
@@ -2246,6 +2251,7 @@ export type RelayPaginatedSpaceFieldPolicy = {
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   settings?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type RelayPaginatedSpaceEdgeKeySpecifier = ('node' | RelayPaginatedSpaceEdgeKeySpecifier)[];
 export type RelayPaginatedSpaceEdgeFieldPolicy = {
@@ -2592,6 +2598,7 @@ export type SpaceKeySpecifier = (
   | 'profile'
   | 'settings'
   | 'storageAggregator'
+  | 'type'
   | SpaceKeySpecifier
 )[];
 export type SpaceFieldPolicy = {
@@ -2611,6 +2618,7 @@ export type SpaceFieldPolicy = {
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   settings?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type SpaceDefaultsKeySpecifier = (
   | 'authorization'

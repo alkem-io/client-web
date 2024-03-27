@@ -1009,6 +1009,8 @@ export type Challenge = Journey & {
   settings: SpaceSettings;
   /** The StorageAggregator in use by this Challenge */
   storageAggregator?: Maybe<StorageAggregator>;
+  /** The Type of the Space e.g. space/challenge/opportunity. */
+  type: SpaceType;
 };
 
 export type ChallengeOpportunitiesArgs = {
@@ -3506,6 +3508,8 @@ export type Opportunity = Journey & {
   profile: Profile;
   /** The StorageAggregator in use by this Opportunity */
   storageAggregator?: Maybe<StorageAggregator>;
+  /** The Type of the Space e.g. space/challenge/opportunity. */
+  type: SpaceType;
 };
 
 export type OpportunityCreated = {
@@ -4175,6 +4179,8 @@ export type RelayPaginatedSpace = Journey & {
   settings: SpaceSettings;
   /** The StorageAggregator in use by this Space */
   storageAggregator?: Maybe<StorageAggregator>;
+  /** The Type of the Space e.g. space/challenge/opportunity. */
+  type: SpaceType;
 };
 
 export type RelayPaginatedSpaceChallengeArgs = {
@@ -4684,6 +4690,8 @@ export type Space = Journey & {
   settings: SpaceSettings;
   /** The StorageAggregator in use by this Space */
   storageAggregator?: Maybe<StorageAggregator>;
+  /** The Type of the Space e.g. space/challenge/opportunity. */
+  type: SpaceType;
 };
 
 export type SpaceChallengeArgs = {
@@ -4750,6 +4758,12 @@ export type SpaceSettingsPrivacy = {
   mode: SpacePrivacyMode;
 };
 
+export enum SpaceType {
+  Challenge = 'CHALLENGE',
+  Opportunity = 'OPPORTUNITY',
+  Space = 'SPACE',
+}
+
 export enum SpaceVisibility {
   Active = 'ACTIVE',
   Archived = 'ARCHIVED',
@@ -4781,16 +4795,10 @@ export type StorageAggregatorParent = {
   /** The UUID of the parent entity. */
   id: Scalars['UUID'];
   /** The Type of the parent Entity, space/challenge/opportunity. */
-  type: StorageAggregatorParentType;
+  type: SpaceType;
   /** The URL that can be used to access the parent entity. */
   url: Scalars['String'];
 };
-
-export enum StorageAggregatorParentType {
-  Challenge = 'CHALLENGE',
-  Opportunity = 'OPPORTUNITY',
-  Space = 'SPACE',
-}
 
 export type StorageBucket = {
   __typename?: 'StorageBucket';
@@ -23298,13 +23306,7 @@ export type SpaceStorageAdminPageQuery = {
           __typename?: 'StorageAggregator';
           id: string;
           parentEntity?:
-            | {
-                __typename?: 'StorageAggregatorParent';
-                id: string;
-                type: StorageAggregatorParentType;
-                displayName: string;
-                url: string;
-              }
+            | { __typename?: 'StorageAggregatorParent'; id: string; type: SpaceType; displayName: string; url: string }
             | undefined;
           storageAggregators: Array<{
             __typename?: 'StorageAggregator';
@@ -23313,7 +23315,7 @@ export type SpaceStorageAdminPageQuery = {
               | {
                   __typename?: 'StorageAggregatorParent';
                   id: string;
-                  type: StorageAggregatorParentType;
+                  type: SpaceType;
                   displayName: string;
                   url: string;
                 }
@@ -23393,13 +23395,7 @@ export type StorageAggregatorLookupQuery = {
           __typename?: 'StorageAggregator';
           id: string;
           parentEntity?:
-            | {
-                __typename?: 'StorageAggregatorParent';
-                id: string;
-                type: StorageAggregatorParentType;
-                displayName: string;
-                url: string;
-              }
+            | { __typename?: 'StorageAggregatorParent'; id: string; type: SpaceType; displayName: string; url: string }
             | undefined;
           storageAggregators: Array<{
             __typename?: 'StorageAggregator';
@@ -23408,7 +23404,7 @@ export type StorageAggregatorLookupQuery = {
               | {
                   __typename?: 'StorageAggregatorParent';
                   id: string;
-                  type: StorageAggregatorParentType;
+                  type: SpaceType;
                   displayName: string;
                   url: string;
                 }
@@ -23479,25 +23475,13 @@ export type StorageAggregatorFragment = {
   __typename?: 'StorageAggregator';
   id: string;
   parentEntity?:
-    | {
-        __typename?: 'StorageAggregatorParent';
-        id: string;
-        type: StorageAggregatorParentType;
-        displayName: string;
-        url: string;
-      }
+    | { __typename?: 'StorageAggregatorParent'; id: string; type: SpaceType; displayName: string; url: string }
     | undefined;
   storageAggregators: Array<{
     __typename?: 'StorageAggregator';
     id: string;
     parentEntity?:
-      | {
-          __typename?: 'StorageAggregatorParent';
-          id: string;
-          type: StorageAggregatorParentType;
-          displayName: string;
-          url: string;
-        }
+      | { __typename?: 'StorageAggregatorParent'; id: string; type: SpaceType; displayName: string; url: string }
       | undefined;
   }>;
   storageBuckets: Array<{
@@ -23562,13 +23546,7 @@ export type LoadableStorageAggregatorFragment = {
   __typename?: 'StorageAggregator';
   id: string;
   parentEntity?:
-    | {
-        __typename?: 'StorageAggregatorParent';
-        id: string;
-        type: StorageAggregatorParentType;
-        displayName: string;
-        url: string;
-      }
+    | { __typename?: 'StorageAggregatorParent'; id: string; type: SpaceType; displayName: string; url: string }
     | undefined;
 };
 
@@ -23612,7 +23590,7 @@ export type StorageBucketParentFragment = {
 export type StorageAggregatorParentFragment = {
   __typename?: 'StorageAggregatorParent';
   id: string;
-  type: StorageAggregatorParentType;
+  type: SpaceType;
   displayName: string;
   url: string;
 };
