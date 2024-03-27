@@ -48,8 +48,8 @@ export type Account = {
   library?: Maybe<TemplatesSet>;
   /** The License governing platform functionality in use by this Account */
   license: License;
-  /** The root Space for this Account */
-  space: Account;
+  /** The root space for the Account . */
+  space: Space;
 };
 
 export type AccountAuthorizationResetInput = {
@@ -26698,7 +26698,7 @@ export type SearchQuery = {
                 | undefined;
               visuals: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }>;
             };
-            account: { __typename?: 'Account'; space: { __typename?: 'Account'; id: string } };
+            account: { __typename?: 'Account'; space: { __typename?: 'Space'; id: string } };
             context?: { __typename?: 'Context'; id: string; vision?: string | undefined } | undefined;
             authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
             community?:
@@ -27330,7 +27330,7 @@ export type SearchResultChallengeFragment = {
         | undefined;
       visuals: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }>;
     };
-    account: { __typename?: 'Account'; space: { __typename?: 'Account'; id: string } };
+    account: { __typename?: 'Account'; space: { __typename?: 'Space'; id: string } };
     context?: { __typename?: 'Context'; id: string; vision?: string | undefined } | undefined;
     authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
     community?:
@@ -27788,7 +27788,7 @@ export type ChallengeExplorerSearchQuery = {
                 | undefined;
               visuals: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }>;
             };
-            account: { __typename?: 'Account'; space: { __typename?: 'Account'; id: string } };
+            account: { __typename?: 'Account'; space: { __typename?: 'Space'; id: string } };
             context?: { __typename?: 'Context'; id: string; vision?: string | undefined } | undefined;
             authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
             community?:
