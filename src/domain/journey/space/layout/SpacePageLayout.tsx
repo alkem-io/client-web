@@ -22,7 +22,7 @@ const SpacePageLayout = ({
   currentSection,
   children,
 }: PropsWithChildren<SpacePageLayoutProps>) => {
-  const { spaceId, profile, loading } = useSpace();
+  const { spaceId, communityId, profile, loading } = useSpace();
 
   const visual = getVisualByType(VisualName.BANNER, profile?.visuals);
 
@@ -55,7 +55,7 @@ const SpacePageLayout = ({
             journeyTypeName="space"
             description={vision}
             disabled={unauthorizedDialogDisabled}
-            leftColumnChildrenTop={<CommunityGuidelinesBlock spaceId={spaceId} />}
+            leftColumnChildrenTop={<CommunityGuidelinesBlock communityId={communityId} />}
             {...props}
           />
         )}

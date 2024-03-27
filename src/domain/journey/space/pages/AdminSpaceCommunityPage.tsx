@@ -106,7 +106,7 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
           <CommunityApplicationForm spaceId={spaceId} />
         </PageContentBlockCollapsible>
         <PageContentBlockCollapsible header={<BlockTitle>{t('community.communityGuidelines.title')}</BlockTitle>}>
-          <CommunityGuidelines spaceId={spaceId} />
+          <CommunityGuidelines communityId={communityId} />
         </PageContentBlockCollapsible>
         <PageContentColumn columns={6}>
           <PageContentBlock>

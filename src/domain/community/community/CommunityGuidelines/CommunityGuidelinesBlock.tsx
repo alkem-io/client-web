@@ -22,15 +22,15 @@ const CommunityGuidelinesSkeleton = () => {
 };
 
 export interface CommunityGuidelinesBlockProps {
-  spaceId: string | undefined;
+  communityId: string | undefined;
 }
 
-const CommunityGuidelinesBlock: FC<CommunityGuidelinesBlockProps> = ({ spaceId }) => {
+const CommunityGuidelinesBlock: FC<CommunityGuidelinesBlockProps> = ({ communityId }) => {
   const [isCommunityGuidelinesInfoDialogOpen, setIsCommunityGuidelinesInfoDialogOpen] = useState(false);
 
   const { data, loading } = useCommunityGuidelinesQuery({
-    variables: { spaceId: spaceId! },
-    skip: !spaceId,
+    variables: { communityId: communityId! },
+    skip: !communityId,
   });
 
   const openDialog = () => setIsCommunityGuidelinesInfoDialogOpen(true);
@@ -40,7 +40,7 @@ const CommunityGuidelinesBlock: FC<CommunityGuidelinesBlockProps> = ({ spaceId }
     <>
       <PageContentBlock>
         <PageContentBlockHeaderWithDialogAction
-          title={data?.space?.community?.guidelines?.profile.displayName}
+          title={data?.lookup?.community?.guidelines?.profile.displayName}
           onDialogOpen={openDialog}
         />
         <Box display="flex" flexDirection="column" gap={gutters()}>
@@ -49,7 +49,7 @@ const CommunityGuidelinesBlock: FC<CommunityGuidelinesBlockProps> = ({ spaceId }
             <OverflowGradient maxHeight={gutters(6)}>
               <Box sx={{ wordWrap: 'break-word' }}>
                 <WrapperMarkdown disableParagraphPadding>
-                  {data?.space?.community?.guidelines?.profile.description ?? ''}
+                  {data?.lookup?.community?.guidelines?.profile.description ?? ''}
                 </WrapperMarkdown>
               </Box>
             </OverflowGradient>
@@ -59,7 +59,7 @@ const CommunityGuidelinesBlock: FC<CommunityGuidelinesBlockProps> = ({ spaceId }
       <CommunityGuidelinesInfoDialog
         open={isCommunityGuidelinesInfoDialogOpen}
         onClose={closeDialog}
-        guidelines={data?.space?.community?.guidelines?.profile}
+        guidelines={data?.lookup?.community?.guidelines?.profile}
       />
     </>
   );

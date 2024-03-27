@@ -14158,14 +14158,13 @@ export type SpaceCommunityQuery = {
 };
 
 export type CommunityGuidelinesQueryVariables = Exact<{
-  spaceId?: InputMaybe<Scalars['UUID_NAMEID']>;
+  communityId: Scalars['UUID'];
 }>;
 
 export type CommunityGuidelinesQuery = {
   __typename?: 'Query';
-  space: {
-    __typename?: 'Space';
-    id: string;
+  lookup: {
+    __typename?: 'LookupQueryResults';
     community?:
       | {
           __typename?: 'Community';

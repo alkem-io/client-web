@@ -22,7 +22,7 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import ProfileReferenceSegment from '../../../platform/admin/components/Common/ProfileReferenceSegment';
 
 interface CommunityGuidelinesProps {
-  spaceId: string;
+  communityId: string;
   challengeId?: string;
   disabled?: boolean;
 }
@@ -41,26 +41,26 @@ const validationSchema = yup.object().shape({
   tagsets: tagsetSegmentSchema,
 });
 
-const CommunityGuidelines: FC<CommunityGuidelinesProps> = ({ spaceId, disabled }) => {
+const CommunityGuidelines: FC<CommunityGuidelinesProps> = ({ communityId, disabled }) => {
   const { t } = useTranslation();
   const notify = useNotification();
 
   const { data: rawData, loading: loadingGuidelines } = useCommunityGuidelinesQuery({
     variables: {
-      spaceId,
+      communityId,
     },
-    skip: !spaceId,
+    skip: !communityId,
   });
 
   const data = useMemo(
     () => ({
-      communityGuidelinesId: rawData?.space?.community?.guidelines?.id,
-      displayName: rawData?.space?.community?.guidelines?.profile.displayName,
-      description: rawData?.space?.community?.guidelines?.profile.description,
-      profile: rawData?.space?.community?.guidelines?.profile,
-      references: rawData?.space?.community?.guidelines?.profile.references,
-      tagsets: rawData?.space?.community?.guidelines?.profile.tagset
-        ? [rawData?.space?.community?.guidelines?.profile.tagset]
+      communityGuidelinesId: rawData?.lookup?.community?.guidelines?.id,
+      displayName: rawData?.lookup?.community?.guidelines?.profile.displayName,
+      description: rawData?.lookup?.community?.guidelines?.profile.description,
+      profile: rawData?.lookup?.community?.guidelines?.profile,
+      references: rawData?.lookup?.community?.guidelines?.profile.references,
+      tagsets: rawData?.lookup?.community?.guidelines?.profile.tagset
+        ? [rawData?.lookup?.community?.guidelines?.profile.tagset]
         : ([
             {
               id: '',
@@ -110,7 +110,7 @@ const CommunityGuidelines: FC<CommunityGuidelinesProps> = ({ spaceId, disabled }
       awaitRefetchQueries: true,
       refetchQueries: [
         refetchCommunityGuidelinesQuery({
-          spaceId,
+          communityId,
         }),
       ],
     });

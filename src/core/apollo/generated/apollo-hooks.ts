@@ -11434,10 +11434,9 @@ export function refetchSpaceCommunityQuery(variables: SchemaTypes.SpaceCommunity
 }
 
 export const CommunityGuidelinesDocument = gql`
-  query CommunityGuidelines($spaceId: UUID_NAMEID = "00000000-0000-0000-0000-000000000000") {
-    space(ID: $spaceId) {
-      id
-      community {
+  query CommunityGuidelines($communityId: UUID!) {
+    lookup {
+      community(ID: $communityId) {
         id
         guidelines {
           ...CommunityGuidelinesDetails
@@ -11460,12 +11459,12 @@ export const CommunityGuidelinesDocument = gql`
  * @example
  * const { data, loading, error } = useCommunityGuidelinesQuery({
  *   variables: {
- *      spaceId: // value for 'spaceId'
+ *      communityId: // value for 'communityId'
  *   },
  * });
  */
 export function useCommunityGuidelinesQuery(
-  baseOptions?: Apollo.QueryHookOptions<
+  baseOptions: Apollo.QueryHookOptions<
     SchemaTypes.CommunityGuidelinesQuery,
     SchemaTypes.CommunityGuidelinesQueryVariables
   >
@@ -11496,7 +11495,7 @@ export type CommunityGuidelinesQueryResult = Apollo.QueryResult<
   SchemaTypes.CommunityGuidelinesQuery,
   SchemaTypes.CommunityGuidelinesQueryVariables
 >;
-export function refetchCommunityGuidelinesQuery(variables?: SchemaTypes.CommunityGuidelinesQueryVariables) {
+export function refetchCommunityGuidelinesQuery(variables: SchemaTypes.CommunityGuidelinesQueryVariables) {
   return { query: CommunityGuidelinesDocument, variables: variables };
 }
 
