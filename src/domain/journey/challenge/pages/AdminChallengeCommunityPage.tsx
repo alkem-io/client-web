@@ -10,9 +10,6 @@ import { SettingsSection } from '../../../platform/admin/layout/EntitySettingsLa
 import { SettingsPageProps } from '../../../platform/admin/layout/EntitySettingsLayout/types';
 import { useChallenge } from '../hooks/useChallenge';
 import ChallengeSettingsLayout from '../../../platform/admin/challenge/ChallengeSettingsLayout';
-import ChallengeCommunityAdminMembershipPreferencesSection from '../../../platform/admin/challenge/ChallengeCommunityAdminMembershipPreferencesSection';
-import CommunityApplicationForm from '../../../community/community/CommunityApplicationForm/CommunityApplicationForm';
-import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 
 const AdminChallengeCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
@@ -85,10 +82,6 @@ const AdminChallengeCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../
           </PageContentBlock>
         </PageContentColumn>
       </PageContent>
-      <PageContentBlockSeamless>
-        <ChallengeCommunityAdminMembershipPreferencesSection challengeId={challengeId} />
-        <CommunityApplicationForm spaceId={spaceId} challengeId={challengeId} />
-      </PageContentBlockSeamless>
     </ChallengeSettingsLayout>
   );
 };

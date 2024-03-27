@@ -106,7 +106,7 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
   const spacePrivileges = space?.authorization?.myPrivileges ?? NO_PRIVILEGES;
 
   const canReadChallenges = spacePrivileges.includes(AuthorizationPrivilege.Read);
-  const canCreateChallenges = spacePrivileges.includes(AuthorizationPrivilege.CreateChallenge);
+  const canCreateSubspaces = spacePrivileges.includes(AuthorizationPrivilege.CreateSubspace);
   const canCreate = spacePrivileges.includes(AuthorizationPrivilege.Create);
 
   const communityPrivileges = space?.community?.authorization?.myPrivileges ?? NO_PRIVILEGES;
@@ -116,13 +116,13 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
       canRead: spacePrivileges.includes(AuthorizationPrivilege.Read),
       viewerCanUpdate: spacePrivileges.includes(AuthorizationPrivilege.Update),
       canReadChallenges,
-      canCreateChallenges,
+      canCreateChallenges: canCreateSubspaces,
       canCreate,
       communityReadAccess: communityPrivileges.includes(AuthorizationPrivilege.Read),
       canReadPosts: contextPrivileges.includes(AuthorizationPrivilege.Read),
       contextPrivileges,
     };
-  }, [spacePrivileges, contextPrivileges, canReadChallenges, communityPrivileges, canCreate, canCreateChallenges]);
+  }, [spacePrivileges, contextPrivileges, canReadChallenges, communityPrivileges, canCreate, canCreateSubspaces]);
 
   const profile = useMemo(() => {
     return {

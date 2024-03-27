@@ -1,8 +1,10 @@
 query SpaceCommunityContributors($spaceId: UUID_NAMEID!) {
   space(ID: $spaceId) {
     id
-    host {
-      ...OrganizationCard
+    account {
+      host {
+        ...OrganizationCard
+      }
     }
     community {
       id

@@ -32,6 +32,12 @@ fragment SpacePage on Space {
       id
       visibility
     }
+    host {
+      ...AssociatedOrganizationDetails
+      profile {
+        ...SpaceWelcomeBlockContributorProfile
+      }
+    }
   }
   metrics {
     id
@@ -43,12 +49,7 @@ fragment SpacePage on Space {
     anonymousReadAccess
     myPrivileges
   }
-  host {
-    ...AssociatedOrganizationDetails
-    profile {
-      ...SpaceWelcomeBlockContributorProfile
-    }
-  }
+
   profile {
     id
     url

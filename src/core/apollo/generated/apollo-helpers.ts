@@ -11,7 +11,7 @@ export type AccountKeySpecifier = (
   | 'id'
   | 'library'
   | 'license'
-  | 'spaceID'
+  | 'space'
   | AccountKeySpecifier
 )[];
 export type AccountFieldPolicy = {
@@ -21,7 +21,7 @@ export type AccountFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   library?: FieldPolicy<any> | FieldReadFunction<any>;
   license?: FieldPolicy<any> | FieldReadFunction<any>;
-  spaceID?: FieldPolicy<any> | FieldReadFunction<any>;
+  space?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ActivityCreatedSubscriptionResultKeySpecifier = (
   | 'activity'
@@ -747,11 +747,13 @@ export type ChallengeKeySpecifier = (
   | 'community'
   | 'context'
   | 'id'
+  | 'level'
   | 'metrics'
   | 'nameID'
   | 'opportunities'
-  | 'preferences'
+  | 'opportunity'
   | 'profile'
+  | 'settings'
   | 'storageAggregator'
   | ChallengeKeySpecifier
 )[];
@@ -763,11 +765,13 @@ export type ChallengeFieldPolicy = {
   community?: FieldPolicy<any> | FieldReadFunction<any>;
   context?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  level?: FieldPolicy<any> | FieldReadFunction<any>;
   metrics?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   opportunities?: FieldPolicy<any> | FieldReadFunction<any>;
-  preferences?: FieldPolicy<any> | FieldReadFunction<any>;
+  opportunity?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  settings?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ChallengeCreatedKeySpecifier = ('challenge' | 'spaceID' | ChallengeCreatedKeySpecifier)[];
@@ -892,7 +896,9 @@ export type CommunityKeySpecifier = (
   | 'availableLeadUsers'
   | 'availableMemberUsers'
   | 'communication'
+  | 'group'
   | 'groups'
+  | 'guidelines'
   | 'id'
   | 'invitations'
   | 'invitationsExternal'
@@ -911,7 +917,9 @@ export type CommunityFieldPolicy = {
   availableLeadUsers?: FieldPolicy<any> | FieldReadFunction<any>;
   availableMemberUsers?: FieldPolicy<any> | FieldReadFunction<any>;
   communication?: FieldPolicy<any> | FieldReadFunction<any>;
+  group?: FieldPolicy<any> | FieldReadFunction<any>;
   groups?: FieldPolicy<any> | FieldReadFunction<any>;
+  guidelines?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   invitations?: FieldPolicy<any> | FieldReadFunction<any>;
   invitationsExternal?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -922,10 +930,15 @@ export type CommunityFieldPolicy = {
   policy?: FieldPolicy<any> | FieldReadFunction<any>;
   usersInRole?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type CommunityPolicyKeySpecifier = ('admin' | 'host' | 'id' | 'lead' | 'member' | CommunityPolicyKeySpecifier)[];
+export type CommunityGuidelinesKeySpecifier = ('authorization' | 'id' | 'profile' | CommunityGuidelinesKeySpecifier)[];
+export type CommunityGuidelinesFieldPolicy = {
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  profile?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CommunityPolicyKeySpecifier = ('admin' | 'id' | 'lead' | 'member' | CommunityPolicyKeySpecifier)[];
 export type CommunityPolicyFieldPolicy = {
   admin?: FieldPolicy<any> | FieldReadFunction<any>;
-  host?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   lead?: FieldPolicy<any> | FieldReadFunction<any>;
   member?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -970,18 +983,9 @@ export type ConfigFieldPolicy = {
   storage?: FieldPolicy<any> | FieldReadFunction<any>;
   template?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type ContextKeySpecifier = (
-  | 'authorization'
-  | 'ecosystemModel'
-  | 'id'
-  | 'impact'
-  | 'vision'
-  | 'who'
-  | ContextKeySpecifier
-)[];
+export type ContextKeySpecifier = ('authorization' | 'id' | 'impact' | 'vision' | 'who' | ContextKeySpecifier)[];
 export type ContextFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  ecosystemModel?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   impact?: FieldPolicy<any> | FieldReadFunction<any>;
   vision?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1481,9 +1485,9 @@ export type MutationKeySpecifier = (
   | 'assignUserToGroup'
   | 'assignUserToOrganization'
   | 'authorizationPolicyResetAll'
+  | 'authorizationPolicyResetOnAccount'
   | 'authorizationPolicyResetOnOrganization'
   | 'authorizationPolicyResetOnPlatform'
-  | 'authorizationPolicyResetOnSpace'
   | 'authorizationPolicyResetOnUser'
   | 'authorizationPolicyResetToGlobalAdminsAccess'
   | 'beginAlkemioUserVerifiedCredentialOfferInteraction'
@@ -1573,6 +1577,7 @@ export type MutationKeySpecifier = (
   | 'sendMessageToOrganization'
   | 'sendMessageToRoom'
   | 'sendMessageToUser'
+  | 'updateAccountPlatformSettings'
   | 'updateActor'
   | 'updateAnswerRelevance'
   | 'updateCalendarEvent'
@@ -1582,7 +1587,9 @@ export type MutationKeySpecifier = (
   | 'updateCalloutVisibility'
   | 'updateCalloutsSortOrder'
   | 'updateChallenge'
+  | 'updateChallengeSettings'
   | 'updateCommunityApplicationForm'
+  | 'updateCommunityGuidelines'
   | 'updateDiscussion'
   | 'updateDocument'
   | 'updateEcosystemModel'
@@ -1598,15 +1605,14 @@ export type MutationKeySpecifier = (
   | 'updateOrganization'
   | 'updatePost'
   | 'updatePostTemplate'
-  | 'updatePreferenceOnChallenge'
   | 'updatePreferenceOnOrganization'
-  | 'updatePreferenceOnSpace'
   | 'updatePreferenceOnUser'
   | 'updateProfile'
   | 'updateReference'
   | 'updateSpace'
   | 'updateSpaceDefaults'
   | 'updateSpacePlatformSettings'
+  | 'updateSpaceSettings'
   | 'updateTagset'
   | 'updateUser'
   | 'updateUserGroup'
@@ -1637,9 +1643,9 @@ export type MutationFieldPolicy = {
   assignUserToGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   authorizationPolicyResetAll?: FieldPolicy<any> | FieldReadFunction<any>;
+  authorizationPolicyResetOnAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   authorizationPolicyResetOnOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   authorizationPolicyResetOnPlatform?: FieldPolicy<any> | FieldReadFunction<any>;
-  authorizationPolicyResetOnSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   authorizationPolicyResetOnUser?: FieldPolicy<any> | FieldReadFunction<any>;
   authorizationPolicyResetToGlobalAdminsAccess?: FieldPolicy<any> | FieldReadFunction<any>;
   beginAlkemioUserVerifiedCredentialOfferInteraction?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1729,6 +1735,7 @@ export type MutationFieldPolicy = {
   sendMessageToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   sendMessageToRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   sendMessageToUser?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateAccountPlatformSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   updateActor?: FieldPolicy<any> | FieldReadFunction<any>;
   updateAnswerRelevance?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCalendarEvent?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1738,7 +1745,9 @@ export type MutationFieldPolicy = {
   updateCalloutVisibility?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCalloutsSortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
   updateChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateChallengeSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCommunityApplicationForm?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateCommunityGuidelines?: FieldPolicy<any> | FieldReadFunction<any>;
   updateDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
   updateDocument?: FieldPolicy<any> | FieldReadFunction<any>;
   updateEcosystemModel?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1754,15 +1763,14 @@ export type MutationFieldPolicy = {
   updateOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   updatePost?: FieldPolicy<any> | FieldReadFunction<any>;
   updatePostTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
-  updatePreferenceOnChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
   updatePreferenceOnOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
-  updatePreferenceOnSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   updatePreferenceOnUser?: FieldPolicy<any> | FieldReadFunction<any>;
   updateProfile?: FieldPolicy<any> | FieldReadFunction<any>;
   updateReference?: FieldPolicy<any> | FieldReadFunction<any>;
   updateSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   updateSpaceDefaults?: FieldPolicy<any> | FieldReadFunction<any>;
   updateSpacePlatformSettings?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateSpaceSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   updateTagset?: FieldPolicy<any> | FieldReadFunction<any>;
   updateUser?: FieldPolicy<any> | FieldReadFunction<any>;
   updateUserGroup?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1794,6 +1802,7 @@ export type OpportunityKeySpecifier = (
   | 'community'
   | 'context'
   | 'id'
+  | 'level'
   | 'metrics'
   | 'nameID'
   | 'parentNameID'
@@ -1808,6 +1817,7 @@ export type OpportunityFieldPolicy = {
   community?: FieldPolicy<any> | FieldReadFunction<any>;
   context?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  level?: FieldPolicy<any> | FieldReadFunction<any>;
   metrics?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   parentNameID?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2094,6 +2104,8 @@ export type ProfileCredentialVerifiedFieldPolicy = {
   vc?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type QueryKeySpecifier = (
+  | 'account'
+  | 'accounts'
   | 'activityFeed'
   | 'activityFeedGrouped'
   | 'activityLogOnCollaboration'
@@ -2123,6 +2135,8 @@ export type QueryKeySpecifier = (
   | QueryKeySpecifier
 )[];
 export type QueryFieldPolicy = {
+  account?: FieldPolicy<any> | FieldReadFunction<any>;
+  accounts?: FieldPolicy<any> | FieldReadFunction<any>;
   activityFeed?: FieldPolicy<any> | FieldReadFunction<any>;
   activityFeedGrouped?: FieldPolicy<any> | FieldReadFunction<any>;
   activityLogOnCollaboration?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2206,15 +2220,12 @@ export type RelayPaginatedSpaceKeySpecifier = (
   | 'community'
   | 'context'
   | 'createdDate'
-  | 'group'
-  | 'groups'
-  | 'host'
   | 'id'
+  | 'level'
   | 'metrics'
   | 'nameID'
-  | 'opportunity'
-  | 'preferences'
   | 'profile'
+  | 'settings'
   | 'storageAggregator'
   | RelayPaginatedSpaceKeySpecifier
 )[];
@@ -2228,15 +2239,12 @@ export type RelayPaginatedSpaceFieldPolicy = {
   community?: FieldPolicy<any> | FieldReadFunction<any>;
   context?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
-  group?: FieldPolicy<any> | FieldReadFunction<any>;
-  groups?: FieldPolicy<any> | FieldReadFunction<any>;
-  host?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  level?: FieldPolicy<any> | FieldReadFunction<any>;
   metrics?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
-  opportunity?: FieldPolicy<any> | FieldReadFunction<any>;
-  preferences?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  settings?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type RelayPaginatedSpaceEdgeKeySpecifier = ('node' | RelayPaginatedSpaceEdgeKeySpecifier)[];
@@ -2577,15 +2585,12 @@ export type SpaceKeySpecifier = (
   | 'community'
   | 'context'
   | 'createdDate'
-  | 'group'
-  | 'groups'
-  | 'host'
   | 'id'
+  | 'level'
   | 'metrics'
   | 'nameID'
-  | 'opportunity'
-  | 'preferences'
   | 'profile'
+  | 'settings'
   | 'storageAggregator'
   | SpaceKeySpecifier
 )[];
@@ -2599,15 +2604,12 @@ export type SpaceFieldPolicy = {
   community?: FieldPolicy<any> | FieldReadFunction<any>;
   context?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
-  group?: FieldPolicy<any> | FieldReadFunction<any>;
-  groups?: FieldPolicy<any> | FieldReadFunction<any>;
-  host?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  level?: FieldPolicy<any> | FieldReadFunction<any>;
   metrics?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
-  opportunity?: FieldPolicy<any> | FieldReadFunction<any>;
-  preferences?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  settings?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type SpaceDefaultsKeySpecifier = (
@@ -2620,6 +2622,36 @@ export type SpaceDefaultsFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationFlowTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type SpaceSettingsKeySpecifier = ('collaboration' | 'membership' | 'privacy' | SpaceSettingsKeySpecifier)[];
+export type SpaceSettingsFieldPolicy = {
+  collaboration?: FieldPolicy<any> | FieldReadFunction<any>;
+  membership?: FieldPolicy<any> | FieldReadFunction<any>;
+  privacy?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type SpaceSettingsCollaborationKeySpecifier = (
+  | 'allowMembersToCreateCallouts'
+  | 'allowMembersToCreateSubspaces'
+  | 'inheritMembershipRights'
+  | SpaceSettingsCollaborationKeySpecifier
+)[];
+export type SpaceSettingsCollaborationFieldPolicy = {
+  allowMembersToCreateCallouts?: FieldPolicy<any> | FieldReadFunction<any>;
+  allowMembersToCreateSubspaces?: FieldPolicy<any> | FieldReadFunction<any>;
+  inheritMembershipRights?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type SpaceSettingsMembershipKeySpecifier = (
+  | 'policy'
+  | 'trustedOrganizations'
+  | SpaceSettingsMembershipKeySpecifier
+)[];
+export type SpaceSettingsMembershipFieldPolicy = {
+  policy?: FieldPolicy<any> | FieldReadFunction<any>;
+  trustedOrganizations?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type SpaceSettingsPrivacyKeySpecifier = ('mode' | SpaceSettingsPrivacyKeySpecifier)[];
+export type SpaceSettingsPrivacyFieldPolicy = {
+  mode?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type StorageAggregatorKeySpecifier = (
   | 'authorization'
@@ -2851,7 +2883,6 @@ export type UserGroupKeySpecifier = (
   | 'authorization'
   | 'id'
   | 'members'
-  | 'name'
   | 'parent'
   | 'profile'
   | UserGroupKeySpecifier
@@ -2860,7 +2891,6 @@ export type UserGroupFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   members?: FieldPolicy<any> | FieldReadFunction<any>;
-  name?: FieldPolicy<any> | FieldReadFunction<any>;
   parent?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -3236,6 +3266,10 @@ export type StrictTypedTypePolicies = {
   Community?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CommunityKeySpecifier | (() => undefined | CommunityKeySpecifier);
     fields?: CommunityFieldPolicy;
+  };
+  CommunityGuidelines?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CommunityGuidelinesKeySpecifier | (() => undefined | CommunityGuidelinesKeySpecifier);
+    fields?: CommunityGuidelinesFieldPolicy;
   };
   CommunityPolicy?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CommunityPolicyKeySpecifier | (() => undefined | CommunityPolicyKeySpecifier);
@@ -3630,6 +3664,25 @@ export type StrictTypedTypePolicies = {
   SpaceDefaults?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SpaceDefaultsKeySpecifier | (() => undefined | SpaceDefaultsKeySpecifier);
     fields?: SpaceDefaultsFieldPolicy;
+  };
+  SpaceSettings?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | SpaceSettingsKeySpecifier | (() => undefined | SpaceSettingsKeySpecifier);
+    fields?: SpaceSettingsFieldPolicy;
+  };
+  SpaceSettingsCollaboration?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | SpaceSettingsCollaborationKeySpecifier
+      | (() => undefined | SpaceSettingsCollaborationKeySpecifier);
+    fields?: SpaceSettingsCollaborationFieldPolicy;
+  };
+  SpaceSettingsMembership?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | SpaceSettingsMembershipKeySpecifier | (() => undefined | SpaceSettingsMembershipKeySpecifier);
+    fields?: SpaceSettingsMembershipFieldPolicy;
+  };
+  SpaceSettingsPrivacy?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | SpaceSettingsPrivacyKeySpecifier | (() => undefined | SpaceSettingsPrivacyKeySpecifier);
+    fields?: SpaceSettingsPrivacyFieldPolicy;
   };
   StorageAggregator?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | StorageAggregatorKeySpecifier | (() => undefined | StorageAggregatorKeySpecifier);

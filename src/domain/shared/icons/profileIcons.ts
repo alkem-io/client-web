@@ -59,5 +59,7 @@ export const getProfileIcon = (profileType: ProfileType): ComponentType<SvgIconP
       return calloutIcons.WHITEBOARD_COLLECTION;
     case ProfileType.ContributionLink:
       return calloutIcons.LINK_COLLECTION;
+    case ProfileType.CommunityGuidelines:
+      return calloutIcons.LINK_COLLECTION; // TODO:
   }
 };

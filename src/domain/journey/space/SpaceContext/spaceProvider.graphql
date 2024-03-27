@@ -37,24 +37,27 @@ fragment SpaceInfo on Space {
 query spaceHost($spaceId: UUID_NAMEID!) {
   space(ID: $spaceId) {
     id
-    host {
+    account {
       id
-      nameID
-      profile {
+      host {
         id
-        displayName
-        avatar: visual(type: AVATAR) {
+        nameID
+        profile {
           id
-          uri
-        }
-        location {
-          id
-          city
-          country
-        }
-        tagsets {
-          id
-          tags
+          displayName
+          avatar: visual(type: AVATAR) {
+            id
+            uri
+          }
+          location {
+            id
+            city
+            country
+          }
+          tagsets {
+            id
+            tags
+          }
         }
       }
     }

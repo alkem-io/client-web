@@ -1,12 +1,3 @@
-import {
-  ChallengePreferenceType,
-  SpacePreferenceType,
-  OrganizationPreferenceType,
-  UserPreferenceType,
-} from '../../../core/apollo/generated/graphql-schema';
+import { OrganizationPreferenceType, UserPreferenceType } from '../../../core/apollo/generated/graphql-schema';
 
-export type PreferenceTypes =
-  | UserPreferenceType
-  | OrganizationPreferenceType
-  | ChallengePreferenceType
-  | SpacePreferenceType;
+export type PreferenceTypes = UserPreferenceType | OrganizationPreferenceType;

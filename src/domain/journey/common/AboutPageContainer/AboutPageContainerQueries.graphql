@@ -39,8 +39,10 @@ query AboutPageNonMembers(
         ...VisualFull
       }
     }
-    host {
-      ...AssociatedOrganizationDetails
+    account {
+      host {
+        ...AssociatedOrganizationDetails
+      }
     }
     metrics {
       ...MetricsItem

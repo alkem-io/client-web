@@ -10,7 +10,7 @@ import { Formik } from 'formik';
 import { LicenseFeatureFlagName, SpaceVisibility } from '../../../../../core/apollo/generated/graphql-schema';
 import FormikAutocomplete from '../../../../../core/ui/forms/FormikAutocomplete';
 import { FormikSelectValue } from '../../../../../core/ui/forms/FormikSelect';
-import { useUpdateSpacePlatformSettingsMutation } from '../../../../../core/apollo/generated/apollo-hooks';
+import { useUpdateAccountPlatformSettingsMutation } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useTranslation } from 'react-i18next';
 import { BlockTitle } from '../../../../../core/ui/typography';
 import { Actions } from '../../../../../core/ui/actions/Actions';
@@ -22,6 +22,10 @@ import FormikCheckboxField from '../../../../../core/ui/forms/FormikCheckboxFiel
 
 export interface SpacePlatformSettings {
   nameID: string;
+  account: AccountPlatformSettings;
+}
+
+export interface AccountPlatformSettings {
   hostID: string | undefined;
   visibility: SpaceVisibility;
   features: Record<LicenseFeatureFlagName, boolean>;
@@ -37,11 +41,8 @@ interface SpaceListItemProps extends ListItemLinkProps, SpacePlatformSettings {
 
 const SpaceListItem = ({
   spaceId,
-  visibility,
   nameID,
-  hostID,
-  organizations,
-  features,
+  account: { visibility, hostID, organizations, features },
   ...props
 }: SpaceListItemProps) => {
   const [isPlatformSettingsModalOpen, setIsPlatformSettingsModalOpen] = useState(false);
@@ -59,14 +60,14 @@ const SpaceListItem = ({
     features,
   };
 
-  const [updatePlatformSettings, { loading }] = useUpdateSpacePlatformSettingsMutation();
+  // TODO: also update the nameID via a second mutation TODO
+  const [updatePlatformSettings, { loading }] = useUpdateAccountPlatformSettingsMutation();
 
-  const handleSubmit = async ({ visibility, nameID, hostID, features }: Partial<SpacePlatformSettings>) => {
+  const handleSubmit = async ({ visibility, hostID, features }: Partial<AccountPlatformSettings>) => {
     await updatePlatformSettings({
       variables: {
-        spaceID: spaceId,
+        accountID: '', // TODO: add in the accountID
         hostID,
-        nameID,
         license: {
           visibility,
           featureFlags: Object.keys(features ?? {}).map(feature => ({ name: feature, enabled: features![feature] })),

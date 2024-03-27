@@ -120,7 +120,6 @@ fragment ActivityLogCalendarEventCreated on ActivityLogEntryCalendarEventCreated
 
 fragment ActivityLogUpdateSent on ActivityLogEntryUpdateSent {
   message
-  journeyUrl
 }
 
 fragment ActivitySubjectProfile on Profile {

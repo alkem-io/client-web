@@ -10,7 +10,7 @@ import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolv
 interface ChallengePermissions {
   canUpdate: boolean;
   canCreate: boolean;
-  canCreateOpportunity: boolean;
+  canCreateSubspace: boolean;
   canReadCommunity: boolean;
   contextPrivileges: AuthorizationPrivilege[];
 }
@@ -32,7 +32,7 @@ const ChallengeContext = React.createContext<ChallengeContextProps>({
   permissions: {
     canUpdate: false,
     canCreate: false,
-    canCreateOpportunity: false,
+    canCreateSubspace: false,
     canReadCommunity: false,
     contextPrivileges: [],
   },
@@ -72,7 +72,7 @@ const ChallengeProvider: FC<ChallengeProviderProps> = ({ children }) => {
     () => ({
       canUpdate: myPrivileges.includes(AuthorizationPrivilege.Update),
       canCreate: myPrivileges.includes(AuthorizationPrivilege.Create),
-      canCreateOpportunity: myPrivileges.includes(AuthorizationPrivilege.CreateOpportunity),
+      canCreateSubspace: myPrivileges.includes(AuthorizationPrivilege.CreateSubspace),
       canReadCommunity,
       contextPrivileges: challenge?.context?.authorization?.myPrivileges ?? [],
     }),

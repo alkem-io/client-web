@@ -78,7 +78,7 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
                 member={opportunity.community?.myMembershipStatus === CommunityMembershipStatus.Member}
               />
             )}
-            childEntityCreateAccess={permissions.canCreateOpportunity}
+            childEntityCreateAccess={permissions.canCreateSubspace}
             childEntityOnCreate={() => setCreateDialogOpen(true)}
             createSubentityDialog={
               <JourneyCreationDialog
