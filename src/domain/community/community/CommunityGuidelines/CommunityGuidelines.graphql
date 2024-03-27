@@ -15,9 +15,6 @@ fragment CommunityGuidelinesDetails on CommunityGuidelines {
     id
     displayName
     description
-    tagset {
-      ...TagsetDetails
-    }
     references {
       id
       name
@@ -29,7 +26,6 @@ fragment CommunityGuidelinesDetails on CommunityGuidelines {
 
 mutation updateCommunityGuidelines($communityGuidelinesData: UpdateCommunityGuidelinesInput!) {
   updateCommunityGuidelines(communityGuidelinesData: $communityGuidelinesData) {
-    id
     ...CommunityGuidelinesDetails
   }
 }

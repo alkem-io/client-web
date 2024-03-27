@@ -13611,7 +13611,33 @@ export type ChallengeApplicationQuery = {
           __typename?: 'Challenge';
           id: string;
           profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
-          community?: { __typename?: 'Community'; id: string } | undefined;
+          community?:
+            | {
+                __typename?: 'Community';
+                id: string;
+                guidelines?:
+                  | {
+                      __typename?: 'CommunityGuidelines';
+                      id: string;
+                      profile: {
+                        __typename?: 'Profile';
+                        id: string;
+                        displayName: string;
+                        description?: string | undefined;
+                        references?:
+                          | Array<{
+                              __typename?: 'Reference';
+                              id: string;
+                              name: string;
+                              uri: string;
+                              description?: string | undefined;
+                            }>
+                          | undefined;
+                      };
+                    }
+                  | undefined;
+              }
+            | undefined;
         }
       | undefined;
   };
@@ -13761,7 +13787,33 @@ export type SpaceApplicationQuery = {
     __typename?: 'Space';
     id: string;
     profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
-    community?: { __typename?: 'Community'; id: string } | undefined;
+    community?:
+      | {
+          __typename?: 'Community';
+          id: string;
+          guidelines?:
+            | {
+                __typename?: 'CommunityGuidelines';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  description?: string | undefined;
+                  references?:
+                    | Array<{
+                        __typename?: 'Reference';
+                        id: string;
+                        name: string;
+                        uri: string;
+                        description?: string | undefined;
+                      }>
+                    | undefined;
+                };
+              }
+            | undefined;
+        }
+      | undefined;
   };
 };
 
@@ -14178,16 +14230,6 @@ export type CommunityGuidelinesQuery = {
                   id: string;
                   displayName: string;
                   description?: string | undefined;
-                  tagset?:
-                    | {
-                        __typename?: 'Tagset';
-                        id: string;
-                        name: string;
-                        tags: Array<string>;
-                        allowedValues: Array<string>;
-                        type: TagsetType;
-                      }
-                    | undefined;
                   references?:
                     | Array<{
                         __typename?: 'Reference';
@@ -14213,16 +14255,6 @@ export type CommunityGuidelinesDetailsFragment = {
     id: string;
     displayName: string;
     description?: string | undefined;
-    tagset?:
-      | {
-          __typename?: 'Tagset';
-          id: string;
-          name: string;
-          tags: Array<string>;
-          allowedValues: Array<string>;
-          type: TagsetType;
-        }
-      | undefined;
     references?:
       | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
       | undefined;
@@ -14235,7 +14267,19 @@ export type UpdateCommunityGuidelinesMutationVariables = Exact<{
 
 export type UpdateCommunityGuidelinesMutation = {
   __typename?: 'Mutation';
-  updateCommunityGuidelines: { __typename?: 'CommunityGuidelines'; id: string };
+  updateCommunityGuidelines: {
+    __typename?: 'CommunityGuidelines';
+    id: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      description?: string | undefined;
+      references?:
+        | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
+        | undefined;
+    };
+  };
 };
 
 export type EntityDashboardCommunityFragment = {

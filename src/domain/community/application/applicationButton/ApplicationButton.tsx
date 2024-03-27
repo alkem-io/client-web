@@ -5,15 +5,16 @@ import RouterLink from '../../../../core/ui/link/RouterLink';
 import { buildLoginUrl } from '../../../../main/routing/urlBuilders';
 import PreApplicationDialog from './PreApplicationDialog';
 import isApplicationPending from './isApplicationPending';
-import PreJoinDialog from './PreJoinDialog';
+import ApplicationSubmitedDialog from './ApplicationSubmittedDialog';
 import PreJoinParentDialog from './PreJoinParentDialog';
 import { AddOutlined, PersonOutlined } from '@mui/icons-material';
 import RootThemeProvider from '../../../../core/ui/themes/RootThemeProvider';
 import { InvitationItem } from '../../user/providers/UserProvider/InvitationItem';
 import InvitationActionsContainer from '../../invitations/InvitationActionsContainer';
 import InvitationDialog from '../../invitations/InvitationDialog';
-import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import useNavigate from '../../../../core/routing/useNavigate';
+import { JourneyTypeName } from '../../../journey/JourneyTypeName';
+import ApplicationDialog from './ApplicationDialog';
 
 export interface ApplicationButtonProps {
   isAuthenticated?: boolean;
@@ -68,26 +69,28 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
   ) => {
     const { t } = useTranslation();
     const navigate = useNavigate();
-    const [isApplyDialogOpen, setIsApplyDialogOpen] = useState(false);
-    const [isJoinDialogOpen, setIsJoinDialogOpen] = useState(false);
+    const [isApplicationDialogOpen, setIsApplicationDialogOpen] = useState(false);
+    const [isApplyParentDialogOpen, setIsApplyParentDialogOpen] = useState(false);
+    const [isApplicationSubmittedDialogOpen, setIsApplicationSubmittedDialogOpen] = useState(false);
     const [isJoinParentDialogOpen, setIsJoinParentDialogOpen] = useState(false);
     const [isInvitationDialogOpen, setIsInvitationDialogOpen] = useState(false);
 
-    const handleClickApplyParent = () => setIsApplyDialogOpen(true);
-    const handleClickJoin = () => setIsJoinDialogOpen(true);
+    const handleClickApply = () => setIsApplicationDialogOpen(true);
+    const handleClickApplyParent = () => setIsApplyParentDialogOpen(true);
+    const handleClickJoin = () => setIsApplicationDialogOpen(true);
     const handleClickJoinParent = () => setIsJoinParentDialogOpen(true);
     const handleClickAcceptInvitation = () => setIsInvitationDialogOpen(true);
 
     const handleClose = () => {
-      setIsApplyDialogOpen(false);
-      setIsJoinDialogOpen(false);
+      setIsApplyParentDialogOpen(false);
       setIsJoinParentDialogOpen(false);
+      setIsApplicationDialogOpen(false);
       setIsInvitationDialogOpen(false);
     };
 
-    const handleJoin = () => {
-      setIsJoinDialogOpen(false);
-      onJoin();
+    const handleOpenApplicationSubmittedDialog = () => {
+      setIsApplicationDialogOpen(false);
+      setIsApplicationSubmittedDialogOpen(true);
     };
 
     const handleJoinParent = () => {
@@ -228,15 +231,14 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
         );
       }
 
-      if (canApplyToCommunity && applyUrl) {
+      if (canApplyToCommunity) {
         const verb = extended ? t('components.application-button.applyTo') : t('buttons.apply');
         return (
           <Button
-            ref={ref as Ref<HTMLAnchorElement>}
-            component={RouterLink}
+            ref={ref as Ref<HTMLButtonElement>}
             startIcon={extended ? <AddOutlined /> : undefined}
+            onClick={handleClickApply}
             variant="contained"
-            to={applyUrl}
             sx={extended ? { textTransform: 'none' } : undefined}
           >
             {getApplyJoinButtonLabel(verb)}
@@ -303,8 +305,16 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
       <>
         {renderApplicationButton()}
         <RootThemeProvider>
+          <ApplicationDialog
+            open={isApplicationDialogOpen}
+            onClose={handleClose}
+            journeyTypeName={journeyTypeName}
+            canJoinCommunity={canJoinCommunity}
+            onJoin={onJoin}
+            onApply={handleOpenApplicationSubmittedDialog}
+          />
           <PreApplicationDialog
-            open={isApplyDialogOpen}
+            open={isApplyParentDialogOpen}
             onClose={handleClose}
             dialogVariant={dialogVariant}
             spaceName={spaceName}
@@ -313,7 +323,10 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
             applyUrl={applyUrl}
             parentApplyUrl={parentApplyUrl}
           />
-          <PreJoinDialog open={isJoinDialogOpen} onClose={handleClose} onJoin={handleJoin} />
+          <ApplicationSubmitedDialog
+            open={isApplicationSubmittedDialogOpen}
+            onClose={() => setIsApplicationSubmittedDialogOpen(false)}
+          />
           <PreJoinParentDialog open={isJoinParentDialogOpen} onClose={handleClose} onJoin={handleJoinParent} />
           <InvitationActionsContainer onUpdate={handleAcceptInvitation}>
             {props => (

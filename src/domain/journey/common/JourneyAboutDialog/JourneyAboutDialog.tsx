@@ -10,7 +10,6 @@ import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
 import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 import EntityDashboardLeadsSection from '../../../community/community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';
-import { JourneyTypeName } from '../../JourneyTypeName';
 import { useTranslation } from 'react-i18next';
 import { EntityDashboardLeads } from '../../../community/community/EntityDashboardContributorsSection/Types';
 import ContactLeadsButton from '../../../community/community/ContactLeadsButton/ContactLeadsButton';
@@ -34,6 +33,7 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import useDirectMessageDialog from '../../../communication/messaging/DirectMessaging/useDirectMessageDialog';
 import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
+import { JourneyTypeName } from '../../JourneyTypeName';
 
 export interface JourneyAboutDialogProps extends EntityDashboardLeads {
   open: boolean;

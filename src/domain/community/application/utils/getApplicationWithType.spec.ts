@@ -1,6 +1,5 @@
 import { ApplicationForRoleResult } from '../../../../core/apollo/generated/graphql-schema';
 import getApplicationWithType, { ApplicationWithType } from './getApplicationWithType';
-import { ApplicationTypeEnum } from '../constants/ApplicationType';
 import { expect, test, describe } from 'vitest';
 
 type TestData = {
@@ -11,30 +10,32 @@ type TestData = {
 };
 
 const data = (): TestData[] =>
-  [
-    // normal case
-    {
-      name: '3',
-      data: { id: 'app-id', spaceID: 'eco' },
-      result: { id: 'app-id', spaceID: 'eco', type: ApplicationTypeEnum.space },
-    },
-    {
-      name: '4',
-      data: { id: 'app-id', spaceID: 'eco', challengeID: 'chall' },
-      result: { id: 'app-id', spaceID: 'eco', challengeID: 'chall', type: ApplicationTypeEnum.challenge },
-    },
-    {
-      name: '5',
-      data: { id: 'app-id', spaceID: 'eco', challengeID: 'chall', opportunityID: 'opp' },
-      result: {
-        id: 'app-id',
-        spaceID: 'eco',
-        challengeID: 'chall',
-        opportunityID: 'opp',
-        type: ApplicationTypeEnum.opportunity,
+  (
+    [
+      // normal case
+      {
+        name: '3',
+        data: { id: 'app-id', spaceID: 'eco' },
+        result: { id: 'app-id', spaceID: 'eco', type: 'space' },
       },
-    },
-  ].map(x => Object.assign(x, { toString: () => x.name })); // using toString operator into test.each
+      {
+        name: '4',
+        data: { id: 'app-id', spaceID: 'eco', challengeID: 'chall' },
+        result: { id: 'app-id', spaceID: 'eco', challengeID: 'chall', type: 'challenge' },
+      },
+      {
+        name: '5',
+        data: { id: 'app-id', spaceID: 'eco', challengeID: 'chall', opportunityID: 'opp' },
+        result: {
+          id: 'app-id',
+          spaceID: 'eco',
+          challengeID: 'chall',
+          opportunityID: 'opp',
+          type: 'opportunity',
+        },
+      },
+    ] as TestData[]
+  ).map(x => Object.assign(x, { toString: () => x.name })); // using toString operator into test.each
 
 const exceptionData = (): TestData[] =>
   [

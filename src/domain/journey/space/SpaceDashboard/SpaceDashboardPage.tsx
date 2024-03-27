@@ -17,7 +17,6 @@ import { buildAboutUrl, buildUpdatesUrl } from '../../../../main/routing/urlBuil
 import { useTranslation } from 'react-i18next';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 import CommunityGuidelinesBlock from '../../../community/community/CommunityGuidelines/CommunityGuidelinesBlock';
-import { useSpace } from '../SpaceContext/useSpace';
 
 export interface SpaceDashboardPageProps {
   dialog?: 'about' | 'updates' | 'contributors' | 'calendar';
@@ -30,8 +29,8 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
   const [backToDashboard] = useBackToParentPage(`${currentPath.pathname}/dashboard`);
 
   const { spaceNameId } = useUrlParams();
+
   const { spaceId } = useRouteResolver();
-  const { communityId } = useSpace();
 
   if (!spaceNameId) {
     throw new Error('Param :spaceNameId is missing');
@@ -108,7 +107,7 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
                 </IconButton>
               }
               shareUrl={buildAboutUrl(entities.space?.profile.url)}
-              leftColumnChildrenTop={<CommunityGuidelinesBlock communityId={communityId} />}
+              leftColumnChildrenTop={<CommunityGuidelinesBlock communityId={entities.space?.community?.id} />}
             />
           </>
         )}

@@ -1116,9 +1116,6 @@ export const CommunityGuidelinesDetailsFragmentDoc = gql`
       id
       displayName
       description
-      tagset {
-        ...TagsetDetails
-      }
       references {
         id
         name
@@ -1127,7 +1124,6 @@ export const CommunityGuidelinesDetailsFragmentDoc = gql`
       }
     }
   }
-  ${TagsetDetailsFragmentDoc}
 `;
 export const CommunityPageMembersFragmentDoc = gql`
   fragment CommunityPageMembers on User {
@@ -10535,10 +10531,14 @@ export const ChallengeApplicationDocument = gql`
         }
         community {
           id
+          guidelines {
+            ...CommunityGuidelinesDetails
+          }
         }
       }
     }
   }
+  ${CommunityGuidelinesDetailsFragmentDoc}
 `;
 
 /**
@@ -10868,9 +10868,13 @@ export const SpaceApplicationDocument = gql`
       }
       community {
         id
+        guidelines {
+          ...CommunityGuidelinesDetails
+        }
       }
     }
   }
+  ${CommunityGuidelinesDetailsFragmentDoc}
 `;
 
 /**
@@ -11518,9 +11522,10 @@ export function refetchCommunityGuidelinesQuery(variables: SchemaTypes.Community
 export const UpdateCommunityGuidelinesDocument = gql`
   mutation updateCommunityGuidelines($communityGuidelinesData: UpdateCommunityGuidelinesInput!) {
     updateCommunityGuidelines(communityGuidelinesData: $communityGuidelinesData) {
-      id
+      ...CommunityGuidelinesDetails
     }
   }
+  ${CommunityGuidelinesDetailsFragmentDoc}
 `;
 export type UpdateCommunityGuidelinesMutationFn = Apollo.MutationFunction<
   SchemaTypes.UpdateCommunityGuidelinesMutation,
