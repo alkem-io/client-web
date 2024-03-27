@@ -12,11 +12,9 @@ const CommunityGuidelinesSkeleton = () => {
   const theme = useTheme();
 
   return (
-    <Box>
-      <Box display="flex" gap={gutters()} marginBottom={gutters()}>
-        <Skeleton variant="circular" width={gutters(2)(theme)} height={gutters(2)(theme)} />
-        <Skeleton height={gutters(2)(theme)} sx={{ flexGrow: 1 }} />
-      </Box>
+    <Box display="flex" gap={gutters()} marginBottom={gutters()}>
+      <Skeleton variant="circular" width={gutters(2)(theme)} height={gutters(2)(theme)} />
+      <Skeleton height={gutters(2)(theme)} sx={{ flexGrow: 1 }} />
     </Box>
   );
 };
