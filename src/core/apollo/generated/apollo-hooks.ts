@@ -1116,9 +1116,6 @@ export const CommunityGuidelinesDetailsFragmentDoc = gql`
       id
       displayName
       description
-      tagset {
-        ...TagsetDetails
-      }
       references {
         id
         name
@@ -1127,7 +1124,6 @@ export const CommunityGuidelinesDetailsFragmentDoc = gql`
       }
     }
   }
-  ${TagsetDetailsFragmentDoc}
 `;
 export const CommunityPageMembersFragmentDoc = gql`
   fragment CommunityPageMembers on User {

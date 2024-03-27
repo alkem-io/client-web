@@ -14,9 +14,7 @@ import Gutters from '../../../../core/ui/grid/Gutters';
 import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
 import { MARKDOWN_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
-import { Reference, Tagset, TagsetType } from '../../../../core/apollo/generated/graphql-schema';
-import { DEFAULT_TAGSET } from '../../../common/tags/tagset.constants';
-import { TagsetSegment, tagsetSegmentSchema } from '../../../platform/admin/components/Common/TagsetSegment';
+import { Reference } from '../../../../core/apollo/generated/graphql-schema';
 import { referenceSegmentSchema } from '../../../platform/admin/components/Common/ReferenceSegment';
 import LoadingButton from '@mui/lab/LoadingButton';
 import ProfileReferenceSegment from '../../../platform/admin/components/Common/ProfileReferenceSegment';
@@ -31,14 +29,12 @@ interface FormValues {
   displayName: string;
   description: string;
   references: Reference[];
-  tagsets: Tagset[];
 }
 
 const validationSchema = yup.object().shape({
   displayName: yup.string().required(),
   description: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
   references: referenceSegmentSchema,
-  tagsets: tagsetSegmentSchema,
 });
 
 const CommunityGuidelines: FC<CommunityGuidelinesProps> = ({ communityId, disabled }) => {
@@ -59,17 +55,6 @@ const CommunityGuidelines: FC<CommunityGuidelinesProps> = ({ communityId, disabl
       description: rawData?.lookup?.community?.guidelines?.profile.description,
       profile: rawData?.lookup?.community?.guidelines?.profile,
       references: rawData?.lookup?.community?.guidelines?.profile.references,
-      tagsets: rawData?.lookup?.community?.guidelines?.profile.tagset
-        ? [rawData?.lookup?.community?.guidelines?.profile.tagset]
-        : ([
-            {
-              id: '',
-              name: DEFAULT_TAGSET,
-              tags: [],
-              allowedValues: [],
-              type: TagsetType.Freeform,
-            },
-          ] as Tagset[]),
     }),
     [rawData]
   );
@@ -81,7 +66,6 @@ const CommunityGuidelines: FC<CommunityGuidelinesProps> = ({ communityId, disabl
     displayName: data.displayName ?? '',
     description: data.description ?? '',
     references: data.references || [],
-    tagsets: data.tagsets,
   };
 
   const onSubmit = (values: FormValues) => {
@@ -97,11 +81,6 @@ const CommunityGuidelines: FC<CommunityGuidelinesProps> = ({ communityId, disabl
               name: reference.name,
               description: reference.description,
               uri: reference.uri,
-            })),
-            tagsets: values.tagsets.map(tagset => ({
-              ID: tagset.id,
-              name: tagset.name,
-              tags: tagset.tags,
             })),
           },
         },
@@ -128,7 +107,6 @@ const CommunityGuidelines: FC<CommunityGuidelinesProps> = ({ communityId, disabl
               disabled={disabled || loading}
               maxLength={MARKDOWN_TEXT_LENGTH}
             />
-            <TagsetSegment tagsets={values.tagsets} />
             <ProfileReferenceSegment references={values.references} profileId={data?.profile?.id} />
             <Box display="flex" marginY={4} justifyContent="flex-end">
               <LoadingButton disabled={!isValid} variant="contained" onClick={() => handleSubmit()} loading={loading}>

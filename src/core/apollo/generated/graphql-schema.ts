@@ -13624,16 +13624,6 @@ export type ChallengeApplicationQuery = {
                         id: string;
                         displayName: string;
                         description?: string | undefined;
-                        tagset?:
-                          | {
-                              __typename?: 'Tagset';
-                              id: string;
-                              name: string;
-                              tags: Array<string>;
-                              allowedValues: Array<string>;
-                              type: TagsetType;
-                            }
-                          | undefined;
                         references?:
                           | Array<{
                               __typename?: 'Reference';
@@ -13810,16 +13800,6 @@ export type SpaceApplicationQuery = {
                   id: string;
                   displayName: string;
                   description?: string | undefined;
-                  tagset?:
-                    | {
-                        __typename?: 'Tagset';
-                        id: string;
-                        name: string;
-                        tags: Array<string>;
-                        allowedValues: Array<string>;
-                        type: TagsetType;
-                      }
-                    | undefined;
                   references?:
                     | Array<{
                         __typename?: 'Reference';
@@ -14250,16 +14230,6 @@ export type CommunityGuidelinesQuery = {
                   id: string;
                   displayName: string;
                   description?: string | undefined;
-                  tagset?:
-                    | {
-                        __typename?: 'Tagset';
-                        id: string;
-                        name: string;
-                        tags: Array<string>;
-                        allowedValues: Array<string>;
-                        type: TagsetType;
-                      }
-                    | undefined;
                   references?:
                     | Array<{
                         __typename?: 'Reference';
@@ -14285,16 +14255,6 @@ export type CommunityGuidelinesDetailsFragment = {
     id: string;
     displayName: string;
     description?: string | undefined;
-    tagset?:
-      | {
-          __typename?: 'Tagset';
-          id: string;
-          name: string;
-          tags: Array<string>;
-          allowedValues: Array<string>;
-          type: TagsetType;
-        }
-      | undefined;
     references?:
       | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
       | undefined;
@@ -14315,16 +14275,6 @@ export type UpdateCommunityGuidelinesMutation = {
       id: string;
       displayName: string;
       description?: string | undefined;
-      tagset?:
-        | {
-            __typename?: 'Tagset';
-            id: string;
-            name: string;
-            tags: Array<string>;
-            allowedValues: Array<string>;
-            type: TagsetType;
-          }
-        | undefined;
       references?:
         | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
         | undefined;

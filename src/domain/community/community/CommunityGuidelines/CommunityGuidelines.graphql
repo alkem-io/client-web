@@ -15,9 +15,6 @@ fragment CommunityGuidelinesDetails on CommunityGuidelines {
     id
     displayName
     description
-    tagset {
-      ...TagsetDetails
-    }
     references {
       id
       name
