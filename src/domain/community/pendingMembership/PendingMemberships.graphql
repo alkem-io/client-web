@@ -1,8 +1,14 @@
-query PendingMembershipsSpace($spaceId: UUID_NAMEID!, $fetchDetails: Boolean! = false, $visualType: VisualType!) {
+query PendingMembershipsSpace($spaceId: UUID_NAMEID!, $fetchDetails: Boolean! = false, $visualType: VisualType!, $fetchCommunityGuidelines: Boolean! = false) {
   space(ID: $spaceId) {
     id
     profile {
       ...PendingMembershipsJourneyProfile
+    }
+    community @include(if: $fetchCommunityGuidelines) {
+      id
+      guidelines {
+        ...CommunityGuidelinesSummary
+      }
     }
   }
 }
@@ -11,12 +17,19 @@ query PendingMembershipsChallenge(
   $challengeId: UUID!
   $fetchDetails: Boolean! = false
   $visualType: VisualType!
+  $fetchCommunityGuidelines: Boolean! = false
 ) {
   lookup {
     challenge(ID: $challengeId) {
       id
       profile {
         ...PendingMembershipsJourneyProfile
+      }
+      community @include(if: $fetchCommunityGuidelines) {
+        id
+        guidelines {
+          ...CommunityGuidelinesSummary
+        }
       }
     }
   }
@@ -26,12 +39,19 @@ query PendingMembershipsOpportunity(
   $opportunityId: UUID!
   $fetchDetails: Boolean! = false
   $visualType: VisualType!
+  $fetchCommunityGuidelines: Boolean! = false
 ) {
   lookup {
     opportunity(ID: $opportunityId) {
       id
       profile {
         ...PendingMembershipsJourneyProfile
+      }
+      community @include(if: $fetchCommunityGuidelines) {
+        id
+        guidelines {
+          ...CommunityGuidelinesSummary
+        }
       }
     }
   }
@@ -82,6 +102,21 @@ fragment PendingMembershipInvitation on Invitation {
     profile {
       id
       displayName
+    }
+  }
+}
+
+fragment CommunityGuidelinesSummary on CommunityGuidelines {
+  id
+  profile {
+    id
+    displayName
+    description
+    references {
+      id
+      name
+      uri
+      description
     }
   }
 }

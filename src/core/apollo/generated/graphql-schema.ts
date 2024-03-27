@@ -15938,6 +15938,7 @@ export type PendingMembershipsSpaceQueryVariables = Exact<{
   spaceId: Scalars['UUID_NAMEID'];
   fetchDetails?: Scalars['Boolean'];
   visualType: VisualType;
+  fetchCommunityGuidelines?: Scalars['Boolean'];
 }>;
 
 export type PendingMembershipsSpaceQuery = {
@@ -15954,6 +15955,33 @@ export type PendingMembershipsSpaceQuery = {
       tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
       visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
     };
+    community?:
+      | {
+          __typename?: 'Community';
+          id: string;
+          guidelines?:
+            | {
+                __typename?: 'CommunityGuidelines';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  description?: string | undefined;
+                  references?:
+                    | Array<{
+                        __typename?: 'Reference';
+                        id: string;
+                        name: string;
+                        uri: string;
+                        description?: string | undefined;
+                      }>
+                    | undefined;
+                };
+              }
+            | undefined;
+        }
+      | undefined;
   };
 };
 
@@ -15961,6 +15989,7 @@ export type PendingMembershipsChallengeQueryVariables = Exact<{
   challengeId: Scalars['UUID'];
   fetchDetails?: Scalars['Boolean'];
   visualType: VisualType;
+  fetchCommunityGuidelines?: Scalars['Boolean'];
 }>;
 
 export type PendingMembershipsChallengeQuery = {
@@ -15980,6 +16009,33 @@ export type PendingMembershipsChallengeQuery = {
             tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
             visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
           };
+          community?:
+            | {
+                __typename?: 'Community';
+                id: string;
+                guidelines?:
+                  | {
+                      __typename?: 'CommunityGuidelines';
+                      id: string;
+                      profile: {
+                        __typename?: 'Profile';
+                        id: string;
+                        displayName: string;
+                        description?: string | undefined;
+                        references?:
+                          | Array<{
+                              __typename?: 'Reference';
+                              id: string;
+                              name: string;
+                              uri: string;
+                              description?: string | undefined;
+                            }>
+                          | undefined;
+                      };
+                    }
+                  | undefined;
+              }
+            | undefined;
         }
       | undefined;
   };
@@ -15989,6 +16045,7 @@ export type PendingMembershipsOpportunityQueryVariables = Exact<{
   opportunityId: Scalars['UUID'];
   fetchDetails?: Scalars['Boolean'];
   visualType: VisualType;
+  fetchCommunityGuidelines?: Scalars['Boolean'];
 }>;
 
 export type PendingMembershipsOpportunityQuery = {
@@ -16008,6 +16065,33 @@ export type PendingMembershipsOpportunityQuery = {
             tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
             visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
           };
+          community?:
+            | {
+                __typename?: 'Community';
+                id: string;
+                guidelines?:
+                  | {
+                      __typename?: 'CommunityGuidelines';
+                      id: string;
+                      profile: {
+                        __typename?: 'Profile';
+                        id: string;
+                        displayName: string;
+                        description?: string | undefined;
+                        references?:
+                          | Array<{
+                              __typename?: 'Reference';
+                              id: string;
+                              name: string;
+                              uri: string;
+                              description?: string | undefined;
+                            }>
+                          | undefined;
+                      };
+                    }
+                  | undefined;
+              }
+            | undefined;
         }
       | undefined;
   };
@@ -16055,6 +16139,20 @@ export type PendingMembershipInvitationFragment = {
   id: string;
   welcomeMessage?: string | undefined;
   createdBy: { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } };
+};
+
+export type CommunityGuidelinesSummaryFragment = {
+  __typename?: 'CommunityGuidelines';
+  id: string;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    description?: string | undefined;
+    references?:
+      | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
+      | undefined;
+  };
 };
 
 export type SpaceContributionDetailsQueryVariables = Exact<{
