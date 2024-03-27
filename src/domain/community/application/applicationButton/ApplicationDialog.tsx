@@ -3,7 +3,6 @@ import React, { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
-import { Loading } from '../../../../core/ui/loading/Loading';
 import { useApplicationCommunityQuery } from '../containers/useApplicationCommunityQuery';
 import {
   refetchUserProviderQuery,
@@ -43,17 +42,13 @@ const ApplicationDialog: FC<ApplicationDialogProps> = ({
   canJoinCommunity = false,
 }) => {
   const { t } = useTranslation();
-  const [hasApplied, setHasApplied] = useState(false);
   const [applicationQuestions, setApplicationQuestions] = useState<CreateNvpInput[]>([]);
   const [isValid, setIsValid] = useState(false);
 
-  const { data, loading: isLoadingApplicationForm } = useApplicationCommunityQuery(journeyTypeName, canJoinCommunity);
+  const { data } = useApplicationCommunityQuery(journeyTypeName, canJoinCommunity);
   const { description, questions = [], communityId = '', displayName: communityName, communityGuidelines } = data || {};
 
-  const loading = isLoadingApplicationForm;
-
   const [createApplication, { loading: isCreationLoading }] = useApplyForCommunityMembershipMutation({
-    onCompleted: () => setHasApplied(true),
     // refetch user applications
     refetchQueries: [refetchUserProviderQuery()],
   });
@@ -120,15 +115,6 @@ const ApplicationDialog: FC<ApplicationDialogProps> = ({
     <DialogWithGrid open={open} onClose={onClose} columns={8}>
       <DialogHeader onClose={onClose} title={dialogTitle} />
       <DialogContent>
-        {loading && <Loading text={t('pages.space.application.loading')} />}
-        {!loading &&
-          !hasApplied &&
-          !canJoinCommunity &&
-          (description ? (
-            <WrapperMarkdown>{description}</WrapperMarkdown>
-          ) : (
-            <BlockTitle> {t('pages.space.application.subheader')}</BlockTitle>
-          ))}
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
@@ -141,6 +127,12 @@ const ApplicationDialog: FC<ApplicationDialogProps> = ({
               <>
                 <Gutters disablePadding>
                   <FormikEffect onChange={handleChange} onStatusChange={onStatusChange} />
+                  {!canJoinCommunity &&
+                    (description ? (
+                      <WrapperMarkdown>{description}</WrapperMarkdown>
+                    ) : (
+                      <BlockTitle> {t('pages.space.application.subheader')}</BlockTitle>
+                    ))}
                   {questions.map((x, i) => (
                     <FormikInputField
                       key={i}
