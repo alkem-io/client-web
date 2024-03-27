@@ -1534,6 +1534,22 @@ export const PendingMembershipsMembershipsFragmentDoc = gql`
   }
   ${PendingMembershipInvitationFragmentDoc}
 `;
+export const CommunityGuidelinesSummaryFragmentDoc = gql`
+  fragment CommunityGuidelinesSummary on CommunityGuidelines {
+    id
+    profile {
+      id
+      displayName
+      description
+      references {
+        id
+        name
+        uri
+        description
+      }
+    }
+  }
+`;
 export const UserSelectorUserInformationFragmentDoc = gql`
   fragment UserSelectorUserInformation on User {
     id
@@ -13695,15 +13711,27 @@ export type InviteExternalUserMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.InviteExternalUserMutationVariables
 >;
 export const PendingMembershipsSpaceDocument = gql`
-  query PendingMembershipsSpace($spaceId: UUID_NAMEID!, $fetchDetails: Boolean! = false, $visualType: VisualType!) {
+  query PendingMembershipsSpace(
+    $spaceId: UUID_NAMEID!
+    $fetchDetails: Boolean! = false
+    $visualType: VisualType!
+    $fetchCommunityGuidelines: Boolean! = false
+  ) {
     space(ID: $spaceId) {
       id
       profile {
         ...PendingMembershipsJourneyProfile
       }
+      community @include(if: $fetchCommunityGuidelines) {
+        id
+        guidelines {
+          ...CommunityGuidelinesSummary
+        }
+      }
     }
   }
   ${PendingMembershipsJourneyProfileFragmentDoc}
+  ${CommunityGuidelinesSummaryFragmentDoc}
 `;
 
 /**
@@ -13721,6 +13749,7 @@ export const PendingMembershipsSpaceDocument = gql`
  *      spaceId: // value for 'spaceId'
  *      fetchDetails: // value for 'fetchDetails'
  *      visualType: // value for 'visualType'
+ *      fetchCommunityGuidelines: // value for 'fetchCommunityGuidelines'
  *   },
  * });
  */
@@ -13761,17 +13790,29 @@ export function refetchPendingMembershipsSpaceQuery(variables: SchemaTypes.Pendi
 }
 
 export const PendingMembershipsChallengeDocument = gql`
-  query PendingMembershipsChallenge($challengeId: UUID!, $fetchDetails: Boolean! = false, $visualType: VisualType!) {
+  query PendingMembershipsChallenge(
+    $challengeId: UUID!
+    $fetchDetails: Boolean! = false
+    $visualType: VisualType!
+    $fetchCommunityGuidelines: Boolean! = false
+  ) {
     lookup {
       challenge(ID: $challengeId) {
         id
         profile {
           ...PendingMembershipsJourneyProfile
         }
+        community @include(if: $fetchCommunityGuidelines) {
+          id
+          guidelines {
+            ...CommunityGuidelinesSummary
+          }
+        }
       }
     }
   }
   ${PendingMembershipsJourneyProfileFragmentDoc}
+  ${CommunityGuidelinesSummaryFragmentDoc}
 `;
 
 /**
@@ -13789,6 +13830,7 @@ export const PendingMembershipsChallengeDocument = gql`
  *      challengeId: // value for 'challengeId'
  *      fetchDetails: // value for 'fetchDetails'
  *      visualType: // value for 'visualType'
+ *      fetchCommunityGuidelines: // value for 'fetchCommunityGuidelines'
  *   },
  * });
  */
@@ -13835,6 +13877,7 @@ export const PendingMembershipsOpportunityDocument = gql`
     $opportunityId: UUID!
     $fetchDetails: Boolean! = false
     $visualType: VisualType!
+    $fetchCommunityGuidelines: Boolean! = false
   ) {
     lookup {
       opportunity(ID: $opportunityId) {
@@ -13842,10 +13885,17 @@ export const PendingMembershipsOpportunityDocument = gql`
         profile {
           ...PendingMembershipsJourneyProfile
         }
+        community @include(if: $fetchCommunityGuidelines) {
+          id
+          guidelines {
+            ...CommunityGuidelinesSummary
+          }
+        }
       }
     }
   }
   ${PendingMembershipsJourneyProfileFragmentDoc}
+  ${CommunityGuidelinesSummaryFragmentDoc}
 `;
 
 /**
@@ -13863,6 +13913,7 @@ export const PendingMembershipsOpportunityDocument = gql`
  *      opportunityId: // value for 'opportunityId'
  *      fetchDetails: // value for 'fetchDetails'
  *      visualType: // value for 'visualType'
+ *      fetchCommunityGuidelines: // value for 'fetchCommunityGuidelines'
  *   },
  * });
  */

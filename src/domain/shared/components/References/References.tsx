@@ -1,11 +1,12 @@
 import React, { FC, ReactNode } from 'react';
 import { Reference, ReferenceWithAuthorization } from '../../../common/profile/Profile';
 import ReferenceView, { ReferenceViewProps } from './ReferenceView';
-import { Box, styled } from '@mui/material';
+import { Box } from '@mui/material';
 import { gutters } from '../../../../core/ui/grid/utils';
 import { OpenInNew } from '@mui/icons-material';
 import RouterLink from '../../../../core/ui/link/RouterLink';
 import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
+import { Text } from '../../../../core/ui/typography';
 
 interface ReferencesProps {
   references: ReferenceWithAuthorization[] | undefined;
@@ -15,29 +16,23 @@ interface ReferencesProps {
   onEdit?: (reference: Reference) => void;
 }
 
-const CompactView = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  flexDirection: 'column',
-  gap: 1,
-  fontSize: 14,
-  '& svg': {
-    marginRight: theme.spacing(1),
-    verticalAlign: 'middle',
-  },
-}));
-
 const References: FC<ReferencesProps> = ({ references, onEdit, noItemsView, icon, compact }) => {
   if (compact) {
     if (references && references.length > 0) {
       return (
-        <CompactView>
+        <Box>
           {references.map(reference => (
-            <RouterLink key={reference.id} to={reference.uri} title={reference.description}>
-              <OpenInNew fontSize="small" />
-              {reference.name}
+            <RouterLink
+              key={reference.id}
+              to={reference.uri}
+              title={reference.description}
+              sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
+            >
+              <OpenInNew fontSize="inherit" />
+              <Text>{reference.name}</Text>
             </RouterLink>
           ))}
-        </CompactView>
+        </Box>
       );
     }
     return null;
