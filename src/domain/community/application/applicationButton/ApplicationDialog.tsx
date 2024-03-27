@@ -8,13 +8,10 @@ import { useApplicationCommunityQuery } from '../containers/useApplicationCommun
 import {
   refetchUserProviderQuery,
   useApplyForCommunityMembershipMutation,
-  useCommunityGuidelinesQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
-import { ApplicationTypeEnum } from '../constants/ApplicationType';
 import { CreateNvpInput } from '../../../../core/apollo/generated/graphql-schema';
 import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 import { BlockTitle } from '../../../../core/ui/typography';
-import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import References from '../../../shared/components/References/References';
 import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
@@ -24,13 +21,14 @@ import { gutters } from '../../../../core/ui/grid/utils';
 import { Actions } from '../../../../core/ui/actions/Actions';
 import { LoadingButton } from '@mui/lab';
 import FormikEffectFactory from '../../../../core/ui/forms/FormikEffect';
+import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 
 const FormikEffect = FormikEffectFactory<Record<string, string>>();
 
 interface ApplicationDialogProps {
   open: boolean;
   onClose: () => void;
-  type: ApplicationTypeEnum;
+  journeyTypeName: JourneyTypeName;
   canJoinCommunity?: boolean;
   onJoin: () => void;
   onApply?: () => void;
@@ -41,34 +39,18 @@ const ApplicationDialog: FC<ApplicationDialogProps> = ({
   onJoin,
   onClose,
   onApply,
-  type,
+  journeyTypeName,
   canJoinCommunity = false,
 }) => {
   const { t } = useTranslation();
   const [hasApplied, setHasApplied] = useState(false);
-  const { spaceId } = useRouteResolver();
   const [applicationQuestions, setApplicationQuestions] = useState<CreateNvpInput[]>([]);
   const [isValid, setIsValid] = useState(false);
 
-  const { data, loading: isLoadingApplicationForm } = useApplicationCommunityQuery(type, canJoinCommunity);
-  const { description, questions = [], communityId = '', displayName: communityName } = data || {};
+  const { data, loading: isLoadingApplicationForm } = useApplicationCommunityQuery(journeyTypeName, canJoinCommunity);
+  const { description, questions = [], communityId = '', displayName: communityName, communityGuidelines } = data || {};
 
-  const { data: communityGuidelinesData, loading: isLoadingGuidelines } = useCommunityGuidelinesQuery({
-    variables: { spaceId: spaceId! },
-    skip: !spaceId,
-  });
-
-  const loading = isLoadingApplicationForm || isLoadingGuidelines;
-
-  const communityGuidelines = useMemo(
-    () => ({
-      displayName: communityGuidelinesData?.space?.community?.guidelines?.profile.displayName,
-      description: communityGuidelinesData?.space?.community?.guidelines?.profile.description,
-      references: communityGuidelinesData?.space?.community?.guidelines?.profile.references,
-      communityName: communityGuidelinesData?.space?.profile.displayName,
-    }),
-    [communityGuidelinesData]
-  );
+  const loading = isLoadingApplicationForm;
 
   const [createApplication, { loading: isCreationLoading }] = useApplyForCommunityMembershipMutation({
     onCompleted: () => setHasApplied(true),
@@ -131,7 +113,7 @@ const ApplicationDialog: FC<ApplicationDialogProps> = ({
   };
 
   const dialogTitle = canJoinCommunity
-    ? t('pages.space.application.joinTitle', { name: communityGuidelines.communityName })
+    ? t('pages.space.application.joinTitle', { name: communityName })
     : t('pages.space.application.applyTitle', { name: communityName });
 
   return (
@@ -173,9 +155,9 @@ const ApplicationDialog: FC<ApplicationDialogProps> = ({
                       maxLength={x.maxLength}
                     />
                   ))}
-                  <BlockTitle>{communityGuidelines.displayName}</BlockTitle>
-                  <WrapperMarkdown>{communityGuidelines.description ?? ''}</WrapperMarkdown>
-                  <References compact references={communityGuidelines.references} />
+                  <BlockTitle>{communityGuidelines?.displayName}</BlockTitle>
+                  <WrapperMarkdown>{communityGuidelines?.description ?? ''}</WrapperMarkdown>
+                  <References compact references={communityGuidelines?.references} />
                 </Gutters>
               </>
             );

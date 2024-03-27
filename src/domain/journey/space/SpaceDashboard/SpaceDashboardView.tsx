@@ -32,7 +32,6 @@ import MembershipContainer from '../../../community/membership/membershipContain
 import RouterLink from '../../../../core/ui/link/RouterLink';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import { RECENT_ACTIVITIES_LIMIT_EXPANDED } from '../../common/journeyDashboard/constants';
-import { ApplicationTypeEnum } from '../../../community/application/constants/ApplicationType';
 
 interface SpaceWelcomeBlockContributor {
   profile: SpaceWelcomeBlockContributorProfileFragment;
@@ -125,7 +124,7 @@ const SpaceDashboardView = ({
                   loading={loading}
                   component={FullWidthButton}
                   extended={hasExtendedApplicationButton}
-                  journeyTypeName={ApplicationTypeEnum.space}
+                  journeyTypeName="space"
                 />
               </PageContentColumn>
             );
@@ -174,7 +173,7 @@ const SpaceDashboardView = ({
 
         <PageContentColumn columns={8}>
           <DashboardRecentContributionsBlock
-            halfWidth={(callouts.groupedCallouts[CalloutGroupName.Home_1]?.length ?? 0) > 0}
+            halfWidth={(callouts.groupedCallouts[CalloutGroupName.Home_2]?.length ?? 0) > 0}
             readUsersAccess={readUsersAccess}
             entityReadAccess={entityReadAccess}
             activitiesLoading={activityLoading}

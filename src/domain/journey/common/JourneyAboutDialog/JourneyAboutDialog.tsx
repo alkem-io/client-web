@@ -33,11 +33,11 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import useDirectMessageDialog from '../../../communication/messaging/DirectMessaging/useDirectMessageDialog';
 import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
-import { ApplicationTypeEnum } from '../../../community/application/constants/ApplicationType';
+import { JourneyTypeName } from '../../JourneyTypeName';
 
 export interface JourneyAboutDialogProps extends EntityDashboardLeads {
   open: boolean;
-  journeyTypeName: ApplicationTypeEnum;
+  journeyTypeName: JourneyTypeName;
   displayName: ReactNode;
   tagline: ReactNode;
   references: Reference[] | undefined;
@@ -64,13 +64,13 @@ const DialogHeaderItem = ({ align = 'center', ...props }: DialogHeaderItemProps)
   return <Box {...props} flexGrow={1} display="flex" justifyContent={align} alignItems="center" gap={gutters()} />;
 };
 
-const getMetricsSpec = (journeyTypeName: ApplicationTypeEnum) => {
+const getMetricsSpec = (journeyTypeName: JourneyTypeName) => {
   switch (journeyTypeName) {
-    case ApplicationTypeEnum.space:
+    case 'space':
       return SpaceMetrics;
-    case ApplicationTypeEnum.challenge:
+    case 'challenge':
       return ChallengeMetrics;
-    case ApplicationTypeEnum.opportunity:
+    case 'opportunity':
       return OpportunityMetrics;
   }
 };
@@ -105,7 +105,7 @@ const JourneyAboutDialog = ({
 }: JourneyAboutDialogProps) => {
   const { t } = useTranslation();
 
-  const isSpace = journeyTypeName === ApplicationTypeEnum.space;
+  const isSpace = journeyTypeName === 'space';
   const leadOrganizationsHeader = isSpace
     ? 'pages.space.sections.dashboard.leadingOrganizations'
     : 'community.leading-organizations';

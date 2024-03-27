@@ -1,7 +1,7 @@
 import { ApplicationForRoleResult } from '../../../../core/apollo/generated/graphql-schema';
-import { ApplicationTypeEnum } from '../constants/ApplicationType';
+import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 
-type WithType = { type: ApplicationTypeEnum };
+type WithType = { type: JourneyTypeName };
 export type ApplicationWithType = ApplicationForRoleResult & WithType;
 
 const getApplicationWithType = (application: ApplicationForRoleResult): ApplicationWithType | never => ({
@@ -10,9 +10,9 @@ const getApplicationWithType = (application: ApplicationForRoleResult): Applicat
 });
 export default getApplicationWithType;
 
-const getType = ({ spaceID, challengeID, opportunityID }: ApplicationForRoleResult): ApplicationTypeEnum | never => {
+const getType = ({ spaceID, challengeID, opportunityID }: ApplicationForRoleResult): JourneyTypeName => {
   if (spaceID && challengeID && opportunityID) {
-    return ApplicationTypeEnum.opportunity;
+    return 'opportunity';
   }
 
   if (spaceID && opportunityID && !challengeID) {
@@ -20,11 +20,11 @@ const getType = ({ spaceID, challengeID, opportunityID }: ApplicationForRoleResu
   }
 
   if (spaceID && challengeID) {
-    return ApplicationTypeEnum.challenge;
+    return 'challenge';
   }
 
   if (spaceID) {
-    return ApplicationTypeEnum.space;
+    return 'space';
   }
 
   throw new TypeError("'spaceID' parameter expected");

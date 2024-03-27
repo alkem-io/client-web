@@ -13,7 +13,7 @@ import { InvitationItem } from '../../user/providers/UserProvider/InvitationItem
 import InvitationActionsContainer from '../../invitations/InvitationActionsContainer';
 import InvitationDialog from '../../invitations/InvitationDialog';
 import useNavigate from '../../../../core/routing/useNavigate';
-import { ApplicationTypeEnum } from '../constants/ApplicationType';
+import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import ApplicationDialog from './ApplicationDialog';
 
 export interface ApplicationButtonProps {
@@ -37,7 +37,7 @@ export interface ApplicationButtonProps {
   loading: boolean;
   component?: typeof MuiButton;
   extended?: boolean;
-  journeyTypeName: ApplicationTypeEnum;
+  journeyTypeName: JourneyTypeName;
 }
 
 export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElement, ApplicationButtonProps>(
@@ -136,7 +136,7 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
       extended
         ? t('components.application-button.extendedMessage', {
             join: verb,
-            journey: journeyTypeName === ApplicationTypeEnum.challenge ? t('common.challenge') : t('common.community'),
+            journey: journeyTypeName === 'challenge' ? t('common.challenge') : t('common.community'),
           })
         : verb;
 
@@ -186,7 +186,7 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
       }
 
       if (canAcceptInvitation) {
-        if (journeyTypeName === ApplicationTypeEnum.challenge && !isMember && !isParentMember) {
+        if (journeyTypeName === 'challenge' && !isMember && !isParentMember) {
           return (
             joinParentUrl && (
               <Button
@@ -307,7 +307,7 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
           <ApplicationDialog
             open={isApplicationDialogOpen}
             onClose={handleClose}
-            type={journeyTypeName}
+            journeyTypeName={journeyTypeName}
             canJoinCommunity={canJoinCommunity}
             onJoin={onJoin}
             onApply={handleOpenApplicationSubmittedDialog}

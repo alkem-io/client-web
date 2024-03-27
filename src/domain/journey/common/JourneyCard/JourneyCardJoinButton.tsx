@@ -4,7 +4,6 @@ import ButtonNarrow from '../../../../core/ui/actions/ButtonNarrow';
 import ApplicationButton from '../../../community/application/applicationButton/ApplicationButton';
 import ApplicationButtonContainer from '../../../community/application/containers/ApplicationButtonContainer';
 import provideStaticProps from '../../../../core/utils/provideStaticProps';
-import { ApplicationTypeEnum } from '../../../community/application/constants/ApplicationType';
 
 interface JourneyCardJoinButtonProps {
   challengeId?: string;
@@ -26,7 +25,7 @@ const JourneyCardJoinButton = (props: JourneyCardJoinButtonProps) => {
             component={ButtonNarrowOutlined as typeof Button}
             {...applicationButtonProps}
             loading={loading}
-            journeyTypeName={props.challengeId ? ApplicationTypeEnum.challenge : ApplicationTypeEnum.space}
+            journeyTypeName={props.challengeId ? 'challenge' : 'space'}
           />
         );
       }}

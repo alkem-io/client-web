@@ -6,10 +6,10 @@ import {
   useSpaceApplicationQuery,
   useSpaceApplicationTemplateQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
-import { ApplicationTypeEnum } from '../constants/ApplicationType';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
+import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 
-export const useApplicationCommunityQuery = (type: ApplicationTypeEnum, canJoinCommunity: boolean) => {
+export const useApplicationCommunityQuery = (type: JourneyTypeName, canJoinCommunity: boolean) => {
   const { spaceNameId = '', challengeNameId = '' } = useUrlParams();
 
   const { challengeId } = useRouteResolver();
@@ -23,7 +23,7 @@ export const useApplicationCommunityQuery = (type: ApplicationTypeEnum, canJoinC
       challengeId: challengeId!,
     },
     errorPolicy: 'all',
-    skip: type !== ApplicationTypeEnum.challenge || !challengeId || canJoinCommunity,
+    skip: type !== 'challenge' || !challengeId || canJoinCommunity,
   });
 
   const {
@@ -34,7 +34,7 @@ export const useApplicationCommunityQuery = (type: ApplicationTypeEnum, canJoinC
     variables: {
       challengeId: challengeId!,
     },
-    skip: type !== ApplicationTypeEnum.challenge || !challengeId || canJoinCommunity,
+    skip: type !== 'challenge' || !challengeId || canJoinCommunity,
   });
 
   const {
@@ -46,7 +46,7 @@ export const useApplicationCommunityQuery = (type: ApplicationTypeEnum, canJoinC
       spaceId: spaceNameId,
     },
     errorPolicy: 'all',
-    skip: type !== ApplicationTypeEnum.space || canJoinCommunity,
+    skip: type !== 'space' || canJoinCommunity,
   });
 
   const {
@@ -54,29 +54,31 @@ export const useApplicationCommunityQuery = (type: ApplicationTypeEnum, canJoinC
     loading: isSpaceTemplateLoading,
     error: spaceTemplateError,
   } = useSpaceApplicationTemplateQuery({
-    skip: type !== ApplicationTypeEnum.space || canJoinCommunity,
+    skip: type !== 'space' || canJoinCommunity,
     variables: {
       spaceId: spaceNameId,
     },
   });
 
   const result = useMemo(() => {
-    if (type === ApplicationTypeEnum.space) {
+    if (type === 'space') {
       return {
         communityId: spaceData?.space.community?.id || '',
         displayName: spaceData?.space.profile.displayName || '',
         description: spaceTemplateData?.space.community?.applicationForm?.description,
         questions: spaceTemplateData?.space.community?.applicationForm?.questions || [],
         backUrl: spaceData?.space.profile.url,
+        communityGuidelines: spaceData?.space.community?.guidelines?.profile,
       };
     }
-    if (type === ApplicationTypeEnum.challenge) {
+    if (type === 'challenge') {
       return {
         communityId: challengeData?.lookup.challenge?.community?.id || '',
         displayName: challengeData?.lookup.challenge?.profile.displayName || '',
         description: challengeTemplateData?.lookup.challenge?.community?.applicationForm?.description,
         questions: challengeTemplateData?.lookup.challenge?.community?.applicationForm?.questions ?? [],
         backUrl: challengeData?.lookup.challenge?.profile.url,
+        communityGuidelines: challengeData?.lookup.challenge?.community?.guidelines?.profile,
       };
     }
   }, [type, challengeData, challengeTemplateData, spaceData, spaceTemplateData, challengeNameId, spaceNameId]);

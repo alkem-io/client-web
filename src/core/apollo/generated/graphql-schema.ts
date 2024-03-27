@@ -13611,7 +13611,43 @@ export type ChallengeApplicationQuery = {
           __typename?: 'Challenge';
           id: string;
           profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
-          community?: { __typename?: 'Community'; id: string } | undefined;
+          community?:
+            | {
+                __typename?: 'Community';
+                id: string;
+                guidelines?:
+                  | {
+                      __typename?: 'CommunityGuidelines';
+                      id: string;
+                      profile: {
+                        __typename?: 'Profile';
+                        id: string;
+                        displayName: string;
+                        description?: string | undefined;
+                        tagset?:
+                          | {
+                              __typename?: 'Tagset';
+                              id: string;
+                              name: string;
+                              tags: Array<string>;
+                              allowedValues: Array<string>;
+                              type: TagsetType;
+                            }
+                          | undefined;
+                        references?:
+                          | Array<{
+                              __typename?: 'Reference';
+                              id: string;
+                              name: string;
+                              uri: string;
+                              description?: string | undefined;
+                            }>
+                          | undefined;
+                      };
+                    }
+                  | undefined;
+              }
+            | undefined;
         }
       | undefined;
   };
@@ -13761,7 +13797,43 @@ export type SpaceApplicationQuery = {
     __typename?: 'Space';
     id: string;
     profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
-    community?: { __typename?: 'Community'; id: string } | undefined;
+    community?:
+      | {
+          __typename?: 'Community';
+          id: string;
+          guidelines?:
+            | {
+                __typename?: 'CommunityGuidelines';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  description?: string | undefined;
+                  tagset?:
+                    | {
+                        __typename?: 'Tagset';
+                        id: string;
+                        name: string;
+                        tags: Array<string>;
+                        allowedValues: Array<string>;
+                        type: TagsetType;
+                      }
+                    | undefined;
+                  references?:
+                    | Array<{
+                        __typename?: 'Reference';
+                        id: string;
+                        name: string;
+                        uri: string;
+                        description?: string | undefined;
+                      }>
+                    | undefined;
+                };
+              }
+            | undefined;
+        }
+      | undefined;
   };
 };
 
@@ -14158,15 +14230,13 @@ export type SpaceCommunityQuery = {
 };
 
 export type CommunityGuidelinesQueryVariables = Exact<{
-  spaceId?: InputMaybe<Scalars['UUID_NAMEID']>;
+  communityId: Scalars['UUID'];
 }>;
 
 export type CommunityGuidelinesQuery = {
   __typename?: 'Query';
-  space: {
-    __typename?: 'Space';
-    id: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string };
+  lookup: {
+    __typename?: 'LookupQueryResults';
     community?:
       | {
           __typename?: 'Community';
@@ -14237,7 +14307,29 @@ export type UpdateCommunityGuidelinesMutationVariables = Exact<{
 
 export type UpdateCommunityGuidelinesMutation = {
   __typename?: 'Mutation';
-  updateCommunityGuidelines: { __typename?: 'CommunityGuidelines'; id: string };
+  updateCommunityGuidelines: {
+    __typename?: 'CommunityGuidelines';
+    id: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      description?: string | undefined;
+      tagset?:
+        | {
+            __typename?: 'Tagset';
+            id: string;
+            name: string;
+            tags: Array<string>;
+            allowedValues: Array<string>;
+            type: TagsetType;
+          }
+        | undefined;
+      references?:
+        | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
+        | undefined;
+    };
+  };
 };
 
 export type EntityDashboardCommunityFragment = {
@@ -29027,8 +29119,13 @@ export type LatestContributionsGroupedQuery = {
     | {
         __typename?: 'ActivityLogEntryCalendarEventCreated';
         id: string;
+        collaborationID: string;
         createdDate: Date;
+        description: string;
         type: ActivityEventType;
+        child: boolean;
+        parentNameID: string;
+        journeyDisplayName: string;
         journey?:
           | {
               __typename?: 'Challenge';
@@ -29088,9 +29185,13 @@ export type LatestContributionsGroupedQuery = {
     | {
         __typename?: 'ActivityLogEntryCalloutDiscussionComment';
         id: string;
+        collaborationID: string;
         createdDate: Date;
-        type: ActivityEventType;
         description: string;
+        type: ActivityEventType;
+        child: boolean;
+        parentNameID: string;
+        journeyDisplayName: string;
         journey?:
           | {
               __typename?: 'Challenge';
@@ -29154,8 +29255,13 @@ export type LatestContributionsGroupedQuery = {
     | {
         __typename?: 'ActivityLogEntryCalloutLinkCreated';
         id: string;
+        collaborationID: string;
         createdDate: Date;
+        description: string;
         type: ActivityEventType;
+        child: boolean;
+        parentNameID: string;
+        journeyDisplayName: string;
         journey?:
           | {
               __typename?: 'Challenge';
@@ -29220,9 +29326,13 @@ export type LatestContributionsGroupedQuery = {
     | {
         __typename?: 'ActivityLogEntryCalloutPostComment';
         id: string;
+        collaborationID: string;
         createdDate: Date;
-        type: ActivityEventType;
         description: string;
+        type: ActivityEventType;
+        child: boolean;
+        parentNameID: string;
+        journeyDisplayName: string;
         journey?:
           | {
               __typename?: 'Challenge';
@@ -29282,8 +29392,13 @@ export type LatestContributionsGroupedQuery = {
     | {
         __typename?: 'ActivityLogEntryCalloutPostCreated';
         id: string;
+        collaborationID: string;
         createdDate: Date;
+        description: string;
         type: ActivityEventType;
+        child: boolean;
+        parentNameID: string;
+        journeyDisplayName: string;
         journey?:
           | {
               __typename?: 'Challenge';
@@ -29353,8 +29468,13 @@ export type LatestContributionsGroupedQuery = {
     | {
         __typename?: 'ActivityLogEntryCalloutPublished';
         id: string;
+        collaborationID: string;
         createdDate: Date;
+        description: string;
         type: ActivityEventType;
+        child: boolean;
+        parentNameID: string;
+        journeyDisplayName: string;
         journey?:
           | {
               __typename?: 'Challenge';
@@ -29419,8 +29539,13 @@ export type LatestContributionsGroupedQuery = {
     | {
         __typename?: 'ActivityLogEntryCalloutWhiteboardContentModified';
         id: string;
+        collaborationID: string;
         createdDate: Date;
+        description: string;
         type: ActivityEventType;
+        child: boolean;
+        parentNameID: string;
+        journeyDisplayName: string;
         journey?:
           | {
               __typename?: 'Challenge';
@@ -29489,8 +29614,13 @@ export type LatestContributionsGroupedQuery = {
     | {
         __typename?: 'ActivityLogEntryCalloutWhiteboardCreated';
         id: string;
+        collaborationID: string;
         createdDate: Date;
+        description: string;
         type: ActivityEventType;
+        child: boolean;
+        parentNameID: string;
+        journeyDisplayName: string;
         journey?:
           | {
               __typename?: 'Challenge';
@@ -29559,8 +29689,13 @@ export type LatestContributionsGroupedQuery = {
     | {
         __typename?: 'ActivityLogEntryChallengeCreated';
         id: string;
+        collaborationID: string;
         createdDate: Date;
+        description: string;
         type: ActivityEventType;
+        child: boolean;
+        parentNameID: string;
+        journeyDisplayName: string;
         journey?:
           | {
               __typename?: 'Challenge';
@@ -29620,8 +29755,13 @@ export type LatestContributionsGroupedQuery = {
     | {
         __typename?: 'ActivityLogEntryMemberJoined';
         id: string;
+        collaborationID: string;
         createdDate: Date;
+        description: string;
         type: ActivityEventType;
+        child: boolean;
+        parentNameID: string;
+        journeyDisplayName: string;
         journey?:
           | {
               __typename?: 'Challenge';
@@ -29689,8 +29829,13 @@ export type LatestContributionsGroupedQuery = {
     | {
         __typename?: 'ActivityLogEntryOpportunityCreated';
         id: string;
+        collaborationID: string;
         createdDate: Date;
+        description: string;
         type: ActivityEventType;
+        child: boolean;
+        parentNameID: string;
+        journeyDisplayName: string;
         journey?:
           | {
               __typename?: 'Challenge';
@@ -29750,10 +29895,15 @@ export type LatestContributionsGroupedQuery = {
     | {
         __typename?: 'ActivityLogEntryUpdateSent';
         id: string;
+        collaborationID: string;
         createdDate: Date;
+        description: string;
         type: ActivityEventType;
+        child: boolean;
+        parentNameID: string;
         message: string;
         journeyUrl: string;
+        journeyDisplayName: string;
         journey?:
           | {
               __typename?: 'Challenge';

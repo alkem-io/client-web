@@ -10519,10 +10519,14 @@ export const ChallengeApplicationDocument = gql`
         }
         community {
           id
+          guidelines {
+            ...CommunityGuidelinesDetails
+          }
         }
       }
     }
   }
+  ${CommunityGuidelinesDetailsFragmentDoc}
 `;
 
 /**
@@ -10852,9 +10856,13 @@ export const SpaceApplicationDocument = gql`
       }
       community {
         id
+        guidelines {
+          ...CommunityGuidelinesDetails
+        }
       }
     }
   }
+  ${CommunityGuidelinesDetailsFragmentDoc}
 `;
 
 /**
@@ -11434,14 +11442,9 @@ export function refetchSpaceCommunityQuery(variables: SchemaTypes.SpaceCommunity
 }
 
 export const CommunityGuidelinesDocument = gql`
-  query CommunityGuidelines($spaceId: UUID_NAMEID = "00000000-0000-0000-0000-000000000000") {
-    space(ID: $spaceId) {
-      id
-      profile {
-        id
-        displayName
-      }
-      community {
+  query CommunityGuidelines($communityId: UUID!) {
+    lookup {
+      community(ID: $communityId) {
         id
         guidelines {
           ...CommunityGuidelinesDetails
@@ -11464,12 +11467,12 @@ export const CommunityGuidelinesDocument = gql`
  * @example
  * const { data, loading, error } = useCommunityGuidelinesQuery({
  *   variables: {
- *      spaceId: // value for 'spaceId'
+ *      communityId: // value for 'communityId'
  *   },
  * });
  */
 export function useCommunityGuidelinesQuery(
-  baseOptions?: Apollo.QueryHookOptions<
+  baseOptions: Apollo.QueryHookOptions<
     SchemaTypes.CommunityGuidelinesQuery,
     SchemaTypes.CommunityGuidelinesQueryVariables
   >
@@ -11500,16 +11503,17 @@ export type CommunityGuidelinesQueryResult = Apollo.QueryResult<
   SchemaTypes.CommunityGuidelinesQuery,
   SchemaTypes.CommunityGuidelinesQueryVariables
 >;
-export function refetchCommunityGuidelinesQuery(variables?: SchemaTypes.CommunityGuidelinesQueryVariables) {
+export function refetchCommunityGuidelinesQuery(variables: SchemaTypes.CommunityGuidelinesQueryVariables) {
   return { query: CommunityGuidelinesDocument, variables: variables };
 }
 
 export const UpdateCommunityGuidelinesDocument = gql`
   mutation updateCommunityGuidelines($communityGuidelinesData: UpdateCommunityGuidelinesInput!) {
     updateCommunityGuidelines(communityGuidelinesData: $communityGuidelinesData) {
-      id
+      ...CommunityGuidelinesDetails
     }
   }
+  ${CommunityGuidelinesDetailsFragmentDoc}
 `;
 export type UpdateCommunityGuidelinesMutationFn = Apollo.MutationFunction<
   SchemaTypes.UpdateCommunityGuidelinesMutation,
@@ -24250,8 +24254,13 @@ export const LatestContributionsGroupedDocument = gql`
   query LatestContributionsGrouped($filter: ActivityFeedGroupedQueryArgs) {
     activityFeedGrouped(args: $filter) {
       id
+      collaborationID
       createdDate
+      description
       type
+      child
+      parentNameID
+      journeyDisplayName: parentDisplayName
       journey {
         id
         ... on Space {

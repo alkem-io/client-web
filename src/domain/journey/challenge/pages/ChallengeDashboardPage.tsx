@@ -21,7 +21,6 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { Theme } from '@mui/material';
 import { buildUpdatesUrl } from '../../../../main/routing/urlBuilders';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
-import { ApplicationTypeEnum } from '../../../community/application/constants/ApplicationType';
 
 export interface ChallengeDashboardPageProps {
   dialog?: 'updates' | 'contributors' | 'calendar';
@@ -68,7 +67,7 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
                           loading={loading}
                           component={FullWidthButton}
                           extended={hasExtendedApplicationButton}
-                          journeyTypeName={ApplicationTypeEnum.challenge}
+                          journeyTypeName="challenge"
                         />
                       </PageContentColumn>
                     );
