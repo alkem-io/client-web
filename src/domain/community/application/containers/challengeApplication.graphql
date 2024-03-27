@@ -9,6 +9,9 @@ query challengeApplication($challengeId: UUID!) {
       }
       community {
         id
+        guidelines {
+          ...CommunityGuidelinesDetails
+        }
       }
     }
   }

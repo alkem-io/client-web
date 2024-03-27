@@ -12,8 +12,15 @@ import CommunityOrganizations from '../../../community/community/CommunityAdmin/
 import CommunityApplications from '../../../community/community/CommunityAdmin/CommunityApplications';
 import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
 import InvitationOptionsBlock from '../../../community/invitations/InvitationOptionsBlock';
+import PageContentBlockCollapsible from '../../../../core/ui/content/PageContentBlockCollapsible';
+import { BlockTitle, Text } from '../../../../core/ui/typography';
+import CommunityApplicationForm from '../../../community/community/CommunityApplicationForm/CommunityApplicationForm';
+import { Trans, useTranslation } from 'react-i18next';
+import { gutters } from '../../../../core/ui/grid/utils';
+import CommunityGuidelines from '../../../community/community/CommunityGuidelines/CommunityGuidelines';
 
 const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
+  const { t } = useTranslation();
   const { spaceId, loading: isLoadingSpace, communityId, profile: spaceProfile } = useSpace();
 
   const {
@@ -92,6 +99,15 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
             />
           </PageContentBlockSeamless>
         </PageContentColumn>
+        <PageContentBlockCollapsible header={<BlockTitle>{t('community.application-form.title')}</BlockTitle>}>
+          <Text marginBottom={gutters(2)}>
+            <Trans i18nKey="community.application-form.subtitle" components={{ b: <strong /> }} />
+          </Text>
+          <CommunityApplicationForm spaceId={spaceId} />
+        </PageContentBlockCollapsible>
+        <PageContentBlockCollapsible header={<BlockTitle>{t('community.communityGuidelines.title')}</BlockTitle>}>
+          <CommunityGuidelines communityId={communityId} />
+        </PageContentBlockCollapsible>
         <PageContentColumn columns={6}>
           <PageContentBlock>
             <CommunityUsers

@@ -1,0 +1,31 @@
+query CommunityGuidelines($communityId: UUID!) {
+  lookup {
+    community(ID: $communityId) {
+      id
+      guidelines {
+        ...CommunityGuidelinesDetails
+      }
+    }
+  }
+}
+
+fragment CommunityGuidelinesDetails on CommunityGuidelines {
+  id
+  profile {
+    id
+    displayName
+    description
+    references {
+      id
+      name
+      uri
+      description
+    }
+  }
+}
+
+mutation updateCommunityGuidelines($communityGuidelinesData: UpdateCommunityGuidelinesInput!) {
+  updateCommunityGuidelines(communityGuidelinesData: $communityGuidelinesData) {
+    ...CommunityGuidelinesDetails
+  }
+}

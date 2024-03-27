@@ -2,8 +2,6 @@ import React from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { ChallengeProvider } from '../../challenge/context/ChallengeProvider';
 import { CommunityContextProvider } from '../../../community/community/CommunityContext';
-import { ApplicationTypeEnum } from '../../../community/application/constants/ApplicationType';
-import ApplyRoute from '../../../community/application/routing/ApplyRoute';
 import { nameOfUrl } from '../../../../main/routing/urlParams';
 import ChallengeRoute from '../../challenge/routing/ChallengeRoute';
 import { Error404 } from '../../../../core/pages/Errors/Error404';
@@ -12,7 +10,6 @@ import { routes } from '../routes/spaceRoutes';
 import { EntityPageLayoutHolder, NotFoundPageLayout } from '../../common/EntityPageLayout';
 import CalloutRoute from '../../../collaboration/callout/routing/CalloutRoute';
 import SpaceDashboardPage from '../SpaceDashboard/SpaceDashboardPage';
-import SpacePageLayout from '../layout/SpacePageLayout';
 import Redirect from '../../../../core/routing/Redirect';
 import SpaceCalloutPage from '../spaceCalloutPage/SpaceCalloutPage';
 import SpaceCommunityPage from '../SpaceCommunityPage/SpaceCommunityPage';
@@ -54,10 +51,6 @@ export const SpaceRoute = () => {
             }
           />
         </Route>
-        <Route
-          path="apply"
-          element={<ApplyRoute type={ApplicationTypeEnum.space} journeyPageLayoutComponent={SpacePageLayout} />}
-        />
         <Route
           path={`challenges/:${nameOfUrl.challengeNameId}/*`}
           element={
