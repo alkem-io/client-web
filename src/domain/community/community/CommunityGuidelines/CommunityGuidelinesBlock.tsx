@@ -57,7 +57,7 @@ const CommunityGuidelinesBlock: FC<CommunityGuidelinesBlockProps> = ({ community
       <CommunityGuidelinesInfoDialog
         open={isCommunityGuidelinesInfoDialogOpen}
         onClose={closeDialog}
-        guidelines={data?.lookup?.community?.guidelines?.profile}
+        guidelines={data?.lookup.community?.guidelines?.profile}
       />
     </>
   );

@@ -5,7 +5,7 @@ import RouterLink from '../../../../core/ui/link/RouterLink';
 import { buildLoginUrl } from '../../../../main/routing/urlBuilders';
 import PreApplicationDialog from './PreApplicationDialog';
 import isApplicationPending from './isApplicationPending';
-import ApplicationSubmitedDialog from './ApplicationSubmittedDialog';
+import ApplicationSubmittedDialog from './ApplicationSubmittedDialog';
 import PreJoinParentDialog from './PreJoinParentDialog';
 import { AddOutlined, PersonOutlined } from '@mui/icons-material';
 import RootThemeProvider from '../../../../core/ui/themes/RootThemeProvider';
@@ -323,7 +323,7 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
             applyUrl={applyUrl}
             parentApplyUrl={parentApplyUrl}
           />
-          <ApplicationSubmitedDialog
+          <ApplicationSubmittedDialog
             open={isApplicationSubmittedDialogOpen}
             onClose={() => setIsApplicationSubmittedDialogOpen(false)}
           />
