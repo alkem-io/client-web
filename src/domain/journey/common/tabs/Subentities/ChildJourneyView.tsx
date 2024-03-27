@@ -116,7 +116,7 @@ const ChildJourneyView = <ChildEntity extends BaseChildEntity>({
                   data={childEntities}
                   valueGetter={childEntityValueGetter}
                   tagsGetter={childEntityTagsGetter}
-                  title={t('common.all-entities', {
+                  title={t('common.entitiesWithCount', {
                     entityType: getJourneyChildrenTranslation(t, journeyTypeName),
                     count: childEntities.length,
                   })}

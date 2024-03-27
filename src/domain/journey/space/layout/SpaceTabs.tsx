@@ -22,7 +22,7 @@ const SpaceTabs = (props: EntityTabsProps) => {
       rootUrl={profile.url}
       shareUrl={profile.url}
       subEntityTab={{
-        label: t('common.challenges'),
+        label: t('common.subspaces'),
         section: EntityPageSection.Challenges,
         icon: <ChallengeIcon />,
         disabled: !permissions.canReadChallenges,
