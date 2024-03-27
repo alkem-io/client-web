@@ -254,7 +254,6 @@
     "subspaces": "Subspaces",
     "challenge": "Challenge",
     "challenges": "Challenges",
-    "all-entities": "All {{entityType}} ({{count}})",
     "entitiesWithCount": "{{entityType}} ({{count}})",
     "contributors": "Contributors",
     "opportunity": "Opportunity",
