@@ -1108,6 +1108,22 @@ export const CommunityDetailsFragmentDoc = gql`
     }
   }
 `;
+export const CommunityGuidelinesDetailsFragmentDoc = gql`
+  fragment CommunityGuidelinesDetails on CommunityGuidelines {
+    id
+    profile {
+      id
+      displayName
+      description
+      references {
+        id
+        name
+        uri
+        description
+      }
+    }
+  }
+`;
 export const CommunityPageMembersFragmentDoc = gql`
   fragment CommunityPageMembers on User {
     id
@@ -1532,6 +1548,22 @@ export const PendingMembershipsMembershipsFragmentDoc = gql`
     }
   }
   ${PendingMembershipInvitationFragmentDoc}
+`;
+export const CommunityGuidelinesSummaryFragmentDoc = gql`
+  fragment CommunityGuidelinesSummary on CommunityGuidelines {
+    id
+    profile {
+      id
+      displayName
+      description
+      references {
+        id
+        name
+        uri
+        description
+      }
+    }
+  }
 `;
 export const UserSelectorUserInformationFragmentDoc = gql`
   fragment UserSelectorUserInformation on User {
@@ -10275,10 +10307,14 @@ export const ChallengeApplicationDocument = gql`
         }
         community {
           id
+          guidelines {
+            ...CommunityGuidelinesDetails
+          }
         }
       }
     }
   }
+  ${CommunityGuidelinesDetailsFragmentDoc}
 `;
 
 /**
@@ -10608,9 +10644,13 @@ export const SpaceApplicationDocument = gql`
       }
       community {
         id
+        guidelines {
+          ...CommunityGuidelinesDetails
+        }
       }
     }
   }
+  ${CommunityGuidelinesDetailsFragmentDoc}
 `;
 
 /**
@@ -11189,6 +11229,122 @@ export function refetchSpaceCommunityQuery(variables: SchemaTypes.SpaceCommunity
   return { query: SpaceCommunityDocument, variables: variables };
 }
 
+export const CommunityGuidelinesDocument = gql`
+  query CommunityGuidelines($communityId: UUID!) {
+    lookup {
+      community(ID: $communityId) {
+        id
+        guidelines {
+          ...CommunityGuidelinesDetails
+        }
+      }
+    }
+  }
+  ${CommunityGuidelinesDetailsFragmentDoc}
+`;
+
+/**
+ * __useCommunityGuidelinesQuery__
+ *
+ * To run a query within a React component, call `useCommunityGuidelinesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCommunityGuidelinesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCommunityGuidelinesQuery({
+ *   variables: {
+ *      communityId: // value for 'communityId'
+ *   },
+ * });
+ */
+export function useCommunityGuidelinesQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.CommunityGuidelinesQuery,
+    SchemaTypes.CommunityGuidelinesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.CommunityGuidelinesQuery, SchemaTypes.CommunityGuidelinesQueryVariables>(
+    CommunityGuidelinesDocument,
+    options
+  );
+}
+
+export function useCommunityGuidelinesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CommunityGuidelinesQuery,
+    SchemaTypes.CommunityGuidelinesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.CommunityGuidelinesQuery, SchemaTypes.CommunityGuidelinesQueryVariables>(
+    CommunityGuidelinesDocument,
+    options
+  );
+}
+
+export type CommunityGuidelinesQueryHookResult = ReturnType<typeof useCommunityGuidelinesQuery>;
+export type CommunityGuidelinesLazyQueryHookResult = ReturnType<typeof useCommunityGuidelinesLazyQuery>;
+export type CommunityGuidelinesQueryResult = Apollo.QueryResult<
+  SchemaTypes.CommunityGuidelinesQuery,
+  SchemaTypes.CommunityGuidelinesQueryVariables
+>;
+export function refetchCommunityGuidelinesQuery(variables: SchemaTypes.CommunityGuidelinesQueryVariables) {
+  return { query: CommunityGuidelinesDocument, variables: variables };
+}
+
+export const UpdateCommunityGuidelinesDocument = gql`
+  mutation updateCommunityGuidelines($communityGuidelinesData: UpdateCommunityGuidelinesInput!) {
+    updateCommunityGuidelines(communityGuidelinesData: $communityGuidelinesData) {
+      ...CommunityGuidelinesDetails
+    }
+  }
+  ${CommunityGuidelinesDetailsFragmentDoc}
+`;
+export type UpdateCommunityGuidelinesMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateCommunityGuidelinesMutation,
+  SchemaTypes.UpdateCommunityGuidelinesMutationVariables
+>;
+
+/**
+ * __useUpdateCommunityGuidelinesMutation__
+ *
+ * To run a mutation, you first call `useUpdateCommunityGuidelinesMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateCommunityGuidelinesMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateCommunityGuidelinesMutation, { data, loading, error }] = useUpdateCommunityGuidelinesMutation({
+ *   variables: {
+ *      communityGuidelinesData: // value for 'communityGuidelinesData'
+ *   },
+ * });
+ */
+export function useUpdateCommunityGuidelinesMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateCommunityGuidelinesMutation,
+    SchemaTypes.UpdateCommunityGuidelinesMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.UpdateCommunityGuidelinesMutation,
+    SchemaTypes.UpdateCommunityGuidelinesMutationVariables
+  >(UpdateCommunityGuidelinesDocument, options);
+}
+
+export type UpdateCommunityGuidelinesMutationHookResult = ReturnType<typeof useUpdateCommunityGuidelinesMutation>;
+export type UpdateCommunityGuidelinesMutationResult =
+  Apollo.MutationResult<SchemaTypes.UpdateCommunityGuidelinesMutation>;
+export type UpdateCommunityGuidelinesMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateCommunityGuidelinesMutation,
+  SchemaTypes.UpdateCommunityGuidelinesMutationVariables
+>;
 export const CreateGroupOnCommunityDocument = gql`
   mutation createGroupOnCommunity($input: CreateUserGroupInput!) {
     createGroupOnCommunity(groupData: $input) {
@@ -13475,15 +13631,27 @@ export type InviteExternalUserMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.InviteExternalUserMutationVariables
 >;
 export const PendingMembershipsSpaceDocument = gql`
-  query PendingMembershipsSpace($spaceId: UUID_NAMEID!, $fetchDetails: Boolean! = false, $visualType: VisualType!) {
+  query PendingMembershipsSpace(
+    $spaceId: UUID_NAMEID!
+    $fetchDetails: Boolean! = false
+    $visualType: VisualType!
+    $fetchCommunityGuidelines: Boolean! = false
+  ) {
     space(ID: $spaceId) {
       id
       profile {
         ...PendingMembershipsJourneyProfile
       }
+      community @include(if: $fetchCommunityGuidelines) {
+        id
+        guidelines {
+          ...CommunityGuidelinesSummary
+        }
+      }
     }
   }
   ${PendingMembershipsJourneyProfileFragmentDoc}
+  ${CommunityGuidelinesSummaryFragmentDoc}
 `;
 
 /**
@@ -13501,6 +13669,7 @@ export const PendingMembershipsSpaceDocument = gql`
  *      spaceId: // value for 'spaceId'
  *      fetchDetails: // value for 'fetchDetails'
  *      visualType: // value for 'visualType'
+ *      fetchCommunityGuidelines: // value for 'fetchCommunityGuidelines'
  *   },
  * });
  */
@@ -13541,17 +13710,29 @@ export function refetchPendingMembershipsSpaceQuery(variables: SchemaTypes.Pendi
 }
 
 export const PendingMembershipsChallengeDocument = gql`
-  query PendingMembershipsChallenge($challengeId: UUID!, $fetchDetails: Boolean! = false, $visualType: VisualType!) {
+  query PendingMembershipsChallenge(
+    $challengeId: UUID!
+    $fetchDetails: Boolean! = false
+    $visualType: VisualType!
+    $fetchCommunityGuidelines: Boolean! = false
+  ) {
     lookup {
       challenge(ID: $challengeId) {
         id
         profile {
           ...PendingMembershipsJourneyProfile
         }
+        community @include(if: $fetchCommunityGuidelines) {
+          id
+          guidelines {
+            ...CommunityGuidelinesSummary
+          }
+        }
       }
     }
   }
   ${PendingMembershipsJourneyProfileFragmentDoc}
+  ${CommunityGuidelinesSummaryFragmentDoc}
 `;
 
 /**
@@ -13569,6 +13750,7 @@ export const PendingMembershipsChallengeDocument = gql`
  *      challengeId: // value for 'challengeId'
  *      fetchDetails: // value for 'fetchDetails'
  *      visualType: // value for 'visualType'
+ *      fetchCommunityGuidelines: // value for 'fetchCommunityGuidelines'
  *   },
  * });
  */
@@ -13615,6 +13797,7 @@ export const PendingMembershipsOpportunityDocument = gql`
     $opportunityId: UUID!
     $fetchDetails: Boolean! = false
     $visualType: VisualType!
+    $fetchCommunityGuidelines: Boolean! = false
   ) {
     lookup {
       opportunity(ID: $opportunityId) {
@@ -13622,10 +13805,17 @@ export const PendingMembershipsOpportunityDocument = gql`
         profile {
           ...PendingMembershipsJourneyProfile
         }
+        community @include(if: $fetchCommunityGuidelines) {
+          id
+          guidelines {
+            ...CommunityGuidelinesSummary
+          }
+        }
       }
     }
   }
   ${PendingMembershipsJourneyProfileFragmentDoc}
+  ${CommunityGuidelinesSummaryFragmentDoc}
 `;
 
 /**
@@ -13643,6 +13833,7 @@ export const PendingMembershipsOpportunityDocument = gql`
  *      opportunityId: // value for 'opportunityId'
  *      fetchDetails: // value for 'fetchDetails'
  *      visualType: // value for 'visualType'
+ *      fetchCommunityGuidelines: // value for 'fetchCommunityGuidelines'
  *   },
  * });
  */

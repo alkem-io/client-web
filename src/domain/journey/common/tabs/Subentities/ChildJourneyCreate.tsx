@@ -21,7 +21,6 @@ const ChildJourneyCreate = ({ journeyTypeName, canCreateSubentity, onCreateSuben
       <WrapperMarkdown>
         {t('pages.generic.sections.subentities.description', {
           entities: getJourneyChildrenTranslation(t, journeyTypeName),
-          parentEntity: t(`common.${journeyTypeName}` as const),
         })}
       </WrapperMarkdown>
       {canCreateSubentity && (

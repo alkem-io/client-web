@@ -23,7 +23,7 @@ const ChallengeTabs: FC<ChallengeTabsProps> = props => {
       rootUrl={profile.url}
       shareUrl={profile.url}
       subEntityTab={{
-        label: t('common.opportunities'),
+        label: t('common.subspaces'),
         section: EntityPageSection.Opportunities,
         icon: <OpportunityIcon />,
       }}

@@ -1,13 +1,13 @@
-import { ApplicationTypeEnum } from '../constants/ApplicationType';
 import TranslationKey from '../../../../core/i18n/utils/TranslationKey';
+import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 
-const getApplicationTypeKey = (type: ApplicationTypeEnum): TranslationKey => {
+const getApplicationTypeKey = (type: JourneyTypeName): TranslationKey => {
   switch (type) {
-    case ApplicationTypeEnum.space:
+    case 'space':
       return 'common.space';
-    case ApplicationTypeEnum.challenge:
+    case 'challenge':
       return 'common.challenge';
-    case ApplicationTypeEnum.opportunity:
+    case 'opportunity':
       return 'common.opportunity';
     default:
       return 'common.empty-string';

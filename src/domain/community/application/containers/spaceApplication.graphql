@@ -8,6 +8,9 @@ query spaceApplication($spaceId: UUID_NAMEID!) {
     }
     community {
       id
+      guidelines {
+        ...CommunityGuidelinesDetails
+      }
     }
   }
 }

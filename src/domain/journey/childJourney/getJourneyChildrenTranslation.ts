@@ -8,9 +8,9 @@ const getJourneyChildrenTranslation = (
 ): string => {
   switch (type) {
     case 'space':
-      return t('common.journeyTypes.challenge', { count });
+      return t('common.journeyTypes.subspace', { count });
     case 'challenge':
-      return t('common.journeyTypes.opportunity', { count });
+      return t('common.journeyTypes.subspace', { count });
     case 'opportunity':
       return t('common.journeyTypes.agreement', { count });
   }
