@@ -3,7 +3,6 @@ import { FC, PropsWithChildren } from 'react';
 import CardFooter from '../../../../../core/ui/card/CardFooter';
 import CardHeader from '../../../../../core/ui/card/CardHeader';
 import CardHeaderCaption from '../../../../../core/ui/card/CardHeaderCaption';
-import CardMatchedTerms from '../../../../../core/ui/card/CardMatchedTerms';
 import ContributeCard from '../../../../../core/ui/card/ContributeCard';
 import RouterLink from '../../../../../core/ui/link/RouterLink';
 import { gutters } from '../../../../../core/ui/grid/utils';
@@ -21,7 +20,6 @@ const SearchBaseContributionCard: FC<PropsWithChildren<SearchBaseContributionCar
   icon,
   name,
   author: label,
-  matchedTerms,
   url,
   children,
 }) => {
@@ -34,7 +32,7 @@ const SearchBaseContributionCard: FC<PropsWithChildren<SearchBaseContributionCar
       </Box>
       {children}
       <CardFooter paddingX={gutters(1)} marginBottom={gutters(1.5)}>
-        <CardMatchedTerms tags={matchedTerms} />
+        {/*<CardMatchedTerms tags={matchedTerms} />*/}
       </CardFooter>
     </ContributeCard>
   );

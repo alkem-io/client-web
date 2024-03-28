@@ -1941,7 +1941,7 @@
       "title": "Search",
       "subtitle": "Find the Spaces, Contributors and Challenges, Opportunities and content from publicly available Spaces below",
       "placeholder": "Search…",
-      "results-disclaimer": "Showing the first 8 results. Soon, you’ll be able to see all, but for now, please specify your search terms.",
+      "results-disclaimer": "These results may not represent the up-to-date state of the platform. Search results are updated on an interval.",
       "max-tags-reached": "You have reached the limit of {{max}} terms to search for",
       "user-not-logged": "Login or Register to include users in your search results",
       "filter": {
