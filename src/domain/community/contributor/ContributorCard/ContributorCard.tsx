@@ -4,7 +4,6 @@ import { gutters } from '../../../../core/ui/grid/utils';
 import { BlockTitle } from '../../../../core/ui/typography';
 import LocationCardSegment from '../../../../core/ui/location/LocationCardSegment';
 import React, { ReactNode, useState } from 'react';
-import CardMatchedTerms from '../../../../core/ui/card/CardMatchedTerms';
 import CardTags from '../../../../core/ui/card/CardTags';
 import RouterLink from '../../../../core/ui/link/RouterLink';
 import ExpandableCardFooter from '../../../../core/ui/card/ExpandableCardFooter';
@@ -42,9 +41,9 @@ const ContributorCard = ({
   const [isExpanded, setIsExpanded] = useState(false);
   const toggleExpanded = () => setIsExpanded(wasExpanded => !wasExpanded);
 
-  const Tags = matchedTerms ? CardMatchedTerms : CardTags;
+  // const Tags = matchedTerms ? CardMatchedTerms : CardTags;
 
-  const tagsElement = <Tags tags={matchedTerms ?? tags} marginTop={gutters()} />;
+  const tagsElement = <></>; //<Tags tags={matchedTerms ?? tags} marginTop={gutters()} />;
 
   return (
     <>
