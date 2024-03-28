@@ -92,7 +92,7 @@ export const ForumPage: FC<ForumPageProps> = ({ dialog }) => {
   const { data, loading: loadingDiscussions, subscribeToMore } = usePlatformDiscussionsQuery();
   useSubscriptionToCommunication(data, data => data?.platform.communication, subscribeToMore);
 
-  const isGlobalAdmin = hasPlatformPrivilege?.(AuthorizationPrivilege.GrantGlobalAdmins);
+  const isGlobalAdmin = hasPlatformPrivilege?.(AuthorizationPrivilege.PlatformAdmin);
   const validCategories = data?.platform.communication.discussionCategories ?? [];
   const discussionCreationCategories =
     (isGlobalAdmin
