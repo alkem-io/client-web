@@ -15,6 +15,7 @@ import JourneyCardTagline from '../../journey/common/JourneyCard/JourneyCardTagl
 import InvitationDialog from '../invitations/InvitationDialog';
 import InvitationActionsContainer from '../invitations/InvitationActionsContainer';
 import { VisualType } from '../../../core/apollo/generated/graphql-schema';
+import BackButton from '../../../core/ui/actions/BackButton';
 
 interface ButtonImplementationParams {
   header: ReactNode;
@@ -128,8 +129,9 @@ const PendingMembershipsUserMenuItem = ({ children }: PendingMembershipsUserMenu
         {props => (
           <InvitationDialog
             open={openDialog?.type === DialogType.InvitationView}
-            onClose={() => setOpenDialog({ type: DialogType.PendingMembershipsList })}
+            onClose={closeDialog}
             invitation={currentInvitation}
+            actions={<BackButton onClick={() => setOpenDialog({ type: DialogType.PendingMembershipsList })} />}
             {...props}
           />
         )}

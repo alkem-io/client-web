@@ -1,5 +1,4 @@
 import { Box } from '@mui/material';
-import CardMatchedTerms from '../../../../core/ui/card/CardMatchedTerms';
 import { JourneyTypeName } from '../../../../domain/journey/JourneyTypeName';
 import journeyIcon from '../../../../domain/shared/components/JourneyIcon/JourneyIcon';
 import { CONTRIBUTION_ICON } from '../../../../domain/collaboration/callout/calloutCard/calloutIcons';
@@ -82,7 +81,6 @@ const SearchResultsCalloutCardFooter = ({
   callout,
   journeyDisplayName,
   journeyTypeName,
-  matchedTerms,
 }: SearchResultsCalloutCardFooterProps) => {
   const JourneyIcon = journeyIcon[journeyTypeName];
 
@@ -95,7 +93,7 @@ const SearchResultsCalloutCardFooter = ({
         </Caption>
         <CalloutContributions callout={callout} />
       </Box>
-      <CardMatchedTerms tags={matchedTerms} />
+      {/*<CardMatchedTerms tags={matchedTerms} />*/}
     </Gutters>
   );
 };

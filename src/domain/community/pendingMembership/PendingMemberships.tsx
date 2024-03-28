@@ -10,7 +10,7 @@ import { useUserContext } from '../user';
 import { Visual } from '../../common/visual/Visual';
 import { ContributionItem } from '../user/contribution';
 import { InvitationItem } from '../user/providers/UserProvider/InvitationItem';
-import { VisualType } from '../../../core/apollo/generated/graphql-schema';
+import { CommunityGuidelinesSummaryFragment, VisualType } from '../../../core/apollo/generated/graphql-schema';
 
 export interface JourneyDetails {
   journeyTypeName: JourneyTypeName;
@@ -48,11 +48,13 @@ export const usePendingMemberships = (): UsePendingMembershipsProvided => {
 
 interface InvitationHydratorProvided {
   invitation: InvitationWithMeta | undefined;
+  communityGuidelines?: CommunityGuidelinesSummaryFragment;
 }
 
 type InvitationHydratorProps = {
   invitation: InvitationItem;
   children: (provided: InvitationHydratorProvided) => ReactNode;
+  withCommunityGuidelines?: boolean;
 } & (
   | {
       withJourneyDetails?: false;
@@ -82,12 +84,14 @@ export const InvitationHydrator = ({
   // This fallback is for Typescript only,
   // visualType is either required when withJourneyDetails is true or not used otherwise.
   visualType = VisualType.Avatar,
+  withCommunityGuidelines = false,
   children,
 }: InvitationHydratorProps) => {
   const { data: spaceData } = usePendingMembershipsSpaceQuery({
     variables: {
       spaceId: invitation.spaceId,
       fetchDetails: withJourneyDetails,
+      fetchCommunityGuidelines: withCommunityGuidelines,
       visualType: visualType === VisualType.Avatar ? VisualType.Card : visualType, // Spaces don't have avatars
     },
     skip: Boolean(invitation.challengeId || invitation.opportunityId),
@@ -97,6 +101,7 @@ export const InvitationHydrator = ({
     variables: {
       challengeId: invitation.challengeId!,
       fetchDetails: withJourneyDetails,
+      fetchCommunityGuidelines: withCommunityGuidelines,
       visualType,
     },
     skip: !invitation.challengeId,
@@ -106,6 +111,7 @@ export const InvitationHydrator = ({
     variables: {
       opportunityId: invitation.opportunityId!,
       fetchDetails: withJourneyDetails,
+      fetchCommunityGuidelines: withCommunityGuidelines,
       visualType,
     },
     skip: !invitation.opportunityId,
@@ -139,7 +145,9 @@ export const InvitationHydrator = ({
     };
   }, [invitation, journey, createdBy]);
 
-  return <>{children({ invitation: hydratedInvitation })}</>;
+  const communityGuidelines = journey?.community?.guidelines;
+
+  return <>{children({ invitation: hydratedInvitation, communityGuidelines })}</>;
 };
 
 interface ApplicationHydratorProvided {

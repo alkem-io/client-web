@@ -10,6 +10,7 @@ import { getVisualByType } from '../../../common/visual/utils/visuals.utils';
 import { VisualName } from '../../../common/visual/constants/visuals.constants';
 import useInnovationHubJourneyBannerRibbon from '../../../innovationHub/InnovationHubJourneyBannerRibbon/useInnovationHubJourneyBannerRibbon';
 import SpacePageBanner from './SpacePageBanner';
+import CommunityGuidelinesBlock from '../../../community/community/CommunityGuidelines/CommunityGuidelinesBlock';
 
 export interface SpacePageLayoutProps {
   currentSection: EntityPageSection;
@@ -21,7 +22,7 @@ const SpacePageLayout = ({
   currentSection,
   children,
 }: PropsWithChildren<SpacePageLayoutProps>) => {
-  const { spaceId, profile, loading } = useSpace();
+  const { spaceId, communityId, profile, loading } = useSpace();
 
   const visual = getVisualByType(VisualName.BANNER, profile?.visuals);
 
@@ -54,6 +55,7 @@ const SpacePageLayout = ({
             journeyTypeName="space"
             description={vision}
             disabled={unauthorizedDialogDisabled}
+            leftColumnChildrenTop={<CommunityGuidelinesBlock communityId={communityId} />}
             {...props}
           />
         )}

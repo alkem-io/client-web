@@ -250,9 +250,11 @@
     "lead": "Lead",
     "space": "Space",
     "spaces": "Spaces",
+    "subspace": "Subspace",
+    "subspaces": "Subspaces",
     "challenge": "Challenge",
     "challenges": "Challenges",
-    "all-entities": "All {{entityType}} ({{count}})",
+    "entitiesWithCount": "{{entityType}} ({{count}})",
     "contributors": "Contributors",
     "opportunity": "Opportunity",
     "opportunities": "Opportunities",
@@ -348,6 +350,8 @@
     "journeyTypes": {
       "space": "$t(common.space)",
       "space_plural": "$t(common.spaces)",
+      "subspace": "$t(common.subspace)",
+      "subspace_plural": "$t(common.subspaces)",
       "challenge": "$t(common.challenge)",
       "challenge_plural": "$t(common.challenges)",
       "opportunity": "$t(common.opportunity)",
@@ -569,6 +573,10 @@
       "move-down": "Move question one position down",
       "delete-question": "Delete question",
       "updated-successfully": "Application form updated successfully."
+    },
+    "communityGuidelines": {
+      "title": "Community Guidelines",
+      "updatedSuccessfully": "Community guidelines updated successfully."
     },
     "applicationsHelp": "Here you can find everyone that applied to become a member of this Space. By clicking on them you can review their application and accept or reject them.",
     "applicationStatus": {
@@ -1278,10 +1286,13 @@
         "title": "Parent application pending!",
         "body": "To join <strong title='Challenge name'>{{challengeName}}'</strong> you must join <strong title='Space name'>'{{spaceName}}'</strong> Space first. There is already an application pending for that <strong title='Space name'>'{{spaceName}}'</strong>, so you can also submit a parallel application for <strong title='Challenge name'>'{{challengeName}}'</strong>."
       },
-      "dialog-join": {
-        "title": "Join community",
-        "body": "You can join this community without applying for a membership, because you have the right credentials.",
-        "accept-terms": "I understand and accept the terms and conditions for community members"
+      "dialogApplicationSuccessful": {
+        "join": {
+          "body": "Thanks for joining this community!"
+        },
+        "apply": {
+          "body": "Thanks for applying to our community!"
+        }
       },
       "dialog-join-parent": {
         "title": "Join <strong title='Parent community name'>{{parentCommunityName}}</strong>",
@@ -1627,10 +1638,10 @@
           "description": ""
         },
         "subentities": {
-          "description": "Here you can explore the **{{entities}}** hosted in this {{parentEntity}}. Filter by key words to show just the topics you care about.",
+          "description": "Here you can explore the hosted **{{entities}}**. Filter by key words to show just the topics you care about.",
           "list": "List view",
-          "empty": "No {{entities}} found in this {{parentEntity}}.",
-          "empty-list": "There are no {{entities}} in this {{parentEntity}} yet."
+          "empty": "No {{entities}} found.",
+          "empty-list": "There are no {{entities}} yet."
         },
         "recommendations": {
           "title": "Recommended by the Host"
@@ -1930,7 +1941,7 @@
       "title": "Search",
       "subtitle": "Find the Spaces, Contributors and Challenges, Opportunities and content from publicly available Spaces below",
       "placeholder": "Search…",
-      "results-disclaimer": "Showing the first 8 results. Soon, you’ll be able to see all, but for now, please specify your search terms.",
+      "results-disclaimer": "These results may not represent the up-to-date state of the platform. Search results are updated on an interval.",
       "max-tags-reached": "You have reached the limit of {{max}} terms to search for",
       "user-not-logged": "Login or Register to include users in your search results",
       "filter": {
@@ -2166,8 +2177,9 @@
     "space": {
       "title": "Space",
       "application": {
-        "title": "Application to join {{entity}} \"{{name}}\"",
-        "subheader": "Please fill out the questions below, which together with your profile will be sent to the relevant party.",
+        "applyTitle": "Apply to {{name}}",
+        "joinTitle": "Join {{name}}",
+        "subheader": "Hey, super nice that you're joining! Please answer the following questions:",
         "finish": "Thank you for completing your application for ",
         "backButton": "Back",
         "loading": "Loading questions",

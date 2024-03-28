@@ -1070,7 +1070,7 @@ export type Collaboration = {
   __typename?: 'Collaboration';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
-  /** List of callouts */
+  /** The list of Callouts for this Collaboration object. */
   callouts?: Maybe<Array<Callout>>;
   /** The set of CalloutGroups in use in this Collaboration. */
   groups: Array<CalloutGroup>;
@@ -1234,6 +1234,8 @@ export type Community = Groupable & {
   communication?: Maybe<Communication>;
   /** Groups of users related to a Community. */
   groups?: Maybe<Array<UserGroup>>;
+  /** The guidelines for members of this Community. */
+  guidelines?: Maybe<CommunityGuidelines>;
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** Invitations for this community. */
@@ -1285,6 +1287,16 @@ export type CommunityUsersInRoleArgs = {
 export type CommunityApplyInput = {
   communityID: Scalars['UUID'];
   questions: Array<CreateNvpInput>;
+};
+
+export type CommunityGuidelines = {
+  __typename?: 'CommunityGuidelines';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** The details of the guidelilnes */
+  profile: Profile;
 };
 
 export type CommunityJoinInput = {
@@ -2765,6 +2777,8 @@ export type Mutation = {
   updateChallenge: Challenge;
   /** Update the Application Form used by this Community. */
   updateCommunityApplicationForm: Community;
+  /** Updates the CommunityGuidelines. */
+  updateCommunityGuidelines: CommunityGuidelines;
   /** Updates the specified Discussion. */
   updateDiscussion: Discussion;
   /** Updates the specified Document. */
@@ -3281,6 +3295,10 @@ export type MutationUpdateChallengeArgs = {
 
 export type MutationUpdateCommunityApplicationFormArgs = {
   applicationFormData: UpdateCommunityApplicationFormInput;
+};
+
+export type MutationUpdateCommunityGuidelinesArgs = {
+  communityGuidelinesData: UpdateCommunityGuidelinesInput;
 };
 
 export type MutationUpdateDiscussionArgs = {
@@ -3877,6 +3895,7 @@ export enum ProfileType {
   CalloutFraming = 'CALLOUT_FRAMING',
   CalloutTemplate = 'CALLOUT_TEMPLATE',
   Challenge = 'CHALLENGE',
+  CommunityGuidelines = 'COMMUNITY_GUIDELINES',
   ContributionLink = 'CONTRIBUTION_LINK',
   Discussion = 'DISCUSSION',
   InnovationFlow = 'INNOVATION_FLOW',
@@ -5128,6 +5147,13 @@ export type UpdateCollaborationCalloutsSortOrderInput = {
 export type UpdateCommunityApplicationFormInput = {
   communityID: Scalars['UUID'];
   formData: UpdateFormInput;
+};
+
+export type UpdateCommunityGuidelinesInput = {
+  /** ID of the CommunityGuidelines */
+  communityGuidelinesID: Scalars['UUID'];
+  /** The Profile for this community guidelines. */
+  profile: UpdateProfileInput;
 };
 
 export type UpdateContextInput = {
@@ -13585,7 +13611,33 @@ export type ChallengeApplicationQuery = {
           __typename?: 'Challenge';
           id: string;
           profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
-          community?: { __typename?: 'Community'; id: string } | undefined;
+          community?:
+            | {
+                __typename?: 'Community';
+                id: string;
+                guidelines?:
+                  | {
+                      __typename?: 'CommunityGuidelines';
+                      id: string;
+                      profile: {
+                        __typename?: 'Profile';
+                        id: string;
+                        displayName: string;
+                        description?: string | undefined;
+                        references?:
+                          | Array<{
+                              __typename?: 'Reference';
+                              id: string;
+                              name: string;
+                              uri: string;
+                              description?: string | undefined;
+                            }>
+                          | undefined;
+                      };
+                    }
+                  | undefined;
+              }
+            | undefined;
         }
       | undefined;
   };
@@ -13735,7 +13787,33 @@ export type SpaceApplicationQuery = {
     __typename?: 'Space';
     id: string;
     profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
-    community?: { __typename?: 'Community'; id: string } | undefined;
+    community?:
+      | {
+          __typename?: 'Community';
+          id: string;
+          guidelines?:
+            | {
+                __typename?: 'CommunityGuidelines';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  description?: string | undefined;
+                  references?:
+                    | Array<{
+                        __typename?: 'Reference';
+                        id: string;
+                        name: string;
+                        uri: string;
+                        description?: string | undefined;
+                      }>
+                    | undefined;
+                };
+              }
+            | undefined;
+        }
+      | undefined;
   };
 };
 
@@ -14128,6 +14206,79 @@ export type SpaceCommunityQuery = {
             | undefined;
         }
       | undefined;
+  };
+};
+
+export type CommunityGuidelinesQueryVariables = Exact<{
+  communityId: Scalars['UUID'];
+}>;
+
+export type CommunityGuidelinesQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    community?:
+      | {
+          __typename?: 'Community';
+          id: string;
+          guidelines?:
+            | {
+                __typename?: 'CommunityGuidelines';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  description?: string | undefined;
+                  references?:
+                    | Array<{
+                        __typename?: 'Reference';
+                        id: string;
+                        name: string;
+                        uri: string;
+                        description?: string | undefined;
+                      }>
+                    | undefined;
+                };
+              }
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type CommunityGuidelinesDetailsFragment = {
+  __typename?: 'CommunityGuidelines';
+  id: string;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    description?: string | undefined;
+    references?:
+      | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
+      | undefined;
+  };
+};
+
+export type UpdateCommunityGuidelinesMutationVariables = Exact<{
+  communityGuidelinesData: UpdateCommunityGuidelinesInput;
+}>;
+
+export type UpdateCommunityGuidelinesMutation = {
+  __typename?: 'Mutation';
+  updateCommunityGuidelines: {
+    __typename?: 'CommunityGuidelines';
+    id: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      description?: string | undefined;
+      references?:
+        | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
+        | undefined;
+    };
   };
 };
 
@@ -15831,6 +15982,7 @@ export type PendingMembershipsSpaceQueryVariables = Exact<{
   spaceId: Scalars['UUID_NAMEID'];
   fetchDetails?: Scalars['Boolean'];
   visualType: VisualType;
+  fetchCommunityGuidelines?: Scalars['Boolean'];
 }>;
 
 export type PendingMembershipsSpaceQuery = {
@@ -15847,6 +15999,33 @@ export type PendingMembershipsSpaceQuery = {
       tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
       visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
     };
+    community?:
+      | {
+          __typename?: 'Community';
+          id: string;
+          guidelines?:
+            | {
+                __typename?: 'CommunityGuidelines';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  description?: string | undefined;
+                  references?:
+                    | Array<{
+                        __typename?: 'Reference';
+                        id: string;
+                        name: string;
+                        uri: string;
+                        description?: string | undefined;
+                      }>
+                    | undefined;
+                };
+              }
+            | undefined;
+        }
+      | undefined;
   };
 };
 
@@ -15854,6 +16033,7 @@ export type PendingMembershipsChallengeQueryVariables = Exact<{
   challengeId: Scalars['UUID'];
   fetchDetails?: Scalars['Boolean'];
   visualType: VisualType;
+  fetchCommunityGuidelines?: Scalars['Boolean'];
 }>;
 
 export type PendingMembershipsChallengeQuery = {
@@ -15873,6 +16053,33 @@ export type PendingMembershipsChallengeQuery = {
             tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
             visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
           };
+          community?:
+            | {
+                __typename?: 'Community';
+                id: string;
+                guidelines?:
+                  | {
+                      __typename?: 'CommunityGuidelines';
+                      id: string;
+                      profile: {
+                        __typename?: 'Profile';
+                        id: string;
+                        displayName: string;
+                        description?: string | undefined;
+                        references?:
+                          | Array<{
+                              __typename?: 'Reference';
+                              id: string;
+                              name: string;
+                              uri: string;
+                              description?: string | undefined;
+                            }>
+                          | undefined;
+                      };
+                    }
+                  | undefined;
+              }
+            | undefined;
         }
       | undefined;
   };
@@ -15882,6 +16089,7 @@ export type PendingMembershipsOpportunityQueryVariables = Exact<{
   opportunityId: Scalars['UUID'];
   fetchDetails?: Scalars['Boolean'];
   visualType: VisualType;
+  fetchCommunityGuidelines?: Scalars['Boolean'];
 }>;
 
 export type PendingMembershipsOpportunityQuery = {
@@ -15901,6 +16109,33 @@ export type PendingMembershipsOpportunityQuery = {
             tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
             visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
           };
+          community?:
+            | {
+                __typename?: 'Community';
+                id: string;
+                guidelines?:
+                  | {
+                      __typename?: 'CommunityGuidelines';
+                      id: string;
+                      profile: {
+                        __typename?: 'Profile';
+                        id: string;
+                        displayName: string;
+                        description?: string | undefined;
+                        references?:
+                          | Array<{
+                              __typename?: 'Reference';
+                              id: string;
+                              name: string;
+                              uri: string;
+                              description?: string | undefined;
+                            }>
+                          | undefined;
+                      };
+                    }
+                  | undefined;
+              }
+            | undefined;
         }
       | undefined;
   };
@@ -15948,6 +16183,20 @@ export type PendingMembershipInvitationFragment = {
   id: string;
   welcomeMessage?: string | undefined;
   createdBy: { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } };
+};
+
+export type CommunityGuidelinesSummaryFragment = {
+  __typename?: 'CommunityGuidelines';
+  id: string;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    description?: string | undefined;
+    references?:
+      | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
+      | undefined;
+  };
 };
 
 export type SpaceContributionDetailsQueryVariables = Exact<{

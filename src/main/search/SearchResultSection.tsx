@@ -1,5 +1,5 @@
 import { FilterConfig, FilterDefinition } from './Filter';
-import React, { ComponentType, ReactNode, useMemo } from 'react';
+import React, { ComponentType, ReactNode } from 'react';
 import { EntityFilter } from './EntityFilter';
 import CardsLayout from '../../core/ui/card/cardsLayout/CardsLayout';
 import PageContentBlock from '../../core/ui/content/PageContentBlock';
@@ -23,20 +23,18 @@ const SearchResultSection = <Result extends Identifiable>({
   title,
   results = [],
   filterTitle,
-  count = 0,
   filterConfig,
   currentFilter,
   onFilterChange,
   loading,
   cardComponent: Card,
 }: ResultSectionProps<Result>) => {
-  const titleWithCount = useMemo(() => `${title} (${count})`, [title, results.length]);
   const { t } = useTranslation();
   const resultDisclaimer = results.length >= 8 ? t('pages.search.results-disclaimer') : undefined;
   return (
     <PageContentBlock>
       <PageContentBlockHeader
-        title={titleWithCount}
+        title={title}
         disclaimer={resultDisclaimer}
         actions={
           <EntityFilter
