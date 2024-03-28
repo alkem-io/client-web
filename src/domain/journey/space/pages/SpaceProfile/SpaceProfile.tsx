@@ -81,7 +81,7 @@ export const SpaceProfile: FC = () => {
         edit
         name={space.profile.displayName}
         nameID={spaceNameId}
-        hostID={hostOrganization?.space.account.host?.id}
+        hostId={hostOrganization?.space.account.host?.id}
         tagset={space.profile.tagset}
         context={space.context}
         profile={space.profile}

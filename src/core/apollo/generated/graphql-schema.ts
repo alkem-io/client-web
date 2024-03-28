@@ -5033,7 +5033,7 @@ export type Timeline = {
 
 export type UpdateAccountPlatformSettingsInput = {
   /** The identifier for the Account whose license etc is to be updated. */
-  accountID: Scalars['String'];
+  accountID: Scalars['UUID'];
   /** Update the host Organization for the Account. */
   hostID?: InputMaybe<Scalars['UUID_NAMEID']>;
   /** Update the license settings for the Account. */
@@ -5408,7 +5408,7 @@ export type UpdateSpacePlatformSettingsInput = {
   /** Upate the URL path for the Space. */
   nameID: Scalars['NameID'];
   /** The identifier for the Space whose license etc is to be updated. */
-  spaceID: Scalars['String'];
+  spaceID: Scalars['UUID'];
 };
 
 export type UpdateSpaceSettingsCollaborationInput = {
@@ -23383,8 +23383,8 @@ export type AdminGlobalOrganizationsListQuery = {
 };
 
 export type UpdateAccountPlatformSettingsMutationVariables = Exact<{
-  accountID: Scalars['String'];
-  hostID?: InputMaybe<Scalars['UUID_NAMEID']>;
+  accountId: Scalars['UUID'];
+  hostId?: InputMaybe<Scalars['UUID_NAMEID']>;
   license?: InputMaybe<UpdateLicenseInput>;
 }>;
 
@@ -23409,8 +23409,8 @@ export type UpdateAccountPlatformSettingsMutation = {
 };
 
 export type UpdateSpacePlatformSettingsMutationVariables = Exact<{
-  spaceID: Scalars['String'];
-  nameID: Scalars['NameID'];
+  spaceId: Scalars['UUID'];
+  nameId: Scalars['NameID'];
 }>;
 
 export type UpdateSpacePlatformSettingsMutation = {

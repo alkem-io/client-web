@@ -1,10 +1,5 @@
-mutation UpdateSpacePlatformSettings(
-  $spaceID: String!
-  $nameID: NameID!
-) {
-  updateSpacePlatformSettings(updateData: {
-    spaceID: $spaceID, nameID: $nameID }
-    ) {
+mutation UpdateSpacePlatformSettings($spaceId: UUID!, $nameId: NameID!) {
+  updateSpacePlatformSettings(updateData: { spaceID: $spaceId, nameID: $nameId }) {
     id
     nameID
   }

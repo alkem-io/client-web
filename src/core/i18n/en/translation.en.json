@@ -1874,7 +1874,8 @@
       },
       "spaces": {
         "updateVisibility": "Update Visibility",
-        "spaceSettings": "Space Settings"
+        "spaceSettings": "Space Settings",
+        "changeNameId": "Change Space NameID"
       },
       "innovationHub": {
         "spaceListFilter": {

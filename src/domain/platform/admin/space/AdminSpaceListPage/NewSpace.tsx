@@ -59,14 +59,14 @@ export const NewSpace: FC<NewSpaceProps> = () => {
   );
 
   const onSubmit = async (values: SpaceEditFormValuesType) => {
-    const { name, nameID, host, tagsets } = values;
+    const { name, nameID, hostId, tagsets } = values;
 
     await createSpace({
       variables: {
         input: {
           nameID,
           accountData: {
-            hostID: host,
+            hostID: hostId,
           },
           profileData: {
             displayName: name,

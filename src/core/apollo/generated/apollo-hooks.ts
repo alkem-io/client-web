@@ -20117,8 +20117,8 @@ export function refetchAdminGlobalOrganizationsListQuery(
 }
 
 export const UpdateAccountPlatformSettingsDocument = gql`
-  mutation UpdateAccountPlatformSettings($accountID: String!, $hostID: UUID_NAMEID, $license: UpdateLicenseInput) {
-    updateAccountPlatformSettings(updateData: { accountID: $accountID, hostID: $hostID, license: $license }) {
+  mutation UpdateAccountPlatformSettings($accountId: UUID!, $hostId: UUID_NAMEID, $license: UpdateLicenseInput) {
+    updateAccountPlatformSettings(updateData: { accountID: $accountId, hostID: $hostId, license: $license }) {
       id
       account {
         id
@@ -20156,8 +20156,8 @@ export type UpdateAccountPlatformSettingsMutationFn = Apollo.MutationFunction<
  * @example
  * const [updateAccountPlatformSettingsMutation, { data, loading, error }] = useUpdateAccountPlatformSettingsMutation({
  *   variables: {
- *      accountID: // value for 'accountID'
- *      hostID: // value for 'hostID'
+ *      accountId: // value for 'accountId'
+ *      hostId: // value for 'hostId'
  *      license: // value for 'license'
  *   },
  * });
@@ -20185,8 +20185,8 @@ export type UpdateAccountPlatformSettingsMutationOptions = Apollo.BaseMutationOp
   SchemaTypes.UpdateAccountPlatformSettingsMutationVariables
 >;
 export const UpdateSpacePlatformSettingsDocument = gql`
-  mutation UpdateSpacePlatformSettings($spaceID: String!, $nameID: NameID!) {
-    updateSpacePlatformSettings(updateData: { spaceID: $spaceID, nameID: $nameID }) {
+  mutation UpdateSpacePlatformSettings($spaceId: UUID!, $nameId: NameID!) {
+    updateSpacePlatformSettings(updateData: { spaceID: $spaceId, nameID: $nameId }) {
       id
       nameID
     }
@@ -20210,8 +20210,8 @@ export type UpdateSpacePlatformSettingsMutationFn = Apollo.MutationFunction<
  * @example
  * const [updateSpacePlatformSettingsMutation, { data, loading, error }] = useUpdateSpacePlatformSettingsMutation({
  *   variables: {
- *      spaceID: // value for 'spaceID'
- *      nameID: // value for 'nameID'
+ *      spaceId: // value for 'spaceId'
+ *      nameId: // value for 'nameId'
  *   },
  * });
  */
