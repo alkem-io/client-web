@@ -437,6 +437,10 @@ export type ActorGroupFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   name?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type AdminSearchIngestResultKeySpecifier = ('results' | AdminSearchIngestResultKeySpecifier)[];
+export type AdminSearchIngestResultFieldPolicy = {
+  results?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type AgentKeySpecifier = (
   | 'authorization'
   | 'credentials'
@@ -755,6 +759,7 @@ export type ChallengeKeySpecifier = (
   | 'profile'
   | 'settings'
   | 'storageAggregator'
+  | 'type'
   | ChallengeKeySpecifier
 )[];
 export type ChallengeFieldPolicy = {
@@ -773,6 +778,7 @@ export type ChallengeFieldPolicy = {
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   settings?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ChallengeCreatedKeySpecifier = ('challenge' | 'spaceID' | ChallengeCreatedKeySpecifier)[];
 export type ChallengeCreatedFieldPolicy = {
@@ -1158,6 +1164,16 @@ export type ISearchResultsFieldPolicy = {
   journeyResults?: FieldPolicy<any> | FieldReadFunction<any>;
   journeyResultsCount?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type IngestBulkResultKeySpecifier = ('message' | 'success' | IngestBulkResultKeySpecifier)[];
+export type IngestBulkResultFieldPolicy = {
+  message?: FieldPolicy<any> | FieldReadFunction<any>;
+  success?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type IngestResultKeySpecifier = ('index' | 'result' | IngestResultKeySpecifier)[];
+export type IngestResultFieldPolicy = {
+  index?: FieldPolicy<any> | FieldReadFunction<any>;
+  result?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type InnovationFlowKeySpecifier = (
   | 'authorization'
   | 'currentState'
@@ -1474,6 +1490,7 @@ export type MutationKeySpecifier = (
   | 'adminCommunicationEnsureAccessToCommunications'
   | 'adminCommunicationRemoveOrphanedRoom'
   | 'adminCommunicationUpdateRoomsJoinRule'
+  | 'adminSearchIngestFromScratch'
   | 'applyForCommunityMembership'
   | 'assignCommunityRoleToOrganization'
   | 'assignCommunityRoleToUser'
@@ -1632,6 +1649,7 @@ export type MutationFieldPolicy = {
   adminCommunicationEnsureAccessToCommunications?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationRemoveOrphanedRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationUpdateRoomsJoinRule?: FieldPolicy<any> | FieldReadFunction<any>;
+  adminSearchIngestFromScratch?: FieldPolicy<any> | FieldReadFunction<any>;
   applyForCommunityMembership?: FieldPolicy<any> | FieldReadFunction<any>;
   assignCommunityRoleToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   assignCommunityRoleToUser?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1808,6 +1826,7 @@ export type OpportunityKeySpecifier = (
   | 'parentNameID'
   | 'profile'
   | 'storageAggregator'
+  | 'type'
   | OpportunityKeySpecifier
 )[];
 export type OpportunityFieldPolicy = {
@@ -1823,6 +1842,7 @@ export type OpportunityFieldPolicy = {
   parentNameID?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type OpportunityCreatedKeySpecifier = ('challengeID' | 'opportunity' | OpportunityCreatedKeySpecifier)[];
 export type OpportunityCreatedFieldPolicy = {
@@ -2227,6 +2247,7 @@ export type RelayPaginatedSpaceKeySpecifier = (
   | 'profile'
   | 'settings'
   | 'storageAggregator'
+  | 'type'
   | RelayPaginatedSpaceKeySpecifier
 )[];
 export type RelayPaginatedSpaceFieldPolicy = {
@@ -2246,6 +2267,7 @@ export type RelayPaginatedSpaceFieldPolicy = {
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   settings?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type RelayPaginatedSpaceEdgeKeySpecifier = ('node' | RelayPaginatedSpaceEdgeKeySpecifier)[];
 export type RelayPaginatedSpaceEdgeFieldPolicy = {
@@ -2592,6 +2614,7 @@ export type SpaceKeySpecifier = (
   | 'profile'
   | 'settings'
   | 'storageAggregator'
+  | 'type'
   | SpaceKeySpecifier
 )[];
 export type SpaceFieldPolicy = {
@@ -2611,6 +2634,7 @@ export type SpaceFieldPolicy = {
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   settings?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type SpaceDefaultsKeySpecifier = (
   | 'authorization'
@@ -3099,6 +3123,10 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | ActorGroupKeySpecifier | (() => undefined | ActorGroupKeySpecifier);
     fields?: ActorGroupFieldPolicy;
   };
+  AdminSearchIngestResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | AdminSearchIngestResultKeySpecifier | (() => undefined | AdminSearchIngestResultKeySpecifier);
+    fields?: AdminSearchIngestResultFieldPolicy;
+  };
   Agent?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | AgentKeySpecifier | (() => undefined | AgentKeySpecifier);
     fields?: AgentFieldPolicy;
@@ -3346,6 +3374,14 @@ export type StrictTypedTypePolicies = {
   ISearchResults?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ISearchResultsKeySpecifier | (() => undefined | ISearchResultsKeySpecifier);
     fields?: ISearchResultsFieldPolicy;
+  };
+  IngestBulkResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | IngestBulkResultKeySpecifier | (() => undefined | IngestBulkResultKeySpecifier);
+    fields?: IngestBulkResultFieldPolicy;
+  };
+  IngestResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | IngestResultKeySpecifier | (() => undefined | IngestResultKeySpecifier);
+    fields?: IngestResultFieldPolicy;
   };
   InnovationFlow?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | InnovationFlowKeySpecifier | (() => undefined | InnovationFlowKeySpecifier);

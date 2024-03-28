@@ -27,7 +27,7 @@ export const NewSpace: FC<NewSpaceProps> = () => {
     // refetchQueries: [refetchSpacesQuery()],
     // awaitRefetchQueries: true,
     onCompleted: data => {
-      const spaceId = data.createSpace.nameID;
+      const spaceId = data.createSpace.space.nameID;
       if (spaceId) {
         notify(t('pages.admin.space.notifications.space-created'), 'success');
         navigateToEdit(spaceId);

@@ -1,5 +1,8 @@
 mutation createSpace($input: CreateSpaceInput!) {
   createSpace(spaceData: $input) {
-    ...SpaceDetails
+    id
+    space {
+      ...SpaceDetails
+    }
   }
 }

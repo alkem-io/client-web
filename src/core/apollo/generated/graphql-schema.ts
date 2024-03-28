@@ -509,6 +509,12 @@ export type ActorGroup = {
   name: Scalars['String'];
 };
 
+export type AdminSearchIngestResult = {
+  __typename?: 'AdminSearchIngestResult';
+  /** The result of the operation. */
+  results: Array<IngestResult>;
+};
+
 export type Agent = {
   __typename?: 'Agent';
   /** The authorization rules for the entity */
@@ -1009,6 +1015,8 @@ export type Challenge = Journey & {
   settings: SpaceSettings;
   /** The StorageAggregator in use by this Challenge */
   storageAggregator?: Maybe<StorageAggregator>;
+  /** The Type of the Space e.g. space/challenge/opportunity. */
+  type: SpaceType;
 };
 
 export type ChallengeOpportunitiesArgs = {
@@ -2076,6 +2084,22 @@ export type ISearchResults = {
   journeyResultsCount: Scalars['Float'];
 };
 
+export type IngestBulkResult = {
+  __typename?: 'IngestBulkResult';
+  /** A message to describe the result of the operation. */
+  message?: Maybe<Scalars['String']>;
+  /** Whether the operation was successful. */
+  success: Scalars['Boolean'];
+};
+
+export type IngestResult = {
+  __typename?: 'IngestResult';
+  /** The index that the documents were ingested into. */
+  index: Scalars['String'];
+  /** The result of the operation. */
+  result: IngestBulkResult;
+};
+
 export type InnovationFlow = {
   __typename?: 'InnovationFlow';
   /** The authorization rules for the entity */
@@ -2556,6 +2580,8 @@ export type Mutation = {
   adminCommunicationRemoveOrphanedRoom: Scalars['Boolean'];
   /** Allow updating the rule for joining rooms: public or invite. */
   adminCommunicationUpdateRoomsJoinRule: Scalars['Boolean'];
+  /** Ingests new data into Elasticsearch from scratch. This will delete all existing data and ingest new data from the source. This is an admin only operation. */
+  adminSearchIngestFromScratch: AdminSearchIngestResult;
   /** Apply to join the specified Community as a member. */
   applyForCommunityMembership: Application;
   /** Assigns an Organization a Role in the specified Community. */
@@ -2637,7 +2663,7 @@ export type Mutation = {
   /** Create a new Relation on the Collaboration. */
   createRelationOnCollaboration: Relation;
   /** Creates a new Space. */
-  createSpace: Space;
+  createSpace: Account;
   /** Creates a new Tagset on the specified Profile */
   createTagsetOnProfile: Tagset;
   /** Creates a new User on the platform. */
@@ -3506,6 +3532,8 @@ export type Opportunity = Journey & {
   profile: Profile;
   /** The StorageAggregator in use by this Opportunity */
   storageAggregator?: Maybe<StorageAggregator>;
+  /** The Type of the Space e.g. space/challenge/opportunity. */
+  type: SpaceType;
 };
 
 export type OpportunityCreated = {
@@ -4175,6 +4203,8 @@ export type RelayPaginatedSpace = Journey & {
   settings: SpaceSettings;
   /** The StorageAggregator in use by this Space */
   storageAggregator?: Maybe<StorageAggregator>;
+  /** The Type of the Space e.g. space/challenge/opportunity. */
+  type: SpaceType;
 };
 
 export type RelayPaginatedSpaceChallengeArgs = {
@@ -4684,6 +4714,8 @@ export type Space = Journey & {
   settings: SpaceSettings;
   /** The StorageAggregator in use by this Space */
   storageAggregator?: Maybe<StorageAggregator>;
+  /** The Type of the Space e.g. space/challenge/opportunity. */
+  type: SpaceType;
 };
 
 export type SpaceChallengeArgs = {
@@ -4750,6 +4782,12 @@ export type SpaceSettingsPrivacy = {
   mode: SpacePrivacyMode;
 };
 
+export enum SpaceType {
+  Challenge = 'CHALLENGE',
+  Opportunity = 'OPPORTUNITY',
+  Space = 'SPACE',
+}
+
 export enum SpaceVisibility {
   Active = 'ACTIVE',
   Archived = 'ARCHIVED',
@@ -4781,16 +4819,10 @@ export type StorageAggregatorParent = {
   /** The UUID of the parent entity. */
   id: Scalars['UUID'];
   /** The Type of the parent Entity, space/challenge/opportunity. */
-  type: StorageAggregatorParentType;
+  type: SpaceType;
   /** The URL that can be used to access the parent entity. */
   url: Scalars['String'];
 };
-
-export enum StorageAggregatorParentType {
-  Challenge = 'CHALLENGE',
-  Opportunity = 'OPPORTUNITY',
-  Space = 'SPACE',
-}
 
 export type StorageBucket = {
   __typename?: 'StorageBucket';
@@ -22751,74 +22783,78 @@ export type CreateSpaceMutationVariables = Exact<{
 export type CreateSpaceMutation = {
   __typename?: 'Mutation';
   createSpace: {
-    __typename?: 'Space';
+    __typename?: 'Account';
     id: string;
-    nameID: string;
-    profile: {
-      __typename?: 'Profile';
+    space: {
+      __typename?: 'Space';
       id: string;
-      displayName: string;
-      description?: string | undefined;
-      tagline: string;
-      url: string;
-      tagset?:
-        | {
-            __typename?: 'Tagset';
-            id: string;
-            name: string;
-            tags: Array<string>;
-            allowedValues: Array<string>;
-            type: TagsetType;
-          }
-        | undefined;
-      references?:
-        | Array<{ __typename?: 'Reference'; id: string; name: string; description?: string | undefined; uri: string }>
-        | undefined;
-      visuals: Array<{
-        __typename?: 'Visual';
+      nameID: string;
+      profile: {
+        __typename?: 'Profile';
         id: string;
-        uri: string;
-        name: string;
-        allowedTypes: Array<string>;
-        aspectRatio: number;
-        maxHeight: number;
-        maxWidth: number;
-        minHeight: number;
-        minWidth: number;
-        alternativeText?: string | undefined;
-      }>;
-      location?:
+        displayName: string;
+        description?: string | undefined;
+        tagline: string;
+        url: string;
+        tagset?:
+          | {
+              __typename?: 'Tagset';
+              id: string;
+              name: string;
+              tags: Array<string>;
+              allowedValues: Array<string>;
+              type: TagsetType;
+            }
+          | undefined;
+        references?:
+          | Array<{ __typename?: 'Reference'; id: string; name: string; description?: string | undefined; uri: string }>
+          | undefined;
+        visuals: Array<{
+          __typename?: 'Visual';
+          id: string;
+          uri: string;
+          name: string;
+          allowedTypes: Array<string>;
+          aspectRatio: number;
+          maxHeight: number;
+          maxWidth: number;
+          minHeight: number;
+          minWidth: number;
+          alternativeText?: string | undefined;
+        }>;
+        location?:
+          | {
+              __typename?: 'Location';
+              id: string;
+              country: string;
+              city: string;
+              addressLine1: string;
+              addressLine2: string;
+              stateOrProvince: string;
+              postalCode: string;
+            }
+          | undefined;
+      };
+      account: { __typename?: 'Account'; host?: { __typename?: 'Organization'; id: string } | undefined };
+      authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
+      context?:
         | {
-            __typename?: 'Location';
+            __typename?: 'Context';
             id: string;
-            country: string;
-            city: string;
-            addressLine1: string;
-            addressLine2: string;
-            stateOrProvince: string;
-            postalCode: string;
+            vision?: string | undefined;
+            impact?: string | undefined;
+            who?: string | undefined;
+            authorization?:
+              | {
+                  __typename?: 'Authorization';
+                  id: string;
+                  myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                  anonymousReadAccess: boolean;
+                }
+              | undefined;
           }
         | undefined;
     };
-    account: { __typename?: 'Account'; host?: { __typename?: 'Organization'; id: string } | undefined };
-    authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
-    context?:
-      | {
-          __typename?: 'Context';
-          id: string;
-          vision?: string | undefined;
-          impact?: string | undefined;
-          who?: string | undefined;
-          authorization?:
-            | {
-                __typename?: 'Authorization';
-                id: string;
-                myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                anonymousReadAccess: boolean;
-              }
-            | undefined;
-        }
-      | undefined;
   };
 };
 
@@ -23492,13 +23528,7 @@ export type SpaceStorageAdminPageQuery = {
           __typename?: 'StorageAggregator';
           id: string;
           parentEntity?:
-            | {
-                __typename?: 'StorageAggregatorParent';
-                id: string;
-                type: StorageAggregatorParentType;
-                displayName: string;
-                url: string;
-              }
+            | { __typename?: 'StorageAggregatorParent'; id: string; type: SpaceType; displayName: string; url: string }
             | undefined;
           storageAggregators: Array<{
             __typename?: 'StorageAggregator';
@@ -23507,7 +23537,7 @@ export type SpaceStorageAdminPageQuery = {
               | {
                   __typename?: 'StorageAggregatorParent';
                   id: string;
-                  type: StorageAggregatorParentType;
+                  type: SpaceType;
                   displayName: string;
                   url: string;
                 }
@@ -23587,13 +23617,7 @@ export type StorageAggregatorLookupQuery = {
           __typename?: 'StorageAggregator';
           id: string;
           parentEntity?:
-            | {
-                __typename?: 'StorageAggregatorParent';
-                id: string;
-                type: StorageAggregatorParentType;
-                displayName: string;
-                url: string;
-              }
+            | { __typename?: 'StorageAggregatorParent'; id: string; type: SpaceType; displayName: string; url: string }
             | undefined;
           storageAggregators: Array<{
             __typename?: 'StorageAggregator';
@@ -23602,7 +23626,7 @@ export type StorageAggregatorLookupQuery = {
               | {
                   __typename?: 'StorageAggregatorParent';
                   id: string;
-                  type: StorageAggregatorParentType;
+                  type: SpaceType;
                   displayName: string;
                   url: string;
                 }
@@ -23673,25 +23697,13 @@ export type StorageAggregatorFragment = {
   __typename?: 'StorageAggregator';
   id: string;
   parentEntity?:
-    | {
-        __typename?: 'StorageAggregatorParent';
-        id: string;
-        type: StorageAggregatorParentType;
-        displayName: string;
-        url: string;
-      }
+    | { __typename?: 'StorageAggregatorParent'; id: string; type: SpaceType; displayName: string; url: string }
     | undefined;
   storageAggregators: Array<{
     __typename?: 'StorageAggregator';
     id: string;
     parentEntity?:
-      | {
-          __typename?: 'StorageAggregatorParent';
-          id: string;
-          type: StorageAggregatorParentType;
-          displayName: string;
-          url: string;
-        }
+      | { __typename?: 'StorageAggregatorParent'; id: string; type: SpaceType; displayName: string; url: string }
       | undefined;
   }>;
   storageBuckets: Array<{
@@ -23756,13 +23768,7 @@ export type LoadableStorageAggregatorFragment = {
   __typename?: 'StorageAggregator';
   id: string;
   parentEntity?:
-    | {
-        __typename?: 'StorageAggregatorParent';
-        id: string;
-        type: StorageAggregatorParentType;
-        displayName: string;
-        url: string;
-      }
+    | { __typename?: 'StorageAggregatorParent'; id: string; type: SpaceType; displayName: string; url: string }
     | undefined;
 };
 
@@ -23806,7 +23812,7 @@ export type StorageBucketParentFragment = {
 export type StorageAggregatorParentFragment = {
   __typename?: 'StorageAggregatorParent';
   id: string;
-  type: StorageAggregatorParentType;
+  type: SpaceType;
   displayName: string;
   url: string;
 };

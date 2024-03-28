@@ -19174,7 +19174,10 @@ export function refetchSpaceChallengeCardsQuery(variables: SchemaTypes.SpaceChal
 export const CreateSpaceDocument = gql`
   mutation createSpace($input: CreateSpaceInput!) {
     createSpace(spaceData: $input) {
-      ...SpaceDetails
+      id
+      space {
+        ...SpaceDetails
+      }
     }
   }
   ${SpaceDetailsFragmentDoc}
