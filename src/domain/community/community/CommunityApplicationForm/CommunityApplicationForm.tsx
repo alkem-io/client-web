@@ -18,11 +18,9 @@ import { useNotification } from '../../../../core/ui/notifications/useNotificati
 import Gutters from '../../../../core/ui/grid/Gutters';
 import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
 import { MARKDOWN_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
-import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 
 interface CommunityApplicationFormProps {
-  journeyId: string;
-  journeyTypeName: JourneyTypeName;
+  communityId: string | undefined;
   disabled?: boolean;
 }
 
@@ -47,33 +45,23 @@ const newQuestion = (currentQuestions: FormValues['questions']) => ({
   sortOrder: (max(currentQuestions.map(q => q.sortOrder)) ?? 0) + 1,
 });
 
-const CommunityApplicationForm: FC<CommunityApplicationFormProps> = ({ journeyId, journeyTypeName, disabled }) => {
+const CommunityApplicationForm: FC<CommunityApplicationFormProps> = ({ communityId, disabled }) => {
   const { t } = useTranslation();
   const notify = useNotification();
 
   const { data: rawData, loading: loadingQuestions } = useCommunityApplicationFormQuery({
     variables: {
-      spaceId: journeyTypeName === 'space' ? journeyId : undefined,
-      challengeId: journeyTypeName === 'challenge' ? journeyId : undefined,
-      includeSpace: journeyTypeName === 'space',
-      includeChallenge: journeyTypeName === 'challenge',
+      communityId: communityId!,
     },
-    skip: !journeyId,
+    skip: !communityId,
   });
 
   const data = useMemo(
     () => ({
-      communityId: rawData?.space?.community?.id ?? rawData?.lookup.challenge?.community?.id,
-      description:
-        rawData?.space?.community?.applicationForm?.description ??
-        rawData?.lookup.challenge?.community?.applicationForm?.description,
-      questions: sortBy(
-        rawData?.space?.community?.applicationForm?.questions ??
-          rawData?.lookup.challenge?.community?.applicationForm?.questions,
-        q => q.sortOrder
-      ),
+      description: rawData?.lookup?.community?.applicationForm?.description,
+      questions: sortBy(rawData?.lookup?.community?.applicationForm?.questions, q => q.sortOrder),
     }),
-    [journeyId, rawData]
+    [communityId, rawData]
   );
 
   const [updateQuestions, { loading: submittingQuestions }] = useUpdateCommunityApplicationQuestionsMutation();
@@ -95,7 +83,7 @@ const CommunityApplicationForm: FC<CommunityApplicationFormProps> = ({ journeyId
 
     updateQuestions({
       variables: {
-        communityId: data.communityId!,
+        communityId: communityId!,
         formData: {
           description: values.description,
           questions,
@@ -105,10 +93,7 @@ const CommunityApplicationForm: FC<CommunityApplicationFormProps> = ({ journeyId
       awaitRefetchQueries: true,
       refetchQueries: [
         refetchCommunityApplicationFormQuery({
-          spaceId: journeyTypeName === 'space' ? journeyId : undefined,
-          challengeId: journeyTypeName === 'challenge' ? journeyId : undefined,
-          includeSpace: journeyTypeName === 'space',
-          includeChallenge: journeyTypeName === 'challenge',
+          communityId: communityId!,
         }),
       ],
     });

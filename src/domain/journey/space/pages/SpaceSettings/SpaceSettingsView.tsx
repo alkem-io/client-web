@@ -68,6 +68,10 @@ export const SpaceSettingsView: FC<SpaceSettingsViewProps> = ({ journeyId, journ
       includeOpportunity: journeyTypeName === 'opportunity',
     },
   });
+  const communityId =
+    settingsData?.space?.community?.id ??
+    settingsData?.challenge?.challenge?.community?.id ??
+    settingsData?.opportunity?.opportunity?.community?.id;
 
   const currentSettings = useMemo(() => {
     const settings = settingsData?.space?.settings ?? settingsData?.challenge.challenge?.settings; // ?? settingsData?.opportunity?.opportunity?.settings;
@@ -237,7 +241,7 @@ export const SpaceSettingsView: FC<SpaceSettingsViewProps> = ({ journeyId, journ
             <Text marginBottom={gutters(2)}>
               <Trans i18nKey="community.application-form.subtitle" components={{ b: <strong /> }} />
             </Text>
-            <CommunityApplicationForm journeyId={journeyId} journeyTypeName={journeyTypeName} />
+            <CommunityApplicationForm communityId={communityId} />
           </PageContentBlockCollapsible>
 
           <PageContentBlock>

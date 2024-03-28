@@ -12,6 +12,9 @@ query SpaceSettings(
       settings {
         ...SpaceSettings
       }
+      community {
+        id
+      }
     }
   }
   opportunity: lookup @include(if: $includeOpportunity) {
@@ -21,12 +24,18 @@ query SpaceSettings(
       # settings {
       #   ...SpaceSettings
       # }
+      community {
+        id
+      }
     }
   }
   space(ID: $spaceId) @include(if: $includeSpace) {
     id
     settings {
       ...SpaceSettings
+    }
+    community {
+      id
     }
   }
 }

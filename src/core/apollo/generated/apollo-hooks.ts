@@ -10885,28 +10885,12 @@ export function refetchCommunityApplicationsInvitationsQuery(
 }
 
 export const CommunityApplicationFormDocument = gql`
-  query CommunityApplicationForm(
-    $spaceId: UUID_NAMEID = "00000000-0000-0000-0000-000000000000"
-    $challengeId: UUID = "00000000-0000-0000-0000-000000000000"
-    $includeSpace: Boolean = false
-    $includeChallenge: Boolean = false
-  ) {
-    space(ID: $spaceId) @include(if: $includeSpace) {
-      id
-      community {
+  query CommunityApplicationForm($communityId: UUID!) {
+    lookup {
+      community(ID: $communityId) {
         id
         applicationForm {
           ...ApplicationForm
-        }
-      }
-    }
-    lookup {
-      challenge(ID: $challengeId) @include(if: $includeChallenge) {
-        community {
-          id
-          applicationForm {
-            ...ApplicationForm
-          }
         }
       }
     }
@@ -10926,15 +10910,12 @@ export const CommunityApplicationFormDocument = gql`
  * @example
  * const { data, loading, error } = useCommunityApplicationFormQuery({
  *   variables: {
- *      spaceId: // value for 'spaceId'
- *      challengeId: // value for 'challengeId'
- *      includeSpace: // value for 'includeSpace'
- *      includeChallenge: // value for 'includeChallenge'
+ *      communityId: // value for 'communityId'
  *   },
  * });
  */
 export function useCommunityApplicationFormQuery(
-  baseOptions?: Apollo.QueryHookOptions<
+  baseOptions: Apollo.QueryHookOptions<
     SchemaTypes.CommunityApplicationFormQuery,
     SchemaTypes.CommunityApplicationFormQueryVariables
   >
@@ -10965,7 +10946,7 @@ export type CommunityApplicationFormQueryResult = Apollo.QueryResult<
   SchemaTypes.CommunityApplicationFormQuery,
   SchemaTypes.CommunityApplicationFormQueryVariables
 >;
-export function refetchCommunityApplicationFormQuery(variables?: SchemaTypes.CommunityApplicationFormQueryVariables) {
+export function refetchCommunityApplicationFormQuery(variables: SchemaTypes.CommunityApplicationFormQueryVariables) {
   return { query: CommunityApplicationFormDocument, variables: variables };
 }
 
@@ -19857,17 +19838,26 @@ export const SpaceSettingsDocument = gql`
         settings {
           ...SpaceSettings
         }
+        community {
+          id
+        }
       }
     }
     opportunity: lookup @include(if: $includeOpportunity) {
       opportunity(ID: $opportunityId) {
         id
+        community {
+          id
+        }
       }
     }
     space(ID: $spaceId) @include(if: $includeSpace) {
       id
       settings {
         ...SpaceSettings
+      }
+      community {
+        id
       }
     }
   }

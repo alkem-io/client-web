@@ -13942,17 +13942,13 @@ export type AdminCommunityCandidateMemberFragment = {
 };
 
 export type CommunityApplicationFormQueryVariables = Exact<{
-  spaceId?: InputMaybe<Scalars['UUID_NAMEID']>;
-  challengeId?: InputMaybe<Scalars['UUID']>;
-  includeSpace?: InputMaybe<Scalars['Boolean']>;
-  includeChallenge?: InputMaybe<Scalars['Boolean']>;
+  communityId: Scalars['UUID'];
 }>;
 
 export type CommunityApplicationFormQuery = {
   __typename?: 'Query';
-  space?: {
-    __typename?: 'Space';
-    id: string;
+  lookup: {
+    __typename?: 'LookupQueryResults';
     community?:
       | {
           __typename?: 'Community';
@@ -13970,35 +13966,6 @@ export type CommunityApplicationFormQuery = {
                   required: boolean;
                   sortOrder: number;
                 }>;
-              }
-            | undefined;
-        }
-      | undefined;
-  };
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    challenge?:
-      | {
-          __typename?: 'Challenge';
-          community?:
-            | {
-                __typename?: 'Community';
-                id: string;
-                applicationForm?:
-                  | {
-                      __typename?: 'Form';
-                      id: string;
-                      description?: string | undefined;
-                      questions: Array<{
-                        __typename?: 'FormQuestion';
-                        question: string;
-                        explanation: string;
-                        maxLength: number;
-                        required: boolean;
-                        sortOrder: number;
-                      }>;
-                    }
-                  | undefined;
               }
             | undefined;
         }
@@ -23288,12 +23255,15 @@ export type SpaceSettingsQuery = {
               inheritMembershipRights: boolean;
             };
           };
+          community?: { __typename?: 'Community'; id: string } | undefined;
         }
       | undefined;
   };
   opportunity: {
     __typename?: 'LookupQueryResults';
-    opportunity?: { __typename?: 'Opportunity'; id: string } | undefined;
+    opportunity?:
+      | { __typename?: 'Opportunity'; id: string; community?: { __typename?: 'Community'; id: string } | undefined }
+      | undefined;
   };
   space?: {
     __typename?: 'Space';
@@ -23313,6 +23283,7 @@ export type SpaceSettingsQuery = {
         inheritMembershipRights: boolean;
       };
     };
+    community?: { __typename?: 'Community'; id: string } | undefined;
   };
 };
 
