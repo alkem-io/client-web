@@ -4,11 +4,9 @@ import { LockOutlined } from '@mui/icons-material';
 import ContributeCard, { ContributeCardProps } from '../../../../core/ui/card/ContributeCard';
 import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
 import RoundedIcon from '../../../../core/ui/icon/RoundedIcon';
-import CardTags from '../../../../core/ui/card/CardTags';
 import { gutters } from '../../../../core/ui/grid/utils';
 import CardContent from '../../../../core/ui/card/CardContent';
 import RouterLink from '../../../../core/ui/link/RouterLink';
-import CardMatchedTerms from '../../../../core/ui/card/CardMatchedTerms';
 import ExpandableCardFooter from '../../../../core/ui/card/ExpandableCardFooter';
 import CardMemberIcon from '../../../community/membership/CardMemberIcon/CardMemberIcon';
 import CardBanner from '../../../../core/ui/card/CardImageHeader';
@@ -43,7 +41,6 @@ const JourneyCard = ({
   member,
   locked,
   actions,
-  matchedTerms = false,
   children,
   ...containerProps
 }: PropsWithChildren<JourneyCardProps>) => {
@@ -54,7 +51,7 @@ const JourneyCard = ({
 
   const toggleExpanded = () => setIsExpanded(wasExpanded => !wasExpanded);
 
-  const Tags = matchedTerms ? CardMatchedTerms : CardTags;
+  // const Tags = matchedTerms ? CardMatchedTerms : CardTags;
 
   const wrapperProps = journeyUri
     ? ({
@@ -95,7 +92,7 @@ const JourneyCard = ({
           expansion={expansion}
           actions={actions}
           expansionActions={expansionActions}
-          tags={<Tags tags={tags} disableIndentation />}
+          tags={<></>}
         />
       </Box>
     </ContributeCard>
