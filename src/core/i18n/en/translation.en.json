@@ -239,8 +239,8 @@
     "filterby": "Filter by...",
     "forum": "Forum",
     "email": "Email",
-    "state": "State",
-    "states": "States",
+    "state": "Phase",
+    "states": "Phases",
     "post": "Post",
     "posts": "Posts",
     "status": "Status",
@@ -886,7 +886,7 @@
   "innovation-templates": {
     "states": {
       "title": "Definition",
-      "placeholder": "Here you can paste the description of the states to use for this Innovation Flow"
+      "placeholder": "Here you can paste the description of the phases to use for this Innovation Flow"
     }
   },
   "components": {
@@ -954,8 +954,8 @@
       }
     },
     "innovationFlowVisualizer": {
-      "currentState": "Current State",
-      "currentStateName": "Current State: {{state}}"
+      "currentState": "Current Phase",
+      "currentStateName": "Current Phase: {{state}}"
     },
     "innovationFlowSettings": {
       "title": "Innovation Flow Settings",
@@ -963,27 +963,27 @@
         "title": "Edit Details: Innovation Flow"
       },
       "stateEditor": {
-        "activeState": "Active State",
-        "setActiveState": "Set as Active State",
+        "activeState": "Active Phase",
+        "setActiveState": "Set as Active Phase",
         "editState": "Edit Details",
         "deleteState": "Delete",
-        "addState": "Add State",
-        "noRepeatedStates": "A State with the same name already exists.",
+        "addState": "Add Phase",
+        "noRepeatedStates": "A phase with the same name already exists.",
         "createDialog": {
-          "title": "Create Flow State"
+          "title": "Create Flow Phase"
         },
         "editDialog": {
-          "title": "Edit Details: Flow State"
+          "title": "Edit Details: Flow Phase"
         },
         "deleteDialog": {
-          "title": "Delete State?",
+          "title": "Delete Phase?",
           "text": "This action cannot be undone."
         },
         "selectDifferentFlow": {
           "title": "Select different Flow",
           "confirmationDialog": {
             "title": "Be careful when changing the flow!",
-            "description": "- By changing the Innovation Flow, **all changes made to the current flow will be lost**.\n- All existing collaboration tools will be grouped under the default state of the new flow."
+            "description": "- By changing the Innovation Flow, **all changes made to the current flow will be lost**.\n- All existing collaboration tools will be grouped under the first phase of the new flow."
           }
         }
       }
@@ -1112,8 +1112,8 @@
       }
     },
     "innovationFlow": {
-      "currentState": "Current State:",
-      "changeState": "Change State to:",
+      "currentState": "Current Phase:",
+      "changeState": "Change Phase to:",
       "error": "The definition was not able to be visualized"
     },
     "activity-tooltip": {
