@@ -18,12 +18,12 @@ export const ActivityMemberJoinedView: FC<ActivityMemberJoinedViewProps> = ({
 }) => {
   return (
     <ActivityBaseView
+      {...rest}
       type={type}
       avatarUrl={member.avatarUrl}
       title={<ActivityDescriptionByType activityType={type} subject={member.displayName} />}
       url={member.url}
       contextDisplayName={journeyDisplayName}
-      {...rest}
     />
   );
 };
