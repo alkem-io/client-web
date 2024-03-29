@@ -16,7 +16,7 @@ import NoIdentityRedirect from '../../core/routing/NoIdentityRedirect';
 import { nameOfUrl } from './urlParams';
 import UserRoute from '../../domain/community/user/routing/UserRoute';
 import { SpaceRoute } from '../../domain/journey/space/routing/SpaceRoute';
-import { ChallengeExplorerPage } from '../topLevelPages/TopLevelChallenges/ChallengeExplorerPage';
+import { SpaceExplorerPage } from '../topLevelPages/topLevelSpaces/SpaceExplorerPage';
 import { IdentityRoute } from '../../core/auth/authentication/routing/IdentityRoute';
 import { ROUTE_HOME } from '../../domain/platform/routes/constants';
 import { WithApmTransaction } from '../../domain/shared/components';
@@ -118,7 +118,7 @@ export const TopLevelRoutes: FC = () => {
           element={
             <NonIdentity>
               <WithApmTransaction path="/challenges">
-                <ChallengeExplorerPage />
+                <SpaceExplorerPage />
               </WithApmTransaction>
             </NonIdentity>
           }

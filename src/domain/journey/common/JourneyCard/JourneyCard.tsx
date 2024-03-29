@@ -21,14 +21,12 @@ export interface JourneyCardProps extends ContributeCardProps {
   journeyUri?: string;
   expansion?: ReactNode;
   expansionActions?: ReactNode;
-  ribbon?: ReactNode;
+  bannerOverlay?: ReactNode;
   member?: boolean;
   locked?: boolean;
   actions?: ReactNode;
   matchedTerms?: boolean; // TODO pass ComponentType<CardTags> instead
   visual?: ReactNode;
-  showAccessibility?: boolean;
-  journeyName?: ReactNode;
   isPrivate?: boolean;
 }
 
@@ -40,14 +38,12 @@ const JourneyCard = ({
   journeyUri,
   expansion,
   expansionActions,
-  ribbon,
+  bannerOverlay,
   member,
   locked,
   actions,
   children,
   visual,
-  showAccessibility,
-  journeyName,
   isPrivate,
   ...containerProps
 }: PropsWithChildren<JourneyCardProps>) => {
@@ -73,12 +69,7 @@ const JourneyCard = ({
         <CardBanner
           src={banner?.uri || defaultCardBanner}
           alt={t('visuals-alt-text.banner.card.text', { altText: banner?.alternativeText })}
-          overlay={
-            <>
-              {ribbon}
-              {showAccessibility && journeyName}
-            </>
-          }
+          overlay={bannerOverlay}
         />
         <BadgeCardView
           visual={visual || <RoundedIcon size="small" component={Icon} />}

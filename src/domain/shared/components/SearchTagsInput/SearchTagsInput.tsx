@@ -3,6 +3,7 @@ import Autocomplete, { AutocompleteProps, AutocompleteRenderInputParams } from '
 import TextField from '@mui/material/TextField';
 import { Chip } from '@mui/material';
 import uniqSortedByOccurrences from './uniqSortedByOccurrences';
+import { gutters } from '../../../../core/ui/grid/utils';
 
 export interface SearchTagsInputProps {
   value: string[];
@@ -30,7 +31,18 @@ const SearchTagsInput = ({
 
   const renderInput = useCallback(
     (props: AutocompleteRenderInputParams) => (
-      <TextField {...props} variant="outlined" placeholder={placeholder} label={label} />
+      <TextField
+        {...props}
+        variant="outlined"
+        placeholder={placeholder}
+        label={label}
+        sx={{
+          '.MuiTextField-root input': {
+            height: gutters(),
+            paddingY: 0,
+          },
+        }}
+      />
     ),
     [label, placeholder]
   );
@@ -38,7 +50,6 @@ const SearchTagsInput = ({
   return (
     <Autocomplete
       aria-label="Filter"
-      id="card-filter"
       placeholder={placeholder}
       multiple
       fullWidth
@@ -50,7 +61,17 @@ const SearchTagsInput = ({
       isOptionEqualToValue={(option, value) => option === value}
       groupBy={() => 'Tags'}
       onChange={handleChange}
-      sx={{ '.MuiAutocomplete-inputRoot': { backgroundColor: 'background.paper' } }}
+      size="small"
+      sx={{
+        '.MuiAutocomplete-inputRoot.MuiOutlinedInput-root.MuiInputBase-sizeSmall': {
+          backgroundColor: 'background.paper',
+          paddingY: 0.25,
+          paddingLeft: 0.25,
+          '.MuiAutocomplete-input': {
+            height: gutters(),
+          },
+        },
+      }}
       renderTags={(value, getTagProps) =>
         value.map((option, index) => (
           <Chip color="primary" variant="outlined" label={option} {...getTagProps({ index })} />

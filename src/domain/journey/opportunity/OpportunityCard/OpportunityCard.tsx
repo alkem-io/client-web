@@ -52,7 +52,7 @@ const OpportunityCard = ({
           <JourneyCardGoToButton journeyUri={props.journeyUri} journeyTypeName="opportunity" />
         </CardActions>
       }
-      ribbon={ribbon}
+      bannerOverlay={ribbon}
       {...props}
     />
   );
