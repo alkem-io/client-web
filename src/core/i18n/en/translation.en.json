@@ -2641,7 +2641,6 @@
       }
     },
     "avatar": {
-      "name": "avatar",
       "contributor": {
         "text": "{{displayName}}'s avatar: {{altText}}"
       }
