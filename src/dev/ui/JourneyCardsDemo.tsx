@@ -8,6 +8,8 @@ import SpaceCard from '../../domain/journey/space/SpaceCard/SpaceCard';
 import ChallengeCard from '../../domain/journey/challenge/ChallengeCard/ChallengeCard';
 import PageContentBlockHeader from '../../core/ui/content/PageContentBlockHeader';
 import OpportunityCard from '../../domain/journey/opportunity/OpportunityCard/OpportunityCard';
+import SpaceSubspaceCard from '../../domain/journey/space/SpaceSubspaceCard/SpaceSubspaceCard';
+import { ProfileType } from '../../core/apollo/generated/graphql-schema';
 
 const loremIpsum =
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.';
@@ -26,6 +28,60 @@ const JourneyCardsDemo = () => {
           </PageContentBlock>
         </PageContentColumn>
         <PageContentColumn columns={8}>
+          <PageContentBlock>
+            <PageContentBlockHeader title="Explore Spaces Cards" />
+            <PageContentBlockGrid disablePadding cards>
+              <SpaceSubspaceCard
+                banner={{ uri: '/src/domain/journey/defaultVisuals/Card.jpg' }}
+                tagline={loremIpsum}
+                vision={loremIpsum}
+                displayName="Challenge Card"
+                tags={['challenge', 'card']}
+                journeyUri=""
+                spaceDisplayName="Parent Space"
+                spaceUri=""
+                type={ProfileType.Challenge}
+                avatarUris={['', '']}
+              />
+              <SpaceSubspaceCard
+                banner={{ uri: '/src/domain/journey/defaultVisuals/Card.jpg' }}
+                tagline={loremIpsum}
+                vision={loremIpsum}
+                displayName="Really Long Challenge Card Display Name"
+                tags={['challenge', 'card']}
+                journeyUri=""
+                spaceDisplayName=""
+                spaceUri=""
+                type={ProfileType.Space}
+                isPrivate
+                avatarUris={['']}
+              />
+              <SpaceSubspaceCard
+                banner={{ uri: '/src/domain/journey/defaultVisuals/Card.jpg' }}
+                tagline={loremIpsum}
+                vision={loremIpsum}
+                displayName="Really Long Challenge Card Display Name That Doesn't Even Fit On 2 Lines"
+                tags={[
+                  'challenge',
+                  'card',
+                  'that',
+                  'has',
+                  'too',
+                  'many',
+                  'tags',
+                  'they',
+                  'dont even fit',
+                  'on 2 lines',
+                ]}
+                member
+                journeyUri=""
+                spaceDisplayName="Parent Space"
+                spaceUri=""
+                type={ProfileType.Opportunity}
+                avatarUris={['', '', '']}
+              />
+            </PageContentBlockGrid>
+          </PageContentBlock>
           <PageContentBlock>
             <PageContentBlockHeader title="Space Cards" />
             <PageContentBlockGrid disablePadding cards>
