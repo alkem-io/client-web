@@ -1,5 +1,5 @@
 import React, { ComponentType, PropsWithChildren, ReactNode, useState } from 'react';
-import { Box, SvgIconProps } from '@mui/material';
+import { Box, Chip, SvgIconProps } from '@mui/material';
 import { LockOutlined } from '@mui/icons-material';
 import ContributeCard, { ContributeCardProps } from '../../../../core/ui/card/ContributeCard';
 import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
@@ -8,7 +8,6 @@ import { gutters } from '../../../../core/ui/grid/utils';
 import CardContent from '../../../../core/ui/card/CardContent';
 import RouterLink from '../../../../core/ui/link/RouterLink';
 import ExpandableCardFooter from '../../../../core/ui/card/ExpandableCardFooter';
-import CardMemberIcon from '../../../community/membership/CardMemberIcon/CardMemberIcon';
 import CardBanner from '../../../../core/ui/card/CardImageHeader';
 import { useTranslation } from 'react-i18next';
 import { JourneyCardBanner } from './Banner';
@@ -27,6 +26,10 @@ export interface JourneyCardProps extends ContributeCardProps {
   locked?: boolean;
   actions?: ReactNode;
   matchedTerms?: boolean; // TODO pass ComponentType<CardTags> instead
+  visual?: ReactNode;
+  showAccessibility?: boolean;
+  subspace?: boolean;
+  isPrivate?: boolean;
 }
 
 const JourneyCard = ({
@@ -42,6 +45,10 @@ const JourneyCard = ({
   locked,
   actions,
   children,
+  visual,
+  showAccessibility,
+  subspace,
+  isPrivate,
   ...containerProps
 }: PropsWithChildren<JourneyCardProps>) => {
   const { t } = useTranslation();
@@ -60,6 +67,11 @@ const JourneyCard = ({
       } as const)
     : {};
 
+  const isSubspace = subspace ? t('common.subspace') : t('common.space');
+  const accessibilityLabel = member
+    ? t('components.card.member')
+    : `${isPrivate ? t('components.card.private') : t('components.card.public')} ${isSubspace}`;
+
   return (
     <ContributeCard {...containerProps}>
       <Box {...wrapperProps}>
@@ -69,12 +81,20 @@ const JourneyCard = ({
           overlay={
             <>
               {ribbon}
-              {member && <CardMemberIcon top={gutters(ribbon ? 2.0 : 0.5)} />}
+              {showAccessibility && (
+                <Chip
+                  variant="filled"
+                  color="primary"
+                  label={accessibilityLabel}
+                  icon={isPrivate ? <LockOutlined /> : undefined}
+                  sx={{ position: 'absolute', bottom: gutters(0.5), left: gutters(0.5) }}
+                />
+              )}
             </>
           }
         />
         <BadgeCardView
-          visual={<RoundedIcon size="small" component={Icon} />}
+          visual={visual || <RoundedIcon size="small" component={Icon} />}
           visualRight={locked ? <LockOutlined fontSize="small" color="primary" /> : undefined}
           gap={1}
           height={gutters(3)}
