@@ -103,12 +103,12 @@ export const SpaceExplorerView: FC<SpaceExplorerViewProps> = ({
 
   return (
     <PageContentBlock>
-      <PageContentBlockHeader title={t('pages.challenge-explorer.fullName')} />
-      <WrapperMarkdown caption>{t('pages.challenge-explorer.caption')}</WrapperMarkdown>
+      <PageContentBlockHeader title={t('pages.exploreSpaces.fullName')} />
+      <WrapperMarkdown caption>{t('pages.exploreSpaces.caption')}</WrapperMarkdown>
       <Gutters row disablePadding>
         <SearchTagsInput
           value={searchTerms}
-          placeholder={t('pages.challenge-explorer.search.placeholder')}
+          placeholder={t('pages.exploreSpaces.search.placeholder')}
           onChange={(_event: unknown, newValue: string[]) => setSearchTerms(newValue)}
         />
         {SPACES_EXPLORER_MEMBERSHIP_FILTERS.map(filter => (
@@ -118,13 +118,21 @@ export const SpaceExplorerView: FC<SpaceExplorerViewProps> = ({
             sx={{ flexShrink: 0, textTransform: 'none' }}
             onClick={() => onMembershipFilterChange?.(filter)}
           >
-            <Caption noWrap>{t(`pages.challenge-explorer.membershipFilter.${filter}` as const)}</Caption>
+            <Caption noWrap>{t(`pages.exploreSpaces.membershipFilter.${filter}` as const)}</Caption>
           </Button>
         ))}
       </Gutters>
-      {membershipFilter === SpacesExplorerMembershipFilter.Member && spaces && spaces.length === 0 && (
+      {membershipFilter === SpacesExplorerMembershipFilter.Member &&
+        searchTerms.length === 0 &&
+        spaces &&
+        spaces.length === 0 && (
+          <CaptionSmall marginX="auto" paddingY={gutters()}>
+            {t('pages.exploreSpaces.noSpaceMemberships')}
+          </CaptionSmall>
+        )}
+      {searchTerms.length !== 0 && spaces && spaces.length === 0 && (
         <CaptionSmall marginX="auto" paddingY={gutters()}>
-          {t('pages.challenge-explorer.noSpaceMemberships')}
+          {t('pages.exploreSpaces.search.noResults')}
         </CaptionSmall>
       )}
       {spaces && spaces.length > 0 && (

@@ -114,10 +114,10 @@ export const TopLevelRoutes: FC = () => {
           }
         />
         <Route
-          path="/challenges"
+          path="/spaces"
           element={
             <NonIdentity>
-              <WithApmTransaction path="/challenges">
+              <WithApmTransaction path="/spaces">
                 <SpaceExplorerPage />
               </WithApmTransaction>
             </NonIdentity>

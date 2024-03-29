@@ -17,12 +17,12 @@ export const SpaceExplorerPage = () => {
   return (
     <TopLevelPageLayout
       iconComponent={SpaceIcon}
-      title={t('pages.challenge-explorer.fullName')}
-      subtitle={t('pages.challenge-explorer.subtitle')}
+      title={t('pages.exploreSpaces.fullName')}
+      subtitle={t('pages.exploreSpaces.subtitle')}
       ribbon={ribbon}
       breadcrumbs={
         <TopLevelPageBreadcrumbs>
-          <BreadcrumbsItem iconComponent={SpaceIcon}>{t('pages.challenge-explorer.shortName')}</BreadcrumbsItem>
+          <BreadcrumbsItem iconComponent={SpaceIcon}>{t('pages.exploreSpaces.shortName')}</BreadcrumbsItem>
         </TopLevelPageBreadcrumbs>
       }
     >
