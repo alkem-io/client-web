@@ -1,33 +1,33 @@
 import { useTranslation } from 'react-i18next';
-import { Box, styled } from '@mui/material';
+import { Box } from '@mui/material';
 import { gutters } from '../../../../core/ui/grid/utils';
+import JourneyAvatar from '../../common/JourneyAvatar/JourneyAvatar';
 
 interface StackedAvatarProps {
-  uri: string[];
+  avatarUris: string[];
 }
 
-const Avatar = styled(Box)(({ theme }) => ({
-  width: theme.spacing(2),
-  height: theme.spacing(2),
-  position: 'absolute',
-  borderRadius: 4,
-  border: '1px solid #FFFFFF',
-  '& > img': {
-    width: theme.spacing(2),
-    height: theme.spacing(2),
-    objectFit: 'cover',
-  },
-}));
-
-const StackedAvatar = ({ uri }: StackedAvatarProps) => {
+const StackedAvatar = ({ avatarUris }: StackedAvatarProps) => {
   const { t } = useTranslation();
   return (
-    <Box sx={{ width: gutters(1.5), height: gutters(1.5), position: 'relative', flex: '0 0 10%' }}>
-      {uri.map((u, index) => {
+    <Box sx={{ width: gutters(2), height: gutters(2), position: 'relative', flex: '0 0 15%' }}>
+      {avatarUris.map((avatarUri, index) => {
         return (
-          <Avatar sx={{ zIndex: index, top: `${index * 4}px`, left: `${index * 4}px` }}>
-            <img src={u ? u : '/src/domain/journey/defaultVisuals/Card.jpg'} alt={t('visuals-alt-text.avatar.name')} />
-          </Avatar>
+          <JourneyAvatar
+            key={index}
+            sx={{
+              width: gutters(1.5),
+              height: gutters(1.5),
+              zIndex: index,
+              position: 'absolute',
+              top: theme => `${theme.spacing(index * 0.5)}`,
+              left: theme => `${theme.spacing(index * 0.5)}`,
+              border: theme => `${theme.spacing(0.2)} solid #FFFFFF`,
+              borderRadius: theme => theme.spacing(0.6),
+            }}
+            src={avatarUri}
+            alt={t('visuals-alt-text.avatar.name')}
+          />
         );
       })}
     </Box>

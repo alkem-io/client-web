@@ -1,9 +1,11 @@
 import { useTranslation } from 'react-i18next';
-import { HubOutlined } from '@mui/icons-material';
+import { Chip } from '@mui/material';
+import { HubOutlined, LockOutlined } from '@mui/icons-material';
 import { ProfileType, SpaceVisibility } from '../../../../core/apollo/generated/graphql-schema';
 import { BlockTitle, Caption } from '../../../../core/ui/typography';
 import CardRibbon from '../../../../core/ui/card/CardRibbon';
 import CardActions from '../../../../core/ui/card/CardActions';
+import { gutters } from '../../../../core/ui/grid/utils';
 import JourneyCard, { JourneyCardProps } from '../../common/JourneyCard/JourneyCard';
 import JourneyCardDescription from '../../common/JourneyCard/JourneyCardDescription';
 import JourneyCardSpacing from '../../common/JourneyCard/JourneyCardSpacing';
@@ -18,7 +20,7 @@ interface SpaceSubspaceCardProps
   vision: string;
   member?: boolean;
   journeyUri: string;
-  type: string;
+  type: ProfileType;
   spaceVisibility?: SpaceVisibility;
   spaceDisplayName?: string;
   spaceUri?: string;
@@ -33,8 +35,10 @@ const SpaceSubspaceCard = ({
   tagline,
   spaceVisibility,
   type,
+  member,
   spaceDisplayName,
   avatarUris,
+  isPrivate,
   ...props
 }: SpaceSubspaceCardProps) => {
   const { t } = useTranslation();
@@ -45,6 +49,10 @@ const SpaceSubspaceCard = ({
     ) : undefined;
 
   const isSubspace = type !== ProfileType.Space;
+  const spaceString = isSubspace ? t('common.subspace') : t('common.space');
+  const accessibilityLabel = member
+    ? t('components.card.member')
+    : `${isPrivate ? t('components.card.private') : t('components.card.public')} ${spaceString}`;
 
   return (
     <JourneyCard
@@ -61,9 +69,17 @@ const SpaceSubspaceCard = ({
           )}
         </>
       }
-      visual={<StackedAvatar uri={avatarUris} />}
+      visual={<StackedAvatar avatarUris={avatarUris} />}
       showAccessibility
-      subspace={isSubspace}
+      journeyName={
+        <Chip
+          variant="filled"
+          color="primary"
+          label={accessibilityLabel}
+          icon={isPrivate ? <LockOutlined /> : undefined}
+          sx={{ position: 'absolute', bottom: gutters(0.5), left: gutters(0.5) }}
+        />
+      }
       expansion={
         <>
           <JourneyCardDescription>{vision}</JourneyCardDescription>

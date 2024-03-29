@@ -1,5 +1,5 @@
 import React, { ComponentType, PropsWithChildren, ReactNode, useState } from 'react';
-import { Box, Chip, SvgIconProps } from '@mui/material';
+import { Box, SvgIconProps } from '@mui/material';
 import { LockOutlined } from '@mui/icons-material';
 import ContributeCard, { ContributeCardProps } from '../../../../core/ui/card/ContributeCard';
 import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
@@ -28,7 +28,7 @@ export interface JourneyCardProps extends ContributeCardProps {
   matchedTerms?: boolean; // TODO pass ComponentType<CardTags> instead
   visual?: ReactNode;
   showAccessibility?: boolean;
-  subspace?: boolean;
+  journeyName?: ReactNode;
   isPrivate?: boolean;
 }
 
@@ -47,7 +47,7 @@ const JourneyCard = ({
   children,
   visual,
   showAccessibility,
-  subspace,
+  journeyName,
   isPrivate,
   ...containerProps
 }: PropsWithChildren<JourneyCardProps>) => {
@@ -67,11 +67,6 @@ const JourneyCard = ({
       } as const)
     : {};
 
-  const isSubspace = subspace ? t('common.subspace') : t('common.space');
-  const accessibilityLabel = member
-    ? t('components.card.member')
-    : `${isPrivate ? t('components.card.private') : t('components.card.public')} ${isSubspace}`;
-
   return (
     <ContributeCard {...containerProps}>
       <Box {...wrapperProps}>
@@ -81,15 +76,7 @@ const JourneyCard = ({
           overlay={
             <>
               {ribbon}
-              {showAccessibility && (
-                <Chip
-                  variant="filled"
-                  color="primary"
-                  label={accessibilityLabel}
-                  icon={isPrivate ? <LockOutlined /> : undefined}
-                  sx={{ position: 'absolute', bottom: gutters(0.5), left: gutters(0.5) }}
-                />
-              )}
+              {showAccessibility && journeyName}
             </>
           }
         />
