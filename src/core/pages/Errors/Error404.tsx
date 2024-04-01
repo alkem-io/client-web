@@ -12,6 +12,7 @@ import PageContent from '../../ui/content/PageContent';
 import PageContentColumn from '../../ui/content/PageContentColumn';
 import { gutters } from '../../ui/grid/utils';
 import { NAVIGATION_CONTAINER_HEIGHT_GUTTERS } from '../../ui/navigation/NavigationBar';
+import { useLocation } from 'react-router-dom';
 
 const Container = styled(Box)(({ theme }) => ({
   margin: theme.spacing(2, 'auto', 2, 'auto'),
@@ -80,7 +81,9 @@ const StyledLink = ({ children, subtitle, ...props }: LinkProps & { subtitle?: s
 };
 
 export const Error404: FC = () => {
-  useEffect(() => log404NotFound());
+  const { pathname } = useLocation();
+
+  useEffect(() => log404NotFound(), [pathname]);
 
   const { t } = useTranslation();
   const { locations } = useConfig();

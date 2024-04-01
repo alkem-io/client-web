@@ -48,7 +48,7 @@ const SearchBaseJourneyCard = ({
           {displayName}
         </BlockTitle>
       }
-      ribbon={ribbon}
+      bannerOverlay={ribbon}
       expansion={<JourneyCardDescription>{vision}</JourneyCardDescription>}
       expansionActions={
         <CardActions>

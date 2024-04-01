@@ -35,14 +35,16 @@ const PADDING: Record<'small' | 'medium' | 'large', { x: number; y: number }> = 
 const MuiButton: Components<Theme>['MuiButton'] = {
   styleOverrides: {
     root: ({ theme, ownerState }) => {
-      const { size = 'medium' } = ownerState;
+      const { size = 'medium', variant } = ownerState;
 
       const padding = PADDING[size];
+
+      const borderWidth = variant === 'outlined' ? 0.1 : 0;
 
       return {
         display: 'inline-flex',
         width: 'auto',
-        padding: theme.spacing(padding.y, padding.x),
+        padding: theme.spacing(padding.y - borderWidth, padding.x),
         '&.Mui-focusVisible': getFocusVisibleStyle(theme, ownerState),
       };
     },

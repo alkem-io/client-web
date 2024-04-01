@@ -3595,6 +3595,107 @@ export const InnovationPackDataFragmentDoc = gql`
   ${LibraryTemplatesFragmentDoc}
   ${InnovationPackProviderProfileWithAvatarFragmentDoc}
 `;
+export const SpaceExplorerSpaceFragmentDoc = gql`
+  fragment SpaceExplorerSpace on Space {
+    id
+    authorization {
+      id
+      anonymousReadAccess
+    }
+    profile {
+      id
+      url
+      tagline
+      displayName
+      type
+      tagset {
+        id
+        tags
+      }
+      avatar: visual(type: AVATAR) {
+        ...VisualUri
+      }
+    }
+    context {
+      id
+      vision
+    }
+    account {
+      id
+      license {
+        id
+        visibility
+      }
+    }
+    community {
+      id
+      myMembershipStatus
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
+export const SpaceExplorerSearchSpaceFragmentDoc = gql`
+  fragment SpaceExplorerSearchSpace on SearchResultSpace {
+    space {
+      ...SpaceExplorerSpace
+    }
+  }
+  ${SpaceExplorerSpaceFragmentDoc}
+`;
+export const SpaceExplorerChallengeFragmentDoc = gql`
+  fragment SpaceExplorerChallenge on Challenge {
+    id
+    profile {
+      id
+      url
+      tagline
+      displayName
+      description
+      cardBanner: visual(type: CARD) {
+        ...VisualUri
+      }
+      type
+      tagset {
+        id
+        tags
+      }
+      avatar: visual(type: AVATAR) {
+        ...VisualUri
+      }
+    }
+    context {
+      id
+      vision
+    }
+    community {
+      id
+      myMembershipStatus
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
+export const SpaceExplorerSearchChallengeFragmentDoc = gql`
+  fragment SpaceExplorerSearchChallenge on SearchResultChallenge {
+    space {
+      ...SpaceExplorerSpace
+    }
+    challenge {
+      ...SpaceExplorerChallenge
+    }
+  }
+  ${SpaceExplorerSpaceFragmentDoc}
+  ${SpaceExplorerChallengeFragmentDoc}
+`;
+export const SpaceExplorerSpaceWithChallengesFragmentDoc = gql`
+  fragment SpaceExplorerSpaceWithChallenges on Space {
+    ...SpaceExplorerSpace
+    challenges {
+      ...SpaceExplorerChallenge
+    }
+  }
+  ${SpaceExplorerSpaceFragmentDoc}
+  ${SpaceExplorerChallengeFragmentDoc}
+`;
 export const InnovationPackCardFragmentDoc = gql`
   fragment InnovationPackCard on InnovationPack {
     id
@@ -23781,171 +23882,206 @@ export function refetchChallengeExplorerPageQuery(variables?: SchemaTypes.Challe
   return { query: ChallengeExplorerPageDocument, variables: variables };
 }
 
-export const ChallengeExplorerSearchDocument = gql`
-  query ChallengeExplorerSearch($searchData: SearchInput!) {
+export const SpaceExplorerSearchDocument = gql`
+  query SpaceExplorerSearch($searchData: SearchInput!) {
     search(searchData: $searchData) {
       journeyResults {
         id
         type
         terms
+        ... on SearchResultSpace {
+          ...SpaceExplorerSearchSpace
+        }
         ... on SearchResultChallenge {
-          ...SearchResultChallenge
+          ...SpaceExplorerSearchChallenge
         }
       }
     }
   }
-  ${SearchResultChallengeFragmentDoc}
+  ${SpaceExplorerSearchSpaceFragmentDoc}
+  ${SpaceExplorerSearchChallengeFragmentDoc}
 `;
 
 /**
- * __useChallengeExplorerSearchQuery__
+ * __useSpaceExplorerSearchQuery__
  *
- * To run a query within a React component, call `useChallengeExplorerSearchQuery` and pass it any options that fit your needs.
- * When your component renders, `useChallengeExplorerSearchQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useSpaceExplorerSearchQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSpaceExplorerSearchQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useChallengeExplorerSearchQuery({
+ * const { data, loading, error } = useSpaceExplorerSearchQuery({
  *   variables: {
  *      searchData: // value for 'searchData'
  *   },
  * });
  */
-export function useChallengeExplorerSearchQuery(
+export function useSpaceExplorerSearchQuery(
   baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.ChallengeExplorerSearchQuery,
-    SchemaTypes.ChallengeExplorerSearchQueryVariables
+    SchemaTypes.SpaceExplorerSearchQuery,
+    SchemaTypes.SpaceExplorerSearchQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.ChallengeExplorerSearchQuery, SchemaTypes.ChallengeExplorerSearchQueryVariables>(
-    ChallengeExplorerSearchDocument,
+  return Apollo.useQuery<SchemaTypes.SpaceExplorerSearchQuery, SchemaTypes.SpaceExplorerSearchQueryVariables>(
+    SpaceExplorerSearchDocument,
     options
   );
 }
 
-export function useChallengeExplorerSearchLazyQuery(
+export function useSpaceExplorerSearchLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.ChallengeExplorerSearchQuery,
-    SchemaTypes.ChallengeExplorerSearchQueryVariables
+    SchemaTypes.SpaceExplorerSearchQuery,
+    SchemaTypes.SpaceExplorerSearchQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.ChallengeExplorerSearchQuery,
-    SchemaTypes.ChallengeExplorerSearchQueryVariables
-  >(ChallengeExplorerSearchDocument, options);
+  return Apollo.useLazyQuery<SchemaTypes.SpaceExplorerSearchQuery, SchemaTypes.SpaceExplorerSearchQueryVariables>(
+    SpaceExplorerSearchDocument,
+    options
+  );
 }
 
-export type ChallengeExplorerSearchQueryHookResult = ReturnType<typeof useChallengeExplorerSearchQuery>;
-export type ChallengeExplorerSearchLazyQueryHookResult = ReturnType<typeof useChallengeExplorerSearchLazyQuery>;
-export type ChallengeExplorerSearchQueryResult = Apollo.QueryResult<
-  SchemaTypes.ChallengeExplorerSearchQuery,
-  SchemaTypes.ChallengeExplorerSearchQueryVariables
+export type SpaceExplorerSearchQueryHookResult = ReturnType<typeof useSpaceExplorerSearchQuery>;
+export type SpaceExplorerSearchLazyQueryHookResult = ReturnType<typeof useSpaceExplorerSearchLazyQuery>;
+export type SpaceExplorerSearchQueryResult = Apollo.QueryResult<
+  SchemaTypes.SpaceExplorerSearchQuery,
+  SchemaTypes.SpaceExplorerSearchQueryVariables
 >;
-export function refetchChallengeExplorerSearchQuery(variables: SchemaTypes.ChallengeExplorerSearchQueryVariables) {
-  return { query: ChallengeExplorerSearchDocument, variables: variables };
+export function refetchSpaceExplorerSearchQuery(variables: SchemaTypes.SpaceExplorerSearchQueryVariables) {
+  return { query: SpaceExplorerSearchDocument, variables: variables };
 }
 
-export const ChallengeExplorerDataDocument = gql`
-  query ChallengeExplorerData($spaceIDs: [UUID!]) {
+export const SpaceExplorerMemberSpacesDocument = gql`
+  query SpaceExplorerMemberSpaces($spaceIDs: [UUID!]) {
     spaces(IDs: $spaceIDs) {
-      id
-      profile {
-        id
-        url
-        tagline
-        displayName
-      }
-      account {
-        id
-        license {
-          id
-          visibility
-        }
-      }
-      challenges {
-        id
-        profile {
-          id
-          url
-          tagline
-          displayName
-          description
-          cardBanner: visual(type: CARD) {
-            ...VisualUri
-          }
-          tagset {
-            ...TagsetDetails
-          }
-        }
-        context {
-          id
-          vision
-        }
-        community {
-          id
-          myMembershipStatus
-        }
-      }
+      ...SpaceExplorerSpaceWithChallenges
     }
   }
-  ${VisualUriFragmentDoc}
-  ${TagsetDetailsFragmentDoc}
+  ${SpaceExplorerSpaceWithChallengesFragmentDoc}
 `;
 
 /**
- * __useChallengeExplorerDataQuery__
+ * __useSpaceExplorerMemberSpacesQuery__
  *
- * To run a query within a React component, call `useChallengeExplorerDataQuery` and pass it any options that fit your needs.
- * When your component renders, `useChallengeExplorerDataQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useSpaceExplorerMemberSpacesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSpaceExplorerMemberSpacesQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useChallengeExplorerDataQuery({
+ * const { data, loading, error } = useSpaceExplorerMemberSpacesQuery({
  *   variables: {
  *      spaceIDs: // value for 'spaceIDs'
  *   },
  * });
  */
-export function useChallengeExplorerDataQuery(
+export function useSpaceExplorerMemberSpacesQuery(
   baseOptions?: Apollo.QueryHookOptions<
-    SchemaTypes.ChallengeExplorerDataQuery,
-    SchemaTypes.ChallengeExplorerDataQueryVariables
+    SchemaTypes.SpaceExplorerMemberSpacesQuery,
+    SchemaTypes.SpaceExplorerMemberSpacesQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.ChallengeExplorerDataQuery, SchemaTypes.ChallengeExplorerDataQueryVariables>(
-    ChallengeExplorerDataDocument,
-    options
-  );
+  return Apollo.useQuery<
+    SchemaTypes.SpaceExplorerMemberSpacesQuery,
+    SchemaTypes.SpaceExplorerMemberSpacesQueryVariables
+  >(SpaceExplorerMemberSpacesDocument, options);
 }
 
-export function useChallengeExplorerDataLazyQuery(
+export function useSpaceExplorerMemberSpacesLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.ChallengeExplorerDataQuery,
-    SchemaTypes.ChallengeExplorerDataQueryVariables
+    SchemaTypes.SpaceExplorerMemberSpacesQuery,
+    SchemaTypes.SpaceExplorerMemberSpacesQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.ChallengeExplorerDataQuery, SchemaTypes.ChallengeExplorerDataQueryVariables>(
-    ChallengeExplorerDataDocument,
+  return Apollo.useLazyQuery<
+    SchemaTypes.SpaceExplorerMemberSpacesQuery,
+    SchemaTypes.SpaceExplorerMemberSpacesQueryVariables
+  >(SpaceExplorerMemberSpacesDocument, options);
+}
+
+export type SpaceExplorerMemberSpacesQueryHookResult = ReturnType<typeof useSpaceExplorerMemberSpacesQuery>;
+export type SpaceExplorerMemberSpacesLazyQueryHookResult = ReturnType<typeof useSpaceExplorerMemberSpacesLazyQuery>;
+export type SpaceExplorerMemberSpacesQueryResult = Apollo.QueryResult<
+  SchemaTypes.SpaceExplorerMemberSpacesQuery,
+  SchemaTypes.SpaceExplorerMemberSpacesQueryVariables
+>;
+export function refetchSpaceExplorerMemberSpacesQuery(variables?: SchemaTypes.SpaceExplorerMemberSpacesQueryVariables) {
+  return { query: SpaceExplorerMemberSpacesDocument, variables: variables };
+}
+
+export const SpaceExplorerAllSpacesDocument = gql`
+  query SpaceExplorerAllSpaces($first: Int!, $after: UUID, $visibilities: [SpaceVisibility!] = [ACTIVE]) {
+    spacesPaginated(first: $first, after: $after, filter: { visibilities: $visibilities }) {
+      spaces {
+        ...SpaceExplorerSpaceWithChallenges
+      }
+      pageInfo {
+        ...PageInfo
+      }
+    }
+  }
+  ${SpaceExplorerSpaceWithChallengesFragmentDoc}
+  ${PageInfoFragmentDoc}
+`;
+
+/**
+ * __useSpaceExplorerAllSpacesQuery__
+ *
+ * To run a query within a React component, call `useSpaceExplorerAllSpacesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSpaceExplorerAllSpacesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSpaceExplorerAllSpacesQuery({
+ *   variables: {
+ *      first: // value for 'first'
+ *      after: // value for 'after'
+ *      visibilities: // value for 'visibilities'
+ *   },
+ * });
+ */
+export function useSpaceExplorerAllSpacesQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.SpaceExplorerAllSpacesQuery,
+    SchemaTypes.SpaceExplorerAllSpacesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.SpaceExplorerAllSpacesQuery, SchemaTypes.SpaceExplorerAllSpacesQueryVariables>(
+    SpaceExplorerAllSpacesDocument,
     options
   );
 }
 
-export type ChallengeExplorerDataQueryHookResult = ReturnType<typeof useChallengeExplorerDataQuery>;
-export type ChallengeExplorerDataLazyQueryHookResult = ReturnType<typeof useChallengeExplorerDataLazyQuery>;
-export type ChallengeExplorerDataQueryResult = Apollo.QueryResult<
-  SchemaTypes.ChallengeExplorerDataQuery,
-  SchemaTypes.ChallengeExplorerDataQueryVariables
+export function useSpaceExplorerAllSpacesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.SpaceExplorerAllSpacesQuery,
+    SchemaTypes.SpaceExplorerAllSpacesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.SpaceExplorerAllSpacesQuery, SchemaTypes.SpaceExplorerAllSpacesQueryVariables>(
+    SpaceExplorerAllSpacesDocument,
+    options
+  );
+}
+
+export type SpaceExplorerAllSpacesQueryHookResult = ReturnType<typeof useSpaceExplorerAllSpacesQuery>;
+export type SpaceExplorerAllSpacesLazyQueryHookResult = ReturnType<typeof useSpaceExplorerAllSpacesLazyQuery>;
+export type SpaceExplorerAllSpacesQueryResult = Apollo.QueryResult<
+  SchemaTypes.SpaceExplorerAllSpacesQuery,
+  SchemaTypes.SpaceExplorerAllSpacesQueryVariables
 >;
-export function refetchChallengeExplorerDataQuery(variables?: SchemaTypes.ChallengeExplorerDataQueryVariables) {
-  return { query: ChallengeExplorerDataDocument, variables: variables };
+export function refetchSpaceExplorerAllSpacesQuery(variables: SchemaTypes.SpaceExplorerAllSpacesQueryVariables) {
+  return { query: SpaceExplorerAllSpacesDocument, variables: variables };
 }
 
 export const DashboardSpacesDocument = gql`
