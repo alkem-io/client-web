@@ -8,14 +8,40 @@ const warningLevel: Sentry.SeverityLevel = 'warning';
 const errorLevel: Sentry.SeverityLevel = 'error';
 const fatalLevel: Sentry.SeverityLevel = 'fatal';
 
+export const tagKeys = {
+  CATEGORY: 'CATEGORY',
+  LABEL: 'LABEL',
+} as const;
+
+export const tagCategoryValues = {
+  SERVER: 'SERVER',
+  AUTH: 'AUTH',
+  UI: 'UI',
+} as const;
+
+type TagsKeysType = keyof typeof tagKeys;
+type TagType = {
+  [key in TagsKeysType]: string;
+};
+
+const setTags = (tags: TagType | undefined, scope: Sentry.Scope) => {
+  if (tags) {
+    for (const [key, value] of Object.entries(tags as TagType)) {
+      scope.setTag(key as TagsKeysType, value as string);
+    }
+  }
+};
+
 export const error = (
   error: Error,
+  tags?,
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   setup: (scope: Sentry.Scope) => void = () => {},
   severity: typeof fatalLevel | typeof errorLevel = errorLevel
 ) => {
   Sentry.withScope(scope => {
     scope.setLevel(severity);
+    setTags(tags, scope);
     setup(scope);
     Sentry.captureException(error);
   });
