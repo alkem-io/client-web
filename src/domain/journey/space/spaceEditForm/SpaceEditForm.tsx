@@ -99,7 +99,7 @@ const SpaceEditForm: FC<SpaceEditFormProps> = ({
   const validationSchema = yup.object().shape({
     name: nameSegmentSchema.fields?.name ?? yup.string(),
     nameID: nameSegmentSchema.fields?.nameID ?? yup.string(),
-    host: yup.string().required(t('forms.validations.required')),
+    hostId: yup.string().required(t('forms.validations.required')),
     tagline: contextSegmentSchema.fields?.tagline ?? yup.string(),
     references: referenceSegmentSchema,
     tagsets: tagsetSegmentSchema,
