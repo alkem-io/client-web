@@ -1,19 +1,11 @@
 import React from 'react';
 import { ReactMarkdownProps } from 'react-markdown/lib/complex-types';
-import MarkdownParagraph from './MarkdownParagraph';
+import createMarkdownComponent from './MarkdownComponent';
 
-const MarkdownListItem = ({ node, children, ...props }: ReactMarkdownProps) => {
-  if (children && children.length === 1 && typeof children[0] === 'string') {
-    return (
-      <li {...props}>
-        <MarkdownParagraph node={node} overrideDisableParagraphPadding>
-          {children}
-        </MarkdownParagraph>
-      </li>
-    );
-  } else {
-    return <li {...props}>{children}</li>;
-  }
+const Base = createMarkdownComponent('li');
+
+const MarkdownListItem = (props: ReactMarkdownProps) => {
+  return <Base sx={{ display: 'list-item' }} {...props} />;
 };
 
 export default MarkdownListItem;

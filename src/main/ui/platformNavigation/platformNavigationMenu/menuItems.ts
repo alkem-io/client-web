@@ -3,7 +3,7 @@ import { SvgIconProps } from '@mui/material';
 import TranslationKey from '../../../../core/i18n/utils/TranslationKey';
 import InnovationLibraryIcon from '../../../topLevelPages/InnovationLibraryPage/InnovationLibraryIcon';
 import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
-import { ChallengeIcon } from '../../../../domain/journey/challenge/icon/ChallengeIcon';
+import { SpaceIcon } from '../../../../domain/journey/space/icon/SpaceIcon';
 import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
 
 interface MenuItem {
@@ -24,9 +24,9 @@ const PLATFORM_NAVIGATION_MENU_ITEMS: MenuItem[] = [
     route: '/forum',
   },
   {
-    label: 'pages.challenge-explorer.fullName',
-    iconComponent: ChallengeIcon,
-    route: '/challenges',
+    label: 'pages.exploreSpaces.fullName',
+    iconComponent: SpaceIcon,
+    route: '/spaces',
   },
   {
     label: 'pages.contributors.fullName',
