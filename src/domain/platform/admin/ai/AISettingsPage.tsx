@@ -8,6 +8,8 @@ import { LoadingButton } from '@mui/lab';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import { gutters } from '../../../../core/ui/grid/utils';
 import { useCookies } from 'react-cookie';
+import { useNotification } from '../../../../core/ui/notifications/useNotification';
+import useLoadingState from '../../../shared/utils/useLoadingState';
 
 interface VirtualContributorsConfig {
   prompt1: string;
@@ -15,9 +17,9 @@ interface VirtualContributorsConfig {
   prompt3: string;
 }
 
-const ALKEMIO_COOKIE_PROMPT1 = 'prompt1';
-const ALKEMIO_COOKIE_PROMPT2 = 'prompt2';
-const ALKEMIO_COOKIE_PROMPT3 = 'prompt3';
+export const ALKEMIO_COOKIE_PROMPT1 = 'prompt1';
+export const ALKEMIO_COOKIE_PROMPT2 = 'prompt2';
+export const ALKEMIO_COOKIE_PROMPT3 = 'prompt3';
 const COOKIE_EXPIRY = 2147483647 * 1000; // Y2k38 -> 2^31 - 1 = 2147483647 ie. 2038-01-19 04:14:07
 
 // Virtual Community Manager
@@ -48,7 +50,13 @@ const PROMPT3_DEFAULT = '';
 
 interface AISettingsPageProps {}
 
+// TODO: Remove this NOW
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 const AISettingsPage: FC<AISettingsPageProps> = () => {
+  const notify = useNotification();
   const [cookies, setCookie] = useCookies([ALKEMIO_COOKIE_PROMPT1, ALKEMIO_COOKIE_PROMPT2, ALKEMIO_COOKIE_PROMPT3]);
 
   const initialValues = {
@@ -57,7 +65,7 @@ const AISettingsPage: FC<AISettingsPageProps> = () => {
     prompt3: (cookies.prompt3 as string) ?? PROMPT3_DEFAULT,
   };
 
-  const onSave = (values: VirtualContributorsConfig) => {
+  const [onSave, isSaving] = useLoadingState(async (values: VirtualContributorsConfig) => {
     setCookie(ALKEMIO_COOKIE_PROMPT1, values.prompt1, {
       expires: new Date(COOKIE_EXPIRY),
       path: '/',
@@ -73,7 +81,10 @@ const AISettingsPage: FC<AISettingsPageProps> = () => {
       path: '/',
       sameSite: 'strict',
     });
-  };
+    await sleep(1000);
+    notify('Settings saved', 'success');
+  });
+
   const textAreasStyle = {
     InputProps: {
       sx: { fontFamily: 'monospace', height: gutters(20) },
@@ -108,7 +119,7 @@ const AISettingsPage: FC<AISettingsPageProps> = () => {
               {...textAreasStyle}
             />
             <Actions>
-              <LoadingButton loading={false} type="submit" variant="contained">
+              <LoadingButton loading={isSaving} type="submit" variant="contained">
                 Save
               </LoadingButton>
             </Actions>

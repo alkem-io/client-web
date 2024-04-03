@@ -1,5 +1,5 @@
-mutation UpdateVirtualCommunityManagerPrompt($newPrompt: String!) {
-  updateVirtualCommunityManagerPrompt(newPrompt: $newPrompt) {
-    success
-  }
-}
+# mutation UpdateVirtualCommunityManagerPrompt($newPrompt: String!) {
+#   updateVirtualCommunityManagerPrompt(newPrompt: $newPrompt) {
+#     success
+#   }
+# }
