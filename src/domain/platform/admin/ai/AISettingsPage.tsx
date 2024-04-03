@@ -7,23 +7,79 @@ import { Actions } from '../../../../core/ui/actions/Actions';
 import { LoadingButton } from '@mui/lab';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import { gutters } from '../../../../core/ui/grid/utils';
+import { useCookies } from 'react-cookie';
+
+interface VirtualContributorsConfig {
+  prompt1: string;
+  prompt2: string;
+  prompt3: string;
+}
+
+const ALKEMIO_COOKIE_PROMPT1 = 'prompt1';
+const ALKEMIO_COOKIE_PROMPT2 = 'prompt2';
+const ALKEMIO_COOKIE_PROMPT3 = 'prompt3';
+const COOKIE_EXPIRY = 2147483647 * 1000; // Y2k38 -> 2^31 - 1 = 2147483647 ie. 2038-01-19 04:14:07
+
+// Virtual Community Manager
+const PROMPT1_DEFAULT = `
+You are an expert community manager.
+You need to confirm that a message written by the a user in the community follows these set of rules:
+----
+{communityRules}
+----
+You have to answer just two lines of text. The fist line will be "YES", or "NO" if the message follows the rules. The second line will be the reason why you think so.
+----
+{message}
+----
+`;
+
+// Virtual Expert:
+const PROMPT2_DEFAULT = `
+You are an expert in the topic of Energy Transition.
+Answer the following message sent by one of our users:
+----
+{message}
+----
+`;
+
+// Digital Twin:
+
+const PROMPT3_DEFAULT = '';
 
 interface AISettingsPageProps {}
 
 const AISettingsPage: FC<AISettingsPageProps> = () => {
+  const [cookies, setCookie] = useCookies([ALKEMIO_COOKIE_PROMPT1, ALKEMIO_COOKIE_PROMPT2, ALKEMIO_COOKIE_PROMPT3]);
+
   const initialValues = {
-    prompt: `You will be provided with customer service inquiries that require troubleshooting in a technical support context. Help the user by:
-    - Ask them to check that all cables to/from the router are connected. Note that it is common for cables to come loose over time.
-    - If all cables are connected and the issue persists, ask them which router model they are using
-    - Now you will advise them how to restart their device:
-    -- If the model number is MTD-327J, advise them to push the red button and hold it for 5 seconds, then wait 5 minutes before testing the connection.
-    -- If the model number is MTD-327S, advise them to unplug and replug it, then wait 5 minutes before testing the connection.
-    - If the customers issue persists after restarting the device and waiting 5 minutes, connect them to IT support by outputting { "IT support requested"}.
-    - If the user starts asking questions that are unrelated to this topic then confirm if they would like to end the current chat about troubleshooting and classify their request according to the following scheme:
-    `,
+    prompt1: (cookies.prompt1 as string) ?? PROMPT1_DEFAULT,
+    prompt2: (cookies.prompt2 as string) ?? PROMPT2_DEFAULT,
+    prompt3: (cookies.prompt3 as string) ?? PROMPT3_DEFAULT,
   };
 
-  const onSave = () => {};
+  const onSave = (values: VirtualContributorsConfig) => {
+    setCookie(ALKEMIO_COOKIE_PROMPT1, values.prompt1, {
+      expires: new Date(COOKIE_EXPIRY),
+      path: '/',
+      sameSite: 'strict',
+    });
+    setCookie(ALKEMIO_COOKIE_PROMPT2, values.prompt1, {
+      expires: new Date(COOKIE_EXPIRY),
+      path: '/',
+      sameSite: 'strict',
+    });
+    setCookie(ALKEMIO_COOKIE_PROMPT3, values.prompt1, {
+      expires: new Date(COOKIE_EXPIRY),
+      path: '/',
+      sameSite: 'strict',
+    });
+  };
+  const textAreasStyle = {
+    InputProps: {
+      sx: { fontFamily: 'monospace', height: gutters(20) },
+    },
+    sx: { height: gutters(20), div: { alignItems: 'flex-start' } },
+  };
 
   return (
     <AdminLayout currentTab={AdminSection.AISettings}>
@@ -32,10 +88,24 @@ const AISettingsPage: FC<AISettingsPageProps> = () => {
           <Gutters>
             <FormikInputField
               multiline
-              name="prompt"
-              label="Prompt"
+              name="prompt1"
+              label="Virtual Community Manager Prompt (Prompt 1)"
               title="Prompt"
-              sx={{ height: gutters(20), fontFamily: 'monospace' }}
+              {...textAreasStyle}
+            />
+            <FormikInputField
+              multiline
+              name="prompt2"
+              label="Ask an expert (Prompt 2)"
+              title="Prompt"
+              {...textAreasStyle}
+            />
+            <FormikInputField
+              multiline
+              name="prompt3"
+              label="Virtual twin (Prompt 3)"
+              title="Prompt"
+              {...textAreasStyle}
             />
             <Actions>
               <LoadingButton loading={false} type="submit" variant="contained">
