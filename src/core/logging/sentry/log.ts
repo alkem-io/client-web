@@ -21,7 +21,7 @@ export const tagCategoryValues = {
 
 type TagsKeysType = keyof typeof tagKeys;
 type TagType = {
-  [key in TagsKeysType]: string;
+  [key in TagsKeysType]?: string;
 };
 
 const setTags = (tags: TagType | undefined, scope: Sentry.Scope) => {
