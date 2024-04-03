@@ -128,7 +128,7 @@ export const CommentInputField: FC<InputBaseComponentProps> = forwardRef<
       .map(user => ({
         id: user.nameID,
         display: user.profile.displayName,
-        avatarUrl: user.profile.visual?.uri,
+        avatarUrl: user.profile.avatar?.uri,
         city: user.profile.location?.city,
         country: user.profile.location?.country,
       }));

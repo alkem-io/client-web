@@ -437,6 +437,10 @@ export type ActorGroupFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   name?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type AdminSearchIngestResultKeySpecifier = ('results' | AdminSearchIngestResultKeySpecifier)[];
+export type AdminSearchIngestResultFieldPolicy = {
+  results?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type AgentKeySpecifier = (
   | 'authorization'
   | 'credentials'
@@ -1162,6 +1166,16 @@ export type ISearchResultsFieldPolicy = {
   journeyResults?: FieldPolicy<any> | FieldReadFunction<any>;
   journeyResultsCount?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type IngestBulkResultKeySpecifier = ('message' | 'success' | IngestBulkResultKeySpecifier)[];
+export type IngestBulkResultFieldPolicy = {
+  message?: FieldPolicy<any> | FieldReadFunction<any>;
+  success?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type IngestResultKeySpecifier = ('index' | 'result' | IngestResultKeySpecifier)[];
+export type IngestResultFieldPolicy = {
+  index?: FieldPolicy<any> | FieldReadFunction<any>;
+  result?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type InnovationFlowKeySpecifier = (
   | 'authorization'
   | 'currentState'
@@ -1478,6 +1492,7 @@ export type MutationKeySpecifier = (
   | 'adminCommunicationEnsureAccessToCommunications'
   | 'adminCommunicationRemoveOrphanedRoom'
   | 'adminCommunicationUpdateRoomsJoinRule'
+  | 'adminSearchIngestFromScratch'
   | 'applyForCommunityMembership'
   | 'assignCommunityRoleToOrganization'
   | 'assignCommunityRoleToUser'
@@ -1574,6 +1589,7 @@ export type MutationKeySpecifier = (
   | 'removeUserFromGroup'
   | 'removeUserFromOrganization'
   | 'resetChatGuidance'
+  | 'resetVirtualContributor'
   | 'revokeCredentialFromOrganization'
   | 'revokeCredentialFromUser'
   | 'sendMessageReplyToRoom'
@@ -1635,6 +1651,7 @@ export type MutationFieldPolicy = {
   adminCommunicationEnsureAccessToCommunications?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationRemoveOrphanedRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationUpdateRoomsJoinRule?: FieldPolicy<any> | FieldReadFunction<any>;
+  adminSearchIngestFromScratch?: FieldPolicy<any> | FieldReadFunction<any>;
   applyForCommunityMembership?: FieldPolicy<any> | FieldReadFunction<any>;
   assignCommunityRoleToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   assignCommunityRoleToUser?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1731,6 +1748,7 @@ export type MutationFieldPolicy = {
   removeUserFromGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserFromOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   resetChatGuidance?: FieldPolicy<any> | FieldReadFunction<any>;
+  resetVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
   revokeCredentialFromOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   revokeCredentialFromUser?: FieldPolicy<any> | FieldReadFunction<any>;
   sendMessageReplyToRoom?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2110,6 +2128,7 @@ export type QueryKeySpecifier = (
   | 'adminCommunicationMembership'
   | 'adminCommunicationOrphanedUsage'
   | 'askChatGuidanceQuestion'
+  | 'askVirtualContributorQuestion'
   | 'getSupportedVerifiedCredentialMetadata'
   | 'lookup'
   | 'me'
@@ -2139,6 +2158,7 @@ export type QueryFieldPolicy = {
   adminCommunicationMembership?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationOrphanedUsage?: FieldPolicy<any> | FieldReadFunction<any>;
   askChatGuidanceQuestion?: FieldPolicy<any> | FieldReadFunction<any>;
+  askVirtualContributorQuestion?: FieldPolicy<any> | FieldReadFunction<any>;
   getSupportedVerifiedCredentialMetadata?: FieldPolicy<any> | FieldReadFunction<any>;
   lookup?: FieldPolicy<any> | FieldReadFunction<any>;
   me?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2898,6 +2918,19 @@ export type VerifiedCredentialClaimFieldPolicy = {
   name?: FieldPolicy<any> | FieldReadFunction<any>;
   value?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type VirtualContributorResultKeySpecifier = (
+  | 'answer'
+  | 'id'
+  | 'question'
+  | 'sources'
+  | VirtualContributorResultKeySpecifier
+)[];
+export type VirtualContributorResultFieldPolicy = {
+  answer?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  question?: FieldPolicy<any> | FieldReadFunction<any>;
+  sources?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type VisualKeySpecifier = (
   | 'allowedTypes'
   | 'alternativeText'
@@ -3078,6 +3111,10 @@ export type StrictTypedTypePolicies = {
   ActorGroup?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ActorGroupKeySpecifier | (() => undefined | ActorGroupKeySpecifier);
     fields?: ActorGroupFieldPolicy;
+  };
+  AdminSearchIngestResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | AdminSearchIngestResultKeySpecifier | (() => undefined | AdminSearchIngestResultKeySpecifier);
+    fields?: AdminSearchIngestResultFieldPolicy;
   };
   Agent?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | AgentKeySpecifier | (() => undefined | AgentKeySpecifier);
@@ -3326,6 +3363,14 @@ export type StrictTypedTypePolicies = {
   ISearchResults?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ISearchResultsKeySpecifier | (() => undefined | ISearchResultsKeySpecifier);
     fields?: ISearchResultsFieldPolicy;
+  };
+  IngestBulkResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | IngestBulkResultKeySpecifier | (() => undefined | IngestBulkResultKeySpecifier);
+    fields?: IngestBulkResultFieldPolicy;
+  };
+  IngestResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | IngestResultKeySpecifier | (() => undefined | IngestResultKeySpecifier);
+    fields?: IngestResultFieldPolicy;
   };
   InnovationFlow?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | InnovationFlowKeySpecifier | (() => undefined | InnovationFlowKeySpecifier);
@@ -3708,6 +3753,10 @@ export type StrictTypedTypePolicies = {
   VerifiedCredentialClaim?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | VerifiedCredentialClaimKeySpecifier | (() => undefined | VerifiedCredentialClaimKeySpecifier);
     fields?: VerifiedCredentialClaimFieldPolicy;
+  };
+  VirtualContributorResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | VirtualContributorResultKeySpecifier | (() => undefined | VirtualContributorResultKeySpecifier);
+    fields?: VirtualContributorResultFieldPolicy;
   };
   Visual?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | VisualKeySpecifier | (() => undefined | VisualKeySpecifier);

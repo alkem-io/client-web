@@ -1,0 +1,11 @@
+query askVirtualContributorQuestion($prompt: String!, $question: String!) {
+  askVirtualContributorQuestion(chatData: { prompt: $prompt, question: $question}) {
+    id
+    question
+    answer
+    sources {
+      title
+      uri
+    }
+  }
+}

@@ -4,6 +4,8 @@ query MentionableUsers($filter: UserFilterInput, $first: Int) {
     users {
       id
       nameID
+      firstName
+      lastName
       profile {
         id
         displayName
@@ -12,9 +14,13 @@ query MentionableUsers($filter: UserFilterInput, $first: Int) {
           city
           country
         }
-        visual(type: AVATAR) {
+        avatar: visual(type: AVATAR) {
           ...VisualUri
         }
+        tagsets {
+          ...TagsetDetails
+        }
+        url
       }
     }
   }
