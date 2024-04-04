@@ -5660,6 +5660,10 @@ export type VirtualContributorInput = {
   prompt: Scalars['String'];
   /** The question that is being asked. */
   question: Scalars['String'];
+  /** The Room in the context of which the VC is asked */
+  roomID: Scalars['UUID'];
+  /** The Space in which the question to the VC is aked */
+  spaceID: Scalars['UUID_NAMEID'];
   /** Virtual Contributor Type. */
   virtualContributorType: VirtualContributorType;
 };
@@ -13462,6 +13466,8 @@ export type ReplyToMessageMutation = {
 export type AskVirtualContributorQuestionQueryVariables = Exact<{
   prompt: Scalars['String'];
   question: Scalars['String'];
+  spaceId: Scalars['UUID_NAMEID'];
+  roomId: Scalars['UUID'];
 }>;
 
 export type AskVirtualContributorQuestionQuery = {

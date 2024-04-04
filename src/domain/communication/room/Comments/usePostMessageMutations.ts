@@ -64,7 +64,17 @@ const usePostMessageMutations = ({ roomId, isSubscribedToMessages }: UsePostMess
   const [postReply, { loading: postingReply }] = useReplyToMessageMutation();
   const [askVirtualContributor, { loading: askingVirtualContributor }] = useAskVirtualContributorQuestionLazyQuery();
 
-  const handleVirtualContributorTag = async (message: string, threadId?: string): Promise<MessageDetailsFragment | undefined> => {
+  const handleVirtualContributorTag = async ({
+    message,
+    roomId,
+    spaceId,
+    threadId,
+  }: {
+    message: string;
+    spaceId: string;
+    roomId: string;
+    threadId?: string;
+  }): Promise<MessageDetailsFragment | undefined> => {
     // Regular expression to match [@VirtualContributor n] pattern
     const match = message.match(/\[@VirtualContributor (\d+)/);
 
@@ -78,8 +88,8 @@ const usePostMessageMutations = ({ roomId, isSubscribedToMessages }: UsePostMess
           variables: {
             prompt,
             question: message,
-            // spaceId: spaceNameId,
-            // roomId,
+            spaceId,
+            roomId,
           },
         });
         if (data?.askVirtualContributorQuestion) {
@@ -97,11 +107,12 @@ const usePostMessageMutations = ({ roomId, isSubscribedToMessages }: UsePostMess
       }
     }
     return undefined;
-  }
+  };
 
   const handlePostMessage = async (message: string) => {
     const requiredRoomId = ensurePresence(roomId);
-    const vcResponse = await handleVirtualContributorTag(message);
+    const spaceId = ensurePresence(spaceNameId);
+    const vcResponse = await handleVirtualContributorTag({ message, spaceId, roomId: requiredRoomId });
 
     return await postMessage({
       variables: {
@@ -166,7 +177,14 @@ const usePostMessageMutations = ({ roomId, isSubscribedToMessages }: UsePostMess
 
   const handleReply = async ({ threadId, messageText }: { threadId: string; messageText: string }) => {
     const requiredRoomId = ensurePresence(roomId);
-    const vcResponse = await handleVirtualContributorTag(messageText, threadId);
+    const spaceId = ensurePresence(spaceNameId);
+
+    const vcResponse = await handleVirtualContributorTag({
+      message: messageText,
+      spaceId,
+      roomId: requiredRoomId,
+      threadId,
+    });
 
     return postReply({
       variables: {

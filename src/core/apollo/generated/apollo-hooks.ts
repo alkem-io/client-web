@@ -10258,9 +10258,15 @@ export type ReplyToMessageMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.ReplyToMessageMutationVariables
 >;
 export const AskVirtualContributorQuestionDocument = gql`
-  query askVirtualContributorQuestion($prompt: String!, $question: String!) {
+  query askVirtualContributorQuestion($prompt: String!, $question: String!, $spaceId: UUID_NAMEID!, $roomId: UUID!) {
     askVirtualContributorQuestion(
-      chatData: { prompt: $prompt, question: $question, virtualContributorType: VIRTUAL_CONTRIBUTOR }
+      chatData: {
+        prompt: $prompt
+        question: $question
+        spaceID: $spaceId
+        roomID: $roomId
+        virtualContributorType: VIRTUAL_CONTRIBUTOR
+      }
     ) {
       id
       question
@@ -10287,6 +10293,8 @@ export const AskVirtualContributorQuestionDocument = gql`
  *   variables: {
  *      prompt: // value for 'prompt'
  *      question: // value for 'question'
+ *      spaceId: // value for 'spaceId'
+ *      roomId: // value for 'roomId'
  *   },
  * });
  */
