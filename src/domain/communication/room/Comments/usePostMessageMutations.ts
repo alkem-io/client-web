@@ -61,49 +61,10 @@ const usePostMessageMutations = ({ roomId, isSubscribedToMessages }: UsePostMess
   }, [virtualContributorsData]);
 
   const [postMessage, { loading: postingMessage }] = useSendMessageToRoomMutation();
-
-  const [postReply, { loading: postingReply }] = useReplyToMessageMutation({
-    update: (cache, { data }) => {
-      if (isSubscribedToMessages) {
-        return;
-      }
-
-      const cacheCommentsId = cache.identify({
-        id: roomId,
-        __typename: 'Room',
-      });
-
-      if (!cacheCommentsId) {
-        return;
-      }
-
-      cache.modify({
-        id: cacheCommentsId,
-        fields: {
-          messages(existingMessages = []) {
-            if (!data) {
-              return existingMessages;
-            }
-
-            const newMessage = cache.writeFragment({
-              data: data?.sendMessageReplyToRoom,
-              fragment: MessageDetailsFragmentDoc,
-              fragmentName: 'MessageDetails',
-            });
-            return [...existingMessages, newMessage];
-          },
-        },
-      });
-    },
-  });
-
+  const [postReply, { loading: postingReply }] = useReplyToMessageMutation();
   const [askVirtualContributor, { loading: askingVirtualContributor }] = useAskVirtualContributorQuestionLazyQuery();
 
-  const handlePostMessage = async (message: string) => {
-    const requiredRoomId = ensurePresence(roomId);
-
-    let VCResponse: MessageDetailsFragment | undefined = undefined;
-
+  const handleVirtualContributorTag = async (message: string, threadId?: string): Promise<MessageDetailsFragment | undefined> => {
     // Regular expression to match [@VirtualContributor n] pattern
     const match = message.match(/\[@VirtualContributor (\d+)/);
 
@@ -122,19 +83,25 @@ const usePostMessageMutations = ({ roomId, isSubscribedToMessages }: UsePostMess
           },
         });
         if (data?.askVirtualContributorQuestion) {
-          VCResponse = {
+          return {
             __typename: 'Message',
             id: uniqueId(), //data?.askVirtualContributorQuestion.id ?? ,
             message: data?.askVirtualContributorQuestion.answer,
             timestamp: new Date(Date.now() + 5000).getTime(),
             sender: virtualContributor,
             reactions: [],
-            threadID: null,
+            threadID: threadId ?? null,
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          } as any; // TODO! threadId cannot be undefined because of Apollo and cannot be null :(
+          } as any; // TODO! threadId cannot be undefined because of Apollo cache error and cannot be null because a typescript error :(
         }
       }
     }
+    return undefined;
+  }
+
+  const handlePostMessage = async (message: string) => {
+    const requiredRoomId = ensurePresence(roomId);
+    const vcResponse = await handleVirtualContributorTag(message);
 
     return await postMessage({
       variables: {
@@ -152,7 +119,7 @@ const usePostMessageMutations = ({ roomId, isSubscribedToMessages }: UsePostMess
         if (!cacheRoomId) {
           return;
         }
-        if (VCResponse) {
+        if (vcResponse) {
           cache.modify({
             id: cacheRoomId,
             fields: {
@@ -161,8 +128,8 @@ const usePostMessageMutations = ({ roomId, isSubscribedToMessages }: UsePostMess
                   return existingMessages;
                 }
                 const newMessage = cache.writeFragment({
-                  id: `Message:${VCResponse!.id}`,
-                  data: VCResponse,
+                  id: `Message:${vcResponse!.id}`,
+                  data: vcResponse,
                   fragment: MessageDetailsFragmentDoc,
                   fragmentName: 'MessageDetails',
                 });
@@ -197,14 +164,66 @@ const usePostMessageMutations = ({ roomId, isSubscribedToMessages }: UsePostMess
     });
   };
 
-  const handleReply = ({ threadId, messageText }: { threadId: string; messageText: string }) => {
+  const handleReply = async ({ threadId, messageText }: { threadId: string; messageText: string }) => {
     const requiredRoomId = ensurePresence(roomId);
+    const vcResponse = await handleVirtualContributorTag(messageText, threadId);
 
     return postReply({
       variables: {
         roomId: requiredRoomId,
         message: messageText,
         threadId,
+      },
+      update: (cache, { data }) => {
+        const cacheRoomId = cache.identify({
+          id: roomId,
+          __typename: 'Room',
+        });
+
+        if (!cacheRoomId) {
+          return;
+        }
+        if (vcResponse) {
+          cache.modify({
+            id: cacheRoomId,
+            fields: {
+              messages(existingMessages = []) {
+                if (!data) {
+                  return existingMessages;
+                }
+                const newMessage = cache.writeFragment({
+                  id: `Message:${vcResponse!.id}`,
+                  data: vcResponse,
+                  fragment: MessageDetailsFragmentDoc,
+                  fragmentName: 'MessageDetails',
+                });
+                return [...existingMessages, newMessage];
+              },
+            },
+          });
+        }
+
+        if (isSubscribedToMessages) {
+          return;
+        }
+
+        cache.modify({
+          id: cacheRoomId,
+          fields: {
+            messages(existingMessages = []) {
+              if (!data) {
+                return existingMessages;
+              }
+
+              const newMessage = cache.writeFragment({
+                data: data?.sendMessageReplyToRoom,
+                fragment: MessageDetailsFragmentDoc,
+                fragmentName: 'MessageDetails',
+              });
+              return [...existingMessages, newMessage];
+            },
+          },
+        });
       },
     });
   };
