@@ -10259,7 +10259,9 @@ export type ReplyToMessageMutationOptions = Apollo.BaseMutationOptions<
 >;
 export const AskVirtualContributorQuestionDocument = gql`
   query askVirtualContributorQuestion($prompt: String!, $question: String!) {
-    askVirtualContributorQuestion(chatData: { prompt: $prompt, question: $question }) {
+    askVirtualContributorQuestion(
+      chatData: { prompt: $prompt, question: $question, virtualContributorType: VIRTUAL_CONTRIBUTOR }
+    ) {
       id
       question
       answer

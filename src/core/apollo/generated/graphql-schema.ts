@@ -5660,6 +5660,8 @@ export type VirtualContributorInput = {
   prompt: Scalars['String'];
   /** The question that is being asked. */
   question: Scalars['String'];
+  /** Virtual Contributor Type. */
+  virtualContributorType: VirtualContributorType;
 };
 
 export type VirtualContributorResult = {
@@ -5673,6 +5675,11 @@ export type VirtualContributorResult = {
   /** The sources used to answer the question */
   sources?: Maybe<Array<Source>>;
 };
+
+export enum VirtualContributorType {
+  CommunityManager = 'COMMUNITY_MANAGER',
+  VirtualContributor = 'VIRTUAL_CONTRIBUTOR',
+}
 
 export type Visual = {
   __typename?: 'Visual';
