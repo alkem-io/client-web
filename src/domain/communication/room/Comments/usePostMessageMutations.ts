@@ -15,6 +15,7 @@ import {
 import { compact, uniqueId } from 'lodash';
 import { MentionableUsersQuery, MessageDetailsFragment } from '../../../../core/apollo/generated/graphql-schema';
 import { useMemo } from 'react';
+import { useUrlParams } from '../../../../core/routing/useUrlParams';
 
 interface UsePostMessageMutationsOptions {
   roomId: string | undefined;
@@ -22,7 +23,9 @@ interface UsePostMessageMutationsOptions {
 }
 
 const usePostMessageMutations = ({ roomId, isSubscribedToMessages }: UsePostMessageMutationsOptions) => {
+  const { spaceNameId } = useUrlParams();
   const [cookies] = useCookies([ALKEMIO_COOKIE_PROMPT1, ALKEMIO_COOKIE_PROMPT2, ALKEMIO_COOKIE_PROMPT3]);
+
   const { data: virtualContributorsData } = useMentionableUsersQuery({
     variables: {
       filter: {
@@ -44,6 +47,7 @@ const usePostMessageMutations = ({ roomId, isSubscribedToMessages }: UsePostMess
             ...user,
           };
         }
+        return undefined; // Will be removed by lodash.compact
       })
     );
     // Convert the array of users into a Record
@@ -51,6 +55,7 @@ const usePostMessageMutations = ({ roomId, isSubscribedToMessages }: UsePostMess
       record[user.virtualContributorNumber] = user;
       return record;
     }, {} as Record<string, MentionableUsersQuery['usersPaginated']['users'][0]>);
+
     console.log('Available virtual contributors', result);
     return result;
   }, [virtualContributorsData]);
@@ -112,6 +117,8 @@ const usePostMessageMutations = ({ roomId, isSubscribedToMessages }: UsePostMess
           variables: {
             prompt,
             question: message,
+            // spaceId: spaceNameId,
+            // roomId,
           },
         });
         if (data?.askVirtualContributorQuestion) {
@@ -124,7 +131,7 @@ const usePostMessageMutations = ({ roomId, isSubscribedToMessages }: UsePostMess
             reactions: [],
             threadID: null,
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          } as any;
+          } as any; // TODO! threadId cannot be undefined because of Apollo and cannot be null :(
         }
       }
     }
