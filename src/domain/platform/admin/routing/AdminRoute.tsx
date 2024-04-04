@@ -10,7 +10,8 @@ import { SpacesRoute } from '../space/routing/SpacesRoute';
 import NoIdentityRedirect from '../../../../core/routing/NoIdentityRedirect';
 import AdminInnovationPacksRoutes from '../templates/InnovationPacks/admin/AdminInnovationPackRoutes';
 import AdminInnovationHubsRoutes from '../../../innovationHub/InnovationHubsAdmin/InnovationHubsAdminRoutes';
-import AISettingsRoutes from '../ai/AISettingsRoutes';
+import AISettingsRoutes from '../ai/AISettingsRoutes';  //!! Remove
+import VirtualContributorsRoutes from '../virtual-contributors/VirtualContributorsRoutes';
 
 export const AdminRoute: FC = () => {
   useTransactionScope({ type: 'admin' });
@@ -27,6 +28,7 @@ export const AdminRoute: FC = () => {
           <Route path="innovation-packs/*" element={<AdminInnovationPacksRoutes />} />
           <Route path="innovation-hubs/*" element={<AdminInnovationHubsRoutes />} />
           <Route path="ai-settings/*" element={<AISettingsRoutes />} />
+          <Route path="virtual-contributors/*" element={<VirtualContributorsRoutes />} />
           <Route path="*" element={<Error404 />} />
         </Routes>
       </NonAdminRedirect>

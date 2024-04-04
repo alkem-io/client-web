@@ -1,0 +1,17 @@
+query AdminVirtualContributors {
+  virtualContributors {
+    id
+    authorization {
+      id
+      myPrivileges
+    }
+    profile{
+      displayName
+      avatar: visual(type: AVATAR) {
+        ...VisualFull
+      }
+    }
+    prompt
+    type
+  }
+}

@@ -246,6 +246,7 @@
     "status": "Status",
     "aspect": "Card",
     "aspects": "Cards",
+    "prompt": "Prompt",
     "host": "Host",
     "lead": "Lead",
     "space": "Space",
@@ -343,6 +344,7 @@
     "url": "URL",
     "sources": "Sources",
     "ai-settings": "AI",
+    "virtual-contributors": "VC",
     "genders": {
       "notSpecified": "not specified",
       "male": "male",

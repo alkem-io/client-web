@@ -21780,6 +21780,78 @@ export type DeleteWhiteboardTemplateMutationOptions = Apollo.BaseMutationOptions
   SchemaTypes.DeleteWhiteboardTemplateMutation,
   SchemaTypes.DeleteWhiteboardTemplateMutationVariables
 >;
+export const AdminVirtualContributorsDocument = gql`
+  query AdminVirtualContributors {
+    virtualContributors {
+      id
+      authorization {
+        id
+        myPrivileges
+      }
+      profile {
+        displayName
+        avatar: visual(type: AVATAR) {
+          ...VisualFull
+        }
+      }
+      prompt
+      type
+    }
+  }
+  ${VisualFullFragmentDoc}
+`;
+
+/**
+ * __useAdminVirtualContributorsQuery__
+ *
+ * To run a query within a React component, call `useAdminVirtualContributorsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAdminVirtualContributorsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAdminVirtualContributorsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useAdminVirtualContributorsQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.AdminVirtualContributorsQuery,
+    SchemaTypes.AdminVirtualContributorsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.AdminVirtualContributorsQuery, SchemaTypes.AdminVirtualContributorsQueryVariables>(
+    AdminVirtualContributorsDocument,
+    options
+  );
+}
+
+export function useAdminVirtualContributorsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.AdminVirtualContributorsQuery,
+    SchemaTypes.AdminVirtualContributorsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.AdminVirtualContributorsQuery,
+    SchemaTypes.AdminVirtualContributorsQueryVariables
+  >(AdminVirtualContributorsDocument, options);
+}
+
+export type AdminVirtualContributorsQueryHookResult = ReturnType<typeof useAdminVirtualContributorsQuery>;
+export type AdminVirtualContributorsLazyQueryHookResult = ReturnType<typeof useAdminVirtualContributorsLazyQuery>;
+export type AdminVirtualContributorsQueryResult = Apollo.QueryResult<
+  SchemaTypes.AdminVirtualContributorsQuery,
+  SchemaTypes.AdminVirtualContributorsQueryVariables
+>;
+export function refetchAdminVirtualContributorsQuery(variables?: SchemaTypes.AdminVirtualContributorsQueryVariables) {
+  return { query: AdminVirtualContributorsDocument, variables: variables };
+}
+
 export const ConfigurationDocument = gql`
   query configuration {
     platform {

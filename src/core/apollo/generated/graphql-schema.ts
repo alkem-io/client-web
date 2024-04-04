@@ -24976,6 +24976,40 @@ export type DeleteWhiteboardTemplateMutation = {
   deleteWhiteboardTemplate: { __typename?: 'WhiteboardTemplate'; id: string };
 };
 
+export type AdminVirtualContributorsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type AdminVirtualContributorsQuery = {
+  __typename?: 'Query';
+  virtualContributors: Array<{
+    __typename?: 'VirtualContributor';
+    id: string;
+    prompt?: string | undefined;
+    type: VirtualPersonaType;
+    authorization?:
+      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+      | undefined;
+    profile: {
+      __typename?: 'Profile';
+      displayName: string;
+      avatar?:
+        | {
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: string;
+            allowedTypes: Array<string>;
+            aspectRatio: number;
+            maxHeight: number;
+            maxWidth: number;
+            minHeight: number;
+            minWidth: number;
+            alternativeText?: string | undefined;
+          }
+        | undefined;
+    };
+  }>;
+};
+
 export type ConfigurationQueryVariables = Exact<{ [key: string]: never }>;
 
 export type ConfigurationQuery = {
