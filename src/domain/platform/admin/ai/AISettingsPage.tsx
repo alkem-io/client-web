@@ -71,12 +71,12 @@ const AISettingsPage: FC<AISettingsPageProps> = () => {
       path: '/',
       sameSite: 'strict',
     });
-    setCookie(ALKEMIO_COOKIE_PROMPT2, values.prompt1, {
+    setCookie(ALKEMIO_COOKIE_PROMPT2, values.prompt2, {
       expires: new Date(COOKIE_EXPIRY),
       path: '/',
       sameSite: 'strict',
     });
-    setCookie(ALKEMIO_COOKIE_PROMPT3, values.prompt1, {
+    setCookie(ALKEMIO_COOKIE_PROMPT3, values.prompt3, {
       expires: new Date(COOKIE_EXPIRY),
       path: '/',
       sameSite: 'strict',
