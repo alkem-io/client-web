@@ -10265,7 +10265,7 @@ export const AskVirtualContributorQuestionDocument = gql`
         question: $question
         spaceID: $spaceId
         roomID: $roomId
-        virtualContributorType: VIRTUAL_CONTRIBUTOR
+        virtualPersonaType: TOPIC_EXPERT
       }
     ) {
       id

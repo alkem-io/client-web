@@ -594,6 +594,12 @@ export type AssignCommunityRoleToUserInput = {
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
+export type AssignCommunityRoleToVirtualInput = {
+  communityID: Scalars['UUID'];
+  role: CommunityRole;
+  virtualContributorID: Scalars['UUID_NAMEID'];
+};
+
 export type AssignGlobalAdminInput = {
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
@@ -1260,6 +1266,8 @@ export type Community = Groupable & {
   policy?: Maybe<CommunityPolicy>;
   /** All users that have the specified Role in this Community. */
   usersInRole?: Maybe<Array<User>>;
+  /** All virtuals that have the specified Role in this Community. */
+  virtualContributorsInRole?: Maybe<Array<VirtualContributor>>;
 };
 
 export type CommunityAvailableLeadUsersArgs = {
@@ -1287,6 +1295,10 @@ export type CommunityOrganizationsInRoleArgs = {
 };
 
 export type CommunityUsersInRoleArgs = {
+  role: CommunityRole;
+};
+
+export type CommunityVirtualContributorsInRoleArgs = {
   role: CommunityRole;
 };
 
@@ -1738,6 +1750,15 @@ export type CreateUserInput = {
   profileData: CreateProfileInput;
 };
 
+export type CreateVirtualContributorInput = {
+  /** A readable identifier, unique within the containing scope. */
+  nameID: Scalars['NameID'];
+  profileData: CreateProfileInput;
+  prompt: Scalars['String'];
+  /** VirtualContributor Persona  type. */
+  type: VirtualPersonaType;
+};
+
 export type CreateWhiteboardInput = {
   content?: InputMaybe<Scalars['WhiteboardContent']>;
   /** A readable identifier, unique within the containing scope. If not provided it will be generated based on the displayName. */
@@ -1889,6 +1910,10 @@ export type DeleteUserGroupInput = {
 
 export type DeleteUserInput = {
   ID: Scalars['UUID_NAMEID_EMAIL'];
+};
+
+export type DeleteVirtualContributorInput = {
+  ID: Scalars['UUID_NAMEID'];
 };
 
 export type DeleteWhiteboardInput = {
@@ -2581,6 +2606,8 @@ export type Mutation = {
   assignCommunityRoleToOrganization: Organization;
   /** Assigns a User to a role in the specified Community. */
   assignCommunityRoleToUser: User;
+  /** Assigns a Virtual Contributor to a role in the specified Community. */
+  assignCommunityRoleToVirtual: VirtualContributor;
   /** Assigns a User as a Global Admin. */
   assignUserAsGlobalAdmin: User;
   /** Assigns a User as a Global Community Admin. */
@@ -2605,6 +2632,8 @@ export type Mutation = {
   authorizationPolicyResetOnSpace: Space;
   /** Reset the Authorization policy on the specified User. */
   authorizationPolicyResetOnUser: User;
+  /** Reset the Authorization Policy on the specified VirtualContributor. */
+  authorizationPolicyResetOnVirtualContributor: VirtualContributor;
   /** Reset the specified Authorization Policy to global admin privileges */
   authorizationPolicyResetToGlobalAdminsAccess: Authorization;
   /** Generate Alkemio user credential offer */
@@ -2663,6 +2692,8 @@ export type Mutation = {
   createUser: User;
   /** Creates a new User profile on the platform for a user that has a valid Authentication session. */
   createUserNewRegistration: User;
+  /** Creates a new VirtualContributor on the platform. */
+  createVirtualContributor: VirtualContributor;
   /** Creates a new WhiteboardTemplate on the specified TemplatesSet. */
   createWhiteboardTemplate: WhiteboardTemplate;
   /** Deletes the specified Actor. */
@@ -2717,6 +2748,8 @@ export type Mutation = {
   deleteUserApplication: Application;
   /** Deletes the specified User Group. */
   deleteUserGroup: UserGroup;
+  /** Deletes the specified VirtualContributor. */
+  deleteVirtualContributor: VirtualContributor;
   /** Deletes the specified Whiteboard. */
   deleteWhiteboard: Whiteboard;
   /** Deletes the specified WhiteboardTemplate. */
@@ -2747,6 +2780,8 @@ export type Mutation = {
   removeCommunityRoleFromOrganization: Organization;
   /** Removes a User from a Role in the specified Community. */
   removeCommunityRoleFromUser: User;
+  /** Removes a Virtual from a Role in the specified Community. */
+  removeCommunityRoleFromVirtual: VirtualContributor;
   /** Removes a message. */
   removeMessageOnRoom: Scalars['MessageID'];
   /** Remove a reaction on a message from the specified Room. */
@@ -2861,6 +2896,8 @@ export type Mutation = {
   updateUserGroup: UserGroup;
   /** Update the platform settings, such as nameID, email, for the specified User. */
   updateUserPlatformSettings: User;
+  /** Updates the specified VirtualContributor. */
+  updateVirtualContributor: VirtualContributor;
   /** Updates the image URI for the specified Visual. */
   updateVisual: Visual;
   /** Updates the specified Whiteboard. */
@@ -2907,6 +2944,10 @@ export type MutationAssignCommunityRoleToUserArgs = {
   roleData: AssignCommunityRoleToUserInput;
 };
 
+export type MutationAssignCommunityRoleToVirtualArgs = {
+  roleData: AssignCommunityRoleToVirtualInput;
+};
+
 export type MutationAssignUserAsGlobalAdminArgs = {
   membershipData: AssignGlobalAdminInput;
 };
@@ -2945,6 +2986,10 @@ export type MutationAuthorizationPolicyResetOnSpaceArgs = {
 
 export type MutationAuthorizationPolicyResetOnUserArgs = {
   authorizationResetData: UserAuthorizationResetInput;
+};
+
+export type MutationAuthorizationPolicyResetOnVirtualContributorArgs = {
+  authorizationResetData: VirtualContributorAuthorizationResetInput;
 };
 
 export type MutationAuthorizationPolicyResetToGlobalAdminsAccessArgs = {
@@ -3055,6 +3100,10 @@ export type MutationCreateUserArgs = {
   userData: CreateUserInput;
 };
 
+export type MutationCreateVirtualContributorArgs = {
+  virtualContributorData: CreateVirtualContributorInput;
+};
+
 export type MutationCreateWhiteboardTemplateArgs = {
   whiteboardTemplateInput: CreateWhiteboardTemplateOnTemplatesSetInput;
 };
@@ -3163,6 +3212,10 @@ export type MutationDeleteUserGroupArgs = {
   deleteData: DeleteUserGroupInput;
 };
 
+export type MutationDeleteVirtualContributorArgs = {
+  deleteData: DeleteVirtualContributorInput;
+};
+
 export type MutationDeleteWhiteboardArgs = {
   whiteboardData: DeleteWhiteboardInput;
 };
@@ -3217,6 +3270,10 @@ export type MutationRemoveCommunityRoleFromOrganizationArgs = {
 
 export type MutationRemoveCommunityRoleFromUserArgs = {
   roleData: RemoveCommunityRoleFromUserInput;
+};
+
+export type MutationRemoveCommunityRoleFromVirtualArgs = {
+  roleData: RemoveCommunityRoleFromVirtualInput;
 };
 
 export type MutationRemoveMessageOnRoomArgs = {
@@ -3437,6 +3494,10 @@ export type MutationUpdateUserGroupArgs = {
 
 export type MutationUpdateUserPlatformSettingsArgs = {
   updateData: UpdateUserPlatformSettingsInput;
+};
+
+export type MutationUpdateVirtualContributorArgs = {
+  virtualContributorData: UpdateVirtualInput;
 };
 
 export type MutationUpdateVisualArgs = {
@@ -3953,8 +4014,8 @@ export type Query = {
   adminCommunicationOrphanedUsage: CommunicationAdminOrphanedUsageResult;
   /** Ask the chat engine for guidance. */
   askChatGuidanceQuestion: ChatGuidanceResult;
-  /** Ask the chat engine for guidance. */
-  askVirtualContributorQuestion: VirtualContributorResult;
+  /** Ask the virtual persona engine for guidance. */
+  askVirtualContributorQuestion: VirtualPersonaResult;
   /** Get supported credential metadata */
   getSupportedVerifiedCredentialMetadata: Array<CredentialMetadataOutput>;
   /** Allow direct lookup of entities from the domain model */
@@ -3995,6 +4056,10 @@ export type Query = {
   usersPaginated: PaginatedUsers;
   /** All Users that hold credentials matching the supplied criteria. */
   usersWithAuthorizationCredential: Array<User>;
+  /** A particular VirtualContributor */
+  virtualContributor: VirtualContributor;
+  /** The VirtualContributors on this platform */
+  virtualContributors: Array<VirtualContributor>;
 };
 
 export type QueryActivityFeedArgs = {
@@ -4022,7 +4087,7 @@ export type QueryAskChatGuidanceQuestionArgs = {
 };
 
 export type QueryAskVirtualContributorQuestionArgs = {
-  chatData: VirtualContributorInput;
+  chatData: VirtualPersonaInput;
 };
 
 export type QueryOrganizationArgs = {
@@ -4105,6 +4170,16 @@ export type QueryUsersPaginatedArgs = {
 
 export type QueryUsersWithAuthorizationCredentialArgs = {
   credentialsCriteriaData: UsersWithAuthorizationCredentialInput;
+};
+
+export type QueryVirtualContributorArgs = {
+  ID: Scalars['UUID_NAMEID'];
+};
+
+export type QueryVirtualContributorsArgs = {
+  filter?: InputMaybe<ContributorFilterInput>;
+  limit?: InputMaybe<Scalars['Float']>;
+  shuffle?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type Question = {
@@ -4302,6 +4377,12 @@ export type RemoveCommunityRoleFromUserInput = {
   communityID: Scalars['UUID'];
   role: CommunityRole;
   userID: Scalars['UUID_NAMEID_EMAIL'];
+};
+
+export type RemoveCommunityRoleFromVirtualInput = {
+  communityID: Scalars['UUID'];
+  role: CommunityRole;
+  virtualContributorID: Scalars['UUID_NAMEID'];
 };
 
 export type RemoveGlobalAdminInput = {
@@ -5486,6 +5567,16 @@ export type UpdateUserPreferenceInput = {
   value: Scalars['String'];
 };
 
+export type UpdateVirtualInput = {
+  /** The ID or NameID of the Virtual to update. */
+  ID: Scalars['UUID_NAMEID'];
+  /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
+  nameID?: InputMaybe<Scalars['NameID']>;
+  /** The Profile of this entity. */
+  profileData?: InputMaybe<UpdateProfileInput>;
+  prompt?: InputMaybe<Scalars['String']>;
+};
+
 export type UpdateVisualInput = {
   alternativeText?: InputMaybe<Scalars['String']>;
   uri: Scalars['String'];
@@ -5655,7 +5746,32 @@ export type VerifiedCredentialClaim = {
   value: Scalars['JSON'];
 };
 
-export type VirtualContributorInput = {
+export type VirtualContributor = {
+  __typename?: 'VirtualContributor';
+  /** The Agent representing this User. */
+  agent?: Maybe<Agent>;
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** A name identifier of the entity, unique within a given scope. */
+  nameID: Scalars['NameID'];
+  /** The profile for this Virtual. */
+  profile: Profile;
+  /** The prompt being used by this Virtual */
+  prompt?: Maybe<Scalars['String']>;
+  /** The StorageAggregator for managing storage buckets in use by this Virtual */
+  storageAggregator?: Maybe<StorageAggregator>;
+  /** The VirtualContributor Persona type */
+  type: VirtualPersonaType;
+};
+
+export type VirtualContributorAuthorizationResetInput = {
+  /** The identifier of the Virtual Contributor whose Authorization Policy should be reset. */
+  virtualID: Scalars['UUID_NAMEID_EMAIL'];
+};
+
+export type VirtualPersonaInput = {
   /** Prompt. */
   prompt: Scalars['String'];
   /** The question that is being asked. */
@@ -5664,12 +5780,12 @@ export type VirtualContributorInput = {
   roomID: Scalars['UUID'];
   /** The Space in which the question to the VC is aked */
   spaceID: Scalars['UUID_NAMEID'];
-  /** Virtual Contributor Type. */
-  virtualContributorType: VirtualContributorType;
+  /** Virtual Persona Type. */
+  virtualPersonaType: VirtualPersonaType;
 };
 
-export type VirtualContributorResult = {
-  __typename?: 'VirtualContributorResult';
+export type VirtualPersonaResult = {
+  __typename?: 'VirtualPersonaResult';
   /** The answer to the question */
   answer: Scalars['String'];
   /** The id of the answer; null if an error was returned */
@@ -5680,9 +5796,10 @@ export type VirtualContributorResult = {
   sources?: Maybe<Array<Source>>;
 };
 
-export enum VirtualContributorType {
+export enum VirtualPersonaType {
   CommunityManager = 'COMMUNITY_MANAGER',
-  VirtualContributor = 'VIRTUAL_CONTRIBUTOR',
+  DigitalTwin = 'DIGITAL_TWIN',
+  TopicExpert = 'TOPIC_EXPERT',
 }
 
 export type Visual = {
@@ -13473,7 +13590,7 @@ export type AskVirtualContributorQuestionQueryVariables = Exact<{
 export type AskVirtualContributorQuestionQuery = {
   __typename?: 'Query';
   askVirtualContributorQuestion: {
-    __typename?: 'VirtualContributorResult';
+    __typename?: 'VirtualPersonaResult';
     id?: string | undefined;
     question: string;
     answer: string;

@@ -907,6 +907,7 @@ export type CommunityKeySpecifier = (
   | 'organizationsInRole'
   | 'policy'
   | 'usersInRole'
+  | 'virtualContributorsInRole'
   | CommunityKeySpecifier
 )[];
 export type CommunityFieldPolicy = {
@@ -927,6 +928,7 @@ export type CommunityFieldPolicy = {
   organizationsInRole?: FieldPolicy<any> | FieldReadFunction<any>;
   policy?: FieldPolicy<any> | FieldReadFunction<any>;
   usersInRole?: FieldPolicy<any> | FieldReadFunction<any>;
+  virtualContributorsInRole?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CommunityGuidelinesKeySpecifier = ('authorization' | 'id' | 'profile' | CommunityGuidelinesKeySpecifier)[];
 export type CommunityGuidelinesFieldPolicy = {
@@ -1496,6 +1498,7 @@ export type MutationKeySpecifier = (
   | 'applyForCommunityMembership'
   | 'assignCommunityRoleToOrganization'
   | 'assignCommunityRoleToUser'
+  | 'assignCommunityRoleToVirtual'
   | 'assignUserAsGlobalAdmin'
   | 'assignUserAsGlobalCommunityAdmin'
   | 'assignUserAsGlobalSpacesAdmin'
@@ -1508,6 +1511,7 @@ export type MutationKeySpecifier = (
   | 'authorizationPolicyResetOnPlatform'
   | 'authorizationPolicyResetOnSpace'
   | 'authorizationPolicyResetOnUser'
+  | 'authorizationPolicyResetOnVirtualContributor'
   | 'authorizationPolicyResetToGlobalAdminsAccess'
   | 'beginAlkemioUserVerifiedCredentialOfferInteraction'
   | 'beginCommunityMemberVerifiedCredentialOfferInteraction'
@@ -1537,6 +1541,7 @@ export type MutationKeySpecifier = (
   | 'createTagsetOnProfile'
   | 'createUser'
   | 'createUserNewRegistration'
+  | 'createVirtualContributor'
   | 'createWhiteboardTemplate'
   | 'deleteActor'
   | 'deleteActorGroup'
@@ -1564,6 +1569,7 @@ export type MutationKeySpecifier = (
   | 'deleteUser'
   | 'deleteUserApplication'
   | 'deleteUserGroup'
+  | 'deleteVirtualContributor'
   | 'deleteWhiteboard'
   | 'deleteWhiteboardTemplate'
   | 'eventOnApplication'
@@ -1579,6 +1585,7 @@ export type MutationKeySpecifier = (
   | 'moveContributionToCallout'
   | 'removeCommunityRoleFromOrganization'
   | 'removeCommunityRoleFromUser'
+  | 'removeCommunityRoleFromVirtual'
   | 'removeMessageOnRoom'
   | 'removeReactionToMessageInRoom'
   | 'removeUserAsGlobalAdmin'
@@ -1636,6 +1643,7 @@ export type MutationKeySpecifier = (
   | 'updateUser'
   | 'updateUserGroup'
   | 'updateUserPlatformSettings'
+  | 'updateVirtualContributor'
   | 'updateVisual'
   | 'updateWhiteboard'
   | 'updateWhiteboardContent'
@@ -1655,6 +1663,7 @@ export type MutationFieldPolicy = {
   applyForCommunityMembership?: FieldPolicy<any> | FieldReadFunction<any>;
   assignCommunityRoleToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   assignCommunityRoleToUser?: FieldPolicy<any> | FieldReadFunction<any>;
+  assignCommunityRoleToVirtual?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsGlobalAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsGlobalCommunityAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsGlobalSpacesAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1667,6 +1676,7 @@ export type MutationFieldPolicy = {
   authorizationPolicyResetOnPlatform?: FieldPolicy<any> | FieldReadFunction<any>;
   authorizationPolicyResetOnSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   authorizationPolicyResetOnUser?: FieldPolicy<any> | FieldReadFunction<any>;
+  authorizationPolicyResetOnVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
   authorizationPolicyResetToGlobalAdminsAccess?: FieldPolicy<any> | FieldReadFunction<any>;
   beginAlkemioUserVerifiedCredentialOfferInteraction?: FieldPolicy<any> | FieldReadFunction<any>;
   beginCommunityMemberVerifiedCredentialOfferInteraction?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1696,6 +1706,7 @@ export type MutationFieldPolicy = {
   createTagsetOnProfile?: FieldPolicy<any> | FieldReadFunction<any>;
   createUser?: FieldPolicy<any> | FieldReadFunction<any>;
   createUserNewRegistration?: FieldPolicy<any> | FieldReadFunction<any>;
+  createVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
   createWhiteboardTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteActor?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteActorGroup?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1723,6 +1734,7 @@ export type MutationFieldPolicy = {
   deleteUser?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteUserApplication?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteUserGroup?: FieldPolicy<any> | FieldReadFunction<any>;
+  deleteVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteWhiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteWhiteboardTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   eventOnApplication?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1738,6 +1750,7 @@ export type MutationFieldPolicy = {
   moveContributionToCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   removeCommunityRoleFromOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   removeCommunityRoleFromUser?: FieldPolicy<any> | FieldReadFunction<any>;
+  removeCommunityRoleFromVirtual?: FieldPolicy<any> | FieldReadFunction<any>;
   removeMessageOnRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   removeReactionToMessageInRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserAsGlobalAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1795,6 +1808,7 @@ export type MutationFieldPolicy = {
   updateUser?: FieldPolicy<any> | FieldReadFunction<any>;
   updateUserGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   updateUserPlatformSettings?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
   updateVisual?: FieldPolicy<any> | FieldReadFunction<any>;
   updateWhiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
   updateWhiteboardContent?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2149,6 +2163,8 @@ export type QueryKeySpecifier = (
   | 'users'
   | 'usersPaginated'
   | 'usersWithAuthorizationCredential'
+  | 'virtualContributor'
+  | 'virtualContributors'
   | QueryKeySpecifier
 )[];
 export type QueryFieldPolicy = {
@@ -2179,6 +2195,8 @@ export type QueryFieldPolicy = {
   users?: FieldPolicy<any> | FieldReadFunction<any>;
   usersPaginated?: FieldPolicy<any> | FieldReadFunction<any>;
   usersWithAuthorizationCredential?: FieldPolicy<any> | FieldReadFunction<any>;
+  virtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
+  virtualContributors?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type QuestionKeySpecifier = ('id' | 'name' | 'value' | QuestionKeySpecifier)[];
 export type QuestionFieldPolicy = {
@@ -2918,14 +2936,35 @@ export type VerifiedCredentialClaimFieldPolicy = {
   name?: FieldPolicy<any> | FieldReadFunction<any>;
   value?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type VirtualContributorResultKeySpecifier = (
+export type VirtualContributorKeySpecifier = (
+  | 'agent'
+  | 'authorization'
+  | 'id'
+  | 'nameID'
+  | 'profile'
+  | 'prompt'
+  | 'storageAggregator'
+  | 'type'
+  | VirtualContributorKeySpecifier
+)[];
+export type VirtualContributorFieldPolicy = {
+  agent?: FieldPolicy<any> | FieldReadFunction<any>;
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  nameID?: FieldPolicy<any> | FieldReadFunction<any>;
+  profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  prompt?: FieldPolicy<any> | FieldReadFunction<any>;
+  storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type VirtualPersonaResultKeySpecifier = (
   | 'answer'
   | 'id'
   | 'question'
   | 'sources'
-  | VirtualContributorResultKeySpecifier
+  | VirtualPersonaResultKeySpecifier
 )[];
-export type VirtualContributorResultFieldPolicy = {
+export type VirtualPersonaResultFieldPolicy = {
   answer?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   question?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3754,9 +3793,13 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | VerifiedCredentialClaimKeySpecifier | (() => undefined | VerifiedCredentialClaimKeySpecifier);
     fields?: VerifiedCredentialClaimFieldPolicy;
   };
-  VirtualContributorResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | VirtualContributorResultKeySpecifier | (() => undefined | VirtualContributorResultKeySpecifier);
-    fields?: VirtualContributorResultFieldPolicy;
+  VirtualContributor?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | VirtualContributorKeySpecifier | (() => undefined | VirtualContributorKeySpecifier);
+    fields?: VirtualContributorFieldPolicy;
+  };
+  VirtualPersonaResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | VirtualPersonaResultKeySpecifier | (() => undefined | VirtualPersonaResultKeySpecifier);
+    fields?: VirtualPersonaResultFieldPolicy;
   };
   Visual?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | VisualKeySpecifier | (() => undefined | VisualKeySpecifier);

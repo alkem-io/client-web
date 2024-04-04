@@ -1,11 +1,11 @@
 query askVirtualContributorQuestion($prompt: String!, $question: String!, $spaceId: UUID_NAMEID!, $roomId: UUID!) {
   askVirtualContributorQuestion(
     chatData: {
-      prompt: $prompt,
-      question: $question,
-      spaceID: $spaceId,
-      roomID: $roomId,
-      virtualContributorType: VIRTUAL_CONTRIBUTOR
+      prompt: $prompt
+      question: $question
+      spaceID: $spaceId
+      roomID: $roomId
+      virtualPersonaType: TOPIC_EXPERT
     }
   ) {
     id
