@@ -780,11 +780,6 @@ export type ChallengeFieldPolicy = {
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type ChallengeCreatedKeySpecifier = ('challenge' | 'spaceID' | ChallengeCreatedKeySpecifier)[];
-export type ChallengeCreatedFieldPolicy = {
-  challenge?: FieldPolicy<any> | FieldReadFunction<any>;
-  spaceID?: FieldPolicy<any> | FieldReadFunction<any>;
-};
 export type ChallengeTemplateKeySpecifier = ('feedback' | 'name' | ChallengeTemplateKeySpecifier)[];
 export type ChallengeTemplateFieldPolicy = {
   feedback?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1844,11 +1839,6 @@ export type OpportunityFieldPolicy = {
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type OpportunityCreatedKeySpecifier = ('challengeID' | 'opportunity' | OpportunityCreatedKeySpecifier)[];
-export type OpportunityCreatedFieldPolicy = {
-  challengeID?: FieldPolicy<any> | FieldReadFunction<any>;
-  opportunity?: FieldPolicy<any> | FieldReadFunction<any>;
-};
 export type OrganizationKeySpecifier = (
   | 'admins'
   | 'agent'
@@ -2750,21 +2740,24 @@ export type StorageConfigFieldPolicy = {
 export type SubscriptionKeySpecifier = (
   | 'activityCreated'
   | 'calloutPostCreated'
-  | 'challengeCreated'
   | 'communicationDiscussionUpdated'
-  | 'opportunityCreated'
   | 'profileVerifiedCredential'
   | 'roomEvents'
+  | 'subspaceCreated'
   | SubscriptionKeySpecifier
 )[];
 export type SubscriptionFieldPolicy = {
   activityCreated?: FieldPolicy<any> | FieldReadFunction<any>;
   calloutPostCreated?: FieldPolicy<any> | FieldReadFunction<any>;
-  challengeCreated?: FieldPolicy<any> | FieldReadFunction<any>;
   communicationDiscussionUpdated?: FieldPolicy<any> | FieldReadFunction<any>;
-  opportunityCreated?: FieldPolicy<any> | FieldReadFunction<any>;
   profileVerifiedCredential?: FieldPolicy<any> | FieldReadFunction<any>;
   roomEvents?: FieldPolicy<any> | FieldReadFunction<any>;
+  subspaceCreated?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type SubspaceCreatedKeySpecifier = ('childJourney' | 'journeyID' | SubspaceCreatedKeySpecifier)[];
+export type SubspaceCreatedFieldPolicy = {
+  childJourney?: FieldPolicy<any> | FieldReadFunction<any>;
+  journeyID?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type TagsetKeySpecifier = (
   | 'allowedValues'
@@ -3239,10 +3232,6 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | ChallengeKeySpecifier | (() => undefined | ChallengeKeySpecifier);
     fields?: ChallengeFieldPolicy;
   };
-  ChallengeCreated?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | ChallengeCreatedKeySpecifier | (() => undefined | ChallengeCreatedKeySpecifier);
-    fields?: ChallengeCreatedFieldPolicy;
-  };
   ChallengeTemplate?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ChallengeTemplateKeySpecifier | (() => undefined | ChallengeTemplateKeySpecifier);
     fields?: ChallengeTemplateFieldPolicy;
@@ -3478,10 +3467,6 @@ export type StrictTypedTypePolicies = {
   Opportunity?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | OpportunityKeySpecifier | (() => undefined | OpportunityKeySpecifier);
     fields?: OpportunityFieldPolicy;
-  };
-  OpportunityCreated?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | OpportunityCreatedKeySpecifier | (() => undefined | OpportunityCreatedKeySpecifier);
-    fields?: OpportunityCreatedFieldPolicy;
   };
   Organization?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | OrganizationKeySpecifier | (() => undefined | OrganizationKeySpecifier);
@@ -3743,6 +3728,10 @@ export type StrictTypedTypePolicies = {
   Subscription?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SubscriptionKeySpecifier | (() => undefined | SubscriptionKeySpecifier);
     fields?: SubscriptionFieldPolicy;
+  };
+  SubspaceCreated?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | SubspaceCreatedKeySpecifier | (() => undefined | SubspaceCreatedKeySpecifier);
+    fields?: SubspaceCreatedFieldPolicy;
   };
   Tagset?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | TagsetKeySpecifier | (() => undefined | TagsetKeySpecifier);

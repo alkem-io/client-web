@@ -16779,49 +16779,6 @@ export function refetchChallengeProfileInfoQuery(variables: SchemaTypes.Challeng
   return { query: ChallengeProfileInfoDocument, variables: variables };
 }
 
-export const OpportunityCreatedDocument = gql`
-  subscription OpportunityCreated($challengeID: UUID!) {
-    opportunityCreated(challengeID: $challengeID) {
-      opportunity {
-        ...OpportunityCard
-      }
-    }
-  }
-  ${OpportunityCardFragmentDoc}
-`;
-
-/**
- * __useOpportunityCreatedSubscription__
- *
- * To run a query within a React component, call `useOpportunityCreatedSubscription` and pass it any options that fit your needs.
- * When your component renders, `useOpportunityCreatedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useOpportunityCreatedSubscription({
- *   variables: {
- *      challengeID: // value for 'challengeID'
- *   },
- * });
- */
-export function useOpportunityCreatedSubscription(
-  baseOptions: Apollo.SubscriptionHookOptions<
-    SchemaTypes.OpportunityCreatedSubscription,
-    SchemaTypes.OpportunityCreatedSubscriptionVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useSubscription<
-    SchemaTypes.OpportunityCreatedSubscription,
-    SchemaTypes.OpportunityCreatedSubscriptionVariables
-  >(OpportunityCreatedDocument, options);
-}
-
-export type OpportunityCreatedSubscriptionHookResult = ReturnType<typeof useOpportunityCreatedSubscription>;
-export type OpportunityCreatedSubscriptionResult =
-  Apollo.SubscriptionResult<SchemaTypes.OpportunityCreatedSubscription>;
 export const AboutPageNonMembersDocument = gql`
   query AboutPageNonMembers(
     $spaceId: UUID_NAMEID = "00000000-0000-0000-0000-000000000000"
@@ -19625,48 +19582,48 @@ export function refetchSpaceInnovationFlowTemplatesQuery(
   return { query: SpaceInnovationFlowTemplatesDocument, variables: variables };
 }
 
-export const ChallengeCreatedDocument = gql`
-  subscription ChallengeCreated($spaceID: UUID_NAMEID!) {
-    challengeCreated(spaceID: $spaceID) {
-      challenge {
-        ...ChallengeCard
+export const SubspaceCreatedDocument = gql`
+  subscription subspaceCreated($journeyID: UUID!) {
+    subspaceCreated(journeyID: $journeyID) {
+      childJourney {
+        ...SpaceCard
       }
     }
   }
-  ${ChallengeCardFragmentDoc}
+  ${SpaceCardFragmentDoc}
 `;
 
 /**
- * __useChallengeCreatedSubscription__
+ * __useSubspaceCreatedSubscription__
  *
- * To run a query within a React component, call `useChallengeCreatedSubscription` and pass it any options that fit your needs.
- * When your component renders, `useChallengeCreatedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useSubspaceCreatedSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useSubspaceCreatedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useChallengeCreatedSubscription({
+ * const { data, loading, error } = useSubspaceCreatedSubscription({
  *   variables: {
- *      spaceID: // value for 'spaceID'
+ *      journeyID: // value for 'journeyID'
  *   },
  * });
  */
-export function useChallengeCreatedSubscription(
+export function useSubspaceCreatedSubscription(
   baseOptions: Apollo.SubscriptionHookOptions<
-    SchemaTypes.ChallengeCreatedSubscription,
-    SchemaTypes.ChallengeCreatedSubscriptionVariables
+    SchemaTypes.SubspaceCreatedSubscription,
+    SchemaTypes.SubspaceCreatedSubscriptionVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useSubscription<
-    SchemaTypes.ChallengeCreatedSubscription,
-    SchemaTypes.ChallengeCreatedSubscriptionVariables
-  >(ChallengeCreatedDocument, options);
+    SchemaTypes.SubspaceCreatedSubscription,
+    SchemaTypes.SubspaceCreatedSubscriptionVariables
+  >(SubspaceCreatedDocument, options);
 }
 
-export type ChallengeCreatedSubscriptionHookResult = ReturnType<typeof useChallengeCreatedSubscription>;
-export type ChallengeCreatedSubscriptionResult = Apollo.SubscriptionResult<SchemaTypes.ChallengeCreatedSubscription>;
+export type SubspaceCreatedSubscriptionHookResult = ReturnType<typeof useSubspaceCreatedSubscription>;
+export type SubspaceCreatedSubscriptionResult = Apollo.SubscriptionResult<SchemaTypes.SubspaceCreatedSubscription>;
 export const BannerInnovationHubDocument = gql`
   query BannerInnovationHub($subdomain: String) {
     platform {

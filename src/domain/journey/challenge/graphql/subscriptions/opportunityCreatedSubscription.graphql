@@ -1,7 +1,0 @@
-subscription OpportunityCreated($challengeID: UUID!) {
-  opportunityCreated(challengeID: $challengeID) {
-    opportunity {
-      ...OpportunityCard
-    }
-  }
-}

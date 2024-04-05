@@ -1029,14 +1029,6 @@ export type ChallengeOpportunityArgs = {
   ID: Scalars['UUID_NAMEID'];
 };
 
-export type ChallengeCreated = {
-  __typename?: 'ChallengeCreated';
-  /** The Challenge that has been created. */
-  challenge: Challenge;
-  /** The identifier for the Space on which the Challenge was created. */
-  spaceID: Scalars['UUID_NAMEID'];
-};
-
 export type ChallengeTemplate = {
   __typename?: 'ChallengeTemplate';
   /** Feedback templates. */
@@ -3537,14 +3529,6 @@ export type Opportunity = Journey & {
   type: SpaceType;
 };
 
-export type OpportunityCreated = {
-  __typename?: 'OpportunityCreated';
-  /** The identifier for the Challenge on which the Opportunity was created. */
-  challengeID: Scalars['UUID'];
-  /** The Opportunity that has been created. */
-  opportunity: Opportunity;
-};
-
 export type Organization = Groupable & {
   __typename?: 'Organization';
   /** All Users that are admins of this Organization. */
@@ -4889,16 +4873,14 @@ export type Subscription = {
   activityCreated: ActivityCreatedSubscriptionResult;
   /** Receive new Update messages on Communities the currently authenticated User is a member of. */
   calloutPostCreated: CalloutPostCreated;
-  /** Receive new Challenges created on the Space. */
-  challengeCreated: ChallengeCreated;
   /** Receive updates on Discussions */
   communicationDiscussionUpdated: Discussion;
-  /** Receive new Opportunities created on the Challenge. */
-  opportunityCreated: OpportunityCreated;
   /** Received on verified credentials change */
   profileVerifiedCredential: ProfileCredentialVerified;
   /** Receive Room event */
   roomEvents: RoomEventSubscriptionResult;
+  /** Receive new Challenges created on the Space. */
+  subspaceCreated: SubspaceCreated;
 };
 
 export type SubscriptionActivityCreatedArgs = {
@@ -4909,20 +4891,24 @@ export type SubscriptionCalloutPostCreatedArgs = {
   calloutID: Scalars['UUID'];
 };
 
-export type SubscriptionChallengeCreatedArgs = {
-  spaceID: Scalars['UUID_NAMEID'];
-};
-
 export type SubscriptionCommunicationDiscussionUpdatedArgs = {
   communicationID: Scalars['UUID'];
 };
 
-export type SubscriptionOpportunityCreatedArgs = {
-  challengeID: Scalars['UUID'];
-};
-
 export type SubscriptionRoomEventsArgs = {
   roomID: Scalars['UUID'];
+};
+
+export type SubscriptionSubspaceCreatedArgs = {
+  journeyID: Scalars['UUID'];
+};
+
+export type SubspaceCreated = {
+  __typename?: 'SubspaceCreated';
+  /** The subspace that has been created. */
+  childJourney: Journey;
+  /** The identifier for the Space on which the subspace was created. */
+  journeyID: Scalars['UUID'];
 };
 
 export type Tagset = {
@@ -19107,87 +19093,6 @@ export type ChallengeProfileInfoQuery = {
   };
 };
 
-export type OpportunityCreatedSubscriptionVariables = Exact<{
-  challengeID: Scalars['UUID'];
-}>;
-
-export type OpportunityCreatedSubscription = {
-  __typename?: 'Subscription';
-  opportunityCreated: {
-    __typename?: 'OpportunityCreated';
-    opportunity: {
-      __typename?: 'Opportunity';
-      id: string;
-      profile: {
-        __typename?: 'Profile';
-        id: string;
-        url: string;
-        displayName: string;
-        tagline: string;
-        tagset?:
-          | {
-              __typename?: 'Tagset';
-              id: string;
-              name: string;
-              tags: Array<string>;
-              allowedValues: Array<string>;
-              type: TagsetType;
-            }
-          | undefined;
-        cardBanner?:
-          | {
-              __typename?: 'Visual';
-              id: string;
-              uri: string;
-              name: string;
-              allowedTypes: Array<string>;
-              aspectRatio: number;
-              maxHeight: number;
-              maxWidth: number;
-              minHeight: number;
-              minWidth: number;
-              alternativeText?: string | undefined;
-            }
-          | undefined;
-      };
-      metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
-      collaboration?:
-        | {
-            __typename?: 'Collaboration';
-            id: string;
-            innovationFlow?:
-              | {
-                  __typename?: 'InnovationFlow';
-                  id: string;
-                  currentState: { __typename?: 'InnovationFlowState'; displayName: string };
-                }
-              | undefined;
-          }
-        | undefined;
-      context?:
-        | {
-            __typename?: 'Context';
-            id: string;
-            vision?: string | undefined;
-            impact?: string | undefined;
-            who?: string | undefined;
-            authorization?:
-              | {
-                  __typename?: 'Authorization';
-                  id: string;
-                  myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                  anonymousReadAccess: boolean;
-                }
-              | undefined;
-          }
-        | undefined;
-      community?:
-        | { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined }
-        | undefined;
-    };
-  };
-};
-
 export type ContextTabFragment = {
   __typename?: 'Context';
   id: string;
@@ -23050,43 +22955,51 @@ export type SpaceInnovationFlowTemplatesQuery = {
   };
 };
 
-export type ChallengeCreatedSubscriptionVariables = Exact<{
-  spaceID: Scalars['UUID_NAMEID'];
+export type SubspaceCreatedSubscriptionVariables = Exact<{
+  journeyID: Scalars['UUID'];
 }>;
 
-export type ChallengeCreatedSubscription = {
+export type SubspaceCreatedSubscription = {
   __typename?: 'Subscription';
-  challengeCreated: {
-    __typename?: 'ChallengeCreated';
-    challenge: {
-      __typename?: 'Challenge';
-      id: string;
-      authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
-      metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
-      profile: {
-        __typename?: 'Profile';
-        id: string;
-        url: string;
-        tagline: string;
-        displayName: string;
-        description?: string | undefined;
-        cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-        tagset?:
-          | {
-              __typename?: 'Tagset';
-              id: string;
-              name: string;
-              tags: Array<string>;
-              allowedValues: Array<string>;
-              type: TagsetType;
-            }
-          | undefined;
-      };
-      context?: { __typename?: 'Context'; id: string; vision?: string | undefined } | undefined;
-      community?:
-        | { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined }
-        | undefined;
-    };
+  subspaceCreated: {
+    __typename?: 'SubspaceCreated';
+    childJourney:
+      | { __typename?: 'Challenge' }
+      | { __typename?: 'Opportunity' }
+      | { __typename?: 'RelayPaginatedSpace' }
+      | {
+          __typename?: 'Space';
+          id: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            url: string;
+            displayName: string;
+            tagline: string;
+            tagset?:
+              | {
+                  __typename?: 'Tagset';
+                  id: string;
+                  name: string;
+                  tags: Array<string>;
+                  allowedValues: Array<string>;
+                  type: TagsetType;
+                }
+              | undefined;
+            cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          };
+          authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
+          metrics?: Array<{ __typename?: 'NVP'; name: string; value: string }> | undefined;
+          community?:
+            | { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined }
+            | undefined;
+          context?: { __typename?: 'Context'; id: string; vision?: string | undefined } | undefined;
+          account: {
+            __typename?: 'Account';
+            id: string;
+            license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
+          };
+        };
   };
 };
 
