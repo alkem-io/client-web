@@ -20170,21 +20170,17 @@ export const UpdateAccountPlatformSettingsDocument = gql`
   mutation UpdateAccountPlatformSettings($accountId: UUID!, $hostId: UUID_NAMEID, $license: UpdateLicenseInput) {
     updateAccountPlatformSettings(updateData: { accountID: $accountId, hostID: $hostId, license: $license }) {
       id
-      account {
+      license {
         id
-        license {
-          id
-          visibility
-          featureFlags {
-            name
-            enabled
-          }
-        }
-        host {
-          id
+        visibility
+        featureFlags {
+          name
+          enabled
         }
       }
-      nameID
+      host {
+        id
+      }
     }
   }
 `;

@@ -2790,7 +2790,7 @@ export type Mutation = {
   /** Send message to a User. */
   sendMessageToUser: Scalars['Boolean'];
   /** Update the platform settings, such as license, of the specified Account. */
-  updateAccountPlatformSettings: Space;
+  updateAccountPlatformSettings: Account;
   /** Updates the specified Actor. */
   updateActor: Actor;
   /** User vote if a specific answer is relevant. */
@@ -23364,20 +23364,15 @@ export type UpdateAccountPlatformSettingsMutationVariables = Exact<{
 export type UpdateAccountPlatformSettingsMutation = {
   __typename?: 'Mutation';
   updateAccountPlatformSettings: {
-    __typename?: 'Space';
+    __typename?: 'Account';
     id: string;
-    nameID: string;
-    account: {
-      __typename?: 'Account';
+    license: {
+      __typename?: 'License';
       id: string;
-      license: {
-        __typename?: 'License';
-        id: string;
-        visibility: SpaceVisibility;
-        featureFlags: Array<{ __typename?: 'LicenseFeatureFlag'; name: LicenseFeatureFlagName; enabled: boolean }>;
-      };
-      host?: { __typename?: 'Organization'; id: string } | undefined;
+      visibility: SpaceVisibility;
+      featureFlags: Array<{ __typename?: 'LicenseFeatureFlag'; name: LicenseFeatureFlagName; enabled: boolean }>;
     };
+    host?: { __typename?: 'Organization'; id: string } | undefined;
   };
 };
 
