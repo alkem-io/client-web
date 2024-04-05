@@ -1482,6 +1482,7 @@ export const OrganizationProfileInfoFragmentDoc = gql`
     }
     profile {
       id
+      url
       displayName
       visual(type: AVATAR) {
         ...VisualFull
@@ -12950,6 +12951,7 @@ export const CreateOrganizationDocument = gql`
       profile {
         id
         displayName
+        url
       }
     }
   }

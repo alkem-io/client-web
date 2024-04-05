@@ -15570,6 +15570,7 @@ export type OrganizationProfileInfoFragment = {
   profile: {
     __typename?: 'Profile';
     id: string;
+    url: string;
     displayName: string;
     description?: string | undefined;
     tagline: string;
@@ -15628,7 +15629,7 @@ export type CreateOrganizationMutation = {
     __typename?: 'Organization';
     id: string;
     nameID: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string };
+    profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
   };
 };
 
@@ -15659,6 +15660,7 @@ export type UpdateOrganizationMutation = {
     profile: {
       __typename?: 'Profile';
       id: string;
+      url: string;
       displayName: string;
       description?: string | undefined;
       tagline: string;
@@ -15804,6 +15806,7 @@ export type OrganizationProfileInfoQuery = {
     profile: {
       __typename?: 'Profile';
       id: string;
+      url: string;
       displayName: string;
       description?: string | undefined;
       tagline: string;
