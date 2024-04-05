@@ -4,6 +4,16 @@ query spaceProvider($spaceId: UUID_NAMEID!) {
   }
 }
 
+query spaceUrl($spaceId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
+    id
+    profile {
+      id
+      url
+    }
+  }
+}
+
 fragment SpaceInfo on Space {
   ...SpaceDetails
   authorization {

@@ -7,9 +7,9 @@ import AdminLayout from '../../layout/toplevel/AdminLayout';
 import { AdminSection } from '../../layout/toplevel/constants';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import {
-  SpaceDetailsFragmentDoc,
-  useCreateSpaceMutation,
+  useCreateAccountMutation,
   useOrganizationsListQuery,
+  useSpaceUrlLazyQuery,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useNavigateToEdit } from '../../../../../core/routing/useNavigateToEdit';
 import { PageProps } from '../../../../shared/types/PageProps';
@@ -23,33 +23,20 @@ export const NewSpace: FC<NewSpaceProps> = () => {
   const notify = useNotification();
   const { data: organizationList } = useOrganizationsListQuery();
 
-  const [createSpace, { loading }] = useCreateSpaceMutation({
-    // refetchQueries: [refetchSpacesQuery()],
-    // awaitRefetchQueries: true,
-    onCompleted: data => {
-      const spaceId = data.createSpace.space.nameID;
-      if (spaceId) {
-        notify(t('pages.admin.space.notifications.space-created'), 'success');
-        navigateToEdit(spaceId);
-      }
-    },
-    update: (cache, { data }) => {
-      if (data) {
-        const { createSpace } = data;
+  const [spaceUrlQuery] = useSpaceUrlLazyQuery();
 
-        cache.modify({
-          fields: {
-            spaces(existingSpaces = []) {
-              const newSpaceRef = cache.writeFragment({
-                data: createSpace,
-                fragment: SpaceDetailsFragmentDoc,
-                fragmentName: 'SpaceDetails',
-              });
-              return [...existingSpaces, newSpaceRef];
-            },
-          },
-        });
+  const [createAccount, { loading }] = useCreateAccountMutation({
+    onCompleted: async data => {
+      const spaceId = data.createAccount.spaceID;
+      const spaceWithUrl = await spaceUrlQuery({ variables: { spaceId } });
+      const url = spaceWithUrl.data?.space.profile.url;
+
+      if (!url) {
+        notify(t('pages.admin.space.notifications.space-created'), 'error');
+        return;
       }
+      notify(t('pages.admin.space.notifications.space-created'), 'success');
+      navigateToEdit(url);
     },
   });
 
@@ -61,19 +48,19 @@ export const NewSpace: FC<NewSpaceProps> = () => {
   const onSubmit = async (values: SpaceEditFormValuesType) => {
     const { name, nameID, hostId, tagsets } = values;
 
-    await createSpace({
+    await createAccount({
       variables: {
         input: {
-          nameID,
-          accountData: {
-            hostID: hostId,
+          hostID: hostId,
+          spaceData: {
+            nameID,
+            profileData: {
+              displayName: name,
+              tagline: values.tagline,
+              location: formatDatabaseLocation(values.location),
+            },
+            tags: tagsets.flatMap(x => x.tags),
           },
-          profileData: {
-            displayName: name,
-            tagline: values.tagline,
-            location: formatDatabaseLocation(values.location),
-          },
-          tags: tagsets.flatMap(x => x.tags),
         },
       },
     });

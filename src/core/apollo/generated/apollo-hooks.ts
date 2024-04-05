@@ -3422,9 +3422,7 @@ export const SearchResultChallengeFragmentDoc = gql`
         }
       }
       account {
-        space {
-          id
-        }
+        spaceID
       }
       context {
         id
@@ -18506,6 +18504,55 @@ export function refetchSpaceProviderQuery(variables: SchemaTypes.SpaceProviderQu
   return { query: SpaceProviderDocument, variables: variables };
 }
 
+export const SpaceUrlDocument = gql`
+  query spaceUrl($spaceId: UUID_NAMEID!) {
+    space(ID: $spaceId) {
+      id
+      profile {
+        id
+        url
+      }
+    }
+  }
+`;
+
+/**
+ * __useSpaceUrlQuery__
+ *
+ * To run a query within a React component, call `useSpaceUrlQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSpaceUrlQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSpaceUrlQuery({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *   },
+ * });
+ */
+export function useSpaceUrlQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.SpaceUrlQuery, SchemaTypes.SpaceUrlQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.SpaceUrlQuery, SchemaTypes.SpaceUrlQueryVariables>(SpaceUrlDocument, options);
+}
+
+export function useSpaceUrlLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.SpaceUrlQuery, SchemaTypes.SpaceUrlQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.SpaceUrlQuery, SchemaTypes.SpaceUrlQueryVariables>(SpaceUrlDocument, options);
+}
+
+export type SpaceUrlQueryHookResult = ReturnType<typeof useSpaceUrlQuery>;
+export type SpaceUrlLazyQueryHookResult = ReturnType<typeof useSpaceUrlLazyQuery>;
+export type SpaceUrlQueryResult = Apollo.QueryResult<SchemaTypes.SpaceUrlQuery, SchemaTypes.SpaceUrlQueryVariables>;
+export function refetchSpaceUrlQuery(variables: SchemaTypes.SpaceUrlQueryVariables) {
+  return { query: SpaceUrlDocument, variables: variables };
+}
+
 export const SpaceHostDocument = gql`
   query spaceHost($spaceId: UUID_NAMEID!) {
     space(ID: $spaceId) {
@@ -19171,54 +19218,54 @@ export function refetchSpaceChallengeCardsQuery(variables: SchemaTypes.SpaceChal
   return { query: SpaceChallengeCardsDocument, variables: variables };
 }
 
-export const CreateSpaceDocument = gql`
-  mutation createSpace($input: CreateSpaceInput!) {
-    createSpace(spaceData: $input) {
+export const CreateAccountDocument = gql`
+  mutation createAccount($input: CreateAccountInput!) {
+    createAccount(accountData: $input) {
       id
-      space {
-        ...SpaceDetails
-      }
+      spaceID
     }
   }
-  ${SpaceDetailsFragmentDoc}
 `;
-export type CreateSpaceMutationFn = Apollo.MutationFunction<
-  SchemaTypes.CreateSpaceMutation,
-  SchemaTypes.CreateSpaceMutationVariables
+export type CreateAccountMutationFn = Apollo.MutationFunction<
+  SchemaTypes.CreateAccountMutation,
+  SchemaTypes.CreateAccountMutationVariables
 >;
 
 /**
- * __useCreateSpaceMutation__
+ * __useCreateAccountMutation__
  *
- * To run a mutation, you first call `useCreateSpaceMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateSpaceMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useCreateAccountMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateAccountMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [createSpaceMutation, { data, loading, error }] = useCreateSpaceMutation({
+ * const [createAccountMutation, { data, loading, error }] = useCreateAccountMutation({
  *   variables: {
  *      input: // value for 'input'
  *   },
  * });
  */
-export function useCreateSpaceMutation(
-  baseOptions?: Apollo.MutationHookOptions<SchemaTypes.CreateSpaceMutation, SchemaTypes.CreateSpaceMutationVariables>
+export function useCreateAccountMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.CreateAccountMutation,
+    SchemaTypes.CreateAccountMutationVariables
+  >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.CreateSpaceMutation, SchemaTypes.CreateSpaceMutationVariables>(
-    CreateSpaceDocument,
+  return Apollo.useMutation<SchemaTypes.CreateAccountMutation, SchemaTypes.CreateAccountMutationVariables>(
+    CreateAccountDocument,
     options
   );
 }
 
-export type CreateSpaceMutationHookResult = ReturnType<typeof useCreateSpaceMutation>;
-export type CreateSpaceMutationResult = Apollo.MutationResult<SchemaTypes.CreateSpaceMutation>;
-export type CreateSpaceMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.CreateSpaceMutation,
-  SchemaTypes.CreateSpaceMutationVariables
+export type CreateAccountMutationHookResult = ReturnType<typeof useCreateAccountMutation>;
+export type CreateAccountMutationResult = Apollo.MutationResult<SchemaTypes.CreateAccountMutation>;
+export type CreateAccountMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.CreateAccountMutation,
+  SchemaTypes.CreateAccountMutationVariables
 >;
 export const DeleteSpaceDocument = gql`
   mutation deleteSpace($input: DeleteSpaceInput!) {

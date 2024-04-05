@@ -11,7 +11,7 @@ export type AccountKeySpecifier = (
   | 'id'
   | 'library'
   | 'license'
-  | 'space'
+  | 'spaceID'
   | AccountKeySpecifier
 )[];
 export type AccountFieldPolicy = {
@@ -21,7 +21,7 @@ export type AccountFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   library?: FieldPolicy<any> | FieldReadFunction<any>;
   license?: FieldPolicy<any> | FieldReadFunction<any>;
-  space?: FieldPolicy<any> | FieldReadFunction<any>;
+  spaceID?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ActivityCreatedSubscriptionResultKeySpecifier = (
   | 'activity'
@@ -1512,6 +1512,7 @@ export type MutationKeySpecifier = (
   | 'beginVerifiedCredentialRequestInteraction'
   | 'convertChallengeToSpace'
   | 'convertOpportunityToChallenge'
+  | 'createAccount'
   | 'createActor'
   | 'createActorGroup'
   | 'createCalloutOnCollaboration'
@@ -1531,7 +1532,6 @@ export type MutationKeySpecifier = (
   | 'createPostTemplate'
   | 'createReferenceOnProfile'
   | 'createRelationOnCollaboration'
-  | 'createSpace'
   | 'createTagsetOnProfile'
   | 'createUser'
   | 'createUserNewRegistration'
@@ -1671,6 +1671,7 @@ export type MutationFieldPolicy = {
   beginVerifiedCredentialRequestInteraction?: FieldPolicy<any> | FieldReadFunction<any>;
   convertChallengeToSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   convertOpportunityToChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
+  createAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   createActor?: FieldPolicy<any> | FieldReadFunction<any>;
   createActorGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   createCalloutOnCollaboration?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1690,7 +1691,6 @@ export type MutationFieldPolicy = {
   createPostTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   createReferenceOnProfile?: FieldPolicy<any> | FieldReadFunction<any>;
   createRelationOnCollaboration?: FieldPolicy<any> | FieldReadFunction<any>;
-  createSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   createTagsetOnProfile?: FieldPolicy<any> | FieldReadFunction<any>;
   createUser?: FieldPolicy<any> | FieldReadFunction<any>;
   createUserNewRegistration?: FieldPolicy<any> | FieldReadFunction<any>;
