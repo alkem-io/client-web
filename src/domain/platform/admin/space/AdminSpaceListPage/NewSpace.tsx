@@ -11,15 +11,15 @@ import {
   useOrganizationsListQuery,
   useSpaceUrlLazyQuery,
 } from '../../../../../core/apollo/generated/apollo-hooks';
-import { useNavigateToEdit } from '../../../../../core/routing/useNavigateToEdit';
 import { PageProps } from '../../../../shared/types/PageProps';
 import { formatDatabaseLocation } from '../../../../common/location/LocationUtils';
+import useNavigate from '../../../../../core/routing/useNavigate';
 
 interface NewSpaceProps extends PageProps {}
 
 export const NewSpace: FC<NewSpaceProps> = () => {
   const { t } = useTranslation();
-  const navigateToEdit = useNavigateToEdit();
+  const navigate = useNavigate();
   const notify = useNotification();
   const { data: organizationList } = useOrganizationsListQuery();
 
@@ -36,7 +36,7 @@ export const NewSpace: FC<NewSpaceProps> = () => {
         return;
       }
       notify(t('pages.admin.space.notifications.space-created'), 'success');
-      navigateToEdit(url);
+      navigate(url);
     },
   });
 
