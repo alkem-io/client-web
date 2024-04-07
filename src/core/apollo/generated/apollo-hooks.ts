@@ -10257,17 +10257,9 @@ export type ReplyToMessageMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.ReplyToMessageMutation,
   SchemaTypes.ReplyToMessageMutationVariables
 >;
-export const AskVirtualContributorQuestionDocument = gql`
-  query askVirtualContributorQuestion($prompt: String!, $question: String!, $spaceId: UUID_NAMEID!, $roomId: UUID!) {
-    askVirtualContributorQuestion(
-      chatData: {
-        prompt: $prompt
-        question: $question
-        spaceID: $spaceId
-        roomID: $roomId
-        virtualPersonaType: TOPIC_EXPERT
-      }
-    ) {
+export const AskVirtualPersonaQuestionDocument = gql`
+  query askVirtualPersonaQuestion($question: String!, $virtualPersonaID: UUID!) {
+    askVirtualPersonaQuestion(chatData: { question: $question, virtualPersonaID: $virtualPersonaID }) {
       id
       question
       answer
@@ -10280,62 +10272,56 @@ export const AskVirtualContributorQuestionDocument = gql`
 `;
 
 /**
- * __useAskVirtualContributorQuestionQuery__
+ * __useAskVirtualPersonaQuestionQuery__
  *
- * To run a query within a React component, call `useAskVirtualContributorQuestionQuery` and pass it any options that fit your needs.
- * When your component renders, `useAskVirtualContributorQuestionQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useAskVirtualPersonaQuestionQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAskVirtualPersonaQuestionQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useAskVirtualContributorQuestionQuery({
+ * const { data, loading, error } = useAskVirtualPersonaQuestionQuery({
  *   variables: {
- *      prompt: // value for 'prompt'
  *      question: // value for 'question'
- *      spaceId: // value for 'spaceId'
- *      roomId: // value for 'roomId'
+ *      virtualPersonaID: // value for 'virtualPersonaID'
  *   },
  * });
  */
-export function useAskVirtualContributorQuestionQuery(
+export function useAskVirtualPersonaQuestionQuery(
   baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.AskVirtualContributorQuestionQuery,
-    SchemaTypes.AskVirtualContributorQuestionQueryVariables
+    SchemaTypes.AskVirtualPersonaQuestionQuery,
+    SchemaTypes.AskVirtualPersonaQuestionQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<
-    SchemaTypes.AskVirtualContributorQuestionQuery,
-    SchemaTypes.AskVirtualContributorQuestionQueryVariables
-  >(AskVirtualContributorQuestionDocument, options);
+    SchemaTypes.AskVirtualPersonaQuestionQuery,
+    SchemaTypes.AskVirtualPersonaQuestionQueryVariables
+  >(AskVirtualPersonaQuestionDocument, options);
 }
 
-export function useAskVirtualContributorQuestionLazyQuery(
+export function useAskVirtualPersonaQuestionLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.AskVirtualContributorQuestionQuery,
-    SchemaTypes.AskVirtualContributorQuestionQueryVariables
+    SchemaTypes.AskVirtualPersonaQuestionQuery,
+    SchemaTypes.AskVirtualPersonaQuestionQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<
-    SchemaTypes.AskVirtualContributorQuestionQuery,
-    SchemaTypes.AskVirtualContributorQuestionQueryVariables
-  >(AskVirtualContributorQuestionDocument, options);
+    SchemaTypes.AskVirtualPersonaQuestionQuery,
+    SchemaTypes.AskVirtualPersonaQuestionQueryVariables
+  >(AskVirtualPersonaQuestionDocument, options);
 }
 
-export type AskVirtualContributorQuestionQueryHookResult = ReturnType<typeof useAskVirtualContributorQuestionQuery>;
-export type AskVirtualContributorQuestionLazyQueryHookResult = ReturnType<
-  typeof useAskVirtualContributorQuestionLazyQuery
+export type AskVirtualPersonaQuestionQueryHookResult = ReturnType<typeof useAskVirtualPersonaQuestionQuery>;
+export type AskVirtualPersonaQuestionLazyQueryHookResult = ReturnType<typeof useAskVirtualPersonaQuestionLazyQuery>;
+export type AskVirtualPersonaQuestionQueryResult = Apollo.QueryResult<
+  SchemaTypes.AskVirtualPersonaQuestionQuery,
+  SchemaTypes.AskVirtualPersonaQuestionQueryVariables
 >;
-export type AskVirtualContributorQuestionQueryResult = Apollo.QueryResult<
-  SchemaTypes.AskVirtualContributorQuestionQuery,
-  SchemaTypes.AskVirtualContributorQuestionQueryVariables
->;
-export function refetchAskVirtualContributorQuestionQuery(
-  variables: SchemaTypes.AskVirtualContributorQuestionQueryVariables
-) {
-  return { query: AskVirtualContributorQuestionDocument, variables: variables };
+export function refetchAskVirtualPersonaQuestionQuery(variables: SchemaTypes.AskVirtualPersonaQuestionQueryVariables) {
+  return { query: AskVirtualPersonaQuestionDocument, variables: variables };
 }
 
 export const MentionableUsersDocument = gql`

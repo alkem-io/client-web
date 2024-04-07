@@ -10,6 +10,8 @@ import {
   Campaign,
   ChatBubbleOutline,
   CorporateFareOutlined,
+  Face5,
+  Face6,
   HubOutlined,
   InventoryOutlined,
   PeopleAltOutlined,
@@ -61,5 +63,9 @@ export const getProfileIcon = (profileType: ProfileType): ComponentType<SvgIconP
       return calloutIcons.LINK_COLLECTION;
     case ProfileType.CommunityGuidelines:
       return calloutIcons.POST; // TODO: Choose a more appropriate icon
+    case ProfileType.VirtualPersona:
+      return Face5; // TODO: Choose a more appropriate icon
+    case ProfileType.VirtualContributor:
+      return Face6; // TODO: Choose a more appropriate icon
   }
 };

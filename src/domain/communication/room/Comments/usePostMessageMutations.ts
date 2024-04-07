@@ -1,7 +1,7 @@
 import ensurePresence from '../../../../core/utils/ensurePresence';
 import {
   MessageDetailsFragmentDoc,
-  useAskVirtualContributorQuestionLazyQuery,
+  useAskVirtualPersonaQuestionLazyQuery,
   useMentionableUsersQuery,
   useReplyToMessageMutation,
   useSendMessageToRoomMutation,
@@ -15,7 +15,6 @@ import {
 import { compact, uniqueId } from 'lodash';
 import { MentionableUsersQuery, MessageDetailsFragment } from '../../../../core/apollo/generated/graphql-schema';
 import { useMemo } from 'react';
-import { useUrlParams } from '../../../../core/routing/useUrlParams';
 
 interface UsePostMessageMutationsOptions {
   roomId: string | undefined;
@@ -23,7 +22,6 @@ interface UsePostMessageMutationsOptions {
 }
 
 const usePostMessageMutations = ({ roomId, isSubscribedToMessages }: UsePostMessageMutationsOptions) => {
-  const { spaceNameId } = useUrlParams();
   const [cookies] = useCookies([ALKEMIO_COOKIE_PROMPT1, ALKEMIO_COOKIE_PROMPT2, ALKEMIO_COOKIE_PROMPT3]);
 
   const { data: virtualContributorsData } = useMentionableUsersQuery({
@@ -62,17 +60,13 @@ const usePostMessageMutations = ({ roomId, isSubscribedToMessages }: UsePostMess
 
   const [postMessage, { loading: postingMessage }] = useSendMessageToRoomMutation();
   const [postReply, { loading: postingReply }] = useReplyToMessageMutation();
-  const [askVirtualContributor, { loading: askingVirtualContributor }] = useAskVirtualContributorQuestionLazyQuery();
+  const [askVirtualPersona, { loading: askingVirtualPersona }] = useAskVirtualPersonaQuestionLazyQuery();
 
   const handleVirtualContributorTag = async ({
     message,
-    roomId,
-    spaceId,
     threadId,
   }: {
     message: string;
-    spaceId: string;
-    roomId: string;
     threadId?: string;
   }): Promise<MessageDetailsFragment | undefined> => {
     // Regular expression to match [@VirtualContributor n] pattern
@@ -84,19 +78,17 @@ const usePostMessageMutations = ({ roomId, isSubscribedToMessages }: UsePostMess
       const virtualContributor = virtualContributors[vc];
 
       if (prompt && virtualContributor) {
-        const { data } = await askVirtualContributor({
+        const { data } = await askVirtualPersona({
           variables: {
-            prompt,
             question: message,
-            spaceId,
-            roomId,
+            virtualPersonaID: 'admin-allkemio', // TODO: FIX
           },
         });
-        if (data?.askVirtualContributorQuestion) {
+        if (data?.askVirtualPersonaQuestion) {
           return {
             __typename: 'Message',
             id: uniqueId(), //data?.askVirtualContributorQuestion.id ?? ,
-            message: data?.askVirtualContributorQuestion.answer,
+            message: data?.askVirtualPersonaQuestion.answer,
             timestamp: new Date(Date.now() + 5000).getTime(),
             sender: virtualContributor,
             reactions: [],
@@ -111,8 +103,7 @@ const usePostMessageMutations = ({ roomId, isSubscribedToMessages }: UsePostMess
 
   const handlePostMessage = async (message: string) => {
     const requiredRoomId = ensurePresence(roomId);
-    const spaceId = ensurePresence(spaceNameId);
-    const vcResponse = await handleVirtualContributorTag({ message, spaceId, roomId: requiredRoomId });
+    const vcResponse = await handleVirtualContributorTag({ message });
 
     return await postMessage({
       variables: {
@@ -177,12 +168,9 @@ const usePostMessageMutations = ({ roomId, isSubscribedToMessages }: UsePostMess
 
   const handleReply = async ({ threadId, messageText }: { threadId: string; messageText: string }) => {
     const requiredRoomId = ensurePresence(roomId);
-    const spaceId = ensurePresence(spaceNameId);
 
     const vcResponse = await handleVirtualContributorTag({
       message: messageText,
-      spaceId,
-      roomId: requiredRoomId,
       threadId,
     });
 
@@ -249,8 +237,8 @@ const usePostMessageMutations = ({ roomId, isSubscribedToMessages }: UsePostMess
   return {
     postMessage: handlePostMessage,
     postReply: handleReply,
-    postingMessage: postingMessage || askingVirtualContributor,
-    postingReply: postingReply || askingVirtualContributor,
+    postingMessage: postingMessage || askingVirtualPersona,
+    postingReply: postingReply || askingVirtualPersona,
   };
 };
 
