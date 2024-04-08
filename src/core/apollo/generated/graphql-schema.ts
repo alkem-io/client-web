@@ -13646,22 +13646,6 @@ export type ReplyToMessageMutation = {
   };
 };
 
-export type AskVirtualPersonaQuestionQueryVariables = Exact<{
-  question: Scalars['String'];
-  virtualPersonaID: Scalars['UUID'];
-}>;
-
-export type AskVirtualPersonaQuestionQuery = {
-  __typename?: 'Query';
-  askVirtualPersonaQuestion: {
-    __typename?: 'VirtualPersonaResult';
-    id?: string | undefined;
-    question: string;
-    answer: string;
-    sources?: Array<{ __typename?: 'Source'; title?: string | undefined; uri?: string | undefined }> | undefined;
-  };
-};
-
 export type MentionableUsersQueryVariables = Exact<{
   filter?: InputMaybe<UserFilterInput>;
   first?: InputMaybe<Scalars['Int']>;
