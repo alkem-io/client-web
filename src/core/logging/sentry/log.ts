@@ -17,6 +17,7 @@ export const tagCategoryValues = {
   SERVER: 'SERVER',
   AUTH: 'AUTH',
   UI: 'UI',
+  WHITEBOARD: 'WHITEBOARD',
 } as const;
 
 type TagsKeysType = keyof typeof tagKeys;
@@ -34,7 +35,7 @@ const setTags = (tags: TagType | undefined, scope: Sentry.Scope) => {
 
 export const error = (
   error: Error,
-  tags?,
+  tags?: TagType | undefined,
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   setup: (scope: Sentry.Scope) => void = () => {},
   severity: typeof fatalLevel | typeof errorLevel = errorLevel

@@ -45,6 +45,7 @@ export const useApolloErrorHandler = (severity: Severity = 'error') => {
     graphqlErrors.forEach((error: GraphQLError) => {
       const translation = getTranslationForCode(error, t, i18n);
       notify(translation, severity);
+      // TODO: verify that this log doesn't duplicate the useErrorLoggerLink.ts one on line 28
       logError(error, { [tagKeys.CATEGORY]: tagCategoryValues.SERVER });
     });
   };
