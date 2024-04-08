@@ -13649,6 +13649,7 @@ export type ReplyToMessageMutation = {
 export type MentionableUsersQueryVariables = Exact<{
   filter?: InputMaybe<UserFilterInput>;
   first?: InputMaybe<Scalars['Int']>;
+  communityId: Scalars['UUID'];
 }>;
 
 export type MentionableUsersQuery = {
@@ -13658,28 +13659,36 @@ export type MentionableUsersQuery = {
     users: Array<{
       __typename?: 'User';
       id: string;
-      nameID: string;
-      firstName: string;
-      lastName: string;
       profile: {
         __typename?: 'Profile';
         id: string;
-        displayName: string;
         url: string;
+        displayName: string;
         location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
         avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-        tagsets?:
-          | Array<{
-              __typename?: 'Tagset';
-              id: string;
-              name: string;
-              tags: Array<string>;
-              allowedValues: Array<string>;
-              type: TagsetType;
-            }>
-          | undefined;
       };
     }>;
+  };
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    community?:
+      | {
+          __typename?: 'Community';
+          virtualContributorsInRole?:
+            | Array<{
+                __typename?: 'VirtualContributor';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                };
+              }>
+            | undefined;
+        }
+      | undefined;
   };
 };
 

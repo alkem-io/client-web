@@ -3,6 +3,7 @@ import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { gutters } from '../../../../core/ui/grid/utils';
 import { BlockSectionTitle } from '../../../../core/ui/typography';
+import VirtualContributorLabel from '../../virtualContributor/VirtualContributorLabel';
 
 export interface ProfileChipViewProps extends BoxProps {
   displayName: string | undefined;
@@ -10,6 +11,7 @@ export interface ProfileChipViewProps extends BoxProps {
   country: string | undefined;
   avatarUrl: string | undefined;
   selected?: boolean;
+  virtualContributor?: boolean;
 }
 
 export const ProfileChipView: FC<ProfileChipViewProps> = ({
@@ -17,6 +19,7 @@ export const ProfileChipView: FC<ProfileChipViewProps> = ({
   city,
   country,
   avatarUrl,
+  virtualContributor,
   selected,
   children,
   ...containerProps
@@ -48,6 +51,7 @@ export const ProfileChipView: FC<ProfileChipViewProps> = ({
             {city && country ? `${city}, ` : city}
             {country}
           </BlockSectionTitle>
+          {virtualContributor && <VirtualContributorLabel />}
         </Box>
         {children}
       </Box>

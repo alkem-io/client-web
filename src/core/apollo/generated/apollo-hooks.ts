@@ -10258,15 +10258,13 @@ export type ReplyToMessageMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.ReplyToMessageMutationVariables
 >;
 export const MentionableUsersDocument = gql`
-  query MentionableUsers($filter: UserFilterInput, $first: Int) {
+  query MentionableUsers($filter: UserFilterInput, $first: Int, $communityId: UUID!) {
     usersPaginated(filter: $filter, first: $first) {
       users {
         id
-        nameID
-        firstName
-        lastName
         profile {
           id
+          url
           displayName
           location {
             id
@@ -10276,16 +10274,26 @@ export const MentionableUsersDocument = gql`
           avatar: visual(type: AVATAR) {
             ...VisualUri
           }
-          tagsets {
-            ...TagsetDetails
+        }
+      }
+    }
+    lookup {
+      community(ID: $communityId) {
+        virtualContributorsInRole(role: MEMBER) {
+          id
+          profile {
+            id
+            url
+            displayName
+            avatar: visual(type: AVATAR) {
+              ...VisualUri
+            }
           }
-          url
         }
       }
     }
   }
   ${VisualUriFragmentDoc}
-  ${TagsetDetailsFragmentDoc}
 `;
 
 /**
@@ -10302,11 +10310,12 @@ export const MentionableUsersDocument = gql`
  *   variables: {
  *      filter: // value for 'filter'
  *      first: // value for 'first'
+ *      communityId: // value for 'communityId'
  *   },
  * });
  */
 export function useMentionableUsersQuery(
-  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.MentionableUsersQuery, SchemaTypes.MentionableUsersQueryVariables>
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.MentionableUsersQuery, SchemaTypes.MentionableUsersQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.MentionableUsersQuery, SchemaTypes.MentionableUsersQueryVariables>(
@@ -10334,7 +10343,7 @@ export type MentionableUsersQueryResult = Apollo.QueryResult<
   SchemaTypes.MentionableUsersQuery,
   SchemaTypes.MentionableUsersQueryVariables
 >;
-export function refetchMentionableUsersQuery(variables?: SchemaTypes.MentionableUsersQueryVariables) {
+export function refetchMentionableUsersQuery(variables: SchemaTypes.MentionableUsersQueryVariables) {
   return { query: MentionableUsersDocument, variables: variables };
 }
 

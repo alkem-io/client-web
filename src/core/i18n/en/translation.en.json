@@ -562,6 +562,7 @@
     "leads": "Leads",
     "members": "Members",
     "host": "Host",
+    "virtualContributor": "Virtual Contributor",
     "members-count": "{{count}} Member",
     "members-count_plural": "{{count}} Members",
     "addMember": "Add member",

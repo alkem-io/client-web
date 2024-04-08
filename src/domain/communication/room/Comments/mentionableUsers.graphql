@@ -1,13 +1,10 @@
-
-query MentionableUsers($filter: UserFilterInput, $first: Int) {
+query MentionableUsers($filter: UserFilterInput, $first: Int, $communityId: UUID!) {
   usersPaginated(filter: $filter, first: $first) {
     users {
       id
-      nameID
-      firstName
-      lastName
       profile {
         id
+        url
         displayName
         location {
           id
@@ -17,10 +14,21 @@ query MentionableUsers($filter: UserFilterInput, $first: Int) {
         avatar: visual(type: AVATAR) {
           ...VisualUri
         }
-        tagsets {
-          ...TagsetDetails
+      }
+    }
+  }
+  lookup {
+    community(ID: $communityId) {
+      virtualContributorsInRole(role: MEMBER) {
+        id
+        profile {
+          id
+          url
+          displayName
+          avatar: visual(type: AVATAR) {
+            ...VisualUri
+          }
         }
-        url
       }
     }
   }
