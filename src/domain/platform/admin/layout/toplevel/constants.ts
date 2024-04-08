@@ -9,6 +9,7 @@ export enum AdminSection {
   Space = 'spaces',
   User = 'users',
   Organization = 'organizations',
+  VirtualContributors = 'virtual-contributors',
   InnovationPacks = 'innovation-packs',
   InnovationHubs = 'innovation-hubs',
   AISettings = 'ai-settings',
@@ -29,6 +30,11 @@ export const adminTabs: TabDefinition<AdminSection>[] = [
   {
     section: AdminSection.Organization,
     route: '/admin/organizations',
+    icon: ForumOutlinedIcon,
+  },
+  {
+    section: AdminSection.VirtualContributors,
+    route: '/admin/virtual-contributors',
     icon: ForumOutlinedIcon,
   },
   {
