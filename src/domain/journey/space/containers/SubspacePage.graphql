@@ -1,12 +1,10 @@
-query opportunityPage($opportunityId: UUID!) {
-  lookup {
-    opportunity(ID: $opportunityId) {
-      ...OpportunityPage
-    }
+query subspacePage($subspaceId: UUID_NAMEID!) {
+  space(ID: $subspaceId) {
+    ...SubspacePage
   }
 }
 
-fragment OpportunityPage on Opportunity {
+fragment SubspacePage on Space {
   id
   nameID
   profile {

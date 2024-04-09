@@ -1,0 +1,5 @@
+query subspaceInfo($subspaceId: UUID_NAMEID!) {
+  space(ID: $subspaceId) {
+    ...SubspaceInfo
+  }
+}

@@ -1,12 +1,10 @@
-query opportunityProvider($opportunityId: UUID!) {
-  lookup {
-    opportunity(ID: $opportunityId) {
-      ...OpportunityProvider
-    }
+query subspaceProvider($subspaceId: UUID_NAMEID!) {
+  space(ID: $subspaceId) {
+    ...SubspaceProvider
   }
 }
 
-fragment OpportunityProvider on Opportunity {
+fragment SubspaceProvider on Space {
   id
   nameID
   profile {

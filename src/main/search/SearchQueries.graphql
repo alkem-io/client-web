@@ -8,7 +8,7 @@ query search($searchData: SearchInput!) {
       ... on SearchResultSpace {
         ...SearchResultSpace
       }
-      ... on SearchResultChallenge {
+      ... on SearchResultsubspace {
         ...SearchResultChallenge
       }
       ... on SearchResultOpportunity {
@@ -99,7 +99,7 @@ fragment PostParent on SearchResultPost {
       anonymousReadAccess
     }
   }
-  challenge {
+  subspace {
     id
     profile {
       id
@@ -252,7 +252,7 @@ fragment SearchResultSpace on SearchResultSpace {
 }
 
 fragment SearchResultChallenge on SearchResultChallenge {
-  challenge {
+  subspace {
     id
     profile {
       id
@@ -332,7 +332,7 @@ fragment SearchResultOpportunity on SearchResultOpportunity {
       myMembershipStatus
     }
   }
-  challenge {
+  subspace {
     id
     profile {
       id
@@ -361,12 +361,12 @@ query userRolesSearchCards($userId: UUID_NAMEID_EMAIL!) {
     spaces {
       id
       roles
-      challenges {
+      subspaces {
         id
         nameID
         roles
       }
-      opportunities {
+      subsubspaces {
         id
         roles
       }

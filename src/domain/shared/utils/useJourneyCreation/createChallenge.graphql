@@ -1,5 +1,5 @@
-mutation createChallenge($input: CreateChallengeOnSpaceInput!) {
-  createChallenge(challengeData: $input) {
-    ...ChallengeCard
+mutation createSubspace($input: CreateSubspaceOnSpaceInput!) {
+  createSubspace(challengeData: $input) {
+    ...SupspaceCard
   }
 }

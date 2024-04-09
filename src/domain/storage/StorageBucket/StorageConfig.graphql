@@ -1,29 +1,8 @@
-query JourneyStorageConfig(
-  $spaceId: UUID_NAMEID = "00000000-0000-0000-0000-000000000000" # workaround for mandatory param
-  $challengeId: UUID = "00000000-0000-0000-0000-000000000000" # workaround for mandatory param
-  $opportunityId: UUID = "00000000-0000-0000-0000-000000000000" # workaround for mandatory param
-  $includeSpace: Boolean = false
-  $includeChallenge: Boolean = false
-  $includeOpportunity: Boolean = false
-) {
-  space(ID: $spaceId) @include(if: $includeSpace) {
+query JourneyStorageConfig($spaceId: UUID) {
+  space(ID: $spaceId) {
     id
     profile {
       ...ProfileStorageConfig
-    }
-  }
-  lookup {
-    challenge(ID: $challengeId) @include(if: $includeChallenge) {
-      id
-      profile {
-        ...ProfileStorageConfig
-      }
-    }
-    opportunity(ID: $opportunityId) @include(if: $includeOpportunity) {
-      id
-      profile {
-        ...ProfileStorageConfig
-      }
     }
   }
 }
