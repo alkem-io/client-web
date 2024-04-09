@@ -11,10 +11,7 @@ import { useTranslation } from 'react-i18next';
 
 interface CommentReactionsReaction extends Identifiable {
   emoji: string;
-  sender?: Identifiable & {
-    firstName: string;
-    lastName: string;
-  };
+  sender?: Identifiable & { profile: { displayName: string } };
 }
 
 interface CommentReactionsProps {

@@ -1,3 +1,5 @@
+import { ProfileType } from '../../../../../core/apollo/generated/graphql-schema';
+
 export interface Author {
   id: string;
   displayName: string;
@@ -8,4 +10,5 @@ export interface Author {
   tags?: string[];
   city?: string;
   country?: string;
+  type?: ProfileType;
 }

@@ -1,12 +1,14 @@
 import { Author } from '../../../shared/components/AuthorAvatar/models/author';
 import { Identifiable } from '../../../../core/utils/Identifiable';
+import { ProfileType } from '../../../../core/apollo/generated/graphql-schema';
 
 interface AuthorData extends Identifiable {
-  firstName: string;
-  lastName: string;
+  firstName?: string;
+  lastName?: string;
   profile: {
     displayName: string;
     url: string;
+    type?: ProfileType;
     avatar?: {
       uri: string;
     };
@@ -24,16 +26,19 @@ interface AuthorData extends Identifiable {
 export const buildAuthorFromUser = (user: AuthorData): Author => {
   const avatarURL = user.profile.avatar ? user.profile.avatar?.uri : user.profile.visual?.uri;
   const tags = user?.profile?.tagsets?.flatMap(tagset => tagset.tags);
+  const firstName = user.firstName ?? user.profile.displayName.split(' ')[0];
+  const lastName = user.lastName ?? user.profile.displayName.split(' ')[1];
   const result: Author = {
     id: user.id,
+    firstName,
+    lastName,
     displayName: user.profile.displayName,
-    firstName: user.firstName,
-    lastName: user.lastName,
     avatarUrl: avatarURL,
     url: user.profile.url,
     tags: tags ?? [],
     city: user.profile.location?.city,
     country: user.profile.location?.country,
+    type: user.profile.type,
   };
   return result;
 };

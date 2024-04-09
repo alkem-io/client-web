@@ -569,10 +569,33 @@ export const ReactionDetailsFragmentDoc = gql`
     emoji
     sender {
       id
-      firstName
-      lastName
+      profile {
+        id
+        displayName
+      }
     }
   }
+`;
+export const SenderProfileFragmentDoc = gql`
+  fragment SenderProfile on Profile {
+    id
+    displayName
+    url
+    type
+    avatar: visual(type: AVATAR) {
+      id
+      uri
+    }
+    tagsets {
+      ...TagsetDetails
+    }
+    location {
+      id
+      city
+      country
+    }
+  }
+  ${TagsetDetailsFragmentDoc}
 `;
 export const MessageDetailsFragmentDoc = gql`
   fragment MessageDetails on Message {
@@ -584,31 +607,22 @@ export const MessageDetailsFragmentDoc = gql`
     }
     threadID
     sender {
-      id
-      nameID
-      firstName
-      lastName
-      profile {
+      ... on User {
         id
-        displayName
-        url
-        avatar: visual(type: AVATAR) {
-          id
-          uri
+        profile {
+          ...SenderProfile
         }
-        tagsets {
-          ...TagsetDetails
-        }
-        location {
-          id
-          city
-          country
+      }
+      ... on VirtualContributor {
+        id
+        profile {
+          ...SenderProfile
         }
       }
     }
   }
   ${ReactionDetailsFragmentDoc}
-  ${TagsetDetailsFragmentDoc}
+  ${SenderProfileFragmentDoc}
 `;
 export const CommentsWithMessagesFragmentDoc = gql`
   fragment CommentsWithMessages on Room {
@@ -10208,7 +10222,12 @@ export const ReplyToMessageDocument = gql`
       id
       message
       sender {
-        id
+        ... on User {
+          id
+        }
+        ... on VirtualContributor {
+          id
+        }
       }
       timestamp
     }
@@ -10353,7 +10372,12 @@ export const SendMessageToRoomDocument = gql`
       id
       message
       sender {
-        id
+        ... on User {
+          id
+        }
+        ... on VirtualContributor {
+          id
+        }
       }
       timestamp
     }
