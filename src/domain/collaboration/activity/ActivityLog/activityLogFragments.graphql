@@ -94,7 +94,7 @@ fragment ActivityLogChallengeCreated on ActivityLogEntryChallengeCreated {
 }
 
 fragment ActivityLogOpportunityCreated on ActivityLogEntryOpportunityCreated {
-  opportunity {
+  subsubspace {
     id
     profile {
       ...ActivitySubjectProfile

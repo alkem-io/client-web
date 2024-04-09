@@ -1,4 +1,4 @@
-query JourneyStorageConfig($spaceId: UUID) {
+query JourneyStorageConfig($spaceId: UUID_NAMEID!) {
   space(ID: $spaceId) {
     id
     profile {

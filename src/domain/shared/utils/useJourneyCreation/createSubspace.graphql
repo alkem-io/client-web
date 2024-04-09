@@ -1,5 +1,5 @@
 mutation createSubspace($input: CreateSubspaceOnSpaceInput!) {
-  createSubspace(challengeData: $input) {
-    ...SupspaceCard
+  createSubspace(subspaceData: $input) {
+    ...SubspaceCard
   }
 }

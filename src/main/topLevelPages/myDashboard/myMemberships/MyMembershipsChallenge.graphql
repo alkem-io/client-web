@@ -1,4 +1,4 @@
-query MyMembershipsSubspace($subspaceId: UUID!) {
+query MyMembershipsSubspace($subspaceId: UUID_NAMEID!) {
   space(ID: $subspaceId) {
     id
     profile {

@@ -8,7 +8,7 @@ query search($searchData: SearchInput!) {
       ... on SearchResultSpace {
         ...SearchResultSpace
       }
-      ... on SearchResultsubspace {
+      ... on SearchResultChallenge {
         ...SearchResultChallenge
       }
       ... on SearchResultOpportunity {
@@ -111,7 +111,7 @@ fragment PostParent on SearchResultPost {
       anonymousReadAccess
     }
   }
-  opportunity {
+  subsubspace {
     id
     profile {
       id
@@ -305,7 +305,7 @@ fragment SearchResultChallenge on SearchResultChallenge {
 }
 
 fragment SearchResultOpportunity on SearchResultOpportunity {
-  opportunity {
+  subsubspace {
     id
     profile {
       id

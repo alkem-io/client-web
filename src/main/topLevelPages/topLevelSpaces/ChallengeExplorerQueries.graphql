@@ -125,6 +125,6 @@ fragment SpaceExplorerSubspace on Space {
 fragment SpaceExplorerSpaceWithChallenges on Space {
   ...SpaceExplorerSpace
   subspaces {
-    ...SpaceExplorerChallenge
+    ...SpaceExplorerSubspace
   }
 }
