@@ -1,6 +1,6 @@
 import React from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { ChallengeProvider } from '../../challenge/context/ChallengeProvider';
+import { ChallengeProvider } from '../../challenge/context/SubspaceProvider';
 import { CommunityContextProvider } from '../../../community/community/CommunityContext';
 import { nameOfUrl } from '../../../../main/routing/urlParams';
 import ChallengeRoute from '../../challenge/routing/ChallengeRoute';
@@ -21,7 +21,7 @@ export const SpaceRoute = () => {
   const { journeyId } = useRouteResolver();
 
   return (
-    <StorageConfigContextProvider locationType="journey" journeyTypeName="space" journeyId={journeyId}>
+    <StorageConfigContextProvider locationType="journey" journeyTypeName="space" spaceId={journeyId}>
       <Routes>
         <Route path="/" element={<EntityPageLayoutHolder />}>
           <Route index element={<Navigate replace to={routes.Dashboard} />} />
@@ -52,7 +52,7 @@ export const SpaceRoute = () => {
           />
         </Route>
         <Route
-          path={`challenges/:${nameOfUrl.challengeNameId}/*`}
+          path={`challenges/:${nameOfUrl.subspaceNameId}/*`}
           element={
             <ChallengeProvider>
               <CommunityContextProvider>

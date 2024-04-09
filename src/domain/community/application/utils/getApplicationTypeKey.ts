@@ -6,7 +6,7 @@ const getApplicationTypeKey = (type: JourneyTypeName): TranslationKey => {
     case 'space':
       return 'common.space';
     case 'challenge':
-      return 'common.challenge';
+      return 'common.subspace';
     case 'opportunity':
       return 'common.opportunity';
     default:

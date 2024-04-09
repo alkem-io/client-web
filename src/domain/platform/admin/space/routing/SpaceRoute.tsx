@@ -21,7 +21,7 @@ export const SpaceRoute: FC = () => {
   const { spaceId, communityId } = useSpace();
 
   return (
-    <StorageConfigContextProvider locationType="journey" journeyTypeName="space" journeyId={spaceId}>
+    <StorageConfigContextProvider locationType="journey" journeyTypeName="space" spaceId={spaceId}>
       <Routes>
         <Route index element={<Navigate to="profile" replace />} />
         <Route path="profile" element={<SpaceProfilePage />} />

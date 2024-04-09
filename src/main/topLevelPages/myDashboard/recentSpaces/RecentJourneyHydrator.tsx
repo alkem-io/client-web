@@ -39,16 +39,11 @@ const RecentJourneyHydrator = ({ journey, component: Component }: RecentJourneyH
   const { data } = useRecentJourneyQuery({
     variables: {
       spaceId: journey.id,
-      challengeId: journey.id,
-      opportunityId: journey.id,
-      includeSpace: journeyTypeName === 'space',
-      includeChallenge: journeyTypeName === 'challenge',
-      includeOpportunity: journeyTypeName === 'opportunity',
     },
     skip: !journeyTypeName,
   });
 
-  const hydratedJourney = data?.space ?? data?.lookup.challenge ?? data?.lookup.opportunity;
+  const hydratedJourney = data?.space;
 
   if (!journeyTypeName) {
     return null;

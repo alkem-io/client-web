@@ -38,8 +38,8 @@ const WhiteboardPage: FC<WhiteboardPageProps> = ({
   });
 
   const calloutId =
-    data?.lookup.opportunity?.collaboration?.callouts?.[0].id ??
-    data?.lookup.challenge?.collaboration?.callouts?.[0].id ??
+    data?.lookup.subsubspace?.collaboration?.callouts?.[0].id ??
+    data?.lookup.subspace?.collaboration?.callouts?.[0].id ??
     data?.space?.collaboration?.callouts?.[0].id;
 
   return (

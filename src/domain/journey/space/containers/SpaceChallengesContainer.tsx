@@ -35,7 +35,7 @@ export const SpaceChallengesContainer: FC<SpaceChallengesContainerProps> = ({ sp
 
   useChallengeCreatedSubscription(data, data => data?.space, subscribeToMore);
 
-  const challenges = data?.space?.challenges ?? [];
+  const challenges = data?.space?.subspaces ?? [];
 
   const callouts = useCallouts({
     journeyId: spaceId,

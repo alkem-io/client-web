@@ -25,7 +25,7 @@ const JourneyCardJoinButton = (props: JourneyCardJoinButtonProps) => {
             component={ButtonNarrowOutlined as typeof Button}
             {...applicationButtonProps}
             loading={loading}
-            journeyTypeName={props.challengeId ? 'challenge' : 'space'}
+            journeyTypeName={props.subspaceId ? 'challenge' : 'space'}
           />
         );
       }}

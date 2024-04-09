@@ -5,7 +5,7 @@ import { journeyCardTagsGetter, journeyCardValueGetter } from '../../common/util
 import { JourneyCreationDialog } from '../../../shared/components/JorneyCreationDialog';
 import { JourneyFormValues } from '../../../shared/components/JorneyCreationDialog/JourneyCreationForm';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
-import { useJourneyCreation } from '../../../shared/utils/useJourneyCreation/useJourneyCreation';
+import { useSubspaceCreation } from '../../../shared/utils/useJourneyCreation/useJourneyCreation';
 import ChallengeCard from '../../challenge/ChallengeCard/ChallengeCard';
 import { CreateChallengeForm } from '../../challenge/forms/CreateChallengeForm';
 import { ChallengeIcon } from '../../challenge/icon/ChallengeIcon';
@@ -28,7 +28,7 @@ const SpaceChallengesPage: FC<SpaceChallengesPageProps> = () => {
 
   const [isCreateDialogOpen, setCreateDialogOpen] = useState(false);
 
-  const { createChallenge } = useJourneyCreation();
+  const { createChallenge } = useSubspaceCreation();
 
   const handleCreate = useCallback(
     async (value: JourneyFormValues) => {
@@ -56,7 +56,7 @@ const SpaceChallengesPage: FC<SpaceChallengesPageProps> = () => {
       <SpaceChallengesContainer spaceId={spaceId}>
         {({ callouts, ...entities }, state) => (
           <ChildJourneyView
-            childEntities={entities.challenges}
+            childEntities={entities.subspaces}
             childEntitiesIcon={<ChallengeIcon />}
             childEntityReadAccess={permissions.canReadChallenges}
             childEntityValueGetter={journeyCardValueGetter}
@@ -82,7 +82,7 @@ const SpaceChallengesPage: FC<SpaceChallengesPageProps> = () => {
               <JourneyCreationDialog
                 open={isCreateDialogOpen}
                 icon={<ChallengeIcon />}
-                journeyName={t('common.challenge')}
+                journeyName={t('common.subspace')}
                 onClose={() => setCreateDialogOpen(false)}
                 OnCreate={handleCreate}
                 formComponent={CreateChallengeForm}

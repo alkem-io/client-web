@@ -39,7 +39,7 @@ export const useCollaborationAuthorization = (): CollaborationAuthorization => {
 
   const authorization = (
     authorizationData?.lookup.opportunity ??
-    authorizationData?.lookup.challenge ??
+    authorizationData?.lookup.subspace ??
     authorizationData?.space
   )?.authorization;
 
@@ -59,7 +59,7 @@ export const useCollaborationAuthorization = (): CollaborationAuthorization => {
 
   const collaboration =
     collaborationData?.space?.collaboration ??
-    collaborationData?.lookup.challenge?.collaboration ??
+    collaborationData?.lookup.subspace?.collaboration ??
     collaborationData?.lookup.opportunity?.collaboration;
 
   const collaborationId = collaboration?.id;

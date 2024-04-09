@@ -5,7 +5,7 @@ import { GUTTER_MUI } from '../../core/ui/grid/constants';
 import { BlockTitle, PageTitle, Text } from '../../core/ui/typography';
 import PageContentBlockGrid from '../../core/ui/content/PageContentBlockGrid';
 import SpaceCard from '../../domain/journey/space/SpaceCard/SpaceCard';
-import ChallengeCard from '../../domain/journey/challenge/ChallengeCard/ChallengeCard';
+import ChallengeCard from '../../domain/journey/subspace/ChallengeCard/ChallengeCard';
 import PageContentBlockHeader from '../../core/ui/content/PageContentBlockHeader';
 import OpportunityCard from '../../domain/journey/opportunity/OpportunityCard/OpportunityCard';
 import SpaceSubspaceCard from '../../domain/journey/space/SpaceSubspaceCard/SpaceSubspaceCard';

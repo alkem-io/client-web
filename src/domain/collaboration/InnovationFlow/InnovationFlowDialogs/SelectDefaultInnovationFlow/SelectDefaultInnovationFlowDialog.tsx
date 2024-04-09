@@ -63,7 +63,7 @@ const SelectDefaultInnovationFlowDialog = ({
   return (
     <DialogWithGrid open={open} onClose={onClose}>
       <DialogHeader
-        title={t('pages.admin.space.sections.challenges.defaultSettings.defaultInnovationFlow.title')}
+        title={t('pages.admin.space.sections.subspaces.defaultSettings.defaultInnovationFlow.title')}
         onClose={onClose}
       />
       <Formik initialValues={initialValues} validationSchema={validationSchema} enableReinitialize onSubmit={() => {}}>
@@ -71,7 +71,7 @@ const SelectDefaultInnovationFlowDialog = ({
           <Form noValidate>
             <Gutters>
               <WrapperMarkdown caption>
-                {t('pages.admin.space.sections.challenges.defaultSettings.defaultInnovationFlow.description')}
+                {t('pages.admin.space.sections.subspaces.defaultSettings.defaultInnovationFlow.description')}
               </WrapperMarkdown>
               {loadingInnovationFlows && <Skeleton variant="rectangular" />}
               {innovationFlowTemplates && (

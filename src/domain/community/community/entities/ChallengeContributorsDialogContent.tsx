@@ -17,7 +17,7 @@ const ChallengeContributorsDialogContent: FC<ContributorsDialogContentProps> = (
     skip: !dialogOpen || !challengeId,
   });
 
-  const { memberUsers, memberOrganizations } = data?.lookup.challenge?.community ?? {};
+  const { memberUsers, memberOrganizations } = data?.lookup.subspace?.community ?? {};
 
   return (
     <CommunityContributorsView

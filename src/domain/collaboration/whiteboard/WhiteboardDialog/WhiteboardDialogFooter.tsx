@@ -9,7 +9,7 @@ import { useAuthenticationContext } from '../../../../core/auth/authentication/h
 import { CommunityMembershipStatus, ContentUpdatePolicy } from '../../../../core/apollo/generated/graphql-schema';
 import { formatTimeElapsed } from '../../../shared/utils/formatTimeElapsed';
 import { useSpace } from '../../../journey/space/SpaceContext/useSpace';
-import { useChallenge } from '../../../journey/challenge/hooks/useChallenge';
+import { useChallenge } from '../../../journey/subspace/hooks/useChallenge';
 import { useOpportunity } from '../../../journey/opportunity/hooks/useOpportunity';
 import { getJourneyTypeName } from '../../../journey/JourneyTypeName';
 import RouterLink from '../../../../core/ui/link/RouterLink';
@@ -77,8 +77,8 @@ const WhiteboardDialogFooter = ({
   const opportunityContext = useOpportunity();
 
   const journeyTypeName = getJourneyTypeName({
-    ...opportunityContext,
-    ...challengeContext,
+    ...subsubspaceContext,
+    ...subspaceContext,
     ...spaceContext,
   });
 

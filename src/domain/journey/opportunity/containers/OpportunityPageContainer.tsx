@@ -93,7 +93,7 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ opportuni
     errorPolicy: 'all',
   });
 
-  const opportunity = query?.lookup.opportunity;
+  const opportunity = query?.lookup.subsubspace;
   const collaborationID = opportunity?.collaboration?.id;
   const opportunityPrivileges = opportunity?.authorization?.myPrivileges ?? NO_PRIVILEGES;
   const communityPrivileges = opportunity?.community?.authorization?.myPrivileges ?? NO_PRIVILEGES;
@@ -124,7 +124,7 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ opportuni
     loading: activityLoading,
     fetchMoreActivities,
   } = useActivityOnCollaboration(collaborationID, {
-    skip: !permissions.opportunityReadAccess || !permissions.readUsers,
+    skip: !permissions.subsubspaceReadAccess || !permissions.readUsers,
     types: activityTypes,
     limit: RECENT_ACTIVITIES_LIMIT_INITIAL,
   });

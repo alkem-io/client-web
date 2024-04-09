@@ -1,6 +1,6 @@
 import React from 'react';
 import CommunityContextFeedbackContainer from '../../../journey/common/AboutPageContainer/feedback/CommunityFeedbackContainer';
-import CommunityFeedbackView from '../../../journey/challenge/views/CommunityFeedbackView';
+import CommunityFeedbackView from '../../../journey/subspace/views/CommunityFeedbackView';
 
 const CommunityContextFeedbackPage = () => {
   return (

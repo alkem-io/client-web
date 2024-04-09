@@ -28,7 +28,7 @@ const useCollaborationIdentity = ({
 
   const collaborationId =
     CollaborationIdentityData?.lookup.opportunity?.collaboration?.id ??
-    CollaborationIdentityData?.lookup.challenge?.collaboration?.id ??
+    CollaborationIdentityData?.lookup.subspace?.collaboration?.id ??
     CollaborationIdentityData?.space?.collaboration?.id;
 
   return {

@@ -48,7 +48,7 @@ export interface ContributionDetails {
 }
 
 const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entities, children }) => {
-  const { spaceId, challengeId, opportunityId } = entities;
+  const { spaceId, subspaceId: challengeId, subsubspaceId: opportunityId } = entities;
   const { user: userMetadata } = useUserContext();
   const userId = userMetadata?.user?.id;
   const { data: spaceData, loading: spaceLoading } = useSpaceContributionDetailsQuery({
@@ -89,25 +89,25 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
 
     if (challengeData) {
       return {
-        displayName: challengeData.lookup.challenge?.profile.displayName!,
+        displayName: challengeData.lookup.subspace?.profile.displayName!,
         journeyTypeName: 'challenge',
-        banner: getVisualByType(VisualName.CARD, challengeData.lookup.challenge?.profile.visuals),
-        tags: challengeData.lookup.challenge?.profile.tagset?.tags ?? [],
-        journeyUri: challengeData.lookup.challenge?.profile.url!,
-        communityId: challengeData.lookup.challenge?.community?.id,
-        tagline: challengeData.lookup.challenge?.profile.tagline ?? '',
+        banner: getVisualByType(VisualName.CARD, challengeData.lookup.subspace?.profile.visuals),
+        tags: challengeData.lookup.subspace?.profile.tagset?.tags ?? [],
+        journeyUri: challengeData.lookup.subspace?.profile.url!,
+        communityId: challengeData.lookup.subspace?.community?.id,
+        tagline: challengeData.lookup.subspace?.profile.tagline ?? '',
       };
     }
 
     if (opportunityData) {
       return {
-        displayName: opportunityData.lookup.opportunity?.profile.displayName!,
+        displayName: opportunityData.lookup.subsubspace?.profile.displayName!,
         journeyTypeName: 'opportunity',
-        banner: getVisualByType(VisualName.CARD, opportunityData.lookup.opportunity?.profile.visuals),
-        tags: opportunityData.lookup.opportunity?.profile.tagset?.tags ?? [],
-        journeyUri: opportunityData.lookup.opportunity?.profile.url!,
-        communityId: opportunityData.lookup.opportunity?.community?.id,
-        tagline: opportunityData.lookup.opportunity?.profile.tagline ?? '',
+        banner: getVisualByType(VisualName.CARD, opportunityData.lookup.subsubspace?.profile.visuals),
+        tags: opportunityData.lookup.subsubspace?.profile.tagset?.tags ?? [],
+        journeyUri: opportunityData.lookup.subsubspace?.profile.url!,
+        communityId: opportunityData.lookup.subsubspace?.community?.id,
+        tagline: opportunityData.lookup.subsubspace?.profile.tagline ?? '',
       };
     }
   }, [spaceData, challengeData, opportunityData]);

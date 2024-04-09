@@ -359,9 +359,9 @@
       "space": "crwdns8632:0$t(common.space)crwdne8632:0",
       "space_plural": "crwdns8634:0$t(common.spaces)crwdne8634:0",
       "challenge": "crwdns8636:0$t(common.challenge)crwdne8636:0",
-      "challenge_plural": "crwdns8638:0$t(common.challenges)crwdne8638:0",
+      "challenge_plural": "crwdns8638:0$t(common.subspaces)crwdne8638:0",
       "opportunity": "crwdns8640:0$t(common.opportunity)crwdne8640:0",
-      "opportunity_plural": "crwdns8642:0$t(common.opportunities)crwdne8642:0",
+      "opportunity_plural": "crwdns8642:0$t(common.subspaces)crwdne8642:0",
       "agreement": "crwdns8644:0$t(common.agreement)crwdne8644:0",
       "agreement_plural": "crwdns8646:0$t(common.agreements)crwdne8646:0"
     },
@@ -1905,11 +1905,11 @@
           "callout": "crwdns10312:0crwdne10312:0"
         }
       },
-      "journeyFilterTitle": "crwdns10314:0$t(common.spaces)crwdnd10314:0$t(common.challenges)crwdnd10314:0$t(common.opportunities)crwdne10314:0"
+      "journeyFilterTitle": "crwdns10314:0$t(common.spaces)crwdnd10314:0$t(common.subspaces)crwdnd10314:0$t(common.subspaces)crwdne10314:0"
     },
     "challenge-explorer": {
       "fullName": "crwdns10316:0crwdne10316:0",
-      "shortName": "crwdns10318:0$t(common.challenges)crwdne10318:0",
+      "shortName": "crwdns10318:0$t(common.subspaces)crwdne10318:0",
       "search": {
         "title": "crwdns10320:0crwdne10320:0",
         "subtitle": "crwdns10322:0crwdne10322:0",
@@ -2578,7 +2578,7 @@
     ]
   },
   "spaceSearch": {
-    "journeyFilterTitle": "crwdns10876:0$t(common.challenges)crwdnd10876:0$t(common.opportunities)crwdne10876:0"
+    "journeyFilterTitle": "crwdns10876:0$t(common.subspaces)crwdnd10876:0$t(common.subspaces)crwdne10876:0"
   },
   "visuals-alt-text": {
     "banner": {

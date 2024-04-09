@@ -57,7 +57,7 @@ export const useJourneyBreadcrumbs = () => {
       case 'space':
         return _space?.space.profile;
       case 'challenge':
-        return _challenge?.lookup.challenge?.profile;
+        return _challenge?.lookup.subspace?.profile;
       case 'opportunity':
         return _opportunity?.lookup.opportunity?.profile;
     }

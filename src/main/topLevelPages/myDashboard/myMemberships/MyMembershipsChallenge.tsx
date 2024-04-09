@@ -6,7 +6,7 @@ import JourneyCardHorizontal, {
 import GridItem from '../../../../core/ui/grid/GridItem';
 import { AuthorizationPrivilege, CommunityRole } from '../../../../core/apollo/generated/graphql-schema';
 import { Identifiable } from '../../../../core/utils/Identifiable';
-import { useMyMembershipsChallengeQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { useMyMembershipsSubspaceQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import isJourneyMember from '../../../../domain/journey/utils/isJourneyMember';
 
 interface MyMembershipsChallengeProps {
@@ -23,9 +23,9 @@ interface MyMembershipsChallengeProps {
 const MyMembershipsChallenge = ({ challenge }: MyMembershipsChallengeProps) => {
   const canReadChallenge = challenge.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Read);
 
-  const { data, loading } = useMyMembershipsChallengeQuery({
+  const { data, loading } = useMyMembershipsSubspaceQuery({
     variables: {
-      challengeId: challenge.id,
+      subspaceId: challenge.id,
     },
     skip: !canReadChallenge,
   });
@@ -33,8 +33,8 @@ const MyMembershipsChallenge = ({ challenge }: MyMembershipsChallengeProps) => {
   const hydratedChallenge = useMemo(() => {
     return {
       ...challenge,
-      ...data?.lookup.challenge!,
-      opportunities: data?.lookup.challenge?.opportunities?.filter(isJourneyMember),
+      ...data?.space!,
+      opportunities: data?.space.subspaces?.filter(isJourneyMember),
     };
   }, [challenge, data]);
 
@@ -52,7 +52,7 @@ const MyMembershipsChallenge = ({ challenge }: MyMembershipsChallengeProps) => {
     );
   }
 
-  if (!data?.lookup.challenge) {
+  if (!data?.space) {
     return null; // Challenge not found, unlikely but possible
   }
 
@@ -60,7 +60,7 @@ const MyMembershipsChallenge = ({ challenge }: MyMembershipsChallengeProps) => {
     <GridItem columns={4}>
       <Gutters disablePadding>
         <JourneyCardHorizontal journey={hydratedChallenge} journeyTypeName="challenge" />
-        {hydratedChallenge.opportunities?.map(opportunity => (
+        {hydratedChallenge.subspaces?.map(opportunity => (
           <JourneyCardHorizontal journey={opportunity} journeyTypeName="opportunity" />
         ))}
       </Gutters>

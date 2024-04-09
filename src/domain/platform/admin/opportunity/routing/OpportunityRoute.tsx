@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { useChallenge } from '../../../../journey/challenge/hooks/useChallenge';
+import { useChallenge } from '../../../../journey/subspace/hooks/useChallenge';
 import { useOpportunity } from '../../../../journey/opportunity/hooks/useOpportunity';
 import { Error404 } from '../../../../../core/pages/Errors/Error404';
 import AdminOpportunityCommunityPage from '../../../../journey/opportunity/pages/AdminOpportunityCommunityPage';
@@ -11,11 +11,11 @@ import CommunityGroupsRoute from '../../community/routes/CommunityGroupsAdminRou
 import { StorageConfigContextProvider } from '../../../../storage/StorageBucket/StorageConfigContext';
 
 export const OpportunityRoute: FC = () => {
-  const { challenge } = useChallenge();
+  const { subspace: challenge } = useChallenge();
   const { opportunity } = useOpportunity();
 
   return (
-    <StorageConfigContextProvider locationType="journey" journeyTypeName="opportunity" journeyId={opportunity?.id}>
+    <StorageConfigContextProvider locationType="journey" journeyTypeName="opportunity" spaceId={opportunity?.id}>
       <Routes>
         <Route index element={<Navigate to="profile" replace />} />
         <Route path="profile" element={<OpportunityProfilePage />} />

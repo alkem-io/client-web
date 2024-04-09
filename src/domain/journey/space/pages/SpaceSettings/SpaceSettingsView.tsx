@@ -70,11 +70,11 @@ export const SpaceSettingsView: FC<SpaceSettingsViewProps> = ({ journeyId, journ
   });
   const communityId =
     settingsData?.space?.community?.id ??
-    settingsData?.challenge?.challenge?.community?.id ??
-    settingsData?.opportunity?.opportunity?.community?.id;
+    settingsData?.subspace?.subspace?.community?.id ??
+    settingsData?.subsubspace?.subsubspace?.community?.id;
 
   const currentSettings = useMemo(() => {
-    const settings = settingsData?.space?.settings ?? settingsData?.challenge.challenge?.settings; // ?? settingsData?.opportunity?.opportunity?.settings;
+    const settings = settingsData?.space?.settings ?? settingsData?.subspace.subspace?.settings; // ?? settingsData?.subsubspace?.subsubspace?.settings;
     return {
       ...settings,
       hostOrganizationTrusted:

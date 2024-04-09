@@ -56,7 +56,7 @@ export const OpportunityMembers: FC<OpportunityMembersProps> = ({ children, enti
     setSearchTerm,
   } = useAvailableMembersWithCredential({
     credential: entities.credential,
-    resourceId: entities.opportunityId,
+    resourceId: entities.subsubspaceId,
     parentCommunityId: communityId,
   });
 

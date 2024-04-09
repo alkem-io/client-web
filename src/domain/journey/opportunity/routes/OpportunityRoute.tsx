@@ -24,7 +24,7 @@ const OpportunityRoute = () => {
   }
 
   return (
-    <StorageConfigContextProvider locationType="journey" journeyTypeName="opportunity" journeyId={journeyId}>
+    <StorageConfigContextProvider locationType="journey" journeyTypeName="opportunity" spaceId={journeyId}>
       <Routes>
         <Route path={'/'} element={<EntityPageLayoutHolder />}>
           <Route index element={<Navigate replace to={routes.Dashboard} />} />

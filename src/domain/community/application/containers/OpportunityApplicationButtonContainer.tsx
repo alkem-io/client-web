@@ -41,10 +41,10 @@ export const OpportunityApplicationButtonContainer: FC<OpportunityApplicationBut
 
   const isMember = myMembershipStatus === CommunityMembershipStatus.Member;
   const isParentMember =
-    _communityPrivileges?.lookup.challenge?.community?.myMembershipStatus === CommunityMembershipStatus.Member;
+    _communityPrivileges?.lookup.subspace?.community?.myMembershipStatus === CommunityMembershipStatus.Member;
 
-  const parentUrl = _communityPrivileges?.lookup.challenge?.profile.url;
-  const communityLeadUsers = _communityPrivileges?.lookup.opportunity?.community?.leadUsers ?? [];
+  const parentUrl = _communityPrivileges?.lookup.subspace?.profile.url;
+  const communityLeadUsers = _communityPrivileges?.lookup.subsubspace?.community?.leadUsers ?? [];
   const leadUsers = communityLeadUsers.map(user => ({
     id: user.id,
     displayName: user.profile.displayName,
@@ -52,7 +52,7 @@ export const OpportunityApplicationButtonContainer: FC<OpportunityApplicationBut
     city: user.profile.location?.city,
     avatarUri: user.profile.avatar?.uri,
   }));
-  const communityId = _communityPrivileges?.lookup.opportunity?.community?.id;
+  const communityId = _communityPrivileges?.lookup.subsubspace?.community?.id;
   const sendMessageToCommunityLeads = useSendMessageToCommunityLeads(communityId);
 
   const loading = communityPrivilegesLoading;

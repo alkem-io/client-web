@@ -56,10 +56,10 @@ export const useRouteResolver = (): RouteParams => {
 
   const resolvedJourney: JourneyRouteParams = {
     spaceId: data?.space.id,
-    challengeId: data?.space.challenge?.id,
-    opportunityId: data?.space.challenge?.opportunity?.id,
+    challengeId: data?.space.subspace?.id,
+    opportunityId: data?.space.subspace?.subspace?.id,
     type: RouteType.Journey,
-    journeyId: data?.space.challenge?.opportunity?.id ?? data?.space.challenge?.id ?? data?.space.id,
+    journeyId: data?.space.subspace?.subspace?.id ?? data?.space.subspace?.id ?? data?.space.id,
     journeyTypeName: getJourneyTypeName({ spaceNameId, challengeNameId, opportunityNameId })!,
   };
 
@@ -77,9 +77,7 @@ export const useRouteResolver = (): RouteParams => {
   });
 
   const collaboration =
-    calloutData?.lookup.opportunity?.collaboration ??
-    calloutData?.lookup.challenge?.collaboration ??
-    calloutData?.space?.collaboration;
+    calloutData?.space?.collaboration ?? calloutData?.space?.collaboration ?? calloutData?.space?.collaboration;
 
   const calloutId = collaboration?.callouts?.[0]?.id;
 

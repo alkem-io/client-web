@@ -76,16 +76,16 @@ const AboutPageContainer: FC<AboutPageContainerProps> = ({ journeyId, journeyTyp
     },
   });
   const nonMemberContext =
-    nonMembersData?.lookup.opportunity?.context ??
-    nonMembersData?.lookup.challenge?.context ??
+    nonMembersData?.lookup.subsubspace?.context ??
+    nonMembersData?.lookup.subspace?.context ??
     nonMembersData?.space?.context;
   const nonMemberProfile =
-    nonMembersData?.lookup.opportunity?.profile ??
-    nonMembersData?.lookup.challenge?.profile ??
+    nonMembersData?.lookup.subsubspace?.profile ??
+    nonMembersData?.lookup.subspace?.profile ??
     nonMembersData?.space?.profile;
   const nonMemberCommunity =
-    nonMembersData?.lookup.opportunity?.community ??
-    nonMembersData?.lookup.challenge?.community ??
+    nonMembersData?.lookup.subsubspace?.community ??
+    nonMembersData?.lookup.subspace?.community ??
     nonMembersData?.space?.community;
 
   const referencesReadAccess =
@@ -112,17 +112,17 @@ const AboutPageContainer: FC<AboutPageContainerProps> = ({ journeyId, journeyTyp
   });
 
   const memberProfile =
-    membersData?.lookup.opportunity?.profile ?? membersData?.lookup.challenge?.profile ?? membersData?.space?.profile;
+    membersData?.lookup.subsubspace?.profile ?? membersData?.lookup.subspace?.profile ?? membersData?.space?.profile;
 
   const context = nonMemberContext;
 
   const nonMemberJourney =
-    nonMembersData?.lookup.opportunity ?? nonMembersData?.lookup.challenge ?? nonMembersData?.space;
-  const memberJourney = membersData?.lookup.opportunity ?? membersData?.lookup.challenge ?? membersData?.space;
+    nonMembersData?.lookup.subsubspace ?? nonMembersData?.lookup.subspace ?? nonMembersData?.space;
+  const memberJourney = membersData?.lookup.subsubspace ?? membersData?.lookup.subspace ?? membersData?.space;
 
   const tagset = nonMemberJourney?.profile?.tagset;
   // TODO looks like space is missing
-  const collaboration = (nonMembersData?.lookup.opportunity ?? nonMembersData?.lookup.challenge)?.collaboration;
+  const collaboration = (nonMembersData?.lookup.subsubspace ?? nonMembersData?.lookup.subspace)?.collaboration;
 
   const hostOrganization = nonMembersData?.space?.account.host;
   const community = {
@@ -140,7 +140,7 @@ const AboutPageContainer: FC<AboutPageContainerProps> = ({ journeyId, journeyTyp
   const contributors = useCommunityMembersAsCardProps(community, { memberUsersCount });
 
   const canCreateCommunityContextReview =
-    nonMembersData?.lookup.challenge?.authorization?.myPrivileges?.includes(
+    nonMembersData?.lookup.subspace?.authorization?.myPrivileges?.includes(
       AuthorizationPrivilege.CommunityContextReview
     ) ?? false;
 

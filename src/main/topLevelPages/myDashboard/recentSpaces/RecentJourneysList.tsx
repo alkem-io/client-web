@@ -1,5 +1,4 @@
 import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
-import { useRecentJourneysQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import RecentJourneyHydrator from './RecentJourneyHydrator';
 import RecentJourneyCard, { RECENT_JOURNEY_CARD_ASPECT_RATIO } from './RecentJourneyCard';
 import GridItem from '../../../../core/ui/grid/GridItem';
@@ -9,13 +8,14 @@ import { DoubleArrowOutlined } from '@mui/icons-material';
 import { useColumns } from '../../../../core/ui/grid/GridContext';
 import { useTranslation } from 'react-i18next';
 import { GRID_COLUMNS_DESKTOP } from '../../../../core/ui/grid/constants';
+import { useRecentSpacesQuery } from '../../../../core/apollo/generated/apollo-hooks';
 
 interface RecentJourneysListProps {
   onSeeMore?: () => void;
 }
 
 const RecentJourneysList = ({ onSeeMore }: RecentJourneysListProps) => {
-  const { data } = useRecentJourneysQuery({
+  const { data } = useRecentSpacesQuery({
     variables: {
       limit: GRID_COLUMNS_DESKTOP / 2 - 1,
     },
@@ -29,8 +29,8 @@ const RecentJourneysList = ({ onSeeMore }: RecentJourneysListProps) => {
 
   return (
     <PageContentBlockSeamless row disablePadding>
-      {data?.me.myJourneys.slice(0, columns / 2 - 1).map(result => (
-        <RecentJourneyHydrator journey={result.journey} component={RecentJourneyCard} />
+      {data?.me.mySpaces.slice(0, columns / 2 - 1).map(result => (
+        <RecentJourneyHydrator journey={result.space} component={RecentJourneyCard} />
       ))}
       <GridItem columns={2}>
         <Paper

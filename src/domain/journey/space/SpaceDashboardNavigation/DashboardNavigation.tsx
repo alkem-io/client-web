@@ -77,7 +77,7 @@ const DashboardNavigation = ({
       />
       <Collapse in={showAll} collapsedSize={allItemsFit ? 0 : theme.spacing(6 * VISIBLE_ROWS_WHEN_COLLAPSED - 2)}>
         <Gutters disablePadding>
-          {dashboardNavigation?.map(({ id, url: challengeUrl, avatar, cardBanner, member, ...challenge }) => {
+          {dashboardNavigation?.map(({ id, url: challengeUrl, avatar, cardBanner, member, ...subspace }) => {
             if (loading) {
               return <Skeleton key={id} />;
             }
@@ -104,10 +104,10 @@ const DashboardNavigation = ({
                   />
                 }
                 tooltipPlacement={tooltipPlacement}
-                {...challenge}
+                {...subspace}
               >
                 {Boolean(challenge.children?.length) &&
-                  challenge.children?.map(({ id, url: opportunityUrl, avatar, cardBanner, member, ...opportunity }) => (
+                  challenge.children?.map(({ id, url: opportunityUrl, avatar, cardBanner, member, ...subsubspace }) => (
                     <DashboardNavigationItemView
                       key={id}
                       url={opportunityUrl}
@@ -129,7 +129,7 @@ const DashboardNavigation = ({
                           member={member}
                         />
                       }
-                      {...opportunity}
+                      {...subsubspace}
                     />
                   ))}
               </DashboardNavigationItemView>

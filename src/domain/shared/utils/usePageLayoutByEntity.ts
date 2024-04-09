@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import SpacePageLayout from '../../journey/space/layout/SpacePageLayout';
-import ChallengePageLayout from '../../journey/challenge/layout/ChallengePageLayout';
+import ChallengePageLayout from '../../journey/subspace/layout/ChallengePageLayout';
 import OpportunityPageLayout from '../../journey/opportunity/layout/OpportunityPageLayout';
 import { EntityTypeName } from '../../platform/constants/EntityTypeName';
 

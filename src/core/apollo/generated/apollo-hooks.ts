@@ -1883,55 +1883,6 @@ export const InnovationHubHomeInnovationHubFragmentDoc = gql`
     }
   }
 `;
-export const SubspaceInfoFragmentDoc = gql`
-  fragment SubspaceInfo on Space {
-    id
-    nameID
-    profile {
-      id
-      displayName
-      tagline
-      description
-      url
-      tagset {
-        ...TagsetDetails
-      }
-      references {
-        id
-        name
-        uri
-      }
-      visuals {
-        ...VisualFull
-      }
-      location {
-        ...fullLocation
-      }
-    }
-    community {
-      id
-      myMembershipStatus
-      authorization {
-        id
-        myPrivileges
-      }
-    }
-    authorization {
-      id
-      myPrivileges
-    }
-    context {
-      id
-      authorization {
-        id
-        myPrivileges
-      }
-    }
-  }
-  ${TagsetDetailsFragmentDoc}
-  ${VisualFullFragmentDoc}
-  ${FullLocationFragmentDoc}
-`;
 export const ContextTabFragmentDoc = gql`
   fragment ContextTab on Context {
     id
@@ -2665,6 +2616,55 @@ export const SpaceSettingsFragmentDoc = gql`
       inheritMembershipRights
     }
   }
+`;
+export const SubspaceInfoFragmentDoc = gql`
+  fragment SubspaceInfo on Space {
+    id
+    nameID
+    profile {
+      id
+      displayName
+      tagline
+      description
+      url
+      tagset {
+        ...TagsetDetails
+      }
+      references {
+        id
+        name
+        uri
+      }
+      visuals {
+        ...VisualFull
+      }
+      location {
+        ...fullLocation
+      }
+    }
+    community {
+      id
+      myMembershipStatus
+      authorization {
+        id
+        myPrivileges
+      }
+    }
+    authorization {
+      id
+      myPrivileges
+    }
+    context {
+      id
+      authorization {
+        id
+        myPrivileges
+      }
+    }
+  }
+  ${TagsetDetailsFragmentDoc}
+  ${VisualFullFragmentDoc}
+  ${FullLocationFragmentDoc}
 `;
 export const AdminSpaceFragmentDoc = gql`
   fragment AdminSpace on Space {
@@ -15347,61 +15347,6 @@ export function refetchInnovationHubQuery(variables?: SchemaTypes.InnovationHubQ
   return { query: InnovationHubDocument, variables: variables };
 }
 
-export const SubspaceInfoDocument = gql`
-  query subspaceInfo($subspaceId: UUID_NAMEID!) {
-    space(ID: $subspaceId) {
-      ...SubspaceInfo
-    }
-  }
-  ${SubspaceInfoFragmentDoc}
-`;
-
-/**
- * __useSubspaceInfoQuery__
- *
- * To run a query within a React component, call `useSubspaceInfoQuery` and pass it any options that fit your needs.
- * When your component renders, `useSubspaceInfoQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useSubspaceInfoQuery({
- *   variables: {
- *      subspaceId: // value for 'subspaceId'
- *   },
- * });
- */
-export function useSubspaceInfoQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.SubspaceInfoQuery, SchemaTypes.SubspaceInfoQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.SubspaceInfoQuery, SchemaTypes.SubspaceInfoQueryVariables>(
-    SubspaceInfoDocument,
-    options
-  );
-}
-
-export function useSubspaceInfoLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.SubspaceInfoQuery, SchemaTypes.SubspaceInfoQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.SubspaceInfoQuery, SchemaTypes.SubspaceInfoQueryVariables>(
-    SubspaceInfoDocument,
-    options
-  );
-}
-
-export type SubspaceInfoQueryHookResult = ReturnType<typeof useSubspaceInfoQuery>;
-export type SubspaceInfoLazyQueryHookResult = ReturnType<typeof useSubspaceInfoLazyQuery>;
-export type SubspaceInfoQueryResult = Apollo.QueryResult<
-  SchemaTypes.SubspaceInfoQuery,
-  SchemaTypes.SubspaceInfoQueryVariables
->;
-export function refetchSubspaceInfoQuery(variables: SchemaTypes.SubspaceInfoQueryVariables) {
-  return { query: SubspaceInfoDocument, variables: variables };
-}
-
 export const AboutPageNonMembersDocument = gql`
   query AboutPageNonMembers($spaceId: UUID_NAMEID!) {
     space(ID: $spaceId) {
@@ -17986,6 +17931,61 @@ export type UpdateSpaceSettingsMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateSpaceSettingsMutation,
   SchemaTypes.UpdateSpaceSettingsMutationVariables
 >;
+export const SubspaceInfoDocument = gql`
+  query subspaceInfo($subspaceId: UUID_NAMEID!) {
+    space(ID: $subspaceId) {
+      ...SubspaceInfo
+    }
+  }
+  ${SubspaceInfoFragmentDoc}
+`;
+
+/**
+ * __useSubspaceInfoQuery__
+ *
+ * To run a query within a React component, call `useSubspaceInfoQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSubspaceInfoQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSubspaceInfoQuery({
+ *   variables: {
+ *      subspaceId: // value for 'subspaceId'
+ *   },
+ * });
+ */
+export function useSubspaceInfoQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.SubspaceInfoQuery, SchemaTypes.SubspaceInfoQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.SubspaceInfoQuery, SchemaTypes.SubspaceInfoQueryVariables>(
+    SubspaceInfoDocument,
+    options
+  );
+}
+
+export function useSubspaceInfoLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.SubspaceInfoQuery, SchemaTypes.SubspaceInfoQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.SubspaceInfoQuery, SchemaTypes.SubspaceInfoQueryVariables>(
+    SubspaceInfoDocument,
+    options
+  );
+}
+
+export type SubspaceInfoQueryHookResult = ReturnType<typeof useSubspaceInfoQuery>;
+export type SubspaceInfoLazyQueryHookResult = ReturnType<typeof useSubspaceInfoLazyQuery>;
+export type SubspaceInfoQueryResult = Apollo.QueryResult<
+  SchemaTypes.SubspaceInfoQuery,
+  SchemaTypes.SubspaceInfoQueryVariables
+>;
+export function refetchSubspaceInfoQuery(variables: SchemaTypes.SubspaceInfoQueryVariables) {
+  return { query: SubspaceInfoDocument, variables: variables };
+}
+
 export const AdminGlobalOrganizationsListDocument = gql`
   query adminGlobalOrganizationsList($first: Int!, $after: UUID, $filter: OrganizationFilterInput) {
     organizationsPaginated(first: $first, after: $after, filter: $filter) {

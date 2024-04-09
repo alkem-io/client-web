@@ -6,7 +6,7 @@ import {
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { CommunityContext, CommunityContextValue } from './CommunityContext';
 import { useSpace } from '../../../journey/space/SpaceContext/useSpace';
-import { useChallenge } from '../../../journey/challenge/hooks/useChallenge';
+import { useChallenge } from '../../../journey/subspace/hooks/useChallenge';
 import { useOpportunity } from '../../../journey/opportunity/hooks/useOpportunity';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 
@@ -50,13 +50,13 @@ const CommunityContextProvider: FC = ({ children }) => {
 
   const community =
     spaceData?.space.community ??
-    challengeData?.lookup.challenge?.community ??
-    opportunityData?.lookup.opportunity?.community;
+    challengeData?.lookup.subspace?.community ??
+    opportunityData?.lookup.subsubspace?.community;
 
   const communityName =
     spaceData?.space.profile.displayName ??
-    challengeData?.lookup.challenge?.profile.displayName ??
-    opportunityData?.lookup.opportunity?.profile.displayName;
+    challengeData?.lookup.subspace?.profile.displayName ??
+    opportunityData?.lookup.subsubspace?.profile.displayName;
 
   const isLoading = isLoadingSpace || isLoadingChallenge || isLoadingOpportunity;
 

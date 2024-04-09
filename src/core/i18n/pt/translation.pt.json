@@ -359,9 +359,9 @@
       "space": "$t(common.space)",
       "space_plural": "$t(common.spaces)",
       "challenge": "$t(common.challenge)",
-      "challenge_plural": "$t(common.challenges)",
+      "challenge_plural": "$t(common.subspaces)",
       "opportunity": "$t(common.opportunity)",
-      "opportunity_plural": "$t(common.opportunities)",
+      "opportunity_plural": "$t(common.subspaces)",
       "agreement": "$t(common.agreement)",
       "agreement_plural": "$t(common.agreements)"
     },
@@ -1905,11 +1905,11 @@
           "callout": "Callouts (disponível em breve)"
         }
       },
-      "journeyFilterTitle": "$t(common.spaces), $t(common.challenges) & $t(common.opportunities)"
+      "journeyFilterTitle": "$t(common.spaces), $t(common.subspaces) & $t(common.subspaces)"
     },
     "challenge-explorer": {
       "fullName": "Explorar Desafios",
-      "shortName": "$t(common.challenges)",
+      "shortName": "$t(common.subspaces)",
       "search": {
         "title": "Explorar Desafios Públicos",
         "subtitle": "Abaixo você encontrará todos os Desafios dos quais você é membro. Curioso para explorar mais? Role para baixo e procure os tópicos que te interessam!",
@@ -2569,7 +2569,7 @@
     ]
   },
   "spaceSearch": {
-    "journeyFilterTitle": "$t(common.challenges) & $t(common.opportunities)"
+    "journeyFilterTitle": "$t(common.subspaces) & $t(common.subspaces)"
   },
   "visuals-alt-text": {
     "banner": {

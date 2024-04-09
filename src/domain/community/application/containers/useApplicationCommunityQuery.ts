@@ -73,12 +73,12 @@ export const useApplicationCommunityQuery = (type: JourneyTypeName, canJoinCommu
     }
     if (type === 'challenge') {
       return {
-        communityId: challengeData?.lookup.challenge?.community?.id || '',
-        displayName: challengeData?.lookup.challenge?.profile.displayName || '',
-        description: challengeTemplateData?.lookup.challenge?.community?.applicationForm?.description,
-        questions: challengeTemplateData?.lookup.challenge?.community?.applicationForm?.questions ?? [],
-        backUrl: challengeData?.lookup.challenge?.profile.url,
-        communityGuidelines: challengeData?.lookup.challenge?.community?.guidelines?.profile,
+        communityId: challengeData?.lookup.subspace?.community?.id || '',
+        displayName: challengeData?.lookup.subspace?.profile.displayName || '',
+        description: challengeTemplateData?.lookup.subspace?.community?.applicationForm?.description,
+        questions: challengeTemplateData?.lookup.subspace?.community?.applicationForm?.questions ?? [],
+        backUrl: challengeData?.lookup.subspace?.profile.url,
+        communityGuidelines: challengeData?.lookup.subspace?.community?.guidelines?.profile,
       };
     }
   }, [type, challengeData, challengeTemplateData, spaceData, spaceTemplateData, challengeNameId, spaceNameId]);

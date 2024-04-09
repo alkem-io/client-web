@@ -63,8 +63,8 @@ const JourneyUnauthorizedDialogContainer = ({
   });
 
   const { authorization } =
-    journeyPrivilegesQueryData?.lookup.opportunity ??
-    journeyPrivilegesQueryData?.lookup.challenge ??
+    journeyPrivilegesQueryData?.lookup.subsubspace ??
+    journeyPrivilegesQueryData?.lookup.subspace ??
     journeyPrivilegesQueryData?.space ??
     {};
 
@@ -89,8 +89,8 @@ const JourneyUnauthorizedDialogContainer = ({
   });
 
   const { authorization: communityAuthorization } =
-    journeyCommunityPrivilegesQueryData?.lookup.opportunity?.community ??
-    journeyCommunityPrivilegesQueryData?.lookup.challenge?.community ??
+    journeyCommunityPrivilegesQueryData?.lookup.subsubspace?.community ??
+    journeyCommunityPrivilegesQueryData?.lookup.subspace?.community ??
     journeyCommunityPrivilegesQueryData?.space?.community ??
     {};
 
@@ -114,8 +114,8 @@ const JourneyUnauthorizedDialogContainer = ({
   });
 
   const { profile, context, metrics, community } =
-    journeyDataQueryData?.lookup.opportunity ??
-    journeyDataQueryData?.lookup.challenge ??
+    journeyDataQueryData?.lookup.subsubspace ??
+    journeyDataQueryData?.lookup.subspace ??
     journeyDataQueryData?.space ??
     {};
 
