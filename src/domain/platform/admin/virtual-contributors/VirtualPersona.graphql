@@ -1,0 +1,13 @@
+mutation createVirtualPersona($virtualPersonaData: CreateVirtualPersonaInput!) {
+  createVirtualPersona(virtualPersonaData: $virtualPersonaData ) {
+    id
+    prompt
+  }
+}
+
+query virtualPersonas {
+  virtualPersonas {
+    id
+    prompt
+  }
+}

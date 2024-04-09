@@ -13,3 +13,9 @@ query AdminVirtualContributors {
     }
   }
 }
+
+mutation createVirtualContributor($virtualContributorData: CreateVirtualContributorInput!) {
+  createVirtualContributor(virtualContributorData: $virtualContributorData ) {
+      id
+    }
+}

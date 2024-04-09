@@ -21778,6 +21778,158 @@ export function refetchAdminVirtualContributorsQuery(variables?: SchemaTypes.Adm
   return { query: AdminVirtualContributorsDocument, variables: variables };
 }
 
+export const CreateVirtualContributorDocument = gql`
+  mutation createVirtualContributor($virtualContributorData: CreateVirtualContributorInput!) {
+    createVirtualContributor(virtualContributorData: $virtualContributorData) {
+      id
+    }
+  }
+`;
+export type CreateVirtualContributorMutationFn = Apollo.MutationFunction<
+  SchemaTypes.CreateVirtualContributorMutation,
+  SchemaTypes.CreateVirtualContributorMutationVariables
+>;
+
+/**
+ * __useCreateVirtualContributorMutation__
+ *
+ * To run a mutation, you first call `useCreateVirtualContributorMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateVirtualContributorMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createVirtualContributorMutation, { data, loading, error }] = useCreateVirtualContributorMutation({
+ *   variables: {
+ *      virtualContributorData: // value for 'virtualContributorData'
+ *   },
+ * });
+ */
+export function useCreateVirtualContributorMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.CreateVirtualContributorMutation,
+    SchemaTypes.CreateVirtualContributorMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.CreateVirtualContributorMutation,
+    SchemaTypes.CreateVirtualContributorMutationVariables
+  >(CreateVirtualContributorDocument, options);
+}
+
+export type CreateVirtualContributorMutationHookResult = ReturnType<typeof useCreateVirtualContributorMutation>;
+export type CreateVirtualContributorMutationResult =
+  Apollo.MutationResult<SchemaTypes.CreateVirtualContributorMutation>;
+export type CreateVirtualContributorMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.CreateVirtualContributorMutation,
+  SchemaTypes.CreateVirtualContributorMutationVariables
+>;
+export const CreateVirtualPersonaDocument = gql`
+  mutation createVirtualPersona($virtualPersonaData: CreateVirtualPersonaInput!) {
+    createVirtualPersona(virtualPersonaData: $virtualPersonaData) {
+      id
+      prompt
+    }
+  }
+`;
+export type CreateVirtualPersonaMutationFn = Apollo.MutationFunction<
+  SchemaTypes.CreateVirtualPersonaMutation,
+  SchemaTypes.CreateVirtualPersonaMutationVariables
+>;
+
+/**
+ * __useCreateVirtualPersonaMutation__
+ *
+ * To run a mutation, you first call `useCreateVirtualPersonaMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateVirtualPersonaMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createVirtualPersonaMutation, { data, loading, error }] = useCreateVirtualPersonaMutation({
+ *   variables: {
+ *      virtualPersonaData: // value for 'virtualPersonaData'
+ *   },
+ * });
+ */
+export function useCreateVirtualPersonaMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.CreateVirtualPersonaMutation,
+    SchemaTypes.CreateVirtualPersonaMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.CreateVirtualPersonaMutation,
+    SchemaTypes.CreateVirtualPersonaMutationVariables
+  >(CreateVirtualPersonaDocument, options);
+}
+
+export type CreateVirtualPersonaMutationHookResult = ReturnType<typeof useCreateVirtualPersonaMutation>;
+export type CreateVirtualPersonaMutationResult = Apollo.MutationResult<SchemaTypes.CreateVirtualPersonaMutation>;
+export type CreateVirtualPersonaMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.CreateVirtualPersonaMutation,
+  SchemaTypes.CreateVirtualPersonaMutationVariables
+>;
+export const VirtualPersonasDocument = gql`
+  query virtualPersonas {
+    virtualPersonas {
+      id
+      prompt
+    }
+  }
+`;
+
+/**
+ * __useVirtualPersonasQuery__
+ *
+ * To run a query within a React component, call `useVirtualPersonasQuery` and pass it any options that fit your needs.
+ * When your component renders, `useVirtualPersonasQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useVirtualPersonasQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useVirtualPersonasQuery(
+  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.VirtualPersonasQuery, SchemaTypes.VirtualPersonasQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.VirtualPersonasQuery, SchemaTypes.VirtualPersonasQueryVariables>(
+    VirtualPersonasDocument,
+    options
+  );
+}
+
+export function useVirtualPersonasLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.VirtualPersonasQuery, SchemaTypes.VirtualPersonasQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.VirtualPersonasQuery, SchemaTypes.VirtualPersonasQueryVariables>(
+    VirtualPersonasDocument,
+    options
+  );
+}
+
+export type VirtualPersonasQueryHookResult = ReturnType<typeof useVirtualPersonasQuery>;
+export type VirtualPersonasLazyQueryHookResult = ReturnType<typeof useVirtualPersonasLazyQuery>;
+export type VirtualPersonasQueryResult = Apollo.QueryResult<
+  SchemaTypes.VirtualPersonasQuery,
+  SchemaTypes.VirtualPersonasQueryVariables
+>;
+export function refetchVirtualPersonasQuery(variables?: SchemaTypes.VirtualPersonasQueryVariables) {
+  return { query: VirtualPersonasDocument, variables: variables };
+}
+
 export const ConfigurationDocument = gql`
   query configuration {
     platform {

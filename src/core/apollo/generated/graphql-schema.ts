@@ -25065,6 +25065,31 @@ export type AdminVirtualContributorsQuery = {
   }>;
 };
 
+export type CreateVirtualContributorMutationVariables = Exact<{
+  virtualContributorData: CreateVirtualContributorInput;
+}>;
+
+export type CreateVirtualContributorMutation = {
+  __typename?: 'Mutation';
+  createVirtualContributor: { __typename?: 'VirtualContributor'; id: string };
+};
+
+export type CreateVirtualPersonaMutationVariables = Exact<{
+  virtualPersonaData: CreateVirtualPersonaInput;
+}>;
+
+export type CreateVirtualPersonaMutation = {
+  __typename?: 'Mutation';
+  createVirtualPersona: { __typename?: 'VirtualPersona'; id: string; prompt: string };
+};
+
+export type VirtualPersonasQueryVariables = Exact<{ [key: string]: never }>;
+
+export type VirtualPersonasQuery = {
+  __typename?: 'Query';
+  virtualPersonas: Array<{ __typename?: 'VirtualPersona'; id: string; prompt: string }>;
+};
+
 export type ConfigurationQueryVariables = Exact<{ [key: string]: never }>;
 
 export type ConfigurationQuery = {
