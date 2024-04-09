@@ -1754,9 +1754,15 @@ export type CreateVirtualContributorInput = {
   /** A readable identifier, unique within the containing scope. */
   nameID: Scalars['NameID'];
   profileData: CreateProfileInput;
-  prompt: Scalars['String'];
-  /** VirtualContributor Persona  type. */
-  type: VirtualPersonaType;
+  virtualPersonaID: Scalars['UUID'];
+};
+
+export type CreateVirtualPersonaInput = {
+  engine: VirtualPersonaEngine;
+  /** A readable identifier, unique within the containing scope. */
+  nameID: Scalars['NameID'];
+  profileData: CreateProfileInput;
+  prompt: Scalars['JSON'];
 };
 
 export type CreateWhiteboardInput = {
@@ -1913,6 +1919,10 @@ export type DeleteUserInput = {
 };
 
 export type DeleteVirtualContributorInput = {
+  ID: Scalars['UUID_NAMEID'];
+};
+
+export type DeleteVirtualPersonaInput = {
   ID: Scalars['UUID_NAMEID'];
 };
 
@@ -2333,6 +2343,7 @@ export type LicenseFeatureFlag = {
 
 export enum LicenseFeatureFlagName {
   CalloutToCalloutTemplate = 'CALLOUT_TO_CALLOUT_TEMPLATE',
+  VirtualContributors = 'VIRTUAL_CONTRIBUTORS',
   WhiteboardMultiUser = 'WHITEBOARD_MULTI_USER',
 }
 
@@ -2634,6 +2645,8 @@ export type Mutation = {
   authorizationPolicyResetOnUser: User;
   /** Reset the Authorization Policy on the specified VirtualContributor. */
   authorizationPolicyResetOnVirtualContributor: VirtualContributor;
+  /** Reset the Authorization Policy on the specified VirtualPersona. */
+  authorizationPolicyResetOnVirtualPersona: VirtualPersona;
   /** Reset the specified Authorization Policy to global admin privileges */
   authorizationPolicyResetToGlobalAdminsAccess: Authorization;
   /** Generate Alkemio user credential offer */
@@ -2694,6 +2707,8 @@ export type Mutation = {
   createUserNewRegistration: User;
   /** Creates a new VirtualContributor on the platform. */
   createVirtualContributor: VirtualContributor;
+  /** Creates a new VirtualPersona on the platform. */
+  createVirtualPersona: VirtualPersona;
   /** Creates a new WhiteboardTemplate on the specified TemplatesSet. */
   createWhiteboardTemplate: WhiteboardTemplate;
   /** Deletes the specified Actor. */
@@ -2750,6 +2765,8 @@ export type Mutation = {
   deleteUserGroup: UserGroup;
   /** Deletes the specified VirtualContributor. */
   deleteVirtualContributor: VirtualContributor;
+  /** Deletes the specified VirtualPersona. */
+  deleteVirtualPersona: VirtualPersona;
   /** Deletes the specified Whiteboard. */
   deleteWhiteboard: Whiteboard;
   /** Deletes the specified WhiteboardTemplate. */
@@ -2764,7 +2781,7 @@ export type Mutation = {
   grantCredentialToOrganization: Organization;
   /** Grants an authorization credential to a User. */
   grantCredentialToUser: User;
-  /** Ingest the virtual contributor data / embeddings. */
+  /** Resets the interaction with the chat engine. */
   ingest: Scalars['Boolean'];
   /** Invite an existing User to join the specified Community as a member. */
   inviteExistingUserForCommunityMembership: Array<Invitation>;
@@ -2898,6 +2915,8 @@ export type Mutation = {
   updateUserPlatformSettings: User;
   /** Updates the specified VirtualContributor. */
   updateVirtualContributor: VirtualContributor;
+  /** Updates the specified VirtualPersona. */
+  updateVirtualPersona: VirtualPersona;
   /** Updates the image URI for the specified Visual. */
   updateVisual: Visual;
   /** Updates the specified Whiteboard. */
@@ -2990,6 +3009,10 @@ export type MutationAuthorizationPolicyResetOnUserArgs = {
 
 export type MutationAuthorizationPolicyResetOnVirtualContributorArgs = {
   authorizationResetData: VirtualContributorAuthorizationResetInput;
+};
+
+export type MutationAuthorizationPolicyResetOnVirtualPersonaArgs = {
+  authorizationResetData: VirtualPersonaAuthorizationResetInput;
 };
 
 export type MutationAuthorizationPolicyResetToGlobalAdminsAccessArgs = {
@@ -3104,6 +3127,10 @@ export type MutationCreateVirtualContributorArgs = {
   virtualContributorData: CreateVirtualContributorInput;
 };
 
+export type MutationCreateVirtualPersonaArgs = {
+  virtualPersonaData: CreateVirtualPersonaInput;
+};
+
 export type MutationCreateWhiteboardTemplateArgs = {
   whiteboardTemplateInput: CreateWhiteboardTemplateOnTemplatesSetInput;
 };
@@ -3214,6 +3241,10 @@ export type MutationDeleteUserGroupArgs = {
 
 export type MutationDeleteVirtualContributorArgs = {
   deleteData: DeleteVirtualContributorInput;
+};
+
+export type MutationDeleteVirtualPersonaArgs = {
+  deleteData: DeleteVirtualPersonaInput;
 };
 
 export type MutationDeleteWhiteboardArgs = {
@@ -3497,7 +3528,11 @@ export type MutationUpdateUserPlatformSettingsArgs = {
 };
 
 export type MutationUpdateVirtualContributorArgs = {
-  virtualContributorData: UpdateVirtualInput;
+  virtualContributorData: UpdateVirtualContributorInput;
+};
+
+export type MutationUpdateVirtualPersonaArgs = {
+  virtualPersonaData: UpdateVirtualPersonaInput;
 };
 
 export type MutationUpdateVisualArgs = {
@@ -3996,6 +4031,8 @@ export enum ProfileType {
   Space = 'SPACE',
   User = 'USER',
   UserGroup = 'USER_GROUP',
+  VirtualContributor = 'VIRTUAL_CONTRIBUTOR',
+  VirtualPersona = 'VIRTUAL_PERSONA',
   Whiteboard = 'WHITEBOARD',
   WhiteboardTemplate = 'WHITEBOARD_TEMPLATE',
 }
@@ -4015,7 +4052,7 @@ export type Query = {
   /** Ask the chat engine for guidance. */
   askChatGuidanceQuestion: ChatGuidanceResult;
   /** Ask the virtual persona engine for guidance. */
-  askVirtualContributorQuestion: VirtualPersonaResult;
+  askVirtualPersonaQuestion: VirtualPersonaResult;
   /** Get supported credential metadata */
   getSupportedVerifiedCredentialMetadata: Array<CredentialMetadataOutput>;
   /** Allow direct lookup of entities from the domain model */
@@ -4060,6 +4097,10 @@ export type Query = {
   virtualContributor: VirtualContributor;
   /** The VirtualContributors on this platform */
   virtualContributors: Array<VirtualContributor>;
+  /** A particular VirtualPersona */
+  virtualPersona: VirtualPersona;
+  /** The VirtualPersonas on this platform */
+  virtualPersonas: Array<VirtualPersona>;
 };
 
 export type QueryActivityFeedArgs = {
@@ -4086,8 +4127,8 @@ export type QueryAskChatGuidanceQuestionArgs = {
   chatData: ChatGuidanceInput;
 };
 
-export type QueryAskVirtualContributorQuestionArgs = {
-  chatData: VirtualPersonaInput;
+export type QueryAskVirtualPersonaQuestionArgs = {
+  chatData: VirtualPersonaQuestionInput;
 };
 
 export type QueryOrganizationArgs = {
@@ -4180,6 +4221,10 @@ export type QueryVirtualContributorsArgs = {
   filter?: InputMaybe<ContributorFilterInput>;
   limit?: InputMaybe<Scalars['Float']>;
   shuffle?: InputMaybe<Scalars['Boolean']>;
+};
+
+export type QueryVirtualPersonaArgs = {
+  ID: Scalars['UUID'];
 };
 
 export type Question = {
@@ -5567,14 +5612,23 @@ export type UpdateUserPreferenceInput = {
   value: Scalars['String'];
 };
 
-export type UpdateVirtualInput = {
-  /** The ID or NameID of the Virtual to update. */
-  ID: Scalars['UUID_NAMEID'];
+export type UpdateVirtualContributorInput = {
+  /** The ID of the Virtual Contributor to update. */
+  ID: Scalars['UUID'];
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
   nameID?: InputMaybe<Scalars['NameID']>;
   /** The Profile of this entity. */
   profileData?: InputMaybe<UpdateProfileInput>;
-  prompt?: InputMaybe<Scalars['String']>;
+};
+
+export type UpdateVirtualPersonaInput = {
+  ID: Scalars['UUID'];
+  engine: VirtualPersonaEngine;
+  /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
+  nameID?: InputMaybe<Scalars['NameID']>;
+  /** The Profile of this entity. */
+  profileData?: InputMaybe<UpdateProfileInput>;
+  prompt: Scalars['JSON'];
 };
 
 export type UpdateVisualInput = {
@@ -5758,30 +5812,48 @@ export type VirtualContributor = {
   nameID: Scalars['NameID'];
   /** The profile for this Virtual. */
   profile: Profile;
-  /** The prompt being used by this Virtual */
-  prompt?: Maybe<Scalars['String']>;
   /** The StorageAggregator for managing storage buckets in use by this Virtual */
   storageAggregator?: Maybe<StorageAggregator>;
-  /** The VirtualContributor Persona type */
-  type: VirtualPersonaType;
+  /** The virtual persona being used by this virtual contributor */
+  virtualPersona: VirtualPersona;
 };
 
 export type VirtualContributorAuthorizationResetInput = {
   /** The identifier of the Virtual Contributor whose Authorization Policy should be reset. */
-  virtualID: Scalars['UUID_NAMEID_EMAIL'];
+  virtualContributorID: Scalars['UUID'];
 };
 
-export type VirtualPersonaInput = {
-  /** Prompt. */
-  prompt: Scalars['String'];
+export type VirtualPersona = {
+  __typename?: 'VirtualPersona';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The Virtual Persona Engine being used by this virtual persona. */
+  engine?: Maybe<VirtualPersonaEngine>;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** A name identifier of the entity, unique within a given scope. */
+  nameID: Scalars['NameID'];
+  /** The prompt used by this Virtual Persona */
+  prompt: Scalars['JSON'];
+};
+
+export type VirtualPersonaAuthorizationResetInput = {
+  /** The identifier of the Virtual Persona whose Authorization Policy should be reset. */
+  virtualPersonaID: Scalars['UUID_NAMEID_EMAIL'];
+};
+
+export enum VirtualPersonaEngine {
+  AlkemioDigileefomgeving = 'ALKEMIO_DIGILEEFOMGEVING',
+  AlkemioWelcome = 'ALKEMIO_WELCOME',
+  CommunityManager = 'COMMUNITY_MANAGER',
+  Guidance = 'GUIDANCE',
+}
+
+export type VirtualPersonaQuestionInput = {
   /** The question that is being asked. */
   question: Scalars['String'];
-  /** The Room in the context of which the VC is asked */
-  roomID: Scalars['UUID'];
-  /** The Space in which the question to the VC is aked */
-  spaceID: Scalars['UUID_NAMEID'];
   /** Virtual Persona Type. */
-  virtualPersonaType: VirtualPersonaType;
+  virtualPersonaID: Scalars['UUID'];
 };
 
 export type VirtualPersonaResult = {
@@ -5795,12 +5867,6 @@ export type VirtualPersonaResult = {
   /** The sources used to answer the question */
   sources?: Maybe<Array<Source>>;
 };
-
-export enum VirtualPersonaType {
-  CommunityManager = 'COMMUNITY_MANAGER',
-  DigitalTwin = 'DIGITAL_TWIN',
-  TopicExpert = 'TOPIC_EXPERT',
-}
 
 export type Visual = {
   __typename?: 'Visual';
@@ -13580,27 +13646,10 @@ export type ReplyToMessageMutation = {
   };
 };
 
-export type AskVirtualContributorQuestionQueryVariables = Exact<{
-  prompt: Scalars['String'];
-  question: Scalars['String'];
-  spaceId: Scalars['UUID_NAMEID'];
-  roomId: Scalars['UUID'];
-}>;
-
-export type AskVirtualContributorQuestionQuery = {
-  __typename?: 'Query';
-  askVirtualContributorQuestion: {
-    __typename?: 'VirtualPersonaResult';
-    id?: string | undefined;
-    question: string;
-    answer: string;
-    sources?: Array<{ __typename?: 'Source'; title?: string | undefined; uri?: string | undefined }> | undefined;
-  };
-};
-
 export type MentionableUsersQueryVariables = Exact<{
   filter?: InputMaybe<UserFilterInput>;
   first?: InputMaybe<Scalars['Int']>;
+  communityId: Scalars['UUID'];
 }>;
 
 export type MentionableUsersQuery = {
@@ -13610,28 +13659,36 @@ export type MentionableUsersQuery = {
     users: Array<{
       __typename?: 'User';
       id: string;
-      nameID: string;
-      firstName: string;
-      lastName: string;
       profile: {
         __typename?: 'Profile';
         id: string;
-        displayName: string;
         url: string;
+        displayName: string;
         location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
         avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-        tagsets?:
-          | Array<{
-              __typename?: 'Tagset';
-              id: string;
-              name: string;
-              tags: Array<string>;
-              allowedValues: Array<string>;
-              type: TagsetType;
-            }>
-          | undefined;
       };
     }>;
+  };
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    community?:
+      | {
+          __typename?: 'Community';
+          virtualContributorsInRole?:
+            | Array<{
+                __typename?: 'VirtualContributor';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                };
+              }>
+            | undefined;
+        }
+      | undefined;
   };
 };
 

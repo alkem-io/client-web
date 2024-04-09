@@ -10257,97 +10257,14 @@ export type ReplyToMessageMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.ReplyToMessageMutation,
   SchemaTypes.ReplyToMessageMutationVariables
 >;
-export const AskVirtualContributorQuestionDocument = gql`
-  query askVirtualContributorQuestion($prompt: String!, $question: String!, $spaceId: UUID_NAMEID!, $roomId: UUID!) {
-    askVirtualContributorQuestion(
-      chatData: {
-        prompt: $prompt
-        question: $question
-        spaceID: $spaceId
-        roomID: $roomId
-        virtualPersonaType: TOPIC_EXPERT
-      }
-    ) {
-      id
-      question
-      answer
-      sources {
-        title
-        uri
-      }
-    }
-  }
-`;
-
-/**
- * __useAskVirtualContributorQuestionQuery__
- *
- * To run a query within a React component, call `useAskVirtualContributorQuestionQuery` and pass it any options that fit your needs.
- * When your component renders, `useAskVirtualContributorQuestionQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useAskVirtualContributorQuestionQuery({
- *   variables: {
- *      prompt: // value for 'prompt'
- *      question: // value for 'question'
- *      spaceId: // value for 'spaceId'
- *      roomId: // value for 'roomId'
- *   },
- * });
- */
-export function useAskVirtualContributorQuestionQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.AskVirtualContributorQuestionQuery,
-    SchemaTypes.AskVirtualContributorQuestionQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    SchemaTypes.AskVirtualContributorQuestionQuery,
-    SchemaTypes.AskVirtualContributorQuestionQueryVariables
-  >(AskVirtualContributorQuestionDocument, options);
-}
-
-export function useAskVirtualContributorQuestionLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.AskVirtualContributorQuestionQuery,
-    SchemaTypes.AskVirtualContributorQuestionQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.AskVirtualContributorQuestionQuery,
-    SchemaTypes.AskVirtualContributorQuestionQueryVariables
-  >(AskVirtualContributorQuestionDocument, options);
-}
-
-export type AskVirtualContributorQuestionQueryHookResult = ReturnType<typeof useAskVirtualContributorQuestionQuery>;
-export type AskVirtualContributorQuestionLazyQueryHookResult = ReturnType<
-  typeof useAskVirtualContributorQuestionLazyQuery
->;
-export type AskVirtualContributorQuestionQueryResult = Apollo.QueryResult<
-  SchemaTypes.AskVirtualContributorQuestionQuery,
-  SchemaTypes.AskVirtualContributorQuestionQueryVariables
->;
-export function refetchAskVirtualContributorQuestionQuery(
-  variables: SchemaTypes.AskVirtualContributorQuestionQueryVariables
-) {
-  return { query: AskVirtualContributorQuestionDocument, variables: variables };
-}
-
 export const MentionableUsersDocument = gql`
-  query MentionableUsers($filter: UserFilterInput, $first: Int) {
+  query MentionableUsers($filter: UserFilterInput, $first: Int, $communityId: UUID!) {
     usersPaginated(filter: $filter, first: $first) {
       users {
         id
-        nameID
-        firstName
-        lastName
         profile {
           id
+          url
           displayName
           location {
             id
@@ -10357,16 +10274,26 @@ export const MentionableUsersDocument = gql`
           avatar: visual(type: AVATAR) {
             ...VisualUri
           }
-          tagsets {
-            ...TagsetDetails
+        }
+      }
+    }
+    lookup {
+      community(ID: $communityId) {
+        virtualContributorsInRole(role: MEMBER) {
+          id
+          profile {
+            id
+            url
+            displayName
+            avatar: visual(type: AVATAR) {
+              ...VisualUri
+            }
           }
-          url
         }
       }
     }
   }
   ${VisualUriFragmentDoc}
-  ${TagsetDetailsFragmentDoc}
 `;
 
 /**
@@ -10383,11 +10310,12 @@ export const MentionableUsersDocument = gql`
  *   variables: {
  *      filter: // value for 'filter'
  *      first: // value for 'first'
+ *      communityId: // value for 'communityId'
  *   },
  * });
  */
 export function useMentionableUsersQuery(
-  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.MentionableUsersQuery, SchemaTypes.MentionableUsersQueryVariables>
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.MentionableUsersQuery, SchemaTypes.MentionableUsersQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.MentionableUsersQuery, SchemaTypes.MentionableUsersQueryVariables>(
@@ -10415,7 +10343,7 @@ export type MentionableUsersQueryResult = Apollo.QueryResult<
   SchemaTypes.MentionableUsersQuery,
   SchemaTypes.MentionableUsersQueryVariables
 >;
-export function refetchMentionableUsersQuery(variables?: SchemaTypes.MentionableUsersQueryVariables) {
+export function refetchMentionableUsersQuery(variables: SchemaTypes.MentionableUsersQueryVariables) {
   return { query: MentionableUsersDocument, variables: variables };
 }
 

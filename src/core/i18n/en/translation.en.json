@@ -564,6 +564,7 @@
     "leads": "Leads",
     "members": "Members",
     "host": "Host",
+    "virtualContributor": "Virtual Contributor",
     "members-count": "{{count}} Member",
     "members-count_plural": "{{count}} Members",
     "addMember": "Add member",
@@ -1831,7 +1832,8 @@
             "title": "Space Features",
             "features": {
               "WHITEBOARD_MULTI_USER": "Multiuser Whiteboards",
-              "CALLOUT_TO_CALLOUT_TEMPLATE": "Create template from callout"
+              "CALLOUT_TO_CALLOUT_TEMPLATE": "Create template from callout",
+              "VIRTUAL_CONTRIBUTORS": "Interact with virtual contributors"
             }
           },
           "membership": {
