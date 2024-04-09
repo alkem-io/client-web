@@ -11,7 +11,5 @@ query AdminVirtualContributors {
         ...VisualFull
       }
     }
-    prompt
-    type
   }
 }

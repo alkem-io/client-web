@@ -25040,8 +25040,6 @@ export type AdminVirtualContributorsQuery = {
   virtualContributors: Array<{
     __typename?: 'VirtualContributor';
     id: string;
-    prompt?: string | undefined;
-    type: VirtualPersonaType;
     authorization?:
       | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;

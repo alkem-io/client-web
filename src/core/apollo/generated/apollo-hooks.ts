@@ -21722,8 +21722,6 @@ export const AdminVirtualContributorsDocument = gql`
           ...VisualFull
         }
       }
-      prompt
-      type
     }
   }
   ${VisualFullFragmentDoc}
