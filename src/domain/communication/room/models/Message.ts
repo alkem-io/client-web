@@ -11,8 +11,7 @@ export interface Message {
     emoji: string;
     sender?: {
       id: string;
-      firstName: string;
-      lastName: string;
+      profile: { displayName: string };
     };
   }[];
 }

@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { buildAuthorFromUser } from '../../../community/user/utils/buildAuthorFromUser';
+import { ProfileType } from '../../../../core/apollo/generated/graphql-schema';
 
 interface FetchedMessage {
   id: string;
@@ -7,13 +8,11 @@ interface FetchedMessage {
   message: string;
   sender?: {
     id: string;
-    nameID: string;
-    firstName: string;
-    lastName: string;
     profile: {
       id: string;
       displayName: string;
       url: string;
+      type?: ProfileType;
       visual?: { id: string; uri: string };
       tagsets?: { id: string; name: string; tags: string[] }[];
       location?: { id: string; city: string; country: string };
@@ -25,8 +24,9 @@ interface FetchedMessage {
     emoji: string;
     sender?: {
       id: string;
-      firstName: string;
-      lastName: string;
+      profile: {
+        displayName: string;
+      };
     };
   }[];
 }
