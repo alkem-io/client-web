@@ -1,42 +1,55 @@
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { HubOutlined } from '@mui/icons-material';
-import JourneyCard, { JourneyCardProps } from '../../common/JourneyCard/JourneyCard';
+import { ProfileType, SpaceVisibility } from '../../../../core/apollo/generated/graphql-schema';
 import { BlockTitle, Caption } from '../../../../core/ui/typography';
-import JourneyCardTagline from '../../common/JourneyCard/JourneyCardTagline';
+import CardRibbon from '../../../../core/ui/card/CardRibbon';
+import CardActions from '../../../../core/ui/card/CardActions';
+import JourneyCard, { JourneyCardProps } from '../../common/JourneyCard/JourneyCard';
 import JourneyCardDescription from '../../common/JourneyCard/JourneyCardDescription';
 import JourneyCardSpacing from '../../common/JourneyCard/JourneyCardSpacing';
-import CardActions from '../../../../core/ui/card/CardActions';
 import JourneyCardGoToButton from '../../common/JourneyCard/JourneyCardGoToButton';
-import CardRibbon from '../../../../core/ui/card/CardRibbon';
-import { SpaceVisibility } from '../../../../core/apollo/generated/graphql-schema';
+import JourneyCardTagline from '../../common/JourneyCard/JourneyCardTagline';
+import StackedAvatar from './StackedAvatar';
+import { ReactNode } from 'react';
 
-export interface SpaceCardProps
+interface SpaceSubspaceCardProps
   extends Omit<JourneyCardProps, 'header' | 'iconComponent' | 'expansion' | 'journeyTypeName'> {
   tagline: string;
-  spaceId?: string;
   displayName: string;
   vision: string;
-  membersCount: number;
-  spaceVisibility?: SpaceVisibility;
+  member?: boolean;
   journeyUri: string;
+  type: ProfileType;
+  spaceVisibility?: SpaceVisibility;
+  spaceDisplayName?: string;
+  spaceUri?: string;
+  hideJoin?: boolean;
+  isPrivate?: boolean;
+  avatarUris: string[];
+  label?: ReactNode;
 }
 
-const SpaceCard = ({
-  spaceId,
+const SpaceSubspaceCard = ({
   displayName,
   vision,
-  membersCount,
   tagline,
   spaceVisibility,
+  type,
+  member,
+  spaceDisplayName,
+  avatarUris,
+  isPrivate,
+  label,
   ...props
-}: SpaceCardProps) => {
+}: SpaceSubspaceCardProps) => {
   const { t } = useTranslation();
 
   const ribbon =
     spaceVisibility && spaceVisibility !== SpaceVisibility.Active ? (
       <CardRibbon text={t(`common.enums.space-visibility.${spaceVisibility}` as const)} />
     ) : undefined;
+
+  const isSubspace = type !== ProfileType.Space;
 
   return (
     <JourneyCard
@@ -46,11 +59,14 @@ const SpaceCard = ({
           <BlockTitle noWrap component="dt">
             {displayName}
           </BlockTitle>
-          <Caption noWrap component="dd">
-            {t('community.members-count', { count: membersCount })}
-          </Caption>
+          {isSubspace && (
+            <Caption noWrap component="dd" sx={{ color: 'primary.main' }}>
+              {t('components.card.parentSpace', { space: spaceDisplayName })}
+            </Caption>
+          )}
         </>
       }
+      visual={<StackedAvatar avatarUris={avatarUris} />}
       expansion={
         <>
           <JourneyCardDescription>{vision}</JourneyCardDescription>
@@ -62,7 +78,12 @@ const SpaceCard = ({
           <JourneyCardGoToButton journeyUri={props.journeyUri} journeyTypeName="space" />
         </CardActions>
       }
-      bannerOverlay={ribbon}
+      bannerOverlay={
+        <>
+          {ribbon}
+          {label}
+        </>
+      }
       {...props}
     >
       <JourneyCardTagline>{tagline}</JourneyCardTagline>
@@ -70,4 +91,4 @@ const SpaceCard = ({
   );
 };
 
-export default SpaceCard;
+export default SpaceSubspaceCard;

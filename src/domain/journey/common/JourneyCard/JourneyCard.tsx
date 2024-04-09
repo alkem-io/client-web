@@ -4,13 +4,10 @@ import { LockOutlined } from '@mui/icons-material';
 import ContributeCard, { ContributeCardProps } from '../../../../core/ui/card/ContributeCard';
 import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
 import RoundedIcon from '../../../../core/ui/icon/RoundedIcon';
-import CardTags from '../../../../core/ui/card/CardTags';
 import { gutters } from '../../../../core/ui/grid/utils';
 import CardContent from '../../../../core/ui/card/CardContent';
 import RouterLink from '../../../../core/ui/link/RouterLink';
-import CardMatchedTerms from '../../../../core/ui/card/CardMatchedTerms';
 import ExpandableCardFooter from '../../../../core/ui/card/ExpandableCardFooter';
-import CardMemberIcon from '../../../community/membership/CardMemberIcon/CardMemberIcon';
 import CardBanner from '../../../../core/ui/card/CardImageHeader';
 import { useTranslation } from 'react-i18next';
 import { JourneyCardBanner } from './Banner';
@@ -24,11 +21,13 @@ export interface JourneyCardProps extends ContributeCardProps {
   journeyUri?: string;
   expansion?: ReactNode;
   expansionActions?: ReactNode;
-  ribbon?: ReactNode;
+  bannerOverlay?: ReactNode;
   member?: boolean;
   locked?: boolean;
   actions?: ReactNode;
   matchedTerms?: boolean; // TODO pass ComponentType<CardTags> instead
+  visual?: ReactNode;
+  isPrivate?: boolean;
 }
 
 const JourneyCard = ({
@@ -39,12 +38,13 @@ const JourneyCard = ({
   journeyUri,
   expansion,
   expansionActions,
-  ribbon,
+  bannerOverlay,
   member,
   locked,
   actions,
-  matchedTerms = false,
   children,
+  visual,
+  isPrivate,
   ...containerProps
 }: PropsWithChildren<JourneyCardProps>) => {
   const { t } = useTranslation();
@@ -54,7 +54,7 @@ const JourneyCard = ({
 
   const toggleExpanded = () => setIsExpanded(wasExpanded => !wasExpanded);
 
-  const Tags = matchedTerms ? CardMatchedTerms : CardTags;
+  // const Tags = matchedTerms ? CardMatchedTerms : CardTags;
 
   const wrapperProps = journeyUri
     ? ({
@@ -69,15 +69,10 @@ const JourneyCard = ({
         <CardBanner
           src={banner?.uri || defaultCardBanner}
           alt={t('visuals-alt-text.banner.card.text', { altText: banner?.alternativeText })}
-          overlay={
-            <>
-              {ribbon}
-              {member && <CardMemberIcon top={gutters(ribbon ? 2.0 : 0.5)} />}
-            </>
-          }
+          overlay={bannerOverlay}
         />
         <BadgeCardView
-          visual={<RoundedIcon size="small" component={Icon} />}
+          visual={visual || <RoundedIcon size="small" component={Icon} />}
           visualRight={locked ? <LockOutlined fontSize="small" color="primary" /> : undefined}
           gap={1}
           height={gutters(3)}
@@ -95,7 +90,7 @@ const JourneyCard = ({
           expansion={expansion}
           actions={actions}
           expansionActions={expansionActions}
-          tags={<Tags tags={tags} disableIndentation />}
+          tags={<></>}
         />
       </Box>
     </ContributeCard>

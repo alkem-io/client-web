@@ -1,8 +1,11 @@
 import React from 'react';
 import { ReactMarkdownProps } from 'react-markdown/lib/complex-types';
+import { Box } from '@mui/material';
 
-const MarkdownList = ({ node, ...props }: ReactMarkdownProps) => {
-  return <ul {...props} />;
-};
+const createMarkdownList =
+  (component: 'ul' | 'ol') =>
+  ({ node, ...props }: ReactMarkdownProps) => {
+    return <Box component={component} marginY={1} {...props} />;
+  };
 
-export default MarkdownList;
+export default createMarkdownList;
