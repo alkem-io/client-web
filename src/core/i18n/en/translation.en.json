@@ -940,7 +940,7 @@
     },
     "dashboardNavigation": {
       "help": "This Space holds the following subspaces. When these subspaces have Opportunities, these are visible as well.",
-      "privatesubspace": "This is a private subspace. To view it’s content and potential Opportunities, visit the subspace and apply to become a member.",
+      "privateSubspace": "This is a private subspace. To view it’s content and potential Opportunities, visit the subspace and apply to become a member.",
       "showAll": "Show all"
     },
     "dashboardRecentContributions": {

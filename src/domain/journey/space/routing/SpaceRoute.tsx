@@ -21,7 +21,7 @@ export const SpaceRoute = () => {
   const { journeyId } = useRouteResolver();
 
   return (
-    <StorageConfigContextProvider locationType="journey" journeyTypeName="space" spaceId={journeyId}>
+    <StorageConfigContextProvider locationType="journey" spaceId={journeyId}>
       <Routes>
         <Route path="/" element={<EntityPageLayoutHolder />}>
           <Route index element={<Navigate replace to={routes.Dashboard} />} />
