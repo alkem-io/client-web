@@ -32,11 +32,6 @@ export const normalizeLink = (link: string) => {
   return link;
 };
 
-export const makeAbsoluteUrl = (link: string) => {
-  if (isAbsoluteUrl(link)) return link;
-  return `${window.location.origin}${link.startsWith('/') ? '' : '/'}${link}`;
-};
-
 const PRIVATE_STORAGE_ROOT_PATH = '/api/private/rest/storage/';
 
 export const isFileAttachmentUrl = (link: string) => {

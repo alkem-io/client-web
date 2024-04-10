@@ -246,6 +246,7 @@
     "status": "Status",
     "aspect": "Card",
     "aspects": "Cards",
+    "prompt": "Prompt",
     "host": "Host",
     "lead": "Lead",
     "space": "Space",
@@ -342,6 +343,7 @@
     "more": "More",
     "url": "URL",
     "sources": "Sources",
+    "virtual-contributors": "VC",
     "genders": {
       "notSpecified": "not specified",
       "male": "male",
@@ -561,10 +563,18 @@
     "leads": "Leads",
     "members": "Members",
     "host": "Host",
+    "virtualContributor": "Virtual Contributor",
     "members-count": "{{count}} Member",
     "members-count_plural": "{{count}} Members",
     "addMember": "Add member",
     "unauthorizedPermissionsChange": "You are not allowed to edit this user's permissions",
+    "virtualContributors": {
+      "blockTitle": "Virtual Contributors ({{count}})",
+      "removeDialog": {
+        "title": "Remove Virtual Contributor",
+        "confirm": "Are you sure?"
+      }
+    },
     "application-form": {
       "title": "Application Form",
       "subtitle": "This section allows you to modify the questions for users applying to the Space. <br /><b>Please note</b> that these questions will only be shown when the Membership options (in the block above) are set to \"Applications required\"",
@@ -1828,7 +1838,8 @@
             "title": "Space Features",
             "features": {
               "WHITEBOARD_MULTI_USER": "Multiuser Whiteboards",
-              "CALLOUT_TO_CALLOUT_TEMPLATE": "Create template from callout"
+              "CALLOUT_TO_CALLOUT_TEMPLATE": "Create template from callout",
+              "VIRTUAL_CONTRIBUTORS": "Interact with virtual contributors"
             }
           },
           "membership": {
