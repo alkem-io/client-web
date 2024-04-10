@@ -16,6 +16,7 @@ import { Actions } from '../../../../core/ui/actions/Actions';
 import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
 import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
 import { Identifiable } from '../../../../core/utils/Identifiable';
+import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
 
 const VirtualContributorsPage: FC = () => {
   const { t } = useTranslation();
@@ -53,25 +54,27 @@ const VirtualContributorsPage: FC = () => {
         </Link>
       </Actions>
       <PageContentBlockSeamless disablePadding disableGap>
-        {data?.virtualContributors.map(virtualContributor => (
-          <Accordion key={virtualContributor.id}>
-            <AccordionSummary expandIcon={<ExpandMore />}>
-              <BadgeCardView
-                visual={
-                  <Avatar
-                    src={virtualContributor.profile.avatar?.uri}
-                    alt={t('common.avatar-of', { user: virtualContributor.profile.displayName })}
-                  />
-                }
-              >
-                <BlockTitle>{virtualContributor.profile.displayName}</BlockTitle>
-              </BadgeCardView>
-            </AccordionSummary>
-            <AccordionDetails>
-              <VirtualContributorForm virtualContributor={virtualContributor} onSave={handleUpdateContributor} />
-            </AccordionDetails>
-          </Accordion>
-        ))}
+        <StorageConfigContextProvider locationType="platform">
+          {data?.virtualContributors.map(virtualContributor => (
+            <Accordion key={virtualContributor.id}>
+              <AccordionSummary expandIcon={<ExpandMore />}>
+                <BadgeCardView
+                  visual={
+                    <Avatar
+                      src={virtualContributor.profile.avatar?.uri}
+                      alt={t('common.avatar-of', { user: virtualContributor.profile.displayName })}
+                    />
+                  }
+                >
+                  <BlockTitle>{virtualContributor.profile.displayName}</BlockTitle>
+                </BadgeCardView>
+              </AccordionSummary>
+              <AccordionDetails>
+                <VirtualContributorForm virtualContributor={virtualContributor} onSave={handleUpdateContributor} />
+              </AccordionDetails>
+            </Accordion>
+          ))}
+        </StorageConfigContextProvider>
       </PageContentBlockSeamless>
     </AdminLayout>
   );
