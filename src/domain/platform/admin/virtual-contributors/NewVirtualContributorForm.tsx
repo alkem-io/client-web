@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
 import useLoadingState from '../../../shared/utils/useLoadingState';
 import {
+  refetchAdminVirtualContributorsQuery,
   useCreateVirtualContributorMutation,
   useVirtualContributorAvailablePersonasQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
@@ -36,7 +37,7 @@ const NewVirtualContributorForm = ({ parentPagePath }: NewVirtualContributorForm
   const initialValues = { displayName: '', virtualPersonaID: '' };
   const { data: virtualPersonas } = useVirtualContributorAvailablePersonasQuery();
   const [createVirtualContributor, { loading }] = useCreateVirtualContributorMutation({
-    refetchQueries: ['VirtualContributors'],
+    refetchQueries: [refetchAdminVirtualContributorsQuery()],
   });
 
   const onCancel = () => {
