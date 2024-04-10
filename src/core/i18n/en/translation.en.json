@@ -1897,6 +1897,13 @@
             "subtitle": "The order below is the order in which the Spaces will be visible on the Custom Homepage"
           }
         }
+      },
+      "virtualContributors": {
+        "virtualPersonas": {
+          "title": "Virtual Personas",
+          "create": "Create Virtual Persona",
+          "selectEngine": "Select Engine"
+        }
       }
     },
     "feedback": {
