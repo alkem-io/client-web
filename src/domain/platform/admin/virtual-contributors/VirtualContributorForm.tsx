@@ -39,10 +39,10 @@ const VirtualContributorForm: FC<VirtualContributorFormProps> = ({ virtualContri
   });
 
   return (
-    <>
+    <Gutters disablePadding>
       <Formik initialValues={initialValues} onSubmit={handleSubmit}>
         <Form>
-          <Gutters>
+          <Gutters disablePadding>
             <FormikInputField title={t('common.title')} name="displayName" />
             <FormikMarkdownField title={t('common.description')} name="description" />
             <Actions>
@@ -61,7 +61,7 @@ const VirtualContributorForm: FC<VirtualContributorFormProps> = ({ virtualContri
           altText: virtualContributor.profile.avatar?.alternativeText,
         })}
       />
-    </>
+    </Gutters>
   );
 };
 

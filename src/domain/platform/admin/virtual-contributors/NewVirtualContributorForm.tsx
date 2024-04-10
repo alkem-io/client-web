@@ -9,7 +9,7 @@ import {
   useVirtualPersonasQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { Actions } from '../../../../core/ui/actions/Actions';
-import { Button, Container } from '@mui/material';
+import { Button } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { v4 as uuidv4 } from 'uuid';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
@@ -17,6 +17,8 @@ import AdminLayout from '../layout/toplevel/AdminLayout';
 import { AdminSection } from '../layout/toplevel/constants';
 import FormikSelect from '../../../../core/ui/forms/FormikSelect';
 import { useBackToStaticPath } from '../../../../core/routing/useBackToPath';
+import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
+import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
 
 interface NewVirtualContributorFormValues {
   displayName: string;
@@ -72,10 +74,11 @@ const NewVirtualContributorForm = ({ parentPagePath }: NewVirtualContributorForm
 
   return (
     <AdminLayout currentTab={AdminSection.VirtualContributors}>
-      <Container maxWidth="xl">
+      <PageContentBlock>
+        <PageContentBlockHeader title="Create Virtual Contributor" />
         <Formik initialValues={initialValues} onSubmit={handleSubmit}>
           <Form>
-            <Gutters>
+            <Gutters disablePadding>
               <FormikInputField title={t('common.title')} name="displayName" />
               <FormikSelect title="Select Virtual Persona" name="virtualPersonaID" values={personas ?? []} />
               <Actions>
@@ -89,7 +92,7 @@ const NewVirtualContributorForm = ({ parentPagePath }: NewVirtualContributorForm
             </Gutters>
           </Form>
         </Formik>
-      </Container>
+      </PageContentBlock>
     </AdminLayout>
   );
 };

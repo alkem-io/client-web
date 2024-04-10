@@ -7,7 +7,7 @@ import FormikMarkdownField from '../../../../core/ui/forms/MarkdownInput/FormikM
 import useLoadingState from '../../../shared/utils/useLoadingState';
 import { useCreateVirtualPersonaMutation } from '../../../../core/apollo/generated/apollo-hooks';
 import { Actions } from '../../../../core/ui/actions/Actions';
-import { Button, Container } from '@mui/material';
+import { Button } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { VirtualPersonaEngine } from '../../../../core/apollo/generated/graphql-schema';
 import { v4 as uuidv4 } from 'uuid';
@@ -16,6 +16,8 @@ import AdminLayout from '../layout/toplevel/AdminLayout';
 import { AdminSection } from '../layout/toplevel/constants';
 import { useBackToStaticPath } from '../../../../core/routing/useBackToPath';
 import FormikSelect from '../../../../core/ui/forms/FormikSelect';
+import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
+import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
 
 interface NewPersonaFormValues {
   displayName: string;
@@ -72,7 +74,8 @@ const NewPersonaForm = ({ parentPagePath }: NewPersonaFormProps) => {
 
   return (
     <AdminLayout currentTab={AdminSection.VirtualContributors}>
-      <Container maxWidth="xl">
+      <PageContentBlock>
+        <PageContentBlockHeader title="Create Virtal Persona" />
         <Formik initialValues={initialValues} onSubmit={handleSubmit}>
           <Form>
             <Gutters>
@@ -90,7 +93,7 @@ const NewPersonaForm = ({ parentPagePath }: NewPersonaFormProps) => {
             </Gutters>
           </Form>
         </Formik>
-      </Container>
+      </PageContentBlock>
     </AdminLayout>
   );
 };
