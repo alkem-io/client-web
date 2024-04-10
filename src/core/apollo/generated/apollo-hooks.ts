@@ -21858,6 +21858,7 @@ export const CreateVirtualPersonaDocument = gql`
     createVirtualPersona(virtualPersonaData: $virtualPersonaData) {
       id
       prompt
+      engine
     }
   }
 `;

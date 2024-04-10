@@ -25495,7 +25495,12 @@ export type CreateVirtualPersonaMutationVariables = Exact<{
 
 export type CreateVirtualPersonaMutation = {
   __typename?: 'Mutation';
-  createVirtualPersona: { __typename?: 'VirtualPersona'; id: string; prompt: string };
+  createVirtualPersona: {
+    __typename?: 'VirtualPersona';
+    id: string;
+    prompt: string;
+    engine?: VirtualPersonaEngine | undefined;
+  };
 };
 
 export type VirtualPersonasQueryVariables = Exact<{ [key: string]: never }>;
