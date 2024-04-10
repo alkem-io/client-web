@@ -20,22 +20,22 @@ interface VirtualContributorFormProps {
     profile: {
       id: string;
       displayName: string;
-      description: string;
-      avatar: VisualUploadProps['visual'];
+      description?: string;
+      avatar?: VisualUploadProps['visual'];
     };
   };
-  onSave: (values: VirtualContributorFormValues) => Promise<unknown> | void;
+  onSave?: (values: VirtualContributorFormValues) => Promise<unknown> | void;
 }
 
 const VirtualContributorForm: FC<VirtualContributorFormProps> = ({ virtualContributor, onSave }) => {
   const { t } = useTranslation();
   const initialValues = {
     displayName: virtualContributor.profile.displayName,
-    description: virtualContributor.profile.description,
+    description: virtualContributor.profile.description ?? '',
   };
 
   const [handleSubmit, loading] = useLoadingState(async (values: VirtualContributorFormValues) => {
-    await onSave(values);
+    await onSave?.(values);
   });
 
   return (

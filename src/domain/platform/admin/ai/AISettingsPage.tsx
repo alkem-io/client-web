@@ -93,7 +93,7 @@ const AISettingsPage: FC<AISettingsPageProps> = () => {
   };
 
   return (
-    <AdminLayout currentTab={AdminSection.AISettings}>
+    <AdminLayout currentTab={AdminSection.VirtualContributors}>
       <Formik initialValues={initialValues} onSubmit={onSave}>
         <Form>
           <Gutters>

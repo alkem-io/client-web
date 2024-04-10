@@ -25458,7 +25458,9 @@ export type AdminVirtualContributorsQuery = {
       | undefined;
     profile: {
       __typename?: 'Profile';
+      id: string;
       displayName: string;
+      description?: string | undefined;
       avatar?:
         | {
             __typename?: 'Visual';

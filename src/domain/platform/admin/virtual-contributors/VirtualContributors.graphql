@@ -5,8 +5,10 @@ query AdminVirtualContributors {
       id
       myPrivileges
     }
-    profile{
+    profile {
+      id
       displayName
+      description
       avatar: visual(type: AVATAR) {
         ...VisualFull
       }
@@ -16,6 +18,6 @@ query AdminVirtualContributors {
 
 mutation createVirtualContributor($virtualContributorData: CreateVirtualContributorInput!) {
   createVirtualContributor(virtualContributorData: $virtualContributorData ) {
-      id
-    }
+    id
+  }
 }

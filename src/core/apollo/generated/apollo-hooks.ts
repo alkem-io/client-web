@@ -21741,7 +21741,9 @@ export const AdminVirtualContributorsDocument = gql`
         myPrivileges
       }
       profile {
+        id
         displayName
+        description
         avatar: visual(type: AVATAR) {
           ...VisualFull
         }
