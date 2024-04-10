@@ -74,6 +74,7 @@ const SpaceChallengesPage: FC<SpaceChallengesPageProps> = () => {
                 locked={!challenge.authorization?.anonymousReadAccess}
                 spaceVisibility={spaceVisibility}
                 member={challenge.community?.myMembershipStatus === CommunityMembershipStatus.Member}
+                openCreateDialog={() => setCreateDialogOpen(true)}
               />
             )}
             childEntityCreateAccess={permissions.canCreateChallenges}
