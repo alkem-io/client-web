@@ -255,7 +255,7 @@ const CalloutLayout = ({
             <ShareButton url={callout.framing.profile.url} entityTypeName="callout" />
           </>
         }
-        titleContainerProps={{ flexDirection: 'column', position: 'relative' }}
+        titleContainerProps={{ display: 'block', position: 'relative' }}
       >
         {hasCalloutDetails && (
           <Authorship
@@ -273,7 +273,7 @@ const CalloutLayout = ({
       </DialogHeader>
       <DialogContent ref={contentRef} sx={{ paddingTop: 0 }}>
         <Gutters disablePadding>
-          {hasCalloutDetails && <BlockTitle>{callout.framing.profile.displayName}</BlockTitle>}
+          {hasCalloutDetails && <BlockTitle noWrap>{callout.framing.profile.displayName}</BlockTitle>}
           <Box sx={{ wordWrap: 'break-word' }}>
             <WrapperMarkdown>{callout.framing.profile.description ?? ''}</WrapperMarkdown>
           </Box>
