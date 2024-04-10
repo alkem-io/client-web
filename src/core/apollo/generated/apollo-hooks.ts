@@ -2609,6 +2609,67 @@ export const SubspacesOnSpaceFragmentDoc = gql`
   }
   ${SubspaceCardFragmentDoc}
 `;
+export const SpaceProfileFragmentDoc = gql`
+  fragment SpaceProfile on Space {
+    id
+    nameID
+    metrics {
+      id
+      name
+      value
+    }
+    profile {
+      id
+      url
+      tagline
+      displayName
+      visuals {
+        ...VisualFull
+      }
+      tagset {
+        ...TagsetDetails
+      }
+    }
+    authorization {
+      id
+      myPrivileges
+    }
+    context {
+      id
+      vision
+      authorization {
+        id
+        myPrivileges
+        anonymousReadAccess
+      }
+    }
+    collaboration {
+      id
+      innovationFlow {
+        id
+        states {
+          displayName
+          description
+        }
+        currentState {
+          displayName
+        }
+      }
+      ...DashboardTopCallouts
+      ...DashboardTimelineAuthorization
+    }
+    community {
+      id
+      myMembershipStatus
+      ...EntityDashboardCommunity
+    }
+  }
+  ${VisualFullFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
+  ${DashboardTopCalloutsFragmentDoc}
+  ${DashboardTimelineAuthorizationFragmentDoc}
+  ${EntityDashboardCommunityFragmentDoc}
+`;
 export const SpaceSettingsFragmentDoc = gql`
   fragment SpaceSettings on SpaceSettings {
     privacy {

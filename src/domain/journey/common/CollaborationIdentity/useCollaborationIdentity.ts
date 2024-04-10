@@ -11,25 +11,15 @@ interface CollaborationIdentityParams {
   journeyTypeName: JourneyTypeName;
 }
 
-const useCollaborationIdentity = ({
-  journeyId,
-  journeyTypeName,
-}: CollaborationIdentityParams): CollaborationIdentity => {
-  const { data: CollaborationIdentityData, loading } = useCollaborationIdentityQuery({
+const useCollaborationIdentity = ({ journeyId }: CollaborationIdentityParams): CollaborationIdentity => {
+  const { data: collaborationIdentityData, loading } = useCollaborationIdentityQuery({
     variables: {
-      spaceId: journeyId,
-      challengeId: journeyId,
-      opportunityId: journeyId,
-      isSpace: journeyTypeName === 'space',
-      isChallenge: journeyTypeName === 'challenge',
-      isOpportunity: journeyTypeName === 'opportunity',
+      spaceId: journeyId!,
     },
+    skip: !journeyId,
   });
 
-  const collaborationId =
-    CollaborationIdentityData?.lookup.opportunity?.collaboration?.id ??
-    CollaborationIdentityData?.lookup.subspace?.collaboration?.id ??
-    CollaborationIdentityData?.space?.collaboration?.id;
+  const collaborationId = collaborationIdentityData?.space?.collaboration?.id;
 
   return {
     collaborationId,

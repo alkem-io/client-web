@@ -3,7 +3,7 @@ import { useUserContext } from '../../../community/user';
 import {
   AuthorizationCredential,
   Community,
-  Opportunity,
+  Space,
   UserDisplayNameFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { Member } from '../../../community/user/models/User';
@@ -16,7 +16,7 @@ export type AuthorizationCredentials = AuthorizationCredential.SubspaceAdmin | A
 
 export interface OpportunityMembersProps {
   entities: {
-    opportunityId: Opportunity['id'];
+    subsubspaceId: Space['id'];
     communityId?: Community['id']; // TODO: this should not be optional to carry out the role assignments
     credential: AuthorizationCredentials;
   };

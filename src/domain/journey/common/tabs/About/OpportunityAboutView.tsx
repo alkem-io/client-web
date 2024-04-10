@@ -77,7 +77,7 @@ enum JourneyContextField {
   Who = 'who',
 }
 
-const journeyTypeName = 'opportunity';
+const journeyTypeName = 'subsubspace';
 
 const OpportunityAboutView: FC<OpportunityAboutViewProps> = ({
   opportunityId,

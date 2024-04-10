@@ -9,6 +9,7 @@ import {
   CommunityMembershipStatus,
   DashboardTopCalloutFragment,
   Reference,
+  SubspacePageFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
 import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
 import { MetricType } from '../../../platform/metrics/MetricType';
@@ -22,7 +23,7 @@ import { RECENT_ACTIVITIES_LIMIT_INITIAL, TOP_CALLOUTS_LIMIT } from '../../commo
 import { useSpaceDashboardReferencesQuery, useSubspacePageQuery } from '../../../../core/apollo/generated/apollo-hooks';
 
 export interface SubspaceContainerEntities extends EntityDashboardContributors {
-  challenge?: ChallengeProfileFragment;
+  challenge?: SubspacePageFragment;
   references: Reference[] | undefined;
   permissions: {
     canEdit: boolean;

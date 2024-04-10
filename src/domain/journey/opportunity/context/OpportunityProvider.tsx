@@ -1,9 +1,9 @@
 import React, { FC, useMemo } from 'react';
-import { useOpportunityProviderQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { useSubspaceProviderQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
   CommunityMembershipStatus,
-  OpportunityProviderFragment,
+  SubspaceProviderFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 
@@ -14,13 +14,13 @@ interface OpportunityViewerPermissions {
 }
 
 export interface OpportunityContextProps {
-  opportunity?: OpportunityProviderFragment;
+  opportunity?: SubspaceProviderFragment;
   opportunityId: string;
   communityId: string;
   loading: boolean;
   permissions: OpportunityViewerPermissions;
   myMembershipStatus: CommunityMembershipStatus | undefined;
-  profile: OpportunityProviderFragment['profile'];
+  profile: SubspaceProviderFragment['profile'];
 }
 
 const DEFAULT_CONTEXT = {
@@ -54,13 +54,13 @@ interface OpportunityProviderProps {}
 const OpportunityProvider: FC<OpportunityProviderProps> = ({ children }) => {
   const { subSubSpaceId: opportunityId } = useRouteResolver();
 
-  const { data, loading } = useOpportunityProviderQuery({
-    variables: { opportunityId: opportunityId! },
+  const { data, loading } = useSubspaceProviderQuery({
+    variables: { subspaceId: opportunityId! },
     skip: !opportunityId,
     errorPolicy: 'all',
   });
 
-  const opportunity = data?.lookup.subsubspace;
+  const opportunity = data?.space;
 
   const communityId = opportunity?.community?.id ?? '';
 

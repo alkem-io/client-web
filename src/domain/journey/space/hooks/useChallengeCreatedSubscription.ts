@@ -13,9 +13,9 @@ const useChallengeCreatedSubscription = createUseSubscriptionToSubEntityHook<
   SubspaceCreatedSubscriptionVariables
 >({
   subscriptionDocument: SubspaceCreatedDocument,
-  getSubscriptionVariables: space => ({ journeyID: space.id }),
+  getSubscriptionVariables: space => ({ subspaceId: space.id }),
   updateSubEntity: (space, subscriptionData) => {
-    space?.subspaces?.push(subscriptionData.subspaceCreated.childJourney as Space);
+    space?.subspaces?.push(subscriptionData.subspaceCreated.subspace as Space);
   },
 });
 
