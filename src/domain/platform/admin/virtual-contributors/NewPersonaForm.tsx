@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Form, Formik } from 'formik';
 import Gutters from '../../../../core/ui/grid/Gutters';
@@ -15,17 +15,19 @@ import { v4 as uuidv4 } from 'uuid';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
 import AdminLayout from '../layout/toplevel/AdminLayout';
 import { AdminSection } from '../layout/toplevel/constants';
+import FormikSelect from '../../../../core/ui/forms/FormikSelect';
 
 interface NewPersonaFormValues {
   displayName: string;
   prompt: string;
+  engine: VirtualPersonaEngine;
 }
 
 const NewPersonaForm: FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const notify = useNotification();
-  const initialValues = { displayName: '', prompt: '' };
+  const initialValues = { displayName: '', prompt: '', engine: VirtualPersonaEngine.AlkemioWelcome };
   const [createPersona, { loading }] = useCreateVirtualPersonaMutation({
     onCompleted: () => {
       notify('Persona Created Successfully!', 'success');
@@ -38,7 +40,7 @@ const NewPersonaForm: FC = () => {
   };
 
   const [handleSubmit] = useLoadingState(async (values: NewPersonaFormValues) => {
-    const { displayName, prompt } = values;
+    const { displayName, prompt, engine } = values;
 
     await createPersona({
       variables: {
@@ -48,11 +50,21 @@ const NewPersonaForm: FC = () => {
           profileData: {
             displayName,
           },
-          engine: VirtualPersonaEngine.AlkemioDigileefomgeving,
+          engine,
         },
       },
     });
   });
+
+  const engines = useMemo(
+    () =>
+      (Object.values(VirtualPersonaEngine) as string[]).map(engine => ({
+        id: engine,
+        name: engine,
+        label: engine,
+      })),
+    [VirtualPersonaEngine]
+  );
 
   return (
     <AdminLayout currentTab={AdminSection.VirtualContributors}>
@@ -62,6 +74,7 @@ const NewPersonaForm: FC = () => {
             <Gutters>
               <FormikInputField title={t('common.title')} name="displayName" />
               <FormikMarkdownField title={t('common.prompt')} name="prompt" />
+              <FormikSelect title="Select Engine" name="engine" values={engines ?? []} />
               <Actions>
                 <Button variant="text" onClick={onCancel}>
                   {t('buttons.cancel')}
