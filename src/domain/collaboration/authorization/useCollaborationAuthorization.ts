@@ -17,50 +17,33 @@ interface CollaborationAuthorization {
 }
 
 export const useCollaborationAuthorization = (): CollaborationAuthorization => {
-  const { journeyId, journeyTypeName } = useRouteResolver();
+  const { journeyId } = useRouteResolver();
 
-  const [includeSpace, includeChallenge, includeOpportunity] = [
-    journeyTypeName === 'space',
-    journeyTypeName === 'challenge',
-    journeyTypeName === 'opportunity',
-  ];
+  // const [includeSpace, includeChallenge, includeOpportunity] = [
+  //   journeyTypeName === 'space',
+  //   journeyTypeName === 'subspace',
+  //   journeyTypeName === 'subsubspace',
+  // ];
 
   const { data: authorizationData, loading: loadingAuthorization } = useCollaborationAuthorizationQuery({
     variables: {
-      spaceId: journeyId,
-      challengeId: journeyId,
-      opportunityId: journeyId,
-      includeSpace,
-      includeChallenge,
-      includeOpportunity,
+      spaceId: journeyId!,
     },
     skip: !journeyId,
   });
 
-  const authorization = (
-    authorizationData?.lookup.opportunity ??
-    authorizationData?.lookup.subspace ??
-    authorizationData?.space
-  )?.authorization;
+  const authorization = authorizationData?.space?.authorization;
 
   const canReadCollaboration = (authorization?.myPrivileges ?? []).includes(AuthorizationPrivilege.Read);
 
   const { data: collaborationData, loading: loadingCollaboration } = useCollaborationPrivilegesQuery({
     variables: {
-      spaceId: journeyId,
-      challengeId: journeyId,
-      opportunityId: journeyId,
-      includeSpace,
-      includeChallenge,
-      includeOpportunity,
+      spaceId: journeyId!,
     },
     skip: !journeyId || !canReadCollaboration,
   });
 
-  const collaboration =
-    collaborationData?.space?.collaboration ??
-    collaborationData?.lookup.subspace?.collaboration ??
-    collaborationData?.lookup.opportunity?.collaboration;
+  const collaboration = collaborationData?.space?.collaboration;
 
   const collaborationId = collaboration?.id;
   const collaborationPrivileges = collaboration?.authorization?.myPrivileges ?? [];
