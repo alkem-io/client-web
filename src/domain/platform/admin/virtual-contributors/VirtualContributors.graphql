@@ -1,0 +1,23 @@
+query AdminVirtualContributors {
+  virtualContributors {
+    id
+    authorization {
+      id
+      myPrivileges
+    }
+    profile {
+      id
+      displayName
+      description
+      avatar: visual(type: AVATAR) {
+        ...VisualFull
+      }
+    }
+  }
+}
+
+mutation createVirtualContributor($virtualContributorData: CreateVirtualContributorInput!) {
+  createVirtualContributor(virtualContributorData: $virtualContributorData ) {
+    id
+  }
+}

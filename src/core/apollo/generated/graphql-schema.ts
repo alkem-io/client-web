@@ -25528,6 +25528,70 @@ export type DeleteWhiteboardTemplateMutation = {
   deleteWhiteboardTemplate: { __typename?: 'WhiteboardTemplate'; id: string };
 };
 
+export type AdminVirtualContributorsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type AdminVirtualContributorsQuery = {
+  __typename?: 'Query';
+  virtualContributors: Array<{
+    __typename?: 'VirtualContributor';
+    id: string;
+    authorization?:
+      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+      | undefined;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      description?: string | undefined;
+      avatar?:
+        | {
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: string;
+            allowedTypes: Array<string>;
+            aspectRatio: number;
+            maxHeight: number;
+            maxWidth: number;
+            minHeight: number;
+            minWidth: number;
+            alternativeText?: string | undefined;
+          }
+        | undefined;
+    };
+  }>;
+};
+
+export type CreateVirtualContributorMutationVariables = Exact<{
+  virtualContributorData: CreateVirtualContributorInput;
+}>;
+
+export type CreateVirtualContributorMutation = {
+  __typename?: 'Mutation';
+  createVirtualContributor: { __typename?: 'VirtualContributor'; id: string };
+};
+
+export type CreateVirtualPersonaMutationVariables = Exact<{
+  virtualPersonaData: CreateVirtualPersonaInput;
+}>;
+
+export type CreateVirtualPersonaMutation = {
+  __typename?: 'Mutation';
+  createVirtualPersona: {
+    __typename?: 'VirtualPersona';
+    id: string;
+    prompt: string;
+    engine?: VirtualPersonaEngine | undefined;
+  };
+};
+
+export type VirtualPersonasQueryVariables = Exact<{ [key: string]: never }>;
+
+export type VirtualPersonasQuery = {
+  __typename?: 'Query';
+  virtualPersonas: Array<{ __typename?: 'VirtualPersona'; id: string; nameID: string; prompt: string }>;
+};
+
 export type ConfigurationQueryVariables = Exact<{ [key: string]: never }>;
 
 export type ConfigurationQuery = {
