@@ -5,6 +5,7 @@ import rehypeRaw from 'rehype-raw';
 import components from './components';
 import PlainText from './PlainText';
 import { MarkdownOptions, MarkdownOptionsProvider } from './MarkdownOptionsContext';
+import { Box } from '@mui/material';
 
 const allowedNodeTypes = ['iframe'] as const;
 
@@ -26,14 +27,16 @@ export const WrapperMarkdown = ({
       disableParagraphPadding={disableParagraphPadding}
       caption={caption}
     >
-      <ReactMarkdown
-        components={components}
-        remarkPlugins={[gfm, [PlainText, { enabled: plain }]]}
-        rehypePlugins={
-          plain ? undefined : ([rehypeRaw, { passThrough: allowedNodeTypes }] as MarkdownProps['rehypePlugins'])
-        }
-        {...props}
-      />
+      <Box sx={{ li: { marginY: caption ? 0 : 1 } }}>
+        <ReactMarkdown
+          components={components}
+          remarkPlugins={[gfm, [PlainText, { enabled: plain }]]}
+          rehypePlugins={
+            plain ? undefined : ([rehypeRaw, { passThrough: allowedNodeTypes }] as MarkdownProps['rehypePlugins'])
+          }
+          {...props}
+        />
+      </Box>
     </MarkdownOptionsProvider>
   );
 };

@@ -18,6 +18,7 @@ import CommunityApplicationForm from '../../../community/community/CommunityAppl
 import { Trans, useTranslation } from 'react-i18next';
 import { gutters } from '../../../../core/ui/grid/utils';
 import CommunityGuidelines from '../../../community/community/CommunityGuidelines/CommunityGuidelines';
+import CommunityVirtualContributors from '../../../community/community/CommunityAdmin/CommunityVirtualContributors';
 
 const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   const { t } = useTranslation();
@@ -26,6 +27,7 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
   const {
     users,
     organizations,
+    virtualContributors,
     applications,
     invitations,
     invitationsExternal,
@@ -40,9 +42,12 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
     onOrganizationLeadChange,
     onAddUser,
     onAddOrganization,
+    onAddVirtualContributor,
     onRemoveUser,
     onRemoveOrganization,
+    onRemoveVirtualContributor,
     getAvailableUsers,
+    getAvailableVirtualContributors,
     getAvailableOrganizations,
     loading,
     inviteExternalUser,
@@ -137,6 +142,20 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
             />
           </PageContentBlock>
         </PageContentColumn>
+        {permissions.virtualContributorsEnabled && (
+          <PageContentColumn columns={6}>
+            <PageContentBlock>
+              <CommunityVirtualContributors
+                virtualContributors={virtualContributors}
+                canAddVirtualContributors={permissions.canAddVirtualContributors}
+                onAddMember={onAddVirtualContributor}
+                onRemoveMember={onRemoveVirtualContributor}
+                fetchAvailableVirtualContributors={getAvailableVirtualContributors}
+                loading={loading}
+              />
+            </PageContentBlock>
+          </PageContentColumn>
+        )}
       </PageContent>
     </SpaceSettingsLayout>
   );

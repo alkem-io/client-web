@@ -15,7 +15,7 @@ export const formatTimeElapsed = (
   const currentDate = new Date();
   const formatCandidate = new Date(date);
 
-  const diffInTime = currentDate.getTime() - formatCandidate.getTime();
+  const diffInTime = Math.max(0, currentDate.getTime() - formatCandidate.getTime());
 
   if (diffInTime > ONE_YEAR) {
     const timeDiff = Math.round(diffInTime / ONE_YEAR);

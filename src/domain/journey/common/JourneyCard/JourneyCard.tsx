@@ -8,7 +8,6 @@ import { gutters } from '../../../../core/ui/grid/utils';
 import CardContent from '../../../../core/ui/card/CardContent';
 import RouterLink from '../../../../core/ui/link/RouterLink';
 import ExpandableCardFooter from '../../../../core/ui/card/ExpandableCardFooter';
-import CardMemberIcon from '../../../community/membership/CardMemberIcon/CardMemberIcon';
 import CardBanner from '../../../../core/ui/card/CardImageHeader';
 import { useTranslation } from 'react-i18next';
 import { JourneyCardBanner } from './Banner';
@@ -22,11 +21,13 @@ export interface JourneyCardProps extends ContributeCardProps {
   journeyUri?: string;
   expansion?: ReactNode;
   expansionActions?: ReactNode;
-  ribbon?: ReactNode;
+  bannerOverlay?: ReactNode;
   member?: boolean;
   locked?: boolean;
   actions?: ReactNode;
   matchedTerms?: boolean; // TODO pass ComponentType<CardTags> instead
+  visual?: ReactNode;
+  isPrivate?: boolean;
 }
 
 const JourneyCard = ({
@@ -37,11 +38,13 @@ const JourneyCard = ({
   journeyUri,
   expansion,
   expansionActions,
-  ribbon,
+  bannerOverlay,
   member,
   locked,
   actions,
   children,
+  visual,
+  isPrivate,
   ...containerProps
 }: PropsWithChildren<JourneyCardProps>) => {
   const { t } = useTranslation();
@@ -66,15 +69,10 @@ const JourneyCard = ({
         <CardBanner
           src={banner?.uri || defaultCardBanner}
           alt={t('visuals-alt-text.banner.card.text', { altText: banner?.alternativeText })}
-          overlay={
-            <>
-              {ribbon}
-              {member && <CardMemberIcon top={gutters(ribbon ? 2.0 : 0.5)} />}
-            </>
-          }
+          overlay={bannerOverlay}
         />
         <BadgeCardView
-          visual={<RoundedIcon size="small" component={Icon} />}
+          visual={visual || <RoundedIcon size="small" component={Icon} />}
           visualRight={locked ? <LockOutlined fontSize="small" color="primary" /> : undefined}
           gap={1}
           height={gutters(3)}

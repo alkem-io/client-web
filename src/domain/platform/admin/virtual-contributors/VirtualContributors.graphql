@@ -1,0 +1,48 @@
+query AdminVirtualContributors {
+  virtualContributors {
+    id
+    authorization {
+      id
+      myPrivileges
+    }
+    profile {
+      id
+      displayName
+      description
+      avatar: visual(type: AVATAR) {
+        ...VisualFull
+      }
+    }
+  }
+}
+
+mutation createVirtualContributor($virtualContributorData: CreateVirtualContributorInput!) {
+  createVirtualContributor(virtualContributorData: $virtualContributorData) {
+    id
+  }
+}
+
+mutation updateVirtualContributor($virtualContributorData: UpdateVirtualContributorInput!) {
+  updateVirtualContributor(virtualContributorData: $virtualContributorData) {
+    id
+    profile {
+      id
+      displayName
+      description
+    }
+  }
+}
+
+query virtualContributorAvailablePersonas {
+  virtualPersonas {
+    id
+    profile {
+      id
+      displayName
+      description
+      avatar: visual(type: AVATAR) {
+        ...VisualUri
+      }
+    }
+  }
+}

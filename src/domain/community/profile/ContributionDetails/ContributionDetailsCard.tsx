@@ -75,7 +75,7 @@ const ContributionDetailsCard = ({
             </CardActions>
           )
         }
-        ribbon={ribbon}
+        bannerOverlay={ribbon}
       >
         <JourneyCardTagline>{tagline}</JourneyCardTagline>
       </JourneyCard>

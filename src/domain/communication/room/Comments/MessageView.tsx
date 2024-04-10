@@ -9,6 +9,8 @@ import { Caption, Text } from '../../../../core/ui/typography';
 import { gutters } from '../../../../core/ui/grid/utils';
 import CommentReactions from './CommentReactions';
 import { MaybeDeletedMessage } from './useRestoredMessages';
+import { ProfileType } from '../../../../core/apollo/generated/graphql-schema';
+import VirtualContributorLabel from '../../../community/virtualContributor/VirtualContributorLabel';
 
 const MessageContentWrapper = styled(Box)(({ theme }) => ({
   overflowWrap: 'break-word',
@@ -81,6 +83,7 @@ export const MessageView = ({
           {!message.deleted && (
             <Box display="flex" height={gutters()} justifyContent="space-between" alignItems="center">
               <Caption>{author?.displayName}</Caption>
+              {author?.type === ProfileType.VirtualContributor && <VirtualContributorLabel />}
               <Box display="flex" height={gutters()} justifyContent="end" alignItems="center">
                 {root && canUpdate && onUpdate && (
                   <IconButton onClick={() => onUpdate(id)} size="small" aria-label={t('common.update')}>

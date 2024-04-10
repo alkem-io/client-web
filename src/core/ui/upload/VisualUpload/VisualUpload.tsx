@@ -5,7 +5,6 @@ import { Avatar, Box, BoxProps, Skeleton } from '@mui/material';
 import { useNotification } from '../../notifications/useNotification';
 import { useUploadVisualMutation } from '../../../apollo/generated/apollo-hooks';
 import UploadButton from '../../button/UploadButton';
-import { Visual } from '../../../apollo/generated/graphql-schema';
 import { CropDialog } from './CropDialog';
 import Image from '../../image/Image';
 
@@ -16,8 +15,18 @@ const ImagePlaceholder: FC<BoxProps<'img'>> = ({ src, alt, ...props }) => {
   return src ? <Image src={src} alt={alt} {...props} /> : <Box {...props}>{t('components.visual-upload.no-data')}</Box>;
 };
 
-interface VisualUploadProps {
-  visual?: Visual;
+export interface VisualUploadProps {
+  visual?: {
+    id: string;
+    allowedTypes: string[];
+    alternativeText?: string;
+    aspectRatio: number;
+    maxHeight: number;
+    maxWidth: number;
+    minHeight: number;
+    minWidth: number;
+    uri: string;
+  };
   height?: number;
   altText?: string;
 }

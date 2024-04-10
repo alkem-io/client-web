@@ -20,8 +20,6 @@ interface ChallengeCardProps
   spaceDisplayName?: ReactNode;
   spaceVisibility?: SpaceVisibility;
   innovationFlowState?: string;
-  private?: boolean;
-  privateParent?: boolean;
   hideJoin?: boolean;
   journeyUri: string;
 }
@@ -60,7 +58,7 @@ const ChallengeCard = ({
           )}
         </CardActions>
       }
-      ribbon={ribbon}
+      bannerOverlay={ribbon}
       {...props}
     />
   );

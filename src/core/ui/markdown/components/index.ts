@@ -2,8 +2,8 @@ import MarkdownHeading from './MarkdownHeading';
 import MarkdownParagraph from './MarkdownParagraph';
 import MarkdownMedia from './MarkdownMedia';
 import MarkdownLink from './MarkdownLink';
-import MarkdownList from './MarkdownList';
 import MarkdownListItem from './MarkdownListItem';
+import createMarkdownList from './MarkdownList';
 
 const headings = {
   h1: MarkdownHeading,
@@ -20,7 +20,8 @@ const components = {
   iframe: MarkdownMedia,
   img: MarkdownMedia,
   p: MarkdownParagraph,
-  ul: MarkdownList,
+  ul: createMarkdownList('ul'),
+  ol: createMarkdownList('ol'),
   li: MarkdownListItem,
 } as const;
 
