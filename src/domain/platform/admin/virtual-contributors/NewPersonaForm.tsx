@@ -46,10 +46,7 @@ const NewPersonaForm = ({ parentPagePath }: NewPersonaFormProps) => {
     engine: VirtualPersonaEngine.AlkemioDigileefomgeving,
   };
   const [createPersona, { loading }] = useCreateVirtualPersonaMutation({
-    onCompleted: () => {
-      notify('Persona Created Successfully!', 'success');
-      navigateBack();
-    },
+    refetchQueries: [refetchVirtualContributorAvailablePersonasQuery()],
   });
 
   const onCancel = () => {
@@ -71,7 +68,8 @@ const NewPersonaForm = ({ parentPagePath }: NewPersonaFormProps) => {
           },
         },
       });
-      refetchVirtualContributorAvailablePersonasQuery();
+      notify('Persona Created Successfully!', 'success');
+      navigateBack();
     }
   );
 
