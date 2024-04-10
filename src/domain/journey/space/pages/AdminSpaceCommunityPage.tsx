@@ -150,7 +150,7 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
                 canAddVirtualContributors={permissions.canAddVirtualContributors}
                 onAddMember={onAddVirtualContributor}
                 onRemoveMember={onRemoveVirtualContributor}
-                fetchAvailableUsers={getAvailableVirtualContributors}
+                fetchAvailableVirtualContributors={getAvailableVirtualContributors}
                 loading={loading}
               />
             </PageContentBlock>

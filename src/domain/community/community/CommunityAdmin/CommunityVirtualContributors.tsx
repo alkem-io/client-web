@@ -45,7 +45,7 @@ interface CommunityVirtualContributorsProps {
   onRemoveMember: (memberId: string) => Promise<unknown> | void;
   canAddVirtualContributors: boolean;
   onAddMember: (memberId: string) => Promise<unknown> | undefined;
-  fetchAvailableUsers: CommunityAddMembersDialogProps['fetchAvailableEntities'];
+  fetchAvailableVirtualContributors: CommunityAddMembersDialogProps['fetchAvailableEntities'];
   loading?: boolean;
 }
 
@@ -54,7 +54,7 @@ const CommunityVirtualContributors: FC<CommunityVirtualContributorsProps> = ({
   onRemoveMember,
   canAddVirtualContributors,
   onAddMember,
-  fetchAvailableUsers,
+  fetchAvailableVirtualContributors,
   loading,
 }) => {
   const { t } = useTranslation();
@@ -164,7 +164,7 @@ const CommunityVirtualContributors: FC<CommunityVirtualContributorsProps> = ({
       {isAddingNewMember && (
         <CommunityAddMembersDialog
           onAdd={onAddMember}
-          fetchAvailableEntities={fetchAvailableUsers}
+          fetchAvailableEntities={fetchAvailableVirtualContributors}
           onClose={() => setAddingNewMember(false)}
         />
       )}
