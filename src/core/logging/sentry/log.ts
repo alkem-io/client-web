@@ -25,11 +25,9 @@ type TagType = {
   [key in TagsKeysType]?: string;
 };
 
-const setTags = (tags: TagType | undefined, scope: Sentry.Scope) => {
-  if (tags) {
-    for (const [key, value] of Object.entries(tags as TagType)) {
-      scope.setTag(key as TagsKeysType, value as string);
-    }
+const setTags = (tags: TagType, scope: Sentry.Scope) => {
+  for (const [key, value] of Object.entries(tags)) {
+    scope.setTag(key, value);
   }
 };
 
@@ -42,7 +40,7 @@ export const error = (
 ) => {
   Sentry.withScope(scope => {
     scope.setLevel(severity);
-    setTags(tags, scope);
+    tags && setTags(tags, scope);
     setup(scope);
     Sentry.captureException(error);
   });
