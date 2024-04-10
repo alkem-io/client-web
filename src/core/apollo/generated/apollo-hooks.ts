@@ -21906,6 +21906,7 @@ export const VirtualPersonasDocument = gql`
   query virtualPersonas {
     virtualPersonas {
       id
+      nameID
       prompt
     }
   }

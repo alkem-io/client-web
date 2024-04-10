@@ -8,6 +8,7 @@ mutation createVirtualPersona($virtualPersonaData: CreateVirtualPersonaInput!) {
 query virtualPersonas {
   virtualPersonas {
     id
+    nameID
     prompt
   }
 }

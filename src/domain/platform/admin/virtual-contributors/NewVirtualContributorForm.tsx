@@ -66,8 +66,7 @@ const NewVirtualContributorForm = ({ parentPagePath }: NewVirtualContributorForm
     () =>
       virtualPersonas?.virtualPersonas.map(persona => ({
         id: persona.id,
-        name: persona.prompt,
-        label: persona.prompt,
+        name: `${persona.nameID} - ${persona.prompt}`,
       })),
     [virtualPersonas]
   );

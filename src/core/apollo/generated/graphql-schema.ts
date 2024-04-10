@@ -25502,7 +25502,7 @@ export type VirtualPersonasQueryVariables = Exact<{ [key: string]: never }>;
 
 export type VirtualPersonasQuery = {
   __typename?: 'Query';
-  virtualPersonas: Array<{ __typename?: 'VirtualPersona'; id: string; prompt: string }>;
+  virtualPersonas: Array<{ __typename?: 'VirtualPersona'; id: string; nameID: string; prompt: string }>;
 };
 
 export type ConfigurationQueryVariables = Exact<{ [key: string]: never }>;

@@ -10,7 +10,6 @@ import { Actions } from '../../../../core/ui/actions/Actions';
 import { Button } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { VirtualPersonaEngine } from '../../../../core/apollo/generated/graphql-schema';
-import { v4 as uuidv4 } from 'uuid';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
 import AdminLayout from '../layout/toplevel/AdminLayout';
 import { AdminSection } from '../layout/toplevel/constants';
@@ -21,6 +20,7 @@ import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlock
 
 interface NewPersonaFormValues {
   displayName: string;
+  nameId: string;
   prompt: string;
   engine: VirtualPersonaEngine;
 }
@@ -33,7 +33,12 @@ const NewPersonaForm = ({ parentPagePath }: NewPersonaFormProps) => {
   const { t } = useTranslation();
   const navigateBack = useBackToStaticPath(parentPagePath);
   const notify = useNotification();
-  const initialValues = { displayName: '', prompt: '', engine: VirtualPersonaEngine.AlkemioWelcome };
+  const initialValues = {
+    displayName: '',
+    nameId: '',
+    prompt: '',
+    engine: VirtualPersonaEngine.AlkemioWelcome,
+  };
   const [createPersona, { loading }] = useCreateVirtualPersonaMutation({
     onCompleted: () => {
       notify('Persona Created Successfully!', 'success');
@@ -52,7 +57,7 @@ const NewPersonaForm = ({ parentPagePath }: NewPersonaFormProps) => {
       variables: {
         virtualPersonaData: {
           prompt,
-          nameID: `V-P-${uuidv4()}`.slice(0, 25).toLocaleLowerCase(),
+          nameID: values.nameId,
           profileData: {
             displayName,
           },
@@ -80,6 +85,7 @@ const NewPersonaForm = ({ parentPagePath }: NewPersonaFormProps) => {
           <Form>
             <Gutters>
               <FormikInputField title={t('common.title')} name="displayName" />
+              <FormikInputField title={t('components.nameSegment.nameID.title')} name="nameId" />
               <FormikMarkdownField title={t('common.prompt')} name="prompt" />
               <FormikSelect title="Select Engine" name="engine" values={engines ?? []} />
               <Actions>
