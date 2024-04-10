@@ -5,7 +5,7 @@ import { ThemeProvider } from '@mui/material';
 import providePrimaryColor from '../../../../core/ui/themes/utils/providePrimaryColor';
 import { Visual } from '../../../../domain/common/visual/Visual';
 
-const provideHubColor = providePrimaryColor(theme => theme.palette.space.main);
+const provideHubColor = providePrimaryColor(theme => theme.palette.primary.main);
 
 const banner: Visual = {
   uri: '/alkemio-banner/global-banner.jpg',

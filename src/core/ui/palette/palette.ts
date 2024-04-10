@@ -4,7 +4,7 @@ import { grey } from '@mui/material/colors';
 const COLOR_POSITIVE_CONTAINER = '#CDE7ED';
 
 export const paletteOptions: PaletteOptions = {
-  primary: { main: '#1d384a' },
+  primary: { main: '#1D384A' },
   secondary: { main: '#00a88f' },
   muted: { main: '#A8A8A8' },
   text: {
@@ -32,7 +32,7 @@ export const paletteOptions: PaletteOptions = {
     light: '#DEEFF6',
   },
   space: {
-    main: '#1D384A',
+    dark: '#152A37',
   },
 };
 
