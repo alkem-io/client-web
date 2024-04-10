@@ -24,7 +24,7 @@ const Root = styled(Box)(({ theme }) => ({
   backgroundColor: theme.palette.neutralLight.main,
 }));
 
-const TITLE_BACKGROUND_COLOR = '#043B43';
+const TITLE_BACKGROUND_COLOR = '#152A37';
 
 const Title = styled(Box)(({ theme }) => ({
   color: theme.palette.common.white,
