@@ -5836,6 +5836,8 @@ export type VirtualPersona = {
   id: Scalars['UUID'];
   /** A name identifier of the entity, unique within a given scope. */
   nameID: Scalars['NameID'];
+  /** The Profile for this VirtualPersona. */
+  profile: Profile;
   /** The prompt used by this Virtual Persona */
   prompt: Scalars['JSON'];
 };
@@ -25563,6 +25565,36 @@ export type CreateVirtualContributorMutation = {
   createVirtualContributor: { __typename?: 'VirtualContributor'; id: string };
 };
 
+export type UpdateVirtualContributorMutationVariables = Exact<{
+  virtualContributorData: UpdateVirtualContributorInput;
+}>;
+
+export type UpdateVirtualContributorMutation = {
+  __typename?: 'Mutation';
+  updateVirtualContributor: {
+    __typename?: 'VirtualContributor';
+    id: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+  };
+};
+
+export type VirtualContributorAvailablePersonasQueryVariables = Exact<{ [key: string]: never }>;
+
+export type VirtualContributorAvailablePersonasQuery = {
+  __typename?: 'Query';
+  virtualPersonas: Array<{
+    __typename?: 'VirtualPersona';
+    id: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      description?: string | undefined;
+      avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+    };
+  }>;
+};
+
 export type CreateVirtualPersonaMutationVariables = Exact<{
   virtualPersonaData: CreateVirtualPersonaInput;
 }>;
@@ -25572,16 +25604,11 @@ export type CreateVirtualPersonaMutation = {
   createVirtualPersona: {
     __typename?: 'VirtualPersona';
     id: string;
+    nameID: string;
     prompt: string;
     engine?: VirtualPersonaEngine | undefined;
+    profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
   };
-};
-
-export type VirtualPersonasQueryVariables = Exact<{ [key: string]: never }>;
-
-export type VirtualPersonasQuery = {
-  __typename?: 'Query';
-  virtualPersonas: Array<{ __typename?: 'VirtualPersona'; id: string; nameID: string; prompt: string }>;
 };
 
 export type ConfigurationQueryVariables = Exact<{ [key: string]: never }>;

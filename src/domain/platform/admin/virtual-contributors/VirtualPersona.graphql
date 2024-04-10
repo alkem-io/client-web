@@ -1,15 +1,13 @@
 mutation createVirtualPersona($virtualPersonaData: CreateVirtualPersonaInput!) {
   createVirtualPersona(virtualPersonaData: $virtualPersonaData ) {
     id
-    prompt
-    engine
-  }
-}
-
-query virtualPersonas {
-  virtualPersonas {
-    id
     nameID
     prompt
+    engine
+    profile {
+      id
+      displayName
+      description
+    }
   }
 }

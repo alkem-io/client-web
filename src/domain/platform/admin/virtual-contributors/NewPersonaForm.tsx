@@ -21,6 +21,7 @@ import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlock
 interface NewPersonaFormValues {
   displayName: string;
   nameId: string;
+  description: string;
   prompt: string;
   engine: VirtualPersonaEngine;
 }
@@ -37,6 +38,7 @@ const NewPersonaForm = ({ parentPagePath }: NewPersonaFormProps) => {
     displayName: '',
     nameId: '',
     prompt: '',
+    description: '',
     engine: VirtualPersonaEngine.AlkemioWelcome,
   };
   const [createPersona, { loading }] = useCreateVirtualPersonaMutation({
@@ -50,22 +52,23 @@ const NewPersonaForm = ({ parentPagePath }: NewPersonaFormProps) => {
     navigateBack();
   };
 
-  const [handleSubmit] = useLoadingState(async (values: NewPersonaFormValues) => {
-    const { displayName, prompt, engine } = values;
-
-    await createPersona({
-      variables: {
-        virtualPersonaData: {
-          prompt,
-          nameID: values.nameId,
-          profileData: {
-            displayName,
+  const [handleSubmit] = useLoadingState(
+    async ({ displayName, prompt, engine, nameId, description }: NewPersonaFormValues) => {
+      await createPersona({
+        variables: {
+          virtualPersonaData: {
+            prompt,
+            nameID: nameId,
+            profileData: {
+              displayName,
+              description,
+            },
+            engine,
           },
-          engine,
         },
-      },
-    });
-  });
+      });
+    }
+  );
 
   const engines = useMemo(
     () =>
@@ -87,6 +90,7 @@ const NewPersonaForm = ({ parentPagePath }: NewPersonaFormProps) => {
               <FormikInputField title={t('common.title')} name="displayName" />
               <FormikInputField title={t('components.nameSegment.nameID.title')} name="nameId" />
               <FormikMarkdownField title={t('common.prompt')} name="prompt" />
+              <FormikMarkdownField title={t('common.description')} name="description" />
               <FormikSelect title="Select Engine" name="engine" values={engines ?? []} />
               <Actions>
                 <Button variant="text" onClick={onCancel}>

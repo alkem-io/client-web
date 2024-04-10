@@ -6,7 +6,7 @@ import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikI
 import useLoadingState from '../../../shared/utils/useLoadingState';
 import {
   useCreateVirtualContributorMutation,
-  useVirtualPersonasQuery,
+  useVirtualContributorAvailablePersonasQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { Actions } from '../../../../core/ui/actions/Actions';
 import { Button } from '@mui/material';
@@ -34,12 +34,9 @@ const NewVirtualContributorForm = ({ parentPagePath }: NewVirtualContributorForm
   const navigateBack = useBackToStaticPath(parentPagePath);
   const notify = useNotification();
   const initialValues = { displayName: '', virtualPersonaID: '' };
-  const { data: virtualPersonas } = useVirtualPersonasQuery();
+  const { data: virtualPersonas } = useVirtualContributorAvailablePersonasQuery();
   const [createVirtualContributor, { loading }] = useCreateVirtualContributorMutation({
-    onCompleted: () => {
-      notify('Virtual Contributor Created Successfully!', 'success');
-      navigateBack();
-    },
+    refetchQueries: ['VirtualContributors'],
   });
 
   const onCancel = () => {
@@ -60,13 +57,16 @@ const NewVirtualContributorForm = ({ parentPagePath }: NewVirtualContributorForm
         },
       },
     });
+
+    notify('Virtual Contributor Created Successfully!', 'success');
+    navigateBack();
   });
 
   const personas = useMemo(
     () =>
       virtualPersonas?.virtualPersonas.map(persona => ({
         id: persona.id,
-        name: `${persona.nameID} - ${persona.prompt}`,
+        name: `${persona.profile.displayName}${persona.profile.description && ` - ${persona.profile.description}`}`,
       })),
     [virtualPersonas]
   );

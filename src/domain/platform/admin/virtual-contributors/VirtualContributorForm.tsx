@@ -9,14 +9,15 @@ import useLoadingState from '../../../shared/utils/useLoadingState';
 import { Actions } from '../../../../core/ui/actions/Actions';
 import { Button } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
+import { Identifiable } from '../../../../core/utils/Identifiable';
 
-interface VirtualContributorFormValues {
+export interface VirtualContributorFormValues {
   displayName: string;
   description: string;
 }
 
 interface VirtualContributorFormProps {
-  virtualContributor: {
+  virtualContributor: Identifiable & {
     profile: {
       id: string;
       displayName: string;
@@ -24,7 +25,7 @@ interface VirtualContributorFormProps {
       avatar?: VisualUploadProps['visual'];
     };
   };
-  onSave?: (values: VirtualContributorFormValues) => Promise<unknown> | void;
+  onSave?: (values: Identifiable & VirtualContributorFormValues) => Promise<unknown> | void;
 }
 
 const VirtualContributorForm: FC<VirtualContributorFormProps> = ({ virtualContributor, onSave }) => {
@@ -35,7 +36,10 @@ const VirtualContributorForm: FC<VirtualContributorFormProps> = ({ virtualContri
   };
 
   const [handleSubmit, loading] = useLoadingState(async (values: VirtualContributorFormValues) => {
-    await onSave?.(values);
+    await onSave?.({
+      id: virtualContributor.id,
+      ...values,
+    });
   });
 
   return (

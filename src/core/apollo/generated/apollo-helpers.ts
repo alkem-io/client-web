@@ -2972,6 +2972,7 @@ export type VirtualPersonaKeySpecifier = (
   | 'engine'
   | 'id'
   | 'nameID'
+  | 'profile'
   | 'prompt'
   | VirtualPersonaKeySpecifier
 )[];
@@ -2980,6 +2981,7 @@ export type VirtualPersonaFieldPolicy = {
   engine?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
+  profile?: FieldPolicy<any> | FieldReadFunction<any>;
   prompt?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type VirtualPersonaResultKeySpecifier = (
