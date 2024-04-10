@@ -27,13 +27,11 @@ import {
   AuthorizationCredential,
   AuthorizationPrivilege,
   CommunityRole,
-  LicenseFeatureFlagName,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { OrganizationDetailsFragmentWithRoles } from '../../../community/community/CommunityAdmin/CommunityOrganizations';
 import { CommunityMemberUserFragmentWithRoles } from '../../../community/community/CommunityAdmin/CommunityUsers';
 import useInviteUsers from '../../../community/invitations/useInviteUsers';
 import { JourneyTypeName, getJourneyTypeName } from '../../../journey/JourneyTypeName';
-import { licenseHasFeature } from '../../../journey/space/license/useLicenseFeatures';
 
 const MAX_AVAILABLE_MEMBERS = 100;
 const buildUserFilterObject = (filter: string | undefined) =>
@@ -92,9 +90,8 @@ const useCommunityAdmin = ({ communityId, spaceId, challengeId, opportunityId }:
   const communityPolicy = data?.lookup.community?.policy;
 
   const permissions = {
-    virtualContributorsEnabled: licenseHasFeature(
-      LicenseFeatureFlagName.VirtualContributors,
-      data?.space?.account.license
+    virtualContributorsEnabled: (data?.lookup.community?.authorization?.myPrivileges ?? []).some(
+      priv => priv === AuthorizationPrivilege.AccessVirtualContributor
     ),
     canAddMembers: (data?.lookup.community?.authorization?.myPrivileges ?? []).some(
       priv => priv === AuthorizationPrivilege.CommunityAddMember

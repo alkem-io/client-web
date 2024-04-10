@@ -720,6 +720,7 @@ export type AuthorizationPolicyRuleVerifiedCredential = {
 export enum AuthorizationPrivilege {
   AccessDashboardRefresh = 'ACCESS_DASHBOARD_REFRESH',
   AccessInteractiveGuidance = 'ACCESS_INTERACTIVE_GUIDANCE',
+  AccessVirtualContributor = 'ACCESS_VIRTUAL_CONTRIBUTOR',
   Admin = 'ADMIN',
   AuthorizationReset = 'AUTHORIZATION_RESET',
   CommunityAddMember = 'COMMUNITY_ADD_MEMBER',
@@ -15258,17 +15259,8 @@ export type CommunityMembersListQueryVariables = Exact<{
 
 export type CommunityMembersListQuery = {
   __typename?: 'Query';
-  space: {
+  space?: {
     __typename?: 'Space';
-    account: {
-      __typename?: 'Account';
-      id: string;
-      license: {
-        __typename?: 'License';
-        id: string;
-        featureFlags: Array<{ __typename?: 'LicenseFeatureFlag'; name: LicenseFeatureFlagName; enabled: boolean }>;
-      };
-    };
     host?:
       | {
           __typename?: 'Organization';
