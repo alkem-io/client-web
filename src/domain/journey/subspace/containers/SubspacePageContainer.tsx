@@ -27,7 +27,7 @@ export interface SubspaceContainerEntities extends EntityDashboardContributors {
   permissions: {
     canEdit: boolean;
     communityReadAccess: boolean;
-    challengeReadAccess: boolean;
+    subspaceReadAccess: boolean;
     timelineReadAccess: boolean;
     readUsers: boolean;
   };

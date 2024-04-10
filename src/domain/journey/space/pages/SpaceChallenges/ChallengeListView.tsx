@@ -9,17 +9,17 @@ import Loading from '../../../../../core/ui/loading/Loading';
 import {
   refetchAdminSpaceChallengesPageQuery,
   useAdminSpaceChallengesPageQuery,
-  useCreateChallengeMutation,
-  useDeleteChallengeMutation,
+  useCreateSubspaceMutation,
+  useDeleteSpaceMutation,
   useUpdateSpaceDefaultInnovationFlowTemplateMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import { useSpace } from '../../SpaceContext/useSpace';
 import { JourneyCreationDialog } from '../../../../shared/components/JorneyCreationDialog';
-import { ChallengeIcon } from '../../../challenge/icon/ChallengeIcon';
+import { ChallengeIcon } from '../../../subspace/icon/ChallengeIcon';
 import { JourneyFormValues } from '../../../../shared/components/JorneyCreationDialog/JourneyCreationForm';
 import { buildJourneyAdminUrl } from '../../../../../main/routing/urlBuilders';
-import { CreateChallengeForm } from '../../../challenge/forms/CreateChallengeForm';
+import { CreateChallengeForm } from '../../../subspace/forms/CreateChallengeForm';
 import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
 import { BlockSectionTitle, Caption } from '../../../../../core/ui/typography';
@@ -55,7 +55,7 @@ export const ChallengeListView: FC = () => {
       url: `${c.nameID}`,
     })) || [];
 
-  const [deleteChallenge] = useDeleteChallengeMutation({
+  const [deleteChallenge] = useDeleteSpaceMutation({
     refetchQueries: [
       refetchAdminSpaceChallengesPageQuery({
         spaceId: spaceNameId,
@@ -75,7 +75,7 @@ export const ChallengeListView: FC = () => {
     });
   };
 
-  const [createChallenge] = useCreateChallengeMutation({
+  const [createChallenge] = useCreateSubspaceMutation({
     onCompleted: () => {
       notify(t('pages.admin.subspace.notifications.subspace-created'), 'success');
     },
@@ -105,11 +105,11 @@ export const ChallengeListView: FC = () => {
         },
       });
 
-      if (!data?.createChallenge) {
+      if (!data?.createSubspace) {
         return;
       }
-      if (data?.createChallenge.profile.url) {
-        navigate(buildJourneyAdminUrl(data?.createChallenge.profile.url));
+      if (data?.createSubspace.profile.url) {
+        navigate(buildJourneyAdminUrl(data?.createSubspace.profile.url));
       }
     },
     [navigate, createChallenge, spaceNameId]

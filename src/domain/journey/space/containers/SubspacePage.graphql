@@ -60,5 +60,6 @@ fragment SubspacePage on Space {
   }
   community {
     ...EntityDashboardCommunity
+    myMembershipStatus
   }
 }

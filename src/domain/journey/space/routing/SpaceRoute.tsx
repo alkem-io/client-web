@@ -1,9 +1,9 @@
 import React from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { ChallengeProvider } from '../../challenge/context/SubspaceProvider';
+import { ChallengeProvider } from '../../subspace/context/SubspaceProvider';
 import { CommunityContextProvider } from '../../../community/community/CommunityContext';
 import { nameOfUrl } from '../../../../main/routing/urlParams';
-import ChallengeRoute from '../../challenge/routing/ChallengeRoute';
+import ChallengeRoute from '../../subspace/routing/ChallengeRoute';
 import { Error404 } from '../../../../core/pages/Errors/Error404';
 import SpaceChallengesPage from '../pages/SpaceChallengesPage';
 import { routes } from '../routes/spaceRoutes';

@@ -3,11 +3,11 @@ import React, { FC } from 'react';
 import useChallengeCreatedSubscription from '../hooks/useChallengeCreatedSubscription';
 import { useSpaceChallengeCardsQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
-import { CalloutGroupName, ChallengeCardFragment } from '../../../../core/apollo/generated/graphql-schema';
+import { CalloutGroupName, SubspaceCardFragment } from '../../../../core/apollo/generated/graphql-schema';
 import useCallouts, { UseCalloutsProvided } from '../../../collaboration/callout/useCallouts/useCallouts';
 
 export interface ChallengesCardContainerEntities {
-  challenges: ChallengeCardFragment[];
+  challenges: SubspaceCardFragment[];
   callouts: UseCalloutsProvided;
 }
 

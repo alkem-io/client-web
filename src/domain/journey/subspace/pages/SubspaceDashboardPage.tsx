@@ -95,7 +95,7 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
               communityId={entities.challenge?.community?.id}
               communityReadAccess={entities.permissions.communityReadAccess}
               timelineReadAccess={entities.permissions.timelineReadAccess}
-              entityReadAccess={entities.permissions.challengeReadAccess}
+              entityReadAccess={entities.permissions.subspaceReadAccess}
               readUsersAccess={entities.permissions.readUsers}
               references={entities.references}
               memberUsers={entities.memberUsers}

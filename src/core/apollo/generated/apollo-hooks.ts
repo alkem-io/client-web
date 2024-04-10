@@ -44,61 +44,6 @@ export const TagsetDetailsFragmentDoc = gql`
     type
   }
 `;
-export const VisualFullFragmentDoc = gql`
-  fragment VisualFull on Visual {
-    id
-    uri
-    name
-    allowedTypes
-    aspectRatio
-    maxHeight
-    maxWidth
-    minHeight
-    minWidth
-    alternativeText
-  }
-`;
-export const InnovationFlowProfileFragmentDoc = gql`
-  fragment InnovationFlowProfile on Profile {
-    id
-    displayName
-    description
-    tagsets {
-      ...TagsetDetails
-    }
-    references {
-      id
-      name
-      description
-      uri
-    }
-    bannerNarrow: visual(type: CARD) {
-      ...VisualFull
-    }
-  }
-  ${TagsetDetailsFragmentDoc}
-  ${VisualFullFragmentDoc}
-`;
-export const InnovationFlowDetailsFragmentDoc = gql`
-  fragment InnovationFlowDetails on InnovationFlow {
-    id
-    profile {
-      ...InnovationFlowProfile
-    }
-    states {
-      displayName
-      description
-    }
-    currentState {
-      displayName
-    }
-    authorization {
-      id
-      myPrivileges
-    }
-  }
-  ${InnovationFlowProfileFragmentDoc}
-`;
 export const InnovationFlowCollaborationFragmentDoc = gql`
   fragment InnovationFlowCollaboration on Collaboration {
     id
@@ -394,6 +339,20 @@ export const ProfileDisplayNameFragmentDoc = gql`
   fragment ProfileDisplayName on Profile {
     id
     displayName
+  }
+`;
+export const VisualFullFragmentDoc = gql`
+  fragment VisualFull on Visual {
+    id
+    uri
+    name
+    allowedTypes
+    aspectRatio
+    maxHeight
+    maxWidth
+    minHeight
+    minWidth
+    alternativeText
   }
 `;
 export const PostCardFragmentDoc = gql`
@@ -2546,6 +2505,7 @@ export const SubspacePageFragmentDoc = gql`
     }
     community {
       ...EntityDashboardCommunity
+      myMembershipStatus
     }
   }
   ${TagsetDetailsFragmentDoc}
@@ -2553,6 +2513,47 @@ export const SubspacePageFragmentDoc = gql`
   ${DashboardTopCalloutsFragmentDoc}
   ${DashboardTimelineAuthorizationFragmentDoc}
   ${EntityDashboardCommunityFragmentDoc}
+`;
+export const InnovationFlowProfileFragmentDoc = gql`
+  fragment InnovationFlowProfile on Profile {
+    id
+    displayName
+    description
+    tagsets {
+      ...TagsetDetails
+    }
+    references {
+      id
+      name
+      description
+      uri
+    }
+    bannerNarrow: visual(type: CARD) {
+      ...VisualFull
+    }
+  }
+  ${TagsetDetailsFragmentDoc}
+  ${VisualFullFragmentDoc}
+`;
+export const InnovationFlowDetailsFragmentDoc = gql`
+  fragment InnovationFlowDetails on InnovationFlow {
+    id
+    profile {
+      ...InnovationFlowProfile
+    }
+    states {
+      displayName
+      description
+    }
+    currentState {
+      displayName
+    }
+    authorization {
+      id
+      myPrivileges
+    }
+  }
+  ${InnovationFlowProfileFragmentDoc}
 `;
 export const SubspaceCardFragmentDoc = gql`
   fragment SubspaceCard on Space {
@@ -2588,9 +2589,16 @@ export const SubspaceCardFragmentDoc = gql`
       id
       myMembershipStatus
     }
+    collaboration {
+      id
+      innovationFlow {
+        ...InnovationFlowDetails
+      }
+    }
   }
   ${VisualUriFragmentDoc}
   ${TagsetDetailsFragmentDoc}
+  ${InnovationFlowDetailsFragmentDoc}
 `;
 export const SubspacesOnSpaceFragmentDoc = gql`
   fragment SubspacesOnSpace on Space {

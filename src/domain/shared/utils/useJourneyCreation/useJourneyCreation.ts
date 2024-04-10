@@ -17,7 +17,7 @@ interface SubspaceCreationInput {
   spaceID: string;
   displayName: string;
   tagline: string;
-  background: string;
+  background?: string;
   vision: string;
   tags: string[];
   addDefaultCallouts: boolean;
@@ -25,7 +25,6 @@ interface SubspaceCreationInput {
 
 export const useSubspaceCreation = () => {
   const { spaceId } = useSpace();
-  //const { challengeId } = useChallenge();
   const { isFeatureEnabled } = useConfig();
 
   const subscriptionsEnabled = isFeatureEnabled(PlatformFeatureFlagName.Subscriptions);
@@ -50,7 +49,7 @@ export const useSubspaceCreation = () => {
       cache.modify({
         id: spaceRefId,
         fields: {
-          challenges(existingChallenges = []) {
+          subspaces(existingChallenges = []) {
             const newChallengeRef = cache.writeFragment({
               data: createSubspace,
               fragment: SubspaceCardFragmentDoc,
