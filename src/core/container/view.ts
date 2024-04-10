@@ -1,4 +1,7 @@
-// todo: overload so that actions and options are optional - <e, s, a?, o?>
+/**
+ * @deprecated
+ * use SimpleContainerProps or ComponentOrChildrenFn instead
+ */
 export type ViewProps<TEntities = {}, TActions = {}, TState = {}, TOptions = {}> = {
   entities: TEntities;
   state: TState;

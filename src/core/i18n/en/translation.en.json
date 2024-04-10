@@ -1418,9 +1418,12 @@
       }
     },
     "card": {
-      "member": "Member",
-      "private": "Private",
-      "lead": "Lead"
+      "privacy": {
+        "member": "Member",
+        "private": "Private {{entity}}",
+        "public": "Public {{entity}}"
+      },
+      "parentSpace": "in: {{space}}"
     },
     "errorblock": {
       "message": "Sorry, an error occurred while loading {{blockName}}."
@@ -1941,7 +1944,7 @@
       "title": "Search",
       "subtitle": "Find the Spaces, Contributors and Challenges, Opportunities and content from publicly available Spaces below",
       "placeholder": "Search…",
-      "results-disclaimer": "Showing the first 8 results. Soon, you’ll be able to see all, but for now, please specify your search terms.",
+      "results-disclaimer": "These results may not represent the up-to-date state of the platform. Search results are updated on an interval.",
       "max-tags-reached": "You have reached the limit of {{max}} terms to search for",
       "user-not-logged": "Login or Register to include users in your search results",
       "filter": {
@@ -1964,32 +1967,20 @@
       },
       "journeyFilterTitle": "$t(common.spaces), $t(common.challenges) & $t(common.opportunities)"
     },
-    "challenge-explorer": {
-      "fullName": "Explore challenges",
-      "shortName": "$t(common.challenges)",
+    "exploreSpaces": {
+      "fullName": "Explore Spaces",
+      "shortName": "$t(common.spaces)",
+      "subtitle": "All activity on Alkemio happens inside Spaces and their corresponding Subspaces. Explore both to find topics where you can contribute!",
+      "caption": "Discover a diverse range of Spaces awaiting your exploration. Whether you’re an experienced member or a curious newcomer, there’s something here for everyone. Let’s delve into the details:\n1. Member Spaces: These are the ones you’re already a part of. Dive deeper into this familiar territory to continue your journey.\n2. Public Spaces: Immerse yourself in content directly accessible from these Spaces. From captivating stories to insightful discussions, there’s plenty to explore. You’ll also find Subspaces that are part of the Public Spaces.\n3. All Spaces: This category encompasses both public and private Spaces. While public content is readily available, private Spaces require membership. Join to unlock exclusive content and connect with like-minded enthusiasts. Remember that Subspaces within Private Spaces are accessible only to members of those private groups.",
+      "membershipFilter": {
+        "all": "All Spaces",
+        "member": "Member Spaces",
+        "public": "Public Spaces"
+      },
+      "noSpaceMemberships": "You’re not currently a member of any Space. Click here to visit our Welcome @ Alkemio Space, which is a fantastic starting point for your journey on Alkemio!",
       "search": {
-        "title": "Explore Public Challenges",
-        "subtitle": "Below you'll find all Challenges that you are member of. Curious to explore more? Scroll down and search for the topics that interest you!",
-        "placeholder": "Search...",
-        "default-search-term": "Innovation",
-        "no-results": "No results matched your search terms."
-      },
-      "side-note": {
-        "title": "The Alkemio Structure",
-        "description": "At Alkemio, all Challenges are part of a Space. Each Space has it's specific frame of reference, in which Challenges are used to understand the issues at hand."
-      },
-      "my-search": {
-        "title": "Explore other Challenges visible to you",
-        "subtitle": "Challenges in public Spaces are visible to everyone. Challenges in private Spaces are visible to members only. Enter your search terms (e.g. ‘innovation’) below to find matching Challenges. "
-      },
-      "my": {
-        "title": "My Challenges",
-        "subtitle": "Here you'll find the challenges that you are contributing to."
-      },
-      "other": {
-        "title": "Other Challenges within My Spaces",
-        "subtitle": "Here you'll find the other challenges hosted by the Spaces that you are member of.",
-        "filter-by-space": "Filter by My Spaces"
+        "placeholder": "Search…",
+        "noResults": "No results matched your search terms."
       }
     },
     "lead-organization": {
