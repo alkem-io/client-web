@@ -20,7 +20,6 @@ import { useBackToStaticPath } from '../../../../core/routing/useBackToPath';
 import FormikSelect from '../../../../core/ui/forms/FormikSelect';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
-import { gutters } from '../../../../core/ui/grid/utils';
 
 interface NewPersonaFormValues {
   displayName: string;
@@ -92,13 +91,7 @@ const NewPersonaForm = ({ parentPagePath }: NewPersonaFormProps) => {
             <Gutters>
               <FormikInputField title={t('common.title')} name="displayName" />
               <FormikInputField title={t('components.nameSegment.nameID.title')} name="nameId" />
-              <FormikInputField
-                multiline
-                title={t('common.prompt')}
-                name="prompt"
-                sx={{ height: gutters(10), '& .MuiInputBase-root': { alignItems: 'start' } }}
-                InputProps={{ sx: { height: gutters(10) } }}
-              />
+              <FormikInputField multiline title={t('common.prompt')} name="prompt" rows={10} />
               <FormikMarkdownField title={t('common.description')} name="description" />
               <FormikSelect
                 title={t('pages.admin.virtualContributors.virtualPersonas.selectEngine')}
