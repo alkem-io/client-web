@@ -31,7 +31,7 @@ const colors = (theme: Theme) => ({
     background: 'transparent',
   },
   selected: {
-    background: theme.palette.space.main,
+    background: theme.palette.primary.main,
     font: theme.palette.common.white,
   },
   disabled: {
