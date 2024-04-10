@@ -1,4 +1,8 @@
-query CommunityMembersList($communityId: UUID!, $spaceId: UUID_NAMEID = "00000000-0000-0000-0000-000000000000", $includeSpaceHost: Boolean = false) {
+query CommunityMembersList(
+  $communityId: UUID!
+  $spaceId: UUID_NAMEID = "00000000-0000-0000-0000-000000000000"
+  $includeSpaceHost: Boolean = false
+) {
   space(ID: $spaceId) @include(if: $includeSpaceHost) {
     host {
       ...OrganizationDetails
@@ -32,6 +36,9 @@ fragment CommunityMembersDetails on Community {
   }
   leadOrganizations: organizationsInRole(role: LEAD) {
     ...OrganizationDetails
+  }
+  virtualContributorsInRole(role: MEMBER) {
+    ...CommunityMemberVirtualContributor
   }
   policy {
     ...CommunityPolicy
@@ -100,6 +107,23 @@ fragment CommunityMemberUser on User {
   email
   firstName
   lastName
+}
+
+fragment CommunityMemberVirtualContributor on VirtualContributor {
+  id
+  nameID
+  profile {
+    id
+    displayName
+    avatar: visual(type: AVATAR) {
+      ...VisualUri
+    }
+    location {
+      id
+      city
+      country
+    }
+  }
 }
 
 fragment AvailableUser on User {
