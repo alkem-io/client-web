@@ -2,6 +2,7 @@ mutation createVirtualPersona($virtualPersonaData: CreateVirtualPersonaInput!) {
   createVirtualPersona(virtualPersonaData: $virtualPersonaData ) {
     id
     prompt
+    engine
   }
 }
 
