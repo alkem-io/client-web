@@ -4,8 +4,9 @@ import { Caption, CardText, Text } from '../../../../core/ui/typography/componen
 import Gutters from '../../../../core/ui/grid/Gutters';
 
 interface ReactionViewReactionSender {
-  firstName: string;
-  lastName: string;
+  profile: {
+    displayName: string;
+  };
 }
 
 export interface ReactionViewReaction {
@@ -31,11 +32,7 @@ const ReactionView = ({ reaction, onRemoveReaction }: ReactionViewProps) => {
         <Paper variant="outlined">
           <Gutters row>
             <Text>{reaction.emoji}</Text>
-            <Caption>
-              {reaction.senders
-                .map(({ firstName, lastName }) => `${firstName} ${lastName}`)
-                .join(SENDERS_JOIN_SEPARATOR)}
-            </Caption>
+            <Caption>{reaction.senders.map(({ profile }) => profile.displayName).join(SENDERS_JOIN_SEPARATOR)}</Caption>
           </Gutters>
         </Paper>
       }
