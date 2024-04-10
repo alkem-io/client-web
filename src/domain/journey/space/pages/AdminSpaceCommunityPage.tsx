@@ -142,18 +142,20 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
             />
           </PageContentBlock>
         </PageContentColumn>
-        <PageContentColumn columns={6}>
-          <PageContentBlock>
-            <CommunityVirtualContributors
-              virtualContributors={virtualContributors}
-              canAddVirtualContributors={permissions.canAddVirtualContributors}
-              onAddMember={onAddVirtualContributor}
-              onRemoveMember={onRemoveVirtualContributor}
-              fetchAvailableUsers={getAvailableVirtualContributors}
-              loading={loading}
-            />
-          </PageContentBlock>
-        </PageContentColumn>
+        {permissions.virtualContributorsEnabled && (
+          <PageContentColumn columns={6}>
+            <PageContentBlock>
+              <CommunityVirtualContributors
+                virtualContributors={virtualContributors}
+                canAddVirtualContributors={permissions.canAddVirtualContributors}
+                onAddMember={onAddVirtualContributor}
+                onRemoveMember={onRemoveVirtualContributor}
+                fetchAvailableUsers={getAvailableVirtualContributors}
+                loading={loading}
+              />
+            </PageContentBlock>
+          </PageContentColumn>
+        )}
       </PageContent>
     </SpaceSettingsLayout>
   );

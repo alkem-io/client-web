@@ -15258,8 +15258,17 @@ export type CommunityMembersListQueryVariables = Exact<{
 
 export type CommunityMembersListQuery = {
   __typename?: 'Query';
-  space?: {
+  space: {
     __typename?: 'Space';
+    account: {
+      __typename?: 'Account';
+      id: string;
+      license: {
+        __typename?: 'License';
+        id: string;
+        featureFlags: Array<{ __typename?: 'LicenseFeatureFlag'; name: LicenseFeatureFlagName; enabled: boolean }>;
+      };
+    };
     host?:
       | {
           __typename?: 'Organization';

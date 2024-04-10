@@ -11977,8 +11977,18 @@ export const CommunityMembersListDocument = gql`
     $spaceId: UUID_NAMEID = "00000000-0000-0000-0000-000000000000"
     $includeSpaceHost: Boolean = false
   ) {
-    space(ID: $spaceId) @include(if: $includeSpaceHost) {
-      host {
+    space(ID: $spaceId) {
+      account {
+        id
+        license {
+          id
+          featureFlags {
+            name
+            enabled
+          }
+        }
+      }
+      host @include(if: $includeSpaceHost) {
         ...OrganizationDetails
       }
     }
