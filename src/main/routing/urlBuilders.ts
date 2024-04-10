@@ -26,8 +26,6 @@ export const buildLoginUrl = (returnUrl?: string) => {
   return `${_AUTH_LOGIN_PATH}${buildReturnUrlParam(returnUrl)}`;
 };
 
-export const buildJourneyApplyUrl = (journeyUrl: string) => `${journeyUrl}/apply`;
-
 export const buildNewOrganizationUrl = () => {
   return '/admin/organizations/new';
 };
