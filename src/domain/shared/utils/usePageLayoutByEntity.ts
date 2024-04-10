@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import SpacePageLayout from '../../journey/space/layout/SpacePageLayout';
-import ChallengePageLayout from '../../journey/subspace/layout/ChallengePageLayout';
+import SubspacePageLayout from '../../journey/subspace/layout/SubspacePageLayout';
 import OpportunityPageLayout from '../../journey/opportunity/layout/OpportunityPageLayout';
 import { EntityTypeName } from '../../platform/constants/EntityTypeName';
 
@@ -10,7 +10,7 @@ const usePageLayoutByEntity = (entityTypeName: EntityTypeName) =>
       case 'space':
         return SpacePageLayout;
       case 'challenge':
-        return ChallengePageLayout;
+        return SubspacePageLayout;
       case 'opportunity':
         return OpportunityPageLayout;
     }

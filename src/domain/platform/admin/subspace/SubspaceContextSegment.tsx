@@ -1,5 +1,6 @@
 import { FC } from 'react';
 import { ContextSegment, ContextSegmentProps } from '../components/Common/ContextSegment';
+import React from 'react';
 
 export interface SubspaceContextSegmentProps extends ContextSegmentProps {}
 

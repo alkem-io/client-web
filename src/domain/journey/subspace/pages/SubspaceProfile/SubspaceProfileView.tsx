@@ -5,10 +5,10 @@ import { useNotification } from '../../../../../core/ui/notifications/useNotific
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import {
   refetchAdminSpaceChallengesPageQuery,
-  refetchChallengeProfileInfoQuery,
-  useChallengeProfileInfoQuery,
-  useCreateChallengeMutation,
-  useUpdateChallengeMutation,
+  refetchSubspaceProfileInfoQuery,
+  useCreateSubspaceMutation,
+  useSubspaceProfileInfoQuery,
+  useUpdateSpaceMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import SaveButton from '../../../../../core/ui/actions/SaveButton';
 import WrapperTypography from '../../../../../core/ui/typography/deprecated/WrapperTypography';
@@ -26,7 +26,7 @@ interface ChallengeProfileViewProps {
   mode: FormMode;
 }
 
-const ChallengeProfileView: FC<ChallengeProfileViewProps> = ({ mode }) => {
+const SubspaceProfileView: FC<ChallengeProfileViewProps> = ({ mode }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const notify = useNotification();
@@ -36,27 +36,27 @@ const ChallengeProfileView: FC<ChallengeProfileViewProps> = ({ mode }) => {
 
   const { challengeId } = useRouteResolver();
 
-  const [createChallenge, { loading: isCreating }] = useCreateChallengeMutation({
+  const [createSubspace, { loading: isCreating }] = useCreateSubspaceMutation({
     onCompleted: data => {
       onSuccess('Successfully created');
-      navigate(buildJourneyAdminUrl(data.createChallenge.profile.url), { replace: true });
+      navigate(buildJourneyAdminUrl(data.createSubspace.profile.url), { replace: true });
     },
     refetchQueries: [refetchAdminSpaceChallengesPageQuery({ spaceId: spaceNameId })],
     awaitRefetchQueries: true,
   });
 
-  const [updateChallenge, { loading: isUpdating }] = useUpdateChallengeMutation({
+  const [updateSubspace, { loading: isUpdating }] = useUpdateSpaceMutation({
     onCompleted: () => onSuccess('Successfully updated'),
-    refetchQueries: [refetchChallengeProfileInfoQuery({ challengeId: challengeId! })],
+    refetchQueries: [refetchSubspaceProfileInfoQuery({ subspaceId: challengeId! })],
     awaitRefetchQueries: true,
   });
 
-  const { data: challengeProfile } = useChallengeProfileInfoQuery({
-    variables: { challengeId: challengeId! },
+  const { data: subspaceProfile } = useSubspaceProfileInfoQuery({
+    variables: { subspaceId: challengeId! },
     skip: mode === FormMode.create || !challengeId,
   });
 
-  const challenge = challengeProfile?.lookup.subspace;
+  const challenge = subspaceProfile?.space;
 
   const isLoading = isCreating || isUpdating;
 
@@ -65,7 +65,7 @@ const ChallengeProfileView: FC<ChallengeProfileViewProps> = ({ mode }) => {
 
     switch (mode) {
       case FormMode.create:
-        createChallenge({
+        createSubspace({
           variables: {
             input: {
               nameID: nameID,
@@ -87,7 +87,7 @@ const ChallengeProfileView: FC<ChallengeProfileViewProps> = ({ mode }) => {
         if (!challengeId) {
           throw new Error('Challenge ID is required for update');
         }
-        updateChallenge({
+        updateSubspace({
           variables: {
             input: {
               ID: challengeId,
@@ -140,4 +140,4 @@ const ChallengeProfileView: FC<ChallengeProfileViewProps> = ({ mode }) => {
   );
 };
 
-export default ChallengeProfileView;
+export default SubspaceProfileView;

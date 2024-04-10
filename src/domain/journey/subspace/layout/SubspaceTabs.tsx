@@ -7,9 +7,9 @@ import JourneyPageTabs from '../../common/JourneyPageTabs';
 import { OpportunityIcon } from '../../opportunity/icon/OpportunityIcon';
 import { buildJourneyAdminUrl } from '../../../../main/routing/urlBuilders';
 
-export interface ChallengeTabsProps extends EntityTabsProps {}
+export interface SubspaceTabsProps extends EntityTabsProps {}
 
-const ChallengeTabs: FC<ChallengeTabsProps> = props => {
+const SubspaceTabs: FC<SubspaceTabsProps> = props => {
   const { t } = useTranslation();
 
   const { permissions, profile } = useChallenge();
@@ -32,4 +32,4 @@ const ChallengeTabs: FC<ChallengeTabsProps> = props => {
   );
 };
 
-export default ChallengeTabs;
+export default SubspaceTabs;

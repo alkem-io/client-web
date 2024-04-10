@@ -8,7 +8,6 @@ import { OpportunityProvider } from '../../opportunity/context/OpportunityProvid
 import { CommunityContextProvider } from '../../../community/community/CommunityContext';
 import OpportunityRoute from '../../opportunity/routes/OpportunityRoute';
 import ChallengeDashboardPage from '../pages/SubspaceDashboardPage';
-import CommunityFeedbackRoute from './CommunityContextFeedback';
 import { EntityPageLayoutHolder, NotFoundPageLayout } from '../../common/EntityPageLayout';
 import { routes } from '../routes/challengeRoutes';
 import CalloutRoute from '../../../collaboration/callout/routing/CalloutRoute';
@@ -16,9 +15,9 @@ import ChallengeAboutPage from '../pages/SubspaceAboutPage';
 import ChallengeOpportunitiesPage from '../pages/SubspaceOpportunitiesPage';
 import JourneyContributePage from '../../common/JourneyContributePage/JourneyContributePage';
 import Redirect from '../../../../core/routing/Redirect';
-import ChallengeCalloutPage from '../challengeCalloutPage/ChallengeCalloutPage';
 import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
+import SubspaceCalloutPage from '../subspaceCalloutPage/SubspaceCalloutPage';
 
 const ChallengeRoute = () => {
   const { journeyId, loading } = useRouteResolver();
@@ -38,16 +37,16 @@ const ChallengeRoute = () => {
           <Route path={routes.Contribute} element={<JourneyContributePage journeyTypeName="challenge" />} />
           <Route path={routes.About} element={<ChallengeAboutPage />} />
           <Route path={routes.Opportunities} element={<ChallengeOpportunitiesPage />} />
-          <Route path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}`} element={<ChallengeCalloutPage />} />
+          <Route path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}`} element={<SubspaceCalloutPage />} />
           <Route path={`${routes.Dashboard}/calendar`} element={<ChallengeDashboardPage dialog="calendar" />} />
           <Route
             path={`${routes.Dashboard}/calendar/:${nameOfUrl.calendarEventNameId}`}
             element={<ChallengeDashboardPage dialog="calendar" />}
           />
-          <Route path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}`} element={<ChallengeCalloutPage />} />
+          <Route path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}`} element={<SubspaceCalloutPage />} />
           <Route
             path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}/*`}
-            element={<ChallengeCalloutPage>{props => <CalloutRoute {...props} />}</ChallengeCalloutPage>}
+            element={<SubspaceCalloutPage>{props => <CalloutRoute {...props} />}</SubspaceCalloutPage>}
           />
           <Route
             path="*"
@@ -58,7 +57,6 @@ const ChallengeRoute = () => {
             }
           />
         </Route>
-        <Route path="feedback/*" element={<CommunityFeedbackRoute />} />
         <Route
           path={`${routes.Opportunities}/:${nameOfUrl.subsubspaceNameId}/*`}
           element={

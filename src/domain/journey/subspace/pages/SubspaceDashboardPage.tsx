@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { useResolvedPath } from 'react-router-dom';
-import ChallengePageContainer from '../containers/ChallengePageContainer';
-import ChallengePageLayout from '../layout/ChallengePageLayout';
+import SubspacePageContainer from '../containers/SubspacePageContainer';
+import SubspacePageLayout from '../layout/SubspacePageLayout';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import useBackToParentPage from '../../../../core/routing/deprecated/useBackToParentPage';
 import CommunityUpdatesDialog from '../../../community/community/CommunityUpdatesDialog/CommunityUpdatesDialog';
@@ -42,9 +42,9 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
   const { challengeId } = useRouteResolver();
 
   return (
-    <ChallengePageLayout currentSection={EntityPageSection.Dashboard}>
+    <SubspacePageLayout currentSection={EntityPageSection.Dashboard}>
       {directMessageDialog}
-      <ChallengePageContainer challengeId={challengeId}>
+      <SubspacePageContainer challengeId={challengeId}>
         {({ callouts, ...entities }, state) => (
           <>
             <JourneyDashboardView
@@ -134,8 +134,8 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
             )}
           </>
         )}
-      </ChallengePageContainer>
-    </ChallengePageLayout>
+      </SubspacePageContainer>
+    </SubspacePageLayout>
   );
 };
 

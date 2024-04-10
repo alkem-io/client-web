@@ -1,14 +1,15 @@
 import React, { FC } from 'react';
-import SubspaceSettingsLayout from '../../../../platform/admin/challenge/SubspaceSettingsLayout';
+
 import { SettingsSection } from '../../../../platform/admin/layout/EntitySettingsLayout/constants';
 import { SettingsPageProps } from '../../../../platform/admin/layout/EntitySettingsLayout/types';
-import ChallengeProfileView from './ChallengeProfileView';
+import SubspaceProfileView from './SubspaceProfileView';
 import FormMode from '../../../../platform/admin/components/FormMode';
+import SubspaceSettingsLayout from '../../../../platform/admin/subspace/SubspaceSettingsLayout';
 
 const ChallengeProfilePage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   return (
     <SubspaceSettingsLayout currentTab={SettingsSection.Profile} tabRoutePrefix={routePrefix}>
-      <ChallengeProfileView mode={FormMode.update} />
+      <SubspaceProfileView mode={FormMode.update} />
     </SubspaceSettingsLayout>
   );
 };

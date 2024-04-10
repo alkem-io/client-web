@@ -1,15 +1,16 @@
 import { Grid } from '@mui/material';
 import React, { FC } from 'react';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
-import {
-  refetchChallengeProfileInfoQuery,
-  useChallengeProfileInfoQuery,
-  useUpdateChallengeMutation,
-} from '../../../../../core/apollo/generated/apollo-hooks';
+
 import SaveButton from '../../../../../core/ui/actions/SaveButton';
 import { ContextForm, ContextFormValues } from '../../../../context/ContextForm';
-import { SubspaceContextSegment } from '../../../../platform/admin/challenge/SubspaceContextSegment';
 import { useRouteResolver } from '../../../../../main/routing/resolvers/RouteResolver';
+import {
+  refetchSubspaceProfileInfoQuery,
+  useSubspaceProfileInfoQuery,
+  useUpdateSpaceMutation,
+} from '../../../../../core/apollo/generated/apollo-hooks';
+import SubspaceContextSegment from '../../../../../domain/platform/admin/subspace/SubspaceContextSegment';
 
 const ChallengeContextView: FC = () => {
   const notify = useNotification();
@@ -17,24 +18,24 @@ const ChallengeContextView: FC = () => {
 
   const { challengeId } = useRouteResolver();
 
-  const [updateChallenge, { loading: isUpdating }] = useUpdateChallengeMutation({
+  const [updateSubspace, { loading: isUpdating }] = useUpdateSpaceMutation({
     onCompleted: () => onSuccess('Successfully updated'),
-    refetchQueries: [refetchChallengeProfileInfoQuery({ challengeId: challengeId! })],
+    refetchQueries: [refetchSubspaceProfileInfoQuery({ subspaceId: challengeId! })],
     awaitRefetchQueries: true,
   });
 
-  const { data: challengeProfile, loading } = useChallengeProfileInfoQuery({
-    variables: { challengeId: challengeId! },
+  const { data: subspaceProfile, loading } = useSubspaceProfileInfoQuery({
+    variables: { subspaceId: challengeId! },
     skip: !challengeId,
   });
 
-  const challenge = challengeProfile?.lookup.subspace;
+  const challenge = subspaceProfile?.space;
 
   const onSubmit = async (values: ContextFormValues) => {
     if (!challengeId) {
       throw new Error('Challenge ID is required for updating challenge');
     }
-    updateChallenge({
+    updateSubspace({
       variables: {
         input: {
           ID: challengeId,
@@ -52,6 +53,7 @@ const ChallengeContextView: FC = () => {
   };
 
   let submitWired;
+
   return (
     <Grid container spacing={2}>
       <ContextForm

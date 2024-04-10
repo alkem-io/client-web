@@ -1,16 +1,11 @@
 import { ApolloError } from '@apollo/client';
 import React, { FC } from 'react';
 import { useUserContext } from '../../../community/user';
-import {
-  useChallengeDashboardReferencesQuery,
-  useChallengePageQuery,
-} from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
 import {
   ActivityEventType,
   AuthorizationPrivilege,
   CalloutGroupName,
-  ChallengeProfileFragment,
   CommunityMembershipStatus,
   DashboardTopCalloutFragment,
   Reference,
@@ -24,8 +19,9 @@ import { ActivityLogResultType } from '../../../collaboration/activity/ActivityL
 import useActivityOnCollaboration from '../../../collaboration/activity/useActivityLogOnCollaboration/useActivityOnCollaboration';
 import useSendMessageToCommunityLeads from '../../../community/CommunityLeads/useSendMessageToCommunityLeads';
 import { RECENT_ACTIVITIES_LIMIT_INITIAL, TOP_CALLOUTS_LIMIT } from '../../common/journeyDashboard/constants';
+import { useSpaceDashboardReferencesQuery, useSubspacePageQuery } from '../../../../core/apollo/generated/apollo-hooks';
 
-export interface ChallengeContainerEntities extends EntityDashboardContributors {
+export interface SubspaceContainerEntities extends EntityDashboardContributors {
   challenge?: ChallengeProfileFragment;
   references: Reference[] | undefined;
   permissions: {
@@ -53,36 +49,36 @@ export interface ChallengeContainerState {
 }
 
 export interface ChallengePageContainerProps
-  extends ContainerChildProps<ChallengeContainerEntities, ChallengeContainerActions, ChallengeContainerState> {
+  extends ContainerChildProps<SubspaceContainerEntities, ChallengeContainerActions, ChallengeContainerState> {
   challengeId: string | undefined;
 }
 
 const NO_PRIVILEGES = [];
 
-export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ challengeId, children }) => {
+export const SubspacePageContainer: FC<ChallengePageContainerProps> = ({ challengeId, children }) => {
   const { user, isAuthenticated } = useUserContext();
 
-  const { data: _challenge, loading: loadingProfile } = useChallengePageQuery({
+  const { data: subspace, loading: loadingProfile } = useSubspacePageQuery({
     variables: {
-      challengeId: challengeId!,
+      subspaceId: challengeId!,
     },
     skip: !challengeId,
   });
 
-  const collaborationID = _challenge?.lookup.subspace?.collaboration?.id;
+  const collaborationID = subspace?.space?.collaboration?.id;
 
-  const challengePrivileges = _challenge?.lookup.subspace?.authorization?.myPrivileges ?? NO_PRIVILEGES;
+  const challengePrivileges = subspace?.space?.authorization?.myPrivileges ?? NO_PRIVILEGES;
 
-  const timelineReadAccess = (
-    _challenge?.lookup.subspace?.collaboration?.timeline?.authorization?.myPrivileges ?? []
-  ).includes(AuthorizationPrivilege.Read);
+  const timelineReadAccess = (subspace?.space?.collaboration?.timeline?.authorization?.myPrivileges ?? []).includes(
+    AuthorizationPrivilege.Read
+  );
 
   const permissions = {
     canEdit: challengePrivileges.includes(AuthorizationPrivilege.Update),
-    communityReadAccess: (_challenge?.lookup.subspace?.community?.authorization?.myPrivileges || []).some(
+    communityReadAccess: (subspace?.space?.community?.authorization?.myPrivileges || []).some(
       x => x === AuthorizationPrivilege.Read
     ),
-    challengeReadAccess: challengePrivileges.includes(AuthorizationPrivilege.Read),
+    subspaceReadAccess: challengePrivileges.includes(AuthorizationPrivilege.Read),
     timelineReadAccess,
     readUsers: user?.hasPlatformPrivilege(AuthorizationPrivilege.ReadUsers) ?? false,
   };
@@ -101,28 +97,28 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ challe
     limit: RECENT_ACTIVITIES_LIMIT_INITIAL,
   });
 
-  const canReadReferences = _challenge?.lookup.subspace?.context?.authorization?.myPrivileges?.includes(
+  const canReadReferences = subspace?.space?.context?.authorization?.myPrivileges?.includes(
     AuthorizationPrivilege.Read
   );
 
-  const { data: referenceData } = useChallengeDashboardReferencesQuery({
+  const { data: referenceData } = useSpaceDashboardReferencesQuery({
     variables: {
-      challengeId: challengeId!, // canReadReferences implies challengeId is provided
+      spaceId: challengeId!, // canReadReferences implies challengeId is provided
     },
     skip: !canReadReferences,
   });
 
-  const { metrics = [] } = _challenge?.lookup.subspace || {};
+  const { metrics = [] } = subspace?.space || {};
 
   const membersCount = getMetricCount(metrics, MetricType.Member);
-  const memberUsersCount = membersCount - (_challenge?.lookup.subspace?.community?.memberOrganizations?.length ?? 0);
-  const contributors = useCommunityMembersAsCardProps(_challenge?.lookup.subspace?.community, { memberUsersCount });
+  const memberUsersCount = membersCount - (subspace?.space?.community?.memberOrganizations?.length ?? 0);
+  const contributors = useCommunityMembersAsCardProps(subspace?.space?.community, { memberUsersCount });
 
-  const references = referenceData?.lookup.subspace?.profile.references;
+  const references = referenceData?.space?.profile.references;
 
-  const topCallouts = _challenge?.lookup.subspace?.collaboration?.callouts?.slice(0, TOP_CALLOUTS_LIMIT);
+  const topCallouts = subspace?.space?.collaboration?.callouts?.slice(0, TOP_CALLOUTS_LIMIT);
 
-  const communityId = _challenge?.lookup.subspace?.community?.id ?? '';
+  const communityId = subspace?.space?.community?.id ?? '';
 
   const sendMessageToCommunityLeads = useSendMessageToCommunityLeads(communityId);
 
@@ -132,13 +128,13 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ challe
     groupNames: [CalloutGroupName.Home_1, CalloutGroupName.Home_2],
   });
 
-  const isMember = _challenge?.lookup.subspace?.community?.myMembershipStatus === CommunityMembershipStatus.Member;
+  const isMember = subspace?.space?.community?.myMembershipStatus === CommunityMembershipStatus.Member;
 
   return (
     <>
       {children(
         {
-          challenge: _challenge?.lookup.subspace,
+          challenge: subspace?.space,
           permissions,
           isAuthenticated,
           references,
@@ -157,4 +153,4 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ challe
   );
 };
 
-export default ChallengePageContainer;
+export default SubspacePageContainer;

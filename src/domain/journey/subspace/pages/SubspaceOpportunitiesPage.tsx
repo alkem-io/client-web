@@ -11,9 +11,9 @@ import { useSpace } from '../../space/SpaceContext/useSpace';
 import { CreateOpportunityForm } from '../../opportunity/forms/CreateOpportunityForm';
 import { OpportunityIcon } from '../../opportunity/icon/OpportunityIcon';
 import OpportunityCard from '../../opportunity/OpportunityCard/OpportunityCard';
-import ChallengeOpportunitiesContainer from '../containers/ChallengeOpportunitiesContainer';
+import ChallengeOpportunitiesContainer from '../containers/SubspaceOpportunitiesContainer';
 import { useChallenge } from '../hooks/useChallenge';
-import ChallengePageLayout from '../layout/ChallengePageLayout';
+import SubspacePageLayout from '../layout/SubspacePageLayout';
 import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { CalloutGroupName, CommunityMembershipStatus } from '../../../../core/apollo/generated/graphql-schema';
@@ -54,7 +54,7 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
   );
 
   return (
-    <ChallengePageLayout currentSection={EntityPageSection.Opportunities}>
+    <SubspacePageLayout currentSection={EntityPageSection.Opportunities}>
       <ChallengeOpportunitiesContainer challengeId={challengeId}>
         {({ callouts, ...entities }, state) => (
           <ChildJourneyView
@@ -119,7 +119,7 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
           />
         )}
       </ChallengeOpportunitiesContainer>
-    </ChallengePageLayout>
+    </SubspacePageLayout>
   );
 };
 

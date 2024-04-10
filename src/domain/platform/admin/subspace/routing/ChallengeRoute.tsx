@@ -4,7 +4,7 @@ import { useSpace } from '../../../../journey/space/SpaceContext/useSpace';
 import { useChallenge } from '../../../../journey/subspace/hooks/useChallenge';
 import { Error404 } from '../../../../../core/pages/Errors/Error404';
 import SubspaceCommunicationsPage from '../../../../journey/subspace/pages/SubspaceCommunications/SubspaceCommunicationsPage';
-import ChallengeProfilePage from '../../../../journey/subspace/pages/SubspaceProfile/ChallengeProfilePage';
+import ChallengeProfilePage from '../../../../journey/subspace/pages/SubspaceProfile/SubspaceProfilePage';
 import { ApplicationsAdminRoutes } from '../../community/routes/ApplicationsAdminRoutes';
 import { OpportunitiesRoute } from '../../opportunity/routing/OpportunitiesRoute';
 

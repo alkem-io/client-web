@@ -27,7 +27,7 @@ export const getJourneyTypeName = (
     if (journeyLocation.opportunityNameId) {
       return 'opportunity';
     }
-    if (journeyLocation.subspaceNameId) {
+    if (journeyLocation.challengeNameId) {
       return 'challenge';
     }
     if (journeyLocation.spaceNameId) {

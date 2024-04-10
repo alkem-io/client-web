@@ -7,7 +7,7 @@ import { useSpace } from '../../space/SpaceContext/useSpace';
 import ChildJourneyPageBanner from '../../common/childJourneyPageBanner/ChildJourneyPageBanner';
 import { BasePageBannerProps } from '../../common/EntityPageLayout/EntityPageLayoutTypes';
 
-const ChallengePageBanner = (props: BasePageBannerProps) => {
+const SubspacePageBanner = (props: BasePageBannerProps) => {
   const { profile: spaceProfile, spaceId } = useSpace();
   const { subspace: challenge } = useChallenge();
   const banner = getVisualByType(VisualName.BANNER, spaceProfile?.visuals);
@@ -33,4 +33,4 @@ const ChallengePageBanner = (props: BasePageBannerProps) => {
   );
 };
 
-export default ChallengePageBanner;
+export default SubspacePageBanner;
