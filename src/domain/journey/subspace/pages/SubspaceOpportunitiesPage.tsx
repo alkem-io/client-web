@@ -31,12 +31,12 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
 
   const [isCreateDialogOpen, setCreateDialogOpen] = useState(false);
 
-  const { createOpportunity } = useSubspaceCreation();
+  const { createSubspace } = useSubspaceCreation();
 
   const handleCreate = useCallback(
     async (value: JourneyFormValues) => {
-      const result = await createOpportunity({
-        challengeID: challengeId,
+      const result = await createSubspace({
+        spaceID: challengeId,
         displayName: value.displayName,
         tagline: value.tagline,
         vision: value.vision,
@@ -50,7 +50,7 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
 
       navigate(result.profile.url);
     },
-    [navigate, createOpportunity, spaceNameId, challengeId, challengeNameId]
+    [navigate, createSubspace, spaceNameId, challengeId, challengeNameId]
   );
 
   return (
@@ -58,24 +58,24 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
       <ChallengeOpportunitiesContainer challengeId={challengeId}>
         {({ callouts, ...entities }, state) => (
           <ChildJourneyView
-            childEntities={entities.subspaces ?? undefined}
+            childEntities={entities.subsubspaces ?? undefined}
             childEntitiesIcon={<OpportunityIcon />}
             childEntityReadAccess
             childEntityValueGetter={journeyCardValueGetter}
             childEntityTagsGetter={journeyCardTagsGetter}
             journeyTypeName="challenge"
             state={{ loading: state.loading, error: state.error }}
-            renderChildEntityCard={opportunity => (
+            renderChildEntityCard={subsubspace => (
               <OpportunityCard
-                displayName={opportunity.profile.displayName}
-                tagline={opportunity.profile.tagline!}
-                vision={opportunity.context?.vision!}
-                innovationFlowState={opportunity.collaboration?.innovationFlow?.currentState.displayName}
-                tags={opportunity.profile.tagset?.tags!}
-                banner={opportunity.profile.cardBanner}
-                journeyUri={opportunity.profile.url}
+                displayName={subsubspace.profile.displayName}
+                tagline={subsubspace.profile.tagline!}
+                vision={subsubspace.context?.vision!}
+                innovationFlowState={subsubspace.collaboration?.innovationFlow?.currentState.displayName}
+                tags={subsubspace.profile.tagset?.tags!}
+                banner={subsubspace.profile.cardBanner}
+                journeyUri={subsubspace.profile.url}
                 spaceVisibility={spaceVisibility}
-                member={opportunity.community?.myMembershipStatus === CommunityMembershipStatus.Member}
+                member={subsubspace.community?.myMembershipStatus === CommunityMembershipStatus.Member}
               />
             )}
             childEntityCreateAccess={permissions.canCreateSubspace}

@@ -6390,15 +6390,6 @@ export type InnovationFlowCollaborationFragment = {
     | undefined;
 };
 
-export type UpdateInnovationFlowMutationVariables = Exact<{
-  updateInnovationFlowData: UpdateInnovationFlowInput;
-}>;
-
-export type UpdateInnovationFlowMutation = {
-  __typename?: 'Mutation';
-  updateInnovationFlow: { __typename?: 'InnovationFlow'; id: string };
-};
-
 export type UpdateCalloutFlowStateMutationVariables = Exact<{
   calloutId: Scalars['UUID'];
   flowStateTagsetId: Scalars['UUID'];
