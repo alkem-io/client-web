@@ -51,7 +51,7 @@ const NewVirtualContributorForm = ({ parentPagePath }: NewVirtualContributorForm
       variables: {
         virtualContributorData: {
           virtualPersonaID,
-          nameID: `${'V'}-${'P'}-${uuidv4()}`.slice(0, 25).toLocaleLowerCase(),
+          nameID: `V-P-${uuidv4()}`.slice(0, 25).toLocaleLowerCase(),
           profileData: {
             displayName,
           },
