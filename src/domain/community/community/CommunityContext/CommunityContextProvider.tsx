@@ -1,9 +1,5 @@
 import React, { FC, useMemo } from 'react';
-import {
-  useChallengeCommunityQuery,
-  useSpaceCommunityQuery,
-  useOpportunityCommunityQuery,
-} from '../../../../core/apollo/generated/apollo-hooks';
+import { useSpaceCommunityQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { CommunityContext, CommunityContextValue } from './CommunityContext';
 import { useSpace } from '../../../journey/space/SpaceContext/useSpace';
 import { useSubSpace } from '../../../journey/subspace/hooks/useChallenge';
@@ -30,33 +26,30 @@ const CommunityContextProvider: FC = ({ children }) => {
     skip: journeyTypeName !== 'space' || !spaceId,
   });
 
-  const { data: challengeData, loading: isLoadingChallenge } = useChallengeCommunityQuery({
+  const { data: challengeData, loading: isLoadingChallenge } = useSpaceCommunityQuery({
     variables: {
-      challengeId: challengeId!,
+      spaceId: challengeId!,
       includeDetails: challengePermissions.canReadCommunity,
     },
     errorPolicy: 'all',
-    skip: journeyTypeName !== 'challenge' || !challengeId,
+    skip: journeyTypeName !== 'subspace' || !challengeId,
   });
 
-  const { data: opportunityData, loading: isLoadingOpportunity } = useOpportunityCommunityQuery({
+  const { data: opportunityData, loading: isLoadingOpportunity } = useSpaceCommunityQuery({
     variables: {
-      opportunityId: opportunityId!,
+      spaceId: opportunityId!,
       includeDetails: opportunityPermissions.communityReadAccess,
     },
     errorPolicy: 'all',
-    skip: journeyTypeName !== 'opportunity' || !opportunityId,
+    skip: journeyTypeName !== 'subsubspace' || !opportunityId,
   });
 
-  const community =
-    spaceData?.space.community ??
-    challengeData?.lookup.subspace?.community ??
-    opportunityData?.lookup.subsubspace?.community;
+  const community = spaceData?.space.community ?? challengeData?.space?.community ?? opportunityData?.space?.community;
 
   const communityName =
     spaceData?.space.profile.displayName ??
-    challengeData?.lookup.subspace?.profile.displayName ??
-    opportunityData?.lookup.subsubspace?.profile.displayName;
+    challengeData?.space?.profile.displayName ??
+    opportunityData?.space?.profile.displayName;
 
   const isLoading = isLoadingSpace || isLoadingChallenge || isLoadingOpportunity;
 

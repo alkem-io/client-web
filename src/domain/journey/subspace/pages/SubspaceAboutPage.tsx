@@ -31,7 +31,7 @@ const ChallengeAboutPage: FC = () => {
   return (
     <>
       <ChallengeDashboardPage />
-      <AboutPageContainer journeyId={journeyId} journeyTypeName="subspace">
+      <AboutPageContainer journeyId={journeyId}>
         {(
           {
             context,

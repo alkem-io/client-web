@@ -86,9 +86,9 @@ const WhiteboardDialogFooter = ({
     switch (journeyTypeName) {
       case 'space':
         return spaceContext.myMembershipStatus;
-      case 'challenge':
+      case 'subspace':
         return subspaceContext.myMembershipStatus;
-      case 'opportunity':
+      case 'subsubspace':
         return subsubspaceContext.myMembershipStatus;
     }
   };
@@ -97,9 +97,9 @@ const WhiteboardDialogFooter = ({
     switch (journeyTypeName) {
       case 'space':
         return spaceContext.profile;
-      case 'challenge':
+      case 'subspace':
         return subspaceContext.profile;
-      case 'opportunity':
+      case 'subsubspace':
         return subsubspaceContext.profile;
     }
   };

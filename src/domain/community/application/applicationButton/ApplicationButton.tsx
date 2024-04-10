@@ -137,7 +137,7 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
       extended
         ? t('components.application-button.extendedMessage', {
             join: verb,
-            journey: journeyTypeName === 'challenge' ? t('common.subspace') : t('common.community'),
+            journey: journeyTypeName === 'subspace' ? t('common.subspace') : t('common.community'),
           })
         : verb;
 
@@ -187,7 +187,7 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
       }
 
       if (canAcceptInvitation) {
-        if (journeyTypeName === 'challenge' && !isMember && !isParentMember) {
+        if (journeyTypeName === 'subspace' && !isMember && !isParentMember) {
           return (
             joinParentUrl && (
               <Button

@@ -19,7 +19,6 @@ import { useAboutPageMembersQuery, useAboutPageNonMembersQuery } from '../../../
 import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
 import { MetricType } from '../../../platform/metrics/MetricType';
 import { InnovationFlowDetails } from '../../../collaboration/InnovationFlow/InnovationFlow';
-import { JourneyTypeName } from '../../JourneyTypeName';
 
 interface AboutPagePermissions {
   communityReadAccess: boolean;
@@ -52,14 +51,9 @@ export interface AboutPageContainerState {
 export interface AboutPageContainerProps
   extends ContainerChildProps<AboutPageContainerEntities, AboutPageContainerActions, AboutPageContainerState> {
   journeyId: string | undefined;
-  journeyTypeName: JourneyTypeName;
 }
 
-const AboutPageContainer: FC<AboutPageContainerProps> = ({ journeyId, journeyTypeName, children }) => {
-  const includeSpace = journeyTypeName === 'space';
-  const includeChallenge = journeyTypeName === 'subspace';
-  const includeOpportunity = journeyTypeName === 'subsubspace';
-
+const AboutPageContainer: FC<AboutPageContainerProps> = ({ journeyId, children }) => {
   const {
     data: nonMembersData,
     loading: nonMembersDataLoading,
@@ -74,8 +68,6 @@ const AboutPageContainer: FC<AboutPageContainerProps> = ({ journeyId, journeyTyp
   const nonMemberProfile = nonMembersData?.space?.profile;
   const nonMemberCommunity = nonMembersData?.space?.community;
 
-  const referencesReadAccess =
-    nonMemberContext?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Read) ?? false;
   const communityReadAccess =
     nonMemberCommunity?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Read) ?? false;
 
@@ -86,24 +78,20 @@ const AboutPageContainer: FC<AboutPageContainerProps> = ({ journeyId, journeyTyp
   } = useAboutPageMembersQuery({
     variables: {
       spaceId: journeyId!,
-      referencesReadAccess,
-      communityReadAccess,
     },
     skip: nonMembersDataLoading,
   });
 
-  const memberProfile =
-    membersData?.lookup.subsubspace?.profile ?? membersData?.lookup.subspace?.profile ?? membersData?.space?.profile;
+  const memberProfile = membersData?.space?.profile;
 
   const context = nonMemberContext;
 
-  const nonMemberJourney =
-    nonMembersData?.lookup.subsubspace ?? nonMembersData?.lookup.subspace ?? nonMembersData?.space;
-  const memberJourney = membersData?.lookup.subsubspace ?? membersData?.lookup.subspace ?? membersData?.space;
+  const nonMemberJourney = nonMembersData?.space;
+  const memberJourney = membersData?.space;
 
   const tagset = nonMemberJourney?.profile?.tagset;
   // TODO looks like space is missing
-  const collaboration = (nonMembersData?.lookup.subsubspace ?? nonMembersData?.lookup.subspace)?.collaboration;
+  const collaboration = nonMembersData?.space?.collaboration;
 
   const hostOrganization = nonMembersData?.space?.account.host;
   const community = {

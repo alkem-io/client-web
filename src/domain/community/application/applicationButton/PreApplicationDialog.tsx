@@ -37,7 +37,7 @@ const PreApplicationDialog: FC<PreApplicationDialogProps> = ({
   const { profile: challengeProfile } = useSubSpace();
   const { opportunityId } = useOpportunity();
   const parentCommunityName = opportunityId ? challengeProfile.displayName : spaceProfile.displayName;
-  const buttonText = t(`components.application-button.goTo${opportunityId ? 'Challenge' : 'Space'}` as const);
+  const buttonText = t(`components.application-button.goTo${opportunityId ? 'Subspace' : 'Space'}` as const);
 
   return (
     <Dialog open={open}>

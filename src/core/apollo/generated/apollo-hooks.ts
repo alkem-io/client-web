@@ -10252,9 +10252,25 @@ export const CommunityUserPrivilegesWithParentCommunityDocument = gql`
           id
           myPrivileges
         }
+        leadUsers: usersInRole(role: LEAD) {
+          id
+          profile {
+            id
+            displayName
+            avatar: visual(type: AVATAR) {
+              ...VisualUri
+            }
+            location {
+              id
+              country
+              city
+            }
+          }
+        }
       }
     }
   }
+  ${VisualUriFragmentDoc}
 `;
 
 /**
@@ -15402,6 +15418,19 @@ export const AboutPageNonMembersDocument = gql`
       }
       context {
         ...ContextTab
+      }
+      collaboration {
+        id
+        innovationFlow {
+          id
+          currentState {
+            displayName
+          }
+          states {
+            displayName
+            description
+          }
+        }
       }
     }
   }

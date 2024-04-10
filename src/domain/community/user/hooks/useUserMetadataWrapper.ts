@@ -26,7 +26,7 @@ export const getPendingApplications = (applicationsData: ApplicationForRoleResul
     applicationsData.map<PendingApplication>(a => ({
       spaceId: a.spaceID,
       subspaceId: a.subspaceID,
-      subsubspaceId: a.opportunityID,
+      subsubspaceId: a.subsubspaceID,
       id: a.id,
       state: a.state,
     })) || []
@@ -38,7 +38,7 @@ const getPendingInvitations = (invitationsData: InvitationForRoleResult[]) => {
     invitationsData.map<InvitationItem>(a => ({
       spaceId: a.spaceID,
       subspaceId: a.subspaceID,
-      subsubspaceId: a.opportunityID,
+      subsubspaceId: a.subsubspaceID,
       welcomeMessage: a.welcomeMessage || '',
       createdBy: a.createdBy,
       createdDate: a.createdDate,

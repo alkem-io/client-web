@@ -47,9 +47,9 @@ const buildOrganizationFilterObject = (filter: string | undefined) =>
     : undefined;
 
 const adminCredentialByJourneyType = (journeyType: JourneyTypeName) => {
-  if (journeyType === 'opportunity') {
+  if (journeyType === 'subsubspace') {
     return AuthorizationCredential.SubspaceAdmin;
-  } else if (journeyType === 'challenge') {
+  } else if (journeyType === 'subspace') {
     return AuthorizationCredential.SubspaceAdmin;
   } else {
     return AuthorizationCredential.SpaceAdmin;

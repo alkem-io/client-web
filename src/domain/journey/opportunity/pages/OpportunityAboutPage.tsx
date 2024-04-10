@@ -12,7 +12,7 @@ const OpportunityAboutPage: FC = () => {
 
   return (
     <OpportunityPageLayout currentSection={EntityPageSection.About}>
-      <AboutPageContainer journeyId={opportunityId} journeyTypeName="subsubspace">
+      <AboutPageContainer journeyId={opportunityId}>
         {({ context, profile, tagset, permissions, ...rest }, state) => (
           <OpportunityAboutView
             challengeId={challengeId}

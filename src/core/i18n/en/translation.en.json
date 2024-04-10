@@ -352,8 +352,8 @@
       "space_plural": "$t(common.spaces)",
       "subspace": "$t(common.subspace)",
       "subspace_plural": "$t(common.subspaces)",
-      "opportunity": "$t(common.opportunity)",
-      "opportunity_plural": "$t(common.subspaces)",
+      "subsubspace": "$t(common.subspace)",
+      "subsubspace_plural": "$t(common.subspaces)",
       "agreement": "$t(common.agreement)",
       "agreement_plural": "$t(common.agreements)"
     },
@@ -491,7 +491,7 @@
         "SHARING": "Sharing",
         "PLATFORM_FUNCTIONALITIES": "Platform Functionalities",
         "COMMUNITY_BUILDING": "Community Building",
-        "subspace_CENTRIC": "Working subspace Centric",
+        "CHALLENGE_CENTRIC": "Working subspace Centric",
         "HELP": "Need Help?",
         "OTHER": "Other"
       },
@@ -1263,7 +1263,7 @@
         "full": "To become a member of this subspace, first become a member of the parent Space",
         "short": "Please join parent Space first"
       },
-      "joinsubspaceFirst": {
+      "joinSubspaceFirst": {
         "full": "To become a member of this Opportunity, first become a member of the parent subspace",
         "short": "Please join parent subspace first"
       },
@@ -1272,7 +1272,7 @@
         "short": "Send a message to Opportunity leads to become a member"
       },
       "goToSpace": "Go to $t(common.space)",
-      "goTosubspace": "Go to $t(common.subspace)",
+      "goToSubspace": "Go to $t(common.subspace)",
       "parent-pending": "Parent application pending",
       "applyTo": "Apply to",
       "extendedMessage": "{{join}} our {{journey}} and start making change!",

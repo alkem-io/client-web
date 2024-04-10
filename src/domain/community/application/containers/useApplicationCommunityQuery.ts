@@ -1,8 +1,6 @@
 import { useMemo } from 'react';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import {
-  useChallengeApplicationQuery,
-  useChallengeApplicationTemplateQuery,
   useSpaceApplicationQuery,
   useSpaceApplicationTemplateQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
@@ -18,23 +16,23 @@ export const useApplicationCommunityQuery = (type: JourneyTypeName, canJoinCommu
     data: challengeData,
     loading: isChallengeCommunityLoading,
     error: challengeCommunityError,
-  } = useChallengeApplicationQuery({
+  } = useSpaceApplicationQuery({
     variables: {
-      challengeId: challengeId!,
+      spaceId: challengeId!,
     },
     errorPolicy: 'all',
-    skip: type !== 'challenge' || !challengeId,
+    skip: type !== 'subspace' || !challengeId,
   });
 
   const {
     data: challengeTemplateData,
     loading: isChallengeTemplateLoading,
     error: challengeTemplateError,
-  } = useChallengeApplicationTemplateQuery({
+  } = useSpaceApplicationTemplateQuery({
     variables: {
-      challengeId: challengeId!,
+      spaceId: challengeId!,
     },
-    skip: type !== 'challenge' || !challengeId || canJoinCommunity,
+    skip: type !== 'subspace' || !challengeId || canJoinCommunity,
   });
 
   const {
@@ -71,14 +69,14 @@ export const useApplicationCommunityQuery = (type: JourneyTypeName, canJoinCommu
         communityGuidelines: spaceData?.space.community?.guidelines?.profile,
       };
     }
-    if (type === 'challenge') {
+    if (type === 'subspace') {
       return {
-        communityId: challengeData?.lookup.subspace?.community?.id || '',
-        displayName: challengeData?.lookup.subspace?.profile.displayName || '',
-        description: challengeTemplateData?.lookup.subspace?.community?.applicationForm?.description,
-        questions: challengeTemplateData?.lookup.subspace?.community?.applicationForm?.questions ?? [],
-        backUrl: challengeData?.lookup.subspace?.profile.url,
-        communityGuidelines: challengeData?.lookup.subspace?.community?.guidelines?.profile,
+        communityId: challengeData?.space?.community?.id || '',
+        displayName: challengeData?.space?.profile.displayName || '',
+        description: challengeTemplateData?.space?.community?.applicationForm?.description,
+        questions: challengeTemplateData?.space?.community?.applicationForm?.questions ?? [],
+        backUrl: challengeData?.space?.profile.url,
+        communityGuidelines: challengeData?.space?.community?.guidelines?.profile,
       };
     }
   }, [type, challengeData, challengeTemplateData, spaceData, spaceTemplateData, challengeNameId, spaceNameId]);

@@ -50,13 +50,26 @@ query AboutPageNonMembers($spaceId: UUID_NAMEID!) {
     context {
       ...ContextTab
     }
+    collaboration {
+      id
+      innovationFlow {
+        id
+        currentState {
+          displayName
+        }
+        states {
+          displayName
+          description
+        }
+      }
+    }
   }
 }
 #
 query AboutPageMembers($spaceId: UUID_NAMEID!) {
-  space(ID: $spaceId)  {
+  space(ID: $spaceId) {
     id
-    community  {
+    community {
       ...EntityDashboardCommunity
     }
     profile {

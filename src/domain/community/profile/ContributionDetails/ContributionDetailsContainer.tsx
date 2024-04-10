@@ -1,7 +1,5 @@
 import React, { FC, useCallback, useMemo } from 'react';
 import {
-  useChallengeContributionDetailsQuery,
-  useOpportunityContributionDetailsQuery,
   useRemoveUserAsCommunityMemberMutation,
   useSpaceContributionDetailsQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
@@ -58,16 +56,16 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
     skip: Boolean(challengeId) || Boolean(opportunityId),
   });
 
-  const { data: challengeData, loading: challengeLoading } = useChallengeContributionDetailsQuery({
+  const { data: challengeData, loading: challengeLoading } = useSpaceContributionDetailsQuery({
     variables: {
-      challengeId: challengeId!,
+      spaceId: challengeId!,
     },
     skip: !challengeId || Boolean(opportunityId),
   });
 
-  const { data: opportunityData, loading: opportunityLoading } = useOpportunityContributionDetailsQuery({
+  const { data: opportunityData, loading: opportunityLoading } = useSpaceContributionDetailsQuery({
     variables: {
-      opportunityId: opportunityId!,
+      spaceId: opportunityId!,
     },
     skip: !opportunityId,
   });
@@ -89,25 +87,25 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
 
     if (challengeData) {
       return {
-        displayName: challengeData.lookup.subspace?.profile.displayName!,
-        journeyTypeName: 'challenge',
-        banner: getVisualByType(VisualName.CARD, challengeData.lookup.subspace?.profile.visuals),
-        tags: challengeData.lookup.subspace?.profile.tagset?.tags ?? [],
-        journeyUri: challengeData.lookup.subspace?.profile.url!,
-        communityId: challengeData.lookup.subspace?.community?.id,
-        tagline: challengeData.lookup.subspace?.profile.tagline ?? '',
+        displayName: challengeData.space?.profile.displayName!,
+        journeyTypeName: 'subspace',
+        banner: getVisualByType(VisualName.CARD, challengeData.space?.profile.visuals),
+        tags: challengeData.space?.profile.tagset?.tags ?? [],
+        journeyUri: challengeData.space?.profile.url!,
+        communityId: challengeData.space?.community?.id,
+        tagline: challengeData.space?.profile.tagline ?? '',
       };
     }
 
     if (opportunityData) {
       return {
-        displayName: opportunityData.lookup.subsubspace?.profile.displayName!,
-        journeyTypeName: 'opportunity',
-        banner: getVisualByType(VisualName.CARD, opportunityData.lookup.subsubspace?.profile.visuals),
-        tags: opportunityData.lookup.subsubspace?.profile.tagset?.tags ?? [],
-        journeyUri: opportunityData.lookup.subsubspace?.profile.url!,
-        communityId: opportunityData.lookup.subsubspace?.community?.id,
-        tagline: opportunityData.lookup.subsubspace?.profile.tagline ?? '',
+        displayName: opportunityData.space?.profile.displayName!,
+        journeyTypeName: 'subsubspace',
+        banner: getVisualByType(VisualName.CARD, opportunityData.space?.profile.visuals),
+        tags: opportunityData.space?.profile.tagset?.tags ?? [],
+        journeyUri: opportunityData.space?.profile.url!,
+        communityId: opportunityData.space?.community?.id,
+        tagline: opportunityData.space?.profile.tagline ?? '',
       };
     }
   }, [spaceData, challengeData, opportunityData]);

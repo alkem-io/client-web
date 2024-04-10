@@ -10,17 +10,17 @@ const getApplicationWithType = (application: ApplicationForRoleResult): Applicat
 });
 export default getApplicationWithType;
 
-const getType = ({ spaceID, challengeID, opportunityID }: ApplicationForRoleResult): JourneyTypeName => {
-  if (spaceID && challengeID && opportunityID) {
-    return 'opportunity';
+const getType = ({ spaceID, subspaceID, subsubspaceID }: ApplicationForRoleResult): JourneyTypeName => {
+  if (spaceID && subspaceID && subsubspaceID) {
+    return 'subsubspace';
   }
 
-  if (spaceID && opportunityID && !challengeID) {
+  if (spaceID && subsubspaceID && !subspaceID) {
     throw new TypeError("'challengeID' parameter expected when 'spaceID' and 'opportunityID' are provided");
   }
 
-  if (spaceID && challengeID) {
-    return 'challenge';
+  if (spaceID && subspaceID) {
+    return 'subspace';
   }
 
   if (spaceID) {
