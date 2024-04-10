@@ -12,7 +12,7 @@ import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 export const useApplicationCommunityQuery = (type: JourneyTypeName, canJoinCommunity: boolean) => {
   const { spaceNameId = '', challengeNameId = '' } = useUrlParams();
 
-  const { challengeId } = useRouteResolver();
+  const { subSpaceId: challengeId } = useRouteResolver();
 
   const {
     data: challengeData,

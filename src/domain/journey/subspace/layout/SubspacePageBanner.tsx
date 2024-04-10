@@ -1,5 +1,5 @@
 import React from 'react';
-import { useChallenge } from '../hooks/useChallenge';
+import { useSubSpace } from '../hooks/useChallenge';
 import { getVisualByType } from '../../../common/visual/utils/visuals.utils';
 import { VisualName } from '../../../common/visual/constants/visuals.constants';
 import useInnovationHubJourneyBannerRibbon from '../../../innovationHub/InnovationHubJourneyBannerRibbon/useInnovationHubJourneyBannerRibbon';
@@ -9,7 +9,7 @@ import { BasePageBannerProps } from '../../common/EntityPageLayout/EntityPageLay
 
 const SubspacePageBanner = (props: BasePageBannerProps) => {
   const { profile: spaceProfile, spaceId } = useSpace();
-  const { subspace: challenge } = useChallenge();
+  const { subspace: challenge } = useSubSpace();
   const banner = getVisualByType(VisualName.BANNER, spaceProfile?.visuals);
   const avatar = getVisualByType(VisualName.AVATAR, challenge?.profile.visuals);
   const cardImage = getVisualByType(VisualName.CARD, challenge?.profile.visuals);
@@ -23,7 +23,7 @@ const SubspacePageBanner = (props: BasePageBannerProps) => {
     <ChildJourneyPageBanner
       banner={banner}
       ribbon={ribbon}
-      journeyTypeName="challenge"
+      journeyTypeName="subspace"
       avatar={avatar ?? cardImage}
       tags={challenge?.profile.tagset?.tags}
       displayName={challenge?.profile.displayName ?? ''}

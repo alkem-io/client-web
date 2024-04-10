@@ -52,7 +52,7 @@ const OpportunityContext = React.createContext<OpportunityContextProps>(DEFAULT_
 interface OpportunityProviderProps {}
 
 const OpportunityProvider: FC<OpportunityProviderProps> = ({ children }) => {
-  const { opportunityId } = useRouteResolver();
+  const { subSubSpaceId: opportunityId } = useRouteResolver();
 
   const { data, loading } = useOpportunityProviderQuery({
     variables: { opportunityId: opportunityId! },

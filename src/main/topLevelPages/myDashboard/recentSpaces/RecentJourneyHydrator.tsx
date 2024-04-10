@@ -27,9 +27,9 @@ const getJourneyTypeName = (typename: string): JourneyTypeName | undefined => {
     case 'Space':
       return 'space';
     case 'Challenge':
-      return 'challenge';
+      return 'subspace';
     case 'Opportunity':
-      return 'opportunity';
+      return 'subsubspace';
   }
 };
 

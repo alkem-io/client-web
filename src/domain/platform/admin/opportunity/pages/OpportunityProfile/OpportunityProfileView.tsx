@@ -29,7 +29,7 @@ const OpportunityProfileView: FC<Props> = ({ mode }) => {
   const notify = useNotification();
   const onSuccess = (message: string) => notify(message, 'success');
 
-  const { challengeId, opportunityId } = useRouteResolver();
+  const { subSpaceId: challengeId, subSubSpaceId: opportunityId } = useRouteResolver();
 
   const [createSubspace, { loading: isCreating }] = useCreateSubspaceMutation({
     refetchQueries: [refetchSubspacesInSpaceQuery({ spaceId: challengeId! })],
@@ -120,7 +120,7 @@ const OpportunityProfileView: FC<Props> = ({ mode }) => {
         isEdit={mode === FormMode.update}
         name={opportunity?.profile.displayName}
         nameID={opportunity?.nameID}
-        journeyType="opportunity"
+        journeyType="subsubspace"
         tagset={opportunity?.profile.tagset}
         profile={opportunity?.profile}
         onSubmit={onSubmit}

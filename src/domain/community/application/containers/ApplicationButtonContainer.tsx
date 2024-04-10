@@ -13,7 +13,7 @@ import { AuthorizationPrivilege, CommunityMembershipStatus } from '../../../../c
 import { useCommunityContext } from '../../community/CommunityContext';
 import clearCacheForType from '../../../../core/apollo/utils/clearCacheForType';
 import { useAuthenticationContext } from '../../../../core/auth/authentication/hooks/useAuthenticationContext';
-import { useChallenge } from '../../../journey/subspace/hooks/useChallenge';
+import { useSubSpace } from '../../../journey/subspace/hooks/useChallenge';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
 import { useTranslation } from 'react-i18next';
 
@@ -47,7 +47,7 @@ export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = (
   const [getUserProfile, { loading: gettingUserProfile }] = useUserProfileLazyQuery({ variables: { input: userId } });
 
   const { spaceId, spaceNameId, profile: spaceProfile, refetchSpace } = useSpace();
-  const { profile: challengeProfile } = useChallenge();
+  const { profile: challengeProfile } = useSubSpace();
 
   const { communityId, myMembershipStatus } = useCommunityContext();
 

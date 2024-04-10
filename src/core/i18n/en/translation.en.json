@@ -252,6 +252,8 @@
     "spaces": "Spaces",
     "subspace": "Subspace",
     "subspaces": "Subspaces",
+    "subsubspace": "Subspace",
+    "subsubspaces": "Subspaces",
     "entitiesWithCount": "{{entityType}} ({{count}})",
     "contributors": "Contributors",
     "opportunity": "Opportunity",
@@ -796,7 +798,7 @@
         "title": "subspace Flow"
       }
     },
-    "opportunity": {
+    "subsubspace": {
       "displayName": {
         "title": "Title",
         "description": "Try to keep it short, descriptive and engaging",
@@ -1091,7 +1093,7 @@
     "activityLogView": {
       "description": {
         "CALLOUT_PUBLISHED": "{{subject}}",
-        "subspace_CREATED": "{{subject}}",
+        "CHALLENGE_CREATED": "{{subject}}",
         "DISCUSSION_COMMENT": "{{subject}}",
         "MEMBER_JOINED": "{{subject}} joined",
         "OPPORTUNITY_CREATED": "{{subject}}",
@@ -1763,6 +1765,24 @@
         "notifications": {
           "organization-created": "Organization created successfully.",
           "organization-removed": "Organization removed successfully."
+        }
+      },
+      "subsubspace": {
+        "authorization": {
+          "preferences": {
+            "subtitle": "This section allows you to modify the $t(common.subspace) authorization preferences"
+          }
+        },
+        "community": {
+          "preferences": {
+            "title": "Membership",
+            "subtitle": "This section allows you to modify the $t(common.subspace) membership preferences. If both switches are turned off, new members can only be added manually. If both switches are turned on, members of the Space don't have to apply but can directly join."
+          }
+        },
+        "notifications": {
+          "subsubspace-created": "subspace created successfully.",
+          "subsubspace-removed": "subspace removed successfully.",
+          "subsubspace-updated": "subspace updated successfully."
         }
       },
       "subspace": {

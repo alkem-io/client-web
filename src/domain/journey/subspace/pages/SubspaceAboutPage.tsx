@@ -1,5 +1,5 @@
 import React, { FC, useState } from 'react';
-import { useChallenge } from '../hooks/useChallenge';
+import { useSubSpace } from '../hooks/useChallenge';
 import AboutPageContainer from '../../common/AboutPageContainer/AboutPageContainer';
 import ChallengeDashboardPage from './SubspaceDashboardPage';
 import useBackToParentPage from '../../../../core/routing/deprecated/useBackToParentPage';
@@ -16,7 +16,7 @@ import { buildAboutUrl } from '../../../../main/routing/urlBuilders';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 
 const ChallengeAboutPage: FC = () => {
-  const { communityId, profile } = useChallenge();
+  const { communityId, profile } = useSubSpace();
 
   const [backToParentPage] = useBackToParentPage('../dashboard');
 
@@ -31,7 +31,7 @@ const ChallengeAboutPage: FC = () => {
   return (
     <>
       <ChallengeDashboardPage />
-      <AboutPageContainer journeyId={journeyId} journeyTypeName="challenge">
+      <AboutPageContainer journeyId={journeyId} journeyTypeName="subspace">
         {(
           {
             context,
@@ -49,7 +49,7 @@ const ChallengeAboutPage: FC = () => {
         ) => (
           <JourneyAboutDialog
             open
-            journeyTypeName="challenge"
+            journeyTypeName="subspace"
             displayName={profile?.displayName}
             tagline={profile?.tagline}
             references={references}

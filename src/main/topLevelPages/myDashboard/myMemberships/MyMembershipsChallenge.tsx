@@ -59,9 +59,9 @@ const MyMembershipsChallenge = ({ challenge }: MyMembershipsChallengeProps) => {
   return (
     <GridItem columns={4}>
       <Gutters disablePadding>
-        <JourneyCardHorizontal journey={hydratedChallenge} journeyTypeName="challenge" />
+        <JourneyCardHorizontal journey={hydratedChallenge} journeyTypeName="subspace" />
         {hydratedChallenge.subspaces?.map(opportunity => (
-          <JourneyCardHorizontal journey={opportunity} journeyTypeName="opportunity" />
+          <JourneyCardHorizontal journey={opportunity} journeyTypeName="subsubspace" />
         ))}
       </Gutters>
     </GridItem>

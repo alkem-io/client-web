@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useChallenge } from '../hooks/useChallenge';
+import { useSubSpace } from '../hooks/useChallenge';
 import { EntityTabsProps } from '../../common/EntityPageLayout';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import JourneyPageTabs from '../../common/JourneyPageTabs';
@@ -12,19 +12,19 @@ export interface SubspaceTabsProps extends EntityTabsProps {}
 const SubspaceTabs: FC<SubspaceTabsProps> = props => {
   const { t } = useTranslation();
 
-  const { permissions, profile } = useChallenge();
+  const { permissions, profile } = useSubSpace();
 
   return (
     <JourneyPageTabs
       {...props}
-      entityTypeName="challenge"
+      entityTypeName="subspace"
       showSettings={permissions.canUpdate}
       settingsUrl={buildJourneyAdminUrl(profile.url)}
       rootUrl={profile.url}
       shareUrl={profile.url}
       subEntityTab={{
         label: t('common.subspaces'),
-        section: EntityPageSection.Opportunities,
+        section: EntityPageSection.Subsubspaces,
         icon: <OpportunityIcon />,
       }}
       hideAbout

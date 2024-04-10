@@ -39,7 +39,7 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
 
   const hasExtendedApplicationButton = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
 
-  const { challengeId } = useRouteResolver();
+  const { subSpaceId: challengeId } = useRouteResolver();
 
   return (
     <SubspacePageLayout currentSection={EntityPageSection.Dashboard}>
@@ -67,7 +67,7 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
                           loading={loading}
                           component={FullWidthButton}
                           extended={hasExtendedApplicationButton}
-                          journeyTypeName="challenge"
+                          journeyTypeName="subspace"
                         />
                       </PageContentColumn>
                     );
@@ -109,7 +109,7 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
               topCallouts={entities.topCallouts}
               callouts={callouts}
               sendMessageToCommunityLeads={entities.sendMessageToCommunityLeads}
-              journeyTypeName="challenge"
+              journeyTypeName="subspace"
               shareUpdatesUrl={buildUpdatesUrl(entities.challenge?.profile.url ?? '')}
             />
             <CommunityUpdatesDialog
@@ -129,7 +129,7 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
                 open={dialog === 'calendar'}
                 onClose={backToDashboard}
                 journeyId={challengeId}
-                journeyTypeName="challenge"
+                journeyTypeName="subspace"
               />
             )}
           </>

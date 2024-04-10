@@ -49,7 +49,7 @@ const OpportunityCard = ({
       }
       expansionActions={
         <CardActions>
-          <JourneyCardGoToButton journeyUri={props.journeyUri} journeyTypeName="opportunity" />
+          <JourneyCardGoToButton journeyUri={props.journeyUri} journeyTypeName="subsubspace" />
         </CardActions>
       }
       bannerOverlay={ribbon}

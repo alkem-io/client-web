@@ -15,7 +15,7 @@ const OpportunityContextView: FC = () => {
   const notify = useNotification();
   const onSuccess = (message: string) => notify(message, 'success');
 
-  const { opportunityId } = useRouteResolver();
+  const { subSubSpaceId: opportunityId } = useRouteResolver();
 
   const [updateSubspace, { loading: isUpdating }] = useUpdateSpaceMutation({
     onCompleted: () => onSuccess('Successfully updated'),

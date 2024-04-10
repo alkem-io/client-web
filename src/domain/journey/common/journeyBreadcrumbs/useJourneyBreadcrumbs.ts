@@ -19,7 +19,13 @@ export interface BreadcrumbsItem {
 const JOURNEY_NESTING: JourneyTypeName[] = ['space', 'challenge', 'opportunity'];
 
 export const useJourneyBreadcrumbs = () => {
-  const { spaceId, challengeId, opportunityId, journeyTypeName, loading } = useRouteResolver();
+  const {
+    spaceId,
+    subSpaceId: challengeId,
+    subSubSpaceId: opportunityId,
+    journeyTypeName,
+    loading,
+  } = useRouteResolver();
 
   const currentJourneyIndex = journeyTypeName && JOURNEY_NESTING.indexOf(journeyTypeName);
 

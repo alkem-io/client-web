@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
-import SubspaceSettingsLayout from '../../../../platform/admin/challenge/SubspaceSettingsLayout';
+import SubspaceSettingsLayout from '../../../../platform/admin/subspace/SubspaceSettingsLayout';
 import { SettingsSection } from '../../../../platform/admin/layout/EntitySettingsLayout/constants';
 import { SettingsPageProps } from '../../../../platform/admin/layout/EntitySettingsLayout/types';
 import { Trans, useTranslation } from 'react-i18next';
-import { useChallenge } from '../../hooks/useChallenge';
+import { useSubSpace } from '../../hooks/useChallenge';
 import { CommunityMembershipPolicy, SpacePrivacyMode } from '../../../../../core/apollo/generated/graphql-schema';
 import {
   useSpaceSettingsQuery,
@@ -17,7 +17,7 @@ interface SubspaceAuthorizationPageProps extends SettingsPageProps {}
 
 const SubspaceAuthorizationPage: FC<SubspaceAuthorizationPageProps> = ({ routePrefix = '../' }) => {
   const { t } = useTranslation();
-  const { subspaceId: challengeId } = useChallenge();
+  const { subspaceId: challengeId } = useSubSpace();
   const { data: settingsData, loading } = useSpaceSettingsQuery({
     variables: {
       spaceId: challengeId,

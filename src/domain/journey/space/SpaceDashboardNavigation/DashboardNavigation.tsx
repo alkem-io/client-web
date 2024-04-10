@@ -9,10 +9,11 @@ import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlock
 import Gutters from '../../../../core/ui/grid/Gutters';
 import { gutters } from '../../../../core/ui/grid/utils';
 import { Caption } from '../../../../core/ui/typography';
-import ChallengeCard from '../../challenge/ChallengeCard/ChallengeCard';
+
 import OpportunityCard from '../../opportunity/OpportunityCard/OpportunityCard';
 import DashboardNavigationItemView from './DashboardNavigationItemView';
 import { DashboardNavigationItem } from './useSpaceDashboardNavigation';
+import ChallengeCard from '../../subspace/SubspaceCard/SubspaceCard';
 
 interface DashboardNavigationProps {
   spaceUrl: string | undefined;
@@ -90,11 +91,11 @@ const DashboardNavigation = ({
                   <ChallengeCard
                     challengeId={id}
                     banner={cardBanner}
-                    displayName={challenge.displayName}
-                    tags={challenge.tags ?? []}
-                    tagline={challenge.tagline}
-                    vision={challenge.vision ?? ''}
-                    innovationFlowState={challenge.innovationFlowState}
+                    displayName={subspace.displayName}
+                    tags={subspace.tags ?? []}
+                    tagline={subspace.tagline}
+                    vision={subspace.vision ?? ''}
+                    innovationFlowState={subspace.innovationFlowState}
                     journeyUri={challengeUrl}
                     spaceDisplayName={displayName ?? ''}
                     spaceUri={spaceUrl}
@@ -106,8 +107,8 @@ const DashboardNavigation = ({
                 tooltipPlacement={tooltipPlacement}
                 {...subspace}
               >
-                {Boolean(challenge.children?.length) &&
-                  challenge.children?.map(({ id, url: opportunityUrl, avatar, cardBanner, member, ...subsubspace }) => (
+                {Boolean(subspace.children?.length) &&
+                  subspace.children?.map(({ id, url: opportunityUrl, avatar, cardBanner, member, ...subsubspace }) => (
                     <DashboardNavigationItemView
                       key={id}
                       url={opportunityUrl}
@@ -116,13 +117,13 @@ const DashboardNavigation = ({
                         <OpportunityCard
                           opportunityId={id}
                           banner={cardBanner}
-                          displayName={opportunity.displayName}
-                          tags={opportunity.tags ?? []}
-                          tagline={opportunity.tagline}
-                          vision={opportunity.vision ?? ''}
-                          innovationFlowState={opportunity.innovationFlowState}
+                          displayName={subsubspace.displayName}
+                          tags={subsubspace.tags ?? []}
+                          tagline={subsubspace.tagline}
+                          vision={subsubspace.vision ?? ''}
+                          innovationFlowState={subsubspace.innovationFlowState}
                           journeyUri={opportunityUrl}
-                          challengeDisplayName={challenge.displayName}
+                          challengeDisplayName={subspace.displayName}
                           challengeUri={challengeUrl}
                           spaceVisibility={spaceVisibility}
                           sx={{ width: gutters(15) }}

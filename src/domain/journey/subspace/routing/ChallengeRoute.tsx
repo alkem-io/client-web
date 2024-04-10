@@ -27,16 +27,16 @@ const ChallengeRoute = () => {
   }
 
   return (
-    <StorageConfigContextProvider locationType="journey" journeyTypeName="challenge" spaceId={journeyId}>
+    <StorageConfigContextProvider locationType="journey" spaceId={journeyId}>
       <Routes>
         <Route path="/" element={<EntityPageLayoutHolder />}>
           <Route index element={<Navigate replace to={routes.Dashboard} />} />
           <Route path={routes.Dashboard} element={<ChallengeDashboardPage />} />
           <Route path={`${routes.Dashboard}/updates`} element={<ChallengeDashboardPage dialog="updates" />} />
           <Route path={`${routes.Dashboard}/contributors`} element={<ChallengeDashboardPage dialog="contributors" />} />
-          <Route path={routes.Contribute} element={<JourneyContributePage journeyTypeName="challenge" />} />
+          <Route path={routes.Contribute} element={<JourneyContributePage journeyTypeName="subspace" />} />
           <Route path={routes.About} element={<ChallengeAboutPage />} />
-          <Route path={routes.Opportunities} element={<ChallengeOpportunitiesPage />} />
+          <Route path={routes.Subsubspaces} element={<ChallengeOpportunitiesPage />} />
           <Route path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}`} element={<SubspaceCalloutPage />} />
           <Route path={`${routes.Dashboard}/calendar`} element={<ChallengeDashboardPage dialog="calendar" />} />
           <Route
@@ -58,7 +58,7 @@ const ChallengeRoute = () => {
           />
         </Route>
         <Route
-          path={`${routes.Opportunities}/:${nameOfUrl.subsubspaceNameId}/*`}
+          path={`${routes.Subsubspaces}/:${nameOfUrl.subsubspaceNameId}/*`}
           element={
             <OpportunityProvider>
               <CommunityContextProvider>

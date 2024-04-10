@@ -12,7 +12,7 @@ import { CreateOpportunityForm } from '../../opportunity/forms/CreateOpportunity
 import { OpportunityIcon } from '../../opportunity/icon/OpportunityIcon';
 import OpportunityCard from '../../opportunity/OpportunityCard/OpportunityCard';
 import ChallengeOpportunitiesContainer from '../containers/SubspaceOpportunitiesContainer';
-import { useChallenge } from '../hooks/useChallenge';
+import { useSubSpace } from '../hooks/useChallenge';
 import SubspacePageLayout from '../layout/SubspacePageLayout';
 import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
@@ -26,7 +26,7 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
 
   const { spaceNameId, license } = useSpace();
   const spaceVisibility = license.visibility;
-  const { subspaceId: challengeId, permissions } = useChallenge();
+  const { subspaceId: challengeId, permissions } = useSubSpace();
   const { challengeNameId = '' } = useUrlParams();
 
   const [isCreateDialogOpen, setCreateDialogOpen] = useState(false);
@@ -54,7 +54,7 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
   );
 
   return (
-    <SubspacePageLayout currentSection={EntityPageSection.Opportunities}>
+    <SubspacePageLayout currentSection={EntityPageSection.Subsubspaces}>
       <ChallengeOpportunitiesContainer challengeId={challengeId}>
         {({ callouts, ...entities }, state) => (
           <ChildJourneyView
@@ -63,7 +63,7 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
             childEntityReadAccess
             childEntityValueGetter={journeyCardValueGetter}
             childEntityTagsGetter={journeyCardTagsGetter}
-            journeyTypeName="challenge"
+            journeyTypeName="subspace"
             state={{ loading: state.loading, error: state.error }}
             renderChildEntityCard={subsubspace => (
               <OpportunityCard
@@ -96,7 +96,7 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
                 canCreateCallout={callouts.canCreateCallout}
                 canCreateCalloutFromTemplate={callouts.canCreateCalloutFromTemplate}
                 loading={callouts.loading}
-                journeyTypeName="challenge"
+                journeyTypeName="subspace"
                 calloutNames={callouts.calloutNames}
                 onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
                 onCalloutUpdate={callouts.refetchCallout}
@@ -109,7 +109,7 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
                 canCreateCallout={callouts.canCreateCallout}
                 canCreateCalloutFromTemplate={callouts.canCreateCalloutFromTemplate}
                 loading={callouts.loading}
-                journeyTypeName="challenge"
+                journeyTypeName="subspace"
                 calloutNames={callouts.calloutNames}
                 onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
                 onCalloutUpdate={callouts.refetchCallout}

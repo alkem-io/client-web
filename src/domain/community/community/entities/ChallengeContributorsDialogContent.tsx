@@ -8,7 +8,7 @@ import { ContributorsDialogContentProps } from '../ContributorsDialog/Contributo
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 
 const ChallengeContributorsDialogContent: FC<ContributorsDialogContentProps> = ({ dialogOpen }) => {
-  const { challengeId } = useRouteResolver();
+  const { subSpaceId: challengeId } = useRouteResolver();
 
   const { loading, data } = useChallengeCommunityContributorsQuery({
     variables: {

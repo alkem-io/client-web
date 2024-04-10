@@ -24,7 +24,7 @@ const OpportunityRoute = () => {
   }
 
   return (
-    <StorageConfigContextProvider locationType="journey" journeyTypeName="opportunity" spaceId={journeyId}>
+    <StorageConfigContextProvider locationType="journey" journeyTypeName="subsubspace" spaceId={journeyId}>
       <Routes>
         <Route path={'/'} element={<EntityPageLayoutHolder />}>
           <Route index element={<Navigate replace to={routes.Dashboard} />} />
@@ -34,7 +34,7 @@ const OpportunityRoute = () => {
             path={`${routes.Dashboard}/contributors`}
             element={<OpportunityDashboardPage dialog="contributors" />}
           />
-          <Route path={routes.Contribute} element={<JourneyContributePage journeyTypeName="opportunity" />} />
+          <Route path={routes.Contribute} element={<JourneyContributePage journeyTypeName="subsubspace" />} />
           <Route path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}`} element={<OpportunityCalloutPage />} />
           <Route path={`${routes.Dashboard}/calendar`} element={<OpportunityDashboardPage dialog="calendar" />} />
           <Route

@@ -52,7 +52,7 @@ const ChallengeCard = ({
       }
       expansionActions={
         <CardActions>
-          <JourneyCardGoToButton journeyUri={props.journeyUri} journeyTypeName="challenge" />
+          <JourneyCardGoToButton journeyUri={props.journeyUri} journeyTypeName="subspace" />
           {!hideJoin && challengeId && (
             <JourneyCardJoinButton challengeId={challengeId} challengeName={props.displayName} />
           )}

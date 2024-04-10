@@ -52,7 +52,7 @@ const SpaceChallengesPage: FC<SpaceChallengesPageProps> = () => {
   );
 
   return (
-    <SpacePageLayout currentSection={EntityPageSection.Challenges}>
+    <SpacePageLayout currentSection={EntityPageSection.Subspaces}>
       <SpaceChallengesContainer spaceId={spaceId}>
         {({ callouts, ...entities }, state) => (
           <ChildJourneyView

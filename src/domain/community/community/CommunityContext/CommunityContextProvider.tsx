@@ -6,7 +6,7 @@ import {
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { CommunityContext, CommunityContextValue } from './CommunityContext';
 import { useSpace } from '../../../journey/space/SpaceContext/useSpace';
-import { useChallenge } from '../../../journey/subspace/hooks/useChallenge';
+import { useSubSpace } from '../../../journey/subspace/hooks/useChallenge';
 import { useOpportunity } from '../../../journey/opportunity/hooks/useOpportunity';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 
@@ -18,10 +18,10 @@ import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolv
  * @constructor
  */
 const CommunityContextProvider: FC = ({ children }) => {
-  const { spaceId, challengeId, opportunityId, journeyTypeName } = useRouteResolver();
+  const { spaceId, subSpaceId: challengeId, subSubSpaceId: opportunityId, journeyTypeName } = useRouteResolver();
 
   const { permissions: spacePermissions } = useSpace();
-  const { permissions: challengePermissions } = useChallenge();
+  const { permissions: challengePermissions } = useSubSpace();
   const { permissions: opportunityPermissions } = useOpportunity();
 
   const { data: spaceData, loading: isLoadingSpace } = useSpaceCommunityQuery({

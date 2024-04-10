@@ -8,12 +8,12 @@ import CommunityUsers from '../../../community/community/CommunityAdmin/Communit
 import useCommunityAdmin from '../../../community/community/CommunityAdmin/useCommunityAdmin';
 import { SettingsSection } from '../../../platform/admin/layout/EntitySettingsLayout/constants';
 import { SettingsPageProps } from '../../../platform/admin/layout/EntitySettingsLayout/types';
-import { useChallenge } from '../hooks/useChallenge';
-import SubspaceSettingsLayout from '../../../platform/admin/challenge/SubspaceSettingsLayout';
+import { useSubSpace } from '../hooks/useChallenge';
+import SubspaceSettingsLayout from '../../../platform/admin/subspace/SubspaceSettingsLayout';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 
 const AdminChallengeCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
-  const { loading: isLoadingChallenge, communityId, subspaceId: challengeId } = useChallenge();
+  const { loading: isLoadingChallenge, communityId, subspaceId: challengeId } = useSubSpace();
 
   const { spaceId } = useRouteResolver();
 

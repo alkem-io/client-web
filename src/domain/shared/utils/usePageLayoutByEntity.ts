@@ -9,9 +9,9 @@ const usePageLayoutByEntity = (entityTypeName: EntityTypeName) =>
     switch (entityTypeName) {
       case 'space':
         return SpacePageLayout;
-      case 'challenge':
+      case 'subspace':
         return SubspacePageLayout;
-      case 'opportunity':
+      case 'subsubspace':
         return OpportunityPageLayout;
     }
     throw new TypeError(`Unknown entity ${entityTypeName}`);

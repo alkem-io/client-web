@@ -64,7 +64,7 @@ export interface CalendarEventsEntities {
 export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ journeyId, journeyTypeName, children }) => {
   const { data: spaceData, loading } = useSpaceCalendarEventsQuery({
     variables: { spaceId: journeyId! },
-    skip: !journeyId || journeyTypeName !== 'opportunity',
+    skip: !journeyId || journeyTypeName !== 'subsubspace',
   });
 
   const collaboration = spaceData?.space.collaboration;
@@ -163,7 +163,7 @@ export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ jour
   );
 
   return (
-    <StorageConfigContextProvider spaceId={journeyId} locationType="journey" journeyTypeName={journeyTypeName}>
+    <StorageConfigContextProvider spaceId={journeyId} locationType="journey">
       {children(
         { events, privileges },
         { createEvent, updateEvent, deleteEvent },

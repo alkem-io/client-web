@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { useSpace } from '../../../../journey/space/SpaceContext/useSpace';
-import { useChallenge } from '../../../../journey/subspace/hooks/useChallenge';
+import { useSubSpace } from '../../../../journey/subspace/hooks/useChallenge';
 import { Error404 } from '../../../../../core/pages/Errors/Error404';
 import SubspaceCommunicationsPage from '../../../../journey/subspace/pages/SubspaceCommunications/SubspaceCommunicationsPage';
 import ChallengeProfilePage from '../../../../journey/subspace/pages/SubspaceProfile/SubspaceProfilePage';
@@ -17,11 +17,11 @@ import SpaceSettingsPage from '../../../../journey/space/pages/SpaceSettings/Spa
 
 export const ChallengeRoute: FC = () => {
   const { communityId: spaceCommunityId } = useSpace();
-  const { subspace: challenge } = useChallenge();
+  const { subspace: challenge } = useSubSpace();
   const communityId = challenge?.community?.id;
 
   return (
-    <StorageConfigContextProvider locationType="journey" journeyTypeName="challenge" spaceId={challenge?.id}>
+    <StorageConfigContextProvider locationType="journey" spaceId={challenge?.id}>
       <Routes>
         <Route path={'/'}>
           <Route index element={<Navigate to="profile" replace />} />

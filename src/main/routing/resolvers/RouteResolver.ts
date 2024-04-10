@@ -8,8 +8,8 @@ enum RouteType {
 
 interface JourneyRouteParams {
   spaceId?: string;
-  challengeId?: string;
-  opportunityId?: string;
+  subSpaceId?: string;
+  subSubSpaceId?: string;
   type: RouteType.Journey;
   journeyId: string | undefined;
   journeyTypeName: JourneyTypeName;
@@ -56,8 +56,8 @@ export const useRouteResolver = (): RouteParams => {
 
   const resolvedJourney: JourneyRouteParams = {
     spaceId: data?.space.id,
-    challengeId: data?.space.subspace?.id,
-    opportunityId: data?.space.subspace?.subspace?.id,
+    subSpaceId: data?.space.subspace?.id,
+    subSubSpaceId: data?.space.subspace?.subspace?.id,
     type: RouteType.Journey,
     journeyId: data?.space.subspace?.subspace?.id ?? data?.space.subspace?.id ?? data?.space.id,
     journeyTypeName: getJourneyTypeName({ spaceNameId, challengeNameId, opportunityNameId })!,
@@ -66,12 +66,7 @@ export const useRouteResolver = (): RouteParams => {
   const { data: calloutData, loading: loadingCallout } = useCalloutIdQuery({
     variables: {
       calloutNameId: calloutNameId!,
-      spaceId: resolvedJourney.spaceId,
-      challengeId: resolvedJourney.challengeId,
-      opportunityId: resolvedJourney.opportunityId,
-      isSpace: resolvedJourney.journeyTypeName === 'space',
-      isChallenge: resolvedJourney.journeyTypeName === 'challenge',
-      isOpportunity: resolvedJourney.journeyTypeName === 'opportunity',
+      spaceId: resolvedJourney.subSubSpaceId ?? resolvedJourney.subSpaceId ?? resolvedJourney.spaceId!,
     },
     skip: !resolvedJourney.journeyId || !calloutNameId,
   });

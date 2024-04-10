@@ -34,7 +34,7 @@ interface UseStorageConfigOptionsBase {
 }
 
 interface UseStorageConfigOptionsSpace extends UseStorageConfigOptionsBase {
-  spaceId: string;
+  spaceId: string | undefined;
   locationType: 'journey';
 }
 
@@ -92,7 +92,7 @@ const useStorageConfig = ({ locationType, skip, ...options }: StorageConfigOptio
   const journeyOptions = options as UseStorageConfigOptionsSpace;
   const { data: journeyStorageConfigData } = useJourneyStorageConfigQuery({
     variables: {
-      spaceId: journeyOptions.spaceId,
+      spaceId: journeyOptions.spaceId!,
     },
     skip: skip || locationType !== 'journey' || !journeyOptions.spaceId,
   });

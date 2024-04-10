@@ -4,7 +4,7 @@ import SubspacePageBanner from './SubspacePageBanner';
 import SubspaceTabs from './SubspaceTabs';
 import JourneyUnauthorizedDialog from '../../common/JourneyUnauthorizedDialog/JourneyUnauthorizedDialog';
 import JourneyUnauthorizedDialogContainer from '../../common/JourneyUnauthorizedDialog/JourneyUnauthorizedDialogContainer';
-import { useChallenge } from '../hooks/useChallenge';
+import { useSubSpace } from '../hooks/useChallenge';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import JourneyBreadcrumbs from '../../common/journeyBreadcrumbs/JourneyBreadcrumbs';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
@@ -19,9 +19,9 @@ const SubspacePageLayout = ({
   currentSection,
   children,
 }: PropsWithChildren<SubspacePageLayoutProps>) => {
-  const { profile } = useChallenge();
+  const { profile } = useSubSpace();
 
-  const { challengeId, loading } = useRouteResolver();
+  const { subSpaceId: challengeId, loading } = useRouteResolver();
 
   return (
     <EntityPageLayout
@@ -31,10 +31,10 @@ const SubspacePageLayout = ({
       tabsComponent={SubspaceTabs}
     >
       {children}
-      <JourneyUnauthorizedDialogContainer journeyId={challengeId} journeyTypeName="challenge" loading={loading}>
+      <JourneyUnauthorizedDialogContainer journeyId={challengeId} journeyTypeName="subspace" loading={loading}>
         {({ vision, ...props }) => (
           <JourneyUnauthorizedDialog
-            journeyTypeName="challenge"
+            journeyTypeName="subspace"
             subspaceId={challengeId}
             subspaceName={profile.displayName}
             description={vision}

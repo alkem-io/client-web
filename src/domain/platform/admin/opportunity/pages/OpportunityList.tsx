@@ -8,7 +8,7 @@ import SearchableList, { SearchableListItem } from '../../components/SearchableL
 import Loading from '../../../../../core/ui/loading/Loading';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import { useSpace } from '../../../../journey/space/SpaceContext/useSpace';
-import { useChallenge } from '../../../../journey/subspace/hooks/useChallenge';
+import { useSubSpace } from '../../../../journey/subspace/hooks/useChallenge';
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import { JourneyCreationDialog } from '../../../../shared/components/JorneyCreationDialog';
 import { CreateOpportunityForm } from '../../../../journey/opportunity/forms/CreateOpportunityForm';
@@ -26,14 +26,14 @@ export const OpportunityList: FC = () => {
   const { t } = useTranslation();
   const notify = useNotification();
   const { spaceNameId } = useSpace();
-  const { challengeId } = useChallenge();
+  const { subspaceId } = useSubSpace();
   const { challengeNameId = '' } = useUrlParams();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
 
   const { data: subspacesListQuery, loading } = useSubspacesInSpaceQuery({
-    variables: { spaceId: challengeId },
-    skip: !challengeId,
+    variables: { spaceId: subspaceId },
+    skip: !subspaceId,
   });
 
   const opportunityList =
@@ -46,7 +46,7 @@ export const OpportunityList: FC = () => {
   const [deleteOpportunity] = useDeleteSpaceMutation({
     refetchQueries: [
       refetchSubspacesInSpaceQuery({
-        spaceId: challengeId,
+        spaceId: subspaceId,
       }),
     ],
     awaitRefetchQueries: true,
@@ -64,7 +64,7 @@ export const OpportunityList: FC = () => {
   };
 
   const [createSubspace] = useCreateSubspaceMutation({
-    refetchQueries: [refetchSubspacesInSpaceQuery({ spaceId })],
+    refetchQueries: [refetchSubspacesInSpaceQuery({ spaceId: subspaceId })],
     awaitRefetchQueries: true,
     onCompleted: () => {
       notify(t('pages.admin.subsubspace.notifications.subsubspace-created'), 'success');
@@ -76,7 +76,7 @@ export const OpportunityList: FC = () => {
       const { data } = await createSubspace({
         variables: {
           input: {
-            spaceID: challengeId,
+            spaceID: subspaceId,
             context: {
               vision: value.vision,
             },
@@ -99,7 +99,7 @@ export const OpportunityList: FC = () => {
         navigate(buildJourneyAdminUrl(data?.createSubspace.profile.url));
       }
     },
-    [navigate, createSubspace, spaceNameId, challengeId, challengeNameId]
+    [navigate, createSubspace, spaceNameId, subspaceId, challengeNameId]
   );
 
   if (loading) return <Loading text={'Loading spaces'} />;
@@ -120,7 +120,7 @@ export const OpportunityList: FC = () => {
       <JourneyCreationDialog
         open={open}
         icon={<OpportunityIcon />}
-        journeyName={t('common.subsubspace')}
+        journeyName={t('common.subspace')}
         onClose={() => setOpen(false)}
         OnCreate={handleCreate}
         formComponent={CreateOpportunityForm}

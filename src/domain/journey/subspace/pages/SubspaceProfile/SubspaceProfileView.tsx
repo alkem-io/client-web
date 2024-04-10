@@ -34,7 +34,7 @@ const SubspaceProfileView: FC<ChallengeProfileViewProps> = ({ mode }) => {
 
   const { spaceNameId = '' } = useUrlParams();
 
-  const { challengeId } = useRouteResolver();
+  const { subSpaceId: challengeId } = useRouteResolver();
 
   const [createSubspace, { loading: isCreating }] = useCreateSubspaceMutation({
     onCompleted: data => {
@@ -121,7 +121,7 @@ const SubspaceProfileView: FC<ChallengeProfileViewProps> = ({ mode }) => {
         isEdit={mode === FormMode.update}
         name={challenge?.profile.displayName}
         nameID={challenge?.nameID}
-        journeyType="challenge"
+        journeyType="subspace"
         tagset={challenge?.profile.tagset}
         profile={challenge?.profile}
         onSubmit={onSubmit}

@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { SettingsSection } from '../layout/EntitySettingsLayout/constants';
 import { TabDefinition } from '../layout/EntitySettingsLayout/EntitySettingsTabs';
-import { useChallenge } from '../../../journey/subspace/hooks/useChallenge';
+import { useSubSpace } from '../../../journey/subspace/hooks/useChallenge';
 import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
 import ListOutlinedIcon from '@mui/icons-material/ListOutlined';
 import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
@@ -39,7 +39,7 @@ const tabs: TabDefinition<SettingsSection>[] = [
     icon: ForumOutlinedIcon,
   },
   {
-    section: SettingsSection.Opportunities,
+    section: SettingsSection.Subsubspaces,
     route: 'opportunities',
     icon: FlagOutlinedIcon,
   },
@@ -51,11 +51,11 @@ const tabs: TabDefinition<SettingsSection>[] = [
 ];
 
 const SubspaceSettingsLayout: FC<SubspaceSettingsLayoutProps> = props => {
-  const entityAttrs = useChallenge();
+  const entityAttrs = useSubSpace();
 
   return (
     <EntitySettingsLayout
-      entityTypeName="challenge"
+      entityTypeName="subspace"
       subheaderTabs={tabs}
       pageBannerComponent={SubspacePageBanner}
       tabsComponent={SubspaceTabs}

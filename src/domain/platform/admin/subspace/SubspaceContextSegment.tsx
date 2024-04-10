@@ -5,5 +5,5 @@ import React from 'react';
 export interface SubspaceContextSegmentProps extends ContextSegmentProps {}
 
 export const SubspaceContextSegment: FC<SubspaceContextSegmentProps> = ({ ...props }) => {
-  return <ContextSegment contextType="challenge" {...props} />;
+  return <ContextSegment contextType="subspace" {...props} />;
 };

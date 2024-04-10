@@ -4,7 +4,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router-dom';
 import isApplicationPending from './isApplicationPending';
 import { useSpace } from '../../../journey/space/SpaceContext/useSpace';
-import { useChallenge } from '../../../journey/subspace/hooks/useChallenge';
+import { useSubSpace } from '../../../journey/subspace/hooks/useChallenge';
 import { useOpportunity } from '../../../journey/opportunity/hooks/useOpportunity';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import { BlockTitle } from '../../../../core/ui/typography';
@@ -34,7 +34,7 @@ const PreApplicationDialog: FC<PreApplicationDialogProps> = ({
 }) => {
   const { t } = useTranslation();
   const { profile: spaceProfile } = useSpace();
-  const { profile: challengeProfile } = useChallenge();
+  const { profile: challengeProfile } = useSubSpace();
   const { opportunityId } = useOpportunity();
   const parentCommunityName = opportunityId ? challengeProfile.displayName : spaceProfile.displayName;
   const buttonText = t(`components.application-button.goTo${opportunityId ? 'Challenge' : 'Space'}` as const);

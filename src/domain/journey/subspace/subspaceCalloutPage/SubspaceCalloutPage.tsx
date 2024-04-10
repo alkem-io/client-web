@@ -6,7 +6,7 @@ import { JourneyCalloutDialogProps } from '../../common/JourneyCalloutDialog/Jou
 import ChallengeDashboardPage from '../pages/SubspaceDashboardPage';
 import { CalloutGroupName } from '../../../../core/apollo/generated/graphql-schema';
 import ChallengeOpportunitiesPage from '../pages/SubspaceOpportunitiesPage';
-import { useChallenge } from '../hooks/useChallenge';
+import { useSubSpace } from '../hooks/useChallenge';
 
 const renderPage = (calloutGroup: string | undefined) => {
   switch (calloutGroup) {
@@ -15,12 +15,12 @@ const renderPage = (calloutGroup: string | undefined) => {
       return <ChallengeDashboardPage />;
     case CalloutGroupName.Contribute_1:
     case CalloutGroupName.Contribute_2:
-      return <JourneyContributePage journeyTypeName="challenge" />;
+      return <JourneyContributePage journeyTypeName="subspace" />;
     case CalloutGroupName.Subspaces_1:
     case CalloutGroupName.Subspaces_2:
       return <ChallengeOpportunitiesPage />;
     default:
-      return <JourneyContributePage journeyTypeName="challenge" />;
+      return <JourneyContributePage journeyTypeName="subspace" />;
   }
 };
 
@@ -34,20 +34,20 @@ const getPageSection = (calloutGroup: string | undefined): EntityPageSection => 
       return EntityPageSection.Contribute;
     case CalloutGroupName.Subspaces_1:
     case CalloutGroupName.Subspaces_2:
-      return EntityPageSection.Opportunities;
+      return EntityPageSection.Subsubspaces;
     default:
       return EntityPageSection.Contribute;
   }
 };
 
 const ChallengeCalloutPage = (props: JourneyCalloutDialogProps) => {
-  const { profile } = useChallenge();
+  const { profile } = useSubSpace();
 
   const getPageRoute = (calloutGroup: string | undefined) => {
     return `${profile.url}/${getPageSection(calloutGroup)}`;
   };
 
-  return <CalloutPage journeyTypeName="challenge" parentRoute={getPageRoute} renderPage={renderPage} {...props} />;
+  return <CalloutPage journeyTypeName="subspace" parentRoute={getPageRoute} renderPage={renderPage} {...props} />;
 };
 
 export default ChallengeCalloutPage;

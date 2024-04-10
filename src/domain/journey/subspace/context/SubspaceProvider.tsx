@@ -49,7 +49,7 @@ const SubspaceContext = React.createContext<SubspaceContextProps>({
 interface SubspaceProviderProps {}
 
 const SubspaceProvider: FC<SubspaceProviderProps> = ({ children }) => {
-  const { challengeId } = useRouteResolver();
+  const { subSpaceId: challengeId } = useRouteResolver();
 
   const { data, loading } = useSubspaceInfoQuery({
     variables: { subspaceId: challengeId! },

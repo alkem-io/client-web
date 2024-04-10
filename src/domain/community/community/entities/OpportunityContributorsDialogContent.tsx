@@ -8,7 +8,7 @@ import { ContributorsDialogContentProps } from '../ContributorsDialog/Contributo
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 
 const OpportunityContributorsDialogContent: FC<ContributorsDialogContentProps> = ({ dialogOpen }) => {
-  const { opportunityId } = useRouteResolver();
+  const { subSubSpaceId: opportunityId } = useRouteResolver();
 
   const { loading, data } = useOpportunityCommunityContributorsQuery({
     variables: {

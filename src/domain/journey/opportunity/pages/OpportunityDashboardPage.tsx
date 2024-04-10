@@ -38,7 +38,7 @@ const OpportunityDashboardPage: FC<OpportunityDashboardPageProps> = ({ dialog })
 
   const hasExtendedApplicationButton = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
 
-  const { challengeId, opportunityId } = useRouteResolver();
+  const { subSpaceId: challengeId, subSubSpaceId: opportunityId } = useRouteResolver();
 
   return (
     <OpportunityPageLayout currentSection={EntityPageSection.Dashboard}>
@@ -95,7 +95,7 @@ const OpportunityDashboardPage: FC<OpportunityDashboardPageProps> = ({ dialog })
               activities={entities.activities}
               fetchMoreActivities={entities.fetchMoreActivities}
               activityLoading={state.activityLoading}
-              journeyTypeName="opportunity"
+              journeyTypeName="subsubspace"
               topCallouts={entities.topCallouts}
               callouts={callouts}
               sendMessageToCommunityLeads={entities.sendMessageToCommunityLeads}
@@ -118,7 +118,7 @@ const OpportunityDashboardPage: FC<OpportunityDashboardPageProps> = ({ dialog })
                 open={dialog === 'calendar'}
                 onClose={backToDashboard}
                 journeyId={opportunityId}
-                journeyTypeName="opportunity"
+                journeyTypeName="subsubspace"
               />
             )}
           </>

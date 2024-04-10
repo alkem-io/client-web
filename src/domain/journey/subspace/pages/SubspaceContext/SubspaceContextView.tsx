@@ -10,13 +10,13 @@ import {
   useSubspaceProfileInfoQuery,
   useUpdateSpaceMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
-import SubspaceContextSegment from '../../../../../domain/platform/admin/subspace/SubspaceContextSegment';
+import { SubspaceContextSegment } from '../../../../platform/admin/subspace/SubspaceContextSegment';
 
 const ChallengeContextView: FC = () => {
   const notify = useNotification();
   const onSuccess = (message: string) => notify(message, 'success');
 
-  const { challengeId } = useRouteResolver();
+  const { subSpaceId: challengeId } = useRouteResolver();
 
   const [updateSubspace, { loading: isUpdating }] = useUpdateSpaceMutation({
     onCompleted: () => onSuccess('Successfully updated'),
