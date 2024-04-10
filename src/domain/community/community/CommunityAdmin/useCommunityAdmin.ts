@@ -19,6 +19,9 @@ import {
   useCommunityAvailableMembersLazyQuery,
   useAssignCommunityRoleToUserMutation,
   useRemoveCommunityRoleFromUserMutation,
+  useAvailableVirtualContributorsLazyQuery,
+  useAddVirtualContributorToCommunityMutation,
+  useRemoveVirtualContributorFromCommunityMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import {
   AuthorizationCredential,
@@ -89,6 +92,9 @@ const useCommunityAdmin = ({ communityId, spaceId, challengeId, opportunityId }:
   const permissions = {
     canAddMembers: (data?.lookup.community?.authorization?.myPrivileges ?? []).some(
       priv => priv === AuthorizationPrivilege.CommunityAddMember
+    ),
+    canAddVirtualContributors: (data?.lookup.community?.authorization?.myPrivileges ?? []).some(
+      priv => priv === AuthorizationPrivilege.CommunityAddMember // TODO: Change to CommunityAddVirtualContributor
     ),
   };
 
@@ -191,6 +197,10 @@ const useCommunityAdmin = ({ communityId, spaceId, challengeId, opportunityId }:
     return result;
   }, [data, dataAdmins]);
 
+  const virtualContributors = useMemo(() => {
+    return data?.lookup.community?.virtualContributorsInRole ?? [];
+  }, [data]);
+
   // Available new members:
   const [fetchAvailableUsers, { refetch: refetchAvailableMemberUsers }] = useCommunityAvailableMembersLazyQuery();
   const getAvailableUsers = async (filter: string | undefined) => {
@@ -215,6 +225,17 @@ const useCommunityAdmin = ({ communityId, spaceId, challengeId, opportunityId }:
     // Filter out already member organizations
     return data?.organizationsPaginated.organization.filter(
       org => organizations.find(member => member.id === org.id) === undefined
+    );
+  };
+
+  const [fetchAllVirtualContributors] = useAvailableVirtualContributorsLazyQuery();
+  const getAvailableVirtualContributors = async (filter: string | undefined) => {
+    const { data } = await fetchAllVirtualContributors();
+    // Filter out already member organizations
+    return data?.virtualContributors.filter(
+      vc =>
+        !virtualContributors.some(member => member.id === vc.id) &&
+        vc.profile.displayName.toLowerCase().includes(filter?.toLowerCase() ?? '')
     );
   };
 
@@ -354,6 +375,33 @@ const useCommunityAdmin = ({ communityId, spaceId, challengeId, opportunityId }:
     return refetchCommunityMembers();
   };
 
+  const [addVirtualContributor] = useAddVirtualContributorToCommunityMutation();
+  const handleAddVirtualContributor = async (virtualContributorId: string) => {
+    if (!communityId) {
+      return;
+    }
+    await addVirtualContributor({
+      variables: {
+        communityId,
+        virtualContributorId,
+      },
+    });
+    return refetchCommunityMembers();
+  };
+  const [removeVirtualContributor] = useRemoveVirtualContributorFromCommunityMutation();
+  const handleRemoveVirtualContributor = async (virtualContributorId: string) => {
+    if (!communityId) {
+      return;
+    }
+    await removeVirtualContributor({
+      variables: {
+        communityId,
+        virtualContributorId,
+      },
+    });
+    return refetchCommunityMembers();
+  };
+
   const onInviteUser = async () => {
     await refetchApplicationsAndInvitations();
   };
@@ -398,6 +446,7 @@ const useCommunityAdmin = ({ communityId, spaceId, challengeId, opportunityId }:
   return {
     users,
     organizations,
+    virtualContributors,
     communityPolicy,
     permissions,
     applications: dataApplications?.lookup.community?.applications,
@@ -410,12 +459,15 @@ const useCommunityAdmin = ({ communityId, spaceId, challengeId, opportunityId }:
     onOrganizationLeadChange: onOrganizationLeadChange,
     onAddUser: handleAddUser,
     onAddOrganization: handleAddOrganization,
+    onAddVirtualContributor: handleAddVirtualContributor,
     onRemoveUser: handleRemoveUser,
     onRemoveOrganization: handleRemoveOrganization,
+    onRemoveVirtualContributor: handleRemoveVirtualContributor,
     onDeleteInvitation: handleDeleteInvitation,
     onDeleteInvitationExternal: handleDeleteInvitationExternal,
     getAvailableUsers,
     getAvailableOrganizations,
+    getAvailableVirtualContributors,
     inviteExistingUser,
     inviteExternalUser,
     loading: loadingAdmins || loadingMembers || loadingApplications,

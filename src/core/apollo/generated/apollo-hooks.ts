@@ -1230,6 +1230,25 @@ export const OrganizationDetailsFragmentDoc = gql`
   ${VisualUriFragmentDoc}
   ${TagsetDetailsFragmentDoc}
 `;
+export const CommunityMemberVirtualContributorFragmentDoc = gql`
+  fragment CommunityMemberVirtualContributor on VirtualContributor {
+    id
+    nameID
+    profile {
+      id
+      displayName
+      avatar: visual(type: AVATAR) {
+        ...VisualUri
+      }
+      location {
+        id
+        city
+        country
+      }
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
 export const CommunityPolicyFragmentDoc = gql`
   fragment CommunityPolicy on CommunityPolicy {
     id
@@ -1262,6 +1281,9 @@ export const CommunityMembersDetailsFragmentDoc = gql`
     leadOrganizations: organizationsInRole(role: LEAD) {
       ...OrganizationDetails
     }
+    virtualContributorsInRole(role: MEMBER) {
+      ...CommunityMemberVirtualContributor
+    }
     policy {
       ...CommunityPolicy
     }
@@ -1272,6 +1294,7 @@ export const CommunityMembersDetailsFragmentDoc = gql`
   }
   ${CommunityMemberUserFragmentDoc}
   ${OrganizationDetailsFragmentDoc}
+  ${CommunityMemberVirtualContributorFragmentDoc}
   ${CommunityPolicyFragmentDoc}
 `;
 export const AvailableUserFragmentDoc = gql`
@@ -12089,6 +12112,182 @@ export function refetchCommunityAvailableMembersQuery(variables: SchemaTypes.Com
   return { query: CommunityAvailableMembersDocument, variables: variables };
 }
 
+export const AvailableVirtualContributorsDocument = gql`
+  query AvailableVirtualContributors {
+    virtualContributors {
+      id
+      nameID
+      profile {
+        id
+        displayName
+      }
+    }
+  }
+`;
+
+/**
+ * __useAvailableVirtualContributorsQuery__
+ *
+ * To run a query within a React component, call `useAvailableVirtualContributorsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAvailableVirtualContributorsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAvailableVirtualContributorsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useAvailableVirtualContributorsQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.AvailableVirtualContributorsQuery,
+    SchemaTypes.AvailableVirtualContributorsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.AvailableVirtualContributorsQuery,
+    SchemaTypes.AvailableVirtualContributorsQueryVariables
+  >(AvailableVirtualContributorsDocument, options);
+}
+
+export function useAvailableVirtualContributorsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.AvailableVirtualContributorsQuery,
+    SchemaTypes.AvailableVirtualContributorsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.AvailableVirtualContributorsQuery,
+    SchemaTypes.AvailableVirtualContributorsQueryVariables
+  >(AvailableVirtualContributorsDocument, options);
+}
+
+export type AvailableVirtualContributorsQueryHookResult = ReturnType<typeof useAvailableVirtualContributorsQuery>;
+export type AvailableVirtualContributorsLazyQueryHookResult = ReturnType<
+  typeof useAvailableVirtualContributorsLazyQuery
+>;
+export type AvailableVirtualContributorsQueryResult = Apollo.QueryResult<
+  SchemaTypes.AvailableVirtualContributorsQuery,
+  SchemaTypes.AvailableVirtualContributorsQueryVariables
+>;
+export function refetchAvailableVirtualContributorsQuery(
+  variables?: SchemaTypes.AvailableVirtualContributorsQueryVariables
+) {
+  return { query: AvailableVirtualContributorsDocument, variables: variables };
+}
+
+export const AddVirtualContributorToCommunityDocument = gql`
+  mutation AddVirtualContributorToCommunity($communityId: UUID!, $virtualContributorId: UUID_NAMEID!) {
+    assignCommunityRoleToVirtual(
+      roleData: { communityID: $communityId, role: MEMBER, virtualContributorID: $virtualContributorId }
+    ) {
+      id
+    }
+  }
+`;
+export type AddVirtualContributorToCommunityMutationFn = Apollo.MutationFunction<
+  SchemaTypes.AddVirtualContributorToCommunityMutation,
+  SchemaTypes.AddVirtualContributorToCommunityMutationVariables
+>;
+
+/**
+ * __useAddVirtualContributorToCommunityMutation__
+ *
+ * To run a mutation, you first call `useAddVirtualContributorToCommunityMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddVirtualContributorToCommunityMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addVirtualContributorToCommunityMutation, { data, loading, error }] = useAddVirtualContributorToCommunityMutation({
+ *   variables: {
+ *      communityId: // value for 'communityId'
+ *      virtualContributorId: // value for 'virtualContributorId'
+ *   },
+ * });
+ */
+export function useAddVirtualContributorToCommunityMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.AddVirtualContributorToCommunityMutation,
+    SchemaTypes.AddVirtualContributorToCommunityMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.AddVirtualContributorToCommunityMutation,
+    SchemaTypes.AddVirtualContributorToCommunityMutationVariables
+  >(AddVirtualContributorToCommunityDocument, options);
+}
+
+export type AddVirtualContributorToCommunityMutationHookResult = ReturnType<
+  typeof useAddVirtualContributorToCommunityMutation
+>;
+export type AddVirtualContributorToCommunityMutationResult =
+  Apollo.MutationResult<SchemaTypes.AddVirtualContributorToCommunityMutation>;
+export type AddVirtualContributorToCommunityMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.AddVirtualContributorToCommunityMutation,
+  SchemaTypes.AddVirtualContributorToCommunityMutationVariables
+>;
+export const RemoveVirtualContributorFromCommunityDocument = gql`
+  mutation RemoveVirtualContributorFromCommunity($communityId: UUID!, $virtualContributorId: UUID_NAMEID!) {
+    removeCommunityRoleFromVirtual(
+      roleData: { communityID: $communityId, role: MEMBER, virtualContributorID: $virtualContributorId }
+    ) {
+      id
+    }
+  }
+`;
+export type RemoveVirtualContributorFromCommunityMutationFn = Apollo.MutationFunction<
+  SchemaTypes.RemoveVirtualContributorFromCommunityMutation,
+  SchemaTypes.RemoveVirtualContributorFromCommunityMutationVariables
+>;
+
+/**
+ * __useRemoveVirtualContributorFromCommunityMutation__
+ *
+ * To run a mutation, you first call `useRemoveVirtualContributorFromCommunityMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveVirtualContributorFromCommunityMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeVirtualContributorFromCommunityMutation, { data, loading, error }] = useRemoveVirtualContributorFromCommunityMutation({
+ *   variables: {
+ *      communityId: // value for 'communityId'
+ *      virtualContributorId: // value for 'virtualContributorId'
+ *   },
+ * });
+ */
+export function useRemoveVirtualContributorFromCommunityMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.RemoveVirtualContributorFromCommunityMutation,
+    SchemaTypes.RemoveVirtualContributorFromCommunityMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.RemoveVirtualContributorFromCommunityMutation,
+    SchemaTypes.RemoveVirtualContributorFromCommunityMutationVariables
+  >(RemoveVirtualContributorFromCommunityDocument, options);
+}
+
+export type RemoveVirtualContributorFromCommunityMutationHookResult = ReturnType<
+  typeof useRemoveVirtualContributorFromCommunityMutation
+>;
+export type RemoveVirtualContributorFromCommunityMutationResult =
+  Apollo.MutationResult<SchemaTypes.RemoveVirtualContributorFromCommunityMutation>;
+export type RemoveVirtualContributorFromCommunityMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.RemoveVirtualContributorFromCommunityMutation,
+  SchemaTypes.RemoveVirtualContributorFromCommunityMutationVariables
+>;
 export const AllOrganizationsDocument = gql`
   query AllOrganizations($first: Int!, $after: UUID, $filter: OrganizationFilterInput) {
     organizationsPaginated(first: $first, after: $after, filter: $filter) {

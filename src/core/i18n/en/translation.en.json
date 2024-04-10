@@ -567,6 +567,13 @@
     "members-count_plural": "{{count}} Members",
     "addMember": "Add member",
     "unauthorizedPermissionsChange": "You are not allowed to edit this user's permissions",
+    "virtualContributors": {
+      "blockTitle": "Virtual Contributors ({{count}})",
+      "removeDialog": {
+        "title": "Remove Virtual Contributor",
+        "confirm": "Are you sure?"
+      }
+    },
     "application-form": {
       "title": "Application Form",
       "subtitle": "This section allows you to modify the questions for users applying to the Space. <br /><b>Please note</b> that these questions will only be shown when the Membership options (in the block above) are set to \"Applications required\"",

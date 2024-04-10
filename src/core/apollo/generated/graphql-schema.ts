@@ -15376,6 +15376,20 @@ export type CommunityMembersListQuery = {
                 };
               }>
             | undefined;
+          virtualContributorsInRole?:
+            | Array<{
+                __typename?: 'VirtualContributor';
+                id: string;
+                nameID: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                };
+              }>
+            | undefined;
           policy?:
             | {
                 __typename?: 'CommunityPolicy';
@@ -15528,6 +15542,20 @@ export type CommunityMembersDetailsFragment = {
         };
       }>
     | undefined;
+  virtualContributorsInRole?:
+    | Array<{
+        __typename?: 'VirtualContributor';
+        id: string;
+        nameID: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+        };
+      }>
+    | undefined;
   policy?:
     | {
         __typename?: 'CommunityPolicy';
@@ -15614,11 +15642,56 @@ export type CommunityMemberUserFragment = {
   };
 };
 
+export type CommunityMemberVirtualContributorFragment = {
+  __typename?: 'VirtualContributor';
+  id: string;
+  nameID: string;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+    location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+  };
+};
+
 export type AvailableUserFragment = {
   __typename?: 'User';
   id: string;
   email: string;
   profile: { __typename?: 'Profile'; id: string; displayName: string };
+};
+
+export type AvailableVirtualContributorsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type AvailableVirtualContributorsQuery = {
+  __typename?: 'Query';
+  virtualContributors: Array<{
+    __typename?: 'VirtualContributor';
+    id: string;
+    nameID: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
+  }>;
+};
+
+export type AddVirtualContributorToCommunityMutationVariables = Exact<{
+  communityId: Scalars['UUID'];
+  virtualContributorId: Scalars['UUID_NAMEID'];
+}>;
+
+export type AddVirtualContributorToCommunityMutation = {
+  __typename?: 'Mutation';
+  assignCommunityRoleToVirtual: { __typename?: 'VirtualContributor'; id: string };
+};
+
+export type RemoveVirtualContributorFromCommunityMutationVariables = Exact<{
+  communityId: Scalars['UUID'];
+  virtualContributorId: Scalars['UUID_NAMEID'];
+}>;
+
+export type RemoveVirtualContributorFromCommunityMutation = {
+  __typename?: 'Mutation';
+  removeCommunityRoleFromVirtual: { __typename?: 'VirtualContributor'; id: string };
 };
 
 export type AllOrganizationsQueryVariables = Exact<{
