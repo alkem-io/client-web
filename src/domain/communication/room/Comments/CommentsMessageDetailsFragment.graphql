@@ -7,27 +7,37 @@ fragment MessageDetails on Message {
   }
   threadID
   sender {
-    id
-    nameID
-    firstName
-    lastName
-    profile {
+    ... on User {
       id
-      displayName
-      url
-      avatar: visual(type: AVATAR) {
-        id
-        uri
-      }
-      tagsets {
-        ...TagsetDetails
-      }
-      location {
-        id
-        city
-        country
+      profile {
+        ...SenderProfile
       }
     }
+    ... on VirtualContributor {
+      id
+      profile {
+        ...SenderProfile
+      }
+    }
+  }
+}
+
+fragment SenderProfile on Profile {
+  id
+  displayName
+  url
+  type
+  avatar: visual(type: AVATAR) {
+    id
+    uri
+  }
+  tagsets {
+    ...TagsetDetails
+  }
+  location {
+    id
+    city
+    country
   }
 }
 
@@ -36,7 +46,9 @@ fragment ReactionDetails on Reaction {
   emoji
   sender {
     id
-    firstName
-    lastName
+    profile {
+      id
+      displayName
+    }
   }
 }
