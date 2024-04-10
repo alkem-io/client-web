@@ -5,7 +5,10 @@ import { useTranslation } from 'react-i18next';
 import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
 import FormikMarkdownField from '../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
 import useLoadingState from '../../../shared/utils/useLoadingState';
-import { useCreateVirtualPersonaMutation } from '../../../../core/apollo/generated/apollo-hooks';
+import {
+  refetchVirtualContributorAvailablePersonasQuery,
+  useCreateVirtualPersonaMutation,
+} from '../../../../core/apollo/generated/apollo-hooks';
 import { Actions } from '../../../../core/ui/actions/Actions';
 import { Button } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
@@ -39,13 +42,10 @@ const NewPersonaForm = ({ parentPagePath }: NewPersonaFormProps) => {
     nameId: '',
     prompt: '',
     description: '',
-    engine: VirtualPersonaEngine.AlkemioWelcome,
+    engine: VirtualPersonaEngine.AlkemioDigileefomgeving,
   };
   const [createPersona, { loading }] = useCreateVirtualPersonaMutation({
-    onCompleted: () => {
-      notify('Persona Created Successfully!', 'success');
-      navigateBack();
-    },
+    refetchQueries: [refetchVirtualContributorAvailablePersonasQuery()],
   });
 
   const onCancel = () => {
@@ -67,6 +67,8 @@ const NewPersonaForm = ({ parentPagePath }: NewPersonaFormProps) => {
           },
         },
       });
+      notify('Persona Created Successfully!', 'success');
+      navigateBack();
     }
   );
 
@@ -83,15 +85,19 @@ const NewPersonaForm = ({ parentPagePath }: NewPersonaFormProps) => {
   return (
     <AdminLayout currentTab={AdminSection.VirtualContributors}>
       <PageContentBlock>
-        <PageContentBlockHeader title="Create Virtal Persona" />
+        <PageContentBlockHeader title={t('pages.admin.virtualContributors.virtualPersonas.create')} />
         <Formik initialValues={initialValues} onSubmit={handleSubmit}>
           <Form>
             <Gutters>
               <FormikInputField title={t('common.title')} name="displayName" />
               <FormikInputField title={t('components.nameSegment.nameID.title')} name="nameId" />
-              <FormikMarkdownField title={t('common.prompt')} name="prompt" />
+              <FormikInputField multiline title={t('common.prompt')} name="prompt" rows={10} />
               <FormikMarkdownField title={t('common.description')} name="description" />
-              <FormikSelect title="Select Engine" name="engine" values={engines ?? []} />
+              <FormikSelect
+                title={t('pages.admin.virtualContributors.virtualPersonas.selectEngine')}
+                name="engine"
+                values={engines ?? []}
+              />
               <Actions>
                 <Button variant="text" onClick={onCancel}>
                   {t('buttons.cancel')}
