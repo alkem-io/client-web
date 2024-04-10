@@ -10,8 +10,11 @@ const VirtualContributorsRoutes: FC = () => {
     <Routes>
       <Route path="/">
         <Route index element={<VirtualContributorsPage />} />
-        <Route path={'new-persona'} element={<NewPersonaForm />} />
-        <Route path={'new-virtual-contributor'} element={<NewVirtualContributorForm />} />
+        <Route path={'new-persona'} element={<NewPersonaForm parentPagePath="/admin/virtual-contributors" />} />
+        <Route
+          path={'new-virtual-contributor'}
+          element={<NewVirtualContributorForm parentPagePath="/admin/virtual-contributors" />}
+        />
         <Route path="*" element={<Error404 />} />
       </Route>
     </Routes>

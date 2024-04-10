@@ -1,11 +1,13 @@
-import { FC, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useMemo } from 'react';
 import { Form, Formik } from 'formik';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import { useTranslation } from 'react-i18next';
 import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
 import useLoadingState from '../../../shared/utils/useLoadingState';
-import { useCreateVirtualContributorMutation } from '../../../../core/apollo/generated/apollo-hooks';
+import {
+  useCreateVirtualContributorMutation,
+  useVirtualPersonasQuery,
+} from '../../../../core/apollo/generated/apollo-hooks';
 import { Actions } from '../../../../core/ui/actions/Actions';
 import { Button, Container } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
@@ -14,28 +16,32 @@ import { useNotification } from '../../../../core/ui/notifications/useNotificati
 import AdminLayout from '../layout/toplevel/AdminLayout';
 import { AdminSection } from '../layout/toplevel/constants';
 import FormikSelect from '../../../../core/ui/forms/FormikSelect';
-import { useVirtualPersonasQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { useBackToStaticPath } from '../../../../core/routing/useBackToPath';
 
 interface NewVirtualContributorFormValues {
   displayName: string;
   virtualPersonaID: string;
 }
 
-const NewVirtualContributorForm: FC = () => {
+interface NewVirtualContributorFormProps {
+  parentPagePath: string;
+}
+
+const NewVirtualContributorForm = ({ parentPagePath }: NewVirtualContributorFormProps) => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
+  const navigateBack = useBackToStaticPath(parentPagePath);
   const notify = useNotification();
   const initialValues = { displayName: '', virtualPersonaID: '' };
   const { data: virtualPersonas } = useVirtualPersonasQuery();
   const [createVirtualContributor, { loading }] = useCreateVirtualContributorMutation({
     onCompleted: () => {
       notify('Virtual Contributor Created Successfully!', 'success');
-      navigate(-1);
+      navigateBack();
     },
   });
 
   const onCancel = () => {
-    navigate(-1);
+    navigateBack();
   };
 
   const [handleSubmit] = useLoadingState(async (values: NewVirtualContributorFormValues) => {

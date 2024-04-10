@@ -1,5 +1,4 @@
-import { FC, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useMemo } from 'react';
 import { Form, Formik } from 'formik';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import { useTranslation } from 'react-i18next';
@@ -15,6 +14,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
 import AdminLayout from '../layout/toplevel/AdminLayout';
 import { AdminSection } from '../layout/toplevel/constants';
+import { useBackToStaticPath } from '../../../../core/routing/useBackToPath';
 import FormikSelect from '../../../../core/ui/forms/FormikSelect';
 
 interface NewPersonaFormValues {
@@ -23,20 +23,24 @@ interface NewPersonaFormValues {
   engine: VirtualPersonaEngine;
 }
 
-const NewPersonaForm: FC = () => {
+interface NewPersonaFormProps {
+  parentPagePath: string;
+}
+
+const NewPersonaForm = ({ parentPagePath }: NewPersonaFormProps) => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
+  const navigateBack = useBackToStaticPath(parentPagePath);
   const notify = useNotification();
   const initialValues = { displayName: '', prompt: '', engine: VirtualPersonaEngine.AlkemioWelcome };
   const [createPersona, { loading }] = useCreateVirtualPersonaMutation({
     onCompleted: () => {
       notify('Persona Created Successfully!', 'success');
-      navigate(-1);
+      navigateBack();
     },
   });
 
   const onCancel = () => {
-    navigate(-1);
+    navigateBack();
   };
 
   const [handleSubmit] = useLoadingState(async (values: NewPersonaFormValues) => {
