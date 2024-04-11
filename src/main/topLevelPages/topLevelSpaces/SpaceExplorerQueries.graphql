@@ -121,10 +121,20 @@ fragment SpaceExplorerChallenge on Challenge {
   }
 }
 
-
 fragment SpaceExplorerSpaceWithChallenges on Space {
   ...SpaceExplorerSpace
   challenges {
     ...SpaceExplorerChallenge
+  }
+}
+
+query SpaceExplorerWelcomeSpace($spaceId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
+    id
+    profile {
+      id
+      url
+      displayName
+    }
   }
 }

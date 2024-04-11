@@ -1995,7 +1995,7 @@
         "member": "Member Spaces",
         "public": "Public Spaces"
       },
-      "noSpaceMemberships": "You’re not currently a member of any Space. Click here to visit our Welcome @ Alkemio Space, which is a fantastic starting point for your journey on Alkemio!",
+      "noSpaceMemberships": "You’re not currently a member of any Space. Click here to visit our {{welcomeSpace}}, which is a fantastic starting point for your journey on Alkemio!",
       "search": {
         "placeholder": "Search…",
         "noResults": "No results matched your search terms."

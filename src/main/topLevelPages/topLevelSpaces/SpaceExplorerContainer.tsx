@@ -4,6 +4,7 @@ import {
   useSpaceExplorerAllSpacesQuery,
   useSpaceExplorerMemberSpacesQuery,
   useSpaceExplorerSearchQuery,
+  useSpaceExplorerWelcomeSpaceLazyQuery,
 } from '../../../core/apollo/generated/apollo-hooks';
 import { useUserContext } from '../../../domain/community/user';
 import {
@@ -25,6 +26,14 @@ export interface ChallengeExplorerContainerEntities {
   fetchMore: () => Promise<void>;
   loading: boolean;
   hasMore: boolean | undefined;
+  authenticated: boolean;
+  welcomeSpace:
+    | {
+        displayName: string;
+        url: string;
+      }
+    | undefined;
+  fetchWelcomeSpace?: (args: { variables: { spaceId: string } }) => void;
 }
 
 interface SpaceExplorerContainerProps extends SimpleContainerProps<ChallengeExplorerContainerEntities> {
@@ -155,15 +164,19 @@ const SpaceExplorerContainer = ({ searchTerms, children }: SpaceExplorerContaine
     return flattenedSpaces;
   }, [flattenedSpaces, membershipFilter, shouldSearch]);
 
+  const [fetchWelcomeSpace, { data: welcomeSpaceData }] = useSpaceExplorerWelcomeSpaceLazyQuery();
+
   const provided = {
     spaces: filteredSpaces,
-    isAuthenticated,
+    authenticated: isAuthenticated,
     searchTerms,
     membershipFilter,
     onMembershipFilterChange: setMembershipFilter,
     fetchMore,
     loading,
     hasMore,
+    welcomeSpace: welcomeSpaceData?.space.profile,
+    fetchWelcomeSpace,
   };
 
   return <>{children(provided)}</>;

@@ -25717,3 +25717,68 @@ export type SpaceExplorerAllSpacesQueryResult = Apollo.QueryResult<
 export function refetchSpaceExplorerAllSpacesQuery(variables: SchemaTypes.SpaceExplorerAllSpacesQueryVariables) {
   return { query: SpaceExplorerAllSpacesDocument, variables: variables };
 }
+
+export const SpaceExplorerWelcomeSpaceDocument = gql`
+  query SpaceExplorerWelcomeSpace($spaceId: UUID_NAMEID!) {
+    space(ID: $spaceId) {
+      id
+      profile {
+        id
+        url
+        displayName
+      }
+    }
+  }
+`;
+
+/**
+ * __useSpaceExplorerWelcomeSpaceQuery__
+ *
+ * To run a query within a React component, call `useSpaceExplorerWelcomeSpaceQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSpaceExplorerWelcomeSpaceQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSpaceExplorerWelcomeSpaceQuery({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *   },
+ * });
+ */
+export function useSpaceExplorerWelcomeSpaceQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.SpaceExplorerWelcomeSpaceQuery,
+    SchemaTypes.SpaceExplorerWelcomeSpaceQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.SpaceExplorerWelcomeSpaceQuery,
+    SchemaTypes.SpaceExplorerWelcomeSpaceQueryVariables
+  >(SpaceExplorerWelcomeSpaceDocument, options);
+}
+
+export function useSpaceExplorerWelcomeSpaceLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.SpaceExplorerWelcomeSpaceQuery,
+    SchemaTypes.SpaceExplorerWelcomeSpaceQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.SpaceExplorerWelcomeSpaceQuery,
+    SchemaTypes.SpaceExplorerWelcomeSpaceQueryVariables
+  >(SpaceExplorerWelcomeSpaceDocument, options);
+}
+
+export type SpaceExplorerWelcomeSpaceQueryHookResult = ReturnType<typeof useSpaceExplorerWelcomeSpaceQuery>;
+export type SpaceExplorerWelcomeSpaceLazyQueryHookResult = ReturnType<typeof useSpaceExplorerWelcomeSpaceLazyQuery>;
+export type SpaceExplorerWelcomeSpaceQueryResult = Apollo.QueryResult<
+  SchemaTypes.SpaceExplorerWelcomeSpaceQuery,
+  SchemaTypes.SpaceExplorerWelcomeSpaceQueryVariables
+>;
+export function refetchSpaceExplorerWelcomeSpaceQuery(variables: SchemaTypes.SpaceExplorerWelcomeSpaceQueryVariables) {
+  return { query: SpaceExplorerWelcomeSpaceDocument, variables: variables };
+}

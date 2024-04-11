@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import PageContentBlock from '../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../core/ui/content/PageContentBlockHeader';
@@ -16,6 +16,8 @@ import { gutters } from '../../../core/ui/grid/utils';
 import useLazyLoading from '../../../domain/shared/pagination/useLazyLoading';
 import SpaceSubspaceCardLabel from '../../../domain/journey/space/SpaceSubspaceCard/SpaceSubspaceCardLabel';
 import SeeMoreExpandable from '../../../core/ui/content/SeeMoreExpandable';
+import { buildLoginUrl } from '../../routing/urlBuilders';
+import RouterLink from '../../../core/ui/link/RouterLink';
 
 export interface SpaceExplorerViewProps {
   spaces: SpaceWithParent[] | undefined;
@@ -26,6 +28,12 @@ export interface SpaceExplorerViewProps {
   loading: boolean;
   hasMore: boolean | undefined;
   fetchMore: () => Promise<void>;
+  authenticated: boolean;
+  welcomeSpace?: {
+    displayName: string;
+    url: string;
+  };
+  fetchWelcomeSpace?: (args: { variables: { spaceId: string } }) => void;
 }
 
 export enum SpacesExplorerMembershipFilter {
@@ -97,6 +105,9 @@ export const SpaceExplorerView: FC<SpaceExplorerViewProps> = ({
   onMembershipFilterChange,
   fetchMore,
   hasMore,
+  authenticated,
+  welcomeSpace,
+  fetchWelcomeSpace,
 }) => {
   const { t } = useTranslation();
 
@@ -113,6 +124,17 @@ export const SpaceExplorerView: FC<SpaceExplorerViewProps> = ({
   const shouldDisplayPrivacyInfo = membershipFilter !== SpacesExplorerMembershipFilter.Member;
 
   const visibleSpaces = isCollapsed ? spaces?.slice(0, ITEMS_LIMIT) : spaces;
+
+  const hasNoMemberSpaces =
+    (membershipFilter === SpacesExplorerMembershipFilter.Member && !authenticated) || spaces?.length === 0;
+
+  useEffect(() => {
+    if (hasNoMemberSpaces) {
+      fetchWelcomeSpace?.({
+        variables: { spaceId: t('pages.home.sections.membershipSuggestions.suggestedSpace.nameId') },
+      });
+    }
+  }, [hasNoMemberSpaces]);
 
   return (
     <PageContentBlock>
@@ -135,14 +157,16 @@ export const SpaceExplorerView: FC<SpaceExplorerViewProps> = ({
           </Button>
         ))}
       </Gutters>
-      {membershipFilter === SpacesExplorerMembershipFilter.Member &&
-        searchTerms.length === 0 &&
-        spaces &&
-        spaces.length === 0 && (
-          <CaptionSmall marginX="auto" paddingY={gutters()}>
-            {t('pages.exploreSpaces.noSpaceMemberships')}
-          </CaptionSmall>
-        )}
+      {hasNoMemberSpaces && (
+        <CaptionSmall
+          component={RouterLink}
+          to={(authenticated ? welcomeSpace?.url : buildLoginUrl(welcomeSpace?.url)) ?? ''}
+          marginX="auto"
+          paddingY={gutters()}
+        >
+          {t('pages.exploreSpaces.noSpaceMemberships', { welcomeSpace: welcomeSpace?.displayName })}
+        </CaptionSmall>
+      )}
       {searchTerms.length !== 0 && spaces && spaces.length === 0 && (
         <CaptionSmall marginX="auto" paddingY={gutters()}>
           {t('pages.exploreSpaces.search.noResults')}
@@ -180,6 +204,12 @@ export const SpaceExplorerView: FC<SpaceExplorerViewProps> = ({
             <SeeMoreExpandable onExpand={() => setHasExpanded(true)} label={t('pages.exploreSpaces.seeAll')} />
           )}
         </>
+      )}
+      {hasNoMemberSpaces && (
+        <SeeMoreExpandable
+          onExpand={() => onMembershipFilterChange?.(SpacesExplorerMembershipFilter.All)}
+          label={t('pages.exploreSpaces.seeAll')}
+        />
       )}
     </PageContentBlock>
   );
