@@ -9,9 +9,9 @@ query JourneyRouteResolver(
     id
     challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
       id
-    }
-    opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
-      id
+      opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
+        id
+      }
     }
   }
 }

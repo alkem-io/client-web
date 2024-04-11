@@ -1,7 +1,0 @@
-subscription ChallengeCreated($spaceID: UUID_NAMEID!) {
-  challengeCreated(spaceID: $spaceID) {
-    challenge {
-      ...ChallengeCard
-    }
-  }
-}

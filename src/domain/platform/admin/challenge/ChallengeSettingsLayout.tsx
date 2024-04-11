@@ -39,14 +39,14 @@ const tabs: TabDefinition<SettingsSection>[] = [
     icon: ForumOutlinedIcon,
   },
   {
-    section: SettingsSection.Authorization,
-    route: 'authorization',
-    icon: GppGoodOutlinedIcon,
-  },
-  {
     section: SettingsSection.Opportunities,
     route: 'opportunities',
     icon: FlagOutlinedIcon,
+  },
+  {
+    section: SettingsSection.SpaceSettings,
+    route: 'settings',
+    icon: GppGoodOutlinedIcon,
   },
 ];
 

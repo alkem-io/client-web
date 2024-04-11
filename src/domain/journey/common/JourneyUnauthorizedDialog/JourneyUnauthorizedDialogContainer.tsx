@@ -135,7 +135,7 @@ const JourneyUnauthorizedDialogContainer = ({
   );
 
   const hostOrganizations = useMemo(
-    () => journeyDataQueryData?.space?.host && [journeyDataQueryData?.space.host],
+    () => journeyDataQueryData?.space?.account.host && [journeyDataQueryData?.space.account.host],
     [journeyDataQueryData]
   );
 
