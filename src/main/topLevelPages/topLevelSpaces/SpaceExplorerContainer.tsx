@@ -59,6 +59,7 @@ const SpaceExplorerContainer = ({ searchTerms, children }: SpaceExplorerContaine
       spaceIDs: mySpaceIds,
     },
     skip: !mySpaceIds || shouldSearch,
+    errorPolicy: 'ignore',
   });
 
   // PUBLIC: Search for challenges
@@ -91,7 +92,7 @@ const SpaceExplorerContainer = ({ searchTerms, children }: SpaceExplorerContaine
     getPageInfo: result => result.spacesPaginated.pageInfo,
     options: {
       skip: !usesPagination,
-      errorPolicy: 'all',
+      errorPolicy: 'ignore',
     },
   });
 
