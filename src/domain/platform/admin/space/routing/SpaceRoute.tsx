@@ -33,7 +33,7 @@ export const SpaceRoute: FC = () => {
         <Route path="storage" element={<SpaceStorageAdminPage spaceId={spaceId} />} />
         <Route path="community/groups/*" element={<CommunityGroupsRoute communityId={communityId} />} />
         <Route path="community/applications/*" element={<ApplicationsAdminRoutes />} />
-        <Route path="challenges/*" element={<ChallengesRoute />} />
+        <Route path="subspaces/*" element={<ChallengesRoute />} />
         <Route path="*" element={<Error404 />} />
       </Routes>
     </StorageConfigContextProvider>
