@@ -44,7 +44,7 @@ export const CreateOrganizationGroupPage: FC = () => {
         variables: {
           input: {
             parentID: organizationId,
-            profileData: {
+            profile: {
               displayName: name,
             },
           },

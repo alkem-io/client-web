@@ -124,7 +124,7 @@ const AboutPageContainer: FC<AboutPageContainerProps> = ({ journeyId, journeyTyp
   // TODO looks like space is missing
   const collaboration = (nonMembersData?.lookup.opportunity ?? nonMembersData?.lookup.challenge)?.collaboration;
 
-  const hostOrganization = nonMembersData?.space?.host;
+  const hostOrganization = nonMembersData?.space?.account.host;
   const community = {
     ...nonMemberJourney?.community,
     ...memberJourney?.community,

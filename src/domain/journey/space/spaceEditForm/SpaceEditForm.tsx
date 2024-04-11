@@ -31,12 +31,12 @@ import SpaceProfileFixedInformation, { SpaceProfileFixedInformationProps } from 
 import { DEFAULT_TAGSET } from '../../../common/tags/tagset.constants';
 import { Caption } from '../../../../core/ui/typography';
 
-interface Props {
+interface SpaceEditFormProps {
   context?: Context;
   profile?: Omit<Profile, 'storageBucket' | 'url'>;
   name?: string;
   nameID?: string;
-  hostID?: string;
+  hostId?: string;
   tagset?: Tagset;
   organizations?: { id: string; name: string }[];
   visibility?: SpaceVisibility;
@@ -49,18 +49,18 @@ interface Props {
 export interface SpaceEditFormValuesType {
   name: string;
   nameID: string;
-  host: string;
+  hostId: string;
   tagline: string;
   location: Partial<Location>;
   references: Reference[];
   tagsets: Tagset[];
 }
 
-const SpaceEditForm: FC<Props> = ({
+const SpaceEditForm: FC<SpaceEditFormProps> = ({
   profile,
   name,
   nameID,
-  hostID,
+  hostId,
   tagset,
   visibility,
   host,
@@ -93,13 +93,13 @@ const SpaceEditForm: FC<Props> = ({
     location: formatLocation(profile?.location) || EmptyLocation,
     references: profile?.references ?? [],
     tagsets,
-    host: hostID ?? '',
+    hostId: hostId ?? '',
   };
 
   const validationSchema = yup.object().shape({
     name: nameSegmentSchema.fields?.name ?? yup.string(),
     nameID: nameSegmentSchema.fields?.nameID ?? yup.string(),
-    host: yup.string().required(t('forms.validations.required')),
+    hostId: yup.string().required(t('forms.validations.required')),
     tagline: contextSegmentSchema.fields?.tagline ?? yup.string(),
     references: referenceSegmentSchema,
     tagsets: tagsetSegmentSchema,
@@ -132,7 +132,7 @@ const SpaceEditForm: FC<Props> = ({
                 {!edit && (
                   <FormikAutocomplete
                     title={t('components.editSpaceForm.host.title')}
-                    name="host"
+                    name="hostId"
                     values={organizations}
                     required
                     placeholder={t('components.editSpaceForm.host.title')}

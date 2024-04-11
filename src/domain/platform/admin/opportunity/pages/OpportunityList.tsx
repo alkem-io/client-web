@@ -33,6 +33,7 @@ export const OpportunityList: FC = () => {
 
   const { data: challengesListQuery, loading } = useOpportunitiesQuery({
     variables: { challengeId },
+    skip: !challengeId,
   });
 
   const opportunityList =
