@@ -16,7 +16,7 @@ const getType = ({ spaceID, subspaceID, subsubspaceID }: ApplicationForRoleResul
   }
 
   if (spaceID && subsubspaceID && !subspaceID) {
-    throw new TypeError("'challengeID' parameter expected when 'spaceID' and 'opportunityID' are provided");
+    throw new TypeError("'subspaceID' parameter expected when 'spaceID' and 'subsubspaceID' are provided");
   }
 
   if (spaceID && subspaceID) {
