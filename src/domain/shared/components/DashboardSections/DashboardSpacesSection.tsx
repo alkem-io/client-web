@@ -71,7 +71,7 @@ const DashboardSpacesSection = <ExtraAttrs extends {}>({
         ))}
         {loader}
       </ScrollableCardsLayoutContainer>
-      <Link href="/challenges" textAlign="right">
+      <Link href="/spaces" textAlign="right">
         <Caption>{t('common.show-all')}</Caption>
       </Link>
     </PageContentBlock>

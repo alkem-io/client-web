@@ -3,6 +3,7 @@ import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
 import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
 import GppGoodOutlinedIcon from '@mui/icons-material/GppGoodOutlined';
 import { SpaceIcon } from '../../../../journey/space/icon/SpaceIcon';
+import PsychologyIcon from '@mui/icons-material/Psychology';
 
 export enum AdminSection {
   Space = 'spaces',
@@ -10,6 +11,7 @@ export enum AdminSection {
   Organization = 'organizations',
   InnovationPacks = 'innovation-packs',
   InnovationHubs = 'innovation-hubs',
+  VirtualContributors = 'virtual-contributors',
   Authorization = 'authorization',
 }
 
@@ -38,6 +40,11 @@ export const adminTabs: TabDefinition<AdminSection>[] = [
     section: AdminSection.InnovationHubs,
     route: '/admin/innovation-hubs',
     icon: ForumOutlinedIcon,
+  },
+  {
+    section: AdminSection.VirtualContributors,
+    route: '/admin/virtual-contributors',
+    icon: PsychologyIcon,
   },
   {
     section: AdminSection.Authorization,

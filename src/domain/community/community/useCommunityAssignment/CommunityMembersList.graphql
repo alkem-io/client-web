@@ -39,6 +39,9 @@ fragment CommunityMembersDetails on Community {
   leadOrganizations: organizationsInRole(role: LEAD) {
     ...OrganizationDetails
   }
+  virtualContributorsInRole(role: MEMBER) {
+    ...CommunityMemberVirtualContributor
+  }
   policy {
     ...CommunityPolicy
   }
@@ -106,6 +109,23 @@ fragment CommunityMemberUser on User {
   email
   firstName
   lastName
+}
+
+fragment CommunityMemberVirtualContributor on VirtualContributor {
+  id
+  nameID
+  profile {
+    id
+    displayName
+    avatar: visual(type: AVATAR) {
+      ...VisualUri
+    }
+    location {
+      id
+      city
+      country
+    }
+  }
 }
 
 fragment AvailableUser on User {

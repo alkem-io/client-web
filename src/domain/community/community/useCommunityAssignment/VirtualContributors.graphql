@@ -1,0 +1,26 @@
+query AvailableVirtualContributors {
+  virtualContributors {
+    id
+    nameID
+    profile {
+      id
+      displayName
+    }
+  }
+}
+
+mutation AddVirtualContributorToCommunity($communityId: UUID!, $virtualContributorId: UUID_NAMEID!) {
+  assignCommunityRoleToVirtual(
+    roleData: { communityID: $communityId, role: MEMBER, virtualContributorID: $virtualContributorId }
+  ) {
+    id
+  }
+}
+
+mutation RemoveVirtualContributorFromCommunity($communityId: UUID!, $virtualContributorId: UUID_NAMEID!) {
+  removeCommunityRoleFromVirtual(
+    roleData: { communityID: $communityId, role: MEMBER, virtualContributorID: $virtualContributorId }
+  ) {
+    id
+  }
+}

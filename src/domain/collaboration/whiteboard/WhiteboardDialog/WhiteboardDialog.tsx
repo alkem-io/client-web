@@ -14,7 +14,7 @@ import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import whiteboardSchema from '../validation/whiteboardSchema';
 import { WhiteboardTemplateWithContent } from '../WhiteboardTemplateCard/WhiteboardTemplate';
 import mergeWhiteboard from '../utils/mergeWhiteboard';
-import { error as logError } from '../../../../core/logging/sentry/log';
+import { error as logError, tagCategoryValues, tagKeys } from '../../../../core/logging/sentry/log';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
 import { WhiteboardWithContent } from '../containers/WhiteboardContentContainer';
 import {
@@ -96,7 +96,8 @@ const checkWhiteboardConsistency = (
     logError(
       new Error(
         `Whiteboard is missing images '${whiteboardId}':[${missingImages.map(image => image.fileId).join(', ')}]`
-      )
+      ),
+      { [tagKeys.CATEGORY]: tagCategoryValues.WHITEBOARD }
     );
     return false;
   }
@@ -233,7 +234,9 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
       } catch (err) {
         notify(t('templateLibrary.whiteboardTemplates.errorImporting'), 'error');
         // @ts-ignore
-        logError(new Error(`Error importing whiteboard template ${template.id}: '${err}'`));
+        logError(new Error(`Error importing whiteboard template ${template.id}: '${err}'`), {
+          [tagKeys.CATEGORY]: tagCategoryValues.WHITEBOARD,
+        });
       }
     }
   };

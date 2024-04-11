@@ -3,7 +3,7 @@ import { GraphQLError } from 'graphql';
 import { i18n, TFunction } from 'i18next';
 import { useTranslation } from 'react-i18next';
 import { Severity } from '../../state/global/notifications/notificationMachine';
-import { error as logError } from '../../logging/sentry/log';
+import { error as logError, tagCategoryValues, tagKeys } from '../../logging/sentry/log';
 import { useNotification } from '../../ui/notifications/useNotification';
 
 const getTranslationForCode = (error: GraphQLError, t: TFunction, i18n: i18n) => {
@@ -45,7 +45,8 @@ export const useApolloErrorHandler = (severity: Severity = 'error') => {
     graphqlErrors.forEach((error: GraphQLError) => {
       const translation = getTranslationForCode(error, t, i18n);
       notify(translation, severity);
-      logError(error);
+      // TODO: verify that this log doesn't duplicate the useErrorLoggerLink.ts one on line 28
+      logError(error, { [tagKeys.CATEGORY]: tagCategoryValues.SERVER });
     });
   };
 

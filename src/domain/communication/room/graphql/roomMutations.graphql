@@ -3,7 +3,12 @@ mutation sendMessageToRoom($messageData: RoomSendMessageInput!) {
     id
     message
     sender {
-      id
+      ... on User {
+        id
+      }
+      ... on VirtualContributor {
+        id
+      }
     }
     timestamp
   }
