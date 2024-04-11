@@ -1,0 +1,7 @@
+subscription subspaceCreated($journeyID: UUID!) {
+  subspaceCreated(journeyID: $journeyID) {
+    childJourney {
+      ...SpaceCard
+    }
+  }
+}
