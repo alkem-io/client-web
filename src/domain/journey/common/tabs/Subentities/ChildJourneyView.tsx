@@ -18,8 +18,11 @@ import Loading from '../../../../../core/ui/loading/Loading';
 import PageContentBlockSeamless from '../../../../../core/ui/content/PageContentBlockSeamless';
 import JourneyFilter from '../../JourneyFilter/JourneyFilter';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
-import { Button } from '@mui/material';
+import { Box, Button, IconButton } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
 import { Identifiable } from '../../../../../core/utils/Identifiable';
+import RoundedIcon from '../../../../../core/ui/icon/RoundedIcon';
+import { useSpace } from '../../../space/SpaceContext/useSpace';
 
 export interface JourneySubentitiesState {
   loading: boolean;
@@ -47,6 +50,8 @@ export interface ChildJourneyViewProps<ChildEntity extends BaseChildEntity> {
   state: JourneySubentitiesState;
   childrenLeft?: ReactNode;
   childrenRight?: ReactNode;
+  addSubspaceButton?: ReactNode;
+  openCreateDialog?: (isOpen: boolean) => void;
 }
 
 const ChildJourneyView = <ChildEntity extends BaseChildEntity>({
@@ -63,8 +68,10 @@ const ChildJourneyView = <ChildEntity extends BaseChildEntity>({
   state,
   childrenLeft,
   childrenRight,
+  openCreateDialog,
 }: ChildJourneyViewProps<ChildEntity>) => {
   const { t } = useTranslation();
+  const { permissions } = useSpace();
 
   return (
     <MembershipBackdrop show={!childEntityReadAccess} blockName={getJourneyChildrenTranslation(t, journeyTypeName)}>
@@ -122,7 +129,23 @@ const ChildJourneyView = <ChildEntity extends BaseChildEntity>({
                   })}
                 >
                   {filteredEntities => (
-                    <CardsLayout items={filteredEntities} disablePadding>
+                    <CardsLayout
+                      items={filteredEntities}
+                      disablePadding
+                      addSubspaceButton={
+                        <Box sx={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
+                          {permissions.canCreateChallenges && (
+                            <IconButton
+                              aria-label={t('common.add')}
+                              size="small"
+                              onClick={() => openCreateDialog && openCreateDialog(true)}
+                            >
+                              <RoundedIcon component={AddIcon} size="medium" iconSize="small" />
+                            </IconButton>
+                          )}
+                        </Box>
+                      }
+                    >
                       {renderChildEntityCard}
                     </CardsLayout>
                   )}

@@ -10,6 +10,7 @@ export interface CardsLayoutProps<Item extends Identifiable | null | undefined> 
   deps?: unknown[];
   showCreateButton?: boolean;
   createButton?: ReactNode;
+  addSubspaceButton?: ReactNode;
 }
 
 /**
@@ -24,6 +25,7 @@ const CardsLayout = <Item extends Identifiable | null | undefined>({
   children,
   deps = [],
   createButton,
+  addSubspaceButton,
   ...layoutProps
 }: CardsLayoutProps<Item>) => {
   const depsValueFromObjectDeps = getDepsValueFromObject(deps);
@@ -42,6 +44,7 @@ const CardsLayout = <Item extends Identifiable | null | undefined>({
     <CardLayoutContainer {...layoutProps}>
       {createButton}
       {cards}
+      {addSubspaceButton}
     </CardLayoutContainer>
   );
 };
