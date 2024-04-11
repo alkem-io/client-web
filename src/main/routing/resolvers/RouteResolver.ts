@@ -41,15 +41,15 @@ type RouteParams = RouteResolverState & (LazyParams<JourneyRouteParams> | LazyPa
 // };
 
 export const useRouteResolver = (): RouteParams => {
-  const { spaceNameId, challengeNameId, opportunityNameId, calloutNameId } = useUrlParams();
+  const { spaceNameId, subspaceNameId, subsubspaceNameId, calloutNameId } = useUrlParams();
 
   const { data, loading: loadingJourney } = useJourneyRouteResolverQuery({
     variables: {
       spaceNameId: spaceNameId!,
-      challengeNameId,
-      opportunityNameId,
-      includeChallenge: !!challengeNameId,
-      includeOpportunity: !!opportunityNameId,
+      challengeNameId: subspaceNameId,
+      opportunityNameId: subsubspaceNameId,
+      includeChallenge: !!subspaceNameId,
+      includeOpportunity: !!subsubspaceNameId,
     },
     skip: !spaceNameId,
   });
@@ -60,7 +60,11 @@ export const useRouteResolver = (): RouteParams => {
     subSubSpaceId: data?.space.subspace?.subspace?.id,
     type: RouteType.Journey,
     journeyId: data?.space.subspace?.subspace?.id ?? data?.space.subspace?.id ?? data?.space.id,
-    journeyTypeName: getJourneyTypeName({ spaceNameId, challengeNameId, opportunityNameId })!,
+    journeyTypeName: getJourneyTypeName({
+      spaceNameId,
+      challengeNameId: subspaceNameId,
+      opportunityNameId: subsubspaceNameId,
+    })!,
   };
 
   const { data: calloutData, loading: loadingCallout } = useCalloutIdQuery({

@@ -52,7 +52,7 @@ export const SpaceRoute = () => {
           />
         </Route>
         <Route
-          path={`challenges/:${nameOfUrl.subspaceNameId}/*`}
+          path={`subspaces/:${nameOfUrl.subspaceNameId}/*`}
           element={
             <ChallengeProvider>
               <CommunityContextProvider>
