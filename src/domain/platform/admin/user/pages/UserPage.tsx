@@ -14,7 +14,6 @@ import {
 import { EditMode } from '../../../../../core/ui/forms/editMode';
 import { CreateUserInput } from '../../../../../core/apollo/generated/graphql-schema';
 import { UserModel } from '../../../../community/user/models/User';
-import { logger } from '../../../../../core/logging/winston/logger';
 import { createUserNameID } from '../../../../community/user/utils/createUserNameId';
 import { getUpdateUserInput } from '../../../../community/user/utils/getUpdateUserInput';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
@@ -84,7 +83,7 @@ const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, title = 'User' 
   const [createTagset] = useCreateTagsetOnProfileMutation({
     // Just log the error. Do not send it to the notification hanlder.
     // there is an issue handling multiple snackbars.
-    onError: error => logger.error(error.message),
+    onError: error => console.error(error.message),
   });
 
   const isSaving = updateMutationLoading || createMutationLoading;
