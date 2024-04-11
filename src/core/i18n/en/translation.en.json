@@ -1999,7 +1999,8 @@
       "search": {
         "placeholder": "Search…",
         "noResults": "No results matched your search terms."
-      }
+      },
+      "seeAll": "Show all Spaces on the platform"
     },
     "lead-organization": {
       "search": {

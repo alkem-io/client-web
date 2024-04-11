@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import PageContentBlock from '../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../core/ui/content/PageContentBlockHeader';
@@ -15,6 +15,7 @@ import { Visual } from '../../../domain/common/visual/Visual';
 import { gutters } from '../../../core/ui/grid/utils';
 import useLazyLoading from '../../../domain/shared/pagination/useLazyLoading';
 import SpaceSubspaceCardLabel from '../../../domain/journey/space/SpaceSubspaceCard/SpaceSubspaceCardLabel';
+import SeeMoreExpandable from '../../../core/ui/content/SeeMoreExpandable';
 
 export interface SpaceExplorerViewProps {
   spaces: SpaceWithParent[] | undefined;
@@ -85,6 +86,8 @@ const collectParentAvatars = <Journey extends WithParent<{ profile?: { avatar?: 
   return collectParentAvatars(parent, [parent.profile!.avatar!.uri, ...collected]);
 };
 
+export const ITEMS_LIMIT = 10;
+
 export const SpaceExplorerView: FC<SpaceExplorerViewProps> = ({
   spaces,
   searchTerms,
@@ -97,9 +100,19 @@ export const SpaceExplorerView: FC<SpaceExplorerViewProps> = ({
 }) => {
   const { t } = useTranslation();
 
+  const [hasExpanded, setHasExpanded] = useState(false);
+
+  const isCollapsed = !hasExpanded && membershipFilter !== SpacesExplorerMembershipFilter.Member;
+
+  const enableLazyLoading = !isCollapsed || (spaces && spaces.length < ITEMS_LIMIT);
+
+  const enableShowAll = isCollapsed && spaces && (spaces.length > ITEMS_LIMIT || hasMore);
+
   const loader = useLazyLoading(Box, { fetchMore, loading, hasMore });
 
   const shouldDisplayPrivacyInfo = membershipFilter !== SpacesExplorerMembershipFilter.Member;
+
+  const visibleSpaces = isCollapsed ? spaces?.slice(0, ITEMS_LIMIT) : spaces;
 
   return (
     <PageContentBlock>
@@ -136,32 +149,37 @@ export const SpaceExplorerView: FC<SpaceExplorerViewProps> = ({
         </CaptionSmall>
       )}
       {spaces && spaces.length > 0 && (
-        <ScrollableCardsLayoutContainer>
-          {spaces.map(space => (
-            <SpaceSubspaceCard
-              key={space.id}
-              tagline={space.profile!.tagline}
-              displayName={space.profile!.displayName}
-              vision={space.context?.vision ?? ''}
-              journeyUri={space.profile!.url}
-              type={space.profile!.type!}
-              avatarUris={collectParentAvatars(space, [space.profile!.avatar!.uri])}
-              tags={space.matchedTerms ?? space.profile?.tagset?.tags ?? []}
-              spaceDisplayName={space.parent?.profile?.displayName}
-              matchedTerms={!!space.matchedTerms}
-              label={
-                shouldDisplayPrivacyInfo && (
-                  <SpaceSubspaceCardLabel
-                    type={space.profile!.type!}
-                    member={space.community?.myMembershipStatus === CommunityMembershipStatus.Member}
-                    isPrivate={!space.authorization?.anonymousReadAccess}
-                  />
-                )
-              }
-            />
-          ))}
-          {loader}
-        </ScrollableCardsLayoutContainer>
+        <>
+          <ScrollableCardsLayoutContainer>
+            {visibleSpaces!.map(space => (
+              <SpaceSubspaceCard
+                key={space.id}
+                tagline={space.profile!.tagline}
+                displayName={space.profile!.displayName}
+                vision={space.context?.vision ?? ''}
+                journeyUri={space.profile!.url}
+                type={space.profile!.type!}
+                avatarUris={collectParentAvatars(space, [space.profile!.avatar!.uri])}
+                tags={space.matchedTerms ?? space.profile?.tagset?.tags ?? []}
+                spaceDisplayName={space.parent?.profile?.displayName}
+                matchedTerms={!!space.matchedTerms}
+                label={
+                  shouldDisplayPrivacyInfo && (
+                    <SpaceSubspaceCardLabel
+                      type={space.profile!.type!}
+                      member={space.community?.myMembershipStatus === CommunityMembershipStatus.Member}
+                      isPrivate={!space.authorization?.anonymousReadAccess}
+                    />
+                  )
+                }
+              />
+            ))}
+            {enableLazyLoading && loader}
+          </ScrollableCardsLayoutContainer>
+          {enableShowAll && (
+            <SeeMoreExpandable onExpand={() => setHasExpanded(true)} label={t('pages.exploreSpaces.seeAll')} />
+          )}
+        </>
       )}
     </PageContentBlock>
   );

@@ -13,7 +13,7 @@ import {
   SpaceExplorerSearchSpaceFragment,
 } from '../../../core/apollo/generated/graphql-schema';
 import { TypedSearchResult } from '../../search/SearchView';
-import { SpacesExplorerMembershipFilter, SpaceWithParent } from './SpaceExplorerView';
+import { ITEMS_LIMIT, SpacesExplorerMembershipFilter, SpaceWithParent } from './SpaceExplorerView';
 import usePaginatedQuery from '../../../domain/shared/pagination/usePaginatedQuery';
 import { SimpleContainerProps } from '../../../core/container/SimpleContainer';
 
@@ -36,9 +36,11 @@ const SpaceExplorerContainer = ({ searchTerms, children }: SpaceExplorerContaine
 
   const shouldSearch = searchTerms.length > 0;
 
+  const [membershipFilter, setMembershipFilter] = useState(SpacesExplorerMembershipFilter.All);
+
   // PRIVATE: Challenges if the user is logged in
   const { data: spaceMembershipsData, loading: loadingUserData } = useChallengeExplorerPageQuery({
-    skip: !userMetadata?.user?.id,
+    skip: !userMetadata?.user?.id || shouldSearch || membershipFilter !== SpacesExplorerMembershipFilter.Member,
   });
 
   const mySpaceIds = spaceMembershipsData?.me.spaceMemberships.map(space => space.id);
@@ -63,8 +65,6 @@ const SpaceExplorerContainer = ({ searchTerms, children }: SpaceExplorerContaine
     skip: !shouldSearch,
   });
 
-  const [membershipFilter, setMembershipFilter] = useState(SpacesExplorerMembershipFilter.All);
-
   const usesPagination =
     (membershipFilter === SpacesExplorerMembershipFilter.All ||
       membershipFilter === SpacesExplorerMembershipFilter.Public) &&
@@ -77,7 +77,7 @@ const SpaceExplorerContainer = ({ searchTerms, children }: SpaceExplorerContaine
     hasMore: hasMoreSpaces,
   } = usePaginatedQuery({
     useQuery: useSpaceExplorerAllSpacesQuery,
-    pageSize: 10,
+    pageSize: ITEMS_LIMIT,
     variables: {},
     getPageInfo: result => result.spacesPaginated.pageInfo,
     options: {
@@ -87,6 +87,7 @@ const SpaceExplorerContainer = ({ searchTerms, children }: SpaceExplorerContaine
   });
 
   const fetchMore = usesPagination ? fetchMoreSpaces : () => Promise.resolve();
+
   const hasMore = usesPagination ? hasMoreSpaces : false;
 
   const loading = isLoadingSpaces || isLoadingMemberSpaces || loadingSearchResults || loadingUserData || loadingUser;
