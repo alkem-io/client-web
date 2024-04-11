@@ -12,7 +12,7 @@ import SpaceSubspaceCard from '../../../domain/journey/space/SpaceSubspaceCard/S
 import { Identifiable } from '../../../core/utils/Identifiable';
 import { CommunityMembershipStatus, ProfileType } from '../../../core/apollo/generated/graphql-schema';
 import { Visual } from '../../../domain/common/visual/Visual';
-import { gutters } from '../../../core/ui/grid/utils';
+import { gutters, useGridItem } from '../../../core/ui/grid/utils';
 import useLazyLoading from '../../../domain/shared/pagination/useLazyLoading';
 import SpaceSubspaceCardLabel from '../../../domain/journey/space/SpaceSubspaceCard/SpaceSubspaceCardLabel';
 import SeeMoreExpandable from '../../../core/ui/content/SeeMoreExpandable';
@@ -136,26 +136,32 @@ export const SpaceExplorerView: FC<SpaceExplorerViewProps> = ({
     }
   }, [hasNoMemberSpaces]);
 
+  const getGridItemStyle = useGridItem();
+
   return (
     <PageContentBlock>
       <PageContentBlockHeader title={t('pages.exploreSpaces.fullName')} />
       <WrapperMarkdown caption>{t('pages.exploreSpaces.caption')}</WrapperMarkdown>
-      <Gutters row disablePadding>
+      <Gutters row disablePadding flexWrap="wrap" justifyContent="center">
         <SearchTagsInput
           value={searchTerms}
           placeholder={t('pages.exploreSpaces.search.placeholder')}
           onChange={(_event: unknown, newValue: string[]) => setSearchTerms(newValue)}
+          fullWidth={false}
+          sx={{ flexGrow: 1, flexBasis: getGridItemStyle(4).width }}
         />
-        {SPACES_EXPLORER_MEMBERSHIP_FILTERS.map(filter => (
-          <Button
-            key={filter}
-            variant={filter === membershipFilter ? 'contained' : 'outlined'}
-            sx={{ flexShrink: 0, textTransform: 'none' }}
-            onClick={() => onMembershipFilterChange?.(filter)}
-          >
-            <Caption noWrap>{t(`pages.exploreSpaces.membershipFilter.${filter}` as const)}</Caption>
-          </Button>
-        ))}
+        <Gutters row disablePadding maxWidth="100%">
+          {SPACES_EXPLORER_MEMBERSHIP_FILTERS.map(filter => (
+            <Button
+              key={filter}
+              variant={filter === membershipFilter ? 'contained' : 'outlined'}
+              sx={{ textTransform: 'none', flexShrink: 1 }}
+              onClick={() => onMembershipFilterChange?.(filter)}
+            >
+              <Caption noWrap>{t(`pages.exploreSpaces.membershipFilter.${filter}` as const)}</Caption>
+            </Button>
+          ))}
+        </Gutters>
       </Gutters>
       {hasNoMemberSpaces && (
         <CaptionSmall
