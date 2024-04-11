@@ -599,6 +599,12 @@ export type AssignCommunityRoleToUserInput = {
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
+export type AssignCommunityRoleToVirtualInput = {
+  communityID: Scalars['UUID'];
+  role: CommunityRole;
+  virtualContributorID: Scalars['UUID_NAMEID'];
+};
+
 export type AssignGlobalAdminInput = {
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
@@ -714,6 +720,7 @@ export type AuthorizationPolicyRuleVerifiedCredential = {
 export enum AuthorizationPrivilege {
   AccessDashboardRefresh = 'ACCESS_DASHBOARD_REFRESH',
   AccessInteractiveGuidance = 'ACCESS_INTERACTIVE_GUIDANCE',
+  AccessVirtualContributor = 'ACCESS_VIRTUAL_CONTRIBUTOR',
   Admin = 'ADMIN',
   AuthorizationReset = 'AUTHORIZATION_RESET',
   CommunityAddMember = 'COMMUNITY_ADD_MEMBER',
@@ -1198,6 +1205,8 @@ export type Community = Groupable & {
   policy?: Maybe<CommunityPolicy>;
   /** All users that have the specified Role in this Community. */
   usersInRole?: Maybe<Array<User>>;
+  /** All virtuals that have the specified Role in this Community. */
+  virtualContributorsInRole?: Maybe<Array<VirtualContributor>>;
 };
 
 export type CommunityAvailableLeadUsersArgs = {
@@ -1229,6 +1238,10 @@ export type CommunityOrganizationsInRoleArgs = {
 };
 
 export type CommunityUsersInRoleArgs = {
+  role: CommunityRole;
+};
+
+export type CommunityVirtualContributorsInRoleArgs = {
   role: CommunityRole;
 };
 
@@ -1664,6 +1677,21 @@ export type CreateUserInput = {
   profileData: CreateProfileInput;
 };
 
+export type CreateVirtualContributorInput = {
+  /** A readable identifier, unique within the containing scope. */
+  nameID: Scalars['NameID'];
+  profileData: CreateProfileInput;
+  virtualPersonaID: Scalars['UUID'];
+};
+
+export type CreateVirtualPersonaInput = {
+  engine: VirtualPersonaEngine;
+  /** A readable identifier, unique within the containing scope. */
+  nameID: Scalars['NameID'];
+  profileData: CreateProfileInput;
+  prompt: Scalars['JSON'];
+};
+
 export type CreateWhiteboardInput = {
   content?: InputMaybe<Scalars['WhiteboardContent']>;
   /** A readable identifier, unique within the containing scope. If not provided it will be generated based on the displayName. */
@@ -1807,6 +1835,14 @@ export type DeleteUserGroupInput = {
 
 export type DeleteUserInput = {
   ID: Scalars['UUID_NAMEID_EMAIL'];
+};
+
+export type DeleteVirtualContributorInput = {
+  ID: Scalars['UUID_NAMEID'];
+};
+
+export type DeleteVirtualPersonaInput = {
+  ID: Scalars['UUID_NAMEID'];
 };
 
 export type DeleteWhiteboardInput = {
@@ -2207,6 +2243,7 @@ export type LicenseFeatureFlag = {
 
 export enum LicenseFeatureFlagName {
   CalloutToCalloutTemplate = 'CALLOUT_TO_CALLOUT_TEMPLATE',
+  VirtualContributors = 'VIRTUAL_CONTRIBUTORS',
   WhiteboardMultiUser = 'WHITEBOARD_MULTI_USER',
 }
 
@@ -2416,13 +2453,15 @@ export type Message = {
   message: Scalars['Markdown'];
   /** Reactions on this message */
   reactions: Array<Reaction>;
-  /** The user that created this Post */
-  sender?: Maybe<User>;
+  /** The User or Virtual Contributor that created this Message */
+  sender?: Maybe<MessageSender>;
   /** The message being replied to */
   threadID?: Maybe<Scalars['String']>;
   /** The server timestamp in UTC */
   timestamp: Scalars['Float'];
 };
+
+export type MessageSender = User | VirtualContributor;
 
 export type Metadata = {
   __typename?: 'Metadata';
@@ -2468,6 +2507,8 @@ export type Mutation = {
   assignCommunityRoleToOrganization: Organization;
   /** Assigns a User to a role in the specified Community. */
   assignCommunityRoleToUser: User;
+  /** Assigns a Virtual Contributor to a role in the specified Community. */
+  assignCommunityRoleToVirtual: VirtualContributor;
   /** Assigns a User as a Global Admin. */
   assignUserAsGlobalAdmin: User;
   /** Assigns a User as a Global Community Admin. */
@@ -2492,6 +2533,10 @@ export type Mutation = {
   authorizationPolicyResetOnPlatform: Platform;
   /** Reset the Authorization policy on the specified User. */
   authorizationPolicyResetOnUser: User;
+  /** Reset the Authorization Policy on the specified VirtualContributor. */
+  authorizationPolicyResetOnVirtualContributor: VirtualContributor;
+  /** Reset the Authorization Policy on the specified VirtualPersona. */
+  authorizationPolicyResetOnVirtualPersona: VirtualPersona;
   /** Reset the specified Authorization Policy to global admin privileges */
   authorizationPolicyResetToGlobalAdminsAccess: Authorization;
   /** Generate Alkemio user credential offer */
@@ -2546,6 +2591,10 @@ export type Mutation = {
   createUser: User;
   /** Creates a new User profile on the platform for a user that has a valid Authentication session. */
   createUserNewRegistration: User;
+  /** Creates a new VirtualContributor on the platform. */
+  createVirtualContributor: VirtualContributor;
+  /** Creates a new VirtualPersona on the platform. */
+  createVirtualPersona: VirtualPersona;
   /** Creates a new WhiteboardTemplate on the specified TemplatesSet. */
   createWhiteboardTemplate: WhiteboardTemplate;
   /** Deletes the specified Actor. */
@@ -2596,6 +2645,10 @@ export type Mutation = {
   deleteUserApplication: Application;
   /** Deletes the specified User Group. */
   deleteUserGroup: UserGroup;
+  /** Deletes the specified VirtualContributor. */
+  deleteVirtualContributor: VirtualContributor;
+  /** Deletes the specified VirtualPersona. */
+  deleteVirtualPersona: VirtualPersona;
   /** Deletes the specified Whiteboard. */
   deleteWhiteboard: Whiteboard;
   /** Deletes the specified WhiteboardTemplate. */
@@ -2626,6 +2679,8 @@ export type Mutation = {
   removeCommunityRoleFromOrganization: Organization;
   /** Removes a User from a Role in the specified Community. */
   removeCommunityRoleFromUser: User;
+  /** Removes a Virtual from a Role in the specified Community. */
+  removeCommunityRoleFromVirtual: VirtualContributor;
   /** Removes a message. */
   removeMessageOnRoom: Scalars['MessageID'];
   /** Remove a reaction on a message from the specified Room. */
@@ -2646,6 +2701,8 @@ export type Mutation = {
   removeUserFromOrganization: Organization;
   /** Resets the interaction with the chat engine. */
   resetChatGuidance: Scalars['Boolean'];
+  /** Resets the interaction with the chat engine. */
+  resetVirtualContributor: Scalars['Boolean'];
   /** Removes an authorization credential from an Organization. */
   revokeCredentialFromOrganization: Organization;
   /** Removes an authorization credential from a User. */
@@ -2736,6 +2793,10 @@ export type Mutation = {
   updateUserGroup: UserGroup;
   /** Update the platform settings, such as nameID, email, for the specified User. */
   updateUserPlatformSettings: User;
+  /** Updates the specified VirtualContributor. */
+  updateVirtualContributor: VirtualContributor;
+  /** Updates the specified VirtualPersona. */
+  updateVirtualPersona: VirtualPersona;
   /** Updates the image URI for the specified Visual. */
   updateVisual: Visual;
   /** Updates the specified Whiteboard. */
@@ -2782,6 +2843,10 @@ export type MutationAssignCommunityRoleToUserArgs = {
   roleData: AssignCommunityRoleToUserInput;
 };
 
+export type MutationAssignCommunityRoleToVirtualArgs = {
+  roleData: AssignCommunityRoleToVirtualInput;
+};
+
 export type MutationAssignUserAsGlobalAdminArgs = {
   membershipData: AssignGlobalAdminInput;
 };
@@ -2820,6 +2885,14 @@ export type MutationAuthorizationPolicyResetOnOrganizationArgs = {
 
 export type MutationAuthorizationPolicyResetOnUserArgs = {
   authorizationResetData: UserAuthorizationResetInput;
+};
+
+export type MutationAuthorizationPolicyResetOnVirtualContributorArgs = {
+  authorizationResetData: VirtualContributorAuthorizationResetInput;
+};
+
+export type MutationAuthorizationPolicyResetOnVirtualPersonaArgs = {
+  authorizationResetData: VirtualPersonaAuthorizationResetInput;
 };
 
 export type MutationAuthorizationPolicyResetToGlobalAdminsAccessArgs = {
@@ -2922,6 +2995,14 @@ export type MutationCreateUserArgs = {
   userData: CreateUserInput;
 };
 
+export type MutationCreateVirtualContributorArgs = {
+  virtualContributorData: CreateVirtualContributorInput;
+};
+
+export type MutationCreateVirtualPersonaArgs = {
+  virtualPersonaData: CreateVirtualPersonaInput;
+};
+
 export type MutationCreateWhiteboardTemplateArgs = {
   whiteboardTemplateInput: CreateWhiteboardTemplateOnTemplatesSetInput;
 };
@@ -3022,6 +3103,14 @@ export type MutationDeleteUserGroupArgs = {
   deleteData: DeleteUserGroupInput;
 };
 
+export type MutationDeleteVirtualContributorArgs = {
+  deleteData: DeleteVirtualContributorInput;
+};
+
+export type MutationDeleteVirtualPersonaArgs = {
+  deleteData: DeleteVirtualPersonaInput;
+};
+
 export type MutationDeleteWhiteboardArgs = {
   whiteboardData: DeleteWhiteboardInput;
 };
@@ -3076,6 +3165,10 @@ export type MutationRemoveCommunityRoleFromOrganizationArgs = {
 
 export type MutationRemoveCommunityRoleFromUserArgs = {
   roleData: RemoveCommunityRoleFromUserInput;
+};
+
+export type MutationRemoveCommunityRoleFromVirtualArgs = {
+  roleData: RemoveCommunityRoleFromVirtualInput;
 };
 
 export type MutationRemoveMessageOnRoomArgs = {
@@ -3292,6 +3385,14 @@ export type MutationUpdateUserGroupArgs = {
 
 export type MutationUpdateUserPlatformSettingsArgs = {
   updateData: UpdateUserPlatformSettingsInput;
+};
+
+export type MutationUpdateVirtualContributorArgs = {
+  virtualContributorData: UpdateVirtualContributorInput;
+};
+
+export type MutationUpdateVirtualPersonaArgs = {
+  virtualPersonaData: UpdateVirtualPersonaInput;
 };
 
 export type MutationUpdateVisualArgs = {
@@ -3743,6 +3844,8 @@ export enum ProfileType {
   Space = 'SPACE',
   User = 'USER',
   UserGroup = 'USER_GROUP',
+  VirtualContributor = 'VIRTUAL_CONTRIBUTOR',
+  VirtualPersona = 'VIRTUAL_PERSONA',
   Whiteboard = 'WHITEBOARD',
   WhiteboardTemplate = 'WHITEBOARD_TEMPLATE',
 }
@@ -3765,6 +3868,8 @@ export type Query = {
   adminCommunicationOrphanedUsage: CommunicationAdminOrphanedUsageResult;
   /** Ask the chat engine for guidance. */
   askChatGuidanceQuestion: ChatGuidanceResult;
+  /** Ask the virtual persona engine for guidance. */
+  askVirtualPersonaQuestion: VirtualPersonaResult;
   /** Get supported credential metadata */
   getSupportedVerifiedCredentialMetadata: Array<CredentialMetadataOutput>;
   /** Allow direct lookup of entities from the domain model */
@@ -3805,6 +3910,14 @@ export type Query = {
   usersPaginated: PaginatedUsers;
   /** All Users that hold credentials matching the supplied criteria. */
   usersWithAuthorizationCredential: Array<User>;
+  /** A particular VirtualContributor */
+  virtualContributor: VirtualContributor;
+  /** The VirtualContributors on this platform */
+  virtualContributors: Array<VirtualContributor>;
+  /** A particular VirtualPersona */
+  virtualPersona: VirtualPersona;
+  /** The VirtualPersonas on this platform */
+  virtualPersonas: Array<VirtualPersona>;
 };
 
 export type QueryAccountArgs = {
@@ -3833,6 +3946,10 @@ export type QueryAdminCommunicationMembershipArgs = {
 
 export type QueryAskChatGuidanceQuestionArgs = {
   chatData: ChatGuidanceInput;
+};
+
+export type QueryAskVirtualPersonaQuestionArgs = {
+  chatData: VirtualPersonaQuestionInput;
 };
 
 export type QueryOrganizationArgs = {
@@ -3915,6 +4032,20 @@ export type QueryUsersPaginatedArgs = {
 
 export type QueryUsersWithAuthorizationCredentialArgs = {
   credentialsCriteriaData: UsersWithAuthorizationCredentialInput;
+};
+
+export type QueryVirtualContributorArgs = {
+  ID: Scalars['UUID_NAMEID'];
+};
+
+export type QueryVirtualContributorsArgs = {
+  filter?: InputMaybe<ContributorFilterInput>;
+  limit?: InputMaybe<Scalars['Float']>;
+  shuffle?: InputMaybe<Scalars['Boolean']>;
+};
+
+export type QueryVirtualPersonaArgs = {
+  ID: Scalars['UUID'];
 };
 
 export type Question = {
@@ -4090,6 +4221,12 @@ export type RemoveCommunityRoleFromUserInput = {
   communityID: Scalars['UUID'];
   role: CommunityRole;
   userID: Scalars['UUID_NAMEID_EMAIL'];
+};
+
+export type RemoveCommunityRoleFromVirtualInput = {
+  communityID: Scalars['UUID'];
+  role: CommunityRole;
+  virtualContributorID: Scalars['UUID_NAMEID'];
 };
 
 export type RemoveGlobalAdminInput = {
@@ -5285,6 +5422,25 @@ export type UpdateUserPreferenceInput = {
   value: Scalars['String'];
 };
 
+export type UpdateVirtualContributorInput = {
+  /** The ID of the Virtual Contributor to update. */
+  ID: Scalars['UUID'];
+  /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
+  nameID?: InputMaybe<Scalars['NameID']>;
+  /** The Profile of this entity. */
+  profileData?: InputMaybe<UpdateProfileInput>;
+};
+
+export type UpdateVirtualPersonaInput = {
+  ID: Scalars['UUID'];
+  engine: VirtualPersonaEngine;
+  /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
+  nameID?: InputMaybe<Scalars['NameID']>;
+  /** The Profile of this entity. */
+  profileData?: InputMaybe<UpdateProfileInput>;
+  prompt: Scalars['JSON'];
+};
+
 export type UpdateVisualInput = {
   alternativeText?: InputMaybe<Scalars['String']>;
   uri: Scalars['String'];
@@ -5451,6 +5607,76 @@ export type VerifiedCredentialClaim = {
   name: Scalars['JSON'];
   /** The value for the claim */
   value: Scalars['JSON'];
+};
+
+export type VirtualContributor = {
+  __typename?: 'VirtualContributor';
+  /** The Agent representing this User. */
+  agent?: Maybe<Agent>;
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** A name identifier of the entity, unique within a given scope. */
+  nameID: Scalars['NameID'];
+  /** The profile for this Virtual. */
+  profile: Profile;
+  /** The StorageAggregator for managing storage buckets in use by this Virtual */
+  storageAggregator?: Maybe<StorageAggregator>;
+  /** The virtual persona being used by this virtual contributor */
+  virtualPersona: VirtualPersona;
+};
+
+export type VirtualContributorAuthorizationResetInput = {
+  /** The identifier of the Virtual Contributor whose Authorization Policy should be reset. */
+  virtualContributorID: Scalars['UUID'];
+};
+
+export type VirtualPersona = {
+  __typename?: 'VirtualPersona';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The Virtual Persona Engine being used by this virtual persona. */
+  engine?: Maybe<VirtualPersonaEngine>;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** A name identifier of the entity, unique within a given scope. */
+  nameID: Scalars['NameID'];
+  /** The Profile for this VirtualPersona. */
+  profile: Profile;
+  /** The prompt used by this Virtual Persona */
+  prompt: Scalars['String'];
+};
+
+export type VirtualPersonaAuthorizationResetInput = {
+  /** The identifier of the Virtual Persona whose Authorization Policy should be reset. */
+  virtualPersonaID: Scalars['UUID_NAMEID_EMAIL'];
+};
+
+export enum VirtualPersonaEngine {
+  AlkemioDigileefomgeving = 'ALKEMIO_DIGILEEFOMGEVING',
+  AlkemioWelcome = 'ALKEMIO_WELCOME',
+  CommunityManager = 'COMMUNITY_MANAGER',
+  Guidance = 'GUIDANCE',
+}
+
+export type VirtualPersonaQuestionInput = {
+  /** The question that is being asked. */
+  question: Scalars['String'];
+  /** Virtual Persona Type. */
+  virtualPersonaID: Scalars['UUID'];
+};
+
+export type VirtualPersonaResult = {
+  __typename?: 'VirtualPersonaResult';
+  /** The answer to the question */
+  answer: Scalars['String'];
+  /** The id of the answer; null if an error was returned */
+  id?: Maybe<Scalars['String']>;
+  /** The original question */
+  question: Scalars['String'];
+  /** The sources used to answer the question */
+  sources?: Maybe<Array<Source>>;
 };
 
 export type Visual = {
@@ -6002,20 +6228,47 @@ export type CalloutPageCalloutQuery = {
                     __typename?: 'Reaction';
                     id: string;
                     emoji: string;
-                    sender?: { __typename?: 'User'; id: string; firstName: string; lastName: string } | undefined;
+                    sender?:
+                      | {
+                          __typename?: 'User';
+                          id: string;
+                          profile: { __typename?: 'Profile'; id: string; displayName: string };
+                        }
+                      | undefined;
                   }>;
                   sender?:
                     | {
                         __typename?: 'User';
                         id: string;
-                        nameID: string;
-                        firstName: string;
-                        lastName: string;
                         profile: {
                           __typename?: 'Profile';
                           id: string;
                           displayName: string;
                           url: string;
+                          type?: ProfileType | undefined;
+                          avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                          tagsets?:
+                            | Array<{
+                                __typename?: 'Tagset';
+                                id: string;
+                                name: string;
+                                tags: Array<string>;
+                                allowedValues: Array<string>;
+                                type: TagsetType;
+                              }>
+                            | undefined;
+                          location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                        };
+                      }
+                    | {
+                        __typename?: 'VirtualContributor';
+                        id: string;
+                        profile: {
+                          __typename?: 'Profile';
+                          id: string;
+                          displayName: string;
+                          url: string;
+                          type?: ProfileType | undefined;
                           avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                           tagsets?:
                             | Array<{
@@ -8582,20 +8835,47 @@ export type CreateCalloutMutation = {
               __typename?: 'Reaction';
               id: string;
               emoji: string;
-              sender?: { __typename?: 'User'; id: string; firstName: string; lastName: string } | undefined;
+              sender?:
+                | {
+                    __typename?: 'User';
+                    id: string;
+                    profile: { __typename?: 'Profile'; id: string; displayName: string };
+                  }
+                | undefined;
             }>;
             sender?:
               | {
                   __typename?: 'User';
                   id: string;
-                  nameID: string;
-                  firstName: string;
-                  lastName: string;
                   profile: {
                     __typename?: 'Profile';
                     id: string;
                     displayName: string;
                     url: string;
+                    type?: ProfileType | undefined;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                    tagsets?:
+                      | Array<{
+                          __typename?: 'Tagset';
+                          id: string;
+                          name: string;
+                          tags: Array<string>;
+                          allowedValues: Array<string>;
+                          type: TagsetType;
+                        }>
+                      | undefined;
+                    location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                  };
+                }
+              | {
+                  __typename?: 'VirtualContributor';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    url: string;
+                    type?: ProfileType | undefined;
                     avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                     tagsets?:
                       | Array<{
@@ -8850,20 +9130,47 @@ export type UpdateCalloutVisibilityMutation = {
               __typename?: 'Reaction';
               id: string;
               emoji: string;
-              sender?: { __typename?: 'User'; id: string; firstName: string; lastName: string } | undefined;
+              sender?:
+                | {
+                    __typename?: 'User';
+                    id: string;
+                    profile: { __typename?: 'Profile'; id: string; displayName: string };
+                  }
+                | undefined;
             }>;
             sender?:
               | {
                   __typename?: 'User';
                   id: string;
-                  nameID: string;
-                  firstName: string;
-                  lastName: string;
                   profile: {
                     __typename?: 'Profile';
                     id: string;
                     displayName: string;
                     url: string;
+                    type?: ProfileType | undefined;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                    tagsets?:
+                      | Array<{
+                          __typename?: 'Tagset';
+                          id: string;
+                          name: string;
+                          tags: Array<string>;
+                          allowedValues: Array<string>;
+                          type: TagsetType;
+                        }>
+                      | undefined;
+                    location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                  };
+                }
+              | {
+                  __typename?: 'VirtualContributor';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    url: string;
+                    type?: ProfileType | undefined;
                     avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                     tagsets?:
                       | Array<{
@@ -9554,20 +9861,47 @@ export type CalloutDetailsQuery = {
                     __typename?: 'Reaction';
                     id: string;
                     emoji: string;
-                    sender?: { __typename?: 'User'; id: string; firstName: string; lastName: string } | undefined;
+                    sender?:
+                      | {
+                          __typename?: 'User';
+                          id: string;
+                          profile: { __typename?: 'Profile'; id: string; displayName: string };
+                        }
+                      | undefined;
                   }>;
                   sender?:
                     | {
                         __typename?: 'User';
                         id: string;
-                        nameID: string;
-                        firstName: string;
-                        lastName: string;
                         profile: {
                           __typename?: 'Profile';
                           id: string;
                           displayName: string;
                           url: string;
+                          type?: ProfileType | undefined;
+                          avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                          tagsets?:
+                            | Array<{
+                                __typename?: 'Tagset';
+                                id: string;
+                                name: string;
+                                tags: Array<string>;
+                                allowedValues: Array<string>;
+                                type: TagsetType;
+                              }>
+                            | undefined;
+                          location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                        };
+                      }
+                    | {
+                        __typename?: 'VirtualContributor';
+                        id: string;
+                        profile: {
+                          __typename?: 'Profile';
+                          id: string;
+                          displayName: string;
+                          url: string;
+                          type?: ProfileType | undefined;
                           avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                           tagsets?:
                             | Array<{
@@ -9762,20 +10096,47 @@ export type CalloutDetailsFragment = {
             __typename?: 'Reaction';
             id: string;
             emoji: string;
-            sender?: { __typename?: 'User'; id: string; firstName: string; lastName: string } | undefined;
+            sender?:
+              | {
+                  __typename?: 'User';
+                  id: string;
+                  profile: { __typename?: 'Profile'; id: string; displayName: string };
+                }
+              | undefined;
           }>;
           sender?:
             | {
                 __typename?: 'User';
                 id: string;
-                nameID: string;
-                firstName: string;
-                lastName: string;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
                   url: string;
+                  type?: ProfileType | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                  tagsets?:
+                    | Array<{
+                        __typename?: 'Tagset';
+                        id: string;
+                        name: string;
+                        tags: Array<string>;
+                        allowedValues: Array<string>;
+                        type: TagsetType;
+                      }>
+                    | undefined;
+                  location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                };
+              }
+            | {
+                __typename?: 'VirtualContributor';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  url: string;
+                  type?: ProfileType | undefined;
                   avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                   tagsets?:
                     | Array<{
@@ -10089,21 +10450,48 @@ export type PostQuery = {
                             id: string;
                             emoji: string;
                             sender?:
-                              | { __typename?: 'User'; id: string; firstName: string; lastName: string }
+                              | {
+                                  __typename?: 'User';
+                                  id: string;
+                                  profile: { __typename?: 'Profile'; id: string; displayName: string };
+                                }
                               | undefined;
                           }>;
                           sender?:
                             | {
                                 __typename?: 'User';
                                 id: string;
-                                nameID: string;
-                                firstName: string;
-                                lastName: string;
                                 profile: {
                                   __typename?: 'Profile';
                                   id: string;
                                   displayName: string;
                                   url: string;
+                                  type?: ProfileType | undefined;
+                                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                                  tagsets?:
+                                    | Array<{
+                                        __typename?: 'Tagset';
+                                        id: string;
+                                        name: string;
+                                        tags: Array<string>;
+                                        allowedValues: Array<string>;
+                                        type: TagsetType;
+                                      }>
+                                    | undefined;
+                                  location?:
+                                    | { __typename?: 'Location'; id: string; city: string; country: string }
+                                    | undefined;
+                                };
+                              }
+                            | {
+                                __typename?: 'VirtualContributor';
+                                id: string;
+                                profile: {
+                                  __typename?: 'Profile';
+                                  id: string;
+                                  displayName: string;
+                                  url: string;
+                                  type?: ProfileType | undefined;
                                   avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                                   tagsets?:
                                     | Array<{
@@ -10197,20 +10585,43 @@ export type PostDashboardFragment = {
         __typename?: 'Reaction';
         id: string;
         emoji: string;
-        sender?: { __typename?: 'User'; id: string; firstName: string; lastName: string } | undefined;
+        sender?:
+          | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+          | undefined;
       }>;
       sender?:
         | {
             __typename?: 'User';
             id: string;
-            nameID: string;
-            firstName: string;
-            lastName: string;
             profile: {
               __typename?: 'Profile';
               id: string;
               displayName: string;
               url: string;
+              type?: ProfileType | undefined;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              tagsets?:
+                | Array<{
+                    __typename?: 'Tagset';
+                    id: string;
+                    name: string;
+                    tags: Array<string>;
+                    allowedValues: Array<string>;
+                    type: TagsetType;
+                  }>
+                | undefined;
+              location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+            };
+          }
+        | {
+            __typename?: 'VirtualContributor';
+            id: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              url: string;
+              type?: ProfileType | undefined;
               avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
               tagsets?:
                 | Array<{
@@ -12034,20 +12445,43 @@ export type CreateDiscussionMutation = {
           __typename?: 'Reaction';
           id: string;
           emoji: string;
-          sender?: { __typename?: 'User'; id: string; firstName: string; lastName: string } | undefined;
+          sender?:
+            | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+            | undefined;
         }>;
         sender?:
           | {
               __typename?: 'User';
               id: string;
-              nameID: string;
-              firstName: string;
-              lastName: string;
               profile: {
                 __typename?: 'Profile';
                 id: string;
                 displayName: string;
                 url: string;
+                type?: ProfileType | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                tagsets?:
+                  | Array<{
+                      __typename?: 'Tagset';
+                      id: string;
+                      name: string;
+                      tags: Array<string>;
+                      allowedValues: Array<string>;
+                      type: TagsetType;
+                    }>
+                  | undefined;
+                location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+              };
+            }
+          | {
+              __typename?: 'VirtualContributor';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                url: string;
+                type?: ProfileType | undefined;
                 avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 tagsets?:
                   | Array<{
@@ -12101,20 +12535,43 @@ export type UpdateDiscussionMutation = {
           __typename?: 'Reaction';
           id: string;
           emoji: string;
-          sender?: { __typename?: 'User'; id: string; firstName: string; lastName: string } | undefined;
+          sender?:
+            | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+            | undefined;
         }>;
         sender?:
           | {
               __typename?: 'User';
               id: string;
-              nameID: string;
-              firstName: string;
-              lastName: string;
               profile: {
                 __typename?: 'Profile';
                 id: string;
                 displayName: string;
                 url: string;
+                type?: ProfileType | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                tagsets?:
+                  | Array<{
+                      __typename?: 'Tagset';
+                      id: string;
+                      name: string;
+                      tags: Array<string>;
+                      allowedValues: Array<string>;
+                      type: TagsetType;
+                    }>
+                  | undefined;
+                location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+              };
+            }
+          | {
+              __typename?: 'VirtualContributor';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                url: string;
+                type?: ProfileType | undefined;
                 avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 tagsets?:
                   | Array<{
@@ -12171,20 +12628,43 @@ export type DiscussionDetailsFragment = {
         __typename?: 'Reaction';
         id: string;
         emoji: string;
-        sender?: { __typename?: 'User'; id: string; firstName: string; lastName: string } | undefined;
+        sender?:
+          | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+          | undefined;
       }>;
       sender?:
         | {
             __typename?: 'User';
             id: string;
-            nameID: string;
-            firstName: string;
-            lastName: string;
             profile: {
               __typename?: 'Profile';
               id: string;
               displayName: string;
               url: string;
+              type?: ProfileType | undefined;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              tagsets?:
+                | Array<{
+                    __typename?: 'Tagset';
+                    id: string;
+                    name: string;
+                    tags: Array<string>;
+                    allowedValues: Array<string>;
+                    type: TagsetType;
+                  }>
+                | undefined;
+              location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+            };
+          }
+        | {
+            __typename?: 'VirtualContributor';
+            id: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              url: string;
+              type?: ProfileType | undefined;
               avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
               tagsets?:
                 | Array<{
@@ -12376,20 +12856,47 @@ export type PlatformDiscussionQuery = {
                   __typename?: 'Reaction';
                   id: string;
                   emoji: string;
-                  sender?: { __typename?: 'User'; id: string; firstName: string; lastName: string } | undefined;
+                  sender?:
+                    | {
+                        __typename?: 'User';
+                        id: string;
+                        profile: { __typename?: 'Profile'; id: string; displayName: string };
+                      }
+                    | undefined;
                 }>;
                 sender?:
                   | {
                       __typename?: 'User';
                       id: string;
-                      nameID: string;
-                      firstName: string;
-                      lastName: string;
                       profile: {
                         __typename?: 'Profile';
                         id: string;
                         displayName: string;
                         url: string;
+                        type?: ProfileType | undefined;
+                        avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                        tagsets?:
+                          | Array<{
+                              __typename?: 'Tagset';
+                              id: string;
+                              name: string;
+                              tags: Array<string>;
+                              allowedValues: Array<string>;
+                              type: TagsetType;
+                            }>
+                          | undefined;
+                        location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                      };
+                    }
+                  | {
+                      __typename?: 'VirtualContributor';
+                      id: string;
+                      profile: {
+                        __typename?: 'Profile';
+                        id: string;
+                        displayName: string;
+                        url: string;
+                        type?: ProfileType | undefined;
                         avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                         tagsets?:
                           | Array<{
@@ -12497,20 +13004,43 @@ export type MessageDetailsFragment = {
     __typename?: 'Reaction';
     id: string;
     emoji: string;
-    sender?: { __typename?: 'User'; id: string; firstName: string; lastName: string } | undefined;
+    sender?:
+      | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+      | undefined;
   }>;
   sender?:
     | {
         __typename?: 'User';
         id: string;
-        nameID: string;
-        firstName: string;
-        lastName: string;
         profile: {
           __typename?: 'Profile';
           id: string;
           displayName: string;
           url: string;
+          type?: ProfileType | undefined;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+          tagsets?:
+            | Array<{
+                __typename?: 'Tagset';
+                id: string;
+                name: string;
+                tags: Array<string>;
+                allowedValues: Array<string>;
+                type: TagsetType;
+              }>
+            | undefined;
+          location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+        };
+      }
+    | {
+        __typename?: 'VirtualContributor';
+        id: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          url: string;
+          type?: ProfileType | undefined;
           avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
           tagsets?:
             | Array<{
@@ -12528,11 +13058,33 @@ export type MessageDetailsFragment = {
     | undefined;
 };
 
+export type SenderProfileFragment = {
+  __typename?: 'Profile';
+  id: string;
+  displayName: string;
+  url: string;
+  type?: ProfileType | undefined;
+  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+  tagsets?:
+    | Array<{
+        __typename?: 'Tagset';
+        id: string;
+        name: string;
+        tags: Array<string>;
+        allowedValues: Array<string>;
+        type: TagsetType;
+      }>
+    | undefined;
+  location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+};
+
 export type ReactionDetailsFragment = {
   __typename?: 'Reaction';
   id: string;
   emoji: string;
-  sender?: { __typename?: 'User'; id: string; firstName: string; lastName: string } | undefined;
+  sender?:
+    | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+    | undefined;
 };
 
 export type CommentsWithMessagesFragment = {
@@ -12557,20 +13109,43 @@ export type CommentsWithMessagesFragment = {
       __typename?: 'Reaction';
       id: string;
       emoji: string;
-      sender?: { __typename?: 'User'; id: string; firstName: string; lastName: string } | undefined;
+      sender?:
+        | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+        | undefined;
     }>;
     sender?:
       | {
           __typename?: 'User';
           id: string;
-          nameID: string;
-          firstName: string;
-          lastName: string;
           profile: {
             __typename?: 'Profile';
             id: string;
             displayName: string;
             url: string;
+            type?: ProfileType | undefined;
+            avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            tagsets?:
+              | Array<{
+                  __typename?: 'Tagset';
+                  id: string;
+                  name: string;
+                  tags: Array<string>;
+                  allowedValues: Array<string>;
+                  type: TagsetType;
+                }>
+              | undefined;
+            location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+          };
+        }
+      | {
+          __typename?: 'VirtualContributor';
+          id: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            url: string;
+            type?: ProfileType | undefined;
             avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
             tagsets?:
               | Array<{
@@ -12609,13 +13184,14 @@ export type ReplyToMessageMutation = {
     id: string;
     message: string;
     timestamp: number;
-    sender?: { __typename?: 'User'; id: string } | undefined;
+    sender?: { __typename?: 'User'; id: string } | { __typename?: 'VirtualContributor'; id: string } | undefined;
   };
 };
 
 export type MentionableUsersQueryVariables = Exact<{
   filter?: InputMaybe<UserFilterInput>;
   first?: InputMaybe<Scalars['Int']>;
+  communityId: Scalars['UUID'];
 }>;
 
 export type MentionableUsersQuery = {
@@ -12625,15 +13201,36 @@ export type MentionableUsersQuery = {
     users: Array<{
       __typename?: 'User';
       id: string;
-      nameID: string;
       profile: {
         __typename?: 'Profile';
         id: string;
+        url: string;
         displayName: string;
         location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-        visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
       };
     }>;
+  };
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    community?:
+      | {
+          __typename?: 'Community';
+          virtualContributorsInRole?:
+            | Array<{
+                __typename?: 'VirtualContributor';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                };
+              }>
+            | undefined;
+        }
+      | undefined;
   };
 };
 
@@ -12648,7 +13245,7 @@ export type SendMessageToRoomMutation = {
     id: string;
     message: string;
     timestamp: number;
-    sender?: { __typename?: 'User'; id: string } | undefined;
+    sender?: { __typename?: 'User'; id: string } | { __typename?: 'VirtualContributor'; id: string } | undefined;
   };
 };
 
@@ -12681,20 +13278,47 @@ export type RoomEventsSubscription = {
               __typename?: 'Reaction';
               id: string;
               emoji: string;
-              sender?: { __typename?: 'User'; id: string; firstName: string; lastName: string } | undefined;
+              sender?:
+                | {
+                    __typename?: 'User';
+                    id: string;
+                    profile: { __typename?: 'Profile'; id: string; displayName: string };
+                  }
+                | undefined;
             }>;
             sender?:
               | {
                   __typename?: 'User';
                   id: string;
-                  nameID: string;
-                  firstName: string;
-                  lastName: string;
                   profile: {
                     __typename?: 'Profile';
                     id: string;
                     displayName: string;
                     url: string;
+                    type?: ProfileType | undefined;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                    tagsets?:
+                      | Array<{
+                          __typename?: 'Tagset';
+                          id: string;
+                          name: string;
+                          tags: Array<string>;
+                          allowedValues: Array<string>;
+                          type: TagsetType;
+                        }>
+                      | undefined;
+                    location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                  };
+                }
+              | {
+                  __typename?: 'VirtualContributor';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    url: string;
+                    type?: ProfileType | undefined;
                     avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                     tagsets?:
                       | Array<{
@@ -12722,7 +13346,13 @@ export type RoomEventsSubscription = {
             __typename?: 'Reaction';
             id: string;
             emoji: string;
-            sender?: { __typename?: 'User'; id: string; firstName: string; lastName: string } | undefined;
+            sender?:
+              | {
+                  __typename?: 'User';
+                  id: string;
+                  profile: { __typename?: 'Profile'; id: string; displayName: string };
+                }
+              | undefined;
           };
         }
       | undefined;
@@ -12759,20 +13389,49 @@ export type CommunityUpdatesQuery = {
                       __typename?: 'Reaction';
                       id: string;
                       emoji: string;
-                      sender?: { __typename?: 'User'; id: string; firstName: string; lastName: string } | undefined;
+                      sender?:
+                        | {
+                            __typename?: 'User';
+                            id: string;
+                            profile: { __typename?: 'Profile'; id: string; displayName: string };
+                          }
+                        | undefined;
                     }>;
                     sender?:
                       | {
                           __typename?: 'User';
                           id: string;
-                          nameID: string;
-                          firstName: string;
-                          lastName: string;
                           profile: {
                             __typename?: 'Profile';
                             id: string;
                             displayName: string;
                             url: string;
+                            type?: ProfileType | undefined;
+                            avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                            tagsets?:
+                              | Array<{
+                                  __typename?: 'Tagset';
+                                  id: string;
+                                  name: string;
+                                  tags: Array<string>;
+                                  allowedValues: Array<string>;
+                                  type: TagsetType;
+                                }>
+                              | undefined;
+                            location?:
+                              | { __typename?: 'Location'; id: string; city: string; country: string }
+                              | undefined;
+                          };
+                        }
+                      | {
+                          __typename?: 'VirtualContributor';
+                          id: string;
+                          profile: {
+                            __typename?: 'Profile';
+                            id: string;
+                            displayName: string;
+                            url: string;
+                            type?: ProfileType | undefined;
                             avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                             tagsets?:
                               | Array<{
@@ -13710,6 +14369,20 @@ export type CommunityMembersListQuery = {
                 };
               }>
             | undefined;
+          virtualContributorsInRole?:
+            | Array<{
+                __typename?: 'VirtualContributor';
+                id: string;
+                nameID: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                };
+              }>
+            | undefined;
           policy?:
             | {
                 __typename?: 'CommunityPolicy';
@@ -13862,6 +14535,20 @@ export type CommunityMembersDetailsFragment = {
         };
       }>
     | undefined;
+  virtualContributorsInRole?:
+    | Array<{
+        __typename?: 'VirtualContributor';
+        id: string;
+        nameID: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+        };
+      }>
+    | undefined;
   policy?:
     | {
         __typename?: 'CommunityPolicy';
@@ -13948,11 +14635,56 @@ export type CommunityMemberUserFragment = {
   };
 };
 
+export type CommunityMemberVirtualContributorFragment = {
+  __typename?: 'VirtualContributor';
+  id: string;
+  nameID: string;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+    location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+  };
+};
+
 export type AvailableUserFragment = {
   __typename?: 'User';
   id: string;
   email: string;
   profile: { __typename?: 'Profile'; id: string; displayName: string };
+};
+
+export type AvailableVirtualContributorsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type AvailableVirtualContributorsQuery = {
+  __typename?: 'Query';
+  virtualContributors: Array<{
+    __typename?: 'VirtualContributor';
+    id: string;
+    nameID: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
+  }>;
+};
+
+export type AddVirtualContributorToCommunityMutationVariables = Exact<{
+  communityId: Scalars['UUID'];
+  virtualContributorId: Scalars['UUID_NAMEID'];
+}>;
+
+export type AddVirtualContributorToCommunityMutation = {
+  __typename?: 'Mutation';
+  assignCommunityRoleToVirtual: { __typename?: 'VirtualContributor'; id: string };
+};
+
+export type RemoveVirtualContributorFromCommunityMutationVariables = Exact<{
+  communityId: Scalars['UUID'];
+  virtualContributorId: Scalars['UUID_NAMEID'];
+}>;
+
+export type RemoveVirtualContributorFromCommunityMutation = {
+  __typename?: 'Mutation';
+  removeCommunityRoleFromVirtual: { __typename?: 'VirtualContributor'; id: string };
 };
 
 export type AllOrganizationsQueryVariables = Exact<{
@@ -22053,6 +22785,95 @@ export type DeleteWhiteboardTemplateMutation = {
   deleteWhiteboardTemplate: { __typename?: 'WhiteboardTemplate'; id: string };
 };
 
+export type AdminVirtualContributorsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type AdminVirtualContributorsQuery = {
+  __typename?: 'Query';
+  virtualContributors: Array<{
+    __typename?: 'VirtualContributor';
+    id: string;
+    authorization?:
+      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+      | undefined;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      description?: string | undefined;
+      avatar?:
+        | {
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: string;
+            allowedTypes: Array<string>;
+            aspectRatio: number;
+            maxHeight: number;
+            maxWidth: number;
+            minHeight: number;
+            minWidth: number;
+            alternativeText?: string | undefined;
+          }
+        | undefined;
+    };
+  }>;
+};
+
+export type CreateVirtualContributorMutationVariables = Exact<{
+  virtualContributorData: CreateVirtualContributorInput;
+}>;
+
+export type CreateVirtualContributorMutation = {
+  __typename?: 'Mutation';
+  createVirtualContributor: { __typename?: 'VirtualContributor'; id: string };
+};
+
+export type UpdateVirtualContributorMutationVariables = Exact<{
+  virtualContributorData: UpdateVirtualContributorInput;
+}>;
+
+export type UpdateVirtualContributorMutation = {
+  __typename?: 'Mutation';
+  updateVirtualContributor: {
+    __typename?: 'VirtualContributor';
+    id: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+  };
+};
+
+export type VirtualContributorAvailablePersonasQueryVariables = Exact<{ [key: string]: never }>;
+
+export type VirtualContributorAvailablePersonasQuery = {
+  __typename?: 'Query';
+  virtualPersonas: Array<{
+    __typename?: 'VirtualPersona';
+    id: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      description?: string | undefined;
+      avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+    };
+  }>;
+};
+
+export type CreateVirtualPersonaMutationVariables = Exact<{
+  virtualPersonaData: CreateVirtualPersonaInput;
+}>;
+
+export type CreateVirtualPersonaMutation = {
+  __typename?: 'Mutation';
+  createVirtualPersona: {
+    __typename?: 'VirtualPersona';
+    id: string;
+    nameID: string;
+    prompt: string;
+    engine?: VirtualPersonaEngine | undefined;
+    profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+  };
+};
+
 export type ConfigurationQueryVariables = Exact<{ [key: string]: never }>;
 
 export type ConfigurationQuery = {
@@ -23112,20 +23933,47 @@ export type CalendarEventDetailsQuery = {
                 __typename?: 'Reaction';
                 id: string;
                 emoji: string;
-                sender?: { __typename?: 'User'; id: string; firstName: string; lastName: string } | undefined;
+                sender?:
+                  | {
+                      __typename?: 'User';
+                      id: string;
+                      profile: { __typename?: 'Profile'; id: string; displayName: string };
+                    }
+                  | undefined;
               }>;
               sender?:
                 | {
                     __typename?: 'User';
                     id: string;
-                    nameID: string;
-                    firstName: string;
-                    lastName: string;
                     profile: {
                       __typename?: 'Profile';
                       id: string;
                       displayName: string;
                       url: string;
+                      type?: ProfileType | undefined;
+                      avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                      tagsets?:
+                        | Array<{
+                            __typename?: 'Tagset';
+                            id: string;
+                            name: string;
+                            tags: Array<string>;
+                            allowedValues: Array<string>;
+                            type: TagsetType;
+                          }>
+                        | undefined;
+                      location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                    };
+                  }
+                | {
+                    __typename?: 'VirtualContributor';
+                    id: string;
+                    profile: {
+                      __typename?: 'Profile';
+                      id: string;
+                      displayName: string;
+                      url: string;
+                      type?: ProfileType | undefined;
                       avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                       tagsets?:
                         | Array<{
@@ -23230,20 +24078,43 @@ export type CalendarEventDetailsFragment = {
         __typename?: 'Reaction';
         id: string;
         emoji: string;
-        sender?: { __typename?: 'User'; id: string; firstName: string; lastName: string } | undefined;
+        sender?:
+          | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+          | undefined;
       }>;
       sender?:
         | {
             __typename?: 'User';
             id: string;
-            nameID: string;
-            firstName: string;
-            lastName: string;
             profile: {
               __typename?: 'Profile';
               id: string;
               displayName: string;
               url: string;
+              type?: ProfileType | undefined;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              tagsets?:
+                | Array<{
+                    __typename?: 'Tagset';
+                    id: string;
+                    name: string;
+                    tags: Array<string>;
+                    allowedValues: Array<string>;
+                    type: TagsetType;
+                  }>
+                | undefined;
+              location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+            };
+          }
+        | {
+            __typename?: 'VirtualContributor';
+            id: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              url: string;
+              type?: ProfileType | undefined;
               avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
               tagsets?:
                 | Array<{
@@ -23366,20 +24237,43 @@ export type CreateCalendarEventMutation = {
           __typename?: 'Reaction';
           id: string;
           emoji: string;
-          sender?: { __typename?: 'User'; id: string; firstName: string; lastName: string } | undefined;
+          sender?:
+            | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+            | undefined;
         }>;
         sender?:
           | {
               __typename?: 'User';
               id: string;
-              nameID: string;
-              firstName: string;
-              lastName: string;
               profile: {
                 __typename?: 'Profile';
                 id: string;
                 displayName: string;
                 url: string;
+                type?: ProfileType | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                tagsets?:
+                  | Array<{
+                      __typename?: 'Tagset';
+                      id: string;
+                      name: string;
+                      tags: Array<string>;
+                      allowedValues: Array<string>;
+                      type: TagsetType;
+                    }>
+                  | undefined;
+                location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+              };
+            }
+          | {
+              __typename?: 'VirtualContributor';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                url: string;
+                type?: ProfileType | undefined;
                 avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 tagsets?:
                   | Array<{
@@ -23482,20 +24376,43 @@ export type UpdateCalendarEventMutation = {
           __typename?: 'Reaction';
           id: string;
           emoji: string;
-          sender?: { __typename?: 'User'; id: string; firstName: string; lastName: string } | undefined;
+          sender?:
+            | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+            | undefined;
         }>;
         sender?:
           | {
               __typename?: 'User';
               id: string;
-              nameID: string;
-              firstName: string;
-              lastName: string;
               profile: {
                 __typename?: 'Profile';
                 id: string;
                 displayName: string;
                 url: string;
+                type?: ProfileType | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                tagsets?:
+                  | Array<{
+                      __typename?: 'Tagset';
+                      id: string;
+                      name: string;
+                      tags: Array<string>;
+                      allowedValues: Array<string>;
+                      type: TagsetType;
+                    }>
+                  | undefined;
+                location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+              };
+            }
+          | {
+              __typename?: 'VirtualContributor';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                url: string;
+                type?: ProfileType | undefined;
                 avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 tagsets?:
                   | Array<{

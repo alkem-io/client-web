@@ -8,7 +8,6 @@ import {
   useUserProfileLazyQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
-import { buildJourneyApplyUrl } from '../../../../main/routing/urlBuilders';
 import { AuthorizationPrivilege, CommunityMembershipStatus } from '../../../../core/apollo/generated/graphql-schema';
 import { useCommunityContext } from '../../community/CommunityContext';
 import clearCacheForType from '../../../../core/apollo/utils/clearCacheForType';
@@ -82,7 +81,7 @@ export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = (
     hasCommunityParent &&
     _communityPrivileges?.space?.spaceCommunity?.myMembershipStatus === CommunityMembershipStatus.Member;
 
-  const applyUrl = buildJourneyApplyUrl(challengeId ? challengeProfile.url : spaceProfile.url);
+  const applyUrl = challengeId ? challengeProfile.url : spaceProfile.url;
 
   const joinParentUrl = challengeId && spaceProfile.url;
 
@@ -114,7 +113,7 @@ export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = (
     isMember,
     isParentMember,
     applyUrl,
-    parentApplyUrl: buildJourneyApplyUrl(spaceProfile.url),
+    parentApplyUrl: spaceProfile.url,
     joinParentUrl,
     applicationState: userApplication?.state,
     userInvitation,

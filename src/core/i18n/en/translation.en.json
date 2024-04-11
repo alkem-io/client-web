@@ -239,13 +239,14 @@
     "filterby": "Filter by...",
     "forum": "Forum",
     "email": "Email",
-    "state": "State",
-    "states": "States",
+    "state": "Phase",
+    "states": "Phases",
     "post": "Post",
     "posts": "Posts",
     "status": "Status",
     "aspect": "Card",
     "aspects": "Cards",
+    "prompt": "Prompt",
     "host": "Host",
     "lead": "Lead",
     "space": "Space",
@@ -342,6 +343,7 @@
     "more": "More",
     "url": "URL",
     "sources": "Sources",
+    "virtual-contributors": "VC",
     "genders": {
       "notSpecified": "not specified",
       "male": "male",
@@ -559,10 +561,18 @@
     "leads": "Leads",
     "members": "Members",
     "host": "Host",
+    "virtualContributor": "Virtual Contributor",
     "members-count": "{{count}} Member",
     "members-count_plural": "{{count}} Members",
     "addMember": "Add member",
     "unauthorizedPermissionsChange": "You are not allowed to edit this user's permissions",
+    "virtualContributors": {
+      "blockTitle": "Virtual Contributors ({{count}})",
+      "removeDialog": {
+        "title": "Remove Virtual Contributor",
+        "confirm": "Are you sure?"
+      }
+    },
     "application-form": {
       "title": "Application Form",
       "subtitle": "This section allows you to modify the questions for users applying to the Space. <br /><b>Please note</b> that these questions will only be shown when the Membership options (in the block above) are set to \"Applications required\"",
@@ -884,7 +894,7 @@
   "innovation-templates": {
     "states": {
       "title": "Definition",
-      "placeholder": "Here you can paste the description of the states to use for this Innovation Flow"
+      "placeholder": "Here you can paste the description of the phases to use for this Innovation Flow"
     }
   },
   "components": {
@@ -952,8 +962,8 @@
       }
     },
     "innovationFlowVisualizer": {
-      "currentState": "Current State",
-      "currentStateName": "Current State: {{state}}"
+      "currentState": "Current Phase",
+      "currentStateName": "Current Phase: {{state}}"
     },
     "innovationFlowSettings": {
       "title": "Innovation Flow Settings",
@@ -961,27 +971,27 @@
         "title": "Edit Details: Innovation Flow"
       },
       "stateEditor": {
-        "activeState": "Active State",
-        "setActiveState": "Set as Active State",
+        "activeState": "Active Phase",
+        "setActiveState": "Set as Active Phase",
         "editState": "Edit Details",
         "deleteState": "Delete",
-        "addState": "Add State",
-        "noRepeatedStates": "A State with the same name already exists.",
+        "addState": "Add Phase",
+        "noRepeatedStates": "A phase with the same name already exists.",
         "createDialog": {
-          "title": "Create Flow State"
+          "title": "Create Flow Phase"
         },
         "editDialog": {
-          "title": "Edit Details: Flow State"
+          "title": "Edit Details: Flow Phase"
         },
         "deleteDialog": {
-          "title": "Delete State?",
+          "title": "Delete Phase?",
           "text": "This action cannot be undone."
         },
         "selectDifferentFlow": {
           "title": "Select different Flow",
           "confirmationDialog": {
             "title": "Be careful when changing the flow!",
-            "description": "- By changing the Innovation Flow, **all changes made to the current flow will be lost**.\n- All existing collaboration tools will be grouped under the default state of the new flow."
+            "description": "- By changing the Innovation Flow, **all changes made to the current flow will be lost**.\n- All existing collaboration tools will be grouped under the first phase of the new flow."
           }
         }
       }
@@ -1110,8 +1120,8 @@
       }
     },
     "innovationFlow": {
-      "currentState": "Current State:",
-      "changeState": "Change State to:",
+      "currentState": "Current Phase:",
+      "changeState": "Change Phase to:",
       "error": "The definition was not able to be visualized"
     },
     "activity-tooltip": {
@@ -1844,7 +1854,8 @@
             "title": "Space Features",
             "features": {
               "WHITEBOARD_MULTI_USER": "Multiuser Whiteboards",
-              "CALLOUT_TO_CALLOUT_TEMPLATE": "Create template from callout"
+              "CALLOUT_TO_CALLOUT_TEMPLATE": "Create template from callout",
+              "VIRTUAL_CONTRIBUTORS": "Interact with virtual contributors"
             }
           },
           "membership": {
@@ -1902,6 +1913,13 @@
             "title": "Current Selection",
             "subtitle": "The order below is the order in which the Spaces will be visible on the Custom Homepage"
           }
+        }
+      },
+      "virtualContributors": {
+        "virtualPersonas": {
+          "title": "Virtual Personas",
+          "create": "Create Virtual Persona",
+          "selectEngine": "Select Engine"
         }
       }
     },

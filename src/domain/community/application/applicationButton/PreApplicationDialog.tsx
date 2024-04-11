@@ -1,7 +1,7 @@
 import { Button, Dialog, DialogContent } from '@mui/material';
 import React, { FC } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { Link as RouterLink } from 'react-router-dom';
+import RouterLink from '../../../../core/ui/link/RouterLink';
 import isApplicationPending from './isApplicationPending';
 import { useSpace } from '../../../journey/space/SpaceContext/useSpace';
 import { useSubSpace } from '../../../journey/subspace/hooks/useChallenge';
@@ -63,7 +63,7 @@ const PreApplicationDialog: FC<PreApplicationDialogProps> = ({
       <Actions padding={gutters()} sx={{ justifyContent: 'end' }}>
         <Button
           component={RouterLink}
-          to={(isApplicationPending(parentApplicationState) ? applyUrl : parentApplyUrl) || ''}
+          to={(isApplicationPending(parentApplicationState) ? applyUrl : parentApplyUrl) ?? ''}
           variant="contained"
           aria-label="dialog-apply"
         >
