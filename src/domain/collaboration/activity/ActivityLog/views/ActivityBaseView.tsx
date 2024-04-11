@@ -94,7 +94,7 @@ export const ActivityBaseView: FC<ActivityBaseViewProps & (Activity | { type: un
         )}
       </Gutters>
       {loading && <Skeleton />}
-      {!loading && <ActivityViewFooter contextDisplayName={contextDisplayName} createdDate={createdDate} />}
+      {!loading && <ActivityViewFooter contextDisplayName={contextDisplayName} />}
       {loading && <Skeleton />}
     </BadgeCardView>
   );
