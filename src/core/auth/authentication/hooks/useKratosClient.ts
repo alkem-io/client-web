@@ -4,7 +4,7 @@ import axios, { AxiosError, AxiosResponse } from 'axios';
 import { once } from 'lodash';
 import { useConfig } from '../../../../domain/platform/config/useConfig';
 import { AuthenticationProviderConfigUnion, OryConfig } from '../../../apollo/generated/graphql-schema';
-import { error as logError, tagCategoryValues, tagKeys } from '../../../logging/sentry/log';
+import { error as logError, TagCategoryValues } from '../../../logging/sentry/log';
 
 export function isOryConfig(pet: AuthenticationProviderConfigUnion): pet is OryConfig {
   return (pet as OryConfig).__typename === 'OryConfig';
@@ -17,7 +17,7 @@ const logFlowErrors = (response: AxiosResponse<{ ui: UiContainer } | {}>) => {
         continue;
       }
       const errorMessage = 'Kratos Flow Error: ' + text;
-      logError(new Error(errorMessage), { [tagKeys.CATEGORY]: tagCategoryValues.AUTH });
+      logError(new Error(errorMessage), { category: TagCategoryValues.AUTH });
     }
   }
 };
@@ -57,7 +57,7 @@ const createAxiosClient = () => {
     error => {
       if (isAxiosError(error) && !isWhoamiError401(error)) {
         const errorMessage = getKratosErrorMessage(error);
-        logError(new Error(errorMessage), { [tagKeys.CATEGORY]: tagCategoryValues.AUTH });
+        logError(new Error(errorMessage), { category: TagCategoryValues.AUTH });
       }
       throw error;
     }

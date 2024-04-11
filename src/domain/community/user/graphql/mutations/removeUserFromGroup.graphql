@@ -1,7 +1,9 @@
 mutation removeUserFromGroup($input: RemoveUserGroupMemberInput!) {
     removeUserFromGroup(membershipData: $input) {
       id
-      name
+      profile {
+        displayName
+      }
       members {
         ...GroupMembers
       }

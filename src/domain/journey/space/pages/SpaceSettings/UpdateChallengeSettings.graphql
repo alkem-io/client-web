@@ -1,0 +1,19 @@
+mutation UpdateChallengeSettings($settingsData: UpdateChallengeSettingsInput!) {
+  updateChallengeSettings(settingsData: $settingsData) {
+    id
+    settings {
+      privacy {
+        mode
+      }
+      membership {
+        policy
+        trustedOrganizations
+      }
+      collaboration {
+        allowMembersToCreateCallouts
+        allowMembersToCreateSubspaces
+        inheritMembershipRights
+      }
+    }
+  }
+}

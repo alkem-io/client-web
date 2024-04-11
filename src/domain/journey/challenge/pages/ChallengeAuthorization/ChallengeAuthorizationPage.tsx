@@ -2,70 +2,89 @@ import React, { FC } from 'react';
 import ChallengeSettingsLayout from '../../../../platform/admin/challenge/ChallengeSettingsLayout';
 import { SettingsSection } from '../../../../platform/admin/layout/EntitySettingsLayout/constants';
 import { SettingsPageProps } from '../../../../platform/admin/layout/EntitySettingsLayout/types';
-import {
-  ChallengePreferencesQuery,
-  ChallengePreferencesQueryVariables,
-  ChallengePreferenceType,
-  UpdatePreferenceOnChallengeMutationVariables,
-} from '../../../../../core/apollo/generated/graphql-schema';
-import { useTranslation } from 'react-i18next';
-import PreferenceSection from '../../../../../main/ui/settings/PreferenceSection';
-import { PreferenceTypes } from '../../../../common/preference/preference-types';
+import { Trans, useTranslation } from 'react-i18next';
 import { useChallenge } from '../../hooks/useChallenge';
-import { usePreferences } from '../../../../common/preference/usePreferences';
+import { CommunityMembershipPolicy, SpacePrivacyMode } from '../../../../../core/apollo/generated/graphql-schema';
 import {
-  ChallengePreferencesDocument,
-  UpdatePreferenceOnChallengeDocument,
+  useSpaceSettingsQuery,
+  useUpdateChallengeSettingsMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
-
-const selectedGroups = ['Authorization', 'Privileges'];
-
-const querySelector = (query: ChallengePreferencesQuery) => query.lookup.challenge?.preferences;
+import { BlockTitle } from '../../../../../core/ui/typography/components';
+import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
+import RadioSettingsGroup from '../../../../../core/ui/forms/SettingsGroups/RadioSettingsGroup';
 
 interface ChallengeAuthorizationPageProps extends SettingsPageProps {}
 
 const ChallengeAuthorizationPage: FC<ChallengeAuthorizationPageProps> = ({ routePrefix = '../' }) => {
   const { t } = useTranslation();
   const { challengeId } = useChallenge();
-
-  // todo: how can these two be extracted in a util
-  const queryVariables: ChallengePreferencesQueryVariables = { challengeId };
-
-  const mutationVariables = (
-    queryVariables: ChallengePreferencesQueryVariables,
-    type: PreferenceTypes,
-    value: boolean
-  ): UpdatePreferenceOnChallengeMutationVariables => ({
-    preferenceData: {
-      challengeID: challengeId,
-      type: type as ChallengePreferenceType,
-      value: value ? 'true' : 'false',
+  const { data: settingsData, loading } = useSpaceSettingsQuery({
+    variables: {
+      challengeId: challengeId,
+      includeChallenge: true,
     },
   });
+  const [updateChallengeSettings] = useUpdateChallengeSettingsMutation();
+  const settings = settingsData?.challenge.challenge?.settings;
 
-  const { preferences, onUpdate, loading, submitting } = usePreferences<
-    ChallengePreferencesQuery,
-    ChallengePreferencesQueryVariables,
-    UpdatePreferenceOnChallengeMutationVariables
-  >(
-    ChallengePreferencesDocument,
-    queryVariables,
-    querySelector,
-    UpdatePreferenceOnChallengeDocument,
-    mutationVariables,
-    selectedGroups
-  );
+  const handleUpdateSettings = async (
+    privacyModeUpdate?: SpacePrivacyMode,
+    membershipPolicyUpdate?: CommunityMembershipPolicy,
+    hostOrgTrustedUpdate?: boolean
+  ) => {
+    const privacyMode = privacyModeUpdate ? privacyModeUpdate : settings?.privacy.mode ?? SpacePrivacyMode.Public;
+    const membershipPolicy =
+      membershipPolicyUpdate ?? settings?.membership.policy ?? CommunityMembershipPolicy.Invitations;
+    const hostOrgArray = settings?.membership.trustedOrganizations ?? [];
+    const hostOrgTrusted = hostOrgTrustedUpdate ?? hostOrgArray.length > 0;
+    await updateChallengeSettings({
+      variables: {
+        settingsData: {
+          challengeID: challengeId,
+          settings: {
+            privacy: {
+              mode: privacyMode,
+            },
+            membership: {
+              policy: membershipPolicy,
+              trustedOrganizations: hostOrgTrusted ? ['myHostOrgID-TODO'] : [],
+            },
+            collaboration: {
+              allowMembersToCreateCallouts: true,
+              allowMembersToCreateSubspaces: true,
+              inheritMembershipRights: true,
+            },
+          },
+        },
+      },
+    });
+  };
 
   return (
     <ChallengeSettingsLayout currentTab={SettingsSection.Authorization} tabRoutePrefix={routePrefix}>
-      <PreferenceSection
-        headerText={t('common.authorization')}
-        subHeaderText={t('pages.admin.challenge.authorization.preferences.subtitle')}
-        preferences={preferences}
-        onUpdate={(id, type, value) => onUpdate(type, value)}
-        loading={loading}
-        submitting={submitting}
-      />
+      {!loading && (
+        <>
+          <PageContentBlock>
+            <BlockTitle>{t('pages.admin.space.settings.visibility.title')}</BlockTitle>
+            <RadioSettingsGroup
+              value={settings?.privacy.mode}
+              options={{
+                [SpacePrivacyMode.Public]: {
+                  label: (
+                    <Trans i18nKey="pages.admin.space.settings.visibility.public" components={{ b: <strong /> }} />
+                  ),
+                },
+                [SpacePrivacyMode.Private]: {
+                  label: (
+                    <Trans i18nKey="pages.admin.space.settings.visibility.private" components={{ b: <strong /> }} />
+                  ),
+                },
+              }}
+              onChange={handleUpdateSettings}
+            />
+          </PageContentBlock>
+        </>
+      )}
     </ChallengeSettingsLayout>
   );
 };
