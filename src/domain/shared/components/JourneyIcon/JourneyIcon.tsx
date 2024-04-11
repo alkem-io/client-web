@@ -4,8 +4,8 @@ import { OpportunityIcon } from '../../../journey/opportunity/icon/OpportunityIc
 
 const journeyIcon = {
   space: SpaceIcon,
-  challenge: ChallengeIcon,
-  opportunity: OpportunityIcon,
+  subspace: ChallengeIcon,
+  subsubspace: OpportunityIcon,
 } as const;
 
 export default journeyIcon;
