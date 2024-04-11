@@ -1,5 +1,5 @@
 import { onError } from '@apollo/client/link/error';
-import { error as sentryError, tagCategoryValues, tagKeys } from '../../logging/sentry/log';
+import { error as sentryError, TagCategoryValues } from '../../logging/sentry/log';
 import { useApm } from '../../analytics/apm/context';
 
 /**
@@ -25,7 +25,7 @@ export const useErrorLoggerLink = (errorLogging = false) => {
     }
 
     errors.forEach(e => {
-      sentryError(e, { [tagKeys.CATEGORY]: tagCategoryValues.SERVER });
+      sentryError(e, { category: TagCategoryValues.SERVER });
       apm?.captureError(e);
     });
   });
