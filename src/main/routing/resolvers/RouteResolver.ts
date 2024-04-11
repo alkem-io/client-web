@@ -57,9 +57,9 @@ export const useRouteResolver = (): RouteParams => {
   const resolvedJourney: JourneyRouteParams = {
     spaceId: data?.space.id,
     challengeId: data?.space.challenge?.id,
-    opportunityId: data?.space.opportunity?.id,
+    opportunityId: data?.space.challenge?.opportunity?.id,
     type: RouteType.Journey,
-    journeyId: data?.space.opportunity?.id ?? data?.space.challenge?.id ?? data?.space.id,
+    journeyId: data?.space.challenge?.opportunity?.id ?? data?.space.challenge?.id ?? data?.space.id,
     journeyTypeName: getJourneyTypeName({ spaceNameId, challengeNameId, opportunityNameId })!,
   };
 

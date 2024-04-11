@@ -15,5 +15,5 @@ export const SpaceGroupRoute: FC<GroupRouteProps> = ({ parentCommunityId }) => {
     nextFetchPolicy: 'cache-first',
   });
 
-  return <GroupRoute loading={loading} group={data?.space.group} parentCommunityId={parentCommunityId} />;
+  return <GroupRoute loading={loading} group={data?.space.community?.group} parentCommunityId={parentCommunityId} />;
 };
