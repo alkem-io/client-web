@@ -24,7 +24,7 @@ export const journeyFilterConfig: FilterConfig = {
     typename: 'space',
   },
   challenge: {
-    title: 'pages.search.filter.key.challenge',
+    title: 'pages.search.filter.key.subspace',
     value: ['challenge'],
     typename: 'challenge',
   },

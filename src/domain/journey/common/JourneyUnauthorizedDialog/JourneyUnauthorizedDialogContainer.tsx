@@ -52,59 +52,33 @@ const JourneyUnauthorizedDialogContainer = ({
     error: privilegesError,
   } = fetchPrivileges({
     variables: {
-      spaceId: journeyId,
-      challengeId: journeyId,
-      opportunityId: journeyId,
-      includeSpace: journeyTypeName === 'space',
-      includeChallenge: journeyTypeName === 'challenge',
-      includeOpportunity: journeyTypeName === 'opportunity',
+      spaceId: journeyId!,
     },
     skip: !journeyId,
   });
 
-  const { authorization } =
-    journeyPrivilegesQueryData?.lookup.opportunity ??
-    journeyPrivilegesQueryData?.lookup.challenge ??
-    journeyPrivilegesQueryData?.space ??
-    {};
+  const { authorization } = journeyPrivilegesQueryData?.space ?? {};
 
   const isAuthorized = authorization?.myPrivileges?.includes(AuthorizationPrivilege.Read);
 
   const shouldSkipJourneyCommunityPrivileges = privilegesLoading || Boolean(privilegesError) || isAuthorized;
 
   const {
-    data: journeyCommunityPrivilegesQueryData,
+    // data: journeyCommunityPrivilegesQueryData,
     loading: journeyCommunityPrivilegesLoading,
     error: journeyCommunityPrivilegesError,
   } = fetchCommunityPrivileges({
     variables: {
-      spaceId: journeyId,
-      challengeId: journeyId,
-      opportunityId: journeyId,
-      includeSpace: journeyTypeName === 'space',
-      includeChallenge: journeyTypeName === 'challenge',
-      includeOpportunity: journeyTypeName === 'opportunity',
+      spaceId: journeyId!,
     },
     skip: shouldSkipJourneyCommunityPrivileges || !journeyId,
   });
 
-  const { authorization: communityAuthorization } =
-    journeyCommunityPrivilegesQueryData?.lookup.opportunity?.community ??
-    journeyCommunityPrivilegesQueryData?.lookup.challenge?.community ??
-    journeyCommunityPrivilegesQueryData?.space?.community ??
-    {};
-
-  const communityReadAccess = communityAuthorization?.myPrivileges?.includes(AuthorizationPrivilege.Read);
+  // const { authorization: communityAuthorization } = journeyCommunityPrivilegesQueryData?.space?.community ?? {};
 
   const { data: journeyDataQueryData, error: journeyDataError } = fetchJourneyData({
     variables: {
-      spaceId: journeyId,
-      challengeId: journeyId,
-      opportunityId: journeyId,
-      includeSpace: journeyTypeName === 'space',
-      includeChallenge: journeyTypeName === 'challenge',
-      includeOpportunity: journeyTypeName === 'opportunity',
-      includeCommunity: communityReadAccess,
+      spaceId: journeyId!,
     },
     skip:
       !journeyId ||
@@ -113,11 +87,7 @@ const JourneyUnauthorizedDialogContainer = ({
       Boolean(journeyCommunityPrivilegesError),
   });
 
-  const { profile, context, metrics, community } =
-    journeyDataQueryData?.lookup.opportunity ??
-    journeyDataQueryData?.lookup.challenge ??
-    journeyDataQueryData?.space ??
-    {};
+  const { profile, context, metrics, community } = journeyDataQueryData?.space ?? {};
 
   const [sendMessageToCommunityLeads] = useSendMessageToCommunityLeadsMutation();
   const handleSendMessageToCommunityLeads = useCallback(

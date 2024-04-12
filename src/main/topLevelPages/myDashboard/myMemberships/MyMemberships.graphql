@@ -30,7 +30,7 @@ query MyMemberships {
           ...VisualUri
         }
       }
-      challenges {
+      subspaces {
         id
         authorization {
           id

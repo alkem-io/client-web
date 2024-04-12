@@ -9,9 +9,9 @@ const getJourneyChildrenTranslation = (
   switch (type) {
     case 'space':
       return t('common.journeyTypes.subspace', { count });
-    case 'challenge':
+    case 'subspace':
       return t('common.journeyTypes.subspace', { count });
-    case 'opportunity':
+    case 'subsubspace':
       return t('common.journeyTypes.agreement', { count });
   }
 };

@@ -3,8 +3,8 @@ import { AuthorizationCredential } from '../../core/apollo/generated/graphql-sch
 
 export default interface UrlParams extends Record<string, string | undefined> {
   spaceNameId?: string;
-  challengeNameId?: string;
-  opportunityNameId?: string;
+  subspaceNameId?: string;
+  subsubspaceNameId?: string;
   organizationNameId?: string;
   groupId?: string;
   projectNameId?: string;

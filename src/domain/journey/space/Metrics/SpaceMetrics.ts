@@ -3,7 +3,7 @@ import { MetricsItemSpec } from '../../../platform/metrics/utils/useMetricsItems
 
 const SpaceMetrics: MetricsItemSpec[] = [
   {
-    label: 'common.challenges',
+    label: 'common.subspaces',
     type: MetricType.Challenge,
     color: 'neutral',
   },

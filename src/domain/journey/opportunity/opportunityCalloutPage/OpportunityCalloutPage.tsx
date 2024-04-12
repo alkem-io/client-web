@@ -14,9 +14,9 @@ const renderPage = (calloutGroup: string | undefined) => {
       return <OpportunityDashboardPage />;
     case CalloutGroupName.Contribute_1:
     case CalloutGroupName.Contribute_2:
-      return <JourneyContributePage journeyTypeName="opportunity" />;
+      return <JourneyContributePage journeyTypeName="subsubspace" />;
     default:
-      return <JourneyContributePage journeyTypeName="opportunity" />;
+      return <JourneyContributePage journeyTypeName="subsubspace" />;
   }
 };
 
@@ -40,7 +40,7 @@ const OpportunityCalloutPage = (props: JourneyCalloutDialogProps) => {
     return `${profile.url}/${getPageSection(calloutGroup)}`;
   };
 
-  return <CalloutPage journeyTypeName="opportunity" parentRoute={getPageRoute} renderPage={renderPage} {...props} />;
+  return <CalloutPage journeyTypeName="subsubspace" parentRoute={getPageRoute} renderPage={renderPage} {...props} />;
 };
 
 export default OpportunityCalloutPage;

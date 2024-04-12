@@ -1,30 +1,8 @@
-query spaceDashboardCalendarEvents($spaceId: UUID_NAMEID!, $limit: Float) {
+query spaceCalendarEvents($spaceId: UUID_NAMEID!, $limit: Float) {
   space(ID: $spaceId) {
     id
     collaboration {
       ...CollaborationTimelineInfo
-    }
-  }
-}
-
-query challengeDashboardCalendarEvents($challengeId: UUID!, $limit: Float) {
-  lookup {
-    challenge(ID: $challengeId) {
-      id
-      collaboration {
-        ...CollaborationTimelineInfo
-      }
-    }
-  }
-}
-
-query opportunityDashboardCalendarEvents($opportunityId: UUID!, $limit: Float) {
-  lookup {
-    opportunity(ID: $opportunityId) {
-      id
-      collaboration {
-        ...CollaborationTimelineInfo
-      }
     }
   }
 }
@@ -66,37 +44,6 @@ fragment CalendarEventInfo on CalendarEvent {
   multipleDays
   profile {
     ...EventProfile
-  }
-}
-
-query spaceCalendarEvents($spaceId: UUID_NAMEID!, $limit: Float) {
-  space(ID: $spaceId) {
-    id
-    collaboration {
-      ...CollaborationTimelineInfo
-    }
-  }
-}
-
-query challengeCalendarEvents($challengeId: UUID!, $limit: Float) {
-  lookup {
-    challenge(ID: $challengeId) {
-      id
-      collaboration {
-        ...CollaborationTimelineInfo
-      }
-    }
-  }
-}
-
-query opportunityCalendarEvents($opportunityId: UUID!, $limit: Float) {
-  lookup {
-    opportunity(ID: $opportunityId) {
-      id
-      collaboration {
-        ...CollaborationTimelineInfo
-      }
-    }
   }
 }
 
