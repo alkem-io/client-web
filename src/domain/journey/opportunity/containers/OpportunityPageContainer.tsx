@@ -2,8 +2,8 @@ import { ApolloError } from '@apollo/client';
 import { FC, useCallback, useMemo, useState } from 'react';
 import { useUserContext } from '../../../community/user';
 import {
-  useOpportunityPageQuery,
   useSendMessageToCommunityLeadsMutation,
+  useSubspacePageQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
 import {
@@ -11,8 +11,8 @@ import {
   AuthorizationPrivilege,
   CalloutGroupName,
   DashboardTopCalloutFragment,
-  OpportunityPageFragment,
   Reference,
+  SubspacePageFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
 import useCommunityMembersAsCardProps from '../../../community/community/utils/useCommunityMembersAsCardProps';
 import { EntityDashboardContributors } from '../../../community/community/EntityDashboardContributorsSection/Types';
@@ -25,7 +25,7 @@ import { MetricType } from '../../../platform/metrics/MetricType';
 import { RECENT_ACTIVITIES_LIMIT_INITIAL, TOP_CALLOUTS_LIMIT } from '../../common/journeyDashboard/constants';
 
 export interface OpportunityContainerEntities extends EntityDashboardContributors {
-  opportunity: OpportunityPageFragment | undefined;
+  subsubspace: SubspacePageFragment | undefined;
   permissions: {
     canEdit: boolean;
     projectWrite: boolean;
@@ -35,7 +35,7 @@ export interface OpportunityContainerEntities extends EntityDashboardContributor
     removeRelations: boolean;
     isAuthenticated: boolean;
     communityReadAccess: boolean;
-    opportunityReadAccess: boolean;
+    subsubspaceReadAccess: boolean;
     readUsers: boolean;
     timelineReadAccess: boolean;
   };
@@ -87,17 +87,17 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ opportuni
     data: query,
     loading: loadingOpportunity,
     error: errorOpportunity,
-  } = useOpportunityPageQuery({
-    variables: { opportunityId: opportunityId! },
+  } = useSubspacePageQuery({
+    variables: { subspaceId: opportunityId! },
     skip: !opportunityId,
     errorPolicy: 'all',
   });
 
-  const opportunity = query?.lookup.opportunity;
-  const collaborationID = opportunity?.collaboration?.id;
-  const opportunityPrivileges = opportunity?.authorization?.myPrivileges ?? NO_PRIVILEGES;
-  const communityPrivileges = opportunity?.community?.authorization?.myPrivileges ?? NO_PRIVILEGES;
-  const timelineReadAccess = (opportunity?.collaboration?.timeline?.authorization?.myPrivileges ?? []).includes(
+  const subsubspace = query?.space;
+  const collaborationID = subsubspace?.collaboration?.id;
+  const opportunityPrivileges = subsubspace?.authorization?.myPrivileges ?? NO_PRIVILEGES;
+  const communityPrivileges = subsubspace?.community?.authorization?.myPrivileges ?? NO_PRIVILEGES;
+  const timelineReadAccess = (subsubspace?.collaboration?.timeline?.authorization?.myPrivileges ?? []).includes(
     AuthorizationPrivilege.Read
   );
   const permissions = useMemo(() => {
@@ -109,7 +109,7 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ opportuni
       editActors: opportunityPrivileges?.includes(AuthorizationPrivilege.Update),
       removeRelations: opportunityPrivileges?.includes(AuthorizationPrivilege.Update),
       communityReadAccess: communityPrivileges.includes(AuthorizationPrivilege.Read),
-      opportunityReadAccess: opportunityPrivileges?.includes(AuthorizationPrivilege.Read),
+      subsubspaceReadAccess: opportunityPrivileges?.includes(AuthorizationPrivilege.Read),
       readUsers: user?.hasPlatformPrivilege(AuthorizationPrivilege.ReadUsers) ?? false,
       timelineReadAccess,
     };
@@ -124,12 +124,12 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ opportuni
     loading: activityLoading,
     fetchMoreActivities,
   } = useActivityOnCollaboration(collaborationID, {
-    skip: !permissions.opportunityReadAccess || !permissions.readUsers,
+    skip: !permissions.subsubspaceReadAccess || !permissions.readUsers,
     types: activityTypes,
     limit: RECENT_ACTIVITIES_LIMIT_INITIAL,
   });
 
-  const { profile, collaboration, metrics = [] } = opportunity ?? {};
+  const { profile, collaboration, metrics = [] } = subsubspace ?? {};
 
   const { references } = profile ?? {};
 
@@ -137,12 +137,12 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ opportuni
   const links = (references?.filter(x => ['poster', 'meme'].indexOf(x.name) === -1) ?? []) as Reference[];
 
   const membersCount = getMetricCount(metrics, MetricType.Member);
-  const memberUsersCount = membersCount - (opportunity?.community?.memberOrganizations?.length ?? 0);
-  const contributors = useCommunityMembersAsCardProps(opportunity?.community, { memberUsersCount });
+  const memberUsersCount = membersCount - (subsubspace?.community?.memberOrganizations?.length ?? 0);
+  const contributors = useCommunityMembersAsCardProps(subsubspace?.community, { memberUsersCount });
 
   const topCallouts = collaboration?.callouts?.slice(0, TOP_CALLOUTS_LIMIT);
 
-  const communityId = opportunity?.community?.id;
+  const communityId = subsubspace?.community?.id;
 
   const [sendMessageToCommunityLeads] = useSendMessageToCommunityLeadsMutation();
   const handleSendMessageToCommunityLeads = useCallback(
@@ -165,7 +165,7 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ opportuni
 
   const callouts = useCallouts({
     journeyId: opportunityId,
-    journeyTypeName: 'opportunity',
+    journeyTypeName: 'subsubspace',
     groupNames: [CalloutGroupName.Home_1, CalloutGroupName.Home_2],
   });
 
@@ -173,8 +173,8 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ opportuni
     <>
       {children(
         {
-          opportunity,
-          url: `admin/${opportunity?.profile.url}`, //opportunity && buildAdminOpportunityUrl(spaceNameId, challengeNameId, opportunity.nameID),
+          subsubspace,
+          url: `admin/${subsubspace?.profile.url}`, //opportunity && buildAdminOpportunityUrl(spaceNameId, challengeNameId, opportunity.nameID),
           meme,
           links,
           permissions: {

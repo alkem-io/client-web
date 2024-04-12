@@ -44,7 +44,7 @@ const tabs: TabDefinition<SettingsSection>[] = [
     icon: ForumOutlinedIcon,
   },
   {
-    section: SettingsSection.Challenges,
+    section: SettingsSection.Subspaces,
     route: 'challenges',
     icon: FlagOutlinedIcon,
   },

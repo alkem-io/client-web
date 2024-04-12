@@ -1,6 +1,0 @@
-fragment ChallengesOnSpace on Space {
-  id
-  challenges {
-    ...ChallengeCard
-  }
-}

@@ -79,7 +79,7 @@ const useSpaceDashboardNavigation = ({
     skip,
   });
 
-  const challenges = challengesQueryData?.space.challenges;
+  const challenges = challengesQueryData?.space.subspaces;
 
   const readableChallengeIds = challenges?.filter(isReadable).map(({ id }) => id);
 
@@ -93,7 +93,7 @@ const useSpaceDashboardNavigation = ({
     });
 
   const challengesWithOpportunitiesById = useMemo(
-    () => keyBy(opportunitiesQueryData?.space.challenges, 'id'),
+    () => keyBy(opportunitiesQueryData?.space.subspaces, 'id'),
     [opportunitiesQueryData]
   );
 
@@ -102,7 +102,7 @@ const useSpaceDashboardNavigation = ({
   const dashboardNavigation = useMemo(
     () =>
       challenges?.map(challenge => {
-        const opportunities = challengesWithOpportunitiesById[challenge.id]?.opportunities ?? [];
+        const opportunities = challengesWithOpportunitiesById[challenge.id]?.subspaces ?? [];
 
         return {
           ...getDashboardNavigationItemProps(challenge, !isReadable(challenge)),

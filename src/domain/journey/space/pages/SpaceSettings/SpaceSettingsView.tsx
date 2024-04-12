@@ -5,7 +5,6 @@ import {
   useSpaceHostQuery,
   useSpaceSettingsQuery,
   useUpdateSpaceSettingsMutation,
-  useUpdateChallengeSettingsMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import {
   CommunityMembershipPolicy,
@@ -60,21 +59,13 @@ export const SpaceSettingsView: FC<SpaceSettingsViewProps> = ({ journeyId, journ
 
   const { data: settingsData, loading } = useSpaceSettingsQuery({
     variables: {
-      spaceId: journeyTypeName === 'space' ? journeyId : undefined,
-      challengeId: journeyTypeName === 'challenge' ? journeyId : undefined,
-      opportunityId: journeyTypeName === 'opportunity' ? journeyId : undefined,
-      includeSpace: journeyTypeName === 'space',
-      includeChallenge: journeyTypeName === 'challenge',
-      includeOpportunity: journeyTypeName === 'opportunity',
+      spaceId: journeyId,
     },
   });
-  const communityId =
-    settingsData?.space?.community?.id ??
-    settingsData?.challenge?.challenge?.community?.id ??
-    settingsData?.opportunity?.opportunity?.community?.id;
+  const communityId = settingsData?.space?.community?.id;
 
   const currentSettings = useMemo(() => {
-    const settings = settingsData?.space?.settings ?? settingsData?.challenge.challenge?.settings; // ?? settingsData?.opportunity?.opportunity?.settings;
+    const settings = settingsData?.space?.settings;
     return {
       ...settings,
       hostOrganizationTrusted:
@@ -83,7 +74,6 @@ export const SpaceSettingsView: FC<SpaceSettingsViewProps> = ({ journeyId, journ
   }, [settingsData, hostOrganizationId]);
 
   const [updateSpaceSettings] = useUpdateSpaceSettingsMutation();
-  const [updateChallengeSettings] = useUpdateChallengeSettingsMutation();
 
   const handleUpdateSettings = async ({
     privacyMode = currentSettings?.privacy?.mode ?? defaultSpaceSettings.privacy.mode,
@@ -134,11 +124,11 @@ export const SpaceSettingsView: FC<SpaceSettingsViewProps> = ({ journeyId, journ
         });
         break;
       }
-      case 'challenge': {
-        await updateChallengeSettings({
+      case 'subspace': {
+        await updateSpaceSettings({
           variables: {
             settingsData: {
-              challengeID: journeyId,
+              spaceID: journeyId,
               settings: settingsVariable,
             },
           },

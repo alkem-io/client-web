@@ -5,7 +5,7 @@ import { SettingsSection } from '../../../../platform/admin/layout/EntitySetting
 import { SettingsPageProps } from '../../../../platform/admin/layout/EntitySettingsLayout/types';
 import { useRouteResolver } from '../../../../../main/routing/resolvers/RouteResolver';
 import { Skeleton } from '@mui/material';
-import ChallengeSettingsLayout from '../../../../platform/admin/challenge/ChallengeSettingsLayout';
+import SubspaceSettingsLayout from '../../../../platform/admin/subspace/SubspaceSettingsLayout';
 import OpportunitySettingsLayout from '../../../../platform/admin/opportunity/OpportunitySettingsLayout';
 
 const SpaceSettingsPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
@@ -22,17 +22,17 @@ const SpaceSettingsPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
           )}
         </SpaceSettingsLayout>
       );
-    case 'challenge':
+    case 'subspace':
       return (
-        <ChallengeSettingsLayout currentTab={SettingsSection.SpaceSettings} tabRoutePrefix={routePrefix}>
+        <SubspaceSettingsLayout currentTab={SettingsSection.SpaceSettings} tabRoutePrefix={routePrefix}>
           {!journeyId || loading ? (
             <Skeleton />
           ) : (
             <SpaceSettingsView journeyId={journeyId} journeyTypeName={journeyTypeName} />
           )}
-        </ChallengeSettingsLayout>
+        </SubspaceSettingsLayout>
       );
-    case 'opportunity':
+    case 'subsubspace':
       return (
         <OpportunitySettingsLayout currentTab={SettingsSection.SpaceSettings} tabRoutePrefix={routePrefix}>
           {!journeyId || loading ? (

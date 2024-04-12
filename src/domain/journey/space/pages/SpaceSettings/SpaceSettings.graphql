@@ -1,35 +1,5 @@
-query SpaceSettings(
-  $spaceId: UUID_NAMEID! = "00000000-0000-0000-0000-000000000000"
-  $challengeId: UUID! = "00000000-0000-0000-0000-000000000000"
-  $opportunityId: UUID! = "00000000-0000-0000-0000-000000000000"
-  $includeSpace: Boolean = false
-  $includeChallenge: Boolean = false
-  $includeOpportunity: Boolean = false
-) {
-  challenge: lookup @include(if: $includeChallenge) {
-    challenge(ID: $challengeId) {
-      id
-      settings {
-        ...SpaceSettings
-      }
-      community {
-        id
-      }
-    }
-  }
-  opportunity: lookup @include(if: $includeOpportunity) {
-    opportunity(ID: $opportunityId) {
-      id
-      # TODO
-      # settings {
-      #   ...SpaceSettings
-      # }
-      community {
-        id
-      }
-    }
-  }
-  space(ID: $spaceId) @include(if: $includeSpace) {
+query SpaceSettings($spaceId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
     id
     settings {
       ...SpaceSettings

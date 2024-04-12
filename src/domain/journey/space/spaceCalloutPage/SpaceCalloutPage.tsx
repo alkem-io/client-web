@@ -19,7 +19,7 @@ const getPageSection = (calloutGroup: string | undefined): EntityPageSection => 
       return EntityPageSection.Community;
     case CalloutGroupName.Subspaces_1:
     case CalloutGroupName.Subspaces_2:
-      return EntityPageSection.Challenges;
+      return EntityPageSection.Subspaces;
     default:
       return EntityPageSection.KnowledgeBase;
   }

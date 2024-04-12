@@ -1,6 +1,6 @@
-subscription subspaceCreated($journeyID: UUID!) {
-  subspaceCreated(journeyID: $journeyID) {
-    childJourney {
+subscription subspaceCreated($subspaceId: UUID!) {
+  subspaceCreated(spaceID: $subspaceId) {
+    subspace {
       ...SpaceCard
     }
   }
