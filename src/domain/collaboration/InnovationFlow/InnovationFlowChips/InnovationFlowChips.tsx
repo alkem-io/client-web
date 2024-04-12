@@ -1,8 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, IconButton, styled, Tooltip } from '@mui/material';
+import { Button, styled, Tooltip } from '@mui/material';
 import { ArrowRight } from '@mui/icons-material';
-import SettingsIcon from '@mui/icons-material/SettingsOutlined';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import { useGlobalGridColumns } from '../../../../core/ui/grid/constants';
 import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
@@ -10,6 +9,8 @@ import TranslationKey from '../../../../core/i18n/utils/TranslationKey';
 import i18n from '../../../../core/i18n/config';
 import { InnovationFlowState } from '../InnovationFlow';
 import { Caption } from '../../../../core/ui/typography';
+import ButtonWithTooltip from '../../../../core/ui/button/ButtonWithTooltip';
+import { InnovationFlowIcon } from '../InnovationFlowIcon/InnovationFlowIcon';
 
 interface InnovationFlowChipsProps {
   states: InnovationFlowState[];
@@ -105,13 +106,14 @@ const InnovationFlowChips = ({
           ))}
         </Gutters>
         {showSettings && (
-          <IconButton
-            color="primary"
+          <ButtonWithTooltip
             onClick={onSettingsOpen}
-            aria-label={t('components.innovationFlowSettings.title')}
+            tooltip={t('components.innovationFlowSettings.buttonTooltip')}
+            variant="outlined"
+            iconButton
           >
-            <SettingsIcon />
-          </IconButton>
+            <InnovationFlowIcon />
+          </ButtonWithTooltip>
         )}
       </Gutters>
       {selectedStateDescription && <FlowStateDescription>{selectedStateDescription}</FlowStateDescription>}
