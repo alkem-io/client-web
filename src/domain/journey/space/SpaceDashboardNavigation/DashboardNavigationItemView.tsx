@@ -25,11 +25,13 @@ export interface DashboardNavigationItemViewProps extends Omit<DashboardNavigati
   level?: number;
   onClick?: MouseEventHandler;
   onToggle?: (isExpanded: boolean) => void;
+  expandable?: boolean;
 }
 
 export interface DashboardNavigationItemViewApi {
   expand: () => void;
-  getBoundingClientRect: () => DOMRect | undefined;
+  level: number;
+  getDimensions: () => { top?: number; height?: number };
 }
 
 const DashboardNavigationItemView = forwardRef<
@@ -48,6 +50,7 @@ const DashboardNavigationItemView = forwardRef<
       level = 0,
       onClick,
       onToggle,
+      expandable = false,
     },
     ref
   ) => {
@@ -65,20 +68,42 @@ const DashboardNavigationItemView = forwardRef<
       setIsExpanded(value => !value);
     };
 
-    const containerRef = useRef<HTMLDivElement>();
+    const hostContainerRef = useRef<HTMLDivElement>();
+
+    const childrenContainerRef = useRef<HTMLDivElement>();
 
     useImperativeHandle(
       ref,
       () => ({
+        level,
         expand: () => setIsExpanded(true),
-        getBoundingClientRect: () => containerRef.current?.getBoundingClientRect(),
+        getDimensions: () => {
+          // If items lose expandability, we can greatly simplify the code by using a wrapper Box and reading its height.
+          const hostBounds = hostContainerRef.current?.getBoundingClientRect();
+          const top = hostBounds?.top;
+
+          if (!isExpanded && expandable) {
+            return {
+              top,
+              height: hostBounds?.height,
+            };
+          }
+
+          const childrenBounds = childrenContainerRef.current?.getBoundingClientRect();
+
+          return {
+            top,
+            height: (hostBounds?.height ?? 0) + (childrenBounds?.height ?? 0),
+          };
+        },
       }),
-      []
+      [isExpanded, expandable, level]
     );
 
     return (
-      <Box ref={containerRef}>
+      <>
         <BadgeCardView
+          ref={hostContainerRef}
           component={RouterLink}
           to={url ?? ''}
           visual={<JourneyAvatar src={visualUri} size="medium" />}
@@ -94,7 +119,8 @@ const DashboardNavigationItemView = forwardRef<
                 </IconButton>
               </Tooltip>
             ) : (
-              Children.count(children) > 0 && (
+              Children.count(children) > 0 &&
+              expandable && (
                 <IconButton
                   onClick={toggleExpand}
                   aria-label={isExpanded ? t('buttons.collapse') : t('buttons.expand')}
@@ -115,11 +141,18 @@ const DashboardNavigationItemView = forwardRef<
           <Caption>{displayName}</Caption>
         </BadgeCardView>
         {children && (
-          <Collapse in={isExpanded} onEntered={() => onToggle?.(isExpanded)} onExited={() => onToggle?.(isExpanded)}>
-            <Box>{children}</Box>
+          // If items lose expandability, we can safely remove the callbacks.
+          <Collapse
+            in={isExpanded || !expandable}
+            onEntering={() => onToggle?.(isExpanded)}
+            onEntered={() => onToggle?.(isExpanded)}
+            onExiting={() => onToggle?.(isExpanded)}
+            onExited={() => onToggle?.(isExpanded)}
+          >
+            <Box ref={childrenContainerRef}>{children}</Box>
           </Collapse>
         )}
-      </Box>
+      </>
     );
   }
 );

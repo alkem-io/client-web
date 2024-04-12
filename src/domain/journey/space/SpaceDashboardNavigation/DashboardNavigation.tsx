@@ -17,6 +17,7 @@ import { Actions } from '../../../../core/ui/actions/Actions';
 import produce from 'immer';
 import RouterLink from '../../../../core/ui/link/RouterLink';
 import { GUTTER_PX } from '../../../../core/ui/grid/constants';
+import findCurrentPath from './findCurrentPath';
 
 interface DashboardNavigationProps {
   spaceUrl: string | undefined;
@@ -31,29 +32,7 @@ interface DashboardNavigationProps {
 
 const VISIBLE_ROWS_WHEN_COLLAPSED = 6;
 
-const findCurrentLevel = (
-  dashboardNavigation: DashboardNavigationItem[] | undefined,
-  currentItemId: string | undefined,
-  level = 0
-) => {
-  if (!currentItemId || !dashboardNavigation) {
-    return undefined;
-  }
-  if (dashboardNavigation.some(item => item.id === currentItemId)) {
-    return level;
-  } else {
-    for (const item of dashboardNavigation) {
-      if (!item.children) {
-        continue;
-      }
-      const found = findCurrentLevel(item.children, currentItemId, level + 1);
-      if (typeof found === 'number') {
-        return found;
-      }
-    }
-    return undefined;
-  }
-};
+const INITIAL_HEIGHT_LIMIT = GUTTER_PX * VISIBLE_ROWS_WHEN_COLLAPSED * 3;
 
 const DashboardNavigation = ({
   spaceUrl,
@@ -87,7 +66,10 @@ const DashboardNavigation = ({
 
   const tooltipPlacement = isMobile ? 'left' : 'right';
 
-  const currentLevel = findCurrentLevel(dashboardNavigation, currentItemId) ?? -1;
+  const pathToItem = findCurrentPath(dashboardNavigation, currentItemId);
+
+  const currentLevel = pathToItem.length - 1;
+  const isTopLevel = currentLevel === -1;
 
   const itemRefs = useRef<Record<string, DashboardNavigationItemViewApi | null>>({}).current;
 
@@ -102,14 +84,23 @@ const DashboardNavigation = ({
     height: 0,
   });
 
+  // The only purpose of this method is to calculate the height of the content before expand/collapse transition is completed on an item.
+  // If items aren't expandable/collapsible anymore, this method is not needed, just get the height of the content from the contentWrapperRef.
+  const getContentHeight = () => {
+    return Object.values(itemRefs).reduce((height, itemRef) => {
+      const bounds = itemRef?.level === 0 ? itemRef.getDimensions() : undefined;
+      return height + (bounds?.height ?? 0);
+    }, 0);
+  };
+
   const adjustViewport = () => {
     const itemRef = currentItemId && itemRefs[currentItemId];
 
     if (!isSnappedToCurrentSubspace || !itemRef) {
       setViewportSnap(snap =>
         produce(snap, snap => {
-          const contentHeight = contentWrapperRef.current?.getBoundingClientRect().height ?? 0;
-          const maxHeight = hasHeightLimit ? GUTTER_PX * VISIBLE_ROWS_WHEN_COLLAPSED * 3 : Infinity;
+          const contentHeight = getContentHeight();
+          const maxHeight = hasHeightLimit && isTopLevel ? INITIAL_HEIGHT_LIMIT : Infinity;
 
           snap.top = 0;
           snap.height = Math.min(maxHeight, contentHeight);
@@ -120,13 +111,13 @@ const DashboardNavigation = ({
 
     setViewportSnap(snap =>
       produce(snap, snap => {
-        const itemBounds = itemRef.getBoundingClientRect();
+        const itemBounds = itemRef.getDimensions();
 
         const parentBounds = contentWrapperRef.current?.getBoundingClientRect();
 
         const offsetTop =
-          typeof parentBounds?.top === 'number' && typeof itemBounds?.top === 'number'
-            ? itemBounds.top - parentBounds.top
+          typeof parentBounds?.top === 'number' && typeof itemBounds.top === 'number'
+            ? itemBounds.top - parentBounds?.top
             : 0;
 
         snap.height = itemBounds?.height ?? parentBounds?.height ?? 0;
@@ -135,19 +126,25 @@ const DashboardNavigation = ({
     );
   };
 
-  useLayoutEffect(adjustViewport, [currentItemId, dashboardNavigation, isSnappedToCurrentSubspace, hasHeightLimit]);
+  useLayoutEffect(adjustViewport, [
+    dashboardNavigation,
+    currentItemId,
+    isSnappedToCurrentSubspace,
+    hasHeightLimit,
+    isTopLevel,
+  ]);
 
   const contentTranslationX = (theme: Theme) =>
-    isSnappedToCurrentSubspace && currentLevel !== -1 ? gutters(-currentLevel * 2)(theme) : 0;
+    isSnappedToCurrentSubspace && !isTopLevel ? gutters(-currentLevel * 2)(theme) : 0;
   const contentTranslationY = () => `-${viewportSnap.top}px`;
   const contentWidth = (theme: Theme) =>
-    isSnappedToCurrentSubspace && currentLevel !== -1 ? `calc(100% + ${gutters(currentLevel * 2)(theme)})` : '100%';
+    isSnappedToCurrentSubspace && !isTopLevel ? `calc(100% + ${gutters(currentLevel * 2)(theme)})` : '100%';
 
   const getItemProps = typeof itemProps === 'function' ? itemProps : () => itemProps;
 
   return (
     <PageContentBlock disablePadding disableGap>
-      <Collapse in={!isSnappedToCurrentSubspace || currentLevel === -1}>
+      <Collapse in={!isSnappedToCurrentSubspace || isTopLevel}>
         <RouterLink to={spaceUrl ?? ''}>
           <PageContentBlockHeader
             title={
@@ -183,14 +180,16 @@ const DashboardNavigation = ({
             if (loading) {
               return <Skeleton key={id} />;
             }
+            const isCurrent = id === currentItemId;
             return (
               <DashboardNavigationItemView
                 key={id}
                 ref={itemRef(id)}
                 visualUri={avatar?.uri}
-                current={id === currentItemId}
+                current={isCurrent}
                 tooltipPlacement={tooltipPlacement}
                 onToggle={adjustViewport}
+                expandable={isTopLevel || !(isSnappedToCurrentSubspace && pathToItem.includes(id))}
                 {...subspace}
                 {...getItemProps({ id, avatar, member, ...subspace })}
               >
@@ -203,6 +202,7 @@ const DashboardNavigation = ({
                     tooltipPlacement={tooltipPlacement}
                     level={1}
                     onToggle={adjustViewport}
+                    expandable={isTopLevel || !(isSnappedToCurrentSubspace && pathToItem.includes(id))}
                     {...subsubspace}
                     {...getItemProps({ id, avatar, member, ...subsubspace })}
                   />
@@ -223,7 +223,7 @@ const DashboardNavigation = ({
           </Button>
         </Actions>
       )}
-      {currentLevel === -1 &&
+      {isTopLevel &&
         (showAll ? (
           <Box height={gutters(0.5)} />
         ) : (
