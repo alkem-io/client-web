@@ -1,0 +1,5 @@
+mutation createSubspace($input: CreateSubspaceOnSpaceInput!) {
+  createSubspace(subspaceData: $input) {
+    ...SubspaceCard
+  }
+}

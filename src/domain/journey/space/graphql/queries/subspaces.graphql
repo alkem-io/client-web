@@ -1,0 +1,13 @@
+query subspacesInSpace($spaceId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
+    id
+    subspaces {
+      id
+      nameID
+      profile {
+        id
+        displayName
+      }
+    }
+  }
+}

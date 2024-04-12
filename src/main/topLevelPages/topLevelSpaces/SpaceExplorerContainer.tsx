@@ -127,7 +127,7 @@ const SpaceExplorerContainer = ({ searchTerms, children }: SpaceExplorerContaine
             };
           case SearchResultType.Challenge:
             return {
-              ...entry.challenge,
+              ...entry.subspace,
               parent: entry.space,
               matchedTerms: entry.terms,
             };
@@ -138,12 +138,12 @@ const SpaceExplorerContainer = ({ searchTerms, children }: SpaceExplorerContaine
     }
 
     return fetchedSpaces?.flatMap<SpaceWithParent>(space => {
-      if (!space.challenges || space.challenges.length === 0) {
+      if (!space.subspaces || space.subspaces.length === 0) {
         return space;
       }
       return [
         space,
-        ...space.challenges.map(ch => ({
+        ...space.subspaces.map(ch => ({
           ...ch,
           parent: space,
         })),

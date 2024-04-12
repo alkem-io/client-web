@@ -17,7 +17,7 @@ import {
 import ImageIcon from '@mui/icons-material/Image';
 import { getProfileIcon } from '../../../../shared/icons/profileIcons';
 import { SpaceIcon } from '../../../../journey/space/icon/SpaceIcon';
-import { ChallengeIcon } from '../../../../journey/challenge/icon/ChallengeIcon';
+import { ChallengeIcon } from '../../../../journey/subspace/icon/ChallengeIcon';
 import { OpportunityIcon } from '../../../../journey/opportunity/icon/OpportunityIcon';
 import { FolderCopyOutlined } from '@mui/icons-material';
 

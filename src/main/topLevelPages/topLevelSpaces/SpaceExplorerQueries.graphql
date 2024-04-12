@@ -32,8 +32,8 @@ fragment SpaceExplorerSearchChallenge on SearchResultChallenge {
   space {
     ...SpaceExplorerSpace
   }
-  challenge {
-    ...SpaceExplorerChallenge
+  subspace {
+    ...SpaceExplorerSubspace
   }
 }
 
@@ -91,7 +91,7 @@ fragment SpaceExplorerSpace on Space {
   }
 }
 
-fragment SpaceExplorerChallenge on Challenge {
+fragment SpaceExplorerSubspace on Space {
   id
   profile {
     id
@@ -99,7 +99,7 @@ fragment SpaceExplorerChallenge on Challenge {
     tagline
     displayName
     description
-    cardBanner: visual(type: CARD) {
+    cardBanner2: visual(type: CARD) {
       ...VisualUri
     }
     type
@@ -107,7 +107,7 @@ fragment SpaceExplorerChallenge on Challenge {
       id
       tags
     }
-    avatar: visual(type: AVATAR) {
+    avatar2: visual(type: AVATAR) {
       ...VisualUri
     }
   }
@@ -123,8 +123,8 @@ fragment SpaceExplorerChallenge on Challenge {
 
 fragment SpaceExplorerSpaceWithChallenges on Space {
   ...SpaceExplorerSpace
-  challenges {
-    ...SpaceExplorerChallenge
+  subspaces {
+    ...SpaceExplorerSubspace
   }
 }
 

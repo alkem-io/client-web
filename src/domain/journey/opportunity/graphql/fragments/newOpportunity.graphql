@@ -1,8 +1,0 @@
-fragment NewOpportunity on Opportunity {
-  id
-  nameID
-  profile {
-    id
-    displayName
-  }
-}

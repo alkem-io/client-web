@@ -20,18 +20,18 @@ const data = (): TestData[] =>
       },
       {
         name: '4',
-        data: { id: 'app-id', spaceID: 'eco', challengeID: 'chall' },
-        result: { id: 'app-id', spaceID: 'eco', challengeID: 'chall', type: 'challenge' },
+        data: { id: 'app-id', spaceID: 'eco', subspaceID: 'chall' },
+        result: { id: 'app-id', spaceID: 'eco', subspaceID: 'chall', type: 'subspace' },
       },
       {
         name: '5',
-        data: { id: 'app-id', spaceID: 'eco', challengeID: 'chall', opportunityID: 'opp' },
+        data: { id: 'app-id', spaceID: 'eco', subspaceID: 'chall', subsubspaceID: 'opp' },
         result: {
           id: 'app-id',
           spaceID: 'eco',
-          challengeID: 'chall',
-          opportunityID: 'opp',
-          type: 'opportunity',
+          subspaceID: 'chall',
+          subsubspaceID: 'opp',
+          type: 'subsubspace',
         },
       },
     ] as TestData[]
@@ -43,8 +43,8 @@ const exceptionData = (): TestData[] =>
     { name: '1', data: { id: 'app-id' }, exceptionMsg: "'spaceID' parameter expected" },
     {
       name: '2',
-      data: { id: 'app-id', spaceID: 'eco', opportunityID: 'opp' },
-      exceptionMsg: "'challengeID' parameter expected when 'spaceID' and 'opportunityID' are provided",
+      data: { id: 'app-id', spaceID: 'eco', subsubspaceID: 'opp' },
+      exceptionMsg: "'subspaceID' parameter expected when 'spaceID' and 'subsubspaceID' are provided",
     },
   ].map(x => Object.assign(x, { toString: () => x.name })); // using toString operator into test.each;
 

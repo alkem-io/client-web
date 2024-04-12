@@ -26,7 +26,7 @@ const OpportunityPageBanner = (props: BasePageBannerProps) => {
     <ChildJourneyPageBanner
       banner={banner}
       ribbon={ribbon}
-      journeyTypeName="opportunity"
+      journeyTypeName="subsubspace"
       avatar={avatar ?? cardImage}
       tags={opportunity?.profile.tagset?.tags}
       displayName={opportunity?.profile.displayName ?? ''}

@@ -109,7 +109,7 @@ const useInnovationFlowSettings = ({ collaborationId, skip }: useInnovationFlowS
   const handleUpdateInnovationFlowProfile = async (innovationFlowId: string, profileData: UpdateProfileInput) => {
     return updateInnovationFlowProfile({
       variables: {
-        updateInnovationFlowData: {
+        input: {
           innovationFlowID: innovationFlowId,
           profileData,
         },

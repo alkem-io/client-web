@@ -1,9 +1,5 @@
 import { useMemo } from 'react';
-import {
-  useJourneyBreadcrumbsChallengeQuery,
-  useJourneyBreadcrumbsOpportunityQuery,
-  useJourneyBreadcrumbsSpaceQuery,
-} from '../../../../core/apollo/generated/apollo-hooks';
+import { useJourneyBreadcrumbsSpaceQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { JourneyTypeName } from '../../JourneyTypeName';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 
@@ -16,10 +12,10 @@ export interface BreadcrumbsItem {
   };
 }
 
-const JOURNEY_NESTING: JourneyTypeName[] = ['space', 'challenge', 'opportunity'];
+const JOURNEY_NESTING: JourneyTypeName[] = ['space', 'subspace', 'subsubspace'];
 
 export const useJourneyBreadcrumbs = () => {
-  const { spaceId, challengeId, opportunityId, journeyTypeName, loading } = useRouteResolver();
+  const { spaceId, subSpaceId, subSubSpaceId, journeyTypeName, loading } = useRouteResolver();
 
   const currentJourneyIndex = journeyTypeName && JOURNEY_NESTING.indexOf(journeyTypeName);
 
@@ -38,28 +34,28 @@ export const useJourneyBreadcrumbs = () => {
     skip: !shouldFetchJourney('space') || loading,
   });
 
-  const { data: _challenge, loading: isLoadingChallenge } = useJourneyBreadcrumbsChallengeQuery({
+  const { data: _challenge, loading: isLoadingChallenge } = useJourneyBreadcrumbsSpaceQuery({
     variables: {
-      challengeId: challengeId!,
+      spaceId: subSpaceId!,
     },
-    skip: !shouldFetchJourney('challenge') || loading,
+    skip: !shouldFetchJourney('subspace') || loading,
   });
 
-  const { data: _opportunity, loading: isLoadingOpportunity } = useJourneyBreadcrumbsOpportunityQuery({
+  const { data: _opportunity, loading: isLoadingOpportunity } = useJourneyBreadcrumbsSpaceQuery({
     variables: {
-      opportunityId: opportunityId!,
+      spaceId: subSubSpaceId!,
     },
-    skip: !shouldFetchJourney('opportunity') || loading,
+    skip: !shouldFetchJourney('subsubspace') || loading,
   });
 
   const getJourneyProfile = (journey: JourneyTypeName) => {
     switch (journey) {
       case 'space':
         return _space?.space.profile;
-      case 'challenge':
-        return _challenge?.lookup.challenge?.profile;
-      case 'opportunity':
-        return _opportunity?.lookup.opportunity?.profile;
+      case 'subspace':
+        return _challenge?.space?.profile;
+      case 'subsubspace':
+        return _opportunity?.space?.profile;
     }
   };
 

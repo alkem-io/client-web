@@ -4,14 +4,14 @@ import { OpportunityProvider } from '../../../../journey/opportunity/context/Opp
 import { Error404 } from '../../../../../core/pages/Errors/Error404';
 import { nameOfUrl } from '../../../../../main/routing/urlParams';
 import { OpportunityRoute } from './OpportunityRoute';
-import ChallengeOpportunitiesPage from '../../../../journey/challenge/pages/ChallengeOpportunities/ChallengeOpportunitiesPage';
+import ChallengeOpportunitiesPage from '../../../../journey/subspace/pages/SubspaceSubspaces/SubspaceSubspacesPage';
 
 export const OpportunitiesRoute: FC = () => {
   return (
     <Routes>
       <Route index element={<ChallengeOpportunitiesPage routePrefix="../../" />} />
       <Route
-        path={`:${nameOfUrl.opportunityNameId}/*`}
+        path={`:${nameOfUrl.subsubspaceNameId}/*`}
         element={
           <OpportunityProvider>
             <OpportunityRoute />
