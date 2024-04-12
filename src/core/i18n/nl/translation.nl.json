@@ -359,9 +359,9 @@
       "space": "$t(common.space)",
       "space_plural": "$t(common.spaces)",
       "challenge": "$t(common.challenge)",
-      "challenge_plural": "$t(common.challenges)",
+      "challenge_plural": "$t(common.subspaces)",
       "opportunity": "$t(common.opportunity)",
-      "opportunity_plural": "$t(common.opportunities)",
+      "opportunity_plural": "$t(common.subspaces)",
       "agreement": "$t(common.agreement)",
       "agreement_plural": "$t(common.agreements)"
     },
@@ -1905,11 +1905,11 @@
           "callout": "Oproepen (binnenkort beschikbaar)"
         }
       },
-      "journeyFilterTitle": "$t(common.spaces), $t(common.challenges) & $t(common.opportunities)"
+      "journeyFilterTitle": "$t(common.spaces), $t(common.subspaces) & $t(common.subspaces)"
     },
     "challenge-explorer": {
       "fullName": "Challenges verkennen",
-      "shortName": "$t(common.challenges)",
+      "shortName": "$t(common.subspaces)",
       "search": {
         "title": "Verken de openbare Challenges",
         "subtitle": "Voer je zoektermen hieronder in (bijv. 'innovatie') om overeenkomende Challenges te vinden. Houd er rekening mee dat er in Alkemio zowel openbare als privé challenges zijn. Hier vind je alle Challenges van de openbare Spaces. Uitdagingen van privé Spaces zijn zichtbaar wanneer je bent aangemeld en lid bent van die specifieke Space.",
@@ -2569,7 +2569,7 @@
     ]
   },
   "spaceSearch": {
-    "journeyFilterTitle": "$t(common.challenges) & $t(common.opportunities)"
+    "journeyFilterTitle": "$t(common.subspaces) & $t(common.subspaces)"
   },
   "visuals-alt-text": {
     "banner": {

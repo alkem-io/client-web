@@ -13,7 +13,7 @@ interface OpportunityPageLayoutProps {
 }
 
 const OpportunityPageLayout = ({ currentSection, children }: PropsWithChildren<OpportunityPageLayoutProps>) => {
-  const { opportunityId, loading } = useRouteResolver();
+  const { subSubSpaceId: opportunityId, loading } = useRouteResolver();
 
   return (
     <EntityPageLayout
@@ -23,9 +23,9 @@ const OpportunityPageLayout = ({ currentSection, children }: PropsWithChildren<O
       tabsComponent={OpportunityTabs}
     >
       {children}
-      <JourneyUnauthorizedDialogContainer journeyId={opportunityId} journeyTypeName="opportunity" loading={loading}>
+      <JourneyUnauthorizedDialogContainer journeyId={opportunityId} journeyTypeName="subsubspace" loading={loading}>
         {({ vision, ...props }) => (
-          <JourneyUnauthorizedDialog journeyTypeName="opportunity" description={vision} {...props} />
+          <JourneyUnauthorizedDialog journeyTypeName="subsubspace" description={vision} {...props} />
         )}
       </JourneyUnauthorizedDialogContainer>
     </EntityPageLayout>

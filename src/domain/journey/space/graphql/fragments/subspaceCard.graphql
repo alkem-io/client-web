@@ -1,0 +1,40 @@
+fragment SubspaceCard on Space {
+  id
+  authorization {
+    id
+    anonymousReadAccess
+  }
+  metrics {
+    id
+    name
+    value
+  }
+  profile {
+    id
+    url
+    tagline
+    displayName
+    description
+    cardBanner: visual(type: CARD) {
+      ...VisualUri
+    }
+    tagset {
+      ...TagsetDetails
+    }
+    url
+  }
+  context {
+    id
+    vision
+  }
+  community {
+    id
+    myMembershipStatus
+  }
+  collaboration {
+    id
+    innovationFlow {
+      ...InnovationFlowDetails
+    }
+  }
+}

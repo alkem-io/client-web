@@ -189,8 +189,7 @@ const LinkCollectionCallout = ({
     <StorageConfigContextProvider
       locationType="callout"
       calloutId={callout.id}
-      journeyTypeName={calloutLayoutProps.journeyTypeName}
-      journeyId={journeyId}
+      journeyId={journeyId!}
       skip={!addNewLinkDialogOpen && !editLink}
     >
       <CalloutLayout

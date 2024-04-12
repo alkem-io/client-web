@@ -1,8 +1,8 @@
-query SpaceChallengeCards($spaceId: UUID_NAMEID!) {
+query SpaceSubspaceCards($spaceId: UUID_NAMEID!) {
   space(ID: $spaceId) {
     id
-    challenges {
-      ...ChallengeCard
+    subspaces {
+      ...SubspaceCard
     }
   }
 }

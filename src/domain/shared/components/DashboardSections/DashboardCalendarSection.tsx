@@ -4,11 +4,7 @@ import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
 import useNavigate from '../../../../core/routing/useNavigate';
 import { groupBy, sortBy, times } from 'lodash';
-import {
-  useChallengeDashboardCalendarEventsQuery,
-  useOpportunityDashboardCalendarEventsQuery,
-  useSpaceDashboardCalendarEventsQuery,
-} from '../../../../core/apollo/generated/apollo-hooks';
+import { useSpaceCalendarEventsQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeaderWithDialogAction from '../../../../core/ui/content/PageContentBlockHeaderWithDialogAction';
 import { gutters } from '../../../../core/ui/grid/utils';
@@ -51,27 +47,12 @@ const DashboardCalendarSection: FC<DashboardCalendarSectionProps> = ({ journeyId
 
   const [isCalendarView, setCalendarView] = useState(false);
 
-  const { data: spaceData, loading: loadingSpace } = useSpaceDashboardCalendarEventsQuery({
+  const { data: spaceData, loading } = useSpaceCalendarEventsQuery({
     variables: { spaceId: journeyId! },
     skip: !journeyId || journeyTypeName !== 'space',
   });
 
-  const { data: challengeData, loading: loadingChallenge } = useChallengeDashboardCalendarEventsQuery({
-    variables: { challengeId: journeyId! },
-    skip: !journeyId || journeyTypeName !== 'challenge',
-  });
-
-  const { data: opportunityData, loading: loadingOpportunity } = useOpportunityDashboardCalendarEventsQuery({
-    variables: { opportunityId: journeyId! },
-    skip: !journeyId || journeyTypeName !== 'opportunity',
-  });
-
-  const loading = loadingOpportunity || loadingChallenge || loadingSpace;
-
-  const collaboration =
-    opportunityData?.lookup.opportunity?.collaboration ??
-    challengeData?.lookup.challenge?.collaboration ??
-    spaceData?.space.collaboration;
+  const collaboration = spaceData?.space.collaboration;
 
   // TODO: Move this to serverside
   const allEvents = useMemo(

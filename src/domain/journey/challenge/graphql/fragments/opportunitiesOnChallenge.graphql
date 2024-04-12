@@ -1,6 +1,0 @@
-fragment OpportunitiesOnChallenge on Challenge {
-  id
-  opportunities {
-    ...OpportunityCard
-  }
-}

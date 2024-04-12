@@ -50,7 +50,7 @@ const DashboardNavigationItemView = ({
           visualRight={
             isPrivate ? (
               <Tooltip
-                title={<Caption>{t('components.dashboardNavigation.privateChallenge')}</Caption>}
+                title={<Caption>{t('components.dashboardNavigation.privateSubspace')}</Caption>}
                 placement={tooltipPlacement}
                 arrow
               >

@@ -6,5 +6,5 @@ type SearchChallengeCardImplProps = Omit<SearchBaseJourneyCardProps, 'journeyTyp
 interface SearchChallengeCardProps extends SearchChallengeCardImplProps {}
 
 export const SearchChallengeCard: FC<SearchChallengeCardProps> = ({ children, ...rest }) => {
-  return <SearchBaseJourneyCard journeyTypeName="challenge" {...rest} />;
+  return <SearchBaseJourneyCard journeyTypeName="subspace" {...rest} />;
 };

@@ -1,0 +1,10 @@
+query RecentSpaces($limit: Float) {
+  me {
+    mySpaces(limit: $limit) {
+      space {
+        id
+        __typename
+      }
+    }
+  }
+}

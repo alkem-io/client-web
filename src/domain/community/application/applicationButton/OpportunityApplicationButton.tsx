@@ -84,7 +84,7 @@ export const OpportunityApplicationButton = forwardRef<
               variant="contained"
               sx={{ textTransform: 'none' }}
             >
-              {t(`components.application-button.joinChallengeFirst.${extended ? 'full' : 'short'}` as const)}
+              {t(`components.application-button.joinSubspaceFirst.${extended ? 'full' : 'short'}` as const)}
             </Button>
           )
         );
