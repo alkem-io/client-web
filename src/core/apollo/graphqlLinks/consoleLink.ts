@@ -1,5 +1,4 @@
 import { ApolloLink } from '@apollo/client';
-import { logger } from '../../logging/winston/logger';
 
 export const consoleLink = (debugQuery = false) =>
   new ApolloLink((operation, forward) => {
@@ -7,10 +6,10 @@ export const consoleLink = (debugQuery = false) =>
       return forward(operation);
     }
 
-    logger.info(`starting request for ${operation.operationName}`);
+    console.info(`starting request for ${operation.operationName}`);
 
     return forward(operation).map(data => {
-      logger.info(`ending request for ${operation.operationName}`);
+      console.info(`ending request for ${operation.operationName}`);
       return data;
     });
   });
