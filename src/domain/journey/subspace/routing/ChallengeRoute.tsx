@@ -58,7 +58,7 @@ const ChallengeRoute = () => {
           />
         </Route>
         <Route
-          path={`${routes.Subsubspaces}/:${nameOfUrl.subsubspaceNameId}/*`}
+          path={`opportunities/:${nameOfUrl.subsubspaceNameId}/*`}
           element={
             <OpportunityProvider>
               <CommunityContextProvider>
