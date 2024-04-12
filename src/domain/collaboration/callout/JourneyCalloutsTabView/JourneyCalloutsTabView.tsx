@@ -1,9 +1,8 @@
 import { useTranslation } from 'react-i18next';
 import PageContent from '../../../../core/ui/content/PageContent';
-import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
-import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
+import { Button } from '@mui/material';
+import { useState } from 'react';
 import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
-import LinksList from '../../../../core/ui/list/LinksList';
 import useStateWithAsyncDefault from '../../../../core/utils/useStateWithAsyncDefault';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import MembershipBackdrop from '../../../shared/components/Backdrops/MembershipBackdrop';
@@ -12,7 +11,7 @@ import { ContributeInnovationFlowBlock } from '../../InnovationFlow/ContributeIn
 import InnovationFlowStates from '../../InnovationFlow/InnovationFlowStates/InnovationFlowStates';
 import CalloutsGroupView from '../CalloutsInContext/CalloutsGroupView';
 import { OrderUpdate, TypedCallout } from '../useCallouts/useCallouts';
-import calloutIcons from '../utils/calloutIcons';
+import CalloutsListDialog from '../CalloutsListDialog/CalloutsListDialog';
 import JourneyCalloutsListItemTitle from './JourneyCalloutsListItemTitle';
 import { InnovationFlowState } from '../../InnovationFlow/InnovationFlow';
 
@@ -47,6 +46,7 @@ const JourneyCalloutsTabView = ({
   refetchCallout,
   journeyTypeName,
 }: JourneyCalloutsTabViewProps) => {
+  const [isCalloutsListDialogOpen, setCalloutsListDialogOpen] = useState(false);
   const [selectedInnovationFlowState, setSelectedInnovationFlowState] =
     useStateWithAsyncDefault(currentInnovationFlowState);
 
@@ -72,34 +72,23 @@ const JourneyCalloutsTabView = ({
         <PageContent>
           <PageContentColumn columns={4}>
             <ContributeInnovationFlowBlock collaborationId={collaborationId} journeyTypeName={journeyTypeName} />
-            <PageContentBlock>
-              <PageContentBlockHeader
-                title={t('pages.generic.sections.subentities.list', { entities: t('common.callouts') })}
-              />
-              <LinksList
-                items={allCallouts?.map(callout => {
-                  const CalloutIcon = calloutIcons[callout.type];
-                  return {
-                    id: callout.id,
-                    title: (
-                      <JourneyCalloutsListItemTitle
-                        callout={{
-                          ...callout,
-                          flowStates: contributeLeftCalloutsIds.includes(callout.id) ? [] : callout.flowStates,
-                        }}
-                      />
-                    ),
-                    icon: <CalloutIcon />,
-                    uri: callout.framing.profile.url,
-                  };
-                })}
-                emptyListCaption={t('pages.generic.sections.subentities.empty-list', {
-                  entities: t('common.callouts'),
-                  parentEntity: t(`common.${journeyTypeName}` as const),
-                })}
-                loading={loading}
-              />
-            </PageContentBlock>
+            <Button onClick={() => setCalloutsListDialogOpen(true)}>Callouts List</Button>
+            <CalloutsListDialog
+              open={isCalloutsListDialogOpen}
+              onClose={() => setCalloutsListDialogOpen(false)}
+              callouts={allCallouts}
+              renderCallout={callout => (
+                <JourneyCalloutsListItemTitle
+                  callout={{
+                    ...callout,
+                    flowStates: contributeLeftCalloutsIds.includes(callout.id) ? [] : callout.flowStates,
+                  }}
+                />
+              )}
+              emptyListCaption={t('pages.generic.sections.subentities.empty-list', {
+                entities: t('common.callouts'),
+              })}
+            />
             <CalloutsGroupView
               callouts={groupedCallouts[CalloutGroupName.Contribute_1]}
               canCreateCallout={canCreateCallout}
