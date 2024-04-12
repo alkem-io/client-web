@@ -1,20 +1,21 @@
-import { ChallengeCreatedDocument } from '../../../../core/apollo/generated/apollo-hooks';
+import { SubspaceCreatedDocument } from '../../../../core/apollo/generated/apollo-hooks';
 import {
-  ChallengeCreatedSubscription,
-  ChallengeCreatedSubscriptionVariables,
+  Challenge,
   ChallengesOnSpaceFragment,
+  SubspaceCreatedSubscription,
+  SubspaceCreatedSubscriptionVariables,
 } from '../../../../core/apollo/generated/graphql-schema';
 import createUseSubscriptionToSubEntityHook from '../../../../core/apollo/subscriptions/useSubscriptionToSubEntity';
 
 const useChallengeCreatedSubscription = createUseSubscriptionToSubEntityHook<
   ChallengesOnSpaceFragment,
-  ChallengeCreatedSubscription,
-  ChallengeCreatedSubscriptionVariables
+  SubspaceCreatedSubscription,
+  SubspaceCreatedSubscriptionVariables
 >({
-  subscriptionDocument: ChallengeCreatedDocument,
-  getSubscriptionVariables: space => ({ spaceID: space.id }),
+  subscriptionDocument: SubspaceCreatedDocument,
+  getSubscriptionVariables: space => ({ journeyID: space.id }),
   updateSubEntity: (space, subscriptionData) => {
-    space?.challenges?.push(subscriptionData.challengeCreated.challenge);
+    space?.challenges?.push(subscriptionData.subspaceCreated.childJourney as Challenge);
   },
 });
 

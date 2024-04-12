@@ -1,12 +1,17 @@
-import { FC } from 'react';
+import { FC, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import scrollToTop from '../../../../../core/ui/utils/scrollToTop';
 import {
   useSpaceHostQuery,
-  useSpacePreferencesQuery,
-  useUpdatePreferenceOnSpaceMutation,
+  useSpaceSettingsQuery,
+  useUpdateSpaceSettingsMutation,
+  useUpdateChallengeSettingsMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
-import { SpacePreferenceType, PreferenceType } from '../../../../../core/apollo/generated/graphql-schema';
+import {
+  CommunityMembershipPolicy,
+  SpacePrivacyMode,
+  SpaceSettingsCollaboration,
+} from '../../../../../core/apollo/generated/graphql-schema';
 import PageContent from '../../../../../core/ui/content/PageContent';
 import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 import PageContentBlockCollapsible from '../../../../../core/ui/content/PageContentBlockCollapsible';
@@ -19,124 +24,132 @@ import { BlockSectionTitle, BlockTitle, Text } from '../../../../../core/ui/typo
 import CommunityApplicationForm from '../../../../community/community/CommunityApplicationForm/CommunityApplicationForm';
 import { SettingsSection } from '../../../../platform/admin/layout/EntitySettingsLayout/constants';
 import { Box, CircularProgress } from '@mui/material';
-import { useUrlParams } from '../../../../../core/routing/useUrlParams';
-import { isEqual } from 'lodash';
+import { JourneyTypeName } from '../../../JourneyTypeName';
 
-export const SpaceSettingsView: FC = () => {
+interface SpaceSettingsViewProps {
+  journeyId: string;
+  journeyTypeName: JourneyTypeName; // TODO: The idea is to just pass isSubspace as a boolean here
+}
+
+const defaultSpaceSettings = {
+  privacy: {
+    mode: SpacePrivacyMode.Public,
+  },
+  membership: {
+    policy: CommunityMembershipPolicy.Invitations,
+    trustedOrganizations: [],
+    hostOrganizationTrusted: false, // Computed from `trustedOrganizations`
+  },
+  collaboration: {
+    allowMembersToCreateCallouts: true,
+    allowMembersToCreateSubspaces: true,
+    inheritMembershipRights: true,
+  },
+};
+
+export const SpaceSettingsView: FC<SpaceSettingsViewProps> = ({ journeyId, journeyTypeName }) => {
   const { t } = useTranslation();
-  const { spaceNameId } = useUrlParams();
-
-  if (!spaceNameId) {
-    throw new Error('Must be within a Space route.');
-  }
+  const notify = useNotification();
+  const isSubspace = journeyTypeName !== 'space';
 
   const { data: hostOrganization } = useSpaceHostQuery({
-    variables: { spaceId: spaceNameId },
+    variables: { spaceId: journeyId },
+    skip: isSubspace,
   });
+  const hostOrganizationId = hostOrganization?.space.account.host?.id;
 
-  const notify = useNotification();
-
-  const { data: preferencesData, loading } = useSpacePreferencesQuery({
+  const { data: settingsData, loading } = useSpaceSettingsQuery({
     variables: {
-      spaceNameId: spaceNameId,
+      spaceId: journeyTypeName === 'space' ? journeyId : undefined,
+      challengeId: journeyTypeName === 'challenge' ? journeyId : undefined,
+      opportunityId: journeyTypeName === 'opportunity' ? journeyId : undefined,
+      includeSpace: journeyTypeName === 'space',
+      includeChallenge: journeyTypeName === 'challenge',
+      includeOpportunity: journeyTypeName === 'opportunity',
     },
   });
-  const [updatePreference] = useUpdatePreferenceOnSpaceMutation();
+  const communityId =
+    settingsData?.space?.community?.id ??
+    settingsData?.challenge?.challenge?.community?.id ??
+    settingsData?.opportunity?.opportunity?.community?.id;
 
-  const handleUpdatePreference = async (
-    preference: SpacePreferenceType,
-    newValue: string,
-    showNotification: boolean = true
-  ) => {
-    await updatePreference({
-      variables: {
-        preferenceData: {
-          spaceID: spaceNameId,
-          type: preference,
-          value: newValue,
-        },
+  const currentSettings = useMemo(() => {
+    const settings = settingsData?.space?.settings ?? settingsData?.challenge.challenge?.settings; // ?? settingsData?.opportunity?.opportunity?.settings;
+    return {
+      ...settings,
+      hostOrganizationTrusted:
+        (!!hostOrganizationId && settings?.membership.trustedOrganizations.includes(hostOrganizationId)) ?? false,
+    };
+  }, [settingsData, hostOrganizationId]);
+
+  const [updateSpaceSettings] = useUpdateSpaceSettingsMutation();
+  const [updateChallengeSettings] = useUpdateChallengeSettingsMutation();
+
+  const handleUpdateSettings = async ({
+    privacyMode = currentSettings?.privacy?.mode ?? defaultSpaceSettings.privacy.mode,
+    membershipPolicy = currentSettings?.membership?.policy ?? defaultSpaceSettings.membership.policy,
+    hostOrganizationTrusted = currentSettings.hostOrganizationTrusted ??
+      defaultSpaceSettings.membership.hostOrganizationTrusted,
+    collaborationSettings = currentSettings.collaboration ?? defaultSpaceSettings.collaboration,
+    showNotification = true,
+  }: {
+    privacyMode?: SpacePrivacyMode;
+    membershipPolicy?: CommunityMembershipPolicy;
+    hostOrganizationTrusted?: boolean;
+    collaborationSettings?: Partial<SpaceSettingsCollaboration>;
+    showNotification?: boolean;
+  }) => {
+    const trustedOrganizations = [...(currentSettings?.membership?.trustedOrganizations ?? [])];
+    if (hostOrganizationTrusted && hostOrganizationId) {
+      if (!trustedOrganizations.includes(hostOrganizationId)) {
+        trustedOrganizations.push(hostOrganizationId);
+      }
+    } else {
+      trustedOrganizations.splice(0, trustedOrganizations.length); // Clear the array
+    }
+
+    const settingsVariable = {
+      privacy: {
+        mode: privacyMode,
       },
-    });
+      membership: {
+        policy: membershipPolicy,
+        trustedOrganizations,
+      },
+      collaboration: {
+        ...currentSettings.collaboration,
+        ...collaborationSettings, // Overwrite with the passed values if any
+      } as SpaceSettingsCollaboration,
+    };
+
+    switch (journeyTypeName) {
+      case 'space': {
+        await updateSpaceSettings({
+          variables: {
+            settingsData: {
+              spaceID: journeyId,
+              settings: settingsVariable,
+            },
+          },
+        });
+        break;
+      }
+      case 'challenge': {
+        await updateChallengeSettings({
+          variables: {
+            settingsData: {
+              challengeID: journeyId,
+              settings: settingsVariable,
+            },
+          },
+        });
+        break;
+      }
+      // TODO: Add opportunity case
+    }
     if (showNotification) {
       notify(t('pages.admin.space.settings.savedSuccessfully'), 'success');
     }
-  };
-
-  const getBooleanPreferenceValue = (preference: PreferenceType) => {
-    const value = preferencesData?.space.preferences?.find(pref => pref.definition.type === preference)?.value;
-    if (value === 'true') {
-      return true;
-    } else if (value === 'false') {
-      return false;
-    }
-    return undefined;
-  };
-
-  // Visibility:
-  const getVisibilityValue = () => {
-    const value = getBooleanPreferenceValue(PreferenceType.AuthorizationAnonymousReadAccess);
-    if (value === undefined) {
-      return undefined;
-    }
-    return value ? 'public' : 'private';
-  };
-
-  // Membership
-  enum MembershipOption {
-    noApplicationRequired = 'noApplicationRequired',
-    applicationRequired = 'applicationRequired',
-    invitationOnly = 'invitationOnly',
-  }
-  // There are 2 preferences for the 3 different options:
-  const membershipTruthTable = {
-    [MembershipOption.noApplicationRequired]: {
-      [PreferenceType.MembershipApplicationsFromAnyone]: false,
-      [PreferenceType.MembershipJoinSpaceFromAnyone]: true,
-    },
-    [MembershipOption.applicationRequired]: {
-      [PreferenceType.MembershipApplicationsFromAnyone]: true,
-      [PreferenceType.MembershipJoinSpaceFromAnyone]: false,
-    },
-    [MembershipOption.invitationOnly]: {
-      [PreferenceType.MembershipApplicationsFromAnyone]: false,
-      [PreferenceType.MembershipJoinSpaceFromAnyone]: false,
-    },
-  };
-
-  const getMembershipValue = () => {
-    const preferences = {
-      [PreferenceType.MembershipApplicationsFromAnyone]: getBooleanPreferenceValue(
-        PreferenceType.MembershipApplicationsFromAnyone
-      ),
-      [PreferenceType.MembershipJoinSpaceFromAnyone]: getBooleanPreferenceValue(
-        PreferenceType.MembershipJoinSpaceFromAnyone
-      ),
-    };
-
-    for (const [key, value] of Object.entries(membershipTruthTable)) {
-      if (isEqual(preferences, value)) {
-        return key as MembershipOption;
-      }
-    }
-  };
-
-  const onMembershipChange = async (value: MembershipOption) => {
-    const currentPreferences = {
-      [PreferenceType.MembershipApplicationsFromAnyone]: getBooleanPreferenceValue(
-        PreferenceType.MembershipApplicationsFromAnyone
-      ),
-      [PreferenceType.MembershipJoinSpaceFromAnyone]: getBooleanPreferenceValue(
-        PreferenceType.MembershipJoinSpaceFromAnyone
-      ),
-    };
-    const nextPreferences = membershipTruthTable[value];
-
-    for (const [key, value] of Object.entries(currentPreferences)) {
-      if (value !== nextPreferences[key]) {
-        await handleUpdatePreference(key as SpacePreferenceType, `${nextPreferences[key]}`, false);
-      }
-    }
-    notify(t('pages.admin.space.settings.savedSuccessfully'), 'success');
   };
 
   return (
@@ -146,45 +159,35 @@ export const SpaceSettingsView: FC = () => {
           <PageContentBlock>
             <BlockTitle>{t('pages.admin.space.settings.visibility.title')}</BlockTitle>
             <RadioSettingsGroup
-              value={getVisibilityValue()}
+              value={currentSettings?.privacy?.mode}
               options={{
-                public: {
+                [SpacePrivacyMode.Public]: {
                   label: (
                     <Trans i18nKey="pages.admin.space.settings.visibility.public" components={{ b: <strong /> }} />
                   ),
                 },
-                private: {
+                [SpacePrivacyMode.Private]: {
                   label: (
                     <Trans i18nKey="pages.admin.space.settings.visibility.private" components={{ b: <strong /> }} />
                   ),
                 },
               }}
-              onChange={newValue =>
-                handleUpdatePreference(
-                  SpacePreferenceType.AuthorizationAnonymousReadAccess,
-                  newValue === 'public' ? 'true' : 'false'
-                )
-              }
+              onChange={value => handleUpdateSettings({ privacyMode: value })}
             />
           </PageContentBlock>
 
           <PageContentBlock>
             <BlockTitle>{t('pages.admin.space.settings.membership.title')}</BlockTitle>
             <RadioSettingsGroup
-              value={getMembershipValue()}
+              value={currentSettings?.membership?.policy}
               options={{
-                [MembershipOption.noApplicationRequired]: {
-                  label: (
-                    <Trans
-                      i18nKey="pages.admin.space.settings.membership.noApplicationRequired"
-                      components={{ b: <strong /> }}
-                    />
-                  ),
+                [CommunityMembershipPolicy.Open]: {
+                  label: <Trans i18nKey="pages.admin.space.settings.membership.open" components={{ b: <strong /> }} />,
                 },
-                [MembershipOption.applicationRequired]: {
+                [CommunityMembershipPolicy.Applications]: {
                   label: (
                     <Trans
-                      i18nKey="pages.admin.space.settings.membership.applicationRequired"
+                      i18nKey="pages.admin.space.settings.membership.applications"
                       components={{
                         b: <strong />,
                         community: <RouterLink to={`../${SettingsSection.Community}`} onClick={scrollToTop} />,
@@ -192,63 +195,63 @@ export const SpaceSettingsView: FC = () => {
                     />
                   ),
                 },
-                [MembershipOption.invitationOnly]: {
-                  label: (
-                    <Trans
-                      i18nKey="pages.admin.space.settings.membership.invitationOnly"
-                      components={{
-                        b: <strong />,
-                        community: <RouterLink to={`../${SettingsSection.Community}`} onClick={scrollToTop} />,
-                      }}
-                    />
-                  ),
-                },
+                ...(!isSubspace && {
+                  // Only show this option for top level spaces
+                  [CommunityMembershipPolicy.Invitations]: {
+                    label: (
+                      <Trans
+                        i18nKey="pages.admin.space.settings.membership.invitations"
+                        components={{
+                          b: <strong />,
+                          community: <RouterLink to={`../${SettingsSection.Community}`} onClick={scrollToTop} />,
+                        }}
+                      />
+                    ),
+                  },
+                }),
               }}
-              onChange={newValue => onMembershipChange(newValue)}
+              onChange={value => handleUpdateSettings({ membershipPolicy: value })}
             />
-
-            <BlockSectionTitle>{t('pages.admin.space.settings.membership.trustedApplicants')}</BlockSectionTitle>
-            <SwitchSettingsGroup
-              options={{
-                trustHostOrganization: {
-                  checked:
-                    getBooleanPreferenceValue(PreferenceType.MembershipJoinSpaceFromHostOrganizationMembers) ?? false,
-                  label: (
-                    <Trans
-                      t={t}
-                      i18nKey="pages.admin.space.settings.membership.hostOrganizationJoin"
-                      values={{
-                        host: hostOrganization?.space?.host?.profile?.displayName,
-                      }}
-                      components={{ b: <strong />, i: <em /> }}
-                    />
-                  ),
-                },
-              }}
-              onChange={(setting, newValue) => {
-                if (setting === 'trustHostOrganization') {
-                  return handleUpdatePreference(
-                    SpacePreferenceType.MembershipJoinSpaceFromHostOrganizationMembers,
-                    newValue ? 'true' : 'false'
-                  );
-                }
-              }}
-            />
+            {!isSubspace && (
+              <>
+                <BlockSectionTitle>{t('pages.admin.space.settings.membership.trustedApplicants')}</BlockSectionTitle>
+                <SwitchSettingsGroup
+                  options={{
+                    hostOrganizationTrusted: {
+                      checked: currentSettings.hostOrganizationTrusted,
+                      label: (
+                        <Trans
+                          t={t}
+                          i18nKey="pages.admin.space.settings.membership.hostOrganizationJoin"
+                          values={{
+                            host: hostOrganization?.space?.account.host?.profile?.displayName,
+                          }}
+                          components={{ b: <strong />, i: <em /> }}
+                        />
+                      ),
+                    },
+                  }}
+                  onChange={(setting, newValue) => handleUpdateSettings({ [setting]: newValue })}
+                />
+              </>
+            )}
           </PageContentBlock>
 
           <PageContentBlockCollapsible header={<BlockTitle>{t('community.application-form.title')}</BlockTitle>}>
             <Text marginBottom={gutters(2)}>
               <Trans i18nKey="community.application-form.subtitle" components={{ b: <strong /> }} />
             </Text>
-            <CommunityApplicationForm spaceId={spaceNameId} />
+            <CommunityApplicationForm communityId={communityId} />
           </PageContentBlockCollapsible>
 
           <PageContentBlock>
             <BlockTitle>{t('pages.admin.space.settings.memberActions.title')}</BlockTitle>
             <SwitchSettingsGroup
               options={{
-                createBlocks: {
-                  checked: getBooleanPreferenceValue(PreferenceType.AllowMembersToCreateCallouts) ?? false,
+                allowMembersToCreateCallouts: {
+                  checked:
+                    currentSettings.collaboration?.allowMembersToCreateCallouts ??
+                    defaultSpaceSettings.collaboration.allowMembersToCreateCallouts,
                   label: (
                     <Trans
                       i18nKey="pages.admin.space.settings.memberActions.createBlocks"
@@ -256,29 +259,24 @@ export const SpaceSettingsView: FC = () => {
                     />
                   ),
                 },
-                createChallenges: {
-                  checked: getBooleanPreferenceValue(PreferenceType.AllowMembersToCreateChallenges) ?? false,
+                allowMembersToCreateSubspaces: {
+                  checked:
+                    currentSettings.collaboration?.allowMembersToCreateSubspaces ??
+                    defaultSpaceSettings.collaboration.allowMembersToCreateSubspaces,
                   label: (
                     <Trans
-                      i18nKey="pages.admin.space.settings.memberActions.createChallenges"
+                      i18nKey="pages.admin.space.settings.memberActions.createSubspaces"
                       components={{ b: <strong /> }}
                     />
                   ),
                 },
               }}
               onChange={async (setting, newValue) => {
-                if (setting === 'createBlocks') {
-                  await handleUpdatePreference(
-                    SpacePreferenceType.AllowMembersToCreateCallouts,
-                    newValue ? 'true' : 'false'
-                  );
-                }
-                if (setting === 'createChallenges') {
-                  await handleUpdatePreference(
-                    SpacePreferenceType.AllowMembersToCreateChallenges,
-                    newValue ? 'true' : 'false'
-                  );
-                }
+                await handleUpdateSettings({
+                  collaborationSettings: {
+                    [setting]: newValue,
+                  },
+                });
               }}
             />
           </PageContentBlock>

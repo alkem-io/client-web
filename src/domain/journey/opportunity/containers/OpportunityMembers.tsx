@@ -12,9 +12,7 @@ import {
   AvailableMembersResults,
 } from '../../../community/community/useAvailableMembersWithCredential';
 
-export type AuthorizationCredentials =
-  | AuthorizationCredential.OpportunityAdmin
-  | AuthorizationCredential.OpportunityMember;
+export type AuthorizationCredentials = AuthorizationCredential.SubspaceAdmin | AuthorizationCredential.SubspaceMember;
 
 export interface OpportunityMembersProps {
   entities: {

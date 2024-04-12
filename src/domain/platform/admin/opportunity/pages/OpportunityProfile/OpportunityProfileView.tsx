@@ -18,7 +18,6 @@ import Gutters from '../../../../../../core/ui/grid/Gutters';
 import { VisualType } from '../../../../../../core/apollo/generated/graphql-schema';
 import { useRouteResolver } from '../../../../../../main/routing/resolvers/RouteResolver';
 import useNavigate from '../../../../../../core/routing/useNavigate';
-import { buildJourneyAdminUrl } from '../../../../../../main/routing/urlBuilders';
 
 interface Props {
   mode: FormMode;
@@ -37,7 +36,7 @@ const OpportunityProfileView: FC<Props> = ({ mode }) => {
     awaitRefetchQueries: true,
     onCompleted: data => {
       onSuccess('Successfully created');
-      navigate(buildJourneyAdminUrl(data.createOpportunity.profile.url), { replace: true });
+      navigate(data.createOpportunity.profile.url, { replace: true });
     },
   });
 

@@ -9,7 +9,11 @@ import {
 import { useSpace } from '../../../journey/space/SpaceContext/useSpace';
 import { useConfig } from '../../../platform/config/useConfig';
 import { useChallenge } from '../../../journey/challenge/hooks/useChallenge';
-import { PlatformFeatureFlagName, TagsetType } from '../../../../core/apollo/generated/graphql-schema';
+import {
+  CommunityMembershipStatus,
+  PlatformFeatureFlagName,
+  TagsetType,
+} from '../../../../core/apollo/generated/graphql-schema';
 import { DEFAULT_TAGSET } from '../../../common/tags/tagset.constants';
 
 interface ChallengeCreationInput {
@@ -155,6 +159,10 @@ export const useJourneyCreation = () => {
                 type: TagsetType.Freeform,
               },
             },
+            community: {
+              id: '',
+              myMembershipStatus: CommunityMembershipStatus.Member,
+            },
           },
         },
       });
@@ -219,6 +227,19 @@ export const useJourneyCreation = () => {
                 tags: value.tags ?? [],
                 allowedValues: [],
                 type: TagsetType.Freeform,
+              },
+            },
+            community: {
+              id: '',
+              myMembershipStatus: CommunityMembershipStatus.Member,
+            },
+            collaboration: {
+              id: '',
+              innovationFlow: {
+                id: '',
+                currentState: {
+                  displayName: '',
+                },
               },
             },
           },
