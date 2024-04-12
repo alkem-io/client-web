@@ -4,7 +4,6 @@ import { Container } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import Loading from '../../../ui/loading/Loading';
 import { useQueryParams } from '../../../routing/useQueryParams';
-import { logger } from '../../../logging/winston/logger';
 import { useKratosClient } from '../hooks/useKratosClient';
 
 export const ErrorRoute: FC = () => {
@@ -18,7 +17,7 @@ export const ErrorRoute: FC = () => {
     if (errorCode && kratos) {
       kratos.getSelfServiceError(errorCode).then(({ status, data: selfServiceError, ..._response }) => {
         if (status !== 200) {
-          logger.error(selfServiceError);
+          console.error(selfServiceError);
         }
         setError(selfServiceError);
       });
