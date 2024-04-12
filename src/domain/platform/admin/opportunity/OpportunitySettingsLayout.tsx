@@ -43,7 +43,7 @@ const OpportunitySettingsLayout: FC<OpportunitySettingsLayoutProps> = props => {
 
   return (
     <EntitySettingsLayout
-      entityTypeName="opportunity"
+      entityTypeName="subsubspace"
       subheaderTabs={tabs}
       pageBannerComponent={OpportunityPageBanner}
       tabsComponent={OpportunityTabs}

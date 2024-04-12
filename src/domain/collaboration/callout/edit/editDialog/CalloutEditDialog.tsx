@@ -108,12 +108,7 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
           onClose={onClose}
         />
         <DialogContent>
-          <StorageConfigContextProvider
-            locationType="callout"
-            journeyTypeName={journeyTypeName}
-            journeyId={journeyId}
-            calloutId={callout.id}
-          >
+          <StorageConfigContextProvider locationType="callout" journeyId={journeyId!} calloutId={callout.id}>
             <CalloutForm
               calloutType={calloutType}
               callout={initialValues}

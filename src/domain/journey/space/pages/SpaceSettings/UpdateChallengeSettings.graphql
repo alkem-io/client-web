@@ -1,5 +1,5 @@
-mutation UpdateChallengeSettings($settingsData: UpdateChallengeSettingsInput!) {
-  updateChallengeSettings(settingsData: $settingsData) {
+mutation UpdateSubspaceSettings($settingsData: UpdateSubspaceSettingsInput!) {
+  updateSubspaceSettings(settingsData: $settingsData) {
     id
     settings {
       privacy {

@@ -10,14 +10,14 @@ query UserProvider {
       displayName
       state
       spaceID
-      challengeID
-      opportunityID
+      subspaceID
+      subsubspaceID
     }
     invitations(states: ["invited"]) {
       id
       spaceID
-      challengeID
-      opportunityID
+      subspaceID
+      subsubspaceID
       welcomeMessage
       createdBy
       createdDate

@@ -5,13 +5,13 @@ fragment UserRolesDetails on ContributorRoles {
     displayName
     roles
     visibility
-    challenges {
+    subspaces {
       id
       nameID
       displayName
       roles
     }
-    opportunities {
+    subsubspaces {
       id
       nameID
       displayName

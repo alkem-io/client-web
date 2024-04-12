@@ -49,7 +49,7 @@ const VISIBLE_COMMUNITY_ROLES = [CommunityRole.Admin, CommunityRole.Lead] as con
 const JourneyCardHorizontal = ({
   journey,
   journeyTypeName,
-  deepness = journeyTypeName === 'challenge' ? 0 : 1,
+  deepness = journeyTypeName === 'subspace' ? 0 : 1,
   sx,
 }: JourneyCardHorizontalProps) => {
   const Icon = JourneyIcon[journeyTypeName];

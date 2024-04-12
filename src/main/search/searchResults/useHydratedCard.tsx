@@ -23,7 +23,7 @@ import { useUserContext } from '../../../domain/community/user/hooks/useUserCont
 import { TypedSearchResult } from '../SearchView';
 import { SearchContributionCardCard } from '../../../domain/shared/components/search-cards/SearchContributionPostCard';
 import { OpportunityIcon } from '../../../domain/journey/opportunity/icon/OpportunityIcon';
-import { ChallengeIcon } from '../../../domain/journey/challenge/icon/ChallengeIcon';
+import { ChallengeIcon } from '../../../domain/journey/subspace/icon/ChallengeIcon';
 import { SpaceIcon } from '../../../domain/journey/space/icon/SpaceIcon';
 import ContributingUserCard from '../../../domain/community/user/ContributingUserCard/ContributingUserCard';
 import CardContent from '../../../core/ui/card/CardContent';
@@ -110,7 +110,7 @@ const hydrateSpaceCard = (data: TypedSearchResult<SearchResultType.Space, Search
 };
 
 const hydrateChallengeCard = (data: TypedSearchResult<SearchResultType.Challenge, SearchResultChallengeFragment>) => {
-  const challenge = data.challenge;
+  const challenge = data.subspace;
   const containingSpace = data.space;
   const tagline = challenge.profile.tagline || '';
   const name = challenge.profile.displayName;
@@ -148,8 +148,8 @@ const hydrateChallengeCard = (data: TypedSearchResult<SearchResultType.Challenge
 const hydrateOpportunityCard = (
   data: TypedSearchResult<SearchResultType.Opportunity, SearchResultOpportunityFragment>
 ) => {
-  const opportunity = data.opportunity;
-  const containingChallenge = data.challenge;
+  const opportunity = data.subsubspace;
+  const containingChallenge = data.subspace;
   const containingSpace = data.space;
   const tagline = opportunity.profile.tagline || '';
   const name = opportunity.profile.displayName;
@@ -185,19 +185,19 @@ const hydrateOpportunityCard = (
 };
 
 const getContributionParentInformation = (data: TypedSearchResult<SearchResultType.Post, SearchResultPostFragment>) => {
-  if (data.opportunity) {
+  if (data.subsubspace) {
     return {
       icon: OpportunityIcon,
-      displayName: data.opportunity?.profile.displayName,
-      locked: !data.opportunity?.authorization?.anonymousReadAccess,
-      url: data.opportunity.profile.url,
+      displayName: data.subsubspace?.profile.displayName,
+      locked: !data.subsubspace?.authorization?.anonymousReadAccess,
+      url: data.subsubspace.profile.url,
     };
-  } else if (data.challenge) {
+  } else if (data.subspace) {
     return {
       icon: ChallengeIcon,
-      displayName: data.challenge?.profile.displayName,
-      locked: !data.challenge?.authorization?.anonymousReadAccess,
-      url: data.challenge.profile.url,
+      displayName: data.subspace?.profile.displayName,
+      locked: !data.subspace?.authorization?.anonymousReadAccess,
+      url: data.subspace.profile.url,
     };
   } else {
     return {

@@ -23,7 +23,7 @@ export const JourneyCalloutGroupNameOptions: Record<JourneyTypeName, CalloutGrou
     CalloutGroupName.Subspaces_2,
     CalloutGroupName.Knowledge,
   ],
-  challenge: [
+  subspace: [
     CalloutGroupName.Home_1,
     CalloutGroupName.Home_2,
     CalloutGroupName.Contribute_1,
@@ -31,7 +31,7 @@ export const JourneyCalloutGroupNameOptions: Record<JourneyTypeName, CalloutGrou
     CalloutGroupName.Subspaces_1,
     CalloutGroupName.Subspaces_2,
   ],
-  opportunity: [
+  subsubspace: [
     CalloutGroupName.Home_1,
     CalloutGroupName.Home_2,
     CalloutGroupName.Contribute_1,

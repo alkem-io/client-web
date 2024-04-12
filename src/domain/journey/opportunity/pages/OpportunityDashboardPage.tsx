@@ -38,7 +38,7 @@ const OpportunityDashboardPage: FC<OpportunityDashboardPageProps> = ({ dialog })
 
   const hasExtendedApplicationButton = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
 
-  const { challengeId, opportunityId } = useRouteResolver();
+  const { subSpaceId: challengeId, subSubSpaceId: opportunityId } = useRouteResolver();
 
   return (
     <OpportunityPageLayout currentSection={EntityPageSection.Dashboard}>
@@ -48,7 +48,7 @@ const OpportunityDashboardPage: FC<OpportunityDashboardPageProps> = ({ dialog })
           <>
             <JourneyDashboardView
               journeyId={opportunityId}
-              journeyUrl={entities.opportunity?.profile.url}
+              journeyUrl={entities.subsubspace?.profile.url}
               ribbon={
                 <OpportunityApplicationButtonContainer challengeId={challengeId} opportunityId={opportunityId}>
                   {({ applicationButtonProps, state: { loading } }) => {
@@ -71,41 +71,41 @@ const OpportunityDashboardPage: FC<OpportunityDashboardPageProps> = ({ dialog })
               }
               welcome={
                 <JourneyDashboardWelcomeBlock
-                  vision={entities.opportunity?.context?.vision ?? ''}
-                  leadUsers={entities.opportunity?.community?.leadUsers}
+                  vision={entities.subsubspace?.context?.vision ?? ''}
+                  leadUsers={entities.subsubspace?.community?.leadUsers}
                   onContactLeadUser={receiver => sendMessage('user', receiver)}
-                  leadOrganizations={entities.opportunity?.community?.leadOrganizations}
+                  leadOrganizations={entities.subsubspace?.community?.leadOrganizations}
                   onContactLeadOrganization={receiver => sendMessage('organization', receiver)}
                   journeyTypeName="space"
                 >
                   {props => <MembershipContainer {...props} />}
                 </JourneyDashboardWelcomeBlock>
               }
-              communityId={entities.opportunity?.community?.id}
+              communityId={entities.subsubspace?.community?.id}
               communityReadAccess={entities.permissions.communityReadAccess}
               timelineReadAccess={entities.permissions.timelineReadAccess}
-              entityReadAccess={entities.permissions.opportunityReadAccess}
+              entityReadAccess={entities.permissions.subsubspaceReadAccess}
               readUsersAccess={entities.permissions.readUsers}
               references={entities.references}
               memberUsers={entities.memberUsers}
               memberUsersCount={entities.memberUsersCount}
               memberOrganizations={entities.memberOrganizations}
               memberOrganizationsCount={entities.memberOrganizationsCount}
-              leadUsers={entities.opportunity?.community?.leadUsers}
+              leadUsers={entities.subsubspace?.community?.leadUsers}
               activities={entities.activities}
               fetchMoreActivities={entities.fetchMoreActivities}
               activityLoading={state.activityLoading}
-              journeyTypeName="opportunity"
+              journeyTypeName="subsubspace"
               topCallouts={entities.topCallouts}
               callouts={callouts}
               sendMessageToCommunityLeads={entities.sendMessageToCommunityLeads}
-              shareUpdatesUrl={buildUpdatesUrl(entities.opportunity?.profile.url ?? '')}
+              shareUpdatesUrl={buildUpdatesUrl(entities.subsubspace?.profile.url ?? '')}
             />
             <CommunityUpdatesDialog
               open={dialog === 'updates'}
               onClose={backToDashboard}
-              communityId={entities.opportunity?.community?.id}
-              shareUrl={buildUpdatesUrl(entities.opportunity?.profile.url ?? '')}
+              communityId={entities.subsubspace?.community?.id}
+              shareUrl={buildUpdatesUrl(entities.subsubspace?.profile.url ?? '')}
               loading={state.loading}
             />
             <ContributorsDialog
@@ -118,7 +118,7 @@ const OpportunityDashboardPage: FC<OpportunityDashboardPageProps> = ({ dialog })
                 open={dialog === 'calendar'}
                 onClose={backToDashboard}
                 journeyId={opportunityId}
-                journeyTypeName="opportunity"
+                journeyTypeName="subsubspace"
               />
             )}
           </>

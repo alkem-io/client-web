@@ -12,7 +12,7 @@ export const SpaceExplorerPage = () => {
   const { t } = useTranslation();
   const [searchTerms, setSearchTerms] = useState<string[]>([]);
 
-  const ribbon = useInnovationHubOutsideRibbon({ label: 'innovationHub.outsideOfSpace.challenges' });
+  const ribbon = useInnovationHubOutsideRibbon({ label: 'innovationHub.outsideOfSpace.subspaces' });
 
   return (
     <TopLevelPageLayout
