@@ -1,6 +1,10 @@
 import { ApolloError } from '@apollo/client';
 import { ReactElement, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
+import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
+import { Button } from '@mui/material';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { Theme } from '@mui/material';
 import { ValueType } from '../../../../../core/utils/filtering/filterFn';
 import ErrorBlock from '../../../../../core/ui/error/ErrorBlock';
 import getJourneyChildrenTranslation from '../../../childJourney/getJourneyChildrenTranslation';
@@ -17,9 +21,13 @@ import ChildJourneyCreate from './ChildJourneyCreate';
 import Loading from '../../../../../core/ui/loading/Loading';
 import PageContentBlockSeamless from '../../../../../core/ui/content/PageContentBlockSeamless';
 import JourneyFilter from '../../JourneyFilter/JourneyFilter';
-import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
-import { Button } from '@mui/material';
 import { Identifiable } from '../../../../../core/utils/Identifiable';
+import {
+  CONTENT_COLUMNS,
+  CONTENT_COLUMNS_MOBILE,
+  SIDEBAR_COLUMNS,
+  SIDEBAR_COLUMNS_MOBILE,
+} from '../../../../../core/ui/themes/default/Theme';
 
 export interface JourneySubentitiesState {
   loading: boolean;
@@ -66,10 +74,12 @@ const ChildJourneyView = <ChildEntity extends BaseChildEntity>({
 }: ChildJourneyViewProps<ChildEntity>) => {
   const { t } = useTranslation();
 
+  const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
+
   return (
     <MembershipBackdrop show={!childEntityReadAccess} blockName={getJourneyChildrenTranslation(t, journeyTypeName)}>
       <PageContent>
-        <PageContentColumn columns={4}>
+        <PageContentColumn columns={isMobile ? SIDEBAR_COLUMNS_MOBILE : SIDEBAR_COLUMNS}>
           <ChildJourneyCreate
             journeyTypeName={journeyTypeName}
             canCreateSubentity={childEntityCreateAccess}
@@ -97,7 +107,7 @@ const ChildJourneyView = <ChildEntity extends BaseChildEntity>({
           </PageContentBlock>
           {childrenLeft}
         </PageContentColumn>
-        <PageContentColumn columns={8}>
+        <PageContentColumn columns={isMobile ? CONTENT_COLUMNS_MOBILE : CONTENT_COLUMNS}>
           {state.loading && <Loading />}
           {!state.loading && childEntities.length === 0 && (
             <PageContentBlockSeamless>

@@ -1,5 +1,7 @@
 import React, { ReactNode, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { Theme } from '@mui/material';
 import {
   CalloutGroupName,
   CalloutsQueryVariables,
@@ -33,6 +35,12 @@ import FullWidthButton from '../../../../../core/ui/button/FullWidthButton';
 import { InfoOutlined } from '@mui/icons-material';
 import RouterLink from '../../../../../core/ui/link/RouterLink';
 import { RECENT_ACTIVITIES_LIMIT_EXPANDED } from '../../journeyDashboard/constants';
+import {
+  CONTENT_COLUMNS,
+  CONTENT_COLUMNS_MOBILE,
+  SIDEBAR_COLUMNS,
+  SIDEBAR_COLUMNS_MOBILE,
+} from '../../../../../core/ui/themes/default/Theme';
 
 export interface JourneyDashboardViewProps
   extends EntityDashboardContributors,
@@ -119,10 +127,12 @@ const JourneyDashboardView = ({
 
   const translatedJourneyTypeName = t(`common.${journeyTypeName}` as const);
 
+  const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
+
   return (
     <PageContent>
       {ribbon}
-      <PageContentColumn columns={4}>
+      <PageContentColumn columns={isMobile ? SIDEBAR_COLUMNS_MOBILE : SIDEBAR_COLUMNS}>
         {welcome}
         <FullWidthButton
           startIcon={<InfoOutlined />}
@@ -174,7 +184,7 @@ const JourneyDashboardView = ({
         />
       </PageContentColumn>
 
-      <PageContentColumn columns={8}>
+      <PageContentColumn columns={isMobile ? CONTENT_COLUMNS_MOBILE : CONTENT_COLUMNS}>
         <DashboardRecentContributionsBlock
           halfWidth={(callouts.groupedCallouts[CalloutGroupName.Home_2]?.length ?? 0) > 0}
           readUsersAccess={readUsersAccess}

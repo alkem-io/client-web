@@ -1,4 +1,6 @@
 import { useTranslation } from 'react-i18next';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { Theme } from '@mui/material';
 import PageContent from '../../../../core/ui/content/PageContent';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
@@ -15,6 +17,12 @@ import { OrderUpdate, TypedCallout } from '../useCallouts/useCallouts';
 import calloutIcons from '../utils/calloutIcons';
 import JourneyCalloutsListItemTitle from './JourneyCalloutsListItemTitle';
 import { InnovationFlowState } from '../../InnovationFlow/InnovationFlow';
+import {
+  CONTENT_COLUMNS,
+  CONTENT_COLUMNS_MOBILE,
+  SIDEBAR_COLUMNS,
+  SIDEBAR_COLUMNS_MOBILE,
+} from '../../../../core/ui/themes/default/Theme';
 
 interface JourneyCalloutsTabViewProps {
   collaborationId: string | undefined;
@@ -66,11 +74,13 @@ const JourneyCalloutsTabView = ({
 
   const contributeLeftCalloutsIds = groupedCallouts[CalloutGroupName.Contribute_1]?.map(callout => callout.id) ?? [];
 
+  const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
+
   return (
     <>
       <MembershipBackdrop show={!loading && !allCallouts} blockName={t(`common.${journeyTypeName}` as const)}>
         <PageContent>
-          <PageContentColumn columns={4}>
+          <PageContentColumn columns={isMobile ? SIDEBAR_COLUMNS_MOBILE : SIDEBAR_COLUMNS}>
             <ContributeInnovationFlowBlock collaborationId={collaborationId} journeyTypeName={journeyTypeName} />
             <PageContentBlock>
               <PageContentBlockHeader
@@ -114,7 +124,7 @@ const JourneyCalloutsTabView = ({
             />
           </PageContentColumn>
 
-          <PageContentColumn columns={8}>
+          <PageContentColumn columns={isMobile ? CONTENT_COLUMNS_MOBILE : CONTENT_COLUMNS}>
             {innovationFlowStates &&
               currentInnovationFlowState &&
               selectedInnovationFlowState &&

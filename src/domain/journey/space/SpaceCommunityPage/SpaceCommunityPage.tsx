@@ -1,4 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { Box, Theme } from '@mui/material';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import PageContent from '../../../../core/ui/content/PageContent';
 import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
@@ -10,7 +13,6 @@ import {
   DirectMessageDialog,
   MessageReceiverChipData,
 } from '../../../communication/messaging/DirectMessaging/DirectMessageDialog';
-import { useTranslation } from 'react-i18next';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
 import { ActivityComponent } from '../../../collaboration/activity/ActivityLog/ActivityComponent';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
@@ -26,10 +28,15 @@ import { RECENT_ACTIVITIES_LIMIT_EXPANDED } from '../../common/journeyDashboard/
 import SeeMore from '../../../../core/ui/content/SeeMore';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
-import { Box } from '@mui/material';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 import CommunityGuidelinesBlock from '../../../community/community/CommunityGuidelines/CommunityGuidelinesBlock';
 import { useSpace } from '../SpaceContext/useSpace';
+import {
+  CONTENT_COLUMNS,
+  CONTENT_COLUMNS_MOBILE,
+  SIDEBAR_COLUMNS,
+  SIDEBAR_COLUMNS_MOBILE,
+} from '../../../../core/ui/themes/default/Theme';
 
 const SpaceCommunityPage = () => {
   const { spaceNameId } = useUrlParams();
@@ -88,6 +95,8 @@ const SpaceCommunityPage = () => {
 
   const [isActivitiesDialogOpen, setIsActivitiesDialogOpen] = useState(false);
 
+  const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
+
   useEffect(() => {
     if (isActivitiesDialogOpen) {
       fetchMoreActivities(RECENT_ACTIVITIES_LIMIT_EXPANDED);
@@ -99,7 +108,7 @@ const SpaceCommunityPage = () => {
       <SpaceCommunityContainer spaceId={spaceId}>
         {({ callouts }) => (
           <PageContent>
-            <PageContentColumn columns={4}>
+            <PageContentColumn columns={isMobile ? SIDEBAR_COLUMNS_MOBILE : SIDEBAR_COLUMNS}>
               <EntityDashboardLeadsSection
                 usersHeader={t('community.host')}
                 organizationsHeader={t('pages.space.sections.dashboard.organization')}
@@ -129,7 +138,7 @@ const SpaceCommunityPage = () => {
                 groupName={CalloutGroupName.Community_1}
               />
             </PageContentColumn>
-            <PageContentColumn columns={8}>
+            <PageContentColumn columns={isMobile ? CONTENT_COLUMNS_MOBILE : CONTENT_COLUMNS}>
               <CommunityContributorsBlockWide users={memberUsers} organizations={memberOrganizations} />
               <PageContentBlock>
                 <PageContentBlockHeader title={t('common.activity')} />
