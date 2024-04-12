@@ -1,9 +1,0 @@
-mutation updateOpportunity($input: UpdateOpportunityInput!) {
-  updateOpportunity(opportunityData: $input) {
-    id
-    profile {
-      id
-      displayName
-    }
-  }
-}

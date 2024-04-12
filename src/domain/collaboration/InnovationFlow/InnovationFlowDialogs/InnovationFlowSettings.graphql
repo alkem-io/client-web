@@ -83,12 +83,6 @@ fragment InnovationFlowCollaboration on Collaboration {
   }
 }
 
-mutation UpdateInnovationFlow($updateInnovationFlowData: UpdateInnovationFlowInput!) {
-  updateInnovationFlow(innovationFlowData: $updateInnovationFlowData) {
-    id
-  }
-}
-
 mutation UpdateCalloutFlowState($calloutId: UUID!, $flowStateTagsetId: UUID!, $value: String!) {
   updateCallout(
     calloutData: { ID: $calloutId, framing: { profile: { tagsets: [{ ID: $flowStateTagsetId, tags: [$value] }] } } }

@@ -359,9 +359,9 @@
       "space": "$t(common.space)",
       "space_plural": "$t(common.spaces)",
       "challenge": "$t(common.challenge)",
-      "challenge_plural": "$t(common.challenges)",
+      "challenge_plural": "$t(common.subspaces)",
       "opportunity": "$t(common.opportunity)",
-      "opportunity_plural": "$t(common.opportunities)",
+      "opportunity_plural": "$t(common.subspaces)",
       "agreement": "$t(common.agreement)",
       "agreement_plural": "$t(common.agreements)"
     },
@@ -1905,11 +1905,11 @@
           "callout": "Callouts (bientôt disponible)"
         }
       },
-      "journeyFilterTitle": "$t(common.spaces), $t(common.challenges) & $t(common.opportunties)"
+      "journeyFilterTitle": "$t(common.spaces), $t(common.subspaces) & $t(common.opportunties)"
     },
     "challenge-explorer": {
       "fullName": "Explore challenges",
-      "shortName": "$t(common.challenges)",
+      "shortName": "$t(common.subspaces)",
       "search": {
         "title": "Explorez les défis publics",
         "subtitle": "Entrez vos termes de recherche (par exemple 'innovation') ci-dessous pour trouver les défis correspondants. Veuillez noter que sur Alkemio, il y a des centres de défis publics et privés. Vous trouverez ici tous les défis des pôles publics. Les défis des hubs privés sont visibles lorsque vous êtes connecté et un membre de ce hub particulier.",
@@ -2569,7 +2569,7 @@
     ]
   },
   "spaceSearch": {
-    "journeyFilterTitle": "$t(common.hubs), $t(common.challenges) & $t(common.opportunties)"
+    "journeyFilterTitle": "$t(common.hubs), $t(common.subspaces) & $t(common.opportunties)"
   },
   "visuals-alt-text": {
     "banner": {

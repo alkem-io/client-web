@@ -8,11 +8,11 @@ import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolv
 
 const OpportunityAboutPage: FC = () => {
   const { communityId } = useOpportunity();
-  const { challengeId, opportunityId } = useRouteResolver();
+  const { subSpaceId: challengeId, subSubSpaceId: opportunityId } = useRouteResolver();
 
   return (
     <OpportunityPageLayout currentSection={EntityPageSection.About}>
-      <AboutPageContainer journeyId={opportunityId} journeyTypeName="opportunity">
+      <AboutPageContainer journeyId={opportunityId}>
         {({ context, profile, tagset, permissions, ...rest }, state) => (
           <OpportunityAboutView
             challengeId={challengeId}
