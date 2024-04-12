@@ -48,7 +48,6 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
               displayName={entities.space?.profile.displayName}
               dashboardNavigation={dashboardNavigation}
               dashboardNavigationLoading={state.loading}
-              spaceVisibility={entities.space?.account.license.visibility}
               loading={state.loading}
               communityId={entities.space?.community?.id}
               communityReadAccess={entities.permissions.communityReadAccess}

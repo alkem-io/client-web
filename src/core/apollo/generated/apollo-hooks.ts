@@ -2327,10 +2327,6 @@ export const SpacePageFragmentDoc = gql`
     nameID
     account {
       id
-      license {
-        id
-        visibility
-      }
       host {
         ...AssociatedOrganizationDetails
         profile {
@@ -2401,27 +2397,11 @@ export const SpaceDashboardNavigationProfileFragmentDoc = gql`
     id
     url
     displayName
-    tagline
-    tagset {
-      ...TagsetDetails
-    }
     avatar: visual(type: AVATAR) {
       id
       uri
       alternativeText
     }
-    cardBanner: visual(type: CARD) {
-      id
-      uri
-      alternativeText
-    }
-  }
-  ${TagsetDetailsFragmentDoc}
-`;
-export const SpaceDashboardNavigationContextFragmentDoc = gql`
-  fragment SpaceDashboardNavigationContext on Context {
-    id
-    vision
   }
 `;
 export const SpaceDashboardNavigationCommunityFragmentDoc = gql`
@@ -16648,9 +16628,6 @@ export const SpaceDashboardNavigationChallengesDocument = gql`
         profile {
           ...SpaceDashboardNavigationProfile
         }
-        context {
-          ...SpaceDashboardNavigationContext
-        }
         authorization {
           id
           myPrivileges
@@ -16659,17 +16636,9 @@ export const SpaceDashboardNavigationChallengesDocument = gql`
           ...SpaceDashboardNavigationCommunity
         }
       }
-      account {
-        id
-        license {
-          id
-          visibility
-        }
-      }
     }
   }
   ${SpaceDashboardNavigationProfileFragmentDoc}
-  ${SpaceDashboardNavigationContextFragmentDoc}
   ${SpaceDashboardNavigationCommunityFragmentDoc}
 `;
 
@@ -16742,9 +16711,6 @@ export const SpaceDashboardNavigationOpportunitiesDocument = gql`
           profile {
             ...SpaceDashboardNavigationProfile
           }
-          context {
-            ...SpaceDashboardNavigationContext
-          }
           community {
             ...SpaceDashboardNavigationCommunity
           }
@@ -16753,7 +16719,6 @@ export const SpaceDashboardNavigationOpportunitiesDocument = gql`
     }
   }
   ${SpaceDashboardNavigationProfileFragmentDoc}
-  ${SpaceDashboardNavigationContextFragmentDoc}
   ${SpaceDashboardNavigationCommunityFragmentDoc}
 `;
 

@@ -6,7 +6,6 @@ import {
   CalloutsQueryVariables,
   DashboardLeadUserFragment,
   DashboardTopCalloutFragment,
-  SpaceVisibility,
   SpaceWelcomeBlockContributorProfileFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
 import DashboardUpdatesSection from '../../../shared/components/DashboardSections/DashboardUpdatesSection';
@@ -43,7 +42,6 @@ interface SpaceDashboardViewProps {
   spaceUrl: string | undefined;
   dashboardNavigation: DashboardNavigationItem[] | undefined;
   dashboardNavigationLoading: boolean;
-  spaceVisibility?: SpaceVisibility;
   vision?: string;
   communityId?: string;
   organization?: unknown;
@@ -80,7 +78,6 @@ const SpaceDashboardView = ({
   displayName,
   dashboardNavigation,
   dashboardNavigationLoading,
-  spaceVisibility,
   spaceUrl,
   communityId = '',
   communityReadAccess = false,
@@ -151,7 +148,6 @@ const SpaceDashboardView = ({
           </FullWidthButton>
           <DashboardNavigation
             spaceUrl={spaceUrl}
-            spaceVisibility={spaceVisibility}
             displayName={displayName}
             dashboardNavigation={dashboardNavigation}
             loading={dashboardNavigationLoading}

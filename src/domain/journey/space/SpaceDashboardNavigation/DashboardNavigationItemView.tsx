@@ -1,8 +1,15 @@
 import { ExpandLess, ExpandMore, LockOutlined } from '@mui/icons-material';
-import { Box, Collapse, IconButton, Skeleton, Tooltip, TooltipProps } from '@mui/material';
-import React, { PropsWithChildren, ReactNode, useState } from 'react';
+import { Box, Collapse, IconButton, Tooltip, TooltipProps } from '@mui/material';
+import React, {
+  Children,
+  forwardRef,
+  MouseEventHandler,
+  PropsWithChildren,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from 'react';
 import { useTranslation } from 'react-i18next';
-import Gutters from '../../../../core/ui/grid/Gutters';
 import { gutters } from '../../../../core/ui/grid/utils';
 import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
 import { Caption } from '../../../../core/ui/typography';
@@ -10,39 +17,67 @@ import { DashboardNavigationItem } from './useSpaceDashboardNavigation';
 import JourneyAvatar from '../../common/JourneyAvatar/JourneyAvatar';
 import RouterLink from '../../../../core/ui/link/RouterLink';
 
-interface DashboardNavigationItemViewProps extends Omit<DashboardNavigationItem, 'id' | 'member' | 'children'> {
+export interface DashboardNavigationItemViewProps extends Omit<DashboardNavigationItem, 'id' | 'member' | 'children'> {
   url: string;
   visualUri?: string;
-  tooltip?: ReactNode;
   tooltipPlacement?: TooltipProps['placement'];
+  current?: boolean;
+  level?: number;
+  onClick?: MouseEventHandler;
+  onToggle?: (isExpanded: boolean) => void;
 }
 
-const DashboardNavigationItemView = ({
-  displayName,
-  visualUri,
-  url,
-  children,
-  private: isPrivate = false,
-  tooltip,
-  tooltipPlacement,
-}: PropsWithChildren<DashboardNavigationItemViewProps>) => {
-  const [isExpanded, setIsExpanded] = useState(true);
+export interface DashboardNavigationItemViewApi {
+  expand: () => void;
+  getBoundingClientRect: () => DOMRect | undefined;
+}
 
-  const { t } = useTranslation();
+const DashboardNavigationItemView = forwardRef<
+  DashboardNavigationItemViewApi,
+  PropsWithChildren<DashboardNavigationItemViewProps>
+>(
+  (
+    {
+      displayName,
+      visualUri,
+      url,
+      children,
+      private: isPrivate = false,
+      tooltipPlacement,
+      current: isCurrent = false,
+      level = 0,
+      onClick,
+      onToggle,
+    },
+    ref
+  ) => {
+    const [isExpanded, setIsExpanded] = useState(true);
 
-  const preventDefault = (event: React.MouseEvent) => {
-    event.stopPropagation();
-    event.preventDefault();
-  };
+    const { t } = useTranslation();
 
-  const toggleExpand = (event: React.MouseEvent) => {
-    preventDefault(event);
-    setIsExpanded(value => !value);
-  };
+    const preventDefault = (event: React.MouseEvent) => {
+      event.stopPropagation();
+      event.preventDefault();
+    };
 
-  return (
-    <Box>
-      <Tooltip title={tooltip ?? <Skeleton />} PopperProps={{ sx: { '.MuiTooltip-tooltip': { padding: 0 } } }}>
+    const toggleExpand = (event: React.MouseEvent) => {
+      preventDefault(event);
+      setIsExpanded(value => !value);
+    };
+
+    const containerRef = useRef<HTMLDivElement>();
+
+    useImperativeHandle(
+      ref,
+      () => ({
+        expand: () => setIsExpanded(true),
+        getBoundingClientRect: () => containerRef.current?.getBoundingClientRect(),
+      }),
+      []
+    );
+
+    return (
+      <Box ref={containerRef}>
         <BadgeCardView
           component={RouterLink}
           to={url ?? ''}
@@ -59,7 +94,7 @@ const DashboardNavigationItemView = ({
                 </IconButton>
               </Tooltip>
             ) : (
-              children && (
+              Children.count(children) > 0 && (
                 <IconButton
                   onClick={toggleExpand}
                   aria-label={isExpanded ? t('buttons.collapse') : t('buttons.expand')}
@@ -69,19 +104,24 @@ const DashboardNavigationItemView = ({
               )
             )
           }
+          padding
+          square
+          sx={{
+            backgroundColor: isCurrent ? 'highlight.main' : undefined,
+            paddingLeft: gutters(1 + level * 2),
+          }}
+          onClick={onClick}
         >
           <Caption>{displayName}</Caption>
         </BadgeCardView>
-      </Tooltip>
-      {children && (
-        <Collapse in={isExpanded}>
-          <Gutters disablePadding paddingLeft={gutters(2)} marginTop={gutters()}>
-            {children}
-          </Gutters>
-        </Collapse>
-      )}
-    </Box>
-  );
-};
+        {children && (
+          <Collapse in={isExpanded} onEntered={() => onToggle?.(isExpanded)} onExited={() => onToggle?.(isExpanded)}>
+            <Box>{children}</Box>
+          </Collapse>
+        )}
+      </Box>
+    );
+  }
+);
 
 export default DashboardNavigationItemView;

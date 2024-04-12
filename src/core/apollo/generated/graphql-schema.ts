@@ -18721,7 +18721,6 @@ export type SpacePageQuery = {
     account: {
       __typename?: 'Account';
       id: string;
-      license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
       host?:
         | {
             __typename?: 'Organization';
@@ -18960,7 +18959,6 @@ export type SpacePageFragment = {
   account: {
     __typename?: 'Account';
     id: string;
-    license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
     host?:
       | {
           __typename?: 'Organization';
@@ -19194,25 +19192,10 @@ export type SpaceDashboardNavigationChallengesQuery = {
             id: string;
             url: string;
             displayName: string;
-            tagline: string;
-            tagset?:
-              | {
-                  __typename?: 'Tagset';
-                  id: string;
-                  name: string;
-                  tags: Array<string>;
-                  allowedValues: Array<string>;
-                  type: TagsetType;
-                }
-              | undefined;
             avatar?:
               | { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined }
               | undefined;
-            cardBanner?:
-              | { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined }
-              | undefined;
           };
-          context?: { __typename?: 'Context'; id: string; vision?: string | undefined } | undefined;
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
@@ -19221,11 +19204,6 @@ export type SpaceDashboardNavigationChallengesQuery = {
             | undefined;
         }>
       | undefined;
-    account: {
-      __typename?: 'Account';
-      id: string;
-      license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
-    };
   };
 };
 
@@ -19252,25 +19230,10 @@ export type SpaceDashboardNavigationOpportunitiesQuery = {
                   id: string;
                   url: string;
                   displayName: string;
-                  tagline: string;
-                  tagset?:
-                    | {
-                        __typename?: 'Tagset';
-                        id: string;
-                        name: string;
-                        tags: Array<string>;
-                        allowedValues: Array<string>;
-                        type: TagsetType;
-                      }
-                    | undefined;
                   avatar?:
                     | { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined }
                     | undefined;
-                  cardBanner?:
-                    | { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined }
-                    | undefined;
                 };
-                context?: { __typename?: 'Context'; id: string; vision?: string | undefined } | undefined;
                 community?:
                   | { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined }
                   | undefined;
@@ -19286,25 +19249,7 @@ export type SpaceDashboardNavigationProfileFragment = {
   id: string;
   url: string;
   displayName: string;
-  tagline: string;
-  tagset?:
-    | {
-        __typename?: 'Tagset';
-        id: string;
-        name: string;
-        tags: Array<string>;
-        allowedValues: Array<string>;
-        type: TagsetType;
-      }
-    | undefined;
   avatar?: { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined } | undefined;
-  cardBanner?: { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined } | undefined;
-};
-
-export type SpaceDashboardNavigationContextFragment = {
-  __typename?: 'Context';
-  id: string;
-  vision?: string | undefined;
 };
 
 export type SpaceDashboardNavigationCommunityFragment = {
