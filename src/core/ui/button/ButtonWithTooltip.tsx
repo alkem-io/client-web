@@ -8,7 +8,7 @@ interface ButtonWithTooltipProps extends ButtonProps {
   tooltipProps?: TooltipProps;
 }
 
-const ButtonWithTooltip: React.FC<ButtonWithTooltipProps> = ({ tooltip, iconButton, tooltipProps, ...props }) => {
+const ButtonWithTooltip = ({ tooltip, iconButton, tooltipProps, sx, ...props }: ButtonWithTooltipProps) => {
   const theme = useTheme();
 
   const isContained = props.variant === 'contained';
@@ -30,8 +30,8 @@ const ButtonWithTooltip: React.FC<ButtonWithTooltipProps> = ({ tooltip, iconButt
   const buttonStyle = {
     backgroundColor: isOutlined ? theme.palette.background.paper : undefined,
     borderColor: isOutlined ? theme.palette.divider : undefined,
-    ...props.sx,
-    minWidth: iconButton ? 0 : undefined,
+    ...sx,
+    minWidth: iconButton ? 0 : sx?.['minWidth'],
   };
 
   return (
