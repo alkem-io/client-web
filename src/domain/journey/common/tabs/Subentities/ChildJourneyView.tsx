@@ -22,12 +22,7 @@ import Loading from '../../../../../core/ui/loading/Loading';
 import PageContentBlockSeamless from '../../../../../core/ui/content/PageContentBlockSeamless';
 import JourneyFilter from '../../JourneyFilter/JourneyFilter';
 import { Identifiable } from '../../../../../core/utils/Identifiable';
-import {
-  CONTENT_COLUMNS,
-  CONTENT_COLUMNS_MOBILE,
-  SIDEBAR_COLUMNS,
-  SIDEBAR_COLUMNS_MOBILE,
-} from '../../../../../core/ui/themes/default/Theme';
+import { CONTENT_COLUMNS, SIDEBAR_COLUMNS, COLUMNS_MOBILE } from '../../../../../core/ui/themes/default/Theme';
 
 export interface JourneySubentitiesState {
   loading: boolean;
@@ -79,7 +74,7 @@ const ChildJourneyView = <ChildEntity extends BaseChildEntity>({
   return (
     <MembershipBackdrop show={!childEntityReadAccess} blockName={getJourneyChildrenTranslation(t, journeyTypeName)}>
       <PageContent>
-        <PageContentColumn columns={isMobile ? SIDEBAR_COLUMNS_MOBILE : SIDEBAR_COLUMNS}>
+        <PageContentColumn columns={isMobile ? COLUMNS_MOBILE : SIDEBAR_COLUMNS}>
           <ChildJourneyCreate
             journeyTypeName={journeyTypeName}
             canCreateSubentity={childEntityCreateAccess}
@@ -107,7 +102,7 @@ const ChildJourneyView = <ChildEntity extends BaseChildEntity>({
           </PageContentBlock>
           {childrenLeft}
         </PageContentColumn>
-        <PageContentColumn columns={isMobile ? CONTENT_COLUMNS_MOBILE : CONTENT_COLUMNS}>
+        <PageContentColumn columns={isMobile ? COLUMNS_MOBILE : CONTENT_COLUMNS}>
           {state.loading && <Loading />}
           {!state.loading && childEntities.length === 0 && (
             <PageContentBlockSeamless>

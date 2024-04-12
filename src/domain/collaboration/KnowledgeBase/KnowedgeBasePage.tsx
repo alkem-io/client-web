@@ -21,12 +21,7 @@ import CalloutsGroupView from '../callout/CalloutsInContext/CalloutsGroupView';
 import CalloutCreationDialog from '../callout/creationDialog/CalloutCreationDialog';
 import KnowledgeBaseContainer from './KnowledgeBaseContainer';
 import { useRouteResolver } from '../../../main/routing/resolvers/RouteResolver';
-import {
-  CONTENT_COLUMNS,
-  CONTENT_COLUMNS_MOBILE,
-  SIDEBAR_COLUMNS,
-  SIDEBAR_COLUMNS_MOBILE,
-} from '../../../core/ui/themes/default/Theme';
+import { CONTENT_COLUMNS, SIDEBAR_COLUMNS, COLUMNS_MOBILE } from '../../../core/ui/themes/default/Theme';
 
 interface KnowledgeBasePageProps {
   journeyTypeName: JourneyTypeName;
@@ -75,7 +70,7 @@ const KnowledgeBasePage = ({ journeyTypeName }: PropsWithChildren<KnowledgeBaseP
           <>
             <MembershipBackdrop show={!loading && !canReadCallout} blockName={t(`common.${journeyTypeName}` as const)}>
               <PageContent>
-                <PageContentColumn columns={isMobile ? SIDEBAR_COLUMNS_MOBILE : SIDEBAR_COLUMNS}>
+                <PageContentColumn columns={isMobile ? COLUMNS_MOBILE : SIDEBAR_COLUMNS}>
                   <ContributeCreationBlock canCreate={canCreateCallout} handleCreate={handleCreate} />
                   <PageContentBlock>
                     <PageContentBlockHeader
@@ -100,7 +95,7 @@ const KnowledgeBasePage = ({ journeyTypeName }: PropsWithChildren<KnowledgeBaseP
                   </PageContentBlock>
                 </PageContentColumn>
 
-                <PageContentColumn columns={isMobile ? CONTENT_COLUMNS_MOBILE : CONTENT_COLUMNS}>
+                <PageContentColumn columns={isMobile ? COLUMNS_MOBILE : CONTENT_COLUMNS}>
                   <CalloutsGroupView
                     callouts={groupedCallouts[CalloutGroupName.Knowledge]}
                     canCreateCallout={canCreateCallout}

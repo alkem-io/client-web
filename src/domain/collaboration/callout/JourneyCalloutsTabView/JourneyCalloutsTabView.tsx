@@ -17,12 +17,7 @@ import { OrderUpdate, TypedCallout } from '../useCallouts/useCallouts';
 import calloutIcons from '../utils/calloutIcons';
 import JourneyCalloutsListItemTitle from './JourneyCalloutsListItemTitle';
 import { InnovationFlowState } from '../../InnovationFlow/InnovationFlow';
-import {
-  CONTENT_COLUMNS,
-  CONTENT_COLUMNS_MOBILE,
-  SIDEBAR_COLUMNS,
-  SIDEBAR_COLUMNS_MOBILE,
-} from '../../../../core/ui/themes/default/Theme';
+import { CONTENT_COLUMNS, COLUMNS_MOBILE, SIDEBAR_COLUMNS } from '../../../../core/ui/themes/default/Theme';
 
 interface JourneyCalloutsTabViewProps {
   collaborationId: string | undefined;
@@ -80,7 +75,7 @@ const JourneyCalloutsTabView = ({
     <>
       <MembershipBackdrop show={!loading && !allCallouts} blockName={t(`common.${journeyTypeName}` as const)}>
         <PageContent>
-          <PageContentColumn columns={isMobile ? SIDEBAR_COLUMNS_MOBILE : SIDEBAR_COLUMNS}>
+          <PageContentColumn columns={isMobile ? COLUMNS_MOBILE : SIDEBAR_COLUMNS}>
             <ContributeInnovationFlowBlock collaborationId={collaborationId} journeyTypeName={journeyTypeName} />
             <PageContentBlock>
               <PageContentBlockHeader
@@ -124,7 +119,7 @@ const JourneyCalloutsTabView = ({
             />
           </PageContentColumn>
 
-          <PageContentColumn columns={isMobile ? CONTENT_COLUMNS_MOBILE : CONTENT_COLUMNS}>
+          <PageContentColumn columns={isMobile ? COLUMNS_MOBILE : CONTENT_COLUMNS}>
             {innovationFlowStates &&
               currentInnovationFlowState &&
               selectedInnovationFlowState &&

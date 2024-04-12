@@ -31,12 +31,7 @@ import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 import CommunityGuidelinesBlock from '../../../community/community/CommunityGuidelines/CommunityGuidelinesBlock';
 import { useSpace } from '../SpaceContext/useSpace';
-import {
-  CONTENT_COLUMNS,
-  CONTENT_COLUMNS_MOBILE,
-  SIDEBAR_COLUMNS,
-  SIDEBAR_COLUMNS_MOBILE,
-} from '../../../../core/ui/themes/default/Theme';
+import { CONTENT_COLUMNS, SIDEBAR_COLUMNS, COLUMNS_MOBILE } from '../../../../core/ui/themes/default/Theme';
 
 const SpaceCommunityPage = () => {
   const { spaceNameId } = useUrlParams();
@@ -108,7 +103,7 @@ const SpaceCommunityPage = () => {
       <SpaceCommunityContainer spaceId={spaceId}>
         {({ callouts }) => (
           <PageContent>
-            <PageContentColumn columns={isMobile ? SIDEBAR_COLUMNS_MOBILE : SIDEBAR_COLUMNS}>
+            <PageContentColumn columns={isMobile ? COLUMNS_MOBILE : SIDEBAR_COLUMNS}>
               <EntityDashboardLeadsSection
                 usersHeader={t('community.host')}
                 organizationsHeader={t('pages.space.sections.dashboard.organization')}
@@ -138,7 +133,7 @@ const SpaceCommunityPage = () => {
                 groupName={CalloutGroupName.Community_1}
               />
             </PageContentColumn>
-            <PageContentColumn columns={isMobile ? CONTENT_COLUMNS_MOBILE : CONTENT_COLUMNS}>
+            <PageContentColumn columns={isMobile ? COLUMNS_MOBILE : CONTENT_COLUMNS}>
               <CommunityContributorsBlockWide users={memberUsers} organizations={memberOrganizations} />
               <PageContentBlock>
                 <PageContentBlockHeader title={t('common.activity')} />

@@ -37,6 +37,7 @@ import InnovationFlowChips from '../../../../collaboration/InnovationFlow/Innova
 import useMetricsItems from '../../../../platform/metrics/utils/useMetricsItems';
 import OpportunityMetrics from '../../../opportunity/utils/useOpportunityMetricsItems';
 import { Metric } from '../../../../platform/metrics/utils/getMetricCount';
+import { COLUMNS_MOBILE, CONTENT_COLUMNS, SIDEBAR_COLUMNS } from '../../../../../core/ui/themes/default/Theme';
 
 export interface OpportunityAboutViewProps extends EntityDashboardContributors, EntityDashboardLeads {
   challengeId: string | undefined;
@@ -131,6 +132,8 @@ const OpportunityAboutView: FC<OpportunityAboutViewProps> = ({
     who,
   } as const;
 
+  const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
+
   const hasExtendedApplicationButton = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
 
   const shareUpdatesUrl = buildUpdatesUrl(opportunityUrl);
@@ -156,7 +159,7 @@ const OpportunityAboutView: FC<OpportunityAboutViewProps> = ({
             );
           }}
         </OpportunityApplicationButtonContainer>
-        <PageContentColumn columns={4}>
+        <PageContentColumn columns={isMobile ? COLUMNS_MOBILE : SIDEBAR_COLUMNS}>
           <PageContentBlock accent>
             <PageContentBlockHeader title={name} />
             <Tagline>{tagline}</Tagline>
@@ -199,7 +202,7 @@ const OpportunityAboutView: FC<OpportunityAboutViewProps> = ({
             </PageContentBlock>
           )}
         </PageContentColumn>
-        <PageContentColumn columns={8}>
+        <PageContentColumn columns={isMobile ? COLUMNS_MOBILE : CONTENT_COLUMNS}>
           <FixedHeightContentBlock>
             <PageContentBlockHeaderWithDialogAction
               title={t(`context.${journeyTypeName}.vision.title` as const)}

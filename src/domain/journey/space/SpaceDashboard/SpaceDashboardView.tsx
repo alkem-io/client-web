@@ -32,12 +32,7 @@ import MembershipContainer from '../../../community/membership/membershipContain
 import RouterLink from '../../../../core/ui/link/RouterLink';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import { RECENT_ACTIVITIES_LIMIT_EXPANDED } from '../../common/journeyDashboard/constants';
-import {
-  CONTENT_COLUMNS,
-  CONTENT_COLUMNS_MOBILE,
-  SIDEBAR_COLUMNS,
-  SIDEBAR_COLUMNS_MOBILE,
-} from '../../../../core/ui/themes/default/Theme';
+import { CONTENT_COLUMNS, SIDEBAR_COLUMNS, COLUMNS_MOBILE } from '../../../../core/ui/themes/default/Theme';
 
 interface SpaceWelcomeBlockContributor {
   profile: SpaceWelcomeBlockContributorProfileFragment;
@@ -138,7 +133,7 @@ const SpaceDashboardView = ({
             );
           }}
         </ApplicationButtonContainer>
-        <PageContentColumn columns={isMobile ? SIDEBAR_COLUMNS_MOBILE : SIDEBAR_COLUMNS}>
+        <PageContentColumn columns={isMobile ? COLUMNS_MOBILE : SIDEBAR_COLUMNS}>
           <JourneyDashboardWelcomeBlock
             vision={vision}
             leadUsers={leadUsers}
@@ -179,7 +174,7 @@ const SpaceDashboardView = ({
           />
         </PageContentColumn>
 
-        <PageContentColumn columns={isMobile ? CONTENT_COLUMNS_MOBILE : CONTENT_COLUMNS}>
+        <PageContentColumn columns={isMobile ? COLUMNS_MOBILE : CONTENT_COLUMNS}>
           <DashboardRecentContributionsBlock
             halfWidth={(callouts.groupedCallouts[CalloutGroupName.Home_2]?.length ?? 0) > 0}
             readUsersAccess={readUsersAccess}

@@ -35,12 +35,7 @@ import FullWidthButton from '../../../../../core/ui/button/FullWidthButton';
 import { InfoOutlined } from '@mui/icons-material';
 import RouterLink from '../../../../../core/ui/link/RouterLink';
 import { RECENT_ACTIVITIES_LIMIT_EXPANDED } from '../../journeyDashboard/constants';
-import {
-  CONTENT_COLUMNS,
-  CONTENT_COLUMNS_MOBILE,
-  SIDEBAR_COLUMNS,
-  SIDEBAR_COLUMNS_MOBILE,
-} from '../../../../../core/ui/themes/default/Theme';
+import { CONTENT_COLUMNS, SIDEBAR_COLUMNS, COLUMNS_MOBILE } from '../../../../../core/ui/themes/default/Theme';
 
 export interface JourneyDashboardViewProps
   extends EntityDashboardContributors,
@@ -132,7 +127,7 @@ const JourneyDashboardView = ({
   return (
     <PageContent>
       {ribbon}
-      <PageContentColumn columns={isMobile ? SIDEBAR_COLUMNS_MOBILE : SIDEBAR_COLUMNS}>
+      <PageContentColumn columns={isMobile ? COLUMNS_MOBILE : SIDEBAR_COLUMNS}>
         {welcome}
         <FullWidthButton
           startIcon={<InfoOutlined />}
@@ -184,7 +179,7 @@ const JourneyDashboardView = ({
         />
       </PageContentColumn>
 
-      <PageContentColumn columns={isMobile ? CONTENT_COLUMNS_MOBILE : CONTENT_COLUMNS}>
+      <PageContentColumn columns={isMobile ? COLUMNS_MOBILE : CONTENT_COLUMNS}>
         <DashboardRecentContributionsBlock
           halfWidth={(callouts.groupedCallouts[CalloutGroupName.Home_2]?.length ?? 0) > 0}
           readUsersAccess={readUsersAccess}
