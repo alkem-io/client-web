@@ -4,20 +4,20 @@ import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
 import LinksList from '../../../../core/ui/list/LinksList';
 import useStateWithAsyncDefault from '../../../../core/utils/useStateWithAsyncDefault';
-import { JourneyTypeName } from '../../../journey/JourneyTypeName';
+import { JourneyTypeName } from '../../JourneyTypeName';
 import MembershipBackdrop from '../../../shared/components/Backdrops/MembershipBackdrop';
 import { CalloutGroupName } from '../../../../core/apollo/generated/graphql-schema';
-import { ContributeInnovationFlowBlock } from '../../InnovationFlow/ContributeInnovationFlowBlock/ContributeInnovationFlowBlock';
-import InnovationFlowStates from '../../InnovationFlow/InnovationFlowStates/InnovationFlowStates';
-import CalloutsGroupView from '../CalloutsInContext/CalloutsGroupView';
-import { OrderUpdate, TypedCallout } from '../useCallouts/useCallouts';
-import calloutIcons from '../utils/calloutIcons';
-import JourneyCalloutsListItemTitle from './JourneyCalloutsListItemTitle';
-import { InnovationFlowState } from '../../InnovationFlow/InnovationFlow';
+import { ContributeInnovationFlowBlock } from '../../../collaboration/InnovationFlow/ContributeInnovationFlowBlock/ContributeInnovationFlowBlock';
+import InnovationFlowStates from '../../../collaboration/InnovationFlow/InnovationFlowStates/InnovationFlowStates';
+import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
+import { OrderUpdate, TypedCallout } from '../../../collaboration/callout/useCallouts/useCallouts';
+import calloutIcons from '../../../collaboration/callout/utils/calloutIcons';
+import JourneyCalloutsListItemTitle from '../../../collaboration/callout/JourneyCalloutsTabView/JourneyCalloutsListItemTitle';
+import { InnovationFlowState } from '../../../collaboration/InnovationFlow/InnovationFlow';
 import InfoColumn from '../../../../core/ui/content/InfoColumn';
 import ContentColumn from '../../../../core/ui/content/ContentColumn';
 
-interface JourneyCalloutsTabViewProps {
+interface SubspaceHomeViewProps {
   collaborationId: string | undefined;
   innovationFlowStates: InnovationFlowState[] | undefined;
   currentInnovationFlowState: string | undefined;
@@ -33,7 +33,7 @@ interface JourneyCalloutsTabViewProps {
   journeyTypeName: JourneyTypeName;
 }
 
-const JourneyCalloutsTabView = ({
+const SubspaceHomeView = ({
   collaborationId,
   innovationFlowStates,
   currentInnovationFlowState,
@@ -47,7 +47,7 @@ const JourneyCalloutsTabView = ({
   onCalloutsSortOrderUpdate,
   refetchCallout,
   journeyTypeName,
-}: JourneyCalloutsTabViewProps) => {
+}: SubspaceHomeViewProps) => {
   const [selectedInnovationFlowState, setSelectedInnovationFlowState] =
     useStateWithAsyncDefault(currentInnovationFlowState);
 
@@ -156,4 +156,4 @@ const JourneyCalloutsTabView = ({
   );
 };
 
-export default JourneyCalloutsTabView;
+export default SubspaceHomeView;
