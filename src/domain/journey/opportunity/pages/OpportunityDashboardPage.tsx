@@ -8,7 +8,6 @@ import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import OpportunityPageLayout from '../layout/OpportunityPageLayout';
 import JourneyDashboardView from '../../common/tabs/Dashboard/JourneyDashboardView';
 import CalendarDialog from '../../../timeline/calendar/CalendarDialog';
-import MembershipContainer from '../../../community/membership/membershipContainer/MembershipContainer';
 import JourneyDashboardWelcomeBlock from '../../common/journeyDashboardWelcomeBlock/JourneyDashboardWelcomeBlock';
 import useDirectMessageDialog from '../../../communication/messaging/DirectMessaging/useDirectMessageDialog';
 import { useTranslation } from 'react-i18next';
@@ -77,9 +76,8 @@ const OpportunityDashboardPage: FC<OpportunityDashboardPageProps> = ({ dialog })
                   leadOrganizations={entities.subsubspace?.community?.leadOrganizations}
                   onContactLeadOrganization={receiver => sendMessage('organization', receiver)}
                   journeyTypeName="space"
-                >
-                  {props => <MembershipContainer {...props} />}
-                </JourneyDashboardWelcomeBlock>
+                  member={false}
+                />
               }
               communityId={entities.subsubspace?.community?.id}
               communityReadAccess={entities.permissions.communityReadAccess}

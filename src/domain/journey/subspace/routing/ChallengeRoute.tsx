@@ -13,7 +13,7 @@ import { routes } from '../routes/challengeRoutes';
 import CalloutRoute from '../../../collaboration/callout/routing/CalloutRoute';
 import ChallengeAboutPage from '../pages/SubspaceAboutPage';
 import ChallengeOpportunitiesPage from '../pages/SubspaceOpportunitiesPage';
-import JourneyContributePage from '../../common/JourneyContributePage/JourneyContributePage';
+import JourneyContributePage from '../subspaceHome/JourneyContributePage';
 import Redirect from '../../../../core/routing/Redirect';
 import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
@@ -30,15 +30,12 @@ const ChallengeRoute = () => {
     <StorageConfigContextProvider locationType="journey" spaceId={journeyId}>
       <Routes>
         <Route path="/" element={<EntityPageLayoutHolder />}>
-          <Route index element={<Navigate replace to={routes.Dashboard} />} />
-          <Route path={routes.Dashboard} element={<ChallengeDashboardPage />} />
-          <Route path={`${routes.Dashboard}/updates`} element={<ChallengeDashboardPage dialog="updates" />} />
-          <Route path={`${routes.Dashboard}/contributors`} element={<ChallengeDashboardPage dialog="contributors" />} />
+          <Route index element={<JourneyContributePage journeyTypeName="subspace" />} />
+          <Route path={routes.Dashboard} element={<Navigate replace to="/" />} />
           <Route path={routes.Contribute} element={<JourneyContributePage journeyTypeName="subspace" />} />
           <Route path={routes.About} element={<ChallengeAboutPage />} />
           <Route path={routes.Subsubspaces} element={<ChallengeOpportunitiesPage />} />
           <Route path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}`} element={<SubspaceCalloutPage />} />
-          <Route path={`${routes.Dashboard}/calendar`} element={<ChallengeDashboardPage dialog="calendar" />} />
           <Route
             path={`${routes.Dashboard}/calendar/:${nameOfUrl.calendarEventNameId}`}
             element={<ChallengeDashboardPage dialog="calendar" />}

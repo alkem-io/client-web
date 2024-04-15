@@ -20,7 +20,10 @@ import { ActivityLogResultType } from '../../../collaboration/activity/ActivityL
 import useActivityOnCollaboration from '../../../collaboration/activity/useActivityLogOnCollaboration/useActivityOnCollaboration';
 import useSendMessageToCommunityLeads from '../../../community/CommunityLeads/useSendMessageToCommunityLeads';
 import { RECENT_ACTIVITIES_LIMIT_INITIAL, TOP_CALLOUTS_LIMIT } from '../../common/journeyDashboard/constants';
-import { useSpaceDashboardReferencesQuery, useSubspacePageQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import {
+  useLegacySubspaceDashboardPageQuery,
+  useSpaceDashboardReferencesQuery,
+} from '../../../../core/apollo/generated/apollo-hooks';
 
 export interface SubspaceContainerEntities extends EntityDashboardContributors {
   challenge?: SubspacePageFragment;
@@ -59,7 +62,7 @@ const NO_PRIVILEGES = [];
 export const SubspacePageContainer: FC<ChallengePageContainerProps> = ({ challengeId, children }) => {
   const { user, isAuthenticated } = useUserContext();
 
-  const { data: subspace, loading: loadingProfile } = useSubspacePageQuery({
+  const { data: subspace, loading: loadingProfile } = useLegacySubspaceDashboardPageQuery({
     variables: {
       subspaceId: challengeId!,
     },

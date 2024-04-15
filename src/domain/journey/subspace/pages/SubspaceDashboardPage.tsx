@@ -12,7 +12,6 @@ import { useTranslation } from 'react-i18next';
 import CalendarDialog from '../../../timeline/calendar/CalendarDialog';
 import JourneyDashboardWelcomeBlock from '../../common/journeyDashboardWelcomeBlock/JourneyDashboardWelcomeBlock';
 import useDirectMessageDialog from '../../../communication/messaging/DirectMessaging/useDirectMessageDialog';
-import MembershipContainer from '../../../community/membership/membershipContainer/MembershipContainer';
 import ApplicationButtonContainer from '../../../community/application/containers/ApplicationButtonContainer';
 import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
 import ApplicationButton from '../../../community/application/applicationButton/ApplicationButton';
@@ -82,15 +81,8 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
                   leadOrganizations={entities.challenge?.community?.leadOrganizations}
                   onContactLeadOrganization={receiver => sendMessage('organization', receiver)}
                   journeyTypeName="space"
-                >
-                  {props => (
-                    <MembershipContainer
-                      subspaceId={entities.challenge?.id}
-                      subspaceName={entities.challenge?.profile.displayName}
-                      {...props}
-                    />
-                  )}
-                </JourneyDashboardWelcomeBlock>
+                  member={entities.isMember}
+                />
               }
               communityId={entities.challenge?.community?.id}
               communityReadAccess={entities.permissions.communityReadAccess}

@@ -1,23 +1,24 @@
 import { useTranslation } from 'react-i18next';
 import PageContent from '../../../../core/ui/content/PageContent';
-import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
-import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
-import LinksList from '../../../../core/ui/list/LinksList';
 import useStateWithAsyncDefault from '../../../../core/utils/useStateWithAsyncDefault';
 import { JourneyTypeName } from '../../JourneyTypeName';
 import MembershipBackdrop from '../../../shared/components/Backdrops/MembershipBackdrop';
-import { CalloutGroupName } from '../../../../core/apollo/generated/graphql-schema';
-import { ContributeInnovationFlowBlock } from '../../../collaboration/InnovationFlow/ContributeInnovationFlowBlock/ContributeInnovationFlowBlock';
+import { CalloutGroupName, CommunityMembershipStatus } from '../../../../core/apollo/generated/graphql-schema';
 import InnovationFlowStates from '../../../collaboration/InnovationFlow/InnovationFlowStates/InnovationFlowStates';
 import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
 import { OrderUpdate, TypedCallout } from '../../../collaboration/callout/useCallouts/useCallouts';
-import calloutIcons from '../../../collaboration/callout/utils/calloutIcons';
-import JourneyCalloutsListItemTitle from '../../../collaboration/callout/JourneyCalloutsTabView/JourneyCalloutsListItemTitle';
 import { InnovationFlowState } from '../../../collaboration/InnovationFlow/InnovationFlow';
 import InfoColumn from '../../../../core/ui/content/InfoColumn';
 import ContentColumn from '../../../../core/ui/content/ContentColumn';
+import JourneyDashboardWelcomeBlock from '../../common/journeyDashboardWelcomeBlock/JourneyDashboardWelcomeBlock';
+import React from 'react';
+import { EntityDashboardLeads } from '../../../community/community/EntityDashboardContributorsSection/Types';
+import { SendMessage } from '../../../communication/messaging/DirectMessaging/useDirectMessageDialog';
+import DashboardNavigation from '../../dashboardNavigation/DashboardNavigation';
+import { DashboardNavigationItem } from '../../space/spaceDashboardNavigation/useSpaceDashboardNavigation';
 
 interface SubspaceHomeViewProps {
+  journeyId: string | undefined;
   collaborationId: string | undefined;
   innovationFlowStates: InnovationFlowState[] | undefined;
   currentInnovationFlowState: string | undefined;
@@ -31,9 +32,27 @@ interface SubspaceHomeViewProps {
   refetchCallout: (calloutId: string) => void;
   onCalloutsSortOrderUpdate: (movedCalloutId: string) => (update: OrderUpdate) => Promise<unknown>;
   journeyTypeName: JourneyTypeName;
+  // profile: {
+  //   displayName: string;
+  // } | undefined;
+  context:
+    | {
+        vision?: string;
+      }
+    | undefined;
+  community:
+    | (EntityDashboardLeads & {
+        myMembershipStatus?: CommunityMembershipStatus;
+      })
+    | undefined;
+  sendMessage: SendMessage;
+  spaceUrl: string;
+  spaceDisplayName: string;
+  dashboardNavigation: DashboardNavigationItem[] | undefined;
 }
 
 const SubspaceHomeView = ({
+  journeyId,
   collaborationId,
   innovationFlowStates,
   currentInnovationFlowState,
@@ -47,6 +66,12 @@ const SubspaceHomeView = ({
   onCalloutsSortOrderUpdate,
   refetchCallout,
   journeyTypeName,
+  context,
+  community,
+  sendMessage,
+  spaceUrl,
+  spaceDisplayName,
+  dashboardNavigation,
 }: SubspaceHomeViewProps) => {
   const [selectedInnovationFlowState, setSelectedInnovationFlowState] =
     useStateWithAsyncDefault(currentInnovationFlowState);
@@ -65,53 +90,25 @@ const SubspaceHomeView = ({
   const handleSelectInnovationFlowState = (state: InnovationFlowState) =>
     setSelectedInnovationFlowState(state.displayName);
 
-  const contributeLeftCalloutsIds = groupedCallouts[CalloutGroupName.Contribute_1]?.map(callout => callout.id) ?? [];
-
   return (
     <>
       <MembershipBackdrop show={!loading && !allCallouts} blockName={t(`common.${journeyTypeName}` as const)}>
         <PageContent>
           <InfoColumn>
-            <ContributeInnovationFlowBlock collaborationId={collaborationId} journeyTypeName={journeyTypeName} />
-            <PageContentBlock>
-              <PageContentBlockHeader
-                title={t('pages.generic.sections.subentities.list', { entities: t('common.callouts') })}
-              />
-              <LinksList
-                items={allCallouts?.map(callout => {
-                  const CalloutIcon = calloutIcons[callout.type];
-                  return {
-                    id: callout.id,
-                    title: (
-                      <JourneyCalloutsListItemTitle
-                        callout={{
-                          ...callout,
-                          flowStates: contributeLeftCalloutsIds.includes(callout.id) ? [] : callout.flowStates,
-                        }}
-                      />
-                    ),
-                    icon: <CalloutIcon />,
-                    uri: callout.framing.profile.url,
-                  };
-                })}
-                emptyListCaption={t('pages.generic.sections.subentities.empty-list', {
-                  entities: t('common.callouts'),
-                  parentEntity: t(`common.${journeyTypeName}` as const),
-                })}
-                loading={loading}
-              />
-            </PageContentBlock>
-            <CalloutsGroupView
-              callouts={groupedCallouts[CalloutGroupName.Contribute_1]}
-              canCreateCallout={canCreateCallout}
-              canCreateCalloutFromTemplate={canCreateCalloutFromTemplate}
-              loading={loading}
-              journeyTypeName={journeyTypeName}
-              calloutNames={calloutNames}
-              onSortOrderUpdate={onCalloutsSortOrderUpdate}
-              onCalloutUpdate={refetchCallout}
-              groupName={CalloutGroupName.Contribute_1}
-              flowState={selectedInnovationFlowState}
+            <JourneyDashboardWelcomeBlock
+              vision={context?.vision ?? ''}
+              leadUsers={community?.leadUsers}
+              onContactLeadUser={receiver => sendMessage('user', receiver)}
+              leadOrganizations={community?.leadOrganizations}
+              onContactLeadOrganization={receiver => sendMessage('organization', receiver)}
+              journeyTypeName="subspace"
+              member={community?.myMembershipStatus === CommunityMembershipStatus.Member}
+            />
+            <DashboardNavigation
+              currentItemId={journeyId}
+              spaceUrl={spaceUrl}
+              displayName={spaceDisplayName}
+              dashboardNavigation={dashboardNavigation}
             />
           </InfoColumn>
 

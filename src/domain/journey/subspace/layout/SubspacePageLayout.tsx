@@ -34,7 +34,6 @@ const SubspacePageLayout = ({
       <JourneyUnauthorizedDialogContainer journeyId={challengeId} loading={loading}>
         {({ vision, ...props }) => (
           <JourneyUnauthorizedDialog
-            journeyTypeName="subspace"
             subspaceId={challengeId}
             subspaceName={profile.displayName}
             description={vision}

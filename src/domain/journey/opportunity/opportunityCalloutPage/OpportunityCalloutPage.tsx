@@ -1,6 +1,6 @@
 import React from 'react';
 import CalloutPage from '../../../collaboration/CalloutPage/CalloutPage';
-import JourneyContributePage from '../../common/JourneyContributePage/JourneyContributePage';
+import JourneyContributePage from '../../subspace/subspaceHome/JourneyContributePage';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import { JourneyCalloutDialogProps } from '../../common/JourneyCalloutDialog/JourneyCalloutDialog';
 import OpportunityDashboardPage from '../pages/OpportunityDashboardPage';

@@ -45,7 +45,6 @@ fragment SpacePage on Space {
     anonymousReadAccess
     myPrivileges
   }
-
   profile {
     id
     url
