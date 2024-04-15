@@ -161,7 +161,8 @@
     "skipLink": "Skip to next block",
     "toolsMenu": "Tools Menu",
     "userMenu": "User Menu",
-    "scrollToTop": "Scroll to top"
+    "scrollToTop": "Scroll to top",
+    "addSubject": "Add {{subject}}"
   },
   "tooltips": {
     "click-more-info": "Click for more information",
@@ -951,7 +952,9 @@
     "dashboardNavigation": {
       "help": "This Space holds the following subspaces. When these subspaces have Opportunities, these are visible as well.",
       "privateSubspace": "This is a private subspace. To view it’s content and potential Opportunities, visit the subspace and apply to become a member.",
-      "showAll": "Show all"
+      "showAll": "Show all",
+      "expand": "Show full hierarchy",
+      "collapse": "Limit to this Subspace"
     },
     "dashboardRecentContributions": {
       "title": "Contributions",

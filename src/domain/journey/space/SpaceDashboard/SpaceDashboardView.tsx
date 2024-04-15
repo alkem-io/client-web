@@ -7,7 +7,6 @@ import {
   CommunityMembershipStatus,
   DashboardLeadUserFragment,
   DashboardTopCalloutFragment,
-  SpaceVisibility,
   SpaceWelcomeBlockContributorProfileFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
 import DashboardUpdatesSection from '../../../shared/components/DashboardSections/DashboardUpdatesSection';
@@ -20,8 +19,8 @@ import ApplicationButton from '../../../community/application/applicationButton/
 import { Theme } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { InfoOutlined } from '@mui/icons-material';
-import { DashboardNavigationItem } from '../SpaceDashboardNavigation/useSpaceDashboardNavigation';
-import DashboardNavigation from '../SpaceDashboardNavigation/DashboardNavigation';
+import { DashboardNavigationItem } from '../spaceDashboardNavigation/useSpaceDashboardNavigation';
+import DashboardNavigation from '../../dashboardNavigation/DashboardNavigation';
 import useDirectMessageDialog from '../../../communication/messaging/DirectMessaging/useDirectMessageDialog';
 import FullWidthButton from '../../../../core/ui/button/FullWidthButton';
 import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
@@ -44,7 +43,6 @@ interface SpaceDashboardViewProps {
   spaceUrl: string | undefined;
   dashboardNavigation: DashboardNavigationItem[] | undefined;
   dashboardNavigationLoading: boolean;
-  spaceVisibility?: SpaceVisibility;
   vision?: string;
   communityId?: string;
   organization?: unknown;
@@ -82,7 +80,6 @@ const SpaceDashboardView = ({
   displayName,
   dashboardNavigation,
   dashboardNavigationLoading,
-  spaceVisibility,
   spaceUrl,
   communityId = '',
   communityReadAccess = false,
@@ -153,7 +150,6 @@ const SpaceDashboardView = ({
           </FullWidthButton>
           <DashboardNavigation
             spaceUrl={spaceUrl}
-            spaceVisibility={spaceVisibility}
             displayName={displayName}
             dashboardNavigation={dashboardNavigation}
             loading={dashboardNavigationLoading}
