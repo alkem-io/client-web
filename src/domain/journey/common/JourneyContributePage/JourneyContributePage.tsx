@@ -2,7 +2,7 @@ import React from 'react';
 import usePageLayoutByEntity from '../../../shared/utils/usePageLayoutByEntity';
 import { JourneyTypeName } from '../../JourneyTypeName';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
-import JourneyCalloutsTabView from '../../../collaboration/callout/JourneyCalloutsTabView/JourneyCalloutsTabView';
+import SubspaceHomeView from '../../subspace/subspaceHome/SubspaceHomeView';
 import JourneyContributePageContainer from './JourneyContributePageContainer';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 
@@ -19,7 +19,7 @@ const JourneyContributePage = ({ journeyTypeName }: ContributePageProps) => {
     <PageLayout currentSection={EntityPageSection.Contribute}>
       <JourneyContributePageContainer journeyId={journeyId} journeyTypeName={journeyTypeName}>
         {({ innovationFlowStates, callouts, collaborationId }) => (
-          <JourneyCalloutsTabView
+          <SubspaceHomeView
             journeyTypeName={journeyTypeName}
             {...innovationFlowStates}
             {...callouts}

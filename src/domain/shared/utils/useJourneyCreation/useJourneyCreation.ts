@@ -8,6 +8,7 @@ import { useSpace } from '../../../journey/space/SpaceContext/useSpace';
 import { useConfig } from '../../../platform/config/useConfig';
 import {
   CommunityMembershipStatus,
+  CreateSubspaceMutation,
   PlatformFeatureFlagName,
   TagsetType,
 } from '../../../../core/apollo/generated/graphql-schema';
@@ -116,6 +117,14 @@ export const useSubspaceCreation = () => {
               id: '',
               myMembershipStatus: CommunityMembershipStatus.Member,
             },
+            context: {
+              id: '',
+              vision: value.vision,
+            },
+            collaboration: {
+              id: '',
+              innovationFlow: undefined,
+            } as unknown as CreateSubspaceMutation['createSubspace']['collaboration'],
           },
         },
       });

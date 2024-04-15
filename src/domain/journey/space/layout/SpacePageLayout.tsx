@@ -49,7 +49,7 @@ const SpacePageLayout = ({
       tabsComponent={SpaceTabs}
     >
       {children}
-      <JourneyUnauthorizedDialogContainer journeyId={spaceId} journeyTypeName="space" loading={loading}>
+      <JourneyUnauthorizedDialogContainer journeyId={spaceId} loading={loading}>
         {({ vision, ...props }) => (
           <JourneyUnauthorizedDialog
             journeyTypeName="space"

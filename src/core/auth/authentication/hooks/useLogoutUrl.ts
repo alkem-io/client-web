@@ -1,6 +1,5 @@
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { logger } from '../../../logging/winston/logger';
 import { useKratosClient } from './useKratosClient';
 
 export const useLogoutUrl = () => {
@@ -18,7 +17,7 @@ export const useLogoutUrl = () => {
       setLoading(true);
       const { status, data } = await client.createSelfServiceLogoutFlowUrlForBrowsers();
       if (status !== 200) {
-        logger.error(data);
+        console.error(data);
       }
       setLogoutUrl(data.logout_url);
     } catch (error) {

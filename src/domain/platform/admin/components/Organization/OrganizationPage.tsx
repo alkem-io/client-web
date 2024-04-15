@@ -14,7 +14,6 @@ import {
   Organization,
   UpdateOrganizationInput,
 } from '../../../../../core/apollo/generated/graphql-schema';
-import { logger } from '../../../../../core/logging/winston/logger';
 import Loading from '../../../../../core/ui/loading/Loading';
 import OrganizationForm from './OrganizationForm';
 import clearCacheForQuery from '../../../../../core/apollo/utils/clearCacheForQuery';
@@ -43,7 +42,7 @@ const OrganizationPage: FC<Props> = ({ title, mode }) => {
   const [createTagset] = useCreateTagsetOnProfileMutation({
     // Just log the error. Do not send it to the notification handler.
     // there is an issue handling multiple snackbars.
-    onError: error => logger.error(error.message),
+    onError: error => console.error(error.message),
   });
 
   const [createOrganization] = useCreateOrganizationMutation({

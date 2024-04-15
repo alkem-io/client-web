@@ -5,6 +5,7 @@ export enum TagCategoryValues {
   AUTH = 'AUTH',
   UI = 'UI',
   WHITEBOARD = 'WHITEBOARD',
+  CONFIG = 'CONFIG',
 }
 
 interface Tags {

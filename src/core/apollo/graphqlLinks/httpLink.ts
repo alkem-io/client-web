@@ -4,7 +4,7 @@ import { getMainDefinition } from '@apollo/client/utilities';
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
 import { createClient } from 'graphql-ws';
 import { env } from '../../../main/env';
-import { logger } from '../../logging/winston/logger';
+import { warn as logWarn } from '../../logging/sentry/log';
 
 const WS_RETRY_ATTEMPTS = 5;
 const DOMAIN = env?.VITE_APP_ALKEMIO_DOMAIN ?? window.location.origin;
@@ -36,7 +36,7 @@ export const httpLink = (graphQLEndpoint: string, enableWebSockets: boolean) => 
               ? 'Fatal ws lazy error'
               : 'ws lazy error: retry attempts have been exceeded or the specific close event is labeled as fatal';
 
-            logger.error(message, errorOrCloseEvent);
+            logWarn(message);
           },
         })
       );
@@ -49,7 +49,7 @@ export const httpLink = (graphQLEndpoint: string, enableWebSockets: boolean) => 
         uploadLink
       );
     } catch (error) {
-      logger.error(error);
+      logWarn(error as Error, { label: 'WS' });
     }
   }
   return uploadLink;
