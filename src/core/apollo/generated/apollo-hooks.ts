@@ -20338,7 +20338,7 @@ export type ShareLinkWithUserMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.ShareLinkWithUserMutationVariables
 >;
 export const CreateSubspaceDocument = gql`
-  mutation createSubspace($input: CreateSubspaceOnSpaceInput!) {
+  mutation createSubspace($input: CreateSubspaceInput!) {
     createSubspace(subspaceData: $input) {
       ...SubspaceCard
     }
