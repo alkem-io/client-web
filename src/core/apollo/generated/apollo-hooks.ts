@@ -15863,75 +15863,6 @@ export function refetchCollaborationIdentityQuery(variables: SchemaTypes.Collabo
   return { query: CollaborationIdentityDocument, variables: variables };
 }
 
-export const JourneyCommunityPrivilegesDocument = gql`
-  query JourneyCommunityPrivileges($spaceId: UUID_NAMEID!) {
-    space(ID: $spaceId) {
-      id
-      community {
-        id
-        authorization {
-          id
-          myPrivileges
-        }
-      }
-    }
-  }
-`;
-
-/**
- * __useJourneyCommunityPrivilegesQuery__
- *
- * To run a query within a React component, call `useJourneyCommunityPrivilegesQuery` and pass it any options that fit your needs.
- * When your component renders, `useJourneyCommunityPrivilegesQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useJourneyCommunityPrivilegesQuery({
- *   variables: {
- *      spaceId: // value for 'spaceId'
- *   },
- * });
- */
-export function useJourneyCommunityPrivilegesQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.JourneyCommunityPrivilegesQuery,
-    SchemaTypes.JourneyCommunityPrivilegesQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    SchemaTypes.JourneyCommunityPrivilegesQuery,
-    SchemaTypes.JourneyCommunityPrivilegesQueryVariables
-  >(JourneyCommunityPrivilegesDocument, options);
-}
-
-export function useJourneyCommunityPrivilegesLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.JourneyCommunityPrivilegesQuery,
-    SchemaTypes.JourneyCommunityPrivilegesQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.JourneyCommunityPrivilegesQuery,
-    SchemaTypes.JourneyCommunityPrivilegesQueryVariables
-  >(JourneyCommunityPrivilegesDocument, options);
-}
-
-export type JourneyCommunityPrivilegesQueryHookResult = ReturnType<typeof useJourneyCommunityPrivilegesQuery>;
-export type JourneyCommunityPrivilegesLazyQueryHookResult = ReturnType<typeof useJourneyCommunityPrivilegesLazyQuery>;
-export type JourneyCommunityPrivilegesQueryResult = Apollo.QueryResult<
-  SchemaTypes.JourneyCommunityPrivilegesQuery,
-  SchemaTypes.JourneyCommunityPrivilegesQueryVariables
->;
-export function refetchJourneyCommunityPrivilegesQuery(
-  variables: SchemaTypes.JourneyCommunityPrivilegesQueryVariables
-) {
-  return { query: JourneyCommunityPrivilegesDocument, variables: variables };
-}
-
 export const JourneyDataDocument = gql`
   query JourneyData($spaceId: UUID_NAMEID!) {
     space(ID: $spaceId) {
@@ -16067,6 +15998,83 @@ export type JourneyPrivilegesQueryResult = Apollo.QueryResult<
 >;
 export function refetchJourneyPrivilegesQuery(variables: SchemaTypes.JourneyPrivilegesQueryVariables) {
   return { query: JourneyPrivilegesDocument, variables: variables };
+}
+
+export const ChildJourneyPageBannerDocument = gql`
+  query ChildJourneyPageBanner($spaceId: UUID_NAMEID!) {
+    space(ID: $spaceId) {
+      id
+      profile {
+        id
+        displayName
+        tagline
+        avatar: visual(type: AVATAR) {
+          id
+          uri
+        }
+        tagset {
+          id
+          tags
+        }
+      }
+      community {
+        id
+        myMembershipStatus
+      }
+    }
+  }
+`;
+
+/**
+ * __useChildJourneyPageBannerQuery__
+ *
+ * To run a query within a React component, call `useChildJourneyPageBannerQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChildJourneyPageBannerQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChildJourneyPageBannerQuery({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *   },
+ * });
+ */
+export function useChildJourneyPageBannerQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.ChildJourneyPageBannerQuery,
+    SchemaTypes.ChildJourneyPageBannerQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.ChildJourneyPageBannerQuery, SchemaTypes.ChildJourneyPageBannerQueryVariables>(
+    ChildJourneyPageBannerDocument,
+    options
+  );
+}
+
+export function useChildJourneyPageBannerLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.ChildJourneyPageBannerQuery,
+    SchemaTypes.ChildJourneyPageBannerQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.ChildJourneyPageBannerQuery, SchemaTypes.ChildJourneyPageBannerQueryVariables>(
+    ChildJourneyPageBannerDocument,
+    options
+  );
+}
+
+export type ChildJourneyPageBannerQueryHookResult = ReturnType<typeof useChildJourneyPageBannerQuery>;
+export type ChildJourneyPageBannerLazyQueryHookResult = ReturnType<typeof useChildJourneyPageBannerLazyQuery>;
+export type ChildJourneyPageBannerQueryResult = Apollo.QueryResult<
+  SchemaTypes.ChildJourneyPageBannerQuery,
+  SchemaTypes.ChildJourneyPageBannerQueryVariables
+>;
+export function refetchChildJourneyPageBannerQuery(variables: SchemaTypes.ChildJourneyPageBannerQueryVariables) {
+  return { query: ChildJourneyPageBannerDocument, variables: variables };
 }
 
 export const JourneyBreadcrumbsInnovationHubDocument = gql`
@@ -20330,7 +20338,7 @@ export type ShareLinkWithUserMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.ShareLinkWithUserMutationVariables
 >;
 export const CreateSubspaceDocument = gql`
-  mutation createSubspace($input: CreateSubspaceOnSpaceInput!) {
+  mutation createSubspace($input: CreateSubspaceInput!) {
     createSubspace(subspaceData: $input) {
       ...SubspaceCard
     }
