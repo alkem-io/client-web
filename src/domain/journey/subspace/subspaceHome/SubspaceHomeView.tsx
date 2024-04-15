@@ -65,8 +65,6 @@ const SubspaceHomeView = ({
   const handleSelectInnovationFlowState = (state: InnovationFlowState) =>
     setSelectedInnovationFlowState(state.displayName);
 
-  const contributeLeftCalloutsIds = groupedCallouts[CalloutGroupName.Contribute_1]?.map(callout => callout.id) ?? [];
-
   return (
     <>
       <MembershipBackdrop show={!loading && !allCallouts} blockName={t(`common.${journeyTypeName}` as const)}>
@@ -82,14 +80,7 @@ const SubspaceHomeView = ({
                   const CalloutIcon = calloutIcons[callout.type];
                   return {
                     id: callout.id,
-                    title: (
-                      <JourneyCalloutsListItemTitle
-                        callout={{
-                          ...callout,
-                          flowStates: contributeLeftCalloutsIds.includes(callout.id) ? [] : callout.flowStates,
-                        }}
-                      />
-                    ),
+                    title: <JourneyCalloutsListItemTitle callout={callout} />,
                     icon: <CalloutIcon />,
                     uri: callout.framing.profile.url,
                   };
@@ -101,18 +92,6 @@ const SubspaceHomeView = ({
                 loading={loading}
               />
             </PageContentBlock>
-            <CalloutsGroupView
-              callouts={groupedCallouts[CalloutGroupName.Contribute_1]}
-              canCreateCallout={canCreateCallout}
-              canCreateCalloutFromTemplate={canCreateCalloutFromTemplate}
-              loading={loading}
-              journeyTypeName={journeyTypeName}
-              calloutNames={calloutNames}
-              onSortOrderUpdate={onCalloutsSortOrderUpdate}
-              onCalloutUpdate={refetchCallout}
-              groupName={CalloutGroupName.Contribute_1}
-              flowState={selectedInnovationFlowState}
-            />
           </InfoColumn>
 
           <ContentColumn>
@@ -137,7 +116,7 @@ const SubspaceHomeView = ({
                 />
               ))}
             <CalloutsGroupView
-              callouts={filterCallouts(groupedCallouts[CalloutGroupName.Contribute_2])}
+              callouts={filterCallouts(groupedCallouts[CalloutGroupName.Contribute])}
               canCreateCallout={canCreateCallout}
               canCreateCalloutFromTemplate={canCreateCalloutFromTemplate}
               loading={loading}
@@ -145,7 +124,7 @@ const SubspaceHomeView = ({
               calloutNames={calloutNames}
               onSortOrderUpdate={onCalloutsSortOrderUpdate}
               onCalloutUpdate={refetchCallout}
-              groupName={CalloutGroupName.Contribute_2}
+              groupName={CalloutGroupName.Contribute}
               createButtonPlace="top"
               flowState={selectedInnovationFlowState}
             />

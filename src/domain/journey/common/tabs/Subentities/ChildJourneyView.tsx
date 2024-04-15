@@ -46,8 +46,7 @@ export interface ChildJourneyViewProps<ChildEntity extends BaseChildEntity> {
   childEntityOnCreate?: () => void;
   createSubentityDialog?: ReactElement;
   state: JourneySubentitiesState;
-  childrenLeft?: ReactNode;
-  childrenRight?: ReactNode;
+  children?: ReactNode;
 }
 
 const ChildJourneyView = <ChildEntity extends BaseChildEntity>({
@@ -62,8 +61,7 @@ const ChildJourneyView = <ChildEntity extends BaseChildEntity>({
   childEntityOnCreate,
   createSubentityDialog,
   state,
-  childrenLeft,
-  childrenRight,
+  children,
 }: ChildJourneyViewProps<ChildEntity>) => {
   const { t } = useTranslation();
 
@@ -96,7 +94,6 @@ const ChildJourneyView = <ChildEntity extends BaseChildEntity>({
               })}
             />
           </PageContentBlock>
-          {childrenLeft}
         </InfoColumn>
         <ContentColumn>
           {state.loading && <Loading />}
@@ -141,7 +138,7 @@ const ChildJourneyView = <ChildEntity extends BaseChildEntity>({
               {t('common.create-new-entity', { entity: getJourneyChildrenTranslation(t, journeyTypeName, 1) })}
             </Button>
           )}
-          {childrenRight}
+          {children}
           {state.error && <ErrorBlock blockName={t(`common.${journeyTypeName}` as const)} />}
         </ContentColumn>
       </PageContent>

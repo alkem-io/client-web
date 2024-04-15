@@ -51,7 +51,7 @@ export const InnovationFlowCollaborationFragmentDoc = gql`
       id
       myPrivileges
     }
-    callouts(groups: ["CONTRIBUTE_1", "CONTRIBUTE_2"]) {
+    callouts(groups: ["CONTRIBUTE"]) {
       id
       nameID
       type
