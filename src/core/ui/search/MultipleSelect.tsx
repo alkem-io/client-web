@@ -28,6 +28,7 @@ export interface MultipleSelectProps {
   containerProps?: BoxProps;
   autoShrink?: boolean;
   inlineTerms?: boolean;
+  placeholder?: string;
 }
 
 const filterTerms = (values: string[] | undefined) => {
@@ -79,6 +80,7 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
   size = 'medium',
   autoShrink,
   inlineTerms,
+  placeholder,
   containerProps,
   children,
 }) => {
@@ -97,7 +99,7 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
 
   const inputRef = useRef<HTMLInputElement | null>(null);
   useEffect(() => {
-    if (!isShrunk) {
+    if (autoShrink && !isShrunk) {
       inputRef.current?.focus();
     }
   }, [isShrunk, inputRef.current]);
@@ -192,7 +194,7 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
                 value={textInput}
                 onChange={handleTextInputChange}
                 onKeyDown={handleKeyDown}
-                placeholder={t('pages.search.placeholder')}
+                placeholder={placeholder ?? t('pages.search.placeholder')}
                 InputProps={{
                   disabled: disabled,
                   endAdornment: (

@@ -685,6 +685,12 @@
       "SUBSPACES_1": "Subspaces Left",
       "SUBSPACES_2": "Subspaces Right",
       "KNOWLEDGE": "Knowledge Base"
+    },
+    "calloutsList": {
+      "title": "List",
+      "filter": {
+        "placeholder": "Find collaboration tools..."
+      }
     }
   },
   "journey-creation": {

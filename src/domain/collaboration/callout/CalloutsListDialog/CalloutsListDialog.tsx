@@ -1,12 +1,13 @@
-import { Dialog, DialogContent } from '@mui/material';
+import { Dialog, DialogContent, List, ListItem, ListItemIcon, Skeleton, useTheme } from '@mui/material';
 import React, { ReactNode, useCallback, useMemo, useState } from 'react';
-import LinksList from '../../../../core/ui/list/LinksList';
 import calloutIcons from '../utils/calloutIcons';
 import { useTranslation } from 'react-i18next';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import MultipleSelect from '../../../../core/ui/search/MultipleSelect';
-import { some } from 'lodash';
+import { some, times } from 'lodash';
 import { CalloutGroupName } from '../../../../core/apollo/generated/graphql-schema';
+import { BlockSectionTitle, Caption } from '../../../../core/ui/typography';
+import RouterLink from '../../../../core/ui/link/RouterLink';
 
 interface CalloutInfo {
   id: string;
@@ -41,6 +42,7 @@ const CalloutsListDialog = <Callout extends CalloutInfo>({
   loading,
 }: CalloutsListDialogProps<Callout>) => {
   const { t } = useTranslation();
+  const theme = useTheme();
   const [filter, setFilter] = useState<string[]>([]);
 
   const filterCalloutCallback = useCallback(
@@ -71,7 +73,8 @@ const CalloutsListDialog = <Callout extends CalloutInfo>({
 
   return (
     <Dialog open={open}>
-      <DialogHeader onClose={onClose} title={t('common.collaborationTools')}>
+      <DialogHeader onClose={onClose} title={t('callout.calloutsList.title')} />
+      <DialogContent>
         <MultipleSelect
           onChange={setFilter}
           value={filter}
@@ -81,24 +84,29 @@ const CalloutsListDialog = <Callout extends CalloutInfo>({
           }}
           size="small"
           inlineTerms
+          placeholder={t('callout.calloutsList.filter.placeholder')}
         />
-      </DialogHeader>
-      <DialogContent>
-        <LinksList
-          items={
-            filteredCallouts?.map(callout => {
-              const CalloutIcon = calloutIcons[callout.type];
-              return {
-                id: callout.id,
-                title: renderCallout(callout),
-                icon: <CalloutIcon />,
-                uri: callout.framing.profile.url,
-              };
-            }) ?? []
-          }
-          emptyListCaption={emptyListCaption}
-          loading={loading}
-        />
+        <List>
+          {loading && times(3, i => <ListItem key={i} component={Skeleton} />)}
+          {(!filteredCallouts || filteredCallouts.length === 0) && (
+            <ListItem key="_empty">
+              <Caption>{emptyListCaption}</Caption>
+            </ListItem>
+          )}
+          {filteredCallouts?.map(callout => {
+            const CalloutIcon = calloutIcons[callout.type];
+            return (
+              <ListItem key={callout.id} component={RouterLink} to={callout.framing.profile.url}>
+                <ListItemIcon>
+                  <CalloutIcon sx={{ color: theme.palette.primary.dark }} />
+                </ListItemIcon>
+                <BlockSectionTitle minWidth={0} noWrap>
+                  {renderCallout(callout)}
+                </BlockSectionTitle>
+              </ListItem>
+            );
+          })}
+        </List>
       </DialogContent>
     </Dialog>
   );
