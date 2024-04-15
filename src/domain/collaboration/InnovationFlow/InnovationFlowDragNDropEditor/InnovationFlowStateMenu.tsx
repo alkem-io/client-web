@@ -31,46 +31,45 @@ export default function InnovationFlowStateMenu({
           menuAction(state);
           closeMenu();
         };
-        return (
-          <>
-            {isCurrentState ? (
-              <MenuItem disabled>
+        return [
+          // MUI Menu doesn't accept a React Fragment as a child, it has to be an array of nodes. It does work, but it prints an annoying warning in the console
+          isCurrentState ? (
+            <MenuItem disabled>
+              <ListItemIcon>
+                <ToggleOn fontSize="small" color="primary" />
+              </ListItemIcon>
+              {t('components.innovationFlowSettings.stateEditor.activeState')}
+            </MenuItem>
+          ) : (
+            onUpdateCurrentState && (
+              <MenuItem onClick={createMenuAction(onUpdateCurrentState)}>
                 <ListItemIcon>
-                  <ToggleOn fontSize="small" color="primary" />
+                  <ToggleOn fontSize="small" />
                 </ListItemIcon>
-                {t('components.innovationFlowSettings.stateEditor.activeState')}
+                {t('components.innovationFlowSettings.stateEditor.setActiveState')}
               </MenuItem>
-            ) : (
-              onUpdateCurrentState && (
-                <MenuItem onClick={createMenuAction(onUpdateCurrentState)}>
-                  <ListItemIcon>
-                    <ToggleOn fontSize="small" />
-                  </ListItemIcon>
-                  {t('components.innovationFlowSettings.stateEditor.setActiveState')}
-                </MenuItem>
-              )
-            )}
-            <MenuItem onClick={createMenuAction(onEdit)}>
-              <ListItemIcon>
-                <EditOutlined fontSize="small" />
-              </ListItemIcon>
-              {t('components.innovationFlowSettings.stateEditor.editState')}
-            </MenuItem>
-            <MenuItem onClick={createMenuAction(onDelete)}>
-              <ListItemIcon>
-                <DeleteOutlined fontSize="small" />
-              </ListItemIcon>
-              {t('components.innovationFlowSettings.stateEditor.deleteState')}
-            </MenuItem>
-            <Divider />
-            <MenuItem onClick={createMenuAction(onAddStateAfter)}>
-              <ListItemIcon>
-                <AddCircleOutline fontSize="small" />
-              </ListItemIcon>
-              {t('components.innovationFlowSettings.stateEditor.addState')}
-            </MenuItem>
-          </>
-        );
+            )
+          ),
+          <MenuItem onClick={createMenuAction(onEdit)}>
+            <ListItemIcon>
+              <EditOutlined fontSize="small" />
+            </ListItemIcon>
+            {t('components.innovationFlowSettings.stateEditor.editState')}
+          </MenuItem>,
+          <MenuItem onClick={createMenuAction(onDelete)}>
+            <ListItemIcon>
+              <DeleteOutlined fontSize="small" />
+            </ListItemIcon>
+            {t('components.innovationFlowSettings.stateEditor.deleteState')}
+          </MenuItem>,
+          <Divider />,
+          <MenuItem onClick={createMenuAction(onAddStateAfter)}>
+            <ListItemIcon>
+              <AddCircleOutline fontSize="small" />
+            </ListItemIcon>
+            {t('components.innovationFlowSettings.stateEditor.addState')}
+          </MenuItem>,
+        ];
       }}
     </PageContentBlockContextualMenu>
   );
