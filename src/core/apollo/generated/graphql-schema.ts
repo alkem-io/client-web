@@ -5185,7 +5185,7 @@ export type UpdateInnovationFlowSingleStateInput = {
 
 export type UpdateInnovationFlowStateInput = {
   /** The explation text to clarify the State. */
-  description?: InputMaybe<Scalars['Markdown']>;
+  description: Scalars['Markdown'];
   /** The display name for the State */
   displayName: Scalars['String'];
 };
@@ -17734,27 +17734,6 @@ export type CollaborationIdentityQuery = {
   space: { __typename?: 'Space'; id: string; collaboration?: { __typename?: 'Collaboration'; id: string } | undefined };
 };
 
-export type JourneyCommunityPrivilegesQueryVariables = Exact<{
-  spaceId: Scalars['UUID_NAMEID'];
-}>;
-
-export type JourneyCommunityPrivilegesQuery = {
-  __typename?: 'Query';
-  space: {
-    __typename?: 'Space';
-    id: string;
-    community?:
-      | {
-          __typename?: 'Community';
-          id: string;
-          authorization?:
-            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-            | undefined;
-        }
-      | undefined;
-  };
-};
-
 export type JourneyDataQueryVariables = Exact<{
   spaceId: Scalars['UUID_NAMEID'];
 }>;
@@ -17946,6 +17925,29 @@ export type JourneyPrivilegesQuery = {
     id: string;
     authorization?:
       | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+      | undefined;
+  };
+};
+
+export type ChildJourneyPageBannerQueryVariables = Exact<{
+  spaceId: Scalars['UUID_NAMEID'];
+}>;
+
+export type ChildJourneyPageBannerQuery = {
+  __typename?: 'Query';
+  space: {
+    __typename?: 'Space';
+    id: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      tagline: string;
+      avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+      tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+    };
+    community?:
+      | { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined }
       | undefined;
   };
 };

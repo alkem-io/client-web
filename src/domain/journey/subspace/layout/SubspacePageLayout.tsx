@@ -1,6 +1,6 @@
 import React, { PropsWithChildren } from 'react';
 import { EntityPageLayout } from '../../common/EntityPageLayout';
-import SubspacePageBanner from './SubspacePageBanner';
+import ChildJourneyPageBanner from '../../common/childJourneyPageBanner/ChildJourneyPageBanner';
 import SubspaceTabs from './SubspaceTabs';
 import JourneyUnauthorizedDialog from '../../common/JourneyUnauthorizedDialog/JourneyUnauthorizedDialog';
 import JourneyUnauthorizedDialogContainer from '../../common/JourneyUnauthorizedDialog/JourneyUnauthorizedDialogContainer';
@@ -27,11 +27,11 @@ const SubspacePageLayout = ({
     <EntityPageLayout
       currentSection={currentSection}
       breadcrumbs={<JourneyBreadcrumbs />}
-      pageBannerComponent={SubspacePageBanner}
+      pageBannerComponent={ChildJourneyPageBanner}
       tabsComponent={SubspaceTabs}
     >
       {children}
-      <JourneyUnauthorizedDialogContainer journeyId={challengeId} journeyTypeName="subspace" loading={loading}>
+      <JourneyUnauthorizedDialogContainer journeyId={challengeId} loading={loading}>
         {({ vision, ...props }) => (
           <JourneyUnauthorizedDialog
             journeyTypeName="subspace"

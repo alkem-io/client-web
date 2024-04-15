@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { SettingsSection } from '../layout/EntitySettingsLayout/constants';
 import { useOpportunity } from '../../../journey/opportunity/hooks/useOpportunity';
 import EntitySettingsLayout from '../layout/EntitySettingsLayout/EntitySettingsLayout';
-import OpportunityPageBanner from '../../../journey/opportunity/layout/OpportunityPageBanner';
+import ChildJourneyPageBanner from '../../../journey/common/childJourneyPageBanner/ChildJourneyPageBanner';
 import OpportunityTabs from '../../../journey/opportunity/layout/OpportunityTabs';
 import { TabDefinition } from '../layout/EntitySettingsLayout/EntitySettingsTabs';
 import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
@@ -45,7 +45,7 @@ const OpportunitySettingsLayout: FC<OpportunitySettingsLayoutProps> = props => {
     <EntitySettingsLayout
       entityTypeName="subsubspace"
       subheaderTabs={tabs}
-      pageBannerComponent={OpportunityPageBanner}
+      pageBannerComponent={ChildJourneyPageBanner}
       tabsComponent={OpportunityTabs}
       breadcrumbs={<JourneyBreadcrumbs settings />}
       {...entityAttrs}

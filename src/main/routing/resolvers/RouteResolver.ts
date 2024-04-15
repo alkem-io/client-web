@@ -12,6 +12,10 @@ interface JourneyRouteParams {
   subSubSpaceId?: string;
   type: RouteType.Journey;
   journeyId: string | undefined;
+  /**
+   * @deprecated
+   * introduce type JourneyLevel = 0 | 1 | 2 instead
+   */
   journeyTypeName: JourneyTypeName;
 }
 
