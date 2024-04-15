@@ -1,7 +1,12 @@
 import React, { cloneElement, FC, ReactElement, ReactNode, useMemo } from 'react';
-import { Box, BoxProps } from '@mui/material';
+import { useTranslation } from 'react-i18next';
+import { Box, BoxProps, IconButton } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
+import { Actions } from '../../actions/Actions';
+import RoundedIcon from '../../icon/RoundedIcon';
 import { Identifiable } from '../../../utils/Identifiable';
 import getDepsValueFromObject from '../../../../domain/shared/utils/getDepsValueFromObject';
+import { useSpace } from '../../../../domain/journey/space/SpaceContext/useSpace';
 import PageContentBlockGrid, { PageContentBlockGridProps } from '../../content/PageContentBlockGrid';
 
 export interface CardsLayoutProps<Item extends Identifiable | null | undefined> extends CardLayoutContainerProps {
@@ -10,7 +15,8 @@ export interface CardsLayoutProps<Item extends Identifiable | null | undefined> 
   deps?: unknown[];
   showCreateButton?: boolean;
   createButton?: ReactNode;
-  addSubspaceButton?: ReactNode;
+  bottomCreateButton?: ReactNode;
+  onClickCreate?: (isOpen: boolean) => void;
 }
 
 /**
@@ -25,10 +31,13 @@ const CardsLayout = <Item extends Identifiable | null | undefined>({
   children,
   deps = [],
   createButton,
-  addSubspaceButton,
+  bottomCreateButton,
+  onClickCreate,
   ...layoutProps
 }: CardsLayoutProps<Item>) => {
   const depsValueFromObjectDeps = getDepsValueFromObject(deps);
+  const { t } = useTranslation();
+  const { permissions } = useSpace();
 
   const cards = useMemo(
     () =>
@@ -44,7 +53,15 @@ const CardsLayout = <Item extends Identifiable | null | undefined>({
     <CardLayoutContainer {...layoutProps}>
       {createButton}
       {cards}
-      {addSubspaceButton}
+      {bottomCreateButton && (
+        <Actions sx={{ justifyContent: 'flex-end', width: '100%' }}>
+          {permissions.canCreateChallenges && (
+            <IconButton aria-label={t('common.add')} size="small" onClick={() => onClickCreate?.(true)}>
+              <RoundedIcon component={AddIcon} size="medium" iconSize="small" />
+            </IconButton>
+          )}
+        </Actions>
+      )}
     </CardLayoutContainer>
   );
 };

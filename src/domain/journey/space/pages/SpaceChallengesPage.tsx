@@ -77,7 +77,7 @@ const SpaceChallengesPage: FC<SpaceChallengesPageProps> = () => {
                 member={challenge.community?.myMembershipStatus === CommunityMembershipStatus.Member}
               />
             )}
-            openCreateDialog={() => setCreateDialogOpen(true)}
+            onClickCreate={() => setCreateDialogOpen(true)}
             childEntityCreateAccess={permissions.canCreateChallenges}
             childEntityOnCreate={() => setCreateDialogOpen(true)}
             createSubentityDialog={
