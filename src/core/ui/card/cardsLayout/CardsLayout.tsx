@@ -1,12 +1,7 @@
 import React, { cloneElement, FC, ReactElement, ReactNode, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Box, BoxProps, IconButton } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
-import { Actions } from '../../actions/Actions';
-import RoundedIcon from '../../icon/RoundedIcon';
+import { Box, BoxProps } from '@mui/material';
 import { Identifiable } from '../../../utils/Identifiable';
 import getDepsValueFromObject from '../../../../domain/shared/utils/getDepsValueFromObject';
-import { useSpace } from '../../../../domain/journey/space/SpaceContext/useSpace';
 import PageContentBlockGrid, { PageContentBlockGridProps } from '../../content/PageContentBlockGrid';
 
 export interface CardsLayoutProps<Item extends Identifiable | null | undefined> extends CardLayoutContainerProps {
@@ -54,34 +49,10 @@ const CardsLayout = <Item extends Identifiable | null | undefined>({
 
 export default CardsLayout;
 
-interface CardLayoutContainerProps extends PageContentBlockGridProps {
-  bottomCreateButton?: ReactNode;
-  onClickCreate?: (isOpen: boolean) => void;
-}
+interface CardLayoutContainerProps extends PageContentBlockGridProps {}
 
-export const CardLayoutContainer: FC<CardLayoutContainerProps> = ({
-  children,
-  bottomCreateButton,
-  onClickCreate,
-  ...props
-}) => {
-  const { t } = useTranslation();
-  const { permissions } = useSpace();
-
-  return (
-    <PageContentBlockGrid cards {...props}>
-      {children}
-      {bottomCreateButton && (
-        <Actions sx={{ justifyContent: 'flex-end', width: '100%' }}>
-          {permissions.canCreateChallenges && (
-            <IconButton aria-label={t('common.add')} size="small" onClick={() => onClickCreate?.(true)}>
-              <RoundedIcon component={AddIcon} size="medium" iconSize="small" />
-            </IconButton>
-          )}
-        </Actions>
-      )}
-    </PageContentBlockGrid>
-  );
+export const CardLayoutContainer: FC<CardLayoutContainerProps> = props => {
+  return <PageContentBlockGrid cards {...props} />;
 };
 
 interface CardLayoutItemProps extends Pick<BoxProps, 'maxWidth' | 'flexGrow'> {
