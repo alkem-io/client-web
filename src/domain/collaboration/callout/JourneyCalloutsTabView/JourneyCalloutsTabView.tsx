@@ -2,7 +2,6 @@ import { useTranslation } from 'react-i18next';
 import PageContent from '../../../../core/ui/content/PageContent';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
-import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
 import LinksList from '../../../../core/ui/list/LinksList';
 import useStateWithAsyncDefault from '../../../../core/utils/useStateWithAsyncDefault';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
@@ -15,6 +14,8 @@ import { OrderUpdate, TypedCallout } from '../useCallouts/useCallouts';
 import calloutIcons from '../utils/calloutIcons';
 import JourneyCalloutsListItemTitle from './JourneyCalloutsListItemTitle';
 import { InnovationFlowState } from '../../InnovationFlow/InnovationFlow';
+import InfoColumn from '../../../../core/ui/content/InfoColumn';
+import ContentColumn from '../../../../core/ui/content/ContentColumn';
 
 interface JourneyCalloutsTabViewProps {
   collaborationId: string | undefined;
@@ -70,7 +71,7 @@ const JourneyCalloutsTabView = ({
     <>
       <MembershipBackdrop show={!loading && !allCallouts} blockName={t(`common.${journeyTypeName}` as const)}>
         <PageContent>
-          <PageContentColumn columns={4}>
+          <InfoColumn>
             <ContributeInnovationFlowBlock collaborationId={collaborationId} journeyTypeName={journeyTypeName} />
             <PageContentBlock>
               <PageContentBlockHeader
@@ -112,9 +113,9 @@ const JourneyCalloutsTabView = ({
               groupName={CalloutGroupName.Contribute_1}
               flowState={selectedInnovationFlowState}
             />
-          </PageContentColumn>
+          </InfoColumn>
 
-          <PageContentColumn columns={8}>
+          <ContentColumn>
             {innovationFlowStates &&
               currentInnovationFlowState &&
               selectedInnovationFlowState &&
@@ -148,7 +149,7 @@ const JourneyCalloutsTabView = ({
               createButtonPlace="top"
               flowState={selectedInnovationFlowState}
             />
-          </PageContentColumn>
+          </ContentColumn>
         </PageContent>
       </MembershipBackdrop>
     </>
