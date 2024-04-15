@@ -15,8 +15,6 @@ export interface CardsLayoutProps<Item extends Identifiable | null | undefined> 
   deps?: unknown[];
   showCreateButton?: boolean;
   createButton?: ReactNode;
-  bottomCreateButton?: ReactNode;
-  onClickCreate?: (isOpen: boolean) => void;
 }
 
 /**
@@ -25,19 +23,16 @@ export interface CardsLayoutProps<Item extends Identifiable | null | undefined> 
  * @param children - a callback that renders a *single* item, pass null or undefined for an item that's loading
  * @param deps - deps to consider the render callback refreshed, as in useCallback(callback, deps)
  * @constructor
+ * @deprecated - doesn't add any functionality except items.map but adds complexity and reduces flexibility
  */
 const CardsLayout = <Item extends Identifiable | null | undefined>({
   items,
   children,
   deps = [],
   createButton,
-  bottomCreateButton,
-  onClickCreate,
   ...layoutProps
 }: CardsLayoutProps<Item>) => {
   const depsValueFromObjectDeps = getDepsValueFromObject(deps);
-  const { t } = useTranslation();
-  const { permissions } = useSpace();
 
   const cards = useMemo(
     () =>
@@ -53,6 +48,29 @@ const CardsLayout = <Item extends Identifiable | null | undefined>({
     <CardLayoutContainer {...layoutProps}>
       {createButton}
       {cards}
+    </CardLayoutContainer>
+  );
+};
+
+export default CardsLayout;
+
+interface CardLayoutContainerProps extends PageContentBlockGridProps {
+  bottomCreateButton?: ReactNode;
+  onClickCreate?: (isOpen: boolean) => void;
+}
+
+export const CardLayoutContainer: FC<CardLayoutContainerProps> = ({
+  children,
+  bottomCreateButton,
+  onClickCreate,
+  ...props
+}) => {
+  const { t } = useTranslation();
+  const { permissions } = useSpace();
+
+  return (
+    <PageContentBlockGrid cards {...props}>
+      {children}
       {bottomCreateButton && (
         <Actions sx={{ justifyContent: 'flex-end', width: '100%' }}>
           {permissions.canCreateChallenges && (
@@ -62,16 +80,8 @@ const CardsLayout = <Item extends Identifiable | null | undefined>({
           )}
         </Actions>
       )}
-    </CardLayoutContainer>
+    </PageContentBlockGrid>
   );
-};
-
-export default CardsLayout;
-
-interface CardLayoutContainerProps extends PageContentBlockGridProps {}
-
-export const CardLayoutContainer: FC<CardLayoutContainerProps> = props => {
-  return <PageContentBlockGrid cards {...props} />;
 };
 
 interface CardLayoutItemProps extends Pick<BoxProps, 'maxWidth' | 'flexGrow'> {
