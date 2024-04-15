@@ -5185,7 +5185,7 @@ export type UpdateInnovationFlowSingleStateInput = {
 
 export type UpdateInnovationFlowStateInput = {
   /** The explation text to clarify the State. */
-  description: Scalars['Markdown'];
+  description?: InputMaybe<Scalars['Markdown']>;
   /** The display name for the State */
   displayName: Scalars['String'];
 };
