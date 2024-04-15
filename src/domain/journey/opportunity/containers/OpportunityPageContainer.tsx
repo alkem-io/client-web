@@ -2,8 +2,8 @@ import { ApolloError } from '@apollo/client';
 import { FC, useCallback, useMemo, useState } from 'react';
 import { useUserContext } from '../../../community/user';
 import {
+  useLegacySubspaceDashboardPageQuery,
   useSendMessageToCommunityLeadsMutation,
-  useSubspacePageQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
 import {
@@ -87,7 +87,7 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ opportuni
     data: query,
     loading: loadingOpportunity,
     error: errorOpportunity,
-  } = useSubspacePageQuery({
+  } = useLegacySubspaceDashboardPageQuery({
     variables: { subspaceId: opportunityId! },
     skip: !opportunityId,
     errorPolicy: 'all',

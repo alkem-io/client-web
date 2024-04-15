@@ -3,14 +3,14 @@ import useInnovationFlowStates, {
   UseInnovationFlowStatesProvided,
 } from '../../../collaboration/InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
 import useCallouts, { UseCalloutsProvided } from '../../../collaboration/callout/useCallouts/useCallouts';
-import { CalloutGroupName } from '../../../../core/apollo/generated/graphql-schema';
-import useCollaborationIdentity from '../CollaborationIdentity/useCollaborationIdentity';
+import { CalloutGroupName, SubspacePageSpaceFragment } from '../../../../core/apollo/generated/graphql-schema';
 import { JourneyTypeName } from '../../JourneyTypeName';
+import { useSubspacePageQuery } from '../../../../core/apollo/generated/apollo-hooks';
 
 interface JourneyContributePageContainerProvided {
-  collaborationId: string | undefined;
   innovationFlowStates: UseInnovationFlowStatesProvided;
   callouts: UseCalloutsProvided;
+  subspace?: SubspacePageSpaceFragment;
 }
 
 interface JourneyContributePageContainerProps extends SimpleContainerProps<JourneyContributePageContainerProvided> {
@@ -23,7 +23,14 @@ const JourneyContributePageContainer = ({
   journeyTypeName,
   children,
 }: JourneyContributePageContainerProps) => {
-  const { collaborationId } = useCollaborationIdentity({ journeyId, journeyTypeName });
+  const { data } = useSubspacePageQuery({
+    variables: {
+      spaceId: journeyId!,
+    },
+    skip: !journeyId,
+  });
+
+  const collaborationId = data?.space?.collaboration.id;
 
   const innovationFlowStates = useInnovationFlowStates({
     collaborationId,
@@ -35,7 +42,7 @@ const JourneyContributePageContainer = ({
     groupNames: [CalloutGroupName.Contribute_1, CalloutGroupName.Contribute_2],
   });
 
-  return <>{children({ innovationFlowStates, callouts, collaborationId })}</>;
+  return <>{children({ innovationFlowStates, callouts, subspace: data?.space })}</>;
 };
 
 export default JourneyContributePageContainer;

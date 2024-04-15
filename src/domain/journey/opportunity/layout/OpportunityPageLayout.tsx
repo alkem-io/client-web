@@ -24,9 +24,7 @@ const OpportunityPageLayout = ({ currentSection, children }: PropsWithChildren<O
     >
       {children}
       <JourneyUnauthorizedDialogContainer journeyId={opportunityId} loading={loading}>
-        {({ vision, ...props }) => (
-          <JourneyUnauthorizedDialog journeyTypeName="subsubspace" description={vision} {...props} />
-        )}
+        {({ vision, ...props }) => <JourneyUnauthorizedDialog description={vision} {...props} />}
       </JourneyUnauthorizedDialogContainer>
     </EntityPageLayout>
   );

@@ -6293,35 +6293,6 @@ export type CalloutPageCalloutQuery = {
   };
 };
 
-export type InnovationFlowBlockQueryVariables = Exact<{
-  collaborationId: Scalars['UUID'];
-}>;
-
-export type InnovationFlowBlockQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    collaboration?:
-      | {
-          __typename?: 'Collaboration';
-          id: string;
-          innovationFlow: {
-            __typename?: 'InnovationFlow';
-            id: string;
-            profile: {
-              __typename?: 'Profile';
-              id: string;
-              displayName: string;
-              cardBanner?:
-                | { __typename?: 'Visual'; id: string; name: string; uri: string; alternativeText?: string | undefined }
-                | undefined;
-            };
-          };
-        }
-      | undefined;
-  };
-};
-
 export type InnovationFlowSettingsQueryVariables = Exact<{
   collaborationId: Scalars['UUID'];
 }>;
@@ -17512,15 +17483,6 @@ export type AboutPageMembersQuery = {
   };
 };
 
-export type CollaborationIdentityQueryVariables = Exact<{
-  spaceId: Scalars['UUID_NAMEID'];
-}>;
-
-export type CollaborationIdentityQuery = {
-  __typename?: 'Query';
-  space: { __typename?: 'Space'; id: string; collaboration: { __typename?: 'Collaboration'; id: string } };
-};
-
 export type JourneyDataQueryVariables = Exact<{
   spaceId: Scalars['UUID_NAMEID'];
 }>;
@@ -19305,11 +19267,11 @@ export type SpaceSubspaceCardsQuery = {
   };
 };
 
-export type SubspacePageQueryVariables = Exact<{
+export type LegacySubspaceDashboardPageQueryVariables = Exact<{
   subspaceId: Scalars['UUID_NAMEID'];
 }>;
 
-export type SubspacePageQuery = {
+export type LegacySubspaceDashboardPageQuery = {
   __typename?: 'Query';
   space: {
     __typename?: 'Space';
@@ -20825,6 +20787,211 @@ export type SubspaceInfoFragment = {
       | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
   };
+};
+
+export type SubspacePageQueryVariables = Exact<{
+  spaceId: Scalars['UUID_NAMEID'];
+}>;
+
+export type SubspacePageQuery = {
+  __typename?: 'Query';
+  space: {
+    __typename?: 'Space';
+    id: string;
+    profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+    context: { __typename?: 'Context'; id: string; vision?: string | undefined };
+    community: {
+      __typename?: 'Community';
+      myMembershipStatus?: CommunityMembershipStatus | undefined;
+      id: string;
+      leadUsers: Array<{
+        __typename?: 'User';
+        id: string;
+        nameID: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
+          tagsets?:
+            | Array<{
+                __typename?: 'Tagset';
+                id: string;
+                name: string;
+                tags: Array<string>;
+                allowedValues: Array<string>;
+                type: TagsetType;
+              }>
+            | undefined;
+        };
+      }>;
+      memberUsers: Array<{
+        __typename?: 'User';
+        id: string;
+        isContactable: boolean;
+        nameID: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+          tagsets?:
+            | Array<{
+                __typename?: 'Tagset';
+                id: string;
+                name: string;
+                tags: Array<string>;
+                allowedValues: Array<string>;
+                type: TagsetType;
+              }>
+            | undefined;
+        };
+      }>;
+      leadOrganizations: Array<{
+        __typename?: 'Organization';
+        id: string;
+        nameID: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          tagline: string;
+          displayName: string;
+          description?: string | undefined;
+          location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+        };
+        verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
+        metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+      }>;
+      memberOrganizations: Array<{
+        __typename?: 'Organization';
+        id: string;
+        nameID: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          tagsets?:
+            | Array<{
+                __typename?: 'Tagset';
+                id: string;
+                name: string;
+                tags: Array<string>;
+                allowedValues: Array<string>;
+                type: TagsetType;
+              }>
+            | undefined;
+        };
+      }>;
+      authorization?:
+        | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+        | undefined;
+    };
+    collaboration: { __typename?: 'Collaboration'; id: string };
+  };
+};
+
+export type SubspacePageSpaceFragment = {
+  __typename?: 'Space';
+  id: string;
+  profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+  context: { __typename?: 'Context'; id: string; vision?: string | undefined };
+  community: {
+    __typename?: 'Community';
+    myMembershipStatus?: CommunityMembershipStatus | undefined;
+    id: string;
+    leadUsers: Array<{
+      __typename?: 'User';
+      id: string;
+      nameID: string;
+      profile: {
+        __typename?: 'Profile';
+        id: string;
+        displayName: string;
+        avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
+        tagsets?:
+          | Array<{
+              __typename?: 'Tagset';
+              id: string;
+              name: string;
+              tags: Array<string>;
+              allowedValues: Array<string>;
+              type: TagsetType;
+            }>
+          | undefined;
+      };
+    }>;
+    memberUsers: Array<{
+      __typename?: 'User';
+      id: string;
+      isContactable: boolean;
+      nameID: string;
+      profile: {
+        __typename?: 'Profile';
+        id: string;
+        displayName: string;
+        location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+        visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+        tagsets?:
+          | Array<{
+              __typename?: 'Tagset';
+              id: string;
+              name: string;
+              tags: Array<string>;
+              allowedValues: Array<string>;
+              type: TagsetType;
+            }>
+          | undefined;
+      };
+    }>;
+    leadOrganizations: Array<{
+      __typename?: 'Organization';
+      id: string;
+      nameID: string;
+      profile: {
+        __typename?: 'Profile';
+        id: string;
+        tagline: string;
+        displayName: string;
+        description?: string | undefined;
+        location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+        avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+      };
+      verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
+      metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+    }>;
+    memberOrganizations: Array<{
+      __typename?: 'Organization';
+      id: string;
+      nameID: string;
+      profile: {
+        __typename?: 'Profile';
+        id: string;
+        displayName: string;
+        visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        tagsets?:
+          | Array<{
+              __typename?: 'Tagset';
+              id: string;
+              name: string;
+              tags: Array<string>;
+              allowedValues: Array<string>;
+              type: TagsetType;
+            }>
+          | undefined;
+      };
+    }>;
+    authorization?:
+      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+      | undefined;
+  };
+  collaboration: { __typename?: 'Collaboration'; id: string };
 };
 
 export type AdminGlobalOrganizationsListQueryVariables = Exact<{

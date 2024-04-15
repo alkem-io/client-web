@@ -14,7 +14,7 @@ import { keyBy } from 'lodash';
 import { useMemo } from 'react';
 
 interface UseSpaceDashboardNavigationProps {
-  spaceId: string;
+  spaceId: string | undefined;
   skip?: boolean;
 }
 
@@ -75,8 +75,8 @@ const useSpaceDashboardNavigation = ({
   skip,
 }: UseSpaceDashboardNavigationProps): UseSpaceDashboardNavigationProvided => {
   const { data: challengesQueryData, loading: challengesQueryLoading } = useSpaceDashboardNavigationChallengesQuery({
-    variables: { spaceId },
-    skip,
+    variables: { spaceId: spaceId! },
+    skip: skip || !spaceId,
   });
 
   const challenges = challengesQueryData?.space.subspaces;
@@ -86,7 +86,7 @@ const useSpaceDashboardNavigation = ({
   const { data: opportunitiesQueryData, loading: opportunitiesQueryLoading } =
     useSpaceDashboardNavigationOpportunitiesQuery({
       variables: {
-        spaceId,
+        spaceId: spaceId!,
         challengeIds: readableChallengeIds!,
       },
       skip: !readableChallengeIds || skip,

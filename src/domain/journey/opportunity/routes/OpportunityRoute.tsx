@@ -3,14 +3,13 @@ import { Route, Routes } from 'react-router';
 import { Navigate } from 'react-router-dom';
 import Loading from '../../../../core/ui/loading/Loading';
 import { Error404 } from '../../../../core/pages/Errors/Error404';
-import OpportunityAgreementsPage from '../pages/OpportunityAgreementsPage';
 import { nameOfUrl } from '../../../../main/routing/urlParams';
 import { EntityPageLayoutHolder, NotFoundPageLayout } from '../../common/EntityPageLayout';
 import { routes } from './opportunityRoutes';
 import CalloutRoute from '../../../collaboration/callout/routing/CalloutRoute';
 import OpportunityAboutPage from '../pages/OpportunityAboutPage';
 import OpportunityDashboardPage from '../pages/OpportunityDashboardPage';
-import JourneyContributePage from '../../common/JourneyContributePage/JourneyContributePage';
+import JourneyContributePage from '../../subspace/subspaceHome/JourneyContributePage';
 import Redirect from '../../../../core/routing/Redirect';
 import OpportunityCalloutPage from '../opportunityCalloutPage/OpportunityCalloutPage';
 import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
@@ -46,7 +45,6 @@ const OpportunityRoute = () => {
             element={<OpportunityCalloutPage>{props => <CalloutRoute {...props} />}</OpportunityCalloutPage>}
           />
           <Route path={routes.About} element={<OpportunityAboutPage />} />
-          <Route path={routes.Agreements} element={<OpportunityAgreementsPage />} />
           <Route
             path="*"
             element={

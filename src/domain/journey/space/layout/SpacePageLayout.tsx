@@ -52,7 +52,6 @@ const SpacePageLayout = ({
       <JourneyUnauthorizedDialogContainer journeyId={spaceId} loading={loading}>
         {({ vision, ...props }) => (
           <JourneyUnauthorizedDialog
-            journeyTypeName="space"
             description={vision}
             disabled={unauthorizedDialogDisabled}
             leftColumnChildrenTop={<CommunityGuidelinesBlock communityId={communityId} />}
