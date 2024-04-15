@@ -9,7 +9,6 @@ import {
   useUsersWithCredentialsQuery,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { AuthorizationCredential, GroupInfoFragment, User } from '../../../../../core/apollo/generated/graphql-schema';
-import { logger } from '../../../../../core/logging/winston/logger';
 import GroupForm, { UserGroupUpdateInput } from './GroupForm/GroupForm';
 import { getUpdateProfileInput } from '../../../../community/user/utils/getUpdateUserInput';
 import OrganizationAdminLayout from '../../organization/OrganizationAdminLayout';
@@ -40,13 +39,14 @@ export const GroupPage: FC<GroupPageProps> = ({ group }) => {
   });
 
   const [updateGroup] = useUpdateGroupMutation({
-    onCompleted: data => success(t('operations.user-group.updated-successfuly', { name: data.updateUserGroup.name })),
+    onCompleted: data =>
+      success(t('operations.user-group.updated-successfuly', { name: data.updateUserGroup.profile?.displayName })),
   });
 
   const [createTagset] = useCreateTagsetOnProfileMutation({
     // Just log the error. Do not send it to the notification hanlder.
     // there is an issue handling multiple snackbars.
-    onError: error => logger.error(error.message),
+    onError: error => console.error(error.message),
   });
 
   const members = membersData?.usersWithAuthorizationCredential.map(u => u as User) || [];
@@ -73,7 +73,6 @@ export const GroupPage: FC<GroupPageProps> = ({ group }) => {
       variables: {
         input: {
           ID: group.id,
-          name: group.name,
           profileData: getUpdateProfileInput(group.profile),
         },
       },
@@ -84,7 +83,7 @@ export const GroupPage: FC<GroupPageProps> = ({ group }) => {
     <OrganizationAdminLayout currentTab={SettingsSection.Community} tabRoutePrefix="../../../../">
       <GroupForm
         title={t('components.groupForm.title')}
-        group={group || { id: '-1', name: '' }}
+        group={group || { id: '-1' }}
         members={members}
         onSave={handleSave}
         onDelete={handleDelete}

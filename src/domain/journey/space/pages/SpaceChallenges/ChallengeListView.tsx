@@ -9,17 +9,17 @@ import Loading from '../../../../../core/ui/loading/Loading';
 import {
   refetchAdminSpaceChallengesPageQuery,
   useAdminSpaceChallengesPageQuery,
-  useCreateChallengeMutation,
-  useDeleteChallengeMutation,
+  useCreateSubspaceMutation,
+  useDeleteSpaceMutation,
   useUpdateSpaceDefaultInnovationFlowTemplateMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import { useSpace } from '../../SpaceContext/useSpace';
 import { JourneyCreationDialog } from '../../../../shared/components/JorneyCreationDialog';
-import { ChallengeIcon } from '../../../challenge/icon/ChallengeIcon';
+import { ChallengeIcon } from '../../../subspace/icon/ChallengeIcon';
 import { JourneyFormValues } from '../../../../shared/components/JorneyCreationDialog/JourneyCreationForm';
 import { buildJourneyAdminUrl } from '../../../../../main/routing/urlBuilders';
-import { CreateChallengeForm } from '../../../challenge/forms/CreateChallengeForm';
+import { CreateChallengeForm } from '../../../subspace/forms/CreateChallengeForm';
 import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
 import { BlockSectionTitle, Caption } from '../../../../../core/ui/typography';
@@ -49,20 +49,20 @@ export const ChallengeListView: FC = () => {
   }, [defaultInnovationFlow?.states?.[0]?.displayName]);
 
   const challengeList =
-    data?.space?.challenges?.map(c => ({
+    data?.space?.subspaces?.map(c => ({
       id: c.id,
       value: c.profile.displayName,
       url: `${c.nameID}`,
     })) || [];
 
-  const [deleteChallenge] = useDeleteChallengeMutation({
+  const [deleteChallenge] = useDeleteSpaceMutation({
     refetchQueries: [
       refetchAdminSpaceChallengesPageQuery({
         spaceId: spaceNameId,
       }),
     ],
     awaitRefetchQueries: true,
-    onCompleted: () => notify(t('pages.admin.challenge.notifications.challenge-removed'), 'success'),
+    onCompleted: () => notify(t('pages.admin.subspace.notifications.subspace-removed'), 'success'),
   });
 
   const handleDelete = (item: SearchableListItem) => {
@@ -75,9 +75,9 @@ export const ChallengeListView: FC = () => {
     });
   };
 
-  const [createChallenge] = useCreateChallengeMutation({
+  const [createChallenge] = useCreateSubspaceMutation({
     onCompleted: () => {
-      notify(t('pages.admin.challenge.notifications.challenge-created'), 'success');
+      notify(t('pages.admin.subspace.notifications.subspace-created'), 'success');
     },
     refetchQueries: [refetchAdminSpaceChallengesPageQuery({ spaceId: spaceNameId })],
     awaitRefetchQueries: true,
@@ -105,11 +105,11 @@ export const ChallengeListView: FC = () => {
         },
       });
 
-      if (!data?.createChallenge) {
+      if (!data?.createSubspace) {
         return;
       }
-      if (data?.createChallenge.profile.url) {
-        navigate(buildJourneyAdminUrl(data?.createChallenge.profile.url));
+      if (data?.createSubspace.profile.url) {
+        navigate(buildJourneyAdminUrl(data?.createSubspace.profile.url));
       }
     },
     [navigate, createChallenge, spaceNameId]
@@ -137,8 +137,8 @@ export const ChallengeListView: FC = () => {
   return (
     <>
       <PageContentBlock>
-        <PageContentBlockHeader title={t('pages.admin.space.sections.challenges.defaultSettings.title')} />
-        <Caption>{t('pages.admin.space.sections.challenges.defaultSettings.description')}</Caption>
+        <PageContentBlockHeader title={t('pages.admin.space.sections.subspaces.defaultSettings.title')} />
+        <Caption>{t('pages.admin.space.sections.subspaces.defaultSettings.description')}</Caption>
         <PageContentBlock>
           <PageContentBlockHeader title={t('common.innovation-flow')} />
           <BlockSectionTitle>{defaultInnovationFlow?.profile.displayName}</BlockSectionTitle>
@@ -150,7 +150,7 @@ export const ChallengeListView: FC = () => {
           />
           <Actions justifyContent="end">
             <Button variant="outlined" startIcon={<Cached />} onClick={() => setInnovationFlowDialogOpen(true)}>
-              {t('pages.admin.space.sections.challenges.defaultSettings.defaultInnovationFlow.selectDifferentFlow')}
+              {t('pages.admin.space.sections.subspaces.defaultSettings.defaultInnovationFlow.selectDifferentFlow')}
             </Button>
           </Actions>
         </PageContentBlock>
@@ -179,7 +179,7 @@ export const ChallengeListView: FC = () => {
       <JourneyCreationDialog
         open={journeyCreationDialogOpen}
         icon={<ChallengeIcon />}
-        journeyName={t('common.challenge')}
+        journeyName={t('common.subspace')}
         onClose={() => setJourneyCreationDialogOpen(false)}
         OnCreate={handleCreate}
         formComponent={CreateChallengeForm}

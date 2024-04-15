@@ -22,23 +22,23 @@ const useUserContributions = (userNameId: string) => {
       id: e.id,
     }));
 
-    const challenges = data?.rolesUser.spaces.flatMap<ContributionItem>(e =>
-      e.challenges.map(c => ({
+    const subspaces = data?.rolesUser.spaces.flatMap<ContributionItem>(e =>
+      e.subspaces.map(c => ({
         spaceId: e.id,
         challengeId: c.id,
         id: c.id,
       }))
     );
 
-    const opportunities = data?.rolesUser.spaces.flatMap<ContributionItem>(e =>
-      e.opportunities.map(o => ({
+    const subsubspaces = data?.rolesUser.spaces.flatMap<ContributionItem>(e =>
+      e.subspaces.map(o => ({
         spaceId: e.id,
         opportunityId: o.id,
         id: o.id,
       }))
     );
 
-    return [...spaces, ...challenges, ...opportunities];
+    return [...spaces, ...subspaces, ...subsubspaces];
   }, [data]);
 };
 

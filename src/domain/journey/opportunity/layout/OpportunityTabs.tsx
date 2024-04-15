@@ -12,7 +12,7 @@ const OpportunityTabs: FC<OpportunityTabsProps> = props => {
   return (
     <JourneyPageTabs
       {...props}
-      entityTypeName="opportunity"
+      entityTypeName="subsubspace"
       showSettings={permissions.viewerCanUpdate}
       settingsUrl={buildJourneyAdminUrl(profile.url)}
       rootUrl={profile.url}

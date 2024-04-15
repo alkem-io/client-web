@@ -6,5 +6,5 @@ type SearchOpportunityCardImplProps = Omit<SearchBaseJourneyCardProps, 'journeyT
 interface SearchOpportunityCardProps extends SearchOpportunityCardImplProps {}
 
 export const SearchOpportunityCard: FC<SearchOpportunityCardProps> = ({ children, ...rest }) => {
-  return <SearchBaseJourneyCard journeyTypeName="opportunity" {...rest} />;
+  return <SearchBaseJourneyCard journeyTypeName="subsubspace" {...rest} />;
 };

@@ -1,5 +1,5 @@
 import { EntityPageLayout } from '../../common/EntityPageLayout';
-import OpportunityPageBanner from './OpportunityPageBanner';
+import ChildJourneyPageBanner from '../../common/childJourneyPageBanner/ChildJourneyPageBanner';
 import OpportunityTabs from './OpportunityTabs';
 import React, { PropsWithChildren } from 'react';
 import JourneyUnauthorizedDialogContainer from '../../common/JourneyUnauthorizedDialog/JourneyUnauthorizedDialogContainer';
@@ -13,19 +13,19 @@ interface OpportunityPageLayoutProps {
 }
 
 const OpportunityPageLayout = ({ currentSection, children }: PropsWithChildren<OpportunityPageLayoutProps>) => {
-  const { opportunityId, loading } = useRouteResolver();
+  const { subSubSpaceId: opportunityId, loading } = useRouteResolver();
 
   return (
     <EntityPageLayout
       currentSection={currentSection}
       breadcrumbs={<JourneyBreadcrumbs />}
-      pageBannerComponent={OpportunityPageBanner}
+      pageBannerComponent={ChildJourneyPageBanner}
       tabsComponent={OpportunityTabs}
     >
       {children}
-      <JourneyUnauthorizedDialogContainer journeyId={opportunityId} journeyTypeName="opportunity" loading={loading}>
+      <JourneyUnauthorizedDialogContainer journeyId={opportunityId} loading={loading}>
         {({ vision, ...props }) => (
-          <JourneyUnauthorizedDialog journeyTypeName="opportunity" description={vision} {...props} />
+          <JourneyUnauthorizedDialog journeyTypeName="subsubspace" description={vision} {...props} />
         )}
       </JourneyUnauthorizedDialogContainer>
     </EntityPageLayout>

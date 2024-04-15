@@ -1,15 +1,8 @@
 import React, { FC, useCallback } from 'react';
 import {
-  refetchChallengeCalendarEventsQuery,
-  refetchChallengeDashboardCalendarEventsQuery,
-  refetchOpportunityCalendarEventsQuery,
-  refetchOpportunityDashboardCalendarEventsQuery,
   refetchSpaceCalendarEventsQuery,
-  refetchSpaceDashboardCalendarEventsQuery,
-  useChallengeCalendarEventsQuery,
   useCreateCalendarEventMutation,
   useDeleteCalendarEventMutation,
-  useOpportunityCalendarEventsQuery,
   useSpaceCalendarEventsQuery,
   useUpdateCalendarEventMutation,
 } from '../../../core/apollo/generated/apollo-hooks';
@@ -69,27 +62,12 @@ export interface CalendarEventsEntities {
 }
 
 export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ journeyId, journeyTypeName, children }) => {
-  const { data: opportunityData, loading: loadingOpportunity } = useOpportunityCalendarEventsQuery({
-    variables: { opportunityId: journeyId! },
-    skip: !journeyId || journeyTypeName !== 'opportunity',
-  });
-
-  const { data: challengeData, loading: loadingChallenge } = useChallengeCalendarEventsQuery({
-    variables: { challengeId: journeyId! },
-    skip: !journeyId || journeyTypeName !== 'challenge',
-  });
-
-  const { data: spaceData, loading: loadingSpace } = useSpaceCalendarEventsQuery({
+  const { data: spaceData, loading } = useSpaceCalendarEventsQuery({
     variables: { spaceId: journeyId! },
-    skip: !journeyId || journeyTypeName !== 'space',
+    skip: !journeyId || journeyTypeName !== 'subsubspace',
   });
 
-  const loading = loadingOpportunity || loadingChallenge || loadingSpace;
-
-  const collaboration =
-    opportunityData?.lookup.opportunity?.collaboration ??
-    challengeData?.lookup.challenge?.collaboration ??
-    spaceData?.space.collaboration;
+  const collaboration = spaceData?.space.collaboration;
 
   const myPrivileges = collaboration?.timeline?.calendar.authorization?.myPrivileges;
 
@@ -111,22 +89,7 @@ export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ jour
 
   let refetchQueriesList: MutationBaseOptions['refetchQueries'] = [];
 
-  if (journeyTypeName === 'opportunity') {
-    refetchQueriesList = [
-      refetchOpportunityCalendarEventsQuery({ opportunityId: journeyId! }),
-      refetchOpportunityDashboardCalendarEventsQuery({ opportunityId: journeyId! }),
-    ];
-  } else if (journeyTypeName === 'challenge') {
-    refetchQueriesList = [
-      refetchChallengeCalendarEventsQuery({ challengeId: journeyId! }),
-      refetchChallengeDashboardCalendarEventsQuery({ challengeId: journeyId! }),
-    ];
-  } else if (journeyTypeName === 'space') {
-    refetchQueriesList = [
-      refetchSpaceCalendarEventsQuery({ spaceId: journeyId! }),
-      refetchSpaceDashboardCalendarEventsQuery({ spaceId: journeyId! }),
-    ];
-  }
+  refetchQueriesList = [refetchSpaceCalendarEventsQuery({ spaceId: journeyId! })];
 
   const createEvent = useCallback(
     (event: CalendarEventFormData) => {
@@ -200,7 +163,7 @@ export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ jour
   );
 
   return (
-    <StorageConfigContextProvider journeyId={journeyId} locationType="journey" journeyTypeName={journeyTypeName}>
+    <StorageConfigContextProvider spaceId={journeyId} locationType="journey">
       {children(
         { events, privileges },
         { createEvent, updateEvent, deleteEvent },

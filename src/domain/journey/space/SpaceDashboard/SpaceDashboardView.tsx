@@ -12,7 +12,6 @@ import {
 import DashboardUpdatesSection from '../../../shared/components/DashboardSections/DashboardUpdatesSection';
 import { ActivityLogResultType } from '../../../collaboration/activity/ActivityLog/ActivityComponent';
 import PageContent from '../../../../core/ui/content/PageContent';
-import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
 import { JourneyTypeName } from '../../JourneyTypeName';
 import DashboardCalendarSection from '../../../shared/components/DashboardSections/DashboardCalendarSection';
 import ApplicationButtonContainer from '../../../community/application/containers/ApplicationButtonContainer';
@@ -32,6 +31,8 @@ import MembershipContainer from '../../../community/membership/membershipContain
 import RouterLink from '../../../../core/ui/link/RouterLink';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import { RECENT_ACTIVITIES_LIMIT_EXPANDED } from '../../common/journeyDashboard/constants';
+import InfoColumn from '../../../../core/ui/content/InfoColumn';
+import ContentColumn from '../../../../core/ui/content/ContentColumn';
 
 interface SpaceWelcomeBlockContributor {
   profile: SpaceWelcomeBlockContributorProfileFragment;
@@ -118,7 +119,7 @@ const SpaceDashboardView = ({
             }
 
             return (
-              <PageContentColumn columns={12}>
+              <InfoColumn>
                 <ApplicationButton
                   {...applicationButtonProps}
                   loading={loading}
@@ -126,11 +127,11 @@ const SpaceDashboardView = ({
                   extended={hasExtendedApplicationButton}
                   journeyTypeName="space"
                 />
-              </PageContentColumn>
+              </InfoColumn>
             );
           }}
         </ApplicationButtonContainer>
-        <PageContentColumn columns={4}>
+        <InfoColumn>
           <JourneyDashboardWelcomeBlock
             vision={vision}
             leadUsers={leadUsers}
@@ -169,9 +170,9 @@ const SpaceDashboardView = ({
             onCalloutUpdate={callouts.refetchCallout}
             groupName={CalloutGroupName.Home_1}
           />
-        </PageContentColumn>
+        </InfoColumn>
 
-        <PageContentColumn columns={8}>
+        <ContentColumn>
           <DashboardRecentContributionsBlock
             halfWidth={(callouts.groupedCallouts[CalloutGroupName.Home_2]?.length ?? 0) > 0}
             readUsersAccess={readUsersAccess}
@@ -200,7 +201,7 @@ const SpaceDashboardView = ({
               }
             }}
           />
-        </PageContentColumn>
+        </ContentColumn>
       </PageContent>
     </>
   );

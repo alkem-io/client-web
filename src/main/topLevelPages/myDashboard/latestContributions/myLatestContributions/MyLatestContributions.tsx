@@ -70,7 +70,7 @@ const MyLatestContributions = () => {
                 <ActivityViewChooser
                   key={activity.id}
                   activity={activity as ActivityLogResultType}
-                  avatarUrl={activity.journey?.profile.avatar?.uri || defaultJourneyAvatar}
+                  avatarUrl={activity.space?.profile.avatar?.uri || defaultJourneyAvatar}
                 />
               );
             })

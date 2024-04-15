@@ -27,20 +27,12 @@ const WhiteboardPage: FC<WhiteboardPageProps> = ({
   const { data } = useCalloutIdQuery({
     variables: {
       calloutNameId,
-      spaceId: journeyId,
-      challengeId: journeyId,
-      opportunityId: journeyId,
-      isSpace: journeyTypeName === 'space',
-      isChallenge: journeyTypeName === 'challenge',
-      isOpportunity: journeyTypeName === 'opportunity',
+      spaceId: journeyId!,
     },
     skip: !calloutNameId || !journeyId,
   });
 
-  const calloutId =
-    data?.lookup.opportunity?.collaboration?.callouts?.[0].id ??
-    data?.lookup.challenge?.collaboration?.callouts?.[0].id ??
-    data?.space?.collaboration?.callouts?.[0].id;
+  const calloutId = data?.space?.collaboration?.callouts?.[0].id;
 
   return (
     <WhiteboardProvider whiteboardNameId={whiteboardNameId} calloutId={calloutId}>

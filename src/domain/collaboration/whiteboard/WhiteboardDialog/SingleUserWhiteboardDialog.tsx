@@ -23,7 +23,7 @@ import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikI
 import WhiteboardDialogTemplatesLibrary from './WhiteboardDialogTemplatesLibrary';
 import { WhiteboardTemplateWithContent } from '../WhiteboardTemplateCard/WhiteboardTemplate';
 import mergeWhiteboard from '../utils/mergeWhiteboard';
-import { error as logError } from '../../../../core/logging/sentry/log';
+import { error as logError, TagCategoryValues } from '../../../../core/logging/sentry/log';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
 import { WhiteboardWithContent, WhiteboardWithoutContent } from '../containers/WhiteboardContentContainer';
 import {
@@ -177,7 +177,9 @@ const SingleUserWhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
       } catch (err) {
         notify(t('templateLibrary.whiteboardTemplates.errorImporting'), 'error');
         // @ts-ignore
-        logError(new Error(`Error importing whiteboard template ${template.id}: '${err}'`));
+        logError(new Error(`Error importing whiteboard template ${template.id}: '${err}'`), {
+          category: TagCategoryValues.WHITEBOARD,
+        });
       }
     }
   };

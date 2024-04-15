@@ -1,0 +1,8 @@
+query SubspaceCards($spaceId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
+    id
+    subspaces {
+      ...SubspaceCard
+    }
+  }
+}
