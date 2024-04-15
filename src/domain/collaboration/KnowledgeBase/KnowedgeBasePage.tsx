@@ -1,12 +1,9 @@
 import React, { PropsWithChildren } from 'react';
-import useMediaQuery from '@mui/material/useMediaQuery';
-import { Theme } from '@mui/material';
 import usePageLayoutByEntity from '../../shared/utils/usePageLayoutByEntity';
 import { JourneyTypeName } from '../../journey/JourneyTypeName';
 import { EntityPageSection } from '../../shared/layout/EntityPageSection';
 import MembershipBackdrop from '../../shared/components/Backdrops/MembershipBackdrop';
 import PageContent from '../../../core/ui/content/PageContent';
-import PageContentColumn from '../../../core/ui/content/PageContentColumn';
 import { ContributeCreationBlock } from '../../journey/common/tabs/Contribute/ContributeCreationBlock';
 import PageContentBlock from '../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../core/ui/content/PageContentBlockHeader';
@@ -21,7 +18,8 @@ import CalloutsGroupView from '../callout/CalloutsInContext/CalloutsGroupView';
 import CalloutCreationDialog from '../callout/creationDialog/CalloutCreationDialog';
 import KnowledgeBaseContainer from './KnowledgeBaseContainer';
 import { useRouteResolver } from '../../../main/routing/resolvers/RouteResolver';
-import { CONTENT_COLUMNS, SIDEBAR_COLUMNS, COLUMNS_MOBILE } from '../../../core/ui/themes/default/Theme';
+import InfoColumn from '../../../core/ui/content/InfoColumn';
+import ContentColumn from '../../../core/ui/content/ContentColumn';
 
 interface KnowledgeBasePageProps {
   journeyTypeName: JourneyTypeName;
@@ -33,8 +31,6 @@ const KnowledgeBasePage = ({ journeyTypeName }: PropsWithChildren<KnowledgeBaseP
   const { journeyId } = useRouteResolver();
 
   const { t } = useTranslation();
-
-  const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
 
   const buildCalloutTitle = (callout: TypedCallout) => {
     return <EllipsableWithCount count={callout.activity}>{callout.framing.profile.displayName}</EllipsableWithCount>;
@@ -70,7 +66,7 @@ const KnowledgeBasePage = ({ journeyTypeName }: PropsWithChildren<KnowledgeBaseP
           <>
             <MembershipBackdrop show={!loading && !canReadCallout} blockName={t(`common.${journeyTypeName}` as const)}>
               <PageContent>
-                <PageContentColumn columns={isMobile ? COLUMNS_MOBILE : SIDEBAR_COLUMNS}>
+                <InfoColumn>
                   <ContributeCreationBlock canCreate={canCreateCallout} handleCreate={handleCreate} />
                   <PageContentBlock>
                     <PageContentBlockHeader
@@ -93,9 +89,9 @@ const KnowledgeBasePage = ({ journeyTypeName }: PropsWithChildren<KnowledgeBaseP
                       loading={loading}
                     />
                   </PageContentBlock>
-                </PageContentColumn>
+                </InfoColumn>
 
-                <PageContentColumn columns={isMobile ? COLUMNS_MOBILE : CONTENT_COLUMNS}>
+                <ContentColumn>
                   <CalloutsGroupView
                     callouts={groupedCallouts[CalloutGroupName.Knowledge]}
                     canCreateCallout={canCreateCallout}
@@ -107,7 +103,7 @@ const KnowledgeBasePage = ({ journeyTypeName }: PropsWithChildren<KnowledgeBaseP
                     onCalloutUpdate={refetchCallout}
                     groupName={CalloutGroupName.Knowledge}
                   />
-                </PageContentColumn>
+                </ContentColumn>
               </PageContent>
             </MembershipBackdrop>
             <CalloutCreationDialog

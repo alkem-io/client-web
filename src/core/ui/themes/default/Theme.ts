@@ -10,11 +10,6 @@ const AVATAR_SIZE_XS = 4;
 const AVATAR_SIZE = 7;
 const AVATAR_SIZE_LG = 9;
 
-// page layout grid constants
-export const SIDEBAR_COLUMNS = 3;
-export const CONTENT_COLUMNS = 9;
-export const COLUMNS_MOBILE = 4;
-
 const defaultTheme = createTheme();
 
 export const themeOptions: ThemeOptions = {

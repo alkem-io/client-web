@@ -3,15 +3,12 @@ import { ReactElement, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import { Button } from '@mui/material';
-import useMediaQuery from '@mui/material/useMediaQuery';
-import { Theme } from '@mui/material';
 import { ValueType } from '../../../../../core/utils/filtering/filterFn';
 import ErrorBlock from '../../../../../core/ui/error/ErrorBlock';
 import getJourneyChildrenTranslation from '../../../childJourney/getJourneyChildrenTranslation';
 import PageContent from '../../../../../core/ui/content/PageContent';
 import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
-import PageContentColumn from '../../../../../core/ui/content/PageContentColumn';
 import LinksList from '../../../../../core/ui/list/LinksList';
 import { Caption } from '../../../../../core/ui/typography';
 import MembershipBackdrop from '../../../../shared/components/Backdrops/MembershipBackdrop';
@@ -22,7 +19,8 @@ import Loading from '../../../../../core/ui/loading/Loading';
 import PageContentBlockSeamless from '../../../../../core/ui/content/PageContentBlockSeamless';
 import JourneyFilter from '../../JourneyFilter/JourneyFilter';
 import { Identifiable } from '../../../../../core/utils/Identifiable';
-import { CONTENT_COLUMNS, SIDEBAR_COLUMNS, COLUMNS_MOBILE } from '../../../../../core/ui/themes/default/Theme';
+import InfoColumn from '../../../../../core/ui/content/InfoColumn';
+import ContentColumn from '../../../../../core/ui/content/ContentColumn';
 
 export interface JourneySubentitiesState {
   loading: boolean;
@@ -69,12 +67,10 @@ const ChildJourneyView = <ChildEntity extends BaseChildEntity>({
 }: ChildJourneyViewProps<ChildEntity>) => {
   const { t } = useTranslation();
 
-  const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
-
   return (
     <MembershipBackdrop show={!childEntityReadAccess} blockName={getJourneyChildrenTranslation(t, journeyTypeName)}>
       <PageContent>
-        <PageContentColumn columns={isMobile ? COLUMNS_MOBILE : SIDEBAR_COLUMNS}>
+        <InfoColumn>
           <ChildJourneyCreate
             journeyTypeName={journeyTypeName}
             canCreateSubentity={childEntityCreateAccess}
@@ -101,8 +97,8 @@ const ChildJourneyView = <ChildEntity extends BaseChildEntity>({
             />
           </PageContentBlock>
           {childrenLeft}
-        </PageContentColumn>
-        <PageContentColumn columns={isMobile ? COLUMNS_MOBILE : CONTENT_COLUMNS}>
+        </InfoColumn>
+        <ContentColumn>
           {state.loading && <Loading />}
           {!state.loading && childEntities.length === 0 && (
             <PageContentBlockSeamless>
@@ -147,7 +143,7 @@ const ChildJourneyView = <ChildEntity extends BaseChildEntity>({
           )}
           {childrenRight}
           {state.error && <ErrorBlock blockName={t(`common.${journeyTypeName}` as const)} />}
-        </PageContentColumn>
+        </ContentColumn>
       </PageContent>
     </MembershipBackdrop>
   );

@@ -1,10 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import useMediaQuery from '@mui/material/useMediaQuery';
-import { Box, Theme } from '@mui/material';
+import { Box } from '@mui/material';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import PageContent from '../../../../core/ui/content/PageContent';
-import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
 import EntityDashboardLeadsSection from '../../../community/community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';
@@ -31,7 +29,8 @@ import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 import CommunityGuidelinesBlock from '../../../community/community/CommunityGuidelines/CommunityGuidelinesBlock';
 import { useSpace } from '../SpaceContext/useSpace';
-import { CONTENT_COLUMNS, SIDEBAR_COLUMNS, COLUMNS_MOBILE } from '../../../../core/ui/themes/default/Theme';
+import InfoColumn from '../../../../core/ui/content/InfoColumn';
+import ContentColumn from '../../../../core/ui/content/ContentColumn';
 
 const SpaceCommunityPage = () => {
   const { spaceNameId } = useUrlParams();
@@ -90,8 +89,6 @@ const SpaceCommunityPage = () => {
 
   const [isActivitiesDialogOpen, setIsActivitiesDialogOpen] = useState(false);
 
-  const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
-
   useEffect(() => {
     if (isActivitiesDialogOpen) {
       fetchMoreActivities(RECENT_ACTIVITIES_LIMIT_EXPANDED);
@@ -103,7 +100,7 @@ const SpaceCommunityPage = () => {
       <SpaceCommunityContainer spaceId={spaceId}>
         {({ callouts }) => (
           <PageContent>
-            <PageContentColumn columns={isMobile ? COLUMNS_MOBILE : SIDEBAR_COLUMNS}>
+            <InfoColumn>
               <EntityDashboardLeadsSection
                 usersHeader={t('community.host')}
                 organizationsHeader={t('pages.space.sections.dashboard.organization')}
@@ -132,8 +129,8 @@ const SpaceCommunityPage = () => {
                 onCalloutUpdate={callouts.refetchCallout}
                 groupName={CalloutGroupName.Community_1}
               />
-            </PageContentColumn>
-            <PageContentColumn columns={isMobile ? COLUMNS_MOBILE : CONTENT_COLUMNS}>
+            </InfoColumn>
+            <ContentColumn>
               <CommunityContributorsBlockWide users={memberUsers} organizations={memberOrganizations} />
               <PageContentBlock>
                 <PageContentBlockHeader title={t('common.activity')} />
@@ -166,7 +163,7 @@ const SpaceCommunityPage = () => {
                 onCalloutUpdate={callouts.refetchCallout}
                 groupName={CalloutGroupName.Community_2}
               />
-            </PageContentColumn>
+            </ContentColumn>
           </PageContent>
         )}
       </SpaceCommunityContainer>

@@ -1,7 +1,5 @@
 import React, { ReactNode, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import useMediaQuery from '@mui/material/useMediaQuery';
-import { Theme } from '@mui/material';
 import {
   CalloutGroupName,
   CalloutsQueryVariables,
@@ -17,7 +15,6 @@ import { EntityPageSection } from '../../../../shared/layout/EntityPageSection';
 import { ActivityLogResultType } from '../../../../collaboration/activity/ActivityLog/ActivityComponent';
 import ShareButton from '../../../../shared/components/ShareDialog/ShareButton';
 import PageContent from '../../../../../core/ui/content/PageContent';
-import PageContentColumn from '../../../../../core/ui/content/PageContentColumn';
 import SeeMore from '../../../../../core/ui/content/SeeMore';
 import { JourneyTypeName } from '../../../JourneyTypeName';
 import DashboardCalendarSection from '../../../../shared/components/DashboardSections/DashboardCalendarSection';
@@ -35,7 +32,8 @@ import FullWidthButton from '../../../../../core/ui/button/FullWidthButton';
 import { InfoOutlined } from '@mui/icons-material';
 import RouterLink from '../../../../../core/ui/link/RouterLink';
 import { RECENT_ACTIVITIES_LIMIT_EXPANDED } from '../../journeyDashboard/constants';
-import { CONTENT_COLUMNS, SIDEBAR_COLUMNS, COLUMNS_MOBILE } from '../../../../../core/ui/themes/default/Theme';
+import InfoColumn from '../../../../../core/ui/content/InfoColumn';
+import ContentColumn from '../../../../../core/ui/content/ContentColumn';
 
 export interface JourneyDashboardViewProps
   extends EntityDashboardContributors,
@@ -122,12 +120,10 @@ const JourneyDashboardView = ({
 
   const translatedJourneyTypeName = t(`common.${journeyTypeName}` as const);
 
-  const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
-
   return (
     <PageContent>
       {ribbon}
-      <PageContentColumn columns={isMobile ? COLUMNS_MOBILE : SIDEBAR_COLUMNS}>
+      <InfoColumn>
         {welcome}
         <FullWidthButton
           startIcon={<InfoOutlined />}
@@ -177,9 +173,9 @@ const JourneyDashboardView = ({
           onCalloutUpdate={callouts.refetchCallout}
           groupName={CalloutGroupName.Home_1}
         />
-      </PageContentColumn>
+      </InfoColumn>
 
-      <PageContentColumn columns={isMobile ? COLUMNS_MOBILE : CONTENT_COLUMNS}>
+      <ContentColumn>
         <DashboardRecentContributionsBlock
           halfWidth={(callouts.groupedCallouts[CalloutGroupName.Home_2]?.length ?? 0) > 0}
           readUsersAccess={readUsersAccess}
@@ -208,7 +204,7 @@ const JourneyDashboardView = ({
             }
           }}
         />
-      </PageContentColumn>
+      </ContentColumn>
     </PageContent>
   );
 };

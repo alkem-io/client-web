@@ -37,7 +37,8 @@ import InnovationFlowChips from '../../../../collaboration/InnovationFlow/Innova
 import useMetricsItems from '../../../../platform/metrics/utils/useMetricsItems';
 import OpportunityMetrics from '../../../opportunity/utils/useOpportunityMetricsItems';
 import { Metric } from '../../../../platform/metrics/utils/getMetricCount';
-import { COLUMNS_MOBILE, CONTENT_COLUMNS, SIDEBAR_COLUMNS } from '../../../../../core/ui/themes/default/Theme';
+import InfoColumn from '../../../../../core/ui/content/InfoColumn';
+import ContentColumn from '../../../../../core/ui/content/ContentColumn';
 
 export interface OpportunityAboutViewProps extends EntityDashboardContributors, EntityDashboardLeads {
   challengeId: string | undefined;
@@ -132,8 +133,6 @@ const OpportunityAboutView: FC<OpportunityAboutViewProps> = ({
     who,
   } as const;
 
-  const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
-
   const hasExtendedApplicationButton = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
 
   const shareUpdatesUrl = buildUpdatesUrl(opportunityUrl);
@@ -159,7 +158,7 @@ const OpportunityAboutView: FC<OpportunityAboutViewProps> = ({
             );
           }}
         </OpportunityApplicationButtonContainer>
-        <PageContentColumn columns={isMobile ? COLUMNS_MOBILE : SIDEBAR_COLUMNS}>
+        <InfoColumn>
           <PageContentBlock accent>
             <PageContentBlockHeader title={name} />
             <Tagline>{tagline}</Tagline>
@@ -201,8 +200,8 @@ const OpportunityAboutView: FC<OpportunityAboutViewProps> = ({
               <ActivityView activity={metricsItems} loading={loading} />
             </PageContentBlock>
           )}
-        </PageContentColumn>
-        <PageContentColumn columns={isMobile ? COLUMNS_MOBILE : CONTENT_COLUMNS}>
+        </InfoColumn>
+        <ContentColumn>
           <FixedHeightContentBlock>
             <PageContentBlockHeaderWithDialogAction
               title={t(`context.${journeyTypeName}.vision.title` as const)}
@@ -244,7 +243,7 @@ const OpportunityAboutView: FC<OpportunityAboutViewProps> = ({
               <ActivityView activity={metricsItems} loading={loading} />
             </PageContentBlock>
           )}
-        </PageContentColumn>
+        </ContentColumn>
       </PageContent>
       <DialogWithGrid open={isDialogOpen} columns={12} onClose={closeDialog}>
         <DialogHeader title={t('common.context')} onClose={closeDialog} />
