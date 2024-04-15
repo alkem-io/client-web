@@ -3,7 +3,6 @@ import { SettingsSection } from '../layout/EntitySettingsLayout/constants';
 import { useOpportunity } from '../../../journey/opportunity/hooks/useOpportunity';
 import EntitySettingsLayout from '../layout/EntitySettingsLayout/EntitySettingsLayout';
 import ChildJourneyPageBanner from '../../../journey/common/childJourneyPageBanner/ChildJourneyPageBanner';
-import OpportunityTabs from '../../../journey/opportunity/layout/OpportunityTabs';
 import { TabDefinition } from '../layout/EntitySettingsLayout/EntitySettingsTabs';
 import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
 import ListOutlinedIcon from '@mui/icons-material/ListOutlined';
@@ -46,7 +45,6 @@ const OpportunitySettingsLayout: FC<OpportunitySettingsLayoutProps> = props => {
       entityTypeName="subsubspace"
       subheaderTabs={tabs}
       pageBannerComponent={ChildJourneyPageBanner}
-      tabsComponent={OpportunityTabs}
       breadcrumbs={<JourneyBreadcrumbs settings />}
       {...entityAttrs}
       {...props}

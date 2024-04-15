@@ -1,12 +1,10 @@
 import React from 'react';
 import { Route, Routes } from 'react-router';
 import { Navigate } from 'react-router-dom';
-import Loading from '../../../../core/ui/loading/Loading';
 import { Error404 } from '../../../../core/pages/Errors/Error404';
 import { nameOfUrl } from '../../../../main/routing/urlParams';
 import { OpportunityProvider } from '../../opportunity/context/OpportunityProvider';
 import { CommunityContextProvider } from '../../../community/community/CommunityContext';
-import OpportunityRoute from '../../opportunity/routes/OpportunityRoute';
 import ChallengeDashboardPage from '../pages/SubspaceDashboardPage';
 import { EntityPageLayoutHolder, NotFoundPageLayout } from '../../common/EntityPageLayout';
 import { routes } from '../routes/challengeRoutes';
@@ -19,20 +17,15 @@ import { StorageConfigContextProvider } from '../../../storage/StorageBucket/Sto
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 import SubspaceCalloutPage from '../subspaceCalloutPage/SubspaceCalloutPage';
 
-const ChallengeRoute = () => {
-  const { journeyId, loading } = useRouteResolver();
-
-  if (loading) {
-    return <Loading text="Loading challenge" />;
-  }
+const SubspaceRoute = () => {
+  const { journeyId } = useRouteResolver();
 
   return (
     <StorageConfigContextProvider locationType="journey" spaceId={journeyId}>
       <Routes>
         <Route path="/" element={<EntityPageLayoutHolder />}>
-          <Route index element={<JourneyContributePage journeyTypeName="subspace" />} />
+          <Route index element={<JourneyContributePage />} />
           <Route path={routes.Dashboard} element={<Navigate replace to="/" />} />
-          <Route path={routes.Contribute} element={<JourneyContributePage journeyTypeName="subspace" />} />
           <Route path={routes.About} element={<ChallengeAboutPage />} />
           <Route path={routes.Subsubspaces} element={<ChallengeOpportunitiesPage />} />
           <Route path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}`} element={<SubspaceCalloutPage />} />
@@ -59,7 +52,7 @@ const ChallengeRoute = () => {
           element={
             <OpportunityProvider>
               <CommunityContextProvider>
-                <OpportunityRoute />
+                <SubspaceRoute />
               </CommunityContextProvider>
             </OpportunityProvider>
           }
@@ -70,4 +63,4 @@ const ChallengeRoute = () => {
   );
 };
 
-export default ChallengeRoute;
+export default SubspaceRoute;

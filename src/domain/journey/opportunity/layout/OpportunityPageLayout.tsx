@@ -1,6 +1,5 @@
 import { EntityPageLayout } from '../../common/EntityPageLayout';
 import ChildJourneyPageBanner from '../../common/childJourneyPageBanner/ChildJourneyPageBanner';
-import OpportunityTabs from './OpportunityTabs';
 import React, { PropsWithChildren } from 'react';
 import JourneyUnauthorizedDialogContainer from '../../common/JourneyUnauthorizedDialog/JourneyUnauthorizedDialogContainer';
 import JourneyUnauthorizedDialog from '../../common/JourneyUnauthorizedDialog/JourneyUnauthorizedDialog';
@@ -12,6 +11,9 @@ interface OpportunityPageLayoutProps {
   currentSection: EntityPageSection;
 }
 
+/**
+ * @deprecated
+ */
 const OpportunityPageLayout = ({ currentSection, children }: PropsWithChildren<OpportunityPageLayoutProps>) => {
   const { subSubSpaceId: opportunityId, loading } = useRouteResolver();
 
@@ -20,7 +22,6 @@ const OpportunityPageLayout = ({ currentSection, children }: PropsWithChildren<O
       currentSection={currentSection}
       breadcrumbs={<JourneyBreadcrumbs />}
       pageBannerComponent={ChildJourneyPageBanner}
-      tabsComponent={OpportunityTabs}
     >
       {children}
       <JourneyUnauthorizedDialogContainer journeyId={opportunityId} loading={loading}>

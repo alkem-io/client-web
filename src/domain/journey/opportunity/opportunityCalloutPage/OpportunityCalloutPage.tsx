@@ -14,9 +14,9 @@ const renderPage = (calloutGroup: string | undefined) => {
       return <OpportunityDashboardPage />;
     case CalloutGroupName.Contribute_1:
     case CalloutGroupName.Contribute_2:
-      return <JourneyContributePage journeyTypeName="subsubspace" />;
+      return <JourneyContributePage />;
     default:
-      return <JourneyContributePage journeyTypeName="subsubspace" />;
+      return <JourneyContributePage />;
   }
 };
 

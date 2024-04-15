@@ -9,7 +9,6 @@ import GppGoodOutlinedIcon from '@mui/icons-material/GppGoodOutlined';
 import FlagOutlinedIcon from '@mui/icons-material/FlagOutlined';
 import EntitySettingsLayout from '../layout/EntitySettingsLayout/EntitySettingsLayout';
 import ChildJourneyPageBanner from '../../../journey/common/childJourneyPageBanner/ChildJourneyPageBanner';
-import SubspaceTabs from '../../../journey/subspace/layout/SubspaceTabs';
 import JourneyBreadcrumbs from '../../../journey/common/journeyBreadcrumbs/JourneyBreadcrumbs';
 
 interface SubspaceSettingsLayoutProps {
@@ -58,7 +57,6 @@ const SubspaceSettingsLayout: FC<SubspaceSettingsLayoutProps> = props => {
       entityTypeName="subspace"
       subheaderTabs={tabs}
       pageBannerComponent={ChildJourneyPageBanner}
-      tabsComponent={SubspaceTabs}
       breadcrumbs={<JourneyBreadcrumbs settings />}
       {...entityAttrs}
       {...props}

@@ -3,7 +3,7 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import { ChallengeProvider } from '../../subspace/context/SubspaceProvider';
 import { CommunityContextProvider } from '../../../community/community/CommunityContext';
 import { nameOfUrl } from '../../../../main/routing/urlParams';
-import ChallengeRoute from '../../subspace/routing/ChallengeRoute';
+import SubspaceRoute from '../../subspace/routing/SubspaceRoute';
 import { Error404 } from '../../../../core/pages/Errors/Error404';
 import SpaceChallengesPage from '../pages/SpaceChallengesPage';
 import { routes } from '../routes/spaceRoutes';
@@ -56,7 +56,7 @@ export const SpaceRoute = () => {
           element={
             <ChallengeProvider>
               <CommunityContextProvider>
-                <ChallengeRoute />
+                <SubspaceRoute />
               </CommunityContextProvider>
             </ChallengeProvider>
           }

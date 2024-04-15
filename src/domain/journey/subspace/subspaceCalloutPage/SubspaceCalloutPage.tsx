@@ -15,12 +15,12 @@ const renderPage = (calloutGroup: string | undefined) => {
       return <ChallengeDashboardPage />;
     case CalloutGroupName.Contribute_1:
     case CalloutGroupName.Contribute_2:
-      return <JourneyContributePage journeyTypeName="subspace" />;
+      return <JourneyContributePage />;
     case CalloutGroupName.Subspaces_1:
     case CalloutGroupName.Subspaces_2:
       return <ChallengeOpportunitiesPage />;
     default:
-      return <JourneyContributePage journeyTypeName="subspace" />;
+      return <JourneyContributePage />;
   }
 };
 
