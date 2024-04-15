@@ -4,7 +4,6 @@ import { JourneyTypeName } from '../../journey/JourneyTypeName';
 import { EntityPageSection } from '../../shared/layout/EntityPageSection';
 import MembershipBackdrop from '../../shared/components/Backdrops/MembershipBackdrop';
 import PageContent from '../../../core/ui/content/PageContent';
-import PageContentColumn from '../../../core/ui/content/PageContentColumn';
 import { ContributeCreationBlock } from '../../journey/common/tabs/Contribute/ContributeCreationBlock';
 import PageContentBlock from '../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../core/ui/content/PageContentBlockHeader';
@@ -19,6 +18,8 @@ import CalloutsGroupView from '../callout/CalloutsInContext/CalloutsGroupView';
 import CalloutCreationDialog from '../callout/creationDialog/CalloutCreationDialog';
 import KnowledgeBaseContainer from './KnowledgeBaseContainer';
 import { useRouteResolver } from '../../../main/routing/resolvers/RouteResolver';
+import InfoColumn from '../../../core/ui/content/InfoColumn';
+import ContentColumn from '../../../core/ui/content/ContentColumn';
 
 interface KnowledgeBasePageProps {
   journeyTypeName: JourneyTypeName;
@@ -65,7 +66,7 @@ const KnowledgeBasePage = ({ journeyTypeName }: PropsWithChildren<KnowledgeBaseP
           <>
             <MembershipBackdrop show={!loading && !canReadCallout} blockName={t(`common.${journeyTypeName}` as const)}>
               <PageContent>
-                <PageContentColumn columns={4}>
+                <InfoColumn>
                   <ContributeCreationBlock canCreate={canCreateCallout} handleCreate={handleCreate} />
                   <PageContentBlock>
                     <PageContentBlockHeader
@@ -88,9 +89,9 @@ const KnowledgeBasePage = ({ journeyTypeName }: PropsWithChildren<KnowledgeBaseP
                       loading={loading}
                     />
                   </PageContentBlock>
-                </PageContentColumn>
+                </InfoColumn>
 
-                <PageContentColumn columns={8}>
+                <ContentColumn>
                   <CalloutsGroupView
                     callouts={groupedCallouts[CalloutGroupName.Knowledge]}
                     canCreateCallout={canCreateCallout}
@@ -102,7 +103,7 @@ const KnowledgeBasePage = ({ journeyTypeName }: PropsWithChildren<KnowledgeBaseP
                     onCalloutUpdate={refetchCallout}
                     groupName={CalloutGroupName.Knowledge}
                   />
-                </PageContentColumn>
+                </ContentColumn>
               </PageContent>
             </MembershipBackdrop>
             <CalloutCreationDialog

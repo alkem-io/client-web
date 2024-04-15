@@ -970,6 +970,7 @@
     },
     "innovationFlowSettings": {
       "title": "Innovation Flow Settings",
+      "buttonTooltip": "Manage Innovation Flow",
       "editProfileDialog": {
         "title": "Edit Details: Innovation Flow"
       },

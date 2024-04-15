@@ -1,0 +1,22 @@
+query ChildJourneyPageBanner($spaceId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
+    id
+    profile {
+      id
+      displayName
+      tagline
+      avatar: visual(type: AVATAR) {
+        id
+        uri
+      }
+      tagset {
+        id
+        tags
+      }
+    }
+    community {
+      id
+      myMembershipStatus
+    }
+  }
+}

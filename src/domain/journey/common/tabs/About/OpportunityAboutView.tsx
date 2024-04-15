@@ -37,6 +37,8 @@ import InnovationFlowChips from '../../../../collaboration/InnovationFlow/Innova
 import useMetricsItems from '../../../../platform/metrics/utils/useMetricsItems';
 import OpportunityMetrics from '../../../opportunity/utils/useOpportunityMetricsItems';
 import { Metric } from '../../../../platform/metrics/utils/getMetricCount';
+import InfoColumn from '../../../../../core/ui/content/InfoColumn';
+import ContentColumn from '../../../../../core/ui/content/ContentColumn';
 
 export interface OpportunityAboutViewProps extends EntityDashboardContributors, EntityDashboardLeads {
   challengeId: string | undefined;
@@ -156,7 +158,7 @@ const OpportunityAboutView: FC<OpportunityAboutViewProps> = ({
             );
           }}
         </OpportunityApplicationButtonContainer>
-        <PageContentColumn columns={4}>
+        <InfoColumn>
           <PageContentBlock accent>
             <PageContentBlockHeader title={name} />
             <Tagline>{tagline}</Tagline>
@@ -198,8 +200,8 @@ const OpportunityAboutView: FC<OpportunityAboutViewProps> = ({
               <ActivityView activity={metricsItems} loading={loading} />
             </PageContentBlock>
           )}
-        </PageContentColumn>
-        <PageContentColumn columns={8}>
+        </InfoColumn>
+        <ContentColumn>
           <FixedHeightContentBlock>
             <PageContentBlockHeaderWithDialogAction
               title={t(`context.${journeyTypeName}.vision.title` as const)}
@@ -241,7 +243,7 @@ const OpportunityAboutView: FC<OpportunityAboutViewProps> = ({
               <ActivityView activity={metricsItems} loading={loading} />
             </PageContentBlock>
           )}
-        </PageContentColumn>
+        </ContentColumn>
       </PageContent>
       <DialogWithGrid open={isDialogOpen} columns={12} onClose={closeDialog}>
         <DialogHeader title={t('common.context')} onClose={closeDialog} />
