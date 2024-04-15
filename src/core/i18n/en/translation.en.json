@@ -253,8 +253,8 @@
     "spaces": "Spaces",
     "subspace": "Subspace",
     "subspaces": "Subspaces",
-    "challenge": "Challenge",
-    "challenges": "Challenges",
+    "subsubspace": "Subsubspace",
+    "subsubspaces": "Subsubspaces",
     "entitiesWithCount": "{{entityType}} ({{count}})",
     "contributors": "Contributors",
     "opportunity": "Opportunity",
@@ -354,10 +354,8 @@
       "space_plural": "$t(common.spaces)",
       "subspace": "$t(common.subspace)",
       "subspace_plural": "$t(common.subspaces)",
-      "challenge": "$t(common.challenge)",
-      "challenge_plural": "$t(common.challenges)",
-      "opportunity": "$t(common.opportunity)",
-      "opportunity_plural": "$t(common.opportunities)",
+      "subsubspace": "$t(common.subsubspace)",
+      "subsubspace_plural": "$t(common.subsubspaces)",
       "agreement": "$t(common.agreement)",
       "agreement_plural": "$t(common.agreements)"
     },
@@ -1974,8 +1972,8 @@
         "key": {
           "all": "All",
           "space": "Spaces",
-          "challenge": "Challenges",
-          "opportunity": "Opportunities",
+          "subspace": "Subspaces",
+          "subsubspace": "Subsubspace",
           "user": "Users",
           "organization": "Organizations",
           "post": "Posts",
@@ -1983,7 +1981,7 @@
           "callout": "Callouts (available soon)"
         }
       },
-      "journeyFilterTitle": "$t(common.spaces), $t(common.challenges) & $t(common.opportunities)"
+      "journeyFilterTitle": "$t(common.spaces), $t(common.subspaces) & $t(common.subsubspaces)"
     },
     "exploreSpaces": {
       "fullName": "Explore Spaces",
