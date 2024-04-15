@@ -15,7 +15,7 @@ import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/
 import { CalloutGroupName, CommunityMembershipStatus } from '../../../../core/apollo/generated/graphql-schema';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 import { ChallengeIcon } from '../../subspace/icon/ChallengeIcon';
-import ChallengeCard from '../../subspace/SubspaceCard/SubspaceCard';
+import ChallengeCard from '../../subspace/subspaceCard/SubspaceCard';
 import { CreateChallengeForm } from '../../subspace/forms/CreateChallengeForm';
 
 export interface SpaceChallengesPageProps {}

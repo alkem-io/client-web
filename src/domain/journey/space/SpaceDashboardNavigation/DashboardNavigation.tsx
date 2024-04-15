@@ -13,7 +13,7 @@ import { Caption } from '../../../../core/ui/typography';
 import OpportunityCard from '../../opportunity/OpportunityCard/OpportunityCard';
 import DashboardNavigationItemView from './DashboardNavigationItemView';
 import { DashboardNavigationItem } from './useSpaceDashboardNavigation';
-import ChallengeCard from '../../subspace/SubspaceCard/SubspaceCard';
+import ChallengeCard from '../../subspace/subspaceCard/SubspaceCard';
 
 interface DashboardNavigationProps {
   spaceUrl: string | undefined;

@@ -1,21 +1,21 @@
-import { useTranslation } from 'react-i18next';
-import PageContent from '../../../../core/ui/content/PageContent';
 import { Button } from '@mui/material';
 import { useState } from 'react';
-import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
+import { useTranslation } from 'react-i18next';
+import { CalloutGroupName, InnovationFlowState } from '../../../../core/apollo/generated/graphql-schema';
+import ContentColumn from '../../../../core/ui/content/ContentColumn';
+import InfoColumn from '../../../../core/ui/content/InfoColumn';
+import PageContent from '../../../../core/ui/content/PageContent';
 import useStateWithAsyncDefault from '../../../../core/utils/useStateWithAsyncDefault';
-import { JourneyTypeName } from '../../../journey/JourneyTypeName';
+import { ContributeInnovationFlowBlock } from '../../../collaboration/InnovationFlow/ContributeInnovationFlowBlock/ContributeInnovationFlowBlock';
+import InnovationFlowStates from '../../../collaboration/InnovationFlow/InnovationFlowStates/InnovationFlowStates';
+import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
+import CalloutsListDialog from '../../../collaboration/callout/CalloutsListDialog/CalloutsListDialog';
+import JourneyCalloutsListItemTitle from '../../../collaboration/callout/JourneyCalloutsTabView/JourneyCalloutsListItemTitle';
+import { OrderUpdate, TypedCallout } from '../../../collaboration/callout/useCallouts/useCallouts';
 import MembershipBackdrop from '../../../shared/components/Backdrops/MembershipBackdrop';
-import { CalloutGroupName } from '../../../../core/apollo/generated/graphql-schema';
-import { ContributeInnovationFlowBlock } from '../../InnovationFlow/ContributeInnovationFlowBlock/ContributeInnovationFlowBlock';
-import InnovationFlowStates from '../../InnovationFlow/InnovationFlowStates/InnovationFlowStates';
-import CalloutsGroupView from '../CalloutsInContext/CalloutsGroupView';
-import { OrderUpdate, TypedCallout } from '../useCallouts/useCallouts';
-import CalloutsListDialog from '../CalloutsListDialog/CalloutsListDialog';
-import JourneyCalloutsListItemTitle from './JourneyCalloutsListItemTitle';
-import { InnovationFlowState } from '../../InnovationFlow/InnovationFlow';
+import { JourneyTypeName } from '../../JourneyTypeName';
 
-interface JourneyCalloutsTabViewProps {
+interface SubspaceHomeViewProps {
   collaborationId: string | undefined;
   innovationFlowStates: InnovationFlowState[] | undefined;
   currentInnovationFlowState: string | undefined;
@@ -31,7 +31,7 @@ interface JourneyCalloutsTabViewProps {
   journeyTypeName: JourneyTypeName;
 }
 
-const JourneyCalloutsTabView = ({
+const SubspaceHomeView = ({
   collaborationId,
   innovationFlowStates,
   currentInnovationFlowState,
@@ -45,10 +45,10 @@ const JourneyCalloutsTabView = ({
   onCalloutsSortOrderUpdate,
   refetchCallout,
   journeyTypeName,
-}: JourneyCalloutsTabViewProps) => {
-  const [isCalloutsListDialogOpen, setCalloutsListDialogOpen] = useState(false);
+}: SubspaceHomeViewProps) => {
   const [selectedInnovationFlowState, setSelectedInnovationFlowState] =
     useStateWithAsyncDefault(currentInnovationFlowState);
+  const [isCalloutsListDialogOpen, setCalloutsListDialogOpen] = useState(false);
 
   const filterCallouts = (callouts: TypedCallout[] | undefined) => {
     return callouts?.filter(callout => {
@@ -70,7 +70,7 @@ const JourneyCalloutsTabView = ({
     <>
       <MembershipBackdrop show={!loading && !allCallouts} blockName={t(`common.${journeyTypeName}` as const)}>
         <PageContent>
-          <PageContentColumn columns={4}>
+          <InfoColumn>
             <ContributeInnovationFlowBlock collaborationId={collaborationId} journeyTypeName={journeyTypeName} />
             <Button onClick={() => setCalloutsListDialogOpen(true)}>Callouts List</Button>
             <CalloutsListDialog
@@ -101,9 +101,9 @@ const JourneyCalloutsTabView = ({
               groupName={CalloutGroupName.Contribute_1}
               flowState={selectedInnovationFlowState}
             />
-          </PageContentColumn>
+          </InfoColumn>
 
-          <PageContentColumn columns={8}>
+          <ContentColumn>
             {innovationFlowStates &&
               currentInnovationFlowState &&
               selectedInnovationFlowState &&
@@ -137,11 +137,11 @@ const JourneyCalloutsTabView = ({
               createButtonPlace="top"
               flowState={selectedInnovationFlowState}
             />
-          </PageContentColumn>
+          </ContentColumn>
         </PageContent>
       </MembershipBackdrop>
     </>
   );
 };
 
-export default JourneyCalloutsTabView;
+export default SubspaceHomeView;
