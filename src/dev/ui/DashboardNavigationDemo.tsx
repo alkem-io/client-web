@@ -3,8 +3,8 @@ import PageContentColumn from '../../core/ui/content/PageContentColumn';
 import PageContentBlock from '../../core/ui/content/PageContentBlock';
 import { GUTTER_MUI } from '../../core/ui/grid/constants';
 import { BlockTitle, PageTitle, Text } from '../../core/ui/typography';
-import DashboardNavigation from '../../domain/journey/space/SpaceDashboardNavigation/DashboardNavigation';
-import { DashboardNavigationItem } from '../../domain/journey/space/SpaceDashboardNavigation/useSpaceDashboardNavigation';
+import DashboardNavigation from '../../domain/journey/dashboardNavigation/DashboardNavigation';
+import { DashboardNavigationItem } from '../../domain/journey/space/spaceDashboardNavigation/useSpaceDashboardNavigation';
 import { MouseEventHandler, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
@@ -31,6 +31,7 @@ const dashboardNavigation: DashboardNavigationItem[] = [
     url: '',
     displayName: 'Challenge 1',
     member: true,
+    canCreateSubspace: true,
     children: [
       {
         id: 'subspace_1_1',

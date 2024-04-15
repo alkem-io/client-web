@@ -24,6 +24,10 @@ query SpaceDashboardNavigationOpportunities($spaceId: UUID_NAMEID!, $challengeId
       id
       subspaces {
         id
+        authorization {
+          id
+          myPrivileges
+        }
         profile {
           ...SpaceDashboardNavigationProfile
         }

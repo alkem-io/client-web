@@ -3,21 +3,23 @@ import { Box, Button, Collapse, IconButton, Skeleton, Tooltip, useMediaQuery } f
 import { Theme } from '@mui/material/styles';
 import { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
-import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
-import { gutters } from '../../../../core/ui/grid/utils';
-import { Caption } from '../../../../core/ui/typography';
+import PageContentBlock from '../../../core/ui/content/PageContentBlock';
+import PageContentBlockHeader from '../../../core/ui/content/PageContentBlockHeader';
+import { gutters } from '../../../core/ui/grid/utils';
+import { Caption } from '../../../core/ui/typography';
 import DashboardNavigationItemView, {
   DashboardNavigationItemViewApi,
   DashboardNavigationItemViewProps,
 } from './DashboardNavigationItemView';
-import { DashboardNavigationItem } from './useSpaceDashboardNavigation';
-import { Actions } from '../../../../core/ui/actions/Actions';
+import { DashboardNavigationItem } from '../space/spaceDashboardNavigation/useSpaceDashboardNavigation';
+import { Actions } from '../../../core/ui/actions/Actions';
 
 import produce from 'immer';
-import RouterLink from '../../../../core/ui/link/RouterLink';
-import { GUTTER_PX } from '../../../../core/ui/grid/constants';
-import findCurrentPath from './findCurrentPath';
+import RouterLink from '../../../core/ui/link/RouterLink';
+import { GUTTER_PX } from '../../../core/ui/grid/constants';
+import { findCurrentPath } from './utils';
+import DashboardNavigationAddSubspace from './DashboardNavigationAddSubspace';
+import { Identifiable } from '../../../core/utils/Identifiable';
 
 interface DashboardNavigationProps {
   spaceUrl: string | undefined;
@@ -28,6 +30,7 @@ interface DashboardNavigationProps {
   itemProps?:
     | Partial<DashboardNavigationItemViewProps>
     | ((item: DashboardNavigationItem) => Partial<DashboardNavigationItemViewProps>);
+  onCreateSubspace?: (parent: Identifiable) => void;
 }
 
 const VISIBLE_ROWS_WHEN_COLLAPSED = 6;
@@ -41,6 +44,7 @@ const DashboardNavigation = ({
   loading = false,
   currentItemId,
   itemProps = () => ({}),
+  onCreateSubspace,
 }: DashboardNavigationProps) => {
   const { t } = useTranslation();
 
@@ -176,35 +180,38 @@ const DashboardNavigation = ({
             transition: 'transform 0.3s ease-in-out, width 0.3s ease-in-out',
           }}
         >
-          {dashboardNavigation?.map(({ id, avatar, member, ...subspace }) => {
+          {dashboardNavigation?.map(({ canCreateSubspace, ...subspace }) => {
             if (loading) {
-              return <Skeleton key={id} />;
+              return <Skeleton key={subspace.id} />;
             }
-            const isCurrent = id === currentItemId;
+            const isCurrent = subspace.id === currentItemId;
             return (
               <DashboardNavigationItemView
-                key={id}
-                ref={itemRef(id)}
-                visualUri={avatar?.uri}
+                key={subspace.id}
+                ref={itemRef(subspace.id)}
+                visualUri={subspace.avatar?.uri}
                 current={isCurrent}
                 tooltipPlacement={tooltipPlacement}
                 onToggle={adjustViewport}
-                expandable={isTopLevel || !(isSnappedToCurrentSubspace && pathToItem.includes(id))}
+                expandable={isTopLevel || !(isSnappedToCurrentSubspace && pathToItem.includes(subspace.id))}
                 {...subspace}
-                {...getItemProps({ id, avatar, member, ...subspace })}
+                {...getItemProps(subspace)}
               >
-                {subspace.children?.map(({ id, avatar, member, ...subsubspace }) => (
+                {canCreateSubspace && (
+                  <DashboardNavigationAddSubspace level={1} onClick={() => onCreateSubspace?.(subspace)} />
+                )}
+                {subspace.children?.map(childSubspace => (
                   <DashboardNavigationItemView
-                    key={id}
-                    ref={itemRef(id)}
-                    visualUri={avatar?.uri}
-                    current={id === currentItemId}
+                    key={childSubspace.id}
+                    ref={itemRef(childSubspace.id)}
+                    visualUri={childSubspace.avatar?.uri}
+                    current={childSubspace.id === currentItemId}
                     tooltipPlacement={tooltipPlacement}
                     level={1}
                     onToggle={adjustViewport}
-                    expandable={isTopLevel || !(isSnappedToCurrentSubspace && pathToItem.includes(id))}
-                    {...subsubspace}
-                    {...getItemProps({ id, avatar, member, ...subsubspace })}
+                    expandable={isTopLevel || !(isSnappedToCurrentSubspace && pathToItem.includes(childSubspace.id))}
+                    {...childSubspace}
+                    {...getItemProps(childSubspace)}
                   />
                 ))}
               </DashboardNavigationItemView>

@@ -1,6 +1,7 @@
-import { DashboardNavigationItem } from './useSpaceDashboardNavigation';
+import { DashboardNavigationItem } from '../space/spaceDashboardNavigation/useSpaceDashboardNavigation';
+import { gutters } from '../../../core/ui/grid/utils';
 
-const findCurrentPath = (
+export const findCurrentPath = (
   dashboardNavigation: DashboardNavigationItem[] | undefined,
   currentItemId: string | undefined,
   path: string[] = []
@@ -24,4 +25,8 @@ const findCurrentPath = (
   }
 };
 
-export default findCurrentPath;
+export const getIndentStyle = (level: number) => {
+  return {
+    paddingLeft: gutters(1 + level * 2),
+  };
+};

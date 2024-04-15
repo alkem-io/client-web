@@ -19225,6 +19225,13 @@ export type SpaceDashboardNavigationOpportunitiesQuery = {
             | Array<{
                 __typename?: 'Space';
                 id: string;
+                authorization?:
+                  | {
+                      __typename?: 'Authorization';
+                      id: string;
+                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                    }
+                  | undefined;
                 profile: {
                   __typename?: 'Profile';
                   id: string;

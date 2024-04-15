@@ -19,8 +19,8 @@ import ApplicationButton from '../../../community/application/applicationButton/
 import { Theme } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { InfoOutlined } from '@mui/icons-material';
-import { DashboardNavigationItem } from '../SpaceDashboardNavigation/useSpaceDashboardNavigation';
-import DashboardNavigation from '../SpaceDashboardNavigation/DashboardNavigation';
+import { DashboardNavigationItem } from '../spaceDashboardNavigation/useSpaceDashboardNavigation';
+import DashboardNavigation from '../../dashboardNavigation/DashboardNavigation';
 import useDirectMessageDialog from '../../../communication/messaging/DirectMessaging/useDirectMessageDialog';
 import FullWidthButton from '../../../../core/ui/button/FullWidthButton';
 import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';

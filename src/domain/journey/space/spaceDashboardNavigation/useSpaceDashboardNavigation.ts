@@ -33,6 +33,7 @@ export interface DashboardNavigationItem {
   innovationFlowState?: string | undefined;
   private?: boolean;
   member: boolean;
+  canCreateSubspace?: boolean;
   children?: DashboardNavigationItem[];
 }
 
@@ -41,6 +42,9 @@ const getDashboardNavigationItemProps = (
     id: string;
     profile: SpaceDashboardNavigationProfileFragment;
     community?: SpaceDashboardNavigationCommunityFragment;
+    authorization?: {
+      myPrivileges?: AuthorizationPrivilege[];
+    };
   },
   disabled?: boolean
 ): DashboardNavigationItem => {
@@ -51,6 +55,7 @@ const getDashboardNavigationItemProps = (
     avatar: journey.profile.avatar,
     private: disabled,
     member: journey.community?.myMembershipStatus === CommunityMembershipStatus.Member,
+    canCreateSubspace: journey.authorization?.myPrivileges?.includes(AuthorizationPrivilege.CreateSubspace),
   };
 };
 

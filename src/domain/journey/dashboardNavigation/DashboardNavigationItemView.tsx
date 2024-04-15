@@ -10,14 +10,20 @@ import React, {
   useState,
 } from 'react';
 import { useTranslation } from 'react-i18next';
-import { gutters } from '../../../../core/ui/grid/utils';
-import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
-import { Caption } from '../../../../core/ui/typography';
-import { DashboardNavigationItem } from './useSpaceDashboardNavigation';
-import JourneyAvatar from '../../common/JourneyAvatar/JourneyAvatar';
-import RouterLink from '../../../../core/ui/link/RouterLink';
+import BadgeCardView from '../../../core/ui/list/BadgeCardView';
+import { Caption } from '../../../core/ui/typography';
+import JourneyAvatar from '../common/JourneyAvatar/JourneyAvatar';
+import RouterLink from '../../../core/ui/link/RouterLink';
+import { getIndentStyle } from './utils';
 
-export interface DashboardNavigationItemViewProps extends Omit<DashboardNavigationItem, 'id' | 'member' | 'children'> {
+export interface DashboardNavigationItemViewProps {
+  displayName: string;
+  avatar?: {
+    uri: string;
+    alternativeText?: string;
+  };
+  innovationFlowState?: string | undefined;
+  private?: boolean;
   url: string;
   visualUri?: string;
   tooltipPlacement?: TooltipProps['placement'];
@@ -133,8 +139,8 @@ const DashboardNavigationItemView = forwardRef<
           padding
           square
           sx={{
+            ...getIndentStyle(level),
             backgroundColor: isCurrent ? 'highlight.main' : undefined,
-            paddingLeft: gutters(1 + level * 2),
           }}
           onClick={onClick}
         >

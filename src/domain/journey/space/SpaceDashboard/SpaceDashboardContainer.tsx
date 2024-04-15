@@ -24,7 +24,7 @@ import useCallouts, { UseCalloutsProvided } from '../../../collaboration/callout
 import { RECENT_ACTIVITIES_LIMIT_INITIAL, TOP_CALLOUTS_LIMIT } from '../../common/journeyDashboard/constants';
 import useSpaceDashboardNavigation, {
   DashboardNavigationItem,
-} from '../SpaceDashboardNavigation/useSpaceDashboardNavigation';
+} from '../spaceDashboardNavigation/useSpaceDashboardNavigation';
 
 export interface SpaceContainerEntities {
   space: SpacePageFragment | undefined;

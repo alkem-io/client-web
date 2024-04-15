@@ -161,7 +161,8 @@
     "skipLink": "Skip to next block",
     "toolsMenu": "Tools Menu",
     "userMenu": "User Menu",
-    "scrollToTop": "Scroll to top"
+    "scrollToTop": "Scroll to top",
+    "addSubject": "Add {{subject}}"
   },
   "tooltips": {
     "click-more-info": "Click for more information",

@@ -16708,6 +16708,10 @@ export const SpaceDashboardNavigationOpportunitiesDocument = gql`
         id
         subspaces {
           id
+          authorization {
+            id
+            myPrivileges
+          }
           profile {
             ...SpaceDashboardNavigationProfile
           }
