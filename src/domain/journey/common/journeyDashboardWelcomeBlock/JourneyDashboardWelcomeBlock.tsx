@@ -39,44 +39,48 @@ const JourneyDashboardWelcomeBlock = ({
         {member && <DashboardMemberIcon journeyTypeName={journeyTypeName} />}
         <WrapperMarkdown disableParagraphPadding>{vision}</WrapperMarkdown>
       </OverflowGradient>
-      <Gutters row disablePadding>
-        {leadUsers?.slice(0, 2).map(user => (
-          <ContributorCardHorizontal
-            key={user.id}
-            profile={user.profile}
-            url={buildUserProfileUrl(user.nameID)}
-            onContact={() => {
-              onContactLeadUser({
-                id: user.id,
-                displayName: user.profile.displayName,
-                avatarUri: user.profile.avatar?.uri,
-                country: user.profile.location?.country,
-                city: user.profile.location?.city,
-              });
-            }}
-            seamless
-          />
-        ))}
-      </Gutters>
-      <Gutters row disablePadding>
-        {leadOrganizations?.slice(0, 2).map(org => (
-          <ContributorCardHorizontal
-            key={org.id}
-            profile={org.profile}
-            url={buildOrganizationUrl(org.nameID)}
-            onContact={() => {
-              onContactLeadOrganization({
-                id: org.id,
-                displayName: org.profile.displayName,
-                avatarUri: org.profile.avatar?.uri,
-                country: org.profile.location?.country,
-                city: org.profile.location?.city,
-              });
-            }}
-            seamless
-          />
-        ))}
-      </Gutters>
+      {leadUsers && leadUsers.length > 0 && (
+        <Gutters row disablePadding>
+          {leadUsers.slice(0, 2).map(user => (
+            <ContributorCardHorizontal
+              key={user.id}
+              profile={user.profile}
+              url={buildUserProfileUrl(user.nameID)}
+              onContact={() => {
+                onContactLeadUser({
+                  id: user.id,
+                  displayName: user.profile.displayName,
+                  avatarUri: user.profile.avatar?.uri,
+                  country: user.profile.location?.country,
+                  city: user.profile.location?.city,
+                });
+              }}
+              seamless
+            />
+          ))}
+        </Gutters>
+      )}
+      {leadOrganizations && leadOrganizations.length > 0 && (
+        <Gutters row disablePadding>
+          {leadOrganizations.slice(0, 2).map(org => (
+            <ContributorCardHorizontal
+              key={org.id}
+              profile={org.profile}
+              url={buildOrganizationUrl(org.nameID)}
+              onContact={() => {
+                onContactLeadOrganization({
+                  id: org.id,
+                  displayName: org.profile.displayName,
+                  avatarUri: org.profile.avatar?.uri,
+                  country: org.profile.location?.country,
+                  city: org.profile.location?.city,
+                });
+              }}
+              seamless
+            />
+          ))}
+        </Gutters>
+      )}
     </>
   );
 };

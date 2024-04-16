@@ -1,6 +1,6 @@
 import React from 'react';
 import CalloutPage from '../../../collaboration/CalloutPage/CalloutPage';
-import JourneyContributePage from '../../subspace/subspaceHome/JourneyContributePage';
+import SubspaceHomePage from '../../subspace/subspaceHome/SubspaceHomePage';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import { JourneyCalloutDialogProps } from '../../common/JourneyCalloutDialog/JourneyCalloutDialog';
 import OpportunityDashboardPage from '../pages/OpportunityDashboardPage';
@@ -14,9 +14,9 @@ const renderPage = (calloutGroup: string | undefined) => {
       return <OpportunityDashboardPage />;
     case CalloutGroupName.Contribute_1:
     case CalloutGroupName.Contribute_2:
-      return <JourneyContributePage />;
+      return <SubspaceHomePage />;
     default:
-      return <JourneyContributePage />;
+      return <SubspaceHomePage />;
   }
 };
 

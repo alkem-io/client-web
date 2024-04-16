@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
+import { ComponentType, useState } from 'react';
 import InnovationFlowSettingsDialog from '../InnovationFlowDialogs/InnovationFlowSettingsDialog';
 import { InnovationFlowState } from '../InnovationFlow';
 import InnovationFlowChips from '../InnovationFlowChips/InnovationFlowChips';
@@ -8,6 +7,16 @@ interface Props {
   states: InnovationFlowState[] | undefined;
   currentState?: string;
   selectedState: string | undefined;
+  onSelectState?: (state: InnovationFlowState) => void;
+  visualizer?: ComponentType<InnovationFlowVisualizerProps>;
+}
+
+interface InnovationFlowVisualizerProps {
+  states: InnovationFlowState[];
+  currentState?: string;
+  selectedState: string | undefined;
+  showSettings?: boolean;
+  onSettingsOpen?: () => void;
   onSelectState?: (state: InnovationFlowState) => void;
 }
 
@@ -30,12 +39,13 @@ const InnovationFlowStates = ({
   selectedState,
   showSettings = false,
   onSelectState,
+  visualizer: Visualizer = InnovationFlowChips,
 }: InnovationFlowStatesProps) => {
   const [showSettingsDialog, setShowSettingsDialog] = useState(false);
 
   return (
-    <PageContentBlockSeamless disablePadding>
-      <InnovationFlowChips
+    <>
+      <Visualizer
         states={states}
         currentState={currentState}
         selectedState={selectedState}
@@ -48,7 +58,7 @@ const InnovationFlowStates = ({
         open={showSettingsDialog}
         onClose={() => setShowSettingsDialog(false)}
       />
-    </PageContentBlockSeamless>
+    </>
   );
 };
 

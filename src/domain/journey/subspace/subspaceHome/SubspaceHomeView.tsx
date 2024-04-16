@@ -1,4 +1,3 @@
-import useStateWithAsyncDefault from '../../../../core/utils/useStateWithAsyncDefault';
 import { JourneyTypeName } from '../../JourneyTypeName';
 import { CalloutGroupName } from '../../../../core/apollo/generated/graphql-schema';
 import InnovationFlowStates from '../../../collaboration/InnovationFlow/InnovationFlowStates/InnovationFlowStates';
@@ -6,11 +5,17 @@ import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/
 import { OrderUpdate, TypedCallout } from '../../../collaboration/callout/useCallouts/useCallouts';
 import { InnovationFlowState } from '../../../collaboration/InnovationFlow/InnovationFlow';
 import React from 'react';
+import { SubspaceInnovationFlow } from '../layout/SubspacePageLayout';
+import { useColumns } from '../../../../core/ui/grid/GridContext';
+import { GRID_COLUMNS_MOBILE } from '../../../../core/ui/grid/constants';
+import InnovationFlowCurrentStateSelector from '../../../collaboration/InnovationFlow/InnovationFlowCurrentStateSelector/InnovationFlowCurrentStateSelector';
 
 interface SubspaceHomeViewProps {
   collaborationId: string | undefined;
   innovationFlowStates: InnovationFlowState[] | undefined;
   currentInnovationFlowState: string | undefined;
+  selectedInnovationFlowState: string | undefined;
+  onSelectInnovationFlowState: (state: InnovationFlowState) => void;
   canEditInnovationFlow: boolean | undefined;
   groupedCallouts: Record<CalloutGroupName, TypedCallout[] | undefined>;
   canCreateCallout: boolean;
@@ -22,10 +27,16 @@ interface SubspaceHomeViewProps {
   journeyTypeName: JourneyTypeName;
 }
 
+const InnovationFlowVisualizerMobile = props => (
+  <InnovationFlowCurrentStateSelector {...props} flexShrink={1} minWidth={0} />
+);
+
 const SubspaceHomeView = ({
   collaborationId,
   innovationFlowStates,
   currentInnovationFlowState,
+  selectedInnovationFlowState,
+  onSelectInnovationFlowState,
   canEditInnovationFlow = false,
   groupedCallouts,
   canCreateCallout,
@@ -36,9 +47,6 @@ const SubspaceHomeView = ({
   refetchCallout,
   journeyTypeName,
 }: SubspaceHomeViewProps) => {
-  const [selectedInnovationFlowState, setSelectedInnovationFlowState] =
-    useStateWithAsyncDefault(currentInnovationFlowState);
-
   const filterCallouts = (callouts: TypedCallout[] | undefined) => {
     return callouts?.filter(callout => {
       if (!selectedInnovationFlowState) {
@@ -48,31 +56,36 @@ const SubspaceHomeView = ({
     });
   };
 
-  const handleSelectInnovationFlowState = (state: InnovationFlowState) =>
-    setSelectedInnovationFlowState(state.displayName);
+  const columns = useColumns();
+
+  const isMobile = columns <= GRID_COLUMNS_MOBILE;
 
   return (
     <>
-      {innovationFlowStates &&
-        currentInnovationFlowState &&
-        selectedInnovationFlowState &&
-        (canEditInnovationFlow ? (
-          <InnovationFlowStates
-            collaborationId={collaborationId!}
-            states={innovationFlowStates}
-            currentState={currentInnovationFlowState}
-            selectedState={selectedInnovationFlowState}
-            showSettings
-            onSelectState={handleSelectInnovationFlowState}
-          />
-        ) : (
-          <InnovationFlowStates
-            states={innovationFlowStates}
-            currentState={currentInnovationFlowState}
-            selectedState={selectedInnovationFlowState}
-            onSelectState={handleSelectInnovationFlowState}
-          />
-        ))}
+      <SubspaceInnovationFlow columns={columns}>
+        {innovationFlowStates &&
+          currentInnovationFlowState &&
+          selectedInnovationFlowState &&
+          (canEditInnovationFlow ? (
+            <InnovationFlowStates
+              collaborationId={collaborationId!}
+              states={innovationFlowStates}
+              currentState={currentInnovationFlowState}
+              selectedState={selectedInnovationFlowState}
+              showSettings
+              onSelectState={onSelectInnovationFlowState}
+              visualizer={isMobile ? InnovationFlowVisualizerMobile : undefined}
+            />
+          ) : (
+            <InnovationFlowStates
+              states={innovationFlowStates}
+              currentState={currentInnovationFlowState}
+              selectedState={selectedInnovationFlowState}
+              onSelectState={onSelectInnovationFlowState}
+              visualizer={isMobile ? InnovationFlowVisualizerMobile : undefined}
+            />
+          ))}
+      </SubspaceInnovationFlow>
       <CalloutsGroupView
         callouts={filterCallouts(groupedCallouts[CalloutGroupName.Contribute_2])}
         canCreateCallout={canCreateCallout}

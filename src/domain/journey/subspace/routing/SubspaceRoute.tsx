@@ -11,7 +11,7 @@ import { routes } from '../routes/challengeRoutes';
 import CalloutRoute from '../../../collaboration/callout/routing/CalloutRoute';
 import ChallengeAboutPage from '../pages/SubspaceAboutPage';
 import ChallengeOpportunitiesPage from '../pages/SubspaceOpportunitiesPage';
-import JourneyContributePage from '../subspaceHome/JourneyContributePage';
+import SubspaceHomePage from '../subspaceHome/SubspaceHomePage';
 import Redirect from '../../../../core/routing/Redirect';
 import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
@@ -23,7 +23,7 @@ const SubspaceRoute = () => {
   return (
     <StorageConfigContextProvider locationType="journey" spaceId={journeyId}>
       <Routes>
-        <Route index element={<JourneyContributePage />} />
+        <Route index element={<SubspaceHomePage />} />
         {/* Redirecting legacy dashboard links to Subspace Home */}
         <Route path={routes.Dashboard} element={<Navigate replace to="/" />} />
         {/* TODO Remove the routes below */}

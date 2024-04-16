@@ -4,7 +4,7 @@ import { EntityPageLayoutProps, EntityTabsProps } from './EntityPageLayoutTypes'
 import TopLevelLayout from '../../../../main/ui/layout/TopLevelLayout';
 import SubspacePageLayoutImpl from '../../subspace/layout/SubspacePageLayout';
 
-const { LayoutHolder: EntityPageLayoutHolder, createLayout } = createLayoutHolder();
+const { LayoutHolder: EntityPageLayoutHolder, createLayout, RenderPoint } = createLayoutHolder();
 
 export const EntityPageLayout = createLayout(EntityPageLayoutImpl);
 
@@ -12,6 +12,6 @@ export const NotFoundPageLayout = createLayout(TopLevelLayout);
 
 export const SubspacePageLayout = createLayout(SubspacePageLayoutImpl);
 
-export { EntityPageLayoutHolder };
+export { EntityPageLayoutHolder, RenderPoint };
 export type { EntityPageLayoutProps };
 export type { EntityTabsProps };
