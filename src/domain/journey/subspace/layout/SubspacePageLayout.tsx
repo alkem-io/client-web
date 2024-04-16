@@ -77,7 +77,7 @@ const SubspacePageLayout = ({
 
   const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
 
-  const [isInfoDrawerOpen, setIsInfoDrawerOpen] = useState(true);
+  const [isInfoDrawerOpen, setIsInfoDrawerOpen] = useState(false);
 
   return (
     <NotFoundErrorBoundary
