@@ -2,6 +2,7 @@ import { useUrlParams } from '../../../core/routing/useUrlParams';
 import { useCalloutIdQuery, useJourneyRouteResolverQuery } from '../../../core/apollo/generated/apollo-hooks';
 import { getJourneyTypeName, JourneyTypeName } from '../../../domain/journey/JourneyTypeName';
 import { takeWhile } from 'lodash';
+import { useMemo } from 'react';
 
 enum RouteType {
   Journey = 'Journey',
@@ -82,9 +83,13 @@ export const useRouteResolver = (): RouteParams => {
 
   const journeyLevel = getJourneyLevel({ spaceNameId, subspaceNameId, subsubspaceNameId });
   const journeyLength = journeyLevel + 1;
-  const journeyPath = (
-    data ? [data?.space.id, data?.space.subspace?.id, data?.space.subspace?.subspace?.id].slice(0, journeyLength) : []
-  ) as JourneyPath;
+  const journeyPath = useMemo(
+    () =>
+      (data
+        ? [data?.space.id, data?.space.subspace?.id, data?.space.subspace?.subspace?.id].slice(0, journeyLength)
+        : []) as JourneyPath,
+    [data, journeyLength]
+  );
 
   const resolvedJourney: JourneyRouteParams = {
     spaceId: data?.space.id,
