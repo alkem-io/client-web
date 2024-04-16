@@ -20,12 +20,9 @@ const DialogActionButtons = ({ children }: PropsWithChildren<DialogActionButtons
 
           return (
             <RouterLink to={dialogType} key={dialogType} sx={{ flexShrink: 1, minWidth: 0 }}>
-              <ButtonWithTooltip
-                variant="contained"
-                startIcon={<Icon />}
-                tooltip={String(label)}
-                sx={{ maxWidth: '100%', minWidth: 0, paddingX: 1, '.MuiButton-startIcon': { margin: 0 } }}
-              />
+              <ButtonWithTooltip variant="contained" tooltip={String(label)} sx={{ maxWidth: '100%' }} iconButton>
+                <Icon />
+              </ButtonWithTooltip>
             </RouterLink>
           );
         }
