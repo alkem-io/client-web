@@ -70,6 +70,7 @@ const DashboardNavigation = ({
 
   const tooltipPlacement = isMobile ? 'left' : 'right';
 
+  // TODO receive journeyPath as argument
   const pathToItem = findCurrentPath(dashboardNavigation, currentItemId);
 
   const currentLevel = pathToItem.length - 1;

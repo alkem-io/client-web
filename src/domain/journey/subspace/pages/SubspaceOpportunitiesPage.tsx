@@ -17,6 +17,7 @@ import SubspacePageLayout from '../layout/SubspacePageLayout';
 import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { CalloutGroupName, CommunityMembershipStatus } from '../../../../core/apollo/generated/graphql-schema';
+import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 
 export interface ChallengeOpportunitiesPageProps {}
 
@@ -28,6 +29,7 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
   const spaceVisibility = license.visibility;
   const { subspaceId: challengeId, permissions } = useSubSpace();
   const { challengeNameId = '' } = useUrlParams();
+  const { journeyId, journeyPath } = useRouteResolver();
 
   const [isCreateDialogOpen, setCreateDialogOpen] = useState(false);
 
@@ -54,7 +56,7 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
   );
 
   return (
-    <SubspacePageLayout currentSection={EntityPageSection.Subsubspaces}>
+    <SubspacePageLayout journeyId={journeyId} journeyPath={journeyPath} currentSection={EntityPageSection.Subsubspaces}>
       <ChallengeOpportunitiesContainer challengeId={challengeId}>
         {({ callouts, ...entities }, state) => (
           <ChildJourneyView

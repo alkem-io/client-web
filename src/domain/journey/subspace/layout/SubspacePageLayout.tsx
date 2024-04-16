@@ -5,15 +5,18 @@ import JourneyUnauthorizedDialog from '../../common/JourneyUnauthorizedDialog/Jo
 import JourneyUnauthorizedDialogContainer from '../../common/JourneyUnauthorizedDialog/JourneyUnauthorizedDialogContainer';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import JourneyBreadcrumbs from '../../common/journeyBreadcrumbs/JourneyBreadcrumbs';
-import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 import DashboardNavigation from '../../dashboardNavigation/DashboardNavigation';
 import InfoColumn from '../../../../core/ui/content/InfoColumn';
 import ContentColumn from '../../../../core/ui/content/ContentColumn';
 import PageContent from '../../../../core/ui/content/PageContent';
 import useSpaceDashboardNavigation from '../../space/spaceDashboardNavigation/useSpaceDashboardNavigation';
 import { useSpace } from '../../space/SpaceContext/useSpace';
+import { JourneyPath } from '../../../../main/routing/resolvers/RouteResolver';
 
 export interface SubspacePageLayoutProps {
+  journeyId: string | undefined;
+  journeyPath: JourneyPath;
+  loading?: boolean;
   currentSection: EntityPageSection;
   unauthorizedDialogDisabled?: boolean;
   welcome?: ReactNode;
@@ -24,26 +27,27 @@ export interface SubspacePageLayoutProps {
 }
 
 const SubspacePageLayout = ({
+  journeyId,
+  journeyPath,
+  loading = false,
   unauthorizedDialogDisabled = false,
   currentSection,
   welcome,
   profile,
   children,
 }: PropsWithChildren<SubspacePageLayoutProps>) => {
-  const { journeyId, loading } = useRouteResolver();
-
   const { spaceId, profile: spaceProfile } = useSpace();
 
   const { dashboardNavigation } = useSpaceDashboardNavigation({
     spaceId,
-    skip: loading,
+    skip: !spaceId,
   });
 
   return (
     <EntityPageLayout
       currentSection={currentSection}
-      breadcrumbs={<JourneyBreadcrumbs />}
-      pageBannerComponent={ChildJourneyPageBanner}
+      breadcrumbs={<JourneyBreadcrumbs journeyPath={journeyPath} loading={loading} />}
+      pageBanner={<ChildJourneyPageBanner journeyId={journeyId} />}
     >
       <PageContent>
         <InfoColumn>

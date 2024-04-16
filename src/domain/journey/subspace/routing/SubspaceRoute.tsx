@@ -6,7 +6,7 @@ import { nameOfUrl } from '../../../../main/routing/urlParams';
 import { OpportunityProvider } from '../../opportunity/context/OpportunityProvider';
 import { CommunityContextProvider } from '../../../community/community/CommunityContext';
 import ChallengeDashboardPage from '../pages/SubspaceDashboardPage';
-import { EntityPageLayoutHolder, NotFoundPageLayout } from '../../common/EntityPageLayout';
+import { NotFoundPageLayout } from '../../common/EntityPageLayout';
 import { routes } from '../routes/challengeRoutes';
 import CalloutRoute from '../../../collaboration/callout/routing/CalloutRoute';
 import ChallengeAboutPage from '../pages/SubspaceAboutPage';
@@ -23,30 +23,30 @@ const SubspaceRoute = () => {
   return (
     <StorageConfigContextProvider locationType="journey" spaceId={journeyId}>
       <Routes>
-        <Route path="/" element={<EntityPageLayoutHolder />}>
-          <Route index element={<JourneyContributePage />} />
-          <Route path={routes.Dashboard} element={<Navigate replace to="/" />} />
-          <Route path={routes.About} element={<ChallengeAboutPage />} />
-          <Route path={routes.Subsubspaces} element={<ChallengeOpportunitiesPage />} />
-          <Route path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}`} element={<SubspaceCalloutPage />} />
-          <Route
-            path={`${routes.Dashboard}/calendar/:${nameOfUrl.calendarEventNameId}`}
-            element={<ChallengeDashboardPage dialog="calendar" />}
-          />
-          <Route path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}`} element={<SubspaceCalloutPage />} />
-          <Route
-            path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}/*`}
-            element={<SubspaceCalloutPage>{props => <CalloutRoute {...props} />}</SubspaceCalloutPage>}
-          />
-          <Route
-            path="*"
-            element={
-              <NotFoundPageLayout>
-                <Error404 />
-              </NotFoundPageLayout>
-            }
-          />
-        </Route>
+        <Route index element={<JourneyContributePage />} />
+        {/* Redirecting legacy dashboard links to Subspace Home */}
+        <Route path={routes.Dashboard} element={<Navigate replace to="/" />} />
+        {/* TODO Remove the routes below */}
+        <Route path={routes.About} element={<ChallengeAboutPage />} />
+        <Route path={routes.Subsubspaces} element={<ChallengeOpportunitiesPage />} />
+        <Route path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}`} element={<SubspaceCalloutPage />} />
+        <Route
+          path={`${routes.Dashboard}/calendar/:${nameOfUrl.calendarEventNameId}`}
+          element={<ChallengeDashboardPage dialog="calendar" />}
+        />
+        <Route path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}`} element={<SubspaceCalloutPage />} />
+        <Route
+          path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}/*`}
+          element={<SubspaceCalloutPage>{props => <CalloutRoute {...props} />}</SubspaceCalloutPage>}
+        />
+        <Route
+          path="*"
+          element={
+            <NotFoundPageLayout>
+              <Error404 />
+            </NotFoundPageLayout>
+          }
+        />
         <Route
           path={`opportunities/:${nameOfUrl.subsubspaceNameId}/*`}
           element={

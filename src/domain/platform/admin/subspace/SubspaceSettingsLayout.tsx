@@ -10,6 +10,7 @@ import FlagOutlinedIcon from '@mui/icons-material/FlagOutlined';
 import EntitySettingsLayout from '../layout/EntitySettingsLayout/EntitySettingsLayout';
 import ChildJourneyPageBanner from '../../../journey/common/childJourneyPageBanner/ChildJourneyPageBanner';
 import JourneyBreadcrumbs from '../../../journey/common/journeyBreadcrumbs/JourneyBreadcrumbs';
+import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 
 interface SubspaceSettingsLayoutProps {
   currentTab: SettingsSection;
@@ -52,12 +53,14 @@ const tabs: TabDefinition<SettingsSection>[] = [
 const SubspaceSettingsLayout: FC<SubspaceSettingsLayoutProps> = props => {
   const entityAttrs = useSubSpace();
 
+  const { journeyId, journeyPath } = useRouteResolver();
+
   return (
     <EntitySettingsLayout
       entityTypeName="subspace"
       subheaderTabs={tabs}
-      pageBannerComponent={ChildJourneyPageBanner}
-      breadcrumbs={<JourneyBreadcrumbs settings />}
+      pageBanner={<ChildJourneyPageBanner journeyId={journeyId} />}
+      breadcrumbs={<JourneyBreadcrumbs journeyPath={journeyPath} settings />}
       {...entityAttrs}
       {...props}
     />

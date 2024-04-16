@@ -28,7 +28,7 @@ interface KnowledgeBasePageProps {
 const KnowledgeBasePage = ({ journeyTypeName }: PropsWithChildren<KnowledgeBasePageProps>) => {
   const PageLayout = usePageLayoutByEntity(journeyTypeName);
 
-  const { journeyId } = useRouteResolver();
+  const { journeyId, journeyPath } = useRouteResolver();
 
   const { t } = useTranslation();
 
@@ -49,7 +49,7 @@ const KnowledgeBasePage = ({ journeyTypeName }: PropsWithChildren<KnowledgeBaseP
   };
 
   return (
-    <PageLayout currentSection={EntityPageSection.KnowledgeBase}>
+    <PageLayout journeyId={journeyId} journeyPath={journeyPath} currentSection={EntityPageSection.KnowledgeBase}>
       <KnowledgeBaseContainer journeyId={journeyId} journeyTypeName={journeyTypeName}>
         {({
           callouts: {

@@ -16,6 +16,7 @@ import { VisualName } from '../../../common/visual/constants/visuals.constants';
 import useInnovationHubJourneyBannerRibbon from '../../../innovationHub/InnovationHubJourneyBannerRibbon/useInnovationHubJourneyBannerRibbon';
 import SpacePageBanner from '../../../journey/space/layout/SpacePageBanner';
 import JourneyBreadcrumbs from '../../../journey/common/journeyBreadcrumbs/JourneyBreadcrumbs';
+import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 
 interface SpaceSettingsLayoutProps {
   currentTab: SettingsSection;
@@ -77,6 +78,8 @@ const SpaceSettingsLayout: FC<SpaceSettingsLayoutProps> = props => {
     journeyTypeName: 'space',
   });
 
+  const { journeyPath } = useRouteResolver();
+
   return (
     <EntitySettingsLayout
       entityTypeName="space"
@@ -93,7 +96,7 @@ const SpaceSettingsLayout: FC<SpaceSettingsLayoutProps> = props => {
         />
       }
       tabsComponent={SpaceTabs}
-      breadcrumbs={<JourneyBreadcrumbs settings />}
+      breadcrumbs={<JourneyBreadcrumbs journeyPath={journeyPath} settings />}
       {...entityAttrs}
       {...props}
     />

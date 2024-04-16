@@ -12,7 +12,7 @@ import { CommunityMembershipStatus } from '../../../../core/apollo/generated/gra
 const JourneyContributePage = () => {
   const { t } = useTranslation();
 
-  const { journeyId, journeyTypeName } = useRouteResolver();
+  const { journeyId, journeyTypeName, journeyPath, loading } = useRouteResolver();
 
   const { sendMessage, directMessageDialog } = useDirectMessageDialog({
     dialogTitle: t('send-message-dialog.direct-message-title'),
@@ -22,6 +22,9 @@ const JourneyContributePage = () => {
     <JourneyContributePageContainer journeyId={journeyId} journeyTypeName={journeyTypeName}>
       {({ innovationFlowStates, callouts, subspace }) => (
         <SubspacePageLayout
+          journeyId={journeyId}
+          journeyPath={journeyPath}
+          loading={loading}
           currentSection={EntityPageSection.Contribute}
           welcome={
             <JourneyDashboardWelcomeBlock

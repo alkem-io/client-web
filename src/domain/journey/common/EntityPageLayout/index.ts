@@ -1,10 +1,10 @@
 import { default as EntityPageLayoutImpl } from './EntityPageLayout';
-import createLayoutHolderWithOutlet from '../../../../core/ui/layout/layoutHolder/LayoutHolderWithOutlet';
+import createLayoutHolder from '../../../../core/ui/layout/layoutHolder/LayoutHolder';
 import { EntityPageLayoutProps, EntityTabsProps } from './EntityPageLayoutTypes';
 import TopLevelLayout from '../../../../main/ui/layout/TopLevelLayout';
 import SubspacePageLayoutImpl from '../../subspace/layout/SubspacePageLayout';
 
-const { LayoutHolder: EntityPageLayoutHolder, createLayout } = createLayoutHolderWithOutlet();
+const { LayoutHolder: EntityPageLayoutHolder, createLayout } = createLayoutHolder();
 
 export const EntityPageLayout = createLayout(EntityPageLayoutImpl);
 

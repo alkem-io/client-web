@@ -28,7 +28,7 @@ import InnovationPackRoute from '../../domain/collaboration/InnovationPack/Innov
 import { innovationPacksPath } from '../../domain/collaboration/InnovationPack/urlBuilders';
 import NonIdentity from '../../domain/platform/routes/NonIdentity';
 import useRedirectToIdentityDomain from '../../core/auth/authentication/routing/useRedirectToIdentityDomain';
-import { NotFoundPageLayout } from '../../domain/journey/common/EntityPageLayout';
+import { EntityPageLayoutHolder, NotFoundPageLayout } from '../../domain/journey/common/EntityPageLayout';
 import RedirectToWelcomeSite from '../../domain/platform/routes/RedirectToWelcomeSite';
 
 export const TopLevelRoutes: FC = () => {
@@ -63,7 +63,9 @@ export const TopLevelRoutes: FC = () => {
               <WithApmTransaction path={`:${nameOfUrl.spaceNameId}/*`}>
                 <SpaceContextProvider>
                   <CommunityContextProvider>
-                    <SpaceRoute />
+                    <EntityPageLayoutHolder>
+                      <SpaceRoute />
+                    </EntityPageLayoutHolder>
                   </CommunityContextProvider>
                 </SpaceContextProvider>
               </WithApmTransaction>

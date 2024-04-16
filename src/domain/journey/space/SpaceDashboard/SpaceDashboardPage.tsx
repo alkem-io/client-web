@@ -9,7 +9,6 @@ import useBackToParentPage from '../../../../core/routing/deprecated/useBackToPa
 import SpacePageLayout from '../layout/SpacePageLayout';
 import SpaceDashboardView from './SpaceDashboardView';
 import CalendarDialog from '../../../timeline/calendar/CalendarDialog';
-import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import JourneyAboutDialog from '../../common/JourneyAboutDialog/JourneyAboutDialog';
 import { IconButton } from '@mui/material';
 import { Close } from '@mui/icons-material';
@@ -28,16 +27,10 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
 
   const [backToDashboard] = useBackToParentPage(`${currentPath.pathname}/dashboard`);
 
-  const { spaceNameId } = useUrlParams();
-
-  const { spaceId } = useRouteResolver();
-
-  if (!spaceNameId) {
-    throw new Error('Param :spaceNameId is missing');
-  }
+  const { spaceId, journeyPath } = useRouteResolver();
 
   return (
-    <SpacePageLayout currentSection={EntityPageSection.Dashboard}>
+    <SpacePageLayout journeyPath={journeyPath} currentSection={EntityPageSection.Dashboard}>
       <SpaceDashboardContainer spaceId={spaceId}>
         {({ callouts, dashboardNavigation, ...entities }, state) => (
           <>

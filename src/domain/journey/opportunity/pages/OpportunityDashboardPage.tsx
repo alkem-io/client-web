@@ -5,7 +5,7 @@ import CommunityUpdatesDialog from '../../../community/community/CommunityUpdate
 import ContributorsDialog from '../../../community/community/ContributorsDialog/ContributorsDialog';
 import OpportunityContributorsDialogContent from '../../../community/community/entities/OpportunityContributorsDialogContent';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
-import OpportunityPageLayout from '../layout/OpportunityPageLayout';
+import { SubspacePageLayout } from '../../common/EntityPageLayout';
 import JourneyDashboardView from '../../common/tabs/Dashboard/JourneyDashboardView';
 import CalendarDialog from '../../../timeline/calendar/CalendarDialog';
 import JourneyDashboardWelcomeBlock from '../../common/journeyDashboardWelcomeBlock/JourneyDashboardWelcomeBlock';
@@ -37,10 +37,10 @@ const OpportunityDashboardPage: FC<OpportunityDashboardPageProps> = ({ dialog })
 
   const hasExtendedApplicationButton = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
 
-  const { subSpaceId: challengeId, subSubSpaceId: opportunityId } = useRouteResolver();
+  const { subSpaceId: challengeId, subSubSpaceId: opportunityId, journeyId, journeyPath } = useRouteResolver();
 
   return (
-    <OpportunityPageLayout currentSection={EntityPageSection.Dashboard}>
+    <SubspacePageLayout journeyId={journeyId} journeyPath={journeyPath} currentSection={EntityPageSection.Dashboard}>
       {directMessageDialog}
       <OpportunityPageContainer opportunityId={opportunityId}>
         {({ callouts, ...entities }, state) => (
@@ -122,7 +122,7 @@ const OpportunityDashboardPage: FC<OpportunityDashboardPageProps> = ({ dialog })
           </>
         )}
       </OpportunityPageContainer>
-    </OpportunityPageLayout>
+    </SubspacePageLayout>
   );
 };
 

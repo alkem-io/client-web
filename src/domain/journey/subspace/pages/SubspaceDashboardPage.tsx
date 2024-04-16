@@ -38,10 +38,10 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
 
   const hasExtendedApplicationButton = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
 
-  const { subSpaceId: challengeId } = useRouteResolver();
+  const { subSpaceId: challengeId, journeyId, journeyPath } = useRouteResolver();
 
   return (
-    <SubspacePageLayout currentSection={EntityPageSection.Dashboard}>
+    <SubspacePageLayout journeyId={journeyId} journeyPath={journeyPath} currentSection={EntityPageSection.Dashboard}>
       {directMessageDialog}
       <SubspacePageContainer challengeId={challengeId}>
         {({ callouts, ...entities }, state) => (

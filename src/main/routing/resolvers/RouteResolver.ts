@@ -1,17 +1,32 @@
 import { useUrlParams } from '../../../core/routing/useUrlParams';
 import { useCalloutIdQuery, useJourneyRouteResolverQuery } from '../../../core/apollo/generated/apollo-hooks';
 import { getJourneyTypeName, JourneyTypeName } from '../../../domain/journey/JourneyTypeName';
+import { takeWhile } from 'lodash';
 
 enum RouteType {
   Journey = 'Journey',
 }
 
 interface JourneyRouteParams {
-  spaceId?: string;
-  subSpaceId?: string;
-  subSubSpaceId?: string;
   type: RouteType.Journey;
   journeyId: string | undefined;
+  journeyPath: JourneyPath;
+  journeyLevel: JourneyLevel | -1; // TODO not sure maybe remove as well, can be calculated from journeyPath
+  /**
+   * @deprecated
+   * use journeyId or journeyPath instead
+   */
+  spaceId?: string;
+  /**
+   * @deprecated
+   * use journeyId or journeyPath instead
+   */
+  subSpaceId?: string;
+  /**
+   * @deprecated
+   * use journeyId or journeyPath instead
+   */
+  subSubSpaceId?: string;
   /**
    * @deprecated
    * introduce type JourneyLevel = 0 | 1 | 2 instead
@@ -35,14 +50,21 @@ type LazyParams<Params extends {}> = {
 
 type RouteParams = RouteResolverState & (LazyParams<JourneyRouteParams> | LazyParams<JourneyCalloutRouteParams>);
 
-// type JourneyLevel = 0 | 1 | 2;
+export type JourneyLevel = 0 | 1 | 2;
 
-// const JOURNEY_PARAM_NESTING: (keyof JourneyLocation)[] = ['spaceNameId', 'challengeNameId', 'opportunityNameId'];
+export type JourneyPath = [] | [string] | [string, string] | [string, string, string];
 
-// const getJourneyLevel = (urlParams: Partial<JourneyLocation>): JourneyLevel | -1 => {
-//   const journeyTypeName = getJourneyTypeName(urlParams);
-//   return takeWhile(JOURNEY_PARAM_NESTING, (param) => urlParams[param]).length - 1 as JourneyLevel | -1;
-// };
+interface JourneyLocation {
+  spaceNameId: string | undefined;
+  subspaceNameId: string | undefined;
+  subsubspaceNameId: string | undefined;
+}
+
+const JOURNEY_PARAM_NESTING: (keyof JourneyLocation)[] = ['spaceNameId', 'subspaceNameId', 'subsubspaceNameId'];
+
+const getJourneyLevel = (urlParams: Partial<JourneyLocation>): JourneyLevel | -1 => {
+  return (takeWhile(JOURNEY_PARAM_NESTING, param => urlParams[param]).length - 1) as JourneyLevel | -1;
+};
 
 export const useRouteResolver = (): RouteParams => {
   const { spaceNameId, subspaceNameId, subsubspaceNameId, calloutNameId } = useUrlParams();
@@ -58,6 +80,12 @@ export const useRouteResolver = (): RouteParams => {
     skip: !spaceNameId,
   });
 
+  const journeyLevel = getJourneyLevel({ spaceNameId, subspaceNameId, subsubspaceNameId });
+  const journeyLength = journeyLevel + 1;
+  const journeyPath = (
+    data ? [data?.space.id, data?.space.subspace?.id, data?.space.subspace?.subspace?.id].slice(0, journeyLength) : []
+  ) as JourneyPath;
+
   const resolvedJourney: JourneyRouteParams = {
     spaceId: data?.space.id,
     subSpaceId: data?.space.subspace?.id,
@@ -69,6 +97,8 @@ export const useRouteResolver = (): RouteParams => {
       challengeNameId: subspaceNameId,
       opportunityNameId: subsubspaceNameId,
     })!,
+    journeyLevel: getJourneyLevel({ spaceNameId, subspaceNameId, subsubspaceNameId }),
+    journeyPath,
   };
 
   const { data: calloutData, loading: loadingCallout } = useCalloutIdQuery({

@@ -6,7 +6,6 @@ import { SettingsPageProps } from '../../../../platform/admin/layout/EntitySetti
 import { useRouteResolver } from '../../../../../main/routing/resolvers/RouteResolver';
 import { Skeleton } from '@mui/material';
 import SubspaceSettingsLayout from '../../../../platform/admin/subspace/SubspaceSettingsLayout';
-import OpportunitySettingsLayout from '../../../../platform/admin/opportunity/OpportunitySettingsLayout';
 
 const SpaceSettingsPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   const { journeyId, journeyTypeName, loading } = useRouteResolver();
@@ -34,13 +33,13 @@ const SpaceSettingsPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
       );
     case 'subsubspace':
       return (
-        <OpportunitySettingsLayout currentTab={SettingsSection.SpaceSettings} tabRoutePrefix={routePrefix}>
+        <SubspaceSettingsLayout currentTab={SettingsSection.SpaceSettings} tabRoutePrefix={routePrefix}>
           {!journeyId || loading ? (
             <Skeleton />
           ) : (
             <SpaceSettingsView journeyId={journeyId} journeyTypeName={journeyTypeName} />
           )}
-        </OpportunitySettingsLayout>
+        </SubspaceSettingsLayout>
       );
   }
 };

@@ -35,7 +35,7 @@ import ContentColumn from '../../../../core/ui/content/ContentColumn';
 const SpaceCommunityPage = () => {
   const { spaceNameId } = useUrlParams();
 
-  const { spaceId } = useRouteResolver();
+  const { spaceId, journeyPath } = useRouteResolver();
   const { communityId } = useSpace();
 
   const { t } = useTranslation();
@@ -96,7 +96,7 @@ const SpaceCommunityPage = () => {
   }, [isActivitiesDialogOpen]);
 
   return (
-    <SpacePageLayout currentSection={EntityPageSection.Community}>
+    <SpacePageLayout journeyPath={journeyPath} currentSection={EntityPageSection.Community}>
       <SpaceCommunityContainer spaceId={spaceId}>
         {({ callouts }) => (
           <PageContent>
