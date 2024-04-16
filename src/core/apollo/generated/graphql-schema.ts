@@ -13103,7 +13103,8 @@ export type ReplyToMessageMutation = {
 export type MentionableUsersQueryVariables = Exact<{
   filter?: InputMaybe<UserFilterInput>;
   first?: InputMaybe<Scalars['Int']>;
-  communityId: Scalars['UUID'];
+  communityId?: Scalars['UUID'];
+  includeVirtualContributors: Scalars['Boolean'];
 }>;
 
 export type MentionableUsersQuery = {
@@ -13123,7 +13124,7 @@ export type MentionableUsersQuery = {
       };
     }>;
   };
-  lookup: {
+  lookup?: {
     __typename?: 'LookupQueryResults';
     community?:
       | {

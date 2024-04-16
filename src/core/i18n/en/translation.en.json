@@ -253,8 +253,8 @@
     "spaces": "Spaces",
     "subspace": "Subspace",
     "subspaces": "Subspaces",
-    "subsubspace": "Subsubspace",
-    "subsubspaces": "Subsubspaces",
+    "subsubspace": "Subspace",
+    "subsubspaces": "Subspaces",
     "entitiesWithCount": "{{entityType}} ({{count}})",
     "contributors": "Contributors",
     "opportunity": "Opportunity",
@@ -1989,7 +1989,7 @@
           "all": "All",
           "space": "Spaces",
           "subspace": "Subspaces",
-          "subsubspace": "Subsubspace",
+          "subsubspace": "Subspace",
           "user": "Users",
           "organization": "Organizations",
           "post": "Posts",
@@ -1997,7 +1997,7 @@
           "callout": "Callouts (available soon)"
         }
       },
-      "journeyFilterTitle": "$t(common.spaces), $t(common.subspaces) & $t(common.subsubspaces)"
+      "journeyFilterTitle": "$t(common.spaces), $t(common.subspaces)"
     },
     "exploreSpaces": {
       "fullName": "Explore Spaces",
