@@ -121,10 +121,15 @@ export const CommentInputField: FC<InputBaseComponentProps> = forwardRef<
     const filter = { email: search, displayName: search };
 
     const { data } = await queryUsers({
-      variables: { filter, first: MAX_USERS_LISTED, communityId },
+      variables: {
+        filter,
+        first: MAX_USERS_LISTED,
+        communityId: communityId ? communityId : undefined,
+        includeVirtualContributors: communityId !== '',
+      },
     });
 
-    const mentionableVCs = data?.lookup.community?.virtualContributorsInRole?.filter(vc => {
+    const mentionableVCs = data?.lookup?.community?.virtualContributorsInRole?.filter(vc => {
       return !isAlreadyMentioned(vc) && vc.profile.displayName.toLowerCase().includes(search.toLowerCase());
     });
 
