@@ -4,7 +4,6 @@ import useNavigate from '../../../../core/routing/useNavigate';
 import { journeyCardTagsGetter, journeyCardValueGetter } from '../../common/utils/journeyCardValueGetter';
 import { JourneyCreationDialog } from '../../../shared/components/JorneyCreationDialog';
 import { JourneyFormValues } from '../../../shared/components/JorneyCreationDialog/JourneyCreationForm';
-import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import { useSubspaceCreation } from '../../../shared/utils/useJourneyCreation/useJourneyCreation';
 import ChildJourneyView from '../../common/tabs/Subentities/ChildJourneyView';
 import { useSpace } from '../../space/SpaceContext/useSpace';
@@ -56,7 +55,7 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
   );
 
   return (
-    <SubspacePageLayout journeyId={journeyId} journeyPath={journeyPath} currentSection={EntityPageSection.Subsubspaces}>
+    <SubspacePageLayout journeyId={journeyId} journeyPath={journeyPath}>
       <ChallengeOpportunitiesContainer challengeId={challengeId}>
         {({ callouts, ...entities }, state) => (
           <ChildJourneyView

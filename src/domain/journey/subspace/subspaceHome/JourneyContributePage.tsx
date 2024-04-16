@@ -1,5 +1,4 @@
 import React from 'react';
-import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import SubspaceHomeView from './SubspaceHomeView';
 import JourneyContributePageContainer from './JourneyContributePageContainer';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
@@ -25,7 +24,6 @@ const JourneyContributePage = () => {
           journeyId={journeyId}
           journeyPath={journeyPath}
           loading={loading}
-          currentSection={EntityPageSection.Contribute}
           welcome={
             <JourneyDashboardWelcomeBlock
               vision={subspace?.context?.vision ?? ''}

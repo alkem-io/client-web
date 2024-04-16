@@ -6,7 +6,6 @@ import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import ContributorCardHorizontal from '../../../../core/ui/card/ContributorCardHorizontal';
 import { buildOrganizationUrl, buildUserProfileUrl } from '../../../../main/routing/urlBuilders';
-import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import { EntityDashboardLeads } from '../../../community/community/EntityDashboardContributorsSection/Types';
 import { MessageReceiverChipData } from '../../../communication/messaging/DirectMessaging/DirectMessageDialog';
 import SeeMore from '../../../../core/ui/content/SeeMore';
@@ -32,7 +31,7 @@ const JourneyDashboardWelcomeBlock = ({
   member = false,
 }: JourneyDashboardWelcomeBlockProps) => {
   return (
-    <PageContentBlock accent>
+    <>
       <OverflowGradient
         maxHeight={gutters(11)}
         overflowMarker={<SeeMore label="buttons.readMore" to={EntityPageSection.About} sx={{ marginTop: -1 }} />}
@@ -78,7 +77,7 @@ const JourneyDashboardWelcomeBlock = ({
           />
         ))}
       </Gutters>
-    </PageContentBlock>
+    </>
   );
 };
 
