@@ -27,7 +27,13 @@ export const WrapperMarkdown = ({
       disableParagraphPadding={disableParagraphPadding}
       caption={caption}
     >
-      <Box sx={{ li: { marginY: caption ? 0 : 1 }, display: plain ? 'inline' : undefined, img: { maxWidth: '100%' } }}>
+      <Box
+        sx={{
+          li: { marginY: caption ? 0 : 1 },
+          display: plain ? 'inline' : undefined,
+          img: { maxWidth: '100%', borderRadius: theme => `${theme.spacing(0.6)}` },
+        }}
+      >
         <ReactMarkdown
           components={components}
           remarkPlugins={[gfm, [PlainText, { enabled: plain }]]}
