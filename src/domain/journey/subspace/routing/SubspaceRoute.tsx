@@ -16,6 +16,7 @@ import Redirect from '../../../../core/routing/Redirect';
 import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 import SubspaceCalloutPage from '../subspaceCalloutPage/SubspaceCalloutPage';
+import { SubspaceDialog } from '../layout/SubspaceDialog';
 
 const SubspaceRoute = () => {
   const { journeyId } = useRouteResolver();
@@ -24,6 +25,8 @@ const SubspaceRoute = () => {
     <StorageConfigContextProvider locationType="journey" spaceId={journeyId}>
       <Routes>
         <Route index element={<SubspaceHomePage />} />
+        <Route path={SubspaceDialog.Index} element={<SubspaceHomePage dialog={SubspaceDialog.Index} />} />
+
         {/* Redirecting legacy dashboard links to Subspace Home */}
         <Route path={routes.Dashboard} element={<Navigate replace to="/" />} />
         {/* TODO Remove the routes below */}

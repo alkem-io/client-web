@@ -22,7 +22,7 @@ interface CalloutInfo {
   flowStates: string[] | undefined;
 }
 
-interface CalloutsListDialogProps<Callout extends CalloutInfo> {
+export interface CalloutsListDialogProps<Callout extends CalloutInfo> {
   open?: boolean;
   onClose?: () => void;
   callouts: Callout[] | undefined;

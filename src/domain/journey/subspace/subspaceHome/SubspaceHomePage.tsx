@@ -21,8 +21,13 @@ import {
   ShareOutlined,
 } from '@mui/icons-material';
 import { InnovationFlowIcon } from '../../../collaboration/InnovationFlow/InnovationFlowIcon/InnovationFlowIcon';
+import SubspaceDialogs from './dialogs/SubspaceDialogs';
 
-const SubspaceHomePage = () => {
+interface SubspaceHomePageProps {
+  dialog?: SubspaceDialog | undefined;
+}
+
+const SubspaceHomePage = ({ dialog }: SubspaceHomePageProps) => {
   const { t } = useTranslation();
 
   const { journeyId, journeyTypeName, journeyPath, loading } = useRouteResolver();
@@ -112,6 +117,7 @@ const SubspaceHomePage = () => {
             collaborationId={subspace?.collaboration.id}
           />
           {directMessageDialog}
+          <SubspaceDialogs dialog={dialog} callouts={callouts?.callouts ?? []} />
         </SubspacePageLayout>
       )}
     </JourneyContributePageContainer>
