@@ -365,18 +365,6 @@
       "not-verified": ""
     },
     "enums": {
-      "spaceDialog": {
-        "About": "About",
-        "Outline": "Outline",
-        "Index": "Index",
-        "Subspaces": "Subspaces",
-        "Contributors": "Contributors",
-        "Activity": "Activity",
-        "Events": "Events",
-        "Share": "Share",
-        "ManageFlow": "Manage Flow",
-        "Settings": "Settings"
-      },
       "communityRole": {
         "ADMIN": "$t(common.admin)",
         "LEAD": "$t(common.lead)",
@@ -2686,5 +2674,17 @@
         "text": "{{displayName}}'s avatar: {{altText}}"
       }
     }
+  },
+  "spaceDialog": {
+    "About": "About",
+    "Outline": "Outline",
+    "Index": "Index",
+    "Subspaces": "Subspaces",
+    "Contributors": "Contributors",
+    "Activity": "Activity",
+    "Events": "Events",
+    "Share": "Share",
+    "ManageFlow": "$t(components.innovationFlowSettings.buttonTooltip)",
+    "Settings": "Settings"
   }
 }

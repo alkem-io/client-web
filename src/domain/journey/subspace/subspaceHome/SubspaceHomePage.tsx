@@ -53,55 +53,52 @@ const SubspaceHomePage = () => {
             <>
               <DialogDef
                 dialogType={SubspaceDialog.About}
-                label={t(`common.enums.spaceDialog.${SubspaceDialog.About}` as const)}
+                label={t(`spaceDialog.${SubspaceDialog.About}` as const)}
                 icon={InfoOutlined}
-                fullMenu
               />
               <DialogDef
                 dialogType={SubspaceDialog.Outline}
-                label={t(`common.enums.spaceDialog.${SubspaceDialog.Outline}` as const)}
+                label={t(`spaceDialog.${SubspaceDialog.Outline}` as const)}
                 icon={AccountTreeOutlined}
-                fullMenu
               />
               <DialogDef
                 dialogType={SubspaceDialog.Index}
-                label={t(`common.enums.spaceDialog.${SubspaceDialog.Index}` as const)}
+                label={t(`spaceDialog.${SubspaceDialog.Index}` as const)}
                 icon={ListOutlined}
               />
               <DialogDef
                 dialogType={SubspaceDialog.Subspaces}
-                label={t(`common.enums.spaceDialog.${SubspaceDialog.Subspaces}` as const)}
+                label={t(`spaceDialog.${SubspaceDialog.Subspaces}` as const)}
                 icon={SegmentOutlined}
               />
               <DialogDef
                 dialogType={SubspaceDialog.Contributors}
-                label={t(`common.enums.spaceDialog.${SubspaceDialog.Contributors}` as const)}
+                label={t(`spaceDialog.${SubspaceDialog.Contributors}` as const)}
                 icon={GroupsOutlined}
               />
               <DialogDef
                 dialogType={SubspaceDialog.Activity}
-                label={t(`common.enums.spaceDialog.${SubspaceDialog.Activity}` as const)}
+                label={t(`spaceDialog.${SubspaceDialog.Activity}` as const)}
                 icon={HistoryOutlined}
               />
               <DialogDef
                 dialogType={SubspaceDialog.Events}
-                label={t(`common.enums.spaceDialog.${SubspaceDialog.Events}` as const)}
+                label={t(`spaceDialog.${SubspaceDialog.Events}` as const)}
                 icon={CalendarMonthOutlined}
               />
               <DialogDef
                 dialogType={SubspaceDialog.Share}
-                label={t(`common.enums.spaceDialog.${SubspaceDialog.Share}` as const)}
+                label={t(`spaceDialog.${SubspaceDialog.Share}` as const)}
                 icon={ShareOutlined}
               />
               <DialogDef
                 dialogType={SubspaceDialog.ManageFlow}
-                label={t(`common.enums.spaceDialog.${SubspaceDialog.ManageFlow}` as const)}
+                label={t(`spaceDialog.${SubspaceDialog.ManageFlow}` as const)}
                 icon={InnovationFlowIcon}
-                fullMenu
               />
               <DialogDef
                 dialogType={SubspaceDialog.Settings}
-                label={t(`common.enums.spaceDialog.${SubspaceDialog.Settings}` as const)}
+                label={t(`spaceDialog.${SubspaceDialog.Settings}` as const)}
                 icon={SettingsOutlined}
               />
             </>

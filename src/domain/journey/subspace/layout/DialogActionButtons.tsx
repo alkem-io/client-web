@@ -1,5 +1,5 @@
 import React, { Children, PropsWithChildren } from 'react';
-import { DialogDef, DialogDefinitionProps } from './DialogDefinition';
+import { isDialogDef } from './DialogDefinition';
 import unwrapFragment from '../../../../core/ui/utils/unwrapFragment';
 import ButtonWithTooltip from '../../../../core/ui/button/ButtonWithTooltip';
 import RouterLink from '../../../../core/ui/link/RouterLink';
@@ -11,22 +11,19 @@ const DialogActionButtons = ({ children }: PropsWithChildren<DialogActionButtons
   return (
     <PageContentBlockSeamless row disablePadding sx={{ justifyContent: 'space-between', gap: 0.1 }}>
       {Children.map(unwrapFragment(children), node => {
-        if (node && node['type'] === DialogDef) {
-          const { icon: Icon, label, dialogType, fullMenu } = node['props'] as DialogDefinitionProps;
-
-          if (fullMenu) {
-            return null;
-          }
-
-          return (
-            <RouterLink to={dialogType} key={dialogType} sx={{ flexShrink: 1, minWidth: 0 }}>
-              <ButtonWithTooltip variant="contained" tooltip={String(label)} sx={{ maxWidth: '100%' }} iconButton>
-                <Icon />
-              </ButtonWithTooltip>
-            </RouterLink>
-          );
+        if (!isDialogDef(node)) {
+          return node;
         }
-        return node;
+
+        const { icon: Icon, label, dialogType } = node.props;
+
+        return (
+          <RouterLink to={dialogType} key={dialogType} sx={{ flexShrink: 1, minWidth: 0 }}>
+            <ButtonWithTooltip variant="contained" tooltip={String(label)} sx={{ maxWidth: '100%' }} iconButton>
+              <Icon />
+            </ButtonWithTooltip>
+          </RouterLink>
+        );
       })}
     </PageContentBlockSeamless>
   );

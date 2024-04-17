@@ -8,8 +8,6 @@ interface InnovationFlowChipsProps {
   states: InnovationFlowState[];
   currentState?: string;
   selectedState: string | undefined;
-  showSettings?: boolean;
-  onSettingsOpen?: () => void;
   onSelectState?: (state: InnovationFlowState) => void;
 }
 

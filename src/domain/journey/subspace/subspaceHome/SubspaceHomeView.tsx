@@ -5,10 +5,13 @@ import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/
 import { OrderUpdate, TypedCallout } from '../../../collaboration/callout/useCallouts/useCallouts';
 import { InnovationFlowState } from '../../../collaboration/InnovationFlow/InnovationFlow';
 import React from 'react';
-import { SubspaceInnovationFlow } from '../layout/SubspacePageLayout';
+import { SubspaceInnovationFlow, useConsumeAction } from '../layout/SubspacePageLayout';
 import { useColumns } from '../../../../core/ui/grid/GridContext';
 import { GRID_COLUMNS_MOBILE } from '../../../../core/ui/grid/constants';
 import InnovationFlowCurrentStateSelector from '../../../collaboration/InnovationFlow/InnovationFlowCurrentStateSelector/InnovationFlowCurrentStateSelector';
+import { SubspaceDialog } from '../layout/SubspaceDialog';
+import ButtonWithTooltip from '../../../../core/ui/button/ButtonWithTooltip';
+import { ButtonProps } from '@mui/material';
 
 interface SubspaceHomeViewProps {
   collaborationId: string | undefined;
@@ -30,6 +33,18 @@ interface SubspaceHomeViewProps {
 const InnovationFlowVisualizerMobile = props => (
   <InnovationFlowCurrentStateSelector {...props} flexShrink={1} minWidth={0} />
 );
+
+const SettingsButton = (props: ButtonProps) => {
+  const settingsActionDef = useConsumeAction(SubspaceDialog.ManageFlow);
+
+  const SettingsIcon = settingsActionDef?.icon;
+
+  return (
+    <ButtonWithTooltip tooltip={String(settingsActionDef?.label)} variant="outlined" iconButton {...props}>
+      {SettingsIcon && <SettingsIcon />}
+    </ButtonWithTooltip>
+  );
+};
 
 const SubspaceHomeView = ({
   collaborationId,
@@ -72,7 +87,7 @@ const SubspaceHomeView = ({
               states={innovationFlowStates}
               currentState={currentInnovationFlowState}
               selectedState={selectedInnovationFlowState}
-              showSettings
+              settings={<SettingsButton />}
               onSelectState={onSelectInnovationFlowState}
               visualizer={isMobile ? InnovationFlowVisualizerMobile : undefined}
             />
