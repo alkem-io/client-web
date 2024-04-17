@@ -4,8 +4,7 @@ import calloutIcons from '../utils/calloutIcons';
 import { useTranslation } from 'react-i18next';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import MultipleSelect from '../../../../core/ui/search/MultipleSelect';
-import { some, times } from 'lodash';
-import { CalloutGroupName } from '../../../../core/apollo/generated/graphql-schema';
+import { every, some, times } from 'lodash';
 import { BlockSectionTitle, Caption } from '../../../../core/ui/typography';
 import RouterLink from '../../../../core/ui/link/RouterLink';
 
@@ -46,17 +45,16 @@ const CalloutsListDialog = <Callout extends CalloutInfo>({
   const [filter, setFilter] = useState<string[]>([]);
 
   const filterCalloutCallback = useCallback(
-    callout => {
+    (callout: Callout) => {
       const lowerCaseFilters = filter.map(term => term.toLowerCase());
 
-      return some(
+      return every(
         lowerCaseFilters,
         term =>
           // Any term matches the Callout's displayName
           callout.framing.profile.displayName.toLowerCase().includes(term.toLowerCase()) ||
-          // Or any term matches the Callout's flowState and groupName is equal to Contribute_2
-          (callout.groupName === CalloutGroupName.Contribute_2 &&
-            callout.flowStates &&
+          // Or any term matches the Callout's flowState
+          (callout.flowStates &&
             some(
               callout.flowStates.map(flowState => flowState.toLowerCase()),
               flowState => flowState.includes(term)

@@ -117,7 +117,7 @@ const SubspaceHomePage = ({ dialog }: SubspaceHomePageProps) => {
             collaborationId={subspace?.collaboration.id}
           />
           {directMessageDialog}
-          <SubspaceDialogs dialog={dialog} callouts={callouts?.callouts ?? []} />
+          <SubspaceDialogs dialog={dialog} callouts={callouts?.callouts ?? []} journeyId={journeyId} />
         </SubspacePageLayout>
       )}
     </JourneyContributePageContainer>

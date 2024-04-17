@@ -5,13 +5,15 @@ import JourneyCalloutsListItemTitle from '../../../../collaboration/callout/Jour
 import { useTranslation } from 'react-i18next';
 import { TypedCallout } from '../../../../collaboration/callout/useCallouts/useCallouts';
 import { SubspaceDialog } from '../../layout/SubspaceDialog';
+import SubspacesListDialog from '../../dialogs/SubspacesListDialog';
 
 export interface SubspaceDialogsProps {
   dialog: SubspaceDialog | undefined;
   callouts: TypedCallout[];
+  journeyId: string | undefined;
 }
 
-const SubspaceDialogs = ({ dialog, callouts }: SubspaceDialogsProps) => {
+const SubspaceDialogs = ({ dialog, callouts, journeyId }: SubspaceDialogsProps) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
@@ -26,6 +28,13 @@ const SubspaceDialogs = ({ dialog, callouts }: SubspaceDialogsProps) => {
           entities: t('common.callouts'),
         })}
       />
+      {journeyId && (
+        <SubspacesListDialog
+          journeyId={journeyId}
+          open={dialog === SubspaceDialog.Subspaces}
+          onClose={() => navigate('./')}
+        />
+      )}
     </>
   );
 };

@@ -26,6 +26,7 @@ const SubspaceRoute = () => {
       <Routes>
         <Route index element={<SubspaceHomePage />} />
         <Route path={SubspaceDialog.Index} element={<SubspaceHomePage dialog={SubspaceDialog.Index} />} />
+        <Route path={SubspaceDialog.Subspaces} element={<SubspaceHomePage dialog={SubspaceDialog.Subspaces} />} />
 
         {/* Redirecting legacy dashboard links to Subspace Home */}
         <Route path={routes.Dashboard} element={<Navigate replace to="/" />} />
