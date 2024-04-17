@@ -9,11 +9,9 @@ import { useOpportunity } from '../hooks/useOpportunity';
 
 const renderPage = (calloutGroup: string | undefined) => {
   switch (calloutGroup) {
-    case CalloutGroupName.Home_1:
-    case CalloutGroupName.Home_2:
+    case CalloutGroupName.Home:
       return <OpportunityDashboardPage />;
-    case CalloutGroupName.Contribute_1:
-    case CalloutGroupName.Contribute_2:
+    case CalloutGroupName.Contribute:
       return <SubspaceHomePage />;
     default:
       return <SubspaceHomePage />;
@@ -22,11 +20,9 @@ const renderPage = (calloutGroup: string | undefined) => {
 
 const getPageSection = (calloutGroup: string | undefined): EntityPageSection => {
   switch (calloutGroup) {
-    case CalloutGroupName.Home_1:
-    case CalloutGroupName.Home_2:
+    case CalloutGroupName.Home:
       return EntityPageSection.Dashboard;
-    case CalloutGroupName.Contribute_1:
-    case CalloutGroupName.Contribute_2:
+    case CalloutGroupName.Contribute:
       return EntityPageSection.Contribute;
     default:
       return EntityPageSection.Contribute;

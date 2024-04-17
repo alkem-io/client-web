@@ -677,14 +677,10 @@
     },
     "callout-group": {
       "HOME_TOP": "Dashboard Recommendations",
-      "HOME_1": "Dashboard Left",
-      "HOME_2": "Dashboard Right",
-      "CONTRIBUTE_1": "Contribute Left",
-      "CONTRIBUTE_2": "Contribute Right",
-      "COMMUNITY_1": "Community Left",
-      "COMMUNITY_2": "Community Right",
-      "SUBSPACES_1": "Subspaces Left",
-      "SUBSPACES_2": "Subspaces Right",
+      "HOME": "Dashboard",
+      "CONTRIBUTE": "Contribute",
+      "COMMUNITY": "Community",
+      "SUBSPACES": "Subspaces",
       "KNOWLEDGE": "Knowledge Base"
     }
   },
