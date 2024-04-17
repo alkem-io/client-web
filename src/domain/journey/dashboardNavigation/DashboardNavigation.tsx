@@ -21,7 +21,7 @@ import { findCurrentPath } from './utils';
 import DashboardNavigationAddSubspace from './DashboardNavigationAddSubspace';
 import { Identifiable } from '../../../core/utils/Identifiable';
 
-interface DashboardNavigationProps {
+export interface DashboardNavigationProps {
   spaceUrl: string | undefined;
   displayName: string | undefined;
   dashboardNavigation: DashboardNavigationItem[] | undefined;

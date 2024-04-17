@@ -1,14 +1,15 @@
-import { ComponentType, useState } from 'react';
+import { cloneElement, ComponentType, MouseEventHandler, ReactElement, ReactNode, useState } from 'react';
 import InnovationFlowSettingsDialog from '../InnovationFlowDialogs/InnovationFlowSettingsDialog';
 import { InnovationFlowState } from '../InnovationFlow';
 import InnovationFlowChips from '../InnovationFlowChips/InnovationFlowChips';
 
-interface Props {
+interface InnovationFlowStatesBaseProps {
   states: InnovationFlowState[] | undefined;
   currentState?: string;
   selectedState: string | undefined;
   onSelectState?: (state: InnovationFlowState) => void;
   visualizer?: ComponentType<InnovationFlowVisualizerProps>;
+  settings?: ReactElement<{ onClick: MouseEventHandler }>;
 }
 
 interface InnovationFlowVisualizerProps {
@@ -18,16 +19,17 @@ interface InnovationFlowVisualizerProps {
   showSettings?: boolean;
   onSettingsOpen?: () => void;
   onSelectState?: (state: InnovationFlowState) => void;
+  settings?: ReactNode;
 }
 
-type InnovationFlowStatesProps = Props &
+type InnovationFlowStatesProps = InnovationFlowStatesBaseProps &
   (
     | {
-        showSettings?: false;
+        settings?: never;
         collaborationId?: undefined;
       }
     | {
-        showSettings: true;
+        settings: ReactElement<{ onClick: MouseEventHandler }>;
         collaborationId: string;
       }
   );
@@ -37,7 +39,7 @@ const InnovationFlowStates = ({
   states = [],
   currentState,
   selectedState,
-  showSettings = false,
+  settings,
   onSelectState,
   visualizer: Visualizer = InnovationFlowChips,
 }: InnovationFlowStatesProps) => {
@@ -49,7 +51,7 @@ const InnovationFlowStates = ({
         states={states}
         currentState={currentState}
         selectedState={selectedState}
-        showSettings={showSettings}
+        settings={settings && cloneElement(settings, { onClick: () => setShowSettingsDialog(true) })}
         onSettingsOpen={() => setShowSettingsDialog(true)}
         onSelectState={onSelectState}
       />

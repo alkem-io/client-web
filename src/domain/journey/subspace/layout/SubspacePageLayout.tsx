@@ -1,9 +1,18 @@
-import React, { PropsWithChildren, ReactNode, useState } from 'react';
+import React, {
+  Children,
+  createContext,
+  PropsWithChildren,
+  ReactNode,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import ChildJourneyPageBanner from '../../common/childJourneyPageBanner/ChildJourneyPageBanner';
 import JourneyUnauthorizedDialog from '../../common/JourneyUnauthorizedDialog/JourneyUnauthorizedDialog';
 import JourneyUnauthorizedDialogContainer from '../../common/JourneyUnauthorizedDialog/JourneyUnauthorizedDialogContainer';
 import JourneyBreadcrumbs from '../../common/journeyBreadcrumbs/JourneyBreadcrumbs';
-import DashboardNavigation from '../../dashboardNavigation/DashboardNavigation';
+import DashboardNavigation, { DashboardNavigationProps } from '../../dashboardNavigation/DashboardNavigation';
 import PageContent from '../../../../core/ui/content/PageContent';
 import useSpaceDashboardNavigation from '../../space/spaceDashboardNavigation/useSpaceDashboardNavigation';
 import { useSpace } from '../../space/SpaceContext/useSpace';
@@ -24,12 +33,16 @@ import GridProvider from '../../../../core/ui/grid/GridProvider';
 import { GRID_COLUMNS_MOBILE } from '../../../../core/ui/grid/constants';
 import SwapColors from '../../../../core/ui/palette/SwapColors';
 import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
-import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import DialogActionsMenu from './DialogActionsMenu';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import createLayoutHolder from '../../../../core/ui/layout/layoutHolder/LayoutHolder';
 import PoweredBy from '../../../../main/ui/poweredBy/PoweredBy';
 import DialogActionButtons from './DialogActionButtons';
+import unwrapFragment from '../../../../core/ui/utils/unwrapFragment';
+import { SubspaceDialog } from './SubspaceDialog';
+import { DialogDefinitionProps, isDialogDef } from './DialogDefinition';
+import produce from 'immer';
+import WelcomeBlock from './WelcomeBlock';
 
 export interface SubspacePageLayoutProps {
   journeyId: string | undefined;
@@ -53,6 +66,38 @@ const {
 export const SubspaceInnovationFlow = createLayout(({ columns, children }: PropsWithChildren<{ columns: number }>) => {
   return <GridProvider columns={columns}>{children}</GridProvider>;
 });
+
+/**
+ * The rationale for this context is to allow actions to be consumed by individual components,
+ * and not rendered in the action list (menu or buttons).
+ * Rather that handling a set of rules whether the action should be rendered in the menu or not,
+ * we let the child components decide.
+ */
+interface ActionsProvider {
+  consume(action: SubspaceDialog): DialogDefinitionProps | undefined;
+  dispose(action: SubspaceDialog): void;
+}
+
+const DialogActionsContext = createContext<ActionsProvider>({
+  consume: () => {
+    throw new Error('Must be under DialogActionsContext');
+  },
+  dispose: () => {
+    throw new Error('Must be under DialogActionsContext');
+  },
+});
+
+export const useConsumeAction = (action: SubspaceDialog | undefined | null | false) => {
+  const { consume, dispose } = useContext(DialogActionsContext);
+  const actionDef = action ? consume(action) : undefined;
+  useEffect(() => (action ? () => dispose(action) : undefined), [action]);
+  return actionDef;
+};
+
+const Outline = (props: DashboardNavigationProps) => {
+  useConsumeAction(SubspaceDialog.Outline);
+  return <DashboardNavigation {...props} />;
+};
 
 const SubspacePageLayout = ({
   journeyId,
@@ -79,6 +124,42 @@ const SubspacePageLayout = ({
 
   const [isInfoDrawerOpen, setIsInfoDrawerOpen] = useState(false);
 
+  const actionsList = Children.toArray(unwrapFragment(actions));
+
+  // Some actions are handled/consumed by individual components, in that case they aren't rendered in the action list (menu or buttons)
+  const [consumedActions, setConsumedActions] = useState<Partial<Record<SubspaceDialog, true>>>({});
+
+  const actionsProvider = useMemo<ActionsProvider>(() => {
+    const actionDefinitions = actionsList.filter(isDialogDef);
+
+    const consume = (type: SubspaceDialog) => {
+      const actionDef = actionDefinitions.find(action => action.props.dialogType === type)?.props;
+      if (!actionDef) {
+        return;
+      }
+      setConsumedActions(consumed =>
+        produce(consumed, record => {
+          record[type] = true;
+        })
+      );
+      return actionDef;
+    };
+
+    const restore = (type: SubspaceDialog) => {
+      setConsumedActions(consumed =>
+        produce(consumed, record => {
+          delete record[type];
+        })
+      );
+    };
+
+    return { consume, dispose: restore };
+  }, [actionsList, setConsumedActions]);
+
+  const unconsumedActions = actionsList.filter(action => {
+    return !isDialogDef(action) || !consumedActions[action.props.dialogType];
+  });
+
   return (
     <NotFoundErrorBoundary
       errorComponent={
@@ -87,86 +168,94 @@ const SubspacePageLayout = ({
         </TopLevelLayout>
       }
     >
-      <InnovationFlowHolder>
-        <TopLevelLayout
-          breadcrumbs={<JourneyBreadcrumbs journeyPath={journeyPath} loading={loading} />}
-          header={<ChildJourneyPageBanner journeyId={journeyId} />}
-          floatingActions={
-            <FloatingActionButtons
-              visible
-              floatingActions={<PlatformHelpButton />}
-              bottom={isMobile ? gutters(2) : 0}
-            />
-          }
-        >
-          <PageContent>
-            <InfoColumn collapsed={isExpanded}>
-              <PageContentBlock accent>{welcome}</PageContentBlock>
-              <FullWidthButton
-                startIcon={<KeyboardTab />}
-                variant="contained"
-                onClick={() => setIsExpanded(true)}
-                sx={{ '.MuiSvgIcon-root': { transform: 'rotate(180deg)' } }}
-              >
-                {t('buttons.collapse')}
-              </FullWidthButton>
-              {!isMobile && <DialogActionButtons>{actions}</DialogActionButtons>}
-              <DashboardNavigation
-                currentItemId={journeyId}
-                spaceUrl={spaceProfile.url}
-                displayName={spaceProfile.displayName}
-                dashboardNavigation={dashboardNavigation}
+      <DialogActionsContext.Provider value={actionsProvider}>
+        <InnovationFlowHolder>
+          <TopLevelLayout
+            breadcrumbs={<JourneyBreadcrumbs journeyPath={journeyPath} loading={loading} />}
+            header={<ChildJourneyPageBanner journeyId={journeyId} />}
+            floatingActions={
+              <FloatingActionButtons
+                visible
+                floatingActions={<PlatformHelpButton />}
+                bottom={isMobile ? gutters(2) : 0}
               />
-            </InfoColumn>
-            <PageContentColumnBase columns={isExpanded ? 12 : 9} flexBasis={0} flexGrow={1} flexShrink={1} minWidth={0}>
-              {!isMobile && (
-                <PageContentBlockSeamless disablePadding>
-                  <InnovationFlowRenderPoint />
-                </PageContentBlockSeamless>
-              )}
-              {children}
-            </PageContentColumnBase>
-          </PageContent>
-          {isMobile && (
-            <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 1 }} elevation={3} square>
-              <Gutters row padding={1} paddingBottom={0} justifyContent="space-between">
-                <IconButton onClick={() => setIsInfoDrawerOpen(true)}>
-                  <Menu />
-                </IconButton>
-                <InnovationFlowRenderPoint />
-                <Box width={gutters(2)} />
-              </Gutters>
-              <PoweredBy compact />
-            </Paper>
-          )}
-        </TopLevelLayout>
-        <JourneyUnauthorizedDialogContainer journeyId={journeyId} loading={loading}>
-          {({ vision, ...props }) => (
-            <JourneyUnauthorizedDialog
-              subspaceId={journeyId}
-              subspaceName={profile?.displayName}
-              description={vision}
-              disabled={unauthorizedDialogDisabled}
-              {...props}
-            />
-          )}
-        </JourneyUnauthorizedDialogContainer>
-        {isMobile && (
-          <SwapColors>
-            <GridProvider columns={GRID_COLUMNS_MOBILE}>
-              <Drawer
-                open={isInfoDrawerOpen}
-                onClose={() => setIsInfoDrawerOpen(false)}
-                sx={{ '.MuiDrawer-paper': { width: '60vw' } }}
+            }
+          >
+            <PageContent>
+              <InfoColumn collapsed={isExpanded}>
+                <WelcomeBlock about={!isMobile}>{welcome}</WelcomeBlock>
+                <FullWidthButton
+                  startIcon={<KeyboardTab />}
+                  variant="contained"
+                  onClick={() => setIsExpanded(true)}
+                  sx={{ '.MuiSvgIcon-root': { transform: 'rotate(180deg)' } }}
+                >
+                  {t('buttons.collapse')}
+                </FullWidthButton>
+                {!isMobile && <DialogActionButtons>{unconsumedActions}</DialogActionButtons>}
+                <Outline
+                  currentItemId={journeyId}
+                  spaceUrl={spaceProfile.url}
+                  displayName={spaceProfile.displayName}
+                  dashboardNavigation={dashboardNavigation}
+                />
+              </InfoColumn>
+              <PageContentColumnBase
+                columns={isExpanded ? 12 : 9}
+                flexBasis={0}
+                flexGrow={1}
+                flexShrink={1}
+                minWidth={0}
               >
-                <PageContentBlockSeamless>{welcome}</PageContentBlockSeamless>
-                <DialogActionsMenu onClose={() => setIsInfoDrawerOpen(false)}>{actions}</DialogActionsMenu>
-              </Drawer>
-            </GridProvider>
-          </SwapColors>
-        )}
-        {isMobile && <Box height={gutters(3)} />}
-      </InnovationFlowHolder>
+                {!isMobile && (
+                  <PageContentBlockSeamless disablePadding>
+                    <InnovationFlowRenderPoint />
+                  </PageContentBlockSeamless>
+                )}
+                {children}
+              </PageContentColumnBase>
+            </PageContent>
+            {isMobile && (
+              <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 1 }} elevation={3} square>
+                <Gutters row padding={1} paddingBottom={0} justifyContent="space-between">
+                  <IconButton onClick={() => setIsInfoDrawerOpen(true)}>
+                    <Menu />
+                  </IconButton>
+                  <InnovationFlowRenderPoint />
+                  <Box width={gutters(2)} />
+                </Gutters>
+                <PoweredBy compact />
+              </Paper>
+            )}
+          </TopLevelLayout>
+          <JourneyUnauthorizedDialogContainer journeyId={journeyId} loading={loading}>
+            {({ vision, ...props }) => (
+              <JourneyUnauthorizedDialog
+                subspaceId={journeyId}
+                subspaceName={profile?.displayName}
+                description={vision}
+                disabled={unauthorizedDialogDisabled}
+                {...props}
+              />
+            )}
+          </JourneyUnauthorizedDialogContainer>
+          {isMobile && (
+            <SwapColors>
+              <GridProvider columns={GRID_COLUMNS_MOBILE}>
+                <Drawer
+                  open={isInfoDrawerOpen}
+                  onClose={() => setIsInfoDrawerOpen(false)}
+                  sx={{ '.MuiDrawer-paper': { width: '60vw' } }}
+                >
+                  <PageContentBlockSeamless>{welcome}</PageContentBlockSeamless>
+                  <DialogActionsMenu onClose={() => setIsInfoDrawerOpen(false)}>{unconsumedActions}</DialogActionsMenu>
+                </Drawer>
+              </GridProvider>
+            </SwapColors>
+          )}
+          {isMobile && <Box height={gutters(3)} />}
+        </InnovationFlowHolder>
+      </DialogActionsContext.Provider>
     </NotFoundErrorBoundary>
   );
 };
