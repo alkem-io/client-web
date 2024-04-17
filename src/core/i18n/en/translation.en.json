@@ -1985,7 +1985,7 @@
       "user-not-logged": "Login or Register to include users in your search results",
       "filter": {
         "type": {
-          "journey": "Journey type",
+          "journey": "Space type",
           "contribution": "Contribution type",
           "contributor": "Contributor type"
         },
@@ -1993,7 +1993,6 @@
           "all": "All",
           "space": "Spaces",
           "subspace": "Subspaces",
-          "subsubspace": "Subspace",
           "user": "Users",
           "organization": "Organizations",
           "post": "Posts",
@@ -2001,7 +2000,7 @@
           "callout": "Callouts (available soon)"
         }
       },
-      "journeyFilterTitle": "$t(common.spaces), $t(common.subspaces)"
+      "journeyFilterTitle": "$t(common.spaces)"
     },
     "exploreSpaces": {
       "fullName": "Explore Spaces",
