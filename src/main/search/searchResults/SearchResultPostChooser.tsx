@@ -40,6 +40,8 @@ const SearchResultPostChooser = ({
       return hydrateOrganizationCard(result);
     case SearchResultType.Post:
       return hydrateContributionCard(result);
+    default:
+      return null;
   }
 };
 

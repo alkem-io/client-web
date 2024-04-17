@@ -3197,6 +3197,7 @@ export const PostParentFragmentDoc = gql`
   fragment PostParent on SearchResultPost {
     space {
       id
+      type
       account {
         id
         license {
@@ -3204,30 +3205,6 @@ export const PostParentFragmentDoc = gql`
           visibility
         }
       }
-      profile {
-        id
-        url
-        displayName
-      }
-      authorization {
-        id
-        anonymousReadAccess
-      }
-    }
-    subspace {
-      id
-      profile {
-        id
-        url
-        displayName
-      }
-      authorization {
-        id
-        anonymousReadAccess
-      }
-    }
-    subsubspace {
-      id
       profile {
         id
         url
@@ -3344,6 +3321,7 @@ export const SearchResultSpaceFragmentDoc = gql`
   fragment SearchResultSpace on SearchResultSpace {
     parentSpace {
       id
+      type
       profile {
         id
         url
@@ -3352,6 +3330,7 @@ export const SearchResultSpaceFragmentDoc = gql`
     }
     space {
       id
+      type
       profile {
         id
         url

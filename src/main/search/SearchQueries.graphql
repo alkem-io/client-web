@@ -76,6 +76,7 @@ fragment SearchResultPost on SearchResultPost {
 fragment PostParent on SearchResultPost {
   space {
     id
+    type
     account {
       id
       license {
@@ -83,30 +84,6 @@ fragment PostParent on SearchResultPost {
         visibility
       }
     }
-    profile {
-      id
-      url
-      displayName
-    }
-    authorization {
-      id
-      anonymousReadAccess
-    }
-  }
-  subspace {
-    id
-    profile {
-      id
-      url
-      displayName
-    }
-    authorization {
-      id
-      anonymousReadAccess
-    }
-  }
-  subsubspace {
-    id
     profile {
       id
       url
@@ -211,6 +188,7 @@ fragment SearchResultPostProfile on Profile {
 fragment SearchResultSpace on SearchResultSpace {
   parentSpace {
     id
+    type
     profile {
       id
       url
@@ -219,6 +197,7 @@ fragment SearchResultSpace on SearchResultSpace {
   }
   space {
     id
+    type
     profile {
       id
       url
