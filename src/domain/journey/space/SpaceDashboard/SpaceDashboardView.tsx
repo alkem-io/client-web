@@ -33,6 +33,7 @@ import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import { RECENT_ACTIVITIES_LIMIT_EXPANDED } from '../../common/journeyDashboard/constants';
 import InfoColumn from '../../../../core/ui/content/InfoColumn';
 import ContentColumn from '../../../../core/ui/content/ContentColumn';
+import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
 
 interface SpaceWelcomeBlockContributor {
   profile: SpaceWelcomeBlockContributorProfileFragment;
@@ -119,7 +120,7 @@ const SpaceDashboardView = ({
             }
 
             return (
-              <InfoColumn>
+              <PageContentColumn columns={12}>
                 <ApplicationButton
                   {...applicationButtonProps}
                   loading={loading}
@@ -127,7 +128,7 @@ const SpaceDashboardView = ({
                   extended={hasExtendedApplicationButton}
                   journeyTypeName="space"
                 />
-              </InfoColumn>
+              </PageContentColumn>
             );
           }}
         </ApplicationButtonContainer>
