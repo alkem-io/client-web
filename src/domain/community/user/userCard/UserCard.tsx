@@ -9,7 +9,6 @@ import ContributeCard from '../../../../core/ui/card/ContributeCard';
 import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
 import { gutters } from '../../../../core/ui/grid/utils';
 import ExpandableCardFooter from '../../../../core/ui/card/ExpandableCardFooter';
-import { useColumns } from '../../../../core/ui/grid/GridContext';
 import { Caption } from '../../../../core/ui/typography';
 import ImageBlurredSides from '../../../../core/ui/image/ImageBlurredSides';
 import TagsComponent from '../../../shared/components/TagsComponent/TagsComponent';
@@ -52,7 +51,7 @@ const UserCard: FC<UserCardProps> = ({
   };
 
   return (
-    <ContributeCard columns={useColumns()} to={url} aria-label="user-card">
+    <ContributeCard to={url} aria-label="user-card">
       <Box>
         {loading ? (
           <Skeleton variant={'rectangular'}>
