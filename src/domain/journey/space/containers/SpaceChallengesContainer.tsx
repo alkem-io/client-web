@@ -40,7 +40,7 @@ export const SpaceChallengesContainer: FC<SpaceChallengesContainerProps> = ({ sp
   const callouts = useCallouts({
     journeyId: spaceId,
     journeyTypeName: 'space',
-    groupNames: [CalloutGroupName.Subspaces_1, CalloutGroupName.Subspaces_2],
+    groupNames: [CalloutGroupName.Subspaces],
   });
 
   return <>{children({ subspaces, callouts }, { loading, error }, {})}</>;

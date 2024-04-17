@@ -10,14 +10,11 @@ import { useSubSpace } from '../hooks/useChallenge';
 
 const renderPage = (calloutGroup: string | undefined) => {
   switch (calloutGroup) {
-    case CalloutGroupName.Home_1:
-    case CalloutGroupName.Home_2:
+    case CalloutGroupName.Home:
       return <ChallengeDashboardPage />;
-    case CalloutGroupName.Contribute_1:
-    case CalloutGroupName.Contribute_2:
+    case CalloutGroupName.Contribute:
       return <SubspaceHomePage />;
-    case CalloutGroupName.Subspaces_1:
-    case CalloutGroupName.Subspaces_2:
+    case CalloutGroupName.Subspaces:
       return <ChallengeOpportunitiesPage />;
     default:
       return <SubspaceHomePage />;
@@ -26,14 +23,11 @@ const renderPage = (calloutGroup: string | undefined) => {
 
 const getPageSection = (calloutGroup: string | undefined): EntityPageSection => {
   switch (calloutGroup) {
-    case CalloutGroupName.Home_1:
-    case CalloutGroupName.Home_2:
+    case CalloutGroupName.Home:
       return EntityPageSection.Dashboard;
-    case CalloutGroupName.Contribute_1:
-    case CalloutGroupName.Contribute_2:
+    case CalloutGroupName.Contribute:
       return EntityPageSection.Contribute;
-    case CalloutGroupName.Subspaces_1:
-    case CalloutGroupName.Subspaces_2:
+    case CalloutGroupName.Subspaces:
       return EntityPageSection.Subsubspaces;
     default:
       return EntityPageSection.Contribute;

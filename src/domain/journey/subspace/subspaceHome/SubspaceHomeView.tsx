@@ -102,7 +102,7 @@ const SubspaceHomeView = ({
           ))}
       </SubspaceInnovationFlow>
       <CalloutsGroupView
-        callouts={filterCallouts(groupedCallouts[CalloutGroupName.Contribute_2])}
+        callouts={filterCallouts(groupedCallouts[CalloutGroupName.Contribute])}
         canCreateCallout={canCreateCallout}
         canCreateCalloutFromTemplate={canCreateCalloutFromTemplate}
         loading={loading}
@@ -110,7 +110,7 @@ const SubspaceHomeView = ({
         calloutNames={calloutNames}
         onSortOrderUpdate={onCalloutsSortOrderUpdate}
         onCalloutUpdate={refetchCallout}
-        groupName={CalloutGroupName.Contribute_2}
+        groupName={CalloutGroupName.Contribute}
         createButtonPlace="top"
         flowState={selectedInnovationFlowState}
       />

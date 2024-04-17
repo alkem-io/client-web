@@ -933,15 +933,11 @@ export type CalloutGroup = {
 };
 
 export enum CalloutGroupName {
-  Community_1 = 'COMMUNITY_1',
-  Community_2 = 'COMMUNITY_2',
-  Contribute_1 = 'CONTRIBUTE_1',
-  Contribute_2 = 'CONTRIBUTE_2',
-  Home_1 = 'HOME_1',
-  Home_2 = 'HOME_2',
+  Community = 'COMMUNITY',
+  Contribute = 'CONTRIBUTE',
+  Home = 'HOME',
   Knowledge = 'KNOWLEDGE',
-  Subspaces_1 = 'SUBSPACES_1',
-  Subspaces_2 = 'SUBSPACES_2',
+  Subspaces = 'SUBSPACES',
 }
 
 export type CalloutPostCreated = {
@@ -2023,8 +2019,8 @@ export type ISearchResults = {
   journeyResultsCount: Scalars['Float'];
 };
 
-export type IngestBulkResult = {
-  __typename?: 'IngestBulkResult';
+export type IngestBatchResult = {
+  __typename?: 'IngestBatchResult';
   /** A message to describe the result of the operation. */
   message?: Maybe<Scalars['String']>;
   /** Whether the operation was successful. */
@@ -2033,10 +2029,12 @@ export type IngestBulkResult = {
 
 export type IngestResult = {
   __typename?: 'IngestResult';
+  /** The result of the operation. */
+  batches: Array<IngestBatchResult>;
   /** The index that the documents were ingested into. */
   index: Scalars['String'];
-  /** The result of the operation. */
-  result: IngestBulkResult;
+  /** Amount of documents indexed. */
+  total?: Maybe<Scalars['Float']>;
 };
 
 export type InnovationFlow = {
@@ -2783,8 +2781,6 @@ export type Mutation = {
   updateSpacePlatformSettings: Space;
   /** Updates one of the Setting on a Space */
   updateSpaceSettings: Space;
-  /** Updates one of the settings on a Space */
-  updateSubspaceSettings: Space;
   /** Updates the specified Tagset. */
   updateTagset: Tagset;
   /** Updates the User. */
@@ -3364,11 +3360,7 @@ export type MutationUpdateSpacePlatformSettingsArgs = {
 };
 
 export type MutationUpdateSpaceSettingsArgs = {
-  settingsData: UpdateSpaceSettingsOnSpaceInput;
-};
-
-export type MutationUpdateSubspaceSettingsArgs = {
-  settingsData: UpdateSubspaceSettingsInput;
+  settingsData: UpdateSpaceSettingsInput;
 };
 
 export type MutationUpdateTagsetArgs = {
@@ -4444,7 +4436,7 @@ export type SearchInput = {
   tagsetNames?: InputMaybe<Array<Scalars['String']>>;
   /** The terms to be searched for within this Space. Max 5. */
   terms: Array<Scalars['String']>;
-  /** Restrict the search to only the specified entity types. Values allowed: user, group, organization, Default is all. */
+  /** Restrict the search to only the specified entity types. Values allowed: space, subspace, user, group, organization, Default is all. */
   typesFilter?: InputMaybe<Array<Scalars['String']>>;
 };
 
@@ -5348,10 +5340,17 @@ export type UpdateSpaceSettingsCollaborationInput = {
   inheritMembershipRights: Scalars['Boolean'];
 };
 
-export type UpdateSpaceSettingsInput = {
+export type UpdateSpaceSettingsEntityInput = {
   collaboration?: InputMaybe<UpdateSpaceSettingsCollaborationInput>;
   membership?: InputMaybe<UpdateSpaceSettingsMembershipInput>;
   privacy?: InputMaybe<UpdateSpaceSettingsPrivacyInput>;
+};
+
+export type UpdateSpaceSettingsInput = {
+  /** Update the settings for the Space. */
+  settings: UpdateSpaceSettingsEntityInput;
+  /** The identifier for the Space whose settings are to be updated. */
+  spaceID: Scalars['String'];
 };
 
 export type UpdateSpaceSettingsMembershipInput = {
@@ -5361,22 +5360,8 @@ export type UpdateSpaceSettingsMembershipInput = {
   trustedOrganizations: Array<Scalars['UUID']>;
 };
 
-export type UpdateSpaceSettingsOnSpaceInput = {
-  /** Update the settings for the Space. */
-  settings: UpdateSpaceSettingsInput;
-  /** The identifier for the Space whose settings are to be updated. */
-  spaceID: Scalars['String'];
-};
-
 export type UpdateSpaceSettingsPrivacyInput = {
   mode: SpacePrivacyMode;
-};
-
-export type UpdateSubspaceSettingsInput = {
-  /** Update the settings for the Subspace. */
-  settings: UpdateSpaceSettingsInput;
-  /** The identifier for the Subspace whose settings are to be updated. */
-  subspaceID: Scalars['String'];
 };
 
 export type UpdateTagsetInput = {
@@ -20468,35 +20453,8 @@ export type SpaceSettingsFragment = {
   };
 };
 
-export type UpdateSubspaceSettingsMutationVariables = Exact<{
-  settingsData: UpdateSubspaceSettingsInput;
-}>;
-
-export type UpdateSubspaceSettingsMutation = {
-  __typename?: 'Mutation';
-  updateSubspaceSettings: {
-    __typename?: 'Space';
-    id: string;
-    settings: {
-      __typename?: 'SpaceSettings';
-      privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
-      membership: {
-        __typename?: 'SpaceSettingsMembership';
-        policy: CommunityMembershipPolicy;
-        trustedOrganizations: Array<string>;
-      };
-      collaboration: {
-        __typename?: 'SpaceSettingsCollaboration';
-        allowMembersToCreateCallouts: boolean;
-        allowMembersToCreateSubspaces: boolean;
-        inheritMembershipRights: boolean;
-      };
-    };
-  };
-};
-
 export type UpdateSpaceSettingsMutationVariables = Exact<{
-  settingsData: UpdateSpaceSettingsOnSpaceInput;
+  settingsData: UpdateSpaceSettingsInput;
 }>;
 
 export type UpdateSpaceSettingsMutation = {
