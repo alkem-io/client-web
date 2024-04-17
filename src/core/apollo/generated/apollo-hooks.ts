@@ -3342,6 +3342,14 @@ export const SearchResultOrganizationFragmentDoc = gql`
 `;
 export const SearchResultSpaceFragmentDoc = gql`
   fragment SearchResultSpace on SearchResultSpace {
+    parentSpace {
+      id
+      profile {
+        id
+        url
+        displayName
+      }
+    }
     space {
       id
       profile {
@@ -3368,117 +3376,6 @@ export const SearchResultSpaceFragmentDoc = gql`
         id
         myMembershipStatus
       }
-      account {
-        id
-        license {
-          id
-          visibility
-        }
-      }
-    }
-  }
-  ${TagsetDetailsFragmentDoc}
-  ${VisualUriFragmentDoc}
-`;
-export const SearchResultChallengeFragmentDoc = gql`
-  fragment SearchResultChallenge on SearchResultChallenge {
-    subspace {
-      id
-      profile {
-        id
-        url
-        displayName
-        tagset {
-          ...TagsetDetails
-        }
-        tagline
-        visuals {
-          ...VisualUri
-        }
-      }
-      account {
-        spaceID
-      }
-      context {
-        id
-        vision
-      }
-      authorization {
-        id
-        anonymousReadAccess
-      }
-      community {
-        id
-        myMembershipStatus
-      }
-    }
-    space {
-      id
-      profile {
-        id
-        url
-        displayName
-        tagline
-      }
-      authorization {
-        id
-        anonymousReadAccess
-      }
-      account {
-        id
-        license {
-          id
-          visibility
-        }
-      }
-    }
-  }
-  ${TagsetDetailsFragmentDoc}
-  ${VisualUriFragmentDoc}
-`;
-export const SearchResultOpportunityFragmentDoc = gql`
-  fragment SearchResultOpportunity on SearchResultOpportunity {
-    subsubspace {
-      id
-      profile {
-        id
-        url
-        displayName
-        tagset {
-          ...TagsetDetails
-        }
-        tagline
-        visuals {
-          ...VisualUri
-        }
-      }
-      context {
-        id
-        vision
-      }
-      authorization {
-        id
-        anonymousReadAccess
-      }
-      community {
-        id
-        myMembershipStatus
-      }
-    }
-    subspace {
-      id
-      profile {
-        id
-        url
-        displayName
-      }
-      authorization {
-        id
-        anonymousReadAccess
-      }
-    }
-    space {
-      id
       account {
         id
         license {
@@ -3675,6 +3572,7 @@ export const SpaceExplorerSpaceFragmentDoc = gql`
       id
       anonymousReadAccess
     }
+    type
     profile {
       id
       url
@@ -3718,6 +3616,7 @@ export const SpaceExplorerSearchSpaceFragmentDoc = gql`
 export const SpaceExplorerSubspaceFragmentDoc = gql`
   fragment SpaceExplorerSubspace on Space {
     id
+    type
     profile {
       id
       url
@@ -3746,18 +3645,6 @@ export const SpaceExplorerSubspaceFragmentDoc = gql`
     }
   }
   ${VisualUriFragmentDoc}
-`;
-export const SpaceExplorerSearchChallengeFragmentDoc = gql`
-  fragment SpaceExplorerSearchChallenge on SearchResultChallenge {
-    space {
-      ...SpaceExplorerSpace
-    }
-    subspace {
-      ...SpaceExplorerSubspace
-    }
-  }
-  ${SpaceExplorerSpaceFragmentDoc}
-  ${SpaceExplorerSubspaceFragmentDoc}
 `;
 export const SpaceExplorerSpaceWithChallengesFragmentDoc = gql`
   fragment SpaceExplorerSpaceWithChallenges on Space {
@@ -21586,12 +21473,6 @@ export const SearchDocument = gql`
         ... on SearchResultSpace {
           ...SearchResultSpace
         }
-        ... on SearchResultChallenge {
-          ...SearchResultChallenge
-        }
-        ... on SearchResultOpportunity {
-          ...SearchResultOpportunity
-        }
       }
       journeyResultsCount
       calloutResults {
@@ -21629,8 +21510,6 @@ export const SearchDocument = gql`
     }
   }
   ${SearchResultSpaceFragmentDoc}
-  ${SearchResultChallengeFragmentDoc}
-  ${SearchResultOpportunityFragmentDoc}
   ${SearchResultCalloutFragmentDoc}
   ${SearchResultUserFragmentDoc}
   ${SearchResultOrganizationFragmentDoc}
@@ -22989,14 +22868,10 @@ export const SpaceExplorerSearchDocument = gql`
         ... on SearchResultSpace {
           ...SpaceExplorerSearchSpace
         }
-        ... on SearchResultChallenge {
-          ...SpaceExplorerSearchChallenge
-        }
       }
     }
   }
   ${SpaceExplorerSearchSpaceFragmentDoc}
-  ${SpaceExplorerSearchChallengeFragmentDoc}
 `;
 
 /**
