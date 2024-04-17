@@ -1,4 +1,4 @@
-mutation UpdateSpaceSettings($settingsData: UpdateSpaceSettingsOnSpaceInput!) {
+mutation UpdateSpaceSettings($settingsData: UpdateSpaceSettingsInput!) {
   updateSpaceSettings(settingsData: $settingsData) {
     id
     settings {

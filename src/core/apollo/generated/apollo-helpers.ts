@@ -1570,7 +1570,6 @@ export type MutationKeySpecifier = (
   | 'updateSpaceDefaults'
   | 'updateSpacePlatformSettings'
   | 'updateSpaceSettings'
-  | 'updateSubspaceSettings'
   | 'updateTagset'
   | 'updateUser'
   | 'updateUserGroup'
@@ -1734,7 +1733,6 @@ export type MutationFieldPolicy = {
   updateSpaceDefaults?: FieldPolicy<any> | FieldReadFunction<any>;
   updateSpacePlatformSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   updateSpaceSettings?: FieldPolicy<any> | FieldReadFunction<any>;
-  updateSubspaceSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   updateTagset?: FieldPolicy<any> | FieldReadFunction<any>;
   updateUser?: FieldPolicy<any> | FieldReadFunction<any>;
   updateUserGroup?: FieldPolicy<any> | FieldReadFunction<any>;

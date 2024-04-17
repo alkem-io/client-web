@@ -2785,8 +2785,6 @@ export type Mutation = {
   updateSpacePlatformSettings: Space;
   /** Updates one of the Setting on a Space */
   updateSpaceSettings: Space;
-  /** Updates one of the settings on a Space */
-  updateSubspaceSettings: Space;
   /** Updates the specified Tagset. */
   updateTagset: Tagset;
   /** Updates the User. */
@@ -3366,11 +3364,7 @@ export type MutationUpdateSpacePlatformSettingsArgs = {
 };
 
 export type MutationUpdateSpaceSettingsArgs = {
-  settingsData: UpdateSpaceSettingsOnSpaceInput;
-};
-
-export type MutationUpdateSubspaceSettingsArgs = {
-  settingsData: UpdateSubspaceSettingsInput;
+  settingsData: UpdateSpaceSettingsInput;
 };
 
 export type MutationUpdateTagsetArgs = {
@@ -5316,10 +5310,17 @@ export type UpdateSpaceSettingsCollaborationInput = {
   inheritMembershipRights: Scalars['Boolean'];
 };
 
-export type UpdateSpaceSettingsInput = {
+export type UpdateSpaceSettingsEntityInput = {
   collaboration?: InputMaybe<UpdateSpaceSettingsCollaborationInput>;
   membership?: InputMaybe<UpdateSpaceSettingsMembershipInput>;
   privacy?: InputMaybe<UpdateSpaceSettingsPrivacyInput>;
+};
+
+export type UpdateSpaceSettingsInput = {
+  /** Update the settings for the Space. */
+  settings: UpdateSpaceSettingsEntityInput;
+  /** The identifier for the Space whose settings are to be updated. */
+  spaceID: Scalars['String'];
 };
 
 export type UpdateSpaceSettingsMembershipInput = {
@@ -5329,22 +5330,8 @@ export type UpdateSpaceSettingsMembershipInput = {
   trustedOrganizations: Array<Scalars['UUID']>;
 };
 
-export type UpdateSpaceSettingsOnSpaceInput = {
-  /** Update the settings for the Space. */
-  settings: UpdateSpaceSettingsInput;
-  /** The identifier for the Space whose settings are to be updated. */
-  spaceID: Scalars['String'];
-};
-
 export type UpdateSpaceSettingsPrivacyInput = {
   mode: SpacePrivacyMode;
-};
-
-export type UpdateSubspaceSettingsInput = {
-  /** Update the settings for the Subspace. */
-  settings: UpdateSpaceSettingsInput;
-  /** The identifier for the Subspace whose settings are to be updated. */
-  subspaceID: Scalars['String'];
 };
 
 export type UpdateTagsetInput = {
@@ -20599,35 +20586,8 @@ export type SpaceSettingsFragment = {
   };
 };
 
-export type UpdateSubspaceSettingsMutationVariables = Exact<{
-  settingsData: UpdateSubspaceSettingsInput;
-}>;
-
-export type UpdateSubspaceSettingsMutation = {
-  __typename?: 'Mutation';
-  updateSubspaceSettings: {
-    __typename?: 'Space';
-    id: string;
-    settings: {
-      __typename?: 'SpaceSettings';
-      privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
-      membership: {
-        __typename?: 'SpaceSettingsMembership';
-        policy: CommunityMembershipPolicy;
-        trustedOrganizations: Array<string>;
-      };
-      collaboration: {
-        __typename?: 'SpaceSettingsCollaboration';
-        allowMembersToCreateCallouts: boolean;
-        allowMembersToCreateSubspaces: boolean;
-        inheritMembershipRights: boolean;
-      };
-    };
-  };
-};
-
 export type UpdateSpaceSettingsMutationVariables = Exact<{
-  settingsData: UpdateSpaceSettingsOnSpaceInput;
+  settingsData: UpdateSpaceSettingsInput;
 }>;
 
 export type UpdateSpaceSettingsMutation = {
