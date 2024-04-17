@@ -23,7 +23,7 @@ export interface SpaceChallengesPageProps {}
 const SpaceChallengesPage: FC<SpaceChallengesPageProps> = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { spaceId } = useRouteResolver();
+  const { spaceId, journeyPath } = useRouteResolver();
   const { spaceNameId, permissions, license } = useSpace();
   const spaceVisibility = license.visibility;
 
@@ -53,7 +53,7 @@ const SpaceChallengesPage: FC<SpaceChallengesPageProps> = () => {
   );
 
   return (
-    <SpacePageLayout currentSection={EntityPageSection.Subspaces}>
+    <SpacePageLayout journeyPath={journeyPath} currentSection={EntityPageSection.Subspaces}>
       <SpaceChallengesContainer spaceId={spaceId}>
         {({ callouts, ...entities }, state) => (
           <ChildJourneyView

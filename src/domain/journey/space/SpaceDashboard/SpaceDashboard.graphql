@@ -28,10 +28,6 @@ fragment SpacePage on Space {
   nameID
   account {
     id
-    license {
-      id
-      visibility
-    }
     host {
       ...AssociatedOrganizationDetails
       profile {
@@ -49,7 +45,6 @@ fragment SpacePage on Space {
     anonymousReadAccess
     myPrivileges
   }
-
   profile {
     id
     url

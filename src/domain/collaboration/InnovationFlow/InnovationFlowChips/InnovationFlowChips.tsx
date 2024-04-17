@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, styled, Tooltip } from '@mui/material';
 import { ArrowRight } from '@mui/icons-material';
@@ -9,15 +9,12 @@ import TranslationKey from '../../../../core/i18n/utils/TranslationKey';
 import i18n from '../../../../core/i18n/config';
 import { InnovationFlowState } from '../InnovationFlow';
 import { Caption } from '../../../../core/ui/typography';
-import ButtonWithTooltip from '../../../../core/ui/button/ButtonWithTooltip';
-import { InnovationFlowIcon } from '../InnovationFlowIcon/InnovationFlowIcon';
 
 interface InnovationFlowChipsProps {
   states: InnovationFlowState[];
   currentState?: string;
   selectedState: string | undefined;
-  showSettings?: boolean;
-  onSettingsOpen?: () => void;
+  settings?: ReactNode;
   onSelectState?: (state: InnovationFlowState) => void;
 }
 
@@ -33,9 +30,8 @@ const InnovationFlowChips = ({
   states,
   currentState,
   selectedState,
-  showSettings,
-  onSettingsOpen,
   onSelectState,
+  settings,
 }: InnovationFlowChipsProps) => {
   const { t } = useTranslation();
 
@@ -105,16 +101,7 @@ const InnovationFlowChips = ({
             </Button>
           ))}
         </Gutters>
-        {showSettings && (
-          <ButtonWithTooltip
-            onClick={onSettingsOpen}
-            tooltip={t('components.innovationFlowSettings.buttonTooltip')}
-            variant="outlined"
-            iconButton
-          >
-            <InnovationFlowIcon />
-          </ButtonWithTooltip>
-        )}
+        {settings}
       </Gutters>
       {selectedStateDescription && <FlowStateDescription>{selectedStateDescription}</FlowStateDescription>}
     </>

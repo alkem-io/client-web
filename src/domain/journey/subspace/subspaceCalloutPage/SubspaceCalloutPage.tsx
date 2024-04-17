@@ -1,6 +1,6 @@
 import React from 'react';
 import CalloutPage from '../../../collaboration/CalloutPage/CalloutPage';
-import JourneyContributePage from '../../common/JourneyContributePage/JourneyContributePage';
+import SubspaceHomePage from '../subspaceHome/SubspaceHomePage';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import { JourneyCalloutDialogProps } from '../../common/JourneyCalloutDialog/JourneyCalloutDialog';
 import ChallengeDashboardPage from '../pages/SubspaceDashboardPage';
@@ -15,12 +15,12 @@ const renderPage = (calloutGroup: string | undefined) => {
       return <ChallengeDashboardPage />;
     case CalloutGroupName.Contribute_1:
     case CalloutGroupName.Contribute_2:
-      return <JourneyContributePage journeyTypeName="subspace" />;
+      return <SubspaceHomePage />;
     case CalloutGroupName.Subspaces_1:
     case CalloutGroupName.Subspaces_2:
       return <ChallengeOpportunitiesPage />;
     default:
-      return <JourneyContributePage journeyTypeName="subspace" />;
+      return <SubspaceHomePage />;
   }
 };
 
