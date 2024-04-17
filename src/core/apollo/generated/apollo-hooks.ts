@@ -9840,7 +9840,12 @@ export type ReplyToMessageMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.ReplyToMessageMutationVariables
 >;
 export const MentionableUsersDocument = gql`
-  query MentionableUsers($filter: UserFilterInput, $first: Int, $communityId: UUID!) {
+  query MentionableUsers(
+    $filter: UserFilterInput
+    $first: Int
+    $communityId: UUID! = "00000000-0000-0000-0000-000000000000"
+    $includeVirtualContributors: Boolean!
+  ) {
     usersPaginated(filter: $filter, first: $first) {
       users {
         id
@@ -9859,7 +9864,7 @@ export const MentionableUsersDocument = gql`
         }
       }
     }
-    lookup {
+    lookup @include(if: $includeVirtualContributors) {
       community(ID: $communityId) {
         virtualContributorsInRole(role: MEMBER) {
           id
@@ -9893,6 +9898,7 @@ export const MentionableUsersDocument = gql`
  *      filter: // value for 'filter'
  *      first: // value for 'first'
  *      communityId: // value for 'communityId'
+ *      includeVirtualContributors: // value for 'includeVirtualContributors'
  *   },
  * });
  */
