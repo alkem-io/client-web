@@ -22,6 +22,8 @@ import { JourneyTypeName } from '../../journey/JourneyTypeName';
 
 // If url params contains `highlight=YYYY-MM-DD` events in that date will be highlighted
 export const HIGHLIGHT_PARAM_NAME = 'highlight';
+export const INIT_CREATING_EVENT_PARAM = 'new';
+export const CALENDAR_PATH = `${EntityPageSection.Dashboard}/calendar`;
 
 export interface CalendarDialogProps {
   open: boolean;
@@ -36,6 +38,7 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, journeyId, journeyTypeN
   const navigate = useNavigate();
 
   const params = useQueryParams();
+  const isCreatingEventInit = params.get(INIT_CREATING_EVENT_PARAM);
   const highlightedDayParam: string | null = params.get(HIGHLIGHT_PARAM_NAME);
   const highlightedDay = useMemo(
     () =>
@@ -94,7 +97,7 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, journeyId, journeyTypeN
             const handleDeleteEvent = async (eventId: string) => {
               await deleteEvent(eventId);
               setDeletingEvent(undefined);
-              navigate(`${EntityPageSection.Dashboard}/calendar`);
+              navigate(CALENDAR_PATH);
             };
             return (
               <ConfirmationDialog
@@ -119,10 +122,11 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, journeyId, journeyTypeN
             );
 
             // Creating a new event:
-          } else if (isCreatingEvent) {
+          } else if (isCreatingEvent || isCreatingEventInit) {
             const handleNewEventSubmit = async (calendarEvent: CalendarEventFormData) => {
               await createEvent(calendarEvent);
               setIsCreatingEvent(false);
+              navigate(CALENDAR_PATH);
             };
 
             return (
@@ -132,7 +136,9 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, journeyId, journeyTypeN
                 onSubmit={handleNewEventSubmit}
                 onClose={handleClose}
                 isSubmitting={creatingCalendarEvent}
-                actions={<BackButton onClick={() => setIsCreatingEvent(false)} />}
+                actions={
+                  isCreatingEventInit ? <div>&nbsp;</div> : <BackButton onClick={() => setIsCreatingEvent(false)} />
+                }
               />
             );
 
@@ -197,7 +203,7 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, journeyId, journeyTypeN
                   onEdit={() => setEditingEventId(event?.nameID)}
                   canDelete={privileges.canDeleteEvents}
                   onDelete={() => setDeletingEvent(event)}
-                  actions={<BackButton onClick={() => navigate(`${EntityPageSection.Dashboard}/calendar`)} />}
+                  actions={<BackButton onClick={() => navigate(CALENDAR_PATH)} />}
                 />
               );
             }
