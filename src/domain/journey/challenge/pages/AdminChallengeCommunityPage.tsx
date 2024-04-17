@@ -14,6 +14,7 @@ import ChallengeCommunityAdminMembershipPreferencesSection from '../../../platfo
 import CommunityApplicationForm from '../../../community/community/CommunityApplicationForm/CommunityApplicationForm';
 import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
+import CommunityVirtualContributors from '../../../community/community/CommunityAdmin/CommunityVirtualContributors';
 
 const AdminChallengeCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   const { loading: isLoadingChallenge, communityId, challengeId } = useChallenge();
@@ -23,6 +24,7 @@ const AdminChallengeCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../
   const {
     users,
     organizations,
+    virtualContributors,
     applications,
     communityPolicy,
     permissions,
@@ -32,10 +34,13 @@ const AdminChallengeCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../
     onOrganizationLeadChange,
     onAddUser,
     onAddOrganization,
+    onAddVirtualContributor,
     onRemoveUser,
     onRemoveOrganization,
+    onRemoveVirtualContributor,
     getAvailableUsers,
     getAvailableOrganizations,
+    getAvailableVirtualContributors,
     loading,
   } = useCommunityAdmin({ communityId, spaceId, challengeId });
 
@@ -84,6 +89,20 @@ const AdminChallengeCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../
             />
           </PageContentBlock>
         </PageContentColumn>
+        {permissions.virtualContributorsEnabled && (
+          <PageContentColumn columns={6}>
+            <PageContentBlock>
+              <CommunityVirtualContributors
+                virtualContributors={virtualContributors}
+                canAddVirtualContributors={permissions.canAddVirtualContributors}
+                onAddMember={onAddVirtualContributor}
+                onRemoveMember={onRemoveVirtualContributor}
+                fetchAvailableVirtualContributors={getAvailableVirtualContributors}
+                loading={loading}
+              />
+            </PageContentBlock>
+          </PageContentColumn>
+        )}
       </PageContent>
       <PageContentBlockSeamless>
         <ChallengeCommunityAdminMembershipPreferencesSection challengeId={challengeId} />
