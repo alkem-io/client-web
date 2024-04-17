@@ -67,6 +67,12 @@ export const SubspaceInnovationFlow = createLayout(({ columns, children }: Props
   return <GridProvider columns={columns}>{children}</GridProvider>;
 });
 
+/**
+ * The rationale for this context is to allow actions to be consumed by individual components,
+ * and not rendered in the action list (menu or buttons).
+ * Rather that handling a set of rules whether the action should be rendered in the menu or not,
+ * we let the child components decide.
+ */
 interface ActionsProvider {
   consume(action: SubspaceDialog): DialogDefinitionProps | undefined;
   dispose(action: SubspaceDialog): void;
