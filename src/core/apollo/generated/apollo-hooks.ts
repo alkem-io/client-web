@@ -18110,70 +18110,8 @@ export function refetchSpaceSettingsQuery(variables: SchemaTypes.SpaceSettingsQu
   return { query: SpaceSettingsDocument, variables: variables };
 }
 
-export const UpdateSubspaceSettingsDocument = gql`
-  mutation UpdateSubspaceSettings($settingsData: UpdateSubspaceSettingsInput!) {
-    updateSubspaceSettings(settingsData: $settingsData) {
-      id
-      settings {
-        privacy {
-          mode
-        }
-        membership {
-          policy
-          trustedOrganizations
-        }
-        collaboration {
-          allowMembersToCreateCallouts
-          allowMembersToCreateSubspaces
-          inheritMembershipRights
-        }
-      }
-    }
-  }
-`;
-export type UpdateSubspaceSettingsMutationFn = Apollo.MutationFunction<
-  SchemaTypes.UpdateSubspaceSettingsMutation,
-  SchemaTypes.UpdateSubspaceSettingsMutationVariables
->;
-
-/**
- * __useUpdateSubspaceSettingsMutation__
- *
- * To run a mutation, you first call `useUpdateSubspaceSettingsMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateSubspaceSettingsMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateSubspaceSettingsMutation, { data, loading, error }] = useUpdateSubspaceSettingsMutation({
- *   variables: {
- *      settingsData: // value for 'settingsData'
- *   },
- * });
- */
-export function useUpdateSubspaceSettingsMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.UpdateSubspaceSettingsMutation,
-    SchemaTypes.UpdateSubspaceSettingsMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.UpdateSubspaceSettingsMutation,
-    SchemaTypes.UpdateSubspaceSettingsMutationVariables
-  >(UpdateSubspaceSettingsDocument, options);
-}
-
-export type UpdateSubspaceSettingsMutationHookResult = ReturnType<typeof useUpdateSubspaceSettingsMutation>;
-export type UpdateSubspaceSettingsMutationResult = Apollo.MutationResult<SchemaTypes.UpdateSubspaceSettingsMutation>;
-export type UpdateSubspaceSettingsMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.UpdateSubspaceSettingsMutation,
-  SchemaTypes.UpdateSubspaceSettingsMutationVariables
->;
 export const UpdateSpaceSettingsDocument = gql`
-  mutation UpdateSpaceSettings($settingsData: UpdateSpaceSettingsOnSpaceInput!) {
+  mutation UpdateSpaceSettings($settingsData: UpdateSpaceSettingsInput!) {
     updateSpaceSettings(settingsData: $settingsData) {
       id
       settings {

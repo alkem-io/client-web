@@ -7,7 +7,7 @@ import { useSubSpace } from '../../hooks/useChallenge';
 import { CommunityMembershipPolicy, SpacePrivacyMode } from '../../../../../core/apollo/generated/graphql-schema';
 import {
   useSpaceSettingsQuery,
-  useUpdateSubspaceSettingsMutation,
+  useUpdateSpaceSettingsMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { BlockTitle } from '../../../../../core/ui/typography/components';
 import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
@@ -23,7 +23,7 @@ const SubspaceAuthorizationPage: FC<SubspaceAuthorizationPageProps> = ({ routePr
       spaceId: challengeId,
     },
   });
-  const [updateSubspaceSettings] = useUpdateSubspaceSettingsMutation();
+  const [updateSubspaceSettings] = useUpdateSpaceSettingsMutation();
   const settings = settingsData?.space?.settings;
 
   const handleUpdateSettings = async (
@@ -39,7 +39,7 @@ const SubspaceAuthorizationPage: FC<SubspaceAuthorizationPageProps> = ({ routePr
     await updateSubspaceSettings({
       variables: {
         settingsData: {
-          subspaceID: challengeId,
+          spaceID: challengeId,
           settings: {
             privacy: {
               mode: privacyMode,
