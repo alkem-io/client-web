@@ -100,7 +100,7 @@ const UserCard: FC<UserCardProps> = ({
           <Caption fontSize={gutters(0.7)}>{displayName}</Caption>
           {roleName && <InfoRow text={roleName} icon={PersonIcon} ariaLabel="Role name" loading={loading} />}
           <InfoRow
-            text={location || 'No location specified'}
+            text={location || t('components.profileSegment.location.noLocation')}
             icon={LocationOnOutlinedIcon}
             ariaLabel="Location"
             loading={loading}

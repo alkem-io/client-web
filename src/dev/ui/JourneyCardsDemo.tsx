@@ -1,4 +1,3 @@
-import { Box } from '@mui/material';
 import PageContent from '../../core/ui/content/PageContent';
 import PageContentColumn from '../../core/ui/content/PageContentColumn';
 import PageContentBlock from '../../core/ui/content/PageContentBlock';
@@ -88,24 +87,19 @@ const JourneyCardsDemo = () => {
           <PageContentBlock>
             <PageContentBlockHeader title="User Cards" />
             <PageContentBlockGrid disablePadding cards>
-              <Box flexGrow={1} flexBasis={0}>
-                <UserCard
-                  avatarSrc="https://alkem.io/api/private/rest/storage/document/0e228032-f3ab-4dec-9cd1-01d8a6e3ef2b"
-                  displayName="Emilia Pavlova"
-                  roleName="Admin"
-                  city="Sofia"
-                  country="Bulgaria"
-                  tags={['dreamer', 'nonpractical']}
-                />
-              </Box>
-              <Box flexGrow={1} flexBasis={0}>
-                <UserCard
-                  avatarSrc="http://localhost:3000/api/private/rest/storage/document/fc346b8b-3e89-4c74-ad71-ca26910952ed"
-                  displayName="Test User"
-                  isContactable={false}
-                />
-              </Box>
-              <Box flexGrow={1} flexBasis={0} />
+              <UserCard
+                avatarSrc="https://alkem.io/api/private/rest/storage/document/0e228032-f3ab-4dec-9cd1-01d8a6e3ef2b"
+                displayName="Emilia Pavlova"
+                roleName="Admin"
+                city="Sofia"
+                country="Bulgaria"
+                tags={['dreamer', 'nonpractical']}
+              />
+              <UserCard
+                avatarSrc="http://localhost:3000/api/private/rest/storage/document/fc346b8b-3e89-4c74-ad71-ca26910952ed"
+                displayName="Test User"
+                isContactable={false}
+              />
             </PageContentBlockGrid>
           </PageContentBlock>
           <PageContentBlock>
