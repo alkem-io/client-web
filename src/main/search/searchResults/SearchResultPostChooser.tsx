@@ -11,8 +11,6 @@ const SearchResultPostChooser = ({
 }): React.ReactElement | null => {
   const {
     hydrateSpaceCard,
-    hydrateChallengeCard,
-    hydrateOpportunityCard,
     hydrateUserCard,
     hydrateOrganizationCard,
     hydrateContributionCard,
