@@ -119,7 +119,7 @@ const SpaceExplorerContainer = ({ searchTerms, children }: SpaceExplorerContaine
         if (entry.type === SearchResultType.Space) {
           return {
             ...entry.space,
-            parent: entry.parentSpace,
+            parent: undefined,
             matchedTerms: entry.terms,
           };
         }
