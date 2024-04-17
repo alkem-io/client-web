@@ -166,7 +166,7 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ opportuni
   const callouts = useCallouts({
     journeyId: opportunityId,
     journeyTypeName: 'subsubspace',
-    groupNames: [CalloutGroupName.Home_1, CalloutGroupName.Home_2],
+    groupNames: [CalloutGroupName.Home],
   });
 
   return (

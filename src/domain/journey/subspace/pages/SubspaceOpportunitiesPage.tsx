@@ -90,9 +90,9 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
                 formComponent={CreateOpportunityForm}
               />
             }
-            childrenLeft={
+            children={
               <CalloutsGroupView
-                callouts={callouts.groupedCallouts[CalloutGroupName.Subspaces_1]}
+                callouts={callouts.groupedCallouts[CalloutGroupName.Subspaces]}
                 canCreateCallout={callouts.canCreateCallout}
                 canCreateCalloutFromTemplate={callouts.canCreateCalloutFromTemplate}
                 loading={callouts.loading}
@@ -100,20 +100,7 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
                 calloutNames={callouts.calloutNames}
                 onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
                 onCalloutUpdate={callouts.refetchCallout}
-                groupName={CalloutGroupName.Subspaces_1}
-              />
-            }
-            childrenRight={
-              <CalloutsGroupView
-                callouts={callouts.groupedCallouts[CalloutGroupName.Subspaces_2]}
-                canCreateCallout={callouts.canCreateCallout}
-                canCreateCalloutFromTemplate={callouts.canCreateCalloutFromTemplate}
-                loading={callouts.loading}
-                journeyTypeName="subspace"
-                calloutNames={callouts.calloutNames}
-                onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
-                onCalloutUpdate={callouts.refetchCallout}
-                groupName={CalloutGroupName.Subspaces_2}
+                groupName={CalloutGroupName.Subspaces}
               />
             }
           />
