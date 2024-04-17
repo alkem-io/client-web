@@ -126,7 +126,7 @@ export const SubspacePageContainer: FC<ChallengePageContainerProps> = ({ challen
   const callouts = useCallouts({
     journeyId: challengeId,
     journeyTypeName: 'subspace',
-    groupNames: [CalloutGroupName.Home_1, CalloutGroupName.Home_2],
+    groupNames: [CalloutGroupName.Home],
   });
 
   const isMember = subspace?.space?.community?.myMembershipStatus === CommunityMembershipStatus.Member;

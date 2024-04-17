@@ -153,7 +153,7 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ spaceId, 
   const callouts = useCallouts({
     journeyId: spaceId,
     journeyTypeName: 'space',
-    groupNames: [CalloutGroupName.Home_1, CalloutGroupName.Home_2],
+    groupNames: [CalloutGroupName.Home],
   });
 
   return (

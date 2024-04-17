@@ -160,22 +160,11 @@ const SpaceDashboardView = ({
           />
           {timelineReadAccess && <DashboardCalendarSection journeyId={spaceId} journeyTypeName={journeyTypeName} />}
           {communityReadAccess && <DashboardUpdatesSection communityId={communityId} shareUrl={shareUpdatesUrl} />}
-          <CalloutsGroupView
-            callouts={callouts.groupedCallouts[CalloutGroupName.Home_1]}
-            canCreateCallout={callouts.canCreateCallout}
-            canCreateCalloutFromTemplate={callouts.canCreateCalloutFromTemplate}
-            loading={callouts.loading}
-            journeyTypeName={journeyTypeName}
-            calloutNames={callouts.calloutNames}
-            onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
-            onCalloutUpdate={callouts.refetchCallout}
-            groupName={CalloutGroupName.Home_1}
-          />
         </InfoColumn>
 
         <ContentColumn>
           <DashboardRecentContributionsBlock
-            halfWidth={(callouts.groupedCallouts[CalloutGroupName.Home_2]?.length ?? 0) > 0}
+            halfWidth={(callouts.groupedCallouts[CalloutGroupName.Home]?.length ?? 0) > 0}
             readUsersAccess={readUsersAccess}
             entityReadAccess={entityReadAccess}
             activitiesLoading={activityLoading}
@@ -185,7 +174,7 @@ const SpaceDashboardView = ({
             onActivitiesDialogOpen={() => fetchMoreActivities(RECENT_ACTIVITIES_LIMIT_EXPANDED)}
           />
           <CalloutsGroupView
-            callouts={callouts.groupedCallouts[CalloutGroupName.Home_2]}
+            callouts={callouts.groupedCallouts[CalloutGroupName.Home]}
             canCreateCallout={callouts.canCreateCallout}
             canCreateCalloutFromTemplate={callouts.canCreateCalloutFromTemplate}
             loading={callouts.loading}
@@ -193,7 +182,7 @@ const SpaceDashboardView = ({
             calloutNames={callouts.calloutNames}
             onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
             onCalloutUpdate={callouts.refetchCallout}
-            groupName={CalloutGroupName.Home_2}
+            groupName={CalloutGroupName.Home}
             blockProps={(callout, index) => {
               if (index === 0) {
                 return {

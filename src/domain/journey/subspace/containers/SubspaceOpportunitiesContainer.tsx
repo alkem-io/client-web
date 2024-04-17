@@ -48,7 +48,7 @@ export const ChallengeOpportunitiesContainer: FC<ChallengeOpportunitiesContainer
   const callouts = useCallouts({
     journeyId: _challenge?.space?.id,
     journeyTypeName: 'subspace',
-    groupNames: [CalloutGroupName.Subspaces_1, CalloutGroupName.Subspaces_2],
+    groupNames: [CalloutGroupName.Subspaces],
   });
 
   return (
