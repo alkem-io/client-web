@@ -162,22 +162,11 @@ const JourneyDashboardView = ({
             <SeeMore subject={t('common.contributors')} to={`${EntityPageSection.Dashboard}/contributors`} />
           </EntityDashboardContributorsSection>
         )}
-        <CalloutsGroupView
-          callouts={callouts.groupedCallouts[CalloutGroupName.Home_1]}
-          canCreateCallout={callouts.canCreateCallout}
-          canCreateCalloutFromTemplate={callouts.canCreateCalloutFromTemplate}
-          loading={callouts.loading}
-          journeyTypeName={journeyTypeName}
-          calloutNames={callouts.calloutNames}
-          onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
-          onCalloutUpdate={callouts.refetchCallout}
-          groupName={CalloutGroupName.Home_1}
-        />
       </InfoColumn>
 
       <ContentColumn>
         <DashboardRecentContributionsBlock
-          halfWidth={(callouts.groupedCallouts[CalloutGroupName.Home_2]?.length ?? 0) > 0}
+          halfWidth={(callouts.groupedCallouts[CalloutGroupName.Home]?.length ?? 0) > 0}
           readUsersAccess={readUsersAccess}
           entityReadAccess={entityReadAccess}
           activitiesLoading={activityLoading}
@@ -187,7 +176,7 @@ const JourneyDashboardView = ({
           onActivitiesDialogOpen={() => fetchMoreActivities(RECENT_ACTIVITIES_LIMIT_EXPANDED)}
         />
         <CalloutsGroupView
-          callouts={callouts.groupedCallouts[CalloutGroupName.Home_2]}
+          callouts={callouts.groupedCallouts[CalloutGroupName.Home]}
           canCreateCallout={callouts.canCreateCallout}
           canCreateCalloutFromTemplate={callouts.canCreateCalloutFromTemplate}
           loading={callouts.loading}
@@ -195,7 +184,7 @@ const JourneyDashboardView = ({
           calloutNames={callouts.calloutNames}
           onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
           onCalloutUpdate={callouts.refetchCallout}
-          groupName={CalloutGroupName.Home_2}
+          groupName={CalloutGroupName.Home}
           blockProps={(callout, index) => {
             if (index === 0) {
               return {

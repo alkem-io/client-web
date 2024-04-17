@@ -32,7 +32,7 @@ const JourneyContributePageContainer = ({
   const callouts = useCallouts({
     journeyId,
     journeyTypeName,
-    groupNames: [CalloutGroupName.Contribute_1, CalloutGroupName.Contribute_2],
+    groupNames: [CalloutGroupName.Contribute],
   });
 
   return <>{children({ innovationFlowStates, callouts, collaborationId })}</>;

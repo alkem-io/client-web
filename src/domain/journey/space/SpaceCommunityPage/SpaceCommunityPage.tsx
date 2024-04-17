@@ -118,17 +118,6 @@ const SpaceCommunityPage = () => {
                 messageReceivers={messageReceivers}
               />
               <CommunityGuidelinesBlock communityId={communityId} />
-              <CalloutsGroupView
-                callouts={callouts.groupedCallouts[CalloutGroupName.Community_1]}
-                canCreateCallout={callouts.canCreateCallout}
-                canCreateCalloutFromTemplate={callouts.canCreateCalloutFromTemplate}
-                loading={callouts.loading}
-                journeyTypeName="space"
-                calloutNames={callouts.calloutNames}
-                onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
-                onCalloutUpdate={callouts.refetchCallout}
-                groupName={CalloutGroupName.Community_1}
-              />
             </InfoColumn>
             <ContentColumn>
               <CommunityContributorsBlockWide users={memberUsers} organizations={memberOrganizations} />
@@ -153,7 +142,7 @@ const SpaceCommunityPage = () => {
                 </DialogWithGrid>
               </PageContentBlock>
               <CalloutsGroupView
-                callouts={callouts.groupedCallouts[CalloutGroupName.Community_2]}
+                callouts={callouts.groupedCallouts[CalloutGroupName.Community]}
                 canCreateCallout={callouts.canCreateCallout}
                 canCreateCalloutFromTemplate={callouts.canCreateCalloutFromTemplate}
                 loading={callouts.loading}
@@ -161,7 +150,7 @@ const SpaceCommunityPage = () => {
                 calloutNames={callouts.calloutNames}
                 onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
                 onCalloutUpdate={callouts.refetchCallout}
-                groupName={CalloutGroupName.Community_2}
+                groupName={CalloutGroupName.Community}
               />
             </ContentColumn>
           </PageContent>
