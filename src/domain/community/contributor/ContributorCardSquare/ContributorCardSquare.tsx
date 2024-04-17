@@ -109,7 +109,6 @@ export const ContributorCardSquare: FC<ContributorCardSquareProps> = props => {
         tooltip ? (
           <Tooltip
             arrow
-            open
             title={
               <GridProvider columns={3}>
                 <UserCard
