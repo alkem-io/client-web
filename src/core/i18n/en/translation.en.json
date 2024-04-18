@@ -684,7 +684,7 @@
       "KNOWLEDGE": "Knowledge Base"
     },
     "calloutsList": {
-      "title": "List",
+      "title": "Index",
       "filter": {
         "placeholder": "Find collaboration tools..."
       }

@@ -1,40 +1,40 @@
 import React from 'react';
 import CalloutsListDialog from '../../../../collaboration/callout/CalloutsListDialog/CalloutsListDialog';
 import useNavigate from '../../../../../core/routing/useNavigate';
-import JourneyCalloutsListItemTitle from '../../../../collaboration/callout/JourneyCalloutsTabView/JourneyCalloutsListItemTitle';
 import { useTranslation } from 'react-i18next';
-import { TypedCallout } from '../../../../collaboration/callout/useCallouts/useCallouts';
+import { UseCalloutsProvided } from '../../../../collaboration/callout/useCallouts/useCallouts';
 import { SubspaceDialog } from '../../layout/SubspaceDialog';
 import SubspacesListDialog from '../../dialogs/SubspacesListDialog';
 
 export interface SubspaceDialogsProps {
-  dialog: SubspaceDialog | undefined;
-  callouts: TypedCallout[];
+  dialogOpen: SubspaceDialog | undefined;
   journeyId: string | undefined;
+  journeyUrl: string | undefined;
+  callouts: UseCalloutsProvided;
 }
 
-const SubspaceDialogs = ({ dialog, callouts, journeyId }: SubspaceDialogsProps) => {
+const SubspaceDialogs = ({ dialogOpen, journeyUrl, callouts, journeyId }: SubspaceDialogsProps) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-
+  if (!dialogOpen || !journeyId || !journeyUrl) {
+    return null;
+  }
   return (
     <>
       <CalloutsListDialog
-        open={dialog === SubspaceDialog.Index}
-        onClose={() => navigate('./')}
-        callouts={callouts}
-        renderCallout={callout => <JourneyCalloutsListItemTitle callout={callout} />}
-        emptyListCaption={t('pages.generic.sections.subentities.empty-list', {
-          entities: t('common.callouts'),
+        open={dialogOpen === SubspaceDialog.Index}
+        onClose={() => navigate(journeyUrl)}
+        callouts={callouts.callouts}
+        loading={callouts.loading}
+        emptyListCaption={t('pages.generic.sections.subentities.empty', {
+          entities: t('common.collaborationTools'),
         })}
       />
-      {journeyId && (
-        <SubspacesListDialog
-          journeyId={journeyId}
-          open={dialog === SubspaceDialog.Subspaces}
-          onClose={() => navigate('./')}
-        />
-      )}
+      <SubspacesListDialog
+        journeyId={journeyId}
+        open={dialogOpen === SubspaceDialog.Subspaces}
+        onClose={() => navigate(journeyUrl)}
+      />
     </>
   );
 };
