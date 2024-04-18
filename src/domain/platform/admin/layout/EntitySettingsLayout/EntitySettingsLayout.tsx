@@ -44,7 +44,7 @@ const EntitySettingsLayout: FC<EntitySettingsLayoutProps> = ({
           routePrefix={tabRoutePrefix}
           getTabLabel={getTabLabel}
         />
-        {backButton && backButton}
+        {backButton}
         <SettingsPageContent currentSection={currentTab} entityTypeName={entityTypeName} tabDescriptionNs="pages.admin">
           {children}
         </SettingsPageContent>
