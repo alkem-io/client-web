@@ -1,4 +1,4 @@
-import React, { FC, useCallback } from 'react';
+import React, { FC, ReactNode, useCallback } from 'react';
 import { SettingsSection } from './constants';
 import EntitySettingsTabs, { TabDefinition } from './EntitySettingsTabs';
 import { useTranslation } from 'react-i18next';
@@ -18,6 +18,7 @@ interface EntitySettingsLayoutProps extends Omit<EntityPageLayoutProps, 'tabs' |
   currentTab: SettingsSection;
   tabRoutePrefix?: string;
   breadcrumbs?: PlatformNavigationBarProps['breadcrumbs'];
+  backButton?: ReactNode;
 }
 
 const EntitySettingsLayout: FC<EntitySettingsLayoutProps> = ({
@@ -26,6 +27,7 @@ const EntitySettingsLayout: FC<EntitySettingsLayoutProps> = ({
   currentTab,
   tabRoutePrefix = '../',
   children,
+  backButton,
   ...props
 }) => {
   const { t } = useTranslation();
@@ -42,6 +44,7 @@ const EntitySettingsLayout: FC<EntitySettingsLayoutProps> = ({
           routePrefix={tabRoutePrefix}
           getTabLabel={getTabLabel}
         />
+        {backButton && backButton}
         <SettingsPageContent currentSection={currentTab} entityTypeName={entityTypeName} tabDescriptionNs="pages.admin">
           {children}
         </SettingsPageContent>
