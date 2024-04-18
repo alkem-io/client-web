@@ -1588,6 +1588,9 @@
   },
   "navigation": {
     "admin": {
+      "settingsMenu": {
+        "quit": "Quit Settings"
+      },
       "opportunity": {
         "create": "Create opportunity",
         "edit": "Edit opportunity"
