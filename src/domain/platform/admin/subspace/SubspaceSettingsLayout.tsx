@@ -1,7 +1,9 @@
 import React, { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 import { SettingsSection } from '../layout/EntitySettingsLayout/constants';
 import { TabDefinition } from '../layout/EntitySettingsLayout/EntitySettingsTabs';
 import { useSubSpace } from '../../../journey/subspace/hooks/useChallenge';
+import { Link } from '@mui/material';
 import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
 import ListOutlinedIcon from '@mui/icons-material/ListOutlined';
 import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
@@ -11,6 +13,8 @@ import EntitySettingsLayout from '../layout/EntitySettingsLayout/EntitySettingsL
 import ChildJourneyPageBanner from '../../../journey/common/childJourneyPageBanner/ChildJourneyPageBanner';
 import SubspaceTabs from '../../../journey/subspace/layout/SubspaceTabs';
 import JourneyBreadcrumbs from '../../../journey/common/journeyBreadcrumbs/JourneyBreadcrumbs';
+import BackButton from '../../../../core/ui/actions/BackButton';
+import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 
 interface SubspaceSettingsLayoutProps {
   currentTab: SettingsSection;
@@ -52,6 +56,7 @@ const tabs: TabDefinition<SettingsSection>[] = [
 
 const SubspaceSettingsLayout: FC<SubspaceSettingsLayoutProps> = props => {
   const entityAttrs = useSubSpace();
+  const { t } = useTranslation();
 
   return (
     <EntitySettingsLayout
@@ -60,6 +65,16 @@ const SubspaceSettingsLayout: FC<SubspaceSettingsLayoutProps> = props => {
       pageBannerComponent={ChildJourneyPageBanner}
       tabsComponent={SubspaceTabs}
       breadcrumbs={<JourneyBreadcrumbs settings />}
+      backButton={
+        <Link
+          href={`${entityAttrs.profile.url}/${EntityPageSection.Dashboard}`}
+          sx={{ alignSelf: 'center', marginLeft: 'auto' }}
+        >
+          <BackButton variant="outlined" sx={{ textTransform: 'capitalize' }}>
+            {t('navigation.admin.settingsMenu.quit')}
+          </BackButton>
+        </Link>
+      }
       {...entityAttrs}
       {...props}
     />

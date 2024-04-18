@@ -78,6 +78,7 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
                 member={subsubspace.community?.myMembershipStatus === CommunityMembershipStatus.Member}
               />
             )}
+            onClickCreate={() => setCreateDialogOpen(true)}
             childEntityCreateAccess={permissions.canCreateSubspace}
             childEntityOnCreate={() => setCreateDialogOpen(true)}
             createSubentityDialog={

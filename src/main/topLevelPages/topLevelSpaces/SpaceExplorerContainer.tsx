@@ -10,7 +10,6 @@ import { useUserContext } from '../../../domain/community/user';
 import {
   CommunityMembershipStatus,
   SearchResultType,
-  SpaceExplorerSearchChallengeFragment,
   SpaceExplorerSearchSpaceFragment,
 } from '../../../core/apollo/generated/graphql-schema';
 import { TypedSearchResult } from '../../search/SearchView';
@@ -115,22 +114,14 @@ const SpaceExplorerContainer = ({ searchTerms, children }: SpaceExplorerContaine
   const flattenedSpaces = useMemo<SpaceWithParent[] | undefined>(() => {
     if (shouldSearch) {
       return rawSearchResults?.search?.journeyResults.map(result => {
-        const entry = result as
-          | TypedSearchResult<SearchResultType.Space, SpaceExplorerSearchSpaceFragment>
-          | TypedSearchResult<SearchResultType.Challenge, SpaceExplorerSearchChallengeFragment>;
+        const entry = result as TypedSearchResult<SearchResultType.Space, SpaceExplorerSearchSpaceFragment>;
 
-        switch (entry.type) {
-          case SearchResultType.Space:
-            return {
-              ...entry.space,
-              matchedTerms: entry.terms,
-            };
-          case SearchResultType.Challenge:
-            return {
-              ...entry.subspace,
-              parent: entry.space,
-              matchedTerms: entry.terms,
-            };
+        if (entry.type === SearchResultType.Space) {
+          return {
+            ...entry.space,
+            parent: undefined,
+            matchedTerms: entry.terms,
+          };
         }
 
         return null as never;
