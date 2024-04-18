@@ -2376,42 +2376,6 @@ export type SearchResultCalloutFieldPolicy = {
   terms?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type SearchResultChallengeKeySpecifier = (
-  | 'id'
-  | 'score'
-  | 'space'
-  | 'subspace'
-  | 'terms'
-  | 'type'
-  | SearchResultChallengeKeySpecifier
-)[];
-export type SearchResultChallengeFieldPolicy = {
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-  score?: FieldPolicy<any> | FieldReadFunction<any>;
-  space?: FieldPolicy<any> | FieldReadFunction<any>;
-  subspace?: FieldPolicy<any> | FieldReadFunction<any>;
-  terms?: FieldPolicy<any> | FieldReadFunction<any>;
-  type?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type SearchResultOpportunityKeySpecifier = (
-  | 'id'
-  | 'score'
-  | 'space'
-  | 'subspace'
-  | 'subsubspace'
-  | 'terms'
-  | 'type'
-  | SearchResultOpportunityKeySpecifier
-)[];
-export type SearchResultOpportunityFieldPolicy = {
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-  score?: FieldPolicy<any> | FieldReadFunction<any>;
-  space?: FieldPolicy<any> | FieldReadFunction<any>;
-  subspace?: FieldPolicy<any> | FieldReadFunction<any>;
-  subsubspace?: FieldPolicy<any> | FieldReadFunction<any>;
-  terms?: FieldPolicy<any> | FieldReadFunction<any>;
-  type?: FieldPolicy<any> | FieldReadFunction<any>;
-};
 export type SearchResultOrganizationKeySpecifier = (
   | 'id'
   | 'organization'
@@ -2433,8 +2397,6 @@ export type SearchResultPostKeySpecifier = (
   | 'post'
   | 'score'
   | 'space'
-  | 'subspace'
-  | 'subsubspace'
   | 'terms'
   | 'type'
   | SearchResultPostKeySpecifier
@@ -2445,13 +2407,12 @@ export type SearchResultPostFieldPolicy = {
   post?: FieldPolicy<any> | FieldReadFunction<any>;
   score?: FieldPolicy<any> | FieldReadFunction<any>;
   space?: FieldPolicy<any> | FieldReadFunction<any>;
-  subspace?: FieldPolicy<any> | FieldReadFunction<any>;
-  subsubspace?: FieldPolicy<any> | FieldReadFunction<any>;
   terms?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type SearchResultSpaceKeySpecifier = (
   | 'id'
+  | 'parentSpace'
   | 'score'
   | 'space'
   | 'terms'
@@ -2460,6 +2421,7 @@ export type SearchResultSpaceKeySpecifier = (
 )[];
 export type SearchResultSpaceFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  parentSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   score?: FieldPolicy<any> | FieldReadFunction<any>;
   space?: FieldPolicy<any> | FieldReadFunction<any>;
   terms?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3580,14 +3542,6 @@ export type StrictTypedTypePolicies = {
   SearchResultCallout?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SearchResultCalloutKeySpecifier | (() => undefined | SearchResultCalloutKeySpecifier);
     fields?: SearchResultCalloutFieldPolicy;
-  };
-  SearchResultChallenge?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | SearchResultChallengeKeySpecifier | (() => undefined | SearchResultChallengeKeySpecifier);
-    fields?: SearchResultChallengeFieldPolicy;
-  };
-  SearchResultOpportunity?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | SearchResultOpportunityKeySpecifier | (() => undefined | SearchResultOpportunityKeySpecifier);
-    fields?: SearchResultOpportunityFieldPolicy;
   };
   SearchResultOrganization?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SearchResultOrganizationKeySpecifier | (() => undefined | SearchResultOrganizationKeySpecifier);

@@ -15,9 +15,6 @@ query SpaceExplorerSearch($searchData: SearchInput!) {
       ... on SearchResultSpace {
         ...SpaceExplorerSearchSpace
       }
-      ... on SearchResultChallenge {
-        ...SpaceExplorerSearchChallenge
-      }
     }
   }
 }
@@ -25,15 +22,6 @@ query SpaceExplorerSearch($searchData: SearchInput!) {
 fragment SpaceExplorerSearchSpace on SearchResultSpace {
   space {
     ...SpaceExplorerSpace
-  }
-}
-
-fragment SpaceExplorerSearchChallenge on SearchResultChallenge {
-  space {
-    ...SpaceExplorerSpace
-  }
-  subspace {
-    ...SpaceExplorerSubspace
   }
 }
 
@@ -60,6 +48,7 @@ fragment SpaceExplorerSpace on Space {
     id
     anonymousReadAccess
   }
+  type
   profile {
     id
     url
@@ -93,6 +82,7 @@ fragment SpaceExplorerSpace on Space {
 
 fragment SpaceExplorerSubspace on Space {
   id
+  type
   profile {
     id
     url
