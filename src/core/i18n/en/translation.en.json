@@ -1397,7 +1397,8 @@
         "postalCode": {
           "name": "Postal code",
           "placeholder": "Postal code"
-        }
+        },
+        "noLocation": "No location specified"
       }
     },
     "organizationSegment": {
