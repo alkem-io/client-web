@@ -42,6 +42,7 @@ const SubspaceHomePage = ({ dialog }: SubspaceHomePageProps) => {
         <SubspacePageLayout
           journeyId={journeyId}
           journeyPath={journeyPath}
+          journeyUrl={subspace?.profile.url}
           loading={loading}
           welcome={
             <JourneyDashboardWelcomeBlock
