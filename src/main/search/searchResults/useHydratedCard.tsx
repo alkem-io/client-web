@@ -1,21 +1,17 @@
+import { SvgIconComponent } from '@mui/icons-material';
 import {
   CommunityMembershipStatus,
-  SearchResultChallengeFragment,
-  SearchResultOpportunityFragment,
   SearchResultOrganizationFragment,
   SearchResultPostFragment,
   SearchResultSpaceFragment,
   SearchResultType,
   SearchResultUserFragment,
+  SpaceType,
   UserRolesSearchCardsQuery,
 } from '../../../core/apollo/generated/graphql-schema';
 import React from 'react';
 import { buildOrganizationUrl, buildUserProfileUrl } from '../../routing/urlBuilders';
-import {
-  SearchChallengeCard,
-  SearchOpportunityCard,
-  SearchSpaceCard,
-} from '../../../domain/shared/components/search-cards';
+import { SearchSpaceCard } from '../../../domain/shared/components/search-cards';
 import { RoleType } from '../../../domain/community/user/constants/RoleType';
 import { getVisualByType } from '../../../domain/common/visual/utils/visuals.utils';
 import { useUserRolesSearchCardsQuery } from '../../../core/apollo/generated/apollo-hooks';
@@ -109,104 +105,23 @@ const hydrateSpaceCard = (data: TypedSearchResult<SearchResultType.Space, Search
   );
 };
 
-const hydrateChallengeCard = (data: TypedSearchResult<SearchResultType.Challenge, SearchResultChallengeFragment>) => {
-  const challenge = data.subspace;
-  const containingSpace = data.space;
-  const tagline = challenge.profile.tagline || '';
-  const name = challenge.profile.displayName;
-  const matchedTerms = data?.terms ?? [];
-  const spaceDisplayName = containingSpace.profile.displayName;
-  const vision = challenge.context?.vision || '';
-
-  const isMember = challenge.community?.myMembershipStatus === CommunityMembershipStatus.Member;
-
-  return (
-    <SearchChallengeCard
-      banner={getVisualByType(VisualName.CARD, challenge.profile.visuals)}
-      member={isMember}
-      displayName={name}
-      tagline={tagline}
-      tags={matchedTerms}
-      matchedTerms
-      journeyUri={challenge.profile.url}
-      vision={vision}
-      locked={!challenge.authorization?.anonymousReadAccess}
-      parentSegment={
-        <CardParentJourneySegment
-          iconComponent={SpaceIcon}
-          parentJourneyUri={containingSpace.profile.url}
-          locked={!containingSpace.authorization?.anonymousReadAccess}
-        >
-          {spaceDisplayName}
-        </CardParentJourneySegment>
-      }
-      spaceVisibility={containingSpace.account.license.visibility}
-    />
-  );
-};
-
-const hydrateOpportunityCard = (
-  data: TypedSearchResult<SearchResultType.Opportunity, SearchResultOpportunityFragment>
-) => {
-  const opportunity = data.subsubspace;
-  const containingChallenge = data.subspace;
-  const containingSpace = data.space;
-  const tagline = opportunity.profile.tagline || '';
-  const name = opportunity.profile.displayName;
-  const matchedTerms = data?.terms ?? [];
-  const challengeDisplayName = containingChallenge.profile.displayName;
-  const vision = opportunity.context?.vision ?? '';
-
-  const isMember = opportunity.community?.myMembershipStatus === CommunityMembershipStatus.Member;
-
-  return (
-    <SearchOpportunityCard
-      banner={getVisualByType(VisualName.CARD, opportunity.profile.visuals)}
-      member={isMember}
-      displayName={name}
-      tagline={tagline}
-      tags={matchedTerms}
-      matchedTerms
-      journeyUri={opportunity.profile.url}
-      vision={vision}
-      locked={!opportunity.authorization?.anonymousReadAccess}
-      parentSegment={
-        <CardParentJourneySegment
-          iconComponent={ChallengeIcon}
-          parentJourneyUri={containingChallenge.profile.url}
-          locked={!containingChallenge.authorization?.anonymousReadAccess}
-        >
-          {challengeDisplayName}
-        </CardParentJourneySegment>
-      }
-      spaceVisibility={containingSpace.account.license.visibility}
-    />
-  );
-};
-
 const getContributionParentInformation = (data: TypedSearchResult<SearchResultType.Post, SearchResultPostFragment>) => {
-  if (data.subsubspace) {
-    return {
-      icon: OpportunityIcon,
-      displayName: data.subsubspace?.profile.displayName,
-      locked: !data.subsubspace?.authorization?.anonymousReadAccess,
-      url: data.subsubspace.profile.url,
-    };
-  } else if (data.subspace) {
-    return {
-      icon: ChallengeIcon,
-      displayName: data.subspace?.profile.displayName,
-      locked: !data.subspace?.authorization?.anonymousReadAccess,
-      url: data.subspace.profile.url,
-    };
-  } else {
-    return {
-      icon: SpaceIcon,
-      displayName: data.space.profile.displayName,
-      locked: !data.space?.authorization?.anonymousReadAccess,
-      url: data.space.profile.url,
-    };
+  const info = {
+    displayName: data.space.profile.displayName,
+    locked: !data.space?.authorization?.anonymousReadAccess,
+    url: data.space.profile.url,
+    icon: SpaceIcon,
+  };
+
+  if (data.space.type === SpaceType.Opportunity) {
+    info.icon = OpportunityIcon;
+  } else if (data.space.type === SpaceType.Challenge) {
+    info.icon = ChallengeIcon as SvgIconComponent;
+  } else if (data.space.type === SpaceType.Space) {
+    info.icon = SpaceIcon;
   }
+
+  return info;
 };
 
 const hydrateContributionPost = (data: TypedSearchResult<SearchResultType.Post, SearchResultPostFragment>) => {
@@ -253,12 +168,6 @@ interface UseHydrateCardProvided {
   >;
   hydrateContributionCard: HydratedCardGetter<TypedSearchResult<SearchResultType.Post, SearchResultPostFragment>>;
   hydrateSpaceCard: HydratedCardGetter<TypedSearchResult<SearchResultType.Space, SearchResultSpaceFragment>>;
-  hydrateChallengeCard: HydratedCardGetter<
-    TypedSearchResult<SearchResultType.Challenge, SearchResultChallengeFragment>
-  >;
-  hydrateOpportunityCard: HydratedCardGetter<
-    TypedSearchResult<SearchResultType.Opportunity, SearchResultOpportunityFragment>
-  >;
 }
 
 export const useHydrateCard = (): UseHydrateCardProvided => {
@@ -280,9 +189,7 @@ export const useHydrateCard = (): UseHydrateCardProvided => {
 
   return {
     hydrateSpaceCard,
-    hydrateChallengeCard,
     hydrateContributionCard: hydrateContributionPost,
-    hydrateOpportunityCard,
     hydrateUserCard,
     hydrateOrganizationCard,
   };
