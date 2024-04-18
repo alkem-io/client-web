@@ -53,7 +53,7 @@ export const SpaceProfile: FC = () => {
             })),
             tagsets: tagsets.map(tagset => ({ ID: tagset.id, name: tagset.name, tags: tagset.tags })),
           },
-          ID: spaceNameId,
+          ID: space.spaceId,
         },
       },
     });
