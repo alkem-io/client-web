@@ -1,28 +1,25 @@
-import { useTranslation } from 'react-i18next';
-import PageContent from '../../../../core/ui/content/PageContent';
-import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
-import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
-import LinksList from '../../../../core/ui/list/LinksList';
-import useStateWithAsyncDefault from '../../../../core/utils/useStateWithAsyncDefault';
 import { JourneyTypeName } from '../../JourneyTypeName';
-import MembershipBackdrop from '../../../shared/components/Backdrops/MembershipBackdrop';
 import { CalloutGroupName } from '../../../../core/apollo/generated/graphql-schema';
-import { ContributeInnovationFlowBlock } from '../../../collaboration/InnovationFlow/ContributeInnovationFlowBlock/ContributeInnovationFlowBlock';
 import InnovationFlowStates from '../../../collaboration/InnovationFlow/InnovationFlowStates/InnovationFlowStates';
 import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
 import { OrderUpdate, TypedCallout } from '../../../collaboration/callout/useCallouts/useCallouts';
-import calloutIcons from '../../../collaboration/callout/utils/calloutIcons';
-import JourneyCalloutsListItemTitle from '../../../collaboration/callout/JourneyCalloutsTabView/JourneyCalloutsListItemTitle';
 import { InnovationFlowState } from '../../../collaboration/InnovationFlow/InnovationFlow';
-import InfoColumn from '../../../../core/ui/content/InfoColumn';
-import ContentColumn from '../../../../core/ui/content/ContentColumn';
+import React from 'react';
+import { SubspaceInnovationFlow, useConsumeAction } from '../layout/SubspacePageLayout';
+import { useColumns } from '../../../../core/ui/grid/GridContext';
+import { GRID_COLUMNS_MOBILE } from '../../../../core/ui/grid/constants';
+import InnovationFlowCurrentStateSelector from '../../../collaboration/InnovationFlow/InnovationFlowCurrentStateSelector/InnovationFlowCurrentStateSelector';
+import { SubspaceDialog } from '../layout/SubspaceDialog';
+import ButtonWithTooltip from '../../../../core/ui/button/ButtonWithTooltip';
+import { ButtonProps } from '@mui/material';
 
 interface SubspaceHomeViewProps {
   collaborationId: string | undefined;
   innovationFlowStates: InnovationFlowState[] | undefined;
   currentInnovationFlowState: string | undefined;
+  selectedInnovationFlowState: string | undefined;
+  onSelectInnovationFlowState: (state: InnovationFlowState) => void;
   canEditInnovationFlow: boolean | undefined;
-  callouts: TypedCallout[] | undefined;
   groupedCallouts: Record<CalloutGroupName, TypedCallout[] | undefined>;
   canCreateCallout: boolean;
   canCreateCalloutFromTemplate: boolean;
@@ -33,12 +30,29 @@ interface SubspaceHomeViewProps {
   journeyTypeName: JourneyTypeName;
 }
 
+const InnovationFlowVisualizerMobile = props => (
+  <InnovationFlowCurrentStateSelector {...props} flexShrink={1} minWidth={0} />
+);
+
+const SettingsButton = (props: ButtonProps) => {
+  const settingsActionDef = useConsumeAction(SubspaceDialog.ManageFlow);
+
+  const SettingsIcon = settingsActionDef?.icon;
+
+  return (
+    <ButtonWithTooltip tooltip={String(settingsActionDef?.label)} variant="outlined" iconButton {...props}>
+      {SettingsIcon && <SettingsIcon />}
+    </ButtonWithTooltip>
+  );
+};
+
 const SubspaceHomeView = ({
   collaborationId,
   innovationFlowStates,
   currentInnovationFlowState,
+  selectedInnovationFlowState,
+  onSelectInnovationFlowState,
   canEditInnovationFlow = false,
-  callouts: allCallouts,
   groupedCallouts,
   canCreateCallout,
   canCreateCalloutFromTemplate,
@@ -48,9 +62,6 @@ const SubspaceHomeView = ({
   refetchCallout,
   journeyTypeName,
 }: SubspaceHomeViewProps) => {
-  const [selectedInnovationFlowState, setSelectedInnovationFlowState] =
-    useStateWithAsyncDefault(currentInnovationFlowState);
-
   const filterCallouts = (callouts: TypedCallout[] | undefined) => {
     return callouts?.filter(callout => {
       if (!selectedInnovationFlowState) {
@@ -60,77 +71,49 @@ const SubspaceHomeView = ({
     });
   };
 
-  const { t } = useTranslation();
+  const columns = useColumns();
 
-  const handleSelectInnovationFlowState = (state: InnovationFlowState) =>
-    setSelectedInnovationFlowState(state.displayName);
+  const isMobile = columns <= GRID_COLUMNS_MOBILE;
 
   return (
     <>
-      <MembershipBackdrop show={!loading && !allCallouts} blockName={t(`common.${journeyTypeName}` as const)}>
-        <PageContent>
-          <InfoColumn>
-            <ContributeInnovationFlowBlock collaborationId={collaborationId} journeyTypeName={journeyTypeName} />
-            <PageContentBlock>
-              <PageContentBlockHeader
-                title={t('pages.generic.sections.subentities.list', { entities: t('common.callouts') })}
-              />
-              <LinksList
-                items={allCallouts?.map(callout => {
-                  const CalloutIcon = calloutIcons[callout.type];
-                  return {
-                    id: callout.id,
-                    title: <JourneyCalloutsListItemTitle callout={callout} />,
-                    icon: <CalloutIcon />,
-                    uri: callout.framing.profile.url,
-                  };
-                })}
-                emptyListCaption={t('pages.generic.sections.subentities.empty-list', {
-                  entities: t('common.callouts'),
-                  parentEntity: t(`common.${journeyTypeName}` as const),
-                })}
-                loading={loading}
-              />
-            </PageContentBlock>
-          </InfoColumn>
-
-          <ContentColumn>
-            {innovationFlowStates &&
-              currentInnovationFlowState &&
-              selectedInnovationFlowState &&
-              (canEditInnovationFlow ? (
-                <InnovationFlowStates
-                  collaborationId={collaborationId!}
-                  states={innovationFlowStates}
-                  currentState={currentInnovationFlowState}
-                  selectedState={selectedInnovationFlowState}
-                  showSettings
-                  onSelectState={handleSelectInnovationFlowState}
-                />
-              ) : (
-                <InnovationFlowStates
-                  states={innovationFlowStates}
-                  currentState={currentInnovationFlowState}
-                  selectedState={selectedInnovationFlowState}
-                  onSelectState={handleSelectInnovationFlowState}
-                />
-              ))}
-            <CalloutsGroupView
-              callouts={filterCallouts(groupedCallouts[CalloutGroupName.Contribute])}
-              canCreateCallout={canCreateCallout}
-              canCreateCalloutFromTemplate={canCreateCalloutFromTemplate}
-              loading={loading}
-              journeyTypeName={journeyTypeName}
-              calloutNames={calloutNames}
-              onSortOrderUpdate={onCalloutsSortOrderUpdate}
-              onCalloutUpdate={refetchCallout}
-              groupName={CalloutGroupName.Contribute}
-              createButtonPlace="top"
-              flowState={selectedInnovationFlowState}
+      <SubspaceInnovationFlow columns={columns}>
+        {innovationFlowStates &&
+          currentInnovationFlowState &&
+          selectedInnovationFlowState &&
+          (canEditInnovationFlow ? (
+            <InnovationFlowStates
+              collaborationId={collaborationId!}
+              states={innovationFlowStates}
+              currentState={currentInnovationFlowState}
+              selectedState={selectedInnovationFlowState}
+              settings={<SettingsButton />}
+              onSelectState={onSelectInnovationFlowState}
+              visualizer={isMobile ? InnovationFlowVisualizerMobile : undefined}
             />
-          </ContentColumn>
-        </PageContent>
-      </MembershipBackdrop>
+          ) : (
+            <InnovationFlowStates
+              states={innovationFlowStates}
+              currentState={currentInnovationFlowState}
+              selectedState={selectedInnovationFlowState}
+              onSelectState={onSelectInnovationFlowState}
+              visualizer={isMobile ? InnovationFlowVisualizerMobile : undefined}
+            />
+          ))}
+      </SubspaceInnovationFlow>
+      <CalloutsGroupView
+        callouts={filterCallouts(groupedCallouts[CalloutGroupName.Contribute])}
+        canCreateCallout={canCreateCallout}
+        canCreateCalloutFromTemplate={canCreateCalloutFromTemplate}
+        loading={loading}
+        journeyTypeName={journeyTypeName}
+        calloutNames={calloutNames}
+        onSortOrderUpdate={onCalloutsSortOrderUpdate}
+        onCalloutUpdate={refetchCallout}
+        groupName={CalloutGroupName.Contribute}
+        createButtonPlace="top"
+        flowState={selectedInnovationFlowState}
+      />
     </>
   );
 };

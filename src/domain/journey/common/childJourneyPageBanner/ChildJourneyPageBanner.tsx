@@ -2,15 +2,16 @@ import JourneyPageBannerCard from '../PageBanner/JourneyPageBannerCard/JourneyPa
 import PageBanner, { PageBannerProps } from '../../../../core/ui/layout/pageBanner/PageBanner';
 import { useMemo } from 'react';
 import defaultJourneyBanner from '../../defaultVisuals/Banner.jpg';
-import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 import { useChildJourneyPageBannerQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { useSpace } from '../../space/SpaceContext/useSpace';
 import { getVisualByType } from '../../../common/visual/utils/visuals.utils';
 import { VisualName } from '../../../common/visual/constants/visuals.constants';
 
-interface ChildJourneyPageBannerProps extends Omit<PageBannerProps, 'banner'> {}
+interface ChildJourneyPageBannerProps extends Omit<PageBannerProps, 'banner'> {
+  journeyId: string | undefined;
+}
 
-const ChildJourneyPageBanner = (props: ChildJourneyPageBannerProps) => {
+const ChildJourneyPageBanner = ({ journeyId, ...props }: ChildJourneyPageBannerProps) => {
   const { profile: spaceProfile } = useSpace();
   const spaceBanner = getVisualByType(VisualName.BANNER, spaceProfile?.visuals);
 
@@ -24,13 +25,11 @@ const ChildJourneyPageBanner = (props: ChildJourneyPageBannerProps) => {
     };
   }, [spaceBanner]);
 
-  const { journeyId, loading } = useRouteResolver();
-
   const { data } = useChildJourneyPageBannerQuery({
     variables: {
       spaceId: journeyId!,
     },
-    skip: loading,
+    skip: !journeyId,
   });
 
   return (

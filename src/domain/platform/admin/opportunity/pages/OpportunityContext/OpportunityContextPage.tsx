@@ -1,14 +1,14 @@
 import React, { FC } from 'react';
 import { SettingsSection } from '../../../layout/EntitySettingsLayout/constants';
 import { SettingsPageProps } from '../../../layout/EntitySettingsLayout/types';
-import OpportunitySettingsLayout from '../../OpportunitySettingsLayout';
+import SubspaceSettingsLayout from '../../../subspace/SubspaceSettingsLayout';
 import OpportunityContextView from './OpportunityContextView';
 
 const OpportunityContextPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   return (
-    <OpportunitySettingsLayout currentTab={SettingsSection.Context} tabRoutePrefix={routePrefix}>
+    <SubspaceSettingsLayout currentTab={SettingsSection.Context} tabRoutePrefix={routePrefix}>
       <OpportunityContextView />
-    </OpportunitySettingsLayout>
+    </SubspaceSettingsLayout>
   );
 };
 
