@@ -7,7 +7,6 @@ import CardParentJourneySegment from '../../common/SpaceChildJourneyCard/CardPar
 import { SpaceIcon } from '../../space/icon/SpaceIcon';
 import CardActions from '../../../../core/ui/card/CardActions';
 import JourneyCardGoToButton from '../../common/JourneyCard/JourneyCardGoToButton';
-import JourneyCardJoinButton from '../../common/JourneyCard/JourneyCardJoinButton';
 import { SpaceVisibility } from '../../../../core/apollo/generated/graphql-schema';
 import CardRibbon from '../../../../core/ui/card/CardRibbon';
 import { useTranslation } from 'react-i18next';
@@ -15,23 +14,14 @@ import { useTranslation } from 'react-i18next';
 interface ChallengeCardProps
   extends Omit<SpaceChildJourneyCardProps, 'iconComponent' | 'journeyTypeName' | 'parentSegment'> {
   tagline: string;
-  challengeId?: string;
   spaceUri?: string;
   spaceDisplayName?: ReactNode;
   spaceVisibility?: SpaceVisibility;
   innovationFlowState?: string;
-  hideJoin?: boolean;
   journeyUri: string;
 }
 
-const ChallengeCard = ({
-  challengeId,
-  spaceDisplayName,
-  spaceUri,
-  spaceVisibility,
-  hideJoin = false,
-  ...props
-}: ChallengeCardProps) => {
+const ChallengeCard = ({ spaceDisplayName, spaceUri, spaceVisibility, ...props }: ChallengeCardProps) => {
   const { t } = useTranslation();
 
   const ribbon =
@@ -52,10 +42,7 @@ const ChallengeCard = ({
       }
       expansionActions={
         <CardActions>
-          <JourneyCardGoToButton journeyUri={props.journeyUri} journeyTypeName="subspace" />
-          {!hideJoin && challengeId && (
-            <JourneyCardJoinButton subspaceId={challengeId} subspaceName={props.displayName} />
-          )}
+          <JourneyCardGoToButton journeyUri={props.journeyUri} subspace />
         </CardActions>
       }
       bannerOverlay={ribbon}

@@ -11,7 +11,6 @@ import {
 } from '../../../core/apollo/generated/graphql-schema';
 import React from 'react';
 import { buildOrganizationUrl, buildUserProfileUrl } from '../../routing/urlBuilders';
-import { SearchSpaceCard } from '../../../domain/shared/components/search-cards';
 import { RoleType } from '../../../domain/community/user/constants/RoleType';
 import { getVisualByType } from '../../../domain/common/visual/utils/visuals.utils';
 import { useUserRolesSearchCardsQuery } from '../../../core/apollo/generated/apollo-hooks';
@@ -27,6 +26,7 @@ import ContributingOrganizationCard from '../../../domain/community/contributor/
 import CardParentJourneySegment from '../../../domain/journey/common/SpaceChildJourneyCard/CardParentJourneySegment';
 import { CalloutIcon } from '../../../domain/collaboration/callout/icon/CalloutIcon';
 import { VisualName } from '../../../domain/common/visual/constants/visuals.constants';
+import SearchBaseJourneyCard from '../../../domain/shared/components/search-cards/base/SearchBaseJourneyCard';
 
 const hydrateUserCard = (data: TypedSearchResult<SearchResultType.User, SearchResultUserFragment>) => {
   const user = data.user;
@@ -80,7 +80,12 @@ const _hydrateOrganizationCard = (
   );
 };
 
-const hydrateSpaceCard = (data: TypedSearchResult<SearchResultType.Space, SearchResultSpaceFragment>) => {
+const hydrateSpaceCard = (
+  data: TypedSearchResult<
+    SearchResultType.Space | SearchResultType.Challenge | SearchResultType.Opportunity,
+    SearchResultSpaceFragment
+  >
+) => {
   const space = data.space;
   const tagline = space.profile?.tagline ?? '';
   const name = space.profile.displayName;
@@ -89,8 +94,32 @@ const hydrateSpaceCard = (data: TypedSearchResult<SearchResultType.Space, Search
 
   const isMember = space.community?.myMembershipStatus === CommunityMembershipStatus.Member;
 
+  const parentSegment = (
+    data: TypedSearchResult<
+      SearchResultType.Space | SearchResultType.Challenge | SearchResultType.Opportunity,
+      SearchResultSpaceFragment
+    >
+  ) => {
+    if (!data.parentSpace) {
+      return null;
+    }
+
+    const parentIcon = data.parentSpace.type === SpaceType.Space ? SpaceIcon : ChallengeIcon;
+
+    return (
+      <CardParentJourneySegment
+        iconComponent={parentIcon}
+        parentJourneyUri={data.parentSpace?.profile.url ?? ''}
+        locked={!data.parentSpace?.authorization?.anonymousReadAccess}
+      >
+        {data.parentSpace?.profile.displayName}
+      </CardParentJourneySegment>
+    );
+  };
+
   return (
-    <SearchSpaceCard
+    <SearchBaseJourneyCard
+      spaceType={space.type}
       banner={getVisualByType(VisualName.CARD, space.profile.visuals)}
       member={isMember}
       displayName={name}
@@ -101,6 +130,7 @@ const hydrateSpaceCard = (data: TypedSearchResult<SearchResultType.Space, Search
       vision={vision}
       locked={!space.authorization?.anonymousReadAccess}
       spaceVisibility={space.account.license.visibility}
+      parentSegment={parentSegment(data)}
     />
   );
 };
@@ -167,7 +197,12 @@ interface UseHydrateCardProvided {
     TypedSearchResult<SearchResultType.Organization, SearchResultOrganizationFragment>
   >;
   hydrateContributionCard: HydratedCardGetter<TypedSearchResult<SearchResultType.Post, SearchResultPostFragment>>;
-  hydrateSpaceCard: HydratedCardGetter<TypedSearchResult<SearchResultType.Space, SearchResultSpaceFragment>>;
+  hydrateSpaceCard: HydratedCardGetter<
+    TypedSearchResult<
+      SearchResultType.Space | SearchResultType.Challenge | SearchResultType.Opportunity,
+      SearchResultSpaceFragment
+    >
+  >;
 }
 
 export const useHydrateCard = (): UseHydrateCardProvided => {

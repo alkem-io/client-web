@@ -9,7 +9,7 @@ import ChildJourneyView from '../../common/tabs/Subentities/ChildJourneyView';
 import { useSpace } from '../../space/SpaceContext/useSpace';
 import { CreateOpportunityForm } from '../../opportunity/forms/CreateOpportunityForm';
 import { OpportunityIcon } from '../../opportunity/icon/OpportunityIcon';
-import OpportunityCard from '../../opportunity/OpportunityCard/OpportunityCard';
+import SubspaceCard from '../subspaceCard/SubspaceCard';
 import ChallengeOpportunitiesContainer from '../containers/SubspaceOpportunitiesContainer';
 import { useSubSpace } from '../hooks/useChallenge';
 import SubspacePageLayout from '../layout/SubspacePageLayout';
@@ -67,7 +67,7 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
             journeyTypeName="subspace"
             state={{ loading: state.loading, error: state.error }}
             renderChildEntityCard={subsubspace => (
-              <OpportunityCard
+              <SubspaceCard
                 displayName={subsubspace.profile.displayName}
                 tagline={subsubspace.profile.tagline!}
                 vision={subsubspace.context?.vision!}
