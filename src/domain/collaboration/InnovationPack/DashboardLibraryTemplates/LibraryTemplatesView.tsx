@@ -53,6 +53,16 @@ const LibraryTemplatesView = ({
         onDialogOpen={onDialogOpen}
         onDialogClose={onDialogClose}
         expanded={expanded}
+        actions={
+          <MultipleSelect
+            onChange={terms => onFilterChange({ templateTypes: filter.templateTypes, searchTerms: terms })}
+            value={filter.searchTerms}
+            minLength={2}
+            size="xsmall"
+            containerProps={{ sx: { flexGrow: isMobile ? 1 : undefined }, marginLeft: 'auto' }}
+            inlineTerms
+          />
+        }
       />
       <Box
         sx={{
@@ -65,14 +75,6 @@ const LibraryTemplatesView = ({
         <TemplateTypeFilter
           onChange={templateTypes => onFilterChange({ templateTypes: templateTypes, searchTerms: filter.searchTerms })}
           value={filter.templateTypes}
-        />
-        <MultipleSelect
-          onChange={terms => onFilterChange({ templateTypes: filter.templateTypes, searchTerms: terms })}
-          value={filter.searchTerms}
-          minLength={2}
-          size="xsmall"
-          containerProps={{ sx: { flexGrow: isMobile ? 1 : undefined }, marginLeft: 'auto' }}
-          inlineTerms
         />
       </Box>
       {templates && (
