@@ -2,7 +2,6 @@ import { Box, Chip } from '@mui/material';
 import { TemplateType } from '../InnovationPackProfilePage/InnovationPackProfilePage';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Caption } from '../../../../core/ui/typography';
 import CheckIcon from '@mui/icons-material/Check';
 
 interface TemplateTypeFilterProps {
@@ -25,7 +24,6 @@ const TemplateTypeFilter: FC<TemplateTypeFilterProps> = ({ value, onChange }) =>
 
   return (
     <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-      <Caption>{t('common.show-subject')}</Caption>
       {templateTypeNames.map(key => {
         const isSelected = value.includes(TemplateType[key]);
         return (
