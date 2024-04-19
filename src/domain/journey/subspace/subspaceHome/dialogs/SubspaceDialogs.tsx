@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { UseCalloutsProvided } from '../../../../collaboration/callout/useCallouts/useCallouts';
 import { SubspaceDialog } from '../../layout/SubspaceDialog';
 import SubspacesListDialog from '../../dialogs/SubspacesListDialog';
+import ContributorsToggleDialog from '../../dialogs/ContributorsToggleDialog';
 
 export interface SubspaceDialogsProps {
   dialogOpen: SubspaceDialog | undefined;
@@ -33,6 +34,11 @@ const SubspaceDialogs = ({ dialogOpen, journeyUrl, callouts, journeyId }: Subspa
       <SubspacesListDialog
         journeyId={journeyId}
         open={dialogOpen === SubspaceDialog.Subspaces}
+        onClose={() => navigate(journeyUrl)}
+      />
+      <ContributorsToggleDialog
+        journeyId={journeyId}
+        open={dialog === SubspaceDialog.Contributors}
         onClose={() => navigate(journeyUrl)}
       />
     </>
