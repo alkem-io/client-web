@@ -2,7 +2,6 @@ import React, { FC } from 'react';
 import { useResolvedPath } from 'react-router-dom';
 import SubspacePageContainer from '../containers/SubspacePageContainer';
 import SubspacePageLayout from '../layout/SubspacePageLayout';
-import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import useBackToParentPage from '../../../../core/routing/deprecated/useBackToParentPage';
 import CommunityUpdatesDialog from '../../../community/community/CommunityUpdatesDialog/CommunityUpdatesDialog';
 import ContributorsDialog from '../../../community/community/ContributorsDialog/ContributorsDialog';
@@ -12,7 +11,6 @@ import { useTranslation } from 'react-i18next';
 import CalendarDialog from '../../../timeline/calendar/CalendarDialog';
 import JourneyDashboardWelcomeBlock from '../../common/journeyDashboardWelcomeBlock/JourneyDashboardWelcomeBlock';
 import useDirectMessageDialog from '../../../communication/messaging/DirectMessaging/useDirectMessageDialog';
-import MembershipContainer from '../../../community/membership/membershipContainer/MembershipContainer';
 import ApplicationButtonContainer from '../../../community/application/containers/ApplicationButtonContainer';
 import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
 import ApplicationButton from '../../../community/application/applicationButton/ApplicationButton';
@@ -39,10 +37,10 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
 
   const hasExtendedApplicationButton = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
 
-  const { subSpaceId: challengeId } = useRouteResolver();
+  const { subSpaceId: challengeId, journeyId, journeyPath } = useRouteResolver();
 
   return (
-    <SubspacePageLayout currentSection={EntityPageSection.Dashboard}>
+    <SubspacePageLayout journeyId={journeyId} journeyPath={journeyPath}>
       {directMessageDialog}
       <SubspacePageContainer challengeId={challengeId}>
         {({ callouts, ...entities }, state) => (
@@ -82,15 +80,8 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
                   leadOrganizations={entities.challenge?.community?.leadOrganizations}
                   onContactLeadOrganization={receiver => sendMessage('organization', receiver)}
                   journeyTypeName="space"
-                >
-                  {props => (
-                    <MembershipContainer
-                      subspaceId={entities.challenge?.id}
-                      subspaceName={entities.challenge?.profile.displayName}
-                      {...props}
-                    />
-                  )}
-                </JourneyDashboardWelcomeBlock>
+                  member={entities.isMember}
+                />
               }
               communityId={entities.challenge?.community?.id}
               communityReadAccess={entities.permissions.communityReadAccess}

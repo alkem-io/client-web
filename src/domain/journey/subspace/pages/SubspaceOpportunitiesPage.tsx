@@ -4,7 +4,6 @@ import useNavigate from '../../../../core/routing/useNavigate';
 import { journeyCardTagsGetter, journeyCardValueGetter } from '../../common/utils/journeyCardValueGetter';
 import { JourneyCreationDialog } from '../../../shared/components/JorneyCreationDialog';
 import { JourneyFormValues } from '../../../shared/components/JorneyCreationDialog/JourneyCreationForm';
-import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import { useSubspaceCreation } from '../../../shared/utils/useJourneyCreation/useJourneyCreation';
 import ChildJourneyView from '../../common/tabs/Subentities/ChildJourneyView';
 import { useSpace } from '../../space/SpaceContext/useSpace';
@@ -17,6 +16,7 @@ import SubspacePageLayout from '../layout/SubspacePageLayout';
 import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { CalloutGroupName, CommunityMembershipStatus } from '../../../../core/apollo/generated/graphql-schema';
+import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 
 export interface ChallengeOpportunitiesPageProps {}
 
@@ -28,6 +28,7 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
   const spaceVisibility = license.visibility;
   const { subspaceId: challengeId, permissions } = useSubSpace();
   const { challengeNameId = '' } = useUrlParams();
+  const { journeyId, journeyPath } = useRouteResolver();
 
   const [isCreateDialogOpen, setCreateDialogOpen] = useState(false);
 
@@ -54,7 +55,7 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
   );
 
   return (
-    <SubspacePageLayout currentSection={EntityPageSection.Subsubspaces}>
+    <SubspacePageLayout journeyId={journeyId} journeyPath={journeyPath}>
       <ChallengeOpportunitiesContainer challengeId={challengeId}>
         {({ callouts, ...entities }, state) => (
           <ChildJourneyView

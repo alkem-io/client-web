@@ -6,22 +6,12 @@ query SpaceDashboardNavigationChallenges($spaceId: UUID_NAMEID!) {
       profile {
         ...SpaceDashboardNavigationProfile
       }
-      context {
-        ...SpaceDashboardNavigationContext
-      }
       authorization {
         id
         myPrivileges
       }
       community {
         ...SpaceDashboardNavigationCommunity
-      }
-    }
-    account {
-      id
-      license {
-        id
-        visibility
       }
     }
   }
@@ -34,11 +24,12 @@ query SpaceDashboardNavigationOpportunities($spaceId: UUID_NAMEID!, $challengeId
       id
       subspaces {
         id
+        authorization {
+          id
+          myPrivileges
+        }
         profile {
           ...SpaceDashboardNavigationProfile
-        }
-        context {
-          ...SpaceDashboardNavigationContext
         }
         community {
           ...SpaceDashboardNavigationCommunity
@@ -52,25 +43,11 @@ fragment SpaceDashboardNavigationProfile on Profile {
   id
   url
   displayName
-  tagline
-  tagset {
-    ...TagsetDetails
-  }
   avatar: visual(type: AVATAR) {
     id
     uri
     alternativeText
   }
-  cardBanner: visual(type: CARD) {
-    id
-    uri
-    alternativeText
-  }
-}
-
-fragment SpaceDashboardNavigationContext on Context {
-  id
-  vision
 }
 
 fragment SpaceDashboardNavigationCommunity on Community {

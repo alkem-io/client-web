@@ -1,14 +1,23 @@
 import React from 'react';
 import { Button, ButtonProps, Tooltip, TooltipProps, useTheme } from '@mui/material';
 import { gutters } from '../grid/utils';
+import { ButtonTypeMap } from '@mui/material/Button/Button';
+import { Caption } from '../typography';
 
-interface ButtonWithTooltipProps extends ButtonProps {
+interface ButtonWithTooltipProps {
   tooltip: string;
   iconButton?: boolean;
   tooltipProps?: TooltipProps;
 }
 
-const ButtonWithTooltip = ({ tooltip, iconButton, tooltipProps, sx, ...props }: ButtonWithTooltipProps) => {
+const ButtonWithTooltip = <D extends React.ElementType = ButtonTypeMap['defaultComponent'], P = {}>({
+  tooltip,
+  iconButton,
+  tooltipProps,
+  sx,
+  children,
+  ...props
+}: ButtonWithTooltipProps & ButtonProps<D, P>) => {
   const theme = useTheme();
 
   const isContained = props.variant === 'contained';
@@ -32,11 +41,21 @@ const ButtonWithTooltip = ({ tooltip, iconButton, tooltipProps, sx, ...props }: 
     borderColor: isOutlined ? theme.palette.divider : undefined,
     ...sx,
     minWidth: iconButton ? 0 : sx?.['minWidth'],
+    paddingX: iconButton ? 1 : undefined,
+    '&.MuiButton-outlinedSizeMedium': { paddingX: 0.9 },
+    '.MuiButton-startIcon': { margin: 0 },
   };
 
   return (
-    <Tooltip arrow title={tooltip} componentsProps={{ tooltip: { sx: tooltipStyle } }} {...tooltipProps}>
-      <Button aria-label={tooltip} {...props} sx={buttonStyle} />
+    <Tooltip
+      arrow
+      title={<Caption>{tooltip}</Caption>}
+      componentsProps={{ tooltip: { sx: tooltipStyle } }}
+      {...tooltipProps}
+    >
+      <Button aria-label={tooltip} {...props} sx={buttonStyle} startIcon={iconButton && children}>
+        {!iconButton && children}
+      </Button>
     </Tooltip>
   );
 };
