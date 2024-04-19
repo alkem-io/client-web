@@ -7,14 +7,13 @@ import {
   AuthorizationPrivilege,
   CommunityMembershipStatus,
   SpaceDashboardNavigationCommunityFragment,
-  SpaceDashboardNavigationContextFragment,
   SpaceDashboardNavigationProfileFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { keyBy } from 'lodash';
 import { useMemo } from 'react';
 
 interface UseSpaceDashboardNavigationProps {
-  spaceId: string;
+  spaceId: string | undefined;
   skip?: boolean;
 }
 
@@ -26,21 +25,15 @@ interface UseSpaceDashboardNavigationProvided {
 export interface DashboardNavigationItem {
   id: string;
   displayName: string;
-  tagline: string;
-  vision?: string;
   url: string;
   avatar?: {
     uri: string;
     alternativeText?: string;
   };
-  cardBanner?: {
-    uri: string;
-    alternativeText?: string;
-  };
-  tags: string[] | undefined;
   innovationFlowState?: string | undefined;
   private?: boolean;
   member: boolean;
+  canCreateSubspace?: boolean;
   children?: DashboardNavigationItem[];
 }
 
@@ -48,8 +41,10 @@ const getDashboardNavigationItemProps = (
   journey: {
     id: string;
     profile: SpaceDashboardNavigationProfileFragment;
-    context?: SpaceDashboardNavigationContextFragment;
     community?: SpaceDashboardNavigationCommunityFragment;
+    authorization?: {
+      myPrivileges?: AuthorizationPrivilege[];
+    };
   },
   disabled?: boolean
 ): DashboardNavigationItem => {
@@ -57,13 +52,10 @@ const getDashboardNavigationItemProps = (
     id: journey.id,
     url: journey.profile.url,
     displayName: journey.profile.displayName,
-    tagline: journey.profile.tagline,
-    vision: journey.context?.vision,
     avatar: journey.profile.avatar,
-    cardBanner: journey.profile.cardBanner,
-    tags: journey.profile.tagset?.tags,
     private: disabled,
     member: journey.community?.myMembershipStatus === CommunityMembershipStatus.Member,
+    canCreateSubspace: journey.authorization?.myPrivileges?.includes(AuthorizationPrivilege.CreateSubspace),
   };
 };
 
@@ -75,8 +67,8 @@ const useSpaceDashboardNavigation = ({
   skip,
 }: UseSpaceDashboardNavigationProps): UseSpaceDashboardNavigationProvided => {
   const { data: challengesQueryData, loading: challengesQueryLoading } = useSpaceDashboardNavigationChallengesQuery({
-    variables: { spaceId },
-    skip,
+    variables: { spaceId: spaceId! },
+    skip: skip || !spaceId,
   });
 
   const challenges = challengesQueryData?.space.subspaces;
@@ -86,7 +78,7 @@ const useSpaceDashboardNavigation = ({
   const { data: opportunitiesQueryData, loading: opportunitiesQueryLoading } =
     useSpaceDashboardNavigationOpportunitiesQuery({
       variables: {
-        spaceId,
+        spaceId: spaceId!,
         challengeIds: readableChallengeIds!,
       },
       skip: !readableChallengeIds || skip,

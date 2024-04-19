@@ -1,9 +1,0 @@
-query CollaborationIdentity( $spaceId: UUID_NAMEID!) {
-  space(ID: $spaceId) {
-    id
-    collaboration {
-      id
-    }
-  }
-
-}

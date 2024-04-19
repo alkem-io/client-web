@@ -1,0 +1,25 @@
+query SubspacePage($spaceId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
+    ...SubspacePageSpace
+  }
+}
+
+fragment SubspacePageSpace on Space {
+  id
+  profile {
+    id
+    url
+    displayName
+  }
+  context {
+    id
+    vision
+  }
+  community {
+    ...EntityDashboardCommunity
+    myMembershipStatus
+  }
+  collaboration {
+    id
+  }
+}

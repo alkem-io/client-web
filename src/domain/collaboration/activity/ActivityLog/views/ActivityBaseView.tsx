@@ -44,7 +44,7 @@ export const ActivityBaseView: FC<ActivityBaseViewProps & (Activity | { type: un
     <BadgeCardView
       component={Wrapper}
       to={url}
-      sx={{ padding: 1 }}
+      padding
       visual={
         <Badge
           overlap="circular"
