@@ -1,9 +1,9 @@
 import { Dialog, DialogContent, List, ListItem, ListItemIcon, Skeleton, useTheme } from '@mui/material';
-import React, { ReactNode, useCallback, useMemo, useState } from 'react';
+import React, { ReactNode, useMemo, useState } from 'react';
 import calloutIcons from '../utils/calloutIcons';
 import { useTranslation } from 'react-i18next';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
-import { some, times } from 'lodash';
+import { times } from 'lodash';
 import { BlockSectionTitle, Caption } from '../../../../core/ui/typography';
 import RouterLink from '../../../../core/ui/link/RouterLink';
 import SearchField from '../../../../core/ui/search/SearchField';
@@ -42,23 +42,16 @@ const CalloutsListDialog = <Callout extends CalloutInfo>({
   const theme = useTheme();
   const [filter, setFilter] = useState<string>('');
 
-  const filterCalloutCallback = useCallback(
-    (callout: Callout) => {
-      const lowerCaseFilter = filter.toLowerCase();
+  const filterCalloutCallback = (callout: Callout) => {
+    const lowerCaseFilter = filter.toLowerCase();
 
-      // If the Callout's name matches the filter
-      return (
-        callout.framing.profile.displayName.toLowerCase().includes(lowerCaseFilter) ||
-        // Or any term matches the Callout's flowState
-        (callout.flowStates &&
-          some(
-            callout.flowStates.map(flowState => flowState.toLowerCase()),
-            flowState => flowState.includes(lowerCaseFilter)
-          ))
-      );
-    },
-    [filter]
-  );
+    // If the Callout's name matches the filter
+    return (
+      callout.framing.profile.displayName.toLowerCase().includes(lowerCaseFilter) ||
+      // Or any term matches the Callout's flowState
+      callout.flowStates?.some(flowState => flowState.toLowerCase().includes(lowerCaseFilter))
+    );
+  };
 
   const filteredCallouts = useMemo(
     () => (callouts && filter.length > 0 ? callouts?.filter(filterCalloutCallback) : callouts),
