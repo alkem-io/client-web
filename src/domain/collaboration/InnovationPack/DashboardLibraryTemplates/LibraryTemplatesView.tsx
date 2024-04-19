@@ -59,7 +59,7 @@ const LibraryTemplatesView = ({
             value={filter.searchTerms}
             minLength={2}
             size="xsmall"
-            containerProps={{ sx: { flexGrow: isMobile ? 1 : undefined }, marginLeft: 'auto' }}
+            containerProps={{ sx: { flexGrow: isMobile ? 1 : undefined } }}
             inlineTerms
           />
         }
