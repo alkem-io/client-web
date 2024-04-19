@@ -15,6 +15,7 @@ import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import ReactDOM from 'react-dom';
 import EmptyWhiteboard from '../EmptyWhiteboard';
 import { WhiteboardFilesManager } from './useWhiteboardFilesManager';
+import whiteboardStyles from './whiteboardStyles';
 
 const useActorWhiteboardStyles = makeStyles(theme => ({
   container: {
@@ -66,7 +67,7 @@ const ExcalidrawWrapper = ({ entities, actions, options }: WhiteboardWhiteboardP
 
     return {
       ...parsedData,
-      zoomToFit: true,
+      ...whiteboardStyles,
     };
   }, [whiteboard?.content]);
 
@@ -186,7 +187,6 @@ const ExcalidrawWrapper = ({ entities, actions, options }: WhiteboardWhiteboardP
           initialData={data}
           UIOptions={mergedUIOptions}
           isCollaborating={false}
-          gridModeEnabled
           viewModeEnabled
           generateIdForFile={addNewFile}
           {...restOptions}

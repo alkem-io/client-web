@@ -22,6 +22,7 @@ import { LoadingButton } from '@mui/lab';
 import useOnlineStatus from '../../../../core/utils/onlineStatus';
 import Reconnectable from '../../../../core/utils/reconnectable';
 import { useTick } from '../../../../core/utils/time/tick';
+import whiteboardStyles from './whiteboardStyles';
 
 const useActorWhiteboardStyles = makeStyles(theme => ({
   container: {
@@ -91,7 +92,7 @@ const CollaborativeExcalidrawWrapper = ({
     const parsedData = whiteboard?.content ? JSON.parse(whiteboard?.content) : EmptyWhiteboard;
     return {
       ...parsedData,
-      zoomToFit: true,
+      ...whiteboardStyles,
     };
   }, [whiteboard?.content]);
 
@@ -223,7 +224,6 @@ const CollaborativeExcalidrawWrapper = ({
           UIOptions={mergedUIOptions}
           isCollaborating={collaborating}
           viewModeEnabled={!collaborating || mode === 'read'}
-          gridModeEnabled
           onChange={onChange}
           onPointerUpdate={collabApi?.onPointerUpdate}
           detectScroll={false}
