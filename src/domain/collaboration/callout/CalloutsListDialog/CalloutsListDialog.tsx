@@ -27,7 +27,6 @@ export interface CalloutsListDialogProps<Callout extends CalloutInfo> {
   open?: boolean;
   onClose?: () => void;
   callouts: Callout[] | undefined;
-  renderCallout?: (callout: Callout) => ReactNode;
   emptyListCaption?: ReactNode;
   loading?: boolean;
 }
