@@ -114,12 +114,7 @@ const OpportunityDashboardPage: FC<OpportunityDashboardPageProps> = ({ dialog })
               dialogContent={OpportunityContributorsDialogContent}
             />
             {entities.permissions.timelineReadAccess && (
-              <CalendarDialog
-                open={dialog === 'calendar'}
-                onClose={backToDashboard}
-                journeyId={opportunityId}
-                journeyTypeName="subsubspace"
-              />
+              <CalendarDialog open={dialog === 'calendar'} onClose={backToDashboard} journeyId={opportunityId} />
             )}
           </>
         )}
