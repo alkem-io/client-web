@@ -194,6 +194,10 @@ fragment SearchResultSpace on SearchResultSpace {
       url
       displayName
     }
+    authorization {
+      id
+      anonymousReadAccess
+    }
   }
   space {
     id

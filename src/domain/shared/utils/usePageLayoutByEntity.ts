@@ -1,7 +1,6 @@
 import { useMemo } from 'react';
 import SpacePageLayout from '../../journey/space/layout/SpacePageLayout';
 import SubspacePageLayout from '../../journey/subspace/layout/SubspacePageLayout';
-import OpportunityPageLayout from '../../journey/opportunity/layout/OpportunityPageLayout';
 import { EntityTypeName } from '../../platform/constants/EntityTypeName';
 
 const usePageLayoutByEntity = (entityTypeName: EntityTypeName) =>
@@ -10,9 +9,8 @@ const usePageLayoutByEntity = (entityTypeName: EntityTypeName) =>
       case 'space':
         return SpacePageLayout;
       case 'subspace':
-        return SubspacePageLayout;
       case 'subsubspace':
-        return OpportunityPageLayout;
+        return SubspacePageLayout;
     }
     throw new TypeError(`Unknown entity ${entityTypeName}`);
   }, [entityTypeName]);

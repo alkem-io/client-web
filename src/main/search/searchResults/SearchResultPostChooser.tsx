@@ -27,6 +27,8 @@ const SearchResultPostChooser = ({
 
   switch (result.type) {
     case SearchResultType.Space:
+    case SearchResultType.Challenge:
+    case SearchResultType.Opportunity:
       return hydrateSpaceCard(result);
     case SearchResultType.User:
       return hydrateUserCard(result);

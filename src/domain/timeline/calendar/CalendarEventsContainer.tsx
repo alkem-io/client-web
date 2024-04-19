@@ -14,7 +14,6 @@ import {
 } from '../../../core/apollo/generated/graphql-schema';
 import { StorageConfigContextProvider } from '../../storage/StorageBucket/StorageConfigContext';
 import { MutationBaseOptions } from '@apollo/client/core/watchQueryOptions';
-import { JourneyTypeName } from '../../journey/JourneyTypeName';
 
 export interface CalendarEventFormData
   extends Pick<CalendarEvent, 'durationDays' | 'durationMinutes' | 'multipleDays' | 'startDate' | 'type' | 'wholeDay'> {
@@ -26,7 +25,6 @@ export interface CalendarEventFormData
 
 export interface CalendarEventsContainerProps {
   journeyId: string | undefined;
-  journeyTypeName: JourneyTypeName;
   children: (
     entities: CalendarEventsEntities,
     actions: CalendarEventsActions,
@@ -61,10 +59,10 @@ export interface CalendarEventsEntities {
   };
 }
 
-export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ journeyId, journeyTypeName, children }) => {
+export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ journeyId, children }) => {
   const { data: spaceData, loading } = useSpaceCalendarEventsQuery({
     variables: { spaceId: journeyId! },
-    skip: !journeyId || journeyTypeName !== 'subsubspace',
+    skip: !journeyId,
   });
 
   const collaboration = spaceData?.space.collaboration;

@@ -1,4 +1,5 @@
 export enum EntityPageSection {
+  Home = 'home',
   Dashboard = 'dashboard',
   Settings = 'settings',
   About = 'about',

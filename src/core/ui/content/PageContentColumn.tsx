@@ -1,11 +1,7 @@
 import React, { forwardRef } from 'react';
-import { Box, BoxProps } from '@mui/material';
-import GridProvider from '../grid/GridProvider';
-import { GUTTER_MUI } from '../grid/constants';
+import { BoxProps } from '@mui/material';
 import GridItem from '../grid/GridItem';
-import SkipLink from '../keyboardNavigation/SkipLink';
-import { useCombinedRefs } from '../../../domain/shared/utils/useCombinedRefs';
-import { BlockAnchorProvider, NextBlockAnchor } from '../keyboardNavigation/NextBlockAnchor';
+import PageContentColumnBase from './PageContentColumnBase';
 
 export interface PageContentColumnProps extends BoxProps {
   columns: number;
@@ -15,21 +11,10 @@ export interface PageContentColumnProps extends BoxProps {
  * Sets the width of the column while also providing inner grid properties to the children.
  * @constructor
  */
-const PageContentColumn = forwardRef<HTMLDivElement, PageContentColumnProps>(({ columns, children, ...props }, ref) => {
-  const combinedRef = useCombinedRefs(null, ref);
-
+const PageContentColumn = forwardRef<HTMLDivElement, PageContentColumnProps>(({ columns, ...props }, ref) => {
   return (
     <GridItem columns={columns}>
-      <Box ref={combinedRef} display="flex" flexWrap="wrap" alignContent="start" gap={GUTTER_MUI} {...props}>
-        <GridProvider columns={columns}>
-          <BlockAnchorProvider blockRef={combinedRef}>
-            {children}
-            <NextBlockAnchor>
-              <SkipLink />
-            </NextBlockAnchor>
-          </BlockAnchorProvider>
-        </GridProvider>
-      </Box>
+      <PageContentColumnBase columns={columns} {...props} ref={ref} />
     </GridItem>
   );
 });

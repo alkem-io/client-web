@@ -6,7 +6,6 @@ import { BlockTitle, PageTitle, Text } from '../../core/ui/typography';
 import PageContentBlockGrid from '../../core/ui/content/PageContentBlockGrid';
 import SpaceCard from '../../domain/journey/space/SpaceCard/SpaceCard';
 import PageContentBlockHeader from '../../core/ui/content/PageContentBlockHeader';
-import OpportunityCard from '../../domain/journey/opportunity/OpportunityCard/OpportunityCard';
 import SpaceSubspaceCard from '../../domain/journey/space/SpaceSubspaceCard/SpaceSubspaceCard';
 import { ProfileType } from '../../core/apollo/generated/graphql-schema';
 import ChallengeCard from '../../domain/journey/subspace/subspaceCard/SubspaceCard';
@@ -180,55 +179,6 @@ const JourneyCardsDemo = () => {
                 journeyUri=""
                 spaceDisplayName="Parent Space"
                 spaceUri=""
-              />
-            </PageContentBlockGrid>
-          </PageContentBlock>
-          <PageContentBlock>
-            <PageContentBlockHeader title="Opportunity Cards" />
-            <PageContentBlockGrid disablePadding cards>
-              <OpportunityCard
-                banner={{ uri: '/alkemio-banner/default-banner.png' }}
-                tagline={loremIpsum}
-                vision={loremIpsum}
-                displayName="Opportunity Card"
-                tags={['opportunity', 'card']}
-                innovationFlowState="Innovation Flow State"
-                journeyUri=""
-                challengeDisplayName="Parent Challenge"
-                challengeUri=""
-              />
-              <OpportunityCard
-                banner={{ uri: '/alkemio-banner/default-banner.png' }}
-                tagline={loremIpsum}
-                vision={loremIpsum}
-                displayName="Really Long Opportunity Card Display Name"
-                tags={['opportunity', 'card']}
-                innovationFlowState="Innovation Flow State"
-                journeyUri=""
-                challengeDisplayName="Parent Challenge"
-                challengeUri=""
-              />
-              <OpportunityCard
-                banner={{ uri: '/alkemio-banner/default-banner.png' }}
-                tagline={loremIpsum}
-                vision={loremIpsum}
-                displayName="Really Long Opportunity Card Display Name That Doesn't Even Fit On 2 Lines"
-                tags={[
-                  'opportunity',
-                  'card',
-                  'that',
-                  'has',
-                  'too',
-                  'many',
-                  'tags',
-                  'they',
-                  'dont even fit',
-                  'on 2 lines',
-                ]}
-                innovationFlowState="Innovation Flow State"
-                journeyUri=""
-                challengeDisplayName="Parent Challenge"
-                challengeUri=""
               />
             </PageContentBlockGrid>
           </PageContentBlock>
