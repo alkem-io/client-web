@@ -1,19 +1,16 @@
-import React, { useCallback, useState } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
-import useNavigate from '../../../../core/routing/useNavigate';
 import { journeyCardTagsGetter, journeyCardValueGetter } from '../../common/utils/journeyCardValueGetter';
-import { JourneyCreationDialog } from '../../../shared/components/JorneyCreationDialog';
-import { JourneyFormValues } from '../../../shared/components/JorneyCreationDialog/JourneyCreationForm';
-import { useSubspaceCreation } from '../../../shared/utils/useJourneyCreation/useJourneyCreation';
-import ChildJourneyView from '../../common/tabs/Subentities/ChildJourneyView';
 import { useSpace } from '../../space/SpaceContext/useSpace';
-import { ChallengeIcon } from '../../subspace/icon/ChallengeIcon';
 import ChallengeCard from '../../subspace/subspaceCard/SubspaceCard';
-import { CreateChallengeForm } from '../../subspace/forms/CreateChallengeForm';
 import SpaceChallengesContainer from '../../space/containers/SpaceChallengesContainer';
-import { Dialog, DialogContent } from '@mui/material';
+import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
+import { DialogContent } from '@mui/material';
 import { CommunityMembershipStatus } from '../../../../core/apollo/generated/graphql-schema';
+import { CardLayoutContainer } from '../../../../core/ui/card/cardsLayout/CardsLayout';
+import JourneyFilter from '../../common/JourneyFilter/JourneyFilter';
+import Loading from '../../../../core/ui/loading/Loading';
 
 export interface SubspacesListDialogProps {
   open?: boolean;
@@ -23,80 +20,55 @@ export interface SubspacesListDialogProps {
 
 const SubspacesListDialog = ({ open = false, journeyId, onClose }: SubspacesListDialogProps) => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
-  const { permissions, license } = useSpace();
+  const { license } = useSpace();
   const spaceVisibility = license.visibility;
 
-  const [isCreateDialogOpen, setCreateDialogOpen] = useState(false);
-
-  const { createSubspace } = useSubspaceCreation();
-
-  const handleCreate = useCallback(
-    async (value: JourneyFormValues) => {
-      const result = await createSubspace({
-        spaceID: journeyId,
-        displayName: value.displayName,
-        tagline: value.tagline,
-        background: value.background ?? '',
-        vision: value.vision,
-        tags: value.tags,
-        addDefaultCallouts: value.addDefaultCallouts,
-      });
-
-      if (!result) {
-        return;
-      }
-
-      navigate(result.profile.url);
-    },
-    [navigate, createSubspace, journeyId]
-  );
-
   return (
-    <Dialog open={open}>
+    <DialogWithGrid open={open} fullWidth columns={12}>
       <DialogHeader onClose={onClose} title={t('callout.calloutsList.title')} />
       <DialogContent>
         <SpaceChallengesContainer spaceId={journeyId}>
           {({ ...entities }, state) => (
-            <ChildJourneyView
-              childEntities={entities.subspaces}
-              childEntitiesIcon={<ChallengeIcon />}
-              childEntityReadAccess={permissions.canReadChallenges}
-              childEntityValueGetter={journeyCardValueGetter}
-              childEntityTagsGetter={journeyCardTagsGetter}
-              journeyTypeName="space"
-              state={{ loading: state.loading, error: state.error }}
-              renderChildEntityCard={challenge => (
-                <ChallengeCard
-                  displayName={challenge.profile.displayName}
-                  banner={challenge.profile.cardBanner}
-                  tags={challenge.profile.tagset?.tags!}
-                  tagline={challenge.profile.tagline!}
-                  vision={challenge.context?.vision!}
-                  journeyUri={challenge.profile.url}
-                  locked={!challenge.authorization?.anonymousReadAccess}
-                  spaceVisibility={spaceVisibility}
-                  member={challenge.community?.myMembershipStatus === CommunityMembershipStatus.Member}
-                />
+            <>
+              {state.loading && <Loading />}
+              {!state.loading && entities.subspaces.length > 0 && (
+                <JourneyFilter
+                  data={entities.subspaces}
+                  valueGetter={journeyCardValueGetter}
+                  tagsGetter={journeyCardTagsGetter}
+                  title={t('common.entitiesWithCount', {
+                    entityType: t('common.subspaces'),
+                    count: entities.subspaces.length,
+                  })}
+                >
+                  {filteredEntities => (
+                    <CardLayoutContainer>
+                      {filteredEntities.map((subspace, index) => {
+                        const key = subspace ? subspace.id : `__loading_${index}`;
+                        return (
+                          <ChallengeCard
+                            key={key}
+                            displayName={subspace.profile.displayName}
+                            banner={subspace.profile.cardBanner}
+                            tags={subspace.profile.tagset?.tags!}
+                            tagline={subspace.profile.tagline!}
+                            vision={subspace.context?.vision!}
+                            journeyUri={subspace.profile.url}
+                            locked={!subspace.authorization?.anonymousReadAccess}
+                            spaceVisibility={spaceVisibility}
+                            member={subspace.community?.myMembershipStatus === CommunityMembershipStatus.Member}
+                          />
+                        );
+                      })}
+                    </CardLayoutContainer>
+                  )}
+                </JourneyFilter>
               )}
-              onClickCreate={() => setCreateDialogOpen(true)}
-              childEntityCreateAccess={permissions.canCreateChallenges}
-              childEntityOnCreate={() => setCreateDialogOpen(true)}
-              createSubentityDialog={
-                <JourneyCreationDialog
-                  open={isCreateDialogOpen}
-                  icon={<ChallengeIcon />}
-                  journeyName={t('common.subspace')}
-                  onClose={() => setCreateDialogOpen(false)}
-                  OnCreate={handleCreate}
-                  formComponent={CreateChallengeForm}
-                />
-              }
-            />
+            </>
           )}
         </SpaceChallengesContainer>
       </DialogContent>
-    </Dialog>
+    </DialogWithGrid>
   );
 };
 

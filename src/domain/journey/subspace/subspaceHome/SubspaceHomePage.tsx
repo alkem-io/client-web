@@ -1,6 +1,6 @@
 import React from 'react';
 import SubspaceHomeView from './SubspaceHomeView';
-import JourneyContributePageContainer from './JourneyContributePageContainer';
+import SubspaceHomeContainer from './SubspaceHomeContainer';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 import useDirectMessageDialog from '../../../communication/messaging/DirectMessaging/useDirectMessageDialog';
 import { useTranslation } from 'react-i18next';
@@ -24,7 +24,7 @@ import { InnovationFlowIcon } from '../../../collaboration/InnovationFlow/Innova
 import SubspaceDialogs from './dialogs/SubspaceDialogs';
 
 interface SubspaceHomePageProps {
-  dialog?: SubspaceDialog | undefined;
+  dialog?: SubspaceDialog;
 }
 
 const SubspaceHomePage = ({ dialog }: SubspaceHomePageProps) => {
@@ -37,91 +37,98 @@ const SubspaceHomePage = ({ dialog }: SubspaceHomePageProps) => {
   });
 
   return (
-    <JourneyContributePageContainer journeyId={journeyId} journeyTypeName={journeyTypeName}>
+    <SubspaceHomeContainer journeyId={journeyId} journeyTypeName={journeyTypeName}>
       {({ innovationFlow, callouts, subspace }) => (
-        <SubspacePageLayout
-          journeyId={journeyId}
-          journeyPath={journeyPath}
-          journeyUrl={subspace?.profile.url}
-          loading={loading}
-          welcome={
-            <JourneyDashboardWelcomeBlock
-              vision={subspace?.context?.vision ?? ''}
-              leadUsers={subspace?.community?.leadUsers}
-              onContactLeadUser={receiver => sendMessage('user', receiver)}
-              leadOrganizations={subspace?.community?.leadOrganizations}
-              onContactLeadOrganization={receiver => sendMessage('organization', receiver)}
-              journeyTypeName="subspace"
-              member={subspace?.community?.myMembershipStatus === CommunityMembershipStatus.Member}
+        <>
+          <SubspacePageLayout
+            journeyId={journeyId}
+            journeyPath={journeyPath}
+            journeyUrl={subspace?.profile.url}
+            loading={loading}
+            welcome={
+              <JourneyDashboardWelcomeBlock
+                vision={subspace?.context?.vision ?? ''}
+                leadUsers={subspace?.community?.leadUsers}
+                onContactLeadUser={receiver => sendMessage('user', receiver)}
+                leadOrganizations={subspace?.community?.leadOrganizations}
+                onContactLeadOrganization={receiver => sendMessage('organization', receiver)}
+                journeyTypeName="subspace"
+                member={subspace?.community?.myMembershipStatus === CommunityMembershipStatus.Member}
+              />
+            }
+            actions={
+              <>
+                <DialogDef
+                  dialogType={SubspaceDialog.About}
+                  label={t(`spaceDialog.${SubspaceDialog.About}` as const)}
+                  icon={InfoOutlined}
+                />
+                <DialogDef
+                  dialogType={SubspaceDialog.Outline}
+                  label={t(`spaceDialog.${SubspaceDialog.Outline}` as const)}
+                  icon={AccountTreeOutlined}
+                />
+                <DialogDef
+                  dialogType={SubspaceDialog.Index}
+                  label={t(`spaceDialog.${SubspaceDialog.Index}` as const)}
+                  icon={ListOutlined}
+                />
+                <DialogDef
+                  dialogType={SubspaceDialog.Subspaces}
+                  label={t(`spaceDialog.${SubspaceDialog.Subspaces}` as const)}
+                  icon={SegmentOutlined}
+                />
+                <DialogDef
+                  dialogType={SubspaceDialog.Contributors}
+                  label={t(`spaceDialog.${SubspaceDialog.Contributors}` as const)}
+                  icon={GroupsOutlined}
+                />
+                <DialogDef
+                  dialogType={SubspaceDialog.Activity}
+                  label={t(`spaceDialog.${SubspaceDialog.Activity}` as const)}
+                  icon={HistoryOutlined}
+                />
+                <DialogDef
+                  dialogType={SubspaceDialog.Events}
+                  label={t(`spaceDialog.${SubspaceDialog.Events}` as const)}
+                  icon={CalendarMonthOutlined}
+                />
+                <DialogDef
+                  dialogType={SubspaceDialog.Share}
+                  label={t(`spaceDialog.${SubspaceDialog.Share}` as const)}
+                  icon={ShareOutlined}
+                />
+                <DialogDef
+                  dialogType={SubspaceDialog.ManageFlow}
+                  label={t(`spaceDialog.${SubspaceDialog.ManageFlow}` as const)}
+                  icon={InnovationFlowIcon}
+                />
+                <DialogDef
+                  dialogType={SubspaceDialog.Settings}
+                  label={t(`spaceDialog.${SubspaceDialog.Settings}` as const)}
+                  icon={SettingsOutlined}
+                />
+              </>
+            }
+            profile={subspace?.profile}
+          >
+            <SubspaceHomeView
+              journeyTypeName={journeyTypeName}
+              {...innovationFlow}
+              {...callouts}
+              collaborationId={subspace?.collaboration.id}
             />
-          }
-          actions={
-            <>
-              <DialogDef
-                dialogType={SubspaceDialog.About}
-                label={t(`spaceDialog.${SubspaceDialog.About}` as const)}
-                icon={InfoOutlined}
-              />
-              <DialogDef
-                dialogType={SubspaceDialog.Outline}
-                label={t(`spaceDialog.${SubspaceDialog.Outline}` as const)}
-                icon={AccountTreeOutlined}
-              />
-              <DialogDef
-                dialogType={SubspaceDialog.Index}
-                label={t(`spaceDialog.${SubspaceDialog.Index}` as const)}
-                icon={ListOutlined}
-              />
-              <DialogDef
-                dialogType={SubspaceDialog.Subspaces}
-                label={t(`spaceDialog.${SubspaceDialog.Subspaces}` as const)}
-                icon={SegmentOutlined}
-              />
-              <DialogDef
-                dialogType={SubspaceDialog.Contributors}
-                label={t(`spaceDialog.${SubspaceDialog.Contributors}` as const)}
-                icon={GroupsOutlined}
-              />
-              <DialogDef
-                dialogType={SubspaceDialog.Activity}
-                label={t(`spaceDialog.${SubspaceDialog.Activity}` as const)}
-                icon={HistoryOutlined}
-              />
-              <DialogDef
-                dialogType={SubspaceDialog.Events}
-                label={t(`spaceDialog.${SubspaceDialog.Events}` as const)}
-                icon={CalendarMonthOutlined}
-              />
-              <DialogDef
-                dialogType={SubspaceDialog.Share}
-                label={t(`spaceDialog.${SubspaceDialog.Share}` as const)}
-                icon={ShareOutlined}
-              />
-              <DialogDef
-                dialogType={SubspaceDialog.ManageFlow}
-                label={t(`spaceDialog.${SubspaceDialog.ManageFlow}` as const)}
-                icon={InnovationFlowIcon}
-              />
-              <DialogDef
-                dialogType={SubspaceDialog.Settings}
-                label={t(`spaceDialog.${SubspaceDialog.Settings}` as const)}
-                icon={SettingsOutlined}
-              />
-            </>
-          }
-          profile={subspace?.profile}
-        >
-          <SubspaceHomeView
-            journeyTypeName={journeyTypeName}
-            {...innovationFlow}
-            {...callouts}
-            collaborationId={subspace?.collaboration.id}
-          />
+          </SubspacePageLayout>
           {directMessageDialog}
-          <SubspaceDialogs dialog={dialog} callouts={callouts?.callouts ?? []} journeyId={journeyId} />
-        </SubspacePageLayout>
+          <SubspaceDialogs
+            dialogOpen={dialog}
+            callouts={callouts}
+            journeyId={journeyId}
+            journeyUrl={subspace?.profile.url}
+          />
+        </>
       )}
-    </JourneyContributePageContainer>
+    </SubspaceHomeContainer>
   );
 };
 

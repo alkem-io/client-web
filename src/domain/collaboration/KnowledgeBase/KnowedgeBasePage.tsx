@@ -1,4 +1,3 @@
-import { Button } from '@mui/material';
 import { PropsWithChildren, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CalloutGroupName } from '../../../core/apollo/generated/graphql-schema';
@@ -16,7 +15,8 @@ import { useCalloutCreationWithPreviewImages } from '../callout/creationDialog/u
 import KnowledgeBaseContainer from './KnowledgeBaseContainer';
 import InfoColumn from '../../../core/ui/content/InfoColumn';
 import ContentColumn from '../../../core/ui/content/ContentColumn';
-import EllipsableWithCount from '../../../core/ui/typography/EllipsableWithCount';
+import ButtonWithTooltip from '../../../core/ui/button/ButtonWithTooltip';
+import { ListOutlined } from '@mui/icons-material';
 
 interface KnowledgeBasePageProps {
   journeyTypeName: JourneyTypeName;
@@ -62,16 +62,18 @@ const KnowledgeBasePage = ({ journeyTypeName }: PropsWithChildren<KnowledgeBaseP
               <PageContent>
                 <InfoColumn>
                   <ContributeCreationBlock canCreate={canCreateCallout} handleCreate={handleCreate} />
-                  <Button onClick={() => setCalloutsListDialogOpen(true)}>Callouts List{/* TODO!! */}</Button>
+                  <ButtonWithTooltip
+                    iconButton
+                    tooltip={t('spaceDialog.Index')}
+                    onClick={() => setCalloutsListDialogOpen(true)}
+                    variant="contained"
+                  >
+                    <ListOutlined />
+                  </ButtonWithTooltip>
                   <CalloutsListDialog
                     open={isCalloutsListDialogOpen}
                     onClose={() => setCalloutsListDialogOpen(false)}
                     callouts={groupedCallouts[CalloutGroupName.Knowledge]}
-                    renderCallout={callout => (
-                      <EllipsableWithCount count={callout.activity}>
-                        {callout.framing.profile.displayName}
-                      </EllipsableWithCount>
-                    )}
                     emptyListCaption={t('pages.generic.sections.subentities.empty-list', {
                       entities: t('common.callouts'),
                     })}

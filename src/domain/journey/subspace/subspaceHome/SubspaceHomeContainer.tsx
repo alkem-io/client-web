@@ -3,14 +3,14 @@ import useInnovationFlowStates, {
   UseInnovationFlowStatesProvided,
 } from '../../../collaboration/InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
 import useCallouts, { UseCalloutsProvided } from '../../../collaboration/callout/useCallouts/useCallouts';
-import { CalloutGroupName, SubspacePageSpaceFragment } from '../../../../core/apollo/generated/graphql-schema';
+import { SubspacePageSpaceFragment } from '../../../../core/apollo/generated/graphql-schema';
 import { JourneyTypeName } from '../../JourneyTypeName';
 import { useSubspacePageQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import useStateWithAsyncDefault from '../../../../core/utils/useStateWithAsyncDefault';
 import { useMemo } from 'react';
 import { InnovationFlowState } from '../../../collaboration/InnovationFlow/InnovationFlow';
 
-interface JourneyContributePageContainerProvided {
+interface SubspaceHomeContainerProvided {
   innovationFlow: UseInnovationFlowStatesProvided & {
     selectedInnovationFlowState: string | undefined;
     onSelectInnovationFlowState: (state: InnovationFlowState) => void;
@@ -19,16 +19,12 @@ interface JourneyContributePageContainerProvided {
   subspace?: SubspacePageSpaceFragment;
 }
 
-interface JourneyContributePageContainerProps extends SimpleContainerProps<JourneyContributePageContainerProvided> {
+interface SubspaceHomeContainerProps extends SimpleContainerProps<SubspaceHomeContainerProvided> {
   journeyId: string | undefined;
   journeyTypeName: JourneyTypeName;
 }
 
-const JourneyContributePageContainer = ({
-  journeyId,
-  journeyTypeName,
-  children,
-}: JourneyContributePageContainerProps) => {
+const SubspaceHomeContainer = ({ journeyId, journeyTypeName, children }: SubspaceHomeContainerProps) => {
   const { data } = useSubspacePageQuery({
     variables: {
       spaceId: journeyId!,
@@ -55,10 +51,9 @@ const JourneyContributePageContainer = ({
   const callouts = useCallouts({
     journeyId,
     journeyTypeName,
-    groupNames: [CalloutGroupName.Contribute],
   });
 
   return <>{children({ innovationFlow, callouts, subspace: data?.space })}</>;
 };
 
-export default JourneyContributePageContainer;
+export default SubspaceHomeContainer;
