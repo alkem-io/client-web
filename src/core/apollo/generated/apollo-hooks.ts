@@ -3327,6 +3327,10 @@ export const SearchResultSpaceFragmentDoc = gql`
         url
         displayName
       }
+      authorization {
+        id
+        anonymousReadAccess
+      }
     }
     space {
       id
