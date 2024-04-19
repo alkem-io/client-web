@@ -682,6 +682,12 @@
       "COMMUNITY": "Community",
       "SUBSPACES": "Subspaces",
       "KNOWLEDGE": "Knowledge Base"
+    },
+    "calloutsList": {
+      "title": "Index",
+      "filter": {
+        "placeholder": "Find collaboration tools..."
+      }
     }
   },
   "journey-creation": {
