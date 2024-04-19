@@ -93,13 +93,17 @@ const hydrateSpaceCard = (
   const vision = space.context?.vision ?? '';
 
   const isMember = space.community?.myMembershipStatus === CommunityMembershipStatus.Member;
+
   const parentSegment = (
     data: TypedSearchResult<
       SearchResultType.Space | SearchResultType.Challenge | SearchResultType.Opportunity,
       SearchResultSpaceFragment
     >
   ) => {
-    if (!data.parentSpace) return undefined;
+    if (!data.parentSpace) {
+      return null;
+    }
+
     const parentIcon = data.parentSpace.type === SpaceType.Space ? SpaceIcon : ChallengeIcon;
 
     return (
@@ -113,20 +117,9 @@ const hydrateSpaceCard = (
     );
   };
 
-  const getJourneyTypeNameFromSpaceType = (spaceType: SpaceType) => {
-    switch (spaceType) {
-      case SpaceType.Opportunity:
-        return 'subsubspace';
-      case SpaceType.Challenge:
-        return 'subspace';
-      case SpaceType.Space:
-        return 'space';
-    }
-  };
-
   return (
     <SearchBaseJourneyCard
-      journeyTypeName={getJourneyTypeNameFromSpaceType(space.type)}
+      spaceType={space.type}
       banner={getVisualByType(VisualName.CARD, space.profile.visuals)}
       member={isMember}
       displayName={name}

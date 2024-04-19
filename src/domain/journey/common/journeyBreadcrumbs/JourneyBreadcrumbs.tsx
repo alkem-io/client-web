@@ -1,6 +1,6 @@
 import { useJourneyBreadcrumbs, UseJourneyBreadcrumbsParams } from './useJourneyBreadcrumbs';
 import Breadcrumbs, { BreadcrumbsProps } from '../../../../core/ui/navigation/Breadcrumbs';
-import { legacyJourneyIcons } from '../../../shared/components/JourneyIcon/JourneyIcon';
+import { journeyIconByJourneyLevel } from '../../../shared/components/JourneyIcon/JourneyIcon';
 import BreadcrumbsRootItem from '../../../../main/ui/breadcrumbs/BreadcrumbsRootItem';
 import BreadcrumbsItem from '../../../../core/ui/navigation/BreadcrumbsItem';
 import { Expandable } from '../../../../core/ui/navigation/Expandable';
@@ -33,7 +33,7 @@ const JourneyBreadcrumbs = forwardRef<Collapsible, JourneyBreadcrumbsProps<Expan
         {breadcrumbs.map(({ displayName, ...item }, level) => (
           <BreadcrumbsItem
             key={level}
-            iconComponent={legacyJourneyIcons[level]}
+            iconComponent={journeyIconByJourneyLevel[level]}
             accent
             aria-label={displayName}
             {...item}
