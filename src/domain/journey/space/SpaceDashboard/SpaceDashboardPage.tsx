@@ -71,12 +71,7 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
               dialogContent={SpaceContributorsDialogContent}
             />
             {entities.permissions.timelineReadAccess && (
-              <CalendarDialog
-                open={dialog === 'calendar'}
-                onClose={backToDashboard}
-                journeyId={spaceId}
-                journeyTypeName="space"
-              />
+              <CalendarDialog open={dialog === 'calendar'} onClose={backToDashboard} journeyId={spaceId} />
             )}
             <JourneyAboutDialog
               open={dialog === 'about'}

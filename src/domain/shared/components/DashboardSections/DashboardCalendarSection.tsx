@@ -1,4 +1,5 @@
-import { Box, FormControlLabel, Skeleton, Switch, useTheme } from '@mui/material';
+import { Box, FormControlLabel, IconButton, Skeleton, Switch, useTheme } from '@mui/material';
+import { Add } from '@mui/icons-material';
 import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
@@ -13,10 +14,12 @@ import CalendarEventView from '../../../timeline/calendar/views/CalendarEventVie
 import { EntityPageSection } from '../../layout/EntityPageSection';
 import PageContentBlockFooter from '../../../../core/ui/content/PageContentBlockFooter';
 import FullCalendar, { INTERNAL_DATE_FORMAT } from '../../../timeline/calendar/components/FullCalendar';
-import { HIGHLIGHT_PARAM_NAME } from '../../../timeline/calendar/CalendarDialog';
+import { HIGHLIGHT_PARAM_NAME, INIT_CREATING_EVENT_PARAM } from '../../../timeline/calendar/CalendarDialog';
 import { useQueryParams } from '../../../../core/routing/useQueryParams';
 import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
+import RoundedIcon from '../../../../core/ui/icon/RoundedIcon';
+import { Actions } from '../../../../core/ui/actions/Actions';
 
 const MAX_NUMBER_OF_EVENTS = 3;
 
@@ -72,6 +75,9 @@ const DashboardCalendarSection: FC<DashboardCalendarSectionProps> = ({ journeyId
 
   const openDialog = () => navigate(`${EntityPageSection.Dashboard}/calendar`);
 
+  const openDialogCreateEvent = () =>
+    navigate(`${EntityPageSection.Dashboard}/calendar?${INIT_CREATING_EVENT_PARAM}=1`);
+
   const onClickHighlightedDate = (date: Date) => {
     // Clicking on a marked date highlights events on the list
     const nextUrlParams = new URLSearchParams(urlQueryParams.toString());
@@ -79,11 +85,11 @@ const DashboardCalendarSection: FC<DashboardCalendarSectionProps> = ({ journeyId
     navigate(`${EntityPageSection.Dashboard}/calendar?${nextUrlParams}`);
   };
 
-  const alwaysShowEvents = collaboration?.timeline?.calendar.authorization?.myPrivileges?.includes(
+  const hasCreatePrivilege = collaboration?.timeline?.calendar.authorization?.myPrivileges?.includes(
     AuthorizationPrivilege.Create
   );
 
-  return events.length > 0 || alwaysShowEvents ? (
+  return events.length > 0 || hasCreatePrivilege ? (
     <PageContentBlock disableGap={isCalendarView}>
       <PageContentBlockHeaderWithDialogAction title={t('common.events')} onDialogOpen={openDialog} />
       <Box display="flex" flexDirection="column" gap={gutters()}>
@@ -105,6 +111,13 @@ const DashboardCalendarSection: FC<DashboardCalendarSectionProps> = ({ journeyId
           control={<Switch size="small" value={isCalendarView} onChange={(e, checked) => setCalendarView(checked)} />}
           label={<Caption>{t('calendar.show-calendar')}</Caption>}
         />
+        {hasCreatePrivilege && (
+          <Actions>
+            <IconButton onClick={openDialogCreateEvent} size="large" sx={{ padding: 0 }}>
+              <RoundedIcon component={Add} size="medium" iconSize="small" />
+            </IconButton>
+          </Actions>
+        )}
       </PageContentBlockFooter>
     </PageContentBlock>
   ) : (

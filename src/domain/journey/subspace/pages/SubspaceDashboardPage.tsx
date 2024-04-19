@@ -116,12 +116,7 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
               dialogContent={ChallengeContributorsDialogContent}
             />
             {entities.permissions.timelineReadAccess && (
-              <CalendarDialog
-                open={dialog === 'calendar'}
-                onClose={backToDashboard}
-                journeyId={challengeId}
-                journeyTypeName="subspace"
-              />
+              <CalendarDialog open={dialog === 'calendar'} onClose={backToDashboard} journeyId={challengeId} />
             )}
           </>
         )}
