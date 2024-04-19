@@ -18,7 +18,6 @@ import CalendarEventsList from './views/CalendarEventsList';
 import dayjs from 'dayjs';
 import DialogWithGrid from '../../../core/ui/dialog/DialogWithGrid';
 import ConfirmationDialog from '../../../core/ui/dialogs/ConfirmationDialog';
-import { JourneyTypeName } from '../../journey/JourneyTypeName';
 
 // If url params contains `highlight=YYYY-MM-DD` events in that date will be highlighted
 export const HIGHLIGHT_PARAM_NAME = 'highlight';
@@ -28,11 +27,10 @@ export const CALENDAR_PATH = `${EntityPageSection.Dashboard}/calendar`;
 export interface CalendarDialogProps {
   open: boolean;
   journeyId: string | undefined;
-  journeyTypeName: JourneyTypeName;
   onClose: () => void;
 }
 
-const CalendarDialog: FC<CalendarDialogProps> = ({ open, journeyId, journeyTypeName, onClose }) => {
+const CalendarDialog: FC<CalendarDialogProps> = ({ open, journeyId, onClose }) => {
   const { t } = useTranslation();
   const { calendarEventNameId } = useUrlParams();
   const navigate = useNavigate();
@@ -86,7 +84,7 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, journeyId, journeyTypeN
       aria-labelledby="calendar-events-dialog-title"
       PaperProps={{ sx: { padding: 0, display: `${deletingEvent ? 'none' : 'flex'}`, flexDirection: 'column' } }}
     >
-      <CalendarEventsContainer journeyId={journeyId} journeyTypeName={journeyTypeName}>
+      <CalendarEventsContainer journeyId={journeyId}>
         {(
           { events, privileges },
           { createEvent, updateEvent, deleteEvent },
