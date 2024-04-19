@@ -81,7 +81,10 @@ const _hydrateOrganizationCard = (
 };
 
 const hydrateSpaceCard = (
-  data: TypedSearchResult<SearchResultType.Space | SearchResultType.Challenge, SearchResultSpaceFragment>
+  data: TypedSearchResult<
+    SearchResultType.Space | SearchResultType.Challenge | SearchResultType.Opportunity,
+    SearchResultSpaceFragment
+  >
 ) => {
   const space = data.space;
   const tagline = space.profile?.tagline ?? '';
