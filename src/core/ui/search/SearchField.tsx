@@ -7,19 +7,15 @@ type SearchFieldProps = TextFieldProps & {
   onSearch?: (value: string) => void;
 };
 
-const SearchField = ({ onSearch, ...props }: SearchFieldProps) => {
+const SearchField = ({ onSearch, InputProps, ...props }: SearchFieldProps) => {
   const { t } = useTranslation();
-  const defaults: TextFieldProps = {
-    placeholder: t('common.search'),
-    fullWidth: true,
-    variant: 'outlined',
-    size: 'small',
-  };
 
   return (
     <TextField
-      {...defaults}
-      {...props}
+      placeholder={t('common.search')}
+      fullWidth
+      variant="outlined"
+      size="small"
       InputProps={{
         endAdornment: (
           <InputAdornment position="end">
@@ -28,8 +24,9 @@ const SearchField = ({ onSearch, ...props }: SearchFieldProps) => {
             </IconButton>
           </InputAdornment>
         ),
-        ...props.InputProps,
+        ...InputProps,
       }}
+      {...props}
     />
   );
 };
