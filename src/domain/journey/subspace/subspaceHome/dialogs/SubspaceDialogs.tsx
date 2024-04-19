@@ -38,7 +38,7 @@ const SubspaceDialogs = ({ dialogOpen, journeyUrl, callouts, journeyId }: Subspa
       />
       <ContributorsToggleDialog
         journeyId={journeyId}
-        open={dialog === SubspaceDialog.Contributors}
+        open={dialogOpen === SubspaceDialog.Contributors}
         onClose={() => navigate(journeyUrl)}
       />
     </>
