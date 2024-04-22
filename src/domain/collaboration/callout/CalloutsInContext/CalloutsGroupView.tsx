@@ -13,6 +13,7 @@ interface CalloutsGroupProps extends CalloutsViewProps {
   groupName: CalloutGroupName;
   flowState?: string;
   createButtonPlace?: 'top' | 'bottom';
+  hideButton?: boolean;
 }
 
 const CalloutsGroupView = ({
@@ -23,6 +24,7 @@ const CalloutsGroupView = ({
   flowState,
   createButtonPlace = 'bottom',
   journeyTypeName,
+  hideButton,
   ...calloutsViewProps
 }: CalloutsGroupProps) => {
   const {
@@ -47,11 +49,13 @@ const CalloutsGroupView = ({
     </AddContentButton>
   );
 
+  const showButton = canCreateCallout && !hideButton;
+
   return (
     <>
-      {canCreateCallout && createButtonPlace === 'top' && createButton}
+      {showButton && createButtonPlace === 'top' && createButton}
       <CalloutsView calloutNames={calloutNames} journeyTypeName={journeyTypeName} {...calloutsViewProps} />
-      {canCreateCallout && createButtonPlace === 'bottom' && createButton}
+      {showButton && createButtonPlace === 'bottom' && createButton}
       <CalloutCreationDialog
         open={isCalloutCreationDialogOpen}
         onClose={handleCreateCalloutClosed}

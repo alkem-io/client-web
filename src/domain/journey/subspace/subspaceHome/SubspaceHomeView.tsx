@@ -1,3 +1,6 @@
+import { useTranslation } from 'react-i18next';
+import { Button, ButtonProps } from '@mui/material';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { JourneyTypeName } from '../../JourneyTypeName';
 import { CalloutGroupName } from '../../../../core/apollo/generated/graphql-schema';
 import InnovationFlowStates from '../../../collaboration/InnovationFlow/InnovationFlowStates/InnovationFlowStates';
@@ -8,10 +11,11 @@ import React from 'react';
 import { SubspaceInnovationFlow, useConsumeAction } from '../layout/SubspacePageLayout';
 import { useColumns } from '../../../../core/ui/grid/GridContext';
 import { GRID_COLUMNS_MOBILE } from '../../../../core/ui/grid/constants';
-import InnovationFlowCurrentStateSelector from '../../../collaboration/InnovationFlow/InnovationFlowCurrentStateSelector/InnovationFlowCurrentStateSelector';
-import { SubspaceDialog } from '../layout/SubspaceDialog';
 import ButtonWithTooltip from '../../../../core/ui/button/ButtonWithTooltip';
-import { ButtonProps } from '@mui/material';
+import InnovationFlowCurrentStateSelector from '../../../collaboration/InnovationFlow/InnovationFlowCurrentStateSelector/InnovationFlowCurrentStateSelector';
+import { useCalloutCreationWithPreviewImages } from '../../../collaboration/callout/creationDialog/useCalloutCreation/useCalloutCreationWithPreviewImages';
+import CalloutCreationDialog from '../../../collaboration/callout/creationDialog/CalloutCreationDialog';
+import { SubspaceDialog } from '../layout/SubspaceDialog';
 
 interface SubspaceHomeViewProps {
   collaborationId: string | undefined;
@@ -72,6 +76,24 @@ const SubspaceHomeView = ({
   };
 
   const columns = useColumns();
+  const { t } = useTranslation();
+  const { isCalloutCreationDialogOpen, handleCreateCalloutOpened, handleCreateCalloutClosed, handleCreateCallout } =
+    useCalloutCreationWithPreviewImages();
+
+  const createButton = (
+    <Button
+      variant="outlined"
+      startIcon={<AddCircleOutlineIcon />}
+      sx={{
+        backgroundColor: 'background.paper',
+        borderColor: 'divider',
+        textWrap: 'nowrap',
+      }}
+      onClick={handleCreateCalloutOpened}
+    >
+      {t('callout.createShort')}
+    </Button>
+  );
 
   const isMobile = columns <= GRID_COLUMNS_MOBILE;
 
@@ -88,6 +110,7 @@ const SubspaceHomeView = ({
               currentState={currentInnovationFlowState}
               selectedState={selectedInnovationFlowState}
               settings={<SettingsButton />}
+              createButton={canCreateCallout && createButton}
               onSelectState={onSelectInnovationFlowState}
               visualizer={isMobile ? InnovationFlowVisualizerMobile : undefined}
             />
@@ -105,6 +128,7 @@ const SubspaceHomeView = ({
         callouts={filterCallouts(groupedCallouts[CalloutGroupName.Contribute])}
         canCreateCallout={canCreateCallout}
         canCreateCalloutFromTemplate={canCreateCalloutFromTemplate}
+        hideButton={!isMobile}
         loading={loading}
         journeyTypeName={journeyTypeName}
         calloutNames={calloutNames}
@@ -113,6 +137,16 @@ const SubspaceHomeView = ({
         groupName={CalloutGroupName.Contribute}
         createButtonPlace="top"
         flowState={selectedInnovationFlowState}
+      />
+      <CalloutCreationDialog
+        open={isCalloutCreationDialogOpen}
+        onClose={handleCreateCalloutClosed}
+        onCreateCallout={handleCreateCallout}
+        loading={loading}
+        calloutNames={calloutNames}
+        groupName={CalloutGroupName.Contribute}
+        journeyTypeName={journeyTypeName}
+        canCreateCalloutFromTemplate={canCreateCalloutFromTemplate}
       />
     </>
   );
