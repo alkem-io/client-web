@@ -61,7 +61,7 @@ interface Space extends Identifiable {
     tagset?: {
       tags: string[];
     };
-    avatar?: Visual;
+    cardBanner?: Visual;
   };
   context?: {
     vision?: string;
@@ -75,14 +75,16 @@ interface Space extends Identifiable {
   matchedTerms?: string[];
 }
 
-const collectParentAvatars = <Journey extends WithParent<{ profile?: { avatar?: Visual } }>>(
+const collectParentAvatars = <Journey extends WithParent<{ profile?: { avatar?: Visual; cardBanner?: Visual } }>>(
   { parent }: Journey,
   collected: string[] = []
 ) => {
   if (!parent) {
     return collected;
   }
-  return collectParentAvatars(parent, [parent.profile!.avatar!.uri, ...collected]);
+  const { cardBanner, avatar = cardBanner } = parent.profile!;
+
+  return collectParentAvatars(parent, [avatar?.uri ?? '', ...collected]);
 };
 
 export const SpaceExplorerView: FC<SpaceExplorerViewProps> = ({
@@ -145,7 +147,8 @@ export const SpaceExplorerView: FC<SpaceExplorerViewProps> = ({
               vision={space.context?.vision ?? ''}
               journeyUri={space.profile!.url}
               type={space.profile!.type!}
-              avatarUris={collectParentAvatars(space, [space.profile!.avatar!.uri])}
+              banner={space.profile!.cardBanner}
+              avatarUris={collectParentAvatars(space, [space.profile!.cardBanner!.uri])}
               tags={space.matchedTerms ?? space.profile?.tagset?.tags ?? []}
               spaceDisplayName={space.parent?.profile?.displayName}
               matchedTerms={!!space.matchedTerms}

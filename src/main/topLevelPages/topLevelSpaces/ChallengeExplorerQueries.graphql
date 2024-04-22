@@ -70,7 +70,7 @@ fragment SpaceExplorerSpace on Space {
       id
       tags
     }
-    avatar: visual(type: AVATAR) {
+    cardBanner: visual(type: CARD) {
       ...VisualUri
     }
   }
