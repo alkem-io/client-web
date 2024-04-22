@@ -6,6 +6,7 @@ import { UseCalloutsProvided } from '../../../../collaboration/callout/useCallou
 import { SubspaceDialog } from '../../layout/SubspaceDialog';
 import SubspacesListDialog from '../../dialogs/SubspacesListDialog';
 import ContributorsToggleDialog from '../../dialogs/ContributorsToggleDialog';
+import ActivityDialog from '../../dialogs/ActivityDialog';
 
 export interface SubspaceDialogsProps {
   dialogOpen: SubspaceDialog | undefined;
@@ -39,6 +40,11 @@ const SubspaceDialogs = ({ dialogOpen, journeyUrl, callouts, journeyId }: Subspa
       <ContributorsToggleDialog
         journeyId={journeyId}
         open={dialogOpen === SubspaceDialog.Contributors}
+        onClose={() => navigate(journeyUrl)}
+      />
+      <ActivityDialog
+        journeyId={journeyId}
+        open={dialogOpen === SubspaceDialog.Activity}
         onClose={() => navigate(journeyUrl)}
       />
     </>
