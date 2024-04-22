@@ -3,7 +3,10 @@ import {
   useCollaborationPrivilegesQuery,
 } from '../../../core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege } from '../../../core/apollo/generated/graphql-schema';
-import { useRouteResolver } from '../../../main/routing/resolvers/RouteResolver';
+
+interface CollaborationAuthorizationParams {
+  journeyId: string | undefined;
+}
 
 interface CollaborationAuthorization {
   collaborationId: string | undefined;
@@ -16,15 +19,9 @@ interface CollaborationAuthorization {
   loading: boolean;
 }
 
-export const useCollaborationAuthorization = (): CollaborationAuthorization => {
-  const { journeyId } = useRouteResolver();
-
-  // const [includeSpace, includeChallenge, includeOpportunity] = [
-  //   journeyTypeName === 'space',
-  //   journeyTypeName === 'subspace',
-  //   journeyTypeName === 'subsubspace',
-  // ];
-
+export const useCollaborationAuthorization = ({
+  journeyId,
+}: CollaborationAuthorizationParams): CollaborationAuthorization => {
   const { data: authorizationData, loading: loadingAuthorization } = useCollaborationAuthorizationQuery({
     variables: {
       spaceId: journeyId!,
@@ -32,7 +29,7 @@ export const useCollaborationAuthorization = (): CollaborationAuthorization => {
     skip: !journeyId,
   });
 
-  const authorization = authorizationData?.space?.authorization;
+  const authorization = authorizationData?.space.authorization;
 
   const canReadCollaboration = (authorization?.myPrivileges ?? []).includes(AuthorizationPrivilege.Read);
 
@@ -43,7 +40,7 @@ export const useCollaborationAuthorization = (): CollaborationAuthorization => {
     skip: !journeyId || !canReadCollaboration,
   });
 
-  const collaboration = collaborationData?.space?.collaboration;
+  const collaboration = collaborationData?.space.collaboration;
 
   const collaborationId = collaboration?.id;
   const collaborationPrivileges = collaboration?.authorization?.myPrivileges ?? [];

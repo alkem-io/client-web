@@ -36,7 +36,7 @@ const KnowledgeBasePage = ({ journeyTypeName }: PropsWithChildren<KnowledgeBaseP
     handleCreateCalloutClosed,
     handleCreateCallout,
     loading: loadingCalloutCreation,
-  } = useCalloutCreationWithPreviewImages();
+  } = useCalloutCreationWithPreviewImages({ journeyId });
 
   const handleCreate = () => {
     handleCreateCalloutOpened();
@@ -82,6 +82,7 @@ const KnowledgeBasePage = ({ journeyTypeName }: PropsWithChildren<KnowledgeBaseP
 
                 <ContentColumn>
                   <CalloutsGroupView
+                    journeyId={journeyId}
                     callouts={groupedCallouts[CalloutGroupName.Knowledge]}
                     canCreateCallout={canCreateCallout}
                     canCreateCalloutFromTemplate={canCreateCalloutFromTemplate}
