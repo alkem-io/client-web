@@ -15,7 +15,7 @@ import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import ReactDOM from 'react-dom';
 import EmptyWhiteboard from '../EmptyWhiteboard';
 import { WhiteboardFilesManager } from './useWhiteboardFilesManager';
-import whiteboardStyles from './whiteboardStyles';
+import useWhiteboardDefaults from './useWhiteboardDefaults';
 
 const useActorWhiteboardStyles = makeStyles(theme => ({
   container: {
@@ -57,6 +57,7 @@ const WINDOW_SCROLL_HANDLER_DEBOUNCE_INTERVAL = 100;
 
 const ExcalidrawWrapper = ({ entities, actions, options }: WhiteboardWhiteboardProps) => {
   const { whiteboard, filesManager } = entities;
+  const whiteboardDefaults = useWhiteboardDefaults();
 
   const styles = useActorWhiteboardStyles();
 
@@ -67,7 +68,7 @@ const ExcalidrawWrapper = ({ entities, actions, options }: WhiteboardWhiteboardP
 
     return {
       ...parsedData,
-      ...whiteboardStyles,
+      ...whiteboardDefaults,
     };
   }, [whiteboard?.content]);
 
