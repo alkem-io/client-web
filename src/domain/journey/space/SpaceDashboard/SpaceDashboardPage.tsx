@@ -36,9 +36,7 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
           <>
             <SpaceDashboardView
               spaceId={spaceId}
-              spaceUrl={entities.space?.profile.url}
               vision={entities.space?.context?.vision}
-              displayName={entities.space?.profile.displayName}
               dashboardNavigation={dashboardNavigation}
               dashboardNavigationLoading={state.loading}
               loading={state.loading}

@@ -25,8 +25,8 @@ export const findCurrentPath = (
   }
 };
 
-export const getIndentStyle = (level: number) => {
+export const getIndentStyle = (level: number, compact: boolean = false) => {
   return {
-    paddingLeft: gutters(1 + level * 2),
+    paddingLeft: gutters(compact ? 0.5 : 1 + level * 2),
   };
 };

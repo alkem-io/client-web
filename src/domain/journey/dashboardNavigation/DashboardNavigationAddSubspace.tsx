@@ -12,6 +12,7 @@ interface DashboardNavigationAddSubspaceProps {
   url?: string;
   onClick?: MouseEventHandler;
   level?: number;
+  compact?: boolean;
 }
 
 const DashboardNavigationAddSubspace = ({ url, level = 0, onClick }: DashboardNavigationAddSubspaceProps) => {
