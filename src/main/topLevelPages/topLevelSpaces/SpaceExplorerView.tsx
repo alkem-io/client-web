@@ -42,9 +42,10 @@ const SPACES_EXPLORER_MEMBERSHIP_FILTERS: SpacesExplorerMembershipFilter[] = [
 export type SpaceWithParent = Space & WithParent<ParentSpace>;
 
 interface ParentSpace extends Identifiable {
-  profile?: {
+  profile: {
     displayName: string;
     avatar?: Visual;
+    cardBanner?: Visual;
   };
 }
 
@@ -53,7 +54,7 @@ type WithParent<ParentInfo extends {}> = {
 };
 
 interface Space extends Identifiable {
-  profile?: {
+  profile: {
     url: string;
     displayName: string;
     tagline: string;
@@ -61,7 +62,7 @@ interface Space extends Identifiable {
     tagset?: {
       tags: string[];
     };
-    avatar?: Visual;
+    cardBanner?: Visual;
   };
   context?: {
     vision?: string;
@@ -75,14 +76,23 @@ interface Space extends Identifiable {
   matchedTerms?: string[];
 }
 
-const collectParentAvatars = <Journey extends WithParent<{ profile?: { avatar?: Visual } }>>(
-  { parent }: Journey,
-  collected: string[] = []
+interface WithBanner {
+  profile: { avatar?: Visual; cardBanner?: Visual };
+}
+
+const collectParentAvatars = <Journey extends WithBanner & WithParent<WithBanner>>(
+  { profile, parent }: Journey,
+  initial: string[] = []
 ) => {
+  const { cardBanner, avatar = cardBanner } = profile;
+
+  const collected = [avatar?.uri ?? '', ...initial];
+
   if (!parent) {
     return collected;
+  } else {
+    return collectParentAvatars(parent, collected);
   }
-  return collectParentAvatars(parent, [parent.profile!.avatar!.uri, ...collected]);
 };
 
 export const SpaceExplorerView: FC<SpaceExplorerViewProps> = ({
@@ -145,7 +155,8 @@ export const SpaceExplorerView: FC<SpaceExplorerViewProps> = ({
               vision={space.context?.vision ?? ''}
               journeyUri={space.profile!.url}
               type={space.profile!.type!}
-              avatarUris={collectParentAvatars(space, [space.profile!.avatar!.uri])}
+              banner={space.profile!.cardBanner}
+              avatarUris={collectParentAvatars(space)}
               tags={space.matchedTerms ?? space.profile?.tagset?.tags ?? []}
               spaceDisplayName={space.parent?.profile?.displayName}
               matchedTerms={!!space.matchedTerms}

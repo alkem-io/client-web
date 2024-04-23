@@ -2113,8 +2113,8 @@ export type ISearchResults = {
   journeyResultsCount: Scalars['Float'];
 };
 
-export type IngestBulkResult = {
-  __typename?: 'IngestBulkResult';
+export type IngestBatchResult = {
+  __typename?: 'IngestBatchResult';
   /** A message to describe the result of the operation. */
   message?: Maybe<Scalars['String']>;
   /** Whether the operation was successful. */
@@ -2123,10 +2123,12 @@ export type IngestBulkResult = {
 
 export type IngestResult = {
   __typename?: 'IngestResult';
+  /** The result of the operation. */
+  batches: Array<IngestBatchResult>;
   /** The index that the documents were ingested into. */
   index: Scalars['String'];
-  /** The result of the operation. */
-  result: IngestBulkResult;
+  /** Amount of documents indexed. */
+  total?: Maybe<Scalars['Float']>;
 };
 
 export type InnovationFlow = {
@@ -5839,7 +5841,7 @@ export type VirtualPersona = {
   /** The Profile for this VirtualPersona. */
   profile: Profile;
   /** The prompt used by this Virtual Persona */
-  prompt: Scalars['JSON'];
+  prompt: Scalars['String'];
 };
 
 export type VirtualPersonaAuthorizationResetInput = {
@@ -31191,7 +31193,7 @@ export type SpaceExplorerSearchQuery = {
               displayName: string;
               type?: ProfileType | undefined;
               tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-              avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
             };
             context?: { __typename?: 'Context'; id: string; vision?: string | undefined } | undefined;
             account: {
@@ -31244,7 +31246,7 @@ export type SpaceExplorerSearchQuery = {
               displayName: string;
               type?: ProfileType | undefined;
               tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-              avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
             };
             context?: { __typename?: 'Context'; id: string; vision?: string | undefined } | undefined;
             account: {
@@ -31277,7 +31279,7 @@ export type SpaceExplorerSearchSpaceFragment = {
       displayName: string;
       type?: ProfileType | undefined;
       tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-      avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+      cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
     };
     context?: { __typename?: 'Context'; id: string; vision?: string | undefined } | undefined;
     account: {
@@ -31305,7 +31307,7 @@ export type SpaceExplorerSearchChallengeFragment = {
       displayName: string;
       type?: ProfileType | undefined;
       tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-      avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+      cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
     };
     context?: { __typename?: 'Context'; id: string; vision?: string | undefined } | undefined;
     account: {
@@ -31379,7 +31381,7 @@ export type SpaceExplorerMemberSpacesQuery = {
       displayName: string;
       type?: ProfileType | undefined;
       tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-      avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+      cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
     };
     context?: { __typename?: 'Context'; id: string; vision?: string | undefined } | undefined;
     account: {
@@ -31437,7 +31439,7 @@ export type SpaceExplorerAllSpacesQuery = {
         displayName: string;
         type?: ProfileType | undefined;
         tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-        avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
       };
       context?: { __typename?: 'Context'; id: string; vision?: string | undefined } | undefined;
       account: {
@@ -31470,7 +31472,7 @@ export type SpaceExplorerSpaceFragment = {
     displayName: string;
     type?: ProfileType | undefined;
     tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+    cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
   };
   context?: { __typename?: 'Context'; id: string; vision?: string | undefined } | undefined;
   account: {
@@ -31538,7 +31540,7 @@ export type SpaceExplorerSpaceWithChallengesFragment = {
     displayName: string;
     type?: ProfileType | undefined;
     tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+    cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
   };
   context?: { __typename?: 'Context'; id: string; vision?: string | undefined } | undefined;
   account: {
