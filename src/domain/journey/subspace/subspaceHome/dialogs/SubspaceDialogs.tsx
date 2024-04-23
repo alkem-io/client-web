@@ -6,7 +6,7 @@ import { UseCalloutsProvided } from '../../../../collaboration/callout/useCallou
 import { SubspaceDialog } from '../../layout/SubspaceDialog';
 import SubspacesListDialog from '../../dialogs/SubspacesListDialog';
 import ContributorsToggleDialog from '../../dialogs/ContributorsToggleDialog';
-import ActivityDialog from '../../dialogs/ActivityDialog';
+import ActivityDialog from '../../../common/Activity/ActivityDialog';
 
 export interface SubspaceDialogsProps {
   dialogOpen: SubspaceDialog | undefined;

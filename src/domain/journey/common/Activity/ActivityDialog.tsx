@@ -3,9 +3,9 @@ import { useTranslation } from 'react-i18next';
 import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import { DialogContent } from '@mui/material';
-import SubspacePageContainer from '../containers/SubspacePageContainer';
+import SubspacePageContainer from '../../subspace/containers/SubspacePageContainer';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
-import DashboardAllContributionsBlock from '../../common/dashboardRecentContributionsBlock/DashboardAllContributionsBlock';
+import DashboardAllContributionsBlock from '../dashboardRecentContributionsBlock/DashboardAllContributionsBlock';
 
 export interface SubspacesListDialogProps {
   open?: boolean;
