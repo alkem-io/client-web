@@ -59,7 +59,7 @@ const SpaceCard = ({
       }
       expansionActions={
         <CardActions>
-          <JourneyCardGoToButton journeyUri={props.journeyUri} journeyTypeName="space" />
+          <JourneyCardGoToButton journeyUri={props.journeyUri} />
         </CardActions>
       }
       bannerOverlay={ribbon}

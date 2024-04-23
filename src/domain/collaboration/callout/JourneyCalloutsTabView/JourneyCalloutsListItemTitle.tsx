@@ -1,11 +1,18 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { TypedCallout } from '../useCallouts/useCallouts';
 import EllipsableWithCount from '../../../../core/ui/typography/EllipsableWithCount';
 import TranslationKey from '../../../../core/i18n/utils/TranslationKey';
 
 interface JourneyCalloutsListItemTitleProps {
-  callout: TypedCallout;
+  callout: {
+    activity: number;
+    framing: {
+      profile: {
+        displayName: string;
+      };
+    };
+    flowStates?: string[];
+  };
 }
 
 const SEPARATOR = ' — ';

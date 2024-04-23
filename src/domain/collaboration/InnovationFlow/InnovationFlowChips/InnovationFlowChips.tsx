@@ -1,8 +1,7 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, IconButton, styled, Tooltip } from '@mui/material';
+import { Button, styled, Tooltip } from '@mui/material';
 import { ArrowRight } from '@mui/icons-material';
-import SettingsIcon from '@mui/icons-material/SettingsOutlined';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import { useGlobalGridColumns } from '../../../../core/ui/grid/constants';
 import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
@@ -15,8 +14,7 @@ interface InnovationFlowChipsProps {
   states: InnovationFlowState[];
   currentState?: string;
   selectedState: string | undefined;
-  showSettings?: boolean;
-  onSettingsOpen?: () => void;
+  settings?: ReactNode;
   onSelectState?: (state: InnovationFlowState) => void;
 }
 
@@ -32,9 +30,8 @@ const InnovationFlowChips = ({
   states,
   currentState,
   selectedState,
-  showSettings,
-  onSettingsOpen,
   onSelectState,
+  settings,
 }: InnovationFlowChipsProps) => {
   const { t } = useTranslation();
 
@@ -104,15 +101,7 @@ const InnovationFlowChips = ({
             </Button>
           ))}
         </Gutters>
-        {showSettings && (
-          <IconButton
-            color="primary"
-            onClick={onSettingsOpen}
-            aria-label={t('components.innovationFlowSettings.title')}
-          >
-            <SettingsIcon />
-          </IconButton>
-        )}
+        {settings}
       </Gutters>
       {selectedStateDescription && <FlowStateDescription>{selectedStateDescription}</FlowStateDescription>}
     </>

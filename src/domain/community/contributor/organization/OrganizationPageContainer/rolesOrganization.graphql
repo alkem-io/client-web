@@ -7,7 +7,7 @@ query rolesOrganization($input: UUID_NAMEID!) {
       roles
       displayName
       visibility
-      challenges {
+      subspaces {
         nameID
         id
         displayName

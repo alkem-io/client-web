@@ -5,6 +5,7 @@ import DashboardComponentsDemo from './ui/DashboardComponentsDemo';
 import JourneyCardsDemo from './ui/JourneyCardsDemo';
 import TableDemo from './ui/TableDemo';
 import SearchCardsDemo from './ui/SearchCardsDemo';
+import DashboardNavigationDemo from './ui/DashboardNavigationDemo';
 
 const devRoutes = () => {
   return (
@@ -15,6 +16,7 @@ const devRoutes = () => {
       <Route path="ui/cards" element={<JourneyCardsDemo />} />
       <Route path="ui/table" element={<TableDemo />} />
       <Route path="ui/search-cards" element={<SearchCardsDemo />} />
+      <Route path="ui/dashboard-navigation" element={<DashboardNavigationDemo />} />
     </Route>
   );
 };

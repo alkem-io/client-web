@@ -13,28 +13,28 @@ query LatestContributions(
       child
       parentNameID
       journeyDisplayName: parentDisplayName
-      journey {
+      space {
         id
         ... on Space {
           profile {
             ...RecentContributionsSpaceProfile
           }
         }
-        ... on RelayPaginatedSpace {
-          profile {
-            ...RecentContributionsSpaceProfile
-          }
-        }
-        ... on Challenge {
-          profile {
-            ...RecentContributionsChildJourneyProfile
-          }
-        }
-        ... on Opportunity {
-          profile {
-            ...RecentContributionsChildJourneyProfile
-          }
-        }
+        # ... on RelayPaginatedSpace {
+        #   profile {
+        #     ...RecentContributionsSpaceProfile
+        #   }
+        # }
+        # ... on subspace {
+        #   profile {
+        #     ...RecentContributionsChildJourneyProfile
+        #   }
+        # }
+        # ... on Opportunity {
+        #   profile {
+        #     ...RecentContributionsChildJourneyProfile
+        #   }
+        # }
       }
       triggeredBy {
         id

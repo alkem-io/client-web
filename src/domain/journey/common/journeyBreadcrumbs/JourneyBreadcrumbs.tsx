@@ -1,6 +1,6 @@
-import { useJourneyBreadcrumbs } from './useJourneyBreadcrumbs';
+import { useJourneyBreadcrumbs, UseJourneyBreadcrumbsParams } from './useJourneyBreadcrumbs';
 import Breadcrumbs, { BreadcrumbsProps } from '../../../../core/ui/navigation/Breadcrumbs';
-import JourneyIcon from '../../../shared/components/JourneyIcon/JourneyIcon';
+import { journeyIconByJourneyLevel } from '../../../shared/components/JourneyIcon/JourneyIcon';
 import BreadcrumbsRootItem from '../../../../main/ui/breadcrumbs/BreadcrumbsRootItem';
 import BreadcrumbsItem from '../../../../core/ui/navigation/BreadcrumbsItem';
 import { Expandable } from '../../../../core/ui/navigation/Expandable';
@@ -9,23 +9,31 @@ import { Collapsible } from '../../../../core/ui/navigation/Collapsible';
 import { Settings } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 
-interface JourneyBreadcrumbsProps<ItemProps extends Expandable> extends BreadcrumbsProps<ItemProps> {
+interface JourneyBreadcrumbsProps<ItemProps extends Expandable>
+  extends BreadcrumbsProps<ItemProps>,
+    UseJourneyBreadcrumbsParams {
   settings?: boolean;
 }
 
 const JourneyBreadcrumbs = forwardRef<Collapsible, JourneyBreadcrumbsProps<Expandable>>(
-  <ItemProps extends Expandable>({ settings, ...props }: JourneyBreadcrumbsProps<ItemProps>, ref) => {
-    const { breadcrumbs } = useJourneyBreadcrumbs();
+  <ItemProps extends Expandable>(
+    { journeyPath, settings, loading, ...props }: JourneyBreadcrumbsProps<ItemProps>,
+    ref
+  ) => {
+    const { breadcrumbs } = useJourneyBreadcrumbs({
+      journeyPath,
+      loading,
+    });
 
     const { t } = useTranslation();
 
     return (
       <Breadcrumbs ref={ref} {...props}>
         <BreadcrumbsRootItem />
-        {breadcrumbs.map(({ journeyTypeName, displayName, ...item }) => (
+        {breadcrumbs.map(({ displayName, ...item }, level) => (
           <BreadcrumbsItem
-            key={journeyTypeName}
-            iconComponent={JourneyIcon[journeyTypeName]}
+            key={level}
+            iconComponent={journeyIconByJourneyLevel[level]}
             accent
             aria-label={displayName}
             {...item}

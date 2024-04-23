@@ -1,18 +1,17 @@
 import React, { FC } from 'react';
 import AboutPageContainer from '../../common/AboutPageContainer/AboutPageContainer';
-import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import { useOpportunity } from '../hooks/useOpportunity';
-import OpportunityPageLayout from '../layout/OpportunityPageLayout';
+import { SubspacePageLayout } from '../../common/EntityPageLayout';
 import OpportunityAboutView from '../../common/tabs/About/OpportunityAboutView';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 
 const OpportunityAboutPage: FC = () => {
   const { communityId } = useOpportunity();
-  const { challengeId, opportunityId } = useRouteResolver();
+  const { subSpaceId: challengeId, subSubSpaceId: opportunityId, journeyId, journeyPath } = useRouteResolver();
 
   return (
-    <OpportunityPageLayout currentSection={EntityPageSection.About}>
-      <AboutPageContainer journeyId={opportunityId} journeyTypeName="opportunity">
+    <SubspacePageLayout journeyId={journeyId} journeyPath={journeyPath}>
+      <AboutPageContainer journeyId={opportunityId}>
         {({ context, profile, tagset, permissions, ...rest }, state) => (
           <OpportunityAboutView
             challengeId={challengeId}
@@ -32,7 +31,7 @@ const OpportunityAboutPage: FC = () => {
           />
         )}
       </AboutPageContainer>
-    </OpportunityPageLayout>
+    </SubspacePageLayout>
   );
 };
 

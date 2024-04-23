@@ -5,10 +5,8 @@ import { journeyCardTagsGetter, journeyCardValueGetter } from '../../common/util
 import { JourneyCreationDialog } from '../../../shared/components/JorneyCreationDialog';
 import { JourneyFormValues } from '../../../shared/components/JorneyCreationDialog/JourneyCreationForm';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
-import { useJourneyCreation } from '../../../shared/utils/useJourneyCreation/useJourneyCreation';
-import ChallengeCard from '../../challenge/ChallengeCard/ChallengeCard';
-import { CreateChallengeForm } from '../../challenge/forms/CreateChallengeForm';
-import { ChallengeIcon } from '../../challenge/icon/ChallengeIcon';
+import { useSubspaceCreation } from '../../../shared/utils/useJourneyCreation/useJourneyCreation';
+
 import ChildJourneyView from '../../common/tabs/Subentities/ChildJourneyView';
 import SpaceChallengesContainer from '../containers/SpaceChallengesContainer';
 import { useSpace } from '../SpaceContext/useSpace';
@@ -16,23 +14,26 @@ import SpacePageLayout from '../layout/SpacePageLayout';
 import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
 import { CalloutGroupName, CommunityMembershipStatus } from '../../../../core/apollo/generated/graphql-schema';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
+import { ChallengeIcon } from '../../subspace/icon/ChallengeIcon';
+import ChallengeCard from '../../subspace/subspaceCard/SubspaceCard';
+import { CreateChallengeForm } from '../../subspace/forms/CreateChallengeForm';
 
 export interface SpaceChallengesPageProps {}
 
 const SpaceChallengesPage: FC<SpaceChallengesPageProps> = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { spaceId } = useRouteResolver();
+  const { spaceId, journeyPath } = useRouteResolver();
   const { spaceNameId, permissions, license } = useSpace();
   const spaceVisibility = license.visibility;
 
   const [isCreateDialogOpen, setCreateDialogOpen] = useState(false);
 
-  const { createChallenge } = useJourneyCreation();
+  const { createSubspace } = useSubspaceCreation();
 
   const handleCreate = useCallback(
     async (value: JourneyFormValues) => {
-      const result = await createChallenge({
+      const result = await createSubspace({
         spaceID: spaceNameId,
         displayName: value.displayName,
         tagline: value.tagline,
@@ -48,15 +49,15 @@ const SpaceChallengesPage: FC<SpaceChallengesPageProps> = () => {
 
       navigate(result.profile.url);
     },
-    [navigate, createChallenge, spaceNameId]
+    [navigate, createSubspace, spaceNameId]
   );
 
   return (
-    <SpacePageLayout currentSection={EntityPageSection.Challenges}>
+    <SpacePageLayout journeyPath={journeyPath} currentSection={EntityPageSection.Subspaces}>
       <SpaceChallengesContainer spaceId={spaceId}>
         {({ callouts, ...entities }, state) => (
           <ChildJourneyView
-            childEntities={entities.challenges}
+            childEntities={entities.subspaces}
             childEntitiesIcon={<ChallengeIcon />}
             childEntityReadAccess={permissions.canReadChallenges}
             childEntityValueGetter={journeyCardValueGetter}
@@ -76,21 +77,22 @@ const SpaceChallengesPage: FC<SpaceChallengesPageProps> = () => {
                 member={challenge.community?.myMembershipStatus === CommunityMembershipStatus.Member}
               />
             )}
+            onClickCreate={() => setCreateDialogOpen(true)}
             childEntityCreateAccess={permissions.canCreateChallenges}
             childEntityOnCreate={() => setCreateDialogOpen(true)}
             createSubentityDialog={
               <JourneyCreationDialog
                 open={isCreateDialogOpen}
                 icon={<ChallengeIcon />}
-                journeyName={t('common.challenge')}
+                journeyName={t('common.subspace')}
                 onClose={() => setCreateDialogOpen(false)}
                 OnCreate={handleCreate}
                 formComponent={CreateChallengeForm}
               />
             }
-            childrenLeft={
+            children={
               <CalloutsGroupView
-                callouts={callouts.groupedCallouts[CalloutGroupName.Subspaces_1]}
+                callouts={callouts.groupedCallouts[CalloutGroupName.Subspaces]}
                 canCreateCallout={callouts.canCreateCallout}
                 canCreateCalloutFromTemplate={callouts.canCreateCalloutFromTemplate}
                 loading={callouts.loading}
@@ -98,20 +100,7 @@ const SpaceChallengesPage: FC<SpaceChallengesPageProps> = () => {
                 calloutNames={callouts.calloutNames}
                 onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
                 onCalloutUpdate={callouts.refetchCallout}
-                groupName={CalloutGroupName.Subspaces_1}
-              />
-            }
-            childrenRight={
-              <CalloutsGroupView
-                callouts={callouts.groupedCallouts[CalloutGroupName.Subspaces_2]}
-                canCreateCallout={callouts.canCreateCallout}
-                canCreateCalloutFromTemplate={callouts.canCreateCalloutFromTemplate}
-                loading={callouts.loading}
-                journeyTypeName="space"
-                calloutNames={callouts.calloutNames}
-                onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
-                onCalloutUpdate={callouts.refetchCallout}
-                groupName={CalloutGroupName.Subspaces_2}
+                groupName={CalloutGroupName.Subspaces}
               />
             }
           />

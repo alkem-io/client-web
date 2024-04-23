@@ -12,8 +12,7 @@ import JourneyCardTagline from '../../common/JourneyCard/JourneyCardTagline';
 import StackedAvatar from './StackedAvatar';
 import { ReactNode } from 'react';
 
-interface SpaceSubspaceCardProps
-  extends Omit<JourneyCardProps, 'header' | 'iconComponent' | 'expansion' | 'journeyTypeName'> {
+interface SpaceSubspaceCardProps extends Omit<JourneyCardProps, 'header' | 'iconComponent' | 'expansion'> {
   tagline: string;
   displayName: string;
   vision: string;
@@ -75,7 +74,7 @@ const SpaceSubspaceCard = ({
       }
       expansionActions={
         <CardActions>
-          <JourneyCardGoToButton journeyUri={props.journeyUri} journeyTypeName="space" />
+          <JourneyCardGoToButton journeyUri={props.journeyUri} />
         </CardActions>
       }
       bannerOverlay={

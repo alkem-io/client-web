@@ -8,18 +8,17 @@ import {
   useOrganizationProfileInfoQuery,
   useUpdateOrganizationMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
-import { useNavigateToEdit } from '../../../../../core/routing/useNavigateToEdit';
 import { EditMode } from '../../../../../core/ui/forms/editMode';
 import {
   CreateOrganizationInput,
   Organization,
   UpdateOrganizationInput,
 } from '../../../../../core/apollo/generated/graphql-schema';
-import { logger } from '../../../../../core/logging/winston/logger';
 import Loading from '../../../../../core/ui/loading/Loading';
 import OrganizationForm from './OrganizationForm';
 import clearCacheForQuery from '../../../../../core/apollo/utils/clearCacheForQuery';
 import { StorageConfigContextProvider } from '../../../../storage/StorageBucket/StorageConfigContext';
+import useNavigate from '../../../../../core/routing/useNavigate';
 
 interface Props {
   title?: string;
@@ -39,20 +38,18 @@ const OrganizationPage: FC<Props> = ({ title, mode }) => {
   const organization = data?.organization;
 
   const notify = useNotification();
-  const navigateToEdit = useNavigateToEdit();
+  const navigate = useNavigate();
   const [createTagset] = useCreateTagsetOnProfileMutation({
     // Just log the error. Do not send it to the notification handler.
     // there is an issue handling multiple snackbars.
-    onError: error => logger.error(error.message),
+    onError: error => console.error(error.message),
   });
 
   const [createOrganization] = useCreateOrganizationMutation({
     onCompleted: data => {
-      const organizationId = data.createOrganization.nameID;
-      if (organizationId) {
-        notify(t('pages.admin.organization.notifications.organization-created'), 'success');
-        navigateToEdit(organizationId);
-      }
+      const organizationURL = data.createOrganization.profile.url;
+      notify(t('pages.admin.organization.notifications.organization-created'), 'success');
+      navigate(organizationURL);
     },
     update: cache => clearCacheForQuery(cache, 'organizationsPaginated'),
   });

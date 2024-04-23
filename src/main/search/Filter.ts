@@ -15,7 +15,7 @@ export interface FilterConfig {
 export const journeyFilterConfig: FilterConfig = {
   all: {
     title: 'pages.search.filter.key.all',
-    value: ['space', 'opportunity', 'challenge'],
+    value: ['space', 'subspace'],
     typename: 'all',
   },
   space: {
@@ -23,15 +23,10 @@ export const journeyFilterConfig: FilterConfig = {
     value: ['space'],
     typename: 'space',
   },
-  challenge: {
-    title: 'pages.search.filter.key.challenge',
-    value: ['challenge'],
-    typename: 'challenge',
-  },
-  opportunity: {
-    title: 'pages.search.filter.key.opportunity',
-    value: ['opportunity'],
-    typename: 'opportunity',
+  subspace: {
+    title: 'pages.search.filter.key.subspace',
+    value: ['subspace'],
+    typename: 'subspace',
   },
 };
 

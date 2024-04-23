@@ -6,22 +6,22 @@ import ActivityDescriptionByType from '../../../../shared/components/ActivityDes
 import { ActivityEventType } from '../../../../../core/apollo/generated/graphql-schema';
 
 interface ActivityOpportunityCreatedViewProps extends ActivityViewProps {
-  opportunity: ActivitySubject;
+  subsubspace: ActivitySubject;
   type: ActivityEventType.OpportunityCreated;
 }
 
 export const ActivityOpportunityCreatedView: FC<ActivityOpportunityCreatedViewProps> = ({
   createdDate,
   journeyDisplayName,
-  opportunity,
+  subsubspace,
   type,
   ...rest
 }) => {
   return (
     <ActivityBaseView
       type={type}
-      title={<ActivityDescriptionByType activityType={type} subject={opportunity.profile.displayName} />}
-      url={opportunity.profile.url}
+      title={<ActivityDescriptionByType activityType={type} subject={subsubspace.profile.displayName} />}
+      url={subsubspace.profile.url}
       contextDisplayName={journeyDisplayName}
       createdDate={createdDate}
       {...rest}

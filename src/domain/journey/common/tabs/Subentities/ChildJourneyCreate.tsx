@@ -26,7 +26,7 @@ const ChildJourneyCreate = ({ journeyTypeName, canCreateSubentity, onCreateSuben
       {canCreateSubentity && (
         <Box display="flex" justifyContent="flex-end">
           <Button startIcon={<AddOutlinedIcon />} variant="contained" onClick={onCreateSubentity}>
-            {t('buttons.create')}
+            {t('navigation.admin.subspace.create')}
           </Button>
         </Box>
       )}

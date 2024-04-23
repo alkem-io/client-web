@@ -16,15 +16,8 @@ fragment MetricsItem on NVP {
   value
 }
 #
-query AboutPageNonMembers(
-  $spaceId: UUID_NAMEID = "00000000-0000-0000-0000-000000000000"
-  $includeSpace: Boolean = false
-  $includeChallenge: Boolean = false
-  $includeOpportunity: Boolean = false
-  $challengeId: UUID = "00000000-0000-0000-0000-000000000000"
-  $opportunityId: UUID = "00000000-0000-0000-0000-000000000000"
-) {
-  space(ID: $spaceId) @include(if: $includeSpace) {
+query AboutPageNonMembers($spaceId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
     id
     profile {
       id
@@ -39,8 +32,10 @@ query AboutPageNonMembers(
         ...VisualFull
       }
     }
-    host {
-      ...AssociatedOrganizationDetails
+    account {
+      host {
+        ...AssociatedOrganizationDetails
+      }
     }
     metrics {
       ...MetricsItem
@@ -55,144 +50,32 @@ query AboutPageNonMembers(
     context {
       ...ContextTab
     }
-  }
-  lookup {
-    challenge(ID: $challengeId) @include(if: $includeChallenge) {
+    collaboration {
       id
-      profile {
+      innovationFlow {
         id
-        url
-        displayName
-        tagline
-        description
-        tagset {
-          ...TagsetDetails
+        currentState {
+          displayName
         }
-        visuals {
-          ...VisualFull
-        }
-      }
-      authorization {
-        id
-        myPrivileges
-      }
-      collaboration {
-        id
-        innovationFlow {
-          id
-          currentState {
-            displayName
-          }
-          states {
-            displayName
-            description
-          }
-        }
-      }
-      context {
-        ...ContextTab
-      }
-      metrics {
-        ...MetricsItem
-      }
-      community {
-        id
-        authorization {
-          id
-          myPrivileges
-        }
-      }
-    }
-    opportunity(ID: $opportunityId) @include(if: $includeOpportunity) {
-      id
-      profile {
-        id
-        url
-        displayName
-        tagline
-        description
-        tagset {
-          ...TagsetDetails
-        }
-        visuals {
-          ...VisualFull
-        }
-      }
-      collaboration {
-        id
-        innovationFlow {
-          id
-          currentState {
-            displayName
-          }
-          states {
-            displayName
-            description
-          }
-        }
-      }
-      context {
-        ...ContextTab
-      }
-      metrics {
-        ...MetricsItem
-      }
-      community {
-        id
-        authorization {
-          id
-          myPrivileges
+        states {
+          displayName
+          description
         }
       }
     }
   }
 }
 #
-query AboutPageMembers(
-  $spaceId: UUID_NAMEID = "00000000-0000-0000-0000-000000000000"
-  $includeSpace: Boolean = false
-  $includeChallenge: Boolean = false
-  $includeOpportunity: Boolean = false
-  $communityReadAccess: Boolean!
-  $referencesReadAccess: Boolean!
-  $challengeId: UUID = "00000000-0000-0000-0000-000000000000"
-  $opportunityId: UUID = "00000000-0000-0000-0000-000000000000"
-) {
-  space(ID: $spaceId) @include(if: $includeSpace) {
+query AboutPageMembers($spaceId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
     id
-    community @include(if: $communityReadAccess) {
+    community {
       ...EntityDashboardCommunity
     }
     profile {
       id
-      references @include(if: $referencesReadAccess) {
+      references {
         ...ReferenceDetails
-      }
-    }
-  }
-  lookup {
-    challenge(ID: $challengeId) @include(if: $includeChallenge) {
-      id
-      community @include(if: $communityReadAccess) {
-        ...EntityDashboardCommunity
-      }
-      profile {
-        id
-        references @include(if: $referencesReadAccess) {
-          ...ReferenceDetails
-        }
-      }
-    }
-    opportunity(ID: $opportunityId) @include(if: $includeOpportunity) {
-      id
-      community @include(if: $communityReadAccess) {
-        ...EntityDashboardCommunity
-      }
-      profile {
-        id
-        references @include(if: $referencesReadAccess) {
-          ...ReferenceDetails
-        }
       }
     }
   }

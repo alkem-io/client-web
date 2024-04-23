@@ -1,14 +1,17 @@
 import React, { FC, ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Badge, ListItemButtonProps, Paper } from '@mui/material';
 import Skeleton from '@mui/material/Skeleton';
+import ListItemButton, { ListItemButtonTypeMap } from '@mui/material/ListItemButton/ListItemButton';
 import { Caption } from '../../../../../core/ui/typography';
 import BadgeCardView from '../../../../../core/ui/list/BadgeCardView';
 import RouterLink, { RouterLinkProps } from '../../../../../core/ui/link/RouterLink';
 import { gutters } from '../../../../../core/ui/grid/utils';
 import Avatar from '../../../../../core/ui/avatar/Avatar';
-import { Badge, ListItemButtonProps, Paper } from '@mui/material';
 import SwapColors from '../../../../../core/ui/palette/SwapColors';
+import Gutters from '../../../../../core/ui/grid/Gutters';
+import { formatTimeElapsed } from '../../../../shared/utils/formatTimeElapsed';
 import getActivityIcon, { Activity } from './ActivityIcon';
-import ListItemButton, { ListItemButtonTypeMap } from '@mui/material/ListItemButton/ListItemButton';
 import ActivityViewFooter from './ActivityViewFooter';
 
 export interface ActivityBaseViewProps {
@@ -35,12 +38,13 @@ export const ActivityBaseView: FC<ActivityBaseViewProps & (Activity | { type: un
   ...activity
 }) => {
   const ActivityIcon = activity.type && getActivityIcon(activity);
+  const { t } = useTranslation();
 
   return (
     <BadgeCardView
       component={Wrapper}
       to={url}
-      sx={{ padding: 1 }}
+      padding
       visual={
         <Badge
           overlap="circular"
@@ -77,9 +81,20 @@ export const ActivityBaseView: FC<ActivityBaseViewProps & (Activity | { type: un
         </Badge>
       }
     >
-      <Caption>{loading ? <Skeleton width="60%" /> : title}</Caption>
+      <Gutters row disablePadding justifyContent="space-between" gap={gutters(0.5)}>
+        {loading ? (
+          <Skeleton width="60%" />
+        ) : (
+          <>
+            <Caption noWrap flexGrow={1} minWidth={0} flexShrink={1}>
+              {title}
+            </Caption>
+            <Caption>{formatTimeElapsed(createdDate, t)}</Caption>
+          </>
+        )}
+      </Gutters>
       {loading && <Skeleton />}
-      {!loading && <ActivityViewFooter contextDisplayName={contextDisplayName} createdDate={createdDate} />}
+      {!loading && <ActivityViewFooter contextDisplayName={contextDisplayName} />}
       {loading && <Skeleton />}
     </BadgeCardView>
   );

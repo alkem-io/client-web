@@ -1,24 +1,48 @@
-import JourneyPageBannerCard, {
-  JourneyPageBannerCardProps,
-} from '../PageBanner/JourneyPageBannerCard/JourneyPageBannerCard';
+import JourneyPageBannerCard from '../PageBanner/JourneyPageBannerCard/JourneyPageBannerCard';
 import PageBanner, { PageBannerProps } from '../../../../core/ui/layout/pageBanner/PageBanner';
 import { useMemo } from 'react';
 import defaultJourneyBanner from '../../defaultVisuals/Banner.jpg';
+import { useChildJourneyPageBannerQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { useSpace } from '../../space/SpaceContext/useSpace';
+import { getVisualByType } from '../../../common/visual/utils/visuals.utils';
+import { VisualName } from '../../../common/visual/constants/visuals.constants';
 
-interface ChildJourneyPageBannerProps extends PageBannerProps, JourneyPageBannerCardProps {}
+interface ChildJourneyPageBannerProps extends Omit<PageBannerProps, 'banner'> {
+  journeyId: string | undefined;
+}
 
-const ChildJourneyPageBanner = ({ banner, ...props }: ChildJourneyPageBannerProps) => {
-  const spaceBanner = useMemo(() => {
-    if (banner?.uri) {
-      return banner;
+const ChildJourneyPageBanner = ({ journeyId, ...props }: ChildJourneyPageBannerProps) => {
+  const { profile: spaceProfile } = useSpace();
+  const spaceBanner = getVisualByType(VisualName.BANNER, spaceProfile?.visuals);
+
+  const bannerVisual = useMemo(() => {
+    if (spaceBanner?.uri) {
+      return spaceBanner;
     }
     return {
-      ...banner,
+      ...spaceBanner,
       uri: defaultJourneyBanner,
     };
-  }, [banner]);
+  }, [spaceBanner]);
 
-  return <PageBanner banner={spaceBanner} cardComponent={JourneyPageBannerCard} {...props} />;
+  const { data } = useChildJourneyPageBannerQuery({
+    variables: {
+      spaceId: journeyId!,
+    },
+    skip: !journeyId,
+  });
+
+  return (
+    <PageBanner
+      banner={bannerVisual}
+      cardComponent={JourneyPageBannerCard}
+      displayName={data?.space.profile.displayName ?? ''}
+      tagline={data?.space.profile.tagline ?? ''}
+      avatar={data?.space.profile.avatar}
+      tags={data?.space.profile.tagset?.tags}
+      {...props}
+    />
+  );
 };
 
 export default ChildJourneyPageBanner;

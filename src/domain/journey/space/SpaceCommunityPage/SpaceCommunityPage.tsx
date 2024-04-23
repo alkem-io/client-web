@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Box } from '@mui/material';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import PageContent from '../../../../core/ui/content/PageContent';
-import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
 import EntityDashboardLeadsSection from '../../../community/community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';
@@ -10,7 +11,6 @@ import {
   DirectMessageDialog,
   MessageReceiverChipData,
 } from '../../../communication/messaging/DirectMessaging/DirectMessageDialog';
-import { useTranslation } from 'react-i18next';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
 import { ActivityComponent } from '../../../collaboration/activity/ActivityLog/ActivityComponent';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
@@ -26,15 +26,16 @@ import { RECENT_ACTIVITIES_LIMIT_EXPANDED } from '../../common/journeyDashboard/
 import SeeMore from '../../../../core/ui/content/SeeMore';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
-import { Box } from '@mui/material';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 import CommunityGuidelinesBlock from '../../../community/community/CommunityGuidelines/CommunityGuidelinesBlock';
 import { useSpace } from '../SpaceContext/useSpace';
+import InfoColumn from '../../../../core/ui/content/InfoColumn';
+import ContentColumn from '../../../../core/ui/content/ContentColumn';
 
 const SpaceCommunityPage = () => {
   const { spaceNameId } = useUrlParams();
 
-  const { spaceId } = useRouteResolver();
+  const { spaceId, journeyPath } = useRouteResolver();
   const { communityId } = useSpace();
 
   const { t } = useTranslation();
@@ -69,7 +70,10 @@ const SpaceCommunityPage = () => {
     [leadUsers]
   );
 
-  const hostOrganizations = useMemo(() => data?.space.host && [data?.space.host], [data?.space.host]);
+  const hostOrganizations = useMemo(
+    () => data?.space.account.host && [data?.space.account.host],
+    [data?.space.account.host]
+  );
 
   const { activities, fetchMoreActivities } = useActivityOnCollaboration(data?.space.collaboration?.id, {
     types: [ActivityEventType.MemberJoined],
@@ -92,11 +96,11 @@ const SpaceCommunityPage = () => {
   }, [isActivitiesDialogOpen]);
 
   return (
-    <SpacePageLayout currentSection={EntityPageSection.Community}>
+    <SpacePageLayout journeyPath={journeyPath} currentSection={EntityPageSection.Community}>
       <SpaceCommunityContainer spaceId={spaceId}>
         {({ callouts }) => (
           <PageContent>
-            <PageContentColumn columns={4}>
+            <InfoColumn>
               <EntityDashboardLeadsSection
                 usersHeader={t('community.host')}
                 organizationsHeader={t('pages.space.sections.dashboard.organization')}
@@ -114,19 +118,8 @@ const SpaceCommunityPage = () => {
                 messageReceivers={messageReceivers}
               />
               <CommunityGuidelinesBlock communityId={communityId} />
-              <CalloutsGroupView
-                callouts={callouts.groupedCallouts[CalloutGroupName.Community_1]}
-                canCreateCallout={callouts.canCreateCallout}
-                canCreateCalloutFromTemplate={callouts.canCreateCalloutFromTemplate}
-                loading={callouts.loading}
-                journeyTypeName="space"
-                calloutNames={callouts.calloutNames}
-                onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
-                onCalloutUpdate={callouts.refetchCallout}
-                groupName={CalloutGroupName.Community_1}
-              />
-            </PageContentColumn>
-            <PageContentColumn columns={8}>
+            </InfoColumn>
+            <ContentColumn>
               <CommunityContributorsBlockWide users={memberUsers} organizations={memberOrganizations} />
               <PageContentBlock>
                 <PageContentBlockHeader title={t('common.activity')} />
@@ -149,7 +142,7 @@ const SpaceCommunityPage = () => {
                 </DialogWithGrid>
               </PageContentBlock>
               <CalloutsGroupView
-                callouts={callouts.groupedCallouts[CalloutGroupName.Community_2]}
+                callouts={callouts.groupedCallouts[CalloutGroupName.Community]}
                 canCreateCallout={callouts.canCreateCallout}
                 canCreateCalloutFromTemplate={callouts.canCreateCalloutFromTemplate}
                 loading={callouts.loading}
@@ -157,9 +150,9 @@ const SpaceCommunityPage = () => {
                 calloutNames={callouts.calloutNames}
                 onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
                 onCalloutUpdate={callouts.refetchCallout}
-                groupName={CalloutGroupName.Community_2}
+                groupName={CalloutGroupName.Community}
               />
-            </PageContentColumn>
+            </ContentColumn>
           </PageContent>
         )}
       </SpaceCommunityContainer>

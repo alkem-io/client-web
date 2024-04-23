@@ -1,24 +1,35 @@
-import { useState } from 'react';
-import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
+import { cloneElement, ComponentType, MouseEventHandler, ReactElement, ReactNode, useState } from 'react';
 import InnovationFlowSettingsDialog from '../InnovationFlowDialogs/InnovationFlowSettingsDialog';
 import { InnovationFlowState } from '../InnovationFlow';
 import InnovationFlowChips from '../InnovationFlowChips/InnovationFlowChips';
 
-interface Props {
+interface InnovationFlowStatesBaseProps {
   states: InnovationFlowState[] | undefined;
   currentState?: string;
   selectedState: string | undefined;
   onSelectState?: (state: InnovationFlowState) => void;
+  visualizer?: ComponentType<InnovationFlowVisualizerProps>;
+  settings?: ReactElement<{ onClick: MouseEventHandler }>;
 }
 
-type InnovationFlowStatesProps = Props &
+interface InnovationFlowVisualizerProps {
+  states: InnovationFlowState[];
+  currentState?: string;
+  selectedState: string | undefined;
+  showSettings?: boolean;
+  onSettingsOpen?: () => void;
+  onSelectState?: (state: InnovationFlowState) => void;
+  settings?: ReactNode;
+}
+
+type InnovationFlowStatesProps = InnovationFlowStatesBaseProps &
   (
     | {
-        showSettings?: false;
+        settings?: never;
         collaborationId?: undefined;
       }
     | {
-        showSettings: true;
+        settings: ReactElement<{ onClick: MouseEventHandler }>;
         collaborationId: string;
       }
   );
@@ -28,18 +39,19 @@ const InnovationFlowStates = ({
   states = [],
   currentState,
   selectedState,
-  showSettings = false,
+  settings,
   onSelectState,
+  visualizer: Visualizer = InnovationFlowChips,
 }: InnovationFlowStatesProps) => {
   const [showSettingsDialog, setShowSettingsDialog] = useState(false);
 
   return (
-    <PageContentBlockSeamless disablePadding>
-      <InnovationFlowChips
+    <>
+      <Visualizer
         states={states}
         currentState={currentState}
         selectedState={selectedState}
-        showSettings={showSettings}
+        settings={settings && cloneElement(settings, { onClick: () => setShowSettingsDialog(true) })}
         onSettingsOpen={() => setShowSettingsDialog(true)}
         onSelectState={onSelectState}
       />
@@ -48,7 +60,7 @@ const InnovationFlowStates = ({
         open={showSettingsDialog}
         onClose={() => setShowSettingsDialog(false)}
       />
-    </PageContentBlockSeamless>
+    </>
   );
 };
 

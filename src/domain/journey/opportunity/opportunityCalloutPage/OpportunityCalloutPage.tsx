@@ -1,6 +1,6 @@
 import React from 'react';
 import CalloutPage from '../../../collaboration/CalloutPage/CalloutPage';
-import JourneyContributePage from '../../common/JourneyContributePage/JourneyContributePage';
+import SubspaceHomePage from '../../subspace/subspaceHome/SubspaceHomePage';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import { JourneyCalloutDialogProps } from '../../common/JourneyCalloutDialog/JourneyCalloutDialog';
 import OpportunityDashboardPage from '../pages/OpportunityDashboardPage';
@@ -9,24 +9,20 @@ import { useOpportunity } from '../hooks/useOpportunity';
 
 const renderPage = (calloutGroup: string | undefined) => {
   switch (calloutGroup) {
-    case CalloutGroupName.Home_1:
-    case CalloutGroupName.Home_2:
+    case CalloutGroupName.Home:
       return <OpportunityDashboardPage />;
-    case CalloutGroupName.Contribute_1:
-    case CalloutGroupName.Contribute_2:
-      return <JourneyContributePage journeyTypeName="opportunity" />;
+    case CalloutGroupName.Contribute:
+      return <SubspaceHomePage />;
     default:
-      return <JourneyContributePage journeyTypeName="opportunity" />;
+      return <SubspaceHomePage />;
   }
 };
 
 const getPageSection = (calloutGroup: string | undefined): EntityPageSection => {
   switch (calloutGroup) {
-    case CalloutGroupName.Home_1:
-    case CalloutGroupName.Home_2:
+    case CalloutGroupName.Home:
       return EntityPageSection.Dashboard;
-    case CalloutGroupName.Contribute_1:
-    case CalloutGroupName.Contribute_2:
+    case CalloutGroupName.Contribute:
       return EntityPageSection.Contribute;
     default:
       return EntityPageSection.Contribute;
@@ -40,7 +36,7 @@ const OpportunityCalloutPage = (props: JourneyCalloutDialogProps) => {
     return `${profile.url}/${getPageSection(calloutGroup)}`;
   };
 
-  return <CalloutPage journeyTypeName="opportunity" parentRoute={getPageRoute} renderPage={renderPage} {...props} />;
+  return <CalloutPage journeyTypeName="subsubspace" parentRoute={getPageRoute} renderPage={renderPage} {...props} />;
 };
 
 export default OpportunityCalloutPage;

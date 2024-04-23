@@ -3,7 +3,7 @@ import { useUserContext } from '../../../community/user';
 import {
   AuthorizationCredential,
   Community,
-  Opportunity,
+  Space,
   UserDisplayNameFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { Member } from '../../../community/user/models/User';
@@ -12,13 +12,11 @@ import {
   AvailableMembersResults,
 } from '../../../community/community/useAvailableMembersWithCredential';
 
-export type AuthorizationCredentials =
-  | AuthorizationCredential.OpportunityAdmin
-  | AuthorizationCredential.OpportunityMember;
+export type AuthorizationCredentials = AuthorizationCredential.SubspaceAdmin | AuthorizationCredential.SubspaceMember;
 
 export interface OpportunityMembersProps {
   entities: {
-    opportunityId: Opportunity['id'];
+    subsubspaceId: Space['id'];
     communityId?: Community['id']; // TODO: this should not be optional to carry out the role assignments
     credential: AuthorizationCredentials;
   };
@@ -58,7 +56,7 @@ export const OpportunityMembers: FC<OpportunityMembersProps> = ({ children, enti
     setSearchTerm,
   } = useAvailableMembersWithCredential({
     credential: entities.credential,
-    resourceId: entities.opportunityId,
+    resourceId: entities.subsubspaceId,
     parentCommunityId: communityId,
   });
 

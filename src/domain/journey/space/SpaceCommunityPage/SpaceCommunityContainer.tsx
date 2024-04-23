@@ -14,7 +14,7 @@ const SpaceCommunityContainer = ({ spaceId, children }: SpaceCommunityContainerP
   const callouts = useCallouts({
     journeyId: spaceId,
     journeyTypeName: 'space',
-    groupNames: [CalloutGroupName.Community_1, CalloutGroupName.Community_2],
+    groupNames: [CalloutGroupName.Community],
   });
 
   return <>{children({ callouts })}</>;

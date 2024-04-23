@@ -1,6 +1,5 @@
 import { onError } from '@apollo/client/link/error';
 import { ServerParseError } from '@apollo/client';
-import { logger } from '../../logging/winston/logger';
 import { _AUTH_LOGIN_PATH } from '../../auth/authentication/constants/authentication.constants';
 
 /**
@@ -27,9 +26,6 @@ export const redirectLink = onError(({ networkError }) => {
 
     if (name === 'ServerParseError' && response.redirected && response.url && response.url.includes(_AUTH_LOGIN_PATH)) {
       window.location.replace(response.url);
-
-      logger.error(new Error(`[ServerParseError]: ${parseError}`));
-      logger.info(`[ServerParseError]: Redirecting to ${response.url}...`);
     }
   }
 });
