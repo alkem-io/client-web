@@ -182,6 +182,11 @@ const SpacePageTabs: FC<EntityPageTabsProps> = ({
           </BottomNavigation>
         </Paper>
         {shareDialog}
+        <ActivityDialog
+          open={isActivityVisible}
+          onClose={() => setIsActivityVisible(false)}
+          journeyId={journeyId ?? ''}
+        />
         {showSettings && (
           <Drawer anchor="bottom" open={isDrawerOpen} onClose={() => setIsDrawerOpen(false)}>
             <List>
@@ -198,6 +203,19 @@ const SpacePageTabs: FC<EntityPageTabsProps> = ({
                   </ListItemButton>
                 </ListItem>
               ))}
+              <ListItem disablePadding>
+                <ListItemButton
+                  onClick={() => {
+                    setIsDrawerOpen(false);
+                    setIsActivityVisible(true);
+                  }}
+                >
+                  <ListItemIcon>
+                    <History />
+                  </ListItemIcon>
+                  <ListItemText primary={t('common.contributions')} />
+                </ListItemButton>
+              </ListItem>
               <ListItem disablePadding>
                 <ListItemButton
                   onClick={() => {
