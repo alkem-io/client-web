@@ -12,7 +12,6 @@ import {
   CalloutVisibility,
   WhiteboardDetailsFragment,
   CommentsWithMessagesFragment,
-  ContributeTabPostFragment,
   CalloutContributionPolicy,
   CalloutContribution,
 } from '../../../../core/apollo/generated/graphql-schema';
@@ -23,8 +22,6 @@ import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import { useCollaborationAuthorization } from '../../authorization/useCollaborationAuthorization';
 import { INNOVATION_FLOW_STATES_TAGSET_NAME } from '../../InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
 import { getCalloutGroupNameValue } from '../utils/getCalloutGroupValue';
-
-export type PostFragmentWithCallout = ContributeTabPostFragment & { calloutNameId: string };
 
 export type WhiteboardFragmentWithCallout = WhiteboardDetailsFragment & { calloutNameId: string };
 
@@ -100,7 +97,7 @@ const CALLOUT_DISPLAY_LOCATION_TAGSET_NAME = 'callout-group';
  * If you need Callouts without a group, don't specify groupNames at all.
  */
 
-const useCallouts = ({ journeyTypeName, ...params }: UseCalloutsParams): UseCalloutsProvided => {
+const useCallouts = ({ journeyId, journeyTypeName, ...params }: UseCalloutsParams): UseCalloutsProvided => {
   const {
     collaborationId,
     canReadCollaboration,
@@ -109,7 +106,7 @@ const useCallouts = ({ journeyTypeName, ...params }: UseCalloutsParams): UseCall
     canReadCallout,
     canSaveAsTemplate,
     loading: authorizationLoading,
-  } = useCollaborationAuthorization();
+  } = useCollaborationAuthorization({ journeyId });
 
   const variables = {
     collaborationId: collaborationId!,

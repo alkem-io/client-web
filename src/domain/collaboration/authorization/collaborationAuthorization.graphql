@@ -6,7 +6,6 @@ query CollaborationAuthorization($spaceId: UUID_NAMEID!) {
       myPrivileges
     }
   }
-
 }
 
 query CollaborationPrivileges($spaceId: UUID_NAMEID!) {
@@ -17,7 +16,6 @@ query CollaborationPrivileges($spaceId: UUID_NAMEID!) {
     }
   }
 }
-
 
 fragment CollaborationPrivileges on Collaboration {
   id
