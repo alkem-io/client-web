@@ -8,13 +8,13 @@ import SubspacePageContainer from '../../subspace/containers/SubspacePageContain
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 import DashboardAllContributionsBlock from '../dashboardRecentContributionsBlock/DashboardAllContributionsBlock';
 
-export interface SubspacesListDialogProps {
+export interface ActivityDialogProps {
   open?: boolean;
   onClose?: () => void;
   journeyId: string;
 }
 
-const SubspacesListDialog = ({ open = false, journeyId, onClose }: SubspacesListDialogProps) => {
+const ActivityDialog = ({ open = false, journeyId, onClose }: ActivityDialogProps) => {
   const { t } = useTranslation();
   const { journeyTypeName } = useRouteResolver();
   const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('md'));
@@ -41,4 +41,4 @@ const SubspacesListDialog = ({ open = false, journeyId, onClose }: SubspacesList
   );
 };
 
-export default SubspacesListDialog;
+export default ActivityDialog;
