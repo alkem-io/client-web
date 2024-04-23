@@ -7,7 +7,7 @@ const useWhiteboardDefaults = (): {
 } => {
   const theme = useTheme();
   return {
-    zoomToFit: true,
+    zoomToFit: true,          // requires @alkemio/excalidraw-fork@0.15.2-alkemio-1 or higher
     appState: {
       currentItemStrokeColor: theme.whiteboards.defaultStrokeColor,
       currentItemStrokeStyle: theme.whiteboards.defaultStrokeStyle,
@@ -22,7 +22,7 @@ const useWhiteboardDefaults = (): {
       currentItemOpacity: theme.whiteboards.defaultOpacity,
       currentItemEndArrowhead: theme.whiteboards.defaultEndArrowhead,
       currentChartType: theme.whiteboards.defaultChartType,
-      hideLibraryButton: true, // Since v0.17.0-alkemio-4
+      hideLibraryButton: true,   // requires @alkemio/excalidraw-fork@0.17.0-alkemio-4 or higher
     },
   };
 };
