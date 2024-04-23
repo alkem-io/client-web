@@ -32,7 +32,7 @@ export const SpaceContextView: FC = () => {
           profileData: {
             description: values.background,
           },
-          ID: space.spaceId,
+          ID: spaceNameId,
         },
       },
     });

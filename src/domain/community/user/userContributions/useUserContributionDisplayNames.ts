@@ -13,8 +13,8 @@ const useUserContributionDisplayNames = () => {
     skip: !user?.user.id,
   });
 
-  const challengeMemberships = data?.rolesUser.spaces.flatMap(e => e.subspaces);
-  const opportunityMemberships = data?.rolesUser.spaces.flatMap(e => e.subspaces);
+  const challengeMemberships = data?.rolesUser.spaces.flatMap(e => e.challenges);
+  const opportunityMemberships = data?.rolesUser.spaces.flatMap(e => e.opportunities);
 
   const spaceDisplayNames = data?.rolesUser.spaces.map(getDisplayName);
   const challengeDisplayNames = challengeMemberships?.map(getDisplayName);

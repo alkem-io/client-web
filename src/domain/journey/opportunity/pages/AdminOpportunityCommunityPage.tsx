@@ -8,7 +8,7 @@ import useCommunityAdmin from '../../../community/community/CommunityAdmin/useCo
 import { SettingsSection } from '../../../platform/admin/layout/EntitySettingsLayout/constants';
 import { SettingsPageProps } from '../../../platform/admin/layout/EntitySettingsLayout/types';
 import { useOpportunity } from '../hooks/useOpportunity';
-import SubspaceSettingsLayout from '../../../platform/admin/subspace/SubspaceSettingsLayout';
+import OpportunitySettingsLayout from '../../../platform/admin/opportunity/OpportunitySettingsLayout';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import CommunityVirtualContributors from '../../../community/community/CommunityAdmin/CommunityVirtualContributors';
 
@@ -43,7 +43,7 @@ const AdminOpportunityCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '.
   }
 
   return (
-    <SubspaceSettingsLayout currentTab={SettingsSection.Community} tabRoutePrefix={routePrefix}>
+    <OpportunitySettingsLayout currentTab={SettingsSection.Community} tabRoutePrefix={routePrefix}>
       <PageContent background="transparent">
         <PageContentColumn columns={6}>
           <PageContentBlock>
@@ -89,7 +89,7 @@ const AdminOpportunityCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '.
           </PageContentColumn>
         )}
       </PageContent>
-    </SubspaceSettingsLayout>
+    </OpportunitySettingsLayout>
   );
 };
 

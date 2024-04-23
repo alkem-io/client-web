@@ -1,8 +1,12 @@
 import React, { FC, useMemo } from 'react';
-import { useSpaceCommunityQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import {
+  useChallengeCommunityQuery,
+  useSpaceCommunityQuery,
+  useOpportunityCommunityQuery,
+} from '../../../../core/apollo/generated/apollo-hooks';
 import { CommunityContext, CommunityContextValue } from './CommunityContext';
 import { useSpace } from '../../../journey/space/SpaceContext/useSpace';
-import { useSubSpace } from '../../../journey/subspace/hooks/useChallenge';
+import { useChallenge } from '../../../journey/challenge/hooks/useChallenge';
 import { useOpportunity } from '../../../journey/opportunity/hooks/useOpportunity';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 
@@ -14,10 +18,10 @@ import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolv
  * @constructor
  */
 const CommunityContextProvider: FC = ({ children }) => {
-  const { spaceId, subSpaceId: challengeId, subSubSpaceId: opportunityId, journeyTypeName } = useRouteResolver();
+  const { spaceId, challengeId, opportunityId, journeyTypeName } = useRouteResolver();
 
   const { permissions: spacePermissions } = useSpace();
-  const { permissions: challengePermissions } = useSubSpace();
+  const { permissions: challengePermissions } = useChallenge();
   const { permissions: opportunityPermissions } = useOpportunity();
 
   const { data: spaceData, loading: isLoadingSpace } = useSpaceCommunityQuery({
@@ -26,30 +30,33 @@ const CommunityContextProvider: FC = ({ children }) => {
     skip: journeyTypeName !== 'space' || !spaceId,
   });
 
-  const { data: challengeData, loading: isLoadingChallenge } = useSpaceCommunityQuery({
+  const { data: challengeData, loading: isLoadingChallenge } = useChallengeCommunityQuery({
     variables: {
-      spaceId: challengeId!,
+      challengeId: challengeId!,
       includeDetails: challengePermissions.canReadCommunity,
     },
     errorPolicy: 'all',
-    skip: journeyTypeName !== 'subspace' || !challengeId,
+    skip: journeyTypeName !== 'challenge' || !challengeId,
   });
 
-  const { data: opportunityData, loading: isLoadingOpportunity } = useSpaceCommunityQuery({
+  const { data: opportunityData, loading: isLoadingOpportunity } = useOpportunityCommunityQuery({
     variables: {
-      spaceId: opportunityId!,
+      opportunityId: opportunityId!,
       includeDetails: opportunityPermissions.communityReadAccess,
     },
     errorPolicy: 'all',
-    skip: journeyTypeName !== 'subsubspace' || !opportunityId,
+    skip: journeyTypeName !== 'opportunity' || !opportunityId,
   });
 
-  const community = spaceData?.space.community ?? challengeData?.space?.community ?? opportunityData?.space?.community;
+  const community =
+    spaceData?.space.community ??
+    challengeData?.lookup.challenge?.community ??
+    opportunityData?.lookup.opportunity?.community;
 
   const communityName =
     spaceData?.space.profile.displayName ??
-    challengeData?.space?.profile.displayName ??
-    opportunityData?.space?.profile.displayName;
+    challengeData?.lookup.challenge?.profile.displayName ??
+    opportunityData?.lookup.opportunity?.profile.displayName;
 
   const isLoading = isLoadingSpace || isLoadingChallenge || isLoadingOpportunity;
 

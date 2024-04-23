@@ -1,42 +1,50 @@
 import { useCallback } from 'react';
 import {
-  SubspaceCardFragmentDoc,
+  ChallengeCardFragmentDoc,
+  OpportunityCardFragmentDoc,
   refetchUserProviderQuery,
-  useCreateSubspaceMutation,
+  useCreateChallengeMutation,
+  useCreateOpportunityMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { useSpace } from '../../../journey/space/SpaceContext/useSpace';
 import { useConfig } from '../../../platform/config/useConfig';
-import {
-  CommunityMembershipStatus,
-  CreateSubspaceMutation,
-  PlatformFeatureFlagName,
-  TagsetType,
-} from '../../../../core/apollo/generated/graphql-schema';
+import { useChallenge } from '../../../journey/challenge/hooks/useChallenge';
+import { PlatformFeatureFlagName, TagsetType } from '../../../../core/apollo/generated/graphql-schema';
 import { DEFAULT_TAGSET } from '../../../common/tags/tagset.constants';
 
-interface SubspaceCreationInput {
+interface ChallengeCreationInput {
   spaceID: string;
   displayName: string;
   tagline: string;
-  background?: string;
+  background: string;
   vision: string;
   tags: string[];
   addDefaultCallouts: boolean;
 }
 
-export const useSubspaceCreation = () => {
+interface OpportunityCreationInput {
+  challengeID: string;
+  displayName: string;
+  tagline: string;
+  vision: string;
+  tags: string[];
+  addDefaultCallouts: boolean;
+}
+
+export const useJourneyCreation = () => {
   const { spaceId } = useSpace();
+  const { challengeId } = useChallenge();
   const { isFeatureEnabled } = useConfig();
 
   const subscriptionsEnabled = isFeatureEnabled(PlatformFeatureFlagName.Subscriptions);
 
-  const [createSubspaceLazy] = useCreateSubspaceMutation({
+  const [createChallengeLazy] = useCreateChallengeMutation({
     update: (cache, { data }) => {
       if (subscriptionsEnabled || !data) {
         return;
       }
 
-      const { createSubspace } = data;
+      const { createChallenge } = data;
 
       const spaceRefId = cache.identify({
         __typename: 'Space',
@@ -50,11 +58,11 @@ export const useSubspaceCreation = () => {
       cache.modify({
         id: spaceRefId,
         fields: {
-          subspaces(existingChallenges = []) {
+          challenges(existingChallenges = []) {
             const newChallengeRef = cache.writeFragment({
-              data: createSubspace,
-              fragment: SubspaceCardFragmentDoc,
-              fragmentName: 'SubspaceCard',
+              data: createChallenge,
+              fragment: ChallengeCardFragmentDoc,
+              fragmentName: 'ChallengeCard',
             });
             return [...existingChallenges, newChallengeRef];
           },
@@ -63,11 +71,44 @@ export const useSubspaceCreation = () => {
     },
     refetchQueries: [refetchUserProviderQuery()],
   });
+  const [createOpportunityLazy] = useCreateOpportunityMutation({
+    update: (cache, { data }) => {
+      if (subscriptionsEnabled || !data) {
+        return;
+      }
+
+      const { createOpportunity } = data;
+
+      const challengeRefId = cache.identify({
+        __typename: 'Challenge',
+        id: challengeId,
+      });
+
+      if (!challengeRefId) {
+        return;
+      }
+
+      cache.modify({
+        id: challengeRefId,
+        fields: {
+          challenges(existingOpportunity = []) {
+            const newOpportunityRef = cache.writeFragment({
+              data: createOpportunity,
+              fragment: OpportunityCardFragmentDoc,
+              fragmentName: 'OpportunityCard',
+            });
+            return [...existingOpportunity, newOpportunityRef];
+          },
+        },
+      });
+    },
+    refetchQueries: [refetchUserProviderQuery()],
+  });
 
   // add useCallback
-  const createSubspace = useCallback(
-    async (value: SubspaceCreationInput) => {
-      const { data } = await createSubspaceLazy({
+  const createChallenge = useCallback(
+    async (value: ChallengeCreationInput) => {
+      const { data } = await createChallengeLazy({
         variables: {
           input: {
             spaceID: value.spaceID,
@@ -86,7 +127,8 @@ export const useSubspaceCreation = () => {
           },
         },
         optimisticResponse: {
-          createSubspace: {
+          createChallenge: {
+            __typename: 'Challenge',
             id: '',
             metrics: [
               {
@@ -113,26 +155,80 @@ export const useSubspaceCreation = () => {
                 type: TagsetType.Freeform,
               },
             },
-            community: {
-              id: '',
-              myMembershipStatus: CommunityMembershipStatus.Member,
-            },
-            context: {
-              id: '',
-              vision: value.vision,
-            },
-            collaboration: {
-              id: '',
-              innovationFlow: undefined,
-            } as unknown as CreateSubspaceMutation['createSubspace']['collaboration'],
           },
         },
       });
 
-      return data?.createSubspace;
+      return data?.createChallenge;
     },
-    [createSubspaceLazy]
+    [createChallengeLazy]
   );
 
-  return { createSubspace };
+  const createOpportunity = useCallback(
+    async (value: OpportunityCreationInput) => {
+      const { data } = await createOpportunityLazy({
+        variables: {
+          input: {
+            challengeID: value.challengeID,
+            context: {
+              vision: value.vision,
+            },
+            profileData: {
+              displayName: value.displayName,
+              tagline: value.tagline,
+            },
+            tags: value.tags,
+            collaborationData: {
+              addDefaultCallouts: value.addDefaultCallouts,
+            },
+          },
+        },
+        optimisticResponse: {
+          createOpportunity: {
+            __typename: 'Opportunity',
+            id: '',
+            metrics: [
+              {
+                id: '',
+                name: '',
+                value: '',
+              },
+            ],
+            context: {
+              id: '',
+            },
+            profile: {
+              id: '',
+              displayName: value.displayName ?? '',
+              tagline: value.tagline,
+              url: '',
+              cardBanner: {
+                id: '',
+                uri: '',
+                name: '',
+                allowedTypes: [],
+                aspectRatio: 1,
+                maxHeight: 1,
+                maxWidth: 1,
+                minHeight: 1,
+                minWidth: 1,
+              },
+              tagset: {
+                id: '-1',
+                name: DEFAULT_TAGSET,
+                tags: value.tags ?? [],
+                allowedValues: [],
+                type: TagsetType.Freeform,
+              },
+            },
+          },
+        },
+      });
+
+      return data?.createOpportunity;
+    },
+    [createOpportunityLazy]
+  );
+
+  return { createChallenge, createOpportunity };
 };

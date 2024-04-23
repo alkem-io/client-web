@@ -57,7 +57,7 @@ const mapFlowState = (tagset: Tagset | undefined): GroupedCallout['flowState'] =
 // And for the moment that is the callouts that are in ContributeRight displayLocation
 const isCalloutConnectedToFlowState = (callout: { framing: { profile: { calloutGroupName?: Tagset } } }) => {
   const calloutGroupName = callout.framing.profile.calloutGroupName?.tags?.[0] as CalloutGroupNameValuesMap | undefined;
-  return calloutGroupName === CalloutGroupNameValuesMap.Contribute;
+  return calloutGroupName === CalloutGroupNameValuesMap.Contribute_2;
 };
 
 const useInnovationFlowSettings = ({ collaborationId, skip }: useInnovationFlowSettingsProps) => {
@@ -109,7 +109,7 @@ const useInnovationFlowSettings = ({ collaborationId, skip }: useInnovationFlowS
   const handleUpdateInnovationFlowProfile = async (innovationFlowId: string, profileData: UpdateProfileInput) => {
     return updateInnovationFlowProfile({
       variables: {
-        input: {
+        updateInnovationFlowData: {
           innovationFlowID: innovationFlowId,
           profileData,
         },

@@ -33,6 +33,7 @@ interface GroupFormProps {
 
 export interface UserGroupUpdateInput {
   id: string;
+  name: string;
   profile: Omit<Profile, 'url'>;
 }
 
@@ -42,7 +43,7 @@ export const GroupForm: FC<GroupFormProps> = ({ title, group, members, onSave, o
   const { t } = useTranslation();
   const groupId = group.id;
   const profileId = group.profile?.id || '';
-  const groupName = group.profile?.displayName || '';
+  const groupName = group.name || '';
 
   const initialValues: GroupFormInput = {
     name: groupName || '',
@@ -64,6 +65,7 @@ export const GroupForm: FC<GroupFormProps> = ({ title, group, members, onSave, o
     const { tagsets, references, description, profileId, name } = formData;
     const group: UserGroupUpdateInput = {
       id: groupId,
+      name,
       profile: {
         id: profileId,
         displayName: name,

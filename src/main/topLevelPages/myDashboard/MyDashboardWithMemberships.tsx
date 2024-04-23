@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import PageContentColumn from '../../../core/ui/content/PageContentColumn';
-import RecentSpacesList from './recentSpaces/RecentJourneysList';
+import RecentJourneysList from './recentJourneys/RecentJourneysList';
 import MoreAboutAlkemio from './moreAboutAlkemio/MoreAboutAlkemio';
 import StartingSpace from './startingSpace/StartingSpace';
 import RecentForumMessages from './recentForumMessages/RecentForumMessages';
@@ -30,7 +30,7 @@ const MyDashboardWithMemberships: FC<MyDashboardWithMembershipsProps> = ({ space
   return (
     <>
       <PageContentColumn columns={columns}>
-        <RecentSpacesList onSeeMore={() => onOpenMembershipsDialog()} />
+        <RecentJourneysList onSeeMore={() => onOpenMembershipsDialog()} />
       </PageContentColumn>
       <PageContentColumn columns={columns === 12 ? 4 : 8} flexDirection="column" alignSelf="stretch">
         <LatestContributions spaceMemberships={spacesData?.me.spaceMemberships} />

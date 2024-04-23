@@ -1,9 +1,0 @@
-mutation updateInnovationFlow($input: UpdateInnovationFlowInput!) {
-  updateInnovationFlow(innovationFlowData: $input) {
-    id
-    profile {
-      id
-      displayName
-    }
-  }
-}

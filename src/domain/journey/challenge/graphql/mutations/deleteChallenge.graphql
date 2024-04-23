@@ -1,0 +1,6 @@
+mutation deleteChallenge($input: DeleteChallengeInput!) {
+  deleteChallenge(deleteData: $input) {
+    id
+    nameID
+  }
+}

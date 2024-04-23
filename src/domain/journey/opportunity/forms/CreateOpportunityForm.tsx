@@ -78,33 +78,33 @@ export const CreateOpportunityForm: FC<CreateOpportunityFormProps> = ({ isSubmit
             <FormikEffect onChange={handleChanged} onStatusChange={onValidChanged} />
             <FormikInputField
               name="displayName"
-              title={t('context.subsubspace.displayName.title')}
-              helperText={t('context.subsubspace.displayName.description')}
+              title={t('context.opportunity.displayName.title')}
+              helperText={t('context.opportunity.displayName.description')}
               disabled={isSubmitting}
               maxLength={SMALL_TEXT_LENGTH}
             />
             <FormikInputField
               name="tagline"
-              title={t('context.subsubspace.tagline.title')}
-              helperText={t('context.subsubspace.tagline.description')}
+              title={t('context.opportunity.tagline.title')}
+              helperText={t('context.opportunity.tagline.description')}
               disabled={isSubmitting}
               maxLength={SMALL_TEXT_LENGTH}
             />
             <FormikMarkdownField
               name="vision"
-              title={t('context.subsubspace.vision.title')}
+              title={t('context.opportunity.vision.title')}
               rows={5}
-              helperText={t('context.subsubspace.vision.description')}
+              helperText={t('context.opportunity.vision.description')}
               disabled={isSubmitting}
               maxLength={MARKDOWN_TEXT_LENGTH}
             />
             <TagsetField
               name="tags"
               disabled={isSubmitting}
-              title={t('context.subsubspace.tags.title')}
-              helperText={t('context.subsubspace.tags.description')}
+              title={t('context.opportunity.tags.title')}
+              helperText={t('context.opportunity.tags.description')}
             />
-            <FormikSwitch name="addDefaultCallouts" title={t('context.subsubspace.addDefaultCallouts.title')} />
+            <FormikSwitch name="addDefaultCallouts" title={t('context.opportunity.addDefaultCallouts.title')} />
           </Gutters>
         </Form>
       )}

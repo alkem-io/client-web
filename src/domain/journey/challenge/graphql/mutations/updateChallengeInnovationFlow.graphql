@@ -1,0 +1,9 @@
+mutation updateChallengeInnovationFlow($input: UpdateInnovationFlowInput!) {
+  updateInnovationFlow(innovationFlowData: $input) {
+    id
+    profile {
+      id
+      displayName
+    }
+  }
+}

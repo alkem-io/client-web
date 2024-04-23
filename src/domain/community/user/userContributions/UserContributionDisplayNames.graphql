@@ -3,11 +3,11 @@ query UserContributionDisplayNames($userId: UUID_NAMEID_EMAIL!) {
     spaces {
       id
       displayName
-      subspaces {
+      challenges {
         id
         displayName
       }
-      subsubspaces {
+      opportunities {
         id
         displayName
       }

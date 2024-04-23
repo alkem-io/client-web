@@ -1,5 +1,4 @@
 export enum EntityPageSection {
-  Home = 'home',
   Dashboard = 'dashboard',
   Settings = 'settings',
   About = 'about',
@@ -7,8 +6,8 @@ export enum EntityPageSection {
   Community = 'community',
   Contribute = 'contribute',
   KnowledgeBase = 'knowledge-base',
-  Subspaces = 'subspaces',
-  Subsubspaces = 'subsubspaces',
+  Challenges = 'challenges',
+  Opportunities = 'opportunities',
   Agreements = 'agreements',
   Profile = 'profile',
   Share = 'share',

@@ -1,0 +1,20 @@
+query challengeApplicationTemplate($challengeId: UUID!) {
+  lookup {
+    challenge(ID: $challengeId) {
+      id
+      community {
+        id
+        applicationForm {
+          description
+          questions {
+            required
+            question
+            sortOrder
+            explanation
+            maxLength
+          }
+        }
+      }
+    }
+  }
+}

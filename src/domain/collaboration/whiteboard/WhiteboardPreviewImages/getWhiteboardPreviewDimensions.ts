@@ -22,6 +22,8 @@ const getWhiteboardPreviewDimensions =
       };
     }
 
+    const { minScale = 0 } = params;
+
     // deriving dimensions from visual, but not bigger than the whiteboard content
     let height = Math.min(params.maxHeight, contentHeight);
     let width = Math.min(params.maxWidth, contentWidth);
@@ -29,7 +31,7 @@ const getWhiteboardPreviewDimensions =
     // ensuring the whole content fits
     const scaleV = height / contentHeight;
     const scaleH = width / contentWidth;
-    const scale = Math.max(scaleV, scaleH);
+    const scale = Math.max(Math.min(scaleV, scaleH), minScale);
 
     // removing blank paddings
     if (scaleH > scale) {

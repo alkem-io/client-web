@@ -2,7 +2,35 @@ query JourneyBreadcrumbsSpace($spaceId: UUID_NAMEID!) {
   space(ID: $spaceId) {
     id
     profile {
-      ...JourneyBreadcrumbsProfile
+      id
+      url
+      displayName
+      avatar: visual(type: BANNER) {
+        id
+        ...VisualUri
+      }
+    }
+  }
+}
+
+query JourneyBreadcrumbsChallenge($challengeId: UUID!) {
+  lookup {
+    challenge(ID: $challengeId) {
+      id
+      profile {
+        ...JourneyBreadcrumbsProfile
+      }
+    }
+  }
+}
+
+query JourneyBreadcrumbsOpportunity($opportunityId: UUID!) {
+  lookup {
+    opportunity(ID: $opportunityId) {
+      id
+      profile {
+        ...JourneyBreadcrumbsProfile
+      }
     }
   }
 }

@@ -10,28 +10,28 @@ query activityLogOnCollaboration($collaborationID: UUID!, $limit: Float!, $types
     child
     parentNameID
     journeyDisplayName: parentDisplayName
-    space {
+    journey {
       id
       ... on Space {
         profile {
           ...RecentContributionsSpaceProfile
         }
       }
-      # ... on RelayPaginatedSpace {
-      #   profile {
-      #     ...RecentContributionsSpaceProfile
-      #   }
-      # }
-      # ... on subspace {
-      #   profile {
-      #     ...RecentContributionsChildJourneyProfile
-      #   }
-      # }
-      # ... on subsubspace {
-      #   profile {
-      #     ...RecentContributionsChildJourneyProfile
-      #   }
-      # }
+      ... on RelayPaginatedSpace {
+        profile {
+          ...RecentContributionsSpaceProfile
+        }
+      }
+      ... on Challenge {
+        profile {
+          ...RecentContributionsChildJourneyProfile
+        }
+      }
+      ... on Opportunity {
+        profile {
+          ...RecentContributionsChildJourneyProfile
+        }
+      }
     }
     triggeredBy {
       id

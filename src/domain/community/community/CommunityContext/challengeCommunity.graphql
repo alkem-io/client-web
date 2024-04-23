@@ -1,0 +1,15 @@
+query challengeCommunity($challengeId: UUID!, $includeDetails: Boolean = false) {
+  lookup {
+    challenge(ID: $challengeId) {
+      id
+      profile {
+        id
+        displayName
+      }
+      community {
+        id
+        ...CommunityDetails @include(if: $includeDetails)
+      }
+    }
+  }
+}

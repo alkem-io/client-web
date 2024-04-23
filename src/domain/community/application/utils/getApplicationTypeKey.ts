@@ -5,9 +5,9 @@ const getApplicationTypeKey = (type: JourneyTypeName): TranslationKey => {
   switch (type) {
     case 'space':
       return 'common.space';
-    case 'subspace':
-      return 'common.subspace';
-    case 'subsubspace':
+    case 'challenge':
+      return 'common.challenge';
+    case 'opportunity':
       return 'common.opportunity';
     default:
       return 'common.empty-string';

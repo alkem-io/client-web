@@ -37,8 +37,6 @@ import InnovationFlowChips from '../../../../collaboration/InnovationFlow/Innova
 import useMetricsItems from '../../../../platform/metrics/utils/useMetricsItems';
 import OpportunityMetrics from '../../../opportunity/utils/useOpportunityMetricsItems';
 import { Metric } from '../../../../platform/metrics/utils/getMetricCount';
-import InfoColumn from '../../../../../core/ui/content/InfoColumn';
-import ContentColumn from '../../../../../core/ui/content/ContentColumn';
 
 export interface OpportunityAboutViewProps extends EntityDashboardContributors, EntityDashboardLeads {
   challengeId: string | undefined;
@@ -79,7 +77,7 @@ enum JourneyContextField {
   Who = 'who',
 }
 
-const journeyTypeName = 'subsubspace';
+const journeyTypeName = 'opportunity';
 
 const OpportunityAboutView: FC<OpportunityAboutViewProps> = ({
   opportunityId,
@@ -158,7 +156,7 @@ const OpportunityAboutView: FC<OpportunityAboutViewProps> = ({
             );
           }}
         </OpportunityApplicationButtonContainer>
-        <InfoColumn>
+        <PageContentColumn columns={4}>
           <PageContentBlock accent>
             <PageContentBlockHeader title={name} />
             <Tagline>{tagline}</Tagline>
@@ -200,8 +198,8 @@ const OpportunityAboutView: FC<OpportunityAboutViewProps> = ({
               <ActivityView activity={metricsItems} loading={loading} />
             </PageContentBlock>
           )}
-        </InfoColumn>
-        <ContentColumn>
+        </PageContentColumn>
+        <PageContentColumn columns={8}>
           <FixedHeightContentBlock>
             <PageContentBlockHeaderWithDialogAction
               title={t(`context.${journeyTypeName}.vision.title` as const)}
@@ -243,7 +241,7 @@ const OpportunityAboutView: FC<OpportunityAboutViewProps> = ({
               <ActivityView activity={metricsItems} loading={loading} />
             </PageContentBlock>
           )}
-        </ContentColumn>
+        </PageContentColumn>
       </PageContent>
       <DialogWithGrid open={isDialogOpen} columns={12} onClose={closeDialog}>
         <DialogHeader title={t('common.context')} onClose={closeDialog} />

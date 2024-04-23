@@ -1,5 +1,13 @@
-query JourneyData($spaceId: UUID_NAMEID!) {
-  space(ID: $spaceId)  {
+query JourneyData(
+  $spaceId: UUID_NAMEID = "00000000-0000-0000-0000-000000000000"
+  $challengeId: UUID = "00000000-0000-0000-0000-000000000000"
+  $opportunityId: UUID = "00000000-0000-0000-0000-000000000000"
+  $includeSpace: Boolean = false
+  $includeChallenge: Boolean = false
+  $includeOpportunity: Boolean = false
+  $includeCommunity: Boolean = false
+) {
+  space(ID: $spaceId) @include(if: $includeSpace) {
     id
     profile {
       ...ProfileJourneyData
@@ -7,15 +15,45 @@ query JourneyData($spaceId: UUID_NAMEID!) {
     context {
       ...ContextJourneyData
     }
-    community {
+    community @include(if: $includeCommunity) {
       ...JourneyCommunity
     }
     metrics {
       ...MetricsItem
     }
-    account {
-      host {
-        ...AssociatedOrganizationDetails
+    host {
+      ...AssociatedOrganizationDetails
+    }
+  }
+  lookup {
+    challenge(ID: $challengeId) @include(if: $includeChallenge) {
+      id
+      profile {
+        ...ProfileJourneyData
+      }
+      context {
+        ...ContextJourneyData
+      }
+      community @include(if: $includeCommunity) {
+        ...JourneyCommunity
+      }
+      metrics {
+        ...MetricsItem
+      }
+    }
+    opportunity(ID: $opportunityId) @include(if: $includeOpportunity) {
+      id
+      profile {
+        ...ProfileJourneyData
+      }
+      context {
+        ...ContextJourneyData
+      }
+      community @include(if: $includeCommunity) {
+        ...JourneyCommunity
+      }
+      metrics {
+        ...MetricsItem
       }
     }
   }

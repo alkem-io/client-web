@@ -18,11 +18,12 @@ interface DialogContainerProps extends PaperProps {
  * you can wrap the footer content into DialogFooter for it to be rendered
  * as a sibling of the dialog content.
  */
-const {
-  LayoutHolder: DialogFooterLayoutHolder,
-  RenderPoint: DialogFooterRenderPoint,
-  createLayout,
-} = createLayoutHolder();
+const { LayoutHolder: DialogFooterLayoutHolder, createLayout } = createLayoutHolder(({ layout, children }) => (
+  <>
+    {children}
+    {layout}
+  </>
+));
 
 export const DialogFooter = createLayout(({ children }: PropsWithChildren<{}>) => <>{children}</>);
 
@@ -57,10 +58,7 @@ const DialogContainer = ({
         <GridItem columns={columns}>
           <Paper {...paperProps}>
             <GridProvider columns={columns ?? containerColumns}>
-              <DialogFooterLayoutHolder>
-                {children}
-                <DialogFooterRenderPoint />
-              </DialogFooterLayoutHolder>
+              <DialogFooterLayoutHolder>{children}</DialogFooterLayoutHolder>
             </GridProvider>
           </Paper>
         </GridItem>

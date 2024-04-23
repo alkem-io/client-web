@@ -17,13 +17,6 @@ fragment AdminSpace on Space {
         enabled
       }
     }
-    host {
-      id
-      profile {
-        id
-        displayName
-      }
-    }
   }
   profile {
     id
@@ -32,5 +25,12 @@ fragment AdminSpace on Space {
   authorization {
     id
     myPrivileges
+  }
+  host {
+    id
+    profile {
+      id
+      displayName
+    }
   }
 }

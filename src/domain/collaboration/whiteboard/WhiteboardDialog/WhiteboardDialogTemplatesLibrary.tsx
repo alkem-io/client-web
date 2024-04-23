@@ -28,7 +28,7 @@ const WhiteboardDialogTemplatesLibrary: FC<WhiteboardDialogTemplatesLibraryProps
   return (
     <>
       {editModeEnabled && (
-        <Box height={gutters()} display="flex" alignItems="center" marginLeft={gutters()}>
+        <Box height={gutters()} display="flex" alignItems="center">
           {columns <= 4 ? (
             <IconButton color="primary" onClick={() => setIsOpen(true)} aria-label={t('buttons.find-template')}>
               <LibraryIcon fontSize="small" />

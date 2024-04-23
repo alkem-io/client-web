@@ -6,7 +6,7 @@ import { SettingsPageProps } from '../../../../platform/admin/layout/EntitySetti
 
 const ChallengeListPage: FC<SettingsPageProps> = ({ routePrefix }) => {
   return (
-    <SpaceSettingsLayout currentTab={SettingsSection.Subspaces} tabRoutePrefix={routePrefix}>
+    <SpaceSettingsLayout currentTab={SettingsSection.Challenges} tabRoutePrefix={routePrefix}>
       <ChallengeListView />
     </SpaceSettingsLayout>
   );

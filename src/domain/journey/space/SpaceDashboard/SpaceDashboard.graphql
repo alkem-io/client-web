@@ -28,11 +28,9 @@ fragment SpacePage on Space {
   nameID
   account {
     id
-    host {
-      ...AssociatedOrganizationDetails
-      profile {
-        ...SpaceWelcomeBlockContributorProfile
-      }
+    license {
+      id
+      visibility
     }
   }
   metrics {
@@ -44,6 +42,12 @@ fragment SpacePage on Space {
     id
     anonymousReadAccess
     myPrivileges
+  }
+  host {
+    ...AssociatedOrganizationDetails
+    profile {
+      ...SpaceWelcomeBlockContributorProfile
+    }
   }
   profile {
     id

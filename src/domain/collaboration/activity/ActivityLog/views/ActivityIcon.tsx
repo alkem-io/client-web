@@ -9,7 +9,7 @@ import {
   NotesOutlined,
   PersonOutlined,
 } from '@mui/icons-material';
-import { ChallengeIcon } from '../../../../journey/subspace/icon/ChallengeIcon';
+import { ChallengeIcon } from '../../../../journey/challenge/icon/ChallengeIcon';
 import { OpportunityIcon } from '../../../../journey/opportunity/icon/OpportunityIcon';
 import calloutIcons from '../../../callout/utils/calloutIcons';
 import { WhiteboardIcon } from '../../../whiteboard/icon/WhiteboardIcon';

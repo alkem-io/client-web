@@ -6,6 +6,7 @@ import { Error404 } from '../../../../../core/pages/Errors/Error404';
 import SpaceCommunicationsPage from '../../../../journey/space/pages/SpaceCommunication/SpaceCommunicationsPage';
 import SpaceProfilePage from '../../../../journey/space/pages/SpaceProfile/SpaceProfilePage';
 import SpaceSettingsPage from '../../../../journey/space/pages/SpaceSettings/SpaceSettingsPage';
+import { ChallengesRoute } from '../../challenge/routing/ChallengesRoute';
 import { ApplicationsAdminRoutes } from '../../community/routes/ApplicationsAdminRoutes';
 import SpaceTemplatesAdminRoutes from '../SpaceTemplatesAdminRoutes';
 import CommunityGroupsRoute from '../../community/routes/CommunityGroupsAdminRoutes';
@@ -13,7 +14,6 @@ import SpaceContextPage from '../../../../journey/space/pages/SpaceContext/Space
 import SpaceStorageAdminPage from '../storage/SpaceStorageAdminPage';
 import { StorageConfigContextProvider } from '../../../../storage/StorageBucket/StorageConfigContext';
 import AdminSpaceCommunityPage from '../../../../journey/space/pages/AdminSpaceCommunityPage';
-import { ChallengesRoute } from '../../subspace/routing/ChallengesRoute';
 
 export const SpaceRoute: FC = () => {
   useTransactionScope({ type: 'admin' });
@@ -21,7 +21,7 @@ export const SpaceRoute: FC = () => {
   const { spaceId, communityId } = useSpace();
 
   return (
-    <StorageConfigContextProvider locationType="journey" spaceId={spaceId}>
+    <StorageConfigContextProvider locationType="journey" journeyTypeName="space" journeyId={spaceId}>
       <Routes>
         <Route index element={<Navigate to="profile" replace />} />
         <Route path="profile" element={<SpaceProfilePage />} />

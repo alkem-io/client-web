@@ -9,10 +9,6 @@ interface UseDirectMessageDialogOptions {
   dialogTitle: ReactNode;
 }
 
-export interface SendMessage {
-  (receiverType: ReceiverType, ...receivers: MessageReceiverChipData[]): void;
-}
-
 export type ReceiverType = 'user' | 'organization';
 
 const useDirectMessageDialog = ({ dialogTitle }: UseDirectMessageDialogOptions) => {
@@ -73,14 +69,11 @@ const useDirectMessageDialog = ({ dialogTitle }: UseDirectMessageDialogOptions) 
     />
   );
 
-  const sendMessage = useCallback<SendMessage>(
-    (receiverType: ReceiverType, ...receivers: MessageReceiverChipData[]) => {
-      setDirectMessageReceivers(receivers);
-      setReceiverType(receiverType);
-      setIsDialogOpen(true);
-    },
-    []
-  );
+  const sendMessage = useCallback((receiverType: ReceiverType, ...receivers: MessageReceiverChipData[]) => {
+    setDirectMessageReceivers(receivers);
+    setReceiverType(receiverType);
+    setIsDialogOpen(true);
+  }, []);
 
   return {
     sendMessage,

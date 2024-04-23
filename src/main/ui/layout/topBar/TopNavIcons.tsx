@@ -4,7 +4,7 @@ import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
 import ProfileMenuItem from './ProfileMenuItem';
-import { ChallengeIcon } from '../../../../domain/journey/subspace/icon/ChallengeIcon';
+import { ChallengeIcon } from '../../../../domain/journey/challenge/icon/ChallengeIcon';
 import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
 import { Link, useLocation } from 'react-router-dom';
 import InnovationLibraryIcon from '../../../topLevelPages/InnovationLibraryPage/InnovationLibraryIcon';
@@ -88,7 +88,7 @@ const TopNavIcons = () => {
         url: '/innovation-library',
       },
       {
-        title: t('common.subspaces'),
+        title: t('common.challenges'),
         icon: <ChallengeIcon />,
         url: '/challenges',
       },

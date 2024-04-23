@@ -1,0 +1,15 @@
+query opportunities($challengeId: UUID!) {
+  lookup {
+    challenge(ID: $challengeId) {
+      id
+      opportunities {
+        id
+        nameID
+        profile {
+          id
+          displayName
+        }
+      }
+    }
+  }
+}

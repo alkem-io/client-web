@@ -31,12 +31,12 @@ import SpaceProfileFixedInformation, { SpaceProfileFixedInformationProps } from 
 import { DEFAULT_TAGSET } from '../../../common/tags/tagset.constants';
 import { Caption } from '../../../../core/ui/typography';
 
-interface SpaceEditFormProps {
+interface Props {
   context?: Context;
   profile?: Omit<Profile, 'storageBucket' | 'url'>;
   name?: string;
   nameID?: string;
-  hostId?: string;
+  hostID?: string;
   tagset?: Tagset;
   organizations?: { id: string; name: string }[];
   visibility?: SpaceVisibility;
@@ -49,18 +49,18 @@ interface SpaceEditFormProps {
 export interface SpaceEditFormValuesType {
   name: string;
   nameID: string;
-  hostId: string;
+  host: string;
   tagline: string;
   location: Partial<Location>;
   references: Reference[];
   tagsets: Tagset[];
 }
 
-const SpaceEditForm: FC<SpaceEditFormProps> = ({
+const SpaceEditForm: FC<Props> = ({
   profile,
   name,
   nameID,
-  hostId,
+  hostID,
   tagset,
   visibility,
   host,
@@ -93,13 +93,13 @@ const SpaceEditForm: FC<SpaceEditFormProps> = ({
     location: formatLocation(profile?.location) || EmptyLocation,
     references: profile?.references ?? [],
     tagsets,
-    hostId: hostId ?? '',
+    host: hostID ?? '',
   };
 
   const validationSchema = yup.object().shape({
     name: nameSegmentSchema.fields?.name ?? yup.string(),
     nameID: nameSegmentSchema.fields?.nameID ?? yup.string(),
-    hostId: yup.string().required(t('forms.validations.required')),
+    host: yup.string().required(t('forms.validations.required')),
     tagline: contextSegmentSchema.fields?.tagline ?? yup.string(),
     references: referenceSegmentSchema,
     tagsets: tagsetSegmentSchema,
@@ -132,7 +132,7 @@ const SpaceEditForm: FC<SpaceEditFormProps> = ({
                 {!edit && (
                   <FormikAutocomplete
                     title={t('components.editSpaceForm.host.title')}
-                    name="hostId"
+                    name="host"
                     values={organizations}
                     required
                     placeholder={t('components.editSpaceForm.host.title')}

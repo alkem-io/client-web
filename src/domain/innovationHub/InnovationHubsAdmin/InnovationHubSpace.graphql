@@ -6,16 +6,16 @@ fragment InnovationHubSpace on Space {
       id
       visibility
     }
-    host {
-      id
-      profile {
-        id
-        displayName
-      }
-    }
   }
   profile {
     id
     displayName
+  }
+  host {
+    id
+    profile {
+      id
+      displayName
+    }
   }
 }

@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { useSpaceCommunityContributorsQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { useOpportunityCommunityContributorsQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import CommunityContributorsView from '../CommunityContributors/CommunityContributorsView';
 import useOrganizationCardProps from '../utils/useOrganizationCardProps';
 import useUserCardProps from '../utils/useUserCardProps';
@@ -8,16 +8,16 @@ import { ContributorsDialogContentProps } from '../ContributorsDialog/Contributo
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 
 const OpportunityContributorsDialogContent: FC<ContributorsDialogContentProps> = ({ dialogOpen }) => {
-  const { subSubSpaceId: opportunityId } = useRouteResolver();
+  const { opportunityId } = useRouteResolver();
 
-  const { loading, data } = useSpaceCommunityContributorsQuery({
+  const { loading, data } = useOpportunityCommunityContributorsQuery({
     variables: {
-      spaceId: opportunityId!,
+      opportunityId: opportunityId!,
     },
     skip: !dialogOpen || !opportunityId,
   });
 
-  const { memberUsers, memberOrganizations } = data?.space?.community ?? {};
+  const { memberUsers, memberOrganizations } = data?.lookup.opportunity?.community ?? {};
 
   return (
     <CommunityContributorsView

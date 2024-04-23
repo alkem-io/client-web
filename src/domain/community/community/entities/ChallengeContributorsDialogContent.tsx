@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { useSpaceCommunityContributorsQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { useChallengeCommunityContributorsQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import CommunityContributorsView from '../CommunityContributors/CommunityContributorsView';
 import useOrganizationCardProps from '../utils/useOrganizationCardProps';
 import useUserCardProps from '../utils/useUserCardProps';
@@ -8,16 +8,16 @@ import { ContributorsDialogContentProps } from '../ContributorsDialog/Contributo
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 
 const ChallengeContributorsDialogContent: FC<ContributorsDialogContentProps> = ({ dialogOpen }) => {
-  const { subSpaceId: challengeId } = useRouteResolver();
+  const { challengeId } = useRouteResolver();
 
-  const { loading, data } = useSpaceCommunityContributorsQuery({
+  const { loading, data } = useChallengeCommunityContributorsQuery({
     variables: {
-      spaceId: challengeId!,
+      challengeId: challengeId!,
     },
     skip: !dialogOpen || !challengeId,
   });
 
-  const { memberUsers, memberOrganizations } = data?.space?.community ?? {};
+  const { memberUsers, memberOrganizations } = data?.lookup.challenge?.community ?? {};
 
   return (
     <CommunityContributorsView

@@ -1,30 +1,25 @@
 import { ApolloError } from '@apollo/client';
-import { ReactElement, ReactNode, cloneElement } from 'react';
+import { ReactElement, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
-import { Button, IconButton } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
 import { ValueType } from '../../../../../core/utils/filtering/filterFn';
 import ErrorBlock from '../../../../../core/ui/error/ErrorBlock';
 import getJourneyChildrenTranslation from '../../../childJourney/getJourneyChildrenTranslation';
 import PageContent from '../../../../../core/ui/content/PageContent';
 import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
+import PageContentColumn from '../../../../../core/ui/content/PageContentColumn';
 import LinksList from '../../../../../core/ui/list/LinksList';
 import { Caption } from '../../../../../core/ui/typography';
 import MembershipBackdrop from '../../../../shared/components/Backdrops/MembershipBackdrop';
-import { CardLayoutContainer } from '../../../../../core/ui/card/cardsLayout/CardsLayout';
+import CardsLayout from '../../../../../core/ui/card/cardsLayout/CardsLayout';
 import { JourneyTypeName } from '../../../JourneyTypeName';
 import ChildJourneyCreate from './ChildJourneyCreate';
 import Loading from '../../../../../core/ui/loading/Loading';
 import PageContentBlockSeamless from '../../../../../core/ui/content/PageContentBlockSeamless';
 import JourneyFilter from '../../JourneyFilter/JourneyFilter';
+import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
+import { Button } from '@mui/material';
 import { Identifiable } from '../../../../../core/utils/Identifiable';
-import { Actions } from '../../../../../core/ui/actions/Actions';
-import RoundedIcon from '../../../../../core/ui/icon/RoundedIcon';
-import { useSpace } from '../../../space/SpaceContext/useSpace';
-import InfoColumn from '../../../../../core/ui/content/InfoColumn';
-import ContentColumn from '../../../../../core/ui/content/ContentColumn';
 
 export interface JourneySubentitiesState {
   loading: boolean;
@@ -50,8 +45,8 @@ export interface ChildJourneyViewProps<ChildEntity extends BaseChildEntity> {
   childEntityOnCreate?: () => void;
   createSubentityDialog?: ReactElement;
   state: JourneySubentitiesState;
-  children?: ReactNode;
-  onClickCreate?: (isOpen: boolean) => void;
+  childrenLeft?: ReactNode;
+  childrenRight?: ReactNode;
 }
 
 const ChildJourneyView = <ChildEntity extends BaseChildEntity>({
@@ -66,16 +61,15 @@ const ChildJourneyView = <ChildEntity extends BaseChildEntity>({
   childEntityOnCreate,
   createSubentityDialog,
   state,
-  children,
-  onClickCreate,
+  childrenLeft,
+  childrenRight,
 }: ChildJourneyViewProps<ChildEntity>) => {
   const { t } = useTranslation();
-  const { permissions } = useSpace();
 
   return (
     <MembershipBackdrop show={!childEntityReadAccess} blockName={getJourneyChildrenTranslation(t, journeyTypeName)}>
       <PageContent>
-        <InfoColumn>
+        <PageContentColumn columns={4}>
           <ChildJourneyCreate
             journeyTypeName={journeyTypeName}
             canCreateSubentity={childEntityCreateAccess}
@@ -101,8 +95,9 @@ const ChildJourneyView = <ChildEntity extends BaseChildEntity>({
               })}
             />
           </PageContentBlock>
-        </InfoColumn>
-        <ContentColumn>
+          {childrenLeft}
+        </PageContentColumn>
+        <PageContentColumn columns={8}>
           {state.loading && <Loading />}
           {!state.loading && childEntities.length === 0 && (
             <PageContentBlockSeamless>
@@ -127,19 +122,9 @@ const ChildJourneyView = <ChildEntity extends BaseChildEntity>({
                   })}
                 >
                   {filteredEntities => (
-                    <CardLayoutContainer>
-                      {filteredEntities.map((item, index) => {
-                        const key = item ? item.id : `__loading_${index}`;
-                        return cloneElement(renderChildEntityCard(item), { key });
-                      })}
-                      {permissions.canCreateChallenges && (
-                        <Actions sx={{ justifyContent: 'flex-end', width: '100%' }}>
-                          <IconButton aria-label={t('common.add')} size="small" onClick={() => onClickCreate?.(true)}>
-                            <RoundedIcon component={AddIcon} size="medium" iconSize="small" />
-                          </IconButton>
-                        </Actions>
-                      )}
-                    </CardLayoutContainer>
+                    <CardsLayout items={filteredEntities} disablePadding>
+                      {renderChildEntityCard}
+                    </CardsLayout>
                   )}
                 </JourneyFilter>
               )}
@@ -155,9 +140,9 @@ const ChildJourneyView = <ChildEntity extends BaseChildEntity>({
               {t('common.create-new-entity', { entity: getJourneyChildrenTranslation(t, journeyTypeName, 1) })}
             </Button>
           )}
-          {children}
+          {childrenRight}
           {state.error && <ErrorBlock blockName={t(`common.${journeyTypeName}` as const)} />}
-        </ContentColumn>
+        </PageContentColumn>
       </PageContent>
     </MembershipBackdrop>
   );

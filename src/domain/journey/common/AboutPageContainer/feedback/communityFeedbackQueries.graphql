@@ -1,0 +1,22 @@
+query communityFeedbackTemplates {
+  platform {
+    configuration {
+      template {
+        challenges {
+          feedback {
+            name
+            questions {
+              question
+              required
+              sortOrder
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+mutation createFeedbackOnCommunityContext($feedbackData: CreateFeedbackOnCommunityContextInput!) {
+  createFeedbackOnCommunityContext(feedbackData: $feedbackData)
+}

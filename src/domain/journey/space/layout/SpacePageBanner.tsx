@@ -24,9 +24,11 @@ const Root = styled(Box)(({ theme }) => ({
   backgroundColor: theme.palette.neutralLight.main,
 }));
 
+const TITLE_BACKGROUND_COLOR = '#043B43';
+
 const Title = styled(Box)(({ theme }) => ({
   color: theme.palette.common.white,
-  backgroundColor: theme.palette.space.dark,
+  backgroundColor: TITLE_BACKGROUND_COLOR,
   position: 'relative',
   width: '100%',
   textAlign: 'center',

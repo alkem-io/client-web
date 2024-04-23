@@ -1,0 +1,66 @@
+query opportunityPage($opportunityId: UUID!) {
+  lookup {
+    opportunity(ID: $opportunityId) {
+      ...OpportunityPage
+    }
+  }
+}
+
+fragment OpportunityPage on Opportunity {
+  id
+  nameID
+  profile {
+    id
+    url
+    displayName
+    tagset {
+      ...TagsetDetails
+    }
+    references {
+      id
+      name
+      description
+      uri
+    }
+    visuals {
+      ...VisualUri
+    }
+  }
+  authorization {
+    id
+    anonymousReadAccess
+    myPrivileges
+  }
+  metrics {
+    id
+    name
+    value
+  }
+  collaboration {
+    id
+    innovationFlow {
+      id
+      states {
+        displayName
+        description
+      }
+      currentState {
+        displayName
+      }
+    }
+    ...DashboardTopCallouts
+    ...DashboardTimelineAuthorization
+  }
+  context {
+    id
+    vision
+    authorization {
+      id
+      anonymousReadAccess
+      myPrivileges
+    }
+  }
+  community {
+    ...EntityDashboardCommunity
+  }
+}

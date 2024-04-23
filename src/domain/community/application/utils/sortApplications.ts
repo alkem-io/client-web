@@ -2,11 +2,11 @@ import { ApplicationWithType } from './getApplicationWithType';
 import { APPLICATION_STATE_NEW } from '../constants/ApplicationState';
 
 const sortApplications = (a: ApplicationWithType, b: ApplicationWithType) => {
-  if ((a.type === 'space' && b.type !== 'space') || (a.type === 'subspace' && b.type === 'subsubspace')) {
+  if ((a.type === 'space' && b.type !== 'space') || (a.type === 'challenge' && b.type === 'opportunity')) {
     return -1;
   }
 
-  if ((b.type === 'space' && a.type !== 'space') || (b.type === 'subspace' && a.type === 'subsubspace')) {
+  if ((b.type === 'space' && a.type !== 'space') || (b.type === 'challenge' && a.type === 'opportunity')) {
     return 1;
   }
 

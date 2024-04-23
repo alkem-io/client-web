@@ -4,16 +4,6 @@ query spaceProvider($spaceId: UUID_NAMEID!) {
   }
 }
 
-query spaceUrl($spaceId: UUID_NAMEID!) {
-  space(ID: $spaceId) {
-    id
-    profile {
-      id
-      url
-    }
-  }
-}
-
 fragment SpaceInfo on Space {
   ...SpaceDetails
   authorization {
@@ -47,27 +37,24 @@ fragment SpaceInfo on Space {
 query spaceHost($spaceId: UUID_NAMEID!) {
   space(ID: $spaceId) {
     id
-    account {
+    host {
       id
-      host {
+      nameID
+      profile {
         id
-        nameID
-        profile {
+        displayName
+        avatar: visual(type: AVATAR) {
           id
-          displayName
-          avatar: visual(type: AVATAR) {
-            id
-            uri
-          }
-          location {
-            id
-            city
-            country
-          }
-          tagsets {
-            id
-            tags
-          }
+          uri
+        }
+        location {
+          id
+          city
+          country
+        }
+        tagsets {
+          id
+          tags
         }
       }
     }

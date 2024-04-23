@@ -81,7 +81,7 @@ const ExploreOtherChallenges = () => {
     >
       {({ items: filteredSpaces, value, handleChange }) => (
         <DashboardSpacesSection
-          headerText={tLineBreaks('pages.home.sections.exploreOtherSubspaces.header')}
+          headerText={tLineBreaks('pages.home.sections.exploreOtherChallenges.header')}
           spaces={filteredSpaces}
           getSpaceCardProps={getSpaceCardProps}
           loader={spacesLoader}

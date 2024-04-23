@@ -1,9 +1,9 @@
 import React, { FC, useEffect, useState } from 'react';
 import { Metadata, ServerMetadataQuery } from '../../../core/apollo/generated/graphql-schema';
 import { ServerMetadataDocument } from '../../../core/apollo/generated/apollo-hooks';
+import { logger } from '../../../core/logging/winston/logger';
 import queryRequest from '../../../core/http/queryRequest';
 import useLoadingStateWithHandlers from '../../shared/utils/useLoadingStateWithHandlers';
-import { TagCategoryValues, warn as logWarn } from '../../../core/logging/sentry/log';
 
 interface ServerMetadataContextProps {
   metadata?: Partial<Metadata>;
@@ -30,7 +30,7 @@ const ServerMetadataProvider: FC<ServerMetadataProviderProps> = ({ url, children
       setMetadata(result.data.data.platform.metadata);
     },
     {
-      onError: err => logWarn(err, { category: TagCategoryValues.CONFIG }),
+      onError: err => logger.error(err.message),
     }
   );
 

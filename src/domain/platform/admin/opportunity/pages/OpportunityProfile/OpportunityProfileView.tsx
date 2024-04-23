@@ -4,6 +4,13 @@ import { useTranslation } from 'react-i18next';
 import FormMode from '../../../components/FormMode';
 import ProfileForm, { ProfileFormValues } from '../../../../../common/profile/ProfileForm';
 import { useNotification } from '../../../../../../core/ui/notifications/useNotification';
+import {
+  refetchOpportunitiesQuery,
+  refetchOpportunityProfileInfoQuery,
+  useCreateOpportunityMutation,
+  useOpportunityProfileInfoQuery,
+  useUpdateOpportunityMutation,
+} from '../../../../../../core/apollo/generated/apollo-hooks';
 import EditVisualsView from '../../../../../common/visual/EditVisuals/EditVisualsView';
 import { formatDatabaseLocation } from '../../../../../common/location/LocationUtils';
 import SaveButton from '../../../../../../core/ui/actions/SaveButton';
@@ -11,13 +18,7 @@ import Gutters from '../../../../../../core/ui/grid/Gutters';
 import { VisualType } from '../../../../../../core/apollo/generated/graphql-schema';
 import { useRouteResolver } from '../../../../../../main/routing/resolvers/RouteResolver';
 import useNavigate from '../../../../../../core/routing/useNavigate';
-import {
-  refetchSubspaceProfileInfoQuery,
-  refetchSubspacesInSpaceQuery,
-  useCreateSubspaceMutation,
-  useSubspaceProfileInfoQuery,
-  useUpdateSpaceMutation,
-} from '../../../../../../core/apollo/generated/apollo-hooks';
+import { buildJourneyAdminUrl } from '../../../../../../main/routing/urlBuilders';
 
 interface Props {
   mode: FormMode;
@@ -29,29 +30,29 @@ const OpportunityProfileView: FC<Props> = ({ mode }) => {
   const notify = useNotification();
   const onSuccess = (message: string) => notify(message, 'success');
 
-  const { subSpaceId: challengeId, subSubSpaceId: opportunityId } = useRouteResolver();
+  const { challengeId, opportunityId } = useRouteResolver();
 
-  const [createSubspace, { loading: isCreating }] = useCreateSubspaceMutation({
-    refetchQueries: [refetchSubspacesInSpaceQuery({ spaceId: challengeId! })],
+  const [createOpportunity, { loading: isCreating }] = useCreateOpportunityMutation({
+    refetchQueries: [refetchOpportunitiesQuery({ challengeId: challengeId! })],
     awaitRefetchQueries: true,
     onCompleted: data => {
       onSuccess('Successfully created');
-      navigate(data.createSubspace.profile.url, { replace: true });
+      navigate(buildJourneyAdminUrl(data.createOpportunity.profile.url), { replace: true });
     },
   });
 
-  const [updateSubspace, { loading: isUpdating }] = useUpdateSpaceMutation({
+  const [updateOpportunity, { loading: isUpdating }] = useUpdateOpportunityMutation({
     onCompleted: () => onSuccess('Successfully updated'),
-    refetchQueries: [refetchSubspaceProfileInfoQuery({ subspaceId: opportunityId! })],
+    refetchQueries: [refetchOpportunityProfileInfoQuery({ opportunityId: opportunityId! })],
     awaitRefetchQueries: true,
   });
 
-  const { data: opportunityProfile } = useSubspaceProfileInfoQuery({
-    variables: { subspaceId: opportunityId! },
+  const { data: opportunityProfile } = useOpportunityProfileInfoQuery({
+    variables: { opportunityId: opportunityId! },
     skip: !opportunityId || mode === FormMode.create,
   });
 
-  const opportunity = opportunityProfile?.space;
+  const opportunity = opportunityProfile?.lookup.opportunity;
 
   const isLoading = isCreating || isUpdating;
 
@@ -64,7 +65,7 @@ const OpportunityProfileView: FC<Props> = ({ mode }) => {
 
     switch (mode) {
       case FormMode.create:
-        createSubspace({
+        createOpportunity({
           variables: {
             input: {
               nameID: nameID,
@@ -72,7 +73,7 @@ const OpportunityProfileView: FC<Props> = ({ mode }) => {
                 displayName,
                 location: formatDatabaseLocation(values.location),
               },
-              spaceID: challengeId,
+              challengeID: challengeId,
               tags: tagsets.flatMap(x => x.tags),
               collaborationData: {
                 innovationFlowTemplateID: '',
@@ -86,7 +87,7 @@ const OpportunityProfileView: FC<Props> = ({ mode }) => {
           throw new Error('Opportunity is not loaded');
         }
 
-        updateSubspace({
+        updateOpportunity({
           variables: {
             input: {
               nameID: nameID,
@@ -120,7 +121,7 @@ const OpportunityProfileView: FC<Props> = ({ mode }) => {
         isEdit={mode === FormMode.update}
         name={opportunity?.profile.displayName}
         nameID={opportunity?.nameID}
-        journeyType="subsubspace"
+        journeyType="opportunity"
         tagset={opportunity?.profile.tagset}
         profile={opportunity?.profile}
         onSubmit={onSubmit}

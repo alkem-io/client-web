@@ -1,11 +1,9 @@
 query SpaceCommunityPage($spaceNameId: UUID_NAMEID!) {
   space(ID: $spaceNameId) {
     id
-    account {
-      id
-      host {
-        ...AssociatedOrganizationDetails
-      }
+
+    host {
+      ...AssociatedOrganizationDetails
     }
 
     community {

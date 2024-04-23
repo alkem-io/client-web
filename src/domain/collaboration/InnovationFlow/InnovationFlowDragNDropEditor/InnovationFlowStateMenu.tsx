@@ -31,7 +31,6 @@ export default function InnovationFlowStateMenu({
           menuAction(state);
           closeMenu();
         };
-
         return (
           <>
             {isCurrentState ? (

@@ -1,3 +1,5 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`RemoveModal - main > renders correct RemoveModal component 1`] = `<DocumentFragment />`;
+
+exports[`RemoveModal - main renders correct RemoveModal component 1`] = `<DocumentFragment />`;

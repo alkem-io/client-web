@@ -50,7 +50,7 @@ export interface LocationStateCachedCallout extends NavigationState {
  * @constructor
  */
 const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: CalloutPageProps) => {
-  const { calloutId, journeyId, journeyPath } = useRouteResolver();
+  const { calloutId } = useRouteResolver();
 
   const locationState = (useLocation().state ?? {}) as LocationStateCachedCallout;
 
@@ -102,7 +102,7 @@ const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: Cal
 
   if (isCalloutLoading && !typedCalloutDetails) {
     return (
-      <PageLayout journeyId={journeyId} journeyPath={journeyPath} currentSection={EntityPageSection.Contribute}>
+      <PageLayout currentSection={EntityPageSection.Contribute}>
         <Loading />
       </PageLayout>
     );

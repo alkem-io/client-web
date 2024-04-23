@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo } from 'react';
 import Autocomplete, { AutocompleteProps, AutocompleteRenderInputParams } from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
-import { Chip, SxProps } from '@mui/material';
+import { Chip } from '@mui/material';
 import uniqSortedByOccurrences from './uniqSortedByOccurrences';
 import { gutters } from '../../../../core/ui/grid/utils';
 
@@ -12,8 +12,6 @@ export interface SearchTagsInputProps {
   label?: string;
   placeholder?: string;
   disableCloseOnSelect?: boolean;
-  fullWidth?: boolean;
-  sx?: SxProps;
 }
 
 const SearchTagsInput = ({
@@ -23,8 +21,6 @@ const SearchTagsInput = ({
   label,
   placeholder,
   disableCloseOnSelect = true,
-  fullWidth = true,
-  sx,
 }: SearchTagsInputProps) => {
   const options = useMemo(() => uniqSortedByOccurrences(availableTags), [availableTags]);
 
@@ -56,7 +52,7 @@ const SearchTagsInput = ({
       aria-label="Filter"
       placeholder={placeholder}
       multiple
-      fullWidth={fullWidth}
+      fullWidth
       freeSolo
       disableCloseOnSelect={disableCloseOnSelect}
       options={options}
@@ -75,7 +71,6 @@ const SearchTagsInput = ({
             height: gutters(),
           },
         },
-        ...sx,
       }}
       renderTags={(value, getTagProps) =>
         value.map((option, index) => (

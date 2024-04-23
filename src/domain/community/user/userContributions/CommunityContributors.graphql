@@ -1,10 +1,8 @@
 query SpaceCommunityContributors($spaceId: UUID_NAMEID!) {
   space(ID: $spaceId) {
     id
-    account {
-      host {
-        ...OrganizationCard
-      }
+    host {
+      ...OrganizationCard
     }
     community {
       id
@@ -21,6 +19,29 @@ query SpaceCommunityContributors($spaceId: UUID_NAMEID!) {
   }
 }
 
+query ChallengeCommunityContributors($challengeId: UUID!) {
+  lookup {
+    challenge(ID: $challengeId) {
+      id
+      community {
+        id
+        ...CommunityMembers
+      }
+    }
+  }
+}
+
+query OpportunityCommunityContributors($opportunityId: UUID!) {
+  lookup {
+    opportunity(ID: $opportunityId) {
+      id
+      community {
+        id
+        ...CommunityMembers
+      }
+    }
+  }
+}
 
 fragment CommunityMembers on Community {
   leadUsers: usersInRole(role: LEAD) {

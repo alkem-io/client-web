@@ -13,7 +13,6 @@ import {
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { DirectMessageDialog } from '../../../communication/messaging/DirectMessaging/DirectMessageDialog';
 import { ContributorType } from '../CommunityContributorsBlockWide/CommunityContributorsBlockWideContent';
-import GridProvider from '../../../../core/ui/grid/GridProvider';
 
 interface ContributorCardTooltip {
   tags: string[];
@@ -110,19 +109,17 @@ export const ContributorCardSquare: FC<ContributorCardSquareProps> = props => {
           <Tooltip
             arrow
             title={
-              <GridProvider columns={3}>
-                <UserCard
-                  displayName={displayName}
-                  avatarSrc={avatar}
-                  avatarAltText={avatarAltText}
-                  tags={tooltip?.tags || []}
-                  roleName={roleName ?? tooltip?.roleName}
-                  city={tooltip?.city}
-                  country={tooltip?.country}
-                  isContactable={isContactable}
-                  onContact={() => setIsMessageUserDialogOpen(true)}
-                />
-              </GridProvider>
+              <UserCard
+                displayName={displayName}
+                avatarSrc={avatar}
+                avatarAltText={avatarAltText}
+                tags={tooltip?.tags || []}
+                roleName={roleName ?? tooltip?.roleName}
+                city={tooltip?.city}
+                country={tooltip?.country}
+                isContactable={isContactable}
+                onContact={() => setIsMessageUserDialogOpen(true)}
+              />
             }
             classes={{ tooltip: styles.tooltip }}
           >

@@ -12,10 +12,9 @@ import { useTranslation } from 'react-i18next';
 import useNavigate from '../../../../core/routing/useNavigate';
 import JourneyAboutDialog, { JourneyAboutDialogProps } from '../JourneyAboutDialog/JourneyAboutDialog';
 import useCanGoBack from '../../../../core/routing/useCanGoBack';
-import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 
 interface JourneyUnauthorizedDialogProps
-  extends Omit<JourneyAboutDialogProps, 'open' | 'startButton' | 'endButton' | 'journeyTypeName'>,
+  extends Omit<JourneyAboutDialogProps, 'open' | 'startButton' | 'endButton'>,
     Omit<ApplicationButtonContainerProps, 'children'> {
   authorized: boolean | undefined;
   disabled?: boolean;
@@ -26,13 +25,12 @@ const JourneyUnauthorizedDialog = ({
   authorized,
   loading = false,
   disabled = false,
-  subspaceId: challengeId,
-  subspaceName: challengeName,
+  challengeId,
+  challengeName,
+  journeyTypeName,
   ...aboutDialogProps
 }: JourneyUnauthorizedDialogProps) => {
   const { t } = useTranslation();
-
-  const { journeyTypeName } = useRouteResolver();
 
   const navigate = useNavigate();
 
@@ -47,16 +45,12 @@ const JourneyUnauthorizedDialog = ({
     (applicationButtonRef.current instanceof HTMLAnchorElement ||
       (applicationButtonRef.current instanceof HTMLButtonElement && !applicationButtonRef.current.disabled));
 
-  if (!journeyTypeName) {
-    return null;
-  }
-
   return (
     <JourneyAboutDialog
       open={!disabled && !loading && !authorized}
       startButton={canGoBack && <BackButton onClick={() => navigate(-1)} />}
       endButton={
-        <ApplicationButtonContainer {...{ subspaceId: challengeId, subspaceName: challengeName }}>
+        <ApplicationButtonContainer {...{ challengeId, challengeName }}>
           {(e, s) => (
             <ApplicationButton
               ref={applicationButtonRef}

@@ -1,0 +1,18 @@
+query challengeApplication($challengeId: UUID!) {
+  lookup {
+    challenge(ID: $challengeId) {
+      id
+      profile {
+        id
+        url
+        displayName
+      }
+      community {
+        id
+        guidelines {
+          ...CommunityGuidelinesDetails
+        }
+      }
+    }
+  }
+}

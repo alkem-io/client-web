@@ -160,18 +160,18 @@ export const OrganizationPageContainer: FC<OrganizationPageContainerProps> = ({ 
     }));
 
     // Loop over spaces, filter the challenges in which user has the role 'lead' and map those challenges to ContributionItems
-    const subspaceContributions =
+    const challengeContributions =
       orgRolesData?.rolesOrganization?.spaces.flatMap<ContributionItem>(h =>
-        h.subspaces
+        h.challenges
           .filter(c => c.roles?.includes(RoleType.Lead))
           .map<ContributionItem>(c => ({
             spaceId: h.id,
-            subspaceId: c.id,
+            challengeId: c.id,
             id: c.id,
           }))
       ) || [];
 
-    return [...spaceContributions, ...subspaceContributions];
+    return [...spaceContributions, ...challengeContributions];
   }, [orgRolesData]);
 
   const [sendMessageToOrganization] = useSendMessageToOrganizationMutation();

@@ -359,9 +359,9 @@
       "space": "$t(common.space)",
       "space_plural": "$t(common.spaces)",
       "challenge": "$t(common.challenge)",
-      "challenge_plural": "$t(common.subspaces)",
+      "challenge_plural": "$t(common.challenges)",
       "opportunity": "$t(common.opportunity)",
-      "opportunity_plural": "$t(common.subspaces)",
+      "opportunity_plural": "$t(common.opportunities)",
       "agreement": "$t(common.agreement)",
       "agreement_plural": "$t(common.agreements)"
     },
@@ -1905,11 +1905,11 @@
           "callout": "Callouts (available soon)"
         }
       },
-      "journeyFilterTitle": "$t(common.spaces), $t(common.subspaces) & $t(common.subspaces)"
+      "journeyFilterTitle": "$t(common.spaces), $t(common.challenges) & $t(common.opportunities)"
     },
     "challenge-explorer": {
       "fullName": "Explore challenges",
-      "shortName": "$t(common.subspaces)",
+      "shortName": "$t(common.challenges)",
       "search": {
         "title": "Разгледай предизвикателствата",
         "subtitle": "Enter your search terms (e.g. 'innovation') below to find matching challenges. Please note that on Alkemio, there are both public and private challenge Spaces. Here you can find all challenges from the public Spaces. Challenges from private Spaces are visible when you are signed in and a member of that particular Space.",
@@ -2569,7 +2569,7 @@
     ]
   },
   "spaceSearch": {
-    "journeyFilterTitle": "$t(common.subspaces) & $t(common.subspaces)"
+    "journeyFilterTitle": "$t(common.challenges) & $t(common.opportunities)"
   },
   "visuals-alt-text": {
     "banner": {

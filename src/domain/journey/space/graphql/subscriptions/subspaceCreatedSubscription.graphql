@@ -1,7 +1,0 @@
-subscription subspaceCreated($subspaceId: UUID!) {
-  subspaceCreated(spaceID: $subspaceId) {
-    subspace {
-      ...SpaceCard
-    }
-  }
-}

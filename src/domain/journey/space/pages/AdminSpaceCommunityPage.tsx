@@ -108,7 +108,7 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
           <Text marginBottom={gutters(2)}>
             <Trans i18nKey="community.application-form.subtitle" components={{ b: <strong /> }} />
           </Text>
-          <CommunityApplicationForm communityId={communityId} />
+          <CommunityApplicationForm spaceId={spaceId} />
         </PageContentBlockCollapsible>
         <PageContentBlockCollapsible header={<BlockTitle>{t('community.communityGuidelines.title')}</BlockTitle>}>
           <CommunityGuidelines communityId={communityId} />

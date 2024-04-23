@@ -8,6 +8,7 @@ import { SocialNetworkEnum } from '../../../shared/components/SocialLinks/models
 import { Visual } from '../../../../core/apollo/generated/graphql-schema';
 import { Reference } from '../../../common/profile/Profile';
 import { defaultUser, UserFormGenerated, UserModel } from '../models/User';
+import { logger } from '../../../../core/logging/winston/logger';
 import ProfileReferenceSegment from '../../../platform/admin/components/Common/ProfileReferenceSegment';
 import { referenceSegmentValidationObject } from '../../../platform/admin/components/Common/ReferenceSegment';
 import SocialSegment from '../../../platform/admin/components/Common/SocialSegment';
@@ -190,7 +191,8 @@ export const UserForm: FC<UserProps> = ({
         handleSubmit(values).finally(() => setSubmitting(false));
       }}
     >
-      {({ values: { references, tagsets }, handleSubmit, isSubmitting }) => {
+      {({ values: { references, tagsets }, handleSubmit, isSubmitting, errors }) => {
+        logger.info(errors);
         return (
           <GridContainer>
             <GridProvider columns={12}>

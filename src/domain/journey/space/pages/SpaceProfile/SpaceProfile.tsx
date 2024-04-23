@@ -53,7 +53,7 @@ export const SpaceProfile: FC = () => {
             })),
             tagsets: tagsets.map(tagset => ({ ID: tagset.id, name: tagset.name, tags: tagset.tags })),
           },
-          ID: space.spaceId,
+          ID: spaceNameId,
         },
       },
     });
@@ -62,7 +62,7 @@ export const SpaceProfile: FC = () => {
   const organizationsSorted = useMemo(() => sortBy(organizations, org => org.name), [organizations]);
 
   const host = useMemo(() => {
-    const host = hostOrganization?.space.account.host;
+    const host = hostOrganization?.space.host;
     if (!host) {
       return undefined;
     }
@@ -81,7 +81,7 @@ export const SpaceProfile: FC = () => {
         edit
         name={space.profile.displayName}
         nameID={spaceNameId}
-        hostId={hostOrganization?.space.account.host?.id}
+        hostID={hostOrganization?.space.host?.id}
         tagset={space.profile.tagset}
         context={space.context}
         profile={space.profile}

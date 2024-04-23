@@ -2,21 +2,22 @@ import React, { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import CardActions from '../../../../../core/ui/card/CardActions';
 import JourneyCardGoToButton from '../../../../journey/common/JourneyCard/JourneyCardGoToButton';
-import { spaceTypeIcon } from '../../JourneyIcon/JourneyIcon';
+import { JourneyTypeName } from '../../../../journey/JourneyTypeName';
+import journeyIcon from '../../JourneyIcon/JourneyIcon';
 import JourneyCard, { JourneyCardProps } from '../../../../journey/common/JourneyCard/JourneyCard';
 import JourneyCardTagline from '../../../../journey/common/JourneyCard/JourneyCardTagline';
 import { BlockTitle } from '../../../../../core/ui/typography/components';
 import webkitLineClamp from '../../../../../core/ui/utils/webkitLineClamp';
 import JourneyCardDescription from '../../../../journey/common/JourneyCard/JourneyCardDescription';
 import JourneyCardSpacing from '../../../../journey/common/JourneyCard/JourneyCardSpacing';
-import { SpaceType, SpaceVisibility } from '../../../../../core/apollo/generated/graphql-schema';
+import { SpaceVisibility } from '../../../../../core/apollo/generated/graphql-schema';
 import CardRibbon from '../../../../../core/ui/card/CardRibbon';
 
 export interface SearchBaseJourneyCardProps
   extends Omit<JourneyCardProps, 'header' | 'iconComponent' | 'parentSegment'> {
   tagline: string;
   locked?: boolean;
-  spaceType: SpaceType;
+  journeyTypeName: JourneyTypeName;
   displayName: string;
   vision: string;
   parentSegment?: ReactNode;
@@ -25,7 +26,7 @@ export interface SearchBaseJourneyCardProps
 }
 
 const SearchBaseJourneyCard = ({
-  spaceType,
+  journeyTypeName,
   tagline,
   displayName,
   vision,
@@ -41,7 +42,7 @@ const SearchBaseJourneyCard = ({
 
   return (
     <JourneyCard
-      iconComponent={spaceTypeIcon[spaceType]}
+      iconComponent={journeyIcon[journeyTypeName]}
       header={
         <BlockTitle component="div" sx={webkitLineClamp(2)}>
           {displayName}
@@ -51,7 +52,7 @@ const SearchBaseJourneyCard = ({
       expansion={<JourneyCardDescription>{vision}</JourneyCardDescription>}
       expansionActions={
         <CardActions>
-          <JourneyCardGoToButton journeyUri={props.journeyUri} subspace={spaceType !== SpaceType.Space} />
+          <JourneyCardGoToButton journeyUri={props.journeyUri} journeyTypeName={journeyTypeName} />
         </CardActions>
       }
       {...props}

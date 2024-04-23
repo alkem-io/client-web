@@ -12,6 +12,7 @@ import {
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { EditMode } from '../../../../core/ui/forms/editMode';
 import { UserModel } from '../models/User';
+import { logger } from '../../../../core/logging/winston/logger';
 import { buildUserProfileUrl } from '../../../../main/routing/urlBuilders';
 import { getUpdateUserInput } from '../utils/getUpdateUserInput';
 import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
@@ -40,7 +41,7 @@ export const EditUserProfilePage: FC<EditUserProfilePageProps> = () => {
   const [createTagset] = useCreateTagsetOnProfileMutation({
     // Just log the error. Do not send it to the notification hanlder.
     // there is an issue handling multiple snackbars.
-    onError: error => console.error(error.message),
+    onError: error => logger.error(error.message),
   });
 
   const [updateUser] = useUpdateUserMutation({

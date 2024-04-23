@@ -1,4 +1,4 @@
-import { Box, BoxProps, SvgIconProps } from '@mui/material';
+import { Box, SvgIconProps } from '@mui/material';
 import { CaptionSmall } from '../typography';
 import { PropsWithChildren, ReactElement, ReactNode } from 'react';
 import { Actions } from '../actions/Actions';
@@ -6,7 +6,6 @@ import { gutters } from '../grid/utils';
 import SkipLink from '../keyboardNavigation/SkipLink';
 import { useNextBlockAnchor } from '../keyboardNavigation/NextBlockAnchor';
 import BlockTitleWithIcon from './BlockTitleWithIcon';
-import { BoxTypeMap } from '@mui/system';
 
 export interface PageContentBlockHeaderProps {
   title: ReactNode;
@@ -16,15 +15,14 @@ export interface PageContentBlockHeaderProps {
   fullWidth?: boolean;
 }
 
-const PageContentBlockHeader = <D extends React.ElementType = BoxTypeMap['defaultComponent'], P = {}>({
+const PageContentBlockHeader = ({
   title,
   icon,
   actions,
   disclaimer,
   fullWidth,
   children,
-  ...props
-}: PropsWithChildren<PageContentBlockHeaderProps> & Omit<BoxProps<D, P>, 'title'>) => {
+}: PropsWithChildren<PageContentBlockHeaderProps>) => {
   const nextBlock = useNextBlockAnchor();
 
   return (
@@ -35,7 +33,6 @@ const PageContentBlockHeader = <D extends React.ElementType = BoxTypeMap['defaul
       gap={gutters(0.5)}
       position="relative"
       width={fullWidth ? '100%' : undefined}
-      {...props}
     >
       <SkipLink anchor={nextBlock} sx={{ position: 'absolute', right: 0, top: 0 }} />
       <Box

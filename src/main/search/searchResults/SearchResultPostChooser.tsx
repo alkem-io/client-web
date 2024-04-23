@@ -11,6 +11,8 @@ const SearchResultPostChooser = ({
 }): React.ReactElement | null => {
   const {
     hydrateSpaceCard,
+    hydrateChallengeCard,
+    hydrateOpportunityCard,
     hydrateUserCard,
     hydrateOrganizationCard,
     hydrateContributionCard,
@@ -27,17 +29,17 @@ const SearchResultPostChooser = ({
 
   switch (result.type) {
     case SearchResultType.Space:
-    case SearchResultType.Challenge:
-    case SearchResultType.Opportunity:
       return hydrateSpaceCard(result);
+    case SearchResultType.Challenge:
+      return hydrateChallengeCard(result);
+    case SearchResultType.Opportunity:
+      return hydrateOpportunityCard(result);
     case SearchResultType.User:
       return hydrateUserCard(result);
     case SearchResultType.Organization:
       return hydrateOrganizationCard(result);
     case SearchResultType.Post:
       return hydrateContributionCard(result);
-    default:
-      return null;
   }
 };
 

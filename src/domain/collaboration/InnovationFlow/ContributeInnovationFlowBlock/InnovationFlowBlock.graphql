@@ -1,0 +1,20 @@
+query InnovationFlowBlock($collaborationId: UUID!) {
+  lookup {
+    collaboration(ID: $collaborationId) {
+      id
+      innovationFlow {
+        id
+        profile {
+          id
+          displayName
+          cardBanner: visual(type: CARD) {
+            id
+            name
+            uri
+            alternativeText
+          }
+        }
+      }
+    }
+  }
+}

@@ -10,14 +10,14 @@ import HistoryIcon from '@mui/icons-material/History';
 import {
   DocumentDataFragment,
   LoadableStorageAggregatorFragment,
-  SpaceType,
   StorageAggregatorFragment,
+  StorageAggregatorParentType,
   StorageBucketFragment,
 } from '../../../../../core/apollo/generated/graphql-schema';
 import ImageIcon from '@mui/icons-material/Image';
 import { getProfileIcon } from '../../../../shared/icons/profileIcons';
 import { SpaceIcon } from '../../../../journey/space/icon/SpaceIcon';
-import { ChallengeIcon } from '../../../../journey/subspace/icon/ChallengeIcon';
+import { ChallengeIcon } from '../../../../journey/challenge/icon/ChallengeIcon';
 import { OpportunityIcon } from '../../../../journey/opportunity/icon/OpportunityIcon';
 import { FolderCopyOutlined } from '@mui/icons-material';
 
@@ -54,13 +54,13 @@ interface Provided {
   reload: () => void;
 }
 
-export const getStorageAggregatorParentIcon = (type: SpaceType) => {
+export const getStorageAggregatorParentIcon = (type: StorageAggregatorParentType) => {
   switch (type) {
-    case SpaceType.Space:
+    case StorageAggregatorParentType.Space:
       return SpaceIcon;
-    case SpaceType.Challenge:
+    case StorageAggregatorParentType.Challenge:
       return ChallengeIcon;
-    case SpaceType.Opportunity:
+    case StorageAggregatorParentType.Opportunity:
       return OpportunityIcon;
   }
 };

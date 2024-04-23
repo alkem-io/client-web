@@ -5,7 +5,6 @@ mutation createOrganization($input: CreateOrganizationInput!) {
     profile {
       id
       displayName
-      url
     }
   }
 }

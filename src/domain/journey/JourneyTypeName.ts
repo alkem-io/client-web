@@ -1,6 +1,6 @@
 import { ProfileType } from '../../core/apollo/generated/graphql-schema';
 
-export type JourneyTypeName = 'space' | 'subspace' | 'subsubspace';
+export type JourneyTypeName = 'space' | 'challenge' | 'opportunity';
 
 interface JourneyLocation {
   spaceNameId: string;
@@ -19,16 +19,16 @@ export const getJourneyTypeName = (
       case 'SPACE':
         return 'space';
       case 'CHALLENGE':
-        return 'subspace';
+        return 'challenge';
       case 'OPPORTUNITY':
-        return 'subsubspace';
+        return 'opportunity';
     }
   } else {
     if (journeyLocation.opportunityNameId) {
-      return 'subsubspace';
+      return 'opportunity';
     }
     if (journeyLocation.challengeNameId) {
-      return 'subspace';
+      return 'challenge';
     }
     if (journeyLocation.spaceNameId) {
       return 'space';

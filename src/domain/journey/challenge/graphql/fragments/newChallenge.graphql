@@ -1,0 +1,8 @@
+fragment NewChallenge on Challenge {
+  id
+  nameID
+  profile {
+    id
+    displayName
+  }
+}

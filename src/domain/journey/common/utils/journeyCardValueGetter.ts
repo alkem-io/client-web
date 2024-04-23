@@ -1,7 +1,11 @@
 import { ValueType } from '../../../../core/utils/filtering/filterFn';
-import { SubspaceCardFragment, SpaceCardQuery } from '../../../../core/apollo/generated/graphql-schema';
+import {
+  ChallengeCardFragment,
+  SpaceCardQuery,
+  OpportunityCardFragment,
+} from '../../../../core/apollo/generated/graphql-schema';
 
-type JourneyCard = SpaceCardQuery['space'] | SubspaceCardFragment;
+type JourneyCard = SpaceCardQuery['space'] | ChallengeCardFragment | OpportunityCardFragment;
 
 export const journeyCardValueGetter = ({ id, profile }: JourneyCard): ValueType => ({
   id,

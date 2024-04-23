@@ -1,5 +1,6 @@
 fragment GroupInfo on UserGroup {
   id
+  name
   profile {
     id
     displayName

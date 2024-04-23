@@ -13,6 +13,50 @@ query PendingMembershipsSpace($spaceId: UUID_NAMEID!, $fetchDetails: Boolean! = 
   }
 }
 
+query PendingMembershipsChallenge(
+  $challengeId: UUID!
+  $fetchDetails: Boolean! = false
+  $visualType: VisualType!
+  $fetchCommunityGuidelines: Boolean! = false
+) {
+  lookup {
+    challenge(ID: $challengeId) {
+      id
+      profile {
+        ...PendingMembershipsJourneyProfile
+      }
+      community @include(if: $fetchCommunityGuidelines) {
+        id
+        guidelines {
+          ...CommunityGuidelinesSummary
+        }
+      }
+    }
+  }
+}
+
+query PendingMembershipsOpportunity(
+  $opportunityId: UUID!
+  $fetchDetails: Boolean! = false
+  $visualType: VisualType!
+  $fetchCommunityGuidelines: Boolean! = false
+) {
+  lookup {
+    opportunity(ID: $opportunityId) {
+      id
+      profile {
+        ...PendingMembershipsJourneyProfile
+      }
+      community @include(if: $fetchCommunityGuidelines) {
+        id
+        guidelines {
+          ...CommunityGuidelinesSummary
+        }
+      }
+    }
+  }
+}
+
 query PendingMembershipsUser($userId: UUID_NAMEID_EMAIL!) {
   user(ID: $userId) {
     id

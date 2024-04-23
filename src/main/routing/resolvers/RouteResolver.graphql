@@ -7,11 +7,11 @@ query JourneyRouteResolver(
 ) {
   space(ID: $spaceNameId) {
     id
-    subspace(ID: $challengeNameId) @include(if: $includeChallenge) {
+    challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
       id
-      subspace(ID: $opportunityNameId) @include(if: $includeOpportunity) {
-        id
-      }
+    }
+    opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
+      id
     }
   }
 }

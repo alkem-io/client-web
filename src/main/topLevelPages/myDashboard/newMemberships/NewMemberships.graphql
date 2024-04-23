@@ -6,15 +6,15 @@ query NewMemberships {
       displayName
       state
       spaceID
-      subspaceID
-      subsubspaceID
+      challengeID
+      opportunityID
       createdDate
     }
     invitations(states: ["invited", "accepted"]) {
       id
       spaceID
-      state
-      subspaceID
+      challengeID
+      opportunityID
       welcomeMessage
       createdBy
       createdDate

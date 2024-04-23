@@ -2,7 +2,6 @@ import { Link as MuiLink, LinkProps as MuiLinkProps } from '@mui/material';
 import { Link as ReactRouterLink, LinkProps as ReactRouterLinkProps } from 'react-router-dom';
 import { isAbsoluteUrl, normalizeLink } from '../../utils/links';
 import { forwardRef } from 'react';
-import { useUrlBase } from './UrlBase';
 
 export interface RouterLinkProps extends Omit<ReactRouterLinkProps, 'target'>, Pick<MuiLinkProps, 'underline' | 'sx'> {
   to: string;
@@ -18,12 +17,6 @@ export interface RouterLinkProps extends Omit<ReactRouterLinkProps, 'target'>, P
  */
 const RouterLink = forwardRef<HTMLAnchorElement, RouterLinkProps>(
   ({ to, raw = false, strict = false, blank, ...props }, ref) => {
-    const base = useUrlBase();
-
-    if (!isAbsoluteUrl(to) && base && !to.startsWith('/')) {
-      to = `${base}/${to}`;
-    }
-
     const urlLike = !strict ? normalizeLink(to) : to;
 
     const isForeign = raw || isAbsoluteUrl(urlLike);

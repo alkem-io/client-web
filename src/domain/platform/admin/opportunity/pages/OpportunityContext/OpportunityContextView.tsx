@@ -2,39 +2,39 @@ import { Grid } from '@mui/material';
 import React, { FC } from 'react';
 import { ContextForm, ContextFormValues } from '../../../../../context/ContextForm';
 import { useNotification } from '../../../../../../core/ui/notifications/useNotification';
+import {
+  refetchOpportunityProfileInfoQuery,
+  useOpportunityProfileInfoQuery,
+  useUpdateOpportunityMutation,
+} from '../../../../../../core/apollo/generated/apollo-hooks';
 import { OpportunityContextSegment } from '../../OpportunityContextSegment';
 import SaveButton from '../../../../../../core/ui/actions/SaveButton';
 import { useRouteResolver } from '../../../../../../main/routing/resolvers/RouteResolver';
-import {
-  refetchSubspaceProfileInfoQuery,
-  useSubspaceProfileInfoQuery,
-  useUpdateSpaceMutation,
-} from '../../../../../../core/apollo/generated/apollo-hooks';
 
 const OpportunityContextView: FC = () => {
   const notify = useNotification();
   const onSuccess = (message: string) => notify(message, 'success');
 
-  const { subSubSpaceId: opportunityId } = useRouteResolver();
+  const { opportunityId } = useRouteResolver();
 
-  const [updateSubspace, { loading: isUpdating }] = useUpdateSpaceMutation({
+  const [updateOpportunity, { loading: isUpdating }] = useUpdateOpportunityMutation({
     onCompleted: () => onSuccess('Successfully updated'),
-    refetchQueries: [refetchSubspaceProfileInfoQuery({ subspaceId: opportunityId! })],
+    refetchQueries: [refetchOpportunityProfileInfoQuery({ opportunityId: opportunityId! })],
     awaitRefetchQueries: true,
   });
 
-  const { data: subspacePrfile, loading } = useSubspaceProfileInfoQuery({
-    variables: { subspaceId: opportunityId! },
+  const { data: opportunityProfile, loading } = useOpportunityProfileInfoQuery({
+    variables: { opportunityId: opportunityId! },
     skip: !opportunityId,
   });
 
-  const opportunity = subspacePrfile?.space;
+  const opportunity = opportunityProfile?.lookup.opportunity;
 
   const onSubmit = async (values: ContextFormValues) => {
     if (!opportunity) {
       throw new TypeError('Opportunity is not loaded');
     }
-    await updateSubspace({
+    await updateOpportunity({
       variables: {
         input: {
           context: {

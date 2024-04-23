@@ -5,7 +5,7 @@ import Avatar from '../../../core/ui/avatar/Avatar';
 import { PageTitle } from '../../../core/ui/typography';
 import LocationCaption from '../../../core/ui/location/LocationCaption';
 import { Actions } from '../../../core/ui/actions/Actions';
-import { IconButton, Theme, useMediaQuery } from '@mui/material';
+import { IconButton, Theme, ThemeProvider, useMediaQuery } from '@mui/material';
 import { MailOutlined, SettingsOutlined } from '@mui/icons-material';
 import RouterLink from '../../../core/ui/link/RouterLink';
 import { DirectMessageDialog } from '../../communication/messaging/DirectMessaging/DirectMessageDialog';
@@ -13,6 +13,9 @@ import { Visual } from '../visual/Visual';
 import { Location } from '../../../core/ui/location/getLocationString';
 import { useTranslation } from 'react-i18next';
 import PageBannerWatermark from '../../../main/ui/platformNavigation/PageBannerWatermark';
+import providePrimaryColor from '../../../core/ui/themes/utils/providePrimaryColor';
+
+const provideHubColor = providePrimaryColor(theme => theme.palette.space.main);
 
 const banner: Visual = {
   uri: '/alkemio-banner/global-banner.jpg',
@@ -92,9 +95,11 @@ const ProfilePageBanner = ({
         }
         header={
           <>
-            <PageTitle color="primary" noWrap>
-              {profile?.displayName}
-            </PageTitle>
+            <ThemeProvider theme={provideHubColor}>
+              <PageTitle color="primary" noWrap>
+                {profile?.displayName}
+              </PageTitle>
+            </ThemeProvider>
             {profile?.location && <LocationCaption {...profile?.location} />}
             <Actions gap={0}>
               {onSendMessage && (

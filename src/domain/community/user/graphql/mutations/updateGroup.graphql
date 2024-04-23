@@ -1,9 +1,9 @@
 mutation updateGroup($input: UpdateUserGroupInput!) {
   updateUserGroup(userGroupData: $input) {
     id
+    name
     profile {
       id
-      displayName
       visual(type: AVATAR) {
         ...VisualUri
       }

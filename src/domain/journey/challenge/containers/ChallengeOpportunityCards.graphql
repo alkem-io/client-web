@@ -1,0 +1,10 @@
+query ChallengeOpportunityCards($challengeId: UUID!) {
+  lookup {
+    challenge(ID: $challengeId) {
+      id
+      opportunities {
+        ...OpportunityCard
+      }
+    }
+  }
+}

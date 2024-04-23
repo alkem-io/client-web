@@ -7,6 +7,8 @@ import {
   SearchQuery,
   SearchResult,
   SearchResultCalloutFragment,
+  SearchResultChallengeFragment,
+  SearchResultOpportunityFragment,
   SearchResultOrganizationFragment,
   SearchResultPostFragment,
   SearchResultSpaceFragment,
@@ -51,8 +53,8 @@ export type SearchResultMetaType =
   | TypedSearchResult<SearchResultType.Organization, SearchResultOrganizationFragment>
   | TypedSearchResult<SearchResultType.Post, SearchResultPostFragment>
   | TypedSearchResult<SearchResultType.Space, SearchResultSpaceFragment>
-  | TypedSearchResult<SearchResultType.Challenge, SearchResultSpaceFragment>
-  | TypedSearchResult<SearchResultType.Opportunity, SearchResultSpaceFragment>;
+  | TypedSearchResult<SearchResultType.Challenge, SearchResultChallengeFragment>
+  | TypedSearchResult<SearchResultType.Opportunity, SearchResultOpportunityFragment>;
 
 interface SearchViewProps {
   searchRoute: string;

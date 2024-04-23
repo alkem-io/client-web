@@ -1,16 +1,18 @@
-query MyMembershipsSubspace($subspaceId: UUID_NAMEID!) {
-  space(ID: $subspaceId) {
-    id
-    profile {
-      ...MyMembershipsChildJourneyProfile
-    }
-    subspaces {
+query MyMembershipsChallenge($challengeId: UUID!) {
+  lookup {
+    challenge(ID: $challengeId) {
       id
-      community {
-        ...MyMembershipsChildJourneyCommunity
-      }
       profile {
         ...MyMembershipsChildJourneyProfile
+      }
+      opportunities {
+        id
+        community {
+          ...MyMembershipsChildJourneyCommunity
+        }
+        profile {
+          ...MyMembershipsChildJourneyProfile
+        }
       }
     }
   }

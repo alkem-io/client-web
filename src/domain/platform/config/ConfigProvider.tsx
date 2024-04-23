@@ -4,9 +4,9 @@ import queryRequest from '../../../core/http/queryRequest';
 import Loading from '../../../core/ui/loading/Loading';
 import { ConfigurationDocument } from '../../../core/apollo/generated/apollo-hooks';
 import { ConfigurationQuery } from '../../../core/apollo/generated/graphql-schema';
+import { logger } from '../../../core/logging/winston/logger';
 import { Configuration } from './configuration';
 import useLoadingStateWithHandlers from '../../shared/utils/useLoadingStateWithHandlers';
-import { TagCategoryValues, warn as logWarn } from '../../../core/logging/sentry/log';
 
 export interface ConfigContextProps {
   config?: Configuration;
@@ -33,7 +33,7 @@ const ConfigProvider: FC<ConfigProviderProps> = ({ children, url }) => {
       setConfig(result.data.data.platform.configuration);
     },
     {
-      onError: err => logWarn(err, { category: TagCategoryValues.CONFIG }),
+      onError: err => logger.error(err.message),
     }
   );
 

@@ -5,7 +5,7 @@ import { useSpace } from '../SpaceContext/useSpace';
 import { buildJourneyAdminUrl } from '../../../../main/routing/urlBuilders';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import { useTranslation } from 'react-i18next';
-import { ChallengeIcon } from '../../subspace/icon/ChallengeIcon';
+import { ChallengeIcon } from '../../challenge/icon/ChallengeIcon';
 
 const SpaceTabs = (props: EntityTabsProps) => {
   const { t } = useTranslation();
@@ -23,7 +23,7 @@ const SpaceTabs = (props: EntityTabsProps) => {
       shareUrl={profile.url}
       subEntityTab={{
         label: t('common.subspaces'),
-        section: EntityPageSection.Subspaces,
+        section: EntityPageSection.Challenges,
         icon: <ChallengeIcon />,
         disabled: !permissions.canReadChallenges,
       }}

@@ -14,8 +14,8 @@ export interface ShareDialogProps extends ShareComponentProps {
   onClose: () => void;
   entityTypeName:
     | 'space'
-    | 'subspace'
-    | 'subsubspace'
+    | 'challenge'
+    | 'opportunity'
     | 'user'
     | 'organization'
     | 'callout'

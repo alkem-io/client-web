@@ -1,0 +1,7 @@
+query challengeInfo($challengeId: UUID!) {
+  lookup {
+    challenge(ID: $challengeId) {
+      ...ChallengeInfo
+    }
+  }
+}

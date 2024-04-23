@@ -4,9 +4,7 @@ query communityGroups($communityId: UUID!) {
       id
       groups {
         id
-        profile {
-          displayName
-        }
+        name
       }
     }
   }

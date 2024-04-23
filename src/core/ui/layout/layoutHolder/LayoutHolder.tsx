@@ -4,10 +4,10 @@ import React, {
   Dispatch,
   FC,
   PropsWithChildren,
+  ReactElement,
   SetStateAction,
   useContext,
   useLayoutEffect,
-  useMemo,
   useState,
 } from 'react';
 
@@ -16,39 +16,41 @@ interface LayoutState<P> {
   props: P;
 }
 
-interface LayoutContext {
-  layout: LayoutState<Record<string, unknown>> | undefined;
-  setLayout: Dispatch<SetStateAction<LayoutState<Record<string, unknown>> | undefined>>;
-}
+type LayoutRenderOrderProps = PropsWithChildren<{
+  layout: ReactElement | undefined;
+}>;
 
-const createLayoutHolder = () => {
-  const LayoutContext = createContext<LayoutContext>({
-    layout: undefined,
-    setLayout: () => {
+const DefaultLayoutRenderOrder = ({ layout, children }: LayoutRenderOrderProps) => {
+  return (
+    <>
+      {layout}
+      {children}
+    </>
+  );
+};
+
+const createLayoutHolder = (RenderOrder: ComponentType<LayoutRenderOrderProps> = DefaultLayoutRenderOrder) => {
+  const LayoutContext = createContext<Dispatch<SetStateAction<LayoutState<Record<string, unknown>> | undefined>>>(
+    () => {
       throw new Error('Not within the LayoutHolder.');
-    },
-  });
-
-  const RenderPoint = () => {
-    const { layout } = useContext(LayoutContext);
-    if (!layout) {
-      return null;
     }
-    const Component = layout.component;
-    return <Component {...layout.props} />;
-  };
+  );
 
   const LayoutHolder = ({ children }: PropsWithChildren<{}>) => {
     const [layout, setLayout] = useState<LayoutState<Record<string, unknown>>>();
 
-    const contextValue = useMemo(() => ({ layout, setLayout }), [layout, setLayout]);
+    const Component = layout?.component!;
 
-    return <LayoutContext.Provider value={contextValue}>{children}</LayoutContext.Provider>;
+    return (
+      <RenderOrder layout={layout && <Component {...layout.props} />}>
+        <LayoutContext.Provider value={setLayout}>{children}</LayoutContext.Provider>
+      </RenderOrder>
+    );
   };
 
   const createLayout = <P extends {}>(Component: ComponentType<P>) => {
     const Layout = React.memo<P>(props => {
-      const { setLayout } = useContext(LayoutContext);
+      const setLayout = useContext(LayoutContext);
 
       useLayoutEffect(() => {
         setLayout({
@@ -65,7 +67,6 @@ const createLayoutHolder = () => {
 
   return {
     LayoutHolder,
-    RenderPoint,
     createLayout,
   };
 };

@@ -1,0 +1,44 @@
+query challengeProfileInfo($challengeId: UUID!) {
+  lookup {
+    challenge(ID: $challengeId) {
+      id
+      nameID
+      collaboration {
+        id
+      }
+      profile {
+        id
+        displayName
+        tagline
+        description
+        tagset {
+          ...TagsetDetails
+        }
+        visuals {
+          ...VisualFull
+        }
+        references {
+          id
+          name
+          uri
+          description
+        }
+        location {
+          ...fullLocation
+        }
+      }
+      collaboration {
+        id
+        innovationFlow {
+          id
+          currentState {
+            displayName
+          }
+        }
+      }
+      context {
+        ...ContextDetails
+      }
+    }
+  }
+}

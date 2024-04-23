@@ -79,6 +79,7 @@
     "jquery": "^3.5.1",
     "lodash": "^4.17.21",
     "logform": "^2.2.0",
+    "loglevel": "^1.8.0",
     "mdast-builder": "^1.1.1",
     "nanoid": "^3.3.6",
     "qrcode": "^1.5.0",

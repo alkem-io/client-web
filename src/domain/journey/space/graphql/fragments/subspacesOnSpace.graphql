@@ -1,6 +1,0 @@
-fragment SubspacesOnSpace on Space {
-  id
-  subspaces {
-    ...SubspaceCard
-  }
-}

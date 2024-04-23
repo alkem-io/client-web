@@ -21,9 +21,6 @@ interface InnovationFlowStateFormProps {
   onCancel?: () => void;
 }
 
-// Leave description empty if the Markdown component has returned just a <br> tag
-const emptyMarkdown = (markdown: string | undefined = '') => (markdown.trim() === '<br>' ? '' : markdown.trim());
-
 const InnovationFlowStateForm: FC<InnovationFlowStateFormProps> = ({
   state,
   forbiddenFlowStateNames = [],
@@ -34,7 +31,7 @@ const InnovationFlowStateForm: FC<InnovationFlowStateFormProps> = ({
 
   const initialValues: InnovationFlowStateFormValues = {
     displayName: state?.displayName ?? '',
-    description: state?.description ?? '',
+    description: state?.description ?? '\n',
   };
 
   const validationSchema = yup.object().shape({
@@ -43,12 +40,10 @@ const InnovationFlowStateForm: FC<InnovationFlowStateFormProps> = ({
       .required()
       .max(SMALL_TEXT_LENGTH)
       .notOneOf(forbiddenFlowStateNames, t('components.innovationFlowSettings.stateEditor.noRepeatedStates')),
-    description: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
+    description: MarkdownValidator(MARKDOWN_TEXT_LENGTH).required(),
   });
 
-  const [handleSave, loading] = useLoadingState((formData: InnovationFlowStateFormValues) =>
-    onSubmit({ ...formData, description: emptyMarkdown(formData.description) })
-  );
+  const [handleSave, loading] = useLoadingState(onSubmit);
 
   return (
     <Formik initialValues={initialValues} validationSchema={validationSchema} enableReinitialize onSubmit={handleSave}>

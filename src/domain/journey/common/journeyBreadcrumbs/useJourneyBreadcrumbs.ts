@@ -1,71 +1,87 @@
 import { useMemo } from 'react';
-import { useJourneyBreadcrumbsSpaceQuery } from '../../../../core/apollo/generated/apollo-hooks';
-import { JourneyLevel, JourneyPath } from '../../../../main/routing/resolvers/RouteResolver';
+import {
+  useJourneyBreadcrumbsChallengeQuery,
+  useJourneyBreadcrumbsOpportunityQuery,
+  useJourneyBreadcrumbsSpaceQuery,
+} from '../../../../core/apollo/generated/apollo-hooks';
+import { JourneyTypeName } from '../../JourneyTypeName';
+import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 
 export interface BreadcrumbsItem {
   displayName: string;
   uri: string;
-  // journeyTypeName: JourneyTypeName;
+  journeyTypeName: JourneyTypeName;
   avatar?: {
     uri?: string;
   };
 }
 
-// const JOURNEY_NESTING: JourneyTypeName[] = ['space', 'subspace', 'subsubspace'];
+const JOURNEY_NESTING: JourneyTypeName[] = ['space', 'challenge', 'opportunity'];
 
-export interface UseJourneyBreadcrumbsParams {
-  journeyPath: JourneyPath;
-  loading?: boolean;
-}
+export const useJourneyBreadcrumbs = () => {
+  const { spaceId, challengeId, opportunityId, journeyTypeName, loading } = useRouteResolver();
 
-export const useJourneyBreadcrumbs = ({ journeyPath, loading = false }: UseJourneyBreadcrumbsParams) => {
-  const currentJourneyIndex = journeyPath.length - 1;
+  const currentJourneyIndex = journeyTypeName && JOURNEY_NESTING.indexOf(journeyTypeName);
 
-  const shouldFetchJourney = (level: JourneyLevel) => {
-    return !!journeyPath[level];
+  const shouldFetchJourney = (journey: JourneyTypeName) => {
+    if (!journeyTypeName) {
+      return false;
+    }
+    const targetJourneyIndex = JOURNEY_NESTING.indexOf(journey);
+    return targetJourneyIndex <= currentJourneyIndex!;
   };
 
   const { data: _space, loading: isLoadingSpace } = useJourneyBreadcrumbsSpaceQuery({
     variables: {
-      spaceId: journeyPath[0]!,
+      spaceId: spaceId!,
     },
-    skip: !shouldFetchJourney(0) || loading,
+    skip: !shouldFetchJourney('space') || loading,
   });
 
-  const { data: _challenge, loading: isLoadingChallenge } = useJourneyBreadcrumbsSpaceQuery({
+  const { data: _challenge, loading: isLoadingChallenge } = useJourneyBreadcrumbsChallengeQuery({
     variables: {
-      spaceId: journeyPath[1]!,
+      challengeId: challengeId!,
     },
-    skip: !shouldFetchJourney(1) || loading,
+    skip: !shouldFetchJourney('challenge') || loading,
   });
 
-  const { data: _opportunity, loading: isLoadingOpportunity } = useJourneyBreadcrumbsSpaceQuery({
+  const { data: _opportunity, loading: isLoadingOpportunity } = useJourneyBreadcrumbsOpportunityQuery({
     variables: {
-      spaceId: journeyPath[1]!,
+      opportunityId: opportunityId!,
     },
-    skip: !shouldFetchJourney(2) || loading,
+    skip: !shouldFetchJourney('opportunity') || loading,
   });
 
-  const journeyProfiles = [_space?.space.profile, _challenge?.space?.profile, _opportunity?.space?.profile];
+  const getJourneyProfile = (journey: JourneyTypeName) => {
+    switch (journey) {
+      case 'space':
+        return _space?.space.profile;
+      case 'challenge':
+        return _challenge?.lookup.challenge?.profile;
+      case 'opportunity':
+        return _opportunity?.lookup.opportunity?.profile;
+    }
+  };
 
   const isLoading = isLoadingSpace || isLoadingChallenge || isLoadingOpportunity;
 
   const breadcrumbs = useMemo<BreadcrumbsItem[]>(() => {
-    if (isLoading) {
+    if (isLoading || !journeyTypeName) {
       return [];
     }
 
-    return journeyProfiles.slice(0, currentJourneyIndex + 1).map(profile => {
+    return JOURNEY_NESTING.slice(0, currentJourneyIndex! + 1).map(journey => {
+      const profile = getJourneyProfile(journey);
       const displayName = profile?.displayName!;
       const journeyUri = profile?.url!;
       return {
         displayName,
         uri: journeyUri,
-        // journeyTypeName: JOURNEY_NESTING[journey],
+        journeyTypeName: journey,
         avatar: profile?.avatar,
       };
     });
-  }, [isLoading, currentJourneyIndex, _challenge, _space, _opportunity]);
+  }, [isLoading, journeyTypeName, _challenge, _space, _opportunity]);
 
   return {
     loading: isLoading,

@@ -12,7 +12,7 @@ import { AuthorizationPrivilege, CommunityMembershipStatus } from '../../../../c
 import { useCommunityContext } from '../../community/CommunityContext';
 import clearCacheForType from '../../../../core/apollo/utils/clearCacheForType';
 import { useAuthenticationContext } from '../../../../core/auth/authentication/hooks/useAuthenticationContext';
-import { useSubSpace } from '../../../journey/subspace/hooks/useChallenge';
+import { useChallenge } from '../../../journey/challenge/hooks/useChallenge';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
 import { useTranslation } from 'react-i18next';
 
@@ -28,13 +28,13 @@ interface ApplicationContainerState {
 
 export interface ApplicationButtonContainerProps
   extends ContainerChildProps<ApplicationContainerEntities, ApplicationContainerActions, ApplicationContainerState> {
-  subspaceId?: string;
-  subspaceName?: string;
+  challengeId?: string;
+  challengeName?: string;
 }
 
 export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = ({
-  subspaceId: challengeId,
-  subspaceName: challengeName,
+  challengeId,
+  challengeName,
   children,
 }) => {
   const { t } = useTranslation();
@@ -46,7 +46,7 @@ export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = (
   const [getUserProfile, { loading: gettingUserProfile }] = useUserProfileLazyQuery({ variables: { input: userId } });
 
   const { spaceId, spaceNameId, profile: spaceProfile, refetchSpace } = useSpace();
-  const { profile: challengeProfile } = useSubSpace();
+  const { profile: challengeProfile } = useChallenge();
 
   const { communityId, myMembershipStatus } = useCommunityContext();
 
@@ -63,17 +63,17 @@ export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = (
 
   // todo: refactor logic or use entity privileges
   const userApplication = user?.pendingApplications?.find(
-    x => x.spaceId === spaceId && (challengeId ? x.subspaceId === challengeId : true) && !x.subsubspaceId
+    x => x.spaceId === spaceId && (challengeId ? x.challengeId === challengeId : true) && !x.opportunityId
   );
 
   const userInvitation = user?.pendingInvitations?.find(
-    x => x.spaceId === spaceId && (challengeId ? x.subspaceId === challengeId : true) && !x.subsubspaceId
+    x => x.spaceId === spaceId && (challengeId ? x.challengeId === challengeId : true) && !x.opportunityId
   );
 
   // find an application which does not have a challengeID, meaning it's on space level,
   // but you are at least at challenge level to have a parent application
   const parentApplication = user?.pendingApplications?.find(
-    x => x.spaceId === spaceId && !x.subspaceId && !x.subsubspaceId && challengeId
+    x => x.spaceId === spaceId && !x.challengeId && !x.opportunityId && challengeId
   );
 
   const isMember = myMembershipStatus === CommunityMembershipStatus.Member;

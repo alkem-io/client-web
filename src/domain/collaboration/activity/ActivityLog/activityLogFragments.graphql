@@ -85,7 +85,7 @@ fragment ActivityLogCalloutWhiteboardContentModified on ActivityLogEntryCalloutW
 }
 
 fragment ActivityLogChallengeCreated on ActivityLogEntryChallengeCreated {
-  subspace {
+  challenge {
     id
     profile {
       ...ActivitySubjectProfile
@@ -94,7 +94,7 @@ fragment ActivityLogChallengeCreated on ActivityLogEntryChallengeCreated {
 }
 
 fragment ActivityLogOpportunityCreated on ActivityLogEntryOpportunityCreated {
-  subsubspace {
+  opportunity {
     id
     profile {
       ...ActivitySubjectProfile
@@ -120,6 +120,7 @@ fragment ActivityLogCalendarEventCreated on ActivityLogEntryCalendarEventCreated
 
 fragment ActivityLogUpdateSent on ActivityLogEntryUpdateSent {
   message
+  journeyUrl
 }
 
 fragment ActivitySubjectProfile on Profile {

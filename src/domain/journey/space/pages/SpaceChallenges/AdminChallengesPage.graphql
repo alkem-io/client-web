@@ -1,7 +1,7 @@
 query AdminSpaceChallengesPage($spaceId: UUID_NAMEID!) {
   space(ID: $spaceId) {
     id
-    subspaces {
+    challenges {
       id
       nameID
       profile {

@@ -24,7 +24,7 @@ import useCallouts, { UseCalloutsProvided } from '../../../collaboration/callout
 import { RECENT_ACTIVITIES_LIMIT_INITIAL, TOP_CALLOUTS_LIMIT } from '../../common/journeyDashboard/constants';
 import useSpaceDashboardNavigation, {
   DashboardNavigationItem,
-} from '../spaceDashboardNavigation/useSpaceDashboardNavigation';
+} from '../SpaceDashboardNavigation/useSpaceDashboardNavigation';
 
 export interface SpaceContainerEntities {
   space: SpacePageFragment | undefined;
@@ -128,7 +128,7 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ spaceId, 
 
   const references = referencesData?.space?.profile.references;
 
-  const hostOrganizations = useMemo(() => (_space?.space.account.host ? [_space.space.account.host] : []), [_space]);
+  const hostOrganizations = useMemo(() => (_space?.space.host ? [_space.space.host] : []), [_space]);
 
   const topCallouts = _space?.space.collaboration?.callouts?.slice(0, TOP_CALLOUTS_LIMIT);
 
@@ -153,7 +153,7 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ spaceId, 
   const callouts = useCallouts({
     journeyId: spaceId,
     journeyTypeName: 'space',
-    groupNames: [CalloutGroupName.Home],
+    groupNames: [CalloutGroupName.Home_1, CalloutGroupName.Home_2],
   });
 
   return (

@@ -18,25 +18,24 @@ import CalendarEventsList from './views/CalendarEventsList';
 import dayjs from 'dayjs';
 import DialogWithGrid from '../../../core/ui/dialog/DialogWithGrid';
 import ConfirmationDialog from '../../../core/ui/dialogs/ConfirmationDialog';
+import { JourneyTypeName } from '../../journey/JourneyTypeName';
 
 // If url params contains `highlight=YYYY-MM-DD` events in that date will be highlighted
 export const HIGHLIGHT_PARAM_NAME = 'highlight';
-export const INIT_CREATING_EVENT_PARAM = 'new';
-export const CALENDAR_PATH = `${EntityPageSection.Dashboard}/calendar`;
 
 export interface CalendarDialogProps {
   open: boolean;
   journeyId: string | undefined;
+  journeyTypeName: JourneyTypeName;
   onClose: () => void;
 }
 
-const CalendarDialog: FC<CalendarDialogProps> = ({ open, journeyId, onClose }) => {
+const CalendarDialog: FC<CalendarDialogProps> = ({ open, journeyId, journeyTypeName, onClose }) => {
   const { t } = useTranslation();
   const { calendarEventNameId } = useUrlParams();
   const navigate = useNavigate();
 
   const params = useQueryParams();
-  const isCreatingEventInit = params.get(INIT_CREATING_EVENT_PARAM);
   const highlightedDayParam: string | null = params.get(HIGHLIGHT_PARAM_NAME);
   const highlightedDay = useMemo(
     () =>
@@ -84,7 +83,7 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, journeyId, onClose }) =
       aria-labelledby="calendar-events-dialog-title"
       PaperProps={{ sx: { padding: 0, display: `${deletingEvent ? 'none' : 'flex'}`, flexDirection: 'column' } }}
     >
-      <CalendarEventsContainer journeyId={journeyId}>
+      <CalendarEventsContainer journeyId={journeyId} journeyTypeName={journeyTypeName}>
         {(
           { events, privileges },
           { createEvent, updateEvent, deleteEvent },
@@ -95,7 +94,7 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, journeyId, onClose }) =
             const handleDeleteEvent = async (eventId: string) => {
               await deleteEvent(eventId);
               setDeletingEvent(undefined);
-              navigate(CALENDAR_PATH);
+              navigate(`${EntityPageSection.Dashboard}/calendar`);
             };
             return (
               <ConfirmationDialog
@@ -120,11 +119,10 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, journeyId, onClose }) =
             );
 
             // Creating a new event:
-          } else if (isCreatingEvent || isCreatingEventInit) {
+          } else if (isCreatingEvent) {
             const handleNewEventSubmit = async (calendarEvent: CalendarEventFormData) => {
               await createEvent(calendarEvent);
               setIsCreatingEvent(false);
-              navigate(CALENDAR_PATH);
             };
 
             return (
@@ -134,9 +132,7 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, journeyId, onClose }) =
                 onSubmit={handleNewEventSubmit}
                 onClose={handleClose}
                 isSubmitting={creatingCalendarEvent}
-                actions={
-                  isCreatingEventInit ? <div>&nbsp;</div> : <BackButton onClick={() => setIsCreatingEvent(false)} />
-                }
+                actions={<BackButton onClick={() => setIsCreatingEvent(false)} />}
               />
             );
 
@@ -201,7 +197,7 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, journeyId, onClose }) =
                   onEdit={() => setEditingEventId(event?.nameID)}
                   canDelete={privileges.canDeleteEvents}
                   onDelete={() => setDeletingEvent(event)}
-                  actions={<BackButton onClick={() => navigate(CALENDAR_PATH)} />}
+                  actions={<BackButton onClick={() => navigate(`${EntityPageSection.Dashboard}/calendar`)} />}
                 />
               );
             }

@@ -1,9 +1,32 @@
-query JourneyPrivileges($spaceId: UUID_NAMEID!) {
-  space(ID: $spaceId)  {
+query JourneyPrivileges(
+  $spaceId: UUID_NAMEID = "00000000-0000-0000-0000-000000000000"
+  $includeSpace: Boolean = false
+  $includeChallenge: Boolean = false
+  $includeOpportunity: Boolean = false
+  $challengeId: UUID = "00000000-0000-0000-0000-000000000000"
+  $opportunityId: UUID = "00000000-0000-0000-0000-000000000000"
+) {
+  space(ID: $spaceId) @include(if: $includeSpace) {
     id
     authorization {
       id
       myPrivileges
+    }
+  }
+  lookup {
+    challenge(ID: $challengeId) @include(if: $includeChallenge) {
+      id
+      authorization {
+        id
+        myPrivileges
+      }
+    }
+    opportunity(ID: $opportunityId) @include(if: $includeOpportunity) {
+      id
+      authorization {
+        id
+        myPrivileges
+      }
     }
   }
 }

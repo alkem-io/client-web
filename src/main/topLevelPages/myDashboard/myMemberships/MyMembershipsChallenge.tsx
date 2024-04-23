@@ -6,7 +6,7 @@ import JourneyCardHorizontal, {
 import GridItem from '../../../../core/ui/grid/GridItem';
 import { AuthorizationPrivilege, CommunityRole } from '../../../../core/apollo/generated/graphql-schema';
 import { Identifiable } from '../../../../core/utils/Identifiable';
-import { useMyMembershipsSubspaceQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { useMyMembershipsChallengeQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import isJourneyMember from '../../../../domain/journey/utils/isJourneyMember';
 
 interface MyMembershipsChallengeProps {
@@ -23,9 +23,9 @@ interface MyMembershipsChallengeProps {
 const MyMembershipsChallenge = ({ challenge }: MyMembershipsChallengeProps) => {
   const canReadChallenge = challenge.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Read);
 
-  const { data, loading } = useMyMembershipsSubspaceQuery({
+  const { data, loading } = useMyMembershipsChallengeQuery({
     variables: {
-      subspaceId: challenge.id,
+      challengeId: challenge.id,
     },
     skip: !canReadChallenge,
   });
@@ -33,8 +33,8 @@ const MyMembershipsChallenge = ({ challenge }: MyMembershipsChallengeProps) => {
   const hydratedChallenge = useMemo(() => {
     return {
       ...challenge,
-      ...data?.space!,
-      opportunities: data?.space.subspaces?.filter(isJourneyMember),
+      ...data?.lookup.challenge!,
+      opportunities: data?.lookup.challenge?.opportunities?.filter(isJourneyMember),
     };
   }, [challenge, data]);
 
@@ -52,16 +52,16 @@ const MyMembershipsChallenge = ({ challenge }: MyMembershipsChallengeProps) => {
     );
   }
 
-  if (!data?.space) {
+  if (!data?.lookup.challenge) {
     return null; // Challenge not found, unlikely but possible
   }
 
   return (
     <GridItem columns={4}>
       <Gutters disablePadding>
-        <JourneyCardHorizontal journey={hydratedChallenge} journeyTypeName="subspace" />
-        {hydratedChallenge.subspaces?.map(opportunity => (
-          <JourneyCardHorizontal journey={opportunity} journeyTypeName="subsubspace" />
+        <JourneyCardHorizontal journey={hydratedChallenge} journeyTypeName="challenge" />
+        {hydratedChallenge.opportunities?.map(opportunity => (
+          <JourneyCardHorizontal journey={opportunity} journeyTypeName="opportunity" />
         ))}
       </Gutters>
     </GridItem>

@@ -1,6 +1,6 @@
 import React, { ComponentType, MouseEventHandler, PropsWithChildren } from 'react';
 import RouterLink from '../link/RouterLink';
-import { ListItemIcon, ListItemText, MenuItem, SvgIconProps, TypographyProps } from '@mui/material';
+import { ListItemIcon, ListItemText, MenuItem, SvgIconProps } from '@mui/material';
 import { gutters } from '../grid/utils';
 import { BlockSectionTitle } from '../typography';
 import visibleOnFocus from '../keyboardNavigation/visibleOnFocus';
@@ -10,10 +10,7 @@ interface NavigatableMenuItemProps {
   route?: string;
   onClick?: MouseEventHandler;
   tabOnly?: boolean;
-  typographyComponent?: ComponentType<TypographyProps>;
 }
-
-const DefaultTypography = props => <BlockSectionTitle textTransform="uppercase" {...props} />;
 
 const NavigatableMenuItem = ({
   iconComponent: Icon,
@@ -21,21 +18,16 @@ const NavigatableMenuItem = ({
   onClick,
   tabOnly = false,
   children,
-  typographyComponent: Typography = DefaultTypography,
 }: PropsWithChildren<NavigatableMenuItemProps>) => {
   const menuItemProps = route ? { component: RouterLink, to: route, blank: false } : {};
 
   return (
-    <MenuItem
-      {...menuItemProps}
-      onClick={onClick}
-      sx={visibleOnFocus({ skip: !tabOnly })({ paddingX: gutters(), textTransform: 'none' })}
-    >
+    <MenuItem {...menuItemProps} onClick={onClick} sx={visibleOnFocus({ skip: !tabOnly })({ paddingX: gutters() })}>
       <ListItemIcon>
-        <Icon fontSize="small" color="primary" />
+        <Icon fontSize="small" />
       </ListItemIcon>
       <ListItemText disableTypography>
-        <Typography>{children}</Typography>
+        <BlockSectionTitle textTransform="uppercase">{children}</BlockSectionTitle>
       </ListItemText>
     </MenuItem>
   );

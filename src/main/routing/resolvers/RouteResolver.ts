@@ -1,37 +1,17 @@
 import { useUrlParams } from '../../../core/routing/useUrlParams';
 import { useCalloutIdQuery, useJourneyRouteResolverQuery } from '../../../core/apollo/generated/apollo-hooks';
 import { getJourneyTypeName, JourneyTypeName } from '../../../domain/journey/JourneyTypeName';
-import { takeWhile } from 'lodash';
-import { useMemo } from 'react';
 
 enum RouteType {
   Journey = 'Journey',
 }
 
 interface JourneyRouteParams {
+  spaceId?: string;
+  challengeId?: string;
+  opportunityId?: string;
   type: RouteType.Journey;
   journeyId: string | undefined;
-  journeyPath: JourneyPath;
-  journeyLevel: JourneyLevel | -1; // TODO not sure maybe remove as well, can be calculated from journeyPath
-  /**
-   * @deprecated
-   * use journeyId or journeyPath instead
-   */
-  spaceId?: string;
-  /**
-   * @deprecated
-   * use journeyId or journeyPath instead
-   */
-  subSpaceId?: string;
-  /**
-   * @deprecated
-   * use journeyId or journeyPath instead
-   */
-  subSubSpaceId?: string;
-  /**
-   * @deprecated
-   * introduce type JourneyLevel = 0 | 1 | 2 instead
-   */
   journeyTypeName: JourneyTypeName;
 }
 
@@ -51,71 +31,55 @@ type LazyParams<Params extends {}> = {
 
 type RouteParams = RouteResolverState & (LazyParams<JourneyRouteParams> | LazyParams<JourneyCalloutRouteParams>);
 
-export type JourneyLevel = 0 | 1 | 2;
+// type JourneyLevel = 0 | 1 | 2;
 
-export type JourneyPath = [] | [string] | [string, string] | [string, string, string];
+// const JOURNEY_PARAM_NESTING: (keyof JourneyLocation)[] = ['spaceNameId', 'challengeNameId', 'opportunityNameId'];
 
-interface JourneyLocation {
-  spaceNameId: string | undefined;
-  subspaceNameId: string | undefined;
-  subsubspaceNameId: string | undefined;
-}
-
-const JOURNEY_PARAM_NESTING: (keyof JourneyLocation)[] = ['spaceNameId', 'subspaceNameId', 'subsubspaceNameId'];
-
-const getJourneyLevel = (urlParams: Partial<JourneyLocation>): JourneyLevel | -1 => {
-  return (takeWhile(JOURNEY_PARAM_NESTING, param => urlParams[param]).length - 1) as JourneyLevel | -1;
-};
+// const getJourneyLevel = (urlParams: Partial<JourneyLocation>): JourneyLevel | -1 => {
+//   const journeyTypeName = getJourneyTypeName(urlParams);
+//   return takeWhile(JOURNEY_PARAM_NESTING, (param) => urlParams[param]).length - 1 as JourneyLevel | -1;
+// };
 
 export const useRouteResolver = (): RouteParams => {
-  const { spaceNameId, subspaceNameId, subsubspaceNameId, calloutNameId } = useUrlParams();
+  const { spaceNameId, challengeNameId, opportunityNameId, calloutNameId } = useUrlParams();
 
   const { data, loading: loadingJourney } = useJourneyRouteResolverQuery({
     variables: {
       spaceNameId: spaceNameId!,
-      challengeNameId: subspaceNameId,
-      opportunityNameId: subsubspaceNameId,
-      includeChallenge: !!subspaceNameId,
-      includeOpportunity: !!subsubspaceNameId,
+      challengeNameId,
+      opportunityNameId,
+      includeChallenge: !!challengeNameId,
+      includeOpportunity: !!opportunityNameId,
     },
     skip: !spaceNameId,
   });
 
-  const journeyLevel = getJourneyLevel({ spaceNameId, subspaceNameId, subsubspaceNameId });
-  const journeyLength = journeyLevel + 1;
-  const journeyPath = useMemo(
-    () =>
-      (data
-        ? [data?.space.id, data?.space.subspace?.id, data?.space.subspace?.subspace?.id].slice(0, journeyLength)
-        : []) as JourneyPath,
-    [data, journeyLength]
-  );
-
   const resolvedJourney: JourneyRouteParams = {
     spaceId: data?.space.id,
-    subSpaceId: data?.space.subspace?.id,
-    subSubSpaceId: data?.space.subspace?.subspace?.id,
+    challengeId: data?.space.challenge?.id,
+    opportunityId: data?.space.opportunity?.id,
     type: RouteType.Journey,
-    journeyId: data?.space.subspace?.subspace?.id ?? data?.space.subspace?.id ?? data?.space.id,
-    journeyTypeName: getJourneyTypeName({
-      spaceNameId,
-      challengeNameId: subspaceNameId,
-      opportunityNameId: subsubspaceNameId,
-    })!,
-    journeyLevel: getJourneyLevel({ spaceNameId, subspaceNameId, subsubspaceNameId }),
-    journeyPath,
+    journeyId: data?.space.opportunity?.id ?? data?.space.challenge?.id ?? data?.space.id,
+    journeyTypeName: getJourneyTypeName({ spaceNameId, challengeNameId, opportunityNameId })!,
   };
 
   const { data: calloutData, loading: loadingCallout } = useCalloutIdQuery({
     variables: {
       calloutNameId: calloutNameId!,
-      spaceId: resolvedJourney.subSubSpaceId ?? resolvedJourney.subSpaceId ?? resolvedJourney.spaceId!,
+      spaceId: resolvedJourney.spaceId,
+      challengeId: resolvedJourney.challengeId,
+      opportunityId: resolvedJourney.opportunityId,
+      isSpace: resolvedJourney.journeyTypeName === 'space',
+      isChallenge: resolvedJourney.journeyTypeName === 'challenge',
+      isOpportunity: resolvedJourney.journeyTypeName === 'opportunity',
     },
     skip: !resolvedJourney.journeyId || !calloutNameId,
   });
 
   const collaboration =
-    calloutData?.space?.collaboration ?? calloutData?.space?.collaboration ?? calloutData?.space?.collaboration;
+    calloutData?.lookup.opportunity?.collaboration ??
+    calloutData?.lookup.challenge?.collaboration ??
+    calloutData?.space?.collaboration;
 
   const calloutId = collaboration?.callouts?.[0]?.id;
 

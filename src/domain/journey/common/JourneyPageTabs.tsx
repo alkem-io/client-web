@@ -104,7 +104,7 @@ const JourneyPageTabs: FC<EntityPageTabsProps> = ({
   const navigationBackgroundColor = getEntityColor(theme, entityTypeName);
   const navigationForegroundColor =
     /*
-    entityTypeName === 'opportunity' ? theme.palette.primary.main : */ theme.palette.common.white;
+    entityTypeName === 'opportunity' ? theme.palette.space.main : */ theme.palette.common.white;
 
   const shareDialog = shareUrl && (
     <ShareDialog

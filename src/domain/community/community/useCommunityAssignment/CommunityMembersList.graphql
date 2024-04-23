@@ -4,10 +4,8 @@ query CommunityMembersList(
   $includeSpaceHost: Boolean = false
 ) {
   space(ID: $spaceId) @include(if: $includeSpaceHost) {
-    account {
-      host {
-        ...OrganizationDetails
-      }
+    host {
+      ...OrganizationDetails
     }
   }
   lookup {

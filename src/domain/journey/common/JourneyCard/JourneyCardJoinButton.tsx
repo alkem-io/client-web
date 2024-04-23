@@ -6,8 +6,8 @@ import ApplicationButtonContainer from '../../../community/application/container
 import provideStaticProps from '../../../../core/utils/provideStaticProps';
 
 interface JourneyCardJoinButtonProps {
-  subspaceId?: string;
-  subspaceName?: string;
+  challengeId?: string;
+  challengeName?: string;
 }
 
 const ButtonNarrowOutlined = provideStaticProps(ButtonNarrow, { variant: 'outlined' }, { override: true });
@@ -25,7 +25,7 @@ const JourneyCardJoinButton = (props: JourneyCardJoinButtonProps) => {
             component={ButtonNarrowOutlined as typeof Button}
             {...applicationButtonProps}
             loading={loading}
-            journeyTypeName={props.subspaceId ? 'subspace' : 'space'}
+            journeyTypeName={props.challengeId ? 'challenge' : 'space'}
           />
         );
       }}

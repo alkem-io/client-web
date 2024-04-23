@@ -13,14 +13,10 @@ import AltToggle from '../../../../core/ui/forms/AltToggle/AltToggle';
 import MultipleSelect from '../../../../core/ui/search/MultipleSelect';
 import { Theme } from '@mui/material/styles';
 import { gutters } from '../../../../core/ui/grid/utils';
-import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
-import Loading from '../../../../core/ui/loading/Loading';
 
 interface CommunityContributorsBlockWideProps {
   users: ContributorCardSquareProps[] | undefined;
   organizations: ContributorCardSquareProps[] | undefined;
-  isDialogView?: boolean;
-  isLoading?: boolean;
 }
 
 const config = [
@@ -34,12 +30,7 @@ const config = [
   },
 ] as const;
 
-const CommunityContributorsBlockWide = ({
-  users,
-  organizations,
-  isDialogView = false,
-  isLoading = false,
-}: CommunityContributorsBlockWideProps) => {
+const CommunityContributorsBlockWide = ({ users, organizations }: CommunityContributorsBlockWideProps) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const { t } = useTranslation();
@@ -53,52 +44,6 @@ const CommunityContributorsBlockWide = ({
   }));
 
   const isSmallScreen = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
-
-  if (isLoading) {
-    return <Loading text={t('common.loading')} />;
-  }
-
-  const contributorTypeToggle = () => (
-    <AltToggle
-      value={contributorType}
-      options={contributorTypeToggleOptions}
-      onChange={setContributorType}
-      sx={{ height: gutters() }}
-      aria-label={t('pages.generic.sections.community.switchMode')}
-    />
-  );
-
-  if (isDialogView) {
-    return (
-      <PageContentBlock>
-        <PageContentBlockHeader
-          title={''}
-          actions={
-            <MultipleSelect
-              onChange={onFilterChange}
-              value={filter}
-              minLength={2}
-              containerProps={{
-                marginLeft: theme => theme.spacing(2),
-              }}
-              size="xsmall"
-              inlineTerms
-            />
-          }
-        >
-          {contributorTypeToggle()}
-        </PageContentBlockHeader>
-        <CommunityContributorsBlockWideContent
-          users={users}
-          organizations={organizations}
-          contributorType={contributorType}
-          filter={filter}
-          nested
-          compactView
-        />
-      </PageContentBlock>
-    );
-  }
 
   return (
     <>
@@ -119,7 +64,13 @@ const CommunityContributorsBlockWide = ({
             />
           }
         >
-          {contributorTypeToggle()}
+          <AltToggle
+            value={contributorType}
+            options={contributorTypeToggleOptions}
+            onChange={setContributorType}
+            sx={{ height: gutters() }}
+            aria-label={t('pages.generic.sections.community.switchMode')}
+          />
         </PageContentBlockHeaderWithDialogAction>
         <CommunityContributorsBlockWideContent
           users={users}

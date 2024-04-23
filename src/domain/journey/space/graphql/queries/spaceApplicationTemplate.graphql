@@ -4,12 +4,13 @@ query spaceApplicationTemplate($spaceId: UUID_NAMEID!) {
     community {
       id
       applicationForm {
+        id
         description
         questions {
           required
           question
-          sortOrder
           explanation
+          sortOrder
           maxLength
         }
       }

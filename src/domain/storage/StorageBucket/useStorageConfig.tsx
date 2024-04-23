@@ -1,3 +1,4 @@
+import { JourneyTypeName } from '../../journey/JourneyTypeName';
 import {
   useCalloutPostStorageConfigQuery,
   useCalloutStorageConfigQuery,
@@ -33,14 +34,16 @@ interface UseStorageConfigOptionsBase {
   skip?: boolean;
 }
 
-interface UseStorageConfigOptionsSpace extends UseStorageConfigOptionsBase {
-  spaceId: string | undefined;
+interface UseStorageConfigOptionsJourney extends UseStorageConfigOptionsBase {
+  journeyId: string | undefined;
+  journeyTypeName: JourneyTypeName;
   locationType: 'journey';
 }
 
 interface UseStorageConfigOptionsCallout extends UseStorageConfigOptionsBase {
   calloutId: string;
-  journeyId: string;
+  journeyId: string | undefined;
+  journeyTypeName: JourneyTypeName;
   locationType: 'callout';
 }
 
@@ -75,7 +78,7 @@ interface UseStorageConfigOptionsPlatform extends UseStorageConfigOptionsBase {
 }
 
 export type StorageConfigOptions =
-  | UseStorageConfigOptionsSpace
+  | UseStorageConfigOptionsJourney
   | UseStorageConfigOptionsUser
   | UseStorageConfigOptionsOrganization
   | UseStorageConfigOptionsCallout
@@ -89,12 +92,19 @@ export interface StorageConfigProvided {
 }
 
 const useStorageConfig = ({ locationType, skip, ...options }: StorageConfigOptions): StorageConfigProvided => {
-  const journeyOptions = options as UseStorageConfigOptionsSpace;
+  const journeyTypeName = 'journeyTypeName' in options ? options.journeyTypeName : undefined;
+
+  const journeyOptions = options as UseStorageConfigOptionsJourney;
   const { data: journeyStorageConfigData } = useJourneyStorageConfigQuery({
     variables: {
-      spaceId: journeyOptions.spaceId!,
+      spaceId: journeyOptions.journeyId,
+      challengeId: journeyOptions.journeyId,
+      opportunityId: journeyOptions.journeyId,
+      includeSpace: journeyTypeName === 'space',
+      includeChallenge: journeyTypeName === 'challenge',
+      includeOpportunity: journeyTypeName === 'opportunity',
     },
-    skip: skip || locationType !== 'journey' || !journeyOptions.spaceId,
+    skip: skip || locationType !== 'journey' || !journeyOptions.journeyId,
   });
 
   const calloutOptions = options as UseStorageConfigOptionsCallout;
@@ -149,7 +159,10 @@ const useStorageConfig = ({ locationType, skip, ...options }: StorageConfigOptio
     skip: skip || locationType !== 'platform',
   });
 
-  const journey = journeyStorageConfigData?.space;
+  const journey =
+    journeyStorageConfigData?.lookup.opportunity ??
+    journeyStorageConfigData?.lookup.challenge ??
+    journeyStorageConfigData?.space;
 
   const callout = calloutStorageConfigData?.lookup.callout;
 

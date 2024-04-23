@@ -70,8 +70,8 @@ export const mapApiDataToContributionItem = <Incoming extends JourneyLocationApi
   return {
     ...apiData,
     spaceId: spaceID,
-    subspaceId: challengeID,
-    subsubspaceId: opportunityID,
+    challengeId: challengeID,
+    opportunityId: opportunityID,
   };
 };
 

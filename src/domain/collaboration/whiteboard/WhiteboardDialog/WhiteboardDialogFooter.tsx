@@ -9,7 +9,7 @@ import { useAuthenticationContext } from '../../../../core/auth/authentication/h
 import { CommunityMembershipStatus, ContentUpdatePolicy } from '../../../../core/apollo/generated/graphql-schema';
 import { formatTimeElapsed } from '../../../shared/utils/formatTimeElapsed';
 import { useSpace } from '../../../journey/space/SpaceContext/useSpace';
-import { useSubSpace } from '../../../journey/subspace/hooks/useChallenge';
+import { useChallenge } from '../../../journey/challenge/hooks/useChallenge';
 import { useOpportunity } from '../../../journey/opportunity/hooks/useOpportunity';
 import { getJourneyTypeName } from '../../../journey/JourneyTypeName';
 import RouterLink from '../../../../core/ui/link/RouterLink';
@@ -73,12 +73,12 @@ const WhiteboardDialogFooter = ({
   const { isAuthenticated } = useAuthenticationContext();
 
   const spaceContext = useSpace();
-  const subspaceContext = useSubSpace();
-  const subsubspaceContext = useOpportunity();
+  const challengeContext = useChallenge();
+  const opportunityContext = useOpportunity();
 
   const journeyTypeName = getJourneyTypeName({
-    ...subsubspaceContext,
-    ...subspaceContext,
+    ...opportunityContext,
+    ...challengeContext,
     ...spaceContext,
   });
 
@@ -86,10 +86,10 @@ const WhiteboardDialogFooter = ({
     switch (journeyTypeName) {
       case 'space':
         return spaceContext.myMembershipStatus;
-      case 'subspace':
-        return subspaceContext.myMembershipStatus;
-      case 'subsubspace':
-        return subsubspaceContext.myMembershipStatus;
+      case 'challenge':
+        return challengeContext.myMembershipStatus;
+      case 'opportunity':
+        return opportunityContext.myMembershipStatus;
     }
   };
 
@@ -97,10 +97,10 @@ const WhiteboardDialogFooter = ({
     switch (journeyTypeName) {
       case 'space':
         return spaceContext.profile;
-      case 'subspace':
-        return subspaceContext.profile;
-      case 'subsubspace':
-        return subsubspaceContext.profile;
+      case 'challenge':
+        return challengeContext.profile;
+      case 'opportunity':
+        return opportunityContext.profile;
     }
   };
 

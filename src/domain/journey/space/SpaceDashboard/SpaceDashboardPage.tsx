@@ -9,6 +9,7 @@ import useBackToParentPage from '../../../../core/routing/deprecated/useBackToPa
 import SpacePageLayout from '../layout/SpacePageLayout';
 import SpaceDashboardView from './SpaceDashboardView';
 import CalendarDialog from '../../../timeline/calendar/CalendarDialog';
+import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import JourneyAboutDialog from '../../common/JourneyAboutDialog/JourneyAboutDialog';
 import { IconButton } from '@mui/material';
 import { Close } from '@mui/icons-material';
@@ -27,10 +28,16 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
 
   const [backToDashboard] = useBackToParentPage(`${currentPath.pathname}/dashboard`);
 
-  const { spaceId, journeyPath } = useRouteResolver();
+  const { spaceNameId } = useUrlParams();
+
+  const { spaceId } = useRouteResolver();
+
+  if (!spaceNameId) {
+    throw new Error('Param :spaceNameId is missing');
+  }
 
   return (
-    <SpacePageLayout journeyPath={journeyPath} currentSection={EntityPageSection.Dashboard}>
+    <SpacePageLayout currentSection={EntityPageSection.Dashboard}>
       <SpaceDashboardContainer spaceId={spaceId}>
         {({ callouts, dashboardNavigation, ...entities }, state) => (
           <>
@@ -41,6 +48,7 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
               displayName={entities.space?.profile.displayName}
               dashboardNavigation={dashboardNavigation}
               dashboardNavigationLoading={state.loading}
+              spaceVisibility={entities.space?.account.license.visibility}
               loading={state.loading}
               communityId={entities.space?.community?.id}
               communityReadAccess={entities.permissions.communityReadAccess}
@@ -55,7 +63,6 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
               callouts={callouts}
               topCallouts={entities.topCallouts}
               journeyTypeName="space"
-              myMembershipStatus={entities.space?.community?.myMembershipStatus}
               shareUpdatesUrl={buildUpdatesUrl(entities.space?.profile.url ?? '')}
             />
             <CommunityUpdatesDialog
@@ -71,7 +78,12 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
               dialogContent={SpaceContributorsDialogContent}
             />
             {entities.permissions.timelineReadAccess && (
-              <CalendarDialog open={dialog === 'calendar'} onClose={backToDashboard} journeyId={spaceId} />
+              <CalendarDialog
+                open={dialog === 'calendar'}
+                onClose={backToDashboard}
+                journeyId={spaceId}
+                journeyTypeName="space"
+              />
             )}
             <JourneyAboutDialog
               open={dialog === 'about'}

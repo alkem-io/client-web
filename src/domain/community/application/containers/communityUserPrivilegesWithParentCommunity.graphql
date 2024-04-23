@@ -1,14 +1,13 @@
-query communityUserPrivilegesWithParentCommunity($spaceId: UUID_NAMEID!) {
-  space(ID: $spaceId) {
+query communityUserPrivilegesWithParentCommunity(
+  $spaceId: UUID_NAMEID = "00000000-0000-0000-0000-000000000000"
+  $challengeId: UUID = "00000000-0000-0000-0000-000000000000"
+  $opportunityId: UUID = "00000000-0000-0000-0000-000000000000"
+  $includeSpaceCommunity: Boolean = false
+  $includeChallenge: Boolean = false
+  $includeOpportunity: Boolean = false
+) {
+  space(ID: $spaceId) @include(if: $includeSpaceCommunity) {
     id
-    profile {
-      id
-      url
-    }
-    authorization {
-      id
-      myPrivileges
-    }
     community {
       id
       myMembershipStatus
@@ -16,18 +15,54 @@ query communityUserPrivilegesWithParentCommunity($spaceId: UUID_NAMEID!) {
         id
         myPrivileges
       }
-      leadUsers: usersInRole(role: LEAD) {
+    }
+  }
+  lookup {
+    challenge(ID: $challengeId) @include(if: $includeChallenge) {
+      id
+      profile {
         id
-        profile {
+        url
+      }
+      authorization {
+        id
+        myPrivileges
+      }
+      community {
+        id
+        myMembershipStatus
+        authorization {
           id
-          displayName
-          avatar: visual(type: AVATAR) {
-            ...VisualUri
-          }
-          location {
+          myPrivileges
+        }
+      }
+    }
+    opportunity(ID: $opportunityId) @include(if: $includeOpportunity) {
+      id
+      authorization {
+        id
+        myPrivileges
+      }
+      community {
+        id
+        myMembershipStatus
+        authorization {
+          id
+          myPrivileges
+        }
+        leadUsers: usersInRole(role: LEAD) {
+          id
+          profile {
             id
-            country
-            city
+            displayName
+            avatar: visual(type: AVATAR) {
+              ...VisualUri
+            }
+            location {
+              id
+              country
+              city
+            }
           }
         }
       }

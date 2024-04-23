@@ -15,6 +15,7 @@ import { EntityPageSection } from '../../../../shared/layout/EntityPageSection';
 import { ActivityLogResultType } from '../../../../collaboration/activity/ActivityLog/ActivityComponent';
 import ShareButton from '../../../../shared/components/ShareDialog/ShareButton';
 import PageContent from '../../../../../core/ui/content/PageContent';
+import PageContentColumn from '../../../../../core/ui/content/PageContentColumn';
 import SeeMore from '../../../../../core/ui/content/SeeMore';
 import { JourneyTypeName } from '../../../JourneyTypeName';
 import DashboardCalendarSection from '../../../../shared/components/DashboardSections/DashboardCalendarSection';
@@ -32,8 +33,6 @@ import FullWidthButton from '../../../../../core/ui/button/FullWidthButton';
 import { InfoOutlined } from '@mui/icons-material';
 import RouterLink from '../../../../../core/ui/link/RouterLink';
 import { RECENT_ACTIVITIES_LIMIT_EXPANDED } from '../../journeyDashboard/constants';
-import InfoColumn from '../../../../../core/ui/content/InfoColumn';
-import ContentColumn from '../../../../../core/ui/content/ContentColumn';
 
 export interface JourneyDashboardViewProps
   extends EntityDashboardContributors,
@@ -123,7 +122,7 @@ const JourneyDashboardView = ({
   return (
     <PageContent>
       {ribbon}
-      <InfoColumn>
+      <PageContentColumn columns={4}>
         {welcome}
         <FullWidthButton
           startIcon={<InfoOutlined />}
@@ -162,11 +161,22 @@ const JourneyDashboardView = ({
             <SeeMore subject={t('common.contributors')} to={`${EntityPageSection.Dashboard}/contributors`} />
           </EntityDashboardContributorsSection>
         )}
-      </InfoColumn>
+        <CalloutsGroupView
+          callouts={callouts.groupedCallouts[CalloutGroupName.Home_1]}
+          canCreateCallout={callouts.canCreateCallout}
+          canCreateCalloutFromTemplate={callouts.canCreateCalloutFromTemplate}
+          loading={callouts.loading}
+          journeyTypeName={journeyTypeName}
+          calloutNames={callouts.calloutNames}
+          onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
+          onCalloutUpdate={callouts.refetchCallout}
+          groupName={CalloutGroupName.Home_1}
+        />
+      </PageContentColumn>
 
-      <ContentColumn>
+      <PageContentColumn columns={8}>
         <DashboardRecentContributionsBlock
-          halfWidth={(callouts.groupedCallouts[CalloutGroupName.Home]?.length ?? 0) > 0}
+          halfWidth={(callouts.groupedCallouts[CalloutGroupName.Home_2]?.length ?? 0) > 0}
           readUsersAccess={readUsersAccess}
           entityReadAccess={entityReadAccess}
           activitiesLoading={activityLoading}
@@ -176,7 +186,7 @@ const JourneyDashboardView = ({
           onActivitiesDialogOpen={() => fetchMoreActivities(RECENT_ACTIVITIES_LIMIT_EXPANDED)}
         />
         <CalloutsGroupView
-          callouts={callouts.groupedCallouts[CalloutGroupName.Home]}
+          callouts={callouts.groupedCallouts[CalloutGroupName.Home_2]}
           canCreateCallout={callouts.canCreateCallout}
           canCreateCalloutFromTemplate={callouts.canCreateCalloutFromTemplate}
           loading={callouts.loading}
@@ -184,7 +194,7 @@ const JourneyDashboardView = ({
           calloutNames={callouts.calloutNames}
           onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
           onCalloutUpdate={callouts.refetchCallout}
-          groupName={CalloutGroupName.Home}
+          groupName={CalloutGroupName.Home_2}
           blockProps={(callout, index) => {
             if (index === 0) {
               return {
@@ -193,7 +203,7 @@ const JourneyDashboardView = ({
             }
           }}
         />
-      </ContentColumn>
+      </PageContentColumn>
     </PageContent>
   );
 };

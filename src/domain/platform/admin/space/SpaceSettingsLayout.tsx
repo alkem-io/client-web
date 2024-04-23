@@ -1,9 +1,7 @@
 import React, { FC } from 'react';
-import { useTranslation } from 'react-i18next';
 import { SettingsSection } from '../layout/EntitySettingsLayout/constants';
 import { TabDefinition } from '../layout/EntitySettingsLayout/EntitySettingsTabs';
 import { useSpace } from '../../../journey/space/SpaceContext/useSpace';
-import RouterLink from '../../../../core/ui/link/RouterLink';
 import FlagOutlinedIcon from '@mui/icons-material/FlagOutlined';
 import WbIncandescentOutlinedIcon from '@mui/icons-material/WbIncandescentOutlined';
 import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
@@ -18,9 +16,6 @@ import { VisualName } from '../../../common/visual/constants/visuals.constants';
 import useInnovationHubJourneyBannerRibbon from '../../../innovationHub/InnovationHubJourneyBannerRibbon/useInnovationHubJourneyBannerRibbon';
 import SpacePageBanner from '../../../journey/space/layout/SpacePageBanner';
 import JourneyBreadcrumbs from '../../../journey/common/journeyBreadcrumbs/JourneyBreadcrumbs';
-import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
-import BackButton from '../../../../core/ui/actions/BackButton';
-import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 
 interface SpaceSettingsLayoutProps {
   currentTab: SettingsSection;
@@ -49,7 +44,7 @@ const tabs: TabDefinition<SettingsSection>[] = [
     icon: ForumOutlinedIcon,
   },
   {
-    section: SettingsSection.Subspaces,
+    section: SettingsSection.Challenges,
     route: 'challenges',
     icon: FlagOutlinedIcon,
   },
@@ -73,8 +68,6 @@ const tabs: TabDefinition<SettingsSection>[] = [
 const SpaceSettingsLayout: FC<SpaceSettingsLayoutProps> = props => {
   const entityAttrs = useSpace();
 
-  const { t } = useTranslation();
-
   const { spaceId, profile, loading } = useSpace();
 
   const visual = getVisualByType(VisualName.BANNER, profile?.visuals);
@@ -83,8 +76,6 @@ const SpaceSettingsLayout: FC<SpaceSettingsLayoutProps> = props => {
     spaceId,
     journeyTypeName: 'space',
   });
-
-  const { journeyPath } = useRouteResolver();
 
   return (
     <EntitySettingsLayout
@@ -102,17 +93,7 @@ const SpaceSettingsLayout: FC<SpaceSettingsLayoutProps> = props => {
         />
       }
       tabsComponent={SpaceTabs}
-      breadcrumbs={<JourneyBreadcrumbs journeyPath={journeyPath} settings />}
-      backButton={
-        <RouterLink
-          to={`${entityAttrs.profile.url}/${EntityPageSection.Dashboard}`}
-          sx={{ alignSelf: 'center', marginLeft: 'auto' }}
-        >
-          <BackButton variant="outlined" sx={{ textTransform: 'capitalize' }}>
-            {t('navigation.admin.settingsMenu.quit')}
-          </BackButton>
-        </RouterLink>
-      }
+      breadcrumbs={<JourneyBreadcrumbs settings />}
       {...entityAttrs}
       {...props}
     />

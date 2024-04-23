@@ -61,17 +61,14 @@ export const SpaceList: FC = () => {
         .map(space => ({
           ...searchableListItemMapper()(space),
           spaceId: space.id,
-          accountId: space.account.id,
-          nameId: space.nameID,
-          account: {
-            visibility: space.account.license.visibility,
-            hostId: space.account.host?.id,
-            features: Object.values(LicenseFeatureFlagName).reduce((acc, licenseFeature) => {
-              acc[licenseFeature] = licenseHasFeature(licenseFeature, space.account.license);
-              return acc;
-            }, {} as Record<LicenseFeatureFlagName, boolean>),
-            organizations,
-          },
+          visibility: space.account.license.visibility,
+          hostID: space.host?.id,
+          nameID: space.nameID,
+          features: Object.values(LicenseFeatureFlagName).reduce((acc, licenseFeature) => {
+            acc[licenseFeature] = licenseHasFeature(licenseFeature, space.account.license);
+            return acc;
+          }, {} as Record<LicenseFeatureFlagName, boolean>),
+          organizations,
         })) ?? []
     );
   }, [spacesData, organizations]);

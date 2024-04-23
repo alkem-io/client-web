@@ -11,18 +11,15 @@ import { VisualName } from '../../../common/visual/constants/visuals.constants';
 import useInnovationHubJourneyBannerRibbon from '../../../innovationHub/InnovationHubJourneyBannerRibbon/useInnovationHubJourneyBannerRibbon';
 import SpacePageBanner from './SpacePageBanner';
 import CommunityGuidelinesBlock from '../../../community/community/CommunityGuidelines/CommunityGuidelinesBlock';
-import { JourneyPath } from '../../../../main/routing/resolvers/RouteResolver';
 
 export interface SpacePageLayoutProps {
   currentSection: EntityPageSection;
   unauthorizedDialogDisabled?: boolean;
-  journeyPath: JourneyPath;
 }
 
 const SpacePageLayout = ({
   unauthorizedDialogDisabled = false,
   currentSection,
-  journeyPath,
   children,
 }: PropsWithChildren<SpacePageLayoutProps>) => {
   const { spaceId, communityId, profile, loading } = useSpace();
@@ -37,7 +34,7 @@ const SpacePageLayout = ({
   return (
     <EntityPageLayout
       currentSection={currentSection}
-      breadcrumbs={<JourneyBreadcrumbs journeyPath={journeyPath} />}
+      breadcrumbs={<JourneyBreadcrumbs />}
       pageBanner={
         <SpacePageBanner
           title={profile.displayName}
@@ -52,9 +49,10 @@ const SpacePageLayout = ({
       tabsComponent={SpaceTabs}
     >
       {children}
-      <JourneyUnauthorizedDialogContainer journeyId={spaceId} loading={loading}>
+      <JourneyUnauthorizedDialogContainer journeyId={spaceId} journeyTypeName="space" loading={loading}>
         {({ vision, ...props }) => (
           <JourneyUnauthorizedDialog
+            journeyTypeName="space"
             description={vision}
             disabled={unauthorizedDialogDisabled}
             leftColumnChildrenTop={<CommunityGuidelinesBlock communityId={communityId} />}
