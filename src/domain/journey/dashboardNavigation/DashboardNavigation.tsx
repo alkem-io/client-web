@@ -70,9 +70,9 @@ const DashboardNavigation = ({
   const tooltipPlacement = isMobile ? 'left' : 'right';
 
   // TODO receive journeyPath as argument
-  const pathToItem = findCurrentPath(dashboardNavigation, currentItemId);
+  const pathToItem = findCurrentPath(dashboardNavigationRoot, currentItemId);
   const currentLevel = pathToItem.length - 1;
-  const isTopLevel = currentLevel === -1;
+  const isTopLevel = currentLevel === 0;
 
   const itemRefs = useRef<Record<string, DashboardNavigationItemViewApi | null>>({}).current;
 
@@ -87,11 +87,13 @@ const DashboardNavigation = ({
     height: 0,
   });
 
+  const rootLevel = compact ? 0 : 1;
+
   // The only purpose of this method is to calculate the height of the content before expand/collapse transition is completed on an item.
   // If items aren't expandable/collapsible anymore, this method is not needed, just get the height of the content from the contentWrapperRef.
   const getContentHeight = () => {
     return Object.values(itemRefs).reduce((height, itemRef) => {
-      const bounds = itemRef?.level === 0 ? itemRef.getDimensions() : undefined;
+      const bounds = itemRef?.level === rootLevel ? itemRef.getDimensions() : undefined;
       return height + (bounds?.height ?? 0);
     }, 0);
   };
@@ -129,41 +131,50 @@ const DashboardNavigation = ({
     );
   };
 
-  useLayoutEffect(adjustViewport, [dashboardNavigation, currentItemId, isSnapped, hasHeightLimit, isTopLevel, compact]);
+  useLayoutEffect(adjustViewport, [
+    dashboardNavigationRoot,
+    currentItemId,
+    isSnapped,
+    hasHeightLimit,
+    isTopLevel,
+    compact,
+  ]);
 
   const contentTranslationX = (theme: Theme) =>
-    isSnapped && !isTopLevel && !compact ? gutters(-currentLevel * 2)(theme) : 0;
+    isSnapped && !isTopLevel && !compact ? gutters(-(currentLevel - 1) * 2)(theme) : 0;
   const contentTranslationY = () => `-${viewportSnap.top}px`;
   const contentWidth = (theme: Theme) =>
-    isSnapped && !isTopLevel ? `calc(100% + ${gutters(currentLevel * 2)(theme)})` : '100%';
+    isSnapped && !isTopLevel ? `calc(100% + ${gutters((currentLevel - 1) * 2)(theme)})` : '100%';
 
   const getItemProps = typeof itemProps === 'function' ? itemProps : () => itemProps;
 
   return (
-    <PageContentBlock disablePadding disableGap sx={compact ? { width: undefined } : undefined}>
-      <Collapse in={!compact && (!isSnapped || isTopLevel)}>
-        <RouterLink to={dashboardNavigationRoot?.url ?? ''}>
-          <PageContentBlockHeader
-            title={
-              <Tooltip title={<Caption>{dashboardNavigationRoot?.displayName}</Caption>}>
-                <Box component="span">{dashboardNavigationRoot?.displayName}</Box>
-              </Tooltip>
-            }
-            actions={
-              <Tooltip
-                title={<Caption>{t('components.dashboardNavigation.help')}</Caption>}
-                placement={tooltipPlacement}
-                arrow
-              >
-                <IconButton size="small" aria-label={t('components.dashboardNavigation.help')}>
-                  <HelpOutlineOutlined fontSize="small" />
-                </IconButton>
-              </Tooltip>
-            }
-            sx={{ padding: gutters() }}
-          />
-        </RouterLink>
-      </Collapse>
+    <PageContentBlock disablePadding disableGap>
+      {!compact && (
+        <Collapse in={!isSnapped || isTopLevel}>
+          <RouterLink to={dashboardNavigationRoot?.url ?? ''}>
+            <PageContentBlockHeader
+              title={
+                <Tooltip title={<Caption>{dashboardNavigationRoot?.displayName}</Caption>}>
+                  <Box component="span">{dashboardNavigationRoot?.displayName}</Box>
+                </Tooltip>
+              }
+              actions={
+                <Tooltip
+                  title={<Caption>{t('components.dashboardNavigation.help')}</Caption>}
+                  placement={tooltipPlacement}
+                  arrow
+                >
+                  <IconButton size="small" aria-label={t('components.dashboardNavigation.help')}>
+                    <HelpOutlineOutlined fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+              }
+              sx={{ padding: gutters() }}
+            />
+          </RouterLink>
+        </Collapse>
+      )}
       <Box height={viewportSnap.height} overflow="hidden" sx={{ transition: 'height 0.3s ease-in-out' }}>
         <Box
           ref={contentWrapperRef}
@@ -177,8 +188,9 @@ const DashboardNavigation = ({
             <DashboardNavigationItemView
               key={subspace.id}
               ref={itemRef(subspace.id)}
+              level={rootLevel}
               itemRef={itemRef}
-              current={currentItemId}
+              currentPath={pathToItem}
               tooltipPlacement={tooltipPlacement}
               onToggle={adjustViewport}
               compact={compact}
@@ -195,7 +207,7 @@ const DashboardNavigation = ({
           <Button
             startIcon={compact ? undefined : isSnapped ? <UnfoldMore /> : <UnfoldLess />}
             onClick={() => setIsSnapped(isExpanded => !isExpanded)}
-            sx={{ textTransform: 'none', minWidth: 0 }}
+            sx={{ textTransform: 'none', minWidth: 0, padding: 0.8 }}
           >
             {compact && (isSnapped ? <UnfoldMore /> : <UnfoldLess />)}
             {!compact && t(`components.dashboardNavigation.${isSnapped ? 'expand' : 'collapse'}` as const)}
@@ -210,7 +222,7 @@ const DashboardNavigation = ({
             <Button
               startIcon={!compact && <ExpandMore />}
               onClick={() => setHasHeightLimit(false)}
-              sx={{ textTransform: 'none', minWidth: 0 }}
+              sx={{ textTransform: 'none', minWidth: 0, padding: 0.8 }}
             >
               {compact && <ExpandMore />}
               {!compact && t('components.dashboardNavigation.showAll')}

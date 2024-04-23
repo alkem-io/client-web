@@ -6,15 +6,16 @@ import BadgeCardView from '../../../core/ui/list/BadgeCardView';
 import { Caption } from '../../../core/ui/typography';
 import JourneyAvatar from '../common/JourneyAvatar/JourneyAvatar';
 import RouterLink from '../../../core/ui/link/RouterLink';
-import { findCurrentPath, getIndentStyle } from './utils';
+import { getIndentStyle } from './utils';
 import { DashboardNavigationItem } from '../space/spaceDashboardNavigation/useSpaceDashboardNavigation';
 import { Identifiable } from '../../../core/utils/Identifiable';
 import DashboardNavigationAddSubspace from './DashboardNavigationAddSubspace';
-import { gutters } from '../../../core/ui/grid/utils';
+import { last } from 'lodash';
 
 export interface DashboardNavigationItemViewProps extends DashboardNavigationItem {
   tooltipPlacement?: TooltipProps['placement'];
-  current?: string;
+  currentPath: string[];
+  subspaceOfCurrent?: boolean;
   level?: number;
   onClick?: MouseEventHandler;
   onToggle?: (isExpanded: boolean) => void;
@@ -44,7 +45,8 @@ const DashboardNavigationItemView = forwardRef<DashboardNavigationItemViewApi, D
       avatar,
       private: isPrivate = false,
       tooltipPlacement,
-      current,
+      currentPath,
+      subspaceOfCurrent = false,
       level = 0,
       onClick,
       onToggle,
@@ -59,6 +61,8 @@ const DashboardNavigationItemView = forwardRef<DashboardNavigationItemViewApi, D
     const [isExpanded, setIsExpanded] = useState(true);
 
     const { t } = useTranslation();
+
+    const current = last(currentPath);
 
     const isCurrent = current === id;
 
@@ -76,7 +80,9 @@ const DashboardNavigationItemView = forwardRef<DashboardNavigationItemViewApi, D
 
     const childrenContainerRef = useRef<HTMLDivElement>();
 
-    const expandable = !compact && findCurrentPath(children, current).length === 0;
+    const includesCurrentItem = currentPath.includes(id);
+
+    const expandable = !compact && !includesCurrentItem;
 
     useImperativeHandle(
       ref,
@@ -111,6 +117,10 @@ const DashboardNavigationItemView = forwardRef<DashboardNavigationItemViewApi, D
     const hasCreateButton = !compact && canCreateSubspace && !!onCreateSubspace;
 
     const getItemProps = typeof itemProps === 'function' ? itemProps : () => itemProps;
+
+    if (compact && !(includesCurrentItem || subspaceOfCurrent)) {
+      return null;
+    }
 
     return (
       <>
@@ -155,7 +165,6 @@ const DashboardNavigationItemView = forwardRef<DashboardNavigationItemViewApi, D
           square
           sx={{
             ...getIndentStyle(level, compact),
-            width: compact ? gutters(3) : undefined,
             backgroundColor: isCurrent ? 'highlight.main' : undefined,
           }}
           onClick={onClick}
@@ -182,9 +191,10 @@ const DashboardNavigationItemView = forwardRef<DashboardNavigationItemViewApi, D
                   itemRef={itemRef}
                   level={level + 1}
                   tooltipPlacement={tooltipPlacement}
-                  current={current}
-                  onClick={onClick}
+                  currentPath={currentPath}
+                  subspaceOfCurrent={subspaceOfCurrent || isCurrent}
                   compact={compact}
+                  itemProps={itemProps}
                   {...child}
                   {...getItemProps(child)}
                 />

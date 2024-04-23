@@ -7,6 +7,7 @@ import DashboardNavigation from '../../domain/journey/dashboardNavigation/Dashbo
 import { DashboardNavigationItem } from '../../domain/journey/space/spaceDashboardNavigation/useSpaceDashboardNavigation';
 import { MouseEventHandler, useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import Gutters from '../../core/ui/grid/Gutters';
 
 const loremIpsum =
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.';
@@ -76,7 +77,7 @@ const dashboardNavigation: DashboardNavigationItem = {
 };
 
 const DashboardNavigationDemo = () => {
-  const [currentSpaceId, setCurrentSpaceId] = useState<string>();
+  const [currentSpaceId, setCurrentSpaceId] = useState<string>('space_0');
 
   const getItemProps = (item: DashboardNavigationItem) => {
     return {
@@ -88,7 +89,7 @@ const DashboardNavigationDemo = () => {
 
   const handleClickOnSpace: MouseEventHandler = ({ target }) => {
     if (target['parentElement']?.['parentElement']?.['parentElement']?.['href']?.endsWith(pathname)) {
-      setCurrentSpaceId(undefined);
+      setCurrentSpaceId('space_0');
     }
   };
 
@@ -105,12 +106,14 @@ const DashboardNavigationDemo = () => {
           </PageContentBlock>
         </PageContentColumn>
         <PageContentColumn columns={1}>
-          <DashboardNavigation
-            dashboardNavigation={dashboardNavigation}
-            currentItemId={currentSpaceId}
-            itemProps={getItemProps}
-            compact
-          />
+          <Gutters disablePadding alignItems="center">
+            <DashboardNavigation
+              dashboardNavigation={dashboardNavigation}
+              currentItemId={currentSpaceId}
+              itemProps={getItemProps}
+              compact
+            />
+          </Gutters>
         </PageContentColumn>
         <PageContentColumn columns={3}>
           <DashboardNavigation
