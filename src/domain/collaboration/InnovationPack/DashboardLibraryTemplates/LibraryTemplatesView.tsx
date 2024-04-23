@@ -54,31 +54,29 @@ const LibraryTemplatesView = ({
         onDialogClose={onDialogClose}
         expanded={expanded}
         actions={
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 1,
-              flexWrap: isSmallScreen ? 'wrap' : undefined,
-            }}
-          >
-            <TemplateTypeFilter
-              onChange={templateTypes =>
-                onFilterChange({ templateTypes: templateTypes, searchTerms: filter.searchTerms })
-              }
-              value={filter.templateTypes}
-            />
-            <MultipleSelect
-              onChange={terms => onFilterChange({ templateTypes: filter.templateTypes, searchTerms: terms })}
-              value={filter.searchTerms}
-              minLength={2}
-              size="xsmall"
-              containerProps={{ sx: { flexGrow: isMobile ? 1 : undefined } }}
-              inlineTerms
-            />
-          </Box>
+          <MultipleSelect
+            onChange={terms => onFilterChange({ templateTypes: filter.templateTypes, searchTerms: terms })}
+            value={filter.searchTerms}
+            minLength={2}
+            size="xsmall"
+            containerProps={{ sx: { flexGrow: isMobile ? 1 : undefined } }}
+            inlineTerms
+          />
         }
       />
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 1,
+          flexWrap: isSmallScreen ? 'wrap' : undefined,
+        }}
+      >
+        <TemplateTypeFilter
+          onChange={templateTypes => onFilterChange({ templateTypes: templateTypes, searchTerms: filter.searchTerms })}
+          value={filter.templateTypes}
+        />
+      </Box>
       {templates && (
         <ScrollableCardsLayoutContainer minHeight={0} orientation={expanded ? 'vertical' : undefined} sameHeight>
           {templates.map(template => (

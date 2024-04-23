@@ -14,13 +14,14 @@ import ButtonWithTooltip from '../../../../core/ui/button/ButtonWithTooltip';
 import { ButtonProps } from '@mui/material';
 
 interface SubspaceHomeViewProps {
+  journeyId: string | undefined;
   collaborationId: string | undefined;
   innovationFlowStates: InnovationFlowState[] | undefined;
   currentInnovationFlowState: string | undefined;
   selectedInnovationFlowState: string | undefined;
   onSelectInnovationFlowState: (state: InnovationFlowState) => void;
   canEditInnovationFlow: boolean | undefined;
-  groupedCallouts: Record<CalloutGroupName, TypedCallout[] | undefined>;
+  selectedFlowStateCallouts: TypedCallout[] | undefined;
   canCreateCallout: boolean;
   canCreateCalloutFromTemplate: boolean;
   calloutNames: string[];
@@ -47,13 +48,14 @@ const SettingsButton = (props: ButtonProps) => {
 };
 
 const SubspaceHomeView = ({
+  journeyId,
   collaborationId,
   innovationFlowStates,
   currentInnovationFlowState,
   selectedInnovationFlowState,
   onSelectInnovationFlowState,
   canEditInnovationFlow = false,
-  groupedCallouts,
+  selectedFlowStateCallouts,
   canCreateCallout,
   canCreateCalloutFromTemplate,
   calloutNames,
@@ -62,15 +64,6 @@ const SubspaceHomeView = ({
   refetchCallout,
   journeyTypeName,
 }: SubspaceHomeViewProps) => {
-  const filterCallouts = (callouts: TypedCallout[] | undefined) => {
-    return callouts?.filter(callout => {
-      if (!selectedInnovationFlowState) {
-        return true;
-      }
-      return callout.flowStates?.includes(selectedInnovationFlowState);
-    });
-  };
-
   const columns = useColumns();
 
   const isMobile = columns <= GRID_COLUMNS_MOBILE;
@@ -102,7 +95,8 @@ const SubspaceHomeView = ({
           ))}
       </SubspaceInnovationFlow>
       <CalloutsGroupView
-        callouts={filterCallouts(groupedCallouts[CalloutGroupName.Contribute])}
+        journeyId={journeyId}
+        callouts={selectedFlowStateCallouts}
         canCreateCallout={canCreateCallout}
         canCreateCalloutFromTemplate={canCreateCalloutFromTemplate}
         loading={loading}

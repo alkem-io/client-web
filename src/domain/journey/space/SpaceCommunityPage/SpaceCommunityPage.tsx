@@ -142,6 +142,7 @@ const SpaceCommunityPage = () => {
                 </DialogWithGrid>
               </PageContentBlock>
               <CalloutsGroupView
+                journeyId={spaceId}
                 callouts={callouts.groupedCallouts[CalloutGroupName.Community]}
                 canCreateCallout={callouts.canCreateCallout}
                 canCreateCalloutFromTemplate={callouts.canCreateCalloutFromTemplate}

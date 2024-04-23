@@ -176,6 +176,7 @@ const JourneyDashboardView = ({
           onActivitiesDialogOpen={() => fetchMoreActivities(RECENT_ACTIVITIES_LIMIT_EXPANDED)}
         />
         <CalloutsGroupView
+          journeyId={journeyId}
           callouts={callouts.groupedCallouts[CalloutGroupName.Home]}
           canCreateCallout={callouts.canCreateCallout}
           canCreateCalloutFromTemplate={callouts.canCreateCalloutFromTemplate}
