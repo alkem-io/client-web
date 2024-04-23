@@ -1,7 +1,12 @@
 import { useCallback } from 'react';
 import { WhiteboardFieldSubmittedValuesWithPreviewImages } from '../CalloutWhiteboardField/CalloutWhiteboardField';
 import { useUploadWhiteboardVisuals } from '../../../whiteboard/WhiteboardPreviewImages/WhiteboardPreviewImages';
-import { CalloutCreationType, CalloutCreationUtils, useCalloutCreation } from './useCalloutCreation';
+import {
+  CalloutCreationParams,
+  CalloutCreationType,
+  CalloutCreationUtils,
+  useCalloutCreation,
+} from './useCalloutCreation';
 import {
   CalloutType,
   CreateCalloutMutation,
@@ -28,9 +33,11 @@ export interface CalloutCreationUtilsWithPreviewImages extends Omit<CalloutCreat
   ) => Promise<CreateCalloutMutation['createCalloutOnCollaboration'] | undefined>;
 }
 
-export const useCalloutCreationWithPreviewImages = (initialOpened = false): CalloutCreationUtilsWithPreviewImages => {
+export const useCalloutCreationWithPreviewImages = (
+  options: CalloutCreationParams
+): CalloutCreationUtilsWithPreviewImages => {
   const { uploadVisuals } = useUploadWhiteboardVisuals();
-  const parentHook = useCalloutCreation(initialOpened);
+  const parentHook = useCalloutCreation(options);
 
   const handlePreviewImages = (callout: CalloutCreationTypeWithPreviewImages) => {
     if (callout.framing.whiteboard) {

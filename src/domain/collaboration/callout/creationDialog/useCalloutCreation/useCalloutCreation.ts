@@ -36,6 +36,11 @@ export interface CalloutCreationType {
   sendNotification?: boolean;
 }
 
+export interface CalloutCreationParams {
+  journeyId: string | undefined;
+  initialOpened?: boolean;
+}
+
 export interface CalloutCreationUtils {
   isCalloutCreationDialogOpen: boolean;
   handleCreateCalloutOpened: () => void;
@@ -46,10 +51,13 @@ export interface CalloutCreationUtils {
   loading: boolean;
 }
 
-export const useCalloutCreation = (initialOpened = false): CalloutCreationUtils => {
+export const useCalloutCreation = ({
+  journeyId,
+  initialOpened = false,
+}: CalloutCreationParams): CalloutCreationUtils => {
   const [isCalloutCreationDialogOpen, setIsCalloutCreationDialogOpen] = useState(initialOpened);
   const [isCreating, setIsCreating] = useState(false);
-  const { collaborationId, loading } = useCollaborationAuthorization();
+  const { collaborationId, loading } = useCollaborationAuthorization({ journeyId });
 
   const [createCallout] = useCreateCalloutMutation({
     update: (cache, { data }) => {

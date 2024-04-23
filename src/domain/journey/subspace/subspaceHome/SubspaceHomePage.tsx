@@ -113,10 +113,11 @@ const SubspaceHomePage = ({ dialog }: SubspaceHomePageProps) => {
             profile={subspace?.profile}
           >
             <SubspaceHomeView
+              journeyId={journeyId}
+              collaborationId={subspace?.collaboration.id}
               journeyTypeName={journeyTypeName}
               {...innovationFlow}
               {...callouts}
-              collaborationId={subspace?.collaboration.id}
             />
           </SubspacePageLayout>
           {directMessageDialog}
