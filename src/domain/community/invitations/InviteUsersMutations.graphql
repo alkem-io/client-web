@@ -14,6 +14,11 @@ mutation InviteExternalUser($email: String!, $communityId: UUID!, $message: Stri
     communityID: $communityId
     welcomeMessage: $message
   }) {
-    id
+    ... on InvitationExternal {
+      id
+    }
+    ... on Invitation {
+      id
+    }
   }
 }

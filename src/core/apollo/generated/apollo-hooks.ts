@@ -13287,7 +13287,12 @@ export const InviteExternalUserDocument = gql`
     inviteExternalUserForCommunityMembership(
       invitationData: { email: $email, communityID: $communityId, welcomeMessage: $message }
     ) {
-      id
+      ... on InvitationExternal {
+        id
+      }
+      ... on Invitation {
+        id
+      }
     }
   }
 `;
