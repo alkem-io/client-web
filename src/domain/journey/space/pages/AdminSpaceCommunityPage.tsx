@@ -1,4 +1,6 @@
 import React, { FC, useMemo } from 'react';
+import { Box, Button } from '@mui/material';
+import InnovationLibraryIcon from '../../../../main/topLevelPages/InnovationLibraryPage/InnovationLibraryIcon';
 import SpaceSettingsLayout from '../../../platform/admin/space/SpaceSettingsLayout';
 import { SettingsSection } from '../../../platform/admin/layout/EntitySettingsLayout/constants';
 import { SettingsPageProps } from '../../../platform/admin/layout/EntitySettingsLayout/types';
@@ -110,7 +112,27 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
           </Text>
           <CommunityApplicationForm communityId={communityId} />
         </PageContentBlockCollapsible>
-        <PageContentBlockCollapsible header={<BlockTitle>{t('community.communityGuidelines.title')}</BlockTitle>}>
+        <PageContentBlockCollapsible
+          header={<BlockTitle>{t('community.communityGuidelines.title')}</BlockTitle>}
+          primaryAction={
+            <Box marginLeft="auto">
+              {/* {canImportTemplates && ( */}
+              {true && (
+                <Button
+                  variant="outlined"
+                  onClick={event => {
+                    event.stopPropagation();
+                    // openImportTemplateDialog
+                  }}
+                  sx={{ marginRight: theme => theme.spacing(1) }}
+                  startIcon={<InnovationLibraryIcon />}
+                >
+                  {t('common.library')}
+                </Button>
+              )}
+            </Box>
+          }
+        >
           <CommunityGuidelines communityId={communityId} />
         </PageContentBlockCollapsible>
         <PageContentColumn columns={6}>
