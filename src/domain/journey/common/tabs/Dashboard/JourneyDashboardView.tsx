@@ -157,6 +157,7 @@ const JourneyDashboardView = ({
 
       <ContentColumn>
         <CalloutsGroupView
+          journeyId={journeyId}
           callouts={callouts.groupedCallouts[CalloutGroupName.Home]}
           canCreateCallout={callouts.canCreateCallout}
           canCreateCalloutFromTemplate={callouts.canCreateCalloutFromTemplate}

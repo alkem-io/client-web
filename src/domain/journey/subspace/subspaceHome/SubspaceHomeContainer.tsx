@@ -2,8 +2,8 @@ import { SimpleContainerProps } from '../../../../core/container/SimpleContainer
 import useInnovationFlowStates, {
   UseInnovationFlowStatesProvided,
 } from '../../../collaboration/InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
-import useCallouts, { UseCalloutsProvided } from '../../../collaboration/callout/useCallouts/useCallouts';
-import { SubspacePageSpaceFragment } from '../../../../core/apollo/generated/graphql-schema';
+import useCallouts, { TypedCallout, UseCalloutsProvided } from '../../../collaboration/callout/useCallouts/useCallouts';
+import { CalloutGroupName, SubspacePageSpaceFragment } from '../../../../core/apollo/generated/graphql-schema';
 import { JourneyTypeName } from '../../JourneyTypeName';
 import { useSubspacePageQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import useStateWithAsyncDefault from '../../../../core/utils/useStateWithAsyncDefault';
@@ -15,7 +15,7 @@ interface SubspaceHomeContainerProvided {
     selectedInnovationFlowState: string | undefined;
     onSelectInnovationFlowState: (state: InnovationFlowState) => void;
   };
-  callouts: UseCalloutsProvided;
+  callouts: UseCalloutsProvided & { selectedFlowStateCallouts: TypedCallout[] | undefined };
   subspace?: SubspacePageSpaceFragment;
 }
 
@@ -53,7 +53,25 @@ const SubspaceHomeContainer = ({ journeyId, journeyTypeName, children }: Subspac
     journeyTypeName,
   });
 
-  return <>{children({ innovationFlow, callouts, subspace: data?.space })}</>;
+  const selectedFlowStateCallouts = useMemo(() => {
+    const filterCallouts = (callouts: TypedCallout[] | undefined) => {
+      return callouts?.filter(callout => {
+        if (!selectedInnovationFlowState) {
+          return true;
+        }
+        return callout.flowStates?.includes(selectedInnovationFlowState);
+      });
+    };
+
+    return filterCallouts(callouts.groupedCallouts[CalloutGroupName.Contribute]);
+  }, [callouts.groupedCallouts, selectedInnovationFlowState]);
+
+  const providedCallouts = {
+    ...callouts,
+    selectedFlowStateCallouts,
+  };
+
+  return <>{children({ innovationFlow, callouts: providedCallouts, subspace: data?.space })}</>;
 };
 
 export default SubspaceHomeContainer;

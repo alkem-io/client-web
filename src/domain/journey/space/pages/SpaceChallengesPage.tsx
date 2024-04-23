@@ -92,6 +92,7 @@ const SpaceChallengesPage: FC<SpaceChallengesPageProps> = () => {
             }
             children={
               <CalloutsGroupView
+                journeyId={spaceId}
                 callouts={callouts.groupedCallouts[CalloutGroupName.Subspaces]}
                 canCreateCallout={callouts.canCreateCallout}
                 canCreateCalloutFromTemplate={callouts.canCreateCalloutFromTemplate}
