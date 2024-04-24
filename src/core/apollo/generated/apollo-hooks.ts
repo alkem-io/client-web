@@ -17742,6 +17742,16 @@ export const SpaceDashboardNavigationChallengesDocument = gql`
   query SpaceDashboardNavigationChallenges($spaceId: UUID_NAMEID!) {
     space(ID: $spaceId) {
       id
+      profile {
+        id
+        url
+        displayName
+        avatar: visual(type: CARD) {
+          id
+          uri
+          alternativeText
+        }
+      }
       subspaces {
         id
         profile {

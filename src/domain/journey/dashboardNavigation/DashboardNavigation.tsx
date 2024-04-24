@@ -1,5 +1,5 @@
 import { ExpandMore, HelpOutlineOutlined, UnfoldLess, UnfoldMore } from '@mui/icons-material';
-import { Box, Button, Collapse, IconButton, Skeleton, Tooltip, useMediaQuery } from '@mui/material';
+import { Box, Button, Collapse, IconButton, Tooltip, useMediaQuery } from '@mui/material';
 import { Theme } from '@mui/material/styles';
 import { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -18,19 +18,17 @@ import produce from 'immer';
 import RouterLink from '../../../core/ui/link/RouterLink';
 import { GUTTER_PX } from '../../../core/ui/grid/constants';
 import { findCurrentPath } from './utils';
-import DashboardNavigationAddSubspace from './DashboardNavigationAddSubspace';
 import { Identifiable } from '../../../core/utils/Identifiable';
 
 export interface DashboardNavigationProps {
-  spaceUrl: string | undefined;
-  displayName: string | undefined;
-  dashboardNavigation: DashboardNavigationItem[] | undefined;
+  dashboardNavigation: DashboardNavigationItem | undefined;
   loading?: boolean;
   currentItemId?: string;
   itemProps?:
     | Partial<DashboardNavigationItemViewProps>
     | ((item: DashboardNavigationItem) => Partial<DashboardNavigationItemViewProps>);
   onCreateSubspace?: (parent: Identifiable) => void;
+  compact?: boolean;
 }
 
 const VISIBLE_ROWS_WHEN_COLLAPSED = 6;
@@ -38,19 +36,20 @@ const VISIBLE_ROWS_WHEN_COLLAPSED = 6;
 const INITIAL_HEIGHT_LIMIT = GUTTER_PX * VISIBLE_ROWS_WHEN_COLLAPSED * 3;
 
 const DashboardNavigation = ({
-  spaceUrl,
-  displayName,
-  dashboardNavigation,
+  dashboardNavigation: dashboardNavigationRoot,
   loading = false,
   currentItemId,
   itemProps = () => ({}),
   onCreateSubspace,
+  compact = false,
 }: DashboardNavigationProps) => {
   const { t } = useTranslation();
 
-  const [isSnappedToCurrentSubspace, setIsSnappedToCurrentSubspace] = useState(true);
+  const [isSnapped, setIsSnapped] = useState(true);
 
   const [hasHeightLimit, setHasHeightLimit] = useState(true);
+
+  const dashboardNavigation = dashboardNavigationRoot?.children;
 
   const itemsCount = useMemo(() => {
     if (loading) {
@@ -71,10 +70,9 @@ const DashboardNavigation = ({
   const tooltipPlacement = isMobile ? 'left' : 'right';
 
   // TODO receive journeyPath as argument
-  const pathToItem = findCurrentPath(dashboardNavigation, currentItemId);
-
+  const pathToItem = findCurrentPath(dashboardNavigationRoot, currentItemId);
   const currentLevel = pathToItem.length - 1;
-  const isTopLevel = currentLevel === -1;
+  const isTopLevel = currentLevel === 0;
 
   const itemRefs = useRef<Record<string, DashboardNavigationItemViewApi | null>>({}).current;
 
@@ -89,11 +87,13 @@ const DashboardNavigation = ({
     height: 0,
   });
 
+  const rootLevel = compact ? 0 : 1;
+
   // The only purpose of this method is to calculate the height of the content before expand/collapse transition is completed on an item.
   // If items aren't expandable/collapsible anymore, this method is not needed, just get the height of the content from the contentWrapperRef.
   const getContentHeight = () => {
     return Object.values(itemRefs).reduce((height, itemRef) => {
-      const bounds = itemRef?.level === 0 ? itemRef.getDimensions() : undefined;
+      const bounds = itemRef?.level === rootLevel ? itemRef.getDimensions() : undefined;
       return height + (bounds?.height ?? 0);
     }, 0);
   };
@@ -101,7 +101,7 @@ const DashboardNavigation = ({
   const adjustViewport = () => {
     const itemRef = currentItemId && itemRefs[currentItemId];
 
-    if (!isSnappedToCurrentSubspace || !itemRef) {
+    if (!isSnapped || !itemRef) {
       setViewportSnap(snap =>
         produce(snap, snap => {
           const contentHeight = getContentHeight();
@@ -132,46 +132,49 @@ const DashboardNavigation = ({
   };
 
   useLayoutEffect(adjustViewport, [
-    dashboardNavigation,
+    dashboardNavigationRoot,
     currentItemId,
-    isSnappedToCurrentSubspace,
+    isSnapped,
     hasHeightLimit,
     isTopLevel,
+    compact,
   ]);
 
   const contentTranslationX = (theme: Theme) =>
-    isSnappedToCurrentSubspace && !isTopLevel ? gutters(-currentLevel * 2)(theme) : 0;
+    isSnapped && !isTopLevel && !compact ? gutters(-(currentLevel - 1) * 2)(theme) : 0;
   const contentTranslationY = () => `-${viewportSnap.top}px`;
   const contentWidth = (theme: Theme) =>
-    isSnappedToCurrentSubspace && !isTopLevel ? `calc(100% + ${gutters(currentLevel * 2)(theme)})` : '100%';
+    isSnapped && !isTopLevel ? `calc(100% + ${gutters((currentLevel - 1) * 2)(theme)})` : '100%';
 
   const getItemProps = typeof itemProps === 'function' ? itemProps : () => itemProps;
 
   return (
     <PageContentBlock disablePadding disableGap>
-      <Collapse in={!isSnappedToCurrentSubspace || isTopLevel}>
-        <RouterLink to={spaceUrl ?? ''}>
-          <PageContentBlockHeader
-            title={
-              <Tooltip title={<Caption>{displayName}</Caption>}>
-                <Box component="span">{displayName}</Box>
-              </Tooltip>
-            }
-            actions={
-              <Tooltip
-                title={<Caption>{t('components.dashboardNavigation.help')}</Caption>}
-                placement={tooltipPlacement}
-                arrow
-              >
-                <IconButton size="small" aria-label={t('components.dashboardNavigation.help')}>
-                  <HelpOutlineOutlined fontSize="small" />
-                </IconButton>
-              </Tooltip>
-            }
-            sx={{ padding: gutters() }}
-          />
-        </RouterLink>
-      </Collapse>
+      {!compact && (
+        <Collapse in={!isSnapped || isTopLevel}>
+          <RouterLink to={dashboardNavigationRoot?.url ?? ''}>
+            <PageContentBlockHeader
+              title={
+                <Tooltip title={<Caption>{dashboardNavigationRoot?.displayName}</Caption>}>
+                  <Box component="span">{dashboardNavigationRoot?.displayName}</Box>
+                </Tooltip>
+              }
+              actions={
+                <Tooltip
+                  title={<Caption>{t('components.dashboardNavigation.help')}</Caption>}
+                  placement={tooltipPlacement}
+                  arrow
+                >
+                  <IconButton size="small" aria-label={t('components.dashboardNavigation.help')}>
+                    <HelpOutlineOutlined fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+              }
+              sx={{ padding: gutters() }}
+            />
+          </RouterLink>
+        </Collapse>
+      )}
       <Box height={viewportSnap.height} overflow="hidden" sx={{ transition: 'height 0.3s ease-in-out' }}>
         <Box
           ref={contentWrapperRef}
@@ -181,53 +184,33 @@ const DashboardNavigation = ({
             transition: 'transform 0.3s ease-in-out, width 0.3s ease-in-out',
           }}
         >
-          {dashboardNavigation?.map(({ canCreateSubspace, ...subspace }) => {
-            if (loading) {
-              return <Skeleton key={subspace.id} />;
-            }
-            const isCurrent = subspace.id === currentItemId;
-            return (
-              <DashboardNavigationItemView
-                key={subspace.id}
-                ref={itemRef(subspace.id)}
-                visualUri={subspace.avatar?.uri}
-                current={isCurrent}
-                tooltipPlacement={tooltipPlacement}
-                onToggle={adjustViewport}
-                expandable={isTopLevel || !(isSnappedToCurrentSubspace && pathToItem.includes(subspace.id))}
-                {...subspace}
-                {...getItemProps(subspace)}
-              >
-                {canCreateSubspace && (
-                  <DashboardNavigationAddSubspace level={1} onClick={() => onCreateSubspace?.(subspace)} />
-                )}
-                {subspace.children?.map(childSubspace => (
-                  <DashboardNavigationItemView
-                    key={childSubspace.id}
-                    ref={itemRef(childSubspace.id)}
-                    visualUri={childSubspace.avatar?.uri}
-                    current={childSubspace.id === currentItemId}
-                    tooltipPlacement={tooltipPlacement}
-                    level={1}
-                    onToggle={adjustViewport}
-                    expandable={isTopLevel || !(isSnappedToCurrentSubspace && pathToItem.includes(childSubspace.id))}
-                    {...childSubspace}
-                    {...getItemProps(childSubspace)}
-                  />
-                ))}
-              </DashboardNavigationItemView>
-            );
-          })}
+          {(compact ? dashboardNavigationRoot && [dashboardNavigationRoot] : dashboardNavigation)?.map(subspace => (
+            <DashboardNavigationItemView
+              key={subspace.id}
+              ref={itemRef(subspace.id)}
+              level={rootLevel}
+              itemRef={itemRef}
+              currentPath={pathToItem}
+              tooltipPlacement={tooltipPlacement}
+              onToggle={adjustViewport}
+              compact={compact}
+              onCreateSubspace={onCreateSubspace}
+              itemProps={itemProps}
+              {...subspace}
+              {...getItemProps(subspace)}
+            />
+          ))}
         </Box>
       </Box>
-      {currentLevel !== -1 && (
+      {!isTopLevel && (
         <Actions padding={1} justifyContent="center">
           <Button
-            startIcon={isSnappedToCurrentSubspace ? <UnfoldMore /> : <UnfoldLess />}
-            onClick={() => setIsSnappedToCurrentSubspace(isExpanded => !isExpanded)}
-            sx={{ textTransform: 'none' }}
+            startIcon={compact ? undefined : isSnapped ? <UnfoldMore /> : <UnfoldLess />}
+            onClick={() => setIsSnapped(isExpanded => !isExpanded)}
+            sx={{ textTransform: 'none', minWidth: 0, padding: 0.8 }}
           >
-            {t(`components.dashboardNavigation.${isSnappedToCurrentSubspace ? 'expand' : 'collapse'}` as const)}
+            {compact && (isSnapped ? <UnfoldMore /> : <UnfoldLess />)}
+            {!compact && t(`components.dashboardNavigation.${isSnapped ? 'expand' : 'collapse'}` as const)}
           </Button>
         </Actions>
       )}
@@ -236,8 +219,13 @@ const DashboardNavigation = ({
           <Box height={gutters(0.5)} />
         ) : (
           <Actions padding={1} justifyContent="center">
-            <Button startIcon={<ExpandMore />} onClick={() => setHasHeightLimit(false)} sx={{ textTransform: 'none' }}>
-              {t('components.dashboardNavigation.showAll')}
+            <Button
+              startIcon={!compact && <ExpandMore />}
+              onClick={() => setHasHeightLimit(false)}
+              sx={{ textTransform: 'none', minWidth: 0, padding: 0.8 }}
+            >
+              {compact && <ExpandMore />}
+              {!compact && t('components.dashboardNavigation.showAll')}
             </Button>
           </Actions>
         ))}

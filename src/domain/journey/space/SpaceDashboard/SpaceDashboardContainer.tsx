@@ -28,7 +28,7 @@ import useSpaceDashboardNavigation, {
 
 export interface SpaceContainerEntities {
   space: SpacePageFragment | undefined;
-  dashboardNavigation: DashboardNavigationItem[] | undefined;
+  dashboardNavigation: DashboardNavigationItem | undefined;
   isPrivate: boolean | undefined;
   permissions: {
     canEdit: boolean;
