@@ -344,6 +344,7 @@
     "url": "URL",
     "sources": "Sources",
     "virtual-contributors": "VC",
+    "collaborationTool": "Collaboration tool",
     "genders": {
       "notSpecified": "not specified",
       "male": "male",
@@ -647,7 +648,6 @@
       "description": "We apologize, but the content you requested is not available. It may have been deleted, or you may not have the permission to access it, such as if it was put in draft mode."
     },
     "createFull": "Add collaboration tool",
-    "createShort": "Collaboration tool",
     "contributions": "{{count}} Contribution",
     "contributions_plural": "{{count}} Contributions",
     "draftNotice": "DRAFT - Only visible for admins",

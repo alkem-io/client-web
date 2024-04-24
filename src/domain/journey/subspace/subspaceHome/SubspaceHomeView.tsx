@@ -84,7 +84,7 @@ const SubspaceHomeView = ({
       }}
       onClick={handleCreateCalloutOpened}
     >
-      {t('callout.createShort')}
+      {t('common.collaborationTool')}
     </Button>
   );
 
@@ -120,9 +120,8 @@ const SubspaceHomeView = ({
       <CalloutsGroupView
         journeyId={journeyId}
         callouts={selectedFlowStateCallouts}
-        canCreateCallout={canCreateCallout}
+        canCreateCallout={canCreateCallout && !isMobile}
         canCreateCalloutFromTemplate={canCreateCalloutFromTemplate}
-        hideButton={!isMobile}
         loading={loading}
         journeyTypeName={journeyTypeName}
         calloutNames={calloutNames}
