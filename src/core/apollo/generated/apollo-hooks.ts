@@ -3286,6 +3286,7 @@ export const SearchResultUserFragmentDoc = gql`
     user {
       id
       nameID
+      isContactable
       profile {
         displayName
         ...SearchResultProfile

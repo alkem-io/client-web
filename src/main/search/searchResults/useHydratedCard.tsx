@@ -47,6 +47,7 @@ const hydrateUserCard = (data: TypedSearchResult<SearchResultType.User, SearchRe
       tags={tags}
       userUri={url}
       matchedTerms={data.terms}
+      isContactable={user.isContactable}
     />
   );
 };

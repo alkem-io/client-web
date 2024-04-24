@@ -24190,6 +24190,7 @@ export type SearchQuery = {
             __typename?: 'User';
             id: string;
             nameID: string;
+            isContactable: boolean;
             profile: {
               __typename?: 'Profile';
               displayName: string;
@@ -24382,6 +24383,7 @@ export type SearchResultUserFragment = {
     __typename?: 'User';
     id: string;
     nameID: string;
+    isContactable: boolean;
     profile: {
       __typename?: 'Profile';
       displayName: string;
