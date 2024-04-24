@@ -90,7 +90,7 @@ const SubspaceHomePage = ({ dialog }: SubspaceHomePageProps) => {
                 />
                 <DialogDef
                   dialogType={SubspaceDialog.Events}
-                  label={t(`spaceDialog.${SubspaceDialog.Events}` as const)}
+                  label={t('spaceDialog.Events')}
                   icon={CalendarMonthOutlined}
                 />
                 <DialogDef

@@ -183,6 +183,7 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, journeyId, onClose, par
                   events={events}
                   onClose={handleClose}
                   highlightedDay={highlightedDay}
+                  parentPath={parentPath}
                   actions={
                     privileges.canCreateEvents && (
                       <IconButton onClick={() => setIsCreatingEvent(true)} size="large" sx={{ padding: 0 }}>
