@@ -60,7 +60,7 @@ const UserCard: FC<UserCardProps> = ({
         ) : avatarSrc ? (
           <ImageBlurredSides
             src={avatarSrc}
-            alt={t('visuals-alt-text.avatar.contributor.text', { displayName, altText: avatarAltText })}
+            alt={t('common.avatar-of', { user: displayName })}
             blurRadius={1}
             sx={{ width: '50%' }}
           />
