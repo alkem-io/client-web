@@ -8,7 +8,6 @@ import {
 import { Caption } from '../../../../core/ui/typography';
 import PageContentBlock, { PageContentBlockProps } from '../../../../core/ui/content/PageContentBlock';
 import { useTranslation } from 'react-i18next';
-import { JourneyTypeName } from '../../JourneyTypeName';
 import TopCalloutDetails from '../../../collaboration/callout/TopCallout/TopCalloutDetails';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 import { gutters } from '../../../../core/ui/grid/utils';
@@ -17,7 +16,7 @@ import Gutters from '../../../../core/ui/grid/Gutters';
 import { Box } from '@mui/material';
 import { RECENT_ACTIVITIES_LIMIT_INITIAL, RECENT_ACTIVITIES_LIMIT_EXPANDED } from '../journeyDashboard/constants';
 
-export interface DashboardRecentContributionsBlockProps extends PageContentBlockProps, ActivityComponentProps {
+export interface RecentContributionsBlockProps extends PageContentBlockProps, ActivityComponentProps {
   readUsersAccess: boolean;
   entityReadAccess: boolean;
   activitiesLoading: boolean;
@@ -35,7 +34,6 @@ export interface DashboardRecentContributionsBlockProps extends PageContentBlock
         };
       })[]
     | undefined;
-  journeyTypeName: JourneyTypeName;
 }
 
 enum Mode {
@@ -43,16 +41,15 @@ enum Mode {
   TopCallouts,
 }
 
-const DashboardRecentContributionsBlock = ({
+const RecentContributionsBlock = ({
   readUsersAccess,
   entityReadAccess,
   activities,
   activitiesLoading,
   fetchMoreActivities,
   topCallouts,
-  journeyTypeName,
   ...blockProps
-}: DashboardRecentContributionsBlockProps) => {
+}: RecentContributionsBlockProps) => {
   const { t } = useTranslation();
 
   const [mode, setMode] = useState(Mode.RecentActivity);
@@ -82,6 +79,28 @@ const DashboardRecentContributionsBlock = ({
     }
   }, [activities]);
 
+  const renderCaption = errorCopy => <Caption>{errorCopy}</Caption>;
+
+  const renderAccessError = () => {
+    if (!entityReadAccess && readUsersAccess) {
+      return renderCaption(
+        t('components.activity-log-section.activity-join-error-message', {
+          journeyType: t('common.space'),
+        })
+      );
+    } else if (!readUsersAccess && entityReadAccess) {
+      return renderCaption(t('components.activity-log-section.activity-sign-in-error-message'));
+    } else if (!entityReadAccess && !readUsersAccess) {
+      return renderCaption(
+        t('components.activity-log-section.activity-sign-in-and-join-error-message', {
+          journeyType: t('common.space'),
+        })
+      );
+    }
+
+    return null;
+  };
+
   return (
     <PageContentBlock {...blockProps}>
       <PageContentBlockHeader title={t('components.dashboardRecentContributions.title')}>
@@ -104,23 +123,7 @@ const DashboardRecentContributionsBlock = ({
                 </Gutters>
               </>
             )}
-            {!entityReadAccess && readUsersAccess && (
-              <Caption>
-                {t('components.activity-log-section.activity-join-error-message', {
-                  journeyType: t(`common.${journeyTypeName}` as const),
-                })}
-              </Caption>
-            )}
-            {!readUsersAccess && entityReadAccess && (
-              <Caption>{t('components.activity-log-section.activity-sign-in-error-message')}</Caption>
-            )}
-            {!entityReadAccess && !readUsersAccess && (
-              <Caption>
-                {t('components.activity-log-section.activity-sign-in-and-join-error-message', {
-                  journeyType: t(`common.${journeyTypeName}` as const),
-                })}
-              </Caption>
-            )}
+            {renderAccessError()}
           </>
         )}
 
@@ -143,4 +146,4 @@ const DashboardRecentContributionsBlock = ({
   );
 };
 
-export default DashboardRecentContributionsBlock;
+export default RecentContributionsBlock;

@@ -5,8 +5,7 @@ import { Theme } from '@mui/material/styles';
 import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import SubspacePageContainer from '../../subspace/containers/SubspacePageContainer';
-import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
-import DashboardAllContributionsBlock from '../dashboardRecentContributionsBlock/DashboardAllContributionsBlock';
+import RecentContributionsBlock from './RecentContributionsBlock';
 
 export interface ActivityDialogProps {
   open?: boolean;
@@ -16,7 +15,6 @@ export interface ActivityDialogProps {
 
 const ActivityDialog = ({ open = false, journeyId, onClose }: ActivityDialogProps) => {
   const { t } = useTranslation();
-  const { journeyTypeName } = useRouteResolver();
   const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('md'));
 
   return (
@@ -25,13 +23,12 @@ const ActivityDialog = ({ open = false, journeyId, onClose }: ActivityDialogProp
       <DialogContent>
         <SubspacePageContainer challengeId={journeyId}>
           {({ callouts, ...entities }) => (
-            <DashboardAllContributionsBlock
+            <RecentContributionsBlock
               readUsersAccess={entities.permissions.readUsers}
               entityReadAccess={entities.permissions.subspaceReadAccess}
               activitiesLoading={false}
               topCallouts={entities.topCallouts}
               activities={entities.activities}
-              journeyTypeName={journeyTypeName}
               fetchMoreActivities={entities.fetchMoreActivities}
             />
           )}
