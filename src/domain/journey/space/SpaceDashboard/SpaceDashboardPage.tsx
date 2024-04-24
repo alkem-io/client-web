@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { useResolvedPath } from 'react-router-dom';
+import { useParams, useResolvedPath } from 'react-router-dom';
 import SpaceDashboardContainer from './SpaceDashboardContainer';
 import CommunityUpdatesDialog from '../../../community/community/CommunityUpdatesDialog/CommunityUpdatesDialog';
 import ContributorsDialog from '../../../community/community/ContributorsDialog/ContributorsDialog';
@@ -24,6 +24,7 @@ export interface SpaceDashboardPageProps {
 const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
   const { t } = useTranslation();
   const currentPath = useResolvedPath('..');
+  const { calendarEventNameId } = useParams();
 
   const [backToDashboard] = useBackToParentPage(`${currentPath.pathname}/dashboard`);
 
@@ -71,7 +72,13 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
               dialogContent={SpaceContributorsDialogContent}
             />
             {entities.permissions.timelineReadAccess && (
-              <CalendarDialog open={dialog === 'calendar'} onClose={backToDashboard} journeyId={spaceId} />
+              <CalendarDialog
+                open={dialog === 'calendar'}
+                onClose={backToDashboard}
+                journeyId={spaceId}
+                parentPath={EntityPageSection.Dashboard}
+                calendarEventNameId={calendarEventNameId}
+              />
             )}
             <JourneyAboutDialog
               open={dialog === 'about'}
