@@ -1,26 +1,21 @@
-import { IconButton } from '@mui/material';
-import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import { DirectMessageDialog } from '../../../communication/messaging/DirectMessaging/DirectMessageDialog';
-import React, { MouseEventHandler, useCallback, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useSendMessageToUserMutation } from '../../../../core/apollo/generated/apollo-hooks';
 import { useTranslation } from 'react-i18next';
-import ContributorCard, { ContributorCardProps } from '../../contributor/ContributorCard/ContributorCard';
+import { ContributorCardProps } from '../../contributor/ContributorCard/ContributorCard';
+import UserCard from '../userCard/UserCard';
 
 interface ContributingUserCardProps extends ContributorCardProps {
   id: string;
+  isContactable: boolean;
 }
 
-const ContributingUserCard = ({ id, ...contributorCardProps }: ContributingUserCardProps) => {
+const ContributingUserCard = ({ id, isContactable, ...contributorCardProps }: ContributingUserCardProps) => {
   const { t } = useTranslation();
 
   const [isMessageUserDialogOpen, setIsMessageUserDialogOpen] = useState(false);
   const closeMessageUserDialog = () => setIsMessageUserDialogOpen(false);
-  const openMessageUserDialog: MouseEventHandler<HTMLButtonElement> = event => {
-    // Since ContributorCard is an <a>, we need to call preventDefault instead of stopPropagation
-    // to suppress the default behavior of going to the parent "href"
-    event.preventDefault();
-    setIsMessageUserDialogOpen(true);
-  };
+  const openMessageUserDialog = () => setIsMessageUserDialogOpen(true);
 
   const messageReceivers = [
     {
@@ -50,12 +45,11 @@ const ContributingUserCard = ({ id, ...contributorCardProps }: ContributingUserC
 
   return (
     <>
-      <ContributorCard
-        headerActions={
-          <IconButton onClick={openMessageUserDialog} aria-label={t('common.email')}>
-            <EmailOutlinedIcon color="primary" />
-          </IconButton>
-        }
+      <UserCard
+        avatarSrc={contributorCardProps.avatarUri}
+        avatarAltText={t('common.avatar-of', { user: contributorCardProps.displayName })}
+        isContactable={isContactable}
+        onContact={openMessageUserDialog}
         {...contributorCardProps}
       />
       <DirectMessageDialog
