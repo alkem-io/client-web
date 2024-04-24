@@ -71,7 +71,7 @@ const SubspaceHomeView = ({
   const columns = useColumns();
   const { t } = useTranslation();
   const { isCalloutCreationDialogOpen, handleCreateCalloutOpened, handleCreateCalloutClosed, handleCreateCallout } =
-    useCalloutCreationWithPreviewImages();
+    useCalloutCreationWithPreviewImages({ journeyId });
 
   const createButton = (
     <Button
