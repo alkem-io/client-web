@@ -89,7 +89,7 @@ const SubspaceHomePage = ({ dialog }: SubspaceHomePageProps) => {
                   icon={HistoryOutlined}
                 />
                 <DialogDef
-                  dialogType={SubspaceDialog.Events}
+                  dialogType={SubspaceDialog.Timeline}
                   label={t('spaceDialog.Events')}
                   icon={CalendarMonthOutlined}
                 />
