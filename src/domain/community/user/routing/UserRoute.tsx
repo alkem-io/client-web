@@ -9,7 +9,7 @@ import TopLevelLayout from '../../../../main/ui/layout/TopLevelLayout';
 export const UserRoute: FC = () => {
   return (
     <Routes>
-      <Route path={'/'} element={<PageLayoutHolderWithOutlet />}>
+      <Route path="/" element={<PageLayoutHolderWithOutlet />}>
         <Route index element={<UserProfilePage />} />
       </Route>
       <Route path={'settings/*'} element={<UserSettingsRoute />} />
