@@ -25,13 +25,10 @@ import {
 } from '../../../../communication/messaging/DirectMessaging/DirectMessageDialog';
 import CalloutsGroupView from '../../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
 import { OrderUpdate, TypedCallout } from '../../../../collaboration/callout/useCallouts/useCallouts';
-import DashboardRecentContributionsBlock, {
-  DashboardRecentContributionsBlockProps,
-} from '../../dashboardRecentContributionsBlock/DashboardRecentContributionsBlock';
+import { DashboardRecentContributionsBlockProps } from '../../dashboardRecentContributionsBlock/DashboardRecentContributionsBlock';
 import FullWidthButton from '../../../../../core/ui/button/FullWidthButton';
 import { InfoOutlined } from '@mui/icons-material';
 import RouterLink from '../../../../../core/ui/link/RouterLink';
-import { RECENT_ACTIVITIES_LIMIT_EXPANDED } from '../../journeyDashboard/constants';
 import InfoColumn from '../../../../../core/ui/content/InfoColumn';
 import ContentColumn from '../../../../../core/ui/content/ContentColumn';
 
@@ -76,19 +73,13 @@ const JourneyDashboardView = ({
   journeyUrl,
   communityId = '',
   callouts,
-  topCallouts,
   communityReadAccess = false,
   timelineReadAccess = false,
-  entityReadAccess,
-  readUsersAccess,
   memberUsers,
   memberUsersCount,
   memberOrganizations,
   memberOrganizationsCount,
   leadUsers,
-  activities,
-  fetchMoreActivities,
-  activityLoading,
   journeyTypeName,
   sendMessageToCommunityLeads,
   shareUpdatesUrl,
@@ -165,16 +156,6 @@ const JourneyDashboardView = ({
       </InfoColumn>
 
       <ContentColumn>
-        <DashboardRecentContributionsBlock
-          halfWidth={(callouts.groupedCallouts[CalloutGroupName.Home]?.length ?? 0) > 0}
-          readUsersAccess={readUsersAccess}
-          entityReadAccess={entityReadAccess}
-          activitiesLoading={activityLoading}
-          topCallouts={topCallouts}
-          activities={activities}
-          journeyTypeName={journeyTypeName}
-          onActivitiesDialogOpen={() => fetchMoreActivities(RECENT_ACTIVITIES_LIMIT_EXPANDED)}
-        />
         <CalloutsGroupView
           journeyId={journeyId}
           callouts={callouts.groupedCallouts[CalloutGroupName.Home]}
@@ -186,13 +167,6 @@ const JourneyDashboardView = ({
           onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
           onCalloutUpdate={callouts.refetchCallout}
           groupName={CalloutGroupName.Home}
-          blockProps={(callout, index) => {
-            if (index === 0) {
-              return {
-                halfWidth: true,
-              };
-            }
-          }}
         />
       </ContentColumn>
     </PageContent>
