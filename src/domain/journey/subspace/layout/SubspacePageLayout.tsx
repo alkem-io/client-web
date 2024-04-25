@@ -45,6 +45,7 @@ import produce from 'immer';
 import WelcomeBlock from './WelcomeBlock';
 import { UrlBaseProvider } from '../../../../core/ui/link/UrlBase';
 import ButtonWithTooltip from '../../../../core/ui/button/ButtonWithTooltip';
+import { theme } from '../../../../core/ui/themes/default/Theme';
 
 export interface SubspacePageLayoutProps {
   journeyId: string | undefined;
@@ -67,7 +68,24 @@ const {
 } = createLayoutHolder();
 
 export const SubspaceInnovationFlow = createLayout(({ columns, children }: PropsWithChildren<{ columns: number }>) => {
-  return <GridProvider columns={columns}>{children}</GridProvider>;
+  return (
+    <GridProvider columns={columns}>
+      <Box
+        sx={{
+          position: 'sticky',
+          top: 0,
+          marginTop: gutters(-1),
+          paddingY: gutters(1),
+          background: theme.palette.background.default,
+          width: '100%',
+          zIndex: 1,
+          boxShadow: theme => `0 6px 5px 2px ${theme.palette.background.default}`,
+        }}
+      >
+        {children}
+      </Box>
+    </GridProvider>
+  );
 });
 
 /**
@@ -221,11 +239,7 @@ const SubspacePageLayout = ({
                   flexShrink={1}
                   minWidth={0}
                 >
-                  {!isMobile && (
-                    <PageContentBlockSeamless disablePadding>
-                      <InnovationFlowRenderPoint />
-                    </PageContentBlockSeamless>
-                  )}
+                  {!isMobile && <InnovationFlowRenderPoint />}
                   {children}
                 </PageContentColumnBase>
               </PageContent>

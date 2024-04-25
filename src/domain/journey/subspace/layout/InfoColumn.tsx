@@ -27,7 +27,13 @@ const InfoColumn = ({ collapsed, children }: PropsWithChildren<InfoColumnProps>)
       width={isMobile ? 0 : width}
       flexGrow={0}
       flexShrink={0}
-      sx={{ transition: 'width .2s ease-in-out' }}
+      sx={{
+        transition: 'width .2s ease-in-out',
+        position: 'sticky',
+        top: gutters(1),
+        maxHeight: '100vh',
+        overflowY: 'auto',
+      }}
     >
       {children}
     </PageContentColumnBase>
