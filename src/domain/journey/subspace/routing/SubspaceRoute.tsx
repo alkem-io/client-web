@@ -3,6 +3,7 @@ import { Route, Routes } from 'react-router';
 import { Navigate } from 'react-router-dom';
 import { Error404 } from '../../../../core/pages/Errors/Error404';
 import { nameOfUrl } from '../../../../main/routing/urlParams';
+import { buildJourneyAdminUrl } from '../../../../main/routing/urlBuilders';
 import { OpportunityProvider } from '../../opportunity/context/OpportunityProvider';
 import { CommunityContextProvider } from '../../../community/community/CommunityContext';
 import ChallengeDashboardPage from '../pages/SubspaceDashboardPage';
@@ -28,6 +29,10 @@ const SubspaceRoute = () => {
         <Route path={SubspaceDialog.Index} element={<SubspaceHomePage dialog={SubspaceDialog.Index} />} />
         <Route path={SubspaceDialog.Subspaces} element={<SubspaceHomePage dialog={SubspaceDialog.Subspaces} />} />
         <Route path={SubspaceDialog.Contributors} element={<SubspaceHomePage dialog={SubspaceDialog.Contributors} />} />
+        <Route
+          path={SubspaceDialog.Settings}
+          element={journeyId && <Navigate to={`${buildJourneyAdminUrl(journeyId)}/profile`} />}
+        />
 
         {/* Redirecting legacy dashboard links to Subspace Home */}
         <Route path={routes.Dashboard} element={<Navigate replace to="/" />} />
