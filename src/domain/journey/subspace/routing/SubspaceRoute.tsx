@@ -27,6 +27,7 @@ const SubspaceRoute = () => {
         <Route path={SubspaceDialog.Index} element={<SubspaceHomePage dialog={SubspaceDialog.Index} />} />
         <Route path={SubspaceDialog.Subspaces} element={<SubspaceHomePage dialog={SubspaceDialog.Subspaces} />} />
         <Route path={SubspaceDialog.Contributors} element={<SubspaceHomePage dialog={SubspaceDialog.Contributors} />} />
+        <Route path={SubspaceDialog.Activity} element={<SubspaceHomePage dialog={SubspaceDialog.Activity} />} />
         <Route path={SubspaceDialog.Timeline} element={<SubspaceHomePage dialog={SubspaceDialog.Timeline} />} />
         <Route
           path={`${SubspaceDialog.Timeline}/:${nameOfUrl.calendarEventNameId}`}
