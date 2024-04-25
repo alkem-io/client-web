@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, styled, Tooltip } from '@mui/material';
+import { Button, Divider, styled, Tooltip } from '@mui/material';
 import { ArrowRight } from '@mui/icons-material';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import { useGlobalGridColumns } from '../../../../core/ui/grid/constants';
@@ -15,6 +15,7 @@ interface InnovationFlowChipsProps {
   currentState?: string;
   selectedState: string | undefined;
   settings?: ReactNode;
+  createButton?: ReactNode;
   onSelectState?: (state: InnovationFlowState) => void;
 }
 
@@ -32,6 +33,7 @@ const InnovationFlowChips = ({
   selectedState,
   onSelectState,
   settings,
+  createButton,
 }: InnovationFlowChipsProps) => {
   const { t } = useTranslation();
 
@@ -102,6 +104,12 @@ const InnovationFlowChips = ({
           ))}
         </Gutters>
         {settings}
+        {createButton && (
+          <Gutters row disablePadding>
+            <Divider orientation="vertical" flexItem />
+            {createButton}
+          </Gutters>
+        )}
       </Gutters>
       {selectedStateDescription && <FlowStateDescription>{selectedStateDescription}</FlowStateDescription>}
     </>
