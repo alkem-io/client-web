@@ -4702,15 +4702,15 @@ export const InnovationFlowSettingsDocument = gql`
   query InnovationFlowSettings($collaborationId: UUID!) {
     lookup {
       collaboration(ID: $collaborationId) {
+        ...InnovationFlowCollaboration
         innovationFlow {
           ...InnovationFlowDetails
         }
-        ...InnovationFlowCollaboration
       }
     }
   }
-  ${InnovationFlowDetailsFragmentDoc}
   ${InnovationFlowCollaborationFragmentDoc}
+  ${InnovationFlowDetailsFragmentDoc}
 `;
 
 /**
@@ -4769,6 +4769,7 @@ export const InnovationFlowDetailsDocument = gql`
   query InnovationFlowDetails($collaborationId: UUID!) {
     lookup {
       collaboration(ID: $collaborationId) {
+        id
         innovationFlow {
           ...InnovationFlowDetails
         }
