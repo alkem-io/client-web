@@ -9,7 +9,7 @@ mutation InviteExistingUser($userIds: [UUID!]!, $communityId: UUID!, $message: S
 }
 
 mutation InviteExternalUser($email: String!, $communityId: UUID!, $message: String) {
-  inviteExternalUserForCommunityMembership(invitationData: {
+  inviteForCommunityMembershipByEmail(invitationData: {
     email: $email
     communityID: $communityId
     welcomeMessage: $message
