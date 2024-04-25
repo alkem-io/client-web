@@ -53,9 +53,11 @@ const BadgeCardView = forwardRef(
         {...containerProps}
       >
         {cloneVisual(visual)}
-        <Box overflow="hidden" flexGrow={1} minWidth={0} {...contentProps}>
-          {children}
-        </Box>
+        {children && (
+          <Box overflow="hidden" flexGrow={1} minWidth={0} {...contentProps}>
+            {children}
+          </Box>
+        )}
         {cloneVisual(visualRight)}
       </Box>
     );

@@ -3,13 +3,27 @@ import { isDialogDef } from './DialogDefinition';
 import unwrapFragment from '../../../../core/ui/utils/unwrapFragment';
 import ButtonWithTooltip from '../../../../core/ui/button/ButtonWithTooltip';
 import RouterLink from '../../../../core/ui/link/RouterLink';
-import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
+import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
+import { gutters } from '../../../../core/ui/grid/utils';
 
-interface DialogActionButtonsProps {}
+interface DialogActionButtonsProps {
+  column?: boolean;
+}
 
-const DialogActionButtons = ({ children }: PropsWithChildren<DialogActionButtonsProps>) => {
+const DialogActionButtons = ({ column = false, children }: PropsWithChildren<DialogActionButtonsProps>) => {
   return (
-    <PageContentBlockSeamless row disablePadding sx={{ justifyContent: 'space-between', gap: 0.1 }}>
+    <PageContentBlock
+      accent={column}
+      row={!column}
+      sx={{
+        padding: column ? gutters(0.5) : 0,
+        justifyContent: 'space-between',
+        columnGap: 0.1,
+        backgroundColor: column ? undefined : 'transparent',
+        border: column ? undefined : 'transparent',
+        overflow: column ? undefined : 'visible',
+      }}
+    >
       {Children.map(unwrapFragment(children), node => {
         if (!isDialogDef(node)) {
           return node;
@@ -19,13 +33,19 @@ const DialogActionButtons = ({ children }: PropsWithChildren<DialogActionButtons
 
         return (
           <RouterLink to={dialogType} key={dialogType} sx={{ flexShrink: 1, minWidth: 0 }}>
-            <ButtonWithTooltip variant="contained" tooltip={String(label)} sx={{ maxWidth: '100%' }} iconButton>
+            <ButtonWithTooltip
+              variant={column ? 'text' : 'contained'}
+              tooltip={String(label)}
+              tooltipPlacement={column ? 'right' : 'bottom'}
+              sx={{ maxWidth: '100%' }}
+              iconButton
+            >
               <Icon />
             </ButtonWithTooltip>
           </RouterLink>
         );
       })}
-    </PageContentBlockSeamless>
+    </PageContentBlock>
   );
 };
 
