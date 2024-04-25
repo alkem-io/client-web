@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 import useNavigate from './useNavigate';
 import useCanGoBack from './useCanGoBack';
+import { normalizeLink } from '../utils/links';
 
 /**
  * Goes back only if the previous history item has the specified URL.
@@ -11,6 +12,7 @@ const useBackToPath = () => {
   const canGoBack = useCanGoBack();
 
   return useCallback((parentPagePath: string) => {
+    parentPagePath = normalizeLink(parentPagePath);
     if (!canGoBack) {
       navigate(parentPagePath);
     }

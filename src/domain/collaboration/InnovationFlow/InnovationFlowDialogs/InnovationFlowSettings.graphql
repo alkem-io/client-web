@@ -1,10 +1,10 @@
 query InnovationFlowSettings($collaborationId: UUID!) {
   lookup {
     collaboration(ID: $collaborationId) {
+      ...InnovationFlowCollaboration
       innovationFlow {
         ...InnovationFlowDetails
       }
-      ...InnovationFlowCollaboration
     }
   }
 }
@@ -12,6 +12,7 @@ query InnovationFlowSettings($collaborationId: UUID!) {
 query InnovationFlowDetails($collaborationId: UUID!) {
   lookup {
     collaboration(ID: $collaborationId) {
+      id
       innovationFlow {
         ...InnovationFlowDetails
       }
