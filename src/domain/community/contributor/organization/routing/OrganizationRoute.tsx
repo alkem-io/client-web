@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { Route, Routes } from 'react-router';
 import Loading from '../../../../../core/ui/loading/Loading';
-import { EntityPageLayoutHolder } from '../../../../journey/common/EntityPageLayout';
+import { PageLayoutHolderWithOutlet } from '../../../../journey/common/EntityPageLayout';
 import { useOrganization } from '../hooks/useOrganization';
 import { Error404 } from '../../../../../core/pages/Errors/Error404';
 import OrganizationPage from '../pages/OrganizationPage';
@@ -22,7 +22,7 @@ const OrganizationRoute: FC = () => {
 
   return (
     <Routes>
-      <Route path="/" element={<EntityPageLayoutHolder />}>
+      <Route path="/" element={<PageLayoutHolderWithOutlet />}>
         <Route index element={<OrganizationPage />} />
         <Route path="*" element={<Error404 />} />
       </Route>

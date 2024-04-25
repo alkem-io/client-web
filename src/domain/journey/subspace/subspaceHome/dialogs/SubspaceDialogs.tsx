@@ -45,11 +45,7 @@ const SubspaceDialogs = ({ dialogOpen, journeyUrl, callouts, journeyId }: Subspa
         open={dialogOpen === SubspaceDialog.Contributors}
         onClose={handleClose}
       />
-      <ActivityDialog
-        journeyId={journeyId}
-        open={dialogOpen === SubspaceDialog.Activity}
-        onClose={() => navigate(journeyUrl)}
-      />
+      <ActivityDialog journeyId={journeyId} open={dialogOpen === SubspaceDialog.Activity} onClose={handleClose} />
       <CalendarDialog
         journeyId={journeyId}
         open={dialogOpen === SubspaceDialog.Timeline}
@@ -59,7 +55,7 @@ const SubspaceDialogs = ({ dialogOpen, journeyUrl, callouts, journeyId }: Subspa
       />
       <ShareDialog
         open={dialogOpen === SubspaceDialog.Share}
-        onClose={() => navigate(journeyUrl)}
+        onClose={handleClose}
         url={journeyUrl}
         entityTypeName={'space'}
       />
