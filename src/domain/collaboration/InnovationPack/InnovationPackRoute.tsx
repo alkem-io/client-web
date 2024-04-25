@@ -1,6 +1,6 @@
 import React from 'react';
 import { Route, Routes } from 'react-router';
-import { EntityPageLayoutHolder } from '../../journey/common/EntityPageLayout';
+import { PageLayoutHolderWithOutlet } from '../../journey/common/EntityPageLayout';
 import { Error404 } from '../../../core/pages/Errors/Error404';
 import InnovationPackProfilePage from './InnovationPackProfilePage/InnovationPackProfilePage';
 import AdminInnovationPackPage, {
@@ -11,7 +11,7 @@ import { nameOfUrl } from '../../../main/routing/urlParams';
 const InnovationPackRoute = () => {
   return (
     <Routes>
-      <Route path="/" element={<EntityPageLayoutHolder />}>
+      <Route path="/" element={<PageLayoutHolderWithOutlet />}>
         <Route path={`:${nameOfUrl.innovationPackNameId}`} element={<InnovationPackProfilePage />} />
         <Route path={`:${nameOfUrl.innovationPackNameId}/settings`} element={<AdminInnovationPackPage />} />
         <Route

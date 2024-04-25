@@ -2,19 +2,22 @@ import createLayoutHolder from './LayoutHolder';
 import { Outlet } from 'react-router-dom';
 
 const createLayoutHolderWithOutlet = () => {
-  const { LayoutHolder, createLayout } = createLayoutHolder();
+  const { LayoutHolder, RenderPoint, createLayout } = createLayoutHolder();
 
   const LayoutHolderWithOutlet = () => {
     return (
       <LayoutHolder>
+        <RenderPoint />
         <Outlet />
       </LayoutHolder>
     );
   };
 
   return {
-    LayoutHolder: LayoutHolderWithOutlet,
+    LayoutHolder,
+    RenderPoint,
     createLayout,
+    LayoutHolderWithOutlet,
   };
 };
 
