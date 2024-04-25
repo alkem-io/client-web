@@ -6361,6 +6361,7 @@ export type InnovationFlowDetailsQuery = {
     collaboration?:
       | {
           __typename?: 'Collaboration';
+          id: string;
           innovationFlow: {
             __typename?: 'InnovationFlow';
             id: string;
