@@ -67,7 +67,23 @@ const {
 } = createLayoutHolder();
 
 export const SubspaceInnovationFlow = createLayout(({ columns, children }: PropsWithChildren<{ columns: number }>) => {
-  return <GridProvider columns={columns}>{children}</GridProvider>;
+  return (
+    <GridProvider columns={columns}>
+      <Box
+        sx={{
+          position: 'sticky',
+          top: 0,
+          marginY: gutters(-1),
+          paddingY: gutters(1),
+          background: theme => theme.palette.background.default,
+          width: '100%',
+          zIndex: 1,
+        }}
+      >
+        {children}
+      </Box>
+    </GridProvider>
+  );
 });
 
 /**
@@ -221,11 +237,7 @@ const SubspacePageLayout = ({
                   flexShrink={1}
                   minWidth={0}
                 >
-                  {!isMobile && (
-                    <PageContentBlockSeamless disablePadding>
-                      <InnovationFlowRenderPoint />
-                    </PageContentBlockSeamless>
-                  )}
+                  {!isMobile && <InnovationFlowRenderPoint />}
                   {children}
                 </PageContentColumnBase>
               </PageContent>
