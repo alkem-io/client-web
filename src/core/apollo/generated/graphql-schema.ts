@@ -545,6 +545,8 @@ export type AgentBeginVerifiedCredentialRequestOutput = {
   qrCodeImg: Scalars['String'];
 };
 
+export type AnyInvitation = Invitation | InvitationExternal;
+
 export type Application = {
   __typename?: 'Application';
   /** The authorization rules for the entity */
@@ -2666,7 +2668,7 @@ export type Mutation = {
   /** Invite an existing User to join the specified Community as a member. */
   inviteExistingUserForCommunityMembership: Array<Invitation>;
   /** Invite an external User to join the specified Community as a member. */
-  inviteExternalUserForCommunityMembership: InvitationExternal;
+  inviteForCommunityMembershipByEmail: AnyInvitation;
   /** Join the specified Community as a member, without going through an approval process. */
   joinCommunity: Community;
   /** Sends a message on the specified User`s behalf and returns the room id */
@@ -3139,7 +3141,7 @@ export type MutationInviteExistingUserForCommunityMembershipArgs = {
   invitationData: CreateInvitationExistingUserOnCommunityInput;
 };
 
-export type MutationInviteExternalUserForCommunityMembershipArgs = {
+export type MutationInviteForCommunityMembershipByEmailArgs = {
   invitationData: CreateInvitationExternalUserOnCommunityInput;
 };
 
@@ -15482,7 +15484,9 @@ export type InviteExternalUserMutationVariables = Exact<{
 
 export type InviteExternalUserMutation = {
   __typename?: 'Mutation';
-  inviteExternalUserForCommunityMembership: { __typename?: 'InvitationExternal'; id: string };
+  inviteForCommunityMembershipByEmail:
+    | { __typename?: 'Invitation'; id: string }
+    | { __typename?: 'InvitationExternal'; id: string };
 };
 
 export type PendingMembershipsSpaceQueryVariables = Exact<{
