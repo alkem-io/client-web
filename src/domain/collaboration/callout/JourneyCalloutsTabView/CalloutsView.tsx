@@ -103,10 +103,12 @@ const CalloutsView = ({
     return navigate(callout.framing.profile.url, { state });
   };
 
+  const isLoading = loading && !sortedCallouts;
+
   return (
     <>
-      {loading && <CalloutsViewSkeleton />}
-      {!loading &&
+      {isLoading && <CalloutsViewSkeleton />}
+      {!isLoading &&
         sortedCallouts?.map((callout, index) => {
           const sortProps: CalloutSortProps = {
             topCallout: index === 0,
