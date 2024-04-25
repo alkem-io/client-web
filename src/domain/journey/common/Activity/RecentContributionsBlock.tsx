@@ -79,27 +79,19 @@ const RecentContributionsBlock = ({
     }
   }, [activities]);
 
-  const renderCaption = errorCopy => <Caption>{errorCopy}</Caption>;
-
-  const renderAccessError = () => {
+  const getAccessErrorTypeName = () => {
     if (!entityReadAccess && readUsersAccess) {
-      return renderCaption(
-        t('components.activity-log-section.activity-join-error-message', {
-          journeyType: t('common.space'),
-        })
-      );
-    } else if (!readUsersAccess && entityReadAccess) {
-      return renderCaption(t('components.activity-log-section.activity-sign-in-error-message'));
-    } else if (!entityReadAccess && !readUsersAccess) {
-      return renderCaption(
-        t('components.activity-log-section.activity-sign-in-and-join-error-message', {
-          journeyType: t('common.space'),
-        })
-      );
+      return 'activity-join-error-message' as const;
     }
-
-    return null;
+    if (!readUsersAccess && entityReadAccess) {
+      return 'activity-sign-in-error-message' as const;
+    }
+    if (!entityReadAccess && !readUsersAccess) {
+      return 'activity-sign-in-and-join-error-message' as const;
+    }
   };
+
+  const accessErrorTypeName = getAccessErrorTypeName();
 
   return (
     <PageContentBlock {...blockProps}>
@@ -123,7 +115,13 @@ const RecentContributionsBlock = ({
                 </Gutters>
               </>
             )}
-            {renderAccessError()}
+            {accessErrorTypeName && (
+              <Caption>
+                {t(`components.activity-log-section.${accessErrorTypeName}` as const, {
+                  journeyType: t('common.space'),
+                })}
+              </Caption>
+            )}
           </>
         )}
 
