@@ -6,7 +6,6 @@ import DialogHeader, { DialogHeaderProps } from '../../../../core/ui/dialog/Dial
 import GridProvider from '../../../../core/ui/grid/GridProvider';
 import { gutters } from '../../../../core/ui/grid/utils';
 import { BlockSectionTitle, BlockTitle, Caption } from '../../../../core/ui/typography';
-import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import CalendarEventCard from './CalendarEventCard';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import ScrollerWithGradient from '../../../../core/ui/overflow/ScrollerWithGradient';
@@ -20,7 +19,6 @@ import useScrollToElement from '../../../shared/utils/scroll/useScrollToElement'
 import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
 import { HIGHLIGHT_PARAM_NAME } from '../CalendarDialog';
 import { useQueryParams } from '../../../../core/routing/useQueryParams';
-import { normalizeLink } from '../../../../core/utils/links';
 
 interface CalendarEventsListProps {
   events: {
@@ -35,20 +33,26 @@ interface CalendarEventsListProps {
   }[];
   highlightedDay?: Date | null;
   actions?: ReactNode;
+  parentPath?: string;
   onClose?: DialogHeaderProps['onClose'];
 }
 
-const CalendarEventsList = ({ events, highlightedDay, actions, onClose }: CalendarEventsListProps) => {
+const CalendarEventsList = ({ events, highlightedDay, actions, parentPath = '', onClose }: CalendarEventsListProps) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const urlQueryParams = useQueryParams();
   const breakpoint = useCurrentBreakpoint();
+  const calendarPath = parentPath
+    ? parentPath.indexOf('calendar') > -1
+      ? `${parentPath}`
+      : `${parentPath}/calendar`
+    : '';
 
   const [scrollToElement, scrollTo] = useState<string>();
   const { scrollable } = useScrollToElement(scrollToElement, { enabled: Boolean(scrollToElement), method: 'element' });
 
-  const handleClickOnEvent = (url: string) => {
-    navigate(normalizeLink(url));
+  const handleClickOnEvent = (nameID: string) => {
+    navigate(`${calendarPath}/${nameID}`);
   };
 
   const { futureEvents = [], pastEvents = [] } = useMemo(() => {
@@ -83,7 +87,7 @@ const CalendarEventsList = ({ events, highlightedDay, actions, onClose }: Calend
     if (date) {
       const nextUrlParams = new URLSearchParams(urlQueryParams.toString());
       nextUrlParams.set(HIGHLIGHT_PARAM_NAME, dayjs(date).format(INTERNAL_DATE_FORMAT));
-      navigate(`${EntityPageSection.Dashboard}/calendar?${nextUrlParams}`, { replace: true });
+      navigate(`${calendarPath}?${nextUrlParams}`, { replace: true });
     }
     if (events.length > 0) {
       // Scroll again in case url hasn't changed but user has scrolled out of the view
@@ -112,7 +116,7 @@ const CalendarEventsList = ({ events, highlightedDay, actions, onClose }: Calend
                   ref={scrollable(event.nameID)}
                   highlighted={dayjs(event.startDate).startOf('day').isSame(highlightedDay)}
                   event={event}
-                  onClick={() => handleClickOnEvent(event.profile.url)}
+                  onClick={() => handleClickOnEvent(event.nameID)}
                 />
               ))}
               {sortedPastEvents.length > 0 && (
@@ -124,7 +128,7 @@ const CalendarEventsList = ({ events, highlightedDay, actions, onClose }: Calend
                       ref={scrollable(event.nameID)}
                       highlighted={dayjs(event.startDate).startOf('day').isSame(highlightedDay)}
                       event={event}
-                      onClick={() => handleClickOnEvent(event.profile.url)}
+                      onClick={() => handleClickOnEvent(event.nameID)}
                     />
                   ))}
                 </>
