@@ -10,6 +10,7 @@ interface InnovationFlowStatesBaseProps {
   onSelectState?: (state: InnovationFlowState) => void;
   visualizer?: ComponentType<InnovationFlowVisualizerProps>;
   settings?: ReactElement<{ onClick: MouseEventHandler }>;
+  createButton?: ReactNode;
 }
 
 interface InnovationFlowVisualizerProps {
@@ -20,6 +21,7 @@ interface InnovationFlowVisualizerProps {
   onSettingsOpen?: () => void;
   onSelectState?: (state: InnovationFlowState) => void;
   settings?: ReactNode;
+  createButton?: ReactNode;
 }
 
 type InnovationFlowStatesProps = InnovationFlowStatesBaseProps &
@@ -40,6 +42,7 @@ const InnovationFlowStates = ({
   currentState,
   selectedState,
   settings,
+  createButton,
   onSelectState,
   visualizer: Visualizer = InnovationFlowChips,
 }: InnovationFlowStatesProps) => {
@@ -52,6 +55,7 @@ const InnovationFlowStates = ({
         currentState={currentState}
         selectedState={selectedState}
         settings={settings && cloneElement(settings, { onClick: () => setShowSettingsDialog(true) })}
+        createButton={createButton}
         onSettingsOpen={() => setShowSettingsDialog(true)}
         onSelectState={onSelectState}
       />
