@@ -33,10 +33,8 @@ const SubspaceRoute = () => {
           path={`${SubspaceDialog.Timeline}/:${nameOfUrl.calendarEventNameId}`}
           element={<SubspaceHomePage dialog={SubspaceDialog.Timeline} />}
         />
-
         {/* Redirecting legacy dashboard links to Subspace Home */}
         <Route path={routes.Dashboard} element={<Navigate replace to="/" />} />
-        {/* TODO Remove the routes below */}
         <Route path={routes.About} element={<ChallengeAboutPage />} />
         <Route path={routes.Subsubspaces} element={<ChallengeOpportunitiesPage />} />
         <Route path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}`} element={<SubspaceCalloutPage />} />
