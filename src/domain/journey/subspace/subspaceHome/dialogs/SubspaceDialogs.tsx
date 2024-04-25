@@ -7,6 +7,8 @@ import { SubspaceDialog } from '../../layout/SubspaceDialog';
 import SubspacesListDialog from '../../dialogs/SubspacesListDialog';
 import ContributorsToggleDialog from '../../dialogs/ContributorsToggleDialog';
 import ActivityDialog from '../../../common/Activity/ActivityDialog';
+import CalendarDialog from '../../../../timeline/calendar/CalendarDialog';
+import { useParams } from 'react-router-dom';
 
 export interface SubspaceDialogsProps {
   dialogOpen: SubspaceDialog | undefined;
@@ -18,6 +20,8 @@ export interface SubspaceDialogsProps {
 const SubspaceDialogs = ({ dialogOpen, journeyUrl, callouts, journeyId }: SubspaceDialogsProps) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { calendarEventNameId } = useParams();
+
   if (!dialogOpen || !journeyId || !journeyUrl) {
     return null;
   }
@@ -46,6 +50,12 @@ const SubspaceDialogs = ({ dialogOpen, journeyUrl, callouts, journeyId }: Subspa
         journeyId={journeyId}
         open={dialogOpen === SubspaceDialog.Activity}
         onClose={() => navigate(journeyUrl)}
+      <CalendarDialog
+        journeyId={journeyId}
+        open={dialogOpen === SubspaceDialog.Timeline}
+        onClose={() => navigate(journeyUrl)}
+        parentPath={journeyUrl}
+        calendarEventNameId={calendarEventNameId}
       />
     </>
   );
