@@ -13286,10 +13286,15 @@ export type InviteExistingUserMutationOptions = Apollo.BaseMutationOptions<
 >;
 export const InviteExternalUserDocument = gql`
   mutation InviteExternalUser($email: String!, $communityId: UUID!, $message: String) {
-    inviteExternalUserForCommunityMembership(
+    inviteForCommunityMembershipByEmail(
       invitationData: { email: $email, communityID: $communityId, welcomeMessage: $message }
     ) {
-      id
+      ... on InvitationExternal {
+        id
+      }
+      ... on Invitation {
+        id
+      }
     }
   }
 `;
