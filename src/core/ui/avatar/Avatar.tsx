@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { forwardRef, ReactNode } from 'react';
 import { AvatarProps, Box } from '@mui/material';
 import ErrorHandlingAvatar from './ErrorHandlingAvatar';
 import { gutters } from '../grid/utils';
@@ -16,12 +16,12 @@ export interface SizeableAvatarProps {
   overlay?: ReactNode;
 }
 
-const Avatar = ({ size, sx, overlay, ...props }: AvatarProps & SizeableAvatarProps) => {
+const Avatar = forwardRef<HTMLDivElement, AvatarProps & SizeableAvatarProps>(({ size, sx, overlay, ...props }, ref) => {
   const avatarSize = size && AvatarSize[size];
 
   if (overlay) {
     return (
-      <Box position="relative">
+      <Box ref={ref} position="relative">
         <Avatar size={size} sx={sx} {...props} />
         <Box
           position="absolute"
@@ -41,6 +41,7 @@ const Avatar = ({ size, sx, overlay, ...props }: AvatarProps & SizeableAvatarPro
 
   return (
     <ErrorHandlingAvatar
+      ref={ref}
       sx={{
         borderRadius: 0.5,
         width: avatarSize && gutters(avatarSize),
@@ -50,6 +51,6 @@ const Avatar = ({ size, sx, overlay, ...props }: AvatarProps & SizeableAvatarPro
       {...props}
     />
   );
-};
+});
 
 export default Avatar;

@@ -18,7 +18,7 @@ interface UseSpaceDashboardNavigationProps {
 }
 
 interface UseSpaceDashboardNavigationProvided {
-  dashboardNavigation: DashboardNavigationItem[] | undefined;
+  dashboardNavigation: DashboardNavigationItem | undefined;
   loading: boolean;
 }
 
@@ -71,9 +71,9 @@ const useSpaceDashboardNavigation = ({
     skip: skip || !spaceId,
   });
 
-  const challenges = challengesQueryData?.space.subspaces;
+  const space = challengesQueryData?.space;
 
-  const readableChallengeIds = challenges?.filter(isReadable).map(({ id }) => id);
+  const readableChallengeIds = space?.subspaces.filter(isReadable).map(({ id }) => id);
 
   const { data: opportunitiesQueryData, loading: opportunitiesQueryLoading } =
     useSpaceDashboardNavigationOpportunitiesQuery({
@@ -91,18 +91,22 @@ const useSpaceDashboardNavigation = ({
 
   const loading = challengesQueryLoading || opportunitiesQueryLoading;
 
-  const dashboardNavigation = useMemo(
-    () =>
-      challenges?.map(challenge => {
-        const opportunities = challengesWithOpportunitiesById[challenge.id]?.subspaces ?? [];
+  const dashboardNavigation = useMemo<DashboardNavigationItem | undefined>(() => {
+    if (!space) {
+      return undefined;
+    }
+    return {
+      ...getDashboardNavigationItemProps(space),
+      children: space.subspaces.map(subspace => {
+        const subspaces = challengesWithOpportunitiesById[subspace.id]?.subspaces ?? [];
 
         return {
-          ...getDashboardNavigationItemProps(challenge, !isReadable(challenge)),
-          children: opportunities.map(opportunity => getDashboardNavigationItemProps(opportunity)),
+          ...getDashboardNavigationItemProps(subspace, !isReadable(subspace)),
+          children: subspaces.map(challenge => getDashboardNavigationItemProps(challenge, !isReadable(challenge))),
         };
       }),
-    [challengesQueryData, opportunitiesQueryData]
-  );
+    };
+  }, [challengesQueryData, opportunitiesQueryData]);
 
   return {
     dashboardNavigation,
