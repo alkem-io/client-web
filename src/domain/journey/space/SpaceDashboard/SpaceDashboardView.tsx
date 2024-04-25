@@ -39,9 +39,7 @@ interface SpaceWelcomeBlockContributor {
 
 interface SpaceDashboardViewProps {
   spaceId: string | undefined;
-  displayName: string | undefined;
-  spaceUrl: string | undefined;
-  dashboardNavigation: DashboardNavigationItem[] | undefined;
+  dashboardNavigation: DashboardNavigationItem | undefined;
   dashboardNavigationLoading: boolean;
   vision?: string;
   communityId?: string;
@@ -77,10 +75,8 @@ interface SpaceDashboardViewProps {
 const SpaceDashboardView = ({
   spaceId,
   vision = '',
-  displayName,
   dashboardNavigation,
   dashboardNavigationLoading,
-  spaceUrl,
   communityId = '',
   communityReadAccess = false,
   timelineReadAccess = false,
@@ -144,12 +140,7 @@ const SpaceDashboardView = ({
           >
             {t('common.aboutThis', { entity: translatedJourneyTypeName })}
           </FullWidthButton>
-          <DashboardNavigation
-            spaceUrl={spaceUrl}
-            displayName={displayName}
-            dashboardNavigation={dashboardNavigation}
-            loading={dashboardNavigationLoading}
-          />
+          <DashboardNavigation dashboardNavigation={dashboardNavigation} loading={dashboardNavigationLoading} />
           {timelineReadAccess && <DashboardCalendarSection journeyId={spaceId} journeyTypeName={journeyTypeName} />}
           {communityReadAccess && <DashboardUpdatesSection communityId={communityId} shareUrl={shareUpdatesUrl} />}
         </InfoColumn>

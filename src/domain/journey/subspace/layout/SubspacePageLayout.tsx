@@ -44,6 +44,7 @@ import { DialogDefinitionProps, isDialogDef } from './DialogDefinition';
 import produce from 'immer';
 import WelcomeBlock from './WelcomeBlock';
 import { UrlBaseProvider } from '../../../../core/ui/link/UrlBase';
+import ButtonWithTooltip from '../../../../core/ui/button/ButtonWithTooltip';
 
 export interface SubspacePageLayoutProps {
   journeyId: string | undefined;
@@ -112,7 +113,7 @@ const SubspacePageLayout = ({
   profile,
   children,
 }: PropsWithChildren<SubspacePageLayoutProps>) => {
-  const { spaceId, profile: spaceProfile } = useSpace();
+  const { spaceId } = useSpace();
 
   const { dashboardNavigation } = useSpaceDashboardNavigation({
     spaceId,
@@ -187,22 +188,31 @@ const SubspacePageLayout = ({
             >
               <PageContent>
                 <InfoColumn collapsed={isExpanded}>
-                  <WelcomeBlock about={!isMobile}>{welcome}</WelcomeBlock>
-                  <FullWidthButton
-                    startIcon={<KeyboardTab />}
-                    variant="contained"
-                    onClick={() => setIsExpanded(true)}
-                    sx={{ '.MuiSvgIcon-root': { transform: 'rotate(180deg)' } }}
-                  >
-                    {t('buttons.collapse')}
-                  </FullWidthButton>
-                  {!isMobile && <DialogActionButtons>{unconsumedActions}</DialogActionButtons>}
-                  <Outline
-                    currentItemId={journeyId}
-                    spaceUrl={spaceProfile.url}
-                    displayName={spaceProfile.displayName}
-                    dashboardNavigation={dashboardNavigation}
-                  />
+                  {!isExpanded && <WelcomeBlock about={!isMobile}>{welcome}</WelcomeBlock>}
+                  {!isExpanded && (
+                    <FullWidthButton
+                      startIcon={<KeyboardTab />}
+                      variant="contained"
+                      onClick={() => setIsExpanded(true)}
+                      sx={{ '.MuiSvgIcon-root': { transform: 'rotate(180deg)' } }}
+                    >
+                      {t('buttons.collapse')}
+                    </FullWidthButton>
+                  )}
+                  <DialogActionButtons column={isExpanded}>
+                    {unconsumedActions}
+                    {isExpanded && (
+                      <ButtonWithTooltip
+                        tooltip={t('buttons.expand')}
+                        tooltipPlacement="right"
+                        iconButton
+                        onClick={() => setIsExpanded(false)}
+                      >
+                        <KeyboardTab />
+                      </ButtonWithTooltip>
+                    )}
+                  </DialogActionButtons>
+                  <Outline currentItemId={journeyId} dashboardNavigation={dashboardNavigation} compact={isExpanded} />
                 </InfoColumn>
                 <PageContentColumnBase
                   columns={isExpanded ? 12 : 9}
