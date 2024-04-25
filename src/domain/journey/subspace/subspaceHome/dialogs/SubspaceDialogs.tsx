@@ -9,6 +9,7 @@ import ContributorsToggleDialog from '../../dialogs/ContributorsToggleDialog';
 import ActivityDialog from '../../../common/Activity/ActivityDialog';
 import CalendarDialog from '../../../../timeline/calendar/CalendarDialog';
 import { useParams } from 'react-router-dom';
+import { ShareDialog } from '../../../../shared/components/ShareDialog/ShareDialog';
 
 export interface SubspaceDialogsProps {
   dialogOpen: SubspaceDialog | undefined;
@@ -55,6 +56,12 @@ const SubspaceDialogs = ({ dialogOpen, journeyUrl, callouts, journeyId }: Subspa
         onClose={handleClose}
         parentPath={journeyUrl}
         calendarEventNameId={calendarEventNameId}
+      />
+      <ShareDialog
+        open={dialogOpen === SubspaceDialog.Share}
+        onClose={() => navigate(journeyUrl)}
+        url={journeyUrl}
+        entityTypeName={'space'}
       />
     </>
   );
