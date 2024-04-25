@@ -21038,7 +21038,6 @@ export const DeleteCalendarEventDocument = gql`
   mutation deleteCalendarEvent($deleteData: DeleteCalendarEventInput!) {
     deleteCalendarEvent(deleteData: $deleteData) {
       id
-      nameID
     }
   }
 `;

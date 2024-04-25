@@ -11,7 +11,6 @@ import PageContentBlockHeaderWithDialogAction from '../../../../core/ui/content/
 import { gutters } from '../../../../core/ui/grid/utils';
 import { Caption, Text } from '../../../../core/ui/typography';
 import CalendarEventView from '../../../timeline/calendar/views/CalendarEventView';
-import { EntityPageSection } from '../../layout/EntityPageSection';
 import PageContentBlockFooter from '../../../../core/ui/content/PageContentBlockFooter';
 import FullCalendar, { INTERNAL_DATE_FORMAT } from '../../../timeline/calendar/components/FullCalendar';
 import { HIGHLIGHT_PARAM_NAME, INIT_CREATING_EVENT_PARAM } from '../../../timeline/calendar/CalendarDialog';
@@ -73,16 +72,15 @@ const DashboardCalendarSection: FC<DashboardCalendarSectionProps> = ({ journeyId
     ].slice(0, MAX_NUMBER_OF_EVENTS);
   }, [allEvents]);
 
-  const openDialog = () => navigate(`${EntityPageSection.Dashboard}/calendar`);
+  const openDialog = () => navigate('calendar');
 
-  const openDialogCreateEvent = () =>
-    navigate(`${EntityPageSection.Dashboard}/calendar?${INIT_CREATING_EVENT_PARAM}=1`);
+  const openDialogCreateEvent = () => navigate(`calendar?${INIT_CREATING_EVENT_PARAM}=1`);
 
   const onClickHighlightedDate = (date: Date) => {
     // Clicking on a marked date highlights events on the list
     const nextUrlParams = new URLSearchParams(urlQueryParams.toString());
     nextUrlParams.set(HIGHLIGHT_PARAM_NAME, dayjs(date).format(INTERNAL_DATE_FORMAT));
-    navigate(`${EntityPageSection.Dashboard}/calendar?${nextUrlParams}`);
+    navigate(`calendar?${nextUrlParams}`);
   };
 
   const hasCreatePrivilege = collaboration?.timeline?.calendar.authorization?.myPrivileges?.includes(
