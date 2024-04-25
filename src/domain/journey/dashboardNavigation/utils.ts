@@ -2,31 +2,27 @@ import { DashboardNavigationItem } from '../space/spaceDashboardNavigation/useSp
 import { gutters } from '../../../core/ui/grid/utils';
 
 export const findCurrentPath = (
-  dashboardNavigation: DashboardNavigationItem[] | undefined,
+  dashboardNavigation: DashboardNavigationItem | undefined,
   currentItemId: string | undefined,
   path: string[] = []
 ) => {
-  if (!currentItemId || !dashboardNavigation) {
+  if (!dashboardNavigation) {
     return [];
   }
-  if (dashboardNavigation.some(item => item.id === currentItemId)) {
+  if (dashboardNavigation.id === currentItemId) {
     return [...path, currentItemId];
-  } else {
-    for (const item of dashboardNavigation) {
-      if (!item.children) {
-        continue;
-      }
-      const found = findCurrentPath(item.children, currentItemId, [...path, item.id]);
-      if (found.length) {
-        return found;
-      }
-    }
-    return [];
   }
+  for (const item of dashboardNavigation.children ?? []) {
+    const found = findCurrentPath(item, currentItemId, [...path, dashboardNavigation.id]);
+    if (found.length) {
+      return found;
+    }
+  }
+  return [];
 };
 
-export const getIndentStyle = (level: number) => {
+export const getIndentStyle = (level: number, compact: boolean = false) => {
   return {
-    paddingLeft: gutters(1 + level * 2),
+    paddingLeft: gutters(compact ? 0.5 : 1 + (level - 1) * 2),
   };
 };

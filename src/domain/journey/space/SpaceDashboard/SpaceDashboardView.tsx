@@ -33,6 +33,7 @@ import { RECENT_ACTIVITIES_LIMIT_EXPANDED } from '../../common/journeyDashboard/
 import InfoColumn from '../../../../core/ui/content/InfoColumn';
 import ContentColumn from '../../../../core/ui/content/ContentColumn';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
+import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
 
 interface SpaceWelcomeBlockContributor {
   profile: SpaceWelcomeBlockContributorProfileFragment;
@@ -40,9 +41,7 @@ interface SpaceWelcomeBlockContributor {
 
 interface SpaceDashboardViewProps {
   spaceId: string | undefined;
-  displayName: string | undefined;
-  spaceUrl: string | undefined;
-  dashboardNavigation: DashboardNavigationItem[] | undefined;
+  dashboardNavigation: DashboardNavigationItem | undefined;
   dashboardNavigationLoading: boolean;
   vision?: string;
   communityId?: string;
@@ -78,10 +77,8 @@ interface SpaceDashboardViewProps {
 const SpaceDashboardView = ({
   spaceId,
   vision = '',
-  displayName,
   dashboardNavigation,
   dashboardNavigationLoading,
-  spaceUrl,
   communityId = '',
   communityReadAccess = false,
   timelineReadAccess = false,
@@ -119,7 +116,7 @@ const SpaceDashboardView = ({
             }
 
             return (
-              <InfoColumn>
+              <PageContentColumn columns={12}>
                 <ApplicationButton
                   {...applicationButtonProps}
                   loading={loading}
@@ -127,7 +124,7 @@ const SpaceDashboardView = ({
                   extended={hasExtendedApplicationButton}
                   journeyTypeName="space"
                 />
-              </InfoColumn>
+              </PageContentColumn>
             );
           }}
         </ApplicationButtonContainer>
@@ -151,12 +148,7 @@ const SpaceDashboardView = ({
           >
             {t('common.aboutThis', { entity: translatedJourneyTypeName })}
           </FullWidthButton>
-          <DashboardNavigation
-            spaceUrl={spaceUrl}
-            displayName={displayName}
-            dashboardNavigation={dashboardNavigation}
-            loading={dashboardNavigationLoading}
-          />
+          <DashboardNavigation dashboardNavigation={dashboardNavigation} loading={dashboardNavigationLoading} />
           {timelineReadAccess && <DashboardCalendarSection journeyId={spaceId} journeyTypeName={journeyTypeName} />}
           {communityReadAccess && <DashboardUpdatesSection communityId={communityId} shareUrl={shareUpdatesUrl} />}
         </InfoColumn>

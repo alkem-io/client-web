@@ -1,37 +1,30 @@
 import { ExpandLess, ExpandMore, LockOutlined } from '@mui/icons-material';
 import { Box, Collapse, IconButton, Tooltip, TooltipProps } from '@mui/material';
-import React, {
-  Children,
-  forwardRef,
-  MouseEventHandler,
-  PropsWithChildren,
-  useImperativeHandle,
-  useRef,
-  useState,
-} from 'react';
+import React, { forwardRef, MouseEventHandler, Ref, useImperativeHandle, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import BadgeCardView from '../../../core/ui/list/BadgeCardView';
 import { Caption } from '../../../core/ui/typography';
 import JourneyAvatar from '../common/JourneyAvatar/JourneyAvatar';
 import RouterLink from '../../../core/ui/link/RouterLink';
 import { getIndentStyle } from './utils';
+import { DashboardNavigationItem } from '../space/spaceDashboardNavigation/useSpaceDashboardNavigation';
+import { Identifiable } from '../../../core/utils/Identifiable';
+import DashboardNavigationAddSubspace from './DashboardNavigationAddSubspace';
+import { last } from 'lodash';
 
-export interface DashboardNavigationItemViewProps {
-  displayName: string;
-  avatar?: {
-    uri: string;
-    alternativeText?: string;
-  };
-  innovationFlowState?: string | undefined;
-  private?: boolean;
-  url: string;
-  visualUri?: string;
+export interface DashboardNavigationItemViewProps extends DashboardNavigationItem {
   tooltipPlacement?: TooltipProps['placement'];
-  current?: boolean;
+  currentPath: string[];
+  subspaceOfCurrent?: boolean;
   level?: number;
   onClick?: MouseEventHandler;
   onToggle?: (isExpanded: boolean) => void;
-  expandable?: boolean;
+  compact?: boolean;
+  onCreateSubspace?: (parent: Identifiable) => void;
+  itemRef?: (itemId: string) => Ref<DashboardNavigationItemViewApi>;
+  itemProps?:
+    | Partial<DashboardNavigationItemViewProps>
+    | ((item: DashboardNavigationItem) => Partial<DashboardNavigationItemViewProps>);
 }
 
 export interface DashboardNavigationItemViewApi {
@@ -40,29 +33,38 @@ export interface DashboardNavigationItemViewApi {
   getDimensions: () => { top?: number; height?: number };
 }
 
-const DashboardNavigationItemView = forwardRef<
-  DashboardNavigationItemViewApi,
-  PropsWithChildren<DashboardNavigationItemViewProps>
->(
+const EMPTY_ITEM_REF = () => {};
+
+const DashboardNavigationItemView = forwardRef<DashboardNavigationItemViewApi, DashboardNavigationItemViewProps>(
   (
     {
+      id,
       displayName,
-      visualUri,
       url,
       children,
+      avatar,
       private: isPrivate = false,
       tooltipPlacement,
-      current: isCurrent = false,
+      currentPath,
+      subspaceOfCurrent = false,
       level = 0,
       onClick,
       onToggle,
-      expandable = false,
+      compact = false,
+      canCreateSubspace = false,
+      onCreateSubspace,
+      itemRef = () => EMPTY_ITEM_REF,
+      itemProps = () => ({}),
     },
     ref
   ) => {
     const [isExpanded, setIsExpanded] = useState(true);
 
     const { t } = useTranslation();
+
+    const current = last(currentPath);
+
+    const isCurrent = current === id;
 
     const preventDefault = (event: React.MouseEvent) => {
       event.stopPropagation();
@@ -77,6 +79,10 @@ const DashboardNavigationItemView = forwardRef<
     const hostContainerRef = useRef<HTMLDivElement>();
 
     const childrenContainerRef = useRef<HTMLDivElement>();
+
+    const includesCurrentItem = currentPath.includes(id);
+
+    const expandable = !compact && !includesCurrentItem;
 
     useImperativeHandle(
       ref,
@@ -106,13 +112,32 @@ const DashboardNavigationItemView = forwardRef<
       [isExpanded, expandable, level]
     );
 
+    const hasChildren = children && children.length > 0;
+
+    const hasCreateButton = !compact && canCreateSubspace && !!onCreateSubspace;
+
+    const getItemProps = typeof itemProps === 'function' ? itemProps : () => itemProps;
+
+    if (compact && !(includesCurrentItem || subspaceOfCurrent)) {
+      return null;
+    }
+
     return (
       <>
         <BadgeCardView
           ref={hostContainerRef}
           component={RouterLink}
           to={url ?? ''}
-          visual={<JourneyAvatar src={visualUri} size="medium" />}
+          visual={
+            <Tooltip
+              open={compact ? undefined : false}
+              title={<Caption>{displayName}</Caption>}
+              placement={tooltipPlacement}
+              arrow
+            >
+              <JourneyAvatar src={avatar?.uri} size="medium" />
+            </Tooltip>
+          }
           visualRight={
             isPrivate ? (
               <Tooltip
@@ -125,7 +150,7 @@ const DashboardNavigationItemView = forwardRef<
                 </IconButton>
               </Tooltip>
             ) : (
-              Children.count(children) > 0 &&
+              hasChildren &&
               expandable && (
                 <IconButton
                   onClick={toggleExpand}
@@ -139,14 +164,14 @@ const DashboardNavigationItemView = forwardRef<
           padding
           square
           sx={{
-            ...getIndentStyle(level),
+            ...getIndentStyle(level, compact),
             backgroundColor: isCurrent ? 'highlight.main' : undefined,
           }}
           onClick={onClick}
         >
-          <Caption>{displayName}</Caption>
+          {!compact && <Caption>{displayName}</Caption>}
         </BadgeCardView>
-        {children && (
+        {(hasChildren || hasCreateButton) && (
           // If items lose expandability, we can safely remove the callbacks.
           <Collapse
             in={isExpanded || !expandable}
@@ -155,7 +180,26 @@ const DashboardNavigationItemView = forwardRef<
             onExiting={() => onToggle?.(isExpanded)}
             onExited={() => onToggle?.(isExpanded)}
           >
-            <Box ref={childrenContainerRef}>{children}</Box>
+            <Box ref={childrenContainerRef}>
+              {hasCreateButton && (
+                <DashboardNavigationAddSubspace level={level + 1} onClick={() => onCreateSubspace?.({ id })} />
+              )}
+              {children?.map(child => (
+                <DashboardNavigationItemView
+                  key={child.id}
+                  ref={itemRef(child.id)}
+                  itemRef={itemRef}
+                  level={level + 1}
+                  tooltipPlacement={tooltipPlacement}
+                  currentPath={currentPath}
+                  subspaceOfCurrent={subspaceOfCurrent || isCurrent}
+                  compact={compact}
+                  itemProps={itemProps}
+                  {...child}
+                  {...getItemProps(child)}
+                />
+              ))}
+            </Box>
           </Collapse>
         )}
       </>

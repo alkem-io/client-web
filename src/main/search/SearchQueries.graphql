@@ -111,6 +111,7 @@ fragment SearchResultUser on SearchResultUser {
   user {
     id
     nameID
+    isContactable
     profile {
       displayName
       ...SearchResultProfile
