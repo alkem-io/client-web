@@ -1,5 +1,5 @@
 import React from 'react';
-import CalloutsListDialog from '../../../../collaboration/callout/CalloutsListDialog/CalloutsListDialog';
+import CalloutsListDialog from '../../../../collaboration/callout/calloutsList/CalloutsListDialog';
 import { useBackToStaticPath } from '../../../../../core/routing/useBackToPath';
 import { useTranslation } from 'react-i18next';
 import { UseCalloutsProvided } from '../../../../collaboration/callout/useCallouts/useCallouts';
