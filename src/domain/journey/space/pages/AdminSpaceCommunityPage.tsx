@@ -1,5 +1,6 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC, useCallback, useMemo, useState } from 'react';
 import { Box, Button } from '@mui/material';
+import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import InnovationLibraryIcon from '../../../../main/topLevelPages/InnovationLibraryPage/InnovationLibraryIcon';
 import SpaceSettingsLayout from '../../../platform/admin/space/SpaceSettingsLayout';
 import { SettingsSection } from '../../../platform/admin/layout/EntitySettingsLayout/constants';
@@ -21,6 +22,9 @@ import { Trans, useTranslation } from 'react-i18next';
 import { gutters } from '../../../../core/ui/grid/utils';
 import CommunityGuidelines from '../../../community/community/CommunityGuidelines/CommunityGuidelines';
 import CommunityVirtualContributors from '../../../community/community/CommunityAdmin/CommunityVirtualContributors';
+import ImportTemplatesDialog from '../../../platform/admin/templates/InnovationPacks/ImportTemplatesDialog';
+import { TemplateType } from '../../../collaboration/InnovationPack/InnovationPackProfilePage/InnovationPackProfilePage';
+import MemberGuidelinesImportTemplateCard from '../../../platform/admin/templates/MemberGuidelines/MemberGuidelinesImportTemplateCard';
 
 const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   const { t } = useTranslation();
@@ -74,6 +78,15 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
 
   const currentMembersIds = useMemo(() => users.map(user => user.id), [users]);
 
+  const [isImportTemplatesDialogOpen, setImportTemplatesDialogOpen] = useState(false);
+  const openImportTemplateDialog = useCallback(() => {
+    // loadInnovationPacks();
+    setImportTemplatesDialogOpen(true);
+  }, []);
+  const closeImportTemplatesDialog = useCallback(() => setImportTemplatesDialogOpen(false), []);
+
+  const handleImportTemplate = async () => {};
+
   if (!spaceId || isLoadingSpace) {
     return null;
   }
@@ -122,7 +135,7 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
                   variant="outlined"
                   onClick={event => {
                     event.stopPropagation();
-                    // openImportTemplateDialog
+                    openImportTemplateDialog();
                   }}
                   sx={{ marginRight: theme => theme.spacing(1) }}
                   startIcon={<InnovationLibraryIcon />}
@@ -135,6 +148,30 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
         >
           <CommunityGuidelines communityId={communityId} />
         </PageContentBlockCollapsible>
+        <ImportTemplatesDialog
+          // {...dialogProps}
+          headerText={t('pages.admin.generic.sections.templates.import.title', {
+            templateType: t('common.memberGuidelines'),
+          })}
+          dialogSubtitle={t('pages.admin.generic.sections.templates.import.subtitle')}
+          templateImportCardComponent={MemberGuidelinesImportTemplateCard}
+          // getImportedTemplateContent={getImportedWhiteboardTemplateContent}
+          open={isImportTemplatesDialogOpen}
+          onClose={closeImportTemplatesDialog}
+          onImportTemplate={handleImportTemplate}
+          innovationPacks={[]}
+          // loading={loadingInnovationPacks}
+          actionButton={
+            <Button
+              startIcon={<SystemUpdateAltIcon />}
+              variant="contained"
+              sx={{ marginLeft: theme => theme.spacing(1) }}
+            >
+              {t('buttons.import')}
+            </Button>
+          }
+          templateType={TemplateType.MemberGuidelines}
+        />
         <PageContentColumn columns={6}>
           <PageContentBlock>
             <CommunityUsers

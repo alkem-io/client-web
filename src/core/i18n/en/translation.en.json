@@ -340,6 +340,7 @@
     "innovation-hub": "Innovation Hub",
     "innovation-hubs": "Innovation Hubs",
     "innovationPack": "Innovation Pack",
+    "memberGuidelines": "Member Guidelines",
     "more": "More",
     "url": "URL",
     "sources": "Sources",
@@ -505,7 +506,9 @@
         "InnovationFlowTemplate": "Innovation Flow",
         "InnovationFlowTemplate_plural": "Innovation Flows",
         "CalloutTemplate": "Callout Template",
-        "CalloutTemplate_plural": "Callout Templates"
+        "CalloutTemplate_plural": "Callout Templates",
+        "MemberGuidelinesTemplate": "Member Guidelines Template",
+        "MemberGuidelinesTemplate_plural": "Member Guidelines Templates"
       },
       "calloutType": {
         "LINK_COLLECTION": "Link Collection",

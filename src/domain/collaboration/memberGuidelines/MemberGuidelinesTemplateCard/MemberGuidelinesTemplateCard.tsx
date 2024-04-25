@@ -9,16 +9,21 @@ import InnovationPackIcon from '../../InnovationPack/InnovationPackIcon';
 import CardDescriptionWithTags from '../../../../core/ui/card/CardDescriptionWithTags';
 import CardDetails from '../../../../core/ui/card/CardDetails';
 import { TemplateBase, TemplateCardBaseProps } from '../../templates/CollaborationTemplatesLibrary/TemplateBase';
-import { PostIcon } from '../../post/icon/PostIcon';
+import { MemberGuidelinesIcon } from '../icon/MemberGuidelinesIcon';
 
-interface PostTemplateCardProps extends TemplateCardBaseProps<TemplateBase> {}
+interface MemberGuidelinesTemplateCardProps extends TemplateCardBaseProps<TemplateBase> {}
 
-const PostTemplateCard: FC<PostTemplateCardProps> = ({ template, innovationPack, loading, onClick }) => {
+const MemberGuidelinesTemplateCard: FC<MemberGuidelinesTemplateCardProps> = ({
+  template,
+  innovationPack,
+  loading,
+  onClick,
+}) => {
   console.log(template);
   console.log(innovationPack);
   return (
     <ContributeCard onClick={onClick}>
-      <CardHeader title={template?.profile.displayName} iconComponent={PostIcon}>
+      <CardHeader title={template?.profile.displayName} iconComponent={MemberGuidelinesIcon}>
         {loading && <Skeleton />}
         <CardHeaderCaption logoUrl={innovationPack?.provider?.profile.avatar?.uri}>
           {innovationPack?.provider?.profile.displayName}
@@ -39,4 +44,4 @@ const PostTemplateCard: FC<PostTemplateCardProps> = ({ template, innovationPack,
   );
 };
 
-export default PostTemplateCard;
+export default MemberGuidelinesTemplateCard;

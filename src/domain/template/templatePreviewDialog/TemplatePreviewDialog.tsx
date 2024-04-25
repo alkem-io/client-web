@@ -39,6 +39,10 @@ export type TemplatePreview =
       template: CalloutTemplate & Identifiable;
       templateType: TemplateType.CalloutTemplate;
     };
+// | {
+//     template: MemberGuidelinesTemplate;
+//     templateType: TemplateType.MemberGuidelines;
+//   };
 
 const Noop = () => null;
 
@@ -112,6 +116,18 @@ const TemplatePreviewChooser = ({ templatePreview, ...props }: TemplatePreviewCh
         />
       );
     }
+    // case TemplateType.MemberGuidelines: {
+    //   return (
+    //     <CollaborationTemplatesLibraryPreview
+    //       {...{
+    //         ...templatePreview,
+    //         templateCardComponent: MemberGuidelinesTemplateCard,
+    //         templatePreviewComponent: MemberGuidelinesTemplatePreview,
+    //       }}
+    //       {...props}
+    //     />
+    //   );
+    // }
   }
 };
 
