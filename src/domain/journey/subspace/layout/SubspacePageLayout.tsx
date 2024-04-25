@@ -28,7 +28,7 @@ import FloatingActionButtons from '../../../../core/ui/button/FloatingActionButt
 import { gutters } from '../../../../core/ui/grid/utils';
 import PlatformHelpButton from '../../../../main/ui/helpButton/PlatformHelpButton';
 import { NotFoundErrorBoundary } from '../../../../core/notFound/NotFoundErrorBoundary';
-import { Box, Drawer, IconButton, Paper, Theme, useMediaQuery, useTheme } from '@mui/material';
+import { Box, Drawer, IconButton, Paper, Theme, useMediaQuery } from '@mui/material';
 import GridProvider from '../../../../core/ui/grid/GridProvider';
 import { GRID_COLUMNS_MOBILE } from '../../../../core/ui/grid/constants';
 import SwapColors from '../../../../core/ui/palette/SwapColors';
@@ -45,6 +45,7 @@ import produce from 'immer';
 import WelcomeBlock from './WelcomeBlock';
 import { UrlBaseProvider } from '../../../../core/ui/link/UrlBase';
 import ButtonWithTooltip from '../../../../core/ui/button/ButtonWithTooltip';
+import { theme } from '../../../../core/ui/themes/default/Theme';
 
 export interface SubspacePageLayoutProps {
   journeyId: string | undefined;
@@ -67,7 +68,6 @@ const {
 } = createLayoutHolder();
 
 export const SubspaceInnovationFlow = createLayout(({ columns, children }: PropsWithChildren<{ columns: number }>) => {
-  const theme = useTheme();
   return (
     <GridProvider columns={columns}>
       <Box
@@ -79,7 +79,7 @@ export const SubspaceInnovationFlow = createLayout(({ columns, children }: Props
           background: theme.palette.background.default,
           width: '100%',
           zIndex: 1,
-          boxShadow: `0 6px 5px 2px ${theme.palette.background.default}`,
+          boxShadow: theme => `0 6px 5px 2px ${theme.palette.background.default}`,
         }}
       >
         {children}
