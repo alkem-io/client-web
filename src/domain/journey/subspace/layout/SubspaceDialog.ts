@@ -5,7 +5,7 @@ export enum SubspaceDialog {
   Subspaces = 'Subspaces',
   Contributors = 'Contributors',
   Activity = 'Activity',
-  Events = 'calendar',
+  Timeline = 'calendar',
   Share = 'Share',
   ManageFlow = 'ManageFlow',
   Settings = 'Settings',

@@ -47,7 +47,7 @@ const SubspaceDialogs = ({ dialogOpen, journeyUrl, callouts, journeyId }: Subspa
       />
       <CalendarDialog
         journeyId={journeyId}
-        open={dialogOpen === SubspaceDialog.Events}
+        open={dialogOpen === SubspaceDialog.Timeline}
         onClose={() => navigate(journeyUrl)}
         parentPath={journeyUrl}
         calendarEventNameId={calendarEventNameId}

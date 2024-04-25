@@ -27,10 +27,10 @@ const SubspaceRoute = () => {
         <Route path={SubspaceDialog.Index} element={<SubspaceHomePage dialog={SubspaceDialog.Index} />} />
         <Route path={SubspaceDialog.Subspaces} element={<SubspaceHomePage dialog={SubspaceDialog.Subspaces} />} />
         <Route path={SubspaceDialog.Contributors} element={<SubspaceHomePage dialog={SubspaceDialog.Contributors} />} />
-        <Route path={SubspaceDialog.Events} element={<SubspaceHomePage dialog={SubspaceDialog.Events} />} />
+        <Route path={SubspaceDialog.Timeline} element={<SubspaceHomePage dialog={SubspaceDialog.Timeline} />} />
         <Route
-          path={`${SubspaceDialog.Events}/:${nameOfUrl.calendarEventNameId}`}
-          element={<SubspaceHomePage dialog={SubspaceDialog.Events} />}
+          path={`${SubspaceDialog.Timeline}/:${nameOfUrl.calendarEventNameId}`}
+          element={<SubspaceHomePage dialog={SubspaceDialog.Timeline} />}
         />
 
         {/* Redirecting legacy dashboard links to Subspace Home */}
