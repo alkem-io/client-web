@@ -6,6 +6,7 @@ export interface DialogDefinitionProps {
   dialogType: SubspaceDialog;
   label: ReactNode;
   icon: SvgIconComponent;
+  url?: string;
 }
 
 export const DialogDef = (_props: DialogDefinitionProps) => {

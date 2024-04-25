@@ -22,6 +22,7 @@ import {
 } from '@mui/icons-material';
 import { InnovationFlowIcon } from '../../../collaboration/InnovationFlow/InnovationFlowIcon/InnovationFlowIcon';
 import SubspaceDialogs from './dialogs/SubspaceDialogs';
+import { buildJourneyAdminUrl } from '../../../../main/routing/urlBuilders';
 
 interface SubspaceHomePageProps {
   dialog?: SubspaceDialog;
@@ -107,6 +108,7 @@ const SubspaceHomePage = ({ dialog }: SubspaceHomePageProps) => {
                   dialogType={SubspaceDialog.Settings}
                   label={t(`spaceDialog.${SubspaceDialog.Settings}` as const)}
                   icon={SettingsOutlined}
+                  url={subspace ? buildJourneyAdminUrl(subspace?.profile.url) : undefined}
                 />
               </>
             }
