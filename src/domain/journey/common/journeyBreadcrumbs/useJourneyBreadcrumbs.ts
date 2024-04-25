@@ -41,7 +41,7 @@ export const useJourneyBreadcrumbs = ({ journeyPath, loading = false }: UseJourn
 
   const { data: _opportunity, loading: isLoadingOpportunity } = useJourneyBreadcrumbsSpaceQuery({
     variables: {
-      spaceId: journeyPath[1]!,
+      spaceId: journeyPath[2]!,
     },
     skip: !shouldFetchJourney(2) || loading,
   });
