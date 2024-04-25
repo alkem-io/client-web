@@ -120,7 +120,7 @@ const SubspaceHomeView = ({
       <CalloutsGroupView
         journeyId={journeyId}
         callouts={selectedFlowStateCallouts}
-        canCreateCallout={canCreateCallout && !isMobile}
+        canCreateCallout={canCreateCallout && isMobile}
         canCreateCalloutFromTemplate={canCreateCalloutFromTemplate}
         loading={loading}
         journeyTypeName={journeyTypeName}
