@@ -1512,7 +1512,7 @@ export type MutationKeySpecifier = (
   | 'grantCredentialToUser'
   | 'ingest'
   | 'inviteExistingUserForCommunityMembership'
-  | 'inviteExternalUserForCommunityMembership'
+  | 'inviteForCommunityMembershipByEmail'
   | 'joinCommunity'
   | 'messageUser'
   | 'moveContributionToCallout'
@@ -1675,7 +1675,7 @@ export type MutationFieldPolicy = {
   grantCredentialToUser?: FieldPolicy<any> | FieldReadFunction<any>;
   ingest?: FieldPolicy<any> | FieldReadFunction<any>;
   inviteExistingUserForCommunityMembership?: FieldPolicy<any> | FieldReadFunction<any>;
-  inviteExternalUserForCommunityMembership?: FieldPolicy<any> | FieldReadFunction<any>;
+  inviteForCommunityMembershipByEmail?: FieldPolicy<any> | FieldReadFunction<any>;
   joinCommunity?: FieldPolicy<any> | FieldReadFunction<any>;
   messageUser?: FieldPolicy<any> | FieldReadFunction<any>;
   moveContributionToCallout?: FieldPolicy<any> | FieldReadFunction<any>;
