@@ -344,6 +344,7 @@
     "url": "URL",
     "sources": "Sources",
     "virtual-contributors": "VC",
+    "collaborationTool": "Collaboration tool",
     "genders": {
       "notSpecified": "not specified",
       "male": "male",
