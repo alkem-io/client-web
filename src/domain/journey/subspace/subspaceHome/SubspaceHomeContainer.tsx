@@ -53,18 +53,7 @@ const SubspaceHomeContainer = ({ journeyId, journeyTypeName, children }: Subspac
     journeyTypeName,
   });
 
-  const selectedFlowStateCallouts = useMemo(() => {
-    const filterCallouts = (callouts: TypedCallout[] | undefined) => {
-      return callouts?.filter(callout => {
-        if (!selectedInnovationFlowState) {
-          return true;
-        }
-        return callout.flowStates?.includes(selectedInnovationFlowState);
-      });
-    };
-
-    return filterCallouts(callouts.groupedCallouts[CalloutGroupName.Contribute]);
-  }, [callouts.groupedCallouts, selectedInnovationFlowState]);
+  const selectedFlowStateCallouts = callouts.groupedCallouts[CalloutGroupName.Home];
 
   const providedCallouts = {
     ...callouts,
