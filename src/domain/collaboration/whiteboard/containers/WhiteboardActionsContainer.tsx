@@ -142,6 +142,7 @@ const WhiteboardActionsContainer: FC<WhiteboardActionsContainerProps> = ({ child
             content: whiteboard.content,
           },
         },
+        refetchQueries: ['CalloutWhiteboards'],
       });
       return {
         success: !result.errors || result.errors.length === 0,
