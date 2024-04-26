@@ -18,12 +18,12 @@ const DialogActionsMenu = ({ children, onClose }: PropsWithChildren<DialogAction
         if (!isDialogDef(node)) {
           return node;
         }
-        const { icon, label, dialogType } = node.props;
+        const { icon, label, dialogType, url } = node.props;
         return (
           <NavigatableMenuItem
             key={dialogType}
             iconComponent={icon}
-            route={dialogType}
+            route={url ?? dialogType}
             onClick={onClose}
             typographyComponent={MenuItemLabel}
           >
