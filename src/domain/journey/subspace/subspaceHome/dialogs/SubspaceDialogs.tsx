@@ -12,18 +12,21 @@ import { useParams } from 'react-router-dom';
 import { ShareDialog } from '../../../../shared/components/ShareDialog/ShareDialog';
 import InnovationFlowSettingsDialog from '../../../../collaboration/InnovationFlow/InnovationFlowDialogs/InnovationFlowSettingsDialog';
 import { useCollaborationAuthorization } from '../../../../collaboration/authorization/useCollaborationAuthorization';
-import DashboardNavigation, { DashboardNavigationProps } from '../../../dashboardNavigation/DashboardNavigation';
+import DashboardNavigation from '../../../dashboardNavigation/DashboardNavigation';
 import Dialog from '@mui/material/Dialog';
 import GridProvider from '../../../../../core/ui/grid/GridProvider';
 import { GRID_COLUMNS_MOBILE } from '../../../../../core/ui/grid/constants';
 import { Theme, useMediaQuery } from '@mui/material';
+import { DashboardNavigationItem } from '../../../space/spaceDashboardNavigation/useSpaceDashboardNavigation';
 
 export interface SubspaceDialogsProps {
   dialogOpen: SubspaceDialog | undefined;
   journeyId: string | undefined;
   journeyUrl: string | undefined;
   callouts: UseCalloutsProvided;
-  dashboardNavigation: DashboardNavigationProps | undefined;
+  dashboardNavigation: {
+    dashboardNavigation: DashboardNavigationItem | undefined;
+  };
 }
 
 const SubspaceDialogs = ({
