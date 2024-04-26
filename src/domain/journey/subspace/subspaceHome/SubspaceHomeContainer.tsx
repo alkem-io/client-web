@@ -3,7 +3,7 @@ import useInnovationFlowStates, {
   UseInnovationFlowStatesProvided,
 } from '../../../collaboration/InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
 import useCallouts, { TypedCallout, UseCalloutsProvided } from '../../../collaboration/callout/useCallouts/useCallouts';
-import { CalloutGroupName, SubspacePageSpaceFragment } from '../../../../core/apollo/generated/graphql-schema';
+import { SubspacePageSpaceFragment } from '../../../../core/apollo/generated/graphql-schema';
 import { JourneyTypeName } from '../../JourneyTypeName';
 import { useSubspacePageQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import useStateWithAsyncDefault from '../../../../core/utils/useStateWithAsyncDefault';
@@ -63,7 +63,7 @@ const SubspaceHomeContainer = ({ journeyId, journeyTypeName, children }: Subspac
       });
     };
 
-    return filterCallouts(callouts.groupedCallouts[CalloutGroupName.Contribute]);
+    return filterCallouts(callouts.callouts);
   }, [callouts.groupedCallouts, selectedInnovationFlowState]);
 
   const providedCallouts = {
