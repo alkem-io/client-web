@@ -140,7 +140,11 @@ const SpaceDashboardView = ({
           >
             {t('common.aboutThis', { entity: translatedJourneyTypeName })}
           </FullWidthButton>
-          <DashboardNavigation dashboardNavigation={dashboardNavigation} loading={dashboardNavigationLoading} />
+          <DashboardNavigation
+            currentItemId={spaceId}
+            dashboardNavigation={dashboardNavigation}
+            loading={dashboardNavigationLoading}
+          />
           {timelineReadAccess && <DashboardCalendarSection journeyId={spaceId} journeyTypeName={journeyTypeName} />}
           {communityReadAccess && <DashboardUpdatesSection communityId={communityId} shareUrl={shareUpdatesUrl} />}
         </InfoColumn>
