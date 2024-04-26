@@ -23993,7 +23993,7 @@ export type DeleteCalendarEventMutationVariables = Exact<{
 
 export type DeleteCalendarEventMutation = {
   __typename?: 'Mutation';
-  deleteCalendarEvent: { __typename?: 'CalendarEvent'; id: string; nameID: string };
+  deleteCalendarEvent: { __typename?: 'CalendarEvent'; id: string };
 };
 
 export type UpdateAnswerRelevanceMutationVariables = Exact<{

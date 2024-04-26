@@ -25,7 +25,7 @@ export interface CalendarDialogProps {
   open: boolean;
   journeyId: string | undefined;
   onClose: () => void;
-  parentPath?: string;
+  parentPath: string;
   calendarEventNameId?: string;
 }
 
@@ -56,7 +56,7 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, journeyId, onClose, par
   };
 
   const navigateBack = () => {
-    return navigate(`${parentPath ?? ''}/calendar`);
+    return navigate(`${parentPath}/calendar`);
   };
 
   const emptyCalendarEvent: Partial<CalendarEventDetailData> = useMemo(
@@ -124,9 +124,9 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, journeyId, onClose, par
             // Creating a new event:
           } else if (isCreatingEvent || isCreatingEventInit) {
             const handleNewEventSubmit = async (calendarEvent: CalendarEventFormData) => {
-              await createEvent(calendarEvent);
+              const eventUrl = await createEvent(calendarEvent);
               setIsCreatingEvent(false);
-              navigateBack();
+              eventUrl ? navigate(eventUrl) : navigateBack();
             };
 
             return (
@@ -183,7 +183,6 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, journeyId, onClose, par
                   events={events}
                   onClose={handleClose}
                   highlightedDay={highlightedDay}
-                  parentPath={parentPath}
                   actions={
                     privileges.canCreateEvents && (
                       <IconButton onClick={() => setIsCreatingEvent(true)} size="large" sx={{ padding: 0 }}>

@@ -1,4 +1,4 @@
-import { PropsWithChildren, useState } from 'react';
+import { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CalloutGroupName } from '../../../core/apollo/generated/graphql-schema';
 import PageContent from '../../../core/ui/content/PageContent';
@@ -9,14 +9,13 @@ import MembershipBackdrop from '../../shared/components/Backdrops/MembershipBack
 import { EntityPageSection } from '../../shared/layout/EntityPageSection';
 import usePageLayoutByEntity from '../../shared/utils/usePageLayoutByEntity';
 import CalloutsGroupView from '../callout/CalloutsInContext/CalloutsGroupView';
-import CalloutsListDialog from '../callout/CalloutsListDialog/CalloutsListDialog';
 import CalloutCreationDialog from '../callout/creationDialog/CalloutCreationDialog';
 import { useCalloutCreationWithPreviewImages } from '../callout/creationDialog/useCalloutCreation/useCalloutCreationWithPreviewImages';
 import KnowledgeBaseContainer from './KnowledgeBaseContainer';
 import InfoColumn from '../../../core/ui/content/InfoColumn';
 import ContentColumn from '../../../core/ui/content/ContentColumn';
-import ButtonWithTooltip from '../../../core/ui/button/ButtonWithTooltip';
-import { ListOutlined } from '@mui/icons-material';
+import CalloutsList from '../callout/calloutsList/CalloutsList';
+import PageContentBlock from '../../../core/ui/content/PageContentBlock';
 
 interface KnowledgeBasePageProps {
   journeyTypeName: JourneyTypeName;
@@ -24,7 +23,6 @@ interface KnowledgeBasePageProps {
 
 const KnowledgeBasePage = ({ journeyTypeName }: PropsWithChildren<KnowledgeBasePageProps>) => {
   const PageLayout = usePageLayoutByEntity(journeyTypeName);
-  const [isCalloutsListDialogOpen, setCalloutsListDialogOpen] = useState(false);
 
   const { journeyId, journeyPath } = useRouteResolver();
 
@@ -62,22 +60,14 @@ const KnowledgeBasePage = ({ journeyTypeName }: PropsWithChildren<KnowledgeBaseP
               <PageContent>
                 <InfoColumn>
                   <ContributeCreationBlock canCreate={canCreateCallout} handleCreate={handleCreate} />
-                  <ButtonWithTooltip
-                    iconButton
-                    tooltip={t('spaceDialog.Index')}
-                    onClick={() => setCalloutsListDialogOpen(true)}
-                    variant="contained"
-                  >
-                    <ListOutlined />
-                  </ButtonWithTooltip>
-                  <CalloutsListDialog
-                    open={isCalloutsListDialogOpen}
-                    onClose={() => setCalloutsListDialogOpen(false)}
-                    callouts={groupedCallouts[CalloutGroupName.Knowledge]}
-                    emptyListCaption={t('pages.generic.sections.subentities.empty-list', {
-                      entities: t('common.callouts'),
-                    })}
-                  />
+                  <PageContentBlock>
+                    <CalloutsList
+                      callouts={groupedCallouts[CalloutGroupName.Knowledge]}
+                      emptyListCaption={t('pages.generic.sections.subentities.empty-list', {
+                        entities: t('common.callouts'),
+                      })}
+                    />
+                  </PageContentBlock>
                 </InfoColumn>
 
                 <ContentColumn>

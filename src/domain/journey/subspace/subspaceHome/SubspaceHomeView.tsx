@@ -105,7 +105,7 @@ const SubspaceHomeView = ({
 
   return (
     <>
-      <SubspaceInnovationFlow columns={columns}>
+      <SubspaceInnovationFlow>
         {innovationFlowStates && currentInnovationFlowState && selectedInnovationFlowState && collaborationId && (
           <InnovationFlowStates
             states={innovationFlowStates}

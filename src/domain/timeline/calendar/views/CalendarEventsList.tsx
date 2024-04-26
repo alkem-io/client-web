@@ -19,6 +19,7 @@ import useScrollToElement from '../../../shared/utils/scroll/useScrollToElement'
 import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
 import { HIGHLIGHT_PARAM_NAME } from '../CalendarDialog';
 import { useQueryParams } from '../../../../core/routing/useQueryParams';
+import { useLocation } from 'react-router-dom';
 
 interface CalendarEventsListProps {
   events: {
@@ -33,26 +34,21 @@ interface CalendarEventsListProps {
   }[];
   highlightedDay?: Date | null;
   actions?: ReactNode;
-  parentPath?: string;
   onClose?: DialogHeaderProps['onClose'];
 }
 
-const CalendarEventsList = ({ events, highlightedDay, actions, parentPath = '', onClose }: CalendarEventsListProps) => {
+const CalendarEventsList = ({ events, highlightedDay, actions, onClose }: CalendarEventsListProps) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const urlQueryParams = useQueryParams();
   const breakpoint = useCurrentBreakpoint();
-  const calendarPath = parentPath
-    ? parentPath.indexOf('calendar') > -1
-      ? `${parentPath}`
-      : `${parentPath}/calendar`
-    : '';
+  const { pathname } = useLocation();
 
   const [scrollToElement, scrollTo] = useState<string>();
   const { scrollable } = useScrollToElement(scrollToElement, { enabled: Boolean(scrollToElement), method: 'element' });
 
-  const handleClickOnEvent = (nameID: string) => {
-    navigate(`${calendarPath}/${nameID}`);
+  const handleClickOnEvent = (url: string) => {
+    navigate(url);
   };
 
   const { futureEvents = [], pastEvents = [] } = useMemo(() => {
@@ -87,13 +83,14 @@ const CalendarEventsList = ({ events, highlightedDay, actions, parentPath = '', 
     if (date) {
       const nextUrlParams = new URLSearchParams(urlQueryParams.toString());
       nextUrlParams.set(HIGHLIGHT_PARAM_NAME, dayjs(date).format(INTERNAL_DATE_FORMAT));
-      navigate(`${calendarPath}?${nextUrlParams}`, { replace: true });
+      navigate(`${pathname}?${nextUrlParams}`, { replace: true });
     }
     if (events.length > 0) {
       // Scroll again in case url hasn't changed but user has scrolled out of the view
       scrollTo(events[0].nameID);
     }
   };
+
   return (
     <GridProvider columns={12}>
       <DialogHeader onClose={onClose}>
@@ -116,7 +113,7 @@ const CalendarEventsList = ({ events, highlightedDay, actions, parentPath = '', 
                   ref={scrollable(event.nameID)}
                   highlighted={dayjs(event.startDate).startOf('day').isSame(highlightedDay)}
                   event={event}
-                  onClick={() => handleClickOnEvent(event.nameID)}
+                  onClick={() => handleClickOnEvent(event.profile.url)}
                 />
               ))}
               {sortedPastEvents.length > 0 && (
@@ -128,7 +125,7 @@ const CalendarEventsList = ({ events, highlightedDay, actions, parentPath = '', 
                       ref={scrollable(event.nameID)}
                       highlighted={dayjs(event.startDate).startOf('day').isSame(highlightedDay)}
                       event={event}
-                      onClick={() => handleClickOnEvent(event.nameID)}
+                      onClick={() => handleClickOnEvent(event.profile.url)}
                     />
                   ))}
                 </>

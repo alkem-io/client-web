@@ -14,7 +14,6 @@ import ChildJourneyPageBanner from '../../../journey/common/childJourneyPageBann
 import JourneyBreadcrumbs from '../../../journey/common/journeyBreadcrumbs/JourneyBreadcrumbs';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 import BackButton from '../../../../core/ui/actions/BackButton';
-import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 
 interface SubspaceSettingsLayoutProps {
   currentTab: SettingsSection;
@@ -68,10 +67,7 @@ const SubspaceSettingsLayout: FC<SubspaceSettingsLayoutProps> = props => {
       pageBanner={<ChildJourneyPageBanner journeyId={journeyId} />}
       breadcrumbs={<JourneyBreadcrumbs journeyPath={journeyPath} settings />}
       backButton={
-        <RouterLink
-          to={`${entityAttrs.profile.url}/${EntityPageSection.Dashboard}`}
-          sx={{ alignSelf: 'center', marginLeft: 'auto' }}
-        >
+        <RouterLink to={entityAttrs.profile.url} sx={{ alignSelf: 'center', marginLeft: 'auto' }}>
           <BackButton variant="outlined" sx={{ textTransform: 'capitalize' }}>
             {t('navigation.admin.settingsMenu.quit')}
           </BackButton>

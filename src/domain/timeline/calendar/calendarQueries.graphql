@@ -110,6 +110,5 @@ mutation updateCalendarEvent($eventData: UpdateCalendarEventInput!) {
 mutation deleteCalendarEvent($deleteData: DeleteCalendarEventInput!) {
   deleteCalendarEvent(deleteData: $deleteData) {
     id
-    nameID
   }
 }

@@ -23,7 +23,7 @@ import { Identifiable } from '../../../core/utils/Identifiable';
 export interface DashboardNavigationProps {
   dashboardNavigation: DashboardNavigationItem | undefined;
   loading?: boolean;
-  currentItemId?: string;
+  currentItemId: string | undefined;
   itemProps?:
     | Partial<DashboardNavigationItemViewProps>
     | ((item: DashboardNavigationItem) => Partial<DashboardNavigationItemViewProps>);

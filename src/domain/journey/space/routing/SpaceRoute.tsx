@@ -32,11 +32,8 @@ export const SpaceRoute = () => {
           path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}/*`}
           element={<SpaceCalloutPage>{props => <CalloutRoute {...props} />}</SpaceCalloutPage>}
         />
-        <Route path={`${routes.Dashboard}/calendar`} element={<SpaceDashboardPage dialog="calendar" />} />
-        <Route
-          path={`${routes.Dashboard}/calendar/:${nameOfUrl.calendarEventNameId}`}
-          element={<SpaceDashboardPage dialog="calendar" />}
-        />
+        <Route path="calendar" element={<SpaceDashboardPage dialog="calendar" />} />
+        <Route path={`calendar/:${nameOfUrl.calendarEventNameId}`} element={<SpaceDashboardPage dialog="calendar" />} />
         <Route path={routes.Community} element={<SpaceCommunityPage />} />
         <Route path={routes.About} element={<SpaceDashboardPage dialog="about" />} />
         <Route path={routes.Subspaces} element={<SpaceChallengesPage />} />
