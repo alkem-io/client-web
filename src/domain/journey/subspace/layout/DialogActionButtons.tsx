@@ -29,10 +29,10 @@ const DialogActionButtons = ({ column = false, children }: PropsWithChildren<Dia
           return node;
         }
 
-        const { icon: Icon, label, dialogType, url } = node.props;
+        const { icon: Icon, label, dialogType, url = dialogType } = node.props;
 
         return (
-          <RouterLink to={url ?? dialogType} key={dialogType} sx={{ flexShrink: 1, minWidth: 0 }}>
+          <RouterLink to={url} key={dialogType} sx={{ flexShrink: 1, minWidth: 0 }}>
             <ButtonWithTooltip
               variant={column ? 'text' : 'contained'}
               tooltip={String(label)}
