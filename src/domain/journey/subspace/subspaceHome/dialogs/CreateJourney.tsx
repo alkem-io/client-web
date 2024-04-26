@@ -1,7 +1,6 @@
 import React, { useCallback } from 'react';
 import useNavigate from '../../../../../core/routing/useNavigate';
 import { useTranslation } from 'react-i18next';
-import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import { JourneyCreationDialog } from '../../../../shared/components/JorneyCreationDialog';
 import { CreateOpportunityForm } from '../../../opportunity/forms/CreateOpportunityForm';
 import { JourneyFormValues } from '../../../../shared/components/JorneyCreationDialog/JourneyCreationForm';
@@ -13,12 +12,11 @@ import {
 export interface CreateJourneyProps {
   isVisible: boolean;
   onClose: () => void;
-  parentSpaceId?: string;
+  parentSpaceId: string | undefined;
 }
 
 export const CreateJourney = ({ isVisible = false, onClose, parentSpaceId = '' }: CreateJourneyProps) => {
   const { t } = useTranslation();
-  const { spaceNameId = '' } = useUrlParams();
   const navigate = useNavigate();
 
   const [createSubspace] = useCreateSubspaceMutation({
@@ -30,7 +28,7 @@ export const CreateJourney = ({ isVisible = false, onClose, parentSpaceId = '' }
       const { data } = await createSubspace({
         variables: {
           input: {
-            spaceID: parentSpaceId || spaceNameId,
+            spaceID: parentSpaceId,
             context: {
               vision: value.vision,
             },
@@ -54,7 +52,7 @@ export const CreateJourney = ({ isVisible = false, onClose, parentSpaceId = '' }
         onClose();
       }
     },
-    [navigate, createSubspace, parentSpaceId, spaceNameId]
+    [navigate, createSubspace, parentSpaceId]
   );
 
   return (
