@@ -10,6 +10,8 @@ import ActivityDialog from '../../../common/Activity/ActivityDialog';
 import CalendarDialog from '../../../../timeline/calendar/CalendarDialog';
 import { useParams } from 'react-router-dom';
 import { ShareDialog } from '../../../../shared/components/ShareDialog/ShareDialog';
+import InnovationFlowSettingsDialog from '../../../../collaboration/InnovationFlow/InnovationFlowDialogs/InnovationFlowSettingsDialog';
+import { useCollaborationAuthorization } from '../../../../collaboration/authorization/useCollaborationAuthorization';
 
 export interface SubspaceDialogsProps {
   dialogOpen: SubspaceDialog | undefined;
@@ -23,6 +25,8 @@ const SubspaceDialogs = ({ dialogOpen, journeyUrl, callouts, journeyId }: Subspa
   const { calendarEventNameId } = useParams();
 
   const handleClose = useBackToStaticPath(journeyUrl ?? '');
+
+  const { collaborationId } = useCollaborationAuthorization({ journeyId });
 
   if (!dialogOpen || !journeyId || !journeyUrl) {
     return null;
@@ -58,6 +62,11 @@ const SubspaceDialogs = ({ dialogOpen, journeyUrl, callouts, journeyId }: Subspa
         onClose={handleClose}
         url={journeyUrl}
         entityTypeName={'space'}
+      />
+      <InnovationFlowSettingsDialog
+        collaborationId={collaborationId}
+        open={dialogOpen === SubspaceDialog.ManageFlow}
+        onClose={handleClose}
       />
     </>
   );
