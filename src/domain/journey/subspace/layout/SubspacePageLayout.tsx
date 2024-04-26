@@ -12,10 +12,7 @@ import ChildJourneyPageBanner from '../../common/childJourneyPageBanner/ChildJou
 import JourneyUnauthorizedDialog from '../../common/JourneyUnauthorizedDialog/JourneyUnauthorizedDialog';
 import JourneyUnauthorizedDialogContainer from '../../common/JourneyUnauthorizedDialog/JourneyUnauthorizedDialogContainer';
 import JourneyBreadcrumbs from '../../common/journeyBreadcrumbs/JourneyBreadcrumbs';
-import DashboardNavigation, { DashboardNavigationProps } from '../../dashboardNavigation/DashboardNavigation';
 import PageContent from '../../../../core/ui/content/PageContent';
-import useSpaceDashboardNavigation from '../../space/spaceDashboardNavigation/useSpaceDashboardNavigation';
-import { useSpace } from '../../space/SpaceContext/useSpace';
 import { JourneyPath } from '../../../../main/routing/resolvers/RouteResolver';
 import PageContentColumnBase from '../../../../core/ui/content/PageContentColumnBase';
 import { useTranslation } from 'react-i18next';
@@ -59,6 +56,7 @@ export interface SubspacePageLayoutProps {
     // TODO make required
     displayName: string;
   };
+  infoColumnChildren?: ReactNode;
 }
 
 const {
@@ -98,11 +96,6 @@ export const useConsumeAction = (action: SubspaceDialog | undefined | null | fal
   return actionDef;
 };
 
-const Outline = (props: DashboardNavigationProps) => {
-  useConsumeAction(SubspaceDialog.Outline);
-  return <DashboardNavigation {...props} />;
-};
-
 const SubspacePageLayout = ({
   journeyId,
   journeyPath,
@@ -113,14 +106,8 @@ const SubspacePageLayout = ({
   actions,
   profile,
   children,
+  infoColumnChildren,
 }: PropsWithChildren<SubspacePageLayoutProps>) => {
-  const { spaceId } = useSpace();
-
-  const { dashboardNavigation } = useSpaceDashboardNavigation({
-    spaceId,
-    skip: !spaceId,
-  });
-
   const [isExpanded, setIsExpanded] = useState(false);
 
   const { t } = useTranslation();
@@ -213,7 +200,7 @@ const SubspacePageLayout = ({
                       </ButtonWithTooltip>
                     )}
                   </DialogActionButtons>
-                  <Outline currentItemId={journeyId} dashboardNavigation={dashboardNavigation} compact={isExpanded} />
+                  {infoColumnChildren}
                 </InfoColumn>
                 <PageContentColumnBase
                   columns={isExpanded ? 12 : 9}
