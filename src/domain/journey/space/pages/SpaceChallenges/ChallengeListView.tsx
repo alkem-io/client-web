@@ -181,7 +181,7 @@ export const ChallengeListView: FC = () => {
         icon={<ChallengeIcon />}
         journeyName={t('common.subspace')}
         onClose={() => setJourneyCreationDialogOpen(false)}
-        OnCreate={handleCreate}
+        onCreate={handleCreate}
         formComponent={CreateChallengeForm}
       />
     </>

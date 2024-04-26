@@ -122,7 +122,7 @@ export const OpportunityList: FC = () => {
         icon={<OpportunityIcon />}
         journeyName={t('common.subspace')}
         onClose={() => setOpen(false)}
-        OnCreate={handleCreate}
+        onCreate={handleCreate}
         formComponent={CreateOpportunityForm}
       />
     </>

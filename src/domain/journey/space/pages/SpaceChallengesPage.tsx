@@ -86,7 +86,7 @@ const SpaceChallengesPage: FC<SpaceChallengesPageProps> = () => {
                 icon={<ChallengeIcon />}
                 journeyName={t('common.subspace')}
                 onClose={() => setCreateDialogOpen(false)}
-                OnCreate={handleCreate}
+                onCreate={handleCreate}
                 formComponent={CreateChallengeForm}
               />
             }

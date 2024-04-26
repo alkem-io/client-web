@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import SubspaceHomeView from './SubspaceHomeView';
 import SubspaceHomeContainer from './SubspaceHomeContainer';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
@@ -28,6 +28,7 @@ import useSpaceDashboardNavigation from '../../space/spaceDashboardNavigation/us
 import DashboardNavigation, { DashboardNavigationProps } from '../../dashboardNavigation/DashboardNavigation';
 import { useConsumeAction } from '../layout/SubspacePageLayout';
 import { useColumns } from '../../../../core/ui/grid/GridContext';
+import CreateJourney from './dialogs/CreateJourney';
 
 interface SubspaceHomePageProps {
   dialog?: SubspaceDialog;
@@ -54,6 +55,32 @@ const SubspaceHomePage = ({ dialog }: SubspaceHomePageProps) => {
     spaceId,
     skip: !spaceId,
   });
+
+  const [createSpaceState, setCreateSpaceState] = useState<
+    | {
+        isDialogVisible: true;
+        parentSpaceId: string;
+      }
+    | {
+        isDialogVisible: false;
+        parentSpaceId?: never;
+      }
+  >({
+    isDialogVisible: false,
+  });
+
+  const openCreateSubspace = ({ id }) => {
+    setCreateSpaceState({
+      isDialogVisible: true,
+      parentSpaceId: id,
+    });
+  };
+
+  const onCreateJourneyClose = () => {
+    setCreateSpaceState({
+      isDialogVisible: false,
+    });
+  };
 
   return (
     <SubspaceHomeContainer journeyId={journeyId} journeyTypeName={journeyTypeName}>
@@ -132,7 +159,11 @@ const SubspaceHomePage = ({ dialog }: SubspaceHomePageProps) => {
             }
             profile={subspace?.profile}
             infoColumnChildren={
-              <Outline currentItemId={journeyId} dashboardNavigation={dashboardNavigation.dashboardNavigation} />
+              <Outline
+                currentItemId={journeyId}
+                dashboardNavigation={dashboardNavigation.dashboardNavigation}
+                onCreateSubspace={openCreateSubspace}
+              />
             }
           >
             <SubspaceHomeView
@@ -144,6 +175,11 @@ const SubspaceHomePage = ({ dialog }: SubspaceHomePageProps) => {
             />
           </SubspacePageLayout>
           {directMessageDialog}
+          <CreateJourney
+            isVisible={createSpaceState.isDialogVisible}
+            onClose={onCreateJourneyClose}
+            parentSpaceId={createSpaceState.parentSpaceId}
+          />
           <SubspaceDialogs
             dialogOpen={dialog}
             callouts={callouts}
