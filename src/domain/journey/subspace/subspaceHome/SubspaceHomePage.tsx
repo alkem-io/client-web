@@ -23,10 +23,21 @@ import {
 import { InnovationFlowIcon } from '../../../collaboration/InnovationFlow/InnovationFlowIcon/InnovationFlowIcon';
 import SubspaceDialogs from './dialogs/SubspaceDialogs';
 import { buildJourneyAdminUrl } from '../../../../main/routing/urlBuilders';
+import { useSpace } from '../../space/SpaceContext/useSpace';
+import useSpaceDashboardNavigation from '../../space/spaceDashboardNavigation/useSpaceDashboardNavigation';
+import DashboardNavigation, { DashboardNavigationProps } from '../../dashboardNavigation/DashboardNavigation';
+import { useConsumeAction } from '../layout/SubspacePageLayout';
+import { useColumns } from '../../../../core/ui/grid/GridContext';
 
 interface SubspaceHomePageProps {
   dialog?: SubspaceDialog;
 }
+
+const Outline = (props: DashboardNavigationProps) => {
+  useConsumeAction(SubspaceDialog.Outline);
+  const columns = useColumns();
+  return <DashboardNavigation compact={columns === 0} {...props} />;
+};
 
 const SubspaceHomePage = ({ dialog }: SubspaceHomePageProps) => {
   const { t } = useTranslation();
@@ -35,6 +46,13 @@ const SubspaceHomePage = ({ dialog }: SubspaceHomePageProps) => {
 
   const { sendMessage, directMessageDialog } = useDirectMessageDialog({
     dialogTitle: t('send-message-dialog.direct-message-title'),
+  });
+
+  const { spaceId } = useSpace();
+
+  const dashboardNavigation = useSpaceDashboardNavigation({
+    spaceId,
+    skip: !spaceId,
   });
 
   return (
@@ -113,6 +131,9 @@ const SubspaceHomePage = ({ dialog }: SubspaceHomePageProps) => {
               </>
             }
             profile={subspace?.profile}
+            infoColumnChildren={
+              <Outline currentItemId={journeyId} dashboardNavigation={dashboardNavigation.dashboardNavigation} />
+            }
           >
             <SubspaceHomeView
               journeyId={journeyId}
@@ -128,6 +149,7 @@ const SubspaceHomePage = ({ dialog }: SubspaceHomePageProps) => {
             callouts={callouts}
             journeyId={journeyId}
             journeyUrl={subspace?.profile.url}
+            dashboardNavigation={dashboardNavigation}
           />
         </>
       )}
