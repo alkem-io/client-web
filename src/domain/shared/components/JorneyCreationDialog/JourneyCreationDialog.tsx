@@ -9,7 +9,7 @@ import { JourneyCreationForm, JourneyFormValues } from './JourneyCreationForm';
 
 interface JourneyCreationDialogProps {
   open: boolean;
-  icon: React.ReactNode;
+  icon?: React.ReactNode;
   journeyName: string;
   onClose: () => void;
   OnCreate: (value: JourneyFormValues) => Promise<void>;
