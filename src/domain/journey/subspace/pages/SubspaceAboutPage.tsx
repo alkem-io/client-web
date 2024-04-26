@@ -2,7 +2,7 @@ import React, { FC, useState } from 'react';
 import { useSubSpace } from '../hooks/useChallenge';
 import AboutPageContainer from '../../common/AboutPageContainer/AboutPageContainer';
 import ChallengeDashboardPage from './SubspaceDashboardPage';
-import useBackToParentPage from '../../../../core/routing/deprecated/useBackToParentPage';
+import { useBackToStaticPath } from '../../../../core/routing/useBackToPath';
 import JourneyAboutDialog from '../../common/JourneyAboutDialog/JourneyAboutDialog';
 import { IconButton } from '@mui/material';
 import { Close } from '@mui/icons-material';
@@ -18,7 +18,7 @@ import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolv
 const ChallengeAboutPage: FC = () => {
   const { communityId, profile } = useSubSpace();
 
-  const [backToParentPage] = useBackToParentPage('../dashboard');
+  const backToParentPage = useBackToStaticPath(profile.url);
 
   const sendMessageToCommunityLeads = useSendMessageToCommunityLeads(communityId);
 
