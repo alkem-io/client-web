@@ -2755,6 +2755,10 @@ export const SubspaceInfoFragmentDoc = gql`
 export const SubspacePageSpaceFragmentDoc = gql`
   fragment SubspacePageSpace on Space {
     id
+    authorization {
+      id
+      myPrivileges
+    }
     profile {
       id
       url

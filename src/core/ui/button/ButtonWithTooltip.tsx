@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { Button, ButtonProps, Tooltip, TooltipProps, useTheme } from '@mui/material';
 import { gutters } from '../grid/utils';
 import { ButtonTypeMap } from '@mui/material/Button/Button';
 import { Caption } from '../typography';
 
 interface ButtonWithTooltipProps {
-  tooltip: string;
+  tooltip: ReactNode;
   iconButton?: boolean;
   tooltipPlacement?: TooltipProps['placement'];
 }
@@ -53,7 +53,7 @@ const ButtonWithTooltip = <D extends React.ElementType = ButtonTypeMap['defaultC
       componentsProps={{ tooltip: { sx: tooltipStyle } }}
       placement={tooltipPlacement}
     >
-      <Button aria-label={tooltip} {...props} sx={buttonStyle} startIcon={iconButton && children}>
+      <Button aria-label={String(tooltip)} {...props} sx={buttonStyle} startIcon={iconButton && children}>
         {!iconButton && children}
       </Button>
     </Tooltip>

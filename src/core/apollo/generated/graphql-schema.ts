@@ -20684,6 +20684,9 @@ export type SubspacePageQuery = {
   space: {
     __typename?: 'Space';
     id: string;
+    authorization?:
+      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+      | undefined;
     profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
     context: { __typename?: 'Context'; id: string; vision?: string | undefined };
     community: {
@@ -20784,6 +20787,9 @@ export type SubspacePageQuery = {
 export type SubspacePageSpaceFragment = {
   __typename?: 'Space';
   id: string;
+  authorization?:
+    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+    | undefined;
   profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
   context: { __typename?: 'Context'; id: string; vision?: string | undefined };
   community: {

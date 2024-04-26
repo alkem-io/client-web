@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { Button, ButtonProps } from '@mui/material';
+import { Button, Theme, useMediaQuery } from '@mui/material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { JourneyTypeName } from '../../JourneyTypeName';
 import { CalloutGroupName } from '../../../../core/apollo/generated/graphql-schema';
@@ -7,18 +7,14 @@ import InnovationFlowStates from '../../../collaboration/InnovationFlow/Innovati
 import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
 import { OrderUpdate, TypedCallout } from '../../../collaboration/callout/useCallouts/useCallouts';
 import { InnovationFlowState } from '../../../collaboration/InnovationFlow/InnovationFlow';
-import React, { useState } from 'react';
+import React from 'react';
 import { SubspaceInnovationFlow, useConsumeAction } from '../layout/SubspacePageLayout';
-import { useColumns } from '../../../../core/ui/grid/GridContext';
-import { GRID_COLUMNS_MOBILE } from '../../../../core/ui/grid/constants';
-import ButtonWithTooltip from '../../../../core/ui/button/ButtonWithTooltip';
 import { useCalloutCreationWithPreviewImages } from '../../../collaboration/callout/creationDialog/useCalloutCreation/useCalloutCreationWithPreviewImages';
 import CalloutCreationDialog from '../../../collaboration/callout/creationDialog/CalloutCreationDialog';
 import { SubspaceDialog } from '../layout/SubspaceDialog';
 import InnovationFlowVisualizerMobile from '../../../collaboration/InnovationFlow/InnovationFlowVisualizers/InnovationFlowVisualizerMobile';
 import InnovationFlowChips from '../../../collaboration/InnovationFlow/InnovationFlowVisualizers/InnovationFlowChips';
-import InnovationFlowSettingsDialog from '../../../collaboration/InnovationFlow/InnovationFlowDialogs/InnovationFlowSettingsDialog';
-import { CalloutGroupNameValuesMap } from '../../../collaboration/callout/CalloutsInContext/CalloutsGroup';
+import InnovationFlowSettingsButton from '../../../collaboration/InnovationFlow/InnovationFlowDialogs/InnovationFlowSettingsButton';
 
 interface SubspaceHomeViewProps {
   journeyId: string | undefined;
@@ -27,6 +23,7 @@ interface SubspaceHomeViewProps {
   currentInnovationFlowState: string | undefined;
   selectedInnovationFlowState: string | undefined;
   onSelectInnovationFlowState: (state: InnovationFlowState) => void;
+  canEditSubspaceSettings: boolean | undefined;
   canEditInnovationFlow: boolean | undefined;
   selectedFlowStateCallouts: TypedCallout[] | undefined;
   canCreateCallout: boolean;
@@ -38,32 +35,6 @@ interface SubspaceHomeViewProps {
   journeyTypeName: JourneyTypeName;
 }
 
-const InnovationFlowSettingsButton = ({ collaborationId, ...props }: ButtonProps & { collaborationId: string }) => {
-  const settingsActionDef = useConsumeAction(SubspaceDialog.ManageFlow);
-  const [isSettingsDialogOpen, setSettingsDialogOpen] = useState(false);
-
-  const SettingsIcon = settingsActionDef?.icon;
-  return (
-    <>
-      <ButtonWithTooltip
-        tooltip={String(settingsActionDef?.label)}
-        variant="outlined"
-        iconButton
-        {...props}
-        onClick={() => setSettingsDialogOpen(true)}
-      >
-        {SettingsIcon && <SettingsIcon />}
-      </ButtonWithTooltip>
-      <InnovationFlowSettingsDialog
-        open={isSettingsDialogOpen}
-        onClose={() => setSettingsDialogOpen(false)}
-        collaborationId={collaborationId}
-        filterCalloutGroups={[CalloutGroupNameValuesMap.Home]}
-      />
-    </>
-  );
-};
-
 const SubspaceHomeView = ({
   journeyId,
   collaborationId,
@@ -71,6 +42,7 @@ const SubspaceHomeView = ({
   currentInnovationFlowState,
   selectedInnovationFlowState,
   onSelectInnovationFlowState,
+  canEditSubspaceSettings = false,
   canEditInnovationFlow = false,
   selectedFlowStateCallouts,
   canCreateCallout,
@@ -81,7 +53,8 @@ const SubspaceHomeView = ({
   refetchCallout,
   journeyTypeName,
 }: SubspaceHomeViewProps) => {
-  const columns = useColumns();
+  const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
+
   const { t } = useTranslation();
   const { isCalloutCreationDialogOpen, handleCreateCalloutOpened, handleCreateCalloutClosed, handleCreateCallout } =
     useCalloutCreationWithPreviewImages({ journeyId });
@@ -101,7 +74,13 @@ const SubspaceHomeView = ({
     </Button>
   );
 
-  const isMobile = columns <= GRID_COLUMNS_MOBILE;
+  // Consuming this action here will hide the button if the user doesn't have permission to edit the settings
+  useConsumeAction(!canEditSubspaceSettings ? SubspaceDialog.Settings : undefined);
+
+  // If it's mobile the IF Settings action will be consumed somewhere else
+  const settingsActionDef = useConsumeAction(
+    !canEditInnovationFlow || !isMobile ? SubspaceDialog.ManageFlow : undefined
+  );
 
   return (
     <>
@@ -115,7 +94,13 @@ const SubspaceHomeView = ({
             visualizer={isMobile ? InnovationFlowVisualizerMobile : InnovationFlowChips}
             createButton={canCreateCallout && createButton}
             settingsButton={
-              canEditInnovationFlow ? <InnovationFlowSettingsButton collaborationId={collaborationId} /> : undefined
+              settingsActionDef && canEditInnovationFlow ? (
+                <InnovationFlowSettingsButton
+                  collaborationId={collaborationId}
+                  icon={settingsActionDef.icon}
+                  tooltip={settingsActionDef.label}
+                />
+              ) : undefined
             }
           />
         )}

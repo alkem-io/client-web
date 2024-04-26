@@ -6,7 +6,7 @@ import useDirectMessageDialog from '../../../communication/messaging/DirectMessa
 import { useTranslation } from 'react-i18next';
 import { SubspacePageLayout } from '../../common/EntityPageLayout';
 import JourneyDashboardWelcomeBlock from '../../common/journeyDashboardWelcomeBlock/JourneyDashboardWelcomeBlock';
-import { CommunityMembershipStatus } from '../../../../core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, CommunityMembershipStatus } from '../../../../core/apollo/generated/graphql-schema';
 import { DialogDef } from '../layout/DialogDefinition';
 import { SubspaceDialog } from '../layout/SubspaceDialog';
 import {
@@ -170,6 +170,7 @@ const SubspaceHomePage = ({ dialog }: SubspaceHomePageProps) => {
               journeyId={journeyId}
               collaborationId={subspace?.collaboration.id}
               journeyTypeName={journeyTypeName}
+              canEditSubspaceSettings={subspace?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update)}
               {...innovationFlow}
               {...callouts}
             />
