@@ -4,7 +4,7 @@ import { Identifiable } from '../../../../core/utils/Identifiable';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import { useInnovationFlowTemplateStatesQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { InnovationFlowState } from '../InnovationFlow';
-import InnovationFlowChips from '../InnovationFlowChips/InnovationFlowChips';
+import InnovationFlowChips from '../InnovationFlowVisualizers/InnovationFlowChips';
 
 interface InnovationFlowTemplatePreviewProps {
   template?: Identifiable;

@@ -3,7 +3,7 @@ import { Route, Routes } from 'react-router';
 import { Navigate } from 'react-router-dom';
 import { Error404 } from '../../../../core/pages/Errors/Error404';
 import { nameOfUrl } from '../../../../main/routing/urlParams';
-import { OpportunityProvider } from '../../opportunity/context/OpportunityProvider';
+import SubspaceProvider from '../context/SubspaceProvider';
 import { CommunityContextProvider } from '../../../community/community/CommunityContext';
 import { NotFoundPageLayout } from '../../common/EntityPageLayout';
 import { routes } from '../routes/challengeRoutes';
@@ -57,11 +57,11 @@ const SubspaceRoute = () => {
         <Route
           path={`opportunities/:${nameOfUrl.subsubspaceNameId}/*`}
           element={
-            <OpportunityProvider>
+            <SubspaceProvider>
               <CommunityContextProvider>
                 <SubspaceRoute />
               </CommunityContextProvider>
-            </OpportunityProvider>
+            </SubspaceProvider>
           }
         />
         <Route path="explore/*" element={<Redirect to={routes.Contribute} />} />
