@@ -56,9 +56,17 @@ const SubspaceHomePage = ({ dialog }: SubspaceHomePageProps) => {
     skip: !spaceId,
   });
 
-  const [createSpaceState, setCreateSpaceState] = useState({
+  const [createSpaceState, setCreateSpaceState] = useState<
+    | {
+        isDialogVisible: true;
+        parentSpaceId: string;
+      }
+    | {
+        isDialogVisible: false;
+        parentSpaceId?: never;
+      }
+  >({
     isDialogVisible: false,
-    parentSpaceId: '',
   });
 
   const openCreateSubspace = ({ id }) => {
@@ -70,7 +78,6 @@ const SubspaceHomePage = ({ dialog }: SubspaceHomePageProps) => {
 
   const onCreateJourneyClose = () => {
     setCreateSpaceState({
-      ...createSpaceState,
       isDialogVisible: false,
     });
   };
