@@ -12,7 +12,7 @@ interface JourneyCreationDialogProps {
   icon?: React.ReactNode;
   journeyName: string;
   onClose: () => void;
-  OnCreate: (value: JourneyFormValues) => Promise<void>;
+  onCreate: (value: JourneyFormValues) => Promise<void>;
   formComponent: React.ComponentType<JourneyCreationForm>;
 }
 
@@ -21,7 +21,7 @@ export const JourneyCreationDialog: FC<JourneyCreationDialogProps> = ({
   icon,
   journeyName,
   onClose,
-  OnCreate,
+  onCreate,
   formComponent: FormComponent,
 }) => {
   const { t } = useTranslation();
@@ -39,7 +39,7 @@ export const JourneyCreationDialog: FC<JourneyCreationDialogProps> = ({
   const handleValidChange = (valid: boolean) => setFormInvalid(!valid);
   const handleCreate = async () => {
     setSubmitting(true);
-    await OnCreate(value);
+    await onCreate(value);
     setSubmitting(false);
   };
 

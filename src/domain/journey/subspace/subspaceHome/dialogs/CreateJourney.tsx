@@ -63,7 +63,7 @@ export const CreateJourney = ({ isVisible = false, onClose, parentSpaceId = '' }
         open={isVisible}
         journeyName={t('common.subspace')}
         onClose={onClose}
-        OnCreate={handleCreate}
+        onCreate={handleCreate}
         formComponent={CreateOpportunityForm}
       />
     </>
