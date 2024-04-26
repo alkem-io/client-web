@@ -11,22 +11,26 @@ import PageContentBlockContextualMenu from '../../../../core/ui/content/PageCont
 import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 import ImportInnovationFlowDialog from './ImportInnovationFlow/ImportInnovationFlowDialog';
 import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
+import { CalloutGroupNameValuesMap } from '../../callout/CalloutsInContext/CalloutsGroup';
 
 interface InnovationFlowSettingsDialogProps {
   open?: boolean;
   onClose: () => void;
   collaborationId: string | undefined;
+  filterCalloutGroups?: CalloutGroupNameValuesMap[];
 }
 
 const InnovationFlowSettingsDialog: FC<InnovationFlowSettingsDialogProps> = ({
   open = false,
   onClose,
   collaborationId,
+  filterCalloutGroups = undefined,
 }) => {
   const { t } = useTranslation();
 
   const { data, actions, authorization, state } = useInnovationFlowSettings({
     collaborationId,
+    filterCalloutGroups,
     skip: !open,
   });
   const { innovationFlow, callouts } = data;
