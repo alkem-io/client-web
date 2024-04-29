@@ -20,7 +20,6 @@ import { nanoid } from 'nanoid';
 import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
 import { evictFromCache } from '../../../../core/apollo/utils/removeFromCache';
 import { compact } from 'lodash';
-import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 
 const MAX_LINKS_NORMALVIEW = 3;
 
@@ -182,14 +181,10 @@ const LinkCollectionCallout = ({
     [callout]
   );
 
-  // TODO don't access globals from here, replace JourneyLocation with journeyId in BaseCalloutViewProps
-  const { journeyId } = useRouteResolver();
-
   return (
     <StorageConfigContextProvider
       locationType="callout"
       calloutId={callout.id}
-      journeyId={journeyId!}
       skip={!addNewLinkDialogOpen && !editLink}
     >
       <CalloutLayout
