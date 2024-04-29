@@ -17664,6 +17664,7 @@ export type JourneyBreadcrumbsInnovationHubQuery = {
 
 export type JourneyBreadcrumbsSpaceQueryVariables = Exact<{
   spaceId: Scalars['UUID_NAMEID'];
+  visualType?: VisualType;
 }>;
 
 export type JourneyBreadcrumbsSpaceQuery = {
