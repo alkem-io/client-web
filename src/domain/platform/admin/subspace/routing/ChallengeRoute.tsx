@@ -37,7 +37,7 @@ export const ChallengeRoute: FC = () => {
               <CommunityGroupsRoute communityId={challenge?.community?.id} parentCommunityId={spaceCommunityId} />
             }
           />
-          <Route path="opportunities/*" element={<OpportunitiesRoute />} />
+          <Route path="opportunities/*" element={<OpportunitiesRoute parentCommunityId={communityId} />} />
           <Route path="community" element={<AdminChallengeCommunityPage />} />
           <Route path="settings" element={<SpaceSettingsPage />} />
           <Route path="community/applications/*" element={<ApplicationsAdminRoutes />} />
