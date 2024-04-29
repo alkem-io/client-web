@@ -14,7 +14,6 @@ import Redirect from '../../../../core/routing/Redirect';
 import SpaceCalloutPage from '../spaceCalloutPage/SpaceCalloutPage';
 import SpaceCommunityPage from '../SpaceCommunityPage/SpaceCommunityPage';
 import KnowledgeBasePage from '../../../collaboration/KnowledgeBase/KnowedgeBasePage';
-import SpaceStorageConfigProvider from '../../common/storageConfig/SpaceStorageConfigProvider';
 
 export const SpaceRoute = () => {
   return (
@@ -46,11 +45,9 @@ export const SpaceRoute = () => {
         path={`challenges/:${nameOfUrl.subspaceNameId}/*`}
         element={
           <SubspaceProvider>
-            <SpaceStorageConfigProvider>
-              <CommunityContextProvider>
-                <SubspaceRoute />
-              </CommunityContextProvider>
-            </SpaceStorageConfigProvider>
+            <CommunityContextProvider>
+              <SubspaceRoute />
+            </CommunityContextProvider>
           </SubspaceProvider>
         }
       />
