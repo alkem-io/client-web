@@ -19044,59 +19044,6 @@ export type SpaceSubspaceCardsQuery = {
       };
       context: { __typename?: 'Context'; id: string; vision?: string | undefined };
       community: { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
-      collaboration: {
-        __typename?: 'Collaboration';
-        id: string;
-        innovationFlow: {
-          __typename?: 'InnovationFlow';
-          id: string;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            displayName: string;
-            description?: string | undefined;
-            tagsets?:
-              | Array<{
-                  __typename?: 'Tagset';
-                  id: string;
-                  name: string;
-                  tags: Array<string>;
-                  allowedValues: Array<string>;
-                  type: TagsetType;
-                }>
-              | undefined;
-            references?:
-              | Array<{
-                  __typename?: 'Reference';
-                  id: string;
-                  name: string;
-                  description?: string | undefined;
-                  uri: string;
-                }>
-              | undefined;
-            bannerNarrow?:
-              | {
-                  __typename?: 'Visual';
-                  id: string;
-                  uri: string;
-                  name: string;
-                  allowedTypes: Array<string>;
-                  aspectRatio: number;
-                  maxHeight: number;
-                  maxWidth: number;
-                  minHeight: number;
-                  minWidth: number;
-                  alternativeText?: string | undefined;
-                }
-              | undefined;
-          };
-          states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
-          currentState: { __typename?: 'InnovationFlowState'; displayName: string };
-          authorization?:
-            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-            | undefined;
-        };
-      };
     }>;
   };
 };
@@ -19482,6 +19429,11 @@ export type SubspaceCardFragment = {
   };
   context: { __typename?: 'Context'; id: string; vision?: string | undefined };
   community: { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
+};
+
+export type SubspaceCardExtendedFragment = {
+  __typename?: 'Space';
+  id: string;
   collaboration: {
     __typename?: 'Collaboration';
     id: string;
@@ -19529,6 +19481,29 @@ export type SubspaceCardFragment = {
         | undefined;
     };
   };
+  authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
+  metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    url: string;
+    tagline: string;
+    displayName: string;
+    description?: string | undefined;
+    cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+    tagset?:
+      | {
+          __typename?: 'Tagset';
+          id: string;
+          name: string;
+          tags: Array<string>;
+          allowedValues: Array<string>;
+          type: TagsetType;
+        }
+      | undefined;
+  };
+  context: { __typename?: 'Context'; id: string; vision?: string | undefined };
+  community: { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
 };
 
 export type SubspacesOnSpaceFragment = {
@@ -19560,59 +19535,6 @@ export type SubspacesOnSpaceFragment = {
     };
     context: { __typename?: 'Context'; id: string; vision?: string | undefined };
     community: { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
-    collaboration: {
-      __typename?: 'Collaboration';
-      id: string;
-      innovationFlow: {
-        __typename?: 'InnovationFlow';
-        id: string;
-        profile: {
-          __typename?: 'Profile';
-          id: string;
-          displayName: string;
-          description?: string | undefined;
-          tagsets?:
-            | Array<{
-                __typename?: 'Tagset';
-                id: string;
-                name: string;
-                tags: Array<string>;
-                allowedValues: Array<string>;
-                type: TagsetType;
-              }>
-            | undefined;
-          references?:
-            | Array<{
-                __typename?: 'Reference';
-                id: string;
-                name: string;
-                description?: string | undefined;
-                uri: string;
-              }>
-            | undefined;
-          bannerNarrow?:
-            | {
-                __typename?: 'Visual';
-                id: string;
-                uri: string;
-                name: string;
-                allowedTypes: Array<string>;
-                aspectRatio: number;
-                maxHeight: number;
-                maxWidth: number;
-                minHeight: number;
-                minWidth: number;
-                alternativeText?: string | undefined;
-              }
-            | undefined;
-        };
-        states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
-        currentState: { __typename?: 'InnovationFlowState'; displayName: string };
-        authorization?:
-          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-          | undefined;
-      };
-    };
   }>;
 };
 
@@ -19745,59 +19667,6 @@ export type SubspaceCardsQuery = {
       };
       context: { __typename?: 'Context'; id: string; vision?: string | undefined };
       community: { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
-      collaboration: {
-        __typename?: 'Collaboration';
-        id: string;
-        innovationFlow: {
-          __typename?: 'InnovationFlow';
-          id: string;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            displayName: string;
-            description?: string | undefined;
-            tagsets?:
-              | Array<{
-                  __typename?: 'Tagset';
-                  id: string;
-                  name: string;
-                  tags: Array<string>;
-                  allowedValues: Array<string>;
-                  type: TagsetType;
-                }>
-              | undefined;
-            references?:
-              | Array<{
-                  __typename?: 'Reference';
-                  id: string;
-                  name: string;
-                  description?: string | undefined;
-                  uri: string;
-                }>
-              | undefined;
-            bannerNarrow?:
-              | {
-                  __typename?: 'Visual';
-                  id: string;
-                  uri: string;
-                  name: string;
-                  allowedTypes: Array<string>;
-                  aspectRatio: number;
-                  maxHeight: number;
-                  maxWidth: number;
-                  minHeight: number;
-                  minWidth: number;
-                  alternativeText?: string | undefined;
-                }
-              | undefined;
-          };
-          states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
-          currentState: { __typename?: 'InnovationFlowState'; displayName: string };
-          authorization?:
-            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-            | undefined;
-        };
-      };
     }>;
   };
 };
@@ -22566,29 +22435,6 @@ export type CreateSubspaceMutation = {
   createSubspace: {
     __typename?: 'Space';
     id: string;
-    authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
-    metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      url: string;
-      tagline: string;
-      displayName: string;
-      description?: string | undefined;
-      cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-      tagset?:
-        | {
-            __typename?: 'Tagset';
-            id: string;
-            name: string;
-            tags: Array<string>;
-            allowedValues: Array<string>;
-            type: TagsetType;
-          }
-        | undefined;
-    };
-    context: { __typename?: 'Context'; id: string; vision?: string | undefined };
-    community: { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
     collaboration: {
       __typename?: 'Collaboration';
       id: string;
@@ -22642,6 +22488,29 @@ export type CreateSubspaceMutation = {
           | undefined;
       };
     };
+    authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
+    metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      url: string;
+      tagline: string;
+      displayName: string;
+      description?: string | undefined;
+      cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+      tagset?:
+        | {
+            __typename?: 'Tagset';
+            id: string;
+            name: string;
+            tags: Array<string>;
+            allowedValues: Array<string>;
+            type: TagsetType;
+          }
+        | undefined;
+    };
+    context: { __typename?: 'Context'; id: string; vision?: string | undefined };
+    community: { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
   };
 };
 

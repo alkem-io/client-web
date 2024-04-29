@@ -19,7 +19,4 @@ fragment SubspacePageSpace on Space {
     ...EntityDashboardCommunity
     myMembershipStatus
   }
-  collaboration {
-    id
-  }
 }

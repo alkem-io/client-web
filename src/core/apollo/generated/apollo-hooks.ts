@@ -2513,6 +2513,44 @@ export const SubspacePageFragmentDoc = gql`
   ${DashboardTimelineAuthorizationFragmentDoc}
   ${EntityDashboardCommunityFragmentDoc}
 `;
+export const SubspaceCardFragmentDoc = gql`
+  fragment SubspaceCard on Space {
+    id
+    authorization {
+      id
+      anonymousReadAccess
+    }
+    metrics {
+      id
+      name
+      value
+    }
+    profile {
+      id
+      url
+      tagline
+      displayName
+      description
+      cardBanner: visual(type: CARD) {
+        ...VisualUri
+      }
+      tagset {
+        ...TagsetDetails
+      }
+      url
+    }
+    context {
+      id
+      vision
+    }
+    community {
+      id
+      myMembershipStatus
+    }
+  }
+  ${VisualUriFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
+`;
 export const InnovationFlowProfileFragmentDoc = gql`
   fragment InnovationFlowProfile on Profile {
     id
@@ -2554,40 +2592,9 @@ export const InnovationFlowDetailsFragmentDoc = gql`
   }
   ${InnovationFlowProfileFragmentDoc}
 `;
-export const SubspaceCardFragmentDoc = gql`
-  fragment SubspaceCard on Space {
-    id
-    authorization {
-      id
-      anonymousReadAccess
-    }
-    metrics {
-      id
-      name
-      value
-    }
-    profile {
-      id
-      url
-      tagline
-      displayName
-      description
-      cardBanner: visual(type: CARD) {
-        ...VisualUri
-      }
-      tagset {
-        ...TagsetDetails
-      }
-      url
-    }
-    context {
-      id
-      vision
-    }
-    community {
-      id
-      myMembershipStatus
-    }
+export const SubspaceCardExtendedFragmentDoc = gql`
+  fragment SubspaceCardExtended on Space {
+    ...SubspaceCard
     collaboration {
       id
       innovationFlow {
@@ -2595,8 +2602,7 @@ export const SubspaceCardFragmentDoc = gql`
       }
     }
   }
-  ${VisualUriFragmentDoc}
-  ${TagsetDetailsFragmentDoc}
+  ${SubspaceCardFragmentDoc}
   ${InnovationFlowDetailsFragmentDoc}
 `;
 export const SubspacesOnSpaceFragmentDoc = gql`
@@ -20089,10 +20095,10 @@ export type ShareLinkWithUserMutationOptions = Apollo.BaseMutationOptions<
 export const CreateSubspaceDocument = gql`
   mutation createSubspace($input: CreateSubspaceInput!) {
     createSubspace(subspaceData: $input) {
-      ...SubspaceCard
+      ...SubspaceCardExtended
     }
   }
-  ${SubspaceCardFragmentDoc}
+  ${SubspaceCardExtendedFragmentDoc}
 `;
 export type CreateSubspaceMutationFn = Apollo.MutationFunction<
   SchemaTypes.CreateSubspaceMutation,
