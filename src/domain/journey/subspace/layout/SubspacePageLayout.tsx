@@ -46,6 +46,7 @@ import { theme } from '../../../../core/ui/themes/default/Theme';
 import ApplicationButton from '../../../community/application/applicationButton/ApplicationButton';
 import ApplicationButtonContainer from '../../../community/application/containers/ApplicationButtonContainer';
 import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
+import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
 
 export interface SubspacePageLayoutProps {
   journeyId: string | undefined;
@@ -154,145 +155,147 @@ const SubspacePageLayout = ({
   const hasExtendedApplicationButton = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
 
   return (
-    <NotFoundErrorBoundary
-      errorComponent={
-        <TopLevelLayout>
-          <Error404 />
-        </TopLevelLayout>
-      }
-    >
-      <UrlBaseProvider url={journeyUrl}>
-        <DialogActionsContext.Provider value={actionsProvider}>
-          <InnovationFlowHolder>
-            <TopLevelLayout
-              breadcrumbs={<JourneyBreadcrumbs journeyPath={journeyPath} loading={loading} />}
-              header={<ChildJourneyPageBanner journeyId={journeyId} />}
-              floatingActions={
-                <FloatingActionButtons
-                  visible
-                  floatingActions={<PlatformHelpButton />}
-                  bottom={isMobile ? gutters(2) : 0}
-                />
-              }
-            >
-              <PageContent>
-                <InfoColumn collapsed={isExpanded}>
-                  {!isExpanded && <WelcomeBlock about={!isMobile}>{welcome}</WelcomeBlock>}
-                  {!isExpanded && (
-                    <FullWidthButton
-                      startIcon={<KeyboardTab />}
-                      variant="contained"
-                      onClick={() => setIsExpanded(true)}
-                      sx={{ '.MuiSvgIcon-root': { transform: 'rotate(180deg)' } }}
-                    >
-                      {t('buttons.collapse')}
-                    </FullWidthButton>
-                  )}
-                  <DialogActionButtons column={isExpanded}>
-                    {unconsumedActions}
-                    {isExpanded && (
-                      <ButtonWithTooltip
-                        tooltip={t('buttons.expand')}
-                        tooltipPlacement="right"
-                        iconButton
-                        onClick={() => setIsExpanded(false)}
+    <StorageConfigContextProvider locationType="journey" spaceId={journeyId}>
+      <NotFoundErrorBoundary
+        errorComponent={
+          <TopLevelLayout>
+            <Error404 />
+          </TopLevelLayout>
+        }
+      >
+        <UrlBaseProvider url={journeyUrl}>
+          <DialogActionsContext.Provider value={actionsProvider}>
+            <InnovationFlowHolder>
+              <TopLevelLayout
+                breadcrumbs={<JourneyBreadcrumbs journeyPath={journeyPath} loading={loading} />}
+                header={<ChildJourneyPageBanner journeyId={journeyId} />}
+                floatingActions={
+                  <FloatingActionButtons
+                    visible
+                    floatingActions={<PlatformHelpButton />}
+                    bottom={isMobile ? gutters(2) : 0}
+                  />
+                }
+              >
+                <PageContent>
+                  <InfoColumn collapsed={isExpanded}>
+                    {!isExpanded && <WelcomeBlock about={!isMobile}>{welcome}</WelcomeBlock>}
+                    {!isExpanded && (
+                      <FullWidthButton
+                        startIcon={<KeyboardTab />}
+                        variant="contained"
+                        onClick={() => setIsExpanded(true)}
+                        sx={{ '.MuiSvgIcon-root': { transform: 'rotate(180deg)' } }}
                       >
-                        <KeyboardTab />
-                      </ButtonWithTooltip>
+                        {t('buttons.collapse')}
+                      </FullWidthButton>
                     )}
-                  </DialogActionButtons>
-                  {infoColumnChildren}
-                </InfoColumn>
-                <PageContentColumnBase
-                  columns={isExpanded ? 12 : 9}
-                  flexBasis={0}
-                  flexGrow={1}
-                  flexShrink={1}
-                  minWidth={0}
-                >
-                  <ApplicationButtonContainer>
-                    {({ applicationButtonProps }, { loading }) => {
-                      if (loading || applicationButtonProps.isMember) {
-                        return null;
-                      }
-                      return (
-                        <PageContentColumn columns={9}>
-                          <ApplicationButton
-                            {...applicationButtonProps}
-                            loading={loading}
-                            component={FullWidthButton}
-                            extended={hasExtendedApplicationButton}
-                            journeyTypeName="subspace"
-                          />
-                        </PageContentColumn>
-                      );
-                    }}
-                  </ApplicationButtonContainer>
-
-                  {!isMobile && (
-                    <Box
-                      sx={{
-                        position: 'sticky',
-                        top: 0,
-                        marginTop: gutters(-1),
-                        paddingY: gutters(1),
-                        background: theme.palette.background.default,
-                        width: '100%',
-                        zIndex: 1,
-                        boxShadow: theme => `0 6px 5px 2px ${theme.palette.background.default}`,
-                      }}
-                    >
-                      <InnovationFlowRenderPoint />
-                    </Box>
-                  )}
-                  {children}
-                </PageContentColumnBase>
-              </PageContent>
-              {isMobile && (
-                <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 1 }} elevation={3} square>
-                  <Gutters row padding={1} paddingBottom={0} justifyContent="space-between">
-                    <IconButton onClick={() => setIsInfoDrawerOpen(true)}>
-                      <Menu />
-                    </IconButton>
-                    <InnovationFlowRenderPoint />
-                    <Box width={gutters(2)} />
-                  </Gutters>
-                  <PoweredBy compact />
-                </Paper>
-              )}
-            </TopLevelLayout>
-            <JourneyUnauthorizedDialogContainer journeyId={journeyId} loading={loading}>
-              {({ vision, ...props }) => (
-                <JourneyUnauthorizedDialog
-                  subspaceId={journeyId}
-                  subspaceName={profile?.displayName}
-                  description={vision}
-                  disabled={unauthorizedDialogDisabled}
-                  {...props}
-                />
-              )}
-            </JourneyUnauthorizedDialogContainer>
-            {isMobile && (
-              <SwapColors>
-                <GridProvider columns={GRID_COLUMNS_MOBILE}>
-                  <Drawer
-                    open={isInfoDrawerOpen}
-                    onClose={() => setIsInfoDrawerOpen(false)}
-                    sx={{ '.MuiDrawer-paper': { width: '60vw' } }}
-                  >
-                    <PageContentBlockSeamless>{welcome}</PageContentBlockSeamless>
-                    <DialogActionsMenu onClose={() => setIsInfoDrawerOpen(false)}>
+                    <DialogActionButtons column={isExpanded}>
                       {unconsumedActions}
-                    </DialogActionsMenu>
-                  </Drawer>
-                </GridProvider>
-              </SwapColors>
-            )}
-            {isMobile && <Box height={gutters(3)} />}
-          </InnovationFlowHolder>
-        </DialogActionsContext.Provider>
-      </UrlBaseProvider>
-    </NotFoundErrorBoundary>
+                      {isExpanded && (
+                        <ButtonWithTooltip
+                          tooltip={t('buttons.expand')}
+                          tooltipPlacement="right"
+                          iconButton
+                          onClick={() => setIsExpanded(false)}
+                        >
+                          <KeyboardTab />
+                        </ButtonWithTooltip>
+                      )}
+                    </DialogActionButtons>
+                    {infoColumnChildren}
+                  </InfoColumn>
+                  <PageContentColumnBase
+                    columns={isExpanded ? 12 : 9}
+                    flexBasis={0}
+                    flexGrow={1}
+                    flexShrink={1}
+                    minWidth={0}
+                  >
+                    <ApplicationButtonContainer>
+                      {({ applicationButtonProps }, { loading }) => {
+                        if (loading || applicationButtonProps.isMember) {
+                          return null;
+                        }
+                        return (
+                          <PageContentColumn columns={9}>
+                            <ApplicationButton
+                              {...applicationButtonProps}
+                              loading={loading}
+                              component={FullWidthButton}
+                              extended={hasExtendedApplicationButton}
+                              journeyTypeName="subspace"
+                            />
+                          </PageContentColumn>
+                        );
+                      }}
+                    </ApplicationButtonContainer>
+
+                    {!isMobile && (
+                      <Box
+                        sx={{
+                          position: 'sticky',
+                          top: 0,
+                          marginTop: gutters(-1),
+                          paddingY: gutters(1),
+                          background: theme.palette.background.default,
+                          width: '100%',
+                          zIndex: 1,
+                          boxShadow: theme => `0 6px 5px 2px ${theme.palette.background.default}`,
+                        }}
+                      >
+                        <InnovationFlowRenderPoint />
+                      </Box>
+                    )}
+                    {children}
+                  </PageContentColumnBase>
+                </PageContent>
+                {isMobile && (
+                  <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 1 }} elevation={3} square>
+                    <Gutters row padding={1} paddingBottom={0} justifyContent="space-between">
+                      <IconButton onClick={() => setIsInfoDrawerOpen(true)}>
+                        <Menu />
+                      </IconButton>
+                      <InnovationFlowRenderPoint />
+                      <Box width={gutters(2)} />
+                    </Gutters>
+                    <PoweredBy compact />
+                  </Paper>
+                )}
+              </TopLevelLayout>
+              <JourneyUnauthorizedDialogContainer journeyId={journeyId} loading={loading}>
+                {({ vision, ...props }) => (
+                  <JourneyUnauthorizedDialog
+                    subspaceId={journeyId}
+                    subspaceName={profile?.displayName}
+                    description={vision}
+                    disabled={unauthorizedDialogDisabled}
+                    {...props}
+                  />
+                )}
+              </JourneyUnauthorizedDialogContainer>
+              {isMobile && (
+                <SwapColors>
+                  <GridProvider columns={GRID_COLUMNS_MOBILE}>
+                    <Drawer
+                      open={isInfoDrawerOpen}
+                      onClose={() => setIsInfoDrawerOpen(false)}
+                      sx={{ '.MuiDrawer-paper': { width: '60vw' } }}
+                    >
+                      <PageContentBlockSeamless>{welcome}</PageContentBlockSeamless>
+                      <DialogActionsMenu onClose={() => setIsInfoDrawerOpen(false)}>
+                        {unconsumedActions}
+                      </DialogActionsMenu>
+                    </Drawer>
+                  </GridProvider>
+                </SwapColors>
+              )}
+              {isMobile && <Box height={gutters(3)} />}
+            </InnovationFlowHolder>
+          </DialogActionsContext.Provider>
+        </UrlBaseProvider>
+      </NotFoundErrorBoundary>
+    </StorageConfigContextProvider>
   );
 };
 
