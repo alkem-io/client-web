@@ -2070,7 +2070,7 @@
         "myMemberships": {
           "title": "My Memberships",
           "noChildMemberships": "You are not a member of a subspace in this Space. Some subspaces do not require you to be a member to contribute, but if you want to receive updates or show the subspace here, become a member anyway!",
-          "seeMore": "That’s all! Looking for other Spaces to collaborate in? <subspaces>Click here</subspaces> to explore all subspaces on the platform, or <landing>click here</landing> to create your own!"
+          "seeMore": "That’s all! Looking for other Spaces to collaborate in? <spaces>Click here</spaces> to explore all spaces on the platform, or <landing>click here</landing> to create your own!"
         },
         "membershipSuggestions": {
           "title": "Become a member",

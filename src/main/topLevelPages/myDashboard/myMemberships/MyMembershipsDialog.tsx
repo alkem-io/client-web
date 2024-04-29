@@ -85,7 +85,7 @@ const MyMembershipsDialog = ({ open, onClose }: MyJourneysDialogProps) => {
             <Trans
               i18nKey="pages.home.sections.myMemberships.seeMore"
               components={{
-                challenges: <RouterLink to="/challenges" underline="always" />,
+                spaces: <RouterLink to="/spaces" underline="always" />,
                 landing: <RouterLink to={landingUrl ?? ''} underline="always" />,
               }}
             />
