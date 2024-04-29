@@ -4,7 +4,7 @@ import { Box, Button } from '@mui/material';
 import WrapperMarkdown from '../../../../../core/ui/markdown/WrapperMarkdown';
 import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 import { JourneyTypeName } from '../../../JourneyTypeName';
-import getJourneyChildrenTranslation from '../../../childJourney/getJourneyChildrenTranslation';
+import getJourneyChildrenTranslation from '../../../subspace/getJourneyChildrenTranslation';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 
 interface ChildJourneyCreateProps {
