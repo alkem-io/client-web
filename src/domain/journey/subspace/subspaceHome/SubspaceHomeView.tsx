@@ -7,7 +7,7 @@ import InnovationFlowStates from '../../../collaboration/InnovationFlow/Innovati
 import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
 import { OrderUpdate, TypedCallout } from '../../../collaboration/callout/useCallouts/useCallouts';
 import { InnovationFlowState } from '../../../collaboration/InnovationFlow/InnovationFlow';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { SubspaceInnovationFlow, useConsumeAction } from '../layout/SubspacePageLayout';
 import { useColumns } from '../../../../core/ui/grid/GridContext';
 import { GRID_COLUMNS_MOBILE } from '../../../../core/ui/grid/constants';
@@ -19,16 +19,15 @@ import InnovationFlowVisualizerMobile from '../../../collaboration/InnovationFlo
 import InnovationFlowChips from '../../../collaboration/InnovationFlow/InnovationFlowVisualizers/InnovationFlowChips';
 import InnovationFlowSettingsDialog from '../../../collaboration/InnovationFlow/InnovationFlowDialogs/InnovationFlowSettingsDialog';
 import { CalloutGroupNameValuesMap } from '../../../collaboration/callout/CalloutsInContext/CalloutsGroup';
+import useStateWithAsyncDefault from '../../../../core/utils/useStateWithAsyncDefault';
 
 interface SubspaceHomeViewProps {
   journeyId: string | undefined;
   collaborationId: string | undefined;
   innovationFlowStates: InnovationFlowState[] | undefined;
   currentInnovationFlowState: string | undefined;
-  selectedInnovationFlowState: string | undefined;
-  onSelectInnovationFlowState: (state: InnovationFlowState) => void;
   canEditInnovationFlow: boolean | undefined;
-  selectedFlowStateCallouts: TypedCallout[] | undefined;
+  callouts: TypedCallout[] | undefined;
   canCreateCallout: boolean;
   canCreateCalloutFromTemplate: boolean;
   calloutNames: string[];
@@ -69,10 +68,8 @@ const SubspaceHomeView = ({
   collaborationId,
   innovationFlowStates,
   currentInnovationFlowState,
-  selectedInnovationFlowState,
-  onSelectInnovationFlowState,
+  callouts,
   canEditInnovationFlow = false,
-  selectedFlowStateCallouts,
   canCreateCallout,
   canCreateCalloutFromTemplate,
   calloutNames,
@@ -103,6 +100,22 @@ const SubspaceHomeView = ({
 
   const isMobile = columns <= GRID_COLUMNS_MOBILE;
 
+  const [selectedInnovationFlowState, setSelectedInnovationFlowState] =
+    useStateWithAsyncDefault(currentInnovationFlowState);
+
+  const selectedFlowStateCallouts = useMemo(() => {
+    const filterCallouts = (callouts: TypedCallout[] | undefined) => {
+      return callouts?.filter(callout => {
+        if (!selectedInnovationFlowState) {
+          return true;
+        }
+        return callout.flowStates?.includes(selectedInnovationFlowState);
+      });
+    };
+
+    return filterCallouts(callouts);
+  }, [callouts, selectedInnovationFlowState]);
+
   return (
     <>
       <SubspaceInnovationFlow>
@@ -111,7 +124,7 @@ const SubspaceHomeView = ({
             states={innovationFlowStates}
             currentState={currentInnovationFlowState}
             selectedState={selectedInnovationFlowState}
-            onSelectState={onSelectInnovationFlowState}
+            onSelectState={state => setSelectedInnovationFlowState(state.displayName)}
             visualizer={isMobile ? InnovationFlowVisualizerMobile : InnovationFlowChips}
             createButton={canCreateCallout && createButton}
             settingsButton={
