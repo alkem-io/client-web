@@ -1,4 +1,4 @@
-query JourneyBreadcrumbsSpace($spaceId: UUID_NAMEID!) {
+query JourneyBreadcrumbsSpace($spaceId: UUID_NAMEID!, $visualType: VisualType! = AVATAR) {
   space(ID: $spaceId) {
     id
     profile {
@@ -11,11 +11,7 @@ fragment JourneyBreadcrumbsProfile on Profile {
   id
   url
   displayName
-  cardBanner: visual(type: BANNER) {
-    id
-    ...VisualUri
-  }
-  avatar: visual(type: AVATAR) {
+  avatar: visual(type: $visualType) {
     id
     ...VisualUri
   }

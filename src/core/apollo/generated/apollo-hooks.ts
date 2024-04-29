@@ -1997,11 +1997,7 @@ export const JourneyBreadcrumbsProfileFragmentDoc = gql`
     id
     url
     displayName
-    cardBanner: visual(type: BANNER) {
-      id
-      ...VisualUri
-    }
-    avatar: visual(type: AVATAR) {
+    avatar: visual(type: $visualType) {
       id
       ...VisualUri
     }
@@ -15904,7 +15900,7 @@ export function refetchJourneyBreadcrumbsInnovationHubQuery(
 }
 
 export const JourneyBreadcrumbsSpaceDocument = gql`
-  query JourneyBreadcrumbsSpace($spaceId: UUID_NAMEID!) {
+  query JourneyBreadcrumbsSpace($spaceId: UUID_NAMEID!, $visualType: VisualType! = AVATAR) {
     space(ID: $spaceId) {
       id
       profile {
@@ -15928,6 +15924,7 @@ export const JourneyBreadcrumbsSpaceDocument = gql`
  * const { data, loading, error } = useJourneyBreadcrumbsSpaceQuery({
  *   variables: {
  *      spaceId: // value for 'spaceId'
+ *      visualType: // value for 'visualType'
  *   },
  * });
  */
