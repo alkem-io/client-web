@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { journeyCardTagsGetter, journeyCardValueGetter } from '../../common/utils/journeyCardValueGetter';
 import { useSpace } from '../../space/SpaceContext/useSpace';
 import ChallengeCard from '../../subspace/subspaceCard/SubspaceCard';
-import SpaceChallengesContainer from '../../space/containers/SpaceChallengesContainer';
+import SubspacesContainer from '../../space/containers/SubspacesContainer';
 import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import { DialogContent } from '@mui/material';
@@ -27,18 +27,18 @@ const SubspacesListDialog = ({ open = false, journeyId, onClose }: SubspacesList
     <DialogWithGrid open={open} fullWidth columns={12}>
       <DialogHeader onClose={onClose} title={t('callout.calloutsList.title')} />
       <DialogContent>
-        <SpaceChallengesContainer spaceId={journeyId}>
-          {({ ...entities }, state) => (
+        <SubspacesContainer spaceId={journeyId}>
+          {({ subspaces }, state) => (
             <>
               {state.loading && <Loading />}
-              {!state.loading && entities.subspaces.length > 0 && (
+              {!state.loading && subspaces.length > 0 && (
                 <JourneyFilter
-                  data={entities.subspaces}
+                  data={subspaces}
                   valueGetter={journeyCardValueGetter}
                   tagsGetter={journeyCardTagsGetter}
                   title={t('common.entitiesWithCount', {
                     entityType: t('common.subspaces'),
-                    count: entities.subspaces.length,
+                    count: subspaces.length,
                   })}
                 >
                   {filteredEntities => (
@@ -66,7 +66,7 @@ const SubspacesListDialog = ({ open = false, journeyId, onClose }: SubspacesList
               )}
             </>
           )}
-        </SpaceChallengesContainer>
+        </SubspacesContainer>
       </DialogContent>
     </DialogWithGrid>
   );
