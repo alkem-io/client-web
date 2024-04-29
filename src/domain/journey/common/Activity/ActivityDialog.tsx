@@ -1,7 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { DialogContent, useMediaQuery } from '@mui/material';
-import { Theme } from '@mui/material/styles';
+import { DialogContent } from '@mui/material';
 import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import SubspacePageContainer from '../../subspace/containers/SubspacePageContainer';
@@ -15,10 +14,9 @@ export interface ActivityDialogProps {
 
 const ActivityDialog = ({ open = false, journeyId, onClose }: ActivityDialogProps) => {
   const { t } = useTranslation();
-  const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('md'));
 
   return (
-    <DialogWithGrid open={open} fullScreen={isMobile} columns={8} aria-labelledby="activity-dialog">
+    <DialogWithGrid open={open} columns={8} aria-labelledby="activity-dialog">
       <DialogHeader onClose={onClose} title={t('common.contributions')} />
       <DialogContent>
         <SubspacePageContainer challengeId={journeyId}>
