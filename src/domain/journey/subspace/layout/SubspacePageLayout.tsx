@@ -43,6 +43,9 @@ import WelcomeBlock from './WelcomeBlock';
 import { UrlBaseProvider } from '../../../../core/ui/link/UrlBase';
 import ButtonWithTooltip from '../../../../core/ui/button/ButtonWithTooltip';
 import { theme } from '../../../../core/ui/themes/default/Theme';
+import ApplicationButton from '../../../community/application/applicationButton/ApplicationButton';
+import ApplicationButtonContainer from '../../../community/application/containers/ApplicationButtonContainer';
+import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
 
 export interface SubspacePageLayoutProps {
   journeyId: string | undefined;
@@ -152,6 +155,8 @@ const SubspacePageLayout = ({
     return !isDialogDef(action) || !consumedActions[action.props.dialogType];
   });
 
+  const hasExtendedApplicationButton = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
+
   return (
     <NotFoundErrorBoundary
       errorComponent={
@@ -209,6 +214,25 @@ const SubspacePageLayout = ({
                   flexShrink={1}
                   minWidth={0}
                 >
+                  <ApplicationButtonContainer>
+                    {({ applicationButtonProps }, { loading }) => {
+                      if (loading || applicationButtonProps.isMember) {
+                        return null;
+                      }
+                      return (
+                        <PageContentColumn columns={9}>
+                          <ApplicationButton
+                            {...applicationButtonProps}
+                            loading={loading}
+                            component={FullWidthButton}
+                            extended={hasExtendedApplicationButton}
+                            journeyTypeName="subspace"
+                          />
+                        </PageContentColumn>
+                      );
+                    }}
+                  </ApplicationButtonContainer>
+
                   {!isMobile && (
                     <Box
                       sx={{
