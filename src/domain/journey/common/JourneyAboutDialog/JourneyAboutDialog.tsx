@@ -34,6 +34,7 @@ import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import useDirectMessageDialog from '../../../communication/messaging/DirectMessaging/useDirectMessageDialog';
 import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
 import { JourneyTypeName } from '../../JourneyTypeName';
+import Loading from '../../../../core/ui/loading/Loading';
 
 export interface JourneyAboutDialogProps extends EntityDashboardLeads {
   open: boolean;
@@ -161,6 +162,11 @@ const JourneyAboutDialog = ({
           alignItems="start"
           flexWrap={isMobile ? 'wrap' : 'nowrap'}
         >
+          {loading && (
+            <Box position="absolute">
+              <Loading text="" />
+            </Box>
+          )}
           <DialogHeaderItem minWidth="30%" align="start">
             {startButton}
           </DialogHeaderItem>
