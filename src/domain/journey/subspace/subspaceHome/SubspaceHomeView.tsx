@@ -156,6 +156,7 @@ const SubspaceHomeView = ({
         groupName={CalloutGroupName.Home}
         journeyTypeName={journeyTypeName}
         canCreateCalloutFromTemplate={canCreateCalloutFromTemplate}
+        flowState={selectedInnovationFlowState}
       />
     </>
   );
