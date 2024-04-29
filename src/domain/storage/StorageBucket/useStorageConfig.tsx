@@ -40,7 +40,6 @@ interface UseStorageConfigOptionsSpace extends UseStorageConfigOptionsBase {
 
 interface UseStorageConfigOptionsCallout extends UseStorageConfigOptionsBase {
   calloutId: string;
-  journeyId: string;
   locationType: 'callout';
 }
 
@@ -98,7 +97,6 @@ const useStorageConfig = ({ locationType, skip, ...options }: StorageConfigOptio
   });
 
   const calloutOptions = options as UseStorageConfigOptionsCallout;
-
   const { data: calloutStorageConfigData } = useCalloutStorageConfigQuery({
     variables: {
       calloutId: calloutOptions.calloutId,
