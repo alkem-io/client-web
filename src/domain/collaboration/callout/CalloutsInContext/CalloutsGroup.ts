@@ -11,6 +11,6 @@ export enum CalloutGroupNameValuesMap {
 
 export const JourneyCalloutGroupNameOptions: Record<JourneyTypeName, CalloutGroupName[]> = {
   space: [CalloutGroupName.Home, CalloutGroupName.Community, CalloutGroupName.Subspaces, CalloutGroupName.Knowledge],
-  subspace: [CalloutGroupName.Home, CalloutGroupName.Contribute, CalloutGroupName.Subspaces],
-  subsubspace: [CalloutGroupName.Home, CalloutGroupName.Contribute],
+  subspace: [CalloutGroupName.Home],
+  subsubspace: [CalloutGroupName.Home],
 };

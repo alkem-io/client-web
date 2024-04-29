@@ -1,15 +1,10 @@
-import { InnovationFlowState } from '../InnovationFlow';
 import { Button, IconButton } from '@mui/material';
 import Gutters, { GuttersProps } from '../../../../core/ui/grid/Gutters';
 import { NavigateBeforeOutlined, NavigateNextOutlined } from '@mui/icons-material';
 import { gutters } from '../../../../core/ui/grid/utils';
+import { InnovationFlowVisualizerProps } from './InnovationFlowVisualizer';
 
-interface InnovationFlowChipsProps {
-  states: InnovationFlowState[];
-  currentState?: string;
-  selectedState: string | undefined;
-  onSelectState?: (state: InnovationFlowState) => void;
-}
+interface InnovationFlowCurrentStateSelectorProps extends InnovationFlowVisualizerProps {}
 
 const InnovationFlowCurrentStateSelector = ({
   states,
@@ -17,7 +12,7 @@ const InnovationFlowCurrentStateSelector = ({
   currentState: currentStateName,
   onSelectState,
   ...props
-}: InnovationFlowChipsProps & GuttersProps) => {
+}: InnovationFlowCurrentStateSelectorProps & GuttersProps) => {
   const selectedStateIndex = states.findIndex(state => state.displayName === selectedStateName);
 
   if (selectedStateIndex === -1) {

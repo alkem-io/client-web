@@ -3,14 +3,14 @@ import { Box, BoxProps } from '@mui/material';
 import { BoxTypeMap } from '@mui/system';
 import { gutters } from './utils';
 
-export interface GuttersProps {
+export interface GuttersProps extends BoxProps {
   row?: boolean;
   disablePadding?: boolean;
   disableGap?: boolean;
 }
 
 const Gutters = forwardRef(
-  ({ row = false, disablePadding = false, disableGap = false, ...props }: GuttersProps & BoxProps, ref) => {
+  ({ row = false, disablePadding = false, disableGap = false, ...props }: GuttersProps, ref) => {
     return (
       <Box
         ref={ref}

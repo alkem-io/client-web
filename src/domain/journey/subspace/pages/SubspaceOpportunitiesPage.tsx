@@ -88,7 +88,7 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
                 icon={<OpportunityIcon />}
                 journeyName={t('common.subsubspace')}
                 onClose={() => setCreateDialogOpen(false)}
-                OnCreate={handleCreate}
+                onCreate={handleCreate}
                 formComponent={CreateOpportunityForm}
               />
             }

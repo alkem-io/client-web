@@ -1,6 +1,6 @@
 import React from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { ChallengeProvider } from '../../subspace/context/SubspaceProvider';
+import SubspaceProvider from '../../subspace/context/SubspaceProvider';
 import { CommunityContextProvider } from '../../../community/community/CommunityContext';
 import { nameOfUrl } from '../../../../main/routing/urlParams';
 import SubspaceRoute from '../../subspace/routing/SubspaceRoute';
@@ -49,11 +49,11 @@ export const SpaceRoute = () => {
         <Route
           path={`challenges/:${nameOfUrl.subspaceNameId}/*`}
           element={
-            <ChallengeProvider>
+            <SubspaceProvider>
               <CommunityContextProvider>
                 <SubspaceRoute />
               </CommunityContextProvider>
-            </ChallengeProvider>
+            </SubspaceProvider>
           }
         />
         <Route path="explore/*" element={<Redirect to={routes.Contribute} />} />

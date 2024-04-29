@@ -6248,6 +6248,7 @@ export type CalloutPageCalloutQuery = {
 
 export type InnovationFlowSettingsQueryVariables = Exact<{
   collaborationId: Scalars['UUID'];
+  filterCalloutGroups?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
 }>;
 
 export type InnovationFlowSettingsQuery = {

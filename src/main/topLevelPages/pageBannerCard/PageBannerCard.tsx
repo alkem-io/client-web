@@ -9,7 +9,6 @@ import BadgeCardView from '../../../core/ui/list/BadgeCardView';
 import Gutters from '../../../core/ui/grid/Gutters';
 
 export interface PageBannerCardProps extends PageBannerCardWrapperProps {
-  title: ReactNode;
   subtitle?: ReactNode;
   iconComponent?: ComponentType<SvgIconProps>;
 }

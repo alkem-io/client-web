@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import SubspaceHomeView from './SubspaceHomeView';
 import SubspaceHomeContainer from './SubspaceHomeContainer';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
@@ -23,10 +23,22 @@ import {
 import { InnovationFlowIcon } from '../../../collaboration/InnovationFlow/InnovationFlowIcon/InnovationFlowIcon';
 import SubspaceDialogs from './dialogs/SubspaceDialogs';
 import { buildJourneyAdminUrl } from '../../../../main/routing/urlBuilders';
+import { useSpace } from '../../space/SpaceContext/useSpace';
+import useSpaceDashboardNavigation from '../../space/spaceDashboardNavigation/useSpaceDashboardNavigation';
+import DashboardNavigation, { DashboardNavigationProps } from '../../dashboardNavigation/DashboardNavigation';
+import { useConsumeAction } from '../layout/SubspacePageLayout';
+import { useColumns } from '../../../../core/ui/grid/GridContext';
+import CreateJourney from './dialogs/CreateJourney';
 
 interface SubspaceHomePageProps {
   dialog?: SubspaceDialog;
 }
+
+const Outline = (props: DashboardNavigationProps) => {
+  useConsumeAction(SubspaceDialog.Outline);
+  const columns = useColumns();
+  return <DashboardNavigation compact={columns === 0} {...props} />;
+};
 
 const SubspaceHomePage = ({ dialog }: SubspaceHomePageProps) => {
   const { t } = useTranslation();
@@ -36,6 +48,39 @@ const SubspaceHomePage = ({ dialog }: SubspaceHomePageProps) => {
   const { sendMessage, directMessageDialog } = useDirectMessageDialog({
     dialogTitle: t('send-message-dialog.direct-message-title'),
   });
+
+  const { spaceId } = useSpace();
+
+  const dashboardNavigation = useSpaceDashboardNavigation({
+    spaceId,
+    skip: !spaceId,
+  });
+
+  const [createSpaceState, setCreateSpaceState] = useState<
+    | {
+        isDialogVisible: true;
+        parentSpaceId: string;
+      }
+    | {
+        isDialogVisible: false;
+        parentSpaceId?: never;
+      }
+  >({
+    isDialogVisible: false,
+  });
+
+  const openCreateSubspace = ({ id }) => {
+    setCreateSpaceState({
+      isDialogVisible: true,
+      parentSpaceId: id,
+    });
+  };
+
+  const onCreateJourneyClose = () => {
+    setCreateSpaceState({
+      isDialogVisible: false,
+    });
+  };
 
   return (
     <SubspaceHomeContainer journeyId={journeyId} journeyTypeName={journeyTypeName}>
@@ -113,6 +158,13 @@ const SubspaceHomePage = ({ dialog }: SubspaceHomePageProps) => {
               </>
             }
             profile={subspace?.profile}
+            infoColumnChildren={
+              <Outline
+                currentItemId={journeyId}
+                dashboardNavigation={dashboardNavigation.dashboardNavigation}
+                onCreateSubspace={openCreateSubspace}
+              />
+            }
           >
             <SubspaceHomeView
               journeyId={journeyId}
@@ -123,11 +175,17 @@ const SubspaceHomePage = ({ dialog }: SubspaceHomePageProps) => {
             />
           </SubspacePageLayout>
           {directMessageDialog}
+          <CreateJourney
+            isVisible={createSpaceState.isDialogVisible}
+            onClose={onCreateJourneyClose}
+            parentSpaceId={createSpaceState.parentSpaceId}
+          />
           <SubspaceDialogs
             dialogOpen={dialog}
             callouts={callouts}
             journeyId={journeyId}
             journeyUrl={subspace?.profile.url}
+            dashboardNavigation={dashboardNavigation}
           />
         </>
       )}

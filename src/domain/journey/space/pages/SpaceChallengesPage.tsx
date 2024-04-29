@@ -6,9 +6,8 @@ import { JourneyCreationDialog } from '../../../shared/components/JorneyCreation
 import { JourneyFormValues } from '../../../shared/components/JorneyCreationDialog/JourneyCreationForm';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import { useSubspaceCreation } from '../../../shared/utils/useJourneyCreation/useJourneyCreation';
-
 import ChildJourneyView from '../../common/tabs/Subentities/ChildJourneyView';
-import SpaceChallengesContainer from '../containers/SpaceChallengesContainer';
+import SubspacesContainer from '../containers/SubspacesContainer';
 import { useSpace } from '../SpaceContext/useSpace';
 import SpacePageLayout from '../layout/SpacePageLayout';
 import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
@@ -17,6 +16,7 @@ import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolv
 import { ChallengeIcon } from '../../subspace/icon/ChallengeIcon';
 import ChallengeCard from '../../subspace/subspaceCard/SubspaceCard';
 import { CreateChallengeForm } from '../../subspace/forms/CreateChallengeForm';
+import useCallouts from '../../../collaboration/callout/useCallouts/useCallouts';
 
 export interface SpaceChallengesPageProps {}
 
@@ -52,12 +52,18 @@ const SpaceChallengesPage: FC<SpaceChallengesPageProps> = () => {
     [navigate, createSubspace, spaceNameId]
   );
 
+  const callouts = useCallouts({
+    journeyId: spaceId,
+    journeyTypeName: 'space',
+    groupNames: [CalloutGroupName.Subspaces],
+  });
+
   return (
     <SpacePageLayout journeyPath={journeyPath} currentSection={EntityPageSection.Subspaces}>
-      <SpaceChallengesContainer spaceId={spaceId}>
-        {({ callouts, ...entities }, state) => (
+      <SubspacesContainer spaceId={spaceId}>
+        {({ subspaces }, state) => (
           <ChildJourneyView
-            childEntities={entities.subspaces}
+            childEntities={subspaces}
             childEntitiesIcon={<ChallengeIcon />}
             childEntityReadAccess={permissions.canReadChallenges}
             childEntityValueGetter={journeyCardValueGetter}
@@ -86,7 +92,7 @@ const SpaceChallengesPage: FC<SpaceChallengesPageProps> = () => {
                 icon={<ChallengeIcon />}
                 journeyName={t('common.subspace')}
                 onClose={() => setCreateDialogOpen(false)}
-                OnCreate={handleCreate}
+                onCreate={handleCreate}
                 formComponent={CreateChallengeForm}
               />
             }
@@ -106,7 +112,7 @@ const SpaceChallengesPage: FC<SpaceChallengesPageProps> = () => {
             }
           />
         )}
-      </SpaceChallengesContainer>
+      </SubspacesContainer>
     </SpacePageLayout>
   );
 };

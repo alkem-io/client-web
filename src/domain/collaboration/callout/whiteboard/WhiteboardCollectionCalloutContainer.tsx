@@ -3,6 +3,7 @@ import {
   WhiteboardCollectionCalloutCardFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
 import {
+  refetchCalloutWhiteboardsQuery,
   useCalloutWhiteboardsQuery,
   useCreateWhiteboardOnCalloutMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
@@ -72,6 +73,7 @@ const WhiteboardCollectionCalloutContainer = ({ callout, children }: WhiteboardC
           },
         },
       },
+      refetchQueries: [refetchCalloutWhiteboardsQuery({ calloutId: calloutId })],
     });
 
     return data?.createContributionOnCallout.whiteboard;

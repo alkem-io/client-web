@@ -25,7 +25,7 @@ interface SubspaceContextProps {
   myMembershipStatus: CommunityMembershipStatus | undefined;
 }
 
-const SubspaceContext = React.createContext<SubspaceContextProps>({
+export const SubspaceContext = React.createContext<SubspaceContextProps>({
   loading: true,
   subspaceId: '',
   communityId: '',
@@ -49,12 +49,12 @@ const SubspaceContext = React.createContext<SubspaceContextProps>({
 interface SubspaceProviderProps {}
 
 const SubspaceProvider: FC<SubspaceProviderProps> = ({ children }) => {
-  const { subSpaceId: challengeId } = useRouteResolver();
+  const { journeyId } = useRouteResolver();
 
   const { data, loading } = useSubspaceInfoQuery({
-    variables: { subspaceId: challengeId! },
+    variables: { subspaceId: journeyId! },
     errorPolicy: 'all',
-    skip: !challengeId,
+    skip: !journeyId,
   });
 
   const subspace = data?.space;
@@ -64,6 +64,7 @@ const SubspaceProvider: FC<SubspaceProviderProps> = ({ children }) => {
     () => subspace?.authorization?.myPrivileges ?? [],
     [subspace?.authorization?.myPrivileges]
   );
+
   const canReadCommunity = (subspace?.community?.authorization?.myPrivileges ?? []).includes(
     AuthorizationPrivilege.Read
   );
@@ -97,7 +98,7 @@ const SubspaceProvider: FC<SubspaceProviderProps> = ({ children }) => {
     <SubspaceContext.Provider
       value={{
         subspace: subspace,
-        subspaceId: challengeId ?? '',
+        subspaceId: journeyId ?? '',
         communityId,
         permissions,
         profile,
@@ -110,4 +111,4 @@ const SubspaceProvider: FC<SubspaceProviderProps> = ({ children }) => {
   );
 };
 
-export { SubspaceProvider as ChallengeProvider, SubspaceContext };
+export default SubspaceProvider;

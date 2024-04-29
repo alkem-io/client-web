@@ -1,70 +1,36 @@
-import { cloneElement, ComponentType, MouseEventHandler, ReactElement, ReactNode, useState } from 'react';
-import InnovationFlowSettingsDialog from '../InnovationFlowDialogs/InnovationFlowSettingsDialog';
+import { ComponentType, ReactNode } from 'react';
 import { InnovationFlowState } from '../InnovationFlow';
-import InnovationFlowChips from '../InnovationFlowChips/InnovationFlowChips';
+import InnovationFlowChips from '../InnovationFlowVisualizers/InnovationFlowChips';
+import { InnovationFlowVisualizerProps } from '../InnovationFlowVisualizers/InnovationFlowVisualizer';
 
-interface InnovationFlowStatesBaseProps {
+interface InnovationFlowStatesProps {
   states: InnovationFlowState[] | undefined;
   currentState?: string;
   selectedState: string | undefined;
   onSelectState?: (state: InnovationFlowState) => void;
   visualizer?: ComponentType<InnovationFlowVisualizerProps>;
-  settings?: ReactElement<{ onClick: MouseEventHandler }>;
   createButton?: ReactNode;
+  settingsButton?: ReactNode;
 }
-
-interface InnovationFlowVisualizerProps {
-  states: InnovationFlowState[];
-  currentState?: string;
-  selectedState: string | undefined;
-  showSettings?: boolean;
-  onSettingsOpen?: () => void;
-  onSelectState?: (state: InnovationFlowState) => void;
-  settings?: ReactNode;
-  createButton?: ReactNode;
-}
-
-type InnovationFlowStatesProps = InnovationFlowStatesBaseProps &
-  (
-    | {
-        settings?: never;
-        collaborationId?: undefined;
-      }
-    | {
-        settings: ReactElement<{ onClick: MouseEventHandler }>;
-        collaborationId: string;
-      }
-  );
 
 const InnovationFlowStates = ({
-  collaborationId,
   states = [],
   currentState,
   selectedState,
-  settings,
   createButton,
+  settingsButton,
   onSelectState,
   visualizer: Visualizer = InnovationFlowChips,
 }: InnovationFlowStatesProps) => {
-  const [showSettingsDialog, setShowSettingsDialog] = useState(false);
-
   return (
-    <>
-      <Visualizer
-        states={states}
-        currentState={currentState}
-        selectedState={selectedState}
-        settings={settings && cloneElement(settings, { onClick: () => setShowSettingsDialog(true) })}
-        createButton={createButton}
-        onSettingsOpen={() => setShowSettingsDialog(true)}
-        onSelectState={onSelectState}
-      />
-      <InnovationFlowSettingsDialog
-        collaborationId={collaborationId}
-        open={showSettingsDialog}
-        onClose={() => setShowSettingsDialog(false)}
-      />
-    </>
+    <Visualizer
+      states={states}
+      currentState={currentState}
+      selectedState={selectedState}
+      createButton={createButton}
+      settingsButton={settingsButton}
+      onSelectState={onSelectState}
+    />
   );
 };
 
