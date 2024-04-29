@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SettingsSection } from '../layout/EntitySettingsLayout/constants';
 import { TabDefinition } from '../layout/EntitySettingsLayout/EntitySettingsTabs';
@@ -20,45 +20,54 @@ interface SubspaceSettingsLayoutProps {
   tabRoutePrefix?: string;
 }
 
-const tabs: TabDefinition<SettingsSection>[] = [
-  {
-    section: SettingsSection.Profile,
-    route: 'profile',
-    icon: PeopleOutlinedIcon,
-  },
-  {
-    section: SettingsSection.Context,
-    route: 'context',
-    icon: ListOutlinedIcon,
-  },
-  {
-    section: SettingsSection.Community,
-    route: 'community',
-    icon: PeopleOutlinedIcon,
-  },
-  {
-    section: SettingsSection.Communications,
-    route: 'communications',
-    icon: ForumOutlinedIcon,
-  },
-  {
-    section: SettingsSection.Subsubspaces,
-    route: 'opportunities',
-    icon: FlagOutlinedIcon,
-  },
-  {
-    section: SettingsSection.SpaceSettings,
-    route: 'settings',
-    icon: GppGoodOutlinedIcon,
-  },
-];
-
 const SubspaceSettingsLayout: FC<SubspaceSettingsLayoutProps> = props => {
   const entityAttrs = useSubSpace();
 
   const { t } = useTranslation();
 
-  const { journeyId, journeyPath } = useRouteResolver();
+  const { journeyId, journeyPath, journeyLevel } = useRouteResolver();
+
+  const tabs = useMemo(() => {
+    const tabs: TabDefinition<SettingsSection>[] = [
+      {
+        section: SettingsSection.Profile,
+        route: 'profile',
+        icon: PeopleOutlinedIcon,
+      },
+      {
+        section: SettingsSection.Context,
+        route: 'context',
+        icon: ListOutlinedIcon,
+      },
+      {
+        section: SettingsSection.Community,
+        route: 'community',
+        icon: PeopleOutlinedIcon,
+      },
+      {
+        section: SettingsSection.Communications,
+        route: 'communications',
+        icon: ForumOutlinedIcon,
+      },
+    ];
+
+    if (journeyLevel === 1) {
+      tabs.push(
+        {
+          section: SettingsSection.Subsubspaces,
+          route: 'opportunities',
+          icon: FlagOutlinedIcon,
+        },
+        {
+          section: SettingsSection.SpaceSettings,
+          route: 'settings',
+          icon: GppGoodOutlinedIcon,
+        }
+      );
+    }
+
+    return tabs;
+  }, [journeyLevel]);
 
   return (
     <EntitySettingsLayout
