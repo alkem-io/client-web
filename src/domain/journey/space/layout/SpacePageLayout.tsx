@@ -12,6 +12,7 @@ import useInnovationHubJourneyBannerRibbon from '../../../innovationHub/Innovati
 import SpacePageBanner from './SpacePageBanner';
 import CommunityGuidelinesBlock from '../../../community/community/CommunityGuidelines/CommunityGuidelinesBlock';
 import { JourneyPath } from '../../../../main/routing/resolvers/RouteResolver';
+import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
 
 export interface SpacePageLayoutProps {
   currentSection: EntityPageSection;
@@ -51,7 +52,9 @@ const SpacePageLayout = ({
       }
       tabsComponent={SpaceTabs}
     >
-      {children}
+      <StorageConfigContextProvider locationType="journey" spaceId={spaceId}>
+        {children}
+      </StorageConfigContextProvider>
       <JourneyUnauthorizedDialogContainer journeyId={spaceId} loading={loading}>
         {({ vision, ...props }) => (
           <JourneyUnauthorizedDialog
