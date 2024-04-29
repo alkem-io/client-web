@@ -1,7 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { DialogContent, useMediaQuery } from '@mui/material';
-import { Theme } from '@mui/material/styles';
+import { DialogContent } from '@mui/material';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import CommunityContributorsBlockWide from '../../../community/contributor/CommunityContributorsBlockWide/CommunityContributorsBlockWide';
 import { useSpaceCommunityContributorsQuery } from '../../../../core/apollo/generated/apollo-hooks';
@@ -47,10 +46,8 @@ const ContributorsToggleDialog = ({ open = false, journeyId, onClose }: Contribu
     })
   );
 
-  const isSmallScreen = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
-
   return (
-    <DialogWithGrid open={open} columns={12} fullScreen={isSmallScreen} aria-labelledby="contributors-dialog-title">
+    <DialogWithGrid open={open} fullWidth columns={12} aria-labelledby="contributors-dialog-title">
       <DialogHeader onClose={onClose} title={t('common.contributors')} />
       <DialogContent>
         <CommunityContributorsBlockWide users={users} organizations={organizations} isLoading={loading} isDialogView />

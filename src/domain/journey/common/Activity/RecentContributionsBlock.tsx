@@ -1,12 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { CalloutType } from '../../../../core/apollo/generated/graphql-schema';
-import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
 import {
   ActivityComponent,
   ActivityComponentProps,
 } from '../../../collaboration/activity/ActivityLog/ActivityComponent';
 import { Caption } from '../../../../core/ui/typography';
-import PageContentBlock, { PageContentBlockProps } from '../../../../core/ui/content/PageContentBlock';
 import { useTranslation } from 'react-i18next';
 import TopCalloutDetails from '../../../collaboration/callout/TopCallout/TopCalloutDetails';
 import { Identifiable } from '../../../../core/utils/Identifiable';
@@ -16,7 +14,7 @@ import Gutters from '../../../../core/ui/grid/Gutters';
 import { Box } from '@mui/material';
 import { RECENT_ACTIVITIES_LIMIT_INITIAL, RECENT_ACTIVITIES_LIMIT_EXPANDED } from '../journeyDashboard/constants';
 
-export interface RecentContributionsBlockProps extends PageContentBlockProps, ActivityComponentProps {
+export interface RecentContributionsBlockProps extends ActivityComponentProps {
   readUsersAccess: boolean;
   entityReadAccess: boolean;
   activitiesLoading: boolean;
@@ -48,7 +46,6 @@ const RecentContributionsBlock = ({
   activitiesLoading,
   fetchMoreActivities,
   topCallouts,
-  ...blockProps
 }: RecentContributionsBlockProps) => {
   const { t } = useTranslation();
 
@@ -94,17 +91,17 @@ const RecentContributionsBlock = ({
   const accessErrorTypeName = getAccessErrorTypeName();
 
   return (
-    <PageContentBlock {...blockProps}>
-      <PageContentBlockHeader title={t('components.dashboardRecentContributions.title')}>
+    <Box>
+      <Gutters disablePadding>
         <AltToggle
           value={mode}
           options={modeOptions}
           onChange={setMode}
-          sx={{ height: gutters() }}
+          justifyContent="center"
+          sx={{ height: gutters(), marginBottom: gutters() }}
           aria-label={t('components.dashboardRecentContributions.modes.switchMode')}
         />
-      </PageContentBlockHeader>
-
+      </Gutters>
       <Box position="relative" flexGrow={1} flexBasis={gutters(12)}>
         {mode === Mode.RecentActivity && (
           <>
@@ -140,7 +137,7 @@ const RecentContributionsBlock = ({
           </Gutters>
         )}
       </Box>
-    </PageContentBlock>
+    </Box>
   );
 };
 
