@@ -54,6 +54,9 @@ const OpportunityContext = React.createContext<OpportunityContextProps>(DEFAULT_
 
 interface OpportunityProviderProps {}
 
+/**
+ * @deprecated
+ */
 const OpportunityProvider: FC<OpportunityProviderProps> = ({ children }) => {
   const { subSubSpaceId: opportunityId } = useRouteResolver();
 

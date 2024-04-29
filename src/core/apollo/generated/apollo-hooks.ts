@@ -3575,7 +3575,7 @@ export const SpaceExplorerSpaceFragmentDoc = gql`
         id
         tags
       }
-      avatar: visual(type: AVATAR) {
+      cardBanner: visual(type: CARD) {
         ...VisualUri
       }
     }
