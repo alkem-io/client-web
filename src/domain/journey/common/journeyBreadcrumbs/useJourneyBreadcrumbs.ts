@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useJourneyBreadcrumbsSpaceQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { JourneyLevel, JourneyPath } from '../../../../main/routing/resolvers/RouteResolver';
+import { JourneyBreadcrumbsSpaceQuery } from '../../../../core/apollo/generated/graphql-schema';
 
 export interface BreadcrumbsItem {
   displayName: string;
@@ -46,7 +47,19 @@ export const useJourneyBreadcrumbs = ({ journeyPath, loading = false }: UseJourn
     skip: !shouldFetchJourney(2) || loading,
   });
 
-  const journeyProfiles = [_space?.space.profile, _challenge?.space?.profile, _opportunity?.space?.profile];
+  // on a space level we use cardBanner as an avatar
+  const getSpaceProfile = (data: JourneyBreadcrumbsSpaceQuery | undefined) => {
+    if (!data?.space?.profile) {
+      return null;
+    }
+
+    return {
+      ...data.space.profile,
+      avatar: data.space.profile.cardBanner,
+    };
+  };
+
+  const journeyProfiles = [getSpaceProfile(_space), _challenge?.space?.profile, _opportunity?.space?.profile];
 
   const isLoading = isLoadingSpace || isLoadingChallenge || isLoadingOpportunity;
 

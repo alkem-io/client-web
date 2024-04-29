@@ -1997,6 +1997,10 @@ export const JourneyBreadcrumbsProfileFragmentDoc = gql`
     id
     url
     displayName
+    cardBanner: visual(type: BANNER) {
+      id
+      ...VisualUri
+    }
     avatar: visual(type: AVATAR) {
       id
       ...VisualUri

@@ -17676,6 +17676,7 @@ export type JourneyBreadcrumbsSpaceQuery = {
       id: string;
       url: string;
       displayName: string;
+      cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
       avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
     };
   };
@@ -17686,6 +17687,7 @@ export type JourneyBreadcrumbsProfileFragment = {
   id: string;
   url: string;
   displayName: string;
+  cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
   avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
 };
 
