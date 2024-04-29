@@ -11,6 +11,7 @@ import EntityDashboardContributorsSection from '../../../community/community/Ent
 import ContributorsDialog from '../../../community/community/ContributorsDialog/ContributorsDialog';
 import ChallengeContributorsDialogContent from '../../../community/community/entities/ChallengeContributorsDialogContent';
 import SeeMore from '../../../../core/ui/content/SeeMore';
+import Loading from '../../../../core/ui/loading/Loading';
 import { useTranslation } from 'react-i18next';
 import { buildAboutUrl } from '../../../../main/routing/urlBuilders';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
@@ -26,7 +27,11 @@ const ChallengeAboutPage: FC = () => {
 
   const { t } = useTranslation();
 
-  const { journeyId } = useRouteResolver();
+  const { journeyId, loading } = useRouteResolver();
+
+  if (loading) {
+    return <Loading text={t('common.loading')} />;
+  }
 
   return (
     <>
