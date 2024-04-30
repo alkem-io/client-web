@@ -1598,10 +1598,6 @@
       "settingsMenu": {
         "quit": "Quit Settings"
       },
-      "opportunity": {
-        "create": "Create Subspace",
-        "edit": "Edit Subspace"
-      },
       "subspace": {
         "create": "Create Subspace",
         "edit": "Edit Subspace"
@@ -1879,13 +1875,6 @@
             "createBlocks": "<b>Create Blocks</b>: allow members to create blocks for collaboration tools & posts. If you deactivate this, members will still be able to contribute to existing posts and calls, but will not be able to create new blocks.",
             "createSubspaces": "<b>Create Subspaces</b>: allow members to create Subspaces in this Space. If you deactivate this, you can still create Subspaces yourself and add other people as an admin inside the Subspace."
           }
-        }
-      },
-      "opportunity": {
-        "notifications": {
-          "opportunity-created": "Subspace created successfully.",
-          "opportunity-removed": "Subspace removed successfully.",
-          "opportunity-updated": "Subspace updated successfully."
         }
       },
       "users": {
@@ -2259,30 +2248,6 @@
         }
       }
     },
-    "opportunity": {
-      "title": "Subspace",
-      "sections": {
-        "dashboard": {
-          "projects": {
-            "title": "Projects",
-            "help-text": "Projects related to this Subspace"
-          }
-        },
-        "community": {
-          "description": "Here you can explore the Community. See the Users that are contributing, as well as updates that have been shared by the leads."
-        },
-        "apply": "Interested in collaboration?",
-        "agreements": {
-          "description": "Agreements are the formation of concrete next steps to be taken. This new functionality will be available soon.\n\nIdeas, suggestions? Please reach out!"
-        },
-        "projects": {
-          "more-projects": "MORE PROJECTS STARTING SOON",
-          "new-project": {
-            "header": "New project"
-          }
-        }
-      }
-    },
     "community": {
       "title": "{{name}} community page",
       "leading-organizations": {
@@ -2338,9 +2303,6 @@
       "subspace": {
         "templatesHeader": "Templates defined in this Subspace",
         "templatesSubheader": "The templates defined in this Subspace within its scope."
-      },
-      "opportunity": {
-        "templatesHeader": "Templates defined in this Subspace"
       },
       "whiteboardDisconnected": {
         "title": "Whiteboard connection lost",
