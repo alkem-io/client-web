@@ -20480,6 +20480,7 @@ export type SubspacePageQuery = {
     __typename?: 'Space';
     id: string;
     profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+    metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
     context: { __typename?: 'Context'; id: string; vision?: string | undefined };
     community: {
       __typename?: 'Community';
@@ -20580,6 +20581,7 @@ export type SubspacePageSpaceFragment = {
   __typename?: 'Space';
   id: string;
   profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+  metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
   context: { __typename?: 'Context'; id: string; vision?: string | undefined };
   community: {
     __typename?: 'Community';

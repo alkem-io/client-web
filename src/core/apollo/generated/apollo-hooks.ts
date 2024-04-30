@@ -2753,6 +2753,11 @@ export const SubspacePageSpaceFragmentDoc = gql`
       url
       displayName
     }
+    metrics {
+      id
+      name
+      value
+    }
     context {
       id
       vision

@@ -11,6 +11,11 @@ fragment SubspacePageSpace on Space {
     url
     displayName
   }
+  metrics {
+    id
+    name
+    value
+  }
   context {
     id
     vision

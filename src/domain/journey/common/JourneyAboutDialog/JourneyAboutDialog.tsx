@@ -21,7 +21,6 @@ import ActivityView from '../../../platform/metrics/views/MetricsView';
 import { Metric } from '../../../platform/metrics/utils/getMetricCount';
 import useMetricsItems from '../../../platform/metrics/utils/useMetricsItems';
 import SpaceMetrics from '../../space/Metrics/SpaceMetrics';
-import ChallengeMetrics from '../../subspace/utils/useChallengeMetricsItems';
 import OpportunityMetrics from '../../opportunity/utils/useOpportunityMetricsItems';
 import { Theme } from '@mui/material/styles';
 import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
@@ -68,9 +67,8 @@ const DialogHeaderItem = ({ align = 'center', ...props }: DialogHeaderItemProps)
 const getMetricsSpec = (journeyTypeName: JourneyTypeName) => {
   switch (journeyTypeName) {
     case 'space':
-      return SpaceMetrics;
     case 'subspace':
-      return ChallengeMetrics;
+      return SpaceMetrics;
     case 'subsubspace':
       return OpportunityMetrics;
   }
