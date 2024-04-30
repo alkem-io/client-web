@@ -1,7 +1,7 @@
 import { ExpandMore, HelpOutlineOutlined, UnfoldLess, UnfoldMore } from '@mui/icons-material';
 import { Box, Button, Collapse, IconButton, Tooltip, useMediaQuery } from '@mui/material';
 import { Theme } from '@mui/material/styles';
-import { useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import PageContentBlock from '../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../core/ui/content/PageContentBlockHeader';
@@ -19,6 +19,7 @@ import RouterLink from '../../../core/ui/link/RouterLink';
 import { GUTTER_PX } from '../../../core/ui/grid/constants';
 import { findCurrentPath } from './utils';
 import { Identifiable } from '../../../core/utils/Identifiable';
+import { debounce, difference } from 'lodash';
 
 export interface DashboardNavigationProps {
   dashboardNavigation: DashboardNavigationItem | undefined;
@@ -36,6 +37,11 @@ const VISIBLE_ROWS_WHEN_COLLAPSED = 6;
 
 const INITIAL_HEIGHT_LIMIT = GUTTER_PX * VISIBLE_ROWS_WHEN_COLLAPSED * 3;
 
+const collectIds = (item: DashboardNavigationItem): string[] => {
+  const children = item.children ?? [];
+  return [item.id, ...children.flatMap(collectIds)];
+};
+
 const DashboardNavigation = ({
   dashboardNavigation: dashboardNavigationRoot,
   loading = false,
@@ -51,17 +57,20 @@ const DashboardNavigation = ({
 
   const [hasHeightLimit, setHasHeightLimit] = useState(true);
 
-  const dashboardNavigation = dashboardNavigationRoot?.children;
-
+  // Used only on top level where we have "Show all"
   const itemsCount = useMemo(() => {
     if (loading) {
       return undefined;
     }
-    const childCount = dashboardNavigation?.reduce((count, item) => {
-      return count + (item.children?.length ?? 0);
-    }, 0);
-    return dashboardNavigation?.length! + childCount!;
-  }, [dashboardNavigation, loading]);
+    if (!dashboardNavigationRoot?.children) {
+      return 0;
+    }
+    const childCount =
+      dashboardNavigationRoot.children.reduce((count, item) => {
+        return count + (item.children?.length ?? 0);
+      }, 0) ?? 0;
+    return dashboardNavigationRoot.children.length + childCount;
+  }, [dashboardNavigationRoot, loading]);
 
   const allItemsFit = !itemsCount || itemsCount <= VISIBLE_ROWS_WHEN_COLLAPSED;
 
@@ -84,9 +93,34 @@ const DashboardNavigation = ({
 
   const itemRefs = useRef<Record<string, DashboardNavigationItemViewApi | null>>({}).current;
 
-  const itemRef = (itemId: string) => (element: DashboardNavigationItemViewApi | null) => {
-    itemRefs[itemId] = element;
-  };
+  // To trigger render after all item refs are collected
+  const [itemRefsVersion, setItemRefsVersion] = useState(0);
+
+  // Manually debounced to avoid multiple setState
+  const updateItemRefsVersion = useRef(debounce(() => setItemRefsVersion(version => version + 1))).current;
+
+  // Has to maintain stable id over renders, otherwise we get a loop because React always invokes a new functional ref
+  const itemRef = useCallback((element: DashboardNavigationItemViewApi | null) => {
+    if (element && itemRefs[element.id] !== element) {
+      itemRefs[element.id] = element;
+      updateItemRefsVersion();
+    }
+  }, []);
+
+  const ids = useMemo(
+    () => (dashboardNavigationRoot ? collectIds(dashboardNavigationRoot) : []),
+    [dashboardNavigationRoot]
+  );
+
+  // Because we can't use high-order itemRef (id) => (ref) => {}, we can't rely on null ref value to do cleanup,
+  // therefore we do a manual cleanup by removing all refs that are not in the current list of ids.
+  useEffect(() => {
+    for (const key of difference(Object.keys(itemRefs), ids)) {
+      itemRefs[key] = null;
+    }
+  }, [ids]);
+
+  const rootItem = dashboardNavigationRoot && itemRefs[dashboardNavigationRoot.id];
 
   const contentWrapperRef = useRef<HTMLDivElement>(null);
 
@@ -100,7 +134,9 @@ const DashboardNavigation = ({
   // The only purpose of this method is to calculate the height of the content before expand/collapse transition is completed on an item.
   // If items aren't expandable/collapsible anymore, this method is not needed, just get the height of the content from the contentWrapperRef.
   const getContentHeight = () => {
-    return Object.values(itemRefs).reduce((height, itemRef) => {
+    // Iterating over ids instead of itemRefs to skip outdated items (cleanup may not have run yet)
+    return ids.reduce((height, id) => {
+      const itemRef = itemRefs[id];
       const bounds = itemRef?.level === rootLevel ? itemRef.getDimensions() : undefined;
       return height + (bounds?.height ?? 0);
     }, 0);
@@ -109,13 +145,21 @@ const DashboardNavigation = ({
   const adjustViewport = () => {
     const itemRef = currentItemId && itemRefs[currentItemId];
 
-    if (!isSnapped || !itemRef) {
+    const getRelativeOffsetTop = (itemBounds: { top?: number } | undefined) => {
+      if (typeof itemBounds?.top !== 'number') {
+        return 0;
+      }
+      const parentBounds = contentWrapperRef.current?.getBoundingClientRect();
+      return parentBounds ? itemBounds.top - parentBounds.top : 0;
+    };
+
+    if (!isSnapped || isTopLevel || !itemRef) {
       setViewportSnap(snap =>
         produce(snap, snap => {
           const contentHeight = getContentHeight();
           const maxHeight = hasHeightLimit && isTopLevel ? INITIAL_HEIGHT_LIMIT : Infinity;
 
-          snap.top = 0;
+          snap.top = compact ? 0 : getRelativeOffsetTop(rootItem?.getChildrenDimensions());
           snap.height = Math.min(maxHeight, contentHeight);
         })
       );
@@ -125,13 +169,8 @@ const DashboardNavigation = ({
     setViewportSnap(snap =>
       produce(snap, snap => {
         const itemBounds = itemRef.getDimensions();
-
         const parentBounds = contentWrapperRef.current?.getBoundingClientRect();
-
-        const offsetTop =
-          typeof parentBounds?.top === 'number' && typeof itemBounds.top === 'number'
-            ? itemBounds.top - parentBounds?.top
-            : 0;
+        const offsetTop = getRelativeOffsetTop(itemBounds);
 
         snap.height = itemBounds?.height ?? parentBounds?.height ?? 0;
         snap.top = offsetTop;
@@ -146,13 +185,16 @@ const DashboardNavigation = ({
     hasHeightLimit,
     isTopLevel,
     compact,
+    itemRefsVersion,
+    ids,
   ]);
 
-  const contentTranslationX = (theme: Theme) =>
-    isSnapped && !isTopLevel && !compact ? gutters(-(currentLevel - 1) * 2)(theme) : 0;
+  const shouldShift = isSnapped && currentLevel !== -1 && !isTopLevel && !compact;
+
+  const contentTranslationX = (theme: Theme) => (shouldShift ? gutters(-(currentLevel - 1) * 2)(theme) : 0);
   const contentTranslationY = () => `-${viewportSnap.top}px`;
   const contentWidth = (theme: Theme) =>
-    isSnapped && !isTopLevel ? `calc(100% + ${gutters((currentLevel - 1) * 2)(theme)})` : '100%';
+    shouldShift ? `calc(100% + ${gutters((currentLevel - 1) * 2)(theme)})` : '100%';
 
   const getItemProps = typeof itemProps === 'function' ? itemProps : () => itemProps;
 
@@ -192,22 +234,19 @@ const DashboardNavigation = ({
             transition: 'transform 0.3s ease-in-out, width 0.3s ease-in-out',
           }}
         >
-          {(compact ? dashboardNavigationRoot && [dashboardNavigationRoot] : dashboardNavigation)?.map(subspace => (
+          {dashboardNavigationRoot && (
             <DashboardNavigationItemView
-              key={subspace.id}
-              ref={itemRef(subspace.id)}
-              level={rootLevel}
-              itemRef={itemRef}
+              ref={itemRef}
               currentPath={pathToItem}
               tooltipPlacement={tooltipPlacement}
               onToggle={adjustViewport}
               compact={compact}
               onCreateSubspace={onCreateSubspace}
               itemProps={itemProps}
-              {...subspace}
-              {...getItemProps(subspace)}
+              {...dashboardNavigationRoot}
+              {...getItemProps(dashboardNavigationRoot)}
             />
-          ))}
+          )}
         </Box>
       </Box>
       {!isTopLevel && (
