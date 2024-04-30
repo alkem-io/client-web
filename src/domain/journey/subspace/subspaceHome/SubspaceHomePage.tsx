@@ -84,9 +84,10 @@ const SubspaceHomePage = ({ dialog }: SubspaceHomePageProps) => {
 
   return (
     <SubspaceHomeContainer journeyId={journeyId} journeyTypeName={journeyTypeName}>
-      {({ innovationFlow, callouts, subspace }) => (
+      {({ innovationFlow, callouts, subspace, spaceReadAccess }) => (
         <>
           <SubspacePageLayout
+            spaceReadAccess={spaceReadAccess}
             journeyId={journeyId}
             journeyPath={journeyPath}
             journeyUrl={subspace?.profile.url}

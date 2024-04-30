@@ -40,7 +40,11 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
   const { subSpaceId: challengeId, journeyId, journeyPath } = useRouteResolver();
 
   return (
-    <SubspacePageLayout journeyId={journeyId} journeyPath={journeyPath}>
+    <SubspacePageLayout
+      journeyId={journeyId}
+      journeyPath={journeyPath}
+      spaceReadAccess={{ canReadSpace: false, loading: false }}
+    >
       {directMessageDialog}
       <SubspacePageContainer challengeId={challengeId}>
         {({ callouts, ...entities }, state) => (
