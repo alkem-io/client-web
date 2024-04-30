@@ -258,8 +258,6 @@
     "subsubspaces": "Subspaces",
     "entitiesWithCount": "{{entityType}} ({{count}})",
     "contributors": "Contributors",
-    "opportunity": "Opportunity",
-    "opportunities": "Opportunities",
     "organization": "Organization",
     "organizations": "Organizations",
     "communications": "Updates from the leads",
@@ -421,32 +419,32 @@
           "hidden": true
         },
         "subspace_ADMIN": {
-          "name": "subspace Admin",
+          "name": "Subspace Admin",
           "order": 6,
           "hidden": false
         },
         "subspace_LEAD": {
-          "name": "subspace Lead",
+          "name": "Subspace Lead",
           "order": 7,
           "hidden": true
         },
         "subspace_MEMBER": {
-          "name": "subspace Member",
+          "name": "Subspace Member",
           "order": 8,
           "hidden": true
         },
         "OPPORTUNITY_ADMIN": {
-          "name": "Opportunity Admin",
+          "name": "Subspace Admin",
           "order": 9,
           "hidden": true
         },
         "OPPORTUNITY_MEMBER": {
-          "name": "Opportunity Member",
+          "name": "Subspace Member",
           "order": 10,
           "hidden": true
         },
         "OPPORTUNITY_LEAD": {
-          "name": "Opportunity Lead",
+          "name": "Subspace Lead",
           "order": 11,
           "hidden": true
         },
@@ -494,7 +492,7 @@
         "SHARING": "Sharing",
         "PLATFORM_FUNCTIONALITIES": "Platform Functionalities",
         "COMMUNITY_BUILDING": "Community Building",
-        "CHALLENGE_CENTRIC": "Working subspace Centric",
+        "CHALLENGE_CENTRIC": "Working Challenge Centric",
         "HELP": "Need Help?",
         "OTHER": "Other"
       },
@@ -638,7 +636,7 @@
         "sectionTitle": "Remove member",
         "remove": "Click here to remove this user from this Community. Be careful, this action cannot be undone.",
         "dialogTitle": "Are you sure you want to remove this member?",
-        "dialogContent": "By clicking CONFIRM, {{member}} will be removed from this Community and all the underlying subspaces and Opportunities {{memberFirstName}} may be member of. {{memberFirstName}}’s contributions will remain in place."
+        "dialogContent": "By clicking CONFIRM, {{member}} will be removed from this Community and all the underlying Subspaces {{memberFirstName}} may be member of. {{memberFirstName}}’s contributions will remain in place."
       }
     }
   },
@@ -775,23 +773,23 @@
         "placeholder": ""
       },
       "tagline": {
-        "title": "subspace Statement",
-        "description": "Explain in one sentence what this subspace is about. It is also possible to frame it as a question, starting with 'How might we...'",
+        "title": "Subspace Statement",
+        "description": "Explain in one sentence what this Subspace is about. It is also possible to frame it as a question, starting with 'How might we...'",
         "placeholder": ""
       },
       "background": {
         "title": "Current Reality",
-        "description": "Give a brief impression of the current state of the subspace. Think of the 'What, where, when and who'.",
+        "description": "Give a brief impression of the current state of the Subspace. Think of the 'What, where, when and who'.",
         "placeholder": ""
       },
       "impact": {
         "title": "Additional context",
-        "description": "Give a brief overview of how this subspace is embedded in the wider picture. What is its impact? Why is it here?",
+        "description": "Give a brief overview of how this Subspace is embedded in the wider picture. What is its impact? Why is it here?",
         "placeholder": ""
       },
       "vision": {
         "title": "Future Vision",
-        "description": "Please note that this information will also be shown as a standalone description on the Dashboard of this subspace",
+        "description": "Please note that this information will also be shown as a standalone description on the Dashboard of this Subspace",
         "placeholder": ""
       },
       "who": {
@@ -801,14 +799,14 @@
       },
       "tags": {
         "title": "Tags",
-        "description": "Enter words that are key to the subspace to make it stand out and easier to find.",
+        "description": "Enter words that are key to the Subspace to make it stand out and easier to find.",
         "placeholder": ""
       },
       "addDefaultCallouts": {
         "title": "Add default collaboration tools"
       },
       "innovationFlow": {
-        "title": "subspace Flow"
+        "title": "Subspace Flow"
       }
     },
     "subsubspace": {
@@ -819,39 +817,39 @@
       },
       "tagline": {
         "title": "Tagline",
-        "description": "In one sentence, explain what this Opportunity is about.",
+        "description": "In one sentence, explain what this Subspace is about.",
         "placeholder": ""
       },
       "background": {
         "title": "Background",
-        "description": "Give a brief overview of how this Opportunity was identified and how it is embedded in the wider picture.",
+        "description": "Give a brief overview of how this Subspace was identified and how it is embedded in the wider picture.",
         "placeholder": ""
       },
       "impact": {
         "title": "Impact",
-        "description": "What will this Opportunity change? How will people and organizations be affected, for good or bad?",
+        "description": "What will this Subspace change? How will people and organizations be affected, for good or bad?",
         "placeholder": ""
       },
       "vision": {
         "title": "Description",
-        "description": "Describe the idea and the impact it will have on the subspace. Please note that this information will also be shown as a standalone description on the Dashboard of this Opportunity.",
+        "description": "Describe the idea and the impact it will have on the Subspace. Please note that this information will also be shown as a standalone description on the Dashboard of this Subspace.",
         "placeholder": ""
       },
       "who": {
         "title": "Who is involved?",
-        "description": "Describe the people and organizations who are currently working on this Opportunity.",
+        "description": "Describe the people and organizations who are currently working on this Subspace.",
         "placeholder": ""
       },
       "tags": {
         "title": "Tags",
-        "description": "Enter words that are key to your Opportunity to make it stand out and easier to find.",
+        "description": "Enter words that are key to your Subspace to make it stand out and easier to find.",
         "placeholder": ""
       },
       "addDefaultCallouts": {
         "title": "Add default collaboration tools"
       },
       "innovationFlow": {
-        "title": "Opportunity Flow"
+        "title": "Subspace Flow"
       }
     }
   },
@@ -952,8 +950,8 @@
       "title": "{{journey}} statistics"
     },
     "dashboardNavigation": {
-      "help": "This Space holds the following subspaces. When these subspaces have Opportunities, these are visible as well.",
-      "privateSubspace": "This is a private subspace. To view it’s content and potential Opportunities, visit the subspace and apply to become a member.",
+      "help": "This Space holds the following Subspaces.",
+      "privateSubspace": "This is a private Subspace. Visit the Subspace and apply to become a member to view it's content.",
       "showAll": "Show all",
       "expand": "Show full hierarchy",
       "collapse": "Limit to this Subspace"
@@ -1276,16 +1274,16 @@
         "short": "Accept Invitation"
       },
       "joinSpaceFirst": {
-        "full": "To become a member of this subspace, first become a member of the parent Space",
+        "full": "To become a member of this Subspace, first become a member of the parent Space",
         "short": "Please join parent Space first"
       },
       "joinSubspaceFirst": {
-        "full": "To become a member of this Opportunity, first become a member of the parent subspace",
-        "short": "Please join parent subspace first"
+        "full": "To become a member of this Subspace, first become a member of the parent Subspace",
+        "short": "Please join parent Subspace first"
       },
       "contactOpportunityLeads": {
-        "full": "Send a message to Opportunity leads to become a member",
-        "short": "Send a message to Opportunity leads to become a member"
+        "full": "Send a message to Subspace leads to become a member",
+        "short": "Send a message to Subspace leads to become a member"
       },
       "goToSpace": "Go to $t(common.space)",
       "goToSubspace": "Go to $t(common.subspace)",
@@ -1294,7 +1292,7 @@
       "extendedMessage": "{{join}} our {{journey}} and start making change!",
       "dialog-apply-parent": {
         "title": "Apply to <strong title='Parent community name'>{{parentCommunityName}}</strong>",
-        "body": "To join <strong title='subspace name'>'{{subspaceName}}'</strong> you must join <strong title='Space name'>'{{spaceName}}'</strong> Space first. Please add the subspace you want to join in the Spaces' application form."
+        "body": "To join <strong title='subspace name'>'{{subspaceName}}'</strong> you must join <strong title='Space name'>'{{spaceName}}'</strong> Space first. Please add the Subspace you want to join in the Spaces' application form."
       },
       "dialog-parent-app-pending": {
         "title": "Parent application pending!",
@@ -1350,7 +1348,7 @@
         "title": "Host",
         "select": "Select a host"
       },
-      "read-access": "Allow read access for non-space members to subspaces",
+      "read-access": "Allow read access for non-space members to Subspaces",
       "about": "About this Space",
       "visibility": "This Space is currently in <strong>{{visibility}}</strong> mode",
       "readOnly": "If you want to change any of this information, please contact the Alkemio team here."
@@ -1521,7 +1519,7 @@
     },
     "contributions": {
       "title": "Contributions",
-      "help": "The Spaces and subspaces that this organization is contributing to"
+      "help": "The Spaces and Subspaces that this organization is contributing to"
     },
     "discussions-list": {
       "name": "Discussions - {{community}}",
@@ -1601,12 +1599,12 @@
         "quit": "Quit Settings"
       },
       "opportunity": {
-        "create": "Create opportunity",
-        "edit": "Edit opportunity"
+        "create": "Create Subspace",
+        "edit": "Edit Subspace"
       },
       "subspace": {
-        "create": "Create subspace",
-        "edit": "Edit subspace"
+        "create": "Create Subspace",
+        "edit": "Edit Subspace"
       }
     }
   },
@@ -1624,7 +1622,7 @@
     "foreignJourney": "This {{journey}} is not in the selection of {{space}}. You are anyway very welcome to contribute. <strong>Enjoy exploring!</strong>",
     "outsideOfSpace": {
       "forum": "This is the general Alkemio Forum, outside of the <strong>{{space}}</strong> space. You are very much invited to explore and contribute!",
-      "subspaces": "Here you can find all subspaces that are hosted on Alkemio, also the ones that are not selected by <strong>{{space}}. Enjoy exploring!</strong>",
+      "subspaces": "Here you can find all Subspaces that are hosted on Alkemio, also the ones that are not selected by <strong>{{space}}. Enjoy exploring!</strong>",
       "contributors": "Here you can find all people and organizations that are contributing on Alkemio, also in Spaces that are not selected by <strong>{{space}}. Enjoy connecting!</strong>"
     },
     "goToMainPage": "Interested in collaborating in other Spaces? Click here to see them all on the universal Alkemio homepage.",
@@ -1731,7 +1729,7 @@
             "delete-confirmation": "Are you sure you want to delete {{template}} from the Space? You can also edit the information of this template.",
             "import": {
               "title": "Template Library: {{templateType}}",
-              "subtitle": "Find templates to use in your Space, subspace or opportunity. Select the template and click `Import` to add it to your Template set.",
+              "subtitle": "Find templates to use in your Space or Subspace. Select the template and click `Import` to add it to your Template set.",
               "callout-template-import-subtitle": "Find a template for people to use when contributing to your $t(common.callout)",
               "no-templates": "No templates found in this Space, find further platform templates below",
               "imported-successfully-notification": "Template imported successfully"
@@ -1800,9 +1798,9 @@
           }
         },
         "notifications": {
-          "subsubspace-created": "subspace created successfully.",
-          "subsubspace-removed": "subspace removed successfully.",
-          "subsubspace-updated": "subspace updated successfully."
+          "subsubspace-created": "Subspace created successfully.",
+          "subsubspace-removed": "Subspace removed successfully.",
+          "subsubspace-updated": "Subspace updated successfully."
         }
       },
       "subspace": {
@@ -1818,22 +1816,22 @@
           }
         },
         "notifications": {
-          "subspace-created": "subspace created successfully.",
-          "subspace-removed": "subspace removed successfully.",
-          "subspace-updated": "subspace updated successfully."
+          "subspace-created": "Subspace created successfully.",
+          "subspace-removed": "Subspace removed successfully.",
+          "subspace-updated": "Subspace updated successfully."
         }
       },
       "space": {
         "sections": {
           "subspaces": {
-            "description": "Here you can edit subspaces for this Space.",
+            "description": "Here you can edit Subspaces for this Space.",
             "defaultSettings": {
               "title": "Default settings",
-              "description": "Choose the default settings that will apply when creating a new subspace or Opportunity within this Space. These settings can be modified during the creation process or at a later time.",
+              "description": "Choose the default settings that will apply when creating a new Subspace within this Space. These settings can be modified during the creation process or at a later time.",
               "defaultInnovationFlow": {
                 "selectDifferentFlow": "Select different Flow",
                 "title": "Selecting the Default Innovation Flow",
-                "description": "Customize the default flow for newly created subspaces and Opportunities. Admins can modify it later in the Innovation flow settings. \n\nBelow you can choose between the templates collected in the Space Templates library. If you’re looking to create new flows or explore additional templates, click here to access this library."
+                "description": "Customize the default flow for newly created Subspaces. Admins can modify it later in the Innovation flow settings. \n\nBelow you can choose between the templates collected in the Space Templates library. If you’re looking to create new flows or explore additional templates, click here to access this library."
               }
             }
           }
@@ -1879,15 +1877,15 @@
           "memberActions": {
             "title": "Member Actions",
             "createBlocks": "<b>Create Blocks</b>: allow members to create blocks for collaboration tools & posts. If you deactivate this, members will still be able to contribute to existing posts and calls, but will not be able to create new blocks.",
-            "createSubspaces": "<b>Create subspaces</b>: allow members to create subspaces in this Space. If you deactivate this, you can still create subspaces yourself and add other people as an admin inside the subspace."
+            "createSubspaces": "<b>Create Subspaces</b>: allow members to create Subspaces in this Space. If you deactivate this, you can still create Subspaces yourself and add other people as an admin inside the Subspace."
           }
         }
       },
       "opportunity": {
         "notifications": {
-          "opportunity-created": "Opportunity created successfully.",
-          "opportunity-removed": "Opportunity removed successfully.",
-          "opportunity-updated": "Opportunity updated successfully."
+          "opportunity-created": "Subspace created successfully.",
+          "opportunity-removed": "Subspace removed successfully.",
+          "opportunity-updated": "Subspace updated successfully."
         }
       },
       "users": {
@@ -1975,7 +1973,7 @@
       "shortName": "$t(common.contributors)",
       "search": {
         "title": "Find talent and expertise!",
-        "subtitle": "Search for other people and organizations that can help you with your subspace, for example based on skills or interests.",
+        "subtitle": "Search for other people and organizations that can help you with your Subspace, for example based on skills or interests.",
         "placeholder": "Search…"
       },
       "organizations": {
@@ -1987,7 +1985,7 @@
     },
     "search": {
       "title": "Search",
-      "subtitle": "Find the Spaces, Contributors and subspaces, Opportunities and content from publicly available Spaces below",
+      "subtitle": "Find the Spaces, Contributors and Subspaces, and content from publicly available Spaces below",
       "placeholder": "Search…",
       "results-disclaimer": "These results may not represent the up-to-date state of the platform. Search results are updated on an interval.",
       "max-tags-reached": "You have reached the limit of {{max}} terms to search for",
@@ -2070,7 +2068,7 @@
         "myMemberships": {
           "title": "My Memberships",
           "noChildMemberships": "You are not a member of a subspace in this Space. Some subspaces do not require you to be a member to contribute, but if you want to receive updates or show the subspace here, become a member anyway!",
-          "seeMore": "That’s all! Looking for other Spaces to collaborate in? <spaces>Click here</spaces> to explore all spaces on the platform, or <landing>click here</landing> to create your own!"
+          "seeMore": "That's all! Looking for other Spaces to collaborate in? <spaces>Click here</spaces> to explore all spaces on the platform, or <landing>click here</landing> to create your own!"
         },
         "membershipSuggestions": {
           "title": "Become a member",
@@ -2111,13 +2109,13 @@
           "join": "Want to join the community and see more?",
           "existing-user": {
             "header": "Existing user? Jump back in!",
-            "subheader": "Welcome back! Continue where you left off and start exploring new subspaces.",
+            "subheader": "Welcome back! Continue where you left off and start exploring new Subspaces.",
             "more-info": "More about Alkemio",
             "more-info-url": "https://alkemio.foundation/manifesto"
           },
           "new-to-alkemio": {
             "header": "New to Alkemio?",
-            "subheader": "Easy for you to engage in effective and meaningful ways. Find solutions to subspaces.",
+            "subheader": "Easy for you to engage in effective and meaningful ways. Find solutions to Subspaces.",
             "more-info": "Contact us!",
             "more-info-url": "https://alkemio.foundation/feedback/"
           }
@@ -2131,9 +2129,9 @@
           "seeMore": "Explore more Innovation Packs"
         },
         "space": {
-          "header": "Explore the subspace Spaces!",
+          "header": "Explore the Subspace Spaces!",
           "subheader": "",
-          "body": "Each Space is a community with a dedicated space for shared subspaces. To connect, collaborate and innovate together.",
+          "body": "Each Space is a community with a dedicated space for shared Subspaces. To connect, collaborate and innovate together.",
           "body1": "For Users, Spaces are free to join. Explore the membership options, including for public and private Spaces."
         },
         "startingSpace": {
@@ -2148,7 +2146,7 @@
           "subheader": "The entities that want to bring innnovation."
         },
         "contributors-section": {
-          "title": "See who is driving subspaces on Alkemio"
+          "title": "See who is driving Subspaces on Alkemio"
         },
         "forumMessages": {
           "title": "Latest Contributions in the Forum",
@@ -2230,11 +2228,11 @@
           "community": "Community"
         },
         "subspaces": {
-          "header": "subspaces",
+          "header": "Subspaces",
           "subheader": "There is no final frontier",
           "body": "",
-          "no-data": "No subspaces available for this Space",
-          "description": "Here you can explore the subspaces hosted in this Space. Filter by key words to show just the topics you care about. "
+          "no-data": "No Subspaces available for this Space",
+          "description": "Here you can explore the Subspaces hosted in this Space. Filter by key words to show just the topics you care about. "
         },
         "contribute": {
           "header": "Contribute"
@@ -2245,7 +2243,7 @@
       }
     },
     "subspace": {
-      "title": "subspace",
+      "title": "Subspace",
       "organizationBanner": {
         "load-more": "And more ..."
       },
@@ -2253,21 +2251,21 @@
         "dashboard": {
           "projects": {
             "title": "Projects",
-            "help-text": "Projects related to this subspace"
+            "help-text": "Projects related to this Subspace"
           }
         },
         "opportunities": {
-          "description": "Here you can explore the Opportunities that have been identified for making progress on the subspace. Filter by key words to show just the topics you care about."
+          "description": "Here you can explore the Subspaces that have been identified for making progress. Filter by key words to show just the topics you care about."
         }
       }
     },
     "opportunity": {
-      "title": "Opportunity",
+      "title": "Subspace",
       "sections": {
         "dashboard": {
           "projects": {
             "title": "Projects",
-            "help-text": "Projects related to this opportunity"
+            "help-text": "Projects related to this Subspace"
           }
         },
         "community": {
@@ -2335,14 +2333,14 @@
       },
       "space": {
         "templatesHeader": "Templates defined in this Space",
-        "templatesSubheader": "The templates defined in this Space can be used in every subspace and Opportunity that this Space hosts."
+        "templatesSubheader": "The templates defined in this Space can be used in every Subspace that this Space hosts."
       },
       "subspace": {
-        "templatesHeader": "Templates defined in this subspace",
-        "templatesSubheader": "The templates defined in this subspace can be used in every Opportunity that is in the scope of this subspace."
+        "templatesHeader": "Templates defined in this Subspace",
+        "templatesSubheader": "The templates defined in this Subspace within its scope."
       },
       "opportunity": {
-        "templatesHeader": "Templates defined in this Opportunity"
+        "templatesHeader": "Templates defined in this Subspace"
       },
       "whiteboardDisconnected": {
         "title": "Whiteboard connection lost",
@@ -2372,7 +2370,7 @@
     },
     "about": {
       "title": "Reimagining collaboration",
-      "description": "Alkemio puts the subspaces central, each subspace providing a central, neutral place for collaboration.",
+      "description": "Alkemio puts the Subspaces central, each Subspace providing a central, neutral place for collaboration.",
       "powered-by": "Powered by {{name}} v{{version}}"
     },
     "error": {
@@ -2397,13 +2395,13 @@
     },
     "registration": {
       "header": "Create an account to start using Alkemio",
-      "introduction": "<p>Welcome at Alkemio! Alkemio makes it easy to manage subspaces and have contributors, from anywhere, working together on solutions. subspaces take center-stage. Focus is on the destination.</p><p>To keep the platform safe, open, and constructive, every user must accept the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy>. Please read the these documents and accept them below before you continue.</p>",
+      "introduction": "<p>Welcome at Alkemio! Alkemio makes it easy to manage Subspaces and have contributors, from anywhere, working together on solutions. Subspaces take center-stage. Focus is on the destination.</p><p>To keep the platform safe, open, and constructive, every user must accept the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy>. Please read the these documents and accept them below before you continue.</p>",
       "terms": "I accept the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy>.",
       "login": "Have an account?",
       "reset-password": "Reset password"
     },
     "accept-terms": {
-      "introduction": "<p>Alkemio makes it easy to manage subspaces and have contributors, from anywhere, working together on solutions. subspaces take center-stage. Focus is on the destination.</p><p>To keep the platform safe, open, and constructive, every user must accept the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy>. Please read the these documents and accept them below before you continue.</p>",
+      "introduction": "<p>Alkemio makes it easy to manage Subspaces and have contributors, from anywhere, working together on solutions. Subspaces take center-stage. Focus is on the destination.</p><p>To keep the platform safe, open, and constructive, every user must accept the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy>. Please read the these documents and accept them below before you continue.</p>",
       "greeting": "Hi {{user}}, welcome at Alkemio!",
       "continue": "Continue to the platform",
       "tooltip": "Please read and accept the Terms of Use and Privacy Policy before you continue"
@@ -2593,7 +2591,7 @@
     "postLocation": {
       "title": "Post location",
       "label": "Contributing to Callout",
-      "reminder": "Be careful changing the Posts location. Moving the Post to another Callout will make it disappear from the current Callout. This might make it difficult for people, including the person who created this Post, to retrieve it. Note that you can only move Posts within the same Space, subspace or Opportunity.",
+      "reminder": "Be careful changing the Posts location. Moving the Post to another Callout will make it disappear from the current Callout. This might make it difficult for people, including the person who created this Post, to retrieve it. Note that you can only move Posts within the same Space or Subspace.",
       "success": "Successfully moved Post to the new Callout.",
       "error": "Something went wrong when moving the Post, please try again."
     },
