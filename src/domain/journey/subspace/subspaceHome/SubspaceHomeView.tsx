@@ -7,7 +7,7 @@ import InnovationFlowStates from '../../../collaboration/InnovationFlow/Innovati
 import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
 import { OrderUpdate, TypedCallout } from '../../../collaboration/callout/useCallouts/useCallouts';
 import { InnovationFlowState } from '../../../collaboration/InnovationFlow/InnovationFlow';
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { SubspaceInnovationFlow, useConsumeAction } from '../layout/SubspacePageLayout';
 import { useCalloutCreationWithPreviewImages } from '../../../collaboration/callout/creationDialog/useCalloutCreation/useCalloutCreationWithPreviewImages';
 import CalloutCreationDialog from '../../../collaboration/callout/creationDialog/CalloutCreationDialog';
@@ -67,8 +67,17 @@ const SubspaceHomeView = ({
     </Button>
   );
 
+  const journeyIdRef = useRef(journeyId);
+
   const [selectedInnovationFlowState, setSelectedInnovationFlowState] =
     useStateWithAsyncDefault(currentInnovationFlowState);
+
+  useEffect(() => {
+    if (journeyId && journeyId !== journeyIdRef.current) {
+      setSelectedInnovationFlowState(currentInnovationFlowState);
+    }
+    journeyIdRef.current = journeyId;
+  }, [journeyId]);
 
   const selectedFlowStateCallouts = useMemo(() => {
     const filterCallouts = (callouts: TypedCallout[] | undefined) => {
