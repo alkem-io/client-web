@@ -13,7 +13,7 @@ import { MAX_TERMS_SEARCH } from '../../../../main/search/SearchView';
 export interface CardFilterProps<T extends Identifiable> extends Omit<SearchTagsInputProps, 'value' | 'availableTags'> {
   data: T[];
   valueGetter: (data: T) => ValueType;
-  tagsGetter: (data: T) => string[];
+  tagsGetter?: (data: T) => string[];
   inputFieldEnabled?: boolean;
   children: (filteredData: (T & MatchInformation)[]) => React.ReactNode;
   title?: string;
@@ -31,10 +31,12 @@ const JourneyFilter = <T extends Identifiable>({
 
   const allValues = useMemo(
     () =>
-      getAllValues(data, tagsGetter)
-        .sort((a, b) => a.term.toLocaleLowerCase().localeCompare(b.term.toLocaleLowerCase()))
-        .sort((a, b) => b.count - a.count)
-        .map(element => element.term),
+      tagsGetter
+        ? getAllValues(data, tagsGetter)
+            .sort((a, b) => a.term.toLocaleLowerCase().localeCompare(b.term.toLocaleLowerCase()))
+            .sort((a, b) => b.count - a.count)
+            .map(element => element.term)
+        : undefined,
     [data, tagsGetter]
   );
 
@@ -67,18 +69,20 @@ const JourneyFilter = <T extends Identifiable>({
           containerProps={{ marginLeft: 'auto', maxWidth: '100%', overflow: 'hidden' }}
         />
       </Box>
-      <TagsComponent
-        tags={allValues}
-        variant="filled"
-        color="primary"
-        gap={gutters(0.5)}
-        justifyContent="end"
-        height={gutters(2.5)}
-        onClickTag={term => {
-          setTerms(currentTerms => uniq([...currentTerms, term]));
-        }}
-        canShowAll
-      />
+      {allValues && (
+        <TagsComponent
+          tags={allValues}
+          variant="filled"
+          color="primary"
+          gap={gutters(0.5)}
+          justifyContent="end"
+          height={gutters(2.5)}
+          onClickTag={term => {
+            setTerms(currentTerms => uniq([...currentTerms, term]));
+          }}
+          canShowAll
+        />
+      )}
       {children(filteredData)}
     </>
   );
