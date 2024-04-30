@@ -7,6 +7,7 @@ import EditLinkDialog, { EditLinkFormValues } from '../../../shared/components/R
 import CreateLinksDialog, { CreateLinkFormValues } from '../../../shared/components/References/CreateLinksDialog';
 import { Box, IconButton, Link } from '@mui/material';
 import {
+  refetchCalloutDetailsQuery,
   useCreateLinkOnCalloutMutation,
   useDeleteLinkMutation,
   useUpdateLinkMutation,
@@ -50,7 +51,9 @@ const LinkCollectionCallout = ({
   ...calloutLayoutProps
 }: LinkCollectionCalloutProps) => {
   const { t } = useTranslation();
-  const [createLinkOnCallout] = useCreateLinkOnCalloutMutation();
+  const [createLinkOnCallout] = useCreateLinkOnCalloutMutation({
+    refetchQueries: [refetchCalloutDetailsQuery({ calloutId: callout.id })],
+  });
   const [updateLink] = useUpdateLinkMutation();
   const [deleteLink] = useDeleteLinkMutation();
 
