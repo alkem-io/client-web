@@ -71,7 +71,6 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
                 displayName={subsubspace.profile.displayName}
                 tagline={subsubspace.profile.tagline!}
                 vision={subsubspace.context?.vision!}
-                innovationFlowState={subsubspace.collaboration?.innovationFlow?.currentState.displayName}
                 tags={subsubspace.profile.tagset?.tags!}
                 banner={subsubspace.profile.cardBanner}
                 journeyUri={subsubspace.profile.url}

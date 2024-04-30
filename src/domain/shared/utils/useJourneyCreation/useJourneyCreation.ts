@@ -1,14 +1,13 @@
 import { useCallback } from 'react';
 import {
-  SubspaceCardFragmentDoc,
   refetchUserProviderQuery,
+  SubspaceCardFragmentDoc,
   useCreateSubspaceMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { useSpace } from '../../../journey/space/SpaceContext/useSpace';
 import { useConfig } from '../../../platform/config/useConfig';
 import {
   CommunityMembershipStatus,
-  CreateSubspaceMutation,
   PlatformFeatureFlagName,
   TagsetType,
 } from '../../../../core/apollo/generated/graphql-schema';
@@ -61,6 +60,7 @@ export const useSubspaceCreation = () => {
         },
       });
     },
+
     refetchQueries: [refetchUserProviderQuery()],
   });
 
@@ -121,10 +121,6 @@ export const useSubspaceCreation = () => {
               id: '',
               vision: value.vision,
             },
-            collaboration: {
-              id: '',
-              innovationFlow: undefined,
-            } as unknown as CreateSubspaceMutation['createSubspace']['collaboration'],
           },
         },
       });

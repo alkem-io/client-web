@@ -11,17 +11,21 @@ import { SpaceVisibility } from '../../../../core/apollo/generated/graphql-schem
 import CardRibbon from '../../../../core/ui/card/CardRibbon';
 import { useTranslation } from 'react-i18next';
 
-interface ChallengeCardProps
+interface SubspaceCardProps
   extends Omit<SpaceChildJourneyCardProps, 'iconComponent' | 'journeyTypeName' | 'parentSegment'> {
   tagline: string;
   spaceUri?: string;
   spaceDisplayName?: ReactNode;
   spaceVisibility?: SpaceVisibility;
-  innovationFlowState?: string;
   journeyUri: string;
 }
 
-const ChallengeCard = ({ spaceDisplayName, spaceUri, spaceVisibility, ...props }: ChallengeCardProps) => {
+/**
+ * @deprecated
+ * This is the old ChallengeCard. We need to review the usage of those cards and maybe replace them with new ones,
+ * such as SpaceSubspaceCard.
+ */
+const SubspaceCard = ({ spaceDisplayName, spaceUri, spaceVisibility, ...props }: SubspaceCardProps) => {
   const { t } = useTranslation();
 
   const ribbon =
@@ -51,4 +55,4 @@ const ChallengeCard = ({ spaceDisplayName, spaceUri, spaceVisibility, ...props }
   );
 };
 
-export default ChallengeCard;
+export default SubspaceCard;

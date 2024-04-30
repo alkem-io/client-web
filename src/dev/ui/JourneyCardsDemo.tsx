@@ -8,7 +8,7 @@ import SpaceCard from '../../domain/journey/space/SpaceCard/SpaceCard';
 import PageContentBlockHeader from '../../core/ui/content/PageContentBlockHeader';
 import SpaceSubspaceCard from '../../domain/journey/space/SpaceSubspaceCard/SpaceSubspaceCard';
 import { ProfileType } from '../../core/apollo/generated/graphql-schema';
-import ChallengeCard from '../../domain/journey/subspace/subspaceCard/SubspaceCard';
+import SubspaceCard from '../../domain/journey/subspace/subspaceCard/SubspaceCard';
 import UserCard from '../../domain/community/user/userCard/UserCard';
 
 const loremIpsum =
@@ -136,7 +136,7 @@ const JourneyCardsDemo = () => {
           <PageContentBlock>
             <PageContentBlockHeader title="Challenge Cards" />
             <PageContentBlockGrid disablePadding cards>
-              <ChallengeCard
+              <SubspaceCard
                 banner={{ uri: '/alkemio-banner/default-banner.png' }}
                 tagline={loremIpsum}
                 vision={loremIpsum}
@@ -147,7 +147,7 @@ const JourneyCardsDemo = () => {
                 spaceDisplayName="Parent Space"
                 spaceUri=""
               />
-              <ChallengeCard
+              <SubspaceCard
                 banner={{ uri: '/alkemio-banner/default-banner.png' }}
                 tagline={loremIpsum}
                 vision={loremIpsum}
@@ -158,7 +158,7 @@ const JourneyCardsDemo = () => {
                 spaceDisplayName="Parent Space"
                 spaceUri=""
               />
-              <ChallengeCard
+              <SubspaceCard
                 banner={{ uri: '/alkemio-banner/default-banner.png' }}
                 tagline={loremIpsum}
                 vision={loremIpsum}
