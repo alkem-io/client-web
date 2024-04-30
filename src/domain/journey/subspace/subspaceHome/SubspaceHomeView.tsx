@@ -21,11 +21,9 @@ interface SubspaceHomeViewProps {
   collaborationId: string | undefined;
   innovationFlowStates: InnovationFlowState[] | undefined;
   currentInnovationFlowState: string | undefined;
-  selectedInnovationFlowState: string | undefined;
-  onSelectInnovationFlowState: (state: InnovationFlowState) => void;
-  canEditSubspaceSettings: boolean | undefined;
   canEditInnovationFlow: boolean | undefined;
-  selectedFlowStateCallouts: TypedCallout[] | undefined;
+  canEditSubspaceSettings: boolean | undefined;
+  callouts: TypedCallout[] | undefined;
   canCreateCallout: boolean;
   canCreateCalloutFromTemplate: boolean;
   calloutNames: string[];
@@ -40,11 +38,8 @@ const SubspaceHomeView = ({
   collaborationId,
   innovationFlowStates,
   currentInnovationFlowState,
-  selectedInnovationFlowState,
-  onSelectInnovationFlowState,
-  canEditSubspaceSettings = false,
   canEditInnovationFlow = false,
-  selectedFlowStateCallouts,
+  canEditSubspaceSettings = false,
   canCreateCallout,
   canCreateCalloutFromTemplate,
   calloutNames,
@@ -82,6 +77,22 @@ const SubspaceHomeView = ({
     !canEditInnovationFlow || !isMobile ? SubspaceDialog.ManageFlow : undefined
   );
 
+  const [selectedInnovationFlowState, setSelectedInnovationFlowState] =
+    useStateWithAsyncDefault(currentInnovationFlowState);
+
+  const selectedFlowStateCallouts = useMemo(() => {
+    const filterCallouts = (callouts: TypedCallout[] | undefined) => {
+      return callouts?.filter(callout => {
+        if (!selectedInnovationFlowState) {
+          return true;
+        }
+        return callout.flowStates?.includes(selectedInnovationFlowState);
+      });
+    };
+
+    return filterCallouts(callouts);
+  }, [callouts, selectedInnovationFlowState]);
+
   return (
     <>
       <SubspaceInnovationFlow>
@@ -90,7 +101,7 @@ const SubspaceHomeView = ({
             states={innovationFlowStates}
             currentState={currentInnovationFlowState}
             selectedState={selectedInnovationFlowState}
-            onSelectState={onSelectInnovationFlowState}
+            onSelectState={state => setSelectedInnovationFlowState(state.displayName)}
             visualizer={isMobile ? InnovationFlowVisualizerMobile : InnovationFlowChips}
             createButton={canCreateCallout && createButton}
             settingsButton={
