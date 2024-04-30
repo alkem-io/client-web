@@ -444,6 +444,45 @@ export const ContributeTabPostFragmentDoc = gql`
   }
   ${PostCardFragmentDoc}
 `;
+export const CalloutFragmentDoc = gql`
+  fragment Callout on Callout {
+    id
+    nameID
+    type
+    sortOrder
+    activity
+    authorization {
+      id
+      myPrivileges
+    }
+    framing {
+      id
+      profile {
+        id
+        url
+        displayName
+        tagsets {
+          ...TagsetDetails
+        }
+      }
+    }
+    visibility
+  }
+  ${TagsetDetailsFragmentDoc}
+`;
+export const CollaborationWithCalloutsFragmentDoc = gql`
+  fragment CollaborationWithCallouts on Collaboration {
+    id
+    authorization {
+      id
+      myPrivileges
+    }
+    callouts(groups: $groups, IDs: $calloutIds) {
+      ...Callout
+    }
+  }
+  ${CalloutFragmentDoc}
+`;
 export const ReferenceDetailsFragmentDoc = gql`
   fragment ReferenceDetails on Reference {
     id
@@ -657,45 +696,6 @@ export const CalloutDetailsFragmentDoc = gql`
   ${WhiteboardDetailsFragmentDoc}
   ${LinkDetailsWithAuthorizationFragmentDoc}
   ${CommentsWithMessagesFragmentDoc}
-`;
-export const CollaborationWithCalloutsFragmentDoc = gql`
-  fragment CollaborationWithCallouts on Collaboration {
-    id
-    authorization {
-      id
-      myPrivileges
-    }
-    callouts(groups: $groups, IDs: $calloutIds) {
-      ...CalloutDetails
-    }
-  }
-  ${CalloutDetailsFragmentDoc}
-`;
-export const CalloutFragmentDoc = gql`
-  fragment Callout on Callout {
-    id
-    nameID
-    type
-    sortOrder
-    activity
-    authorization {
-      id
-      myPrivileges
-    }
-    framing {
-      id
-      profile {
-        id
-        url
-        displayName
-        tagsets {
-          ...TagsetDetails
-        }
-      }
-    }
-    visibility
-  }
-  ${TagsetDetailsFragmentDoc}
 `;
 export const VisualUriFragmentDoc = gql`
   fragment VisualUri on Visual {
