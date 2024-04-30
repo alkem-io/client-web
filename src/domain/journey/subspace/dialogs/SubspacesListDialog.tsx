@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { journeyCardTagsGetter, journeyCardValueGetter } from '../../common/utils/journeyCardValueGetter';
+import { journeyCardValueGetter } from '../../common/utils/journeyCardValueGetter';
 import { useSpace } from '../../space/SpaceContext/useSpace';
 import SubspaceCard from '../../subspace/subspaceCard/SubspaceCard';
 import SubspacesContainer from '../../space/containers/SubspacesContainer';
@@ -25,22 +25,20 @@ const SubspacesListDialog = ({ open = false, journeyId, onClose }: SubspacesList
 
   return (
     <DialogWithGrid open={open} fullWidth columns={12}>
-      <DialogHeader onClose={onClose} title={t('callout.calloutsList.title')} />
-      <DialogContent>
-        <SubspacesContainer spaceId={journeyId}>
-          {({ subspaces }, state) => (
-            <>
+      <SubspacesContainer spaceId={journeyId}>
+        {({ subspaces }, state) => (
+          <>
+            <DialogHeader
+              onClose={onClose}
+              title={t('common.entitiesWithCount', {
+                entityType: t('common.subspaces'),
+                count: subspaces.length,
+              })}
+            />
+            <DialogContent>
               {state.loading && <Loading />}
               {!state.loading && subspaces.length > 0 && (
-                <JourneyFilter
-                  data={subspaces}
-                  valueGetter={journeyCardValueGetter}
-                  tagsGetter={journeyCardTagsGetter}
-                  title={t('common.entitiesWithCount', {
-                    entityType: t('common.subspaces'),
-                    count: subspaces.length,
-                  })}
-                >
+                <JourneyFilter data={subspaces} valueGetter={journeyCardValueGetter}>
                   {filteredEntities => (
                     <CardLayoutContainer>
                       {filteredEntities.map((subspace, index) => {
@@ -64,10 +62,10 @@ const SubspacesListDialog = ({ open = false, journeyId, onClose }: SubspacesList
                   )}
                 </JourneyFilter>
               )}
-            </>
-          )}
-        </SubspacesContainer>
-      </DialogContent>
+            </DialogContent>
+          </>
+        )}
+      </SubspacesContainer>
     </DialogWithGrid>
   );
 };
