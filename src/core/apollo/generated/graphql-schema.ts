@@ -17441,8 +17441,28 @@ export type AboutPageMembersQuery = {
   };
 };
 
+export type JourneyCommunityPrivilegesQueryVariables = Exact<{
+  spaceId: Scalars['UUID_NAMEID'];
+}>;
+
+export type JourneyCommunityPrivilegesQuery = {
+  __typename?: 'Query';
+  space: {
+    __typename?: 'Space';
+    id: string;
+    community: {
+      __typename?: 'Community';
+      id: string;
+      authorization?:
+        | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+        | undefined;
+    };
+  };
+};
+
 export type JourneyDataQueryVariables = Exact<{
   spaceId: Scalars['UUID_NAMEID'];
+  includeCommunity?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 export type JourneyDataQuery = {
@@ -17467,7 +17487,7 @@ export type JourneyDataQuery = {
       who?: string | undefined;
       impact?: string | undefined;
     };
-    community: {
+    community?: {
       __typename?: 'Community';
       id: string;
       leadUsers: Array<{
@@ -17516,6 +17536,7 @@ export type JourneyDataQuery = {
     metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
     account: {
       __typename?: 'Account';
+      id: string;
       host?:
         | {
             __typename?: 'Organization';

@@ -1,7 +1,7 @@
 import { ReactNode, useCallback, useMemo } from 'react';
 import {
+  useJourneyCommunityPrivilegesQuery,
   useJourneyDataQuery,
-  useJourneyPrivilegesQuery,
   useSendMessageToCommunityLeadsMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { EntityDashboardLeads } from '../../../community/community/EntityDashboardContributorsSection/Types';
@@ -29,40 +29,45 @@ interface JourneyUnauthorizedDialogContainerProvided extends EntityDashboardLead
 
 interface JourneyUnauthorizedDialogContainerProps {
   journeyId: string | undefined;
-  loading?: boolean;
+  canReadSpace: boolean | undefined;
+  loading: boolean;
   children: (provided: JourneyUnauthorizedDialogContainerProvided) => ReactNode;
 }
 
-const fetchPrivileges = mainQuery(useJourneyPrivilegesQuery);
+const fetchCommunityPrivileges = mainQuery(useJourneyCommunityPrivilegesQuery);
 const fetchJourneyData = mainQuery(useJourneyDataQuery);
 
 const JourneyUnauthorizedDialogContainer = ({
   journeyId,
+  canReadSpace = true,
   loading = false,
   children,
 }: JourneyUnauthorizedDialogContainerProps) => {
+  const isUnauthorized = !canReadSpace && !loading;
+
   const {
-    data: journeyPrivilegesQueryData,
-    loading: privilegesLoading,
-    error: privilegesError,
-  } = fetchPrivileges({
+    data: journeyCommunityPrivilegesQueryData,
+    loading: journeyCommunityPrivilegesLoading,
+    error: journeyCommunityPrivilegesError,
+  } = fetchCommunityPrivileges({
     variables: {
       spaceId: journeyId!,
     },
-    skip: !journeyId,
+    skip: !journeyId || !isUnauthorized,
   });
 
-  const { authorization } = journeyPrivilegesQueryData?.space ?? {};
-
-  const isAuthorized = authorization?.myPrivileges?.includes(AuthorizationPrivilege.Read);
-
-  const shouldSkipJourneyCommunityPrivileges = privilegesLoading || Boolean(privilegesError) || isAuthorized;
+  const communityReadAccess =
+    journeyCommunityPrivilegesQueryData?.space?.community?.authorization?.myPrivileges?.includes(
+      AuthorizationPrivilege.Read
+    );
 
   const { data: journeyDataQueryData, error: journeyDataError } = fetchJourneyData({
     variables: {
       spaceId: journeyId!,
+      includeCommunity: Boolean(communityReadAccess), // passing undefined triggers Apollo Invariant Violation error
     },
-    skip: !journeyId || shouldSkipJourneyCommunityPrivileges,
+    skip:
+      !journeyId || !isUnauthorized || journeyCommunityPrivilegesLoading || Boolean(journeyCommunityPrivilegesError),
   });
 
   const { profile, context, metrics, community } = journeyDataQueryData?.space ?? {};
@@ -88,7 +93,7 @@ const JourneyUnauthorizedDialogContainer = ({
   );
 
   const provided: JourneyUnauthorizedDialogContainerProvided = {
-    authorized: isAuthorized,
+    authorized: !isUnauthorized,
     background: profile?.description,
     displayName: profile?.displayName,
     tagline: profile?.tagline,
@@ -101,8 +106,8 @@ const JourneyUnauthorizedDialogContainer = ({
     hostOrganizations,
     leadOrganizations: community?.leadOrganizations,
     leadUsers: community?.leadUsers,
-    loading: privilegesLoading || loading,
-    error: privilegesError ?? journeyDataError,
+    loading,
+    error: journeyCommunityPrivilegesError ?? journeyDataError,
   };
 
   return <>{children(provided)}</>;

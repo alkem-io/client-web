@@ -31,7 +31,7 @@ const renderPage = (calloutGroup: string | undefined) => {
     case CalloutGroupName.Community:
       return <SpaceCommunityPage />;
     default:
-      return <KnowedgeBasePage journeyTypeName="space" />;
+      return <KnowedgeBasePage />;
   }
 };
 

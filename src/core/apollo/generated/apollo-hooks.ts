@@ -15608,8 +15608,77 @@ export function refetchAboutPageMembersQuery(variables: SchemaTypes.AboutPageMem
   return { query: AboutPageMembersDocument, variables: variables };
 }
 
+export const JourneyCommunityPrivilegesDocument = gql`
+  query JourneyCommunityPrivileges($spaceId: UUID_NAMEID!) {
+    space(ID: $spaceId) {
+      id
+      community {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useJourneyCommunityPrivilegesQuery__
+ *
+ * To run a query within a React component, call `useJourneyCommunityPrivilegesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useJourneyCommunityPrivilegesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useJourneyCommunityPrivilegesQuery({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *   },
+ * });
+ */
+export function useJourneyCommunityPrivilegesQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.JourneyCommunityPrivilegesQuery,
+    SchemaTypes.JourneyCommunityPrivilegesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.JourneyCommunityPrivilegesQuery,
+    SchemaTypes.JourneyCommunityPrivilegesQueryVariables
+  >(JourneyCommunityPrivilegesDocument, options);
+}
+
+export function useJourneyCommunityPrivilegesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.JourneyCommunityPrivilegesQuery,
+    SchemaTypes.JourneyCommunityPrivilegesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.JourneyCommunityPrivilegesQuery,
+    SchemaTypes.JourneyCommunityPrivilegesQueryVariables
+  >(JourneyCommunityPrivilegesDocument, options);
+}
+
+export type JourneyCommunityPrivilegesQueryHookResult = ReturnType<typeof useJourneyCommunityPrivilegesQuery>;
+export type JourneyCommunityPrivilegesLazyQueryHookResult = ReturnType<typeof useJourneyCommunityPrivilegesLazyQuery>;
+export type JourneyCommunityPrivilegesQueryResult = Apollo.QueryResult<
+  SchemaTypes.JourneyCommunityPrivilegesQuery,
+  SchemaTypes.JourneyCommunityPrivilegesQueryVariables
+>;
+export function refetchJourneyCommunityPrivilegesQuery(
+  variables: SchemaTypes.JourneyCommunityPrivilegesQueryVariables
+) {
+  return { query: JourneyCommunityPrivilegesDocument, variables: variables };
+}
+
 export const JourneyDataDocument = gql`
-  query JourneyData($spaceId: UUID_NAMEID!) {
+  query JourneyData($spaceId: UUID_NAMEID!, $includeCommunity: Boolean = false) {
     space(ID: $spaceId) {
       id
       profile {
@@ -15618,13 +15687,14 @@ export const JourneyDataDocument = gql`
       context {
         ...ContextJourneyData
       }
-      community {
+      community @include(if: $includeCommunity) {
         ...JourneyCommunity
       }
       metrics {
         ...MetricsItem
       }
       account {
+        id
         host {
           ...AssociatedOrganizationDetails
         }
@@ -15651,6 +15721,7 @@ export const JourneyDataDocument = gql`
  * const { data, loading, error } = useJourneyDataQuery({
  *   variables: {
  *      spaceId: // value for 'spaceId'
+ *      includeCommunity: // value for 'includeCommunity'
  *   },
  * });
  */
