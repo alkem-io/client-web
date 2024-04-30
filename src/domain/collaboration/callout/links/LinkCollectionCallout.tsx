@@ -54,9 +54,7 @@ const LinkCollectionCallout = ({
   const [createLinkOnCallout] = useCreateLinkOnCalloutMutation({
     refetchQueries: [refetchCalloutDetailsQuery({ calloutId: callout.id })],
   });
-  const [updateLink] = useUpdateLinkMutation({
-    refetchQueries: [refetchCalloutDetailsQuery({ calloutId: callout.id })],
-  });
+  const [updateLink] = useUpdateLinkMutation();
   const [deleteLink] = useDeleteLinkMutation({
     refetchQueries: [refetchCalloutDetailsQuery({ calloutId: callout.id })],
   });
