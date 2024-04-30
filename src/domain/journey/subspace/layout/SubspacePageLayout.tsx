@@ -81,12 +81,8 @@ interface ActionsProvider {
 }
 
 const DialogActionsContext = createContext<ActionsProvider>({
-  consume: () => {
-    throw new Error('Must be under DialogActionsContext');
-  },
-  dispose: () => {
-    throw new Error('Must be under DialogActionsContext');
-  },
+  consume: () => undefined,
+  dispose: () => {},
 });
 
 export const useConsumeAction = (action: SubspaceDialog | undefined | null | false) => {
