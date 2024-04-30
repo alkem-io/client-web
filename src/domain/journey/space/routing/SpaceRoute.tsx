@@ -32,7 +32,7 @@ export const SpaceRoute = () => {
       <Route path={routes.Community} element={<SpaceCommunityPage />} />
       <Route path={routes.About} element={<SpaceDashboardPage dialog="about" />} />
       <Route path={routes.Subspaces} element={<SpaceSubspacesPage />} />
-      <Route path={routes.KnowledgeBase} element={<KnowledgeBasePage journeyTypeName="space" />} />
+      <Route path={routes.KnowledgeBase} element={<KnowledgeBasePage />} />
       <Route
         path="*"
         element={

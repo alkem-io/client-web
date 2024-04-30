@@ -13,6 +13,7 @@ import SpacePageBanner from './SpacePageBanner';
 import CommunityGuidelinesBlock from '../../../community/community/CommunityGuidelines/CommunityGuidelinesBlock';
 import { JourneyPath } from '../../../../main/routing/resolvers/RouteResolver';
 import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
+import useCanReadSpace from '../../common/authorization/useCanReadSpace';
 
 export interface SpacePageLayoutProps {
   currentSection: EntityPageSection;
@@ -35,6 +36,8 @@ const SpacePageLayout = ({
     journeyTypeName: 'space',
   });
 
+  const spaceReadAccess = useCanReadSpace({ spaceId });
+
   return (
     <EntityPageLayout
       currentSection={currentSection}
@@ -55,7 +58,7 @@ const SpacePageLayout = ({
       <StorageConfigContextProvider locationType="journey" spaceId={spaceId}>
         {children}
       </StorageConfigContextProvider>
-      <JourneyUnauthorizedDialogContainer journeyId={spaceId} loading={loading}>
+      <JourneyUnauthorizedDialogContainer {...spaceReadAccess} journeyId={spaceId}>
         {({ vision, ...props }) => (
           <JourneyUnauthorizedDialog
             description={vision}

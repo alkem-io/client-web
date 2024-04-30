@@ -47,9 +47,11 @@ import ApplicationButton from '../../../community/application/applicationButton/
 import ApplicationButtonContainer from '../../../community/application/containers/ApplicationButtonContainer';
 import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
 import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
+import { SpaceReadAccess } from '../../common/authorization/useCanReadSpace';
 
 export interface SubspacePageLayoutProps {
   journeyId: string | undefined;
+  spaceReadAccess: SpaceReadAccess;
   journeyPath: JourneyPath;
   journeyUrl?: string | undefined; // TODO make required
   loading?: boolean;
@@ -85,12 +87,8 @@ interface ActionsProvider {
 }
 
 const DialogActionsContext = createContext<ActionsProvider>({
-  consume: () => {
-    throw new Error('Must be under DialogActionsContext');
-  },
-  dispose: () => {
-    throw new Error('Must be under DialogActionsContext');
-  },
+  consume: () => undefined,
+  dispose: () => {},
 });
 
 export const useConsumeAction = (action: SubspaceDialog | undefined | null | false) => {
@@ -102,6 +100,7 @@ export const useConsumeAction = (action: SubspaceDialog | undefined | null | fal
 
 const SubspacePageLayout = ({
   journeyId,
+  spaceReadAccess,
   journeyPath,
   journeyUrl,
   loading = false,
@@ -267,7 +266,7 @@ const SubspacePageLayout = ({
                   </Paper>
                 )}
               </TopLevelLayout>
-              <JourneyUnauthorizedDialogContainer journeyId={journeyId} loading={loading}>
+              <JourneyUnauthorizedDialogContainer {...spaceReadAccess} journeyId={journeyId}>
                 {({ vision, ...props }) => (
                   <JourneyUnauthorizedDialog
                     subspaceId={journeyId}
