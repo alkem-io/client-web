@@ -13,6 +13,7 @@ import AltToggle from '../../../../core/ui/forms/AltToggle/AltToggle';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import { Box } from '@mui/material';
 import { RECENT_ACTIVITIES_LIMIT_INITIAL, RECENT_ACTIVITIES_LIMIT_EXPANDED } from '../journeyDashboard/constants';
+import { Actions } from '../../../../core/ui/actions/Actions';
 
 export interface RecentContributionsBlockProps extends ActivityComponentProps {
   readUsersAccess: boolean;
@@ -92,16 +93,15 @@ const RecentContributionsBlock = ({
 
   return (
     <Box>
-      <Gutters disablePadding>
+      <Actions justifyContent="end">
         <AltToggle
           value={mode}
           options={modeOptions}
           onChange={setMode}
-          justifyContent="center"
           sx={{ height: gutters(), marginBottom: gutters() }}
           aria-label={t('components.dashboardRecentContributions.modes.switchMode')}
         />
-      </Gutters>
+      </Actions>
       <Box position="relative" flexGrow={1} flexBasis={gutters(12)}>
         {mode === Mode.RecentActivity && (
           <>

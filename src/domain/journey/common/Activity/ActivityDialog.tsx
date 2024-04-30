@@ -18,7 +18,7 @@ const ActivityDialog = ({ open = false, journeyId, onClose }: ActivityDialogProp
   return (
     <DialogWithGrid open={open} columns={8} aria-labelledby="activity-dialog">
       <DialogHeader onClose={onClose} title={t('common.contributions')} />
-      <DialogContent>
+      <DialogContent sx={{ paddingTop: 0 }}>
         <SubspacePageContainer challengeId={journeyId}>
           {({ callouts, ...entities }) => (
             <RecentContributionsBlock
