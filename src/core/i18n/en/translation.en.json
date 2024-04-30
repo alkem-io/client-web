@@ -258,8 +258,6 @@
     "subsubspaces": "Subspaces",
     "entitiesWithCount": "{{entityType}} ({{count}})",
     "contributors": "Contributors",
-    "opportunity": "Subspace",
-    "opportunities": "Subspaces",
     "organization": "Organization",
     "organizations": "Organizations",
     "communications": "Updates from the leads",
