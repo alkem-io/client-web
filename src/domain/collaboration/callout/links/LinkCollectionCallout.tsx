@@ -54,8 +54,12 @@ const LinkCollectionCallout = ({
   const [createLinkOnCallout] = useCreateLinkOnCalloutMutation({
     refetchQueries: [refetchCalloutDetailsQuery({ calloutId: callout.id })],
   });
-  const [updateLink] = useUpdateLinkMutation();
-  const [deleteLink] = useDeleteLinkMutation();
+  const [updateLink] = useUpdateLinkMutation({
+    refetchQueries: [refetchCalloutDetailsQuery({ calloutId: callout.id })],
+  });
+  const [deleteLink] = useDeleteLinkMutation({
+    refetchQueries: [refetchCalloutDetailsQuery({ calloutId: callout.id })],
+  });
 
   const [addNewLinkDialogOpen, setAddNewLinkDialogOpen] = useState<boolean>(false);
   const [editLink, setEditLink] = useState<EditLinkFormValues>();
