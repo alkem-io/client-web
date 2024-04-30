@@ -17,7 +17,7 @@ fragment CollaborationWithCallouts on Collaboration {
     myPrivileges
   }
   callouts(groups: $groups, IDs: $calloutIds) {
-    ...Callout
+    ...CalloutDetails
   }
 }
 
