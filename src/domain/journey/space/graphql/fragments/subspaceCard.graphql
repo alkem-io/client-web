@@ -31,10 +31,4 @@ fragment SubspaceCard on Space {
     id
     myMembershipStatus
   }
-  collaboration {
-    id
-    innovationFlow {
-      ...InnovationFlowDetails
-    }
-  }
 }
