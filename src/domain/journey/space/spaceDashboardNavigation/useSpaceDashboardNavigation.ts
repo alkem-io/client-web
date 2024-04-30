@@ -10,7 +10,7 @@ import {
   SpaceDashboardNavigationProfileFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { keyBy } from 'lodash';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 
 interface UseSpaceDashboardNavigationProps {
   spaceId: string | undefined;
@@ -20,6 +20,7 @@ interface UseSpaceDashboardNavigationProps {
 interface UseSpaceDashboardNavigationProvided {
   dashboardNavigation: DashboardNavigationItem | undefined;
   loading: boolean;
+  refetch: () => void;
 }
 
 export interface DashboardNavigationItem {
@@ -66,7 +67,11 @@ const useSpaceDashboardNavigation = ({
   spaceId,
   skip,
 }: UseSpaceDashboardNavigationProps): UseSpaceDashboardNavigationProvided => {
-  const { data: challengesQueryData, loading: challengesQueryLoading } = useSpaceDashboardNavigationChallengesQuery({
+  const {
+    data: challengesQueryData,
+    loading: challengesQueryLoading,
+    refetch: refetchChallenges,
+  } = useSpaceDashboardNavigationChallengesQuery({
     variables: { spaceId: spaceId! },
     skip: skip || !spaceId,
   });
@@ -75,14 +80,17 @@ const useSpaceDashboardNavigation = ({
 
   const readableChallengeIds = space?.subspaces.filter(isReadable).map(({ id }) => id);
 
-  const { data: opportunitiesQueryData, loading: opportunitiesQueryLoading } =
-    useSpaceDashboardNavigationOpportunitiesQuery({
-      variables: {
-        spaceId: spaceId!,
-        challengeIds: readableChallengeIds!,
-      },
-      skip: !readableChallengeIds || skip,
-    });
+  const {
+    data: opportunitiesQueryData,
+    loading: opportunitiesQueryLoading,
+    refetch: refetchOpportunities,
+  } = useSpaceDashboardNavigationOpportunitiesQuery({
+    variables: {
+      spaceId: spaceId!,
+      challengeIds: readableChallengeIds!,
+    },
+    skip: !readableChallengeIds || skip,
+  });
 
   const challengesWithOpportunitiesById = useMemo(
     () => keyBy(opportunitiesQueryData?.space.subspaces, 'id'),
@@ -108,9 +116,15 @@ const useSpaceDashboardNavigation = ({
     };
   }, [challengesQueryData, opportunitiesQueryData]);
 
+  const refetch = useCallback(() => {
+    refetchChallenges();
+    refetchOpportunities();
+  }, [refetchChallenges, refetchOpportunities]);
+
   return {
     dashboardNavigation,
     loading,
+    refetch,
   };
 };
 

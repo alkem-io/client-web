@@ -29,6 +29,7 @@ export interface DashboardNavigationProps {
     | ((item: DashboardNavigationItem) => Partial<DashboardNavigationItemViewProps>);
   onCreateSubspace?: (parent: Identifiable) => void;
   compact?: boolean;
+  onCurrentItemNotFound?: () => void;
 }
 
 const VISIBLE_ROWS_WHEN_COLLAPSED = 6;
@@ -42,6 +43,7 @@ const DashboardNavigation = ({
   itemProps = () => ({}),
   onCreateSubspace,
   compact = false,
+  onCurrentItemNotFound = () => {},
 }: DashboardNavigationProps) => {
   const { t } = useTranslation();
 
@@ -73,6 +75,12 @@ const DashboardNavigation = ({
   const pathToItem = findCurrentPath(dashboardNavigationRoot, currentItemId);
   const currentLevel = pathToItem.length - 1;
   const isTopLevel = currentLevel === 0;
+
+  useLayoutEffect(() => {
+    if (currentItemId && dashboardNavigationRoot && pathToItem.length === 0) {
+      onCurrentItemNotFound();
+    }
+  }, [currentItemId, dashboardNavigationRoot, pathToItem.length]);
 
   const itemRefs = useRef<Record<string, DashboardNavigationItemViewApi | null>>({}).current;
 
