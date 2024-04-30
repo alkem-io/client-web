@@ -1,6 +1,9 @@
 import { TFunction } from 'react-i18next';
 import { JourneyTypeName } from '../JourneyTypeName';
 
+/**
+ * @deprecated remove, all child journeys are now called subspace
+ */
 const getJourneyChildrenTranslation = (
   t: TFunction<'translation', undefined>,
   type: JourneyTypeName,

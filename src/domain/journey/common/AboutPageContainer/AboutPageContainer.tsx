@@ -79,7 +79,7 @@ const AboutPageContainer: FC<AboutPageContainerProps> = ({ journeyId, children }
     variables: {
       spaceId: journeyId!,
     },
-    skip: nonMembersDataLoading,
+    skip: nonMembersDataLoading || !journeyId,
   });
 
   const memberProfile = membersData?.space?.profile;
