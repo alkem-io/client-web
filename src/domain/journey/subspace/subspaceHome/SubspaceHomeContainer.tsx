@@ -6,11 +6,13 @@ import useCallouts, { UseCalloutsProvided } from '../../../collaboration/callout
 import { SubspacePageSpaceFragment } from '../../../../core/apollo/generated/graphql-schema';
 import { JourneyTypeName } from '../../JourneyTypeName';
 import { useSubspacePageQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import useCanReadSpace, { SpaceReadAccess } from '../../common/authorization/useCanReadSpace';
 
 interface SubspaceHomeContainerProvided {
   innovationFlow: UseInnovationFlowStatesProvided;
   callouts: UseCalloutsProvided;
   subspace?: SubspacePageSpaceFragment;
+  spaceReadAccess: SpaceReadAccess;
 }
 
 interface SubspaceHomeContainerProps extends SimpleContainerProps<SubspaceHomeContainerProvided> {
@@ -19,11 +21,13 @@ interface SubspaceHomeContainerProps extends SimpleContainerProps<SubspaceHomeCo
 }
 
 const SubspaceHomeContainer = ({ journeyId, journeyTypeName, children }: SubspaceHomeContainerProps) => {
+  const spaceReadAccess = useCanReadSpace({ spaceId: journeyId });
+
   const { data } = useSubspacePageQuery({
     variables: {
       spaceId: journeyId!,
     },
-    skip: !journeyId,
+    skip: !journeyId || !spaceReadAccess.canReadSpace,
   });
 
   const collaborationId = data?.space?.collaboration.id;
@@ -35,7 +39,7 @@ const SubspaceHomeContainer = ({ journeyId, journeyTypeName, children }: Subspac
     journeyTypeName,
   });
 
-  return <>{children({ innovationFlow, callouts, subspace: data?.space })}</>;
+  return <>{children({ innovationFlow, callouts, subspace: data?.space, spaceReadAccess })}</>;
 };
 
 export default SubspaceHomeContainer;

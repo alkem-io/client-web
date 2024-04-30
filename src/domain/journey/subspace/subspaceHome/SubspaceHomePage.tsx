@@ -6,7 +6,7 @@ import useDirectMessageDialog from '../../../communication/messaging/DirectMessa
 import { useTranslation } from 'react-i18next';
 import { SubspacePageLayout } from '../../common/EntityPageLayout';
 import JourneyDashboardWelcomeBlock from '../../common/journeyDashboardWelcomeBlock/JourneyDashboardWelcomeBlock';
-import { CommunityMembershipStatus } from '../../../../core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, CommunityMembershipStatus } from '../../../../core/apollo/generated/graphql-schema';
 import { DialogDef } from '../layout/DialogDefinition';
 import { SubspaceDialog } from '../layout/SubspaceDialog';
 import {
@@ -84,9 +84,10 @@ const SubspaceHomePage = ({ dialog }: SubspaceHomePageProps) => {
 
   return (
     <SubspaceHomeContainer journeyId={journeyId} journeyTypeName={journeyTypeName}>
-      {({ innovationFlow, callouts, subspace }) => (
+      {({ innovationFlow, callouts, subspace, spaceReadAccess }) => (
         <>
           <SubspacePageLayout
+            spaceReadAccess={spaceReadAccess}
             journeyId={journeyId}
             journeyPath={journeyPath}
             journeyUrl={subspace?.profile.url}
@@ -144,17 +145,21 @@ const SubspaceHomePage = ({ dialog }: SubspaceHomePageProps) => {
                   label={t(`spaceDialog.${SubspaceDialog.Share}` as const)}
                   icon={ShareOutlined}
                 />
-                <DialogDef
-                  dialogType={SubspaceDialog.ManageFlow}
-                  label={t(`spaceDialog.${SubspaceDialog.ManageFlow}` as const)}
-                  icon={InnovationFlowIcon}
-                />
-                <DialogDef
-                  dialogType={SubspaceDialog.Settings}
-                  label={t(`spaceDialog.${SubspaceDialog.Settings}` as const)}
-                  icon={SettingsOutlined}
-                  url={subspace ? buildJourneyAdminUrl(subspace?.profile.url) : undefined}
-                />
+                {innovationFlow.canEditInnovationFlow && (
+                  <DialogDef
+                    dialogType={SubspaceDialog.ManageFlow}
+                    label={t(`spaceDialog.${SubspaceDialog.ManageFlow}` as const)}
+                    icon={InnovationFlowIcon}
+                  />
+                )}
+                {subspace?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) && (
+                  <DialogDef
+                    dialogType={SubspaceDialog.Settings}
+                    label={t(`spaceDialog.${SubspaceDialog.Settings}` as const)}
+                    icon={SettingsOutlined}
+                    url={subspace ? buildJourneyAdminUrl(subspace?.profile.url) : undefined}
+                  />
+                )}
               </>
             }
             profile={subspace?.profile}

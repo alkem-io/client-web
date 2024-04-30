@@ -55,7 +55,11 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
   );
 
   return (
-    <SubspacePageLayout journeyId={journeyId} journeyPath={journeyPath}>
+    <SubspacePageLayout
+      journeyId={journeyId}
+      journeyPath={journeyPath}
+      spaceReadAccess={{ canReadSpace: false, loading: false }}
+    >
       <ChallengeOpportunitiesContainer challengeId={challengeId}>
         {({ callouts, ...entities }, state) => (
           <ChildJourneyView

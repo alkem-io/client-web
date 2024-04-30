@@ -6,6 +6,10 @@ query SubspacePage($spaceId: UUID_NAMEID!) {
 
 fragment SubspacePageSpace on Space {
   id
+  authorization {
+    id
+    myPrivileges
+  }
   profile {
     id
     url
