@@ -5,7 +5,7 @@ import { CommunityContextProvider } from '../../../community/community/Community
 import { nameOfUrl } from '../../../../main/routing/urlParams';
 import SubspaceRoute from '../../subspace/routing/SubspaceRoute';
 import { Error404 } from '../../../../core/pages/Errors/Error404';
-import SpaceChallengesPage from '../pages/SpaceChallengesPage';
+import SpaceSubspacesPage from '../pages/SpaceSubspacesPage';
 import { routes } from '../routes/spaceRoutes';
 import { NotFoundPageLayout } from '../../common/EntityPageLayout';
 import CalloutRoute from '../../../collaboration/callout/routing/CalloutRoute';
@@ -31,7 +31,7 @@ export const SpaceRoute = () => {
       <Route path={`calendar/:${nameOfUrl.calendarEventNameId}`} element={<SpaceDashboardPage dialog="calendar" />} />
       <Route path={routes.Community} element={<SpaceCommunityPage />} />
       <Route path={routes.About} element={<SpaceDashboardPage dialog="about" />} />
-      <Route path={routes.Subspaces} element={<SpaceChallengesPage />} />
+      <Route path={routes.Subspaces} element={<SpaceSubspacesPage />} />
       <Route path={routes.KnowledgeBase} element={<KnowledgeBasePage journeyTypeName="space" />} />
       <Route
         path="*"
