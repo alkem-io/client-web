@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { journeyCardTagsGetter, journeyCardValueGetter } from '../../common/utils/journeyCardValueGetter';
 import { useSpace } from '../../space/SpaceContext/useSpace';
-import ChallengeCard from '../../subspace/subspaceCard/SubspaceCard';
+import SubspaceCard from '../../subspace/subspaceCard/SubspaceCard';
 import SubspacesContainer from '../../space/containers/SubspacesContainer';
 import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
@@ -46,7 +46,7 @@ const SubspacesListDialog = ({ open = false, journeyId, onClose }: SubspacesList
                       {filteredEntities.map((subspace, index) => {
                         const key = subspace ? subspace.id : `__loading_${index}`;
                         return (
-                          <ChallengeCard
+                          <SubspaceCard
                             key={key}
                             displayName={subspace.profile.displayName}
                             banner={subspace.profile.cardBanner}

@@ -127,7 +127,7 @@ const ChildJourneyView = <ChildEntity extends BaseChildEntity>({
                   })}
                 >
                   {filteredEntities => (
-                    <CardLayoutContainer>
+                    <CardLayoutContainer disablePadding>
                       {filteredEntities.map((item, index) => {
                         const key = item ? item.id : `__loading_${index}`;
                         return cloneElement(renderChildEntityCard(item), { key });

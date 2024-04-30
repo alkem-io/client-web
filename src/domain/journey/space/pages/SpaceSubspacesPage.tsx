@@ -14,13 +14,13 @@ import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/
 import { CalloutGroupName, CommunityMembershipStatus } from '../../../../core/apollo/generated/graphql-schema';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 import { ChallengeIcon } from '../../subspace/icon/ChallengeIcon';
-import ChallengeCard from '../../subspace/subspaceCard/SubspaceCard';
+import SubspaceCard from '../../subspace/subspaceCard/SubspaceCard';
 import { CreateChallengeForm } from '../../subspace/forms/CreateChallengeForm';
 import useCallouts from '../../../collaboration/callout/useCallouts/useCallouts';
 
-export interface SpaceChallengesPageProps {}
+export interface SpaceSubspacesPageProps {}
 
-const SpaceChallengesPage: FC<SpaceChallengesPageProps> = () => {
+const SpaceSubspacesPage: FC<SpaceSubspacesPageProps> = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { spaceId, journeyPath } = useRouteResolver();
@@ -71,7 +71,7 @@ const SpaceChallengesPage: FC<SpaceChallengesPageProps> = () => {
             journeyTypeName="space"
             state={{ loading: state.loading, error: state.error }}
             renderChildEntityCard={challenge => (
-              <ChallengeCard
+              <SubspaceCard
                 displayName={challenge.profile.displayName}
                 banner={challenge.profile.cardBanner}
                 tags={challenge.profile.tagset?.tags!}
@@ -117,4 +117,4 @@ const SpaceChallengesPage: FC<SpaceChallengesPageProps> = () => {
   );
 };
 
-export default SpaceChallengesPage;
+export default SpaceSubspacesPage;
