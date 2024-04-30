@@ -35,7 +35,7 @@ const DialogActionButtons = ({ column = false, children }: PropsWithChildren<Dia
           <RouterLink to={url} key={dialogType} sx={{ flexShrink: 1, minWidth: 0 }}>
             <ButtonWithTooltip
               variant={column ? 'text' : 'contained'}
-              tooltip={label}
+              tooltip={String(label)}
               tooltipPlacement={column ? 'right' : 'bottom'}
               sx={{ maxWidth: '100%' }}
               iconButton

@@ -1,4 +1,4 @@
-import { ReactNode, useState } from 'react';
+import { useState } from 'react';
 import { ButtonProps } from '@mui/material';
 import ButtonWithTooltip from '../../../../core/ui/button/ButtonWithTooltip';
 import InnovationFlowSettingsDialog from './InnovationFlowSettingsDialog';
@@ -7,7 +7,7 @@ import { SvgIconComponent } from '@mui/icons-material';
 
 interface InnovationFlowSettingsButtonProps extends ButtonProps {
   collaborationId: string;
-  tooltip: ReactNode;
+  tooltip: string;
   icon: SvgIconComponent;
 }
 
