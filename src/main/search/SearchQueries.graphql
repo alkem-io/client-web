@@ -8,12 +8,6 @@ query search($searchData: SearchInput!) {
       ... on SearchResultSpace {
         ...SearchResultSpace
       }
-      ... on SearchResultChallenge {
-        ...SearchResultChallenge
-      }
-      ... on SearchResultOpportunity {
-        ...SearchResultOpportunity
-      }
     }
     journeyResultsCount
     calloutResults {
@@ -82,6 +76,7 @@ fragment SearchResultPost on SearchResultPost {
 fragment PostParent on SearchResultPost {
   space {
     id
+    type
     account {
       id
       license {
@@ -89,30 +84,6 @@ fragment PostParent on SearchResultPost {
         visibility
       }
     }
-    profile {
-      id
-      url
-      displayName
-    }
-    authorization {
-      id
-      anonymousReadAccess
-    }
-  }
-  challenge {
-    id
-    profile {
-      id
-      url
-      displayName
-    }
-    authorization {
-      id
-      anonymousReadAccess
-    }
-  }
-  opportunity {
-    id
     profile {
       id
       url
@@ -140,6 +111,7 @@ fragment SearchResultUser on SearchResultUser {
   user {
     id
     nameID
+    isContactable
     profile {
       displayName
       ...SearchResultProfile
@@ -215,8 +187,22 @@ fragment SearchResultPostProfile on Profile {
 }
 
 fragment SearchResultSpace on SearchResultSpace {
+  parentSpace {
+    id
+    type
+    profile {
+      id
+      url
+      displayName
+    }
+    authorization {
+      id
+      anonymousReadAccess
+    }
+  }
   space {
     id
+    type
     profile {
       id
       url
@@ -241,111 +227,6 @@ fragment SearchResultSpace on SearchResultSpace {
       id
       myMembershipStatus
     }
-    account {
-      id
-      license {
-        id
-        visibility
-      }
-    }
-  }
-}
-
-fragment SearchResultChallenge on SearchResultChallenge {
-  challenge {
-    id
-    profile {
-      id
-      url
-      displayName
-      tagset {
-        ...TagsetDetails
-      }
-      tagline
-      visuals {
-        ...VisualUri
-      }
-    }
-    account {
-      spaceID
-    }
-    context {
-      id
-      vision
-    }
-    authorization {
-      id
-      anonymousReadAccess
-    }
-    community {
-      id
-      myMembershipStatus
-    }
-  }
-  space {
-    id
-    profile {
-      id
-      url
-      displayName
-      tagline
-    }
-    authorization {
-      id
-      anonymousReadAccess
-    }
-    account {
-      id
-      license {
-        id
-        visibility
-      }
-    }
-  }
-}
-
-fragment SearchResultOpportunity on SearchResultOpportunity {
-  opportunity {
-    id
-    profile {
-      id
-      url
-      displayName
-      tagset {
-        ...TagsetDetails
-      }
-      tagline
-      visuals {
-        ...VisualUri
-      }
-    }
-    context {
-      id
-      vision
-    }
-    authorization {
-      id
-      anonymousReadAccess
-    }
-    community {
-      id
-      myMembershipStatus
-    }
-  }
-  challenge {
-    id
-    profile {
-      id
-      url
-      displayName
-    }
-    authorization {
-      id
-      anonymousReadAccess
-    }
-  }
-  space {
-    id
     account {
       id
       license {
@@ -361,12 +242,12 @@ query userRolesSearchCards($userId: UUID_NAMEID_EMAIL!) {
     spaces {
       id
       roles
-      challenges {
+      subspaces {
         id
         nameID
         roles
       }
-      opportunities {
+      subsubspaces {
         id
         roles
       }

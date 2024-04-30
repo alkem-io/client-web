@@ -1,0 +1,19 @@
+mutation UpdateSpaceSettings($settingsData: UpdateSpaceSettingsInput!) {
+  updateSpaceSettings(settingsData: $settingsData) {
+    id
+    settings {
+      privacy {
+        mode
+      }
+      membership {
+        policy
+        trustedOrganizations
+      }
+      collaboration {
+        allowMembersToCreateCallouts
+        allowMembersToCreateSubspaces
+        inheritMembershipRights
+      }
+    }
+  }
+}

@@ -15,7 +15,6 @@ import { EntityPageSection } from '../../../../shared/layout/EntityPageSection';
 import { ActivityLogResultType } from '../../../../collaboration/activity/ActivityLog/ActivityComponent';
 import ShareButton from '../../../../shared/components/ShareDialog/ShareButton';
 import PageContent from '../../../../../core/ui/content/PageContent';
-import PageContentColumn from '../../../../../core/ui/content/PageContentColumn';
 import SeeMore from '../../../../../core/ui/content/SeeMore';
 import { JourneyTypeName } from '../../../JourneyTypeName';
 import DashboardCalendarSection from '../../../../shared/components/DashboardSections/DashboardCalendarSection';
@@ -26,13 +25,12 @@ import {
 } from '../../../../communication/messaging/DirectMessaging/DirectMessageDialog';
 import CalloutsGroupView from '../../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
 import { OrderUpdate, TypedCallout } from '../../../../collaboration/callout/useCallouts/useCallouts';
-import DashboardRecentContributionsBlock, {
-  DashboardRecentContributionsBlockProps,
-} from '../../dashboardRecentContributionsBlock/DashboardRecentContributionsBlock';
+import { DashboardRecentContributionsBlockProps } from '../../dashboardRecentContributionsBlock/DashboardRecentContributionsBlock';
 import FullWidthButton from '../../../../../core/ui/button/FullWidthButton';
 import { InfoOutlined } from '@mui/icons-material';
 import RouterLink from '../../../../../core/ui/link/RouterLink';
-import { RECENT_ACTIVITIES_LIMIT_EXPANDED } from '../../journeyDashboard/constants';
+import InfoColumn from '../../../../../core/ui/content/InfoColumn';
+import ContentColumn from '../../../../../core/ui/content/ContentColumn';
 
 export interface JourneyDashboardViewProps
   extends EntityDashboardContributors,
@@ -75,19 +73,13 @@ const JourneyDashboardView = ({
   journeyUrl,
   communityId = '',
   callouts,
-  topCallouts,
   communityReadAccess = false,
   timelineReadAccess = false,
-  entityReadAccess,
-  readUsersAccess,
   memberUsers,
   memberUsersCount,
   memberOrganizations,
   memberOrganizationsCount,
   leadUsers,
-  activities,
-  fetchMoreActivities,
-  activityLoading,
   journeyTypeName,
   sendMessageToCommunityLeads,
   shareUpdatesUrl,
@@ -122,7 +114,7 @@ const JourneyDashboardView = ({
   return (
     <PageContent>
       {ribbon}
-      <PageContentColumn columns={4}>
+      <InfoColumn>
         {welcome}
         <FullWidthButton
           startIcon={<InfoOutlined />}
@@ -161,32 +153,12 @@ const JourneyDashboardView = ({
             <SeeMore subject={t('common.contributors')} to={`${EntityPageSection.Dashboard}/contributors`} />
           </EntityDashboardContributorsSection>
         )}
-        <CalloutsGroupView
-          callouts={callouts.groupedCallouts[CalloutGroupName.Home_1]}
-          canCreateCallout={callouts.canCreateCallout}
-          canCreateCalloutFromTemplate={callouts.canCreateCalloutFromTemplate}
-          loading={callouts.loading}
-          journeyTypeName={journeyTypeName}
-          calloutNames={callouts.calloutNames}
-          onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
-          onCalloutUpdate={callouts.refetchCallout}
-          groupName={CalloutGroupName.Home_1}
-        />
-      </PageContentColumn>
+      </InfoColumn>
 
-      <PageContentColumn columns={8}>
-        <DashboardRecentContributionsBlock
-          halfWidth={(callouts.groupedCallouts[CalloutGroupName.Home_2]?.length ?? 0) > 0}
-          readUsersAccess={readUsersAccess}
-          entityReadAccess={entityReadAccess}
-          activitiesLoading={activityLoading}
-          topCallouts={topCallouts}
-          activities={activities}
-          journeyTypeName={journeyTypeName}
-          onActivitiesDialogOpen={() => fetchMoreActivities(RECENT_ACTIVITIES_LIMIT_EXPANDED)}
-        />
+      <ContentColumn>
         <CalloutsGroupView
-          callouts={callouts.groupedCallouts[CalloutGroupName.Home_2]}
+          journeyId={journeyId}
+          callouts={callouts.groupedCallouts[CalloutGroupName.Home]}
           canCreateCallout={callouts.canCreateCallout}
           canCreateCalloutFromTemplate={callouts.canCreateCalloutFromTemplate}
           loading={callouts.loading}
@@ -194,16 +166,9 @@ const JourneyDashboardView = ({
           calloutNames={callouts.calloutNames}
           onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
           onCalloutUpdate={callouts.refetchCallout}
-          groupName={CalloutGroupName.Home_2}
-          blockProps={(callout, index) => {
-            if (index === 0) {
-              return {
-                halfWidth: true,
-              };
-            }
-          }}
+          groupName={CalloutGroupName.Home}
         />
-      </PageContentColumn>
+      </ContentColumn>
     </PageContent>
   );
 };

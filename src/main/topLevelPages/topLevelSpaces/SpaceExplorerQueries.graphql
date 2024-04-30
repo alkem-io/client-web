@@ -1,0 +1,130 @@
+query ChallengeExplorerPage {
+  me {
+    spaceMemberships(visibilities: [ACTIVE, DEMO]) {
+      id
+    }
+  }
+}
+
+query SpaceExplorerSearch($searchData: SearchInput!) {
+  search(searchData: $searchData) {
+    journeyResults {
+      id
+      type
+      terms
+      ... on SearchResultSpace {
+        ...SpaceExplorerSearchSpace
+      }
+    }
+  }
+}
+
+fragment SpaceExplorerSearchSpace on SearchResultSpace {
+  space {
+    ...SpaceExplorerSpace
+  }
+}
+
+query SpaceExplorerMemberSpaces($spaceIDs: [UUID!]) {
+  spaces(IDs: $spaceIDs) {
+    ...SpaceExplorerSpaceWithChallenges
+  }
+}
+
+query SpaceExplorerAllSpaces($first: Int!, $after: UUID, $visibilities: [SpaceVisibility!] = [ACTIVE]) {
+  spacesPaginated(first: $first, after: $after, filter: { visibilities: $visibilities }) {
+    spaces {
+      ...SpaceExplorerSpaceWithChallenges
+    }
+    pageInfo {
+      ...PageInfo
+    }
+  }
+}
+
+fragment SpaceExplorerSpace on Space {
+  id
+  authorization {
+    id
+    anonymousReadAccess
+  }
+  type
+  profile {
+    id
+    url
+    tagline
+    displayName
+    type
+    tagset {
+      id
+      tags
+    }
+    cardBanner: visual(type: CARD) {
+      ...VisualUri
+    }
+  }
+  context {
+    id
+    vision
+  }
+  account {
+    id
+    license {
+      id
+      visibility
+    }
+  }
+  community {
+    id
+    myMembershipStatus
+  }
+}
+
+fragment SpaceExplorerSubspace on Space {
+  id
+  type
+  profile {
+    id
+    url
+    tagline
+    displayName
+    description
+    cardBanner2: visual(type: CARD) {
+      ...VisualUri
+    }
+    type
+    tagset {
+      id
+      tags
+    }
+    avatar2: visual(type: AVATAR) {
+      ...VisualUri
+    }
+  }
+  context {
+    id
+    vision
+  }
+  community {
+    id
+    myMembershipStatus
+  }
+}
+
+fragment SpaceExplorerSpaceWithChallenges on Space {
+  ...SpaceExplorerSpace
+  subspaces {
+    ...SpaceExplorerSubspace
+  }
+}
+
+query SpaceExplorerWelcomeSpace($spaceId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
+    id
+    profile {
+      id
+      url
+      displayName
+    }
+  }
+}

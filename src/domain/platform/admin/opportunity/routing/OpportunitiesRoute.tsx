@@ -1,21 +1,28 @@
-import React, { FC } from 'react';
+import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { OpportunityProvider } from '../../../../journey/opportunity/context/OpportunityProvider';
 import { Error404 } from '../../../../../core/pages/Errors/Error404';
 import { nameOfUrl } from '../../../../../main/routing/urlParams';
 import { OpportunityRoute } from './OpportunityRoute';
-import ChallengeOpportunitiesPage from '../../../../journey/challenge/pages/ChallengeOpportunities/ChallengeOpportunitiesPage';
+import ChallengeOpportunitiesPage from '../../../../journey/subspace/pages/SubspaceSubspaces/SubspaceSubspacesPage';
+import SubspaceProvider from '../../../../journey/subspace/context/SubspaceProvider';
 
-export const OpportunitiesRoute: FC = () => {
+interface OpportunitiesRouteProps {
+  parentCommunityId: string | undefined;
+}
+
+export const OpportunitiesRoute = ({ parentCommunityId }: OpportunitiesRouteProps) => {
   return (
     <Routes>
       <Route index element={<ChallengeOpportunitiesPage routePrefix="../../" />} />
       <Route
-        path={`:${nameOfUrl.opportunityNameId}/*`}
+        path={`:${nameOfUrl.subsubspaceNameId}/*`}
         element={
-          <OpportunityProvider>
-            <OpportunityRoute />
-          </OpportunityProvider>
+          <SubspaceProvider>
+            <OpportunityProvider>
+              <OpportunityRoute parentCommunityId={parentCommunityId} />
+            </OpportunityProvider>
+          </SubspaceProvider>
         }
       />
       <Route path="*" element={<Error404 />} />

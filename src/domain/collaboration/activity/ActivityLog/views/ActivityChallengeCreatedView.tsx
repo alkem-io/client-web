@@ -6,21 +6,21 @@ import ActivityDescriptionByType from '../../../../shared/components/ActivityDes
 import { ActivityEventType } from '../../../../../core/apollo/generated/graphql-schema';
 
 interface ActivityChallengeCreatedViewProps extends ActivityViewProps {
-  challenge: ActivitySubject;
+  subspace: ActivitySubject;
   type: ActivityEventType.ChallengeCreated;
 }
 
 export const ActivityChallengeCreatedView: FC<ActivityChallengeCreatedViewProps> = ({
   journeyDisplayName,
-  challenge,
+  subspace,
   type,
   ...rest
 }) => {
   return (
     <ActivityBaseView
       type={type}
-      title={<ActivityDescriptionByType activityType={type} subject={challenge.profile.displayName} />}
-      url={challenge.profile.url}
+      title={<ActivityDescriptionByType activityType={type} subject={subspace.profile.displayName} />}
+      url={subspace.profile.url}
       contextDisplayName={journeyDisplayName}
       {...rest}
     />

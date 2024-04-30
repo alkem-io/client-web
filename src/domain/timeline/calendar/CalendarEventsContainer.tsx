@@ -1,15 +1,8 @@
 import React, { FC, useCallback } from 'react';
 import {
-  refetchChallengeCalendarEventsQuery,
-  refetchChallengeDashboardCalendarEventsQuery,
-  refetchOpportunityCalendarEventsQuery,
-  refetchOpportunityDashboardCalendarEventsQuery,
   refetchSpaceCalendarEventsQuery,
-  refetchSpaceDashboardCalendarEventsQuery,
-  useChallengeCalendarEventsQuery,
   useCreateCalendarEventMutation,
   useDeleteCalendarEventMutation,
-  useOpportunityCalendarEventsQuery,
   useSpaceCalendarEventsQuery,
   useUpdateCalendarEventMutation,
 } from '../../../core/apollo/generated/apollo-hooks';
@@ -21,7 +14,6 @@ import {
 } from '../../../core/apollo/generated/graphql-schema';
 import { StorageConfigContextProvider } from '../../storage/StorageBucket/StorageConfigContext';
 import { MutationBaseOptions } from '@apollo/client/core/watchQueryOptions';
-import { JourneyTypeName } from '../../journey/JourneyTypeName';
 
 export interface CalendarEventFormData
   extends Pick<CalendarEvent, 'durationDays' | 'durationMinutes' | 'multipleDays' | 'startDate' | 'type' | 'wholeDay'> {
@@ -33,7 +25,6 @@ export interface CalendarEventFormData
 
 export interface CalendarEventsContainerProps {
   journeyId: string | undefined;
-  journeyTypeName: JourneyTypeName;
   children: (
     entities: CalendarEventsEntities,
     actions: CalendarEventsActions,
@@ -50,7 +41,7 @@ export interface CalendarEventsActions {
     tagsetid: string | undefined,
     event: CalendarEventFormData
   ) => Promise<string | undefined>;
-  deleteEvent: (eventId: string) => Promise<string | undefined>;
+  deleteEvent: (eventId: string) => Promise<void>;
 }
 
 export interface CalendarEventsState {
@@ -68,28 +59,13 @@ export interface CalendarEventsEntities {
   };
 }
 
-export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ journeyId, journeyTypeName, children }) => {
-  const { data: opportunityData, loading: loadingOpportunity } = useOpportunityCalendarEventsQuery({
-    variables: { opportunityId: journeyId! },
-    skip: !journeyId || journeyTypeName !== 'opportunity',
-  });
-
-  const { data: challengeData, loading: loadingChallenge } = useChallengeCalendarEventsQuery({
-    variables: { challengeId: journeyId! },
-    skip: !journeyId || journeyTypeName !== 'challenge',
-  });
-
-  const { data: spaceData, loading: loadingSpace } = useSpaceCalendarEventsQuery({
+export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ journeyId, children }) => {
+  const { data: spaceData, loading } = useSpaceCalendarEventsQuery({
     variables: { spaceId: journeyId! },
-    skip: !journeyId || journeyTypeName !== 'space',
+    skip: !journeyId,
   });
 
-  const loading = loadingOpportunity || loadingChallenge || loadingSpace;
-
-  const collaboration =
-    opportunityData?.lookup.opportunity?.collaboration ??
-    challengeData?.lookup.challenge?.collaboration ??
-    spaceData?.space.collaboration;
+  const collaboration = spaceData?.space.collaboration;
 
   const myPrivileges = collaboration?.timeline?.calendar.authorization?.myPrivileges;
 
@@ -111,22 +87,7 @@ export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ jour
 
   let refetchQueriesList: MutationBaseOptions['refetchQueries'] = [];
 
-  if (journeyTypeName === 'opportunity') {
-    refetchQueriesList = [
-      refetchOpportunityCalendarEventsQuery({ opportunityId: journeyId! }),
-      refetchOpportunityDashboardCalendarEventsQuery({ opportunityId: journeyId! }),
-    ];
-  } else if (journeyTypeName === 'challenge') {
-    refetchQueriesList = [
-      refetchChallengeCalendarEventsQuery({ challengeId: journeyId! }),
-      refetchChallengeDashboardCalendarEventsQuery({ challengeId: journeyId! }),
-    ];
-  } else if (journeyTypeName === 'space') {
-    refetchQueriesList = [
-      refetchSpaceCalendarEventsQuery({ spaceId: journeyId! }),
-      refetchSpaceDashboardCalendarEventsQuery({ spaceId: journeyId! }),
-    ];
-  }
+  refetchQueriesList = [refetchSpaceCalendarEventsQuery({ spaceId: journeyId! })];
 
   const createEvent = useCallback(
     (event: CalendarEventFormData) => {
@@ -148,7 +109,7 @@ export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ jour
         },
         refetchQueries: refetchQueriesList,
         awaitRefetchQueries: true,
-      }).then(result => result.data?.createEventOnCalendar?.nameID);
+      }).then(result => result.data?.createEventOnCalendar?.profile.url);
     },
     [createCalendarEvent, calendarId]
   );
@@ -179,14 +140,14 @@ export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ jour
         },
         refetchQueries: refetchQueriesList,
         awaitRefetchQueries: true,
-      }).then(result => result.data?.updateCalendarEvent?.nameID);
+      }).then(result => result.data?.updateCalendarEvent?.profile.url);
     },
     [updateCalendarEvent]
   );
 
   const deleteEvent = useCallback(
-    (eventId: string) => {
-      return deleteCalendarEvent({
+    async (eventId: string) => {
+      await deleteCalendarEvent({
         variables: {
           deleteData: {
             ID: eventId,
@@ -194,13 +155,13 @@ export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ jour
         },
         refetchQueries: refetchQueriesList,
         awaitRefetchQueries: true,
-      }).then(result => result.data?.deleteCalendarEvent?.nameID);
+      });
     },
     [deleteCalendarEvent]
   );
 
   return (
-    <StorageConfigContextProvider journeyId={journeyId} locationType="journey" journeyTypeName={journeyTypeName}>
+    <StorageConfigContextProvider spaceId={journeyId} locationType="journey">
       {children(
         { events, privileges },
         { createEvent, updateEvent, deleteEvent },

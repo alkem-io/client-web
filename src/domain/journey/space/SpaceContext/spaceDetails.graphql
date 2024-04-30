@@ -23,8 +23,10 @@ fragment SpaceDetails on Space {
       ...fullLocation
     }
   }
-  host {
-    id
+  account {
+    host {
+      id
+    }
   }
   authorization {
     id

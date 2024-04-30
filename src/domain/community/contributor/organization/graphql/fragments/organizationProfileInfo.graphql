@@ -11,6 +11,7 @@ fragment OrganizationProfileInfo on Organization {
   }
   profile {
     id
+    url
     displayName
     visual(type: AVATAR) {
       ...VisualFull

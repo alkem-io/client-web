@@ -2,7 +2,7 @@ import { ComponentType } from 'react';
 import { ProfileType } from '../../../core/apollo/generated/graphql-schema';
 import { SvgIconProps } from '@mui/material';
 import { CalendarIcon } from '../../timeline/calendar/icons/CalendarIcon';
-import { ChallengeIcon } from '../../journey/challenge/icon/ChallengeIcon';
+import { ChallengeIcon } from '../../journey/subspace/icon/ChallengeIcon';
 import { OpportunityIcon } from '../../journey/opportunity/icon/OpportunityIcon';
 import { InnovationFlowIcon } from '../../collaboration/InnovationFlow/InnovationFlowIcon/InnovationFlowIcon';
 import { CalloutIcon } from '../../collaboration/callout/icon/CalloutIcon';

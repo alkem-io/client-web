@@ -2,11 +2,10 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Tooltip } from '@mui/material';
 import { HowToRegOutlined } from '@mui/icons-material';
-import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import { Caption } from '../../../../core/ui/typography';
 
 interface DashboardMemberIconProps {
-  journeyTypeName: JourneyTypeName;
+  journeyTypeName: 'space' | 'subspace';
 }
 
 const DashboardMemberIcon = ({ journeyTypeName }: DashboardMemberIconProps) => {

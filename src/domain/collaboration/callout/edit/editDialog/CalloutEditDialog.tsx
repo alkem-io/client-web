@@ -14,7 +14,6 @@ import { JourneyTypeName } from '../../../../journey/JourneyTypeName';
 import { StorageConfigContextProvider } from '../../../../storage/StorageBucket/StorageConfigContext';
 import { DEFAULT_TAGSET } from '../../../../common/tags/tagset.constants';
 import DialogWithGrid from '../../../../../core/ui/dialog/DialogWithGrid';
-import { useRouteResolver } from '../../../../../main/routing/resolvers/RouteResolver';
 
 export interface CalloutEditDialogProps {
   open: boolean;
@@ -40,8 +39,6 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
   journeyTypeName,
 }) => {
   const { t } = useTranslation();
-
-  const { journeyId } = useRouteResolver();
 
   const [loading, setLoading] = useState(false);
   const [valid, setValid] = useState(true);
@@ -108,12 +105,7 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
           onClose={onClose}
         />
         <DialogContent>
-          <StorageConfigContextProvider
-            locationType="callout"
-            journeyTypeName={journeyTypeName}
-            journeyId={journeyId}
-            calloutId={callout.id}
-          >
+          <StorageConfigContextProvider locationType="callout" calloutId={callout.id}>
             <CalloutForm
               calloutType={calloutType}
               callout={initialValues}

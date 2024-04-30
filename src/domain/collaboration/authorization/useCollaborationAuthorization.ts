@@ -3,7 +3,10 @@ import {
   useCollaborationPrivilegesQuery,
 } from '../../../core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege } from '../../../core/apollo/generated/graphql-schema';
-import { useRouteResolver } from '../../../main/routing/resolvers/RouteResolver';
+
+interface CollaborationAuthorizationParams {
+  journeyId: string | undefined;
+}
 
 interface CollaborationAuthorization {
   collaborationId: string | undefined;
@@ -16,51 +19,28 @@ interface CollaborationAuthorization {
   loading: boolean;
 }
 
-export const useCollaborationAuthorization = (): CollaborationAuthorization => {
-  const { journeyId, journeyTypeName } = useRouteResolver();
-
-  const [includeSpace, includeChallenge, includeOpportunity] = [
-    journeyTypeName === 'space',
-    journeyTypeName === 'challenge',
-    journeyTypeName === 'opportunity',
-  ];
-
+export const useCollaborationAuthorization = ({
+  journeyId,
+}: CollaborationAuthorizationParams): CollaborationAuthorization => {
   const { data: authorizationData, loading: loadingAuthorization } = useCollaborationAuthorizationQuery({
     variables: {
-      spaceId: journeyId,
-      challengeId: journeyId,
-      opportunityId: journeyId,
-      includeSpace,
-      includeChallenge,
-      includeOpportunity,
+      spaceId: journeyId!,
     },
     skip: !journeyId,
   });
 
-  const authorization = (
-    authorizationData?.lookup.opportunity ??
-    authorizationData?.lookup.challenge ??
-    authorizationData?.space
-  )?.authorization;
+  const authorization = authorizationData?.space.authorization;
 
   const canReadCollaboration = (authorization?.myPrivileges ?? []).includes(AuthorizationPrivilege.Read);
 
   const { data: collaborationData, loading: loadingCollaboration } = useCollaborationPrivilegesQuery({
     variables: {
-      spaceId: journeyId,
-      challengeId: journeyId,
-      opportunityId: journeyId,
-      includeSpace,
-      includeChallenge,
-      includeOpportunity,
+      spaceId: journeyId!,
     },
     skip: !journeyId || !canReadCollaboration,
   });
 
-  const collaboration =
-    collaborationData?.space?.collaboration ??
-    collaborationData?.lookup.challenge?.collaboration ??
-    collaborationData?.lookup.opportunity?.collaboration;
+  const collaboration = collaborationData?.space.collaboration;
 
   const collaborationId = collaboration?.id;
   const collaborationPrivileges = collaboration?.authorization?.myPrivileges ?? [];

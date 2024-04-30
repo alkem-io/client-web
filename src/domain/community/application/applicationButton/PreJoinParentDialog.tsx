@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Button, Dialog, DialogContent } from '@mui/material';
-import { useChallenge } from '../../../journey/challenge/hooks/useChallenge';
+import { useSubSpace } from '../../../journey/subspace/hooks/useChallenge';
 import { useSpace } from '../../../journey/space/SpaceContext/useSpace';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import { BlockTitle } from '../../../../core/ui/typography';
@@ -18,11 +18,11 @@ export interface PreJoinParentDialogProps {
 const PreJoinParentDialog: FC<PreJoinParentDialogProps> = ({ open, onClose, onJoin }) => {
   const { t } = useTranslation();
   const { profile: spaceProfile } = useSpace();
-  const { profile: challengeProfile } = useChallenge();
+  const { profile: challengeProfile } = useSubSpace();
   const { opportunityId } = useOpportunity();
 
   const parentCommunityName = opportunityId ? challengeProfile.displayName : spaceProfile.displayName;
-  const buttonText = t(`components.application-button.goTo${opportunityId ? 'Challenge' : 'Space'}` as const);
+  const buttonText = t(`components.application-button.goTo${opportunityId ? 'Subspace' : 'Space'}` as const);
 
   return (
     <Dialog open={open}>

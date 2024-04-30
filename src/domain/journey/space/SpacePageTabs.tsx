@@ -21,6 +21,7 @@ import {
 import hexToRGBA from '../../../core/utils/hexToRGBA';
 import {
   DashboardOutlined,
+  History,
   MoreVertOutlined,
   SchoolOutlined,
   SettingsOutlined,
@@ -32,6 +33,8 @@ import getEntityColor from '../../shared/utils/getEntityColor';
 import useShare from '../../../core/utils/Share';
 import { EntityTabsProps } from '../common/EntityPageLayout';
 import { gutters } from '../../../core/ui/grid/utils';
+import { useRouteResolver } from '../../../main/routing/resolvers/RouteResolver';
+import ActivityDialog from '../common/Activity/ActivityDialog';
 
 interface TabDefinition {
   label: ReactNode;
@@ -61,6 +64,7 @@ export interface EntityPageTabsProps extends EntityTabsProps {
 
 enum NavigationActions {
   Share = 'share',
+  Activity = 'activity',
   More = 'more',
 }
 
@@ -87,9 +91,12 @@ const SpacePageTabs: FC<EntityPageTabsProps> = ({
   const navigationBackgroundColor = getEntityColor(theme, entityTypeName);
   const navigationForegroundColor =
     /*
-    entityTypeName === 'opportunity' ? theme.palette.space.main : */ theme.palette.common.white;
+    entityTypeName === 'opportunity' ? theme.palette.primary.main : */ theme.palette.common.white;
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isActivityVisible, setIsActivityVisible] = useState(false);
+
+  const { journeyId } = useRouteResolver();
 
   useLayoutEffect(() => {
     onMenuOpen?.(isDrawerOpen);
@@ -175,6 +182,11 @@ const SpacePageTabs: FC<EntityPageTabsProps> = ({
           </BottomNavigation>
         </Paper>
         {shareDialog}
+        <ActivityDialog
+          open={isActivityVisible}
+          onClose={() => setIsActivityVisible(false)}
+          journeyId={journeyId ?? ''}
+        />
         {showSettings && (
           <Drawer anchor="bottom" open={isDrawerOpen} onClose={() => setIsDrawerOpen(false)}>
             <List>
@@ -191,6 +203,19 @@ const SpacePageTabs: FC<EntityPageTabsProps> = ({
                   </ListItemButton>
                 </ListItem>
               ))}
+              <ListItem disablePadding>
+                <ListItemButton
+                  onClick={() => {
+                    setIsDrawerOpen(false);
+                    setIsActivityVisible(true);
+                  }}
+                >
+                  <ListItemIcon>
+                    <History />
+                  </ListItemIcon>
+                  <ListItemText primary={t('common.contributions')} />
+                </ListItemButton>
+              </ListItem>
               <ListItem disablePadding>
                 <ListItemButton
                   onClick={() => {
@@ -254,11 +279,21 @@ const SpacePageTabs: FC<EntityPageTabsProps> = ({
         {actions?.map((action, index) => (
           <HeaderNavigationButton key={index} icon={action.icon} onClick={action.onClick} value={action.section} />
         ))}
+        <HeaderNavigationButton
+          icon={<History />}
+          value={NavigationActions.Activity}
+          onClick={() => setIsActivityVisible(true)}
+        />
         {shareUrl && (
           <HeaderNavigationButton icon={<ShareOutlined />} value={NavigationActions.Share} onClick={share} />
         )}
       </HeaderNavigationTabs>
       {shareDialog}
+      <ActivityDialog
+        open={isActivityVisible}
+        onClose={() => setIsActivityVisible(false)}
+        journeyId={journeyId ?? ''}
+      />
     </>
   );
 };

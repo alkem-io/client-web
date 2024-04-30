@@ -1,39 +1,24 @@
-import React, { PropsWithChildren } from 'react';
-import usePageLayoutByEntity from '../../shared/utils/usePageLayoutByEntity';
-import { JourneyTypeName } from '../../journey/JourneyTypeName';
-import { EntityPageSection } from '../../shared/layout/EntityPageSection';
-import MembershipBackdrop from '../../shared/components/Backdrops/MembershipBackdrop';
-import PageContent from '../../../core/ui/content/PageContent';
-import PageContentColumn from '../../../core/ui/content/PageContentColumn';
-import { ContributeCreationBlock } from '../../journey/common/tabs/Contribute/ContributeCreationBlock';
-import PageContentBlock from '../../../core/ui/content/PageContentBlock';
-import PageContentBlockHeader from '../../../core/ui/content/PageContentBlockHeader';
-import LinksList from '../../../core/ui/list/LinksList';
-import { TypedCallout } from '../callout/useCallouts/useCallouts';
 import { useTranslation } from 'react-i18next';
-import EllipsableWithCount from '../../../core/ui/typography/EllipsableWithCount';
-import { useCalloutCreationWithPreviewImages } from '../callout/creationDialog/useCalloutCreation/useCalloutCreationWithPreviewImages';
 import { CalloutGroupName } from '../../../core/apollo/generated/graphql-schema';
-import calloutIcons from '../callout/utils/calloutIcons';
+import PageContent from '../../../core/ui/content/PageContent';
+import { useRouteResolver } from '../../../main/routing/resolvers/RouteResolver';
+import { ContributeCreationBlock } from '../../journey/common/tabs/Contribute/ContributeCreationBlock';
+import MembershipBackdrop from '../../shared/components/Backdrops/MembershipBackdrop';
+import { EntityPageSection } from '../../shared/layout/EntityPageSection';
 import CalloutsGroupView from '../callout/CalloutsInContext/CalloutsGroupView';
 import CalloutCreationDialog from '../callout/creationDialog/CalloutCreationDialog';
+import { useCalloutCreationWithPreviewImages } from '../callout/creationDialog/useCalloutCreation/useCalloutCreationWithPreviewImages';
 import KnowledgeBaseContainer from './KnowledgeBaseContainer';
-import { useRouteResolver } from '../../../main/routing/resolvers/RouteResolver';
+import InfoColumn from '../../../core/ui/content/InfoColumn';
+import ContentColumn from '../../../core/ui/content/ContentColumn';
+import CalloutsList from '../callout/calloutsList/CalloutsList';
+import PageContentBlock from '../../../core/ui/content/PageContentBlock';
+import SpacePageLayout from '../../journey/space/layout/SpacePageLayout';
 
-interface KnowledgeBasePageProps {
-  journeyTypeName: JourneyTypeName;
-}
-
-const KnowledgeBasePage = ({ journeyTypeName }: PropsWithChildren<KnowledgeBasePageProps>) => {
-  const PageLayout = usePageLayoutByEntity(journeyTypeName);
-
-  const { journeyId } = useRouteResolver();
+const KnowledgeBasePage = () => {
+  const { journeyId, journeyPath } = useRouteResolver();
 
   const { t } = useTranslation();
-
-  const buildCalloutTitle = (callout: TypedCallout) => {
-    return <EllipsableWithCount count={callout.activity}>{callout.framing.profile.displayName}</EllipsableWithCount>;
-  };
 
   const {
     isCalloutCreationDialogOpen,
@@ -41,15 +26,15 @@ const KnowledgeBasePage = ({ journeyTypeName }: PropsWithChildren<KnowledgeBaseP
     handleCreateCalloutClosed,
     handleCreateCallout,
     loading: loadingCalloutCreation,
-  } = useCalloutCreationWithPreviewImages();
+  } = useCalloutCreationWithPreviewImages({ journeyId });
 
   const handleCreate = () => {
     handleCreateCalloutOpened();
   };
 
   return (
-    <PageLayout currentSection={EntityPageSection.KnowledgeBase}>
-      <KnowledgeBaseContainer journeyId={journeyId} journeyTypeName={journeyTypeName}>
+    <SpacePageLayout journeyPath={journeyPath} currentSection={EntityPageSection.KnowledgeBase}>
+      <KnowledgeBaseContainer journeyId={journeyId} journeyTypeName="space">
         {({
           callouts: {
             loading,
@@ -63,46 +48,34 @@ const KnowledgeBasePage = ({ journeyTypeName }: PropsWithChildren<KnowledgeBaseP
           },
         }) => (
           <>
-            <MembershipBackdrop show={!loading && !canReadCallout} blockName={t(`common.${journeyTypeName}` as const)}>
+            <MembershipBackdrop show={!loading && !canReadCallout} blockName={t('common.space')}>
               <PageContent>
-                <PageContentColumn columns={4}>
+                <InfoColumn>
                   <ContributeCreationBlock canCreate={canCreateCallout} handleCreate={handleCreate} />
                   <PageContentBlock>
-                    <PageContentBlockHeader
-                      title={t('pages.generic.sections.subentities.list', { entities: t('common.callouts') })}
-                    />
-                    <LinksList
-                      items={groupedCallouts[CalloutGroupName.Knowledge]?.map(callout => {
-                        const CalloutIcon = calloutIcons[callout.type];
-                        return {
-                          id: callout.id,
-                          title: buildCalloutTitle(callout),
-                          icon: <CalloutIcon />,
-                          uri: callout.framing.profile.url,
-                        };
-                      })}
+                    <CalloutsList
+                      callouts={groupedCallouts[CalloutGroupName.Knowledge]}
                       emptyListCaption={t('pages.generic.sections.subentities.empty-list', {
                         entities: t('common.callouts'),
-                        parentEntity: t(`common.${journeyTypeName}` as const),
                       })}
-                      loading={loading}
                     />
                   </PageContentBlock>
-                </PageContentColumn>
+                </InfoColumn>
 
-                <PageContentColumn columns={8}>
+                <ContentColumn>
                   <CalloutsGroupView
+                    journeyId={journeyId}
                     callouts={groupedCallouts[CalloutGroupName.Knowledge]}
                     canCreateCallout={canCreateCallout}
                     canCreateCalloutFromTemplate={canCreateCalloutFromTemplate}
                     loading={loading}
-                    journeyTypeName={journeyTypeName}
+                    journeyTypeName="space"
                     calloutNames={calloutNames}
                     onSortOrderUpdate={onCalloutsSortOrderUpdate}
                     onCalloutUpdate={refetchCallout}
                     groupName={CalloutGroupName.Knowledge}
                   />
-                </PageContentColumn>
+                </ContentColumn>
               </PageContent>
             </MembershipBackdrop>
             <CalloutCreationDialog
@@ -113,12 +86,12 @@ const KnowledgeBasePage = ({ journeyTypeName }: PropsWithChildren<KnowledgeBaseP
               loading={loadingCalloutCreation}
               calloutNames={calloutNames}
               groupName={CalloutGroupName.Knowledge}
-              journeyTypeName={journeyTypeName}
+              journeyTypeName="space"
             />
           </>
         )}
       </KnowledgeBaseContainer>
-    </PageLayout>
+    </SpacePageLayout>
   );
 };
 

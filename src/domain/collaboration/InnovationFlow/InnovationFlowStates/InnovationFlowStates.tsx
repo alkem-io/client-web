@@ -1,54 +1,36 @@
-import { useState } from 'react';
-import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
-import InnovationFlowSettingsDialog from '../InnovationFlowDialogs/InnovationFlowSettingsDialog';
+import { ComponentType, ReactNode } from 'react';
 import { InnovationFlowState } from '../InnovationFlow';
-import InnovationFlowChips from '../InnovationFlowChips/InnovationFlowChips';
+import InnovationFlowChips from '../InnovationFlowVisualizers/InnovationFlowChips';
+import { InnovationFlowVisualizerProps } from '../InnovationFlowVisualizers/InnovationFlowVisualizer';
 
-interface Props {
+interface InnovationFlowStatesProps {
   states: InnovationFlowState[] | undefined;
   currentState?: string;
   selectedState: string | undefined;
   onSelectState?: (state: InnovationFlowState) => void;
+  visualizer?: ComponentType<InnovationFlowVisualizerProps>;
+  createButton?: ReactNode;
+  settingsButton?: ReactNode;
 }
 
-type InnovationFlowStatesProps = Props &
-  (
-    | {
-        showSettings?: false;
-        collaborationId?: undefined;
-      }
-    | {
-        showSettings: true;
-        collaborationId: string;
-      }
-  );
-
 const InnovationFlowStates = ({
-  collaborationId,
   states = [],
   currentState,
   selectedState,
-  showSettings = false,
+  createButton,
+  settingsButton,
   onSelectState,
+  visualizer: Visualizer = InnovationFlowChips,
 }: InnovationFlowStatesProps) => {
-  const [showSettingsDialog, setShowSettingsDialog] = useState(false);
-
   return (
-    <PageContentBlockSeamless disablePadding>
-      <InnovationFlowChips
-        states={states}
-        currentState={currentState}
-        selectedState={selectedState}
-        showSettings={showSettings}
-        onSettingsOpen={() => setShowSettingsDialog(true)}
-        onSelectState={onSelectState}
-      />
-      <InnovationFlowSettingsDialog
-        collaborationId={collaborationId}
-        open={showSettingsDialog}
-        onClose={() => setShowSettingsDialog(false)}
-      />
-    </PageContentBlockSeamless>
+    <Visualizer
+      states={states}
+      currentState={currentState}
+      selectedState={selectedState}
+      createButton={createButton}
+      settingsButton={settingsButton}
+      onSelectState={onSelectState}
+    />
   );
 };
 

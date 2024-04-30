@@ -1,5 +1,6 @@
-mutation createSpace($input: CreateSpaceInput!) {
-  createSpace(spaceData: $input) {
-    ...SpaceDetails
+mutation createAccount($input: CreateAccountInput!) {
+  createAccount(accountData: $input) {
+    id
+    spaceID 
   }
 }

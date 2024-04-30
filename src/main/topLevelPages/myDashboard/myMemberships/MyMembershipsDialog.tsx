@@ -37,7 +37,7 @@ const MyMembershipsDialog = ({ open, onClose }: MyJourneysDialogProps) => {
       data?.me.spaceMemberships.map(space => {
         return {
           ...space,
-          challenges: space.challenges?.filter(isJourneyMember),
+          challenges: space.subspaces?.filter(isJourneyMember),
         };
       }),
     [data]
@@ -70,10 +70,10 @@ const MyMembershipsDialog = ({ open, onClose }: MyJourneysDialogProps) => {
               <GridItem columns={9}>
                 <Gutters row disablePadding flexGrow={1} flexWrap="wrap">
                   <GridProvider columns={8}>
-                    {space.challenges?.map(challenge => (
+                    {space.subspaces?.map(challenge => (
                       <MyMembershipsChallenge key={challenge.id} challenge={challenge} />
                     ))}
-                    {!loading && !space.challenges?.length && (
+                    {!loading && !space.subspaces?.length && (
                       <Caption alignSelf="center">{t('pages.home.sections.myMemberships.noChildMemberships')}</Caption>
                     )}
                   </GridProvider>
@@ -85,7 +85,7 @@ const MyMembershipsDialog = ({ open, onClose }: MyJourneysDialogProps) => {
             <Trans
               i18nKey="pages.home.sections.myMemberships.seeMore"
               components={{
-                challenges: <RouterLink to="/challenges" underline="always" />,
+                spaces: <RouterLink to="/spaces" underline="always" />,
                 landing: <RouterLink to={landingUrl ?? ''} underline="always" />,
               }}
             />

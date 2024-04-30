@@ -1,7 +1,6 @@
-import React, { FC } from 'react';
+import React from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { useChallenge } from '../../../../journey/challenge/hooks/useChallenge';
-import { useOpportunity } from '../../../../journey/opportunity/hooks/useOpportunity';
+import { useSubSpace } from '../../../../journey/subspace/hooks/useChallenge';
 import { Error404 } from '../../../../../core/pages/Errors/Error404';
 import AdminOpportunityCommunityPage from '../../../../journey/opportunity/pages/AdminOpportunityCommunityPage';
 import OpportunityCommunicationsPage from '../pages/OpportunityCommunications/OpportunityCommunicationsPage';
@@ -10,12 +9,15 @@ import OpportunityProfilePage from '../pages/OpportunityProfile/OpportunityProfi
 import CommunityGroupsRoute from '../../community/routes/CommunityGroupsAdminRoutes';
 import { StorageConfigContextProvider } from '../../../../storage/StorageBucket/StorageConfigContext';
 
-export const OpportunityRoute: FC = () => {
-  const { challenge } = useChallenge();
-  const { opportunity } = useOpportunity();
+interface OpportunityRouteProps {
+  parentCommunityId: string | undefined;
+}
+
+export const OpportunityRoute = ({ parentCommunityId }: OpportunityRouteProps) => {
+  const { subspace } = useSubSpace();
 
   return (
-    <StorageConfigContextProvider locationType="journey" journeyTypeName="opportunity" journeyId={opportunity?.id}>
+    <StorageConfigContextProvider locationType="journey" spaceId={subspace?.id}>
       <Routes>
         <Route index element={<Navigate to="profile" replace />} />
         <Route path="profile" element={<OpportunityProfilePage />} />
@@ -24,20 +26,15 @@ export const OpportunityRoute: FC = () => {
           path="communications"
           element={
             <OpportunityCommunicationsPage
-              communityId={opportunity?.community?.id}
-              parentCommunityId={challenge?.community?.id}
+              communityId={subspace?.community?.id}
+              parentCommunityId={parentCommunityId}
             />
           }
         />
         <Route path="community" element={<AdminOpportunityCommunityPage />} />
         <Route
           path="community/groups/*"
-          element={
-            <CommunityGroupsRoute
-              communityId={opportunity?.community?.id}
-              parentCommunityId={challenge?.community?.id}
-            />
-          }
+          element={<CommunityGroupsRoute communityId={subspace?.community?.id} parentCommunityId={parentCommunityId} />}
         />
         <Route path="*" element={<Error404 />} />
       </Routes>

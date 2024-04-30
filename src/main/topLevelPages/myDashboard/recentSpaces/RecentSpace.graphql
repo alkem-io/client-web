@@ -1,0 +1,18 @@
+query RecentJourney($spaceId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
+    id
+    profile {
+      ...RecentJourneyProfile
+    }
+  }
+
+}
+
+fragment RecentJourneyProfile on Profile {
+  id
+  url
+  displayName
+  cardBanner: visual(type: CARD) {
+    ...VisualUri
+  }
+}

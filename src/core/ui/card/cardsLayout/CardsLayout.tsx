@@ -18,6 +18,7 @@ export interface CardsLayoutProps<Item extends Identifiable | null | undefined> 
  * @param children - a callback that renders a *single* item, pass null or undefined for an item that's loading
  * @param deps - deps to consider the render callback refreshed, as in useCallback(callback, deps)
  * @constructor
+ * @deprecated - doesn't add any functionality except items.map but adds complexity and reduces flexibility
  */
 const CardsLayout = <Item extends Identifiable | null | undefined>({
   items,

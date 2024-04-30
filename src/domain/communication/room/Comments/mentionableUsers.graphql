@@ -1,4 +1,9 @@
-query MentionableUsers($filter: UserFilterInput, $first: Int, $communityId: UUID!) {
+query MentionableUsers(
+  $filter: UserFilterInput
+  $first: Int
+  $communityId: UUID! = "00000000-0000-0000-0000-000000000000"
+  $includeVirtualContributors: Boolean!
+) {
   usersPaginated(filter: $filter, first: $first) {
     users {
       id
@@ -17,7 +22,7 @@ query MentionableUsers($filter: UserFilterInput, $first: Int, $communityId: UUID
       }
     }
   }
-  lookup {
+  lookup @include(if: $includeVirtualContributors) {
     community(ID: $communityId) {
       virtualContributorsInRole(role: MEMBER) {
         id

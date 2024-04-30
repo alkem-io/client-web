@@ -4,12 +4,11 @@ import { BlockSectionTitle, CardText } from '../../../../core/ui/typography';
 import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
 import RouterLink from '../../../../core/ui/link/RouterLink';
 import { CalendarEventDetailsFragment } from '../../../../core/apollo/generated/graphql-schema';
-import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import OneLineMarkdown from '../../../../core/ui/markdown/OneLineMarkdown';
 import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 import CalendarEventBadge from './CalendarEventBadge';
 
-interface CalendarEventViewProps extends Pick<CalendarEventDetailsFragment, 'nameID' | 'startDate' | 'profile'> {}
+interface CalendarEventViewProps extends Pick<CalendarEventDetailsFragment, 'startDate' | 'profile'> {}
 
 const EVENT_DESCRIPTION_MAX_LENGTH = 80; // characters
 
@@ -44,7 +43,7 @@ const EventDescription: FC<EventDescriptionProps> = ({ children }) => {
 };
 
 const CalendarEventView: FC<CalendarEventViewProps> = event => {
-  const url = `${EntityPageSection.Dashboard}/calendar/${event.nameID}`;
+  const url = event.profile.url;
 
   return (
     <BadgeCardView component={RouterLink} to={url} visual={<CalendarEventBadge eventStartDate={event.startDate} />}>

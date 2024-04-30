@@ -21,6 +21,7 @@ import { useTranslation } from 'react-i18next';
 import { NavigationState } from '../../../core/routing/ScrollToTop';
 import { useRouteResolver } from '../../../main/routing/resolvers/RouteResolver';
 import { getCalloutGroupNameValue } from '../callout/utils/getCalloutGroupValue';
+import useCanReadSpace from '../../journey/common/authorization/useCanReadSpace';
 
 interface CalloutLocation {
   journeyTypeName: JourneyTypeName;
@@ -50,7 +51,7 @@ export interface LocationStateCachedCallout extends NavigationState {
  * @constructor
  */
 const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: CalloutPageProps) => {
-  const { calloutId } = useRouteResolver();
+  const { calloutId, journeyId, journeyPath } = useRouteResolver();
 
   const locationState = (useLocation().state ?? {}) as LocationStateCachedCallout;
 
@@ -100,9 +101,16 @@ const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: Cal
 
   const PageLayout = usePageLayoutByEntity(journeyTypeName);
 
+  const spaceReadAccess = useCanReadSpace({ spaceId: journeyId });
+
   if (isCalloutLoading && !typedCalloutDetails) {
     return (
-      <PageLayout currentSection={EntityPageSection.Contribute}>
+      <PageLayout
+        spaceReadAccess={spaceReadAccess}
+        journeyId={journeyId}
+        journeyPath={journeyPath}
+        currentSection={EntityPageSection.Contribute}
+      >
         <Loading />
       </PageLayout>
     );

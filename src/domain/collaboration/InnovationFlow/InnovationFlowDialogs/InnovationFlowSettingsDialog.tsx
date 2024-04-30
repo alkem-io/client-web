@@ -1,4 +1,4 @@
-import { DialogContent, ListItemIcon, MenuItem } from '@mui/material';
+import { DialogContent, ListItemIcon, MenuItem, Theme, useMediaQuery } from '@mui/material';
 import { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
@@ -11,22 +11,27 @@ import PageContentBlockContextualMenu from '../../../../core/ui/content/PageCont
 import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 import ImportInnovationFlowDialog from './ImportInnovationFlow/ImportInnovationFlowDialog';
 import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
+import { CalloutGroupNameValuesMap } from '../../callout/CalloutsInContext/CalloutsGroup';
 
 interface InnovationFlowSettingsDialogProps {
   open?: boolean;
   onClose: () => void;
   collaborationId: string | undefined;
+  filterCalloutGroups?: CalloutGroupNameValuesMap[];
 }
 
 const InnovationFlowSettingsDialog: FC<InnovationFlowSettingsDialogProps> = ({
   open = false,
   onClose,
   collaborationId,
+  filterCalloutGroups = undefined,
 }) => {
   const { t } = useTranslation();
+  const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
 
   const { data, actions, authorization, state } = useInnovationFlowSettings({
     collaborationId,
+    filterCalloutGroups,
     skip: !open,
   });
   const { innovationFlow, callouts } = data;
@@ -41,7 +46,7 @@ const InnovationFlowSettingsDialog: FC<InnovationFlowSettingsDialogProps> = ({
 
   return (
     <>
-      <DialogWithGrid open={open} columns={12} onClose={onClose}>
+      <DialogWithGrid open={open} columns={12} onClose={onClose} fullScreen={isMobile}>
         <DialogHeader
           icon={<InnovationFlowIcon />}
           title={t('components.innovationFlowSettings.title')}

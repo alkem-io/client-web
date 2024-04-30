@@ -3,7 +3,6 @@ import { useUserContext } from '../../community/user';
 import { useApolloErrorHandler } from '../../../core/apollo/hooks/useApolloErrorHandler';
 import { useNotification } from '../../../core/ui/notifications/useNotification';
 import { usePlatformUpdatesRoomQuery, useRoomEventsSubscription } from '../../../core/apollo/generated/apollo-hooks';
-import { logger } from '../../../core/logging/winston/logger';
 import { MutationType, PlatformFeatureFlagName } from '../../../core/apollo/generated/graphql-schema';
 
 const useCommunityUpdatesNotifier = () => {
@@ -22,7 +21,7 @@ const useCommunityUpdatesNotifier = () => {
   try {
     useCommunityUpdatesSubscriber(roomID!, shouldSkip);
   } catch (error) {
-    logger.error('[Updates Notifier] Failed subscribing for community updates. Failing gracefully.');
+    console.error('[Updates Notifier] Failed subscribing for community updates. Failing gracefully.');
   }
 };
 

@@ -54,7 +54,7 @@ const searchResults: SearchResult[] = [
       },
     },
     matchedTerms: ['callout', 'card'],
-    journeyTypeName: 'challenge',
+    journeyTypeName: 'subspace',
     journeyDisplayName: 'Parent Challenge',
   },
   {
