@@ -10,4 +10,5 @@ export enum MetricType {
   Relation = 'relations',
   Post = 'posts',
   Whiteboard = 'whiteboards',
+  Subspace = 'subspaces',
 }
