@@ -84,7 +84,7 @@ const SubspaceDialogs = ({
         open={dialogOpen === SubspaceDialog.Share}
         onClose={handleClose}
         url={journeyUrl}
-        entityTypeName={'space'}
+        entityTypeName={'subspace'}
       />
       <InnovationFlowSettingsDialog
         collaborationId={collaborationId}
