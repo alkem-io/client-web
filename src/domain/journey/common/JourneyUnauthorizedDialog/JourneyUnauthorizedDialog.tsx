@@ -26,8 +26,8 @@ const JourneyUnauthorizedDialog = ({
   authorized,
   loading = false,
   disabled = false,
-  subspaceId: challengeId,
-  subspaceName: challengeName,
+  subspaceId,
+  parentSpaceId,
   journeyLevel,
   ...aboutDialogProps
 }: JourneyUnauthorizedDialogProps) => {
@@ -53,7 +53,7 @@ const JourneyUnauthorizedDialog = ({
       open={!disabled && !loading && !authorized}
       startButton={canGoBack && <BackButton onClick={() => navigate(-1)} />}
       endButton={
-        <ApplicationButtonContainer {...{ subspaceId: challengeId, subspaceName: challengeName }}>
+        <ApplicationButtonContainer parentSpaceId={parentSpaceId} subspaceId={subspaceId} loading={loading}>
           {(e, s) => (
             <ApplicationButton
               ref={applicationButtonRef}

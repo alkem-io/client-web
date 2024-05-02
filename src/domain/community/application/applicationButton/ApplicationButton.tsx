@@ -24,10 +24,9 @@ export interface ApplicationButtonProps {
   applicationState: string | undefined;
   userInvitation: InvitationItem | undefined;
   parentApplicationState: string | undefined;
-  applyUrl: string;
-  parentApplyUrl: string;
-  joinParentUrl: string | undefined;
-  spaceName: string;
+  applyUrl: string | undefined;
+  parentUrl: string | undefined;
+  spaceName: string | undefined;
   challengeName: string | undefined;
   canJoinCommunity: boolean;
   canAcceptInvitation: boolean;
@@ -50,8 +49,7 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
       userInvitation,
       parentApplicationState,
       applyUrl,
-      parentApplyUrl,
-      joinParentUrl,
+      parentUrl,
       isMember = false,
       isParentMember = false,
       spaceName,
@@ -96,8 +94,8 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
     };
 
     const handleJoinParent = () => {
-      if (joinParentUrl) {
-        navigate(joinParentUrl);
+      if (parentUrl) {
+        navigate(parentUrl);
       }
     };
 
@@ -154,7 +152,7 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
             ref={ref as Ref<HTMLAnchorElement>}
             variant="contained"
             component={RouterLink}
-            to={buildLoginUrl(applyUrl?.replace('/apply', ''))}
+            to={buildLoginUrl(applyUrl)}
           >
             {t('components.application-button.apply-not-signed')}
           </Button>
@@ -191,12 +189,12 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
       if (canAcceptInvitation) {
         if (journeyLevel > 0 && !isMember && !isParentMember) {
           return (
-            joinParentUrl && (
+            parentUrl && (
               <Button
                 ref={ref as Ref<HTMLAnchorElement>}
                 component={RouterLink}
                 startIcon={<AddOutlined />}
-                to={joinParentUrl}
+                to={parentUrl}
                 variant="contained"
                 sx={{ textTransform: 'none' }}
               >
@@ -323,7 +321,7 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
             challengeName={challengeName}
             parentApplicationState={parentApplicationState}
             applyUrl={applyUrl}
-            parentApplyUrl={parentApplyUrl}
+            parentApplyUrl={parentUrl}
           />
           <ApplicationSubmittedDialog
             open={isApplicationSubmittedDialogOpen}

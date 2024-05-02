@@ -51,6 +51,7 @@ import { SpaceReadAccess } from '../../common/authorization/useCanReadSpace';
 
 export interface SubspacePageLayoutProps {
   journeyId: string | undefined;
+  parentJourneyId: string | undefined;
   spaceReadAccess: SpaceReadAccess;
   journeyPath: JourneyPath;
   journeyUrl?: string | undefined; // TODO make required
@@ -58,10 +59,6 @@ export interface SubspacePageLayoutProps {
   unauthorizedDialogDisabled?: boolean;
   welcome?: ReactNode;
   actions?: ReactNode;
-  profile?: {
-    // TODO make required
-    displayName: string;
-  };
   infoColumnChildren?: ReactNode;
 }
 
@@ -107,7 +104,7 @@ const SubspacePageLayout = ({
   unauthorizedDialogDisabled = false,
   welcome,
   actions,
-  profile,
+  parentJourneyId,
   children,
   infoColumnChildren,
 }: PropsWithChildren<SubspacePageLayoutProps>) => {
@@ -271,7 +268,7 @@ const SubspacePageLayout = ({
                 {({ vision, ...props }) => (
                   <JourneyUnauthorizedDialog
                     subspaceId={journeyId}
-                    subspaceName={profile?.displayName}
+                    parentSpaceId={parentJourneyId}
                     description={vision}
                     disabled={unauthorizedDialogDisabled}
                     journeyLevel={(journeyPath.length - 1) as JourneyLevel}

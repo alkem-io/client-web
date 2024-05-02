@@ -321,7 +321,7 @@ test.skip('parent type & is opening', async () => {
     canApplyToCommunity: false,
     canJoinParentCommunity: false,
     canApplyToParentCommunity: true,
-    parentApplyUrl: '/parent/apply',
+    parentUrl: '/parent/apply',
   } as ApplicationButtonProps;
 
   render(
