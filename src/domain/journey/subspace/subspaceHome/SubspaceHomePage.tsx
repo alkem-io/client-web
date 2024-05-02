@@ -168,6 +168,7 @@ const SubspaceHomePage = ({ dialog }: SubspaceHomePageProps) => {
                 currentItemId={journeyId}
                 dashboardNavigation={dashboardNavigation.dashboardNavigation}
                 onCreateSubspace={openCreateSubspace}
+                onCurrentItemNotFound={dashboardNavigation.refetch}
               />
             }
           >

@@ -14,13 +14,14 @@ import CalloutCreationDialog from '../../../collaboration/callout/creationDialog
 import { SubspaceDialog } from '../layout/SubspaceDialog';
 import InnovationFlowVisualizerMobile from '../../../collaboration/InnovationFlow/InnovationFlowVisualizers/InnovationFlowVisualizerMobile';
 import InnovationFlowChips from '../../../collaboration/InnovationFlow/InnovationFlowVisualizers/InnovationFlowChips';
-import useStateWithAsyncDefault from '../../../../core/utils/useStateWithAsyncDefault';
+import useResettableState from '../../../../core/utils/useResettableState';
 import InnovationFlowSettingsButton from '../../../collaboration/InnovationFlow/InnovationFlowDialogs/InnovationFlowSettingsButton';
 import { CalloutGroupNameValuesMap } from '../../../collaboration/callout/CalloutsInContext/CalloutsGroup';
 
 interface SubspaceHomeViewProps {
   journeyId: string | undefined;
   collaborationId: string | undefined;
+  innovationFlowId: string | undefined;
   innovationFlowStates: InnovationFlowState[] | undefined;
   currentInnovationFlowState: string | undefined;
   callouts: TypedCallout[] | undefined;
@@ -36,6 +37,7 @@ interface SubspaceHomeViewProps {
 const SubspaceHomeView = ({
   journeyId,
   collaborationId,
+  innovationFlowId,
   innovationFlowStates,
   currentInnovationFlowState,
   callouts,
@@ -67,8 +69,9 @@ const SubspaceHomeView = ({
     </Button>
   );
 
-  const [selectedInnovationFlowState, setSelectedInnovationFlowState] =
-    useStateWithAsyncDefault(currentInnovationFlowState);
+  const [selectedInnovationFlowState, setSelectedInnovationFlowState] = useResettableState(currentInnovationFlowState, [
+    innovationFlowId,
+  ]);
 
   const selectedFlowStateCallouts = useMemo(() => {
     const filterCallouts = (callouts: TypedCallout[] | undefined) => {
