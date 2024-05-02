@@ -1,6 +1,6 @@
 import { ExpandLess, ExpandMore, LockOutlined } from '@mui/icons-material';
 import { Box, Collapse, IconButton, Tooltip, TooltipProps } from '@mui/material';
-import React, { forwardRef, MouseEventHandler, Ref, useImperativeHandle, useRef, useState } from 'react';
+import React, { forwardRef, MouseEventHandler, useImperativeHandle, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import BadgeCardView from '../../../core/ui/list/BadgeCardView';
 import { Caption } from '../../../core/ui/typography';
@@ -21,19 +21,18 @@ export interface DashboardNavigationItemViewProps extends DashboardNavigationIte
   onToggle?: (isExpanded: boolean) => void;
   compact?: boolean;
   onCreateSubspace?: (parent: Identifiable) => void;
-  itemRef?: (itemId: string) => Ref<DashboardNavigationItemViewApi>;
   itemProps?:
     | Partial<DashboardNavigationItemViewProps>
     | ((item: DashboardNavigationItem) => Partial<DashboardNavigationItemViewProps>);
 }
 
 export interface DashboardNavigationItemViewApi {
+  id: string;
   expand: () => void;
   level: number;
   getDimensions: () => { top?: number; height?: number };
+  getChildrenDimensions: () => { top?: number; height?: number };
 }
-
-const EMPTY_ITEM_REF = () => {};
 
 const DashboardNavigationItemView = forwardRef<DashboardNavigationItemViewApi, DashboardNavigationItemViewProps>(
   (
@@ -53,7 +52,6 @@ const DashboardNavigationItemView = forwardRef<DashboardNavigationItemViewApi, D
       compact = false,
       canCreateSubspace = false,
       onCreateSubspace,
-      itemRef = () => EMPTY_ITEM_REF,
       itemProps = () => ({}),
     },
     ref
@@ -86,30 +84,41 @@ const DashboardNavigationItemView = forwardRef<DashboardNavigationItemViewApi, D
 
     useImperativeHandle(
       ref,
-      () => ({
-        level,
-        expand: () => setIsExpanded(true),
-        getDimensions: () => {
-          // If items lose expandability, we can greatly simplify the code by using a wrapper Box and reading its height.
-          const hostBounds = hostContainerRef.current?.getBoundingClientRect();
-          const top = hostBounds?.top;
+      () => {
+        const getChildrenDimensions = () => {
+          const childrenBounds = childrenContainerRef.current?.getBoundingClientRect();
+          return {
+            top: childrenBounds?.top,
+            height: childrenBounds?.height,
+          };
+        };
+        return {
+          id,
+          level,
+          expand: () => setIsExpanded(true),
+          getDimensions: () => {
+            // If items lose expandability, we can greatly simplify the code by using a wrapper Box and reading its height.
+            const hostBounds = hostContainerRef.current?.getBoundingClientRect();
+            const top = hostBounds?.top;
 
-          if (!isExpanded && expandable) {
+            if (!isExpanded && expandable) {
+              return {
+                top,
+                height: hostBounds?.height,
+              };
+            }
+
+            const childrenBounds = getChildrenDimensions();
+
             return {
               top,
-              height: hostBounds?.height,
+              height: (hostBounds?.height ?? 0) + (childrenBounds.height ?? 0),
             };
-          }
-
-          const childrenBounds = childrenContainerRef.current?.getBoundingClientRect();
-
-          return {
-            top,
-            height: (hostBounds?.height ?? 0) + (childrenBounds?.height ?? 0),
-          };
-        },
-      }),
-      [isExpanded, expandable, level]
+          },
+          getChildrenDimensions,
+        };
+      },
+      [id, isExpanded, expandable, level]
     );
 
     const hasChildren = children && children.length > 0;
@@ -128,6 +137,7 @@ const DashboardNavigationItemView = forwardRef<DashboardNavigationItemViewApi, D
           ref={hostContainerRef}
           component={RouterLink}
           to={url ?? ''}
+          keepScroll
           visual={
             <Tooltip
               open={compact ? undefined : false}
@@ -187,14 +197,14 @@ const DashboardNavigationItemView = forwardRef<DashboardNavigationItemViewApi, D
               {children?.map(child => (
                 <DashboardNavigationItemView
                   key={child.id}
-                  ref={itemRef(child.id)}
-                  itemRef={itemRef}
+                  ref={ref}
                   level={level + 1}
                   tooltipPlacement={tooltipPlacement}
                   currentPath={currentPath}
                   subspaceOfCurrent={subspaceOfCurrent || isCurrent}
                   compact={compact}
                   itemProps={itemProps}
+                  onToggle={onToggle}
                   {...child}
                   {...getItemProps(child)}
                 />
