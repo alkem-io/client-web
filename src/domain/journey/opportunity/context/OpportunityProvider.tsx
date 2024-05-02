@@ -47,10 +47,16 @@ const DEFAULT_CONTEXT = {
   },
 };
 
+/**
+ * @deprecated
+ */
 const OpportunityContext = React.createContext<OpportunityContextProps>(DEFAULT_CONTEXT);
 
 interface OpportunityProviderProps {}
 
+/**
+ * @deprecated
+ */
 const OpportunityProvider: FC<OpportunityProviderProps> = ({ children }) => {
   const { subSubSpaceId: opportunityId } = useRouteResolver();
 

@@ -6,7 +6,7 @@ import { Button, IconButton } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { ValueType } from '../../../../../core/utils/filtering/filterFn';
 import ErrorBlock from '../../../../../core/ui/error/ErrorBlock';
-import getJourneyChildrenTranslation from '../../../childJourney/getJourneyChildrenTranslation';
+import getJourneyChildrenTranslation from '../../../subspace/getJourneyChildrenTranslation';
 import PageContent from '../../../../../core/ui/content/PageContent';
 import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
@@ -127,7 +127,7 @@ const ChildJourneyView = <ChildEntity extends BaseChildEntity>({
                   })}
                 >
                   {filteredEntities => (
-                    <CardLayoutContainer>
+                    <CardLayoutContainer disablePadding>
                       {filteredEntities.map((item, index) => {
                         const key = item ? item.id : `__loading_${index}`;
                         return cloneElement(renderChildEntityCard(item), { key });

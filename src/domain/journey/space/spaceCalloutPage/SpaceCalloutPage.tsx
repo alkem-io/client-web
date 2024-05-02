@@ -1,7 +1,7 @@
 import React from 'react';
 import CalloutPage from '../../../collaboration/CalloutPage/CalloutPage';
 import SpaceDashboardPage from '../SpaceDashboard/SpaceDashboardPage';
-import SpaceChallengesPage from '../pages/SpaceChallengesPage';
+import SpaceSubspacesPage from '../pages/SpaceSubspacesPage';
 import KnowedgeBasePage from '../../../collaboration/KnowledgeBase/KnowedgeBasePage';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import { JourneyCalloutDialogProps } from '../../common/JourneyCalloutDialog/JourneyCalloutDialog';
@@ -27,11 +27,11 @@ const renderPage = (calloutGroup: string | undefined) => {
     case CalloutGroupName.Home:
       return <SpaceDashboardPage />;
     case CalloutGroupName.Subspaces:
-      return <SpaceChallengesPage />;
+      return <SpaceSubspacesPage />;
     case CalloutGroupName.Community:
       return <SpaceCommunityPage />;
     default:
-      return <KnowedgeBasePage journeyTypeName="space" />;
+      return <KnowedgeBasePage />;
   }
 };
 

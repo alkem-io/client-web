@@ -7,6 +7,7 @@ import EditLinkDialog, { EditLinkFormValues } from '../../../shared/components/R
 import CreateLinksDialog, { CreateLinkFormValues } from '../../../shared/components/References/CreateLinksDialog';
 import { Box, IconButton, Link } from '@mui/material';
 import {
+  refetchCalloutDetailsQuery,
   useCreateLinkOnCalloutMutation,
   useDeleteLinkMutation,
   useUpdateLinkMutation,
@@ -20,7 +21,6 @@ import { nanoid } from 'nanoid';
 import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
 import { evictFromCache } from '../../../../core/apollo/utils/removeFromCache';
 import { compact } from 'lodash';
-import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 
 const MAX_LINKS_NORMALVIEW = 3;
 
@@ -51,9 +51,13 @@ const LinkCollectionCallout = ({
   ...calloutLayoutProps
 }: LinkCollectionCalloutProps) => {
   const { t } = useTranslation();
-  const [createLinkOnCallout] = useCreateLinkOnCalloutMutation();
+  const [createLinkOnCallout] = useCreateLinkOnCalloutMutation({
+    refetchQueries: [refetchCalloutDetailsQuery({ calloutId: callout.id })],
+  });
   const [updateLink] = useUpdateLinkMutation();
-  const [deleteLink] = useDeleteLinkMutation();
+  const [deleteLink] = useDeleteLinkMutation({
+    refetchQueries: [refetchCalloutDetailsQuery({ calloutId: callout.id })],
+  });
 
   const [addNewLinkDialogOpen, setAddNewLinkDialogOpen] = useState<boolean>(false);
   const [editLink, setEditLink] = useState<EditLinkFormValues>();
@@ -182,14 +186,10 @@ const LinkCollectionCallout = ({
     [callout]
   );
 
-  // TODO don't access globals from here, replace JourneyLocation with journeyId in BaseCalloutViewProps
-  const { journeyId } = useRouteResolver();
-
   return (
     <StorageConfigContextProvider
       locationType="callout"
       calloutId={callout.id}
-      journeyId={journeyId!}
       skip={!addNewLinkDialogOpen && !editLink}
     >
       <CalloutLayout

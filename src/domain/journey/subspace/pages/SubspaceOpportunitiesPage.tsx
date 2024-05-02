@@ -55,7 +55,11 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
   );
 
   return (
-    <SubspacePageLayout journeyId={journeyId} journeyPath={journeyPath}>
+    <SubspacePageLayout
+      journeyId={journeyId}
+      journeyPath={journeyPath}
+      spaceReadAccess={{ canReadSpace: false, loading: false }}
+    >
       <ChallengeOpportunitiesContainer challengeId={challengeId}>
         {({ callouts, ...entities }, state) => (
           <ChildJourneyView
@@ -71,7 +75,6 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
                 displayName={subsubspace.profile.displayName}
                 tagline={subsubspace.profile.tagline!}
                 vision={subsubspace.context?.vision!}
-                innovationFlowState={subsubspace.collaboration?.innovationFlow?.currentState.displayName}
                 tags={subsubspace.profile.tagset?.tags!}
                 banner={subsubspace.profile.cardBanner}
                 journeyUri={subsubspace.profile.url}
@@ -88,7 +91,7 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
                 icon={<OpportunityIcon />}
                 journeyName={t('common.subsubspace')}
                 onClose={() => setCreateDialogOpen(false)}
-                OnCreate={handleCreate}
+                onCreate={handleCreate}
                 formComponent={CreateOpportunityForm}
               />
             }

@@ -41,7 +41,7 @@ export interface CalendarEventsActions {
     tagsetid: string | undefined,
     event: CalendarEventFormData
   ) => Promise<string | undefined>;
-  deleteEvent: (eventId: string) => Promise<string | undefined>;
+  deleteEvent: (eventId: string) => Promise<void>;
 }
 
 export interface CalendarEventsState {
@@ -109,7 +109,7 @@ export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ jour
         },
         refetchQueries: refetchQueriesList,
         awaitRefetchQueries: true,
-      }).then(result => result.data?.createEventOnCalendar?.nameID);
+      }).then(result => result.data?.createEventOnCalendar?.profile.url);
     },
     [createCalendarEvent, calendarId]
   );
@@ -140,14 +140,14 @@ export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ jour
         },
         refetchQueries: refetchQueriesList,
         awaitRefetchQueries: true,
-      }).then(result => result.data?.updateCalendarEvent?.nameID);
+      }).then(result => result.data?.updateCalendarEvent?.profile.url);
     },
     [updateCalendarEvent]
   );
 
   const deleteEvent = useCallback(
-    (eventId: string) => {
-      return deleteCalendarEvent({
+    async (eventId: string) => {
+      await deleteCalendarEvent({
         variables: {
           deleteData: {
             ID: eventId,
@@ -155,7 +155,7 @@ export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ jour
         },
         refetchQueries: refetchQueriesList,
         awaitRefetchQueries: true,
-      }).then(result => result.data?.deleteCalendarEvent?.nameID);
+      });
     },
     [deleteCalendarEvent]
   );

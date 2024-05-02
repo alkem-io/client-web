@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import SubspaceHomeView from './SubspaceHomeView';
 import SubspaceHomeContainer from './SubspaceHomeContainer';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
@@ -6,7 +6,7 @@ import useDirectMessageDialog from '../../../communication/messaging/DirectMessa
 import { useTranslation } from 'react-i18next';
 import { SubspacePageLayout } from '../../common/EntityPageLayout';
 import JourneyDashboardWelcomeBlock from '../../common/journeyDashboardWelcomeBlock/JourneyDashboardWelcomeBlock';
-import { CommunityMembershipStatus } from '../../../../core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, CommunityMembershipStatus } from '../../../../core/apollo/generated/graphql-schema';
 import { DialogDef } from '../layout/DialogDefinition';
 import { SubspaceDialog } from '../layout/SubspaceDialog';
 import {
@@ -22,10 +22,23 @@ import {
 } from '@mui/icons-material';
 import { InnovationFlowIcon } from '../../../collaboration/InnovationFlow/InnovationFlowIcon/InnovationFlowIcon';
 import SubspaceDialogs from './dialogs/SubspaceDialogs';
+import { buildJourneyAdminUrl } from '../../../../main/routing/urlBuilders';
+import { useSpace } from '../../space/SpaceContext/useSpace';
+import useSpaceDashboardNavigation from '../../space/spaceDashboardNavigation/useSpaceDashboardNavigation';
+import DashboardNavigation, { DashboardNavigationProps } from '../../dashboardNavigation/DashboardNavigation';
+import { useConsumeAction } from '../layout/SubspacePageLayout';
+import { useColumns } from '../../../../core/ui/grid/GridContext';
+import CreateJourney from './dialogs/CreateJourney';
 
 interface SubspaceHomePageProps {
   dialog?: SubspaceDialog;
 }
+
+const Outline = (props: DashboardNavigationProps) => {
+  useConsumeAction(SubspaceDialog.Outline);
+  const columns = useColumns();
+  return <DashboardNavigation compact={columns === 0} {...props} />;
+};
 
 const SubspaceHomePage = ({ dialog }: SubspaceHomePageProps) => {
   const { t } = useTranslation();
@@ -36,11 +49,45 @@ const SubspaceHomePage = ({ dialog }: SubspaceHomePageProps) => {
     dialogTitle: t('send-message-dialog.direct-message-title'),
   });
 
+  const { spaceId } = useSpace();
+
+  const dashboardNavigation = useSpaceDashboardNavigation({
+    spaceId,
+    skip: !spaceId,
+  });
+
+  const [createSpaceState, setCreateSpaceState] = useState<
+    | {
+        isDialogVisible: true;
+        parentSpaceId: string;
+      }
+    | {
+        isDialogVisible: false;
+        parentSpaceId?: never;
+      }
+  >({
+    isDialogVisible: false,
+  });
+
+  const openCreateSubspace = ({ id }) => {
+    setCreateSpaceState({
+      isDialogVisible: true,
+      parentSpaceId: id,
+    });
+  };
+
+  const onCreateJourneyClose = () => {
+    setCreateSpaceState({
+      isDialogVisible: false,
+    });
+  };
+
   return (
     <SubspaceHomeContainer journeyId={journeyId} journeyTypeName={journeyTypeName}>
-      {({ innovationFlow, callouts, subspace }) => (
+      {({ innovationFlow, callouts, subspace, spaceReadAccess }) => (
         <>
           <SubspacePageLayout
+            spaceReadAccess={spaceReadAccess}
             journeyId={journeyId}
             journeyPath={journeyPath}
             journeyUrl={subspace?.profile.url}
@@ -89,8 +136,8 @@ const SubspaceHomePage = ({ dialog }: SubspaceHomePageProps) => {
                   icon={HistoryOutlined}
                 />
                 <DialogDef
-                  dialogType={SubspaceDialog.Events}
-                  label={t(`spaceDialog.${SubspaceDialog.Events}` as const)}
+                  dialogType={SubspaceDialog.Timeline}
+                  label={t('spaceDialog.Events')}
                   icon={CalendarMonthOutlined}
                 />
                 <DialogDef
@@ -98,19 +145,32 @@ const SubspaceHomePage = ({ dialog }: SubspaceHomePageProps) => {
                   label={t(`spaceDialog.${SubspaceDialog.Share}` as const)}
                   icon={ShareOutlined}
                 />
-                <DialogDef
-                  dialogType={SubspaceDialog.ManageFlow}
-                  label={t(`spaceDialog.${SubspaceDialog.ManageFlow}` as const)}
-                  icon={InnovationFlowIcon}
-                />
-                <DialogDef
-                  dialogType={SubspaceDialog.Settings}
-                  label={t(`spaceDialog.${SubspaceDialog.Settings}` as const)}
-                  icon={SettingsOutlined}
-                />
+                {innovationFlow.canEditInnovationFlow && (
+                  <DialogDef
+                    dialogType={SubspaceDialog.ManageFlow}
+                    label={t(`spaceDialog.${SubspaceDialog.ManageFlow}` as const)}
+                    icon={InnovationFlowIcon}
+                  />
+                )}
+                {subspace?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) && (
+                  <DialogDef
+                    dialogType={SubspaceDialog.Settings}
+                    label={t(`spaceDialog.${SubspaceDialog.Settings}` as const)}
+                    icon={SettingsOutlined}
+                    url={subspace ? buildJourneyAdminUrl(subspace?.profile.url) : undefined}
+                  />
+                )}
               </>
             }
             profile={subspace?.profile}
+            infoColumnChildren={
+              <Outline
+                currentItemId={journeyId}
+                dashboardNavigation={dashboardNavigation.dashboardNavigation}
+                onCreateSubspace={openCreateSubspace}
+                onCurrentItemNotFound={dashboardNavigation.refetch}
+              />
+            }
           >
             <SubspaceHomeView
               journeyId={journeyId}
@@ -121,11 +181,17 @@ const SubspaceHomePage = ({ dialog }: SubspaceHomePageProps) => {
             />
           </SubspacePageLayout>
           {directMessageDialog}
+          <CreateJourney
+            isVisible={createSpaceState.isDialogVisible}
+            onClose={onCreateJourneyClose}
+            parentSpaceId={createSpaceState.parentSpaceId}
+          />
           <SubspaceDialogs
             dialogOpen={dialog}
             callouts={callouts}
             journeyId={journeyId}
             journeyUrl={subspace?.profile.url}
+            dashboardNavigation={dashboardNavigation}
           />
         </>
       )}

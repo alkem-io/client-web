@@ -1,10 +1,10 @@
-query InnovationFlowSettings($collaborationId: UUID!) {
+query InnovationFlowSettings($collaborationId: UUID!, $filterCalloutGroups: [String!]) {
   lookup {
     collaboration(ID: $collaborationId) {
+      ...InnovationFlowCollaboration
       innovationFlow {
         ...InnovationFlowDetails
       }
-      ...InnovationFlowCollaboration
     }
   }
 }
@@ -12,6 +12,7 @@ query InnovationFlowSettings($collaborationId: UUID!) {
 query InnovationFlowDetails($collaborationId: UUID!) {
   lookup {
     collaboration(ID: $collaborationId) {
+      id
       innovationFlow {
         ...InnovationFlowDetails
       }
@@ -61,7 +62,7 @@ fragment InnovationFlowCollaboration on Collaboration {
     id
     myPrivileges
   }
-  callouts(groups: ["CONTRIBUTE"]) {
+  callouts(groups: $filterCalloutGroups) {
     id
     nameID
     type

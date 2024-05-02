@@ -44,6 +44,61 @@ export const TagsetDetailsFragmentDoc = gql`
     type
   }
 `;
+export const VisualFullFragmentDoc = gql`
+  fragment VisualFull on Visual {
+    id
+    uri
+    name
+    allowedTypes
+    aspectRatio
+    maxHeight
+    maxWidth
+    minHeight
+    minWidth
+    alternativeText
+  }
+`;
+export const InnovationFlowProfileFragmentDoc = gql`
+  fragment InnovationFlowProfile on Profile {
+    id
+    displayName
+    description
+    tagsets {
+      ...TagsetDetails
+    }
+    references {
+      id
+      name
+      description
+      uri
+    }
+    bannerNarrow: visual(type: CARD) {
+      ...VisualFull
+    }
+  }
+  ${TagsetDetailsFragmentDoc}
+  ${VisualFullFragmentDoc}
+`;
+export const InnovationFlowDetailsFragmentDoc = gql`
+  fragment InnovationFlowDetails on InnovationFlow {
+    id
+    profile {
+      ...InnovationFlowProfile
+    }
+    states {
+      displayName
+      description
+    }
+    currentState {
+      displayName
+    }
+    authorization {
+      id
+      myPrivileges
+    }
+  }
+  ${InnovationFlowProfileFragmentDoc}
+`;
 export const InnovationFlowCollaborationFragmentDoc = gql`
   fragment InnovationFlowCollaboration on Collaboration {
     id
@@ -51,7 +106,7 @@ export const InnovationFlowCollaborationFragmentDoc = gql`
       id
       myPrivileges
     }
-    callouts(groups: ["CONTRIBUTE"]) {
+    callouts(groups: $filterCalloutGroups) {
       id
       nameID
       type
@@ -339,20 +394,6 @@ export const ProfileDisplayNameFragmentDoc = gql`
   fragment ProfileDisplayName on Profile {
     id
     displayName
-  }
-`;
-export const VisualFullFragmentDoc = gql`
-  fragment VisualFull on Visual {
-    id
-    uri
-    name
-    allowedTypes
-    aspectRatio
-    maxHeight
-    maxWidth
-    minHeight
-    minWidth
-    alternativeText
   }
 `;
 export const PostCardFragmentDoc = gql`
@@ -1997,7 +2038,7 @@ export const JourneyBreadcrumbsProfileFragmentDoc = gql`
     id
     url
     displayName
-    avatar: visual(type: AVATAR) {
+    avatar: visual(type: $visualType) {
       id
       ...VisualUri
     }
@@ -2513,47 +2554,6 @@ export const SubspacePageFragmentDoc = gql`
   ${DashboardTimelineAuthorizationFragmentDoc}
   ${EntityDashboardCommunityFragmentDoc}
 `;
-export const InnovationFlowProfileFragmentDoc = gql`
-  fragment InnovationFlowProfile on Profile {
-    id
-    displayName
-    description
-    tagsets {
-      ...TagsetDetails
-    }
-    references {
-      id
-      name
-      description
-      uri
-    }
-    bannerNarrow: visual(type: CARD) {
-      ...VisualFull
-    }
-  }
-  ${TagsetDetailsFragmentDoc}
-  ${VisualFullFragmentDoc}
-`;
-export const InnovationFlowDetailsFragmentDoc = gql`
-  fragment InnovationFlowDetails on InnovationFlow {
-    id
-    profile {
-      ...InnovationFlowProfile
-    }
-    states {
-      displayName
-      description
-    }
-    currentState {
-      displayName
-    }
-    authorization {
-      id
-      myPrivileges
-    }
-  }
-  ${InnovationFlowProfileFragmentDoc}
-`;
 export const SubspaceCardFragmentDoc = gql`
   fragment SubspaceCard on Space {
     id
@@ -2588,16 +2588,9 @@ export const SubspaceCardFragmentDoc = gql`
       id
       myMembershipStatus
     }
-    collaboration {
-      id
-      innovationFlow {
-        ...InnovationFlowDetails
-      }
-    }
   }
   ${VisualUriFragmentDoc}
   ${TagsetDetailsFragmentDoc}
-  ${InnovationFlowDetailsFragmentDoc}
 `;
 export const SubspacesOnSpaceFragmentDoc = gql`
   fragment SubspacesOnSpace on Space {
@@ -2755,10 +2748,19 @@ export const SubspaceInfoFragmentDoc = gql`
 export const SubspacePageSpaceFragmentDoc = gql`
   fragment SubspacePageSpace on Space {
     id
+    authorization {
+      id
+      myPrivileges
+    }
     profile {
       id
       url
       displayName
+    }
+    metrics {
+      id
+      name
+      value
     }
     context {
       id
@@ -3569,7 +3571,7 @@ export const SpaceExplorerSpaceFragmentDoc = gql`
         id
         tags
       }
-      avatar: visual(type: AVATAR) {
+      cardBanner: visual(type: CARD) {
         ...VisualUri
       }
     }
@@ -4699,18 +4701,18 @@ export function refetchCalloutPageCalloutQuery(variables: SchemaTypes.CalloutPag
 }
 
 export const InnovationFlowSettingsDocument = gql`
-  query InnovationFlowSettings($collaborationId: UUID!) {
+  query InnovationFlowSettings($collaborationId: UUID!, $filterCalloutGroups: [String!]) {
     lookup {
       collaboration(ID: $collaborationId) {
+        ...InnovationFlowCollaboration
         innovationFlow {
           ...InnovationFlowDetails
         }
-        ...InnovationFlowCollaboration
       }
     }
   }
-  ${InnovationFlowDetailsFragmentDoc}
   ${InnovationFlowCollaborationFragmentDoc}
+  ${InnovationFlowDetailsFragmentDoc}
 `;
 
 /**
@@ -4726,6 +4728,7 @@ export const InnovationFlowSettingsDocument = gql`
  * const { data, loading, error } = useInnovationFlowSettingsQuery({
  *   variables: {
  *      collaborationId: // value for 'collaborationId'
+ *      filterCalloutGroups: // value for 'filterCalloutGroups'
  *   },
  * });
  */
@@ -4769,6 +4772,7 @@ export const InnovationFlowDetailsDocument = gql`
   query InnovationFlowDetails($collaborationId: UUID!) {
     lookup {
       collaboration(ID: $collaborationId) {
+        id
         innovationFlow {
           ...InnovationFlowDetails
         }
@@ -13285,10 +13289,15 @@ export type InviteExistingUserMutationOptions = Apollo.BaseMutationOptions<
 >;
 export const InviteExternalUserDocument = gql`
   mutation InviteExternalUser($email: String!, $communityId: UUID!, $message: String) {
-    inviteExternalUserForCommunityMembership(
+    inviteForCommunityMembershipByEmail(
       invitationData: { email: $email, communityID: $communityId, welcomeMessage: $message }
     ) {
-      id
+      ... on InvitationExternal {
+        id
+      }
+      ... on Invitation {
+        id
+      }
     }
   }
 `;
@@ -15604,8 +15613,77 @@ export function refetchAboutPageMembersQuery(variables: SchemaTypes.AboutPageMem
   return { query: AboutPageMembersDocument, variables: variables };
 }
 
+export const JourneyCommunityPrivilegesDocument = gql`
+  query JourneyCommunityPrivileges($spaceId: UUID_NAMEID!) {
+    space(ID: $spaceId) {
+      id
+      community {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useJourneyCommunityPrivilegesQuery__
+ *
+ * To run a query within a React component, call `useJourneyCommunityPrivilegesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useJourneyCommunityPrivilegesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useJourneyCommunityPrivilegesQuery({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *   },
+ * });
+ */
+export function useJourneyCommunityPrivilegesQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.JourneyCommunityPrivilegesQuery,
+    SchemaTypes.JourneyCommunityPrivilegesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.JourneyCommunityPrivilegesQuery,
+    SchemaTypes.JourneyCommunityPrivilegesQueryVariables
+  >(JourneyCommunityPrivilegesDocument, options);
+}
+
+export function useJourneyCommunityPrivilegesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.JourneyCommunityPrivilegesQuery,
+    SchemaTypes.JourneyCommunityPrivilegesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.JourneyCommunityPrivilegesQuery,
+    SchemaTypes.JourneyCommunityPrivilegesQueryVariables
+  >(JourneyCommunityPrivilegesDocument, options);
+}
+
+export type JourneyCommunityPrivilegesQueryHookResult = ReturnType<typeof useJourneyCommunityPrivilegesQuery>;
+export type JourneyCommunityPrivilegesLazyQueryHookResult = ReturnType<typeof useJourneyCommunityPrivilegesLazyQuery>;
+export type JourneyCommunityPrivilegesQueryResult = Apollo.QueryResult<
+  SchemaTypes.JourneyCommunityPrivilegesQuery,
+  SchemaTypes.JourneyCommunityPrivilegesQueryVariables
+>;
+export function refetchJourneyCommunityPrivilegesQuery(
+  variables: SchemaTypes.JourneyCommunityPrivilegesQueryVariables
+) {
+  return { query: JourneyCommunityPrivilegesDocument, variables: variables };
+}
+
 export const JourneyDataDocument = gql`
-  query JourneyData($spaceId: UUID_NAMEID!) {
+  query JourneyData($spaceId: UUID_NAMEID!, $includeCommunity: Boolean = false) {
     space(ID: $spaceId) {
       id
       profile {
@@ -15614,13 +15692,14 @@ export const JourneyDataDocument = gql`
       context {
         ...ContextJourneyData
       }
-      community {
+      community @include(if: $includeCommunity) {
         ...JourneyCommunity
       }
       metrics {
         ...MetricsItem
       }
       account {
+        id
         host {
           ...AssociatedOrganizationDetails
         }
@@ -15647,6 +15726,7 @@ export const JourneyDataDocument = gql`
  * const { data, loading, error } = useJourneyDataQuery({
  *   variables: {
  *      spaceId: // value for 'spaceId'
+ *      includeCommunity: // value for 'includeCommunity'
  *   },
  * });
  */
@@ -15893,7 +15973,7 @@ export function refetchJourneyBreadcrumbsInnovationHubQuery(
 }
 
 export const JourneyBreadcrumbsSpaceDocument = gql`
-  query JourneyBreadcrumbsSpace($spaceId: UUID_NAMEID!) {
+  query JourneyBreadcrumbsSpace($spaceId: UUID_NAMEID!, $visualType: VisualType! = AVATAR) {
     space(ID: $spaceId) {
       id
       profile {
@@ -15917,6 +15997,7 @@ export const JourneyBreadcrumbsSpaceDocument = gql`
  * const { data, loading, error } = useJourneyBreadcrumbsSpaceQuery({
  *   variables: {
  *      spaceId: // value for 'spaceId'
+ *      visualType: // value for 'visualType'
  *   },
  * });
  */
@@ -17742,6 +17823,16 @@ export const SpaceDashboardNavigationChallengesDocument = gql`
   query SpaceDashboardNavigationChallenges($spaceId: UUID_NAMEID!) {
     space(ID: $spaceId) {
       id
+      profile {
+        id
+        url
+        displayName
+        avatar: visual(type: CARD) {
+          id
+          uri
+          alternativeText
+        }
+      }
       subspaces {
         id
         profile {
@@ -21022,7 +21113,6 @@ export const DeleteCalendarEventDocument = gql`
   mutation deleteCalendarEvent($deleteData: DeleteCalendarEventInput!) {
     deleteCalendarEvent(deleteData: $deleteData) {
       id
-      nameID
     }
   }
 `;

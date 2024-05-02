@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SettingsSection } from '../layout/EntitySettingsLayout/constants';
 import { TabDefinition } from '../layout/EntitySettingsLayout/EntitySettingsTabs';
@@ -14,52 +14,60 @@ import ChildJourneyPageBanner from '../../../journey/common/childJourneyPageBann
 import JourneyBreadcrumbs from '../../../journey/common/journeyBreadcrumbs/JourneyBreadcrumbs';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 import BackButton from '../../../../core/ui/actions/BackButton';
-import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 
 interface SubspaceSettingsLayoutProps {
   currentTab: SettingsSection;
   tabRoutePrefix?: string;
 }
 
-const tabs: TabDefinition<SettingsSection>[] = [
-  {
-    section: SettingsSection.Profile,
-    route: 'profile',
-    icon: PeopleOutlinedIcon,
-  },
-  {
-    section: SettingsSection.Context,
-    route: 'context',
-    icon: ListOutlinedIcon,
-  },
-  {
-    section: SettingsSection.Community,
-    route: 'community',
-    icon: PeopleOutlinedIcon,
-  },
-  {
-    section: SettingsSection.Communications,
-    route: 'communications',
-    icon: ForumOutlinedIcon,
-  },
-  {
-    section: SettingsSection.Subsubspaces,
-    route: 'opportunities',
-    icon: FlagOutlinedIcon,
-  },
-  {
-    section: SettingsSection.SpaceSettings,
-    route: 'settings',
-    icon: GppGoodOutlinedIcon,
-  },
-];
-
 const SubspaceSettingsLayout: FC<SubspaceSettingsLayoutProps> = props => {
   const entityAttrs = useSubSpace();
 
   const { t } = useTranslation();
 
-  const { journeyId, journeyPath } = useRouteResolver();
+  const { journeyId, journeyPath, journeyLevel } = useRouteResolver();
+
+  const tabs = useMemo(() => {
+    const tabs: TabDefinition<SettingsSection>[] = [
+      {
+        section: SettingsSection.Profile,
+        route: 'profile',
+        icon: PeopleOutlinedIcon,
+      },
+      {
+        section: SettingsSection.Context,
+        route: 'context',
+        icon: ListOutlinedIcon,
+      },
+      {
+        section: SettingsSection.Community,
+        route: 'community',
+        icon: PeopleOutlinedIcon,
+      },
+      {
+        section: SettingsSection.Communications,
+        route: 'communications',
+        icon: ForumOutlinedIcon,
+      },
+    ];
+
+    if (journeyLevel === 1) {
+      tabs.push(
+        {
+          section: SettingsSection.Subsubspaces,
+          route: 'opportunities',
+          icon: FlagOutlinedIcon,
+        },
+        {
+          section: SettingsSection.SpaceSettings,
+          route: 'settings',
+          icon: GppGoodOutlinedIcon,
+        }
+      );
+    }
+
+    return tabs;
+  }, [journeyLevel]);
 
   return (
     <EntitySettingsLayout
@@ -68,10 +76,7 @@ const SubspaceSettingsLayout: FC<SubspaceSettingsLayoutProps> = props => {
       pageBanner={<ChildJourneyPageBanner journeyId={journeyId} />}
       breadcrumbs={<JourneyBreadcrumbs journeyPath={journeyPath} settings />}
       backButton={
-        <RouterLink
-          to={`${entityAttrs.profile.url}/${EntityPageSection.Dashboard}`}
-          sx={{ alignSelf: 'center', marginLeft: 'auto' }}
-        >
+        <RouterLink to={entityAttrs.profile.url} sx={{ alignSelf: 'center', marginLeft: 'auto' }}>
           <BackButton variant="outlined" sx={{ textTransform: 'capitalize' }}>
             {t('navigation.admin.settingsMenu.quit')}
           </BackButton>

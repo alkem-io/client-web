@@ -2,7 +2,7 @@ import React from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { useConfig } from '../../../platform/config/useConfig';
 import { Error404 } from '../../../../core/pages/Errors/Error404';
-import { EntityPageLayoutHolder } from '../../../journey/common/EntityPageLayout';
+import { PageLayoutHolderWithOutlet } from '../../../journey/common/EntityPageLayout';
 import EditUserProfilePage from '../pages/EditUserProfilePage';
 import UserCredentialsPage from '../pages/UserCredentialsPage';
 import UserMembershipPage from '../pages/UserMembershipPage';
@@ -15,7 +15,7 @@ export const UserSettingsRoute = () => {
 
   return (
     <Routes>
-      <Route path={'/'} element={<EntityPageLayoutHolder />}>
+      <Route path={'/'} element={<PageLayoutHolderWithOutlet />}>
         <Route index element={<Navigate to={'profile'} />} />
         <Route path={'profile'} element={<EditUserProfilePage />} />
         <Route path={'membership'} element={<UserMembershipPage />} />

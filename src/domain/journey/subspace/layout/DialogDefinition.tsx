@@ -4,8 +4,9 @@ import { SvgIconComponent } from '@mui/icons-material';
 
 export interface DialogDefinitionProps {
   dialogType: SubspaceDialog;
-  label: ReactNode;
+  label: string;
   icon: SvgIconComponent;
+  url?: string;
 }
 
 export const DialogDef = (_props: DialogDefinitionProps) => {

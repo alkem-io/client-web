@@ -2,21 +2,17 @@ import { SimpleContainerProps } from '../../../../core/container/SimpleContainer
 import useInnovationFlowStates, {
   UseInnovationFlowStatesProvided,
 } from '../../../collaboration/InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
-import useCallouts, { TypedCallout, UseCalloutsProvided } from '../../../collaboration/callout/useCallouts/useCallouts';
-import { CalloutGroupName, SubspacePageSpaceFragment } from '../../../../core/apollo/generated/graphql-schema';
+import useCallouts, { UseCalloutsProvided } from '../../../collaboration/callout/useCallouts/useCallouts';
+import { SubspacePageSpaceFragment } from '../../../../core/apollo/generated/graphql-schema';
 import { JourneyTypeName } from '../../JourneyTypeName';
 import { useSubspacePageQuery } from '../../../../core/apollo/generated/apollo-hooks';
-import useStateWithAsyncDefault from '../../../../core/utils/useStateWithAsyncDefault';
-import { useMemo } from 'react';
-import { InnovationFlowState } from '../../../collaboration/InnovationFlow/InnovationFlow';
+import useCanReadSpace, { SpaceReadAccess } from '../../common/authorization/useCanReadSpace';
 
 interface SubspaceHomeContainerProvided {
-  innovationFlow: UseInnovationFlowStatesProvided & {
-    selectedInnovationFlowState: string | undefined;
-    onSelectInnovationFlowState: (state: InnovationFlowState) => void;
-  };
-  callouts: UseCalloutsProvided & { selectedFlowStateCallouts: TypedCallout[] | undefined };
+  innovationFlow: UseInnovationFlowStatesProvided;
+  callouts: UseCalloutsProvided;
   subspace?: SubspacePageSpaceFragment;
+  spaceReadAccess: SpaceReadAccess;
 }
 
 interface SubspaceHomeContainerProps extends SimpleContainerProps<SubspaceHomeContainerProvided> {
@@ -25,53 +21,25 @@ interface SubspaceHomeContainerProps extends SimpleContainerProps<SubspaceHomeCo
 }
 
 const SubspaceHomeContainer = ({ journeyId, journeyTypeName, children }: SubspaceHomeContainerProps) => {
+  const spaceReadAccess = useCanReadSpace({ spaceId: journeyId });
+
   const { data } = useSubspacePageQuery({
     variables: {
       spaceId: journeyId!,
     },
-    skip: !journeyId,
+    skip: !journeyId || !spaceReadAccess.canReadSpace,
   });
 
   const collaborationId = data?.space?.collaboration.id;
 
-  const innovationFlowStates = useInnovationFlowStates({ collaborationId });
-
-  const [selectedInnovationFlowState, setSelectedInnovationFlowState] = useStateWithAsyncDefault(
-    innovationFlowStates.currentInnovationFlowState
-  );
-
-  const innovationFlow = useMemo(() => {
-    return {
-      ...innovationFlowStates,
-      selectedInnovationFlowState: selectedInnovationFlowState,
-      onSelectInnovationFlowState: (state: InnovationFlowState) => setSelectedInnovationFlowState(state.displayName),
-    };
-  }, [innovationFlowStates, selectedInnovationFlowState]);
+  const innovationFlow = useInnovationFlowStates({ collaborationId });
 
   const callouts = useCallouts({
     journeyId,
     journeyTypeName,
   });
 
-  const selectedFlowStateCallouts = useMemo(() => {
-    const filterCallouts = (callouts: TypedCallout[] | undefined) => {
-      return callouts?.filter(callout => {
-        if (!selectedInnovationFlowState) {
-          return true;
-        }
-        return callout.flowStates?.includes(selectedInnovationFlowState);
-      });
-    };
-
-    return filterCallouts(callouts.groupedCallouts[CalloutGroupName.Contribute]);
-  }, [callouts.groupedCallouts, selectedInnovationFlowState]);
-
-  const providedCallouts = {
-    ...callouts,
-    selectedFlowStateCallouts,
-  };
-
-  return <>{children({ innovationFlow, callouts: providedCallouts, subspace: data?.space })}</>;
+  return <>{children({ innovationFlow, callouts, subspace: data?.space, spaceReadAccess })}</>;
 };
 
 export default SubspaceHomeContainer;

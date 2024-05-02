@@ -24,15 +24,14 @@ import DashboardNavigation from '../../dashboardNavigation/DashboardNavigation';
 import useDirectMessageDialog from '../../../communication/messaging/DirectMessaging/useDirectMessageDialog';
 import FullWidthButton from '../../../../core/ui/button/FullWidthButton';
 import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
-import DashboardRecentContributionsBlock from '../../common/dashboardRecentContributionsBlock/DashboardRecentContributionsBlock';
 import { OrderUpdate, TypedCallout } from '../../../collaboration/callout/useCallouts/useCallouts';
 import JourneyDashboardWelcomeBlock from '../../common/journeyDashboardWelcomeBlock/JourneyDashboardWelcomeBlock';
 import RouterLink from '../../../../core/ui/link/RouterLink';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
-import { RECENT_ACTIVITIES_LIMIT_EXPANDED } from '../../common/journeyDashboard/constants';
 import InfoColumn from '../../../../core/ui/content/InfoColumn';
 import ContentColumn from '../../../../core/ui/content/ContentColumn';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
+import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
 
 interface SpaceWelcomeBlockContributor {
   profile: SpaceWelcomeBlockContributorProfileFragment;
@@ -40,9 +39,7 @@ interface SpaceWelcomeBlockContributor {
 
 interface SpaceDashboardViewProps {
   spaceId: string | undefined;
-  displayName: string | undefined;
-  spaceUrl: string | undefined;
-  dashboardNavigation: DashboardNavigationItem[] | undefined;
+  dashboardNavigation: DashboardNavigationItem | undefined;
   dashboardNavigationLoading: boolean;
   vision?: string;
   communityId?: string;
@@ -78,23 +75,15 @@ interface SpaceDashboardViewProps {
 const SpaceDashboardView = ({
   spaceId,
   vision = '',
-  displayName,
   dashboardNavigation,
   dashboardNavigationLoading,
-  spaceUrl,
   communityId = '',
   communityReadAccess = false,
   timelineReadAccess = false,
-  entityReadAccess,
-  readUsersAccess,
   leadOrganizations,
   leadUsers,
-  activities,
-  fetchMoreActivities,
-  activityLoading,
   journeyTypeName,
   callouts,
-  topCallouts,
   shareUpdatesUrl,
   myMembershipStatus,
 }: SpaceDashboardViewProps) => {
@@ -119,7 +108,7 @@ const SpaceDashboardView = ({
             }
 
             return (
-              <InfoColumn>
+              <PageContentColumn columns={12}>
                 <ApplicationButton
                   {...applicationButtonProps}
                   loading={loading}
@@ -127,7 +116,7 @@ const SpaceDashboardView = ({
                   extended={hasExtendedApplicationButton}
                   journeyTypeName="space"
                 />
-              </InfoColumn>
+              </PageContentColumn>
             );
           }}
         </ApplicationButtonContainer>
@@ -152,8 +141,7 @@ const SpaceDashboardView = ({
             {t('common.aboutThis', { entity: translatedJourneyTypeName })}
           </FullWidthButton>
           <DashboardNavigation
-            spaceUrl={spaceUrl}
-            displayName={displayName}
+            currentItemId={spaceId}
             dashboardNavigation={dashboardNavigation}
             loading={dashboardNavigationLoading}
           />
@@ -162,16 +150,6 @@ const SpaceDashboardView = ({
         </InfoColumn>
 
         <ContentColumn>
-          <DashboardRecentContributionsBlock
-            halfWidth={(callouts.groupedCallouts[CalloutGroupName.Home]?.length ?? 0) > 0}
-            readUsersAccess={readUsersAccess}
-            entityReadAccess={entityReadAccess}
-            activitiesLoading={activityLoading}
-            topCallouts={topCallouts}
-            activities={activities}
-            journeyTypeName={journeyTypeName}
-            onActivitiesDialogOpen={() => fetchMoreActivities(RECENT_ACTIVITIES_LIMIT_EXPANDED)}
-          />
           <CalloutsGroupView
             journeyId={spaceId}
             callouts={callouts.groupedCallouts[CalloutGroupName.Home]}
@@ -183,13 +161,6 @@ const SpaceDashboardView = ({
             onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
             onCalloutUpdate={callouts.refetchCallout}
             groupName={CalloutGroupName.Home}
-            blockProps={(callout, index) => {
-              if (index === 0) {
-                return {
-                  halfWidth: true,
-                };
-              }
-            }}
           />
         </ContentColumn>
       </PageContent>

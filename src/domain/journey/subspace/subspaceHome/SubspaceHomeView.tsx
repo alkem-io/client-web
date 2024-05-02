@@ -1,27 +1,30 @@
+import { useTranslation } from 'react-i18next';
+import { Button, Theme, useMediaQuery } from '@mui/material';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { JourneyTypeName } from '../../JourneyTypeName';
 import { CalloutGroupName } from '../../../../core/apollo/generated/graphql-schema';
 import InnovationFlowStates from '../../../collaboration/InnovationFlow/InnovationFlowStates/InnovationFlowStates';
 import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
 import { OrderUpdate, TypedCallout } from '../../../collaboration/callout/useCallouts/useCallouts';
 import { InnovationFlowState } from '../../../collaboration/InnovationFlow/InnovationFlow';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { SubspaceInnovationFlow, useConsumeAction } from '../layout/SubspacePageLayout';
-import { useColumns } from '../../../../core/ui/grid/GridContext';
-import { GRID_COLUMNS_MOBILE } from '../../../../core/ui/grid/constants';
-import InnovationFlowCurrentStateSelector from '../../../collaboration/InnovationFlow/InnovationFlowCurrentStateSelector/InnovationFlowCurrentStateSelector';
+import { useCalloutCreationWithPreviewImages } from '../../../collaboration/callout/creationDialog/useCalloutCreation/useCalloutCreationWithPreviewImages';
+import CalloutCreationDialog from '../../../collaboration/callout/creationDialog/CalloutCreationDialog';
 import { SubspaceDialog } from '../layout/SubspaceDialog';
-import ButtonWithTooltip from '../../../../core/ui/button/ButtonWithTooltip';
-import { ButtonProps } from '@mui/material';
+import InnovationFlowVisualizerMobile from '../../../collaboration/InnovationFlow/InnovationFlowVisualizers/InnovationFlowVisualizerMobile';
+import InnovationFlowChips from '../../../collaboration/InnovationFlow/InnovationFlowVisualizers/InnovationFlowChips';
+import useResettableState from '../../../../core/utils/useResettableState';
+import InnovationFlowSettingsButton from '../../../collaboration/InnovationFlow/InnovationFlowDialogs/InnovationFlowSettingsButton';
+import { CalloutGroupNameValuesMap } from '../../../collaboration/callout/CalloutsInContext/CalloutsGroup';
 
 interface SubspaceHomeViewProps {
   journeyId: string | undefined;
   collaborationId: string | undefined;
+  innovationFlowId: string | undefined;
   innovationFlowStates: InnovationFlowState[] | undefined;
   currentInnovationFlowState: string | undefined;
-  selectedInnovationFlowState: string | undefined;
-  onSelectInnovationFlowState: (state: InnovationFlowState) => void;
-  canEditInnovationFlow: boolean | undefined;
-  selectedFlowStateCallouts: TypedCallout[] | undefined;
+  callouts: TypedCallout[] | undefined;
   canCreateCallout: boolean;
   canCreateCalloutFromTemplate: boolean;
   calloutNames: string[];
@@ -31,31 +34,13 @@ interface SubspaceHomeViewProps {
   journeyTypeName: JourneyTypeName;
 }
 
-const InnovationFlowVisualizerMobile = props => (
-  <InnovationFlowCurrentStateSelector {...props} flexShrink={1} minWidth={0} />
-);
-
-const SettingsButton = (props: ButtonProps) => {
-  const settingsActionDef = useConsumeAction(SubspaceDialog.ManageFlow);
-
-  const SettingsIcon = settingsActionDef?.icon;
-
-  return (
-    <ButtonWithTooltip tooltip={String(settingsActionDef?.label)} variant="outlined" iconButton {...props}>
-      {SettingsIcon && <SettingsIcon />}
-    </ButtonWithTooltip>
-  );
-};
-
 const SubspaceHomeView = ({
   journeyId,
   collaborationId,
+  innovationFlowId,
   innovationFlowStates,
   currentInnovationFlowState,
-  selectedInnovationFlowState,
-  onSelectInnovationFlowState,
-  canEditInnovationFlow = false,
-  selectedFlowStateCallouts,
+  callouts,
   canCreateCallout,
   canCreateCalloutFromTemplate,
   calloutNames,
@@ -64,48 +49,94 @@ const SubspaceHomeView = ({
   refetchCallout,
   journeyTypeName,
 }: SubspaceHomeViewProps) => {
-  const columns = useColumns();
+  const { t } = useTranslation();
+  const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
+  const { isCalloutCreationDialogOpen, handleCreateCalloutOpened, handleCreateCalloutClosed, handleCreateCallout } =
+    useCalloutCreationWithPreviewImages({ journeyId });
 
-  const isMobile = columns <= GRID_COLUMNS_MOBILE;
+  const createButton = (
+    <Button
+      variant="outlined"
+      startIcon={<AddCircleOutlineIcon />}
+      sx={{
+        backgroundColor: 'background.paper',
+        borderColor: 'divider',
+        textWrap: 'nowrap',
+      }}
+      onClick={handleCreateCalloutOpened}
+    >
+      {t('common.collaborationTool')}
+    </Button>
+  );
+
+  const [selectedInnovationFlowState, setSelectedInnovationFlowState] = useResettableState(currentInnovationFlowState, [
+    innovationFlowId,
+  ]);
+
+  const selectedFlowStateCallouts = useMemo(() => {
+    const filterCallouts = (callouts: TypedCallout[] | undefined) => {
+      return callouts?.filter(callout => {
+        if (!selectedInnovationFlowState) {
+          return true;
+        }
+        return callout.flowStates?.includes(selectedInnovationFlowState);
+      });
+    };
+
+    return filterCallouts(callouts);
+  }, [callouts, selectedInnovationFlowState]);
+
+  // If it's mobile the ManageFlow action will be consumed somewhere else,
+  // if there is no definition for it, button should not be shown
+  const manageFlowActionDef = useConsumeAction(!isMobile ? SubspaceDialog.ManageFlow : undefined);
 
   return (
     <>
-      <SubspaceInnovationFlow columns={columns}>
-        {innovationFlowStates &&
-          currentInnovationFlowState &&
-          selectedInnovationFlowState &&
-          (canEditInnovationFlow ? (
-            <InnovationFlowStates
-              collaborationId={collaborationId!}
-              states={innovationFlowStates}
-              currentState={currentInnovationFlowState}
-              selectedState={selectedInnovationFlowState}
-              settings={<SettingsButton />}
-              onSelectState={onSelectInnovationFlowState}
-              visualizer={isMobile ? InnovationFlowVisualizerMobile : undefined}
-            />
-          ) : (
-            <InnovationFlowStates
-              states={innovationFlowStates}
-              currentState={currentInnovationFlowState}
-              selectedState={selectedInnovationFlowState}
-              onSelectState={onSelectInnovationFlowState}
-              visualizer={isMobile ? InnovationFlowVisualizerMobile : undefined}
-            />
-          ))}
+      <SubspaceInnovationFlow>
+        {innovationFlowStates && currentInnovationFlowState && selectedInnovationFlowState && collaborationId && (
+          <InnovationFlowStates
+            states={innovationFlowStates}
+            currentState={currentInnovationFlowState}
+            selectedState={selectedInnovationFlowState}
+            onSelectState={state => setSelectedInnovationFlowState(state.displayName)}
+            visualizer={isMobile ? InnovationFlowVisualizerMobile : InnovationFlowChips}
+            createButton={canCreateCallout && createButton}
+            settingsButton={
+              manageFlowActionDef && (
+                <InnovationFlowSettingsButton
+                  collaborationId={collaborationId}
+                  filterCalloutGroups={[CalloutGroupNameValuesMap.Home]}
+                  tooltip={manageFlowActionDef.label}
+                  icon={manageFlowActionDef.icon}
+                />
+              )
+            }
+          />
+        )}
       </SubspaceInnovationFlow>
       <CalloutsGroupView
         journeyId={journeyId}
         callouts={selectedFlowStateCallouts}
-        canCreateCallout={canCreateCallout}
+        canCreateCallout={canCreateCallout && isMobile}
         canCreateCalloutFromTemplate={canCreateCalloutFromTemplate}
         loading={loading}
         journeyTypeName={journeyTypeName}
         calloutNames={calloutNames}
         onSortOrderUpdate={onCalloutsSortOrderUpdate}
         onCalloutUpdate={refetchCallout}
-        groupName={CalloutGroupName.Contribute}
+        groupName={CalloutGroupName.Home}
         createButtonPlace="top"
+        flowState={selectedInnovationFlowState}
+      />
+      <CalloutCreationDialog
+        open={isCalloutCreationDialogOpen}
+        onClose={handleCreateCalloutClosed}
+        onCreateCallout={handleCreateCallout}
+        loading={loading}
+        calloutNames={calloutNames}
+        groupName={CalloutGroupName.Home}
+        journeyTypeName={journeyTypeName}
+        canCreateCalloutFromTemplate={canCreateCalloutFromTemplate}
         flowState={selectedInnovationFlowState}
       />
     </>

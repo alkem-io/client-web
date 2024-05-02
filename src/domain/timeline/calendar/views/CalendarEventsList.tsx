@@ -6,7 +6,6 @@ import DialogHeader, { DialogHeaderProps } from '../../../../core/ui/dialog/Dial
 import GridProvider from '../../../../core/ui/grid/GridProvider';
 import { gutters } from '../../../../core/ui/grid/utils';
 import { BlockSectionTitle, BlockTitle, Caption } from '../../../../core/ui/typography';
-import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import CalendarEventCard from './CalendarEventCard';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import ScrollerWithGradient from '../../../../core/ui/overflow/ScrollerWithGradient';
@@ -20,7 +19,7 @@ import useScrollToElement from '../../../shared/utils/scroll/useScrollToElement'
 import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
 import { HIGHLIGHT_PARAM_NAME } from '../CalendarDialog';
 import { useQueryParams } from '../../../../core/routing/useQueryParams';
-import { normalizeLink } from '../../../../core/utils/links';
+import { useLocation } from 'react-router-dom';
 
 interface CalendarEventsListProps {
   events: {
@@ -43,12 +42,13 @@ const CalendarEventsList = ({ events, highlightedDay, actions, onClose }: Calend
   const navigate = useNavigate();
   const urlQueryParams = useQueryParams();
   const breakpoint = useCurrentBreakpoint();
+  const { pathname } = useLocation();
 
   const [scrollToElement, scrollTo] = useState<string>();
   const { scrollable } = useScrollToElement(scrollToElement, { enabled: Boolean(scrollToElement), method: 'element' });
 
   const handleClickOnEvent = (url: string) => {
-    navigate(normalizeLink(url));
+    navigate(url);
   };
 
   const { futureEvents = [], pastEvents = [] } = useMemo(() => {
@@ -83,13 +83,14 @@ const CalendarEventsList = ({ events, highlightedDay, actions, onClose }: Calend
     if (date) {
       const nextUrlParams = new URLSearchParams(urlQueryParams.toString());
       nextUrlParams.set(HIGHLIGHT_PARAM_NAME, dayjs(date).format(INTERNAL_DATE_FORMAT));
-      navigate(`${EntityPageSection.Dashboard}/calendar?${nextUrlParams}`, { replace: true });
+      navigate(`${pathname}?${nextUrlParams}`, { replace: true });
     }
     if (events.length > 0) {
       // Scroll again in case url hasn't changed but user has scrolled out of the view
       scrollTo(events[0].nameID);
     }
   };
+
   return (
     <GridProvider columns={12}>
       <DialogHeader onClose={onClose}>

@@ -1,6 +1,6 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, styled, Tooltip } from '@mui/material';
+import { Button, Divider, styled, Tooltip } from '@mui/material';
 import { ArrowRight } from '@mui/icons-material';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import { useGlobalGridColumns } from '../../../../core/ui/grid/constants';
@@ -9,14 +9,9 @@ import TranslationKey from '../../../../core/i18n/utils/TranslationKey';
 import i18n from '../../../../core/i18n/config';
 import { InnovationFlowState } from '../InnovationFlow';
 import { Caption } from '../../../../core/ui/typography';
+import { InnovationFlowVisualizerProps } from './InnovationFlowVisualizer';
 
-interface InnovationFlowChipsProps {
-  states: InnovationFlowState[];
-  currentState?: string;
-  selectedState: string | undefined;
-  settings?: ReactNode;
-  onSelectState?: (state: InnovationFlowState) => void;
-}
+interface InnovationFlowChipsProps extends InnovationFlowVisualizerProps {}
 
 const FlowStateDescription = styled(WrapperMarkdown)(() => ({
   img: {
@@ -31,7 +26,8 @@ const InnovationFlowChips = ({
   currentState,
   selectedState,
   onSelectState,
-  settings,
+  settingsButton,
+  createButton,
 }: InnovationFlowChipsProps) => {
   const { t } = useTranslation();
 
@@ -101,7 +97,13 @@ const InnovationFlowChips = ({
             </Button>
           ))}
         </Gutters>
-        {settings}
+        {settingsButton}
+        {createButton && (
+          <Gutters row disablePadding>
+            <Divider orientation="vertical" flexItem />
+            {createButton}
+          </Gutters>
+        )}
       </Gutters>
       {selectedStateDescription && <FlowStateDescription>{selectedStateDescription}</FlowStateDescription>}
     </>

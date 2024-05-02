@@ -545,6 +545,8 @@ export type AgentBeginVerifiedCredentialRequestOutput = {
   qrCodeImg: Scalars['String'];
 };
 
+export type AnyInvitation = Invitation | InvitationExternal;
+
 export type Application = {
   __typename?: 'Application';
   /** The authorization rules for the entity */
@@ -2666,7 +2668,7 @@ export type Mutation = {
   /** Invite an existing User to join the specified Community as a member. */
   inviteExistingUserForCommunityMembership: Array<Invitation>;
   /** Invite an external User to join the specified Community as a member. */
-  inviteExternalUserForCommunityMembership: InvitationExternal;
+  inviteForCommunityMembershipByEmail: AnyInvitation;
   /** Join the specified Community as a member, without going through an approval process. */
   joinCommunity: Community;
   /** Sends a message on the specified User`s behalf and returns the room id */
@@ -3139,7 +3141,7 @@ export type MutationInviteExistingUserForCommunityMembershipArgs = {
   invitationData: CreateInvitationExistingUserOnCommunityInput;
 };
 
-export type MutationInviteExternalUserForCommunityMembershipArgs = {
+export type MutationInviteForCommunityMembershipByEmailArgs = {
   invitationData: CreateInvitationExternalUserOnCommunityInput;
 };
 
@@ -6246,6 +6248,7 @@ export type CalloutPageCalloutQuery = {
 
 export type InnovationFlowSettingsQueryVariables = Exact<{
   collaborationId: Scalars['UUID'];
+  filterCalloutGroups?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
 }>;
 
 export type InnovationFlowSettingsQuery = {
@@ -6361,6 +6364,7 @@ export type InnovationFlowDetailsQuery = {
     collaboration?:
       | {
           __typename?: 'Collaboration';
+          id: string;
           innovationFlow: {
             __typename?: 'InnovationFlow';
             id: string;
@@ -15481,7 +15485,9 @@ export type InviteExternalUserMutationVariables = Exact<{
 
 export type InviteExternalUserMutation = {
   __typename?: 'Mutation';
-  inviteExternalUserForCommunityMembership: { __typename?: 'InvitationExternal'; id: string };
+  inviteForCommunityMembershipByEmail:
+    | { __typename?: 'Invitation'; id: string }
+    | { __typename?: 'InvitationExternal'; id: string };
 };
 
 export type PendingMembershipsSpaceQueryVariables = Exact<{
@@ -17435,8 +17441,28 @@ export type AboutPageMembersQuery = {
   };
 };
 
+export type JourneyCommunityPrivilegesQueryVariables = Exact<{
+  spaceId: Scalars['UUID_NAMEID'];
+}>;
+
+export type JourneyCommunityPrivilegesQuery = {
+  __typename?: 'Query';
+  space: {
+    __typename?: 'Space';
+    id: string;
+    community: {
+      __typename?: 'Community';
+      id: string;
+      authorization?:
+        | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+        | undefined;
+    };
+  };
+};
+
 export type JourneyDataQueryVariables = Exact<{
   spaceId: Scalars['UUID_NAMEID'];
+  includeCommunity?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 export type JourneyDataQuery = {
@@ -17461,7 +17487,7 @@ export type JourneyDataQuery = {
       who?: string | undefined;
       impact?: string | undefined;
     };
-    community: {
+    community?: {
       __typename?: 'Community';
       id: string;
       leadUsers: Array<{
@@ -17510,6 +17536,7 @@ export type JourneyDataQuery = {
     metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
     account: {
       __typename?: 'Account';
+      id: string;
       host?:
         | {
             __typename?: 'Organization';
@@ -17658,6 +17685,7 @@ export type JourneyBreadcrumbsInnovationHubQuery = {
 
 export type JourneyBreadcrumbsSpaceQueryVariables = Exact<{
   spaceId: Scalars['UUID_NAMEID'];
+  visualType?: VisualType;
 }>;
 
 export type JourneyBreadcrumbsSpaceQuery = {
@@ -19037,59 +19065,6 @@ export type SpaceSubspaceCardsQuery = {
       };
       context: { __typename?: 'Context'; id: string; vision?: string | undefined };
       community: { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
-      collaboration: {
-        __typename?: 'Collaboration';
-        id: string;
-        innovationFlow: {
-          __typename?: 'InnovationFlow';
-          id: string;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            displayName: string;
-            description?: string | undefined;
-            tagsets?:
-              | Array<{
-                  __typename?: 'Tagset';
-                  id: string;
-                  name: string;
-                  tags: Array<string>;
-                  allowedValues: Array<string>;
-                  type: TagsetType;
-                }>
-              | undefined;
-            references?:
-              | Array<{
-                  __typename?: 'Reference';
-                  id: string;
-                  name: string;
-                  description?: string | undefined;
-                  uri: string;
-                }>
-              | undefined;
-            bannerNarrow?:
-              | {
-                  __typename?: 'Visual';
-                  id: string;
-                  uri: string;
-                  name: string;
-                  allowedTypes: Array<string>;
-                  aspectRatio: number;
-                  maxHeight: number;
-                  maxWidth: number;
-                  minHeight: number;
-                  minWidth: number;
-                  alternativeText?: string | undefined;
-                }
-              | undefined;
-          };
-          states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
-          currentState: { __typename?: 'InnovationFlowState'; displayName: string };
-          authorization?:
-            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-            | undefined;
-        };
-      };
     }>;
   };
 };
@@ -19475,53 +19450,6 @@ export type SubspaceCardFragment = {
   };
   context: { __typename?: 'Context'; id: string; vision?: string | undefined };
   community: { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
-  collaboration: {
-    __typename?: 'Collaboration';
-    id: string;
-    innovationFlow: {
-      __typename?: 'InnovationFlow';
-      id: string;
-      profile: {
-        __typename?: 'Profile';
-        id: string;
-        displayName: string;
-        description?: string | undefined;
-        tagsets?:
-          | Array<{
-              __typename?: 'Tagset';
-              id: string;
-              name: string;
-              tags: Array<string>;
-              allowedValues: Array<string>;
-              type: TagsetType;
-            }>
-          | undefined;
-        references?:
-          | Array<{ __typename?: 'Reference'; id: string; name: string; description?: string | undefined; uri: string }>
-          | undefined;
-        bannerNarrow?:
-          | {
-              __typename?: 'Visual';
-              id: string;
-              uri: string;
-              name: string;
-              allowedTypes: Array<string>;
-              aspectRatio: number;
-              maxHeight: number;
-              maxWidth: number;
-              minHeight: number;
-              minWidth: number;
-              alternativeText?: string | undefined;
-            }
-          | undefined;
-      };
-      states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
-      currentState: { __typename?: 'InnovationFlowState'; displayName: string };
-      authorization?:
-        | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-        | undefined;
-    };
-  };
 };
 
 export type SubspacesOnSpaceFragment = {
@@ -19553,59 +19481,6 @@ export type SubspacesOnSpaceFragment = {
     };
     context: { __typename?: 'Context'; id: string; vision?: string | undefined };
     community: { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
-    collaboration: {
-      __typename?: 'Collaboration';
-      id: string;
-      innovationFlow: {
-        __typename?: 'InnovationFlow';
-        id: string;
-        profile: {
-          __typename?: 'Profile';
-          id: string;
-          displayName: string;
-          description?: string | undefined;
-          tagsets?:
-            | Array<{
-                __typename?: 'Tagset';
-                id: string;
-                name: string;
-                tags: Array<string>;
-                allowedValues: Array<string>;
-                type: TagsetType;
-              }>
-            | undefined;
-          references?:
-            | Array<{
-                __typename?: 'Reference';
-                id: string;
-                name: string;
-                description?: string | undefined;
-                uri: string;
-              }>
-            | undefined;
-          bannerNarrow?:
-            | {
-                __typename?: 'Visual';
-                id: string;
-                uri: string;
-                name: string;
-                allowedTypes: Array<string>;
-                aspectRatio: number;
-                maxHeight: number;
-                maxWidth: number;
-                minHeight: number;
-                minWidth: number;
-                alternativeText?: string | undefined;
-              }
-            | undefined;
-        };
-        states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
-        currentState: { __typename?: 'InnovationFlowState'; displayName: string };
-        authorization?:
-          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-          | undefined;
-      };
-    };
   }>;
 };
 
@@ -19738,59 +19613,6 @@ export type SubspaceCardsQuery = {
       };
       context: { __typename?: 'Context'; id: string; vision?: string | undefined };
       community: { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
-      collaboration: {
-        __typename?: 'Collaboration';
-        id: string;
-        innovationFlow: {
-          __typename?: 'InnovationFlow';
-          id: string;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            displayName: string;
-            description?: string | undefined;
-            tagsets?:
-              | Array<{
-                  __typename?: 'Tagset';
-                  id: string;
-                  name: string;
-                  tags: Array<string>;
-                  allowedValues: Array<string>;
-                  type: TagsetType;
-                }>
-              | undefined;
-            references?:
-              | Array<{
-                  __typename?: 'Reference';
-                  id: string;
-                  name: string;
-                  description?: string | undefined;
-                  uri: string;
-                }>
-              | undefined;
-            bannerNarrow?:
-              | {
-                  __typename?: 'Visual';
-                  id: string;
-                  uri: string;
-                  name: string;
-                  allowedTypes: Array<string>;
-                  aspectRatio: number;
-                  maxHeight: number;
-                  maxWidth: number;
-                  minHeight: number;
-                  minWidth: number;
-                  alternativeText?: string | undefined;
-                }
-              | undefined;
-          };
-          states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
-          currentState: { __typename?: 'InnovationFlowState'; displayName: string };
-          authorization?:
-            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-            | undefined;
-        };
-      };
     }>;
   };
 };
@@ -20455,6 +20277,13 @@ export type SpaceDashboardNavigationChallengesQuery = {
   space: {
     __typename?: 'Space';
     id: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      url: string;
+      displayName: string;
+      avatar?: { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined } | undefined;
+    };
     subspaces: Array<{
       __typename?: 'Space';
       id: string;
@@ -20671,7 +20500,11 @@ export type SubspacePageQuery = {
   space: {
     __typename?: 'Space';
     id: string;
+    authorization?:
+      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+      | undefined;
     profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+    metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
     context: { __typename?: 'Context'; id: string; vision?: string | undefined };
     community: {
       __typename?: 'Community';
@@ -20771,7 +20604,11 @@ export type SubspacePageQuery = {
 export type SubspacePageSpaceFragment = {
   __typename?: 'Space';
   id: string;
+  authorization?:
+    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+    | undefined;
   profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+  metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
   context: { __typename?: 'Context'; id: string; vision?: string | undefined };
   community: {
     __typename?: 'Community';
@@ -22575,59 +22412,6 @@ export type CreateSubspaceMutation = {
     };
     context: { __typename?: 'Context'; id: string; vision?: string | undefined };
     community: { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
-    collaboration: {
-      __typename?: 'Collaboration';
-      id: string;
-      innovationFlow: {
-        __typename?: 'InnovationFlow';
-        id: string;
-        profile: {
-          __typename?: 'Profile';
-          id: string;
-          displayName: string;
-          description?: string | undefined;
-          tagsets?:
-            | Array<{
-                __typename?: 'Tagset';
-                id: string;
-                name: string;
-                tags: Array<string>;
-                allowedValues: Array<string>;
-                type: TagsetType;
-              }>
-            | undefined;
-          references?:
-            | Array<{
-                __typename?: 'Reference';
-                id: string;
-                name: string;
-                description?: string | undefined;
-                uri: string;
-              }>
-            | undefined;
-          bannerNarrow?:
-            | {
-                __typename?: 'Visual';
-                id: string;
-                uri: string;
-                name: string;
-                allowedTypes: Array<string>;
-                aspectRatio: number;
-                maxHeight: number;
-                maxWidth: number;
-                minHeight: number;
-                minWidth: number;
-                alternativeText?: string | undefined;
-              }
-            | undefined;
-        };
-        states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
-        currentState: { __typename?: 'InnovationFlowState'; displayName: string };
-        authorization?:
-          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-          | undefined;
-      };
-    };
   };
 };
 
@@ -23980,7 +23764,7 @@ export type DeleteCalendarEventMutationVariables = Exact<{
 
 export type DeleteCalendarEventMutation = {
   __typename?: 'Mutation';
-  deleteCalendarEvent: { __typename?: 'CalendarEvent'; id: string; nameID: string };
+  deleteCalendarEvent: { __typename?: 'CalendarEvent'; id: string };
 };
 
 export type UpdateAnswerRelevanceMutationVariables = Exact<{
@@ -26350,7 +26134,7 @@ export type SpaceExplorerSearchQuery = {
               displayName: string;
               type?: ProfileType | undefined;
               tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-              avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
             };
             context: { __typename?: 'Context'; id: string; vision?: string | undefined };
             account: {
@@ -26386,7 +26170,7 @@ export type SpaceExplorerSearchSpaceFragment = {
       displayName: string;
       type?: ProfileType | undefined;
       tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-      avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+      cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
     };
     context: { __typename?: 'Context'; id: string; vision?: string | undefined };
     account: {
@@ -26436,7 +26220,7 @@ export type SpaceExplorerMemberSpacesQuery = {
       displayName: string;
       type?: ProfileType | undefined;
       tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-      avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+      cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
     };
     context: { __typename?: 'Context'; id: string; vision?: string | undefined };
     account: {
@@ -26490,7 +26274,7 @@ export type SpaceExplorerAllSpacesQuery = {
         displayName: string;
         type?: ProfileType | undefined;
         tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-        avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
       };
       context: { __typename?: 'Context'; id: string; vision?: string | undefined };
       account: {
@@ -26522,7 +26306,7 @@ export type SpaceExplorerSpaceFragment = {
     displayName: string;
     type?: ProfileType | undefined;
     tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+    cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
   };
   context: { __typename?: 'Context'; id: string; vision?: string | undefined };
   account: {
@@ -26585,7 +26369,7 @@ export type SpaceExplorerSpaceWithChallengesFragment = {
     displayName: string;
     type?: ProfileType | undefined;
     tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+    cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
   };
   context: { __typename?: 'Context'; id: string; vision?: string | undefined };
   account: {

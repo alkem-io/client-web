@@ -11,7 +11,6 @@ import Gutters, { GuttersProps } from '../../../../../core/ui/grid/Gutters';
 
 export interface PageBannerCardWithVisualProps extends PageBannerCardWrapperProps {
   header?: ReactNode;
-  title?: ReactNode;
   subtitle?: ReactNode;
   tags: string[] | undefined;
   visual?: ReactElement<{ sx: { flexShrink: number } }>;

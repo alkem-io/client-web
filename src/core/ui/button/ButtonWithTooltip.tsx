@@ -7,13 +7,13 @@ import { Caption } from '../typography';
 interface ButtonWithTooltipProps {
   tooltip: string;
   iconButton?: boolean;
-  tooltipProps?: TooltipProps;
+  tooltipPlacement?: TooltipProps['placement'];
 }
 
 const ButtonWithTooltip = <D extends React.ElementType = ButtonTypeMap['defaultComponent'], P = {}>({
   tooltip,
   iconButton,
-  tooltipProps,
+  tooltipPlacement,
   sx,
   children,
   ...props
@@ -51,7 +51,7 @@ const ButtonWithTooltip = <D extends React.ElementType = ButtonTypeMap['defaultC
       arrow
       title={<Caption>{tooltip}</Caption>}
       componentsProps={{ tooltip: { sx: tooltipStyle } }}
-      {...tooltipProps}
+      placement={tooltipPlacement}
     >
       <Button aria-label={tooltip} {...props} sx={buttonStyle} startIcon={iconButton && children}>
         {!iconButton && children}

@@ -1,0 +1,12 @@
+query JourneyCommunityPrivileges($spaceId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
+    id
+    community {
+      id
+      authorization {
+        id
+        myPrivileges
+      }
+    }
+  }
+}

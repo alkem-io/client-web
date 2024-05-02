@@ -21,7 +21,6 @@ import ActivityView from '../../../platform/metrics/views/MetricsView';
 import { Metric } from '../../../platform/metrics/utils/getMetricCount';
 import useMetricsItems from '../../../platform/metrics/utils/useMetricsItems';
 import SpaceMetrics from '../../space/Metrics/SpaceMetrics';
-import ChallengeMetrics from '../../subspace/utils/useChallengeMetricsItems';
 import OpportunityMetrics from '../../opportunity/utils/useOpportunityMetricsItems';
 import { Theme } from '@mui/material/styles';
 import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
@@ -34,6 +33,7 @@ import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import useDirectMessageDialog from '../../../communication/messaging/DirectMessaging/useDirectMessageDialog';
 import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
 import { JourneyTypeName } from '../../JourneyTypeName';
+import Loading from '../../../../core/ui/loading/Loading';
 
 export interface JourneyAboutDialogProps extends EntityDashboardLeads {
   open: boolean;
@@ -67,9 +67,8 @@ const DialogHeaderItem = ({ align = 'center', ...props }: DialogHeaderItemProps)
 const getMetricsSpec = (journeyTypeName: JourneyTypeName) => {
   switch (journeyTypeName) {
     case 'space':
-      return SpaceMetrics;
     case 'subspace':
-      return ChallengeMetrics;
+      return SpaceMetrics;
     case 'subsubspace':
       return OpportunityMetrics;
   }
@@ -161,6 +160,11 @@ const JourneyAboutDialog = ({
           alignItems="start"
           flexWrap={isMobile ? 'wrap' : 'nowrap'}
         >
+          {loading && (
+            <Box position="absolute">
+              <Loading text="" />
+            </Box>
+          )}
           <DialogHeaderItem minWidth="30%" align="start">
             {startButton}
           </DialogHeaderItem>
