@@ -108,7 +108,7 @@ const CalendarEventForm = ({
             <DialogContent>
               <Form>
                 <Gutters disablePadding>
-                  <Box display="flex" gap={gutters()} sx={{ flexDirection: { xs: 'column', sm: 'row' } }}>
+                  <Gutters disablePadding sx={{ flexDirection: { xs: 'column', sm: 'row' } }}>
                     <GridItem columns={4}>
                       <Box>
                         <FormikDatePicker name="startDate" label={t('common.date')} minDate={new Date()} />
@@ -117,7 +117,7 @@ const CalendarEventForm = ({
                     <Box flexGrow={1}>
                       <FormikInputField name="displayName" title={t('fields.displayName')} />
                     </Box>
-                  </Box>
+                  </Gutters>
                   <Box display="flex" gap={gutters()} flexWrap="wrap">
                     <GridItem columns={isMobile ? undefined : 4}>
                       <Box display="flex" gap={gutters()}>
