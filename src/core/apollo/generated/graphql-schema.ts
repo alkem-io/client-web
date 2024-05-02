@@ -1555,6 +1555,17 @@ export type CreateLocationInput = {
   stateOrProvince?: InputMaybe<Scalars['String']>;
 };
 
+export type CreateMemberGuidelinesTemplateOnTemplatesSetInput = {
+  /** The default description to be pre-filled when users create Member Guidelines based on this template. */
+  defaultDescription?: InputMaybe<Scalars['Markdown']>;
+  profile: CreateProfileInput;
+  tags?: InputMaybe<Array<Scalars['String']>>;
+  templatesSetID: Scalars['UUID'];
+  /** The type of Member Guidelines created from this Template. */
+  type: Scalars['String'];
+  visualUri?: InputMaybe<Scalars['String']>;
+};
+
 export type CreateNvpInput = {
   name: Scalars['String'];
   sortOrder: Scalars['Float'];
@@ -2444,6 +2455,16 @@ export type MeQueryResultsSpaceMembershipsArgs = {
   visibilities?: InputMaybe<Array<SpaceVisibility>>;
 };
 
+export type MemberGuidelinesTemplate = {
+  __typename?: 'MemberGuidelinesTemplate';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** The Profile for this template. */
+  profile: Profile;
+};
+
 /** A message that was sent either as an Update or as part of a Discussion. */
 export type Message = {
   __typename?: 'Message';
@@ -2575,6 +2596,8 @@ export type Mutation = {
   createInnovationHub: InnovationHub;
   /** Create a new InnovatonPack on the Library. */
   createInnovationPackOnLibrary: InnovationPack;
+  /** Creates a new MemberGuidelinesTemplate on the specified TemplatesSet. */
+  createMemberGuidelinesTemplate: MemberGuidelinesTemplate;
   /** Creates a new Organization on the platform. */
   createOrganization: Organization;
   /** Creates a new PostTemplate on the specified TemplatesSet. */
@@ -2963,6 +2986,10 @@ export type MutationCreateInnovationHubArgs = {
 
 export type MutationCreateInnovationPackOnLibraryArgs = {
   packData: CreateInnovationPackOnLibraryInput;
+};
+
+export type MutationCreateMemberGuidelinesTemplateArgs = {
+  memberGuidelinesTemplateInput: CreateMemberGuidelinesTemplateOnTemplatesSetInput;
 };
 
 export type MutationCreateOrganizationArgs = {
@@ -3831,6 +3858,7 @@ export enum ProfileType {
   InnovationFlowTemplate = 'INNOVATION_FLOW_TEMPLATE',
   InnovationHub = 'INNOVATION_HUB',
   InnovationPack = 'INNOVATION_PACK',
+  MemberGuidelinesTemplate = 'MEMBER_GUIDELINES_TEMPLATE',
   Opportunity = 'OPPORTUNITY',
   Organization = 'ORGANIZATION',
   Post = 'POST',
@@ -13412,6 +13440,9 @@ export type SpaceApplicationQuery = {
               }>
             | undefined;
         };
+        authorization?:
+          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+          | undefined;
       };
     };
   };
@@ -13715,6 +13746,9 @@ export type CommunityGuidelinesQuery = {
                   }>
                 | undefined;
             };
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
           };
         }
       | undefined;
@@ -13733,6 +13767,9 @@ export type CommunityGuidelinesDetailsFragment = {
       | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
       | undefined;
   };
+  authorization?:
+    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+    | undefined;
 };
 
 export type UpdateCommunityGuidelinesMutationVariables = Exact<{
@@ -13753,6 +13790,9 @@ export type UpdateCommunityGuidelinesMutation = {
         | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
         | undefined;
     };
+    authorization?:
+      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+      | undefined;
   };
 };
 

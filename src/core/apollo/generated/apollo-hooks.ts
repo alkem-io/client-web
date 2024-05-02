@@ -1136,6 +1136,10 @@ export const CommunityGuidelinesDetailsFragmentDoc = gql`
         description
       }
     }
+    authorization {
+      id
+      myPrivileges
+    }
   }
 `;
 export const CommunityPageMembersFragmentDoc = gql`
