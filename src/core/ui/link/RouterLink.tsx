@@ -9,6 +9,7 @@ export interface RouterLinkProps extends Omit<ReactRouterLinkProps, 'target'>, P
   strict?: boolean;
   raw?: boolean;
   blank?: boolean;
+  keepScroll?: boolean;
 }
 
 /**
@@ -17,7 +18,7 @@ export interface RouterLinkProps extends Omit<ReactRouterLinkProps, 'target'>, P
  * @constructor
  */
 const RouterLink = forwardRef<HTMLAnchorElement, RouterLinkProps>(
-  ({ to, raw = false, strict = false, blank, ...props }, ref) => {
+  ({ to, raw = false, strict = false, blank, keepScroll = false, ...props }, ref) => {
     const base = useUrlBase();
 
     if (!isAbsoluteUrl(to) && base && !to.startsWith('/')) {
@@ -30,9 +31,16 @@ const RouterLink = forwardRef<HTMLAnchorElement, RouterLinkProps>(
 
     const shouldOpenNewWindow = blank ?? isForeign;
 
+    const getToParam = () => {
+      if (isForeign || !keepScroll) {
+        return urlLike;
+      }
+      return { pathname: urlLike, state: { keepScroll: true } };
+    };
+
     const componentProps = {
       component: isForeign ? undefined : ReactRouterLink,
-      [isForeign ? 'href' : 'to']: urlLike,
+      [isForeign ? 'href' : 'to']: getToParam(),
     };
 
     return <MuiLink ref={ref} target={shouldOpenNewWindow ? '_blank' : undefined} {...componentProps} {...props} />;
