@@ -13,7 +13,7 @@ import JourneyUnauthorizedDialog from '../../common/JourneyUnauthorizedDialog/Jo
 import JourneyUnauthorizedDialogContainer from '../../common/JourneyUnauthorizedDialog/JourneyUnauthorizedDialogContainer';
 import JourneyBreadcrumbs from '../../common/journeyBreadcrumbs/JourneyBreadcrumbs';
 import PageContent from '../../../../core/ui/content/PageContent';
-import { JourneyPath } from '../../../../main/routing/resolvers/RouteResolver';
+import { JourneyLevel, JourneyPath } from '../../../../main/routing/resolvers/RouteResolver';
 import PageContentColumnBase from '../../../../core/ui/content/PageContentColumnBase';
 import { useTranslation } from 'react-i18next';
 import { KeyboardTab, Menu } from '@mui/icons-material';
@@ -227,7 +227,8 @@ const SubspacePageLayout = ({
                               loading={loading}
                               component={FullWidthButton}
                               extended={hasExtendedApplicationButton}
-                              journeyTypeName="subspace"
+                              journeyId={journeyId}
+                              journeyLevel={(journeyPath.length - 1) as JourneyLevel}
                             />
                           </PageContentColumn>
                         );
@@ -273,6 +274,7 @@ const SubspacePageLayout = ({
                     subspaceName={profile?.displayName}
                     description={vision}
                     disabled={unauthorizedDialogDisabled}
+                    journeyLevel={(journeyPath.length - 1) as JourneyLevel}
                     {...props}
                   />
                 )}

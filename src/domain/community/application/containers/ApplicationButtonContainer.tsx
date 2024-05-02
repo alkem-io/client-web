@@ -17,7 +17,7 @@ import { useNotification } from '../../../../core/ui/notifications/useNotificati
 import { useTranslation } from 'react-i18next';
 
 interface ApplicationContainerEntities {
-  applicationButtonProps: Omit<ApplicationButtonProps, 'journeyTypeName'>;
+  applicationButtonProps: Omit<ApplicationButtonProps, 'journeyId' | 'journeyLevel'>;
 }
 
 interface ApplicationContainerActions {}
@@ -108,7 +108,7 @@ export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = (
     notify(t('components.application-button.dialogApplicationSuccessful.join.body'), 'success');
   };
 
-  const applicationButtonProps: Omit<ApplicationButtonProps, 'journeyTypeName'> = {
+  const applicationButtonProps: Omit<ApplicationButtonProps, 'journeyId' | 'journeyLevel'> = {
     isAuthenticated,
     isMember,
     isParentMember,

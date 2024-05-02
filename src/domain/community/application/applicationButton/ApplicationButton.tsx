@@ -13,37 +13,39 @@ import { InvitationItem } from '../../user/providers/UserProvider/InvitationItem
 import InvitationActionsContainer from '../../invitations/InvitationActionsContainer';
 import InvitationDialog from '../../invitations/InvitationDialog';
 import useNavigate from '../../../../core/routing/useNavigate';
-import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import ApplicationDialog from './ApplicationDialog';
+import { JourneyLevel } from '../../../../main/routing/resolvers/RouteResolver';
 
 export interface ApplicationButtonProps {
-  isAuthenticated?: boolean;
+  journeyId: string | undefined;
+  isAuthenticated: boolean;
   isMember: boolean;
-  isParentMember?: boolean;
-  applicationState?: string;
-  userInvitation?: InvitationItem;
-  parentApplicationState?: string;
-  applyUrl?: string;
-  parentApplyUrl?: string;
-  joinParentUrl?: string;
-  spaceName?: string;
-  challengeName?: string;
-  canJoinCommunity?: boolean;
-  canAcceptInvitation?: boolean;
-  canApplyToCommunity?: boolean;
-  canJoinParentCommunity?: boolean;
-  canApplyToParentCommunity?: boolean;
+  isParentMember: boolean;
+  applicationState: string | undefined;
+  userInvitation: InvitationItem | undefined;
+  parentApplicationState: string | undefined;
+  applyUrl: string;
+  parentApplyUrl: string;
+  joinParentUrl: string | undefined;
+  spaceName: string;
+  challengeName: string | undefined;
+  canJoinCommunity: boolean;
+  canAcceptInvitation: boolean;
+  canApplyToCommunity: boolean;
+  canJoinParentCommunity: boolean;
+  canApplyToParentCommunity: boolean;
   onJoin: () => void;
   loading: boolean;
   component?: typeof MuiButton;
   extended?: boolean;
-  journeyTypeName: JourneyTypeName;
+  journeyLevel: JourneyLevel | -1;
 }
 
 export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElement, ApplicationButtonProps>(
   (
     {
       isAuthenticated,
+      journeyId,
       applicationState,
       userInvitation,
       parentApplicationState,
@@ -60,7 +62,7 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
       canJoinParentCommunity,
       canApplyToParentCommunity,
       onJoin,
-      journeyTypeName,
+      journeyLevel,
       loading = false,
       component: Button = MuiButton,
       extended = false,
@@ -137,7 +139,7 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
       extended
         ? t('components.application-button.extendedMessage', {
             join: verb,
-            journey: journeyTypeName === 'subspace' ? t('common.subspace') : t('common.community'),
+            journey: journeyLevel > 0 ? t('common.subspace') : t('common.community'),
           })
         : verb;
 
@@ -187,7 +189,7 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
       }
 
       if (canAcceptInvitation) {
-        if (journeyTypeName === 'subspace' && !isMember && !isParentMember) {
+        if (journeyLevel > 0 && !isMember && !isParentMember) {
           return (
             joinParentUrl && (
               <Button
@@ -308,7 +310,7 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
           <ApplicationDialog
             open={isApplicationDialogOpen}
             onClose={handleClose}
-            journeyTypeName={journeyTypeName}
+            journeyId={journeyId}
             canJoinCommunity={canJoinCommunity}
             onJoin={onJoin}
             onApply={handleOpenApplicationSubmittedDialog}

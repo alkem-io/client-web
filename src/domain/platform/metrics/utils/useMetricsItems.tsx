@@ -11,18 +11,20 @@ export interface MetricsItemSpec {
   color?: MetricItem['color'];
 }
 
-const useMetricsItems = (metrics: Metric[] | undefined, specs: MetricsItemSpec[]) => {
+const useMetricsItems = (metrics: Metric[] | undefined, specs: MetricsItemSpec[] | undefined) => {
   const { t } = useTranslation();
 
   const metricsItems: MetricItem[] = useMemo(() => {
-    return specs.map(({ label, type, color }) => {
-      return {
-        type,
-        color,
-        name: t(label),
-        count: getMetricCount(metrics, type),
-      };
-    });
+    return (
+      specs?.map(({ label, type, color }) => {
+        return {
+          type,
+          color,
+          name: t(label),
+          count: getMetricCount(metrics, type),
+        };
+      }) ?? []
+    );
   }, [metrics, specs, t]);
 
   return metricsItems;

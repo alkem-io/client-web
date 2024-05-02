@@ -69,7 +69,8 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
                           loading={loading}
                           component={FullWidthButton}
                           extended={hasExtendedApplicationButton}
-                          journeyTypeName="subspace"
+                          journeyLevel={-1}
+                          journeyId=""
                         />
                       </PageContentColumn>
                     );
