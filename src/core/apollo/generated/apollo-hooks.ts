@@ -3601,48 +3601,11 @@ export const SpaceExplorerSearchSpaceFragmentDoc = gql`
   }
   ${SpaceExplorerSpaceFragmentDoc}
 `;
-export const SpaceExplorerSubspaceFragmentDoc = gql`
-  fragment SpaceExplorerSubspace on Space {
-    id
-    type
-    profile {
-      id
-      url
-      tagline
-      displayName
-      description
-      cardBanner2: visual(type: CARD) {
-        ...VisualUri
-      }
-      type
-      tagset {
-        id
-        tags
-      }
-      avatar2: visual(type: AVATAR) {
-        ...VisualUri
-      }
-    }
-    context {
-      id
-      vision
-    }
-    community {
-      id
-      myMembershipStatus
-    }
-  }
-  ${VisualUriFragmentDoc}
-`;
 export const SpaceExplorerSpaceWithChallengesFragmentDoc = gql`
   fragment SpaceExplorerSpaceWithChallenges on Space {
     ...SpaceExplorerSpace
-    subspaces {
-      ...SpaceExplorerSubspace
-    }
   }
   ${SpaceExplorerSpaceFragmentDoc}
-  ${SpaceExplorerSubspaceFragmentDoc}
 `;
 export const AssignUserAsBetaTesterDocument = gql`
   mutation assignUserAsBetaTester($input: GrantAuthorizationCredentialInput!) {
