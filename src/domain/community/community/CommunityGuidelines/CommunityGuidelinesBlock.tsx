@@ -43,12 +43,12 @@ const CommunityGuidelinesBlock: FC<CommunityGuidelinesBlockProps> = ({ community
 
   const { pathname } = useLocation();
   const { t } = useTranslation();
-  const hasGuidelines = data?.lookup.community?.guidelines.profile.description;
-  const alwaysShowEvents = data?.lookup.community?.guidelines.authorization?.myPrivileges?.includes(
+  const hasGuidelines = !!data?.lookup.community?.guidelines.profile.description;
+  const alwaysShowGuidelines = data?.lookup.community?.guidelines.authorization?.myPrivileges?.includes(
     AuthorizationPrivilege.Create
   );
 
-  return alwaysShowEvents ? (
+  return alwaysShowGuidelines ? (
     <>
       <PageContentBlock>
         <PageContentBlockHeader title={data?.lookup?.community?.guidelines?.profile.displayName} />
@@ -66,7 +66,7 @@ const CommunityGuidelinesBlock: FC<CommunityGuidelinesBlockProps> = ({ community
                 </OverflowGradient>
               )}
             </Box>
-            <SeeMore label="community.communityGuidelines.reedMore" onClick={openDialog} />
+            <SeeMore label="buttons.readMore" onClick={openDialog} />
           </>
         ) : (
           <>
