@@ -611,11 +611,11 @@ export type AssignGlobalAdminInput = {
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
-export type AssignGlobalCommunityAdminInput = {
+export type AssignGlobalCommunityReadInput = {
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
-export type AssignGlobalSpacesAdminInput = {
+export type AssignGlobalSupportInput = {
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
@@ -2510,10 +2510,10 @@ export type Mutation = {
   assignCommunityRoleToVirtual: VirtualContributor;
   /** Assigns a User as a Global Admin. */
   assignUserAsGlobalAdmin: User;
-  /** Assigns a User as a Global Community Admin. */
-  assignUserAsGlobalCommunityAdmin: User;
+  /** Assigns a User as a Global Community Read. */
+  assignUserAsGlobalCommunityRead: User;
   /** Assigns a User as a Global Spaces Admin. */
-  assignUserAsGlobalSpacesAdmin: User;
+  assignUserAsGlobalSupport: User;
   /** Assigns a User as an Organization Admin. */
   assignUserAsOrganizationAdmin: User;
   /** Assigns a User as an Organization Owner. */
@@ -2687,9 +2687,9 @@ export type Mutation = {
   /** Removes a User from being a Global Admin. */
   removeUserAsGlobalAdmin: User;
   /** Removes a User from being a Global Community Admin. */
-  removeUserAsGlobalCommunityAdmin: User;
-  /** Removes a User from being a Global Spaces Admin. */
-  removeUserAsGlobalSpacesAdmin: User;
+  removeUserAsGlobalCommunityRead: User;
+  /** Removes a User from being a Global Support. */
+  removeUserAsGlobalSupport: User;
   /** Removes a User from being an Organization Admin. */
   removeUserAsOrganizationAdmin: User;
   /** Removes a User from being an Organization Owner. */
@@ -2848,12 +2848,12 @@ export type MutationAssignUserAsGlobalAdminArgs = {
   membershipData: AssignGlobalAdminInput;
 };
 
-export type MutationAssignUserAsGlobalCommunityAdminArgs = {
-  membershipData: AssignGlobalCommunityAdminInput;
+export type MutationAssignUserAsGlobalCommunityReadArgs = {
+  membershipData: AssignGlobalCommunityReadInput;
 };
 
-export type MutationAssignUserAsGlobalSpacesAdminArgs = {
-  membershipData: AssignGlobalSpacesAdminInput;
+export type MutationAssignUserAsGlobalSupportArgs = {
+  membershipData: AssignGlobalSupportInput;
 };
 
 export type MutationAssignUserAsOrganizationAdminArgs = {
@@ -3180,12 +3180,12 @@ export type MutationRemoveUserAsGlobalAdminArgs = {
   membershipData: RemoveGlobalAdminInput;
 };
 
-export type MutationRemoveUserAsGlobalCommunityAdminArgs = {
-  membershipData: RemoveGlobalCommunityAdminInput;
+export type MutationRemoveUserAsGlobalCommunityReadArgs = {
+  membershipData: RemoveGlobalCommunityReadInput;
 };
 
-export type MutationRemoveUserAsGlobalSpacesAdminArgs = {
-  membershipData: RemoveGlobalSpacesAdminInput;
+export type MutationRemoveUserAsGlobalSupportArgs = {
+  membershipData: RemoveGlobalSupportInput;
 };
 
 export type MutationRemoveUserAsOrganizationAdminArgs = {
@@ -4226,11 +4226,11 @@ export type RemoveGlobalAdminInput = {
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
-export type RemoveGlobalCommunityAdminInput = {
+export type RemoveGlobalCommunityReadInput = {
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
-export type RemoveGlobalSpacesAdminInput = {
+export type RemoveGlobalSupportInput = {
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
@@ -5736,26 +5736,26 @@ export type AssignUserAsGlobalAdminMutation = {
   };
 };
 
-export type AssignUserAsGlobalCommunityAdminMutationVariables = Exact<{
-  input: AssignGlobalCommunityAdminInput;
+export type AssignUserAsGlobalCommunityReadMutationVariables = Exact<{
+  input: AssignGlobalCommunityReadInput;
 }>;
 
-export type AssignUserAsGlobalCommunityAdminMutation = {
+export type AssignUserAsGlobalCommunityReadMutation = {
   __typename?: 'Mutation';
-  assignUserAsGlobalCommunityAdmin: {
+  assignUserAsGlobalCommunityRead: {
     __typename?: 'User';
     id: string;
     profile: { __typename?: 'Profile'; id: string; displayName: string };
   };
 };
 
-export type AssignUserAsGlobalSpacesAdminMutationVariables = Exact<{
-  input: AssignGlobalSpacesAdminInput;
+export type AssignUserAsGlobalSupportMutationVariables = Exact<{
+  input: AssignGlobalSupportInput;
 }>;
 
-export type AssignUserAsGlobalSpacesAdminMutation = {
+export type AssignUserAsGlobalSupportMutation = {
   __typename?: 'Mutation';
-  assignUserAsGlobalSpacesAdmin: {
+  assignUserAsGlobalSupport: {
     __typename?: 'User';
     id: string;
     profile: { __typename?: 'Profile'; id: string; displayName: string };
@@ -5801,26 +5801,26 @@ export type RemoveUserAsGlobalAdminMutation = {
   };
 };
 
-export type RemoveUserAsGlobalCommunityAdminMutationVariables = Exact<{
-  input: RemoveGlobalCommunityAdminInput;
+export type RemoveUserAsGlobalCommunityReadMutationVariables = Exact<{
+  input: RemoveGlobalCommunityReadInput;
 }>;
 
-export type RemoveUserAsGlobalCommunityAdminMutation = {
+export type RemoveUserAsGlobalCommunityReadMutation = {
   __typename?: 'Mutation';
-  removeUserAsGlobalCommunityAdmin: {
+  removeUserAsGlobalCommunityRead: {
     __typename?: 'User';
     id: string;
     profile: { __typename?: 'Profile'; id: string; displayName: string };
   };
 };
 
-export type RemoveUserAsGlobalSpacesAdminMutationVariables = Exact<{
-  input: RemoveGlobalSpacesAdminInput;
+export type RemoveUserAsGlobalSupportMutationVariables = Exact<{
+  input: RemoveGlobalSupportInput;
 }>;
 
-export type RemoveUserAsGlobalSpacesAdminMutation = {
+export type RemoveUserAsGlobalSupportMutation = {
   __typename?: 'Mutation';
-  removeUserAsGlobalSpacesAdmin: {
+  removeUserAsGlobalSupport: {
     __typename?: 'User';
     id: string;
     profile: { __typename?: 'Profile'; id: string; displayName: string };

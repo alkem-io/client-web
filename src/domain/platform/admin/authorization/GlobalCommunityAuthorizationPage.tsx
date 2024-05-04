@@ -4,8 +4,8 @@ import EditMemberCredentials from '../components/Authorization/EditMemberCredent
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import {
   refetchUsersWithCredentialsQuery,
-  useAssignUserAsGlobalCommunityAdminMutation,
-  useRemoveUserAsGlobalCommunityAdminMutation,
+  useAssignUserAsGlobalCommunityReadMutation,
+  useRemoveUserAsGlobalCommunityReadMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import AuthorizationPageProps from './AuthorizationPageProps';
 import { AuthorizationCredential } from '../../../../core/apollo/generated/graphql-schema';
@@ -16,9 +16,9 @@ const GlobalCommunityViewerAuthorizationPage: FC<AuthorizationPageProps> = () =>
   // TODO Needs refactor. If credential is missing page should not be rendered or error should be shown.
   const { role: credential = AuthorizationCredential.GlobalCommunityRead } = useUrlParams();
 
-  const [grant, { loading: addingMember }] = useAssignUserAsGlobalCommunityAdminMutation({});
+  const [grant, { loading: addingMember }] = useAssignUserAsGlobalCommunityReadMutation({});
 
-  const [revoke, { loading: removingMember }] = useRemoveUserAsGlobalCommunityAdminMutation({});
+  const [revoke, { loading: removingMember }] = useRemoveUserAsGlobalCommunityReadMutation({});
 
   const handleAdd = (memberId: string) => {
     grant({

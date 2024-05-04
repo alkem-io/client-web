@@ -1,0 +1,9 @@
+mutation removeUserAsGlobalSupport($input: RemoveGlobalSupportInput!) {
+  removeUserAsGlobalSupport(membershipData: $input) {
+    id
+    profile {
+      id
+      displayName
+    }
+  }
+}

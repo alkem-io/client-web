@@ -4,7 +4,7 @@ import { Error404 } from '../../../../core/pages/Errors/Error404';
 import AdminAuthorizationPage from '../authorization/AdminAuthorizationPage';
 import GlobalAuthorizationPage from '../authorization/GlobalAuthorizationPage';
 import GlobalCommunityViewerAuthorizationPage from '../authorization/GlobalCommunityAuthorizationPage';
-import GlobalSupportAuthorizationPage from '../authorization/GlobalSpacesAdminAuthorizationPage';
+import GlobalSupportAuthorizationPage from '../authorization/GlobaSupportAuthorizationPage';
 import { nameOfUrl } from '../../../../main/routing/urlParams';
 import GlobalBetaTesterAuthorizationPage from '../authorization/GlobalBetaTesterAuthorizationPage';
 

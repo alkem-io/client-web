@@ -4,8 +4,8 @@ import EditMemberCredentials from '../components/Authorization/EditMemberCredent
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import {
   refetchUsersWithCredentialsQuery,
-  useAssignUserAsGlobalSpacesAdminMutation,
-  useRemoveUserAsGlobalSpacesAdminMutation,
+  useAssignUserAsGlobaSupportMutation,
+  useRemoveUserAsGlobaSupportMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { AuthorizationCredential } from '../../../../core/apollo/generated/graphql-schema';
 import AdminLayout from '../layout/toplevel/AdminLayout';
@@ -15,9 +15,9 @@ const GlobalSupportAuthorizationPage: FC = () => {
   // TODO Needs refactor. If credential is missing page should not be rendered or error should be shown.
   const { role: credential = AuthorizationCredential.GlobalSupport } = useUrlParams();
 
-  const [grant, { loading: addingMember }] = useAssignUserAsGlobalSpacesAdminMutation({});
+  const [grant, { loading: addingMember }] = useAssignUserAsGlobaSupportMutation({});
 
-  const [revoke, { loading: removingMember }] = useRemoveUserAsGlobalSpacesAdminMutation({});
+  const [revoke, { loading: removingMember }] = useRemoveUserAsGlobaSupportMutation({});
 
   const handleAdd = (memberId: string) => {
     grant({
