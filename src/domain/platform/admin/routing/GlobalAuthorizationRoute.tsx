@@ -13,8 +13,8 @@ const GlobalAuthorizationRoute: FC = () => {
     <Routes>
       <Route path="/" element={<AdminAuthorizationPage />} />
       <Route path={`:${nameOfUrl.role}`} element={<GlobalAuthorizationPage />} />
-      <Route path={`global-community/:${nameOfUrl.role}`} element={<GlobalCommunityViewerAuthorizationPage />} />
-      <Route path={`global-spaces/:${nameOfUrl.role}`} element={<GlobalSupportAuthorizationPage />} />
+      <Route path={`global-community-read/:${nameOfUrl.role}`} element={<GlobalCommunityViewerAuthorizationPage />} />
+      <Route path={`global-support/:${nameOfUrl.role}`} element={<GlobalSupportAuthorizationPage />} />
       <Route path={`beta-tester/:${nameOfUrl.role}`} element={<GlobalBetaTesterAuthorizationPage />} />
       <Route path="*" element={<Error404 />} />
     </Routes>
