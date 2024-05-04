@@ -3,10 +3,10 @@ import { Route, Routes } from 'react-router-dom';
 import { Error404 } from '../../../../core/pages/Errors/Error404';
 import AdminAuthorizationPage from '../authorization/AdminAuthorizationPage';
 import GlobalAuthorizationPage from '../authorization/GlobalAuthorizationPage';
-import GlobalCommunityViewerAuthorizationPage from '../authorization/GlobalCommunityAuthorizationPage';
-import GlobalSupportAuthorizationPage from '../authorization/GlobaSupportAuthorizationPage';
+import GlobalCommunityViewerAuthorizationPage from '../authorization/GlobalCommunityReadAuthorizationPage';
 import { nameOfUrl } from '../../../../main/routing/urlParams';
 import GlobalBetaTesterAuthorizationPage from '../authorization/GlobalBetaTesterAuthorizationPage';
+import GlobalSupportAuthorizationPage from '../authorization/GlobalSupportAuthorizationPage';
 
 const GlobalAuthorizationRoute: FC = () => {
   return (

@@ -2,11 +2,7 @@ import { Container } from '@mui/material';
 import React, { FC } from 'react';
 import EditMemberCredentials from '../components/Authorization/EditMemberCredentials';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
-import {
-  refetchUsersWithCredentialsQuery,
-  useAssignUserAsGlobaSupportMutation,
-  useRemoveUserAsGlobaSupportMutation,
-} from '../../../../core/apollo/generated/apollo-hooks';
+import { refetchUsersWithCredentialsQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { AuthorizationCredential } from '../../../../core/apollo/generated/graphql-schema';
 import AdminLayout from '../layout/toplevel/AdminLayout';
 import { AdminSection } from '../layout/toplevel/constants';
