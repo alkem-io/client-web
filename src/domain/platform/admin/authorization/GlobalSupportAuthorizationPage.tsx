@@ -2,7 +2,11 @@ import { Container } from '@mui/material';
 import React, { FC } from 'react';
 import EditMemberCredentials from '../components/Authorization/EditMemberCredentials';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
-import { refetchUsersWithCredentialsQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import {
+  refetchUsersWithCredentialsQuery,
+  useAssignUserAsGlobalSupportMutation,
+  useRemoveUserAsGlobalSupportMutation,
+} from '../../../../core/apollo/generated/apollo-hooks';
 import { AuthorizationCredential } from '../../../../core/apollo/generated/graphql-schema';
 import AdminLayout from '../layout/toplevel/AdminLayout';
 import { AdminSection } from '../layout/toplevel/constants';
@@ -11,9 +15,9 @@ const GlobalSupportAuthorizationPage: FC = () => {
   // TODO Needs refactor. If credential is missing page should not be rendered or error should be shown.
   const { role: credential = AuthorizationCredential.GlobalSupport } = useUrlParams();
 
-  const [grant, { loading: addingMember }] = useAssignUserAsGlobaSupportMutation({});
+  const [grant, { loading: addingMember }] = useAssignUserAsGlobalSupportMutation({});
 
-  const [revoke, { loading: removingMember }] = useRemoveUserAsGlobaSupportMutation({});
+  const [revoke, { loading: removingMember }] = useRemoveUserAsGlobalSupportMutation({});
 
   const handleAdd = (memberId: string) => {
     grant({
