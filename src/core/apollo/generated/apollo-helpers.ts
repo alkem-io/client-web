@@ -2549,8 +2549,13 @@ export type SpaceSettingsMembershipFieldPolicy = {
   policy?: FieldPolicy<any> | FieldReadFunction<any>;
   trustedOrganizations?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type SpaceSettingsPrivacyKeySpecifier = ('mode' | SpaceSettingsPrivacyKeySpecifier)[];
+export type SpaceSettingsPrivacyKeySpecifier = (
+  | 'allowPlatformSupportAsAdmin'
+  | 'mode'
+  | SpaceSettingsPrivacyKeySpecifier
+)[];
 export type SpaceSettingsPrivacyFieldPolicy = {
+  allowPlatformSupportAsAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   mode?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type StorageAggregatorKeySpecifier = (

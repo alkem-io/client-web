@@ -13,12 +13,12 @@ const buttons = [
     url: `authorization/${AuthorizationCredential.GlobalAdmin}`,
   },
   {
-    description: 'Global community admins',
-    url: `authorization/global-community/${AuthorizationCredential.GlobalAdminCommunity}`,
+    description: 'Global Community Read',
+    url: `authorization/global-community-read/${AuthorizationCredential.GlobalCommunityRead}`,
   },
   {
-    description: 'Global Spaces Admins',
-    url: `authorization/global-spaces/${AuthorizationCredential.GlobalAdminSpaces}`,
+    description: 'Global Support',
+    url: `authorization/global-support/${AuthorizationCredential.GlobalSupport}`,
   },
   {
     description: 'Beta Testers',

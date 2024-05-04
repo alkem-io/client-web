@@ -680,9 +680,9 @@ export enum AuthorizationCredential {
   AccountHost = 'ACCOUNT_HOST',
   BetaTester = 'BETA_TESTER',
   GlobalAdmin = 'GLOBAL_ADMIN',
-  GlobalAdminCommunity = 'GLOBAL_ADMIN_COMMUNITY',
-  GlobalAdminSpaces = 'GLOBAL_ADMIN_SPACES',
+  GlobalCommunityRead = 'GLOBAL_COMMUNITY_READ',
   GlobalRegistered = 'GLOBAL_REGISTERED',
+  GlobalSupport = 'GLOBAL_SUPPORT',
   InnovationPackProvider = 'INNOVATION_PACK_PROVIDER',
   OrganizationAdmin = 'ORGANIZATION_ADMIN',
   OrganizationAssociate = 'ORGANIZATION_ASSOCIATE',
@@ -739,7 +739,6 @@ export enum AuthorizationPrivilege {
   CreateMessageReply = 'CREATE_MESSAGE_REPLY',
   CreateOrganization = 'CREATE_ORGANIZATION',
   CreatePost = 'CREATE_POST',
-  CreateRelation = 'CREATE_RELATION',
   CreateSpace = 'CREATE_SPACE',
   CreateSubspace = 'CREATE_SUBSPACE',
   CreateWhiteboard = 'CREATE_WHITEBOARD',
@@ -4671,6 +4670,8 @@ export type SpaceSettingsMembership = {
 
 export type SpaceSettingsPrivacy = {
   __typename?: 'SpaceSettingsPrivacy';
+  /** Flag to control if Platform Support has admin rights. */
+  allowPlatformSupportAsAdmin: Scalars['Boolean'];
   /** The privacy mode for this Space */
   mode: SpacePrivacyMode;
 };
@@ -5329,7 +5330,9 @@ export type UpdateSpaceSettingsMembershipInput = {
 };
 
 export type UpdateSpaceSettingsPrivacyInput = {
-  mode: SpacePrivacyMode;
+  /** Flag to control if Platform Support has admin rights. */
+  allowPlatformSupportAsAdmin?: InputMaybe<Scalars['Boolean']>;
+  mode?: InputMaybe<SpacePrivacyMode>;
 };
 
 export type UpdateTagsetInput = {

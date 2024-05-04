@@ -11,9 +11,9 @@ import { AuthorizationCredential } from '../../../../core/apollo/generated/graph
 import AdminLayout from '../layout/toplevel/AdminLayout';
 import { AdminSection } from '../layout/toplevel/constants';
 
-const GlobalSpacesAdminAuthorizationPage: FC = () => {
+const GlobalSupportAuthorizationPage: FC = () => {
   // TODO Needs refactor. If credential is missing page should not be rendered or error should be shown.
-  const { role: credential = AuthorizationCredential.GlobalAdminSpaces } = useUrlParams();
+  const { role: credential = AuthorizationCredential.GlobalSupport } = useUrlParams();
 
   const [grant, { loading: addingMember }] = useAssignUserAsGlobalSpacesAdminMutation({});
 
@@ -65,4 +65,4 @@ const GlobalSpacesAdminAuthorizationPage: FC = () => {
   );
 };
 
-export default GlobalSpacesAdminAuthorizationPage;
+export default GlobalSupportAuthorizationPage;

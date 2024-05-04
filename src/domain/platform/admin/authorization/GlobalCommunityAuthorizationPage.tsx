@@ -12,9 +12,9 @@ import { AuthorizationCredential } from '../../../../core/apollo/generated/graph
 import AdminLayout from '../layout/toplevel/AdminLayout';
 import { AdminSection } from '../layout/toplevel/constants';
 
-const GlobalCommunityAuthorizationPage: FC<AuthorizationPageProps> = () => {
+const GlobalCommunityViewerAuthorizationPage: FC<AuthorizationPageProps> = () => {
   // TODO Needs refactor. If credential is missing page should not be rendered or error should be shown.
-  const { role: credential = AuthorizationCredential.GlobalAdminCommunity } = useUrlParams();
+  const { role: credential = AuthorizationCredential.GlobalCommunityRead } = useUrlParams();
 
   const [grant, { loading: addingMember }] = useAssignUserAsGlobalCommunityAdminMutation({});
 
@@ -66,4 +66,4 @@ const GlobalCommunityAuthorizationPage: FC<AuthorizationPageProps> = () => {
   );
 };
 
-export default GlobalCommunityAuthorizationPage;
+export default GlobalCommunityViewerAuthorizationPage;
