@@ -4,6 +4,7 @@ mutation UpdateSpaceSettings($settingsData: UpdateSpaceSettingsInput!) {
     settings {
       privacy {
         mode
+        allowPlatformSupportAsAdmin
       }
       membership {
         policy

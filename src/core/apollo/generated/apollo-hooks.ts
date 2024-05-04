@@ -2666,6 +2666,7 @@ export const SpaceSettingsFragmentDoc = gql`
   fragment SpaceSettings on SpaceSettings {
     privacy {
       mode
+      allowPlatformSupportAsAdmin
     }
     membership {
       policy
@@ -17764,6 +17765,7 @@ export const UpdateSpaceSettingsDocument = gql`
       settings {
         privacy {
           mode
+          allowPlatformSupportAsAdmin
         }
         membership {
           policy

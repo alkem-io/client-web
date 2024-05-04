@@ -13,6 +13,7 @@ query SpaceSettings($spaceId: UUID_NAMEID!) {
 fragment SpaceSettings on SpaceSettings {
   privacy {
     mode
+    allowPlatformSupportAsAdmin
   }
   membership {
     policy
