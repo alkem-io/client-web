@@ -6,25 +6,26 @@ import { AdminSection } from '../layout/toplevel/constants';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import {
   refetchUsersWithCredentialsQuery,
-  useAssignUserAsGlobalAdminMutation,
-  useRemoveUserAsGlobalAdminMutation,
+  useAssignPlatformRoleToUserMutation,
+  useRemovePlatformRoleFromUserMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
-import { AuthorizationCredential } from '../../../../core/apollo/generated/graphql-schema';
+import { AuthorizationCredential, PlatformRole } from '../../../../core/apollo/generated/graphql-schema';
 import AuthorizationPageProps from './AuthorizationPageProps';
 
 const GlobalAuthorizationPage: FC<AuthorizationPageProps> = () => {
   // TODO Needs refactor. If credential is missing page should not be rendered or error should be shown.
   const { role: credential = AuthorizationCredential.GlobalRegistered } = useUrlParams();
 
-  const [grant, { loading: addingMember }] = useAssignUserAsGlobalAdminMutation({});
+  const [grant, { loading: addingMember }] = useAssignPlatformRoleToUserMutation({});
 
-  const [revoke, { loading: removingMember }] = useRemoveUserAsGlobalAdminMutation({});
+  const [revoke, { loading: removingMember }] = useRemovePlatformRoleFromUserMutation({});
 
   const handleAdd = (memberId: string) => {
     grant({
       variables: {
         input: {
           userID: memberId,
+          role: PlatformRole.GlobalAdmin,
         },
       },
       refetchQueries: [
@@ -41,6 +42,7 @@ const GlobalAuthorizationPage: FC<AuthorizationPageProps> = () => {
       variables: {
         input: {
           userID: memberId,
+          role: PlatformRole.GlobalAdmin,
         },
       },
       refetchQueries: [

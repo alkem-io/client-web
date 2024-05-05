@@ -1433,9 +1433,7 @@ export type MutationKeySpecifier = (
   | 'assignCommunityRoleToOrganization'
   | 'assignCommunityRoleToUser'
   | 'assignCommunityRoleToVirtual'
-  | 'assignUserAsGlobalAdmin'
-  | 'assignUserAsGlobalCommunityRead'
-  | 'assignUserAsGlobalSupport'
+  | 'assignPlatformRoleToUser'
   | 'assignUserAsOrganizationAdmin'
   | 'assignUserAsOrganizationOwner'
   | 'assignUserToGroup'
@@ -1520,10 +1518,8 @@ export type MutationKeySpecifier = (
   | 'removeCommunityRoleFromUser'
   | 'removeCommunityRoleFromVirtual'
   | 'removeMessageOnRoom'
+  | 'removePlatformRoleFromUser'
   | 'removeReactionToMessageInRoom'
-  | 'removeUserAsGlobalAdmin'
-  | 'removeUserAsGlobalCommunityRead'
-  | 'removeUserAsGlobalSupport'
   | 'removeUserAsOrganizationAdmin'
   | 'removeUserAsOrganizationOwner'
   | 'removeUserFromGroup'
@@ -1596,9 +1592,7 @@ export type MutationFieldPolicy = {
   assignCommunityRoleToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   assignCommunityRoleToUser?: FieldPolicy<any> | FieldReadFunction<any>;
   assignCommunityRoleToVirtual?: FieldPolicy<any> | FieldReadFunction<any>;
-  assignUserAsGlobalAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
-  assignUserAsGlobalCommunityRead?: FieldPolicy<any> | FieldReadFunction<any>;
-  assignUserAsGlobalSupport?: FieldPolicy<any> | FieldReadFunction<any>;
+  assignPlatformRoleToUser?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsOrganizationAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsOrganizationOwner?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserToGroup?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1683,10 +1677,8 @@ export type MutationFieldPolicy = {
   removeCommunityRoleFromUser?: FieldPolicy<any> | FieldReadFunction<any>;
   removeCommunityRoleFromVirtual?: FieldPolicy<any> | FieldReadFunction<any>;
   removeMessageOnRoom?: FieldPolicy<any> | FieldReadFunction<any>;
+  removePlatformRoleFromUser?: FieldPolicy<any> | FieldReadFunction<any>;
   removeReactionToMessageInRoom?: FieldPolicy<any> | FieldReadFunction<any>;
-  removeUserAsGlobalAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
-  removeUserAsGlobalCommunityRead?: FieldPolicy<any> | FieldReadFunction<any>;
-  removeUserAsGlobalSupport?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserAsOrganizationAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserAsOrganizationOwner?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserFromGroup?: FieldPolicy<any> | FieldReadFunction<any>;

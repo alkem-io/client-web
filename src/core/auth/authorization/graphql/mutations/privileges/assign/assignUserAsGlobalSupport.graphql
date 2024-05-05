@@ -1,9 +1,0 @@
-mutation assignUserAsGlobalSupport($input: AssignGlobalSupportInput!) {
-  assignUserAsGlobalSupport(membershipData: $input) {
-    id
-    profile {
-      id
-      displayName
-    }
-  }
-}

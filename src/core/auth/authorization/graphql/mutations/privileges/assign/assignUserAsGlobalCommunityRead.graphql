@@ -1,9 +1,0 @@
-mutation assignUserAsGlobalCommunityRead($input: AssignGlobalCommunityReadInput!) {
-  assignUserAsGlobalCommunityRead(membershipData: $input) {
-    id
-    profile {
-      id
-      displayName
-    }
-  }
-}

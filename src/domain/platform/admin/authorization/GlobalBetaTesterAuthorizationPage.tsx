@@ -4,10 +4,10 @@ import EditMemberCredentials from '../components/Authorization/EditMemberCredent
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import {
   refetchUsersWithCredentialsQuery,
-  useAssignUserAsBetaTesterMutation,
-  useRemoveUserAsBetaTesterMutation,
+  useAssignPlatformRoleToUserMutation,
+  useRemovePlatformRoleFromUserMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
-import { AuthorizationCredential } from '../../../../core/apollo/generated/graphql-schema';
+import { AuthorizationCredential, PlatformRole } from '../../../../core/apollo/generated/graphql-schema';
 import AdminLayout from '../layout/toplevel/AdminLayout';
 import { AdminSection } from '../layout/toplevel/constants';
 
@@ -15,16 +15,16 @@ const GlobalBetaTesterAuthorizationPage: FC = () => {
   // TODO Needs refactor. If credential is missing page should not be rendered or error should be shown.
   const { role: credential = AuthorizationCredential.BetaTester } = useUrlParams();
 
-  const [grant, { loading: addingMember }] = useAssignUserAsBetaTesterMutation({});
+  const [grant, { loading: addingMember }] = useAssignPlatformRoleToUserMutation({});
 
-  const [revoke, { loading: removingMember }] = useRemoveUserAsBetaTesterMutation({});
+  const [revoke, { loading: removingMember }] = useRemovePlatformRoleFromUserMutation({});
 
   const handleAdd = (memberId: string) => {
     grant({
       variables: {
         input: {
           userID: memberId,
-          type: AuthorizationCredential.BetaTester,
+          role: PlatformRole.BetaTester,
         },
       },
       refetchQueries: [
@@ -41,8 +41,7 @@ const GlobalBetaTesterAuthorizationPage: FC = () => {
       variables: {
         input: {
           userID: memberId,
-          type: AuthorizationCredential.BetaTester,
-          resourceID: '',
+          role: PlatformRole.BetaTester,
         },
       },
       refetchQueries: [

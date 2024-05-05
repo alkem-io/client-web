@@ -1,9 +1,0 @@
-mutation removeUserAsGlobalCommunityRead($input: RemoveGlobalCommunityReadInput!) {
-  removeUserAsGlobalCommunityRead(membershipData: $input) {
-    id
-    profile {
-      id
-      displayName
-    }
-  }
-}

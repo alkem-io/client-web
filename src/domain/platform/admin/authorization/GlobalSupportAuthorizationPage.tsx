@@ -4,10 +4,10 @@ import EditMemberCredentials from '../components/Authorization/EditMemberCredent
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import {
   refetchUsersWithCredentialsQuery,
-  useAssignUserAsGlobalSupportMutation,
-  useRemoveUserAsGlobalSupportMutation,
+  useAssignPlatformRoleToUserMutation,
+  useRemovePlatformRoleFromUserMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
-import { AuthorizationCredential } from '../../../../core/apollo/generated/graphql-schema';
+import { AuthorizationCredential, PlatformRole } from '../../../../core/apollo/generated/graphql-schema';
 import AdminLayout from '../layout/toplevel/AdminLayout';
 import { AdminSection } from '../layout/toplevel/constants';
 
@@ -15,15 +15,16 @@ const GlobalSupportAuthorizationPage: FC = () => {
   // TODO Needs refactor. If credential is missing page should not be rendered or error should be shown.
   const { role: credential = AuthorizationCredential.GlobalSupport } = useUrlParams();
 
-  const [grant, { loading: addingMember }] = useAssignUserAsGlobalSupportMutation({});
+  const [grant, { loading: addingMember }] = useAssignPlatformRoleToUserMutation({});
 
-  const [revoke, { loading: removingMember }] = useRemoveUserAsGlobalSupportMutation({});
+  const [revoke, { loading: removingMember }] = useRemovePlatformRoleFromUserMutation({});
 
   const handleAdd = (memberId: string) => {
     grant({
       variables: {
         input: {
           userID: memberId,
+          role: PlatformRole.Support,
         },
       },
       refetchQueries: [
@@ -40,6 +41,7 @@ const GlobalSupportAuthorizationPage: FC = () => {
       variables: {
         input: {
           userID: memberId,
+          role: PlatformRole.Support,
         },
       },
       refetchQueries: [

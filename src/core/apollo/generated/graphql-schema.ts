@@ -607,18 +607,6 @@ export type AssignCommunityRoleToVirtualInput = {
   virtualContributorID: Scalars['UUID_NAMEID'];
 };
 
-export type AssignGlobalAdminInput = {
-  userID: Scalars['UUID_NAMEID_EMAIL'];
-};
-
-export type AssignGlobalCommunityReadInput = {
-  userID: Scalars['UUID_NAMEID_EMAIL'];
-};
-
-export type AssignGlobalSupportInput = {
-  userID: Scalars['UUID_NAMEID_EMAIL'];
-};
-
 export type AssignOrganizationAdminInput = {
   organizationID: Scalars['UUID_NAMEID'];
   userID: Scalars['UUID_NAMEID_EMAIL'];
@@ -631,6 +619,11 @@ export type AssignOrganizationAssociateInput = {
 
 export type AssignOrganizationOwnerInput = {
   organizationID: Scalars['UUID_NAMEID'];
+  userID: Scalars['UUID_NAMEID_EMAIL'];
+};
+
+export type AssignPlatformRoleToUserInput = {
+  role: PlatformRole;
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
@@ -2508,12 +2501,8 @@ export type Mutation = {
   assignCommunityRoleToUser: User;
   /** Assigns a Virtual Contributor to a role in the specified Community. */
   assignCommunityRoleToVirtual: VirtualContributor;
-  /** Assigns a User as a Global Admin. */
-  assignUserAsGlobalAdmin: User;
-  /** Assigns a User as a Global Community Read. */
-  assignUserAsGlobalCommunityRead: User;
-  /** Assigns a User as a Global Spaces Admin. */
-  assignUserAsGlobalSupport: User;
+  /** Assigns a role to a User. */
+  assignPlatformRoleToUser: User;
   /** Assigns a User as an Organization Admin. */
   assignUserAsOrganizationAdmin: User;
   /** Assigns a User as an Organization Owner. */
@@ -2682,14 +2671,10 @@ export type Mutation = {
   removeCommunityRoleFromVirtual: VirtualContributor;
   /** Removes a message. */
   removeMessageOnRoom: Scalars['MessageID'];
+  /** Removes a User from a platform role. */
+  removePlatformRoleFromUser: User;
   /** Remove a reaction on a message from the specified Room. */
   removeReactionToMessageInRoom: Scalars['Boolean'];
-  /** Removes a User from being a Global Admin. */
-  removeUserAsGlobalAdmin: User;
-  /** Removes a User from being a Global Community Admin. */
-  removeUserAsGlobalCommunityRead: User;
-  /** Removes a User from being a Global Support. */
-  removeUserAsGlobalSupport: User;
   /** Removes a User from being an Organization Admin. */
   removeUserAsOrganizationAdmin: User;
   /** Removes a User from being an Organization Owner. */
@@ -2844,16 +2829,8 @@ export type MutationAssignCommunityRoleToVirtualArgs = {
   roleData: AssignCommunityRoleToVirtualInput;
 };
 
-export type MutationAssignUserAsGlobalAdminArgs = {
-  membershipData: AssignGlobalAdminInput;
-};
-
-export type MutationAssignUserAsGlobalCommunityReadArgs = {
-  membershipData: AssignGlobalCommunityReadInput;
-};
-
-export type MutationAssignUserAsGlobalSupportArgs = {
-  membershipData: AssignGlobalSupportInput;
+export type MutationAssignPlatformRoleToUserArgs = {
+  membershipData: AssignPlatformRoleToUserInput;
 };
 
 export type MutationAssignUserAsOrganizationAdminArgs = {
@@ -3172,20 +3149,12 @@ export type MutationRemoveMessageOnRoomArgs = {
   messageData: RoomRemoveMessageInput;
 };
 
+export type MutationRemovePlatformRoleFromUserArgs = {
+  membershipData: RemovePlatformRoleFromUserInput;
+};
+
 export type MutationRemoveReactionToMessageInRoomArgs = {
   reactionData: RoomRemoveReactionToMessageInput;
-};
-
-export type MutationRemoveUserAsGlobalAdminArgs = {
-  membershipData: RemoveGlobalAdminInput;
-};
-
-export type MutationRemoveUserAsGlobalCommunityReadArgs = {
-  membershipData: RemoveGlobalCommunityReadInput;
-};
-
-export type MutationRemoveUserAsGlobalSupportArgs = {
-  membershipData: RemoveGlobalSupportInput;
 };
 
 export type MutationRemoveUserAsOrganizationAdminArgs = {
@@ -3669,6 +3638,13 @@ export type PlatformLocations = {
   /** URL where users can get tips and tricks */
   tips: Scalars['String'];
 };
+
+export enum PlatformRole {
+  BetaTester = 'BETA_TESTER',
+  CommunityReader = 'COMMUNITY_READER',
+  GlobalAdmin = 'GLOBAL_ADMIN',
+  Support = 'SUPPORT',
+}
 
 export type Post = {
   __typename?: 'Post';
@@ -4222,18 +4198,6 @@ export type RemoveCommunityRoleFromVirtualInput = {
   virtualContributorID: Scalars['UUID_NAMEID'];
 };
 
-export type RemoveGlobalAdminInput = {
-  userID: Scalars['UUID_NAMEID_EMAIL'];
-};
-
-export type RemoveGlobalCommunityReadInput = {
-  userID: Scalars['UUID_NAMEID_EMAIL'];
-};
-
-export type RemoveGlobalSupportInput = {
-  userID: Scalars['UUID_NAMEID_EMAIL'];
-};
-
 export type RemoveOrganizationAdminInput = {
   organizationID: Scalars['UUID_NAMEID'];
   userID: Scalars['UUID_NAMEID_EMAIL'];
@@ -4246,6 +4210,11 @@ export type RemoveOrganizationAssociateInput = {
 
 export type RemoveOrganizationOwnerInput = {
   organizationID: Scalars['UUID_NAMEID'];
+  userID: Scalars['UUID_NAMEID_EMAIL'];
+};
+
+export type RemovePlatformRoleFromUserInput = {
+  role: PlatformRole;
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
@@ -5710,52 +5679,13 @@ export type MyPrivilegesFragment = {
   myPrivileges?: Array<AuthorizationPrivilege> | undefined;
 };
 
-export type AssignUserAsBetaTesterMutationVariables = Exact<{
-  input: GrantAuthorizationCredentialInput;
+export type AssignPlatformRoleToUserMutationVariables = Exact<{
+  input: AssignPlatformRoleToUserInput;
 }>;
 
-export type AssignUserAsBetaTesterMutation = {
+export type AssignPlatformRoleToUserMutation = {
   __typename?: 'Mutation';
-  grantCredentialToUser: {
-    __typename?: 'User';
-    id: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string };
-  };
-};
-
-export type AssignUserAsGlobalAdminMutationVariables = Exact<{
-  input: AssignGlobalAdminInput;
-}>;
-
-export type AssignUserAsGlobalAdminMutation = {
-  __typename?: 'Mutation';
-  assignUserAsGlobalAdmin: {
-    __typename?: 'User';
-    id: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string };
-  };
-};
-
-export type AssignUserAsGlobalCommunityReadMutationVariables = Exact<{
-  input: AssignGlobalCommunityReadInput;
-}>;
-
-export type AssignUserAsGlobalCommunityReadMutation = {
-  __typename?: 'Mutation';
-  assignUserAsGlobalCommunityRead: {
-    __typename?: 'User';
-    id: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string };
-  };
-};
-
-export type AssignUserAsGlobalSupportMutationVariables = Exact<{
-  input: AssignGlobalSupportInput;
-}>;
-
-export type AssignUserAsGlobalSupportMutation = {
-  __typename?: 'Mutation';
-  assignUserAsGlobalSupport: {
+  assignPlatformRoleToUser: {
     __typename?: 'User';
     id: string;
     profile: { __typename?: 'Profile'; id: string; displayName: string };
@@ -5775,52 +5705,13 @@ export type AssignUserAsOrganizationOwnerMutation = {
   };
 };
 
-export type RemoveUserAsBetaTesterMutationVariables = Exact<{
-  input: RevokeAuthorizationCredentialInput;
+export type RemovePlatformRoleFromUserMutationVariables = Exact<{
+  input: RemovePlatformRoleFromUserInput;
 }>;
 
-export type RemoveUserAsBetaTesterMutation = {
+export type RemovePlatformRoleFromUserMutation = {
   __typename?: 'Mutation';
-  revokeCredentialFromUser: {
-    __typename?: 'User';
-    id: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string };
-  };
-};
-
-export type RemoveUserAsGlobalAdminMutationVariables = Exact<{
-  input: RemoveGlobalAdminInput;
-}>;
-
-export type RemoveUserAsGlobalAdminMutation = {
-  __typename?: 'Mutation';
-  removeUserAsGlobalAdmin: {
-    __typename?: 'User';
-    id: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string };
-  };
-};
-
-export type RemoveUserAsGlobalCommunityReadMutationVariables = Exact<{
-  input: RemoveGlobalCommunityReadInput;
-}>;
-
-export type RemoveUserAsGlobalCommunityReadMutation = {
-  __typename?: 'Mutation';
-  removeUserAsGlobalCommunityRead: {
-    __typename?: 'User';
-    id: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string };
-  };
-};
-
-export type RemoveUserAsGlobalSupportMutationVariables = Exact<{
-  input: RemoveGlobalSupportInput;
-}>;
-
-export type RemoveUserAsGlobalSupportMutation = {
-  __typename?: 'Mutation';
-  removeUserAsGlobalSupport: {
+  removePlatformRoleFromUser: {
     __typename?: 'User';
     id: string;
     profile: { __typename?: 'Profile'; id: string; displayName: string };
