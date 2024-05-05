@@ -607,18 +607,9 @@ export type AssignCommunityRoleToVirtualInput = {
   virtualContributorID: Scalars['UUID_NAMEID'];
 };
 
-export type AssignOrganizationAdminInput = {
+export type AssignOrganizationRoleToUserInput = {
   organizationID: Scalars['UUID_NAMEID'];
-  userID: Scalars['UUID_NAMEID_EMAIL'];
-};
-
-export type AssignOrganizationAssociateInput = {
-  organizationID: Scalars['UUID_NAMEID'];
-  userID: Scalars['UUID_NAMEID_EMAIL'];
-};
-
-export type AssignOrganizationOwnerInput = {
-  organizationID: Scalars['UUID_NAMEID'];
+  role: OrganizationRole;
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
@@ -2501,16 +2492,12 @@ export type Mutation = {
   assignCommunityRoleToUser: User;
   /** Assigns a Virtual Contributor to a role in the specified Community. */
   assignCommunityRoleToVirtual: VirtualContributor;
+  /** Assigns an Organization Role to user. */
+  assignOrganizationRoleToUser: User;
   /** Assigns a role to a User. */
   assignPlatformRoleToUser: User;
-  /** Assigns a User as an Organization Admin. */
-  assignUserAsOrganizationAdmin: User;
-  /** Assigns a User as an Organization Owner. */
-  assignUserAsOrganizationOwner: User;
   /** Assigns a User as a member of the specified User Group. */
   assignUserToGroup: UserGroup;
-  /** Assigns a User as an associate of the specified Organization. */
-  assignUserToOrganization: Organization;
   /** Reset the Authorization Policy on all entities */
   authorizationPolicyResetAll: Scalars['String'];
   /** Reset the Authorization Policy on the specified Space. */
@@ -2671,18 +2658,14 @@ export type Mutation = {
   removeCommunityRoleFromVirtual: VirtualContributor;
   /** Removes a message. */
   removeMessageOnRoom: Scalars['MessageID'];
+  /** Removes Organization Role from user. */
+  removeOrganizationRoleFromUser: User;
   /** Removes a User from a platform role. */
   removePlatformRoleFromUser: User;
   /** Remove a reaction on a message from the specified Room. */
   removeReactionToMessageInRoom: Scalars['Boolean'];
-  /** Removes a User from being an Organization Admin. */
-  removeUserAsOrganizationAdmin: User;
-  /** Removes a User from being an Organization Owner. */
-  removeUserAsOrganizationOwner: User;
   /** Removes the specified User from specified user group */
   removeUserFromGroup: UserGroup;
-  /** Removes a User as a member of the specified Organization. */
-  removeUserFromOrganization: Organization;
   /** Resets the interaction with the chat engine. */
   resetChatGuidance: Scalars['Boolean'];
   /** Resets the interaction with the chat engine. */
@@ -2829,24 +2812,16 @@ export type MutationAssignCommunityRoleToVirtualArgs = {
   roleData: AssignCommunityRoleToVirtualInput;
 };
 
+export type MutationAssignOrganizationRoleToUserArgs = {
+  membershipData: AssignOrganizationRoleToUserInput;
+};
+
 export type MutationAssignPlatformRoleToUserArgs = {
   membershipData: AssignPlatformRoleToUserInput;
 };
 
-export type MutationAssignUserAsOrganizationAdminArgs = {
-  membershipData: AssignOrganizationAdminInput;
-};
-
-export type MutationAssignUserAsOrganizationOwnerArgs = {
-  membershipData: AssignOrganizationOwnerInput;
-};
-
 export type MutationAssignUserToGroupArgs = {
   membershipData: AssignUserGroupMemberInput;
-};
-
-export type MutationAssignUserToOrganizationArgs = {
-  membershipData: AssignOrganizationAssociateInput;
 };
 
 export type MutationAuthorizationPolicyResetOnAccountArgs = {
@@ -3149,6 +3124,10 @@ export type MutationRemoveMessageOnRoomArgs = {
   messageData: RoomRemoveMessageInput;
 };
 
+export type MutationRemoveOrganizationRoleFromUserArgs = {
+  membershipData: RemoveOrganizationRoleFromUserInput;
+};
+
 export type MutationRemovePlatformRoleFromUserArgs = {
   membershipData: RemovePlatformRoleFromUserInput;
 };
@@ -3157,20 +3136,8 @@ export type MutationRemoveReactionToMessageInRoomArgs = {
   reactionData: RoomRemoveReactionToMessageInput;
 };
 
-export type MutationRemoveUserAsOrganizationAdminArgs = {
-  membershipData: RemoveOrganizationAdminInput;
-};
-
-export type MutationRemoveUserAsOrganizationOwnerArgs = {
-  membershipData: RemoveOrganizationOwnerInput;
-};
-
 export type MutationRemoveUserFromGroupArgs = {
   membershipData: RemoveUserGroupMemberInput;
-};
-
-export type MutationRemoveUserFromOrganizationArgs = {
-  membershipData: RemoveOrganizationAssociateInput;
 };
 
 export type MutationRevokeCredentialFromOrganizationArgs = {
@@ -4198,18 +4165,9 @@ export type RemoveCommunityRoleFromVirtualInput = {
   virtualContributorID: Scalars['UUID_NAMEID'];
 };
 
-export type RemoveOrganizationAdminInput = {
+export type RemoveOrganizationRoleFromUserInput = {
   organizationID: Scalars['UUID_NAMEID'];
-  userID: Scalars['UUID_NAMEID_EMAIL'];
-};
-
-export type RemoveOrganizationAssociateInput = {
-  organizationID: Scalars['UUID_NAMEID'];
-  userID: Scalars['UUID_NAMEID_EMAIL'];
-};
-
-export type RemoveOrganizationOwnerInput = {
-  organizationID: Scalars['UUID_NAMEID'];
+  role: OrganizationRole;
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
@@ -5679,6 +5637,19 @@ export type MyPrivilegesFragment = {
   myPrivileges?: Array<AuthorizationPrivilege> | undefined;
 };
 
+export type AssignOrganizationRoleToUserMutationVariables = Exact<{
+  input: AssignOrganizationRoleToUserInput;
+}>;
+
+export type AssignOrganizationRoleToUserMutation = {
+  __typename?: 'Mutation';
+  assignOrganizationRoleToUser: {
+    __typename?: 'User';
+    id: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
+  };
+};
+
 export type AssignPlatformRoleToUserMutationVariables = Exact<{
   input: AssignPlatformRoleToUserInput;
 }>;
@@ -5692,13 +5663,13 @@ export type AssignPlatformRoleToUserMutation = {
   };
 };
 
-export type AssignUserAsOrganizationOwnerMutationVariables = Exact<{
-  input: AssignOrganizationOwnerInput;
+export type RemoveOrganizationRoleFromUserMutationVariables = Exact<{
+  input: RemoveOrganizationRoleFromUserInput;
 }>;
 
-export type AssignUserAsOrganizationOwnerMutation = {
+export type RemoveOrganizationRoleFromUserMutation = {
   __typename?: 'Mutation';
-  assignUserAsOrganizationOwner: {
+  removeOrganizationRoleFromUser: {
     __typename?: 'User';
     id: string;
     profile: { __typename?: 'Profile'; id: string; displayName: string };
@@ -5712,19 +5683,6 @@ export type RemovePlatformRoleFromUserMutationVariables = Exact<{
 export type RemovePlatformRoleFromUserMutation = {
   __typename?: 'Mutation';
   removePlatformRoleFromUser: {
-    __typename?: 'User';
-    id: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string };
-  };
-};
-
-export type RemoveUserAsOrganizationOwnerMutationVariables = Exact<{
-  input: RemoveOrganizationOwnerInput;
-}>;
-
-export type RemoveUserAsOrganizationOwnerMutation = {
-  __typename?: 'Mutation';
-  removeUserAsOrganizationOwner: {
     __typename?: 'User';
     id: string;
     profile: { __typename?: 'Profile'; id: string; displayName: string };
@@ -14714,58 +14672,6 @@ export type AssociatedOrganizationDetailsFragment = {
   };
   verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
   metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
-};
-
-export type AssignUserToOrganizationMutationVariables = Exact<{
-  input: AssignOrganizationAssociateInput;
-}>;
-
-export type AssignUserToOrganizationMutation = {
-  __typename?: 'Mutation';
-  assignUserToOrganization: {
-    __typename?: 'Organization';
-    id: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string };
-  };
-};
-
-export type RemoveUserFromOrganizationMutationVariables = Exact<{
-  input: RemoveOrganizationAssociateInput;
-}>;
-
-export type RemoveUserFromOrganizationMutation = {
-  __typename?: 'Mutation';
-  removeUserFromOrganization: {
-    __typename?: 'Organization';
-    id: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string };
-  };
-};
-
-export type AssignUserAsOrganizationAdminMutationVariables = Exact<{
-  input: AssignOrganizationAdminInput;
-}>;
-
-export type AssignUserAsOrganizationAdminMutation = {
-  __typename?: 'Mutation';
-  assignUserAsOrganizationAdmin: {
-    __typename?: 'User';
-    id: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string };
-  };
-};
-
-export type RemoveUserAsOrganizationAdminMutationVariables = Exact<{
-  input: RemoveOrganizationAdminInput;
-}>;
-
-export type RemoveUserAsOrganizationAdminMutation = {
-  __typename?: 'Mutation';
-  removeUserAsOrganizationAdmin: {
-    __typename?: 'User';
-    id: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string };
-  };
 };
 
 export type OrganizationAssociatesQueryVariables = Exact<{

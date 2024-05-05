@@ -1433,11 +1433,9 @@ export type MutationKeySpecifier = (
   | 'assignCommunityRoleToOrganization'
   | 'assignCommunityRoleToUser'
   | 'assignCommunityRoleToVirtual'
+  | 'assignOrganizationRoleToUser'
   | 'assignPlatformRoleToUser'
-  | 'assignUserAsOrganizationAdmin'
-  | 'assignUserAsOrganizationOwner'
   | 'assignUserToGroup'
-  | 'assignUserToOrganization'
   | 'authorizationPolicyResetAll'
   | 'authorizationPolicyResetOnAccount'
   | 'authorizationPolicyResetOnOrganization'
@@ -1518,12 +1516,10 @@ export type MutationKeySpecifier = (
   | 'removeCommunityRoleFromUser'
   | 'removeCommunityRoleFromVirtual'
   | 'removeMessageOnRoom'
+  | 'removeOrganizationRoleFromUser'
   | 'removePlatformRoleFromUser'
   | 'removeReactionToMessageInRoom'
-  | 'removeUserAsOrganizationAdmin'
-  | 'removeUserAsOrganizationOwner'
   | 'removeUserFromGroup'
-  | 'removeUserFromOrganization'
   | 'resetChatGuidance'
   | 'resetVirtualContributor'
   | 'revokeCredentialFromOrganization'
@@ -1592,11 +1588,9 @@ export type MutationFieldPolicy = {
   assignCommunityRoleToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   assignCommunityRoleToUser?: FieldPolicy<any> | FieldReadFunction<any>;
   assignCommunityRoleToVirtual?: FieldPolicy<any> | FieldReadFunction<any>;
+  assignOrganizationRoleToUser?: FieldPolicy<any> | FieldReadFunction<any>;
   assignPlatformRoleToUser?: FieldPolicy<any> | FieldReadFunction<any>;
-  assignUserAsOrganizationAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
-  assignUserAsOrganizationOwner?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserToGroup?: FieldPolicy<any> | FieldReadFunction<any>;
-  assignUserToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   authorizationPolicyResetAll?: FieldPolicy<any> | FieldReadFunction<any>;
   authorizationPolicyResetOnAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   authorizationPolicyResetOnOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1677,12 +1671,10 @@ export type MutationFieldPolicy = {
   removeCommunityRoleFromUser?: FieldPolicy<any> | FieldReadFunction<any>;
   removeCommunityRoleFromVirtual?: FieldPolicy<any> | FieldReadFunction<any>;
   removeMessageOnRoom?: FieldPolicy<any> | FieldReadFunction<any>;
+  removeOrganizationRoleFromUser?: FieldPolicy<any> | FieldReadFunction<any>;
   removePlatformRoleFromUser?: FieldPolicy<any> | FieldReadFunction<any>;
   removeReactionToMessageInRoom?: FieldPolicy<any> | FieldReadFunction<any>;
-  removeUserAsOrganizationAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
-  removeUserAsOrganizationOwner?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserFromGroup?: FieldPolicy<any> | FieldReadFunction<any>;
-  removeUserFromOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   resetChatGuidance?: FieldPolicy<any> | FieldReadFunction<any>;
   resetVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
   revokeCredentialFromOrganization?: FieldPolicy<any> | FieldReadFunction<any>;

@@ -2,16 +2,13 @@ import React, { FC, useCallback, useMemo } from 'react';
 import { useUserContext } from '../../../user';
 import {
   refetchUsersWithCredentialsQuery,
-  useAssignUserAsOrganizationAdminMutation,
-  useAssignUserAsOrganizationOwnerMutation,
-  useAssignUserToOrganizationMutation,
-  useRemoveUserAsOrganizationAdminMutation,
-  useRemoveUserAsOrganizationOwnerMutation,
-  useRemoveUserFromOrganizationMutation,
+  useAssignOrganizationRoleToUserMutation,
+  useRemoveOrganizationRoleFromUserMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import {
   AuthorizationCredential,
   Organization,
+  OrganizationRole,
   UserDisplayNameFragment,
 } from '../../../../../core/apollo/generated/graphql-schema';
 import { Member } from '../../../user/models/User';
@@ -71,17 +68,17 @@ export interface OrganizationAssociatesEntities {
 export const OrganizationAssociatesContainer: FC<OrganizationAssociatesProps> = ({ children, entities }) => {
   const { user } = useUserContext();
 
-  const [grantMember, { loading: addingUser }] = useAssignUserToOrganizationMutation({});
+  const [grantMember, { loading: addingUser }] = useAssignOrganizationRoleToUserMutation({});
 
-  const [revokeMember, { loading: removingUser }] = useRemoveUserFromOrganizationMutation({});
+  const [revokeMember, { loading: removingUser }] = useRemoveOrganizationRoleFromUserMutation({});
 
-  const [grantAdmin, { loading: addingAdmin }] = useAssignUserAsOrganizationAdminMutation({});
+  const [grantAdmin, { loading: addingAdmin }] = useAssignOrganizationRoleToUserMutation({});
 
-  const [revokeAdmin, { loading: removingAdmin }] = useRemoveUserAsOrganizationAdminMutation({});
+  const [revokeAdmin, { loading: removingAdmin }] = useRemoveOrganizationRoleFromUserMutation({});
 
-  const [grantOwner, { loading: addingOwner }] = useAssignUserAsOrganizationOwnerMutation({});
+  const [grantOwner, { loading: addingOwner }] = useAssignOrganizationRoleToUserMutation({});
 
-  const [revokeOwner, { loading: removingOwner }] = useRemoveUserAsOrganizationOwnerMutation({});
+  const [revokeOwner, { loading: removingOwner }] = useRemoveOrganizationRoleFromUserMutation({});
 
   const handleAssignMember = useCallback(
     (memberId: string) => {
@@ -90,6 +87,7 @@ export const OrganizationAssociatesContainer: FC<OrganizationAssociatesProps> = 
           input: {
             organizationID: entities.organizationId,
             userID: memberId,
+            role: OrganizationRole.Associate,
           },
         },
         refetchQueries: [
@@ -110,6 +108,7 @@ export const OrganizationAssociatesContainer: FC<OrganizationAssociatesProps> = 
           input: {
             userID: memberId,
             organizationID: entities.organizationId,
+            role: OrganizationRole.Associate,
           },
         },
         refetchQueries: [
@@ -130,6 +129,7 @@ export const OrganizationAssociatesContainer: FC<OrganizationAssociatesProps> = 
           input: {
             organizationID: entities.organizationId,
             userID: memberId,
+            role: OrganizationRole.Admin,
           },
         },
         refetchQueries: [
@@ -150,6 +150,7 @@ export const OrganizationAssociatesContainer: FC<OrganizationAssociatesProps> = 
           input: {
             userID: memberId,
             organizationID: entities.organizationId,
+            role: OrganizationRole.Admin,
           },
         },
         refetchQueries: [
@@ -170,6 +171,7 @@ export const OrganizationAssociatesContainer: FC<OrganizationAssociatesProps> = 
           input: {
             organizationID: entities.organizationId,
             userID: memberId,
+            role: OrganizationRole.Owner,
           },
         },
         refetchQueries: [
@@ -190,6 +192,7 @@ export const OrganizationAssociatesContainer: FC<OrganizationAssociatesProps> = 
           input: {
             userID: memberId,
             organizationID: entities.organizationId,
+            role: OrganizationRole.Owner,
           },
         },
         refetchQueries: [
