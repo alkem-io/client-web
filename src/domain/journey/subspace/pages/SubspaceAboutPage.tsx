@@ -26,7 +26,7 @@ const ChallengeAboutPage: FC = () => {
 
   const { t } = useTranslation();
 
-  const { journeyId } = useRouteResolver();
+  const { journeyId, journeyLevel } = useRouteResolver();
 
   return (
     <>
@@ -49,7 +49,7 @@ const ChallengeAboutPage: FC = () => {
         ) => (
           <JourneyAboutDialog
             open
-            journeyTypeName="subspace"
+            journeyLevel={journeyLevel}
             displayName={profile?.displayName}
             tagline={profile?.tagline}
             references={references}
