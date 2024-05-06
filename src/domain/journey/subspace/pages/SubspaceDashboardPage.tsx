@@ -43,6 +43,7 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
     <SubspacePageLayout
       journeyId={journeyId}
       journeyPath={journeyPath}
+      parentJourneyId={undefined}
       spaceReadAccess={{ canReadSpace: false, loading: false }}
     >
       {directMessageDialog}
@@ -53,10 +54,7 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
               journeyId={challengeId}
               journeyUrl={entities.challenge?.profile.url}
               ribbon={
-                <ApplicationButtonContainer
-                  subspaceId={entities.challenge?.id}
-                  subspaceName={entities.challenge?.profile.displayName}
-                >
+                <ApplicationButtonContainer subspaceId={entities.challenge?.id}>
                   {({ applicationButtonProps }, { loading }) => {
                     if (loading || applicationButtonProps.isMember) {
                       return null;
@@ -69,7 +67,8 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
                           loading={loading}
                           component={FullWidthButton}
                           extended={hasExtendedApplicationButton}
-                          journeyTypeName="subspace"
+                          journeyLevel={-1}
+                          journeyId=""
                         />
                       </PageContentColumn>
                     );

@@ -80,7 +80,7 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
             )}
             <JourneyAboutDialog
               open={dialog === 'about'}
-              journeyTypeName="space"
+              journeyLevel={0}
               displayName={entities.space?.profile.displayName}
               tagline={entities.space?.profile.tagline}
               references={entities.references}
