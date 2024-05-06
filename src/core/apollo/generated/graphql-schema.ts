@@ -665,7 +665,9 @@ export enum AuthorizationCredential {
   BetaTester = 'BETA_TESTER',
   GlobalAdmin = 'GLOBAL_ADMIN',
   GlobalCommunityRead = 'GLOBAL_COMMUNITY_READ',
+  GlobalLicenseManager = 'GLOBAL_LICENSE_MANAGER',
   GlobalRegistered = 'GLOBAL_REGISTERED',
+  GlobalSpacesReader = 'GLOBAL_SPACES_READER',
   GlobalSupport = 'GLOBAL_SUPPORT',
   InnovationPackProvider = 'INNOVATION_PACK_PROVIDER',
   OrganizationAdmin = 'ORGANIZATION_ADMIN',
@@ -2494,7 +2496,7 @@ export type Mutation = {
   assignCommunityRoleToVirtual: VirtualContributor;
   /** Assigns an Organization Role to user. */
   assignOrganizationRoleToUser: User;
-  /** Assigns a role to a User. */
+  /** Assigns a platform role to a User. */
   assignPlatformRoleToUser: User;
   /** Assigns a User as a member of the specified User Group. */
   assignUserToGroup: UserGroup;
@@ -3610,6 +3612,8 @@ export enum PlatformRole {
   BetaTester = 'BETA_TESTER',
   CommunityReader = 'COMMUNITY_READER',
   GlobalAdmin = 'GLOBAL_ADMIN',
+  LicenseManager = 'LICENSE_MANAGER',
+  SpacesReader = 'SPACES_READER',
   Support = 'SUPPORT',
 }
 
@@ -4589,6 +4593,8 @@ export type SpaceSettingsCollaboration = {
 
 export type SpaceSettingsMembership = {
   __typename?: 'SpaceSettingsMembership';
+  /** Allow subspace admins to invite to this Space. */
+  allowSubspaceAdminsToInviteMembers: Scalars['Boolean'];
   /** The membership policy in usage for this Space */
   policy: CommunityMembershipPolicy;
   /** The organizations that are trusted to Join as members for this Space */
@@ -5250,6 +5256,8 @@ export type UpdateSpaceSettingsInput = {
 };
 
 export type UpdateSpaceSettingsMembershipInput = {
+  /** Flag to control if Subspace admins can invite for this Space. */
+  allowSubspaceAdminsToInviteMembers: Scalars['Boolean'];
   /** The membership policy in usage for this Space */
   policy: CommunityMembershipPolicy;
   /** The organizations that are trusted to Join as members for this Space */

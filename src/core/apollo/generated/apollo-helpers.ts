@@ -2525,11 +2525,13 @@ export type SpaceSettingsCollaborationFieldPolicy = {
   inheritMembershipRights?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type SpaceSettingsMembershipKeySpecifier = (
+  | 'allowSubspaceAdminsToInviteMembers'
   | 'policy'
   | 'trustedOrganizations'
   | SpaceSettingsMembershipKeySpecifier
 )[];
 export type SpaceSettingsMembershipFieldPolicy = {
+  allowSubspaceAdminsToInviteMembers?: FieldPolicy<any> | FieldReadFunction<any>;
   policy?: FieldPolicy<any> | FieldReadFunction<any>;
   trustedOrganizations?: FieldPolicy<any> | FieldReadFunction<any>;
 };

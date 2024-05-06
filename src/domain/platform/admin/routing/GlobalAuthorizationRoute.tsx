@@ -13,12 +13,20 @@ const GlobalAuthorizationRoute: FC = () => {
         element={<AdminAuthorizationPage credential={AuthorizationCredential.GlobalAdmin} />}
       />
       <Route
+        path={`roles/${AuthorizationCredential.GlobalSupport}`}
+        element={<AdminAuthorizationPage credential={AuthorizationCredential.GlobalSupport} />}
+      />
+      <Route
+        path={`roles/${AuthorizationCredential.GlobalLicenseManager}`}
+        element={<AdminAuthorizationPage credential={AuthorizationCredential.GlobalLicenseManager} />}
+      />
+      <Route
         path={`roles/${AuthorizationCredential.GlobalCommunityRead}`}
         element={<AdminAuthorizationPage credential={AuthorizationCredential.GlobalCommunityRead} />}
       />
       <Route
-        path={`roles/${AuthorizationCredential.GlobalSupport}`}
-        element={<AdminAuthorizationPage credential={AuthorizationCredential.GlobalSupport} />}
+        path={`roles/${AuthorizationCredential.GlobalSpacesReader}`}
+        element={<AdminAuthorizationPage credential={AuthorizationCredential.GlobalSpacesReader} />}
       />
       <Route
         path={`roles/${AuthorizationCredential.BetaTester}`}

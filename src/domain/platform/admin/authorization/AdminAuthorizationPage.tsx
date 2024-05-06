@@ -27,16 +27,28 @@ const AdminAuthorizationPage = ({ credential }: AdminAuthorizationPageProps) => 
               label="Global admins"
             />
             <Tab
-              value={AuthorizationCredential.GlobalCommunityRead}
-              component={RouterLink}
-              to={`/admin/authorization/roles/${AuthorizationCredential.GlobalCommunityRead}`}
-              label="Global Community"
-            />
-            <Tab
               value={AuthorizationCredential.GlobalSupport}
               component={RouterLink}
               to={`/admin/authorization/roles/${AuthorizationCredential.GlobalSupport}`}
-              label="Global Support"
+              label="Support"
+            />
+            <Tab
+              value={AuthorizationCredential.GlobalLicenseManager}
+              component={RouterLink}
+              to={`/admin/authorization/roles/${AuthorizationCredential.GlobalLicenseManager}`}
+              label="License Manager"
+            />
+            <Tab
+              value={AuthorizationCredential.GlobalCommunityRead}
+              component={RouterLink}
+              to={`/admin/authorization/roles/${AuthorizationCredential.GlobalCommunityRead}`}
+              label="Community Reader"
+            />
+            <Tab
+              value={AuthorizationCredential.GlobalSpacesReader}
+              component={RouterLink}
+              to={`/admin/authorization/roles/${AuthorizationCredential.GlobalSpacesReader}`}
+              label="Spaces Reader"
             />
             <Tab
               value={AuthorizationCredential.BetaTester}
@@ -53,16 +65,28 @@ const AdminAuthorizationPage = ({ credential }: AdminAuthorizationPageProps) => 
             authorizationCredential={AuthorizationCredential.GlobalAdmin}
           />
         </TabPanel>
+        <TabPanel value={AuthorizationCredential.GlobalSupport}>
+          <PlatformRoleAssignementPage
+            role={PlatformRole.Support}
+            authorizationCredential={AuthorizationCredential.GlobalSupport}
+          />
+        </TabPanel>
+        <TabPanel value={AuthorizationCredential.GlobalLicenseManager}>
+          <PlatformRoleAssignementPage
+            role={PlatformRole.LicenseManager}
+            authorizationCredential={AuthorizationCredential.GlobalLicenseManager}
+          />
+        </TabPanel>
         <TabPanel value={AuthorizationCredential.GlobalCommunityRead}>
           <PlatformRoleAssignementPage
             role={PlatformRole.CommunityReader}
             authorizationCredential={AuthorizationCredential.GlobalCommunityRead}
           />
         </TabPanel>
-        <TabPanel value={AuthorizationCredential.GlobalSupport}>
+        <TabPanel value={AuthorizationCredential.GlobalSpacesReader}>
           <PlatformRoleAssignementPage
-            role={PlatformRole.Support}
-            authorizationCredential={AuthorizationCredential.GlobalSupport}
+            role={PlatformRole.SpacesReader}
+            authorizationCredential={AuthorizationCredential.GlobalSpacesReader}
           />
         </TabPanel>
         <TabPanel value={AuthorizationCredential.BetaTester}>
