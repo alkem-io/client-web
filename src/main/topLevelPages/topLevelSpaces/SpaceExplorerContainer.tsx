@@ -3,7 +3,7 @@ import {
   useChallengeExplorerPageQuery,
   useSpaceExplorerAllSpacesQuery,
   useSpaceExplorerMemberSpacesQuery,
-  useSpaceExplorerPublicSubspacesLazyQuery,
+  useSpaceExplorerSubspacesLazyQuery,
   useSpaceExplorerSearchQuery,
   useSpaceExplorerWelcomeSpaceLazyQuery,
 } from '../../../core/apollo/generated/apollo-hooks';
@@ -12,7 +12,7 @@ import {
   AuthorizationPrivilege,
   CommunityMembershipStatus,
   SearchResultType,
-  SpaceExplorerPublicSubspacesQuery,
+  SpaceExplorerSubspacesQuery,
   SpaceExplorerSearchSpaceFragment,
 } from '../../../core/apollo/generated/graphql-schema';
 import { TypedSearchResult } from '../../search/SearchView';
@@ -122,10 +122,10 @@ const SpaceExplorerContainer = ({ searchTerms, children }: SpaceExplorerContaine
     [fetchedSpaces]
   );
 
-  const [fetchSubspaces, { loading: loadingSubspaces }] = useSpaceExplorerPublicSubspacesLazyQuery();
-  const [fetchedSpacesWithSubspaces, setFetchedSpacesWithSubspaces] = useState<
-    SpaceExplorerPublicSubspacesQuery['spaces']
-  >([]);
+  const [fetchSubspaces, { loading: loadingSubspaces }] = useSpaceExplorerSubspacesLazyQuery();
+  const [fetchedSpacesWithSubspaces, setFetchedSpacesWithSubspaces] = useState<SpaceExplorerSubspacesQuery['spaces']>(
+    []
+  );
 
   useEffect(() => {
     const fetchSubspacesData = async () => {

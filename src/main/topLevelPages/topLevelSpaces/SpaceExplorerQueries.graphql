@@ -44,7 +44,7 @@ query SpaceExplorerAllSpaces($first: Int!, $after: UUID, $visibilities: [SpaceVi
     }
   }
 }
-query SpaceExplorerPublicSubspaces($IDs: [UUID!]) {
+query SpaceExplorerSubspaces($IDs: [UUID!]) {
   spaces(IDs: $IDs) {
     id
     subspaces {

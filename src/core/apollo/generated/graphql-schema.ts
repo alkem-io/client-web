@@ -26305,11 +26305,11 @@ export type SpaceExplorerAllSpacesQuery = {
   };
 };
 
-export type SpaceExplorerPublicSubspacesQueryVariables = Exact<{
+export type SpaceExplorerSubspacesQueryVariables = Exact<{
   IDs?: InputMaybe<Array<Scalars['UUID']> | Scalars['UUID']>;
 }>;
 
-export type SpaceExplorerPublicSubspacesQuery = {
+export type SpaceExplorerSubspacesQuery = {
   __typename?: 'Query';
   spaces: Array<{
     __typename?: 'Space';

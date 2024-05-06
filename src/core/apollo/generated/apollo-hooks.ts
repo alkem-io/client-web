@@ -22995,8 +22995,8 @@ export function refetchSpaceExplorerAllSpacesQuery(variables: SchemaTypes.SpaceE
   return { query: SpaceExplorerAllSpacesDocument, variables: variables };
 }
 
-export const SpaceExplorerPublicSubspacesDocument = gql`
-  query SpaceExplorerPublicSubspaces($IDs: [UUID!]) {
+export const SpaceExplorerSubspacesDocument = gql`
+  query SpaceExplorerSubspaces($IDs: [UUID!]) {
     spaces(IDs: $IDs) {
       id
       subspaces {
@@ -23008,59 +23008,55 @@ export const SpaceExplorerPublicSubspacesDocument = gql`
 `;
 
 /**
- * __useSpaceExplorerPublicSubspacesQuery__
+ * __useSpaceExplorerSubspacesQuery__
  *
- * To run a query within a React component, call `useSpaceExplorerPublicSubspacesQuery` and pass it any options that fit your needs.
- * When your component renders, `useSpaceExplorerPublicSubspacesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useSpaceExplorerSubspacesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSpaceExplorerSubspacesQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useSpaceExplorerPublicSubspacesQuery({
+ * const { data, loading, error } = useSpaceExplorerSubspacesQuery({
  *   variables: {
  *      IDs: // value for 'IDs'
  *   },
  * });
  */
-export function useSpaceExplorerPublicSubspacesQuery(
+export function useSpaceExplorerSubspacesQuery(
   baseOptions?: Apollo.QueryHookOptions<
-    SchemaTypes.SpaceExplorerPublicSubspacesQuery,
-    SchemaTypes.SpaceExplorerPublicSubspacesQueryVariables
+    SchemaTypes.SpaceExplorerSubspacesQuery,
+    SchemaTypes.SpaceExplorerSubspacesQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    SchemaTypes.SpaceExplorerPublicSubspacesQuery,
-    SchemaTypes.SpaceExplorerPublicSubspacesQueryVariables
-  >(SpaceExplorerPublicSubspacesDocument, options);
+  return Apollo.useQuery<SchemaTypes.SpaceExplorerSubspacesQuery, SchemaTypes.SpaceExplorerSubspacesQueryVariables>(
+    SpaceExplorerSubspacesDocument,
+    options
+  );
 }
 
-export function useSpaceExplorerPublicSubspacesLazyQuery(
+export function useSpaceExplorerSubspacesLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.SpaceExplorerPublicSubspacesQuery,
-    SchemaTypes.SpaceExplorerPublicSubspacesQueryVariables
+    SchemaTypes.SpaceExplorerSubspacesQuery,
+    SchemaTypes.SpaceExplorerSubspacesQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.SpaceExplorerPublicSubspacesQuery,
-    SchemaTypes.SpaceExplorerPublicSubspacesQueryVariables
-  >(SpaceExplorerPublicSubspacesDocument, options);
+  return Apollo.useLazyQuery<SchemaTypes.SpaceExplorerSubspacesQuery, SchemaTypes.SpaceExplorerSubspacesQueryVariables>(
+    SpaceExplorerSubspacesDocument,
+    options
+  );
 }
 
-export type SpaceExplorerPublicSubspacesQueryHookResult = ReturnType<typeof useSpaceExplorerPublicSubspacesQuery>;
-export type SpaceExplorerPublicSubspacesLazyQueryHookResult = ReturnType<
-  typeof useSpaceExplorerPublicSubspacesLazyQuery
+export type SpaceExplorerSubspacesQueryHookResult = ReturnType<typeof useSpaceExplorerSubspacesQuery>;
+export type SpaceExplorerSubspacesLazyQueryHookResult = ReturnType<typeof useSpaceExplorerSubspacesLazyQuery>;
+export type SpaceExplorerSubspacesQueryResult = Apollo.QueryResult<
+  SchemaTypes.SpaceExplorerSubspacesQuery,
+  SchemaTypes.SpaceExplorerSubspacesQueryVariables
 >;
-export type SpaceExplorerPublicSubspacesQueryResult = Apollo.QueryResult<
-  SchemaTypes.SpaceExplorerPublicSubspacesQuery,
-  SchemaTypes.SpaceExplorerPublicSubspacesQueryVariables
->;
-export function refetchSpaceExplorerPublicSubspacesQuery(
-  variables?: SchemaTypes.SpaceExplorerPublicSubspacesQueryVariables
-) {
-  return { query: SpaceExplorerPublicSubspacesDocument, variables: variables };
+export function refetchSpaceExplorerSubspacesQuery(variables?: SchemaTypes.SpaceExplorerSubspacesQueryVariables) {
+  return { query: SpaceExplorerSubspacesDocument, variables: variables };
 }
 
 export const SpaceExplorerWelcomeSpaceDocument = gql`
