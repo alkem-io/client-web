@@ -11,6 +11,7 @@ enum RouteType {
 interface JourneyRouteParams {
   type: RouteType.Journey;
   journeyId: string | undefined;
+  parentJourneyId?: string;
   journeyPath: JourneyPath;
   journeyLevel: JourneyLevel | -1; // TODO not sure maybe remove as well, can be calculated from journeyPath
   /**
@@ -91,18 +92,30 @@ export const useRouteResolver = (): RouteParams => {
     [data, journeyLength]
   );
 
+  const getParentJourneyId = () => {
+    switch (journeyLevel) {
+      case 1:
+        return data?.space.subspace?.id;
+      case 2:
+        return data?.space.subspace?.subspace?.id;
+      default:
+        return undefined;
+    }
+  };
+
   const resolvedJourney: JourneyRouteParams = {
     spaceId: data?.space.id,
     subSpaceId: data?.space.subspace?.id,
     subSubSpaceId: data?.space.subspace?.subspace?.id,
     type: RouteType.Journey,
     journeyId: data?.space.subspace?.subspace?.id ?? data?.space.subspace?.id ?? data?.space.id,
+    parentJourneyId: getParentJourneyId(),
     journeyTypeName: getJourneyTypeName({
       spaceNameId,
       challengeNameId: subspaceNameId,
       opportunityNameId: subsubspaceNameId,
     })!,
-    journeyLevel: getJourneyLevel({ spaceNameId, subspaceNameId, subsubspaceNameId }),
+    journeyLevel,
     journeyPath,
   };
 

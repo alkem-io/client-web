@@ -1,4 +1,5 @@
 import { ProfileType } from '../../core/apollo/generated/graphql-schema';
+import { JourneyLevel } from '../../main/routing/resolvers/RouteResolver';
 
 export type JourneyTypeName = 'space' | 'subspace' | 'subsubspace';
 
@@ -8,6 +9,9 @@ interface JourneyLocation {
   opportunityNameId: string;
 }
 
+/**
+ * @deprecated
+ */
 export const getJourneyTypeName = (
   journeyLocation: Partial<JourneyLocation> | ProfileType | undefined
 ): JourneyTypeName | undefined => {
@@ -34,4 +38,11 @@ export const getJourneyTypeName = (
       return 'space';
     }
   }
+};
+
+export const getSpaceLabel = (journeyLevel: JourneyLevel | -1) => {
+  if (journeyLevel === 0) {
+    return 'space' as const;
+  }
+  return 'subspace' as const;
 };
