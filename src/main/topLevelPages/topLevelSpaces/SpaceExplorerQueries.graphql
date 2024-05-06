@@ -27,17 +27,28 @@ fragment SpaceExplorerSearchSpace on SearchResultSpace {
 
 query SpaceExplorerMemberSpaces($spaceIDs: [UUID!]) {
   spaces(IDs: $spaceIDs) {
-    ...SpaceExplorerSpaceWithChallenges
+    ...SpaceExplorerSpace
+    subspaces {
+      ...SpaceExplorerSubspace
+    }
   }
 }
 
 query SpaceExplorerAllSpaces($first: Int!, $after: UUID, $visibilities: [SpaceVisibility!] = [ACTIVE]) {
   spacesPaginated(first: $first, after: $after, filter: { visibilities: $visibilities }) {
     spaces {
-      ...SpaceExplorerSpaceWithChallenges
+      ...SpaceExplorerSpace
     }
     pageInfo {
       ...PageInfo
+    }
+  }
+}
+query SpaceExplorerPublicSubspaces($IDs: [UUID!]) {
+  spaces(IDs: $IDs) {
+    id
+    subspaces {
+      ...SpaceExplorerSubspace
     }
   }
 }
@@ -47,6 +58,7 @@ fragment SpaceExplorerSpace on Space {
   authorization {
     id
     anonymousReadAccess
+    myPrivileges
   }
   type
   profile {
@@ -80,42 +92,35 @@ fragment SpaceExplorerSpace on Space {
   }
 }
 
-# fragment SpaceExplorerSubspace on Space {
-#   id
-#   type
-#   profile {
-#     id
-#     url
-#     tagline
-#     displayName
-#     description
-#     cardBanner2: visual(type: CARD) {
-#       ...VisualUri
-#     }
-#     type
-#     tagset {
-#       id
-#       tags
-#     }
-#     avatar2: visual(type: AVATAR) {
-#       ...VisualUri
-#     }
-#   }
-#   context {
-#     id
-#     vision
-#   }
-#   community {
-#     id
-#     myMembershipStatus
-#   }
-# }
-
-fragment SpaceExplorerSpaceWithChallenges on Space {
-  ...SpaceExplorerSpace
-  #subspaces {
-  #  ...SpaceExplorerSubspace
-  #}
+fragment SpaceExplorerSubspace on Space {
+  id
+  type
+  profile {
+    id
+    url
+    tagline
+    displayName
+    description
+    cardBanner2: visual(type: CARD) {
+      ...VisualUri
+    }
+    type
+    tagset {
+      id
+      tags
+    }
+    avatar2: visual(type: AVATAR) {
+      ...VisualUri
+    }
+  }
+  context {
+    id
+    vision
+  }
+  community {
+    id
+    myMembershipStatus
+  }
 }
 
 query SpaceExplorerWelcomeSpace($spaceId: UUID_NAMEID!) {
