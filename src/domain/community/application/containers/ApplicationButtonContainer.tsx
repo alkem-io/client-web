@@ -1,7 +1,6 @@
 import React, { FC } from 'react';
 import { ApplicationButtonProps } from '../applicationButton/ApplicationButton';
 import { useUserContext } from '../../user';
-import { useSpace } from '../../../journey/space/SpaceContext/useSpace';
 import {
   useCommunityUserPrivilegesQuery,
   useJoinCommunityMutation,
@@ -24,17 +23,23 @@ interface ApplicationContainerState {
   loading: boolean;
 }
 
+interface JoinParams {
+  communityId: string;
+}
+
 export interface ApplicationButtonContainerProps
   extends ContainerChildProps<ApplicationContainerEntities, ApplicationContainerActions, ApplicationContainerState> {
   parentSpaceId?: string;
   subspaceId?: string;
   loading?: boolean;
+  onJoin?: (params: JoinParams) => void;
 }
 
 export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = ({
   parentSpaceId,
   subspaceId,
   loading: loadingParams = false,
+  onJoin,
   children,
 }) => {
   const { t } = useTranslation();
@@ -44,9 +49,6 @@ export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = (
   const userId = user?.user?.id;
 
   const [getUserProfile, { loading: gettingUserProfile }] = useUserProfileLazyQuery();
-
-  // TODO consider fefeching another way, this is always top level
-  const { refetchSpace } = useSpace();
 
   const { data: _communityPrivileges, loading: communityPrivilegesLoading } = useCommunityUserPrivilegesQuery({
     variables: {
@@ -103,7 +105,7 @@ export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = (
   const loading =
     loadingParams || membershipLoading || communityPrivilegesLoading || joiningCommunity || gettingUserProfile;
 
-  const onJoin = async () => {
+  const handleJoin = async () => {
     const communityId = _communityPrivileges?.space.community.id;
     if (!communityId) {
       throw new Error('Community is not loaded');
@@ -117,7 +119,7 @@ export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = (
           input: userId,
         },
       });
-    refetchSpace();
+    onJoin?.({ communityId });
     notify(t('components.application-button.dialogApplicationSuccessful.join.body'), 'success');
   };
 
@@ -137,7 +139,7 @@ export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = (
     canApplyToCommunity,
     canJoinParentCommunity,
     canApplyToParentCommunity,
-    onJoin,
+    onJoin: handleJoin,
     loading,
   };
 
