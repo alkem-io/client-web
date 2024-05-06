@@ -15,7 +15,7 @@ import useCanGoBack from '../../../../core/routing/useCanGoBack';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 
 interface JourneyUnauthorizedDialogProps
-  extends Omit<JourneyAboutDialogProps, 'open' | 'startButton' | 'endButton' | 'journeyTypeName'>,
+  extends Omit<JourneyAboutDialogProps, 'open' | 'startButton' | 'endButton'>,
     Omit<ApplicationButtonContainerProps, 'children'> {
   authorized: boolean | undefined;
   disabled?: boolean;
@@ -26,13 +26,14 @@ const JourneyUnauthorizedDialog = ({
   authorized,
   loading = false,
   disabled = false,
-  subspaceId: challengeId,
-  subspaceName: challengeName,
+  subspaceId,
+  parentSpaceId,
+  journeyLevel,
   ...aboutDialogProps
 }: JourneyUnauthorizedDialogProps) => {
   const { t } = useTranslation();
 
-  const { journeyTypeName } = useRouteResolver();
+  const { journeyId } = useRouteResolver();
 
   const navigate = useNavigate();
 
@@ -47,22 +48,19 @@ const JourneyUnauthorizedDialog = ({
     (applicationButtonRef.current instanceof HTMLAnchorElement ||
       (applicationButtonRef.current instanceof HTMLButtonElement && !applicationButtonRef.current.disabled));
 
-  if (!journeyTypeName) {
-    return null;
-  }
-
   return (
     <JourneyAboutDialog
       open={!disabled && !loading && !authorized}
       startButton={canGoBack && <BackButton onClick={() => navigate(-1)} />}
       endButton={
-        <ApplicationButtonContainer {...{ subspaceId: challengeId, subspaceName: challengeName }}>
+        <ApplicationButtonContainer parentSpaceId={parentSpaceId} subspaceId={subspaceId} loading={loading}>
           {(e, s) => (
             <ApplicationButton
               ref={applicationButtonRef}
               {...e?.applicationButtonProps}
               loading={s.loading}
-              journeyTypeName={journeyTypeName}
+              journeyId={journeyId}
+              journeyLevel={journeyLevel}
             />
           )}
         </ApplicationButtonContainer>
@@ -77,7 +75,7 @@ const JourneyUnauthorizedDialog = ({
           </PageContentRibbon>
         )
       }
-      journeyTypeName={journeyTypeName}
+      journeyLevel={journeyLevel}
       {...aboutDialogProps}
     />
   );
