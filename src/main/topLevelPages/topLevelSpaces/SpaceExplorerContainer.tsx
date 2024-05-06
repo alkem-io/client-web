@@ -181,8 +181,8 @@ const SpaceExplorerContainer = ({ searchTerms, children }: SpaceExplorerContaine
       }
       return [
         space,
-        ...subspaces.map(ch => ({
-          ...ch,
+        ...subspaces.map(subspace => ({
+          ...subspace,
           parent: space,
         })),
       ];
