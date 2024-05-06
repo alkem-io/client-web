@@ -2755,7 +2755,6 @@ export const SubspacePageSpaceFragmentDoc = gql`
     profile {
       id
       url
-      displayName
     }
     metrics {
       id
@@ -10203,10 +10202,19 @@ export function refetchCommunityUserPrivilegesWithParentCommunityQuery(
 }
 
 export const CommunityUserPrivilegesDocument = gql`
-  query communityUserPrivileges($spaceNameId: UUID_NAMEID!, $communityId: UUID!) {
-    space(ID: $spaceNameId) {
+  query communityUserPrivileges(
+    $spaceId: UUID_NAMEID!
+    $parentSpaceId: UUID_NAMEID! = "00000000-0000-0000-0000-000000000000"
+    $includeParentSpace: Boolean! = false
+  ) {
+    space(ID: $spaceId) {
       id
-      spaceCommunity: community {
+      profile {
+        id
+        url
+        displayName
+      }
+      community {
         id
         myMembershipStatus
         authorization {
@@ -10215,9 +10223,16 @@ export const CommunityUserPrivilegesDocument = gql`
         }
       }
     }
-    lookup {
-      applicationCommunity: community(ID: $communityId) {
+    parentSpace: space(ID: $parentSpaceId) @include(if: $includeParentSpace) {
+      id
+      profile {
         id
+        url
+        displayName
+      }
+      community {
+        id
+        myMembershipStatus
         authorization {
           id
           myPrivileges
@@ -10239,8 +10254,9 @@ export const CommunityUserPrivilegesDocument = gql`
  * @example
  * const { data, loading, error } = useCommunityUserPrivilegesQuery({
  *   variables: {
- *      spaceNameId: // value for 'spaceNameId'
- *      communityId: // value for 'communityId'
+ *      spaceId: // value for 'spaceId'
+ *      parentSpaceId: // value for 'parentSpaceId'
+ *      includeParentSpace: // value for 'includeParentSpace'
  *   },
  * });
  */
