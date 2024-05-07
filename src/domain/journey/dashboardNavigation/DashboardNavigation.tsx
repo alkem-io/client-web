@@ -44,7 +44,6 @@ const collectIds = (item: DashboardNavigationItem): string[] => {
 
 const DashboardNavigation = ({
   dashboardNavigation: dashboardNavigationRoot,
-  loading = false,
   currentItemId,
   itemProps = () => ({}),
   onCreateSubspace,
@@ -57,20 +56,13 @@ const DashboardNavigation = ({
 
   const [hasHeightLimit, setHasHeightLimit] = useState(true);
 
+  const ids = useMemo(
+    () => (dashboardNavigationRoot ? collectIds(dashboardNavigationRoot) : []),
+    [dashboardNavigationRoot]
+  );
+
   // Used only on top level where we have "Show all"
-  const itemsCount = useMemo(() => {
-    if (loading) {
-      return undefined;
-    }
-    if (!dashboardNavigationRoot?.children) {
-      return 0;
-    }
-    const childCount =
-      dashboardNavigationRoot.children.reduce((count, item) => {
-        return count + (item.children?.length ?? 0);
-      }, 0) ?? 0;
-    return dashboardNavigationRoot.children.length + childCount;
-  }, [dashboardNavigationRoot, loading]);
+  const itemsCount = ids.length - 1;
 
   const allItemsFit = !itemsCount || itemsCount <= VISIBLE_ROWS_WHEN_COLLAPSED;
 
@@ -92,25 +84,6 @@ const DashboardNavigation = ({
   }, [currentItemId, dashboardNavigationRoot, pathToItem.length]);
 
   const itemRefs = useRef<Record<string, DashboardNavigationItemViewApi | null>>({}).current;
-
-  // To trigger render after all item refs are collected
-  const [itemRefsVersion, setItemRefsVersion] = useState(0);
-
-  // Manually debounced to avoid multiple setState
-  const updateItemRefsVersion = useRef(debounce(() => setItemRefsVersion(version => version + 1))).current;
-
-  // Has to maintain stable id over renders, otherwise we get a loop because React always invokes a new functional ref
-  const itemRef = useCallback((element: DashboardNavigationItemViewApi | null) => {
-    if (element && itemRefs[element.id] !== element) {
-      itemRefs[element.id] = element;
-      updateItemRefsVersion();
-    }
-  }, []);
-
-  const ids = useMemo(
-    () => (dashboardNavigationRoot ? collectIds(dashboardNavigationRoot) : []),
-    [dashboardNavigationRoot]
-  );
 
   // Because we can't use high-order itemRef (id) => (ref) => {}, we can't rely on null ref value to do cleanup,
   // therefore we do a manual cleanup by removing all refs that are not in the current list of ids.
@@ -178,6 +151,10 @@ const DashboardNavigation = ({
     );
   };
 
+  const adjustViewportFnRef = useRef(adjustViewport);
+
+  adjustViewportFnRef.current = adjustViewport;
+
   useLayoutEffect(adjustViewport, [
     dashboardNavigationRoot,
     currentItemId,
@@ -185,9 +162,18 @@ const DashboardNavigation = ({
     hasHeightLimit,
     isTopLevel,
     compact,
-    itemRefsVersion,
     ids,
   ]);
+
+  const onRefsUpdated = useRef(debounce(() => adjustViewportFnRef.current())).current;
+
+  // Has to maintain stable id over renders, otherwise we get a loop because React always invokes a new functional ref
+  const itemRef = useCallback((element: DashboardNavigationItemViewApi | null) => {
+    if (element && itemRefs[element.id] !== element) {
+      itemRefs[element.id] = element;
+      onRefsUpdated();
+    }
+  }, []);
 
   const shouldShift = isSnapped && currentLevel !== -1 && !isTopLevel && !compact;
 
