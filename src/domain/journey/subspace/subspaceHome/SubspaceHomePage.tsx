@@ -43,7 +43,7 @@ const Outline = (props: DashboardNavigationProps) => {
 const SubspaceHomePage = ({ dialog }: SubspaceHomePageProps) => {
   const { t } = useTranslation();
 
-  const { journeyId, journeyTypeName, journeyPath, loading } = useRouteResolver();
+  const { journeyId, journeyTypeName, journeyPath, parentJourneyId, loading } = useRouteResolver();
 
   const { sendMessage, directMessageDialog } = useDirectMessageDialog({
     dialogTitle: t('send-message-dialog.direct-message-title'),
@@ -91,6 +91,7 @@ const SubspaceHomePage = ({ dialog }: SubspaceHomePageProps) => {
             journeyId={journeyId}
             journeyPath={journeyPath}
             journeyUrl={subspace?.profile.url}
+            parentJourneyId={parentJourneyId}
             loading={loading}
             welcome={
               <JourneyDashboardWelcomeBlock
@@ -162,12 +163,12 @@ const SubspaceHomePage = ({ dialog }: SubspaceHomePageProps) => {
                 )}
               </>
             }
-            profile={subspace?.profile}
             infoColumnChildren={
               <Outline
                 currentItemId={journeyId}
                 dashboardNavigation={dashboardNavigation.dashboardNavigation}
                 onCreateSubspace={openCreateSubspace}
+                onCurrentItemNotFound={dashboardNavigation.refetch}
               />
             }
           >

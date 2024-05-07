@@ -14,7 +14,12 @@ const journeyIcon = {
   subsubspace: OpportunityIcon,
 } as const;
 
-export const journeyIconByJourneyLevel = [SpaceIcon, ChallengeIcon, OpportunityIcon] as const;
+export const journeyIconByJourneyLevel = [
+  SpaceIcon,
+  ChallengeIcon,
+  OpportunityIcon,
+  undefined, // for Typescript to correctly assume you can get undefined as well
+] as const;
 
 export const spaceTypeIcon: Record<SpaceType, ComponentType<SvgIconProps>> = {
   [SpaceType.Space]: SpaceIcon,

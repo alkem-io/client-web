@@ -9,6 +9,7 @@ interface UseInnovationFlowStatesParams {
 export const INNOVATION_FLOW_STATES_TAGSET_NAME = 'flow-state';
 
 export interface UseInnovationFlowStatesProvided {
+  innovationFlowId: string | undefined;
   innovationFlowStates: InnovationFlowState[] | undefined;
   currentInnovationFlowState: string | undefined;
   canEditInnovationFlow: boolean | undefined;
@@ -31,6 +32,7 @@ const useInnovationFlowStates = ({
   const canEditInnovationFlow = myPrivilleges?.includes(AuthorizationPrivilege.Update);
 
   return {
+    innovationFlowId: innovationFlow?.id,
     innovationFlowStates: innovationFlow?.states,
     currentInnovationFlowState,
     canEditInnovationFlow,

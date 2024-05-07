@@ -583,7 +583,9 @@
     },
     "communityGuidelines": {
       "title": "Community Guidelines",
-      "updatedSuccessfully": "Community guidelines updated successfully."
+      "updatedSuccessfully": "Community guidelines updated successfully.",
+      "adminsOnly": "Since there are no Member Guidelines specified, this block is only visible for admins and leads.",
+      "memberGuidelinesRedirect": "Click here to update the Member Guidelines in the Space settings."
     },
     "applicationsHelp": "Here you can find everyone that applied to become a member of this Space. By clicking on them you can review their application and accept or reject them.",
     "applicationStatus": {
@@ -1873,7 +1875,8 @@
           "memberActions": {
             "title": "Member Actions",
             "createBlocks": "<b>Create Blocks</b>: allow members to create blocks for collaboration tools & posts. If you deactivate this, members will still be able to contribute to existing posts and calls, but will not be able to create new blocks.",
-            "createSubspaces": "<b>Create Subspaces</b>: allow members to create Subspaces in this Space. If you deactivate this, you can still create Subspaces yourself and add other people as an admin inside the Subspace."
+            "createSubspaces": "<b>Create Subspaces</b>: allow members to create Subspaces in this Space. If you deactivate this, you can still create Subspaces yourself and add other people as an admin inside the Subspace.",
+            "inheritRights": "Allow Space members to contribute."
           }
         }
       },

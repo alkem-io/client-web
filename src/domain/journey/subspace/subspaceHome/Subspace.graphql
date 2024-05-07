@@ -13,7 +13,11 @@ fragment SubspacePageSpace on Space {
   profile {
     id
     url
-    displayName
+  }
+  metrics {
+    id
+    name
+    value
   }
   context {
     id
