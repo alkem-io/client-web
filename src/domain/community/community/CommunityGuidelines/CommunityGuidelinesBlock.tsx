@@ -1,6 +1,5 @@
 import { Box, Skeleton, useTheme } from '@mui/material';
 import { FC, useState } from 'react';
-import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useCommunityGuidelinesQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
@@ -14,6 +13,7 @@ import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphq
 import { Caption } from '../../../../core/ui/typography';
 import RouterLink from '../../../../core/ui/link/RouterLink';
 import { buildJourneyAdminUrl } from '../../../../main/routing/urlBuilders';
+import { useSpace } from '../../../journey/space/SpaceContext/useSpace';
 
 const CommunityGuidelinesSkeleton = () => {
   const theme = useTheme();
@@ -41,14 +41,12 @@ const CommunityGuidelinesBlock: FC<CommunityGuidelinesBlockProps> = ({ community
   const openDialog = () => setIsCommunityGuidelinesInfoDialogOpen(true);
   const closeDialog = () => setIsCommunityGuidelinesInfoDialogOpen(false);
 
-  const { pathname } = useLocation();
+  const { spaceNameId } = useSpace();
   const { t } = useTranslation();
   const hasGuidelines = !!data?.lookup.community?.guidelines.profile.description;
   const showGuidelines =
     hasGuidelines ||
     data?.lookup.community?.guidelines.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Create);
-  const communityTab = pathname.substring(pathname.lastIndexOf('/') - 1) === 'community';
-  const redirectPath = communityTab ? pathname : `${pathname.substring(0, pathname.lastIndexOf('/') + 1)}community`;
 
   return showGuidelines ? (
     <>
@@ -73,7 +71,7 @@ const CommunityGuidelinesBlock: FC<CommunityGuidelinesBlockProps> = ({ community
         ) : (
           <>
             <Caption>{t('community.communityGuidelines.adminsOnly')}</Caption>
-            <Caption component={RouterLink} to={buildJourneyAdminUrl(redirectPath)}>
+            <Caption component={RouterLink} to={buildJourneyAdminUrl(`${spaceNameId}/community`)}>
               {t('community.communityGuidelines.memberGuidelinesRedirect')}
             </Caption>
           </>
