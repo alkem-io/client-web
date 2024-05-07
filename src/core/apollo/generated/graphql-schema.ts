@@ -13415,6 +13415,9 @@ export type SpaceApplicationQuery = {
               }>
             | undefined;
         };
+        authorization?:
+          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+          | undefined;
       };
     };
   };
@@ -13718,6 +13721,9 @@ export type CommunityGuidelinesQuery = {
                   }>
                 | undefined;
             };
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
           };
         }
       | undefined;
@@ -13736,6 +13742,9 @@ export type CommunityGuidelinesDetailsFragment = {
       | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
       | undefined;
   };
+  authorization?:
+    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+    | undefined;
 };
 
 export type UpdateCommunityGuidelinesMutationVariables = Exact<{
@@ -13756,6 +13765,9 @@ export type UpdateCommunityGuidelinesMutation = {
         | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
         | undefined;
     };
+    authorization?:
+      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+      | undefined;
   };
 };
 
