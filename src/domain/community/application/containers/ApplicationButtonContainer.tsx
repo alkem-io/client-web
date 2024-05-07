@@ -61,7 +61,7 @@ export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = (
 
   const applyUrl = _communityPrivileges?.space.profile.url;
   const challengeName = _communityPrivileges?.space.profile.displayName;
-  const spaceName = _communityPrivileges?.parentSpace.profile.displayName;
+  const spaceName = _communityPrivileges?.parentSpace?.profile.displayName;
 
   const [joinCommunity, { loading: joiningCommunity }] = useJoinCommunityMutation({
     update: cache => clearCacheForType(cache, 'Authorization'),
@@ -85,7 +85,7 @@ export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = (
   const isParentMember =
     _communityPrivileges?.parentSpace?.community?.myMembershipStatus === CommunityMembershipStatus.Member;
 
-  const parentUrl = _communityPrivileges?.parentSpace.profile.url;
+  const parentUrl = _communityPrivileges?.parentSpace?.profile.url;
 
   const communityPrivileges = _communityPrivileges?.space?.community?.authorization?.myPrivileges ?? [];
 
