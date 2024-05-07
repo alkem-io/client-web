@@ -3574,6 +3574,9 @@ export const SpaceExplorerSpaceFragmentDoc = gql`
       cardBanner: visual(type: CARD) {
         ...VisualUri
       }
+      avatar: visual(type: CARD) {
+        ...VisualUri
+      }
     }
     context {
       id
@@ -3600,39 +3603,6 @@ export const SpaceExplorerSearchSpaceFragmentDoc = gql`
     }
   }
   ${SpaceExplorerSpaceFragmentDoc}
-`;
-export const SpaceExplorerSubspaceFragmentDoc = gql`
-  fragment SpaceExplorerSubspace on Space {
-    id
-    type
-    profile {
-      id
-      url
-      tagline
-      displayName
-      description
-      cardBanner2: visual(type: CARD) {
-        ...VisualUri
-      }
-      type
-      tagset {
-        id
-        tags
-      }
-      avatar2: visual(type: AVATAR) {
-        ...VisualUri
-      }
-    }
-    context {
-      id
-      vision
-    }
-    community {
-      id
-      myMembershipStatus
-    }
-  }
-  ${VisualUriFragmentDoc}
 `;
 export const AssignUserAsBetaTesterDocument = gql`
   mutation assignUserAsBetaTester($input: GrantAuthorizationCredentialInput!) {
@@ -22865,13 +22835,9 @@ export const SpaceExplorerMemberSpacesDocument = gql`
   query SpaceExplorerMemberSpaces($spaceIDs: [UUID!]) {
     spaces(IDs: $spaceIDs) {
       ...SpaceExplorerSpace
-      subspaces {
-        ...SpaceExplorerSubspace
-      }
     }
   }
   ${SpaceExplorerSpaceFragmentDoc}
-  ${SpaceExplorerSubspaceFragmentDoc}
 `;
 
 /**
@@ -23000,11 +22966,11 @@ export const SpaceExplorerSubspacesDocument = gql`
     spaces(IDs: $IDs) {
       id
       subspaces {
-        ...SpaceExplorerSubspace
+        ...SpaceExplorerSpace
       }
     }
   }
-  ${SpaceExplorerSubspaceFragmentDoc}
+  ${SpaceExplorerSpaceFragmentDoc}
 `;
 
 /**

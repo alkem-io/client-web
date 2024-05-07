@@ -28,9 +28,6 @@ fragment SpaceExplorerSearchSpace on SearchResultSpace {
 query SpaceExplorerMemberSpaces($spaceIDs: [UUID!]) {
   spaces(IDs: $spaceIDs) {
     ...SpaceExplorerSpace
-    subspaces {
-      ...SpaceExplorerSubspace
-    }
   }
 }
 
@@ -44,11 +41,12 @@ query SpaceExplorerAllSpaces($first: Int!, $after: UUID, $visibilities: [SpaceVi
     }
   }
 }
+
 query SpaceExplorerSubspaces($IDs: [UUID!]) {
   spaces(IDs: $IDs) {
     id
     subspaces {
-      ...SpaceExplorerSubspace
+      ...SpaceExplorerSpace
     }
   }
 }
@@ -74,6 +72,9 @@ fragment SpaceExplorerSpace on Space {
     cardBanner: visual(type: CARD) {
       ...VisualUri
     }
+    avatar: visual(type: CARD) {
+      ...VisualUri
+    }
   }
   context {
     id
@@ -85,37 +86,6 @@ fragment SpaceExplorerSpace on Space {
       id
       visibility
     }
-  }
-  community {
-    id
-    myMembershipStatus
-  }
-}
-
-fragment SpaceExplorerSubspace on Space {
-  id
-  type
-  profile {
-    id
-    url
-    tagline
-    displayName
-    description
-    cardBanner2: visual(type: CARD) {
-      ...VisualUri
-    }
-    type
-    tagset {
-      id
-      tags
-    }
-    avatar2: visual(type: AVATAR) {
-      ...VisualUri
-    }
-  }
-  context {
-    id
-    vision
   }
   community {
     id

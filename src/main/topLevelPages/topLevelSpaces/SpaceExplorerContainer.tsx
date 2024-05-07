@@ -3,8 +3,8 @@ import {
   useChallengeExplorerPageQuery,
   useSpaceExplorerAllSpacesQuery,
   useSpaceExplorerMemberSpacesQuery,
-  useSpaceExplorerSubspacesLazyQuery,
   useSpaceExplorerSearchQuery,
+  useSpaceExplorerSubspacesLazyQuery,
   useSpaceExplorerWelcomeSpaceLazyQuery,
 } from '../../../core/apollo/generated/apollo-hooks';
 import { useUserContext } from '../../../domain/community/user';
@@ -12,14 +12,12 @@ import {
   AuthorizationPrivilege,
   CommunityMembershipStatus,
   SearchResultType,
-  SpaceExplorerSubspacesQuery,
   SpaceExplorerSearchSpaceFragment,
 } from '../../../core/apollo/generated/graphql-schema';
 import { TypedSearchResult } from '../../search/SearchView';
 import { ITEMS_LIMIT, SpacesExplorerMembershipFilter, SpaceWithParent } from './SpaceExplorerView';
 import usePaginatedQuery from '../../../domain/shared/pagination/usePaginatedQuery';
 import { SimpleContainerProps } from '../../../core/container/SimpleContainer';
-import { uniqBy } from 'lodash';
 
 export interface ChallengeExplorerContainerEntities {
   spaces: SpaceWithParent[] | undefined;
@@ -42,6 +40,48 @@ export interface ChallengeExplorerContainerEntities {
 interface SpaceExplorerContainerProps extends SimpleContainerProps<ChallengeExplorerContainerEntities> {
   searchTerms: string[];
 }
+
+interface SpaceWithReadAccess {
+  id: string;
+  authorization?: {
+    myPrivileges?: AuthorizationPrivilege[];
+  };
+}
+
+type SpaceWithHierarchy<Space extends SpaceWithReadAccess> = Space & {
+  subspaces?: Space[];
+  parent?: Space;
+};
+
+interface FetchedSpace<Subspace extends SpaceWithReadAccess> {
+  id: string;
+  subspaces?: Subspace[];
+}
+
+interface FetchSubspaces<Subspace extends SpaceWithReadAccess> {
+  (args: { variables: { IDs: string[] } }): Promise<{ data?: { spaces: FetchedSpace<Subspace>[] } }>;
+}
+
+const collectSubspaces = async <Collected extends SpaceWithReadAccess>(
+  spaces: SpaceWithHierarchy<Collected>[],
+  fetchSubspaces: FetchSubspaces<Collected>
+): Promise<SpaceWithHierarchy<Collected>[]> => {
+  const readableSpaces = spaces.filter(space =>
+    space.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Read)
+  );
+  const readableSpaceIds = readableSpaces.map(space => space.id);
+  const { data } = await fetchSubspaces({ variables: { IDs: readableSpaceIds } });
+  const subspaces =
+    data?.spaces.flatMap(
+      space =>
+        space.subspaces?.map(subspace => ({
+          ...subspace,
+          parent: readableSpaces.find(parent => parent.id === space.id),
+        })) ?? []
+    ) ?? [];
+  const collected = await collectSubspaces(subspaces, fetchSubspaces);
+  return [...spaces, ...subspaces, ...collected];
+};
 
 const SpaceExplorerContainer = ({ searchTerms, children }: SpaceExplorerContainerProps) => {
   const { user: userMetadata, isAuthenticated, loading: loadingUser } = useUserContext();
@@ -113,38 +153,15 @@ const SpaceExplorerContainer = ({ searchTerms, children }: SpaceExplorerContaine
     }
   }, [challengesData, spacesData, membershipFilter]);
 
-  // Spaces which allow this user read their subspaces:
-  const readableSpacesIds = useMemo(
-    () =>
-      fetchedSpaces
-        ?.filter(space => space.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Read))
-        .map(space => space.id),
-    [fetchedSpaces]
-  );
-
   const [fetchSubspaces, { loading: loadingSubspaces }] = useSpaceExplorerSubspacesLazyQuery();
-  const [fetchedSpacesWithSubspaces, setFetchedSpacesWithSubspaces] = useState<SpaceExplorerSubspacesQuery['spaces']>(
-    []
-  );
+  const [fetchedSpacesWithSubspaces, setFetchedSpacesWithSubspaces] = useState<SpaceWithParent[]>([]);
 
   useEffect(() => {
-    const fetchSubspacesData = async () => {
-      // Fetch the spaces that are not already fetched
-      const missingSubspaces = readableSpacesIds?.filter(
-        spaceId => !fetchedSpacesWithSubspaces.some(space => space.id === spaceId)
-      );
-      if (!missingSubspaces || missingSubspaces.length === 0) {
-        return;
-      }
-      const { data } = await fetchSubspaces({
-        variables: {
-          IDs: missingSubspaces,
-        },
-      });
-      setFetchedSpacesWithSubspaces(prev => uniqBy([...prev, ...(data?.spaces ?? [])], space => space.id));
-    };
-    fetchSubspacesData();
-  }, [readableSpacesIds]);
+    (async () => {
+      const collected = await collectSubspaces(fetchedSpaces ?? [], fetchSubspaces);
+      setFetchedSpacesWithSubspaces(collected);
+    })();
+  }, [fetchedSpaces]);
 
   const loading =
     isLoadingSpaces ||
@@ -171,22 +188,7 @@ const SpaceExplorerContainer = ({ searchTerms, children }: SpaceExplorerContaine
       });
     }
 
-    return fetchedSpaces?.flatMap<SpaceWithParent>(space => {
-      const subspaces = fetchedSpacesWithSubspaces?.find(
-        spaceWithSubspaces => spaceWithSubspaces.id === space.id
-      )?.subspaces;
-
-      if (!subspaces || subspaces.length === 0) {
-        return space;
-      }
-      return [
-        space,
-        ...subspaces.map(subspace => ({
-          ...subspace,
-          parent: space,
-        })),
-      ];
-    });
+    return fetchedSpacesWithSubspaces;
   }, [challengesData, spacesData, membershipFilter, rawSearchResults, fetchedSpacesWithSubspaces]);
 
   const filteredSpaces = useMemo(() => {
