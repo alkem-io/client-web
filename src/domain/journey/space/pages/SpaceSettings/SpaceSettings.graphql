@@ -18,6 +18,7 @@ fragment SpaceSettings on SpaceSettings {
   membership {
     policy
     trustedOrganizations
+    allowSubspaceAdminsToInviteMembers
   }
   collaboration {
     allowMembersToCreateCallouts

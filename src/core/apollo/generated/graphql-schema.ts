@@ -20024,6 +20024,7 @@ export type SpaceSettingsQuery = {
         __typename?: 'SpaceSettingsMembership';
         policy: CommunityMembershipPolicy;
         trustedOrganizations: Array<string>;
+        allowSubspaceAdminsToInviteMembers: boolean;
       };
       collaboration: {
         __typename?: 'SpaceSettingsCollaboration';
@@ -20043,6 +20044,7 @@ export type SpaceSettingsFragment = {
     __typename?: 'SpaceSettingsMembership';
     policy: CommunityMembershipPolicy;
     trustedOrganizations: Array<string>;
+    allowSubspaceAdminsToInviteMembers: boolean;
   };
   collaboration: {
     __typename?: 'SpaceSettingsCollaboration';
@@ -20068,6 +20070,7 @@ export type UpdateSpaceSettingsMutation = {
         __typename?: 'SpaceSettingsMembership';
         policy: CommunityMembershipPolicy;
         trustedOrganizations: Array<string>;
+        allowSubspaceAdminsToInviteMembers: boolean;
       };
       collaboration: {
         __typename?: 'SpaceSettingsCollaboration';

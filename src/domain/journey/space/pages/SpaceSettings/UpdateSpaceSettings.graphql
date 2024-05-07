@@ -9,6 +9,7 @@ mutation UpdateSpaceSettings($settingsData: UpdateSpaceSettingsInput!) {
       membership {
         policy
         trustedOrganizations
+        allowSubspaceAdminsToInviteMembers
       }
       collaboration {
         allowMembersToCreateCallouts

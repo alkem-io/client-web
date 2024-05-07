@@ -2671,6 +2671,7 @@ export const SpaceSettingsFragmentDoc = gql`
     membership {
       policy
       trustedOrganizations
+      allowSubspaceAdminsToInviteMembers
     }
     collaboration {
       allowMembersToCreateCallouts
@@ -17246,6 +17247,7 @@ export const UpdateSpaceSettingsDocument = gql`
         membership {
           policy
           trustedOrganizations
+          allowSubspaceAdminsToInviteMembers
         }
         collaboration {
           allowMembersToCreateCallouts
