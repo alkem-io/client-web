@@ -44,9 +44,9 @@ const CommunityGuidelinesBlock: FC<CommunityGuidelinesBlockProps> = ({ community
   const { pathname } = useLocation();
   const { t } = useTranslation();
   const hasGuidelines = !!data?.lookup.community?.guidelines.profile.description;
-  const alwaysShowGuidelines = data?.lookup.community?.guidelines.authorization?.myPrivileges?.includes(
-    AuthorizationPrivilege.Create
-  );
+  const alwaysShowGuidelines =
+    hasGuidelines ||
+    data?.lookup.community?.guidelines.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Create);
 
   return alwaysShowGuidelines ? (
     <>
