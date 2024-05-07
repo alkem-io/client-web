@@ -44,11 +44,13 @@ const CommunityGuidelinesBlock: FC<CommunityGuidelinesBlockProps> = ({ community
   const { pathname } = useLocation();
   const { t } = useTranslation();
   const hasGuidelines = !!data?.lookup.community?.guidelines.profile.description;
-  const alwaysShowGuidelines =
+  const showGuidelines =
     hasGuidelines ||
     data?.lookup.community?.guidelines.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Create);
+  const communityTab = pathname.substring(pathname.lastIndexOf('/') - 1) === 'community';
+  const redirectPath = communityTab ? pathname : `${pathname.substring(0, pathname.lastIndexOf('/') + 1)}community`;
 
-  return alwaysShowGuidelines ? (
+  return showGuidelines ? (
     <>
       <PageContentBlock>
         <PageContentBlockHeader title={data?.lookup?.community?.guidelines?.profile.displayName} />
@@ -71,7 +73,7 @@ const CommunityGuidelinesBlock: FC<CommunityGuidelinesBlockProps> = ({ community
         ) : (
           <>
             <Caption>{t('community.communityGuidelines.adminsOnly')}</Caption>
-            <Caption component={RouterLink} to={buildJourneyAdminUrl(pathname)}>
+            <Caption component={RouterLink} to={buildJourneyAdminUrl(redirectPath)}>
               {t('community.communityGuidelines.memberGuidelinesRedirect')}
             </Caption>
           </>
