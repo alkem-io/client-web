@@ -1402,17 +1402,6 @@ export type MeQueryResultsFieldPolicy = {
   spaceMemberships?: FieldPolicy<any> | FieldReadFunction<any>;
   user?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type MemberGuidelinesTemplateKeySpecifier = (
-  | 'authorization'
-  | 'id'
-  | 'profile'
-  | MemberGuidelinesTemplateKeySpecifier
-)[];
-export type MemberGuidelinesTemplateFieldPolicy = {
-  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-  profile?: FieldPolicy<any> | FieldReadFunction<any>;
-};
 export type MessageKeySpecifier = (
   | 'id'
   | 'message'
@@ -1477,7 +1466,6 @@ export type MutationKeySpecifier = (
   | 'createInnovationFlowTemplate'
   | 'createInnovationHub'
   | 'createInnovationPackOnLibrary'
-  | 'createMemberGuidelinesTemplate'
   | 'createOrganization'
   | 'createPostTemplate'
   | 'createReferenceOnProfile'
@@ -1641,7 +1629,6 @@ export type MutationFieldPolicy = {
   createInnovationFlowTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   createInnovationHub?: FieldPolicy<any> | FieldReadFunction<any>;
   createInnovationPackOnLibrary?: FieldPolicy<any> | FieldReadFunction<any>;
-  createMemberGuidelinesTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   createOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   createPostTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   createReferenceOnProfile?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2279,7 +2266,7 @@ export type RolesResultCommunityKeySpecifier = (
   | 'id'
   | 'nameID'
   | 'roles'
-  | 'userGroups'
+  | 'type'
   | RolesResultCommunityKeySpecifier
 )[];
 export type RolesResultCommunityFieldPolicy = {
@@ -2287,7 +2274,7 @@ export type RolesResultCommunityFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   roles?: FieldPolicy<any> | FieldReadFunction<any>;
-  userGroups?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type RolesResultOrganizationKeySpecifier = (
   | 'displayName'
@@ -2313,8 +2300,7 @@ export type RolesResultSpaceKeySpecifier = (
   | 'roles'
   | 'spaceID'
   | 'subspaces'
-  | 'subsubspaces'
-  | 'userGroups'
+  | 'type'
   | 'visibility'
   | RolesResultSpaceKeySpecifier
 )[];
@@ -2325,8 +2311,7 @@ export type RolesResultSpaceFieldPolicy = {
   roles?: FieldPolicy<any> | FieldReadFunction<any>;
   spaceID?: FieldPolicy<any> | FieldReadFunction<any>;
   subspaces?: FieldPolicy<any> | FieldReadFunction<any>;
-  subsubspaces?: FieldPolicy<any> | FieldReadFunction<any>;
-  userGroups?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
   visibility?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type RoomKeySpecifier = ('authorization' | 'id' | 'messages' | 'messagesCount' | RoomKeySpecifier)[];
@@ -3369,10 +3354,6 @@ export type StrictTypedTypePolicies = {
   MeQueryResults?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | MeQueryResultsKeySpecifier | (() => undefined | MeQueryResultsKeySpecifier);
     fields?: MeQueryResultsFieldPolicy;
-  };
-  MemberGuidelinesTemplate?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | MemberGuidelinesTemplateKeySpecifier | (() => undefined | MemberGuidelinesTemplateKeySpecifier);
-    fields?: MemberGuidelinesTemplateFieldPolicy;
   };
   Message?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | MessageKeySpecifier | (() => undefined | MessageKeySpecifier);
