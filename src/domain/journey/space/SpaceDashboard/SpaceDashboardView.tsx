@@ -63,7 +63,6 @@ interface SpaceDashboardViewProps {
   callouts: {
     groupedCallouts: Record<CalloutGroupName, TypedCallout[] | undefined>;
     canCreateCallout: boolean;
-    canCreateCalloutFromTemplate: boolean;
     calloutNames: string[];
     loading: boolean;
     refetchCallouts: (variables?: Partial<CalloutsQueryVariables>) => void;
@@ -154,7 +153,6 @@ const SpaceDashboardView = ({
             journeyId={spaceId}
             callouts={callouts.groupedCallouts[CalloutGroupName.Home]}
             canCreateCallout={callouts.canCreateCallout}
-            canCreateCalloutFromTemplate={callouts.canCreateCalloutFromTemplate}
             loading={callouts.loading}
             journeyTypeName={journeyTypeName}
             calloutNames={callouts.calloutNames}
