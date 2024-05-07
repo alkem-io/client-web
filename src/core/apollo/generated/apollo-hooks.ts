@@ -21344,10 +21344,22 @@ export const JourneyRouteResolverDocument = gql`
   ) {
     space(ID: $spaceNameId) {
       id
+      profile {
+        id
+        url
+      }
       subspace(ID: $challengeNameId) @include(if: $includeChallenge) {
         id
+        profile {
+          id
+          url
+        }
         subspace(ID: $opportunityNameId) @include(if: $includeOpportunity) {
           id
+          profile {
+            id
+            url
+          }
         }
       }
     }
