@@ -1,7 +1,7 @@
 import React from 'react';
 import { gutters } from '../../../../core/ui/grid/utils';
 import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
-import { Avatar, Chip, Paper, PaperProps, Skeleton, Typography } from '@mui/material';
+import { Chip, Paper, PaperProps, Skeleton, Typography } from '@mui/material';
 import { Caption } from '../../../../core/ui/typography';
 import { Visual } from '../../../common/visual/Visual';
 import withElevationOnHover from '../../../shared/components/withElevationOnHover';
@@ -13,6 +13,7 @@ import { CommunityRole } from '../../../../core/apollo/generated/graphql-schema'
 import { useTranslation } from 'react-i18next';
 import { intersection } from 'lodash';
 import FlexSpacer from '../../../../core/ui/utils/FlexSpacer';
+import JourneyAvatar from '../JourneyAvatar/JourneyAvatar';
 
 export const JourneyCardHorizontalSkeleton = () => (
   <ElevatedPaper sx={{ padding: gutters() }}>
@@ -67,9 +68,7 @@ const JourneyCardHorizontal = ({
   return (
     <ElevatedPaper component={RouterLink} to={journey.profile.url} sx={mergedSx}>
       <BadgeCardView
-        visual={
-          <Avatar src={journey.profile.avatar?.uri} sx={{ borderRadius: 0.5, width: gutters(3), height: gutters(3) }} />
-        }
+        visual={<JourneyAvatar src={journey.profile.avatar?.uri} sx={{ width: gutters(3), height: gutters(3) }} />}
       >
         <BlockTitleWithIcon title={journey.profile.displayName} icon={<Icon />} sx={{ height: gutters(1.5) }}>
           <FlexSpacer />

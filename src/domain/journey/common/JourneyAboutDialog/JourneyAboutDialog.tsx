@@ -172,7 +172,7 @@ const JourneyAboutDialog = ({
             {startButton}
           </DialogHeaderItem>
           <DialogHeaderItem order={isMobile ? 1 : 0}>
-            <JourneyIcon fontSize="small" color="primary" />
+            {JourneyIcon && <JourneyIcon fontSize="small" color="primary" />}
             <PageTitle paddingY={gutters(0.5)}>{displayName}</PageTitle>
           </DialogHeaderItem>
           <DialogHeaderItem minWidth="30%" align="end">
