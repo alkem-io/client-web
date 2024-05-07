@@ -142,6 +142,40 @@ export const SpaceSettingsView: FC<SpaceSettingsViewProps> = ({ journeyId, journ
     }
   };
 
+  const getMemberActions = () => {
+    const spaceActions = {
+      allowMembersToCreateCallouts: {
+        checked:
+          currentSettings.collaboration?.allowMembersToCreateCallouts ??
+          defaultSpaceSettings.collaboration.allowMembersToCreateCallouts,
+        label: <Trans i18nKey="pages.admin.space.settings.memberActions.createBlocks" components={{ b: <strong /> }} />,
+      },
+      allowMembersToCreateSubspaces: {
+        checked:
+          currentSettings.collaboration?.allowMembersToCreateSubspaces ??
+          defaultSpaceSettings.collaboration.allowMembersToCreateSubspaces,
+        label: (
+          <Trans i18nKey="pages.admin.space.settings.memberActions.createSubspaces" components={{ b: <strong /> }} />
+        ),
+      },
+    };
+
+    if (isSubspace) {
+      // show inheritMembershipRights only for subspaces
+      return {
+        ...spaceActions,
+        inheritMembershipRights: {
+          checked:
+            currentSettings.collaboration?.inheritMembershipRights ??
+            defaultSpaceSettings.collaboration.inheritMembershipRights,
+          label: <Trans i18nKey="pages.admin.space.settings.memberActions.inheritRights" />,
+        },
+      };
+    }
+
+    return spaceActions;
+  };
+
   return (
     <PageContent background="transparent">
       {!loading && (
@@ -237,30 +271,7 @@ export const SpaceSettingsView: FC<SpaceSettingsViewProps> = ({ journeyId, journ
           <PageContentBlock>
             <BlockTitle>{t('pages.admin.space.settings.memberActions.title')}</BlockTitle>
             <SwitchSettingsGroup
-              options={{
-                allowMembersToCreateCallouts: {
-                  checked:
-                    currentSettings.collaboration?.allowMembersToCreateCallouts ??
-                    defaultSpaceSettings.collaboration.allowMembersToCreateCallouts,
-                  label: (
-                    <Trans
-                      i18nKey="pages.admin.space.settings.memberActions.createBlocks"
-                      components={{ b: <strong /> }}
-                    />
-                  ),
-                },
-                allowMembersToCreateSubspaces: {
-                  checked:
-                    currentSettings.collaboration?.allowMembersToCreateSubspaces ??
-                    defaultSpaceSettings.collaboration.allowMembersToCreateSubspaces,
-                  label: (
-                    <Trans
-                      i18nKey="pages.admin.space.settings.memberActions.createSubspaces"
-                      components={{ b: <strong /> }}
-                    />
-                  ),
-                },
-              }}
+              options={getMemberActions()}
               onChange={async (setting, newValue) => {
                 await handleUpdateSettings({
                   collaborationSettings: {

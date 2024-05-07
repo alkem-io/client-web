@@ -25,19 +25,20 @@ import OpportunityMetrics from '../../opportunity/utils/useOpportunityMetricsIte
 import { Theme } from '@mui/material/styles';
 import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
 import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
-import journeyIcon from '../../../shared/components/JourneyIcon/JourneyIcon';
+import { journeyIconByJourneyLevel } from '../../../shared/components/JourneyIcon/JourneyIcon';
 import References from '../../../shared/components/References/References';
 import { Reference } from '../../../../core/apollo/generated/graphql-schema';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import useDirectMessageDialog from '../../../communication/messaging/DirectMessaging/useDirectMessageDialog';
 import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
-import { JourneyTypeName } from '../../JourneyTypeName';
+import { getSpaceLabel } from '../../JourneyTypeName';
 import Loading from '../../../../core/ui/loading/Loading';
+import { JourneyLevel } from '../../../../main/routing/resolvers/RouteResolver';
 
 export interface JourneyAboutDialogProps extends EntityDashboardLeads {
   open: boolean;
-  journeyTypeName: JourneyTypeName;
+  journeyLevel: JourneyLevel | -1;
   displayName: ReactNode;
   tagline: ReactNode;
   references: Reference[] | undefined;
@@ -64,14 +65,14 @@ const DialogHeaderItem = ({ align = 'center', ...props }: DialogHeaderItemProps)
   return <Box {...props} flexGrow={1} display="flex" justifyContent={align} alignItems="center" gap={gutters()} />;
 };
 
-const getMetricsSpec = (journeyTypeName: JourneyTypeName) => {
-  switch (journeyTypeName) {
-    case 'space':
-    case 'subspace':
-      return SpaceMetrics;
-    case 'subsubspace':
-      return OpportunityMetrics;
+const getMetricsSpec = (journeyLevel: JourneyLevel | -1) => {
+  if (journeyLevel === -1) {
+    return undefined;
   }
+  if (journeyLevel === 2) {
+    return OpportunityMetrics;
+  }
+  return SpaceMetrics;
 };
 
 const gradient = (theme: Theme) =>
@@ -85,7 +86,7 @@ const JourneyAboutDialog = ({
   tagline,
   references,
   ribbon,
-  journeyTypeName,
+  journeyLevel,
   leadUsers,
   leadOrganizations,
   hostOrganizations,
@@ -104,7 +105,7 @@ const JourneyAboutDialog = ({
 }: JourneyAboutDialogProps) => {
   const { t } = useTranslation();
 
-  const isSpace = journeyTypeName === 'space';
+  const isSpace = journeyLevel === 0;
   const leadOrganizationsHeader = isSpace
     ? 'pages.space.sections.dashboard.leadingOrganizations'
     : 'community.leading-organizations';
@@ -132,9 +133,9 @@ const JourneyAboutDialog = ({
     [leadUsers]
   );
 
-  const JourneyIcon = journeyIcon[journeyTypeName];
+  const JourneyIcon = journeyIconByJourneyLevel[journeyLevel];
 
-  const metricsItems = useMetricsItems(metrics, getMetricsSpec(journeyTypeName));
+  const metricsItems = useMetricsItems(metrics, getMetricsSpec(journeyLevel));
 
   const breakpoint = useCurrentBreakpoint();
 
@@ -143,6 +144,8 @@ const JourneyAboutDialog = ({
   const { sendMessage, directMessageDialog } = useDirectMessageDialog({
     dialogTitle: t('send-message-dialog.direct-message-title'),
   });
+
+  const journeyTypeName = getSpaceLabel(journeyLevel);
 
   return (
     <DialogWithGrid
