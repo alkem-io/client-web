@@ -13340,8 +13340,9 @@ export type CommunityUserPrivilegesWithParentCommunityQuery = {
 };
 
 export type CommunityUserPrivilegesQueryVariables = Exact<{
-  spaceNameId: Scalars['UUID_NAMEID'];
-  communityId: Scalars['UUID'];
+  spaceId: Scalars['UUID_NAMEID'];
+  parentSpaceId?: Scalars['UUID_NAMEID'];
+  includeParentSpace?: Scalars['Boolean'];
 }>;
 
 export type CommunityUserPrivilegesQuery = {
@@ -13349,7 +13350,8 @@ export type CommunityUserPrivilegesQuery = {
   space: {
     __typename?: 'Space';
     id: string;
-    spaceCommunity: {
+    profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+    community: {
       __typename?: 'Community';
       id: string;
       myMembershipStatus?: CommunityMembershipStatus | undefined;
@@ -13358,17 +13360,18 @@ export type CommunityUserPrivilegesQuery = {
         | undefined;
     };
   };
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    applicationCommunity?:
-      | {
-          __typename?: 'Community';
-          id: string;
-          authorization?:
-            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-            | undefined;
-        }
-      | undefined;
+  parentSpace: {
+    __typename?: 'Space';
+    id: string;
+    profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+    community: {
+      __typename?: 'Community';
+      id: string;
+      myMembershipStatus?: CommunityMembershipStatus | undefined;
+      authorization?:
+        | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+        | undefined;
+    };
   };
 };
 
@@ -20503,7 +20506,7 @@ export type SubspacePageQuery = {
     authorization?:
       | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
-    profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+    profile: { __typename?: 'Profile'; id: string; url: string };
     metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
     context: { __typename?: 'Context'; id: string; vision?: string | undefined };
     community: {
@@ -20607,7 +20610,7 @@ export type SubspacePageSpaceFragment = {
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
-  profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+  profile: { __typename?: 'Profile'; id: string; url: string };
   metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
   context: { __typename?: 'Context'; id: string; vision?: string | undefined };
   community: {

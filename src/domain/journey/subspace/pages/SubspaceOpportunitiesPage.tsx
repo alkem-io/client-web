@@ -59,6 +59,7 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
       journeyId={journeyId}
       journeyPath={journeyPath}
       spaceReadAccess={{ canReadSpace: false, loading: false }}
+      parentJourneyId={undefined}
     >
       <ChallengeOpportunitiesContainer challengeId={challengeId}>
         {({ callouts, ...entities }, state) => (
