@@ -1,21 +1,25 @@
-import { Dispatch, useMemo, useState } from 'react';
+import { Dispatch, useEffect, useMemo, useState } from 'react';
 import {
   useChallengeExplorerPageQuery,
   useSpaceExplorerAllSpacesQuery,
   useSpaceExplorerMemberSpacesQuery,
+  useSpaceExplorerSubspacesLazyQuery,
   useSpaceExplorerSearchQuery,
   useSpaceExplorerWelcomeSpaceLazyQuery,
 } from '../../../core/apollo/generated/apollo-hooks';
 import { useUserContext } from '../../../domain/community/user';
 import {
+  AuthorizationPrivilege,
   CommunityMembershipStatus,
   SearchResultType,
+  SpaceExplorerSubspacesQuery,
   SpaceExplorerSearchSpaceFragment,
 } from '../../../core/apollo/generated/graphql-schema';
 import { TypedSearchResult } from '../../search/SearchView';
 import { ITEMS_LIMIT, SpacesExplorerMembershipFilter, SpaceWithParent } from './SpaceExplorerView';
 import usePaginatedQuery from '../../../domain/shared/pagination/usePaginatedQuery';
 import { SimpleContainerProps } from '../../../core/container/SimpleContainer';
+import { uniqBy } from 'lodash';
 
 export interface ChallengeExplorerContainerEntities {
   spaces: SpaceWithParent[] | undefined;
@@ -99,8 +103,6 @@ const SpaceExplorerContainer = ({ searchTerms, children }: SpaceExplorerContaine
 
   const hasMore = usesPagination ? hasMoreSpaces : false;
 
-  const loading = isLoadingSpaces || isLoadingMemberSpaces || loadingSearchResults || loadingUserData || loadingUser;
-
   const fetchedSpaces = useMemo(() => {
     switch (membershipFilter) {
       case SpacesExplorerMembershipFilter.All:
@@ -110,6 +112,47 @@ const SpaceExplorerContainer = ({ searchTerms, children }: SpaceExplorerContaine
         return challengesData?.spaces;
     }
   }, [challengesData, spacesData, membershipFilter]);
+
+  // Spaces which allow this user read their subspaces:
+  const readableSpacesIds = useMemo(
+    () =>
+      fetchedSpaces
+        ?.filter(space => space.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Read))
+        .map(space => space.id),
+    [fetchedSpaces]
+  );
+
+  const [fetchSubspaces, { loading: loadingSubspaces }] = useSpaceExplorerSubspacesLazyQuery();
+  const [fetchedSpacesWithSubspaces, setFetchedSpacesWithSubspaces] = useState<SpaceExplorerSubspacesQuery['spaces']>(
+    []
+  );
+
+  useEffect(() => {
+    const fetchSubspacesData = async () => {
+      // Fetch the spaces that are not already fetched
+      const missingSubspaces = readableSpacesIds?.filter(
+        spaceId => !fetchedSpacesWithSubspaces.some(space => space.id === spaceId)
+      );
+      if (!missingSubspaces || missingSubspaces.length === 0) {
+        return;
+      }
+      const { data } = await fetchSubspaces({
+        variables: {
+          IDs: missingSubspaces,
+        },
+      });
+      setFetchedSpacesWithSubspaces(prev => uniqBy([...prev, ...(data?.spaces ?? [])], space => space.id));
+    };
+    fetchSubspacesData();
+  }, [readableSpacesIds]);
+
+  const loading =
+    isLoadingSpaces ||
+    isLoadingMemberSpaces ||
+    loadingSearchResults ||
+    loadingUserData ||
+    loadingUser ||
+    loadingSubspaces;
 
   const flattenedSpaces = useMemo<SpaceWithParent[] | undefined>(() => {
     if (shouldSearch) {
@@ -129,18 +172,22 @@ const SpaceExplorerContainer = ({ searchTerms, children }: SpaceExplorerContaine
     }
 
     return fetchedSpaces?.flatMap<SpaceWithParent>(space => {
-      if (!space.subspaces || space.subspaces.length === 0) {
+      const subspaces = fetchedSpacesWithSubspaces?.find(
+        spaceWithSubspaces => spaceWithSubspaces.id === space.id
+      )?.subspaces;
+
+      if (!subspaces || subspaces.length === 0) {
         return space;
       }
       return [
         space,
-        ...space.subspaces.map(ch => ({
-          ...ch,
+        ...subspaces.map(subspace => ({
+          ...subspace,
           parent: space,
         })),
       ];
     });
-  }, [challengesData, spacesData, membershipFilter, rawSearchResults]);
+  }, [challengesData, spacesData, membershipFilter, rawSearchResults, fetchedSpacesWithSubspaces]);
 
   const filteredSpaces = useMemo(() => {
     if (membershipFilter === SpacesExplorerMembershipFilter.Member) {
