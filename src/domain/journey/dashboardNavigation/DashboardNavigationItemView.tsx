@@ -204,6 +204,7 @@ const DashboardNavigationItemView = forwardRef<DashboardNavigationItemViewApi, D
                   subspaceOfCurrent={subspaceOfCurrent || isCurrent}
                   compact={compact}
                   itemProps={itemProps}
+                  onCreateSubspace={onCreateSubspace}
                   onToggle={onToggle}
                   {...child}
                   {...getItemProps(child)}
