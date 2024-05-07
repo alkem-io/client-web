@@ -123,7 +123,7 @@ const DashboardNavigationItemView = forwardRef<DashboardNavigationItemViewApi, D
 
     const hasChildren = children && children.length > 0;
 
-    const hasCreateButton = !compact && canCreateSubspace && !!onCreateSubspace;
+    const hasCreateButton = !compact && canCreateSubspace && level === 1 && !!onCreateSubspace;
 
     const getItemProps = typeof itemProps === 'function' ? itemProps : () => itemProps;
 
