@@ -101,7 +101,6 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
                 journeyId={journeyId}
                 callouts={callouts.groupedCallouts[CalloutGroupName.Subspaces]}
                 canCreateCallout={callouts.canCreateCallout}
-                canCreateCalloutFromTemplate={callouts.canCreateCalloutFromTemplate}
                 loading={callouts.loading}
                 journeyTypeName="subspace"
                 calloutNames={callouts.calloutNames}

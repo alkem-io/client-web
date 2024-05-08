@@ -13,7 +13,6 @@ interface CollaborationAuthorization {
   collaborationPrivileges: AuthorizationPrivilege[];
   canReadCollaboration: boolean;
   canCreateCallout: boolean;
-  canCreateCalloutFromTemplate: boolean;
   canSaveAsTemplate: boolean;
   canReadCallout: boolean;
   loading: boolean;
@@ -47,7 +46,6 @@ export const useCollaborationAuthorization = ({
 
   const canCreateCallout = collaborationPrivileges.includes(AuthorizationPrivilege.CreateCallout);
   // TODO: For now Create Callout from template will use the same permission as to save a template from an existing callout
-  const canCreateCalloutFromTemplate = collaborationPrivileges.includes(AuthorizationPrivilege.SaveAsTemplate);
   const canSaveAsTemplate = collaborationPrivileges.includes(AuthorizationPrivilege.SaveAsTemplate);
   const canReadCallout = collaborationPrivileges.includes(AuthorizationPrivilege.Read);
 
@@ -56,7 +54,6 @@ export const useCollaborationAuthorization = ({
     collaborationPrivileges,
     canReadCollaboration,
     canCreateCallout,
-    canCreateCalloutFromTemplate,
     canSaveAsTemplate,
     canReadCallout,
     loading: loadingAuthorization || loadingCollaboration,
