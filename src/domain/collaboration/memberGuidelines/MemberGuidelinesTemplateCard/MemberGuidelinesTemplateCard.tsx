@@ -30,9 +30,11 @@ const MemberGuidelinesTemplateCard: FC<MemberGuidelinesTemplateCardProps> = ({ t
           {template?.profile.description}
         </CardDescriptionWithTags>
       </CardDetails>
-      <CardSegmentCaption icon={<InnovationPackIcon />}>
-        <Caption noWrap>{template?.innovationPack?.profile.displayName}</Caption>
-      </CardSegmentCaption>
+      {template?.innovationPack?.profile && (
+        <CardSegmentCaption icon={<InnovationPackIcon />}>
+          <Caption noWrap>{template?.innovationPack?.profile.displayName}</Caption>
+        </CardSegmentCaption>
+      )}
       {loading && <Skeleton />}
     </ContributeCard>
   );
