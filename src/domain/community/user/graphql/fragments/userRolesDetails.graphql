@@ -11,17 +11,6 @@ fragment UserRolesDetails on ContributorRoles {
       displayName
       roles
     }
-    subsubspaces {
-      id
-      nameID
-      displayName
-      roles
-    }
-    userGroups {
-      id
-      nameID
-      displayName
-    }
   }
   organizations {
     id
