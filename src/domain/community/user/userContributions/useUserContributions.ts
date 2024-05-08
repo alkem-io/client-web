@@ -1,6 +1,6 @@
 import { useUserContributionsQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { SpaceType } from '../../../../core/apollo/generated/graphql-schema';
-import { ContributionItem } from '../contribution';
+import { LegacyContributionItem } from '../contribution';
 import { useMemo } from 'react';
 
 const useUserContributions = (userNameId: string) => {
@@ -18,7 +18,7 @@ const useUserContributions = (userNameId: string) => {
       return undefined;
     }
 
-    const contributions: ContributionItem[] = [];
+    const contributions: LegacyContributionItem[] = [];
 
     data.rolesUser.spaces.forEach(e => {
       contributions.push({
