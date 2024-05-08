@@ -23820,7 +23820,13 @@ export type JourneyRouteResolverQuery = {
   space: {
     __typename?: 'Space';
     id: string;
-    subspace?: { __typename?: 'Space'; id: string; subspace?: { __typename?: 'Space'; id: string } };
+    profile: { __typename?: 'Profile'; id: string; url: string };
+    subspace?: {
+      __typename?: 'Space';
+      id: string;
+      profile: { __typename?: 'Profile'; id: string; url: string };
+      subspace?: { __typename?: 'Space'; id: string; profile: { __typename?: 'Profile'; id: string; url: string } };
+    };
   };
 };
 
