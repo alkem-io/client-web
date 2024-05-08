@@ -212,7 +212,7 @@ const SubspacePageLayout = ({
                     flexShrink={1}
                     minWidth={0}
                   >
-                    <ApplicationButtonContainer>
+                    <ApplicationButtonContainer subspaceId={journeyId}>
                       {({ applicationButtonProps }, { loading }) => {
                         if (loading || applicationButtonProps.isMember) {
                           return null;
