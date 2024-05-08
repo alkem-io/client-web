@@ -178,14 +178,6 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
         );
       }
 
-      if (isApplicationPending(applicationState)) {
-        return (
-          <Button ref={ref as Ref<HTMLButtonElement>} disabled>
-            {t('components.application-button.apply-pending')}
-          </Button>
-        );
-      }
-
       if (canAcceptInvitation) {
         if (journeyLevel > 0 && !isMember && !isParentMember) {
           return (
@@ -227,6 +219,14 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
             sx={extended ? { textTransform: 'none' } : undefined}
           >
             {getApplyJoinButtonLabel(t('components.application-button.join'))}
+          </Button>
+        );
+      }
+
+      if (isApplicationPending(applicationState)) {
+        return (
+          <Button ref={ref as Ref<HTMLButtonElement>} disabled>
+            {t('components.application-button.apply-pending')}
           </Button>
         );
       }
