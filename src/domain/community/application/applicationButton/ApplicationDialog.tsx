@@ -126,6 +126,7 @@ const ApplicationDialog: FC<ApplicationDialogProps> = ({
               <>
                 <Gutters disablePadding>
                   <FormikEffect onChange={handleChange} onStatusChange={onStatusChange} />
+                  {canJoinCommunity && <BlockTitle>{t('pages.space.application.subheaderJoin')}</BlockTitle>}
                   {!canJoinCommunity &&
                     (description ? (
                       <WrapperMarkdown>{description}</WrapperMarkdown>
@@ -146,9 +147,13 @@ const ApplicationDialog: FC<ApplicationDialogProps> = ({
                       maxLength={x.maxLength}
                     />
                   ))}
-                  <BlockTitle>{communityGuidelines?.displayName}</BlockTitle>
-                  <WrapperMarkdown>{communityGuidelines?.description ?? ''}</WrapperMarkdown>
-                  <References compact references={communityGuidelines?.references} />
+                  {communityGuidelines && (
+                    <>
+                      <BlockTitle>{communityGuidelines.displayName}</BlockTitle>
+                      <WrapperMarkdown>{communityGuidelines.description ?? ''}</WrapperMarkdown>
+                      <References compact references={communityGuidelines.references} />
+                    </>
+                  )}
                 </Gutters>
               </>
             );
