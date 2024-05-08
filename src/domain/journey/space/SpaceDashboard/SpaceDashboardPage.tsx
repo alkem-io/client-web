@@ -48,11 +48,7 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
               readUsersAccess={entities.permissions.readUsers}
               leadUsers={entities.space?.community?.leadUsers}
               leadOrganizations={entities.hostOrganizations}
-              activities={entities.activities}
-              fetchMoreActivities={entities.fetchMoreActivities}
-              activityLoading={entities.activityLoading}
               callouts={callouts}
-              topCallouts={entities.topCallouts}
               journeyTypeName="space"
               myMembershipStatus={entities.space?.community?.myMembershipStatus}
               shareUpdatesUrl={buildUpdatesUrl(entities.space?.profile.url ?? '')}

@@ -97,10 +97,6 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
               memberOrganizations={entities.memberOrganizations}
               memberOrganizationsCount={entities.memberOrganizationsCount}
               leadUsers={entities.challenge?.community?.leadUsers}
-              activities={entities.activities}
-              fetchMoreActivities={entities.fetchMoreActivities}
-              activityLoading={state.activityLoading}
-              topCallouts={entities.topCallouts}
               callouts={callouts}
               sendMessageToCommunityLeads={entities.sendMessageToCommunityLeads}
               journeyTypeName="subspace"

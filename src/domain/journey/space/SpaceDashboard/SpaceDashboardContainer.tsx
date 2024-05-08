@@ -9,19 +9,14 @@ import {
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
 import {
-  ActivityEventType,
   AssociatedOrganizationDetailsFragment,
   AuthorizationPrivilege,
   CalloutGroupName,
   CommunityMembershipStatus,
-  DashboardTopCalloutFragment,
   Reference,
   SpacePageFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
-import { ActivityLogResultType } from '../../../collaboration/activity/ActivityLog/ActivityComponent';
-import useActivityOnCollaboration from '../../../collaboration/activity/useActivityLogOnCollaboration/useActivityOnCollaboration';
 import useCallouts, { UseCalloutsProvided } from '../../../collaboration/callout/useCallouts/useCallouts';
-import { RECENT_ACTIVITIES_LIMIT_INITIAL, TOP_CALLOUTS_LIMIT } from '../../common/journeyDashboard/constants';
 import useSpaceDashboardNavigation, {
   DashboardNavigationItem,
 } from '../spaceDashboardNavigation/useSpaceDashboardNavigation';
@@ -39,12 +34,8 @@ export interface SpaceContainerEntities {
   };
   isAuthenticated: boolean;
   isMember: boolean;
-  activities: ActivityLogResultType[] | undefined;
-  fetchMoreActivities: (limit: number) => void;
-  activityLoading: boolean;
   references: Reference[] | undefined;
   hostOrganizations: AssociatedOrganizationDetailsFragment[] | undefined;
-  topCallouts: DashboardTopCalloutFragment[] | undefined;
   sendMessageToCommunityLeads: (message: string) => Promise<void>;
   callouts: UseCalloutsProvided;
 }
@@ -77,8 +68,6 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ spaceId, 
     skip: !spaceId,
   });
 
-  const collaborationID = _space?.space?.collaboration?.id;
-
   const isMember = _space?.space.community?.myMembershipStatus === CommunityMembershipStatus.Member;
 
   // don't load references without READ privilege on Context
@@ -105,22 +94,6 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ spaceId, 
     readUsers: user?.hasPlatformPrivilege(AuthorizationPrivilege.ReadUsers) || false,
   };
 
-  const activityTypes = Object.values(ActivityEventType).filter(
-    activityType =>
-      activityType !== ActivityEventType.MemberJoined &&
-      activityType !== ActivityEventType.CalloutWhiteboardContentModified
-  );
-
-  const {
-    activities,
-    loading: activityLoading,
-    fetchMoreActivities,
-  } = useActivityOnCollaboration(collaborationID || '', {
-    skip: !permissions.spaceReadAccess || !permissions.readUsers,
-    types: activityTypes,
-    limit: RECENT_ACTIVITIES_LIMIT_INITIAL,
-  });
-
   const { dashboardNavigation, loading: dashboardNavigationLoading } = useSpaceDashboardNavigation({
     spaceId: spaceId!, // spaceReadAccess implies presence of spaceId
     skip: !permissions.spaceReadAccess,
@@ -129,8 +102,6 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ spaceId, 
   const references = referencesData?.space?.profile.references;
 
   const hostOrganizations = useMemo(() => (_space?.space.account.host ? [_space.space.account.host] : []), [_space]);
-
-  const topCallouts = _space?.space.collaboration?.callouts?.slice(0, TOP_CALLOUTS_LIMIT);
 
   const communityId = _space?.space.community?.id ?? '';
 
@@ -167,11 +138,7 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ spaceId, 
           isAuthenticated,
           isMember,
           references,
-          activities,
-          fetchMoreActivities,
-          activityLoading,
           hostOrganizations,
-          topCallouts,
           sendMessageToCommunityLeads: handleSendMessageToCommunityLeads,
           callouts,
         },
