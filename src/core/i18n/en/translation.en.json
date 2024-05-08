@@ -504,7 +504,9 @@
         "InnovationFlowTemplate": "Innovation Flow",
         "InnovationFlowTemplate_plural": "Innovation Flows",
         "CalloutTemplate": "Callout Template",
-        "CalloutTemplate_plural": "Callout Templates"
+        "CalloutTemplate_plural": "Callout Templates",
+        "MemberGuidelinesTemplate": "Member Guidelines Template",
+        "MemberGuidelinesTemplate_plural": "Member Guidelines Templates"
       },
       "calloutType": {
         "LINK_COLLECTION": "Link Collection",
