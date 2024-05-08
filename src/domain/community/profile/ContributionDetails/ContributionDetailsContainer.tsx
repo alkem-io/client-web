@@ -46,7 +46,7 @@ export interface ContributionDetails {
 }
 
 const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entities, children }) => {
-  const { spaceId, subspaceId: challengeId, subsubspaceId: opportunityId } = entities;
+  const { spaceId, challengeId, opportunityId } = entities;
   const { user: userMetadata } = useUserContext();
   const userId = userMetadata?.user?.id;
   const { data: spaceData, loading: spaceLoading } = useSpaceContributionDetailsQuery({
