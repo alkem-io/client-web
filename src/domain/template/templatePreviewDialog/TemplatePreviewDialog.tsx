@@ -21,6 +21,9 @@ import { Identifiable } from '../../../core/utils/Identifiable';
 import CalloutTemplatePreview from '../calloutTemplate/CalloutTemplatePreview';
 import CalloutTemplateCard, { CalloutTemplate } from '../calloutTemplate/CalloutTemplateCard';
 import { InnovationFlowState } from '../../collaboration/InnovationFlow/InnovationFlow';
+import { MemberGuidelinesTemplate } from '../../collaboration/memberGuidelines/MemberGuidelinesTemplateCard/MemberGuidelines';
+import MemberGuidelinesTemplateCard from '../../collaboration/memberGuidelines/MemberGuidelinesTemplateCard/MemberGuidelinesTemplateCard';
+import MemberGuidelinesTemplatePreview from '../../collaboration/memberGuidelines/MemberGuidelinesTemplateLibrary/MemberGuidelinesTemplatePreview';
 
 export type TemplatePreview =
   | {
@@ -38,11 +41,11 @@ export type TemplatePreview =
   | {
       template: CalloutTemplate & Identifiable;
       templateType: TemplateType.CalloutTemplate;
+    }
+  | {
+      template: MemberGuidelinesTemplate;
+      templateType: TemplateType.MemberGuidelinesTemplate;
     };
-// | {
-//     template: MemberGuidelinesTemplate;
-//     templateType: TemplateType.MemberGuidelines;
-//   };
 
 const Noop = () => null;
 
@@ -116,18 +119,18 @@ const TemplatePreviewChooser = ({ templatePreview, ...props }: TemplatePreviewCh
         />
       );
     }
-    // case TemplateType.MemberGuidelines: {
-    //   return (
-    //     <CollaborationTemplatesLibraryPreview
-    //       {...{
-    //         ...templatePreview,
-    //         templateCardComponent: MemberGuidelinesTemplateCard,
-    //         templatePreviewComponent: MemberGuidelinesTemplatePreview,
-    //       }}
-    //       {...props}
-    //     />
-    //   );
-    // }
+    case TemplateType.MemberGuidelinesTemplate: {
+      return (
+        <CollaborationTemplatesLibraryPreview
+          {...{
+            ...templatePreview,
+            templateCardComponent: MemberGuidelinesTemplateCard,
+            templatePreviewComponent: MemberGuidelinesTemplatePreview,
+          }}
+          {...props}
+        />
+      );
+    }
   }
 };
 

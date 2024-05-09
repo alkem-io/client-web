@@ -34,7 +34,7 @@ const CalloutTemplateCardFooter = ({ callout, innovationPack, loading }: Callout
       <SwapColors>
         <Gutters row component={Paper} height={gutters(2)} alignItems="center" justifyContent="space-evenly" square>
           {CalloutTypeIcon && <CalloutTypeIcon />}
-          {callout?.contributionPolicy.allowedContributionTypes.map(type => {
+          {callout?.contributionPolicy?.allowedContributionTypes.map(type => {
             const Icon = CONTRIBUTION_ICON[type];
             return <Icon key={type} />;
           })}
