@@ -6,11 +6,9 @@ import {
   CalloutsQueryVariables,
   CommunityMembershipStatus,
   DashboardLeadUserFragment,
-  DashboardTopCalloutFragment,
   SpaceWelcomeBlockContributorProfileFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
 import DashboardUpdatesSection from '../../../shared/components/DashboardSections/DashboardUpdatesSection';
-import { ActivityLogResultType } from '../../../collaboration/activity/ActivityLog/ActivityComponent';
 import PageContent from '../../../../core/ui/content/PageContent';
 import { JourneyTypeName } from '../../JourneyTypeName';
 import DashboardCalendarSection from '../../../shared/components/DashboardSections/DashboardCalendarSection';
@@ -48,15 +46,11 @@ interface SpaceDashboardViewProps {
   leadUsers: (SpaceWelcomeBlockContributor & DashboardLeadUserFragment)[] | undefined;
   communityReadAccess: boolean;
   timelineReadAccess?: boolean;
-  activities: ActivityLogResultType[] | undefined;
-  fetchMoreActivities: (limit: number) => void;
-  activityLoading: boolean;
   entityReadAccess: boolean;
   readUsersAccess: boolean;
   childEntitiesCount?: number;
   journeyTypeName: JourneyTypeName;
   recommendations?: ReactNode;
-  topCallouts: DashboardTopCalloutFragment[] | undefined;
   loading: boolean;
   shareUpdatesUrl: string;
   myMembershipStatus: CommunityMembershipStatus | undefined;
@@ -100,7 +94,7 @@ const SpaceDashboardView = ({
     <>
       {directMessageDialog}
       <PageContent>
-        <ApplicationButtonContainer subspaceId={spaceId}>
+        <ApplicationButtonContainer journeyId={spaceId}>
           {({ applicationButtonProps }, { loading }) => {
             if (loading || applicationButtonProps.isMember) {
               return null;
