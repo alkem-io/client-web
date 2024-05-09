@@ -3,10 +3,10 @@ query subspacesInSpace($spaceId: UUID_NAMEID!) {
     id
     subspaces {
       id
-      nameID
       profile {
         id
         displayName
+        url
       }
     }
   }

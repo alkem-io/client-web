@@ -14,6 +14,7 @@ import Redirect from '../../../../core/routing/Redirect';
 import SpaceCalloutPage from '../spaceCalloutPage/SpaceCalloutPage';
 import SpaceCommunityPage from '../SpaceCommunityPage/SpaceCommunityPage';
 import KnowledgeBasePage from '../../../collaboration/KnowledgeBase/KnowedgeBasePage';
+import { SpaceRoute as SpaceSettingsRoute } from '../../../platform/admin/space/routing/SpaceRoute';
 
 export const SpaceRoute = () => {
   return (
@@ -33,6 +34,7 @@ export const SpaceRoute = () => {
       <Route path={routes.About} element={<SpaceDashboardPage dialog="about" />} />
       <Route path={routes.Subspaces} element={<SpaceSubspacesPage />} />
       <Route path={routes.KnowledgeBase} element={<KnowledgeBasePage />} />
+      <Route path={`${routes.Settings}/*`} element={<SpaceSettingsRoute />} />
       <Route
         path="*"
         element={

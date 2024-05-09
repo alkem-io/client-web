@@ -2229,6 +2229,8 @@ export type License = {
   featureFlags: Array<LicenseFeatureFlag>;
   /** The ID of the entity */
   id: Scalars['UUID'];
+  /** The privileges granted based on this License. */
+  privileges?: Maybe<Array<LicensePrivilege>>;
   /** Visibility of the Space. */
   visibility: SpaceVisibility;
 };
@@ -2244,6 +2246,29 @@ export type LicenseFeatureFlag = {
 export enum LicenseFeatureFlagName {
   CalloutToCalloutTemplate = 'CALLOUT_TO_CALLOUT_TEMPLATE',
   VirtualContributors = 'VIRTUAL_CONTRIBUTORS',
+  WhiteboardMultiUser = 'WHITEBOARD_MULTI_USER',
+}
+
+export type LicensePolicy = {
+  __typename?: 'LicensePolicy';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The set of credential rules that are contained by this License Policy. */
+  featureFlagRules?: Maybe<Array<LicensePolicyRuleFeatureFlag>>;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+};
+
+export type LicensePolicyRuleFeatureFlag = {
+  __typename?: 'LicensePolicyRuleFeatureFlag';
+  featureFlagName: LicenseFeatureFlagName;
+  grantedPrivileges: Array<LicensePrivilege>;
+  name?: Maybe<Scalars['String']>;
+};
+
+export enum LicensePrivilege {
+  CalloutSaveAsTemplate = 'CALLOUT_SAVE_AS_TEMPLATE',
+  VirtualContributorAccess = 'VIRTUAL_CONTRIBUTOR_ACCESS',
   WhiteboardMultiUser = 'WHITEBOARD_MULTI_USER',
 }
 
@@ -2323,6 +2348,8 @@ export type LookupQueryResults = {
   profile?: Maybe<Profile>;
   /** Lookup the specified Room */
   room?: Maybe<Room>;
+  /** Lookup the specified Space */
+  space?: Maybe<Space>;
   /** Lookup the specified StorageAggregator */
   storageAggregator?: Maybe<StorageAggregator>;
   /** Lookup the specified Whiteboard */
@@ -2397,6 +2424,10 @@ export type LookupQueryResultsProfileArgs = {
 };
 
 export type LookupQueryResultsRoomArgs = {
+  ID: Scalars['UUID'];
+};
+
+export type LookupQueryResultsSpaceArgs = {
   ID: Scalars['UUID'];
 };
 
@@ -3593,6 +3624,8 @@ export type Platform = {
   latestReleaseDiscussion?: Maybe<LatestReleaseDiscussion>;
   /** The Innovation Library for the platform */
   library: Library;
+  /** The LicensePolicy in use by the platform. */
+  licensePolicy: LicensePolicy;
   /** Alkemio Services Metadata. */
   metadata: Metadata;
   /** The StorageAggregator with documents in use by Users + Organizations on the Platform. */
@@ -19861,8 +19894,7 @@ export type SubspacesInSpaceQuery = {
     subspaces: Array<{
       __typename?: 'Space';
       id: string;
-      nameID: string;
-      profile: { __typename?: 'Profile'; id: string; displayName: string };
+      profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
     }>;
   };
 };
@@ -19941,8 +19973,7 @@ export type AdminSpaceChallengesPageQuery = {
     subspaces: Array<{
       __typename?: 'Space';
       id: string;
-      nameID: string;
-      profile: { __typename?: 'Profile'; id: string; displayName: string };
+      profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
     }>;
     account: {
       __typename?: 'Account';
@@ -20486,6 +20517,15 @@ export type SubspaceInfoFragment = {
   };
 };
 
+export type SubspaceCommunityIdQueryVariables = Exact<{
+  spaceId: Scalars['UUID_NAMEID'];
+}>;
+
+export type SubspaceCommunityIdQuery = {
+  __typename?: 'Query';
+  space: { __typename?: 'Space'; id: string; community: { __typename?: 'Community'; id: string } };
+};
+
 export type SubspacePageQueryVariables = Exact<{
   spaceId: Scalars['UUID_NAMEID'];
 }>;
@@ -20762,7 +20802,6 @@ export type AdminSpacesListQuery = {
   spaces: Array<{
     __typename?: 'Space';
     id: string;
-    nameID: string;
     account: {
       __typename?: 'Account';
       id: string;
@@ -20780,7 +20819,7 @@ export type AdminSpacesListQuery = {
           }
         | undefined;
     };
-    profile: { __typename?: 'Profile'; id: string; displayName: string };
+    profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
     authorization?:
       | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
@@ -20790,7 +20829,6 @@ export type AdminSpacesListQuery = {
 export type AdminSpaceFragment = {
   __typename?: 'Space';
   id: string;
-  nameID: string;
   account: {
     __typename?: 'Account';
     id: string;
@@ -20808,7 +20846,7 @@ export type AdminSpaceFragment = {
         }
       | undefined;
   };
-  profile: { __typename?: 'Profile'; id: string; displayName: string };
+  profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;

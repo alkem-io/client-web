@@ -24,12 +24,7 @@ export const OpportunityRoute = ({ parentCommunityId }: OpportunityRouteProps) =
         <Route path="context" element={<OpportunityContextPage />} />
         <Route
           path="communications"
-          element={
-            <OpportunityCommunicationsPage
-              communityId={subspace?.community?.id}
-              parentCommunityId={parentCommunityId}
-            />
-          }
+          element={<OpportunityCommunicationsPage communityId={subspace?.community?.id} />}
         />
         <Route path="community" element={<AdminOpportunityCommunityPage />} />
         <Route

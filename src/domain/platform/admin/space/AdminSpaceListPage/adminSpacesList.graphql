@@ -6,7 +6,6 @@ query adminSpacesList {
 
 fragment AdminSpace on Space {
   id
-  nameID
   account {
     id
     license {
@@ -28,6 +27,7 @@ fragment AdminSpace on Space {
   profile {
     id
     displayName
+    url
   }
   authorization {
     id

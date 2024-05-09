@@ -56,7 +56,7 @@ export const SpaceList: FC = () => {
         .map(space => ({
           ...space,
           displayName: space.profile.displayName,
-          url: buildJourneyAdminUrl(space.nameID),
+          url: buildJourneyAdminUrl(space.profile.url),
         }))
         .map(space => ({
           ...searchableListItemMapper()(space),

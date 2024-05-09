@@ -6,7 +6,6 @@ import { Error404 } from '../../../../../core/pages/Errors/Error404';
 import SubspaceCommunicationsPage from '../../../../journey/subspace/pages/SubspaceCommunications/SubspaceCommunicationsPage';
 import ChallengeProfilePage from '../../../../journey/subspace/pages/SubspaceProfile/SubspaceProfilePage';
 import { ApplicationsAdminRoutes } from '../../community/routes/ApplicationsAdminRoutes';
-import { OpportunitiesRoute } from '../../opportunity/routing/OpportunitiesRoute';
 
 import ChallengeAuthorizationRoute from './ChallengeAuthorizationRoute';
 import CommunityGroupsRoute from '../../community/routes/CommunityGroupsAdminRoutes';
@@ -14,6 +13,7 @@ import SubspaceContextPage from '../../../../journey/subspace/pages/SubspaceCont
 import { StorageConfigContextProvider } from '../../../../storage/StorageBucket/StorageConfigContext';
 import AdminChallengeCommunityPage from '../../../../journey/subspace/pages/AdminSubspaceCommunityPage';
 import SpaceSettingsPage from '../../../../journey/space/pages/SpaceSettings/SpaceSettingsPage';
+import ChallengeOpportunitiesPage from '../../../../journey/subspace/pages/SubspaceSubspaces/SubspaceSubspacesPage';
 
 export const ChallengeRoute: FC = () => {
   const { communityId: spaceCommunityId } = useSpace();
@@ -27,17 +27,14 @@ export const ChallengeRoute: FC = () => {
           <Route index element={<Navigate to="profile" replace />} />
           <Route path="profile" element={<ChallengeProfilePage />} />
           <Route path="context" element={<SubspaceContextPage />} />
-          <Route
-            path="communications"
-            element={<SubspaceCommunicationsPage communityId={communityId} parentCommunityId={spaceCommunityId} />}
-          />
+          <Route path="communications" element={<SubspaceCommunicationsPage communityId={communityId} />} />
           <Route
             path="community/groups/*"
             element={
               <CommunityGroupsRoute communityId={challenge?.community?.id} parentCommunityId={spaceCommunityId} />
             }
           />
-          <Route path="opportunities/*" element={<OpportunitiesRoute parentCommunityId={communityId} />} />
+          <Route path="opportunities/*" element={<ChallengeOpportunitiesPage />} />
           <Route path="community" element={<AdminChallengeCommunityPage />} />
           <Route path="settings" element={<SpaceSettingsPage />} />
           <Route path="community/applications/*" element={<ApplicationsAdminRoutes />} />
