@@ -3,11 +3,9 @@ import React, { FC } from 'react';
 import { useUserContext } from '../../../community/user';
 import { ContainerChildProps } from '../../../../core/container/container';
 import {
-  ActivityEventType,
   AuthorizationPrivilege,
   CalloutGroupName,
   CommunityMembershipStatus,
-  DashboardTopCalloutFragment,
   Reference,
   SubspacePageFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
@@ -16,10 +14,7 @@ import { MetricType } from '../../../platform/metrics/MetricType';
 import { EntityDashboardContributors } from '../../../community/community/EntityDashboardContributorsSection/Types';
 import useCommunityMembersAsCardProps from '../../../community/community/utils/useCommunityMembersAsCardProps';
 import useCallouts, { UseCalloutsProvided } from '../../../collaboration/callout/useCallouts/useCallouts';
-import { ActivityLogResultType } from '../../../collaboration/activity/ActivityLog/ActivityComponent';
-import useActivityOnCollaboration from '../../../collaboration/activity/useActivityLogOnCollaboration/useActivityOnCollaboration';
 import useSendMessageToCommunityLeads from '../../../community/CommunityLeads/useSendMessageToCommunityLeads';
-import { RECENT_ACTIVITIES_LIMIT_INITIAL, TOP_CALLOUTS_LIMIT } from '../../common/journeyDashboard/constants';
 import {
   useLegacySubspaceDashboardPageQuery,
   useSpaceDashboardReferencesQuery,
@@ -37,9 +32,6 @@ export interface SubspaceContainerEntities extends EntityDashboardContributors {
   };
   isAuthenticated: boolean;
   isMember: boolean;
-  activities: ActivityLogResultType[] | undefined;
-  fetchMoreActivities: (limit: number) => void;
-  topCallouts: DashboardTopCalloutFragment[] | undefined;
   sendMessageToCommunityLeads: (message: string) => Promise<void>;
   callouts: UseCalloutsProvided;
 }
@@ -49,7 +41,6 @@ export interface ChallengeContainerActions {}
 export interface ChallengeContainerState {
   loading: boolean;
   error?: ApolloError;
-  activityLoading: boolean;
 }
 
 export interface ChallengePageContainerProps
@@ -69,8 +60,6 @@ export const SubspacePageContainer: FC<ChallengePageContainerProps> = ({ challen
     skip: !challengeId,
   });
 
-  const collaborationID = subspace?.space?.collaboration?.id;
-
   const challengePrivileges = subspace?.space?.authorization?.myPrivileges ?? NO_PRIVILEGES;
 
   const timelineReadAccess = (subspace?.space?.collaboration?.timeline?.authorization?.myPrivileges ?? []).includes(
@@ -86,20 +75,6 @@ export const SubspacePageContainer: FC<ChallengePageContainerProps> = ({ challen
     timelineReadAccess,
     readUsers: user?.hasPlatformPrivilege(AuthorizationPrivilege.ReadUsers) ?? false,
   };
-
-  const activityTypes = Object.values(ActivityEventType).filter(
-    activityType => activityType !== ActivityEventType.CalloutWhiteboardContentModified
-  );
-
-  const {
-    activities,
-    loading: activityLoading,
-    fetchMoreActivities,
-  } = useActivityOnCollaboration(collaborationID, {
-    skip: !permissions.subspaceReadAccess || !permissions.readUsers,
-    types: activityTypes,
-    limit: RECENT_ACTIVITIES_LIMIT_INITIAL,
-  });
 
   const canReadReferences = subspace?.space?.context?.authorization?.myPrivileges?.includes(
     AuthorizationPrivilege.Read
@@ -119,8 +94,6 @@ export const SubspacePageContainer: FC<ChallengePageContainerProps> = ({ challen
   const contributors = useCommunityMembersAsCardProps(subspace?.space?.community, { memberUsersCount });
 
   const references = referenceData?.space?.profile.references;
-
-  const topCallouts = subspace?.space?.collaboration?.callouts?.slice(0, TOP_CALLOUTS_LIMIT);
 
   const communityId = subspace?.space?.community?.id ?? '';
 
@@ -144,13 +117,10 @@ export const SubspacePageContainer: FC<ChallengePageContainerProps> = ({ challen
           references,
           isMember,
           ...contributors,
-          activities,
-          fetchMoreActivities,
-          topCallouts,
           sendMessageToCommunityLeads,
           callouts,
         },
-        { loading: loadingProfile, activityLoading },
+        { loading: loadingProfile },
         {}
       )}
     </>

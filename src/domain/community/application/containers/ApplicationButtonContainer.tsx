@@ -30,14 +30,14 @@ interface JoinParams {
 export interface ApplicationButtonContainerProps
   extends ContainerChildProps<ApplicationContainerEntities, ApplicationContainerActions, ApplicationContainerState> {
   parentSpaceId?: string;
-  subspaceId?: string;
+  journeyId?: string;
   loading?: boolean;
   onJoin?: (params: JoinParams) => void;
 }
 
 export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = ({
   parentSpaceId,
-  subspaceId,
+  journeyId,
   loading: loadingParams = false,
   onJoin,
   children,
@@ -52,11 +52,11 @@ export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = (
 
   const { data: _communityPrivileges, loading: communityPrivilegesLoading } = useCommunityUserPrivilegesQuery({
     variables: {
-      spaceId: subspaceId!,
+      spaceId: journeyId!,
       parentSpaceId,
       includeParentSpace: !!parentSpaceId,
     },
-    skip: loadingParams || !subspaceId,
+    skip: loadingParams || !journeyId,
   });
 
   const applyUrl = _communityPrivileges?.space.profile.url;
@@ -70,9 +70,9 @@ export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = (
   const contributionItemKeys = ['spaceId', 'subspaceId', 'subsubspaceId'] as const;
 
   // todo: add journeyId to ContributionItem ??
-  const userApplication = user?.pendingApplications?.find(x => contributionItemKeys.some(key => x[key] === subspaceId));
+  const userApplication = user?.pendingApplications?.find(x => contributionItemKeys.some(key => x[key] === journeyId));
 
-  const userInvitation = user?.pendingInvitations?.find(x => contributionItemKeys.some(key => x[key] === subspaceId));
+  const userInvitation = user?.pendingInvitations?.find(x => contributionItemKeys.some(key => x[key] === journeyId));
 
   // find an application which does not have a challengeID, meaning it's on space level,
   // but you are at least at challenge level to have a parent application
@@ -82,6 +82,7 @@ export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = (
 
   const isMember = _communityPrivileges?.space.community.myMembershipStatus === CommunityMembershipStatus.Member;
 
+  const isChildJourney = !!parentSpaceId;
   const isParentMember =
     _communityPrivileges?.parentSpace?.community?.myMembershipStatus === CommunityMembershipStatus.Member;
 
@@ -89,13 +90,17 @@ export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = (
 
   const communityPrivileges = _communityPrivileges?.space?.community?.authorization?.myPrivileges ?? [];
 
-  const canJoinCommunity = communityPrivileges.includes(AuthorizationPrivilege.CommunityJoin);
+  const canJoinCommunity =
+    (isChildJourney && isParentMember && communityPrivileges.includes(AuthorizationPrivilege.CommunityJoin)) ||
+    (!isChildJourney && communityPrivileges.includes(AuthorizationPrivilege.CommunityJoin));
 
   // Changed from parent to current space
   const canAcceptInvitation =
     _communityPrivileges?.space?.community?.myMembershipStatus === CommunityMembershipStatus.InvitationPending;
 
-  const canApplyToCommunity = communityPrivileges.includes(AuthorizationPrivilege.CommunityApply);
+  const canApplyToCommunity =
+    (isChildJourney && isParentMember && communityPrivileges.includes(AuthorizationPrivilege.CommunityApply)) ||
+    (!isChildJourney && communityPrivileges.includes(AuthorizationPrivilege.CommunityApply));
 
   const parentCommunityPrivileges = _communityPrivileges?.parentSpace?.community?.authorization?.myPrivileges ?? [];
 
