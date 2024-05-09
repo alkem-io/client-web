@@ -12,7 +12,6 @@ import { useTranslation } from 'react-i18next';
 import useNavigate from '../../../../core/routing/useNavigate';
 import JourneyAboutDialog, { JourneyAboutDialogProps } from '../JourneyAboutDialog/JourneyAboutDialog';
 import useCanGoBack from '../../../../core/routing/useCanGoBack';
-import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 
 interface JourneyUnauthorizedDialogProps
   extends Omit<JourneyAboutDialogProps, 'open' | 'startButton' | 'endButton'>,
@@ -26,14 +25,12 @@ const JourneyUnauthorizedDialog = ({
   authorized,
   loading = false,
   disabled = false,
-  subspaceId,
+  journeyId,
   parentSpaceId,
   journeyLevel,
   ...aboutDialogProps
 }: JourneyUnauthorizedDialogProps) => {
   const { t } = useTranslation();
-
-  const { journeyId } = useRouteResolver();
 
   const navigate = useNavigate();
 
@@ -53,7 +50,7 @@ const JourneyUnauthorizedDialog = ({
       open={!disabled && !loading && !authorized}
       startButton={canGoBack && <BackButton onClick={() => navigate(-1)} />}
       endButton={
-        <ApplicationButtonContainer parentSpaceId={parentSpaceId} subspaceId={subspaceId} loading={loading}>
+        <ApplicationButtonContainer parentSpaceId={parentSpaceId} journeyId={journeyId} loading={loading}>
           {(e, s) => (
             <ApplicationButton
               ref={applicationButtonRef}
