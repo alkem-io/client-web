@@ -12,7 +12,6 @@ import {
 } from '../../../../community/community/EntityDashboardContributorsSection/Types';
 import DashboardUpdatesSection from '../../../../shared/components/DashboardSections/DashboardUpdatesSection';
 import { EntityPageSection } from '../../../../shared/layout/EntityPageSection';
-import { ActivityLogResultType } from '../../../../collaboration/activity/ActivityLog/ActivityComponent';
 import ShareButton from '../../../../shared/components/ShareDialog/ShareButton';
 import PageContent from '../../../../../core/ui/content/PageContent';
 import SeeMore from '../../../../../core/ui/content/SeeMore';
@@ -25,7 +24,6 @@ import {
 } from '../../../../communication/messaging/DirectMessaging/DirectMessageDialog';
 import CalloutsGroupView from '../../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
 import { OrderUpdate, TypedCallout } from '../../../../collaboration/callout/useCallouts/useCallouts';
-import { DashboardRecentContributionsBlockProps } from '../../dashboardRecentContributionsBlock/DashboardRecentContributionsBlock';
 import FullWidthButton from '../../../../../core/ui/button/FullWidthButton';
 import { InfoOutlined } from '@mui/icons-material';
 import RouterLink from '../../../../../core/ui/link/RouterLink';
@@ -45,13 +43,9 @@ export interface JourneyDashboardViewProps
   community?: unknown;
   communityReadAccess: boolean;
   timelineReadAccess?: boolean;
-  activities: ActivityLogResultType[] | undefined;
-  fetchMoreActivities: (limit: number) => void;
-  activityLoading: boolean;
   entityReadAccess: boolean;
   readUsersAccess: boolean;
   journeyTypeName: JourneyTypeName;
-  topCallouts: DashboardRecentContributionsBlockProps['topCallouts'];
   sendMessageToCommunityLeads: (message: string) => Promise<void>;
   shareUpdatesUrl: string;
   callouts: {
