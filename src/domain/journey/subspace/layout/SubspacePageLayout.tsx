@@ -212,7 +212,7 @@ const SubspacePageLayout = ({
                     flexShrink={1}
                     minWidth={0}
                   >
-                    <ApplicationButtonContainer subspaceId={journeyId}>
+                    <ApplicationButtonContainer journeyId={journeyId} parentSpaceId={parentJourneyId}>
                       {({ applicationButtonProps }, { loading }) => {
                         if (loading || applicationButtonProps.isMember) {
                           return null;
@@ -267,7 +267,7 @@ const SubspacePageLayout = ({
               <JourneyUnauthorizedDialogContainer {...spaceReadAccess} journeyId={journeyId}>
                 {({ vision, ...props }) => (
                   <JourneyUnauthorizedDialog
-                    subspaceId={journeyId}
+                    journeyId={journeyId}
                     parentSpaceId={parentJourneyId}
                     description={vision}
                     disabled={unauthorizedDialogDisabled}

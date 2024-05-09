@@ -65,13 +65,13 @@ const SpaceExplorerContainer = ({ searchTerms, children }: SpaceExplorerContaine
     errorPolicy: 'ignore',
   });
 
-  // PUBLIC: Search for challenges
+  // PUBLIC: Search for spaces and subspaces
   const { data: rawSearchResults, loading: loadingSearchResults } = useSpaceExplorerSearchQuery({
     variables: {
       searchData: {
         terms: searchTerms,
         tagsetNames: ['skills', 'keywords'],
-        typesFilter: ['space', 'challenge'],
+        typesFilter: ['space', 'subspace'],
       },
     },
     fetchPolicy: 'no-cache',
