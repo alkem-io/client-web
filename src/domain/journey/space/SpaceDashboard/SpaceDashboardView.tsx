@@ -94,7 +94,7 @@ const SpaceDashboardView = ({
     <>
       {directMessageDialog}
       <PageContent>
-        <ApplicationButtonContainer subspaceId={spaceId}>
+        <ApplicationButtonContainer journeyId={spaceId}>
           {({ applicationButtonProps }, { loading }) => {
             if (loading || applicationButtonProps.isMember) {
               return null;
