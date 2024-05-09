@@ -65,7 +65,7 @@ const SpacePageLayout = ({
             disabled={unauthorizedDialogDisabled}
             leftColumnChildrenTop={<CommunityGuidelinesBlock communityId={communityId} />}
             journeyLevel={0}
-            subspaceId={spaceId}
+            journeyId={spaceId}
             {...props}
           />
         )}

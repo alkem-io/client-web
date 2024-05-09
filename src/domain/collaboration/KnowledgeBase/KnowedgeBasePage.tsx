@@ -40,7 +40,6 @@ const KnowledgeBasePage = () => {
             loading,
             canReadCallout,
             canCreateCallout,
-            canCreateCalloutFromTemplate,
             groupedCallouts,
             calloutNames,
             onCalloutsSortOrderUpdate,
@@ -67,7 +66,6 @@ const KnowledgeBasePage = () => {
                     journeyId={journeyId}
                     callouts={groupedCallouts[CalloutGroupName.Knowledge]}
                     canCreateCallout={canCreateCallout}
-                    canCreateCalloutFromTemplate={canCreateCalloutFromTemplate}
                     loading={loading}
                     journeyTypeName="space"
                     calloutNames={calloutNames}
@@ -82,7 +80,6 @@ const KnowledgeBasePage = () => {
               open={isCalloutCreationDialogOpen}
               onClose={handleCreateCalloutClosed}
               onCreateCallout={handleCreateCallout}
-              canCreateCalloutFromTemplate={canCreateCalloutFromTemplate}
               loading={loadingCalloutCreation}
               calloutNames={calloutNames}
               groupName={CalloutGroupName.Knowledge}

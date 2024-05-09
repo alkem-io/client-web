@@ -7,10 +7,8 @@ import {
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
 import {
-  ActivityEventType,
   AuthorizationPrivilege,
   CalloutGroupName,
-  DashboardTopCalloutFragment,
   Reference,
   SubspacePageFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
@@ -18,11 +16,8 @@ import useCommunityMembersAsCardProps from '../../../community/community/utils/u
 import { EntityDashboardContributors } from '../../../community/community/EntityDashboardContributorsSection/Types';
 import useCallouts, { UseCalloutsProvided } from '../../../collaboration/callout/useCallouts/useCallouts';
 import { useAuthenticationContext } from '../../../../core/auth/authentication/hooks/useAuthenticationContext';
-import { ActivityLogResultType } from '../../../collaboration/activity/ActivityLog/ActivityComponent';
-import useActivityOnCollaboration from '../../../collaboration/activity/useActivityLogOnCollaboration/useActivityOnCollaboration';
 import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
 import { MetricType } from '../../../platform/metrics/MetricType';
-import { RECENT_ACTIVITIES_LIMIT_INITIAL, TOP_CALLOUTS_LIMIT } from '../../common/journeyDashboard/constants';
 
 export interface OpportunityContainerEntities extends EntityDashboardContributors {
   subsubspace: SubspacePageFragment | undefined;
@@ -46,9 +41,6 @@ export interface OpportunityContainerEntities extends EntityDashboardContributor
   meme?: Reference;
   links: Reference[];
   references: Reference[] | undefined;
-  activities: ActivityLogResultType[] | undefined;
-  fetchMoreActivities: (limit: number) => void;
-  topCallouts: DashboardTopCalloutFragment[] | undefined;
   sendMessageToCommunityLeads: (message: string) => Promise<void>;
   callouts: UseCalloutsProvided;
 }
@@ -64,7 +56,6 @@ export interface OpportunityContainerActions {
 export interface OpportunityContainerState {
   loading: boolean;
   error?: ApolloError;
-  activityLoading: boolean;
 }
 
 export interface OpportunityPageContainerProps
@@ -94,7 +85,6 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ opportuni
   });
 
   const subsubspace = query?.space;
-  const collaborationID = subsubspace?.collaboration?.id;
   const opportunityPrivileges = subsubspace?.authorization?.myPrivileges ?? NO_PRIVILEGES;
   const communityPrivileges = subsubspace?.community?.authorization?.myPrivileges ?? NO_PRIVILEGES;
   const timelineReadAccess = (subsubspace?.collaboration?.timeline?.authorization?.myPrivileges ?? []).includes(
@@ -115,21 +105,7 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ opportuni
     };
   }, [opportunityPrivileges, communityPrivileges, user]);
 
-  const activityTypes = Object.values(ActivityEventType).filter(
-    activityType => activityType !== ActivityEventType.CalloutWhiteboardContentModified
-  );
-
-  const {
-    activities,
-    loading: activityLoading,
-    fetchMoreActivities,
-  } = useActivityOnCollaboration(collaborationID, {
-    skip: !permissions.subsubspaceReadAccess || !permissions.readUsers,
-    types: activityTypes,
-    limit: RECENT_ACTIVITIES_LIMIT_INITIAL,
-  });
-
-  const { profile, collaboration, metrics = [] } = subsubspace ?? {};
+  const { profile, metrics = [] } = subsubspace ?? {};
 
   const { references } = profile ?? {};
 
@@ -139,8 +115,6 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ opportuni
   const membersCount = getMetricCount(metrics, MetricType.Member);
   const memberUsersCount = membersCount - (subsubspace?.community?.memberOrganizations?.length ?? 0);
   const contributors = useCommunityMembersAsCardProps(subsubspace?.community, { memberUsersCount });
-
-  const topCallouts = collaboration?.callouts?.slice(0, TOP_CALLOUTS_LIMIT);
 
   const communityId = subsubspace?.community?.id;
 
@@ -186,16 +160,12 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ opportuni
           showActorGroupModal,
           references,
           ...contributors,
-          activities,
-          fetchMoreActivities,
-          topCallouts,
           sendMessageToCommunityLeads: handleSendMessageToCommunityLeads,
           callouts,
         },
         {
           loading: loadingOpportunity,
           error: errorOpportunity,
-          activityLoading,
         },
         {
           onMemeError: () => setHideMeme(true),
