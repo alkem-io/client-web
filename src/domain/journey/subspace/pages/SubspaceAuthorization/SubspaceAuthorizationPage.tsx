@@ -24,7 +24,7 @@ const SubspaceAuthorizationPage: FC<SubspaceAuthorizationPageProps> = ({ routePr
     },
   });
   const [updateSubspaceSettings] = useUpdateSpaceSettingsMutation();
-  const settings = settingsData?.space?.settings;
+  const settings = settingsData?.lookup.space?.settings;
 
   const handleUpdateSettings = async (
     privacyModeUpdate?: SpacePrivacyMode,

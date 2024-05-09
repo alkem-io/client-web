@@ -36,10 +36,10 @@ const ChildJourneyPageBanner = ({ journeyId, ...props }: ChildJourneyPageBannerP
     <PageBanner
       banner={bannerVisual}
       cardComponent={JourneyPageBannerCard}
-      displayName={data?.space.profile.displayName ?? ''}
-      tagline={data?.space.profile.tagline ?? ''}
-      avatar={data?.space.profile.avatar}
-      tags={data?.space.profile.tagset?.tags}
+      displayName={data?.lookup.space?.profile.displayName ?? ''}
+      tagline={data?.lookup.space?.profile.tagline ?? ''}
+      avatar={data?.lookup.space?.profile.avatar}
+      tags={data?.lookup.space?.profile.tagset?.tags}
       {...props}
     />
   );

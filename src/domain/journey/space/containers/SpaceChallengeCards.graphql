@@ -1,8 +1,10 @@
-query SpaceSubspaceCards($spaceId: UUID_NAMEID!) {
-  space(ID: $spaceId) {
-    id
-    subspaces {
-      ...SubspaceCard
+query SpaceSubspaceCards($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
+      id
+      subspaces {
+        ...SubspaceCard
+      }
     }
   }
 }

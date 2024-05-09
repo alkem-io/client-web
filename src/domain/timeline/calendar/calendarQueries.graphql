@@ -1,8 +1,10 @@
-query spaceCalendarEvents($spaceId: UUID_NAMEID!, $limit: Float) {
-  space(ID: $spaceId) {
-    id
-    collaboration {
-      ...CollaborationTimelineInfo
+query SpaceCalendarEvents($spaceId: UUID!, $limit: Float) {
+  lookup {
+    space(ID: $spaceId) {
+      id
+      collaboration {
+        ...CollaborationTimelineInfo
+      }
     }
   }
 }

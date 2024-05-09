@@ -1,28 +1,30 @@
-query AdminSpaceTemplates($spaceId: UUID_NAMEID!) {
-  space(ID: $spaceId) {
-    id
-    account {
+query AdminSpaceTemplates($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
       id
-      library {
+      account {
         id
-      authorization {
-        id
-        myPrivileges
-      }
-      calloutTemplates {
-        ...AdminCalloutTemplate
-      }
-      postTemplates {
-        ...AdminPostTemplate
-      }
-      whiteboardTemplates {
-        ...AdminWhiteboardTemplate
-      }
-      innovationFlowTemplates {
-        ...AdminInnovationFlowTemplate
+        library {
+          id
+          authorization {
+            id
+            myPrivileges
+          }
+          calloutTemplates {
+            ...AdminCalloutTemplate
+          }
+          postTemplates {
+            ...AdminPostTemplate
+          }
+          whiteboardTemplates {
+            ...AdminWhiteboardTemplate
+          }
+          innovationFlowTemplates {
+            ...AdminInnovationFlowTemplate
+          }
+        }
       }
     }
-  }
   }
 }
 

@@ -28,7 +28,7 @@ const OpportunityContextView: FC = () => {
     skip: !opportunityId,
   });
 
-  const opportunity = subspacePrfile?.space;
+  const opportunity = subspacePrfile?.lookup.space;
 
   const onSubmit = async (values: ContextFormValues) => {
     if (!opportunity) {

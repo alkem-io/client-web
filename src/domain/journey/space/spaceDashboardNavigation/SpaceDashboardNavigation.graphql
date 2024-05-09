@@ -1,48 +1,52 @@
-query SpaceDashboardNavigationChallenges($spaceId: UUID_NAMEID!) {
-  space(ID: $spaceId) {
-    id
-    profile {
-      id
-      url
-      displayName
-      avatar: visual(type: CARD) {
-        id
-        uri
-        alternativeText
-      }
-    }
-    subspaces {
+query SpaceDashboardNavigationChallenges($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
       id
       profile {
-        ...SpaceDashboardNavigationProfile
-      }
-      authorization {
         id
-        myPrivileges
+        url
+        displayName
+        avatar: visual(type: CARD) {
+          id
+          uri
+          alternativeText
+        }
       }
-      community {
-        ...SpaceDashboardNavigationCommunity
+      subspaces {
+        id
+        profile {
+          ...SpaceDashboardNavigationProfile
+        }
+        authorization {
+          id
+          myPrivileges
+        }
+        community {
+          ...SpaceDashboardNavigationCommunity
+        }
       }
     }
   }
 }
 
-query SpaceDashboardNavigationOpportunities($spaceId: UUID_NAMEID!, $challengeIds: [UUID!]!) {
-  space(ID: $spaceId) {
-    id
-    subspaces(IDs: $challengeIds) {
+query SpaceDashboardNavigationOpportunities($spaceId: UUID!, $challengeIds: [UUID!]!) {
+  lookup {
+    space(ID: $spaceId) {
       id
-      subspaces {
+      subspaces(IDs: $challengeIds) {
         id
-        authorization {
+        subspaces {
           id
-          myPrivileges
-        }
-        profile {
-          ...SpaceDashboardNavigationProfile
-        }
-        community {
-          ...SpaceDashboardNavigationCommunity
+          authorization {
+            id
+            myPrivileges
+          }
+          profile {
+            ...SpaceDashboardNavigationProfile
+          }
+          community {
+            ...SpaceDashboardNavigationCommunity
+          }
         }
       }
     }

@@ -57,7 +57,7 @@ const JourneyUnauthorizedDialogContainer = ({
   });
 
   const communityReadAccess =
-    journeyCommunityPrivilegesQueryData?.space?.community?.authorization?.myPrivileges?.includes(
+    journeyCommunityPrivilegesQueryData?.lookup.space?.community?.authorization?.myPrivileges?.includes(
       AuthorizationPrivilege.Read
     );
 
@@ -70,7 +70,7 @@ const JourneyUnauthorizedDialogContainer = ({
       !journeyId || !isUnauthorized || journeyCommunityPrivilegesLoading || Boolean(journeyCommunityPrivilegesError),
   });
 
-  const { profile, context, metrics, community } = journeyDataQueryData?.space ?? {};
+  const { profile, context, metrics, community } = journeyDataQueryData?.lookup.space ?? {};
 
   const [sendMessageToCommunityLeads] = useSendMessageToCommunityLeadsMutation();
   const handleSendMessageToCommunityLeads = useCallback(
@@ -88,7 +88,7 @@ const JourneyUnauthorizedDialogContainer = ({
   );
 
   const hostOrganizations = useMemo(
-    () => journeyDataQueryData?.space?.account.host && [journeyDataQueryData?.space.account.host],
+    () => journeyDataQueryData?.lookup.space?.account.host && [journeyDataQueryData?.lookup.space.account.host],
     [journeyDataQueryData]
   );
 

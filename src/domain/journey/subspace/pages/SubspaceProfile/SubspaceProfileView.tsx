@@ -56,7 +56,7 @@ const SubspaceProfileView: FC<ChallengeProfileViewProps> = ({ mode }) => {
     skip: mode === FormMode.create || !challengeId,
   });
 
-  const challenge = subspaceProfile?.space;
+  const challenge = subspaceProfile?.lookup.space;
 
   const isLoading = isCreating || isUpdating;
 

@@ -1,18 +1,16 @@
 import { useMemo } from 'react';
 import { useJourneyBreadcrumbsSpaceQuery } from '../../../../core/apollo/generated/apollo-hooks';
-import { JourneyLevel, JourneyPath } from '../../../../main/routing/resolvers/RouteResolver';
+import { JourneyPath } from '../../../../main/routing/resolvers/RouteResolver';
 import { VisualType } from '../../../../core/apollo/generated/graphql-schema';
+import { compact } from 'lodash';
 
 export interface BreadcrumbsItem {
   displayName: string;
   uri: string;
-  // journeyTypeName: JourneyTypeName;
   avatar?: {
     uri?: string;
   };
 }
-
-// const JOURNEY_NESTING: JourneyTypeName[] = ['space', 'subspace', 'subsubspace'];
 
 export interface UseJourneyBreadcrumbsParams {
   journeyPath: JourneyPath;
@@ -22,38 +20,26 @@ export interface UseJourneyBreadcrumbsParams {
 export const useJourneyBreadcrumbs = ({ journeyPath, loading = false }: UseJourneyBreadcrumbsParams) => {
   const currentJourneyIndex = journeyPath.length - 1;
 
-  const shouldFetchJourney = (level: JourneyLevel) => {
-    return !!journeyPath[level];
-  };
-
-  const { data: _space, loading: isLoadingSpace } = useJourneyBreadcrumbsSpaceQuery({
+  const { data, loading: isLoadingBreadcrumbs } = useJourneyBreadcrumbsSpaceQuery({
     variables: {
-      spaceId: journeyPath[0]!,
+      spaceNameId: journeyPath[0]!,
+      subspaceLevel1NameId: journeyPath[1]!,
+      subspaceLevel2NameId: journeyPath[2]!,
+      includeSubspaceLevel1: journeyPath.length > 1,
+      includeSubspaceLevel2: journeyPath.length > 2,
       visualType: VisualType.Banner,
     },
-    skip: !shouldFetchJourney(0) || loading,
+    skip: !journeyPath || journeyPath.length === 0 || loading,
   });
 
-  const { data: _challenge, loading: isLoadingChallenge } = useJourneyBreadcrumbsSpaceQuery({
-    variables: {
-      spaceId: journeyPath[1]!,
-    },
-    skip: !shouldFetchJourney(1) || loading,
-  });
-
-  const { data: _opportunity, loading: isLoadingOpportunity } = useJourneyBreadcrumbsSpaceQuery({
-    variables: {
-      spaceId: journeyPath[2]!,
-    },
-    skip: !shouldFetchJourney(2) || loading,
-  });
-
-  const journeyProfiles = [_space?.space?.profile, _challenge?.space?.profile, _opportunity?.space?.profile];
-
-  const isLoading = isLoadingSpace || isLoadingChallenge || isLoadingOpportunity;
+  const journeyProfiles = compact([
+    data?.space.profile,
+    data?.space.subspace?.profile,
+    data?.space.subspace?.subspace?.profile,
+  ]);
 
   const breadcrumbs = useMemo<BreadcrumbsItem[]>(() => {
-    if (isLoading) {
+    if (isLoadingBreadcrumbs) {
       return [];
     }
 
@@ -67,10 +53,10 @@ export const useJourneyBreadcrumbs = ({ journeyPath, loading = false }: UseJourn
         avatar: profile?.avatar,
       };
     });
-  }, [isLoading, currentJourneyIndex, _challenge, _space, _opportunity]);
+  }, [isLoadingBreadcrumbs, currentJourneyIndex, data]);
 
   return {
-    loading: isLoading,
+    loading: isLoadingBreadcrumbs,
     breadcrumbs,
   };
 };

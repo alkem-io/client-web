@@ -43,7 +43,7 @@ const RecentJourneyHydrator = ({ journey, component: Component }: RecentJourneyH
     skip: !journeyTypeName,
   });
 
-  const hydratedJourney = data?.space;
+  const hydratedJourney = data?.lookup.space;
 
   if (!journeyTypeName) {
     return null;

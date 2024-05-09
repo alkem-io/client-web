@@ -58,7 +58,7 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ spaceId, 
   const { loading: loadingSpace, permissions: spacePermissions, isPrivate, error } = useSpace();
   const { user, isAuthenticated } = useUserContext();
 
-  const { data: _space, loading: loadingSpaceQuery } = useSpacePageQuery({
+  const { data: spaceData, loading: loadingSpaceQuery } = useSpacePageQuery({
     variables: {
       spaceId: spaceId!,
       authorizedReadAccess: spacePermissions.canRead,
@@ -67,24 +67,25 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ spaceId, 
     errorPolicy: 'all',
     skip: !spaceId,
   });
+  const space = spaceData?.lookup.space;
 
-  const isMember = _space?.space.community?.myMembershipStatus === CommunityMembershipStatus.Member;
+  const isMember = space?.community?.myMembershipStatus === CommunityMembershipStatus.Member;
 
   // don't load references without READ privilege on Context
   const { data: referencesData } = useSpaceDashboardReferencesQuery({
     variables: { spaceId: spaceId! }, // having Read privilege implies presence of spaceId
-    skip: !_space?.space?.context?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Read),
+    skip: !space?.context?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Read),
   });
 
-  const communityReadAccess = (_space?.space?.community?.authorization?.myPrivileges ?? []).includes(
+  const communityReadAccess = (space?.community?.authorization?.myPrivileges ?? []).includes(
     AuthorizationPrivilege.Read
   );
 
-  const timelineReadAccess = (_space?.space?.collaboration?.timeline?.authorization?.myPrivileges ?? []).includes(
+  const timelineReadAccess = (space?.collaboration?.timeline?.authorization?.myPrivileges ?? []).includes(
     AuthorizationPrivilege.Read
   );
 
-  const spacePrivileges = _space?.space?.authorization?.myPrivileges ?? NO_PRIVILEGES;
+  const spacePrivileges = space?.authorization?.myPrivileges ?? NO_PRIVILEGES;
 
   const permissions = {
     canEdit: spacePrivileges.includes(AuthorizationPrivilege.Update),
@@ -99,11 +100,11 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ spaceId, 
     skip: !permissions.spaceReadAccess,
   });
 
-  const references = referencesData?.space?.profile.references;
+  const references = referencesData?.lookup.space?.profile.references;
 
-  const hostOrganizations = useMemo(() => (_space?.space.account.host ? [_space.space.account.host] : []), [_space]);
+  const hostOrganizations = useMemo(() => (space?.account.host ? [space.account.host] : []), [spaceData]);
 
-  const communityId = _space?.space.community?.id ?? '';
+  const communityId = space?.community?.id ?? '';
 
   const [sendMessageToCommunityLeads] = useSendMessageToCommunityLeadsMutation();
 
@@ -131,7 +132,7 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ spaceId, 
     <>
       {children(
         {
-          space: _space?.space,
+          space,
           dashboardNavigation,
           isPrivate,
           permissions,

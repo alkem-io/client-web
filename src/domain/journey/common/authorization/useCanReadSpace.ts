@@ -28,7 +28,7 @@ const useCanReadSpace = ({ spaceId }: UseCanReadSpaceParams): SpaceReadAccess =>
     skip: !spaceId,
   });
 
-  const isAuthorized = journeyPrivilegesQueryData?.space?.authorization?.myPrivileges?.includes(
+  const isAuthorized = journeyPrivilegesQueryData?.lookup.space?.authorization?.myPrivileges?.includes(
     AuthorizationPrivilege.Read
   );
 
