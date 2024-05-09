@@ -81,7 +81,6 @@ export interface UseCalloutsProvided {
   callouts: TypedCallout[] | undefined;
   groupedCallouts: Record<CalloutGroupName, TypedCallout[] | undefined>;
   canCreateCallout: boolean;
-  canCreateCalloutFromTemplate: boolean;
   canReadCallout: boolean;
   calloutNames: string[];
   loading: boolean;
@@ -102,7 +101,6 @@ const useCallouts = ({ journeyId, journeyTypeName, ...params }: UseCalloutsParam
     collaborationId,
     canReadCollaboration,
     canCreateCallout,
-    canCreateCalloutFromTemplate,
     canReadCallout,
     canSaveAsTemplate,
     loading: authorizationLoading,
@@ -217,7 +215,6 @@ const useCallouts = ({ journeyId, journeyTypeName, ...params }: UseCalloutsParam
     callouts,
     groupedCallouts,
     canCreateCallout,
-    canCreateCalloutFromTemplate,
     canReadCallout,
     calloutNames,
     loading: calloutsLoading || authorizationLoading,

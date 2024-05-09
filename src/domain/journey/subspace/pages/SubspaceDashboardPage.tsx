@@ -23,7 +23,9 @@ import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolv
 export interface ChallengeDashboardPageProps {
   dialog?: 'updates' | 'contributors' | 'calendar';
 }
-
+/**
+ * @deprecated
+ */
 const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => {
   const { t } = useTranslation();
 
@@ -54,7 +56,7 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
               journeyId={challengeId}
               journeyUrl={entities.challenge?.profile.url}
               ribbon={
-                <ApplicationButtonContainer subspaceId={entities.challenge?.id}>
+                <ApplicationButtonContainer journeyId={entities.challenge?.id}>
                   {({ applicationButtonProps }, { loading }) => {
                     if (loading || applicationButtonProps.isMember) {
                       return null;

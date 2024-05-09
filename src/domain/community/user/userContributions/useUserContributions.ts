@@ -1,5 +1,6 @@
 import { useUserContributionsQuery } from '../../../../core/apollo/generated/apollo-hooks';
-import { ContributionItem } from '../contribution';
+import { SpaceType } from '../../../../core/apollo/generated/graphql-schema';
+import { LegacyContributionItem } from '../contribution';
 import { useMemo } from 'react';
 
 const useUserContributions = (userNameId: string) => {
@@ -17,32 +18,34 @@ const useUserContributions = (userNameId: string) => {
       return undefined;
     }
 
-    const spaces = data?.rolesUser.spaces.map<ContributionItem>(e => ({
-      spaceId: e.id,
-      id: e.id,
-    }));
+    const contributions: LegacyContributionItem[] = [];
 
-    const subspaces = data?.rolesUser.spaces.flatMap<ContributionItem>(e =>
-      e.subspaces
-        .filter(c => c.type === 'CHALLENGE')
-        .map(c => ({
-          spaceId: e.id,
-          challengeId: c.id,
-          id: c.id,
-        }))
-    );
+    data.rolesUser.spaces.forEach(e => {
+      contributions.push({
+        spaceId: e.id,
+        id: e.id,
+      });
 
-    const subsubspaces = data?.rolesUser.spaces.flatMap<ContributionItem>(e =>
-      e.subspaces
-        .filter(c => c.type === 'OPPORTUNITY')
-        .map(o => ({
-          spaceId: e.id,
-          opportunityId: o.id,
-          id: o.id,
-        }))
-    );
+      e.subspaces.forEach(ss => {
+        if (ss.type === SpaceType.Challenge) {
+          contributions.push({
+            spaceId: e.id,
+            challengeId: ss.id,
+            id: ss.id,
+          });
+        }
 
-    return [...spaces, ...subspaces, ...subsubspaces];
+        if (ss.type === SpaceType.Opportunity) {
+          contributions.push({
+            spaceId: ss.id,
+            opportunityId: ss.id,
+            id: ss.id,
+          });
+        }
+      });
+    });
+
+    return contributions;
   }, [data]);
 };
 

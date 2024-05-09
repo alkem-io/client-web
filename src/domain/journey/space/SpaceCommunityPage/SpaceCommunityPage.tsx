@@ -145,7 +145,6 @@ const SpaceCommunityPage = () => {
                 journeyId={spaceId}
                 callouts={callouts.groupedCallouts[CalloutGroupName.Community]}
                 canCreateCallout={callouts.canCreateCallout}
-                canCreateCalloutFromTemplate={callouts.canCreateCalloutFromTemplate}
                 loading={callouts.loading}
                 journeyTypeName="space"
                 calloutNames={callouts.calloutNames}

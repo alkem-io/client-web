@@ -26,7 +26,6 @@ interface SubspaceHomeViewProps {
   currentInnovationFlowState: string | undefined;
   callouts: TypedCallout[] | undefined;
   canCreateCallout: boolean;
-  canCreateCalloutFromTemplate: boolean;
   calloutNames: string[];
   loading: boolean;
   refetchCallout: (calloutId: string) => void;
@@ -42,7 +41,6 @@ const SubspaceHomeView = ({
   currentInnovationFlowState,
   callouts,
   canCreateCallout,
-  canCreateCalloutFromTemplate,
   calloutNames,
   loading,
   onCalloutsSortOrderUpdate,
@@ -118,7 +116,6 @@ const SubspaceHomeView = ({
         journeyId={journeyId}
         callouts={selectedFlowStateCallouts}
         canCreateCallout={canCreateCallout && isMobile}
-        canCreateCalloutFromTemplate={canCreateCalloutFromTemplate}
         loading={loading}
         journeyTypeName={journeyTypeName}
         calloutNames={calloutNames}
@@ -136,7 +133,6 @@ const SubspaceHomeView = ({
         calloutNames={calloutNames}
         groupName={CalloutGroupName.Home}
         journeyTypeName={journeyTypeName}
-        canCreateCalloutFromTemplate={canCreateCalloutFromTemplate}
         flowState={selectedInnovationFlowState}
       />
     </>

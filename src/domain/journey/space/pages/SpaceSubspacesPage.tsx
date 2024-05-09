@@ -101,7 +101,6 @@ const SpaceSubspacesPage: FC<SpaceSubspacesPageProps> = () => {
                 journeyId={spaceId}
                 callouts={callouts.groupedCallouts[CalloutGroupName.Subspaces]}
                 canCreateCallout={callouts.canCreateCallout}
-                canCreateCalloutFromTemplate={callouts.canCreateCalloutFromTemplate}
                 loading={callouts.loading}
                 journeyTypeName="space"
                 calloutNames={callouts.calloutNames}
