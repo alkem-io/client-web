@@ -13,7 +13,7 @@ import JourneyUnauthorizedDialog from '../../common/JourneyUnauthorizedDialog/Jo
 import JourneyUnauthorizedDialogContainer from '../../common/JourneyUnauthorizedDialog/JourneyUnauthorizedDialogContainer';
 import JourneyBreadcrumbs from '../../common/journeyBreadcrumbs/JourneyBreadcrumbs';
 import PageContent from '../../../../core/ui/content/PageContent';
-import { JourneyPath } from '../../../../main/routing/resolvers/RouteResolver';
+import { JourneyLevel, JourneyPath } from '../../../../main/routing/resolvers/RouteResolver';
 import PageContentColumnBase from '../../../../core/ui/content/PageContentColumnBase';
 import { useTranslation } from 'react-i18next';
 import { KeyboardTab, Menu } from '@mui/icons-material';
@@ -51,6 +51,7 @@ import { SpaceReadAccess } from '../../common/authorization/useCanReadSpace';
 
 export interface SubspacePageLayoutProps {
   journeyId: string | undefined;
+  parentJourneyId: string | undefined;
   spaceReadAccess: SpaceReadAccess;
   journeyPath: JourneyPath;
   journeyUrl?: string | undefined; // TODO make required
@@ -58,10 +59,6 @@ export interface SubspacePageLayoutProps {
   unauthorizedDialogDisabled?: boolean;
   welcome?: ReactNode;
   actions?: ReactNode;
-  profile?: {
-    // TODO make required
-    displayName: string;
-  };
   infoColumnChildren?: ReactNode;
 }
 
@@ -107,7 +104,7 @@ const SubspacePageLayout = ({
   unauthorizedDialogDisabled = false,
   welcome,
   actions,
-  profile,
+  parentJourneyId,
   children,
   infoColumnChildren,
 }: PropsWithChildren<SubspacePageLayoutProps>) => {
@@ -215,7 +212,7 @@ const SubspacePageLayout = ({
                     flexShrink={1}
                     minWidth={0}
                   >
-                    <ApplicationButtonContainer>
+                    <ApplicationButtonContainer journeyId={journeyId} parentSpaceId={parentJourneyId}>
                       {({ applicationButtonProps }, { loading }) => {
                         if (loading || applicationButtonProps.isMember) {
                           return null;
@@ -227,7 +224,8 @@ const SubspacePageLayout = ({
                               loading={loading}
                               component={FullWidthButton}
                               extended={hasExtendedApplicationButton}
-                              journeyTypeName="subspace"
+                              journeyId={journeyId}
+                              journeyLevel={(journeyPath.length - 1) as JourneyLevel}
                             />
                           </PageContentColumn>
                         );
@@ -269,10 +267,11 @@ const SubspacePageLayout = ({
               <JourneyUnauthorizedDialogContainer {...spaceReadAccess} journeyId={journeyId}>
                 {({ vision, ...props }) => (
                   <JourneyUnauthorizedDialog
-                    subspaceId={journeyId}
-                    subspaceName={profile?.displayName}
+                    journeyId={journeyId}
+                    parentSpaceId={parentJourneyId}
                     description={vision}
                     disabled={unauthorizedDialogDisabled}
+                    journeyLevel={(journeyPath.length - 1) as JourneyLevel}
                     {...props}
                   />
                 )}

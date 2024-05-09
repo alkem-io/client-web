@@ -20,14 +20,13 @@ import { gutters } from '../../../../core/ui/grid/utils';
 import { Actions } from '../../../../core/ui/actions/Actions';
 import { LoadingButton } from '@mui/lab';
 import FormikEffectFactory from '../../../../core/ui/forms/FormikEffect';
-import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 
 const FormikEffect = FormikEffectFactory<Record<string, string>>();
 
 interface ApplicationDialogProps {
   open: boolean;
   onClose: () => void;
-  journeyTypeName: JourneyTypeName;
+  journeyId: string | undefined;
   canJoinCommunity?: boolean;
   onJoin: () => void;
   onApply?: () => void;
@@ -35,17 +34,17 @@ interface ApplicationDialogProps {
 
 const ApplicationDialog: FC<ApplicationDialogProps> = ({
   open,
+  journeyId,
   onJoin,
   onClose,
   onApply,
-  journeyTypeName,
   canJoinCommunity = false,
 }) => {
   const { t } = useTranslation();
   const [applicationQuestions, setApplicationQuestions] = useState<CreateNvpInput[]>([]);
   const [isValid, setIsValid] = useState(false);
 
-  const { data } = useApplicationCommunityQuery(journeyTypeName, canJoinCommunity);
+  const { data } = useApplicationCommunityQuery(journeyId, canJoinCommunity);
   const { description, questions = [], communityId = '', displayName: communityName, communityGuidelines } = data || {};
 
   const [createApplication, { loading: isCreationLoading }] = useApplyForCommunityMembershipMutation({
@@ -127,6 +126,7 @@ const ApplicationDialog: FC<ApplicationDialogProps> = ({
               <>
                 <Gutters disablePadding>
                   <FormikEffect onChange={handleChange} onStatusChange={onStatusChange} />
+                  {canJoinCommunity && <BlockTitle>{t('pages.space.application.subheaderJoin')}</BlockTitle>}
                   {!canJoinCommunity &&
                     (description ? (
                       <WrapperMarkdown>{description}</WrapperMarkdown>
@@ -147,9 +147,13 @@ const ApplicationDialog: FC<ApplicationDialogProps> = ({
                       maxLength={x.maxLength}
                     />
                   ))}
-                  <BlockTitle>{communityGuidelines?.displayName}</BlockTitle>
-                  <WrapperMarkdown>{communityGuidelines?.description ?? ''}</WrapperMarkdown>
-                  <References compact references={communityGuidelines?.references} />
+                  {communityGuidelines && (
+                    <>
+                      <BlockTitle>{communityGuidelines.displayName}</BlockTitle>
+                      <WrapperMarkdown>{communityGuidelines.description ?? ''}</WrapperMarkdown>
+                      <References compact references={communityGuidelines.references} />
+                    </>
+                  )}
                 </Gutters>
               </>
             );

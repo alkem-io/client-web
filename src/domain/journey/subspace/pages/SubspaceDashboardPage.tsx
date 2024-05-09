@@ -23,7 +23,9 @@ import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolv
 export interface ChallengeDashboardPageProps {
   dialog?: 'updates' | 'contributors' | 'calendar';
 }
-
+/**
+ * @deprecated
+ */
 const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => {
   const { t } = useTranslation();
 
@@ -43,6 +45,7 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
     <SubspacePageLayout
       journeyId={journeyId}
       journeyPath={journeyPath}
+      parentJourneyId={undefined}
       spaceReadAccess={{ canReadSpace: false, loading: false }}
     >
       {directMessageDialog}
@@ -53,10 +56,7 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
               journeyId={challengeId}
               journeyUrl={entities.challenge?.profile.url}
               ribbon={
-                <ApplicationButtonContainer
-                  subspaceId={entities.challenge?.id}
-                  subspaceName={entities.challenge?.profile.displayName}
-                >
+                <ApplicationButtonContainer journeyId={entities.challenge?.id}>
                   {({ applicationButtonProps }, { loading }) => {
                     if (loading || applicationButtonProps.isMember) {
                       return null;
@@ -69,7 +69,8 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
                           loading={loading}
                           component={FullWidthButton}
                           extended={hasExtendedApplicationButton}
-                          journeyTypeName="subspace"
+                          journeyLevel={-1}
+                          journeyId=""
                         />
                       </PageContentColumn>
                     );
@@ -98,10 +99,6 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
               memberOrganizations={entities.memberOrganizations}
               memberOrganizationsCount={entities.memberOrganizationsCount}
               leadUsers={entities.challenge?.community?.leadUsers}
-              activities={entities.activities}
-              fetchMoreActivities={entities.fetchMoreActivities}
-              activityLoading={state.activityLoading}
-              topCallouts={entities.topCallouts}
               callouts={callouts}
               sendMessageToCommunityLeads={entities.sendMessageToCommunityLeads}
               journeyTypeName="subspace"

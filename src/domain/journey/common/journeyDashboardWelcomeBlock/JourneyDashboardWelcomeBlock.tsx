@@ -40,7 +40,7 @@ const JourneyDashboardWelcomeBlock = ({
         <WrapperMarkdown disableParagraphPadding>{vision}</WrapperMarkdown>
       </OverflowGradient>
       {leadUsers && leadUsers.length > 0 && (
-        <Gutters row disablePadding>
+        <Gutters flexWrap="wrap" row disablePadding>
           {leadUsers.slice(0, 2).map(user => (
             <ContributorCardHorizontal
               key={user.id}
@@ -61,7 +61,7 @@ const JourneyDashboardWelcomeBlock = ({
         </Gutters>
       )}
       {leadOrganizations && leadOrganizations.length > 0 && (
-        <Gutters row disablePadding>
+        <Gutters flexWrap="wrap" row disablePadding>
           {leadOrganizations.slice(0, 2).map(org => (
             <ContributorCardHorizontal
               key={org.id}

@@ -22,6 +22,10 @@ fragment CommunityGuidelinesDetails on CommunityGuidelines {
       description
     }
   }
+  authorization {
+    id
+    myPrivileges
+  }
 }
 
 mutation updateCommunityGuidelines($communityGuidelinesData: UpdateCommunityGuidelinesInput!) {

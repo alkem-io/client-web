@@ -5,3 +5,9 @@ export interface ContributionItem extends Identifiable {
   subspaceId?: string;
   subsubspaceId?: string;
 }
+
+export interface LegacyContributionItem extends Identifiable {
+  spaceId: string;
+  challengeId?: string;
+  opportunityId?: string;
+}

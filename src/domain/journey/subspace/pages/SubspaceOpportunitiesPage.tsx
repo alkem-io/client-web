@@ -59,6 +59,7 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
       journeyId={journeyId}
       journeyPath={journeyPath}
       spaceReadAccess={{ canReadSpace: false, loading: false }}
+      parentJourneyId={undefined}
     >
       <ChallengeOpportunitiesContainer challengeId={challengeId}>
         {({ callouts, ...entities }, state) => (
@@ -100,7 +101,6 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
                 journeyId={journeyId}
                 callouts={callouts.groupedCallouts[CalloutGroupName.Subspaces]}
                 canCreateCallout={callouts.canCreateCallout}
-                canCreateCalloutFromTemplate={callouts.canCreateCalloutFromTemplate}
                 loading={callouts.loading}
                 journeyTypeName="subspace"
                 calloutNames={callouts.calloutNames}

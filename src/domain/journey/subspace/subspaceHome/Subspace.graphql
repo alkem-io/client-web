@@ -13,7 +13,6 @@ fragment SubspacePageSpace on Space {
   profile {
     id
     url
-    displayName
   }
   metrics {
     id
