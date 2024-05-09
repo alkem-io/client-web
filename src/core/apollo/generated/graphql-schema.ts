@@ -976,6 +976,7 @@ export type CalloutTemplate = {
 
 export enum CalloutType {
   LinkCollection = 'LINK_COLLECTION',
+  MemberGuidelines = 'MEMBER_GUIDELINES',
   Post = 'POST',
   PostCollection = 'POST_COLLECTION',
   Whiteboard = 'WHITEBOARD',
@@ -2240,6 +2241,8 @@ export type License = {
   featureFlags: Array<LicenseFeatureFlag>;
   /** The ID of the entity */
   id: Scalars['UUID'];
+  /** The privileges granted based on this License. */
+  privileges?: Maybe<Array<LicensePrivilege>>;
   /** Visibility of the Space. */
   visibility: SpaceVisibility;
 };
@@ -2255,6 +2258,29 @@ export type LicenseFeatureFlag = {
 export enum LicenseFeatureFlagName {
   CalloutToCalloutTemplate = 'CALLOUT_TO_CALLOUT_TEMPLATE',
   VirtualContributors = 'VIRTUAL_CONTRIBUTORS',
+  WhiteboardMultiUser = 'WHITEBOARD_MULTI_USER',
+}
+
+export type LicensePolicy = {
+  __typename?: 'LicensePolicy';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The set of credential rules that are contained by this License Policy. */
+  featureFlagRules?: Maybe<Array<LicensePolicyRuleFeatureFlag>>;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+};
+
+export type LicensePolicyRuleFeatureFlag = {
+  __typename?: 'LicensePolicyRuleFeatureFlag';
+  featureFlagName: LicenseFeatureFlagName;
+  grantedPrivileges: Array<LicensePrivilege>;
+  name?: Maybe<Scalars['String']>;
+};
+
+export enum LicensePrivilege {
+  CalloutSaveAsTemplate = 'CALLOUT_SAVE_AS_TEMPLATE',
+  VirtualContributorAccess = 'VIRTUAL_CONTRIBUTOR_ACCESS',
   WhiteboardMultiUser = 'WHITEBOARD_MULTI_USER',
 }
 
@@ -2334,6 +2360,8 @@ export type LookupQueryResults = {
   profile?: Maybe<Profile>;
   /** Lookup the specified Room */
   room?: Maybe<Room>;
+  /** Lookup the specified Space */
+  space?: Maybe<Space>;
   /** Lookup the specified StorageAggregator */
   storageAggregator?: Maybe<StorageAggregator>;
   /** Lookup the specified Whiteboard */
@@ -2408,6 +2436,10 @@ export type LookupQueryResultsProfileArgs = {
 };
 
 export type LookupQueryResultsRoomArgs = {
+  ID: Scalars['UUID'];
+};
+
+export type LookupQueryResultsSpaceArgs = {
   ID: Scalars['UUID'];
 };
 
@@ -3624,6 +3656,8 @@ export type Platform = {
   latestReleaseDiscussion?: Maybe<LatestReleaseDiscussion>;
   /** The Innovation Library for the platform */
   library: Library;
+  /** The LicensePolicy in use by the platform. */
+  licensePolicy: LicensePolicy;
   /** Alkemio Services Metadata. */
   metadata: Metadata;
   /** The StorageAggregator with documents in use by Users + Organizations on the Platform. */

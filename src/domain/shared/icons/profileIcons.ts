@@ -49,6 +49,8 @@ export const getProfileIcon = (profileType: ProfileType): ComponentType<SvgIconP
       return calloutIcons.POST;
     case ProfileType.PostTemplate:
       return calloutIcons.POST_COLLECTION;
+    case ProfileType.MemberGuidelinesTemplate:
+      return calloutIcons.MEMBER_GUIDELINES;
     case ProfileType.Space:
       return SpaceIcon;
     case ProfileType.User:

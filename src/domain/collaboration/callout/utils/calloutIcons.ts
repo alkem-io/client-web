@@ -7,6 +7,7 @@ import {
   NotesOutlined,
   PhotoLibraryOutlined,
 } from '@mui/icons-material';
+import HandshakeOutlinedIcon from '@mui/icons-material/HandshakeOutlined';
 import { WhiteboardIcon } from '../../whiteboard/icon/WhiteboardIcon';
 
 const calloutIcons: Record<CalloutType, ComponentType<SvgIconProps>> = {
@@ -15,6 +16,7 @@ const calloutIcons: Record<CalloutType, ComponentType<SvgIconProps>> = {
   [CalloutType.Post]: NotesOutlined,
   [CalloutType.LinkCollection]: FormatListBulletedOutlined,
   [CalloutType.Whiteboard]: WhiteboardIcon,
+  [CalloutType.MemberGuidelines]: HandshakeOutlinedIcon,
 } as const;
 
 export default calloutIcons;
