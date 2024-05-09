@@ -976,6 +976,7 @@ export type CalloutTemplate = {
 
 export enum CalloutType {
   LinkCollection = 'LINK_COLLECTION',
+  MemberGuidelines = 'MEMBER_GUIDELINES',
   Post = 'POST',
   PostCollection = 'POST_COLLECTION',
   Whiteboard = 'WHITEBOARD',
@@ -1553,6 +1554,17 @@ export type CreateLocationInput = {
   country?: InputMaybe<Scalars['String']>;
   postalCode?: InputMaybe<Scalars['String']>;
   stateOrProvince?: InputMaybe<Scalars['String']>;
+};
+
+export type CreateMemberGuidelinesTemplateOnTemplatesSetInput = {
+  /** The default description to be pre-filled when users create Member Guidelines based on this template. */
+  defaultDescription?: InputMaybe<Scalars['Markdown']>;
+  profile: CreateProfileInput;
+  tags?: InputMaybe<Array<Scalars['String']>>;
+  templatesSetID: Scalars['UUID'];
+  /** The type of Member Guidelines created from this Template. */
+  type: Scalars['String'];
+  visualUri?: InputMaybe<Scalars['String']>;
 };
 
 export type CreateNvpInput = {
@@ -2229,6 +2241,8 @@ export type License = {
   featureFlags: Array<LicenseFeatureFlag>;
   /** The ID of the entity */
   id: Scalars['UUID'];
+  /** The privileges granted based on this License. */
+  privileges?: Maybe<Array<LicensePrivilege>>;
   /** Visibility of the Space. */
   visibility: SpaceVisibility;
 };
@@ -2244,6 +2258,29 @@ export type LicenseFeatureFlag = {
 export enum LicenseFeatureFlagName {
   CalloutToCalloutTemplate = 'CALLOUT_TO_CALLOUT_TEMPLATE',
   VirtualContributors = 'VIRTUAL_CONTRIBUTORS',
+  WhiteboardMultiUser = 'WHITEBOARD_MULTI_USER',
+}
+
+export type LicensePolicy = {
+  __typename?: 'LicensePolicy';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The set of credential rules that are contained by this License Policy. */
+  featureFlagRules?: Maybe<Array<LicensePolicyRuleFeatureFlag>>;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+};
+
+export type LicensePolicyRuleFeatureFlag = {
+  __typename?: 'LicensePolicyRuleFeatureFlag';
+  featureFlagName: LicenseFeatureFlagName;
+  grantedPrivileges: Array<LicensePrivilege>;
+  name?: Maybe<Scalars['String']>;
+};
+
+export enum LicensePrivilege {
+  CalloutSaveAsTemplate = 'CALLOUT_SAVE_AS_TEMPLATE',
+  VirtualContributorAccess = 'VIRTUAL_CONTRIBUTOR_ACCESS',
   WhiteboardMultiUser = 'WHITEBOARD_MULTI_USER',
 }
 
@@ -2323,6 +2360,8 @@ export type LookupQueryResults = {
   profile?: Maybe<Profile>;
   /** Lookup the specified Room */
   room?: Maybe<Room>;
+  /** Lookup the specified Space */
+  space?: Maybe<Space>;
   /** Lookup the specified StorageAggregator */
   storageAggregator?: Maybe<StorageAggregator>;
   /** Lookup the specified Whiteboard */
@@ -2400,6 +2439,10 @@ export type LookupQueryResultsRoomArgs = {
   ID: Scalars['UUID'];
 };
 
+export type LookupQueryResultsSpaceArgs = {
+  ID: Scalars['UUID'];
+};
+
 export type LookupQueryResultsStorageAggregatorArgs = {
   ID: Scalars['UUID'];
 };
@@ -2442,6 +2485,20 @@ export type MeQueryResultsMySpacesArgs = {
 
 export type MeQueryResultsSpaceMembershipsArgs = {
   visibilities?: InputMaybe<Array<SpaceVisibility>>;
+};
+
+export type MemberGuidelinesTemplate = {
+  __typename?: 'MemberGuidelinesTemplate';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The default description to show to users filling our a new instance. */
+  defaultDescription: Scalars['Markdown'];
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** The Profile for this template. */
+  profile: Profile;
+  /** The type for this Member Guidelines. */
+  type: Scalars['String'];
 };
 
 /** A message that was sent either as an Update or as part of a Discussion. */
@@ -2575,6 +2632,8 @@ export type Mutation = {
   createInnovationHub: InnovationHub;
   /** Create a new InnovatonPack on the Library. */
   createInnovationPackOnLibrary: InnovationPack;
+  /** Creates a new MemberGuidelinesTemplate on the specified TemplatesSet. */
+  createMemberGuidelinesTemplate: MemberGuidelinesTemplate;
   /** Creates a new Organization on the platform. */
   createOrganization: Organization;
   /** Creates a new PostTemplate on the specified TemplatesSet. */
@@ -2963,6 +3022,10 @@ export type MutationCreateInnovationHubArgs = {
 
 export type MutationCreateInnovationPackOnLibraryArgs = {
   packData: CreateInnovationPackOnLibraryInput;
+};
+
+export type MutationCreateMemberGuidelinesTemplateArgs = {
+  memberGuidelinesTemplateInput: CreateMemberGuidelinesTemplateOnTemplatesSetInput;
 };
 
 export type MutationCreateOrganizationArgs = {
@@ -3593,6 +3656,8 @@ export type Platform = {
   latestReleaseDiscussion?: Maybe<LatestReleaseDiscussion>;
   /** The Innovation Library for the platform */
   library: Library;
+  /** The LicensePolicy in use by the platform. */
+  licensePolicy: LicensePolicy;
   /** Alkemio Services Metadata. */
   metadata: Metadata;
   /** The StorageAggregator with documents in use by Users + Organizations on the Platform. */
@@ -3831,6 +3896,7 @@ export enum ProfileType {
   InnovationFlowTemplate = 'INNOVATION_FLOW_TEMPLATE',
   InnovationHub = 'INNOVATION_HUB',
   InnovationPack = 'INNOVATION_PACK',
+  MemberGuidelinesTemplate = 'MEMBER_GUIDELINES_TEMPLATE',
   Opportunity = 'OPPORTUNITY',
   Organization = 'ORGANIZATION',
   Post = 'POST',
@@ -4910,6 +4976,12 @@ export type TemplatesSet = {
   innovationFlowTemplates: Array<InnovationFlowTemplate>;
   /** The total number of InnovationFlowTemplates in this TemplatesSet. */
   innovationFlowTemplatesCount: Scalars['Float'];
+  /** A single MemberGuidelinesTemplate */
+  memberGuidelinesTemplate?: Maybe<MemberGuidelinesTemplate>;
+  /** The MemberGuidelines in this TemplatesSet. */
+  memberGuidelinesTemplates: Array<MemberGuidelinesTemplate>;
+  /** The total number of MemberGuidelinesTemplates in this TemplatesSet. */
+  memberGuidelinesTemplatesCount: Scalars['Float'];
   /** A single PostTemplate */
   postTemplate?: Maybe<PostTemplate>;
   /** The PostTemplates in this TemplatesSet. */
@@ -4925,6 +4997,10 @@ export type TemplatesSet = {
 };
 
 export type TemplatesSetInnovationFlowTemplateArgs = {
+  ID: Scalars['UUID'];
+};
+
+export type TemplatesSetMemberGuidelinesTemplateArgs = {
   ID: Scalars['UUID'];
 };
 
@@ -24371,6 +24447,7 @@ export type InnovationLibraryQuery = {
               postTemplatesCount: number;
               whiteboardTemplatesCount: number;
               innovationFlowTemplatesCount: number;
+              memberGuidelinesTemplatesCount: number;
               postTemplates: Array<{
                 __typename?: 'PostTemplate';
                 id: string;
@@ -24437,6 +24514,29 @@ export type InnovationLibraryQuery = {
                 };
                 states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
               }>;
+              memberGuidelinesTemplates: Array<{
+                __typename?: 'MemberGuidelinesTemplate';
+                id: string;
+                type: string;
+                defaultDescription: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  description?: string | undefined;
+                  visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  tagset?:
+                    | {
+                        __typename?: 'Tagset';
+                        id: string;
+                        name: string;
+                        tags: Array<string>;
+                        allowedValues: Array<string>;
+                        type: TagsetType;
+                      }
+                    | undefined;
+                };
+              }>;
             }
           | undefined;
         provider?:
@@ -24484,6 +24584,7 @@ export type InnovationPackDataFragment = {
         postTemplatesCount: number;
         whiteboardTemplatesCount: number;
         innovationFlowTemplatesCount: number;
+        memberGuidelinesTemplatesCount: number;
         postTemplates: Array<{
           __typename?: 'PostTemplate';
           id: string;
@@ -24550,6 +24651,29 @@ export type InnovationPackDataFragment = {
           };
           states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
         }>;
+        memberGuidelinesTemplates: Array<{
+          __typename?: 'MemberGuidelinesTemplate';
+          id: string;
+          type: string;
+          defaultDescription: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            description?: string | undefined;
+            visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+            tagset?:
+              | {
+                  __typename?: 'Tagset';
+                  id: string;
+                  name: string;
+                  tags: Array<string>;
+                  allowedValues: Array<string>;
+                  type: TagsetType;
+                }
+              | undefined;
+          };
+        }>;
       }
     | undefined;
   provider?:
@@ -24573,6 +24697,7 @@ export type LibraryTemplatesFragment = {
   postTemplatesCount: number;
   whiteboardTemplatesCount: number;
   innovationFlowTemplatesCount: number;
+  memberGuidelinesTemplatesCount: number;
   postTemplates: Array<{
     __typename?: 'PostTemplate';
     id: string;
@@ -24638,6 +24763,29 @@ export type LibraryTemplatesFragment = {
         | undefined;
     };
     states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
+  }>;
+  memberGuidelinesTemplates: Array<{
+    __typename?: 'MemberGuidelinesTemplate';
+    id: string;
+    type: string;
+    defaultDescription: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      description?: string | undefined;
+      visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+      tagset?:
+        | {
+            __typename?: 'Tagset';
+            id: string;
+            name: string;
+            tags: Array<string>;
+            allowedValues: Array<string>;
+            type: TagsetType;
+          }
+        | undefined;
+    };
   }>;
 };
 

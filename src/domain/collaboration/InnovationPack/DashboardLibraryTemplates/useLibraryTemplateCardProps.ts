@@ -32,6 +32,9 @@ const useLibraryTemplateCardProps = (
             ...(innovationPack.templates?.innovationFlowTemplates ?? []).map(
               templateInnovationPackHydrator(innovationPack, TemplateType.InnovationFlowTemplate)
             ),
+            ...(innovationPack.templates?.memberGuidelinesTemplates ?? []).map(
+              templateInnovationPackHydrator(innovationPack, TemplateType.MemberGuidelinesTemplate)
+            ),
           ] as LibraryTemplateCardProps[];
         }),
         template => template.profile.displayName?.toLowerCase()

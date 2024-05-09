@@ -3422,6 +3422,23 @@ export const LibraryTemplatesFragmentDoc = gql`
       }
     }
     innovationFlowTemplatesCount
+    memberGuidelinesTemplates {
+      id
+      profile {
+        id
+        displayName
+        description
+        visual(type: CARD) {
+          ...VisualUri
+        }
+        tagset {
+          ...TagsetDetails
+        }
+      }
+      type
+      defaultDescription
+    }
+    memberGuidelinesTemplatesCount
   }
   ${VisualUriFragmentDoc}
   ${TagsetDetailsFragmentDoc}

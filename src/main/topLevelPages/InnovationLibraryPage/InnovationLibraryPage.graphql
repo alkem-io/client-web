@@ -82,4 +82,21 @@ fragment LibraryTemplates on TemplatesSet {
     }
   }
   innovationFlowTemplatesCount
+  memberGuidelinesTemplates {
+    id
+    profile {
+      id
+      displayName
+      description
+      visual(type: CARD) {
+        ...VisualUri
+      }
+      tagset {
+        ...TagsetDetails
+      }
+    }
+    type
+    defaultDescription
+  }
+  memberGuidelinesTemplatesCount
 }

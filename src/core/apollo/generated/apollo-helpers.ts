@@ -1285,16 +1285,41 @@ export type LibraryFieldPolicy = {
   innovationPacks?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type LicenseKeySpecifier = ('authorization' | 'featureFlags' | 'id' | 'visibility' | LicenseKeySpecifier)[];
+export type LicenseKeySpecifier = (
+  | 'authorization'
+  | 'featureFlags'
+  | 'id'
+  | 'privileges'
+  | 'visibility'
+  | LicenseKeySpecifier
+)[];
 export type LicenseFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   featureFlags?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  privileges?: FieldPolicy<any> | FieldReadFunction<any>;
   visibility?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type LicenseFeatureFlagKeySpecifier = ('enabled' | 'name' | LicenseFeatureFlagKeySpecifier)[];
 export type LicenseFeatureFlagFieldPolicy = {
   enabled?: FieldPolicy<any> | FieldReadFunction<any>;
+  name?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type LicensePolicyKeySpecifier = ('authorization' | 'featureFlagRules' | 'id' | LicensePolicyKeySpecifier)[];
+export type LicensePolicyFieldPolicy = {
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  featureFlagRules?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type LicensePolicyRuleFeatureFlagKeySpecifier = (
+  | 'featureFlagName'
+  | 'grantedPrivileges'
+  | 'name'
+  | LicensePolicyRuleFeatureFlagKeySpecifier
+)[];
+export type LicensePolicyRuleFeatureFlagFieldPolicy = {
+  featureFlagName?: FieldPolicy<any> | FieldReadFunction<any>;
+  grantedPrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
   name?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type LifecycleKeySpecifier = (
@@ -1358,6 +1383,7 @@ export type LookupQueryResultsKeySpecifier = (
   | 'post'
   | 'profile'
   | 'room'
+  | 'space'
   | 'storageAggregator'
   | 'whiteboard'
   | 'whiteboardTemplate'
@@ -1381,6 +1407,7 @@ export type LookupQueryResultsFieldPolicy = {
   post?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   room?: FieldPolicy<any> | FieldReadFunction<any>;
+  space?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboardTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1401,6 +1428,21 @@ export type MeQueryResultsFieldPolicy = {
   mySpaces?: FieldPolicy<any> | FieldReadFunction<any>;
   spaceMemberships?: FieldPolicy<any> | FieldReadFunction<any>;
   user?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type MemberGuidelinesTemplateKeySpecifier = (
+  | 'authorization'
+  | 'defaultDescription'
+  | 'id'
+  | 'profile'
+  | 'type'
+  | MemberGuidelinesTemplateKeySpecifier
+)[];
+export type MemberGuidelinesTemplateFieldPolicy = {
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  defaultDescription?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type MessageKeySpecifier = (
   | 'id'
@@ -1466,6 +1508,7 @@ export type MutationKeySpecifier = (
   | 'createInnovationFlowTemplate'
   | 'createInnovationHub'
   | 'createInnovationPackOnLibrary'
+  | 'createMemberGuidelinesTemplate'
   | 'createOrganization'
   | 'createPostTemplate'
   | 'createReferenceOnProfile'
@@ -1629,6 +1672,7 @@ export type MutationFieldPolicy = {
   createInnovationFlowTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   createInnovationHub?: FieldPolicy<any> | FieldReadFunction<any>;
   createInnovationPackOnLibrary?: FieldPolicy<any> | FieldReadFunction<any>;
+  createMemberGuidelinesTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   createOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   createPostTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   createReferenceOnProfile?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1865,6 +1909,7 @@ export type PlatformKeySpecifier = (
   | 'innovationHubs'
   | 'latestReleaseDiscussion'
   | 'library'
+  | 'licensePolicy'
   | 'metadata'
   | 'storageAggregator'
   | PlatformKeySpecifier
@@ -1878,6 +1923,7 @@ export type PlatformFieldPolicy = {
   innovationHubs?: FieldPolicy<any> | FieldReadFunction<any>;
   latestReleaseDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
   library?: FieldPolicy<any> | FieldReadFunction<any>;
+  licensePolicy?: FieldPolicy<any> | FieldReadFunction<any>;
   metadata?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -2709,6 +2755,9 @@ export type TemplatesSetKeySpecifier = (
   | 'innovationFlowTemplate'
   | 'innovationFlowTemplates'
   | 'innovationFlowTemplatesCount'
+  | 'memberGuidelinesTemplate'
+  | 'memberGuidelinesTemplates'
+  | 'memberGuidelinesTemplatesCount'
   | 'postTemplate'
   | 'postTemplates'
   | 'postTemplatesCount'
@@ -2724,6 +2773,9 @@ export type TemplatesSetFieldPolicy = {
   innovationFlowTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationFlowTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationFlowTemplatesCount?: FieldPolicy<any> | FieldReadFunction<any>;
+  memberGuidelinesTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
+  memberGuidelinesTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
+  memberGuidelinesTemplatesCount?: FieldPolicy<any> | FieldReadFunction<any>;
   postTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   postTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
   postTemplatesCount?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3335,6 +3387,17 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | LicenseFeatureFlagKeySpecifier | (() => undefined | LicenseFeatureFlagKeySpecifier);
     fields?: LicenseFeatureFlagFieldPolicy;
   };
+  LicensePolicy?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | LicensePolicyKeySpecifier | (() => undefined | LicensePolicyKeySpecifier);
+    fields?: LicensePolicyFieldPolicy;
+  };
+  LicensePolicyRuleFeatureFlag?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | LicensePolicyRuleFeatureFlagKeySpecifier
+      | (() => undefined | LicensePolicyRuleFeatureFlagKeySpecifier);
+    fields?: LicensePolicyRuleFeatureFlagFieldPolicy;
+  };
   Lifecycle?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | LifecycleKeySpecifier | (() => undefined | LifecycleKeySpecifier);
     fields?: LifecycleFieldPolicy;
@@ -3354,6 +3417,10 @@ export type StrictTypedTypePolicies = {
   MeQueryResults?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | MeQueryResultsKeySpecifier | (() => undefined | MeQueryResultsKeySpecifier);
     fields?: MeQueryResultsFieldPolicy;
+  };
+  MemberGuidelinesTemplate?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | MemberGuidelinesTemplateKeySpecifier | (() => undefined | MemberGuidelinesTemplateKeySpecifier);
+    fields?: MemberGuidelinesTemplateFieldPolicy;
   };
   Message?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | MessageKeySpecifier | (() => undefined | MessageKeySpecifier);

@@ -23,6 +23,10 @@ interface TemplateInnovationPack {
   };
 }
 
+export interface InnovationPackTemplate extends TemplateBase {
+  innovationPack?: TemplateInnovationPack;
+}
+
 export interface TemplateCardBaseProps<Template extends TemplateBase = TemplateBase> {
   template?: Template;
   innovationPack?: TemplateInnovationPack;
