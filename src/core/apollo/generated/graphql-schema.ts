@@ -1555,6 +1555,17 @@ export type CreateLocationInput = {
   stateOrProvince?: InputMaybe<Scalars['String']>;
 };
 
+export type CreateMemberGuidelinesTemplateOnTemplatesSetInput = {
+  /** The default description to be pre-filled when users create Member Guidelines based on this template. */
+  defaultDescription?: InputMaybe<Scalars['Markdown']>;
+  profile: CreateProfileInput;
+  tags?: InputMaybe<Array<Scalars['String']>>;
+  templatesSetID: Scalars['UUID'];
+  /** The type of Member Guidelines created from this Template. */
+  type: Scalars['String'];
+  visualUri?: InputMaybe<Scalars['String']>;
+};
+
 export type CreateNvpInput = {
   name: Scalars['String'];
   sortOrder: Scalars['Float'];
@@ -2444,6 +2455,20 @@ export type MeQueryResultsSpaceMembershipsArgs = {
   visibilities?: InputMaybe<Array<SpaceVisibility>>;
 };
 
+export type MemberGuidelinesTemplate = {
+  __typename?: 'MemberGuidelinesTemplate';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The default description to show to users filling our a new instance. */
+  defaultDescription: Scalars['Markdown'];
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** The Profile for this template. */
+  profile: Profile;
+  /** The type for this Member Guidelines. */
+  type: Scalars['String'];
+};
+
 /** A message that was sent either as an Update or as part of a Discussion. */
 export type Message = {
   __typename?: 'Message';
@@ -2575,6 +2600,8 @@ export type Mutation = {
   createInnovationHub: InnovationHub;
   /** Create a new InnovatonPack on the Library. */
   createInnovationPackOnLibrary: InnovationPack;
+  /** Creates a new MemberGuidelinesTemplate on the specified TemplatesSet. */
+  createMemberGuidelinesTemplate: MemberGuidelinesTemplate;
   /** Creates a new Organization on the platform. */
   createOrganization: Organization;
   /** Creates a new PostTemplate on the specified TemplatesSet. */
@@ -2963,6 +2990,10 @@ export type MutationCreateInnovationHubArgs = {
 
 export type MutationCreateInnovationPackOnLibraryArgs = {
   packData: CreateInnovationPackOnLibraryInput;
+};
+
+export type MutationCreateMemberGuidelinesTemplateArgs = {
+  memberGuidelinesTemplateInput: CreateMemberGuidelinesTemplateOnTemplatesSetInput;
 };
 
 export type MutationCreateOrganizationArgs = {
@@ -3831,6 +3862,7 @@ export enum ProfileType {
   InnovationFlowTemplate = 'INNOVATION_FLOW_TEMPLATE',
   InnovationHub = 'INNOVATION_HUB',
   InnovationPack = 'INNOVATION_PACK',
+  MemberGuidelinesTemplate = 'MEMBER_GUIDELINES_TEMPLATE',
   Opportunity = 'OPPORTUNITY',
   Organization = 'ORGANIZATION',
   Post = 'POST',
@@ -4910,6 +4942,12 @@ export type TemplatesSet = {
   innovationFlowTemplates: Array<InnovationFlowTemplate>;
   /** The total number of InnovationFlowTemplates in this TemplatesSet. */
   innovationFlowTemplatesCount: Scalars['Float'];
+  /** A single MemberGuidelinesTemplate */
+  memberGuidelinesTemplate?: Maybe<MemberGuidelinesTemplate>;
+  /** The MemberGuidelines in this TemplatesSet. */
+  memberGuidelinesTemplates: Array<MemberGuidelinesTemplate>;
+  /** The total number of MemberGuidelinesTemplates in this TemplatesSet. */
+  memberGuidelinesTemplatesCount: Scalars['Float'];
   /** A single PostTemplate */
   postTemplate?: Maybe<PostTemplate>;
   /** The PostTemplates in this TemplatesSet. */
@@ -4925,6 +4963,10 @@ export type TemplatesSet = {
 };
 
 export type TemplatesSetInnovationFlowTemplateArgs = {
+  ID: Scalars['UUID'];
+};
+
+export type TemplatesSetMemberGuidelinesTemplateArgs = {
   ID: Scalars['UUID'];
 };
 
@@ -24371,6 +24413,7 @@ export type InnovationLibraryQuery = {
               postTemplatesCount: number;
               whiteboardTemplatesCount: number;
               innovationFlowTemplatesCount: number;
+              memberGuidelinesTemplatesCount: number;
               postTemplates: Array<{
                 __typename?: 'PostTemplate';
                 id: string;
@@ -24437,6 +24480,29 @@ export type InnovationLibraryQuery = {
                 };
                 states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
               }>;
+              memberGuidelinesTemplates: Array<{
+                __typename?: 'MemberGuidelinesTemplate';
+                id: string;
+                type: string;
+                defaultDescription: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  description?: string | undefined;
+                  visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  tagset?:
+                    | {
+                        __typename?: 'Tagset';
+                        id: string;
+                        name: string;
+                        tags: Array<string>;
+                        allowedValues: Array<string>;
+                        type: TagsetType;
+                      }
+                    | undefined;
+                };
+              }>;
             }
           | undefined;
         provider?:
@@ -24484,6 +24550,7 @@ export type InnovationPackDataFragment = {
         postTemplatesCount: number;
         whiteboardTemplatesCount: number;
         innovationFlowTemplatesCount: number;
+        memberGuidelinesTemplatesCount: number;
         postTemplates: Array<{
           __typename?: 'PostTemplate';
           id: string;
@@ -24550,6 +24617,29 @@ export type InnovationPackDataFragment = {
           };
           states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
         }>;
+        memberGuidelinesTemplates: Array<{
+          __typename?: 'MemberGuidelinesTemplate';
+          id: string;
+          type: string;
+          defaultDescription: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            description?: string | undefined;
+            visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+            tagset?:
+              | {
+                  __typename?: 'Tagset';
+                  id: string;
+                  name: string;
+                  tags: Array<string>;
+                  allowedValues: Array<string>;
+                  type: TagsetType;
+                }
+              | undefined;
+          };
+        }>;
       }
     | undefined;
   provider?:
@@ -24573,6 +24663,7 @@ export type LibraryTemplatesFragment = {
   postTemplatesCount: number;
   whiteboardTemplatesCount: number;
   innovationFlowTemplatesCount: number;
+  memberGuidelinesTemplatesCount: number;
   postTemplates: Array<{
     __typename?: 'PostTemplate';
     id: string;
@@ -24638,6 +24729,29 @@ export type LibraryTemplatesFragment = {
         | undefined;
     };
     states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
+  }>;
+  memberGuidelinesTemplates: Array<{
+    __typename?: 'MemberGuidelinesTemplate';
+    id: string;
+    type: string;
+    defaultDescription: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      description?: string | undefined;
+      visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+      tagset?:
+        | {
+            __typename?: 'Tagset';
+            id: string;
+            name: string;
+            tags: Array<string>;
+            allowedValues: Array<string>;
+            type: TagsetType;
+          }
+        | undefined;
+    };
   }>;
 };
 

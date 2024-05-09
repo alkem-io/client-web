@@ -1402,6 +1402,21 @@ export type MeQueryResultsFieldPolicy = {
   spaceMemberships?: FieldPolicy<any> | FieldReadFunction<any>;
   user?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type MemberGuidelinesTemplateKeySpecifier = (
+  | 'authorization'
+  | 'defaultDescription'
+  | 'id'
+  | 'profile'
+  | 'type'
+  | MemberGuidelinesTemplateKeySpecifier
+)[];
+export type MemberGuidelinesTemplateFieldPolicy = {
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  defaultDescription?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type MessageKeySpecifier = (
   | 'id'
   | 'message'
@@ -1466,6 +1481,7 @@ export type MutationKeySpecifier = (
   | 'createInnovationFlowTemplate'
   | 'createInnovationHub'
   | 'createInnovationPackOnLibrary'
+  | 'createMemberGuidelinesTemplate'
   | 'createOrganization'
   | 'createPostTemplate'
   | 'createReferenceOnProfile'
@@ -1629,6 +1645,7 @@ export type MutationFieldPolicy = {
   createInnovationFlowTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   createInnovationHub?: FieldPolicy<any> | FieldReadFunction<any>;
   createInnovationPackOnLibrary?: FieldPolicy<any> | FieldReadFunction<any>;
+  createMemberGuidelinesTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   createOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   createPostTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   createReferenceOnProfile?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2709,6 +2726,9 @@ export type TemplatesSetKeySpecifier = (
   | 'innovationFlowTemplate'
   | 'innovationFlowTemplates'
   | 'innovationFlowTemplatesCount'
+  | 'memberGuidelinesTemplate'
+  | 'memberGuidelinesTemplates'
+  | 'memberGuidelinesTemplatesCount'
   | 'postTemplate'
   | 'postTemplates'
   | 'postTemplatesCount'
@@ -2724,6 +2744,9 @@ export type TemplatesSetFieldPolicy = {
   innovationFlowTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationFlowTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationFlowTemplatesCount?: FieldPolicy<any> | FieldReadFunction<any>;
+  memberGuidelinesTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
+  memberGuidelinesTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
+  memberGuidelinesTemplatesCount?: FieldPolicy<any> | FieldReadFunction<any>;
   postTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   postTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
   postTemplatesCount?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3354,6 +3377,10 @@ export type StrictTypedTypePolicies = {
   MeQueryResults?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | MeQueryResultsKeySpecifier | (() => undefined | MeQueryResultsKeySpecifier);
     fields?: MeQueryResultsFieldPolicy;
+  };
+  MemberGuidelinesTemplate?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | MemberGuidelinesTemplateKeySpecifier | (() => undefined | MemberGuidelinesTemplateKeySpecifier);
+    fields?: MemberGuidelinesTemplateFieldPolicy;
   };
   Message?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | MessageKeySpecifier | (() => undefined | MessageKeySpecifier);
