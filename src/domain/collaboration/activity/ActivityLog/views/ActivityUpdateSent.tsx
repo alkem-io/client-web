@@ -2,23 +2,24 @@ import React, { FC } from 'react';
 import { ActivityBaseView } from './ActivityBaseView';
 import { ActivityViewProps } from './ActivityViewProps';
 import { buildUpdatesUrl } from '../../../../../main/routing/urlBuilders';
-import { ActivityEventType } from '../../../../../core/apollo/generated/graphql-schema';
+import { ActivityEventType, ActivitySubjectProfileFragment } from '../../../../../core/apollo/generated/graphql-schema';
 import ActivitySubjectMarkdown from './ActivitySubjectMarkdown';
 
 export interface ActivityUpdateSentViewProps extends ActivityViewProps {
-  journeyUrl?: string;
   message: string;
   type: ActivityEventType.UpdateSent;
+  space?: {
+    profile?: ActivitySubjectProfileFragment;
+  };
 }
 
 export const ActivityUpdateSentView: FC<ActivityUpdateSentViewProps> = ({
-  journeyUrl,
   journeyDisplayName,
   message,
   type,
   ...rest
 }) => {
-  const url = buildUpdatesUrl(journeyUrl ?? '');
+  const url = buildUpdatesUrl(rest.space?.profile?.url || '');
 
   return (
     <ActivityBaseView
