@@ -95,8 +95,6 @@ fragment LibraryTemplates on TemplatesSet {
         ...TagsetDetails
       }
     }
-    type
-    defaultDescription
   }
   memberGuidelinesTemplatesCount
 }
