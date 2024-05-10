@@ -247,10 +247,6 @@ query userRolesSearchCards($userId: UUID_NAMEID_EMAIL!) {
         nameID
         roles
       }
-      subsubspaces {
-        id
-        roles
-      }
     }
     organizations {
       id

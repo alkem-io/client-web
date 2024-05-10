@@ -2214,6 +2214,8 @@ export type License = {
   featureFlags: Array<LicenseFeatureFlag>;
   /** The ID of the entity */
   id: Scalars['UUID'];
+  /** The privileges granted based on this License. */
+  privileges?: Maybe<Array<LicensePrivilege>>;
   /** Visibility of the Space. */
   visibility: SpaceVisibility;
 };
@@ -2229,6 +2231,29 @@ export type LicenseFeatureFlag = {
 export enum LicenseFeatureFlagName {
   CalloutToCalloutTemplate = 'CALLOUT_TO_CALLOUT_TEMPLATE',
   VirtualContributors = 'VIRTUAL_CONTRIBUTORS',
+  WhiteboardMultiUser = 'WHITEBOARD_MULTI_USER',
+}
+
+export type LicensePolicy = {
+  __typename?: 'LicensePolicy';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The set of credential rules that are contained by this License Policy. */
+  featureFlagRules?: Maybe<Array<LicensePolicyRuleFeatureFlag>>;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+};
+
+export type LicensePolicyRuleFeatureFlag = {
+  __typename?: 'LicensePolicyRuleFeatureFlag';
+  featureFlagName: LicenseFeatureFlagName;
+  grantedPrivileges: Array<LicensePrivilege>;
+  name?: Maybe<Scalars['String']>;
+};
+
+export enum LicensePrivilege {
+  CalloutSaveAsTemplate = 'CALLOUT_SAVE_AS_TEMPLATE',
+  VirtualContributorAccess = 'VIRTUAL_CONTRIBUTOR_ACCESS',
   WhiteboardMultiUser = 'WHITEBOARD_MULTI_USER',
 }
 
@@ -2308,6 +2333,8 @@ export type LookupQueryResults = {
   profile?: Maybe<Profile>;
   /** Lookup the specified Room */
   room?: Maybe<Room>;
+  /** Lookup the specified Space */
+  space?: Maybe<Space>;
   /** Lookup the specified StorageAggregator */
   storageAggregator?: Maybe<StorageAggregator>;
   /** Lookup the specified Whiteboard */
@@ -2382,6 +2409,10 @@ export type LookupQueryResultsProfileArgs = {
 };
 
 export type LookupQueryResultsRoomArgs = {
+  ID: Scalars['UUID'];
+};
+
+export type LookupQueryResultsSpaceArgs = {
   ID: Scalars['UUID'];
 };
 
@@ -3530,6 +3561,8 @@ export type Platform = {
   latestReleaseDiscussion?: Maybe<LatestReleaseDiscussion>;
   /** The Innovation Library for the platform */
   library: Library;
+  /** The LicensePolicy in use by the platform. */
+  licensePolicy: LicensePolicy;
   /** Alkemio Services Metadata. */
   metadata: Metadata;
   /** The StorageAggregator with documents in use by Users + Organizations on the Platform. */
@@ -4230,8 +4263,8 @@ export type RolesResultCommunity = {
   nameID: Scalars['NameID'];
   /** The roles held by the contributor */
   roles: Array<Scalars['String']>;
-  /** Details of the Groups in the Organizations the user is a member of */
-  userGroups: Array<RolesResult>;
+  /** The Type of the Space e.g. space/challenge/opportunity. */
+  type: SpaceType;
 };
 
 export type RolesResultOrganization = {
@@ -4262,12 +4295,10 @@ export type RolesResultSpace = {
   roles: Array<Scalars['String']>;
   /** The Space ID */
   spaceID: Scalars['String'];
-  /** Details of the Challenges the user is a member of */
+  /** Details of the Subspace the user is a member of */
   subspaces: Array<RolesResultCommunity>;
-  /** Details of the Opportunities the Contributor is a member of */
-  subsubspaces: Array<RolesResultCommunity>;
-  /** Details of the Groups in the Organizations the user is a member of */
-  userGroups: Array<RolesResult>;
+  /** The Type of the Space e.g. space/challenge/opportunity. */
+  type: SpaceType;
   /** Visibility of the Space. */
   visibility: SpaceVisibility;
 };
@@ -13275,6 +13306,9 @@ export type SpaceApplicationQuery = {
               }>
             | undefined;
         };
+        authorization?:
+          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+          | undefined;
       };
     };
   };
@@ -13578,6 +13612,9 @@ export type CommunityGuidelinesQuery = {
                   }>
                 | undefined;
             };
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
           };
         }
       | undefined;
@@ -13596,6 +13633,9 @@ export type CommunityGuidelinesDetailsFragment = {
       | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
       | undefined;
   };
+  authorization?:
+    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+    | undefined;
 };
 
 export type UpdateCommunityGuidelinesMutationVariables = Exact<{
@@ -13616,6 +13656,9 @@ export type UpdateCommunityGuidelinesMutation = {
         | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
         | undefined;
     };
+    authorization?:
+      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+      | undefined;
   };
 };
 
@@ -15705,14 +15748,6 @@ export type UserRolesDetailsFragment = {
       displayName: string;
       roles: Array<string>;
     }>;
-    subsubspaces: Array<{
-      __typename?: 'RolesResultCommunity';
-      id: string;
-      nameID: string;
-      displayName: string;
-      roles: Array<string>;
-    }>;
-    userGroups: Array<{ __typename?: 'RolesResult'; id: string; nameID: string; displayName: string }>;
   }>;
   organizations: Array<{
     __typename?: 'RolesResultOrganization';
@@ -16190,14 +16225,6 @@ export type UserProfileQuery = {
         displayName: string;
         roles: Array<string>;
       }>;
-      subsubspaces: Array<{
-        __typename?: 'RolesResultCommunity';
-        id: string;
-        nameID: string;
-        displayName: string;
-        roles: Array<string>;
-      }>;
-      userGroups: Array<{ __typename?: 'RolesResult'; id: string; nameID: string; displayName: string }>;
     }>;
     organizations: Array<{
       __typename?: 'RolesResultOrganization';
@@ -16560,7 +16587,6 @@ export type UserContributionDisplayNamesQuery = {
       id: string;
       displayName: string;
       subspaces: Array<{ __typename?: 'RolesResultCommunity'; id: string; displayName: string }>;
-      subsubspaces: Array<{ __typename?: 'RolesResultCommunity'; id: string; displayName: string }>;
     }>;
     organizations: Array<{ __typename?: 'RolesResultOrganization'; id: string; displayName: string }>;
   };
@@ -16578,8 +16604,7 @@ export type UserContributionsQuery = {
       __typename?: 'RolesResultSpace';
       id: string;
       nameID: string;
-      subspaces: Array<{ __typename?: 'RolesResultCommunity'; id: string; nameID: string }>;
-      subsubspaces: Array<{ __typename?: 'RolesResultCommunity'; id: string; nameID: string }>;
+      subspaces: Array<{ __typename?: 'RolesResultCommunity'; id: string; nameID: string; type: SpaceType }>;
     }>;
   };
 };
@@ -24125,7 +24150,6 @@ export type UserRolesSearchCardsQuery = {
       id: string;
       roles: Array<string>;
       subspaces: Array<{ __typename?: 'RolesResultCommunity'; id: string; nameID: string; roles: Array<string> }>;
-      subsubspaces: Array<{ __typename?: 'RolesResultCommunity'; id: string; roles: Array<string> }>;
     }>;
     organizations: Array<{ __typename?: 'RolesResultOrganization'; id: string; roles: Array<string> }>;
   };
@@ -25939,7 +25963,14 @@ export type SpaceExplorerSearchQuery = {
             __typename?: 'Space';
             id: string;
             type: SpaceType;
-            authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
+            authorization?:
+              | {
+                  __typename?: 'Authorization';
+                  id: string;
+                  anonymousReadAccess: boolean;
+                  myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                }
+              | undefined;
             profile: {
               __typename?: 'Profile';
               id: string;
@@ -25975,7 +26006,14 @@ export type SpaceExplorerSearchSpaceFragment = {
     __typename?: 'Space';
     id: string;
     type: SpaceType;
-    authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
+    authorization?:
+      | {
+          __typename?: 'Authorization';
+          id: string;
+          anonymousReadAccess: boolean;
+          myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+        }
+      | undefined;
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -26025,7 +26063,14 @@ export type SpaceExplorerMemberSpacesQuery = {
       context: { __typename?: 'Context'; id: string; vision?: string | undefined };
       community: { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
     }>;
-    authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
+    authorization?:
+      | {
+          __typename?: 'Authorization';
+          id: string;
+          anonymousReadAccess: boolean;
+          myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+        }
+      | undefined;
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -26060,26 +26105,14 @@ export type SpaceExplorerAllSpacesQuery = {
       __typename?: 'Space';
       id: string;
       type: SpaceType;
-      subspaces: Array<{
-        __typename?: 'Space';
-        id: string;
-        type: SpaceType;
-        profile: {
-          __typename?: 'Profile';
-          id: string;
-          url: string;
-          tagline: string;
-          displayName: string;
-          description?: string | undefined;
-          type?: ProfileType | undefined;
-          cardBanner2?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-          avatar2?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-        };
-        context: { __typename?: 'Context'; id: string; vision?: string | undefined };
-        community: { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
-      }>;
-      authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
+      authorization?:
+        | {
+            __typename?: 'Authorization';
+            id: string;
+            anonymousReadAccess: boolean;
+            myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+          }
+        | undefined;
       profile: {
         __typename?: 'Profile';
         id: string;
@@ -26107,11 +26140,49 @@ export type SpaceExplorerAllSpacesQuery = {
   };
 };
 
+export type SpaceExplorerSubspacesQueryVariables = Exact<{
+  IDs?: InputMaybe<Array<Scalars['UUID']> | Scalars['UUID']>;
+}>;
+
+export type SpaceExplorerSubspacesQuery = {
+  __typename?: 'Query';
+  spaces: Array<{
+    __typename?: 'Space';
+    id: string;
+    subspaces: Array<{
+      __typename?: 'Space';
+      id: string;
+      type: SpaceType;
+      profile: {
+        __typename?: 'Profile';
+        id: string;
+        url: string;
+        tagline: string;
+        displayName: string;
+        description?: string | undefined;
+        type?: ProfileType | undefined;
+        cardBanner2?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+        avatar2?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+      };
+      context: { __typename?: 'Context'; id: string; vision?: string | undefined };
+      community: { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
+    }>;
+  }>;
+};
+
 export type SpaceExplorerSpaceFragment = {
   __typename?: 'Space';
   id: string;
   type: SpaceType;
-  authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
+  authorization?:
+    | {
+        __typename?: 'Authorization';
+        id: string;
+        anonymousReadAccess: boolean;
+        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+      }
+    | undefined;
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -26148,49 +26219,6 @@ export type SpaceExplorerSubspaceFragment = {
     avatar2?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
   };
   context: { __typename?: 'Context'; id: string; vision?: string | undefined };
-  community: { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
-};
-
-export type SpaceExplorerSpaceWithChallengesFragment = {
-  __typename?: 'Space';
-  id: string;
-  type: SpaceType;
-  subspaces: Array<{
-    __typename?: 'Space';
-    id: string;
-    type: SpaceType;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      url: string;
-      tagline: string;
-      displayName: string;
-      description?: string | undefined;
-      type?: ProfileType | undefined;
-      cardBanner2?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-      tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-      avatar2?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-    };
-    context: { __typename?: 'Context'; id: string; vision?: string | undefined };
-    community: { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
-  }>;
-  authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
-  profile: {
-    __typename?: 'Profile';
-    id: string;
-    url: string;
-    tagline: string;
-    displayName: string;
-    type?: ProfileType | undefined;
-    tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-    cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-  };
-  context: { __typename?: 'Context'; id: string; vision?: string | undefined };
-  account: {
-    __typename?: 'Account';
-    id: string;
-    license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
-  };
   community: { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
 };
 

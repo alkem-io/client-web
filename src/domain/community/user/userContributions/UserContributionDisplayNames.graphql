@@ -6,10 +6,7 @@ query UserContributionDisplayNames($userId: UUID_NAMEID_EMAIL!) {
       subspaces {
         id
         displayName
-      }
-      subsubspaces {
-        id
-        displayName
+    
       }
     }
     organizations {

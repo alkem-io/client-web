@@ -4,7 +4,6 @@ import {
   useSpaceContributionDetailsQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
-import { ContributionItem } from '../../user/contribution';
 import { getVisualByType } from '../../../common/visual/utils/visuals.utils';
 import { useUserContext } from '../../user/hooks/useUserContext';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
@@ -23,13 +22,17 @@ export interface EntityDetailsContainerActions {
   leaveCommunity: () => void;
 }
 
-export interface EntityDetailsContainerProps
+interface EntityDetailsContainerProps
   extends ContainerChildProps<
     EntityDetailsContainerEntities,
     EntityDetailsContainerActions,
     EntityDetailsContainerState
   > {
-  entities: ContributionItem;
+  entities: {
+    spaceId: string;
+    challengeId?: string;
+    opportunityId?: string;
+  };
 }
 
 export interface ContributionDetails {
@@ -46,7 +49,7 @@ export interface ContributionDetails {
 }
 
 const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entities, children }) => {
-  const { spaceId, subspaceId: challengeId, subsubspaceId: opportunityId } = entities;
+  const { spaceId, challengeId, opportunityId } = entities;
   const { user: userMetadata } = useUserContext();
   const userId = userMetadata?.user?.id;
   const { data: spaceData, loading: spaceLoading } = useSpaceContributionDetailsQuery({

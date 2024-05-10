@@ -1285,16 +1285,41 @@ export type LibraryFieldPolicy = {
   innovationPacks?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type LicenseKeySpecifier = ('authorization' | 'featureFlags' | 'id' | 'visibility' | LicenseKeySpecifier)[];
+export type LicenseKeySpecifier = (
+  | 'authorization'
+  | 'featureFlags'
+  | 'id'
+  | 'privileges'
+  | 'visibility'
+  | LicenseKeySpecifier
+)[];
 export type LicenseFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   featureFlags?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  privileges?: FieldPolicy<any> | FieldReadFunction<any>;
   visibility?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type LicenseFeatureFlagKeySpecifier = ('enabled' | 'name' | LicenseFeatureFlagKeySpecifier)[];
 export type LicenseFeatureFlagFieldPolicy = {
   enabled?: FieldPolicy<any> | FieldReadFunction<any>;
+  name?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type LicensePolicyKeySpecifier = ('authorization' | 'featureFlagRules' | 'id' | LicensePolicyKeySpecifier)[];
+export type LicensePolicyFieldPolicy = {
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  featureFlagRules?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type LicensePolicyRuleFeatureFlagKeySpecifier = (
+  | 'featureFlagName'
+  | 'grantedPrivileges'
+  | 'name'
+  | LicensePolicyRuleFeatureFlagKeySpecifier
+)[];
+export type LicensePolicyRuleFeatureFlagFieldPolicy = {
+  featureFlagName?: FieldPolicy<any> | FieldReadFunction<any>;
+  grantedPrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
   name?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type LifecycleKeySpecifier = (
@@ -1358,6 +1383,7 @@ export type LookupQueryResultsKeySpecifier = (
   | 'post'
   | 'profile'
   | 'room'
+  | 'space'
   | 'storageAggregator'
   | 'whiteboard'
   | 'whiteboardTemplate'
@@ -1381,6 +1407,7 @@ export type LookupQueryResultsFieldPolicy = {
   post?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   room?: FieldPolicy<any> | FieldReadFunction<any>;
+  space?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboardTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1849,6 +1876,7 @@ export type PlatformKeySpecifier = (
   | 'innovationHubs'
   | 'latestReleaseDiscussion'
   | 'library'
+  | 'licensePolicy'
   | 'metadata'
   | 'storageAggregator'
   | PlatformKeySpecifier
@@ -1862,6 +1890,7 @@ export type PlatformFieldPolicy = {
   innovationHubs?: FieldPolicy<any> | FieldReadFunction<any>;
   latestReleaseDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
   library?: FieldPolicy<any> | FieldReadFunction<any>;
+  licensePolicy?: FieldPolicy<any> | FieldReadFunction<any>;
   metadata?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -2250,7 +2279,7 @@ export type RolesResultCommunityKeySpecifier = (
   | 'id'
   | 'nameID'
   | 'roles'
-  | 'userGroups'
+  | 'type'
   | RolesResultCommunityKeySpecifier
 )[];
 export type RolesResultCommunityFieldPolicy = {
@@ -2258,7 +2287,7 @@ export type RolesResultCommunityFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   roles?: FieldPolicy<any> | FieldReadFunction<any>;
-  userGroups?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type RolesResultOrganizationKeySpecifier = (
   | 'displayName'
@@ -2284,8 +2313,7 @@ export type RolesResultSpaceKeySpecifier = (
   | 'roles'
   | 'spaceID'
   | 'subspaces'
-  | 'subsubspaces'
-  | 'userGroups'
+  | 'type'
   | 'visibility'
   | RolesResultSpaceKeySpecifier
 )[];
@@ -2296,8 +2324,7 @@ export type RolesResultSpaceFieldPolicy = {
   roles?: FieldPolicy<any> | FieldReadFunction<any>;
   spaceID?: FieldPolicy<any> | FieldReadFunction<any>;
   subspaces?: FieldPolicy<any> | FieldReadFunction<any>;
-  subsubspaces?: FieldPolicy<any> | FieldReadFunction<any>;
-  userGroups?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
   visibility?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type RoomKeySpecifier = ('authorization' | 'id' | 'messages' | 'messagesCount' | RoomKeySpecifier)[];
@@ -3327,6 +3354,17 @@ export type StrictTypedTypePolicies = {
   LicenseFeatureFlag?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | LicenseFeatureFlagKeySpecifier | (() => undefined | LicenseFeatureFlagKeySpecifier);
     fields?: LicenseFeatureFlagFieldPolicy;
+  };
+  LicensePolicy?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | LicensePolicyKeySpecifier | (() => undefined | LicensePolicyKeySpecifier);
+    fields?: LicensePolicyFieldPolicy;
+  };
+  LicensePolicyRuleFeatureFlag?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | LicensePolicyRuleFeatureFlagKeySpecifier
+      | (() => undefined | LicensePolicyRuleFeatureFlagKeySpecifier);
+    fields?: LicensePolicyRuleFeatureFlagFieldPolicy;
   };
   Lifecycle?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | LifecycleKeySpecifier | (() => undefined | LifecycleKeySpecifier);
