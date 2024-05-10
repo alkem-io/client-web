@@ -976,7 +976,6 @@ export type CalloutTemplate = {
 
 export enum CalloutType {
   LinkCollection = 'LINK_COLLECTION',
-  MemberGuidelines = 'MEMBER_GUIDELINES',
   Post = 'POST',
   PostCollection = 'POST_COLLECTION',
   Whiteboard = 'WHITEBOARD',
@@ -1557,13 +1556,9 @@ export type CreateLocationInput = {
 };
 
 export type CreateMemberGuidelinesTemplateOnTemplatesSetInput = {
-  /** The default description to be pre-filled when users create Member Guidelines based on this template. */
-  defaultDescription?: InputMaybe<Scalars['Markdown']>;
   profile: CreateProfileInput;
   tags?: InputMaybe<Array<Scalars['String']>>;
   templatesSetID: Scalars['UUID'];
-  /** The type of Member Guidelines created from this Template. */
-  type: Scalars['String'];
   visualUri?: InputMaybe<Scalars['String']>;
 };
 
@@ -2033,6 +2028,16 @@ export type ISearchResults = {
   journeyResultsCount: Scalars['Float'];
 };
 
+export type ITemplateBase = {
+  __typename?: 'ITemplateBase';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** The Profile for this template. */
+  profile: Profile;
+};
+
 export type IngestBatchResult = {
   __typename?: 'IngestBatchResult';
   /** A message to describe the result of the operation. */
@@ -2487,20 +2492,6 @@ export type MeQueryResultsSpaceMembershipsArgs = {
   visibilities?: InputMaybe<Array<SpaceVisibility>>;
 };
 
-export type MemberGuidelinesTemplate = {
-  __typename?: 'MemberGuidelinesTemplate';
-  /** The authorization rules for the entity */
-  authorization?: Maybe<Authorization>;
-  /** The default description to show to users filling our a new instance. */
-  defaultDescription: Scalars['Markdown'];
-  /** The ID of the entity */
-  id: Scalars['UUID'];
-  /** The Profile for this template. */
-  profile: Profile;
-  /** The type for this Member Guidelines. */
-  type: Scalars['String'];
-};
-
 /** A message that was sent either as an Update or as part of a Discussion. */
 export type Message = {
   __typename?: 'Message';
@@ -2633,7 +2624,7 @@ export type Mutation = {
   /** Create a new InnovatonPack on the Library. */
   createInnovationPackOnLibrary: InnovationPack;
   /** Creates a new MemberGuidelinesTemplate on the specified TemplatesSet. */
-  createMemberGuidelinesTemplate: MemberGuidelinesTemplate;
+  createMemberGuidelinesTemplate: ITemplateBase;
   /** Creates a new Organization on the platform. */
   createOrganization: Organization;
   /** Creates a new PostTemplate on the specified TemplatesSet. */
@@ -4977,9 +4968,9 @@ export type TemplatesSet = {
   /** The total number of InnovationFlowTemplates in this TemplatesSet. */
   innovationFlowTemplatesCount: Scalars['Float'];
   /** A single MemberGuidelinesTemplate */
-  memberGuidelinesTemplate?: Maybe<MemberGuidelinesTemplate>;
+  memberGuidelinesTemplate?: Maybe<ITemplateBase>;
   /** The MemberGuidelines in this TemplatesSet. */
-  memberGuidelinesTemplates: Array<MemberGuidelinesTemplate>;
+  memberGuidelinesTemplates: Array<ITemplateBase>;
   /** The total number of MemberGuidelinesTemplates in this TemplatesSet. */
   memberGuidelinesTemplatesCount: Scalars['Float'];
   /** A single PostTemplate */
@@ -24515,10 +24506,8 @@ export type InnovationLibraryQuery = {
                 states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
               }>;
               memberGuidelinesTemplates: Array<{
-                __typename?: 'MemberGuidelinesTemplate';
+                __typename?: 'ITemplateBase';
                 id: string;
-                type: string;
-                defaultDescription: string;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
@@ -24652,10 +24641,8 @@ export type InnovationPackDataFragment = {
           states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
         }>;
         memberGuidelinesTemplates: Array<{
-          __typename?: 'MemberGuidelinesTemplate';
+          __typename?: 'ITemplateBase';
           id: string;
-          type: string;
-          defaultDescription: string;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -24765,10 +24752,8 @@ export type LibraryTemplatesFragment = {
     states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
   }>;
   memberGuidelinesTemplates: Array<{
-    __typename?: 'MemberGuidelinesTemplate';
+    __typename?: 'ITemplateBase';
     id: string;
-    type: string;
-    defaultDescription: string;
     profile: {
       __typename?: 'Profile';
       id: string;

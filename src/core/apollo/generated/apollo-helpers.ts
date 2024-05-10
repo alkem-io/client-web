@@ -1112,6 +1112,12 @@ export type ISearchResultsFieldPolicy = {
   journeyResults?: FieldPolicy<any> | FieldReadFunction<any>;
   journeyResultsCount?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type ITemplateBaseKeySpecifier = ('authorization' | 'id' | 'profile' | ITemplateBaseKeySpecifier)[];
+export type ITemplateBaseFieldPolicy = {
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  profile?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type IngestBatchResultKeySpecifier = ('message' | 'success' | IngestBatchResultKeySpecifier)[];
 export type IngestBatchResultFieldPolicy = {
   message?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1428,21 +1434,6 @@ export type MeQueryResultsFieldPolicy = {
   mySpaces?: FieldPolicy<any> | FieldReadFunction<any>;
   spaceMemberships?: FieldPolicy<any> | FieldReadFunction<any>;
   user?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type MemberGuidelinesTemplateKeySpecifier = (
-  | 'authorization'
-  | 'defaultDescription'
-  | 'id'
-  | 'profile'
-  | 'type'
-  | MemberGuidelinesTemplateKeySpecifier
-)[];
-export type MemberGuidelinesTemplateFieldPolicy = {
-  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  defaultDescription?: FieldPolicy<any> | FieldReadFunction<any>;
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-  profile?: FieldPolicy<any> | FieldReadFunction<any>;
-  type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type MessageKeySpecifier = (
   | 'id'
@@ -3331,6 +3322,10 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | ISearchResultsKeySpecifier | (() => undefined | ISearchResultsKeySpecifier);
     fields?: ISearchResultsFieldPolicy;
   };
+  ITemplateBase?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | ITemplateBaseKeySpecifier | (() => undefined | ITemplateBaseKeySpecifier);
+    fields?: ITemplateBaseFieldPolicy;
+  };
   IngestBatchResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | IngestBatchResultKeySpecifier | (() => undefined | IngestBatchResultKeySpecifier);
     fields?: IngestBatchResultFieldPolicy;
@@ -3417,10 +3412,6 @@ export type StrictTypedTypePolicies = {
   MeQueryResults?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | MeQueryResultsKeySpecifier | (() => undefined | MeQueryResultsKeySpecifier);
     fields?: MeQueryResultsFieldPolicy;
-  };
-  MemberGuidelinesTemplate?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | MemberGuidelinesTemplateKeySpecifier | (() => undefined | MemberGuidelinesTemplateKeySpecifier);
-    fields?: MemberGuidelinesTemplateFieldPolicy;
   };
   Message?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | MessageKeySpecifier | (() => undefined | MessageKeySpecifier);

@@ -3435,8 +3435,6 @@ export const LibraryTemplatesFragmentDoc = gql`
           ...TagsetDetails
         }
       }
-      type
-      defaultDescription
     }
     memberGuidelinesTemplatesCount
   }
