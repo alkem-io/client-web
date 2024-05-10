@@ -4300,8 +4300,8 @@ export type RolesResultCommunity = {
   nameID: Scalars['NameID'];
   /** The roles held by the contributor */
   roles: Array<Scalars['String']>;
-  /** Details of the Groups in the Organizations the user is a member of */
-  userGroups: Array<RolesResult>;
+  /** The Type of the Space e.g. space/challenge/opportunity. */
+  type: SpaceType;
 };
 
 export type RolesResultOrganization = {
@@ -4332,12 +4332,10 @@ export type RolesResultSpace = {
   roles: Array<Scalars['String']>;
   /** The Space ID */
   spaceID: Scalars['String'];
-  /** Details of the Challenges the user is a member of */
+  /** Details of the Subspace the user is a member of */
   subspaces: Array<RolesResultCommunity>;
-  /** Details of the Opportunities the Contributor is a member of */
-  subsubspaces: Array<RolesResultCommunity>;
-  /** Details of the Groups in the Organizations the user is a member of */
-  userGroups: Array<RolesResult>;
+  /** The Type of the Space e.g. space/challenge/opportunity. */
+  type: SpaceType;
   /** Visibility of the Space. */
   visibility: SpaceVisibility;
 };
@@ -15909,14 +15907,6 @@ export type UserRolesDetailsFragment = {
       displayName: string;
       roles: Array<string>;
     }>;
-    subsubspaces: Array<{
-      __typename?: 'RolesResultCommunity';
-      id: string;
-      nameID: string;
-      displayName: string;
-      roles: Array<string>;
-    }>;
-    userGroups: Array<{ __typename?: 'RolesResult'; id: string; nameID: string; displayName: string }>;
   }>;
   organizations: Array<{
     __typename?: 'RolesResultOrganization';
@@ -16394,14 +16384,6 @@ export type UserProfileQuery = {
         displayName: string;
         roles: Array<string>;
       }>;
-      subsubspaces: Array<{
-        __typename?: 'RolesResultCommunity';
-        id: string;
-        nameID: string;
-        displayName: string;
-        roles: Array<string>;
-      }>;
-      userGroups: Array<{ __typename?: 'RolesResult'; id: string; nameID: string; displayName: string }>;
     }>;
     organizations: Array<{
       __typename?: 'RolesResultOrganization';
@@ -16764,7 +16746,6 @@ export type UserContributionDisplayNamesQuery = {
       id: string;
       displayName: string;
       subspaces: Array<{ __typename?: 'RolesResultCommunity'; id: string; displayName: string }>;
-      subsubspaces: Array<{ __typename?: 'RolesResultCommunity'; id: string; displayName: string }>;
     }>;
     organizations: Array<{ __typename?: 'RolesResultOrganization'; id: string; displayName: string }>;
   };
@@ -16782,8 +16763,7 @@ export type UserContributionsQuery = {
       __typename?: 'RolesResultSpace';
       id: string;
       nameID: string;
-      subspaces: Array<{ __typename?: 'RolesResultCommunity'; id: string; nameID: string }>;
-      subsubspaces: Array<{ __typename?: 'RolesResultCommunity'; id: string; nameID: string }>;
+      subspaces: Array<{ __typename?: 'RolesResultCommunity'; id: string; nameID: string; type: SpaceType }>;
     }>;
   };
 };
@@ -24332,7 +24312,6 @@ export type UserRolesSearchCardsQuery = {
       id: string;
       roles: Array<string>;
       subspaces: Array<{ __typename?: 'RolesResultCommunity'; id: string; nameID: string; roles: Array<string> }>;
-      subsubspaces: Array<{ __typename?: 'RolesResultCommunity'; id: string; roles: Array<string> }>;
     }>;
     organizations: Array<{ __typename?: 'RolesResultOrganization'; id: string; roles: Array<string> }>;
   };

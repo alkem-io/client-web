@@ -1749,17 +1749,6 @@ export const UserRolesDetailsFragmentDoc = gql`
         displayName
         roles
       }
-      subsubspaces {
-        id
-        nameID
-        displayName
-        roles
-      }
-      userGroups {
-        id
-        nameID
-        displayName
-      }
     }
     organizations {
       id
@@ -14848,10 +14837,6 @@ export const UserContributionDisplayNamesDocument = gql`
           id
           displayName
         }
-        subsubspaces {
-          id
-          displayName
-        }
       }
       organizations {
         id
@@ -14926,10 +14911,7 @@ export const UserContributionsDocument = gql`
         subspaces {
           id
           nameID
-        }
-        subsubspaces {
-          id
-          nameID
+          type
         }
       }
     }
@@ -21513,10 +21495,6 @@ export const UserRolesSearchCardsDocument = gql`
         subspaces {
           id
           nameID
-          roles
-        }
-        subsubspaces {
-          id
           roles
         }
       }

@@ -3,8 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { DialogContent } from '@mui/material';
 import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
-import SubspacePageContainer from '../../subspace/containers/SubspacePageContainer';
 import RecentContributionsBlock from './RecentContributionsBlock';
+import ActivityContainer from './ActivityContainer';
 
 export interface ActivityDialogProps {
   open?: boolean;
@@ -19,18 +19,18 @@ const ActivityDialog = ({ open = false, journeyId, onClose }: ActivityDialogProp
     <DialogWithGrid open={open} columns={8} aria-labelledby="activity-dialog">
       <DialogHeader onClose={onClose} title={t('common.contributions')} />
       <DialogContent sx={{ paddingTop: 0 }}>
-        <SubspacePageContainer challengeId={journeyId}>
-          {({ callouts, ...entities }) => (
+        <ActivityContainer spaceId={journeyId}>
+          {({ ...entities }) => (
             <RecentContributionsBlock
               readUsersAccess={entities.permissions.readUsers}
-              entityReadAccess={entities.permissions.subspaceReadAccess}
+              entityReadAccess={entities.permissions.readAccess}
               activitiesLoading={false}
               topCallouts={entities.topCallouts}
               activities={entities.activities}
               fetchMoreActivities={entities.fetchMoreActivities}
             />
           )}
-        </SubspacePageContainer>
+        </ActivityContainer>
       </DialogContent>
     </DialogWithGrid>
   );

@@ -96,9 +96,9 @@ export const useRouteResolver = (): RouteParams => {
   const getParentJourneyId = () => {
     switch (journeyLevel) {
       case 1:
-        return data?.space.subspace?.id;
+        return data?.space.id;
       case 2:
-        return data?.space.subspace?.subspace?.id;
+        return data?.space.subspace?.id;
       default:
         return undefined;
     }
