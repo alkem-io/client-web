@@ -976,7 +976,6 @@ export type CalloutTemplate = {
 
 export enum CalloutType {
   LinkCollection = 'LINK_COLLECTION',
-  MemberGuidelines = 'MEMBER_GUIDELINES',
   Post = 'POST',
   PostCollection = 'POST_COLLECTION',
   Whiteboard = 'WHITEBOARD',
