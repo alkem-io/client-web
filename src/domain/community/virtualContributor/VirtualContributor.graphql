@@ -1,0 +1,24 @@
+query VirtualContributor ($id: UUID_NAMEID!) {
+  virtualContributor (ID: $id) {
+    id
+    nameID
+    virtualPersona {
+      id
+      nameID
+      prompt
+      profile {
+        id
+        displayName
+        description
+      }
+    }
+    profile {
+      id
+      displayName
+      description
+      avatar: visual(type: AVATAR) {
+        ...VisualFull
+      }
+    }
+  }
+}

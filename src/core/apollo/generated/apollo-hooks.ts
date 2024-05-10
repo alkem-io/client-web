@@ -15029,6 +15029,86 @@ export function refetchUserOrganizationIdsQuery(variables: SchemaTypes.UserOrgan
   return { query: UserOrganizationIdsDocument, variables: variables };
 }
 
+export const VirtualContributorDocument = gql`
+  query VirtualContributor($id: UUID_NAMEID!) {
+    virtualContributor(ID: $id) {
+      id
+      nameID
+      virtualPersona {
+        id
+        nameID
+        prompt
+        profile {
+          id
+          displayName
+          description
+        }
+      }
+      profile {
+        id
+        displayName
+        description
+        avatar: visual(type: AVATAR) {
+          ...VisualFull
+        }
+      }
+    }
+  }
+  ${VisualFullFragmentDoc}
+`;
+
+/**
+ * __useVirtualContributorQuery__
+ *
+ * To run a query within a React component, call `useVirtualContributorQuery` and pass it any options that fit your needs.
+ * When your component renders, `useVirtualContributorQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useVirtualContributorQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useVirtualContributorQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.VirtualContributorQuery,
+    SchemaTypes.VirtualContributorQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.VirtualContributorQuery, SchemaTypes.VirtualContributorQueryVariables>(
+    VirtualContributorDocument,
+    options
+  );
+}
+
+export function useVirtualContributorLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.VirtualContributorQuery,
+    SchemaTypes.VirtualContributorQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.VirtualContributorQuery, SchemaTypes.VirtualContributorQueryVariables>(
+    VirtualContributorDocument,
+    options
+  );
+}
+
+export type VirtualContributorQueryHookResult = ReturnType<typeof useVirtualContributorQuery>;
+export type VirtualContributorLazyQueryHookResult = ReturnType<typeof useVirtualContributorLazyQuery>;
+export type VirtualContributorQueryResult = Apollo.QueryResult<
+  SchemaTypes.VirtualContributorQuery,
+  SchemaTypes.VirtualContributorQueryVariables
+>;
+export function refetchVirtualContributorQuery(variables: SchemaTypes.VirtualContributorQueryVariables) {
+  return { query: VirtualContributorDocument, variables: variables };
+}
+
 export const InnovationHubAvailableSpacesDocument = gql`
   query InnovationHubAvailableSpaces {
     spaces(filter: { visibilities: [ACTIVE, DEMO] }) {

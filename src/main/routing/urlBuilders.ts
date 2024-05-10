@@ -14,6 +14,8 @@ export const buildAdminOrganizationUrl = (organizationNameId: string) => `/admin
 
 export const buildUserProfileUrl = (userNameId: string) => `/user/${userNameId}`;
 
+export const buildVCProfileUrl = (vcNameId: string) => `/vc/${vcNameId}`;
+
 export const buildUserProfileSettingsUrl = (userNameId: string) =>
   `${buildUserProfileUrl(userNameId)}/settings/profile`;
 

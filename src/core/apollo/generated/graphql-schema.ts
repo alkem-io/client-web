@@ -16780,6 +16780,47 @@ export type UserOrganizationIdsQuery = {
   };
 };
 
+export type VirtualContributorQueryVariables = Exact<{
+  id: Scalars['UUID_NAMEID'];
+}>;
+
+export type VirtualContributorQuery = {
+  __typename?: 'Query';
+  virtualContributor: {
+    __typename?: 'VirtualContributor';
+    id: string;
+    nameID: string;
+    virtualPersona: {
+      __typename?: 'VirtualPersona';
+      id: string;
+      nameID: string;
+      prompt: string;
+      profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+    };
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      description?: string | undefined;
+      avatar?:
+        | {
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: string;
+            allowedTypes: Array<string>;
+            aspectRatio: number;
+            maxHeight: number;
+            maxWidth: number;
+            minHeight: number;
+            minWidth: number;
+            alternativeText?: string | undefined;
+          }
+        | undefined;
+    };
+  };
+};
+
 export type ContextDetailsFragment = {
   __typename?: 'Context';
   id: string;
