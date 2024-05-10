@@ -12,14 +12,14 @@ import {
   TemplateCardBaseProps,
 } from '../../templates/CollaborationTemplatesLibrary/TemplateBase';
 import InnovationPackIcon from '../../InnovationPack/InnovationPackIcon';
-import { MemberGuidelinesIcon } from '../icon/MemberGuidelinesIcon';
+import { CommunityGuidelinesIcon } from '../icon/CommunityGuidelinesIcon';
 
-interface MemberGuidelinesTemplateCardProps extends TemplateCardBaseProps<InnovationPackTemplate> {}
+interface CommunityGuidelinesTemplateCardProps extends TemplateCardBaseProps<InnovationPackTemplate> {}
 
-const MemberGuidelinesTemplateCard: FC<MemberGuidelinesTemplateCardProps> = ({ template, loading, onClick }) => {
+const CommunityGuidelinesTemplateCard: FC<CommunityGuidelinesTemplateCardProps> = ({ template, loading, onClick }) => {
   return (
     <ContributeCard onClick={onClick}>
-      <CardHeader title={template?.profile.displayName} iconComponent={MemberGuidelinesIcon}>
+      <CardHeader title={template?.profile.displayName} iconComponent={CommunityGuidelinesIcon}>
         {loading && <Skeleton />}
         <CardHeaderCaption logoUrl={template?.innovationPack?.provider?.profile.avatar?.uri}>
           {template?.innovationPack?.provider?.profile.displayName}
@@ -40,4 +40,4 @@ const MemberGuidelinesTemplateCard: FC<MemberGuidelinesTemplateCardProps> = ({ t
   );
 };
 
-export default MemberGuidelinesTemplateCard;
+export default CommunityGuidelinesTemplateCard;
