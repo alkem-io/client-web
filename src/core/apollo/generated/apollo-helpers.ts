@@ -1491,6 +1491,7 @@ export type MutationKeySpecifier = (
   | 'createActorGroup'
   | 'createCalloutOnCollaboration'
   | 'createCalloutTemplate'
+  | 'createCommunityGuidelinesTemplate'
   | 'createContributionOnCallout'
   | 'createDiscussion'
   | 'createEventOnCalendar'
@@ -1499,7 +1500,6 @@ export type MutationKeySpecifier = (
   | 'createInnovationFlowTemplate'
   | 'createInnovationHub'
   | 'createInnovationPackOnLibrary'
-  | 'createMemberGuidelinesTemplate'
   | 'createOrganization'
   | 'createPostTemplate'
   | 'createReferenceOnProfile'
@@ -1655,6 +1655,7 @@ export type MutationFieldPolicy = {
   createActorGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   createCalloutOnCollaboration?: FieldPolicy<any> | FieldReadFunction<any>;
   createCalloutTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
+  createCommunityGuidelinesTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   createContributionOnCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   createDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
   createEventOnCalendar?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1663,7 +1664,6 @@ export type MutationFieldPolicy = {
   createInnovationFlowTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   createInnovationHub?: FieldPolicy<any> | FieldReadFunction<any>;
   createInnovationPackOnLibrary?: FieldPolicy<any> | FieldReadFunction<any>;
-  createMemberGuidelinesTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   createOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   createPostTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   createReferenceOnProfile?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2742,13 +2742,13 @@ export type TaskFieldPolicy = {
 export type TemplatesSetKeySpecifier = (
   | 'authorization'
   | 'calloutTemplates'
+  | 'communityGuidelinesTemplate'
+  | 'communityGuidelinesTemplates'
+  | 'communityGuidelinesTemplatesCount'
   | 'id'
   | 'innovationFlowTemplate'
   | 'innovationFlowTemplates'
   | 'innovationFlowTemplatesCount'
-  | 'memberGuidelinesTemplate'
-  | 'memberGuidelinesTemplates'
-  | 'memberGuidelinesTemplatesCount'
   | 'postTemplate'
   | 'postTemplates'
   | 'postTemplatesCount'
@@ -2760,13 +2760,13 @@ export type TemplatesSetKeySpecifier = (
 export type TemplatesSetFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   calloutTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
+  communityGuidelinesTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
+  communityGuidelinesTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
+  communityGuidelinesTemplatesCount?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationFlowTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationFlowTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationFlowTemplatesCount?: FieldPolicy<any> | FieldReadFunction<any>;
-  memberGuidelinesTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
-  memberGuidelinesTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
-  memberGuidelinesTemplatesCount?: FieldPolicy<any> | FieldReadFunction<any>;
   postTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   postTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
   postTemplatesCount?: FieldPolicy<any> | FieldReadFunction<any>;

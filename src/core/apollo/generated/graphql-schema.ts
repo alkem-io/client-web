@@ -1482,6 +1482,13 @@ export type CreateCollaborationInput = {
   innovationFlowTemplateID?: InputMaybe<Scalars['UUID']>;
 };
 
+export type CreateCommunityGuidelinesTemplateOnTemplatesSetInput = {
+  profile: CreateProfileInput;
+  tags?: InputMaybe<Array<Scalars['String']>>;
+  templatesSetID: Scalars['UUID'];
+  visualUri?: InputMaybe<Scalars['String']>;
+};
+
 export type CreateContextInput = {
   impact?: InputMaybe<Scalars['Markdown']>;
   vision?: InputMaybe<Scalars['Markdown']>;
@@ -1553,13 +1560,6 @@ export type CreateLocationInput = {
   country?: InputMaybe<Scalars['String']>;
   postalCode?: InputMaybe<Scalars['String']>;
   stateOrProvince?: InputMaybe<Scalars['String']>;
-};
-
-export type CreateMemberGuidelinesTemplateOnTemplatesSetInput = {
-  profile: CreateProfileInput;
-  tags?: InputMaybe<Array<Scalars['String']>>;
-  templatesSetID: Scalars['UUID'];
-  visualUri?: InputMaybe<Scalars['String']>;
 };
 
 export type CreateNvpInput = {
@@ -2607,6 +2607,8 @@ export type Mutation = {
   createCalloutOnCollaboration: Callout;
   /** Creates a new CalloutTemplate on the specified TemplatesSet. */
   createCalloutTemplate: CalloutTemplate;
+  /** Creates a new CommunityGuidelinesTemplate on the specified TemplatesSet. */
+  createCommunityGuidelinesTemplate: ITemplateBase;
   /** Create a new Contribution on the Callout. */
   createContributionOnCallout: CalloutContribution;
   /** Creates a new Discussion as part of this Communication. */
@@ -2623,8 +2625,6 @@ export type Mutation = {
   createInnovationHub: InnovationHub;
   /** Create a new InnovatonPack on the Library. */
   createInnovationPackOnLibrary: InnovationPack;
-  /** Creates a new MemberGuidelinesTemplate on the specified TemplatesSet. */
-  createMemberGuidelinesTemplate: ITemplateBase;
   /** Creates a new Organization on the platform. */
   createOrganization: Organization;
   /** Creates a new PostTemplate on the specified TemplatesSet. */
@@ -2983,6 +2983,10 @@ export type MutationCreateCalloutTemplateArgs = {
   calloutTemplateInput: CreateCalloutTemplateOnTemplatesSetInput;
 };
 
+export type MutationCreateCommunityGuidelinesTemplateArgs = {
+  communityGuidelinesTemplateInput: CreateCommunityGuidelinesTemplateOnTemplatesSetInput;
+};
+
 export type MutationCreateContributionOnCalloutArgs = {
   contributionData: CreateContributionOnCalloutInput;
 };
@@ -3013,10 +3017,6 @@ export type MutationCreateInnovationHubArgs = {
 
 export type MutationCreateInnovationPackOnLibraryArgs = {
   packData: CreateInnovationPackOnLibraryInput;
-};
-
-export type MutationCreateMemberGuidelinesTemplateArgs = {
-  memberGuidelinesTemplateInput: CreateMemberGuidelinesTemplateOnTemplatesSetInput;
 };
 
 export type MutationCreateOrganizationArgs = {
@@ -3881,13 +3881,13 @@ export enum ProfileType {
   CalloutTemplate = 'CALLOUT_TEMPLATE',
   Challenge = 'CHALLENGE',
   CommunityGuidelines = 'COMMUNITY_GUIDELINES',
+  CommunityGuidelinesTemplate = 'COMMUNITY_GUIDELINES_TEMPLATE',
   ContributionLink = 'CONTRIBUTION_LINK',
   Discussion = 'DISCUSSION',
   InnovationFlow = 'INNOVATION_FLOW',
   InnovationFlowTemplate = 'INNOVATION_FLOW_TEMPLATE',
   InnovationHub = 'INNOVATION_HUB',
   InnovationPack = 'INNOVATION_PACK',
-  MemberGuidelinesTemplate = 'MEMBER_GUIDELINES_TEMPLATE',
   Opportunity = 'OPPORTUNITY',
   Organization = 'ORGANIZATION',
   Post = 'POST',
@@ -4959,6 +4959,12 @@ export type TemplatesSet = {
   authorization?: Maybe<Authorization>;
   /** The CalloutTemplates in this TemplatesSet. */
   calloutTemplates: Array<CalloutTemplate>;
+  /** A single CommunityGuidelinesTemplate */
+  communityGuidelinesTemplate?: Maybe<ITemplateBase>;
+  /** The CommunityGuidelines in this TemplatesSet. */
+  communityGuidelinesTemplates: Array<ITemplateBase>;
+  /** The total number of CommunityGuidelinesTemplates in this TemplatesSet. */
+  communityGuidelinesTemplatesCount: Scalars['Float'];
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** A single InnovationFlowTemplate */
@@ -4967,12 +4973,6 @@ export type TemplatesSet = {
   innovationFlowTemplates: Array<InnovationFlowTemplate>;
   /** The total number of InnovationFlowTemplates in this TemplatesSet. */
   innovationFlowTemplatesCount: Scalars['Float'];
-  /** A single MemberGuidelinesTemplate */
-  memberGuidelinesTemplate?: Maybe<ITemplateBase>;
-  /** The MemberGuidelines in this TemplatesSet. */
-  memberGuidelinesTemplates: Array<ITemplateBase>;
-  /** The total number of MemberGuidelinesTemplates in this TemplatesSet. */
-  memberGuidelinesTemplatesCount: Scalars['Float'];
   /** A single PostTemplate */
   postTemplate?: Maybe<PostTemplate>;
   /** The PostTemplates in this TemplatesSet. */
@@ -4987,11 +4987,11 @@ export type TemplatesSet = {
   whiteboardTemplatesCount: Scalars['Float'];
 };
 
-export type TemplatesSetInnovationFlowTemplateArgs = {
+export type TemplatesSetCommunityGuidelinesTemplateArgs = {
   ID: Scalars['UUID'];
 };
 
-export type TemplatesSetMemberGuidelinesTemplateArgs = {
+export type TemplatesSetInnovationFlowTemplateArgs = {
   ID: Scalars['UUID'];
 };
 
@@ -24438,7 +24438,7 @@ export type InnovationLibraryQuery = {
               postTemplatesCount: number;
               whiteboardTemplatesCount: number;
               innovationFlowTemplatesCount: number;
-              memberGuidelinesTemplatesCount: number;
+              communityGuidelinesTemplatesCount: number;
               postTemplates: Array<{
                 __typename?: 'PostTemplate';
                 id: string;
@@ -24505,7 +24505,7 @@ export type InnovationLibraryQuery = {
                 };
                 states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
               }>;
-              memberGuidelinesTemplates: Array<{
+              communityGuidelinesTemplates: Array<{
                 __typename?: 'ITemplateBase';
                 id: string;
                 profile: {
@@ -24523,6 +24523,9 @@ export type InnovationLibraryQuery = {
                         allowedValues: Array<string>;
                         type: TagsetType;
                       }
+                    | undefined;
+                  references?:
+                    | Array<{ __typename?: 'Reference'; name: string; description?: string | undefined; uri: string }>
                     | undefined;
                 };
               }>;
@@ -24573,7 +24576,7 @@ export type InnovationPackDataFragment = {
         postTemplatesCount: number;
         whiteboardTemplatesCount: number;
         innovationFlowTemplatesCount: number;
-        memberGuidelinesTemplatesCount: number;
+        communityGuidelinesTemplatesCount: number;
         postTemplates: Array<{
           __typename?: 'PostTemplate';
           id: string;
@@ -24640,7 +24643,7 @@ export type InnovationPackDataFragment = {
           };
           states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
         }>;
-        memberGuidelinesTemplates: Array<{
+        communityGuidelinesTemplates: Array<{
           __typename?: 'ITemplateBase';
           id: string;
           profile: {
@@ -24658,6 +24661,9 @@ export type InnovationPackDataFragment = {
                   allowedValues: Array<string>;
                   type: TagsetType;
                 }
+              | undefined;
+            references?:
+              | Array<{ __typename?: 'Reference'; name: string; description?: string | undefined; uri: string }>
               | undefined;
           };
         }>;
@@ -24684,7 +24690,7 @@ export type LibraryTemplatesFragment = {
   postTemplatesCount: number;
   whiteboardTemplatesCount: number;
   innovationFlowTemplatesCount: number;
-  memberGuidelinesTemplatesCount: number;
+  communityGuidelinesTemplatesCount: number;
   postTemplates: Array<{
     __typename?: 'PostTemplate';
     id: string;
@@ -24751,7 +24757,7 @@ export type LibraryTemplatesFragment = {
     };
     states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
   }>;
-  memberGuidelinesTemplates: Array<{
+  communityGuidelinesTemplates: Array<{
     __typename?: 'ITemplateBase';
     id: string;
     profile: {
@@ -24769,6 +24775,9 @@ export type LibraryTemplatesFragment = {
             allowedValues: Array<string>;
             type: TagsetType;
           }
+        | undefined;
+      references?:
+        | Array<{ __typename?: 'Reference'; name: string; description?: string | undefined; uri: string }>
         | undefined;
     };
   }>;

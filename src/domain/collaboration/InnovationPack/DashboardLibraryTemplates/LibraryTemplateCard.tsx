@@ -5,12 +5,12 @@ import WhiteboardTemplateCard from '../../whiteboard/WhiteboardTemplateCard/Whit
 import InnovationFlowTemplateCard, {
   InnovationFlowTemplate,
 } from '../../InnovationFlow/InnovationFlowTemplateCard/InnovationFlowTemplateCard';
-import MemberGuidelinesTemplateCard from '../../memberGuidelines/MemberGuidelinesTemplateCard/MemberGuidelinesTemplateCard';
+import CommunityGuidelinesTemplateCard from '../../communityGuidelines/CommunityGuidelinesTemplateCard/CommunityGuidelinesTemplateCard';
 import { TemplateType } from '../InnovationPackProfilePage/InnovationPackProfilePage';
 import { PostTemplate } from '../../post/PostTemplateCard/PostTemplate';
 import { TemplateBase } from '../../templates/CollaborationTemplatesLibrary/TemplateBase';
 import { TemplateWithInnovationPack } from '../../../platform/admin/templates/InnovationPacks/ImportTemplatesDialogGalleryStep';
-import { MemberGuidelinesTemplate } from '../../memberGuidelines/MemberGuidelinesTemplateCard/MemberGuidelines';
+import { CommunityGuidelinesTemplate } from '../../communityGuidelines/CommunityGuidelinesTemplateCard/CommunityGuidelines';
 
 export type LibraryTemplateCardProps = Identifiable &
   TemplateWithInnovationPack<
@@ -18,7 +18,7 @@ export type LibraryTemplateCardProps = Identifiable &
     | (TemplateBase & { templateType: TemplateType.WhiteboardTemplate })
     | (InnovationFlowTemplate & { templateType: TemplateType.InnovationFlowTemplate })
     | (TemplateBase & { templateType: TemplateType.CalloutTemplate })
-    | (MemberGuidelinesTemplate & { templateType: TemplateType.MemberGuidelinesTemplate })
+    | (CommunityGuidelinesTemplate & { templateType: TemplateType.CommunityGuidelinesTemplate })
   > & { onClick?: ContributeCardProps['onClick'] };
 
 const LibraryTemplateCard = (props: LibraryTemplateCardProps) => {
@@ -40,9 +40,9 @@ const LibraryTemplateCard = (props: LibraryTemplateCardProps) => {
       // TODO CalloutTemplateCard
       return <PostTemplateCard onClick={onClick} template={template} />;
     }
-    case TemplateType.MemberGuidelinesTemplate: {
+    case TemplateType.CommunityGuidelinesTemplate: {
       const { onClick, templateType, ...template } = props;
-      return <MemberGuidelinesTemplateCard onClick={onClick} template={template} />;
+      return <CommunityGuidelinesTemplateCard onClick={onClick} template={template} />;
     }
   }
 };

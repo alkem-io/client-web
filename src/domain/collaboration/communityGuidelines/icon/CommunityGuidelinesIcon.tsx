@@ -1,3 +1,3 @@
 import HandshakeOutlinedIcon from '@mui/icons-material/HandshakeOutlined';
 
-export const MemberGuidelinesIcon = HandshakeOutlinedIcon;
+export const CommunityGuidelinesIcon = HandshakeOutlinedIcon;

@@ -32,11 +32,8 @@ const useLibraryTemplateCardProps = (
             ...(innovationPack.templates?.innovationFlowTemplates ?? []).map(
               templateInnovationPackHydrator(innovationPack, TemplateType.InnovationFlowTemplate)
             ),
-            ...(innovationPack.templates?.innovationFlowTemplates ?? []).map(
-              templateInnovationPackHydrator(innovationPack, TemplateType.CalloutTemplate)
-            ),
-            ...(innovationPack.templates?.memberGuidelinesTemplates ?? []).map(
-              templateInnovationPackHydrator(innovationPack, TemplateType.MemberGuidelinesTemplate)
+            ...(innovationPack.templates?.communityGuidelinesTemplates ?? []).map(
+              templateInnovationPackHydrator(innovationPack, TemplateType.CommunityGuidelinesTemplate)
             ),
           ] as LibraryTemplateCardProps[];
         }),

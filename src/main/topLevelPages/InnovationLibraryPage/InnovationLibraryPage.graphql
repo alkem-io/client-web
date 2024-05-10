@@ -82,7 +82,7 @@ fragment LibraryTemplates on TemplatesSet {
     }
   }
   innovationFlowTemplatesCount
-  memberGuidelinesTemplates {
+  communityGuidelinesTemplates {
     id
     profile {
       id
@@ -94,7 +94,12 @@ fragment LibraryTemplates on TemplatesSet {
       tagset {
         ...TagsetDetails
       }
+      references {
+        name
+        description
+        uri
+      }
     }
   }
-  memberGuidelinesTemplatesCount
+  communityGuidelinesTemplatesCount
 }
