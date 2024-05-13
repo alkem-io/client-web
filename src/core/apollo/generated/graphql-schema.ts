@@ -690,9 +690,6 @@ export enum AuthorizationCredential {
   SpaceAdmin = 'SPACE_ADMIN',
   SpaceLead = 'SPACE_LEAD',
   SpaceMember = 'SPACE_MEMBER',
-  SubspaceAdmin = 'SUBSPACE_ADMIN',
-  SubspaceLead = 'SUBSPACE_LEAD',
-  SubspaceMember = 'SUBSPACE_MEMBER',
   UserGroupMember = 'USER_GROUP_MEMBER',
   UserSelfManagement = 'USER_SELF_MANAGEMENT',
 }
@@ -13356,17 +13353,6 @@ export type CommunityUpdatesQuery = {
           };
         }
       | undefined;
-  };
-};
-
-export type PlatformUpdatesRoomQueryVariables = Exact<{ [key: string]: never }>;
-
-export type PlatformUpdatesRoomQuery = {
-  __typename?: 'Query';
-  platform: {
-    __typename?: 'Platform';
-    id: string;
-    communication: { __typename?: 'Communication'; id: string; updates: { __typename?: 'Room'; id: string } };
   };
 };
 
