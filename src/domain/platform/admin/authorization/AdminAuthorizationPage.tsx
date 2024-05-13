@@ -12,6 +12,39 @@ interface AdminAuthorizationPageProps {
   credential?: AuthorizationCredential;
 }
 
+const tabs = [
+  {
+    title: 'Global admins',
+    authorizationCredential: AuthorizationCredential.GlobalAdmin,
+    platformRole: PlatformRole.GlobalAdmin,
+  },
+  {
+    title: 'Support',
+    authorizationCredential: AuthorizationCredential.GlobalSupport,
+    platformRole: PlatformRole.Support,
+  },
+  {
+    title: 'License Manager',
+    authorizationCredential: AuthorizationCredential.GlobalLicenseManager,
+    platformRole: PlatformRole.LicenseManager,
+  },
+  {
+    title: 'Community Reader',
+    authorizationCredential: AuthorizationCredential.GlobalCommunityRead,
+    platformRole: PlatformRole.CommunityReader,
+  },
+  {
+    title: 'Spaces Reader',
+    authorizationCredential: AuthorizationCredential.GlobalSpacesReader,
+    platformRole: PlatformRole.SpacesReader,
+  },
+  {
+    title: 'Beta Testers',
+    authorizationCredential: AuthorizationCredential.BetaTester,
+    platformRole: PlatformRole.BetaTester,
+  },
+];
+
 const AdminAuthorizationPage = ({ credential }: AdminAuthorizationPageProps) => {
   const selectedTab: AuthorizationCredential | '_none' = credential ?? '_none';
 
@@ -20,81 +53,26 @@ const AdminAuthorizationPage = ({ credential }: AdminAuthorizationPageProps) => 
       <TabContext value={selectedTab}>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <TabList sx={{ '.MuiTabs-flexContainer': { gap: gutters() } }}>
-            <Tab
-              value={AuthorizationCredential.GlobalAdmin}
-              component={RouterLink}
-              to={`/admin/authorization/roles/${AuthorizationCredential.GlobalAdmin}`}
-              label="Global admins"
-            />
-            <Tab
-              value={AuthorizationCredential.GlobalSupport}
-              component={RouterLink}
-              to={`/admin/authorization/roles/${AuthorizationCredential.GlobalSupport}`}
-              label="Support"
-            />
-            <Tab
-              value={AuthorizationCredential.GlobalLicenseManager}
-              component={RouterLink}
-              to={`/admin/authorization/roles/${AuthorizationCredential.GlobalLicenseManager}`}
-              label="License Manager"
-            />
-            <Tab
-              value={AuthorizationCredential.GlobalCommunityRead}
-              component={RouterLink}
-              to={`/admin/authorization/roles/${AuthorizationCredential.GlobalCommunityRead}`}
-              label="Community Reader"
-            />
-            <Tab
-              value={AuthorizationCredential.GlobalSpacesReader}
-              component={RouterLink}
-              to={`/admin/authorization/roles/${AuthorizationCredential.GlobalSpacesReader}`}
-              label="Spaces Reader"
-            />
-            <Tab
-              value={AuthorizationCredential.BetaTester}
-              component={RouterLink}
-              to={`/admin/authorization/roles/${AuthorizationCredential.BetaTester}`}
-              label="Beta Testers"
-            />
+            {tabs.map(tab => (
+              <Tab
+                key={tab.authorizationCredential}
+                value={tab.authorizationCredential}
+                component={RouterLink}
+                to={`/admin/authorization/roles/${tab.authorizationCredential}`}
+                label={tab.title}
+              />
+            ))}
           </TabList>
         </Box>
         <TabPanel value="_none" />
-        <TabPanel value={AuthorizationCredential.GlobalAdmin}>
-          <PlatformRoleAssignementPage
-            role={PlatformRole.GlobalAdmin}
-            authorizationCredential={AuthorizationCredential.GlobalAdmin}
-          />
-        </TabPanel>
-        <TabPanel value={AuthorizationCredential.GlobalSupport}>
-          <PlatformRoleAssignementPage
-            role={PlatformRole.Support}
-            authorizationCredential={AuthorizationCredential.GlobalSupport}
-          />
-        </TabPanel>
-        <TabPanel value={AuthorizationCredential.GlobalLicenseManager}>
-          <PlatformRoleAssignementPage
-            role={PlatformRole.LicenseManager}
-            authorizationCredential={AuthorizationCredential.GlobalLicenseManager}
-          />
-        </TabPanel>
-        <TabPanel value={AuthorizationCredential.GlobalCommunityRead}>
-          <PlatformRoleAssignementPage
-            role={PlatformRole.CommunityReader}
-            authorizationCredential={AuthorizationCredential.GlobalCommunityRead}
-          />
-        </TabPanel>
-        <TabPanel value={AuthorizationCredential.GlobalSpacesReader}>
-          <PlatformRoleAssignementPage
-            role={PlatformRole.SpacesReader}
-            authorizationCredential={AuthorizationCredential.GlobalSpacesReader}
-          />
-        </TabPanel>
-        <TabPanel value={AuthorizationCredential.BetaTester}>
-          <PlatformRoleAssignementPage
-            role={PlatformRole.BetaTester}
-            authorizationCredential={AuthorizationCredential.BetaTester}
-          />
-        </TabPanel>
+        {tabs.map(tab => (
+          <TabPanel key={tab.authorizationCredential} value={tab.authorizationCredential}>
+            <PlatformRoleAssignementPage
+              role={tab.platformRole}
+              authorizationCredential={tab.authorizationCredential}
+            />
+          </TabPanel>
+        ))}
       </TabContext>
     </AdminLayout>
   );
