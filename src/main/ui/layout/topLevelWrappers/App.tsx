@@ -4,7 +4,6 @@ import { NotificationHandler } from '../../../../core/ui/notifications/Notificat
 import { useUserContext } from '../../../../domain/community/user';
 import { useUserScope } from '../../../../core/analytics/SentryTransactionScopeContext';
 import useServerMetadata from '../../../../domain/platform/metadata/useServerMetadata';
-import useCommunityUpdatesNotifier from '../../../../domain/communication/updates/useCommunityUpdatesNotifier';
 import { useCookies } from 'react-cookie';
 import { ALKEMIO_COOKIE_NAME } from '../../../cookies/useAlkemioCookies';
 import CookieConsent from '../../../cookies/CookieConsent';
@@ -15,7 +14,6 @@ const App: FC = () => {
   const { user } = useUserContext();
 
   useUserScope(user);
-  useCommunityUpdatesNotifier();
 
   const { services } = useServerMetadata();
 
