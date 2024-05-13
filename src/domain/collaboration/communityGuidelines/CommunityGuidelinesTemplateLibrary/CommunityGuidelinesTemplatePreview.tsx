@@ -7,7 +7,12 @@ import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 
 interface CommunityGuidelinesTemplatePreviewProps {
   template?: {
-    defaultDescription?: string;
+    guidelines: {
+      profile: {
+        displayName: string;
+        description: string;
+      };
+    };
   };
 }
 
@@ -17,9 +22,9 @@ const CommunityGuidelinesTemplatePreview: FC<CommunityGuidelinesTemplatePreviewP
   return (
     <PageContentBlock>
       <BlockSectionTitle>{t('community.communityGuidelines.templateTitle')}</BlockSectionTitle>
-      <WrapperMarkdown>TODO</WrapperMarkdown>
+      <WrapperMarkdown>{template?.guidelines.profile.displayName}</WrapperMarkdown>
       <BlockSectionTitle>{t('community.communityGuidelines.templateDescription')}</BlockSectionTitle>
-      <WrapperMarkdown>{template?.defaultDescription}</WrapperMarkdown>
+      <WrapperMarkdown>{template?.guidelines.profile.description}</WrapperMarkdown>
       {/* <ProfileReferenceSegment references={mockValues.references} profileId={"data?.profile?.id"} /> */}
     </PageContentBlock>
   );
