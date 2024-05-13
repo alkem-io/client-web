@@ -94,11 +94,6 @@ fragment LibraryTemplates on TemplatesSet {
       tagset {
         ...TagsetDetails
       }
-      references {
-        name
-        description
-        uri
-      }
     }
   }
   communityGuidelinesTemplatesCount

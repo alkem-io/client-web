@@ -21534,6 +21534,42 @@ export type AdminInnovationFlowTemplateFragment = {
   };
 };
 
+export type AdminCommunityGuidelinesTemplateFragment = {
+  __typename?: 'CommunityGuidelines';
+  id: string;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    description?: string | undefined;
+    tagset?:
+      | {
+          __typename?: 'Tagset';
+          id: string;
+          name: string;
+          tags: Array<string>;
+          allowedValues: Array<string>;
+          type: TagsetType;
+        }
+      | undefined;
+    visual?:
+      | {
+          __typename?: 'Visual';
+          id: string;
+          uri: string;
+          name: string;
+          allowedTypes: Array<string>;
+          aspectRatio: number;
+          maxHeight: number;
+          maxWidth: number;
+          minHeight: number;
+          minWidth: number;
+          alternativeText?: string | undefined;
+        }
+      | undefined;
+  };
+};
+
 export type ProfileInfoWithVisualFragment = {
   __typename?: 'Profile';
   id: string;
@@ -24524,9 +24560,6 @@ export type InnovationLibraryQuery = {
                         type: TagsetType;
                       }
                     | undefined;
-                  references?:
-                    | Array<{ __typename?: 'Reference'; name: string; description?: string | undefined; uri: string }>
-                    | undefined;
                 };
               }>;
             }
@@ -24662,9 +24695,6 @@ export type InnovationPackDataFragment = {
                   type: TagsetType;
                 }
               | undefined;
-            references?:
-              | Array<{ __typename?: 'Reference'; name: string; description?: string | undefined; uri: string }>
-              | undefined;
           };
         }>;
       }
@@ -24775,9 +24805,6 @@ export type LibraryTemplatesFragment = {
             allowedValues: Array<string>;
             type: TagsetType;
           }
-        | undefined;
-      references?:
-        | Array<{ __typename?: 'Reference'; name: string; description?: string | undefined; uri: string }>
         | undefined;
     };
   }>;

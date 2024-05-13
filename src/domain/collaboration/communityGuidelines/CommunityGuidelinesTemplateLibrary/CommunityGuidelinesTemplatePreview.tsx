@@ -19,7 +19,7 @@ const CommunityGuidelinesTemplatePreview: FC<CommunityGuidelinesTemplatePreviewP
       <BlockSectionTitle>{t('community.communityGuidelines.templateTitle')}</BlockSectionTitle>
       <WrapperMarkdown>TODO</WrapperMarkdown>
       <BlockSectionTitle>{t('community.communityGuidelines.templateDescription')}</BlockSectionTitle>
-      <WrapperMarkdown>{template?.defaultDescription}</WrapperMarkdown>
+      <WrapperMarkdown>{template?.defaultDescription || ''}</WrapperMarkdown>
       {/* <ProfileReferenceSegment references={mockValues.references} profileId={"data?.profile?.id"} /> */}
     </PageContentBlock>
   );

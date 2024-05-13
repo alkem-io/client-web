@@ -2910,6 +2910,15 @@ export const AdminCalloutTemplateFragmentDoc = gql`
   }
   ${ProfileInfoWithVisualFragmentDoc}
 `;
+export const AdminCommunityGuidelinesTemplateFragmentDoc = gql`
+  fragment AdminCommunityGuidelinesTemplate on CommunityGuidelines {
+    id
+    profile {
+      ...ProfileInfoWithVisual
+    }
+  }
+  ${ProfileInfoWithVisualFragmentDoc}
+`;
 export const InnovationPackProfileFragmentDoc = gql`
   fragment InnovationPackProfile on Profile {
     id
@@ -3433,11 +3442,6 @@ export const LibraryTemplatesFragmentDoc = gql`
         }
         tagset {
           ...TagsetDetails
-        }
-        references {
-          name
-          description
-          uri
         }
       }
     }

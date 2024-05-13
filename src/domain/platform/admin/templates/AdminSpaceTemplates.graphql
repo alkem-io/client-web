@@ -65,6 +65,13 @@ fragment AdminInnovationFlowTemplate on InnovationFlowTemplate {
   }
 }
 
+fragment AdminCommunityGuidelinesTemplate on CommunityGuidelines {
+  id
+  profile {
+    ...ProfileInfoWithVisual
+  }
+}
+
 fragment ProfileInfoWithVisual on Profile {
   id
   displayName
