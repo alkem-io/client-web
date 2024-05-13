@@ -3422,7 +3422,7 @@ export const LibraryTemplatesFragmentDoc = gql`
       }
     }
     innovationFlowTemplatesCount
-    memberGuidelinesTemplates {
+    communityGuidelinesTemplates {
       id
       profile {
         id
@@ -3434,11 +3434,14 @@ export const LibraryTemplatesFragmentDoc = gql`
         tagset {
           ...TagsetDetails
         }
+        references {
+          name
+          description
+          uri
+        }
       }
-      type
-      defaultDescription
     }
-    memberGuidelinesTemplatesCount
+    communityGuidelinesTemplatesCount
   }
   ${VisualUriFragmentDoc}
   ${TagsetDetailsFragmentDoc}

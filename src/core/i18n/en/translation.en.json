@@ -506,8 +506,8 @@
         "InnovationFlowTemplate_plural": "Innovation Flows",
         "CalloutTemplate": "Callout Template",
         "CalloutTemplate_plural": "Callout Templates",
-        "MemberGuidelinesTemplate": "Member Guidelines Template",
-        "MemberGuidelinesTemplate_plural": "Member Guidelines Templates"
+        "CommunityGuidelinesTemplate": "Community Guidelines Template",
+        "CommunityGuidelinesTemplate_plural": "Community Guidelines Templates"
       },
       "calloutType": {
         "LINK_COLLECTION": "Link Collection",
@@ -587,8 +587,8 @@
     "communityGuidelines": {
       "title": "Community Guidelines",
       "updatedSuccessfully": "Community guidelines updated successfully.",
-      "adminsOnly": "Since there are no Member Guidelines specified, this block is only visible for admins and leads.",
-      "memberGuidelinesRedirect": "Click here to update the Member Guidelines in the Space settings."
+      "adminsOnly": "Since there are no Community Guidelines specified, this block is only visible for admins and leads.",
+      "communityGuidelinesRedirect": "Click here to update the Community Guidelines in the Space settings."
     },
     "applicationsHelp": "Here you can find everyone that applied to become a member of this Space. By clicking on them you can review their application and accept or reject them.",
     "applicationStatus": {

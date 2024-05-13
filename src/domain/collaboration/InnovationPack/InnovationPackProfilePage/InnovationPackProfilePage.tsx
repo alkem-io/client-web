@@ -30,7 +30,7 @@ export enum TemplateType {
   PostTemplate = 'PostTemplate',
   InnovationFlowTemplate = 'InnovationFlowTemplate',
   CalloutTemplate = 'CalloutTemplate',
-  MemberGuidelinesTemplate = 'MemberGuidelines',
+  CommunityGuidelinesTemplate = 'CommunityGuidelinesTemplate',
 }
 
 const InnovationPackProfilePage = () => {
