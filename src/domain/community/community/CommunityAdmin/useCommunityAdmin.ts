@@ -31,7 +31,7 @@ import {
 import { OrganizationDetailsFragmentWithRoles } from '../../../community/community/CommunityAdmin/CommunityOrganizations';
 import { CommunityMemberUserFragmentWithRoles } from '../../../community/community/CommunityAdmin/CommunityUsers';
 import useInviteUsers from '../../../community/invitations/useInviteUsers';
-import { JourneyTypeName, getJourneyTypeName } from '../../../journey/JourneyTypeName';
+import { getJourneyTypeName } from '../../../journey/JourneyTypeName';
 
 const MAX_AVAILABLE_MEMBERS = 100;
 const buildUserFilterObject = (filter: string | undefined) =>
@@ -48,16 +48,6 @@ const buildOrganizationFilterObject = (filter: string | undefined) =>
         displayName: filter,
       }
     : undefined;
-
-const adminCredentialByJourneyType = (journeyType: JourneyTypeName) => {
-  if (journeyType === 'subsubspace') {
-    return AuthorizationCredential.SubspaceAdmin;
-  } else if (journeyType === 'subspace') {
-    return AuthorizationCredential.SubspaceAdmin;
-  } else {
-    return AuthorizationCredential.SpaceAdmin;
-  }
-};
 
 // TODO: Inherit from CoreEntityIds when they are not NameIds
 interface useCommunityAdminParams {
@@ -108,7 +98,7 @@ const useCommunityAdmin = ({ communityId, spaceId, challengeId, opportunityId }:
   } = useUsersWithCredentialsQuery({
     variables: {
       input: {
-        type: adminCredentialByJourneyType(journeyTypeName),
+        type: AuthorizationCredential.SpaceAdmin,
         resourceID: opportunityId ?? challengeId ?? spaceId,
       },
     },

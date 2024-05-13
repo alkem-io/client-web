@@ -13260,17 +13260,6 @@ export type CommunityUpdatesQuery = {
   };
 };
 
-export type PlatformUpdatesRoomQueryVariables = Exact<{ [key: string]: never }>;
-
-export type PlatformUpdatesRoomQuery = {
-  __typename?: 'Query';
-  platform: {
-    __typename?: 'Platform';
-    id: string;
-    communication: { __typename?: 'Communication'; id: string; updates: { __typename?: 'Room'; id: string } };
-  };
-};
-
 export type CommunityUserPrivilegesQueryVariables = Exact<{
   spaceId: Scalars['UUID'];
   parentSpaceId?: Scalars['UUID'];
