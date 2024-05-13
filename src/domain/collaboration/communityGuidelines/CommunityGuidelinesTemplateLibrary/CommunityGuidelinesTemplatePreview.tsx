@@ -22,9 +22,9 @@ const CommunityGuidelinesTemplatePreview: FC<CommunityGuidelinesTemplatePreviewP
   return (
     <PageContentBlock>
       <BlockSectionTitle>{t('community.communityGuidelines.templateTitle')}</BlockSectionTitle>
-      <WrapperMarkdown>{template?.guidelines.profile.displayName}</WrapperMarkdown>
+      <WrapperMarkdown>{template?.guidelines.profile.displayName ?? ''}</WrapperMarkdown>
       <BlockSectionTitle>{t('community.communityGuidelines.templateDescription')}</BlockSectionTitle>
-      <WrapperMarkdown>{template?.guidelines.profile.description}</WrapperMarkdown>
+      <WrapperMarkdown>{template?.guidelines.profile.description ?? ''}</WrapperMarkdown>
       {/* <ProfileReferenceSegment references={mockValues.references} profileId={"data?.profile?.id"} /> */}
     </PageContentBlock>
   );
