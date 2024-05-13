@@ -897,6 +897,19 @@ export type CommunityGuidelinesFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type CommunityGuidelinesTemplateKeySpecifier = (
+  | 'authorization'
+  | 'guidelines'
+  | 'id'
+  | 'profile'
+  | CommunityGuidelinesTemplateKeySpecifier
+)[];
+export type CommunityGuidelinesTemplateFieldPolicy = {
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  guidelines?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  profile?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type CommunityPolicyKeySpecifier = ('admin' | 'id' | 'lead' | 'member' | CommunityPolicyKeySpecifier)[];
 export type CommunityPolicyFieldPolicy = {
   admin?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1111,12 +1124,6 @@ export type ISearchResultsFieldPolicy = {
   groupResults?: FieldPolicy<any> | FieldReadFunction<any>;
   journeyResults?: FieldPolicy<any> | FieldReadFunction<any>;
   journeyResultsCount?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type ITemplateBaseKeySpecifier = ('authorization' | 'id' | 'profile' | ITemplateBaseKeySpecifier)[];
-export type ITemplateBaseFieldPolicy = {
-  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-  profile?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type IngestBatchResultKeySpecifier = ('message' | 'success' | IngestBatchResultKeySpecifier)[];
 export type IngestBatchResultFieldPolicy = {
@@ -1381,6 +1388,8 @@ export type LookupQueryResultsKeySpecifier = (
   | 'calloutTemplate'
   | 'collaboration'
   | 'community'
+  | 'communityGuideline'
+  | 'communityGuidelineTemplate'
   | 'context'
   | 'document'
   | 'innovationFlow'
@@ -1405,6 +1414,8 @@ export type LookupQueryResultsFieldPolicy = {
   calloutTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   collaboration?: FieldPolicy<any> | FieldReadFunction<any>;
   community?: FieldPolicy<any> | FieldReadFunction<any>;
+  communityGuideline?: FieldPolicy<any> | FieldReadFunction<any>;
+  communityGuidelineTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   context?: FieldPolicy<any> | FieldReadFunction<any>;
   document?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationFlow?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1491,7 +1502,6 @@ export type MutationKeySpecifier = (
   | 'createActorGroup'
   | 'createCalloutOnCollaboration'
   | 'createCalloutTemplate'
-  | 'createCommunityGuidelinesTemplate'
   | 'createContributionOnCallout'
   | 'createDiscussion'
   | 'createEventOnCalendar'
@@ -1655,7 +1665,6 @@ export type MutationFieldPolicy = {
   createActorGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   createCalloutOnCollaboration?: FieldPolicy<any> | FieldReadFunction<any>;
   createCalloutTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
-  createCommunityGuidelinesTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   createContributionOnCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   createDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
   createEventOnCalendar?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3250,6 +3259,13 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | CommunityGuidelinesKeySpecifier | (() => undefined | CommunityGuidelinesKeySpecifier);
     fields?: CommunityGuidelinesFieldPolicy;
   };
+  CommunityGuidelinesTemplate?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | CommunityGuidelinesTemplateKeySpecifier
+      | (() => undefined | CommunityGuidelinesTemplateKeySpecifier);
+    fields?: CommunityGuidelinesTemplateFieldPolicy;
+  };
   CommunityPolicy?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CommunityPolicyKeySpecifier | (() => undefined | CommunityPolicyKeySpecifier);
     fields?: CommunityPolicyFieldPolicy;
@@ -3321,10 +3337,6 @@ export type StrictTypedTypePolicies = {
   ISearchResults?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ISearchResultsKeySpecifier | (() => undefined | ISearchResultsKeySpecifier);
     fields?: ISearchResultsFieldPolicy;
-  };
-  ITemplateBase?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | ITemplateBaseKeySpecifier | (() => undefined | ITemplateBaseKeySpecifier);
-    fields?: ITemplateBaseFieldPolicy;
   };
   IngestBatchResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | IngestBatchResultKeySpecifier | (() => undefined | IngestBatchResultKeySpecifier);
