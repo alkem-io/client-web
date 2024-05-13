@@ -21,6 +21,9 @@ query AdminSpaceTemplates($spaceId: UUID_NAMEID!) {
       innovationFlowTemplates {
         ...AdminInnovationFlowTemplate
       }
+      communityGuidelinesTemplates {
+        ...AdminCommunityGuidelinesTemplate
+      }
     }
   }
   }
@@ -65,7 +68,7 @@ fragment AdminInnovationFlowTemplate on InnovationFlowTemplate {
   }
 }
 
-fragment AdminCommunityGuidelinesTemplate on CommunityGuidelines {
+fragment AdminCommunityGuidelinesTemplate on CommunityGuidelinesTemplate {
   id
   profile {
     ...ProfileInfoWithVisual

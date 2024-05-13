@@ -66,7 +66,6 @@ const ImportTemplatesDialogGalleryStep = <T extends Template /*, Q extends T & T
       );
   }, [innovationPacks, organizationFilter, innovationPackFilter]);
 
-  console.log('templates: ', templates);
   /*
   // TODO: Pending Implement filters
       <Grid item xs={12}>

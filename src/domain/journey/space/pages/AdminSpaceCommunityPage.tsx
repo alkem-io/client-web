@@ -164,7 +164,7 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
           open={isImportTemplatesDialogOpen}
           onClose={closeImportTemplatesDialog}
           onImportTemplate={handleImportTemplate}
-          innovationPacks={[]}
+          innovationPacks={innovationPacks}
           loading={loadingInnovationPacks}
           actionButton={
             <Button

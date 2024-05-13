@@ -24,6 +24,9 @@ query InnovationPacks {
           innovationFlowTemplates {
             ...AdminInnovationFlowTemplate
           }
+          communityGuidelinesTemplates {
+            AdminCommunityGuidelinesTemplate
+          }
         }
       }
     }
