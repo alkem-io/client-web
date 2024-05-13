@@ -21,9 +21,9 @@ import { Identifiable } from '../../../core/utils/Identifiable';
 import CalloutTemplatePreview from '../calloutTemplate/CalloutTemplatePreview';
 import CalloutTemplateCard, { CalloutTemplate } from '../calloutTemplate/CalloutTemplateCard';
 import { InnovationFlowState } from '../../collaboration/InnovationFlow/InnovationFlow';
-import { MemberGuidelinesTemplate } from '../../collaboration/memberGuidelines/MemberGuidelinesTemplateCard/MemberGuidelines';
-import MemberGuidelinesTemplateCard from '../../collaboration/memberGuidelines/MemberGuidelinesTemplateCard/MemberGuidelinesTemplateCard';
-import MemberGuidelinesTemplatePreview from '../../collaboration/memberGuidelines/MemberGuidelinesTemplateLibrary/MemberGuidelinesTemplatePreview';
+import { CommunityGuidelinesTemplate } from '../../collaboration/communityGuidelines/CommunityGuidelinesTemplateCard/CommunityGuidelines';
+import CommunityGuidelinesTemplateCard from '../../collaboration/communityGuidelines/CommunityGuidelinesTemplateCard/CommunityGuidelinesTemplateCard';
+import CommunityGuidelinesTemplatePreview from '../../collaboration/communityGuidelines/CommunityGuidelinesTemplateLibrary/CommunityGuidelinesTemplatePreview';
 
 export type TemplatePreview =
   | {
@@ -43,8 +43,8 @@ export type TemplatePreview =
       templateType: TemplateType.CalloutTemplate;
     }
   | {
-      template: MemberGuidelinesTemplate;
-      templateType: TemplateType.MemberGuidelinesTemplate;
+      template: CommunityGuidelinesTemplate;
+      templateType: TemplateType.CommunityGuidelinesTemplate;
     };
 
 const Noop = () => null;
@@ -119,13 +119,13 @@ const TemplatePreviewChooser = ({ templatePreview, ...props }: TemplatePreviewCh
         />
       );
     }
-    case TemplateType.MemberGuidelinesTemplate: {
+    case TemplateType.CommunityGuidelinesTemplate: {
       return (
         <CollaborationTemplatesLibraryPreview
           {...{
             ...templatePreview,
-            templateCardComponent: MemberGuidelinesTemplateCard,
-            templatePreviewComponent: MemberGuidelinesTemplatePreview,
+            templateCardComponent: CommunityGuidelinesTemplateCard,
+            templatePreviewComponent: CommunityGuidelinesTemplatePreview,
           }}
           {...props}
         />

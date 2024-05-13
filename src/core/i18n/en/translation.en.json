@@ -588,7 +588,9 @@
       "title": "Community Guidelines",
       "updatedSuccessfully": "Community guidelines updated successfully.",
       "adminsOnly": "Since there are no Community Guidelines specified, this block is only visible for admins and leads.",
-      "communityGuidelinesRedirect": "Click here to update the Community Guidelines in the Space settings."
+      "communityGuidelinesRedirect": "Click here to update the Community Guidelines in the Space settings.",
+      "templateTitle": "Title",
+      "templateDescription": "Guidelines"
     },
     "applicationsHelp": "Here you can find everyone that applied to become a member of this Space. By clicking on them you can review their application and accept or reject them.",
     "applicationStatus": {
