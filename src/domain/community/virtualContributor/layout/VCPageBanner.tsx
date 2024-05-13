@@ -16,7 +16,15 @@ const VCPageBanner = () => {
 
   const userId = data?.virtualContributor.id;
 
-  return <ProfilePageBanner entityId={userId} profile={profile} settingsUri={undefined} loading={loading} />;
+  return (
+    <ProfilePageBanner
+      isVirtualContributor
+      entityId={userId}
+      profile={profile}
+      settingsUri={undefined}
+      loading={loading}
+    />
+  );
 };
 
 export default VCPageBanner;
