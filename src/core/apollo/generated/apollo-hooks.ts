@@ -15036,18 +15036,20 @@ export const VirtualContributorDocument = gql`
       nameID
       virtualPersona {
         id
-        nameID
         prompt
         profile {
-          id
           displayName
-          description
         }
       }
       profile {
         id
         displayName
         description
+        tagline
+        tagsets {
+          id
+          tags
+        }
         avatar: visual(type: AVATAR) {
           ...VisualFull
         }

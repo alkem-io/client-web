@@ -1,6 +1,4 @@
 import React, { FC, PropsWithChildren } from 'react';
-import { useTranslation } from 'react-i18next';
-import AssociatedOrganizationsLazilyFetched from '../../contributor/organization/AssociatedOrganizations/AssociatedOrganizationsLazilyFetched';
 import PageContent from '../../../../core/ui/content/PageContent';
 import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
 import { VirtualContributorQuery } from '../../../../core/apollo/generated/graphql-schema';
@@ -8,23 +6,18 @@ import VCProfileView from '../views/VCProfileView';
 import { BlockTitle } from '../../../../core/ui/typography';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
+import HostOrganization from './HostOrganization';
 
 interface Props {
   virtualContributor: VirtualContributorQuery['virtualContributor'] | undefined;
 }
 
 export const VCProfilePageView: FC<PropsWithChildren<Props>> = ({ virtualContributor }) => {
-  const { t } = useTranslation();
-
   return (
     <PageContent>
       <PageContentColumn columns={4}>
         <VCProfileView virtualContributor={virtualContributor} />
-        <AssociatedOrganizationsLazilyFetched
-          organizationIds={[]}
-          title={t('pages.user-profile.associated-organizations.title')}
-          helpText={t('pages.user-profile.associated-organizations.help')}
-        />
+        <HostOrganization />
       </PageContentColumn>
       <PageContentColumn columns={8}>
         <PageContentColumn columns={4}>
