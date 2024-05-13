@@ -88,11 +88,12 @@ fragment LibraryTemplates on TemplatesSet {
       id
       displayName
       description
-      visual(type: CARD) {
-        ...VisualUri
-      }
-      tagset {
-        ...TagsetDetails
+    }
+    guidelines {
+      id
+      profile {
+        displayName
+        description
       }
     }
   }

@@ -2910,15 +2910,6 @@ export const AdminCalloutTemplateFragmentDoc = gql`
   }
   ${ProfileInfoWithVisualFragmentDoc}
 `;
-export const AdminCommunityGuidelinesTemplateFragmentDoc = gql`
-  fragment AdminCommunityGuidelinesTemplate on CommunityGuidelines {
-    id
-    profile {
-      ...ProfileInfoWithVisual
-    }
-  }
-  ${ProfileInfoWithVisualFragmentDoc}
-`;
 export const InnovationPackProfileFragmentDoc = gql`
   fragment InnovationPackProfile on Profile {
     id
@@ -2970,6 +2961,15 @@ export const AdminWhiteboardTemplateFragmentDoc = gql`
   }
   ${ProfileInfoWithVisualFragmentDoc}
 `;
+export const AdminCommunityGuidelinesTemplateFragmentDoc = gql`
+  fragment AdminCommunityGuidelinesTemplate on CommunityGuidelinesTemplate {
+    id
+    profile {
+      ...ProfileInfoWithVisual
+    }
+  }
+  ${ProfileInfoWithVisualFragmentDoc}
+`;
 export const AdminInnovationPackTemplatesFragmentDoc = gql`
   fragment AdminInnovationPackTemplates on TemplatesSet {
     id
@@ -2982,10 +2982,14 @@ export const AdminInnovationPackTemplatesFragmentDoc = gql`
     whiteboardTemplates {
       ...AdminWhiteboardTemplate
     }
+    communityGuidelinesTemplates {
+      ...AdminCommunityGuidelinesTemplate
+    }
   }
   ${AdminPostTemplateFragmentDoc}
   ${AdminInnovationFlowTemplateFragmentDoc}
   ${AdminWhiteboardTemplateFragmentDoc}
+  ${AdminCommunityGuidelinesTemplateFragmentDoc}
 `;
 export const ConfigurationFragmentDoc = gql`
   fragment Configuration on Config {
@@ -3437,11 +3441,12 @@ export const LibraryTemplatesFragmentDoc = gql`
         id
         displayName
         description
-        visual(type: CARD) {
-          ...VisualUri
-        }
-        tagset {
-          ...TagsetDetails
+      }
+      guidelines {
+        id
+        profile {
+          displayName
+          description
         }
       }
     }
@@ -18571,6 +18576,9 @@ export const AdminSpaceTemplatesDocument = gql`
           innovationFlowTemplates {
             ...AdminInnovationFlowTemplate
           }
+          communityGuidelinesTemplates {
+            ...AdminCommunityGuidelinesTemplate
+          }
         }
       }
     }
@@ -18579,6 +18587,7 @@ export const AdminSpaceTemplatesDocument = gql`
   ${AdminPostTemplateFragmentDoc}
   ${AdminWhiteboardTemplateFragmentDoc}
   ${AdminInnovationFlowTemplateFragmentDoc}
+  ${AdminCommunityGuidelinesTemplateFragmentDoc}
 `;
 
 /**
@@ -18846,6 +18855,9 @@ export const InnovationPacksDocument = gql`
             innovationFlowTemplates {
               ...AdminInnovationFlowTemplate
             }
+            communityGuidelinesTemplates {
+              ...AdminCommunityGuidelinesTemplate
+            }
           }
         }
       }
@@ -18855,6 +18867,7 @@ export const InnovationPacksDocument = gql`
   ${AdminPostTemplateFragmentDoc}
   ${AdminWhiteboardTemplateFragmentDoc}
   ${AdminInnovationFlowTemplateFragmentDoc}
+  ${AdminCommunityGuidelinesTemplateFragmentDoc}
 `;
 
 /**
