@@ -3428,16 +3428,12 @@ export const LibraryTemplatesFragmentDoc = gql`
         id
         displayName
         description
-        visual(type: CARD) {
-          ...VisualUri
-        }
-        tagset {
-          ...TagsetDetails
-        }
-        references {
-          name
+      }
+      guidelines {
+        id
+        profile {
+          displayName
           description
-          uri
         }
       }
     }
