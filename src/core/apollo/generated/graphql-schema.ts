@@ -690,9 +690,6 @@ export enum AuthorizationCredential {
   SpaceAdmin = 'SPACE_ADMIN',
   SpaceLead = 'SPACE_LEAD',
   SpaceMember = 'SPACE_MEMBER',
-  SubspaceAdmin = 'SUBSPACE_ADMIN',
-  SubspaceLead = 'SUBSPACE_LEAD',
-  SubspaceMember = 'SUBSPACE_MEMBER',
   UserGroupMember = 'USER_GROUP_MEMBER',
   UserSelfManagement = 'USER_SELF_MANAGEMENT',
 }
