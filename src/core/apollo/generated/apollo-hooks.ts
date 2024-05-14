@@ -10400,16 +10400,14 @@ export const CommunityMembersListDocument = gql`
     $spaceId: UUID = "00000000-0000-0000-0000-000000000000"
     $includeSpaceHost: Boolean = false
   ) {
-    space: lookup @include(if: $includeSpaceHost) {
-      space(ID: $spaceId) {
+    lookup {
+      space(ID: $spaceId) @include(if: $includeSpaceHost) {
         account {
           host {
             ...OrganizationDetails
           }
         }
       }
-    }
-    lookup {
       community(ID: $communityId) {
         ...CommunityMembersDetails
       }

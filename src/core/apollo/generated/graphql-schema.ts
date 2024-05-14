@@ -13859,7 +13859,7 @@ export type CommunityMembersListQueryVariables = Exact<{
 
 export type CommunityMembersListQuery = {
   __typename?: 'Query';
-  space: {
+  lookup: {
     __typename?: 'LookupQueryResults';
     space?:
       | {
@@ -13894,9 +13894,6 @@ export type CommunityMembersListQuery = {
           };
         }
       | undefined;
-  };
-  lookup: {
-    __typename?: 'LookupQueryResults';
     community?:
       | {
           __typename?: 'Community';

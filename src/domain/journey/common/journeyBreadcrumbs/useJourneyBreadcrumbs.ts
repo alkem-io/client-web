@@ -2,7 +2,6 @@ import { useMemo } from 'react';
 import { useJourneyBreadcrumbsSpaceQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { JourneyPath } from '../../../../main/routing/resolvers/RouteResolver';
 import { VisualType } from '../../../../core/apollo/generated/graphql-schema';
-import { compact } from 'lodash';
 
 export interface BreadcrumbsItem {
   displayName: string;
@@ -32,11 +31,7 @@ export const useJourneyBreadcrumbs = ({ journeyPath, loading = false }: UseJourn
     skip: !journeyPath || journeyPath.length === 0 || loading,
   });
 
-  const journeyProfiles = compact([
-    data?.space.profile,
-    data?.space.subspace?.profile,
-    data?.space.subspace?.subspace?.profile,
-  ]);
+  const journeyProfiles = [data?.space.profile, data?.space.subspace?.profile, data?.space.subspace?.subspace?.profile];
 
   const breadcrumbs = useMemo<BreadcrumbsItem[]>(() => {
     if (isLoadingBreadcrumbs) {

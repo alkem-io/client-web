@@ -67,6 +67,7 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ spaceId, 
     errorPolicy: 'all',
     skip: !spaceId,
   });
+
   const space = spaceData?.lookup.space;
 
   const isMember = space?.community?.myMembershipStatus === CommunityMembershipStatus.Member;
