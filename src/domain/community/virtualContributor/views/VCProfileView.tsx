@@ -11,12 +11,16 @@ interface Props {
 
 export const VCProfileView: FC<Props> = ({ virtualContributor }) => {
   const { t } = useTranslation();
-  const bio = virtualContributor?.profile?.description;
+  const description = virtualContributor?.profile?.description;
 
   return (
     <PageContentBlock>
       <Grid item>
-        <ProfileDetail title={t('components.profile.fields.bio.title')} value={bio} aria-label="bio" />
+        <ProfileDetail
+          title={t('components.profile.fields.description.title')}
+          value={description}
+          aria-label="description"
+        />
       </Grid>
     </PageContentBlock>
   );
