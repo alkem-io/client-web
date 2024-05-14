@@ -23,11 +23,11 @@ export const OrganizationAssociatesView: FC = () => {
           credential: AuthorizationCredential.OrganizationAssociate,
         }}
       >
-        {(entities, actions, state) => (
+        {({ entities, actions, state }) => (
           <EditMemberUsers
             members={entities.allMembers}
             availableMembers={entities.availableMembers}
-            updating={state.addingUser || state.removingUser}
+            updating={state.updatingRoles}
             executorId={entities.currentMember?.id}
             onAdd={actions.handleAssignAssociate}
             onRemove={actions.handleRemoveAssociate}

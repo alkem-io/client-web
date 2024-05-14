@@ -12,6 +12,7 @@ import CardBanner from '../../../../core/ui/card/CardImageHeader';
 import { useTranslation } from 'react-i18next';
 import { JourneyCardBanner } from './Banner';
 import defaultCardBanner from '../../defaultVisuals/Card.jpg';
+import CardTags from '../../../../core/ui/card/CardTags';
 
 export interface JourneyCardProps extends ContributeCardProps {
   iconComponent: ComponentType<SvgIconProps>;
@@ -54,8 +55,6 @@ const JourneyCard = ({
 
   const toggleExpanded = () => setIsExpanded(wasExpanded => !wasExpanded);
 
-  // const Tags = matchedTerms ? CardMatchedTerms : CardTags;
-
   const wrapperProps = journeyUri
     ? ({
         component: RouterLink,
@@ -90,7 +89,7 @@ const JourneyCard = ({
           expansion={expansion}
           actions={actions}
           expansionActions={expansionActions}
-          tags={<></>}
+          tags={tags.length > 0 ? <CardTags disableIndentation tags={tags} /> : <></>}
         />
       </Box>
     </ContributeCard>
