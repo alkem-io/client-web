@@ -17,7 +17,7 @@ import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlo
 import InvitationOptionsBlock from '../../../community/invitations/InvitationOptionsBlock';
 import PageContentBlockCollapsible from '../../../../core/ui/content/PageContentBlockCollapsible';
 import { BlockTitle, Text } from '../../../../core/ui/typography';
-import { useInnovationPacksLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { useAdminCommunityGuidelinesTemplatesLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import CommunityApplicationForm from '../../../community/community/CommunityApplicationForm/CommunityApplicationForm';
 import { Trans, useTranslation } from 'react-i18next';
 import { gutters } from '../../../../core/ui/grid/utils';
@@ -26,6 +26,8 @@ import CommunityVirtualContributors from '../../../community/community/Community
 import ImportTemplatesDialog from '../../../platform/admin/templates/InnovationPacks/ImportTemplatesDialog';
 import { TemplateType } from '../../../collaboration/InnovationPack/InnovationPackProfilePage/InnovationPackProfilePage';
 import CommunityGuidelinesImportTemplateCard from '../../../platform/admin/templates/CommunityGuidelines/CommunityGuidelinesImportTemplateCard';
+import { InnovationPack } from '../../../platform/admin/templates/InnovationPacks/InnovationPack';
+import { Template } from '../../../platform/admin/templates/AdminTemplatesSection';
 
 const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   const { t } = useTranslation();
@@ -79,18 +81,31 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
 
   const currentMembersIds = useMemo(() => users.map(user => user.id), [users]);
 
-  // TODO: get community guidelines data
-  const [loadInnovationPacks, { data: innovationPacks, loading: loadingInnovationPacks }] =
-  useInnovationPacksLazyQuery();
-
+  const [loadCommunityGuidelinesTemplates, { data: templatesData, loading: loadingTemplates }] =
+    useAdminCommunityGuidelinesTemplatesLazyQuery();
   const [isImportTemplatesDialogOpen, setImportTemplatesDialogOpen] = useState(false);
   const openImportTemplateDialog = useCallback(() => {
-    loadInnovationPacks();
+    loadCommunityGuidelinesTemplates({
+      variables: {
+        spaceId: spaceId!,
+      },
+    });
     setImportTemplatesDialogOpen(true);
-  }, []);
+  }, [spaceId]);
   const closeImportTemplatesDialog = useCallback(() => setImportTemplatesDialogOpen(false), []);
 
-  const handleImportTemplate = async () => {};
+  const guidelinesData: InnovationPack<Template>[] = [
+    {
+      id: templatesData?.space.account.library.id,
+      nameID: templatesData?.space.account.library.nameID,
+      profile: {
+        id: '',
+        displayName: '',
+      },
+      templates: templatesData?.space.account.library.communityGuidelinesTemplates,
+    },
+  ];
+  console.log(guidelinesData);
 
   if (!spaceId || isLoadingSpace) {
     return null;
@@ -134,20 +149,17 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
           header={<BlockTitle>{t('community.communityGuidelines.title')}</BlockTitle>}
           primaryAction={
             <Box marginLeft="auto">
-              {/* {canImportTemplates && ( */}
-              {true && (
-                <Button
-                  variant="outlined"
-                  onClick={event => {
-                    event.stopPropagation();
-                    openImportTemplateDialog();
-                  }}
-                  sx={{ marginRight: theme => theme.spacing(1) }}
-                  startIcon={<InnovationLibraryIcon />}
-                >
-                  {t('common.library')}
-                </Button>
-              )}
+              <Button
+                variant="outlined"
+                onClick={event => {
+                  event.stopPropagation();
+                  openImportTemplateDialog();
+                }}
+                sx={{ marginRight: theme => theme.spacing(1) }}
+                startIcon={<InnovationLibraryIcon />}
+              >
+                {t('common.library')}
+              </Button>
             </Box>
           }
         >
@@ -159,13 +171,12 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
           })}
           dialogSubtitle={t('pages.admin.generic.sections.templates.import.subtitle')}
           templateImportCardComponent={CommunityGuidelinesImportTemplateCard}
-          // getImportedTemplateContent={}
           templateType={TemplateType.CommunityGuidelinesTemplate}
           open={isImportTemplatesDialogOpen}
           onClose={closeImportTemplatesDialog}
-          onImportTemplate={handleImportTemplate}
-          innovationPacks={innovationPacks}
-          loading={loadingInnovationPacks}
+          loadInnovationPacks={loadCommunityGuidelinesTemplates}
+          innovationPacks={[]}
+          loading={loadingTemplates}
           actionButton={
             <Button
               startIcon={<SystemUpdateAltIcon />}

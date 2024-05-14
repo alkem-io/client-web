@@ -29,6 +29,25 @@ query AdminSpaceTemplates($spaceId: UUID_NAMEID!) {
   }
 }
 
+query AdminCommunityGuidelinesTemplates($spaceId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
+    id
+    account {
+      id
+      library {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+        communityGuidelinesTemplates {
+          ...AdminCommunityGuidelinesTemplate
+        }
+      }
+    }
+  }
+}
+
 fragment AdminCalloutTemplate on CalloutTemplate {
   id
   type
@@ -71,7 +90,20 @@ fragment AdminInnovationFlowTemplate on InnovationFlowTemplate {
 fragment AdminCommunityGuidelinesTemplate on CommunityGuidelinesTemplate {
   id
   profile {
-    ...ProfileInfoWithVisual
+    # TODO: uncomment ProfileInfoWithVisual, add refs and
+    # delete name and description when server is ready
+    # ...ProfileInfoWithVisual
+    displayName
+    description
+  }
+  guidelines {
+    id
+    profile {
+      id
+      displayName
+      description
+      # references
+    }
   }
 }
 

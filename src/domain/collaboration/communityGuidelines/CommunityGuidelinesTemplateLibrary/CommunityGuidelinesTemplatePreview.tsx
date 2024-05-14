@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 // import ProfileReferenceSegment from '../../../platform/admin/components/Common/ProfileReferenceSegment';
+// import { Reference } from '../../../common/profile/Profile';
 
 interface CommunityGuidelinesTemplatePreviewProps {
   template?: {
@@ -11,6 +12,7 @@ interface CommunityGuidelinesTemplatePreviewProps {
       profile: {
         displayName: string;
         description: string;
+        // references: Reference[];
       };
     };
   };
@@ -26,7 +28,7 @@ const CommunityGuidelinesTemplatePreview: FC<CommunityGuidelinesTemplatePreviewP
       <BlockSectionTitle>{t('community.communityGuidelines.templateDescription')}</BlockSectionTitle>
       <WrapperMarkdown>{template?.guidelines.profile.description ?? ''}</WrapperMarkdown>
       {/* TODO: server not ready */}
-      {/* <ProfileReferenceSegment references={template?.guidelines.profile.references} profileId={"template?.guidelines?.profile?.id"} /> */}
+      {/* <ProfileReferenceSegment references={template?.guidelines.profile?.references} profileId={"template?.guidelines?.profile?.id"} /> */}
     </PageContentBlock>
   );
 };

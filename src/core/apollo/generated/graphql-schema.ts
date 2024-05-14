@@ -1459,6 +1459,7 @@ export type CreateCalloutTemplateOnTemplatesSetInput = {
   contributionDefaults: CreateCalloutContributionDefaultsInput;
   contributionPolicy: CreateCalloutContributionPolicyInput;
   framing: CreateCalloutFramingInput;
+  /** The profile of the template. */
   profile: CreateProfileInput;
   tags?: InputMaybe<Array<Scalars['String']>>;
   templatesSetID: Scalars['UUID'];
@@ -1476,6 +1477,22 @@ export type CreateCollaborationInput = {
   innovationFlowTemplateID?: InputMaybe<Scalars['UUID']>;
 };
 
+export type CreateCommunityGuidelinesInput = {
+  profile: CreateProfileInput;
+};
+
+export type CreateCommunityGuidelinesTemplateOnTemplatesSetInput = {
+  /** The Community guidelines to associate with this template. */
+  communityGuidelines?: InputMaybe<CreateCommunityGuidelinesInput>;
+  /** The ID of the Community guidelines to associate with this template. */
+  communityGuidelinesID?: InputMaybe<Scalars['String']>;
+  /** The profile of the template. */
+  profile: CreateProfileInput;
+  tags?: InputMaybe<Array<Scalars['String']>>;
+  templatesSetID: Scalars['UUID'];
+  visualUri?: InputMaybe<Scalars['String']>;
+};
+
 export type CreateContextInput = {
   impact?: InputMaybe<Scalars['Markdown']>;
   vision?: InputMaybe<Scalars['Markdown']>;
@@ -1490,6 +1507,7 @@ export type CreateContributionOnCalloutInput = {
 };
 
 export type CreateInnovationFlowTemplateOnTemplatesSetInput = {
+  /** The profile of the template. */
   profile: CreateProfileInput;
   states?: InputMaybe<Array<UpdateInnovationFlowStateInput>>;
   tags?: InputMaybe<Array<Scalars['String']>>;
@@ -1577,6 +1595,7 @@ export type CreatePostInput = {
 export type CreatePostTemplateOnTemplatesSetInput = {
   /** The default description to be pre-filled when users create Posts based on this template. */
   defaultDescription?: InputMaybe<Scalars['Markdown']>;
+  /** The profile of the template. */
   profile: CreateProfileInput;
   tags?: InputMaybe<Array<Scalars['String']>>;
   templatesSetID: Scalars['UUID'];
@@ -1693,6 +1712,7 @@ export type CreateWhiteboardInput = {
 
 export type CreateWhiteboardTemplateOnTemplatesSetInput = {
   content?: InputMaybe<Scalars['WhiteboardContent']>;
+  /** The profile of the template. */
   profile: CreateProfileInput;
   tags?: InputMaybe<Array<Scalars['String']>>;
   templatesSetID: Scalars['UUID'];
@@ -2588,6 +2608,8 @@ export type Mutation = {
   createCalloutOnCollaboration: Callout;
   /** Creates a new CalloutTemplate on the specified TemplatesSet. */
   createCalloutTemplate: CalloutTemplate;
+  /** Creates a new CommunityGuidelinesTemplate on the specified TemplatesSet. */
+  createCommunityGuidelinesTemplate: CommunityGuidelinesTemplate;
   /** Create a new Contribution on the Callout. */
   createContributionOnCallout: CalloutContribution;
   /** Creates a new Discussion as part of this Communication. */
@@ -2936,6 +2958,10 @@ export type MutationCreateCalloutOnCollaborationArgs = {
 
 export type MutationCreateCalloutTemplateArgs = {
   calloutTemplateInput: CreateCalloutTemplateOnTemplatesSetInput;
+};
+
+export type MutationCreateCommunityGuidelinesTemplateArgs = {
+  communityGuidelinesTemplateInput: CreateCommunityGuidelinesTemplateOnTemplatesSetInput;
 };
 
 export type MutationCreateContributionOnCalloutArgs = {
@@ -21176,36 +21202,46 @@ export type AdminSpaceTemplatesQuery = {
             communityGuidelinesTemplates: Array<{
               __typename?: 'CommunityGuidelinesTemplate';
               id: string;
-              profile: {
-                __typename?: 'Profile';
+              profile: { __typename?: 'Profile'; displayName: string; description?: string | undefined };
+              guidelines: {
+                __typename?: 'CommunityGuidelines';
                 id: string;
-                displayName: string;
-                description?: string | undefined;
-                tagset?:
-                  | {
-                      __typename?: 'Tagset';
-                      id: string;
-                      name: string;
-                      tags: Array<string>;
-                      allowedValues: Array<string>;
-                      type: TagsetType;
-                    }
-                  | undefined;
-                visual?:
-                  | {
-                      __typename?: 'Visual';
-                      id: string;
-                      uri: string;
-                      name: string;
-                      allowedTypes: Array<string>;
-                      aspectRatio: number;
-                      maxHeight: number;
-                      maxWidth: number;
-                      minHeight: number;
-                      minWidth: number;
-                      alternativeText?: string | undefined;
-                    }
-                  | undefined;
+                profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+              };
+            }>;
+          }
+        | undefined;
+    };
+  };
+};
+
+export type AdminCommunityGuidelinesTemplatesQueryVariables = Exact<{
+  spaceId: Scalars['UUID_NAMEID'];
+}>;
+
+export type AdminCommunityGuidelinesTemplatesQuery = {
+  __typename?: 'Query';
+  space: {
+    __typename?: 'Space';
+    id: string;
+    account: {
+      __typename?: 'Account';
+      id: string;
+      library?:
+        | {
+            __typename?: 'TemplatesSet';
+            id: string;
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
+            communityGuidelinesTemplates: Array<{
+              __typename?: 'CommunityGuidelinesTemplate';
+              id: string;
+              profile: { __typename?: 'Profile'; displayName: string; description?: string | undefined };
+              guidelines: {
+                __typename?: 'CommunityGuidelines';
+                id: string;
+                profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
               };
             }>;
           }
@@ -21370,36 +21406,11 @@ export type AdminInnovationFlowTemplateFragment = {
 export type AdminCommunityGuidelinesTemplateFragment = {
   __typename?: 'CommunityGuidelinesTemplate';
   id: string;
-  profile: {
-    __typename?: 'Profile';
+  profile: { __typename?: 'Profile'; displayName: string; description?: string | undefined };
+  guidelines: {
+    __typename?: 'CommunityGuidelines';
     id: string;
-    displayName: string;
-    description?: string | undefined;
-    tagset?:
-      | {
-          __typename?: 'Tagset';
-          id: string;
-          name: string;
-          tags: Array<string>;
-          allowedValues: Array<string>;
-          type: TagsetType;
-        }
-      | undefined;
-    visual?:
-      | {
-          __typename?: 'Visual';
-          id: string;
-          uri: string;
-          name: string;
-          allowedTypes: Array<string>;
-          aspectRatio: number;
-          maxHeight: number;
-          maxWidth: number;
-          minHeight: number;
-          minWidth: number;
-          alternativeText?: string | undefined;
-        }
-      | undefined;
+    profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
   };
 };
 
@@ -21615,36 +21626,16 @@ export type InnovationPacksQuery = {
               communityGuidelinesTemplates: Array<{
                 __typename?: 'CommunityGuidelinesTemplate';
                 id: string;
-                profile: {
-                  __typename?: 'Profile';
+                profile: { __typename?: 'Profile'; displayName: string; description?: string | undefined };
+                guidelines: {
+                  __typename?: 'CommunityGuidelines';
                   id: string;
-                  displayName: string;
-                  description?: string | undefined;
-                  tagset?:
-                    | {
-                        __typename?: 'Tagset';
-                        id: string;
-                        name: string;
-                        tags: Array<string>;
-                        allowedValues: Array<string>;
-                        type: TagsetType;
-                      }
-                    | undefined;
-                  visual?:
-                    | {
-                        __typename?: 'Visual';
-                        id: string;
-                        uri: string;
-                        name: string;
-                        allowedTypes: Array<string>;
-                        aspectRatio: number;
-                        maxHeight: number;
-                        maxWidth: number;
-                        minHeight: number;
-                        minWidth: number;
-                        alternativeText?: string | undefined;
-                      }
-                    | undefined;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    description?: string | undefined;
+                  };
                 };
               }>;
             }
@@ -21830,36 +21821,11 @@ export type AdminInnovationPackTemplatesFragment = {
   communityGuidelinesTemplates: Array<{
     __typename?: 'CommunityGuidelinesTemplate';
     id: string;
-    profile: {
-      __typename?: 'Profile';
+    profile: { __typename?: 'Profile'; displayName: string; description?: string | undefined };
+    guidelines: {
+      __typename?: 'CommunityGuidelines';
       id: string;
-      displayName: string;
-      description?: string | undefined;
-      tagset?:
-        | {
-            __typename?: 'Tagset';
-            id: string;
-            name: string;
-            tags: Array<string>;
-            allowedValues: Array<string>;
-            type: TagsetType;
-          }
-        | undefined;
-      visual?:
-        | {
-            __typename?: 'Visual';
-            id: string;
-            uri: string;
-            name: string;
-            allowedTypes: Array<string>;
-            aspectRatio: number;
-            maxHeight: number;
-            maxWidth: number;
-            minHeight: number;
-            minWidth: number;
-            alternativeText?: string | undefined;
-          }
-        | undefined;
+      profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
     };
   }>;
 };
@@ -22035,36 +22001,16 @@ export type AdminInnovationPackQuery = {
                   communityGuidelinesTemplates: Array<{
                     __typename?: 'CommunityGuidelinesTemplate';
                     id: string;
-                    profile: {
-                      __typename?: 'Profile';
+                    profile: { __typename?: 'Profile'; displayName: string; description?: string | undefined };
+                    guidelines: {
+                      __typename?: 'CommunityGuidelines';
                       id: string;
-                      displayName: string;
-                      description?: string | undefined;
-                      tagset?:
-                        | {
-                            __typename?: 'Tagset';
-                            id: string;
-                            name: string;
-                            tags: Array<string>;
-                            allowedValues: Array<string>;
-                            type: TagsetType;
-                          }
-                        | undefined;
-                      visual?:
-                        | {
-                            __typename?: 'Visual';
-                            id: string;
-                            uri: string;
-                            name: string;
-                            allowedTypes: Array<string>;
-                            aspectRatio: number;
-                            maxHeight: number;
-                            maxWidth: number;
-                            minHeight: number;
-                            minWidth: number;
-                            alternativeText?: string | undefined;
-                          }
-                        | undefined;
+                      profile: {
+                        __typename?: 'Profile';
+                        id: string;
+                        displayName: string;
+                        description?: string | undefined;
+                      };
                     };
                   }>;
                 }
