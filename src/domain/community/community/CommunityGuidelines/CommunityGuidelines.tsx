@@ -98,7 +98,6 @@ const CommunityGuidelines: FC<CommunityGuidelinesProps> = ({ communityId, disabl
   return (
     <Formik initialValues={initialValues} validationSchema={validationSchema} enableReinitialize onSubmit={onSubmit}>
       {({ values, handleSubmit, isValid }) => {
-        console.log(values);
         return (
           <Gutters>
             <FormikInputField name="displayName" title={t('common.title')} placeholder={t('common.title')} />
