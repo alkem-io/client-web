@@ -21,6 +21,9 @@ import { Identifiable } from '../../../core/utils/Identifiable';
 import CalloutTemplatePreview from '../calloutTemplate/CalloutTemplatePreview';
 import CalloutTemplateCard, { CalloutTemplate } from '../calloutTemplate/CalloutTemplateCard';
 import { InnovationFlowState } from '../../collaboration/InnovationFlow/InnovationFlow';
+import { CommunityGuidelinesTemplate } from '../../collaboration/communityGuidelines/CommunityGuidelinesTemplateCard/CommunityGuidelines';
+import CommunityGuidelinesTemplateCard from '../../collaboration/communityGuidelines/CommunityGuidelinesTemplateCard/CommunityGuidelinesTemplateCard';
+import CommunityGuidelinesTemplatePreview from '../../collaboration/communityGuidelines/CommunityGuidelinesTemplateLibrary/CommunityGuidelinesTemplatePreview';
 
 export type TemplatePreview =
   | {
@@ -38,6 +41,10 @@ export type TemplatePreview =
   | {
       template: CalloutTemplate & Identifiable;
       templateType: TemplateType.CalloutTemplate;
+    }
+  | {
+      template: CommunityGuidelinesTemplate;
+      templateType: TemplateType.CommunityGuidelinesTemplate;
     };
 
 const Noop = () => null;
@@ -107,6 +114,18 @@ const TemplatePreviewChooser = ({ templatePreview, ...props }: TemplatePreviewCh
             ...templatePreview,
             templateCardComponent: CalloutTemplateCard,
             templatePreviewComponent: CalloutTemplatePreview,
+          }}
+          {...props}
+        />
+      );
+    }
+    case TemplateType.CommunityGuidelinesTemplate: {
+      return (
+        <CollaborationTemplatesLibraryPreview
+          {...{
+            ...templatePreview,
+            templateCardComponent: CommunityGuidelinesTemplateCard,
+            templatePreviewComponent: CommunityGuidelinesTemplatePreview,
           }}
           {...props}
         />
