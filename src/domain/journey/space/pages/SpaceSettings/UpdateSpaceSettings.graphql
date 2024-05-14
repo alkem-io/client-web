@@ -4,10 +4,12 @@ mutation UpdateSpaceSettings($settingsData: UpdateSpaceSettingsInput!) {
     settings {
       privacy {
         mode
+        allowPlatformSupportAsAdmin
       }
       membership {
         policy
         trustedOrganizations
+        allowSubspaceAdminsToInviteMembers
       }
       collaboration {
         allowMembersToCreateCallouts
