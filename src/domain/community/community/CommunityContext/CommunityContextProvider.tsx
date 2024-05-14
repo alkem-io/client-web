@@ -44,12 +44,15 @@ const CommunityContextProvider: FC = ({ children }) => {
     skip: journeyTypeName !== 'subsubspace' || !opportunityId,
   });
 
-  const community = spaceData?.space.community ?? challengeData?.space?.community ?? opportunityData?.space?.community;
+  const community =
+    spaceData?.lookup.space?.community ??
+    challengeData?.lookup.space?.community ??
+    opportunityData?.lookup.space?.community;
 
   const communityName =
-    spaceData?.space.profile.displayName ??
-    challengeData?.space?.profile.displayName ??
-    opportunityData?.space?.profile.displayName;
+    spaceData?.lookup.space?.profile.displayName ??
+    challengeData?.lookup.space?.profile.displayName ??
+    opportunityData?.lookup.space?.profile.displayName;
 
   const isLoading = isLoadingSpace || isLoadingChallenge || isLoadingOpportunity;
 

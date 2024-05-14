@@ -1,0 +1,42 @@
+query CommunityUserPrivileges(
+  $spaceId: UUID!
+  $parentSpaceId: UUID! = "00000000-0000-0000-0000-000000000000"
+  $includeParentSpace: Boolean! = false
+) {
+  lookup {
+    space(ID: $spaceId) {
+      id
+      profile {
+        id
+        url
+        displayName
+      }
+      community {
+        id
+        myMembershipStatus
+        authorization {
+          id
+          myPrivileges
+        }
+      }
+    }
+  }
+  parentSpace: lookup @include(if: $includeParentSpace) {
+    space(ID: $parentSpaceId) {
+      id
+      profile {
+        id
+        url
+        displayName
+      }
+      community {
+        id
+        myMembershipStatus
+        authorization {
+          id
+          myPrivileges
+        }
+      }
+    }
+  }
+}

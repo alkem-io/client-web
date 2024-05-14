@@ -57,7 +57,7 @@ const SubspaceProvider: FC<SubspaceProviderProps> = ({ children }) => {
     skip: !journeyId,
   });
 
-  const subspace = data?.space;
+  const subspace = data?.lookup.space;
   const communityId = subspace?.community?.id ?? '';
 
   const myPrivileges = useMemo(

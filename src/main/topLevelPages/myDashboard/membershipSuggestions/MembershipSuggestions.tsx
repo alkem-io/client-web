@@ -26,7 +26,7 @@ const MembershipSuggestions: FC = () => {
   const { data, loading } = useMembershipSuggestionSpaceQuery({
     variables: {
       // Id of the space suggested is coming from the translation:
-      id: t('pages.home.sections.membershipSuggestions.suggestedSpace.nameId'),
+      spaceNameId: t('pages.home.sections.membershipSuggestions.suggestedSpace.nameId'),
     },
     errorPolicy: 'ignore',
   });

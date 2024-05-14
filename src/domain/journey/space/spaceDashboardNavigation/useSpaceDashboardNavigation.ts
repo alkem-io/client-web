@@ -76,7 +76,7 @@ const useSpaceDashboardNavigation = ({
     skip: skip || !spaceId,
   });
 
-  const space = challengesQueryData?.space;
+  const space = challengesQueryData?.lookup.space;
 
   const readableChallengeIds = space?.subspaces.filter(isReadable).map(({ id }) => id);
 
@@ -93,7 +93,7 @@ const useSpaceDashboardNavigation = ({
   });
 
   const challengesWithOpportunitiesById = useMemo(
-    () => keyBy(opportunitiesQueryData?.space.subspaces, 'id'),
+    () => keyBy(opportunitiesQueryData?.lookup.space?.subspaces, 'id'),
     [opportunitiesQueryData]
   );
 

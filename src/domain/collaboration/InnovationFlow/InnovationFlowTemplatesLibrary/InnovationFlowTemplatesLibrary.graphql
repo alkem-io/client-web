@@ -1,5 +1,5 @@
-query SpaceInnovationFlowTemplatesLibrary($spaceId: UUID_NAMEID!) {
-  space(ID: $spaceId) {
+query SpaceInnovationFlowTemplatesLibrary($spaceNameId: UUID_NAMEID!) {
+  space(ID: $spaceNameId) {
     id
     account {
       id
