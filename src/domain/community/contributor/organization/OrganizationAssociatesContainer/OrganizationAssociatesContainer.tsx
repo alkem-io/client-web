@@ -2,16 +2,13 @@ import React, { FC, useCallback, useMemo } from 'react';
 import { useUserContext } from '../../../user';
 import {
   refetchUsersWithCredentialsQuery,
-  useAssignUserAsOrganizationAdminMutation,
-  useAssignUserAsOrganizationOwnerMutation,
-  useAssignUserToOrganizationMutation,
-  useRemoveUserAsOrganizationAdminMutation,
-  useRemoveUserAsOrganizationOwnerMutation,
-  useRemoveUserFromOrganizationMutation,
+  useAssignOrganizationRoleToUserMutation,
+  useRemoveOrganizationRoleFromUserMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import {
   AuthorizationCredential,
   Organization,
+  OrganizationRole,
   UserDisplayNameFragment,
 } from '../../../../../core/apollo/generated/graphql-schema';
 import { Member } from '../../../user/models/User';
@@ -33,11 +30,11 @@ export interface OrganizationAssociatesProps {
     parentAssociates?: Member[];
     credential: AuthorizationCredentials;
   };
-  children: (
-    entities: OrganizationAssociatesEntities,
-    actions: OrganizationAssociatesActions,
-    state: OrganizationAssociatesState
-  ) => React.ReactNode;
+  children: (provided: {
+    entities: OrganizationAssociatesEntities;
+    actions: OrganizationAssociatesActions;
+    state: OrganizationAssociatesState;
+  }) => React.ReactNode;
 }
 
 export interface OrganizationAssociatesActions {
@@ -52,12 +49,7 @@ export interface OrganizationAssociatesActions {
 }
 
 export interface OrganizationAssociatesState {
-  addingUser: boolean;
-  removingUser: boolean;
-  addingAdmin: boolean;
-  removingAdmin: boolean;
-  addingOwner: boolean;
-  removingOwner: boolean;
+  updatingRoles: boolean;
   loadingUsers: boolean;
   hasMoreUsers: boolean | undefined;
 }
@@ -71,136 +63,63 @@ export interface OrganizationAssociatesEntities {
 export const OrganizationAssociatesContainer: FC<OrganizationAssociatesProps> = ({ children, entities }) => {
   const { user } = useUserContext();
 
-  const [grantMember, { loading: addingUser }] = useAssignUserToOrganizationMutation({});
+  const [assignOrganizationRoleToUser, { loading: loadingAssign }] = useAssignOrganizationRoleToUserMutation();
+  const [revokeOrganizationRoleToUser, { loading: loadingRevoke }] = useRemoveOrganizationRoleFromUserMutation();
 
-  const [revokeMember, { loading: removingUser }] = useRemoveUserFromOrganizationMutation({});
+  const handleAssignRole = useCallback(
+    (memberId: string, role: OrganizationRole) => {
+      const refetchType =
+        role === OrganizationRole.Admin
+          ? organizationAdminCredential
+          : role === OrganizationRole.Owner
+          ? organizationOwnerCredential
+          : organizationAssociateCredential;
 
-  const [grantAdmin, { loading: addingAdmin }] = useAssignUserAsOrganizationAdminMutation({});
-
-  const [revokeAdmin, { loading: removingAdmin }] = useRemoveUserAsOrganizationAdminMutation({});
-
-  const [grantOwner, { loading: addingOwner }] = useAssignUserAsOrganizationOwnerMutation({});
-
-  const [revokeOwner, { loading: removingOwner }] = useRemoveUserAsOrganizationOwnerMutation({});
-
-  const handleAssignMember = useCallback(
-    (memberId: string) => {
-      grantMember({
+      assignOrganizationRoleToUser({
         variables: {
           input: {
             organizationID: entities.organizationId,
             userID: memberId,
+            role,
           },
         },
         refetchQueries: [
           refetchUsersWithCredentialsQuery({
-            input: { type: organizationAssociateCredential, resourceID: entities.organizationId },
+            input: { type: refetchType, resourceID: entities.organizationId },
           }),
         ],
         awaitRefetchQueries: true,
       });
     },
-    [entities, grantMember]
+    [entities, assignOrganizationRoleToUser]
   );
 
-  const handleRemoveMember = useCallback(
-    (memberId: string) => {
-      revokeMember({
-        variables: {
-          input: {
-            userID: memberId,
-            organizationID: entities.organizationId,
-          },
-        },
-        refetchQueries: [
-          refetchUsersWithCredentialsQuery({
-            input: { type: organizationAssociateCredential, resourceID: entities.organizationId },
-          }),
-        ],
-        awaitRefetchQueries: true,
-      });
-    },
-    [entities, revokeMember]
-  );
+  const handleRevokeRole = useCallback(
+    (memberId: string, role: OrganizationRole) => {
+      const refetchType =
+        role === OrganizationRole.Admin
+          ? organizationAdminCredential
+          : role === OrganizationRole.Owner
+          ? organizationOwnerCredential
+          : organizationAssociateCredential;
 
-  const handleAssignAdmin = useCallback(
-    (memberId: string) => {
-      grantAdmin({
+      revokeOrganizationRoleToUser({
         variables: {
           input: {
-            organizationID: entities.organizationId,
             userID: memberId,
+            organizationID: entities.organizationId,
+            role,
           },
         },
         refetchQueries: [
           refetchUsersWithCredentialsQuery({
-            input: { type: organizationAdminCredential, resourceID: entities.organizationId },
+            input: { type: refetchType, resourceID: entities.organizationId },
           }),
         ],
         awaitRefetchQueries: true,
       });
     },
-    [entities, grantAdmin]
-  );
-
-  const handleRemoveAdmin = useCallback(
-    (memberId: string) => {
-      revokeAdmin({
-        variables: {
-          input: {
-            userID: memberId,
-            organizationID: entities.organizationId,
-          },
-        },
-        refetchQueries: [
-          refetchUsersWithCredentialsQuery({
-            input: { type: organizationAdminCredential, resourceID: entities.organizationId },
-          }),
-        ],
-        awaitRefetchQueries: true,
-      });
-    },
-    [entities, revokeAdmin]
-  );
-
-  const handleAssignOwner = useCallback(
-    (memberId: string) => {
-      grantOwner({
-        variables: {
-          input: {
-            organizationID: entities.organizationId,
-            userID: memberId,
-          },
-        },
-        refetchQueries: [
-          refetchUsersWithCredentialsQuery({
-            input: { type: organizationOwnerCredential, resourceID: entities.organizationId },
-          }),
-        ],
-        awaitRefetchQueries: true,
-      });
-    },
-    [entities, grantOwner]
-  );
-
-  const handleRemoveOwner = useCallback(
-    (memberId: string) => {
-      revokeOwner({
-        variables: {
-          input: {
-            userID: memberId,
-            organizationID: entities.organizationId,
-          },
-        },
-        refetchQueries: [
-          refetchUsersWithCredentialsQuery({
-            input: { type: organizationOwnerCredential, resourceID: entities.organizationId },
-          }),
-        ],
-        awaitRefetchQueries: true,
-      });
-    },
-    [entities, revokeOwner]
+    [entities, revokeOrganizationRoleToUser]
   );
 
   const {
@@ -229,31 +148,31 @@ export const OrganizationAssociatesContainer: FC<OrganizationAssociatesProps> = 
       };
   }, [user]);
 
+  const actions = useMemo(
+    () => ({
+      handleAssignAssociate: (memberId: string) => handleAssignRole(memberId, OrganizationRole.Associate),
+      handleRemoveAssociate: (memberId: string) => handleRevokeRole(memberId, OrganizationRole.Associate),
+      handleAssignAdmin: (memberId: string) => handleAssignRole(memberId, OrganizationRole.Admin),
+      handleRemoveAdmin: (memberId: string) => handleRevokeRole(memberId, OrganizationRole.Admin),
+      handleAssignOwner: (memberId: string) => handleAssignRole(memberId, OrganizationRole.Owner),
+      handleRemoveOwner: (memberId: string) => handleRevokeRole(memberId, OrganizationRole.Owner),
+      fetchMoreUsers,
+      setSearchTerm,
+    }),
+    [handleAssignRole, handleRevokeRole, fetchMoreUsers, setSearchTerm]
+  );
+
   return (
     <>
-      {children(
-        { availableMembers, allMembers, currentMember },
-        {
-          handleAssignAssociate: handleAssignMember,
-          handleRemoveAssociate: handleRemoveMember,
-          handleAssignAdmin,
-          handleRemoveAdmin,
-          handleAssignOwner,
-          handleRemoveOwner,
-          fetchMoreUsers,
-          setSearchTerm,
-        },
-        {
-          addingUser,
-          removingUser,
-          addingAdmin,
-          removingAdmin,
-          addingOwner,
-          removingOwner,
+      {children({
+        entities: { availableMembers, allMembers, currentMember },
+        actions,
+        state: {
+          updatingRoles: loadingAssign || loadingRevoke,
           loadingUsers,
           hasMoreUsers,
-        }
-      )}
+        },
+      })}
     </>
   );
 };
