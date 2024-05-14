@@ -1,13 +1,10 @@
 import React, { FC } from 'react';
 import { useUserContext } from '../../../../community/user';
 import { AuthorizationCredential } from '../../../../../core/apollo/generated/graphql-schema';
-import AuthorizationPageProps from '../../authorization/AuthorizationPageProps';
 import EditMemberUsers, { EditMemberUsersProps } from '../Community/EditMembersUsers';
 import { useAvailableMembersWithCredential } from '../../../../community/community/useAvailableMembersWithCredential';
 
-interface EditAdminCredentialsProps
-  extends Omit<AuthorizationPageProps, 'paths'>,
-    Pick<EditMemberUsersProps, 'onAdd' | 'onRemove' | 'updating'> {
+interface EditAdminCredentialsProps extends Pick<EditMemberUsersProps, 'onAdd' | 'onRemove' | 'updating'> {
   credential: AuthorizationCredential;
   /** Members of the edited entity */
   parentCommunityId?: string;
@@ -18,7 +15,6 @@ export const EditMemberCredentials: FC<EditAdminCredentialsProps> = ({
   onAdd,
   onRemove,
   credential,
-  resourceId,
   title,
   parentCommunityId,
   updating,
@@ -29,7 +25,6 @@ export const EditMemberCredentials: FC<EditAdminCredentialsProps> = ({
   const { availableMembers, currentMembers, loading, fetchMore, hasMore, setSearchTerm } =
     useAvailableMembersWithCredential({
       credential,
-      resourceId,
       parentCommunityId,
     });
 

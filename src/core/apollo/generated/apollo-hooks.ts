@@ -2659,10 +2659,12 @@ export const SpaceSettingsFragmentDoc = gql`
   fragment SpaceSettings on SpaceSettings {
     privacy {
       mode
+      allowPlatformSupportAsAdmin
     }
     membership {
       policy
       trustedOrganizations
+      allowSubspaceAdminsToInviteMembers
     }
     collaboration {
       allowMembersToCreateCallouts
@@ -3656,9 +3658,9 @@ export const SpaceExplorerSubspaceFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
 `;
-export const AssignUserAsBetaTesterDocument = gql`
-  mutation assignUserAsBetaTester($input: GrantAuthorizationCredentialInput!) {
-    grantCredentialToUser(grantCredentialData: $input) {
+export const AssignOrganizationRoleToUserDocument = gql`
+  mutation assignOrganizationRoleToUser($input: AssignOrganizationRoleToUserInput!) {
+    assignOrganizationRoleToUser(membershipData: $input) {
       id
       profile {
         id
@@ -3667,50 +3669,51 @@ export const AssignUserAsBetaTesterDocument = gql`
     }
   }
 `;
-export type AssignUserAsBetaTesterMutationFn = Apollo.MutationFunction<
-  SchemaTypes.AssignUserAsBetaTesterMutation,
-  SchemaTypes.AssignUserAsBetaTesterMutationVariables
+export type AssignOrganizationRoleToUserMutationFn = Apollo.MutationFunction<
+  SchemaTypes.AssignOrganizationRoleToUserMutation,
+  SchemaTypes.AssignOrganizationRoleToUserMutationVariables
 >;
 
 /**
- * __useAssignUserAsBetaTesterMutation__
+ * __useAssignOrganizationRoleToUserMutation__
  *
- * To run a mutation, you first call `useAssignUserAsBetaTesterMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAssignUserAsBetaTesterMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useAssignOrganizationRoleToUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAssignOrganizationRoleToUserMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [assignUserAsBetaTesterMutation, { data, loading, error }] = useAssignUserAsBetaTesterMutation({
+ * const [assignOrganizationRoleToUserMutation, { data, loading, error }] = useAssignOrganizationRoleToUserMutation({
  *   variables: {
  *      input: // value for 'input'
  *   },
  * });
  */
-export function useAssignUserAsBetaTesterMutation(
+export function useAssignOrganizationRoleToUserMutation(
   baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.AssignUserAsBetaTesterMutation,
-    SchemaTypes.AssignUserAsBetaTesterMutationVariables
+    SchemaTypes.AssignOrganizationRoleToUserMutation,
+    SchemaTypes.AssignOrganizationRoleToUserMutationVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
-    SchemaTypes.AssignUserAsBetaTesterMutation,
-    SchemaTypes.AssignUserAsBetaTesterMutationVariables
-  >(AssignUserAsBetaTesterDocument, options);
+    SchemaTypes.AssignOrganizationRoleToUserMutation,
+    SchemaTypes.AssignOrganizationRoleToUserMutationVariables
+  >(AssignOrganizationRoleToUserDocument, options);
 }
 
-export type AssignUserAsBetaTesterMutationHookResult = ReturnType<typeof useAssignUserAsBetaTesterMutation>;
-export type AssignUserAsBetaTesterMutationResult = Apollo.MutationResult<SchemaTypes.AssignUserAsBetaTesterMutation>;
-export type AssignUserAsBetaTesterMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.AssignUserAsBetaTesterMutation,
-  SchemaTypes.AssignUserAsBetaTesterMutationVariables
+export type AssignOrganizationRoleToUserMutationHookResult = ReturnType<typeof useAssignOrganizationRoleToUserMutation>;
+export type AssignOrganizationRoleToUserMutationResult =
+  Apollo.MutationResult<SchemaTypes.AssignOrganizationRoleToUserMutation>;
+export type AssignOrganizationRoleToUserMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.AssignOrganizationRoleToUserMutation,
+  SchemaTypes.AssignOrganizationRoleToUserMutationVariables
 >;
-export const AssignUserAsGlobalAdminDocument = gql`
-  mutation assignUserAsGlobalAdmin($input: AssignGlobalAdminInput!) {
-    assignUserAsGlobalAdmin(membershipData: $input) {
+export const AssignPlatformRoleToUserDocument = gql`
+  mutation assignPlatformRoleToUser($input: AssignPlatformRoleToUserInput!) {
+    assignPlatformRoleToUser(membershipData: $input) {
       id
       profile {
         id
@@ -3719,50 +3722,51 @@ export const AssignUserAsGlobalAdminDocument = gql`
     }
   }
 `;
-export type AssignUserAsGlobalAdminMutationFn = Apollo.MutationFunction<
-  SchemaTypes.AssignUserAsGlobalAdminMutation,
-  SchemaTypes.AssignUserAsGlobalAdminMutationVariables
+export type AssignPlatformRoleToUserMutationFn = Apollo.MutationFunction<
+  SchemaTypes.AssignPlatformRoleToUserMutation,
+  SchemaTypes.AssignPlatformRoleToUserMutationVariables
 >;
 
 /**
- * __useAssignUserAsGlobalAdminMutation__
+ * __useAssignPlatformRoleToUserMutation__
  *
- * To run a mutation, you first call `useAssignUserAsGlobalAdminMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAssignUserAsGlobalAdminMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useAssignPlatformRoleToUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAssignPlatformRoleToUserMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [assignUserAsGlobalAdminMutation, { data, loading, error }] = useAssignUserAsGlobalAdminMutation({
+ * const [assignPlatformRoleToUserMutation, { data, loading, error }] = useAssignPlatformRoleToUserMutation({
  *   variables: {
  *      input: // value for 'input'
  *   },
  * });
  */
-export function useAssignUserAsGlobalAdminMutation(
+export function useAssignPlatformRoleToUserMutation(
   baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.AssignUserAsGlobalAdminMutation,
-    SchemaTypes.AssignUserAsGlobalAdminMutationVariables
+    SchemaTypes.AssignPlatformRoleToUserMutation,
+    SchemaTypes.AssignPlatformRoleToUserMutationVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
-    SchemaTypes.AssignUserAsGlobalAdminMutation,
-    SchemaTypes.AssignUserAsGlobalAdminMutationVariables
-  >(AssignUserAsGlobalAdminDocument, options);
+    SchemaTypes.AssignPlatformRoleToUserMutation,
+    SchemaTypes.AssignPlatformRoleToUserMutationVariables
+  >(AssignPlatformRoleToUserDocument, options);
 }
 
-export type AssignUserAsGlobalAdminMutationHookResult = ReturnType<typeof useAssignUserAsGlobalAdminMutation>;
-export type AssignUserAsGlobalAdminMutationResult = Apollo.MutationResult<SchemaTypes.AssignUserAsGlobalAdminMutation>;
-export type AssignUserAsGlobalAdminMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.AssignUserAsGlobalAdminMutation,
-  SchemaTypes.AssignUserAsGlobalAdminMutationVariables
+export type AssignPlatformRoleToUserMutationHookResult = ReturnType<typeof useAssignPlatformRoleToUserMutation>;
+export type AssignPlatformRoleToUserMutationResult =
+  Apollo.MutationResult<SchemaTypes.AssignPlatformRoleToUserMutation>;
+export type AssignPlatformRoleToUserMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.AssignPlatformRoleToUserMutation,
+  SchemaTypes.AssignPlatformRoleToUserMutationVariables
 >;
-export const AssignUserAsGlobalCommunityAdminDocument = gql`
-  mutation assignUserAsGlobalCommunityAdmin($input: AssignGlobalCommunityAdminInput!) {
-    assignUserAsGlobalCommunityAdmin(membershipData: $input) {
+export const RemoveOrganizationRoleFromUserDocument = gql`
+  mutation removeOrganizationRoleFromUser($input: RemoveOrganizationRoleFromUserInput!) {
+    removeOrganizationRoleFromUser(membershipData: $input) {
       id
       profile {
         id
@@ -3771,53 +3775,53 @@ export const AssignUserAsGlobalCommunityAdminDocument = gql`
     }
   }
 `;
-export type AssignUserAsGlobalCommunityAdminMutationFn = Apollo.MutationFunction<
-  SchemaTypes.AssignUserAsGlobalCommunityAdminMutation,
-  SchemaTypes.AssignUserAsGlobalCommunityAdminMutationVariables
+export type RemoveOrganizationRoleFromUserMutationFn = Apollo.MutationFunction<
+  SchemaTypes.RemoveOrganizationRoleFromUserMutation,
+  SchemaTypes.RemoveOrganizationRoleFromUserMutationVariables
 >;
 
 /**
- * __useAssignUserAsGlobalCommunityAdminMutation__
+ * __useRemoveOrganizationRoleFromUserMutation__
  *
- * To run a mutation, you first call `useAssignUserAsGlobalCommunityAdminMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAssignUserAsGlobalCommunityAdminMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useRemoveOrganizationRoleFromUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveOrganizationRoleFromUserMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [assignUserAsGlobalCommunityAdminMutation, { data, loading, error }] = useAssignUserAsGlobalCommunityAdminMutation({
+ * const [removeOrganizationRoleFromUserMutation, { data, loading, error }] = useRemoveOrganizationRoleFromUserMutation({
  *   variables: {
  *      input: // value for 'input'
  *   },
  * });
  */
-export function useAssignUserAsGlobalCommunityAdminMutation(
+export function useRemoveOrganizationRoleFromUserMutation(
   baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.AssignUserAsGlobalCommunityAdminMutation,
-    SchemaTypes.AssignUserAsGlobalCommunityAdminMutationVariables
+    SchemaTypes.RemoveOrganizationRoleFromUserMutation,
+    SchemaTypes.RemoveOrganizationRoleFromUserMutationVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
-    SchemaTypes.AssignUserAsGlobalCommunityAdminMutation,
-    SchemaTypes.AssignUserAsGlobalCommunityAdminMutationVariables
-  >(AssignUserAsGlobalCommunityAdminDocument, options);
+    SchemaTypes.RemoveOrganizationRoleFromUserMutation,
+    SchemaTypes.RemoveOrganizationRoleFromUserMutationVariables
+  >(RemoveOrganizationRoleFromUserDocument, options);
 }
 
-export type AssignUserAsGlobalCommunityAdminMutationHookResult = ReturnType<
-  typeof useAssignUserAsGlobalCommunityAdminMutation
+export type RemoveOrganizationRoleFromUserMutationHookResult = ReturnType<
+  typeof useRemoveOrganizationRoleFromUserMutation
 >;
-export type AssignUserAsGlobalCommunityAdminMutationResult =
-  Apollo.MutationResult<SchemaTypes.AssignUserAsGlobalCommunityAdminMutation>;
-export type AssignUserAsGlobalCommunityAdminMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.AssignUserAsGlobalCommunityAdminMutation,
-  SchemaTypes.AssignUserAsGlobalCommunityAdminMutationVariables
+export type RemoveOrganizationRoleFromUserMutationResult =
+  Apollo.MutationResult<SchemaTypes.RemoveOrganizationRoleFromUserMutation>;
+export type RemoveOrganizationRoleFromUserMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.RemoveOrganizationRoleFromUserMutation,
+  SchemaTypes.RemoveOrganizationRoleFromUserMutationVariables
 >;
-export const AssignUserAsGlobalSpacesAdminDocument = gql`
-  mutation assignUserAsGlobalSpacesAdmin($input: AssignGlobalSpacesAdminInput!) {
-    assignUserAsGlobalSpacesAdmin(membershipData: $input) {
+export const RemovePlatformRoleFromUserDocument = gql`
+  mutation removePlatformRoleFromUser($input: RemovePlatformRoleFromUserInput!) {
+    removePlatformRoleFromUser(membershipData: $input) {
       id
       profile {
         id
@@ -3826,373 +3830,47 @@ export const AssignUserAsGlobalSpacesAdminDocument = gql`
     }
   }
 `;
-export type AssignUserAsGlobalSpacesAdminMutationFn = Apollo.MutationFunction<
-  SchemaTypes.AssignUserAsGlobalSpacesAdminMutation,
-  SchemaTypes.AssignUserAsGlobalSpacesAdminMutationVariables
+export type RemovePlatformRoleFromUserMutationFn = Apollo.MutationFunction<
+  SchemaTypes.RemovePlatformRoleFromUserMutation,
+  SchemaTypes.RemovePlatformRoleFromUserMutationVariables
 >;
 
 /**
- * __useAssignUserAsGlobalSpacesAdminMutation__
+ * __useRemovePlatformRoleFromUserMutation__
  *
- * To run a mutation, you first call `useAssignUserAsGlobalSpacesAdminMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAssignUserAsGlobalSpacesAdminMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useRemovePlatformRoleFromUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemovePlatformRoleFromUserMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [assignUserAsGlobalSpacesAdminMutation, { data, loading, error }] = useAssignUserAsGlobalSpacesAdminMutation({
+ * const [removePlatformRoleFromUserMutation, { data, loading, error }] = useRemovePlatformRoleFromUserMutation({
  *   variables: {
  *      input: // value for 'input'
  *   },
  * });
  */
-export function useAssignUserAsGlobalSpacesAdminMutation(
+export function useRemovePlatformRoleFromUserMutation(
   baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.AssignUserAsGlobalSpacesAdminMutation,
-    SchemaTypes.AssignUserAsGlobalSpacesAdminMutationVariables
+    SchemaTypes.RemovePlatformRoleFromUserMutation,
+    SchemaTypes.RemovePlatformRoleFromUserMutationVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
-    SchemaTypes.AssignUserAsGlobalSpacesAdminMutation,
-    SchemaTypes.AssignUserAsGlobalSpacesAdminMutationVariables
-  >(AssignUserAsGlobalSpacesAdminDocument, options);
+    SchemaTypes.RemovePlatformRoleFromUserMutation,
+    SchemaTypes.RemovePlatformRoleFromUserMutationVariables
+  >(RemovePlatformRoleFromUserDocument, options);
 }
 
-export type AssignUserAsGlobalSpacesAdminMutationHookResult = ReturnType<
-  typeof useAssignUserAsGlobalSpacesAdminMutation
->;
-export type AssignUserAsGlobalSpacesAdminMutationResult =
-  Apollo.MutationResult<SchemaTypes.AssignUserAsGlobalSpacesAdminMutation>;
-export type AssignUserAsGlobalSpacesAdminMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.AssignUserAsGlobalSpacesAdminMutation,
-  SchemaTypes.AssignUserAsGlobalSpacesAdminMutationVariables
->;
-export const AssignUserAsOrganizationOwnerDocument = gql`
-  mutation assignUserAsOrganizationOwner($input: AssignOrganizationOwnerInput!) {
-    assignUserAsOrganizationOwner(membershipData: $input) {
-      id
-      profile {
-        id
-        displayName
-      }
-    }
-  }
-`;
-export type AssignUserAsOrganizationOwnerMutationFn = Apollo.MutationFunction<
-  SchemaTypes.AssignUserAsOrganizationOwnerMutation,
-  SchemaTypes.AssignUserAsOrganizationOwnerMutationVariables
->;
-
-/**
- * __useAssignUserAsOrganizationOwnerMutation__
- *
- * To run a mutation, you first call `useAssignUserAsOrganizationOwnerMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAssignUserAsOrganizationOwnerMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [assignUserAsOrganizationOwnerMutation, { data, loading, error }] = useAssignUserAsOrganizationOwnerMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useAssignUserAsOrganizationOwnerMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.AssignUserAsOrganizationOwnerMutation,
-    SchemaTypes.AssignUserAsOrganizationOwnerMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.AssignUserAsOrganizationOwnerMutation,
-    SchemaTypes.AssignUserAsOrganizationOwnerMutationVariables
-  >(AssignUserAsOrganizationOwnerDocument, options);
-}
-
-export type AssignUserAsOrganizationOwnerMutationHookResult = ReturnType<
-  typeof useAssignUserAsOrganizationOwnerMutation
->;
-export type AssignUserAsOrganizationOwnerMutationResult =
-  Apollo.MutationResult<SchemaTypes.AssignUserAsOrganizationOwnerMutation>;
-export type AssignUserAsOrganizationOwnerMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.AssignUserAsOrganizationOwnerMutation,
-  SchemaTypes.AssignUserAsOrganizationOwnerMutationVariables
->;
-export const RemoveUserAsBetaTesterDocument = gql`
-  mutation removeUserAsBetaTester($input: RevokeAuthorizationCredentialInput!) {
-    revokeCredentialFromUser(revokeCredentialData: $input) {
-      id
-      profile {
-        id
-        displayName
-      }
-    }
-  }
-`;
-export type RemoveUserAsBetaTesterMutationFn = Apollo.MutationFunction<
-  SchemaTypes.RemoveUserAsBetaTesterMutation,
-  SchemaTypes.RemoveUserAsBetaTesterMutationVariables
->;
-
-/**
- * __useRemoveUserAsBetaTesterMutation__
- *
- * To run a mutation, you first call `useRemoveUserAsBetaTesterMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useRemoveUserAsBetaTesterMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [removeUserAsBetaTesterMutation, { data, loading, error }] = useRemoveUserAsBetaTesterMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useRemoveUserAsBetaTesterMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.RemoveUserAsBetaTesterMutation,
-    SchemaTypes.RemoveUserAsBetaTesterMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.RemoveUserAsBetaTesterMutation,
-    SchemaTypes.RemoveUserAsBetaTesterMutationVariables
-  >(RemoveUserAsBetaTesterDocument, options);
-}
-
-export type RemoveUserAsBetaTesterMutationHookResult = ReturnType<typeof useRemoveUserAsBetaTesterMutation>;
-export type RemoveUserAsBetaTesterMutationResult = Apollo.MutationResult<SchemaTypes.RemoveUserAsBetaTesterMutation>;
-export type RemoveUserAsBetaTesterMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.RemoveUserAsBetaTesterMutation,
-  SchemaTypes.RemoveUserAsBetaTesterMutationVariables
->;
-export const RemoveUserAsGlobalAdminDocument = gql`
-  mutation removeUserAsGlobalAdmin($input: RemoveGlobalAdminInput!) {
-    removeUserAsGlobalAdmin(membershipData: $input) {
-      id
-      profile {
-        id
-        displayName
-      }
-    }
-  }
-`;
-export type RemoveUserAsGlobalAdminMutationFn = Apollo.MutationFunction<
-  SchemaTypes.RemoveUserAsGlobalAdminMutation,
-  SchemaTypes.RemoveUserAsGlobalAdminMutationVariables
->;
-
-/**
- * __useRemoveUserAsGlobalAdminMutation__
- *
- * To run a mutation, you first call `useRemoveUserAsGlobalAdminMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useRemoveUserAsGlobalAdminMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [removeUserAsGlobalAdminMutation, { data, loading, error }] = useRemoveUserAsGlobalAdminMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useRemoveUserAsGlobalAdminMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.RemoveUserAsGlobalAdminMutation,
-    SchemaTypes.RemoveUserAsGlobalAdminMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.RemoveUserAsGlobalAdminMutation,
-    SchemaTypes.RemoveUserAsGlobalAdminMutationVariables
-  >(RemoveUserAsGlobalAdminDocument, options);
-}
-
-export type RemoveUserAsGlobalAdminMutationHookResult = ReturnType<typeof useRemoveUserAsGlobalAdminMutation>;
-export type RemoveUserAsGlobalAdminMutationResult = Apollo.MutationResult<SchemaTypes.RemoveUserAsGlobalAdminMutation>;
-export type RemoveUserAsGlobalAdminMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.RemoveUserAsGlobalAdminMutation,
-  SchemaTypes.RemoveUserAsGlobalAdminMutationVariables
->;
-export const RemoveUserAsGlobalCommunityAdminDocument = gql`
-  mutation removeUserAsGlobalCommunityAdmin($input: RemoveGlobalCommunityAdminInput!) {
-    removeUserAsGlobalCommunityAdmin(membershipData: $input) {
-      id
-      profile {
-        id
-        displayName
-      }
-    }
-  }
-`;
-export type RemoveUserAsGlobalCommunityAdminMutationFn = Apollo.MutationFunction<
-  SchemaTypes.RemoveUserAsGlobalCommunityAdminMutation,
-  SchemaTypes.RemoveUserAsGlobalCommunityAdminMutationVariables
->;
-
-/**
- * __useRemoveUserAsGlobalCommunityAdminMutation__
- *
- * To run a mutation, you first call `useRemoveUserAsGlobalCommunityAdminMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useRemoveUserAsGlobalCommunityAdminMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [removeUserAsGlobalCommunityAdminMutation, { data, loading, error }] = useRemoveUserAsGlobalCommunityAdminMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useRemoveUserAsGlobalCommunityAdminMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.RemoveUserAsGlobalCommunityAdminMutation,
-    SchemaTypes.RemoveUserAsGlobalCommunityAdminMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.RemoveUserAsGlobalCommunityAdminMutation,
-    SchemaTypes.RemoveUserAsGlobalCommunityAdminMutationVariables
-  >(RemoveUserAsGlobalCommunityAdminDocument, options);
-}
-
-export type RemoveUserAsGlobalCommunityAdminMutationHookResult = ReturnType<
-  typeof useRemoveUserAsGlobalCommunityAdminMutation
->;
-export type RemoveUserAsGlobalCommunityAdminMutationResult =
-  Apollo.MutationResult<SchemaTypes.RemoveUserAsGlobalCommunityAdminMutation>;
-export type RemoveUserAsGlobalCommunityAdminMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.RemoveUserAsGlobalCommunityAdminMutation,
-  SchemaTypes.RemoveUserAsGlobalCommunityAdminMutationVariables
->;
-export const RemoveUserAsGlobalSpacesAdminDocument = gql`
-  mutation removeUserAsGlobalSpacesAdmin($input: RemoveGlobalSpacesAdminInput!) {
-    removeUserAsGlobalSpacesAdmin(membershipData: $input) {
-      id
-      profile {
-        id
-        displayName
-      }
-    }
-  }
-`;
-export type RemoveUserAsGlobalSpacesAdminMutationFn = Apollo.MutationFunction<
-  SchemaTypes.RemoveUserAsGlobalSpacesAdminMutation,
-  SchemaTypes.RemoveUserAsGlobalSpacesAdminMutationVariables
->;
-
-/**
- * __useRemoveUserAsGlobalSpacesAdminMutation__
- *
- * To run a mutation, you first call `useRemoveUserAsGlobalSpacesAdminMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useRemoveUserAsGlobalSpacesAdminMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [removeUserAsGlobalSpacesAdminMutation, { data, loading, error }] = useRemoveUserAsGlobalSpacesAdminMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useRemoveUserAsGlobalSpacesAdminMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.RemoveUserAsGlobalSpacesAdminMutation,
-    SchemaTypes.RemoveUserAsGlobalSpacesAdminMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.RemoveUserAsGlobalSpacesAdminMutation,
-    SchemaTypes.RemoveUserAsGlobalSpacesAdminMutationVariables
-  >(RemoveUserAsGlobalSpacesAdminDocument, options);
-}
-
-export type RemoveUserAsGlobalSpacesAdminMutationHookResult = ReturnType<
-  typeof useRemoveUserAsGlobalSpacesAdminMutation
->;
-export type RemoveUserAsGlobalSpacesAdminMutationResult =
-  Apollo.MutationResult<SchemaTypes.RemoveUserAsGlobalSpacesAdminMutation>;
-export type RemoveUserAsGlobalSpacesAdminMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.RemoveUserAsGlobalSpacesAdminMutation,
-  SchemaTypes.RemoveUserAsGlobalSpacesAdminMutationVariables
->;
-export const RemoveUserAsOrganizationOwnerDocument = gql`
-  mutation removeUserAsOrganizationOwner($input: RemoveOrganizationOwnerInput!) {
-    removeUserAsOrganizationOwner(membershipData: $input) {
-      id
-      profile {
-        id
-        displayName
-      }
-    }
-  }
-`;
-export type RemoveUserAsOrganizationOwnerMutationFn = Apollo.MutationFunction<
-  SchemaTypes.RemoveUserAsOrganizationOwnerMutation,
-  SchemaTypes.RemoveUserAsOrganizationOwnerMutationVariables
->;
-
-/**
- * __useRemoveUserAsOrganizationOwnerMutation__
- *
- * To run a mutation, you first call `useRemoveUserAsOrganizationOwnerMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useRemoveUserAsOrganizationOwnerMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [removeUserAsOrganizationOwnerMutation, { data, loading, error }] = useRemoveUserAsOrganizationOwnerMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useRemoveUserAsOrganizationOwnerMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.RemoveUserAsOrganizationOwnerMutation,
-    SchemaTypes.RemoveUserAsOrganizationOwnerMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.RemoveUserAsOrganizationOwnerMutation,
-    SchemaTypes.RemoveUserAsOrganizationOwnerMutationVariables
-  >(RemoveUserAsOrganizationOwnerDocument, options);
-}
-
-export type RemoveUserAsOrganizationOwnerMutationHookResult = ReturnType<
-  typeof useRemoveUserAsOrganizationOwnerMutation
->;
-export type RemoveUserAsOrganizationOwnerMutationResult =
-  Apollo.MutationResult<SchemaTypes.RemoveUserAsOrganizationOwnerMutation>;
-export type RemoveUserAsOrganizationOwnerMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.RemoveUserAsOrganizationOwnerMutation,
-  SchemaTypes.RemoveUserAsOrganizationOwnerMutationVariables
+export type RemovePlatformRoleFromUserMutationHookResult = ReturnType<typeof useRemovePlatformRoleFromUserMutation>;
+export type RemovePlatformRoleFromUserMutationResult =
+  Apollo.MutationResult<SchemaTypes.RemovePlatformRoleFromUserMutation>;
+export type RemovePlatformRoleFromUserMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.RemovePlatformRoleFromUserMutation,
+  SchemaTypes.RemovePlatformRoleFromUserMutationVariables
 >;
 export const UploadFileOnReferenceDocument = gql`
   mutation UploadFileOnReference($file: Upload!, $uploadData: StorageBucketUploadFileOnReferenceInput!) {
@@ -10051,71 +9729,6 @@ export function refetchCommunityUpdatesQuery(variables: SchemaTypes.CommunityUpd
   return { query: CommunityUpdatesDocument, variables: variables };
 }
 
-export const PlatformUpdatesRoomDocument = gql`
-  query platformUpdatesRoom {
-    platform {
-      id
-      communication {
-        id
-        updates {
-          id
-        }
-      }
-    }
-  }
-`;
-
-/**
- * __usePlatformUpdatesRoomQuery__
- *
- * To run a query within a React component, call `usePlatformUpdatesRoomQuery` and pass it any options that fit your needs.
- * When your component renders, `usePlatformUpdatesRoomQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = usePlatformUpdatesRoomQuery({
- *   variables: {
- *   },
- * });
- */
-export function usePlatformUpdatesRoomQuery(
-  baseOptions?: Apollo.QueryHookOptions<
-    SchemaTypes.PlatformUpdatesRoomQuery,
-    SchemaTypes.PlatformUpdatesRoomQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.PlatformUpdatesRoomQuery, SchemaTypes.PlatformUpdatesRoomQueryVariables>(
-    PlatformUpdatesRoomDocument,
-    options
-  );
-}
-
-export function usePlatformUpdatesRoomLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.PlatformUpdatesRoomQuery,
-    SchemaTypes.PlatformUpdatesRoomQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.PlatformUpdatesRoomQuery, SchemaTypes.PlatformUpdatesRoomQueryVariables>(
-    PlatformUpdatesRoomDocument,
-    options
-  );
-}
-
-export type PlatformUpdatesRoomQueryHookResult = ReturnType<typeof usePlatformUpdatesRoomQuery>;
-export type PlatformUpdatesRoomLazyQueryHookResult = ReturnType<typeof usePlatformUpdatesRoomLazyQuery>;
-export type PlatformUpdatesRoomQueryResult = Apollo.QueryResult<
-  SchemaTypes.PlatformUpdatesRoomQuery,
-  SchemaTypes.PlatformUpdatesRoomQueryVariables
->;
-export function refetchPlatformUpdatesRoomQuery(variables?: SchemaTypes.PlatformUpdatesRoomQueryVariables) {
-  return { query: PlatformUpdatesRoomDocument, variables: variables };
-}
-
 export const CommunityUserPrivilegesWithParentCommunityDocument = gql`
   query communityUserPrivilegesWithParentCommunity($spaceId: UUID_NAMEID!) {
     space(ID: $spaceId) {
@@ -12238,222 +11851,6 @@ export function refetchAssociatedOrganizationQuery(variables: SchemaTypes.Associ
   return { query: AssociatedOrganizationDocument, variables: variables };
 }
 
-export const AssignUserToOrganizationDocument = gql`
-  mutation assignUserToOrganization($input: AssignOrganizationAssociateInput!) {
-    assignUserToOrganization(membershipData: $input) {
-      id
-      profile {
-        id
-        displayName
-      }
-    }
-  }
-`;
-export type AssignUserToOrganizationMutationFn = Apollo.MutationFunction<
-  SchemaTypes.AssignUserToOrganizationMutation,
-  SchemaTypes.AssignUserToOrganizationMutationVariables
->;
-
-/**
- * __useAssignUserToOrganizationMutation__
- *
- * To run a mutation, you first call `useAssignUserToOrganizationMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAssignUserToOrganizationMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [assignUserToOrganizationMutation, { data, loading, error }] = useAssignUserToOrganizationMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useAssignUserToOrganizationMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.AssignUserToOrganizationMutation,
-    SchemaTypes.AssignUserToOrganizationMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.AssignUserToOrganizationMutation,
-    SchemaTypes.AssignUserToOrganizationMutationVariables
-  >(AssignUserToOrganizationDocument, options);
-}
-
-export type AssignUserToOrganizationMutationHookResult = ReturnType<typeof useAssignUserToOrganizationMutation>;
-export type AssignUserToOrganizationMutationResult =
-  Apollo.MutationResult<SchemaTypes.AssignUserToOrganizationMutation>;
-export type AssignUserToOrganizationMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.AssignUserToOrganizationMutation,
-  SchemaTypes.AssignUserToOrganizationMutationVariables
->;
-export const RemoveUserFromOrganizationDocument = gql`
-  mutation removeUserFromOrganization($input: RemoveOrganizationAssociateInput!) {
-    removeUserFromOrganization(membershipData: $input) {
-      id
-      profile {
-        id
-        displayName
-      }
-    }
-  }
-`;
-export type RemoveUserFromOrganizationMutationFn = Apollo.MutationFunction<
-  SchemaTypes.RemoveUserFromOrganizationMutation,
-  SchemaTypes.RemoveUserFromOrganizationMutationVariables
->;
-
-/**
- * __useRemoveUserFromOrganizationMutation__
- *
- * To run a mutation, you first call `useRemoveUserFromOrganizationMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useRemoveUserFromOrganizationMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [removeUserFromOrganizationMutation, { data, loading, error }] = useRemoveUserFromOrganizationMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useRemoveUserFromOrganizationMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.RemoveUserFromOrganizationMutation,
-    SchemaTypes.RemoveUserFromOrganizationMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.RemoveUserFromOrganizationMutation,
-    SchemaTypes.RemoveUserFromOrganizationMutationVariables
-  >(RemoveUserFromOrganizationDocument, options);
-}
-
-export type RemoveUserFromOrganizationMutationHookResult = ReturnType<typeof useRemoveUserFromOrganizationMutation>;
-export type RemoveUserFromOrganizationMutationResult =
-  Apollo.MutationResult<SchemaTypes.RemoveUserFromOrganizationMutation>;
-export type RemoveUserFromOrganizationMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.RemoveUserFromOrganizationMutation,
-  SchemaTypes.RemoveUserFromOrganizationMutationVariables
->;
-export const AssignUserAsOrganizationAdminDocument = gql`
-  mutation assignUserAsOrganizationAdmin($input: AssignOrganizationAdminInput!) {
-    assignUserAsOrganizationAdmin(membershipData: $input) {
-      id
-      profile {
-        id
-        displayName
-      }
-    }
-  }
-`;
-export type AssignUserAsOrganizationAdminMutationFn = Apollo.MutationFunction<
-  SchemaTypes.AssignUserAsOrganizationAdminMutation,
-  SchemaTypes.AssignUserAsOrganizationAdminMutationVariables
->;
-
-/**
- * __useAssignUserAsOrganizationAdminMutation__
- *
- * To run a mutation, you first call `useAssignUserAsOrganizationAdminMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAssignUserAsOrganizationAdminMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [assignUserAsOrganizationAdminMutation, { data, loading, error }] = useAssignUserAsOrganizationAdminMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useAssignUserAsOrganizationAdminMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.AssignUserAsOrganizationAdminMutation,
-    SchemaTypes.AssignUserAsOrganizationAdminMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.AssignUserAsOrganizationAdminMutation,
-    SchemaTypes.AssignUserAsOrganizationAdminMutationVariables
-  >(AssignUserAsOrganizationAdminDocument, options);
-}
-
-export type AssignUserAsOrganizationAdminMutationHookResult = ReturnType<
-  typeof useAssignUserAsOrganizationAdminMutation
->;
-export type AssignUserAsOrganizationAdminMutationResult =
-  Apollo.MutationResult<SchemaTypes.AssignUserAsOrganizationAdminMutation>;
-export type AssignUserAsOrganizationAdminMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.AssignUserAsOrganizationAdminMutation,
-  SchemaTypes.AssignUserAsOrganizationAdminMutationVariables
->;
-export const RemoveUserAsOrganizationAdminDocument = gql`
-  mutation removeUserAsOrganizationAdmin($input: RemoveOrganizationAdminInput!) {
-    removeUserAsOrganizationAdmin(membershipData: $input) {
-      id
-      profile {
-        id
-        displayName
-      }
-    }
-  }
-`;
-export type RemoveUserAsOrganizationAdminMutationFn = Apollo.MutationFunction<
-  SchemaTypes.RemoveUserAsOrganizationAdminMutation,
-  SchemaTypes.RemoveUserAsOrganizationAdminMutationVariables
->;
-
-/**
- * __useRemoveUserAsOrganizationAdminMutation__
- *
- * To run a mutation, you first call `useRemoveUserAsOrganizationAdminMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useRemoveUserAsOrganizationAdminMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [removeUserAsOrganizationAdminMutation, { data, loading, error }] = useRemoveUserAsOrganizationAdminMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useRemoveUserAsOrganizationAdminMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.RemoveUserAsOrganizationAdminMutation,
-    SchemaTypes.RemoveUserAsOrganizationAdminMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.RemoveUserAsOrganizationAdminMutation,
-    SchemaTypes.RemoveUserAsOrganizationAdminMutationVariables
-  >(RemoveUserAsOrganizationAdminDocument, options);
-}
-
-export type RemoveUserAsOrganizationAdminMutationHookResult = ReturnType<
-  typeof useRemoveUserAsOrganizationAdminMutation
->;
-export type RemoveUserAsOrganizationAdminMutationResult =
-  Apollo.MutationResult<SchemaTypes.RemoveUserAsOrganizationAdminMutation>;
-export type RemoveUserAsOrganizationAdminMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.RemoveUserAsOrganizationAdminMutation,
-  SchemaTypes.RemoveUserAsOrganizationAdminMutationVariables
->;
 export const OrganizationAssociatesDocument = gql`
   query organizationAssociates($id: UUID_NAMEID!) {
     organization(ID: $id) {
@@ -17786,10 +17183,12 @@ export const UpdateSpaceSettingsDocument = gql`
       settings {
         privacy {
           mode
+          allowPlatformSupportAsAdmin
         }
         membership {
           policy
           trustedOrganizations
+          allowSubspaceAdminsToInviteMembers
         }
         collaboration {
           allowMembersToCreateCallouts
