@@ -16,66 +16,70 @@ fragment MetricsItem on NVP {
   value
 }
 #
-query AboutPageNonMembers($spaceId: UUID_NAMEID!) {
-  space(ID: $spaceId) {
-    id
-    profile {
+query AboutPageNonMembers($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
       id
-      url
-      displayName
-      tagline
-      description
-      tagset {
-        ...TagsetDetails
-      }
-      visuals {
-        ...VisualFull
-      }
-    }
-    account {
-      host {
-        ...AssociatedOrganizationDetails
-      }
-    }
-    metrics {
-      ...MetricsItem
-    }
-    community {
-      id
-      authorization {
+      profile {
         id
-        myPrivileges
-      }
-    }
-    context {
-      ...ContextTab
-    }
-    collaboration {
-      id
-      innovationFlow {
-        id
-        currentState {
-          displayName
+        url
+        displayName
+        tagline
+        description
+        tagset {
+          ...TagsetDetails
         }
-        states {
-          displayName
-          description
+        visuals {
+          ...VisualFull
+        }
+      }
+      account {
+        host {
+          ...AssociatedOrganizationDetails
+        }
+      }
+      metrics {
+        ...MetricsItem
+      }
+      community {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+      }
+      context {
+        ...ContextTab
+      }
+      collaboration {
+        id
+        innovationFlow {
+          id
+          currentState {
+            displayName
+          }
+          states {
+            displayName
+            description
+          }
         }
       }
     }
   }
 }
 #
-query AboutPageMembers($spaceId: UUID_NAMEID!) {
-  space(ID: $spaceId) {
-    id
-    community {
-      ...EntityDashboardCommunity
-    }
-    profile {
+query AboutPageMembers($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
       id
-      references {
-        ...ReferenceDetails
+      community {
+        ...EntityDashboardCommunity
+      }
+      profile {
+        id
+        references {
+          ...ReferenceDetails
+        }
       }
     }
   }

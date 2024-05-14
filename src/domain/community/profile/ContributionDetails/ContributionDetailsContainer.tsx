@@ -76,39 +76,42 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
   const [leaveCommunity, { loading: isLeavingCommunity }] = useRemoveUserAsCommunityMemberMutation();
 
   const details = useMemo<ContributionDetails | undefined>(() => {
-    if (spaceData) {
+    if (spaceData && spaceData.lookup.space) {
+      const space = spaceData.lookup.space;
       return {
-        displayName: spaceData.space.profile.displayName,
+        displayName: space.profile.displayName,
         journeyTypeName: 'space',
-        banner: getVisualByType(VisualName.CARD, spaceData.space.profile.visuals),
-        tags: spaceData.space.profile.tagset?.tags ?? [],
-        journeyUri: spaceData.space.profile.url,
-        communityId: spaceData.space.community?.id,
-        tagline: spaceData.space.profile.tagline ?? '',
+        banner: getVisualByType(VisualName.CARD, space.profile.visuals),
+        tags: space.profile.tagset?.tags ?? [],
+        journeyUri: space.profile.url,
+        communityId: space.community?.id,
+        tagline: space.profile.tagline ?? '',
       };
     }
 
-    if (challengeData) {
+    if (challengeData && challengeData.lookup.space) {
+      const challenge = challengeData.lookup.space;
       return {
-        displayName: challengeData.space?.profile.displayName!,
+        displayName: challenge.profile.displayName!,
         journeyTypeName: 'subspace',
-        banner: getVisualByType(VisualName.CARD, challengeData.space?.profile.visuals),
-        tags: challengeData.space?.profile.tagset?.tags ?? [],
-        journeyUri: challengeData.space?.profile.url!,
-        communityId: challengeData.space?.community?.id,
-        tagline: challengeData.space?.profile.tagline ?? '',
+        banner: getVisualByType(VisualName.CARD, challenge.profile.visuals),
+        tags: challenge.profile.tagset?.tags ?? [],
+        journeyUri: challenge.profile.url!,
+        communityId: challenge.community?.id,
+        tagline: challenge.profile.tagline ?? '',
       };
     }
 
-    if (opportunityData) {
+    if (opportunityData && opportunityData.lookup.space) {
+      const opportunity = opportunityData.lookup.space;
       return {
-        displayName: opportunityData.space?.profile.displayName!,
+        displayName: opportunity.profile.displayName!,
         journeyTypeName: 'subsubspace',
-        banner: getVisualByType(VisualName.CARD, opportunityData.space?.profile.visuals),
-        tags: opportunityData.space?.profile.tagset?.tags ?? [],
-        journeyUri: opportunityData.space?.profile.url!,
-        communityId: opportunityData.space?.community?.id,
-        tagline: opportunityData.space?.profile.tagline ?? '',
+        banner: getVisualByType(VisualName.CARD, opportunity.profile.visuals),
+        tags: opportunity.profile.tagset?.tags ?? [],
+        journeyUri: opportunity.profile.url!,
+        communityId: opportunity.community?.id,
+        tagline: opportunity.profile.tagline ?? '',
       };
     }
   }, [spaceData, challengeData, opportunityData]);

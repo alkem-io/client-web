@@ -53,22 +53,24 @@ const NO_PRIVILEGES = [];
 export const SubspacePageContainer: FC<ChallengePageContainerProps> = ({ challengeId, children }) => {
   const { user, isAuthenticated } = useUserContext();
 
-  const { data: subspace, loading: loadingProfile } = useLegacySubspaceDashboardPageQuery({
+  const { data: subspaceData, loading: loadingProfile } = useLegacySubspaceDashboardPageQuery({
     variables: {
       subspaceId: challengeId!,
     },
     skip: !challengeId,
   });
 
-  const challengePrivileges = subspace?.space?.authorization?.myPrivileges ?? NO_PRIVILEGES;
+  const subspace = subspaceData?.lookup.space;
 
-  const timelineReadAccess = (subspace?.space?.collaboration?.timeline?.authorization?.myPrivileges ?? []).includes(
+  const challengePrivileges = subspace?.authorization?.myPrivileges ?? NO_PRIVILEGES;
+
+  const timelineReadAccess = (subspace?.collaboration?.timeline?.authorization?.myPrivileges ?? []).includes(
     AuthorizationPrivilege.Read
   );
 
   const permissions = {
     canEdit: challengePrivileges.includes(AuthorizationPrivilege.Update),
-    communityReadAccess: (subspace?.space?.community?.authorization?.myPrivileges || []).some(
+    communityReadAccess: (subspace?.community?.authorization?.myPrivileges || []).some(
       x => x === AuthorizationPrivilege.Read
     ),
     subspaceReadAccess: challengePrivileges.includes(AuthorizationPrivilege.Read),
@@ -76,9 +78,7 @@ export const SubspacePageContainer: FC<ChallengePageContainerProps> = ({ challen
     readUsers: user?.hasPlatformPrivilege(AuthorizationPrivilege.ReadUsers) ?? false,
   };
 
-  const canReadReferences = subspace?.space?.context?.authorization?.myPrivileges?.includes(
-    AuthorizationPrivilege.Read
-  );
+  const canReadReferences = subspace?.context?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Read);
 
   const { data: referenceData } = useSpaceDashboardReferencesQuery({
     variables: {
@@ -87,15 +87,15 @@ export const SubspacePageContainer: FC<ChallengePageContainerProps> = ({ challen
     skip: !canReadReferences,
   });
 
-  const { metrics = [] } = subspace?.space || {};
+  const { metrics = [] } = subspace || {};
 
   const membersCount = getMetricCount(metrics, MetricType.Member);
-  const memberUsersCount = membersCount - (subspace?.space?.community?.memberOrganizations?.length ?? 0);
-  const contributors = useCommunityMembersAsCardProps(subspace?.space?.community, { memberUsersCount });
+  const memberUsersCount = membersCount - (subspace?.community?.memberOrganizations?.length ?? 0);
+  const contributors = useCommunityMembersAsCardProps(subspace?.community, { memberUsersCount });
 
-  const references = referenceData?.space?.profile.references;
+  const references = referenceData?.lookup.space?.profile.references;
 
-  const communityId = subspace?.space?.community?.id ?? '';
+  const communityId = subspace?.community?.id ?? '';
 
   const sendMessageToCommunityLeads = useSendMessageToCommunityLeads(communityId);
 
@@ -105,13 +105,13 @@ export const SubspacePageContainer: FC<ChallengePageContainerProps> = ({ challen
     groupNames: [CalloutGroupName.Home],
   });
 
-  const isMember = subspace?.space?.community?.myMembershipStatus === CommunityMembershipStatus.Member;
+  const isMember = subspace?.community?.myMembershipStatus === CommunityMembershipStatus.Member;
 
   return (
     <>
       {children(
         {
-          challenge: subspace?.space,
+          challenge: subspace,
           permissions,
           isAuthenticated,
           references,

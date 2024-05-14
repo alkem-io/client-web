@@ -59,9 +59,12 @@ export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = (
     skip: loadingParams || !journeyId,
   });
 
-  const applyUrl = _communityPrivileges?.space.profile.url;
-  const challengeName = _communityPrivileges?.space.profile.displayName;
-  const spaceName = _communityPrivileges?.parentSpace?.profile.displayName;
+  const space = _communityPrivileges?.lookup.space;
+  const parentSpace = _communityPrivileges?.parentSpace?.space;
+
+  const applyUrl = space?.profile.url;
+  const challengeName = space?.profile.displayName;
+  const spaceName = parentSpace?.profile.displayName;
 
   const [joinCommunity, { loading: joiningCommunity }] = useJoinCommunityMutation({
     update: cache => clearCacheForType(cache, 'Authorization'),
@@ -80,29 +83,27 @@ export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = (
     contributionItemKeys.some(key => x[key] === parentSpaceId)
   );
 
-  const isMember = _communityPrivileges?.space.community.myMembershipStatus === CommunityMembershipStatus.Member;
+  const isMember = space?.community.myMembershipStatus === CommunityMembershipStatus.Member;
 
   const isChildJourney = !!parentSpaceId;
-  const isParentMember =
-    _communityPrivileges?.parentSpace?.community?.myMembershipStatus === CommunityMembershipStatus.Member;
+  const isParentMember = parentSpace?.community?.myMembershipStatus === CommunityMembershipStatus.Member;
 
-  const parentUrl = _communityPrivileges?.parentSpace?.profile.url;
+  const parentUrl = parentSpace?.profile.url;
 
-  const communityPrivileges = _communityPrivileges?.space?.community?.authorization?.myPrivileges ?? [];
+  const communityPrivileges = space?.community?.authorization?.myPrivileges ?? [];
 
   const canJoinCommunity =
     (isChildJourney && isParentMember && communityPrivileges.includes(AuthorizationPrivilege.CommunityJoin)) ||
     (!isChildJourney && communityPrivileges.includes(AuthorizationPrivilege.CommunityJoin));
 
   // Changed from parent to current space
-  const canAcceptInvitation =
-    _communityPrivileges?.space?.community?.myMembershipStatus === CommunityMembershipStatus.InvitationPending;
+  const canAcceptInvitation = space?.community?.myMembershipStatus === CommunityMembershipStatus.InvitationPending;
 
   const canApplyToCommunity =
     (isChildJourney && isParentMember && communityPrivileges.includes(AuthorizationPrivilege.CommunityApply)) ||
     (!isChildJourney && communityPrivileges.includes(AuthorizationPrivilege.CommunityApply));
 
-  const parentCommunityPrivileges = _communityPrivileges?.parentSpace?.community?.authorization?.myPrivileges ?? [];
+  const parentCommunityPrivileges = parentSpace?.community?.authorization?.myPrivileges ?? [];
 
   const canJoinParentCommunity = parentCommunityPrivileges.includes(AuthorizationPrivilege.CommunityJoin);
   const canApplyToParentCommunity = parentCommunityPrivileges.includes(AuthorizationPrivilege.CommunityApply);
@@ -111,7 +112,7 @@ export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = (
     loadingParams || membershipLoading || communityPrivilegesLoading || joiningCommunity || gettingUserProfile;
 
   const handleJoin = async () => {
-    const communityId = _communityPrivileges?.space.community.id;
+    const communityId = space?.community.id;
     if (!communityId) {
       throw new Error('Community is not loaded');
     }

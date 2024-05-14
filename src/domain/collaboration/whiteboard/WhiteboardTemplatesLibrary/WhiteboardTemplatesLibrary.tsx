@@ -44,7 +44,7 @@ const WhiteboardTemplatesLibrary: FC<WhiteboardTemplatesLibraryProps> = ({ open,
   const [fetchTemplatesFromSpace, { data: spaceData, loading: loadingTemplatesFromSpace }] =
     useSpaceWhiteboardTemplatesLibraryLazyQuery({
       variables: {
-        spaceId: spaceNameId!,
+        spaceNameId: spaceNameId!,
       },
     });
 

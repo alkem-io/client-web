@@ -1,13 +1,12 @@
-query CalloutId(
-  $calloutNameId: UUID_NAMEID!
-  $spaceId: UUID_NAMEID!
-) {
-  space(ID: $spaceId)  {
-    id
-    collaboration {
+query CalloutId($calloutNameId: UUID_NAMEID!, $spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
       id
-      callouts(IDs: [$calloutNameId]) {
+      collaboration {
         id
+        callouts(IDs: [$calloutNameId]) {
+          id
+        }
       }
     }
   }

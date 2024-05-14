@@ -15,7 +15,7 @@ const SpaceContributorsDialogContent: FC<ContributorsDialogContentProps> = ({ di
     skip: !dialogOpen || !spaceId,
   });
 
-  const { memberUsers, memberOrganizations } = data?.space.community ?? {};
+  const { memberUsers, memberOrganizations } = data?.lookup.space?.community ?? {};
 
   return (
     <CommunityContributorsView
