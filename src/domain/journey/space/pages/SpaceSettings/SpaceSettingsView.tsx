@@ -33,6 +33,7 @@ interface SpaceSettingsViewProps {
 const defaultSpaceSettings = {
   privacy: {
     mode: SpacePrivacyMode.Public,
+    allowPlatformSupportAsAdmin: false,
   },
   membership: {
     policy: CommunityMembershipPolicy.Invitations,
@@ -101,10 +102,12 @@ export const SpaceSettingsView: FC<SpaceSettingsViewProps> = ({ journeyId, journ
     const settingsVariable = {
       privacy: {
         mode: privacyMode,
+        allowPlatformSupportAsAdmin: currentSettings.privacy?.allowPlatformSupportAsAdmin ?? false,
       },
       membership: {
         policy: membershipPolicy,
         trustedOrganizations,
+        allowSubspaceAdminsToInviteMembers: currentSettings.membership?.allowSubspaceAdminsToInviteMembers ?? false,
       },
       collaboration: {
         ...currentSettings.collaboration,

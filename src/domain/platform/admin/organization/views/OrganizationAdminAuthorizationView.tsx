@@ -36,11 +36,11 @@ export const OrganizationAdminAuthorizationView: FC = () => {
           credential: AuthorizationCredential.OrganizationAdmin,
         }}
       >
-        {(entities, actions, state) => (
+        {({ entities, actions, state }) => (
           <EditMemberUsers
             members={entities.allMembers}
             availableMembers={entities.availableMembers}
-            updating={state.addingAdmin || state.removingAdmin}
+            updating={state.updatingRoles}
             executorId={entities.currentMember?.id}
             onAdd={actions.handleAssignAdmin}
             onRemove={actions.handleRemoveAdmin}

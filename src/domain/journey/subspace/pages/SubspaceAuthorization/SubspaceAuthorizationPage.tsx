@@ -43,10 +43,12 @@ const SubspaceAuthorizationPage: FC<SubspaceAuthorizationPageProps> = ({ routePr
           settings: {
             privacy: {
               mode: privacyMode,
+              allowPlatformSupportAsAdmin: settings?.privacy.allowPlatformSupportAsAdmin ?? false,
             },
             membership: {
               policy: membershipPolicy,
               trustedOrganizations: hostOrgTrusted ? ['myHostOrgID-TODO'] : [],
+              allowSubspaceAdminsToInviteMembers: settings?.membership.allowSubspaceAdminsToInviteMembers ?? false,
             },
             collaboration: {
               allowMembersToCreateCallouts: true,
