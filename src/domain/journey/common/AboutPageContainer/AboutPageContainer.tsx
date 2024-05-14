@@ -64,9 +64,9 @@ const AboutPageContainer: FC<AboutPageContainerProps> = ({ journeyId, children }
     },
     skip: !journeyId,
   });
-  const nonMemberContext = nonMembersData?.space?.context;
-  const nonMemberProfile = nonMembersData?.space?.profile;
-  const nonMemberCommunity = nonMembersData?.space?.community;
+  const nonMemberContext = nonMembersData?.lookup.space?.context;
+  const nonMemberProfile = nonMembersData?.lookup.space?.profile;
+  const nonMemberCommunity = nonMembersData?.lookup.space?.community;
 
   const communityReadAccess =
     nonMemberCommunity?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Read) ?? false;
@@ -82,18 +82,18 @@ const AboutPageContainer: FC<AboutPageContainerProps> = ({ journeyId, children }
     skip: nonMembersDataLoading || !journeyId,
   });
 
-  const memberProfile = membersData?.space?.profile;
+  const memberProfile = membersData?.lookup.space?.profile;
 
   const context = nonMemberContext;
 
-  const nonMemberJourney = nonMembersData?.space;
-  const memberJourney = membersData?.space;
+  const nonMemberJourney = nonMembersData?.lookup.space;
+  const memberJourney = membersData?.lookup.space;
 
   const tagset = nonMemberJourney?.profile?.tagset;
   // TODO looks like space is missing
-  const collaboration = nonMembersData?.space?.collaboration;
+  const collaboration = nonMembersData?.lookup.space?.collaboration;
 
-  const hostOrganization = nonMembersData?.space?.account.host;
+  const hostOrganization = nonMembersData?.lookup.space?.account.host;
   const community = {
     ...nonMemberJourney?.community,
     ...memberJourney?.community,

@@ -86,7 +86,7 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
     loading,
     refetch: refetchSpace,
   } = useSpaceProviderQuery({
-    variables: { spaceId: spaceNameId },
+    variables: { spaceNameId },
     errorPolicy: 'all',
     skip: !spaceNameId,
   });

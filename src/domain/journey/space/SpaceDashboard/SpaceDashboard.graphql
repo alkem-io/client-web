@@ -1,23 +1,27 @@
-query spacePage(
-  $spaceId: UUID_NAMEID!
+query SpacePage(
+  $spaceId: UUID!
   $authorizedReadAccess: Boolean = false
   $authorizedReadAccessCommunity: Boolean = false
 ) {
-  space(ID: $spaceId) {
-    ...SpacePage
+  lookup {
+    space(ID: $spaceId) {
+      ...SpacePage
+    }
   }
 }
 
-query SpaceDashboardReferences($spaceId: UUID_NAMEID!) {
-  space(ID: $spaceId) {
-    id
-    profile {
+query SpaceDashboardReferences($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
       id
-      references {
+      profile {
         id
-        name
-        uri
-        description
+        references {
+          id
+          name
+          uri
+          description
+        }
       }
     }
   }

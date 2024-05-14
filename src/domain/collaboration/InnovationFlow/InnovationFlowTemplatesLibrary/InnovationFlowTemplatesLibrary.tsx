@@ -44,7 +44,7 @@ const InnovationFlowTemplatesLibrary: FC<InnovationFlowTemplatesLibraryProps> = 
   const [fetchTemplatesFromSpace, { data: spaceData, loading: loadingTemplatesFromSpace }] =
     useSpaceInnovationFlowTemplatesLibraryLazyQuery({
       variables: {
-        spaceId: spaceNameId!,
+        spaceNameId: spaceNameId!,
       },
     });
 

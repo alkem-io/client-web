@@ -30,7 +30,7 @@ const SubspaceHomeContainer = ({ journeyId, journeyTypeName, children }: Subspac
     skip: !journeyId || !spaceReadAccess.canReadSpace,
   });
 
-  const collaborationId = data?.space?.collaboration.id;
+  const collaborationId = data?.lookup.space?.collaboration.id;
 
   const innovationFlow = useInnovationFlowStates({ collaborationId });
 
@@ -39,7 +39,7 @@ const SubspaceHomeContainer = ({ journeyId, journeyTypeName, children }: Subspac
     journeyTypeName,
   });
 
-  return <>{children({ innovationFlow, callouts, subspace: data?.space, spaceReadAccess })}</>;
+  return <>{children({ innovationFlow, callouts, subspace: data?.lookup.space, spaceReadAccess })}</>;
 };
 
 export default SubspaceHomeContainer;

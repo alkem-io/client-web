@@ -33,8 +33,8 @@ const MyMembershipsChallenge = ({ challenge }: MyMembershipsChallengeProps) => {
   const hydratedChallenge = useMemo(() => {
     return {
       ...challenge,
-      ...data?.space!,
-      opportunities: data?.space.subspaces?.filter(isJourneyMember),
+      ...data?.lookup.space!,
+      opportunities: data?.lookup.space?.subspaces?.filter(isJourneyMember),
     };
   }, [challenge, data]);
 
@@ -52,7 +52,7 @@ const MyMembershipsChallenge = ({ challenge }: MyMembershipsChallengeProps) => {
     );
   }
 
-  if (!data?.space) {
+  if (!data?.lookup.space) {
     return null; // Challenge not found, unlikely but possible
   }
 

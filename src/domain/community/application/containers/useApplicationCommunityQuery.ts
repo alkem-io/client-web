@@ -31,12 +31,12 @@ export const useApplicationCommunityQuery = (journeyId: string | undefined, canJ
 
   const result = useMemo(() => {
     return {
-      communityId: challengeData?.space?.community?.id || '',
-      displayName: challengeData?.space?.profile.displayName || '',
-      description: challengeTemplateData?.space?.community?.applicationForm?.description,
-      questions: challengeTemplateData?.space?.community?.applicationForm?.questions ?? [],
-      backUrl: challengeData?.space?.profile.url,
-      communityGuidelines: challengeData?.space?.community?.guidelines?.profile,
+      communityId: challengeData?.lookup.space?.community?.id || '',
+      displayName: challengeData?.lookup.space?.profile.displayName || '',
+      description: challengeTemplateData?.lookup.space?.community?.applicationForm?.description,
+      questions: challengeTemplateData?.lookup.space?.community?.applicationForm?.questions ?? [],
+      backUrl: challengeData?.lookup.space?.profile.url,
+      communityGuidelines: challengeData?.lookup.space?.community?.guidelines?.profile,
     };
   }, [challengeData, challengeTemplateData]);
 

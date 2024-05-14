@@ -1,13 +1,20 @@
-query PendingMembershipsSpace($spaceId: UUID_NAMEID!, $fetchDetails: Boolean! = false, $visualType: VisualType!, $fetchCommunityGuidelines: Boolean! = false) {
-  space(ID: $spaceId) {
-    id
-    profile {
-      ...PendingMembershipsJourneyProfile
-    }
-    community @include(if: $fetchCommunityGuidelines) {
+query PendingMembershipsSpace(
+  $spaceId: UUID!
+  $fetchDetails: Boolean! = false
+  $visualType: VisualType!
+  $fetchCommunityGuidelines: Boolean! = false
+) {
+  lookup {
+    space(ID: $spaceId) {
       id
-      guidelines {
-        ...CommunityGuidelinesSummary
+      profile {
+        ...PendingMembershipsJourneyProfile
+      }
+      community @include(if: $fetchCommunityGuidelines) {
+        id
+        guidelines {
+          ...CommunityGuidelinesSummary
+        }
       }
     }
   }

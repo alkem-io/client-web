@@ -32,7 +32,7 @@ const WhiteboardPage: FC<WhiteboardPageProps> = ({
     skip: !calloutNameId || !journeyId,
   });
 
-  const calloutId = data?.space?.collaboration?.callouts?.[0].id;
+  const calloutId = data?.lookup.space?.collaboration?.callouts?.[0].id;
 
   return (
     <WhiteboardProvider whiteboardNameId={whiteboardNameId} calloutId={calloutId}>
