@@ -25,7 +25,8 @@ const CommunityGuidelinesTemplatePreview: FC<CommunityGuidelinesTemplatePreviewP
       <WrapperMarkdown>{template?.guidelines.profile.displayName ?? ''}</WrapperMarkdown>
       <BlockSectionTitle>{t('community.communityGuidelines.templateDescription')}</BlockSectionTitle>
       <WrapperMarkdown>{template?.guidelines.profile.description ?? ''}</WrapperMarkdown>
-      {/* <ProfileReferenceSegment references={mockValues.references} profileId={"data?.profile?.id"} /> */}
+      {/* TODO: server not ready */}
+      {/* <ProfileReferenceSegment references={template?.guidelines.profile.references} profileId={"template?.guidelines?.profile?.id"} /> */}
     </PageContentBlock>
   );
 };
