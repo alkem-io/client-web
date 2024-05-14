@@ -13,7 +13,7 @@ import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphq
 import { Caption } from '../../../../core/ui/typography';
 import RouterLink from '../../../../core/ui/link/RouterLink';
 import { buildJourneyAdminUrl } from '../../../../main/routing/urlBuilders';
-import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
+import { useSpace } from '../../../journey/space/SpaceContext/useSpace';
 
 const CommunityGuidelinesSkeleton = () => {
   const theme = useTheme();
@@ -31,7 +31,6 @@ export interface CommunityGuidelinesBlockProps {
 }
 
 const CommunityGuidelinesBlock: FC<CommunityGuidelinesBlockProps> = ({ communityId }) => {
-  const { journeyUrl } = useRouteResolver();
   const [isCommunityGuidelinesInfoDialogOpen, setIsCommunityGuidelinesInfoDialogOpen] = useState(false);
 
   const { data, loading } = useCommunityGuidelinesQuery({
@@ -42,6 +41,7 @@ const CommunityGuidelinesBlock: FC<CommunityGuidelinesBlockProps> = ({ community
   const openDialog = () => setIsCommunityGuidelinesInfoDialogOpen(true);
   const closeDialog = () => setIsCommunityGuidelinesInfoDialogOpen(false);
 
+  const { spaceNameId } = useSpace();
   const { t } = useTranslation();
   const hasGuidelines = !!data?.lookup.community?.guidelines.profile.description;
   const showGuidelines =
@@ -71,11 +71,9 @@ const CommunityGuidelinesBlock: FC<CommunityGuidelinesBlockProps> = ({ community
         ) : (
           <>
             <Caption>{t('community.communityGuidelines.adminsOnly')}</Caption>
-            {journeyUrl && (
-              <Caption component={RouterLink} to={`${buildJourneyAdminUrl(journeyUrl)}/community`}>
-                {t('community.communityGuidelines.memberGuidelinesRedirect')}
-              </Caption>
-            )}
+            <Caption component={RouterLink} to={buildJourneyAdminUrl(`${spaceNameId}/community`)}>
+              {t('community.communityGuidelines.memberGuidelinesRedirect')}
+            </Caption>
           </>
         )}
       </PageContentBlock>

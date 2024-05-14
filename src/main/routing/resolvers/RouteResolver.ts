@@ -11,7 +11,6 @@ enum RouteType {
 interface JourneyRouteParams {
   type: RouteType.Journey;
   journeyId: string | undefined;
-  journeyUrl: string | undefined;
   parentJourneyId?: string;
   journeyPath: JourneyPath;
   journeyLevel: JourneyLevel | -1; // TODO not sure maybe remove as well, can be calculated from journeyPath
@@ -110,8 +109,6 @@ export const useRouteResolver = (): RouteParams => {
     subSubSpaceId: data?.space.subspace?.subspace?.id,
     type: RouteType.Journey,
     journeyId: data?.space.subspace?.subspace?.id ?? data?.space.subspace?.id ?? data?.space.id,
-    journeyUrl:
-      data?.space.subspace?.subspace?.profile.url ?? data?.space.subspace?.profile.url ?? data?.space.profile.url,
     parentJourneyId: getParentJourneyId(),
     journeyTypeName: getJourneyTypeName({
       spaceNameId,
