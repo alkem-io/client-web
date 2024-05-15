@@ -13,10 +13,10 @@ import SubspaceSettingsLayout from '../../../platform/admin/subspace/SubspaceSet
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 import CommunityVirtualContributors from '../../../community/community/CommunityAdmin/CommunityVirtualContributors';
 
-const AdminChallengeCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
+const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   const { loading: isLoadingChallenge, communityId, subspaceId: challengeId } = useSubSpace();
 
-  const { spaceId } = useRouteResolver();
+  const { spaceId, journeyLevel } = useRouteResolver();
 
   const {
     users,
@@ -39,7 +39,7 @@ const AdminChallengeCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../
     getAvailableOrganizations,
     getAvailableVirtualContributors,
     loading,
-  } = useCommunityAdmin({ communityId, spaceId, challengeId });
+  } = useCommunityAdmin({ communityId, spaceId, challengeId, journeyLevel });
 
   if (!spaceId || isLoadingChallenge) {
     return null;
@@ -105,4 +105,4 @@ const AdminChallengeCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../
   );
 };
 
-export default AdminChallengeCommunityPage;
+export default AdminSubspaceCommunityPage;

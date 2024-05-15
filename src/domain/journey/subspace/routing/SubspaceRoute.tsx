@@ -8,14 +8,14 @@ import { CommunityContextProvider } from '../../../community/community/Community
 import { NotFoundPageLayout } from '../../common/EntityPageLayout';
 import { routes } from '../routes/challengeRoutes';
 import CalloutRoute from '../../../collaboration/callout/routing/CalloutRoute';
-import ChallengeAboutPage from '../pages/SubspaceAboutPage';
-import ChallengeOpportunitiesPage from '../pages/SubspaceOpportunitiesPage';
+import SubspaceAboutPage from '../pages/SubspaceAboutPage';
 import SubspaceHomePage from '../subspaceHome/SubspaceHomePage';
 import Redirect from '../../../../core/routing/Redirect';
 import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 import SubspaceCalloutPage from '../subspaceCalloutPage/SubspaceCalloutPage';
 import { SubspaceDialog } from '../layout/SubspaceDialog';
+import SubspaceSettingsRoute from './settings/SubspaceSettingsRoute';
 
 const SubspaceRoute = () => {
   const { journeyId } = useRouteResolver();
@@ -32,6 +32,7 @@ const SubspaceRoute = () => {
         <Route path={SubspaceDialog.Timeline} element={<SubspaceHomePage dialog={SubspaceDialog.Timeline} />} />
         <Route path={SubspaceDialog.Share} element={<SubspaceHomePage dialog={SubspaceDialog.Share} />} />
         <Route path={SubspaceDialog.ManageFlow} element={<SubspaceHomePage dialog={SubspaceDialog.ManageFlow} />} />
+        <Route path={SubspaceDialog.About} element={<SubspaceAboutPage />} />
         <Route path={SubspaceDialog.Updates} element={<SubspaceHomePage dialog={SubspaceDialog.Updates} />} />
         <Route
           path={`${SubspaceDialog.Timeline}/:${nameOfUrl.calendarEventNameId}`}
@@ -39,14 +40,13 @@ const SubspaceRoute = () => {
         />
         {/* Redirecting legacy dashboard links to Subspace Home */}
         <Route path={routes.Dashboard} element={<Navigate replace to="/" />} />
-        <Route path={routes.About} element={<ChallengeAboutPage />} />
-        <Route path={routes.Subsubspaces} element={<ChallengeOpportunitiesPage />} />
         <Route path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}`} element={<SubspaceCalloutPage />} />
         <Route path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}`} element={<SubspaceCalloutPage />} />
         <Route
           path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}/*`}
           element={<SubspaceCalloutPage>{props => <CalloutRoute {...props} />}</SubspaceCalloutPage>}
         />
+        <Route path={`${SubspaceDialog.Settings}/*`} element={<SubspaceSettingsRoute />} />
         <Route
           path="*"
           element={
