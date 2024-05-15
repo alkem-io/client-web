@@ -17,6 +17,8 @@ export const NotFoundPageLayout = createLayout(TopLevelLayout);
 
 export const SubspacePageLayout = createLayout(SubspacePageLayoutImpl);
 
+export const EmptyLayout = createLayout(() => null);
+
 export { EntityPageLayoutHolder, RenderPoint, PageLayoutHolderWithOutlet };
 export type { EntityPageLayoutProps };
 export type { EntityTabsProps };

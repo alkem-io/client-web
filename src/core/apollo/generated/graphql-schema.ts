@@ -17701,6 +17701,26 @@ export type SubspaceProviderFragment = {
   };
 };
 
+export type SpacePrivilegesQueryVariables = Exact<{
+  spaceId: Scalars['UUID'];
+}>;
+
+export type SpacePrivilegesQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    space?:
+      | {
+          __typename?: 'Space';
+          id: string;
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
 export type SpaceCardFragment = {
   __typename?: 'Space';
   id: string;
@@ -17742,6 +17762,7 @@ export type SpaceCommunityPageQuery = {
   space: {
     __typename?: 'Space';
     id: string;
+    profile: { __typename?: 'Profile'; id: string; url: string };
     account: {
       __typename?: 'Account';
       id: string;
@@ -19575,8 +19596,7 @@ export type SubspacesInSpaceQuery = {
           subspaces: Array<{
             __typename?: 'Space';
             id: string;
-            nameID: string;
-            profile: { __typename?: 'Profile'; id: string; displayName: string };
+            profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
           }>;
         }
       | undefined;
@@ -19657,8 +19677,7 @@ export type AdminSpaceChallengesPageQuery = {
     subspaces: Array<{
       __typename?: 'Space';
       id: string;
-      nameID: string;
-      profile: { __typename?: 'Profile'; id: string; displayName: string };
+      profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
     }>;
     account: {
       __typename?: 'Account';
@@ -20243,6 +20262,15 @@ export type SubspaceInfoFragment = {
   };
 };
 
+export type SubspaceCommunityIdQueryVariables = Exact<{
+  spaceId: Scalars['UUID_NAMEID'];
+}>;
+
+export type SubspaceCommunityIdQuery = {
+  __typename?: 'Query';
+  space: { __typename?: 'Space'; id: string; community: { __typename?: 'Community'; id: string } };
+};
+
 export type SubspacePageQueryVariables = Exact<{
   spaceId: Scalars['UUID'];
 }>;
@@ -20546,7 +20574,7 @@ export type AdminSpacesListQuery = {
           }
         | undefined;
     };
-    profile: { __typename?: 'Profile'; id: string; displayName: string };
+    profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
     authorization?:
       | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
@@ -20574,7 +20602,7 @@ export type AdminSpaceFragment = {
         }
       | undefined;
   };
-  profile: { __typename?: 'Profile'; id: string; displayName: string };
+  profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;

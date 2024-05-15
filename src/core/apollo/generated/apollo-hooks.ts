@@ -2767,6 +2767,7 @@ export const AdminSpaceFragmentDoc = gql`
     profile {
       id
       displayName
+      url
     }
     authorization {
       id
@@ -15192,10 +15193,74 @@ export function refetchSubspaceProviderQuery(variables: SchemaTypes.SubspaceProv
   return { query: SubspaceProviderDocument, variables: variables };
 }
 
+export const SpacePrivilegesDocument = gql`
+  query SpacePrivileges($spaceId: UUID!) {
+    lookup {
+      space(ID: $spaceId) {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useSpacePrivilegesQuery__
+ *
+ * To run a query within a React component, call `useSpacePrivilegesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSpacePrivilegesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSpacePrivilegesQuery({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *   },
+ * });
+ */
+export function useSpacePrivilegesQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.SpacePrivilegesQuery, SchemaTypes.SpacePrivilegesQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.SpacePrivilegesQuery, SchemaTypes.SpacePrivilegesQueryVariables>(
+    SpacePrivilegesDocument,
+    options
+  );
+}
+
+export function useSpacePrivilegesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.SpacePrivilegesQuery, SchemaTypes.SpacePrivilegesQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.SpacePrivilegesQuery, SchemaTypes.SpacePrivilegesQueryVariables>(
+    SpacePrivilegesDocument,
+    options
+  );
+}
+
+export type SpacePrivilegesQueryHookResult = ReturnType<typeof useSpacePrivilegesQuery>;
+export type SpacePrivilegesLazyQueryHookResult = ReturnType<typeof useSpacePrivilegesLazyQuery>;
+export type SpacePrivilegesQueryResult = Apollo.QueryResult<
+  SchemaTypes.SpacePrivilegesQuery,
+  SchemaTypes.SpacePrivilegesQueryVariables
+>;
+export function refetchSpacePrivilegesQuery(variables: SchemaTypes.SpacePrivilegesQueryVariables) {
+  return { query: SpacePrivilegesDocument, variables: variables };
+}
+
 export const SpaceCommunityPageDocument = gql`
   query SpaceCommunityPage($spaceNameId: UUID_NAMEID!) {
     space(ID: $spaceNameId) {
       id
+      profile {
+        id
+        url
+      }
       account {
         id
         host {
@@ -16275,10 +16340,10 @@ export const SubspacesInSpaceDocument = gql`
         id
         subspaces {
           id
-          nameID
           profile {
             id
             displayName
+            url
           }
         }
       }
@@ -16453,10 +16518,10 @@ export const AdminSpaceChallengesPageDocument = gql`
       id
       subspaces {
         id
-        nameID
         profile {
           id
           displayName
+          url
         }
       }
       account {
@@ -16945,6 +17010,69 @@ export type SubspaceInfoQueryResult = Apollo.QueryResult<
 >;
 export function refetchSubspaceInfoQuery(variables: SchemaTypes.SubspaceInfoQueryVariables) {
   return { query: SubspaceInfoDocument, variables: variables };
+}
+
+export const SubspaceCommunityIdDocument = gql`
+  query SubspaceCommunityId($spaceId: UUID_NAMEID!) {
+    space(ID: $spaceId) {
+      id
+      community {
+        id
+      }
+    }
+  }
+`;
+
+/**
+ * __useSubspaceCommunityIdQuery__
+ *
+ * To run a query within a React component, call `useSubspaceCommunityIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSubspaceCommunityIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSubspaceCommunityIdQuery({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *   },
+ * });
+ */
+export function useSubspaceCommunityIdQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.SubspaceCommunityIdQuery,
+    SchemaTypes.SubspaceCommunityIdQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.SubspaceCommunityIdQuery, SchemaTypes.SubspaceCommunityIdQueryVariables>(
+    SubspaceCommunityIdDocument,
+    options
+  );
+}
+
+export function useSubspaceCommunityIdLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.SubspaceCommunityIdQuery,
+    SchemaTypes.SubspaceCommunityIdQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.SubspaceCommunityIdQuery, SchemaTypes.SubspaceCommunityIdQueryVariables>(
+    SubspaceCommunityIdDocument,
+    options
+  );
+}
+
+export type SubspaceCommunityIdQueryHookResult = ReturnType<typeof useSubspaceCommunityIdQuery>;
+export type SubspaceCommunityIdLazyQueryHookResult = ReturnType<typeof useSubspaceCommunityIdLazyQuery>;
+export type SubspaceCommunityIdQueryResult = Apollo.QueryResult<
+  SchemaTypes.SubspaceCommunityIdQuery,
+  SchemaTypes.SubspaceCommunityIdQueryVariables
+>;
+export function refetchSubspaceCommunityIdQuery(variables: SchemaTypes.SubspaceCommunityIdQueryVariables) {
+  return { query: SubspaceCommunityIdDocument, variables: variables };
 }
 
 export const SubspacePageDocument = gql`

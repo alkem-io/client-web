@@ -1,10 +1,11 @@
 import { Container } from '@mui/material';
 import React, { FC } from 'react';
-import { WithCommunity } from '../components/Community/CommunityTypes';
 import { CommunityUpdatesContainer } from '../../../communication/updates/CommunityUpdatesContainer/CommunityUpdatesContainer';
 import { CommunityUpdatesView } from '../../../community/community/views/CommunityUpdates/CommunityUpdatesView';
 
-interface CommunityUpdatesPageProps extends WithCommunity {}
+export interface CommunityUpdatesPageProps {
+  communityId: string | undefined;
+}
 
 export const CommunityUpdatesPage: FC<CommunityUpdatesPageProps> = ({ communityId }) => {
   if (!communityId) {

@@ -96,7 +96,12 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
                 </IconButton>
               }
               shareUrl={buildAboutUrl(entities.space?.profile.url)}
-              leftColumnChildrenTop={<CommunityGuidelinesBlock communityId={entities.space?.community?.id} />}
+              leftColumnChildrenTop={
+                <CommunityGuidelinesBlock
+                  communityId={entities.space?.community?.id}
+                  journeyUrl={entities.space?.profile.url}
+                />
+              }
             />
           </>
         )}
