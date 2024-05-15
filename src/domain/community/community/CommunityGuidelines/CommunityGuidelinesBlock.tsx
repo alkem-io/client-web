@@ -13,7 +13,6 @@ import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphq
 import { Caption } from '../../../../core/ui/typography';
 import RouterLink from '../../../../core/ui/link/RouterLink';
 import { buildJourneyAdminUrl } from '../../../../main/routing/urlBuilders';
-import { useSpace } from '../../../journey/space/SpaceContext/useSpace';
 
 const CommunityGuidelinesSkeleton = () => {
   const theme = useTheme();
@@ -28,9 +27,10 @@ const CommunityGuidelinesSkeleton = () => {
 
 export interface CommunityGuidelinesBlockProps {
   communityId: string | undefined;
+  journeyUrl: string | undefined;
 }
 
-const CommunityGuidelinesBlock: FC<CommunityGuidelinesBlockProps> = ({ communityId }) => {
+const CommunityGuidelinesBlock: FC<CommunityGuidelinesBlockProps> = ({ communityId, journeyUrl }) => {
   const [isCommunityGuidelinesInfoDialogOpen, setIsCommunityGuidelinesInfoDialogOpen] = useState(false);
 
   const { data, loading } = useCommunityGuidelinesQuery({
@@ -41,7 +41,6 @@ const CommunityGuidelinesBlock: FC<CommunityGuidelinesBlockProps> = ({ community
   const openDialog = () => setIsCommunityGuidelinesInfoDialogOpen(true);
   const closeDialog = () => setIsCommunityGuidelinesInfoDialogOpen(false);
 
-  const { spaceNameId } = useSpace();
   const { t } = useTranslation();
   const hasGuidelines = !!data?.lookup.community?.guidelines.profile.description;
   const showGuidelines =
@@ -71,7 +70,7 @@ const CommunityGuidelinesBlock: FC<CommunityGuidelinesBlockProps> = ({ community
         ) : (
           <>
             <Caption>{t('community.communityGuidelines.adminsOnly')}</Caption>
-            <Caption component={RouterLink} to={buildJourneyAdminUrl(`${spaceNameId}/community`)}>
+            <Caption component={RouterLink} to={buildJourneyAdminUrl(`${journeyUrl}/community`)}>
               {t('community.communityGuidelines.memberGuidelinesRedirect')}
             </Caption>
           </>

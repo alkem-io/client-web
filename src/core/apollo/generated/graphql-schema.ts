@@ -17742,6 +17742,7 @@ export type SpaceCommunityPageQuery = {
   space: {
     __typename?: 'Space';
     id: string;
+    profile: { __typename?: 'Profile'; id: string; url: string };
     account: {
       __typename?: 'Account';
       id: string;

@@ -15196,6 +15196,10 @@ export const SpaceCommunityPageDocument = gql`
   query SpaceCommunityPage($spaceNameId: UUID_NAMEID!) {
     space(ID: $spaceNameId) {
       id
+      profile {
+        id
+        url
+      }
       account {
         id
         host {

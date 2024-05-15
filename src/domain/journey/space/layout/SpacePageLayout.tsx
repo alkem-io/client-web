@@ -63,7 +63,7 @@ const SpacePageLayout = ({
           <JourneyUnauthorizedDialog
             description={vision}
             disabled={unauthorizedDialogDisabled}
-            leftColumnChildrenTop={<CommunityGuidelinesBlock communityId={communityId} />}
+            leftColumnChildrenTop={<CommunityGuidelinesBlock communityId={communityId} journeyUrl={profile.url} />}
             journeyLevel={0}
             journeyId={spaceId}
             {...props}

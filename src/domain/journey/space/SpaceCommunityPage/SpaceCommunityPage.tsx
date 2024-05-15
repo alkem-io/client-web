@@ -117,7 +117,7 @@ const SpaceCommunityPage = () => {
                 onSendMessage={sendMessageToCommunityLeads}
                 messageReceivers={messageReceivers}
               />
-              <CommunityGuidelinesBlock communityId={communityId} />
+              <CommunityGuidelinesBlock communityId={communityId} journeyUrl={data?.space.profile.url} />
             </InfoColumn>
             <ContentColumn>
               <CommunityContributorsBlockWide users={memberUsers} organizations={memberOrganizations} />
