@@ -9,4 +9,5 @@ export enum SubspaceDialog {
   Share = 'Share',
   ManageFlow = 'ManageFlow',
   Settings = 'Settings',
+  Updates = 'dashboard/updates',
 }

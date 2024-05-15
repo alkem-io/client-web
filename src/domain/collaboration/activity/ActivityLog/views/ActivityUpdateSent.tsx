@@ -6,19 +6,22 @@ import { ActivityEventType } from '../../../../../core/apollo/generated/graphql-
 import ActivitySubjectMarkdown from './ActivitySubjectMarkdown';
 
 export interface ActivityUpdateSentViewProps extends ActivityViewProps {
-  journeyUrl?: string;
   message: string;
   type: ActivityEventType.UpdateSent;
+  space?: {
+    profile?: {
+      url: string | undefined;
+    };
+  };
 }
 
 export const ActivityUpdateSentView: FC<ActivityUpdateSentViewProps> = ({
-  journeyUrl,
   journeyDisplayName,
   message,
   type,
   ...rest
 }) => {
-  const url = buildUpdatesUrl(journeyUrl ?? '');
+  const url = buildUpdatesUrl(rest.space?.profile?.url || '');
 
   return (
     <ActivityBaseView

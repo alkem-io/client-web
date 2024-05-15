@@ -18,6 +18,8 @@ import GridProvider from '../../../../../core/ui/grid/GridProvider';
 import { GRID_COLUMNS_MOBILE } from '../../../../../core/ui/grid/constants';
 import { Theme, useMediaQuery } from '@mui/material';
 import { DashboardNavigationItem } from '../../../space/spaceDashboardNavigation/useSpaceDashboardNavigation';
+import CommunityUpdatesDialog from '../../../../community/community/CommunityUpdatesDialog/CommunityUpdatesDialog';
+import { buildUpdatesUrl } from '../../../../../main/routing/urlBuilders';
 
 export interface SubspaceDialogsProps {
   dialogOpen: SubspaceDialog | undefined;
@@ -27,6 +29,7 @@ export interface SubspaceDialogsProps {
   dashboardNavigation: {
     dashboardNavigation: DashboardNavigationItem | undefined;
   };
+  communityId: string | undefined;
 }
 
 const SubspaceDialogs = ({
@@ -35,6 +38,7 @@ const SubspaceDialogs = ({
   callouts,
   journeyId,
   dashboardNavigation,
+  communityId,
 }: SubspaceDialogsProps) => {
   const { t } = useTranslation();
   const { calendarEventNameId } = useParams();
@@ -85,6 +89,13 @@ const SubspaceDialogs = ({
         onClose={handleClose}
         url={journeyUrl}
         entityTypeName="subspace"
+      />
+      <CommunityUpdatesDialog
+        open={dialogOpen === SubspaceDialog.Updates}
+        onClose={handleClose}
+        communityId={communityId}
+        shareUrl={buildUpdatesUrl(journeyUrl ?? '')}
+        loading={false}
       />
       <InnovationFlowSettingsDialog
         collaborationId={collaborationId}
