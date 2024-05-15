@@ -1,7 +1,11 @@
-import { FC, useMemo } from 'react';
+import { FC, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import scrollToTop from '../../../../../core/ui/utils/scrollToTop';
 import {
+  refetchAdminSpaceChallengesPageQuery,
+  refetchAdminSpacesListQuery,
+  useDeleteSpaceMutation,
   useSpaceHostQuery,
   useSpaceSettingsQuery,
   useUpdateSpaceSettingsMutation,
@@ -19,11 +23,18 @@ import SwitchSettingsGroup from '../../../../../core/ui/forms/SettingsGroups/Swi
 import { gutters } from '../../../../../core/ui/grid/utils';
 import RouterLink from '../../../../../core/ui/link/RouterLink';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
-import { BlockSectionTitle, BlockTitle, Text } from '../../../../../core/ui/typography';
+import { BlockSectionTitle, BlockTitle, Caption, Text } from '../../../../../core/ui/typography';
 import CommunityApplicationForm from '../../../../community/community/CommunityApplicationForm/CommunityApplicationForm';
 import { SettingsSection } from '../../../../platform/admin/layout/EntitySettingsLayout/constants';
 import { Box, CircularProgress } from '@mui/material';
 import { JourneyTypeName } from '../../../JourneyTypeName';
+import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
+import { DeleteIcon } from './icon/DeleteIcon';
+import { theme } from '../../../../../core/ui/themes/default/Theme';
+import SpaceProfileDeleteDialog from './SpaceProfileDeleteDialog';
+import { ROUTE_HOME } from '../../../../platform/routes/constants';
+import { useSubSpace } from '../../../subspace/hooks/useChallenge';
+import { useSpace } from '../../SpaceContext/useSpace';
 
 interface SpaceSettingsViewProps {
   journeyId: string;
@@ -50,7 +61,42 @@ const defaultSpaceSettings = {
 export const SpaceSettingsView: FC<SpaceSettingsViewProps> = ({ journeyId, journeyTypeName }) => {
   const { t } = useTranslation();
   const notify = useNotification();
+  const navigate = useNavigate();
   const isSubspace = journeyTypeName !== 'space';
+
+  const { subspaceId } = useSubSpace();
+  const { spaceNameId } = useSpace();
+
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const openDialog = () => setOpenDeleteDialog(true);
+  const closeDialog = () => setOpenDeleteDialog(false);
+
+  const translatedEntity = t(`common.${isSubspace ? 'subspace' : 'space'}` as const);
+
+  const [deleteSpace] = useDeleteSpaceMutation({
+    refetchQueries: isSubspace
+      ? [
+          refetchAdminSpaceChallengesPageQuery({
+            spaceId: spaceNameId,
+          }),
+        ]
+      : [refetchAdminSpacesListQuery()],
+    awaitRefetchQueries: true,
+    onCompleted: data => {
+      notify(t('pages.admin.space.notifications.space-removed', { name: data.deleteSpace.nameID }), 'success');
+      navigate(`${isSubspace ? '/' + spaceNameId : ROUTE_HOME}`, { replace: true });
+    },
+  });
+
+  const handleDelete = (id: string) => {
+    deleteSpace({
+      variables: {
+        input: {
+          ID: id,
+        },
+      },
+    });
+  };
 
   const { data: hostOrganization } = useSpaceHostQuery({
     variables: { spaceNameId: journeyId },
@@ -284,6 +330,25 @@ export const SpaceSettingsView: FC<SpaceSettingsViewProps> = ({ journeyId, journ
               }}
             />
           </PageContentBlock>
+
+          <PageContentBlock sx={{ borderColor: theme.palette.error.main }}>
+            <PageContentBlockHeader
+              sx={{ color: theme.palette.error.main }}
+              title={t('components.deleteSpace.title')}
+            />
+            <Box display="flex" gap={1} alignItems="center" sx={{ cursor: 'pointer' }} onClick={openDialog}>
+              <DeleteIcon />
+              <Caption>{t('components.deleteSpace.description', { entity: translatedEntity })}</Caption>
+            </Box>
+          </PageContentBlock>
+          {openDeleteDialog && (
+            <SpaceProfileDeleteDialog
+              entity={translatedEntity}
+              open={openDeleteDialog}
+              onClose={closeDialog}
+              onDelete={() => handleDelete(isSubspace ? subspaceId : journeyId)}
+            />
+          )}
         </>
       )}
       {loading && (

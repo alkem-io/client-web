@@ -6,6 +6,7 @@ import AdminOpportunityCommunityPage from '../../../../journey/opportunity/pages
 import OpportunityCommunicationsPage from '../pages/OpportunityCommunications/OpportunityCommunicationsPage';
 import OpportunityContextPage from '../pages/OpportunityContext/OpportunityContextPage';
 import OpportunityProfilePage from '../pages/OpportunityProfile/OpportunityProfilePage';
+import OpportunitySettingsPage from '../pages/OpportunitySettings/OpportunitySettingsPage';
 import CommunityGroupsRoute from '../../community/routes/CommunityGroupsAdminRoutes';
 import { StorageConfigContextProvider } from '../../../../storage/StorageBucket/StorageConfigContext';
 
@@ -36,6 +37,7 @@ export const OpportunityRoute = ({ parentCommunityId }: OpportunityRouteProps) =
           path="community/groups/*"
           element={<CommunityGroupsRoute communityId={subspace?.community?.id} parentCommunityId={parentCommunityId} />}
         />
+        <Route path="settings" element={<OpportunitySettingsPage />} />
         <Route path="*" element={<Error404 />} />
       </Routes>
     </StorageConfigContextProvider>
