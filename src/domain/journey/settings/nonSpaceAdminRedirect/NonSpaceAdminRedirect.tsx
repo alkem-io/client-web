@@ -6,9 +6,14 @@ import { useSpacePrivilegesQuery } from '../../../../core/apollo/generated/apoll
 
 interface NonSpaceAdminRedirectProps {
   spaceId: string | undefined;
+  adminPrivilege?: AuthorizationPrivilege;
 }
 
-const NonSpaceAdminRedirect = ({ spaceId, children }: PropsWithChildren<NonSpaceAdminRedirectProps>) => {
+const NonSpaceAdminRedirect = ({
+  spaceId,
+  adminPrivilege = AuthorizationPrivilege.Update, // Space admins don't have ADMIN privilege for the space for now
+  children,
+}: PropsWithChildren<NonSpaceAdminRedirectProps>) => {
   const { pathname } = useLocation();
 
   const { data, loading: isLoadingPrivileges } = useSpacePrivilegesQuery({
@@ -23,7 +28,7 @@ const NonSpaceAdminRedirect = ({ spaceId, children }: PropsWithChildren<NonSpace
   }
 
   const isAdmin = data?.lookup.space?.authorization?.myPrivileges?.some(
-    privilege => privilege === AuthorizationPrivilege.Admin || privilege === AuthorizationPrivilege.PlatformAdmin
+    privilege => privilege === adminPrivilege || privilege === AuthorizationPrivilege.PlatformAdmin
   );
 
   if (isAdmin) {

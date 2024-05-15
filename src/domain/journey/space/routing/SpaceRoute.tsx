@@ -14,7 +14,7 @@ import Redirect from '../../../../core/routing/Redirect';
 import SpaceCalloutPage from '../spaceCalloutPage/SpaceCalloutPage';
 import SpaceCommunityPage from '../SpaceCommunityPage/SpaceCommunityPage';
 import KnowledgeBasePage from '../../../collaboration/KnowledgeBase/KnowedgeBasePage';
-import { SpaceRoute as SpaceSettingsRoute } from '../../../platform/admin/space/routing/SpaceRoute';
+import { SpaceRoute as SpaceSettingsRoute } from '../../settings/routes/SpaceRoute';
 
 export const SpaceRoute = () => {
   return (

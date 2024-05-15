@@ -1,20 +1,20 @@
 import React, { FC } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { useSpace } from '../../../../journey/space/SpaceContext/useSpace';
-import { useSubSpace } from '../../../../journey/subspace/hooks/useChallenge';
-import { Error404 } from '../../../../../core/pages/Errors/Error404';
-import SubspaceCommunicationsPage from '../../../../journey/subspace/pages/SubspaceCommunications/SubspaceCommunicationsPage';
-import ChallengeProfilePage from '../../../../journey/subspace/pages/SubspaceProfile/SubspaceProfilePage';
-import { ApplicationsAdminRoutes } from '../../community/routes/ApplicationsAdminRoutes';
+import { useSpace } from '../../space/SpaceContext/useSpace';
+import { useSubSpace } from '../../subspace/hooks/useChallenge';
+import { Error404 } from '../../../../core/pages/Errors/Error404';
+import SubspaceCommunicationsPage from '../../subspace/pages/SubspaceCommunications/SubspaceCommunicationsPage';
+import ChallengeProfilePage from '../../subspace/pages/SubspaceProfile/SubspaceProfilePage';
+import { ApplicationsAdminRoutes } from '../../../platform/admin/community/routes/ApplicationsAdminRoutes';
 
-import ChallengeAuthorizationRoute from './ChallengeAuthorizationRoute';
-import CommunityGroupsRoute from '../../community/routes/CommunityGroupsAdminRoutes';
-import SubspaceContextPage from '../../../../journey/subspace/pages/SubspaceContext/SubspaceContextPage';
-import { StorageConfigContextProvider } from '../../../../storage/StorageBucket/StorageConfigContext';
-import AdminChallengeCommunityPage from '../../../../journey/subspace/pages/AdminSubspaceCommunityPage';
-import SpaceSettingsPage from '../../../../journey/space/pages/SpaceSettings/SpaceSettingsPage';
-import ChallengeOpportunitiesPage from '../../../../journey/subspace/pages/SubspaceSubspaces/SubspaceSubspacesPage';
-import NonSpaceAdminRedirect from '../../../../journey/settings/nonSpaceAdminRedirect/NonSpaceAdminRedirect';
+import ChallengeAuthorizationRoute from '../../../platform/admin/subspace/routing/ChallengeAuthorizationRoute';
+import CommunityGroupsRoute from '../../../platform/admin/community/routes/CommunityGroupsAdminRoutes';
+import SubspaceContextPage from '../../subspace/pages/SubspaceContext/SubspaceContextPage';
+import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
+import AdminChallengeCommunityPage from '../../subspace/pages/AdminSubspaceCommunityPage';
+import SpaceSettingsPage from '../../space/pages/SpaceSettings/SpaceSettingsPage';
+import ChallengeOpportunitiesPage from '../../subspace/pages/SubspaceSubspaces/SubspaceSubspacesPage';
+import NonSpaceAdminRedirect from '../nonSpaceAdminRedirect/NonSpaceAdminRedirect';
 
 export const ChallengeRoute: FC = () => {
   const { communityId: spaceCommunityId } = useSpace();
