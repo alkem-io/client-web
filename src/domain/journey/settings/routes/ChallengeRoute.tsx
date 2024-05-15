@@ -11,7 +11,7 @@ import ChallengeAuthorizationRoute from '../../../platform/admin/subspace/routin
 import CommunityGroupsRoute from '../../../platform/admin/community/routes/CommunityGroupsAdminRoutes';
 import SubspaceContextPage from '../../subspace/pages/SubspaceContext/SubspaceContextPage';
 import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
-import AdminChallengeCommunityPage from '../../subspace/pages/AdminSubspaceCommunityPage';
+import AdminSubspaceCommunityPage from '../../subspace/pages/AdminSubspaceCommunityPage';
 import SpaceSettingsPage from '../../space/pages/SpaceSettings/SpaceSettingsPage';
 import ChallengeOpportunitiesPage from '../../subspace/pages/SubspaceSubspaces/SubspaceSubspacesPage';
 import NonSpaceAdminRedirect from '../nonSpaceAdminRedirect/NonSpaceAdminRedirect';
@@ -37,7 +37,7 @@ export const ChallengeRoute: FC = () => {
               }
             />
             <Route path="opportunities/*" element={<ChallengeOpportunitiesPage />} />
-            <Route path="community" element={<AdminChallengeCommunityPage />} />
+            <Route path="community" element={<AdminSubspaceCommunityPage />} />
             <Route path="settings" element={<SpaceSettingsPage />} />
             <Route path="community/applications/*" element={<ApplicationsAdminRoutes />} />
             <Route path="authorization/*" element={<ChallengeAuthorizationRoute />} />

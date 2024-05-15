@@ -52,7 +52,7 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
     loading,
     inviteExternalUser,
     inviteExistingUser,
-  } = useCommunityAdmin({ communityId, spaceId });
+  } = useCommunityAdmin({ communityId, spaceId, journeyLevel: 0 });
 
   const currentApplicationsUserIds = useMemo(
     () =>

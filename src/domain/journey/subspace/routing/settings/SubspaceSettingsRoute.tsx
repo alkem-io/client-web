@@ -3,6 +3,7 @@ import { useRouteResolver } from '../../../../../main/routing/resolvers/RouteRes
 import { ChallengeRoute } from '../../../settings/routes/ChallengeRoute';
 import { useSubspaceCommunityIdQuery } from '../../../../../core/apollo/generated/apollo-hooks';
 import { OpportunityRoute } from '../../../settings/routes/OpportunityRoute';
+import { OpportunityProvider } from '../../../opportunity/context/OpportunityProvider';
 
 const SubspaceSettingsRoute = () => {
   const { journeyLevel, parentJourneyId } = useRouteResolver();
@@ -18,7 +19,11 @@ const SubspaceSettingsRoute = () => {
     case 1:
       return <ChallengeRoute />;
     case 2:
-      return <OpportunityRoute parentCommunityId={data?.space.community.id} />;
+      return (
+        <OpportunityProvider>
+          <OpportunityRoute parentCommunityId={data?.space.community.id} />
+        </OpportunityProvider>
+      );
   }
 
   return null;
