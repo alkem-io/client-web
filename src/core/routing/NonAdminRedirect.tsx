@@ -7,7 +7,9 @@ import useHasPlatformLevelPrivilege from '../../domain/community/user/PlatformLe
 const NonAdminRedirect: FC = ({ children }) => {
   const { pathname } = useLocation();
 
-  const [isAdmin, { loading: isLoadingPrivileges }] = useHasPlatformLevelPrivilege(AuthorizationPrivilege.Admin);
+  const [isAdmin, { loading: isLoadingPrivileges }] = useHasPlatformLevelPrivilege(
+    AuthorizationPrivilege.PlatformAdmin
+  );
 
   if (isLoadingPrivileges) {
     return <Loading text="Loading user configuration" />;
