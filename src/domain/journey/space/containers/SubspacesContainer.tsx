@@ -27,9 +27,9 @@ export const SubspacesContainer: FC<SubspacesContainerProps> = ({ spaceId, child
     skip: !spaceId,
   });
 
-  useChallengeCreatedSubscription(data, data => data?.space, subscribeToMore);
+  useChallengeCreatedSubscription(data, data => data?.lookup.space, subscribeToMore);
 
-  const subspaces = data?.space?.subspaces ?? [];
+  const subspaces = data?.lookup.space?.subspaces ?? [];
 
   return <>{children({ subspaces }, { loading, error }, {})}</>;
 };

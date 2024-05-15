@@ -1,18 +1,22 @@
-query CollaborationAuthorization($spaceId: UUID_NAMEID!) {
-  space(ID: $spaceId)  {
-    id
-    authorization {
+query CollaborationAuthorization($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
       id
-      myPrivileges
+      authorization {
+        id
+        myPrivileges
+      }
     }
   }
 }
 
-query CollaborationPrivileges($spaceId: UUID_NAMEID!) {
-  space(ID: $spaceId)  {
-    id
-    collaboration {
-      ...CollaborationPrivileges
+query CollaborationPrivileges($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
+      id
+      collaboration {
+        ...CollaborationPrivileges
+      }
     }
   }
 }

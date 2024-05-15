@@ -1,7 +1,6 @@
 import React, { FC, useState } from 'react';
 import { useSubSpace } from '../hooks/useChallenge';
 import AboutPageContainer from '../../common/AboutPageContainer/AboutPageContainer';
-import ChallengeDashboardPage from './SubspaceDashboardPage';
 import { useBackToStaticPath } from '../../../../core/routing/useBackToPath';
 import JourneyAboutDialog from '../../common/JourneyAboutDialog/JourneyAboutDialog';
 import { IconButton } from '@mui/material';
@@ -15,7 +14,7 @@ import { useTranslation } from 'react-i18next';
 import { buildAboutUrl } from '../../../../main/routing/urlBuilders';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 
-const ChallengeAboutPage: FC = () => {
+const SubspaceAboutPage: FC = () => {
   const { communityId, profile } = useSubSpace();
 
   const backToParentPage = useBackToStaticPath(profile.url);
@@ -30,7 +29,6 @@ const ChallengeAboutPage: FC = () => {
 
   return (
     <>
-      <ChallengeDashboardPage />
       <AboutPageContainer journeyId={journeyId}>
         {(
           {
@@ -91,4 +89,4 @@ const ChallengeAboutPage: FC = () => {
   );
 };
 
-export default ChallengeAboutPage;
+export default SubspaceAboutPage;

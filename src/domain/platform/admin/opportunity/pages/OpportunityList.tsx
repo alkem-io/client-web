@@ -37,10 +37,10 @@ export const OpportunityList: FC = () => {
   });
 
   const opportunityList =
-    subspacesListQuery?.space?.subspaces?.map(o => ({
+    subspacesListQuery?.lookup.space?.subspaces?.map(o => ({
       id: o.id,
       value: o.profile.displayName,
-      url: `${o.nameID}`,
+      url: buildJourneyAdminUrl(o.profile.url),
     })) || [];
 
   const [deleteOpportunity] = useDeleteSpaceMutation({

@@ -36,7 +36,7 @@ export interface ChallengeExplorerContainerEntities {
         url: string;
       }
     | undefined;
-  fetchWelcomeSpace?: (args: { variables: { spaceId: string } }) => void;
+  fetchWelcomeSpace?: (args: { variables: { spaceNameId: string } }) => void;
 }
 
 interface SpaceExplorerContainerProps extends SimpleContainerProps<ChallengeExplorerContainerEntities> {

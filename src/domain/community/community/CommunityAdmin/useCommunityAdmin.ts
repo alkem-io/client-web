@@ -31,7 +31,8 @@ import {
 import { OrganizationDetailsFragmentWithRoles } from '../../../community/community/CommunityAdmin/CommunityOrganizations';
 import { CommunityMemberUserFragmentWithRoles } from '../../../community/community/CommunityAdmin/CommunityUsers';
 import useInviteUsers from '../../../community/invitations/useInviteUsers';
-import { JourneyTypeName, getJourneyTypeName } from '../../../journey/JourneyTypeName';
+import { getJourneyTypeName } from '../../../journey/JourneyTypeName';
+import { JourneyLevel } from '../../../../main/routing/resolvers/RouteResolver';
 
 const MAX_AVAILABLE_MEMBERS = 100;
 const buildUserFilterObject = (filter: string | undefined) =>
@@ -49,25 +50,22 @@ const buildOrganizationFilterObject = (filter: string | undefined) =>
       }
     : undefined;
 
-const adminCredentialByJourneyType = (journeyType: JourneyTypeName) => {
-  if (journeyType === 'subsubspace') {
-    return AuthorizationCredential.SubspaceAdmin;
-  } else if (journeyType === 'subspace') {
-    return AuthorizationCredential.SubspaceAdmin;
-  } else {
-    return AuthorizationCredential.SpaceAdmin;
-  }
-};
-
 // TODO: Inherit from CoreEntityIds when they are not NameIds
 interface useCommunityAdminParams {
   communityId: string;
   spaceId?: string;
   challengeId?: string;
   opportunityId?: string;
+  journeyLevel: JourneyLevel | -1;
 }
 
-const useCommunityAdmin = ({ communityId, spaceId, challengeId, opportunityId }: useCommunityAdminParams) => {
+const useCommunityAdmin = ({
+  communityId,
+  spaceId,
+  challengeId,
+  opportunityId,
+  journeyLevel,
+}: useCommunityAdminParams) => {
   const journeyTypeName = getJourneyTypeName({
     spaceNameId: spaceId,
     challengeNameId: challengeId,
@@ -108,11 +106,11 @@ const useCommunityAdmin = ({ communityId, spaceId, challengeId, opportunityId }:
   } = useUsersWithCredentialsQuery({
     variables: {
       input: {
-        type: adminCredentialByJourneyType(journeyTypeName),
-        resourceID: opportunityId ?? challengeId ?? spaceId,
+        type: AuthorizationCredential.SpaceAdmin,
+        resourceID: [spaceId, challengeId, opportunityId][journeyLevel],
       },
     },
-    skip: !spaceId && !challengeId && !opportunityId,
+    skip: ![spaceId, challengeId, opportunityId][journeyLevel],
   });
 
   const {
@@ -174,7 +172,7 @@ const useCommunityAdmin = ({ communityId, spaceId, challengeId, opportunityId }:
       ...member,
       isMember: true,
       isLead: leads.find(lead => lead.id === member.id) !== undefined,
-      isFacilitating: data?.space?.account.host?.id === member.id,
+      isFacilitating: data?.lookup.space?.account.host?.id === member.id,
     }));
 
     // Push the rest of the leads that are not yet in the list of members
@@ -185,16 +183,16 @@ const useCommunityAdmin = ({ communityId, spaceId, challengeId, opportunityId }:
           ...lead,
           isMember: false,
           isLead: true,
-          isFacilitating: data?.space?.account.host?.id === lead.id,
+          isFacilitating: data?.lookup.space?.account.host?.id === lead.id,
         });
       }
     });
 
     // Add Facilitating if it's not yet in the result
-    if (data?.space?.account.host) {
-      const member = result.find(organization => organization.id === data.space?.account.host!.id);
+    if (data?.lookup.space?.account.host) {
+      const member = result.find(organization => organization.id === data.lookup.space?.account.host?.id);
       if (!member) {
-        result.push({ ...data.space.account.host, isMember: false, isLead: false, isFacilitating: true });
+        result.push({ ...data.lookup.space.account.host, isMember: false, isLead: false, isFacilitating: true });
       }
     }
     return result;

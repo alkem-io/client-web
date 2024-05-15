@@ -1,11 +1,11 @@
-query spaceProvider($spaceId: UUID_NAMEID!) {
-  space(ID: $spaceId) {
+query SpaceProvider($spaceNameId: UUID_NAMEID!) {
+  space(ID: $spaceNameId) {
     ...SpaceInfo
   }
 }
 
-query spaceUrl($spaceId: UUID_NAMEID!) {
-  space(ID: $spaceId) {
+query SpaceUrl($spaceNameId: UUID_NAMEID!) {
+  space(ID: $spaceNameId) {
     id
     profile {
       id
@@ -44,8 +44,8 @@ fragment SpaceInfo on Space {
   }
 }
 
-query spaceHost($spaceId: UUID_NAMEID!) {
-  space(ID: $spaceId) {
+query SpaceHost($spaceNameId: UUID_NAMEID!) {
+  space(ID: $spaceNameId) {
     id
     account {
       id

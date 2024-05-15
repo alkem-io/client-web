@@ -65,7 +65,7 @@ export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ jour
     skip: !journeyId,
   });
 
-  const collaboration = spaceData?.space.collaboration;
+  const collaboration = spaceData?.lookup.space?.collaboration;
 
   const myPrivileges = collaboration?.timeline?.calendar.authorization?.myPrivileges;
 

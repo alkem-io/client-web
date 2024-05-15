@@ -1,9 +1,11 @@
-query JourneyPrivileges($spaceId: UUID_NAMEID!) {
-  space(ID: $spaceId)  {
-    id
-    authorization {
+query JourneyPrivileges($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
       id
-      myPrivileges
+      authorization {
+        id
+        myPrivileges
+      }
     }
   }
 }

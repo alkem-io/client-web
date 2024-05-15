@@ -1285,16 +1285,41 @@ export type LibraryFieldPolicy = {
   innovationPacks?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type LicenseKeySpecifier = ('authorization' | 'featureFlags' | 'id' | 'visibility' | LicenseKeySpecifier)[];
+export type LicenseKeySpecifier = (
+  | 'authorization'
+  | 'featureFlags'
+  | 'id'
+  | 'privileges'
+  | 'visibility'
+  | LicenseKeySpecifier
+)[];
 export type LicenseFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   featureFlags?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  privileges?: FieldPolicy<any> | FieldReadFunction<any>;
   visibility?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type LicenseFeatureFlagKeySpecifier = ('enabled' | 'name' | LicenseFeatureFlagKeySpecifier)[];
 export type LicenseFeatureFlagFieldPolicy = {
   enabled?: FieldPolicy<any> | FieldReadFunction<any>;
+  name?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type LicensePolicyKeySpecifier = ('authorization' | 'featureFlagRules' | 'id' | LicensePolicyKeySpecifier)[];
+export type LicensePolicyFieldPolicy = {
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  featureFlagRules?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type LicensePolicyRuleFeatureFlagKeySpecifier = (
+  | 'featureFlagName'
+  | 'grantedPrivileges'
+  | 'name'
+  | LicensePolicyRuleFeatureFlagKeySpecifier
+)[];
+export type LicensePolicyRuleFeatureFlagFieldPolicy = {
+  featureFlagName?: FieldPolicy<any> | FieldReadFunction<any>;
+  grantedPrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
   name?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type LifecycleKeySpecifier = (
@@ -1358,6 +1383,7 @@ export type LookupQueryResultsKeySpecifier = (
   | 'post'
   | 'profile'
   | 'room'
+  | 'space'
   | 'storageAggregator'
   | 'whiteboard'
   | 'whiteboardTemplate'
@@ -1381,6 +1407,7 @@ export type LookupQueryResultsFieldPolicy = {
   post?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   room?: FieldPolicy<any> | FieldReadFunction<any>;
+  space?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboardTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1433,13 +1460,9 @@ export type MutationKeySpecifier = (
   | 'assignCommunityRoleToOrganization'
   | 'assignCommunityRoleToUser'
   | 'assignCommunityRoleToVirtual'
-  | 'assignUserAsGlobalAdmin'
-  | 'assignUserAsGlobalCommunityAdmin'
-  | 'assignUserAsGlobalSpacesAdmin'
-  | 'assignUserAsOrganizationAdmin'
-  | 'assignUserAsOrganizationOwner'
+  | 'assignOrganizationRoleToUser'
+  | 'assignPlatformRoleToUser'
   | 'assignUserToGroup'
-  | 'assignUserToOrganization'
   | 'authorizationPolicyResetAll'
   | 'authorizationPolicyResetOnAccount'
   | 'authorizationPolicyResetOnOrganization'
@@ -1520,14 +1543,10 @@ export type MutationKeySpecifier = (
   | 'removeCommunityRoleFromUser'
   | 'removeCommunityRoleFromVirtual'
   | 'removeMessageOnRoom'
+  | 'removeOrganizationRoleFromUser'
+  | 'removePlatformRoleFromUser'
   | 'removeReactionToMessageInRoom'
-  | 'removeUserAsGlobalAdmin'
-  | 'removeUserAsGlobalCommunityAdmin'
-  | 'removeUserAsGlobalSpacesAdmin'
-  | 'removeUserAsOrganizationAdmin'
-  | 'removeUserAsOrganizationOwner'
   | 'removeUserFromGroup'
-  | 'removeUserFromOrganization'
   | 'resetChatGuidance'
   | 'resetVirtualContributor'
   | 'revokeCredentialFromOrganization'
@@ -1596,13 +1615,9 @@ export type MutationFieldPolicy = {
   assignCommunityRoleToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   assignCommunityRoleToUser?: FieldPolicy<any> | FieldReadFunction<any>;
   assignCommunityRoleToVirtual?: FieldPolicy<any> | FieldReadFunction<any>;
-  assignUserAsGlobalAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
-  assignUserAsGlobalCommunityAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
-  assignUserAsGlobalSpacesAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
-  assignUserAsOrganizationAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
-  assignUserAsOrganizationOwner?: FieldPolicy<any> | FieldReadFunction<any>;
+  assignOrganizationRoleToUser?: FieldPolicy<any> | FieldReadFunction<any>;
+  assignPlatformRoleToUser?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserToGroup?: FieldPolicy<any> | FieldReadFunction<any>;
-  assignUserToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   authorizationPolicyResetAll?: FieldPolicy<any> | FieldReadFunction<any>;
   authorizationPolicyResetOnAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   authorizationPolicyResetOnOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1683,14 +1698,10 @@ export type MutationFieldPolicy = {
   removeCommunityRoleFromUser?: FieldPolicy<any> | FieldReadFunction<any>;
   removeCommunityRoleFromVirtual?: FieldPolicy<any> | FieldReadFunction<any>;
   removeMessageOnRoom?: FieldPolicy<any> | FieldReadFunction<any>;
+  removeOrganizationRoleFromUser?: FieldPolicy<any> | FieldReadFunction<any>;
+  removePlatformRoleFromUser?: FieldPolicy<any> | FieldReadFunction<any>;
   removeReactionToMessageInRoom?: FieldPolicy<any> | FieldReadFunction<any>;
-  removeUserAsGlobalAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
-  removeUserAsGlobalCommunityAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
-  removeUserAsGlobalSpacesAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
-  removeUserAsOrganizationAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
-  removeUserAsOrganizationOwner?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserFromGroup?: FieldPolicy<any> | FieldReadFunction<any>;
-  removeUserFromOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   resetChatGuidance?: FieldPolicy<any> | FieldReadFunction<any>;
   resetVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
   revokeCredentialFromOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1865,6 +1876,7 @@ export type PlatformKeySpecifier = (
   | 'innovationHubs'
   | 'latestReleaseDiscussion'
   | 'library'
+  | 'licensePolicy'
   | 'metadata'
   | 'storageAggregator'
   | PlatformKeySpecifier
@@ -1878,6 +1890,7 @@ export type PlatformFieldPolicy = {
   innovationHubs?: FieldPolicy<any> | FieldReadFunction<any>;
   latestReleaseDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
   library?: FieldPolicy<any> | FieldReadFunction<any>;
+  licensePolicy?: FieldPolicy<any> | FieldReadFunction<any>;
   metadata?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -2539,16 +2552,23 @@ export type SpaceSettingsCollaborationFieldPolicy = {
   inheritMembershipRights?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type SpaceSettingsMembershipKeySpecifier = (
+  | 'allowSubspaceAdminsToInviteMembers'
   | 'policy'
   | 'trustedOrganizations'
   | SpaceSettingsMembershipKeySpecifier
 )[];
 export type SpaceSettingsMembershipFieldPolicy = {
+  allowSubspaceAdminsToInviteMembers?: FieldPolicy<any> | FieldReadFunction<any>;
   policy?: FieldPolicy<any> | FieldReadFunction<any>;
   trustedOrganizations?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type SpaceSettingsPrivacyKeySpecifier = ('mode' | SpaceSettingsPrivacyKeySpecifier)[];
+export type SpaceSettingsPrivacyKeySpecifier = (
+  | 'allowPlatformSupportAsAdmin'
+  | 'mode'
+  | SpaceSettingsPrivacyKeySpecifier
+)[];
 export type SpaceSettingsPrivacyFieldPolicy = {
+  allowPlatformSupportAsAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   mode?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type StorageAggregatorKeySpecifier = (
@@ -3334,6 +3354,17 @@ export type StrictTypedTypePolicies = {
   LicenseFeatureFlag?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | LicenseFeatureFlagKeySpecifier | (() => undefined | LicenseFeatureFlagKeySpecifier);
     fields?: LicenseFeatureFlagFieldPolicy;
+  };
+  LicensePolicy?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | LicensePolicyKeySpecifier | (() => undefined | LicensePolicyKeySpecifier);
+    fields?: LicensePolicyFieldPolicy;
+  };
+  LicensePolicyRuleFeatureFlag?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | LicensePolicyRuleFeatureFlagKeySpecifier
+      | (() => undefined | LicensePolicyRuleFeatureFlagKeySpecifier);
+    fields?: LicensePolicyRuleFeatureFlagFieldPolicy;
   };
   Lifecycle?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | LifecycleKeySpecifier | (() => undefined | LifecycleKeySpecifier);

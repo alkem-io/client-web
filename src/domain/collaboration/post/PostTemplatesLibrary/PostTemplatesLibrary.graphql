@@ -1,5 +1,5 @@
-query SpacePostTemplatesLibrary($spaceId: UUID_NAMEID!) {
-  space(ID: $spaceId) {
+query SpacePostTemplatesLibrary($spaceNameId: UUID_NAMEID!) {
+  space(ID: $spaceNameId) {
     id
     account {
       id

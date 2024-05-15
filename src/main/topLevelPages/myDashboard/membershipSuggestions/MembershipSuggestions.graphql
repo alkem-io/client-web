@@ -1,5 +1,5 @@
-query MembershipSuggestionSpace($id: UUID_NAMEID!) {
-  space(ID: $id) {
+query MembershipSuggestionSpace($spaceNameId: UUID_NAMEID!) {
+  space(ID: $spaceNameId) {
     id
     nameID
     profile {
