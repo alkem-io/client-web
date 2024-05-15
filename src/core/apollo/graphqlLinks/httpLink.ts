@@ -13,6 +13,7 @@ export const httpLink = (graphQLEndpoint: string, enableWebSockets: boolean) => 
   const uploadLink = createUploadLink({
     uri: graphQLEndpoint,
     credentials: 'include',
+    headers: { 'apollo-require-preflight': true },
   });
   if (enableWebSockets) {
     // if creating the web socket link fails fall back to http only
