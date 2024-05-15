@@ -1,25 +1,24 @@
-query JourneyData(
-  $spaceId: UUID_NAMEID!
-  $includeCommunity: Boolean = false
-) {
-  space(ID: $spaceId)  {
-    id
-    profile {
-      ...ProfileJourneyData
-    }
-    context {
-      ...ContextJourneyData
-    }
-    community @include(if: $includeCommunity) {
-      ...JourneyCommunity
-    }
-    metrics {
-      ...MetricsItem
-    }
-    account {
+query JourneyData($spaceId: UUID!, $includeCommunity: Boolean = false) {
+  lookup {
+    space(ID: $spaceId) {
       id
-      host {
-        ...AssociatedOrganizationDetails
+      profile {
+        ...ProfileJourneyData
+      }
+      context {
+        ...ContextJourneyData
+      }
+      community @include(if: $includeCommunity) {
+        ...JourneyCommunity
+      }
+      metrics {
+        ...MetricsItem
+      }
+      account {
+        id
+        host {
+          ...AssociatedOrganizationDetails
+        }
       }
     }
   }

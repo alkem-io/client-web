@@ -1,11 +1,12 @@
-query RecentJourney($spaceId: UUID_NAMEID!) {
-  space(ID: $spaceId) {
-    id
-    profile {
-      ...RecentJourneyProfile
+query RecentJourney($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
+      id
+      profile {
+        ...RecentJourneyProfile
+      }
     }
   }
-
 }
 
 fragment RecentJourneyProfile on Profile {

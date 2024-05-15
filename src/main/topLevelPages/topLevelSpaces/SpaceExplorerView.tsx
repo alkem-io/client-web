@@ -33,7 +33,7 @@ export interface SpaceExplorerViewProps {
     displayName: string;
     url: string;
   };
-  fetchWelcomeSpace?: (args: { variables: { spaceId: string } }) => void;
+  fetchWelcomeSpace?: (args: { variables: { spaceNameId: string } }) => void;
 }
 
 export enum SpacesExplorerMembershipFilter {
@@ -141,7 +141,7 @@ export const SpaceExplorerView: FC<SpaceExplorerViewProps> = ({
   useEffect(() => {
     if (hasNoMemberSpaces) {
       fetchWelcomeSpace?.({
-        variables: { spaceId: t('pages.home.sections.membershipSuggestions.suggestedSpace.nameId') },
+        variables: { spaceNameId: t('pages.home.sections.membershipSuggestions.suggestedSpace.nameId') },
       });
     }
   }, [hasNoMemberSpaces]);

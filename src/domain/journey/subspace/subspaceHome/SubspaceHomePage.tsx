@@ -190,6 +190,7 @@ const SubspaceHomePage = ({ dialog }: SubspaceHomePageProps) => {
             journeyId={journeyId}
             journeyUrl={subspace?.profile.url}
             dashboardNavigation={dashboardNavigation}
+            communityId={subspace?.community?.id}
           />
         </>
       )}

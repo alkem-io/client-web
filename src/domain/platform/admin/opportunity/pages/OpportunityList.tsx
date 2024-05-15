@@ -37,7 +37,7 @@ export const OpportunityList: FC = () => {
   });
 
   const opportunityList =
-    subspacesListQuery?.space?.subspaces?.map(o => ({
+    subspacesListQuery?.lookup.space?.subspaces?.map(o => ({
       id: o.id,
       value: o.profile.displayName,
       url: buildJourneyAdminUrl(o.profile.url),

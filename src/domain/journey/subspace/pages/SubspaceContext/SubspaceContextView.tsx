@@ -29,7 +29,7 @@ const ChallengeContextView: FC = () => {
     skip: !challengeId,
   });
 
-  const challenge = subspaceProfile?.space;
+  const challenge = subspaceProfile?.lookup.space;
 
   const onSubmit = async (values: ContextFormValues) => {
     if (!challengeId) {

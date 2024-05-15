@@ -1,7 +1,6 @@
 import React, { FC, useState } from 'react';
 import { useSubSpace } from '../hooks/useChallenge';
 import AboutPageContainer from '../../common/AboutPageContainer/AboutPageContainer';
-import ChallengeDashboardPage from './SubspaceDashboardPage';
 import { useBackToStaticPath } from '../../../../core/routing/useBackToPath';
 import JourneyAboutDialog from '../../common/JourneyAboutDialog/JourneyAboutDialog';
 import { IconButton } from '@mui/material';
@@ -30,7 +29,6 @@ const SubspaceAboutPage: FC = () => {
 
   return (
     <>
-      <ChallengeDashboardPage />
       <AboutPageContainer journeyId={journeyId}>
         {(
           {

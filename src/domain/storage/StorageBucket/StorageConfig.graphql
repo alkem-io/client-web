@@ -1,15 +1,15 @@
-query JourneyStorageConfig($spaceId: UUID_NAMEID!) {
-  space(ID: $spaceId) {
-    id
-    profile {
-      ...ProfileStorageConfig
+query JourneyStorageConfig($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
+      id
+      profile {
+        ...ProfileStorageConfig
+      }
     }
   }
 }
 
-query CalloutStorageConfig(
-  $calloutId: UUID!
-) {
+query CalloutStorageConfig($calloutId: UUID!) {
   lookup {
     callout(ID: $calloutId) {
       id
@@ -23,10 +23,7 @@ query CalloutStorageConfig(
   }
 }
 
-query CalloutPostStorageConfig(
-  $postId: UUID_NAMEID!
-  $calloutId: UUID!
-) {
+query CalloutPostStorageConfig($postId: UUID_NAMEID!, $calloutId: UUID!) {
   lookup {
     callout(ID: $calloutId) {
       id
