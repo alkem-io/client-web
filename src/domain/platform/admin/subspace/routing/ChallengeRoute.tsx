@@ -14,6 +14,7 @@ import { StorageConfigContextProvider } from '../../../../storage/StorageBucket/
 import AdminChallengeCommunityPage from '../../../../journey/subspace/pages/AdminSubspaceCommunityPage';
 import SpaceSettingsPage from '../../../../journey/space/pages/SpaceSettings/SpaceSettingsPage';
 import ChallengeOpportunitiesPage from '../../../../journey/subspace/pages/SubspaceSubspaces/SubspaceSubspacesPage';
+import NonSpaceAdminRedirect from '../../../../journey/settings/nonSpaceAdminRedirect/NonSpaceAdminRedirect';
 
 export const ChallengeRoute: FC = () => {
   const { communityId: spaceCommunityId } = useSpace();
@@ -21,27 +22,29 @@ export const ChallengeRoute: FC = () => {
   const communityId = challenge?.community?.id;
 
   return (
-    <StorageConfigContextProvider locationType="journey" spaceId={challenge?.id}>
-      <Routes>
-        <Route path={'/'}>
-          <Route index element={<Navigate to="profile" replace />} />
-          <Route path="profile" element={<ChallengeProfilePage />} />
-          <Route path="context" element={<SubspaceContextPage />} />
-          <Route path="communications" element={<SubspaceCommunicationsPage communityId={communityId} />} />
-          <Route
-            path="community/groups/*"
-            element={
-              <CommunityGroupsRoute communityId={challenge?.community?.id} parentCommunityId={spaceCommunityId} />
-            }
-          />
-          <Route path="opportunities/*" element={<ChallengeOpportunitiesPage />} />
-          <Route path="community" element={<AdminChallengeCommunityPage />} />
-          <Route path="settings" element={<SpaceSettingsPage />} />
-          <Route path="community/applications/*" element={<ApplicationsAdminRoutes />} />
-          <Route path="authorization/*" element={<ChallengeAuthorizationRoute />} />
-          <Route path="*" element={<Error404 />} />
-        </Route>
-      </Routes>
-    </StorageConfigContextProvider>
+    <NonSpaceAdminRedirect spaceId={challenge?.id}>
+      <StorageConfigContextProvider locationType="journey" spaceId={challenge?.id}>
+        <Routes>
+          <Route path={'/'}>
+            <Route index element={<Navigate to="profile" replace />} />
+            <Route path="profile" element={<ChallengeProfilePage />} />
+            <Route path="context" element={<SubspaceContextPage />} />
+            <Route path="communications" element={<SubspaceCommunicationsPage communityId={communityId} />} />
+            <Route
+              path="community/groups/*"
+              element={
+                <CommunityGroupsRoute communityId={challenge?.community?.id} parentCommunityId={spaceCommunityId} />
+              }
+            />
+            <Route path="opportunities/*" element={<ChallengeOpportunitiesPage />} />
+            <Route path="community" element={<AdminChallengeCommunityPage />} />
+            <Route path="settings" element={<SpaceSettingsPage />} />
+            <Route path="community/applications/*" element={<ApplicationsAdminRoutes />} />
+            <Route path="authorization/*" element={<ChallengeAuthorizationRoute />} />
+            <Route path="*" element={<Error404 />} />
+          </Route>
+        </Routes>
+      </StorageConfigContextProvider>
+    </NonSpaceAdminRedirect>
   );
 };

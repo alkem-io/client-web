@@ -1,0 +1,11 @@
+query SpacePrivileges($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
+      id
+      authorization {
+        id
+        myPrivileges
+      }
+    }
+  }
+}

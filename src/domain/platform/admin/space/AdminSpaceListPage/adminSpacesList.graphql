@@ -6,6 +6,7 @@ query adminSpacesList {
 
 fragment AdminSpace on Space {
   id
+  nameID
   account {
     id
     license {

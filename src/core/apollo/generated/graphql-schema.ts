@@ -17701,6 +17701,26 @@ export type SubspaceProviderFragment = {
   };
 };
 
+export type SpacePrivilegesQueryVariables = Exact<{
+  spaceId: Scalars['UUID'];
+}>;
+
+export type SpacePrivilegesQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    space?:
+      | {
+          __typename?: 'Space';
+          id: string;
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
 export type SpaceCardFragment = {
   __typename?: 'Space';
   id: string;
@@ -20536,6 +20556,7 @@ export type AdminSpacesListQuery = {
   spaces: Array<{
     __typename?: 'Space';
     id: string;
+    nameID: string;
     account: {
       __typename?: 'Account';
       id: string;
@@ -20563,6 +20584,7 @@ export type AdminSpacesListQuery = {
 export type AdminSpaceFragment = {
   __typename?: 'Space';
   id: string;
+  nameID: string;
   account: {
     __typename?: 'Account';
     id: string;
