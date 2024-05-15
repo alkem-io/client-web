@@ -2655,5 +2655,97 @@
     "Share": "Share",
     "ManageFlow": "$t(components.innovationFlowSettings.buttonTooltip)",
     "Settings": "Settings"
+  },
+  "plansTable": {
+    "title": "Choose a plan",
+    "seeMore": "Click here for the full description of each plan",
+    "seeMoreUrl": "https://welcome.alkem.io/pricing/",
+    "plans": [
+      {
+        "id": "FREE",
+        "name": "Free",
+        "price": "€0",
+        "pricePeriod": "/Lifetime",
+        "priceDescription": "For Change-Makers Exploring Alkemio",
+        "actionButton": "Choose Free",
+        "dialogId": "freeTrial",
+        "features": ["Up to 10 members", "Various tools, including standard Whiteboards"],
+        "disclaimer": "Free Spaces are limited to 1 Space per user"
+      },
+      {
+        "id": "PLUS",
+        "name": "Plus",
+        "price": "€249",
+        "pricePeriod": "/Month",
+        "priceDescription": "For Starting Communities, coalitions, programs...",
+        "actionButton": "Choose Plus",
+        "dialogId": "getStarted",
+        "features": ["Up to 100 members", "Realtime, multi-user Whiteboards", "Create your Virtual Contributor"],
+        "disclaimer": ""
+      },
+      {
+        "id": "PREMIUM",
+        "name": "Premium",
+        "price": "€749",
+        "pricePeriod": "/Month",
+        "priceDescription": "For Established Communities, organisations, coalitions...",
+        "actionButton": "Choose Premium",
+        "dialogId": "getStarted",
+        "features": [
+          "Up to 500 members",
+          "Realtime, multi-user Whiteboards",
+          "Create your Virtual Contributor",
+          "Custom Homepage (with Support)"
+        ],
+        "disclaimer": ""
+      },
+      {
+        "id": "ENTERPRISE",
+        "name": "Enterprise",
+        "price": "",
+        "pricePeriod": "Custom Pricing",
+        "priceDescription": "Your Customized plan",
+        "actionButton": "Contact us",
+        "actionUrl": "https://welcome.alkem.io/contact/",
+        "features": [
+          "Up to 500 members",
+          "Realtime, multi-user Whiteboards",
+          "Create your Virtual Contributor",
+          "Custom Homepage (with Support)",
+          "1 year success program"
+        ],
+        "disclaimer": ""
+      }
+    ],
+    "dialogs": [
+      {
+        "id": "freeTrial",
+        "title": "Free trial",
+        "content": "Try our free 30-day trial of the Plus license to unlock exciting features like creating Virtual Contributors and multi-user whiteboard editing. No payment details required! After the trial, choose between upgrading to Plus or continuing with the Free license.<br/><Link>Questions? Contact our support team anytime</Link>.",
+        "buttons": [
+          {
+            "caption": "Continue with Free Space",
+            "variant": "text",
+            "planId": "FREE"
+          },
+          {
+            "caption": "Start Plus Trial",
+            "variant": "contained",
+            "planId": "PLUS"
+          }
+        ]
+      },
+      {
+        "id": "getStarted",
+        "title": "Get started right away!",
+        "content": "Since we don’t want to hold you up any longer, you receive a 30-day free trial. After these 30 days we will ask you to set up your account details in order to continue using your Space. If you have any questions, feel free to contact support here.",
+        "buttons": [
+          {
+            "caption": "Continue",
+            "variant": "contained"
+          }
+        ]
+      }
+    ]
   }
 }
