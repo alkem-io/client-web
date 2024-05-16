@@ -14,6 +14,7 @@ fragment OrganizationInfo on Organization {
   website
   profile {
     id
+    url
     displayName
     description
     tagline

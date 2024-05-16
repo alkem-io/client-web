@@ -6,6 +6,7 @@ import { useOrganization } from '../hooks/useOrganization';
 import { Error404 } from '../../../../../core/pages/Errors/Error404';
 import OrganizationPage from '../pages/OrganizationPage';
 import TopLevelLayout from '../../../../../main/ui/layout/TopLevelLayout';
+import OrganizationAdminRoutes from '../../../../platform/admin/organization/OrganizationAdminRoutes';
 
 const OrganizationRoute: FC = () => {
   const { organization, loading } = useOrganization();
@@ -25,6 +26,7 @@ const OrganizationRoute: FC = () => {
       <Route path="/" element={<PageLayoutHolderWithOutlet />}>
         <Route index element={<OrganizationPage />} />
         <Route path="*" element={<Error404 />} />
+        <Route path="settings/*" element={<OrganizationAdminRoutes />} />
       </Route>
     </Routes>
   );
