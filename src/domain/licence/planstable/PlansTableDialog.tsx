@@ -21,7 +21,8 @@ interface PlanTranslation {
   price: string;
   pricePeriod: string;
   priceDescription: string;
-  actionButton: string;
+  buttonCaption: string;
+  buttonHighlighted?: boolean;
   dialogId?: string;
   actionUrl?: string;
   features: string[];
@@ -63,6 +64,18 @@ const buttonVariant = (variant: string): ButtonProps['variant'] => {
     default:
       return undefined;
   }
+};
+
+const buttonStyle = (highlighted: boolean = false): ButtonProps['sx'] => {
+  return highlighted
+    ? {
+        backgroundColor: theme => theme.palette.highlight.dark,
+        color: theme => theme.palette.neutral.main,
+        '&:hover': {
+          backgroundColor: theme => theme.palette.highlight.dark,
+        },
+      }
+    : undefined;
 };
 
 interface PlansTableDialogProps {
@@ -151,8 +164,9 @@ const PlansTableDialog = ({ open, onClose, onSelectPlan }: PlansTableDialogProps
                       variant="contained"
                       onClick={() => handlePlanClick(plan)}
                       disabled={isPlanDisabled(plan.id)}
+                      sx={buttonStyle(plan.buttonHighlighted)}
                     >
-                      <Caption textTransform="none">{plan.actionButton}</Caption>
+                      <Caption textTransform="none">{plan.buttonCaption}</Caption>
                     </FullWidthButton>
                   </Box>
                   <Box paddingX={gutters()} color={theme => theme.palette.primary.main}>
