@@ -3,16 +3,16 @@ import { BlockSectionTitle } from '../../../../core/ui/typography';
 import { useTranslation } from 'react-i18next';
 import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
-// import ProfileReferenceSegment from '../../../platform/admin/components/Common/ProfileReferenceSegment';
-// import { Reference } from '../../../common/profile/Profile';
+import ProfileReferenceSegment from '../../../platform/admin/components/Common/ProfileReferenceSegment';
+import { Reference } from '../../../common/profile/Profile';
 
 interface CommunityGuidelinesTemplatePreviewProps {
   template?: {
-    guidelines: {
+    guidelines?: {
       profile: {
         displayName: string;
         description: string;
-        // references: Reference[];
+        references: Reference[] | [];
       };
     };
   };
@@ -23,12 +23,14 @@ const CommunityGuidelinesTemplatePreview: FC<CommunityGuidelinesTemplatePreviewP
 
   return (
     <PageContentBlock>
-      <BlockSectionTitle>{t('community.communityGuidelines.templateTitle')}</BlockSectionTitle>
-      <WrapperMarkdown>{template?.guidelines.profile.displayName ?? ''}</WrapperMarkdown>
-      <BlockSectionTitle>{t('community.communityGuidelines.templateDescription')}</BlockSectionTitle>
-      <WrapperMarkdown>{template?.guidelines.profile.description ?? ''}</WrapperMarkdown>
-      {/* TODO: server not ready */}
-      {/* <ProfileReferenceSegment references={template?.guidelines.profile?.references} profileId={"template?.guidelines?.profile?.id"} /> */}
+      <BlockSectionTitle>{t('communityGuidelinesTemplates.guidelinesTitle')}</BlockSectionTitle>
+      <WrapperMarkdown>{template?.guidelines?.profile.displayName ?? ''}</WrapperMarkdown>
+      <BlockSectionTitle>{t('communityGuidelinesTemplates.guidelinesDescription')}</BlockSectionTitle>
+      <WrapperMarkdown>{template?.guidelines?.profile.description ?? ''}</WrapperMarkdown>
+      <ProfileReferenceSegment
+        references={template?.guidelines?.profile?.references}
+        profileId={'template?.guidelines?.profile?.id'}
+      />
     </PageContentBlock>
   );
 };

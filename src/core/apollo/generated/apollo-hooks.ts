@@ -726,6 +726,27 @@ export const WhiteboardCollectionCalloutCardFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
 `;
+export const CommunityGuidelinesTemplateCardFragmentDoc = gql`
+  fragment CommunityGuidelinesTemplateCard on CommunityGuidelinesTemplate {
+    id
+    profile {
+      ...TemplateCardProfileInfo
+    }
+    guidelines {
+      id
+      profile {
+        id
+        displayName
+        description
+        references {
+          ...ReferenceDetails
+        }
+      }
+    }
+  }
+  ${TemplateCardProfileInfoFragmentDoc}
+  ${ReferenceDetailsFragmentDoc}
+`;
 export const PostTemplateCardFragmentDoc = gql`
   fragment PostTemplateCard on PostTemplate {
     id
@@ -6732,6 +6753,181 @@ export type CalloutWhiteboardsQueryResult = Apollo.QueryResult<
 >;
 export function refetchCalloutWhiteboardsQuery(variables: SchemaTypes.CalloutWhiteboardsQueryVariables) {
   return { query: CalloutWhiteboardsDocument, variables: variables };
+}
+
+export const SpaceCommunityGuidelinesTemplatesLibraryDocument = gql`
+  query SpaceCommunityGuidelinesTemplatesLibrary($spaceNameId: UUID_NAMEID!) {
+    space(ID: $spaceNameId) {
+      id
+      account {
+        id
+        library {
+          id
+          communityGuidelinesTemplates {
+            ...CommunityGuidelinesTemplateCard
+          }
+        }
+        host {
+          id
+          nameID
+          profile {
+            ...TemplateProviderProfile
+          }
+        }
+      }
+    }
+  }
+  ${CommunityGuidelinesTemplateCardFragmentDoc}
+  ${TemplateProviderProfileFragmentDoc}
+`;
+
+/**
+ * __useSpaceCommunityGuidelinesTemplatesLibraryQuery__
+ *
+ * To run a query within a React component, call `useSpaceCommunityGuidelinesTemplatesLibraryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSpaceCommunityGuidelinesTemplatesLibraryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSpaceCommunityGuidelinesTemplatesLibraryQuery({
+ *   variables: {
+ *      spaceNameId: // value for 'spaceNameId'
+ *   },
+ * });
+ */
+export function useSpaceCommunityGuidelinesTemplatesLibraryQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.SpaceCommunityGuidelinesTemplatesLibraryQuery,
+    SchemaTypes.SpaceCommunityGuidelinesTemplatesLibraryQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.SpaceCommunityGuidelinesTemplatesLibraryQuery,
+    SchemaTypes.SpaceCommunityGuidelinesTemplatesLibraryQueryVariables
+  >(SpaceCommunityGuidelinesTemplatesLibraryDocument, options);
+}
+
+export function useSpaceCommunityGuidelinesTemplatesLibraryLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.SpaceCommunityGuidelinesTemplatesLibraryQuery,
+    SchemaTypes.SpaceCommunityGuidelinesTemplatesLibraryQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.SpaceCommunityGuidelinesTemplatesLibraryQuery,
+    SchemaTypes.SpaceCommunityGuidelinesTemplatesLibraryQueryVariables
+  >(SpaceCommunityGuidelinesTemplatesLibraryDocument, options);
+}
+
+export type SpaceCommunityGuidelinesTemplatesLibraryQueryHookResult = ReturnType<
+  typeof useSpaceCommunityGuidelinesTemplatesLibraryQuery
+>;
+export type SpaceCommunityGuidelinesTemplatesLibraryLazyQueryHookResult = ReturnType<
+  typeof useSpaceCommunityGuidelinesTemplatesLibraryLazyQuery
+>;
+export type SpaceCommunityGuidelinesTemplatesLibraryQueryResult = Apollo.QueryResult<
+  SchemaTypes.SpaceCommunityGuidelinesTemplatesLibraryQuery,
+  SchemaTypes.SpaceCommunityGuidelinesTemplatesLibraryQueryVariables
+>;
+export function refetchSpaceCommunityGuidelinesTemplatesLibraryQuery(
+  variables: SchemaTypes.SpaceCommunityGuidelinesTemplatesLibraryQueryVariables
+) {
+  return { query: SpaceCommunityGuidelinesTemplatesLibraryDocument, variables: variables };
+}
+
+export const PlatformCommunityGuidelinesTemplatesLibraryDocument = gql`
+  query PlatformCommunityGuidelinesTemplatesLibrary {
+    platform {
+      id
+      library {
+        id
+        innovationPacks {
+          id
+          nameID
+          profile {
+            id
+            displayName
+          }
+          provider {
+            id
+            nameID
+            profile {
+              ...TemplateProviderProfile
+            }
+          }
+          templates {
+            id
+            communityGuidelinesTemplates {
+              ...CommunityGuidelinesTemplateCard
+            }
+          }
+        }
+      }
+    }
+  }
+  ${TemplateProviderProfileFragmentDoc}
+  ${CommunityGuidelinesTemplateCardFragmentDoc}
+`;
+
+/**
+ * __usePlatformCommunityGuidelinesTemplatesLibraryQuery__
+ *
+ * To run a query within a React component, call `usePlatformCommunityGuidelinesTemplatesLibraryQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePlatformCommunityGuidelinesTemplatesLibraryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePlatformCommunityGuidelinesTemplatesLibraryQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function usePlatformCommunityGuidelinesTemplatesLibraryQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.PlatformCommunityGuidelinesTemplatesLibraryQuery,
+    SchemaTypes.PlatformCommunityGuidelinesTemplatesLibraryQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.PlatformCommunityGuidelinesTemplatesLibraryQuery,
+    SchemaTypes.PlatformCommunityGuidelinesTemplatesLibraryQueryVariables
+  >(PlatformCommunityGuidelinesTemplatesLibraryDocument, options);
+}
+
+export function usePlatformCommunityGuidelinesTemplatesLibraryLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.PlatformCommunityGuidelinesTemplatesLibraryQuery,
+    SchemaTypes.PlatformCommunityGuidelinesTemplatesLibraryQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.PlatformCommunityGuidelinesTemplatesLibraryQuery,
+    SchemaTypes.PlatformCommunityGuidelinesTemplatesLibraryQueryVariables
+  >(PlatformCommunityGuidelinesTemplatesLibraryDocument, options);
+}
+
+export type PlatformCommunityGuidelinesTemplatesLibraryQueryHookResult = ReturnType<
+  typeof usePlatformCommunityGuidelinesTemplatesLibraryQuery
+>;
+export type PlatformCommunityGuidelinesTemplatesLibraryLazyQueryHookResult = ReturnType<
+  typeof usePlatformCommunityGuidelinesTemplatesLibraryLazyQuery
+>;
+export type PlatformCommunityGuidelinesTemplatesLibraryQueryResult = Apollo.QueryResult<
+  SchemaTypes.PlatformCommunityGuidelinesTemplatesLibraryQuery,
+  SchemaTypes.PlatformCommunityGuidelinesTemplatesLibraryQueryVariables
+>;
+export function refetchPlatformCommunityGuidelinesTemplatesLibraryQuery(
+  variables?: SchemaTypes.PlatformCommunityGuidelinesTemplatesLibraryQueryVariables
+) {
+  return { query: PlatformCommunityGuidelinesTemplatesLibraryDocument, variables: variables };
 }
 
 export const SpacePostTemplatesLibraryDocument = gql`
@@ -17621,9 +17817,9 @@ export const AdminSpaceTemplatesDocument = gql`
             innovationFlowTemplates {
               ...AdminInnovationFlowTemplate
             }
-          }
-          communityGuidelinesTemplates {
-            ...AdminCommunityGuidelinesTemplate
+            communityGuidelinesTemplates {
+              ...AdminCommunityGuidelinesTemplate
+            }
           }
         }
       }

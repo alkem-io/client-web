@@ -1,12 +1,12 @@
+import { Reference } from '../../../common/profile/Profile';
 import { TemplateBase } from '../../templates/CollaborationTemplatesLibrary/TemplateBase';
 
-export interface CommunityGuidelinesTemplate extends TemplateBase {
-  guidelines: {
+export interface CommunityGuidelinesTemplateWithContent extends TemplateBase {
+  guidelines?: {
     profile: {
       displayName: string;
-      description: string;
+      description?: string;
+      references?: Reference[];
     };
   };
 }
-
-export interface CommunityGuidelinesTemplateWithValue extends CommunityGuidelinesTemplate {}

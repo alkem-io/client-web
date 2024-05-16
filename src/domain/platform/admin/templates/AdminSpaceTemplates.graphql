@@ -22,10 +22,10 @@ query AdminSpaceTemplates($spaceId: UUID!) {
           innovationFlowTemplates {
             ...AdminInnovationFlowTemplate
           }
+          communityGuidelinesTemplates {
+            ...AdminCommunityGuidelinesTemplate
+          }
         }
-      }
-      communityGuidelinesTemplates {
-        ...AdminCommunityGuidelinesTemplate
       }
     }
   }

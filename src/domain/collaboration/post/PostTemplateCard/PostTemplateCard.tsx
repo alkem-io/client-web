@@ -14,8 +14,6 @@ import { PostIcon } from '../../post/icon/PostIcon';
 interface PostTemplateCardProps extends TemplateCardBaseProps<TemplateBase> {}
 
 const PostTemplateCard: FC<PostTemplateCardProps> = ({ template, innovationPack, loading, onClick }) => {
-  console.log(template);
-  console.log(innovationPack);
   return (
     <ContributeCard onClick={onClick}>
       <CardHeader title={template?.profile.displayName} iconComponent={PostIcon}>

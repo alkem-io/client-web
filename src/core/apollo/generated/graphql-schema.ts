@@ -676,6 +676,7 @@ export enum AuthorizationCredential {
   SpaceAdmin = 'SPACE_ADMIN',
   SpaceLead = 'SPACE_LEAD',
   SpaceMember = 'SPACE_MEMBER',
+  SpaceSubspaceAdmin = 'SPACE_SUBSPACE_ADMIN',
   UserGroupMember = 'USER_GROUP_MEMBER',
   UserSelfManagement = 'USER_SELF_MANAGEMENT',
 }
@@ -2588,7 +2589,7 @@ export type Mutation = {
   authorizationPolicyResetOnVirtualPersona: VirtualPersona;
   /** Reset the specified Authorization Policy to global admin privileges */
   authorizationPolicyResetToGlobalAdminsAccess: Authorization;
-  /** Generate Alkemnpm run ccredential offer */
+  /** Generate Alkemio user credential offer */
   beginAlkemioUserVerifiedCredentialOfferInteraction: AgentBeginVerifiedCredentialOfferOutput;
   /** Generate community member credential offer */
   beginCommunityMemberVerifiedCredentialOfferInteraction: AgentBeginVerifiedCredentialOfferOutput;
@@ -3911,7 +3912,7 @@ export type Query = {
   rolesUser: ContributorRoles;
   /** Search the platform for terms supplied */
   search: ISearchResults;
-  /** An space. If no ID is specified then the first Space is returned. */
+  /** Look up a top level Space (i.e. a Space that does not have a parent Space) by the UUID or NameID. */
   space: Space;
   /** The Spaces on this platform; If accessed through an Innovation Hub will return ONLY the Spaces defined in it. */
   spaces: Array<Space>;
@@ -9986,6 +9987,195 @@ export type WhiteboardCollectionCalloutCardFragment = {
     url: string;
     displayName: string;
     visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+  };
+};
+
+export type CommunityGuidelinesTemplateCardFragment = {
+  __typename?: 'CommunityGuidelinesTemplate';
+  id: string;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    description?: string | undefined;
+    tagset?:
+      | {
+          __typename?: 'Tagset';
+          id: string;
+          name: string;
+          tags: Array<string>;
+          allowedValues: Array<string>;
+          type: TagsetType;
+        }
+      | undefined;
+    visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+  };
+  guidelines: {
+    __typename?: 'CommunityGuidelines';
+    id: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      description?: string | undefined;
+      references?:
+        | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
+        | undefined;
+    };
+  };
+};
+
+export type SpaceCommunityGuidelinesTemplatesLibraryQueryVariables = Exact<{
+  spaceNameId: Scalars['UUID_NAMEID'];
+}>;
+
+export type SpaceCommunityGuidelinesTemplatesLibraryQuery = {
+  __typename?: 'Query';
+  space: {
+    __typename?: 'Space';
+    id: string;
+    account: {
+      __typename?: 'Account';
+      id: string;
+      library?:
+        | {
+            __typename?: 'TemplatesSet';
+            id: string;
+            communityGuidelinesTemplates: Array<{
+              __typename?: 'CommunityGuidelinesTemplate';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                description?: string | undefined;
+                tagset?:
+                  | {
+                      __typename?: 'Tagset';
+                      id: string;
+                      name: string;
+                      tags: Array<string>;
+                      allowedValues: Array<string>;
+                      type: TagsetType;
+                    }
+                  | undefined;
+                visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              };
+              guidelines: {
+                __typename?: 'CommunityGuidelines';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  description?: string | undefined;
+                  references?:
+                    | Array<{
+                        __typename?: 'Reference';
+                        id: string;
+                        name: string;
+                        uri: string;
+                        description?: string | undefined;
+                      }>
+                    | undefined;
+                };
+              };
+            }>;
+          }
+        | undefined;
+      host?:
+        | {
+            __typename?: 'Organization';
+            id: string;
+            nameID: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+            };
+          }
+        | undefined;
+    };
+  };
+};
+
+export type PlatformCommunityGuidelinesTemplatesLibraryQueryVariables = Exact<{ [key: string]: never }>;
+
+export type PlatformCommunityGuidelinesTemplatesLibraryQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    library: {
+      __typename?: 'Library';
+      id: string;
+      innovationPacks: Array<{
+        __typename?: 'InnovationPack';
+        id: string;
+        nameID: string;
+        profile: { __typename?: 'Profile'; id: string; displayName: string };
+        provider?:
+          | {
+              __typename?: 'Organization';
+              id: string;
+              nameID: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              };
+            }
+          | undefined;
+        templates?:
+          | {
+              __typename?: 'TemplatesSet';
+              id: string;
+              communityGuidelinesTemplates: Array<{
+                __typename?: 'CommunityGuidelinesTemplate';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  description?: string | undefined;
+                  tagset?:
+                    | {
+                        __typename?: 'Tagset';
+                        id: string;
+                        name: string;
+                        tags: Array<string>;
+                        allowedValues: Array<string>;
+                        type: TagsetType;
+                      }
+                    | undefined;
+                  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+                guidelines: {
+                  __typename?: 'CommunityGuidelines';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    description?: string | undefined;
+                    references?:
+                      | Array<{
+                          __typename?: 'Reference';
+                          id: string;
+                          name: string;
+                          uri: string;
+                          description?: string | undefined;
+                        }>
+                      | undefined;
+                  };
+                };
+              }>;
+            }
+          | undefined;
+      }>;
+    };
   };
 };
 
@@ -21040,11 +21230,11 @@ export type AdminSpaceTemplatesQuery = {
   __typename?: 'Query';
   lookup: {
     __typename?: 'LookupQueryResults';
-    space?: {
-      __typename?: 'Space';
-      id: string;
-      account:
-        | {
+    space?:
+      | {
+          __typename?: 'Space';
+          id: string;
+          account: {
             __typename?: 'Account';
             id: string;
             library?:
@@ -21207,170 +21397,26 @@ export type AdminSpaceTemplatesQuery = {
                         | undefined;
                     };
                   }>;
+                  communityGuidelinesTemplates: Array<{
+                    __typename?: 'CommunityGuidelinesTemplate';
+                    id: string;
+                    profile: { __typename?: 'Profile'; displayName: string; description?: string | undefined };
+                    guidelines: {
+                      __typename?: 'CommunityGuidelines';
+                      id: string;
+                      profile: {
+                        __typename?: 'Profile';
+                        id: string;
+                        displayName: string;
+                        description?: string | undefined;
+                      };
+                    };
+                  }>;
                 }
               | undefined;
-            calloutTemplates: Array<{
-              __typename?: 'CalloutTemplate';
-              id: string;
-              type: CalloutType;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                displayName: string;
-                description?: string | undefined;
-                tagset?:
-                  | {
-                      __typename?: 'Tagset';
-                      id: string;
-                      name: string;
-                      tags: Array<string>;
-                      allowedValues: Array<string>;
-                      type: TagsetType;
-                    }
-                  | undefined;
-                visual?:
-                  | {
-                      __typename?: 'Visual';
-                      id: string;
-                      uri: string;
-                      name: string;
-                      allowedTypes: Array<string>;
-                      aspectRatio: number;
-                      maxHeight: number;
-                      maxWidth: number;
-                      minHeight: number;
-                      minWidth: number;
-                      alternativeText?: string | undefined;
-                    }
-                  | undefined;
-              };
-              contributionPolicy: {
-                __typename?: 'CalloutContributionPolicy';
-                id: string;
-                allowedContributionTypes: Array<CalloutContributionType>;
-              };
-            }>;
-            postTemplates: Array<{
-              __typename?: 'PostTemplate';
-              id: string;
-              defaultDescription: string;
-              type: string;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                displayName: string;
-                description?: string | undefined;
-                tagset?:
-                  | {
-                      __typename?: 'Tagset';
-                      id: string;
-                      name: string;
-                      tags: Array<string>;
-                      allowedValues: Array<string>;
-                      type: TagsetType;
-                    }
-                  | undefined;
-                visual?:
-                  | {
-                      __typename?: 'Visual';
-                      id: string;
-                      uri: string;
-                      name: string;
-                      allowedTypes: Array<string>;
-                      aspectRatio: number;
-                      maxHeight: number;
-                      maxWidth: number;
-                      minHeight: number;
-                      minWidth: number;
-                      alternativeText?: string | undefined;
-                    }
-                  | undefined;
-              };
-            }>;
-            whiteboardTemplates: Array<{
-              __typename?: 'WhiteboardTemplate';
-              id: string;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                displayName: string;
-                description?: string | undefined;
-                tagset?:
-                  | {
-                      __typename?: 'Tagset';
-                      id: string;
-                      name: string;
-                      tags: Array<string>;
-                      allowedValues: Array<string>;
-                      type: TagsetType;
-                    }
-                  | undefined;
-                visual?:
-                  | {
-                      __typename?: 'Visual';
-                      id: string;
-                      uri: string;
-                      name: string;
-                      allowedTypes: Array<string>;
-                      aspectRatio: number;
-                      maxHeight: number;
-                      maxWidth: number;
-                      minHeight: number;
-                      minWidth: number;
-                      alternativeText?: string | undefined;
-                    }
-                  | undefined;
-              };
-            }>;
-            innovationFlowTemplates: Array<{
-              __typename?: 'InnovationFlowTemplate';
-              id: string;
-              states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                displayName: string;
-                description?: string | undefined;
-                tagset?:
-                  | {
-                      __typename?: 'Tagset';
-                      id: string;
-                      name: string;
-                      tags: Array<string>;
-                      allowedValues: Array<string>;
-                      type: TagsetType;
-                    }
-                  | undefined;
-                visual?:
-                  | {
-                      __typename?: 'Visual';
-                      id: string;
-                      uri: string;
-                      name: string;
-                      allowedTypes: Array<string>;
-                      aspectRatio: number;
-                      maxHeight: number;
-                      maxWidth: number;
-                      minHeight: number;
-                      minWidth: number;
-                      alternativeText?: string | undefined;
-                    }
-                  | undefined;
-              };
-            }>;
-            communityGuidelinesTemplates: Array<{
-              __typename?: 'CommunityGuidelinesTemplate';
-              id: string;
-              profile: { __typename?: 'Profile'; displayName: string; description?: string | undefined };
-              guidelines: {
-                __typename?: 'CommunityGuidelines';
-                id: string;
-                profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
-              };
-            }>;
-          }
-        | undefined;
-    };
+          };
+        }
+      | undefined;
   };
 };
 
