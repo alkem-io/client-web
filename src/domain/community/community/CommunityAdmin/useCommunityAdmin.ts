@@ -32,6 +32,7 @@ import { OrganizationDetailsFragmentWithRoles } from '../../../community/communi
 import { CommunityMemberUserFragmentWithRoles } from '../../../community/community/CommunityAdmin/CommunityUsers';
 import useInviteUsers from '../../../community/invitations/useInviteUsers';
 import { getJourneyTypeName } from '../../../journey/JourneyTypeName';
+import { JourneyLevel } from '../../../../main/routing/resolvers/RouteResolver';
 
 const MAX_AVAILABLE_MEMBERS = 100;
 const buildUserFilterObject = (filter: string | undefined) =>
@@ -55,9 +56,16 @@ interface useCommunityAdminParams {
   spaceId?: string;
   challengeId?: string;
   opportunityId?: string;
+  journeyLevel: JourneyLevel | -1;
 }
 
-const useCommunityAdmin = ({ communityId, spaceId, challengeId, opportunityId }: useCommunityAdminParams) => {
+const useCommunityAdmin = ({
+  communityId,
+  spaceId,
+  challengeId,
+  opportunityId,
+  journeyLevel,
+}: useCommunityAdminParams) => {
   const journeyTypeName = getJourneyTypeName({
     spaceNameId: spaceId,
     challengeNameId: challengeId,
@@ -99,10 +107,10 @@ const useCommunityAdmin = ({ communityId, spaceId, challengeId, opportunityId }:
     variables: {
       input: {
         type: AuthorizationCredential.SpaceAdmin,
-        resourceID: opportunityId ?? challengeId ?? spaceId,
+        resourceID: [spaceId, challengeId, opportunityId][journeyLevel],
       },
     },
-    skip: !spaceId && !challengeId && !opportunityId,
+    skip: ![spaceId, challengeId, opportunityId][journeyLevel],
   });
 
   const {

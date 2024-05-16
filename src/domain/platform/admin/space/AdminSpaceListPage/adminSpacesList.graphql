@@ -28,6 +28,7 @@ fragment AdminSpace on Space {
   profile {
     id
     displayName
+    url
   }
   authorization {
     id

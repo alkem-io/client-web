@@ -2645,16 +2645,16 @@
     }
   },
   "spaceDialog": {
-    "About": "About",
-    "Outline": "Outline",
-    "Index": "Index",
-    "Subspaces": "Subspaces",
-    "Contributors": "Contributors",
-    "Activity": "Activity",
-    "Events": "Events",
-    "Share": "Share",
-    "ManageFlow": "$t(components.innovationFlowSettings.buttonTooltip)",
-    "Settings": "Settings"
+    "about": "About",
+    "outline": "Outline",
+    "index": "Index",
+    "subspaces": "Subspaces",
+    "contributors": "Contributors",
+    "activity": "Activity",
+    "events": "Events",
+    "share": "Share",
+    "manageFlow": "$t(components.innovationFlowSettings.buttonTooltip)",
+    "settings": "Settings"
   },
   "plansTable": {
     "title": "Choose a plan",
