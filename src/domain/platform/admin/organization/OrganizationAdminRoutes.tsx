@@ -5,17 +5,23 @@ import OrganizationProfilePage from './OrganizationProfilePage';
 import { OrganizationGroupsRoute } from './OrganizationGroupsRoute';
 import OrganizationCommunityPage from './OrganizationCommunityPage';
 import OrganizationAuthorizationPage from './OrganizationAuthorizationPage';
+import NonAdminRedirect from '../../../../main/admin/NonAdminRedirect';
+import { useOrganization } from '../../../community/contributor/organization/hooks/useOrganization';
 
 const OrganizationAdminRoutes: FC = () => {
+  const { organization } = useOrganization();
+
   return (
-    <Routes>
-      <Route index element={<Navigate to="profile" replace />} />
-      <Route path="profile" element={<OrganizationProfilePage />} />
-      <Route path="community" element={<OrganizationCommunityPage />} />
-      <Route path="community/groups/*" element={<OrganizationGroupsRoute />} />
-      <Route path="authorization" element={<OrganizationAuthorizationPage />} />
-      <Route path="*" element={<Error404 />} />
-    </Routes>
+    <NonAdminRedirect privileges={organization?.authorization?.myPrivileges}>
+      <Routes>
+        <Route index element={<Navigate to="profile" replace />} />
+        <Route path="profile" element={<OrganizationProfilePage />} />
+        <Route path="community" element={<OrganizationCommunityPage />} />
+        <Route path="community/groups/*" element={<OrganizationGroupsRoute />} />
+        <Route path="authorization" element={<OrganizationAuthorizationPage />} />
+        <Route path="*" element={<Error404 />} />
+      </Routes>
+    </NonAdminRedirect>
   );
 };
 
