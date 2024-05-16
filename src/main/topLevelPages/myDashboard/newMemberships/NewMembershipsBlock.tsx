@@ -148,9 +148,7 @@ const NewMembershipsBlock = ({
     [invitations, applications]
   );
 
-  // Show only spaces
-  const SPACE_LEVEL = 0;
-  const mySpaces = data?.me.mySpaces?.filter(item => item.space?.level === SPACE_LEVEL) ?? [];
+  const mySpaces = data?.me.mySpaces ?? [];
 
   const [openDialog, setOpenDialog] = useState<PendingMembershipsListDialogDetails | InvitationViewDialogDetails>();
 

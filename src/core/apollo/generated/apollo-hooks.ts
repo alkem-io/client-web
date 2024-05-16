@@ -21519,10 +21519,9 @@ export const NewMembershipsDocument = gql`
         createdDate
         state
       }
-      mySpaces {
+      mySpaces(showOnlyMyCreatedSpaces: true) {
         space {
           id
-          level
           spaceID: id
         }
       }
