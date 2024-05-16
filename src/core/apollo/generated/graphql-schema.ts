@@ -15479,18 +15479,6 @@ export type UserSelectorUserInformationFragment = {
   };
 };
 
-export type PlatformLevelAuthorizationQueryVariables = Exact<{ [key: string]: never }>;
-
-export type PlatformLevelAuthorizationQuery = {
-  __typename?: 'Query';
-  platform: {
-    __typename?: 'Platform';
-    authorization?:
-      | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-      | undefined;
-  };
-};
-
 export type UserListQueryVariables = Exact<{
   first: Scalars['Int'];
   after?: InputMaybe<Scalars['UUID']>;
@@ -20517,6 +20505,18 @@ export type SubspacePageSpaceFragment = {
       | undefined;
   };
   collaboration: { __typename?: 'Collaboration'; id: string };
+};
+
+export type PlatformLevelAuthorizationQueryVariables = Exact<{ [key: string]: never }>;
+
+export type PlatformLevelAuthorizationQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    authorization?:
+      | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+      | undefined;
+  };
 };
 
 export type UpdateAccountPlatformSettingsMutationVariables = Exact<{
