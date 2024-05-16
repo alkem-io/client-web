@@ -148,6 +148,10 @@ const NewMembershipsBlock = ({
     [invitations, applications]
   );
 
+  // Show only spaces
+  const SPACE_LEVEL = 0;
+  const mySpaces = data?.me.mySpaces?.filter(item => item.space?.level === SPACE_LEVEL) ?? [];
+
   const [openDialog, setOpenDialog] = useState<PendingMembershipsListDialogDetails | InvitationViewDialogDetails>();
 
   const closeDialog = () => setOpenDialog(undefined);
@@ -232,6 +236,28 @@ const NewMembershipsBlock = ({
                 </ApplicationHydrator>
               ))}
             </Box>
+          </>
+        )}
+        {mySpaces.length > 0 && (
+          <>
+            <Caption>{t('pages.home.sections.newMemberships.mySpaces')}</Caption>
+            {mySpaces.map(item => (
+              <ApplicationHydrator
+                key={item.space.spaceID}
+                application={{
+                  ...mapApiDataToContributionItem(item.space),
+                }}
+                visualType={VisualType.Avatar}
+              >
+                {({ application: hydratedApplication }) => (
+                  <NewMembershipCard
+                    membership={hydratedApplication}
+                    to={hydratedApplication?.journeyUri}
+                    membershipType="membership"
+                  />
+                )}
+              </ApplicationHydrator>
+            ))}
           </>
         )}
         {recentMemberships.length > 0 && (

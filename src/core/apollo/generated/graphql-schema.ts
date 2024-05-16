@@ -676,6 +676,7 @@ export enum AuthorizationCredential {
   SpaceAdmin = 'SPACE_ADMIN',
   SpaceLead = 'SPACE_LEAD',
   SpaceMember = 'SPACE_MEMBER',
+  SpaceSubspaceAdmin = 'SPACE_SUBSPACE_ADMIN',
   UserGroupMember = 'USER_GROUP_MEMBER',
   UserSelfManagement = 'USER_SELF_MANAGEMENT',
 }
@@ -3860,7 +3861,7 @@ export type Query = {
   rolesUser: ContributorRoles;
   /** Search the platform for terms supplied */
   search: ISearchResults;
-  /** An space. If no ID is specified then the first Space is returned. */
+  /** Look up a top level Space (i.e. a Space that does not have a parent Space) by the UUID or NameID. */
   space: Space;
   /** The Spaces on this platform; If accessed through an Innovation Hub will return ONLY the Spaces defined in it. */
   spaces: Array<Space>;
@@ -25834,6 +25835,10 @@ export type NewMembershipsQuery = {
       welcomeMessage?: string | undefined;
       createdBy: string;
       createdDate: Date;
+    }>;
+    mySpaces: Array<{
+      __typename?: 'MySpaceResults';
+      space: { __typename?: 'Space'; id: string; level: number; spaceID: string };
     }>;
   };
 };

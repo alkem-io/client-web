@@ -20,5 +20,12 @@ query NewMemberships {
       createdDate
       state
     }
+    mySpaces {
+      space {
+        id
+        level
+        spaceID: id
+      }
+    }
   }
 }
