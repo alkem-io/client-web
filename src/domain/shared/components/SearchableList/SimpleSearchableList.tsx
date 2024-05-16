@@ -11,7 +11,6 @@ import { times } from 'lodash';
 
 export interface SearchableListProps<Item extends SearchableListItem> {
   data: Item[] | undefined;
-  edit?: boolean;
   active?: number | string;
   onDelete?: (item: Item) => void;
   loading: boolean;
@@ -32,7 +31,6 @@ export interface SearchableListItem {
 
 const SimpleSearchableList = <Item extends SearchableListItem>({
   data = [],
-  edit = false,
   onDelete,
   loading,
   fetchMore,
@@ -70,8 +68,6 @@ const SimpleSearchableList = <Item extends SearchableListItem>({
     const value = e.target.value;
     onSearchTermChange(value);
   };
-
-  const editSuffix = edit ? '/edit' : '';
 
   const handleRemoveItem = async () => {
     if (onDelete && itemToRemove) {
@@ -111,7 +107,7 @@ const SimpleSearchableList = <Item extends SearchableListItem>({
           : data.map(item => (
               <ListItemLink
                 key={item.id}
-                to={`${item.url}${editSuffix}`}
+                to={item.url}
                 primary={item.value}
                 icon={
                   onDelete && (

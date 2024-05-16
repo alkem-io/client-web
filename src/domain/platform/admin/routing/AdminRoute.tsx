@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { useTransactionScope } from '../../../../core/analytics/SentryTransactionScopeContext';
 import { Error404 } from '../../../../core/pages/Errors/Error404';
-import NonAdminRedirect from '../../../../core/routing/NonAdminRedirect';
+import NonPlatformAdminRedirect from '../../../../main/admin/NonPlatformAdminRedirect';
 import GlobalAuthorizationRoute from './GlobalAuthorizationRoute';
 import { AdminOrganizationsRoutes } from '../organization';
 import { UsersRoute } from '../user/routing/UsersRoute';
@@ -17,7 +17,7 @@ export const AdminRoute: FC = () => {
 
   return (
     <NoIdentityRedirect>
-      <NonAdminRedirect>
+      <NonPlatformAdminRedirect>
         <Routes>
           <Route index element={<Navigate to="spaces" replace />} />
           <Route path="spaces/*" element={<SpacesRoute />} />
@@ -29,7 +29,7 @@ export const AdminRoute: FC = () => {
           <Route path="virtual-contributors/*" element={<VirtualContributorsRoutes />} />
           <Route path="*" element={<Error404 />} />
         </Routes>
-      </NonAdminRedirect>
+      </NonPlatformAdminRedirect>
     </NoIdentityRedirect>
   );
 };
