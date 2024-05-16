@@ -147,7 +147,7 @@ const useStorageConfig = ({ locationType, skip, ...options }: StorageConfigOptio
     skip: skip || locationType !== 'platform',
   });
 
-  const journey = journeyStorageConfigData?.space;
+  const journey = journeyStorageConfigData?.lookup.space;
 
   const callout = calloutStorageConfigData?.lookup.callout;
 

@@ -28,7 +28,7 @@ const ContributorsToggleDialog = ({ open = false, journeyId, onClose }: Contribu
     skip: !open || !journeyId,
   });
 
-  const users: ContributorCardSquareProps[] | undefined = data?.space?.community?.memberUsers.map(user => ({
+  const users: ContributorCardSquareProps[] | undefined = data?.lookup.space?.community?.memberUsers.map(user => ({
     id: user.id,
     avatar: user.profile?.visual?.uri || '',
     displayName: user.profile?.displayName || '',
@@ -36,15 +36,14 @@ const ContributorsToggleDialog = ({ open = false, journeyId, onClose }: Contribu
     contributorType: ContributorType.People,
   }));
 
-  const organizations: ContributorCardSquareProps[] | undefined = data?.space?.community?.memberOrganizations.map(
-    organization => ({
+  const organizations: ContributorCardSquareProps[] | undefined =
+    data?.lookup.space?.community?.memberOrganizations.map(organization => ({
       id: organization.id,
       avatar: organization.profile?.visual?.uri || '',
       displayName: organization.profile?.displayName || '',
       url: `/organization/${organization.nameID}`,
       contributorType: ContributorType.Organizations,
-    })
-  );
+    }));
 
   return (
     <DialogWithGrid open={open} fullWidth columns={12} aria-labelledby="contributors-dialog-title">

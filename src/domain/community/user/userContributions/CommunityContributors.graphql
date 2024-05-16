@@ -1,26 +1,27 @@
-query SpaceCommunityContributors($spaceId: UUID_NAMEID!) {
-  space(ID: $spaceId) {
-    id
-    account {
-      host {
-        ...OrganizationCard
-      }
-    }
-    community {
+query SpaceCommunityContributors($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
       id
-      leadUsers: usersInRole(role: LEAD) {
-        ...UserCard
+      account {
+        host {
+          ...OrganizationCard
+        }
       }
-      memberUsers {
-        ...UserCard
-      }
-      memberOrganizations: organizationsInRole(role: MEMBER)  {
-        ...OrganizationCard
+      community {
+        id
+        leadUsers: usersInRole(role: LEAD) {
+          ...UserCard
+        }
+        memberUsers {
+          ...UserCard
+        }
+        memberOrganizations: organizationsInRole(role: MEMBER) {
+          ...OrganizationCard
+        }
       }
     }
   }
 }
-
 
 fragment CommunityMembers on Community {
   leadUsers: usersInRole(role: LEAD) {
@@ -32,7 +33,7 @@ fragment CommunityMembers on Community {
   leadOrganizations: organizationsInRole(role: LEAD) {
     ...OrganizationCard
   }
-  memberOrganizations: organizationsInRole(role: MEMBER)  {
+  memberOrganizations: organizationsInRole(role: MEMBER) {
     ...OrganizationCard
   }
 }

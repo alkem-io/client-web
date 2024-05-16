@@ -28,7 +28,7 @@ export const useCollaborationAuthorization = ({
     skip: !journeyId,
   });
 
-  const authorization = authorizationData?.space.authorization;
+  const authorization = authorizationData?.lookup.space?.authorization;
 
   const canReadCollaboration = (authorization?.myPrivileges ?? []).includes(AuthorizationPrivilege.Read);
 
@@ -39,7 +39,7 @@ export const useCollaborationAuthorization = ({
     skip: !journeyId || !canReadCollaboration,
   });
 
-  const collaboration = collaborationData?.space.collaboration;
+  const collaboration = collaborationData?.lookup.space?.collaboration;
 
   const collaborationId = collaboration?.id;
   const collaborationPrivileges = collaboration?.authorization?.myPrivileges ?? [];

@@ -115,7 +115,7 @@ export const InvitationHydrator = ({
     skip: !invitation.subsubspaceId,
   });
 
-  const journey = opportunityData?.space ?? challengeData?.space ?? spaceData?.space;
+  const journey = opportunityData?.lookup.space ?? challengeData?.lookup.space ?? spaceData?.lookup.space;
 
   const { data: userData } = usePendingMembershipsUserQuery({
     variables: {
@@ -186,7 +186,7 @@ export const ApplicationHydrator = ({ application, visualType, children }: Appli
     skip: !application.subsubspaceId,
   });
 
-  const journey = opportunityData?.space ?? challengeData?.space ?? spaceData?.space;
+  const journey = opportunityData?.lookup.space ?? challengeData?.lookup.space ?? spaceData?.lookup.space;
 
   const hydratedApplication = useMemo<ApplicationWithMeta | undefined>(() => {
     if (!application || !journey) {

@@ -54,7 +54,7 @@ const DashboardCalendarSection: FC<DashboardCalendarSectionProps> = ({ journeyId
     skip: !journeyId || journeyTypeName !== 'space',
   });
 
-  const collaboration = spaceData?.space.collaboration;
+  const collaboration = spaceData?.lookup.space?.collaboration;
 
   // TODO: Move this to serverside
   const allEvents = useMemo(

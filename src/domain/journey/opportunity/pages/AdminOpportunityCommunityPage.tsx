@@ -9,13 +9,13 @@ import { SettingsSection } from '../../../platform/admin/layout/EntitySettingsLa
 import { SettingsPageProps } from '../../../platform/admin/layout/EntitySettingsLayout/types';
 import { useOpportunity } from '../hooks/useOpportunity';
 import SubspaceSettingsLayout from '../../../platform/admin/subspace/SubspaceSettingsLayout';
-import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import CommunityVirtualContributors from '../../../community/community/CommunityAdmin/CommunityVirtualContributors';
+import { useSpace } from '../../space/SpaceContext/useSpace';
 
 const AdminOpportunityCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   const { loading: isLoadingChallenge, communityId, opportunityId } = useOpportunity();
 
-  const { spaceNameId } = useUrlParams();
+  const { spaceId } = useSpace();
 
   const {
     users,
@@ -36,9 +36,9 @@ const AdminOpportunityCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '.
     getAvailableOrganizations,
     getAvailableVirtualContributors,
     loading,
-  } = useCommunityAdmin({ spaceId: spaceNameId, opportunityId, communityId });
+  } = useCommunityAdmin({ spaceId, opportunityId, communityId, journeyLevel: 2 });
 
-  if (!spaceNameId || isLoadingChallenge) {
+  if (!spaceId || isLoadingChallenge) {
     return null;
   }
 

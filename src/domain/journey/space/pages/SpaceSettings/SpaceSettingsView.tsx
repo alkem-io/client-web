@@ -33,6 +33,7 @@ interface SpaceSettingsViewProps {
 const defaultSpaceSettings = {
   privacy: {
     mode: SpacePrivacyMode.Public,
+    allowPlatformSupportAsAdmin: false,
   },
   membership: {
     policy: CommunityMembershipPolicy.Invitations,
@@ -52,7 +53,7 @@ export const SpaceSettingsView: FC<SpaceSettingsViewProps> = ({ journeyId, journ
   const isSubspace = journeyTypeName !== 'space';
 
   const { data: hostOrganization } = useSpaceHostQuery({
-    variables: { spaceId: journeyId },
+    variables: { spaceNameId: journeyId },
     skip: isSubspace,
   });
   const hostOrganizationId = hostOrganization?.space.account.host?.id;
@@ -62,10 +63,10 @@ export const SpaceSettingsView: FC<SpaceSettingsViewProps> = ({ journeyId, journ
       spaceId: journeyId,
     },
   });
-  const communityId = settingsData?.space?.community?.id;
+  const communityId = settingsData?.lookup.space?.community?.id;
 
   const currentSettings = useMemo(() => {
-    const settings = settingsData?.space?.settings;
+    const settings = settingsData?.lookup.space?.settings;
     return {
       ...settings,
       hostOrganizationTrusted:
@@ -101,10 +102,12 @@ export const SpaceSettingsView: FC<SpaceSettingsViewProps> = ({ journeyId, journ
     const settingsVariable = {
       privacy: {
         mode: privacyMode,
+        allowPlatformSupportAsAdmin: currentSettings.privacy?.allowPlatformSupportAsAdmin ?? false,
       },
       membership: {
         policy: membershipPolicy,
         trustedOrganizations,
+        allowSubspaceAdminsToInviteMembers: currentSettings.membership?.allowSubspaceAdminsToInviteMembers ?? false,
       },
       collaboration: {
         ...currentSettings.collaboration,

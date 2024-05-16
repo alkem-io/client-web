@@ -43,7 +43,7 @@ const PostTemplatesLibrary: FC<PostTemplatesLibraryProps> = ({ onSelectTemplate 
   const [fetchTemplatesFromSpace, { data: spaceData, loading: loadingTemplatesFromSpace }] =
     useSpacePostTemplatesLibraryLazyQuery({
       variables: {
-        spaceId: spaceNameId!,
+        spaceNameId: spaceNameId!,
       },
     });
 

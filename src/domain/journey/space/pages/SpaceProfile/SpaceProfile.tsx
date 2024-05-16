@@ -19,7 +19,7 @@ import { useTranslation } from 'react-i18next';
 export const SpaceProfile: FC = () => {
   const { spaceNameId, ...space } = useSpace();
   const { data: organizationList } = useOrganizationsListQuery();
-  const { data: hostOrganization } = useSpaceHostQuery({ variables: { spaceId: spaceNameId }, skip: !spaceNameId });
+  const { data: hostOrganization } = useSpaceHostQuery({ variables: { spaceNameId }, skip: !spaceNameId });
   const notify = useNotification();
   const { t } = useTranslation();
 
