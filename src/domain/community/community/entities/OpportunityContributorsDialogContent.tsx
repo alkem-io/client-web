@@ -17,7 +17,7 @@ const OpportunityContributorsDialogContent: FC<ContributorsDialogContentProps> =
     skip: !dialogOpen || !opportunityId,
   });
 
-  const { memberUsers, memberOrganizations } = data?.space?.community ?? {};
+  const { memberUsers, memberOrganizations } = data?.lookup.space?.community ?? {};
 
   return (
     <CommunityContributorsView

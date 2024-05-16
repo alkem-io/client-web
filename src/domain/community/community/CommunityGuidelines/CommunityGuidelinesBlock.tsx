@@ -1,6 +1,5 @@
 import { Box, Skeleton, useTheme } from '@mui/material';
 import { FC, useState } from 'react';
-import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useCommunityGuidelinesQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
@@ -28,9 +27,10 @@ const CommunityGuidelinesSkeleton = () => {
 
 export interface CommunityGuidelinesBlockProps {
   communityId: string | undefined;
+  journeyUrl: string | undefined;
 }
 
-const CommunityGuidelinesBlock: FC<CommunityGuidelinesBlockProps> = ({ communityId }) => {
+const CommunityGuidelinesBlock: FC<CommunityGuidelinesBlockProps> = ({ communityId, journeyUrl }) => {
   const [isCommunityGuidelinesInfoDialogOpen, setIsCommunityGuidelinesInfoDialogOpen] = useState(false);
 
   const { data, loading } = useCommunityGuidelinesQuery({
@@ -41,14 +41,13 @@ const CommunityGuidelinesBlock: FC<CommunityGuidelinesBlockProps> = ({ community
   const openDialog = () => setIsCommunityGuidelinesInfoDialogOpen(true);
   const closeDialog = () => setIsCommunityGuidelinesInfoDialogOpen(false);
 
-  const { pathname } = useLocation();
   const { t } = useTranslation();
   const hasGuidelines = !!data?.lookup.community?.guidelines.profile.description;
-  const alwaysShowGuidelines =
+  const showGuidelines =
     hasGuidelines ||
     data?.lookup.community?.guidelines.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Create);
 
-  return alwaysShowGuidelines ? (
+  return showGuidelines ? (
     <>
       <PageContentBlock>
         <PageContentBlockHeader title={data?.lookup?.community?.guidelines?.profile.displayName} />
@@ -71,8 +70,8 @@ const CommunityGuidelinesBlock: FC<CommunityGuidelinesBlockProps> = ({ community
         ) : (
           <>
             <Caption>{t('community.communityGuidelines.adminsOnly')}</Caption>
-            <Caption component={RouterLink} to={buildJourneyAdminUrl(pathname)}>
-              {t('community.communityGuidelines.communityGuidelinesRedirect')}
+            <Caption component={RouterLink} to={`${buildJourneyAdminUrl(journeyUrl || '')}/community`}>
+              {t('community.communityGuidelines.memberGuidelinesRedirect')}
             </Caption>
           </>
         )}

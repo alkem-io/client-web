@@ -1,16 +1,18 @@
-query spaceApplicationTemplate($spaceId: UUID_NAMEID!) {
-  space(ID: $spaceId) {
-    id
-    community {
+query SpaceApplicationTemplate($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
       id
-      applicationForm {
-        description
-        questions {
-          required
-          question
-          sortOrder
-          explanation
-          maxLength
+      community {
+        id
+        applicationForm {
+          description
+          questions {
+            required
+            question
+            sortOrder
+            explanation
+            maxLength
+          }
         }
       }
     }

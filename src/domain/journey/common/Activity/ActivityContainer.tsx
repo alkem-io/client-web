@@ -48,9 +48,9 @@ export const ActivityContainer: FC<ActivityContainerProps> = ({ spaceId, childre
     skip: !spaceId,
   });
 
-  const collaborationID = _space?.space?.collaboration?.id;
+  const collaborationID = _space?.lookup.space?.collaboration?.id;
 
-  const spacePrivileges = _space?.space?.authorization?.myPrivileges ?? [];
+  const spacePrivileges = _space?.lookup.space?.authorization?.myPrivileges ?? [];
 
   const permissions = {
     readAccess: spacePrivileges.includes(AuthorizationPrivilege.Read),
@@ -71,7 +71,7 @@ export const ActivityContainer: FC<ActivityContainerProps> = ({ spaceId, childre
     limit: RECENT_ACTIVITIES_LIMIT_INITIAL,
   });
 
-  const topCallouts = _space?.space?.collaboration?.callouts?.slice(0, TOP_CALLOUTS_LIMIT);
+  const topCallouts = _space?.lookup.space?.collaboration?.callouts?.slice(0, TOP_CALLOUTS_LIMIT);
 
   return (
     <>

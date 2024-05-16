@@ -127,8 +127,7 @@ export const useRouteResolver = (): RouteParams => {
     skip: !resolvedJourney.journeyId || !calloutNameId,
   });
 
-  const collaboration =
-    calloutData?.space?.collaboration ?? calloutData?.space?.collaboration ?? calloutData?.space?.collaboration;
+  const collaboration = calloutData?.lookup.space?.collaboration;
 
   const calloutId = collaboration?.callouts?.[0]?.id;
 

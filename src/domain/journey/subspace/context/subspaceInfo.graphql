@@ -1,5 +1,7 @@
-query subspaceInfo($subspaceId: UUID_NAMEID!) {
-  space(ID: $subspaceId) {
-    ...SubspaceInfo
+query SubspaceInfo($subspaceId: UUID!) {
+  lookup {
+    space(ID: $subspaceId) {
+      ...SubspaceInfo
+    }
   }
 }

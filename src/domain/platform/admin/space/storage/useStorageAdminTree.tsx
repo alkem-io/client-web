@@ -241,7 +241,7 @@ const useStorageAdminTree = ({ spaceId }: { spaceId: string | undefined }): Prov
         return;
       }
       const { data } = await loadSpace({ variables: { spaceId }, errorPolicy: 'ignore' });
-      const storageAggregator = data?.space.storageAggregator;
+      const storageAggregator = data?.lookup.space?.storageAggregator;
       if (!storageAggregator) {
         throw new Error('Cannot find storageAggregator');
       }

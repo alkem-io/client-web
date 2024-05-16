@@ -52,7 +52,7 @@ export const ChallengeListView: FC = () => {
     data?.space?.subspaces?.map(c => ({
       id: c.id,
       value: c.profile.displayName,
-      url: `${c.nameID}`,
+      url: buildJourneyAdminUrl(c.profile.url),
     })) || [];
 
   const [deleteChallenge] = useDeleteSpaceMutation({
