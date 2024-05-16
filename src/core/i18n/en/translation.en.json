@@ -2670,7 +2670,8 @@
         "actionButton": "Choose Free",
         "dialogId": "freeTrial",
         "features": ["Up to 10 members", "Various tools, including standard Whiteboards"],
-        "disclaimer": "Free Spaces are limited to 1 Space per user"
+        "disclaimer": "Free Spaces are limited to 1 Space per user",
+        "disabledDisclaimer": "Each user can have 1 free space. It seems like you’ve already used yours!"
       },
       {
         "id": "PLUS",
@@ -2681,7 +2682,8 @@
         "actionButton": "Choose Plus",
         "dialogId": "getStarted",
         "features": ["Up to 100 members", "Realtime, multi-user Whiteboards", "Create your Virtual Contributor"],
-        "disclaimer": ""
+        "disclaimer": "",
+        "disabledDisclaimer": ""
       },
       {
         "id": "PREMIUM",
@@ -2697,7 +2699,8 @@
           "Create your Virtual Contributor",
           "Custom Homepage (with Support)"
         ],
-        "disclaimer": ""
+        "disclaimer": "",
+        "disabledDisclaimer": ""
       },
       {
         "id": "ENTERPRISE",
@@ -2714,14 +2717,15 @@
           "Custom Homepage (with Support)",
           "1 year success program"
         ],
-        "disclaimer": ""
+        "disclaimer": "",
+        "disabledDisclaimer": ""
       }
     ],
     "dialogs": [
       {
         "id": "freeTrial",
         "title": "Free trial",
-        "content": "Try our free 30-day trial of the Plus license to unlock exciting features like creating Virtual Contributors and multi-user whiteboard editing. No payment details required! After the trial, choose between upgrading to Plus or continuing with the Free license.<br/><Link>Questions? Contact our support team anytime</Link>.",
+        "content": "Try our free 30-day trial of the Plus license to unlock exciting features like creating Virtual Contributors and multi-user whiteboard editing. No payment details required! After the trial, choose between upgrading to Plus or continuing with the Free license.<br/><br/>Questions? [Contact our support team anytime](https://welcome.alkem.io/contact).",
         "buttons": [
           {
             "caption": "Continue with Free Space",
