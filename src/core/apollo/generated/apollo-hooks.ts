@@ -1481,6 +1481,7 @@ export const OrganizationInfoFragmentDoc = gql`
     website
     profile {
       id
+      url
       displayName
       description
       tagline

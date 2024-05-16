@@ -9,8 +9,6 @@ export const buildSettingsUrl = (entityUrl: string) => {
   return `${entityUrl}/settings`;
 };
 
-export const buildAdminOrganizationUrl = (organizationNameId: string) => `/admin/organizations/${organizationNameId}`;
-
 export const buildUserProfileUrl = (userNameId: string) => `/user/${userNameId}`;
 
 export const buildUserProfileSettingsUrl = (userNameId: string) =>

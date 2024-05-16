@@ -6,12 +6,12 @@ import { AuthorizationPrivilege } from '../../core/apollo/generated/graphql-sche
 interface NonAdminRedirectProps {
   privileges: AuthorizationPrivilege[] | undefined;
   loading?: boolean;
-  adminPrivilege?: AuthorizationPrivilege;
+  adminPrivilege: AuthorizationPrivilege;
 }
 
 const NonAdminRedirect = ({
   privileges,
-  adminPrivilege = AuthorizationPrivilege.Update,
+  adminPrivilege,
   loading = false,
   children,
 }: PropsWithChildren<NonAdminRedirectProps>) => {

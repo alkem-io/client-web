@@ -7,12 +7,17 @@ import OrganizationCommunityPage from './OrganizationCommunityPage';
 import OrganizationAuthorizationPage from './OrganizationAuthorizationPage';
 import NonAdminRedirect from '../../../../main/admin/NonAdminRedirect';
 import { useOrganization } from '../../../community/contributor/organization/hooks/useOrganization';
+import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
 
 const OrganizationAdminRoutes: FC = () => {
-  const { organization } = useOrganization();
+  const { organization, loading } = useOrganization();
 
   return (
-    <NonAdminRedirect privileges={organization?.authorization?.myPrivileges}>
+    <NonAdminRedirect
+      privileges={organization?.authorization?.myPrivileges}
+      adminPrivilege={AuthorizationPrivilege.Update}
+      loading={loading}
+    >
       <Routes>
         <Route index element={<Navigate to="profile" replace />} />
         <Route path="profile" element={<OrganizationProfilePage />} />
