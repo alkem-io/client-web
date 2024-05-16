@@ -676,6 +676,7 @@ export enum AuthorizationCredential {
   SpaceAdmin = 'SPACE_ADMIN',
   SpaceLead = 'SPACE_LEAD',
   SpaceMember = 'SPACE_MEMBER',
+  SpaceSubspaceAdmin = 'SPACE_SUBSPACE_ADMIN',
   UserGroupMember = 'USER_GROUP_MEMBER',
   UserSelfManagement = 'USER_SELF_MANAGEMENT',
 }
@@ -1665,7 +1666,7 @@ export type CreateVirtualContributorInput = {
 };
 
 export type CreateVirtualPersonaInput = {
-  engine: VirtualPersonaEngine;
+  engine: VirtualContributorEngine;
   /** A readable identifier, unique within the containing scope. */
   nameID: Scalars['NameID'];
   profileData: CreateProfileInput;
@@ -3860,7 +3861,7 @@ export type Query = {
   rolesUser: ContributorRoles;
   /** Search the platform for terms supplied */
   search: ISearchResults;
-  /** An space. If no ID is specified then the first Space is returned. */
+  /** Look up a top level Space (i.e. a Space that does not have a parent Space) by the UUID or NameID. */
   space: Space;
   /** The Spaces on this platform; If accessed through an Innovation Hub will return ONLY the Spaces defined in it. */
   spaces: Array<Space>;
@@ -5352,7 +5353,7 @@ export type UpdateVirtualContributorInput = {
 
 export type UpdateVirtualPersonaInput = {
   ID: Scalars['UUID'];
-  engine: VirtualPersonaEngine;
+  engine: VirtualContributorEngine;
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
   nameID?: InputMaybe<Scalars['NameID']>;
   /** The Profile of this entity. */
@@ -5551,12 +5552,19 @@ export type VirtualContributorAuthorizationResetInput = {
   virtualContributorID: Scalars['UUID'];
 };
 
+export enum VirtualContributorEngine {
+  AlkemioWelcome = 'ALKEMIO_WELCOME',
+  CommunityManager = 'COMMUNITY_MANAGER',
+  Expert = 'EXPERT',
+  Guidance = 'GUIDANCE',
+}
+
 export type VirtualPersona = {
   __typename?: 'VirtualPersona';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The Virtual Persona Engine being used by this virtual persona. */
-  engine?: Maybe<VirtualPersonaEngine>;
+  engine?: Maybe<VirtualContributorEngine>;
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** A name identifier of the entity, unique within a given scope. */
@@ -5571,13 +5579,6 @@ export type VirtualPersonaAuthorizationResetInput = {
   /** The identifier of the Virtual Persona whose Authorization Policy should be reset. */
   virtualPersonaID: Scalars['UUID_NAMEID_EMAIL'];
 };
-
-export enum VirtualPersonaEngine {
-  AlkemioDigileefomgeving = 'ALKEMIO_DIGILEEFOMGEVING',
-  AlkemioWelcome = 'ALKEMIO_WELCOME',
-  CommunityManager = 'COMMUNITY_MANAGER',
-  Guidance = 'GUIDANCE',
-}
 
 export type VirtualPersonaQuestionInput = {
   /** The question that is being asked. */
@@ -22088,7 +22089,7 @@ export type CreateVirtualPersonaMutation = {
     id: string;
     nameID: string;
     prompt: string;
-    engine?: VirtualPersonaEngine | undefined;
+    engine?: VirtualContributorEngine | undefined;
     profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
   };
 };
