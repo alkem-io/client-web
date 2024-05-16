@@ -13,6 +13,7 @@ import useNavigate from '../../../core/routing/useNavigate';
 import { Plan, getPlanFromId } from './Plan';
 import { usePlanAvailability } from './usePlanAvailability';
 import WrapperMarkdown from '../../../core/ui/markdown/WrapperMarkdown';
+import Gutters from '../../../core/ui/grid/Gutters';
 
 interface PlanTranslation {
   id: string;
@@ -122,57 +123,63 @@ const PlansTableDialog = ({ open, onClose, onSelectPlan }: PlansTableDialogProps
     <>
       <DialogWithGrid open={open} onClose={onClose} columns={12}>
         <DialogHeader onClose={onClose}>{t('plansTable.title')}</DialogHeader>
-        <GridContainer sameHeight noGap>
-          {pricingData.map((plan, index) => (
-            <GridItem key={index} columns={3}>
-              <Box borderRight={lines} sx={{ '&:last-child': { borderRight: 'none' } }}>
-                <Box borderBottom={lines} textAlign="center" padding={gutters()}>
-                  <PlanName>{plan.name}</PlanName>
-                  <Box
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                    gap={gutters(0.5)}
-                    height={gutters(4)}
-                  >
-                    <Price>{plan.price}</Price>
-                    <Caption color={theme => theme.palette.neutral.light}>{plan.pricePeriod}</Caption>
+        <Gutters>
+          <Caption>{t('plansTable.subtitle')}</Caption>
+          <GridContainer sameHeight disablePadding noGap>
+            {pricingData.map((plan, index) => (
+              <GridItem key={index} columns={3}>
+                <Box
+                  borderRight={lines}
+                  sx={{ '&:last-child': { borderRight: 'none' }, '&:first-child': { marginLeft: gutters(1.5) } }}
+                >
+                  <Box borderBottom={lines} textAlign="center" paddingBottom={gutters()} paddingX={gutters()}>
+                    <PlanName>{plan.name}</PlanName>
+                    <Box
+                      display="flex"
+                      alignItems="center"
+                      justifyContent="center"
+                      gap={gutters(0.5)}
+                      height={gutters(4)}
+                    >
+                      <Price>{plan.price}</Price>
+                      <Caption color={theme => theme.palette.neutral.light}>{plan.pricePeriod}</Caption>
+                    </Box>
+                    <Text textAlign="center" height={gutters(4)} color={theme => theme.palette.primary.main}>
+                      {plan.priceDescription}
+                    </Text>
+                    <FullWidthButton
+                      variant="contained"
+                      onClick={() => handlePlanClick(plan)}
+                      disabled={isPlanDisabled(plan.id)}
+                    >
+                      <Caption textTransform="none">{plan.actionButton}</Caption>
+                    </FullWidthButton>
                   </Box>
-                  <Text textAlign="center" height={gutters(4)} color={theme => theme.palette.primary.main}>
-                    {plan.priceDescription}
-                  </Text>
-                  <FullWidthButton
-                    variant="contained"
-                    onClick={() => handlePlanClick(plan)}
-                    disabled={isPlanDisabled(plan.id)}
-                  >
-                    <Caption textTransform="none">{plan.actionButton}</Caption>
-                  </FullWidthButton>
+                  <Box paddingX={gutters()} color={theme => theme.palette.primary.main}>
+                    {
+                      <>
+                        <ul>
+                          {plan.features.map((feature, index) => (
+                            <li>
+                              <Text key={index}>{feature}</Text>
+                            </li>
+                          ))}
+                        </ul>
+                        {!isPlanDisabled(plan.id) && <Caption>{plan.disclaimer}</Caption>}
+                        {isPlanDisabled(plan.id) && <Caption>{plan.disabledDisclaimer}</Caption>}
+                      </>
+                    }
+                  </Box>
                 </Box>
-                <Box paddingX={gutters()} color={theme => theme.palette.primary.main}>
-                  {isPlanDisabled(plan.id) && <Caption marginTop={gutters()}>{plan.disabledDisclaimer}</Caption>}
-                  {(!isPlanDisabled(plan.id) || !plan.disabledDisclaimer) && (
-                    <>
-                      <ul>
-                        {plan.features.map((feature, index) => (
-                          <li>
-                            <Text key={index}>{feature}</Text>
-                          </li>
-                        ))}
-                      </ul>
-                      <Caption>{plan.disclaimer}</Caption>
-                    </>
-                  )}
-                </Box>
-              </Box>
-            </GridItem>
-          ))}
-        </GridContainer>
-        <Box textAlign="center" margin={gutters()}>
-          <CaptionSmall component={RouterLink} to={t('plansTable.seeMoreUrl')}>
-            {t('plansTable.seeMore')}
-          </CaptionSmall>
-        </Box>
+              </GridItem>
+            ))}
+          </GridContainer>
+          <Box textAlign="center">
+            <CaptionSmall component={RouterLink} to={t('plansTable.seeMoreUrl')}>
+              {t('plansTable.seeMore')}
+            </CaptionSmall>
+          </Box>
+        </Gutters>
       </DialogWithGrid>
       {subdialogs.map(dialog => (
         <Dialog open={subDialogOpen === dialog.id} key={dialog.id}>

@@ -2658,8 +2658,9 @@
   },
   "plansTable": {
     "title": "Choose a plan",
+    "subtitle": "To create a safe environment to train your Virtual Contributor, you first need to create a Space. Choose a plan for this Space below.",
     "seeMore": "Click here for the full description of each plan",
-    "seeMoreUrl": "https://welcome.alkem.io/pricing/",
+    "seeMoreUrl": "https://welcome.alkem.io/pricing-own-space/",
     "plans": [
       {
         "id": "FREE",
