@@ -10,7 +10,10 @@ const RedirectToLogin = () => {
   const { pathname } = useLocation();
 
   useEffect(() => {
-    error(`Kratos config error, redirecting to Login from ${pathname}`, { category: TagCategoryValues.CONFIG });
+    error(`Kratos config error, redirecting to Login from ${pathname}`, {
+      category: TagCategoryValues.CONFIG,
+      label: 'Kratos',
+    });
   }, []);
 
   return <Navigate to={_AUTH_LOGIN_PATH} replace />;
