@@ -14687,6 +14687,30 @@ export type RolesOrganizationQuery = {
   };
 };
 
+export type AdminGlobalOrganizationsListQueryVariables = Exact<{
+  first: Scalars['Int'];
+  after?: InputMaybe<Scalars['UUID']>;
+  filter?: InputMaybe<OrganizationFilterInput>;
+}>;
+
+export type AdminGlobalOrganizationsListQuery = {
+  __typename?: 'Query';
+  organizationsPaginated: {
+    __typename?: 'PaginatedOrganization';
+    organization: Array<{
+      __typename?: 'Organization';
+      id: string;
+      profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+    }>;
+    pageInfo: {
+      __typename?: 'PageInfo';
+      startCursor?: string | undefined;
+      endCursor?: string | undefined;
+      hasNextPage: boolean;
+    };
+  };
+};
+
 export type OrganizationInfoFragment = {
   __typename?: 'Organization';
   id: string;
@@ -14701,6 +14725,7 @@ export type OrganizationInfoFragment = {
   profile: {
     __typename?: 'Profile';
     id: string;
+    url: string;
     displayName: string;
     description?: string | undefined;
     tagline: string;
@@ -14784,6 +14809,7 @@ export type OrganizationInfoQuery = {
     profile: {
       __typename?: 'Profile';
       id: string;
+      url: string;
       displayName: string;
       description?: string | undefined;
       tagline: string;
@@ -15453,15 +15479,23 @@ export type UserSelectorUserInformationFragment = {
   };
 };
 
-export type PlatformLevelAuthorizationQueryVariables = Exact<{ [key: string]: never }>;
+export type UserListQueryVariables = Exact<{
+  first: Scalars['Int'];
+  after?: InputMaybe<Scalars['UUID']>;
+  filter?: InputMaybe<UserFilterInput>;
+}>;
 
-export type PlatformLevelAuthorizationQuery = {
+export type UserListQuery = {
   __typename?: 'Query';
-  platform: {
-    __typename?: 'Platform';
-    authorization?:
-      | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-      | undefined;
+  usersPaginated: {
+    __typename?: 'PaginatedUsers';
+    users: Array<{
+      __typename?: 'User';
+      id: string;
+      email: string;
+      profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+    }>;
+    pageInfo: { __typename?: 'PageInfo'; endCursor?: string | undefined; hasNextPage: boolean };
   };
 };
 
@@ -16293,27 +16327,6 @@ export type UserProviderQuery = {
       createdDate: Date;
       state: string;
     }>;
-  };
-};
-
-export type UserListQueryVariables = Exact<{
-  first: Scalars['Int'];
-  after?: InputMaybe<Scalars['UUID']>;
-  filter?: InputMaybe<UserFilterInput>;
-}>;
-
-export type UserListQuery = {
-  __typename?: 'Query';
-  usersPaginated: {
-    __typename?: 'PaginatedUsers';
-    users: Array<{
-      __typename?: 'User';
-      id: string;
-      nameID: string;
-      email: string;
-      profile: { __typename?: 'Profile'; id: string; displayName: string };
-    }>;
-    pageInfo: { __typename?: 'PageInfo'; endCursor?: string | undefined; hasNextPage: boolean };
   };
 };
 
@@ -20494,28 +20507,15 @@ export type SubspacePageSpaceFragment = {
   collaboration: { __typename?: 'Collaboration'; id: string };
 };
 
-export type AdminGlobalOrganizationsListQueryVariables = Exact<{
-  first: Scalars['Int'];
-  after?: InputMaybe<Scalars['UUID']>;
-  filter?: InputMaybe<OrganizationFilterInput>;
-}>;
+export type PlatformLevelAuthorizationQueryVariables = Exact<{ [key: string]: never }>;
 
-export type AdminGlobalOrganizationsListQuery = {
+export type PlatformLevelAuthorizationQuery = {
   __typename?: 'Query';
-  organizationsPaginated: {
-    __typename?: 'PaginatedOrganization';
-    organization: Array<{
-      __typename?: 'Organization';
-      id: string;
-      nameID: string;
-      profile: { __typename?: 'Profile'; id: string; displayName: string };
-    }>;
-    pageInfo: {
-      __typename?: 'PageInfo';
-      startCursor?: string | undefined;
-      endCursor?: string | undefined;
-      hasNextPage: boolean;
-    };
+  platform: {
+    __typename?: 'Platform';
+    authorization?:
+      | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+      | undefined;
   };
 };
 
