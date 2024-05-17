@@ -10,7 +10,6 @@ import { TemplateType } from '../InnovationPackProfilePage/InnovationPackProfile
 import { PostTemplate } from '../../post/PostTemplateCard/PostTemplate';
 import { TemplateBase } from '../../templates/CollaborationTemplatesLibrary/TemplateBase';
 import { TemplateWithInnovationPack } from '../../../platform/admin/templates/InnovationPacks/ImportTemplatesDialogGalleryStep';
-import { CommunityGuidelinesTemplate } from '../../communityGuidelines/CommunityGuidelinesTemplateCard/CommunityGuidelines';
 
 export type LibraryTemplateCardProps = Identifiable &
   TemplateWithInnovationPack<
@@ -18,7 +17,7 @@ export type LibraryTemplateCardProps = Identifiable &
     | (TemplateBase & { templateType: TemplateType.WhiteboardTemplate })
     | (InnovationFlowTemplate & { templateType: TemplateType.InnovationFlowTemplate })
     | (TemplateBase & { templateType: TemplateType.CalloutTemplate })
-    | (CommunityGuidelinesTemplate & { templateType: TemplateType.CommunityGuidelinesTemplate })
+    | (TemplateBase & { templateType: TemplateType.CommunityGuidelinesTemplate })
   > & { onClick?: ContributeCardProps['onClick'] };
 
 const LibraryTemplateCard = (props: LibraryTemplateCardProps) => {

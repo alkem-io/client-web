@@ -1498,6 +1498,7 @@ export type MutationKeySpecifier = (
   | 'createActorGroup'
   | 'createCalloutOnCollaboration'
   | 'createCalloutTemplate'
+  | 'createCommunityGuidelinesTemplate'
   | 'createContributionOnCallout'
   | 'createDiscussion'
   | 'createEventOnCalendar'
@@ -1653,6 +1654,7 @@ export type MutationFieldPolicy = {
   createActorGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   createCalloutOnCollaboration?: FieldPolicy<any> | FieldReadFunction<any>;
   createCalloutTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
+  createCommunityGuidelinesTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   createContributionOnCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   createDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
   createEventOnCalendar?: FieldPolicy<any> | FieldReadFunction<any>;
