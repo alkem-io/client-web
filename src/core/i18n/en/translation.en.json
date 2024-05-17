@@ -34,7 +34,7 @@
   },
   "releaseNotes": {
     "title": "<big>🎉 Platform update!</big> <small>We have some exciting news for you… Click here to read all about it!</small>",
-    "url": "/forum/discussion/introducingmyda-3069"
+    "url": "/forum/releases/latest"
   },
   "cookie": {
     "consent": "By clicking \"Accept All Cookies\", you agree to the storing of cookies on your device to enhance site navigation and analyze site usage.",
@@ -587,7 +587,9 @@
       "title": "Community Guidelines",
       "updatedSuccessfully": "Community guidelines updated successfully.",
       "adminsOnly": "Since there are no Community Guidelines specified, this block is only visible for admins and leads.",
-      "communityGuidelinesRedirect": "Click here to update the Community Guidelines in the Space settings."
+      "communityGuidelinesRedirect": "Click here to update the Community Guidelines in the Space settings.",
+      "templateTitle": "Title",
+      "templateDescription": "Guidelines"
     },
     "applicationsHelp": "Here you can find everyone that applied to become a member of this Space. By clicking on them you can review their application and accept or reject them.",
     "applicationStatus": {
@@ -2648,15 +2650,15 @@
     }
   },
   "spaceDialog": {
-    "About": "About",
-    "Outline": "Outline",
-    "Index": "Index",
-    "Subspaces": "Subspaces",
-    "Contributors": "Contributors",
-    "Activity": "Activity",
-    "Events": "Events",
-    "Share": "Share",
-    "ManageFlow": "$t(components.innovationFlowSettings.buttonTooltip)",
-    "Settings": "Settings"
+    "about": "About",
+    "outline": "Outline",
+    "index": "Index",
+    "subspaces": "Subspaces",
+    "contributors": "Contributors",
+    "activity": "Activity",
+    "events": "Events",
+    "share": "Share",
+    "manageFlow": "$t(components.innovationFlowSettings.buttonTooltip)",
+    "settings": "Settings"
   }
 }

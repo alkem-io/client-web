@@ -33,7 +33,7 @@ const ImportInnovationFlowDialog = ({ open, onClose, handleImportTemplate }: Imp
       profile: { id: '', displayName: spaceDisplayName },
       nameID: '',
       id: '',
-      templates: templatesData?.space.account.library?.innovationFlowTemplates ?? [],
+      templates: templatesData?.lookup.space?.account.library?.innovationFlowTemplates ?? [],
     },
   ];
 

@@ -1,49 +1,79 @@
-import React, { FC } from 'react';
+import React from 'react';
 import AdminLayout from '../layout/toplevel/AdminLayout';
-import { Container, Grid } from '@mui/material';
-import AdminAuthorizationCard from './AdminAuthorizationCard';
-import WrapperButton from '../../../../core/ui/button/deprecated/WrapperButton';
+import { Box, Tab } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 import { AdminSection } from '../layout/toplevel/constants';
-import { AuthorizationCredential } from '../../../../core/apollo/generated/graphql-schema';
+import { AuthorizationCredential, PlatformRole } from '../../../../core/apollo/generated/graphql-schema';
+import { TabContext, TabList, TabPanel } from '@mui/lab';
+import PlatformRoleAssignementPage from './PlatformRoleAssignementPage';
+import { gutters } from '../../../../core/ui/grid/utils';
 
-const buttons = [
+interface AdminAuthorizationPageProps {
+  credential?: AuthorizationCredential;
+}
+
+const tabs = [
   {
-    description: 'Global admins',
-    url: `authorization/${AuthorizationCredential.GlobalAdmin}`,
+    title: 'Global admins',
+    authorizationCredential: AuthorizationCredential.GlobalAdmin,
+    platformRole: PlatformRole.GlobalAdmin,
   },
   {
-    description: 'Global community admins',
-    url: `authorization/global-community/${AuthorizationCredential.GlobalAdminCommunity}`,
+    title: 'Support',
+    authorizationCredential: AuthorizationCredential.GlobalSupport,
+    platformRole: PlatformRole.Support,
   },
   {
-    description: 'Global Spaces Admins',
-    url: `authorization/global-spaces/${AuthorizationCredential.GlobalAdminSpaces}`,
+    title: 'License Manager',
+    authorizationCredential: AuthorizationCredential.GlobalLicenseManager,
+    platformRole: PlatformRole.LicenseManager,
   },
   {
-    description: 'Beta Testers',
-    url: `authorization/beta-tester/${AuthorizationCredential.BetaTester}`,
+    title: 'Community Reader',
+    authorizationCredential: AuthorizationCredential.GlobalCommunityRead,
+    platformRole: PlatformRole.CommunityReader,
+  },
+  {
+    title: 'Spaces Reader',
+    authorizationCredential: AuthorizationCredential.GlobalSpacesReader,
+    platformRole: PlatformRole.SpacesReader,
+  },
+  {
+    title: 'Beta Testers',
+    authorizationCredential: AuthorizationCredential.BetaTester,
+    platformRole: PlatformRole.BetaTester,
   },
 ];
 
-const AdminAuthorizationPage: FC = () => {
+const AdminAuthorizationPage = ({ credential }: AdminAuthorizationPageProps) => {
+  const selectedTab: AuthorizationCredential | '_none' = credential ?? '_none';
+
   return (
     <AdminLayout currentTab={AdminSection.Authorization}>
-      <Container maxWidth="xl">
-        <AdminAuthorizationCard
-          classes={{
-            background: theme => theme.palette.neutral.main,
-          }}
-        >
-          <Grid container spacing={2}>
-            {buttons.map((btn, index) => (
-              <Grid key={index} item>
-                <WrapperButton as={RouterLink} to={`/admin/${btn.url}`} text={btn.description} />
-              </Grid>
+      <TabContext value={selectedTab}>
+        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+          <TabList sx={{ '.MuiTabs-flexContainer': { gap: gutters() } }}>
+            {tabs.map(tab => (
+              <Tab
+                key={tab.authorizationCredential}
+                value={tab.authorizationCredential}
+                component={RouterLink}
+                to={`/admin/authorization/roles/${tab.authorizationCredential}`}
+                label={tab.title}
+              />
             ))}
-          </Grid>
-        </AdminAuthorizationCard>
-      </Container>
+          </TabList>
+        </Box>
+        <TabPanel value="_none" />
+        {tabs.map(tab => (
+          <TabPanel key={tab.authorizationCredential} value={tab.authorizationCredential}>
+            <PlatformRoleAssignementPage
+              role={tab.platformRole}
+              authorizationCredential={tab.authorizationCredential}
+            />
+          </TabPanel>
+        ))}
+      </TabContext>
     </AdminLayout>
   );
 };

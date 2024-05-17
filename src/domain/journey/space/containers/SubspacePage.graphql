@@ -1,6 +1,8 @@
-query LegacySubspaceDashboardPage($subspaceId: UUID_NAMEID!) {
-  space(ID: $subspaceId) {
-    ...SubspacePage
+query LegacySubspaceDashboardPage($subspaceId: UUID!) {
+  lookup {
+    space(ID: $subspaceId) {
+      ...SubspacePage
+    }
   }
 }
 

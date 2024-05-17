@@ -28,7 +28,7 @@ export const NewSpace: FC<NewSpaceProps> = () => {
   const [createAccount, { loading }] = useCreateAccountMutation({
     onCompleted: async data => {
       const spaceId = data.createAccount.spaceID;
-      const spaceWithUrl = await spaceUrlQuery({ variables: { spaceId } });
+      const spaceWithUrl = await spaceUrlQuery({ variables: { spaceNameId: spaceId } });
       const url = spaceWithUrl.data?.space.profile.url;
 
       if (!url) {

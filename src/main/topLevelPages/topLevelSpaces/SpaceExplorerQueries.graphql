@@ -123,8 +123,8 @@ fragment SpaceExplorerSubspace on Space {
   }
 }
 
-query SpaceExplorerWelcomeSpace($spaceId: UUID_NAMEID!) {
-  space(ID: $spaceId) {
+query SpaceExplorerWelcomeSpace($spaceNameId: UUID_NAMEID!) {
+  space(ID: $spaceNameId) {
     id
     profile {
       id

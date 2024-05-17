@@ -3,10 +3,10 @@ query AdminSpaceChallengesPage($spaceId: UUID_NAMEID!) {
     id
     subspaces {
       id
-      nameID
       profile {
         id
         displayName
+        url
       }
     }
     account {

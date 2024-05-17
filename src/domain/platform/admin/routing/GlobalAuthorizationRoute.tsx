@@ -2,20 +2,36 @@ import React, { FC } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { Error404 } from '../../../../core/pages/Errors/Error404';
 import AdminAuthorizationPage from '../authorization/AdminAuthorizationPage';
-import GlobalAuthorizationPage from '../authorization/GlobalAuthorizationPage';
-import GlobalCommunityAuthorizationPage from '../authorization/GlobalCommunityAuthorizationPage';
-import GlobalSpacesAdminAuthorizationPage from '../authorization/GlobalSpacesAdminAuthorizationPage';
-import { nameOfUrl } from '../../../../main/routing/urlParams';
-import GlobalBetaTesterAuthorizationPage from '../authorization/GlobalBetaTesterAuthorizationPage';
+import { AuthorizationCredential } from '../../../../core/apollo/generated/graphql-schema';
 
 const GlobalAuthorizationRoute: FC = () => {
   return (
     <Routes>
       <Route path="/" element={<AdminAuthorizationPage />} />
-      <Route path={`:${nameOfUrl.role}`} element={<GlobalAuthorizationPage />} />
-      <Route path={`global-community/:${nameOfUrl.role}`} element={<GlobalCommunityAuthorizationPage />} />
-      <Route path={`global-spaces/:${nameOfUrl.role}`} element={<GlobalSpacesAdminAuthorizationPage />} />
-      <Route path={`beta-tester/:${nameOfUrl.role}`} element={<GlobalBetaTesterAuthorizationPage />} />
+      <Route
+        path={`roles/${AuthorizationCredential.GlobalAdmin}`}
+        element={<AdminAuthorizationPage credential={AuthorizationCredential.GlobalAdmin} />}
+      />
+      <Route
+        path={`roles/${AuthorizationCredential.GlobalSupport}`}
+        element={<AdminAuthorizationPage credential={AuthorizationCredential.GlobalSupport} />}
+      />
+      <Route
+        path={`roles/${AuthorizationCredential.GlobalLicenseManager}`}
+        element={<AdminAuthorizationPage credential={AuthorizationCredential.GlobalLicenseManager} />}
+      />
+      <Route
+        path={`roles/${AuthorizationCredential.GlobalCommunityRead}`}
+        element={<AdminAuthorizationPage credential={AuthorizationCredential.GlobalCommunityRead} />}
+      />
+      <Route
+        path={`roles/${AuthorizationCredential.GlobalSpacesReader}`}
+        element={<AdminAuthorizationPage credential={AuthorizationCredential.GlobalSpacesReader} />}
+      />
+      <Route
+        path={`roles/${AuthorizationCredential.BetaTester}`}
+        element={<AdminAuthorizationPage credential={AuthorizationCredential.BetaTester} />}
+      />
       <Route path="*" element={<Error404 />} />
     </Routes>
   );
