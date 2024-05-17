@@ -34,7 +34,6 @@ export const paletteOptions: PaletteOptions = {
   space: {
     dark: '#152A37',
   },
-  error: { main: '#940000' },
 };
 
 declare module '@mui/material/styles/createPalette' {

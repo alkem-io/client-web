@@ -30,7 +30,6 @@ import { Box, CircularProgress } from '@mui/material';
 import { JourneyTypeName } from '../../../JourneyTypeName';
 import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
 import { DeleteIcon } from './icon/DeleteIcon';
-import { theme } from '../../../../../core/ui/themes/default/Theme';
 import SpaceProfileDeleteDialog from './SpaceProfileDeleteDialog';
 import { ROUTE_HOME } from '../../../../platform/routes/constants';
 import { useSubSpace } from '../../../subspace/hooks/useChallenge';
@@ -58,6 +57,8 @@ const defaultSpaceSettings = {
   },
 };
 
+const errorColor = '#940000';
+
 export const SpaceSettingsView: FC<SpaceSettingsViewProps> = ({ journeyId, journeyTypeName }) => {
   const { t } = useTranslation();
   const notify = useNotification();
@@ -73,7 +74,7 @@ export const SpaceSettingsView: FC<SpaceSettingsViewProps> = ({ journeyId, journ
 
   const translatedEntity = t(`common.${isSubspace ? 'subspace' : 'space'}` as const);
 
-  const [deleteSpace] = useDeleteSpaceMutation({
+  const [deleteSpace, { loading: deletingSpace }] = useDeleteSpaceMutation({
     refetchQueries: isSubspace
       ? [
           refetchAdminSpaceChallengesPageQuery({
@@ -331,11 +332,8 @@ export const SpaceSettingsView: FC<SpaceSettingsViewProps> = ({ journeyId, journ
             />
           </PageContentBlock>
 
-          <PageContentBlock sx={{ borderColor: theme.palette.error.main }}>
-            <PageContentBlockHeader
-              sx={{ color: theme.palette.error.main }}
-              title={t('components.deleteSpace.title')}
-            />
+          <PageContentBlock sx={{ borderColor: errorColor }}>
+            <PageContentBlockHeader sx={{ color: errorColor }} title={t('components.deleteSpace.title')} />
             <Box display="flex" gap={1} alignItems="center" sx={{ cursor: 'pointer' }} onClick={openDialog}>
               <DeleteIcon />
               <Caption>{t('components.deleteSpace.description', { entity: translatedEntity })}</Caption>
@@ -347,6 +345,7 @@ export const SpaceSettingsView: FC<SpaceSettingsViewProps> = ({ journeyId, journ
               open={openDeleteDialog}
               onClose={closeDialog}
               onDelete={() => handleDelete(isSubspace ? subspaceId : journeyId)}
+              submitting={deletingSpace}
             />
           )}
         </>

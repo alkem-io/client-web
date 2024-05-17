@@ -1,6 +1,7 @@
 import { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Button, Checkbox, Dialog, DialogContent, FormControlLabel } from '@mui/material';
+import LoadingButton from '@mui/lab/LoadingButton';
 import DialogHeader from '../../../../../core/ui/dialog/DialogHeader';
 import Gutters from '../../../../../core/ui/grid/Gutters';
 import { Actions } from '../../../../../core/ui/actions/Actions';
@@ -12,9 +13,16 @@ interface SpaceProfileDeleteDialogProps {
   open: boolean;
   onClose: () => void;
   onDelete: () => void;
+  submitting: boolean;
 }
 
-const SpaceProfileDeleteDialog: FC<SpaceProfileDeleteDialogProps> = ({ entity, open, onClose, onDelete }) => {
+const SpaceProfileDeleteDialog: FC<SpaceProfileDeleteDialogProps> = ({
+  entity,
+  open,
+  onClose,
+  onDelete,
+  submitting,
+}) => {
   const { t } = useTranslation();
   const [checked, setChecked] = useState(false);
 
@@ -31,9 +39,17 @@ const SpaceProfileDeleteDialog: FC<SpaceProfileDeleteDialogProps> = ({ entity, o
             />
             <Actions justifyContent="flex-end" paddingTop={gutters()}>
               <Button onClick={onClose}>{t('buttons.cancel')}</Button>
-              <Button type="submit" variant="contained" value={'SPACE'} disabled={!checked} onClick={onDelete}>
+              <LoadingButton
+                variant="contained"
+                value={'SPACE'}
+                disabled={!checked}
+                loading={submitting}
+                loadingIndicator={`${t('components.deleteSpace.confirmDialog.confirm')}...`}
+                onClick={onDelete}
+                sx={{ textWrap: 'nowrap' }}
+              >
                 {t('components.deleteSpace.confirmDialog.confirm')}
-              </Button>
+              </LoadingButton>
             </Actions>
           </Box>
         </Gutters>
