@@ -5,6 +5,12 @@ interface RedirectProps extends NavigateProps {
   to: string;
 }
 
+/**
+ * Redirects to a different root path while keeping all path segments that matched * in the current route.
+ * @param to
+ * @param props
+ * @constructor
+ */
 const Redirect = ({ to, ...props }: RedirectProps) => {
   const match = useParams();
 
