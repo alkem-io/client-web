@@ -126,7 +126,7 @@ const CollaborationTemplatesLibrary = <
   };
 
   const handleClosePreview = () => {
-    // setPreviewTemplate(undefined);
+    setPreviewTemplate(undefined);
   };
 
   const handleSelectTemplate = () => {

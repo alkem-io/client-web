@@ -22,7 +22,7 @@ import { gutters } from '../../../../core/ui/grid/utils';
 import CommunityGuidelines from '../../../community/community/CommunityGuidelines/CommunityGuidelines';
 import CommunityVirtualContributors from '../../../community/community/CommunityAdmin/CommunityVirtualContributors';
 import CommunityGuidelinesTemplatesLibrary from '../../../collaboration/communityGuidelines/CommunityGuidelinesTemplateLibrary/CommunityGuidelinesTemplatesLibrary';
-// import { CommunityGuidelinesTemplateWithContent } from '../../../collaboration/communityGuidelines/CommunityGuidelinesTemplateCard/CommunityGuidelines';
+import { CommunityGuidelinesTemplateWithContent } from '../../../collaboration/communityGuidelines/CommunityGuidelinesTemplateCard/CommunityGuidelines';
 
 const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   const { t } = useTranslation();
@@ -80,7 +80,10 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
   const openTemplateDialog = useCallback(() => setDialogOpen(true), []);
   const closeTemplatesDialog = useCallback(() => setDialogOpen(false), []);
 
-  const handleSelectTemplate = (/*template: CommunityGuidelinesTemplateWithContent*/) => {};
+  const [template, setTemplate] = useState<CommunityGuidelinesTemplateWithContent>();
+  const handleSelectTemplate = (template: CommunityGuidelinesTemplateWithContent) => {
+    setTemplate(template);
+  };
 
   if (!spaceId || isLoadingSpace) {
     return null;
@@ -139,7 +142,7 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
             </Box>
           }
         >
-          <CommunityGuidelines communityId={communityId} />
+          <CommunityGuidelines communityId={communityId} template={template} />
         </PageContentBlockCollapsible>
         <CommunityGuidelinesTemplatesLibrary
           open={dialogOpen}

@@ -3,6 +3,7 @@ import { TemplateBase } from '../../templates/CollaborationTemplatesLibrary/Temp
 
 export interface CommunityGuidelinesTemplateWithContent extends TemplateBase {
   guidelines?: {
+    id: string;
     profile: {
       displayName: string;
       description?: string;

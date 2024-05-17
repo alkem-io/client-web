@@ -18,11 +18,13 @@ import { Reference } from '../../../../core/apollo/generated/graphql-schema';
 import { referenceSegmentSchema } from '../../../platform/admin/components/Common/ReferenceSegment';
 import LoadingButton from '@mui/lab/LoadingButton';
 import ProfileReferenceSegment from '../../../platform/admin/components/Common/ProfileReferenceSegment';
+import { CommunityGuidelinesTemplateWithContent } from '../../../collaboration/communityGuidelines/CommunityGuidelinesTemplateCard/CommunityGuidelines';
 
 interface CommunityGuidelinesProps {
   communityId: string;
   challengeId?: string;
   disabled?: boolean;
+  template?: CommunityGuidelinesTemplateWithContent;
 }
 
 interface FormValues {
@@ -37,7 +39,7 @@ const validationSchema = yup.object().shape({
   references: referenceSegmentSchema,
 });
 
-const CommunityGuidelines: FC<CommunityGuidelinesProps> = ({ communityId, disabled }) => {
+const CommunityGuidelines: FC<CommunityGuidelinesProps> = ({ communityId, disabled, template }) => {
   const { t } = useTranslation();
   const notify = useNotification();
 
@@ -52,7 +54,8 @@ const CommunityGuidelines: FC<CommunityGuidelinesProps> = ({ communityId, disabl
     () => ({
       communityGuidelinesId: rawData?.lookup?.community?.guidelines?.id,
       displayName: rawData?.lookup?.community?.guidelines?.profile.displayName,
-      description: rawData?.lookup?.community?.guidelines?.profile.description,
+      description:
+        template?.guidelines?.profile.description ?? rawData?.lookup?.community?.guidelines?.profile.description,
       profile: rawData?.lookup?.community?.guidelines?.profile,
       references: rawData?.lookup?.community?.guidelines?.profile.references,
     }),
@@ -63,9 +66,16 @@ const CommunityGuidelines: FC<CommunityGuidelinesProps> = ({ communityId, disabl
 
   const loading = loadingGuidelines || submittingGuidelines;
   const initialValues: FormValues = {
-    displayName: data.displayName ?? '',
-    description: data.description ?? '',
-    references: data.references || [],
+    displayName: template?.guidelines?.profile.displayName ?? data.displayName ?? '',
+    description: template?.guidelines?.profile.description ?? data.description ?? '',
+    references: template?.guidelines?.profile.references
+      ? template?.guidelines?.profile.references.map((ref, index) => ({
+          id: data.references?.[index].id ?? '',
+          name: ref.name,
+          description: ref.description,
+          uri: ref.uri,
+        }))
+      : data.references || [],
   };
 
   const onSubmit = (values: FormValues) => {
