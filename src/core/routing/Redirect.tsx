@@ -6,7 +6,8 @@ interface RedirectProps extends NavigateProps {
 }
 
 /**
- * Redirects to a different root path while keeping all path segments that matched * in the current route.
+ * Redirects to a different root path while keeping all path segments that * has matched.
+ * E.g. under a route /registration/* <Redirect to="/login"> takes from /registration/success to /login/success
  * @param to
  * @param props
  * @constructor
