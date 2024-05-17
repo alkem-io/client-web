@@ -20,7 +20,7 @@ import Gutters from '../../../../../core/ui/grid/Gutters';
 import { VisualType } from '../../../../../core/apollo/generated/graphql-schema';
 import { useRouteResolver } from '../../../../../main/routing/resolvers/RouteResolver';
 import useNavigate from '../../../../../core/routing/useNavigate';
-import { buildJourneyAdminUrl } from '../../../../../main/routing/urlBuilders';
+import { buildSettingsUrl } from '../../../../../main/routing/urlBuilders';
 
 interface ChallengeProfileViewProps {
   mode: FormMode;
@@ -39,7 +39,7 @@ const SubspaceProfileView: FC<ChallengeProfileViewProps> = ({ mode }) => {
   const [createSubspace, { loading: isCreating }] = useCreateSubspaceMutation({
     onCompleted: data => {
       onSuccess('Successfully created');
-      navigate(buildJourneyAdminUrl(data.createSubspace.profile.url), { replace: true });
+      navigate(buildSettingsUrl(data.createSubspace.profile.url), { replace: true });
     },
     refetchQueries: [refetchAdminSpaceChallengesPageQuery({ spaceId: spaceNameId })],
     awaitRefetchQueries: true,
