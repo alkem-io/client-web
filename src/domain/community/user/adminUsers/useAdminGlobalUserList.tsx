@@ -7,6 +7,7 @@ import usePaginatedQuery from '../../../shared/pagination/usePaginatedQuery';
 import { UserListQuery, UserListQueryVariables } from '../../../../core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
 import clearCacheForQuery from '../../../../core/apollo/utils/clearCacheForQuery';
+import { buildSettingsUrl } from '../../../../main/routing/urlBuilders';
 
 interface Provided {
   loading: boolean;
@@ -24,7 +25,7 @@ interface Provided {
 
 const PAGE_SIZE = 10;
 
-const useUserList = (): Provided => {
+const useAdminGlobalUserList = (): Provided => {
   const { t } = useTranslation();
   const notify = useNotification();
 
@@ -48,10 +49,10 @@ const useUserList = (): Provided => {
 
   const userList = useMemo(
     () =>
-      (data?.usersPaginated.users ?? []).map<SearchableListItem>(({ id, nameID, profile, email }) => ({
+      (data?.usersPaginated.users ?? []).map<SearchableListItem>(({ id, profile, email }) => ({
         id,
         value: `${profile.displayName} (${email})`,
-        url: `${nameID}/edit`,
+        url: buildSettingsUrl(profile.url),
       })),
     [data]
   );
@@ -86,4 +87,4 @@ const useUserList = (): Provided => {
   };
 };
 
-export default useUserList;
+export default useAdminGlobalUserList;

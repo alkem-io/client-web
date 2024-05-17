@@ -5,7 +5,7 @@ import {
   OrganizationContainerState,
 } from '../OrganizationPageContainer/OrganizationPageContainer';
 import { OrganizationVerificationEnum } from '../../../../../core/apollo/generated/graphql-schema';
-import { buildAdminOrganizationUrl } from '../../../../../main/routing/urlBuilders';
+import { buildSettingsUrl } from '../../../../../main/routing/urlBuilders';
 import {
   AssociatesView,
   ContributionsView,
@@ -41,7 +41,7 @@ export const OrganizationPageView: FC<OrganizationPageViewProps> = ({ entities }
         avatar: organization?.profile.avatar?.uri,
         displayName: organization?.profile.displayName || '',
         settingsTooltip: t('pages.organization.settings.tooltip'),
-        settingsUrl: buildAdminOrganizationUrl(organization?.nameID || ''),
+        settingsUrl: buildSettingsUrl(organization?.nameID || ''),
         bio: organization?.profile.description,
         verified: organization?.verification.status === OrganizationVerificationEnum.VerifiedManualAttestation,
         tagsets,

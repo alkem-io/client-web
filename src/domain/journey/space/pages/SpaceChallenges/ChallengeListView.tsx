@@ -18,7 +18,7 @@ import { useSpace } from '../../SpaceContext/useSpace';
 import { JourneyCreationDialog } from '../../../../shared/components/JorneyCreationDialog';
 import { ChallengeIcon } from '../../../subspace/icon/ChallengeIcon';
 import { JourneyFormValues } from '../../../../shared/components/JorneyCreationDialog/JourneyCreationForm';
-import { buildJourneyAdminUrl } from '../../../../../main/routing/urlBuilders';
+import { buildSettingsUrl } from '../../../../../main/routing/urlBuilders';
 import { CreateChallengeForm } from '../../../subspace/forms/CreateChallengeForm';
 import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
@@ -52,7 +52,7 @@ export const ChallengeListView: FC = () => {
     data?.space?.subspaces?.map(c => ({
       id: c.id,
       value: c.profile.displayName,
-      url: buildJourneyAdminUrl(c.profile.url),
+      url: buildSettingsUrl(c.profile.url),
     })) || [];
 
   const [deleteChallenge] = useDeleteSpaceMutation({
@@ -109,7 +109,7 @@ export const ChallengeListView: FC = () => {
         return;
       }
       if (data?.createSubspace.profile.url) {
-        navigate(buildJourneyAdminUrl(data?.createSubspace.profile.url));
+        navigate(buildSettingsUrl(data?.createSubspace.profile.url));
       }
     },
     [navigate, createChallenge, spaceNameId]
