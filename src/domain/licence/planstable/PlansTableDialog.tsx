@@ -9,7 +9,6 @@ import GridContainer from '../../../core/ui/grid/GridContainer';
 import GridItem from '../../../core/ui/grid/GridItem';
 import { gutters } from '../../../core/ui/grid/utils';
 import FullWidthButton from '../../../core/ui/button/FullWidthButton';
-import useNavigate from '../../../core/routing/useNavigate';
 import { Plan, getPlanFromId } from './Plan';
 import { usePlanAvailability } from './usePlanAvailability';
 import WrapperMarkdown from '../../../core/ui/markdown/WrapperMarkdown';
@@ -86,31 +85,30 @@ interface PlansTableDialogProps {
 
 const PlansTableDialog = ({ open, onClose, onSelectPlan }: PlansTableDialogProps) => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
 
   const { isPlanAvailable } = usePlanAvailability();
-  const [subDialogOpen, setSubDialogOpen] = useState<string>();
-  // Keep the first plan clicked here to be used in case in the subdialog there is no planId
+  const [confirmDialogOpen, setConfirmDialogOpen] = useState<string>();
+  // Keep the first plan clicked here to be used in case in the Confirmation Dialog there is no planId
   const [planSelected, setPlanSelected] = useState<Plan>();
 
   useEffect(() => {
-    if (!open && subDialogOpen) {
-      // Close any subdialog if the main dialog is closed
-      setSubDialogOpen(undefined);
+    if (!open && confirmDialogOpen) {
+      // Close any confirmation dialog if the main dialog is closed
+      setConfirmDialogOpen(undefined);
     }
   }, [open]);
 
   const pricingData: PlanTranslation[] = t('plansTable.plans', { returnObjects: true });
-  const subdialogs: DialogTranslation[] = t('plansTable.dialogs', { returnObjects: true });
+  const confirmDialogs: DialogTranslation[] = t('plansTable.dialogs', { returnObjects: true });
 
   const handlePlanClick = (planSelected: PlanTranslation) => {
     const plan = getPlanFromId(planSelected.id);
     if (plan) {
       setPlanSelected(plan);
       if (planSelected.dialogId) {
-        setSubDialogOpen(planSelected.dialogId);
-      } else if (planSelected.actionUrl) {
-        navigate(planSelected.actionUrl);
+        setConfirmDialogOpen(planSelected.dialogId);
+      } else {
+        onSelectPlan(plan);
       }
     }
   };
@@ -160,14 +158,27 @@ const PlansTableDialog = ({ open, onClose, onSelectPlan }: PlansTableDialogProps
                     <Text textAlign="center" height={gutters(4)} color={theme => theme.palette.primary.main}>
                       {plan.priceDescription}
                     </Text>
-                    <FullWidthButton
-                      variant="contained"
-                      onClick={() => handlePlanClick(plan)}
-                      disabled={isPlanDisabled(plan.id)}
-                      sx={buttonStyle(plan.buttonHighlighted)}
-                    >
-                      <Caption textTransform="none">{plan.buttonCaption}</Caption>
-                    </FullWidthButton>
+                    {plan.actionUrl ? (
+                      <FullWidthButton
+                        variant="contained"
+                        component={RouterLink}
+                        disabled={isPlanDisabled(plan.id)}
+                        sx={buttonStyle(plan.buttonHighlighted)}
+                        to={plan.actionUrl}
+                        target="_blank"
+                      >
+                        <Caption textTransform="none">{plan.buttonCaption}</Caption>
+                      </FullWidthButton>
+                    ) : (
+                      <FullWidthButton
+                        variant="contained"
+                        onClick={() => handlePlanClick(plan)}
+                        disabled={isPlanDisabled(plan.id)}
+                        sx={buttonStyle(plan.buttonHighlighted)}
+                      >
+                        <Caption textTransform="none">{plan.buttonCaption}</Caption>
+                      </FullWidthButton>
+                    )}
                   </Box>
                   <Box paddingX={gutters()} color={theme => theme.palette.primary.main}>
                     {
@@ -195,9 +206,9 @@ const PlansTableDialog = ({ open, onClose, onSelectPlan }: PlansTableDialogProps
           </Box>
         </Gutters>
       </DialogWithGrid>
-      {subdialogs.map(dialog => (
-        <Dialog open={subDialogOpen === dialog.id} key={dialog.id}>
-          <DialogHeader onClose={() => setSubDialogOpen(undefined)}>{dialog.title}</DialogHeader>
+      {confirmDialogs.map(dialog => (
+        <Dialog open={confirmDialogOpen === dialog.id} key={dialog.id}>
+          <DialogHeader onClose={() => setConfirmDialogOpen(undefined)}>{dialog.title}</DialogHeader>
           <DialogContent>
             <WrapperMarkdown>{dialog.content}</WrapperMarkdown>
           </DialogContent>
