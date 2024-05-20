@@ -5,11 +5,9 @@ import { isAbsoluteUrl } from '../../core/utils/links';
 
 export const buildOrganizationUrl = (organizationNameId: string) => `/organization/${organizationNameId}`;
 
-export const buildJourneyAdminUrl = (journeyUrl: string) => {
-  return `${journeyUrl}/settings`;
+export const buildSettingsUrl = (entityUrl: string) => {
+  return `${entityUrl}/settings`;
 };
-
-export const buildAdminOrganizationUrl = (organizationNameId: string) => `/admin/organizations/${organizationNameId}`;
 
 export const buildUserProfileUrl = (userNameId: string) => `/user/${userNameId}`;
 

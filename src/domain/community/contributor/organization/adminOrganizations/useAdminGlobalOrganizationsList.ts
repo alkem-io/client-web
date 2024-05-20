@@ -9,6 +9,7 @@ import usePaginatedQuery from '../../../../shared/pagination/usePaginatedQuery';
 import { SearchableListItem } from '../../../../shared/components/SearchableList/SimpleSearchableList';
 import clearCacheForQuery from '../../../../../core/apollo/utils/clearCacheForQuery';
 import { useTranslation } from 'react-i18next';
+import { buildSettingsUrl } from '../../../../../main/routing/urlBuilders';
 
 const PAGE_SIZE = 10;
 
@@ -46,7 +47,7 @@ export const useAdminGlobalOrganizationsList = () => {
       data?.organizationsPaginated.organization.map(org => ({
         id: org.id,
         value: org.profile.displayName,
-        url: `${org.nameID}`,
+        url: buildSettingsUrl(org.profile.url),
       })) || [],
     [data]
   );

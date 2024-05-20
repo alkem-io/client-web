@@ -2,7 +2,6 @@ import OrganizationPageBanner from '../../../organization/layout/OrganizationPag
 import React, { PropsWithChildren } from 'react';
 import TopLevelPageBreadcrumbs from '../../../../../main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
 import { Diversity3Outlined } from '@mui/icons-material';
-import { buildOrganizationUrl } from '../../../../../main/routing/urlBuilders';
 import TopLevelLayout from '../../../../../main/ui/layout/TopLevelLayout';
 import OrganizationPageContainer from '../OrganizationPageContainer/OrganizationPageContainer';
 import BreadcrumbsItem from '../../../../../core/ui/navigation/BreadcrumbsItem';
@@ -24,7 +23,7 @@ const OrganizationPageLayout = (props: PropsWithChildren<OrganizationPageLayoutP
                 loading={loading}
                 avatar={organization?.profile.avatar}
                 iconComponent={Diversity3Outlined}
-                uri={organization?.nameID && buildOrganizationUrl(organization?.nameID)}
+                uri={organization?.profile.url}
               >
                 {organization?.profile.displayName}
               </BreadcrumbsItem>
