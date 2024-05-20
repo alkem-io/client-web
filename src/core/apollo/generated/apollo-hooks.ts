@@ -582,25 +582,34 @@ export const ReactionDetailsFragmentDoc = gql`
     }
   }
 `;
-export const SenderProfileFragmentDoc = gql`
-  fragment SenderProfile on Profile {
+export const VisualUriFragmentDoc = gql`
+  fragment VisualUri on Visual {
     id
-    displayName
-    url
-    type
-    avatar: visual(type: AVATAR) {
+    uri
+    name
+  }
+`;
+export const ContributorDetailsFragmentDoc = gql`
+  fragment ContributorDetails on Contributor {
+    id
+    nameID
+    profile {
       id
-      uri
-    }
-    tagsets {
-      ...TagsetDetails
-    }
-    location {
-      id
-      city
-      country
+      displayName
+      avatar: visual(type: AVATAR) {
+        ...VisualUri
+      }
+      description
+      tagsets {
+        ...TagsetDetails
+      }
+      location {
+        country
+        city
+      }
     }
   }
+  ${VisualUriFragmentDoc}
   ${TagsetDetailsFragmentDoc}
 `;
 export const MessageDetailsFragmentDoc = gql`
@@ -613,22 +622,11 @@ export const MessageDetailsFragmentDoc = gql`
     }
     threadID
     sender {
-      ... on User {
-        id
-        profile {
-          ...SenderProfile
-        }
-      }
-      ... on VirtualContributor {
-        id
-        profile {
-          ...SenderProfile
-        }
-      }
+      ...ContributorDetails
     }
   }
   ${ReactionDetailsFragmentDoc}
-  ${SenderProfileFragmentDoc}
+  ${ContributorDetailsFragmentDoc}
 `;
 export const CommentsWithMessagesFragmentDoc = gql`
   fragment CommentsWithMessages on Room {
@@ -703,13 +701,6 @@ export const CalloutDetailsFragmentDoc = gql`
   ${WhiteboardDetailsFragmentDoc}
   ${LinkDetailsWithAuthorizationFragmentDoc}
   ${CommentsWithMessagesFragmentDoc}
-`;
-export const VisualUriFragmentDoc = gql`
-  fragment VisualUri on Visual {
-    id
-    uri
-    name
-  }
 `;
 export const WhiteboardCollectionCalloutCardFragmentDoc = gql`
   fragment WhiteboardCollectionCalloutCard on Whiteboard {
@@ -10406,7 +10397,7 @@ export const CommunityMembersListDocument = gql`
       space(ID: $spaceId) @include(if: $includeSpaceHost) {
         account {
           host {
-            ...OrganizationDetails
+            ...ContributorDetails
           }
         }
       }
@@ -10415,7 +10406,7 @@ export const CommunityMembersListDocument = gql`
       }
     }
   }
-  ${OrganizationDetailsFragmentDoc}
+  ${ContributorDetailsFragmentDoc}
   ${CommunityMembersDetailsFragmentDoc}
 `;
 
