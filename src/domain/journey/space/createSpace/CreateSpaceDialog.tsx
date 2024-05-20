@@ -61,7 +61,9 @@ const CreateSpaceDialog = () => {
     tagsets: tagsetSegmentSchema,
   });
 
-  const [onSubmit, loading] = useLoadingState((_values: Partial<SpaceEditFormValuesType>) => Promise.resolve());
+  const [handleSubmit, loading] = useLoadingState(async (_values: Partial<SpaceEditFormValuesType>) => {
+    handleClose();
+  });
 
   const { isAuthenticated } = useAuthenticationContext();
 
@@ -88,7 +90,7 @@ const CreateSpaceDialog = () => {
               initialValues={initialValues}
               validationSchema={validationSchema}
               enableReinitialize
-              onSubmit={onSubmit}
+              onSubmit={handleSubmit}
             >
               {({ handleSubmit }) => {
                 return (
