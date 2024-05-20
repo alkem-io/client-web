@@ -19,10 +19,10 @@ import { BlockTitle, Text } from '../../../../core/ui/typography';
 import CommunityApplicationForm from '../../../community/community/CommunityApplicationForm/CommunityApplicationForm';
 import { Trans, useTranslation } from 'react-i18next';
 import { gutters } from '../../../../core/ui/grid/utils';
-import CommunityGuidelines from '../../../community/community/CommunityGuidelines/CommunityGuidelines';
+import CommunityGuidelinesForm from '../../../community/community/CommunityGuidelines/CommunityGuidelinesForm';
 import CommunityVirtualContributors from '../../../community/community/CommunityAdmin/CommunityVirtualContributors';
 import CommunityGuidelinesTemplatesLibrary from '../../../collaboration/communityGuidelines/CommunityGuidelinesTemplateLibrary/CommunityGuidelinesTemplatesLibrary';
-import { CommunityGuidelinesTemplateWithContent } from '../../../collaboration/communityGuidelines/CommunityGuidelinesTemplateCard/CommunityGuidelines';
+import CommunityGuidelinesContainer from '../../../community/community/CommunityGuidelines/CommunityGuidelinesContainer';
 
 const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   const { t } = useTranslation();
@@ -80,11 +80,6 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
   const openTemplateDialog = useCallback(() => setDialogOpen(true), []);
   const closeTemplatesDialog = useCallback(() => setDialogOpen(false), []);
 
-  const [template, setTemplate] = useState<CommunityGuidelinesTemplateWithContent>();
-  const handleSelectTemplate = (template: CommunityGuidelinesTemplateWithContent) => {
-    setTemplate(template);
-  };
-
   if (!spaceId || isLoadingSpace) {
     return null;
   }
@@ -123,21 +118,38 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
           </Text>
           <CommunityApplicationForm communityId={communityId} />
         </PageContentBlockCollapsible>
-        <PageContentBlockCollapsible
-          header={<BlockTitle>{t('community.communityGuidelines.title')}</BlockTitle>}
-          primaryAction={
-            <Button variant="outlined" onClick={() => openTemplateDialog()} startIcon={<InnovationLibraryIcon />}>
-              {t('common.library')}
-            </Button>
-          }
-        >
-          <CommunityGuidelines communityId={communityId} template={template} />
-        </PageContentBlockCollapsible>
-        <CommunityGuidelinesTemplatesLibrary
-          open={dialogOpen}
-          onClose={closeTemplatesDialog}
-          onSelectTemplate={handleSelectTemplate}
-        />
+        <CommunityGuidelinesContainer communityId={communityId}>
+          {({
+            communityGuidelines,
+            profileId,
+            loading,
+            onSelectCommunityGuidelinesTemplate,
+            onUpdateCommunityGuidelines,
+          }) => (
+            <>
+              <PageContentBlockCollapsible
+                header={<BlockTitle>{t('community.communityGuidelines.title')}</BlockTitle>}
+                primaryAction={
+                  <Button variant="outlined" onClick={() => openTemplateDialog()} startIcon={<InnovationLibraryIcon />}>
+                    {t('common.library')}
+                  </Button>
+                }
+              >
+                <CommunityGuidelinesForm
+                  data={communityGuidelines}
+                  loading={loading}
+                  onSubmit={onUpdateCommunityGuidelines}
+                  profileId={profileId}
+                />
+              </PageContentBlockCollapsible>
+              <CommunityGuidelinesTemplatesLibrary
+                open={dialogOpen}
+                onClose={closeTemplatesDialog}
+                onSelectTemplate={onSelectCommunityGuidelinesTemplate}
+              />
+            </>
+          )}
+        </CommunityGuidelinesContainer>
         <PageContentColumn columns={6}>
           <PageContentBlock>
             <CommunityUsers
