@@ -32,7 +32,7 @@ const PostTemplateCard: FC<PostTemplateCardProps> = ({ template, innovationPack,
           {template?.profile.description}
         </CardDescriptionWithTags>
       </CardDetails>
-      {cardInnovationPack && (
+      {cardInnovationPack?.profile.displayName && (
         <CardSegmentCaption icon={<InnovationPackIcon />}>
           <Caption noWrap>{cardInnovationPack?.profile.displayName}</Caption>
         </CardSegmentCaption>

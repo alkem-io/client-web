@@ -40,7 +40,7 @@ const WhiteboardTemplateCard: FC<WhiteboardTemplateCardProps> = ({ template, inn
         tags={template?.profile.tagset?.tags ?? []}
         hideIfEmpty
       />
-      {cardInnovationPack && (
+      {cardInnovationPack?.profile.displayName && (
         <CardSegmentCaption icon={<InnovationPackIcon />}>
           <Caption noWrap>{cardInnovationPack?.profile.displayName}</Caption>
         </CardSegmentCaption>
