@@ -10,7 +10,9 @@ import {
   refetchSpaceDashboardNavigationChallengesQuery,
   refetchSubspacesInSpaceQuery,
   useDeleteSpaceMutation,
+  useSubspacePriviledgesQuery,
 } from '../../../../../../core/apollo/generated/apollo-hooks';
+import { AuthorizationPrivilege } from '../../../../../../core/apollo/generated/graphql-schema';
 import { DeleteIcon } from '../../../../../journey/space/pages/SpaceSettings/icon/DeleteIcon';
 import SpaceProfileDeleteDialog from '../../../../../journey/space/pages/SpaceSettings/SpaceProfileDeleteDialog';
 import { useSubSpace } from '../../../../../journey/subspace/hooks/useChallenge';
@@ -45,6 +47,10 @@ const OpportunitySettingsView: FC = () => {
     },
   });
 
+  const { data: subspacePriviledges } = useSubspacePriviledgesQuery({ variables: { subspaceId: subspaceId! } });
+  const canDelete = subspacePriviledges?.lookup.space?.authorization?.myPrivileges?.includes(
+    AuthorizationPrivilege.Delete
+  );
   const handleDelete = () => {
     deleteOpportunity({
       variables: {
@@ -57,13 +63,15 @@ const OpportunitySettingsView: FC = () => {
 
   return (
     <PageContent background="transparent">
-      <PageContentBlock sx={{ borderColor: errorColor }}>
-        <PageContentBlockHeader sx={{ color: errorColor }} title={t('components.deleteSpace.title')} />
-        <Box display="flex" gap={1} alignItems="center" sx={{ cursor: 'pointer' }} onClick={openDialog}>
-          <DeleteIcon />
-          <Caption>{t('components.deleteSpace.description', { entity: t('common.subspace') })}</Caption>
-        </Box>
-      </PageContentBlock>
+      {canDelete && (
+        <PageContentBlock sx={{ borderColor: errorColor }}>
+          <PageContentBlockHeader sx={{ color: errorColor }} title={t('components.deleteSpace.title')} />
+          <Box display="flex" gap={1} alignItems="center" sx={{ cursor: 'pointer' }} onClick={openDialog}>
+            <DeleteIcon />
+            <Caption>{t('components.deleteSpace.description', { entity: t('common.subspace') })}</Caption>
+          </Box>
+        </PageContentBlock>
+      )}
       {openDeleteDialog && (
         <SpaceProfileDeleteDialog
           entity={'Subspace'}

@@ -7,10 +7,13 @@ import {
   refetchAdminSpacesListQuery,
   useDeleteSpaceMutation,
   useSpaceHostQuery,
+  useSpacePriviledgesQuery,
   useSpaceSettingsQuery,
+  useSubspacePriviledgesQuery,
   useUpdateSpaceSettingsMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import {
+  AuthorizationPrivilege,
   CommunityMembershipPolicy,
   SpacePrivacyMode,
   SpaceSettingsCollaboration,
@@ -88,6 +91,15 @@ export const SpaceSettingsView: FC<SpaceSettingsViewProps> = ({ journeyId, journ
       navigate(`${isSubspace ? '/' + spaceNameId : ROUTE_HOME}`, { replace: true });
     },
   });
+
+  const { data: spacePriviledges } = useSpacePriviledgesQuery({ variables: { spaceNameId: spaceNameId! } });
+  const { data: subspacePriviledges } = useSubspacePriviledgesQuery({ variables: { subspaceId: subspaceId! } });
+
+  const priviledges = isSubspace
+    ? subspacePriviledges?.lookup.space?.authorization?.myPrivileges
+    : spacePriviledges?.space.authorization?.myPrivileges;
+  const canDelete = priviledges?.includes(AuthorizationPrivilege.Delete);
+  console.log(priviledges);
 
   const handleDelete = (id: string) => {
     deleteSpace({
@@ -332,13 +344,15 @@ export const SpaceSettingsView: FC<SpaceSettingsViewProps> = ({ journeyId, journ
             />
           </PageContentBlock>
 
-          <PageContentBlock sx={{ borderColor: errorColor }}>
-            <PageContentBlockHeader sx={{ color: errorColor }} title={t('components.deleteSpace.title')} />
-            <Box display="flex" gap={1} alignItems="center" sx={{ cursor: 'pointer' }} onClick={openDialog}>
-              <DeleteIcon />
-              <Caption>{t('components.deleteSpace.description', { entity: translatedEntity })}</Caption>
-            </Box>
-          </PageContentBlock>
+          {canDelete && (
+            <PageContentBlock sx={{ borderColor: errorColor }}>
+              <PageContentBlockHeader sx={{ color: errorColor }} title={t('components.deleteSpace.title')} />
+              <Box display="flex" gap={1} alignItems="center" sx={{ cursor: 'pointer' }} onClick={openDialog}>
+                <DeleteIcon />
+                <Caption>{t('components.deleteSpace.description', { entity: translatedEntity })}</Caption>
+              </Box>
+            </PageContentBlock>
+          )}
           {openDeleteDialog && (
             <SpaceProfileDeleteDialog
               entity={translatedEntity}

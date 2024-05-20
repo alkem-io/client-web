@@ -12,6 +12,26 @@ query SpaceSettings($spaceId: UUID!) {
   }
 }
 
+query SpacePriviledges($spaceNameId: UUID_NAMEID!) {
+  space(ID: $spaceNameId) {
+    id
+    authorization {
+      myPrivileges
+    }
+  }
+}
+
+query SubspacePriviledges($subspaceId: UUID!) {
+  lookup {
+    space(ID: $subspaceId) {
+      id
+      authorization {
+        myPrivileges
+      }
+    }
+  }
+}
+
 fragment SpaceSettings on SpaceSettings {
   privacy {
     mode
