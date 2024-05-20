@@ -1,4 +1,4 @@
-import { ComponentType, FC, useMemo, useState } from 'react';
+import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { compact } from 'lodash';
 import {
@@ -10,7 +10,7 @@ import CollaborationTemplatesLibrary from '../../templates/CollaborationTemplate
 import CommunityGuidelinesTemplateCard from '../CommunityGuidelinesTemplateCard/CommunityGuidelinesTemplateCard';
 import { CommunityGuidelinesTemplateWithContent } from '../CommunityGuidelinesTemplateCard/CommunityGuidelines';
 import CommunityGuidelinesTemplatePreview from './CommunityGuidelinesTemplatePreview';
-import { TemplateBase, TemplateCardBaseProps } from '../../templates/CollaborationTemplatesLibrary/TemplateBase';
+import { TemplateBase } from '../../templates/CollaborationTemplatesLibrary/TemplateBase';
 import { TemplateWithInnovationPack } from '../../../platform/admin/templates/InnovationPacks/ImportTemplatesDialogGalleryStep';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 
@@ -98,9 +98,7 @@ const CommunityGuidelinesTemplatesLibrary: FC<CommunityGuidelinesTemplatesLibrar
       onClose={onClose}
       dialogTitle={t('templateLibrary.communityGuidelinesTemplates.title')}
       onImportTemplate={onSelectTemplate}
-      templateCardComponent={
-        CommunityGuidelinesTemplateCard as ComponentType<TemplateCardBaseProps<CommunityGuidelinesTemplateWithContent>>
-      }
+      templateCardComponent={CommunityGuidelinesTemplateCard}
       templatePreviewComponent={CommunityGuidelinesTemplatePreview}
       filter={filter}
       onFilterChange={setFilter}
