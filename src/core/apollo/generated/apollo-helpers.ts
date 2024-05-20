@@ -864,6 +864,7 @@ export type CommunityKeySpecifier = (
   | 'memberUsers'
   | 'myMembershipStatus'
   | 'myRoles'
+  | 'myRolesImplicit'
   | 'organizationsInRole'
   | 'policy'
   | 'usersInRole'
@@ -886,6 +887,7 @@ export type CommunityFieldPolicy = {
   memberUsers?: FieldPolicy<any> | FieldReadFunction<any>;
   myMembershipStatus?: FieldPolicy<any> | FieldReadFunction<any>;
   myRoles?: FieldPolicy<any> | FieldReadFunction<any>;
+  myRolesImplicit?: FieldPolicy<any> | FieldReadFunction<any>;
   organizationsInRole?: FieldPolicy<any> | FieldReadFunction<any>;
   policy?: FieldPolicy<any> | FieldReadFunction<any>;
   usersInRole?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2744,6 +2746,7 @@ export type TaskFieldPolicy = {
 export type TemplatesSetKeySpecifier = (
   | 'authorization'
   | 'calloutTemplates'
+  | 'calloutTemplatesCount'
   | 'communityGuidelinesTemplate'
   | 'communityGuidelinesTemplates'
   | 'communityGuidelinesTemplatesCount'
@@ -2762,6 +2765,7 @@ export type TemplatesSetKeySpecifier = (
 export type TemplatesSetFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   calloutTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
+  calloutTemplatesCount?: FieldPolicy<any> | FieldReadFunction<any>;
   communityGuidelinesTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   communityGuidelinesTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
   communityGuidelinesTemplatesCount?: FieldPolicy<any> | FieldReadFunction<any>;

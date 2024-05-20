@@ -92,11 +92,7 @@ fragment AdminInnovationFlowTemplate on InnovationFlowTemplate {
 fragment AdminCommunityGuidelinesTemplate on CommunityGuidelinesTemplate {
   id
   profile {
-    # TODO: uncomment ProfileInfoWithVisual, add refs and
-    # delete name and description when server is ready
-    # ...ProfileInfoWithVisual
-    displayName
-    description
+    ...ProfileInfoWithVisual
   }
   guidelines {
     id
@@ -104,7 +100,9 @@ fragment AdminCommunityGuidelinesTemplate on CommunityGuidelinesTemplate {
       id
       displayName
       description
-      # references
+      references {
+        ...ReferenceDetails
+      }
     }
   }
 }

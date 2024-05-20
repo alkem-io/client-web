@@ -2962,8 +2962,7 @@ export const AdminCommunityGuidelinesTemplateFragmentDoc = gql`
   fragment AdminCommunityGuidelinesTemplate on CommunityGuidelinesTemplate {
     id
     profile {
-      displayName
-      description
+      ...ProfileInfoWithVisual
     }
     guidelines {
       id
@@ -2971,9 +2970,14 @@ export const AdminCommunityGuidelinesTemplateFragmentDoc = gql`
         id
         displayName
         description
+        references {
+          ...ReferenceDetails
+        }
       }
     }
   }
+  ${ProfileInfoWithVisualFragmentDoc}
+  ${ReferenceDetailsFragmentDoc}
 `;
 export const AdminInnovationPackTemplatesFragmentDoc = gql`
   fragment AdminInnovationPackTemplates on TemplatesSet {
