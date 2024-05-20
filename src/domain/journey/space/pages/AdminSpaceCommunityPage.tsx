@@ -1,5 +1,5 @@
 import React, { FC, useCallback, useMemo, useState } from 'react';
-import { Box, Button } from '@mui/material';
+import { Button } from '@mui/material';
 import InnovationLibraryIcon from '../../../../main/topLevelPages/InnovationLibraryPage/InnovationLibraryIcon';
 import SpaceSettingsLayout from '../../../platform/admin/space/SpaceSettingsLayout';
 import { SettingsSection } from '../../../platform/admin/layout/EntitySettingsLayout/constants';
@@ -126,20 +126,9 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
         <PageContentBlockCollapsible
           header={<BlockTitle>{t('community.communityGuidelines.title')}</BlockTitle>}
           primaryAction={
-            <Box marginLeft="auto">
-              <Button
-                variant="outlined"
-                onClick={event => {
-                  event.stopPropagation();
-                  openTemplateDialog();
-                }}
-                aria-label={t('common.library')}
-                sx={{ marginRight: theme => theme.spacing(1) }}
-                startIcon={<InnovationLibraryIcon />}
-              >
-                {t('common.library')}
-              </Button>
-            </Box>
+            <Button variant="outlined" onClick={() => openTemplateDialog()} startIcon={<InnovationLibraryIcon />}>
+              {t('common.library')}
+            </Button>
           }
         >
           <CommunityGuidelines communityId={communityId} template={template} />
