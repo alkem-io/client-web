@@ -1697,7 +1697,7 @@ export type CreateVirtualContributorInput = {
 };
 
 export type CreateVirtualPersonaInput = {
-  engine: VirtualPersonaEngine;
+  engine: VirtualContributorEngine;
   /** A readable identifier, unique within the containing scope. */
   nameID: Scalars['NameID'];
   profileData: CreateProfileInput;
@@ -5415,7 +5415,7 @@ export type UpdateVirtualContributorInput = {
 
 export type UpdateVirtualPersonaInput = {
   ID: Scalars['UUID'];
-  engine: VirtualPersonaEngine;
+  engine: VirtualContributorEngine;
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
   nameID?: InputMaybe<Scalars['NameID']>;
   /** The Profile of this entity. */
@@ -5614,12 +5614,19 @@ export type VirtualContributorAuthorizationResetInput = {
   virtualContributorID: Scalars['UUID'];
 };
 
+export enum VirtualContributorEngine {
+  AlkemioWelcome = 'ALKEMIO_WELCOME',
+  CommunityManager = 'COMMUNITY_MANAGER',
+  Expert = 'EXPERT',
+  Guidance = 'GUIDANCE',
+}
+
 export type VirtualPersona = {
   __typename?: 'VirtualPersona';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The Virtual Persona Engine being used by this virtual persona. */
-  engine?: Maybe<VirtualPersonaEngine>;
+  engine?: Maybe<VirtualContributorEngine>;
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** A name identifier of the entity, unique within a given scope. */
@@ -5634,13 +5641,6 @@ export type VirtualPersonaAuthorizationResetInput = {
   /** The identifier of the Virtual Persona whose Authorization Policy should be reset. */
   virtualPersonaID: Scalars['UUID_NAMEID_EMAIL'];
 };
-
-export enum VirtualPersonaEngine {
-  AlkemioDigileefomgeving = 'ALKEMIO_DIGILEEFOMGEVING',
-  AlkemioWelcome = 'ALKEMIO_WELCOME',
-  CommunityManager = 'COMMUNITY_MANAGER',
-  Guidance = 'GUIDANCE',
-}
 
 export type VirtualPersonaQuestionInput = {
   /** The question that is being asked. */
@@ -14938,6 +14938,30 @@ export type RolesOrganizationQuery = {
   };
 };
 
+export type AdminGlobalOrganizationsListQueryVariables = Exact<{
+  first: Scalars['Int'];
+  after?: InputMaybe<Scalars['UUID']>;
+  filter?: InputMaybe<OrganizationFilterInput>;
+}>;
+
+export type AdminGlobalOrganizationsListQuery = {
+  __typename?: 'Query';
+  organizationsPaginated: {
+    __typename?: 'PaginatedOrganization';
+    organization: Array<{
+      __typename?: 'Organization';
+      id: string;
+      profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+    }>;
+    pageInfo: {
+      __typename?: 'PageInfo';
+      startCursor?: string | undefined;
+      endCursor?: string | undefined;
+      hasNextPage: boolean;
+    };
+  };
+};
+
 export type OrganizationInfoFragment = {
   __typename?: 'Organization';
   id: string;
@@ -14952,6 +14976,7 @@ export type OrganizationInfoFragment = {
   profile: {
     __typename?: 'Profile';
     id: string;
+    url: string;
     displayName: string;
     description?: string | undefined;
     tagline: string;
@@ -15035,6 +15060,7 @@ export type OrganizationInfoQuery = {
     profile: {
       __typename?: 'Profile';
       id: string;
+      url: string;
       displayName: string;
       description?: string | undefined;
       tagline: string;
@@ -15704,15 +15730,23 @@ export type UserSelectorUserInformationFragment = {
   };
 };
 
-export type PlatformLevelAuthorizationQueryVariables = Exact<{ [key: string]: never }>;
+export type UserListQueryVariables = Exact<{
+  first: Scalars['Int'];
+  after?: InputMaybe<Scalars['UUID']>;
+  filter?: InputMaybe<UserFilterInput>;
+}>;
 
-export type PlatformLevelAuthorizationQuery = {
+export type UserListQuery = {
   __typename?: 'Query';
-  platform: {
-    __typename?: 'Platform';
-    authorization?:
-      | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-      | undefined;
+  usersPaginated: {
+    __typename?: 'PaginatedUsers';
+    users: Array<{
+      __typename?: 'User';
+      id: string;
+      email: string;
+      profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+    }>;
+    pageInfo: { __typename?: 'PageInfo'; endCursor?: string | undefined; hasNextPage: boolean };
   };
 };
 
@@ -16544,27 +16578,6 @@ export type UserProviderQuery = {
       createdDate: Date;
       state: string;
     }>;
-  };
-};
-
-export type UserListQueryVariables = Exact<{
-  first: Scalars['Int'];
-  after?: InputMaybe<Scalars['UUID']>;
-  filter?: InputMaybe<UserFilterInput>;
-}>;
-
-export type UserListQuery = {
-  __typename?: 'Query';
-  usersPaginated: {
-    __typename?: 'PaginatedUsers';
-    users: Array<{
-      __typename?: 'User';
-      id: string;
-      nameID: string;
-      email: string;
-      profile: { __typename?: 'Profile'; id: string; displayName: string };
-    }>;
-    pageInfo: { __typename?: 'PageInfo'; endCursor?: string | undefined; hasNextPage: boolean };
   };
 };
 
@@ -20745,28 +20758,15 @@ export type SubspacePageSpaceFragment = {
   collaboration: { __typename?: 'Collaboration'; id: string };
 };
 
-export type AdminGlobalOrganizationsListQueryVariables = Exact<{
-  first: Scalars['Int'];
-  after?: InputMaybe<Scalars['UUID']>;
-  filter?: InputMaybe<OrganizationFilterInput>;
-}>;
+export type PlatformLevelAuthorizationQueryVariables = Exact<{ [key: string]: never }>;
 
-export type AdminGlobalOrganizationsListQuery = {
+export type PlatformLevelAuthorizationQuery = {
   __typename?: 'Query';
-  organizationsPaginated: {
-    __typename?: 'PaginatedOrganization';
-    organization: Array<{
-      __typename?: 'Organization';
-      id: string;
-      nameID: string;
-      profile: { __typename?: 'Profile'; id: string; displayName: string };
-    }>;
-    pageInfo: {
-      __typename?: 'PageInfo';
-      startCursor?: string | undefined;
-      endCursor?: string | undefined;
-      hasNextPage: boolean;
-    };
+  platform: {
+    __typename?: 'Platform';
+    authorization?:
+      | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+      | undefined;
   };
 };
 
@@ -22441,7 +22441,7 @@ export type CreateVirtualPersonaMutation = {
     id: string;
     nameID: string;
     prompt: string;
-    engine?: VirtualPersonaEngine | undefined;
+    engine?: VirtualContributorEngine | undefined;
     profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
   };
 };
