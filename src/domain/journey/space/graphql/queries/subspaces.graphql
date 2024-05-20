@@ -1,12 +1,14 @@
-query subspacesInSpace($spaceId: UUID_NAMEID!) {
-  space(ID: $spaceId) {
-    id
-    subspaces {
+query SubspacesInSpace($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
       id
-      nameID
-      profile {
+      subspaces {
         id
-        displayName
+        profile {
+          id
+          displayName
+          url
+        }
       }
     }
   }

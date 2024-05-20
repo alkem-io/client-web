@@ -64,21 +64,6 @@ fragment WhiteboardContent on Whiteboard {
   content
 }
 
-query whiteboardTemplates($spaceId: UUID_NAMEID!) {
-  space(ID: $spaceId) {
-    id
-    account {
-      id
-      library {
-        id
-      whiteboardTemplates {
-        ...CreateWhiteboardWhiteboardTemplate
-      }
-    }
-    }
-  }
-}
-
 fragment CreateWhiteboardWhiteboardTemplate on WhiteboardTemplate {
   id
   profile {

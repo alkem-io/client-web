@@ -1,13 +1,15 @@
-query spaceCommunity($spaceId: UUID_NAMEID!, $includeDetails: Boolean = false) {
-  space(ID: $spaceId) {
-    id
-    profile {
+query SpaceCommunity($spaceId: UUID!, $includeDetails: Boolean = false) {
+  lookup {
+    space(ID: $spaceId) {
       id
-      displayName
-    }
-    community {
-      id
-      ...CommunityDetails @include(if: $includeDetails)
+      profile {
+        id
+        displayName
+      }
+      community {
+        id
+        ...CommunityDetails @include(if: $includeDetails)
+      }
     }
   }
 }

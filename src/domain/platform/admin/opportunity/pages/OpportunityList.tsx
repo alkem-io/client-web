@@ -12,7 +12,7 @@ import { useSubSpace } from '../../../../journey/subspace/hooks/useChallenge';
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import { JourneyCreationDialog } from '../../../../shared/components/JorneyCreationDialog';
 import { CreateOpportunityForm } from '../../../../journey/opportunity/forms/CreateOpportunityForm';
-import { buildJourneyAdminUrl } from '../../../../../main/routing/urlBuilders';
+import { buildSettingsUrl } from '../../../../../main/routing/urlBuilders';
 import { JourneyFormValues } from '../../../../shared/components/JorneyCreationDialog/JourneyCreationForm';
 import { OpportunityIcon } from '../../../../journey/opportunity/icon/OpportunityIcon';
 import {
@@ -37,10 +37,10 @@ export const OpportunityList: FC = () => {
   });
 
   const opportunityList =
-    subspacesListQuery?.space?.subspaces?.map(o => ({
+    subspacesListQuery?.lookup.space?.subspaces?.map(o => ({
       id: o.id,
       value: o.profile.displayName,
-      url: `${o.nameID}`,
+      url: buildSettingsUrl(o.profile.url),
     })) || [];
 
   const [deleteOpportunity] = useDeleteSpaceMutation({
@@ -96,7 +96,7 @@ export const OpportunityList: FC = () => {
         return;
       }
       if (data?.createSubspace.profile.url) {
-        navigate(buildJourneyAdminUrl(data?.createSubspace.profile.url));
+        navigate(buildSettingsUrl(data?.createSubspace.profile.url));
       }
     },
     [navigate, createSubspace, spaceNameId, subspaceId, challengeNameId]

@@ -3,7 +3,7 @@ import { SettingsSection } from './constants';
 import EntitySettingsTabs, { TabDefinition } from './EntitySettingsTabs';
 import { useTranslation } from 'react-i18next';
 import { EntityPageSection } from '../../../../shared/layout/EntityPageSection';
-import { EntityPageLayoutProps } from '../../../../journey/common/EntityPageLayout';
+import { EmptyLayout, EntityPageLayoutProps } from '../../../../journey/common/EntityPageLayout';
 import SettingsPageContent from './SettingsPageContent';
 import EntityPageLayout from '../../../../journey/common/EntityPageLayout/EntityPageLayout';
 import PageContent from '../../../../../core/ui/content/PageContent';
@@ -35,21 +35,30 @@ const EntitySettingsLayout: FC<EntitySettingsLayoutProps> = ({
   const getTabLabel = useCallback((section: SettingsSection) => t(`common.${section}` as const), [t]);
 
   return (
-    <EntityPageLayout currentSection={EntityPageSection.Settings} {...props}>
-      <PageContent background="background.paper" gridContainerProps={{ paddingTop: 0 }}>
-        <EntitySettingsTabs
-          tabs={subheaderTabs}
-          currentTab={currentTab}
-          aria-label={`${entityTypeName} Settings tabs`}
-          routePrefix={tabRoutePrefix}
-          getTabLabel={getTabLabel}
-        />
-        {backButton}
-        <SettingsPageContent currentSection={currentTab} entityTypeName={entityTypeName} tabDescriptionNs="pages.admin">
-          {children}
-        </SettingsPageContent>
-      </PageContent>
-    </EntityPageLayout>
+    <>
+      <EntityPageLayout currentSection={EntityPageSection.Settings} {...props}>
+        <PageContent background="background.paper" gridContainerProps={{ paddingTop: 0 }}>
+          <EntitySettingsTabs
+            tabs={subheaderTabs}
+            currentTab={currentTab}
+            aria-label={`${entityTypeName} Settings tabs`}
+            routePrefix={tabRoutePrefix}
+            getTabLabel={getTabLabel}
+          />
+          {backButton}
+          <SettingsPageContent
+            currentSection={currentTab}
+            entityTypeName={entityTypeName}
+            tabDescriptionNs="pages.admin"
+          >
+            {children}
+          </SettingsPageContent>
+        </PageContent>
+      </EntityPageLayout>
+      {/* EmptyLayout is needed to remove the previous propagated layout from the holder */}
+      {/* Remove this when EntitySettingsLayout becomes a propagated one */}
+      <EmptyLayout />
+    </>
   );
 };
 

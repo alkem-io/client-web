@@ -43,7 +43,7 @@ const CalloutTemplatesLibrary: FC<CalloutTemplatesLibraryProps> = ({ onImportTem
   const [fetchTemplatesFromSpace, { data: spaceData, loading: loadingTemplatesFromSpace }] =
     useSpaceCalloutTemplatesLibraryLazyQuery({
       variables: {
-        spaceId: spaceNameId!,
+        spaceNameId: spaceNameId!,
       },
     });
 

@@ -1,16 +1,13 @@
 import { _AUTH_LOGIN_PATH } from '../../core/auth/authentication/constants/authentication.constants';
 import { EntityPageSection } from '../../domain/shared/layout/EntityPageSection';
 import { ROUTE_HOME } from '../../domain/platform/routes/constants';
-import { isAbsoluteUrl, normalizeLink } from '../../core/utils/links';
+import { isAbsoluteUrl } from '../../core/utils/links';
 
 export const buildOrganizationUrl = (organizationNameId: string) => `/organization/${organizationNameId}`;
 
-export const buildJourneyAdminUrl = (journeyProfileUrl: string) => {
-  const relativeUrl = normalizeLink(journeyProfileUrl);
-  return `/admin/spaces/${relativeUrl.replace(/^\//, '')}`;
+export const buildSettingsUrl = (entityUrl: string) => {
+  return `${entityUrl}/settings`;
 };
-
-export const buildAdminOrganizationUrl = (organizationNameId: string) => `/admin/organizations/${organizationNameId}`;
 
 export const buildUserProfileUrl = (userNameId: string) => `/user/${userNameId}`;
 

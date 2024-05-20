@@ -1,9 +1,0 @@
-mutation assignUserAsBetaTester($input: GrantAuthorizationCredentialInput!) {
-  grantCredentialToUser(grantCredentialData: $input) {
-    id
-    profile {
-      id
-      displayName
-    }
-  }
-}

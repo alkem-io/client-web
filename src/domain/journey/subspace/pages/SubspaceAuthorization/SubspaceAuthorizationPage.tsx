@@ -24,7 +24,7 @@ const SubspaceAuthorizationPage: FC<SubspaceAuthorizationPageProps> = ({ routePr
     },
   });
   const [updateSubspaceSettings] = useUpdateSpaceSettingsMutation();
-  const settings = settingsData?.space?.settings;
+  const settings = settingsData?.lookup.space?.settings;
 
   const handleUpdateSettings = async (
     privacyModeUpdate?: SpacePrivacyMode,
@@ -43,10 +43,12 @@ const SubspaceAuthorizationPage: FC<SubspaceAuthorizationPageProps> = ({ routePr
           settings: {
             privacy: {
               mode: privacyMode,
+              allowPlatformSupportAsAdmin: settings?.privacy.allowPlatformSupportAsAdmin ?? false,
             },
             membership: {
               policy: membershipPolicy,
               trustedOrganizations: hostOrgTrusted ? ['myHostOrgID-TODO'] : [],
+              allowSubspaceAdminsToInviteMembers: settings?.membership.allowSubspaceAdminsToInviteMembers ?? false,
             },
             collaboration: {
               allowMembersToCreateCallouts: true,
