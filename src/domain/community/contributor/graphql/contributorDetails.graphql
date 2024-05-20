@@ -4,6 +4,7 @@ fragment ContributorDetails on Contributor {
   profile {
     id
     displayName
+    url
     avatar: visual(type: AVATAR) {
       ...VisualUri
     }
@@ -12,6 +13,7 @@ fragment ContributorDetails on Contributor {
         ...TagsetDetails
     }
     location {
+      id
       country
       city
     }

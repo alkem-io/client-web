@@ -8,6 +8,7 @@ mutation CreatePostFromContributeTab($postData: CreateContributionOnCalloutInput
         id
         displayName
         description
+        url
         tagset {
           ...TagsetDetails
         }

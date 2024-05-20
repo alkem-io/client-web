@@ -596,6 +596,7 @@ export const ContributorDetailsFragmentDoc = gql`
     profile {
       id
       displayName
+      url
       avatar: visual(type: AVATAR) {
         ...VisualUri
       }
@@ -604,6 +605,7 @@ export const ContributorDetailsFragmentDoc = gql`
         ...TagsetDetails
       }
       location {
+        id
         country
         city
       }
@@ -6164,6 +6166,7 @@ export const CreatePostFromContributeTabDocument = gql`
           id
           displayName
           description
+          url
           tagset {
             ...TagsetDetails
           }
