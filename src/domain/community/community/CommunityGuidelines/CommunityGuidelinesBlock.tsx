@@ -12,7 +12,7 @@ import SeeMore from '../../../../core/ui/content/SeeMore';
 import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
 import { Caption } from '../../../../core/ui/typography';
 import RouterLink from '../../../../core/ui/link/RouterLink';
-import { buildJourneyAdminUrl } from '../../../../main/routing/urlBuilders';
+import { buildSettingsUrl } from '../../../../main/routing/urlBuilders';
 
 const CommunityGuidelinesSkeleton = () => {
   const theme = useTheme();
@@ -70,7 +70,7 @@ const CommunityGuidelinesBlock: FC<CommunityGuidelinesBlockProps> = ({ community
         ) : (
           <>
             <Caption>{t('community.communityGuidelines.adminsOnly')}</Caption>
-            <Caption component={RouterLink} to={`${buildJourneyAdminUrl(journeyUrl || '')}/community`}>
+            <Caption component={RouterLink} to={`${buildSettingsUrl(journeyUrl || '')}/community`}>
               {t('community.communityGuidelines.communityGuidelinesRedirect')}
             </Caption>
           </>
