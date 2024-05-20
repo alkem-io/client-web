@@ -18,9 +18,11 @@ interface InvitationActionsContainerProvided {
 
 interface InvitationActionsContainerProps extends SimpleContainerProps<InvitationActionsContainerProvided> {
   onUpdate?: () => void;
+  onAccept?: () => void;
+  onReject?: () => void;
 }
 
-const InvitationActionsContainer = ({ onUpdate, children }: InvitationActionsContainerProps) => {
+const InvitationActionsContainer = ({ onUpdate, onAccept, onReject, children }: InvitationActionsContainerProps) => {
   const { spaceId, permissions } = useSpace();
   const [invitationStateEventMutation] = useInvitationStateEventMutation({
     refetchQueries: compact([
@@ -42,6 +44,9 @@ const InvitationActionsContainer = ({ onUpdate, children }: InvitationActionsCon
         invitationId,
         eventName: 'ACCEPT',
       },
+      onCompleted: () => {
+        onAccept?.();
+      },
     })
   );
 
@@ -50,6 +55,9 @@ const InvitationActionsContainer = ({ onUpdate, children }: InvitationActionsCon
       variables: {
         invitationId,
         eventName: 'REJECT',
+      },
+      onCompleted: () => {
+        onReject?.();
       },
     })
   );

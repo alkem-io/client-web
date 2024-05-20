@@ -12,7 +12,7 @@ import {
 import { Actions } from '../../../../core/ui/actions/Actions';
 import { Button } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-import { VirtualPersonaEngine } from '../../../../core/apollo/generated/graphql-schema';
+import { VirtualContributorEngine } from '../../../../core/apollo/generated/graphql-schema';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
 import AdminLayout from '../layout/toplevel/AdminLayout';
 import { AdminSection } from '../layout/toplevel/constants';
@@ -27,7 +27,7 @@ interface NewPersonaFormValues {
   nameId: string;
   description: string;
   prompt: string;
-  engine: VirtualPersonaEngine;
+  engine: VirtualContributorEngine;
 }
 
 interface NewPersonaFormProps {
@@ -43,7 +43,7 @@ const NewPersonaForm = ({ parentPagePath }: NewPersonaFormProps) => {
     nameId: '',
     prompt: '',
     description: '',
-    engine: VirtualPersonaEngine.AlkemioDigileefomgeving,
+    engine: VirtualContributorEngine.Expert,
   };
   const [createPersona, { loading }] = useCreateVirtualPersonaMutation({
     refetchQueries: [refetchVirtualContributorAvailablePersonasQuery()],
@@ -75,12 +75,12 @@ const NewPersonaForm = ({ parentPagePath }: NewPersonaFormProps) => {
 
   const engines = useMemo(
     () =>
-      (Object.values(VirtualPersonaEngine) as string[]).map(engine => ({
+      (Object.values(VirtualContributorEngine) as string[]).map(engine => ({
         id: engine,
         name: engine,
         label: engine,
       })),
-    [VirtualPersonaEngine]
+    [VirtualContributorEngine]
   );
 
   return (
