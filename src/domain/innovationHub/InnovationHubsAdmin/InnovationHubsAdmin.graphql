@@ -13,6 +13,12 @@ query AdminInnovationHubsList {
   }
 }
 
+query Accounts {
+  accounts {
+    id
+  }
+}
+
 mutation deleteInnovationHub($innovationHubId: UUID!) {
   deleteInnovationHub(deleteData: { ID: $innovationHubId }) {
     id

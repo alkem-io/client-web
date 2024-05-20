@@ -12,6 +12,7 @@ import {
   refetchAdminInnovationHubsListQuery,
   useCreateInnovationHubMutation,
   useOrganizationsListQuery,
+  useAccountsQuery,
 } from '../../../core/apollo/generated/apollo-hooks';
 import { InnovationHubType } from '../../../core/apollo/generated/graphql-schema';
 import PageContent from '../../../core/ui/content/PageContent';
@@ -22,6 +23,7 @@ const AdminNewInnovationHubPage = () => {
   const navigate = useNavigate();
 
   const { data: organizationsList, loading: loadingOrganizations } = useOrganizationsListQuery();
+  const { data: accountsList, loading: loadingAccounts } = useAccountsQuery();
 
   const organizations = useMemo(
     () =>
@@ -30,6 +32,14 @@ const AdminNewInnovationHubPage = () => {
         org => org.name
       ),
     [organizationsList]
+  );
+
+  const accounts = useMemo(
+    // We have two options here.
+    // 1. Make a second query, get the space.profile and use its display name.
+    // 2. Have Profile for Account.
+    () => sortBy(accountsList?.accounts.map(e => ({ id: e.id, name: e.id })) || [], account => account.name),
+    [accountsList]
   );
 
   const [createInnovationHub, { loading: creating }] = useCreateInnovationHubMutation();
@@ -48,6 +58,7 @@ const AdminNewInnovationHubPage = () => {
           },
           type: InnovationHubType.List,
           spaceListFilter: [],
+          accountID: formData.accountId,
         },
       },
       refetchQueries: [refetchAdminInnovationHubsListQuery()],
@@ -57,7 +68,7 @@ const AdminNewInnovationHubPage = () => {
     }
   };
 
-  const isLoading = loadingOrganizations || creating;
+  const isLoading = loadingOrganizations || loadingAccounts || creating;
 
   return (
     <AdminLayout currentTab={AdminSection.InnovationHubs}>
@@ -66,7 +77,13 @@ const AdminNewInnovationHubPage = () => {
           <Button component={RouterLink} to="../" startIcon={<ArrowBackIcon />}>
             {t('pages.admin.innovationHubs.back')}
           </Button>
-          <InnovationHubForm isNew organizations={organizations} onSubmit={handleSubmit} loading={isLoading} />
+          <InnovationHubForm
+            isNew
+            organizations={organizations}
+            accounts={accounts}
+            onSubmit={handleSubmit}
+            loading={isLoading}
+          />
         </PageContentColumn>
       </PageContent>
     </AdminLayout>

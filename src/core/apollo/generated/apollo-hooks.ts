@@ -14243,6 +14243,50 @@ export function refetchAdminInnovationHubsListQuery(variables?: SchemaTypes.Admi
   return { query: AdminInnovationHubsListDocument, variables: variables };
 }
 
+export const AccountsDocument = gql`
+  query Accounts {
+    accounts {
+      id
+    }
+  }
+`;
+
+/**
+ * __useAccountsQuery__
+ *
+ * To run a query within a React component, call `useAccountsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAccountsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAccountsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useAccountsQuery(
+  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.AccountsQuery, SchemaTypes.AccountsQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.AccountsQuery, SchemaTypes.AccountsQueryVariables>(AccountsDocument, options);
+}
+
+export function useAccountsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.AccountsQuery, SchemaTypes.AccountsQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.AccountsQuery, SchemaTypes.AccountsQueryVariables>(AccountsDocument, options);
+}
+
+export type AccountsQueryHookResult = ReturnType<typeof useAccountsQuery>;
+export type AccountsLazyQueryHookResult = ReturnType<typeof useAccountsLazyQuery>;
+export type AccountsQueryResult = Apollo.QueryResult<SchemaTypes.AccountsQuery, SchemaTypes.AccountsQueryVariables>;
+export function refetchAccountsQuery(variables?: SchemaTypes.AccountsQueryVariables) {
+  return { query: AccountsDocument, variables: variables };
+}
+
 export const DeleteInnovationHubDocument = gql`
   mutation deleteInnovationHub($innovationHubId: UUID!) {
     deleteInnovationHub(deleteData: { ID: $innovationHubId }) {

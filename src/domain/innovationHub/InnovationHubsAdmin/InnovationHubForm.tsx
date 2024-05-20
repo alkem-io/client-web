@@ -27,6 +27,7 @@ export interface InnovationHubFormValues {
     tagsets: Pick<Tagset, 'id' | 'tags' | 'name' | 'allowedValues' | 'type'>[];
   };
   hostId: string;
+  accountId: string;
 }
 
 interface InnovationHubFormProps {
@@ -42,8 +43,10 @@ interface InnovationHubFormProps {
     visual?: Visual;
   };
   hostId?: string;
+  accountId?: string;
 
   organizations?: { id: string; name: string }[];
+  accounts?: { id: string; name: string }[];
 
   loading?: boolean;
   onSubmit: (formData: InnovationHubFormValues) => void;
@@ -56,6 +59,8 @@ const InnovationHubForm: FC<InnovationHubFormProps> = ({
   profile,
   hostId,
   organizations,
+  accounts,
+  accountId,
   loading,
   onSubmit,
 }) => {
@@ -74,6 +79,7 @@ const InnovationHubForm: FC<InnovationHubFormProps> = ({
       tagsets: [profile?.tagset ?? { id: '', name: 'Tags', tags: [], allowedValues: [], type: TagsetType.Freeform }],
     },
     hostId: hostId ?? '',
+    accountId: accountId ?? '',
   };
 
   const validationSchema = yup.object().shape({
@@ -108,6 +114,16 @@ const InnovationHubForm: FC<InnovationHubFormProps> = ({
                 /* required */
                 disabled
                 placeholder={t('pages.admin.innovationHubs.fields.host')}
+              />
+            </FormGroup>
+            <FormGroup>
+              <FormikAutocomplete
+                title={t('pages.admin.innovationHubs.fields.account')}
+                name="accountId"
+                values={accounts ?? []}
+                /* required */
+                disabled={!isNew}
+                placeholder={t('pages.admin.innovationHubs.fields.account')}
               />
             </FormGroup>
             <FormikInputField
