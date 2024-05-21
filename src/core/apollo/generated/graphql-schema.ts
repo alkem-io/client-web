@@ -25805,6 +25805,7 @@ export type MyMembershipsQuery = {
     spaceMemberships: Array<{
       __typename?: 'Space';
       id: string;
+      level: number;
       account: {
         __typename?: 'Account';
         id: string;
