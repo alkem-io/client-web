@@ -33,6 +33,7 @@ export interface JourneyCardHorizontalProps {
       displayName: string;
       tagline: string;
       avatar?: Visual;
+      cardBanner?: Visual;
     };
     community?: {
       myRoles?: CommunityRole[];
@@ -68,7 +69,12 @@ const JourneyCardHorizontal = ({
   return (
     <ElevatedPaper component={RouterLink} to={journey.profile.url} sx={mergedSx}>
       <BadgeCardView
-        visual={<JourneyAvatar src={journey.profile.avatar?.uri} sx={{ width: gutters(3), height: gutters(3) }} />}
+        visual={
+          <JourneyAvatar
+            src={journey.profile.avatar?.uri ?? journey.profile.cardBanner?.uri}
+            sx={{ width: gutters(3), height: gutters(3) }}
+          />
+        }
       >
         <BlockTitleWithIcon title={journey.profile.displayName} icon={<Icon />} sx={{ height: gutters(1.5) }}>
           <FlexSpacer />
