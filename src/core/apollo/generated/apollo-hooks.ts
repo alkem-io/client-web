@@ -3475,7 +3475,7 @@ export const LibraryTemplatesFragmentDoc = gql`
         }
       }
     }
-    communityGuidelinesTemplatesCount
+    calloutTemplatesCount
     communityGuidelinesTemplates {
       id
       profile {
