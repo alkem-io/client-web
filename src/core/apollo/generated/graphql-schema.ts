@@ -1180,6 +1180,8 @@ export type Community = Groupable & {
   myMembershipStatus?: Maybe<CommunityMembershipStatus>;
   /** The roles on this community for the currently logged in user. */
   myRoles: Array<CommunityRole>;
+  /** The implicit roles on this community for the currently logged in user. */
+  myRolesImplicit: Array<CommunityRoleImplicit>;
   /** All Organizations that have the specified Role in this Community. */
   organizationsInRole: Array<Organization>;
   /** The policy that defines the roles for this Community. */
@@ -1274,6 +1276,10 @@ export enum CommunityRole {
   Admin = 'ADMIN',
   Lead = 'LEAD',
   Member = 'MEMBER',
+}
+
+export enum CommunityRoleImplicit {
+  SubspaceAdmin = 'SUBSPACE_ADMIN',
 }
 
 export type CommunityRolePolicy = {
@@ -2452,6 +2458,7 @@ export type MeQueryResultsInvitationsArgs = {
 
 export type MeQueryResultsMySpacesArgs = {
   limit?: InputMaybe<Scalars['Float']>;
+  showOnlyMyCreatedSpaces?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type MeQueryResultsSpaceMembershipsArgs = {
@@ -25717,6 +25724,7 @@ export type MyMembershipsQuery = {
     spaceMemberships: Array<{
       __typename?: 'Space';
       id: string;
+      level: number;
       account: {
         __typename?: 'Account';
         id: string;
