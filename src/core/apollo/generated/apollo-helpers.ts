@@ -864,6 +864,7 @@ export type CommunityKeySpecifier = (
   | 'memberUsers'
   | 'myMembershipStatus'
   | 'myRoles'
+  | 'myRolesImplicit'
   | 'organizationsInRole'
   | 'policy'
   | 'usersInRole'
@@ -886,6 +887,7 @@ export type CommunityFieldPolicy = {
   memberUsers?: FieldPolicy<any> | FieldReadFunction<any>;
   myMembershipStatus?: FieldPolicy<any> | FieldReadFunction<any>;
   myRoles?: FieldPolicy<any> | FieldReadFunction<any>;
+  myRolesImplicit?: FieldPolicy<any> | FieldReadFunction<any>;
   organizationsInRole?: FieldPolicy<any> | FieldReadFunction<any>;
   policy?: FieldPolicy<any> | FieldReadFunction<any>;
   usersInRole?: FieldPolicy<any> | FieldReadFunction<any>;
