@@ -7,9 +7,8 @@ import {
   refetchAdminSpacesListQuery,
   useDeleteSpaceMutation,
   useSpaceHostQuery,
-  useSpacePriviledgesQuery,
+  useSpacePrivilegesQuery,
   useSpaceSettingsQuery,
-  useSubspacePriviledgesQuery,
   useUpdateSpaceSettingsMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import {
@@ -69,7 +68,7 @@ export const SpaceSettingsView: FC<SpaceSettingsViewProps> = ({ journeyId, journ
   const isSubspace = journeyTypeName !== 'space';
 
   const { subspaceId } = useSubSpace();
-  const { spaceNameId } = useSpace();
+  const { spaceNameId, spaceId } = useSpace();
 
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const openDialog = () => setOpenDeleteDialog(true);
@@ -92,14 +91,15 @@ export const SpaceSettingsView: FC<SpaceSettingsViewProps> = ({ journeyId, journ
     },
   });
 
-  const { data: spacePriviledges } = useSpacePriviledgesQuery({ variables: { spaceNameId: spaceNameId! } });
-  const { data: subspacePriviledges } = useSubspacePriviledgesQuery({ variables: { subspaceId: subspaceId! } });
+  const { data } = useSpacePrivilegesQuery({
+    variables: {
+      spaceId: subspaceId || spaceId,
+    },
+    skip: !spaceId && !subspaceId,
+  });
 
-  const priviledges = isSubspace
-    ? subspacePriviledges?.lookup.space?.authorization?.myPrivileges
-    : spacePriviledges?.space.authorization?.myPrivileges;
-  const canDelete = priviledges?.includes(AuthorizationPrivilege.Delete);
-  console.log(priviledges);
+  const privileges = data?.lookup.space?.authorization?.myPrivileges ?? [];
+  const canDelete = privileges?.includes(AuthorizationPrivilege.Delete);
 
   const handleDelete = (id: string) => {
     deleteSpace({

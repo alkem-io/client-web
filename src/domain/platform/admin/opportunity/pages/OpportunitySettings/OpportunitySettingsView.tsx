@@ -10,7 +10,7 @@ import {
   refetchSpaceDashboardNavigationChallengesQuery,
   refetchSubspacesInSpaceQuery,
   useDeleteSpaceMutation,
-  useSubspacePriviledgesQuery,
+  useSpacePrivilegesQuery,
 } from '../../../../../../core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege } from '../../../../../../core/apollo/generated/graphql-schema';
 import { DeleteIcon } from '../../../../../journey/space/pages/SpaceSettings/icon/DeleteIcon';
@@ -47,10 +47,15 @@ const OpportunitySettingsView: FC = () => {
     },
   });
 
-  const { data: subspacePriviledges } = useSubspacePriviledgesQuery({ variables: { subspaceId: subspaceId! } });
-  const canDelete = subspacePriviledges?.lookup.space?.authorization?.myPrivileges?.includes(
-    AuthorizationPrivilege.Delete
-  );
+  const { data } = useSpacePrivilegesQuery({
+    variables: {
+      spaceId: subspaceId || spaceId,
+    },
+    skip: !spaceId && !subspaceId,
+  });
+
+  const subspacePriviledges = data?.lookup.space?.authorization?.myPrivileges ?? [];
+  const canDelete = subspacePriviledges.includes(AuthorizationPrivilege.Delete);
   const handleDelete = () => {
     deleteOpportunity({
       variables: {
