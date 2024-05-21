@@ -52,19 +52,18 @@ const SubspaceSettingsLayout: FC<SubspaceSettingsLayoutProps> = props => {
     ];
 
     if (journeyLevel === 1) {
-      tabs.push(
-        {
-          section: SettingsSection.Subsubspaces,
-          route: 'opportunities',
-          icon: FlagOutlinedIcon,
-        },
-        {
-          section: SettingsSection.SpaceSettings,
-          route: 'settings',
-          icon: GppGoodOutlinedIcon,
-        }
-      );
+      tabs.push({
+        section: SettingsSection.Subsubspaces,
+        route: 'opportunities',
+        icon: FlagOutlinedIcon,
+      });
     }
+
+    tabs.push({
+      section: SettingsSection.SpaceSettings,
+      route: 'settings',
+      icon: GppGoodOutlinedIcon,
+    });
 
     return tabs;
   }, [journeyLevel]);
