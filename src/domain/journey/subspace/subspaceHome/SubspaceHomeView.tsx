@@ -17,6 +17,10 @@ import InnovationFlowChips from '../../../collaboration/InnovationFlow/Innovatio
 import useResettableState from '../../../../core/utils/useResettableState';
 import InnovationFlowSettingsButton from '../../../collaboration/InnovationFlow/InnovationFlowDialogs/InnovationFlowSettingsButton';
 import { CalloutGroupNameValuesMap } from '../../../collaboration/callout/CalloutsInContext/CalloutsGroup';
+import {
+  // useCreateVirtualContributorMutation,
+  useVirtualContributorAvailablePersonasQuery,
+} from '../../../../core/apollo/generated/apollo-hooks';
 
 interface SubspaceHomeViewProps {
   journeyId: string | undefined;
@@ -52,6 +56,20 @@ const SubspaceHomeView = ({
   const { isCalloutCreationDialogOpen, handleCreateCalloutOpened, handleCreateCalloutClosed, handleCreateCallout } =
     useCalloutCreationWithPreviewImages({ journeyId });
 
+  // const [createVirtualContributor] = useCreateVirtualContributorMutation();
+
+  const handleCreateVirtualContributor = async () => {
+    // if (!vpData) return;
+    // await createVirtualContributor({
+    //   variables: {
+    //     virtualContributorData: {
+    //       virtualPersonaID: vpData.virtualPersonas[0].id,
+    //     },
+    //   },
+    // });
+  };
+
+  const { data: vpData } = useVirtualContributorAvailablePersonasQuery();
   const createButton = (
     <Button
       variant="outlined"
@@ -110,6 +128,11 @@ const SubspaceHomeView = ({
               )
             }
           />
+        )}
+        {vpData?.virtualPersonas && (
+          <Button startIcon={<AddCircleOutlineIcon />} onClick={handleCreateVirtualContributor}>
+            Create Virtual Contributor
+          </Button>
         )}
       </SubspaceInnovationFlow>
       <CalloutsGroupView

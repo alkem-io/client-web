@@ -36,6 +36,9 @@ mutation updateVirtualContributor($virtualContributorData: UpdateVirtualContribu
 query virtualContributorAvailablePersonas {
   virtualPersonas {
     id
+    engine
+    dataAccessMode
+    nameID
     profile {
       id
       displayName

@@ -54,7 +54,7 @@ const NewVirtualContributorForm = ({ parentPagePath }: NewVirtualContributorForm
     const { displayName, virtualPersonaID, tagline, tagsets } = values;
 
     await createVirtualContributor({
-      variables: {
+      variales: {
         virtualContributorData: {
           virtualPersonaID,
           nameID: `V-P-${uuidv4()}`.slice(0, 25).toLocaleLowerCase(),

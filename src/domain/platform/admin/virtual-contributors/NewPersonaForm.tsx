@@ -8,6 +8,7 @@ import useLoadingState from '../../../shared/utils/useLoadingState';
 import {
   refetchVirtualContributorAvailablePersonasQuery,
   useCreateVirtualPersonaMutation,
+  // useVirtualContributorAvailablePersonasQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { Actions } from '../../../../core/ui/actions/Actions';
 import { Button } from '@mui/material';

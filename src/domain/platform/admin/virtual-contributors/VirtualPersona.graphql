@@ -2,7 +2,6 @@ mutation createVirtualPersona($virtualPersonaData: CreateVirtualPersonaInput!) {
   createVirtualPersona(virtualPersonaData: $virtualPersonaData ) {
     id
     nameID
-    prompt
     engine
     profile {
       id

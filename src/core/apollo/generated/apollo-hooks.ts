@@ -14118,7 +14118,7 @@ export const VirtualContributorDocument = gql`
       nameID
       virtualPersona {
         id
-        prompt
+        engine
         profile {
           displayName
         }
@@ -18987,6 +18987,9 @@ export const VirtualContributorAvailablePersonasDocument = gql`
   query virtualContributorAvailablePersonas {
     virtualPersonas {
       id
+      engine
+      dataAccessMode
+      nameID
       profile {
         id
         displayName
@@ -19062,7 +19065,6 @@ export const CreateVirtualPersonaDocument = gql`
     createVirtualPersona(virtualPersonaData: $virtualPersonaData) {
       id
       nameID
-      prompt
       engine
       profile {
         id
