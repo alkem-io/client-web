@@ -21520,6 +21520,12 @@ export const NewMembershipsDocument = gql`
         createdDate
         state
       }
+      mySpaces(showOnlyMyCreatedSpaces: true) {
+        space {
+          id
+          spaceID: id
+        }
+      }
     }
   }
 `;

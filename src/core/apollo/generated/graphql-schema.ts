@@ -25924,6 +25924,7 @@ export type NewMembershipsQuery = {
       createdBy: string;
       createdDate: Date;
     }>;
+    mySpaces: Array<{ __typename?: 'MySpaceResults'; space: { __typename?: 'Space'; id: string; spaceID: string } }>;
   };
 };
 
