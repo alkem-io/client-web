@@ -48,6 +48,7 @@ const AdminNewInnovationHubPage = () => {
           },
           type: InnovationHubType.List,
           spaceListFilter: [],
+          accountID: '',
         },
       },
       refetchQueries: [refetchAdminInnovationHubsListQuery()],

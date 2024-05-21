@@ -3,6 +3,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { Box, Collapse } from '@mui/material';
 import { ReactNode, forwardRef, useState } from 'react';
 import PageContentBlock, { PageContentBlockProps } from './PageContentBlock';
+import { gutters } from '../grid/utils';
 
 interface PageContentBlockCollapsibleProps extends PageContentBlockProps {
   header: ReactNode;
@@ -23,7 +24,12 @@ const PageContentBlockCollapsible = forwardRef<HTMLDivElement, PageContentBlockC
           onClick={() => setIsCollapsed(!isCollapsed)}
         >
           {header}
-          {isCollapsed ? undefined : primaryAction}
+          {primaryAction &&
+            (isCollapsed ? undefined : (
+              <Box marginLeft="auto" marginRight={gutters(0.5)} onClick={event => event.stopPropagation()}>
+                {primaryAction}
+              </Box>
+            ))}
           {isCollapsed ? <ExpandMoreIcon /> : <ExpandLessIcon />}
         </Box>
         <Collapse in={!isCollapsed}>{children}</Collapse>
