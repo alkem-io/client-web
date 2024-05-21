@@ -76,9 +76,9 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
 
   const currentMembersIds = useMemo(() => users.map(user => user.id), [users]);
 
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const openTemplateDialog = useCallback(() => setDialogOpen(true), []);
-  const closeTemplatesDialog = useCallback(() => setDialogOpen(false), []);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const openTemplateDialog = useCallback(() => setIsDialogOpen(true), []);
+  const closeTemplatesDialog = useCallback(() => setIsDialogOpen(false), []);
 
   const [template, setTemplate] = useState<CommunityGuidelinesTemplateWithContent>();
   const handleSelectTemplate = (template: CommunityGuidelinesTemplateWithContent) => {
@@ -145,7 +145,7 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
           <CommunityGuidelines communityId={communityId} template={template} />
         </PageContentBlockCollapsible>
         <CommunityGuidelinesTemplatesLibrary
-          open={dialogOpen}
+          open={isDialogOpen}
           onClose={closeTemplatesDialog}
           onSelectTemplate={handleSelectTemplate}
         />

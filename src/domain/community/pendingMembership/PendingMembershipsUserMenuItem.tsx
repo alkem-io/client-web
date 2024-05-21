@@ -9,13 +9,14 @@ import { ApplicationHydrator, InvitationHydrator, usePendingMemberships } from '
 import InvitationCardHorizontal from '../invitations/InvitationCardHorizontal/InvitationCardHorizontal';
 import JourneyCard from '../../journey/common/JourneyCard/JourneyCard';
 import journeyIcon from '../../shared/components/JourneyIcon/JourneyIcon';
-import { Identifiable } from '../../../core/utils/Identifiable';
 import ScrollableCardsLayoutContainer from '../../../core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
 import JourneyCardTagline from '../../journey/common/JourneyCard/JourneyCardTagline';
 import InvitationDialog from '../invitations/InvitationDialog';
 import InvitationActionsContainer from '../invitations/InvitationActionsContainer';
 import { VisualType } from '../../../core/apollo/generated/graphql-schema';
 import BackButton from '../../../core/ui/actions/BackButton';
+import useNavigate from '../../../core/routing/useNavigate';
+import { useNewMembershipsQuery } from '../../../core/apollo/generated/apollo-hooks';
 
 interface ButtonImplementationParams {
   header: ReactNode;
@@ -37,24 +38,31 @@ interface DialogDetails {
 
 interface PendingMembershipsListDialogDetails extends DialogDetails {
   type: DialogType.PendingMembershipsList;
+  journeyUri?: string;
 }
 
 interface InvitationViewDialogDetails extends DialogDetails {
   type: DialogType.InvitationView;
   invitationId: string;
+  journeyUri?: string;
 }
 
 const PendingMembershipsUserMenuItem = ({ children }: PendingMembershipsUserMenuItemProps) => {
   const { t } = useTranslation();
 
+  const navigate = useNavigate();
+
+  const { refetch: refetchNewMembershipsQuery } = useNewMembershipsQuery();
+
   const [openDialog, setOpenDialog] = useState<PendingMembershipsListDialogDetails | InvitationViewDialogDetails>();
 
   const closeDialog = () => setOpenDialog(undefined);
 
-  const handleInvitationCardClick = ({ id }: Identifiable) => {
+  const handleInvitationCardClick = ({ id, journeyUri }) => {
     setOpenDialog({
       type: DialogType.InvitationView,
       invitationId: id,
+      journeyUri,
     });
   };
 
@@ -66,6 +74,21 @@ const PendingMembershipsUserMenuItem = ({ children }: PendingMembershipsUserMenu
       : undefined;
 
   const pendingMembershipsCount = invitations && applications ? invitations.length + applications.length : undefined;
+
+  const onInvitationAccept = () => {
+    refetchNewMembershipsQuery();
+
+    if (openDialog?.journeyUri) {
+      navigate(openDialog?.journeyUri);
+    } else {
+      setOpenDialog({ type: DialogType.PendingMembershipsList });
+    }
+  };
+
+  const onInvitationReject = () => {
+    refetchNewMembershipsQuery();
+    setOpenDialog({ type: DialogType.PendingMembershipsList });
+  };
 
   return (
     <>
@@ -125,7 +148,7 @@ const PendingMembershipsUserMenuItem = ({ children }: PendingMembershipsUserMenu
           )}
         </Gutters>
       </DialogWithGrid>
-      <InvitationActionsContainer onUpdate={() => setOpenDialog({ type: DialogType.PendingMembershipsList })}>
+      <InvitationActionsContainer onAccept={onInvitationAccept} onReject={onInvitationReject}>
         {props => (
           <InvitationDialog
             open={openDialog?.type === DialogType.InvitationView}
