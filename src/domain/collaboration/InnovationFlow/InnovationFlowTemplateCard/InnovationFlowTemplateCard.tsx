@@ -9,14 +9,17 @@ import ContributeCard from '../../../../core/ui/card/ContributeCard';
 import { Caption } from '../../../../core/ui/typography/components';
 import InnovationPackIcon from '../../InnovationPack/InnovationPackIcon';
 import { InnovationFlowIcon } from '../InnovationFlowIcon/InnovationFlowIcon';
-import { TemplateBase, TemplateCardBaseProps } from '../../templates/CollaborationTemplatesLibrary/TemplateBase';
+import {
+  InnovationPackTemplate,
+  TemplateCardBaseProps,
+} from '../../templates/CollaborationTemplatesLibrary/TemplateBase';
 import CardDescription, { DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS } from '../../../../core/ui/card/CardDescription';
 import CardContent from '../../../../core/ui/card/CardContent';
 import CardTags from '../../../../core/ui/card/CardTags';
 import webkitLineClamp from '../../../../core/ui/utils/webkitLineClamp';
 import { InnovationFlowState } from '../InnovationFlow';
 
-export interface InnovationFlowTemplate extends TemplateBase {
+export interface InnovationFlowTemplate extends InnovationPackTemplate {
   states: InnovationFlowState[];
 }
 
@@ -35,12 +38,14 @@ const InnovationFlowTemplateCard = ({
     ? DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS - 2
     : DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS;
 
+  const cardInnovationPack = innovationPack || template?.innovationPack;
+
   return (
     <ContributeCard onClick={onClick}>
       <CardHeader title={template?.profile.displayName} iconComponent={InnovationFlowIcon as SvgIconComponent}>
         {loading && <Skeleton />}
-        <CardHeaderCaption logoUrl={innovationPack?.provider?.profile.avatar?.uri}>
-          {innovationPack?.provider?.profile.displayName}
+        <CardHeaderCaption logoUrl={cardInnovationPack?.provider?.profile.avatar?.uri}>
+          {cardInnovationPack?.provider?.profile.displayName}
         </CardHeaderCaption>
       </CardHeader>
       <CardDetails>
@@ -56,9 +61,9 @@ const InnovationFlowTemplateCard = ({
       <CardDetails>
         <CardTags tags={template?.profile.tagset?.tags ?? []} marginY={1} hideIfEmpty />
       </CardDetails>
-      {innovationPack && (
+      {cardInnovationPack && (
         <CardSegmentCaption icon={<InnovationPackIcon />}>
-          <Caption noWrap>{innovationPack?.profile.displayName}</Caption>
+          <Caption noWrap>{cardInnovationPack?.profile.displayName}</Caption>
         </CardSegmentCaption>
       )}
       {loading && <Skeleton />}

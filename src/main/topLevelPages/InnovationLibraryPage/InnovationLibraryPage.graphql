@@ -82,6 +82,38 @@ fragment LibraryTemplates on TemplatesSet {
     }
   }
   innovationFlowTemplatesCount
+  calloutTemplates {
+    id
+    type
+    profile {
+      ...TemplateCardProfileInfo
+    }
+    framing {
+      id
+      profile {
+        id
+        displayName
+        description
+        tagset {
+          ...TagsetDetails
+        }
+        tagsets {
+          ...TagsetDetails
+        }
+        storageBucket {
+          id
+        }
+        references {
+          ...ReferenceDetails
+        }
+      }
+      whiteboard {
+        ...WhiteboardDetails
+        ...WhiteboardContent
+      }
+    }
+  }
+  calloutTemplatesCount
   communityGuidelinesTemplates {
     id
     profile {

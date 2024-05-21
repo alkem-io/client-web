@@ -24890,6 +24890,150 @@ export type InnovationLibraryQuery = {
                 };
                 states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
               }>;
+              calloutTemplates: Array<{
+                __typename?: 'CalloutTemplate';
+                id: string;
+                type: CalloutType;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  description?: string | undefined;
+                  tagset?:
+                    | {
+                        __typename?: 'Tagset';
+                        id: string;
+                        name: string;
+                        tags: Array<string>;
+                        allowedValues: Array<string>;
+                        type: TagsetType;
+                      }
+                    | undefined;
+                  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+                framing: {
+                  __typename?: 'CalloutFraming';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    description?: string | undefined;
+                    tagset?:
+                      | {
+                          __typename?: 'Tagset';
+                          id: string;
+                          name: string;
+                          tags: Array<string>;
+                          allowedValues: Array<string>;
+                          type: TagsetType;
+                        }
+                      | undefined;
+                    tagsets?:
+                      | Array<{
+                          __typename?: 'Tagset';
+                          id: string;
+                          name: string;
+                          tags: Array<string>;
+                          allowedValues: Array<string>;
+                          type: TagsetType;
+                        }>
+                      | undefined;
+                    storageBucket: { __typename?: 'StorageBucket'; id: string };
+                    references?:
+                      | Array<{
+                          __typename?: 'Reference';
+                          id: string;
+                          name: string;
+                          uri: string;
+                          description?: string | undefined;
+                        }>
+                      | undefined;
+                  };
+                  whiteboard?:
+                    | {
+                        __typename?: 'Whiteboard';
+                        id: string;
+                        nameID: string;
+                        createdDate: Date;
+                        contentUpdatePolicy: ContentUpdatePolicy;
+                        content: string;
+                        profile: {
+                          __typename?: 'Profile';
+                          id: string;
+                          url: string;
+                          displayName: string;
+                          description?: string | undefined;
+                          visual?:
+                            | {
+                                __typename?: 'Visual';
+                                id: string;
+                                uri: string;
+                                name: string;
+                                allowedTypes: Array<string>;
+                                aspectRatio: number;
+                                maxHeight: number;
+                                maxWidth: number;
+                                minHeight: number;
+                                minWidth: number;
+                                alternativeText?: string | undefined;
+                              }
+                            | undefined;
+                          preview?:
+                            | {
+                                __typename?: 'Visual';
+                                id: string;
+                                uri: string;
+                                name: string;
+                                allowedTypes: Array<string>;
+                                aspectRatio: number;
+                                maxHeight: number;
+                                maxWidth: number;
+                                minHeight: number;
+                                minWidth: number;
+                                alternativeText?: string | undefined;
+                              }
+                            | undefined;
+                          tagset?:
+                            | {
+                                __typename?: 'Tagset';
+                                id: string;
+                                name: string;
+                                tags: Array<string>;
+                                allowedValues: Array<string>;
+                                type: TagsetType;
+                              }
+                            | undefined;
+                          storageBucket: { __typename?: 'StorageBucket'; id: string };
+                        };
+                        authorization?:
+                          | {
+                              __typename?: 'Authorization';
+                              id: string;
+                              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                              anonymousReadAccess: boolean;
+                            }
+                          | undefined;
+                        createdBy?:
+                          | {
+                              __typename?: 'User';
+                              id: string;
+                              profile: {
+                                __typename?: 'Profile';
+                                id: string;
+                                displayName: string;
+                                url: string;
+                                location?:
+                                  | { __typename?: 'Location'; id: string; country: string; city: string }
+                                  | undefined;
+                                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                              };
+                            }
+                          | undefined;
+                      }
+                    | undefined;
+                };
+              }>;
               communityGuidelinesTemplates: Array<{
                 __typename?: 'CommunityGuidelinesTemplate';
                 id: string;
@@ -25014,6 +25158,148 @@ export type InnovationPackDataFragment = {
           };
           states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
         }>;
+        calloutTemplates: Array<{
+          __typename?: 'CalloutTemplate';
+          id: string;
+          type: CalloutType;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            description?: string | undefined;
+            tagset?:
+              | {
+                  __typename?: 'Tagset';
+                  id: string;
+                  name: string;
+                  tags: Array<string>;
+                  allowedValues: Array<string>;
+                  type: TagsetType;
+                }
+              | undefined;
+            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+          };
+          framing: {
+            __typename?: 'CalloutFraming';
+            id: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              description?: string | undefined;
+              tagset?:
+                | {
+                    __typename?: 'Tagset';
+                    id: string;
+                    name: string;
+                    tags: Array<string>;
+                    allowedValues: Array<string>;
+                    type: TagsetType;
+                  }
+                | undefined;
+              tagsets?:
+                | Array<{
+                    __typename?: 'Tagset';
+                    id: string;
+                    name: string;
+                    tags: Array<string>;
+                    allowedValues: Array<string>;
+                    type: TagsetType;
+                  }>
+                | undefined;
+              storageBucket: { __typename?: 'StorageBucket'; id: string };
+              references?:
+                | Array<{
+                    __typename?: 'Reference';
+                    id: string;
+                    name: string;
+                    uri: string;
+                    description?: string | undefined;
+                  }>
+                | undefined;
+            };
+            whiteboard?:
+              | {
+                  __typename?: 'Whiteboard';
+                  id: string;
+                  nameID: string;
+                  createdDate: Date;
+                  contentUpdatePolicy: ContentUpdatePolicy;
+                  content: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    url: string;
+                    displayName: string;
+                    description?: string | undefined;
+                    visual?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: string;
+                          allowedTypes: Array<string>;
+                          aspectRatio: number;
+                          maxHeight: number;
+                          maxWidth: number;
+                          minHeight: number;
+                          minWidth: number;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                    preview?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: string;
+                          allowedTypes: Array<string>;
+                          aspectRatio: number;
+                          maxHeight: number;
+                          maxWidth: number;
+                          minHeight: number;
+                          minWidth: number;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                    tagset?:
+                      | {
+                          __typename?: 'Tagset';
+                          id: string;
+                          name: string;
+                          tags: Array<string>;
+                          allowedValues: Array<string>;
+                          type: TagsetType;
+                        }
+                      | undefined;
+                    storageBucket: { __typename?: 'StorageBucket'; id: string };
+                  };
+                  authorization?:
+                    | {
+                        __typename?: 'Authorization';
+                        id: string;
+                        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                        anonymousReadAccess: boolean;
+                      }
+                    | undefined;
+                  createdBy?:
+                    | {
+                        __typename?: 'User';
+                        id: string;
+                        profile: {
+                          __typename?: 'Profile';
+                          id: string;
+                          displayName: string;
+                          url: string;
+                          location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
+                          avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                        };
+                      }
+                    | undefined;
+                }
+              | undefined;
+          };
+        }>;
         communityGuidelinesTemplates: Array<{
           __typename?: 'CommunityGuidelinesTemplate';
           id: string;
@@ -25113,6 +25399,142 @@ export type LibraryTemplatesFragment = {
         | undefined;
     };
     states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
+  }>;
+  calloutTemplates: Array<{
+    __typename?: 'CalloutTemplate';
+    id: string;
+    type: CalloutType;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      description?: string | undefined;
+      tagset?:
+        | {
+            __typename?: 'Tagset';
+            id: string;
+            name: string;
+            tags: Array<string>;
+            allowedValues: Array<string>;
+            type: TagsetType;
+          }
+        | undefined;
+      visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+    };
+    framing: {
+      __typename?: 'CalloutFraming';
+      id: string;
+      profile: {
+        __typename?: 'Profile';
+        id: string;
+        displayName: string;
+        description?: string | undefined;
+        tagset?:
+          | {
+              __typename?: 'Tagset';
+              id: string;
+              name: string;
+              tags: Array<string>;
+              allowedValues: Array<string>;
+              type: TagsetType;
+            }
+          | undefined;
+        tagsets?:
+          | Array<{
+              __typename?: 'Tagset';
+              id: string;
+              name: string;
+              tags: Array<string>;
+              allowedValues: Array<string>;
+              type: TagsetType;
+            }>
+          | undefined;
+        storageBucket: { __typename?: 'StorageBucket'; id: string };
+        references?:
+          | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
+          | undefined;
+      };
+      whiteboard?:
+        | {
+            __typename?: 'Whiteboard';
+            id: string;
+            nameID: string;
+            createdDate: Date;
+            contentUpdatePolicy: ContentUpdatePolicy;
+            content: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              url: string;
+              displayName: string;
+              description?: string | undefined;
+              visual?:
+                | {
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: string;
+                    allowedTypes: Array<string>;
+                    aspectRatio: number;
+                    maxHeight: number;
+                    maxWidth: number;
+                    minHeight: number;
+                    minWidth: number;
+                    alternativeText?: string | undefined;
+                  }
+                | undefined;
+              preview?:
+                | {
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: string;
+                    allowedTypes: Array<string>;
+                    aspectRatio: number;
+                    maxHeight: number;
+                    maxWidth: number;
+                    minHeight: number;
+                    minWidth: number;
+                    alternativeText?: string | undefined;
+                  }
+                | undefined;
+              tagset?:
+                | {
+                    __typename?: 'Tagset';
+                    id: string;
+                    name: string;
+                    tags: Array<string>;
+                    allowedValues: Array<string>;
+                    type: TagsetType;
+                  }
+                | undefined;
+              storageBucket: { __typename?: 'StorageBucket'; id: string };
+            };
+            authorization?:
+              | {
+                  __typename?: 'Authorization';
+                  id: string;
+                  myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                  anonymousReadAccess: boolean;
+                }
+              | undefined;
+            createdBy?:
+              | {
+                  __typename?: 'User';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    url: string;
+                    location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                  };
+                }
+              | undefined;
+          }
+        | undefined;
+    };
   }>;
   communityGuidelinesTemplates: Array<{
     __typename?: 'CommunityGuidelinesTemplate';

@@ -942,12 +942,6 @@ export const WhiteboardSummaryFragmentDoc = gql`
     }
   }
 `;
-export const WhiteboardContentFragmentDoc = gql`
-  fragment WhiteboardContent on Whiteboard {
-    id
-    content
-  }
-`;
 export const CreateWhiteboardWhiteboardTemplateFragmentDoc = gql`
   fragment CreateWhiteboardWhiteboardTemplate on WhiteboardTemplate {
     id
@@ -3390,6 +3384,12 @@ export const SearchResultSpaceFragmentDoc = gql`
   ${TagsetDetailsFragmentDoc}
   ${VisualUriFragmentDoc}
 `;
+export const WhiteboardContentFragmentDoc = gql`
+  fragment WhiteboardContent on Whiteboard {
+    id
+    content
+  }
+`;
 export const LibraryTemplatesFragmentDoc = gql`
   fragment LibraryTemplates on TemplatesSet {
     id
@@ -3444,6 +3444,38 @@ export const LibraryTemplatesFragmentDoc = gql`
       }
     }
     innovationFlowTemplatesCount
+    calloutTemplates {
+      id
+      type
+      profile {
+        ...TemplateCardProfileInfo
+      }
+      framing {
+        id
+        profile {
+          id
+          displayName
+          description
+          tagset {
+            ...TagsetDetails
+          }
+          tagsets {
+            ...TagsetDetails
+          }
+          storageBucket {
+            id
+          }
+          references {
+            ...ReferenceDetails
+          }
+        }
+        whiteboard {
+          ...WhiteboardDetails
+          ...WhiteboardContent
+        }
+      }
+    }
+    communityGuidelinesTemplatesCount
     communityGuidelinesTemplates {
       id
       profile {
@@ -3463,6 +3495,10 @@ export const LibraryTemplatesFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
   ${TagsetDetailsFragmentDoc}
+  ${TemplateCardProfileInfoFragmentDoc}
+  ${ReferenceDetailsFragmentDoc}
+  ${WhiteboardDetailsFragmentDoc}
+  ${WhiteboardContentFragmentDoc}
 `;
 export const InnovationPackProviderProfileWithAvatarFragmentDoc = gql`
   fragment InnovationPackProviderProfileWithAvatar on Organization {
