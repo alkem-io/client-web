@@ -5,7 +5,7 @@ import GridItem from '../../../../core/ui/grid/GridItem';
 import { AuthorizationPrivilege, CommunityRole } from '../../../../core/apollo/generated/graphql-schema';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 import isJourneyMember from '../../../../domain/journey/utils/isJourneyMember';
-import { MembershipType } from './MyMembershipsDialog';
+import { MembershipProps } from './MyMembershipsDialog';
 
 interface MyMembershipsSubSpaceProps {
   subspace: Identifiable & {
@@ -16,17 +16,17 @@ interface MyMembershipsSubSpaceProps {
       myRoles?: CommunityRole[];
     };
   };
-  memberships: MembershipType;
+  getMembership(id: string): MembershipProps;
 }
 
-const MyMembershipsSubSpace = ({ subspace, memberships }: MyMembershipsSubSpaceProps) => {
+const MyMembershipsSubSpace = ({ subspace, getMembership }: MyMembershipsSubSpaceProps) => {
   const canReadSubSpace = subspace.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Read);
 
   const hydratedSubSpace = useMemo(() => {
     return {
       ...subspace,
-      ...memberships[subspace.id],
-      subSubSpaces: memberships[subspace.id]?.subspaces?.filter(isJourneyMember),
+      ...getMembership(subspace.id),
+      subSubSpaces: getMembership(subspace.id)?.subspaces?.filter(isJourneyMember),
     };
   }, [subspace]);
 
@@ -39,7 +39,7 @@ const MyMembershipsSubSpace = ({ subspace, memberships }: MyMembershipsSubSpaceP
       <Gutters disablePadding>
         <JourneyCardHorizontal journey={hydratedSubSpace} journeyTypeName="subspace" />
         {hydratedSubSpace.subSubSpaces?.map(subSubSpace => (
-          <JourneyCardHorizontal journey={memberships[subSubSpace.id]} journeyTypeName="subsubspace" />
+          <JourneyCardHorizontal journey={getMembership(subSubSpace.id)} journeyTypeName="subsubspace" />
         ))}
       </Gutters>
     </GridItem>

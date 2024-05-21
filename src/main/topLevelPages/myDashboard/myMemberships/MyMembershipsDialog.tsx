@@ -24,6 +24,7 @@ import {
   CommunityRole,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { Identifiable } from '../../../../core/utils/Identifiable';
+import Loading from '../../../../core/ui/loading/Loading';
 
 interface MyJourneysDialogProps {
   open: boolean;
@@ -40,7 +41,7 @@ interface SubspaceAccessProps extends Identifiable {
   };
 }
 
-type MembershipProps = {
+export interface MembershipProps {
   profile: {
     url: string;
     displayName: string;
@@ -52,9 +53,7 @@ type MembershipProps = {
     myRoles?: CommunityRole[];
   };
   subspaces?: SubspaceAccessProps[];
-};
-
-export type MembershipType = Record<string, MembershipProps>;
+}
 
 const MyMembershipsDialog = ({ open, onClose }: MyJourneysDialogProps) => {
   const { t } = useTranslation();
@@ -65,21 +64,11 @@ const MyMembershipsDialog = ({ open, onClose }: MyJourneysDialogProps) => {
 
   const landingUrl = useLandingUrl();
 
-  const myTopLevelMemberships = useMemo(
-    () =>
-      data?.me.spaceMemberships
-        .filter(space => space?.level === 0)
-        .map(space => {
-          return {
-            ...space,
-          };
-        }),
-    [data]
-  );
+  const myTopLevelMemberships = useMemo(() => data?.me.spaceMemberships.filter(space => space?.level === 0), [data]);
 
   // As the query returns all levels of memberships, we're using a map for ease of access to the data of each membership
   // without having to iterate over the array each time or making redundant queries for the details of every subspace
-  const allMyMembershipsMap: MembershipType = useMemo(
+  const allMyMembershipsMap: Record<string, MembershipProps> = useMemo(
     () =>
       (data?.me.spaceMemberships ?? []).reduce((acc, item) => {
         acc[item.id] = item;
@@ -88,10 +77,13 @@ const MyMembershipsDialog = ({ open, onClose }: MyJourneysDialogProps) => {
     [data]
   );
 
+  const getMembership = (id: string) => allMyMembershipsMap[id];
+
   return (
     <DialogWithGrid open={open} onClose={onClose} columns={12}>
       <DialogHeader icon={<SpaceIcon />} title={t('pages.home.sections.myMemberships.title')} onClose={onClose} />
       <DialogContent>
+        {loading && <Loading />}
         <Gutters disablePadding>
           {myTopLevelMemberships?.map(space => (
             <PageContentBlock
@@ -116,7 +108,7 @@ const MyMembershipsDialog = ({ open, onClose }: MyJourneysDialogProps) => {
                 <Gutters row disablePadding flexGrow={1} flexWrap="wrap">
                   <GridProvider columns={8}>
                     {space.subspaces?.filter(isJourneyMember).map(subspace => (
-                      <MyMembershipsSubSpace key={subspace.id} subspace={subspace} memberships={allMyMembershipsMap} />
+                      <MyMembershipsSubSpace key={subspace.id} subspace={subspace} getMembership={getMembership} />
                     ))}
                     {!loading && !space.subspaces?.length && (
                       <Caption alignSelf="center">{t('pages.home.sections.myMemberships.noChildMemberships')}</Caption>
