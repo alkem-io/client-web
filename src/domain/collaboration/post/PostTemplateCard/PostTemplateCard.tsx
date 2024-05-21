@@ -8,23 +8,18 @@ import { Caption } from '../../../../core/ui/typography/components';
 import InnovationPackIcon from '../../InnovationPack/InnovationPackIcon';
 import CardDescriptionWithTags from '../../../../core/ui/card/CardDescriptionWithTags';
 import CardDetails from '../../../../core/ui/card/CardDetails';
-import {
-  InnovationPackTemplate,
-  TemplateCardBaseProps,
-} from '../../templates/CollaborationTemplatesLibrary/TemplateBase';
+import { TemplateBase, TemplateCardBaseProps } from '../../templates/CollaborationTemplatesLibrary/TemplateBase';
 import { PostIcon } from '../../post/icon/PostIcon';
 
-interface PostTemplateCardProps extends TemplateCardBaseProps<InnovationPackTemplate> {}
+interface PostTemplateCardProps extends TemplateCardBaseProps<TemplateBase> {}
 
 const PostTemplateCard: FC<PostTemplateCardProps> = ({ template, innovationPack, loading, onClick }) => {
-  const cardInnovationPack = innovationPack || template?.innovationPack;
-
   return (
     <ContributeCard onClick={onClick}>
       <CardHeader title={template?.profile.displayName} iconComponent={PostIcon}>
         {loading && <Skeleton />}
-        <CardHeaderCaption logoUrl={cardInnovationPack?.provider?.profile.avatar?.uri}>
-          {cardInnovationPack?.provider?.profile.displayName}
+        <CardHeaderCaption logoUrl={innovationPack?.provider?.profile.avatar?.uri}>
+          {innovationPack?.provider?.profile.displayName}
         </CardHeaderCaption>
       </CardHeader>
       <CardDetails>
@@ -32,9 +27,9 @@ const PostTemplateCard: FC<PostTemplateCardProps> = ({ template, innovationPack,
           {template?.profile.description}
         </CardDescriptionWithTags>
       </CardDetails>
-      {cardInnovationPack?.profile.displayName && (
+      {innovationPack && (
         <CardSegmentCaption icon={<InnovationPackIcon />}>
-          <Caption noWrap>{cardInnovationPack?.profile.displayName}</Caption>
+          <Caption noWrap>{innovationPack?.profile.displayName}</Caption>
         </CardSegmentCaption>
       )}
       {loading && <Skeleton />}

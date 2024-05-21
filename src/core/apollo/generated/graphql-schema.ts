@@ -36,6 +36,8 @@ export type Apm = {
 
 export type Account = {
   __typename?: 'Account';
+  /** The Agent representing this Account. */
+  agent: Agent;
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The defaults in use by this Account */
@@ -738,6 +740,7 @@ export enum AuthorizationPrivilege {
   Read = 'READ',
   ReadUsers = 'READ_USERS',
   ReadUserPii = 'READ_USER_PII',
+  ReadUserSettings = 'READ_USER_SETTINGS',
   SaveAsTemplate = 'SAVE_AS_TEMPLATE',
   Update = 'UPDATE',
   UpdateCalloutPublisher = 'UPDATE_CALLOUT_PUBLISHER',
@@ -1180,6 +1183,8 @@ export type Community = Groupable & {
   myMembershipStatus?: Maybe<CommunityMembershipStatus>;
   /** The roles on this community for the currently logged in user. */
   myRoles: Array<CommunityRole>;
+  /** The implicit roles on this community for the currently logged in user. */
+  myRolesImplicit: Array<CommunityRoleImplicit>;
   /** All Organizations that have the specified Role in this Community. */
   organizationsInRole: Array<Organization>;
   /** The policy that defines the roles for this Community. */
@@ -1286,6 +1291,10 @@ export enum CommunityRole {
   Admin = 'ADMIN',
   Lead = 'LEAD',
   Member = 'MEMBER',
+}
+
+export enum CommunityRoleImplicit {
+  SubspaceAdmin = 'SUBSPACE_ADMIN',
 }
 
 export type CommunityRolePolicy = {
@@ -1517,6 +1526,8 @@ export type CreateInnovationFlowTemplateOnTemplatesSetInput = {
 };
 
 export type CreateInnovationHubInput = {
+  /** Account ID, associated with the Innovation Hub. */
+  accountID: Scalars['UUID'];
   /** A readable identifier, unique within the containing scope. */
   nameID?: InputMaybe<Scalars['NameID']>;
   profileData: CreateProfileInput;
@@ -1539,19 +1550,25 @@ export type CreateInnovationPackOnLibraryInput = {
   tags?: InputMaybe<Array<Scalars['String']>>;
 };
 
-export type CreateInvitationExistingUserOnCommunityInput = {
+export type CreateInvitationForUsersOnCommunityInput = {
   communityID: Scalars['UUID'];
-  /** The identifier for the user being invited. */
+  /** The identifiers for the users being invited. */
   invitedUsers: Array<Scalars['UUID']>;
   welcomeMessage?: InputMaybe<Scalars['String']>;
 };
 
-export type CreateInvitationExternalUserOnCommunityInput = {
+export type CreateInvitationUserByEmailOnCommunityInput = {
   communityID: Scalars['UUID'];
   email: Scalars['String'];
   firstName?: InputMaybe<Scalars['String']>;
   lastName?: InputMaybe<Scalars['String']>;
   welcomeMessage?: InputMaybe<Scalars['String']>;
+};
+
+export type CreateLicensePlanOnLicensingInput = {
+  licensingID: Scalars['UUID'];
+  /** The name of the License Plan */
+  name: Scalars['String'];
 };
 
 export type CreateLinkInput = {
@@ -1724,8 +1741,12 @@ export type CreateWhiteboardTemplateOnTemplatesSetInput = {
 
 export type Credential = {
   __typename?: 'Credential';
+  /** The timestamp for the expiry of this credential. */
+  expires?: Maybe<Scalars['Float']>;
   /** The ID of the entity */
   id: Scalars['UUID'];
+  /** The User issuing the credential */
+  issuer?: Maybe<Scalars['UUID']>;
   resourceID: Scalars['String'];
   type: AuthorizationCredential;
 };
@@ -1807,6 +1828,10 @@ export type DeleteInvitationExternalInput = {
 };
 
 export type DeleteInvitationInput = {
+  ID: Scalars['UUID'];
+};
+
+export type DeleteLicensePlanInput = {
   ID: Scalars['UUID'];
 };
 
@@ -2090,6 +2115,8 @@ export type InnovationFlowTemplate = {
 
 export type InnovationHub = {
   __typename?: 'InnovationHub';
+  /** The Innovation Hub account. */
+  account: Account;
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The ID of the entity */
@@ -2150,6 +2177,8 @@ export type Invitation = {
   createdDate: Scalars['DateTime'];
   /** The ID of the entity */
   id: Scalars['UUID'];
+  /** Whether to also add the invited user to the parent community. */
+  invitedToParent: Scalars['Boolean'];
   lifecycle: Lifecycle;
   updatedDate: Scalars['DateTime'];
   /** The User who is invited. */
@@ -2174,6 +2203,8 @@ export type InvitationExternal = {
   firstName: Scalars['String'];
   /** The ID of the entity */
   id: Scalars['UUID'];
+  /** Whether to also add the invited user to the parent community. */
+  invitedToParent: Scalars['Boolean'];
   lastName: Scalars['String'];
   /** Whether a new user profile has been created. */
   profileCreated: Scalars['Boolean'];
@@ -2264,6 +2295,16 @@ export enum LicenseFeatureFlagName {
   WhiteboardMultiUser = 'WHITEBOARD_MULTI_USER',
 }
 
+export type LicensePlan = {
+  __typename?: 'LicensePlan';
+  /** Is this plan enabled? */
+  enabled: Scalars['Boolean'];
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** The name of the License Plan */
+  name: Scalars['String'];
+};
+
 export type LicensePolicy = {
   __typename?: 'LicensePolicy';
   /** The authorization rules for the entity */
@@ -2286,6 +2327,18 @@ export enum LicensePrivilege {
   VirtualContributorAccess = 'VIRTUAL_CONTRIBUTOR_ACCESS',
   WhiteboardMultiUser = 'WHITEBOARD_MULTI_USER',
 }
+
+export type Licensing = {
+  __typename?: 'Licensing';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** The License Plans in use on the platform. */
+  plans: Array<LicensePlan>;
+  /** The LicensePolicy in use by the Licensing setup. */
+  policy: LicensePolicy;
+};
 
 export type Lifecycle = {
   __typename?: 'Lifecycle';
@@ -2628,6 +2681,8 @@ export type Mutation = {
   createInnovationHub: InnovationHub;
   /** Create a new InnovatonPack on the Library. */
   createInnovationPackOnLibrary: InnovationPack;
+  /** Create a new LicensePlan on the Licensing. */
+  createLicensePlan: LicensePlan;
   /** Creates a new Organization on the platform. */
   createOrganization: Organization;
   /** Creates a new PostTemplate on the specified TemplatesSet. */
@@ -2676,6 +2731,8 @@ export type Mutation = {
   deleteInvitation: Invitation;
   /** Removes the specified User invitationExternal. */
   deleteInvitationExternal: InvitationExternal;
+  /** Deletes the specified LicensePlan. */
+  deleteLicensePlan: LicensePlan;
   /** Deletes the specified Link. */
   deleteLink: Link;
   /** Deletes the specified Organization. */
@@ -2802,8 +2859,12 @@ export type Mutation = {
   updateInnovationFlowTemplate: InnovationFlowTemplate;
   /** Update Innovation Hub. */
   updateInnovationHub: InnovationHub;
+  /** Update Innovation Hub Settings. */
+  updateInnovationHubPlatformSettings: InnovationHub;
   /** Updates the InnovationPack. */
   updateInnovationPack: InnovationPack;
+  /** Updates the LicensePlan. */
+  updateLicensePlan: LicensePlan;
   /** Updates the specified Link. */
   updateLink: Link;
   /** Updates the specified Organization. */
@@ -2998,6 +3059,10 @@ export type MutationCreateInnovationPackOnLibraryArgs = {
   packData: CreateInnovationPackOnLibraryInput;
 };
 
+export type MutationCreateLicensePlanArgs = {
+  planData: CreateLicensePlanOnLicensingInput;
+};
+
 export type MutationCreateOrganizationArgs = {
   organizationData: CreateOrganizationInput;
 };
@@ -3090,6 +3155,10 @@ export type MutationDeleteInvitationExternalArgs = {
   deleteData: DeleteInvitationExternalInput;
 };
 
+export type MutationDeleteLicensePlanArgs = {
+  deleteData: DeleteLicensePlanInput;
+};
+
 export type MutationDeleteLinkArgs = {
   deleteData: DeleteLinkInput;
 };
@@ -3171,11 +3240,11 @@ export type MutationGrantCredentialToUserArgs = {
 };
 
 export type MutationInviteExistingUserForCommunityMembershipArgs = {
-  invitationData: CreateInvitationExistingUserOnCommunityInput;
+  invitationData: CreateInvitationForUsersOnCommunityInput;
 };
 
 export type MutationInviteForCommunityMembershipByEmailArgs = {
-  invitationData: CreateInvitationExternalUserOnCommunityInput;
+  invitationData: CreateInvitationUserByEmailOnCommunityInput;
 };
 
 export type MutationJoinCommunityArgs = {
@@ -3330,8 +3399,16 @@ export type MutationUpdateInnovationHubArgs = {
   updateData: UpdateInnovationHubInput;
 };
 
+export type MutationUpdateInnovationHubPlatformSettingsArgs = {
+  updateData: UpdateInnovationHubPlatformSettingsInput;
+};
+
 export type MutationUpdateInnovationPackArgs = {
   innovationPackData: UpdateInnovationPackInput;
+};
+
+export type MutationUpdateLicensePlanArgs = {
+  updateData: UpdateLicensePlanInput;
 };
 
 export type MutationUpdateLinkArgs = {
@@ -3610,8 +3687,8 @@ export type Platform = {
   latestReleaseDiscussion?: Maybe<LatestReleaseDiscussion>;
   /** The Innovation Library for the platform */
   library: Library;
-  /** The LicensePolicy in use by the platform. */
-  licensePolicy: LicensePolicy;
+  /** The Licensing in use by the platform. */
+  licensing: Licensing;
   /** Alkemio Services Metadata. */
   metadata: Metadata;
   /** The StorageAggregator with documents in use by Users + Organizations on the Platform. */
@@ -4919,6 +4996,8 @@ export type TemplatesSet = {
   authorization?: Maybe<Authorization>;
   /** The CalloutTemplates in this TemplatesSet. */
   calloutTemplates: Array<CalloutTemplate>;
+  /** The total number of CalloutTemplates in this TemplatesSet. */
+  calloutTemplatesCount: Scalars['Float'];
   /** A single CommunityGuidelinesTemplate */
   communityGuidelinesTemplate?: Maybe<CommunityGuidelinesTemplate>;
   /** The CommunityGuidelines in this TemplatesSet. */
@@ -5194,6 +5273,12 @@ export type UpdateInnovationHubInput = {
   spaceVisibilityFilter?: InputMaybe<SpaceVisibility>;
 };
 
+export type UpdateInnovationHubPlatformSettingsInput = {
+  ID: Scalars['UUID'];
+  /** An Account ID associated with the InnovationHub */
+  accountID: Scalars['UUID'];
+};
+
 export type UpdateInnovationPackInput = {
   /** The ID or NameID of the InnovationPack. */
   ID: Scalars['UUID_NAMEID'];
@@ -5210,6 +5295,10 @@ export type UpdateLicenseInput = {
   featureFlags?: InputMaybe<Array<UpdateFeatureFlagInput>>;
   /** Visibility of the Space. */
   visibility?: InputMaybe<SpaceVisibility>;
+};
+
+export type UpdateLicensePlanInput = {
+  ID: Scalars['UUID'];
 };
 
 export type UpdateLinkInput = {
@@ -21401,7 +21490,37 @@ export type AdminSpaceTemplatesQuery = {
                   communityGuidelinesTemplates: Array<{
                     __typename?: 'CommunityGuidelinesTemplate';
                     id: string;
-                    profile: { __typename?: 'Profile'; displayName: string; description?: string | undefined };
+                    profile: {
+                      __typename?: 'Profile';
+                      id: string;
+                      displayName: string;
+                      description?: string | undefined;
+                      tagset?:
+                        | {
+                            __typename?: 'Tagset';
+                            id: string;
+                            name: string;
+                            tags: Array<string>;
+                            allowedValues: Array<string>;
+                            type: TagsetType;
+                          }
+                        | undefined;
+                      visual?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: string;
+                            allowedTypes: Array<string>;
+                            aspectRatio: number;
+                            maxHeight: number;
+                            maxWidth: number;
+                            minHeight: number;
+                            minWidth: number;
+                            alternativeText?: string | undefined;
+                          }
+                        | undefined;
+                    };
                     guidelines: {
                       __typename?: 'CommunityGuidelines';
                       id: string;
@@ -21410,6 +21529,15 @@ export type AdminSpaceTemplatesQuery = {
                         id: string;
                         displayName: string;
                         description?: string | undefined;
+                        references?:
+                          | Array<{
+                              __typename?: 'Reference';
+                              id: string;
+                              name: string;
+                              uri: string;
+                              description?: string | undefined;
+                            }>
+                          | undefined;
                       };
                     };
                   }>;
@@ -21443,11 +21571,55 @@ export type AdminCommunityGuidelinesTemplatesQuery = {
             communityGuidelinesTemplates: Array<{
               __typename?: 'CommunityGuidelinesTemplate';
               id: string;
-              profile: { __typename?: 'Profile'; displayName: string; description?: string | undefined };
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                description?: string | undefined;
+                tagset?:
+                  | {
+                      __typename?: 'Tagset';
+                      id: string;
+                      name: string;
+                      tags: Array<string>;
+                      allowedValues: Array<string>;
+                      type: TagsetType;
+                    }
+                  | undefined;
+                visual?:
+                  | {
+                      __typename?: 'Visual';
+                      id: string;
+                      uri: string;
+                      name: string;
+                      allowedTypes: Array<string>;
+                      aspectRatio: number;
+                      maxHeight: number;
+                      maxWidth: number;
+                      minHeight: number;
+                      minWidth: number;
+                      alternativeText?: string | undefined;
+                    }
+                  | undefined;
+              };
               guidelines: {
                 __typename?: 'CommunityGuidelines';
                 id: string;
-                profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  description?: string | undefined;
+                  references?:
+                    | Array<{
+                        __typename?: 'Reference';
+                        id: string;
+                        name: string;
+                        uri: string;
+                        description?: string | undefined;
+                      }>
+                    | undefined;
+                };
               };
             }>;
           }
@@ -21612,11 +21784,49 @@ export type AdminInnovationFlowTemplateFragment = {
 export type AdminCommunityGuidelinesTemplateFragment = {
   __typename?: 'CommunityGuidelinesTemplate';
   id: string;
-  profile: { __typename?: 'Profile'; displayName: string; description?: string | undefined };
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    description?: string | undefined;
+    tagset?:
+      | {
+          __typename?: 'Tagset';
+          id: string;
+          name: string;
+          tags: Array<string>;
+          allowedValues: Array<string>;
+          type: TagsetType;
+        }
+      | undefined;
+    visual?:
+      | {
+          __typename?: 'Visual';
+          id: string;
+          uri: string;
+          name: string;
+          allowedTypes: Array<string>;
+          aspectRatio: number;
+          maxHeight: number;
+          maxWidth: number;
+          minHeight: number;
+          minWidth: number;
+          alternativeText?: string | undefined;
+        }
+      | undefined;
+  };
   guidelines: {
     __typename?: 'CommunityGuidelines';
     id: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      description?: string | undefined;
+      references?:
+        | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
+        | undefined;
+    };
   };
 };
 
@@ -21832,7 +22042,37 @@ export type InnovationPacksQuery = {
               communityGuidelinesTemplates: Array<{
                 __typename?: 'CommunityGuidelinesTemplate';
                 id: string;
-                profile: { __typename?: 'Profile'; displayName: string; description?: string | undefined };
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  description?: string | undefined;
+                  tagset?:
+                    | {
+                        __typename?: 'Tagset';
+                        id: string;
+                        name: string;
+                        tags: Array<string>;
+                        allowedValues: Array<string>;
+                        type: TagsetType;
+                      }
+                    | undefined;
+                  visual?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        allowedTypes: Array<string>;
+                        aspectRatio: number;
+                        maxHeight: number;
+                        maxWidth: number;
+                        minHeight: number;
+                        minWidth: number;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                };
                 guidelines: {
                   __typename?: 'CommunityGuidelines';
                   id: string;
@@ -21841,6 +22081,15 @@ export type InnovationPacksQuery = {
                     id: string;
                     displayName: string;
                     description?: string | undefined;
+                    references?:
+                      | Array<{
+                          __typename?: 'Reference';
+                          id: string;
+                          name: string;
+                          uri: string;
+                          description?: string | undefined;
+                        }>
+                      | undefined;
                   };
                 };
               }>;
@@ -22027,11 +22276,49 @@ export type AdminInnovationPackTemplatesFragment = {
   communityGuidelinesTemplates: Array<{
     __typename?: 'CommunityGuidelinesTemplate';
     id: string;
-    profile: { __typename?: 'Profile'; displayName: string; description?: string | undefined };
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      description?: string | undefined;
+      tagset?:
+        | {
+            __typename?: 'Tagset';
+            id: string;
+            name: string;
+            tags: Array<string>;
+            allowedValues: Array<string>;
+            type: TagsetType;
+          }
+        | undefined;
+      visual?:
+        | {
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: string;
+            allowedTypes: Array<string>;
+            aspectRatio: number;
+            maxHeight: number;
+            maxWidth: number;
+            minHeight: number;
+            minWidth: number;
+            alternativeText?: string | undefined;
+          }
+        | undefined;
+    };
     guidelines: {
       __typename?: 'CommunityGuidelines';
       id: string;
-      profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+      profile: {
+        __typename?: 'Profile';
+        id: string;
+        displayName: string;
+        description?: string | undefined;
+        references?:
+          | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
+          | undefined;
+      };
     };
   }>;
 };
@@ -22207,7 +22494,37 @@ export type AdminInnovationPackQuery = {
                   communityGuidelinesTemplates: Array<{
                     __typename?: 'CommunityGuidelinesTemplate';
                     id: string;
-                    profile: { __typename?: 'Profile'; displayName: string; description?: string | undefined };
+                    profile: {
+                      __typename?: 'Profile';
+                      id: string;
+                      displayName: string;
+                      description?: string | undefined;
+                      tagset?:
+                        | {
+                            __typename?: 'Tagset';
+                            id: string;
+                            name: string;
+                            tags: Array<string>;
+                            allowedValues: Array<string>;
+                            type: TagsetType;
+                          }
+                        | undefined;
+                      visual?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: string;
+                            allowedTypes: Array<string>;
+                            aspectRatio: number;
+                            maxHeight: number;
+                            maxWidth: number;
+                            minHeight: number;
+                            minWidth: number;
+                            alternativeText?: string | undefined;
+                          }
+                        | undefined;
+                    };
                     guidelines: {
                       __typename?: 'CommunityGuidelines';
                       id: string;
@@ -22216,6 +22533,15 @@ export type AdminInnovationPackQuery = {
                         id: string;
                         displayName: string;
                         description?: string | undefined;
+                        references?:
+                          | Array<{
+                              __typename?: 'Reference';
+                              id: string;
+                              name: string;
+                              uri: string;
+                              description?: string | undefined;
+                            }>
+                          | undefined;
                       };
                     };
                   }>;
@@ -24578,6 +24904,7 @@ export type InnovationLibraryQuery = {
               postTemplatesCount: number;
               whiteboardTemplatesCount: number;
               innovationFlowTemplatesCount: number;
+              calloutTemplatesCount: number;
               communityGuidelinesTemplatesCount: number;
               postTemplates: Array<{
                 __typename?: 'PostTemplate';
@@ -24846,6 +25173,7 @@ export type InnovationPackDataFragment = {
         postTemplatesCount: number;
         whiteboardTemplatesCount: number;
         innovationFlowTemplatesCount: number;
+        calloutTemplatesCount: number;
         communityGuidelinesTemplatesCount: number;
         postTemplates: Array<{
           __typename?: 'PostTemplate';
@@ -25088,6 +25416,7 @@ export type LibraryTemplatesFragment = {
   postTemplatesCount: number;
   whiteboardTemplatesCount: number;
   innovationFlowTemplatesCount: number;
+  calloutTemplatesCount: number;
   communityGuidelinesTemplatesCount: number;
   postTemplates: Array<{
     __typename?: 'PostTemplate';
