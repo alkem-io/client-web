@@ -32,6 +32,9 @@ const useLibraryTemplateCardProps = (
             ...(innovationPack.templates?.innovationFlowTemplates ?? []).map(
               templateInnovationPackHydrator(innovationPack, TemplateType.InnovationFlowTemplate)
             ),
+            ...(innovationPack.templates?.calloutTemplates ?? []).map(
+              templateInnovationPackHydrator(innovationPack, TemplateType.CalloutTemplate)
+            ),
             ...(innovationPack.templates?.communityGuidelinesTemplates ?? []).map(
               templateInnovationPackHydrator(innovationPack, TemplateType.CommunityGuidelinesTemplate)
             ),

@@ -48,6 +48,9 @@ fragment AdminInnovationPackTemplates on TemplatesSet {
   whiteboardTemplates {
     ...AdminWhiteboardTemplate
   }
+  communityGuidelinesTemplates {
+    ...AdminCommunityGuidelinesTemplate
+  }
 }
 
 query AdminInnovationPack($innovationPackId: UUID_NAMEID!) {

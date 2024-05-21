@@ -21,7 +21,6 @@ import { Identifiable } from '../../../core/utils/Identifiable';
 import CalloutTemplatePreview from '../calloutTemplate/CalloutTemplatePreview';
 import CalloutTemplateCard, { CalloutTemplate } from '../calloutTemplate/CalloutTemplateCard';
 import { InnovationFlowState } from '../../collaboration/InnovationFlow/InnovationFlow';
-import { CommunityGuidelinesTemplate } from '../../collaboration/communityGuidelines/CommunityGuidelinesTemplateCard/CommunityGuidelines';
 import CommunityGuidelinesTemplateCard from '../../collaboration/communityGuidelines/CommunityGuidelinesTemplateCard/CommunityGuidelinesTemplateCard';
 import CommunityGuidelinesTemplatePreview from '../../collaboration/communityGuidelines/CommunityGuidelinesTemplateLibrary/CommunityGuidelinesTemplatePreview';
 
@@ -43,7 +42,7 @@ export type TemplatePreview =
       templateType: TemplateType.CalloutTemplate;
     }
   | {
-      template: CommunityGuidelinesTemplate;
+      template: TemplateBase;
       templateType: TemplateType.CommunityGuidelinesTemplate;
     };
 

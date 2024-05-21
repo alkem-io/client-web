@@ -11,7 +11,7 @@ import CardDetails from '../../../../core/ui/card/CardDetails';
 import { TemplateBase, TemplateCardBaseProps } from '../../templates/CollaborationTemplatesLibrary/TemplateBase';
 import { WhiteboardIcon } from '../../whiteboard/icon/WhiteboardIcon';
 
-interface CalloutTemplateCardProps extends TemplateCardBaseProps<TemplateBase> { }
+interface CalloutTemplateCardProps extends TemplateCardBaseProps<TemplateBase> {}
 
 const CalloutTemplateCard: FC<CalloutTemplateCardProps> = ({ template, innovationPack, loading, onClick }) => {
   return (
@@ -27,7 +27,7 @@ const CalloutTemplateCard: FC<CalloutTemplateCardProps> = ({ template, innovatio
           {template?.profile.description}
         </CardDescriptionWithTags>
       </CardDetails>
-      {innovationPack && (
+      {innovationPack?.profile.displayName && (
         <CardSegmentCaption icon={<InnovationPackIcon />}>
           <Caption noWrap>{innovationPack?.profile.displayName}</Caption>
         </CardSegmentCaption>

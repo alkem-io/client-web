@@ -6,11 +6,12 @@ import PageContentBlock, { PageContentBlockProps } from './PageContentBlock';
 
 interface PageContentBlockCollapsibleProps extends PageContentBlockProps {
   header: ReactNode;
+  primaryAction?: ReactNode;
   children: ReactNode;
 }
 
 const PageContentBlockCollapsible = forwardRef<HTMLDivElement, PageContentBlockCollapsibleProps>(
-  ({ header, children, ...props }, ref) => {
+  ({ header, primaryAction, children, ...props }, ref) => {
     const [isCollapsed, setIsCollapsed] = useState(true);
 
     return (
@@ -22,6 +23,7 @@ const PageContentBlockCollapsible = forwardRef<HTMLDivElement, PageContentBlockC
           onClick={() => setIsCollapsed(!isCollapsed)}
         >
           {header}
+          {isCollapsed ? undefined : primaryAction}
           {isCollapsed ? <ExpandMoreIcon /> : <ExpandLessIcon />}
         </Box>
         <Collapse in={!isCollapsed}>{children}</Collapse>

@@ -7,7 +7,7 @@ import Gutters from '../../../../core/ui/grid/Gutters';
 import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 import References from '../../../shared/components/References/References';
 
-interface CommunityGuidelinesInfo {
+export interface CommunityGuidelinesInfo {
   displayName?: string;
   description?: string;
   references?: Reference[];

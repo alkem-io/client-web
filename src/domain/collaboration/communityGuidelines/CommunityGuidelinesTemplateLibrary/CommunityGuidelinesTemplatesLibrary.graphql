@@ -1,0 +1,51 @@
+query SpaceCommunityGuidelinesTemplatesLibrary($spaceNameId: UUID_NAMEID!) {
+  space(ID: $spaceNameId) {
+    id
+    account {
+      id
+      library {
+        id
+        communityGuidelinesTemplates {
+          ...CommunityGuidelinesTemplateCard
+        }
+      }
+      host {
+        id
+        nameID
+        profile {
+          ...TemplateProviderProfile
+        }
+      }
+    }
+  }
+}
+
+query PlatformCommunityGuidelinesTemplatesLibrary {
+  platform {
+    id
+    library {
+      id
+      innovationPacks {
+        id
+        nameID
+        profile {
+          id
+          displayName
+        }
+        provider {
+          id
+          nameID
+          profile {
+            ...TemplateProviderProfile
+          }
+        }
+        templates {
+          id
+          communityGuidelinesTemplates {
+            ...CommunityGuidelinesTemplateCard
+          }
+        }
+      }
+    }
+  }
+}

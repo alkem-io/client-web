@@ -587,9 +587,7 @@
       "title": "Community Guidelines",
       "updatedSuccessfully": "Community guidelines updated successfully.",
       "adminsOnly": "Since there are no Community Guidelines specified, this block is only visible for admins and leads.",
-      "communityGuidelinesRedirect": "Click here to update the Community Guidelines in the Space settings.",
-      "templateTitle": "Title",
-      "templateDescription": "Guidelines"
+      "communityGuidelinesRedirect": "Click here to update the Community Guidelines in the Space settings."
     },
     "applicationsHelp": "Here you can find everyone that applied to become a member of this Space. By clicking on them you can review their application and accept or reject them.",
     "applicationStatus": {
@@ -891,6 +889,13 @@
     "innovationFlowTemplates": {
       "name": "Innovation Flow template",
       "title": "Template Library: Innovation Flows"
+    },
+    "communityGuidelinesTemplates": {
+      "name": "Community Guidelines",
+      "title": "Template Library: Community Guidelines",
+      "content": "Guidelines",
+      "guidelinesTitle": "Title",
+      "guidelinesDescription": "Guidelines"
     },
     "spaceTemplates": "Templates selected by the host of this community",
     "platformTemplates": "Platform Templates",
@@ -1199,8 +1204,7 @@
         "POST_COLLECTION": "Call for Posts",
         "WHITEBOARD_COLLECTION": "Call for Whiteboards",
         "LINK_COLLECTION": "Collection of Links and Documents",
-        "WHITEBOARD": "Whiteboard",
-        "MEMBER_GUIDELINES": "Member Guidelines"
+        "WHITEBOARD": "Whiteboard"
       },
       "callout-templates-library": "...or have a look at the library!"
     },
