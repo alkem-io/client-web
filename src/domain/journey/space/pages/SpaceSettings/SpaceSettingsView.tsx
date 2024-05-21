@@ -39,6 +39,7 @@ const defaultSpaceSettings = {
     policy: CommunityMembershipPolicy.Invitations,
     trustedOrganizations: [],
     hostOrganizationTrusted: false, // Computed from `trustedOrganizations`
+    allowSubspaceAdminsToInviteMembers: true,
   },
   collaboration: {
     allowMembersToCreateCallouts: true,
@@ -79,6 +80,8 @@ export const SpaceSettingsView: FC<SpaceSettingsViewProps> = ({ journeyId, journ
   const handleUpdateSettings = async ({
     privacyMode = currentSettings?.privacy?.mode ?? defaultSpaceSettings.privacy.mode,
     membershipPolicy = currentSettings?.membership?.policy ?? defaultSpaceSettings.membership.policy,
+    allowSubspaceAdminsToInviteMembers = currentSettings?.membership?.allowSubspaceAdminsToInviteMembers ??
+      defaultSpaceSettings.membership.allowSubspaceAdminsToInviteMembers,
     hostOrganizationTrusted = currentSettings.hostOrganizationTrusted ??
       defaultSpaceSettings.membership.hostOrganizationTrusted,
     collaborationSettings = currentSettings.collaboration ?? defaultSpaceSettings.collaboration,
@@ -86,6 +89,7 @@ export const SpaceSettingsView: FC<SpaceSettingsViewProps> = ({ journeyId, journ
   }: {
     privacyMode?: SpacePrivacyMode;
     membershipPolicy?: CommunityMembershipPolicy;
+    allowSubspaceAdminsToInviteMembers?: boolean;
     hostOrganizationTrusted?: boolean;
     collaborationSettings?: Partial<SpaceSettingsCollaboration>;
     showNotification?: boolean;
@@ -107,7 +111,7 @@ export const SpaceSettingsView: FC<SpaceSettingsViewProps> = ({ journeyId, journ
       membership: {
         policy: membershipPolicy,
         trustedOrganizations,
-        allowSubspaceAdminsToInviteMembers: currentSettings.membership?.allowSubspaceAdminsToInviteMembers ?? false,
+        allowSubspaceAdminsToInviteMembers,
       },
       collaboration: {
         ...currentSettings.collaboration,
@@ -271,8 +275,8 @@ export const SpaceSettingsView: FC<SpaceSettingsViewProps> = ({ journeyId, journ
             <CommunityApplicationForm communityId={communityId} />
           </PageContentBlockCollapsible>
 
-          <PageContentBlock>
-            <BlockTitle>{t('pages.admin.space.settings.memberActions.title')}</BlockTitle>
+          <PageContentBlock disableGap>
+            <BlockTitle marginBottom={gutters(2)}>{t('pages.admin.space.settings.memberActions.title')}</BlockTitle>
             <SwitchSettingsGroup
               options={getMemberActions()}
               onChange={async (setting, newValue) => {
@@ -283,6 +287,17 @@ export const SpaceSettingsView: FC<SpaceSettingsViewProps> = ({ journeyId, journ
                 });
               }}
             />
+            {!isSubspace && (
+              <SwitchSettingsGroup
+                options={{
+                  allowSubspaceAdminsToInviteMembers: {
+                    checked: currentSettings?.membership?.allowSubspaceAdminsToInviteMembers || false,
+                    label: t('pages.admin.space.settings.membership.allowSubspaceAdminsToInviteMembers'),
+                  },
+                }}
+                onChange={(setting, newValue) => handleUpdateSettings({ [setting]: newValue })}
+              />
+            )}
           </PageContentBlock>
         </>
       )}
