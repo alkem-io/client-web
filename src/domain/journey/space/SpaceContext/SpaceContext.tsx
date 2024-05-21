@@ -37,6 +37,7 @@ interface SpaceContextProps {
   profile: SpaceInfoFragment['profile'];
   license: License;
   myMembershipStatus: CommunityMembershipStatus | undefined;
+  accountId: string;
 }
 
 const SpaceContext = React.createContext<SpaceContextProps>({
@@ -67,6 +68,7 @@ const SpaceContext = React.createContext<SpaceContextProps>({
     visibility: SpaceVisibility.Active,
     featureFlags: [],
   },
+  accountId: '',
   refetchSpace: () => {},
   myMembershipStatus: undefined,
 });
@@ -93,6 +95,7 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
 
   const space = data?.space;
   const spaceId = space?.id || '';
+  const accountId = space?.account.id || '';
   const license = {
     id: space?.account.license.id || '',
     visibility: space?.account.license?.visibility || SpaceVisibility.Active,
@@ -142,6 +145,7 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
   return (
     <SpaceContext.Provider
       value={{
+        accountId,
         spaceId,
         spaceNameId,
         communityId,

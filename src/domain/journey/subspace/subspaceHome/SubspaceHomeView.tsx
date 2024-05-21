@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { Button, Theme, useMediaQuery } from '@mui/material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { JourneyTypeName } from '../../JourneyTypeName';
-import { CalloutGroupName } from '../../../../core/apollo/generated/graphql-schema';
+import { BodyOfKnowledgeType, CalloutGroupName } from '../../../../core/apollo/generated/graphql-schema';
 import InnovationFlowStates from '../../../collaboration/InnovationFlow/InnovationFlowStates/InnovationFlowStates';
 import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
 import { OrderUpdate, TypedCallout } from '../../../collaboration/callout/useCallouts/useCallouts';
@@ -18,9 +18,10 @@ import useResettableState from '../../../../core/utils/useResettableState';
 import InnovationFlowSettingsButton from '../../../collaboration/InnovationFlow/InnovationFlowDialogs/InnovationFlowSettingsButton';
 import { CalloutGroupNameValuesMap } from '../../../collaboration/callout/CalloutsInContext/CalloutsGroup';
 import {
-  // useCreateVirtualContributorMutation,
+  useCreateVirtualContributorMutation,
   useVirtualContributorAvailablePersonasQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
+import { useSpace } from '../../space/SpaceContext/useSpace';
 
 interface SubspaceHomeViewProps {
   journeyId: string | undefined;
@@ -56,17 +57,31 @@ const SubspaceHomeView = ({
   const { isCalloutCreationDialogOpen, handleCreateCalloutOpened, handleCreateCalloutClosed, handleCreateCallout } =
     useCalloutCreationWithPreviewImages({ journeyId });
 
-  // const [createVirtualContributor] = useCreateVirtualContributorMutation();
+  const {
+    spaceId: bodyOfKnowledgeID,
+    spaceNameId,
+    accountId,
+    profile: { displayName },
+  } = useSpace();
+
+  const [createVirtualContributor] = useCreateVirtualContributorMutation();
 
   const handleCreateVirtualContributor = async () => {
-    // if (!vpData) return;
-    // await createVirtualContributor({
-    //   variables: {
-    //     virtualContributorData: {
-    //       virtualPersonaID: vpData.virtualPersonas[0].id,
-    //     },
-    //   },
-    // });
+    if (!vpData) return;
+    await createVirtualContributor({
+      variables: {
+        virtualContributorData: {
+          accountId,
+          nameID: spaceNameId,
+          bodyOfKnowledgeType: BodyOfKnowledgeType.Space,
+          bodyOfKnowledgeID,
+          virtualPersonaID: vpData.virtualPersonas[0].id,
+          profileData: {
+            displayName,
+          },
+        },
+      },
+    });
   };
 
   const { data: vpData } = useVirtualContributorAvailablePersonasQuery();

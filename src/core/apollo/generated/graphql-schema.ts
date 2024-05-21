@@ -1680,7 +1680,7 @@ export type CreateUserInput = {
 };
 
 export type CreateVirtualContributorInput = {
-  accountID: Scalars['UUID'];
+  accountId: Scalars['UUID'];
   bodyOfKnowledgeID: Scalars['UUID'];
   bodyOfKnowledgeType: BodyOfKnowledgeType;
   /** A readable identifier, unique within the containing scope. */
