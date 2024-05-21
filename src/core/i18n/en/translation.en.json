@@ -2088,10 +2088,11 @@
           "suggestionsArray": ["Innovation", "Energy", "Inclusive", "3D", "Community", "Transition", "SSI", "Privacy"]
         },
         "newMemberships": {
-          "title": "New Memberships",
+          "title": "Spaces & Subspaces",
           "openInvitations": "Open invitations",
           "noOpenInvitations": "No open invitations",
           "openApplications": "Open applications",
+          "mySpaces": "My Spaces",
           "recentlyJoined": "Recently joined",
           "seeMore": "All pending memberships",
           "seeAll": "See all my memberships",
