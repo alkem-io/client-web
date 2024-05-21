@@ -20,8 +20,8 @@ const MyDashboardWithoutMemberships: FC<MyDashboardWithoutMembershipsProps> = ({
     <>
       <PageContentColumn columns={8}>
         <MembershipSuggestions />
-        <ExploreOtherChallenges />
         <StartingSpace />
+        <ExploreOtherChallenges />
       </PageContentColumn>
       <PageContentColumn columns={columns === 12 ? 4 : 8} flexDirection="column" alignSelf="stretch">
         <NewMembershipsBlock hiddenIfEmpty onOpenMemberships={onOpenMembershipsDialog} />
