@@ -2401,9 +2401,9 @@ export type LookupQueryResults = {
   /** Lookup the specified Community */
   community?: Maybe<Community>;
   /** Lookup the specified Community guidelines */
-  communityGuideline?: Maybe<CommunityGuidelines>;
+  communityGuidelines?: Maybe<CommunityGuidelines>;
   /** Lookup the specified InnovationFlow Template */
-  communityGuidelineTemplate?: Maybe<CommunityGuidelinesTemplate>;
+  communityGuidelinesTemplate?: Maybe<CommunityGuidelinesTemplate>;
   /** Lookup the specified Context */
   context?: Maybe<Context>;
   /** Lookup the specified Document */
@@ -2467,11 +2467,11 @@ export type LookupQueryResultsCommunityArgs = {
   ID: Scalars['UUID'];
 };
 
-export type LookupQueryResultsCommunityGuidelineArgs = {
+export type LookupQueryResultsCommunityGuidelinesArgs = {
   ID: Scalars['UUID'];
 };
 
-export type LookupQueryResultsCommunityGuidelineTemplateArgs = {
+export type LookupQueryResultsCommunityGuidelinesTemplateArgs = {
   ID: Scalars['UUID'];
 };
 

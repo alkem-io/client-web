@@ -1413,8 +1413,8 @@ export type LookupQueryResultsKeySpecifier = (
   | 'calloutTemplate'
   | 'collaboration'
   | 'community'
-  | 'communityGuideline'
-  | 'communityGuidelineTemplate'
+  | 'communityGuidelines'
+  | 'communityGuidelinesTemplate'
   | 'context'
   | 'document'
   | 'innovationFlow'
@@ -1439,8 +1439,8 @@ export type LookupQueryResultsFieldPolicy = {
   calloutTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   collaboration?: FieldPolicy<any> | FieldReadFunction<any>;
   community?: FieldPolicy<any> | FieldReadFunction<any>;
-  communityGuideline?: FieldPolicy<any> | FieldReadFunction<any>;
-  communityGuidelineTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
+  communityGuidelines?: FieldPolicy<any> | FieldReadFunction<any>;
+  communityGuidelinesTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   context?: FieldPolicy<any> | FieldReadFunction<any>;
   document?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationFlow?: FieldPolicy<any> | FieldReadFunction<any>;
