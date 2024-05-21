@@ -5,7 +5,6 @@ import Gutters from '../../../core/ui/grid/Gutters';
 import RadioButton from '../../shared/components/RadioButtons/RadioButton';
 import AssignmentIndOutlinedIcon from '@mui/icons-material/AssignmentIndOutlined';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
-import { LinkOutlined } from '@mui/icons-material';
 import { Caption } from '../../../core/ui/typography';
 import InviteExistingUserDialog from './InviteExistingUserDialog';
 import { InviteExistingUserData, InviteExternalUserData } from './useInviteUsers';
@@ -60,9 +59,6 @@ const InvitationOptionsBlock = ({
             onClick={() => setCurrentInvitation(UserInvite.External)}
           >
             {t('components.invitations.inviteExternalUser')}
-          </RadioButton>
-          <RadioButton value="" iconComponent={LinkOutlined} size="small" disabled>
-            {t('components.invitations.inviteByURL')}
           </RadioButton>
         </Gutters>
       </PageContentBlock>

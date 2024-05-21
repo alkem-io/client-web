@@ -83,12 +83,15 @@ export const SpaceSettingsView: FC<SpaceSettingsViewProps> = ({ journeyId, journ
       defaultSpaceSettings.membership.hostOrganizationTrusted,
     collaborationSettings = currentSettings.collaboration ?? defaultSpaceSettings.collaboration,
     showNotification = true,
+    allowPlatformSupportAsAdmin = currentSettings.privacy?.allowPlatformSupportAsAdmin ??
+      defaultSpaceSettings.privacy.allowPlatformSupportAsAdmin,
   }: {
     privacyMode?: SpacePrivacyMode;
     membershipPolicy?: CommunityMembershipPolicy;
     hostOrganizationTrusted?: boolean;
     collaborationSettings?: Partial<SpaceSettingsCollaboration>;
     showNotification?: boolean;
+    allowPlatformSupportAsAdmin?: boolean;
   }) => {
     const trustedOrganizations = [...(currentSettings?.membership?.trustedOrganizations ?? [])];
     if (hostOrganizationTrusted && hostOrganizationId) {
@@ -102,7 +105,7 @@ export const SpaceSettingsView: FC<SpaceSettingsViewProps> = ({ journeyId, journ
     const settingsVariable = {
       privacy: {
         mode: privacyMode,
-        allowPlatformSupportAsAdmin: currentSettings.privacy?.allowPlatformSupportAsAdmin ?? false,
+        allowPlatformSupportAsAdmin,
       },
       membership: {
         policy: membershipPolicy,
@@ -283,6 +286,23 @@ export const SpaceSettingsView: FC<SpaceSettingsViewProps> = ({ journeyId, journ
                 });
               }}
             />
+            {!isSubspace && (
+              <SwitchSettingsGroup
+                options={{
+                  allowPlatformSupportAsAdmin: {
+                    checked: currentSettings?.privacy?.allowPlatformSupportAsAdmin || false,
+                    label: (
+                      <Trans
+                        t={t}
+                        i18nKey="pages.admin.space.settings.memberActions.supportAsAdmin"
+                        components={{ b: <strong /> }}
+                      />
+                    ),
+                  },
+                }}
+                onChange={(setting, newValue) => handleUpdateSettings({ [setting]: newValue })}
+              />
+            )}
           </PageContentBlock>
         </>
       )}
