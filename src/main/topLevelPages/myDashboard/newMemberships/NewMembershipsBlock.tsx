@@ -28,6 +28,7 @@ import SeeMore from '../../../../core/ui/content/SeeMore';
 import { VisualType } from '../../../../core/apollo/generated/graphql-schema';
 import BadgeCounter from '../../../../core/ui/icon/BadgeCounter';
 import { Box } from '@mui/material';
+import useNavigate from '../../../../core/routing/useNavigate';
 
 enum PendingMembershipItemType {
   Invitation,
@@ -45,12 +46,14 @@ interface DialogDetails {
 
 interface PendingMembershipsListDialogDetails extends DialogDetails {
   type: DialogType.PendingMembershipsList;
+  journeyUri?: string;
 }
 
 interface InvitationViewDialogDetails extends DialogDetails {
   type: DialogType.InvitationView;
   invitationId: string;
   from: 'dialog' | 'card';
+  journeyUri?: string;
 }
 
 const PENDING_MEMBERSHIPS_MAX_ITEMS = 4;
@@ -89,6 +92,8 @@ const NewMembershipsBlock = ({
   onOpenMemberships,
 }: NewMembershipsBlockProps) => {
   const { t } = useTranslation();
+
+  const navigate = useNavigate();
 
   const { data, refetch: refetchNewMembershipsQuery } = useNewMembershipsQuery();
 
@@ -152,11 +157,12 @@ const NewMembershipsBlock = ({
 
   const closeDialog = () => setOpenDialog(undefined);
 
-  const handleInvitationCardClick = ({ id }: Identifiable, from: InvitationViewDialogDetails['from']) => {
+  const handleInvitationCardClick = ({ id, journeyUri }, from: InvitationViewDialogDetails['from']) => {
     setOpenDialog({
       type: DialogType.InvitationView,
       invitationId: id,
       from,
+      journeyUri,
     });
   };
 
@@ -171,6 +177,21 @@ const NewMembershipsBlock = ({
         ? undefined
         : { type: DialogType.PendingMembershipsList };
     });
+  };
+
+  const onInvitationAccept = () => {
+    refetchNewMembershipsQuery();
+
+    if (openDialog?.journeyUri) {
+      navigate(openDialog?.journeyUri);
+    } else {
+      setOpenDialog({ type: DialogType.PendingMembershipsList });
+    }
+  };
+
+  const onInvitationReject = () => {
+    refetchNewMembershipsQuery();
+    setOpenDialog({ type: DialogType.PendingMembershipsList });
   };
 
   if (pendingMembershipsCount === 0 && hiddenIfEmpty) {
@@ -351,12 +372,7 @@ const NewMembershipsBlock = ({
           )}
         </Gutters>
       </DialogWithGrid>
-      <InvitationActionsContainer
-        onUpdate={() => {
-          setOpenDialog({ type: DialogType.PendingMembershipsList });
-          refetchNewMembershipsQuery();
-        }}
-      >
+      <InvitationActionsContainer onAccept={onInvitationAccept} onReject={onInvitationReject}>
         {props => (
           <InvitationDialog
             open={openDialog?.type === DialogType.InvitationView}
