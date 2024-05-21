@@ -292,9 +292,7 @@ export const SpaceSettingsView: FC<SpaceSettingsViewProps> = ({ journeyId, journ
                 options={{
                   allowSubspaceAdminsToInviteMembers: {
                     checked: currentSettings?.membership?.allowSubspaceAdminsToInviteMembers || false,
-                    label: (
-                      <Trans t={t} i18nKey="pages.admin.space.settings.membership.allowSubspaceAdminsToInviteMembers" />
-                    ),
+                    label: t('pages.admin.space.settings.membership.allowSubspaceAdminsToInviteMembers'),
                   },
                 }}
                 onChange={(setting, newValue) => handleUpdateSettings({ [setting]: newValue })}
