@@ -1497,7 +1497,7 @@ export type CreateInnovationFlowTemplateOnTemplatesSetInput = {
 
 export type CreateInnovationHubInput = {
   /** Account ID, associated with the Innovation Hub. */
-  accountID: Scalars['UUID'];
+  accountID?: InputMaybe<Scalars['UUID']>;
   /** A readable identifier, unique within the containing scope. */
   nameID?: InputMaybe<Scalars['NameID']>;
   profileData: CreateProfileInput;
