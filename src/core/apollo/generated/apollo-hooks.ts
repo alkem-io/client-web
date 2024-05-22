@@ -21692,6 +21692,7 @@ export const MyMembershipsDocument = gql`
     me {
       spaceMemberships {
         id
+        level
         account {
           id
           license {

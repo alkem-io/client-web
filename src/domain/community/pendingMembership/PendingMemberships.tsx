@@ -65,12 +65,12 @@ type InvitationHydratorProps = {
 );
 
 const getChildJourneyTypeName = (
-  membership: Pick<ContributionItem, 'subspaceId' | 'subsubspaceId'>
+  membership: Pick<ContributionItem, 'subspaceID' | 'subsubspaceID'>
 ): JourneyTypeName => {
-  if (membership.subsubspaceId) {
+  if (membership.subsubspaceID) {
     return 'subsubspace';
   }
-  if (membership.subspaceId) {
+  if (membership.subspaceID) {
     return 'subspace';
   }
   return 'space';
@@ -92,27 +92,27 @@ export const InvitationHydrator = ({
       fetchCommunityGuidelines: withCommunityGuidelines,
       visualType: visualType === VisualType.Avatar ? VisualType.Card : visualType, // Spaces don't have avatars
     },
-    skip: Boolean(invitation.subspaceId || invitation.subsubspaceId),
+    skip: Boolean(invitation.subspaceID || invitation.subsubspaceID),
   });
 
   const { data: challengeData } = usePendingMembershipsSpaceQuery({
     variables: {
-      spaceId: invitation.subspaceId!,
+      spaceId: invitation.subspaceID!,
       fetchDetails: withJourneyDetails,
       fetchCommunityGuidelines: withCommunityGuidelines,
       visualType,
     },
-    skip: !invitation.subspaceId,
+    skip: !invitation.subspaceID,
   });
 
   const { data: opportunityData } = usePendingMembershipsSpaceQuery({
     variables: {
-      spaceId: invitation.subsubspaceId!,
+      spaceId: invitation.subsubspaceID!,
       fetchDetails: withJourneyDetails,
       fetchCommunityGuidelines: withCommunityGuidelines,
       visualType,
     },
-    skip: !invitation.subsubspaceId,
+    skip: !invitation.subsubspaceID,
   });
 
   const journey = opportunityData?.lookup.space ?? challengeData?.lookup.space ?? spaceData?.lookup.space;
@@ -129,6 +129,7 @@ export const InvitationHydrator = ({
     if (!invitation || !journey) {
       return undefined;
     }
+
     return {
       id: invitation.id,
       welcomeMessage: invitation.welcomeMessage,
@@ -165,25 +166,25 @@ export const ApplicationHydrator = ({ application, visualType, children }: Appli
       fetchDetails: true,
       visualType: visualType === VisualType.Avatar ? VisualType.Card : visualType, // Spaces don't have avatars
     },
-    skip: Boolean(application.subspaceId || application.subsubspaceId),
+    skip: Boolean(application.subspaceID || application.subsubspaceID),
   });
 
   const { data: challengeData } = usePendingMembershipsSpaceQuery({
     variables: {
-      spaceId: application.subspaceId!,
+      spaceId: application.subspaceID!,
       fetchDetails: true,
       visualType,
     },
-    skip: !application.subspaceId,
+    skip: !application.subspaceID,
   });
 
   const { data: opportunityData } = usePendingMembershipsSpaceQuery({
     variables: {
-      spaceId: application.subsubspaceId!,
+      spaceId: application.subsubspaceID!,
       fetchDetails: true,
       visualType,
     },
-    skip: !application.subsubspaceId,
+    skip: !application.subsubspaceID,
   });
 
   const journey = opportunityData?.lookup.space ?? challengeData?.lookup.space ?? spaceData?.lookup.space;

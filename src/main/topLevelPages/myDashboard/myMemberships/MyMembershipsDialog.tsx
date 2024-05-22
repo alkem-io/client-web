@@ -15,12 +15,44 @@ import GridItem from '../../../../core/ui/grid/GridItem';
 import RouterLink from '../../../../core/ui/link/RouterLink';
 import useLandingUrl from '../../../landing/useLandingUrl';
 import { SpaceIcon } from '../../../../domain/journey/space/icon/SpaceIcon';
-import MyMembershipsChallenge from './MyMembershipsChallenge';
+import MyMembershipsSubSpace from './MyMembershipsSubSpace';
 import isJourneyMember from '../../../../domain/journey/utils/isJourneyMember';
+import { Visual } from '../../../../domain/common/visual/Visual';
+import {
+  AuthorizationPrivilege,
+  CommunityMembershipStatus,
+  CommunityRole,
+} from '../../../../core/apollo/generated/graphql-schema';
+import { Identifiable } from '../../../../core/utils/Identifiable';
+import Loading from '../../../../core/ui/loading/Loading';
 
 interface MyJourneysDialogProps {
   open: boolean;
   onClose: () => void;
+}
+
+interface SubspaceAccessProps extends Identifiable {
+  authorization?: {
+    myPrivileges?: AuthorizationPrivilege[];
+  };
+  community?: {
+    myRoles?: CommunityRole[];
+    myMembershipStatus?: CommunityMembershipStatus;
+  };
+}
+
+export interface MembershipProps {
+  profile: {
+    url: string;
+    displayName: string;
+    tagline: string;
+    avatar?: Visual;
+    cardBanner?: Visual;
+  };
+  community?: {
+    myRoles?: CommunityRole[];
+  };
+  subspaces?: SubspaceAccessProps[];
 }
 
 const MyMembershipsDialog = ({ open, onClose }: MyJourneysDialogProps) => {
@@ -32,23 +64,28 @@ const MyMembershipsDialog = ({ open, onClose }: MyJourneysDialogProps) => {
 
   const landingUrl = useLandingUrl();
 
-  const myMemberships = useMemo(
+  const myTopLevelMemberships = useMemo(() => data?.me.spaceMemberships.filter(space => space?.level === 0), [data]);
+
+  // As the query returns all levels of memberships, we're using a map for ease of access to the data of each membership
+  // without having to iterate over the array each time or making redundant queries for the details of every subspace
+  const allMyMembershipsMap: Record<string, MembershipProps> = useMemo(
     () =>
-      data?.me.spaceMemberships.map(space => {
-        return {
-          ...space,
-          challenges: space.subspaces?.filter(isJourneyMember),
-        };
-      }),
+      (data?.me.spaceMemberships ?? []).reduce((acc, item) => {
+        acc[item.id] = item;
+        return acc;
+      }, {}),
     [data]
   );
+
+  const getMembership = (id: string) => allMyMembershipsMap[id];
 
   return (
     <DialogWithGrid open={open} onClose={onClose} columns={12}>
       <DialogHeader icon={<SpaceIcon />} title={t('pages.home.sections.myMemberships.title')} onClose={onClose} />
       <DialogContent>
+        {loading && <Loading />}
         <Gutters disablePadding>
-          {myMemberships?.map(space => (
+          {myTopLevelMemberships?.map(space => (
             <PageContentBlock
               row
               flexWrap="wrap"
@@ -70,8 +107,8 @@ const MyMembershipsDialog = ({ open, onClose }: MyJourneysDialogProps) => {
               <GridItem columns={9}>
                 <Gutters row disablePadding flexGrow={1} flexWrap="wrap">
                   <GridProvider columns={8}>
-                    {space.subspaces?.map(challenge => (
-                      <MyMembershipsChallenge key={challenge.id} challenge={challenge} />
+                    {space.subspaces?.filter(isJourneyMember).map(subspace => (
+                      <MyMembershipsSubSpace key={subspace.id} subspace={subspace} getMembership={getMembership} />
                     ))}
                     {!loading && !space.subspaces?.length && (
                       <Caption alignSelf="center">{t('pages.home.sections.myMemberships.noChildMemberships')}</Caption>

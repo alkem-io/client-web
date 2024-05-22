@@ -43,7 +43,7 @@ export type Account = {
   /** The defaults in use by this Account */
   defaults?: Maybe<SpaceDefaults>;
   /** The Account host. */
-  host?: Maybe<Organization>;
+  host?: Maybe<Contributor>;
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** The Library in use by this Account */
@@ -709,7 +709,6 @@ export enum AuthorizationPrivilege {
   AccessDashboardRefresh = 'ACCESS_DASHBOARD_REFRESH',
   AccessInteractiveGuidance = 'ACCESS_INTERACTIVE_GUIDANCE',
   AccessVirtualContributor = 'ACCESS_VIRTUAL_CONTRIBUTOR',
-  Admin = 'ADMIN',
   AuthorizationReset = 'AUTHORIZATION_RESET',
   CommunityAddMember = 'COMMUNITY_ADD_MEMBER',
   CommunityApply = 'COMMUNITY_APPLY',
@@ -1353,6 +1352,19 @@ export type Context = {
   who?: Maybe<Scalars['Markdown']>;
 };
 
+export type Contributor = {
+  /** The Agent for the Contributor. */
+  agent: Agent;
+  /** The authorization rules for the Contributor */
+  authorization?: Maybe<Authorization>;
+  /** The ID of the Contributor */
+  id: Scalars['UUID'];
+  /** A name identifier of the Contributor, unique within a given scope. */
+  nameID: Scalars['NameID'];
+  /** The profile for the Contributor. */
+  profile: Profile;
+};
+
 export type ContributorFilterInput = {
   /** Return contributors with credentials in the provided list */
   credentials?: InputMaybe<Array<AuthorizationCredential>>;
@@ -1390,7 +1402,7 @@ export type ConvertSubsubspaceToSubspaceInput = {
 };
 
 export type CreateAccountInput = {
-  /** The host Organization for the account */
+  /** The host Organization or User for the account */
   hostID: Scalars['UUID_NAMEID'];
   /** The root Space to be created. */
   spaceData: CreateSpaceInput;
@@ -1527,7 +1539,7 @@ export type CreateInnovationFlowTemplateOnTemplatesSetInput = {
 
 export type CreateInnovationHubInput = {
   /** Account ID, associated with the Innovation Hub. */
-  accountID: Scalars['UUID'];
+  accountID?: InputMaybe<Scalars['UUID']>;
   /** A readable identifier, unique within the containing scope. */
   nameID?: InputMaybe<Scalars['NameID']>;
   profileData: CreateProfileInput;
@@ -2401,9 +2413,9 @@ export type LookupQueryResults = {
   /** Lookup the specified Community */
   community?: Maybe<Community>;
   /** Lookup the specified Community guidelines */
-  communityGuideline?: Maybe<CommunityGuidelines>;
+  communityGuidelines?: Maybe<CommunityGuidelines>;
   /** Lookup the specified InnovationFlow Template */
-  communityGuidelineTemplate?: Maybe<CommunityGuidelinesTemplate>;
+  communityGuidelinesTemplate?: Maybe<CommunityGuidelinesTemplate>;
   /** Lookup the specified Context */
   context?: Maybe<Context>;
   /** Lookup the specified Document */
@@ -2467,11 +2479,11 @@ export type LookupQueryResultsCommunityArgs = {
   ID: Scalars['UUID'];
 };
 
-export type LookupQueryResultsCommunityGuidelineArgs = {
+export type LookupQueryResultsCommunityGuidelinesArgs = {
   ID: Scalars['UUID'];
 };
 
-export type LookupQueryResultsCommunityGuidelineTemplateArgs = {
+export type LookupQueryResultsCommunityGuidelinesTemplateArgs = {
   ID: Scalars['UUID'];
 };
 
@@ -2566,14 +2578,12 @@ export type Message = {
   /** Reactions on this message */
   reactions: Array<Reaction>;
   /** The User or Virtual Contributor that created this Message */
-  sender?: Maybe<MessageSender>;
+  sender?: Maybe<Contributor>;
   /** The message being replied to */
   threadID?: Maybe<Scalars['String']>;
   /** The server timestamp in UTC */
   timestamp: Scalars['Float'];
 };
-
-export type MessageSender = User | VirtualContributor;
 
 export type Metadata = {
   __typename?: 'Metadata';
@@ -3539,46 +3549,47 @@ export type Nvp = {
   value: Scalars['String'];
 };
 
-export type Organization = Groupable & {
-  __typename?: 'Organization';
-  /** All Users that are admins of this Organization. */
-  admins?: Maybe<Array<User>>;
-  /** The Agent representing this User. */
-  agent?: Maybe<Agent>;
-  /** All Users that are associated with this Organization. */
-  associates?: Maybe<Array<User>>;
-  /** The authorization rules for the entity */
-  authorization?: Maybe<Authorization>;
-  /** Organization contact email */
-  contactEmail?: Maybe<Scalars['String']>;
-  /** Domain name; what is verified, eg. alkem.io */
-  domain?: Maybe<Scalars['String']>;
-  /** Group defined on this organization. */
-  group?: Maybe<UserGroup>;
-  /** Groups defined on this organization. */
-  groups?: Maybe<Array<UserGroup>>;
-  /** The ID of the entity */
-  id: Scalars['UUID'];
-  /** Legal name - required if hosting an Space */
-  legalEntityName?: Maybe<Scalars['String']>;
-  /** Metrics about the activity within this Organization. */
-  metrics?: Maybe<Array<Nvp>>;
-  /** The roles on this Organization for the currently logged in user. */
-  myRoles?: Maybe<Array<OrganizationRole>>;
-  /** A name identifier of the entity, unique within a given scope. */
-  nameID: Scalars['NameID'];
-  /** All Users that are owners of this Organization. */
-  owners?: Maybe<Array<User>>;
-  /** The preferences for this Organization */
-  preferences: Array<Preference>;
-  /** The profile for this Organization. */
-  profile: Profile;
-  /** The StorageAggregator for managing storage buckets in use by this Organization */
-  storageAggregator?: Maybe<StorageAggregator>;
-  verification: OrganizationVerification;
-  /** Organization website */
-  website?: Maybe<Scalars['String']>;
-};
+export type Organization = Contributor &
+  Groupable & {
+    __typename?: 'Organization';
+    /** All Users that are admins of this Organization. */
+    admins?: Maybe<Array<User>>;
+    /** The Agent representing this User. */
+    agent: Agent;
+    /** All Users that are associated with this Organization. */
+    associates?: Maybe<Array<User>>;
+    /** The authorization rules for the Contributor */
+    authorization?: Maybe<Authorization>;
+    /** Organization contact email */
+    contactEmail?: Maybe<Scalars['String']>;
+    /** Domain name; what is verified, eg. alkem.io */
+    domain?: Maybe<Scalars['String']>;
+    /** Group defined on this organization. */
+    group?: Maybe<UserGroup>;
+    /** Groups defined on this organization. */
+    groups?: Maybe<Array<UserGroup>>;
+    /** The ID of the Contributor */
+    id: Scalars['UUID'];
+    /** Legal name - required if hosting an Space */
+    legalEntityName?: Maybe<Scalars['String']>;
+    /** Metrics about the activity within this Organization. */
+    metrics?: Maybe<Array<Nvp>>;
+    /** The roles on this Organization for the currently logged in user. */
+    myRoles?: Maybe<Array<OrganizationRole>>;
+    /** A name identifier of the Contributor, unique within a given scope. */
+    nameID: Scalars['NameID'];
+    /** All Users that are owners of this Organization. */
+    owners?: Maybe<Array<User>>;
+    /** The preferences for this Organization */
+    preferences: Array<Preference>;
+    /** The profile for this Organization. */
+    profile: Profile;
+    /** The StorageAggregator for managing storage buckets in use by this Organization */
+    storageAggregator?: Maybe<StorageAggregator>;
+    verification: OrganizationVerification;
+    /** Organization website */
+    website?: Maybe<Scalars['String']>;
+  };
 
 export type OrganizationGroupArgs = {
   ID: Scalars['UUID'];
@@ -4251,56 +4262,6 @@ export type RelayPaginatedSpaceEdge = {
 
 export type RelayPaginatedSpacePageInfo = {
   __typename?: 'RelayPaginatedSpacePageInfo';
-  /** The last cursor of the page result */
-  endCursor?: Maybe<Scalars['String']>;
-  /** Indicate whether more items exist after the returned ones */
-  hasNextPage: Scalars['Boolean'];
-  /** Indicate whether more items exist before the returned ones */
-  hasPreviousPage: Scalars['Boolean'];
-  /** The first cursor of the page result */
-  startCursor?: Maybe<Scalars['String']>;
-};
-
-export type RelayPaginatedUser = {
-  __typename?: 'RelayPaginatedUser';
-  /** The unique personal identifier (upn) for the account associated with this user profile */
-  accountUpn: Scalars['String'];
-  /** The Agent representing this User. */
-  agent?: Maybe<Agent>;
-  /** The authorization rules for the entity */
-  authorization?: Maybe<Authorization>;
-  /** The Community rooms this user is a member of */
-  communityRooms?: Maybe<Array<CommunicationRoom>>;
-  /** The direct rooms this user is a member of */
-  directRooms?: Maybe<Array<DirectRoom>>;
-  /** The email address for this User. */
-  email: Scalars['String'];
-  firstName: Scalars['String'];
-  gender: Scalars['String'];
-  /** The ID of the entity */
-  id: Scalars['UUID'];
-  /** Can a message be sent to this User. */
-  isContactable: Scalars['Boolean'];
-  lastName: Scalars['String'];
-  /** A name identifier of the entity, unique within a given scope. */
-  nameID: Scalars['NameID'];
-  /** The phone number for this User. */
-  phone: Scalars['String'];
-  /** The preferences for this user */
-  preferences: Array<Preference>;
-  /** The Profile for this User. */
-  profile: Profile;
-  /** The StorageAggregator for managing storage buckets in use by this User */
-  storageAggregator?: Maybe<StorageAggregator>;
-};
-
-export type RelayPaginatedUserEdge = {
-  __typename?: 'RelayPaginatedUserEdge';
-  node: RelayPaginatedUser;
-};
-
-export type RelayPaginatedUserPageInfo = {
-  __typename?: 'RelayPaginatedUserPageInfo';
   /** The last cursor of the page result */
   endCursor?: Maybe<Scalars['String']>;
   /** Indicate whether more items exist after the returned ones */
@@ -5055,7 +5016,7 @@ export type Timeline = {
 export type UpdateAccountPlatformSettingsInput = {
   /** The identifier for the Account whose license etc is to be updated. */
   accountID: Scalars['UUID'];
-  /** Update the host Organization for the Account. */
+  /** Update the host Organization or User for the Account. */
   hostID?: InputMaybe<Scalars['UUID_NAMEID']>;
   /** Update the license settings for the Account. */
   license?: InputMaybe<UpdateLicenseInput>;
@@ -5543,13 +5504,13 @@ export type UpdateWhiteboardTemplateInput = {
   profile?: InputMaybe<UpdateProfileInput>;
 };
 
-export type User = {
+export type User = Contributor & {
   __typename?: 'User';
   /** The unique personal identifier (upn) for the account associated with this user profile */
   accountUpn: Scalars['String'];
   /** The Agent representing this User. */
-  agent?: Maybe<Agent>;
-  /** The authorization rules for the entity */
+  agent: Agent;
+  /** The authorization rules for the Contributor */
   authorization?: Maybe<Authorization>;
   /** The Community rooms this user is a member of */
   communityRooms?: Maybe<Array<CommunicationRoom>>;
@@ -5559,12 +5520,12 @@ export type User = {
   email: Scalars['String'];
   firstName: Scalars['String'];
   gender: Scalars['String'];
-  /** The ID of the entity */
+  /** The ID of the Contributor */
   id: Scalars['UUID'];
   /** Can a message be sent to this User. */
   isContactable: Scalars['Boolean'];
   lastName: Scalars['String'];
-  /** A name identifier of the entity, unique within a given scope. */
+  /** A name identifier of the Contributor, unique within a given scope. */
   nameID: Scalars['NameID'];
   /** The phone number for this User. */
   phone: Scalars['String'];
@@ -5680,15 +5641,15 @@ export type VerifiedCredentialClaim = {
   value: Scalars['JSON'];
 };
 
-export type VirtualContributor = {
+export type VirtualContributor = Contributor & {
   __typename?: 'VirtualContributor';
   /** The Agent representing this User. */
-  agent?: Maybe<Agent>;
-  /** The authorization rules for the entity */
+  agent: Agent;
+  /** The authorization rules for the Contributor */
   authorization?: Maybe<Authorization>;
-  /** The ID of the entity */
+  /** The ID of the Contributor */
   id: Scalars['UUID'];
-  /** A name identifier of the entity, unique within a given scope. */
+  /** A name identifier of the Contributor, unique within a given scope. */
   nameID: Scalars['NameID'];
   /** The profile for this Virtual. */
   profile: Profile;
@@ -5967,28 +5928,26 @@ export type UserAgentSsiFragment = {
   __typename?: 'User';
   id: string;
   nameID: string;
-  agent?:
-    | {
-        __typename?: 'Agent';
-        id: string;
-        did?: string | undefined;
-        credentials?:
-          | Array<{ __typename?: 'Credential'; id: string; resourceID: string; type: AuthorizationCredential }>
-          | undefined;
-        verifiedCredentials?:
-          | Array<{
-              __typename?: 'VerifiedCredential';
-              context: string;
-              issued: string;
-              expires: string;
-              issuer: string;
-              name: string;
-              type: string;
-              claims: Array<{ __typename?: 'VerifiedCredentialClaim'; name: string; value: string }>;
-            }>
-          | undefined;
-      }
-    | undefined;
+  agent: {
+    __typename?: 'Agent';
+    id: string;
+    did?: string | undefined;
+    credentials?:
+      | Array<{ __typename?: 'Credential'; id: string; resourceID: string; type: AuthorizationCredential }>
+      | undefined;
+    verifiedCredentials?:
+      | Array<{
+          __typename?: 'VerifiedCredential';
+          context: string;
+          issued: string;
+          expires: string;
+          issuer: string;
+          name: string;
+          type: string;
+          claims: Array<{ __typename?: 'VerifiedCredentialClaim'; name: string; value: string }>;
+        }>
+      | undefined;
+  };
 };
 
 export type UserSsiQueryVariables = Exact<{ [key: string]: never }>;
@@ -6002,28 +5961,26 @@ export type UserSsiQuery = {
           __typename?: 'User';
           id: string;
           nameID: string;
-          agent?:
-            | {
-                __typename?: 'Agent';
-                id: string;
-                did?: string | undefined;
-                credentials?:
-                  | Array<{ __typename?: 'Credential'; id: string; resourceID: string; type: AuthorizationCredential }>
-                  | undefined;
-                verifiedCredentials?:
-                  | Array<{
-                      __typename?: 'VerifiedCredential';
-                      context: string;
-                      issued: string;
-                      expires: string;
-                      issuer: string;
-                      name: string;
-                      type: string;
-                      claims: Array<{ __typename?: 'VerifiedCredentialClaim'; name: string; value: string }>;
-                    }>
-                  | undefined;
-              }
-            | undefined;
+          agent: {
+            __typename?: 'Agent';
+            id: string;
+            did?: string | undefined;
+            credentials?:
+              | Array<{ __typename?: 'Credential'; id: string; resourceID: string; type: AuthorizationCredential }>
+              | undefined;
+            verifiedCredentials?:
+              | Array<{
+                  __typename?: 'VerifiedCredential';
+                  context: string;
+                  issued: string;
+                  expires: string;
+                  issuer: string;
+                  name: string;
+                  type: string;
+                  claims: Array<{ __typename?: 'VerifiedCredentialClaim'; name: string; value: string }>;
+                }>
+              | undefined;
+          };
         }
       | undefined;
   };
@@ -6228,6 +6185,7 @@ export type CalloutPageCalloutQuery = {
                       | undefined;
                   }>;
                   sender?:
+                    | { __typename?: 'Organization' }
                     | {
                         __typename?: 'User';
                         id: string;
@@ -6772,6 +6730,28 @@ export type SpaceInnovationFlowTemplatesLibraryQuery = {
       host?:
         | {
             __typename?: 'Organization';
+            id: string;
+            nameID: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+            };
+          }
+        | {
+            __typename?: 'User';
+            id: string;
+            nameID: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+            };
+          }
+        | {
+            __typename?: 'VirtualContributor';
             id: string;
             nameID: string;
             profile: {
@@ -8246,6 +8226,28 @@ export type SpaceCalloutTemplatesLibraryQuery = {
               visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
             };
           }
+        | {
+            __typename?: 'User';
+            id: string;
+            nameID: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+            };
+          }
+        | {
+            __typename?: 'VirtualContributor';
+            id: string;
+            nameID: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+            };
+          }
         | undefined;
     };
   };
@@ -8733,6 +8735,7 @@ export type CreateCalloutMutation = {
                 | undefined;
             }>;
             sender?:
+              | { __typename?: 'Organization' }
               | {
                   __typename?: 'User';
                   id: string;
@@ -9022,6 +9025,7 @@ export type UpdateCalloutVisibilityMutation = {
                 | undefined;
             }>;
             sender?:
+              | { __typename?: 'Organization' }
               | {
                   __typename?: 'User';
                   id: string;
@@ -9744,6 +9748,7 @@ export type CalloutDetailsQuery = {
                       | undefined;
                   }>;
                   sender?:
+                    | { __typename?: 'Organization' }
                     | {
                         __typename?: 'User';
                         id: string;
@@ -9977,6 +9982,7 @@ export type CalloutDetailsFragment = {
               | undefined;
           }>;
           sender?:
+            | { __typename?: 'Organization' }
             | {
                 __typename?: 'User';
                 id: string;
@@ -10185,6 +10191,28 @@ export type SpaceCommunityGuidelinesTemplatesLibraryQuery = {
               visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
             };
           }
+        | {
+            __typename?: 'User';
+            id: string;
+            nameID: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+            };
+          }
+        | {
+            __typename?: 'VirtualContributor';
+            id: string;
+            nameID: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+            };
+          }
         | undefined;
     };
   };
@@ -10337,6 +10365,28 @@ export type SpacePostTemplatesLibraryQuery = {
       host?:
         | {
             __typename?: 'Organization';
+            id: string;
+            nameID: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+            };
+          }
+        | {
+            __typename?: 'User';
+            id: string;
+            nameID: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+            };
+          }
+        | {
+            __typename?: 'VirtualContributor';
             id: string;
             nameID: string;
             profile: {
@@ -10516,6 +10566,7 @@ export type PostQuery = {
                           | undefined;
                       }>;
                       sender?:
+                        | { __typename?: 'Organization' }
                         | {
                             __typename?: 'User';
                             id: string;
@@ -10647,6 +10698,7 @@ export type PostDashboardFragment = {
           | undefined;
       }>;
       sender?:
+        | { __typename?: 'Organization' }
         | {
             __typename?: 'User';
             id: string;
@@ -11110,6 +11162,28 @@ export type SpaceWhiteboardTemplatesLibraryQuery = {
       host?:
         | {
             __typename?: 'Organization';
+            id: string;
+            nameID: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+            };
+          }
+        | {
+            __typename?: 'User';
+            id: string;
+            nameID: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+            };
+          }
+        | {
+            __typename?: 'VirtualContributor';
             id: string;
             nameID: string;
             profile: {
@@ -12457,6 +12531,7 @@ export type CreateDiscussionMutation = {
             | undefined;
         }>;
         sender?:
+          | { __typename?: 'Organization' }
           | {
               __typename?: 'User';
               id: string;
@@ -12547,6 +12622,7 @@ export type UpdateDiscussionMutation = {
             | undefined;
         }>;
         sender?:
+          | { __typename?: 'Organization' }
           | {
               __typename?: 'User';
               id: string;
@@ -12640,6 +12716,7 @@ export type DiscussionDetailsFragment = {
           | undefined;
       }>;
       sender?:
+        | { __typename?: 'Organization' }
         | {
             __typename?: 'User';
             id: string;
@@ -12872,6 +12949,7 @@ export type PlatformDiscussionQuery = {
                     | undefined;
                 }>;
                 sender?:
+                  | { __typename?: 'Organization' }
                   | {
                       __typename?: 'User';
                       id: string;
@@ -13016,6 +13094,7 @@ export type MessageDetailsFragment = {
       | undefined;
   }>;
   sender?:
+    | { __typename?: 'Organization' }
     | {
         __typename?: 'User';
         id: string;
@@ -13121,6 +13200,7 @@ export type CommentsWithMessagesFragment = {
         | undefined;
     }>;
     sender?:
+      | { __typename?: 'Organization' }
       | {
           __typename?: 'User';
           id: string;
@@ -13191,7 +13271,11 @@ export type ReplyToMessageMutation = {
     id: string;
     message: string;
     timestamp: number;
-    sender?: { __typename?: 'User'; id: string } | { __typename?: 'VirtualContributor'; id: string } | undefined;
+    sender?:
+      | { __typename?: 'Organization' }
+      | { __typename?: 'User'; id: string }
+      | { __typename?: 'VirtualContributor'; id: string }
+      | undefined;
   };
 };
 
@@ -13251,7 +13335,11 @@ export type SendMessageToRoomMutation = {
     id: string;
     message: string;
     timestamp: number;
-    sender?: { __typename?: 'User'; id: string } | { __typename?: 'VirtualContributor'; id: string } | undefined;
+    sender?:
+      | { __typename?: 'Organization' }
+      | { __typename?: 'User'; id: string }
+      | { __typename?: 'VirtualContributor'; id: string }
+      | undefined;
   };
 };
 
@@ -13293,6 +13381,7 @@ export type RoomEventsSubscription = {
                 | undefined;
             }>;
             sender?:
+              | { __typename?: 'Organization' }
               | {
                   __typename?: 'User';
                   id: string;
@@ -13403,6 +13492,7 @@ export type CommunityUpdatesQuery = {
                     | undefined;
                 }>;
                 sender?:
+                  | { __typename?: 'Organization' }
                   | {
                       __typename?: 'User';
                       id: string;
@@ -14075,15 +14165,13 @@ export type CommunityPageMembersFragment = {
   id: string;
   nameID: string;
   email: string;
-  agent?:
-    | {
-        __typename?: 'Agent';
-        id: string;
-        credentials?:
-          | Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
-          | undefined;
-      }
-    | undefined;
+  agent: {
+    __typename?: 'Agent';
+    id: string;
+    credentials?:
+      | Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
+      | undefined;
+  };
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -14231,6 +14319,8 @@ export type CommunityMembersListQuery = {
                     location?: { __typename?: 'Location'; country: string; city: string } | undefined;
                   };
                 }
+              | { __typename?: 'User' }
+              | { __typename?: 'VirtualContributor' }
               | undefined;
           };
         }
@@ -14785,15 +14875,13 @@ export type ContributorsPageUsersQuery = {
       id: string;
       nameID: string;
       isContactable: boolean;
-      agent?:
-        | {
-            __typename?: 'Agent';
-            id: string;
-            credentials?:
-              | Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
-              | undefined;
-          }
-        | undefined;
+      agent: {
+        __typename?: 'Agent';
+        id: string;
+        credentials?:
+          | Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
+          | undefined;
+      };
       userProfile: {
         __typename?: 'Profile';
         id: string;
@@ -14867,15 +14955,13 @@ export type UserContributorPaginatedFragment = {
     id: string;
     nameID: string;
     isContactable: boolean;
-    agent?:
-      | {
-          __typename?: 'Agent';
-          id: string;
-          credentials?:
-            | Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
-            | undefined;
-        }
-      | undefined;
+    agent: {
+      __typename?: 'Agent';
+      id: string;
+      credentials?:
+        | Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
+        | undefined;
+    };
     userProfile: {
       __typename?: 'Profile';
       id: string;
@@ -14907,15 +14993,13 @@ export type UserContributorFragment = {
   id: string;
   nameID: string;
   isContactable: boolean;
-  agent?:
-    | {
-        __typename?: 'Agent';
-        id: string;
-        credentials?:
-          | Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
-          | undefined;
-      }
-    | undefined;
+  agent: {
+    __typename?: 'Agent';
+    id: string;
+    credentials?:
+      | Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
+      | undefined;
+  };
   userProfile: {
     __typename?: 'Profile';
     id: string;
@@ -15952,16 +16036,14 @@ export type GroupMembersFragment = {
 
 export type UserAgentFragment = {
   __typename?: 'User';
-  agent?:
-    | {
-        __typename?: 'Agent';
-        id: string;
-        did?: string | undefined;
-        credentials?:
-          | Array<{ __typename?: 'Credential'; id: string; resourceID: string; type: AuthorizationCredential }>
-          | undefined;
-      }
-    | undefined;
+  agent: {
+    __typename?: 'Agent';
+    id: string;
+    did?: string | undefined;
+    credentials?:
+      | Array<{ __typename?: 'Credential'; id: string; resourceID: string; type: AuthorizationCredential }>
+      | undefined;
+  };
 };
 
 export type UserDetailsFragment = {
@@ -15974,14 +16056,10 @@ export type UserDetailsFragment = {
   gender: string;
   phone: string;
   accountUpn: string;
-  agent?:
-    | {
-        __typename?: 'Agent';
-        credentials?:
-          | Array<{ __typename?: 'Credential'; type: AuthorizationCredential; resourceID: string }>
-          | undefined;
-      }
-    | undefined;
+  agent: {
+    __typename?: 'Agent';
+    credentials?: Array<{ __typename?: 'Credential'; type: AuthorizationCredential; resourceID: string }> | undefined;
+  };
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -16091,14 +16169,10 @@ export type CreateUserMutation = {
     gender: string;
     phone: string;
     accountUpn: string;
-    agent?:
-      | {
-          __typename?: 'Agent';
-          credentials?:
-            | Array<{ __typename?: 'Credential'; type: AuthorizationCredential; resourceID: string }>
-            | undefined;
-        }
-      | undefined;
+    agent: {
+      __typename?: 'Agent';
+      credentials?: Array<{ __typename?: 'Credential'; type: AuthorizationCredential; resourceID: string }> | undefined;
+    };
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -16152,14 +16226,10 @@ export type CreateUserNewRegistrationMutation = {
     gender: string;
     phone: string;
     accountUpn: string;
-    agent?:
-      | {
-          __typename?: 'Agent';
-          credentials?:
-            | Array<{ __typename?: 'Credential'; type: AuthorizationCredential; resourceID: string }>
-            | undefined;
-        }
-      | undefined;
+    agent: {
+      __typename?: 'Agent';
+      credentials?: Array<{ __typename?: 'Credential'; type: AuthorizationCredential; resourceID: string }> | undefined;
+    };
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -16291,14 +16361,10 @@ export type UpdateUserMutation = {
     gender: string;
     phone: string;
     accountUpn: string;
-    agent?:
-      | {
-          __typename?: 'Agent';
-          credentials?:
-            | Array<{ __typename?: 'Credential'; type: AuthorizationCredential; resourceID: string }>
-            | undefined;
-        }
-      | undefined;
+    agent: {
+      __typename?: 'Agent';
+      credentials?: Array<{ __typename?: 'Credential'; type: AuthorizationCredential; resourceID: string }> | undefined;
+    };
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -16363,16 +16429,14 @@ export type UserQuery = {
     gender: string;
     phone: string;
     accountUpn: string;
-    agent?:
-      | {
-          __typename?: 'Agent';
-          id: string;
-          did?: string | undefined;
-          credentials?:
-            | Array<{ __typename?: 'Credential'; type: AuthorizationCredential; resourceID: string; id: string }>
-            | undefined;
-        }
-      | undefined;
+    agent: {
+      __typename?: 'Agent';
+      id: string;
+      did?: string | undefined;
+      credentials?:
+        | Array<{ __typename?: 'Credential'; type: AuthorizationCredential; resourceID: string; id: string }>
+        | undefined;
+    };
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -16455,16 +16519,14 @@ export type UserProfileQuery = {
     gender: string;
     phone: string;
     accountUpn: string;
-    agent?:
-      | {
-          __typename?: 'Agent';
-          id: string;
-          did?: string | undefined;
-          credentials?:
-            | Array<{ __typename?: 'Credential'; type: AuthorizationCredential; resourceID: string; id: string }>
-            | undefined;
-        }
-      | undefined;
+    agent: {
+      __typename?: 'Agent';
+      id: string;
+      did?: string | undefined;
+      credentials?:
+        | Array<{ __typename?: 'Credential'; type: AuthorizationCredential; resourceID: string; id: string }>
+        | undefined;
+    };
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -16592,16 +16654,14 @@ export type UserProviderQuery = {
           gender: string;
           phone: string;
           accountUpn: string;
-          agent?:
-            | {
-                __typename?: 'Agent';
-                id: string;
-                did?: string | undefined;
-                credentials?:
-                  | Array<{ __typename?: 'Credential'; type: AuthorizationCredential; resourceID: string; id: string }>
-                  | undefined;
-              }
-            | undefined;
+          agent: {
+            __typename?: 'Agent';
+            id: string;
+            did?: string | undefined;
+            credentials?:
+              | Array<{ __typename?: 'Credential'; type: AuthorizationCredential; resourceID: string; id: string }>
+              | undefined;
+          };
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -16704,6 +16764,8 @@ export type SpaceCommunityContributorsQuery = {
                     status: OrganizationVerificationEnum;
                   };
                 }
+              | { __typename?: 'User' }
+              | { __typename?: 'VirtualContributor' }
               | undefined;
           };
           community: {
@@ -16959,6 +17021,12 @@ export type InnovationHubAvailableSpacesQuery = {
             id: string;
             profile: { __typename?: 'Profile'; id: string; displayName: string };
           }
+        | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+        | {
+            __typename?: 'VirtualContributor';
+            id: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string };
+          }
         | undefined;
     };
     profile: { __typename?: 'Profile'; id: string; displayName: string };
@@ -16975,6 +17043,12 @@ export type InnovationHubSpaceFragment = {
     host?:
       | {
           __typename?: 'Organization';
+          id: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string };
+        }
+      | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+      | {
+          __typename?: 'VirtualContributor';
           id: string;
           profile: { __typename?: 'Profile'; id: string; displayName: string };
         }
@@ -17104,6 +17178,16 @@ export type AdminInnovationHubQuery = {
                         id: string;
                         profile: { __typename?: 'Profile'; id: string; displayName: string };
                       }
+                    | {
+                        __typename?: 'User';
+                        id: string;
+                        profile: { __typename?: 'Profile'; id: string; displayName: string };
+                      }
+                    | {
+                        __typename?: 'VirtualContributor';
+                        id: string;
+                        profile: { __typename?: 'Profile'; id: string; displayName: string };
+                      }
                     | undefined;
                 };
                 profile: { __typename?: 'Profile'; id: string; displayName: string };
@@ -17163,6 +17247,12 @@ export type AdminInnovationHubFragment = {
           host?:
             | {
                 __typename?: 'Organization';
+                id: string;
+                profile: { __typename?: 'Profile'; id: string; displayName: string };
+              }
+            | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+            | {
+                __typename?: 'VirtualContributor';
                 id: string;
                 profile: { __typename?: 'Profile'; id: string; displayName: string };
               }
@@ -17231,6 +17321,16 @@ export type CreateInnovationHubMutation = {
                   id: string;
                   profile: { __typename?: 'Profile'; id: string; displayName: string };
                 }
+              | {
+                  __typename?: 'User';
+                  id: string;
+                  profile: { __typename?: 'Profile'; id: string; displayName: string };
+                }
+              | {
+                  __typename?: 'VirtualContributor';
+                  id: string;
+                  profile: { __typename?: 'Profile'; id: string; displayName: string };
+                }
               | undefined;
           };
           profile: { __typename?: 'Profile'; id: string; displayName: string };
@@ -17294,6 +17394,16 @@ export type UpdateInnovationHubMutation = {
             host?:
               | {
                   __typename?: 'Organization';
+                  id: string;
+                  profile: { __typename?: 'Profile'; id: string; displayName: string };
+                }
+              | {
+                  __typename?: 'User';
+                  id: string;
+                  profile: { __typename?: 'Profile'; id: string; displayName: string };
+                }
+              | {
+                  __typename?: 'VirtualContributor';
                   id: string;
                   profile: { __typename?: 'Profile'; id: string; displayName: string };
                 }
@@ -17428,6 +17538,8 @@ export type AboutPageNonMembersQuery = {
                   };
                   metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
                 }
+              | { __typename?: 'User' }
+              | { __typename?: 'VirtualContributor' }
               | undefined;
           };
           metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
@@ -17723,6 +17835,8 @@ export type JourneyDataQuery = {
                   };
                   metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
                 }
+              | { __typename?: 'User' }
+              | { __typename?: 'VirtualContributor' }
               | undefined;
           };
         }
@@ -18138,6 +18252,8 @@ export type SpaceCommunityPageQuery = {
             verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
             metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
           }
+        | { __typename?: 'User' }
+        | { __typename?: 'VirtualContributor' }
         | undefined;
     };
     community: {
@@ -18369,7 +18485,14 @@ export type SpaceDetailsFragment = {
         }
       | undefined;
   };
-  account: { __typename?: 'Account'; host?: { __typename?: 'Organization'; id: string } | undefined };
+  account: {
+    __typename?: 'Account';
+    host?:
+      | { __typename?: 'Organization'; id: string }
+      | { __typename?: 'User'; id: string }
+      | { __typename?: 'VirtualContributor'; id: string }
+      | undefined;
+  };
   authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
   context: {
     __typename?: 'Context';
@@ -18433,7 +18556,11 @@ export type SpaceProviderQuery = {
       __typename?: 'Account';
       id: string;
       license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
-      host?: { __typename?: 'Organization'; id: string } | undefined;
+      host?:
+        | { __typename?: 'Organization'; id: string }
+        | { __typename?: 'User'; id: string }
+        | { __typename?: 'VirtualContributor'; id: string }
+        | undefined;
     };
     profile: {
       __typename?: 'Profile';
@@ -18532,7 +18659,11 @@ export type SpaceInfoFragment = {
     __typename?: 'Account';
     id: string;
     license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
-    host?: { __typename?: 'Organization'; id: string } | undefined;
+    host?:
+      | { __typename?: 'Organization'; id: string }
+      | { __typename?: 'User'; id: string }
+      | { __typename?: 'VirtualContributor'; id: string }
+      | undefined;
   };
   profile: {
     __typename?: 'Profile';
@@ -18608,6 +18739,32 @@ export type SpaceHostQuery = {
               tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
             };
           }
+        | {
+            __typename?: 'User';
+            id: string;
+            nameID: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+              tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+            };
+          }
+        | {
+            __typename?: 'VirtualContributor';
+            id: string;
+            nameID: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+              tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+            };
+          }
         | undefined;
     };
   };
@@ -18652,6 +18809,26 @@ export type SpacePageQuery = {
                     status: OrganizationVerificationEnum;
                   };
                   metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+                }
+              | {
+                  __typename?: 'User';
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                    tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+                  };
+                }
+              | {
+                  __typename?: 'VirtualContributor';
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                    tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+                  };
                 }
               | undefined;
           };
@@ -18881,6 +19058,26 @@ export type SpacePageFragment = {
           };
           verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
           metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+        }
+      | {
+          __typename?: 'User';
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+          };
+        }
+      | {
+          __typename?: 'VirtualContributor';
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+          };
         }
       | undefined;
   };
@@ -19609,7 +19806,14 @@ export type UpdateSpaceMutation = {
           }
         | undefined;
     };
-    account: { __typename?: 'Account'; host?: { __typename?: 'Organization'; id: string } | undefined };
+    account: {
+      __typename?: 'Account';
+      host?:
+        | { __typename?: 'Organization'; id: string }
+        | { __typename?: 'User'; id: string }
+        | { __typename?: 'VirtualContributor'; id: string }
+        | undefined;
+    };
     authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
     context: {
       __typename?: 'Context';
@@ -20876,7 +21080,11 @@ export type UpdateAccountPlatformSettingsMutation = {
       visibility: SpaceVisibility;
       featureFlags: Array<{ __typename?: 'LicenseFeatureFlag'; name: LicenseFeatureFlagName; enabled: boolean }>;
     };
-    host?: { __typename?: 'Organization'; id: string } | undefined;
+    host?:
+      | { __typename?: 'Organization'; id: string }
+      | { __typename?: 'User'; id: string }
+      | { __typename?: 'VirtualContributor'; id: string }
+      | undefined;
   };
 };
 
@@ -20913,6 +21121,12 @@ export type AdminSpacesListQuery = {
             id: string;
             profile: { __typename?: 'Profile'; id: string; displayName: string };
           }
+        | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+        | {
+            __typename?: 'VirtualContributor';
+            id: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string };
+          }
         | undefined;
     };
     profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
@@ -20938,6 +21152,12 @@ export type AdminSpaceFragment = {
     host?:
       | {
           __typename?: 'Organization';
+          id: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string };
+        }
+      | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+      | {
+          __typename?: 'VirtualContributor';
           id: string;
           profile: { __typename?: 'Profile'; id: string; displayName: string };
         }
@@ -23775,6 +23995,7 @@ export type CalendarEventDetailsQuery = {
                   | undefined;
               }>;
               sender?:
+                | { __typename?: 'Organization' }
                 | {
                     __typename?: 'User';
                     id: string;
@@ -23916,6 +24137,7 @@ export type CalendarEventDetailsFragment = {
           | undefined;
       }>;
       sender?:
+        | { __typename?: 'Organization' }
         | {
             __typename?: 'User';
             id: string;
@@ -24075,6 +24297,7 @@ export type CreateCalendarEventMutation = {
             | undefined;
         }>;
         sender?:
+          | { __typename?: 'Organization' }
           | {
               __typename?: 'User';
               id: string;
@@ -24214,6 +24437,7 @@ export type UpdateCalendarEventMutation = {
             | undefined;
         }>;
         sender?:
+          | { __typename?: 'Organization' }
           | {
               __typename?: 'User';
               id: string;
@@ -26853,6 +27077,7 @@ export type MyMembershipsQuery = {
     spaceMemberships: Array<{
       __typename?: 'Space';
       id: string;
+      level: number;
       account: {
         __typename?: 'Account';
         id: string;
