@@ -20,8 +20,9 @@ interface InvitationOptionsBlockProps {
   currentApplicationsUserIds: string[];
   currentInvitationsUserIds: string[];
   currentMembersIds: string[];
-  spaceId: string;
-  isPrivate: boolean | undefined;
+  spaceId?: string;
+  isParentPrivate?: boolean | undefined;
+  isSubspace?: boolean;
 }
 
 enum UserInvite {
@@ -36,8 +37,9 @@ const InvitationOptionsBlock = ({
   currentApplicationsUserIds,
   currentInvitationsUserIds,
   currentMembersIds,
-  spaceId,
-  isPrivate,
+  spaceId = '',
+  isParentPrivate,
+  isSubspace = false,
 }: InvitationOptionsBlockProps) => {
   const [currentInvitation, setCurrentInvitation] = useState<UserInvite>();
 
@@ -49,9 +51,11 @@ const InvitationOptionsBlock = ({
     variables: {
       spaceId,
     },
+    skip: !spaceId,
   });
 
   const allowSubspaceAdminsToInviteMembers = data?.lookup.space?.settings.membership.allowSubspaceAdminsToInviteMembers;
+  const showInviteBlock = isSubspace ? !isParentPrivate && allowSubspaceAdminsToInviteMembers : true; // for Spaces the block is always visible
 
   return loading ? (
     <Box marginX="auto">
@@ -59,7 +63,7 @@ const InvitationOptionsBlock = ({
     </Box>
   ) : (
     <>
-      {!isPrivate && allowSubspaceAdminsToInviteMembers && (
+      {showInviteBlock && (
         <PageContentBlock>
           <PageContentBlockHeader title={t('components.invitations.inviteOthers')} />
           <Gutters row disablePadding flexWrap="wrap">
