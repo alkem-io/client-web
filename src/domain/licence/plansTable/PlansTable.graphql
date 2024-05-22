@@ -1,0 +1,24 @@
+query PlansTable {
+  platform {
+    id
+    licensing {
+      id
+      plans {
+        id
+        name
+        enabled
+        sortOrder
+        pricePerMonth
+        isFree
+        trialEnabled
+        requiresPaymentMethod
+        requiresContactSupport
+      }
+    }
+    configuration {
+      locations {
+        contactsupport
+      }
+    }
+  }
+}

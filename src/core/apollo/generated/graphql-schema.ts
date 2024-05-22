@@ -1497,7 +1497,7 @@ export type CreateInnovationFlowTemplateOnTemplatesSetInput = {
 
 export type CreateInnovationHubInput = {
   /** Account ID, associated with the Innovation Hub. */
-  accountID: Scalars['UUID'];
+  accountID?: InputMaybe<Scalars['UUID']>;
   /** A readable identifier, unique within the containing scope. */
   nameID?: InputMaybe<Scalars['NameID']>;
   profileData: CreateProfileInput;
@@ -2269,8 +2269,20 @@ export type LicensePlan = {
   enabled: Scalars['Boolean'];
   /** The ID of the entity */
   id: Scalars['UUID'];
+  /** Is this plan free? */
+  isFree: Scalars['Boolean'];
   /** The name of the License Plan */
   name: Scalars['String'];
+  /** The price per month of this plan. */
+  pricePerMonth?: Maybe<Scalars['Float']>;
+  /** Does this plan require contact support */
+  requiresContactSupport: Scalars['Boolean'];
+  /** Does this plan require a payment method? */
+  requiresPaymentMethod: Scalars['Boolean'];
+  /** The sorting order for this Plan. */
+  sortOrder: Scalars['Float'];
+  /** Is there a trial period enabled */
+  trialEnabled: Scalars['Boolean'];
 };
 
 export type LicensePolicy = {
@@ -3679,6 +3691,8 @@ export type PlatformLocations = {
   blog: Scalars['String'];
   /** URL where users can see the community forum */
   community: Scalars['String'];
+  /** URL for the link Contact in the HomePage and to create a new space with Enterprise plan */
+  contactsupport: Scalars['String'];
   /** Main domain of the environment */
   domain: Scalars['String'];
   /** Name of the environment */
@@ -20593,6 +20607,33 @@ export type SubspacePageSpaceFragment = {
       | undefined;
   };
   collaboration: { __typename?: 'Collaboration'; id: string };
+};
+
+export type PlansTableQueryVariables = Exact<{ [key: string]: never }>;
+
+export type PlansTableQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    licensing: {
+      __typename?: 'Licensing';
+      id: string;
+      plans: Array<{
+        __typename?: 'LicensePlan';
+        id: string;
+        name: string;
+        enabled: boolean;
+        sortOrder: number;
+        pricePerMonth?: number | undefined;
+        isFree: boolean;
+        trialEnabled: boolean;
+        requiresPaymentMethod: boolean;
+        requiresContactSupport: boolean;
+      }>;
+    };
+    configuration: { __typename?: 'Config'; locations: { __typename?: 'PlatformLocations'; contactsupport: string } };
+  };
 };
 
 export type PlatformLevelAuthorizationQueryVariables = Exact<{ [key: string]: never }>;
