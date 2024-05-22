@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { BlockTitle, Caption } from '../../../../core/ui/typography';
-import { Trans } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import DashboardBanner from '../../../../core/ui/content/DashboardBanner';
 import { useUserContext } from '../../../../domain/community/user/hooks/useUserContext';
 import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
