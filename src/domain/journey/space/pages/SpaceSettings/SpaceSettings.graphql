@@ -1,11 +1,13 @@
-query SpaceSettings($spaceId: UUID_NAMEID!) {
-  space(ID: $spaceId) {
-    id
-    settings {
-      ...SpaceSettings
-    }
-    community {
+query SpaceSettings($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
       id
+      settings {
+        ...SpaceSettings
+      }
+      community {
+        id
+      }
     }
   }
 }
@@ -13,10 +15,12 @@ query SpaceSettings($spaceId: UUID_NAMEID!) {
 fragment SpaceSettings on SpaceSettings {
   privacy {
     mode
+    allowPlatformSupportAsAdmin
   }
   membership {
     policy
     trustedOrganizations
+    allowSubspaceAdminsToInviteMembers
   }
   collaboration {
     allowMembersToCreateCallouts

@@ -1,15 +1,17 @@
-query spaceApplication($spaceId: UUID_NAMEID!) {
-  space(ID: $spaceId) {
-    id
-    profile {
+query SpaceApplication($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
       id
-      url
-      displayName
-    }
-    community {
-      id
-      guidelines {
-        ...CommunityGuidelinesDetails
+      profile {
+        id
+        url
+        displayName
+      }
+      community {
+        id
+        guidelines {
+          ...CommunityGuidelinesDetails
+        }
       }
     }
   }

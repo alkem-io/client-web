@@ -22,8 +22,8 @@ mutation createCalloutTemplate(
   }
 }
 
-query SpaceTemplateSetId($spaceId: UUID_NAMEID!) {
-  space(ID: $spaceId) {
+query SpaceTemplateSetId($spaceNameId: UUID_NAMEID!) {
+  space(ID: $spaceNameId) {
     id
     account {
       id

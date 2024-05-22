@@ -2,6 +2,7 @@ query MyMemberships {
   me {
     spaceMemberships {
       id
+      level
       account {
         id
         license {

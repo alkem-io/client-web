@@ -1,13 +1,13 @@
 import React from 'react';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 import ProfilePageBanner, { ProfilePageBannerProps } from '../../../common/profile/ProfilePageBanner';
-import { buildAdminOrganizationUrl } from '../../../../main/routing/urlBuilders';
+import { buildSettingsUrl } from '../../../../main/routing/urlBuilders';
 
 interface OrganizationPageBannerProps {
   organization:
     | (Identifiable & {
         nameID: string;
-        profile: ProfilePageBannerProps['profile'];
+        profile: ProfilePageBannerProps['profile'] & { url: string };
       })
     | undefined;
   onSendMessage: ProfilePageBannerProps['onSendMessage'];
@@ -21,7 +21,7 @@ const OrganizationPageBanner = ({
   canEdit,
   loading = false,
 }: OrganizationPageBannerProps) => {
-  const settingsUri = canEdit && organization ? buildAdminOrganizationUrl(organization.nameID) : undefined;
+  const settingsUri = canEdit && organization ? buildSettingsUrl(organization.profile.url) : undefined;
 
   return (
     <ProfilePageBanner

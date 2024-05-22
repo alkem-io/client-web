@@ -3,13 +3,14 @@ import { useUserContext } from '../../../user';
 import {
   refetchUserOrganizationIdsQuery,
   useAssociatedOrganizationQuery,
-  useRemoveUserFromOrganizationMutation,
+  useRemoveOrganizationRoleFromUserMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import {
   ContainerPropsWithProvided,
   renderComponentOrChildrenFn,
 } from '../../../../../core/container/ComponentOrChildrenFn';
 import { AssociatedOrganization, mapToAssociatedOrganization } from './AssociatedOrganization';
+import { OrganizationRole } from '../../../../../core/apollo/generated/graphql-schema';
 
 export type OrganizationDetailsContainerProps = ContainerPropsWithProvided<
   {
@@ -37,7 +38,7 @@ export const AssociatedOrganizationContainer: FC<OrganizationDetailsContainerPro
   });
 
   const [disassociateSelfFromOrganization, { loading: removingFromOrganization }] =
-    useRemoveUserFromOrganizationMutation();
+    useRemoveOrganizationRoleFromUserMutation();
 
   const handleRemoveSelfFromOrganization = useCallback(async () => {
     if (!user) {
@@ -49,6 +50,7 @@ export const AssociatedOrganizationContainer: FC<OrganizationDetailsContainerPro
         input: {
           userID: user.user.id,
           organizationID: organizationId,
+          role: OrganizationRole.Associate,
         },
       },
       refetchQueries: [refetchUserOrganizationIdsQuery({ userId: user.user.id })],

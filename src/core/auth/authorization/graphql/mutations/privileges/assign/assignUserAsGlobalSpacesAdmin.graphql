@@ -1,9 +1,0 @@
-mutation assignUserAsGlobalSpacesAdmin($input: AssignGlobalSpacesAdminInput!) {
-  assignUserAsGlobalSpacesAdmin(membershipData: $input) {
-    id
-    profile {
-      id
-      displayName
-    }
-  }
-}

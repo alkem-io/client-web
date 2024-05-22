@@ -84,7 +84,7 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ opportuni
     errorPolicy: 'all',
   });
 
-  const subsubspace = query?.space;
+  const subsubspace = query?.lookup.space;
   const opportunityPrivileges = subsubspace?.authorization?.myPrivileges ?? NO_PRIVILEGES;
   const communityPrivileges = subsubspace?.community?.authorization?.myPrivileges ?? NO_PRIVILEGES;
   const timelineReadAccess = (subsubspace?.collaboration?.timeline?.authorization?.myPrivileges ?? []).includes(

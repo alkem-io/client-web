@@ -66,7 +66,7 @@ const OpportunityProvider: FC<OpportunityProviderProps> = ({ children }) => {
     errorPolicy: 'all',
   });
 
-  const opportunity = data?.space;
+  const opportunity = data?.lookup.space;
 
   const communityId = opportunity?.community?.id ?? '';
 

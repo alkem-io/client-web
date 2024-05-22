@@ -51,7 +51,7 @@ const OpportunityProfileView: FC<Props> = ({ mode }) => {
     skip: !opportunityId || mode === FormMode.create,
   });
 
-  const opportunity = opportunityProfile?.space;
+  const opportunity = opportunityProfile?.lookup.space;
 
   const isLoading = isCreating || isUpdating;
 
