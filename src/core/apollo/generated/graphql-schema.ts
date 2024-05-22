@@ -1250,6 +1250,18 @@ export type CommunityGuidelines = {
   profile: Profile;
 };
 
+export type CommunityGuidelinesTemplate = {
+  __typename?: 'CommunityGuidelinesTemplate';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The community guidelines. */
+  guidelines: CommunityGuidelines;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** The Profile for this template. */
+  profile: Profile;
+};
+
 export type CommunityJoinInput = {
   communityID: Scalars['UUID'];
 };
@@ -1461,6 +1473,7 @@ export type CreateCalloutTemplateOnTemplatesSetInput = {
   contributionDefaults: CreateCalloutContributionDefaultsInput;
   contributionPolicy: CreateCalloutContributionPolicyInput;
   framing: CreateCalloutFramingInput;
+  /** The profile of the template. */
   profile: CreateProfileInput;
   tags?: InputMaybe<Array<Scalars['String']>>;
   templatesSetID: Scalars['UUID'];
@@ -1478,6 +1491,22 @@ export type CreateCollaborationInput = {
   innovationFlowTemplateID?: InputMaybe<Scalars['UUID']>;
 };
 
+export type CreateCommunityGuidelinesInput = {
+  profile: CreateProfileInput;
+};
+
+export type CreateCommunityGuidelinesTemplateOnTemplatesSetInput = {
+  /** The Community guidelines to associate with this template. */
+  communityGuidelines?: InputMaybe<CreateCommunityGuidelinesInput>;
+  /** The ID of the Community guidelines to associate with this template. */
+  communityGuidelinesID?: InputMaybe<Scalars['String']>;
+  /** The profile of the template. */
+  profile: CreateProfileInput;
+  tags?: InputMaybe<Array<Scalars['String']>>;
+  templatesSetID: Scalars['UUID'];
+  visualUri?: InputMaybe<Scalars['String']>;
+};
+
 export type CreateContextInput = {
   impact?: InputMaybe<Scalars['Markdown']>;
   vision?: InputMaybe<Scalars['Markdown']>;
@@ -1492,6 +1521,7 @@ export type CreateContributionOnCalloutInput = {
 };
 
 export type CreateInnovationFlowTemplateOnTemplatesSetInput = {
+  /** The profile of the template. */
   profile: CreateProfileInput;
   states?: InputMaybe<Array<UpdateInnovationFlowStateInput>>;
   tags?: InputMaybe<Array<Scalars['String']>>;
@@ -1501,7 +1531,7 @@ export type CreateInnovationFlowTemplateOnTemplatesSetInput = {
 
 export type CreateInnovationHubInput = {
   /** Account ID, associated with the Innovation Hub. */
-  accountID: Scalars['UUID'];
+  accountID?: InputMaybe<Scalars['UUID']>;
   /** A readable identifier, unique within the containing scope. */
   nameID?: InputMaybe<Scalars['NameID']>;
   profileData: CreateProfileInput;
@@ -1587,6 +1617,7 @@ export type CreatePostInput = {
 export type CreatePostTemplateOnTemplatesSetInput = {
   /** The default description to be pre-filled when users create Posts based on this template. */
   defaultDescription?: InputMaybe<Scalars['Markdown']>;
+  /** The profile of the template. */
   profile: CreateProfileInput;
   tags?: InputMaybe<Array<Scalars['String']>>;
   templatesSetID: Scalars['UUID'];
@@ -1706,6 +1737,7 @@ export type CreateWhiteboardInput = {
 
 export type CreateWhiteboardTemplateOnTemplatesSetInput = {
   content?: InputMaybe<Scalars['WhiteboardContent']>;
+  /** The profile of the template. */
   profile: CreateProfileInput;
   tags?: InputMaybe<Array<Scalars['String']>>;
   templatesSetID: Scalars['UUID'];
@@ -2375,6 +2407,10 @@ export type LookupQueryResults = {
   collaboration?: Maybe<Collaboration>;
   /** Lookup the specified Community */
   community?: Maybe<Community>;
+  /** Lookup the specified Community guidelines */
+  communityGuidelines?: Maybe<CommunityGuidelines>;
+  /** Lookup the specified InnovationFlow Template */
+  communityGuidelinesTemplate?: Maybe<CommunityGuidelinesTemplate>;
   /** Lookup the specified Context */
   context?: Maybe<Context>;
   /** Lookup the specified Document */
@@ -2435,6 +2471,14 @@ export type LookupQueryResultsCollaborationArgs = {
 };
 
 export type LookupQueryResultsCommunityArgs = {
+  ID: Scalars['UUID'];
+};
+
+export type LookupQueryResultsCommunityGuidelinesArgs = {
+  ID: Scalars['UUID'];
+};
+
+export type LookupQueryResultsCommunityGuidelinesTemplateArgs = {
   ID: Scalars['UUID'];
 };
 
@@ -2626,6 +2670,8 @@ export type Mutation = {
   createCalloutOnCollaboration: Callout;
   /** Creates a new CalloutTemplate on the specified TemplatesSet. */
   createCalloutTemplate: CalloutTemplate;
+  /** Creates a new CommunityGuidelinesTemplate on the specified TemplatesSet. */
+  createCommunityGuidelinesTemplate: CommunityGuidelinesTemplate;
   /** Create a new Contribution on the Callout. */
   createContributionOnCallout: CalloutContribution;
   /** Creates a new Discussion as part of this Communication. */
@@ -2980,6 +3026,10 @@ export type MutationCreateCalloutOnCollaborationArgs = {
 
 export type MutationCreateCalloutTemplateArgs = {
   calloutTemplateInput: CreateCalloutTemplateOnTemplatesSetInput;
+};
+
+export type MutationCreateCommunityGuidelinesTemplateArgs = {
+  communityGuidelinesTemplateInput: CreateCommunityGuidelinesTemplateOnTemplatesSetInput;
 };
 
 export type MutationCreateContributionOnCalloutArgs = {
@@ -3885,6 +3935,7 @@ export enum ProfileType {
   CalloutTemplate = 'CALLOUT_TEMPLATE',
   Challenge = 'CHALLENGE',
   CommunityGuidelines = 'COMMUNITY_GUIDELINES',
+  CommunityGuidelinesTemplate = 'COMMUNITY_GUIDELINES_TEMPLATE',
   ContributionLink = 'CONTRIBUTION_LINK',
   Discussion = 'DISCUSSION',
   InnovationFlow = 'INNOVATION_FLOW',
@@ -4950,6 +5001,14 @@ export type TemplatesSet = {
   authorization?: Maybe<Authorization>;
   /** The CalloutTemplates in this TemplatesSet. */
   calloutTemplates: Array<CalloutTemplate>;
+  /** The total number of CalloutTemplates in this TemplatesSet. */
+  calloutTemplatesCount: Scalars['Float'];
+  /** A single CommunityGuidelinesTemplate */
+  communityGuidelinesTemplate?: Maybe<CommunityGuidelinesTemplate>;
+  /** The CommunityGuidelines in this TemplatesSet. */
+  communityGuidelinesTemplates: Array<CommunityGuidelinesTemplate>;
+  /** The total number of CommunityGuidelinesTemplates in this TemplatesSet. */
+  communityGuidelinesTemplatesCount: Scalars['Float'];
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** A single InnovationFlowTemplate */
@@ -4970,6 +5029,10 @@ export type TemplatesSet = {
   whiteboardTemplates: Array<WhiteboardTemplate>;
   /** The total number of WhiteboardTemplates in this TemplatesSet. */
   whiteboardTemplatesCount: Scalars['Float'];
+};
+
+export type TemplatesSetCommunityGuidelinesTemplateArgs = {
+  ID: Scalars['UUID'];
 };
 
 export type TemplatesSetInnovationFlowTemplateArgs = {
@@ -25862,6 +25925,7 @@ export type MyMembershipsQuery = {
     spaceMemberships: Array<{
       __typename?: 'Space';
       id: string;
+      level: number;
       account: {
         __typename?: 'Account';
         id: string;

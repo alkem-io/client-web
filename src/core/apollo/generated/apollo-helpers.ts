@@ -901,6 +901,19 @@ export type CommunityGuidelinesFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type CommunityGuidelinesTemplateKeySpecifier = (
+  | 'authorization'
+  | 'guidelines'
+  | 'id'
+  | 'profile'
+  | CommunityGuidelinesTemplateKeySpecifier
+)[];
+export type CommunityGuidelinesTemplateFieldPolicy = {
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  guidelines?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  profile?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type CommunityPolicyKeySpecifier = ('admin' | 'id' | 'lead' | 'member' | CommunityPolicyKeySpecifier)[];
 export type CommunityPolicyFieldPolicy = {
   admin?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1400,6 +1413,8 @@ export type LookupQueryResultsKeySpecifier = (
   | 'calloutTemplate'
   | 'collaboration'
   | 'community'
+  | 'communityGuidelines'
+  | 'communityGuidelinesTemplate'
   | 'context'
   | 'document'
   | 'innovationFlow'
@@ -1424,6 +1439,8 @@ export type LookupQueryResultsFieldPolicy = {
   calloutTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   collaboration?: FieldPolicy<any> | FieldReadFunction<any>;
   community?: FieldPolicy<any> | FieldReadFunction<any>;
+  communityGuidelines?: FieldPolicy<any> | FieldReadFunction<any>;
+  communityGuidelinesTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   context?: FieldPolicy<any> | FieldReadFunction<any>;
   document?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationFlow?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1506,6 +1523,7 @@ export type MutationKeySpecifier = (
   | 'createActorGroup'
   | 'createCalloutOnCollaboration'
   | 'createCalloutTemplate'
+  | 'createCommunityGuidelinesTemplate'
   | 'createContributionOnCallout'
   | 'createDiscussion'
   | 'createEventOnCalendar'
@@ -1664,6 +1682,7 @@ export type MutationFieldPolicy = {
   createActorGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   createCalloutOnCollaboration?: FieldPolicy<any> | FieldReadFunction<any>;
   createCalloutTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
+  createCommunityGuidelinesTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   createContributionOnCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   createDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
   createEventOnCalendar?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2756,6 +2775,10 @@ export type TaskFieldPolicy = {
 export type TemplatesSetKeySpecifier = (
   | 'authorization'
   | 'calloutTemplates'
+  | 'calloutTemplatesCount'
+  | 'communityGuidelinesTemplate'
+  | 'communityGuidelinesTemplates'
+  | 'communityGuidelinesTemplatesCount'
   | 'id'
   | 'innovationFlowTemplate'
   | 'innovationFlowTemplates'
@@ -2771,6 +2794,10 @@ export type TemplatesSetKeySpecifier = (
 export type TemplatesSetFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   calloutTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
+  calloutTemplatesCount?: FieldPolicy<any> | FieldReadFunction<any>;
+  communityGuidelinesTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
+  communityGuidelinesTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
+  communityGuidelinesTemplatesCount?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationFlowTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationFlowTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3261,6 +3288,13 @@ export type StrictTypedTypePolicies = {
   CommunityGuidelines?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CommunityGuidelinesKeySpecifier | (() => undefined | CommunityGuidelinesKeySpecifier);
     fields?: CommunityGuidelinesFieldPolicy;
+  };
+  CommunityGuidelinesTemplate?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | CommunityGuidelinesTemplateKeySpecifier
+      | (() => undefined | CommunityGuidelinesTemplateKeySpecifier);
+    fields?: CommunityGuidelinesTemplateFieldPolicy;
   };
   CommunityPolicy?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CommunityPolicyKeySpecifier | (() => undefined | CommunityPolicyKeySpecifier);

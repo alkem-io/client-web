@@ -4,6 +4,8 @@ export interface ContributionItem extends Identifiable {
   spaceId: string;
   subspaceId?: string;
   subsubspaceId?: string;
+  subspaceID?: string;
+  subsubspaceID?: string;
 }
 
 export interface LegacyContributionItem extends Identifiable {
