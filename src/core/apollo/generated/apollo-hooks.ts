@@ -2748,13 +2748,6 @@ export const AdminSpaceFragmentDoc = gql`
           enabled
         }
       }
-      host {
-        id
-        profile {
-          id
-          displayName
-        }
-      }
     }
     profile {
       id
