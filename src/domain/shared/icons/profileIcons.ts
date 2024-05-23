@@ -13,6 +13,7 @@ import {
   Face5,
   Face6,
   HubOutlined,
+  ImageNotSupportedOutlined,
   InventoryOutlined,
   PeopleAltOutlined,
   PersonOutline,
@@ -21,6 +22,7 @@ import {
 import HandshakeOutlinedIcon from '@mui/icons-material/HandshakeOutlined';
 import calloutIcons from '../../collaboration/callout/utils/calloutIcons';
 import { SpaceIcon } from '../../journey/space/icon/SpaceIcon';
+import { warn } from '../../../core/logging/sentry/log';
 
 export const getProfileIcon = (profileType: ProfileType): ComponentType<SvgIconProps> => {
   switch (profileType) {
@@ -70,5 +72,9 @@ export const getProfileIcon = (profileType: ProfileType): ComponentType<SvgIconP
       return Face5; // TODO: Choose a more appropriate icon
     case ProfileType.VirtualContributor:
       return Face6; // TODO: Choose a more appropriate icon
+    default: {
+      warn(`Icon not specified for ProfileType ${profileType}`);
+      return ImageNotSupportedOutlined;
+    }
   }
 };

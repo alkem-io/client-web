@@ -1,7 +1,6 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  AssociatedOrganizationDetailsFragment,
   CalloutGroupName,
   CalloutsQueryVariables,
   CommunityMembershipStatus,
@@ -30,6 +29,7 @@ import InfoColumn from '../../../../core/ui/content/InfoColumn';
 import ContentColumn from '../../../../core/ui/content/ContentColumn';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
+import { ContributorViewProps } from '../../../community/community/EntityDashboardContributorsSection/Types';
 
 interface SpaceWelcomeBlockContributor {
   profile: SpaceWelcomeBlockContributorProfileFragment;
@@ -42,7 +42,7 @@ interface SpaceDashboardViewProps {
   vision?: string;
   communityId?: string;
   organization?: unknown;
-  leadOrganizations: (SpaceWelcomeBlockContributor & AssociatedOrganizationDetailsFragment)[] | undefined;
+  host: ContributorViewProps | undefined;
   leadUsers: (SpaceWelcomeBlockContributor & DashboardLeadUserFragment)[] | undefined;
   communityReadAccess: boolean;
   timelineReadAccess?: boolean;
@@ -73,7 +73,7 @@ const SpaceDashboardView = ({
   communityId = '',
   communityReadAccess = false,
   timelineReadAccess = false,
-  leadOrganizations,
+  host,
   leadUsers,
   journeyTypeName,
   callouts,
@@ -89,6 +89,8 @@ const SpaceDashboardView = ({
   const { sendMessage, directMessageDialog } = useDirectMessageDialog({
     dialogTitle: t('send-message-dialog.direct-message-title'),
   });
+
+  const welcomeBlockContributors = useMemo(() => host && [host], [host]);
 
   return (
     <>
@@ -120,7 +122,7 @@ const SpaceDashboardView = ({
               vision={vision}
               leadUsers={leadUsers}
               onContactLeadUser={receiver => sendMessage('user', receiver)}
-              leadOrganizations={leadOrganizations}
+              leadOrganizations={welcomeBlockContributors}
               onContactLeadOrganization={receiver => sendMessage('organization', receiver)}
               journeyTypeName="space"
               member={myMembershipStatus === CommunityMembershipStatus.Member}

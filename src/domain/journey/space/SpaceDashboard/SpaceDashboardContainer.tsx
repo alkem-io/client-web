@@ -1,5 +1,5 @@
 import { ApolloError } from '@apollo/client';
-import React, { FC, useCallback, useMemo } from 'react';
+import React, { FC, useCallback } from 'react';
 import { useSpace } from '../SpaceContext/useSpace';
 import { useUserContext } from '../../../community/user';
 import {
@@ -9,7 +9,6 @@ import {
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
 import {
-  AssociatedOrganizationDetailsFragment,
   AuthorizationPrivilege,
   CalloutGroupName,
   CommunityMembershipStatus,
@@ -20,6 +19,7 @@ import useCallouts, { UseCalloutsProvided } from '../../../collaboration/callout
 import useSpaceDashboardNavigation, {
   DashboardNavigationItem,
 } from '../spaceDashboardNavigation/useSpaceDashboardNavigation';
+import { ContributorViewProps } from '../../../community/community/EntityDashboardContributorsSection/Types';
 
 export interface SpaceContainerEntities {
   space: SpacePageFragment | undefined;
@@ -35,7 +35,7 @@ export interface SpaceContainerEntities {
   isAuthenticated: boolean;
   isMember: boolean;
   references: Reference[] | undefined;
-  hostOrganizations: AssociatedOrganizationDetailsFragment[] | undefined;
+  host: ContributorViewProps | undefined;
   sendMessageToCommunityLeads: (message: string) => Promise<void>;
   callouts: UseCalloutsProvided;
 }
@@ -103,7 +103,7 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ spaceId, 
 
   const references = referencesData?.lookup.space?.profile.references;
 
-  const hostOrganizations = useMemo(() => (space?.account.host ? [space.account.host] : []), [spaceData]);
+  const host = space?.account.host;
 
   const communityId = space?.community?.id ?? '';
 
@@ -140,7 +140,7 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ spaceId, 
           isAuthenticated,
           isMember,
           references,
-          hostOrganizations,
+          host,
           sendMessageToCommunityLeads: handleSendMessageToCommunityLeads,
           callouts,
         },
