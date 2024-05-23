@@ -5,9 +5,10 @@ import { AdminCalloutTemplateFragment } from '../../../../../core/apollo/generat
 import { LinkWithState } from '../../../../shared/types/LinkWithState';
 import AdminTemplatesSection from '../AdminTemplatesSection';
 import { InnovationPack } from '../InnovationPacks/InnovationPack';
-import CalloutTemplateCard from './CalloutTemplateCard';
+// import CalloutTemplateCard from './CalloutTemplateCard';
 import CalloutImportTemplateCard from './CalloutImportTemplateCard';
 import { TemplateType } from '../../../../collaboration/InnovationPack/InnovationPackProfilePage/InnovationPackProfilePage';
+import CalloutTemplateCard from '../../../../collaboration/callout/CalloutTemplateCard/CalloutTemplateCard';
 
 interface AdminCalloutTemplatesSectionProps {
   templateId: string | undefined;
