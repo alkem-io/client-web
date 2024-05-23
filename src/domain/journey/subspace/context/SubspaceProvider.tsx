@@ -100,9 +100,9 @@ const SubspaceProvider: FC<SubspaceProviderProps> = ({ children }) => {
   return (
     <SubspaceContext.Provider
       value={{
-        subspace: subspace,
+        subspace,
         subspaceId: journeyId ?? '',
-        subspaceNameId: subspaceNameId,
+        subspaceNameId,
         communityId,
         permissions,
         profile,

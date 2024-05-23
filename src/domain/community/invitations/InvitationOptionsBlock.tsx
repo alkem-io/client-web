@@ -20,7 +20,7 @@ interface InvitationOptionsBlockProps {
   currentApplicationsUserIds: string[];
   currentInvitationsUserIds: string[];
   currentMembersIds: string[];
-  spaceId?: string;
+  spaceId?: string | undefined;
   isParentPrivate?: boolean | undefined;
   isSubspace?: boolean;
 }
@@ -37,7 +37,7 @@ const InvitationOptionsBlock = ({
   currentApplicationsUserIds,
   currentInvitationsUserIds,
   currentMembersIds,
-  spaceId = '',
+  spaceId,
   isParentPrivate,
   isSubspace = false,
 }: InvitationOptionsBlockProps) => {
@@ -49,7 +49,7 @@ const InvitationOptionsBlock = ({
 
   const { data, loading } = useSpaceSettingsQuery({
     variables: {
-      spaceId,
+      spaceId: spaceId!,
     },
     skip: !spaceId,
   });
