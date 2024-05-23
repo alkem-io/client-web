@@ -21230,7 +21230,12 @@ export type SubspaceInfoQuery = {
               | undefined;
           };
           authorization?:
-            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | {
+                __typename?: 'Authorization';
+                id: string;
+                myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                anonymousReadAccess: boolean;
+              }
             | undefined;
           context: {
             __typename?: 'Context';
@@ -21301,7 +21306,12 @@ export type SubspaceInfoFragment = {
       | undefined;
   };
   authorization?:
-    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+    | {
+        __typename?: 'Authorization';
+        id: string;
+        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+        anonymousReadAccess: boolean;
+      }
     | undefined;
   context: {
     __typename?: 'Context';

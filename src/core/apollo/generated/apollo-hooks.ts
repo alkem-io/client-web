@@ -2690,6 +2690,7 @@ export const SubspaceInfoFragmentDoc = gql`
     authorization {
       id
       myPrivileges
+      anonymousReadAccess
     }
     context {
       id
