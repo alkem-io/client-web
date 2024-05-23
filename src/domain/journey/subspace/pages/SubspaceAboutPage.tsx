@@ -34,7 +34,7 @@ const SubspaceAboutPage: FC = () => {
           {
             context,
             references,
-            hostOrganization,
+            host,
             leadOrganizations,
             leadUsers,
             metrics,
@@ -59,7 +59,7 @@ const SubspaceAboutPage: FC = () => {
             impact={context?.impact}
             loading={state.loading}
             leadUsers={leadUsers}
-            hostOrganizations={hostOrganization && [hostOrganization]}
+            host={host}
             leadOrganizations={leadOrganizations}
             endButton={
               <IconButton onClick={backToParentPage} aria-label={t('buttons.close')}>

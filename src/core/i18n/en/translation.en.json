@@ -1006,7 +1006,6 @@
       "inviteOthers": "Invite others",
       "inviteExistingUser": "Invite Alkemio users",
       "inviteExternalUser": "Send email invitation",
-      "inviteByURL": "Copy magic \u2028URL",
       "inviteOrganizations": "Invite Organizations",
       "defaultInvitationMessage": "Hi, I would like to invite you to {{space}}. Click on the link below to have a look or directly accept the invitation.",
       "inviteExistingUserDialog": {
@@ -1883,13 +1882,15 @@
             "applications": "<b>Application required:</b> if people want to become a member, they have to fill in the application form. You receive their applications (<community>see Community tab here</community>) and can choose to accept these or not. If you want, you can choose to leave the form empty.",
             "invitations": "<b>Invitation only:</b> users can only become a member after you’ve invited them (<community>which you can do from the Community tab here</community>) or if they are added manually. There is no Apply or Join button for others to click.",
             "trustedApplicants": "Trusted applicants",
-            "hostOrganizationJoin": "<b>Host organization:</b> allow people who are associated with <i>{{host}}</i> to directly join, without having to apply or be invited."
+            "hostOrganizationJoin": "<b>Host organization:</b> allow people who are associated with <i>{{host}}</i> to directly join, without having to apply or be invited.",
+            "allowSubspaceAdminsToInviteMembers": "Allow admins of Subspaces to invite users to their Subspace. Users who were not yet a member of this Space, will become so when they accept the Subspace invitation."
           },
           "memberActions": {
-            "title": "Member Actions",
+            "title": "Allowed Actions",
             "createBlocks": "<b>Create Blocks</b>: allow members to create blocks for collaboration tools & posts. If you deactivate this, members will still be able to contribute to existing posts and calls, but will not be able to create new blocks.",
             "createSubspaces": "<b>Create Subspaces</b>: allow members to create Subspaces in this Space. If you deactivate this, you can still create Subspaces yourself and add other people as an admin inside the Subspace.",
-            "inheritRights": "Allow Space members to contribute."
+            "inheritRights": "Allow Space members to contribute.",
+            "supportAsAdmin": "<b>Alkemio Support</b>: Allow the Alkemio Support team to act as an admin in this Space."
           }
         }
       },

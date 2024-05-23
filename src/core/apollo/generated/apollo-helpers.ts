@@ -901,6 +901,19 @@ export type CommunityGuidelinesFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type CommunityGuidelinesTemplateKeySpecifier = (
+  | 'authorization'
+  | 'guidelines'
+  | 'id'
+  | 'profile'
+  | CommunityGuidelinesTemplateKeySpecifier
+)[];
+export type CommunityGuidelinesTemplateFieldPolicy = {
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  guidelines?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  profile?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type CommunityPolicyKeySpecifier = ('admin' | 'id' | 'lead' | 'member' | CommunityPolicyKeySpecifier)[];
 export type CommunityPolicyFieldPolicy = {
   admin?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -953,6 +966,21 @@ export type ContextFieldPolicy = {
   impact?: FieldPolicy<any> | FieldReadFunction<any>;
   vision?: FieldPolicy<any> | FieldReadFunction<any>;
   who?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type ContributorKeySpecifier = (
+  | 'agent'
+  | 'authorization'
+  | 'id'
+  | 'nameID'
+  | 'profile'
+  | ContributorKeySpecifier
+)[];
+export type ContributorFieldPolicy = {
+  agent?: FieldPolicy<any> | FieldReadFunction<any>;
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  nameID?: FieldPolicy<any> | FieldReadFunction<any>;
+  profile?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ContributorRolesKeySpecifier = (
   | 'applications'
@@ -1417,6 +1445,8 @@ export type LookupQueryResultsKeySpecifier = (
   | 'calloutTemplate'
   | 'collaboration'
   | 'community'
+  | 'communityGuidelines'
+  | 'communityGuidelinesTemplate'
   | 'context'
   | 'document'
   | 'innovationFlow'
@@ -1441,6 +1471,8 @@ export type LookupQueryResultsFieldPolicy = {
   calloutTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   collaboration?: FieldPolicy<any> | FieldReadFunction<any>;
   community?: FieldPolicy<any> | FieldReadFunction<any>;
+  communityGuidelines?: FieldPolicy<any> | FieldReadFunction<any>;
+  communityGuidelinesTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   context?: FieldPolicy<any> | FieldReadFunction<any>;
   document?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationFlow?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1523,6 +1555,7 @@ export type MutationKeySpecifier = (
   | 'createActorGroup'
   | 'createCalloutOnCollaboration'
   | 'createCalloutTemplate'
+  | 'createCommunityGuidelinesTemplate'
   | 'createContributionOnCallout'
   | 'createDiscussion'
   | 'createEventOnCalendar'
@@ -1682,6 +1715,7 @@ export type MutationFieldPolicy = {
   createActorGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   createCalloutOnCollaboration?: FieldPolicy<any> | FieldReadFunction<any>;
   createCalloutTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
+  createCommunityGuidelinesTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   createContributionOnCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   createDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
   createEventOnCalendar?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2265,60 +2299,6 @@ export type RelayPaginatedSpacePageInfoFieldPolicy = {
   hasPreviousPage?: FieldPolicy<any> | FieldReadFunction<any>;
   startCursor?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type RelayPaginatedUserKeySpecifier = (
-  | 'accountUpn'
-  | 'agent'
-  | 'authorization'
-  | 'communityRooms'
-  | 'directRooms'
-  | 'email'
-  | 'firstName'
-  | 'gender'
-  | 'id'
-  | 'isContactable'
-  | 'lastName'
-  | 'nameID'
-  | 'phone'
-  | 'preferences'
-  | 'profile'
-  | 'storageAggregator'
-  | RelayPaginatedUserKeySpecifier
-)[];
-export type RelayPaginatedUserFieldPolicy = {
-  accountUpn?: FieldPolicy<any> | FieldReadFunction<any>;
-  agent?: FieldPolicy<any> | FieldReadFunction<any>;
-  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  communityRooms?: FieldPolicy<any> | FieldReadFunction<any>;
-  directRooms?: FieldPolicy<any> | FieldReadFunction<any>;
-  email?: FieldPolicy<any> | FieldReadFunction<any>;
-  firstName?: FieldPolicy<any> | FieldReadFunction<any>;
-  gender?: FieldPolicy<any> | FieldReadFunction<any>;
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-  isContactable?: FieldPolicy<any> | FieldReadFunction<any>;
-  lastName?: FieldPolicy<any> | FieldReadFunction<any>;
-  nameID?: FieldPolicy<any> | FieldReadFunction<any>;
-  phone?: FieldPolicy<any> | FieldReadFunction<any>;
-  preferences?: FieldPolicy<any> | FieldReadFunction<any>;
-  profile?: FieldPolicy<any> | FieldReadFunction<any>;
-  storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type RelayPaginatedUserEdgeKeySpecifier = ('node' | RelayPaginatedUserEdgeKeySpecifier)[];
-export type RelayPaginatedUserEdgeFieldPolicy = {
-  node?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type RelayPaginatedUserPageInfoKeySpecifier = (
-  | 'endCursor'
-  | 'hasNextPage'
-  | 'hasPreviousPage'
-  | 'startCursor'
-  | RelayPaginatedUserPageInfoKeySpecifier
-)[];
-export type RelayPaginatedUserPageInfoFieldPolicy = {
-  endCursor?: FieldPolicy<any> | FieldReadFunction<any>;
-  hasNextPage?: FieldPolicy<any> | FieldReadFunction<any>;
-  hasPreviousPage?: FieldPolicy<any> | FieldReadFunction<any>;
-  startCursor?: FieldPolicy<any> | FieldReadFunction<any>;
-};
 export type RolesResultKeySpecifier = ('displayName' | 'id' | 'nameID' | 'roles' | RolesResultKeySpecifier)[];
 export type RolesResultFieldPolicy = {
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2777,6 +2757,10 @@ export type TaskFieldPolicy = {
 export type TemplatesSetKeySpecifier = (
   | 'authorization'
   | 'calloutTemplates'
+  | 'calloutTemplatesCount'
+  | 'communityGuidelinesTemplate'
+  | 'communityGuidelinesTemplates'
+  | 'communityGuidelinesTemplatesCount'
   | 'id'
   | 'innovationFlowTemplate'
   | 'innovationFlowTemplates'
@@ -2792,6 +2776,10 @@ export type TemplatesSetKeySpecifier = (
 export type TemplatesSetFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   calloutTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
+  calloutTemplatesCount?: FieldPolicy<any> | FieldReadFunction<any>;
+  communityGuidelinesTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
+  communityGuidelinesTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
+  communityGuidelinesTemplatesCount?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationFlowTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationFlowTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3279,6 +3267,13 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | CommunityGuidelinesKeySpecifier | (() => undefined | CommunityGuidelinesKeySpecifier);
     fields?: CommunityGuidelinesFieldPolicy;
   };
+  CommunityGuidelinesTemplate?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | CommunityGuidelinesTemplateKeySpecifier
+      | (() => undefined | CommunityGuidelinesTemplateKeySpecifier);
+    fields?: CommunityGuidelinesTemplateFieldPolicy;
+  };
   CommunityPolicy?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CommunityPolicyKeySpecifier | (() => undefined | CommunityPolicyKeySpecifier);
     fields?: CommunityPolicyFieldPolicy;
@@ -3294,6 +3289,10 @@ export type StrictTypedTypePolicies = {
   Context?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ContextKeySpecifier | (() => undefined | ContextKeySpecifier);
     fields?: ContextFieldPolicy;
+  };
+  Contributor?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | ContributorKeySpecifier | (() => undefined | ContributorKeySpecifier);
+    fields?: ContributorFieldPolicy;
   };
   ContributorRoles?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ContributorRolesKeySpecifier | (() => undefined | ContributorRolesKeySpecifier);
@@ -3567,21 +3566,6 @@ export type StrictTypedTypePolicies = {
       | RelayPaginatedSpacePageInfoKeySpecifier
       | (() => undefined | RelayPaginatedSpacePageInfoKeySpecifier);
     fields?: RelayPaginatedSpacePageInfoFieldPolicy;
-  };
-  RelayPaginatedUser?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | RelayPaginatedUserKeySpecifier | (() => undefined | RelayPaginatedUserKeySpecifier);
-    fields?: RelayPaginatedUserFieldPolicy;
-  };
-  RelayPaginatedUserEdge?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | RelayPaginatedUserEdgeKeySpecifier | (() => undefined | RelayPaginatedUserEdgeKeySpecifier);
-    fields?: RelayPaginatedUserEdgeFieldPolicy;
-  };
-  RelayPaginatedUserPageInfo?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?:
-      | false
-      | RelayPaginatedUserPageInfoKeySpecifier
-      | (() => undefined | RelayPaginatedUserPageInfoKeySpecifier);
-    fields?: RelayPaginatedUserPageInfoFieldPolicy;
   };
   RolesResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | RolesResultKeySpecifier | (() => undefined | RolesResultKeySpecifier);

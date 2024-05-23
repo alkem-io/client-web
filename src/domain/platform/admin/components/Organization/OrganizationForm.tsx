@@ -30,6 +30,9 @@ import Gutters from '../../../../../core/ui/grid/Gutters';
 
 const EmptyOrganization: Omit<Organization, 'authorization'> = {
   id: '',
+  agent: {
+    id: '',
+  },
   nameID: '',
   contactEmail: undefined,
   domain: '',

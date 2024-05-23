@@ -101,6 +101,7 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
               currentApplicationsUserIds={currentApplicationsUserIds}
               currentInvitationsUserIds={currentInvitationsUserIds}
               currentMembersIds={currentMembersIds}
+              spaceId={spaceId}
             />
           </PageContentBlockSeamless>
         </PageContentColumn>

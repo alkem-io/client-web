@@ -102,6 +102,7 @@ const PostCalloutContainer = ({ callout, children }: PostCalloutContainerProps) 
             nameID: '',
             profile: {
               id: '',
+              url: '',
               displayName: post.profileData.displayName,
               description: post.profileData?.description,
               visual: {
