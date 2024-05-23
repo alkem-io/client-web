@@ -15,6 +15,11 @@ query PlansTable {
         requiresContactSupport
       }
     }
+  }
+}
+
+query ContactSupportLocation {
+  platform {
     configuration {
       locations {
         contactsupport

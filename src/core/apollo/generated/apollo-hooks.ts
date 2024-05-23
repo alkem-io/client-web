@@ -15773,6 +15773,136 @@ export function refetchLegacySubspaceDashboardPageQuery(
   return { query: LegacySubspaceDashboardPageDocument, variables: variables };
 }
 
+export const PlansTableDocument = gql`
+  query PlansTable {
+    platform {
+      id
+      licensing {
+        id
+        plans {
+          id
+          name
+          enabled
+          sortOrder
+          pricePerMonth
+          isFree
+          trialEnabled
+          requiresPaymentMethod
+          requiresContactSupport
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __usePlansTableQuery__
+ *
+ * To run a query within a React component, call `usePlansTableQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePlansTableQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePlansTableQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function usePlansTableQuery(
+  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.PlansTableQuery, SchemaTypes.PlansTableQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.PlansTableQuery, SchemaTypes.PlansTableQueryVariables>(
+    PlansTableDocument,
+    options
+  );
+}
+
+export function usePlansTableLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.PlansTableQuery, SchemaTypes.PlansTableQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.PlansTableQuery, SchemaTypes.PlansTableQueryVariables>(
+    PlansTableDocument,
+    options
+  );
+}
+
+export type PlansTableQueryHookResult = ReturnType<typeof usePlansTableQuery>;
+export type PlansTableLazyQueryHookResult = ReturnType<typeof usePlansTableLazyQuery>;
+export type PlansTableQueryResult = Apollo.QueryResult<
+  SchemaTypes.PlansTableQuery,
+  SchemaTypes.PlansTableQueryVariables
+>;
+export function refetchPlansTableQuery(variables?: SchemaTypes.PlansTableQueryVariables) {
+  return { query: PlansTableDocument, variables: variables };
+}
+
+export const ContactSupportLocationDocument = gql`
+  query ContactSupportLocation {
+    platform {
+      configuration {
+        locations {
+          contactsupport
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useContactSupportLocationQuery__
+ *
+ * To run a query within a React component, call `useContactSupportLocationQuery` and pass it any options that fit your needs.
+ * When your component renders, `useContactSupportLocationQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useContactSupportLocationQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useContactSupportLocationQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.ContactSupportLocationQuery,
+    SchemaTypes.ContactSupportLocationQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.ContactSupportLocationQuery, SchemaTypes.ContactSupportLocationQueryVariables>(
+    ContactSupportLocationDocument,
+    options
+  );
+}
+
+export function useContactSupportLocationLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.ContactSupportLocationQuery,
+    SchemaTypes.ContactSupportLocationQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.ContactSupportLocationQuery, SchemaTypes.ContactSupportLocationQueryVariables>(
+    ContactSupportLocationDocument,
+    options
+  );
+}
+
+export type ContactSupportLocationQueryHookResult = ReturnType<typeof useContactSupportLocationQuery>;
+export type ContactSupportLocationLazyQueryHookResult = ReturnType<typeof useContactSupportLocationLazyQuery>;
+export type ContactSupportLocationQueryResult = Apollo.QueryResult<
+  SchemaTypes.ContactSupportLocationQuery,
+  SchemaTypes.ContactSupportLocationQueryVariables
+>;
+export function refetchContactSupportLocationQuery(variables?: SchemaTypes.ContactSupportLocationQueryVariables) {
+  return { query: ContactSupportLocationDocument, variables: variables };
+}
+
 export const CreateAccountDocument = gql`
   mutation createAccount($input: CreateAccountInput!) {
     createAccount(accountData: $input) {
@@ -17137,78 +17267,6 @@ export type SubspacePageQueryResult = Apollo.QueryResult<
 >;
 export function refetchSubspacePageQuery(variables: SchemaTypes.SubspacePageQueryVariables) {
   return { query: SubspacePageDocument, variables: variables };
-}
-
-export const PlansTableDocument = gql`
-  query PlansTable {
-    platform {
-      id
-      licensing {
-        id
-        plans {
-          id
-          name
-          enabled
-          sortOrder
-          pricePerMonth
-          isFree
-          trialEnabled
-          requiresPaymentMethod
-          requiresContactSupport
-        }
-      }
-      configuration {
-        locations {
-          contactsupport
-        }
-      }
-    }
-  }
-`;
-
-/**
- * __usePlansTableQuery__
- *
- * To run a query within a React component, call `usePlansTableQuery` and pass it any options that fit your needs.
- * When your component renders, `usePlansTableQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = usePlansTableQuery({
- *   variables: {
- *   },
- * });
- */
-export function usePlansTableQuery(
-  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.PlansTableQuery, SchemaTypes.PlansTableQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.PlansTableQuery, SchemaTypes.PlansTableQueryVariables>(
-    PlansTableDocument,
-    options
-  );
-}
-
-export function usePlansTableLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.PlansTableQuery, SchemaTypes.PlansTableQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.PlansTableQuery, SchemaTypes.PlansTableQueryVariables>(
-    PlansTableDocument,
-    options
-  );
-}
-
-export type PlansTableQueryHookResult = ReturnType<typeof usePlansTableQuery>;
-export type PlansTableLazyQueryHookResult = ReturnType<typeof usePlansTableLazyQuery>;
-export type PlansTableQueryResult = Apollo.QueryResult<
-  SchemaTypes.PlansTableQuery,
-  SchemaTypes.PlansTableQueryVariables
->;
-export function refetchPlansTableQuery(variables?: SchemaTypes.PlansTableQueryVariables) {
-  return { query: PlansTableDocument, variables: variables };
 }
 
 export const PlatformLevelAuthorizationDocument = gql`

@@ -27,7 +27,7 @@ import NameIdField from '../../../../core/utils/nameId/NameIdField';
 import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 import RouterLink from '../../../../core/ui/link/RouterLink';
 import { useConfig } from '../../../platform/config/useConfig';
-import PlansTableDialog from '../../../licence/plansTable/PlansTableDialog';
+import PlansTableDialog from './plansTable/PlansTableDialog';
 
 interface FormValues extends SpaceEditFormValuesType {
   planName: string;

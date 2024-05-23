@@ -709,6 +709,7 @@ export enum AuthorizationPrivilege {
   AccessDashboardRefresh = 'ACCESS_DASHBOARD_REFRESH',
   AccessInteractiveGuidance = 'ACCESS_INTERACTIVE_GUIDANCE',
   AccessVirtualContributor = 'ACCESS_VIRTUAL_CONTRIBUTOR',
+  Admin = 'ADMIN',
   AuthorizationReset = 'AUTHORIZATION_RESET',
   CommunityAddMember = 'COMMUNITY_ADD_MEMBER',
   CommunityApply = 'COMMUNITY_APPLY',
@@ -20178,6 +20179,42 @@ export type SubspacePageFragment = {
   };
 };
 
+export type PlansTableQueryVariables = Exact<{ [key: string]: never }>;
+
+export type PlansTableQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    licensing: {
+      __typename?: 'Licensing';
+      id: string;
+      plans: Array<{
+        __typename?: 'LicensePlan';
+        id: string;
+        name: string;
+        enabled: boolean;
+        sortOrder: number;
+        pricePerMonth?: number | undefined;
+        isFree: boolean;
+        trialEnabled: boolean;
+        requiresPaymentMethod: boolean;
+        requiresContactSupport: boolean;
+      }>;
+    };
+  };
+};
+
+export type ContactSupportLocationQueryVariables = Exact<{ [key: string]: never }>;
+
+export type ContactSupportLocationQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    configuration: { __typename?: 'Config'; locations: { __typename?: 'PlatformLocations'; contactsupport: string } };
+  };
+};
+
 export type SubspaceCardFragment = {
   __typename?: 'Space';
   id: string;
@@ -21565,33 +21602,6 @@ export type SubspacePageSpaceFragment = {
       | undefined;
   };
   collaboration: { __typename?: 'Collaboration'; id: string };
-};
-
-export type PlansTableQueryVariables = Exact<{ [key: string]: never }>;
-
-export type PlansTableQuery = {
-  __typename?: 'Query';
-  platform: {
-    __typename?: 'Platform';
-    id: string;
-    licensing: {
-      __typename?: 'Licensing';
-      id: string;
-      plans: Array<{
-        __typename?: 'LicensePlan';
-        id: string;
-        name: string;
-        enabled: boolean;
-        sortOrder: number;
-        pricePerMonth?: number | undefined;
-        isFree: boolean;
-        trialEnabled: boolean;
-        requiresPaymentMethod: boolean;
-        requiresContactSupport: boolean;
-      }>;
-    };
-    configuration: { __typename?: 'Config'; locations: { __typename?: 'PlatformLocations'; contactsupport: string } };
-  };
 };
 
 export type PlatformLevelAuthorizationQueryVariables = Exact<{ [key: string]: never }>;

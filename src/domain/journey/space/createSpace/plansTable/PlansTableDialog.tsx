@@ -1,28 +1,18 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Box,
-  Button,
-  ButtonProps,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  Theme,
-  styled,
-  useMediaQuery,
-} from '@mui/material';
-import DialogWithGrid from '../../../core/ui/dialog/DialogWithGrid';
-import DialogHeader from '../../../core/ui/dialog/DialogHeader';
-import RouterLink from '../../../core/ui/link/RouterLink';
-import { Caption, CaptionSmall, Text } from '../../../core/ui/typography';
-import GridContainer from '../../../core/ui/grid/GridContainer';
-import GridItem from '../../../core/ui/grid/GridItem';
-import { gutters } from '../../../core/ui/grid/utils';
-import FullWidthButton from '../../../core/ui/button/FullWidthButton';
-import WrapperMarkdown from '../../../core/ui/markdown/WrapperMarkdown';
-import Gutters from '../../../core/ui/grid/Gutters';
-import { usePlansTableQuery } from '../../../core/apollo/generated/apollo-hooks';
-import Loading from '../../../core/ui/loading/Loading';
+import { Box, Button, Dialog, DialogActions, DialogContent, Theme, styled, useMediaQuery } from '@mui/material';
+import DialogWithGrid from '../../../../../core/ui/dialog/DialogWithGrid';
+import DialogHeader from '../../../../../core/ui/dialog/DialogHeader';
+import RouterLink from '../../../../../core/ui/link/RouterLink';
+import { Caption, CaptionSmall, Text } from '../../../../../core/ui/typography';
+import GridContainer from '../../../../../core/ui/grid/GridContainer';
+import GridItem from '../../../../../core/ui/grid/GridItem';
+import { gutters } from '../../../../../core/ui/grid/utils';
+import WrapperMarkdown from '../../../../../core/ui/markdown/WrapperMarkdown';
+import Gutters from '../../../../../core/ui/grid/Gutters';
+import { usePlansTableQuery } from '../../../../../core/apollo/generated/apollo-hooks';
+import Loading from '../../../../../core/ui/loading/Loading';
+import SelectPlanButton from './SelectPlanButton';
 
 interface PlanTranslation {
   name: string;
@@ -45,65 +35,6 @@ const Price = styled('h1')(({ theme }) => ({
 
 const lines = (theme: Theme) => `1px solid ${theme.palette.divider}`;
 
-const SelectPlanButton = ({
-  plan,
-  onClick,
-  contactSupportUrl,
-}: {
-  plan: {
-    id: string;
-    requiresContactSupport: boolean;
-    trialEnabled: boolean;
-    enabled: boolean;
-  };
-  contactSupportUrl: string | undefined;
-  onClick: ButtonProps['onClick'];
-}) => {
-  const { t } = useTranslation();
-  if (plan.requiresContactSupport) {
-    return (
-      <FullWidthButton
-        variant="contained"
-        component={RouterLink}
-        disabled={!plan.enabled}
-        to={contactSupportUrl}
-        target="_blank"
-      >
-        <Caption noWrap textTransform="none">
-          {t('plansTable.buttonCaptions.contactSupport')}
-        </Caption>
-      </FullWidthButton>
-    );
-  }
-  if (plan.trialEnabled) {
-    return (
-      <FullWidthButton
-        variant="contained"
-        onClick={onClick}
-        disabled={!plan.enabled}
-        sx={{
-          backgroundColor: theme => theme.palette.highlight.dark,
-          color: theme => theme.palette.neutral.main,
-          '&:hover': {
-            backgroundColor: theme => theme.palette.highlight.dark,
-          },
-        }}
-      >
-        <Caption noWrap textTransform="none">
-          {t('plansTable.buttonCaptions.startTrial')}
-        </Caption>
-      </FullWidthButton>
-    );
-  }
-  return (
-    <FullWidthButton variant="contained" onClick={onClick} disabled={!plan.enabled}>
-      <Caption noWrap textTransform="none">
-        {t('plansTable.buttonCaptions.startTrial')}
-      </Caption>
-    </FullWidthButton>
-  );
-};
-
 interface PlansTableDialogProps {
   open: boolean;
   onClose: () => void;
@@ -115,12 +46,14 @@ const PlansTableDialog = ({ open, onClose, onSelectPlan }: PlansTableDialogProps
   const isSmall = useMediaQuery<Theme>(theme => theme.breakpoints.down('md'));
   const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
 
-  const { data, loading } = usePlansTableQuery();
+  const { data, loading } = usePlansTableQuery({
+    skip: !open,
+  });
+
   const plansData = useMemo(
     () => data?.platform.licensing.plans.filter(plan => plan.enabled).sort((a, b) => a.sortOrder - b.sortOrder) ?? [],
     [data]
   );
-  const contactSupportUrl = data?.platform.configuration.locations.contactsupport;
 
   const [freeTrialDialogOpen, setFreeTrialDialogOpen] = useState<boolean>(false);
   const [getStartedDialogOpen, setGetStartedDialogOpen] = useState<boolean>(false);
@@ -201,7 +134,7 @@ const PlansTableDialog = ({ open, onClose, onSelectPlan }: PlansTableDialogProps
                         {plan.pricePerMonth === 0 ? (
                           <>
                             {/* Free Plan */}
-                            <Price>{plan.pricePerMonth}</Price>
+                            <Price>{plan.pricePerMonth} &euro;</Price>
                             <Caption color={theme => theme.palette.neutral.light}>
                               {t('plansTable.pricingPeriods.lifetime')}
                             </Caption>
@@ -214,7 +147,7 @@ const PlansTableDialog = ({ open, onClose, onSelectPlan }: PlansTableDialogProps
                         ) : (
                           <>
                             {/* Rest of the plans */}
-                            <Price>{plan.pricePerMonth}</Price>
+                            <Price>{plan.pricePerMonth} &euro;</Price>
                             <Caption color={theme => theme.palette.neutral.light}>
                               {t('plansTable.pricingPeriods.monthly')}
                             </Caption>
@@ -225,8 +158,10 @@ const PlansTableDialog = ({ open, onClose, onSelectPlan }: PlansTableDialogProps
                         {planTranslation.priceDescription}
                       </Text>
                       <SelectPlanButton
-                        plan={plan}
-                        contactSupportUrl={contactSupportUrl}
+                        plan={{
+                          ...plan,
+                          displayName: planTranslation.displayName,
+                        }}
                         onClick={() => handlePlanClick(plan.id)}
                       />
                     </Box>
