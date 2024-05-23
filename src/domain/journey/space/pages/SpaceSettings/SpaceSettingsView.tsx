@@ -39,6 +39,7 @@ const defaultSpaceSettings = {
     policy: CommunityMembershipPolicy.Invitations,
     trustedOrganizations: [],
     hostOrganizationTrusted: false, // Computed from `trustedOrganizations`
+    allowSubspaceAdminsToInviteMembers: true,
   },
   collaboration: {
     allowMembersToCreateCallouts: true,
@@ -79,16 +80,22 @@ export const SpaceSettingsView: FC<SpaceSettingsViewProps> = ({ journeyId, journ
   const handleUpdateSettings = async ({
     privacyMode = currentSettings?.privacy?.mode ?? defaultSpaceSettings.privacy.mode,
     membershipPolicy = currentSettings?.membership?.policy ?? defaultSpaceSettings.membership.policy,
+    allowSubspaceAdminsToInviteMembers = currentSettings?.membership?.allowSubspaceAdminsToInviteMembers ??
+      defaultSpaceSettings.membership.allowSubspaceAdminsToInviteMembers,
     hostOrganizationTrusted = currentSettings.hostOrganizationTrusted ??
       defaultSpaceSettings.membership.hostOrganizationTrusted,
     collaborationSettings = currentSettings.collaboration ?? defaultSpaceSettings.collaboration,
     showNotification = true,
+    allowPlatformSupportAsAdmin = currentSettings.privacy?.allowPlatformSupportAsAdmin ??
+      defaultSpaceSettings.privacy.allowPlatformSupportAsAdmin,
   }: {
     privacyMode?: SpacePrivacyMode;
     membershipPolicy?: CommunityMembershipPolicy;
+    allowSubspaceAdminsToInviteMembers?: boolean;
     hostOrganizationTrusted?: boolean;
     collaborationSettings?: Partial<SpaceSettingsCollaboration>;
     showNotification?: boolean;
+    allowPlatformSupportAsAdmin?: boolean;
   }) => {
     const trustedOrganizations = [...(currentSettings?.membership?.trustedOrganizations ?? [])];
     if (hostOrganizationTrusted && hostOrganizationId) {
@@ -102,12 +109,12 @@ export const SpaceSettingsView: FC<SpaceSettingsViewProps> = ({ journeyId, journ
     const settingsVariable = {
       privacy: {
         mode: privacyMode,
-        allowPlatformSupportAsAdmin: currentSettings.privacy?.allowPlatformSupportAsAdmin ?? false,
+        allowPlatformSupportAsAdmin,
       },
       membership: {
         policy: membershipPolicy,
         trustedOrganizations,
-        allowSubspaceAdminsToInviteMembers: currentSettings.membership?.allowSubspaceAdminsToInviteMembers ?? false,
+        allowSubspaceAdminsToInviteMembers,
       },
       collaboration: {
         ...currentSettings.collaboration,
@@ -271,8 +278,8 @@ export const SpaceSettingsView: FC<SpaceSettingsViewProps> = ({ journeyId, journ
             <CommunityApplicationForm communityId={communityId} />
           </PageContentBlockCollapsible>
 
-          <PageContentBlock>
-            <BlockTitle>{t('pages.admin.space.settings.memberActions.title')}</BlockTitle>
+          <PageContentBlock disableGap>
+            <BlockTitle marginBottom={gutters(2)}>{t('pages.admin.space.settings.memberActions.title')}</BlockTitle>
             <SwitchSettingsGroup
               options={getMemberActions()}
               onChange={async (setting, newValue) => {
@@ -283,6 +290,33 @@ export const SpaceSettingsView: FC<SpaceSettingsViewProps> = ({ journeyId, journ
                 });
               }}
             />
+            {!isSubspace && (
+              <SwitchSettingsGroup
+                options={{
+                  allowSubspaceAdminsToInviteMembers: {
+                    checked: currentSettings?.membership?.allowSubspaceAdminsToInviteMembers || false,
+                    label: t('pages.admin.space.settings.membership.allowSubspaceAdminsToInviteMembers'),
+                  },
+                }}
+                onChange={(setting, newValue) => handleUpdateSettings({ [setting]: newValue })}
+              />
+            )}
+            {!isSubspace && (
+              <SwitchSettingsGroup
+                options={{
+                  allowPlatformSupportAsAdmin: {
+                    checked: currentSettings?.privacy?.allowPlatformSupportAsAdmin || false,
+                    label: (
+                      <Trans
+                        i18nKey="pages.admin.space.settings.memberActions.supportAsAdmin"
+                        components={{ b: <strong /> }}
+                      />
+                    ),
+                  },
+                }}
+                onChange={(setting, newValue) => handleUpdateSettings({ [setting]: newValue })}
+              />
+            )}
           </PageContentBlock>
         </>
       )}
