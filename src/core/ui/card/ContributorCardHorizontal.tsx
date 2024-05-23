@@ -2,7 +2,7 @@ import Avatar from '../avatar/Avatar';
 import { BlockSectionTitle } from '../typography';
 import getLocationString, { Location } from '../location/getLocationString';
 import BadgeCardView from '../list/BadgeCardView';
-import React from 'react';
+import React, { useMemo } from 'react';
 import GridItem from '../grid/GridItem';
 import SwapColors from '../palette/SwapColors';
 import { useTranslation } from 'react-i18next';
@@ -31,7 +31,10 @@ const ContributorCardHorizontal = ({
 }: SpaceWelcomeSectionContributorProps) => {
   const { t } = useTranslation();
 
-  const tags = profile.tagsets ? profile.tagsets.flatMap(tagset => tagset.tags) : [];
+  const tags = useMemo(
+    () => (profile.tagsets ? profile.tagsets.flatMap(tagset => tagset.tags) : []),
+    [profile.tagsets]
+  );
 
   if (!seamless) {
     return (
