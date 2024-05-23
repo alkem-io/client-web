@@ -17727,6 +17727,7 @@ export type AboutPageNonMembersQuery = {
           };
           account: {
             __typename?: 'Account';
+            id: string;
             host?:
               | {
                   __typename?: 'Organization';
@@ -17735,22 +17736,35 @@ export type AboutPageNonMembersQuery = {
                   profile: {
                     __typename?: 'Profile';
                     id: string;
-                    tagline: string;
                     displayName: string;
-                    description?: string | undefined;
                     location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                     tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
                   };
-                  verification: {
-                    __typename?: 'OrganizationVerification';
-                    id: string;
-                    status: OrganizationVerificationEnum;
-                  };
-                  metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
                 }
-              | { __typename?: 'User' }
-              | { __typename?: 'VirtualContributor' }
+              | {
+                  __typename?: 'User';
+                  id: string;
+                  nameID: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                    tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+                  };
+                }
+              | {
+                  __typename?: 'VirtualContributor';
+                  id: string;
+                  nameID: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                    tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+                  };
+                }
               | undefined;
           };
           metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
@@ -18032,22 +18046,35 @@ export type JourneyDataQuery = {
                   profile: {
                     __typename?: 'Profile';
                     id: string;
-                    tagline: string;
                     displayName: string;
-                    description?: string | undefined;
                     location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                     tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
                   };
-                  verification: {
-                    __typename?: 'OrganizationVerification';
-                    id: string;
-                    status: OrganizationVerificationEnum;
-                  };
-                  metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
                 }
-              | { __typename?: 'User' }
-              | { __typename?: 'VirtualContributor' }
+              | {
+                  __typename?: 'User';
+                  id: string;
+                  nameID: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                    tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+                  };
+                }
+              | {
+                  __typename?: 'VirtualContributor';
+                  id: string;
+                  nameID: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                    tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+                  };
+                }
               | undefined;
           };
         }
@@ -18453,18 +18480,35 @@ export type SpaceCommunityPageQuery = {
             profile: {
               __typename?: 'Profile';
               id: string;
-              tagline: string;
               displayName: string;
-              description?: string | undefined;
               location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-              avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
               tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
             };
-            verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
-            metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
           }
-        | { __typename?: 'User' }
-        | { __typename?: 'VirtualContributor' }
+        | {
+            __typename?: 'User';
+            id: string;
+            nameID: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+              tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+            };
+          }
+        | {
+            __typename?: 'VirtualContributor';
+            id: string;
+            nameID: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+              tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+            };
+          }
         | undefined;
     };
     community: {
@@ -19007,22 +19051,15 @@ export type SpacePageQuery = {
                   profile: {
                     __typename?: 'Profile';
                     id: string;
-                    tagline: string;
                     displayName: string;
-                    description?: string | undefined;
                     location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                     tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
                   };
-                  verification: {
-                    __typename?: 'OrganizationVerification';
-                    id: string;
-                    status: OrganizationVerificationEnum;
-                  };
-                  metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
                 }
               | {
                   __typename?: 'User';
+                  id: string;
+                  nameID: string;
                   profile: {
                     __typename?: 'Profile';
                     id: string;
@@ -19033,6 +19070,8 @@ export type SpacePageQuery = {
                 }
               | {
                   __typename?: 'VirtualContributor';
+                  id: string;
+                  nameID: string;
                   profile: {
                     __typename?: 'Profile';
                     id: string;
@@ -19260,18 +19299,15 @@ export type SpacePageFragment = {
           profile: {
             __typename?: 'Profile';
             id: string;
-            tagline: string;
             displayName: string;
-            description?: string | undefined;
             location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-            avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
             tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
           };
-          verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
-          metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
         }
       | {
           __typename?: 'User';
+          id: string;
+          nameID: string;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -19282,6 +19318,8 @@ export type SpacePageFragment = {
         }
       | {
           __typename?: 'VirtualContributor';
+          id: string;
+          nameID: string;
           profile: {
             __typename?: 'Profile';
             id: string;

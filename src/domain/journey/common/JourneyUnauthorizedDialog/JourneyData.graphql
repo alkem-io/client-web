@@ -17,7 +17,11 @@ query JourneyData($spaceId: UUID!, $includeCommunity: Boolean = false) {
       account {
         id
         host {
-          ...AssociatedOrganizationDetails
+          id
+          nameID
+          profile {
+            ...SpaceWelcomeBlockContributorProfile
+          }
         }
       }
     }

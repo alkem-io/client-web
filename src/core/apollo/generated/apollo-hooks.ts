@@ -2383,7 +2383,8 @@ export const SpacePageFragmentDoc = gql`
     account {
       id
       host {
-        ...AssociatedOrganizationDetails
+        id
+        nameID
         profile {
           ...SpaceWelcomeBlockContributorProfile
         }
@@ -2439,7 +2440,6 @@ export const SpacePageFragmentDoc = gql`
       }
     }
   }
-  ${AssociatedOrganizationDetailsFragmentDoc}
   ${SpaceWelcomeBlockContributorProfileFragmentDoc}
   ${VisualUriFragmentDoc}
   ${TagsetDetailsFragmentDoc}
@@ -14524,8 +14524,13 @@ export const AboutPageNonMembersDocument = gql`
           }
         }
         account {
+          id
           host {
-            ...AssociatedOrganizationDetails
+            id
+            nameID
+            profile {
+              ...SpaceWelcomeBlockContributorProfile
+            }
           }
         }
         metrics {
@@ -14559,7 +14564,7 @@ export const AboutPageNonMembersDocument = gql`
   }
   ${TagsetDetailsFragmentDoc}
   ${VisualFullFragmentDoc}
-  ${AssociatedOrganizationDetailsFragmentDoc}
+  ${SpaceWelcomeBlockContributorProfileFragmentDoc}
   ${MetricsItemFragmentDoc}
   ${ContextTabFragmentDoc}
 `;
@@ -14777,7 +14782,11 @@ export const JourneyDataDocument = gql`
         account {
           id
           host {
-            ...AssociatedOrganizationDetails
+            id
+            nameID
+            profile {
+              ...SpaceWelcomeBlockContributorProfile
+            }
           }
         }
       }
@@ -14787,7 +14796,7 @@ export const JourneyDataDocument = gql`
   ${ContextJourneyDataFragmentDoc}
   ${JourneyCommunityFragmentDoc}
   ${MetricsItemFragmentDoc}
-  ${AssociatedOrganizationDetailsFragmentDoc}
+  ${SpaceWelcomeBlockContributorProfileFragmentDoc}
 `;
 
 /**
@@ -15272,7 +15281,11 @@ export const SpaceCommunityPageDocument = gql`
       account {
         id
         host {
-          ...AssociatedOrganizationDetails
+          id
+          nameID
+          profile {
+            ...SpaceWelcomeBlockContributorProfile
+          }
         }
       }
       community {
@@ -15283,7 +15296,7 @@ export const SpaceCommunityPageDocument = gql`
       }
     }
   }
-  ${AssociatedOrganizationDetailsFragmentDoc}
+  ${SpaceWelcomeBlockContributorProfileFragmentDoc}
   ${CommunityPageCommunityFragmentDoc}
 `;
 
