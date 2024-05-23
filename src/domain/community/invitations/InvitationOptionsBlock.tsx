@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Box, CircularProgress } from '@mui/material';
+import AssignmentIndOutlinedIcon from '@mui/icons-material/AssignmentIndOutlined';
+import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import PageContentBlock from '../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../core/ui/content/PageContentBlockHeader';
 import Gutters from '../../../core/ui/grid/Gutters';
 import RadioButton from '../../shared/components/RadioButtons/RadioButton';
-import AssignmentIndOutlinedIcon from '@mui/icons-material/AssignmentIndOutlined';
-import MailOutlineIcon from '@mui/icons-material/MailOutline';
-import { LinkOutlined } from '@mui/icons-material';
 import { Caption } from '../../../core/ui/typography';
+import { useSpaceSettingsQuery } from '../../../core/apollo/generated/apollo-hooks';
 import InviteExistingUserDialog from './InviteExistingUserDialog';
 import { InviteExistingUserData, InviteExternalUserData } from './useInviteUsers';
 import InviteExternalUserDialog from './InviteExternalUserDialog';
-import { useTranslation } from 'react-i18next';
 
 interface InvitationOptionsBlockProps {
   spaceDisplayName: string | undefined;
@@ -19,6 +20,9 @@ interface InvitationOptionsBlockProps {
   currentApplicationsUserIds: string[];
   currentInvitationsUserIds: string[];
   currentMembersIds: string[];
+  spaceId: string | undefined;
+  isParentPrivate?: boolean | undefined;
+  isSubspace?: boolean;
 }
 
 enum UserInvite {
@@ -33,6 +37,9 @@ const InvitationOptionsBlock = ({
   currentApplicationsUserIds,
   currentInvitationsUserIds,
   currentMembersIds,
+  spaceId,
+  isParentPrivate,
+  isSubspace = false,
 }: InvitationOptionsBlockProps) => {
   const [currentInvitation, setCurrentInvitation] = useState<UserInvite>();
 
@@ -40,32 +47,45 @@ const InvitationOptionsBlock = ({
 
   const { t } = useTranslation();
 
-  return (
+  const { data, loading } = useSpaceSettingsQuery({
+    variables: {
+      spaceId: spaceId!,
+    },
+    skip: !spaceId,
+  });
+
+  const allowSubspaceAdminsToInviteMembers = data?.lookup.space?.settings.membership.allowSubspaceAdminsToInviteMembers;
+  const showInviteBlock = isSubspace ? !isParentPrivate && allowSubspaceAdminsToInviteMembers : true; // for Spaces the block is always visible
+
+  return loading ? (
+    <Box marginX="auto">
+      <CircularProgress />
+    </Box>
+  ) : (
     <>
-      <PageContentBlock>
-        <PageContentBlockHeader title={t('components.invitations.inviteOthers')} />
-        <Gutters row disablePadding flexWrap="wrap">
-          <RadioButton
-            value=""
-            iconComponent={AssignmentIndOutlinedIcon}
-            size="small"
-            onClick={() => setCurrentInvitation(UserInvite.Existing)}
-          >
-            {t('components.invitations.inviteExistingUser')}
-          </RadioButton>
-          <RadioButton
-            value=""
-            iconComponent={MailOutlineIcon}
-            size="small"
-            onClick={() => setCurrentInvitation(UserInvite.External)}
-          >
-            {t('components.invitations.inviteExternalUser')}
-          </RadioButton>
-          <RadioButton value="" iconComponent={LinkOutlined} size="small" disabled>
-            {t('components.invitations.inviteByURL')}
-          </RadioButton>
-        </Gutters>
-      </PageContentBlock>
+      {showInviteBlock && (
+        <PageContentBlock>
+          <PageContentBlockHeader title={t('components.invitations.inviteOthers')} />
+          <Gutters row disablePadding flexWrap="wrap">
+            <RadioButton
+              value=""
+              iconComponent={AssignmentIndOutlinedIcon}
+              size="small"
+              onClick={() => setCurrentInvitation(UserInvite.Existing)}
+            >
+              {t('components.invitations.inviteExistingUser')}
+            </RadioButton>
+            <RadioButton
+              value=""
+              iconComponent={MailOutlineIcon}
+              size="small"
+              onClick={() => setCurrentInvitation(UserInvite.External)}
+            >
+              {t('components.invitations.inviteExternalUser')}
+            </RadioButton>
+          </Gutters>
+        </PageContentBlock>
+      )}
       <PageContentBlock>
         <Caption textTransform="uppercase" color="muted.main" textAlign="center">
           {t('components.invitations.inviteOrganizations')}
