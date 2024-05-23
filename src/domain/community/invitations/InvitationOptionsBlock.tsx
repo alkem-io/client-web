@@ -20,7 +20,7 @@ interface InvitationOptionsBlockProps {
   currentApplicationsUserIds: string[];
   currentInvitationsUserIds: string[];
   currentMembersIds: string[];
-  spaceId?: string | undefined;
+  spaceId: string | undefined;
   isParentPrivate?: boolean | undefined;
   isSubspace?: boolean;
 }
