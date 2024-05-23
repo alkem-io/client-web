@@ -6,7 +6,10 @@ import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import ContributorCardHorizontal from '../../../../core/ui/card/ContributorCardHorizontal';
 import { buildOrganizationUrl, buildUserProfileUrl } from '../../../../main/routing/urlBuilders';
-import { EntityDashboardLeads } from '../../../community/community/EntityDashboardContributorsSection/Types';
+import {
+  ContributorViewProps,
+  EntityDashboardLeads,
+} from '../../../community/community/EntityDashboardContributorsSection/Types';
 import { MessageReceiverChipData } from '../../../communication/messaging/DirectMessaging/DirectMessageDialog';
 import SeeMore from '../../../../core/ui/content/SeeMore';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
@@ -16,7 +19,7 @@ interface JourneyDashboardWelcomeBlockProps {
   vision: string;
   leadUsers: EntityDashboardLeads['leadUsers'];
   onContactLeadUser: (receiver: MessageReceiverChipData) => void;
-  leadOrganizations: EntityDashboardLeads['leadOrganizations'];
+  leadOrganizations: ContributorViewProps[] | undefined;
   onContactLeadOrganization: (receiver: MessageReceiverChipData) => void;
   member?: boolean;
 }

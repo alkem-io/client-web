@@ -1,0 +1,21 @@
+fragment ContributorDetails on Contributor {
+  id
+  nameID
+  profile {
+    id
+    displayName
+    url
+    avatar: visual(type: AVATAR) {
+      ...VisualUri
+    }
+    description
+    tagsets {
+        ...TagsetDetails
+    }
+    location {
+      id
+      country
+      city
+    }
+  }
+}

@@ -19,6 +19,7 @@ import { useAboutPageMembersQuery, useAboutPageNonMembersQuery } from '../../../
 import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
 import { MetricType } from '../../../platform/metrics/MetricType';
 import { InnovationFlowDetails } from '../../../collaboration/InnovationFlow/InnovationFlow';
+import { ContributorViewProps } from '../../../community/community/EntityDashboardContributorsSection/Types';
 
 interface AboutPagePermissions {
   communityReadAccess: boolean;
@@ -37,7 +38,7 @@ export interface AboutPageContainerEntities {
   memberOrganizationsCount: number | undefined;
   leadUsers: DashboardLeadUserFragment[] | undefined;
   leadOrganizations: AssociatedOrganizationDetailsFragment[] | undefined;
-  hostOrganization: AssociatedOrganizationDetailsFragment | undefined;
+  host: ContributorViewProps | undefined;
   references: ReferenceDetailsFragment[] | undefined;
 }
 
@@ -93,7 +94,7 @@ const AboutPageContainer: FC<AboutPageContainerProps> = ({ journeyId, children }
   // TODO looks like space is missing
   const collaboration = nonMembersData?.lookup.space?.collaboration;
 
-  const hostOrganization = nonMembersData?.lookup.space?.account.host;
+  const host = nonMembersData?.lookup.space?.account.host;
   const community = {
     ...nonMemberJourney?.community,
     ...memberJourney?.community,
@@ -139,7 +140,7 @@ const AboutPageContainer: FC<AboutPageContainerProps> = ({ journeyId, children }
           metrics,
           leadUsers,
           leadOrganizations,
-          hostOrganization,
+          host,
           references,
           ...contributors,
         },
