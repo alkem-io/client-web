@@ -34,8 +34,9 @@ query AboutPageNonMembers($spaceId: UUID!) {
         }
       }
       account {
+        id
         host {
-          ...AssociatedOrganizationDetails
+          ...ContributorDetails
         }
       }
       metrics {
