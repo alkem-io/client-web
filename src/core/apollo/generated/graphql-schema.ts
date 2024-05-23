@@ -6185,7 +6185,6 @@ export type CalloutPageCalloutQuery = {
                       | undefined;
                   }>;
                   sender?:
-                    | { __typename?: 'Organization' }
                     | {
                         __typename?: 'Organization';
                         id: string;
@@ -8761,7 +8760,6 @@ export type CreateCalloutMutation = {
                 | undefined;
             }>;
             sender?:
-              | { __typename?: 'Organization' }
               | {
                   __typename?: 'Organization';
                   id: string;
@@ -9077,7 +9075,6 @@ export type UpdateCalloutVisibilityMutation = {
                 | undefined;
             }>;
             sender?:
-              | { __typename?: 'Organization' }
               | {
                   __typename?: 'Organization';
                   id: string;
@@ -9827,7 +9824,6 @@ export type CalloutDetailsQuery = {
                       | undefined;
                   }>;
                   sender?:
-                    | { __typename?: 'Organization' }
                     | {
                         __typename?: 'Organization';
                         id: string;
@@ -10087,7 +10083,6 @@ export type CalloutDetailsFragment = {
               | undefined;
           }>;
           sender?:
-            | { __typename?: 'Organization' }
             | {
                 __typename?: 'Organization';
                 id: string;
@@ -10697,7 +10692,6 @@ export type PostQuery = {
                           | undefined;
                       }>;
                       sender?:
-                        | { __typename?: 'Organization' }
                         | {
                             __typename?: 'Organization';
                             id: string;
@@ -10857,7 +10851,6 @@ export type PostDashboardFragment = {
           | undefined;
       }>;
       sender?:
-        | { __typename?: 'Organization' }
         | {
             __typename?: 'Organization';
             id: string;
@@ -12716,7 +12709,6 @@ export type CreateDiscussionMutation = {
             | undefined;
         }>;
         sender?:
-          | { __typename?: 'Organization' }
           | {
               __typename?: 'Organization';
               id: string;
@@ -12833,7 +12825,6 @@ export type UpdateDiscussionMutation = {
             | undefined;
         }>;
         sender?:
-          | { __typename?: 'Organization' }
           | {
               __typename?: 'Organization';
               id: string;
@@ -12953,7 +12944,6 @@ export type DiscussionDetailsFragment = {
           | undefined;
       }>;
       sender?:
-        | { __typename?: 'Organization' }
         | {
             __typename?: 'Organization';
             id: string;
@@ -13212,7 +13202,6 @@ export type PlatformDiscussionQuery = {
                     | undefined;
                 }>;
                 sender?:
-                  | { __typename?: 'Organization' }
                   | {
                       __typename?: 'Organization';
                       id: string;
@@ -13383,7 +13372,6 @@ export type MessageDetailsFragment = {
       | undefined;
   }>;
   sender?:
-    | { __typename?: 'Organization' }
     | {
         __typename?: 'Organization';
         id: string;
@@ -13495,7 +13483,6 @@ export type CommentsWithMessagesFragment = {
         | undefined;
     }>;
     sender?:
-      | { __typename?: 'Organization' }
       | {
           __typename?: 'Organization';
           id: string;
@@ -13702,7 +13689,6 @@ export type RoomEventsSubscription = {
                 | undefined;
             }>;
             sender?:
-              | { __typename?: 'Organization' }
               | {
                   __typename?: 'Organization';
                   id: string;
@@ -13839,7 +13825,6 @@ export type CommunityUpdatesQuery = {
                     | undefined;
                 }>;
                 sender?:
-                  | { __typename?: 'Organization' }
                   | {
                       __typename?: 'Organization';
                       id: string;
@@ -14741,8 +14726,6 @@ export type CommunityMembersListQuery = {
                     location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
                   };
                 }
-              | { __typename?: 'User' }
-              | { __typename?: 'VirtualContributor' }
               | undefined;
           };
         }
@@ -18092,8 +18075,6 @@ export type AboutPageNonMembersQuery = {
                     location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
                   };
                 }
-              | { __typename?: 'User' }
-              | { __typename?: 'VirtualContributor' }
               | undefined;
           };
           metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
@@ -18440,8 +18421,6 @@ export type JourneyDataQuery = {
                     location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
                   };
                 }
-              | { __typename?: 'User' }
-              | { __typename?: 'VirtualContributor' }
               | undefined;
           };
         }
@@ -18912,8 +18891,6 @@ export type SpaceCommunityPageQuery = {
               location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
             };
           }
-        | { __typename?: 'User' }
-        | { __typename?: 'VirtualContributor' }
         | undefined;
     };
     community: {
@@ -19521,26 +19498,6 @@ export type SpacePageQuery = {
                     location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
                   };
                 }
-              | {
-                  __typename?: 'User';
-                  profile: {
-                    __typename?: 'Profile';
-                    id: string;
-                    displayName: string;
-                    location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-                    tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-                  };
-                }
-              | {
-                  __typename?: 'VirtualContributor';
-                  profile: {
-                    __typename?: 'Profile';
-                    id: string;
-                    displayName: string;
-                    location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-                    tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-                  };
-                }
               | undefined;
           };
           metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
@@ -19823,26 +19780,6 @@ export type SpacePageFragment = {
                 }>
               | undefined;
             location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
-          };
-        }
-      | {
-          __typename?: 'User';
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            displayName: string;
-            location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-          };
-        }
-      | {
-          __typename?: 'VirtualContributor';
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            displayName: string;
-            location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
           };
         }
       | undefined;
@@ -24761,7 +24698,6 @@ export type CalendarEventDetailsQuery = {
                   | undefined;
               }>;
               sender?:
-                | { __typename?: 'Organization' }
                 | {
                     __typename?: 'Organization';
                     id: string;
@@ -24929,7 +24865,6 @@ export type CalendarEventDetailsFragment = {
           | undefined;
       }>;
       sender?:
-        | { __typename?: 'Organization' }
         | {
             __typename?: 'Organization';
             id: string;
@@ -25115,7 +25050,6 @@ export type CreateCalendarEventMutation = {
             | undefined;
         }>;
         sender?:
-          | { __typename?: 'Organization' }
           | {
               __typename?: 'Organization';
               id: string;
@@ -25281,7 +25215,6 @@ export type UpdateCalendarEventMutation = {
             | undefined;
         }>;
         sender?:
-          | { __typename?: 'Organization' }
           | {
               __typename?: 'Organization';
               id: string;
