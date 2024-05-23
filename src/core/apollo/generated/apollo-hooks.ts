@@ -582,25 +582,36 @@ export const ReactionDetailsFragmentDoc = gql`
     }
   }
 `;
-export const SenderProfileFragmentDoc = gql`
-  fragment SenderProfile on Profile {
+export const VisualUriFragmentDoc = gql`
+  fragment VisualUri on Visual {
     id
-    displayName
-    url
-    type
-    avatar: visual(type: AVATAR) {
+    uri
+    name
+  }
+`;
+export const ContributorDetailsFragmentDoc = gql`
+  fragment ContributorDetails on Contributor {
+    id
+    nameID
+    profile {
       id
-      uri
-    }
-    tagsets {
-      ...TagsetDetails
-    }
-    location {
-      id
-      city
-      country
+      displayName
+      url
+      avatar: visual(type: AVATAR) {
+        ...VisualUri
+      }
+      description
+      tagsets {
+        ...TagsetDetails
+      }
+      location {
+        id
+        country
+        city
+      }
     }
   }
+  ${VisualUriFragmentDoc}
   ${TagsetDetailsFragmentDoc}
 `;
 export const MessageDetailsFragmentDoc = gql`
@@ -613,22 +624,11 @@ export const MessageDetailsFragmentDoc = gql`
     }
     threadID
     sender {
-      ... on User {
-        id
-        profile {
-          ...SenderProfile
-        }
-      }
-      ... on VirtualContributor {
-        id
-        profile {
-          ...SenderProfile
-        }
-      }
+      ...ContributorDetails
     }
   }
   ${ReactionDetailsFragmentDoc}
-  ${SenderProfileFragmentDoc}
+  ${ContributorDetailsFragmentDoc}
 `;
 export const CommentsWithMessagesFragmentDoc = gql`
   fragment CommentsWithMessages on Room {
@@ -703,13 +703,6 @@ export const CalloutDetailsFragmentDoc = gql`
   ${WhiteboardDetailsFragmentDoc}
   ${LinkDetailsWithAuthorizationFragmentDoc}
   ${CommentsWithMessagesFragmentDoc}
-`;
-export const VisualUriFragmentDoc = gql`
-  fragment VisualUri on Visual {
-    id
-    uri
-    name
-  }
 `;
 export const WhiteboardCollectionCalloutCardFragmentDoc = gql`
   fragment WhiteboardCollectionCalloutCard on Whiteboard {
@@ -2322,21 +2315,6 @@ export const SpaceInfoFragmentDoc = gql`
   }
   ${SpaceDetailsFragmentDoc}
 `;
-export const SpaceWelcomeBlockContributorProfileFragmentDoc = gql`
-  fragment SpaceWelcomeBlockContributorProfile on Profile {
-    id
-    displayName
-    location {
-      id
-      city
-      country
-    }
-    tagsets {
-      id
-      tags
-    }
-  }
-`;
 export const DashboardTopCalloutFragmentDoc = gql`
   fragment DashboardTopCallout on Callout {
     id
@@ -2398,6 +2376,21 @@ export const EntityDashboardCommunityFragmentDoc = gql`
   ${AssociatedOrganizationDetailsFragmentDoc}
   ${DashboardContributingOrganizationFragmentDoc}
 `;
+export const SpaceWelcomeBlockContributorProfileFragmentDoc = gql`
+  fragment SpaceWelcomeBlockContributorProfile on Profile {
+    id
+    displayName
+    location {
+      id
+      city
+      country
+    }
+    tagsets {
+      id
+      tags
+    }
+  }
+`;
 export const SpacePageFragmentDoc = gql`
   fragment SpacePage on Space {
     id
@@ -2405,10 +2398,7 @@ export const SpacePageFragmentDoc = gql`
     account {
       id
       host {
-        ...AssociatedOrganizationDetails
-        profile {
-          ...SpaceWelcomeBlockContributorProfile
-        }
+        ...ContributorDetails
       }
     }
     metrics {
@@ -2461,13 +2451,13 @@ export const SpacePageFragmentDoc = gql`
       }
     }
   }
-  ${AssociatedOrganizationDetailsFragmentDoc}
-  ${SpaceWelcomeBlockContributorProfileFragmentDoc}
+  ${ContributorDetailsFragmentDoc}
   ${VisualUriFragmentDoc}
   ${TagsetDetailsFragmentDoc}
   ${DashboardTopCalloutsFragmentDoc}
   ${DashboardTimelineAuthorizationFragmentDoc}
   ${EntityDashboardCommunityFragmentDoc}
+  ${SpaceWelcomeBlockContributorProfileFragmentDoc}
 `;
 export const SubspacePageFragmentDoc = gql`
   fragment SubspacePage on Space {
@@ -6271,6 +6261,7 @@ export const CreatePostFromContributeTabDocument = gql`
           id
           displayName
           description
+          url
           tagset {
             ...TagsetDetails
           }
@@ -10679,7 +10670,7 @@ export const CommunityMembersListDocument = gql`
       space(ID: $spaceId) @include(if: $includeSpaceHost) {
         account {
           host {
-            ...OrganizationDetails
+            ...ContributorDetails
           }
         }
       }
@@ -10688,7 +10679,7 @@ export const CommunityMembersListDocument = gql`
       }
     }
   }
-  ${OrganizationDetailsFragmentDoc}
+  ${ContributorDetailsFragmentDoc}
   ${CommunityMembersDetailsFragmentDoc}
 `;
 
@@ -14803,8 +14794,9 @@ export const AboutPageNonMembersDocument = gql`
           }
         }
         account {
+          id
           host {
-            ...AssociatedOrganizationDetails
+            ...ContributorDetails
           }
         }
         metrics {
@@ -14838,7 +14830,7 @@ export const AboutPageNonMembersDocument = gql`
   }
   ${TagsetDetailsFragmentDoc}
   ${VisualFullFragmentDoc}
-  ${AssociatedOrganizationDetailsFragmentDoc}
+  ${ContributorDetailsFragmentDoc}
   ${MetricsItemFragmentDoc}
   ${ContextTabFragmentDoc}
 `;
@@ -15056,7 +15048,7 @@ export const JourneyDataDocument = gql`
         account {
           id
           host {
-            ...AssociatedOrganizationDetails
+            ...ContributorDetails
           }
         }
       }
@@ -15066,7 +15058,7 @@ export const JourneyDataDocument = gql`
   ${ContextJourneyDataFragmentDoc}
   ${JourneyCommunityFragmentDoc}
   ${MetricsItemFragmentDoc}
-  ${AssociatedOrganizationDetailsFragmentDoc}
+  ${ContributorDetailsFragmentDoc}
 `;
 
 /**
@@ -15551,7 +15543,7 @@ export const SpaceCommunityPageDocument = gql`
       account {
         id
         host {
-          ...AssociatedOrganizationDetails
+          ...ContributorDetails
         }
       }
       community {
@@ -15562,7 +15554,7 @@ export const SpaceCommunityPageDocument = gql`
       }
     }
   }
-  ${AssociatedOrganizationDetailsFragmentDoc}
+  ${ContributorDetailsFragmentDoc}
   ${CommunityPageCommunityFragmentDoc}
 `;
 
