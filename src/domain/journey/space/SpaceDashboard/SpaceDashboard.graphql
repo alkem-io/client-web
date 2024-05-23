@@ -33,11 +33,7 @@ fragment SpacePage on Space {
   account {
     id
     host {
-      id
-      nameID
-      profile {
-        ...SpaceWelcomeBlockContributorProfile
-      }
+      ...ContributorDetails
     }
   }
   metrics {

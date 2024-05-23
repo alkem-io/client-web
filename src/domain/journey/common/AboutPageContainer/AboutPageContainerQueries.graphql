@@ -36,11 +36,7 @@ query AboutPageNonMembers($spaceId: UUID!) {
       account {
         id
         host {
-          id
-          nameID
-          profile {
-            ...SpaceWelcomeBlockContributorProfile
-          }
+          ...ContributorDetails
         }
       }
       metrics {

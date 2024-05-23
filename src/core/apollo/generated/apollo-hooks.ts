@@ -2300,21 +2300,6 @@ export const SpaceInfoFragmentDoc = gql`
   }
   ${SpaceDetailsFragmentDoc}
 `;
-export const SpaceWelcomeBlockContributorProfileFragmentDoc = gql`
-  fragment SpaceWelcomeBlockContributorProfile on Profile {
-    id
-    displayName
-    location {
-      id
-      city
-      country
-    }
-    tagsets {
-      id
-      tags
-    }
-  }
-`;
 export const DashboardTopCalloutFragmentDoc = gql`
   fragment DashboardTopCallout on Callout {
     id
@@ -2376,6 +2361,21 @@ export const EntityDashboardCommunityFragmentDoc = gql`
   ${AssociatedOrganizationDetailsFragmentDoc}
   ${DashboardContributingOrganizationFragmentDoc}
 `;
+export const SpaceWelcomeBlockContributorProfileFragmentDoc = gql`
+  fragment SpaceWelcomeBlockContributorProfile on Profile {
+    id
+    displayName
+    location {
+      id
+      city
+      country
+    }
+    tagsets {
+      id
+      tags
+    }
+  }
+`;
 export const SpacePageFragmentDoc = gql`
   fragment SpacePage on Space {
     id
@@ -2383,11 +2383,7 @@ export const SpacePageFragmentDoc = gql`
     account {
       id
       host {
-        id
-        nameID
-        profile {
-          ...SpaceWelcomeBlockContributorProfile
-        }
+        ...ContributorDetails
       }
     }
     metrics {
@@ -2440,12 +2436,13 @@ export const SpacePageFragmentDoc = gql`
       }
     }
   }
-  ${SpaceWelcomeBlockContributorProfileFragmentDoc}
+  ${ContributorDetailsFragmentDoc}
   ${VisualUriFragmentDoc}
   ${TagsetDetailsFragmentDoc}
   ${DashboardTopCalloutsFragmentDoc}
   ${DashboardTimelineAuthorizationFragmentDoc}
   ${EntityDashboardCommunityFragmentDoc}
+  ${SpaceWelcomeBlockContributorProfileFragmentDoc}
 `;
 export const SubspacePageFragmentDoc = gql`
   fragment SubspacePage on Space {
@@ -14526,11 +14523,7 @@ export const AboutPageNonMembersDocument = gql`
         account {
           id
           host {
-            id
-            nameID
-            profile {
-              ...SpaceWelcomeBlockContributorProfile
-            }
+            ...ContributorDetails
           }
         }
         metrics {
@@ -14564,7 +14557,7 @@ export const AboutPageNonMembersDocument = gql`
   }
   ${TagsetDetailsFragmentDoc}
   ${VisualFullFragmentDoc}
-  ${SpaceWelcomeBlockContributorProfileFragmentDoc}
+  ${ContributorDetailsFragmentDoc}
   ${MetricsItemFragmentDoc}
   ${ContextTabFragmentDoc}
 `;
@@ -14782,11 +14775,7 @@ export const JourneyDataDocument = gql`
         account {
           id
           host {
-            id
-            nameID
-            profile {
-              ...SpaceWelcomeBlockContributorProfile
-            }
+            ...ContributorDetails
           }
         }
       }
@@ -14796,7 +14785,7 @@ export const JourneyDataDocument = gql`
   ${ContextJourneyDataFragmentDoc}
   ${JourneyCommunityFragmentDoc}
   ${MetricsItemFragmentDoc}
-  ${SpaceWelcomeBlockContributorProfileFragmentDoc}
+  ${ContributorDetailsFragmentDoc}
 `;
 
 /**
@@ -15281,11 +15270,7 @@ export const SpaceCommunityPageDocument = gql`
       account {
         id
         host {
-          id
-          nameID
-          profile {
-            ...SpaceWelcomeBlockContributorProfile
-          }
+          ...ContributorDetails
         }
       }
       community {
@@ -15296,7 +15281,7 @@ export const SpaceCommunityPageDocument = gql`
       }
     }
   }
-  ${SpaceWelcomeBlockContributorProfileFragmentDoc}
+  ${ContributorDetailsFragmentDoc}
   ${CommunityPageCommunityFragmentDoc}
 `;
 

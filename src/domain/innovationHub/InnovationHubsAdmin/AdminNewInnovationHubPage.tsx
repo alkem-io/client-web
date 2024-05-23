@@ -38,7 +38,6 @@ const AdminNewInnovationHubPage = () => {
     const { data } = await createInnovationHub({
       variables: {
         hubData: {
-          accountID: 'FIXME',
           nameID: formData.nameID,
           //providerID: formData.providerId, // TODO: Add provider field when serverside is ready
           subdomain: formData.subdomain,

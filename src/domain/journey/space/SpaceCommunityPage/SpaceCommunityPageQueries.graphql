@@ -8,12 +8,7 @@ query SpaceCommunityPage($spaceNameId: UUID_NAMEID!) {
     account {
       id
       host {
-        id
-        nameID
-        profile {
-          # TODO extract contributor fragment
-          ...SpaceWelcomeBlockContributorProfile
-        }
+        ...ContributorDetails
       }
     }
     community {
