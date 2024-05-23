@@ -38,14 +38,12 @@ const InnovationFlowTemplateCard = ({
     ? DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS - 2
     : DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS;
 
-  const cardInnovationPack = innovationPack || template?.innovationPack;
-
   return (
     <ContributeCard onClick={onClick}>
       <CardHeader title={template?.profile.displayName} iconComponent={InnovationFlowIcon as SvgIconComponent}>
         {loading && <Skeleton />}
-        <CardHeaderCaption logoUrl={cardInnovationPack?.provider?.profile.avatar?.uri}>
-          {cardInnovationPack?.provider?.profile.displayName}
+        <CardHeaderCaption logoUrl={innovationPack?.provider?.profile.avatar?.uri}>
+          {innovationPack?.provider?.profile.displayName}
         </CardHeaderCaption>
       </CardHeader>
       <CardDetails>
@@ -61,9 +59,9 @@ const InnovationFlowTemplateCard = ({
       <CardDetails>
         <CardTags tags={template?.profile.tagset?.tags ?? []} marginY={1} hideIfEmpty />
       </CardDetails>
-      {cardInnovationPack && (
+      {innovationPack && (
         <CardSegmentCaption icon={<InnovationPackIcon />}>
-          <Caption noWrap>{cardInnovationPack?.profile.displayName}</Caption>
+          <Caption noWrap>{innovationPack?.profile.displayName}</Caption>
         </CardSegmentCaption>
       )}
       {loading && <Skeleton />}

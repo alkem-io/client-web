@@ -7,22 +7,24 @@ import ContributeCard from '../../../../core/ui/card/ContributeCard';
 import { Caption } from '../../../../core/ui/typography/components';
 import CardDescriptionWithTags from '../../../../core/ui/card/CardDescriptionWithTags';
 import CardDetails from '../../../../core/ui/card/CardDetails';
-import {
-  InnovationPackTemplate,
-  TemplateCardBaseProps,
-} from '../../templates/CollaborationTemplatesLibrary/TemplateBase';
+import { TemplateBase, TemplateCardBaseProps } from '../../templates/CollaborationTemplatesLibrary/TemplateBase';
 import InnovationPackIcon from '../../InnovationPack/InnovationPackIcon';
 import { CommunityGuidelinesIcon } from '../icon/CommunityGuidelinesIcon';
 
-interface CommunityGuidelinesTemplateCardProps extends TemplateCardBaseProps<InnovationPackTemplate> {}
+interface CommunityGuidelinesTemplateCardProps extends TemplateCardBaseProps<TemplateBase> {}
 
-const CommunityGuidelinesTemplateCard: FC<CommunityGuidelinesTemplateCardProps> = ({ template, loading, onClick }) => {
+const CommunityGuidelinesTemplateCard: FC<CommunityGuidelinesTemplateCardProps> = ({
+  template,
+  innovationPack,
+  loading,
+  onClick,
+}) => {
   return (
     <ContributeCard onClick={onClick}>
       <CardHeader title={template?.profile.displayName} iconComponent={CommunityGuidelinesIcon}>
         {loading && <Skeleton />}
-        <CardHeaderCaption logoUrl={template?.innovationPack?.provider?.profile.avatar?.uri}>
-          {template?.innovationPack?.provider?.profile.displayName}
+        <CardHeaderCaption logoUrl={innovationPack?.provider?.profile.avatar?.uri}>
+          {innovationPack?.provider?.profile.displayName}
         </CardHeaderCaption>
       </CardHeader>
       <CardDetails>
@@ -30,9 +32,9 @@ const CommunityGuidelinesTemplateCard: FC<CommunityGuidelinesTemplateCardProps> 
           {template?.profile.description}
         </CardDescriptionWithTags>
       </CardDetails>
-      {template?.innovationPack?.profile && (
+      {innovationPack?.profile && (
         <CardSegmentCaption icon={<InnovationPackIcon />}>
-          <Caption noWrap>{template?.innovationPack?.profile.displayName}</Caption>
+          <Caption noWrap>{innovationPack?.profile.displayName}</Caption>
         </CardSegmentCaption>
       )}
       {loading && <Skeleton />}

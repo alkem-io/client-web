@@ -18218,6 +18218,9 @@ export const InnovationPacksDocument = gql`
             innovationFlowTemplates {
               ...AdminInnovationFlowTemplate
             }
+            calloutTemplates {
+              ...AdminCalloutTemplate
+            }
             communityGuidelinesTemplates {
               ...AdminCommunityGuidelinesTemplate
             }
@@ -18230,6 +18233,7 @@ export const InnovationPacksDocument = gql`
   ${AdminPostTemplateFragmentDoc}
   ${AdminWhiteboardTemplateFragmentDoc}
   ${AdminInnovationFlowTemplateFragmentDoc}
+  ${AdminCalloutTemplateFragmentDoc}
   ${AdminCommunityGuidelinesTemplateFragmentDoc}
 `;
 
