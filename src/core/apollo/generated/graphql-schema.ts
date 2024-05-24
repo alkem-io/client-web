@@ -581,12 +581,10 @@ export type ApplicationForRoleResult = {
   id: Scalars['UUID'];
   /** ID for the ultimate containing Space */
   spaceID: Scalars['UUID'];
+  /** Nesting level of the Space */
+  spaceLevel: Scalars['Float'];
   /** The current state of the application. */
   state: Scalars['String'];
-  /** ID for the Challenge being applied to, if any. Or the Challenge containing the Opportunity being applied to. */
-  subspaceID?: Maybe<Scalars['UUID']>;
-  /** ID for the Opportunity being applied to, if any. */
-  subsubspaceID?: Maybe<Scalars['UUID']>;
   /** Date of last update */
   updatedDate: Scalars['DateTime'];
 };
@@ -2238,12 +2236,10 @@ export type InvitationForRoleResult = {
   id: Scalars['UUID'];
   /** ID for the ultimate containing Space */
   spaceID: Scalars['UUID'];
+  /** Nesting level of the Space */
+  spaceLevel: Scalars['Float'];
   /** The current state of the invitation. */
   state: Scalars['String'];
-  /** ID for the Subspace being invited to, if any. Or the Challenge containing the Opportunity being invited to. */
-  subspaceID?: Maybe<Scalars['UUID']>;
-  /** ID for the Opportunity being invited to, if any. */
-  subsubspaceID?: Maybe<Scalars['UUID']>;
   /** Date of last update */
   updatedDate: Scalars['DateTime'];
   /** The welcome message of the invitation */
@@ -17002,15 +16998,13 @@ export type UserProviderQuery = {
       displayName: string;
       state: string;
       spaceID: string;
-      subspaceID?: string | undefined;
-      subsubspaceID?: string | undefined;
+      spaceLevel: number;
     }>;
     invitations: Array<{
       __typename?: 'InvitationForRoleResult';
       id: string;
       spaceID: string;
-      subspaceID?: string | undefined;
-      subsubspaceID?: string | undefined;
+      spaceLevel: number;
       welcomeMessage?: string | undefined;
       createdBy: string;
       createdDate: Date;
@@ -21668,19 +21662,6 @@ export type AdminSpacesListQuery = {
         visibility: SpaceVisibility;
         featureFlags: Array<{ __typename?: 'LicenseFeatureFlag'; name: LicenseFeatureFlagName; enabled: boolean }>;
       };
-      host?:
-        | {
-            __typename?: 'Organization';
-            id: string;
-            profile: { __typename?: 'Profile'; id: string; displayName: string };
-          }
-        | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
-        | {
-            __typename?: 'VirtualContributor';
-            id: string;
-            profile: { __typename?: 'Profile'; id: string; displayName: string };
-          }
-        | undefined;
     };
     profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
     authorization?:
@@ -21702,19 +21683,6 @@ export type AdminSpaceFragment = {
       visibility: SpaceVisibility;
       featureFlags: Array<{ __typename?: 'LicenseFeatureFlag'; name: LicenseFeatureFlagName; enabled: boolean }>;
     };
-    host?:
-      | {
-          __typename?: 'Organization';
-          id: string;
-          profile: { __typename?: 'Profile'; id: string; displayName: string };
-        }
-      | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
-      | {
-          __typename?: 'VirtualContributor';
-          id: string;
-          profile: { __typename?: 'Profile'; id: string; displayName: string };
-        }
-      | undefined;
   };
   profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
   authorization?:
@@ -27040,16 +27008,15 @@ export type NewMembershipsQuery = {
       displayName: string;
       state: string;
       spaceID: string;
-      subspaceID?: string | undefined;
-      subsubspaceID?: string | undefined;
+      spaceLevel: number;
       createdDate: Date;
     }>;
     invitations: Array<{
       __typename?: 'InvitationForRoleResult';
       id: string;
       spaceID: string;
+      spaceLevel: number;
       state: string;
-      subspaceID?: string | undefined;
       welcomeMessage?: string | undefined;
       createdBy: string;
       createdDate: Date;

@@ -2748,13 +2748,6 @@ export const AdminSpaceFragmentDoc = gql`
           enabled
         }
       }
-      host {
-        id
-        profile {
-          id
-          displayName
-        }
-      }
     }
     profile {
       id
@@ -13754,14 +13747,12 @@ export const UserProviderDocument = gql`
         displayName
         state
         spaceID
-        subspaceID
-        subsubspaceID
+        spaceLevel
       }
       invitations(states: ["invited"]) {
         id
         spaceID
-        subspaceID
-        subsubspaceID
+        spaceLevel
         welcomeMessage
         createdBy
         createdDate
@@ -21630,15 +21621,14 @@ export const NewMembershipsDocument = gql`
         displayName
         state
         spaceID
-        subspaceID
-        subsubspaceID
+        spaceLevel
         createdDate
       }
       invitations(states: ["invited", "accepted"]) {
         id
         spaceID
+        spaceLevel
         state
-        subspaceID
         welcomeMessage
         createdBy
         createdDate

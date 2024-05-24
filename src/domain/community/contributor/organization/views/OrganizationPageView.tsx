@@ -61,11 +61,7 @@ export const OrganizationPageView: FC<OrganizationPageViewProps> = ({ entities }
       </PageContentColumn>
       <PageContentColumn columns={8}>
         <AssociatesView associates={associates} totalCount={associatesCount} canReadUsers={permissions.canReadUsers} />
-        <ContributionsView
-          title={t('components.contributions.title')}
-          helpText={t('components.contributions.help')}
-          contributions={contributions}
-        />
+        <ContributionsView title={t('components.contributions.title')} contributions={contributions} />
       </PageContentColumn>
     </PageContent>
   );

@@ -1,5 +1,4 @@
 import { KEYWORDS_TAGSET, SKILLS_TAGSET } from '../../../common/tags/tagset.constants';
-import { ContributionItem } from '../contribution';
 import {
   ApplicationForRoleResult,
   AuthorizationPrivilege,
@@ -9,8 +8,10 @@ import {
 } from '../../../../core/apollo/generated/graphql-schema';
 import { InvitationItem } from '../providers/UserProvider/InvitationItem';
 import { Stateful } from '../../../shared/types/Stateful';
+import { JourneyLevel } from '../../../../main/routing/resolvers/RouteResolver';
+import { SpaceHostedItem } from '../../../journey/utils/SpaceHostedItem';
 
-export interface PendingApplication extends ContributionItem, Stateful {}
+export interface PendingApplication extends SpaceHostedItem, Stateful {}
 
 export interface UserMetadata {
   user: UserDetailsFragment;
@@ -23,26 +24,18 @@ export interface UserMetadata {
 
 export const getPendingApplications = (applicationsData: ApplicationForRoleResult[]) => {
   return (
-    applicationsData.map<PendingApplication>(a => ({
-      spaceId: a.spaceID,
-      subspaceId: a.subspaceID,
-      subsubspaceId: a.subsubspaceID,
-      id: a.id,
-      state: a.state,
+    applicationsData.map<PendingApplication>(application => ({
+      ...application,
+      spaceLevel: application.spaceLevel as JourneyLevel,
     })) || []
   );
 };
 
 const getPendingInvitations = (invitationsData: InvitationForRoleResult[]) => {
   return (
-    invitationsData.map<InvitationItem>(a => ({
-      spaceId: a.spaceID,
-      subspaceId: a.subspaceID,
-      subsubspaceId: a.subsubspaceID,
-      welcomeMessage: a.welcomeMessage || '',
-      createdBy: a.createdBy,
-      createdDate: a.createdDate,
-      id: a.id,
+    invitationsData.map<InvitationItem>(invitation => ({
+      ...invitation,
+      spaceLevel: invitation.spaceLevel as JourneyLevel,
     })) || []
   );
 };

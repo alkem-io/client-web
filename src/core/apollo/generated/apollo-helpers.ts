@@ -501,9 +501,8 @@ export type ApplicationForRoleResultKeySpecifier = (
   | 'displayName'
   | 'id'
   | 'spaceID'
+  | 'spaceLevel'
   | 'state'
-  | 'subspaceID'
-  | 'subsubspaceID'
   | 'updatedDate'
   | ApplicationForRoleResultKeySpecifier
 )[];
@@ -513,9 +512,8 @@ export type ApplicationForRoleResultFieldPolicy = {
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   spaceID?: FieldPolicy<any> | FieldReadFunction<any>;
+  spaceLevel?: FieldPolicy<any> | FieldReadFunction<any>;
   state?: FieldPolicy<any> | FieldReadFunction<any>;
-  subspaceID?: FieldPolicy<any> | FieldReadFunction<any>;
-  subsubspaceID?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type AuthenticationConfigKeySpecifier = ('providers' | AuthenticationConfigKeySpecifier)[];
@@ -1285,9 +1283,8 @@ export type InvitationForRoleResultKeySpecifier = (
   | 'displayName'
   | 'id'
   | 'spaceID'
+  | 'spaceLevel'
   | 'state'
-  | 'subspaceID'
-  | 'subsubspaceID'
   | 'updatedDate'
   | 'welcomeMessage'
   | InvitationForRoleResultKeySpecifier
@@ -1299,9 +1296,8 @@ export type InvitationForRoleResultFieldPolicy = {
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   spaceID?: FieldPolicy<any> | FieldReadFunction<any>;
+  spaceLevel?: FieldPolicy<any> | FieldReadFunction<any>;
   state?: FieldPolicy<any> | FieldReadFunction<any>;
-  subspaceID?: FieldPolicy<any> | FieldReadFunction<any>;
-  subsubspaceID?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   welcomeMessage?: FieldPolicy<any> | FieldReadFunction<any>;
 };
