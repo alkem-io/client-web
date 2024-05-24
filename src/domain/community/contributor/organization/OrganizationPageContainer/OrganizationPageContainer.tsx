@@ -11,7 +11,7 @@ import {
 import { COUNTRIES_BY_CODE } from '../../../../common/location/countries.constants';
 import { CAPABILITIES_TAGSET, KEYWORDS_TAGSET } from '../../../../common/tags/tagset.constants';
 import { ContainerChildProps } from '../../../../../core/container/container';
-import { ContributionItem } from '../../../user/contribution';
+import { SpaceHostedItem } from '../../../../journey/utils/SpaceHostedItem';
 import {
   isSocialNetworkSupported,
   SocialNetworkEnum,
@@ -34,7 +34,7 @@ export interface OrganizationContainerEntities {
   capabilities: string[];
   keywords: string[];
   associates: ContributorCardSquareProps[];
-  contributions: ContributionItem[];
+  contributions: SpaceHostedItem[];
   permissions: {
     canEdit: boolean;
     canReadUsers: boolean;
@@ -154,19 +154,20 @@ export const OrganizationPageContainer: FC<OrganizationPageContainerProps> = ({ 
         space => space.roles?.includes(RoleType.Host) || space.roles?.includes(RoleType.Lead)
       ) || [];
 
-    const spaceContributions = spacesHostingLeading.map<ContributionItem>(x => ({
-      spaceId: x.id,
+    const spaceContributions = spacesHostingLeading.map<SpaceHostedItem>(x => ({
+      spaceID: x.id,
+      spaceLevel: 0,
       id: x.id,
     }));
 
     // Loop over spaces, filter the challenges in which user has the role 'lead' and map those challenges to ContributionItems
     const subspaceContributions =
-      orgRolesData?.rolesOrganization?.spaces.flatMap<ContributionItem>(h =>
+      orgRolesData?.rolesOrganization?.spaces.flatMap<SpaceHostedItem>(h =>
         h.subspaces
           .filter(c => c.roles?.includes(RoleType.Lead))
-          .map<ContributionItem>(c => ({
-            spaceId: h.id,
-            subspaceId: c.id,
+          .map<SpaceHostedItem>(c => ({
+            spaceID: c.id,
+            spaceLevel: 1,
             id: c.id,
           }))
       ) || [];
