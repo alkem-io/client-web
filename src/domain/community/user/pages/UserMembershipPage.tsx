@@ -24,7 +24,6 @@ const UserMembershipPage: FC<UserMembershipPageProps> = () => {
       <GridProvider columns={12}>
         <ContributionsView
           title={t('common.my-memberships')}
-          helpText={t('pages.user-profile.communities.help')}
           contributions={contributions}
           loading={loading}
           enableLeave
@@ -35,7 +34,6 @@ const UserMembershipPage: FC<UserMembershipPageProps> = () => {
         <Grid item xs={12}>
           <ContributionsView
             title={t('pages.user-profile.pending-applications.title')}
-            helpText={t('pages.user-profile.pending-applications.help')}
             contributions={userMetadata?.pendingApplications}
             loading={loading}
           />
