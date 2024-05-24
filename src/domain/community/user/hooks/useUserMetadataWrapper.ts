@@ -8,13 +8,10 @@ import {
 } from '../../../../core/apollo/generated/graphql-schema';
 import { InvitationItem } from '../providers/UserProvider/InvitationItem';
 import { Stateful } from '../../../shared/types/Stateful';
-import { Identifiable } from '../../../../core/utils/Identifiable';
 import { JourneyLevel } from '../../../../main/routing/resolvers/RouteResolver';
+import { SpaceHostedItem } from '../../../journey/utils/SpaceHostedItem';
 
-export interface PendingApplication extends Identifiable, Stateful {
-  spaceID: string;
-  spaceLevel: JourneyLevel;
-}
+export interface PendingApplication extends SpaceHostedItem, Stateful {}
 
 export interface UserMetadata {
   user: UserDetailsFragment;
