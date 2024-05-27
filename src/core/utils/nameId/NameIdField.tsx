@@ -16,10 +16,16 @@ const NameIdField = ({
   ...props
 }: FormikInputFieldProps & NameIdFieldProps) => {
   const [{ value: sourceFieldValue = '' }] = useField(sourceFieldName);
-  const [{ value }, { touched }] = useField(name);
+  const [{ value }, { touched }, { setValue, setTouched }] = useField(name);
 
   const nameId = useMemo(() => {
-    return touched ? value : createNameId(sourceFieldValue);
+    if (touched) {
+      return value;
+    } else {
+      const derivedNameId = createNameId(sourceFieldValue);
+      setValue(derivedNameId);
+      return derivedNameId;
+    }
   }, [sourceFieldValue, touched, value]);
 
   const origin = usePlatformOrigin();
@@ -29,6 +35,7 @@ const NameIdField = ({
       {...props}
       value={nameId}
       name={name}
+      onClick={() => setTouched(true)}
       InputProps={{
         startAdornment: <Typography color="neutral.light">{`${origin}/`}</Typography>,
       }}

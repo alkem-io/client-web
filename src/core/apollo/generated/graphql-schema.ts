@@ -1405,6 +1405,8 @@ export type ConvertSubsubspaceToSubspaceInput = {
 export type CreateAccountInput = {
   /** The host Organization or User for the account */
   hostID: Scalars['UUID_NAMEID'];
+  /** The plan selected for the account */
+  planID?: InputMaybe<Scalars['UUID']>;
   /** The root Space to be created. */
   spaceData: CreateSpaceInput;
 };
@@ -20178,6 +20180,7 @@ export type SubspacePageFragment = {
 export type CreateNewSpaceMutationVariables = Exact<{
   hostId: Scalars['UUID_NAMEID'];
   spaceData: CreateSpaceInput;
+  planId?: InputMaybe<Scalars['UUID']>;
 }>;
 
 export type CreateNewSpaceMutation = {

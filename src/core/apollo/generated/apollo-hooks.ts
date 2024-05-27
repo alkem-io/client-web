@@ -15765,8 +15765,8 @@ export function refetchLegacySubspaceDashboardPageQuery(
 }
 
 export const CreateNewSpaceDocument = gql`
-  mutation CreateNewSpace($hostId: UUID_NAMEID!, $spaceData: CreateSpaceInput!) {
-    createAccount(accountData: { hostID: $hostId, spaceData: $spaceData }) {
+  mutation CreateNewSpace($hostId: UUID_NAMEID!, $spaceData: CreateSpaceInput!, $planId: UUID) {
+    createAccount(accountData: { hostID: $hostId, spaceData: $spaceData, planID: $planId }) {
       id
       spaceID
     }
@@ -15792,6 +15792,7 @@ export type CreateNewSpaceMutationFn = Apollo.MutationFunction<
  *   variables: {
  *      hostId: // value for 'hostId'
  *      spaceData: // value for 'spaceData'
+ *      planId: // value for 'planId'
  *   },
  * });
  */

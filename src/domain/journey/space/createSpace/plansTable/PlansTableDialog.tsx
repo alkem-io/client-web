@@ -96,6 +96,15 @@ const PlansTableDialog = ({ open, onClose, onSelectPlan }: PlansTableDialogProps
     }
   };
 
+  const handleSelectPlan = (planName: string) => {
+    const planId = plansData.find(plan => plan.name === planName)?.id;
+    if (planId) {
+      setFreeTrialDialogOpen(false);
+      setGetStartedDialogOpen(false);
+      onSelectPlan(planId);
+    }
+  };
+
   return (
     <>
       <DialogWithGrid open={open} onClose={onClose} columns={isSmall ? 6 : 12} fullScreen={isMobile}>
@@ -202,10 +211,10 @@ const PlansTableDialog = ({ open, onClose, onSelectPlan }: PlansTableDialogProps
           <WrapperMarkdown>{t('plansTable.confirmationDialogs.freeTrial.content')}</WrapperMarkdown>
         </DialogContent>
         <DialogActions>
-          <Button variant="text" onClick={() => onSelectPlan('FREE')}>
+          <Button variant="text" onClick={() => handleSelectPlan('FREE')}>
             {t('plansTable.confirmationDialogs.freeTrial.buttons.continue')}
           </Button>
-          <Button variant="contained" onClick={() => onSelectPlan('PLUS')}>
+          <Button variant="contained" onClick={() => handleSelectPlan('PLUS')}>
             {t('plansTable.confirmationDialogs.freeTrial.buttons.startPlus')}
           </Button>
         </DialogActions>
@@ -218,7 +227,7 @@ const PlansTableDialog = ({ open, onClose, onSelectPlan }: PlansTableDialogProps
           <WrapperMarkdown>{t('plansTable.confirmationDialogs.getStarted.content')}</WrapperMarkdown>
         </DialogContent>
         <DialogActions>
-          <Button variant="contained" onClick={() => planSelected && onSelectPlan(planSelected)}>
+          <Button variant="contained" onClick={() => planSelected && handleSelectPlan(planSelected)}>
             {t('plansTable.confirmationDialogs.getStarted.buttons.continue')}
           </Button>
         </DialogActions>

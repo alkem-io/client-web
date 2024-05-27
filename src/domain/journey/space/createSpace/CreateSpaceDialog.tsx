@@ -2,7 +2,7 @@ import DialogWithGrid, { DialogFooter } from '../../../../core/ui/dialog/DialogW
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import { useBackToStaticPath } from '../../../../core/routing/useBackToPath';
 import { ROUTE_HOME } from '../../../platform/routes/constants';
-import { Button, Checkbox, DialogContent, FormControlLabel, Link, TextField } from '@mui/material';
+import { Button, Checkbox, Dialog, DialogContent, FormControlLabel, Link, TextField } from '@mui/material';
 import { Caption } from '../../../../core/ui/typography';
 import { Formik } from 'formik';
 import { Trans, useTranslation } from 'react-i18next';
@@ -28,19 +28,21 @@ import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 import RouterLink from '../../../../core/ui/link/RouterLink';
 import { useConfig } from '../../../platform/config/useConfig';
 import PlansTableDialog from './plansTable/PlansTableDialog';
-import { useCreateNewSpaceMutation } from '../../../../core/apollo/generated/apollo-hooks';
+import { useCreateNewSpaceMutation, useSpaceUrlLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import useNavigate from '../../../../core/routing/useNavigate';
+import Loading from '../../../../core/ui/loading/Loading';
 
 interface FormValues extends SpaceEditFormValuesType {
-  planName: string;
+  planId: string;
 }
 
 const CreateSpaceDialog = () => {
   const handleClose = useBackToStaticPath(ROUTE_HOME);
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [dialogOpen, setDialogOpen] = useState(true);
   const [plansTableDialogOpen, setPlansTableDialogOpen] = useState(false);
-  //!!
-  const [, setCreatingDialogOpen] = useState(false);
+  const [creatingDialogOpen, setCreatingDialogOpen] = useState(false);
 
   const tagsets = useMemo(() => {
     return [
@@ -60,7 +62,7 @@ const CreateSpaceDialog = () => {
     tagline: '',
     tagsets,
     hostId: '',
-    planName: '',
+    planId: '',
   };
 
   const validationSchema = yup.object().shape({
@@ -68,7 +70,6 @@ const CreateSpaceDialog = () => {
     nameID: nameSegmentSchema.fields?.nameID ?? yup.string(),
     tagline: contextSegmentSchema.fields?.tagline ?? yup.string(),
     tagsets: tagsetSegmentSchema,
-    planName: yup.string().required(),
   });
 
   const { isAuthenticated } = useAuthenticationContext();
@@ -82,6 +83,7 @@ const CreateSpaceDialog = () => {
   const config = useConfig();
 
   const [CreateNewSpace] = useCreateNewSpaceMutation();
+  const [getSpaceUrl] = useSpaceUrlLazyQuery();
   const [handleSubmit] = useLoadingState(async (values: Partial<FormValues>) => {
     if (!user?.user.id) {
       return;
@@ -97,16 +99,27 @@ const CreateSpaceDialog = () => {
           profileData: {
             displayName: values.name!, // ensured by yup validation
             tagline: values.tagline!,
-            tagsets: values.tagsets,
+            tagsets: values.tagsets?.map(tagset => ({ name: tagset.name, tags: tagset.tags, type: tagset.type })),
           },
           collaborationData: {},
         },
+        planId: values.planId,
       },
     });
 
-    setCreatingDialogOpen(false);
-    //!! todo! do something with newSpace, navigate...
-    return newSpace;
+    if (newSpace.data?.createAccount.spaceID) {
+      const { data } = await getSpaceUrl({
+        variables: {
+          spaceNameId: newSpace.data?.createAccount.spaceID,
+        },
+      });
+      const spaceUrl = data?.space.profile.url;
+      if (spaceUrl) {
+        navigate(spaceUrl);
+        return;
+      }
+    }
+    // TODO: Something went wrong, and we are not navigating to the new space, log this issue
   });
 
   if (!isAuthenticated) {
@@ -121,7 +134,7 @@ const CreateSpaceDialog = () => {
         enableReinitialize
         onSubmit={handleSubmit}
       >
-        {({ setFieldValue, handleSubmit }) => {
+        {({ setFieldValue, handleSubmit, errors }) => {
           return (
             <>
               <DialogWithGrid open={dialogOpen} columns={12} onClose={handleClose}>
@@ -173,6 +186,7 @@ const CreateSpaceDialog = () => {
                             setDialogOpen(false);
                             setPlansTableDialogOpen(true);
                           }}
+                          disabled={Object.keys(errors).length > 0 || !hasAcceptedTerms}
                         >
                           {t('buttons.continue')}
                         </Button>
@@ -184,8 +198,8 @@ const CreateSpaceDialog = () => {
               <PlansTableDialog
                 onClose={() => setPlansTableDialogOpen(false)}
                 open={plansTableDialogOpen}
-                onSelectPlan={planName => {
-                  setFieldValue('planName', planName);
+                onSelectPlan={planId => {
+                  setFieldValue('planId', planId);
                   handleSubmit();
                 }}
               />
@@ -204,6 +218,11 @@ const CreateSpaceDialog = () => {
           )}
         </DialogContent>
       </DialogWithGrid>
+      <Dialog open={creatingDialogOpen}>
+        <DialogContent sx={{ display: 'flex', alignItems: 'center' }}>
+          <Loading />
+        </DialogContent>
+      </Dialog>
     </>
   );
 };
