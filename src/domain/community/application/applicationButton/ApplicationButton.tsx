@@ -102,7 +102,7 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
     };
 
     const handleAcceptInvitation = () => {
-      onUpdateInvitation?.();
+      setTimeout(() => onUpdateInvitation?.(), 1000);
       handleClose();
     };
 
