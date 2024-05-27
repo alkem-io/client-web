@@ -1,0 +1,35 @@
+query PlansTable {
+  platform {
+    id
+    licensing {
+      id
+      plans {
+        id
+        name
+        enabled
+        sortOrder
+        pricePerMonth
+        isFree
+        trialEnabled
+        requiresPaymentMethod
+        requiresContactSupport
+      }
+    }
+  }
+}
+
+query FreePlanAvailability {
+  me {
+    canCreateFreeSpace
+  }
+}
+
+query ContactSupportLocation {
+  platform {
+    configuration {
+      locations {
+        contactsupport
+      }
+    }
+  }
+}
