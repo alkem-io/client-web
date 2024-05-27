@@ -31,6 +31,8 @@ import PlansTableDialog from './plansTable/PlansTableDialog';
 import { useCreateNewSpaceMutation, useSpaceUrlLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import useNavigate from '../../../../core/routing/useNavigate';
 import Loading from '../../../../core/ui/loading/Loading';
+import { TagCategoryValues, info } from '../../../../core/logging/sentry/log';
+import { compact } from 'lodash';
 
 interface FormValues extends SpaceEditFormValuesType {
   planId: string;
@@ -91,7 +93,7 @@ const CreateSpaceDialog = () => {
     setDialogOpen(false);
     setPlansTableDialogOpen(false);
     setCreatingDialogOpen(true);
-    const newSpace = await CreateNewSpace({
+    const { data: newSpace } = await CreateNewSpace({
       variables: {
         hostId: user.user.id,
         spaceData: {
@@ -99,27 +101,34 @@ const CreateSpaceDialog = () => {
           profileData: {
             displayName: values.name!, // ensured by yup validation
             tagline: values.tagline!,
-            tagsets: values.tagsets?.map(tagset => ({ name: tagset.name, tags: tagset.tags, type: tagset.type })),
           },
           collaborationData: {},
+          tags: compact(values.tagsets?.reduce((acc: string[], tagset) => [...acc, ...tagset.tags], [])),
         },
         planId: values.planId,
       },
     });
 
-    if (newSpace.data?.createAccount.spaceID) {
-      const { data } = await getSpaceUrl({
+    if (newSpace?.createAccount.spaceID) {
+      const { data: spaceUrlData } = await getSpaceUrl({
         variables: {
-          spaceNameId: newSpace.data?.createAccount.spaceID,
+          spaceNameId: newSpace.createAccount.spaceID,
         },
       });
-      const spaceUrl = data?.space.profile.url;
+      info(
+        `Space Created SpaceId:${newSpace.createAccount.spaceID} Plan:${values.planId} SpaceUrl:${spaceUrlData?.space.profile.url}`,
+        {
+          category: TagCategoryValues.SPACE_CREATION,
+          label: 'Space Created',
+        }
+      );
+
+      const spaceUrl = spaceUrlData?.space.profile.url;
       if (spaceUrl) {
         navigate(spaceUrl);
         return;
       }
     }
-    // TODO: Something went wrong, and we are not navigating to the new space, log this issue
   });
 
   if (!isAuthenticated) {

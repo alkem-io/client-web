@@ -14,6 +14,7 @@ import { usePlansTableQuery } from '../../../../../core/apollo/generated/apollo-
 import Loading from '../../../../../core/ui/loading/Loading';
 import SelectPlanButton from './SelectPlanButton';
 import { usePlanAvailability } from './usePlanAvailability';
+import { TagCategoryValues, error } from '../../../../../core/logging/sentry/log';
 
 interface PlanTranslation {
   name: string;
@@ -83,16 +84,7 @@ const PlansTableDialog = ({ open, onClose, onSelectPlan }: PlansTableDialogProps
     if (isFree) {
       setFreeTrialDialogOpen(true);
     } else {
-      switch (name) {
-        case 'PLUS': {
-          setGetStartedDialogOpen(true);
-          break;
-        }
-        case 'PREMIUM': {
-          setGetStartedDialogOpen(true);
-          break;
-        }
-      }
+      setGetStartedDialogOpen(true);
     }
   };
 
@@ -102,6 +94,11 @@ const PlansTableDialog = ({ open, onClose, onSelectPlan }: PlansTableDialogProps
       setFreeTrialDialogOpen(false);
       setGetStartedDialogOpen(false);
       onSelectPlan(planId);
+    } else {
+      error(`Plan with name ${planName} not found in plansData.`, {
+        category: TagCategoryValues.UI,
+        label: 'PlansTableDialog',
+      });
     }
   };
 
