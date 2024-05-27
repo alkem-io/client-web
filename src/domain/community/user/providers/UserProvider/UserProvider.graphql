@@ -10,14 +10,12 @@ query UserProvider {
       displayName
       state
       spaceID
-      subspaceID
-      subsubspaceID
+      spaceLevel
     }
     invitations(states: ["invited"]) {
       id
       spaceID
-      subspaceID
-      subsubspaceID
+      spaceLevel
       welcomeMessage
       createdBy
       createdDate
