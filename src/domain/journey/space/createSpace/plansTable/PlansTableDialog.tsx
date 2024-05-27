@@ -102,7 +102,7 @@ const PlansTableDialog = ({ open, onClose, onSelectPlan }: PlansTableDialogProps
         <DialogHeader onClose={onClose}>{t('plansTable.title')}</DialogHeader>
         <Gutters>
           <Caption>{t('plansTable.subtitle')}</Caption>
-          <GridContainer sameHeight disablePadding noGap>
+          <GridContainer sameHeight disablePadding disableGap>
             {loading && <Loading text={t('common.loading')} />}
             {plansData.map(plan => {
               const planTranslation = planTranslations[plan.name] ?? {};
