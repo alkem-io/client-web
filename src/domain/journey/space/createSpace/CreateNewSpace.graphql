@@ -1,0 +1,6 @@
+mutation CreateNewSpace($hostId: UUID_NAMEID!, $spaceData: CreateSpaceInput!) {
+  createAccount(accountData: { hostID: $hostId, spaceData: $spaceData }) {
+    id
+    spaceID
+  }
+}

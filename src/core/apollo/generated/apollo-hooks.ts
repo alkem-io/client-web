@@ -15764,6 +15764,56 @@ export function refetchLegacySubspaceDashboardPageQuery(
   return { query: LegacySubspaceDashboardPageDocument, variables: variables };
 }
 
+export const CreateNewSpaceDocument = gql`
+  mutation CreateNewSpace($hostId: UUID_NAMEID!, $spaceData: CreateSpaceInput!) {
+    createAccount(accountData: { hostID: $hostId, spaceData: $spaceData }) {
+      id
+      spaceID
+    }
+  }
+`;
+export type CreateNewSpaceMutationFn = Apollo.MutationFunction<
+  SchemaTypes.CreateNewSpaceMutation,
+  SchemaTypes.CreateNewSpaceMutationVariables
+>;
+
+/**
+ * __useCreateNewSpaceMutation__
+ *
+ * To run a mutation, you first call `useCreateNewSpaceMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateNewSpaceMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createNewSpaceMutation, { data, loading, error }] = useCreateNewSpaceMutation({
+ *   variables: {
+ *      hostId: // value for 'hostId'
+ *      spaceData: // value for 'spaceData'
+ *   },
+ * });
+ */
+export function useCreateNewSpaceMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.CreateNewSpaceMutation,
+    SchemaTypes.CreateNewSpaceMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.CreateNewSpaceMutation, SchemaTypes.CreateNewSpaceMutationVariables>(
+    CreateNewSpaceDocument,
+    options
+  );
+}
+
+export type CreateNewSpaceMutationHookResult = ReturnType<typeof useCreateNewSpaceMutation>;
+export type CreateNewSpaceMutationResult = Apollo.MutationResult<SchemaTypes.CreateNewSpaceMutation>;
+export type CreateNewSpaceMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.CreateNewSpaceMutation,
+  SchemaTypes.CreateNewSpaceMutationVariables
+>;
 export const PlansTableDocument = gql`
   query PlansTable {
     platform {
@@ -15829,6 +15879,62 @@ export type PlansTableQueryResult = Apollo.QueryResult<
 >;
 export function refetchPlansTableQuery(variables?: SchemaTypes.PlansTableQueryVariables) {
   return { query: PlansTableDocument, variables: variables };
+}
+
+export const AccountsHostsDocument = gql`
+  query AccountsHosts {
+    accounts {
+      hosts {
+        id
+        nameID
+      }
+    }
+  }
+`;
+
+/**
+ * __useAccountsHostsQuery__
+ *
+ * To run a query within a React component, call `useAccountsHostsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAccountsHostsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAccountsHostsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useAccountsHostsQuery(
+  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.AccountsHostsQuery, SchemaTypes.AccountsHostsQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.AccountsHostsQuery, SchemaTypes.AccountsHostsQueryVariables>(
+    AccountsHostsDocument,
+    options
+  );
+}
+
+export function useAccountsHostsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.AccountsHostsQuery, SchemaTypes.AccountsHostsQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.AccountsHostsQuery, SchemaTypes.AccountsHostsQueryVariables>(
+    AccountsHostsDocument,
+    options
+  );
+}
+
+export type AccountsHostsQueryHookResult = ReturnType<typeof useAccountsHostsQuery>;
+export type AccountsHostsLazyQueryHookResult = ReturnType<typeof useAccountsHostsLazyQuery>;
+export type AccountsHostsQueryResult = Apollo.QueryResult<
+  SchemaTypes.AccountsHostsQuery,
+  SchemaTypes.AccountsHostsQueryVariables
+>;
+export function refetchAccountsHostsQuery(variables?: SchemaTypes.AccountsHostsQueryVariables) {
+  return { query: AccountsHostsDocument, variables: variables };
 }
 
 export const ContactSupportLocationDocument = gql`

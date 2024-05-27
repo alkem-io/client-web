@@ -1,25 +1,30 @@
-import { useEffect, useState } from 'react';
+import { useAccountsHostsQuery } from '../../../../../core/apollo/generated/apollo-hooks';
+import { useUserContext } from '../../../../community/user';
 
 interface Provided {
   loading: boolean;
-  isPlanAvailable: (planName: string) => boolean;
+  isFreePlanAvailable: () => boolean;
 }
 
-export const usePlanAvailability = (): Provided => {
-  // TODO: Mocked available plans
-  const [availablePlans, setAvailablePlans] = useState<string[]>([]);
-  useEffect(() => {
-    setAvailablePlans(['FREE', 'PLUS', 'PREMIUM', 'ENTERPRISE']);
-  }, []);
+export const usePlanAvailability = ({ skip }: { skip?: boolean }): Provided => {
+  const { user: currentUser, loading: loadingUser } = useUserContext();
 
-  const loading = false;
+  const { data, loading: loadingHosts } = useAccountsHostsQuery({
+    skip,
+  });
 
-  const isPlanAvailable = (planName: string): boolean => {
-    return availablePlans.includes(planName);
+  const isFreePlanAvailable = () => {
+    if (loadingUser || loadingHosts) {
+      return false;
+    }
+    if (!currentUser?.user.id) {
+      return false;
+    }
+    const userIsHost = data?.accounts.some(account => account.hosts?.some(host => host.id === currentUser.user.id));
+    return !userIsHost;
   };
-
   return {
-    loading,
-    isPlanAvailable,
+    loading: loadingHosts || loadingUser,
+    isFreePlanAvailable,
   };
 };

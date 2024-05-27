@@ -18,6 +18,15 @@ query PlansTable {
   }
 }
 
+query AccountsHosts {
+  accounts {
+    hosts {
+      id
+      nameID
+    }
+  }
+}
+
 query ContactSupportLocation {
   platform {
     configuration {

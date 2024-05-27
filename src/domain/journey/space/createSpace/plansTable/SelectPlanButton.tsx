@@ -12,6 +12,7 @@ interface SelectPlanButtonProps extends ButtonProps {
     requiresContactSupport: boolean;
     trialEnabled: boolean;
     enabled: boolean;
+    available: boolean;
   };
 }
 
@@ -31,6 +32,7 @@ const SelectPlanButton = ({ plan, onClick, ...props }: SelectPlanButtonProps) =>
         disabled={!plan.enabled}
         to={contactSupportUrl}
         target="_blank"
+        sx={{ '&:hover': { color: theme => theme.palette.common.white } }}
         {...props}
       >
         <Caption noWrap textTransform="none">

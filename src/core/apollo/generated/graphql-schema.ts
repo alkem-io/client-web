@@ -44,6 +44,8 @@ export type Account = {
   defaults?: Maybe<SpaceDefaults>;
   /** The Account host. */
   host?: Maybe<Contributor>;
+  /** The Account hosts. */
+  hosts?: Maybe<Array<Contributor>>;
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** The Library in use by this Account */
@@ -20173,6 +20175,16 @@ export type SubspacePageFragment = {
   };
 };
 
+export type CreateNewSpaceMutationVariables = Exact<{
+  hostId: Scalars['UUID_NAMEID'];
+  spaceData: CreateSpaceInput;
+}>;
+
+export type CreateNewSpaceMutation = {
+  __typename?: 'Mutation';
+  createAccount: { __typename?: 'Account'; id: string; spaceID: string };
+};
+
 export type PlansTableQueryVariables = Exact<{ [key: string]: never }>;
 
 export type PlansTableQuery = {
@@ -20197,6 +20209,22 @@ export type PlansTableQuery = {
       }>;
     };
   };
+};
+
+export type AccountsHostsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type AccountsHostsQuery = {
+  __typename?: 'Query';
+  accounts: Array<{
+    __typename?: 'Account';
+    hosts?:
+      | Array<
+          | { __typename?: 'Organization'; id: string; nameID: string }
+          | { __typename?: 'User'; id: string; nameID: string }
+          | { __typename?: 'VirtualContributor'; id: string; nameID: string }
+        >
+      | undefined;
+  }>;
 };
 
 export type ContactSupportLocationQueryVariables = Exact<{ [key: string]: never }>;

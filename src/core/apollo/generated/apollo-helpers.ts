@@ -9,6 +9,7 @@ export type AccountKeySpecifier = (
   | 'authorization'
   | 'defaults'
   | 'host'
+  | 'hosts'
   | 'id'
   | 'library'
   | 'license'
@@ -20,6 +21,7 @@ export type AccountFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   defaults?: FieldPolicy<any> | FieldReadFunction<any>;
   host?: FieldPolicy<any> | FieldReadFunction<any>;
+  hosts?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   library?: FieldPolicy<any> | FieldReadFunction<any>;
   license?: FieldPolicy<any> | FieldReadFunction<any>;

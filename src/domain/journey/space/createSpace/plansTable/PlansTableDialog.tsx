@@ -13,6 +13,7 @@ import Gutters from '../../../../../core/ui/grid/Gutters';
 import { usePlansTableQuery } from '../../../../../core/apollo/generated/apollo-hooks';
 import Loading from '../../../../../core/ui/loading/Loading';
 import SelectPlanButton from './SelectPlanButton';
+import { usePlanAvailability } from './usePlanAvailability';
 
 interface PlanTranslation {
   name: string;
@@ -50,6 +51,8 @@ const PlansTableDialog = ({ open, onClose, onSelectPlan }: PlansTableDialogProps
     skip: !open,
   });
 
+  const { isFreePlanAvailable } = usePlanAvailability({ skip: !open });
+
   const plansData = useMemo(
     () => data?.platform.licensing.plans.filter(plan => plan.enabled).sort((a, b) => a.sortOrder - b.sortOrder) ?? [],
     [data]
@@ -75,24 +78,20 @@ const PlansTableDialog = ({ open, onClose, onSelectPlan }: PlansTableDialogProps
     {}
   );
 
-  const handlePlanClick = (planSelectedId: string) => {
-    setPlanSelected(planSelectedId);
-    switch (planSelectedId) {
-      case 'FREE': {
-        setFreeTrialDialogOpen(true);
-        break;
-      }
-      case 'PLUS': {
-        setGetStartedDialogOpen(true);
-        break;
-      }
-      case 'PREMIUM': {
-        setGetStartedDialogOpen(true);
-        break;
-      }
-      case 'ENTERPRISE': {
-        setGetStartedDialogOpen(true);
-        break;
+  const handlePlanClick = ({ name, isFree }: { name: string; isFree: boolean }) => {
+    setPlanSelected(name);
+    if (isFree) {
+      setFreeTrialDialogOpen(true);
+    } else {
+      switch (name) {
+        case 'PLUS': {
+          setGetStartedDialogOpen(true);
+          break;
+        }
+        case 'PREMIUM': {
+          setGetStartedDialogOpen(true);
+          break;
+        }
       }
     }
   };
@@ -112,8 +111,8 @@ const PlansTableDialog = ({ open, onClose, onSelectPlan }: PlansTableDialogProps
                   <Box
                     borderRight={isSmall ? 'none' : lines}
                     sx={{
-                      '&:last-child': { borderRight: 'none' },
-                      '&:first-child': { marginLeft: isSmall ? undefined : gutters(1.5) },
+                      '&:last-of-type': { borderRight: 'none' },
+                      '&:first-of-type': { marginLeft: isSmall ? undefined : gutters(1.5) },
                     }}
                     marginY={isSmall ? gutters(1) : undefined}
                   >
@@ -161,8 +160,9 @@ const PlansTableDialog = ({ open, onClose, onSelectPlan }: PlansTableDialogProps
                         plan={{
                           ...plan,
                           displayName: planTranslation.displayName,
+                          available: plan.isFree ? isFreePlanAvailable() : true,
                         }}
-                        onClick={() => handlePlanClick(plan.id)}
+                        onClick={() => handlePlanClick(plan)}
                       />
                     </Box>
                     <Box
@@ -172,8 +172,8 @@ const PlansTableDialog = ({ open, onClose, onSelectPlan }: PlansTableDialogProps
                     >
                       <ul>
                         {planTranslation.features.map((feature, index) => (
-                          <li>
-                            <Text key={index}>{feature}</Text>
+                          <li key={index}>
+                            <Text>{feature}</Text>
                           </li>
                         ))}
                       </ul>

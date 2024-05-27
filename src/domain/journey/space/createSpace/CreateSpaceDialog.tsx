@@ -28,6 +28,7 @@ import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 import RouterLink from '../../../../core/ui/link/RouterLink';
 import { useConfig } from '../../../platform/config/useConfig';
 import PlansTableDialog from './plansTable/PlansTableDialog';
+import { useCreateNewSpaceMutation } from '../../../../core/apollo/generated/apollo-hooks';
 
 interface FormValues extends SpaceEditFormValuesType {
   planName: string;
@@ -38,6 +39,8 @@ const CreateSpaceDialog = () => {
   const { t } = useTranslation();
   const [dialogOpen, setDialogOpen] = useState(true);
   const [plansTableDialogOpen, setPlansTableDialogOpen] = useState(false);
+  //!!
+  const [, setCreatingDialogOpen] = useState(false);
 
   const tagsets = useMemo(() => {
     return [
@@ -68,11 +71,6 @@ const CreateSpaceDialog = () => {
     planName: yup.string().required(),
   });
 
-  const [handleSubmit] = useLoadingState(async (_values: Partial<FormValues>) => {
-    setDialogOpen(false);
-    setPlansTableDialogOpen(false);
-  });
-
   const { isAuthenticated } = useAuthenticationContext();
 
   const { user } = useUserContext();
@@ -82,6 +80,34 @@ const CreateSpaceDialog = () => {
   const [isTermsDialogOpen, setIsTermsDialogOpen] = useState(false);
 
   const config = useConfig();
+
+  const [CreateNewSpace] = useCreateNewSpaceMutation();
+  const [handleSubmit] = useLoadingState(async (values: Partial<FormValues>) => {
+    if (!user?.user.id) {
+      return;
+    }
+    setDialogOpen(false);
+    setPlansTableDialogOpen(false);
+    setCreatingDialogOpen(true);
+    const newSpace = await CreateNewSpace({
+      variables: {
+        hostId: user.user.id,
+        spaceData: {
+          nameID: values.nameID,
+          profileData: {
+            displayName: values.name!, // ensured by yup validation
+            tagline: values.tagline!,
+            tagsets: values.tagsets,
+          },
+          collaborationData: {},
+        },
+      },
+    });
+
+    setCreatingDialogOpen(false);
+    //!! todo! do something with newSpace, navigate...
+    return newSpace;
+  });
 
   if (!isAuthenticated) {
     return <Navigate to={ROUTE_HOME} replace />;
