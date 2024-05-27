@@ -4,6 +4,8 @@ import { useUserContext } from '../../user';
 import {
   useCommunityUserPrivilegesQuery,
   useJoinCommunityMutation,
+  useSpacePageLazyQuery,
+  useSubspacePageLazyQuery,
   useUserProfileLazyQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
@@ -50,7 +52,11 @@ export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = (
 
   const [getUserProfile, { loading: gettingUserProfile }] = useUserProfileLazyQuery();
 
-  const { data: _communityPrivileges, loading: communityPrivilegesLoading } = useCommunityUserPrivilegesQuery({
+  const {
+    data: _communityPrivileges,
+    loading: communityPrivilegesLoading,
+    refetch,
+  } = useCommunityUserPrivilegesQuery({
     variables: {
       spaceId: journeyId!,
       parentSpaceId,
@@ -58,6 +64,34 @@ export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = (
     },
     skip: loadingParams || !journeyId,
   });
+
+  // TODO ideally this should be a dependency passed from the context where the button is rendered
+  const [fetchSpace] = useSpacePageLazyQuery();
+  const [fetchSubspace] = useSubspacePageLazyQuery();
+
+  const refetchSpace = async () => {
+    const refetchSpaceQuery = parentSpaceId ? fetchSubspace : fetchSpace;
+
+    await refetch({
+      spaceId: journeyId!,
+      parentSpaceId,
+      includeParentSpace: !!parentSpaceId,
+    });
+
+    refetchSpaceQuery({
+      variables: {
+        spaceId: journeyId!,
+      },
+    });
+
+    if (userId) {
+      getUserProfile({
+        variables: {
+          input: userId,
+        },
+      });
+    }
+  };
 
   const space = _communityPrivileges?.lookup.space;
   const parentSpace = _communityPrivileges?.parentSpace?.space;
@@ -70,18 +104,13 @@ export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = (
     update: cache => clearCacheForType(cache, 'Authorization'),
   });
 
-  const contributionItemKeys = ['spaceId', 'subspaceId', 'subsubspaceId'] as const;
+  const userApplication = user?.pendingApplications?.find(x => x.spaceID === journeyId);
 
-  // todo: add journeyId to ContributionItem ??
-  const userApplication = user?.pendingApplications?.find(x => contributionItemKeys.some(key => x[key] === journeyId));
-
-  const userInvitation = user?.pendingInvitations?.find(x => contributionItemKeys.some(key => x[key] === journeyId));
+  const userInvitation = user?.pendingInvitations?.find(x => x.spaceID === journeyId);
 
   // find an application which does not have a challengeID, meaning it's on space level,
   // but you are at least at challenge level to have a parent application
-  const parentApplication = user?.pendingApplications?.find(x =>
-    contributionItemKeys.some(key => x[key] === parentSpaceId)
-  );
+  const parentApplication = user?.pendingApplications?.find(x => x.spaceID === parentSpaceId);
 
   const isMember = space?.community.myMembershipStatus === CommunityMembershipStatus.Member;
 
@@ -119,12 +148,13 @@ export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = (
     await joinCommunity({
       variables: { joiningData: { communityID: communityId } },
     });
-    userId &&
+    if (userId) {
       getUserProfile({
         variables: {
           input: userId,
         },
       });
+    }
     onJoin?.({ communityId });
     notify(t('components.application-button.dialogApplicationSuccessful.join.body'), 'success');
   };
@@ -146,6 +176,7 @@ export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = (
     canJoinParentCommunity,
     canApplyToParentCommunity,
     onJoin: handleJoin,
+    onUpdateInvitation: refetchSpace,
     loading,
   };
 
