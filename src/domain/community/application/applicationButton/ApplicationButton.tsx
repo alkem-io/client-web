@@ -38,6 +38,7 @@ export interface ApplicationButtonProps {
   component?: typeof MuiButton;
   extended?: boolean;
   journeyLevel: JourneyLevel | -1;
+  onUpdateInvitation?: () => void | Promise<void>;
 }
 
 export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElement, ApplicationButtonProps>(
@@ -64,6 +65,7 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
       loading = false,
       component: Button = MuiButton,
       extended = false,
+      onUpdateInvitation,
     },
     ref
   ) => {
@@ -100,6 +102,7 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
     };
 
     const handleAcceptInvitation = () => {
+      setTimeout(() => onUpdateInvitation?.(), 1000);
       handleClose();
     };
 
@@ -179,34 +182,17 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
       }
 
       if (canAcceptInvitation) {
-        if (journeyLevel > 0 && !isMember && !isParentMember) {
-          return (
-            parentUrl && (
-              <Button
-                ref={ref as Ref<HTMLAnchorElement>}
-                component={RouterLink}
-                startIcon={<AddOutlined />}
-                to={parentUrl}
-                variant="contained"
-                sx={{ textTransform: 'none' }}
-              >
-                {t(`components.application-button.joinSpaceFirst.${extended ? 'full' : 'short'}` as const)}
-              </Button>
-            )
-          );
-        } else {
-          return (
-            <Button
-              ref={ref as Ref<HTMLButtonElement>}
-              startIcon={extended ? <AddOutlined /> : undefined}
-              onClick={handleClickAcceptInvitation}
-              variant="contained"
-              sx={extended ? { textTransform: 'none' } : undefined}
-            >
-              {t(`components.application-button.acceptInvitation.${extended ? 'full' : 'short'}` as const)}
-            </Button>
-          );
-        }
+        return (
+          <Button
+            ref={ref as Ref<HTMLButtonElement>}
+            startIcon={extended ? <AddOutlined /> : undefined}
+            onClick={handleClickAcceptInvitation}
+            variant="contained"
+            sx={extended ? { textTransform: 'none' } : undefined}
+          >
+            {t(`components.application-button.acceptInvitation.${extended ? 'full' : 'short'}` as const)}
+          </Button>
+        );
       }
 
       if (canJoinCommunity) {
