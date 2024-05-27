@@ -7,11 +7,11 @@ import UserProfileView, { UserProfileViewProps } from '../../profile/views/Profi
 import AssociatedOrganizationsLazilyFetched from '../../contributor/organization/AssociatedOrganizations/AssociatedOrganizationsLazilyFetched';
 import PageContent from '../../../../core/ui/content/PageContent';
 import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
-import { ContributionItem } from '../contribution';
+import { SpaceHostedItem } from '../../../journey/utils/SpaceHostedItem';
 import { PlatformFeatureFlagName } from '../../../../core/apollo/generated/graphql-schema';
 
 export interface UserProfileViewPageProps extends UserProfileViewProps {
-  contributions: ContributionItem[] | undefined;
+  contributions: SpaceHostedItem[] | undefined;
   organizationIds: string[] | undefined;
 }
 
@@ -42,12 +42,7 @@ export const UserProfilePageView: FC<UserProfileViewPageProps> = ({ contribution
         )}
       </PageContentColumn>
       <PageContentColumn columns={8}>
-        <ContributionsView
-          title={t('pages.user-profile.communities.title')}
-          helpText={t('pages.user-profile.communities.help')}
-          contributions={contributions}
-          cards
-        />
+        <ContributionsView title={t('pages.user-profile.communities.title')} contributions={contributions} cards />
       </PageContentColumn>
     </PageContent>
   );

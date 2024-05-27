@@ -178,7 +178,7 @@ const SpaceListItem = ({
                   name="hostId"
                   values={organizations}
                   required
-                  disabled={loading}
+                  disabled
                   placeholder={t('components.editSpaceForm.host.title')}
                 />
                 <FormikAutocomplete

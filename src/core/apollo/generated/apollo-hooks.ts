@@ -2705,6 +2705,7 @@ export const SubspaceInfoFragmentDoc = gql`
     authorization {
       id
       myPrivileges
+      anonymousReadAccess
     }
     context {
       id
@@ -2760,13 +2761,6 @@ export const AdminSpaceFragmentDoc = gql`
         featureFlags {
           name
           enabled
-        }
-      }
-      host {
-        id
-        profile {
-          id
-          displayName
         }
       }
     }
@@ -14026,14 +14020,12 @@ export const UserProviderDocument = gql`
         displayName
         state
         spaceID
-        subspaceID
-        subsubspaceID
+        spaceLevel
       }
       invitations(states: ["invited"]) {
         id
         spaceID
-        subspaceID
-        subsubspaceID
+        spaceLevel
         welcomeMessage
         createdBy
         createdDate
@@ -21864,15 +21856,14 @@ export const NewMembershipsDocument = gql`
         displayName
         state
         spaceID
-        subspaceID
-        subsubspaceID
+        spaceLevel
         createdDate
       }
       invitations(states: ["invited", "accepted"]) {
         id
         spaceID
+        spaceLevel
         state
-        subspaceID
         welcomeMessage
         createdBy
         createdDate
