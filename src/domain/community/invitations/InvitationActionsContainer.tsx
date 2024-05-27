@@ -1,12 +1,6 @@
 import useLoadingState from '../../shared/utils/useLoadingState';
-import {
-  refetchSpacePageQuery,
-  refetchUserProviderQuery,
-  useInvitationStateEventMutation,
-} from '../../../core/apollo/generated/apollo-hooks';
+import { useInvitationStateEventMutation } from '../../../core/apollo/generated/apollo-hooks';
 import { SimpleContainerProps } from '../../../core/container/SimpleContainer';
-import { useSpace } from '../../journey/space/SpaceContext/useSpace';
-import { compact } from 'lodash';
 
 interface InvitationActionsContainerProvided {
   updating: boolean;
@@ -23,12 +17,11 @@ interface InvitationActionsContainerProps extends SimpleContainerProps<Invitatio
 }
 
 const InvitationActionsContainer = ({ onUpdate, onAccept, onReject, children }: InvitationActionsContainerProps) => {
-  const { spaceId, permissions } = useSpace();
   const [invitationStateEventMutation] = useInvitationStateEventMutation({
-    refetchQueries: compact([
-      refetchUserProviderQuery(),
-      spaceId ? refetchSpacePageQuery({ spaceId, authorizedReadAccess: permissions.communityReadAccess }) : undefined,
-    ]),
+    // refetchQueries: compact([
+    //   refetchUserProviderQuery(),
+    //   spaceId ? refetchSpacePageQuery({ spaceId, authorizedReadAccess: false }) : undefined,
+    // ]),
   });
 
   const [updateInvitationState, isUpdatingInvitationState] = useLoadingState(
