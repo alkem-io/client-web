@@ -17,12 +17,7 @@ interface InvitationActionsContainerProps extends SimpleContainerProps<Invitatio
 }
 
 const InvitationActionsContainer = ({ onUpdate, onAccept, onReject, children }: InvitationActionsContainerProps) => {
-  const [invitationStateEventMutation] = useInvitationStateEventMutation({
-    // refetchQueries: compact([
-    //   refetchUserProviderQuery(),
-    //   spaceId ? refetchSpacePageQuery({ spaceId, authorizedReadAccess: false }) : undefined,
-    // ]),
-  });
+  const [invitationStateEventMutation] = useInvitationStateEventMutation();
 
   const [updateInvitationState, isUpdatingInvitationState] = useLoadingState(
     async (...args: Parameters<typeof invitationStateEventMutation>) => {

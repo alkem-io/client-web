@@ -38,7 +38,7 @@ export interface ApplicationButtonProps {
   component?: typeof MuiButton;
   extended?: boolean;
   journeyLevel: JourneyLevel | -1;
-  onUpdateInvitation: () => void | Promise<void>;
+  onUpdateInvitation?: () => void | Promise<void>;
 }
 
 export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElement, ApplicationButtonProps>(
@@ -102,7 +102,7 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
     };
 
     const handleAcceptInvitation = () => {
-      onUpdateInvitation();
+      onUpdateInvitation?.();
       handleClose();
     };
 
