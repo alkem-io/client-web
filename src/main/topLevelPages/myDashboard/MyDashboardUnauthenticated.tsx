@@ -2,7 +2,6 @@ import React, { FC } from 'react';
 import PageContentColumn from '../../../core/ui/content/PageContentColumn';
 import CreateAccountBanner from '../Home/CreateAccountBanner';
 import MoreAboutAlkemio from './moreAboutAlkemio/MoreAboutAlkemio';
-import StartingSpace from './startingSpace/StartingSpace';
 import RecentForumMessages from './recentForumMessages/RecentForumMessages';
 import InnovationLibraryBlock from './innovationLibraryBlock/InnovationLibraryBlock';
 import TipsAndTricks from './tipsAndTricks/TipsAndTricks';
@@ -25,7 +24,6 @@ const MyDashboardUnauthenticated: FC<MyDashboardUnauthenticatedProps> = () => {
       </PageContentColumn>
       <PageContentColumn columns={8}>
         <ExploreOtherChallenges />
-        <StartingSpace />
         <MoreAboutAlkemio />
       </PageContentColumn>
     </>

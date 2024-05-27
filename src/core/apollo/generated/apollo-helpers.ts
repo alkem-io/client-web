@@ -1341,11 +1341,28 @@ export type LicenseFeatureFlagFieldPolicy = {
   enabled?: FieldPolicy<any> | FieldReadFunction<any>;
   name?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type LicensePlanKeySpecifier = ('enabled' | 'id' | 'name' | LicensePlanKeySpecifier)[];
+export type LicensePlanKeySpecifier = (
+  | 'enabled'
+  | 'id'
+  | 'isFree'
+  | 'name'
+  | 'pricePerMonth'
+  | 'requiresContactSupport'
+  | 'requiresPaymentMethod'
+  | 'sortOrder'
+  | 'trialEnabled'
+  | LicensePlanKeySpecifier
+)[];
 export type LicensePlanFieldPolicy = {
   enabled?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  isFree?: FieldPolicy<any> | FieldReadFunction<any>;
   name?: FieldPolicy<any> | FieldReadFunction<any>;
+  pricePerMonth?: FieldPolicy<any> | FieldReadFunction<any>;
+  requiresContactSupport?: FieldPolicy<any> | FieldReadFunction<any>;
+  requiresPaymentMethod?: FieldPolicy<any> | FieldReadFunction<any>;
+  sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
+  trialEnabled?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type LicensePolicyKeySpecifier = ('authorization' | 'featureFlagRules' | 'id' | LicensePolicyKeySpecifier)[];
 export type LicensePolicyFieldPolicy = {
@@ -1467,6 +1484,7 @@ export type LookupQueryResultsFieldPolicy = {
 };
 export type MeQueryResultsKeySpecifier = (
   | 'applications'
+  | 'canCreateFreeSpace'
   | 'id'
   | 'invitations'
   | 'mySpaces'
@@ -1476,6 +1494,7 @@ export type MeQueryResultsKeySpecifier = (
 )[];
 export type MeQueryResultsFieldPolicy = {
   applications?: FieldPolicy<any> | FieldReadFunction<any>;
+  canCreateFreeSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   invitations?: FieldPolicy<any> | FieldReadFunction<any>;
   mySpaces?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1967,6 +1986,7 @@ export type PlatformLocationsKeySpecifier = (
   | 'aup'
   | 'blog'
   | 'community'
+  | 'contactsupport'
   | 'domain'
   | 'environment'
   | 'feedback'
@@ -1992,6 +2012,7 @@ export type PlatformLocationsFieldPolicy = {
   aup?: FieldPolicy<any> | FieldReadFunction<any>;
   blog?: FieldPolicy<any> | FieldReadFunction<any>;
   community?: FieldPolicy<any> | FieldReadFunction<any>;
+  contactsupport?: FieldPolicy<any> | FieldReadFunction<any>;
   domain?: FieldPolicy<any> | FieldReadFunction<any>;
   environment?: FieldPolicy<any> | FieldReadFunction<any>;
   feedback?: FieldPolicy<any> | FieldReadFunction<any>;
