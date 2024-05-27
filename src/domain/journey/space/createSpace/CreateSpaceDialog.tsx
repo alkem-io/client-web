@@ -2,7 +2,7 @@ import DialogWithGrid, { DialogFooter } from '../../../../core/ui/dialog/DialogW
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import { useBackToStaticPath } from '../../../../core/routing/useBackToPath';
 import { ROUTE_HOME } from '../../../platform/routes/constants';
-import { Checkbox, DialogContent, FormControlLabel, Link, TextField } from '@mui/material';
+import { Button, Checkbox, Dialog, DialogContent, FormControlLabel, Link, TextField } from '@mui/material';
 import { Caption } from '../../../../core/ui/typography';
 import { Formik } from 'formik';
 import { Trans, useTranslation } from 'react-i18next';
@@ -18,7 +18,6 @@ import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlo
 import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
 import { SMALL_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 import { Actions } from '../../../../core/ui/actions/Actions';
-import SaveButton from '../../../../core/ui/actions/SaveButton';
 import useLoadingState from '../../../shared/utils/useLoadingState';
 import { gutters } from '../../../../core/ui/grid/utils';
 import { useUserContext } from '../../../community/user';
@@ -28,11 +27,24 @@ import NameIdField from '../../../../core/utils/nameId/NameIdField';
 import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 import RouterLink from '../../../../core/ui/link/RouterLink';
 import { useConfig } from '../../../platform/config/useConfig';
+import PlansTableDialog from './plansTable/PlansTableDialog';
+import { useCreateNewSpaceMutation, useSpaceUrlLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import useNavigate from '../../../../core/routing/useNavigate';
+import Loading from '../../../../core/ui/loading/Loading';
+import { TagCategoryValues, info } from '../../../../core/logging/sentry/log';
+import { compact } from 'lodash';
+
+interface FormValues extends SpaceEditFormValuesType {
+  planId: string;
+}
 
 const CreateSpaceDialog = () => {
   const handleClose = useBackToStaticPath(ROUTE_HOME);
-
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const [dialogOpen, setDialogOpen] = useState(true);
+  const [plansTableDialogOpen, setPlansTableDialogOpen] = useState(false);
+  const [creatingDialogOpen, setCreatingDialogOpen] = useState(false);
 
   const tagsets = useMemo(() => {
     return [
@@ -46,12 +58,13 @@ const CreateSpaceDialog = () => {
     ] as Tagset[];
   }, []);
 
-  const initialValues: Partial<SpaceEditFormValuesType> = {
+  const initialValues: Partial<FormValues> = {
     name: '',
     nameID: '',
     tagline: '',
     tagsets,
     hostId: '',
+    planId: '',
   };
 
   const validationSchema = yup.object().shape({
@@ -59,10 +72,6 @@ const CreateSpaceDialog = () => {
     nameID: nameSegmentSchema.fields?.nameID ?? yup.string(),
     tagline: contextSegmentSchema.fields?.tagline ?? yup.string(),
     tagsets: tagsetSegmentSchema,
-  });
-
-  const [handleSubmit, loading] = useLoadingState(async (_values: Partial<SpaceEditFormValuesType>) => {
-    handleClose();
   });
 
   const { isAuthenticated } = useAuthenticationContext();
@@ -75,26 +84,74 @@ const CreateSpaceDialog = () => {
 
   const config = useConfig();
 
+  const [CreateNewSpace] = useCreateNewSpaceMutation();
+  const [getSpaceUrl] = useSpaceUrlLazyQuery();
+  const [handleSubmit] = useLoadingState(async (values: Partial<FormValues>) => {
+    if (!user?.user.id) {
+      return;
+    }
+    setDialogOpen(false);
+    setPlansTableDialogOpen(false);
+    setCreatingDialogOpen(true);
+    const { data: newSpace } = await CreateNewSpace({
+      variables: {
+        hostId: user.user.id,
+        spaceData: {
+          nameID: values.nameID,
+          profileData: {
+            displayName: values.name!, // ensured by yup validation
+            tagline: values.tagline!,
+          },
+          collaborationData: {},
+          tags: compact(values.tagsets?.reduce((acc: string[], tagset) => [...acc, ...tagset.tags], [])),
+        },
+        planId: values.planId,
+      },
+    });
+
+    if (newSpace?.createAccount.spaceID) {
+      const { data: spaceUrlData } = await getSpaceUrl({
+        variables: {
+          spaceNameId: newSpace.createAccount.spaceID,
+        },
+      });
+      info(
+        `Space Created SpaceId:${newSpace.createAccount.spaceID} Plan:${values.planId} SpaceUrl:${spaceUrlData?.space.profile.url}`,
+        {
+          category: TagCategoryValues.SPACE_CREATION,
+          label: 'Space Created',
+        }
+      );
+
+      const spaceUrl = spaceUrlData?.space.profile.url;
+      if (spaceUrl) {
+        navigate(spaceUrl);
+        return;
+      }
+    }
+  });
+
   if (!isAuthenticated) {
     return <Navigate to={ROUTE_HOME} replace />;
   }
 
   return (
     <>
-      <DialogWithGrid open columns={12} onClose={handleClose}>
-        <DialogHeader title={t('createSpace.title')} onClose={handleClose} />
-        <DialogContent sx={{ paddingTop: 0, marginTop: -1 }}>
-          <PageContentBlockSeamless disablePadding>
-            <Caption>{t('createSpace.subtitle')}</Caption>
-            <Formik
-              initialValues={initialValues}
-              validationSchema={validationSchema}
-              enableReinitialize
-              onSubmit={handleSubmit}
-            >
-              {({ handleSubmit }) => {
-                return (
-                  <>
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        enableReinitialize
+        onSubmit={handleSubmit}
+      >
+        {({ setFieldValue, handleSubmit, errors }) => {
+          return (
+            <>
+              <DialogWithGrid open={dialogOpen} columns={12} onClose={handleClose}>
+                <DialogHeader title={t('createSpace.title')} onClose={handleClose} />
+                <DialogContent sx={{ paddingTop: 0, marginTop: -1 }}>
+                  <PageContentBlockSeamless disablePadding>
+                    <Caption>{t('createSpace.subtitle')}</Caption>
+
                     <FormikInputField name="name" title={t('components.nameSegment.name')} required />
                     <NameIdField name="nameID" title={t('common.url')} required />
                     <TextField value={user?.user.profile.displayName} disabled />
@@ -132,16 +189,33 @@ const CreateSpaceDialog = () => {
                     />
                     <DialogFooter>
                       <Actions justifyContent="end" padding={gutters()}>
-                        <SaveButton onClick={handleSubmit} loading={loading} />
+                        <Button
+                          variant="contained"
+                          onClick={() => {
+                            setDialogOpen(false);
+                            setPlansTableDialogOpen(true);
+                          }}
+                          disabled={Object.keys(errors).length > 0 || !hasAcceptedTerms}
+                        >
+                          {t('buttons.continue')}
+                        </Button>
                       </Actions>
                     </DialogFooter>
-                  </>
-                );
-              }}
-            </Formik>
-          </PageContentBlockSeamless>
-        </DialogContent>
-      </DialogWithGrid>
+                  </PageContentBlockSeamless>
+                </DialogContent>
+              </DialogWithGrid>
+              <PlansTableDialog
+                onClose={() => setPlansTableDialogOpen(false)}
+                open={plansTableDialogOpen}
+                onSelectPlan={planId => {
+                  setFieldValue('planId', planId);
+                  handleSubmit();
+                }}
+              />
+            </>
+          );
+        }}
+      </Formik>
       <DialogWithGrid columns={8} open={isTermsDialogOpen} onClose={() => setIsTermsDialogOpen(false)}>
         <DialogHeader title={t('createSpace.terms.dialogTitle')} onClose={() => setIsTermsDialogOpen(false)} />
         <DialogContent sx={{ paddingTop: 0 }}>
@@ -153,6 +227,11 @@ const CreateSpaceDialog = () => {
           )}
         </DialogContent>
       </DialogWithGrid>
+      <Dialog open={creatingDialogOpen}>
+        <DialogContent sx={{ display: 'flex', alignItems: 'center' }}>
+          <Loading />
+        </DialogContent>
+      </Dialog>
     </>
   );
 };
