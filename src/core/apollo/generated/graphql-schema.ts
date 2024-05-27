@@ -44,8 +44,6 @@ export type Account = {
   defaults?: Maybe<SpaceDefaults>;
   /** The Account host. */
   host?: Maybe<Contributor>;
-  /** The Account hosts. */
-  hosts?: Maybe<Array<Contributor>>;
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** The Library in use by this Account */
@@ -2552,6 +2550,8 @@ export type MeQueryResults = {
   __typename?: 'MeQueryResults';
   /** The applications of the current authenticated user */
   applications: Array<ApplicationForRoleResult>;
+  /** Can I create a free space? */
+  canCreateFreeSpace: Scalars['Boolean'];
   /** The query id */
   id: Scalars['String'];
   /** The invitations of the current authenticated user */
@@ -20214,20 +20214,11 @@ export type PlansTableQuery = {
   };
 };
 
-export type AccountsHostsQueryVariables = Exact<{ [key: string]: never }>;
+export type FreePlanAvailabilityQueryVariables = Exact<{ [key: string]: never }>;
 
-export type AccountsHostsQuery = {
+export type FreePlanAvailabilityQuery = {
   __typename?: 'Query';
-  accounts: Array<{
-    __typename?: 'Account';
-    hosts?:
-      | Array<
-          | { __typename?: 'Organization'; id: string; nameID: string }
-          | { __typename?: 'User'; id: string; nameID: string }
-          | { __typename?: 'VirtualContributor'; id: string; nameID: string }
-        >
-      | undefined;
-  }>;
+  me: { __typename?: 'MeQueryResults'; canCreateFreeSpace: boolean };
 };
 
 export type ContactSupportLocationQueryVariables = Exact<{ [key: string]: never }>;

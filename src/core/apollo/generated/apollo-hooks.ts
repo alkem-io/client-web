@@ -15882,60 +15882,63 @@ export function refetchPlansTableQuery(variables?: SchemaTypes.PlansTableQueryVa
   return { query: PlansTableDocument, variables: variables };
 }
 
-export const AccountsHostsDocument = gql`
-  query AccountsHosts {
-    accounts {
-      hosts {
-        id
-        nameID
-      }
+export const FreePlanAvailabilityDocument = gql`
+  query FreePlanAvailability {
+    me {
+      canCreateFreeSpace
     }
   }
 `;
 
 /**
- * __useAccountsHostsQuery__
+ * __useFreePlanAvailabilityQuery__
  *
- * To run a query within a React component, call `useAccountsHostsQuery` and pass it any options that fit your needs.
- * When your component renders, `useAccountsHostsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useFreePlanAvailabilityQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFreePlanAvailabilityQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useAccountsHostsQuery({
+ * const { data, loading, error } = useFreePlanAvailabilityQuery({
  *   variables: {
  *   },
  * });
  */
-export function useAccountsHostsQuery(
-  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.AccountsHostsQuery, SchemaTypes.AccountsHostsQueryVariables>
+export function useFreePlanAvailabilityQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.FreePlanAvailabilityQuery,
+    SchemaTypes.FreePlanAvailabilityQueryVariables
+  >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.AccountsHostsQuery, SchemaTypes.AccountsHostsQueryVariables>(
-    AccountsHostsDocument,
+  return Apollo.useQuery<SchemaTypes.FreePlanAvailabilityQuery, SchemaTypes.FreePlanAvailabilityQueryVariables>(
+    FreePlanAvailabilityDocument,
     options
   );
 }
 
-export function useAccountsHostsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.AccountsHostsQuery, SchemaTypes.AccountsHostsQueryVariables>
+export function useFreePlanAvailabilityLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.FreePlanAvailabilityQuery,
+    SchemaTypes.FreePlanAvailabilityQueryVariables
+  >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.AccountsHostsQuery, SchemaTypes.AccountsHostsQueryVariables>(
-    AccountsHostsDocument,
+  return Apollo.useLazyQuery<SchemaTypes.FreePlanAvailabilityQuery, SchemaTypes.FreePlanAvailabilityQueryVariables>(
+    FreePlanAvailabilityDocument,
     options
   );
 }
 
-export type AccountsHostsQueryHookResult = ReturnType<typeof useAccountsHostsQuery>;
-export type AccountsHostsLazyQueryHookResult = ReturnType<typeof useAccountsHostsLazyQuery>;
-export type AccountsHostsQueryResult = Apollo.QueryResult<
-  SchemaTypes.AccountsHostsQuery,
-  SchemaTypes.AccountsHostsQueryVariables
+export type FreePlanAvailabilityQueryHookResult = ReturnType<typeof useFreePlanAvailabilityQuery>;
+export type FreePlanAvailabilityLazyQueryHookResult = ReturnType<typeof useFreePlanAvailabilityLazyQuery>;
+export type FreePlanAvailabilityQueryResult = Apollo.QueryResult<
+  SchemaTypes.FreePlanAvailabilityQuery,
+  SchemaTypes.FreePlanAvailabilityQueryVariables
 >;
-export function refetchAccountsHostsQuery(variables?: SchemaTypes.AccountsHostsQueryVariables) {
-  return { query: AccountsHostsDocument, variables: variables };
+export function refetchFreePlanAvailabilityQuery(variables?: SchemaTypes.FreePlanAvailabilityQueryVariables) {
+  return { query: FreePlanAvailabilityDocument, variables: variables };
 }
 
 export const ContactSupportLocationDocument = gql`

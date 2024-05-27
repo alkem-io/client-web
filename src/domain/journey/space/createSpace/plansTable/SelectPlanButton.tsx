@@ -30,7 +30,7 @@ const SelectPlanButton = ({ plan, onClick, ...props }: SelectPlanButtonProps) =>
         component={RouterLink}
         to={contactSupportUrl}
         blank
-        disabled={!plan.enabled}
+        disabled={!plan.available}
         variant="contained"
         sx={{ width: '100%', '&:hover': { color: theme => theme.palette.common.white } }}
       >
@@ -45,7 +45,7 @@ const SelectPlanButton = ({ plan, onClick, ...props }: SelectPlanButtonProps) =>
       <FullWidthButton
         variant="contained"
         onClick={onClick}
-        disabled={!plan.enabled}
+        disabled={!plan.available}
         sx={{
           backgroundColor: theme => theme.palette.highlight.dark,
           color: theme => theme.palette.neutral.main,
@@ -62,7 +62,7 @@ const SelectPlanButton = ({ plan, onClick, ...props }: SelectPlanButtonProps) =>
     );
   }
   return (
-    <FullWidthButton variant="contained" onClick={onClick} disabled={!plan.enabled} {...props}>
+    <FullWidthButton variant="contained" onClick={onClick} disabled={!plan.available} {...props}>
       <Caption noWrap textTransform="none">
         {t('plansTable.buttonCaptions.choose', { planName: plan.displayName })}
       </Caption>

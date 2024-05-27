@@ -1,9 +1,9 @@
-import { useAccountsHostsQuery } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useUserContext } from '../../../../community/user';
+import { useFreePlanAvailabilityQuery } from '../../../../../core/apollo/generated/apollo-hooks';
 
 interface Provided {
   loading: boolean;
-  isFreePlanAvailable: () => boolean;
+  isPlanAvailable: (plan: { name: string }) => boolean;
 }
 
 // TODO: This is temporary
@@ -12,22 +12,26 @@ interface Provided {
 export const usePlanAvailability = ({ skip }: { skip?: boolean }): Provided => {
   const { user: currentUser, loading: loadingUser } = useUserContext();
 
-  const { data, loading: loadingHosts } = useAccountsHostsQuery({
+  const { data: freePlanAvailableData, loading: loadingPlanAvailability } = useFreePlanAvailabilityQuery({
     skip,
   });
 
-  const isFreePlanAvailable = () => {
-    if (loadingUser || loadingHosts) {
+  const isPlanAvailable = (plan: { name: string }) => {
+    if (loadingUser || loadingPlanAvailability) {
       return false;
     }
     if (!currentUser?.user.id) {
       return false;
     }
-    const userIsHost = data?.accounts.some(account => account.hosts?.some(host => host.id === currentUser.user.id));
-    return !userIsHost;
+    if (plan.name === 'FREE') {
+      return freePlanAvailableData?.me.canCreateFreeSpace ?? false;
+    } else {
+      return true;
+    }
   };
+
   return {
-    loading: loadingHosts || loadingUser,
-    isFreePlanAvailable,
+    loading: loadingPlanAvailability || loadingUser,
+    isPlanAvailable,
   };
 };

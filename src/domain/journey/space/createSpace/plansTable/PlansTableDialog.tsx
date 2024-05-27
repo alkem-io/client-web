@@ -52,11 +52,23 @@ const PlansTableDialog = ({ open, onClose, onSelectPlan }: PlansTableDialogProps
     skip: !open,
   });
 
-  const { isFreePlanAvailable } = usePlanAvailability({ skip: !open });
+  const { isPlanAvailable } = usePlanAvailability({ skip: !open });
+
+  const planTranslations: Record<string, PlanTranslation> = t('plansTable.plans', { returnObjects: true }).reduce(
+    (acc, plan: PlanTranslation) => ({ ...acc, [plan.name]: plan }),
+    {}
+  );
 
   const plansData = useMemo(
-    () => data?.platform.licensing.plans.filter(plan => plan.enabled).sort((a, b) => a.sortOrder - b.sortOrder) ?? [],
-    [data]
+    () =>
+      (data?.platform.licensing.plans.filter(plan => plan.enabled).sort((a, b) => a.sortOrder - b.sortOrder) ?? []).map(
+        plan => ({
+          ...plan,
+          displayName: planTranslations[plan.name]?.displayName,
+          available: isPlanAvailable(plan),
+        })
+      ),
+    [data, planTranslations, isPlanAvailable]
   );
 
   const [freeTrialDialogOpen, setFreeTrialDialogOpen] = useState<boolean>(false);
@@ -73,11 +85,6 @@ const PlansTableDialog = ({ open, onClose, onSelectPlan }: PlansTableDialogProps
       setGetStartedDialogOpen(false);
     }
   }, [open]);
-
-  const planTranslations: Record<string, PlanTranslation> = t('plansTable.plans', { returnObjects: true }).reduce(
-    (acc, plan: PlanTranslation) => ({ ...acc, [plan.name]: plan }),
-    {}
-  );
 
   const handlePlanClick = ({ name, isFree }: { name: string; isFree: boolean }) => {
     setPlanSelected(name);
@@ -162,14 +169,7 @@ const PlansTableDialog = ({ open, onClose, onSelectPlan }: PlansTableDialogProps
                       <Text textAlign="center" height={gutters(4)} color={theme => theme.palette.primary.main}>
                         {planTranslation.priceDescription}
                       </Text>
-                      <SelectPlanButton
-                        plan={{
-                          ...plan,
-                          displayName: planTranslation.displayName,
-                          available: plan.isFree ? isFreePlanAvailable() : true,
-                        }}
-                        onClick={() => handlePlanClick(plan)}
-                      />
+                      <SelectPlanButton plan={plan} onClick={() => handlePlanClick(plan)} />
                     </Box>
                     <Box
                       borderBottom={isSmall ? lines : undefined}

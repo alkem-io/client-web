@@ -9,7 +9,6 @@ export type AccountKeySpecifier = (
   | 'authorization'
   | 'defaults'
   | 'host'
-  | 'hosts'
   | 'id'
   | 'library'
   | 'license'
@@ -21,7 +20,6 @@ export type AccountFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   defaults?: FieldPolicy<any> | FieldReadFunction<any>;
   host?: FieldPolicy<any> | FieldReadFunction<any>;
-  hosts?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   library?: FieldPolicy<any> | FieldReadFunction<any>;
   license?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1486,6 +1484,7 @@ export type LookupQueryResultsFieldPolicy = {
 };
 export type MeQueryResultsKeySpecifier = (
   | 'applications'
+  | 'canCreateFreeSpace'
   | 'id'
   | 'invitations'
   | 'mySpaces'
@@ -1495,6 +1494,7 @@ export type MeQueryResultsKeySpecifier = (
 )[];
 export type MeQueryResultsFieldPolicy = {
   applications?: FieldPolicy<any> | FieldReadFunction<any>;
+  canCreateFreeSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   invitations?: FieldPolicy<any> | FieldReadFunction<any>;
   mySpaces?: FieldPolicy<any> | FieldReadFunction<any>;
