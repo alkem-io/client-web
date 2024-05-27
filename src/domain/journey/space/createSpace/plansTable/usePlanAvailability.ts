@@ -7,7 +7,8 @@ interface Provided {
 }
 
 // TODO: This is temporary
-// The logic should block the availability of a FREE one if the user has a trial or paid one.
+// At the moment the logic is checking if the user is the host of any other space
+// but in the future it should block the availability of the FREE plan if the user has a trial or paid one.
 export const usePlanAvailability = ({ skip }: { skip?: boolean }): Provided => {
   const { user: currentUser, loading: loadingUser } = useUserContext();
 

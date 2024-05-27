@@ -205,7 +205,7 @@ const CreateSpaceDialog = () => {
                 </DialogContent>
               </DialogWithGrid>
               <PlansTableDialog
-                onClose={() => setPlansTableDialogOpen(false)}
+                onClose={handleClose}
                 open={plansTableDialogOpen}
                 onSelectPlan={planId => {
                   setFieldValue('planId', planId);

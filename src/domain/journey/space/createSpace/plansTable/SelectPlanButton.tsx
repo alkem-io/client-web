@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import FullWidthButton from '../../../../../core/ui/button/FullWidthButton';
 import RouterLink from '../../../../../core/ui/link/RouterLink';
 import { Caption } from '../../../../../core/ui/typography';
-import { ButtonProps } from '@mui/material';
+import { Button, ButtonProps } from '@mui/material';
 import { useContactSupportLocationQuery } from '../../../../../core/apollo/generated/apollo-hooks';
 
 interface SelectPlanButtonProps extends ButtonProps {
@@ -26,19 +26,18 @@ const SelectPlanButton = ({ plan, onClick, ...props }: SelectPlanButtonProps) =>
 
   if (plan.requiresContactSupport && contactSupportUrl) {
     return (
-      <FullWidthButton
-        variant="contained"
+      <Button
         component={RouterLink}
-        disabled={!plan.enabled}
         to={contactSupportUrl}
-        target="_blank"
-        sx={{ '&:hover': { color: theme => theme.palette.common.white } }}
-        {...props}
+        blank
+        disabled={!plan.enabled}
+        variant="contained"
+        sx={{ width: '100%', '&:hover': { color: theme => theme.palette.common.white } }}
       >
         <Caption noWrap textTransform="none">
           {t('plansTable.buttonCaptions.contactSupport')}
         </Caption>
-      </FullWidthButton>
+      </Button>
     );
   }
   if (plan.trialEnabled) {
