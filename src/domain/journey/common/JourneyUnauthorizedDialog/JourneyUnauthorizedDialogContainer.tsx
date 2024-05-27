@@ -1,4 +1,4 @@
-import { ReactNode, useCallback, useMemo } from 'react';
+import { ReactNode, useCallback } from 'react';
 import {
   useJourneyCommunityPrivilegesQuery,
   useJourneyDataQuery,
@@ -87,10 +87,7 @@ const JourneyUnauthorizedDialogContainer = ({
     [sendMessageToCommunityLeads, community]
   );
 
-  const hostOrganizations = useMemo(
-    () => journeyDataQueryData?.lookup.space?.account.host && [journeyDataQueryData?.lookup.space.account.host],
-    [journeyDataQueryData]
-  );
+  const host = journeyDataQueryData?.lookup.space?.account.host;
 
   const provided: JourneyUnauthorizedDialogContainerProvided = {
     authorized: !isUnauthorized,
@@ -103,7 +100,7 @@ const JourneyUnauthorizedDialogContainer = ({
     impact: context?.impact,
     metrics,
     sendMessageToCommunityLeads: handleSendMessageToCommunityLeads,
-    hostOrganizations,
+    host,
     leadOrganizations: community?.leadOrganizations,
     leadUsers: community?.leadUsers,
     loading,

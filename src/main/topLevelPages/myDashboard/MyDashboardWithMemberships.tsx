@@ -40,10 +40,10 @@ const MyDashboardWithMemberships: FC<MyDashboardWithMembershipsProps> = ({ space
         {data?.platform.latestReleaseDiscussion && <ReleaseNotesBanner />}
         <NewMembershipsBlock halfWidth onOpenMemberships={onOpenMembershipsDialog} />
         <MyLatestContributions />
+        <StartingSpace />
         <TipsAndTricks halfWidth />
         <InnovationLibraryBlock halfWidth />
         <ExploreOtherChallenges />
-        <StartingSpace />
         <MoreAboutAlkemio />
       </PageContentColumn>
     </>

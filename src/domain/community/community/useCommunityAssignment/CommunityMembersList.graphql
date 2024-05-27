@@ -7,7 +7,7 @@ query CommunityMembersList(
     space(ID: $spaceId) @include(if: $includeSpaceHost) {
       account {
         host {
-          ...OrganizationDetails
+          ...ContributorDetails
         }
       }
     }

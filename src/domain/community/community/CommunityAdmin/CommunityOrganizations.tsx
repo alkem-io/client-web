@@ -12,7 +12,7 @@ import { FC, useState } from 'react';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import { buildOrganizationUrl } from '../../../../main/routing/urlBuilders';
-import { CommunityPolicyFragment, OrganizationDetailsFragment } from '../../../../core/apollo/generated/graphql-schema';
+import { CommunityPolicyFragment } from '../../../../core/apollo/generated/graphql-schema';
 import { gutters } from '../../../../core/ui/grid/utils';
 import DataGridSkeleton from '../../../../core/ui/table/DataGridSkeleton';
 import DataGridTable from '../../../../core/ui/table/DataGridTable';
@@ -20,8 +20,9 @@ import { BlockTitle } from '../../../../core/ui/typography';
 import CommunityMemberSettingsDialog from './CommunityMemberSettingsDialog';
 import CommunityAddMembersDialog, { CommunityAddMembersDialogProps } from './CommunityAddMembersDialog';
 import useCommunityPolicyChecker from './useCommunityPolicyChecker';
+import { ContributorViewProps } from '../EntityDashboardContributorsSection/Types';
 
-export interface OrganizationDetailsFragmentWithRoles extends OrganizationDetailsFragment {
+export interface OrganizationDetailsFragmentWithRoles extends ContributorViewProps {
   isMember: boolean;
   isLead: boolean;
   isFacilitating: boolean;

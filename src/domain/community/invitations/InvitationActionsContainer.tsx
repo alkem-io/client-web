@@ -1,12 +1,6 @@
 import useLoadingState from '../../shared/utils/useLoadingState';
-import {
-  refetchSpacePageQuery,
-  refetchUserProviderQuery,
-  useInvitationStateEventMutation,
-} from '../../../core/apollo/generated/apollo-hooks';
+import { useInvitationStateEventMutation } from '../../../core/apollo/generated/apollo-hooks';
 import { SimpleContainerProps } from '../../../core/container/SimpleContainer';
-import { useSpace } from '../../journey/space/SpaceContext/useSpace';
-import { compact } from 'lodash';
 
 interface InvitationActionsContainerProvided {
   updating: boolean;
@@ -18,16 +12,12 @@ interface InvitationActionsContainerProvided {
 
 interface InvitationActionsContainerProps extends SimpleContainerProps<InvitationActionsContainerProvided> {
   onUpdate?: () => void;
+  onAccept?: () => void;
+  onReject?: () => void;
 }
 
-const InvitationActionsContainer = ({ onUpdate, children }: InvitationActionsContainerProps) => {
-  const { spaceId, permissions } = useSpace();
-  const [invitationStateEventMutation] = useInvitationStateEventMutation({
-    refetchQueries: compact([
-      refetchUserProviderQuery(),
-      spaceId ? refetchSpacePageQuery({ spaceId, authorizedReadAccess: permissions.communityReadAccess }) : undefined,
-    ]),
-  });
+const InvitationActionsContainer = ({ onUpdate, onAccept, onReject, children }: InvitationActionsContainerProps) => {
+  const [invitationStateEventMutation] = useInvitationStateEventMutation();
 
   const [updateInvitationState, isUpdatingInvitationState] = useLoadingState(
     async (...args: Parameters<typeof invitationStateEventMutation>) => {
@@ -42,6 +32,9 @@ const InvitationActionsContainer = ({ onUpdate, children }: InvitationActionsCon
         invitationId,
         eventName: 'ACCEPT',
       },
+      onCompleted: () => {
+        onAccept?.();
+      },
     })
   );
 
@@ -50,6 +43,9 @@ const InvitationActionsContainer = ({ onUpdate, children }: InvitationActionsCon
       variables: {
         invitationId,
         eventName: 'REJECT',
+      },
+      onCompleted: () => {
+        onReject?.();
       },
     })
   );

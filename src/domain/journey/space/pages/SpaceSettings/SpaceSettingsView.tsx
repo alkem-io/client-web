@@ -1,12 +1,18 @@
-import { FC, useMemo } from 'react';
+import { FC, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import scrollToTop from '../../../../../core/ui/utils/scrollToTop';
 import {
+  refetchAdminSpaceChallengesPageQuery,
+  refetchAdminSpacesListQuery,
+  useDeleteSpaceMutation,
   useSpaceHostQuery,
+  useSpacePrivilegesQuery,
   useSpaceSettingsQuery,
   useUpdateSpaceSettingsMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import {
+  AuthorizationPrivilege,
   CommunityMembershipPolicy,
   SpacePrivacyMode,
   SpaceSettingsCollaboration,
@@ -19,11 +25,17 @@ import SwitchSettingsGroup from '../../../../../core/ui/forms/SettingsGroups/Swi
 import { gutters } from '../../../../../core/ui/grid/utils';
 import RouterLink from '../../../../../core/ui/link/RouterLink';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
-import { BlockSectionTitle, BlockTitle, Text } from '../../../../../core/ui/typography';
+import { BlockSectionTitle, BlockTitle, Caption, Text } from '../../../../../core/ui/typography';
 import CommunityApplicationForm from '../../../../community/community/CommunityApplicationForm/CommunityApplicationForm';
 import { SettingsSection } from '../../../../platform/admin/layout/EntitySettingsLayout/constants';
 import { Box, CircularProgress } from '@mui/material';
 import { JourneyTypeName } from '../../../JourneyTypeName';
+import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
+import { DeleteIcon } from './icon/DeleteIcon';
+import SpaceProfileDeleteDialog from './SpaceProfileDeleteDialog';
+import { ROUTE_HOME } from '../../../../platform/routes/constants';
+import { useSubSpace } from '../../../subspace/hooks/useChallenge';
+import { useSpace } from '../../SpaceContext/useSpace';
 
 interface SpaceSettingsViewProps {
   journeyId: string;
@@ -39,6 +51,7 @@ const defaultSpaceSettings = {
     policy: CommunityMembershipPolicy.Invitations,
     trustedOrganizations: [],
     hostOrganizationTrusted: false, // Computed from `trustedOrganizations`
+    allowSubspaceAdminsToInviteMembers: true,
   },
   collaboration: {
     allowMembersToCreateCallouts: true,
@@ -47,10 +60,57 @@ const defaultSpaceSettings = {
   },
 };
 
+const errorColor = '#940000';
+
 export const SpaceSettingsView: FC<SpaceSettingsViewProps> = ({ journeyId, journeyTypeName }) => {
   const { t } = useTranslation();
   const notify = useNotification();
+  const navigate = useNavigate();
   const isSubspace = journeyTypeName !== 'space';
+
+  const { subspaceId } = useSubSpace();
+  const { spaceNameId, spaceId } = useSpace();
+
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const openDialog = () => setOpenDeleteDialog(true);
+  const closeDialog = () => setOpenDeleteDialog(false);
+
+  const translatedEntity = t(`common.${isSubspace ? 'subspace' : 'space'}` as const);
+
+  const [deleteSpace, { loading: deletingSpace }] = useDeleteSpaceMutation({
+    refetchQueries: isSubspace
+      ? [
+          refetchAdminSpaceChallengesPageQuery({
+            spaceId: spaceNameId,
+          }),
+        ]
+      : [refetchAdminSpacesListQuery()],
+    awaitRefetchQueries: true,
+    onCompleted: data => {
+      notify(t('pages.admin.space.notifications.space-removed', { name: data.deleteSpace.nameID }), 'success');
+      navigate(`${isSubspace ? '/' + spaceNameId : ROUTE_HOME}`, { replace: true });
+    },
+  });
+
+  const { data } = useSpacePrivilegesQuery({
+    variables: {
+      spaceId: subspaceId || spaceId,
+    },
+    skip: !spaceId && !subspaceId,
+  });
+
+  const privileges = data?.lookup.space?.authorization?.myPrivileges ?? [];
+  const canDelete = privileges?.includes(AuthorizationPrivilege.Delete);
+
+  const handleDelete = (id: string) => {
+    deleteSpace({
+      variables: {
+        input: {
+          ID: id,
+        },
+      },
+    });
+  };
 
   const { data: hostOrganization } = useSpaceHostQuery({
     variables: { spaceNameId: journeyId },
@@ -79,16 +139,22 @@ export const SpaceSettingsView: FC<SpaceSettingsViewProps> = ({ journeyId, journ
   const handleUpdateSettings = async ({
     privacyMode = currentSettings?.privacy?.mode ?? defaultSpaceSettings.privacy.mode,
     membershipPolicy = currentSettings?.membership?.policy ?? defaultSpaceSettings.membership.policy,
+    allowSubspaceAdminsToInviteMembers = currentSettings?.membership?.allowSubspaceAdminsToInviteMembers ??
+      defaultSpaceSettings.membership.allowSubspaceAdminsToInviteMembers,
     hostOrganizationTrusted = currentSettings.hostOrganizationTrusted ??
       defaultSpaceSettings.membership.hostOrganizationTrusted,
     collaborationSettings = currentSettings.collaboration ?? defaultSpaceSettings.collaboration,
     showNotification = true,
+    allowPlatformSupportAsAdmin = currentSettings.privacy?.allowPlatformSupportAsAdmin ??
+      defaultSpaceSettings.privacy.allowPlatformSupportAsAdmin,
   }: {
     privacyMode?: SpacePrivacyMode;
     membershipPolicy?: CommunityMembershipPolicy;
+    allowSubspaceAdminsToInviteMembers?: boolean;
     hostOrganizationTrusted?: boolean;
     collaborationSettings?: Partial<SpaceSettingsCollaboration>;
     showNotification?: boolean;
+    allowPlatformSupportAsAdmin?: boolean;
   }) => {
     const trustedOrganizations = [...(currentSettings?.membership?.trustedOrganizations ?? [])];
     if (hostOrganizationTrusted && hostOrganizationId) {
@@ -102,12 +168,12 @@ export const SpaceSettingsView: FC<SpaceSettingsViewProps> = ({ journeyId, journ
     const settingsVariable = {
       privacy: {
         mode: privacyMode,
-        allowPlatformSupportAsAdmin: currentSettings.privacy?.allowPlatformSupportAsAdmin ?? false,
+        allowPlatformSupportAsAdmin,
       },
       membership: {
         policy: membershipPolicy,
         trustedOrganizations,
-        allowSubspaceAdminsToInviteMembers: currentSettings.membership?.allowSubspaceAdminsToInviteMembers ?? false,
+        allowSubspaceAdminsToInviteMembers,
       },
       collaboration: {
         ...currentSettings.collaboration,
@@ -271,8 +337,8 @@ export const SpaceSettingsView: FC<SpaceSettingsViewProps> = ({ journeyId, journ
             <CommunityApplicationForm communityId={communityId} />
           </PageContentBlockCollapsible>
 
-          <PageContentBlock>
-            <BlockTitle>{t('pages.admin.space.settings.memberActions.title')}</BlockTitle>
+          <PageContentBlock disableGap>
+            <BlockTitle marginBottom={gutters(2)}>{t('pages.admin.space.settings.memberActions.title')}</BlockTitle>
             <SwitchSettingsGroup
               options={getMemberActions()}
               onChange={async (setting, newValue) => {
@@ -283,7 +349,53 @@ export const SpaceSettingsView: FC<SpaceSettingsViewProps> = ({ journeyId, journ
                 });
               }}
             />
+            {!isSubspace && (
+              <SwitchSettingsGroup
+                options={{
+                  allowSubspaceAdminsToInviteMembers: {
+                    checked: currentSettings?.membership?.allowSubspaceAdminsToInviteMembers || false,
+                    label: t('pages.admin.space.settings.membership.allowSubspaceAdminsToInviteMembers'),
+                  },
+                }}
+                onChange={(setting, newValue) => handleUpdateSettings({ [setting]: newValue })}
+              />
+            )}
+            {!isSubspace && (
+              <SwitchSettingsGroup
+                options={{
+                  allowPlatformSupportAsAdmin: {
+                    checked: currentSettings?.privacy?.allowPlatformSupportAsAdmin || false,
+                    label: (
+                      <Trans
+                        i18nKey="pages.admin.space.settings.memberActions.supportAsAdmin"
+                        components={{ b: <strong /> }}
+                      />
+                    ),
+                  },
+                }}
+                onChange={(setting, newValue) => handleUpdateSettings({ [setting]: newValue })}
+              />
+            )}
           </PageContentBlock>
+
+          {canDelete && (
+            <PageContentBlock sx={{ borderColor: errorColor }}>
+              <PageContentBlockHeader sx={{ color: errorColor }} title={t('components.deleteSpace.title')} />
+              <Box display="flex" gap={1} alignItems="center" sx={{ cursor: 'pointer' }} onClick={openDialog}>
+                <DeleteIcon />
+                <Caption>{t('components.deleteSpace.description', { entity: translatedEntity })}</Caption>
+              </Box>
+            </PageContentBlock>
+          )}
+          {openDeleteDialog && (
+            <SpaceProfileDeleteDialog
+              entity={translatedEntity}
+              open={openDeleteDialog}
+              onClose={closeDialog}
+              onDelete={() => handleDelete(isSubspace ? subspaceId : journeyId)}
+              submitting={deletingSpace}
+            />
+          )}
         </>
       )}
       {loading && (
