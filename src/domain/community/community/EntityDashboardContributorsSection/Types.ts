@@ -10,7 +10,7 @@ export interface EntityDashboardContributors {
   memberOrganizationsCount: number | undefined;
 }
 
-// TODO nameID -> url
+// TODO remove nameID
 // TODO clean up fetched data
 export interface ContributorViewProps extends Identifiable {
   nameID: string;
@@ -27,7 +27,7 @@ export interface ContributorViewProps extends Identifiable {
     tagsets?: {
       tags: string[];
     }[];
-    // url: string;
+    url: string;
   };
 }
 
