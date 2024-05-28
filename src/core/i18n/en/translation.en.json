@@ -1352,7 +1352,7 @@
       },
       "read-access": "Allow read access for non-space members to Subspaces",
       "about": "About this Space",
-      "visibility": "This Space is currently in <strong>{{mode}}</strong> mode",
+      "visibility": "This Space is currently in <strong>{{visibility}}</strong> mode",
       "readOnly": "If you want to change any of this information, please contact the Alkemio team here."
     },
     "deleteSpace": {
