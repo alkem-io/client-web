@@ -74,7 +74,6 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
   const loading = deletingSpace && spacePriviledgesLoading && hostOrganizationLoading;
   const avatar = hostOrganization?.profile.avatar?.uri;
   const location = hostOrganization?.profile.location;
-  console.log(t('pages.admin.generic.sections.account.contactsLink'));
 
   return (
     <PageContent background="transparent">
