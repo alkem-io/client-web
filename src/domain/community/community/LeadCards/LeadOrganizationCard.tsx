@@ -1,6 +1,6 @@
 import AlkemioAvatar from '../../../../core/ui/image/AlkemioAvatar';
 import { Box } from '@mui/material';
-import LinkNoUnderline from '../../../shared/components/LinkNoUnderline';
+import RouterLink from '../../../../core/ui/link/RouterLink';
 import { styled } from '@mui/styles';
 import LocationCaption from '../../../../core/ui/location/LocationCaption';
 import { Caption, Text } from '../../../../core/ui/typography';
@@ -47,7 +47,7 @@ const LeadOrganizationCard: FC<LeadOrganizationCardProps> = props => {
         }}
       >
         <LeadOrganizationCardContainer>
-          <LinkNoUnderline to={organizationUrl}>
+          <RouterLink to={organizationUrl}>
             <Box display="flex" gap={2}>
               <AlkemioAvatar src={avatarSrc} name={displayName} size="md2" />
               <Box>
@@ -56,7 +56,7 @@ const LeadOrganizationCard: FC<LeadOrganizationCardProps> = props => {
                 <Caption sx={webkitLineClamp(2, { keepMinHeight: true })}>{tagline}</Caption>
               </Box>
             </Box>
-          </LinkNoUnderline>
+          </RouterLink>
         </LeadOrganizationCardContainer>
       </ContributorTooltip>
       {directMessageDialog}
