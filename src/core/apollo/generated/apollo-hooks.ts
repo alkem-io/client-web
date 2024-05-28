@@ -1791,6 +1791,7 @@ export const UserCardFragmentDoc = gql`
     isContactable
     profile {
       id
+      url
       displayName
       location {
         country
@@ -1819,6 +1820,7 @@ export const OrganizationCardFragmentDoc = gql`
     profile {
       id
       displayName
+      url
       visual(type: AVATAR) {
         ...VisualUri
       }
