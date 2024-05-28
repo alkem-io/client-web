@@ -1369,6 +1369,16 @@
       "visibility": "This Space is currently in <strong>{{visibility}}</strong> mode",
       "readOnly": "If you want to change any of this information, please contact the Alkemio team here."
     },
+    "deleteSpace": {
+      "title": "Danger Zone",
+      "description": "Click here to delete this {{entity}}. Be careful, this action cannot be undone.",
+      "confirmDialog": {
+        "title": "Confirm {{entity}} Deletion",
+        "description": "Are you certain you want to delete this {{entity}}? Keep in mind that this action is irreversible. You can only delete a {{entity}} if there are no underlying Subspaces associated with it. If there are any Subspaces within this page, please delete them first (you can do so from the {{entity}} settings > Subspaces page).",
+        "checkbox": "Please check this box if you are certain about deleting this {{entity}}",
+        "confirm": "Yes, delete"
+      }
+    },
     "nameSegment": {
       "name": "Name",
       "nameID": {
@@ -1729,6 +1739,9 @@
           },
           "communications": {
             "description": "Here you can post updates that will be visible to all members of this {{entity}}."
+          },
+          "subsubspaces": {
+            "description": "Here you can edit Subspaces for this Subspace."
           },
           "calendar": {
             "description": ""
@@ -2091,10 +2104,11 @@
           "suggestionsArray": ["Innovation", "Energy", "Inclusive", "3D", "Community", "Transition", "SSI", "Privacy"]
         },
         "newMemberships": {
-          "title": "New Memberships",
+          "title": "Spaces & Subspaces",
           "openInvitations": "Open invitations",
           "noOpenInvitations": "No open invitations",
           "openApplications": "Open applications",
+          "mySpaces": "My Spaces",
           "recentlyJoined": "Recently joined",
           "seeMore": "All pending memberships",
           "seeAll": "See all my memberships",
@@ -2671,5 +2685,93 @@
     "share": "Share",
     "manageFlow": "$t(components.innovationFlowSettings.buttonTooltip)",
     "settings": "Settings"
+  },
+  "createSpace": {
+    "title": "Create a Space",
+    "subtitle": "To create a safe environment to train your Virtual Contributor, you first need to create a Space. Enter the details for this Space below.",
+    "terms": {
+      "checkboxLabel": "I have read and accept the <terms>terms and agreements (click here to open them)</terms> for creating a Space.",
+      "dialogTitle": "Terms and Conditions for creating a Space",
+      "dialogContent": "Placeholder text, real text will follow soon, to be added in translation file.\nMembership: By joining this group, you agree to abide by our rules and guidelines.\nBehavior: Treat others with respect and kindness. No hate speech, harassment, or harmful behavior.\nContent: Share relevant content and avoid spam. We reserve the right to remove inappropriate posts.\nPrivacy: Protect your personal information. We won’t share it without your consent.\nTermination: Violation of these terms may result in removal from the group.",
+      "fullTermsLink": "Click here for the full Terms and Conditions"
+    }
+  },
+  "plansTable": {
+    "title": "Choose a plan",
+    "subtitle": "To create a safe environment to train your Virtual Contributor, you first need to create a Space. Choose a plan for this Space below.",
+    "seeMore": "Click here for the full description of each plan",
+    "seeMoreUrl": "https://welcome.alkem.io/pricing-own-space/",
+    "pricingPeriods": {
+      "monthly": "/Month",
+      "lifetime": "/Lifetime",
+      "custom": "Custom pricing"
+    },
+    "buttonCaptions": {
+      "choose": "Choose {{planName}}",
+      "startTrial": "Start Your 30 Day Free Trial",
+      "contactSupport": "Contact us"
+    },
+    "plans": [
+      {
+        "name": "FREE",
+        "displayName": "Free",
+        "priceDescription": "For Change-Makers Exploring Alkemio",
+        "features": ["Up to 10 members", "Various tools, including standard Whiteboards"],
+        "disclaimer": "Free Spaces are limited to 1 Space per user",
+        "disabledDisclaimer": "Each user can have 1 free space. It seems like you’ve already used yours!"
+      },
+      {
+        "name": "PLUS",
+        "displayName": "Plus",
+        "priceDescription": "For Starting Communities, coalitions, programs...",
+        "features": ["Up to 100 members", "Realtime, multi-user Whiteboards", "Create your Virtual Contributor"],
+        "disclaimer": "",
+        "disabledDisclaimer": ""
+      },
+      {
+        "name": "PREMIUM",
+        "displayName": "Premium",
+        "priceDescription": "For Established Communities, organisations, coalitions...",
+        "features": [
+          "Up to 500 members",
+          "Realtime, multi-user Whiteboards",
+          "Create your Virtual Contributor",
+          "Custom Homepage (with Support)"
+        ],
+        "disclaimer": "",
+        "disabledDisclaimer": ""
+      },
+      {
+        "name": "ENTERPRISE",
+        "displayName": "Enterprise",
+        "priceDescription": "Your Customized plan",
+        "features": [
+          "Up to 500 members",
+          "Realtime, multi-user Whiteboards",
+          "Create your Virtual Contributor",
+          "Custom Homepage (with Support)",
+          "1 year success program"
+        ],
+        "disclaimer": "",
+        "disabledDisclaimer": ""
+      }
+    ],
+    "confirmationDialogs": {
+      "freeTrial": {
+        "title": "Free trial",
+        "content": "Try our free 30-day trial of the Plus license to unlock exciting features like creating Virtual Contributors and multi-user whiteboard editing. No payment details required! After the trial, choose between upgrading to Plus or continuing with the Free license.<br/><br/>Questions? [Contact our support team anytime](https://welcome.alkem.io/contact).",
+        "buttons": {
+          "continue": "Continue with Free Space",
+          "startPlus": "Start Plus Trial"
+        }
+      },
+      "getStarted": {
+        "title": "Get started right away!",
+        "content": "Since we don’t want to hold you up any longer, you receive a 30-day free trial. After these 30 days we will ask you to set up your account details in order to continue using your Space. If you have any questions, feel free to contact support here.",
+        "buttons": {
+          "continue": "Continue"
+        }
+      }
+    }
   }
 }

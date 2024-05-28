@@ -38,6 +38,7 @@ const AdminNewInnovationHubPage = () => {
     const { data } = await createInnovationHub({
       variables: {
         hubData: {
+          accountID: 'TODO: fix this',
           nameID: formData.nameID,
           //providerID: formData.providerId, // TODO: Add provider field when serverside is ready
           subdomain: formData.subdomain,
@@ -48,7 +49,6 @@ const AdminNewInnovationHubPage = () => {
           },
           type: InnovationHubType.List,
           spaceListFilter: [],
-          accountID: '',
         },
       },
       refetchQueries: [refetchAdminInnovationHubsListQuery()],

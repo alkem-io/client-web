@@ -65,8 +65,7 @@ export const SpaceList: FC = () => {
           nameId: space.nameID,
           account: {
             visibility: space.account.license.visibility,
-            // TODO: Temporarily removed host field because of it gives an error trying to access it
-            hostId: undefined, // space.account.host?.id,
+            hostId: space.account.host?.id,
             features: Object.values(LicenseFeatureFlagName).reduce((acc, licenseFeature) => {
               acc[licenseFeature] = licenseHasFeature(licenseFeature, space.account.license);
               return acc;
