@@ -30,18 +30,18 @@ const ContributorsToggleDialog = ({ open = false, journeyId, onClose }: Contribu
 
   const users: ContributorCardSquareProps[] | undefined = data?.lookup.space?.community?.memberUsers.map(user => ({
     id: user.id,
-    avatar: user.profile?.visual?.uri || '',
-    displayName: user.profile?.displayName || '',
-    url: `/users/${user.nameID}`,
+    avatar: user.profile.visual?.uri || '',
+    displayName: user.profile.displayName || '',
+    url: user.profile.url,
     contributorType: ContributorType.People,
   }));
 
   const organizations: ContributorCardSquareProps[] | undefined =
     data?.lookup.space?.community?.memberOrganizations.map(organization => ({
       id: organization.id,
-      avatar: organization.profile?.visual?.uri || '',
-      displayName: organization.profile?.displayName || '',
-      url: `/organization/${organization.nameID}`,
+      avatar: organization.profile.visual?.uri || '',
+      displayName: organization.profile.displayName || '',
+      url: organization.profile.url,
       contributorType: ContributorType.Organizations,
     }));
 
