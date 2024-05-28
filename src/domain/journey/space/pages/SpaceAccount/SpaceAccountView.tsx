@@ -2,12 +2,15 @@ import { FC, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Box, CircularProgress } from '@mui/material';
+import { buildOrganizationUrl } from '../../../../../main/routing/urlBuilders';
 import PageContent from '../../../../../core/ui/content/PageContent';
 import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
 import SeeMore from '../../../../../core/ui/content/SeeMore';
-import { BlockSectionTitle, Caption } from '../../../../../core/ui/typography';
+import { BlockTitle, Caption } from '../../../../../core/ui/typography';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
+import ContributorCardHorizontal from '../../../../../core/ui/card/ContributorCardHorizontal';
+import Gutters from '../../../../../core/ui/grid/Gutters';
 import { AuthorizationPrivilege } from '../../../../../core/apollo/generated/graphql-schema';
 import {
   refetchAdminSpacesListQuery,
@@ -74,58 +77,52 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
 
   const ALKEMIO_DOMAIN = 'https://alkem.io/';
   const loading = deletingSpace && spacePriviledgesLoading && hostOrganizationLoading;
-  const avatar = hostOrganization?.profile.avatar?.uri;
-  const location = hostOrganization?.profile.location;
 
   return (
     <PageContent background="transparent">
       {!loading && (
         <>
-          <PageContentBlock columns={6}>
-            <BlockSectionTitle>{t('pages.admin.generic.sections.account.urlTitle')}</BlockSectionTitle>
-            <Caption>
-              {ALKEMIO_DOMAIN}
-              {spaceNameId}
-            </Caption>
-            <BlockSectionTitle marginTop={gutters(2)}>
-              {t('pages.admin.generic.sections.account.visibilityTitle')}
-            </BlockSectionTitle>
-            <Caption>
-              <Trans
-                t={t}
-                i18nKey="pages.admin.generic.sections.account.visibilityMode"
-                values={{
-                  mode: t(`common.enums.space-visibility.${license.visibility}` as const),
-                }}
-                components={{ strong: <strong /> }}
-              />
-            </Caption>
-            <BlockSectionTitle marginTop={gutters(2)}>
-              {t('pages.admin.generic.sections.account.hostTitle')}
-            </BlockSectionTitle>
-            <Box display="flex">
-              {avatar && (
-                <Box
-                  component="img"
-                  src={avatar}
-                  maxHeight={gutters(2)}
-                  maxWidth={gutters(2)}
-                  borderRadius={theme => theme.spacing(0.6)}
+          <PageContentBlock columns={6} sx={{ gap: gutters(2) }}>
+            <Gutters disablePadding>
+              <BlockTitle>{t('common.url')}</BlockTitle>
+              <Caption>
+                {ALKEMIO_DOMAIN}
+                {spaceNameId}
+              </Caption>
+            </Gutters>
+            <Gutters disablePadding>
+              <BlockTitle>{t('common.visibility')}</BlockTitle>
+              <Caption>
+                <Trans
+                  t={t}
+                  i18nKey="components.editSpaceForm.visibility"
+                  values={{
+                    visibility: t(`common.enums.space-visibility.${license.visibility}` as const),
+                  }}
+                  components={{ strong: <strong /> }}
                 />
-              )}
-              <Box marginLeft={gutters(0.5)}>
-                <Caption>{hostOrganization?.profile.displayName}</Caption>
-                <Caption>
-                  {location?.city && location?.city + ', '}
-                  {location?.country && location?.country}
-                </Caption>
-              </Box>
-            </Box>
-            <SeeMore
-              label="pages.admin.generic.sections.account.contactsLinkText"
-              to={t('pages.admin.generic.sections.account.contactsLink')}
-              sx={{ marginTop: gutters(2), textAlign: 'left' }}
-            />
+              </Caption>
+            </Gutters>
+            <Gutters disablePadding>
+              <BlockTitle>{t('pages.admin.generic.sections.account.hostTitle')}</BlockTitle>
+              <ContributorCardHorizontal
+                profile={{
+                  displayName: hostOrganization?.profile.displayName || '',
+                  avatar: hostOrganization?.profile.avatar,
+                  location: hostOrganization?.profile.location,
+                  tagsets: undefined,
+                }}
+                url={(hostOrganization?.nameID && buildOrganizationUrl(hostOrganization?.nameID)) || ''}
+                seamless
+              />
+            </Gutters>
+            <Gutters disablePadding>
+              <SeeMore
+                label="pages.admin.generic.sections.account.contactsLinkText"
+                to={t('pages.admin.generic.sections.account.contactsLink')}
+                sx={{ textAlign: 'left' }}
+              />
+            </Gutters>
           </PageContentBlock>
           {canDelete && (
             <PageContentBlock sx={{ borderColor: errorColor }}>

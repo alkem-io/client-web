@@ -1783,9 +1783,6 @@
           },
           "account": {
             "description": "",
-            "urlTitle": "URL",
-            "visibilityTitle": "Visibility",
-            "visibilityMode": "This Space is currently in <strong>{{mode}}</strong> mode",
             "hostTitle": "Host",
             "contactsLinkText": "If you want to change any of these settings, please contact the Alkemio team here.",
             "contactsLink": "https://www.alkemio.org/support/"
