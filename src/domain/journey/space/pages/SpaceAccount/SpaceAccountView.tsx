@@ -1,7 +1,7 @@
 import { FC, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Box } from '@mui/material';
+import { Box, CircularProgress } from '@mui/material';
 import PageContent from '../../../../../core/ui/content/PageContent';
 import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
@@ -144,6 +144,12 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
             />
           )}
         </>
+      )}
+      {loading && (
+        <Box marginX="auto">
+          {' '}
+          <CircularProgress />{' '}
+        </Box>
       )}
     </PageContent>
   );
