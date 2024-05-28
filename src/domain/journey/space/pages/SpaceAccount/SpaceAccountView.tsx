@@ -5,7 +5,9 @@ import { Box, CircularProgress } from '@mui/material';
 import PageContent from '../../../../../core/ui/content/PageContent';
 import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
+import SeeMore from '../../../../../core/ui/content/SeeMore';
 import { BlockSectionTitle, Caption } from '../../../../../core/ui/typography';
+import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import { AuthorizationPrivilege } from '../../../../../core/apollo/generated/graphql-schema';
 import {
   refetchAdminSpacesListQuery,
@@ -18,7 +20,6 @@ import { ROUTE_HOME } from '../../../../platform/routes/constants';
 import { useSpace } from '../../SpaceContext/useSpace';
 import { DeleteIcon } from '../SpaceSettings/icon/DeleteIcon';
 import SpaceProfileDeleteDialog from '../SpaceSettings/SpaceProfileDeleteDialog';
-import SeeMore from '../../../../../core/ui/content/SeeMore';
 
 interface SpaceAccountPageProps {
   journeyId: string;
@@ -26,6 +27,7 @@ interface SpaceAccountPageProps {
 
 const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
   const { t } = useTranslation();
+  const notify = useNotification();
   const navigate = useNavigate();
 
   const errorColor = '#940000';
