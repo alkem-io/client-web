@@ -2,10 +2,5 @@ mutation createVirtualPersona($virtualPersonaData: CreateVirtualPersonaInput!) {
   createVirtualPersona(virtualPersonaData: $virtualPersonaData ) {
     id
     engine
-    profile {
-      id
-      displayName
-      description
-    }
   }
 }
