@@ -3537,6 +3537,8 @@ export const InnovationPackCardFragmentDoc = gql`
       postTemplatesCount
       whiteboardTemplatesCount
       innovationFlowTemplatesCount
+      calloutTemplatesCount
+      communityGuidelinesTemplatesCount
     }
     provider {
       ...InnovationPackProviderProfileWithAvatar

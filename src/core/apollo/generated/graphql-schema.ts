@@ -26803,6 +26803,8 @@ export type InnovationLibraryBlockQuery = {
               postTemplatesCount: number;
               whiteboardTemplatesCount: number;
               innovationFlowTemplatesCount: number;
+              calloutTemplatesCount: number;
+              communityGuidelinesTemplatesCount: number;
             }
           | undefined;
         provider?:
@@ -26849,6 +26851,8 @@ export type InnovationPackCardFragment = {
         postTemplatesCount: number;
         whiteboardTemplatesCount: number;
         innovationFlowTemplatesCount: number;
+        calloutTemplatesCount: number;
+        communityGuidelinesTemplatesCount: number;
       }
     | undefined;
   provider?:

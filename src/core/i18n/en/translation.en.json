@@ -873,30 +873,35 @@
       "name": "Callout template",
       "title": "Template Library: Collaboration Tools",
       "type": "Callout type",
-      "description": "Description"
+      "description": "Description",
+      "countTooltip": "Collaboration Tool Templates"
     },
     "postTemplates": {
       "name": "Post template",
       "title": "Template Library: Posts",
-      "defaultDescription": "Default Post content"
+      "defaultDescription": "Default Post content",
+      "countTooltip": "Post Templates"
     },
     "whiteboardTemplates": {
       "name": "Whiteboard template",
       "title": "Template Library: Whiteboards",
       "editTemplateButton": "Edit Template",
       "editDialogTitle": "Edit Whiteboard Template",
-      "errorImporting": "Error importing Whiteboard Template"
+      "errorImporting": "Error importing Whiteboard Template",
+      "countTooltip": "Whiteboard Templates"
     },
     "innovationFlowTemplates": {
       "name": "Innovation Flow template",
-      "title": "Template Library: Innovation Flows"
+      "title": "Template Library: Innovation Flows",
+      "countTooltip": "Innovation Flow Templates"
     },
     "communityGuidelinesTemplates": {
       "name": "Community Guidelines",
       "title": "Template Library: Community Guidelines",
       "content": "Guidelines",
       "guidelinesTitle": "Title",
-      "guidelinesDescription": "Guidelines"
+      "guidelinesDescription": "Guidelines",
+      "countTooltip": "Community Guidelines Templates"
     },
     "spaceTemplates": "Templates selected by the host of this community",
     "platformTemplates": "Platform Templates",
