@@ -3,6 +3,7 @@ fragment OrganizationDetails on Organization {
   nameID
   profile {
     id
+    url
     displayName
     avatar: visual(type: AVATAR) {
       ...VisualUri

@@ -2,7 +2,7 @@ import React, { PropsWithChildren, ReactElement, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { EntityDashboardLeads } from '../EntityDashboardContributorsSection/Types';
 import AssociatedOrganizationsView from '../../contributor/organization/AssociatedOrganizations/AssociatedOrganizationsView';
-import { buildOrganizationUrl, buildUserProfileUrl } from '../../../../main/routing/urlBuilders';
+import { buildUserProfileUrl } from '../../../../main/routing/urlBuilders';
 import DashboardLeadUsers from './DashboardLeadUsers';
 import { useUserContext } from '../../user';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
@@ -35,7 +35,7 @@ const EntityDashboardLeadsSection = ({
       leadOrganizations?.map(org => ({
         key: org.id,
         id: org.id,
-        organizationUrl: buildOrganizationUrl(org.nameID),
+        organizationUrl: org.profile.url,
         avatarSrc: org.profile.avatar?.uri,
         displayName: org.profile.displayName,
         city: org.profile.location?.city,
