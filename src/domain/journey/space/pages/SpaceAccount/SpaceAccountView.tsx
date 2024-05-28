@@ -121,7 +121,7 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
               </Box>
             </Box>
             <SeeMore
-              label={t('pages.admin.generic.sections.account.contactsLinkText')}
+              label="pages.admin.generic.sections.account.contactsLinkText"
               to={t('pages.admin.generic.sections.account.contactsLink')}
               sx={{ marginTop: gutters(2), textAlign: 'left' }}
             />
