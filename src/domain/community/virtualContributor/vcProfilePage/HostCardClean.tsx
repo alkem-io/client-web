@@ -41,7 +41,7 @@ const HostCardClean: FC<HostProps> = ({ hostProfile }) => {
   return (
     <>
       <PageContentBlock>
-        <PageContentBlockHeader title="Host Organization" />
+        <PageContentBlockHeader title={t('pages.virtual-contributor-profile.host')} />
         <BadgeCardView
           visual={
             <Avatar
