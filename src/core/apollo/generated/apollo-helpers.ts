@@ -501,9 +501,8 @@ export type ApplicationForRoleResultKeySpecifier = (
   | 'displayName'
   | 'id'
   | 'spaceID'
+  | 'spaceLevel'
   | 'state'
-  | 'subspaceID'
-  | 'subsubspaceID'
   | 'updatedDate'
   | ApplicationForRoleResultKeySpecifier
 )[];
@@ -513,9 +512,8 @@ export type ApplicationForRoleResultFieldPolicy = {
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   spaceID?: FieldPolicy<any> | FieldReadFunction<any>;
+  spaceLevel?: FieldPolicy<any> | FieldReadFunction<any>;
   state?: FieldPolicy<any> | FieldReadFunction<any>;
-  subspaceID?: FieldPolicy<any> | FieldReadFunction<any>;
-  subsubspaceID?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type AuthenticationConfigKeySpecifier = ('providers' | AuthenticationConfigKeySpecifier)[];
@@ -967,6 +965,21 @@ export type ContextFieldPolicy = {
   vision?: FieldPolicy<any> | FieldReadFunction<any>;
   who?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type ContributorKeySpecifier = (
+  | 'agent'
+  | 'authorization'
+  | 'id'
+  | 'nameID'
+  | 'profile'
+  | ContributorKeySpecifier
+)[];
+export type ContributorFieldPolicy = {
+  agent?: FieldPolicy<any> | FieldReadFunction<any>;
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  nameID?: FieldPolicy<any> | FieldReadFunction<any>;
+  profile?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type ContributorRolesKeySpecifier = (
   | 'applications'
   | 'id'
@@ -1270,9 +1283,8 @@ export type InvitationForRoleResultKeySpecifier = (
   | 'displayName'
   | 'id'
   | 'spaceID'
+  | 'spaceLevel'
   | 'state'
-  | 'subspaceID'
-  | 'subsubspaceID'
   | 'updatedDate'
   | 'welcomeMessage'
   | InvitationForRoleResultKeySpecifier
@@ -1284,9 +1296,8 @@ export type InvitationForRoleResultFieldPolicy = {
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   spaceID?: FieldPolicy<any> | FieldReadFunction<any>;
+  spaceLevel?: FieldPolicy<any> | FieldReadFunction<any>;
   state?: FieldPolicy<any> | FieldReadFunction<any>;
-  subspaceID?: FieldPolicy<any> | FieldReadFunction<any>;
-  subsubspaceID?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   welcomeMessage?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -1330,11 +1341,28 @@ export type LicenseFeatureFlagFieldPolicy = {
   enabled?: FieldPolicy<any> | FieldReadFunction<any>;
   name?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type LicensePlanKeySpecifier = ('enabled' | 'id' | 'name' | LicensePlanKeySpecifier)[];
+export type LicensePlanKeySpecifier = (
+  | 'enabled'
+  | 'id'
+  | 'isFree'
+  | 'name'
+  | 'pricePerMonth'
+  | 'requiresContactSupport'
+  | 'requiresPaymentMethod'
+  | 'sortOrder'
+  | 'trialEnabled'
+  | LicensePlanKeySpecifier
+)[];
 export type LicensePlanFieldPolicy = {
   enabled?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  isFree?: FieldPolicy<any> | FieldReadFunction<any>;
   name?: FieldPolicy<any> | FieldReadFunction<any>;
+  pricePerMonth?: FieldPolicy<any> | FieldReadFunction<any>;
+  requiresContactSupport?: FieldPolicy<any> | FieldReadFunction<any>;
+  requiresPaymentMethod?: FieldPolicy<any> | FieldReadFunction<any>;
+  sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
+  trialEnabled?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type LicensePolicyKeySpecifier = ('authorization' | 'featureFlagRules' | 'id' | LicensePolicyKeySpecifier)[];
 export type LicensePolicyFieldPolicy = {
@@ -1456,6 +1484,7 @@ export type LookupQueryResultsFieldPolicy = {
 };
 export type MeQueryResultsKeySpecifier = (
   | 'applications'
+  | 'canCreateFreeSpace'
   | 'id'
   | 'invitations'
   | 'mySpaces'
@@ -1465,6 +1494,7 @@ export type MeQueryResultsKeySpecifier = (
 )[];
 export type MeQueryResultsFieldPolicy = {
   applications?: FieldPolicy<any> | FieldReadFunction<any>;
+  canCreateFreeSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   invitations?: FieldPolicy<any> | FieldReadFunction<any>;
   mySpaces?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1956,6 +1986,7 @@ export type PlatformLocationsKeySpecifier = (
   | 'aup'
   | 'blog'
   | 'community'
+  | 'contactsupport'
   | 'domain'
   | 'environment'
   | 'feedback'
@@ -1981,6 +2012,7 @@ export type PlatformLocationsFieldPolicy = {
   aup?: FieldPolicy<any> | FieldReadFunction<any>;
   blog?: FieldPolicy<any> | FieldReadFunction<any>;
   community?: FieldPolicy<any> | FieldReadFunction<any>;
+  contactsupport?: FieldPolicy<any> | FieldReadFunction<any>;
   domain?: FieldPolicy<any> | FieldReadFunction<any>;
   environment?: FieldPolicy<any> | FieldReadFunction<any>;
   feedback?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2260,60 +2292,6 @@ export type RelayPaginatedSpacePageInfoKeySpecifier = (
   | RelayPaginatedSpacePageInfoKeySpecifier
 )[];
 export type RelayPaginatedSpacePageInfoFieldPolicy = {
-  endCursor?: FieldPolicy<any> | FieldReadFunction<any>;
-  hasNextPage?: FieldPolicy<any> | FieldReadFunction<any>;
-  hasPreviousPage?: FieldPolicy<any> | FieldReadFunction<any>;
-  startCursor?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type RelayPaginatedUserKeySpecifier = (
-  | 'accountUpn'
-  | 'agent'
-  | 'authorization'
-  | 'communityRooms'
-  | 'directRooms'
-  | 'email'
-  | 'firstName'
-  | 'gender'
-  | 'id'
-  | 'isContactable'
-  | 'lastName'
-  | 'nameID'
-  | 'phone'
-  | 'preferences'
-  | 'profile'
-  | 'storageAggregator'
-  | RelayPaginatedUserKeySpecifier
-)[];
-export type RelayPaginatedUserFieldPolicy = {
-  accountUpn?: FieldPolicy<any> | FieldReadFunction<any>;
-  agent?: FieldPolicy<any> | FieldReadFunction<any>;
-  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  communityRooms?: FieldPolicy<any> | FieldReadFunction<any>;
-  directRooms?: FieldPolicy<any> | FieldReadFunction<any>;
-  email?: FieldPolicy<any> | FieldReadFunction<any>;
-  firstName?: FieldPolicy<any> | FieldReadFunction<any>;
-  gender?: FieldPolicy<any> | FieldReadFunction<any>;
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-  isContactable?: FieldPolicy<any> | FieldReadFunction<any>;
-  lastName?: FieldPolicy<any> | FieldReadFunction<any>;
-  nameID?: FieldPolicy<any> | FieldReadFunction<any>;
-  phone?: FieldPolicy<any> | FieldReadFunction<any>;
-  preferences?: FieldPolicy<any> | FieldReadFunction<any>;
-  profile?: FieldPolicy<any> | FieldReadFunction<any>;
-  storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type RelayPaginatedUserEdgeKeySpecifier = ('node' | RelayPaginatedUserEdgeKeySpecifier)[];
-export type RelayPaginatedUserEdgeFieldPolicy = {
-  node?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type RelayPaginatedUserPageInfoKeySpecifier = (
-  | 'endCursor'
-  | 'hasNextPage'
-  | 'hasPreviousPage'
-  | 'startCursor'
-  | RelayPaginatedUserPageInfoKeySpecifier
-)[];
-export type RelayPaginatedUserPageInfoFieldPolicy = {
   endCursor?: FieldPolicy<any> | FieldReadFunction<any>;
   hasNextPage?: FieldPolicy<any> | FieldReadFunction<any>;
   hasPreviousPage?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3310,6 +3288,10 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | ContextKeySpecifier | (() => undefined | ContextKeySpecifier);
     fields?: ContextFieldPolicy;
   };
+  Contributor?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | ContributorKeySpecifier | (() => undefined | ContributorKeySpecifier);
+    fields?: ContributorFieldPolicy;
+  };
   ContributorRoles?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ContributorRolesKeySpecifier | (() => undefined | ContributorRolesKeySpecifier);
     fields?: ContributorRolesFieldPolicy;
@@ -3582,21 +3564,6 @@ export type StrictTypedTypePolicies = {
       | RelayPaginatedSpacePageInfoKeySpecifier
       | (() => undefined | RelayPaginatedSpacePageInfoKeySpecifier);
     fields?: RelayPaginatedSpacePageInfoFieldPolicy;
-  };
-  RelayPaginatedUser?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | RelayPaginatedUserKeySpecifier | (() => undefined | RelayPaginatedUserKeySpecifier);
-    fields?: RelayPaginatedUserFieldPolicy;
-  };
-  RelayPaginatedUserEdge?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | RelayPaginatedUserEdgeKeySpecifier | (() => undefined | RelayPaginatedUserEdgeKeySpecifier);
-    fields?: RelayPaginatedUserEdgeFieldPolicy;
-  };
-  RelayPaginatedUserPageInfo?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?:
-      | false
-      | RelayPaginatedUserPageInfoKeySpecifier
-      | (() => undefined | RelayPaginatedUserPageInfoKeySpecifier);
-    fields?: RelayPaginatedUserPageInfoFieldPolicy;
   };
   RolesResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | RolesResultKeySpecifier | (() => undefined | RolesResultKeySpecifier);
