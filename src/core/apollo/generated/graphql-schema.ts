@@ -12449,6 +12449,7 @@ export type AuthorDetailsQuery = {
     profile: {
       __typename?: 'Profile';
       id: string;
+      url: string;
       displayName: string;
       location?: { __typename?: 'Location'; country: string; city: string } | undefined;
       visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
@@ -15603,6 +15604,7 @@ export type OrganizationCardFragment = {
     __typename?: 'Profile';
     id: string;
     displayName: string;
+    url: string;
     description?: string | undefined;
     visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
     location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
@@ -16259,6 +16261,7 @@ export type UserCardFragment = {
   profile: {
     __typename?: 'Profile';
     id: string;
+    url: string;
     displayName: string;
     location?: { __typename?: 'Location'; country: string; city: string } | undefined;
     visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
@@ -17050,6 +17053,7 @@ export type SpaceCommunityContributorsQuery = {
                     __typename?: 'Profile';
                     id: string;
                     displayName: string;
+                    url: string;
                     description?: string | undefined;
                     visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                     location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
@@ -17075,6 +17079,7 @@ export type SpaceCommunityContributorsQuery = {
               profile: {
                 __typename?: 'Profile';
                 id: string;
+                url: string;
                 displayName: string;
                 location?: { __typename?: 'Location'; country: string; city: string } | undefined;
                 visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
@@ -17098,6 +17103,7 @@ export type SpaceCommunityContributorsQuery = {
               profile: {
                 __typename?: 'Profile';
                 id: string;
+                url: string;
                 displayName: string;
                 location?: { __typename?: 'Location'; country: string; city: string } | undefined;
                 visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
@@ -17122,6 +17128,7 @@ export type SpaceCommunityContributorsQuery = {
                 __typename?: 'Profile';
                 id: string;
                 displayName: string;
+                url: string;
                 description?: string | undefined;
                 visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                 location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
@@ -17148,6 +17155,7 @@ export type CommunityMembersFragment = {
     profile: {
       __typename?: 'Profile';
       id: string;
+      url: string;
       displayName: string;
       location?: { __typename?: 'Location'; country: string; city: string } | undefined;
       visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
@@ -17171,6 +17179,7 @@ export type CommunityMembersFragment = {
     profile: {
       __typename?: 'Profile';
       id: string;
+      url: string;
       displayName: string;
       location?: { __typename?: 'Location'; country: string; city: string } | undefined;
       visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
@@ -17195,6 +17204,7 @@ export type CommunityMembersFragment = {
       __typename?: 'Profile';
       id: string;
       displayName: string;
+      url: string;
       description?: string | undefined;
       visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
       location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
@@ -17210,6 +17220,7 @@ export type CommunityMembersFragment = {
       __typename?: 'Profile';
       id: string;
       displayName: string;
+      url: string;
       description?: string | undefined;
       visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
       location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
