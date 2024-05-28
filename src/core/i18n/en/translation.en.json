@@ -2440,6 +2440,33 @@
         "help": "Credentials that the user holds issued by trusted parties"
       }
     },
+    "virtual-contributor-profile": {
+      "default-name": "Alkemio Help",
+      "description": "Description",
+      "references": "References",
+      "host": "Host",
+      "sections": {
+        "knowledge": {
+          "title": "Knowledge",
+          "description": "Answers {{name}} gives are based on the body of knowledge that is specified in the following Space:"
+        },
+
+        "personality": {
+          "title": "Basic Prompts & Engine",
+          "description": "To allow people to interact with the body of knowledge described above, Alkemio uses an engine and a basic set of instructions. These instructions make sure that the Virtual Contributor for example only answers questions using the specified body of knowledge so you can trust the answers it is giving."
+        },
+        "context": {
+          "title": "Context",
+          "description": "{{name}} uses the following information from the Space it is invited to so it can provide you with meaningful answers:",
+          "bullets": "<ul><li>Space about page: <ul><li>Name, Tagline, location, etc.</li><li>Context information</li><li>Statistics</li></ul></li></ul>"
+        },
+        "privacy": {
+          "title": "Privacy",
+          "description": "For Alkemio, safeguarding your data is of utmost importance. We are committed to maintaining the security and privacy of your information.",
+          "bullets": "<ul><li>When interacting with a Virtual Contributor, only the data explicitly specified on the left (Context) is used to generate meaningful answers.</li><li>Importantly, your (Space) data is not utilized for training the Virtual Contributor.</li><li>Additionally, please note that questions and answers exchanged with the Virtual Contributor may be visible to the Alkemio team.</li></ul>"
+        }
+      }
+    },
     "user-credentials": {
       "your-credentials": {
         "title": "My Verifiable Credentials",
