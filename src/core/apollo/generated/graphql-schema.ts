@@ -23230,13 +23230,6 @@ export type VirtualContributorAvailablePersonasQuery = {
     id: string;
     engine: VirtualContributorEngine;
     dataAccessMode: VirtualPersonaAccessMode;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      displayName: string;
-      description?: string | undefined;
-      avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-    };
   }>;
 };
 

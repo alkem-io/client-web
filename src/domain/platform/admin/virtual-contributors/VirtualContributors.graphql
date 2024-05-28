@@ -38,13 +38,5 @@ query virtualContributorAvailablePersonas {
     id
     engine
     dataAccessMode
-    profile {
-      id
-      displayName
-      description
-      avatar: visual(type: AVATAR) {
-        ...VisualUri
-      }
-    }
   }
 }

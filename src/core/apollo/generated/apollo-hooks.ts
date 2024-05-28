@@ -19220,17 +19220,8 @@ export const VirtualContributorAvailablePersonasDocument = gql`
       id
       engine
       dataAccessMode
-      profile {
-        id
-        displayName
-        description
-        avatar: visual(type: AVATAR) {
-          ...VisualUri
-        }
-      }
     }
   }
-  ${VisualUriFragmentDoc}
 `;
 
 /**
