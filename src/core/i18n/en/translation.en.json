@@ -195,6 +195,7 @@
     }
   },
   "common": {
+    "account": "Account",
     "all": "All",
     "knowledge-base": "Knowledge base",
     "or": "Or",
@@ -1351,7 +1352,7 @@
       },
       "read-access": "Allow read access for non-space members to Subspaces",
       "about": "About this Space",
-      "visibility": "This Space is currently in <strong>{{visibility}}</strong> mode",
+      "visibility": "This Space is currently in <strong>{{mode}}</strong> mode",
       "readOnly": "If you want to change any of this information, please contact the Alkemio team here."
     },
     "deleteSpace": {
@@ -1779,6 +1780,15 @@
               "title": "Delete this document?",
               "content": "Are you sure that you want to delete {{fileName}}?"
             }
+          },
+          "account": {
+            "description": "",
+            "urlTitle": "URL",
+            "visibilityTitle": "Visibility",
+            "visibilityMode": "This Space is currently in <strong>{{mode}}</strong> mode",
+            "hostTitle": "Host",
+            "contactsLinkText": "If you want to change any of these settings, please contact the Alkemio team here.",
+            "contactsLink": "https://www.alkemio.org/support/"
           }
         }
       },
