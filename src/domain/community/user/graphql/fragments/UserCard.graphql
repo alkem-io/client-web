@@ -4,6 +4,7 @@ fragment UserCard on User {
   isContactable
   profile {
     id
+    url
     displayName
     location {
       country

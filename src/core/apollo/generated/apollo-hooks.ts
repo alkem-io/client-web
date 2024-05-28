@@ -1215,6 +1215,7 @@ export const BasicOrganizationDetailsFragmentDoc = gql`
     nameID
     profile {
       id
+      url
       displayName
       visual(type: AVATAR) {
         ...VisualUri
@@ -1251,6 +1252,7 @@ export const OrganizationDetailsFragmentDoc = gql`
     nameID
     profile {
       id
+      url
       displayName
       avatar: visual(type: AVATAR) {
         ...VisualUri
@@ -1806,6 +1808,7 @@ export const UserCardFragmentDoc = gql`
     isContactable
     profile {
       id
+      url
       displayName
       location {
         country
@@ -1834,6 +1837,7 @@ export const OrganizationCardFragmentDoc = gql`
     profile {
       id
       displayName
+      url
       visual(type: AVATAR) {
         ...VisualUri
       }
@@ -2017,6 +2021,7 @@ export const AssociatedOrganizationDetailsFragmentDoc = gql`
     nameID
     profile {
       id
+      url
       tagline
       displayName
       description
