@@ -17,6 +17,13 @@ fragment AdminSpace on Space {
         enabled
       }
     }
+    host {
+      id
+      profile {
+        id
+        displayName
+      }
+    }
   }
   profile {
     id

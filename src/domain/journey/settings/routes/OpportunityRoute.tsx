@@ -7,6 +7,7 @@ import OpportunityCommunicationsPage from '../../../platform/admin/opportunity/p
 import OpportunityContextPage from '../../../platform/admin/opportunity/pages/OpportunityContext/OpportunityContextPage';
 import OpportunityProfilePage from '../../../platform/admin/opportunity/pages/OpportunityProfile/OpportunityProfilePage';
 import CommunityGroupsRoute from '../../../platform/admin/community/routes/CommunityGroupsAdminRoutes';
+import OpportunitySettingsPage from '../../../platform/admin/opportunity/pages/OpportunitySettings/OpportunitySettingsPage';
 import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
 import NonSpaceAdminRedirect from '../nonSpaceAdminRedirect/NonSpaceAdminRedirect';
 
@@ -35,6 +36,7 @@ export const OpportunityRoute = ({ parentCommunityId }: OpportunityRouteProps) =
               <CommunityGroupsRoute communityId={subspace?.community?.id} parentCommunityId={parentCommunityId} />
             }
           />
+          <Route path="settings" element={<OpportunitySettingsPage />} />
           <Route path="*" element={<Error404 />} />
         </Routes>
       </StorageConfigContextProvider>

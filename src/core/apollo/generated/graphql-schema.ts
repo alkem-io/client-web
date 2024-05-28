@@ -1402,6 +1402,8 @@ export type ConvertSubsubspaceToSubspaceInput = {
 export type CreateAccountInput = {
   /** The host Organization or User for the account */
   hostID: Scalars['UUID_NAMEID'];
+  /** The plan selected for the account */
+  planID?: InputMaybe<Scalars['UUID']>;
   /** The root Space to be created. */
   spaceData: CreateSpaceInput;
 };
@@ -2309,8 +2311,20 @@ export type LicensePlan = {
   enabled: Scalars['Boolean'];
   /** The ID of the entity */
   id: Scalars['UUID'];
+  /** Is this plan free? */
+  isFree: Scalars['Boolean'];
   /** The name of the License Plan */
   name: Scalars['String'];
+  /** The price per month of this plan. */
+  pricePerMonth?: Maybe<Scalars['Float']>;
+  /** Does this plan require contact support */
+  requiresContactSupport: Scalars['Boolean'];
+  /** Does this plan require a payment method? */
+  requiresPaymentMethod: Scalars['Boolean'];
+  /** The sorting order for this Plan. */
+  sortOrder: Scalars['Float'];
+  /** Is there a trial period enabled */
+  trialEnabled: Scalars['Boolean'];
 };
 
 export type LicensePolicy = {
@@ -2535,6 +2549,8 @@ export type MeQueryResults = {
   __typename?: 'MeQueryResults';
   /** The applications of the current authenticated user */
   applications: Array<ApplicationForRoleResult>;
+  /** Can I create a free space? */
+  canCreateFreeSpace: Scalars['Boolean'];
   /** The query id */
   id: Scalars['String'];
   /** The invitations of the current authenticated user */
@@ -3736,6 +3752,8 @@ export type PlatformLocations = {
   blog: Scalars['String'];
   /** URL where users can see the community forum */
   community: Scalars['String'];
+  /** URL for the link Contact in the HomePage and to create a new space with Enterprise plan */
+  contactsupport: Scalars['String'];
   /** Main domain of the environment */
   domain: Scalars['String'];
   /** Name of the environment */
@@ -12642,6 +12660,7 @@ export type AuthorDetailsQuery = {
     profile: {
       __typename?: 'Profile';
       id: string;
+      url: string;
       displayName: string;
       location?: { __typename?: 'Location'; country: string; city: string } | undefined;
       visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
@@ -14409,6 +14428,7 @@ export type EntityDashboardCommunityFragment = {
     profile: {
       __typename?: 'Profile';
       id: string;
+      url: string;
       tagline: string;
       displayName: string;
       description?: string | undefined;
@@ -14629,6 +14649,7 @@ export type BasicOrganizationDetailsFragment = {
   profile: {
     __typename?: 'Profile';
     id: string;
+    url: string;
     displayName: string;
     visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
   };
@@ -14767,6 +14788,7 @@ export type CommunityMembersListQuery = {
             profile: {
               __typename?: 'Profile';
               id: string;
+              url: string;
               displayName: string;
               description?: string | undefined;
               avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
@@ -14790,6 +14812,7 @@ export type CommunityMembersListQuery = {
             profile: {
               __typename?: 'Profile';
               id: string;
+              url: string;
               displayName: string;
               description?: string | undefined;
               avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
@@ -14919,6 +14942,7 @@ export type CommunityMembersDetailsFragment = {
     profile: {
       __typename?: 'Profile';
       id: string;
+      url: string;
       displayName: string;
       description?: string | undefined;
       avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
@@ -14942,6 +14966,7 @@ export type CommunityMembersDetailsFragment = {
     profile: {
       __typename?: 'Profile';
       id: string;
+      url: string;
       displayName: string;
       description?: string | undefined;
       avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
@@ -15113,6 +15138,7 @@ export type AllOrganizationsQuery = {
       profile: {
         __typename?: 'Profile';
         id: string;
+        url: string;
         displayName: string;
         visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
       };
@@ -15513,6 +15539,7 @@ export type AssociatedOrganizationQuery = {
     profile: {
       __typename?: 'Profile';
       id: string;
+      url: string;
       tagline: string;
       displayName: string;
       description?: string | undefined;
@@ -15532,6 +15559,7 @@ export type AssociatedOrganizationDetailsFragment = {
   profile: {
     __typename?: 'Profile';
     id: string;
+    url: string;
     tagline: string;
     displayName: string;
     description?: string | undefined;
@@ -15787,6 +15815,7 @@ export type OrganizationCardFragment = {
     __typename?: 'Profile';
     id: string;
     displayName: string;
+    url: string;
     description?: string | undefined;
     visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
     location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
@@ -15801,6 +15830,7 @@ export type OrganizationDetailsFragment = {
   profile: {
     __typename?: 'Profile';
     id: string;
+    url: string;
     displayName: string;
     description?: string | undefined;
     avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
@@ -16442,6 +16472,7 @@ export type UserCardFragment = {
   profile: {
     __typename?: 'Profile';
     id: string;
+    url: string;
     displayName: string;
     location?: { __typename?: 'Location'; country: string; city: string } | undefined;
     visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
@@ -17233,6 +17264,7 @@ export type SpaceCommunityContributorsQuery = {
                     __typename?: 'Profile';
                     id: string;
                     displayName: string;
+                    url: string;
                     description?: string | undefined;
                     visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                     location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
@@ -17258,6 +17290,7 @@ export type SpaceCommunityContributorsQuery = {
               profile: {
                 __typename?: 'Profile';
                 id: string;
+                url: string;
                 displayName: string;
                 location?: { __typename?: 'Location'; country: string; city: string } | undefined;
                 visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
@@ -17281,6 +17314,7 @@ export type SpaceCommunityContributorsQuery = {
               profile: {
                 __typename?: 'Profile';
                 id: string;
+                url: string;
                 displayName: string;
                 location?: { __typename?: 'Location'; country: string; city: string } | undefined;
                 visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
@@ -17305,6 +17339,7 @@ export type SpaceCommunityContributorsQuery = {
                 __typename?: 'Profile';
                 id: string;
                 displayName: string;
+                url: string;
                 description?: string | undefined;
                 visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                 location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
@@ -17331,6 +17366,7 @@ export type CommunityMembersFragment = {
     profile: {
       __typename?: 'Profile';
       id: string;
+      url: string;
       displayName: string;
       location?: { __typename?: 'Location'; country: string; city: string } | undefined;
       visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
@@ -17354,6 +17390,7 @@ export type CommunityMembersFragment = {
     profile: {
       __typename?: 'Profile';
       id: string;
+      url: string;
       displayName: string;
       location?: { __typename?: 'Location'; country: string; city: string } | undefined;
       visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
@@ -17378,6 +17415,7 @@ export type CommunityMembersFragment = {
       __typename?: 'Profile';
       id: string;
       displayName: string;
+      url: string;
       description?: string | undefined;
       visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
       location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
@@ -17393,6 +17431,7 @@ export type CommunityMembersFragment = {
       __typename?: 'Profile';
       id: string;
       displayName: string;
+      url: string;
       description?: string | undefined;
       visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
       location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
@@ -18171,6 +18210,7 @@ export type AboutPageMembersQuery = {
               profile: {
                 __typename?: 'Profile';
                 id: string;
+                url: string;
                 tagline: string;
                 displayName: string;
                 description?: string | undefined;
@@ -18320,6 +18360,7 @@ export type JourneyDataQuery = {
               profile: {
                 __typename?: 'Profile';
                 id: string;
+                url: string;
                 tagline: string;
                 displayName: string;
                 description?: string | undefined;
@@ -18473,6 +18514,7 @@ export type JourneyCommunityFragment = {
     profile: {
       __typename?: 'Profile';
       id: string;
+      url: string;
       tagline: string;
       displayName: string;
       description?: string | undefined;
@@ -18942,6 +18984,7 @@ export type SpaceCommunityPageQuery = {
         profile: {
           __typename?: 'Profile';
           id: string;
+          url: string;
           tagline: string;
           displayName: string;
           description?: string | undefined;
@@ -19033,6 +19076,7 @@ export type CommunityPageCommunityFragment = {
     profile: {
       __typename?: 'Profile';
       id: string;
+      url: string;
       tagline: string;
       displayName: string;
       description?: string | undefined;
@@ -19622,6 +19666,7 @@ export type SpacePageQuery = {
               profile: {
                 __typename?: 'Profile';
                 id: string;
+                url: string;
                 tagline: string;
                 displayName: string;
                 description?: string | undefined;
@@ -19906,6 +19951,7 @@ export type SpacePageFragment = {
       profile: {
         __typename?: 'Profile';
         id: string;
+        url: string;
         tagline: string;
         displayName: string;
         description?: string | undefined;
@@ -20151,6 +20197,7 @@ export type LegacySubspaceDashboardPageQuery = {
               profile: {
                 __typename?: 'Profile';
                 id: string;
+                url: string;
                 tagline: string;
                 displayName: string;
                 description?: string | undefined;
@@ -20332,6 +20379,7 @@ export type SubspacePageFragment = {
       profile: {
         __typename?: 'Profile';
         id: string;
+        url: string;
         tagline: string;
         displayName: string;
         description?: string | undefined;
@@ -20366,6 +20414,60 @@ export type SubspacePageFragment = {
     authorization?:
       | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
+  };
+};
+
+export type CreateNewSpaceMutationVariables = Exact<{
+  hostId: Scalars['UUID_NAMEID'];
+  spaceData: CreateSpaceInput;
+  planId?: InputMaybe<Scalars['UUID']>;
+}>;
+
+export type CreateNewSpaceMutation = {
+  __typename?: 'Mutation';
+  createAccount: { __typename?: 'Account'; id: string; spaceID: string };
+};
+
+export type PlansTableQueryVariables = Exact<{ [key: string]: never }>;
+
+export type PlansTableQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    licensing: {
+      __typename?: 'Licensing';
+      id: string;
+      plans: Array<{
+        __typename?: 'LicensePlan';
+        id: string;
+        name: string;
+        enabled: boolean;
+        sortOrder: number;
+        pricePerMonth?: number | undefined;
+        isFree: boolean;
+        trialEnabled: boolean;
+        requiresPaymentMethod: boolean;
+        requiresContactSupport: boolean;
+      }>;
+    };
+  };
+};
+
+export type FreePlanAvailabilityQueryVariables = Exact<{ [key: string]: never }>;
+
+export type FreePlanAvailabilityQuery = {
+  __typename?: 'Query';
+  me: { __typename?: 'MeQueryResults'; canCreateFreeSpace: boolean };
+};
+
+export type ContactSupportLocationQueryVariables = Exact<{ [key: string]: never }>;
+
+export type ContactSupportLocationQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    configuration: { __typename?: 'Config'; locations: { __typename?: 'PlatformLocations'; contactsupport: string } };
   };
 };
 
@@ -21145,6 +21247,7 @@ export type SpaceProfileFragment = {
       profile: {
         __typename?: 'Profile';
         id: string;
+        url: string;
         tagline: string;
         displayName: string;
         description?: string | undefined;
@@ -21610,6 +21713,7 @@ export type SubspacePageQuery = {
               profile: {
                 __typename?: 'Profile';
                 id: string;
+                url: string;
                 tagline: string;
                 displayName: string;
                 description?: string | undefined;
@@ -21720,6 +21824,7 @@ export type SubspacePageSpaceFragment = {
       profile: {
         __typename?: 'Profile';
         id: string;
+        url: string;
         tagline: string;
         displayName: string;
         description?: string | undefined;
@@ -21822,6 +21927,19 @@ export type AdminSpacesListQuery = {
         visibility: SpaceVisibility;
         featureFlags: Array<{ __typename?: 'LicenseFeatureFlag'; name: LicenseFeatureFlagName; enabled: boolean }>;
       };
+      host?:
+        | {
+            __typename?: 'Organization';
+            id: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string };
+          }
+        | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+        | {
+            __typename?: 'VirtualContributor';
+            id: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string };
+          }
+        | undefined;
     };
     profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
     authorization?:
@@ -21843,6 +21961,19 @@ export type AdminSpaceFragment = {
       visibility: SpaceVisibility;
       featureFlags: Array<{ __typename?: 'LicenseFeatureFlag'; name: LicenseFeatureFlagName; enabled: boolean }>;
     };
+    host?:
+      | {
+          __typename?: 'Organization';
+          id: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string };
+        }
+      | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+      | {
+          __typename?: 'VirtualContributor';
+          id: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string };
+        }
+      | undefined;
   };
   profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
   authorization?:
@@ -28018,6 +28149,7 @@ export type NewMembershipsQuery = {
       createdBy: string;
       createdDate: Date;
     }>;
+    mySpaces: Array<{ __typename?: 'MySpaceResults'; space: { __typename?: 'Space'; id: string; spaceID: string } }>;
   };
 };
 

@@ -11,7 +11,7 @@ export interface DialogTitleProps {
 }
 
 /**
- * @deprecated
+ * @deprecated - use DialogHeader
  */
 const DialogTitle = ({ children, onClose, classes, ...containerProps }: PropsWithChildren<DialogTitleProps>) => {
   const { t } = useTranslation();

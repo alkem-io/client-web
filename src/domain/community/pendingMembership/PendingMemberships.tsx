@@ -100,8 +100,6 @@ export const InvitationHydrator = ({
       return undefined;
     }
 
-    console.log(journey, getChildJourneyTypeName(invitation), invitation);
-
     return {
       id: invitation.id,
       welcomeMessage: invitation.welcomeMessage,

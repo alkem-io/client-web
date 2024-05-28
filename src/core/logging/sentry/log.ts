@@ -6,6 +6,7 @@ export enum TagCategoryValues {
   UI = 'UI',
   WHITEBOARD = 'WHITEBOARD',
   CONFIG = 'CONFIG',
+  SPACE_CREATION = 'SPACE_CREATION',
 }
 
 interface Tags {
