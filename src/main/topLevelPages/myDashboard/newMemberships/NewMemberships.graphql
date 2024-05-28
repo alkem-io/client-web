@@ -6,19 +6,24 @@ query NewMemberships {
       displayName
       state
       spaceID
-      subspaceID
-      subsubspaceID
+      spaceLevel
       createdDate
     }
     invitations(states: ["invited", "accepted"]) {
       id
       spaceID
+      spaceLevel
       state
-      subspaceID
       welcomeMessage
       createdBy
       createdDate
       state
+    }
+    mySpaces(showOnlyMyCreatedSpaces: true) {
+      space {
+        id
+        spaceID: id
+      }
     }
   }
 }

@@ -18,7 +18,7 @@ import UserRoute from '../../domain/community/user/routing/UserRoute';
 import { SpaceRoute } from '../../domain/journey/space/routing/SpaceRoute';
 import { SpaceExplorerPage } from '../topLevelPages/topLevelSpaces/SpaceExplorerPage';
 import { IdentityRoute } from '../../core/auth/authentication/routing/IdentityRoute';
-import { ROUTE_HOME } from '../../domain/platform/routes/constants';
+import { ROUTE_CREATE_SPACE, ROUTE_HOME } from '../../domain/platform/routes/constants';
 import { WithApmTransaction } from '../../domain/shared/components';
 import devRoute from '../../dev/routes';
 import RedirectToLanding from '../../domain/platform/routes/RedirectToLanding';
@@ -31,6 +31,7 @@ import useRedirectToIdentityDomain from '../../core/auth/authentication/routing/
 import { EntityPageLayoutHolder, NotFoundPageLayout, RenderPoint } from '../../domain/journey/common/EntityPageLayout';
 import RedirectToWelcomeSite from '../../domain/platform/routes/RedirectToWelcomeSite';
 import VCProfilePage from '../../domain/community/virtualContributor/vcProfilePage/VCProfilePage';
+import CreateSpaceDialog from '../../domain/journey/space/createSpace/CreateSpaceDialog';
 
 export const TopLevelRoutes: FC = () => {
   useRedirectToIdentityDomain();
@@ -47,6 +48,19 @@ export const TopLevelRoutes: FC = () => {
       >
         <Route index element={<RedirectToLanding />} />
         <Route path="landing" element={<RedirectToWelcomeSite />} />
+        <Route
+          path={ROUTE_CREATE_SPACE}
+          element={
+            <NonIdentity>
+              <WithApmTransaction path={ROUTE_CREATE_SPACE}>
+                <>
+                  <HomePage />
+                  <CreateSpaceDialog />
+                </>
+              </WithApmTransaction>
+            </NonIdentity>
+          }
+        />
         <Route
           path={ROUTE_HOME}
           element={

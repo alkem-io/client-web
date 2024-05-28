@@ -5,12 +5,14 @@ export interface GridContainerProps extends BoxProps {
   disablePadding?: boolean;
   sameHeight?: boolean;
   noWrap?: boolean;
+  disableGap?: boolean;
 }
 
 const GridContainer = ({
   disablePadding = false,
-  noWrap = false,
   sameHeight = false,
+  noWrap = false,
+  disableGap = false,
   ...props
 }: GridContainerProps) => {
   return (
@@ -19,7 +21,7 @@ const GridContainer = ({
       flexDirection="row"
       flexWrap={noWrap ? 'nowrap' : 'wrap'}
       alignItems={sameHeight ? 'stretch' : 'start'}
-      gap={gutters()}
+      gap={disableGap ? 0 : gutters()}
       padding={disablePadding ? undefined : gutters()}
       {...props}
     />

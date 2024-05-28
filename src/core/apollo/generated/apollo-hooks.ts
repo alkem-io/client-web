@@ -582,25 +582,36 @@ export const ReactionDetailsFragmentDoc = gql`
     }
   }
 `;
-export const SenderProfileFragmentDoc = gql`
-  fragment SenderProfile on Profile {
+export const VisualUriFragmentDoc = gql`
+  fragment VisualUri on Visual {
     id
-    displayName
-    url
-    type
-    avatar: visual(type: AVATAR) {
+    uri
+    name
+  }
+`;
+export const ContributorDetailsFragmentDoc = gql`
+  fragment ContributorDetails on Contributor {
+    id
+    nameID
+    profile {
       id
-      uri
-    }
-    tagsets {
-      ...TagsetDetails
-    }
-    location {
-      id
-      city
-      country
+      displayName
+      url
+      avatar: visual(type: AVATAR) {
+        ...VisualUri
+      }
+      description
+      tagsets {
+        ...TagsetDetails
+      }
+      location {
+        id
+        country
+        city
+      }
     }
   }
+  ${VisualUriFragmentDoc}
   ${TagsetDetailsFragmentDoc}
 `;
 export const MessageDetailsFragmentDoc = gql`
@@ -613,22 +624,11 @@ export const MessageDetailsFragmentDoc = gql`
     }
     threadID
     sender {
-      ... on User {
-        id
-        profile {
-          ...SenderProfile
-        }
-      }
-      ... on VirtualContributor {
-        id
-        profile {
-          ...SenderProfile
-        }
-      }
+      ...ContributorDetails
     }
   }
   ${ReactionDetailsFragmentDoc}
-  ${SenderProfileFragmentDoc}
+  ${ContributorDetailsFragmentDoc}
 `;
 export const CommentsWithMessagesFragmentDoc = gql`
   fragment CommentsWithMessages on Room {
@@ -703,13 +703,6 @@ export const CalloutDetailsFragmentDoc = gql`
   ${WhiteboardDetailsFragmentDoc}
   ${LinkDetailsWithAuthorizationFragmentDoc}
   ${CommentsWithMessagesFragmentDoc}
-`;
-export const VisualUriFragmentDoc = gql`
-  fragment VisualUri on Visual {
-    id
-    uri
-    name
-  }
 `;
 export const WhiteboardCollectionCalloutCardFragmentDoc = gql`
   fragment WhiteboardCollectionCalloutCard on Whiteboard {
@@ -2307,21 +2300,6 @@ export const SpaceInfoFragmentDoc = gql`
   }
   ${SpaceDetailsFragmentDoc}
 `;
-export const SpaceWelcomeBlockContributorProfileFragmentDoc = gql`
-  fragment SpaceWelcomeBlockContributorProfile on Profile {
-    id
-    displayName
-    location {
-      id
-      city
-      country
-    }
-    tagsets {
-      id
-      tags
-    }
-  }
-`;
 export const DashboardTopCalloutFragmentDoc = gql`
   fragment DashboardTopCallout on Callout {
     id
@@ -2383,6 +2361,21 @@ export const EntityDashboardCommunityFragmentDoc = gql`
   ${AssociatedOrganizationDetailsFragmentDoc}
   ${DashboardContributingOrganizationFragmentDoc}
 `;
+export const SpaceWelcomeBlockContributorProfileFragmentDoc = gql`
+  fragment SpaceWelcomeBlockContributorProfile on Profile {
+    id
+    displayName
+    location {
+      id
+      city
+      country
+    }
+    tagsets {
+      id
+      tags
+    }
+  }
+`;
 export const SpacePageFragmentDoc = gql`
   fragment SpacePage on Space {
     id
@@ -2390,10 +2383,7 @@ export const SpacePageFragmentDoc = gql`
     account {
       id
       host {
-        ...AssociatedOrganizationDetails
-        profile {
-          ...SpaceWelcomeBlockContributorProfile
-        }
+        ...ContributorDetails
       }
     }
     metrics {
@@ -2446,13 +2436,13 @@ export const SpacePageFragmentDoc = gql`
       }
     }
   }
-  ${AssociatedOrganizationDetailsFragmentDoc}
-  ${SpaceWelcomeBlockContributorProfileFragmentDoc}
+  ${ContributorDetailsFragmentDoc}
   ${VisualUriFragmentDoc}
   ${TagsetDetailsFragmentDoc}
   ${DashboardTopCalloutsFragmentDoc}
   ${DashboardTimelineAuthorizationFragmentDoc}
   ${EntityDashboardCommunityFragmentDoc}
+  ${SpaceWelcomeBlockContributorProfileFragmentDoc}
 `;
 export const SubspacePageFragmentDoc = gql`
   fragment SubspacePage on Space {
@@ -2700,6 +2690,7 @@ export const SubspaceInfoFragmentDoc = gql`
     authorization {
       id
       myPrivileges
+      anonymousReadAccess
     }
     context {
       id
@@ -6173,6 +6164,7 @@ export const CreatePostFromContributeTabDocument = gql`
           id
           displayName
           description
+          url
           tagset {
             ...TagsetDetails
           }
@@ -10406,7 +10398,7 @@ export const CommunityMembersListDocument = gql`
       space(ID: $spaceId) @include(if: $includeSpaceHost) {
         account {
           host {
-            ...OrganizationDetails
+            ...ContributorDetails
           }
         }
       }
@@ -10415,7 +10407,7 @@ export const CommunityMembersListDocument = gql`
       }
     }
   }
-  ${OrganizationDetailsFragmentDoc}
+  ${ContributorDetailsFragmentDoc}
   ${CommunityMembersDetailsFragmentDoc}
 `;
 
@@ -13762,14 +13754,12 @@ export const UserProviderDocument = gql`
         displayName
         state
         spaceID
-        subspaceID
-        subsubspaceID
+        spaceLevel
       }
       invitations(states: ["invited"]) {
         id
         spaceID
-        subspaceID
-        subsubspaceID
+        spaceLevel
         welcomeMessage
         createdBy
         createdDate
@@ -14612,8 +14602,9 @@ export const AboutPageNonMembersDocument = gql`
           }
         }
         account {
+          id
           host {
-            ...AssociatedOrganizationDetails
+            ...ContributorDetails
           }
         }
         metrics {
@@ -14647,7 +14638,7 @@ export const AboutPageNonMembersDocument = gql`
   }
   ${TagsetDetailsFragmentDoc}
   ${VisualFullFragmentDoc}
-  ${AssociatedOrganizationDetailsFragmentDoc}
+  ${ContributorDetailsFragmentDoc}
   ${MetricsItemFragmentDoc}
   ${ContextTabFragmentDoc}
 `;
@@ -14865,7 +14856,7 @@ export const JourneyDataDocument = gql`
         account {
           id
           host {
-            ...AssociatedOrganizationDetails
+            ...ContributorDetails
           }
         }
       }
@@ -14875,7 +14866,7 @@ export const JourneyDataDocument = gql`
   ${ContextJourneyDataFragmentDoc}
   ${JourneyCommunityFragmentDoc}
   ${MetricsItemFragmentDoc}
-  ${AssociatedOrganizationDetailsFragmentDoc}
+  ${ContributorDetailsFragmentDoc}
 `;
 
 /**
@@ -15360,7 +15351,7 @@ export const SpaceCommunityPageDocument = gql`
       account {
         id
         host {
-          ...AssociatedOrganizationDetails
+          ...ContributorDetails
         }
       }
       community {
@@ -15371,7 +15362,7 @@ export const SpaceCommunityPageDocument = gql`
       }
     }
   }
-  ${AssociatedOrganizationDetailsFragmentDoc}
+  ${ContributorDetailsFragmentDoc}
   ${CommunityPageCommunityFragmentDoc}
 `;
 
@@ -15860,6 +15851,246 @@ export function refetchLegacySubspaceDashboardPageQuery(
   variables: SchemaTypes.LegacySubspaceDashboardPageQueryVariables
 ) {
   return { query: LegacySubspaceDashboardPageDocument, variables: variables };
+}
+
+export const CreateNewSpaceDocument = gql`
+  mutation CreateNewSpace($hostId: UUID_NAMEID!, $spaceData: CreateSpaceInput!, $planId: UUID) {
+    createAccount(accountData: { hostID: $hostId, spaceData: $spaceData, planID: $planId }) {
+      id
+      spaceID
+    }
+  }
+`;
+export type CreateNewSpaceMutationFn = Apollo.MutationFunction<
+  SchemaTypes.CreateNewSpaceMutation,
+  SchemaTypes.CreateNewSpaceMutationVariables
+>;
+
+/**
+ * __useCreateNewSpaceMutation__
+ *
+ * To run a mutation, you first call `useCreateNewSpaceMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateNewSpaceMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createNewSpaceMutation, { data, loading, error }] = useCreateNewSpaceMutation({
+ *   variables: {
+ *      hostId: // value for 'hostId'
+ *      spaceData: // value for 'spaceData'
+ *      planId: // value for 'planId'
+ *   },
+ * });
+ */
+export function useCreateNewSpaceMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.CreateNewSpaceMutation,
+    SchemaTypes.CreateNewSpaceMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.CreateNewSpaceMutation, SchemaTypes.CreateNewSpaceMutationVariables>(
+    CreateNewSpaceDocument,
+    options
+  );
+}
+
+export type CreateNewSpaceMutationHookResult = ReturnType<typeof useCreateNewSpaceMutation>;
+export type CreateNewSpaceMutationResult = Apollo.MutationResult<SchemaTypes.CreateNewSpaceMutation>;
+export type CreateNewSpaceMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.CreateNewSpaceMutation,
+  SchemaTypes.CreateNewSpaceMutationVariables
+>;
+export const PlansTableDocument = gql`
+  query PlansTable {
+    platform {
+      id
+      licensing {
+        id
+        plans {
+          id
+          name
+          enabled
+          sortOrder
+          pricePerMonth
+          isFree
+          trialEnabled
+          requiresPaymentMethod
+          requiresContactSupport
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __usePlansTableQuery__
+ *
+ * To run a query within a React component, call `usePlansTableQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePlansTableQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePlansTableQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function usePlansTableQuery(
+  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.PlansTableQuery, SchemaTypes.PlansTableQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.PlansTableQuery, SchemaTypes.PlansTableQueryVariables>(
+    PlansTableDocument,
+    options
+  );
+}
+
+export function usePlansTableLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.PlansTableQuery, SchemaTypes.PlansTableQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.PlansTableQuery, SchemaTypes.PlansTableQueryVariables>(
+    PlansTableDocument,
+    options
+  );
+}
+
+export type PlansTableQueryHookResult = ReturnType<typeof usePlansTableQuery>;
+export type PlansTableLazyQueryHookResult = ReturnType<typeof usePlansTableLazyQuery>;
+export type PlansTableQueryResult = Apollo.QueryResult<
+  SchemaTypes.PlansTableQuery,
+  SchemaTypes.PlansTableQueryVariables
+>;
+export function refetchPlansTableQuery(variables?: SchemaTypes.PlansTableQueryVariables) {
+  return { query: PlansTableDocument, variables: variables };
+}
+
+export const FreePlanAvailabilityDocument = gql`
+  query FreePlanAvailability {
+    me {
+      canCreateFreeSpace
+    }
+  }
+`;
+
+/**
+ * __useFreePlanAvailabilityQuery__
+ *
+ * To run a query within a React component, call `useFreePlanAvailabilityQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFreePlanAvailabilityQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFreePlanAvailabilityQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useFreePlanAvailabilityQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.FreePlanAvailabilityQuery,
+    SchemaTypes.FreePlanAvailabilityQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.FreePlanAvailabilityQuery, SchemaTypes.FreePlanAvailabilityQueryVariables>(
+    FreePlanAvailabilityDocument,
+    options
+  );
+}
+
+export function useFreePlanAvailabilityLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.FreePlanAvailabilityQuery,
+    SchemaTypes.FreePlanAvailabilityQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.FreePlanAvailabilityQuery, SchemaTypes.FreePlanAvailabilityQueryVariables>(
+    FreePlanAvailabilityDocument,
+    options
+  );
+}
+
+export type FreePlanAvailabilityQueryHookResult = ReturnType<typeof useFreePlanAvailabilityQuery>;
+export type FreePlanAvailabilityLazyQueryHookResult = ReturnType<typeof useFreePlanAvailabilityLazyQuery>;
+export type FreePlanAvailabilityQueryResult = Apollo.QueryResult<
+  SchemaTypes.FreePlanAvailabilityQuery,
+  SchemaTypes.FreePlanAvailabilityQueryVariables
+>;
+export function refetchFreePlanAvailabilityQuery(variables?: SchemaTypes.FreePlanAvailabilityQueryVariables) {
+  return { query: FreePlanAvailabilityDocument, variables: variables };
+}
+
+export const ContactSupportLocationDocument = gql`
+  query ContactSupportLocation {
+    platform {
+      configuration {
+        locations {
+          contactsupport
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useContactSupportLocationQuery__
+ *
+ * To run a query within a React component, call `useContactSupportLocationQuery` and pass it any options that fit your needs.
+ * When your component renders, `useContactSupportLocationQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useContactSupportLocationQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useContactSupportLocationQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.ContactSupportLocationQuery,
+    SchemaTypes.ContactSupportLocationQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.ContactSupportLocationQuery, SchemaTypes.ContactSupportLocationQueryVariables>(
+    ContactSupportLocationDocument,
+    options
+  );
+}
+
+export function useContactSupportLocationLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.ContactSupportLocationQuery,
+    SchemaTypes.ContactSupportLocationQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.ContactSupportLocationQuery, SchemaTypes.ContactSupportLocationQueryVariables>(
+    ContactSupportLocationDocument,
+    options
+  );
+}
+
+export type ContactSupportLocationQueryHookResult = ReturnType<typeof useContactSupportLocationQuery>;
+export type ContactSupportLocationLazyQueryHookResult = ReturnType<typeof useContactSupportLocationLazyQuery>;
+export type ContactSupportLocationQueryResult = Apollo.QueryResult<
+  SchemaTypes.ContactSupportLocationQuery,
+  SchemaTypes.ContactSupportLocationQueryVariables
+>;
+export function refetchContactSupportLocationQuery(variables?: SchemaTypes.ContactSupportLocationQueryVariables) {
+  return { query: ContactSupportLocationDocument, variables: variables };
 }
 
 export const CreateAccountDocument = gql`
@@ -18881,7 +19112,7 @@ export function refetchAdminVirtualContributorsQuery(variables?: SchemaTypes.Adm
 }
 
 export const CreateVirtualContributorDocument = gql`
-  mutation createVirtualContributor($virtualContributorData: CreateVirtualContributorInput!) {
+  mutation createVirtualContributor($virtualContributorData: CreateVirtualContributorOnAccountInput!) {
     createVirtualContributor(virtualContributorData: $virtualContributorData) {
       id
     }
@@ -18989,7 +19220,6 @@ export const VirtualContributorAvailablePersonasDocument = gql`
       id
       engine
       dataAccessMode
-      nameID
       profile {
         id
         displayName
@@ -19064,7 +19294,6 @@ export const CreateVirtualPersonaDocument = gql`
   mutation createVirtualPersona($virtualPersonaData: CreateVirtualPersonaInput!) {
     createVirtualPersona(virtualPersonaData: $virtualPersonaData) {
       id
-      nameID
       engine
       profile {
         id
@@ -21591,19 +21820,24 @@ export const NewMembershipsDocument = gql`
         displayName
         state
         spaceID
-        subspaceID
-        subsubspaceID
+        spaceLevel
         createdDate
       }
       invitations(states: ["invited", "accepted"]) {
         id
         spaceID
+        spaceLevel
         state
-        subspaceID
         welcomeMessage
         createdBy
         createdDate
         state
+      }
+      mySpaces(showOnlyMyCreatedSpaces: true) {
+        space {
+          id
+          spaceID: id
+        }
       }
     }
   }

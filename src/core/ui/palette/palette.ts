@@ -28,6 +28,7 @@ export const paletteOptions: PaletteOptions = {
   },
   highlight: {
     main: COLOR_POSITIVE_CONTAINER,
+    dark: '#09BCD4',
     contrastText: '#1D384A',
     light: '#DEEFF6',
   },

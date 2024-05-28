@@ -24,7 +24,18 @@ export const useGraphQLClient = (
   // It's guaranteed to be re-run WHEN the deps change, but it can re-run at random time as well.
   // See https://reactjs.org/docs/hooks-reference.html#usememo
   // If that happens, we don't want to lose the cache.
-  const cache = useRef(once(() => new InMemoryCache({ addTypename: true, typePolicies }))).current();
+  const cache = useRef(
+    once(
+      () =>
+        new InMemoryCache({
+          addTypename: true,
+          typePolicies,
+          possibleTypes: {
+            Contributor: ['User', 'Organization', 'VirtualContributor'],
+          },
+        })
+    )
+  ).current();
 
   const errorHandlerLink = useErrorHandlerLink();
   const errorLoggerLink = useErrorLoggerLink(enableErrorLogging);

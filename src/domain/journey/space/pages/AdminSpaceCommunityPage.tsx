@@ -22,7 +22,7 @@ import CommunityVirtualContributors from '../../../community/community/Community
 
 const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   const { t } = useTranslation();
-  const { spaceId, loading: isLoadingSpace, communityId, profile: spaceProfile, isPrivate } = useSpace();
+  const { spaceId, loading: isLoadingSpace, communityId, profile: spaceProfile } = useSpace();
 
   const {
     users,
@@ -102,7 +102,6 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
               currentInvitationsUserIds={currentInvitationsUserIds}
               currentMembersIds={currentMembersIds}
               spaceId={spaceId}
-              isPrivate={isPrivate}
             />
           </PageContentBlockSeamless>
         </PageContentColumn>

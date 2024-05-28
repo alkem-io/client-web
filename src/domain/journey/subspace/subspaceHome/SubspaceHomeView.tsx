@@ -71,13 +71,13 @@ const SubspaceHomeView = ({
     await createVirtualContributor({
       variables: {
         virtualContributorData: {
-          accountId,
-          nameID: spaceNameId,
+          accountID: accountId,
+          nameID: `${spaceNameId}-${new Date().getTime()}`,
           bodyOfKnowledgeType: BodyOfKnowledgeType.Space,
           bodyOfKnowledgeID,
           virtualPersonaID: vpData.virtualPersonas[0].id,
           profileData: {
-            displayName,
+            displayName: `${displayName}-${new Date().toString()}`,
           },
         },
       },

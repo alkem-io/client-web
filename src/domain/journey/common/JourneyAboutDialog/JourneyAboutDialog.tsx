@@ -89,7 +89,7 @@ const JourneyAboutDialog = ({
   journeyLevel,
   leadUsers,
   leadOrganizations,
-  hostOrganizations,
+  host,
   sendMessageToCommunityLeads,
   metrics,
   description,
@@ -245,7 +245,7 @@ const JourneyAboutDialog = ({
                   />
                 </>
               )}
-              {hostOrganizations && (
+              {host && (
                 <EntityDashboardLeadsSection
                   organizationsHeader={t('pages.space.sections.dashboard.organization')}
                   organizationsHeaderIcon={
@@ -253,19 +253,19 @@ const JourneyAboutDialog = ({
                       <InfoOutlinedIcon color="primary" />
                     </Tooltip>
                   }
-                  leadOrganizations={hostOrganizations}
+                  leadOrganizations={host && [host]}
                   leadUsers={undefined}
                 >
-                  {hostOrganizations && hostOrganizations.length > 0 && (
+                  {host && (
                     <Caption
                       component={Link}
                       onClick={() =>
                         sendMessage('organization', {
-                          id: hostOrganizations[0].id,
-                          displayName: hostOrganizations[0].profile.displayName,
-                          avatarUri: hostOrganizations[0].profile.avatar?.uri,
-                          country: hostOrganizations[0].profile.location?.country,
-                          city: hostOrganizations[0].profile.location?.city,
+                          id: host.id,
+                          displayName: host.profile.displayName,
+                          avatarUri: host.profile.avatar?.uri,
+                          country: host.profile.location?.country,
+                          city: host.profile.location?.city,
                         })
                       }
                       sx={{ cursor: 'pointer' }}

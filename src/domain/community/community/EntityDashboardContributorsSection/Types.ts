@@ -1,9 +1,7 @@
 import { WithId } from '../../../../core/utils/WithId';
 import { ContributorCardSquareProps } from '../../contributor/ContributorCardSquare/ContributorCardSquare';
-import {
-  AssociatedOrganizationDetailsFragment,
-  DashboardLeadUserFragment,
-} from '../../../../core/apollo/generated/graphql-schema';
+import { DashboardLeadUserFragment } from '../../../../core/apollo/generated/graphql-schema';
+import { Identifiable } from '../../../../core/utils/Identifiable';
 
 export interface EntityDashboardContributors {
   memberUsers: WithId<ContributorCardSquareProps>[] | undefined;
@@ -12,8 +10,29 @@ export interface EntityDashboardContributors {
   memberOrganizationsCount: number | undefined;
 }
 
+// TODO nameID -> url
+// TODO clean up fetched data
+export interface ContributorViewProps extends Identifiable {
+  nameID: string;
+  profile: {
+    displayName: string;
+    avatar?: {
+      uri: string;
+    };
+    location?: {
+      country: string;
+      city: string;
+    };
+    tagline?: string;
+    tagsets?: {
+      tags: string[];
+    }[];
+    // url: string;
+  };
+}
+
 export interface EntityDashboardLeads {
   leadUsers: DashboardLeadUserFragment[] | undefined;
-  leadOrganizations: AssociatedOrganizationDetailsFragment[] | undefined;
-  hostOrganizations?: AssociatedOrganizationDetailsFragment[] | undefined;
+  leadOrganizations: ContributorViewProps[] | undefined;
+  host?: ContributorViewProps;
 }

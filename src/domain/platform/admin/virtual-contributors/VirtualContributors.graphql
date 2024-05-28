@@ -16,7 +16,7 @@ query AdminVirtualContributors {
   }
 }
 
-mutation createVirtualContributor($virtualContributorData: CreateVirtualContributorInput!) {
+mutation createVirtualContributor($virtualContributorData: CreateVirtualContributorOnAccountInput!) {
   createVirtualContributor(virtualContributorData: $virtualContributorData) {
     id
   }
@@ -38,7 +38,6 @@ query virtualContributorAvailablePersonas {
     id
     engine
     dataAccessMode
-    nameID
     profile {
       id
       displayName

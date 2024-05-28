@@ -8,6 +8,7 @@ import { getVisualByType } from '../../../common/visual/utils/visuals.utils';
 import { useUserContext } from '../../user/hooks/useUserContext';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import { VisualName } from '../../../common/visual/constants/visuals.constants';
+import { SpaceHostedItem } from '../../../journey/utils/SpaceHostedItem';
 
 export interface EntityDetailsContainerEntities {
   details?: ContributionDetails;
@@ -28,11 +29,7 @@ interface EntityDetailsContainerProps
     EntityDetailsContainerActions,
     EntityDetailsContainerState
   > {
-  entities: {
-    spaceId: string;
-    challengeId?: string;
-    opportunityId?: string;
-  };
+  entities: SpaceHostedItem;
 }
 
 export interface ContributionDetails {
@@ -49,38 +46,23 @@ export interface ContributionDetails {
 }
 
 const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entities, children }) => {
-  const { spaceId, challengeId, opportunityId } = entities;
+  const { spaceID, spaceLevel } = entities;
   const { user: userMetadata } = useUserContext();
   const userId = userMetadata?.user?.id;
   const { data: spaceData, loading: spaceLoading } = useSpaceContributionDetailsQuery({
     variables: {
-      spaceId: spaceId,
+      spaceId: spaceID,
     },
-    skip: Boolean(challengeId) || Boolean(opportunityId),
-  });
-
-  const { data: challengeData, loading: challengeLoading } = useSpaceContributionDetailsQuery({
-    variables: {
-      spaceId: challengeId!,
-    },
-    skip: !challengeId || Boolean(opportunityId),
-  });
-
-  const { data: opportunityData, loading: opportunityLoading } = useSpaceContributionDetailsQuery({
-    variables: {
-      spaceId: opportunityId!,
-    },
-    skip: !opportunityId,
   });
 
   const [leaveCommunity, { loading: isLeavingCommunity }] = useRemoveUserAsCommunityMemberMutation();
 
   const details = useMemo<ContributionDetails | undefined>(() => {
-    if (spaceData && spaceData.lookup.space) {
+    if (spaceData?.lookup.space) {
       const space = spaceData.lookup.space;
       return {
-        displayName: space.profile.displayName,
-        journeyTypeName: 'space',
+        displayName: space.profile.displayName!,
+        journeyTypeName: ['space', 'subspace', 'subsubspace'][spaceLevel] as JourneyTypeName,
         banner: getVisualByType(VisualName.CARD, space.profile.visuals),
         tags: space.profile.tagset?.tags ?? [],
         journeyUri: space.profile.url,
@@ -88,33 +70,7 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
         tagline: space.profile.tagline ?? '',
       };
     }
-
-    if (challengeData && challengeData.lookup.space) {
-      const challenge = challengeData.lookup.space;
-      return {
-        displayName: challenge.profile.displayName!,
-        journeyTypeName: 'subspace',
-        banner: getVisualByType(VisualName.CARD, challenge.profile.visuals),
-        tags: challenge.profile.tagset?.tags ?? [],
-        journeyUri: challenge.profile.url!,
-        communityId: challenge.community?.id,
-        tagline: challenge.profile.tagline ?? '',
-      };
-    }
-
-    if (opportunityData && opportunityData.lookup.space) {
-      const opportunity = opportunityData.lookup.space;
-      return {
-        displayName: opportunity.profile.displayName!,
-        journeyTypeName: 'subsubspace',
-        banner: getVisualByType(VisualName.CARD, opportunity.profile.visuals),
-        tags: opportunity.profile.tagset?.tags ?? [],
-        journeyUri: opportunity.profile.url!,
-        communityId: opportunity.community?.id,
-        tagline: opportunity.profile.tagline ?? '',
-      };
-    }
-  }, [spaceData, challengeData, opportunityData]);
+  }, [spaceData, spaceLevel]);
 
   const handleLeaveCommunity = useCallback(async () => {
     if (details?.communityId && userId)
@@ -132,7 +88,7 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
       {children(
         { details },
         {
-          loading: spaceLoading || challengeLoading || opportunityLoading,
+          loading: spaceLoading,
           isLeavingCommunity,
         },
         { leaveCommunity: handleLeaveCommunity }

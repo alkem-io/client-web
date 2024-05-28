@@ -1,4 +1,5 @@
-import { FC } from 'react';
+import { FC, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import PageContent from '../../../../core/ui/content/PageContent';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
@@ -12,9 +13,17 @@ import { useSubSpace } from '../hooks/useChallenge';
 import SubspaceSettingsLayout from '../../../platform/admin/subspace/SubspaceSettingsLayout';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 import CommunityVirtualContributors from '../../../community/community/CommunityAdmin/CommunityVirtualContributors';
+import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
+import InvitationOptionsBlock from '../../../community/invitations/InvitationOptionsBlock';
+import PageContentBlockCollapsible from '../../../../core/ui/content/PageContentBlockCollapsible';
+import { BlockTitle } from '../../../../core/ui/typography';
+import CommunityGuidelines from '../../../community/community/CommunityGuidelines/CommunityGuidelines';
+import { useSpace } from '../../space/SpaceContext/useSpace';
 
 const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
-  const { loading: isLoadingChallenge, communityId, subspaceId: challengeId } = useSubSpace();
+  const { t } = useTranslation();
+  const { loading: isLoadingChallenge, communityId, subspaceId: challengeId, subspaceNameId } = useSubSpace();
+  const { isPrivate, loading: isLoadingSpace } = useSpace();
 
   const { spaceId, journeyLevel } = useRouteResolver();
 
@@ -23,9 +32,14 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
     organizations,
     virtualContributors,
     applications,
+    invitations,
+    invitationsExternal,
     communityPolicy,
     permissions,
     onApplicationStateChange,
+    onInvitationStateChange,
+    onDeleteInvitation,
+    onDeleteInvitationExternal,
     onUserLeadChange,
     onUserAuthorizationChange,
     onOrganizationLeadChange,
@@ -39,9 +53,29 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
     getAvailableOrganizations,
     getAvailableVirtualContributors,
     loading,
+    inviteExternalUser,
+    inviteExistingUser,
   } = useCommunityAdmin({ communityId, spaceId, challengeId, journeyLevel });
 
-  if (!spaceId || isLoadingChallenge) {
+  const currentApplicationsUserIds = useMemo(
+    () =>
+      applications
+        ?.filter(application => application.lifecycle.state === 'new')
+        .map(application => application.user.id) ?? [],
+    [applications]
+  );
+
+  const currentInvitationsUserIds = useMemo(
+    () =>
+      invitations
+        ?.filter(invitation => invitation.lifecycle.state === 'invited')
+        .map(invitation => invitation.user.id) ?? [],
+    [invitations]
+  );
+
+  const currentMembersIds = useMemo(() => users.map(user => user.id), [users]);
+
+  if (!spaceId || isLoadingChallenge || isLoadingSpace) {
     return null;
   }
 
@@ -49,14 +83,36 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
     <SubspaceSettingsLayout currentTab={SettingsSection.Community} tabRoutePrefix={routePrefix}>
       <PageContent background="transparent">
         <PageContentColumn columns={12}>
-          <PageContentBlock columns={12}>
+          <PageContentBlock columns={8}>
             <CommunityApplications
               applications={applications}
               onApplicationStateChange={onApplicationStateChange}
+              canHandleInvitations
+              invitations={invitations}
+              invitationsExternal={invitationsExternal}
+              onInvitationStateChange={onInvitationStateChange}
+              onDeleteInvitation={onDeleteInvitation}
+              onDeleteInvitationExternal={onDeleteInvitationExternal}
               loading={loading}
             />
           </PageContentBlock>
+          <PageContentBlockSeamless columns={4} disablePadding>
+            <InvitationOptionsBlock
+              spaceDisplayName={subspaceNameId}
+              inviteExistingUser={inviteExistingUser}
+              inviteExternalUser={inviteExternalUser}
+              currentApplicationsUserIds={currentApplicationsUserIds}
+              currentInvitationsUserIds={currentInvitationsUserIds}
+              currentMembersIds={currentMembersIds}
+              spaceId={spaceId}
+              isParentPrivate={isPrivate}
+              isSubspace
+            />
+          </PageContentBlockSeamless>
         </PageContentColumn>
+        <PageContentBlockCollapsible header={<BlockTitle>{t('community.communityGuidelines.title')}</BlockTitle>}>
+          <CommunityGuidelines communityId={communityId} />
+        </PageContentBlockCollapsible>
         <PageContentColumn columns={6}>
           <PageContentBlock>
             <CommunityUsers

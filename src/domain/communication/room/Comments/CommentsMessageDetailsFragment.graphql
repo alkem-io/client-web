@@ -7,37 +7,7 @@ fragment MessageDetails on Message {
   }
   threadID
   sender {
-    ... on User {
-      id
-      profile {
-        ...SenderProfile
-      }
-    }
-    ... on VirtualContributor {
-      id
-      profile {
-        ...SenderProfile
-      }
-    }
-  }
-}
-
-fragment SenderProfile on Profile {
-  id
-  displayName
-  url
-  type
-  avatar: visual(type: AVATAR) {
-    id
-    uri
-  }
-  tagsets {
-    ...TagsetDetails
-  }
-  location {
-    id
-    city
-    country
+    ...ContributorDetails
   }
 }
 
