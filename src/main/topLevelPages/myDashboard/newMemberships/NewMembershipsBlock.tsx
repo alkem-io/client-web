@@ -111,17 +111,17 @@ const NewMembershipsBlock = ({
     [data?.me.applications]
   );
 
-  const pendingApplications = useMemo(
+  const pendingApplications = applications.filter(invitation => !RECENT_MEMBERSHIP_STATES.includes(invitation.state));
+
+  const recentPendingApplications = useMemo(
     () =>
-      sortBy(
-        applications.filter(invitation => !RECENT_MEMBERSHIP_STATES.includes(invitation.state)),
-        ({ createdDate }) => createdDate
-      )
+      sortBy(pendingApplications, ({ createdDate }) => createdDate)
         .reverse()
         .slice(0, Math.max(0, PENDING_MEMBERSHIPS_MAX_ITEMS - pendingInvitations.length)),
     [applications]
   );
-  const pendingMembershipsCount = pendingInvitations.length + pendingApplications.length;
+
+  const pendingMembershipsCount = pendingInvitations.length + recentPendingApplications.length;
 
   const recentMemberships = useMemo(
     () =>
@@ -196,7 +196,7 @@ const NewMembershipsBlock = ({
       <PageContentBlock halfWidth={halfWidth} disableGap flex>
         <PageContentBlockHeader title={t('pages.home.sections.newMemberships.title')} />
 
-        {pendingInvitations.length === 0 && pendingApplications.length === 0 && (
+        {pendingInvitations.length === 0 && recentPendingApplications.length === 0 && (
           <CaptionSmall color={theme => theme.palette.neutral.light} marginBottom={gutters(0.5)}>
             {t('pages.home.sections.newMemberships.noOpenInvitations')}
           </CaptionSmall>
@@ -229,7 +229,7 @@ const NewMembershipsBlock = ({
         </HorizontalCardsGroup>
 
         <HorizontalCardsGroup title={t('pages.home.sections.newMemberships.openApplications')}>
-          {pendingApplications.map(pendingApplication => (
+          {recentPendingApplications.map(pendingApplication => (
             <ApplicationHydrator
               key={pendingApplication.id}
               application={pendingApplication}
@@ -347,11 +347,11 @@ const NewMembershipsBlock = ({
               ))}
             </>
           )}
-          {applications && applications.length > 0 && (
+          {pendingApplications && pendingApplications.length > 0 && (
             <>
               <BlockSectionTitle>{t('community.pendingMembership.applicationsSectionTitle')}</BlockSectionTitle>
               <ScrollableCardsLayoutContainer>
-                {applications?.map(application => (
+                {pendingApplications?.map(application => (
                   <ApplicationHydrator key={application.id} application={application} visualType={VisualType.Card}>
                     {({ application: hydratedApplication }) =>
                       hydratedApplication && (
