@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
 import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
@@ -9,8 +9,20 @@ import { useTranslation } from 'react-i18next';
 import { LocationIcon } from '../../../timeline/calendar/icons/LocationIcon';
 import { theme } from '../../../../core/ui/themes/default/Theme';
 
-// TODO: Replace with real data
-const profile = {
+interface HostProps {
+  hostProfile?: {
+    avatar: {
+      uri: string;
+    };
+    displayName: string;
+    location?: {
+      city: string;
+      country: string;
+    };
+  };
+}
+
+const DEFAULT_PROFILE = {
   avatar: {
     uri: 'https://alkem.io/api/private/rest/storage/document/e58662b2-50f1-4c33-a8b4-40d601000afd',
   },
@@ -21,8 +33,10 @@ const profile = {
   },
 };
 
-const HostOrganization = () => {
+const HostCardClean: FC<HostProps> = ({ hostProfile }) => {
   const { t } = useTranslation();
+
+  const profile = hostProfile || DEFAULT_PROFILE;
 
   return (
     <>
@@ -52,4 +66,4 @@ const HostOrganization = () => {
   );
 };
 
-export default HostOrganization;
+export default HostCardClean;

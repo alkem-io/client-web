@@ -9,7 +9,7 @@ import { VirtualContributorQuery } from '../../../../core/apollo/generated/graph
 import VCProfileView from '../views/VCProfileView';
 import { BlockTitle, Text } from '../../../../core/ui/typography';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
-import HostOrganization from './HostOrganization';
+import HostCardClean from './HostCardClean';
 import useTheme from '@mui/material/styles/useTheme';
 import { Trans, useTranslation } from 'react-i18next';
 
@@ -27,7 +27,7 @@ export const VCProfilePageView: FC<PropsWithChildren<Props>> = ({ virtualContrib
     <PageContent>
       <PageContentColumn columns={4}>
         <VCProfileView virtualContributor={virtualContributor} />
-        <HostOrganization />
+        <HostCardClean />
       </PageContentColumn>
       <PageContentColumn columns={8}>
         <PageContentBlock>
