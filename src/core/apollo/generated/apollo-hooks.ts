@@ -1200,6 +1200,7 @@ export const BasicOrganizationDetailsFragmentDoc = gql`
     nameID
     profile {
       id
+      url
       displayName
       visual(type: AVATAR) {
         ...VisualUri
@@ -1236,6 +1237,7 @@ export const OrganizationDetailsFragmentDoc = gql`
     nameID
     profile {
       id
+      url
       displayName
       avatar: visual(type: AVATAR) {
         ...VisualUri
@@ -2004,6 +2006,7 @@ export const AssociatedOrganizationDetailsFragmentDoc = gql`
     nameID
     profile {
       id
+      url
       tagline
       displayName
       description
