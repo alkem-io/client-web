@@ -41,6 +41,9 @@ export interface DialogTitleWithIconProps extends DialogTitleProps {
   onClose?: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
 }
 
+/**
+ * @deprecated - use DialogHeader
+ */
 const DialogTitleWithIcon = (props: DialogTitleWithIconProps) => {
   const { t } = useTranslation();
   const { children, classes, onClose, icon, subtitle, ...rest } = props;
