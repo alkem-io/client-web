@@ -19402,7 +19402,7 @@ export function refetchAdminVirtualContributorsQuery(variables?: SchemaTypes.Adm
 }
 
 export const CreateVirtualContributorDocument = gql`
-  mutation createVirtualContributor($virtualContributorData: CreateVirtualContributorInput!) {
+  mutation createVirtualContributor($virtualContributorData: CreateVirtualContributorOnAccountInput!) {
     createVirtualContributor(virtualContributorData: $virtualContributorData) {
       id
     }
@@ -19583,7 +19583,6 @@ export const CreateVirtualPersonaDocument = gql`
     createVirtualPersona(virtualPersonaData: $virtualPersonaData) {
       id
       nameID
-      prompt
       engine
       profile {
         id

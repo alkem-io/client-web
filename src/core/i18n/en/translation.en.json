@@ -195,6 +195,7 @@
     }
   },
   "common": {
+    "account": "Account",
     "all": "All",
     "knowledge-base": "Knowledge base",
     "or": "Or",
@@ -1789,6 +1790,12 @@
               "title": "Delete this document?",
               "content": "Are you sure that you want to delete {{fileName}}?"
             }
+          },
+          "account": {
+            "description": "",
+            "hostTitle": "Host",
+            "contactsLinkText": "If you want to change any of these settings, please contact the Alkemio team here.",
+            "contactsLink": "https://www.alkemio.org/support/"
           }
         }
       },

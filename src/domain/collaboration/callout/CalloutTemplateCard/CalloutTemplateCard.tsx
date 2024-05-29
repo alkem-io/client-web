@@ -49,10 +49,10 @@ const CalloutTemplateCard: FC<CalloutTemplateCardProps> = ({ template, innovatio
       </CardDetails>
       <CardDetails>
         <CardContent>
-          {template?.type && (
+          {template && (
             <Box display="flex" alignItems="center" marginLeft={-0.5} gap={gutters(0.5)}>
               {Icon && <RoundedIcon marginLeft={0.5} size="xsmall" component={Icon} />}
-              <Caption>{t(`components.calloutTypeSelect.label.${template?.type}` as const)}</Caption>
+              <Caption>{t(`components.calloutTypeSelect.label.${template.type}` as const)}</Caption>
             </Box>
           )}
         </CardContent>
