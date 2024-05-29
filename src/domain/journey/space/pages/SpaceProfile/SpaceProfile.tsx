@@ -10,7 +10,6 @@ import { useNotification } from '../../../../../core/ui/notifications/useNotific
 import EditVisualsView from '../../../../common/visual/EditVisuals/EditVisualsView';
 import { formatDatabaseLocation } from '../../../../common/location/LocationUtils';
 import { sortBy } from 'lodash';
-import { buildOrganizationUrl } from '../../../../../main/routing/urlBuilders';
 import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 import PageContentColumn from '../../../../../core/ui/content/PageContentColumn';
 import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
@@ -61,18 +60,6 @@ export const SpaceProfile: FC = () => {
 
   const organizationsSorted = useMemo(() => sortBy(organizations, org => org.name), [organizations]);
 
-  const host = useMemo(() => {
-    const host = hostOrganization?.space.account.host;
-    if (!host) {
-      return undefined;
-    }
-    const url = buildOrganizationUrl(host.nameID);
-    return {
-      ...host,
-      url,
-    };
-  }, [hostOrganization]);
-
   const visuals = space.profile.visuals ?? [];
 
   return (
@@ -86,8 +73,6 @@ export const SpaceProfile: FC = () => {
         context={space.context}
         profile={space.profile}
         organizations={organizationsSorted}
-        visibility={space.license.visibility}
-        host={host}
         onSubmit={onSubmit}
         loading={loading}
       />
