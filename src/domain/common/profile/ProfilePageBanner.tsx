@@ -100,6 +100,7 @@ const ProfilePageBanner = ({
             </PageTitle>
             {profile?.location && <LocationCaption {...profile?.location} />}
             <Actions gap={0}>
+              {isVirtualContributor && <VirtualContributorLabel chip />}
               {onSendMessage && (
                 <IconButton size="small" onClick={openMessageDialog} aria-label={t('common.email')}>
                   <MailOutlined />
@@ -111,7 +112,6 @@ const ProfilePageBanner = ({
                 </IconButton>
               )}
             </Actions>
-            {isVirtualContributor && <VirtualContributorLabel chip />}
           </>
         }
         subtitle={profile?.tagline}

@@ -37,3 +37,5 @@ export const buildUpdatesUrl = (journeyLocation: string) => {
 export const buildAboutUrl = (journeyLocation: string | undefined) => {
   return journeyLocation && `${journeyLocation}/about`;
 };
+
+export const buildVCProfileSettingsUrl = (nameID: string) => `/vc/${nameID}/settings/profile`;

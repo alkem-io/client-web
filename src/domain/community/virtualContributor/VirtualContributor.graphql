@@ -2,13 +2,6 @@ query VirtualContributor ($id: UUID_NAMEID!) {
   virtualContributor (ID: $id) {
     id
     nameID
-    virtualPersona {
-      id
-      prompt
-      profile {
-        displayName
-      }
-    }
     profile {
       id
       displayName

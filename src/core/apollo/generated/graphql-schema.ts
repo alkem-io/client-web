@@ -17278,12 +17278,6 @@ export type VirtualContributorQuery = {
     __typename?: 'VirtualContributor';
     id: string;
     nameID: string;
-    virtualPersona: {
-      __typename?: 'VirtualPersona';
-      id: string;
-      prompt: string;
-      profile: { __typename?: 'Profile'; displayName: string };
-    };
     profile: {
       __typename?: 'Profile';
       id: string;

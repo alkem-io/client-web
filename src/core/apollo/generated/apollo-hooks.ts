@@ -14111,13 +14111,6 @@ export const VirtualContributorDocument = gql`
     virtualContributor(ID: $id) {
       id
       nameID
-      virtualPersona {
-        id
-        prompt
-        profile {
-          displayName
-        }
-      }
       profile {
         id
         displayName

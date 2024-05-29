@@ -31,7 +31,7 @@ import useRedirectToIdentityDomain from '../../core/auth/authentication/routing/
 import { EntityPageLayoutHolder, NotFoundPageLayout, RenderPoint } from '../../domain/journey/common/EntityPageLayout';
 import RedirectToWelcomeSite from '../../domain/platform/routes/RedirectToWelcomeSite';
 import CreateSpaceDialog from '../../domain/journey/space/createSpace/CreateSpaceDialog';
-import VCProfilePage from '../../domain/community/virtualContributor/vcProfilePage/VCProfilePage';
+import VCRoute from '../../domain/community/virtualContributor/VCRoute';
 
 export const TopLevelRoutes: FC = () => {
   useRedirectToIdentityDomain();
@@ -117,7 +117,7 @@ export const TopLevelRoutes: FC = () => {
             <NonIdentity>
               <WithApmTransaction path={`:${nameOfUrl.vcNameId}/*`}>
                 <NoIdentityRedirect>
-                  <VCProfilePage />
+                  <VCRoute />
                 </NoIdentityRedirect>
               </WithApmTransaction>
             </NonIdentity>
