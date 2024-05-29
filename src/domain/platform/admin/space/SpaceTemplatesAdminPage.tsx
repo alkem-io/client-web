@@ -87,6 +87,16 @@ const SpaceTemplatesAdminPage: FC<SpaceTemplatesAdminPageProps> = ({
       }));
   }, [innovationPacks]);
 
+  const calloutInnovationPacks = useMemo(() => {
+    if (!innovationPacks) return [];
+    return innovationPacks?.platform.library.innovationPacks
+      .filter(pack => pack.templates && pack.templates?.calloutTemplates.length > 0)
+      .map(pack => ({
+        ...pack,
+        templates: pack.templates?.calloutTemplates || [],
+      }));
+  }, [innovationPacks]);
+
   return (
     <SpaceSettingsLayout currentTab={SettingsSection.Templates} tabRoutePrefix={`${routePrefix}/../`}>
       <Gutters>
@@ -100,7 +110,7 @@ const SpaceTemplatesAdminPage: FC<SpaceTemplatesAdminPageProps> = ({
           edit={edit}
           loadInnovationPacks={loadInnovationPacks}
           loadingInnovationPacks={loadingInnovationPacks}
-          innovationPacks={[]}
+          innovationPacks={calloutInnovationPacks}
           canImportTemplates={canImportTemplates}
         />
         <AdminPostTemplatesSection

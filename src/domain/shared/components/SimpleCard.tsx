@@ -28,6 +28,9 @@ export interface SimpleCardProps extends LinkWithState {
   iconComponent?: ComponentType<SvgIconProps>;
 }
 
+/**
+ * @deprecated - To be updated in #5906
+ */
 const SimpleCard = ({ title, imageUrl, iconComponent, ...linkProps }: SimpleCardProps) => {
   return (
     <LinkNoUnderline {...linkProps}>
