@@ -504,9 +504,9 @@
         "PostTemplate": "Post Template",
         "PostTemplate_plural": "Post Templates",
         "InnovationFlowTemplate": "Innovation Flow",
-        "InnovationFlowTemplate_plural": "Innovation Flows",
+        "InnovationFlowTemplate_plural": "Innovation Flow Templates",
         "CalloutTemplate": "Callout Template",
-        "CalloutTemplate_plural": "Callout Templates",
+        "CollaborationToolTemplate_plural": "Collaboration Tool Templates",
         "CommunityGuidelinesTemplate": "Community Guidelines Template",
         "CommunityGuidelinesTemplate_plural": "Community Guidelines Templates"
       },
@@ -1715,11 +1715,6 @@
         "headerTitle": "Browse through all available materials",
         "dialogTitle": "All materials"
       }
-    },
-    "innovationPack": {
-      "whiteboardTemplatesEmpty": "This Innovation Pack doesn’t have any whiteboard templates.",
-      "postTemplatesEmpty": "This Innovation Pack doesn’t have any post templates.",
-      "innovationFlowTemplatesEmpty": "This Innovation Pack doesn’t have any innovation flows."
     },
     "admin": {
       "generic": {
