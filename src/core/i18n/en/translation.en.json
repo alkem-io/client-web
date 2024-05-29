@@ -1716,11 +1716,6 @@
         "dialogTitle": "All materials"
       }
     },
-    "innovationPack": {
-      "whiteboardTemplatesEmpty": "This Innovation Pack doesn’t have any whiteboard templates.",
-      "postTemplatesEmpty": "This Innovation Pack doesn’t have any post templates.",
-      "innovationFlowTemplatesEmpty": "This Innovation Pack doesn’t have any innovation flows."
-    },
     "admin": {
       "generic": {
         "sections": {

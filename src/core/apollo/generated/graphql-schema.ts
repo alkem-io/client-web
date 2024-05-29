@@ -7035,6 +7035,88 @@ export type InnovationPackProfilePageQuery = {
                     };
                     states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
                   }>;
+                  calloutTemplates: Array<{
+                    __typename?: 'CalloutTemplate';
+                    id: string;
+                    type: CalloutType;
+                    profile: {
+                      __typename?: 'Profile';
+                      id: string;
+                      displayName: string;
+                      description?: string | undefined;
+                      tagset?:
+                        | {
+                            __typename?: 'Tagset';
+                            id: string;
+                            name: string;
+                            tags: Array<string>;
+                            allowedValues: Array<string>;
+                            type: TagsetType;
+                          }
+                        | undefined;
+                      visual?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: string;
+                            allowedTypes: Array<string>;
+                            aspectRatio: number;
+                            maxHeight: number;
+                            maxWidth: number;
+                            minHeight: number;
+                            minWidth: number;
+                            alternativeText?: string | undefined;
+                          }
+                        | undefined;
+                    };
+                    contributionPolicy: {
+                      __typename?: 'CalloutContributionPolicy';
+                      id: string;
+                      allowedContributionTypes: Array<CalloutContributionType>;
+                      state: CalloutState;
+                    };
+                  }>;
+                  communityGuidelinesTemplates: Array<{
+                    __typename?: 'CommunityGuidelinesTemplate';
+                    id: string;
+                    profile: {
+                      __typename?: 'Profile';
+                      id: string;
+                      displayName: string;
+                      description?: string | undefined;
+                      tagset?:
+                        | {
+                            __typename?: 'Tagset';
+                            id: string;
+                            name: string;
+                            tags: Array<string>;
+                            allowedValues: Array<string>;
+                            type: TagsetType;
+                          }
+                        | undefined;
+                      visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                    };
+                    guidelines: {
+                      __typename?: 'CommunityGuidelines';
+                      id: string;
+                      profile: {
+                        __typename?: 'Profile';
+                        id: string;
+                        displayName: string;
+                        description?: string | undefined;
+                        references?:
+                          | Array<{
+                              __typename?: 'Reference';
+                              id: string;
+                              name: string;
+                              uri: string;
+                              description?: string | undefined;
+                            }>
+                          | undefined;
+                      };
+                    };
+                  }>;
                 }
               | undefined;
           }
@@ -8200,6 +8282,49 @@ export type CollaborationPrivilegesFragment = {
     | undefined;
 };
 
+export type CalloutTemplateCardFragment = {
+  __typename?: 'CalloutTemplate';
+  id: string;
+  type: CalloutType;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    description?: string | undefined;
+    tagset?:
+      | {
+          __typename?: 'Tagset';
+          id: string;
+          name: string;
+          tags: Array<string>;
+          allowedValues: Array<string>;
+          type: TagsetType;
+        }
+      | undefined;
+    visual?:
+      | {
+          __typename?: 'Visual';
+          id: string;
+          uri: string;
+          name: string;
+          allowedTypes: Array<string>;
+          aspectRatio: number;
+          maxHeight: number;
+          maxWidth: number;
+          minHeight: number;
+          minWidth: number;
+          alternativeText?: string | undefined;
+        }
+      | undefined;
+  };
+  contributionPolicy: {
+    __typename?: 'CalloutContributionPolicy';
+    id: string;
+    allowedContributionTypes: Array<CalloutContributionType>;
+    state: CalloutState;
+  };
+};
+
 export type SpaceCalloutTemplatesLibraryQueryVariables = Exact<{
   spaceNameId: Scalars['UUID_NAMEID'];
 }>;
@@ -8235,10 +8360,25 @@ export type SpaceCalloutTemplatesLibraryQuery = {
                       type: TagsetType;
                     }
                   | undefined;
-                visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                visual?:
+                  | {
+                      __typename?: 'Visual';
+                      id: string;
+                      uri: string;
+                      name: string;
+                      allowedTypes: Array<string>;
+                      aspectRatio: number;
+                      maxHeight: number;
+                      maxWidth: number;
+                      minHeight: number;
+                      minWidth: number;
+                      alternativeText?: string | undefined;
+                    }
+                  | undefined;
               };
               contributionPolicy: {
                 __typename?: 'CalloutContributionPolicy';
+                id: string;
                 allowedContributionTypes: Array<CalloutContributionType>;
                 state: CalloutState;
               };
@@ -8335,10 +8475,25 @@ export type PlatformCalloutTemplatesLibraryQuery = {
                         type: TagsetType;
                       }
                     | undefined;
-                  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                  visual?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        allowedTypes: Array<string>;
+                        aspectRatio: number;
+                        maxHeight: number;
+                        maxWidth: number;
+                        minHeight: number;
+                        minWidth: number;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
                 };
                 contributionPolicy: {
                   __typename?: 'CalloutContributionPolicy';
+                  id: string;
                   allowedContributionTypes: Array<CalloutContributionType>;
                   state: CalloutState;
                 };
@@ -8509,34 +8664,6 @@ export type CalloutTemplateContentQuery = {
           };
         }
       | undefined;
-  };
-};
-
-export type CalloutTemplateCardFragment = {
-  __typename?: 'CalloutTemplate';
-  id: string;
-  type: CalloutType;
-  profile: {
-    __typename?: 'Profile';
-    id: string;
-    displayName: string;
-    description?: string | undefined;
-    tagset?:
-      | {
-          __typename?: 'Tagset';
-          id: string;
-          name: string;
-          tags: Array<string>;
-          allowedValues: Array<string>;
-          type: TagsetType;
-        }
-      | undefined;
-    visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-  };
-  contributionPolicy: {
-    __typename?: 'CalloutContributionPolicy';
-    allowedContributionTypes: Array<CalloutContributionType>;
-    state: CalloutState;
   };
 };
 

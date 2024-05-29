@@ -389,19 +389,35 @@ export const CollaborationPrivilegesFragmentDoc = gql`
     }
   }
 `;
+export const ProfileInfoWithVisualFragmentDoc = gql`
+  fragment ProfileInfoWithVisual on Profile {
+    id
+    displayName
+    description
+    tagset {
+      ...TagsetDetails
+    }
+    visual(type: CARD) {
+      ...VisualFull
+    }
+  }
+  ${TagsetDetailsFragmentDoc}
+  ${VisualFullFragmentDoc}
+`;
 export const CalloutTemplateCardFragmentDoc = gql`
   fragment CalloutTemplateCard on CalloutTemplate {
     id
     type
     profile {
-      ...TemplateCardProfileInfo
+      ...ProfileInfoWithVisual
     }
     contributionPolicy {
+      id
       allowedContributionTypes
       state
     }
   }
-  ${TemplateCardProfileInfoFragmentDoc}
+  ${ProfileInfoWithVisualFragmentDoc}
 `;
 export const PostCardFragmentDoc = gql`
   fragment PostCard on Post {
@@ -2868,21 +2884,6 @@ export const StorageAggregatorFragmentDoc = gql`
   ${LoadableStorageAggregatorFragmentDoc}
   ${StorageBucketFragmentDoc}
 `;
-export const ProfileInfoWithVisualFragmentDoc = gql`
-  fragment ProfileInfoWithVisual on Profile {
-    id
-    displayName
-    description
-    tagset {
-      ...TagsetDetails
-    }
-    visual(type: CARD) {
-      ...VisualFull
-    }
-  }
-  ${TagsetDetailsFragmentDoc}
-  ${VisualFullFragmentDoc}
-`;
 export const AdminCalloutTemplateFragmentDoc = gql`
   fragment AdminCalloutTemplate on CalloutTemplate {
     id
@@ -5271,6 +5272,12 @@ export const InnovationPackProfilePageDocument = gql`
             innovationFlowTemplates {
               ...InnovationFlowTemplateCard
             }
+            calloutTemplates {
+              ...CalloutTemplateCard
+            }
+            communityGuidelinesTemplates {
+              ...CommunityGuidelinesTemplateCard
+            }
           }
         }
       }
@@ -5281,6 +5288,8 @@ export const InnovationPackProfilePageDocument = gql`
   ${WhiteboardTemplateCardFragmentDoc}
   ${PostTemplateCardFragmentDoc}
   ${InnovationFlowTemplateCardFragmentDoc}
+  ${CalloutTemplateCardFragmentDoc}
+  ${CommunityGuidelinesTemplateCardFragmentDoc}
 `;
 
 /**
