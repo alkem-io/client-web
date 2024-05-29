@@ -13,6 +13,7 @@ export type AccountKeySpecifier = (
   | 'library'
   | 'license'
   | 'spaceID'
+  | 'subscriptions'
   | AccountKeySpecifier
 )[];
 export type AccountFieldPolicy = {
@@ -24,6 +25,12 @@ export type AccountFieldPolicy = {
   library?: FieldPolicy<any> | FieldReadFunction<any>;
   license?: FieldPolicy<any> | FieldReadFunction<any>;
   spaceID?: FieldPolicy<any> | FieldReadFunction<any>;
+  subscriptions?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type AccountSubscriptionKeySpecifier = ('expires' | 'name' | AccountSubscriptionKeySpecifier)[];
+export type AccountSubscriptionFieldPolicy = {
+  expires?: FieldPolicy<any> | FieldReadFunction<any>;
+  name?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ActivityCreatedSubscriptionResultKeySpecifier = (
   | 'activity'
@@ -1345,6 +1352,7 @@ export type LicensePlanKeySpecifier = (
   | 'enabled'
   | 'id'
   | 'isFree'
+  | 'licenseCredential'
   | 'name'
   | 'pricePerMonth'
   | 'requiresContactSupport'
@@ -1357,6 +1365,7 @@ export type LicensePlanFieldPolicy = {
   enabled?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   isFree?: FieldPolicy<any> | FieldReadFunction<any>;
+  licenseCredential?: FieldPolicy<any> | FieldReadFunction<any>;
   name?: FieldPolicy<any> | FieldReadFunction<any>;
   pricePerMonth?: FieldPolicy<any> | FieldReadFunction<any>;
   requiresContactSupport?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1381,9 +1390,17 @@ export type LicensePolicyRuleFeatureFlagFieldPolicy = {
   grantedPrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
   name?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type LicensingKeySpecifier = ('authorization' | 'id' | 'plans' | 'policy' | LicensingKeySpecifier)[];
+export type LicensingKeySpecifier = (
+  | 'authorization'
+  | 'basePlan'
+  | 'id'
+  | 'plans'
+  | 'policy'
+  | LicensingKeySpecifier
+)[];
 export type LicensingFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  basePlan?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   plans?: FieldPolicy<any> | FieldReadFunction<any>;
   policy?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2991,6 +3008,10 @@ export type StrictTypedTypePolicies = {
   Account?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | AccountKeySpecifier | (() => undefined | AccountKeySpecifier);
     fields?: AccountFieldPolicy;
+  };
+  AccountSubscription?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | AccountSubscriptionKeySpecifier | (() => undefined | AccountSubscriptionKeySpecifier);
+    fields?: AccountSubscriptionFieldPolicy;
   };
   ActivityCreatedSubscriptionResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:
