@@ -11,6 +11,7 @@ import ListOutlinedIcon from '@mui/icons-material/ListOutlined';
 import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
 import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
 import GppGoodOutlinedIcon from '@mui/icons-material/GppGoodOutlined';
+import LocalOfferOutlinedIcon from '@mui/icons-material/LocalOfferOutlined';
 import EntitySettingsLayout from '../layout/EntitySettingsLayout/EntitySettingsLayout';
 import SpaceTabs from '../../../journey/space/layout/SpaceTabs';
 import { getVisualByType } from '../../../common/visual/utils/visuals.utils';
@@ -67,6 +68,11 @@ const tabs: TabDefinition<SettingsSection>[] = [
     section: SettingsSection.SpaceSettings,
     route: 'settings',
     icon: GppGoodOutlinedIcon,
+  },
+  {
+    section: SettingsSection.Account,
+    route: 'account',
+    icon: LocalOfferOutlinedIcon,
   },
 ];
 
