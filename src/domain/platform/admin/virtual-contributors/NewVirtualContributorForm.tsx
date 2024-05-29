@@ -20,6 +20,7 @@ import FormikSelect from '../../../../core/ui/forms/FormikSelect';
 import { useBackToStaticPath } from '../../../../core/routing/useBackToPath';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
+import { BodyOfKnowledgeType } from '../../../../core/apollo/generated/graphql-schema';
 
 interface NewVirtualContributorFormValues {
   displayName: string;
@@ -47,6 +48,7 @@ const NewVirtualContributorForm = ({ parentPagePath }: NewVirtualContributorForm
   const [handleSubmit] = useLoadingState(async (values: NewVirtualContributorFormValues) => {
     const { displayName, virtualPersonaID } = values;
 
+    // TODO: fix accountID: '' & bodyOfKnowledgeID: '' in order to work
     await createVirtualContributor({
       variables: {
         virtualContributorData: {
@@ -55,6 +57,9 @@ const NewVirtualContributorForm = ({ parentPagePath }: NewVirtualContributorForm
           profileData: {
             displayName,
           },
+          accountID: '',
+          bodyOfKnowledgeID: '',
+          bodyOfKnowledgeType: BodyOfKnowledgeType.Space,
         },
       },
     });
