@@ -13,6 +13,7 @@ import SpaceContextPage from '../../space/pages/SpaceContext/SpaceContextPage';
 import SpaceStorageAdminPage from '../../../platform/admin/space/storage/SpaceStorageAdminPage';
 import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
 import AdminSpaceCommunityPage from '../../space/pages/AdminSpaceCommunityPage';
+import SpaceAccountPage from '../../space/pages/SpaceAccount/SpaceAccountPage';
 import { ChallengesRoute } from '../../../platform/admin/subspace/routing/ChallengesRoute';
 import NonSpaceAdminRedirect from '../nonSpaceAdminRedirect/NonSpaceAdminRedirect';
 
@@ -28,6 +29,7 @@ export const SpaceRoute: FC = () => {
           <Route index element={<Navigate to="profile" replace />} />
           <Route path="profile" element={<SpaceProfilePage />} />
           <Route path="settings" element={<SpaceSettingsPage />} />
+          <Route path="account" element={<SpaceAccountPage />} />
           <Route path="context" element={<SpaceContextPage />} />
           <Route path="community" element={<AdminSpaceCommunityPage />} />
           <Route path="communications" element={<SpaceCommunicationsPage communityId={communityId} />} />
