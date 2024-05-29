@@ -26,6 +26,7 @@ interface NewPersonaFormValues {
   displayName: string;
   nameId: string;
   description: string;
+  prompt: string;
   engine: VirtualContributorEngine;
 }
 
@@ -40,6 +41,7 @@ const NewPersonaForm = ({ parentPagePath }: NewPersonaFormProps) => {
   const initialValues = {
     displayName: '',
     nameId: '',
+    prompt: '',
     description: '',
     engine: VirtualContributorEngine.Expert,
   };
@@ -51,22 +53,25 @@ const NewPersonaForm = ({ parentPagePath }: NewPersonaFormProps) => {
     navigateBack();
   };
 
-  const [handleSubmit] = useLoadingState(async ({ displayName, engine, nameId, description }: NewPersonaFormValues) => {
-    await createPersona({
-      variables: {
-        virtualPersonaData: {
-          nameID: nameId,
-          profileData: {
-            displayName,
-            description,
+  const [handleSubmit] = useLoadingState(
+    async ({ displayName, prompt, engine, nameId, description }: NewPersonaFormValues) => {
+      await createPersona({
+        variables: {
+          virtualPersonaData: {
+            prompt,
+            nameID: nameId,
+            profileData: {
+              displayName,
+              description,
+            },
+            engine,
           },
-          engine,
         },
-      },
-    });
-    notify('Persona Created Successfully!', 'success');
-    navigateBack();
-  });
+      });
+      notify('Persona Created Successfully!', 'success');
+      navigateBack();
+    }
+  );
 
   const engines = useMemo(
     () =>
@@ -88,6 +93,7 @@ const NewPersonaForm = ({ parentPagePath }: NewPersonaFormProps) => {
               <Gutters>
                 <FormikInputField title={t('common.title')} name="displayName" />
                 <FormikInputField title={t('components.nameSegment.nameID.title')} name="nameId" />
+                <FormikInputField multiline title={t('common.prompt')} name="prompt" rows={10} />
                 <FormikMarkdownField title={t('common.description')} name="description" />
                 <FormikSelect
                   title={t('pages.admin.virtualContributors.virtualPersonas.selectEngine')}
