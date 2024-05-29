@@ -503,9 +503,9 @@
         "PostTemplate": "Post Template",
         "PostTemplate_plural": "Post Templates",
         "InnovationFlowTemplate": "Innovation Flow",
-        "InnovationFlowTemplate_plural": "Innovation Flows",
+        "InnovationFlowTemplate_plural": "Innovation Flow Templates",
         "CalloutTemplate": "Callout Template",
-        "CalloutTemplate_plural": "Callout Templates",
+        "CollaborationToolTemplate_plural": "Collaboration Tool Templates",
         "CommunityGuidelinesTemplate": "Community Guidelines Template",
         "CommunityGuidelinesTemplate_plural": "Community Guidelines Templates"
       },
@@ -873,35 +873,30 @@
       "name": "Callout template",
       "title": "Template Library: Collaboration Tools",
       "type": "Callout type",
-      "description": "Description",
-      "countTooltip": "Collaboration Tool Templates"
+      "description": "Description"
     },
     "postTemplates": {
       "name": "Post template",
       "title": "Template Library: Posts",
-      "defaultDescription": "Default Post content",
-      "countTooltip": "Post Templates"
+      "defaultDescription": "Default Post content"
     },
     "whiteboardTemplates": {
       "name": "Whiteboard template",
       "title": "Template Library: Whiteboards",
       "editTemplateButton": "Edit Template",
       "editDialogTitle": "Edit Whiteboard Template",
-      "errorImporting": "Error importing Whiteboard Template",
-      "countTooltip": "Whiteboard Templates"
+      "errorImporting": "Error importing Whiteboard Template"
     },
     "innovationFlowTemplates": {
       "name": "Innovation Flow template",
-      "title": "Template Library: Innovation Flows",
-      "countTooltip": "Innovation Flow Templates"
+      "title": "Template Library: Innovation Flows"
     },
     "communityGuidelinesTemplates": {
       "name": "Community Guidelines",
       "title": "Template Library: Community Guidelines",
       "content": "Guidelines",
       "guidelinesTitle": "Title",
-      "guidelinesDescription": "Guidelines",
-      "countTooltip": "Community Guidelines Templates"
+      "guidelinesDescription": "Guidelines"
     },
     "spaceTemplates": "Templates selected by the host of this community",
     "platformTemplates": "Platform Templates",
