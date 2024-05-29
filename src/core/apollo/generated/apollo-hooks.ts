@@ -414,6 +414,7 @@ export const CalloutTemplateCardFragmentDoc = gql`
     contributionPolicy {
       id
       allowedContributionTypes
+      state
     }
   }
   ${ProfileInfoWithVisualFragmentDoc}

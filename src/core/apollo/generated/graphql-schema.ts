@@ -7074,6 +7074,7 @@ export type InnovationPackProfilePageQuery = {
                       __typename?: 'CalloutContributionPolicy';
                       id: string;
                       allowedContributionTypes: Array<CalloutContributionType>;
+                      state: CalloutState;
                     };
                   }>;
                   communityGuidelinesTemplates: Array<{
@@ -8320,6 +8321,7 @@ export type CalloutTemplateCardFragment = {
     __typename?: 'CalloutContributionPolicy';
     id: string;
     allowedContributionTypes: Array<CalloutContributionType>;
+    state: CalloutState;
   };
 };
 
@@ -8378,6 +8380,7 @@ export type SpaceCalloutTemplatesLibraryQuery = {
                 __typename?: 'CalloutContributionPolicy';
                 id: string;
                 allowedContributionTypes: Array<CalloutContributionType>;
+                state: CalloutState;
               };
             }>;
           }
@@ -8492,6 +8495,7 @@ export type PlatformCalloutTemplatesLibraryQuery = {
                   __typename?: 'CalloutContributionPolicy';
                   id: string;
                   allowedContributionTypes: Array<CalloutContributionType>;
+                  state: CalloutState;
                 };
               }>;
             }
