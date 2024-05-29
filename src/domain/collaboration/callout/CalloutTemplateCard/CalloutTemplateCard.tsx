@@ -18,9 +18,10 @@ import {
 import InnovationPackIcon from '../../InnovationPack/InnovationPackIcon';
 import { CalloutIcon } from '../icon/CalloutIcon';
 import calloutIcons from '../utils/calloutIcons';
+import { CalloutType } from '../../../../core/apollo/generated/graphql-schema';
 
 export interface CalloutTemplate extends InnovationPackTemplate {
-  type?: string;
+  type: CalloutType;
 }
 
 interface CalloutTemplateCardProps extends TemplateCardBaseProps<CalloutTemplate> {}
@@ -48,10 +49,12 @@ const CalloutTemplateCard: FC<CalloutTemplateCardProps> = ({ template, innovatio
       </CardDetails>
       <CardDetails>
         <CardContent>
-          <Box display="flex" alignItems="center" marginLeft={-0.5} gap={gutters(0.5)}>
-            <RoundedIcon marginLeft={0.5} size="xsmall" component={Icon} />
-            <Caption>{t(`components.calloutTypeSelect.label.${template?.type}`)}</Caption>
-          </Box>
+          {template?.type && (
+            <Box display="flex" alignItems="center" marginLeft={-0.5} gap={gutters(0.5)}>
+              {Icon && <RoundedIcon marginLeft={0.5} size="xsmall" component={Icon} />}
+              <Caption>{t(`components.calloutTypeSelect.label.${template?.type}` as const)}</Caption>
+            </Box>
+          )}
         </CardContent>
       </CardDetails>
       <CardDetails>
