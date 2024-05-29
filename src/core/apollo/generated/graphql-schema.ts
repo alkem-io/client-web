@@ -724,6 +724,7 @@ export enum AuthorizationPrivilege {
   CreatePost = 'CREATE_POST',
   CreateSpace = 'CREATE_SPACE',
   CreateSubspace = 'CREATE_SUBSPACE',
+  CreateVirtualContributor = 'CREATE_VIRTUAL_CONTRIBUTOR',
   CreateWhiteboard = 'CREATE_WHITEBOARD',
   CreateWhiteboardRt = 'CREATE_WHITEBOARD_RT',
   Delete = 'DELETE',
@@ -744,6 +745,10 @@ export enum AuthorizationPrivilege {
   UpdateContent = 'UPDATE_CONTENT',
   UpdateInnovationFlow = 'UPDATE_INNOVATION_FLOW',
   UpdateWhiteboard = 'UPDATE_WHITEBOARD',
+}
+
+export enum BodyOfKnowledgeType {
+  Space = 'SPACE',
 }
 
 export type Calendar = {
@@ -1718,7 +1723,10 @@ export type CreateUserInput = {
   profileData: CreateProfileInput;
 };
 
-export type CreateVirtualContributorInput = {
+export type CreateVirtualContributorOnAccountInput = {
+  accountID: Scalars['UUID'];
+  bodyOfKnowledgeID: Scalars['UUID'];
+  bodyOfKnowledgeType: BodyOfKnowledgeType;
   /** A readable identifier, unique within the containing scope. */
   nameID: Scalars['NameID'];
   profileData: CreateProfileInput;
@@ -2659,10 +2667,6 @@ export type Mutation = {
   authorizationPolicyResetOnPlatform: Platform;
   /** Reset the Authorization policy on the specified User. */
   authorizationPolicyResetOnUser: User;
-  /** Reset the Authorization Policy on the specified VirtualContributor. */
-  authorizationPolicyResetOnVirtualContributor: VirtualContributor;
-  /** Reset the Authorization Policy on the specified VirtualPersona. */
-  authorizationPolicyResetOnVirtualPersona: VirtualPersona;
   /** Reset the specified Authorization Policy to global admin privileges */
   authorizationPolicyResetToGlobalAdminsAccess: Authorization;
   /** Generate Alkemio user credential offer */
@@ -2721,7 +2725,7 @@ export type Mutation = {
   createUser: User;
   /** Creates a new User profile on the platform for a user that has a valid Authentication session. */
   createUserNewRegistration: User;
-  /** Creates a new VirtualContributor on the platform. */
+  /** Creates a new VirtualContributor on an Account. */
   createVirtualContributor: VirtualContributor;
   /** Creates a new VirtualPersona on the platform. */
   createVirtualPersona: VirtualPersona;
@@ -2825,8 +2829,6 @@ export type Mutation = {
   removeUserFromGroup: UserGroup;
   /** Resets the interaction with the chat engine. */
   resetChatGuidance: Scalars['Boolean'];
-  /** Resets the interaction with the chat engine. */
-  resetVirtualContributor: Scalars['Boolean'];
   /** Removes an authorization credential from an Organization. */
   revokeCredentialFromOrganization: Organization;
   /** Removes an authorization credential from a User. */
@@ -2997,14 +2999,6 @@ export type MutationAuthorizationPolicyResetOnUserArgs = {
   authorizationResetData: UserAuthorizationResetInput;
 };
 
-export type MutationAuthorizationPolicyResetOnVirtualContributorArgs = {
-  authorizationResetData: VirtualContributorAuthorizationResetInput;
-};
-
-export type MutationAuthorizationPolicyResetOnVirtualPersonaArgs = {
-  authorizationResetData: VirtualPersonaAuthorizationResetInput;
-};
-
 export type MutationAuthorizationPolicyResetToGlobalAdminsAccessArgs = {
   authorizationID: Scalars['String'];
 };
@@ -3114,7 +3108,7 @@ export type MutationCreateUserArgs = {
 };
 
 export type MutationCreateVirtualContributorArgs = {
-  virtualContributorData: CreateVirtualContributorInput;
+  virtualContributorData: CreateVirtualContributorOnAccountInput;
 };
 
 export type MutationCreateVirtualPersonaArgs = {
@@ -5657,10 +5651,14 @@ export type VerifiedCredentialClaim = {
 
 export type VirtualContributor = Contributor & {
   __typename?: 'VirtualContributor';
+  /** The account under which the virtual contributor was created */
+  account: Account;
   /** The Agent representing this User. */
   agent: Agent;
   /** The authorization rules for the Contributor */
   authorization?: Maybe<Authorization>;
+  /** The body of knowledge type used for the Virtual Contributor */
+  bodyOfKnowledgeType: BodyOfKnowledgeType;
   /** The ID of the Contributor */
   id: Scalars['UUID'];
   /** A name identifier of the Contributor, unique within a given scope. */
@@ -5673,14 +5671,7 @@ export type VirtualContributor = Contributor & {
   virtualPersona: VirtualPersona;
 };
 
-export type VirtualContributorAuthorizationResetInput = {
-  /** The identifier of the Virtual Contributor whose Authorization Policy should be reset. */
-  virtualContributorID: Scalars['UUID'];
-};
-
 export enum VirtualContributorEngine {
-  AlkemioWelcome = 'ALKEMIO_WELCOME',
-  CommunityManager = 'COMMUNITY_MANAGER',
   Expert = 'EXPERT',
   Guidance = 'GUIDANCE',
 }
@@ -5689,22 +5680,23 @@ export type VirtualPersona = {
   __typename?: 'VirtualPersona';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
+  /** The required data access by the Virtual Persona */
+  dataAccessMode: VirtualPersonaAccessMode;
   /** The Virtual Persona Engine being used by this virtual persona. */
-  engine?: Maybe<VirtualContributorEngine>;
+  engine: VirtualContributorEngine;
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** A name identifier of the entity, unique within a given scope. */
   nameID: Scalars['NameID'];
-  /** The Profile for this VirtualPersona. */
+  /** The Profile for the VirtualPersona. */
   profile: Profile;
-  /** The prompt used by this Virtual Persona */
-  prompt: Scalars['String'];
 };
 
-export type VirtualPersonaAuthorizationResetInput = {
-  /** The identifier of the Virtual Persona whose Authorization Policy should be reset. */
-  virtualPersonaID: Scalars['UUID_NAMEID_EMAIL'];
-};
+export enum VirtualPersonaAccessMode {
+  None = 'NONE',
+  SpaceProfile = 'SPACE_PROFILE',
+  SpaceProfileAndContents = 'SPACE_PROFILE_AND_CONTENTS',
+}
 
 export type VirtualPersonaQuestionInput = {
   /** The question that is being asked. */
@@ -23750,7 +23742,7 @@ export type AdminVirtualContributorsQuery = {
 };
 
 export type CreateVirtualContributorMutationVariables = Exact<{
-  virtualContributorData: CreateVirtualContributorInput;
+  virtualContributorData: CreateVirtualContributorOnAccountInput;
 }>;
 
 export type CreateVirtualContributorMutation = {
@@ -23798,8 +23790,7 @@ export type CreateVirtualPersonaMutation = {
     __typename?: 'VirtualPersona';
     id: string;
     nameID: string;
-    prompt: string;
-    engine?: VirtualContributorEngine | undefined;
+    engine: VirtualContributorEngine;
     profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
   };
 };
