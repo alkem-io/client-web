@@ -18,11 +18,11 @@ const TemplateTypeFilterMobile: FC<TemplateTypeFilterMobileProps> = ({ value, on
   const handleOpen = (event: React.MouseEvent<HTMLElement>) => setAnchor(anchor ? null : event.currentTarget);
   const handleClose = () => setAnchor(null);
 
-  const onClick = (templateType: TemplateType) => {
-    if (value.includes(templateType)) {
-      onChange(value.filter(t => t !== templateType));
-    } else {
+  const onCheckboxChange = (templateType: TemplateType, isChecked: boolean) => {
+    if (isChecked) {
       onChange([...value, templateType]);
+    } else {
+      onChange(value.filter(t => t !== templateType));
     }
   };
 
@@ -56,9 +56,9 @@ const TemplateTypeFilterMobile: FC<TemplateTypeFilterMobileProps> = ({ value, on
                   control={
                     <Checkbox
                       checked={isSelected}
-                      onChange={() => onClick(TemplateType[key])}
+                      onChange={(_, isChecked) => onCheckboxChange(TemplateType[key], isChecked)}
                       name="filters"
-                      sx={{ paddingY: theme => theme.spacing(0) }}
+                      sx={{ paddingY: 0 }}
                     />
                   }
                   label={<Caption>{t(`common.enums.templateTypes.${key}` as const)}</Caption>}
