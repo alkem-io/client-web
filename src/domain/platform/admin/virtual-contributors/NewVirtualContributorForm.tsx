@@ -24,6 +24,7 @@ import { TagsetSegment } from '../components/Common/TagsetSegment';
 import { Tagset, TagsetType } from '../../../../core/apollo/generated/graphql-schema';
 import { DEFAULT_TAGSET } from '../../../common/tags/tagset.constants';
 import { SMALL_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
+import { BodyOfKnowledgeType } from '../../../../core/apollo/generated/graphql-schema';
 
 interface NewVirtualContributorFormValues {
   displayName: string;
@@ -53,6 +54,7 @@ const NewVirtualContributorForm = ({ parentPagePath }: NewVirtualContributorForm
   const [handleSubmit] = useLoadingState(async (values: NewVirtualContributorFormValues) => {
     const { displayName, virtualPersonaID, tagline, tagsets } = values;
 
+    // TODO: fix accountID: '' & bodyOfKnowledgeID: '' in order to work
     await createVirtualContributor({
       variables: {
         virtualContributorData: {
@@ -68,6 +70,9 @@ const NewVirtualContributorForm = ({ parentPagePath }: NewVirtualContributorForm
               },
             ],
           },
+          accountID: '',
+          bodyOfKnowledgeID: '',
+          bodyOfKnowledgeType: BodyOfKnowledgeType.Space,
         },
       },
     });
