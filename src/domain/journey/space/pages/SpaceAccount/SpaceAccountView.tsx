@@ -23,6 +23,7 @@ import { ROUTE_HOME } from '../../../../platform/routes/constants';
 import { useSpace } from '../../SpaceContext/useSpace';
 import { DeleteIcon } from '../SpaceSettings/icon/DeleteIcon';
 import SpaceProfileDeleteDialog from '../SpaceSettings/SpaceProfileDeleteDialog';
+import usePlatformOrigin from '../../../../platform/routes/usePlatformOrigin';
 
 interface SpaceAccountPageProps {
   journeyId: string;
@@ -75,7 +76,7 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
     });
   };
 
-  const ALKEMIO_DOMAIN = 'https://alkem.io/';
+  const platformOrigin = usePlatformOrigin();
   const loading = deletingSpace && spacePriviledgesLoading && hostOrganizationLoading;
 
   return (
@@ -86,8 +87,7 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
             <Gutters disablePadding>
               <BlockTitle>{t('common.url')}</BlockTitle>
               <Caption>
-                {ALKEMIO_DOMAIN}
-                {spaceNameId}
+                {platformOrigin}/{spaceNameId}
               </Caption>
             </Gutters>
             <Gutters disablePadding>
