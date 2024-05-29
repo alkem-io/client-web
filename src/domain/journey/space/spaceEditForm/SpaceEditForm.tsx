@@ -2,14 +2,7 @@ import { Formik } from 'formik';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import {
-  Context,
-  Profile,
-  Reference,
-  SpaceVisibility,
-  Tagset,
-  TagsetType,
-} from '../../../../core/apollo/generated/graphql-schema';
+import { Context, Profile, Reference, Tagset, TagsetType } from '../../../../core/apollo/generated/graphql-schema';
 import ContextReferenceSegment from '../../../platform/admin/components/Common/ContextReferenceSegment';
 import { contextSegmentSchema } from '../../../platform/admin/components/Common/ContextSegment';
 import FormikAutocomplete from '../../../../core/ui/forms/FormikAutocomplete';
@@ -27,7 +20,6 @@ import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlock
 import SaveButton from '../../../../core/ui/actions/SaveButton';
 import { Actions } from '../../../../core/ui/actions/Actions';
 import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
-import SpaceProfileFixedInformation, { SpaceProfileFixedInformationProps } from './SpaceProfileFixedInformation';
 import { DEFAULT_TAGSET } from '../../../common/tags/tagset.constants';
 import { Caption } from '../../../../core/ui/typography';
 
@@ -39,8 +31,6 @@ interface SpaceEditFormProps {
   hostId?: string;
   tagset?: Tagset;
   organizations?: { id: string; name: string }[];
-  visibility?: SpaceVisibility;
-  host?: SpaceProfileFixedInformationProps['host'];
   onSubmit: (formData: SpaceEditFormValuesType) => void;
   edit?: boolean;
   loading: boolean;
@@ -62,8 +52,6 @@ const SpaceEditForm: FC<SpaceEditFormProps> = ({
   nameID,
   hostId,
   tagset,
-  visibility,
-  host,
   onSubmit,
   edit,
   organizations = [],
@@ -118,7 +106,7 @@ const SpaceEditForm: FC<SpaceEditFormProps> = ({
         return (
           <>
             <PageContentBlockSeamless row disablePadding>
-              <PageContentBlock columns={edit ? 8 : 12}>
+              <PageContentBlock>
                 <PageContentBlockHeader title={t('components.editSpaceForm.about')} />
                 <FormikInputFieldField name="name" title={t('components.nameSegment.name')} required />
                 {!edit && (
@@ -151,7 +139,6 @@ const SpaceEditForm: FC<SpaceEditFormProps> = ({
                   <SaveButton onClick={handleSubmit} loading={loading} />
                 </Actions>
               </PageContentBlock>
-              {edit && <SpaceProfileFixedInformation visibility={visibility!} host={host} />}
             </PageContentBlockSeamless>
             {edit && (
               <PageContentBlock>
