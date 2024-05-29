@@ -93,15 +93,3 @@ query CalloutTemplateContent($calloutTemplateId: UUID!) {
     }
   }
 }
-
-fragment CalloutTemplateCard on CalloutTemplate {
-  id
-  type
-  profile {
-    ...TemplateCardProfileInfo
-  }
-  contributionPolicy {
-    allowedContributionTypes
-    state
-  }
-}
