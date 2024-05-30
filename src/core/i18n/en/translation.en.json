@@ -1786,7 +1786,14 @@
             "description": "",
             "hostTitle": "Host",
             "contactsLinkText": "If you want to change any of these settings, please contact the Alkemio team here.",
-            "contactsLink": "https://www.alkemio.org/support/"
+            "contactsLink": "https://www.alkemio.org/support/",
+            "freeTrialNotice": {
+              "title": "Free Trial - {{daysLeft}} days left",
+              "description": "Click here to set up your full {{planName}} subscription"
+            },
+            "yourLicense": "Your current license:",
+            "downgradeTo": "Downgrade to",
+            "upgradeTo": "Upgrade to"
           }
         }
       },

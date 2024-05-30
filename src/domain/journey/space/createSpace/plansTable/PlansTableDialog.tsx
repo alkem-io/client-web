@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Button, Dialog, DialogActions, DialogContent, Theme, styled, useMediaQuery } from '@mui/material';
+import { Box, Button, Dialog, DialogActions, DialogContent, Theme, useMediaQuery } from '@mui/material';
 import DialogWithGrid from '../../../../../core/ui/dialog/DialogWithGrid';
 import DialogHeader from '../../../../../core/ui/dialog/DialogHeader';
 import RouterLink from '../../../../../core/ui/link/RouterLink';
@@ -15,25 +15,8 @@ import Loading from '../../../../../core/ui/loading/Loading';
 import SelectPlanButton from './SelectPlanButton';
 import { usePlanAvailability } from './usePlanAvailability';
 import { TagCategoryValues, error } from '../../../../../core/logging/sentry/log';
-
-interface PlanTranslation {
-  name: string;
-  displayName: string;
-  priceDescription: string;
-  features: string[];
-  disclaimer: string;
-  disabledDisclaimer?: string;
-}
-
-const PlanName = styled('h1')(({ theme }) => ({
-  color: theme.palette.primary.main,
-  textAlign: 'center',
-  margin: 0,
-}));
-
-const Price = styled('h1')(({ theme }) => ({
-  color: theme.palette.primary.main,
-}));
+import { usePlanTranslations } from '../../../../license/plans/utils/PlanTranslations';
+import { PlanFeatures, PlanName, PlanPrice } from '../../../../license/plans/ui/PlanCards';
 
 const lines = (theme: Theme) => `1px solid ${theme.palette.divider}`;
 
@@ -54,10 +37,7 @@ const PlansTableDialog = ({ open, onClose, onSelectPlan }: PlansTableDialogProps
 
   const { isPlanAvailable } = usePlanAvailability({ skip: !open });
 
-  const planTranslations: Record<string, PlanTranslation> = t('plansTable.plans', { returnObjects: true }).reduce(
-    (acc, plan: PlanTranslation) => ({ ...acc, [plan.name]: plan }),
-    {}
-  );
+  const planTranslations = usePlanTranslations();
 
   const plansData = useMemo(
     () =>
@@ -136,36 +116,7 @@ const PlansTableDialog = ({ open, onClose, onSelectPlan }: PlansTableDialogProps
                       paddingX={gutters()}
                     >
                       <PlanName>{planTranslation.displayName}</PlanName>
-                      <Box
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="center"
-                        gap={gutters(0.5)}
-                        height={gutters(4)}
-                      >
-                        {plan.pricePerMonth === 0 ? (
-                          <>
-                            {/* Free Plan */}
-                            <Price>{plan.pricePerMonth} &euro;</Price>
-                            <Caption color={theme => theme.palette.neutral.light}>
-                              {t('plansTable.pricingPeriods.lifetime')}
-                            </Caption>
-                          </>
-                        ) : !plan.pricePerMonth ? (
-                          /* Enterprise Plan */
-                          <Caption color={theme => theme.palette.neutral.light}>
-                            {t('plansTable.pricingPeriods.custom')}
-                          </Caption>
-                        ) : (
-                          <>
-                            {/* Rest of the plans */}
-                            <Price>{plan.pricePerMonth} &euro;</Price>
-                            <Caption color={theme => theme.palette.neutral.light}>
-                              {t('plansTable.pricingPeriods.monthly')}
-                            </Caption>
-                          </>
-                        )}
-                      </Box>
+                      <PlanPrice plan={plan} />
                       <Text textAlign="center" height={gutters(4)} color={theme => theme.palette.primary.main}>
                         {planTranslation.priceDescription}
                       </Text>
@@ -176,13 +127,7 @@ const PlansTableDialog = ({ open, onClose, onSelectPlan }: PlansTableDialogProps
                       paddingX={gutters()}
                       color={theme => theme.palette.primary.main}
                     >
-                      <ul>
-                        {planTranslation.features.map((feature, index) => (
-                          <li key={index}>
-                            <Text>{feature}</Text>
-                          </li>
-                        ))}
-                      </ul>
+                      <PlanFeatures planTranslation={planTranslation} />
                       {plan.enabled && <Caption marginBottom={gutters()}>{planTranslation.disclaimer}</Caption>}
                       {!plan.enabled && (
                         <Caption marginBottom={gutters()}>{planTranslation.disabledDisclaimer}</Caption>
