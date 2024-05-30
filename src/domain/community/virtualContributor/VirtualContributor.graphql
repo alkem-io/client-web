@@ -3,6 +3,9 @@ query VirtualContributor ($id: UUID_NAMEID!) {
     id
     nameID
     bodyOfKnowledgeID
+    authorization {
+      myPrivileges
+    }
     account {
       spaceID
       host {
@@ -25,9 +28,9 @@ query VirtualContributor ($id: UUID_NAMEID!) {
       description
       tagline
       tagsets {
-        id
-        tags
+        ...TagsetDetails
       }
+      url
       avatar: visual(type: AVATAR) {
         ...VisualFull
       }

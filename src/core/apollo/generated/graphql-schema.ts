@@ -5698,7 +5698,7 @@ export type VerifiedCredentialClaim = {
 export type VirtualContributor = Contributor & {
   __typename?: 'VirtualContributor';
   /** The account under which the virtual contributor was created */
-  account: Account;
+  account?: Maybe<Account>;
   /** The Agent representing this User. */
   agent: Agent;
   /** The authorization rules for the Contributor */
@@ -17330,49 +17330,64 @@ export type VirtualContributorQuery = {
     id: string;
     nameID: string;
     bodyOfKnowledgeID: string;
-    account: {
-      __typename?: 'Account';
-      spaceID: string;
-      host?:
-        | {
-            __typename?: 'Organization';
-            profile: {
-              __typename?: 'Profile';
-              displayName: string;
-              tagline: string;
-              avatar?: { __typename?: 'Visual'; uri: string } | undefined;
-              location?: { __typename?: 'Location'; city: string; country: string } | undefined;
-            };
-          }
-        | {
-            __typename?: 'User';
-            profile: {
-              __typename?: 'Profile';
-              displayName: string;
-              tagline: string;
-              avatar?: { __typename?: 'Visual'; uri: string } | undefined;
-              location?: { __typename?: 'Location'; city: string; country: string } | undefined;
-            };
-          }
-        | {
-            __typename?: 'VirtualContributor';
-            profile: {
-              __typename?: 'Profile';
-              displayName: string;
-              tagline: string;
-              avatar?: { __typename?: 'Visual'; uri: string } | undefined;
-              location?: { __typename?: 'Location'; city: string; country: string } | undefined;
-            };
-          }
-        | undefined;
-    };
+    authorization?:
+      | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+      | undefined;
+    account?:
+      | {
+          __typename?: 'Account';
+          spaceID: string;
+          host?:
+            | {
+                __typename?: 'Organization';
+                profile: {
+                  __typename?: 'Profile';
+                  displayName: string;
+                  tagline: string;
+                  avatar?: { __typename?: 'Visual'; uri: string } | undefined;
+                  location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+                };
+              }
+            | {
+                __typename?: 'User';
+                profile: {
+                  __typename?: 'Profile';
+                  displayName: string;
+                  tagline: string;
+                  avatar?: { __typename?: 'Visual'; uri: string } | undefined;
+                  location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+                };
+              }
+            | {
+                __typename?: 'VirtualContributor';
+                profile: {
+                  __typename?: 'Profile';
+                  displayName: string;
+                  tagline: string;
+                  avatar?: { __typename?: 'Visual'; uri: string } | undefined;
+                  location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+                };
+              }
+            | undefined;
+        }
+      | undefined;
     profile: {
       __typename?: 'Profile';
       id: string;
       displayName: string;
       description?: string | undefined;
       tagline: string;
-      tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+      url: string;
+      tagsets?:
+        | Array<{
+            __typename?: 'Tagset';
+            id: string;
+            name: string;
+            tags: Array<string>;
+            allowedValues: Array<string>;
+            type: TagsetType;
+          }>
+        | undefined;
       avatar?:
         | {
             __typename?: 'Visual';

@@ -14112,6 +14112,9 @@ export const VirtualContributorDocument = gql`
       id
       nameID
       bodyOfKnowledgeID
+      authorization {
+        myPrivileges
+      }
       account {
         spaceID
         host {
@@ -14134,15 +14137,16 @@ export const VirtualContributorDocument = gql`
         description
         tagline
         tagsets {
-          id
-          tags
+          ...TagsetDetails
         }
+        url
         avatar: visual(type: AVATAR) {
           ...VisualFull
         }
       }
     }
   }
+  ${TagsetDetailsFragmentDoc}
   ${VisualFullFragmentDoc}
 `;
 
