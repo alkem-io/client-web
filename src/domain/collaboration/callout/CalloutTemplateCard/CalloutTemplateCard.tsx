@@ -31,7 +31,7 @@ const CalloutTemplateCard: FC<CalloutTemplateCardProps> = ({ template, innovatio
 
   const hasTags = (template?.profile.tagset?.tags ?? []).length > 0;
   const descriptionHeightGutters = hasTags
-    ? DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS - 3
+    ? DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS - 2
     : DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS;
 
   const Icon = template?.type && calloutIcons[template?.type];
@@ -48,7 +48,7 @@ const CalloutTemplateCard: FC<CalloutTemplateCardProps> = ({ template, innovatio
         <CardDescription heightGutters={descriptionHeightGutters}>{template?.profile.description}</CardDescription>
       </CardDetails>
       <CardDetails>
-        <CardContent>
+        <CardContent sx={{ '&:last-child': { paddingBottom: gutters(0.2) } }}>
           {template && (
             <Box display="flex" alignItems="center" marginLeft={-0.5} gap={gutters(0.5)}>
               {Icon && <RoundedIcon marginLeft={0.5} size="xsmall" component={Icon} />}

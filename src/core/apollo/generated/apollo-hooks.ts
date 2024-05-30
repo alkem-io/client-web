@@ -2884,20 +2884,6 @@ export const StorageAggregatorFragmentDoc = gql`
   ${LoadableStorageAggregatorFragmentDoc}
   ${StorageBucketFragmentDoc}
 `;
-export const AdminCalloutTemplateFragmentDoc = gql`
-  fragment AdminCalloutTemplate on CalloutTemplate {
-    id
-    type
-    profile {
-      ...ProfileInfoWithVisual
-    }
-    contributionPolicy {
-      id
-      allowedContributionTypes
-    }
-  }
-  ${ProfileInfoWithVisualFragmentDoc}
-`;
 export const InnovationPackProfileFragmentDoc = gql`
   fragment InnovationPackProfile on Profile {
     id
@@ -2949,6 +2935,20 @@ export const AdminWhiteboardTemplateFragmentDoc = gql`
   }
   ${ProfileInfoWithVisualFragmentDoc}
 `;
+export const AdminCalloutTemplateFragmentDoc = gql`
+  fragment AdminCalloutTemplate on CalloutTemplate {
+    id
+    type
+    profile {
+      ...ProfileInfoWithVisual
+    }
+    contributionPolicy {
+      id
+      allowedContributionTypes
+    }
+  }
+  ${ProfileInfoWithVisualFragmentDoc}
+`;
 export const AdminCommunityGuidelinesTemplateFragmentDoc = gql`
   fragment AdminCommunityGuidelinesTemplate on CommunityGuidelinesTemplate {
     id
@@ -2982,6 +2982,9 @@ export const AdminInnovationPackTemplatesFragmentDoc = gql`
     whiteboardTemplates {
       ...AdminWhiteboardTemplate
     }
+    calloutTemplates {
+      ...AdminCalloutTemplate
+    }
     communityGuidelinesTemplates {
       ...AdminCommunityGuidelinesTemplate
     }
@@ -2989,6 +2992,7 @@ export const AdminInnovationPackTemplatesFragmentDoc = gql`
   ${AdminPostTemplateFragmentDoc}
   ${AdminInnovationFlowTemplateFragmentDoc}
   ${AdminWhiteboardTemplateFragmentDoc}
+  ${AdminCalloutTemplateFragmentDoc}
   ${AdminCommunityGuidelinesTemplateFragmentDoc}
 `;
 export const ConfigurationFragmentDoc = gql`
@@ -16062,7 +16066,7 @@ export function refetchLegacySubspaceDashboardPageQuery(
 
 export const CreateNewSpaceDocument = gql`
   mutation CreateNewSpace($hostId: UUID_NAMEID!, $spaceData: CreateSpaceInput!, $planId: UUID) {
-    createAccount(accountData: { hostID: $hostId, spaceData: $spaceData, planID: $planId }) {
+    createAccount(accountData: { hostID: $hostId, spaceData: $spaceData, licensePlanID: $planId }) {
       id
       spaceID
     }

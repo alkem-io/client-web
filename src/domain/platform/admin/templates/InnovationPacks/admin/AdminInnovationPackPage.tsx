@@ -53,6 +53,8 @@ const AdminInnovationPackPage: FC<AdminInnovationPackPageProps> = ({ editTemplat
     postTemplates,
     whiteboardTemplates,
     innovationFlowTemplates,
+    // calloutTemplates,
+    // communityGuidelinesTemplates,
     id: templatesSetID,
   } = data?.platform.library.innovationPack?.templates ?? {};
 
@@ -117,23 +119,6 @@ const AdminInnovationPackPage: FC<AdminInnovationPackPageProps> = ({ editTemplat
               />
             </PageContentBlock>
             <PageContentBlockSeamless disablePadding>
-              <AdminPostTemplatesSection
-                templateId={postNameId}
-                templatesSetId={templatesSetID}
-                templates={postTemplates}
-                onCloseTemplateDialog={backFromTemplateDialog}
-                refetchQueries={[refetchAdminInnovationPackQuery({ innovationPackId: innovationPackNameId! })]}
-                buildTemplateLink={({ id }) =>
-                  buildLink(`${innovationPackRoute}/${RoutePaths.postTemplatesRoutePath}/${id}`)
-                }
-                edit={editTemplates}
-                loadInnovationPacks={() => {}}
-                loadingInnovationPacks={isLoading}
-                innovationPacks={[]}
-                canImportTemplates={false}
-              />
-            </PageContentBlockSeamless>
-            <PageContentBlockSeamless disablePadding>
               <AdminWhiteboardTemplatesSection
                 templateId={whiteboardNameId}
                 templatesSetId={templatesSetID}
@@ -151,6 +136,24 @@ const AdminInnovationPackPage: FC<AdminInnovationPackPageProps> = ({ editTemplat
               />
             </PageContentBlockSeamless>
             <PageContentBlockSeamless disablePadding>
+              callouts
+              {/* <AdminWhiteboardTemplatesSection
+                templateId={whiteboardNameId}
+                templatesSetId={templatesSetID}
+                templates={whiteboardTemplates}
+                onCloseTemplateDialog={backFromTemplateDialog}
+                refetchQueries={[refetchAdminInnovationPackQuery({ innovationPackId: innovationPackNameId! })]}
+                buildTemplateLink={({ id }) =>
+                  buildLink(`${innovationPackRoute}/${RoutePaths.whiteboardTemplatesRoutePath}/${id}`)
+                }
+                edit={editTemplates}
+                loadInnovationPacks={() => {}}
+                loadingInnovationPacks={isLoading}
+                innovationPacks={[]}
+                canImportTemplates={false}
+              /> */}
+            </PageContentBlockSeamless>
+            <PageContentBlockSeamless disablePadding>
               <AdminInnovationTemplatesSection
                 templateId={innovationTemplateId}
                 templatesSetId={templatesSetID}
@@ -159,6 +162,41 @@ const AdminInnovationPackPage: FC<AdminInnovationPackPageProps> = ({ editTemplat
                 refetchQueries={[refetchAdminInnovationPackQuery({ innovationPackId: innovationPackNameId! })]}
                 buildTemplateLink={({ id }) =>
                   buildLink(`${innovationPackRoute}/${RoutePaths.innovationTemplatesRoutePath}/${id}`)
+                }
+                edit={editTemplates}
+                loadInnovationPacks={() => {}}
+                loadingInnovationPacks={isLoading}
+                innovationPacks={[]}
+                canImportTemplates={false}
+              />
+            </PageContentBlockSeamless>
+            <PageContentBlockSeamless disablePadding>
+              community guidelines
+              {/* <AdminWhiteboardTemplatesSection
+                templateId={whiteboardNameId}
+                templatesSetId={templatesSetID}
+                templates={whiteboardTemplates}
+                onCloseTemplateDialog={backFromTemplateDialog}
+                refetchQueries={[refetchAdminInnovationPackQuery({ innovationPackId: innovationPackNameId! })]}
+                buildTemplateLink={({ id }) =>
+                  buildLink(`${innovationPackRoute}/${RoutePaths.whiteboardTemplatesRoutePath}/${id}`)
+                }
+                edit={editTemplates}
+                loadInnovationPacks={() => {}}
+                loadingInnovationPacks={isLoading}
+                innovationPacks={[]}
+                canImportTemplates={false}
+              /> */}
+            </PageContentBlockSeamless>
+            <PageContentBlockSeamless disablePadding>
+              <AdminPostTemplatesSection
+                templateId={postNameId}
+                templatesSetId={templatesSetID}
+                templates={postTemplates}
+                onCloseTemplateDialog={backFromTemplateDialog}
+                refetchQueries={[refetchAdminInnovationPackQuery({ innovationPackId: innovationPackNameId! })]}
+                buildTemplateLink={({ id }) =>
+                  buildLink(`${innovationPackRoute}/${RoutePaths.postTemplatesRoutePath}/${id}`)
                 }
                 edit={editTemplates}
                 loadInnovationPacks={() => {}}
