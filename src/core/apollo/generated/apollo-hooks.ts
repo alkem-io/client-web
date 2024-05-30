@@ -14112,6 +14112,9 @@ export const VirtualContributorDocument = gql`
       id
       nameID
       bodyOfKnowledgeID
+      authorization {
+        myPrivileges
+      }
       account {
         spaceID
         host {

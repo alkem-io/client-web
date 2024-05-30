@@ -3,6 +3,9 @@ query VirtualContributor ($id: UUID_NAMEID!) {
     id
     nameID
     bodyOfKnowledgeID
+    authorization {
+      myPrivileges
+    }
     account {
       spaceID
       host {
