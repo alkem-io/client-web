@@ -7,6 +7,9 @@ import {
   useVirtualContributorQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import VirtualContributorForm from './VirtualContributorForm';
+import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
+import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
+import PageContent from '../../../../core/ui/content/PageContent';
 
 export const VCSettingsPage = () => {
   const { vcNameId = '' } = useUrlParams();
@@ -35,13 +38,19 @@ export const VCSettingsPage = () => {
   // TODO: StorageProvider for the VC
   return (
     <VCPageLayout>
-      {data?.virtualContributor && (
-        <VirtualContributorForm
-          virtualContributor={data?.virtualContributor}
-          avatar={data?.virtualContributor.profile.avatar}
-          onSave={handleUpdate}
-        />
-      )}
+      <PageContent background="background.paper">
+        <PageContentColumn columns={12}>
+          <PageContentBlock>
+            {data?.virtualContributor && (
+              <VirtualContributorForm
+                virtualContributor={data?.virtualContributor}
+                avatar={data?.virtualContributor.profile.avatar}
+                onSave={handleUpdate}
+              />
+            )}
+          </PageContentBlock>
+        </PageContentColumn>
+      </PageContent>
     </VCPageLayout>
   );
 };

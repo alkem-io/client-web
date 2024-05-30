@@ -2,22 +2,23 @@ import { Form, Formik } from 'formik';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
+import { Box, Button, Theme, useMediaQuery } from '@mui/material';
+import { LoadingButton } from '@mui/lab';
 import { Tagset, UpdateVirtualContributorInput, Visual } from '../../../../core/apollo/generated/graphql-schema';
 import useNavigate from '../../../../core/routing/useNavigate';
 import { NameSegment, nameSegmentSchema } from '../../../platform/admin/components/Common/NameSegment';
 import { ProfileSegment, profileSegmentSchema } from '../../../platform/admin/components/Common/ProfileSegment';
-import { Button, Grid } from '@mui/material';
-import WrapperButton from '../../../../core/ui/button/deprecated/WrapperButton';
 import VisualUpload from '../../../../core/ui/upload/VisualUpload/VisualUpload';
-import Section from '../../../../core/ui/content/deprecated/Section';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import useLoadingState from '../../../shared/utils/useLoadingState';
 import { Actions } from '../../../../core/ui/actions/Actions';
-import { LoadingButton } from '@mui/lab';
 import { TagsetSegment } from '../../../platform/admin/components/Common/TagsetSegment';
 import { UpdateTagset } from '../../../common/profile/Profile';
 import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
 import { theme } from '../../../../core/ui/themes/default/Theme';
+import GridContainer from '../../../../core/ui/grid/GridContainer';
+import GridProvider from '../../../../core/ui/grid/GridProvider';
+import GridItem from '../../../../core/ui/grid/GridItem';
 
 interface VirtualContributorProps {
   id: string;
@@ -54,8 +55,10 @@ export const VirtualContributorForm: FC<Props> = ({
   avatar,
   onSave,
 }) => {
-  const navigate = useNavigate();
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const handleBack = () => navigate(-1);
+  const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
 
   const {
     nameID,
@@ -109,12 +112,10 @@ export const VirtualContributorForm: FC<Props> = ({
     await onSave?.(virtualContributor);
   });
 
-  const handleBack = () => navigate(-1);
-
   const backButton = (
-    <Grid item>
-      <WrapperButton variant="default" onClick={handleBack} text={t('buttons.back')} />
-    </Grid>
+    <Button onClick={handleBack} variant="text">
+      {t('buttons.back')}
+    </Button>
   );
 
   const HostFields = () => (
@@ -144,36 +145,39 @@ export const VirtualContributorForm: FC<Props> = ({
           {({ values: { avatar, tagsets }, handleSubmit }) => {
             return (
               <Form noValidate onSubmit={handleSubmit}>
-                <Section
-                  avatar={
-                    avatar && (
-                      <VisualUpload
-                        visual={avatar}
-                        altText={t('visuals-alt-text.avatar.contributor.text', {
-                          displayName,
-                          altText: avatar?.alternativeText,
-                        })}
-                      />
-                    )
-                  }
-                >
-                  <Gutters disablePadding>
-                    <>
-                      <NameSegment disabled required />
-                      <ProfileSegment />
-                      {tagsets && <TagsetSegment tagsets={tagsets} />}
-                      <HostFields />
-                    </>
-                  </Gutters>
-                  <Actions marginTop={theme.spacing(2)}>
-                    <Button onClick={handleBack} variant="text">
-                      {t('buttons.back')}
-                    </Button>
-                    <LoadingButton loading={loading} type="submit" variant="contained">
-                      {t('buttons.save')}
-                    </LoadingButton>
-                  </Actions>
-                </Section>
+                <GridContainer>
+                  <GridProvider columns={12}>
+                    <GridItem columns={isMobile ? 6 : 2}>
+                      {avatar && (
+                        <Box display="flex" justifyContent="center">
+                          <VisualUpload
+                            visual={avatar}
+                            altText={t('visuals-alt-text.avatar.contributor.text', {
+                              displayName,
+                              altText: avatar?.alternativeText,
+                            })}
+                          />
+                        </Box>
+                      )}
+                    </GridItem>
+                    <GridItem columns={isMobile ? 6 : 8}>
+                      <Gutters>
+                        <>
+                          <NameSegment disabled required />
+                          <ProfileSegment />
+                          {tagsets && <TagsetSegment tagsets={tagsets} />}
+                          <HostFields />
+                          <Actions marginTop={theme.spacing(2)} sx={{ justifyContent: 'end' }}>
+                            {backButton}
+                            <LoadingButton loading={loading} type="submit" variant="contained">
+                              {t('buttons.save')}
+                            </LoadingButton>
+                          </Actions>
+                        </>
+                      </Gutters>
+                    </GridItem>
+                  </GridProvider>
+                </GridContainer>
               </Form>
             );
           }}
