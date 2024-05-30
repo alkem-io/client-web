@@ -15853,7 +15853,7 @@ export function refetchLegacySubspaceDashboardPageQuery(
 
 export const CreateNewSpaceDocument = gql`
   mutation CreateNewSpace($hostId: UUID_NAMEID!, $spaceData: CreateSpaceInput!, $planId: UUID) {
-    createAccount(accountData: { hostID: $hostId, spaceData: $spaceData, planID: $planId }) {
+    createAccount(accountData: { hostID: $hostId, spaceData: $spaceData, licensePlanID: $planId }) {
       id
       spaceID
     }
