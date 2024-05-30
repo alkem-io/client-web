@@ -8,21 +8,21 @@ import RouterLink from '../../../../core/ui/link/RouterLink';
 import defaultJourneyCardBanner from '../../../../domain/journey/defaultVisuals/Card.jpg';
 
 // TODO: add cardBanner if we want support of Spaces as BOK
-export interface BokProps {
-  bokProfile:
-    | {
-        avatar?: {
-          uri: string;
-        };
-        displayName: string;
-        tagline: string;
-        url: string;
-      }
-    | undefined;
+export interface BasicSpaceProps {
+  avatar?: {
+    uri: string;
+  };
+  displayName: string;
+  tagline: string;
+  url: string;
+}
+
+interface Props {
+  space: BasicSpaceProps | undefined;
   showDefaults?: boolean;
 }
 
-const DEFULT_BOK = {
+const DEFULT_SPACE_DATA = {
   avatar: {
     uri: 'https://alkem.io/api/private/rest/storage/document/1057e0c1-2d47-4821-8848-20ec19cb2a0d',
   },
@@ -31,12 +31,12 @@ const DEFULT_BOK = {
   url: 'https://alkem.io/welcome-space',
 };
 
-const SpaceHorizontalCard: FC<BokProps> = ({ bokProfile, showDefaults }) => {
+const BasicSpaceCard: FC<Props> = ({ space, showDefaults }) => {
   const { t } = useTranslation();
 
-  const bodyOfKnowledge = bokProfile ? bokProfile : showDefaults ? DEFULT_BOK : undefined;
+  const spaceData = space ? space : showDefaults ? DEFULT_SPACE_DATA : undefined;
 
-  if (!bodyOfKnowledge) {
+  if (!spaceData) {
     return null;
   }
 
@@ -45,20 +45,19 @@ const SpaceHorizontalCard: FC<BokProps> = ({ bokProfile, showDefaults }) => {
       marginTop={theme.spacing(2)}
       visual={
         <Avatar
-          src={bodyOfKnowledge.avatar?.uri || defaultJourneyCardBanner}
-          aria-label="User avatar"
-          alt={t('common.avatar-of', { user: bodyOfKnowledge.displayName })}
+          src={spaceData.avatar?.uri || defaultJourneyCardBanner}
+          alt={t('common.avatar-of', { user: spaceData.displayName })}
         >
-          {bodyOfKnowledge.displayName}
+          {spaceData.displayName}
         </Avatar>
       }
       component={RouterLink}
-      to={bodyOfKnowledge.url}
+      to={spaceData.url}
     >
-      <BlockSectionTitle>{bodyOfKnowledge.displayName}</BlockSectionTitle>
-      <BlockSectionTitle>{bodyOfKnowledge.tagline}</BlockSectionTitle>
+      <BlockSectionTitle>{spaceData.displayName}</BlockSectionTitle>
+      <BlockSectionTitle>{spaceData.tagline}</BlockSectionTitle>
     </BadgeCardView>
   );
 };
 
-export default SpaceHorizontalCard;
+export default BasicSpaceCard;

@@ -1740,7 +1740,7 @@ export type CreateVirtualContributorOnAccountInput = {
   /** A readable identifier, unique within the containing scope. */
   nameID: Scalars['NameID'];
   profileData: CreateProfileInput;
-  virtualPersonaID: Scalars['UUID'];
+  virtualPersonaID?: InputMaybe<Scalars['UUID']>;
 };
 
 export type CreateVirtualPersonaInput = {
@@ -17331,41 +17331,48 @@ export type VirtualContributorQuery = {
     nameID: string;
     bodyOfKnowledgeID: string;
     authorization?:
-      | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
     account?:
       | {
           __typename?: 'Account';
+          id: string;
           spaceID: string;
           host?:
             | {
                 __typename?: 'Organization';
+                id: string;
                 profile: {
                   __typename?: 'Profile';
+                  id: string;
                   displayName: string;
                   tagline: string;
                   avatar?: { __typename?: 'Visual'; uri: string } | undefined;
-                  location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+                  location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
                 };
               }
             | {
                 __typename?: 'User';
+                id: string;
                 profile: {
                   __typename?: 'Profile';
+                  id: string;
                   displayName: string;
                   tagline: string;
                   avatar?: { __typename?: 'Visual'; uri: string } | undefined;
-                  location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+                  location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
                 };
               }
             | {
                 __typename?: 'VirtualContributor';
+                id: string;
                 profile: {
                   __typename?: 'Profile';
+                  id: string;
                   displayName: string;
                   tagline: string;
                   avatar?: { __typename?: 'Visual'; uri: string } | undefined;
-                  location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+                  location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
                 };
               }
             | undefined;

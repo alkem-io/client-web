@@ -8,8 +8,11 @@ import {
   useBodyOfKnowledgeProfileQuery,
   useVirtualContributorQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
+import { useTranslation } from 'react-i18next';
 
 export const VCProfilePage = () => {
+  const { t } = useTranslation();
+
   const { vcNameId = '' } = useUrlParams();
 
   const { data, loading, error } = useVirtualContributorQuery({
@@ -20,12 +23,15 @@ export const VCProfilePage = () => {
 
   const { data: bokProfile, loading: loadingBok } = useBodyOfKnowledgeProfileQuery({
     variables: {
-      spaceId: data?.virtualContributor.bodyOfKnowledgeID || '',
+      spaceId: data?.virtualContributor.bodyOfKnowledgeID!,
     },
     skip: !data?.virtualContributor.bodyOfKnowledgeID,
   });
 
-  if (loading) return <Loading text={'Loading Virtual Contributor Profile ...'} />;
+  if (loading)
+    return (
+      <Loading text={t('components.loading.message', { blockName: t('pages.virtual-contributor-profile.title') })} />
+    );
 
   if (error) {
     return (

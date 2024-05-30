@@ -8,14 +8,15 @@ import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
 import { VirtualContributorQuery } from '../../../../core/apollo/generated/graphql-schema';
 import { BlockTitle, Text } from '../../../../core/ui/typography';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
-import HostCardClean from './HostCardClean';
+import HostCard from '../components/HostCard';
 import useTheme from '@mui/material/styles/useTheme';
 import { Trans, useTranslation } from 'react-i18next';
 import ProfileDetail from '../../profile/ProfileDetail/ProfileDetail';
-import SpaceHorizontalCard, { BokProps } from './SpaceHorizontalCard';
+import BasicSpaceCard, { BasicSpaceProps } from '../components/BasicSpaceCard';
 
-interface Props extends BokProps {
+interface Props {
   virtualContributor: VirtualContributorQuery['virtualContributor'] | undefined;
+  bokProfile?: BasicSpaceProps;
   showDefaults?: boolean;
 }
 
@@ -48,7 +49,7 @@ export const VCProfilePageView: FC<PropsWithChildren<Props>> = ({
             aria-label="description"
           />
         </PageContentBlock>
-        <HostCardClean hostProfile={virtualContributor?.account?.host?.profile} />
+        <HostCard hostProfile={virtualContributor?.account?.host?.profile} />
       </PageContentColumn>
       <PageContentColumn columns={8}>
         <PageContentBlock>
@@ -58,7 +59,7 @@ export const VCProfilePageView: FC<PropsWithChildren<Props>> = ({
           </SectionTitle>
           <SectionContent withBottomOffset>
             <Trans i18nKey="pages.virtual-contributor-profile.sections.knowledge.description" values={{ name }} />
-            <SpaceHorizontalCard bokProfile={bokProfile} showDefaults={showDefaults} />
+            <BasicSpaceCard space={bokProfile} showDefaults={showDefaults} />
           </SectionContent>
           <SectionTitle>
             <RecordVoiceOverIcon htmlColor={theme.palette.icons.dark} sx={{ fontSize: '18px' }} />

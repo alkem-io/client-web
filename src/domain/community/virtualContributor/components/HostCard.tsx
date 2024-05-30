@@ -33,7 +33,7 @@ const DEFAULT_PROFILE = {
   },
 };
 
-const HostCardClean: FC<HostProps> = ({ hostProfile }) => {
+const HostCard: FC<HostProps> = ({ hostProfile }) => {
   const { t } = useTranslation();
 
   const profile = hostProfile || DEFAULT_PROFILE;
@@ -44,11 +44,7 @@ const HostCardClean: FC<HostProps> = ({ hostProfile }) => {
         <PageContentBlockHeader title={t('pages.virtual-contributor-profile.host')} />
         <BadgeCardView
           visual={
-            <Avatar
-              src={profile.avatar?.uri}
-              aria-label="User avatar"
-              alt={t('common.avatar-of', { user: profile.displayName })}
-            >
+            <Avatar src={profile.avatar?.uri} alt={t('common.avatar-of', { user: profile.displayName })}>
               {profile.displayName[0]}
             </Avatar>
           }
@@ -66,4 +62,4 @@ const HostCardClean: FC<HostProps> = ({ hostProfile }) => {
   );
 };
 
-export default HostCardClean;
+export default HostCard;

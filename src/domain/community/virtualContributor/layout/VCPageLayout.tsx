@@ -2,7 +2,6 @@ import React, { PropsWithChildren } from 'react';
 import TopLevelPageBreadcrumbs from '../../../../main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
 import { AssignmentIndOutlined } from '@mui/icons-material';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
-import { buildVCProfileUrl } from '../../../../main/routing/urlBuilders';
 import TopLevelLayout from '../../../../main/ui/layout/TopLevelLayout';
 import BreadcrumbsItem from '../../../../core/ui/navigation/BreadcrumbsItem';
 import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
@@ -34,7 +33,7 @@ const VCPageLayout = ({ ...props }: PropsWithChildren<VCPageLayoutProps>) => {
             loading={loading}
             avatar={data?.virtualContributor.profile.avatar}
             iconComponent={AssignmentIndOutlined}
-            uri={buildVCProfileUrl(vcNameId ?? '')}
+            uri={data?.virtualContributor.profile.url ?? ''}
           >
             {data?.virtualContributor.profile.displayName}
           </BreadcrumbsItem>

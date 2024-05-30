@@ -19,7 +19,7 @@ import { theme } from '../../../../core/ui/themes/default/Theme';
 import GridContainer from '../../../../core/ui/grid/GridContainer';
 import GridProvider from '../../../../core/ui/grid/GridProvider';
 import GridItem from '../../../../core/ui/grid/GridItem';
-import { BokProps } from '../vcProfilePage/SpaceHorizontalCard';
+import { BasicSpaceProps } from '../components/BasicSpaceCard';
 
 interface VirtualContributorProps {
   id: string;
@@ -53,8 +53,9 @@ interface VirtualContributorFromProps {
   subSpaceName: string;
 }
 
-interface Props extends BokProps {
+interface Props {
   virtualContributor: VirtualContributorProps;
+  bokProfile?: BasicSpaceProps;
   avatar: Visual | undefined;
   onSave?: (virtualContributor: UpdateVirtualContributorInput) => void;
   title?: string;

@@ -13,8 +13,11 @@ import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContent from '../../../../core/ui/content/PageContent';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
 import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
+import { useTranslation } from 'react-i18next';
 
 export const VCSettingsPage = () => {
+  const { t } = useTranslation();
+
   const { vcNameId = '' } = useUrlParams();
 
   const notify = useNotification();
@@ -27,7 +30,7 @@ export const VCSettingsPage = () => {
 
   const { data: bokProfile } = useBodyOfKnowledgeProfileQuery({
     variables: {
-      spaceId: data?.virtualContributor.bodyOfKnowledgeID || '',
+      spaceId: data?.virtualContributor.bodyOfKnowledgeID!,
     },
     skip: !data?.virtualContributor.bodyOfKnowledgeID,
   });
@@ -48,7 +51,12 @@ export const VCSettingsPage = () => {
     });
   };
 
-  if (loading) return <Loading text={'Loading Virtual Contributor Settings ...'} />;
+  if (loading)
+    return (
+      <Loading
+        text={t('components.loading.message', { blockName: t('pages.virtual-contributor-profile.settings.title') })}
+      />
+    );
 
   return (
     <StorageConfigContextProvider locationType="platform">

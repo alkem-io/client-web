@@ -2448,6 +2448,7 @@
       }
     },
     "virtual-contributor-profile": {
+      "title": "Virtual Contributor Profile",
       "default-name": "Alkemio Help",
       "description": "Description",
       "references": "References",
@@ -2472,6 +2473,9 @@
           "description": "For Alkemio, safeguarding your data is of utmost importance. We are committed to maintaining the security and privacy of your information.",
           "bullets": "<ul><li>When interacting with a Virtual Contributor, only the data explicitly specified on the left (Context) is used to generate meaningful answers.</li><li>Importantly, your (Space) data is not utilized for training the Virtual Contributor.</li><li>Additionally, please note that questions and answers exchanged with the Virtual Contributor may be visible to the Alkemio team.</li></ul>"
         }
+      },
+      "settings": {
+        "title": "Virtual Contributor Settings"
       }
     },
     "user-credentials": {

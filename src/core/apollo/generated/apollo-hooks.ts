@@ -14113,18 +14113,23 @@ export const VirtualContributorDocument = gql`
       nameID
       bodyOfKnowledgeID
       authorization {
+        id
         myPrivileges
       }
       account {
+        id
         spaceID
         host {
+          id
           profile {
+            id
             displayName
             tagline
             avatar: visual(type: AVATAR) {
               uri
             }
             location {
+              id
               city
               country
             }

@@ -11,8 +11,6 @@ export const buildSettingsUrl = (entityUrl: string) => {
 
 export const buildUserProfileUrl = (userNameId: string) => `/user/${userNameId}`;
 
-export const buildVCProfileUrl = (vcNameId: string) => `/vc/${vcNameId}`;
-
 export const buildUserProfileSettingsUrl = (userNameId: string) =>
   `${buildUserProfileUrl(userNameId)}/settings/profile`;
 
@@ -37,5 +35,3 @@ export const buildUpdatesUrl = (journeyLocation: string) => {
 export const buildAboutUrl = (journeyLocation: string | undefined) => {
   return journeyLocation && `${journeyLocation}/about`;
 };
-
-export const buildVCProfileSettingsUrl = (nameID: string) => `/vc/${nameID}/settings/profile`;

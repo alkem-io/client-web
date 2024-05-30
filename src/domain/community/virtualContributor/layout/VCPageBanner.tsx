@@ -2,7 +2,6 @@ import React from 'react';
 import { useVirtualContributorQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import ProfilePageBanner from '../../../common/profile/ProfilePageBanner';
-import { buildVCProfileSettingsUrl } from '../../../../main/routing/urlBuilders';
 import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
 
 const VCPageBanner = () => {
@@ -27,7 +26,7 @@ const VCPageBanner = () => {
       isVirtualContributor
       entityId={vcId}
       profile={profile}
-      settingsUri={hasSettingsAccess ? buildVCProfileSettingsUrl(data?.virtualContributor.nameID || '') : undefined}
+      settingsUri={hasSettingsAccess ? `${data?.virtualContributor.profile.url}/settings/profile` : undefined}
       loading={loading}
     />
   );
