@@ -14117,8 +14117,7 @@ export const VirtualContributorDocument = gql`
         description
         tagline
         tagsets {
-          id
-          tags
+          ...TagsetDetails
         }
         url
         avatar: visual(type: AVATAR) {
@@ -14127,6 +14126,7 @@ export const VirtualContributorDocument = gql`
       }
     }
   }
+  ${TagsetDetailsFragmentDoc}
   ${VisualFullFragmentDoc}
 `;
 

@@ -8,8 +8,7 @@ query VirtualContributor ($id: UUID_NAMEID!) {
       description
       tagline
       tagsets {
-        id
-        tags
+        ...TagsetDetails
       }
       url
       avatar: visual(type: AVATAR) {

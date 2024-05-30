@@ -17331,7 +17331,16 @@ export type VirtualContributorQuery = {
       description?: string | undefined;
       tagline: string;
       url: string;
-      tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+      tagsets?:
+        | Array<{
+            __typename?: 'Tagset';
+            id: string;
+            name: string;
+            tags: Array<string>;
+            allowedValues: Array<string>;
+            type: TagsetType;
+          }>
+        | undefined;
       avatar?:
         | {
             __typename?: 'Visual';

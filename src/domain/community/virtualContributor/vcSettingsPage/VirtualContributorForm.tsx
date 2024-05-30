@@ -14,6 +14,8 @@ import Gutters from '../../../../core/ui/grid/Gutters';
 import useLoadingState from '../../../shared/utils/useLoadingState';
 import { Actions } from '../../../../core/ui/actions/Actions';
 import { LoadingButton } from '@mui/lab';
+import { TagsetSegment } from '../../../platform/admin/components/Common/TagsetSegment';
+import { UpdateTagset } from '../../../common/profile/Profile';
 
 interface VirtualContributorProps {
   id: string;
@@ -23,12 +25,7 @@ interface VirtualContributorProps {
     displayName: string;
     description?: string;
     tagline: string;
-    tagsets?:
-      | {
-          id: string;
-          tags: string[];
-        }[]
-      | undefined;
+    tagsets?: Tagset[] | undefined;
     url: string;
     avatar?: Visual | undefined;
   };
@@ -61,7 +58,7 @@ export const VirtualContributorForm: FC<Props> = ({
 
   const {
     nameID,
-    profile: { displayName, description, tagline },
+    profile: { displayName, description, tagline, tagsets },
   } = currentVirtualContributor;
 
   const initialValues: VirtualContributorFromProps = {
@@ -70,6 +67,7 @@ export const VirtualContributorForm: FC<Props> = ({
     description: description ?? '',
     tagline: tagline,
     avatar: avatar,
+    tagsets: tagsets,
   };
 
   const validationSchema = yup.object().shape({
@@ -78,27 +76,33 @@ export const VirtualContributorForm: FC<Props> = ({
     description: profileSegmentSchema.fields?.description || yup.string(),
   });
 
+  const getUpdatedTagsets = (updatedTagsets: Tagset[]) => {
+    const result: UpdateTagset[] = [];
+    updatedTagsets.forEach(updatedTagset => {
+      const originalTagset = tagsets?.find(value => value.name === updatedTagset.name);
+      if (originalTagset) result.push({ ...originalTagset, tags: updatedTagset.tags });
+    });
+
+    return result;
+  };
+
   const [handleSubmit, loading] = useLoadingState(async (values: VirtualContributorFromProps) => {
-    const { tagsets, description, tagline, ...otherData } = values;
+    const { tagsets, description, tagline, name, ...otherData } = values;
+    const updatedTagsets = getUpdatedTagsets(tagsets || []);
 
     const virtualContributor = {
       ID: currentVirtualContributor.id,
-      description,
+      profileData: {
+        displayName: name,
+        description,
+        tagline,
+        tagsets: updatedTagsets.map(r => ({
+          ID: r.id,
+          id: undefined,
+          tags: r.tags ?? [],
+        })),
+      },
       ...otherData,
-      // bodyOfKnowledgeType: BodyOfKnowledgeType.Space,
-      // profile: {
-      //   displayName: otherData.name,
-      //   description,
-      //   tagline,
-      //   tagsets: updatedTagsets.map(r => ({
-      //     ...r,
-      //     ID: r.id,
-      //     id: '',
-      //     allowedValues: [],
-      //     type: TagsetType.Freeform,
-      //     tags: r.tags ?? [],
-      //   })),
-      // },
     };
 
     await onSave?.(virtualContributor);
@@ -143,15 +147,16 @@ export const VirtualContributorForm: FC<Props> = ({
           enableReinitialize
           onSubmit={handleSubmit}
         >
-          {({ values: { avatar }, handleSubmit }) => {
+          {({ values: { avatar, tagsets }, handleSubmit }) => {
             return (
               <Form noValidate onSubmit={handleSubmit}>
                 <Section avatar={getVisualAvatar(avatar)}>
                   <Header text={title} />
                   <Gutters disablePadding>
                     <>
-                      <NameSegment disabled={false} required />
+                      <NameSegment disabled required />
                       <ProfileSegment />
+                      {tagsets && <TagsetSegment tagsets={tagsets} />}
                     </>
                   </Gutters>
                   <Actions>

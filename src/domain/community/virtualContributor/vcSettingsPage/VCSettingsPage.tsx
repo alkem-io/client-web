@@ -24,10 +24,7 @@ export const VCSettingsPage = () => {
       variables: {
         virtualContributorData: {
           ID: virtualContributor.ID,
-          profileData: {
-            displayName: virtualContributor.name,
-            description: virtualContributor.description,
-          },
+          profileData: virtualContributor.profileData,
         },
       },
     });
