@@ -11,6 +11,7 @@ query VirtualContributor ($id: UUID_NAMEID!) {
         id
         tags
       }
+      url
       avatar: visual(type: AVATAR) {
         ...VisualFull
       }

@@ -2886,6 +2886,7 @@ export type VirtualContributorKeySpecifier = (
   | 'account'
   | 'agent'
   | 'authorization'
+  | 'bodyOfKnowledgeID'
   | 'bodyOfKnowledgeType'
   | 'id'
   | 'nameID'
@@ -2898,6 +2899,7 @@ export type VirtualContributorFieldPolicy = {
   account?: FieldPolicy<any> | FieldReadFunction<any>;
   agent?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  bodyOfKnowledgeID?: FieldPolicy<any> | FieldReadFunction<any>;
   bodyOfKnowledgeType?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;

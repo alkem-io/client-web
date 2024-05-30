@@ -5701,6 +5701,8 @@ export type VirtualContributor = Contributor & {
   agent: Agent;
   /** The authorization rules for the Contributor */
   authorization?: Maybe<Authorization>;
+  /** The body of knowledge ID used for the Virtual Contributor */
+  bodyOfKnowledgeID: Scalars['UUID'];
   /** The body of knowledge type used for the Virtual Contributor */
   bodyOfKnowledgeType: BodyOfKnowledgeType;
   /** The ID of the Contributor */
@@ -17328,6 +17330,7 @@ export type VirtualContributorQuery = {
       displayName: string;
       description?: string | undefined;
       tagline: string;
+      url: string;
       tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
       avatar?:
         | {

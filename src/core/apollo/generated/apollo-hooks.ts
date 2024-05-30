@@ -14120,6 +14120,7 @@ export const VirtualContributorDocument = gql`
           id
           tags
         }
+        url
         avatar: visual(type: AVATAR) {
           ...VisualFull
         }
