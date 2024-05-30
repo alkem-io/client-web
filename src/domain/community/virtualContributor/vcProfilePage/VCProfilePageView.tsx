@@ -6,7 +6,6 @@ import BookIcon from '@mui/icons-material/Book';
 import PageContent from '../../../../core/ui/content/PageContent';
 import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
 import { VirtualContributorQuery } from '../../../../core/apollo/generated/graphql-schema';
-import VCProfileView from '../views/VCProfileView';
 import { BlockSectionTitle, BlockTitle, Text } from '../../../../core/ui/typography';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import HostCardClean from './HostCardClean';
@@ -15,6 +14,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
 import Avatar from '../../../../core/ui/avatar/Avatar';
 import RouterLink from '../../../../core/ui/link/RouterLink';
+import ProfileDetail from '../../profile/ProfileDetail/ProfileDetail';
 
 interface Props {
   virtualContributor: VirtualContributorQuery['virtualContributor'] | undefined;
@@ -48,7 +48,13 @@ export const VCProfilePageView: FC<PropsWithChildren<Props>> = ({ virtualContrib
   return (
     <PageContent>
       <PageContentColumn columns={4}>
-        <VCProfileView virtualContributor={virtualContributor} />
+        <PageContentBlock disableGap>
+          <ProfileDetail
+            title={t('components.profile.fields.description.title')}
+            value={virtualContributor?.profile.description}
+            aria-label="description"
+          />
+        </PageContentBlock>
         <HostCardClean />
       </PageContentColumn>
       <PageContentColumn columns={8}>
