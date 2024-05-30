@@ -75,16 +75,18 @@ export const VirtualContributorForm: FC<Props> = ({
   };
 
   const validationSchema = yup.object().shape({
-    name: nameSegmentSchema.fields?.name || yup.string(),
-    nameID: nameSegmentSchema.fields?.nameID || yup.string(),
-    description: profileSegmentSchema.fields?.description || yup.string(),
+    name: nameSegmentSchema.fields?.name ?? yup.string(),
+    nameID: nameSegmentSchema.fields?.nameID ?? yup.string(),
+    description: profileSegmentSchema.fields?.description ?? yup.string(),
   });
 
   const getUpdatedTagsets = (updatedTagsets: Tagset[]) => {
     const result: UpdateTagset[] = [];
     updatedTagsets.forEach(updatedTagset => {
       const originalTagset = tagsets?.find(value => value.name === updatedTagset.name);
-      if (originalTagset) result.push({ ...originalTagset, tags: updatedTagset.tags });
+      if (originalTagset) {
+        result.push({ ...originalTagset, tags: updatedTagset.tags });
+      }
     });
 
     return result;
@@ -92,7 +94,7 @@ export const VirtualContributorForm: FC<Props> = ({
 
   const [handleSubmit, loading] = useLoadingState(async (values: VirtualContributorFromProps) => {
     const { tagsets, description, tagline, name, ...otherData } = values;
-    const updatedTagsets = getUpdatedTagsets(tagsets || []);
+    const updatedTagsets = getUpdatedTagsets(tagsets ?? []);
 
     const virtualContributor = {
       ID: currentVirtualContributor.id,
@@ -102,7 +104,6 @@ export const VirtualContributorForm: FC<Props> = ({
         tagline,
         tagsets: updatedTagsets.map(r => ({
           ID: r.id,
-          id: undefined,
           tags: r.tags ?? [],
         })),
       },
@@ -120,9 +121,9 @@ export const VirtualContributorForm: FC<Props> = ({
 
   const HostFields = () => (
     <>
-      <FormikInputField name={'host'} title={'Host'} required readOnly disabled />
-      <FormikInputField name={'space'} title={'Space'} required readOnly disabled />
-      <FormikInputField name={'subspace'} title={'Subspace'} required readOnly disabled />
+      <FormikInputField name="host" title="Host" required readOnly disabled />
+      <FormikInputField name="space" title="Space" required readOnly disabled />
+      <FormikInputField name="subspace" title="Subspace" required readOnly disabled />
     </>
   );
 
