@@ -40,7 +40,6 @@ export const VCSettingsPage = () => {
           virtualContributor={data?.virtualContributor}
           avatar={data?.virtualContributor.profile.avatar}
           onSave={handleUpdate}
-          title={''}
         />
       )}
     </VCPageLayout>

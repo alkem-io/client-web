@@ -9,13 +9,15 @@ import { ProfileSegment, profileSegmentSchema } from '../../../platform/admin/co
 import { Button, Grid } from '@mui/material';
 import WrapperButton from '../../../../core/ui/button/deprecated/WrapperButton';
 import VisualUpload from '../../../../core/ui/upload/VisualUpload/VisualUpload';
-import Section, { Header } from '../../../../core/ui/content/deprecated/Section';
+import Section from '../../../../core/ui/content/deprecated/Section';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import useLoadingState from '../../../shared/utils/useLoadingState';
 import { Actions } from '../../../../core/ui/actions/Actions';
 import { LoadingButton } from '@mui/lab';
 import { TagsetSegment } from '../../../platform/admin/components/Common/TagsetSegment';
 import { UpdateTagset } from '../../../common/profile/Profile';
+import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
+import { theme } from '../../../../core/ui/themes/default/Theme';
 
 interface VirtualContributorProps {
   id: string;
@@ -51,7 +53,6 @@ export const VirtualContributorForm: FC<Props> = ({
   virtualContributor: currentVirtualContributor,
   avatar,
   onSave,
-  title = 'Virtual Contributor',
 }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -116,20 +117,13 @@ export const VirtualContributorForm: FC<Props> = ({
     </Grid>
   );
 
-  const getVisualAvatar = avatar => {
-    if (avatar) {
-      return (
-        <VisualUpload
-          visual={avatar}
-          altText={t('visuals-alt-text.avatar.contributor.text', {
-            displayName,
-            altText: avatar?.alternativeText,
-          })}
-        />
-      );
-    }
-    return null;
-  };
+  const HostFields = () => (
+    <>
+      <FormikInputField name={'host'} title={'Host'} required readOnly disabled />
+      <FormikInputField name={'space'} title={'Space'} required readOnly disabled />
+      <FormikInputField name={'subspace'} title={'Subspace'} required readOnly disabled />
+    </>
+  );
 
   if (!currentVirtualContributor) {
     return (
@@ -150,16 +144,28 @@ export const VirtualContributorForm: FC<Props> = ({
           {({ values: { avatar, tagsets }, handleSubmit }) => {
             return (
               <Form noValidate onSubmit={handleSubmit}>
-                <Section avatar={getVisualAvatar(avatar)}>
-                  <Header text={title} />
+                <Section
+                  avatar={
+                    avatar && (
+                      <VisualUpload
+                        visual={avatar}
+                        altText={t('visuals-alt-text.avatar.contributor.text', {
+                          displayName,
+                          altText: avatar?.alternativeText,
+                        })}
+                      />
+                    )
+                  }
+                >
                   <Gutters disablePadding>
                     <>
                       <NameSegment disabled required />
                       <ProfileSegment />
                       {tagsets && <TagsetSegment tagsets={tagsets} />}
+                      <HostFields />
                     </>
                   </Gutters>
-                  <Actions>
+                  <Actions marginTop={theme.spacing(2)}>
                     <Button onClick={handleBack} variant="text">
                       {t('buttons.back')}
                     </Button>
