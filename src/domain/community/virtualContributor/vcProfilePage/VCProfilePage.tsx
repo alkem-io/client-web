@@ -4,7 +4,10 @@ import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { Error404 } from '../../../../core/pages/Errors/Error404';
 import VCPageLayout from '../layout/VCPageLayout';
 import VCProfilePageView from './VCProfilePageView';
-import { useVirtualContributorQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import {
+  useBodyOfKnowledgeProfileQuery,
+  useVirtualContributorQuery,
+} from '../../../../core/apollo/generated/apollo-hooks';
 
 export const VCProfilePage = () => {
   const { vcNameId = '' } = useUrlParams();
@@ -13,6 +16,13 @@ export const VCProfilePage = () => {
     variables: {
       id: vcNameId,
     },
+  });
+
+  const { data: bokProfile, loading: loadingBok } = useBodyOfKnowledgeProfileQuery({
+    variables: {
+      spaceId: data?.virtualContributor.bodyOfKnowledgeID || '',
+    },
+    skip: !data?.virtualContributor.bodyOfKnowledgeID,
   });
 
   if (loading) return <Loading text={'Loading Virtual Contributor Profile ...'} />;
@@ -27,7 +37,11 @@ export const VCProfilePage = () => {
 
   return (
     <VCPageLayout>
-      <VCProfilePageView virtualContributor={data?.virtualContributor} />
+      <VCProfilePageView
+        virtualContributor={data?.virtualContributor}
+        bokProfile={bokProfile?.lookup.space?.profile}
+        showDefaults={!loadingBok}
+      />
     </VCPageLayout>
   );
 };

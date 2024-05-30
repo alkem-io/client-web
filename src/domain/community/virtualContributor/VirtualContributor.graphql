@@ -2,6 +2,23 @@ query VirtualContributor ($id: UUID_NAMEID!) {
   virtualContributor (ID: $id) {
     id
     nameID
+    bodyOfKnowledgeID
+    account {
+      spaceID
+      host {
+				profile {
+          displayName
+          tagline
+          avatar: visual(type: AVATAR) {
+            uri
+          }
+          location {
+            city
+            country
+          }
+        }
+      }
+    }
     profile {
       id
       displayName
@@ -13,6 +30,24 @@ query VirtualContributor ($id: UUID_NAMEID!) {
       }
       avatar: visual(type: AVATAR) {
         ...VisualFull
+      }
+    }
+  }
+}
+
+query BodyOfKnowledgeProfile($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
+      profile {
+        displayName
+        tagline
+        url
+        avatar: visual(type: AVATAR) {
+          uri
+        }
+        cardBanner: visual(type: CARD) {
+          uri
+        }
       }
     }
   }

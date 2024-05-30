@@ -11,7 +11,7 @@ import { theme } from '../../../../core/ui/themes/default/Theme';
 
 interface HostProps {
   hostProfile?: {
-    avatar: {
+    avatar?: {
       uri: string;
     };
     displayName: string;

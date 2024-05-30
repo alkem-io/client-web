@@ -17329,6 +17329,43 @@ export type VirtualContributorQuery = {
     __typename?: 'VirtualContributor';
     id: string;
     nameID: string;
+    bodyOfKnowledgeID: string;
+    account: {
+      __typename?: 'Account';
+      spaceID: string;
+      host?:
+        | {
+            __typename?: 'Organization';
+            profile: {
+              __typename?: 'Profile';
+              displayName: string;
+              tagline: string;
+              avatar?: { __typename?: 'Visual'; uri: string } | undefined;
+              location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+            };
+          }
+        | {
+            __typename?: 'User';
+            profile: {
+              __typename?: 'Profile';
+              displayName: string;
+              tagline: string;
+              avatar?: { __typename?: 'Visual'; uri: string } | undefined;
+              location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+            };
+          }
+        | {
+            __typename?: 'VirtualContributor';
+            profile: {
+              __typename?: 'Profile';
+              displayName: string;
+              tagline: string;
+              avatar?: { __typename?: 'Visual'; uri: string } | undefined;
+              location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+            };
+          }
+        | undefined;
+    };
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -17352,6 +17389,30 @@ export type VirtualContributorQuery = {
           }
         | undefined;
     };
+  };
+};
+
+export type BodyOfKnowledgeProfileQueryVariables = Exact<{
+  spaceId: Scalars['UUID'];
+}>;
+
+export type BodyOfKnowledgeProfileQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    space?:
+      | {
+          __typename?: 'Space';
+          profile: {
+            __typename?: 'Profile';
+            displayName: string;
+            tagline: string;
+            url: string;
+            avatar?: { __typename?: 'Visual'; uri: string } | undefined;
+            cardBanner?: { __typename?: 'Visual'; uri: string } | undefined;
+          };
+        }
+      | undefined;
   };
 };
 
