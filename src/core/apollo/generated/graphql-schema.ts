@@ -1748,6 +1748,7 @@ export type CreateVirtualPersonaInput = {
   /** A readable identifier, unique within the containing scope. */
   nameID: Scalars['NameID'];
   profileData: CreateProfileInput;
+  prompt: Scalars['JSON'];
 };
 
 export type CreateWhiteboardInput = {
@@ -5523,6 +5524,7 @@ export type UpdateVirtualPersonaInput = {
   nameID?: InputMaybe<Scalars['NameID']>;
   /** The Profile of this entity. */
   profileData?: InputMaybe<UpdateProfileInput>;
+  prompt: Scalars['JSON'];
 };
 
 export type UpdateVisualInput = {
@@ -5718,6 +5720,7 @@ export type VirtualContributor = Contributor & {
 };
 
 export enum VirtualContributorEngine {
+  CommunityManager = 'COMMUNITY_MANAGER',
   Expert = 'EXPERT',
   Guidance = 'GUIDANCE',
 }
@@ -5736,6 +5739,8 @@ export type VirtualPersona = {
   nameID: Scalars['NameID'];
   /** The Profile for the VirtualPersona. */
   profile: Profile;
+  /** The prompt used by this Virtual Persona */
+  prompt: Scalars['String'];
 };
 
 export enum VirtualPersonaAccessMode {
@@ -17324,6 +17329,43 @@ export type VirtualContributorQuery = {
     __typename?: 'VirtualContributor';
     id: string;
     nameID: string;
+    bodyOfKnowledgeID: string;
+    account: {
+      __typename?: 'Account';
+      spaceID: string;
+      host?:
+        | {
+            __typename?: 'Organization';
+            profile: {
+              __typename?: 'Profile';
+              displayName: string;
+              tagline: string;
+              avatar?: { __typename?: 'Visual'; uri: string } | undefined;
+              location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+            };
+          }
+        | {
+            __typename?: 'User';
+            profile: {
+              __typename?: 'Profile';
+              displayName: string;
+              tagline: string;
+              avatar?: { __typename?: 'Visual'; uri: string } | undefined;
+              location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+            };
+          }
+        | {
+            __typename?: 'VirtualContributor';
+            profile: {
+              __typename?: 'Profile';
+              displayName: string;
+              tagline: string;
+              avatar?: { __typename?: 'Visual'; uri: string } | undefined;
+              location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+            };
+          }
+        | undefined;
+    };
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -17357,6 +17399,30 @@ export type VirtualContributorQuery = {
           }
         | undefined;
     };
+  };
+};
+
+export type BodyOfKnowledgeProfileQueryVariables = Exact<{
+  spaceId: Scalars['UUID'];
+}>;
+
+export type BodyOfKnowledgeProfileQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    space?:
+      | {
+          __typename?: 'Space';
+          profile: {
+            __typename?: 'Profile';
+            displayName: string;
+            tagline: string;
+            url: string;
+            avatar?: { __typename?: 'Visual'; uri: string } | undefined;
+            cardBanner?: { __typename?: 'Visual'; uri: string } | undefined;
+          };
+        }
+      | undefined;
   };
 };
 

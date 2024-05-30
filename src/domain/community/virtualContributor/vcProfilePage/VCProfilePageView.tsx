@@ -6,35 +6,28 @@ import BookIcon from '@mui/icons-material/Book';
 import PageContent from '../../../../core/ui/content/PageContent';
 import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
 import { VirtualContributorQuery } from '../../../../core/apollo/generated/graphql-schema';
-import { BlockSectionTitle, BlockTitle, Text } from '../../../../core/ui/typography';
+import { BlockTitle, Text } from '../../../../core/ui/typography';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import HostCardClean from './HostCardClean';
 import useTheme from '@mui/material/styles/useTheme';
 import { Trans, useTranslation } from 'react-i18next';
-import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
-import Avatar from '../../../../core/ui/avatar/Avatar';
-import RouterLink from '../../../../core/ui/link/RouterLink';
 import ProfileDetail from '../../profile/ProfileDetail/ProfileDetail';
+import SpaceHorizontalCard, { BokProps } from './SpaceHorizontalCard';
 
-interface Props {
+interface Props extends BokProps {
   virtualContributor: VirtualContributorQuery['virtualContributor'] | undefined;
+  showDefaults?: boolean;
 }
 
-const DEFULT_PROFILE = {
-  avatar: {
-    uri: 'https://alkem.io/api/private/rest/storage/document/1057e0c1-2d47-4821-8848-20ec19cb2a0d',
-  },
-  displayName: 'Welcome @ Alkemio!',
-  tagline: 'Take 5 minutes to get started',
-  url: 'https://alkem.io/welcome-space',
-};
-
-export const VCProfilePageView: FC<PropsWithChildren<Props>> = ({ virtualContributor }) => {
+export const VCProfilePageView: FC<PropsWithChildren<Props>> = ({
+  virtualContributor,
+  bokProfile,
+  showDefaults = false,
+}) => {
   const theme = useTheme();
   const { t } = useTranslation();
 
   const name = virtualContributor?.profile.displayName || t('pages.virtual-contributor-profile.default-name');
-  const profile = DEFULT_PROFILE;
 
   const SectionTitle = ({ children }) => (
     <BlockTitle display={'flex'} alignItems={'center'} gap={theme.spacing(1)}>
@@ -55,7 +48,7 @@ export const VCProfilePageView: FC<PropsWithChildren<Props>> = ({ virtualContrib
             aria-label="description"
           />
         </PageContentBlock>
-        <HostCardClean />
+        <HostCardClean hostProfile={virtualContributor?.account.host?.profile} />
       </PageContentColumn>
       <PageContentColumn columns={8}>
         <PageContentBlock>
@@ -65,23 +58,7 @@ export const VCProfilePageView: FC<PropsWithChildren<Props>> = ({ virtualContrib
           </SectionTitle>
           <SectionContent withBottomOffset>
             <Trans i18nKey="pages.virtual-contributor-profile.sections.knowledge.description" values={{ name }} />
-            <BadgeCardView
-              marginTop={theme.spacing(2)}
-              visual={
-                <Avatar
-                  src={profile.avatar?.uri}
-                  aria-label="User avatar"
-                  alt={t('common.avatar-of', { user: profile.displayName })}
-                >
-                  {profile.displayName}
-                </Avatar>
-              }
-              component={RouterLink}
-              to={profile.url}
-            >
-              <BlockSectionTitle>{profile.displayName}</BlockSectionTitle>
-              <BlockSectionTitle>{profile.tagline}</BlockSectionTitle>
-            </BadgeCardView>
+            <SpaceHorizontalCard bokProfile={bokProfile} showDefaults={showDefaults} />
           </SectionContent>
           <SectionTitle>
             <RecordVoiceOverIcon htmlColor={theme.palette.icons.dark} sx={{ fontSize: '18px' }} />

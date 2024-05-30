@@ -14111,6 +14111,23 @@ export const VirtualContributorDocument = gql`
     virtualContributor(ID: $id) {
       id
       nameID
+      bodyOfKnowledgeID
+      account {
+        spaceID
+        host {
+          profile {
+            displayName
+            tagline
+            avatar: visual(type: AVATAR) {
+              uri
+            }
+            location {
+              city
+              country
+            }
+          }
+        }
+      }
       profile {
         id
         displayName
@@ -14180,6 +14197,78 @@ export type VirtualContributorQueryResult = Apollo.QueryResult<
 >;
 export function refetchVirtualContributorQuery(variables: SchemaTypes.VirtualContributorQueryVariables) {
   return { query: VirtualContributorDocument, variables: variables };
+}
+
+export const BodyOfKnowledgeProfileDocument = gql`
+  query BodyOfKnowledgeProfile($spaceId: UUID!) {
+    lookup {
+      space(ID: $spaceId) {
+        profile {
+          displayName
+          tagline
+          url
+          avatar: visual(type: AVATAR) {
+            uri
+          }
+          cardBanner: visual(type: CARD) {
+            uri
+          }
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useBodyOfKnowledgeProfileQuery__
+ *
+ * To run a query within a React component, call `useBodyOfKnowledgeProfileQuery` and pass it any options that fit your needs.
+ * When your component renders, `useBodyOfKnowledgeProfileQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useBodyOfKnowledgeProfileQuery({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *   },
+ * });
+ */
+export function useBodyOfKnowledgeProfileQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.BodyOfKnowledgeProfileQuery,
+    SchemaTypes.BodyOfKnowledgeProfileQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.BodyOfKnowledgeProfileQuery, SchemaTypes.BodyOfKnowledgeProfileQueryVariables>(
+    BodyOfKnowledgeProfileDocument,
+    options
+  );
+}
+
+export function useBodyOfKnowledgeProfileLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.BodyOfKnowledgeProfileQuery,
+    SchemaTypes.BodyOfKnowledgeProfileQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.BodyOfKnowledgeProfileQuery, SchemaTypes.BodyOfKnowledgeProfileQueryVariables>(
+    BodyOfKnowledgeProfileDocument,
+    options
+  );
+}
+
+export type BodyOfKnowledgeProfileQueryHookResult = ReturnType<typeof useBodyOfKnowledgeProfileQuery>;
+export type BodyOfKnowledgeProfileLazyQueryHookResult = ReturnType<typeof useBodyOfKnowledgeProfileLazyQuery>;
+export type BodyOfKnowledgeProfileQueryResult = Apollo.QueryResult<
+  SchemaTypes.BodyOfKnowledgeProfileQuery,
+  SchemaTypes.BodyOfKnowledgeProfileQueryVariables
+>;
+export function refetchBodyOfKnowledgeProfileQuery(variables: SchemaTypes.BodyOfKnowledgeProfileQueryVariables) {
+  return { query: BodyOfKnowledgeProfileDocument, variables: variables };
 }
 
 export const InnovationHubAvailableSpacesDocument = gql`
