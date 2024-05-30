@@ -19,10 +19,18 @@ import { theme } from '../../../../core/ui/themes/default/Theme';
 import GridContainer from '../../../../core/ui/grid/GridContainer';
 import GridProvider from '../../../../core/ui/grid/GridProvider';
 import GridItem from '../../../../core/ui/grid/GridItem';
+import { BokProps } from '../vcProfilePage/SpaceHorizontalCard';
 
 interface VirtualContributorProps {
   id: string;
   nameID: string;
+  account?: {
+    host?: {
+      profile: {
+        displayName: string;
+      };
+    };
+  };
   profile: {
     id: string;
     displayName: string;
@@ -41,9 +49,11 @@ interface VirtualContributorFromProps {
   tagline: string;
   tagsets?: Tagset[];
   avatar: Visual | undefined;
+  hostDisplayName: string;
+  subSpaceName: string;
 }
 
-interface Props {
+interface Props extends BokProps {
   virtualContributor: VirtualContributorProps;
   avatar: Visual | undefined;
   onSave?: (virtualContributor: UpdateVirtualContributorInput) => void;
@@ -52,6 +62,7 @@ interface Props {
 
 export const VirtualContributorForm: FC<Props> = ({
   virtualContributor: currentVirtualContributor,
+  bokProfile,
   avatar,
   onSave,
 }) => {
@@ -63,7 +74,9 @@ export const VirtualContributorForm: FC<Props> = ({
   const {
     nameID,
     profile: { displayName, description, tagline, tagsets },
+    account,
   } = currentVirtualContributor;
+  const { displayName: subSpaceName } = bokProfile ?? {};
 
   const initialValues: VirtualContributorFromProps = {
     name: displayName,
@@ -72,6 +85,8 @@ export const VirtualContributorForm: FC<Props> = ({
     tagline: tagline,
     avatar: avatar,
     tagsets: tagsets,
+    hostDisplayName: account?.host?.profile.displayName ?? '',
+    subSpaceName: subSpaceName ?? '',
   };
 
   const validationSchema = yup.object().shape({
@@ -121,9 +136,8 @@ export const VirtualContributorForm: FC<Props> = ({
 
   const HostFields = () => (
     <>
-      <FormikInputField name="host" title="Host" required readOnly disabled />
-      <FormikInputField name="space" title="Space" required readOnly disabled />
-      <FormikInputField name="subspace" title="Subspace" required readOnly disabled />
+      <FormikInputField name="hostDisplayName" title="Host" required readOnly disabled />
+      <FormikInputField name="subSpaceName" title="Body Of Knowledge Subspace" required readOnly disabled />
     </>
   );
 
