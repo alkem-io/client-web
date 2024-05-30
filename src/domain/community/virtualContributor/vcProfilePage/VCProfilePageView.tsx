@@ -48,7 +48,7 @@ export const VCProfilePageView: FC<PropsWithChildren<Props>> = ({
             aria-label="description"
           />
         </PageContentBlock>
-        <HostCardClean hostProfile={virtualContributor?.account.host?.profile} />
+        <HostCardClean hostProfile={virtualContributor?.account?.host?.profile} />
       </PageContentColumn>
       <PageContentColumn columns={8}>
         <PageContentBlock>
