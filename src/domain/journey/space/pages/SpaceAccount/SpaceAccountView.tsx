@@ -21,7 +21,7 @@ import { ROUTE_HOME } from '../../../../platform/routes/constants';
 import { DeleteIcon } from '../SpaceSettings/icon/DeleteIcon';
 import SpaceProfileDeleteDialog from '../SpaceSettings/SpaceProfileDeleteDialog';
 import { PlanFeatures, PlanFooter, PlanName, PlanPrice } from '../../../../license/plans/ui/PlanCardsComponents';
-import { usePlanTranslations } from '../../../../license/plans/utils/PlanTranslations';
+import { getPlanTranslations } from '../../../../license/plans/utils/getPlanTranslations';
 import RouterLink from '../../../../../core/ui/link/RouterLink';
 
 interface SpaceAccountPageProps {
@@ -30,7 +30,7 @@ interface SpaceAccountPageProps {
 
 const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
   const { t } = useTranslation();
-  const planTranslations = usePlanTranslations();
+  const planTranslations = getPlanTranslations(t);
   const notify = useNotification();
   const navigate = useNavigate();
 

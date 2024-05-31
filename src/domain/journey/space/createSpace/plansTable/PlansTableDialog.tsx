@@ -15,7 +15,7 @@ import Loading from '../../../../../core/ui/loading/Loading';
 import SelectPlanButton from './SelectPlanButton';
 import { usePlanAvailability } from './usePlanAvailability';
 import { TagCategoryValues, error } from '../../../../../core/logging/sentry/log';
-import { usePlanTranslations } from '../../../../license/plans/utils/PlanTranslations';
+import { getPlanTranslations } from '../../../../license/plans/utils/getPlanTranslations';
 import { PlanFeatures, PlanName, PlanPrice } from '../../../../license/plans/ui/PlanCardsComponents';
 
 const lines = (theme: Theme) => `1px solid ${theme.palette.divider}`;
@@ -37,7 +37,7 @@ const PlansTableDialog = ({ open, onClose, onSelectPlan }: PlansTableDialogProps
 
   const { isPlanAvailable } = usePlanAvailability({ skip: !open });
 
-  const planTranslations = usePlanTranslations();
+  const planTranslations = getPlanTranslations(t);
 
   const plansData = useMemo(
     () =>
