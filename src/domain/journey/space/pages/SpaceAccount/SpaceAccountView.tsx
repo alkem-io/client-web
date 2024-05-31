@@ -86,6 +86,8 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
       availableUpgrades,
       availableDowngrades,
       daysLeft,
+      contactLink: data.platform.configuration.locations.support,
+      switchPlanLink: data.platform.configuration.locations.switchplan,
     };
   }, [data, activeSubscription]);
 
@@ -149,8 +151,8 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
             </Gutters>
             <Gutters disablePadding>
               <SeeMore
-                label="pages.admin.generic.sections.account.contactsLinkText"
-                to={t('pages.admin.generic.sections.account.contactsLink')}
+                label="pages.admin.generic.sections.account.contactsLink"
+                to={plansData.contactLink}
                 sx={{ textAlign: 'left' }}
               />
             </Gutters>
@@ -175,7 +177,7 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
                           </BlockTitle>
                           <Caption
                             component={RouterLink}
-                            to={t('pages.admin.generic.sections.account.changePlanLink')}
+                            to={plansData.switchPlanLink}
                             textAlign="center"
                             sx={{
                               color: theme => theme.palette.primary.contrastText,
@@ -194,11 +196,7 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
                 <Gutters disablePadding width="50%">
                   {plansData.availableUpgrades.map(plan => (
                     <PageContentBlock key={plan.name}>
-                      <Caption
-                        component={RouterLink}
-                        to={t('pages.admin.generic.sections.account.changePlanLink')}
-                        textAlign="center"
-                      >
+                      <Caption component={RouterLink} to={plansData.switchPlanLink} textAlign="center">
                         {t('pages.admin.generic.sections.account.upgradeTo')}
                         <PlanName inline>{plan.translation.displayName}</PlanName>
                       </Caption>
@@ -207,11 +205,7 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
                   ))}
                   {plansData.availableDowngrades.map(plan => (
                     <PageContentBlock key={plan.name}>
-                      <Caption
-                        component={RouterLink}
-                        to={t('pages.admin.generic.sections.account.changePlanLink')}
-                        textAlign="center"
-                      >
+                      <Caption component={RouterLink} to={plansData.switchPlanLink} textAlign="center">
                         {plan.isFree ? (
                           t('pages.admin.generic.sections.account.downgradeTo', {
                             planName: plan.translation.displayName,

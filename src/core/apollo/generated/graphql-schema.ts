@@ -3828,6 +3828,8 @@ export type PlatformLocations = {
   security: Scalars['String'];
   /** URL where users can get support for the platform */
   support: Scalars['String'];
+  /** URL for the link Contact in the HomePage to switch between plans */
+  switchplan: Scalars['String'];
   /** URL to the terms of usage for the platform */
   terms: Scalars['String'];
   /** URL where users can get tips and tricks */
@@ -20940,6 +20942,10 @@ export type SpaceAccountQuery = {
         pricePerMonth?: number | undefined;
         licenseCredential: LicenseCredential;
       }>;
+    };
+    configuration: {
+      __typename?: 'Config';
+      locations: { __typename?: 'PlatformLocations'; support: string; switchplan: string };
     };
   };
 };

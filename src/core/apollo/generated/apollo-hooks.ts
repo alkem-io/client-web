@@ -16819,6 +16819,12 @@ export const SpaceAccountDocument = gql`
           licenseCredential
         }
       }
+      configuration {
+        locations {
+          support
+          switchplan
+        }
+      }
     }
   }
   ${VisualUriFragmentDoc}

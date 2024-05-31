@@ -54,5 +54,11 @@ query SpaceAccount($spaceId: UUID!) {
         licenseCredential
       }
     }
+    configuration {
+      locations {
+        support
+        switchplan
+      }
+    }
   }
 }

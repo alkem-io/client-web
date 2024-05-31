@@ -1785,9 +1785,7 @@
           "account": {
             "description": "",
             "hostTitle": "Host",
-            "contactsLinkText": "If you want to change any of these settings, please contact the Alkemio team here.",
-            "contactsLink": "https://www.alkemio.org/support/",
-            "changePlanLink": "https://welcome.alkem.io/switch-subscription-plan/",
+            "contactsLink": "If you want to change any of these settings, please contact the Alkemio team here.",
             "freeTrialNotice": {
               "title": "Free Trial - {{daysLeft}} days left",
               "description": "Click here to set up your full {{planName}} subscription"
