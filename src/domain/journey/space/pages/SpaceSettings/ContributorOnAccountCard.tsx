@@ -3,7 +3,6 @@ import IconButton from '@mui/material/IconButton';
 import BasicSpaceCard from '../../../../community/virtualContributor/components/BasicSpaceCard';
 import { DeleteIcon } from '../SpaceSettings/icon/DeleteIcon';
 import Gutters from '../../../../../core/ui/grid/Gutters';
-import { buildSettingsUrl } from '../../../../../main/routing/urlBuilders';
 
 interface ContributorOnAccountCardProps {
   contributor?: {
@@ -29,7 +28,7 @@ interface ContributorOnAccountCardProps {
 const ContributorOnAccountCard: FC<ContributorOnAccountCardProps> = ({ contributor, space, onDeleteClick }) => {
   const spaceData = {
     displayName: contributor?.profile.displayName ?? '',
-    url: contributor?.profile.url ? buildSettingsUrl(contributor?.profile.url) : '',
+    url: contributor?.profile.url ? contributor?.profile.url : '',
     avatar: {
       uri: contributor?.profile.avatar?.uri ?? '',
     },
