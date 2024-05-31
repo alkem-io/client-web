@@ -26,7 +26,7 @@ export interface CalloutTemplate extends InnovationPackTemplate {
 
 interface CalloutTemplateCardProps extends TemplateCardBaseProps<CalloutTemplate> {}
 
-const CalloutTemplateCard: FC<CalloutTemplateCardProps> = ({ template, innovationPack, loading, onClick }) => {
+const CalloutTemplateCard: FC<CalloutTemplateCardProps> = ({ template, innovationPack, loading, ...props }) => {
   const { t } = useTranslation();
 
   const hasTags = (template?.profile.tagset?.tags ?? []).length > 0;
@@ -37,7 +37,7 @@ const CalloutTemplateCard: FC<CalloutTemplateCardProps> = ({ template, innovatio
   const Icon = template?.type && calloutIcons[template?.type];
 
   return (
-    <ContributeCard onClick={onClick}>
+    <ContributeCard {...props}>
       <CardHeader title={template?.profile.displayName} iconComponent={CalloutIcon}>
         {loading && <Skeleton />}
         <CardHeaderCaption logoUrl={innovationPack?.provider?.profile.avatar?.uri}>

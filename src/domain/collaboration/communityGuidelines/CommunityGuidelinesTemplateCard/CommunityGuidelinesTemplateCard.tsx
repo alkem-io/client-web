@@ -17,10 +17,10 @@ const CommunityGuidelinesTemplateCard: FC<CommunityGuidelinesTemplateCardProps> 
   template,
   innovationPack,
   loading,
-  onClick,
+  ...props
 }) => {
   return (
-    <ContributeCard onClick={onClick}>
+    <ContributeCard {...props}>
       <CardHeader title={template?.profile.displayName} iconComponent={CommunityGuidelinesIcon}>
         {loading && <Skeleton />}
         <CardHeaderCaption logoUrl={innovationPack?.provider?.profile.avatar?.uri}>

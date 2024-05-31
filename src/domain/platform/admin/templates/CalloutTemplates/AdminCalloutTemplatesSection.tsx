@@ -5,11 +5,8 @@ import { AdminCalloutTemplateFragment } from '../../../../../core/apollo/generat
 import { LinkWithState } from '../../../../shared/types/LinkWithState';
 import AdminTemplatesSection from '../AdminTemplatesSection';
 import { InnovationPack } from '../InnovationPacks/InnovationPack';
-import CalloutTemplateCard from './CalloutTemplateCard';
 import CalloutImportTemplateCard from './CalloutImportTemplateCard';
 import { TemplateType } from '../../../../collaboration/InnovationPack/InnovationPackProfilePage/InnovationPackProfilePage';
-// TODO: change card in #5906
-// import CalloutTemplateCard from '../../../../collaboration/callout/CalloutTemplateCard/CalloutTemplateCard';
 
 interface AdminCalloutTemplatesSectionProps {
   templateId: string | undefined;
@@ -37,7 +34,7 @@ const AdminCalloutTemplatesSection = ({ refetchQueries, ...props }: AdminCallout
       importDialogHeaderText={t('pages.admin.generic.sections.templates.import.title', {
         templateType: t('common.callouts'),
       })}
-      templateCardComponent={CalloutTemplateCard}
+      templateCardComponent={CalloutImportTemplateCard}
       templateImportCardComponent={CalloutImportTemplateCard}
       createTemplateDialogComponent={undefined}
       editTemplateDialogComponent={undefined}
