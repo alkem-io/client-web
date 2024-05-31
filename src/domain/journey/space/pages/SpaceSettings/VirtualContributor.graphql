@@ -1,0 +1,25 @@
+mutation createVirtualContributorOnAccount($virtualContributorData: CreateVirtualContributorOnAccountInput!) {
+  createVirtualContributor(virtualContributorData: $virtualContributorData) {
+    id
+  }
+}
+
+query spaceSubspaces($spaceId: UUID_NAMEID!) {
+  space (ID: $spaceId) {
+    id
+    profile {
+      id
+      displayName
+    }
+    account {
+      id
+    }
+    subspaces {
+      id
+      profile {
+        id
+        displayName
+      }
+    }
+  }
+}
