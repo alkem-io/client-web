@@ -138,7 +138,13 @@ export const VirtualContributorForm: FC<Props> = ({
   const HostFields = () => (
     <>
       <FormikInputField name="hostDisplayName" title="Host" required readOnly disabled />
-      <FormikInputField name="subSpaceName" title="Body Of Knowledge Subspace" required readOnly disabled />
+      <FormikInputField
+        name="subSpaceName"
+        title={t('virtualContributorSpaceSettings.body-of-knowledge')}
+        required
+        readOnly
+        disabled
+      />
     </>
   );
 

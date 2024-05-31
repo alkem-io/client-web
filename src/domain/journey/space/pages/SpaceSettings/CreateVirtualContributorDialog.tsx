@@ -10,6 +10,7 @@ import { Form, Formik } from 'formik';
 import FormikInputField from '../../../../../core/ui/forms/FormikInputField/FormikInputField';
 import FormikSelect from '../../../../../core/ui/forms/FormikSelect';
 import useLoadingState from '../../../../shared/utils/useLoadingState';
+import { Caption } from '../../../../../core/ui/typography';
 
 export interface VirtualContributorFormValues {
   displayName: string;
@@ -47,13 +48,18 @@ const CreateVirtualContributorDialog: FC<CreateVirtualContributorDialogProps> = 
 
   return (
     <Dialog open={open} onClose={onClose}>
-      <DialogHeader onClose={onClose} title={t('virtualContributorDialog.title')} />
+      <DialogHeader onClose={onClose} title={t('virtualContributorSpaceSettings.title')} />
       <DialogContent>
         <Formik initialValues={initialValues} onSubmit={handleCreate}>
           <Form noValidate>
             <Gutters>
-              <FormikInputField title={t('virtualContributorDialog.name')} name="displayName" />
-              <FormikSelect title="Body Of Knowledge" name="bodyOfKnowledgeID" values={spaces ?? []} />
+              <FormikInputField title={t('virtualContributorSpaceSettings.name')} name="displayName" />
+              <FormikSelect
+                title={t('virtualContributorSpaceSettings.body-of-knowledge')}
+                name="bodyOfKnowledgeID"
+                values={spaces ?? []}
+              />
+              <Caption>{t('virtualContributorSpaceSettings.info-text')}</Caption>
               <Actions justifyContent="flex-end" paddingTop={gutters()}>
                 <Button onClick={onClose}>{t('buttons.cancel')}</Button>
                 <LoadingButton

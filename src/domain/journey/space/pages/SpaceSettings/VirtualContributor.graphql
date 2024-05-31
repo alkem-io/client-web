@@ -25,6 +25,7 @@ query SpaceSubspaces($spaceId: UUID_NAMEID!) {
       id
       virtualContributors {
         id
+        nameID
         bodyOfKnowledgeID
         profile {
           displayName

@@ -343,6 +343,7 @@
     "url": "URL",
     "sources": "Sources",
     "virtual-contributors": "VC",
+    "virtual-contributor": "Virtual Contributor",
     "collaborationTool": "Collaboration tool",
     "genders": {
       "notSpecified": "not specified",
@@ -2460,7 +2461,7 @@
       "sections": {
         "knowledge": {
           "title": "Knowledge",
-          "description": "Answers {{name}} gives are based on the body of knowledge that is specified in the following Space:"
+          "description": "Answers {{name}} gives are based on the body of knowledge coming from:"
         },
 
         "personality": {
@@ -2801,13 +2802,13 @@
       }
     }
   },
-  "virtualContributorDialog": {
+  "virtualContributorSpaceSettings": {
     "title": "Create a Virtual Contributor",
     "name": "Name",
+    "body-of-knowledge": "Body Of Knowledge",
     "info-text": "Select the Space or Subspace that you want to use as a body of knowledge for this Virtual Contributor",
     "confirm-deletion": {
-      "title": "Confirm Virtual Contributor Deletion",
-      "description": "Are you certain you want to delete this Virtual Contributor? Keep in mind that this action is irreversible. All profile information will be removed and people will no longer be able to interact with the Virtual Contributor. "
+      "description": "Are you certain you want to delete this {{entity}}? Keep in mind that this action is irreversible. All profile information will be removed and people will no longer be able to interact with the {{entity}}. "
     }
   }
 }

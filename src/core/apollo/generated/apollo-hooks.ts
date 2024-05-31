@@ -17316,6 +17316,7 @@ export const SpaceSubspacesDocument = gql`
         id
         virtualContributors {
           id
+          nameID
           bodyOfKnowledgeID
           profile {
             displayName
