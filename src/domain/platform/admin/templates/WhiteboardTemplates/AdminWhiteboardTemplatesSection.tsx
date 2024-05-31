@@ -14,7 +14,6 @@ import { LinkWithState } from '../../../../shared/types/LinkWithState';
 import { InternalRefetchQueriesInclude } from '@apollo/client/core/types';
 import AdminTemplatesSection from '../AdminTemplatesSection';
 import EditWhiteboardTemplateDialog from './EditWhiteboardTemplateDialog';
-import WhiteboardTemplateCard from './WhiteboardTemplateCard';
 import CreateWhiteboardTemplateDialog from './CreateWhiteboardTemplateDialog';
 import { useTranslation } from 'react-i18next';
 import { InnovationPack } from '../InnovationPacks/InnovationPack';
@@ -90,7 +89,7 @@ const AdminWhiteboardTemplatesSection = ({ refetchQueries, ...props }: AdminWhit
       importDialogHeaderText={t('pages.admin.generic.sections.templates.import.title', {
         templateType: t('common.whiteboards'),
       })}
-      templateCardComponent={WhiteboardTemplateCard}
+      templateCardComponent={WhiteboardImportTemplateCard}
       templateImportCardComponent={WhiteboardImportTemplateCard}
       getWhiteboardTemplateContent={getWhiteboardTemplateContent}
       getImportedWhiteboardTemplateContent={getImportedWhiteboardTemplateContent}

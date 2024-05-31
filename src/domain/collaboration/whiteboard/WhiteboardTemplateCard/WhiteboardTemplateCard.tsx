@@ -14,9 +14,9 @@ import { gutters } from '../../../../core/ui/grid/utils';
 
 interface WhiteboardTemplateCardProps extends TemplateCardBaseProps<TemplateBase> {}
 
-const WhiteboardTemplateCard: FC<WhiteboardTemplateCardProps> = ({ template, innovationPack, loading, onClick }) => {
+const WhiteboardTemplateCard: FC<WhiteboardTemplateCardProps> = ({ template, innovationPack, loading, ...props }) => {
   return (
-    <ContributeCard onClick={onClick}>
+    <ContributeCard {...props}>
       <CardHeader title={template?.profile.displayName} iconComponent={WhiteboardIcon}>
         {loading && <Skeleton />}
         <CardHeaderCaption logoUrl={innovationPack?.provider?.profile.avatar?.uri}>

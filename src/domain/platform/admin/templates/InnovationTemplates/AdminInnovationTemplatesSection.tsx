@@ -1,4 +1,3 @@
-import InnovationTemplateCard from './InnovationTemplateCard';
 import CreateInnovationTemplateDialog from './CreateInnovationTemplateDialog';
 import EditInnovationTemplateDialog from './EditInnovationTemplateDialog';
 import React from 'react';
@@ -44,7 +43,7 @@ const AdminInnovationTemplatesSection = ({ refetchQueries, ...props }: AdminInno
       importDialogHeaderText={t('pages.admin.generic.sections.templates.import.title', {
         templateType: t('common.innovation-flows'),
       })}
-      templateCardComponent={InnovationTemplateCard}
+      templateCardComponent={InnovationImportTemplateCard}
       templateImportCardComponent={InnovationImportTemplateCard}
       createTemplateDialogComponent={CreateInnovationTemplateDialog}
       editTemplateDialogComponent={EditInnovationTemplateDialog}

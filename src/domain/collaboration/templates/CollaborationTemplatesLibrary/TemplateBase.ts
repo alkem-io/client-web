@@ -31,5 +31,7 @@ export interface TemplateCardBaseProps<Template extends TemplateBase = TemplateB
   template?: Template;
   innovationPack?: TemplateInnovationPack;
   loading?: boolean;
+  to?: string;
+  state?: Record<string, unknown>;
   onClick?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 }
