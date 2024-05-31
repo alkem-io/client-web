@@ -16814,6 +16814,7 @@ export const SpaceAccountDocument = gql`
           name
           enabled
           sortOrder
+          isFree
           pricePerMonth
           licenseCredential
         }

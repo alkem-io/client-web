@@ -1742,7 +1742,7 @@ export type CreateVirtualContributorOnAccountInput = {
   /** A readable identifier, unique within the containing scope. */
   nameID: Scalars['NameID'];
   profileData: CreateProfileInput;
-  virtualPersonaID: Scalars['UUID'];
+  virtualPersonaID?: InputMaybe<Scalars['UUID']>;
 };
 
 export type CreateVirtualPersonaInput = {
@@ -1750,7 +1750,7 @@ export type CreateVirtualPersonaInput = {
   /** A readable identifier, unique within the containing scope. */
   nameID: Scalars['NameID'];
   profileData: CreateProfileInput;
-  prompt: Scalars['JSON'];
+  prompt?: InputMaybe<Scalars['JSON']>;
 };
 
 export type CreateWhiteboardInput = {
@@ -5526,7 +5526,7 @@ export type UpdateVirtualPersonaInput = {
   nameID?: InputMaybe<Scalars['NameID']>;
   /** The Profile of this entity. */
   profileData?: InputMaybe<UpdateProfileInput>;
-  prompt: Scalars['JSON'];
+  prompt?: InputMaybe<Scalars['JSON']>;
 };
 
 export type UpdateVisualInput = {
@@ -5700,11 +5700,13 @@ export type VerifiedCredentialClaim = {
 export type VirtualContributor = Contributor & {
   __typename?: 'VirtualContributor';
   /** The account under which the virtual contributor was created */
-  account: Account;
+  account?: Maybe<Account>;
   /** The Agent representing this User. */
   agent: Agent;
   /** The authorization rules for the Contributor */
   authorization?: Maybe<Authorization>;
+  /** The body of knowledge ID used for the Virtual Contributor */
+  bodyOfKnowledgeID: Scalars['UUID'];
   /** The body of knowledge type used for the Virtual Contributor */
   bodyOfKnowledgeType: BodyOfKnowledgeType;
   /** The ID of the Contributor */
@@ -5720,6 +5722,7 @@ export type VirtualContributor = Contributor & {
 };
 
 export enum VirtualContributorEngine {
+  CommunityManager = 'COMMUNITY_MANAGER',
   Expert = 'EXPERT',
   Guidance = 'GUIDANCE',
 }
@@ -5738,6 +5741,8 @@ export type VirtualPersona = {
   nameID: Scalars['NameID'];
   /** The Profile for the VirtualPersona. */
   profile: Profile;
+  /** The prompt used by this Virtual Persona */
+  prompt: Scalars['String'];
 };
 
 export enum VirtualPersonaAccessMode {
@@ -20931,6 +20936,7 @@ export type SpaceAccountQuery = {
         name: string;
         enabled: boolean;
         sortOrder: number;
+        isFree: boolean;
         pricePerMonth?: number | undefined;
         licenseCredential: LicenseCredential;
       }>;

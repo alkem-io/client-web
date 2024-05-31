@@ -1,12 +1,15 @@
-import { Box, styled } from '@mui/material';
+import { Box, styled, List, ListProps } from '@mui/material';
 import { gutters } from '../../../../core/ui/grid/utils';
 import { Caption, Text } from '../../../../core/ui/typography';
 import { useTranslation } from 'react-i18next';
 
-export const PlanName = styled('h1')(({ theme }) => ({
+export const PlanName = styled('h1')<{ inline?: boolean }>(({ theme, inline }) => ({
   color: theme.palette.primary.main,
   textAlign: 'center',
   margin: 0,
+  display: inline ? 'inline' : 'block',
+  marginLeft: inline ? gutters(0.5)(theme) : 0,
+  verticalAlign: inline ? 'bottom' : undefined,
 }));
 
 const Price = styled('h1')(({ theme }) => ({
@@ -45,18 +48,37 @@ export const PlanPrice = ({
 
 export const PlanFeatures = ({
   planTranslation,
-  small,
+  listItemComponent: ListItem = Text,
+  sx,
+  ...props
 }: {
   planTranslation: {
     features: string[];
   };
-  small?: boolean;
-}) => {
+  listItemComponent?: React.ElementType;
+} & ListProps) => {
+  const mergedSx: ListProps['sx'] = {
+    listStyle: 'disc',
+    marginLeft: gutters(),
+    ...sx,
+  };
+
   return (
-    <ul>
+    <List sx={mergedSx} {...props}>
       {planTranslation.features.map((feature, index) => (
-        <li key={index}>{small ? <Caption>{feature}</Caption> : <Text>{feature}</Text>}</li>
+        <ListItem component="li" display="list-item" key={index}>
+          {feature}
+        </ListItem>
       ))}
-    </ul>
+    </List>
   );
 };
+
+export const PlanFooter = styled(Box)(({ theme }) => ({
+  margin: gutters(-1)(theme),
+  marginTop: 'auto',
+  padding: gutters(1)(theme),
+  textAlign: 'center',
+  backgroundColor: theme.palette.primary.main,
+  color: theme.palette.primary.contrastText,
+}));

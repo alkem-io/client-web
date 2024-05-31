@@ -1,12 +1,12 @@
 import { FC, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Box, CircularProgress, Skeleton } from '@mui/material';
+import { Box, CircularProgress } from '@mui/material';
 import PageContent from '../../../../../core/ui/content/PageContent';
 import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
 import SeeMore from '../../../../../core/ui/content/SeeMore';
-import { BlockTitle, Caption, Text } from '../../../../../core/ui/typography';
+import { BlockTitle, Caption } from '../../../../../core/ui/typography';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import ContributorCardHorizontal from '../../../../../core/ui/card/ContributorCardHorizontal';
 import Gutters from '../../../../../core/ui/grid/Gutters';
@@ -20,8 +20,9 @@ import { gutters } from '../../../../../core/ui/grid/utils';
 import { ROUTE_HOME } from '../../../../platform/routes/constants';
 import { DeleteIcon } from '../SpaceSettings/icon/DeleteIcon';
 import SpaceProfileDeleteDialog from '../SpaceSettings/SpaceProfileDeleteDialog';
-import { PlanFeatures, PlanName, PlanPrice } from '../../../../license/plans/ui/PlanCards';
+import { PlanFeatures, PlanFooter, PlanName, PlanPrice } from '../../../../license/plans/ui/PlanCardsComponents';
 import { usePlanTranslations } from '../../../../license/plans/utils/PlanTranslations';
+import RouterLink from '../../../../../core/ui/link/RouterLink';
 
 interface SpaceAccountPageProps {
   journeyId: string;
@@ -64,17 +65,27 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
       return undefined;
     }
 
-    const currentPlanIndex = plans.findIndex(plan => plan.licenseCredential === currentPlan.name);
+    const currentPlanIndex = plans.findIndex(plan => plan.name === currentPlan.name);
 
-    const nextPlan = plans[currentPlanIndex + 1] ?? null;
-    const previousPlan = plans[currentPlanIndex - 1] ?? null;
+    // The previous 2 plans in the list
+    const availableDowngrades = plans.slice(Math.max(currentPlanIndex - 2, 0), currentPlanIndex);
+    // The next plans 2 plans in the list, with a maximum of 3 - the number of available downgrades
+    const availableUpgrades = plans
+      .slice(currentPlanIndex + 1, currentPlanIndex + 3)
+      .slice(0, 3 - availableDowngrades.length);
+
+    const daysLeft =
+      activeSubscription && activeSubscription.expires
+        ? Math.ceil((new Date(activeSubscription.expires).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
+        : undefined;
 
     return {
       plans,
+      freePlan: plans.find(plan => plan.isFree),
       currentPlan,
-      nextPlan,
-      previousPlan,
-      daysLeft: activeSubscription.expires,
+      availableUpgrades,
+      availableDowngrades,
+      daysLeft,
     };
   }, [data, activeSubscription]);
 
@@ -103,7 +114,7 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
     <PageContent background="transparent">
       {!loading && space && hostOrganization && plansData && (
         <>
-          <PageContentBlock columns={6} sx={{ gap: gutters(2) }}>
+          <PageContentBlock columns={5} sx={{ gap: gutters(2) }}>
             <Gutters disablePadding>
               <BlockTitle>{t('common.url')}</BlockTitle>
               <Caption>{space.profile.url}</Caption>
@@ -144,10 +155,10 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
               />
             </Gutters>
           </PageContentBlock>
-          <PageContentBlock columns={6} sx={{ gap: gutters(2) }}>
+          <PageContentBlock columns={7} sx={{ gap: gutters(2) }}>
             <Gutters disablePadding>
               <BlockTitle>{t('common.license')}</BlockTitle>
-              <Box display="flex" width="100%" gap={gutters()} alignItems="stretch">
+              <Gutters row disablePadding>
                 <Box width="50%">
                   <PageContentBlock fullHeight sx={{ borderColor: theme => theme.palette.primary.main }}>
                     <Caption textAlign="center">{t('pages.admin.generic.sections.account.yourLicense')}</Caption>
@@ -155,49 +166,80 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
                       <>
                         <PlanName>{plansData.currentPlan.translation.displayName}</PlanName>
                         <PlanPrice plan={plansData.currentPlan} />
-                        <PlanFeatures planTranslation={plansData.currentPlan.translation} small />
-                        <Box>
-                          <Text>
+                        <PlanFeatures planTranslation={plansData.currentPlan.translation} listItemComponent={Caption} />
+                        <PlanFooter>
+                          <BlockTitle>
                             {t('pages.admin.generic.sections.account.freeTrialNotice.title', {
                               daysLeft: plansData.daysLeft,
                             })}
-                          </Text>
-                          <Caption>
+                          </BlockTitle>
+                          <Caption
+                            component={RouterLink}
+                            to={t('pages.admin.generic.sections.account.changePlanLink')}
+                            textAlign="center"
+                            sx={{
+                              color: theme => theme.palette.primary.contrastText,
+                              '&:hover': { color: theme => theme.palette.primary.contrastText },
+                            }}
+                          >
                             {t('pages.admin.generic.sections.account.freeTrialNotice.description', {
                               planName: plansData.currentPlan.translation.displayName,
                             })}
                           </Caption>
-                        </Box>
-                      </>
-                    )}
-                    {!plansData.currentPlan && (
-                      <>
-                        <Skeleton variant="text" />
-                        <Skeleton variant="text" />
-                        <Skeleton variant="text" />
+                        </PlanFooter>
                       </>
                     )}
                   </PageContentBlock>
                 </Box>
-                <Box width="50%" display="flex" flexDirection="column" gap={gutters()}>
-                  {plansData.nextPlan && (
-                    <PageContentBlock>
-                      <Caption textAlign="center">{t('pages.admin.generic.sections.account.upgradeTo')}</Caption>
-                      <PlanName>{plansData.nextPlan.translation.displayName}</PlanName>
-                      <PlanPrice plan={plansData.nextPlan} />
-                      <PlanFeatures planTranslation={plansData.nextPlan.translation} small />
+                <Gutters disablePadding width="50%">
+                  {plansData.availableUpgrades.map(plan => (
+                    <PageContentBlock key={plan.name}>
+                      <Caption
+                        component={RouterLink}
+                        to={t('pages.admin.generic.sections.account.changePlanLink')}
+                        textAlign="center"
+                      >
+                        {t('pages.admin.generic.sections.account.upgradeTo')}
+                        <PlanName inline>{plan.translation.displayName}</PlanName>
+                      </Caption>
+                      <PlanFeatures planTranslation={plan.translation} listItemComponent={Caption} />
                     </PageContentBlock>
-                  )}
-                  {plansData.previousPlan && (
-                    <PageContentBlock>
-                      <Caption textAlign="center">{t('pages.admin.generic.sections.account.downgradeTo')}</Caption>
-                      <PlanName>{plansData.previousPlan.translation.displayName}</PlanName>
-                      <PlanPrice plan={plansData.previousPlan} />
-                      <PlanFeatures planTranslation={plansData.previousPlan.translation} small />
+                  ))}
+                  {plansData.availableDowngrades.map(plan => (
+                    <PageContentBlock key={plan.name}>
+                      <Caption
+                        component={RouterLink}
+                        to={t('pages.admin.generic.sections.account.changePlanLink')}
+                        textAlign="center"
+                      >
+                        {plan.isFree ? (
+                          t('pages.admin.generic.sections.account.downgradeTo', {
+                            planName: plan.translation.displayName,
+                          })
+                        ) : (
+                          <>
+                            {t('pages.admin.generic.sections.account.downgradeTo')}
+                            <PlanName inline>{plan.translation.displayName}</PlanName>
+                          </>
+                        )}
+                      </Caption>
+                      <PlanFeatures planTranslation={plan.translation} listItemComponent={Caption} />
                     </PageContentBlock>
-                  )}
-                </Box>
-              </Box>
+                  ))}
+                </Gutters>
+              </Gutters>
+              {plansData.freePlan && // if there is a free plan
+                plansData.availableDowngrades.length > 0 && // and we have printed some downgrades
+                !plansData.availableDowngrades.some(plan => plan.isFree) && ( // but the free plan was not one of them
+                  <PageContentBlock>
+                    <Caption textAlign="center">
+                      {t('pages.admin.generic.sections.account.downgradeTo', {
+                        planName: plansData.freePlan.translation.displayName,
+                      })}
+                    </Caption>
+                    <PlanFeatures planTranslation={plansData.freePlan.translation} listItemComponent={Caption} />
+                  </PageContentBlock>
+                )}
             </Gutters>
           </PageContentBlock>
           {canDelete && (

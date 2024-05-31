@@ -16,7 +16,7 @@ import SelectPlanButton from './SelectPlanButton';
 import { usePlanAvailability } from './usePlanAvailability';
 import { TagCategoryValues, error } from '../../../../../core/logging/sentry/log';
 import { usePlanTranslations } from '../../../../license/plans/utils/PlanTranslations';
-import { PlanFeatures, PlanName, PlanPrice } from '../../../../license/plans/ui/PlanCards';
+import { PlanFeatures, PlanName, PlanPrice } from '../../../../license/plans/ui/PlanCardsComponents';
 
 const lines = (theme: Theme) => `1px solid ${theme.palette.divider}`;
 
@@ -127,7 +127,12 @@ const PlansTableDialog = ({ open, onClose, onSelectPlan }: PlansTableDialogProps
                       paddingX={gutters()}
                       color={theme => theme.palette.primary.main}
                     >
-                      <PlanFeatures planTranslation={planTranslation} />
+                      <PlanFeatures
+                        planTranslation={planTranslation}
+                        sx={
+                          isSmall ? { marginX: 'auto', width: '60%' } : { marginTop: gutters(), marginLeft: gutters(2) }
+                        }
+                      />
                       {plan.enabled && <Caption marginBottom={gutters()}>{planTranslation.disclaimer}</Caption>}
                       {!plan.enabled && (
                         <Caption marginBottom={gutters()}>{planTranslation.disabledDisclaimer}</Caption>
