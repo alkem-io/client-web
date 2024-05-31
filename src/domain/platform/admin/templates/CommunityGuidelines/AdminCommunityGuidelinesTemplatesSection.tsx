@@ -1,6 +1,11 @@
 import { InternalRefetchQueriesInclude } from '@apollo/client/core/types';
 import { useTranslation } from 'react-i18next';
 import { AdminCommunityGuidelinesTemplateFragment } from '../../../../../core/apollo/generated/graphql-schema';
+import {
+  useCreateCommunityGuidelinesTemplateMutation,
+  useDeleteCommunityGuidelinesTemplateMutation,
+  useUpdateCommunityGuidelinesTemplateMutation,
+} from '../../../../../core/apollo/generated/apollo-hooks';
 import { TemplateType } from '../../../../collaboration/InnovationPack/InnovationPackProfilePage/InnovationPackProfilePage';
 import { LinkWithState } from '../../../../shared/types/LinkWithState';
 import AdminTemplatesSection from '../AdminTemplatesSection';
@@ -27,6 +32,10 @@ const AdminCommunityGuidelinesTemplatesSection = ({
 }: AdminCommunityGuidelinesTemplatesSectionProps) => {
   const { t } = useTranslation();
 
+  const [createCommunityGuidelinesTemplate] = useCreateCommunityGuidelinesTemplateMutation();
+  const [updateCommunityGuidelinesTemplate] = useUpdateCommunityGuidelinesTemplateMutation();
+  const [deleteCommunityGuidelinesTemplate] = useDeleteCommunityGuidelinesTemplateMutation();
+
   return (
     <AdminTemplatesSection
       {...props}
@@ -38,9 +47,11 @@ const AdminCommunityGuidelinesTemplatesSection = ({
       templateImportCardComponent={CommunityGuidelinesImportTemplateCard}
       createTemplateDialogComponent={undefined}
       editTemplateDialogComponent={undefined}
-      onCreateTemplate={() => Promise.resolve({ data: null, errors: [] })}
-      onUpdateTemplate={() => Promise.resolve({ data: null, errors: [] })}
-      onDeleteTemplate={() => Promise.resolve({ data: null, errors: [] })}
+      onCreateTemplate={variables => createCommunityGuidelinesTemplate({ variables, refetchQueries })}
+      onUpdateTemplate={variables => updateCommunityGuidelinesTemplate({ variables, refetchQueries })}
+      onDeleteTemplate={async variables => {
+        await deleteCommunityGuidelinesTemplate({ variables, refetchQueries });
+      }}
       templateType={TemplateType.CalloutTemplate}
     />
   );

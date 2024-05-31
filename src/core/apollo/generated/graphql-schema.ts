@@ -36,6 +36,8 @@ export type Apm = {
 
 export type Account = {
   __typename?: 'Account';
+  /** The "highest" subscription active for this Account. */
+  activeSubscription?: Maybe<AccountSubscription>;
   /** The Agent representing this Account. */
   agent: Agent;
   /** The authorization rules for the entity */
@@ -54,6 +56,8 @@ export type Account = {
   spaceID: Scalars['String'];
   /** The subscriptions active for this Account. */
   subscriptions: Array<AccountSubscription>;
+  /** The virtual contributors for this Account. */
+  virtualContributors: Array<VirtualContributor>;
 };
 
 export type AccountAuthorizationResetInput = {
@@ -66,7 +70,7 @@ export type AccountSubscription = {
   /** The expiry date of this subscription, null if it does never expire. */
   expires?: Maybe<Scalars['DateTime']>;
   /** The name of the Subscription. */
-  name: Scalars['String'];
+  name: LicenseCredential;
 };
 
 export type ActivityCreatedSubscriptionInput = {
@@ -758,6 +762,7 @@ export enum AuthorizationPrivilege {
 }
 
 export enum BodyOfKnowledgeType {
+  Other = 'OTHER',
   Space = 'SPACE',
 }
 
@@ -1735,12 +1740,12 @@ export type CreateUserInput = {
 
 export type CreateVirtualContributorOnAccountInput = {
   accountID: Scalars['UUID'];
-  bodyOfKnowledgeID: Scalars['UUID'];
-  bodyOfKnowledgeType: BodyOfKnowledgeType;
+  bodyOfKnowledgeID?: InputMaybe<Scalars['UUID']>;
+  bodyOfKnowledgeType?: InputMaybe<BodyOfKnowledgeType>;
   /** A readable identifier, unique within the containing scope. */
   nameID: Scalars['NameID'];
   profileData: CreateProfileInput;
-  virtualPersonaID: Scalars['UUID'];
+  virtualPersonaID?: InputMaybe<Scalars['UUID']>;
 };
 
 export type CreateVirtualPersonaInput = {
@@ -1748,7 +1753,7 @@ export type CreateVirtualPersonaInput = {
   /** A readable identifier, unique within the containing scope. */
   nameID: Scalars['NameID'];
   profileData: CreateProfileInput;
-  prompt: Scalars['JSON'];
+  prompt?: InputMaybe<Scalars['JSON']>;
 };
 
 export type CreateWhiteboardInput = {
@@ -1855,6 +1860,10 @@ export type DeleteCalloutTemplateInput = {
 };
 
 export type DeleteCollaborationInput = {
+  ID: Scalars['UUID'];
+};
+
+export type DeleteCommunityGuidelinesTemplateInput = {
   ID: Scalars['UUID'];
 };
 
@@ -2789,6 +2798,8 @@ export type Mutation = {
   deleteCalloutTemplate: CalloutTemplate;
   /** Delete Collaboration. */
   deleteCollaboration: Collaboration;
+  /** Deletes the specified CommunityGuidelines Template. */
+  deleteCommunityGuidelinesTemplate: CommunityGuidelinesTemplate;
   /** Deletes the specified Discussion. */
   deleteDiscussion: Discussion;
   /** Deletes the specified Document. */
@@ -2911,6 +2922,8 @@ export type Mutation = {
   updateCommunityApplicationForm: Community;
   /** Updates the CommunityGuidelines. */
   updateCommunityGuidelines: CommunityGuidelines;
+  /** Updates the specified CommunityGuidelinesTemplate. */
+  updateCommunityGuidelinesTemplate: CommunityGuidelinesTemplate;
   /** Updates the specified Discussion. */
   updateDiscussion: Discussion;
   /** Updates the specified Document. */
@@ -2969,6 +2982,8 @@ export type Mutation = {
   updateUserPlatformSettings: User;
   /** Updates the specified VirtualContributor. */
   updateVirtualContributor: VirtualContributor;
+  /** Update VirtualContributor Platform Settings. */
+  updateVirtualContributorPlatformSettings: VirtualContributor;
   /** Updates the specified VirtualPersona. */
   updateVirtualPersona: VirtualPersona;
   /** Updates the image URI for the specified Visual. */
@@ -3187,6 +3202,10 @@ export type MutationDeleteCalloutTemplateArgs = {
 
 export type MutationDeleteCollaborationArgs = {
   deleteData: DeleteCollaborationInput;
+};
+
+export type MutationDeleteCommunityGuidelinesTemplateArgs = {
+  deleteData: DeleteCommunityGuidelinesTemplateInput;
 };
 
 export type MutationDeleteDiscussionArgs = {
@@ -3425,6 +3444,10 @@ export type MutationUpdateCommunityGuidelinesArgs = {
   communityGuidelinesData: UpdateCommunityGuidelinesInput;
 };
 
+export type MutationUpdateCommunityGuidelinesTemplateArgs = {
+  communityGuidelinesTemplateInput: UpdateCommunityGuidelinesTemplateInput;
+};
+
 export type MutationUpdateDiscussionArgs = {
   updateData: UpdateDiscussionInput;
 };
@@ -3539,6 +3562,10 @@ export type MutationUpdateUserPlatformSettingsArgs = {
 
 export type MutationUpdateVirtualContributorArgs = {
   virtualContributorData: UpdateVirtualContributorInput;
+};
+
+export type MutationUpdateVirtualContributorPlatformSettingsArgs = {
+  updateData: UpdateVirtualContributorPlatformSettingsInput;
 };
 
 export type MutationUpdateVirtualPersonaArgs = {
@@ -3826,6 +3853,8 @@ export type PlatformLocations = {
   security: Scalars['String'];
   /** URL where users can get support for the platform */
   support: Scalars['String'];
+  /** URL for the link Contact in the HomePage to switch between plans */
+  switchplan: Scalars['String'];
   /** URL to the terms of usage for the platform */
   terms: Scalars['String'];
   /** URL where users can get tips and tricks */
@@ -5179,6 +5208,19 @@ export type UpdateCommunityGuidelinesInput = {
   profile: UpdateProfileInput;
 };
 
+export type UpdateCommunityGuidelinesOfTemplateInput = {
+  /** The Profile for this community guidelines. */
+  profile: UpdateProfileInput;
+};
+
+export type UpdateCommunityGuidelinesTemplateInput = {
+  ID: Scalars['UUID'];
+  /** The Community guidelines to associate with this template. */
+  communityGuidelines?: InputMaybe<UpdateCommunityGuidelinesOfTemplateInput>;
+  /** The Profile of the Template. */
+  profile?: InputMaybe<UpdateProfileInput>;
+};
+
 export type UpdateContextInput = {
   impact?: InputMaybe<Scalars['Markdown']>;
   vision?: InputMaybe<Scalars['Markdown']>;
@@ -5517,6 +5559,12 @@ export type UpdateVirtualContributorInput = {
   profileData?: InputMaybe<UpdateProfileInput>;
 };
 
+export type UpdateVirtualContributorPlatformSettingsInput = {
+  ID: Scalars['UUID'];
+  /** An Account ID associated with the VirtualContributor */
+  accountID: Scalars['UUID'];
+};
+
 export type UpdateVirtualPersonaInput = {
   ID: Scalars['UUID'];
   engine: VirtualContributorEngine;
@@ -5524,7 +5572,7 @@ export type UpdateVirtualPersonaInput = {
   nameID?: InputMaybe<Scalars['NameID']>;
   /** The Profile of this entity. */
   profileData?: InputMaybe<UpdateProfileInput>;
-  prompt: Scalars['JSON'];
+  prompt?: InputMaybe<Scalars['JSON']>;
 };
 
 export type UpdateVisualInput = {
@@ -5698,13 +5746,15 @@ export type VerifiedCredentialClaim = {
 export type VirtualContributor = Contributor & {
   __typename?: 'VirtualContributor';
   /** The account under which the virtual contributor was created */
-  account: Account;
+  account?: Maybe<Account>;
   /** The Agent representing this User. */
   agent: Agent;
   /** The authorization rules for the Contributor */
   authorization?: Maybe<Authorization>;
+  /** The body of knowledge ID used for the Virtual Contributor */
+  bodyOfKnowledgeID?: Maybe<Scalars['UUID']>;
   /** The body of knowledge type used for the Virtual Contributor */
-  bodyOfKnowledgeType: BodyOfKnowledgeType;
+  bodyOfKnowledgeType?: Maybe<BodyOfKnowledgeType>;
   /** The ID of the Contributor */
   id: Scalars['UUID'];
   /** A name identifier of the Contributor, unique within a given scope. */
@@ -5718,6 +5768,7 @@ export type VirtualContributor = Contributor & {
 };
 
 export enum VirtualContributorEngine {
+  CommunityManager = 'COMMUNITY_MANAGER',
   Expert = 'EXPERT',
   Guidance = 'GUIDANCE',
 }
@@ -5736,6 +5787,8 @@ export type VirtualPersona = {
   nameID: Scalars['NameID'];
   /** The Profile for the VirtualPersona. */
   profile: Profile;
+  /** The prompt used by this Virtual Persona */
+  prompt: Scalars['String'];
 };
 
 export enum VirtualPersonaAccessMode {
@@ -23094,6 +23147,37 @@ export type DeleteCalloutTemplateMutationVariables = Exact<{
 export type DeleteCalloutTemplateMutation = {
   __typename?: 'Mutation';
   deleteCalloutTemplate: { __typename?: 'CalloutTemplate'; id: string };
+};
+
+export type CreateCommunityGuidelinesTemplateMutationVariables = Exact<{
+  templatesSetId: Scalars['UUID'];
+  profile: CreateProfileInput;
+  guidelines: CreateCommunityGuidelinesInput;
+}>;
+
+export type CreateCommunityGuidelinesTemplateMutation = {
+  __typename?: 'Mutation';
+  createCommunityGuidelinesTemplate: { __typename?: 'CommunityGuidelinesTemplate'; id: string };
+};
+
+export type UpdateCommunityGuidelinesTemplateMutationVariables = Exact<{
+  templateId: Scalars['UUID'];
+  profile?: InputMaybe<UpdateProfileInput>;
+  communityGuidelines?: InputMaybe<UpdateCommunityGuidelinesOfTemplateInput>;
+}>;
+
+export type UpdateCommunityGuidelinesTemplateMutation = {
+  __typename?: 'Mutation';
+  updateCommunityGuidelinesTemplate: { __typename?: 'CommunityGuidelinesTemplate'; id: string };
+};
+
+export type DeleteCommunityGuidelinesTemplateMutationVariables = Exact<{
+  templateId: Scalars['UUID'];
+}>;
+
+export type DeleteCommunityGuidelinesTemplateMutation = {
+  __typename?: 'Mutation';
+  deleteCommunityGuidelinesTemplate: { __typename?: 'CommunityGuidelinesTemplate'; id: string };
 };
 
 export type InnovationPacksQueryVariables = Exact<{ [key: string]: never }>;

@@ -5,6 +5,7 @@ export type APMFieldPolicy = {
   rumEnabled?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type AccountKeySpecifier = (
+  | 'activeSubscription'
   | 'agent'
   | 'authorization'
   | 'defaults'
@@ -14,9 +15,11 @@ export type AccountKeySpecifier = (
   | 'license'
   | 'spaceID'
   | 'subscriptions'
+  | 'virtualContributors'
   | AccountKeySpecifier
 )[];
 export type AccountFieldPolicy = {
+  activeSubscription?: FieldPolicy<any> | FieldReadFunction<any>;
   agent?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   defaults?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -26,6 +29,7 @@ export type AccountFieldPolicy = {
   license?: FieldPolicy<any> | FieldReadFunction<any>;
   spaceID?: FieldPolicy<any> | FieldReadFunction<any>;
   subscriptions?: FieldPolicy<any> | FieldReadFunction<any>;
+  virtualContributors?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type AccountSubscriptionKeySpecifier = ('expires' | 'name' | AccountSubscriptionKeySpecifier)[];
 export type AccountSubscriptionFieldPolicy = {
@@ -1595,6 +1599,7 @@ export type MutationKeySpecifier = (
   | 'deleteCallout'
   | 'deleteCalloutTemplate'
   | 'deleteCollaboration'
+  | 'deleteCommunityGuidelinesTemplate'
   | 'deleteDiscussion'
   | 'deleteDocument'
   | 'deleteInnovationFlowTemplate'
@@ -1656,6 +1661,7 @@ export type MutationKeySpecifier = (
   | 'updateCalloutsSortOrder'
   | 'updateCommunityApplicationForm'
   | 'updateCommunityGuidelines'
+  | 'updateCommunityGuidelinesTemplate'
   | 'updateDiscussion'
   | 'updateDocument'
   | 'updateEcosystemModel'
@@ -1685,6 +1691,7 @@ export type MutationKeySpecifier = (
   | 'updateUserGroup'
   | 'updateUserPlatformSettings'
   | 'updateVirtualContributor'
+  | 'updateVirtualContributorPlatformSettings'
   | 'updateVirtualPersona'
   | 'updateVisual'
   | 'updateWhiteboard'
@@ -1752,6 +1759,7 @@ export type MutationFieldPolicy = {
   deleteCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteCalloutTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteCollaboration?: FieldPolicy<any> | FieldReadFunction<any>;
+  deleteCommunityGuidelinesTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteDocument?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteInnovationFlowTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1813,6 +1821,7 @@ export type MutationFieldPolicy = {
   updateCalloutsSortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCommunityApplicationForm?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCommunityGuidelines?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateCommunityGuidelinesTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   updateDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
   updateDocument?: FieldPolicy<any> | FieldReadFunction<any>;
   updateEcosystemModel?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1842,6 +1851,7 @@ export type MutationFieldPolicy = {
   updateUserGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   updateUserPlatformSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   updateVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateVirtualContributorPlatformSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   updateVirtualPersona?: FieldPolicy<any> | FieldReadFunction<any>;
   updateVisual?: FieldPolicy<any> | FieldReadFunction<any>;
   updateWhiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2014,6 +2024,7 @@ export type PlatformLocationsKeySpecifier = (
   | 'releases'
   | 'security'
   | 'support'
+  | 'switchplan'
   | 'terms'
   | 'tips'
   | PlatformLocationsKeySpecifier
@@ -2040,6 +2051,7 @@ export type PlatformLocationsFieldPolicy = {
   releases?: FieldPolicy<any> | FieldReadFunction<any>;
   security?: FieldPolicy<any> | FieldReadFunction<any>;
   support?: FieldPolicy<any> | FieldReadFunction<any>;
+  switchplan?: FieldPolicy<any> | FieldReadFunction<any>;
   terms?: FieldPolicy<any> | FieldReadFunction<any>;
   tips?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -2886,6 +2898,7 @@ export type VirtualContributorKeySpecifier = (
   | 'account'
   | 'agent'
   | 'authorization'
+  | 'bodyOfKnowledgeID'
   | 'bodyOfKnowledgeType'
   | 'id'
   | 'nameID'
@@ -2898,6 +2911,7 @@ export type VirtualContributorFieldPolicy = {
   account?: FieldPolicy<any> | FieldReadFunction<any>;
   agent?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  bodyOfKnowledgeID?: FieldPolicy<any> | FieldReadFunction<any>;
   bodyOfKnowledgeType?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2912,6 +2926,7 @@ export type VirtualPersonaKeySpecifier = (
   | 'id'
   | 'nameID'
   | 'profile'
+  | 'prompt'
   | VirtualPersonaKeySpecifier
 )[];
 export type VirtualPersonaFieldPolicy = {
@@ -2921,6 +2936,7 @@ export type VirtualPersonaFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  prompt?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type VirtualPersonaResultKeySpecifier = (
   | 'answer'

@@ -18442,6 +18442,183 @@ export type DeleteCalloutTemplateMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteCalloutTemplateMutation,
   SchemaTypes.DeleteCalloutTemplateMutationVariables
 >;
+export const CreateCommunityGuidelinesTemplateDocument = gql`
+  mutation createCommunityGuidelinesTemplate(
+    $templatesSetId: UUID!
+    $profile: CreateProfileInput!
+    $guidelines: CreateCommunityGuidelinesInput!
+  ) {
+    createCommunityGuidelinesTemplate(
+      communityGuidelinesTemplateInput: {
+        templatesSetID: $templatesSetId
+        profile: $profile
+        communityGuidelines: $guidelines
+      }
+    ) {
+      id
+    }
+  }
+`;
+export type CreateCommunityGuidelinesTemplateMutationFn = Apollo.MutationFunction<
+  SchemaTypes.CreateCommunityGuidelinesTemplateMutation,
+  SchemaTypes.CreateCommunityGuidelinesTemplateMutationVariables
+>;
+
+/**
+ * __useCreateCommunityGuidelinesTemplateMutation__
+ *
+ * To run a mutation, you first call `useCreateCommunityGuidelinesTemplateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateCommunityGuidelinesTemplateMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createCommunityGuidelinesTemplateMutation, { data, loading, error }] = useCreateCommunityGuidelinesTemplateMutation({
+ *   variables: {
+ *      templatesSetId: // value for 'templatesSetId'
+ *      profile: // value for 'profile'
+ *      guidelines: // value for 'guidelines'
+ *   },
+ * });
+ */
+export function useCreateCommunityGuidelinesTemplateMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.CreateCommunityGuidelinesTemplateMutation,
+    SchemaTypes.CreateCommunityGuidelinesTemplateMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.CreateCommunityGuidelinesTemplateMutation,
+    SchemaTypes.CreateCommunityGuidelinesTemplateMutationVariables
+  >(CreateCommunityGuidelinesTemplateDocument, options);
+}
+
+export type CreateCommunityGuidelinesTemplateMutationHookResult = ReturnType<
+  typeof useCreateCommunityGuidelinesTemplateMutation
+>;
+export type CreateCommunityGuidelinesTemplateMutationResult =
+  Apollo.MutationResult<SchemaTypes.CreateCommunityGuidelinesTemplateMutation>;
+export type CreateCommunityGuidelinesTemplateMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.CreateCommunityGuidelinesTemplateMutation,
+  SchemaTypes.CreateCommunityGuidelinesTemplateMutationVariables
+>;
+export const UpdateCommunityGuidelinesTemplateDocument = gql`
+  mutation updateCommunityGuidelinesTemplate(
+    $templateId: UUID!
+    $profile: UpdateProfileInput
+    $communityGuidelines: UpdateCommunityGuidelinesOfTemplateInput
+  ) {
+    updateCommunityGuidelinesTemplate(
+      communityGuidelinesTemplateInput: {
+        ID: $templateId
+        profile: $profile
+        communityGuidelines: $communityGuidelines
+      }
+    ) {
+      id
+    }
+  }
+`;
+export type UpdateCommunityGuidelinesTemplateMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateCommunityGuidelinesTemplateMutation,
+  SchemaTypes.UpdateCommunityGuidelinesTemplateMutationVariables
+>;
+
+/**
+ * __useUpdateCommunityGuidelinesTemplateMutation__
+ *
+ * To run a mutation, you first call `useUpdateCommunityGuidelinesTemplateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateCommunityGuidelinesTemplateMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateCommunityGuidelinesTemplateMutation, { data, loading, error }] = useUpdateCommunityGuidelinesTemplateMutation({
+ *   variables: {
+ *      templateId: // value for 'templateId'
+ *      profile: // value for 'profile'
+ *      communityGuidelines: // value for 'communityGuidelines'
+ *   },
+ * });
+ */
+export function useUpdateCommunityGuidelinesTemplateMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateCommunityGuidelinesTemplateMutation,
+    SchemaTypes.UpdateCommunityGuidelinesTemplateMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.UpdateCommunityGuidelinesTemplateMutation,
+    SchemaTypes.UpdateCommunityGuidelinesTemplateMutationVariables
+  >(UpdateCommunityGuidelinesTemplateDocument, options);
+}
+
+export type UpdateCommunityGuidelinesTemplateMutationHookResult = ReturnType<
+  typeof useUpdateCommunityGuidelinesTemplateMutation
+>;
+export type UpdateCommunityGuidelinesTemplateMutationResult =
+  Apollo.MutationResult<SchemaTypes.UpdateCommunityGuidelinesTemplateMutation>;
+export type UpdateCommunityGuidelinesTemplateMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateCommunityGuidelinesTemplateMutation,
+  SchemaTypes.UpdateCommunityGuidelinesTemplateMutationVariables
+>;
+export const DeleteCommunityGuidelinesTemplateDocument = gql`
+  mutation deleteCommunityGuidelinesTemplate($templateId: UUID!) {
+    deleteCommunityGuidelinesTemplate(deleteData: { ID: $templateId }) {
+      id
+    }
+  }
+`;
+export type DeleteCommunityGuidelinesTemplateMutationFn = Apollo.MutationFunction<
+  SchemaTypes.DeleteCommunityGuidelinesTemplateMutation,
+  SchemaTypes.DeleteCommunityGuidelinesTemplateMutationVariables
+>;
+
+/**
+ * __useDeleteCommunityGuidelinesTemplateMutation__
+ *
+ * To run a mutation, you first call `useDeleteCommunityGuidelinesTemplateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteCommunityGuidelinesTemplateMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteCommunityGuidelinesTemplateMutation, { data, loading, error }] = useDeleteCommunityGuidelinesTemplateMutation({
+ *   variables: {
+ *      templateId: // value for 'templateId'
+ *   },
+ * });
+ */
+export function useDeleteCommunityGuidelinesTemplateMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.DeleteCommunityGuidelinesTemplateMutation,
+    SchemaTypes.DeleteCommunityGuidelinesTemplateMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.DeleteCommunityGuidelinesTemplateMutation,
+    SchemaTypes.DeleteCommunityGuidelinesTemplateMutationVariables
+  >(DeleteCommunityGuidelinesTemplateDocument, options);
+}
+
+export type DeleteCommunityGuidelinesTemplateMutationHookResult = ReturnType<
+  typeof useDeleteCommunityGuidelinesTemplateMutation
+>;
+export type DeleteCommunityGuidelinesTemplateMutationResult =
+  Apollo.MutationResult<SchemaTypes.DeleteCommunityGuidelinesTemplateMutation>;
+export type DeleteCommunityGuidelinesTemplateMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.DeleteCommunityGuidelinesTemplateMutation,
+  SchemaTypes.DeleteCommunityGuidelinesTemplateMutationVariables
+>;
 export const InnovationPacksDocument = gql`
   query InnovationPacks {
     platform {
