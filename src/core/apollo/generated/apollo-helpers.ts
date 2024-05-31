@@ -5,6 +5,7 @@ export type APMFieldPolicy = {
   rumEnabled?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type AccountKeySpecifier = (
+  | 'activeSubscription'
   | 'agent'
   | 'authorization'
   | 'defaults'
@@ -13,9 +14,11 @@ export type AccountKeySpecifier = (
   | 'library'
   | 'license'
   | 'spaceID'
+  | 'subscriptions'
   | AccountKeySpecifier
 )[];
 export type AccountFieldPolicy = {
+  activeSubscription?: FieldPolicy<any> | FieldReadFunction<any>;
   agent?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   defaults?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -24,6 +27,12 @@ export type AccountFieldPolicy = {
   library?: FieldPolicy<any> | FieldReadFunction<any>;
   license?: FieldPolicy<any> | FieldReadFunction<any>;
   spaceID?: FieldPolicy<any> | FieldReadFunction<any>;
+  subscriptions?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type AccountSubscriptionKeySpecifier = ('expires' | 'name' | AccountSubscriptionKeySpecifier)[];
+export type AccountSubscriptionFieldPolicy = {
+  expires?: FieldPolicy<any> | FieldReadFunction<any>;
+  name?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ActivityCreatedSubscriptionResultKeySpecifier = (
   | 'activity'
@@ -1345,6 +1354,7 @@ export type LicensePlanKeySpecifier = (
   | 'enabled'
   | 'id'
   | 'isFree'
+  | 'licenseCredential'
   | 'name'
   | 'pricePerMonth'
   | 'requiresContactSupport'
@@ -1357,6 +1367,7 @@ export type LicensePlanFieldPolicy = {
   enabled?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   isFree?: FieldPolicy<any> | FieldReadFunction<any>;
+  licenseCredential?: FieldPolicy<any> | FieldReadFunction<any>;
   name?: FieldPolicy<any> | FieldReadFunction<any>;
   pricePerMonth?: FieldPolicy<any> | FieldReadFunction<any>;
   requiresContactSupport?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1381,9 +1392,17 @@ export type LicensePolicyRuleFeatureFlagFieldPolicy = {
   grantedPrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
   name?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type LicensingKeySpecifier = ('authorization' | 'id' | 'plans' | 'policy' | LicensingKeySpecifier)[];
+export type LicensingKeySpecifier = (
+  | 'authorization'
+  | 'basePlan'
+  | 'id'
+  | 'plans'
+  | 'policy'
+  | LicensingKeySpecifier
+)[];
 export type LicensingFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  basePlan?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   plans?: FieldPolicy<any> | FieldReadFunction<any>;
   policy?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1997,6 +2016,7 @@ export type PlatformLocationsKeySpecifier = (
   | 'releases'
   | 'security'
   | 'support'
+  | 'switchplan'
   | 'terms'
   | 'tips'
   | PlatformLocationsKeySpecifier
@@ -2023,6 +2043,7 @@ export type PlatformLocationsFieldPolicy = {
   releases?: FieldPolicy<any> | FieldReadFunction<any>;
   security?: FieldPolicy<any> | FieldReadFunction<any>;
   support?: FieldPolicy<any> | FieldReadFunction<any>;
+  switchplan?: FieldPolicy<any> | FieldReadFunction<any>;
   terms?: FieldPolicy<any> | FieldReadFunction<any>;
   tips?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -2869,6 +2890,7 @@ export type VirtualContributorKeySpecifier = (
   | 'account'
   | 'agent'
   | 'authorization'
+  | 'bodyOfKnowledgeID'
   | 'bodyOfKnowledgeType'
   | 'id'
   | 'nameID'
@@ -2881,6 +2903,7 @@ export type VirtualContributorFieldPolicy = {
   account?: FieldPolicy<any> | FieldReadFunction<any>;
   agent?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  bodyOfKnowledgeID?: FieldPolicy<any> | FieldReadFunction<any>;
   bodyOfKnowledgeType?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2895,6 +2918,7 @@ export type VirtualPersonaKeySpecifier = (
   | 'id'
   | 'nameID'
   | 'profile'
+  | 'prompt'
   | VirtualPersonaKeySpecifier
 )[];
 export type VirtualPersonaFieldPolicy = {
@@ -2904,6 +2928,7 @@ export type VirtualPersonaFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  prompt?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type VirtualPersonaResultKeySpecifier = (
   | 'answer'
@@ -2991,6 +3016,10 @@ export type StrictTypedTypePolicies = {
   Account?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | AccountKeySpecifier | (() => undefined | AccountKeySpecifier);
     fields?: AccountFieldPolicy;
+  };
+  AccountSubscription?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | AccountSubscriptionKeySpecifier | (() => undefined | AccountSubscriptionKeySpecifier);
+    fields?: AccountSubscriptionFieldPolicy;
   };
   ActivityCreatedSubscriptionResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:

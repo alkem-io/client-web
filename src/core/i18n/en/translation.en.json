@@ -342,6 +342,7 @@
     "more": "More",
     "url": "URL",
     "sources": "Sources",
+    "license": "License",
     "virtual-contributors": "VC",
     "collaborationTool": "Collaboration tool",
     "genders": {
@@ -1784,8 +1785,14 @@
           "account": {
             "description": "",
             "hostTitle": "Host",
-            "contactsLinkText": "If you want to change any of these settings, please contact the Alkemio team here.",
-            "contactsLink": "https://www.alkemio.org/support/"
+            "contactsLink": "If you want to change any of these settings, please contact the Alkemio team here.",
+            "freeTrialNotice": {
+              "title": "Free Trial - {{daysLeft}} days left",
+              "description": "Click here to set up your full {{planName}} subscription"
+            },
+            "yourLicense": "Your current license:",
+            "downgradeTo": "Downgrade to {{planName}}",
+            "upgradeTo": "Upgrade to {{planName}}"
           }
         }
       },

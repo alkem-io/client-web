@@ -36,6 +36,8 @@ export type Apm = {
 
 export type Account = {
   __typename?: 'Account';
+  /** The "highest" subscription active for this Account. */
+  activeSubscription?: Maybe<AccountSubscription>;
   /** The Agent representing this Account. */
   agent: Agent;
   /** The authorization rules for the entity */
@@ -52,11 +54,21 @@ export type Account = {
   license: License;
   /** The ID for the root space for the Account . */
   spaceID: Scalars['String'];
+  /** The subscriptions active for this Account. */
+  subscriptions: Array<AccountSubscription>;
 };
 
 export type AccountAuthorizationResetInput = {
   /** The identifier of the Account whose Authorization Policy should be reset. */
   accountID: Scalars['UUID_NAMEID'];
+};
+
+export type AccountSubscription = {
+  __typename?: 'AccountSubscription';
+  /** The expiry date of this subscription, null if it does never expire. */
+  expires?: Maybe<Scalars['DateTime']>;
+  /** The name of the Subscription. */
+  name: LicenseCredential;
 };
 
 export type ActivityCreatedSubscriptionInput = {
@@ -1407,8 +1419,8 @@ export type ConvertSubsubspaceToSubspaceInput = {
 export type CreateAccountInput = {
   /** The host Organization or User for the account */
   hostID: Scalars['UUID_NAMEID'];
-  /** The plan selected for the account */
-  planID?: InputMaybe<Scalars['UUID']>;
+  /** The license plan selected for the account */
+  licensePlanID?: InputMaybe<Scalars['UUID']>;
   /** The root Space to be created. */
   spaceData: CreateSpaceInput;
 };
@@ -1730,7 +1742,7 @@ export type CreateVirtualContributorOnAccountInput = {
   /** A readable identifier, unique within the containing scope. */
   nameID: Scalars['NameID'];
   profileData: CreateProfileInput;
-  virtualPersonaID: Scalars['UUID'];
+  virtualPersonaID?: InputMaybe<Scalars['UUID']>;
 };
 
 export type CreateVirtualPersonaInput = {
@@ -1738,7 +1750,7 @@ export type CreateVirtualPersonaInput = {
   /** A readable identifier, unique within the containing scope. */
   nameID: Scalars['NameID'];
   profileData: CreateProfileInput;
-  prompt: Scalars['JSON'];
+  prompt?: InputMaybe<Scalars['JSON']>;
 };
 
 export type CreateWhiteboardInput = {
@@ -1768,7 +1780,7 @@ export type Credential = {
   /** The User issuing the credential */
   issuer?: Maybe<Scalars['UUID']>;
   resourceID: Scalars['String'];
-  type: AuthorizationCredential;
+  type: CredentialType;
 };
 
 export type CredentialDefinition = {
@@ -1794,6 +1806,31 @@ export type CredentialMetadataOutput = {
   /** System recognized unique type for the credential */
   uniqueType: Scalars['String'];
 };
+
+export enum CredentialType {
+  AccountHost = 'ACCOUNT_HOST',
+  BetaTester = 'BETA_TESTER',
+  GlobalAdmin = 'GLOBAL_ADMIN',
+  GlobalCommunityRead = 'GLOBAL_COMMUNITY_READ',
+  GlobalLicenseManager = 'GLOBAL_LICENSE_MANAGER',
+  GlobalRegistered = 'GLOBAL_REGISTERED',
+  GlobalSpacesReader = 'GLOBAL_SPACES_READER',
+  GlobalSupport = 'GLOBAL_SUPPORT',
+  InnovationPackProvider = 'INNOVATION_PACK_PROVIDER',
+  LicenseSpaceEnterprise = 'LICENSE_SPACE_ENTERPRISE',
+  LicenseSpaceFree = 'LICENSE_SPACE_FREE',
+  LicenseSpacePlus = 'LICENSE_SPACE_PLUS',
+  LicenseSpacePremium = 'LICENSE_SPACE_PREMIUM',
+  OrganizationAdmin = 'ORGANIZATION_ADMIN',
+  OrganizationAssociate = 'ORGANIZATION_ASSOCIATE',
+  OrganizationOwner = 'ORGANIZATION_OWNER',
+  SpaceAdmin = 'SPACE_ADMIN',
+  SpaceLead = 'SPACE_LEAD',
+  SpaceMember = 'SPACE_MEMBER',
+  SpaceSubspaceAdmin = 'SPACE_SUBSPACE_ADMIN',
+  UserGroupMember = 'USER_GROUP_MEMBER',
+  UserSelfManagement = 'USER_SELF_MANAGEMENT',
+}
 
 export type DeleteActorGroupInput = {
   ID: Scalars['UUID'];
@@ -2299,6 +2336,13 @@ export type License = {
   visibility: SpaceVisibility;
 };
 
+export enum LicenseCredential {
+  LicenseSpaceEnterprise = 'LICENSE_SPACE_ENTERPRISE',
+  LicenseSpaceFree = 'LICENSE_SPACE_FREE',
+  LicenseSpacePlus = 'LICENSE_SPACE_PLUS',
+  LicenseSpacePremium = 'LICENSE_SPACE_PREMIUM',
+}
+
 export type LicenseFeatureFlag = {
   __typename?: 'LicenseFeatureFlag';
   /** Is this feature flag enabled? */
@@ -2321,6 +2365,8 @@ export type LicensePlan = {
   id: Scalars['UUID'];
   /** Is this plan free? */
   isFree: Scalars['Boolean'];
+  /** The credential to represent this plan */
+  licenseCredential: LicenseCredential;
   /** The name of the License Plan */
   name: Scalars['String'];
   /** The price per month of this plan. */
@@ -2362,6 +2408,8 @@ export type Licensing = {
   __typename?: 'Licensing';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
+  /** The base License Plan assigned to all Accounts in use on the platform. */
+  basePlan: LicensePlan;
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** The License Plans in use on the platform. */
@@ -3780,6 +3828,8 @@ export type PlatformLocations = {
   security: Scalars['String'];
   /** URL where users can get support for the platform */
   support: Scalars['String'];
+  /** URL for the link Contact in the HomePage to switch between plans */
+  switchplan: Scalars['String'];
   /** URL to the terms of usage for the platform */
   terms: Scalars['String'];
   /** URL where users can get tips and tricks */
@@ -5478,7 +5528,7 @@ export type UpdateVirtualPersonaInput = {
   nameID?: InputMaybe<Scalars['NameID']>;
   /** The Profile of this entity. */
   profileData?: InputMaybe<UpdateProfileInput>;
-  prompt: Scalars['JSON'];
+  prompt?: InputMaybe<Scalars['JSON']>;
 };
 
 export type UpdateVisualInput = {
@@ -5652,11 +5702,13 @@ export type VerifiedCredentialClaim = {
 export type VirtualContributor = Contributor & {
   __typename?: 'VirtualContributor';
   /** The account under which the virtual contributor was created */
-  account: Account;
+  account?: Maybe<Account>;
   /** The Agent representing this User. */
   agent: Agent;
   /** The authorization rules for the Contributor */
   authorization?: Maybe<Authorization>;
+  /** The body of knowledge ID used for the Virtual Contributor */
+  bodyOfKnowledgeID: Scalars['UUID'];
   /** The body of knowledge type used for the Virtual Contributor */
   bodyOfKnowledgeType: BodyOfKnowledgeType;
   /** The ID of the Contributor */
@@ -5672,6 +5724,7 @@ export type VirtualContributor = Contributor & {
 };
 
 export enum VirtualContributorEngine {
+  CommunityManager = 'COMMUNITY_MANAGER',
   Expert = 'EXPERT',
   Guidance = 'GUIDANCE',
 }
@@ -5690,6 +5743,8 @@ export type VirtualPersona = {
   nameID: Scalars['NameID'];
   /** The Profile for the VirtualPersona. */
   profile: Profile;
+  /** The prompt used by this Virtual Persona */
+  prompt: Scalars['String'];
 };
 
 export enum VirtualPersonaAccessMode {
@@ -5939,7 +5994,7 @@ export type UserAgentSsiFragment = {
     id: string;
     did?: string | undefined;
     credentials?:
-      | Array<{ __typename?: 'Credential'; id: string; resourceID: string; type: AuthorizationCredential }>
+      | Array<{ __typename?: 'Credential'; id: string; resourceID: string; type: CredentialType }>
       | undefined;
     verifiedCredentials?:
       | Array<{
@@ -5972,7 +6027,7 @@ export type UserSsiQuery = {
             id: string;
             did?: string | undefined;
             credentials?:
-              | Array<{ __typename?: 'Credential'; id: string; resourceID: string; type: AuthorizationCredential }>
+              | Array<{ __typename?: 'Credential'; id: string; resourceID: string; type: CredentialType }>
               | undefined;
             verifiedCredentials?:
               | Array<{
@@ -14324,7 +14379,7 @@ export type CommunityPageMembersFragment = {
     __typename?: 'Agent';
     id: string;
     credentials?:
-      | Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
+      | Array<{ __typename?: 'Credential'; id: string; type: CredentialType; resourceID: string }>
       | undefined;
   };
   profile: {
@@ -15087,7 +15142,7 @@ export type ContributorsPageUsersQuery = {
         __typename?: 'Agent';
         id: string;
         credentials?:
-          | Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
+          | Array<{ __typename?: 'Credential'; id: string; type: CredentialType; resourceID: string }>
           | undefined;
       };
       userProfile: {
@@ -15167,7 +15222,7 @@ export type UserContributorPaginatedFragment = {
       __typename?: 'Agent';
       id: string;
       credentials?:
-        | Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
+        | Array<{ __typename?: 'Credential'; id: string; type: CredentialType; resourceID: string }>
         | undefined;
     };
     userProfile: {
@@ -15205,7 +15260,7 @@ export type UserContributorFragment = {
     __typename?: 'Agent';
     id: string;
     credentials?:
-      | Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
+      | Array<{ __typename?: 'Credential'; id: string; type: CredentialType; resourceID: string }>
       | undefined;
   };
   userProfile: {
@@ -16334,7 +16389,7 @@ export type UserAgentFragment = {
     id: string;
     did?: string | undefined;
     credentials?:
-      | Array<{ __typename?: 'Credential'; id: string; resourceID: string; type: AuthorizationCredential }>
+      | Array<{ __typename?: 'Credential'; id: string; resourceID: string; type: CredentialType }>
       | undefined;
   };
 };
@@ -16351,7 +16406,7 @@ export type UserDetailsFragment = {
   accountUpn: string;
   agent: {
     __typename?: 'Agent';
-    credentials?: Array<{ __typename?: 'Credential'; type: AuthorizationCredential; resourceID: string }> | undefined;
+    credentials?: Array<{ __typename?: 'Credential'; type: CredentialType; resourceID: string }> | undefined;
   };
   profile: {
     __typename?: 'Profile';
@@ -16464,7 +16519,7 @@ export type CreateUserMutation = {
     accountUpn: string;
     agent: {
       __typename?: 'Agent';
-      credentials?: Array<{ __typename?: 'Credential'; type: AuthorizationCredential; resourceID: string }> | undefined;
+      credentials?: Array<{ __typename?: 'Credential'; type: CredentialType; resourceID: string }> | undefined;
     };
     profile: {
       __typename?: 'Profile';
@@ -16521,7 +16576,7 @@ export type CreateUserNewRegistrationMutation = {
     accountUpn: string;
     agent: {
       __typename?: 'Agent';
-      credentials?: Array<{ __typename?: 'Credential'; type: AuthorizationCredential; resourceID: string }> | undefined;
+      credentials?: Array<{ __typename?: 'Credential'; type: CredentialType; resourceID: string }> | undefined;
     };
     profile: {
       __typename?: 'Profile';
@@ -16656,7 +16711,7 @@ export type UpdateUserMutation = {
     accountUpn: string;
     agent: {
       __typename?: 'Agent';
-      credentials?: Array<{ __typename?: 'Credential'; type: AuthorizationCredential; resourceID: string }> | undefined;
+      credentials?: Array<{ __typename?: 'Credential'; type: CredentialType; resourceID: string }> | undefined;
     };
     profile: {
       __typename?: 'Profile';
@@ -16727,7 +16782,7 @@ export type UserQuery = {
       id: string;
       did?: string | undefined;
       credentials?:
-        | Array<{ __typename?: 'Credential'; type: AuthorizationCredential; resourceID: string; id: string }>
+        | Array<{ __typename?: 'Credential'; type: CredentialType; resourceID: string; id: string }>
         | undefined;
     };
     profile: {
@@ -16817,7 +16872,7 @@ export type UserProfileQuery = {
       id: string;
       did?: string | undefined;
       credentials?:
-        | Array<{ __typename?: 'Credential'; type: AuthorizationCredential; resourceID: string; id: string }>
+        | Array<{ __typename?: 'Credential'; type: CredentialType; resourceID: string; id: string }>
         | undefined;
     };
     profile: {
@@ -16952,7 +17007,7 @@ export type UserProviderQuery = {
             id: string;
             did?: string | undefined;
             credentials?:
-              | Array<{ __typename?: 'Credential'; type: AuthorizationCredential; resourceID: string; id: string }>
+              | Array<{ __typename?: 'Credential'; type: CredentialType; resourceID: string; id: string }>
               | undefined;
           };
           profile: {
@@ -20201,7 +20256,7 @@ export type SubspacePageFragment = {
 export type CreateNewSpaceMutationVariables = Exact<{
   hostId: Scalars['UUID_NAMEID'];
   spaceData: CreateSpaceInput;
-  planId?: InputMaybe<Scalars['UUID']>;
+  licensePlanId?: InputMaybe<Scalars['UUID']>;
 }>;
 
 export type CreateNewSpaceMutation = {
@@ -20800,6 +20855,98 @@ export type BannerInnovationHubQuery = {
           spaceListFilter?: Array<{ __typename?: 'Space'; id: string }> | undefined;
         }
       | undefined;
+  };
+};
+
+export type SpaceAccountQueryVariables = Exact<{
+  spaceId: Scalars['UUID'];
+}>;
+
+export type SpaceAccountQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    space?:
+      | {
+          __typename?: 'Space';
+          id: string;
+          profile: { __typename?: 'Profile'; id: string; url: string };
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
+          account: {
+            __typename?: 'Account';
+            id: string;
+            host?:
+              | {
+                  __typename?: 'Organization';
+                  id: string;
+                  nameID: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    url: string;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                    location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                  };
+                }
+              | {
+                  __typename?: 'User';
+                  id: string;
+                  nameID: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    url: string;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                    location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                  };
+                }
+              | {
+                  __typename?: 'VirtualContributor';
+                  id: string;
+                  nameID: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    url: string;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                    location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                  };
+                }
+              | undefined;
+            license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
+            activeSubscription?:
+              | { __typename?: 'AccountSubscription'; name: LicenseCredential; expires?: Date | undefined }
+              | undefined;
+          };
+        }
+      | undefined;
+  };
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    licensing: {
+      __typename?: 'Licensing';
+      id: string;
+      plans: Array<{
+        __typename?: 'LicensePlan';
+        id: string;
+        name: string;
+        enabled: boolean;
+        sortOrder: number;
+        isFree: boolean;
+        pricePerMonth?: number | undefined;
+        licenseCredential: LicenseCredential;
+      }>;
+    };
+    configuration: {
+      __typename?: 'Config';
+      locations: { __typename?: 'PlatformLocations'; support: string; switchplan: string };
+    };
   };
 };
 
