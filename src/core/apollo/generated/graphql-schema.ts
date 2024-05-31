@@ -36,6 +36,8 @@ export type Apm = {
 
 export type Account = {
   __typename?: 'Account';
+  /** The "highest" subscription active for this Account. */
+  activeSubscription?: Maybe<AccountSubscription>;
   /** The Agent representing this Account. */
   agent: Agent;
   /** The authorization rules for the entity */
@@ -54,6 +56,8 @@ export type Account = {
   spaceID: Scalars['String'];
   /** The subscriptions active for this Account. */
   subscriptions: Array<AccountSubscription>;
+  /** The virtual contributors for this Account. */
+  virtualContributors: Array<VirtualContributor>;
 };
 
 export type AccountAuthorizationResetInput = {
@@ -66,7 +70,7 @@ export type AccountSubscription = {
   /** The expiry date of this subscription, null if it does never expire. */
   expires?: Maybe<Scalars['DateTime']>;
   /** The name of the Subscription. */
-  name: Scalars['String'];
+  name: LicenseCredential;
 };
 
 export type ActivityCreatedSubscriptionInput = {
@@ -758,6 +762,7 @@ export enum AuthorizationPrivilege {
 }
 
 export enum BodyOfKnowledgeType {
+  Other = 'OTHER',
   Space = 'SPACE',
 }
 
@@ -1735,8 +1740,8 @@ export type CreateUserInput = {
 
 export type CreateVirtualContributorOnAccountInput = {
   accountID: Scalars['UUID'];
-  bodyOfKnowledgeID: Scalars['UUID'];
-  bodyOfKnowledgeType: BodyOfKnowledgeType;
+  bodyOfKnowledgeID?: InputMaybe<Scalars['UUID']>;
+  bodyOfKnowledgeType?: InputMaybe<BodyOfKnowledgeType>;
   /** A readable identifier, unique within the containing scope. */
   nameID: Scalars['NameID'];
   profileData: CreateProfileInput;
@@ -5704,9 +5709,9 @@ export type VirtualContributor = Contributor & {
   /** The authorization rules for the Contributor */
   authorization?: Maybe<Authorization>;
   /** The body of knowledge ID used for the Virtual Contributor */
-  bodyOfKnowledgeID: Scalars['UUID'];
+  bodyOfKnowledgeID?: Maybe<Scalars['UUID']>;
   /** The body of knowledge type used for the Virtual Contributor */
-  bodyOfKnowledgeType: BodyOfKnowledgeType;
+  bodyOfKnowledgeType?: Maybe<BodyOfKnowledgeType>;
   /** The ID of the Contributor */
   id: Scalars['UUID'];
   /** A name identifier of the Contributor, unique within a given scope. */
@@ -17329,7 +17334,7 @@ export type VirtualContributorQuery = {
     __typename?: 'VirtualContributor';
     id: string;
     nameID: string;
-    bodyOfKnowledgeID: string;
+    bodyOfKnowledgeID?: string | undefined;
     authorization?:
       | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
@@ -21325,7 +21330,20 @@ export type CreateVirtualContributorOnAccountMutationVariables = Exact<{
 
 export type CreateVirtualContributorOnAccountMutation = {
   __typename?: 'Mutation';
-  createVirtualContributor: { __typename?: 'VirtualContributor'; id: string };
+  createVirtualContributor: {
+    __typename?: 'VirtualContributor';
+    id: string;
+    profile: { __typename?: 'Profile'; id: string; url: string };
+  };
+};
+
+export type DeleteVirtualContributorOnAccountMutationVariables = Exact<{
+  virtualContributorData: DeleteVirtualContributorInput;
+}>;
+
+export type DeleteVirtualContributorOnAccountMutation = {
+  __typename?: 'Mutation';
+  deleteVirtualContributor: { __typename?: 'VirtualContributor'; id: string };
 };
 
 export type SpaceSubspacesQueryVariables = Exact<{
@@ -21338,11 +21356,30 @@ export type SpaceSubspacesQuery = {
     __typename?: 'Space';
     id: string;
     profile: { __typename?: 'Profile'; id: string; displayName: string };
-    account: { __typename?: 'Account'; id: string };
+    account: {
+      __typename?: 'Account';
+      id: string;
+      virtualContributors: Array<{
+        __typename?: 'VirtualContributor';
+        id: string;
+        bodyOfKnowledgeID?: string | undefined;
+        profile: {
+          __typename?: 'Profile';
+          displayName: string;
+          url: string;
+          avatar?: { __typename?: 'Visual'; uri: string } | undefined;
+        };
+      }>;
+    };
     subspaces: Array<{
       __typename?: 'Space';
       id: string;
-      profile: { __typename?: 'Profile'; id: string; displayName: string };
+      profile: {
+        __typename?: 'Profile';
+        id: string;
+        displayName: string;
+        avatar?: { __typename?: 'Visual'; uri: string } | undefined;
+      };
     }>;
   };
 };

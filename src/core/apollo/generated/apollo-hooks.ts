@@ -17199,9 +17199,13 @@ export type UpdateSpaceSettingsMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateSpaceSettingsMutationVariables
 >;
 export const CreateVirtualContributorOnAccountDocument = gql`
-  mutation createVirtualContributorOnAccount($virtualContributorData: CreateVirtualContributorOnAccountInput!) {
+  mutation CreateVirtualContributorOnAccount($virtualContributorData: CreateVirtualContributorOnAccountInput!) {
     createVirtualContributor(virtualContributorData: $virtualContributorData) {
       id
+      profile {
+        id
+        url
+      }
     }
   }
 `;
@@ -17249,8 +17253,59 @@ export type CreateVirtualContributorOnAccountMutationOptions = Apollo.BaseMutati
   SchemaTypes.CreateVirtualContributorOnAccountMutation,
   SchemaTypes.CreateVirtualContributorOnAccountMutationVariables
 >;
+export const DeleteVirtualContributorOnAccountDocument = gql`
+  mutation DeleteVirtualContributorOnAccount($virtualContributorData: DeleteVirtualContributorInput!) {
+    deleteVirtualContributor(deleteData: $virtualContributorData) {
+      id
+    }
+  }
+`;
+export type DeleteVirtualContributorOnAccountMutationFn = Apollo.MutationFunction<
+  SchemaTypes.DeleteVirtualContributorOnAccountMutation,
+  SchemaTypes.DeleteVirtualContributorOnAccountMutationVariables
+>;
+
+/**
+ * __useDeleteVirtualContributorOnAccountMutation__
+ *
+ * To run a mutation, you first call `useDeleteVirtualContributorOnAccountMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteVirtualContributorOnAccountMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteVirtualContributorOnAccountMutation, { data, loading, error }] = useDeleteVirtualContributorOnAccountMutation({
+ *   variables: {
+ *      virtualContributorData: // value for 'virtualContributorData'
+ *   },
+ * });
+ */
+export function useDeleteVirtualContributorOnAccountMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.DeleteVirtualContributorOnAccountMutation,
+    SchemaTypes.DeleteVirtualContributorOnAccountMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.DeleteVirtualContributorOnAccountMutation,
+    SchemaTypes.DeleteVirtualContributorOnAccountMutationVariables
+  >(DeleteVirtualContributorOnAccountDocument, options);
+}
+
+export type DeleteVirtualContributorOnAccountMutationHookResult = ReturnType<
+  typeof useDeleteVirtualContributorOnAccountMutation
+>;
+export type DeleteVirtualContributorOnAccountMutationResult =
+  Apollo.MutationResult<SchemaTypes.DeleteVirtualContributorOnAccountMutation>;
+export type DeleteVirtualContributorOnAccountMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.DeleteVirtualContributorOnAccountMutation,
+  SchemaTypes.DeleteVirtualContributorOnAccountMutationVariables
+>;
 export const SpaceSubspacesDocument = gql`
-  query spaceSubspaces($spaceId: UUID_NAMEID!) {
+  query SpaceSubspaces($spaceId: UUID_NAMEID!) {
     space(ID: $spaceId) {
       id
       profile {
@@ -17259,12 +17314,26 @@ export const SpaceSubspacesDocument = gql`
       }
       account {
         id
+        virtualContributors {
+          id
+          bodyOfKnowledgeID
+          profile {
+            displayName
+            url
+            avatar: visual(type: AVATAR) {
+              uri
+            }
+          }
+        }
       }
       subspaces {
         id
         profile {
           id
           displayName
+          avatar: visual(type: AVATAR) {
+            uri
+          }
         }
       }
     }

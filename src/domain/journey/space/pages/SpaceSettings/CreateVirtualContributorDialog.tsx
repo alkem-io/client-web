@@ -50,8 +50,8 @@ const CreateVirtualContributorDialog: FC<CreateVirtualContributorDialogProps> = 
       <DialogHeader onClose={onClose} title={t('virtualContributorDialog.title')} />
       <DialogContent>
         <Formik initialValues={initialValues} onSubmit={handleCreate}>
-          <Gutters disablePadding>
-            <Form noValidate>
+          <Form noValidate>
+            <Gutters>
               <FormikInputField title={t('virtualContributorDialog.name')} name="displayName" />
               <FormikSelect title="Body Of Knowledge" name="bodyOfKnowledgeID" values={spaces ?? []} />
               <Actions justifyContent="flex-end" paddingTop={gutters()}>
@@ -66,8 +66,8 @@ const CreateVirtualContributorDialog: FC<CreateVirtualContributorDialogProps> = 
                   {t('buttons.create')}
                 </LoadingButton>
               </Actions>
-            </Form>
-          </Gutters>
+            </Gutters>
+          </Form>
         </Formik>
       </DialogContent>
     </Dialog>

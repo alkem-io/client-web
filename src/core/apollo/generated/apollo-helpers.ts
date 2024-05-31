@@ -5,6 +5,7 @@ export type APMFieldPolicy = {
   rumEnabled?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type AccountKeySpecifier = (
+  | 'activeSubscription'
   | 'agent'
   | 'authorization'
   | 'defaults'
@@ -14,9 +15,11 @@ export type AccountKeySpecifier = (
   | 'license'
   | 'spaceID'
   | 'subscriptions'
+  | 'virtualContributors'
   | AccountKeySpecifier
 )[];
 export type AccountFieldPolicy = {
+  activeSubscription?: FieldPolicy<any> | FieldReadFunction<any>;
   agent?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   defaults?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -26,6 +29,7 @@ export type AccountFieldPolicy = {
   license?: FieldPolicy<any> | FieldReadFunction<any>;
   spaceID?: FieldPolicy<any> | FieldReadFunction<any>;
   subscriptions?: FieldPolicy<any> | FieldReadFunction<any>;
+  virtualContributors?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type AccountSubscriptionKeySpecifier = ('expires' | 'name' | AccountSubscriptionKeySpecifier)[];
 export type AccountSubscriptionFieldPolicy = {
