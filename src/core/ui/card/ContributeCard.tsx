@@ -47,7 +47,7 @@ const ContributeCard = forwardRef<HTMLDivElement, PropsWithChildren<ContributeCa
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'stretch',
-            cursor: onClick ? 'pointer' : 'default',
+            cursor: onClick || to ? 'pointer' : 'default',
             ...sx,
           }}
           ref={ref}

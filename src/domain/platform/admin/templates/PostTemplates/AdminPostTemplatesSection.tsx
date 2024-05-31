@@ -1,4 +1,3 @@
-import PostTemplateCard from './PostTemplateCard';
 import CreatePostTemplateDialog from './CreatePostTemplateDialog';
 import EditPostTemplateDialog from './EditPostTemplateDialog';
 import React from 'react';
@@ -44,7 +43,7 @@ const AdminPostTemplatesSection = ({ refetchQueries, ...props }: AdminPostTempla
       importDialogHeaderText={t('pages.admin.generic.sections.templates.import.title', {
         templateType: t('common.cards'),
       })}
-      templateCardComponent={PostTemplateCard}
+      templateCardComponent={PostImportTemplateCard}
       templateImportCardComponent={PostImportTemplateCard}
       createTemplateDialogComponent={CreatePostTemplateDialog}
       editTemplateDialogComponent={EditPostTemplateDialog}

@@ -29,7 +29,7 @@ const InnovationFlowTemplateCard = ({
   template,
   innovationPack,
   loading,
-  onClick,
+  ...props
 }: InnovationFlowTemplateCardProps) => {
   const states = template?.states;
 
@@ -39,7 +39,7 @@ const InnovationFlowTemplateCard = ({
     : DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS;
 
   return (
-    <ContributeCard onClick={onClick}>
+    <ContributeCard {...props}>
       <CardHeader title={template?.profile.displayName} iconComponent={InnovationFlowIcon as SvgIconComponent}>
         {loading && <Skeleton />}
         <CardHeaderCaption logoUrl={innovationPack?.provider?.profile.avatar?.uri}>
