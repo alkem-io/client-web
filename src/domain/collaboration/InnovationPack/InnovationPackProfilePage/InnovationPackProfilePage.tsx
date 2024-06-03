@@ -23,7 +23,7 @@ import WhiteboardTemplateCard from '../../whiteboard/WhiteboardTemplateCard/Whit
 import CalloutTemplateCard from '../../callout/CalloutTemplateCard/CalloutTemplateCard';
 import CommunityGuidelinesTemplateCard from '../../communityGuidelines/CommunityGuidelinesTemplateCard/CommunityGuidelinesTemplateCard';
 import InnovationFlowTemplateCard from '../../InnovationFlow/InnovationFlowTemplateCard/InnovationFlowTemplateCard';
-import TemplatePreviewDialog, { TemplatePreview } from '../../../template/templatePreviewDialog/TemplatePreviewDialog';
+import TemplatePreviewDialog, { TemplatePreview } from '../../templates/templatePreviewDialog/TemplatePreviewDialog';
 import InnovationPackProfileLayout from './InnovationPackProfileLayout';
 import TemplatesBlock from './TemplatesBlock';
 

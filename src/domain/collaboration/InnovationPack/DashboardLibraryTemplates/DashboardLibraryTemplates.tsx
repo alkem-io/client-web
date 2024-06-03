@@ -5,7 +5,7 @@ import filterFn, { ValueType } from '../../../../core/utils/filtering/filterFn';
 import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
 import { compact } from 'lodash';
 import LibraryTemplatesView, { LibraryTemplatesFilter } from './LibraryTemplatesView';
-import TemplatePreviewDialog, { TemplatePreview } from '../../../template/templatePreviewDialog/TemplatePreviewDialog';
+import TemplatePreviewDialog, { TemplatePreview } from '../../templates/templatePreviewDialog/TemplatePreviewDialog';
 import { useWhiteboardTemplateContentQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { TemplateType } from '../InnovationPackProfilePage/InnovationPackProfilePage';
 

@@ -2,6 +2,7 @@ import React, { ReactNode } from 'react';
 import { FormikProps } from 'formik';
 import { CreateProfileInput, Visual } from '../../../../../core/apollo/generated/graphql-schema';
 import TemplateForm from '../TemplateForm';
+import { useTranslation } from 'react-i18next';
 
 export interface CalloutTemplateFormValues {
   displayName: string;
@@ -26,6 +27,8 @@ interface CalloutTemplateFormProps {
 const validator = {};
 
 const CalloutTemplateForm = ({ initialValues, visual, onSubmit, actions }: CalloutTemplateFormProps) => {
+  const { t } = useTranslation();
+
   return (
     <TemplateForm
       initialValues={initialValues}
@@ -33,6 +36,7 @@ const CalloutTemplateForm = ({ initialValues, visual, onSubmit, actions }: Callo
       onSubmit={onSubmit}
       actions={actions}
       validator={validator}
+      entityTypeName={t('common.callout')}
     />
   );
 };
