@@ -23578,6 +23578,7 @@ export type AdminVirtualContributorsQuery = {
       id: string;
       displayName: string;
       description?: string | undefined;
+      url: string;
       avatar?:
         | {
             __typename?: 'Visual';
@@ -23595,15 +23596,6 @@ export type AdminVirtualContributorsQuery = {
         | undefined;
     };
   }>;
-};
-
-export type CreateVirtualContributorMutationVariables = Exact<{
-  virtualContributorData: CreateVirtualContributorOnAccountInput;
-}>;
-
-export type CreateVirtualContributorMutation = {
-  __typename?: 'Mutation';
-  createVirtualContributor: { __typename?: 'VirtualContributor'; id: string };
 };
 
 export type UpdateVirtualContributorMutationVariables = Exact<{

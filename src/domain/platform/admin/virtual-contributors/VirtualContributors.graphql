@@ -9,16 +9,11 @@ query AdminVirtualContributors {
       id
       displayName
       description
+      url
       avatar: visual(type: AVATAR) {
         ...VisualFull
       }
     }
-  }
-}
-
-mutation createVirtualContributor($virtualContributorData: CreateVirtualContributorOnAccountInput!) {
-  createVirtualContributor(virtualContributorData: $virtualContributorData) {
-    id
   }
 }
 
@@ -33,7 +28,7 @@ mutation updateVirtualContributor($virtualContributorData: UpdateVirtualContribu
   }
 }
 
-query virtualContributorAvailablePersonas {
+query VirtualContributorAvailablePersonas {
   virtualPersonas {
     id
     profile {
