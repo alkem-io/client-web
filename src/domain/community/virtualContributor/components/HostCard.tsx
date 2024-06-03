@@ -41,7 +41,7 @@ const HostCard: FC<HostProps> = ({ hostProfile }) => {
   return (
     <>
       <PageContentBlock>
-        <PageContentBlockHeader title={t('pages.virtual-contributor-profile.host')} />
+        <PageContentBlockHeader title={t('pages.virtualContributorProfile.host')} />
         <BadgeCardView
           visual={
             <Avatar src={profile.avatar?.uri} alt={t('common.avatar-of', { user: profile.displayName })}>

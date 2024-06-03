@@ -2,7 +2,7 @@ import { Form, Formik } from 'formik';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { Box, Button, Theme, useMediaQuery } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { Tagset, UpdateVirtualContributorInput, Visual } from '../../../../core/apollo/generated/graphql-schema';
 import useNavigate from '../../../../core/routing/useNavigate';
@@ -20,6 +20,7 @@ import GridContainer from '../../../../core/ui/grid/GridContainer';
 import GridProvider from '../../../../core/ui/grid/GridProvider';
 import GridItem from '../../../../core/ui/grid/GridItem';
 import { BasicSpaceProps } from '../components/BasicSpaceCard';
+import { useColumns } from '../../../../core/ui/grid/GridContext';
 
 interface VirtualContributorProps {
   id: string;
@@ -70,7 +71,8 @@ export const VirtualContributorForm: FC<Props> = ({
   const { t } = useTranslation();
   const navigate = useNavigate();
   const handleBack = () => navigate(-1);
-  const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
+  const cols = useColumns();
+  const isMobile = cols < 5;
 
   const {
     nameID,
@@ -169,7 +171,7 @@ export const VirtualContributorForm: FC<Props> = ({
               <Form noValidate onSubmit={handleSubmit}>
                 <GridContainer>
                   <GridProvider columns={12}>
-                    <GridItem columns={isMobile ? 6 : 2}>
+                    <GridItem columns={isMobile ? cols : 2}>
                       {avatar && (
                         <Box display="flex" justifyContent="center">
                           <VisualUpload
@@ -182,20 +184,18 @@ export const VirtualContributorForm: FC<Props> = ({
                         </Box>
                       )}
                     </GridItem>
-                    <GridItem columns={isMobile ? 6 : 8}>
+                    <GridItem columns={isMobile ? cols : 8}>
                       <Gutters>
-                        <>
-                          <NameSegment disabled required />
-                          <ProfileSegment />
-                          {tagsets && <TagsetSegment tagsets={tagsets} />}
-                          <HostFields />
-                          <Actions marginTop={theme.spacing(2)} sx={{ justifyContent: 'end' }}>
-                            {backButton}
-                            <LoadingButton loading={loading} type="submit" variant="contained">
-                              {t('buttons.save')}
-                            </LoadingButton>
-                          </Actions>
-                        </>
+                        <NameSegment disabled required />
+                        <ProfileSegment />
+                        {tagsets && <TagsetSegment tagsets={tagsets} />}
+                        <HostFields />
+                        <Actions marginTop={theme.spacing(2)} sx={{ justifyContent: 'end' }}>
+                          {backButton}
+                          <LoadingButton loading={loading} type="submit" variant="contained">
+                            {t('buttons.save')}
+                          </LoadingButton>
+                        </Actions>
                       </Gutters>
                     </GridItem>
                   </GridProvider>

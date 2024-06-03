@@ -21,6 +21,14 @@ interface Props {
   showDefaults?: boolean;
 }
 
+const SectionTitle = ({ children }) => (
+  <BlockTitle display={'flex'} alignItems={'center'} gap={theme => theme.spacing(1)}>
+    {children}
+  </BlockTitle>
+);
+
+const SectionContent = ({ children }) => <Text>{children}</Text>;
+
 export const VCProfilePageView: FC<PropsWithChildren<Props>> = ({
   virtualContributor,
   bokProfile,
@@ -29,16 +37,7 @@ export const VCProfilePageView: FC<PropsWithChildren<Props>> = ({
   const theme = useTheme();
   const { t } = useTranslation();
 
-  const name = virtualContributor?.profile.displayName || t('pages.virtual-contributor-profile.default-name');
-
-  const SectionTitle = ({ children }) => (
-    <BlockTitle display={'flex'} alignItems={'center'} gap={theme.spacing(1)}>
-      {children}
-    </BlockTitle>
-  );
-  const SectionContent = ({ children, withBottomOffset = false }) => (
-    <Text marginBottom={withBottomOffset ? theme.spacing(2) : 0}>{children}</Text>
-  );
+  const name = virtualContributor?.profile.displayName || t('pages.virtualContributorProfile.default-name');
 
   return (
     <PageContent>
@@ -56,28 +55,29 @@ export const VCProfilePageView: FC<PropsWithChildren<Props>> = ({
         <PageContentBlock>
           <SectionTitle>
             <BookIcon htmlColor={theme.palette.icons.dark} sx={{ fontSize: '18px' }} />
-            {t('pages.virtual-contributor-profile.sections.knowledge.title')}
+            {t('pages.virtualContributorProfile.sections.knowledge.title')}
           </SectionTitle>
-          <SectionContent withBottomOffset>
-            <Trans i18nKey="pages.virtual-contributor-profile.sections.knowledge.description" values={{ name }} />
-            <Spacer />
+          <SectionContent>
+            <Trans i18nKey="pages.virtualContributorProfile.sections.knowledge.description" values={{ name }} />
             <BasicSpaceCard space={bokProfile} showDefaults={showDefaults} />
+            <Spacer />
           </SectionContent>
           <SectionTitle>
             <RecordVoiceOverIcon htmlColor={theme.palette.icons.dark} sx={{ fontSize: '18px' }} />
-            {t('pages.virtual-contributor-profile.sections.personality.title')}
+            {t('pages.virtualContributorProfile.sections.personality.title')}
           </SectionTitle>
-          <SectionContent withBottomOffset>
-            <Trans i18nKey="pages.virtual-contributor-profile.sections.personality.description" values={{ name }} />
+          <SectionContent>
+            <Trans i18nKey="pages.virtualContributorProfile.sections.personality.description" values={{ name }} />
+            <Spacer />
           </SectionContent>
           <SectionTitle>
             <CloudDownloadIcon htmlColor={theme.palette.icons.dark} sx={{ fontSize: '18px' }} />
-            {t('pages.virtual-contributor-profile.sections.context.title')}
+            {t('pages.virtualContributorProfile.sections.context.title')}
           </SectionTitle>
           <SectionContent>
-            <Trans i18nKey="pages.virtual-contributor-profile.sections.context.description" values={{ name }} />
+            <Trans i18nKey="pages.virtualContributorProfile.sections.context.description" values={{ name }} />
             <Trans
-              i18nKey="pages.virtual-contributor-profile.sections.context.bullets"
+              i18nKey="pages.virtualContributorProfile.sections.context.bullets"
               components={{ ul: <ul />, li: <li /> }}
             />
           </SectionContent>
@@ -85,12 +85,12 @@ export const VCProfilePageView: FC<PropsWithChildren<Props>> = ({
         <PageContentBlock>
           <SectionTitle>
             <ShieldIcon htmlColor={theme.palette.icons.dark} sx={{ fontSize: '18px' }} />
-            {t('pages.virtual-contributor-profile.sections.privacy.title')}
+            {t('pages.virtualContributorProfile.sections.privacy.title')}
           </SectionTitle>
           <SectionContent>
-            <Trans i18nKey="pages.virtual-contributor-profile.sections.privacy.description" values={{ name }} />
+            <Trans i18nKey="pages.virtualContributorProfile.sections.privacy.description" values={{ name }} />
             <Trans
-              i18nKey="pages.virtual-contributor-profile.sections.privacy.bullets"
+              i18nKey="pages.virtualContributorProfile.sections.privacy.bullets"
               components={{ ul: <ul />, li: <li /> }}
             />
           </SectionContent>

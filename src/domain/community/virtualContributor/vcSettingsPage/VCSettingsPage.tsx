@@ -54,7 +54,7 @@ export const VCSettingsPage = () => {
   if (loading)
     return (
       <Loading
-        text={t('components.loading.message', { blockName: t('pages.virtual-contributor-profile.settings.title') })}
+        text={t('components.loading.message', { blockName: t('pages.virtualContributorProfile.settings.title') })}
       />
     );
 

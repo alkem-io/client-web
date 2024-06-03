@@ -14233,14 +14233,18 @@ export const BodyOfKnowledgeProfileDocument = gql`
   query BodyOfKnowledgeProfile($spaceId: UUID!) {
     lookup {
       space(ID: $spaceId) {
+        id
         profile {
+          id
           displayName
           tagline
           url
           avatar: visual(type: AVATAR) {
+            id
             uri
           }
           cardBanner: visual(type: CARD) {
+            id
             uri
           }
         }

@@ -30,7 +30,7 @@ export const VCProfilePage = () => {
 
   if (loading)
     return (
-      <Loading text={t('components.loading.message', { blockName: t('pages.virtual-contributor-profile.title') })} />
+      <Loading text={t('components.loading.message', { blockName: t('pages.virtualContributorProfile.title') })} />
     );
 
   if (error) {

@@ -2459,7 +2459,7 @@
         "help": "Credentials that the user holds issued by trusted parties"
       }
     },
-    "virtual-contributor-profile": {
+    "virtualContributorProfile": {
       "title": "Virtual Contributor Profile",
       "default-name": "Alkemio Help",
       "description": "Description",
