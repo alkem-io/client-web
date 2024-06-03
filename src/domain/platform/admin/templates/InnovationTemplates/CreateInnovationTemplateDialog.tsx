@@ -5,7 +5,6 @@ import InnovationFlowTemplateForm, {
 import { useTranslation } from 'react-i18next';
 import { DialogHeaderProps } from '../../../../../core/ui/dialog/DialogHeader';
 import React from 'react';
-import { DialogContent } from '@mui/material';
 import TemplateDialogBase from '../../../../collaboration/templates/templateDialog/TemplateDialogBase';
 
 interface CreatePostTemplateDialogProps {
@@ -30,11 +29,7 @@ const CreateInnovationTemplateDialog = ({ open, onClose, onSubmit }: CreatePostT
       onClose={onClose}
       templateTypeName={t('templateLibrary.innovationFlowTemplates.name')}
     >
-      {({ actions }) => (
-        <DialogContent>
-          <InnovationFlowTemplateForm initialValues={values} onSubmit={onSubmit} actions={actions} />
-        </DialogContent>
-      )}
+      {({ actions }) => <InnovationFlowTemplateForm initialValues={values} onSubmit={onSubmit} actions={actions} />}
     </TemplateDialogBase>
   );
 };
