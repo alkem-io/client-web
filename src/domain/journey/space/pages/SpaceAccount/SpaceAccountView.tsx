@@ -24,7 +24,7 @@ import {
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { gutters } from '../../../../../core/ui/grid/utils';
 import { ROUTE_HOME } from '../../../../platform/routes/constants';
-import { DeleteIcon } from '../SpaceSettings/icon/DeleteIcon';
+import DeleteIcon from '../SpaceSettings/icon/DeleteIcon';
 import SpaceProfileDeleteDialog from '../SpaceSettings/SpaceProfileDeleteDialog';
 import CreateVirtualContributorDialog, {
   VirtualContributorFormValues,
@@ -180,12 +180,8 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
     [spaceData]
   );
 
-  const currentVirtualContributor = useMemo(() => {
-    if (spaceData?.space?.account?.id && spaceData?.space?.account?.virtualContributors) {
-      return spaceData?.space?.account?.virtualContributors[0];
-    }
-
-    return null;
+  const virtualContributors = useMemo(() => {
+    return spaceData?.space?.account?.virtualContributors ?? [];
   }, [spaceData]);
 
   const [createVirtualContributorOnAccount, { loading: loadingVCCreation }] =
@@ -344,20 +340,21 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
           <PageContentBlock columns={5} sx={{ gap: gutters(2) }}>
             <Gutters disablePadding alignItems={'flex-start'}>
               <BlockTitle>{t('pages.admin.space.settings.account.vc-section-title')}</BlockTitle>
-              {currentVirtualContributor && (
-                <ContributorOnAccountCard
-                  contributor={currentVirtualContributor}
-                  space={bokSpaceData}
-                  hasDelete={canCreateVirtualContributor}
-                  onDeleteClick={openDeleteVCDialog}
-                />
-              )}
+              {virtualContributors.length > 0 &&
+                virtualContributors?.map(vc => (
+                  <ContributorOnAccountCard
+                    contributor={vc}
+                    space={bokSpaceData}
+                    hasDelete={canCreateVirtualContributor}
+                    onDeleteClick={openDeleteVCDialog}
+                  />
+                ))}
               {canCreateVirtualContributor && (
                 <Button
                   variant="outlined"
                   startIcon={<ControlPointIcon />}
                   onClick={openCreateVCDialog}
-                  disabled={!!currentVirtualContributor || spaceDataLoading}
+                  disabled={virtualContributors.length > 0 || spaceDataLoading}
                 >
                   {t('pages.admin.space.settings.account.vc-create-button')}
                 </Button>
