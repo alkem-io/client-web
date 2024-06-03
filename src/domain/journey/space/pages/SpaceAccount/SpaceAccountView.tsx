@@ -198,6 +198,7 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
     const vsResponse = await createVirtualContributorOnAccount({
       variables: {
         virtualContributorData: {
+          // todo: guarantee uniqueness but use createNameId(displayName)
           nameID: `v-c-${uuidv4()}`.slice(0, 25).toLocaleLowerCase(),
           profileData: {
             displayName,

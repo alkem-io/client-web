@@ -2,6 +2,7 @@ import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Dialog, DialogContent } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
+import * as yup from 'yup';
 import DialogHeader from '../../../../../core/ui/dialog/DialogHeader';
 import Gutters from '../../../../../core/ui/grid/Gutters';
 import { Actions } from '../../../../../core/ui/actions/Actions';
@@ -11,6 +12,7 @@ import FormikInputField from '../../../../../core/ui/forms/FormikInputField/Form
 import FormikSelect from '../../../../../core/ui/forms/FormikSelect';
 import useLoadingState from '../../../../shared/utils/useLoadingState';
 import { Caption } from '../../../../../core/ui/typography';
+import { nameSegmentSchema } from '../../../../platform/admin/components/Common/NameSegment';
 
 export interface VirtualContributorFormValues {
   displayName: string;
@@ -40,6 +42,11 @@ const CreateVirtualContributorDialog: FC<CreateVirtualContributorDialogProps> = 
     bodyOfKnowledgeID: '',
   };
 
+  const validationSchema = yup.object().shape({
+    displayName: nameSegmentSchema.fields?.name ?? yup.string(),
+    bodyOfKnowledgeID: yup.string().required(t('forms.validations.required')),
+  });
+
   const [handleCreate, loading] = useLoadingState(async (values: VirtualContributorFormValues) => {
     await onCreate?.({
       ...values,
@@ -50,14 +57,15 @@ const CreateVirtualContributorDialog: FC<CreateVirtualContributorDialogProps> = 
     <Dialog open={open} onClose={onClose}>
       <DialogHeader onClose={onClose} title={t('virtualContributorSpaceSettings.title')} />
       <DialogContent>
-        <Formik initialValues={initialValues} onSubmit={handleCreate}>
+        <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleCreate}>
           <Form noValidate>
             <Gutters>
-              <FormikInputField title={t('virtualContributorSpaceSettings.name')} name="displayName" />
+              <FormikInputField title={t('virtualContributorSpaceSettings.name')} name="displayName" required />
               <FormikSelect
                 title={t('virtualContributorSpaceSettings.body-of-knowledge')}
                 name="bodyOfKnowledgeID"
                 values={spaces ?? []}
+                required
               />
               <Caption>{t('virtualContributorSpaceSettings.info-text')}</Caption>
               <Actions justifyContent="flex-end" paddingTop={gutters()}>
