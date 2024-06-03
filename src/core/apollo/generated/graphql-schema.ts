@@ -17517,6 +17517,19 @@ export type BodyOfKnowledgeProfileQuery = {
   };
 };
 
+export type UpdateVirtualContributorMutationVariables = Exact<{
+  virtualContributorData: UpdateVirtualContributorInput;
+}>;
+
+export type UpdateVirtualContributorMutation = {
+  __typename?: 'Mutation';
+  updateVirtualContributor: {
+    __typename?: 'VirtualContributor';
+    id: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+  };
+};
+
 export type ContextDetailsFragment = {
   __typename?: 'Context';
   id: string;
@@ -23596,19 +23609,6 @@ export type AdminVirtualContributorsQuery = {
         | undefined;
     };
   }>;
-};
-
-export type UpdateVirtualContributorMutationVariables = Exact<{
-  virtualContributorData: UpdateVirtualContributorInput;
-}>;
-
-export type UpdateVirtualContributorMutation = {
-  __typename?: 'Mutation';
-  updateVirtualContributor: {
-    __typename?: 'VirtualContributor';
-    id: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
-  };
 };
 
 export type VirtualContributorAvailablePersonasQueryVariables = Exact<{ [key: string]: never }>;

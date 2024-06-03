@@ -17,17 +17,6 @@ query AdminVirtualContributors {
   }
 }
 
-mutation updateVirtualContributor($virtualContributorData: UpdateVirtualContributorInput!) {
-  updateVirtualContributor(virtualContributorData: $virtualContributorData) {
-    id
-    profile {
-      id
-      displayName
-      description
-    }
-  }
-}
-
 query VirtualContributorAvailablePersonas {
   virtualPersonas {
     id

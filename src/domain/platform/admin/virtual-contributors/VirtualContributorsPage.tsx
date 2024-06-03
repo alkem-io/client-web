@@ -15,11 +15,12 @@ import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
 import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
 import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
 import RouterLink from '../../../../core/ui/link/RouterLink';
+import Loading from '../../../../core/ui/loading/Loading';
 
 const VirtualContributorsPage: FC = () => {
   const { t } = useTranslation();
-  const { data } = useAdminVirtualContributorsQuery();
-  const { data: personasData } = useVirtualContributorAvailablePersonasQuery();
+  const { data, loading: loadingVCs } = useAdminVirtualContributorsQuery();
+  const { data: personasData, loading: loadingPersonas } = useVirtualContributorAvailablePersonasQuery();
   const location = useLocation();
 
   return (
@@ -32,6 +33,7 @@ const VirtualContributorsPage: FC = () => {
       <PageContentBlockSeamless disablePadding>
         <StorageConfigContextProvider locationType="platform">
           <BlockTitle>{t('pages.admin.virtualContributors.virtualPersonas.title')}</BlockTitle>
+          {loadingPersonas && <Loading />}
           {personasData?.virtualPersonas.map(persona => (
             <BadgeCardView
               key={persona.id}
@@ -47,6 +49,7 @@ const VirtualContributorsPage: FC = () => {
             </BadgeCardView>
           ))}
           <BlockTitle>{t('pages.admin.virtualContributors.title')}</BlockTitle>
+          {loadingVCs && <Loading />}
           {data?.virtualContributors.map(virtualContributor => (
             <BadgeCardView
               key={virtualContributor.id}

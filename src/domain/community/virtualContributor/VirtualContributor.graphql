@@ -64,3 +64,14 @@ query BodyOfKnowledgeProfile($spaceId: UUID!) {
     }
   }
 }
+
+mutation UpdateVirtualContributor($virtualContributorData: UpdateVirtualContributorInput!) {
+  updateVirtualContributor(virtualContributorData: $virtualContributorData) {
+    id
+    profile {
+      id
+      displayName
+      description
+    }
+  }
+}

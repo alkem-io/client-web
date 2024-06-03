@@ -14305,6 +14305,60 @@ export function refetchBodyOfKnowledgeProfileQuery(variables: SchemaTypes.BodyOf
   return { query: BodyOfKnowledgeProfileDocument, variables: variables };
 }
 
+export const UpdateVirtualContributorDocument = gql`
+  mutation UpdateVirtualContributor($virtualContributorData: UpdateVirtualContributorInput!) {
+    updateVirtualContributor(virtualContributorData: $virtualContributorData) {
+      id
+      profile {
+        id
+        displayName
+        description
+      }
+    }
+  }
+`;
+export type UpdateVirtualContributorMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateVirtualContributorMutation,
+  SchemaTypes.UpdateVirtualContributorMutationVariables
+>;
+
+/**
+ * __useUpdateVirtualContributorMutation__
+ *
+ * To run a mutation, you first call `useUpdateVirtualContributorMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateVirtualContributorMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateVirtualContributorMutation, { data, loading, error }] = useUpdateVirtualContributorMutation({
+ *   variables: {
+ *      virtualContributorData: // value for 'virtualContributorData'
+ *   },
+ * });
+ */
+export function useUpdateVirtualContributorMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateVirtualContributorMutation,
+    SchemaTypes.UpdateVirtualContributorMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.UpdateVirtualContributorMutation,
+    SchemaTypes.UpdateVirtualContributorMutationVariables
+  >(UpdateVirtualContributorDocument, options);
+}
+
+export type UpdateVirtualContributorMutationHookResult = ReturnType<typeof useUpdateVirtualContributorMutation>;
+export type UpdateVirtualContributorMutationResult =
+  Apollo.MutationResult<SchemaTypes.UpdateVirtualContributorMutation>;
+export type UpdateVirtualContributorMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateVirtualContributorMutation,
+  SchemaTypes.UpdateVirtualContributorMutationVariables
+>;
 export const InnovationHubAvailableSpacesDocument = gql`
   query InnovationHubAvailableSpaces {
     spaces(filter: { visibilities: [ACTIVE, DEMO] }) {
@@ -19540,60 +19594,6 @@ export function refetchAdminVirtualContributorsQuery(variables?: SchemaTypes.Adm
   return { query: AdminVirtualContributorsDocument, variables: variables };
 }
 
-export const UpdateVirtualContributorDocument = gql`
-  mutation updateVirtualContributor($virtualContributorData: UpdateVirtualContributorInput!) {
-    updateVirtualContributor(virtualContributorData: $virtualContributorData) {
-      id
-      profile {
-        id
-        displayName
-        description
-      }
-    }
-  }
-`;
-export type UpdateVirtualContributorMutationFn = Apollo.MutationFunction<
-  SchemaTypes.UpdateVirtualContributorMutation,
-  SchemaTypes.UpdateVirtualContributorMutationVariables
->;
-
-/**
- * __useUpdateVirtualContributorMutation__
- *
- * To run a mutation, you first call `useUpdateVirtualContributorMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateVirtualContributorMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateVirtualContributorMutation, { data, loading, error }] = useUpdateVirtualContributorMutation({
- *   variables: {
- *      virtualContributorData: // value for 'virtualContributorData'
- *   },
- * });
- */
-export function useUpdateVirtualContributorMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.UpdateVirtualContributorMutation,
-    SchemaTypes.UpdateVirtualContributorMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.UpdateVirtualContributorMutation,
-    SchemaTypes.UpdateVirtualContributorMutationVariables
-  >(UpdateVirtualContributorDocument, options);
-}
-
-export type UpdateVirtualContributorMutationHookResult = ReturnType<typeof useUpdateVirtualContributorMutation>;
-export type UpdateVirtualContributorMutationResult =
-  Apollo.MutationResult<SchemaTypes.UpdateVirtualContributorMutation>;
-export type UpdateVirtualContributorMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.UpdateVirtualContributorMutation,
-  SchemaTypes.UpdateVirtualContributorMutationVariables
->;
 export const VirtualContributorAvailablePersonasDocument = gql`
   query VirtualContributorAvailablePersonas {
     virtualPersonas {
