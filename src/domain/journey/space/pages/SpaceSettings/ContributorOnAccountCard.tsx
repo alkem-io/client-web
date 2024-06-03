@@ -22,10 +22,16 @@ interface ContributorOnAccountCardProps {
       };
     };
   };
+  hasDelete?: boolean;
   onDeleteClick: () => void;
 }
 
-const ContributorOnAccountCard: FC<ContributorOnAccountCardProps> = ({ contributor, space, onDeleteClick }) => {
+const ContributorOnAccountCard: FC<ContributorOnAccountCardProps> = ({
+  contributor,
+  space,
+  hasDelete = false,
+  onDeleteClick,
+}) => {
   const spaceData = {
     displayName: contributor?.profile.displayName ?? '',
     url: contributor?.profile.url ? contributor?.profile.url : '',
@@ -41,9 +47,11 @@ const ContributorOnAccountCard: FC<ContributorOnAccountCardProps> = ({ contribut
       sx={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}
     >
       <BasicSpaceCard space={spaceData} />
-      <IconButton onClick={onDeleteClick}>
-        <DeleteIcon />
-      </IconButton>
+      {hasDelete && (
+        <IconButton onClick={onDeleteClick}>
+          <DeleteIcon />
+        </IconButton>
+      )}
     </Gutters>
   );
 };

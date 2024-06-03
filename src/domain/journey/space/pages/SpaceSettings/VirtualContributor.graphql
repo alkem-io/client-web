@@ -23,6 +23,9 @@ query SpaceSubspaces($spaceId: UUID_NAMEID!) {
     }
     account {
       id
+      authorization {
+        myPrivileges
+      }
       virtualContributors {
         id
         nameID

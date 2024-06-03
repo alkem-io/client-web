@@ -17314,6 +17314,9 @@ export const SpaceSubspacesDocument = gql`
       }
       account {
         id
+        authorization {
+          myPrivileges
+        }
         virtualContributors {
           id
           nameID

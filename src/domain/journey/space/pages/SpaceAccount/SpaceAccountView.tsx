@@ -117,6 +117,9 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
     skip: !spaceNameId,
   });
 
+  const accountPrivileges = spaceData?.space?.account.authorization?.myPrivileges ?? [];
+  const canCreateVirtualContributor = accountPrivileges?.includes(AuthorizationPrivilege.CreateVirtualContributor);
+
   const subspaces = useMemo(() => {
     const result =
       spaceData?.space?.subspaces.map(subspace => ({
@@ -230,17 +233,20 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
                 <ContributorOnAccountCard
                   contributor={currentVirtualContributor}
                   space={bokSpaceData}
+                  hasDelete={canCreateVirtualContributor}
                   onDeleteClick={openDeleteVCDialog}
                 />
               )}
-              <Button
-                variant="outlined"
-                startIcon={<ControlPointIcon />}
-                onClick={openCreateVCDialog}
-                disabled={!!currentVirtualContributor || spaceDataLoading}
-              >
-                {t('pages.admin.space.settings.account.vc-create-button')}
-              </Button>
+              {canCreateVirtualContributor && (
+                <Button
+                  variant="outlined"
+                  startIcon={<ControlPointIcon />}
+                  onClick={openCreateVCDialog}
+                  disabled={!!currentVirtualContributor || spaceDataLoading}
+                >
+                  {t('pages.admin.space.settings.account.vc-create-button')}
+                </Button>
+              )}
             </Gutters>
           </PageContentBlock>
           {canDelete && (

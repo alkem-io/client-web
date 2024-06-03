@@ -1599,6 +1599,7 @@ export type MutationKeySpecifier = (
   | 'deleteCallout'
   | 'deleteCalloutTemplate'
   | 'deleteCollaboration'
+  | 'deleteCommunityGuidelinesTemplate'
   | 'deleteDiscussion'
   | 'deleteDocument'
   | 'deleteInnovationFlowTemplate'
@@ -1660,6 +1661,7 @@ export type MutationKeySpecifier = (
   | 'updateCalloutsSortOrder'
   | 'updateCommunityApplicationForm'
   | 'updateCommunityGuidelines'
+  | 'updateCommunityGuidelinesTemplate'
   | 'updateDiscussion'
   | 'updateDocument'
   | 'updateEcosystemModel'
@@ -1757,6 +1759,7 @@ export type MutationFieldPolicy = {
   deleteCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteCalloutTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteCollaboration?: FieldPolicy<any> | FieldReadFunction<any>;
+  deleteCommunityGuidelinesTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteDocument?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteInnovationFlowTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1818,6 +1821,7 @@ export type MutationFieldPolicy = {
   updateCalloutsSortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCommunityApplicationForm?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCommunityGuidelines?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateCommunityGuidelinesTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   updateDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
   updateDocument?: FieldPolicy<any> | FieldReadFunction<any>;
   updateEcosystemModel?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2020,6 +2024,7 @@ export type PlatformLocationsKeySpecifier = (
   | 'releases'
   | 'security'
   | 'support'
+  | 'switchplan'
   | 'terms'
   | 'tips'
   | PlatformLocationsKeySpecifier
@@ -2046,6 +2051,7 @@ export type PlatformLocationsFieldPolicy = {
   releases?: FieldPolicy<any> | FieldReadFunction<any>;
   security?: FieldPolicy<any> | FieldReadFunction<any>;
   support?: FieldPolicy<any> | FieldReadFunction<any>;
+  switchplan?: FieldPolicy<any> | FieldReadFunction<any>;
   terms?: FieldPolicy<any> | FieldReadFunction<any>;
   tips?: FieldPolicy<any> | FieldReadFunction<any>;
 };
