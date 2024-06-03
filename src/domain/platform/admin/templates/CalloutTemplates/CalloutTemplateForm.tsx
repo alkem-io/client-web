@@ -1,8 +1,11 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useMemo } from 'react';
 import { FormikProps } from 'formik';
-import { CreateProfileInput, Visual } from '../../../../../core/apollo/generated/graphql-schema';
+import { CalloutType, CreateProfileInput, Visual } from '../../../../../core/apollo/generated/graphql-schema';
 import TemplateForm from '../TemplateForm';
 import { useTranslation } from 'react-i18next';
+import FormikRadioButtonsGroup from '../../../../../core/ui/forms/radioButtons/FormikRadioButtonsGroup';
+import { RadioButtonOption } from '../../../../../core/ui/forms/radioButtons/RadioButtonsGroup';
+import calloutIcons from '../../../../collaboration/callout/utils/calloutIcons';
 
 export interface CalloutTemplateFormValues {
   displayName: string;
@@ -29,6 +32,14 @@ const validator = {};
 const CalloutTemplateForm = ({ initialValues, visual, onSubmit, actions }: CalloutTemplateFormProps) => {
   const { t } = useTranslation();
 
+  const calloutTypeOptions = useMemo<RadioButtonOption<CalloutType>[]>(() => {
+    return [CalloutType.Post, CalloutType.Whiteboard, CalloutType.LinkCollection, CalloutType.PostCollection, CalloutType.WhiteboardCollection].map((type) => ({
+      value: type,
+      icon: calloutIcons[type],
+      label: t(`components.calloutTypeSelect.label.${type}` as const),
+    }));
+  }, [t]);
+
   return (
     <TemplateForm
       initialValues={initialValues}
@@ -37,7 +48,9 @@ const CalloutTemplateForm = ({ initialValues, visual, onSubmit, actions }: Callo
       actions={actions}
       validator={validator}
       entityTypeName={t('common.callout')}
-    />
+    >
+      <FormikRadioButtonsGroup name="calloutType" options={calloutTypeOptions} />
+    </TemplateForm>
   );
 };
 

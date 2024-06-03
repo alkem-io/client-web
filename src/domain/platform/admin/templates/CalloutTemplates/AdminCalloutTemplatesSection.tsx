@@ -1,12 +1,16 @@
 import { InternalRefetchQueriesInclude } from '@apollo/client/core/types';
 import { useTranslation } from 'react-i18next';
-import { useDeleteCalloutTemplateMutation } from '../../../../../core/apollo/generated/apollo-hooks';
+import {
+  useCreateCalloutTemplateMutation,
+  useDeleteCalloutTemplateMutation
+} from '../../../../../core/apollo/generated/apollo-hooks';
 import { AdminCalloutTemplateFragment } from '../../../../../core/apollo/generated/graphql-schema';
 import { LinkWithState } from '../../../../shared/types/LinkWithState';
 import AdminTemplatesSection from '../AdminTemplatesSection';
 import { InnovationPack } from '../InnovationPacks/InnovationPack';
 import CalloutImportTemplateCard from './CalloutImportTemplateCard';
 import { TemplateType } from '../../../../collaboration/InnovationPack/InnovationPackProfilePage/InnovationPackProfilePage';
+import CreateCalloutTemplateDialog from './CreateCalloutTemplateDialog';
 
 interface AdminCalloutTemplatesSectionProps {
   templateId: string | undefined;
@@ -25,6 +29,7 @@ interface AdminCalloutTemplatesSectionProps {
 const AdminCalloutTemplatesSection = ({ refetchQueries, ...props }: AdminCalloutTemplatesSectionProps) => {
   const { t } = useTranslation();
 
+  const [createCalloutTemplate] = useCreateCalloutTemplateMutation();
   const [deleteCalloutTemplate] = useDeleteCalloutTemplateMutation();
 
   return (
@@ -36,7 +41,7 @@ const AdminCalloutTemplatesSection = ({ refetchQueries, ...props }: AdminCallout
       })}
       templateCardComponent={CalloutImportTemplateCard}
       templateImportCardComponent={CalloutImportTemplateCard}
-      createTemplateDialogComponent={undefined}
+      createTemplateDialogComponent={CreateCalloutTemplateDialog}
       editTemplateDialogComponent={undefined}
       onCreateTemplate={() => Promise.resolve({ data: null, errors: [] })}
       onUpdateTemplate={() => Promise.resolve({ data: null, errors: [] })}
