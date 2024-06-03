@@ -20,10 +20,17 @@ import FormikSelect from '../../../../core/ui/forms/FormikSelect';
 import { useBackToStaticPath } from '../../../../core/routing/useBackToPath';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
+import { TagsetSegment } from '../components/Common/TagsetSegment';
+import { Tagset, TagsetType } from '../../../../core/apollo/generated/graphql-schema';
+import { DEFAULT_TAGSET } from '../../../common/tags/tagset.constants';
+import { SMALL_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
+import { BodyOfKnowledgeType } from '../../../../core/apollo/generated/graphql-schema';
 
 interface NewVirtualContributorFormValues {
   displayName: string;
   virtualPersonaID: string;
+  tagline: string;
+  tagsets: Tagset[];
 }
 
 interface NewVirtualContributorFormProps {
@@ -34,7 +41,7 @@ const NewVirtualContributorForm = ({ parentPagePath }: NewVirtualContributorForm
   const { t } = useTranslation();
   const navigateBack = useBackToStaticPath(parentPagePath);
   const notify = useNotification();
-  const initialValues = { displayName: '', virtualPersonaID: '' };
+  const initialValues = { displayName: '', virtualPersonaID: '', tagline: '', tagsets: [] };
   const { data: virtualPersonas } = useVirtualContributorAvailablePersonasQuery();
   const [createVirtualContributor, { loading }] = useCreateVirtualContributorMutation({
     refetchQueries: [refetchAdminVirtualContributorsQuery()],
@@ -45,8 +52,9 @@ const NewVirtualContributorForm = ({ parentPagePath }: NewVirtualContributorForm
   };
 
   const [handleSubmit] = useLoadingState(async (values: NewVirtualContributorFormValues) => {
-    const { displayName, virtualPersonaID } = values;
+    const { displayName, virtualPersonaID, tagline, tagsets } = values;
 
+    // TODO: fix accountID: '' & bodyOfKnowledgeID: '' in order to work
     await createVirtualContributor({
       variables: {
         virtualContributorData: {
@@ -54,7 +62,17 @@ const NewVirtualContributorForm = ({ parentPagePath }: NewVirtualContributorForm
           nameID: `V-P-${uuidv4()}`.slice(0, 25).toLocaleLowerCase(),
           profileData: {
             displayName,
+            tagline,
+            tagsets: [
+              {
+                ...tagsets[0],
+                name: DEFAULT_TAGSET,
+              },
+            ],
           },
+          accountID: '',
+          bodyOfKnowledgeID: '',
+          bodyOfKnowledgeType: BodyOfKnowledgeType.Space,
         },
       },
     });
@@ -72,6 +90,16 @@ const NewVirtualContributorForm = ({ parentPagePath }: NewVirtualContributorForm
     [virtualPersonas]
   );
 
+  const tagsets = [
+    {
+      id: '',
+      name: DEFAULT_TAGSET,
+      tags: [],
+      allowedValues: [],
+      type: TagsetType.Freeform,
+    },
+  ] as Tagset[];
+
   return (
     <AdminLayout currentTab={AdminSection.VirtualContributors}>
       <PageContentBlock>
@@ -81,6 +109,13 @@ const NewVirtualContributorForm = ({ parentPagePath }: NewVirtualContributorForm
             <Gutters disablePadding>
               <FormikInputField title={t('common.title')} name="displayName" />
               <FormikSelect title="Select Virtual Persona" name="virtualPersonaID" values={personas ?? []} />
+              <FormikInputField
+                name={'tagline'}
+                title={t('context.space.tagline.title')}
+                rows={3}
+                maxLength={SMALL_TEXT_LENGTH}
+              />
+              <TagsetSegment title={t('common.tags')} tagsets={tagsets} />
               <Actions>
                 <Button variant="text" onClick={onCancel}>
                   {t('buttons.cancel')}

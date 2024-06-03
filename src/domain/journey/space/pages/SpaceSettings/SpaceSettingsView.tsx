@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import scrollToTop from '../../../../../core/ui/utils/scrollToTop';
 import {
   refetchAdminSpaceChallengesPageQuery,
-  refetchAdminSpacesListQuery,
   useDeleteSpaceMutation,
   useSpaceHostQuery,
   useSpacePrivilegesQuery,
@@ -33,7 +32,6 @@ import { JourneyTypeName } from '../../../JourneyTypeName';
 import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
 import { DeleteIcon } from './icon/DeleteIcon';
 import SpaceProfileDeleteDialog from './SpaceProfileDeleteDialog';
-import { ROUTE_HOME } from '../../../../platform/routes/constants';
 import { useSubSpace } from '../../../subspace/hooks/useChallenge';
 import { useSpace } from '../../SpaceContext/useSpace';
 
@@ -69,34 +67,30 @@ export const SpaceSettingsView: FC<SpaceSettingsViewProps> = ({ journeyId, journ
   const isSubspace = journeyTypeName !== 'space';
 
   const { subspaceId } = useSubSpace();
-  const { spaceNameId, spaceId } = useSpace();
+  const { spaceNameId } = useSpace();
 
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const openDialog = () => setOpenDeleteDialog(true);
   const closeDialog = () => setOpenDeleteDialog(false);
 
-  const translatedEntity = t(`common.${isSubspace ? 'subspace' : 'space'}` as const);
-
   const [deleteSpace, { loading: deletingSpace }] = useDeleteSpaceMutation({
-    refetchQueries: isSubspace
-      ? [
-          refetchAdminSpaceChallengesPageQuery({
-            spaceId: spaceNameId,
-          }),
-        ]
-      : [refetchAdminSpacesListQuery()],
+    refetchQueries: [
+      refetchAdminSpaceChallengesPageQuery({
+        spaceId: spaceNameId,
+      }),
+    ],
     awaitRefetchQueries: true,
     onCompleted: data => {
       notify(t('pages.admin.space.notifications.space-removed', { name: data.deleteSpace.nameID }), 'success');
-      navigate(`${isSubspace ? '/' + spaceNameId : ROUTE_HOME}`, { replace: true });
+      navigate(`/${spaceNameId}`, { replace: true });
     },
   });
 
   const { data } = useSpacePrivilegesQuery({
     variables: {
-      spaceId: subspaceId || spaceId,
+      spaceId: subspaceId,
     },
-    skip: !spaceId && !subspaceId,
+    skip: !subspaceId,
   });
 
   const privileges = data?.lookup.space?.authorization?.myPrivileges ?? [];
@@ -378,21 +372,21 @@ export const SpaceSettingsView: FC<SpaceSettingsViewProps> = ({ journeyId, journ
             )}
           </PageContentBlock>
 
-          {canDelete && (
+          {isSubspace && canDelete && (
             <PageContentBlock sx={{ borderColor: errorColor }}>
               <PageContentBlockHeader sx={{ color: errorColor }} title={t('components.deleteSpace.title')} />
               <Box display="flex" gap={1} alignItems="center" sx={{ cursor: 'pointer' }} onClick={openDialog}>
                 <DeleteIcon />
-                <Caption>{t('components.deleteSpace.description', { entity: translatedEntity })}</Caption>
+                <Caption>{t('components.deleteSpace.description', { entity: t('common.subspace') })}</Caption>
               </Box>
             </PageContentBlock>
           )}
           {openDeleteDialog && (
             <SpaceProfileDeleteDialog
-              entity={translatedEntity}
+              entity={t('common.subspace')}
               open={openDeleteDialog}
               onClose={closeDialog}
-              onDelete={() => handleDelete(isSubspace ? subspaceId : journeyId)}
+              onDelete={() => handleDelete(subspaceId)}
               submitting={deletingSpace}
             />
           )}

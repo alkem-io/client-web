@@ -36,6 +36,8 @@ export type Apm = {
 
 export type Account = {
   __typename?: 'Account';
+  /** The "highest" subscription active for this Account. */
+  activeSubscription?: Maybe<AccountSubscription>;
   /** The Agent representing this Account. */
   agent: Agent;
   /** The authorization rules for the entity */
@@ -52,11 +54,23 @@ export type Account = {
   license: License;
   /** The ID for the root space for the Account . */
   spaceID: Scalars['String'];
+  /** The subscriptions active for this Account. */
+  subscriptions: Array<AccountSubscription>;
+  /** The virtual contributors for this Account. */
+  virtualContributors: Array<VirtualContributor>;
 };
 
 export type AccountAuthorizationResetInput = {
   /** The identifier of the Account whose Authorization Policy should be reset. */
   accountID: Scalars['UUID_NAMEID'];
+};
+
+export type AccountSubscription = {
+  __typename?: 'AccountSubscription';
+  /** The expiry date of this subscription, null if it does never expire. */
+  expires?: Maybe<Scalars['DateTime']>;
+  /** The name of the Subscription. */
+  name: LicenseCredential;
 };
 
 export type ActivityCreatedSubscriptionInput = {
@@ -724,6 +738,7 @@ export enum AuthorizationPrivilege {
   CreatePost = 'CREATE_POST',
   CreateSpace = 'CREATE_SPACE',
   CreateSubspace = 'CREATE_SUBSPACE',
+  CreateVirtualContributor = 'CREATE_VIRTUAL_CONTRIBUTOR',
   CreateWhiteboard = 'CREATE_WHITEBOARD',
   CreateWhiteboardRt = 'CREATE_WHITEBOARD_RT',
   Delete = 'DELETE',
@@ -744,6 +759,11 @@ export enum AuthorizationPrivilege {
   UpdateContent = 'UPDATE_CONTENT',
   UpdateInnovationFlow = 'UPDATE_INNOVATION_FLOW',
   UpdateWhiteboard = 'UPDATE_WHITEBOARD',
+}
+
+export enum BodyOfKnowledgeType {
+  Other = 'OTHER',
+  Space = 'SPACE',
 }
 
 export type Calendar = {
@@ -1402,8 +1422,8 @@ export type ConvertSubsubspaceToSubspaceInput = {
 export type CreateAccountInput = {
   /** The host Organization or User for the account */
   hostID: Scalars['UUID_NAMEID'];
-  /** The plan selected for the account */
-  planID?: InputMaybe<Scalars['UUID']>;
+  /** The license plan selected for the account */
+  licensePlanID?: InputMaybe<Scalars['UUID']>;
   /** The root Space to be created. */
   spaceData: CreateSpaceInput;
 };
@@ -1718,11 +1738,14 @@ export type CreateUserInput = {
   profileData: CreateProfileInput;
 };
 
-export type CreateVirtualContributorInput = {
+export type CreateVirtualContributorOnAccountInput = {
+  accountID: Scalars['UUID'];
+  bodyOfKnowledgeID?: InputMaybe<Scalars['UUID']>;
+  bodyOfKnowledgeType?: InputMaybe<BodyOfKnowledgeType>;
   /** A readable identifier, unique within the containing scope. */
   nameID: Scalars['NameID'];
   profileData: CreateProfileInput;
-  virtualPersonaID: Scalars['UUID'];
+  virtualPersonaID?: InputMaybe<Scalars['UUID']>;
 };
 
 export type CreateVirtualPersonaInput = {
@@ -1730,7 +1753,7 @@ export type CreateVirtualPersonaInput = {
   /** A readable identifier, unique within the containing scope. */
   nameID: Scalars['NameID'];
   profileData: CreateProfileInput;
-  prompt: Scalars['JSON'];
+  prompt?: InputMaybe<Scalars['JSON']>;
 };
 
 export type CreateWhiteboardInput = {
@@ -1760,7 +1783,7 @@ export type Credential = {
   /** The User issuing the credential */
   issuer?: Maybe<Scalars['UUID']>;
   resourceID: Scalars['String'];
-  type: AuthorizationCredential;
+  type: CredentialType;
 };
 
 export type CredentialDefinition = {
@@ -1787,6 +1810,31 @@ export type CredentialMetadataOutput = {
   uniqueType: Scalars['String'];
 };
 
+export enum CredentialType {
+  AccountHost = 'ACCOUNT_HOST',
+  BetaTester = 'BETA_TESTER',
+  GlobalAdmin = 'GLOBAL_ADMIN',
+  GlobalCommunityRead = 'GLOBAL_COMMUNITY_READ',
+  GlobalLicenseManager = 'GLOBAL_LICENSE_MANAGER',
+  GlobalRegistered = 'GLOBAL_REGISTERED',
+  GlobalSpacesReader = 'GLOBAL_SPACES_READER',
+  GlobalSupport = 'GLOBAL_SUPPORT',
+  InnovationPackProvider = 'INNOVATION_PACK_PROVIDER',
+  LicenseSpaceEnterprise = 'LICENSE_SPACE_ENTERPRISE',
+  LicenseSpaceFree = 'LICENSE_SPACE_FREE',
+  LicenseSpacePlus = 'LICENSE_SPACE_PLUS',
+  LicenseSpacePremium = 'LICENSE_SPACE_PREMIUM',
+  OrganizationAdmin = 'ORGANIZATION_ADMIN',
+  OrganizationAssociate = 'ORGANIZATION_ASSOCIATE',
+  OrganizationOwner = 'ORGANIZATION_OWNER',
+  SpaceAdmin = 'SPACE_ADMIN',
+  SpaceLead = 'SPACE_LEAD',
+  SpaceMember = 'SPACE_MEMBER',
+  SpaceSubspaceAdmin = 'SPACE_SUBSPACE_ADMIN',
+  UserGroupMember = 'USER_GROUP_MEMBER',
+  UserSelfManagement = 'USER_SELF_MANAGEMENT',
+}
+
 export type DeleteActorGroupInput = {
   ID: Scalars['UUID'];
 };
@@ -1812,6 +1860,10 @@ export type DeleteCalloutTemplateInput = {
 };
 
 export type DeleteCollaborationInput = {
+  ID: Scalars['UUID'];
+};
+
+export type DeleteCommunityGuidelinesTemplateInput = {
   ID: Scalars['UUID'];
 };
 
@@ -2291,6 +2343,13 @@ export type License = {
   visibility: SpaceVisibility;
 };
 
+export enum LicenseCredential {
+  LicenseSpaceEnterprise = 'LICENSE_SPACE_ENTERPRISE',
+  LicenseSpaceFree = 'LICENSE_SPACE_FREE',
+  LicenseSpacePlus = 'LICENSE_SPACE_PLUS',
+  LicenseSpacePremium = 'LICENSE_SPACE_PREMIUM',
+}
+
 export type LicenseFeatureFlag = {
   __typename?: 'LicenseFeatureFlag';
   /** Is this feature flag enabled? */
@@ -2313,6 +2372,8 @@ export type LicensePlan = {
   id: Scalars['UUID'];
   /** Is this plan free? */
   isFree: Scalars['Boolean'];
+  /** The credential to represent this plan */
+  licenseCredential: LicenseCredential;
   /** The name of the License Plan */
   name: Scalars['String'];
   /** The price per month of this plan. */
@@ -2354,6 +2415,8 @@ export type Licensing = {
   __typename?: 'Licensing';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
+  /** The base License Plan assigned to all Accounts in use on the platform. */
+  basePlan: LicensePlan;
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** The License Plans in use on the platform. */
@@ -2659,10 +2722,6 @@ export type Mutation = {
   authorizationPolicyResetOnPlatform: Platform;
   /** Reset the Authorization policy on the specified User. */
   authorizationPolicyResetOnUser: User;
-  /** Reset the Authorization Policy on the specified VirtualContributor. */
-  authorizationPolicyResetOnVirtualContributor: VirtualContributor;
-  /** Reset the Authorization Policy on the specified VirtualPersona. */
-  authorizationPolicyResetOnVirtualPersona: VirtualPersona;
   /** Reset the specified Authorization Policy to global admin privileges */
   authorizationPolicyResetToGlobalAdminsAccess: Authorization;
   /** Generate Alkemio user credential offer */
@@ -2721,7 +2780,7 @@ export type Mutation = {
   createUser: User;
   /** Creates a new User profile on the platform for a user that has a valid Authentication session. */
   createUserNewRegistration: User;
-  /** Creates a new VirtualContributor on the platform. */
+  /** Creates a new VirtualContributor on an Account. */
   createVirtualContributor: VirtualContributor;
   /** Creates a new VirtualPersona on the platform. */
   createVirtualPersona: VirtualPersona;
@@ -2739,6 +2798,8 @@ export type Mutation = {
   deleteCalloutTemplate: CalloutTemplate;
   /** Delete Collaboration. */
   deleteCollaboration: Collaboration;
+  /** Deletes the specified CommunityGuidelines Template. */
+  deleteCommunityGuidelinesTemplate: CommunityGuidelinesTemplate;
   /** Deletes the specified Discussion. */
   deleteDiscussion: Discussion;
   /** Deletes the specified Document. */
@@ -2825,8 +2886,6 @@ export type Mutation = {
   removeUserFromGroup: UserGroup;
   /** Resets the interaction with the chat engine. */
   resetChatGuidance: Scalars['Boolean'];
-  /** Resets the interaction with the chat engine. */
-  resetVirtualContributor: Scalars['Boolean'];
   /** Removes an authorization credential from an Organization. */
   revokeCredentialFromOrganization: Organization;
   /** Removes an authorization credential from a User. */
@@ -2863,6 +2922,8 @@ export type Mutation = {
   updateCommunityApplicationForm: Community;
   /** Updates the CommunityGuidelines. */
   updateCommunityGuidelines: CommunityGuidelines;
+  /** Updates the specified CommunityGuidelinesTemplate. */
+  updateCommunityGuidelinesTemplate: CommunityGuidelinesTemplate;
   /** Updates the specified Discussion. */
   updateDiscussion: Discussion;
   /** Updates the specified Document. */
@@ -2921,6 +2982,8 @@ export type Mutation = {
   updateUserPlatformSettings: User;
   /** Updates the specified VirtualContributor. */
   updateVirtualContributor: VirtualContributor;
+  /** Update VirtualContributor Platform Settings. */
+  updateVirtualContributorPlatformSettings: VirtualContributor;
   /** Updates the specified VirtualPersona. */
   updateVirtualPersona: VirtualPersona;
   /** Updates the image URI for the specified Visual. */
@@ -2995,14 +3058,6 @@ export type MutationAuthorizationPolicyResetOnOrganizationArgs = {
 
 export type MutationAuthorizationPolicyResetOnUserArgs = {
   authorizationResetData: UserAuthorizationResetInput;
-};
-
-export type MutationAuthorizationPolicyResetOnVirtualContributorArgs = {
-  authorizationResetData: VirtualContributorAuthorizationResetInput;
-};
-
-export type MutationAuthorizationPolicyResetOnVirtualPersonaArgs = {
-  authorizationResetData: VirtualPersonaAuthorizationResetInput;
 };
 
 export type MutationAuthorizationPolicyResetToGlobalAdminsAccessArgs = {
@@ -3114,7 +3169,7 @@ export type MutationCreateUserArgs = {
 };
 
 export type MutationCreateVirtualContributorArgs = {
-  virtualContributorData: CreateVirtualContributorInput;
+  virtualContributorData: CreateVirtualContributorOnAccountInput;
 };
 
 export type MutationCreateVirtualPersonaArgs = {
@@ -3147,6 +3202,10 @@ export type MutationDeleteCalloutTemplateArgs = {
 
 export type MutationDeleteCollaborationArgs = {
   deleteData: DeleteCollaborationInput;
+};
+
+export type MutationDeleteCommunityGuidelinesTemplateArgs = {
+  deleteData: DeleteCommunityGuidelinesTemplateInput;
 };
 
 export type MutationDeleteDiscussionArgs = {
@@ -3385,6 +3444,10 @@ export type MutationUpdateCommunityGuidelinesArgs = {
   communityGuidelinesData: UpdateCommunityGuidelinesInput;
 };
 
+export type MutationUpdateCommunityGuidelinesTemplateArgs = {
+  communityGuidelinesTemplateInput: UpdateCommunityGuidelinesTemplateInput;
+};
+
 export type MutationUpdateDiscussionArgs = {
   updateData: UpdateDiscussionInput;
 };
@@ -3499,6 +3562,10 @@ export type MutationUpdateUserPlatformSettingsArgs = {
 
 export type MutationUpdateVirtualContributorArgs = {
   virtualContributorData: UpdateVirtualContributorInput;
+};
+
+export type MutationUpdateVirtualContributorPlatformSettingsArgs = {
+  updateData: UpdateVirtualContributorPlatformSettingsInput;
 };
 
 export type MutationUpdateVirtualPersonaArgs = {
@@ -3786,6 +3853,8 @@ export type PlatformLocations = {
   security: Scalars['String'];
   /** URL where users can get support for the platform */
   support: Scalars['String'];
+  /** URL for the link Contact in the HomePage to switch between plans */
+  switchplan: Scalars['String'];
   /** URL to the terms of usage for the platform */
   terms: Scalars['String'];
   /** URL where users can get tips and tricks */
@@ -5139,6 +5208,19 @@ export type UpdateCommunityGuidelinesInput = {
   profile: UpdateProfileInput;
 };
 
+export type UpdateCommunityGuidelinesOfTemplateInput = {
+  /** The Profile for this community guidelines. */
+  profile: UpdateProfileInput;
+};
+
+export type UpdateCommunityGuidelinesTemplateInput = {
+  ID: Scalars['UUID'];
+  /** The Community guidelines to associate with this template. */
+  communityGuidelines?: InputMaybe<UpdateCommunityGuidelinesOfTemplateInput>;
+  /** The Profile of the Template. */
+  profile?: InputMaybe<UpdateProfileInput>;
+};
+
 export type UpdateContextInput = {
   impact?: InputMaybe<Scalars['Markdown']>;
   vision?: InputMaybe<Scalars['Markdown']>;
@@ -5477,6 +5559,12 @@ export type UpdateVirtualContributorInput = {
   profileData?: InputMaybe<UpdateProfileInput>;
 };
 
+export type UpdateVirtualContributorPlatformSettingsInput = {
+  ID: Scalars['UUID'];
+  /** An Account ID associated with the VirtualContributor */
+  accountID: Scalars['UUID'];
+};
+
 export type UpdateVirtualPersonaInput = {
   ID: Scalars['UUID'];
   engine: VirtualContributorEngine;
@@ -5484,7 +5572,7 @@ export type UpdateVirtualPersonaInput = {
   nameID?: InputMaybe<Scalars['NameID']>;
   /** The Profile of this entity. */
   profileData?: InputMaybe<UpdateProfileInput>;
-  prompt: Scalars['JSON'];
+  prompt?: InputMaybe<Scalars['JSON']>;
 };
 
 export type UpdateVisualInput = {
@@ -5657,10 +5745,16 @@ export type VerifiedCredentialClaim = {
 
 export type VirtualContributor = Contributor & {
   __typename?: 'VirtualContributor';
+  /** The account under which the virtual contributor was created */
+  account?: Maybe<Account>;
   /** The Agent representing this User. */
   agent: Agent;
   /** The authorization rules for the Contributor */
   authorization?: Maybe<Authorization>;
+  /** The body of knowledge ID used for the Virtual Contributor */
+  bodyOfKnowledgeID?: Maybe<Scalars['UUID']>;
+  /** The body of knowledge type used for the Virtual Contributor */
+  bodyOfKnowledgeType?: Maybe<BodyOfKnowledgeType>;
   /** The ID of the Contributor */
   id: Scalars['UUID'];
   /** A name identifier of the Contributor, unique within a given scope. */
@@ -5673,13 +5767,7 @@ export type VirtualContributor = Contributor & {
   virtualPersona: VirtualPersona;
 };
 
-export type VirtualContributorAuthorizationResetInput = {
-  /** The identifier of the Virtual Contributor whose Authorization Policy should be reset. */
-  virtualContributorID: Scalars['UUID'];
-};
-
 export enum VirtualContributorEngine {
-  AlkemioWelcome = 'ALKEMIO_WELCOME',
   CommunityManager = 'COMMUNITY_MANAGER',
   Expert = 'EXPERT',
   Guidance = 'GUIDANCE',
@@ -5689,22 +5777,25 @@ export type VirtualPersona = {
   __typename?: 'VirtualPersona';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
+  /** The required data access by the Virtual Persona */
+  dataAccessMode: VirtualPersonaAccessMode;
   /** The Virtual Persona Engine being used by this virtual persona. */
-  engine?: Maybe<VirtualContributorEngine>;
+  engine: VirtualContributorEngine;
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** A name identifier of the entity, unique within a given scope. */
   nameID: Scalars['NameID'];
-  /** The Profile for this VirtualPersona. */
+  /** The Profile for the VirtualPersona. */
   profile: Profile;
   /** The prompt used by this Virtual Persona */
   prompt: Scalars['String'];
 };
 
-export type VirtualPersonaAuthorizationResetInput = {
-  /** The identifier of the Virtual Persona whose Authorization Policy should be reset. */
-  virtualPersonaID: Scalars['UUID_NAMEID_EMAIL'];
-};
+export enum VirtualPersonaAccessMode {
+  None = 'NONE',
+  SpaceProfile = 'SPACE_PROFILE',
+  SpaceProfileAndContents = 'SPACE_PROFILE_AND_CONTENTS',
+}
 
 export type VirtualPersonaQuestionInput = {
   /** The question that is being asked. */
@@ -5947,7 +6038,7 @@ export type UserAgentSsiFragment = {
     id: string;
     did?: string | undefined;
     credentials?:
-      | Array<{ __typename?: 'Credential'; id: string; resourceID: string; type: AuthorizationCredential }>
+      | Array<{ __typename?: 'Credential'; id: string; resourceID: string; type: CredentialType }>
       | undefined;
     verifiedCredentials?:
       | Array<{
@@ -5980,7 +6071,7 @@ export type UserSsiQuery = {
             id: string;
             did?: string | undefined;
             credentials?:
-              | Array<{ __typename?: 'Credential'; id: string; resourceID: string; type: AuthorizationCredential }>
+              | Array<{ __typename?: 'Credential'; id: string; resourceID: string; type: CredentialType }>
               | undefined;
             verifiedCredentials?:
               | Array<{
@@ -14332,7 +14423,7 @@ export type CommunityPageMembersFragment = {
     __typename?: 'Agent';
     id: string;
     credentials?:
-      | Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
+      | Array<{ __typename?: 'Credential'; id: string; type: CredentialType; resourceID: string }>
       | undefined;
   };
   profile: {
@@ -14878,16 +14969,45 @@ export type AvailableUserFragment = {
   profile: { __typename?: 'Profile'; id: string; displayName: string };
 };
 
-export type AvailableVirtualContributorsQueryVariables = Exact<{ [key: string]: never }>;
+export type AvailableVirtualContributorsQueryVariables = Exact<{
+  filterSpace?: InputMaybe<Scalars['Boolean']>;
+  filterSpaceId?: InputMaybe<Scalars['UUID']>;
+}>;
 
 export type AvailableVirtualContributorsQuery = {
   __typename?: 'Query';
-  virtualContributors: Array<{
+  lookup?: {
+    __typename?: 'LookupQueryResults';
+    space?:
+      | {
+          __typename?: 'Space';
+          id: string;
+          community: {
+            __typename?: 'Community';
+            id: string;
+            virtualContributorsInRole: Array<{
+              __typename?: 'VirtualContributor';
+              id: string;
+              nameID: string;
+              profile: { __typename?: 'Profile'; id: string; displayName: string };
+            }>;
+          };
+        }
+      | undefined;
+  };
+  virtualContributors?: Array<{
     __typename?: 'VirtualContributor';
     id: string;
     nameID: string;
     profile: { __typename?: 'Profile'; id: string; displayName: string };
   }>;
+};
+
+export type VirtualContributorNameFragment = {
+  __typename?: 'VirtualContributor';
+  id: string;
+  nameID: string;
+  profile: { __typename?: 'Profile'; id: string; displayName: string };
 };
 
 export type AddVirtualContributorToCommunityMutationVariables = Exact<{
@@ -15095,7 +15215,7 @@ export type ContributorsPageUsersQuery = {
         __typename?: 'Agent';
         id: string;
         credentials?:
-          | Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
+          | Array<{ __typename?: 'Credential'; id: string; type: CredentialType; resourceID: string }>
           | undefined;
       };
       userProfile: {
@@ -15175,7 +15295,7 @@ export type UserContributorPaginatedFragment = {
       __typename?: 'Agent';
       id: string;
       credentials?:
-        | Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
+        | Array<{ __typename?: 'Credential'; id: string; type: CredentialType; resourceID: string }>
         | undefined;
     };
     userProfile: {
@@ -15213,7 +15333,7 @@ export type UserContributorFragment = {
     __typename?: 'Agent';
     id: string;
     credentials?:
-      | Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
+      | Array<{ __typename?: 'Credential'; id: string; type: CredentialType; resourceID: string }>
       | undefined;
   };
   userProfile: {
@@ -16342,7 +16462,7 @@ export type UserAgentFragment = {
     id: string;
     did?: string | undefined;
     credentials?:
-      | Array<{ __typename?: 'Credential'; id: string; resourceID: string; type: AuthorizationCredential }>
+      | Array<{ __typename?: 'Credential'; id: string; resourceID: string; type: CredentialType }>
       | undefined;
   };
 };
@@ -16359,7 +16479,7 @@ export type UserDetailsFragment = {
   accountUpn: string;
   agent: {
     __typename?: 'Agent';
-    credentials?: Array<{ __typename?: 'Credential'; type: AuthorizationCredential; resourceID: string }> | undefined;
+    credentials?: Array<{ __typename?: 'Credential'; type: CredentialType; resourceID: string }> | undefined;
   };
   profile: {
     __typename?: 'Profile';
@@ -16472,7 +16592,7 @@ export type CreateUserMutation = {
     accountUpn: string;
     agent: {
       __typename?: 'Agent';
-      credentials?: Array<{ __typename?: 'Credential'; type: AuthorizationCredential; resourceID: string }> | undefined;
+      credentials?: Array<{ __typename?: 'Credential'; type: CredentialType; resourceID: string }> | undefined;
     };
     profile: {
       __typename?: 'Profile';
@@ -16529,7 +16649,7 @@ export type CreateUserNewRegistrationMutation = {
     accountUpn: string;
     agent: {
       __typename?: 'Agent';
-      credentials?: Array<{ __typename?: 'Credential'; type: AuthorizationCredential; resourceID: string }> | undefined;
+      credentials?: Array<{ __typename?: 'Credential'; type: CredentialType; resourceID: string }> | undefined;
     };
     profile: {
       __typename?: 'Profile';
@@ -16664,7 +16784,7 @@ export type UpdateUserMutation = {
     accountUpn: string;
     agent: {
       __typename?: 'Agent';
-      credentials?: Array<{ __typename?: 'Credential'; type: AuthorizationCredential; resourceID: string }> | undefined;
+      credentials?: Array<{ __typename?: 'Credential'; type: CredentialType; resourceID: string }> | undefined;
     };
     profile: {
       __typename?: 'Profile';
@@ -16735,7 +16855,7 @@ export type UserQuery = {
       id: string;
       did?: string | undefined;
       credentials?:
-        | Array<{ __typename?: 'Credential'; type: AuthorizationCredential; resourceID: string; id: string }>
+        | Array<{ __typename?: 'Credential'; type: CredentialType; resourceID: string; id: string }>
         | undefined;
     };
     profile: {
@@ -16825,7 +16945,7 @@ export type UserProfileQuery = {
       id: string;
       did?: string | undefined;
       credentials?:
-        | Array<{ __typename?: 'Credential'; type: AuthorizationCredential; resourceID: string; id: string }>
+        | Array<{ __typename?: 'Credential'; type: CredentialType; resourceID: string; id: string }>
         | undefined;
     };
     profile: {
@@ -16960,7 +17080,7 @@ export type UserProviderQuery = {
             id: string;
             did?: string | undefined;
             credentials?:
-              | Array<{ __typename?: 'Credential'; type: AuthorizationCredential; resourceID: string; id: string }>
+              | Array<{ __typename?: 'Credential'; type: CredentialType; resourceID: string; id: string }>
               | undefined;
           };
           profile: {
@@ -17273,6 +17393,127 @@ export type UserOrganizationIdsQuery = {
   rolesUser: {
     __typename?: 'ContributorRoles';
     organizations: Array<{ __typename?: 'RolesResultOrganization'; id: string }>;
+  };
+};
+
+export type VirtualContributorQueryVariables = Exact<{
+  id: Scalars['UUID_NAMEID'];
+}>;
+
+export type VirtualContributorQuery = {
+  __typename?: 'Query';
+  virtualContributor: {
+    __typename?: 'VirtualContributor';
+    id: string;
+    nameID: string;
+    bodyOfKnowledgeID?: string | undefined;
+    authorization?:
+      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+      | undefined;
+    account?:
+      | {
+          __typename?: 'Account';
+          id: string;
+          spaceID: string;
+          host?:
+            | {
+                __typename?: 'Organization';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  tagline: string;
+                  avatar?: { __typename?: 'Visual'; uri: string } | undefined;
+                  location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                };
+              }
+            | {
+                __typename?: 'User';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  tagline: string;
+                  avatar?: { __typename?: 'Visual'; uri: string } | undefined;
+                  location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                };
+              }
+            | {
+                __typename?: 'VirtualContributor';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  tagline: string;
+                  avatar?: { __typename?: 'Visual'; uri: string } | undefined;
+                  location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                };
+              }
+            | undefined;
+        }
+      | undefined;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      description?: string | undefined;
+      tagline: string;
+      url: string;
+      tagsets?:
+        | Array<{
+            __typename?: 'Tagset';
+            id: string;
+            name: string;
+            tags: Array<string>;
+            allowedValues: Array<string>;
+            type: TagsetType;
+          }>
+        | undefined;
+      avatar?:
+        | {
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: string;
+            allowedTypes: Array<string>;
+            aspectRatio: number;
+            maxHeight: number;
+            maxWidth: number;
+            minHeight: number;
+            minWidth: number;
+            alternativeText?: string | undefined;
+          }
+        | undefined;
+    };
+  };
+};
+
+export type BodyOfKnowledgeProfileQueryVariables = Exact<{
+  spaceId: Scalars['UUID'];
+}>;
+
+export type BodyOfKnowledgeProfileQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    space?:
+      | {
+          __typename?: 'Space';
+          id: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            tagline: string;
+            url: string;
+            avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            cardBanner?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+          };
+        }
+      | undefined;
   };
 };
 
@@ -20209,7 +20450,7 @@ export type SubspacePageFragment = {
 export type CreateNewSpaceMutationVariables = Exact<{
   hostId: Scalars['UUID_NAMEID'];
   spaceData: CreateSpaceInput;
-  planId?: InputMaybe<Scalars['UUID']>;
+  licensePlanId?: InputMaybe<Scalars['UUID']>;
 }>;
 
 export type CreateNewSpaceMutation = {
@@ -20811,6 +21052,98 @@ export type BannerInnovationHubQuery = {
   };
 };
 
+export type SpaceAccountQueryVariables = Exact<{
+  spaceId: Scalars['UUID'];
+}>;
+
+export type SpaceAccountQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    space?:
+      | {
+          __typename?: 'Space';
+          id: string;
+          profile: { __typename?: 'Profile'; id: string; url: string };
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
+          account: {
+            __typename?: 'Account';
+            id: string;
+            host?:
+              | {
+                  __typename?: 'Organization';
+                  id: string;
+                  nameID: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    url: string;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                    location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                  };
+                }
+              | {
+                  __typename?: 'User';
+                  id: string;
+                  nameID: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    url: string;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                    location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                  };
+                }
+              | {
+                  __typename?: 'VirtualContributor';
+                  id: string;
+                  nameID: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    url: string;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                    location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                  };
+                }
+              | undefined;
+            license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
+            activeSubscription?:
+              | { __typename?: 'AccountSubscription'; name: LicenseCredential; expires?: Date | undefined }
+              | undefined;
+          };
+        }
+      | undefined;
+  };
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    licensing: {
+      __typename?: 'Licensing';
+      id: string;
+      plans: Array<{
+        __typename?: 'LicensePlan';
+        id: string;
+        name: string;
+        enabled: boolean;
+        sortOrder: number;
+        isFree: boolean;
+        pricePerMonth?: number | undefined;
+        licenseCredential: LicenseCredential;
+      }>;
+    };
+    configuration: {
+      __typename?: 'Config';
+      locations: { __typename?: 'PlatformLocations'; support: string; switchplan: string };
+    };
+  };
+};
+
 export type AdminSpaceChallengesPageQueryVariables = Exact<{
   spaceId: Scalars['UUID_NAMEID'];
 }>;
@@ -21154,6 +21487,70 @@ export type UpdateSpaceSettingsMutation = {
         inheritMembershipRights: boolean;
       };
     };
+  };
+};
+
+export type CreateVirtualContributorOnAccountMutationVariables = Exact<{
+  virtualContributorData: CreateVirtualContributorOnAccountInput;
+}>;
+
+export type CreateVirtualContributorOnAccountMutation = {
+  __typename?: 'Mutation';
+  createVirtualContributor: {
+    __typename?: 'VirtualContributor';
+    id: string;
+    profile: { __typename?: 'Profile'; id: string; url: string };
+  };
+};
+
+export type DeleteVirtualContributorOnAccountMutationVariables = Exact<{
+  virtualContributorData: DeleteVirtualContributorInput;
+}>;
+
+export type DeleteVirtualContributorOnAccountMutation = {
+  __typename?: 'Mutation';
+  deleteVirtualContributor: { __typename?: 'VirtualContributor'; id: string };
+};
+
+export type SpaceSubspacesQueryVariables = Exact<{
+  spaceId: Scalars['UUID_NAMEID'];
+}>;
+
+export type SpaceSubspacesQuery = {
+  __typename?: 'Query';
+  space: {
+    __typename?: 'Space';
+    id: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
+    account: {
+      __typename?: 'Account';
+      id: string;
+      authorization?:
+        | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+        | undefined;
+      virtualContributors: Array<{
+        __typename?: 'VirtualContributor';
+        id: string;
+        nameID: string;
+        bodyOfKnowledgeID?: string | undefined;
+        profile: {
+          __typename?: 'Profile';
+          displayName: string;
+          url: string;
+          avatar?: { __typename?: 'Visual'; uri: string } | undefined;
+        };
+      }>;
+    };
+    subspaces: Array<{
+      __typename?: 'Space';
+      id: string;
+      profile: {
+        __typename?: 'Profile';
+        id: string;
+        displayName: string;
+        avatar?: { __typename?: 'Visual'; uri: string } | undefined;
+      };
+    }>;
   };
 };
 
@@ -23201,7 +23598,7 @@ export type AdminVirtualContributorsQuery = {
 };
 
 export type CreateVirtualContributorMutationVariables = Exact<{
-  virtualContributorData: CreateVirtualContributorInput;
+  virtualContributorData: CreateVirtualContributorOnAccountInput;
 }>;
 
 export type CreateVirtualContributorMutation = {
@@ -23249,8 +23646,7 @@ export type CreateVirtualPersonaMutation = {
     __typename?: 'VirtualPersona';
     id: string;
     nameID: string;
-    prompt: string;
-    engine?: VirtualContributorEngine | undefined;
+    engine: VirtualContributorEngine;
     profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
   };
 };

@@ -1,0 +1,64 @@
+query SpaceAccount($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
+      id
+      profile {
+        id
+        url
+      }
+      authorization {
+        id
+        myPrivileges
+      }
+      account {
+        id
+        host {
+          id
+          nameID
+          profile {
+            id
+            displayName
+            avatar: visual(type: AVATAR) {
+              ...VisualUri
+            }
+            location {
+              id
+              city
+              country
+            }
+            url
+          }
+        }
+        license {
+          id
+          visibility
+        }
+        activeSubscription {
+          name
+          expires
+        }
+      }
+    }
+  }
+  platform {
+    id
+    licensing {
+      id
+      plans {
+        id
+        name
+        enabled
+        sortOrder
+        isFree
+        pricePerMonth
+        licenseCredential
+      }
+    }
+    configuration {
+      locations {
+        support
+        switchplan
+      }
+    }
+  }
+}
