@@ -7,9 +7,11 @@ import Gutters from '../../../../../core/ui/grid/Gutters';
 import { Actions } from '../../../../../core/ui/actions/Actions';
 import { Caption } from '../../../../../core/ui/typography';
 import { gutters } from '../../../../../core/ui/grid/utils';
+import TranslationKey from '../../../../../core/i18n/utils/TranslationKey';
 
 interface SpaceProfileDeleteDialogProps {
   entity: string;
+  description?: TranslationKey;
   open: boolean;
   onClose: () => void;
   onDelete: () => void;
@@ -18,6 +20,7 @@ interface SpaceProfileDeleteDialogProps {
 
 const SpaceProfileDeleteDialog: FC<SpaceProfileDeleteDialogProps> = ({
   entity,
+  description,
   open,
   onClose,
   onDelete,
@@ -32,7 +35,9 @@ const SpaceProfileDeleteDialog: FC<SpaceProfileDeleteDialogProps> = ({
       <DialogContent>
         <Gutters disablePadding>
           <Box sx={{ wordWrap: 'break-word' }}>
-            <Caption>{t('components.deleteSpace.confirmDialog.description', { entity: entity })} </Caption>
+            <Caption>
+              {t(description ?? 'components.deleteSpace.confirmDialog.description', { entity: entity })}{' '}
+            </Caption>
             <FormControlLabel
               control={<Checkbox checked={checked} onChange={() => setChecked(!checked)} />}
               label={<Caption>{t('components.deleteSpace.confirmDialog.checkbox', { entity: entity })}</Caption>}

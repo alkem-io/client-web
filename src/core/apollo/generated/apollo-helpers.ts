@@ -15,6 +15,7 @@ export type AccountKeySpecifier = (
   | 'license'
   | 'spaceID'
   | 'subscriptions'
+  | 'virtualContributors'
   | AccountKeySpecifier
 )[];
 export type AccountFieldPolicy = {
@@ -28,6 +29,7 @@ export type AccountFieldPolicy = {
   license?: FieldPolicy<any> | FieldReadFunction<any>;
   spaceID?: FieldPolicy<any> | FieldReadFunction<any>;
   subscriptions?: FieldPolicy<any> | FieldReadFunction<any>;
+  virtualContributors?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type AccountSubscriptionKeySpecifier = ('expires' | 'name' | AccountSubscriptionKeySpecifier)[];
 export type AccountSubscriptionFieldPolicy = {
@@ -1597,6 +1599,7 @@ export type MutationKeySpecifier = (
   | 'deleteCallout'
   | 'deleteCalloutTemplate'
   | 'deleteCollaboration'
+  | 'deleteCommunityGuidelinesTemplate'
   | 'deleteDiscussion'
   | 'deleteDocument'
   | 'deleteInnovationFlowTemplate'
@@ -1658,6 +1661,7 @@ export type MutationKeySpecifier = (
   | 'updateCalloutsSortOrder'
   | 'updateCommunityApplicationForm'
   | 'updateCommunityGuidelines'
+  | 'updateCommunityGuidelinesTemplate'
   | 'updateDiscussion'
   | 'updateDocument'
   | 'updateEcosystemModel'
@@ -1687,6 +1691,7 @@ export type MutationKeySpecifier = (
   | 'updateUserGroup'
   | 'updateUserPlatformSettings'
   | 'updateVirtualContributor'
+  | 'updateVirtualContributorPlatformSettings'
   | 'updateVirtualPersona'
   | 'updateVisual'
   | 'updateWhiteboard'
@@ -1754,6 +1759,7 @@ export type MutationFieldPolicy = {
   deleteCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteCalloutTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteCollaboration?: FieldPolicy<any> | FieldReadFunction<any>;
+  deleteCommunityGuidelinesTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteDocument?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteInnovationFlowTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1815,6 +1821,7 @@ export type MutationFieldPolicy = {
   updateCalloutsSortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCommunityApplicationForm?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCommunityGuidelines?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateCommunityGuidelinesTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   updateDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
   updateDocument?: FieldPolicy<any> | FieldReadFunction<any>;
   updateEcosystemModel?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1844,6 +1851,7 @@ export type MutationFieldPolicy = {
   updateUserGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   updateUserPlatformSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   updateVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateVirtualContributorPlatformSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   updateVirtualPersona?: FieldPolicy<any> | FieldReadFunction<any>;
   updateVisual?: FieldPolicy<any> | FieldReadFunction<any>;
   updateWhiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
