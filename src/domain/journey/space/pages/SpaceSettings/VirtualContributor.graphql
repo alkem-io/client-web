@@ -1,0 +1,53 @@
+mutation CreateVirtualContributorOnAccount($virtualContributorData: CreateVirtualContributorOnAccountInput!) {
+  createVirtualContributor(virtualContributorData: $virtualContributorData) {
+    id
+    profile {
+      id
+      url
+    }
+  }
+}
+
+mutation DeleteVirtualContributorOnAccount($virtualContributorData: DeleteVirtualContributorInput!) {
+  deleteVirtualContributor(deleteData: $virtualContributorData) {
+    id
+	}
+}
+
+query SpaceSubspaces($spaceId: UUID_NAMEID!) {
+  space (ID: $spaceId) {
+    id
+    profile {
+      id
+      displayName
+    }
+    account {
+      id
+      authorization {
+        myPrivileges
+      }
+      virtualContributors {
+        id
+        nameID
+        bodyOfKnowledgeID
+        profile {
+          displayName
+          url
+          avatar: visual(type: AVATAR) {
+            uri
+          }
+        }
+      }
+    }
+    subspaces {
+      id
+      profile {
+        id
+        displayName
+        avatar: visual(type: AVATAR) {
+          uri
+        }
+      }
+    }
+  }
+}

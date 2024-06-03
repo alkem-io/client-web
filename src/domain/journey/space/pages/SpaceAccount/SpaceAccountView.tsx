@@ -1,7 +1,9 @@
 import { FC, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
-import { Box, CircularProgress } from '@mui/material';
+import { Box, Button, CircularProgress } from '@mui/material';
+import ControlPointIcon from '@mui/icons-material/ControlPoint';
+import { v4 as uuidv4 } from 'uuid';
+import { buildSettingsUrl } from '../../../../../main/routing/urlBuilders';
 import PageContent from '../../../../../core/ui/content/PageContent';
 import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
@@ -10,16 +12,25 @@ import { BlockTitle, Caption } from '../../../../../core/ui/typography';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import ContributorCardHorizontal from '../../../../../core/ui/card/ContributorCardHorizontal';
 import Gutters from '../../../../../core/ui/grid/Gutters';
-import { AuthorizationPrivilege } from '../../../../../core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, BodyOfKnowledgeType } from '../../../../../core/apollo/generated/graphql-schema';
 import {
-  refetchAdminSpacesListQuery,
+  useCreateVirtualContributorOnAccountMutation,
   useDeleteSpaceMutation,
+  refetchAdminSpacesListQuery,
   useSpaceAccountQuery,
+  useSpaceSubspacesQuery,
+  useDeleteVirtualContributorOnAccountMutation,
+  refetchSpaceSubspacesQuery,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { gutters } from '../../../../../core/ui/grid/utils';
 import { ROUTE_HOME } from '../../../../platform/routes/constants';
 import { DeleteIcon } from '../SpaceSettings/icon/DeleteIcon';
 import SpaceProfileDeleteDialog from '../SpaceSettings/SpaceProfileDeleteDialog';
+import CreateVirtualContributorDialog, {
+  VirtualContributorFormValues,
+} from '../SpaceSettings/CreateVirtualContributorDialog';
+import ContributorOnAccountCard from '../SpaceSettings/ContributorOnAccountCard';
+import useNavigate from '../../../../../core/routing/useNavigate';
 import { PlanFeatures, PlanFooter, PlanName, PlanPrice } from '../../../../license/plans/ui/PlanCardsComponents';
 import { getPlanTranslations } from '../../../../license/plans/utils/getPlanTranslations';
 import RouterLink from '../../../../../core/ui/link/RouterLink';
@@ -39,6 +50,13 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const openDialog = () => setOpenDeleteDialog(true);
   const closeDialog = () => setOpenDeleteDialog(false);
+  const [isCreateVCDialogOpen, setIsCreateVCDialogOpen] = useState(false);
+  const openCreateVCDialog = () => setIsCreateVCDialogOpen(true);
+  const closeCreateVCDialog = () => setIsCreateVCDialogOpen(false);
+  const [isOpenDeleteVCDialog, setIsOpenDeleteVCDialog] = useState(false);
+  const openDeleteVCDialog = () => setIsOpenDeleteVCDialog(true);
+  const closeDeleteVCDialog = () => setIsOpenDeleteVCDialog(false);
+
   const { data, loading: loadingAccount } = useSpaceAccountQuery({
     variables: { spaceId: journeyId },
   });
@@ -108,6 +126,93 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
         },
       },
     });
+  };
+
+  const [deleteVirtualContributor, { loading: deletingVirtualContributor }] =
+    useDeleteVirtualContributorOnAccountMutation({
+      refetchQueries: [refetchSpaceSubspacesQuery({ spaceId: journeyId })],
+      awaitRefetchQueries: true,
+    });
+
+  const handleDeleteVC = async () => {
+    await deleteVirtualContributor({
+      variables: {
+        virtualContributorData: {
+          ID: spaceData?.space?.account?.virtualContributors[0].nameID || '',
+        },
+      },
+    });
+
+    notify('Virtual Contribuotr deleted successfuly!', 'success');
+    closeDeleteVCDialog();
+  };
+
+  const { data: spaceData, loading: spaceDataLoading } = useSpaceSubspacesQuery({
+    variables: {
+      spaceId: journeyId,
+    },
+    skip: !journeyId,
+  });
+
+  const accountPrivileges = spaceData?.space?.account.authorization?.myPrivileges ?? [];
+  const canCreateVirtualContributor = accountPrivileges?.includes(AuthorizationPrivilege.CreateVirtualContributor);
+
+  const subspaces = useMemo(() => {
+    const result =
+      spaceData?.space?.subspaces.map(subspace => ({
+        id: subspace.id,
+        name: subspace?.profile.displayName,
+      })) ?? [];
+
+    result.push({
+      id: journeyId,
+      name: spaceData?.space?.profile.displayName || '',
+    });
+
+    return result;
+  }, [spaceData]);
+
+  const bokSpaceData = useMemo(
+    () =>
+      spaceData?.space?.subspaces
+        .filter(subspace => subspace.id === spaceData?.space?.account?.virtualContributors[0]?.bodyOfKnowledgeID)
+        .map(data => ({ profile: { displayName: data.profile.displayName } }))[0],
+    [spaceData]
+  );
+
+  const currentVirtualContributor = useMemo(() => {
+    if (spaceData?.space?.account?.id && spaceData?.space?.account?.virtualContributors) {
+      return spaceData?.space?.account?.virtualContributors[0];
+    }
+
+    return null;
+  }, [spaceData]);
+
+  const [createVirtualContributorOnAccount, { loading: loadingVCCreation }] =
+    useCreateVirtualContributorOnAccountMutation({
+      refetchQueries: [refetchSpaceSubspacesQuery({ spaceId: journeyId })],
+      awaitRefetchQueries: true,
+    });
+
+  const handleCreateVirtualContributor = async ({ displayName, bodyOfKnowledgeID }: VirtualContributorFormValues) => {
+    const vsResponse = await createVirtualContributorOnAccount({
+      variables: {
+        virtualContributorData: {
+          // todo: guarantee uniqueness but use createNameId(displayName)
+          nameID: `v-c-${uuidv4()}`.slice(0, 25).toLocaleLowerCase(),
+          profileData: {
+            displayName,
+          },
+          accountID: spaceData?.space.account.id ?? '',
+          bodyOfKnowledgeID,
+          bodyOfKnowledgeType: BodyOfKnowledgeType.Space,
+        },
+      },
+    });
+
+    notify('Virtual Contributor Created Successfully!', 'success');
+    closeCreateVCDialog();
+    navigate(buildSettingsUrl(vsResponse.data?.createVirtualContributor.profile.url ?? ''));
   };
 
   const loading = loadingAccount && deletingSpace;
@@ -236,6 +341,29 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
                 )}
             </Gutters>
           </PageContentBlock>
+          <PageContentBlock columns={5} sx={{ gap: gutters(2) }}>
+            <Gutters disablePadding alignItems={'flex-start'}>
+              <BlockTitle>{t('pages.admin.space.settings.account.vc-section-title')}</BlockTitle>
+              {currentVirtualContributor && (
+                <ContributorOnAccountCard
+                  contributor={currentVirtualContributor}
+                  space={bokSpaceData}
+                  hasDelete={canCreateVirtualContributor}
+                  onDeleteClick={openDeleteVCDialog}
+                />
+              )}
+              {canCreateVirtualContributor && (
+                <Button
+                  variant="outlined"
+                  startIcon={<ControlPointIcon />}
+                  onClick={openCreateVCDialog}
+                  disabled={!!currentVirtualContributor || spaceDataLoading}
+                >
+                  {t('pages.admin.space.settings.account.vc-create-button')}
+                </Button>
+              )}
+            </Gutters>
+          </PageContentBlock>
           {canDelete && (
             <PageContentBlock sx={{ borderColor: errorColor }}>
               <PageContentBlockHeader sx={{ color: errorColor }} title={t('components.deleteSpace.title')} />
@@ -254,6 +382,21 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
               submitting={deletingSpace}
             />
           )}
+          <SpaceProfileDeleteDialog
+            entity={t('common.virtual-contributor')}
+            description="virtualContributorSpaceSettings.confirm-deletion.description"
+            open={isOpenDeleteVCDialog}
+            onClose={closeDeleteVCDialog}
+            onDelete={handleDeleteVC}
+            submitting={deletingVirtualContributor}
+          />
+          <CreateVirtualContributorDialog
+            spaces={subspaces}
+            open={isCreateVCDialogOpen}
+            onClose={closeCreateVCDialog}
+            onCreate={handleCreateVirtualContributor}
+            submitting={loadingVCCreation || spaceDataLoading}
+          />
         </>
       )}
       {loading && (

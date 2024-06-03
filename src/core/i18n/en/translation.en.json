@@ -344,6 +344,7 @@
     "sources": "Sources",
     "license": "License",
     "virtual-contributors": "VC",
+    "virtual-contributor": "Virtual Contributor",
     "collaborationTool": "Collaboration tool",
     "genders": {
       "notSpecified": "not specified",
@@ -1905,6 +1906,10 @@
             "createSubspaces": "<b>Create Subspaces</b>: allow members to create Subspaces in this Space. If you deactivate this, you can still create Subspaces yourself and add other people as an admin inside the Subspace.",
             "inheritRights": "Allow Space members to contribute.",
             "supportAsAdmin": "<b>Alkemio Support</b>: Allow the Alkemio Support team to act as an admin in this Space."
+          },
+          "account": {
+            "vc-section-title": "Virtual Contributors created from this Space",
+            "vc-create-button": "Create Virtual Contributor"
           }
         }
       },
@@ -2463,7 +2468,7 @@
       "sections": {
         "knowledge": {
           "title": "Knowledge",
-          "description": "Answers {{name}} gives are based on the body of knowledge that is specified in the following Space:"
+          "description": "Answers {{name}} gives are based on the body of knowledge coming from:"
         },
 
         "personality": {
@@ -2802,6 +2807,15 @@
           "continue": "Continue"
         }
       }
+    }
+  },
+  "virtualContributorSpaceSettings": {
+    "title": "Create a Virtual Contributor",
+    "name": "Name",
+    "body-of-knowledge": "Body Of Knowledge",
+    "info-text": "Select the Space or Subspace that you want to use as a body of knowledge for this Virtual Contributor",
+    "confirm-deletion": {
+      "description": "Are you certain you want to delete this {{entity}}? Keep in mind that this action is irreversible. All profile information will be removed and people will no longer be able to interact with the {{entity}}. "
     }
   }
 }

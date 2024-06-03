@@ -13,6 +13,7 @@ import useTheme from '@mui/material/styles/useTheme';
 import { Trans, useTranslation } from 'react-i18next';
 import ProfileDetail from '../../profile/ProfileDetail/ProfileDetail';
 import BasicSpaceCard, { BasicSpaceProps } from '../components/BasicSpaceCard';
+import Spacer from '../../../../core/ui/content/Spacer';
 
 interface Props {
   virtualContributor: VirtualContributorQuery['virtualContributor'] | undefined;
@@ -59,6 +60,7 @@ export const VCProfilePageView: FC<PropsWithChildren<Props>> = ({
           </SectionTitle>
           <SectionContent withBottomOffset>
             <Trans i18nKey="pages.virtual-contributor-profile.sections.knowledge.description" values={{ name }} />
+            <Spacer />
             <BasicSpaceCard space={bokProfile} showDefaults={showDefaults} />
           </SectionContent>
           <SectionTitle>

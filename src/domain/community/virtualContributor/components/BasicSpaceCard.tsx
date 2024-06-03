@@ -3,7 +3,6 @@ import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
 import Avatar from '../../../../core/ui/avatar/Avatar';
 import { BlockSectionTitle } from '../../../../core/ui/typography';
 import { useTranslation } from 'react-i18next';
-import { theme } from '../../../../core/ui/themes/default/Theme';
 import RouterLink from '../../../../core/ui/link/RouterLink';
 import defaultJourneyCardBanner from '../../../../domain/journey/defaultVisuals/Card.jpg';
 
@@ -42,7 +41,6 @@ const BasicSpaceCard: FC<Props> = ({ space, showDefaults }) => {
 
   return (
     <BadgeCardView
-      marginTop={theme.spacing(2)}
       visual={
         <Avatar
           src={spaceData.avatar?.uri || defaultJourneyCardBanner}
