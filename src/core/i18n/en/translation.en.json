@@ -112,6 +112,7 @@
     "take-me-home": "Take me home",
     "close": "Close",
     "yes-close": "Yes, close",
+    "yesReplace": "Yes, Replace",
     "delete": "Delete",
     "submit": "Submit",
     "remove": "Remove",
@@ -589,7 +590,11 @@
       "title": "Community Guidelines",
       "updatedSuccessfully": "Community guidelines updated successfully.",
       "adminsOnly": "Since there are no Community Guidelines specified, this block is only visible for admins and leads.",
-      "communityGuidelinesRedirect": "Click here to update the Community Guidelines in the Space settings."
+      "communityGuidelinesRedirect": "Click here to update the Community Guidelines in the Space settings.",
+      "confirmDialog": {
+        "title": "Updating Community Guidelines",
+        "description": "Are you sure you want to replace your existing Community Guidelines? This action cannot be undone."
+      }
     },
     "applicationsHelp": "Here you can find everyone that applied to become a member of this Space. By clicking on them you can review their application and accept or reject them.",
     "applicationStatus": {
