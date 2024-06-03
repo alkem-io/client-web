@@ -56,6 +56,7 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
   const [isOpenDeleteVCDialog, setIsOpenDeleteVCDialog] = useState(false);
   const openDeleteVCDialog = () => setIsOpenDeleteVCDialog(true);
   const closeDeleteVCDialog = () => setIsOpenDeleteVCDialog(false);
+  const [selectedVirtualContributorId, setSelectedVirtualContributorId] = useState<string | null>(null);
 
   const { data, loading: loadingAccount } = useSpaceAccountQuery({
     variables: { spaceId: journeyId },
@@ -128,6 +129,11 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
     });
   };
 
+  const initiateDeleteVC = (nameID: string) => {
+    setSelectedVirtualContributorId(nameID);
+    openDeleteVCDialog();
+  };
+
   const [deleteVirtualContributor, { loading: deletingVirtualContributor }] =
     useDeleteVirtualContributorOnAccountMutation({
       refetchQueries: [refetchSpaceSubspacesQuery({ spaceId: journeyId })],
@@ -138,7 +144,7 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
     await deleteVirtualContributor({
       variables: {
         virtualContributorData: {
-          ID: spaceData?.space?.account?.virtualContributors[0].nameID || '',
+          ID: selectedVirtualContributorId || '',
         },
       },
     });
@@ -212,6 +218,7 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
   };
 
   const loading = loadingAccount && deletingSpace;
+  const disabledVirtualCreation = virtualContributors.length > 0 || spaceDataLoading;
 
   return (
     <PageContent background="transparent">
@@ -346,7 +353,7 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
                     contributor={vc}
                     space={bokSpaceData}
                     hasDelete={canCreateVirtualContributor}
-                    onDeleteClick={openDeleteVCDialog}
+                    onDeleteClick={() => initiateDeleteVC(vc.nameID)}
                   />
                 ))}
               {canCreateVirtualContributor && (
@@ -354,7 +361,7 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
                   variant="outlined"
                   startIcon={<ControlPointIcon />}
                   onClick={openCreateVCDialog}
-                  disabled={virtualContributors.length > 0 || spaceDataLoading}
+                  disabled={disabledVirtualCreation}
                 >
                   {t('pages.admin.space.settings.account.vc-create-button')}
                 </Button>
