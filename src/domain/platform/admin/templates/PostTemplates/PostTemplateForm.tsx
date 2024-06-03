@@ -4,7 +4,6 @@ import * as yup from 'yup';
 import { FormikProps } from 'formik';
 import FormikInputField from '../../../../../core/ui/forms/FormikInputField/FormikInputField';
 import { CreateProfileInput, Visual } from '../../../../../core/apollo/generated/graphql-schema';
-import TemplateFormRows from '../TemplateFormRows';
 import FormikMarkdownField from '../../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
 import { MARKDOWN_TEXT_LENGTH } from '../../../../../core/ui/forms/field-length.constants';
 import TemplateForm from '../TemplateForm';
@@ -48,15 +47,14 @@ const PostTemplateForm = ({ initialValues, visual, onSubmit, actions }: PostTemp
       onSubmit={onSubmit}
       actions={actions}
       validator={validator}
+      entityTypeName={t('common.post')}
     >
-      <TemplateFormRows>
-        <FormikInputField name="type" title={t('post-edit.type.title')} />
-        <FormikMarkdownField
-          name="defaultDescription"
-          title={t('templateLibrary.postTemplates.defaultDescription')}
-          maxLength={MARKDOWN_TEXT_LENGTH}
-        />
-      </TemplateFormRows>
+      <FormikInputField name="type" title={t('post-edit.type.title')} />
+      <FormikMarkdownField
+        name="defaultDescription"
+        title={t('templateLibrary.postTemplates.defaultDescription')}
+        maxLength={MARKDOWN_TEXT_LENGTH}
+      />
     </TemplateForm>
   );
 };

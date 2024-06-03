@@ -1,28 +1,28 @@
 import { FC, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import DialogHeader from '../../../core/ui/dialog/DialogHeader';
-import DialogWithGrid from '../../../core/ui/dialog/DialogWithGrid';
-import { BlockTitle } from '../../../core/ui/typography';
-import { PostTemplate } from '../../collaboration/post/PostTemplateCard/PostTemplate';
-import PostTemplateCard from '../../collaboration/post/PostTemplateCard/PostTemplateCard';
-import PostTemplatePreview from '../../collaboration/post/PostTemplatesLibrary/PostTemplatePreview';
-import WhiteboardTemplateCard from '../../collaboration/whiteboard/WhiteboardTemplateCard/WhiteboardTemplateCard';
-import WhiteboardTemplatePreview from '../../collaboration/whiteboard/WhiteboardTemplatesLibrary/WhiteboardTemplatePreview';
+import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
+import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
+import { BlockTitle } from '../../../../core/ui/typography';
+import { PostTemplate } from '../../post/PostTemplateCard/PostTemplate';
+import PostTemplateCard from '../../post/PostTemplateCard/PostTemplateCard';
+import PostTemplatePreview from '../../post/PostTemplatesLibrary/PostTemplatePreview';
+import WhiteboardTemplateCard from '../../whiteboard/WhiteboardTemplateCard/WhiteboardTemplateCard';
+import WhiteboardTemplatePreview from '../../whiteboard/WhiteboardTemplatesLibrary/WhiteboardTemplatePreview';
 import CollaborationTemplatesLibraryPreview, {
   CollaborationTemplatesLibraryPreviewProps,
-} from '../../collaboration/templates/CollaborationTemplatesLibrary/CollaborationTemplatesLibraryPreview';
-import { TemplateBase } from '../../collaboration/templates/CollaborationTemplatesLibrary/TemplateBase';
-import InnovationFlowTemplateCard from '../../collaboration/InnovationFlow/InnovationFlowTemplateCard/InnovationFlowTemplateCard';
-import { TemplateType } from '../../collaboration/InnovationPack/InnovationPackProfilePage/InnovationPackProfilePage';
-import InnovationFlowTemplatePreview from '../../collaboration/InnovationFlow/InnovationFlowTemplatesLibrary/InnovationFlowTemplatePreview';
+} from '../CollaborationTemplatesLibrary/CollaborationTemplatesLibraryPreview';
+import { TemplateBase } from '../CollaborationTemplatesLibrary/TemplateBase';
+import InnovationFlowTemplateCard from '../../InnovationFlow/InnovationFlowTemplateCard/InnovationFlowTemplateCard';
+import { TemplateType } from '../../InnovationPack/InnovationPackProfilePage/InnovationPackProfilePage';
+import InnovationFlowTemplatePreview from '../../InnovationFlow/InnovationFlowTemplatesLibrary/InnovationFlowTemplatePreview';
 import DisabledUseButton from './DisabledUseButton';
-import DialogContent from '../../../core/ui/dialog/DialogContent';
-import { Identifiable } from '../../../core/utils/Identifiable';
+import DialogContent from '../../../../core/ui/dialog/DialogContent';
+import { Identifiable } from '../../../../core/utils/Identifiable';
 import CalloutTemplatePreview from '../calloutTemplate/CalloutTemplatePreview';
 import CalloutTemplateCard, { CalloutTemplate } from '../calloutTemplate/CalloutTemplateCard';
-import { InnovationFlowState } from '../../collaboration/InnovationFlow/InnovationFlow';
-import CommunityGuidelinesTemplateCard from '../../collaboration/communityGuidelines/CommunityGuidelinesTemplateCard/CommunityGuidelinesTemplateCard';
-import CommunityGuidelinesTemplatePreview from '../../collaboration/communityGuidelines/CommunityGuidelinesTemplateLibrary/CommunityGuidelinesTemplatePreview';
+import { InnovationFlowState } from '../../InnovationFlow/InnovationFlow';
+import CommunityGuidelinesTemplateCard from '../../communityGuidelines/CommunityGuidelinesTemplateCard/CommunityGuidelinesTemplateCard';
+import CommunityGuidelinesTemplatePreview from '../../communityGuidelines/CommunityGuidelinesTemplateLibrary/CommunityGuidelinesTemplatePreview';
 
 export type TemplatePreview =
   | {

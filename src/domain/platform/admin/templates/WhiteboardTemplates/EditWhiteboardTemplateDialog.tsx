@@ -5,11 +5,8 @@ import WhiteboardTemplateForm, {
   WhiteboardTemplateFormSubmittedValuesWithPreviewImages,
   WhiteboardTemplateFormValues,
 } from './WhiteboardTemplateForm';
-import DialogWithGrid, { DialogFooter } from '../../../../../core/ui/dialog/DialogWithGrid';
-import DialogHeader, { DialogHeaderProps } from '../../../../../core/ui/dialog/DialogHeader';
-import DeleteButton from '../../../../shared/components/DeleteButton';
-import { FormikSubmitButtonPure } from '../../../../shared/components/forms/FormikSubmitButton';
-import { DialogActions, DialogContent } from '@mui/material';
+import { DialogHeaderProps } from '../../../../../core/ui/dialog/DialogHeader';
+import TemplateDialogBase from '../../../../collaboration/templates/templateDialog/TemplateDialogBase';
 
 export interface EditWhiteboardTemplateDialogProps {
   open: boolean;
@@ -59,29 +56,22 @@ const EditWhiteboardTemplateDialog = ({
   };
 
   return (
-    <DialogWithGrid columns={12} open={open} onClose={onClose}>
-      <DialogHeader
-        title={t('common.edit-entity', { entity: t('templateLibrary.whiteboardTemplates.name') })}
-        onClose={onClose}
-      />
-      <DialogContent>
+    <TemplateDialogBase
+      open={open}
+      onClose={onClose}
+      templateTypeName={t('templateLibrary.whiteboardTemplates.name')}
+      editMode
+      onDelete={onDelete}
+    >
+      {({ actions }) => (
         <WhiteboardTemplateForm
           initialValues={initialValues}
           visual={template?.profile?.visual}
           onSubmit={handleSubmit}
-          actions={formik => (
-            <DialogFooter>
-              <DialogActions>
-                <DeleteButton onClick={onDelete} />
-                <FormikSubmitButtonPure variant="contained" formik={formik} onClick={() => formik.handleSubmit()}>
-                  {t('common.update')}
-                </FormikSubmitButtonPure>
-              </DialogActions>
-            </DialogFooter>
-          )}
+          actions={actions}
         />
-      </DialogContent>
-    </DialogWithGrid>
+      )}
+    </TemplateDialogBase>
   );
 };
 

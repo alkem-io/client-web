@@ -2,7 +2,7 @@ import React, { ReactNode, useEffect, useMemo } from 'react';
 import { Identifiable } from '../../../../../core/utils/Identifiable';
 import TemplatePreviewDialog, {
   TemplatePreviewDialogProps,
-} from '../../../../template/templatePreviewDialog/TemplatePreviewDialog';
+} from '../../../../collaboration/templates/templatePreviewDialog/TemplatePreviewDialog';
 import { TemplateType } from '../../../../collaboration/InnovationPack/InnovationPackProfilePage/InnovationPackProfilePage';
 import { TemplateBase } from '../../../../collaboration/templates/CollaborationTemplatesLibrary/TemplateBase';
 
