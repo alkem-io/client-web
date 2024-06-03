@@ -20,6 +20,24 @@ const CreateCalloutTemplateDialog = ({ open, onClose, onSubmit }: CreateCalloutT
     displayName: '',
     description: '',
     tags: [],
+    framing: {
+      profile: {
+        displayName: '',
+        description: '',
+      },
+      tags: [],
+      whiteboard: {
+        content: '',
+        profileData: {
+          displayName: '',
+          description: '',
+        },
+      },
+    },
+    contributionDefaults: {
+      postDescription: '',
+      whiteboardContent: '',
+    },
   };
 
   return (

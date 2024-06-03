@@ -873,7 +873,11 @@
     "profile": {
       "title": "Template description",
       "help": "This description will be visible to anyone browsing through the templates. However, it is not part of the actual {{entityTypeName}} content.",
-      "tags": "Template tags"
+      "fields": {
+        "displayName": "Template title",
+        "description": "Template description",
+        "tags": "Template tags"
+      }
     }
   },
   "templateLibrary": {
