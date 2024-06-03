@@ -1369,6 +1369,16 @@ export const CommunityAvailableMemberUsersFragmentDoc = gql`
   ${AvailableUserFragmentDoc}
   ${PageInfoFragmentDoc}
 `;
+export const VirtualContributorNameFragmentDoc = gql`
+  fragment VirtualContributorName on VirtualContributor {
+    id
+    nameID
+    profile {
+      id
+      displayName
+    }
+  }
+`;
 export const OrganizationContributorFragmentDoc = gql`
   fragment OrganizationContributor on Organization {
     id
@@ -10537,16 +10547,26 @@ export function refetchCommunityAvailableMembersQuery(variables: SchemaTypes.Com
 }
 
 export const AvailableVirtualContributorsDocument = gql`
-  query AvailableVirtualContributors {
-    virtualContributors {
-      id
-      nameID
-      profile {
+  query AvailableVirtualContributors(
+    $filterSpace: Boolean = false
+    $filterSpaceId: UUID = "00000000-0000-0000-0000-000000000000"
+  ) {
+    lookup @include(if: $filterSpace) {
+      space(ID: $filterSpaceId) {
         id
-        displayName
+        community {
+          id
+          virtualContributorsInRole(role: MEMBER) {
+            ...VirtualContributorName
+          }
+        }
       }
     }
+    virtualContributors @skip(if: $filterSpace) {
+      ...VirtualContributorName
+    }
   }
+  ${VirtualContributorNameFragmentDoc}
 `;
 
 /**
@@ -10561,6 +10581,8 @@ export const AvailableVirtualContributorsDocument = gql`
  * @example
  * const { data, loading, error } = useAvailableVirtualContributorsQuery({
  *   variables: {
+ *      filterSpace: // value for 'filterSpace'
+ *      filterSpaceId: // value for 'filterSpaceId'
  *   },
  * });
  */
@@ -15950,8 +15972,8 @@ export function refetchLegacySubspaceDashboardPageQuery(
 }
 
 export const CreateNewSpaceDocument = gql`
-  mutation CreateNewSpace($hostId: UUID_NAMEID!, $spaceData: CreateSpaceInput!, $planId: UUID) {
-    createAccount(accountData: { hostID: $hostId, spaceData: $spaceData, licensePlanID: $planId }) {
+  mutation CreateNewSpace($hostId: UUID_NAMEID!, $spaceData: CreateSpaceInput!, $licensePlanId: UUID) {
+    createAccount(accountData: { hostID: $hostId, spaceData: $spaceData, licensePlanID: $licensePlanId }) {
       id
       spaceID
     }
@@ -15977,7 +15999,7 @@ export type CreateNewSpaceMutationFn = Apollo.MutationFunction<
  *   variables: {
  *      hostId: // value for 'hostId'
  *      spaceData: // value for 'spaceData'
- *      planId: // value for 'planId'
+ *      licensePlanId: // value for 'licensePlanId'
  *   },
  * });
  */
@@ -16933,6 +16955,120 @@ export type BannerInnovationHubQueryResult = Apollo.QueryResult<
 >;
 export function refetchBannerInnovationHubQuery(variables?: SchemaTypes.BannerInnovationHubQueryVariables) {
   return { query: BannerInnovationHubDocument, variables: variables };
+}
+
+export const SpaceAccountDocument = gql`
+  query SpaceAccount($spaceId: UUID!) {
+    lookup {
+      space(ID: $spaceId) {
+        id
+        profile {
+          id
+          url
+        }
+        authorization {
+          id
+          myPrivileges
+        }
+        account {
+          id
+          host {
+            id
+            nameID
+            profile {
+              id
+              displayName
+              avatar: visual(type: AVATAR) {
+                ...VisualUri
+              }
+              location {
+                id
+                city
+                country
+              }
+              url
+            }
+          }
+          license {
+            id
+            visibility
+          }
+          activeSubscription {
+            name
+            expires
+          }
+        }
+      }
+    }
+    platform {
+      id
+      licensing {
+        id
+        plans {
+          id
+          name
+          enabled
+          sortOrder
+          isFree
+          pricePerMonth
+          licenseCredential
+        }
+      }
+      configuration {
+        locations {
+          support
+          switchplan
+        }
+      }
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
+
+/**
+ * __useSpaceAccountQuery__
+ *
+ * To run a query within a React component, call `useSpaceAccountQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSpaceAccountQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSpaceAccountQuery({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *   },
+ * });
+ */
+export function useSpaceAccountQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.SpaceAccountQuery, SchemaTypes.SpaceAccountQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.SpaceAccountQuery, SchemaTypes.SpaceAccountQueryVariables>(
+    SpaceAccountDocument,
+    options
+  );
+}
+
+export function useSpaceAccountLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.SpaceAccountQuery, SchemaTypes.SpaceAccountQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.SpaceAccountQuery, SchemaTypes.SpaceAccountQueryVariables>(
+    SpaceAccountDocument,
+    options
+  );
+}
+
+export type SpaceAccountQueryHookResult = ReturnType<typeof useSpaceAccountQuery>;
+export type SpaceAccountLazyQueryHookResult = ReturnType<typeof useSpaceAccountLazyQuery>;
+export type SpaceAccountQueryResult = Apollo.QueryResult<
+  SchemaTypes.SpaceAccountQuery,
+  SchemaTypes.SpaceAccountQueryVariables
+>;
+export function refetchSpaceAccountQuery(variables: SchemaTypes.SpaceAccountQueryVariables) {
+  return { query: SpaceAccountDocument, variables: variables };
 }
 
 export const AdminSpaceChallengesPageDocument = gql`
