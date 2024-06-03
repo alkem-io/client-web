@@ -13,7 +13,7 @@ import {
   useSpacePrivilegesQuery,
 } from '../../../../../../core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege } from '../../../../../../core/apollo/generated/graphql-schema';
-import { DeleteIcon } from '../../../../../journey/space/pages/SpaceSettings/icon/DeleteIcon';
+import DeleteIcon from '../../../../../journey/space/pages/SpaceSettings/icon/DeleteIcon';
 import SpaceProfileDeleteDialog from '../../../../../journey/space/pages/SpaceSettings/SpaceProfileDeleteDialog';
 import { useSubSpace } from '../../../../../journey/subspace/hooks/useChallenge';
 import PageContent from '../../../../../../core/ui/content/PageContent';

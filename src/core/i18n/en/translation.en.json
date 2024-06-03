@@ -1949,6 +1949,7 @@
         }
       },
       "virtualContributors": {
+        "title": "Virtual Contributors",
         "virtualPersonas": {
           "title": "Virtual Personas",
           "create": "Create Virtual Persona",
