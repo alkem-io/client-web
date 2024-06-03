@@ -14925,16 +14925,45 @@ export type AvailableUserFragment = {
   profile: { __typename?: 'Profile'; id: string; displayName: string };
 };
 
-export type AvailableVirtualContributorsQueryVariables = Exact<{ [key: string]: never }>;
+export type AvailableVirtualContributorsQueryVariables = Exact<{
+  filterSpace?: InputMaybe<Scalars['Boolean']>;
+  filterSpaceId?: InputMaybe<Scalars['UUID']>;
+}>;
 
 export type AvailableVirtualContributorsQuery = {
   __typename?: 'Query';
-  virtualContributors: Array<{
+  lookup?: {
+    __typename?: 'LookupQueryResults';
+    space?:
+      | {
+          __typename?: 'Space';
+          id: string;
+          community: {
+            __typename?: 'Community';
+            id: string;
+            virtualContributorsInRole: Array<{
+              __typename?: 'VirtualContributor';
+              id: string;
+              nameID: string;
+              profile: { __typename?: 'Profile'; id: string; displayName: string };
+            }>;
+          };
+        }
+      | undefined;
+  };
+  virtualContributors?: Array<{
     __typename?: 'VirtualContributor';
     id: string;
     nameID: string;
     profile: { __typename?: 'Profile'; id: string; displayName: string };
   }>;
+};
+
+export type VirtualContributorNameFragment = {
+  __typename?: 'VirtualContributor';
+  id: string;
+  nameID: string;
+  profile: { __typename?: 'Profile'; id: string; displayName: string };
 };
 
 export type AddVirtualContributorToCommunityMutationVariables = Exact<{

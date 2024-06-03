@@ -1369,6 +1369,16 @@ export const CommunityAvailableMemberUsersFragmentDoc = gql`
   ${AvailableUserFragmentDoc}
   ${PageInfoFragmentDoc}
 `;
+export const VirtualContributorNameFragmentDoc = gql`
+  fragment VirtualContributorName on VirtualContributor {
+    id
+    nameID
+    profile {
+      id
+      displayName
+    }
+  }
+`;
 export const OrganizationContributorFragmentDoc = gql`
   fragment OrganizationContributor on Organization {
     id
@@ -10537,16 +10547,26 @@ export function refetchCommunityAvailableMembersQuery(variables: SchemaTypes.Com
 }
 
 export const AvailableVirtualContributorsDocument = gql`
-  query AvailableVirtualContributors {
-    virtualContributors {
-      id
-      nameID
-      profile {
+  query AvailableVirtualContributors(
+    $filterSpace: Boolean = false
+    $filterSpaceId: UUID = "00000000-0000-0000-0000-000000000000"
+  ) {
+    lookup @include(if: $filterSpace) {
+      space(ID: $filterSpaceId) {
         id
-        displayName
+        community {
+          id
+          virtualContributorsInRole(role: MEMBER) {
+            ...VirtualContributorName
+          }
+        }
       }
     }
+    virtualContributors @skip(if: $filterSpace) {
+      ...VirtualContributorName
+    }
   }
+  ${VirtualContributorNameFragmentDoc}
 `;
 
 /**
@@ -10561,6 +10581,8 @@ export const AvailableVirtualContributorsDocument = gql`
  * @example
  * const { data, loading, error } = useAvailableVirtualContributorsQuery({
  *   variables: {
+ *      filterSpace: // value for 'filterSpace'
+ *      filterSpaceId: // value for 'filterSpaceId'
  *   },
  * });
  */
