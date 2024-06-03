@@ -869,6 +869,13 @@
       "atLeastOne": "At least one {{item}} must be selected."
     }
   },
+  "templateDialog": {
+    "profile": {
+      "title": "Template description",
+      "help": "This description will be visible to anyone browsing through the templates. However, it is not part of the actual {{entityTypeName}} content.",
+      "tags": "Template tags"
+    }
+  },
   "templateLibrary": {
     "calloutTemplates": {
       "name": "Callout template",

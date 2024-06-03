@@ -20,7 +20,7 @@ import useLoadingState from '../../../shared/utils/useLoadingState';
 import { GraphQLError } from 'graphql';
 import TemplatePreviewDialog, {
   TemplatePreviewDialogProps,
-} from '../../../template/templatePreviewDialog/TemplatePreviewDialog';
+} from '../../../collaboration/templates/templatePreviewDialog/TemplatePreviewDialog';
 import { TemplateType } from '../../../collaboration/InnovationPack/InnovationPackProfilePage/InnovationPackProfilePage';
 import { Link } from 'react-router-dom';
 import ScrollableCardsLayoutContainer from '../../../../core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';

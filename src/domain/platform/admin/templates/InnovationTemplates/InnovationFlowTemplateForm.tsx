@@ -128,7 +128,7 @@ const InnovationFlowTemplateForm = ({ initialValues, onSubmit, actions }: Innova
       onSubmit={onSubmit}
       actions={actions}
       validator={validator}
-      verticalLayout
+      entityTypeName={t('common.innovation-flow')}
     >
       {({ values, setFieldValue, setFieldTouched }) => {
         const setStates = (states: InnovationFlowState[]) => {
