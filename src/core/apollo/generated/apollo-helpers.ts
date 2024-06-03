@@ -5,6 +5,7 @@ export type APMFieldPolicy = {
   rumEnabled?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type AccountKeySpecifier = (
+  | 'activeSubscription'
   | 'agent'
   | 'authorization'
   | 'defaults'
@@ -17,6 +18,7 @@ export type AccountKeySpecifier = (
   | AccountKeySpecifier
 )[];
 export type AccountFieldPolicy = {
+  activeSubscription?: FieldPolicy<any> | FieldReadFunction<any>;
   agent?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   defaults?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2014,6 +2016,7 @@ export type PlatformLocationsKeySpecifier = (
   | 'releases'
   | 'security'
   | 'support'
+  | 'switchplan'
   | 'terms'
   | 'tips'
   | PlatformLocationsKeySpecifier
@@ -2040,6 +2043,7 @@ export type PlatformLocationsFieldPolicy = {
   releases?: FieldPolicy<any> | FieldReadFunction<any>;
   security?: FieldPolicy<any> | FieldReadFunction<any>;
   support?: FieldPolicy<any> | FieldReadFunction<any>;
+  switchplan?: FieldPolicy<any> | FieldReadFunction<any>;
   terms?: FieldPolicy<any> | FieldReadFunction<any>;
   tips?: FieldPolicy<any> | FieldReadFunction<any>;
 };

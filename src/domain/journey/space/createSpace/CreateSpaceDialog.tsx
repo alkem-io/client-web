@@ -35,7 +35,7 @@ import { TagCategoryValues, info } from '../../../../core/logging/sentry/log';
 import { compact } from 'lodash';
 
 interface FormValues extends SpaceEditFormValuesType {
-  planId: string;
+  licensePlanId: string;
 }
 
 const CreateSpaceDialog = () => {
@@ -64,7 +64,7 @@ const CreateSpaceDialog = () => {
     tagline: '',
     tagsets,
     hostId: '',
-    planId: '',
+    licensePlanId: '',
   };
 
   const validationSchema = yup.object().shape({
@@ -105,7 +105,7 @@ const CreateSpaceDialog = () => {
           collaborationData: {},
           tags: compact(values.tagsets?.reduce((acc: string[], tagset) => [...acc, ...tagset.tags], [])),
         },
-        planId: values.planId,
+        licensePlanId: values.licensePlanId,
       },
     });
 
@@ -116,7 +116,7 @@ const CreateSpaceDialog = () => {
         },
       });
       info(
-        `Space Created SpaceId:${newSpace.createAccount.spaceID} Plan:${values.planId} SpaceUrl:${spaceUrlData?.space.profile.url}`,
+        `Space Created SpaceId:${newSpace.createAccount.spaceID} Plan:${values.licensePlanId} SpaceUrl:${spaceUrlData?.space.profile.url}`,
         {
           category: TagCategoryValues.SPACE_CREATION,
           label: 'Space Created',
@@ -207,8 +207,8 @@ const CreateSpaceDialog = () => {
               <PlansTableDialog
                 onClose={handleClose}
                 open={plansTableDialogOpen}
-                onSelectPlan={planId => {
-                  setFieldValue('planId', planId);
+                onSelectPlan={licensePlanId => {
+                  setFieldValue('licensePlanId', licensePlanId);
                   handleSubmit();
                 }}
               />
