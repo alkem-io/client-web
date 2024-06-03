@@ -24,7 +24,7 @@ import {
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { gutters } from '../../../../../core/ui/grid/utils';
 import { ROUTE_HOME } from '../../../../platform/routes/constants';
-import { DeleteIcon } from '../SpaceSettings/icon/DeleteIcon';
+import DeleteIcon from '../SpaceSettings/icon/DeleteIcon';
 import SpaceProfileDeleteDialog from '../SpaceSettings/SpaceProfileDeleteDialog';
 import CreateVirtualContributorDialog, {
   VirtualContributorFormValues,
@@ -56,6 +56,7 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
   const [isOpenDeleteVCDialog, setIsOpenDeleteVCDialog] = useState(false);
   const openDeleteVCDialog = () => setIsOpenDeleteVCDialog(true);
   const closeDeleteVCDialog = () => setIsOpenDeleteVCDialog(false);
+  const [selectedVirtualContributorId, setSelectedVirtualContributorId] = useState<string | null>(null);
 
   const { data, loading: loadingAccount } = useSpaceAccountQuery({
     variables: { spaceId: journeyId },
@@ -128,6 +129,11 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
     });
   };
 
+  const initiateDeleteVC = (nameID: string) => {
+    setSelectedVirtualContributorId(nameID);
+    openDeleteVCDialog();
+  };
+
   const [deleteVirtualContributor, { loading: deletingVirtualContributor }] =
     useDeleteVirtualContributorOnAccountMutation({
       refetchQueries: [refetchSpaceSubspacesQuery({ spaceId: journeyId })],
@@ -138,7 +144,7 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
     await deleteVirtualContributor({
       variables: {
         virtualContributorData: {
-          ID: spaceData?.space?.account?.virtualContributors[0].nameID || '',
+          ID: selectedVirtualContributorId || '',
         },
       },
     });
@@ -180,12 +186,8 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
     [spaceData]
   );
 
-  const currentVirtualContributor = useMemo(() => {
-    if (spaceData?.space?.account?.id && spaceData?.space?.account?.virtualContributors) {
-      return spaceData?.space?.account?.virtualContributors[0];
-    }
-
-    return null;
+  const virtualContributors = useMemo(() => {
+    return spaceData?.space?.account?.virtualContributors ?? [];
   }, [spaceData]);
 
   const [createVirtualContributorOnAccount, { loading: loadingVCCreation }] =
@@ -216,6 +218,7 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
   };
 
   const loading = loadingAccount && deletingSpace;
+  const disabledVirtualCreation = virtualContributors.length > 0 || spaceDataLoading;
 
   return (
     <PageContent background="transparent">
@@ -344,20 +347,21 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
           <PageContentBlock columns={5} sx={{ gap: gutters(2) }}>
             <Gutters disablePadding alignItems={'flex-start'}>
               <BlockTitle>{t('pages.admin.space.settings.account.vc-section-title')}</BlockTitle>
-              {currentVirtualContributor && (
-                <ContributorOnAccountCard
-                  contributor={currentVirtualContributor}
-                  space={bokSpaceData}
-                  hasDelete={canCreateVirtualContributor}
-                  onDeleteClick={openDeleteVCDialog}
-                />
-              )}
+              {virtualContributors.length > 0 &&
+                virtualContributors?.map(vc => (
+                  <ContributorOnAccountCard
+                    contributor={vc}
+                    space={bokSpaceData}
+                    hasDelete={canCreateVirtualContributor}
+                    onDeleteClick={() => initiateDeleteVC(vc.nameID)}
+                  />
+                ))}
               {canCreateVirtualContributor && (
                 <Button
                   variant="outlined"
                   startIcon={<ControlPointIcon />}
                   onClick={openCreateVCDialog}
-                  disabled={!!currentVirtualContributor || spaceDataLoading}
+                  disabled={disabledVirtualCreation}
                 >
                   {t('pages.admin.space.settings.account.vc-create-button')}
                 </Button>
