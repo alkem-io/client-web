@@ -3,12 +3,10 @@ import WhiteboardTemplateForm, {
   WhiteboardTemplateFormSubmittedValuesWithPreviewImages,
   WhiteboardTemplateFormValues,
 } from './WhiteboardTemplateForm';
-import DialogWithGrid, { DialogFooter } from '../../../../../core/ui/dialog/DialogWithGrid';
-import DialogHeader, { DialogHeaderProps } from '../../../../../core/ui/dialog/DialogHeader';
+import { DialogHeaderProps } from '../../../../../core/ui/dialog/DialogHeader';
 import React from 'react';
-import { FormikSubmitButtonPure } from '../../../../shared/components/forms/FormikSubmitButton';
 import EmptyWhiteboard from '../../../../common/whiteboard/EmptyWhiteboard';
-import { DialogActions, DialogContent } from '@mui/material';
+import TemplateDialogBase from '../../../../collaboration/templates/templateDialog/TemplateDialogBase';
 
 export interface CreateWhiteboardTemplateDialogProps {
   open: boolean;
@@ -27,27 +25,9 @@ const CreateWhiteboardTemplateDialog = ({ open, onClose, onSubmit }: CreateWhite
   };
 
   return (
-    <DialogWithGrid columns={12} open={open} onClose={onClose}>
-      <DialogHeader
-        title={t('common.create-new-entity', { entity: t('templateLibrary.whiteboardTemplates.name') })}
-        onClose={onClose}
-      />
-      <DialogContent>
-        <WhiteboardTemplateForm
-          initialValues={initialValues}
-          onSubmit={onSubmit}
-          actions={formik => (
-            <DialogFooter>
-              <DialogActions>
-                <FormikSubmitButtonPure variant="contained" formik={formik} onClick={() => formik.handleSubmit()}>
-                  {t('common.create')}
-                </FormikSubmitButtonPure>
-              </DialogActions>
-            </DialogFooter>
-          )}
-        />
-      </DialogContent>
-    </DialogWithGrid>
+    <TemplateDialogBase open={open} onClose={onClose} templateTypeName={t('templateLibrary.whiteboardTemplates.name')}>
+      {({ actions }) => <WhiteboardTemplateForm initialValues={initialValues} onSubmit={onSubmit} actions={actions} />}
+    </TemplateDialogBase>
   );
 };
 
