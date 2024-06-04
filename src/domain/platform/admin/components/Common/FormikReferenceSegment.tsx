@@ -1,21 +1,21 @@
 import React, { FC } from 'react';
-import { PushFunc, RemoveFunc, useEditReference } from '../../../../common/reference/useEditReference';
 import { newReferenceName } from '../../../../common/reference/newReferenceName';
 import ReferenceSegment, { ReferenceSegmentProps } from './ReferenceSegment';
 import { useTranslation } from 'react-i18next';
-import References from '../../../../shared/components/References/References';
 
 interface Reference {
+  id?: string;
   name: string;
   uri: string;
   description?: string;
 }
 
-interface ProfileReferenceSegmentProps extends ReferenceSegmentProps {
-  setFieldValue: (field: string, value: Reference[], shouldValidate?: boolean | undefined) => void
+interface FormikReferenceSegmentProps extends Omit<ReferenceSegmentProps, 'references'> {
+  references: Reference[];
+  setFieldValue: (field: string, value: Reference[], shouldValidate?: boolean | undefined) => void;
 }
 
-export const ProfileReferenceSegment: FC<ProfileReferenceSegmentProps> = ({
+export const FormikReferenceSegment: FC<FormikReferenceSegmentProps> = ({
   fieldName = 'references',
   references,
   setFieldValue,
@@ -23,18 +23,38 @@ export const ProfileReferenceSegment: FC<ProfileReferenceSegmentProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const handleAdd = (pushFn) => {
-    const newRef = { name: newReferenceName(t, references.length), uri: '' };
-    setFieldValue(fieldName, [...(references ?? []), newRef])
-    pushFn(newRef);
-  };
-  const handleRemove = () => { };
+  const referencesWithId = (references ?? []).map(ref => ({
+    ...ref,
+    id: ref.id ?? '',
+  }));
 
+  const handleAdd = pushFn => {
+    const newRef = {
+      name: newReferenceName(t, references.length),
+      uri: '',
+      description: '',
+    };
+    setFieldValue(fieldName, [...(references ?? []), newRef]);
+    pushFn?.(newRef);
+  };
+
+  const handleRemove = (reference, removeFn) => {
+    setFieldValue(
+      fieldName,
+      (referencesWithId ?? []).filter(ref => ref !== reference)
+    );
+    removeFn?.(reference);
+  };
 
   return (
-    <ReferenceSegment onAdd={handleAdd} onRemove={handleRemove} references={references} {...rest} />
+    <ReferenceSegment
+      fieldName={fieldName}
+      onAdd={handleAdd}
+      onRemove={handleRemove}
+      references={referencesWithId}
+      {...rest}
+    />
   );
-
 };
 
-export default ProfileReferenceSegment;
+export default FormikReferenceSegment;

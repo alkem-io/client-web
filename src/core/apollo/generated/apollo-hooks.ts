@@ -18577,12 +18577,14 @@ export const CreateCommunityGuidelinesTemplateDocument = gql`
     $templatesSetId: UUID!
     $profile: CreateProfileInput!
     $guidelines: CreateCommunityGuidelinesInput!
+    $tags: [String!]
   ) {
     createCommunityGuidelinesTemplate(
       communityGuidelinesTemplateInput: {
         templatesSetID: $templatesSetId
         profile: $profile
         communityGuidelines: $guidelines
+        tags: $tags
       }
     ) {
       id
@@ -18610,6 +18612,7 @@ export type CreateCommunityGuidelinesTemplateMutationFn = Apollo.MutationFunctio
  *      templatesSetId: // value for 'templatesSetId'
  *      profile: // value for 'profile'
  *      guidelines: // value for 'guidelines'
+ *      tags: // value for 'tags'
  *   },
  * });
  */

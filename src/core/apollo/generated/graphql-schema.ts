@@ -23468,6 +23468,7 @@ export type CreateCommunityGuidelinesTemplateMutationVariables = Exact<{
   templatesSetId: Scalars['UUID'];
   profile: CreateProfileInput;
   guidelines: CreateCommunityGuidelinesInput;
+  tags?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
 }>;
 
 export type CreateCommunityGuidelinesTemplateMutation = {
