@@ -1,0 +1,77 @@
+query VirtualContributor ($id: UUID_NAMEID!) {
+  virtualContributor (ID: $id) {
+    id
+    nameID
+    bodyOfKnowledgeID
+    authorization {
+      id
+      myPrivileges
+    }
+    account {
+      id
+      spaceID
+      host {
+        id
+				profile {
+          id
+          displayName
+          tagline
+          avatar: visual(type: AVATAR) {
+            uri
+          }
+          location {
+            id
+            city
+            country
+          }
+        }
+      }
+    }
+    profile {
+      id
+      displayName
+      description
+      tagline
+      tagsets {
+        ...TagsetDetails
+      }
+      url
+      avatar: visual(type: AVATAR) {
+        ...VisualFull
+      }
+    }
+  }
+}
+
+query BodyOfKnowledgeProfile($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
+      id
+      profile {
+        id
+        displayName
+        tagline
+        url
+        avatar: visual(type: AVATAR) {
+          id
+          uri
+        }
+        cardBanner: visual(type: CARD) {
+          id
+          uri
+        }
+      }
+    }
+  }
+}
+
+mutation UpdateVirtualContributor($virtualContributorData: UpdateVirtualContributorInput!) {
+  updateVirtualContributor(virtualContributorData: $virtualContributorData) {
+    id
+    profile {
+      id
+      displayName
+      description
+    }
+  }
+}

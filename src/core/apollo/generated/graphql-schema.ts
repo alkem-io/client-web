@@ -2143,6 +2143,11 @@ export type IngestResult = {
   total?: Maybe<Scalars['Float']>;
 };
 
+export type IngestSpaceInput = {
+  /** The identifier for the Space to be ingested. */
+  spaceID: Scalars['UUID'];
+};
+
 export type InnovationFlow = {
   __typename?: 'InnovationFlow';
   /** The authorization rules for the entity */
@@ -2858,6 +2863,8 @@ export type Mutation = {
   grantCredentialToUser: User;
   /** Resets the interaction with the chat engine. */
   ingest: Scalars['Boolean'];
+  /** Triggers space ingestion. */
+  ingestSpace: Space;
   /** Invite an existing User to join the specified Community as a member. */
   inviteExistingUserForCommunityMembership: Array<Invitation>;
   /** Invite an external User to join the specified Community as a member. */
@@ -3318,6 +3325,10 @@ export type MutationGrantCredentialToOrganizationArgs = {
 
 export type MutationGrantCredentialToUserArgs = {
   grantCredentialData: GrantAuthorizationCredentialInput;
+};
+
+export type MutationIngestSpaceArgs = {
+  ingestSpaceData: IngestSpaceInput;
 };
 
 export type MutationInviteExistingUserForCommunityMembershipArgs = {
@@ -15611,16 +15622,45 @@ export type AvailableUserFragment = {
   profile: { __typename?: 'Profile'; id: string; displayName: string };
 };
 
-export type AvailableVirtualContributorsQueryVariables = Exact<{ [key: string]: never }>;
+export type AvailableVirtualContributorsQueryVariables = Exact<{
+  filterSpace?: InputMaybe<Scalars['Boolean']>;
+  filterSpaceId?: InputMaybe<Scalars['UUID']>;
+}>;
 
 export type AvailableVirtualContributorsQuery = {
   __typename?: 'Query';
-  virtualContributors: Array<{
+  lookup?: {
+    __typename?: 'LookupQueryResults';
+    space?:
+      | {
+          __typename?: 'Space';
+          id: string;
+          community: {
+            __typename?: 'Community';
+            id: string;
+            virtualContributorsInRole: Array<{
+              __typename?: 'VirtualContributor';
+              id: string;
+              nameID: string;
+              profile: { __typename?: 'Profile'; id: string; displayName: string };
+            }>;
+          };
+        }
+      | undefined;
+  };
+  virtualContributors?: Array<{
     __typename?: 'VirtualContributor';
     id: string;
     nameID: string;
     profile: { __typename?: 'Profile'; id: string; displayName: string };
   }>;
+};
+
+export type VirtualContributorNameFragment = {
+  __typename?: 'VirtualContributor';
+  id: string;
+  nameID: string;
+  profile: { __typename?: 'Profile'; id: string; displayName: string };
 };
 
 export type AddVirtualContributorToCommunityMutationVariables = Exact<{
@@ -18006,6 +18046,140 @@ export type UserOrganizationIdsQuery = {
   rolesUser: {
     __typename?: 'ContributorRoles';
     organizations: Array<{ __typename?: 'RolesResultOrganization'; id: string }>;
+  };
+};
+
+export type VirtualContributorQueryVariables = Exact<{
+  id: Scalars['UUID_NAMEID'];
+}>;
+
+export type VirtualContributorQuery = {
+  __typename?: 'Query';
+  virtualContributor: {
+    __typename?: 'VirtualContributor';
+    id: string;
+    nameID: string;
+    bodyOfKnowledgeID?: string | undefined;
+    authorization?:
+      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+      | undefined;
+    account?:
+      | {
+          __typename?: 'Account';
+          id: string;
+          spaceID: string;
+          host?:
+            | {
+                __typename?: 'Organization';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  tagline: string;
+                  avatar?: { __typename?: 'Visual'; uri: string } | undefined;
+                  location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                };
+              }
+            | {
+                __typename?: 'User';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  tagline: string;
+                  avatar?: { __typename?: 'Visual'; uri: string } | undefined;
+                  location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                };
+              }
+            | {
+                __typename?: 'VirtualContributor';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  tagline: string;
+                  avatar?: { __typename?: 'Visual'; uri: string } | undefined;
+                  location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                };
+              }
+            | undefined;
+        }
+      | undefined;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      description?: string | undefined;
+      tagline: string;
+      url: string;
+      tagsets?:
+        | Array<{
+            __typename?: 'Tagset';
+            id: string;
+            name: string;
+            tags: Array<string>;
+            allowedValues: Array<string>;
+            type: TagsetType;
+          }>
+        | undefined;
+      avatar?:
+        | {
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: string;
+            allowedTypes: Array<string>;
+            aspectRatio: number;
+            maxHeight: number;
+            maxWidth: number;
+            minHeight: number;
+            minWidth: number;
+            alternativeText?: string | undefined;
+          }
+        | undefined;
+    };
+  };
+};
+
+export type BodyOfKnowledgeProfileQueryVariables = Exact<{
+  spaceId: Scalars['UUID'];
+}>;
+
+export type BodyOfKnowledgeProfileQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    space?:
+      | {
+          __typename?: 'Space';
+          id: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            tagline: string;
+            url: string;
+            avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            cardBanner?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+          };
+        }
+      | undefined;
+  };
+};
+
+export type UpdateVirtualContributorMutationVariables = Exact<{
+  virtualContributorData: UpdateVirtualContributorInput;
+}>;
+
+export type UpdateVirtualContributorMutation = {
+  __typename?: 'Mutation';
+  updateVirtualContributor: {
+    __typename?: 'VirtualContributor';
+    id: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
   };
 };
 
@@ -20942,6 +21116,7 @@ export type SubspacePageFragment = {
 export type CreateNewSpaceMutationVariables = Exact<{
   hostId: Scalars['UUID_NAMEID'];
   spaceData: CreateSpaceInput;
+  licensePlanId?: InputMaybe<Scalars['UUID']>;
 }>;
 
 export type CreateNewSpaceMutation = {
@@ -21543,6 +21718,98 @@ export type BannerInnovationHubQuery = {
   };
 };
 
+export type SpaceAccountQueryVariables = Exact<{
+  spaceId: Scalars['UUID'];
+}>;
+
+export type SpaceAccountQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    space?:
+      | {
+          __typename?: 'Space';
+          id: string;
+          profile: { __typename?: 'Profile'; id: string; url: string };
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
+          account: {
+            __typename?: 'Account';
+            id: string;
+            host?:
+              | {
+                  __typename?: 'Organization';
+                  id: string;
+                  nameID: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    url: string;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                    location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                  };
+                }
+              | {
+                  __typename?: 'User';
+                  id: string;
+                  nameID: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    url: string;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                    location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                  };
+                }
+              | {
+                  __typename?: 'VirtualContributor';
+                  id: string;
+                  nameID: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    url: string;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                    location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                  };
+                }
+              | undefined;
+            license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
+            activeSubscription?:
+              | { __typename?: 'AccountSubscription'; name: LicenseCredential; expires?: Date | undefined }
+              | undefined;
+          };
+        }
+      | undefined;
+  };
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    licensing: {
+      __typename?: 'Licensing';
+      id: string;
+      plans: Array<{
+        __typename?: 'LicensePlan';
+        id: string;
+        name: string;
+        enabled: boolean;
+        sortOrder: number;
+        isFree: boolean;
+        pricePerMonth?: number | undefined;
+        licenseCredential: LicenseCredential;
+      }>;
+    };
+    configuration: {
+      __typename?: 'Config';
+      locations: { __typename?: 'PlatformLocations'; support: string; switchplan: string };
+    };
+  };
+};
+
 export type AdminSpaceChallengesPageQueryVariables = Exact<{
   spaceId: Scalars['UUID_NAMEID'];
 }>;
@@ -21886,6 +22153,70 @@ export type UpdateSpaceSettingsMutation = {
         inheritMembershipRights: boolean;
       };
     };
+  };
+};
+
+export type CreateVirtualContributorOnAccountMutationVariables = Exact<{
+  virtualContributorData: CreateVirtualContributorOnAccountInput;
+}>;
+
+export type CreateVirtualContributorOnAccountMutation = {
+  __typename?: 'Mutation';
+  createVirtualContributor: {
+    __typename?: 'VirtualContributor';
+    id: string;
+    profile: { __typename?: 'Profile'; id: string; url: string };
+  };
+};
+
+export type DeleteVirtualContributorOnAccountMutationVariables = Exact<{
+  virtualContributorData: DeleteVirtualContributorInput;
+}>;
+
+export type DeleteVirtualContributorOnAccountMutation = {
+  __typename?: 'Mutation';
+  deleteVirtualContributor: { __typename?: 'VirtualContributor'; id: string };
+};
+
+export type SpaceSubspacesQueryVariables = Exact<{
+  spaceId: Scalars['UUID_NAMEID'];
+}>;
+
+export type SpaceSubspacesQuery = {
+  __typename?: 'Query';
+  space: {
+    __typename?: 'Space';
+    id: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
+    account: {
+      __typename?: 'Account';
+      id: string;
+      authorization?:
+        | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+        | undefined;
+      virtualContributors: Array<{
+        __typename?: 'VirtualContributor';
+        id: string;
+        nameID: string;
+        bodyOfKnowledgeID?: string | undefined;
+        profile: {
+          __typename?: 'Profile';
+          displayName: string;
+          url: string;
+          avatar?: { __typename?: 'Visual'; uri: string } | undefined;
+        };
+      }>;
+    };
+    subspaces: Array<{
+      __typename?: 'Space';
+      id: string;
+      profile: {
+        __typename?: 'Profile';
+        id: string;
+        displayName: string;
+        avatar?: { __typename?: 'Visual'; uri: string } | undefined;
+      };
+    }>;
   };
 };
 
@@ -24363,6 +24694,7 @@ export type AdminVirtualContributorsQuery = {
       id: string;
       displayName: string;
       description?: string | undefined;
+      url: string;
       avatar?:
         | {
             __typename?: 'Visual';
@@ -24380,28 +24712,6 @@ export type AdminVirtualContributorsQuery = {
         | undefined;
     };
   }>;
-};
-
-export type CreateVirtualContributorMutationVariables = Exact<{
-  virtualContributorData: CreateVirtualContributorOnAccountInput;
-}>;
-
-export type CreateVirtualContributorMutation = {
-  __typename?: 'Mutation';
-  createVirtualContributor: { __typename?: 'VirtualContributor'; id: string };
-};
-
-export type UpdateVirtualContributorMutationVariables = Exact<{
-  virtualContributorData: UpdateVirtualContributorInput;
-}>;
-
-export type UpdateVirtualContributorMutation = {
-  __typename?: 'Mutation';
-  updateVirtualContributor: {
-    __typename?: 'VirtualContributor';
-    id: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
-  };
 };
 
 export type VirtualContributorAvailablePersonasQueryVariables = Exact<{ [key: string]: never }>;
