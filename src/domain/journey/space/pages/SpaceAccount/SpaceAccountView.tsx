@@ -34,12 +34,15 @@ import useNavigate from '../../../../../core/routing/useNavigate';
 import { PlanFeatures, PlanFooter, PlanName, PlanPrice } from '../../../../license/plans/ui/PlanCardsComponents';
 import { getPlanTranslations } from '../../../../license/plans/utils/getPlanTranslations';
 import RouterLink from '../../../../../core/ui/link/RouterLink';
+import useCommunityAdmin from '../../../../community/community/CommunityAdmin/useCommunityAdmin';
+import { useSpace } from '../../SpaceContext/useSpace';
 
 interface SpaceAccountPageProps {
   journeyId: string;
 }
 
 const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
+  const { communityId } = useSpace();
   const { t } = useTranslation();
   const planTranslations = getPlanTranslations(t);
   const notify = useNotification();
@@ -57,6 +60,8 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
   const openDeleteVCDialog = () => setIsOpenDeleteVCDialog(true);
   const closeDeleteVCDialog = () => setIsOpenDeleteVCDialog(false);
   const [selectedVirtualContributorId, setSelectedVirtualContributorId] = useState<string | null>(null);
+
+  const { permissions } = useCommunityAdmin({ communityId, spaceId: journeyId, journeyLevel: 0 });
 
   const { data, loading: loadingAccount } = useSpaceAccountQuery({
     variables: { spaceId: journeyId },
@@ -339,35 +344,37 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
                 )}
             </Gutters>
           </PageContentBlock>
-          <PageContentBlock columns={5} sx={{ gap: gutters(2) }}>
-            <Gutters disablePadding alignItems={'flex-start'}>
-              {virtualContributors.length > 0 &&
-                virtualContributors?.map(vc => (
+          {permissions.virtualContributorsEnabled && (
+            <PageContentBlock columns={5} sx={{ gap: gutters(2) }}>
+              <Gutters disablePadding alignItems={'flex-start'}>
+                {virtualContributors.length > 0 &&
+                  virtualContributors?.map(vc => (
+                    <>
+                      <BlockTitle>{t('pages.admin.space.settings.account.vc-section-title')}</BlockTitle>
+                      <ContributorOnAccountCard
+                        contributor={vc}
+                        space={bokSpaceData}
+                        hasDelete={canCreateVirtualContributor}
+                        onDeleteClick={() => initiateDeleteVC(vc.nameID)}
+                      />
+                    </>
+                  ))}
+                {canCreateVirtualContributor && (
                   <>
-                    <BlockTitle>{t('pages.admin.space.settings.account.vc-section-title')}</BlockTitle>
-                    <ContributorOnAccountCard
-                      contributor={vc}
-                      space={bokSpaceData}
-                      hasDelete={canCreateVirtualContributor}
-                      onDeleteClick={() => initiateDeleteVC(vc.nameID)}
-                    />
+                    <Button
+                      variant="outlined"
+                      startIcon={<ControlPointIcon />}
+                      onClick={openCreateVCDialog}
+                      disabled={disabledVirtualCreation}
+                    >
+                      {t('pages.admin.space.settings.account.vc-create-button')}
+                    </Button>
+                    {noSubspaces && <Caption>{t('virtualContributorSpaceSettings.noSubspacesInfo')}</Caption>}
                   </>
-                ))}
-              {canCreateVirtualContributor && (
-                <>
-                  <Button
-                    variant="outlined"
-                    startIcon={<ControlPointIcon />}
-                    onClick={openCreateVCDialog}
-                    disabled={disabledVirtualCreation}
-                  >
-                    {t('pages.admin.space.settings.account.vc-create-button')}
-                  </Button>
-                  {noSubspaces && <Caption>{t('virtualContributorSpaceSettings.noSubspacesInfo')}</Caption>}
-                </>
-              )}
-            </Gutters>
-          </PageContentBlock>
+                )}
+              </Gutters>
+            </PageContentBlock>
+          )}
           {canDelete && (
             <PageContentBlock sx={{ borderColor: errorColor }}>
               <PageContentBlockHeader sx={{ color: errorColor }} title={t('components.deleteSpace.title')} />
