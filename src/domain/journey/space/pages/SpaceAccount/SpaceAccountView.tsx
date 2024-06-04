@@ -163,20 +163,14 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
   const accountPrivileges = spaceData?.space?.account.authorization?.myPrivileges ?? [];
   const canCreateVirtualContributor = accountPrivileges?.includes(AuthorizationPrivilege.CreateVirtualContributor);
 
-  const subspaces = useMemo(() => {
-    const result =
+  const subspaces = useMemo(
+    () =>
       spaceData?.space?.subspaces.map(subspace => ({
         id: subspace.id,
         name: subspace?.profile.displayName,
-      })) ?? [];
-
-    result.push({
-      id: journeyId,
-      name: spaceData?.space?.profile.displayName || '',
-    });
-
-    return result;
-  }, [spaceData]);
+      })) ?? [],
+    [spaceData]
+  );
 
   const bokSpaceData = useMemo(
     () =>
@@ -218,7 +212,8 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
   };
 
   const loading = loadingAccount && deletingSpace;
-  const disabledVirtualCreation = virtualContributors.length > 0 || spaceDataLoading;
+  const noSubspaces = subspaces?.length < 1;
+  const disabledVirtualCreation = virtualContributors.length > 0 || spaceDataLoading || noSubspaces;
 
   return (
     <PageContent background="transparent">
@@ -346,25 +341,30 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
           </PageContentBlock>
           <PageContentBlock columns={5} sx={{ gap: gutters(2) }}>
             <Gutters disablePadding alignItems={'flex-start'}>
-              <BlockTitle>{t('pages.admin.space.settings.account.vc-section-title')}</BlockTitle>
               {virtualContributors.length > 0 &&
                 virtualContributors?.map(vc => (
-                  <ContributorOnAccountCard
-                    contributor={vc}
-                    space={bokSpaceData}
-                    hasDelete={canCreateVirtualContributor}
-                    onDeleteClick={() => initiateDeleteVC(vc.nameID)}
-                  />
+                  <>
+                    <BlockTitle>{t('pages.admin.space.settings.account.vc-section-title')}</BlockTitle>
+                    <ContributorOnAccountCard
+                      contributor={vc}
+                      space={bokSpaceData}
+                      hasDelete={canCreateVirtualContributor}
+                      onDeleteClick={() => initiateDeleteVC(vc.nameID)}
+                    />
+                  </>
                 ))}
               {canCreateVirtualContributor && (
-                <Button
-                  variant="outlined"
-                  startIcon={<ControlPointIcon />}
-                  onClick={openCreateVCDialog}
-                  disabled={disabledVirtualCreation}
-                >
-                  {t('pages.admin.space.settings.account.vc-create-button')}
-                </Button>
+                <>
+                  <Button
+                    variant="outlined"
+                    startIcon={<ControlPointIcon />}
+                    onClick={openCreateVCDialog}
+                    disabled={disabledVirtualCreation}
+                  >
+                    {t('pages.admin.space.settings.account.vc-create-button')}
+                  </Button>
+                  {noSubspaces && <Caption>{t('virtualContributorSpaceSettings.noSubspacesInfo')}</Caption>}
+                </>
               )}
             </Gutters>
           </PageContentBlock>
