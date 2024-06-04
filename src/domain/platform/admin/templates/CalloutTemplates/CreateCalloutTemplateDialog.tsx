@@ -1,15 +1,11 @@
 import { useTranslation } from 'react-i18next';
-import DialogWithGrid, { DialogFooter } from '../../../../../core/ui/dialog/DialogWithGrid';
-import DialogHeader, { DialogHeaderProps } from '../../../../../core/ui/dialog/DialogHeader';
+import { DialogHeaderProps } from '../../../../../core/ui/dialog/DialogHeader';
 import React from 'react';
-import { FormikSubmitButtonPure } from '../../../../shared/components/forms/FormikSubmitButton';
 import CalloutTemplateForm, {
   CalloutTemplateFormSubmittedValues,
   CalloutTemplateFormValues,
 } from './CalloutTemplateForm';
-import { DialogContent } from '@mui/material';
-import { gutters } from '../../../../../core/ui/grid/utils';
-import { Actions } from '../../../../../core/ui/actions/Actions';
+import TemplateDialogBase from '../../../../collaboration/templates/templateDialog/TemplateDialogBase';
 
 export interface CreateCalloutTemplateDialogProps {
   open: boolean;
@@ -24,30 +20,30 @@ const CreateCalloutTemplateDialog = ({ open, onClose, onSubmit }: CreateCalloutT
     displayName: '',
     description: '',
     tags: [],
+    framing: {
+      profile: {
+        displayName: '',
+        description: '',
+      },
+      tags: [],
+      whiteboard: {
+        content: '',
+        profileData: {
+          displayName: '',
+          description: '',
+        },
+      },
+    },
+    contributionDefaults: {
+      postDescription: '',
+      whiteboardContent: '',
+    },
   };
 
   return (
-    <DialogWithGrid open={open} columns={12} onClose={onClose}>
-      <DialogHeader
-        title={t('common.create-new-entity', { entity: t('templateLibrary.calloutTemplates.name') })}
-        onClose={onClose}
-      />
-      <DialogContent>
-        <CalloutTemplateForm
-          initialValues={initialValues}
-          onSubmit={onSubmit}
-          actions={formik => (
-            <DialogFooter>
-              <Actions padding={gutters()} justifyContent="end">
-                <FormikSubmitButtonPure formik={formik} variant="contained" onClick={() => formik.handleSubmit()}>
-                  {t('common.create')}
-                </FormikSubmitButtonPure>
-              </Actions>
-            </DialogFooter>
-          )}
-        />
-      </DialogContent>
-    </DialogWithGrid>
+    <TemplateDialogBase open={open} onClose={onClose} templateTypeName={t('templateLibrary.calloutTemplates.name')}>
+      {({ actions }) => <CalloutTemplateForm initialValues={initialValues} onSubmit={onSubmit} actions={actions} />}
+    </TemplateDialogBase>
   );
 };
 

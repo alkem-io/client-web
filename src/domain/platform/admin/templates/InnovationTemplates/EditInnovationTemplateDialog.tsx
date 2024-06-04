@@ -6,7 +6,6 @@ import InnovationFlowTemplateForm, {
 } from './InnovationFlowTemplateForm';
 import { DialogHeaderProps } from '../../../../../core/ui/dialog/DialogHeader';
 import React from 'react';
-import { DialogContent } from '@mui/material';
 import TemplateDialogBase from '../../../../collaboration/templates/templateDialog/TemplateDialogBase';
 
 interface EditInnovationTemplateDialogProps {
@@ -52,11 +51,7 @@ const EditInnovationTemplateDialog = ({
       onDelete={onDelete}
       editMode
     >
-      {({ actions }) => (
-        <DialogContent>
-          <InnovationFlowTemplateForm initialValues={values} onSubmit={handleSubmit} actions={actions} />
-        </DialogContent>
-      )}
+      {({ actions }) => <InnovationFlowTemplateForm initialValues={values} onSubmit={handleSubmit} actions={actions} />}
     </TemplateDialogBase>
   );
 };
