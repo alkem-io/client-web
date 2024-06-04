@@ -36,6 +36,8 @@ export type Apm = {
 
 export type Account = {
   __typename?: 'Account';
+  /** The "highest" subscription active for this Account. */
+  activeSubscription?: Maybe<AccountSubscription>;
   /** The Agent representing this Account. */
   agent: Agent;
   /** The authorization rules for the entity */
@@ -52,11 +54,23 @@ export type Account = {
   license: License;
   /** The ID for the root space for the Account . */
   spaceID: Scalars['String'];
+  /** The subscriptions active for this Account. */
+  subscriptions: Array<AccountSubscription>;
+  /** The virtual contributors for this Account. */
+  virtualContributors: Array<VirtualContributor>;
 };
 
 export type AccountAuthorizationResetInput = {
   /** The identifier of the Account whose Authorization Policy should be reset. */
   accountID: Scalars['UUID_NAMEID'];
+};
+
+export type AccountSubscription = {
+  __typename?: 'AccountSubscription';
+  /** The expiry date of this subscription, null if it does never expire. */
+  expires?: Maybe<Scalars['DateTime']>;
+  /** The name of the Subscription. */
+  name: LicenseCredential;
 };
 
 export type ActivityCreatedSubscriptionInput = {
@@ -748,6 +762,7 @@ export enum AuthorizationPrivilege {
 }
 
 export enum BodyOfKnowledgeType {
+  Other = 'OTHER',
   Space = 'SPACE',
 }
 
@@ -1407,8 +1422,8 @@ export type ConvertSubsubspaceToSubspaceInput = {
 export type CreateAccountInput = {
   /** The host Organization or User for the account */
   hostID: Scalars['UUID_NAMEID'];
-  /** The plan selected for the account */
-  planID?: InputMaybe<Scalars['UUID']>;
+  /** The license plan selected for the account */
+  licensePlanID?: InputMaybe<Scalars['UUID']>;
   /** The root Space to be created. */
   spaceData: CreateSpaceInput;
 };
@@ -1725,12 +1740,12 @@ export type CreateUserInput = {
 
 export type CreateVirtualContributorOnAccountInput = {
   accountID: Scalars['UUID'];
-  bodyOfKnowledgeID: Scalars['UUID'];
-  bodyOfKnowledgeType: BodyOfKnowledgeType;
+  bodyOfKnowledgeID?: InputMaybe<Scalars['UUID']>;
+  bodyOfKnowledgeType?: InputMaybe<BodyOfKnowledgeType>;
   /** A readable identifier, unique within the containing scope. */
   nameID: Scalars['NameID'];
   profileData: CreateProfileInput;
-  virtualPersonaID: Scalars['UUID'];
+  virtualPersonaID?: InputMaybe<Scalars['UUID']>;
 };
 
 export type CreateVirtualPersonaInput = {
@@ -1738,7 +1753,7 @@ export type CreateVirtualPersonaInput = {
   /** A readable identifier, unique within the containing scope. */
   nameID: Scalars['NameID'];
   profileData: CreateProfileInput;
-  prompt: Scalars['JSON'];
+  prompt?: InputMaybe<Scalars['JSON']>;
 };
 
 export type CreateWhiteboardInput = {
@@ -1768,7 +1783,7 @@ export type Credential = {
   /** The User issuing the credential */
   issuer?: Maybe<Scalars['UUID']>;
   resourceID: Scalars['String'];
-  type: AuthorizationCredential;
+  type: CredentialType;
 };
 
 export type CredentialDefinition = {
@@ -1795,6 +1810,31 @@ export type CredentialMetadataOutput = {
   uniqueType: Scalars['String'];
 };
 
+export enum CredentialType {
+  AccountHost = 'ACCOUNT_HOST',
+  BetaTester = 'BETA_TESTER',
+  GlobalAdmin = 'GLOBAL_ADMIN',
+  GlobalCommunityRead = 'GLOBAL_COMMUNITY_READ',
+  GlobalLicenseManager = 'GLOBAL_LICENSE_MANAGER',
+  GlobalRegistered = 'GLOBAL_REGISTERED',
+  GlobalSpacesReader = 'GLOBAL_SPACES_READER',
+  GlobalSupport = 'GLOBAL_SUPPORT',
+  InnovationPackProvider = 'INNOVATION_PACK_PROVIDER',
+  LicenseSpaceEnterprise = 'LICENSE_SPACE_ENTERPRISE',
+  LicenseSpaceFree = 'LICENSE_SPACE_FREE',
+  LicenseSpacePlus = 'LICENSE_SPACE_PLUS',
+  LicenseSpacePremium = 'LICENSE_SPACE_PREMIUM',
+  OrganizationAdmin = 'ORGANIZATION_ADMIN',
+  OrganizationAssociate = 'ORGANIZATION_ASSOCIATE',
+  OrganizationOwner = 'ORGANIZATION_OWNER',
+  SpaceAdmin = 'SPACE_ADMIN',
+  SpaceLead = 'SPACE_LEAD',
+  SpaceMember = 'SPACE_MEMBER',
+  SpaceSubspaceAdmin = 'SPACE_SUBSPACE_ADMIN',
+  UserGroupMember = 'USER_GROUP_MEMBER',
+  UserSelfManagement = 'USER_SELF_MANAGEMENT',
+}
+
 export type DeleteActorGroupInput = {
   ID: Scalars['UUID'];
 };
@@ -1820,6 +1860,10 @@ export type DeleteCalloutTemplateInput = {
 };
 
 export type DeleteCollaborationInput = {
+  ID: Scalars['UUID'];
+};
+
+export type DeleteCommunityGuidelinesTemplateInput = {
   ID: Scalars['UUID'];
 };
 
@@ -2299,6 +2343,13 @@ export type License = {
   visibility: SpaceVisibility;
 };
 
+export enum LicenseCredential {
+  LicenseSpaceEnterprise = 'LICENSE_SPACE_ENTERPRISE',
+  LicenseSpaceFree = 'LICENSE_SPACE_FREE',
+  LicenseSpacePlus = 'LICENSE_SPACE_PLUS',
+  LicenseSpacePremium = 'LICENSE_SPACE_PREMIUM',
+}
+
 export type LicenseFeatureFlag = {
   __typename?: 'LicenseFeatureFlag';
   /** Is this feature flag enabled? */
@@ -2321,6 +2372,8 @@ export type LicensePlan = {
   id: Scalars['UUID'];
   /** Is this plan free? */
   isFree: Scalars['Boolean'];
+  /** The credential to represent this plan */
+  licenseCredential: LicenseCredential;
   /** The name of the License Plan */
   name: Scalars['String'];
   /** The price per month of this plan. */
@@ -2362,6 +2415,8 @@ export type Licensing = {
   __typename?: 'Licensing';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
+  /** The base License Plan assigned to all Accounts in use on the platform. */
+  basePlan: LicensePlan;
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** The License Plans in use on the platform. */
@@ -2743,6 +2798,8 @@ export type Mutation = {
   deleteCalloutTemplate: CalloutTemplate;
   /** Delete Collaboration. */
   deleteCollaboration: Collaboration;
+  /** Deletes the specified CommunityGuidelines Template. */
+  deleteCommunityGuidelinesTemplate: CommunityGuidelinesTemplate;
   /** Deletes the specified Discussion. */
   deleteDiscussion: Discussion;
   /** Deletes the specified Document. */
@@ -2865,6 +2922,8 @@ export type Mutation = {
   updateCommunityApplicationForm: Community;
   /** Updates the CommunityGuidelines. */
   updateCommunityGuidelines: CommunityGuidelines;
+  /** Updates the specified CommunityGuidelinesTemplate. */
+  updateCommunityGuidelinesTemplate: CommunityGuidelinesTemplate;
   /** Updates the specified Discussion. */
   updateDiscussion: Discussion;
   /** Updates the specified Document. */
@@ -2923,6 +2982,8 @@ export type Mutation = {
   updateUserPlatformSettings: User;
   /** Updates the specified VirtualContributor. */
   updateVirtualContributor: VirtualContributor;
+  /** Update VirtualContributor Platform Settings. */
+  updateVirtualContributorPlatformSettings: VirtualContributor;
   /** Updates the specified VirtualPersona. */
   updateVirtualPersona: VirtualPersona;
   /** Updates the image URI for the specified Visual. */
@@ -3141,6 +3202,10 @@ export type MutationDeleteCalloutTemplateArgs = {
 
 export type MutationDeleteCollaborationArgs = {
   deleteData: DeleteCollaborationInput;
+};
+
+export type MutationDeleteCommunityGuidelinesTemplateArgs = {
+  deleteData: DeleteCommunityGuidelinesTemplateInput;
 };
 
 export type MutationDeleteDiscussionArgs = {
@@ -3379,6 +3444,10 @@ export type MutationUpdateCommunityGuidelinesArgs = {
   communityGuidelinesData: UpdateCommunityGuidelinesInput;
 };
 
+export type MutationUpdateCommunityGuidelinesTemplateArgs = {
+  communityGuidelinesTemplateInput: UpdateCommunityGuidelinesTemplateInput;
+};
+
 export type MutationUpdateDiscussionArgs = {
   updateData: UpdateDiscussionInput;
 };
@@ -3493,6 +3562,10 @@ export type MutationUpdateUserPlatformSettingsArgs = {
 
 export type MutationUpdateVirtualContributorArgs = {
   virtualContributorData: UpdateVirtualContributorInput;
+};
+
+export type MutationUpdateVirtualContributorPlatformSettingsArgs = {
+  updateData: UpdateVirtualContributorPlatformSettingsInput;
 };
 
 export type MutationUpdateVirtualPersonaArgs = {
@@ -3780,6 +3853,8 @@ export type PlatformLocations = {
   security: Scalars['String'];
   /** URL where users can get support for the platform */
   support: Scalars['String'];
+  /** URL for the link Contact in the HomePage to switch between plans */
+  switchplan: Scalars['String'];
   /** URL to the terms of usage for the platform */
   terms: Scalars['String'];
   /** URL where users can get tips and tricks */
@@ -5133,6 +5208,19 @@ export type UpdateCommunityGuidelinesInput = {
   profile: UpdateProfileInput;
 };
 
+export type UpdateCommunityGuidelinesOfTemplateInput = {
+  /** The Profile for this community guidelines. */
+  profile: UpdateProfileInput;
+};
+
+export type UpdateCommunityGuidelinesTemplateInput = {
+  ID: Scalars['UUID'];
+  /** The Community guidelines to associate with this template. */
+  communityGuidelines?: InputMaybe<UpdateCommunityGuidelinesOfTemplateInput>;
+  /** The Profile of the Template. */
+  profile?: InputMaybe<UpdateProfileInput>;
+};
+
 export type UpdateContextInput = {
   impact?: InputMaybe<Scalars['Markdown']>;
   vision?: InputMaybe<Scalars['Markdown']>;
@@ -5471,6 +5559,12 @@ export type UpdateVirtualContributorInput = {
   profileData?: InputMaybe<UpdateProfileInput>;
 };
 
+export type UpdateVirtualContributorPlatformSettingsInput = {
+  ID: Scalars['UUID'];
+  /** An Account ID associated with the VirtualContributor */
+  accountID: Scalars['UUID'];
+};
+
 export type UpdateVirtualPersonaInput = {
   ID: Scalars['UUID'];
   engine: VirtualContributorEngine;
@@ -5478,7 +5572,7 @@ export type UpdateVirtualPersonaInput = {
   nameID?: InputMaybe<Scalars['NameID']>;
   /** The Profile of this entity. */
   profileData?: InputMaybe<UpdateProfileInput>;
-  prompt: Scalars['JSON'];
+  prompt?: InputMaybe<Scalars['JSON']>;
 };
 
 export type UpdateVisualInput = {
@@ -5652,13 +5746,15 @@ export type VerifiedCredentialClaim = {
 export type VirtualContributor = Contributor & {
   __typename?: 'VirtualContributor';
   /** The account under which the virtual contributor was created */
-  account: Account;
+  account?: Maybe<Account>;
   /** The Agent representing this User. */
   agent: Agent;
   /** The authorization rules for the Contributor */
   authorization?: Maybe<Authorization>;
+  /** The body of knowledge ID used for the Virtual Contributor */
+  bodyOfKnowledgeID?: Maybe<Scalars['UUID']>;
   /** The body of knowledge type used for the Virtual Contributor */
-  bodyOfKnowledgeType: BodyOfKnowledgeType;
+  bodyOfKnowledgeType?: Maybe<BodyOfKnowledgeType>;
   /** The ID of the Contributor */
   id: Scalars['UUID'];
   /** A name identifier of the Contributor, unique within a given scope. */
@@ -5672,6 +5768,7 @@ export type VirtualContributor = Contributor & {
 };
 
 export enum VirtualContributorEngine {
+  CommunityManager = 'COMMUNITY_MANAGER',
   Expert = 'EXPERT',
   Guidance = 'GUIDANCE',
 }
@@ -5690,6 +5787,8 @@ export type VirtualPersona = {
   nameID: Scalars['NameID'];
   /** The Profile for the VirtualPersona. */
   profile: Profile;
+  /** The prompt used by this Virtual Persona */
+  prompt: Scalars['String'];
 };
 
 export enum VirtualPersonaAccessMode {
@@ -5939,7 +6038,7 @@ export type UserAgentSsiFragment = {
     id: string;
     did?: string | undefined;
     credentials?:
-      | Array<{ __typename?: 'Credential'; id: string; resourceID: string; type: AuthorizationCredential }>
+      | Array<{ __typename?: 'Credential'; id: string; resourceID: string; type: CredentialType }>
       | undefined;
     verifiedCredentials?:
       | Array<{
@@ -5972,7 +6071,7 @@ export type UserSsiQuery = {
             id: string;
             did?: string | undefined;
             credentials?:
-              | Array<{ __typename?: 'Credential'; id: string; resourceID: string; type: AuthorizationCredential }>
+              | Array<{ __typename?: 'Credential'; id: string; resourceID: string; type: CredentialType }>
               | undefined;
             verifiedCredentials?:
               | Array<{
@@ -11409,6 +11508,310 @@ export type TemplateCardProfileInfoFragment = {
   visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
 };
 
+export type CalloutTemplatePreviewQueryVariables = Exact<{
+  calloutTemplateId: Scalars['UUID'];
+}>;
+
+export type CalloutTemplatePreviewQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    calloutTemplate?:
+      | {
+          __typename?: 'CalloutTemplate';
+          id: string;
+          type: CalloutType;
+          framing: {
+            __typename?: 'CalloutFraming';
+            id: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              description?: string | undefined;
+              tagset?:
+                | {
+                    __typename?: 'Tagset';
+                    id: string;
+                    name: string;
+                    tags: Array<string>;
+                    allowedValues: Array<string>;
+                    type: TagsetType;
+                  }
+                | undefined;
+              storageBucket: { __typename?: 'StorageBucket'; id: string };
+            };
+            whiteboard?:
+              | {
+                  __typename?: 'Whiteboard';
+                  id: string;
+                  nameID: string;
+                  createdDate: Date;
+                  contentUpdatePolicy: ContentUpdatePolicy;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    url: string;
+                    displayName: string;
+                    description?: string | undefined;
+                    visual?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: string;
+                          allowedTypes: Array<string>;
+                          aspectRatio: number;
+                          maxHeight: number;
+                          maxWidth: number;
+                          minHeight: number;
+                          minWidth: number;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                    preview?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: string;
+                          allowedTypes: Array<string>;
+                          aspectRatio: number;
+                          maxHeight: number;
+                          maxWidth: number;
+                          minHeight: number;
+                          minWidth: number;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                    tagset?:
+                      | {
+                          __typename?: 'Tagset';
+                          id: string;
+                          name: string;
+                          tags: Array<string>;
+                          allowedValues: Array<string>;
+                          type: TagsetType;
+                        }
+                      | undefined;
+                    storageBucket: { __typename?: 'StorageBucket'; id: string };
+                  };
+                  authorization?:
+                    | {
+                        __typename?: 'Authorization';
+                        id: string;
+                        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                        anonymousReadAccess: boolean;
+                      }
+                    | undefined;
+                  createdBy?:
+                    | {
+                        __typename?: 'User';
+                        id: string;
+                        profile: {
+                          __typename?: 'Profile';
+                          id: string;
+                          displayName: string;
+                          url: string;
+                          location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
+                          avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                        };
+                      }
+                    | undefined;
+                }
+              | undefined;
+          };
+          contributionPolicy: { __typename?: 'CalloutContributionPolicy'; state: CalloutState };
+          contributionDefaults: {
+            __typename?: 'CalloutContributionDefaults';
+            id: string;
+            postDescription?: string | undefined;
+            whiteboardContent?: string | undefined;
+          };
+        }
+      | undefined;
+  };
+};
+
+export type CalloutTemplatePreviewFragment = {
+  __typename?: 'CalloutTemplate';
+  id: string;
+  type: CalloutType;
+  framing: {
+    __typename?: 'CalloutFraming';
+    id: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      description?: string | undefined;
+      tagset?:
+        | {
+            __typename?: 'Tagset';
+            id: string;
+            name: string;
+            tags: Array<string>;
+            allowedValues: Array<string>;
+            type: TagsetType;
+          }
+        | undefined;
+      storageBucket: { __typename?: 'StorageBucket'; id: string };
+    };
+    whiteboard?:
+      | {
+          __typename?: 'Whiteboard';
+          id: string;
+          nameID: string;
+          createdDate: Date;
+          contentUpdatePolicy: ContentUpdatePolicy;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            url: string;
+            displayName: string;
+            description?: string | undefined;
+            visual?:
+              | {
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: string;
+                  allowedTypes: Array<string>;
+                  aspectRatio: number;
+                  maxHeight: number;
+                  maxWidth: number;
+                  minHeight: number;
+                  minWidth: number;
+                  alternativeText?: string | undefined;
+                }
+              | undefined;
+            preview?:
+              | {
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: string;
+                  allowedTypes: Array<string>;
+                  aspectRatio: number;
+                  maxHeight: number;
+                  maxWidth: number;
+                  minHeight: number;
+                  minWidth: number;
+                  alternativeText?: string | undefined;
+                }
+              | undefined;
+            tagset?:
+              | {
+                  __typename?: 'Tagset';
+                  id: string;
+                  name: string;
+                  tags: Array<string>;
+                  allowedValues: Array<string>;
+                  type: TagsetType;
+                }
+              | undefined;
+            storageBucket: { __typename?: 'StorageBucket'; id: string };
+          };
+          authorization?:
+            | {
+                __typename?: 'Authorization';
+                id: string;
+                myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                anonymousReadAccess: boolean;
+              }
+            | undefined;
+          createdBy?:
+            | {
+                __typename?: 'User';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  url: string;
+                  location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              }
+            | undefined;
+        }
+      | undefined;
+  };
+  contributionPolicy: { __typename?: 'CalloutContributionPolicy'; state: CalloutState };
+  contributionDefaults: {
+    __typename?: 'CalloutContributionDefaults';
+    id: string;
+    postDescription?: string | undefined;
+    whiteboardContent?: string | undefined;
+  };
+};
+
+export type WhiteboardTemplateContentQueryVariables = Exact<{
+  whiteboardTemplateId: Scalars['UUID'];
+}>;
+
+export type WhiteboardTemplateContentQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    whiteboardTemplate?:
+      | {
+          __typename?: 'WhiteboardTemplate';
+          id: string;
+          content: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            url: string;
+            displayName: string;
+            description?: string | undefined;
+            visual?:
+              | {
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: string;
+                  allowedTypes: Array<string>;
+                  aspectRatio: number;
+                  maxHeight: number;
+                  maxWidth: number;
+                  minHeight: number;
+                  minWidth: number;
+                  alternativeText?: string | undefined;
+                }
+              | undefined;
+            preview?:
+              | {
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: string;
+                  allowedTypes: Array<string>;
+                  aspectRatio: number;
+                  maxHeight: number;
+                  maxWidth: number;
+                  minHeight: number;
+                  minWidth: number;
+                  alternativeText?: string | undefined;
+                }
+              | undefined;
+            tagset?:
+              | {
+                  __typename?: 'Tagset';
+                  id: string;
+                  name: string;
+                  tags: Array<string>;
+                  allowedValues: Array<string>;
+                  type: TagsetType;
+                }
+              | undefined;
+            storageBucket: { __typename?: 'StorageBucket'; id: string };
+          };
+        }
+      | undefined;
+  };
+};
+
 export type WhiteboardTemplateCardFragment = {
   __typename?: 'WhiteboardTemplate';
   id: string;
@@ -14662,7 +15065,7 @@ export type CommunityPageMembersFragment = {
     __typename?: 'Agent';
     id: string;
     credentials?:
-      | Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
+      | Array<{ __typename?: 'Credential'; id: string; type: CredentialType; resourceID: string }>
       | undefined;
   };
   profile: {
@@ -15425,7 +15828,7 @@ export type ContributorsPageUsersQuery = {
         __typename?: 'Agent';
         id: string;
         credentials?:
-          | Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
+          | Array<{ __typename?: 'Credential'; id: string; type: CredentialType; resourceID: string }>
           | undefined;
       };
       userProfile: {
@@ -15505,7 +15908,7 @@ export type UserContributorPaginatedFragment = {
       __typename?: 'Agent';
       id: string;
       credentials?:
-        | Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
+        | Array<{ __typename?: 'Credential'; id: string; type: CredentialType; resourceID: string }>
         | undefined;
     };
     userProfile: {
@@ -15543,7 +15946,7 @@ export type UserContributorFragment = {
     __typename?: 'Agent';
     id: string;
     credentials?:
-      | Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
+      | Array<{ __typename?: 'Credential'; id: string; type: CredentialType; resourceID: string }>
       | undefined;
   };
   userProfile: {
@@ -16672,7 +17075,7 @@ export type UserAgentFragment = {
     id: string;
     did?: string | undefined;
     credentials?:
-      | Array<{ __typename?: 'Credential'; id: string; resourceID: string; type: AuthorizationCredential }>
+      | Array<{ __typename?: 'Credential'; id: string; resourceID: string; type: CredentialType }>
       | undefined;
   };
 };
@@ -16689,7 +17092,7 @@ export type UserDetailsFragment = {
   accountUpn: string;
   agent: {
     __typename?: 'Agent';
-    credentials?: Array<{ __typename?: 'Credential'; type: AuthorizationCredential; resourceID: string }> | undefined;
+    credentials?: Array<{ __typename?: 'Credential'; type: CredentialType; resourceID: string }> | undefined;
   };
   profile: {
     __typename?: 'Profile';
@@ -16802,7 +17205,7 @@ export type CreateUserMutation = {
     accountUpn: string;
     agent: {
       __typename?: 'Agent';
-      credentials?: Array<{ __typename?: 'Credential'; type: AuthorizationCredential; resourceID: string }> | undefined;
+      credentials?: Array<{ __typename?: 'Credential'; type: CredentialType; resourceID: string }> | undefined;
     };
     profile: {
       __typename?: 'Profile';
@@ -16859,7 +17262,7 @@ export type CreateUserNewRegistrationMutation = {
     accountUpn: string;
     agent: {
       __typename?: 'Agent';
-      credentials?: Array<{ __typename?: 'Credential'; type: AuthorizationCredential; resourceID: string }> | undefined;
+      credentials?: Array<{ __typename?: 'Credential'; type: CredentialType; resourceID: string }> | undefined;
     };
     profile: {
       __typename?: 'Profile';
@@ -16994,7 +17397,7 @@ export type UpdateUserMutation = {
     accountUpn: string;
     agent: {
       __typename?: 'Agent';
-      credentials?: Array<{ __typename?: 'Credential'; type: AuthorizationCredential; resourceID: string }> | undefined;
+      credentials?: Array<{ __typename?: 'Credential'; type: CredentialType; resourceID: string }> | undefined;
     };
     profile: {
       __typename?: 'Profile';
@@ -17065,7 +17468,7 @@ export type UserQuery = {
       id: string;
       did?: string | undefined;
       credentials?:
-        | Array<{ __typename?: 'Credential'; type: AuthorizationCredential; resourceID: string; id: string }>
+        | Array<{ __typename?: 'Credential'; type: CredentialType; resourceID: string; id: string }>
         | undefined;
     };
     profile: {
@@ -17155,7 +17558,7 @@ export type UserProfileQuery = {
       id: string;
       did?: string | undefined;
       credentials?:
-        | Array<{ __typename?: 'Credential'; type: AuthorizationCredential; resourceID: string; id: string }>
+        | Array<{ __typename?: 'Credential'; type: CredentialType; resourceID: string; id: string }>
         | undefined;
     };
     profile: {
@@ -17290,7 +17693,7 @@ export type UserProviderQuery = {
             id: string;
             did?: string | undefined;
             credentials?:
-              | Array<{ __typename?: 'Credential'; type: AuthorizationCredential; resourceID: string; id: string }>
+              | Array<{ __typename?: 'Credential'; type: CredentialType; resourceID: string; id: string }>
               | undefined;
           };
           profile: {
@@ -20539,7 +20942,6 @@ export type SubspacePageFragment = {
 export type CreateNewSpaceMutationVariables = Exact<{
   hostId: Scalars['UUID_NAMEID'];
   spaceData: CreateSpaceInput;
-  planId?: InputMaybe<Scalars['UUID']>;
 }>;
 
 export type CreateNewSpaceMutation = {
@@ -23013,6 +23415,68 @@ export type ProfileInfoWithVisualFragment = {
     | undefined;
 };
 
+export type CalloutTemplateFramingDefaultContributionsQueryVariables = Exact<{
+  templateId: Scalars['UUID'];
+}>;
+
+export type CalloutTemplateFramingDefaultContributionsQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    calloutTemplate?:
+      | {
+          __typename?: 'CalloutTemplate';
+          id: string;
+          type: CalloutType;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            description?: string | undefined;
+            tagset?:
+              | {
+                  __typename?: 'Tagset';
+                  id: string;
+                  name: string;
+                  tags: Array<string>;
+                  allowedValues: Array<string>;
+                  type: TagsetType;
+                }
+              | undefined;
+          };
+          framing: {
+            __typename?: 'CalloutFraming';
+            id: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              description?: string | undefined;
+              tagset?:
+                | {
+                    __typename?: 'Tagset';
+                    id: string;
+                    name: string;
+                    tags: Array<string>;
+                    allowedValues: Array<string>;
+                    type: TagsetType;
+                  }
+                | undefined;
+              storageBucket: { __typename?: 'StorageBucket'; id: string };
+            };
+            whiteboard?: { __typename?: 'Whiteboard'; id: string; content: string } | undefined;
+          };
+          contributionDefaults: {
+            __typename?: 'CalloutContributionDefaults';
+            id: string;
+            postDescription?: string | undefined;
+            whiteboardContent?: string | undefined;
+          };
+        }
+      | undefined;
+  };
+};
+
 export type CreateCalloutTemplateMutationVariables = Exact<{
   templatesSetId: Scalars['UUID'];
   framing: CreateCalloutFramingInput;
@@ -23026,6 +23490,15 @@ export type CreateCalloutTemplateMutationVariables = Exact<{
 export type CreateCalloutTemplateMutation = {
   __typename?: 'Mutation';
   createCalloutTemplate: { __typename?: 'CalloutTemplate'; id: string };
+};
+
+export type UpdateCalloutTemplateMutationVariables = Exact<{
+  template: UpdateCalloutTemplateInput;
+}>;
+
+export type UpdateCalloutTemplateMutation = {
+  __typename?: 'Mutation';
+  updateCalloutTemplate: { __typename?: 'CalloutTemplate'; id: string };
 };
 
 export type SpaceTemplateSetIdQueryVariables = Exact<{
@@ -24415,310 +24888,6 @@ export type CalloutOnCollaborationWithStorageConfigFragment = {
       };
     };
   }>;
-};
-
-export type CalloutTemplatePreviewQueryVariables = Exact<{
-  calloutTemplateId: Scalars['UUID'];
-}>;
-
-export type CalloutTemplatePreviewQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    calloutTemplate?:
-      | {
-          __typename?: 'CalloutTemplate';
-          id: string;
-          type: CalloutType;
-          framing: {
-            __typename?: 'CalloutFraming';
-            id: string;
-            profile: {
-              __typename?: 'Profile';
-              id: string;
-              displayName: string;
-              description?: string | undefined;
-              tagset?:
-                | {
-                    __typename?: 'Tagset';
-                    id: string;
-                    name: string;
-                    tags: Array<string>;
-                    allowedValues: Array<string>;
-                    type: TagsetType;
-                  }
-                | undefined;
-              storageBucket: { __typename?: 'StorageBucket'; id: string };
-            };
-            whiteboard?:
-              | {
-                  __typename?: 'Whiteboard';
-                  id: string;
-                  nameID: string;
-                  createdDate: Date;
-                  contentUpdatePolicy: ContentUpdatePolicy;
-                  profile: {
-                    __typename?: 'Profile';
-                    id: string;
-                    url: string;
-                    displayName: string;
-                    description?: string | undefined;
-                    visual?:
-                      | {
-                          __typename?: 'Visual';
-                          id: string;
-                          uri: string;
-                          name: string;
-                          allowedTypes: Array<string>;
-                          aspectRatio: number;
-                          maxHeight: number;
-                          maxWidth: number;
-                          minHeight: number;
-                          minWidth: number;
-                          alternativeText?: string | undefined;
-                        }
-                      | undefined;
-                    preview?:
-                      | {
-                          __typename?: 'Visual';
-                          id: string;
-                          uri: string;
-                          name: string;
-                          allowedTypes: Array<string>;
-                          aspectRatio: number;
-                          maxHeight: number;
-                          maxWidth: number;
-                          minHeight: number;
-                          minWidth: number;
-                          alternativeText?: string | undefined;
-                        }
-                      | undefined;
-                    tagset?:
-                      | {
-                          __typename?: 'Tagset';
-                          id: string;
-                          name: string;
-                          tags: Array<string>;
-                          allowedValues: Array<string>;
-                          type: TagsetType;
-                        }
-                      | undefined;
-                    storageBucket: { __typename?: 'StorageBucket'; id: string };
-                  };
-                  authorization?:
-                    | {
-                        __typename?: 'Authorization';
-                        id: string;
-                        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                        anonymousReadAccess: boolean;
-                      }
-                    | undefined;
-                  createdBy?:
-                    | {
-                        __typename?: 'User';
-                        id: string;
-                        profile: {
-                          __typename?: 'Profile';
-                          id: string;
-                          displayName: string;
-                          url: string;
-                          location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
-                          avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                        };
-                      }
-                    | undefined;
-                }
-              | undefined;
-          };
-          contributionPolicy: { __typename?: 'CalloutContributionPolicy'; state: CalloutState };
-          contributionDefaults: {
-            __typename?: 'CalloutContributionDefaults';
-            id: string;
-            postDescription?: string | undefined;
-            whiteboardContent?: string | undefined;
-          };
-        }
-      | undefined;
-  };
-};
-
-export type CalloutTemplatePreviewFragment = {
-  __typename?: 'CalloutTemplate';
-  id: string;
-  type: CalloutType;
-  framing: {
-    __typename?: 'CalloutFraming';
-    id: string;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      displayName: string;
-      description?: string | undefined;
-      tagset?:
-        | {
-            __typename?: 'Tagset';
-            id: string;
-            name: string;
-            tags: Array<string>;
-            allowedValues: Array<string>;
-            type: TagsetType;
-          }
-        | undefined;
-      storageBucket: { __typename?: 'StorageBucket'; id: string };
-    };
-    whiteboard?:
-      | {
-          __typename?: 'Whiteboard';
-          id: string;
-          nameID: string;
-          createdDate: Date;
-          contentUpdatePolicy: ContentUpdatePolicy;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            url: string;
-            displayName: string;
-            description?: string | undefined;
-            visual?:
-              | {
-                  __typename?: 'Visual';
-                  id: string;
-                  uri: string;
-                  name: string;
-                  allowedTypes: Array<string>;
-                  aspectRatio: number;
-                  maxHeight: number;
-                  maxWidth: number;
-                  minHeight: number;
-                  minWidth: number;
-                  alternativeText?: string | undefined;
-                }
-              | undefined;
-            preview?:
-              | {
-                  __typename?: 'Visual';
-                  id: string;
-                  uri: string;
-                  name: string;
-                  allowedTypes: Array<string>;
-                  aspectRatio: number;
-                  maxHeight: number;
-                  maxWidth: number;
-                  minHeight: number;
-                  minWidth: number;
-                  alternativeText?: string | undefined;
-                }
-              | undefined;
-            tagset?:
-              | {
-                  __typename?: 'Tagset';
-                  id: string;
-                  name: string;
-                  tags: Array<string>;
-                  allowedValues: Array<string>;
-                  type: TagsetType;
-                }
-              | undefined;
-            storageBucket: { __typename?: 'StorageBucket'; id: string };
-          };
-          authorization?:
-            | {
-                __typename?: 'Authorization';
-                id: string;
-                myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                anonymousReadAccess: boolean;
-              }
-            | undefined;
-          createdBy?:
-            | {
-                __typename?: 'User';
-                id: string;
-                profile: {
-                  __typename?: 'Profile';
-                  id: string;
-                  displayName: string;
-                  url: string;
-                  location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
-                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                };
-              }
-            | undefined;
-        }
-      | undefined;
-  };
-  contributionPolicy: { __typename?: 'CalloutContributionPolicy'; state: CalloutState };
-  contributionDefaults: {
-    __typename?: 'CalloutContributionDefaults';
-    id: string;
-    postDescription?: string | undefined;
-    whiteboardContent?: string | undefined;
-  };
-};
-
-export type WhiteboardTemplateContentQueryVariables = Exact<{
-  whiteboardTemplateId: Scalars['UUID'];
-}>;
-
-export type WhiteboardTemplateContentQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    whiteboardTemplate?:
-      | {
-          __typename?: 'WhiteboardTemplate';
-          id: string;
-          content: string;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            url: string;
-            displayName: string;
-            description?: string | undefined;
-            visual?:
-              | {
-                  __typename?: 'Visual';
-                  id: string;
-                  uri: string;
-                  name: string;
-                  allowedTypes: Array<string>;
-                  aspectRatio: number;
-                  maxHeight: number;
-                  maxWidth: number;
-                  minHeight: number;
-                  minWidth: number;
-                  alternativeText?: string | undefined;
-                }
-              | undefined;
-            preview?:
-              | {
-                  __typename?: 'Visual';
-                  id: string;
-                  uri: string;
-                  name: string;
-                  allowedTypes: Array<string>;
-                  aspectRatio: number;
-                  maxHeight: number;
-                  maxWidth: number;
-                  minHeight: number;
-                  minWidth: number;
-                  alternativeText?: string | undefined;
-                }
-              | undefined;
-            tagset?:
-              | {
-                  __typename?: 'Tagset';
-                  id: string;
-                  name: string;
-                  tags: Array<string>;
-                  allowedValues: Array<string>;
-                  type: TagsetType;
-                }
-              | undefined;
-            storageBucket: { __typename?: 'StorageBucket'; id: string };
-          };
-        }
-      | undefined;
-  };
 };
 
 export type SpaceCalendarEventsQueryVariables = Exact<{
