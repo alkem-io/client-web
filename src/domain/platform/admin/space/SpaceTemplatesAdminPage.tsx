@@ -16,7 +16,6 @@ import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphq
 import AdminWhiteboardTemplatesSection from '../templates/WhiteboardTemplates/AdminWhiteboardTemplatesSection';
 import AdminCalloutTemplatesSection from '../templates/CalloutTemplates/AdminCalloutTemplatesSection';
 import AdminCommunityGuidelinesTemplatesSection from '../templates/CommunityGuidelines/AdminCommunityGuidelinesTemplatesSection';
-import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
 
 interface SpaceTemplatesAdminPageProps extends SettingsPageProps {
   spaceId: string;
@@ -120,75 +119,73 @@ const SpaceTemplatesAdminPage: FC<SpaceTemplatesAdminPageProps> = ({
 
   return (
     <SpaceSettingsLayout currentTab={SettingsSection.Templates} tabRoutePrefix={`${routePrefix}/../`}>
-      <StorageConfigContextProvider locationType="journey" spaceId={spaceId}>
-        <Gutters>
-          <AdminCalloutTemplatesSection
-            templateId={calloutTemplateId}
-            templatesSetId={templatesSetID}
-            templates={calloutTemplates}
-            onCloseTemplateDialog={backFromTemplateDialog}
-            refetchQueries={[refetchAdminSpaceTemplatesQuery({ spaceId })]}
-            buildTemplateLink={({ id }) => buildLink(`${routePrefix}/${calloutTemplatesRoutePath}/${id}`)}
-            edit={edit}
-            loadInnovationPacks={loadInnovationPacks}
-            loadingInnovationPacks={loadingInnovationPacks}
-            innovationPacks={calloutInnovationPacks}
-            canImportTemplates={canImportTemplates}
-          />
-          <AdminPostTemplatesSection
-            templateId={postTemplateId}
-            templatesSetId={templatesSetID}
-            templates={postTemplates}
-            onCloseTemplateDialog={backFromTemplateDialog}
-            refetchQueries={[refetchAdminSpaceTemplatesQuery({ spaceId })]}
-            buildTemplateLink={({ id }) => buildLink(`${routePrefix}/${postTemplatesRoutePath}/${id}`)}
-            edit={edit}
-            loadInnovationPacks={loadInnovationPacks}
-            loadingInnovationPacks={loadingInnovationPacks}
-            innovationPacks={postInnovationPacks}
-            canImportTemplates={canImportTemplates}
-          />
-          <AdminWhiteboardTemplatesSection
-            templateId={whiteboardTemplateId}
-            templatesSetId={templatesSetID}
-            templates={whiteboardTemplates}
-            onCloseTemplateDialog={backFromTemplateDialog}
-            refetchQueries={[refetchAdminSpaceTemplatesQuery({ spaceId })]}
-            buildTemplateLink={({ id }) => buildLink(`${routePrefix}/${whiteboardTemplatesRoutePath}/${id}`)}
-            edit={edit}
-            loadInnovationPacks={loadInnovationPacks}
-            loadingInnovationPacks={loadingInnovationPacks}
-            innovationPacks={whiteboardInnovationPacks}
-            canImportTemplates={canImportTemplates}
-          />
-          <AdminInnovationTemplatesSection
-            templateId={innovationTemplateId}
-            templatesSetId={templatesSetID}
-            templates={innovationFlowTemplates}
-            onCloseTemplateDialog={backFromTemplateDialog}
-            refetchQueries={[refetchAdminSpaceTemplatesQuery({ spaceId })]}
-            buildTemplateLink={({ id }) => buildLink(`${routePrefix}/${innovationTemplatesRoutePath}/${id}`)}
-            edit={edit}
-            loadInnovationPacks={loadInnovationPacks}
-            loadingInnovationPacks={loadingInnovationPacks}
-            innovationPacks={innovationFlowInnovationPacks}
-            canImportTemplates={canImportTemplates}
-          />
-          <AdminCommunityGuidelinesTemplatesSection
-            templateId={communityGuidelinesTemplateId}
-            templatesSetId={templatesSetID}
-            templates={communityGuidelinesTemplates}
-            onCloseTemplateDialog={backFromTemplateDialog}
-            refetchQueries={[refetchAdminSpaceTemplatesQuery({ spaceId })]}
-            buildTemplateLink={({ id }) => buildLink(`${routePrefix}/${communityGuidelinesTemplatesRoutePath}/${id}`)}
-            edit={edit}
-            loadInnovationPacks={loadInnovationPacks}
-            loadingInnovationPacks={loadingInnovationPacks}
-            innovationPacks={communityGuidelinesInnovationPacks}
-            canImportTemplates={canImportTemplates}
-          />
-        </Gutters>
-      </StorageConfigContextProvider>
+      <Gutters>
+        <AdminCalloutTemplatesSection
+          templateId={calloutTemplateId}
+          templatesSetId={templatesSetID}
+          templates={calloutTemplates}
+          onCloseTemplateDialog={backFromTemplateDialog}
+          refetchQueries={[refetchAdminSpaceTemplatesQuery({ spaceId })]}
+          buildTemplateLink={({ id }) => buildLink(`${routePrefix}/${calloutTemplatesRoutePath}/${id}`)}
+          edit={edit}
+          loadInnovationPacks={loadInnovationPacks}
+          loadingInnovationPacks={loadingInnovationPacks}
+          innovationPacks={calloutInnovationPacks}
+          canImportTemplates={canImportTemplates}
+        />
+        <AdminPostTemplatesSection
+          templateId={postTemplateId}
+          templatesSetId={templatesSetID}
+          templates={postTemplates}
+          onCloseTemplateDialog={backFromTemplateDialog}
+          refetchQueries={[refetchAdminSpaceTemplatesQuery({ spaceId })]}
+          buildTemplateLink={({ id }) => buildLink(`${routePrefix}/${postTemplatesRoutePath}/${id}`)}
+          edit={edit}
+          loadInnovationPacks={loadInnovationPacks}
+          loadingInnovationPacks={loadingInnovationPacks}
+          innovationPacks={postInnovationPacks}
+          canImportTemplates={canImportTemplates}
+        />
+        <AdminWhiteboardTemplatesSection
+          templateId={whiteboardTemplateId}
+          templatesSetId={templatesSetID}
+          templates={whiteboardTemplates}
+          onCloseTemplateDialog={backFromTemplateDialog}
+          refetchQueries={[refetchAdminSpaceTemplatesQuery({ spaceId })]}
+          buildTemplateLink={({ id }) => buildLink(`${routePrefix}/${whiteboardTemplatesRoutePath}/${id}`)}
+          edit={edit}
+          loadInnovationPacks={loadInnovationPacks}
+          loadingInnovationPacks={loadingInnovationPacks}
+          innovationPacks={whiteboardInnovationPacks}
+          canImportTemplates={canImportTemplates}
+        />
+        <AdminInnovationTemplatesSection
+          templateId={innovationTemplateId}
+          templatesSetId={templatesSetID}
+          templates={innovationFlowTemplates}
+          onCloseTemplateDialog={backFromTemplateDialog}
+          refetchQueries={[refetchAdminSpaceTemplatesQuery({ spaceId })]}
+          buildTemplateLink={({ id }) => buildLink(`${routePrefix}/${innovationTemplatesRoutePath}/${id}`)}
+          edit={edit}
+          loadInnovationPacks={loadInnovationPacks}
+          loadingInnovationPacks={loadingInnovationPacks}
+          innovationPacks={innovationFlowInnovationPacks}
+          canImportTemplates={canImportTemplates}
+        />
+        <AdminCommunityGuidelinesTemplatesSection
+          templateId={communityGuidelinesTemplateId}
+          templatesSetId={templatesSetID}
+          templates={communityGuidelinesTemplates}
+          onCloseTemplateDialog={backFromTemplateDialog}
+          refetchQueries={[refetchAdminSpaceTemplatesQuery({ spaceId })]}
+          buildTemplateLink={({ id }) => buildLink(`${routePrefix}/${communityGuidelinesTemplatesRoutePath}/${id}`)}
+          edit={edit}
+          loadInnovationPacks={loadInnovationPacks}
+          loadingInnovationPacks={loadingInnovationPacks}
+          innovationPacks={communityGuidelinesInnovationPacks}
+          canImportTemplates={canImportTemplates}
+        />
+      </Gutters>
     </SpaceSettingsLayout>
   );
 };
