@@ -83,6 +83,30 @@ query InnovationHubStorageConfig($innovationHubId: UUID_NAMEID!) {
   }
 }
 
+query SpaceGuidelinesTemplateStorageConfig(
+  $spaceId: UUID_NAMEID!
+  $includeTemplate: Boolean = true
+  $templateId: UUID = "00000000-0000-0000-0000-000000000000"
+) {
+  space(ID: $spaceId) {
+    id
+    profile @skip(if: $includeTemplate) {
+      ...ProfileStorageConfig
+    }
+    account @include(if: $includeTemplate) {
+      id
+      library {
+        communityGuidelinesTemplate(ID: $templateId) {
+          id
+          profile {
+            ...ProfileStorageConfig
+          }
+        }
+      }
+    }
+  }
+}
+
 query PlatformStorageConfig {
   platform {
     id

@@ -9,8 +9,10 @@ import MarkdownValidator from '../../../../../core/ui/forms/MarkdownInput/Markdo
 import { MARKDOWN_TEXT_LENGTH } from '../../../../../core/ui/forms/field-length.constants';
 import { gutters } from '../../../../../core/ui/grid/utils';
 import TemplateForm from '../TemplateForm';
-import ProfileReferenceSegment from '../../components/Common/ProfileReferenceSegment';
+import { StorageConfigContextProvider } from '../../../../storage/StorageBucket/StorageConfigContext';
 import { referenceSegmentSchema } from '../../components/Common/ReferenceSegment';
+import { useSpace } from '../../../../journey/space/SpaceContext/useSpace';
+import FormikReferenceSegment from '../../components/Common/FormikReferenceSegment';
 
 export interface CommunityGuidelinesTemplateFormValues {
   displayName: string;
@@ -22,8 +24,8 @@ export interface CommunityGuidelinesTemplateFormValues {
 }
 
 export interface CommunityGuidelinesTemplateFormSubmittedValues {
-  guidelinesDescription: string;
-  guidelinesTitle: string;
+  guidelinesDescription?: string;
+  guidelinesTitle?: string;
   references?: Reference[];
   profile?: CreateProfileInput;
   tags?: string[];
@@ -35,6 +37,7 @@ interface CommunityGuidelinesTemplateFormProps {
   visual?: Visual;
   onSubmit: (values: CommunityGuidelinesTemplateFormSubmittedValues) => void;
   actions: ReactNode | ((formState: FormikProps<CommunityGuidelinesTemplateFormValues>) => ReactNode);
+  guidelinesTemplateId?: string;
 }
 
 const validator = {
@@ -58,8 +61,10 @@ const CommunityGuidelinesTemplateForm = ({
   visual,
   onSubmit,
   actions,
+  guidelinesTemplateId,
 }: CommunityGuidelinesTemplateFormProps) => {
   const { t } = useTranslation();
+  const { spaceId } = useSpace();
 
   return (
     <Formik
@@ -69,7 +74,7 @@ const CommunityGuidelinesTemplateForm = ({
       validateOnMount
       onSubmit={onSubmit}
     >
-      {({ values }) => (
+      {({ values, setFieldValue }) => (
         <TemplateForm
           initialValues={initialValues}
           visual={visual}
@@ -87,12 +92,18 @@ const CommunityGuidelinesTemplateForm = ({
             title={t('templateLibrary.communityGuidelinesTemplates.guidelinesDescription')}
             maxLength={MARKDOWN_TEXT_LENGTH}
           />
-          <ProfileReferenceSegment
-            compactMode
-            references={values.references || []}
-            profileId={'277c8772-e4b3-45cb-8e0b-11bf81d52347'}
-            marginTop={gutters(-1)}
-          />
+          <StorageConfigContextProvider
+            locationType="guidelinestemplate"
+            spaceId={spaceId}
+            guidelinesTemplateId={guidelinesTemplateId}
+          >
+            <FormikReferenceSegment
+              compactMode
+              references={values.references ?? []}
+              marginTop={gutters(-1)}
+              setFieldValue={setFieldValue}
+            />
+          </StorageConfigContextProvider>
         </TemplateForm>
       )}
     </Formik>

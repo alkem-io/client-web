@@ -20634,6 +20634,93 @@ export function refetchInnovationHubStorageConfigQuery(
   return { query: InnovationHubStorageConfigDocument, variables: variables };
 }
 
+export const SpaceGuidelinesTemplateStorageConfigDocument = gql`
+  query SpaceGuidelinesTemplateStorageConfig(
+    $spaceId: UUID_NAMEID!
+    $includeTemplate: Boolean = true
+    $templateId: UUID = "00000000-0000-0000-0000-000000000000"
+  ) {
+    space(ID: $spaceId) {
+      id
+      profile @skip(if: $includeTemplate) {
+        ...ProfileStorageConfig
+      }
+      account @include(if: $includeTemplate) {
+        id
+        library {
+          communityGuidelinesTemplate(ID: $templateId) {
+            id
+            profile {
+              ...ProfileStorageConfig
+            }
+          }
+        }
+      }
+    }
+  }
+  ${ProfileStorageConfigFragmentDoc}
+`;
+
+/**
+ * __useSpaceGuidelinesTemplateStorageConfigQuery__
+ *
+ * To run a query within a React component, call `useSpaceGuidelinesTemplateStorageConfigQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSpaceGuidelinesTemplateStorageConfigQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSpaceGuidelinesTemplateStorageConfigQuery({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *      includeTemplate: // value for 'includeTemplate'
+ *      templateId: // value for 'templateId'
+ *   },
+ * });
+ */
+export function useSpaceGuidelinesTemplateStorageConfigQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.SpaceGuidelinesTemplateStorageConfigQuery,
+    SchemaTypes.SpaceGuidelinesTemplateStorageConfigQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.SpaceGuidelinesTemplateStorageConfigQuery,
+    SchemaTypes.SpaceGuidelinesTemplateStorageConfigQueryVariables
+  >(SpaceGuidelinesTemplateStorageConfigDocument, options);
+}
+
+export function useSpaceGuidelinesTemplateStorageConfigLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.SpaceGuidelinesTemplateStorageConfigQuery,
+    SchemaTypes.SpaceGuidelinesTemplateStorageConfigQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.SpaceGuidelinesTemplateStorageConfigQuery,
+    SchemaTypes.SpaceGuidelinesTemplateStorageConfigQueryVariables
+  >(SpaceGuidelinesTemplateStorageConfigDocument, options);
+}
+
+export type SpaceGuidelinesTemplateStorageConfigQueryHookResult = ReturnType<
+  typeof useSpaceGuidelinesTemplateStorageConfigQuery
+>;
+export type SpaceGuidelinesTemplateStorageConfigLazyQueryHookResult = ReturnType<
+  typeof useSpaceGuidelinesTemplateStorageConfigLazyQuery
+>;
+export type SpaceGuidelinesTemplateStorageConfigQueryResult = Apollo.QueryResult<
+  SchemaTypes.SpaceGuidelinesTemplateStorageConfigQuery,
+  SchemaTypes.SpaceGuidelinesTemplateStorageConfigQueryVariables
+>;
+export function refetchSpaceGuidelinesTemplateStorageConfigQuery(
+  variables: SchemaTypes.SpaceGuidelinesTemplateStorageConfigQueryVariables
+) {
+  return { query: SpaceGuidelinesTemplateStorageConfigDocument, variables: variables };
+}
+
 export const PlatformStorageConfigDocument = gql`
   query PlatformStorageConfig {
     platform {

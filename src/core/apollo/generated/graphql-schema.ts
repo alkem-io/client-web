@@ -2143,6 +2143,11 @@ export type IngestResult = {
   total?: Maybe<Scalars['Float']>;
 };
 
+export type IngestSpaceInput = {
+  /** The identifier for the Space to be ingested. */
+  spaceID: Scalars['UUID'];
+};
+
 export type InnovationFlow = {
   __typename?: 'InnovationFlow';
   /** The authorization rules for the entity */
@@ -2858,6 +2863,8 @@ export type Mutation = {
   grantCredentialToUser: User;
   /** Resets the interaction with the chat engine. */
   ingest: Scalars['Boolean'];
+  /** Triggers space ingestion. */
+  ingestSpace: Space;
   /** Invite an existing User to join the specified Community as a member. */
   inviteExistingUserForCommunityMembership: Array<Invitation>;
   /** Invite an external User to join the specified Community as a member. */
@@ -3318,6 +3325,10 @@ export type MutationGrantCredentialToOrganizationArgs = {
 
 export type MutationGrantCredentialToUserArgs = {
   grantCredentialData: GrantAuthorizationCredentialInput;
+};
+
+export type MutationIngestSpaceArgs = {
+  ingestSpaceData: IngestSpaceInput;
 };
 
 export type MutationInviteExistingUserForCommunityMembershipArgs = {
@@ -24864,6 +24875,65 @@ export type InnovationHubStorageConfigQuery = {
           };
         }
       | undefined;
+  };
+};
+
+export type SpaceGuidelinesTemplateStorageConfigQueryVariables = Exact<{
+  spaceId: Scalars['UUID_NAMEID'];
+  includeTemplate?: InputMaybe<Scalars['Boolean']>;
+  templateId?: InputMaybe<Scalars['UUID']>;
+}>;
+
+export type SpaceGuidelinesTemplateStorageConfigQuery = {
+  __typename?: 'Query';
+  space: {
+    __typename?: 'Space';
+    id: string;
+    profile?: {
+      __typename?: 'Profile';
+      id: string;
+      storageBucket: {
+        __typename?: 'StorageBucket';
+        id: string;
+        allowedMimeTypes: Array<string>;
+        maxFileSize: number;
+        authorization?:
+          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+          | undefined;
+      };
+    };
+    account?: {
+      __typename?: 'Account';
+      id: string;
+      library?:
+        | {
+            __typename?: 'TemplatesSet';
+            communityGuidelinesTemplate?:
+              | {
+                  __typename?: 'CommunityGuidelinesTemplate';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    storageBucket: {
+                      __typename?: 'StorageBucket';
+                      id: string;
+                      allowedMimeTypes: Array<string>;
+                      maxFileSize: number;
+                      authorization?:
+                        | {
+                            __typename?: 'Authorization';
+                            id: string;
+                            myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                          }
+                        | undefined;
+                    };
+                  };
+                }
+              | undefined;
+          }
+        | undefined;
+    };
   };
 };
 

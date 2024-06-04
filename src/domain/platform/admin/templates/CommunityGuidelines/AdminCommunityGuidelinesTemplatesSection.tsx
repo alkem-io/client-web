@@ -53,7 +53,7 @@ const AdminCommunityGuidelinesTemplatesSection = ({
       onDeleteTemplate={async variables => {
         await deleteCommunityGuidelinesTemplate({ variables, refetchQueries });
       }}
-      templateType={TemplateType.CalloutTemplate}
+      templateType={TemplateType.CommunityGuidelinesTemplate}
     />
   );
 };
