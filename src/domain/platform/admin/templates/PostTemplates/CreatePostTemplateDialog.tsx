@@ -2,7 +2,6 @@ import PostTemplateForm, { PostTemplateFormSubmittedValues, PostTemplateFormValu
 import { useTranslation } from 'react-i18next';
 import { DialogHeaderProps } from '../../../../../core/ui/dialog/DialogHeader';
 import React from 'react';
-import { DialogContent } from '@mui/material';
 import TemplateDialogBase from '../../../../collaboration/templates/templateDialog/TemplateDialogBase';
 
 interface CreatePostTemplateDialogProps {
@@ -18,11 +17,7 @@ const CreatePostTemplateDialog = ({ open, onClose, onSubmit }: CreatePostTemplat
 
   return (
     <TemplateDialogBase open={open} onClose={onClose} templateTypeName={t('templateLibrary.postTemplates.name')}>
-      {({ actions }) => (
-        <DialogContent>
-          <PostTemplateForm initialValues={values} onSubmit={onSubmit} actions={actions} />
-        </DialogContent>
-      )}
+      {({ actions }) => <PostTemplateForm initialValues={values} onSubmit={onSubmit} actions={actions} />}
     </TemplateDialogBase>
   );
 };

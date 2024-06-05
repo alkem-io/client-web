@@ -13,6 +13,7 @@ import { Visual } from '../visual/Visual';
 import { Location } from '../../../core/ui/location/getLocationString';
 import { useTranslation } from 'react-i18next';
 import PageBannerWatermark from '../../../main/ui/platformNavigation/PageBannerWatermark';
+import VirtualContributorLabel from '../../community/virtualContributor/VirtualContributorLabel';
 
 const banner: Visual = {
   uri: '/alkemio-banner/global-banner.jpg',
@@ -37,6 +38,7 @@ export interface ProfilePageBannerProps {
   settingsUri?: string;
   onSendMessage?: (messageText: string) => Promise<void>;
   loading?: boolean;
+  isVirtualContributor?: boolean;
 }
 
 const ProfilePageBanner = ({
@@ -45,6 +47,7 @@ const ProfilePageBanner = ({
   settingsUri,
   onSendMessage,
   loading = false,
+  isVirtualContributor = false,
 }: ProfilePageBannerProps) => {
   const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('lg'));
 
@@ -97,6 +100,7 @@ const ProfilePageBanner = ({
             </PageTitle>
             {profile?.location && <LocationCaption {...profile?.location} />}
             <Actions gap={0}>
+              {isVirtualContributor && <VirtualContributorLabel chip />}
               {onSendMessage && (
                 <IconButton size="small" onClick={openMessageDialog} aria-label={t('common.email')}>
                   <MailOutlined />
