@@ -343,7 +343,9 @@
     "more": "More",
     "url": "URL",
     "sources": "Sources",
+    "license": "License",
     "virtual-contributors": "VC",
+    "virtual-contributor": "Virtual Contributor",
     "collaborationTool": "Collaboration tool",
     "genders": {
       "notSpecified": "not specified",
@@ -1800,8 +1802,14 @@
           "account": {
             "description": "",
             "hostTitle": "Host",
-            "contactsLinkText": "If you want to change any of these settings, please contact the Alkemio team here.",
-            "contactsLink": "https://www.alkemio.org/support/"
+            "contactsLink": "If you want to change any of these settings, please contact the Alkemio team here.",
+            "freeTrialNotice": {
+              "title": "Free Trial - {{daysLeft}} days left",
+              "description": "Click here to set up your full {{planName}} subscription"
+            },
+            "yourLicense": "Your current license:",
+            "downgradeTo": "Downgrade to {{planName}}",
+            "upgradeTo": "Upgrade to {{planName}}"
           }
         }
       },
@@ -1914,6 +1922,10 @@
             "createSubspaces": "<b>Create Subspaces</b>: allow members to create Subspaces in this Space. If you deactivate this, you can still create Subspaces yourself and add other people as an admin inside the Subspace.",
             "inheritRights": "Allow Space members to contribute.",
             "supportAsAdmin": "<b>Alkemio Support</b>: Allow the Alkemio Support team to act as an admin in this Space."
+          },
+          "account": {
+            "vc-section-title": "Virtual Contributors created from this Space",
+            "vc-create-button": "Create Virtual Contributor"
           }
         }
       },
@@ -1953,6 +1965,7 @@
         }
       },
       "virtualContributors": {
+        "title": "Virtual Contributors",
         "virtualPersonas": {
           "title": "Virtual Personas",
           "create": "Create Virtual Persona",
@@ -2463,6 +2476,37 @@
         "help": "Credentials that the user holds issued by trusted parties"
       }
     },
+    "virtualContributorProfile": {
+      "title": "Virtual Contributor Profile",
+      "default-name": "Alkemio Help",
+      "description": "Description",
+      "references": "References",
+      "host": "Host",
+      "sections": {
+        "knowledge": {
+          "title": "Knowledge",
+          "description": "Answers {{name}} gives are based on the body of knowledge coming from:"
+        },
+
+        "personality": {
+          "title": "Basic Prompts & Engine",
+          "description": "To allow people to interact with the body of knowledge described above, Alkemio uses an engine and a basic set of instructions. These instructions make sure that the Virtual Contributor for example only answers questions using the specified body of knowledge so you can trust the answers it is giving."
+        },
+        "context": {
+          "title": "Context",
+          "description": "{{name}} uses the following information from the Space it is invited to so it can provide you with meaningful answers:",
+          "bullets": "<ul><li>Space about page: <ul><li>Name, Tagline, location, etc.</li><li>Context information</li><li>Statistics</li></ul></li></ul>"
+        },
+        "privacy": {
+          "title": "Privacy",
+          "description": "For Alkemio, safeguarding your data is of utmost importance. We are committed to maintaining the security and privacy of your information.",
+          "bullets": "<ul><li>When interacting with a Virtual Contributor, only the data explicitly specified on the left (Context) is used to generate meaningful answers.</li><li>Importantly, your (Space) data is not utilized for training the Virtual Contributor.</li><li>Additionally, please note that questions and answers exchanged with the Virtual Contributor may be visible to the Alkemio team.</li></ul>"
+        }
+      },
+      "settings": {
+        "title": "Virtual Contributor Settings"
+      }
+    },
     "user-credentials": {
       "your-credentials": {
         "title": "My Verifiable Credentials",
@@ -2700,8 +2744,8 @@
     "terms": {
       "checkboxLabel": "I have read and accept the <terms>terms and agreements (click here to open them)</terms> for creating a Space.",
       "dialogTitle": "Terms and Conditions for creating a Space",
-      "dialogContent": "Placeholder text, real text will follow soon, to be added in translation file.\nMembership: By joining this group, you agree to abide by our rules and guidelines.\nBehavior: Treat others with respect and kindness. No hate speech, harassment, or harmful behavior.\nContent: Share relevant content and avoid spam. We reserve the right to remove inappropriate posts.\nPrivacy: Protect your personal information. We won’t share it without your consent.\nTermination: Violation of these terms may result in removal from the group.",
-      "fullTermsLink": "Click here for the full Terms and Conditions"
+      "dialogContent": "I understand that as a host, I am responsible for all content within the Space.",
+      "fullTermsLink": "Click here to read more about the Terms & Conditions."
     }
   },
   "plansTable": {
@@ -2780,6 +2824,16 @@
           "continue": "Continue"
         }
       }
+    }
+  },
+  "virtualContributorSpaceSettings": {
+    "title": "Create a Virtual Contributor",
+    "name": "Name",
+    "body-of-knowledge": "Body Of Knowledge",
+    "info-text": "Select the Space or Subspace that you want to use as a body of knowledge for this Virtual Contributor",
+    "noSubspacesInfo": "Create a Subspace first, and populate it with the relevant information for your Virtual Contributor.",
+    "confirm-deletion": {
+      "description": "Are you certain you want to delete this {{entity}}? Keep in mind that this action is irreversible. All profile information will be removed and people will no longer be able to interact with the {{entity}}. "
     }
   }
 }

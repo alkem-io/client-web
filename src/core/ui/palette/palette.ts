@@ -35,6 +35,9 @@ export const paletteOptions: PaletteOptions = {
   space: {
     dark: '#152A37',
   },
+  icons: {
+    dark: '#1C1B1F',
+  },
 };
 
 declare module '@mui/material/styles/createPalette' {
@@ -47,6 +50,7 @@ declare module '@mui/material/styles/createPalette' {
     neutralLight: PaletteColorOptions;
     highlight: PaletteColorOptions;
     space: PaletteColorOptions;
+    icons: PaletteColorOptions;
   }
 
   interface Palette {
@@ -58,5 +62,6 @@ declare module '@mui/material/styles/createPalette' {
     neutralLight: PaletteColor;
     highlight: PaletteColor;
     space: PaletteColor;
+    icons: PaletteColorOptions;
   }
 }

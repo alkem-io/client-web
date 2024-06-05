@@ -30,7 +30,7 @@ import { SettingsSection } from '../../../../platform/admin/layout/EntitySetting
 import { Box, CircularProgress } from '@mui/material';
 import { JourneyTypeName } from '../../../JourneyTypeName';
 import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
-import { DeleteIcon } from './icon/DeleteIcon';
+import DeleteIcon from './icon/DeleteIcon';
 import SpaceProfileDeleteDialog from './SpaceProfileDeleteDialog';
 import { useSubSpace } from '../../../subspace/hooks/useChallenge';
 import { useSpace } from '../../SpaceContext/useSpace';

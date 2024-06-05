@@ -1,5 +1,5 @@
-mutation CreateNewSpace($hostId: UUID_NAMEID!, $spaceData: CreateSpaceInput!, $planId: UUID) {
-  createAccount(accountData: { hostID: $hostId, spaceData: $spaceData, planID: $planId }) {
+mutation CreateNewSpace($hostId: UUID_NAMEID!, $spaceData: CreateSpaceInput!, $licensePlanId: UUID) {
+  createAccount(accountData: { hostID: $hostId, spaceData: $spaceData, licensePlanID: $licensePlanId }) {
     id
     spaceID
   }
