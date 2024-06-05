@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import PostTemplateForm, { PostTemplateFormSubmittedValues, PostTemplateFormValues } from './PostTemplateForm';
 import { DialogHeaderProps } from '../../../../../core/ui/dialog/DialogHeader';
 import React from 'react';
-import { DialogContent } from '@mui/material';
 import TemplateDialogBase from '../../../../collaboration/templates/templateDialog/TemplateDialogBase';
 
 interface EditPostTemplateDialogProps {
@@ -45,14 +44,12 @@ const EditPostTemplateDialog = ({ template, open, onClose, onSubmit, onDelete }:
       editMode
     >
       {({ actions }) => (
-        <DialogContent>
-          <PostTemplateForm
-            initialValues={values}
-            visual={template.profile.visual}
-            onSubmit={handleSubmit}
-            actions={actions}
-          />
-        </DialogContent>
+        <PostTemplateForm
+          initialValues={values}
+          visual={template.profile.visual}
+          onSubmit={handleSubmit}
+          actions={actions}
+        />
       )}
     </TemplateDialogBase>
   );
