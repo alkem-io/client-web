@@ -346,10 +346,12 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
           {permissions.virtualContributorsEnabled && (
             <PageContentBlock columns={5} sx={{ gap: gutters(2) }}>
               <Gutters disablePadding alignItems={'flex-start'}>
+                {hasVirtualContributors && (
+                  <BlockTitle>{t('pages.admin.space.settings.account.vc-section-title')}</BlockTitle>
+                )}
                 {hasVirtualContributors &&
                   virtualContributors?.map(vc => (
                     <>
-                      <BlockTitle>{t('pages.admin.space.settings.account.vc-section-title')}</BlockTitle>
                       <ContributorOnAccountCard
                         contributor={vc}
                         space={getBoKSpaceData(vc.bodyOfKnowledgeID ?? '')}
