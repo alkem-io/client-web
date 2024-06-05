@@ -2728,8 +2728,8 @@
     "terms": {
       "checkboxLabel": "I have read and accept the <terms>terms and agreements (click here to open them)</terms> for creating a Space.",
       "dialogTitle": "Terms and Conditions for creating a Space",
-      "dialogContent": "Placeholder text, real text will follow soon, to be added in translation file.\nMembership: By joining this group, you agree to abide by our rules and guidelines.\nBehavior: Treat others with respect and kindness. No hate speech, harassment, or harmful behavior.\nContent: Share relevant content and avoid spam. We reserve the right to remove inappropriate posts.\nPrivacy: Protect your personal information. We won’t share it without your consent.\nTermination: Violation of these terms may result in removal from the group.",
-      "fullTermsLink": "Click here for the full Terms and Conditions"
+      "dialogContent": "I understand that as a host, I am responsible for all content within the Space.",
+      "fullTermsLink": "Click here to read more about the Terms & Conditions."
     }
   },
   "plansTable": {
@@ -2815,6 +2815,7 @@
     "name": "Name",
     "body-of-knowledge": "Body Of Knowledge",
     "info-text": "Select the Space or Subspace that you want to use as a body of knowledge for this Virtual Contributor",
+    "noSubspacesInfo": "Create a Subspace first, and populate it with the relevant information for your Virtual Contributor.",
     "confirm-deletion": {
       "description": "Are you certain you want to delete this {{entity}}? Keep in mind that this action is irreversible. All profile information will be removed and people will no longer be able to interact with the {{entity}}. "
     }
