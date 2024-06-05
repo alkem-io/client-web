@@ -231,9 +231,14 @@ const useCommunityAdmin = ({
 
   const [fetchAllVirtualContributors] = useAvailableVirtualContributorsLazyQuery();
   const getAvailableVirtualContributors = async (filter: string | undefined) => {
-    const { data } = await fetchAllVirtualContributors();
+    const { data } = await fetchAllVirtualContributors({
+      variables: {
+        filterSpace: journeyLevel > 0,
+        filterSpaceId: spaceId,
+      },
+    });
     // Filter out already member organizations
-    return data?.virtualContributors.filter(
+    return (data?.lookup?.space?.community.virtualContributorsInRole ?? data?.virtualContributors ?? [])?.filter(
       vc =>
         !virtualContributors.some(member => member.id === vc.id) &&
         vc.profile.displayName.toLowerCase().includes(filter?.toLowerCase() ?? '')

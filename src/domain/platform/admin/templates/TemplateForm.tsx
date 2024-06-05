@@ -93,17 +93,17 @@ const TemplateForm = <Values extends TemplateProfileValues>({
               >
                 {t('templateDialog.profile.title')}
               </BlockSectionTitleWithIcon>
-              <FormikInputField name="displayName" title={t('common.title')} />
+              <FormikInputField name="displayName" title={t('templateDialog.profile.fields.displayName')} />
               <Box marginBottom={gutters(-1)}>
                 <FormikMarkdownField
                   name="description"
-                  title={t('common.description')}
+                  title={t('templateDialog.profile.fields.description')}
                   maxLength={MARKDOWN_TEXT_LENGTH}
                 />
               </Box>
               <TagsetField
                 name="tags"
-                title={t('templateDialog.profile.tags')}
+                title={t('templateDialog.profile.fields.tags')}
                 helpTextIcon={t('components.post-creation.info-step.tags-help-text')}
               />
               {visual && <VisualUpload visual={visual} />}
