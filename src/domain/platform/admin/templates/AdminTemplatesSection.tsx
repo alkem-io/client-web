@@ -308,7 +308,6 @@ const AdminTemplatesSection = <
     return {
       template: templateWithValue,
       templateType,
-      // TODO make sure that templateType matches the actual type of the template
     } as TemplatePreviewDialogProps['templatePreview'];
   }, [templateWithValue]);
 

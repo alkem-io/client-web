@@ -2,12 +2,14 @@ mutation createCommunityGuidelinesTemplate(
   $templatesSetId: UUID!
   $profile: CreateProfileInput!
   $guidelines: CreateCommunityGuidelinesInput!
+  $tags: [String!]
 ) {
   createCommunityGuidelinesTemplate(
     communityGuidelinesTemplateInput: {
       templatesSetID: $templatesSetId
       profile: $profile
       communityGuidelines: $guidelines
+      tags: $tags
     }
   ) {
     id
