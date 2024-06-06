@@ -1,5 +1,6 @@
 import React, { FC, useCallback, useMemo, useState } from 'react';
-import { Button } from '@mui/material';
+import { Button, Icon, IconButton } from '@mui/material';
+import DownloadForOfflineOutlinedIcon from '@mui/icons-material/DownloadForOfflineOutlined';
 import InnovationLibraryIcon from '../../../../main/topLevelPages/InnovationLibraryPage/InnovationLibraryIcon';
 import SpaceSettingsLayout from '../../../platform/admin/space/SpaceSettingsLayout';
 import { SettingsSection } from '../../../platform/admin/layout/EntitySettingsLayout/constants';
@@ -23,6 +24,10 @@ import CommunityGuidelinesForm from '../../../community/community/CommunityGuide
 import CommunityVirtualContributors from '../../../community/community/CommunityAdmin/CommunityVirtualContributors';
 import CommunityGuidelinesTemplatesLibrary from '../../../collaboration/communityGuidelines/CommunityGuidelinesTemplateLibrary/CommunityGuidelinesTemplatesLibrary';
 import CommunityGuidelinesContainer from '../../../community/community/CommunityGuidelines/CommunityGuidelinesContainer';
+import CreateCommunityGuidelinesTemplateDialog from '../../../platform/admin/templates/CommunityGuidelines/CreateCommunityGuidelinesTemplateDialog';
+import { CommunityGuidelinesTemplateFormSubmittedValues } from '../../../platform/admin/templates/CommunityGuidelines/CommunityGuidelinesTemplateForm';
+import { useCreateCommunityGuidelinesTemplate } from '../../../platform/admin/templates/CommunityGuidelines/useCreateCommunityGuidelinesTemplate';
+import { useUrlParams } from '../../../../core/routing/useUrlParams';
 
 const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   const { t } = useTranslation();
@@ -80,6 +85,22 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
   const openTemplateDialog = useCallback(() => setDialogOpen(true), []);
   const closeTemplatesDialog = useCallback(() => setDialogOpen(false), []);
 
+  const [saveAsTemplateDialogOpen, setSaveAsTemplateDialogOpen] = useState(false);
+  const handleSaveAsTemplateDialogOpen = () => {
+    setSaveAsTemplateDialogOpen(true);
+  };
+
+  const { spaceNameId } = useUrlParams();
+  if (!spaceNameId) {
+    throw new Error('Must be within a Space');
+  }
+
+  const { handleCreateCommunityGuidelinesTemplate } = useCreateCommunityGuidelinesTemplate();
+  const handleSaveAsTemplate = async (values: CommunityGuidelinesTemplateFormSubmittedValues) => {
+    await handleCreateCommunityGuidelinesTemplate(values, spaceNameId);
+    setSaveAsTemplateDialogOpen(false);
+  };
+
   if (!spaceId || isLoadingSpace) {
     return null;
   }
@@ -131,9 +152,22 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
               <PageContentBlockCollapsible
                 header={<BlockTitle>{t('community.communityGuidelines.title')}</BlockTitle>}
                 primaryAction={
-                  <Button variant="outlined" onClick={() => openTemplateDialog()} startIcon={<InnovationLibraryIcon />}>
-                    {t('common.library')}
-                  </Button>
+                  <>
+                    <Button
+                      variant="outlined"
+                      onClick={() => openTemplateDialog()}
+                      startIcon={<InnovationLibraryIcon />}
+                    >
+                      {t('common.library')}
+                    </Button>
+                    <IconButton
+                      aria-label={t('buttons.saveAsTemplate')}
+                      onClick={handleSaveAsTemplateDialogOpen}
+                      sx={{ marginLeft: gutters(0.5) }}
+                    >
+                      <Icon component={DownloadForOfflineOutlinedIcon} color="primary" />
+                    </IconButton>
+                  </>
                 }
               >
                 <CommunityGuidelinesForm
@@ -151,6 +185,11 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
             </>
           )}
         </CommunityGuidelinesContainer>
+        <CreateCommunityGuidelinesTemplateDialog
+          open={saveAsTemplateDialogOpen}
+          onClose={() => setSaveAsTemplateDialogOpen(false)}
+          onSubmit={handleSaveAsTemplate}
+        />
         <PageContentColumn columns={6}>
           <PageContentBlock>
             <CommunityUsers
