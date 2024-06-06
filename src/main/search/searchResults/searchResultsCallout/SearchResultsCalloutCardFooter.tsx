@@ -84,7 +84,8 @@ const SearchResultsCalloutCardFooter = ({
 }: SearchResultsCalloutCardFooterProps) => {
   const JourneyIcon = journeyIcon[journeyTypeName];
 
-  return (
+  return (<p>//!! TODO</p>);
+    /*
     <Gutters padding={1} gap={1}>
       <Box display="flex">
         <Caption display="flex" alignItems="center" gap={1} flexGrow={1} flexShrink={1} minWidth={0}>
@@ -93,9 +94,10 @@ const SearchResultsCalloutCardFooter = ({
         </Caption>
         <CalloutContributions callout={callout} />
       </Box>
-      {/*<CardMatchedTerms tags={matchedTerms} />*/}
+      <CardMatchedTerms tags={matchedTerms} />
     </Gutters>
   );
+  */
 };
 
 export default SearchResultsCalloutCardFooter;

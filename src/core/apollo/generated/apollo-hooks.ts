@@ -3289,6 +3289,10 @@ export const SearchResultCalloutFragmentDoc = gql`
           }
         }
       }
+      contributionPolicy {
+        id
+        state
+      }
       contributions {
         id
         post {
@@ -3300,6 +3304,10 @@ export const SearchResultCalloutFragmentDoc = gql`
         link {
           id
         }
+      }
+      comments {
+        id
+        messagesCount
       }
     }
   }

@@ -35,9 +35,6 @@ import { SpaceIcon } from '../../domain/journey/space/icon/SpaceIcon';
 import { findKey, groupBy, identity } from 'lodash';
 import SearchResultPostChooser from './searchResults/SearchResultPostChooser';
 import SearchResultsCalloutCard from './searchResults/searchResultsCallout/SearchResultsCalloutCard';
-import { CalloutCardCallout } from '../../domain/collaboration/callout/calloutCard/CalloutCard';
-import { SearchResultsCalloutCardFooterProps } from './searchResults/searchResultsCallout/SearchResultsCalloutCardFooter';
-import { JourneyTypeName } from '../../domain/journey/JourneyTypeName';
 
 export const MAX_TERMS_SEARCH = 5;
 
@@ -135,8 +132,8 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
   };
 
   const filters = useMemo(
-    () => [...journeyFilter.value, ...contributionFilter.value, ...contributorFilter.value],
-    [journeyFilter, contributionFilter, contributorFilter]
+    () => [...journeyFilter.value, ...contributionFilter.value, ...contributorFilter.value, ...calloutFilter.value],
+    [journeyFilter, contributionFilter, contributorFilter, calloutFilter]
   );
 
   const { data, loading: isSearching } = useSearchQuery({
@@ -219,19 +216,25 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
           count={calloutResults?.length}
           filterConfig={calloutFilterConfig}
           results={
-            calloutResults as unknown as {
-              // TODO remove this type cast when the server is updated
-              id: string;
-              callout: CalloutCardCallout & SearchResultsCalloutCardFooterProps['callout'];
-              matchedTerms: string[];
-              journeyTypeName: JourneyTypeName;
-              journeyDisplayName: string;
-            }[]
+            calloutResults?.map(result => ({
+              //!!
+              callout: {
+                id: result.callout.id,
+                nameID: result.callout.nameID,
+                type: result.callout.type,
+                contributions: result.callout.contributions,
+                contributionPolicy: result.callout.contributionPolicy,
+                profile: result.callout.framing.profile,
+                comments: result.callout.comments
+              }
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            })) as any
           }
           currentFilter={calloutFilter}
           onFilterChange={setCalloutFilter}
           loading={isSearching}
-          cardComponent={SearchResultsCalloutCard}
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          cardComponent={SearchResultsCalloutCard as any /* //!! */}
         />
         <SearchResultSection
           title={t('common.contributions')}

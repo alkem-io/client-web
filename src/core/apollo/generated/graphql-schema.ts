@@ -621,6 +621,15 @@ export type AssignCommunityRoleToVirtualInput = {
   virtualContributorID: Scalars['UUID_NAMEID'];
 };
 
+export type AssignLicensePlanToAccount = {
+  /** The ID of the Account to assign the LicensePlan to. */
+  accountID: Scalars['UUID'];
+  /** The ID of the LicensePlan to assign. */
+  licensePlanID: Scalars['UUID'];
+  /** The ID of the Licensing to use. */
+  licensingID?: InputMaybe<Scalars['UUID']>;
+};
+
 export type AssignOrganizationRoleToUserInput = {
   organizationID: Scalars['UUID_NAMEID'];
   role: OrganizationRole;
@@ -1628,7 +1637,7 @@ export type CreateOrganizationInput = {
   domain?: InputMaybe<Scalars['String']>;
   legalEntityName?: InputMaybe<Scalars['String']>;
   /** A readable identifier, unique within the containing scope. */
-  nameID: Scalars['NameID'];
+  nameID?: InputMaybe<Scalars['NameID']>;
   profileData: CreateProfileInput;
   website?: InputMaybe<Scalars['String']>;
 };
@@ -1733,7 +1742,7 @@ export type CreateUserInput = {
   gender?: InputMaybe<Scalars['String']>;
   lastName?: InputMaybe<Scalars['String']>;
   /** A readable identifier, unique within the containing scope. */
-  nameID: Scalars['NameID'];
+  nameID?: InputMaybe<Scalars['NameID']>;
   phone?: InputMaybe<Scalars['String']>;
   profileData: CreateProfileInput;
 };
@@ -1743,7 +1752,7 @@ export type CreateVirtualContributorOnAccountInput = {
   bodyOfKnowledgeID?: InputMaybe<Scalars['UUID']>;
   bodyOfKnowledgeType?: InputMaybe<BodyOfKnowledgeType>;
   /** A readable identifier, unique within the containing scope. */
-  nameID: Scalars['NameID'];
+  nameID?: InputMaybe<Scalars['NameID']>;
   profileData: CreateProfileInput;
   virtualPersonaID?: InputMaybe<Scalars['UUID']>;
 };
@@ -2711,6 +2720,8 @@ export type Mutation = {
   assignCommunityRoleToUser: User;
   /** Assigns a Virtual Contributor to a role in the specified Community. */
   assignCommunityRoleToVirtual: VirtualContributor;
+  /** Assign the specified LicensePlan to an Account. */
+  assignLicensePlanToAccount: Account;
   /** Assigns an Organization Role to user. */
   assignOrganizationRoleToUser: User;
   /** Assigns a platform role to a User. */
@@ -2897,6 +2908,8 @@ export type Mutation = {
   revokeCredentialFromOrganization: Organization;
   /** Removes an authorization credential from a User. */
   revokeCredentialFromUser: User;
+  /** Revokes the specified LicensePlan on an Account. */
+  revokeLicensePlanFromAccount: Account;
   /** Sends a reply to a message from the specified Room. */
   sendMessageReplyToRoom: Message;
   /** Send message to Community Leads. */
@@ -3041,6 +3054,10 @@ export type MutationAssignCommunityRoleToUserArgs = {
 
 export type MutationAssignCommunityRoleToVirtualArgs = {
   roleData: AssignCommunityRoleToVirtualInput;
+};
+
+export type MutationAssignLicensePlanToAccountArgs = {
+  planData: AssignLicensePlanToAccount;
 };
 
 export type MutationAssignOrganizationRoleToUserArgs = {
@@ -3389,6 +3406,10 @@ export type MutationRevokeCredentialFromOrganizationArgs = {
 
 export type MutationRevokeCredentialFromUserArgs = {
   revokeCredentialData: RevokeAuthorizationCredentialInput;
+};
+
+export type MutationRevokeLicensePlanFromAccountArgs = {
+  planData: RevokeLicensePlanFromAccount;
 };
 
 export type MutationSendMessageReplyToRoomArgs = {
@@ -4408,6 +4429,15 @@ export type RevokeAuthorizationCredentialInput = {
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
+export type RevokeLicensePlanFromAccount = {
+  /** The ID of the Account to assign the LicensePlan to. */
+  accountID: Scalars['UUID'];
+  /** The ID of the LicensePlan to assign. */
+  licensePlanID: Scalars['UUID'];
+  /** The ID of the Licensing to use. */
+  licensingID?: InputMaybe<Scalars['UUID']>;
+};
+
 export type RevokeOrganizationAuthorizationCredentialInput = {
   /** The Organization from whom the credential is being removed. */
   organizationID: Scalars['UUID'];
@@ -4581,7 +4611,7 @@ export type SearchInput = {
   tagsetNames?: InputMaybe<Array<Scalars['String']>>;
   /** The terms to be searched for within this Space. Max 5. */
   terms: Array<Scalars['String']>;
-  /** Restrict the search to only the specified entity types. Values allowed: space, subspace, user, group, organization, callout. Default is all. */
+  /** Restrict the search to only the specified entity types. Values allowed: space, subspace, user, group, organization, Default is all. */
   typesFilter?: InputMaybe<Array<Scalars['String']>>;
 };
 
@@ -5159,6 +5189,7 @@ export type UpdateCalloutFramingInput = {
   /** The Profile of the Template. */
   profile?: InputMaybe<UpdateProfileInput>;
   whiteboard?: InputMaybe<UpdateWhiteboardInput>;
+  whiteboardContent?: InputMaybe<UpdateWhiteboardContentInput>;
 };
 
 export type UpdateCalloutInput = {
@@ -25437,6 +25468,7 @@ export type SearchQuery = {
                   | undefined;
               };
             };
+            contributionPolicy: { __typename?: 'CalloutContributionPolicy'; id: string; state: CalloutState };
             contributions: Array<{
               __typename?: 'CalloutContribution';
               id: string;
@@ -25444,6 +25476,7 @@ export type SearchQuery = {
               whiteboard?: { __typename?: 'Whiteboard'; id: string } | undefined;
               link?: { __typename?: 'Link'; id: string } | undefined;
             }>;
+            comments?: { __typename?: 'Room'; id: string; messagesCount: number } | undefined;
           };
         }
       | {
@@ -25751,6 +25784,7 @@ export type SearchResultCalloutFragment = {
           | undefined;
       };
     };
+    contributionPolicy: { __typename?: 'CalloutContributionPolicy'; id: string; state: CalloutState };
     contributions: Array<{
       __typename?: 'CalloutContribution';
       id: string;
@@ -25758,6 +25792,7 @@ export type SearchResultCalloutFragment = {
       whiteboard?: { __typename?: 'Whiteboard'; id: string } | undefined;
       link?: { __typename?: 'Link'; id: string } | undefined;
     }>;
+    comments?: { __typename?: 'Room'; id: string; messagesCount: number } | undefined;
   };
 };
 

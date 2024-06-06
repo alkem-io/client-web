@@ -136,6 +136,10 @@ fragment SearchResultCallout on SearchResultCallout {
         }
       }
     }
+    contributionPolicy {
+     id
+     state
+    }
     contributions {
       id
       post {
@@ -147,6 +151,10 @@ fragment SearchResultCallout on SearchResultCallout {
       link {
         id
       }
+    }
+    comments {
+      id
+      messagesCount
     }
   }
 }
