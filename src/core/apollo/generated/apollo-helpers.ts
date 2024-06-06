@@ -1629,6 +1629,7 @@ export type MutationKeySpecifier = (
   | 'grantCredentialToOrganization'
   | 'grantCredentialToUser'
   | 'ingest'
+  | 'ingestSpace'
   | 'inviteExistingUserForCommunityMembership'
   | 'inviteForCommunityMembershipByEmail'
   | 'joinCommunity'
@@ -1789,6 +1790,7 @@ export type MutationFieldPolicy = {
   grantCredentialToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   grantCredentialToUser?: FieldPolicy<any> | FieldReadFunction<any>;
   ingest?: FieldPolicy<any> | FieldReadFunction<any>;
+  ingestSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   inviteExistingUserForCommunityMembership?: FieldPolicy<any> | FieldReadFunction<any>;
   inviteForCommunityMembershipByEmail?: FieldPolicy<any> | FieldReadFunction<any>;
   joinCommunity?: FieldPolicy<any> | FieldReadFunction<any>;
