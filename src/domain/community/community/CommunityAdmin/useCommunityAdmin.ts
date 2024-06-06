@@ -230,10 +230,10 @@ const useCommunityAdmin = ({
   };
 
   const [fetchAllVirtualContributors] = useAvailableVirtualContributorsLazyQuery();
-  const getAvailableVirtualContributors = async (filter: string | undefined) => {
+  const getAvailableVirtualContributors = async (filter: string | undefined, all: boolean = false) => {
     const { data } = await fetchAllVirtualContributors({
       variables: {
-        filterSpace: journeyLevel > 0,
+        filterSpace: journeyLevel > 0 && !all,
         filterSpaceId: spaceId,
       },
     });

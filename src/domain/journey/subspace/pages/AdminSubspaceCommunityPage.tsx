@@ -19,11 +19,14 @@ import PageContentBlockCollapsible from '../../../../core/ui/content/PageContent
 import { BlockTitle } from '../../../../core/ui/typography';
 import CommunityGuidelines from '../../../community/community/CommunityGuidelines/CommunityGuidelines';
 import { useSpace } from '../../space/SpaceContext/useSpace';
+import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
+import { useUserContext } from '../../../community/user';
 
 const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   const { t } = useTranslation();
   const { loading: isLoadingChallenge, communityId, subspaceId: challengeId, subspaceNameId } = useSubSpace();
   const { isPrivate, loading: isLoadingSpace } = useSpace();
+  const { user: { hasPlatformPrivilege } = {} } = useUserContext();
 
   const { spaceId, journeyLevel } = useRouteResolver();
 
@@ -150,6 +153,7 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
                 canAddVirtualContributors={permissions.canAddVirtualContributors}
                 onAddMember={onAddVirtualContributor}
                 onRemoveMember={onRemoveVirtualContributor}
+                isPlatformAdmin={hasPlatformPrivilege?.(AuthorizationPrivilege.PlatformAdmin)}
                 fetchAvailableVirtualContributors={getAvailableVirtualContributors}
                 loading={loading}
               />
