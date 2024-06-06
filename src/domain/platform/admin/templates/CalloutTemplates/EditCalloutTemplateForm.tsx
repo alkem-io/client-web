@@ -1,6 +1,6 @@
 import React, { ReactNode, useMemo } from 'react';
 import { FormikProps } from 'formik';
-import { CalloutType, UpdateCalloutTemplateInput, Visual, } from '../../../../../core/apollo/generated/graphql-schema';
+import { CalloutType, UpdateCalloutTemplateInput, Visual } from '../../../../../core/apollo/generated/graphql-schema';
 import TemplateForm, { TemplateProfileValues } from '../TemplateForm';
 import { useTranslation } from 'react-i18next';
 import FormikRadioButtonsGroup from '../../../../../core/ui/forms/radioButtons/FormikRadioButtonsGroup';
@@ -15,6 +15,7 @@ import { TagsetField } from '../../components/Common/TagsetSegment';
 import FormikWhiteboardPreview from '../WhiteboardTemplates/FormikWhiteboardPreview';
 import { Reference, Tagset } from '../../../../common/profile/Profile';
 import { Identifiable } from '../../../../../core/utils/Identifiable';
+import { Caption } from '../../../../../core/ui/typography';
 
 export interface CalloutTemplateFormValues extends TemplateProfileValues {
   framing: {
@@ -81,16 +82,12 @@ const EditCalloutTemplateForm = ({ template, visual, onSubmit, actions }: Callou
       value: type,
       icon: calloutIcons[type],
       label: t(`components.calloutTypeSelect.label.${type}` as const),
+      tooltip: <Caption>{t('components.calloutTemplateDialog.typeReadonly')}</Caption>,
     }));
   }, [t]);
 
   const initialValues = useMemo<CalloutTemplateFormValues>(() => {
-    const {
-      framing,
-      contributionDefaults,
-      profile,
-      ...rest
-    } = template ?? {};
+    const { framing, contributionDefaults, profile, ...rest } = template ?? {};
 
     const { profile: framingProfile, ...framingRest } = framing ?? {};
 
@@ -126,14 +123,7 @@ const EditCalloutTemplateForm = ({ template, visual, onSubmit, actions }: Callou
   }, [template?.id]);
 
   const handleSubmit = (values: Partial<CalloutTemplateFormValues>) => {
-    const {
-      framing,
-      displayName,
-      description,
-      tags,
-      contributionDefaults,
-      type,
-    } = values as CalloutTemplateFormValues;
+    const { framing, displayName, description, tags, contributionDefaults } = values as CalloutTemplateFormValues;
 
     if (!template) {
       throw new Error('Template is not loaded');
@@ -145,25 +135,31 @@ const EditCalloutTemplateForm = ({ template, visual, onSubmit, actions }: Callou
       profile: {
         displayName,
         description,
-        tagsets: template.profile.tagset && [{
-          ID: template.profile.tagset.id!,
-          tags,
-        }],
+        tagsets: template.profile.tagset && [
+          {
+            ID: template.profile.tagset.id!,
+            tags,
+          },
+        ],
       },
       framing: {
         profile: {
           displayName: framing.profile.displayName,
           description: framing.profile.description,
           references: framing.profile.references.map(reference => ({ ID: reference.id, ...reference })),
-          tagsets: template.framing.profile.tagset && framing.profile.tags && [{
-            ID: template.framing.profile.tagset.id!,
-            tags: framing.profile.tags,
-          }],
+          tagsets: template.framing.profile.tagset &&
+            framing.profile.tags && [
+              {
+                ID: template.framing.profile.tagset.id!,
+                tags: framing.profile.tags,
+              },
+            ],
         },
-        whiteboard: framing.whiteboard && {
-          ID: template.framing.whiteboard?.id!,
-          // content: framing.whiteboard.content, // Not allowed by schema
-        },
+        whiteboardContent: template.framing.whiteboard &&
+          framing.whiteboard && {
+            ID: template.framing.whiteboard?.id!,
+            content: framing.whiteboard.content,
+          },
       },
       contributionDefaults: {
         postDescription: contributionDefaults.postDescription,
@@ -193,11 +189,8 @@ const EditCalloutTemplateForm = ({ template, visual, onSubmit, actions }: Callou
               maxLength={MARKDOWN_TEXT_LENGTH}
             />
           </Box>
-          <TagsetField
-            name="framing.profile.tags"
-            title={t('common.tags')}
-          />
-          <FormikRadioButtonsGroup name="type" options={calloutTypeOptions} />
+          <TagsetField name="framing.profile.tags" title={t('common.tags')} />
+          <FormikRadioButtonsGroup name="type" options={calloutTypeOptions} readOnly />
           {values.type === CalloutType.Whiteboard && (
             <FormikWhiteboardPreview name="framing.whiteboard.content" canEdit />
           )}
