@@ -1262,6 +1262,7 @@ export const CommunityMemberVirtualContributorFragmentDoc = gql`
     profile {
       id
       displayName
+      url
       avatar: visual(type: AVATAR) {
         ...VisualUri
       }
