@@ -19,7 +19,7 @@ interface AdminCommunityGuidelinesTemplatesSectionProps {
   templates: AdminCommunityGuidelinesTemplateFragment[] | undefined;
   onCloseTemplateDialog: () => void;
   refetchQueries: InternalRefetchQueriesInclude;
-  buildTemplateLink: (callout: AdminCommunityGuidelinesTemplateFragment) => LinkWithState;
+  buildTemplateLink: (guidelines: AdminCommunityGuidelinesTemplateFragment) => LinkWithState;
   edit?: boolean;
   loadInnovationPacks: () => void;
   loadingInnovationPacks?: boolean;
