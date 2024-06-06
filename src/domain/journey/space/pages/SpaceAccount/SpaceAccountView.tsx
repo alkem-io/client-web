@@ -2,7 +2,6 @@ import { FC, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Box, Button, CircularProgress } from '@mui/material';
 import ControlPointIcon from '@mui/icons-material/ControlPoint';
-import { v4 as uuidv4 } from 'uuid';
 import { buildSettingsUrl } from '../../../../../main/routing/urlBuilders';
 import PageContent from '../../../../../core/ui/content/PageContent';
 import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
@@ -196,8 +195,6 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
     const vsResponse = await createVirtualContributorOnAccount({
       variables: {
         virtualContributorData: {
-          // todo: guarantee uniqueness but use createNameId(displayName)
-          nameID: `v-c-${uuidv4()}`.slice(0, 25).toLocaleLowerCase(),
           profileData: {
             displayName,
           },
