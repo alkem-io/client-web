@@ -621,6 +621,15 @@ export type AssignCommunityRoleToVirtualInput = {
   virtualContributorID: Scalars['UUID_NAMEID'];
 };
 
+export type AssignLicensePlanToAccount = {
+  /** The ID of the Account to assign the LicensePlan to. */
+  accountID: Scalars['UUID'];
+  /** The ID of the LicensePlan to assign. */
+  licensePlanID: Scalars['UUID'];
+  /** The ID of the Licensing to use. */
+  licensingID?: InputMaybe<Scalars['UUID']>;
+};
+
 export type AssignOrganizationRoleToUserInput = {
   organizationID: Scalars['UUID_NAMEID'];
   role: OrganizationRole;
@@ -2711,6 +2720,8 @@ export type Mutation = {
   assignCommunityRoleToUser: User;
   /** Assigns a Virtual Contributor to a role in the specified Community. */
   assignCommunityRoleToVirtual: VirtualContributor;
+  /** Assign the specified LicensePlan to an Account. */
+  assignLicensePlanToAccount: Account;
   /** Assigns an Organization Role to user. */
   assignOrganizationRoleToUser: User;
   /** Assigns a platform role to a User. */
@@ -2897,6 +2908,8 @@ export type Mutation = {
   revokeCredentialFromOrganization: Organization;
   /** Removes an authorization credential from a User. */
   revokeCredentialFromUser: User;
+  /** Revokes the specified LicensePlan on an Account. */
+  revokeLicensePlanFromAccount: Account;
   /** Sends a reply to a message from the specified Room. */
   sendMessageReplyToRoom: Message;
   /** Send message to Community Leads. */
@@ -3041,6 +3054,10 @@ export type MutationAssignCommunityRoleToUserArgs = {
 
 export type MutationAssignCommunityRoleToVirtualArgs = {
   roleData: AssignCommunityRoleToVirtualInput;
+};
+
+export type MutationAssignLicensePlanToAccountArgs = {
+  planData: AssignLicensePlanToAccount;
 };
 
 export type MutationAssignOrganizationRoleToUserArgs = {
@@ -3389,6 +3406,10 @@ export type MutationRevokeCredentialFromOrganizationArgs = {
 
 export type MutationRevokeCredentialFromUserArgs = {
   revokeCredentialData: RevokeAuthorizationCredentialInput;
+};
+
+export type MutationRevokeLicensePlanFromAccountArgs = {
+  planData: RevokeLicensePlanFromAccount;
 };
 
 export type MutationSendMessageReplyToRoomArgs = {
@@ -4408,6 +4429,15 @@ export type RevokeAuthorizationCredentialInput = {
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
+export type RevokeLicensePlanFromAccount = {
+  /** The ID of the Account to assign the LicensePlan to. */
+  accountID: Scalars['UUID'];
+  /** The ID of the LicensePlan to assign. */
+  licensePlanID: Scalars['UUID'];
+  /** The ID of the Licensing to use. */
+  licensingID?: InputMaybe<Scalars['UUID']>;
+};
+
 export type RevokeOrganizationAuthorizationCredentialInput = {
   /** The Organization from whom the credential is being removed. */
   organizationID: Scalars['UUID'];
@@ -5159,6 +5189,7 @@ export type UpdateCalloutFramingInput = {
   /** The Profile of the Template. */
   profile?: InputMaybe<UpdateProfileInput>;
   whiteboard?: InputMaybe<UpdateWhiteboardInput>;
+  whiteboardContent?: InputMaybe<UpdateWhiteboardContentInput>;
 };
 
 export type UpdateCalloutInput = {
@@ -21526,7 +21557,40 @@ export type CreateVirtualContributorOnAccountMutation = {
   createVirtualContributor: {
     __typename?: 'VirtualContributor';
     id: string;
-    profile: { __typename?: 'Profile'; id: string; url: string };
+    nameID: string;
+    bodyOfKnowledgeID?: string | undefined;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      url: string;
+      displayName: string;
+      tagline: string;
+      tagsets?:
+        | Array<{
+            __typename?: 'Tagset';
+            id: string;
+            name: string;
+            tags: Array<string>;
+            allowedValues: Array<string>;
+            type: TagsetType;
+          }>
+        | undefined;
+      avatar?:
+        | {
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: string;
+            allowedTypes: Array<string>;
+            aspectRatio: number;
+            maxHeight: number;
+            maxWidth: number;
+            minHeight: number;
+            minWidth: number;
+            alternativeText?: string | undefined;
+          }
+        | undefined;
+    };
   };
 };
 
@@ -21564,7 +21628,7 @@ export type SpaceSubspacesQuery = {
           __typename?: 'Profile';
           displayName: string;
           url: string;
-          avatar?: { __typename?: 'Visual'; uri: string } | undefined;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
         };
       }>;
     };
@@ -21575,7 +21639,9 @@ export type SpaceSubspacesQuery = {
         __typename?: 'Profile';
         id: string;
         displayName: string;
-        avatar?: { __typename?: 'Visual'; uri: string } | undefined;
+        tagline: string;
+        url: string;
+        avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
       };
     }>;
   };

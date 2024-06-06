@@ -2812,6 +2812,7 @@
   },
   "virtualContributorSpaceSettings": {
     "title": "Create a Virtual Contributor",
+    "titleEdit": "Edit Virtual Contributor Profile",
     "name": "Name",
     "body-of-knowledge": "Body Of Knowledge",
     "info-text": "Select the Space or Subspace that you want to use as a body of knowledge for this Virtual Contributor",

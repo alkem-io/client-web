@@ -59,7 +59,7 @@ interface Props {
   bokProfile?: BasicSpaceProps;
   avatar: Visual | undefined;
   onSave?: (virtualContributor: UpdateVirtualContributorInput) => void;
-  title?: string;
+  hasBackNavitagion?: boolean;
 }
 
 export const VirtualContributorForm: FC<Props> = ({
@@ -67,6 +67,7 @@ export const VirtualContributorForm: FC<Props> = ({
   bokProfile,
   avatar,
   onSave,
+  hasBackNavitagion = true,
 }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -166,32 +167,30 @@ export const VirtualContributorForm: FC<Props> = ({
           enableReinitialize
           onSubmit={handleSubmit}
         >
-          {({ values: { avatar, tagsets }, handleSubmit }) => {
+          {({ values: { avatar, tagsets, hostDisplayName }, handleSubmit }) => {
             return (
               <Form noValidate onSubmit={handleSubmit}>
                 <GridContainer>
                   <GridProvider columns={12}>
                     <GridItem columns={isMobile ? cols : 2}>
-                      {avatar && (
-                        <Box display="flex" justifyContent="center">
-                          <VisualUpload
-                            visual={avatar}
-                            altText={t('visuals-alt-text.avatar.contributor.text', {
-                              displayName,
-                              altText: avatar?.alternativeText,
-                            })}
-                          />
-                        </Box>
-                      )}
+                      <Box display="flex" justifyContent="center">
+                        <VisualUpload
+                          visual={avatar}
+                          altText={t('visuals-alt-text.avatar.contributor.text', {
+                            displayName,
+                            altText: avatar?.alternativeText,
+                          })}
+                        />
+                      </Box>
                     </GridItem>
                     <GridItem columns={isMobile ? cols : 8}>
                       <Gutters>
                         <NameSegment disabled required />
                         <ProfileSegment />
                         {tagsets && <TagsetSegment tagsets={tagsets} />}
-                        <HostFields />
+                        {hostDisplayName && <HostFields />}
                         <Actions marginTop={theme.spacing(2)} sx={{ justifyContent: 'end' }}>
-                          {backButton}
+                          {hasBackNavitagion && backButton}
                           <LoadingButton loading={loading} type="submit" variant="contained">
                             {t('buttons.save')}
                           </LoadingButton>

@@ -17397,12 +17397,24 @@ export const CreateVirtualContributorOnAccountDocument = gql`
   mutation CreateVirtualContributorOnAccount($virtualContributorData: CreateVirtualContributorOnAccountInput!) {
     createVirtualContributor(virtualContributorData: $virtualContributorData) {
       id
+      nameID
+      bodyOfKnowledgeID
       profile {
         id
         url
+        displayName
+        tagline
+        tagsets {
+          ...TagsetDetails
+        }
+        avatar: visual(type: AVATAR) {
+          ...VisualFull
+        }
       }
     }
   }
+  ${TagsetDetailsFragmentDoc}
+  ${VisualFullFragmentDoc}
 `;
 export type CreateVirtualContributorOnAccountMutationFn = Apollo.MutationFunction<
   SchemaTypes.CreateVirtualContributorOnAccountMutation,
@@ -17520,7 +17532,7 @@ export const SpaceSubspacesDocument = gql`
             displayName
             url
             avatar: visual(type: AVATAR) {
-              uri
+              ...VisualUri
             }
           }
         }
@@ -17530,13 +17542,16 @@ export const SpaceSubspacesDocument = gql`
         profile {
           id
           displayName
+          tagline
+          url
           avatar: visual(type: AVATAR) {
-            uri
+            ...VisualUri
           }
         }
       }
     }
   }
+  ${VisualUriFragmentDoc}
 `;
 
 /**

@@ -1,9 +1,19 @@
 mutation CreateVirtualContributorOnAccount($virtualContributorData: CreateVirtualContributorOnAccountInput!) {
   createVirtualContributor(virtualContributorData: $virtualContributorData) {
     id
+    nameID
+    bodyOfKnowledgeID
     profile {
       id
       url
+      displayName
+      tagline
+      tagsets {
+        ...TagsetDetails
+      }
+      avatar: visual(type: AVATAR) {
+        ...VisualFull
+      }
     }
   }
 }
@@ -34,7 +44,7 @@ query SpaceSubspaces($spaceId: UUID_NAMEID!) {
           displayName
           url
           avatar: visual(type: AVATAR) {
-            uri
+            ...VisualUri
           }
         }
       }
@@ -44,8 +54,10 @@ query SpaceSubspaces($spaceId: UUID_NAMEID!) {
       profile {
         id
         displayName
+        tagline
+        url
         avatar: visual(type: AVATAR) {
-          uri
+          ...VisualUri
         }
       }
     }
