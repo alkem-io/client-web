@@ -15,6 +15,7 @@ import AdminInnovationTemplatesSection from '../templates/InnovationTemplates/Ad
 import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
 import AdminWhiteboardTemplatesSection from '../templates/WhiteboardTemplates/AdminWhiteboardTemplatesSection';
 import AdminCalloutTemplatesSection from '../templates/CalloutTemplates/AdminCalloutTemplatesSection';
+import AdminCommunityGuidelinesTemplatesSection from '../templates/CommunityGuidelines/AdminCommunityGuidelinesTemplatesSection';
 
 interface SpaceTemplatesAdminPageProps extends SettingsPageProps {
   spaceId: string;
@@ -23,6 +24,7 @@ interface SpaceTemplatesAdminPageProps extends SettingsPageProps {
   postTemplatesRoutePath: string;
   whiteboardTemplatesRoutePath: string;
   innovationTemplatesRoutePath: string;
+  communityGuidelinesTemplatesRoutePath: string;
   edit?: boolean;
 }
 
@@ -33,9 +35,16 @@ const SpaceTemplatesAdminPage: FC<SpaceTemplatesAdminPageProps> = ({
   postTemplatesRoutePath,
   whiteboardTemplatesRoutePath,
   innovationTemplatesRoutePath,
+  communityGuidelinesTemplatesRoutePath,
   edit = false,
 }) => {
-  const { calloutTemplateId, postTemplateId, whiteboardTemplateId, innovationTemplateId } = useParams();
+  const {
+    calloutTemplateId,
+    postTemplateId,
+    whiteboardTemplateId,
+    innovationTemplateId,
+    communityGuidelinesTemplateId,
+  } = useParams();
 
   const [backFromTemplateDialog, buildLink] = useBackToParentPage(routePrefix);
 
@@ -52,6 +61,7 @@ const SpaceTemplatesAdminPage: FC<SpaceTemplatesAdminPageProps> = ({
     postTemplates,
     whiteboardTemplates,
     innovationFlowTemplates,
+    communityGuidelinesTemplates,
     id: templatesSetID,
     authorization: templateSetAuth,
   } = spaceTemplatesData?.lookup.space?.account.library ?? {};
@@ -59,7 +69,7 @@ const SpaceTemplatesAdminPage: FC<SpaceTemplatesAdminPageProps> = ({
 
   const postInnovationPacks = useMemo(() => {
     if (!innovationPacks) return [];
-    return innovationPacks?.platform.library.innovationPacks
+    return innovationPacks.platform.library.innovationPacks
       .filter(pack => pack.templates && pack.templates?.postTemplates.length > 0)
       .map(pack => ({
         ...pack,
@@ -69,7 +79,7 @@ const SpaceTemplatesAdminPage: FC<SpaceTemplatesAdminPageProps> = ({
 
   const whiteboardInnovationPacks = useMemo(() => {
     if (!innovationPacks) return [];
-    return innovationPacks?.platform.library.innovationPacks
+    return innovationPacks.platform.library.innovationPacks
       .filter(pack => pack.templates && pack.templates?.whiteboardTemplates.length > 0)
       .map(pack => ({
         ...pack,
@@ -79,7 +89,7 @@ const SpaceTemplatesAdminPage: FC<SpaceTemplatesAdminPageProps> = ({
 
   const innovationFlowInnovationPacks = useMemo(() => {
     if (!innovationPacks) return [];
-    return innovationPacks?.platform.library.innovationPacks
+    return innovationPacks.platform.library.innovationPacks
       .filter(pack => pack.templates && pack.templates?.innovationFlowTemplates.length > 0)
       .map(pack => ({
         ...pack,
@@ -89,11 +99,21 @@ const SpaceTemplatesAdminPage: FC<SpaceTemplatesAdminPageProps> = ({
 
   const calloutInnovationPacks = useMemo(() => {
     if (!innovationPacks) return [];
-    return innovationPacks?.platform.library.innovationPacks
+    return innovationPacks.platform.library.innovationPacks
       .filter(pack => pack.templates && pack.templates?.calloutTemplates.length > 0)
       .map(pack => ({
         ...pack,
         templates: pack.templates?.calloutTemplates || [],
+      }));
+  }, [innovationPacks]);
+
+  const communityGuidelinesInnovationPacks = useMemo(() => {
+    if (!innovationPacks) return [];
+    return innovationPacks.platform.library.innovationPacks
+      .filter(pack => pack.templates && pack.templates?.communityGuidelinesTemplates.length > 0)
+      .map(pack => ({
+        ...pack,
+        templates: pack.templates?.communityGuidelinesTemplates ?? [],
       }));
   }, [innovationPacks]);
 
@@ -150,6 +170,19 @@ const SpaceTemplatesAdminPage: FC<SpaceTemplatesAdminPageProps> = ({
           loadInnovationPacks={loadInnovationPacks}
           loadingInnovationPacks={loadingInnovationPacks}
           innovationPacks={innovationFlowInnovationPacks}
+          canImportTemplates={canImportTemplates}
+        />
+        <AdminCommunityGuidelinesTemplatesSection
+          templateId={communityGuidelinesTemplateId}
+          templatesSetId={templatesSetID}
+          templates={communityGuidelinesTemplates}
+          onCloseTemplateDialog={backFromTemplateDialog}
+          refetchQueries={[refetchAdminSpaceTemplatesQuery({ spaceId })]}
+          buildTemplateLink={({ id }) => buildLink(`${routePrefix}/${communityGuidelinesTemplatesRoutePath}/${id}`)}
+          edit={edit}
+          loadInnovationPacks={loadInnovationPacks}
+          loadingInnovationPacks={loadingInnovationPacks}
+          innovationPacks={communityGuidelinesInnovationPacks}
           canImportTemplates={canImportTemplates}
         />
       </Gutters>
