@@ -23,7 +23,7 @@ export interface CommunityGuidelinesTemplateFormValues {
         id: string;
         name: string;
         uri: string;
-        description: string | undefined;
+        description: string;
       }[];
     };
   };
@@ -33,7 +33,7 @@ export interface CommunityGuidelinesTemplateFormValues {
 }
 
 export interface CommunityGuidelinesTemplateFormSubmittedValues {
-  guidelines: {
+  guidelines?: {
     profile: {
       displayName: string;
       description: string;
@@ -41,11 +41,11 @@ export interface CommunityGuidelinesTemplateFormSubmittedValues {
         id: string;
         name: string;
         uri: string;
-        description: string | undefined;
+        description: string;
       }[];
     };
   };
-  profile: CreateProfileInput;
+  profile?: CreateProfileInput;
   visualUri?: string;
   tags?: string[];
 }

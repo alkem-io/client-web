@@ -98,7 +98,7 @@ export const ReferenceSegment: FC<ReferenceSegmentProps> = ({
             <Caption>{t('components.referenceSegment.missing-refereneces')}</Caption>
           ) : (
             references?.map((attachment, index) => (
-              <Gutters key={attachment.id} disablePadding>
+              <Gutters key={attachment.id ?? index} disablePadding>
                 <Gutters row={!isMobile} disablePadding alignItems="start">
                   <FormikInputField
                     name={`${fieldName}.${index}.name`}

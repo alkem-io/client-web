@@ -6,6 +6,7 @@ import {
   useJourneyStorageConfigQuery,
   useOrganizationStorageConfigQuery,
   usePlatformStorageConfigQuery,
+  useSpaceGuidelinesTemplateStorageConfigQuery,
   useUserStorageConfigQuery,
 } from '../../../core/apollo/generated/apollo-hooks';
 import { useMemo } from 'react';
@@ -24,6 +25,7 @@ type StorageConfigLocation =
   | 'organization'
   | 'callout'
   | 'post'
+  | 'guidelinesTemplate'
   | 'innovationPack'
   | 'innovationHub'
   | 'platform';
@@ -47,6 +49,12 @@ interface UseStorageConfigOptionsPost extends UseStorageConfigOptionsBase {
   postId: string | undefined;
   calloutId: string | undefined;
   locationType: 'post';
+}
+
+interface UseStorageConfigOptionsGuidelinesTemplate extends UseStorageConfigOptionsBase {
+  spaceId: string | undefined;
+  guidelinesTemplateId: string | undefined;
+  locationType: 'guidelinesTemplate';
 }
 
 interface UseStorageConfigOptionsUser extends UseStorageConfigOptionsBase {
@@ -79,6 +87,7 @@ export type StorageConfigOptions =
   | UseStorageConfigOptionsOrganization
   | UseStorageConfigOptionsCallout
   | UseStorageConfigOptionsPost
+  | UseStorageConfigOptionsGuidelinesTemplate
   | UseStorageConfigOptionsInnovationPack
   | UseStorageConfigOptionsInnovationHub
   | UseStorageConfigOptionsPlatform;
@@ -111,6 +120,16 @@ const useStorageConfig = ({ locationType, skip, ...options }: StorageConfigOptio
       calloutId: postOptions.calloutId!, // ensured by skip
     },
     skip: skip || locationType !== 'post' || !postOptions.postId || !postOptions.calloutId,
+  });
+
+  const guidelinesTemplateOptions = options as UseStorageConfigOptionsGuidelinesTemplate;
+  const { data: guidelinesTemplateStorageConfigData } = useSpaceGuidelinesTemplateStorageConfigQuery({
+    variables: {
+      spaceId: guidelinesTemplateOptions.spaceId!,
+      includeTemplate: !!guidelinesTemplateOptions.guidelinesTemplateId,
+      templateId: guidelinesTemplateOptions.guidelinesTemplateId,
+    },
+    skip: skip || locationType !== 'guidelinesTemplate' || !guidelinesTemplateOptions.spaceId,
   });
 
   const userOptions = options as UseStorageConfigOptionsUser;
@@ -157,6 +176,8 @@ const useStorageConfig = ({ locationType, skip, ...options }: StorageConfigOptio
     journey ??
     callout?.framing ??
     contribution?.post ??
+    guidelinesTemplateStorageConfigData?.space ??
+    guidelinesTemplateStorageConfigData?.space?.account?.library?.communityGuidelinesTemplate ??
     userStorageConfigData?.user ??
     organizationStorageConfigData?.organization ??
     innovationPackStorageConfigData?.platform.library.innovationPack ??

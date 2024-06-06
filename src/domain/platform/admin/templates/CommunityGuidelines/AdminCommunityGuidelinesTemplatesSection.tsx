@@ -12,6 +12,7 @@ import AdminTemplatesSection from '../AdminTemplatesSection';
 import { InnovationPack } from '../InnovationPacks/InnovationPack';
 import CommunityGuidelinesImportTemplateCard from './CommunityGuidelinesImportTemplateCard';
 import EditCommunityGuidelinesTemplateDialog from './EditCommunityGuidelinesTemplateDialog';
+import CreateCommunityGuidelinesTemplateDialog from './CreateCommunityGuidelinesTemplateDialog';
 
 interface AdminCommunityGuidelinesTemplatesSectionProps {
   templateId: string | undefined;
@@ -19,7 +20,7 @@ interface AdminCommunityGuidelinesTemplatesSectionProps {
   templates: AdminCommunityGuidelinesTemplateFragment[] | undefined;
   onCloseTemplateDialog: () => void;
   refetchQueries: InternalRefetchQueriesInclude;
-  buildTemplateLink: (callout: AdminCommunityGuidelinesTemplateFragment) => LinkWithState;
+  buildTemplateLink: (guidelines: AdminCommunityGuidelinesTemplateFragment) => LinkWithState;
   edit?: boolean;
   loadInnovationPacks: () => void;
   loadingInnovationPacks?: boolean;
@@ -46,14 +47,14 @@ const AdminCommunityGuidelinesTemplatesSection = ({
       })}
       templateCardComponent={CommunityGuidelinesImportTemplateCard}
       templateImportCardComponent={CommunityGuidelinesImportTemplateCard}
-      createTemplateDialogComponent={undefined}
+      createTemplateDialogComponent={CreateCommunityGuidelinesTemplateDialog}
       editTemplateDialogComponent={EditCommunityGuidelinesTemplateDialog}
       onCreateTemplate={variables => createCommunityGuidelinesTemplate({ variables, refetchQueries })}
       onUpdateTemplate={variables => updateCommunityGuidelinesTemplate({ variables, refetchQueries })}
       onDeleteTemplate={async variables => {
         await deleteCommunityGuidelinesTemplate({ variables, refetchQueries });
       }}
-      templateType={TemplateType.CalloutTemplate}
+      templateType={TemplateType.CommunityGuidelinesTemplate}
     />
   );
 };
