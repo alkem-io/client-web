@@ -15,9 +15,7 @@ interface FormikRadioButtonsGroupProps<Value> {
 const FormikRadioButtonsGroup = <Value,>({ name, options }: FormikRadioButtonsGroupProps<Value>) => {
   const [{ value }, , { setValue }] = useField<Value>(name);
 
-  return (
-    <RadioButtonsGroup value={value} options={options} onChange={setValue} />
-  );
+  return <RadioButtonsGroup value={value} options={options} onChange={setValue} />;
 };
 
 export default FormikRadioButtonsGroup;

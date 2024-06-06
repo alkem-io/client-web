@@ -25,17 +25,25 @@ const RadioButtonsGroup = <Value,>({ value, options, onChange }: RadioButtonsGro
           key={String(optionValue)}
           onClick={() => onChange?.(optionValue)}
           sx={{ flexShrink: 1, textTransform: 'none' }}
-          startIcon={(
+          startIcon={
             <SwapColors swap={value === optionValue}>
-              <Gutters disablePadding sx={{ justifyContent: 'center', alignItems: 'center', backgroundColor: 'background.paper', borderRadius: gutters(), width: gutters(2), height: gutters(2) }}>
+              <Gutters
+                disablePadding
+                sx={{
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: 'background.paper',
+                  borderRadius: gutters(),
+                  width: gutters(2),
+                  height: gutters(2),
+                }}
+              >
                 <Icon color="primary" />
               </Gutters>
             </SwapColors>
-          )}
+          }
         >
-          <Caption whiteSpace="wrap">
-            {label}
-          </Caption>
+          <Caption whiteSpace="wrap">{label}</Caption>
         </Button>
       ))}
     </Gutters>

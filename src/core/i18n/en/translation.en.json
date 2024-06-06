@@ -507,7 +507,7 @@
         "PostTemplate_plural": "Post Templates",
         "InnovationFlowTemplate": "Innovation Flow",
         "InnovationFlowTemplate_plural": "Innovation Flow Templates",
-        "CalloutTemplate": "Callout Template",
+        "CalloutTemplate": "Collaboration Tool Template",
         "CollaborationToolTemplate_plural": "Collaboration Tool Templates",
         "CommunityGuidelinesTemplate": "Community Guidelines Template",
         "CommunityGuidelinesTemplate_plural": "Community Guidelines Templates"
@@ -884,7 +884,7 @@
   },
   "templateLibrary": {
     "calloutTemplates": {
-      "name": "Callout template",
+      "name": "Collaboration Tool template",
       "title": "Template Library: Collaboration Tools",
       "type": "Callout type",
       "description": "Description"

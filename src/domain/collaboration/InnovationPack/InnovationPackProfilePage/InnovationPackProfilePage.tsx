@@ -28,11 +28,11 @@ import InnovationPackProfileLayout from './InnovationPackProfileLayout';
 import TemplatesBlock from './TemplatesBlock';
 
 export enum TemplateType {
+  CalloutTemplate = 'CalloutTemplate',
   WhiteboardTemplate = 'WhiteboardTemplate',
+  CommunityGuidelinesTemplate = 'CommunityGuidelinesTemplate',
   PostTemplate = 'PostTemplate',
   InnovationFlowTemplate = 'InnovationFlowTemplate',
-  CalloutTemplate = 'CalloutTemplate',
-  CommunityGuidelinesTemplate = 'CommunityGuidelinesTemplate',
 }
 
 const InnovationPackProfilePage = () => {
