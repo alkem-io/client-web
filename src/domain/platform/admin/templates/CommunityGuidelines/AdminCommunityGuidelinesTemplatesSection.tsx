@@ -11,6 +11,7 @@ import { LinkWithState } from '../../../../shared/types/LinkWithState';
 import AdminTemplatesSection from '../AdminTemplatesSection';
 import { InnovationPack } from '../InnovationPacks/InnovationPack';
 import CommunityGuidelinesImportTemplateCard from './CommunityGuidelinesImportTemplateCard';
+import EditCommunityGuidelinesTemplateDialog from './EditCommunityGuidelinesTemplateDialog';
 
 interface AdminCommunityGuidelinesTemplatesSectionProps {
   templateId: string | undefined;
@@ -46,7 +47,7 @@ const AdminCommunityGuidelinesTemplatesSection = ({
       templateCardComponent={CommunityGuidelinesImportTemplateCard}
       templateImportCardComponent={CommunityGuidelinesImportTemplateCard}
       createTemplateDialogComponent={undefined}
-      editTemplateDialogComponent={undefined}
+      editTemplateDialogComponent={EditCommunityGuidelinesTemplateDialog}
       onCreateTemplate={variables => createCommunityGuidelinesTemplate({ variables, refetchQueries })}
       onUpdateTemplate={variables => updateCommunityGuidelinesTemplate({ variables, refetchQueries })}
       onDeleteTemplate={async variables => {
