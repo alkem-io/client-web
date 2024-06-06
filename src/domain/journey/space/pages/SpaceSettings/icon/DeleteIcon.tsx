@@ -2,7 +2,7 @@ import React from 'react';
 
 const DeleteIcon = ({ fill = '#B30000' }) => (
   <svg width="22" height="24" viewBox="0 0 22 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <g clip-path="url(#clip0_1612_5773)">
+    <g clipPath="url(#clip0_1612_5773)">
       <mask id="mask0_1612_5773" maskUnits="userSpaceOnUse" x="0" y="0" width="22" height="24">
         <path d="M22 0H0V24H22V0Z" fill="#D9D9D9" />
       </mask>

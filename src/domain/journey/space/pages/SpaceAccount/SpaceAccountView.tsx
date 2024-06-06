@@ -348,14 +348,13 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
                 )}
                 {hasVirtualContributors &&
                   virtualContributors?.map(vc => (
-                    <>
-                      <ContributorOnAccountCard
-                        contributor={vc}
-                        space={getBoKSpaceData(vc.bodyOfKnowledgeID ?? '')}
-                        hasDelete={canCreateVirtualContributor}
-                        onDeleteClick={() => initiateDeleteVC(vc.nameID)}
-                      />
-                    </>
+                    <ContributorOnAccountCard
+                      key={vc.id}
+                      contributor={vc}
+                      space={getBoKSpaceData(vc.bodyOfKnowledgeID ?? '')}
+                      hasDelete={canCreateVirtualContributor}
+                      onDeleteClick={() => initiateDeleteVC(vc.nameID)}
+                    />
                   ))}
                 {canCreateVirtualContributor && (
                   <>
