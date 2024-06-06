@@ -129,7 +129,7 @@ const useStorageConfig = ({ locationType, skip, ...options }: StorageConfigOptio
       includeTemplate: !!guidelinesTemplateOptions.guidelinesTemplateId,
       templateId: guidelinesTemplateOptions.guidelinesTemplateId,
     },
-    skip: skip || locationType !== 'guidelinestemplate' || !guidelinesTemplateOptions.spaceId,
+    skip: skip || locationType !== 'guidelinesTemplate' || !guidelinesTemplateOptions.spaceId,
   });
 
   const userOptions = options as UseStorageConfigOptionsUser;
