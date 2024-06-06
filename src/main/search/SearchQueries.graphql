@@ -126,28 +126,28 @@ fragment SearchResultCallout on SearchResultCallout {
     type
     framing {
       id
-      # profile {
-      #   id
-      #   displayName
-      #   description
-      #   url
-      #   tagset {
-      #     ...TagsetDetails
-      #   }
-      # }
+      profile {
+        id
+        displayName
+        description
+        url
+        tagset {
+        ...TagsetDetails
+        }
+      }
     }
-    # contributions {
-    #   id
-    #   post {
-    #     id
-    #   }
-    #   whiteboard {
-    #     id
-    #   }
-    #   link {
-    #     id
-    #   }
-    # }
+    contributions {
+      id
+      post {
+        id
+      }
+      whiteboard {
+        id
+      }
+      link {
+        id
+      }
+    }
   }
 }
 

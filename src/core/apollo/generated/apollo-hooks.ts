@@ -3279,9 +3279,31 @@ export const SearchResultCalloutFragmentDoc = gql`
       type
       framing {
         id
+        profile {
+          id
+          displayName
+          description
+          url
+          tagset {
+            ...TagsetDetails
+          }
+        }
+      }
+      contributions {
+        id
+        post {
+          id
+        }
+        whiteboard {
+          id
+        }
+        link {
+          id
+        }
       }
     }
   }
+  ${TagsetDetailsFragmentDoc}
 `;
 export const SearchResultOrganizationFragmentDoc = gql`
   fragment SearchResultOrganization on SearchResultOrganization {

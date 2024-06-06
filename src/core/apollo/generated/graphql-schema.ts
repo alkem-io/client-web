@@ -1628,7 +1628,7 @@ export type CreateOrganizationInput = {
   domain?: InputMaybe<Scalars['String']>;
   legalEntityName?: InputMaybe<Scalars['String']>;
   /** A readable identifier, unique within the containing scope. */
-  nameID?: InputMaybe<Scalars['NameID']>;
+  nameID: Scalars['NameID'];
   profileData: CreateProfileInput;
   website?: InputMaybe<Scalars['String']>;
 };
@@ -1733,7 +1733,7 @@ export type CreateUserInput = {
   gender?: InputMaybe<Scalars['String']>;
   lastName?: InputMaybe<Scalars['String']>;
   /** A readable identifier, unique within the containing scope. */
-  nameID?: InputMaybe<Scalars['NameID']>;
+  nameID: Scalars['NameID'];
   phone?: InputMaybe<Scalars['String']>;
   profileData: CreateProfileInput;
 };
@@ -1743,7 +1743,7 @@ export type CreateVirtualContributorOnAccountInput = {
   bodyOfKnowledgeID?: InputMaybe<Scalars['UUID']>;
   bodyOfKnowledgeType?: InputMaybe<BodyOfKnowledgeType>;
   /** A readable identifier, unique within the containing scope. */
-  nameID?: InputMaybe<Scalars['NameID']>;
+  nameID: Scalars['NameID'];
   profileData: CreateProfileInput;
   virtualPersonaID?: InputMaybe<Scalars['UUID']>;
 };
@@ -4581,7 +4581,7 @@ export type SearchInput = {
   tagsetNames?: InputMaybe<Array<Scalars['String']>>;
   /** The terms to be searched for within this Space. Max 5. */
   terms: Array<Scalars['String']>;
-  /** Restrict the search to only the specified entity types. Values allowed: space, subspace, user, group, organization, Default is all. */
+  /** Restrict the search to only the specified entity types. Values allowed: space, subspace, user, group, organization, callout. Default is all. */
   typesFilter?: InputMaybe<Array<Scalars['String']>>;
 };
 
@@ -25416,7 +25416,34 @@ export type SearchQuery = {
             id: string;
             nameID: string;
             type: CalloutType;
-            framing: { __typename?: 'CalloutFraming'; id: string };
+            framing: {
+              __typename?: 'CalloutFraming';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                description?: string | undefined;
+                url: string;
+                tagset?:
+                  | {
+                      __typename?: 'Tagset';
+                      id: string;
+                      name: string;
+                      tags: Array<string>;
+                      allowedValues: Array<string>;
+                      type: TagsetType;
+                    }
+                  | undefined;
+              };
+            };
+            contributions: Array<{
+              __typename?: 'CalloutContribution';
+              id: string;
+              post?: { __typename?: 'Post'; id: string } | undefined;
+              whiteboard?: { __typename?: 'Whiteboard'; id: string } | undefined;
+              link?: { __typename?: 'Link'; id: string } | undefined;
+            }>;
           };
         }
       | {
@@ -25703,7 +25730,34 @@ export type SearchResultCalloutFragment = {
     id: string;
     nameID: string;
     type: CalloutType;
-    framing: { __typename?: 'CalloutFraming'; id: string };
+    framing: {
+      __typename?: 'CalloutFraming';
+      id: string;
+      profile: {
+        __typename?: 'Profile';
+        id: string;
+        displayName: string;
+        description?: string | undefined;
+        url: string;
+        tagset?:
+          | {
+              __typename?: 'Tagset';
+              id: string;
+              name: string;
+              tags: Array<string>;
+              allowedValues: Array<string>;
+              type: TagsetType;
+            }
+          | undefined;
+      };
+    };
+    contributions: Array<{
+      __typename?: 'CalloutContribution';
+      id: string;
+      post?: { __typename?: 'Post'; id: string } | undefined;
+      whiteboard?: { __typename?: 'Whiteboard'; id: string } | undefined;
+      link?: { __typename?: 'Link'; id: string } | undefined;
+    }>;
   };
 };
 
