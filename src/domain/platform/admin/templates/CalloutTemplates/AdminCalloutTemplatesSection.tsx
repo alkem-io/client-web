@@ -3,12 +3,14 @@ import { useTranslation } from 'react-i18next';
 import {
   useCreateCalloutTemplateMutation,
   useDeleteCalloutTemplateMutation,
+  useUpdateCalloutTemplateMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import {
   AdminCalloutTemplateFragment,
   CalloutState,
   CalloutType,
   CreateCalloutTemplateMutationVariables,
+  UpdateCalloutTemplateInput,
 } from '../../../../../core/apollo/generated/graphql-schema';
 import { LinkWithState } from '../../../../shared/types/LinkWithState';
 import AdminTemplatesSection from '../AdminTemplatesSection';
@@ -18,6 +20,7 @@ import { TemplateType } from '../../../../collaboration/InnovationPack/Innovatio
 import CreateCalloutTemplateDialog from './CreateCalloutTemplateDialog';
 import { CalloutTemplateFormSubmittedValues } from './CalloutTemplateForm';
 import produce from 'immer';
+import EditCalloutTemplateDialog from './EditCalloutTemplateDialog';
 
 interface AdminCalloutTemplatesSectionProps {
   templateId: string | undefined;
@@ -37,6 +40,7 @@ const AdminCalloutTemplatesSection = ({ refetchQueries, ...props }: AdminCallout
   const { t } = useTranslation();
 
   const [createCalloutTemplate] = useCreateCalloutTemplateMutation();
+  const [updateCalloutTemplate] = useUpdateCalloutTemplateMutation();
   const [deleteCalloutTemplate] = useDeleteCalloutTemplateMutation();
 
   return (
@@ -49,7 +53,8 @@ const AdminCalloutTemplatesSection = ({ refetchQueries, ...props }: AdminCallout
       templateCardComponent={CalloutImportTemplateCard}
       templateImportCardComponent={CalloutImportTemplateCard}
       createTemplateDialogComponent={CreateCalloutTemplateDialog}
-      editTemplateDialogComponent={undefined}
+      // @ts-ignore
+      editTemplateDialogComponent={EditCalloutTemplateDialog}
       // @ts-ignore
       onCreateTemplate={(calloutTemplate: CalloutTemplateFormSubmittedValues & { templatesSetId: string }) => {
         const { framing, contributionDefaults } = produce(calloutTemplate, draft => {
@@ -86,7 +91,10 @@ const AdminCalloutTemplatesSection = ({ refetchQueries, ...props }: AdminCallout
 
         return createCalloutTemplate({ variables, refetchQueries });
       }}
-      onUpdateTemplate={() => Promise.resolve({ data: null, errors: [] })}
+      // @ts-ignore
+      onUpdateTemplate={async ({ templateId, ...template }: UpdateCalloutTemplateInput & { templateId: string }) => {
+        await updateCalloutTemplate({ variables: { template }, refetchQueries });
+      }}
       onDeleteTemplate={async variables => {
         await deleteCalloutTemplate({ variables, refetchQueries });
       }}

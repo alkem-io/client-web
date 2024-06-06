@@ -1326,6 +1326,7 @@ export const CommunityMemberVirtualContributorFragmentDoc = gql`
     profile {
       id
       displayName
+      url
       avatar: visual(type: AVATAR) {
         ...VisualUri
       }
@@ -18945,6 +18946,107 @@ export function refetchAdminCommunityGuidelinesTemplatesQuery(
   return { query: AdminCommunityGuidelinesTemplatesDocument, variables: variables };
 }
 
+export const CalloutTemplateEditableAttributesDocument = gql`
+  query CalloutTemplateEditableAttributes($templateId: UUID!) {
+    lookup {
+      calloutTemplate(ID: $templateId) {
+        id
+        type
+        profile {
+          id
+          displayName
+          description
+          tagset {
+            ...TagsetDetails
+          }
+        }
+        framing {
+          id
+          profile {
+            id
+            displayName
+            description
+            tagset {
+              ...TagsetDetails
+            }
+            storageBucket {
+              id
+            }
+          }
+          whiteboard {
+            ...WhiteboardContent
+          }
+        }
+        contributionDefaults {
+          id
+          postDescription
+          whiteboardContent
+        }
+      }
+    }
+  }
+  ${TagsetDetailsFragmentDoc}
+  ${WhiteboardContentFragmentDoc}
+`;
+
+/**
+ * __useCalloutTemplateEditableAttributesQuery__
+ *
+ * To run a query within a React component, call `useCalloutTemplateEditableAttributesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCalloutTemplateEditableAttributesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCalloutTemplateEditableAttributesQuery({
+ *   variables: {
+ *      templateId: // value for 'templateId'
+ *   },
+ * });
+ */
+export function useCalloutTemplateEditableAttributesQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.CalloutTemplateEditableAttributesQuery,
+    SchemaTypes.CalloutTemplateEditableAttributesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.CalloutTemplateEditableAttributesQuery,
+    SchemaTypes.CalloutTemplateEditableAttributesQueryVariables
+  >(CalloutTemplateEditableAttributesDocument, options);
+}
+
+export function useCalloutTemplateEditableAttributesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CalloutTemplateEditableAttributesQuery,
+    SchemaTypes.CalloutTemplateEditableAttributesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.CalloutTemplateEditableAttributesQuery,
+    SchemaTypes.CalloutTemplateEditableAttributesQueryVariables
+  >(CalloutTemplateEditableAttributesDocument, options);
+}
+
+export type CalloutTemplateEditableAttributesQueryHookResult = ReturnType<
+  typeof useCalloutTemplateEditableAttributesQuery
+>;
+export type CalloutTemplateEditableAttributesLazyQueryHookResult = ReturnType<
+  typeof useCalloutTemplateEditableAttributesLazyQuery
+>;
+export type CalloutTemplateEditableAttributesQueryResult = Apollo.QueryResult<
+  SchemaTypes.CalloutTemplateEditableAttributesQuery,
+  SchemaTypes.CalloutTemplateEditableAttributesQueryVariables
+>;
+export function refetchCalloutTemplateEditableAttributesQuery(
+  variables: SchemaTypes.CalloutTemplateEditableAttributesQueryVariables
+) {
+  return { query: CalloutTemplateEditableAttributesDocument, variables: variables };
+}
+
 export const CreateCalloutTemplateDocument = gql`
   mutation createCalloutTemplate(
     $templatesSetId: UUID!
@@ -19016,6 +19118,54 @@ export type CreateCalloutTemplateMutationResult = Apollo.MutationResult<SchemaTy
 export type CreateCalloutTemplateMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateCalloutTemplateMutation,
   SchemaTypes.CreateCalloutTemplateMutationVariables
+>;
+export const UpdateCalloutTemplateDocument = gql`
+  mutation UpdateCalloutTemplate($template: UpdateCalloutTemplateInput!) {
+    updateCalloutTemplate(calloutTemplateInput: $template) {
+      id
+    }
+  }
+`;
+export type UpdateCalloutTemplateMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateCalloutTemplateMutation,
+  SchemaTypes.UpdateCalloutTemplateMutationVariables
+>;
+
+/**
+ * __useUpdateCalloutTemplateMutation__
+ *
+ * To run a mutation, you first call `useUpdateCalloutTemplateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateCalloutTemplateMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateCalloutTemplateMutation, { data, loading, error }] = useUpdateCalloutTemplateMutation({
+ *   variables: {
+ *      template: // value for 'template'
+ *   },
+ * });
+ */
+export function useUpdateCalloutTemplateMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateCalloutTemplateMutation,
+    SchemaTypes.UpdateCalloutTemplateMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.UpdateCalloutTemplateMutation,
+    SchemaTypes.UpdateCalloutTemplateMutationVariables
+  >(UpdateCalloutTemplateDocument, options);
+}
+
+export type UpdateCalloutTemplateMutationHookResult = ReturnType<typeof useUpdateCalloutTemplateMutation>;
+export type UpdateCalloutTemplateMutationResult = Apollo.MutationResult<SchemaTypes.UpdateCalloutTemplateMutation>;
+export type UpdateCalloutTemplateMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateCalloutTemplateMutation,
+  SchemaTypes.UpdateCalloutTemplateMutationVariables
 >;
 export const SpaceTemplateSetIdDocument = gql`
   query SpaceTemplateSetId($spaceNameId: UUID_NAMEID!) {

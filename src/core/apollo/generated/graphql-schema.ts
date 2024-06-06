@@ -621,6 +621,15 @@ export type AssignCommunityRoleToVirtualInput = {
   virtualContributorID: Scalars['UUID_NAMEID'];
 };
 
+export type AssignLicensePlanToAccount = {
+  /** The ID of the Account to assign the LicensePlan to. */
+  accountID: Scalars['UUID'];
+  /** The ID of the LicensePlan to assign. */
+  licensePlanID: Scalars['UUID'];
+  /** The ID of the Licensing to use. */
+  licensingID?: InputMaybe<Scalars['UUID']>;
+};
+
 export type AssignOrganizationRoleToUserInput = {
   organizationID: Scalars['UUID_NAMEID'];
   role: OrganizationRole;
@@ -1628,7 +1637,7 @@ export type CreateOrganizationInput = {
   domain?: InputMaybe<Scalars['String']>;
   legalEntityName?: InputMaybe<Scalars['String']>;
   /** A readable identifier, unique within the containing scope. */
-  nameID: Scalars['NameID'];
+  nameID?: InputMaybe<Scalars['NameID']>;
   profileData: CreateProfileInput;
   website?: InputMaybe<Scalars['String']>;
 };
@@ -1733,7 +1742,7 @@ export type CreateUserInput = {
   gender?: InputMaybe<Scalars['String']>;
   lastName?: InputMaybe<Scalars['String']>;
   /** A readable identifier, unique within the containing scope. */
-  nameID: Scalars['NameID'];
+  nameID?: InputMaybe<Scalars['NameID']>;
   phone?: InputMaybe<Scalars['String']>;
   profileData: CreateProfileInput;
 };
@@ -1743,7 +1752,7 @@ export type CreateVirtualContributorOnAccountInput = {
   bodyOfKnowledgeID?: InputMaybe<Scalars['UUID']>;
   bodyOfKnowledgeType?: InputMaybe<BodyOfKnowledgeType>;
   /** A readable identifier, unique within the containing scope. */
-  nameID: Scalars['NameID'];
+  nameID?: InputMaybe<Scalars['NameID']>;
   profileData: CreateProfileInput;
   virtualPersonaID?: InputMaybe<Scalars['UUID']>;
 };
@@ -2711,6 +2720,8 @@ export type Mutation = {
   assignCommunityRoleToUser: User;
   /** Assigns a Virtual Contributor to a role in the specified Community. */
   assignCommunityRoleToVirtual: VirtualContributor;
+  /** Assign the specified LicensePlan to an Account. */
+  assignLicensePlanToAccount: Account;
   /** Assigns an Organization Role to user. */
   assignOrganizationRoleToUser: User;
   /** Assigns a platform role to a User. */
@@ -2897,6 +2908,8 @@ export type Mutation = {
   revokeCredentialFromOrganization: Organization;
   /** Removes an authorization credential from a User. */
   revokeCredentialFromUser: User;
+  /** Revokes the specified LicensePlan on an Account. */
+  revokeLicensePlanFromAccount: Account;
   /** Sends a reply to a message from the specified Room. */
   sendMessageReplyToRoom: Message;
   /** Send message to Community Leads. */
@@ -3041,6 +3054,10 @@ export type MutationAssignCommunityRoleToUserArgs = {
 
 export type MutationAssignCommunityRoleToVirtualArgs = {
   roleData: AssignCommunityRoleToVirtualInput;
+};
+
+export type MutationAssignLicensePlanToAccountArgs = {
+  planData: AssignLicensePlanToAccount;
 };
 
 export type MutationAssignOrganizationRoleToUserArgs = {
@@ -3389,6 +3406,10 @@ export type MutationRevokeCredentialFromOrganizationArgs = {
 
 export type MutationRevokeCredentialFromUserArgs = {
   revokeCredentialData: RevokeAuthorizationCredentialInput;
+};
+
+export type MutationRevokeLicensePlanFromAccountArgs = {
+  planData: RevokeLicensePlanFromAccount;
 };
 
 export type MutationSendMessageReplyToRoomArgs = {
@@ -4408,6 +4429,15 @@ export type RevokeAuthorizationCredentialInput = {
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
+export type RevokeLicensePlanFromAccount = {
+  /** The ID of the Account to assign the LicensePlan to. */
+  accountID: Scalars['UUID'];
+  /** The ID of the LicensePlan to assign. */
+  licensePlanID: Scalars['UUID'];
+  /** The ID of the Licensing to use. */
+  licensingID?: InputMaybe<Scalars['UUID']>;
+};
+
 export type RevokeOrganizationAuthorizationCredentialInput = {
   /** The Organization from whom the credential is being removed. */
   organizationID: Scalars['UUID'];
@@ -5159,6 +5189,7 @@ export type UpdateCalloutFramingInput = {
   /** The Profile of the Template. */
   profile?: InputMaybe<UpdateProfileInput>;
   whiteboard?: InputMaybe<UpdateWhiteboardInput>;
+  whiteboardContent?: InputMaybe<UpdateWhiteboardContentInput>;
 };
 
 export type UpdateCalloutInput = {
@@ -15370,6 +15401,7 @@ export type CommunityMembersListQuery = {
               __typename?: 'Profile';
               id: string;
               displayName: string;
+              url: string;
               avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
               location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
             };
@@ -15524,6 +15556,7 @@ export type CommunityMembersDetailsFragment = {
       __typename?: 'Profile';
       id: string;
       displayName: string;
+      url: string;
       avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
       location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
     };
@@ -15610,6 +15643,7 @@ export type CommunityMemberVirtualContributorFragment = {
     __typename?: 'Profile';
     id: string;
     displayName: string;
+    url: string;
     avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
     location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
   };
@@ -23746,6 +23780,68 @@ export type ProfileInfoWithVisualFragment = {
     | undefined;
 };
 
+export type CalloutTemplateEditableAttributesQueryVariables = Exact<{
+  templateId: Scalars['UUID'];
+}>;
+
+export type CalloutTemplateEditableAttributesQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    calloutTemplate?:
+      | {
+          __typename?: 'CalloutTemplate';
+          id: string;
+          type: CalloutType;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            description?: string | undefined;
+            tagset?:
+              | {
+                  __typename?: 'Tagset';
+                  id: string;
+                  name: string;
+                  tags: Array<string>;
+                  allowedValues: Array<string>;
+                  type: TagsetType;
+                }
+              | undefined;
+          };
+          framing: {
+            __typename?: 'CalloutFraming';
+            id: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              description?: string | undefined;
+              tagset?:
+                | {
+                    __typename?: 'Tagset';
+                    id: string;
+                    name: string;
+                    tags: Array<string>;
+                    allowedValues: Array<string>;
+                    type: TagsetType;
+                  }
+                | undefined;
+              storageBucket: { __typename?: 'StorageBucket'; id: string };
+            };
+            whiteboard?: { __typename?: 'Whiteboard'; id: string; content: string } | undefined;
+          };
+          contributionDefaults: {
+            __typename?: 'CalloutContributionDefaults';
+            id: string;
+            postDescription?: string | undefined;
+            whiteboardContent?: string | undefined;
+          };
+        }
+      | undefined;
+  };
+};
+
 export type CreateCalloutTemplateMutationVariables = Exact<{
   templatesSetId: Scalars['UUID'];
   framing: CreateCalloutFramingInput;
@@ -23759,6 +23855,15 @@ export type CreateCalloutTemplateMutationVariables = Exact<{
 export type CreateCalloutTemplateMutation = {
   __typename?: 'Mutation';
   createCalloutTemplate: { __typename?: 'CalloutTemplate'; id: string };
+};
+
+export type UpdateCalloutTemplateMutationVariables = Exact<{
+  template: UpdateCalloutTemplateInput;
+}>;
+
+export type UpdateCalloutTemplateMutation = {
+  __typename?: 'Mutation';
+  updateCalloutTemplate: { __typename?: 'CalloutTemplate'; id: string };
 };
 
 export type SpaceTemplateSetIdQueryVariables = Exact<{

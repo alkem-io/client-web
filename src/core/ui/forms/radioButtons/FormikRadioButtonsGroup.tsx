@@ -1,21 +1,14 @@
-import { ComponentType, ReactNode } from 'react';
-import { SvgIconProps } from '@mui/material';
 import { useField } from 'formik';
-import RadioButtonsGroup from './RadioButtonsGroup';
+import RadioButtonsGroup, { RadioButtonsGroupProps } from './RadioButtonsGroup';
 
-interface FormikRadioButtonsGroupProps<Value> {
+interface FormikRadioButtonsGroupProps extends Omit<RadioButtonsGroupProps<unknown>, 'value' | 'onChange'> {
   name: string;
-  options: {
-    icon: ComponentType<SvgIconProps>;
-    value: Value;
-    label: ReactNode;
-  }[];
 }
 
-const FormikRadioButtonsGroup = <Value,>({ name, options }: FormikRadioButtonsGroupProps<Value>) => {
-  const [{ value }, , { setValue }] = useField<Value>(name);
+const FormikRadioButtonsGroup = ({ name, options, ...rest }: FormikRadioButtonsGroupProps) => {
+  const [{ value }, , { setValue }] = useField<unknown>(name);
 
-  return <RadioButtonsGroup value={value} options={options} onChange={setValue} />;
+  return <RadioButtonsGroup value={value} options={options} onChange={setValue} {...rest} />;
 };
 
 export default FormikRadioButtonsGroup;
