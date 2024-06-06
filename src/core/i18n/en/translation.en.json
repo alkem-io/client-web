@@ -930,6 +930,9 @@
     }
   },
   "components": {
+    "calloutTemplateDialog": {
+      "typeReadonly": "Once a template is created, its type cannot be changed. If you need a different type, please create a new template."
+    },
     "shareSettings": {
       "description": "Based on the settings of the Space that this Whiteboard is in, you can edit with multiple users\u2028at once. If you do not want others to edit, change the settings below.",
       "disabled": "Based on the settings of the Space that this Whiteboard is in, real-time collaboration is not enabled. This means that only one user can edit at a time.",
