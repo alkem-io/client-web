@@ -5159,6 +5159,7 @@ export type UpdateCalloutFramingInput = {
   /** The Profile of the Template. */
   profile?: InputMaybe<UpdateProfileInput>;
   whiteboard?: InputMaybe<UpdateWhiteboardInput>;
+  whiteboardContent?: InputMaybe<UpdateWhiteboardContentInput>;
 };
 
 export type UpdateCalloutInput = {
