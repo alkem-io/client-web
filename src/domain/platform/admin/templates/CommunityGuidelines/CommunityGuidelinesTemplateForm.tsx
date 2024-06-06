@@ -111,7 +111,7 @@ const CommunityGuidelinesTemplateForm = ({
               maxLength={MARKDOWN_TEXT_LENGTH}
             />
             <StorageConfigContextProvider
-              locationType="guidelinestemplate"
+              locationType="guidelinesTemplate"
               spaceId={spaceId}
               guidelinesTemplateId={guidelinesTemplateId}
             >
