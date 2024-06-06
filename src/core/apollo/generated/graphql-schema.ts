@@ -14728,6 +14728,7 @@ export type CommunityMembersListQuery = {
               __typename?: 'Profile';
               id: string;
               displayName: string;
+              url: string;
               avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
               location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
             };
@@ -14882,6 +14883,7 @@ export type CommunityMembersDetailsFragment = {
       __typename?: 'Profile';
       id: string;
       displayName: string;
+      url: string;
       avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
       location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
     };
@@ -14968,6 +14970,7 @@ export type CommunityMemberVirtualContributorFragment = {
     __typename?: 'Profile';
     id: string;
     displayName: string;
+    url: string;
     avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
     location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
   };
