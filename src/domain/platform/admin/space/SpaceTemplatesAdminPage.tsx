@@ -113,7 +113,7 @@ const SpaceTemplatesAdminPage: FC<SpaceTemplatesAdminPageProps> = ({
       .filter(pack => pack.templates && pack.templates?.communityGuidelinesTemplates.length > 0)
       .map(pack => ({
         ...pack,
-        templates: pack.templates?.communityGuidelinesTemplates || [],
+        templates: pack.templates?.communityGuidelinesTemplates ?? [],
       }));
   }, [innovationPacks]);
 

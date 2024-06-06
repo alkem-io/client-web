@@ -1,6 +1,5 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { DialogContent } from '@mui/material';
 import { DialogHeaderProps } from '../../../../../core/ui/dialog/DialogHeader';
 import TemplateDialogBase from '../../../../collaboration/templates/templateDialog/TemplateDialogBase';
 import CommunityGuidelinesTemplateForm, {
@@ -30,9 +29,7 @@ const CreateCommunityGuidelinesTemplateDialog = ({
       templateTypeName={t('templateLibrary.communityGuidelinesTemplates.name')}
     >
       {({ actions }) => (
-        <DialogContent>
-          <CommunityGuidelinesTemplateForm initialValues={values} onSubmit={onSubmit} actions={actions} />
-        </DialogContent>
+        <CommunityGuidelinesTemplateForm initialValues={values} onSubmit={onSubmit} actions={actions} />
       )}
     </TemplateDialogBase>
   );

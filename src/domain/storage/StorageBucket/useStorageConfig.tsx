@@ -25,7 +25,7 @@ type StorageConfigLocation =
   | 'organization'
   | 'callout'
   | 'post'
-  | 'guidelinestemplate'
+  | 'guidelinesTemplate'
   | 'innovationPack'
   | 'innovationHub'
   | 'platform';
@@ -54,7 +54,7 @@ interface UseStorageConfigOptionsPost extends UseStorageConfigOptionsBase {
 interface UseStorageConfigOptionsGuidelinesTemplate extends UseStorageConfigOptionsBase {
   spaceId: string | undefined;
   guidelinesTemplateId: string | undefined;
-  locationType: 'guidelinestemplate';
+  locationType: 'guidelinesTemplate';
 }
 
 interface UseStorageConfigOptionsUser extends UseStorageConfigOptionsBase {
