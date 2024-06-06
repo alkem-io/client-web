@@ -208,7 +208,7 @@ const CommunityVirtualContributors: FC<CommunityVirtualContributorsProps> = ({
           onClose={() => setAddingNewMember(false)}
         />
       )}
-      <DialogWithGrid open={!supportMessegeOpen} columns={6} onClose={closeSupportDialog}>
+      <DialogWithGrid open={supportMessegeOpen} columns={6} onClose={closeSupportDialog}>
         <DialogHeader onClose={closeSupportDialog}>{t('community.addMember')}</DialogHeader>
         <Gutters>
           <GridItem>
