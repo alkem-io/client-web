@@ -1,13 +1,25 @@
 import { InternalRefetchQueriesInclude } from '@apollo/client/core/types';
 import { useTranslation } from 'react-i18next';
-import { useDeleteCalloutTemplateMutation } from '../../../../../core/apollo/generated/apollo-hooks';
-import { AdminCalloutTemplateFragment } from '../../../../../core/apollo/generated/graphql-schema';
+import {
+  useCreateCalloutTemplateMutation,
+  useDeleteCalloutTemplateMutation,
+  useUpdateCalloutTemplateMutation,
+} from '../../../../../core/apollo/generated/apollo-hooks';
+import {
+  AdminCalloutTemplateFragment,
+  CalloutState,
+  CalloutType,
+  CreateCalloutTemplateMutationVariables, UpdateCalloutTemplateInput,
+} from '../../../../../core/apollo/generated/graphql-schema';
 import { LinkWithState } from '../../../../shared/types/LinkWithState';
 import AdminTemplatesSection from '../AdminTemplatesSection';
 import { InnovationPack } from '../InnovationPacks/InnovationPack';
-import CalloutTemplateCard from './CalloutTemplateCard';
 import CalloutImportTemplateCard from './CalloutImportTemplateCard';
 import { TemplateType } from '../../../../collaboration/InnovationPack/InnovationPackProfilePage/InnovationPackProfilePage';
+import CreateCalloutTemplateDialog from './CreateCalloutTemplateDialog';
+import { CalloutTemplateFormSubmittedValues } from './CalloutTemplateForm';
+import produce from 'immer';
+import EditCalloutTemplateDialog from './EditCalloutTemplateDialog';
 
 interface AdminCalloutTemplatesSectionProps {
   templateId: string | undefined;
@@ -26,6 +38,8 @@ interface AdminCalloutTemplatesSectionProps {
 const AdminCalloutTemplatesSection = ({ refetchQueries, ...props }: AdminCalloutTemplatesSectionProps) => {
   const { t } = useTranslation();
 
+  const [createCalloutTemplate] = useCreateCalloutTemplateMutation();
+  const [updateCalloutTemplate] = useUpdateCalloutTemplateMutation();
   const [deleteCalloutTemplate] = useDeleteCalloutTemplateMutation();
 
   return (
@@ -35,12 +49,51 @@ const AdminCalloutTemplatesSection = ({ refetchQueries, ...props }: AdminCallout
       importDialogHeaderText={t('pages.admin.generic.sections.templates.import.title', {
         templateType: t('common.callouts'),
       })}
-      templateCardComponent={CalloutTemplateCard}
+      templateCardComponent={CalloutImportTemplateCard}
       templateImportCardComponent={CalloutImportTemplateCard}
-      createTemplateDialogComponent={undefined}
-      editTemplateDialogComponent={undefined}
-      onCreateTemplate={() => Promise.resolve({ data: null, errors: [] })}
-      onUpdateTemplate={() => Promise.resolve({ data: null, errors: [] })}
+      createTemplateDialogComponent={CreateCalloutTemplateDialog}
+      // @ts-ignore
+      editTemplateDialogComponent={EditCalloutTemplateDialog}
+      // @ts-ignore
+      onCreateTemplate={(calloutTemplate: CalloutTemplateFormSubmittedValues & { templatesSetId: string }) => {
+        const { framing, contributionDefaults } = produce(calloutTemplate, draft => {
+          if (draft.type !== CalloutType.Whiteboard) {
+            delete draft.framing.whiteboard;
+          }
+          if (draft.type !== CalloutType.PostCollection) {
+            delete draft.contributionDefaults.postDescription;
+          }
+          if (draft.type !== CalloutType.WhiteboardCollection) {
+            delete draft.contributionDefaults.whiteboardContent;
+          }
+        });
+
+        const variables: CreateCalloutTemplateMutationVariables = {
+          templatesSetId: calloutTemplate.templatesSetId,
+          profile: calloutTemplate.profile,
+          tags: calloutTemplate.tags,
+          framing: {
+            ...framing,
+            whiteboard: {
+              ...framing.whiteboard,
+              profileData: {
+                displayName: framing.profile.displayName,
+              },
+            },
+          },
+          type: calloutTemplate.type ?? CalloutType.Post,
+          contributionPolicy: {
+            state: CalloutState.Open,
+          },
+          contributionDefaults,
+        };
+
+        return createCalloutTemplate({ variables, refetchQueries });
+      }}
+      // @ts-ignore
+      onUpdateTemplate={async ({ templateId, ...template }: UpdateCalloutTemplateInput & { templateId: string }) => {
+        await updateCalloutTemplate({ variables: { template }, refetchQueries });
+      }}
       onDeleteTemplate={async variables => {
         await deleteCalloutTemplate({ variables, refetchQueries });
       }}

@@ -1,4 +1,5 @@
 import React, { Dispatch, ReactNode } from 'react';
+import { Box, Button, Theme, useMediaQuery } from '@mui/material';
 import PageContentBlockHeaderWithDialogAction from '../../../../core/ui/content/PageContentBlockHeaderWithDialogAction';
 import MultipleSelect from '../../../../core/ui/search/MultipleSelect';
 import LibraryTemplateCard, { LibraryTemplateCardProps } from './LibraryTemplateCard';
@@ -7,11 +8,11 @@ import { Identifiable } from '../../../../core/utils/Identifiable';
 import SeeMore from '../../../../core/ui/content/SeeMore';
 import { useTranslation } from 'react-i18next';
 import ScrollableCardsLayoutContainer from '../../../../core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
-import { Box, Button, Theme, useMediaQuery } from '@mui/material';
 import { CONTRIBUTE_CARD_COLUMNS } from '../../../../core/ui/card/ContributeCard';
 import GridItem from '../../../../core/ui/grid/GridItem';
 import { TemplateType } from '../InnovationPackProfilePage/InnovationPackProfilePage';
 import TemplateTypeFilter from './TemplateTypeFilter';
+import TemplateTypeFilterMobile from './TemplateTypeFilterMobile';
 
 export interface LibraryTemplatesFilter {
   templateTypes: TemplateType[];
@@ -44,7 +45,6 @@ const LibraryTemplatesView = ({
 }: Omit<PageContentBlockProps, 'onClick'> & LibraryTemplatesViewProps) => {
   const { t } = useTranslation();
   const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
-  const isSmallScreen = useMediaQuery<Theme>(theme => theme.breakpoints.down('lg'));
 
   return (
     <PageContentBlock {...props}>
@@ -53,28 +53,36 @@ const LibraryTemplatesView = ({
         onDialogOpen={onDialogOpen}
         onDialogClose={onDialogClose}
         expanded={expanded}
-        actions={
-          <MultipleSelect
-            onChange={terms => onFilterChange({ templateTypes: filter.templateTypes, searchTerms: terms })}
-            value={filter.searchTerms}
-            minLength={2}
-            size="xsmall"
-            containerProps={{ sx: { flexGrow: isMobile ? 1 : undefined } }}
-            inlineTerms
-          />
-        }
       />
       <Box
         sx={{
           display: 'flex',
           alignItems: 'center',
           gap: 1,
-          flexWrap: isSmallScreen ? 'wrap' : undefined,
         }}
       >
-        <TemplateTypeFilter
-          onChange={templateTypes => onFilterChange({ templateTypes: templateTypes, searchTerms: filter.searchTerms })}
-          value={filter.templateTypes}
+        {isMobile ? (
+          <TemplateTypeFilterMobile
+            value={filter.templateTypes}
+            onChange={templateTypes =>
+              onFilterChange({ templateTypes: templateTypes, searchTerms: filter.searchTerms })
+            }
+          />
+        ) : (
+          <TemplateTypeFilter
+            onChange={templateTypes =>
+              onFilterChange({ templateTypes: templateTypes, searchTerms: filter.searchTerms })
+            }
+            value={filter.templateTypes}
+          />
+        )}
+        <MultipleSelect
+          onChange={terms => onFilterChange({ templateTypes: filter.templateTypes, searchTerms: terms })}
+          value={filter.searchTerms}
+          minLength={2}
+          size="xsmall"
+          containerProps={{ sx: { flexGrow: isMobile ? 1 : undefined, marginLeft: 'auto' } }}
+          inlineTerms
         />
       </Box>
       {templates && (

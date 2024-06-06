@@ -1,3 +1,11 @@
-import CampaignOutlinedIcon from '@mui/icons-material/CampaignOutlined';
+import { SvgIcon, SvgIconProps } from '@mui/material';
 
-export const CalloutIcon = CampaignOutlinedIcon;
+import { ReactComponent as CalloutIconIconSvg } from './CalloutIcon.svg';
+
+const CalloutIcon = (props: SvgIconProps) => {
+  return <SvgIcon component={CalloutIconIconSvg} inheritViewBox {...props} />;
+};
+
+CalloutIcon.muiName = 'Callout';
+
+export { CalloutIcon };

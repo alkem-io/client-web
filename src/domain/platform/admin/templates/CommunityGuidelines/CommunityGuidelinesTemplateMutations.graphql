@@ -1,0 +1,39 @@
+mutation createCommunityGuidelinesTemplate(
+  $templatesSetId: UUID!
+  $profile: CreateProfileInput!
+  $guidelines: CreateCommunityGuidelinesInput!
+  $tags: [String!]
+) {
+  createCommunityGuidelinesTemplate(
+    communityGuidelinesTemplateInput: {
+      templatesSetID: $templatesSetId
+      profile: $profile
+      communityGuidelines: $guidelines
+      tags: $tags
+    }
+  ) {
+    id
+  }
+}
+
+mutation updateCommunityGuidelinesTemplate(
+  $templateId: UUID!
+  $profile: UpdateProfileInput
+  $communityGuidelines: UpdateCommunityGuidelinesOfTemplateInput
+) {
+  updateCommunityGuidelinesTemplate(
+    communityGuidelinesTemplateInput: {
+      ID: $templateId,
+      profile: $profile,
+      communityGuidelines: $communityGuidelines
+    }
+  ) {
+    id
+  }
+}
+
+mutation deleteCommunityGuidelinesTemplate($templateId: UUID!) {
+  deleteCommunityGuidelinesTemplate(deleteData: { ID: $templateId }) {
+    id
+  }
+}

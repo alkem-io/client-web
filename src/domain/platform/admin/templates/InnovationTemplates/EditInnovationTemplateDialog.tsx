@@ -4,12 +4,9 @@ import InnovationFlowTemplateForm, {
   InnovationTemplateFormSubmittedValues,
   InnovationTemplateFormValues,
 } from './InnovationFlowTemplateForm';
-import DialogWithGrid, { DialogFooter } from '../../../../../core/ui/dialog/DialogWithGrid';
-import DialogHeader, { DialogHeaderProps } from '../../../../../core/ui/dialog/DialogHeader';
+import { DialogHeaderProps } from '../../../../../core/ui/dialog/DialogHeader';
 import React from 'react';
-import DeleteButton from '../../../../shared/components/DeleteButton';
-import { FormikSubmitButtonPure } from '../../../../shared/components/forms/FormikSubmitButton';
-import { DialogActions, DialogContent } from '@mui/material';
+import TemplateDialogBase from '../../../../collaboration/templates/templateDialog/TemplateDialogBase';
 
 interface EditInnovationTemplateDialogProps {
   open: boolean;
@@ -47,28 +44,15 @@ const EditInnovationTemplateDialog = ({
   };
 
   return (
-    <DialogWithGrid columns={12} open={open} onClose={onClose}>
-      <DialogHeader
-        title={t('common.edit-entity', { entity: t('templateLibrary.innovationFlowTemplates.name') })}
-        onClose={onClose}
-      />
-      <DialogContent>
-        <InnovationFlowTemplateForm
-          initialValues={values}
-          onSubmit={handleSubmit}
-          actions={formik => (
-            <DialogFooter>
-              <DialogActions>
-                <DeleteButton onClick={onDelete} />
-                <FormikSubmitButtonPure variant="contained" formik={formik} onClick={() => formik.handleSubmit()}>
-                  {t('common.update')}
-                </FormikSubmitButtonPure>
-              </DialogActions>
-            </DialogFooter>
-          )}
-        />
-      </DialogContent>
-    </DialogWithGrid>
+    <TemplateDialogBase
+      open={open}
+      onClose={onClose}
+      templateTypeName={t('templateLibrary.innovationFlowTemplates.name')}
+      onDelete={onDelete}
+      editMode
+    >
+      {({ actions }) => <InnovationFlowTemplateForm initialValues={values} onSubmit={handleSubmit} actions={actions} />}
+    </TemplateDialogBase>
   );
 };
 

@@ -11,11 +11,11 @@ import CardDetails from '../../../../core/ui/card/CardDetails';
 import { TemplateBase, TemplateCardBaseProps } from '../../templates/CollaborationTemplatesLibrary/TemplateBase';
 import { PostIcon } from '../../post/icon/PostIcon';
 
-interface PostTemplateCardProps extends TemplateCardBaseProps<TemplateBase> { }
+interface PostTemplateCardProps extends TemplateCardBaseProps<TemplateBase> {}
 
-const PostTemplateCard: FC<PostTemplateCardProps> = ({ template, innovationPack, loading, onClick }) => {
+const PostTemplateCard: FC<PostTemplateCardProps> = ({ template, innovationPack, loading, ...props }) => {
   return (
-    <ContributeCard onClick={onClick}>
+    <ContributeCard {...props}>
       <CardHeader title={template?.profile.displayName} iconComponent={PostIcon}>
         {loading && <Skeleton />}
         <CardHeaderCaption logoUrl={innovationPack?.provider?.profile.avatar?.uri}>

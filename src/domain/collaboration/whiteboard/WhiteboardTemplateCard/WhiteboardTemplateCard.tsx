@@ -12,11 +12,11 @@ import { TemplateBase, TemplateCardBaseProps } from '../../templates/Collaborati
 import CardTags from '../../../../core/ui/card/CardTags';
 import { gutters } from '../../../../core/ui/grid/utils';
 
-interface WhiteboardTemplateCardProps extends TemplateCardBaseProps<TemplateBase> { }
+interface WhiteboardTemplateCardProps extends TemplateCardBaseProps<TemplateBase> {}
 
-const WhiteboardTemplateCard: FC<WhiteboardTemplateCardProps> = ({ template, innovationPack, loading, onClick }) => {
+const WhiteboardTemplateCard: FC<WhiteboardTemplateCardProps> = ({ template, innovationPack, loading, ...props }) => {
   return (
-    <ContributeCard onClick={onClick}>
+    <ContributeCard {...props}>
       <CardHeader title={template?.profile.displayName} iconComponent={WhiteboardIcon}>
         {loading && <Skeleton />}
         <CardHeaderCaption logoUrl={innovationPack?.provider?.profile.avatar?.uri}>
@@ -35,7 +35,7 @@ const WhiteboardTemplateCard: FC<WhiteboardTemplateCardProps> = ({ template, inn
         tags={template?.profile.tagset?.tags ?? []}
         hideIfEmpty
       />
-      {innovationPack && (
+      {innovationPack?.profile.displayName && (
         <CardSegmentCaption icon={<InnovationPackIcon />}>
           <Caption noWrap>{innovationPack?.profile.displayName}</Caption>
         </CardSegmentCaption>

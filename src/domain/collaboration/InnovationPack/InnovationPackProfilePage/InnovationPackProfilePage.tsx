@@ -20,16 +20,19 @@ import ReferencesListSmallItem from '../../../profile/Reference/ReferencesListSm
 import TagsComponent from '../../../shared/components/TagsComponent/TagsComponent';
 import PostTemplateCard from '../../post/PostTemplateCard/PostTemplateCard';
 import WhiteboardTemplateCard from '../../whiteboard/WhiteboardTemplateCard/WhiteboardTemplateCard';
+import CalloutTemplateCard from '../../callout/CalloutTemplateCard/CalloutTemplateCard';
+import CommunityGuidelinesTemplateCard from '../../communityGuidelines/CommunityGuidelinesTemplateCard/CommunityGuidelinesTemplateCard';
 import InnovationFlowTemplateCard from '../../InnovationFlow/InnovationFlowTemplateCard/InnovationFlowTemplateCard';
-import TemplatePreviewDialog, { TemplatePreview } from '../../../template/templatePreviewDialog/TemplatePreviewDialog';
+import TemplatePreviewDialog, { TemplatePreview } from '../../templates/templatePreviewDialog/TemplatePreviewDialog';
 import InnovationPackProfileLayout from './InnovationPackProfileLayout';
 import TemplatesBlock from './TemplatesBlock';
 
 export enum TemplateType {
+  CalloutTemplate = 'CalloutTemplate',
   WhiteboardTemplate = 'WhiteboardTemplate',
+  CommunityGuidelinesTemplate = 'CommunityGuidelinesTemplate',
   PostTemplate = 'PostTemplate',
   InnovationFlowTemplate = 'InnovationFlowTemplate',
-  CalloutTemplate = 'CalloutTemplate',
 }
 
 const InnovationPackProfilePage = () => {
@@ -47,8 +50,13 @@ const InnovationPackProfilePage = () => {
 
   const { displayName, description, tagset, references } = data?.platform.library.innovationPack?.profile ?? {};
 
-  const { whiteboardTemplates, postTemplates, innovationFlowTemplates } =
-    data?.platform.library.innovationPack?.templates ?? {};
+  const {
+    whiteboardTemplates,
+    postTemplates,
+    innovationFlowTemplates,
+    calloutTemplates,
+    communityGuidelinesTemplates,
+  } = data?.platform.library.innovationPack?.templates ?? {};
 
   const { innovationPack } = data?.platform.library ?? {};
 
@@ -121,16 +129,14 @@ const InnovationPackProfilePage = () => {
               cardComponent={WhiteboardTemplateCard}
               templateType={TemplateType.WhiteboardTemplate}
               onClickCard={setSelectedTemplate}
-              emptyLabel={t('pages.innovationPack.whiteboardTemplatesEmpty')}
               innovationPack={innovationPack}
             />
             <TemplatesBlock
-              title={t('common.enums.templateTypes.PostTemplate')}
-              templates={postTemplates}
-              cardComponent={PostTemplateCard}
-              templateType={TemplateType.PostTemplate}
+              title={t('common.enums.templateTypes.CalloutTemplate')}
+              templates={calloutTemplates}
+              cardComponent={CalloutTemplateCard}
+              templateType={TemplateType.CalloutTemplate}
               onClickCard={setSelectedTemplate}
-              emptyLabel={t('pages.innovationPack.postTemplatesEmpty')}
               innovationPack={innovationPack}
             />
             <TemplatesBlock
@@ -139,7 +145,22 @@ const InnovationPackProfilePage = () => {
               cardComponent={InnovationFlowTemplateCard}
               templateType={TemplateType.InnovationFlowTemplate}
               onClickCard={setSelectedTemplate}
-              emptyLabel={t('pages.innovationPack.innovationFlowTemplatesEmpty')}
+              innovationPack={innovationPack}
+            />
+            <TemplatesBlock
+              title={t('common.enums.templateTypes.CommunityGuidelinesTemplate')}
+              templates={communityGuidelinesTemplates}
+              cardComponent={CommunityGuidelinesTemplateCard}
+              templateType={TemplateType.CommunityGuidelinesTemplate}
+              onClickCard={setSelectedTemplate}
+              innovationPack={innovationPack}
+            />
+            <TemplatesBlock
+              title={t('common.enums.templateTypes.PostTemplate')}
+              templates={postTemplates}
+              cardComponent={PostTemplateCard}
+              templateType={TemplateType.PostTemplate}
+              onClickCard={setSelectedTemplate}
               innovationPack={innovationPack}
             />
           </PageContentColumn>
