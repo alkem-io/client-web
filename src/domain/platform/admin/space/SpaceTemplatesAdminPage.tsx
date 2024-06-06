@@ -69,7 +69,7 @@ const SpaceTemplatesAdminPage: FC<SpaceTemplatesAdminPageProps> = ({
 
   const postInnovationPacks = useMemo(() => {
     if (!innovationPacks) return [];
-    return innovationPacks?.platform.library.innovationPacks
+    return innovationPacks.platform.library.innovationPacks
       .filter(pack => pack.templates && pack.templates?.postTemplates.length > 0)
       .map(pack => ({
         ...pack,
@@ -79,7 +79,7 @@ const SpaceTemplatesAdminPage: FC<SpaceTemplatesAdminPageProps> = ({
 
   const whiteboardInnovationPacks = useMemo(() => {
     if (!innovationPacks) return [];
-    return innovationPacks?.platform.library.innovationPacks
+    return innovationPacks.platform.library.innovationPacks
       .filter(pack => pack.templates && pack.templates?.whiteboardTemplates.length > 0)
       .map(pack => ({
         ...pack,
@@ -89,7 +89,7 @@ const SpaceTemplatesAdminPage: FC<SpaceTemplatesAdminPageProps> = ({
 
   const innovationFlowInnovationPacks = useMemo(() => {
     if (!innovationPacks) return [];
-    return innovationPacks?.platform.library.innovationPacks
+    return innovationPacks.platform.library.innovationPacks
       .filter(pack => pack.templates && pack.templates?.innovationFlowTemplates.length > 0)
       .map(pack => ({
         ...pack,
@@ -99,7 +99,7 @@ const SpaceTemplatesAdminPage: FC<SpaceTemplatesAdminPageProps> = ({
 
   const calloutInnovationPacks = useMemo(() => {
     if (!innovationPacks) return [];
-    return innovationPacks?.platform.library.innovationPacks
+    return innovationPacks.platform.library.innovationPacks
       .filter(pack => pack.templates && pack.templates?.calloutTemplates.length > 0)
       .map(pack => ({
         ...pack,
@@ -109,7 +109,7 @@ const SpaceTemplatesAdminPage: FC<SpaceTemplatesAdminPageProps> = ({
 
   const communityGuidelinesInnovationPacks = useMemo(() => {
     if (!innovationPacks) return [];
-    return innovationPacks?.platform.library.innovationPacks
+    return innovationPacks.platform.library.innovationPacks
       .filter(pack => pack.templates && pack.templates?.communityGuidelinesTemplates.length > 0)
       .map(pack => ({
         ...pack,
