@@ -16,6 +16,7 @@ import { Identifiable, Identifiables } from '../../../../core/utils/Identifiable
 import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
 import { identity } from 'lodash';
 import Spacer from '../../../../core/ui/content/Spacer';
+import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
 
 enum TemplateSource {
   Space,
@@ -119,6 +120,7 @@ const CollaborationTemplatesLibrary = <
   // Show gallery or show preview of this template:
   const [previewTemplate, setPreviewTemplate] = useState<Template & TemplateWithContent>();
   const [templateUseDisabled, setTemplateUseDisabled] = useState<boolean>(false);
+  const [useConfirmDialogOpen, setUseConfirmDialogOpen] = useState<boolean>(false);
 
   const handlePreviewTemplate = async (template: Template & Identifiable, source: TemplateSource) => {
     setTemplateUseDisabled(disableUsePlatformTemplates && source === TemplateSource.Platform);
@@ -210,7 +212,7 @@ const CollaborationTemplatesLibrary = <
                 variant="contained"
                 sx={{ marginLeft: theme => theme.spacing(1) }}
                 disabled={loading || templateUseDisabled}
-                onClick={handleSelectTemplate}
+                onClick={() => setUseConfirmDialogOpen(true)}
               >
                 {t('buttons.use')}
               </Button>
@@ -218,6 +220,20 @@ const CollaborationTemplatesLibrary = <
           />
         )}
       </DialogContent>
+      <ConfirmationDialog
+        actions={{
+          onConfirm: handleSelectTemplate,
+          onCancel: () => setUseConfirmDialogOpen(false),
+        }}
+        options={{
+          show: Boolean(useConfirmDialogOpen),
+        }}
+        entities={{
+          titleId: 'community.communityGuidelines.confirmDialog.title',
+          contentId: 'community.communityGuidelines.confirmDialog.description',
+          confirmButtonTextId: 'buttons.yesReplace',
+        }}
+      />
     </DialogWithGrid>
   );
 };
