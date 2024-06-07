@@ -1,10 +1,7 @@
 import React, { FC } from 'react';
-import {
-  TemplateBase,
-  TemplateCardBaseProps,
-} from '../../collaboration/templates/CollaborationTemplatesLibrary/TemplateBase';
-import { CalloutContributionType, CalloutState, CalloutType } from '../../../core/apollo/generated/graphql-schema';
-import CalloutCard from '../../collaboration/callout/calloutCard/CalloutCard';
+import { TemplateBase, TemplateCardBaseProps } from '../CollaborationTemplatesLibrary/TemplateBase';
+import { CalloutContributionType, CalloutState, CalloutType } from '../../../../core/apollo/generated/graphql-schema';
+import CalloutCard from '../../callout/calloutCard/CalloutCard';
 import CalloutTemplateCardFooter from './CalloutTemplateCardFooter';
 
 export interface CalloutTemplate extends TemplateBase {

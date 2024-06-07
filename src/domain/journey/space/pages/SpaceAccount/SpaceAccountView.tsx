@@ -176,13 +176,10 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
     [spaceData]
   );
 
-  const bokSpaceData = useMemo(
-    () =>
-      spaceData?.space?.subspaces
-        .filter(subspace => subspace.id === spaceData?.space?.account?.virtualContributors[0]?.bodyOfKnowledgeID)
-        .map(data => ({ profile: { displayName: data.profile.displayName } }))[0],
-    [spaceData]
-  );
+  const getBoKSpaceData = (bodyOfKnowledgeID: string) =>
+    spaceData?.space?.subspaces
+      .filter(subspace => subspace.id === bodyOfKnowledgeID)
+      .map(data => ({ profile: { displayName: data.profile.displayName, avatar: data.profile.avatar } }))[0];
 
   const virtualContributors = useMemo(() => {
     return spaceData?.space?.account?.virtualContributors ?? [];
@@ -215,7 +212,9 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
 
   const loading = loadingAccount && deletingSpace;
   const noSubspaces = subspaces?.length < 1;
-  const disabledVirtualCreation = virtualContributors.length > 0 || spaceDataLoading || noSubspaces;
+  const hasVirtualContributors = virtualContributors.length > 0;
+  const isPlatformAdmin = accountPrivileges?.includes(AuthorizationPrivilege.PlatformAdmin);
+  const disabledVirtualCreation = (hasVirtualContributors && !isPlatformAdmin) || spaceDataLoading || noSubspaces;
 
   return (
     <PageContent background="transparent">
@@ -344,17 +343,18 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
           {permissions.virtualContributorsEnabled && (
             <PageContentBlock columns={5} sx={{ gap: gutters(2) }}>
               <Gutters disablePadding alignItems={'flex-start'}>
-                {virtualContributors.length > 0 &&
+                {hasVirtualContributors && (
+                  <BlockTitle>{t('pages.admin.space.settings.account.vc-section-title')}</BlockTitle>
+                )}
+                {hasVirtualContributors &&
                   virtualContributors?.map(vc => (
-                    <>
-                      <BlockTitle>{t('pages.admin.space.settings.account.vc-section-title')}</BlockTitle>
-                      <ContributorOnAccountCard
-                        contributor={vc}
-                        space={bokSpaceData}
-                        hasDelete={canCreateVirtualContributor}
-                        onDeleteClick={() => initiateDeleteVC(vc.nameID)}
-                      />
-                    </>
+                    <ContributorOnAccountCard
+                      key={vc.id}
+                      contributor={vc}
+                      space={getBoKSpaceData(vc.bodyOfKnowledgeID ?? '')}
+                      hasDelete={canCreateVirtualContributor}
+                      onDeleteClick={() => initiateDeleteVC(vc.nameID)}
+                    />
                   ))}
                 {canCreateVirtualContributor && (
                   <>

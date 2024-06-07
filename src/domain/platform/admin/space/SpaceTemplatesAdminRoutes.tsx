@@ -11,6 +11,7 @@ enum RoutePaths {
   postTemplatesRoutePath = 'post-templates',
   whiteboardTemplatesRoutePath = 'whiteboard-templates',
   innovationTemplatesRoutePath = 'innovation-templates',
+  communityGuidelinesTemplatesRoutePath = 'communityGuidelines-templates',
 }
 
 const SpaceTemplatesAdminRoutes = (props: SpaceTemplatesAdminRoutesProps) => {
@@ -49,6 +50,14 @@ const SpaceTemplatesAdminRoutes = (props: SpaceTemplatesAdminRoutesProps) => {
       />
       <Route
         path={`${RoutePaths.innovationTemplatesRoutePath}/:innovationTemplateId/edit`}
+        element={<SpaceTemplatesAdminPage {...props} routePrefix={url} {...RoutePaths} edit />}
+      />
+      <Route
+        path={`${RoutePaths.communityGuidelinesTemplatesRoutePath}/:communityGuidelinesTemplateId`}
+        element={<SpaceTemplatesAdminPage {...props} routePrefix={url} {...RoutePaths} />}
+      />
+      <Route
+        path={`${RoutePaths.communityGuidelinesTemplatesRoutePath}/:communityGuidelinesTemplateId/edit`}
         element={<SpaceTemplatesAdminPage {...props} routePrefix={url} {...RoutePaths} edit />}
       />
     </Routes>

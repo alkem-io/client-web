@@ -25,6 +25,8 @@ fragment InnovationPackCard on InnovationPack {
     postTemplatesCount
     whiteboardTemplatesCount
     innovationFlowTemplatesCount
+    calloutTemplatesCount
+    communityGuidelinesTemplatesCount
   }
   provider {
     ...InnovationPackProviderProfileWithAvatar

@@ -1,5 +1,6 @@
-import { FC, useMemo } from 'react';
+import { FC, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Button } from '@mui/material';
 import PageContent from '../../../../core/ui/content/PageContent';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
@@ -12,18 +13,25 @@ import { SettingsPageProps } from '../../../platform/admin/layout/EntitySettings
 import { useSubSpace } from '../hooks/useChallenge';
 import SubspaceSettingsLayout from '../../../platform/admin/subspace/SubspaceSettingsLayout';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
+import InnovationLibraryIcon from '../../../../main/topLevelPages/InnovationLibraryPage/InnovationLibraryIcon';
 import CommunityVirtualContributors from '../../../community/community/CommunityAdmin/CommunityVirtualContributors';
 import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
 import InvitationOptionsBlock from '../../../community/invitations/InvitationOptionsBlock';
 import PageContentBlockCollapsible from '../../../../core/ui/content/PageContentBlockCollapsible';
 import { BlockTitle } from '../../../../core/ui/typography';
-import CommunityGuidelines from '../../../community/community/CommunityGuidelines/CommunityGuidelines';
+import CommunityGuidelinesContainer from '../../../community/community/CommunityGuidelines/CommunityGuidelinesContainer';
+import CommunityGuidelinesForm from '../../../community/community/CommunityGuidelines/CommunityGuidelinesForm';
+import CommunityGuidelinesTemplatesLibrary from '../../../collaboration/communityGuidelines/CommunityGuidelinesTemplateLibrary/CommunityGuidelinesTemplatesLibrary';
 import { useSpace } from '../../space/SpaceContext/useSpace';
 
 const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   const { t } = useTranslation();
   const { loading: isLoadingChallenge, communityId, subspaceId: challengeId, subspaceNameId } = useSubSpace();
   const { isPrivate, loading: isLoadingSpace } = useSpace();
+
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const openTemplateDialog = useCallback(() => setIsDialogOpen(true), []);
+  const closeTemplatesDialog = useCallback(() => setIsDialogOpen(false), []);
 
   const { spaceId, journeyLevel } = useRouteResolver();
 
@@ -110,9 +118,38 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
             />
           </PageContentBlockSeamless>
         </PageContentColumn>
-        <PageContentBlockCollapsible header={<BlockTitle>{t('community.communityGuidelines.title')}</BlockTitle>}>
-          <CommunityGuidelines communityId={communityId} />
-        </PageContentBlockCollapsible>
+        <CommunityGuidelinesContainer communityId={communityId}>
+          {({
+            communityGuidelines,
+            profileId,
+            loading,
+            onSelectCommunityGuidelinesTemplate,
+            onUpdateCommunityGuidelines,
+          }) => (
+            <>
+              <PageContentBlockCollapsible
+                header={<BlockTitle>{t('community.communityGuidelines.title')}</BlockTitle>}
+                primaryAction={
+                  <Button variant="outlined" onClick={() => openTemplateDialog()} startIcon={<InnovationLibraryIcon />}>
+                    {t('common.library')}
+                  </Button>
+                }
+              >
+                <CommunityGuidelinesForm
+                  data={communityGuidelines}
+                  loading={loading}
+                  onSubmit={onUpdateCommunityGuidelines}
+                  profileId={profileId}
+                />
+              </PageContentBlockCollapsible>
+              <CommunityGuidelinesTemplatesLibrary
+                open={isDialogOpen}
+                onClose={closeTemplatesDialog}
+                onSelectTemplate={onSelectCommunityGuidelinesTemplate}
+              />
+            </>
+          )}
+        </CommunityGuidelinesContainer>
         <PageContentColumn columns={6}>
           <PageContentBlock>
             <CommunityUsers

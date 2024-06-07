@@ -1,4 +1,6 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC, useCallback, useMemo, useState } from 'react';
+import { Button } from '@mui/material';
+import InnovationLibraryIcon from '../../../../main/topLevelPages/InnovationLibraryPage/InnovationLibraryIcon';
 import SpaceSettingsLayout from '../../../platform/admin/space/SpaceSettingsLayout';
 import { SettingsSection } from '../../../platform/admin/layout/EntitySettingsLayout/constants';
 import { SettingsPageProps } from '../../../platform/admin/layout/EntitySettingsLayout/types';
@@ -17,8 +19,10 @@ import { BlockTitle, Text } from '../../../../core/ui/typography';
 import CommunityApplicationForm from '../../../community/community/CommunityApplicationForm/CommunityApplicationForm';
 import { Trans, useTranslation } from 'react-i18next';
 import { gutters } from '../../../../core/ui/grid/utils';
-import CommunityGuidelines from '../../../community/community/CommunityGuidelines/CommunityGuidelines';
+import CommunityGuidelinesForm from '../../../community/community/CommunityGuidelines/CommunityGuidelinesForm';
 import CommunityVirtualContributors from '../../../community/community/CommunityAdmin/CommunityVirtualContributors';
+import CommunityGuidelinesTemplatesLibrary from '../../../collaboration/communityGuidelines/CommunityGuidelinesTemplateLibrary/CommunityGuidelinesTemplatesLibrary';
+import CommunityGuidelinesContainer from '../../../community/community/CommunityGuidelines/CommunityGuidelinesContainer';
 
 const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   const { t } = useTranslation();
@@ -72,6 +76,10 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
 
   const currentMembersIds = useMemo(() => users.map(user => user.id), [users]);
 
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const openTemplateDialog = useCallback(() => setDialogOpen(true), []);
+  const closeTemplatesDialog = useCallback(() => setDialogOpen(false), []);
+
   if (!spaceId || isLoadingSpace) {
     return null;
   }
@@ -111,9 +119,38 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
           </Text>
           <CommunityApplicationForm communityId={communityId} />
         </PageContentBlockCollapsible>
-        <PageContentBlockCollapsible header={<BlockTitle>{t('community.communityGuidelines.title')}</BlockTitle>}>
-          <CommunityGuidelines communityId={communityId} />
-        </PageContentBlockCollapsible>
+        <CommunityGuidelinesContainer communityId={communityId}>
+          {({
+            communityGuidelines,
+            profileId,
+            loading,
+            onSelectCommunityGuidelinesTemplate,
+            onUpdateCommunityGuidelines,
+          }) => (
+            <>
+              <PageContentBlockCollapsible
+                header={<BlockTitle>{t('community.communityGuidelines.title')}</BlockTitle>}
+                primaryAction={
+                  <Button variant="outlined" onClick={() => openTemplateDialog()} startIcon={<InnovationLibraryIcon />}>
+                    {t('common.library')}
+                  </Button>
+                }
+              >
+                <CommunityGuidelinesForm
+                  data={communityGuidelines}
+                  loading={loading}
+                  onSubmit={onUpdateCommunityGuidelines}
+                  profileId={profileId}
+                />
+              </PageContentBlockCollapsible>
+              <CommunityGuidelinesTemplatesLibrary
+                open={dialogOpen}
+                onClose={closeTemplatesDialog}
+                onSelectTemplate={onSelectCommunityGuidelinesTemplate}
+              />
+            </>
+          )}
+        </CommunityGuidelinesContainer>
         <PageContentColumn columns={6}>
           <PageContentBlock>
             <CommunityUsers

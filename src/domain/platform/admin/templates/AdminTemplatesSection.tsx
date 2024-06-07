@@ -1,12 +1,9 @@
-import DashboardGenericSection from '../../../shared/components/DashboardSections/DashboardGenericSection';
-import { Box, Button, DialogProps } from '@mui/material';
+import { Button, DialogProps } from '@mui/material';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
-import SimpleCardsList from '../../../shared/components/SimpleCardsList';
 import React, { ComponentType, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { LinkWithState } from '../../../shared/types/LinkWithState';
 import { Identifiable } from '../../../../core/utils/Identifiable';
-import { SimpleCardProps } from '../../../shared/components/SimpleCard';
 import { InnovationPack } from './InnovationPacks/InnovationPack';
 import { LibraryIcon } from '../../../collaboration/templates/LibraryIcon';
 import ImportTemplatesDialog from './InnovationPacks/ImportTemplatesDialog';
@@ -23,9 +20,12 @@ import useLoadingState from '../../../shared/utils/useLoadingState';
 import { GraphQLError } from 'graphql';
 import TemplatePreviewDialog, {
   TemplatePreviewDialogProps,
-} from '../../../template/templatePreviewDialog/TemplatePreviewDialog';
+} from '../../../collaboration/templates/templatePreviewDialog/TemplatePreviewDialog';
 import { TemplateType } from '../../../collaboration/InnovationPack/InnovationPackProfilePage/InnovationPackProfilePage';
 import { Link } from 'react-router-dom';
+import ScrollableCardsLayoutContainer from '../../../../core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
+import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
+import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
 
 /**
  * @deprecated TODO remove
@@ -83,7 +83,7 @@ type AdminTemplatesSectionProps<
   loadingInnovationPacks?: boolean;
   canImportTemplates: boolean;
   innovationPacks: InnovationPack<T>[];
-  templateCardComponent: ComponentType<Omit<SimpleCardProps, 'iconComponent'>>;
+  templateCardComponent: ComponentType<TemplateImportCardComponentProps<T>>;
   templateImportCardComponent: ComponentType<TemplateImportCardComponentProps<T>>;
   getWhiteboardTemplateContent?: (template: T) => void;
   getImportedWhiteboardTemplateContent?: (template: TemplateWithInnovationPack<T>) => void;
@@ -308,7 +308,6 @@ const AdminTemplatesSection = <
     return {
       template: templateWithValue,
       templateType,
-      // TODO make sure that templateType matches the actual type of the template
     } as TemplatePreviewDialogProps['templatePreview'];
   }, [templateWithValue]);
 
@@ -320,39 +319,30 @@ const AdminTemplatesSection = <
 
   return (
     <>
-      <DashboardGenericSection
-        headerText={headerText}
-        primaryAction={
-          <Box>
-            {canImportTemplates && (
-              <Button
-                onClick={openImportTemplateDialog}
-                sx={{ marginRight: theme => theme.spacing(1) }}
-                startIcon={<LibraryIcon />}
-              >
-                {t('common.library')}
-              </Button>
-            )}
-            &nbsp;
-            {createTemplateDialogComponent && (
-              <Button variant="outlined" onClick={openCreateTemplateDialog}>
-                {t('common.create-new')}
-              </Button>
-            )}
-          </Box>
-        }
-      >
-        <SimpleCardsList>
+      <PageContentBlock>
+        <PageContentBlockHeader
+          title={headerText}
+          actions={
+            <>
+              {canImportTemplates && (
+                <Button onClick={openImportTemplateDialog} startIcon={<LibraryIcon />}>
+                  {t('common.library')}
+                </Button>
+              )}
+              {createTemplateDialogComponent && (
+                <Button variant="outlined" onClick={openCreateTemplateDialog}>
+                  {t('common.create-new')}
+                </Button>
+              )}
+            </>
+          }
+        />
+        <ScrollableCardsLayoutContainer>
           {templates?.map(template => (
-            <TemplateCard
-              key={template.id}
-              title={template.profile.displayName}
-              imageUrl={template.profile.visual?.uri}
-              {...buildTemplateLink(template)}
-            />
+            <TemplateCard key={template.id} template={template} {...buildTemplateLink(template)} />
           ))}
-        </SimpleCardsList>
-      </DashboardGenericSection>
+        </ScrollableCardsLayoutContainer>
+      </PageContentBlock>
       <CreateTemplateDialog
         {...dialogProps}
         open={isCreateTemplateDialogOpen}

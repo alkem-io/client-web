@@ -1,12 +1,9 @@
 import { AdminPostTemplateFragment } from '../../../../../core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
 import PostTemplateForm, { PostTemplateFormSubmittedValues, PostTemplateFormValues } from './PostTemplateForm';
-import DialogWithGrid, { DialogFooter } from '../../../../../core/ui/dialog/DialogWithGrid';
-import DialogHeader, { DialogHeaderProps } from '../../../../../core/ui/dialog/DialogHeader';
+import { DialogHeaderProps } from '../../../../../core/ui/dialog/DialogHeader';
 import React from 'react';
-import DeleteButton from '../../../../shared/components/DeleteButton';
-import { FormikSubmitButtonPure } from '../../../../shared/components/forms/FormikSubmitButton';
-import { DialogActions, DialogContent } from '@mui/material';
+import TemplateDialogBase from '../../../../collaboration/templates/templateDialog/TemplateDialogBase';
 
 interface EditPostTemplateDialogProps {
   open: boolean;
@@ -39,29 +36,22 @@ const EditPostTemplateDialog = ({ template, open, onClose, onSubmit, onDelete }:
   };
 
   return (
-    <DialogWithGrid columns={12} open={open} onClose={onClose}>
-      <DialogHeader
-        title={t('common.edit-entity', { entity: t('templateLibrary.postTemplates.name') })}
-        onClose={onClose}
-      />
-      <DialogContent>
+    <TemplateDialogBase
+      open={open}
+      onClose={onClose}
+      templateTypeName={t('templateLibrary.postTemplates.name')}
+      onDelete={onDelete}
+      editMode
+    >
+      {({ actions }) => (
         <PostTemplateForm
           initialValues={values}
           visual={template.profile.visual}
           onSubmit={handleSubmit}
-          actions={formik => (
-            <DialogFooter>
-              <DialogActions>
-                <DeleteButton onClick={onDelete} />
-                <FormikSubmitButtonPure variant="contained" formik={formik} onClick={() => formik.handleSubmit()}>
-                  {t('common.update')}
-                </FormikSubmitButtonPure>
-              </DialogActions>
-            </DialogFooter>
-          )}
+          actions={actions}
         />
-      </DialogContent>
-    </DialogWithGrid>
+      )}
+    </TemplateDialogBase>
   );
 };
 

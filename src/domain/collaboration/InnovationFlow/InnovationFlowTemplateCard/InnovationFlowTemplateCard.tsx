@@ -9,14 +9,17 @@ import ContributeCard from '../../../../core/ui/card/ContributeCard';
 import { Caption } from '../../../../core/ui/typography/components';
 import InnovationPackIcon from '../../InnovationPack/InnovationPackIcon';
 import { InnovationFlowIcon } from '../InnovationFlowIcon/InnovationFlowIcon';
-import { TemplateBase, TemplateCardBaseProps } from '../../templates/CollaborationTemplatesLibrary/TemplateBase';
+import {
+  InnovationPackTemplate,
+  TemplateCardBaseProps,
+} from '../../templates/CollaborationTemplatesLibrary/TemplateBase';
 import CardDescription, { DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS } from '../../../../core/ui/card/CardDescription';
 import CardContent from '../../../../core/ui/card/CardContent';
 import CardTags from '../../../../core/ui/card/CardTags';
 import webkitLineClamp from '../../../../core/ui/utils/webkitLineClamp';
 import { InnovationFlowState } from '../InnovationFlow';
 
-export interface InnovationFlowTemplate extends TemplateBase {
+export interface InnovationFlowTemplate extends InnovationPackTemplate {
   states: InnovationFlowState[];
 }
 
@@ -26,7 +29,7 @@ const InnovationFlowTemplateCard = ({
   template,
   innovationPack,
   loading,
-  onClick,
+  ...props
 }: InnovationFlowTemplateCardProps) => {
   const states = template?.states;
 
@@ -36,7 +39,7 @@ const InnovationFlowTemplateCard = ({
     : DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS;
 
   return (
-    <ContributeCard onClick={onClick}>
+    <ContributeCard {...props}>
       <CardHeader title={template?.profile.displayName} iconComponent={InnovationFlowIcon as SvgIconComponent}>
         {loading && <Skeleton />}
         <CardHeaderCaption logoUrl={innovationPack?.provider?.profile.avatar?.uri}>

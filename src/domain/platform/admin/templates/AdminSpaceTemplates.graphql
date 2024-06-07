@@ -22,6 +22,28 @@ query AdminSpaceTemplates($spaceId: UUID!) {
           innovationFlowTemplates {
             ...AdminInnovationFlowTemplate
           }
+          communityGuidelinesTemplates {
+            ...AdminCommunityGuidelinesTemplate
+          }
+        }
+      }
+    }
+  }
+}
+
+query AdminCommunityGuidelinesTemplates($spaceId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
+    id
+    account {
+      id
+      library {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+        communityGuidelinesTemplates {
+          ...AdminCommunityGuidelinesTemplate
         }
       }
     }
@@ -64,6 +86,24 @@ fragment AdminInnovationFlowTemplate on InnovationFlowTemplate {
   }
   profile {
     ...ProfileInfoWithVisual
+  }
+}
+
+fragment AdminCommunityGuidelinesTemplate on CommunityGuidelinesTemplate {
+  id
+  profile {
+    ...ProfileInfoWithVisual
+  }
+  guidelines {
+    id
+    profile {
+      id
+      displayName
+      description
+      references {
+        ...ReferenceDetails
+      }
+    }
   }
 }
 

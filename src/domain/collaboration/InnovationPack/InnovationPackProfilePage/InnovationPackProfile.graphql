@@ -28,6 +28,12 @@ query InnovationPackProfilePage($innovationPackId: UUID_NAMEID!) {
           innovationFlowTemplates {
             ...InnovationFlowTemplateCard
           }
+          calloutTemplates {
+            ...CalloutTemplateCard
+          }
+          communityGuidelinesTemplates {
+            ...CommunityGuidelinesTemplateCard
+          }
         }
       }
     }

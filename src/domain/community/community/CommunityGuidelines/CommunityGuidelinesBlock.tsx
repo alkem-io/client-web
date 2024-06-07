@@ -71,7 +71,7 @@ const CommunityGuidelinesBlock: FC<CommunityGuidelinesBlockProps> = ({ community
           <>
             <Caption>{t('community.communityGuidelines.adminsOnly')}</Caption>
             <Caption component={RouterLink} to={`${buildSettingsUrl(journeyUrl || '')}/community`}>
-              {t('community.communityGuidelines.memberGuidelinesRedirect')}
+              {t('community.communityGuidelines.communityGuidelinesRedirect')}
             </Caption>
           </>
         )}

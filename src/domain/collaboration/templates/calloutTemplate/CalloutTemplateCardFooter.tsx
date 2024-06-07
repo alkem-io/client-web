@@ -1,17 +1,13 @@
-import CardSegmentCaption from '../../../core/ui/card/CardSegmentCaption';
-import InnovationPackIcon from '../../collaboration/InnovationPack/InnovationPackIcon';
-import { Caption } from '../../../core/ui/typography';
+import CardSegmentCaption from '../../../../core/ui/card/CardSegmentCaption';
+import InnovationPackIcon from '../../InnovationPack/InnovationPackIcon';
+import { Caption } from '../../../../core/ui/typography';
 import { Paper, Skeleton } from '@mui/material';
 import React from 'react';
-import SwapColors from '../../../core/ui/palette/SwapColors';
-import Gutters from '../../../core/ui/grid/Gutters';
-import { gutters } from '../../../core/ui/grid/utils';
-import {
-  CONTRIBUTION_ICON,
-  ContributionPolicy,
-  getCalloutTypeIcon,
-} from '../../collaboration/callout/calloutCard/calloutIcons';
-import { CalloutType } from '../../../core/apollo/generated/graphql-schema';
+import SwapColors from '../../../../core/ui/palette/SwapColors';
+import Gutters from '../../../../core/ui/grid/Gutters';
+import { gutters } from '../../../../core/ui/grid/utils';
+import { CONTRIBUTION_ICON, ContributionPolicy, getCalloutTypeIcon } from '../../callout/calloutCard/calloutIcons';
+import { CalloutType } from '../../../../core/apollo/generated/graphql-schema';
 
 interface CalloutTemplateCardFooterProps {
   callout?: {
@@ -34,7 +30,7 @@ const CalloutTemplateCardFooter = ({ callout, innovationPack, loading }: Callout
       <SwapColors>
         <Gutters row component={Paper} height={gutters(2)} alignItems="center" justifyContent="space-evenly" square>
           {CalloutTypeIcon && <CalloutTypeIcon />}
-          {callout?.contributionPolicy.allowedContributionTypes.map(type => {
+          {callout?.contributionPolicy?.allowedContributionTypes.map(type => {
             const Icon = CONTRIBUTION_ICON[type];
             return <Icon key={type} />;
           })}

@@ -1,0 +1,17 @@
+fragment CommunityGuidelinesTemplateCard on CommunityGuidelinesTemplate {
+  id
+  profile {
+    ...TemplateCardProfileInfo
+  }
+  guidelines {
+    id
+    profile {
+      id
+      displayName
+      description
+      references {
+        ...ReferenceDetails
+      }
+    }
+  }
+}

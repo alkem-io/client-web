@@ -23,11 +23,17 @@ const useLibraryTemplateCardProps = (
       sortBy(
         innovationPacks?.flatMap(innovationPack => {
           return [
-            ...(innovationPack.templates?.postTemplates ?? []).map(
-              templateInnovationPackHydrator(innovationPack, TemplateType.PostTemplate)
+            ...(innovationPack.templates?.calloutTemplates ?? []).map(
+              templateInnovationPackHydrator(innovationPack, TemplateType.CalloutTemplate)
             ),
             ...(innovationPack.templates?.whiteboardTemplates ?? []).map(
               templateInnovationPackHydrator(innovationPack, TemplateType.WhiteboardTemplate)
+            ),
+            ...(innovationPack.templates?.communityGuidelinesTemplates ?? []).map(
+              templateInnovationPackHydrator(innovationPack, TemplateType.CommunityGuidelinesTemplate)
+            ),
+            ...(innovationPack.templates?.postTemplates ?? []).map(
+              templateInnovationPackHydrator(innovationPack, TemplateType.PostTemplate)
             ),
             ...(innovationPack.templates?.innovationFlowTemplates ?? []).map(
               templateInnovationPackHydrator(innovationPack, TemplateType.InnovationFlowTemplate)

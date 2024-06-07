@@ -23,9 +23,15 @@ interface TemplateInnovationPack {
   };
 }
 
+export interface InnovationPackTemplate extends TemplateBase {
+  innovationPack?: TemplateInnovationPack;
+}
+
 export interface TemplateCardBaseProps<Template extends TemplateBase = TemplateBase> {
   template?: Template;
   innovationPack?: TemplateInnovationPack;
   loading?: boolean;
+  to?: string;
+  state?: Record<string, unknown>;
   onClick?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 }
