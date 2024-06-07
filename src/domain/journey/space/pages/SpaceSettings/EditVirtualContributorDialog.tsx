@@ -1,9 +1,10 @@
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Dialog, DialogContent } from '@mui/material';
+import { DialogContent } from '@mui/material';
 import DialogHeader from '../../../../../core/ui/dialog/DialogHeader';
 import VirtualContributorForm from '../../../../community/virtualContributor/vcSettingsPage/VirtualContributorForm';
 import { UpdateVirtualContributorInput, Visual } from '../../../../../core/apollo/generated/graphql-schema';
+import DialogWithGrid from '../../../../../core/ui/dialog/DialogWithGrid';
 
 export interface VirtualContributorUpdateFormValues {
   id: string;
@@ -43,8 +44,8 @@ const EditVirtualContributorDialog: FC<EditVirtualContributorDialogProps> = ({
   const { t } = useTranslation();
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="md">
-      <DialogHeader onClose={onClose} title={t('virtualContributorSpaceSettings.titleEdit')} />
+    <DialogWithGrid open={open} onClose={onClose} columns={10}>
+      <DialogHeader onClose={onClose} title={t('virtualContributorSpaceSettings.edit.title')} />
       <DialogContent>
         <VirtualContributorForm
           virtualContributor={virtualContributor}
@@ -54,7 +55,7 @@ const EditVirtualContributorDialog: FC<EditVirtualContributorDialogProps> = ({
           hasBackNavitagion={false}
         />
       </DialogContent>
-    </Dialog>
+    </DialogWithGrid>
   );
 };
 

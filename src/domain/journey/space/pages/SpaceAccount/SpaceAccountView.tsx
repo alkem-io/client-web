@@ -427,7 +427,7 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
           )}
           <SpaceProfileDeleteDialog
             entity={t('common.virtual-contributor')}
-            description="virtualContributorSpaceSettings.confirm-deletion.description"
+            description="virtualContributorSpaceSettings.confirmDeletion.description"
             open={isOpenDeleteVCDialog}
             onClose={closeDeleteVCDialog}
             onDelete={handleDeleteVC}
