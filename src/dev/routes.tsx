@@ -6,7 +6,6 @@ import JourneyCardsDemo from './ui/JourneyCardsDemo';
 import TableDemo from './ui/TableDemo';
 import SearchCardsDemo from './ui/SearchCardsDemo';
 import DashboardNavigationDemo from './ui/DashboardNavigationDemo';
-import FlexColumnGrowModal from './ui/FlexColumnGrowModal';
 
 const devRoutes = () => {
   return (
@@ -18,7 +17,6 @@ const devRoutes = () => {
       <Route path="ui/table" element={<TableDemo />} />
       <Route path="ui/search-cards" element={<SearchCardsDemo />} />
       <Route path="ui/dashboard-navigation" element={<DashboardNavigationDemo />} />
-      <Route path="ui/flex-column-grow" element={<FlexColumnGrowModal />} />
     </Route>
   );
 };
