@@ -11,7 +11,6 @@ import CalloutHeader from '../calloutBlock/CalloutHeader';
 import CalloutClosedMarginal from '../calloutBlock/CalloutClosedMarginal';
 import { CalloutLayoutProps } from '../calloutBlock/CalloutLayout';
 import { gutters } from '../../../../core/ui/grid/utils';
-import Gutters from '../../../../core/ui/grid/Gutters';
 
 const CommentsCalloutLayout = ({
   callout,
@@ -55,10 +54,10 @@ const CommentsCalloutLayout = ({
       <Box sx={{ wordWrap: 'break-word' }} paddingX={gutters()}>
         <WrapperMarkdown caption>{callout.framing.profile.description ?? ''}</WrapperMarkdown>
       </Box>
-      {!skipReferences && (
-        <Gutters>
+      {!skipReferences && !!callout.framing.profile.references?.length && (
+        <Box padding={gutters()} paddingTop={gutters(0.5)}>
           <References compact references={callout.framing.profile.references} />
-        </Gutters>
+        </Box>
       )}
       {callout.framing.profile.tagset?.tags && callout.framing.profile.tagset?.tags.length > 0 ? (
         <TagsComponent tags={callout.framing.profile.tagset?.tags} />
