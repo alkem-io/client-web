@@ -1553,6 +1553,7 @@ export type MutationKeySpecifier = (
   | 'assignCommunityRoleToOrganization'
   | 'assignCommunityRoleToUser'
   | 'assignCommunityRoleToVirtual'
+  | 'assignLicensePlanToAccount'
   | 'assignOrganizationRoleToUser'
   | 'assignPlatformRoleToUser'
   | 'assignUserToGroup'
@@ -1646,6 +1647,7 @@ export type MutationKeySpecifier = (
   | 'resetChatGuidance'
   | 'revokeCredentialFromOrganization'
   | 'revokeCredentialFromUser'
+  | 'revokeLicensePlanFromAccount'
   | 'sendMessageReplyToRoom'
   | 'sendMessageToCommunityLeads'
   | 'sendMessageToOrganization'
@@ -1714,6 +1716,7 @@ export type MutationFieldPolicy = {
   assignCommunityRoleToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   assignCommunityRoleToUser?: FieldPolicy<any> | FieldReadFunction<any>;
   assignCommunityRoleToVirtual?: FieldPolicy<any> | FieldReadFunction<any>;
+  assignLicensePlanToAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   assignOrganizationRoleToUser?: FieldPolicy<any> | FieldReadFunction<any>;
   assignPlatformRoleToUser?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserToGroup?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1807,6 +1810,7 @@ export type MutationFieldPolicy = {
   resetChatGuidance?: FieldPolicy<any> | FieldReadFunction<any>;
   revokeCredentialFromOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   revokeCredentialFromUser?: FieldPolicy<any> | FieldReadFunction<any>;
+  revokeLicensePlanFromAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   sendMessageReplyToRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   sendMessageToCommunityLeads?: FieldPolicy<any> | FieldReadFunction<any>;
   sendMessageToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;

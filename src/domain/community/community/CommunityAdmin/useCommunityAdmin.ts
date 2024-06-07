@@ -33,6 +33,7 @@ import { CommunityMemberUserFragmentWithRoles } from '../../../community/communi
 import useInviteUsers from '../../../community/invitations/useInviteUsers';
 import { getJourneyTypeName } from '../../../journey/JourneyTypeName';
 import { JourneyLevel } from '../../../../main/routing/resolvers/RouteResolver';
+import { Identifiable } from '../../../../core/utils/Identifiable';
 
 const MAX_AVAILABLE_MEMBERS = 100;
 const buildUserFilterObject = (filter: string | undefined) =>
@@ -57,6 +58,14 @@ interface useCommunityAdminParams {
   challengeId?: string;
   opportunityId?: string;
   journeyLevel: JourneyLevel | -1;
+}
+
+interface VirtaulContributorNameProps extends Identifiable {
+  nameID: string;
+  profile: {
+    id: string;
+    displayName: string;
+  };
 }
 
 const useCommunityAdmin = ({
@@ -229,19 +238,34 @@ const useCommunityAdmin = ({
     );
   };
 
+  const filterByName = (vc: VirtaulContributorNameProps, filter?: string) =>
+    vc.profile.displayName.toLowerCase().includes(filter?.toLowerCase() ?? '');
+
   const [fetchAllVirtualContributors] = useAvailableVirtualContributorsLazyQuery();
   const getAvailableVirtualContributors = async (filter: string | undefined, all: boolean = false) => {
     const { data } = await fetchAllVirtualContributors({
       variables: {
-        filterSpace: journeyLevel > 0 && !all,
+        filterSpace: !all || journeyLevel > 0,
         filterSpaceId: spaceId,
       },
     });
-    // Filter out already member organizations
-    return (data?.lookup?.space?.community.virtualContributorsInRole ?? data?.virtualContributors ?? [])?.filter(
+
+    // Results for Space Level - on Account if !all (filter in the query)
+    if (journeyLevel === 0) {
+      return (data?.lookup?.space?.account.virtualContributors ?? data?.virtualContributors ?? []).filter(
+        vc => !virtualContributors.some(member => member.id === vc.id) && filterByName(vc, filter)
+      );
+    }
+
+    // Results for Subspaces - Community Members including External VCs (filter in the query)
+    if (all) {
+      return (data?.lookup?.space?.community.virtualContributorsInRole ?? []).filter(vc => filterByName(vc, filter));
+    }
+
+    // Results for Subspaces - Only Community Members On Account (filter in the query)
+    return (data?.lookup?.space?.community.virtualContributorsInRole ?? []).filter(
       vc =>
-        !virtualContributors.some(member => member.id === vc.id) &&
-        vc.profile.displayName.toLowerCase().includes(filter?.toLowerCase() ?? '')
+        data?.lookup?.space?.account.virtualContributors.some(member => member.id === vc.id) && filterByName(vc, filter)
     );
   };
 

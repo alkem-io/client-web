@@ -10561,6 +10561,12 @@ export const AvailableVirtualContributorsDocument = gql`
             ...VirtualContributorName
           }
         }
+        account {
+          id
+          virtualContributors {
+            ...VirtualContributorName
+          }
+        }
       }
     }
     virtualContributors @skip(if: $filterSpace) {
