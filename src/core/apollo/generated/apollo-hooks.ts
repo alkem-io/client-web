@@ -3271,8 +3271,22 @@ export const SearchResultUserFragmentDoc = gql`
   }
   ${SearchResultProfileFragmentDoc}
 `;
+export const CalloutParentFragmentDoc = gql`
+  fragment CalloutParent on SearchResultCallout {
+    space {
+      id
+      profile {
+        id
+        displayName
+        url
+      }
+      level
+    }
+  }
+`;
 export const SearchResultCalloutFragmentDoc = gql`
   fragment SearchResultCallout on SearchResultCallout {
+    id
     callout {
       id
       nameID
@@ -3311,8 +3325,10 @@ export const SearchResultCalloutFragmentDoc = gql`
         messagesCount
       }
     }
+    ...CalloutParent
   }
   ${TagsetDetailsFragmentDoc}
+  ${CalloutParentFragmentDoc}
 `;
 export const SearchResultOrganizationFragmentDoc = gql`
   fragment SearchResultOrganization on SearchResultOrganization {

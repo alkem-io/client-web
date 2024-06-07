@@ -10,26 +10,26 @@ import SearchResultsCalloutCardFooter, {
   SearchResultsCalloutCardFooterProps,
 } from '../../main/search/searchResults/searchResultsCallout/SearchResultsCalloutCardFooter';
 import { CalloutContributionType, CalloutState, CalloutType } from '../../core/apollo/generated/graphql-schema';
-import { JourneyTypeName } from '../../domain/journey/JourneyTypeName';
 
 const loremIpsum =
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.';
 
 interface SearchResult {
   callout: CalloutCardCallout & SearchResultsCalloutCardFooterProps['callout'];
+  space: SearchResultsCalloutCardFooterProps['space'];
   matchedTerms: string[];
-  journeyTypeName: JourneyTypeName;
-  journeyDisplayName: string;
 }
 
 const searchResults: SearchResult[] = [
   {
     callout: {
-      profile: {
-        description: loremIpsum,
-        displayName: 'Callout 1',
-        tagset: {
-          tags: ['callout', 'card'],
+      framing: {
+        profile: {
+          description: loremIpsum,
+          displayName: 'Callout 1',
+          tagset: {
+            tags: ['callout', 'card'],
+          },
         },
       },
       type: CalloutType.Post,
@@ -45,28 +45,29 @@ const searchResults: SearchResult[] = [
         {
           post: { id: 'post' },
         },
-        {
-          whiteboard: { id: 'whiteboard' },
-        },
-        {
-          link: { id: 'link' },
-        },
       ],
       comments: {
         messagesCount: 3,
       },
     },
     matchedTerms: ['callout', 'card'],
-    journeyTypeName: 'subspace',
-    journeyDisplayName: 'Parent Challenge',
+    space: {
+      profile: {
+        displayName: 'Parent Challenge',
+        url: '/space1',
+      },
+      level: 1,
+    },
   },
   {
     callout: {
-      profile: {
-        description: loremIpsum,
-        displayName: 'Callout 2',
-        tagset: {
-          tags: [],
+      framing: {
+        profile: {
+          description: loremIpsum,
+          displayName: 'Callout 2',
+          tagset: {
+            tags: [],
+          },
         },
       },
       type: CalloutType.LinkCollection,
@@ -84,8 +85,13 @@ const searchResults: SearchResult[] = [
       },
     },
     matchedTerms: ['matched', 'terms'],
-    journeyTypeName: 'space',
-    journeyDisplayName: 'Parent Space',
+    space: {
+      profile: {
+        displayName: 'Parent Space',
+        url: '/space2',
+      },
+      level: 0,
+    },
   },
 ];
 

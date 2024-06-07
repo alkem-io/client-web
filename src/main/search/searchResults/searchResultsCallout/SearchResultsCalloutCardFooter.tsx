@@ -1,6 +1,5 @@
 import { Box } from '@mui/material';
-import { JourneyTypeName } from '../../../../domain/journey/JourneyTypeName';
-import journeyIcon from '../../../../domain/shared/components/JourneyIcon/JourneyIcon';
+import { journeyIconByJourneyLevel } from '../../../../domain/shared/components/JourneyIcon/JourneyIcon';
 import { CONTRIBUTION_ICON } from '../../../../domain/collaboration/callout/calloutCard/calloutIcons';
 import React, { useMemo } from 'react';
 import { CalloutContributionType } from '../../../../core/apollo/generated/graphql-schema';
@@ -9,12 +8,18 @@ import { Caption } from '../../../../core/ui/typography';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import { LibraryBooksOutlined } from '@mui/icons-material';
 import CardMatchedTerms from '../../../../core/ui/card/CardMatchedTerms';
+import RouterLink from '../../../../core/ui/link/RouterLink';
 
 export interface SearchResultsCalloutCardFooterProps {
   callout: CalloutContributionsProps['callout'];
-  matchedTerms: string[];
-  journeyTypeName: JourneyTypeName;
-  journeyDisplayName: string;
+  matchedTerms?: string[];
+  space?: {
+    profile: {
+      displayName: string;
+      url: string;
+    };
+    level: number;
+  };
 }
 
 interface CalloutContribution {
@@ -78,24 +83,30 @@ const CalloutContributions = ({ callout }: CalloutContributionsProps) => {
   );
 };
 
-const SearchResultsCalloutCardFooter = ({
-  callout,
-  matchedTerms,
-  journeyDisplayName,
-  journeyTypeName,
-}: SearchResultsCalloutCardFooterProps) => {
-  const JourneyIcon = journeyIcon[journeyTypeName];
+const SearchResultsCalloutCardFooter = ({ callout, matchedTerms, space }: SearchResultsCalloutCardFooterProps) => {
+  const JourneyIcon = space && journeyIconByJourneyLevel[space.level];
 
   return (
     <Gutters padding={1} gap={1}>
       <Box display="flex">
-        <Caption display="flex" alignItems="center" gap={1} flexGrow={1} flexShrink={1} minWidth={0}>
-          <JourneyIcon fontSize="small" color="primary" />
-          {journeyDisplayName}
-        </Caption>
+        {space && (
+          <Caption
+            component={RouterLink}
+            to={space.profile.url}
+            display="flex"
+            alignItems="center"
+            gap={1}
+            flexGrow={1}
+            flexShrink={1}
+            minWidth={0}
+          >
+            {JourneyIcon && <JourneyIcon fontSize="small" color="primary" />}
+            {space.profile.displayName}
+          </Caption>
+        )}
         <CalloutContributions callout={callout} />
       </Box>
-      <CardMatchedTerms tags={matchedTerms} />
+      {matchedTerms && <CardMatchedTerms tags={matchedTerms} />}
     </Gutters>
   );
 };

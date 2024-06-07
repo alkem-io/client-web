@@ -121,6 +121,7 @@ fragment SearchResultUser on SearchResultUser {
 }
 
 fragment SearchResultCallout on SearchResultCallout {
+  id
   callout {
     id
     nameID
@@ -158,6 +159,18 @@ fragment SearchResultCallout on SearchResultCallout {
       id
       messagesCount
     }
+  }
+  ...CalloutParent
+}
+fragment CalloutParent on SearchResultCallout {
+  space {
+    id
+    profile {
+      id
+      displayName
+      url
+    }
+    level
   }
 }
 

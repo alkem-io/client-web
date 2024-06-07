@@ -35,7 +35,6 @@ import { SpaceIcon } from '../../domain/journey/space/icon/SpaceIcon';
 import { findKey, groupBy, identity } from 'lodash';
 import SearchResultPostChooser from './searchResults/SearchResultPostChooser';
 import SearchResultsCalloutCard from './searchResults/searchResultsCallout/SearchResultsCalloutCard';
-import { JourneyTypeName } from '../../domain/journey/JourneyTypeName';
 
 export const MAX_TERMS_SEARCH = 5;
 
@@ -217,23 +216,7 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
           filterTitle={t('common.type')}
           count={calloutResultsCount}
           filterConfig={calloutFilterConfig}
-          results={calloutResults
-            ?.map(result => result as SearchResultCalloutFragment)
-            .map(result => ({
-              id: result.callout.id,
-              callout: {
-                id: result.callout.id,
-                nameID: result.callout.nameID,
-                type: result.callout.type,
-                contributions: result.callout.contributions,
-                contributionPolicy: result.callout.contributionPolicy,
-                profile: result.callout.framing.profile,
-                comments: result.callout.comments,
-              },
-              journeyDisplayName: 'test',
-              journeyTypeName: 'space' as JourneyTypeName,
-              matchedTerms: (result as SearchResultMetaType).terms,
-            }))}
+          results={calloutResults as SearchResultCalloutFragment[]}
           currentFilter={calloutFilter}
           onFilterChange={setCalloutFilter}
           loading={isSearching}

@@ -25482,6 +25482,12 @@ export type SearchQuery = {
             }>;
             comments?: { __typename?: 'Room'; id: string; messagesCount: number } | undefined;
           };
+          space: {
+            __typename?: 'Space';
+            id: string;
+            level: number;
+            profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+          };
         }
       | {
           __typename?: 'SearchResultOrganization';
@@ -25762,6 +25768,7 @@ export type SearchResultUserFragment = {
 
 export type SearchResultCalloutFragment = {
   __typename?: 'SearchResultCallout';
+  id: string;
   callout: {
     __typename?: 'Callout';
     id: string;
@@ -25802,6 +25809,22 @@ export type SearchResultCalloutFragment = {
       link?: { __typename?: 'Link'; id: string } | undefined;
     }>;
     comments?: { __typename?: 'Room'; id: string; messagesCount: number } | undefined;
+  };
+  space: {
+    __typename?: 'Space';
+    id: string;
+    level: number;
+    profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+  };
+};
+
+export type CalloutParentFragment = {
+  __typename?: 'SearchResultCallout';
+  space: {
+    __typename?: 'Space';
+    id: string;
+    level: number;
+    profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
   };
 };
 

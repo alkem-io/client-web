@@ -18,9 +18,19 @@ export interface CalloutTemplate extends TemplateBase {
 interface CalloutTemplateCardProps extends TemplateCardBaseProps<CalloutTemplate> {}
 
 const CalloutTemplateCard: FC<CalloutTemplateCardProps> = ({ template, innovationPack, loading, onClick }) => {
+  if (!template) return null;
+
   return (
     <CalloutCard
-      callout={template}
+      callout={{
+        // In this case we map the template profile to the callout.framing.profile
+        // to resuse CalloutCard and show the description and displayName
+        // of the template in the card as if it was the description of the callout
+        ...template,
+        framing: {
+          profile: template.profile,
+        },
+      }}
       author={innovationPack?.provider}
       loading={loading}
       onClick={onClick}
