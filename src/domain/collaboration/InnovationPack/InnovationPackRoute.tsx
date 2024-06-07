@@ -26,6 +26,10 @@ const InnovationPackRoute = () => {
           path={`:${nameOfUrl.innovationPackNameId}/${RoutePaths.innovationTemplatesRoutePath}/:${nameOfUrl.innovationTemplateId}`}
           element={<AdminInnovationPackPage editTemplates />}
         />
+        <Route
+          path={`:${nameOfUrl.innovationPackNameId}/${RoutePaths.communityGuidelinesTemplatesRoutePath}/:${nameOfUrl.communityGuidelinesNameId}`}
+          element={<AdminInnovationPackPage editTemplates />}
+        />
         <Route path="*" element={<Error404 />} />
       </Route>
     </Routes>

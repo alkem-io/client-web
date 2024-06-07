@@ -11,7 +11,7 @@ enum RoutePaths {
   postTemplatesRoutePath = 'post-templates',
   whiteboardTemplatesRoutePath = 'whiteboard-templates',
   innovationTemplatesRoutePath = 'innovation-templates',
-  communityGuidelinesTemplatesRoutePath = 'communityGuidelines-templates',
+  communityGuidelinesTemplatesRoutePath = 'community-guidelines-templates',
 }
 
 const SpaceTemplatesAdminRoutes = (props: SpaceTemplatesAdminRoutesProps) => {
