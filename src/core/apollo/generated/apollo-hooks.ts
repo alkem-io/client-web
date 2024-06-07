@@ -3292,6 +3292,7 @@ export const SearchResultCalloutFragmentDoc = gql`
       contributionPolicy {
         id
         state
+        allowedContributionTypes
       }
       contributions {
         id
@@ -21170,6 +21171,7 @@ export const SearchDocument = gql`
           ...SearchResultCallout
         }
       }
+      calloutResultsCount
       contributorResults {
         id
         score

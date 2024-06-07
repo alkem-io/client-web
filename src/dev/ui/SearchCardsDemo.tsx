@@ -48,9 +48,12 @@ const searchResults: SearchResult[] = [
         {
           whiteboard: { id: 'whiteboard' },
         },
+        {
+          link: { id: 'link' },
+        },
       ],
       comments: {
-        messagesCount: 0,
+        messagesCount: 3,
       },
     },
     matchedTerms: ['callout', 'card'],

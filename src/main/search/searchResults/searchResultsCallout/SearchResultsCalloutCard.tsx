@@ -5,6 +5,7 @@ import { JourneyTypeName } from '../../../../domain/journey/JourneyTypeName';
 interface SearchResultsCalloutCardProps {
   result:
     | {
+        id: string;
         callout: CalloutCardCallout & SearchResultsCalloutCardFooterProps['callout'];
         matchedTerms: string[];
         journeyTypeName: JourneyTypeName;

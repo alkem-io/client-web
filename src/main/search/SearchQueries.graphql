@@ -19,6 +19,7 @@ query search($searchData: SearchInput!) {
         ...SearchResultCallout
       }
     }
+    calloutResultsCount
     contributorResults {
       id
       score
@@ -132,13 +133,14 @@ fragment SearchResultCallout on SearchResultCallout {
         description
         url
         tagset {
-        ...TagsetDetails
+          ...TagsetDetails
         }
       }
     }
     contributionPolicy {
-     id
-     state
+      id
+      state
+      allowedContributionTypes
     }
     contributions {
       id

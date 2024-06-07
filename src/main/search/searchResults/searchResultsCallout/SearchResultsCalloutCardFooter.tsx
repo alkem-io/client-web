@@ -8,6 +8,7 @@ import { Identifiable } from '../../../../core/utils/Identifiable';
 import { Caption } from '../../../../core/ui/typography';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import { LibraryBooksOutlined } from '@mui/icons-material';
+import CardMatchedTerms from '../../../../core/ui/card/CardMatchedTerms';
 
 export interface SearchResultsCalloutCardFooterProps {
   callout: CalloutContributionsProps['callout'];
@@ -28,7 +29,7 @@ interface CalloutContributionsProps {
       allowedContributionTypes: CalloutContributionType[];
     };
     contributions: CalloutContribution[];
-    comments: {
+    comments?: {
       messagesCount: number;
     };
   };
@@ -67,7 +68,7 @@ const CalloutContributions = ({ callout }: CalloutContributionsProps) => {
           </Caption>
         );
       })}
-      {callout.comments.messagesCount > 0 && (
+      {callout.comments && callout.comments.messagesCount > 0 && (
         <Caption display="flex" alignItems="center" gap={0.5}>
           <LibraryBooksOutlined fontSize="small" />
           {callout.comments.messagesCount}
@@ -79,13 +80,13 @@ const CalloutContributions = ({ callout }: CalloutContributionsProps) => {
 
 const SearchResultsCalloutCardFooter = ({
   callout,
+  matchedTerms,
   journeyDisplayName,
   journeyTypeName,
 }: SearchResultsCalloutCardFooterProps) => {
   const JourneyIcon = journeyIcon[journeyTypeName];
 
-  return (<p>//!! TODO</p>);
-    /*
+  return (
     <Gutters padding={1} gap={1}>
       <Box display="flex">
         <Caption display="flex" alignItems="center" gap={1} flexGrow={1} flexShrink={1} minWidth={0}>
@@ -97,7 +98,6 @@ const SearchResultsCalloutCardFooter = ({
       <CardMatchedTerms tags={matchedTerms} />
     </Gutters>
   );
-  */
 };
 
 export default SearchResultsCalloutCardFooter;
