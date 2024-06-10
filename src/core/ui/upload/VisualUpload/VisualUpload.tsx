@@ -41,13 +41,9 @@ export interface VisualUploadProps {
 const VisualUpload: FC<VisualUploadProps> = ({ visual, height = DEFAULT_SIZE, altText }) => {
   const { t } = useTranslation();
   const notify = useNotification();
-  const [updatedUri, setUpdatedUri] = useState<string | undefined>(undefined);
 
   const [uploadVisual, { loading }] = useUploadVisualMutation({
-    onCompleted: data => {
-      setUpdatedUri(data?.uploadImageOnVisual?.uri);
-      notify(t('components.visual-upload.success'), 'success');
-    },
+    onCompleted: () => notify(t('components.visual-upload.success'), 'success'),
   });
   const [dialogOpened, setDialogOpened] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File>();
@@ -101,7 +97,7 @@ const VisualUpload: FC<VisualUploadProps> = ({ visual, height = DEFAULT_SIZE, al
               height,
               borderColor: theme => theme.palette.grey[400],
             }}
-            src={updatedUri ?? visual?.uri}
+            src={visual?.uri}
             alt={altText}
           />
         )}
