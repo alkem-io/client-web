@@ -5,7 +5,6 @@ import * as yup from 'yup';
 import { Box, Button } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { Tagset, UpdateVirtualContributorInput, Visual } from '../../../../core/apollo/generated/graphql-schema';
-import useNavigate from '../../../../core/routing/useNavigate';
 import { NameSegment, nameSegmentSchema } from '../../../platform/admin/components/Common/NameSegment';
 import { ProfileSegment, profileSegmentSchema } from '../../../platform/admin/components/Common/ProfileSegment';
 import VisualUpload from '../../../../core/ui/upload/VisualUpload/VisualUpload';
@@ -21,6 +20,7 @@ import GridProvider from '../../../../core/ui/grid/GridProvider';
 import GridItem from '../../../../core/ui/grid/GridItem';
 import { BasicSpaceProps } from '../components/BasicSpaceCard';
 import { useColumns } from '../../../../core/ui/grid/GridContext';
+import { useBackToStaticPath } from '../../../../core/routing/useBackToPath';
 
 interface VirtualContributorProps {
   id: string;
@@ -59,7 +59,7 @@ interface Props {
   bokProfile?: BasicSpaceProps;
   avatar: Visual | undefined;
   onSave?: (virtualContributor: UpdateVirtualContributorInput) => void;
-  title?: string;
+  hasBackNavitagion?: boolean;
 }
 
 export const VirtualContributorForm: FC<Props> = ({
@@ -67,10 +67,10 @@ export const VirtualContributorForm: FC<Props> = ({
   bokProfile,
   avatar,
   onSave,
+  hasBackNavitagion = true,
 }) => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
-  const handleBack = () => navigate(-1);
+  const handleBack = useBackToStaticPath(currentVirtualContributor.profile.url);
   const cols = useColumns();
   const isMobile = cols < 5;
 
@@ -131,18 +131,12 @@ export const VirtualContributorForm: FC<Props> = ({
     await onSave?.(virtualContributor);
   });
 
-  const backButton = (
-    <Button onClick={handleBack} variant="text">
-      {t('buttons.back')}
-    </Button>
-  );
-
   const HostFields = () => (
     <>
       <FormikInputField name="hostDisplayName" title="Host" required readOnly disabled />
       <FormikInputField
         name="subSpaceName"
-        title={t('virtualContributorSpaceSettings.body-of-knowledge')}
+        title={t('virtualContributorSpaceSettings.bodyOfKnowledge')}
         required
         readOnly
         disabled
@@ -150,63 +144,56 @@ export const VirtualContributorForm: FC<Props> = ({
     </>
   );
 
-  if (!currentVirtualContributor) {
-    return (
-      <>
-        <div>Virtual Contributor not found!</div>
-        {backButton}
-      </>
-    );
-  } else {
-    return (
-      <>
-        <Formik
-          initialValues={initialValues}
-          validationSchema={validationSchema}
-          enableReinitialize
-          onSubmit={handleSubmit}
-        >
-          {({ values: { avatar, tagsets }, handleSubmit }) => {
-            return (
-              <Form noValidate onSubmit={handleSubmit}>
-                <GridContainer>
-                  <GridProvider columns={12}>
-                    <GridItem columns={isMobile ? cols : 2}>
-                      {avatar && (
-                        <Box display="flex" justifyContent="center">
-                          <VisualUpload
-                            visual={avatar}
-                            altText={t('visuals-alt-text.avatar.contributor.text', {
-                              displayName,
-                              altText: avatar?.alternativeText,
-                            })}
-                          />
-                        </Box>
-                      )}
-                    </GridItem>
-                    <GridItem columns={isMobile ? cols : 8}>
-                      <Gutters>
-                        <NameSegment disabled required />
-                        <ProfileSegment />
-                        {tagsets && <TagsetSegment tagsets={tagsets} />}
-                        <HostFields />
-                        <Actions marginTop={theme.spacing(2)} sx={{ justifyContent: 'end' }}>
-                          {backButton}
-                          <LoadingButton loading={loading} type="submit" variant="contained">
-                            {t('buttons.save')}
-                          </LoadingButton>
-                        </Actions>
-                      </Gutters>
-                    </GridItem>
-                  </GridProvider>
-                </GridContainer>
-              </Form>
-            );
-          }}
-        </Formik>
-      </>
-    );
-  }
+  return (
+    <>
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        enableReinitialize
+        onSubmit={handleSubmit}
+      >
+        {({ values: { avatar, tagsets, hostDisplayName }, handleSubmit }) => {
+          return (
+            <Form noValidate onSubmit={handleSubmit}>
+              <GridContainer>
+                <GridProvider columns={12}>
+                  <GridItem columns={isMobile ? cols : 2}>
+                    <Box display="flex" justifyContent="center">
+                      <VisualUpload
+                        visual={avatar}
+                        altText={t('visuals-alt-text.avatar.contributor.text', {
+                          displayName,
+                          altText: avatar?.alternativeText,
+                        })}
+                      />
+                    </Box>
+                  </GridItem>
+                  <GridItem columns={isMobile ? cols : 8}>
+                    <Gutters>
+                      <NameSegment disabled required />
+                      <ProfileSegment />
+                      {tagsets && <TagsetSegment tagsets={tagsets} />}
+                      {hostDisplayName && <HostFields />}
+                      <Actions marginTop={theme.spacing(2)} sx={{ justifyContent: 'end' }}>
+                        {hasBackNavitagion && (
+                          <Button onClick={handleBack} variant="text">
+                            {t('buttons.back')}
+                          </Button>
+                        )}
+                        <LoadingButton loading={loading} type="submit" variant="contained">
+                          {t('buttons.save')}
+                        </LoadingButton>
+                      </Actions>
+                    </Gutters>
+                  </GridItem>
+                </GridProvider>
+              </GridContainer>
+            </Form>
+          );
+        }}
+      </Formik>
+    </>
+  );
 };
 
 export default VirtualContributorForm;

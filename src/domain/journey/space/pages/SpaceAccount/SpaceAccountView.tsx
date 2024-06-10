@@ -2,7 +2,6 @@ import { FC, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Box, Button, CircularProgress } from '@mui/material';
 import ControlPointIcon from '@mui/icons-material/ControlPoint';
-import { buildSettingsUrl } from '../../../../../main/routing/urlBuilders';
 import PageContent from '../../../../../core/ui/content/PageContent';
 import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
@@ -13,13 +12,14 @@ import ContributorCardHorizontal from '../../../../../core/ui/card/ContributorCa
 import Gutters from '../../../../../core/ui/grid/Gutters';
 import { AuthorizationPrivilege, BodyOfKnowledgeType } from '../../../../../core/apollo/generated/graphql-schema';
 import {
+  refetchAdminSpacesListQuery,
+  refetchSpaceSubspacesQuery,
   useCreateVirtualContributorOnAccountMutation,
   useDeleteSpaceMutation,
-  refetchAdminSpacesListQuery,
+  useDeleteVirtualContributorOnAccountMutation,
   useSpaceAccountQuery,
   useSpaceSubspacesQuery,
-  useDeleteVirtualContributorOnAccountMutation,
-  refetchSpaceSubspacesQuery,
+  useUpdateVirtualContributorMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { gutters } from '../../../../../core/ui/grid/utils';
 import { ROUTE_HOME } from '../../../../platform/routes/constants';
@@ -35,6 +35,7 @@ import { getPlanTranslations } from '../../../../license/plans/utils/getPlanTran
 import RouterLink from '../../../../../core/ui/link/RouterLink';
 import useCommunityAdmin from '../../../../community/community/CommunityAdmin/useCommunityAdmin';
 import { useSpace } from '../../SpaceContext/useSpace';
+import EditVirtualContributorDialog from '../SpaceSettings/EditVirtualContributorDialog';
 
 interface SpaceAccountPageProps {
   journeyId: string;
@@ -58,6 +59,9 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
   const [isOpenDeleteVCDialog, setIsOpenDeleteVCDialog] = useState(false);
   const openDeleteVCDialog = () => setIsOpenDeleteVCDialog(true);
   const closeDeleteVCDialog = () => setIsOpenDeleteVCDialog(false);
+  const [isEditVCDialogOpen, setIsEditVCDialogOpen] = useState(false);
+  const openEditVCDialog = () => setIsEditVCDialogOpen(true);
+  const closeEditVCDialog = () => setIsEditVCDialogOpen(false);
   const [selectedVirtualContributorId, setSelectedVirtualContributorId] = useState<string | null>(null);
 
   const { permissions } = useCommunityAdmin({ communityId, spaceId: journeyId, journeyLevel: 0 });
@@ -181,9 +185,19 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
       .filter(subspace => subspace.id === bodyOfKnowledgeID)
       .map(data => ({ profile: { displayName: data.profile.displayName, avatar: data.profile.avatar } }))[0];
 
-  const virtualContributors = useMemo(() => {
-    return spaceData?.space?.account?.virtualContributors ?? [];
-  }, [spaceData]);
+  const getBoKProfile = (bodyOfKnowledgeID: string) =>
+    spaceData?.space?.subspaces
+      .filter(subspace => subspace.id === bodyOfKnowledgeID)
+      .map(data => ({
+        profile: {
+          displayName: data.profile.displayName,
+          avatar: data.profile.avatar,
+          tagline: data.profile.tagline,
+          url: data.profile.url,
+        },
+      }))[0];
+
+  const virtualContributors = spaceData?.space?.account?.virtualContributors;
 
   const [createVirtualContributorOnAccount, { loading: loadingVCCreation }] =
     useCreateVirtualContributorOnAccountMutation({
@@ -192,7 +206,7 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
     });
 
   const handleCreateVirtualContributor = async ({ displayName, bodyOfKnowledgeID }: VirtualContributorFormValues) => {
-    const vsResponse = await createVirtualContributorOnAccount({
+    const vcResponse = await createVirtualContributorOnAccount({
       variables: {
         virtualContributorData: {
           profileData: {
@@ -207,14 +221,32 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
 
     notify('Virtual Contributor Created Successfully!', 'success');
     closeCreateVCDialog();
-    navigate(buildSettingsUrl(vsResponse.data?.createVirtualContributor.profile.url ?? ''));
+    setSelectedVirtualContributorId(vcResponse.data?.createVirtualContributor.id ?? null);
+    openEditVCDialog();
+  };
+
+  const [updateContributorMutation] = useUpdateVirtualContributorMutation();
+
+  const handleEditVirtualContributor = async virtualContributor => {
+    await updateContributorMutation({
+      variables: {
+        virtualContributorData: {
+          ID: virtualContributor.ID,
+          profileData: virtualContributor.profileData,
+        },
+      },
+    });
+    notify('Virtual Contributor Updated Successfully!', 'success');
+    closeEditVCDialog();
   };
 
   const loading = loadingAccount && deletingSpace;
   const noSubspaces = subspaces?.length < 1;
-  const hasVirtualContributors = virtualContributors.length > 0;
+  const hasVirtualContributors = virtualContributors && virtualContributors.length > 0;
   const isPlatformAdmin = accountPrivileges?.includes(AuthorizationPrivilege.PlatformAdmin);
   const disabledVirtualCreation = (hasVirtualContributors && !isPlatformAdmin) || spaceDataLoading || noSubspaces;
+
+  const selectedVirtualContributor = virtualContributors?.find(vc => vc.id === selectedVirtualContributorId);
 
   return (
     <PageContent background="transparent">
@@ -392,7 +424,7 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
           )}
           <SpaceProfileDeleteDialog
             entity={t('common.virtual-contributor')}
-            description="virtualContributorSpaceSettings.confirm-deletion.description"
+            description="virtualContributorSpaceSettings.confirmDeletion.description"
             open={isOpenDeleteVCDialog}
             onClose={closeDeleteVCDialog}
             onDelete={handleDeleteVC}
@@ -405,6 +437,16 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
             onCreate={handleCreateVirtualContributor}
             submitting={loadingVCCreation || spaceDataLoading}
           />
+          {selectedVirtualContributor && (
+            <EditVirtualContributorDialog
+              virtualContributor={selectedVirtualContributor}
+              bok={getBoKProfile(selectedVirtualContributor.bodyOfKnowledgeID ?? '')}
+              open={isEditVCDialogOpen}
+              onClose={closeEditVCDialog}
+              onSave={handleEditVirtualContributor}
+              submitting={false}
+            />
+          )}
         </>
       )}
       {loading && (

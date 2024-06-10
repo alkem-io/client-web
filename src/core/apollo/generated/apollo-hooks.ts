@@ -10561,6 +10561,12 @@ export const AvailableVirtualContributorsDocument = gql`
             ...VirtualContributorName
           }
         }
+        account {
+          id
+          virtualContributors {
+            ...VirtualContributorName
+          }
+        }
       }
     }
     virtualContributors @skip(if: $filterSpace) {
@@ -17397,9 +17403,10 @@ export const CreateVirtualContributorOnAccountDocument = gql`
   mutation CreateVirtualContributorOnAccount($virtualContributorData: CreateVirtualContributorOnAccountInput!) {
     createVirtualContributor(virtualContributorData: $virtualContributorData) {
       id
+      nameID
+      bodyOfKnowledgeID
       profile {
         id
-        url
       }
     }
   }
@@ -17517,10 +17524,15 @@ export const SpaceSubspacesDocument = gql`
           nameID
           bodyOfKnowledgeID
           profile {
+            id
             displayName
+            tagline
             url
+            tagsets {
+              ...TagsetDetails
+            }
             avatar: visual(type: AVATAR) {
-              uri
+              ...VisualFull
             }
           }
         }
@@ -17530,13 +17542,18 @@ export const SpaceSubspacesDocument = gql`
         profile {
           id
           displayName
+          tagline
+          url
           avatar: visual(type: AVATAR) {
-            uri
+            ...VisualUri
           }
         }
       }
     }
   }
+  ${TagsetDetailsFragmentDoc}
+  ${VisualFullFragmentDoc}
+  ${VisualUriFragmentDoc}
 `;
 
 /**

@@ -19,10 +19,13 @@ import { Trans, useTranslation } from 'react-i18next';
 import { gutters } from '../../../../core/ui/grid/utils';
 import CommunityGuidelines from '../../../community/community/CommunityGuidelines/CommunityGuidelines';
 import CommunityVirtualContributors from '../../../community/community/CommunityAdmin/CommunityVirtualContributors';
+import { useUserContext } from '../../../community/user';
+import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
 
 const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   const { t } = useTranslation();
   const { spaceId, loading: isLoadingSpace, communityId, profile: spaceProfile } = useSpace();
+  const { user: { hasPlatformPrivilege } = {} } = useUserContext();
 
   const {
     users,
@@ -148,9 +151,12 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
             <PageContentBlock>
               <CommunityVirtualContributors
                 virtualContributors={virtualContributors}
-                canAddVirtualContributors={permissions.canAddVirtualContributors}
+                canAddVirtualContributors={
+                  permissions.canAddVirtualContributorsFromAccount || permissions.canAddMembers
+                }
                 onAddMember={onAddVirtualContributor}
                 onRemoveMember={onRemoveVirtualContributor}
+                isPlatformAdmin={hasPlatformPrivilege?.(AuthorizationPrivilege.PlatformAdmin)}
                 fetchAvailableVirtualContributors={getAvailableVirtualContributors}
                 loading={loading}
               />
