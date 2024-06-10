@@ -60,8 +60,7 @@ interface useCommunityAdminParams {
   journeyLevel: JourneyLevel | -1;
 }
 
-interface VirtaulContributorNameProps extends Identifiable {
-  nameID: string;
+interface VirtualContributorNameProps extends Identifiable {
   profile: {
     id: string;
     displayName: string;
@@ -238,7 +237,7 @@ const useCommunityAdmin = ({
     );
   };
 
-  const filterByName = (vc: VirtaulContributorNameProps, filter?: string) =>
+  const filterByName = (vc: VirtualContributorNameProps, filter?: string) =>
     vc.profile.displayName.toLowerCase().includes(filter?.toLowerCase() ?? '');
 
   const [fetchAllVirtualContributors] = useAvailableVirtualContributorsLazyQuery();

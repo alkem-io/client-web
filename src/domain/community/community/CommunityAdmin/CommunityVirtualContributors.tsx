@@ -115,14 +115,14 @@ const CommunityVirtualContributors: FC<CommunityVirtualContributorsProps> = ({
   const [deletingMemberId, setDeletingMemberId] = useState<string>();
   const [isAddingNewMember, setAddingNewMember] = useState(false);
   const [allVirtualContributors, setAllVirtualContributors] = useState(false);
-  const [supportMessegeOpen, setSupportMessegeOpen] = useState(false);
-  const closeSupportDialog = () => setSupportMessegeOpen(false);
+  const [supportMessageOpen, setSupportMessageOpen] = useState(false);
+  const closeSupportDialog = () => setSupportMessageOpen(false);
 
   const openAvailableContributorsDialog = (external: boolean = false) => {
     setAllVirtualContributors(external);
 
     if (external && !isPlatformAdmin) {
-      setSupportMessegeOpen(true);
+      setSupportMessageOpen(true);
     } else {
       setAddingNewMember(true);
     }
@@ -143,7 +143,7 @@ const CommunityVirtualContributors: FC<CommunityVirtualContributorsProps> = ({
               {t('common.add')}
             </Button>
             <Button variant="contained" startIcon={<AddIcon />} onClick={() => openAvailableContributorsDialog(true)}>
-              {t('community.virtualContributors.externalVCButton')}
+              {t('community.virtualContributors.addExternalVC')}
             </Button>
           </Actions>
         )}
@@ -208,7 +208,7 @@ const CommunityVirtualContributors: FC<CommunityVirtualContributorsProps> = ({
           onClose={() => setAddingNewMember(false)}
         />
       )}
-      <DialogWithGrid open={supportMessegeOpen} columns={6} onClose={closeSupportDialog}>
+      <DialogWithGrid open={supportMessageOpen} columns={6} onClose={closeSupportDialog}>
         <DialogHeader onClose={closeSupportDialog}>{t('community.addMember')}</DialogHeader>
         <Gutters>
           <GridItem>
