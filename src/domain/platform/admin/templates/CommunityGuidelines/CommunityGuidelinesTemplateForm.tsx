@@ -13,12 +13,19 @@ import { StorageConfigContextProvider } from '../../../../storage/StorageBucket/
 import { referenceSegmentSchema } from '../../components/Common/ReferenceSegment';
 import { useSpace } from '../../../../journey/space/SpaceContext/useSpace';
 import FormikReferenceSegment from '../../components/Common/FormikReferenceSegment';
+import ProfileReferenceSegment from '../../components/Common/ProfileReferenceSegment';
 
 export interface CommunityGuidelinesTemplateFormValues extends TemplateProfileValues {
   guidelines: {
     profile?: {
       displayName?: string;
       description?: string;
+      // CreateProfileInput expects referencesData, but UpdateProfileInput expects just references
+      referencesData?: {
+        name: string;
+        uri: string;
+        description?: string;
+      }[];
       references?: {
         id: string;
         name: string;
@@ -52,6 +59,7 @@ interface CommunityGuidelinesTemplateFormProps {
   onSubmit: (values: CommunityGuidelinesTemplateFormSubmittedValues) => void;
   actions: ReactNode | ((formState: FormikProps<CommunityGuidelinesTemplateFormValues>) => ReactNode);
   guidelinesTemplateId?: string;
+  profileId?: string;
 }
 
 const validator = {
@@ -69,6 +77,7 @@ const CommunityGuidelinesTemplateForm = ({
   visual,
   onSubmit,
   actions,
+  profileId, // If we have a profileId means we are editing an existing CG template
   guidelinesTemplateId,
 }: CommunityGuidelinesTemplateFormProps) => {
   const { t } = useTranslation();
@@ -98,13 +107,23 @@ const CommunityGuidelinesTemplateForm = ({
             spaceId={spaceId}
             guidelinesTemplateId={guidelinesTemplateId}
           >
-            <FormikReferenceSegment
-              compactMode
-              fieldName="guidelines.profile.references"
-              references={values.guidelines?.profile?.references ?? []}
-              marginTop={gutters(-1)}
-              setFieldValue={setFieldValue}
-            />
+            {profileId ? (
+              <ProfileReferenceSegment
+                profileId={profileId}
+                compactMode
+                fieldName="guidelines.profile.references"
+                references={values.guidelines?.profile?.references ?? []}
+                marginTop={gutters(-1)}
+              />
+            ) : (
+              <FormikReferenceSegment
+                compactMode
+                fieldName="guidelines.profile.referencesData"
+                references={values.guidelines?.profile?.referencesData ?? []}
+                marginTop={gutters(-1)}
+                setFieldValue={setFieldValue}
+              />
+            )}
           </StorageConfigContextProvider>
         </>
       )}

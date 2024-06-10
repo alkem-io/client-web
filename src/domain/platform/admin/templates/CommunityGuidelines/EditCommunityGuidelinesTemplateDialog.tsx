@@ -88,6 +88,8 @@ const EditCommunityGuidelinesTemplateDialog = ({
           visual={template.profile.visual}
           onSubmit={handleSubmit}
           actions={actions}
+          guidelinesTemplateId={template.id}
+          profileId={template.guidelines.profile.id}
         />
       )}
     </TemplateDialogBase>

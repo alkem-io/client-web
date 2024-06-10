@@ -25290,10 +25290,10 @@ export type SpaceGuidelinesTemplateStorageConfigQueryVariables = Exact<{
 
 export type SpaceGuidelinesTemplateStorageConfigQuery = {
   __typename?: 'Query';
-  space: {
+  space?: {
     __typename?: 'Space';
     id: string;
-    profile?: {
+    profile: {
       __typename?: 'Profile';
       id: string;
       storageBucket: {
@@ -25306,6 +25306,10 @@ export type SpaceGuidelinesTemplateStorageConfigQuery = {
           | undefined;
       };
     };
+  };
+  spaceAccount: {
+    __typename?: 'Space';
+    id: string;
     account?: {
       __typename?: 'Account';
       id: string;

@@ -21250,11 +21250,14 @@ export const SpaceGuidelinesTemplateStorageConfigDocument = gql`
     $includeTemplate: Boolean = true
     $templateId: UUID = "00000000-0000-0000-0000-000000000000"
   ) {
-    space(ID: $spaceId) {
+    space(ID: $spaceId) @skip(if: $includeTemplate) {
       id
-      profile @skip(if: $includeTemplate) {
+      profile {
         ...ProfileStorageConfig
       }
+    }
+    spaceAccount: space(ID: $spaceId) @include(if: $includeTemplate) {
+      id
       account @include(if: $includeTemplate) {
         id
         library {
