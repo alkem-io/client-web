@@ -450,10 +450,6 @@ export type ActorGroupFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   name?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type AdminSearchIngestResultKeySpecifier = ('results' | AdminSearchIngestResultKeySpecifier)[];
-export type AdminSearchIngestResultFieldPolicy = {
-  results?: FieldPolicy<any> | FieldReadFunction<any>;
-};
 export type AgentKeySpecifier = (
   | 'authorization'
   | 'credentials'
@@ -1136,6 +1132,7 @@ export type GroupableFieldPolicy = {
 };
 export type ISearchResultsKeySpecifier = (
   | 'calloutResults'
+  | 'calloutResultsCount'
   | 'contributionResults'
   | 'contributionResultsCount'
   | 'contributorResults'
@@ -1147,6 +1144,7 @@ export type ISearchResultsKeySpecifier = (
 )[];
 export type ISearchResultsFieldPolicy = {
   calloutResults?: FieldPolicy<any> | FieldReadFunction<any>;
+  calloutResultsCount?: FieldPolicy<any> | FieldReadFunction<any>;
   contributionResults?: FieldPolicy<any> | FieldReadFunction<any>;
   contributionResultsCount?: FieldPolicy<any> | FieldReadFunction<any>;
   contributorResults?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2435,6 +2433,7 @@ export type SearchResultCalloutKeySpecifier = (
   | 'callout'
   | 'id'
   | 'score'
+  | 'space'
   | 'terms'
   | 'type'
   | SearchResultCalloutKeySpecifier
@@ -2443,6 +2442,7 @@ export type SearchResultCalloutFieldPolicy = {
   callout?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   score?: FieldPolicy<any> | FieldReadFunction<any>;
+  space?: FieldPolicy<any> | FieldReadFunction<any>;
   terms?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -3141,10 +3141,6 @@ export type StrictTypedTypePolicies = {
   ActorGroup?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ActorGroupKeySpecifier | (() => undefined | ActorGroupKeySpecifier);
     fields?: ActorGroupFieldPolicy;
-  };
-  AdminSearchIngestResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | AdminSearchIngestResultKeySpecifier | (() => undefined | AdminSearchIngestResultKeySpecifier);
-    fields?: AdminSearchIngestResultFieldPolicy;
   };
   Agent?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | AgentKeySpecifier | (() => undefined | AgentKeySpecifier);

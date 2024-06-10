@@ -181,16 +181,6 @@ const NewMembershipsBlock = ({
     return null;
   }
 
-  //!!
-  const mapApiDataToContributionItem = space => {
-    return {
-      spaceID: space.spaceID,
-      spaceLevel: 1 as JourneyLevel,
-      id: space.id,
-      state: '',
-    };
-  };
-
   return (
     <>
       <PageContentBlock halfWidth={halfWidth} disableGap flex>
@@ -251,7 +241,10 @@ const NewMembershipsBlock = ({
             <ApplicationHydrator
               key={item.space.spaceID}
               application={{
-                ...mapApiDataToContributionItem(item.space),
+                spaceID: item.space.spaceID,
+                spaceLevel: 0 as JourneyLevel,
+                id: item.space.id,
+                state: '',
               }}
               visualType={VisualType.Avatar}
             >
