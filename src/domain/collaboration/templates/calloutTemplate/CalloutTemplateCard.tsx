@@ -21,7 +21,7 @@ const CalloutTemplateCard: FC<CalloutTemplateCardProps> = ({ template, innovatio
     <CalloutCard
       callout={{
         // In this case we map the template profile to the callout.framing.profile
-        // to resuse CalloutCard and show the description and displayName
+        // to reuse CalloutCard and show the description and displayName
         // of the template in the card as if it was the description of the callout
         ...template,
         framing: {
