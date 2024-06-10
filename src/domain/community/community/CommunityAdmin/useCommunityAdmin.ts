@@ -102,8 +102,10 @@ const useCommunityAdmin = ({
     canAddMembers: (data?.lookup.community?.authorization?.myPrivileges ?? []).some(
       priv => priv === AuthorizationPrivilege.CommunityAddMember
     ),
-    canAddVirtualContributors: (data?.lookup.community?.authorization?.myPrivileges ?? []).some(
-      priv => priv === AuthorizationPrivilege.CommunityAddMember // TODO: Change to CommunityAddVirtualContributor
+    // the following privilege allows Admins of a space without CommunityAddMember privilege, to
+    // be able to add VC from the account; CommunityAddMember overrides this privilege as it's not granted to PAs
+    canAddVirtualContributorsFromAccount: (data?.lookup.community?.authorization?.myPrivileges ?? []).some(
+      priv => priv === AuthorizationPrivilege.CommunityAddMemberVcFromAccount
     ),
   };
 

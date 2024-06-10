@@ -732,6 +732,7 @@ export enum AuthorizationPrivilege {
   AccessVirtualContributor = 'ACCESS_VIRTUAL_CONTRIBUTOR',
   AuthorizationReset = 'AUTHORIZATION_RESET',
   CommunityAddMember = 'COMMUNITY_ADD_MEMBER',
+  CommunityAddMemberVcFromAccount = 'COMMUNITY_ADD_MEMBER_VC_FROM_ACCOUNT',
   CommunityApply = 'COMMUNITY_APPLY',
   CommunityInvite = 'COMMUNITY_INVITE',
   CommunityInviteAccept = 'COMMUNITY_INVITE_ACCEPT',

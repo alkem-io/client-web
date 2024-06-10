@@ -150,7 +150,9 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
             <PageContentBlock>
               <CommunityVirtualContributors
                 virtualContributors={virtualContributors}
-                canAddVirtualContributors={permissions.canAddVirtualContributors}
+                canAddVirtualContributors={
+                  permissions.canAddVirtualContributorsFromAccount || permissions.canAddMembers
+                }
                 onAddMember={onAddVirtualContributor}
                 onRemoveMember={onRemoveVirtualContributor}
                 isPlatformAdmin={hasPlatformPrivilege?.(AuthorizationPrivilege.PlatformAdmin)}
