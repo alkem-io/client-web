@@ -21559,38 +21559,7 @@ export type CreateVirtualContributorOnAccountMutation = {
     id: string;
     nameID: string;
     bodyOfKnowledgeID?: string | undefined;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      url: string;
-      displayName: string;
-      tagline: string;
-      tagsets?:
-        | Array<{
-            __typename?: 'Tagset';
-            id: string;
-            name: string;
-            tags: Array<string>;
-            allowedValues: Array<string>;
-            type: TagsetType;
-          }>
-        | undefined;
-      avatar?:
-        | {
-            __typename?: 'Visual';
-            id: string;
-            uri: string;
-            name: string;
-            allowedTypes: Array<string>;
-            aspectRatio: number;
-            maxHeight: number;
-            maxWidth: number;
-            minHeight: number;
-            minWidth: number;
-            alternativeText?: string | undefined;
-          }
-        | undefined;
-    };
+    profile: { __typename?: 'Profile'; id: string };
   };
 };
 
@@ -21626,9 +21595,35 @@ export type SpaceSubspacesQuery = {
         bodyOfKnowledgeID?: string | undefined;
         profile: {
           __typename?: 'Profile';
+          id: string;
           displayName: string;
+          tagline: string;
           url: string;
-          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          tagsets?:
+            | Array<{
+                __typename?: 'Tagset';
+                id: string;
+                name: string;
+                tags: Array<string>;
+                allowedValues: Array<string>;
+                type: TagsetType;
+              }>
+            | undefined;
+          avatar?:
+            | {
+                __typename?: 'Visual';
+                id: string;
+                uri: string;
+                name: string;
+                allowedTypes: Array<string>;
+                aspectRatio: number;
+                maxHeight: number;
+                maxWidth: number;
+                minHeight: number;
+                minWidth: number;
+                alternativeText?: string | undefined;
+              }
+            | undefined;
         };
       }>;
     };

@@ -12,13 +12,13 @@ import ContributorCardHorizontal from '../../../../../core/ui/card/ContributorCa
 import Gutters from '../../../../../core/ui/grid/Gutters';
 import { AuthorizationPrivilege, BodyOfKnowledgeType } from '../../../../../core/apollo/generated/graphql-schema';
 import {
+  refetchAdminSpacesListQuery,
+  refetchSpaceSubspacesQuery,
   useCreateVirtualContributorOnAccountMutation,
   useDeleteSpaceMutation,
-  refetchAdminSpacesListQuery,
+  useDeleteVirtualContributorOnAccountMutation,
   useSpaceAccountQuery,
   useSpaceSubspacesQuery,
-  useDeleteVirtualContributorOnAccountMutation,
-  refetchSpaceSubspacesQuery,
   useUpdateVirtualContributorMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { gutters } from '../../../../../core/ui/grid/utils';
@@ -35,9 +35,7 @@ import { getPlanTranslations } from '../../../../license/plans/utils/getPlanTran
 import RouterLink from '../../../../../core/ui/link/RouterLink';
 import useCommunityAdmin from '../../../../community/community/CommunityAdmin/useCommunityAdmin';
 import { useSpace } from '../../SpaceContext/useSpace';
-import EditVirtualContributorDialog, {
-  VirtualContributorUpdateFormValues,
-} from '../SpaceSettings/EditVirtualContributorDialog';
+import EditVirtualContributorDialog from '../SpaceSettings/EditVirtualContributorDialog';
 
 interface SpaceAccountPageProps {
   journeyId: string;
@@ -65,7 +63,6 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
   const openEditVCDialog = () => setIsEditVCDialogOpen(true);
   const closeEditVCDialog = () => setIsEditVCDialogOpen(false);
   const [selectedVirtualContributorId, setSelectedVirtualContributorId] = useState<string | null>(null);
-  const [selectedVirtualContributor, setSelectedVirtualContributor] = useState<VirtualContributorUpdateFormValues>();
 
   const { permissions } = useCommunityAdmin({ communityId, spaceId: journeyId, journeyLevel: 0 });
 
@@ -200,9 +197,7 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
         },
       }))[0];
 
-  const virtualContributors = useMemo(() => {
-    return spaceData?.space?.account?.virtualContributors ?? [];
-  }, [spaceData]);
+  const virtualContributors = spaceData?.space?.account?.virtualContributors;
 
   const [createVirtualContributorOnAccount, { loading: loadingVCCreation }] =
     useCreateVirtualContributorOnAccountMutation({
@@ -211,7 +206,7 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
     });
 
   const handleCreateVirtualContributor = async ({ displayName, bodyOfKnowledgeID }: VirtualContributorFormValues) => {
-    const vsResponse = await createVirtualContributorOnAccount({
+    const vcResponse = await createVirtualContributorOnAccount({
       variables: {
         virtualContributorData: {
           profileData: {
@@ -226,7 +221,7 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
 
     notify('Virtual Contributor Created Successfully!', 'success');
     closeCreateVCDialog();
-    setSelectedVirtualContributor(vsResponse.data?.createVirtualContributor);
+    setSelectedVirtualContributorId(vcResponse.data?.createVirtualContributor.id ?? null);
     openEditVCDialog();
   };
 
@@ -247,9 +242,11 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
 
   const loading = loadingAccount && deletingSpace;
   const noSubspaces = subspaces?.length < 1;
-  const hasVirtualContributors = virtualContributors.length > 0;
+  const hasVirtualContributors = virtualContributors && virtualContributors.length > 0;
   const isPlatformAdmin = accountPrivileges?.includes(AuthorizationPrivilege.PlatformAdmin);
   const disabledVirtualCreation = (hasVirtualContributors && !isPlatformAdmin) || spaceDataLoading || noSubspaces;
+
+  const selectedVirtualContributor = virtualContributors?.find(vc => vc.id === selectedVirtualContributorId);
 
   return (
     <PageContent background="transparent">

@@ -5,15 +5,6 @@ mutation CreateVirtualContributorOnAccount($virtualContributorData: CreateVirtua
     bodyOfKnowledgeID
     profile {
       id
-      url
-      displayName
-      tagline
-      tagsets {
-        ...TagsetDetails
-      }
-      avatar: visual(type: AVATAR) {
-        ...VisualFull
-      }
     }
   }
 }
@@ -41,10 +32,15 @@ query SpaceSubspaces($spaceId: UUID_NAMEID!) {
         nameID
         bodyOfKnowledgeID
         profile {
+          id
           displayName
+          tagline
           url
+          tagsets {
+            ...TagsetDetails
+          }
           avatar: visual(type: AVATAR) {
-            ...VisualUri
+            ...VisualFull
           }
         }
       }

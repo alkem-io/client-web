@@ -17401,20 +17401,9 @@ export const CreateVirtualContributorOnAccountDocument = gql`
       bodyOfKnowledgeID
       profile {
         id
-        url
-        displayName
-        tagline
-        tagsets {
-          ...TagsetDetails
-        }
-        avatar: visual(type: AVATAR) {
-          ...VisualFull
-        }
       }
     }
   }
-  ${TagsetDetailsFragmentDoc}
-  ${VisualFullFragmentDoc}
 `;
 export type CreateVirtualContributorOnAccountMutationFn = Apollo.MutationFunction<
   SchemaTypes.CreateVirtualContributorOnAccountMutation,
@@ -17529,10 +17518,15 @@ export const SpaceSubspacesDocument = gql`
           nameID
           bodyOfKnowledgeID
           profile {
+            id
             displayName
+            tagline
             url
+            tagsets {
+              ...TagsetDetails
+            }
             avatar: visual(type: AVATAR) {
-              ...VisualUri
+              ...VisualFull
             }
           }
         }
@@ -17551,6 +17545,8 @@ export const SpaceSubspacesDocument = gql`
       }
     }
   }
+  ${TagsetDetailsFragmentDoc}
+  ${VisualFullFragmentDoc}
   ${VisualUriFragmentDoc}
 `;
 
