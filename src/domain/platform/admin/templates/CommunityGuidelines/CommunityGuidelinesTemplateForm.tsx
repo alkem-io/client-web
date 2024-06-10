@@ -100,7 +100,7 @@ const CommunityGuidelinesTemplateForm = ({
           >
             <FormikReferenceSegment
               compactMode
-              fieldName="guidelines.profile.referencesData"
+              fieldName="guidelines.profile.references"
               references={values.guidelines?.profile?.references ?? []}
               marginTop={gutters(-1)}
               setFieldValue={setFieldValue}
