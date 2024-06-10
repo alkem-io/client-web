@@ -31,11 +31,11 @@ const EditCommunityGuidelinesTemplateDialog = ({
     return null;
   }
 
-  const values: Partial<CommunityGuidelinesTemplateFormValues> = {
+  const initialValues: Partial<CommunityGuidelinesTemplateFormValues> = {
     guidelines: {
       profile: {
         displayName: template.guidelines.profile.displayName,
-        description: template.guidelines.profile.description || '',
+        description: template.guidelines.profile.description ?? '',
         references: template.guidelines.profile.references ?? [],
       },
     },
@@ -84,7 +84,7 @@ const EditCommunityGuidelinesTemplateDialog = ({
     >
       {({ actions }) => (
         <CommunityGuidelinesTemplateForm
-          initialValues={values}
+          initialValues={initialValues}
           visual={template.profile.visual}
           onSubmit={handleSubmit}
           actions={actions}
