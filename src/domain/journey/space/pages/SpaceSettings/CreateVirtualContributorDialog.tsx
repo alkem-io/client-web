@@ -55,19 +55,19 @@ const CreateVirtualContributorDialog: FC<CreateVirtualContributorDialogProps> = 
 
   return (
     <Dialog open={open} onClose={onClose}>
-      <DialogHeader onClose={onClose} title={t('virtualContributorSpaceSettings.title')} />
+      <DialogHeader onClose={onClose} title={t('virtualContributorSpaceSettings.create.title')} />
       <DialogContent>
         <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleCreate}>
           <Form noValidate>
             <Gutters>
               <FormikInputField title={t('virtualContributorSpaceSettings.name')} name="displayName" required />
               <FormikSelect
-                title={t('virtualContributorSpaceSettings.body-of-knowledge')}
+                title={t('virtualContributorSpaceSettings.bodyOfKnowledge')}
                 name="bodyOfKnowledgeID"
                 values={spaces ?? []}
                 required
               />
-              <Caption>{t('virtualContributorSpaceSettings.info-text')}</Caption>
+              <Caption>{t('virtualContributorSpaceSettings.infoTextBoK')}</Caption>
               <Actions justifyContent="flex-end" paddingTop={gutters()}>
                 <Button onClick={onClose}>{t('buttons.cancel')}</Button>
                 <LoadingButton
