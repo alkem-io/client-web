@@ -14,10 +14,18 @@ import { CommunityMemberVirtualContributorFragment } from '../../../../core/apol
 import { gutters } from '../../../../core/ui/grid/utils';
 import DataGridSkeleton from '../../../../core/ui/table/DataGridSkeleton';
 import DataGridTable from '../../../../core/ui/table/DataGridTable';
-import { BlockTitle } from '../../../../core/ui/typography';
-import CommunityAddMembersDialog, { CommunityAddMembersDialogProps } from './CommunityAddMembersDialog';
+import { BlockTitle, Caption } from '../../../../core/ui/typography';
+import CommunityAddMembersDialog from './CommunityAddMembersDialog';
 import { Remove } from '@mui/icons-material';
 import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
+import { Actions } from '../../../../core/ui/actions/Actions';
+import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
+import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
+import Gutters from '../../../../core/ui/grid/Gutters';
+import GridItem from '../../../../core/ui/grid/GridItem';
+import { Identifiable } from '../../../../core/utils/Identifiable';
+import { TranslateWithElements } from '../../../../domain/shared/i18n/TranslateWithElements';
+import { useConfig } from '../../../platform/config/useConfig';
 
 type RenderParams = GridRenderCellParams<string, CommunityMemberVirtualContributorFragment>;
 type GetterParams = GridValueGetterParams<string, CommunityMemberVirtualContributorFragment>;
@@ -39,12 +47,20 @@ const initialState: GridInitialState = {
   },
 };
 
+interface Entity extends Identifiable {
+  email?: string;
+  profile: {
+    displayName: string;
+  };
+}
+
 interface CommunityVirtualContributorsProps {
   virtualContributors: CommunityMemberVirtualContributorFragment[] | undefined;
   onRemoveMember: (memberId: string) => Promise<unknown> | void;
   canAddVirtualContributors: boolean;
   onAddMember: (memberId: string) => Promise<unknown> | undefined;
-  fetchAvailableVirtualContributors: CommunityAddMembersDialogProps['fetchAvailableEntities'];
+  fetchAvailableVirtualContributors: (filter?: string, all?: boolean) => Promise<Entity[] | undefined>;
+  isPlatformAdmin?: boolean;
   loading?: boolean;
 }
 
@@ -54,9 +70,11 @@ const CommunityVirtualContributors: FC<CommunityVirtualContributorsProps> = ({
   canAddVirtualContributors,
   onAddMember,
   fetchAvailableVirtualContributors,
+  isPlatformAdmin,
   loading,
 }) => {
   const { t } = useTranslation();
+  const { locations } = useConfig();
 
   const usersColumns: GridColDef[] = [
     {
@@ -96,15 +114,38 @@ const CommunityVirtualContributors: FC<CommunityVirtualContributorsProps> = ({
 
   const [deletingMemberId, setDeletingMemberId] = useState<string>();
   const [isAddingNewMember, setAddingNewMember] = useState(false);
+  const [allVirtualContributors, setAllVirtualContributors] = useState(false);
+  const [supportMessageOpen, setSupportMessageOpen] = useState(false);
+  const closeSupportDialog = () => setSupportMessageOpen(false);
+
+  const openAvailableContributorsDialog = (external: boolean = false) => {
+    setAllVirtualContributors(external);
+
+    if (external && !isPlatformAdmin) {
+      setSupportMessageOpen(true);
+    } else {
+      setAddingNewMember(true);
+    }
+  };
+
+  const getFilteredVirtualContributors = async (filter?: string) =>
+    fetchAvailableVirtualContributors(filter, allVirtualContributors);
+
+  const tTerms = TranslateWithElements(<Link target="_blank" />);
 
   return (
     <>
       <Box display="flex" justifyContent="space-between">
         <BlockTitle>{t('community.virtualContributors.blockTitle', { count: virtualContributors.length })}</BlockTitle>
         {canAddVirtualContributors && (
-          <Button variant="contained" startIcon={<AddIcon />} onClick={() => setAddingNewMember(true)}>
-            {t('common.add')}
-          </Button>
+          <Actions>
+            <Button variant="contained" startIcon={<AddIcon />} onClick={() => openAvailableContributorsDialog()}>
+              {t('common.add')}
+            </Button>
+            <Button variant="contained" startIcon={<AddIcon />} onClick={() => openAvailableContributorsDialog(true)}>
+              {t('community.virtualContributors.addExternalVC')}
+            </Button>
+          </Actions>
         )}
       </Box>
       <TextField
@@ -163,10 +204,24 @@ const CommunityVirtualContributors: FC<CommunityVirtualContributorsProps> = ({
       {isAddingNewMember && (
         <CommunityAddMembersDialog
           onAdd={onAddMember}
-          fetchAvailableEntities={fetchAvailableVirtualContributors}
+          fetchAvailableEntities={getFilteredVirtualContributors}
           onClose={() => setAddingNewMember(false)}
         />
       )}
+      <DialogWithGrid open={supportMessageOpen} columns={6} onClose={closeSupportDialog}>
+        <DialogHeader onClose={closeSupportDialog}>{t('community.addMember')}</DialogHeader>
+        <Gutters>
+          <GridItem>
+            <Caption>
+              {tTerms('community.virtualContributors.externalVCsInfo', {
+                click: {
+                  href: locations?.support,
+                },
+              })}
+            </Caption>
+          </GridItem>
+        </Gutters>
+      </DialogWithGrid>
     </>
   );
 };
