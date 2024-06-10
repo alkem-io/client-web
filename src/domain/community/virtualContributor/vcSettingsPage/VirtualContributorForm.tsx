@@ -50,7 +50,6 @@ interface VirtualContributorFromProps {
   description: string;
   tagline: string;
   tagsets?: Tagset[];
-  avatar: Visual | undefined;
   hostDisplayName: string;
   subSpaceName: string;
 }
@@ -64,14 +63,14 @@ interface Props {
 }
 
 export const VirtualContributorForm: FC<Props> = ({
-  virtualContributor: currentVirtualContributor,
+  virtualContributor,
   bokProfile,
   avatar,
   onSave,
   hasBackNavitagion = true,
 }) => {
   const { t } = useTranslation();
-  const handleBack = useBackToStaticPath(currentVirtualContributor.profile.url);
+  const handleBack = useBackToStaticPath(virtualContributor.profile.url);
   const cols = useColumns();
   const isMobile = cols < 5;
 
@@ -79,19 +78,22 @@ export const VirtualContributorForm: FC<Props> = ({
     nameID,
     profile: { displayName, description, tagline, tagsets },
     account,
-  } = currentVirtualContributor;
+  } = virtualContributor;
+
   const { displayName: subSpaceName } = bokProfile ?? {};
 
-  const initialValues: VirtualContributorFromProps = {
-    name: displayName,
-    nameID: nameID,
-    description: description ?? '',
-    tagline: tagline,
-    avatar: avatar,
-    tagsets: tagsets,
-    hostDisplayName: account?.host?.profile.displayName ?? '',
-    subSpaceName: subSpaceName ?? '',
-  };
+  const initialValues: VirtualContributorFromProps = useMemo(
+    () => ({
+      name: displayName,
+      nameID: nameID,
+      description: description ?? '',
+      tagline: tagline,
+      tagsets: tagsets,
+      hostDisplayName: account?.host?.profile.displayName ?? '',
+      subSpaceName: subSpaceName ?? '',
+    }),
+    [displayName, nameID, description, tagline, tagsets, account, subSpaceName]
+  );
 
   const validationSchema = yup.object().shape({
     name: nameSegmentSchema.fields?.name ?? yup.string(),
@@ -118,8 +120,8 @@ export const VirtualContributorForm: FC<Props> = ({
     const { tagsets, description, tagline, name, ...otherData } = values;
     const updatedTagsets = getUpdatedTagsets(tagsets ?? []);
 
-    const virtualContributor = {
-      ID: currentVirtualContributor.id,
+    const updatedVirtualContributor = {
+      ID: virtualContributor.id,
       profileData: {
         displayName: name,
         description,
@@ -132,7 +134,7 @@ export const VirtualContributorForm: FC<Props> = ({
       ...otherData,
     };
 
-    await onSave?.(virtualContributor);
+    await onSave?.(updatedVirtualContributor);
   });
 
   const HostFields = () => (
@@ -156,7 +158,7 @@ export const VirtualContributorForm: FC<Props> = ({
         enableReinitialize
         onSubmit={handleSubmit}
       >
-        {({ values: { avatar, hostDisplayName }, handleSubmit }) => {
+        {({ values: { hostDisplayName }, handleSubmit }) => {
           return (
             <Form noValidate onSubmit={handleSubmit}>
               <GridContainer>
@@ -167,7 +169,7 @@ export const VirtualContributorForm: FC<Props> = ({
                         visual={avatar}
                         altText={t('visuals-alt-text.avatar.contributor.text', {
                           displayName,
-                          altText: avatar?.alternativeText,
+                          altText: virtualContributor.profile.avatar?.alternativeText,
                         })}
                       />
                     </Box>
