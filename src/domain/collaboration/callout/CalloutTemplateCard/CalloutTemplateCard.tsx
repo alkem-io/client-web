@@ -29,9 +29,10 @@ interface CalloutTemplateCardProps extends TemplateCardBaseProps<CalloutTemplate
 const CalloutTemplateCard: FC<CalloutTemplateCardProps> = ({ template, innovationPack, loading, ...props }) => {
   const { t } = useTranslation();
 
+  const footerHeight = template?.type === CalloutType.LinkCollection ? 3 : 2;
   const hasTags = (template?.profile.tagset?.tags ?? []).length > 0;
   const descriptionHeightGutters = hasTags
-    ? DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS - 2
+    ? DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS - footerHeight
     : DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS;
 
   const Icon = template?.type && calloutIcons[template?.type];
@@ -51,7 +52,7 @@ const CalloutTemplateCard: FC<CalloutTemplateCardProps> = ({ template, innovatio
         <CardContent sx={{ '&:last-child': { paddingBottom: gutters(0.2) } }}>
           {template && (
             <Box display="flex" alignItems="center" marginLeft={-0.5} gap={gutters(0.5)}>
-              {Icon && <RoundedIcon marginLeft={0.5} size="xsmall" component={Icon} />}
+              {Icon && <RoundedIcon marginLeft={0.5} size="xsmall" component={Icon} flexShrink={0} />}
               <Caption>{t(`components.calloutTypeSelect.label.${template.type}` as const)}</Caption>
             </Box>
           )}
