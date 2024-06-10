@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { Formik, FormikProps } from 'formik';
+import { FormikProps } from 'formik';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { CreateProfileInput, Visual } from '../../../../../core/apollo/generated/graphql-schema';
@@ -8,40 +8,36 @@ import FormikInputField from '../../../../../core/ui/forms/FormikInputField/Form
 import MarkdownValidator from '../../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
 import { MARKDOWN_TEXT_LENGTH } from '../../../../../core/ui/forms/field-length.constants';
 import { gutters } from '../../../../../core/ui/grid/utils';
-import TemplateForm from '../TemplateForm';
+import TemplateForm, { TemplateProfileValues } from '../TemplateForm';
 import { StorageConfigContextProvider } from '../../../../storage/StorageBucket/StorageConfigContext';
 import { referenceSegmentSchema } from '../../components/Common/ReferenceSegment';
 import { useSpace } from '../../../../journey/space/SpaceContext/useSpace';
 import FormikReferenceSegment from '../../components/Common/FormikReferenceSegment';
 
-export interface CommunityGuidelinesTemplateFormValues {
+export interface CommunityGuidelinesTemplateFormValues extends TemplateProfileValues {
   guidelines: {
-    profile: {
-      displayName: string;
-      description: string;
-      referencesData: {
+    profile?: {
+      displayName?: string;
+      description?: string;
+      references?: {
         id: string;
         name: string;
         uri: string;
-        description: string;
+        description?: string;
       }[];
     };
   };
-  displayName: string;
-  description: string;
-  tags: string[];
 }
 
 export interface CommunityGuidelinesTemplateFormSubmittedValues {
   guidelines?: {
-    profile: {
-      displayName: string;
-      description: string;
-      referencesData: {
+    profile?: {
+      displayName?: string;
+      description?: string;
+      references?: {
         id: string;
         name: string;
         uri: string;
-        description: string;
       }[];
     };
   };
@@ -59,20 +55,14 @@ interface CommunityGuidelinesTemplateFormProps {
 }
 
 const validator = {
-  displayName: yup.string().required(),
-  description: MarkdownValidator(MARKDOWN_TEXT_LENGTH).required(),
-  referencesData: referenceSegmentSchema,
-};
-
-const validationSchema = yup.object().shape({
   guidelines: yup.object().shape({
     profile: yup.object().shape({
-      displayName: yup.string().required(),
-      description: MarkdownValidator(MARKDOWN_TEXT_LENGTH).required(),
-      referencesData: referenceSegmentSchema,
+      displayName: yup.string(),
+      description: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
+      references: referenceSegmentSchema,
     }),
   }),
-});
+};
 
 const CommunityGuidelinesTemplateForm = ({
   initialValues,
@@ -84,49 +74,41 @@ const CommunityGuidelinesTemplateForm = ({
   const { t } = useTranslation();
   const { spaceId } = useSpace();
   return (
-    <Formik
+    <TemplateForm
       initialValues={initialValues}
-      validationSchema={validationSchema}
-      enableReinitialize
-      validateOnMount
+      visual={visual}
       onSubmit={onSubmit}
+      actions={actions}
+      validator={validator}
+      entityTypeName={t('templateLibrary.communityGuidelinesTemplates.name')}
     >
-      {({ values, setFieldValue }) => {
-        return (
-          <TemplateForm
-            initialValues={initialValues}
-            visual={visual}
-            onSubmit={onSubmit}
-            actions={actions}
-            validator={validator}
-            entityTypeName={t('templateLibrary.communityGuidelinesTemplates.name')}
+      {({ values, setFieldValue }) => (
+        <>
+          <FormikInputField
+            name="guidelines.profile.displayName"
+            title={t('templateLibrary.communityGuidelinesTemplates.guidelinesTitle')}
+          />
+          <FormikMarkdownField
+            name="guidelines.profile.description"
+            title={t('templateLibrary.communityGuidelinesTemplates.guidelinesDescription')}
+            maxLength={MARKDOWN_TEXT_LENGTH}
+          />
+          <StorageConfigContextProvider
+            locationType="guidelinesTemplate"
+            spaceId={spaceId}
+            guidelinesTemplateId={guidelinesTemplateId}
           >
-            <FormikInputField
-              name="guidelines.profile.displayName"
-              title={t('templateLibrary.communityGuidelinesTemplates.guidelinesTitle')}
+            <FormikReferenceSegment
+              compactMode
+              fieldName="guidelines.profile.referencesData"
+              references={values.guidelines?.profile?.references ?? []}
+              marginTop={gutters(-1)}
+              setFieldValue={setFieldValue}
             />
-            <FormikMarkdownField
-              name="guidelines.profile.description"
-              title={t('templateLibrary.communityGuidelinesTemplates.guidelinesDescription')}
-              maxLength={MARKDOWN_TEXT_LENGTH}
-            />
-            <StorageConfigContextProvider
-              locationType="guidelinesTemplate"
-              spaceId={spaceId}
-              guidelinesTemplateId={guidelinesTemplateId}
-            >
-              <FormikReferenceSegment
-                compactMode
-                fieldName="guidelines.profile.referencesData"
-                references={values.guidelines?.profile.referencesData ?? []}
-                marginTop={gutters(-1)}
-                setFieldValue={setFieldValue}
-              />
-            </StorageConfigContextProvider>
-          </TemplateForm>
-        );
-      }}
-    </Formik>
+          </StorageConfigContextProvider>
+        </>
+      )}
+    </TemplateForm>
   );
 };
 

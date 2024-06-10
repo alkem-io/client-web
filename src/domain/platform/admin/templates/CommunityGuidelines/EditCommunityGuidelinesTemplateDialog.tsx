@@ -1,5 +1,8 @@
 import { useTranslation } from 'react-i18next';
-import { AdminCommunityGuidelinesTemplateFragment } from '../../../../../core/apollo/generated/graphql-schema';
+import {
+  AdminCommunityGuidelinesTemplateFragment,
+  UpdateCommunityGuidelinesTemplateMutationVariables,
+} from '../../../../../core/apollo/generated/graphql-schema';
 import { DialogHeaderProps } from '../../../../../core/ui/dialog/DialogHeader';
 import TemplateDialogBase from '../../../../collaboration/templates/templateDialog/TemplateDialogBase';
 import CommunityGuidelinesTemplateForm, {
@@ -10,9 +13,7 @@ import CommunityGuidelinesTemplateForm, {
 interface EditCommunityGuidelinesTemplateDialogProps {
   open: boolean;
   onClose: DialogHeaderProps['onClose'];
-  onSubmit: (
-    values: CommunityGuidelinesTemplateFormSubmittedValues & { tagsetId: string | undefined; tags?: string[] }
-  ) => void;
+  onSubmit: (values: UpdateCommunityGuidelinesTemplateMutationVariables) => void;
   onDelete: () => void;
   template: AdminCommunityGuidelinesTemplateFragment | undefined;
 }
@@ -30,14 +31,12 @@ const EditCommunityGuidelinesTemplateDialog = ({
     return null;
   }
 
-  console.log(template);
-
   const values: Partial<CommunityGuidelinesTemplateFormValues> = {
     guidelines: {
       profile: {
         displayName: template.guidelines.profile.displayName,
         description: template.guidelines.profile.description || '',
-        referencesData: template.guidelines.profile.references,
+        references: template.guidelines.profile.references ?? [],
       },
     },
     displayName: template.profile.displayName,
@@ -46,9 +45,32 @@ const EditCommunityGuidelinesTemplateDialog = ({
   };
 
   const handleSubmit = (values: CommunityGuidelinesTemplateFormSubmittedValues) => {
+    const variables: UpdateCommunityGuidelinesTemplateMutationVariables = {
+      templateId: template.id,
+      profile: {
+        displayName: values.profile?.displayName,
+        description: values.profile?.description,
+        tagsets: [
+          {
+            ID: template.profile.tagset?.id!,
+            tags: values.tags || [],
+          },
+        ],
+      },
+      communityGuidelines: {
+        profile: {
+          displayName: values.guidelines?.profile?.displayName,
+          description: values.guidelines?.profile?.description,
+          references: values.guidelines?.profile?.references?.map(reference => ({
+            ID: reference.id,
+            name: reference.name,
+            uri: reference.uri,
+          })),
+        },
+      },
+    };
     return onSubmit({
-      ...values,
-      tagsetId: template.profile.tagset?.id,
+      ...variables,
     });
   };
 

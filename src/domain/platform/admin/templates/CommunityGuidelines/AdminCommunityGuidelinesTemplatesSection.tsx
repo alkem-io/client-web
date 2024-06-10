@@ -48,6 +48,7 @@ const AdminCommunityGuidelinesTemplatesSection = ({
       templateCardComponent={CommunityGuidelinesImportTemplateCard}
       templateImportCardComponent={CommunityGuidelinesImportTemplateCard}
       createTemplateDialogComponent={CreateCommunityGuidelinesTemplateDialog}
+      // @ts-ignore
       editTemplateDialogComponent={EditCommunityGuidelinesTemplateDialog}
       onCreateTemplate={variables => createCommunityGuidelinesTemplate({ variables, refetchQueries })}
       onUpdateTemplate={variables => updateCommunityGuidelinesTemplate({ variables, refetchQueries })}
