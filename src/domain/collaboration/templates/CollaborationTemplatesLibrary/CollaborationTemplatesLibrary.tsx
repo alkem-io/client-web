@@ -16,7 +16,7 @@ import { Identifiable, Identifiables } from '../../../../core/utils/Identifiable
 import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
 import { identity } from 'lodash';
 import Spacer from '../../../../core/ui/content/Spacer';
-import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
+import CommunityGuidelinesConfirmDialog from '../../communityGuidelines/CommunityGuidelinesTemplateLibrary/CommunityGuidelinesConfirmDialog';
 
 enum TemplateSource {
   Space,
@@ -71,6 +71,7 @@ export interface CollaborationTemplatesLibraryProps<
   templatesFromPlatform?: Identifiables<Template>;
   loadingTemplatesFromPlatform?: boolean;
   disableUsePlatformTemplates?: boolean;
+  confirmDialog?: boolean;
 }
 
 const CollaborationTemplatesLibrary = <
@@ -96,6 +97,7 @@ const CollaborationTemplatesLibrary = <
   templatesFromPlatform,
   loadingTemplatesFromPlatform = false,
   disableUsePlatformTemplates = false,
+  confirmDialog,
 }: CollaborationTemplatesLibraryProps<Template, TemplateWithContent, TemplatePreview>) => {
   const { t } = useTranslation();
 
@@ -212,7 +214,7 @@ const CollaborationTemplatesLibrary = <
                 variant="contained"
                 sx={{ marginLeft: theme => theme.spacing(1) }}
                 disabled={loading || templateUseDisabled}
-                onClick={() => setUseConfirmDialogOpen(true)}
+                onClick={confirmDialog ? () => setUseConfirmDialogOpen(true) : handleSelectTemplate}
               >
                 {t('buttons.use')}
               </Button>
@@ -220,20 +222,13 @@ const CollaborationTemplatesLibrary = <
           />
         )}
       </DialogContent>
-      <ConfirmationDialog
-        actions={{
-          onConfirm: handleSelectTemplate,
-          onCancel: () => setUseConfirmDialogOpen(false),
-        }}
-        options={{
-          show: Boolean(useConfirmDialogOpen),
-        }}
-        entities={{
-          titleId: 'community.communityGuidelines.confirmDialog.title',
-          contentId: 'community.communityGuidelines.confirmDialog.description',
-          confirmButtonTextId: 'buttons.yesReplace',
-        }}
-      />
+      {confirmDialog && (
+        <CommunityGuidelinesConfirmDialog
+          handleSelectTemplate={handleSelectTemplate}
+          open={useConfirmDialogOpen}
+          onClose={() => setUseConfirmDialogOpen(false)}
+        />
+      )}
     </DialogWithGrid>
   );
 };

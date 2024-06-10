@@ -110,6 +110,7 @@ const CommunityGuidelinesTemplatesLibrary: FC<CommunityGuidelinesTemplatesLibrar
       templatesFromPlatform={templatesFromPlatform}
       loadingTemplatesFromPlatform={loadingTemplatesFromPlatform}
       getTemplateWithContent={getCommunityGuidelinesTemplateWithContent}
+      confirmDialog
     />
   );
 };
