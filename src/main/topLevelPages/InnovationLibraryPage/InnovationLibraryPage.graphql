@@ -120,6 +120,9 @@ fragment LibraryTemplates on TemplatesSet {
       id
       displayName
       description
+      tagset {
+        ...TagsetDetails
+      }
     }
     guidelines {
       id
