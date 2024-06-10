@@ -23,11 +23,14 @@ import CommunityGuidelinesContainer from '../../../community/community/Community
 import CommunityGuidelinesForm from '../../../community/community/CommunityGuidelines/CommunityGuidelinesForm';
 import CommunityGuidelinesTemplatesLibrary from '../../../collaboration/communityGuidelines/CommunityGuidelinesTemplateLibrary/CommunityGuidelinesTemplatesLibrary';
 import { useSpace } from '../../space/SpaceContext/useSpace';
+import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
+import { useUserContext } from '../../../community/user';
 
 const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   const { t } = useTranslation();
   const { loading: isLoadingChallenge, communityId, subspaceId: challengeId, subspaceNameId } = useSubSpace();
   const { isPrivate, loading: isLoadingSpace } = useSpace();
+  const { user: { hasPlatformPrivilege } = {} } = useUserContext();
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const openTemplateDialog = useCallback(() => setIsDialogOpen(true), []);
@@ -184,9 +187,12 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
             <PageContentBlock>
               <CommunityVirtualContributors
                 virtualContributors={virtualContributors}
-                canAddVirtualContributors={permissions.canAddVirtualContributors}
+                canAddVirtualContributors={
+                  permissions.canAddVirtualContributorsFromAccount || permissions.canAddMembers
+                }
                 onAddMember={onAddVirtualContributor}
                 onRemoveMember={onRemoveVirtualContributor}
+                isPlatformAdmin={hasPlatformPrivilege?.(AuthorizationPrivilege.PlatformAdmin)}
                 fetchAvailableVirtualContributors={getAvailableVirtualContributors}
                 loading={loading}
               />

@@ -14,6 +14,7 @@ export default interface UrlParams extends Record<string, string | undefined> {
   role?: AuthorizationCredential;
   discussionNameId?: string;
   calloutNameId?: string;
+  calloutTemplateId?: string;
   postNameId?: string;
   whiteboardNameId?: string;
   innovationTemplateId?: string;
