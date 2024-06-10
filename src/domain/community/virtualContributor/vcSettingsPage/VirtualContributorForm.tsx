@@ -1,5 +1,5 @@
 import { Form, Formik } from 'formik';
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { Box, Button } from '@mui/material';
@@ -21,6 +21,7 @@ import GridItem from '../../../../core/ui/grid/GridItem';
 import { BasicSpaceProps } from '../components/BasicSpaceCard';
 import { useColumns } from '../../../../core/ui/grid/GridContext';
 import { useBackToStaticPath } from '../../../../core/routing/useBackToPath';
+import { KEYWORDS_TAGSET } from '../../../common/tags/tagset.constants';
 
 interface VirtualContributorProps {
   id: string;
@@ -110,6 +111,9 @@ export const VirtualContributorForm: FC<Props> = ({
     return result;
   };
 
+  // use keywords tagset (existing after creation of VC) as tags
+  const tags = useMemo(() => tagsets?.find(x => x.name.toLowerCase() === KEYWORDS_TAGSET) ?? undefined, [tagsets]);
+
   const [handleSubmit, loading] = useLoadingState(async (values: VirtualContributorFromProps) => {
     const { tagsets, description, tagline, name, ...otherData } = values;
     const updatedTagsets = getUpdatedTagsets(tagsets ?? []);
@@ -152,7 +156,7 @@ export const VirtualContributorForm: FC<Props> = ({
         enableReinitialize
         onSubmit={handleSubmit}
       >
-        {({ values: { avatar, tagsets, hostDisplayName }, handleSubmit }) => {
+        {({ values: { avatar, hostDisplayName }, handleSubmit }) => {
           return (
             <Form noValidate onSubmit={handleSubmit}>
               <GridContainer>
@@ -172,7 +176,7 @@ export const VirtualContributorForm: FC<Props> = ({
                     <Gutters>
                       <NameSegment disabled required />
                       <ProfileSegment />
-                      {tagsets && <TagsetSegment tagsets={tagsets} />}
+                      {tags ? <TagsetSegment tagsets={[tags]} title={t('common.tags')} /> : null}
                       {hostDisplayName && <HostFields />}
                       <Actions marginTop={theme.spacing(2)} sx={{ justifyContent: 'end' }}>
                         {hasBackNavitagion && (
