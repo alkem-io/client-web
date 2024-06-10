@@ -21626,9 +21626,25 @@ export type SpaceSubspacesQuery = {
         bodyOfKnowledgeID?: string | undefined;
         profile: {
           __typename?: 'Profile';
+          id: string;
           displayName: string;
+          tagline: string;
           url: string;
-          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          avatar?:
+            | {
+                __typename?: 'Visual';
+                id: string;
+                uri: string;
+                name: string;
+                allowedTypes: Array<string>;
+                aspectRatio: number;
+                maxHeight: number;
+                maxWidth: number;
+                minHeight: number;
+                minWidth: number;
+                alternativeText?: string | undefined;
+              }
+            | undefined;
         };
       }>;
     };

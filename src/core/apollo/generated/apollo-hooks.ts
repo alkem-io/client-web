@@ -17529,10 +17529,12 @@ export const SpaceSubspacesDocument = gql`
           nameID
           bodyOfKnowledgeID
           profile {
+            id
             displayName
+            tagline
             url
             avatar: visual(type: AVATAR) {
-              ...VisualUri
+              ...VisualFull
             }
           }
         }
@@ -17551,6 +17553,7 @@ export const SpaceSubspacesDocument = gql`
       }
     }
   }
+  ${VisualFullFragmentDoc}
   ${VisualUriFragmentDoc}
 `;
 
