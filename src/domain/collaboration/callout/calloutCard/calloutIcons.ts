@@ -16,10 +16,14 @@ export const getCalloutTypeIcon = ({
   contributionPolicy,
 }: {
   type: CalloutType;
-  contributionPolicy: ContributionPolicy;
+  contributionPolicy: ContributionPolicy | undefined;
 }) => {
   switch (type) {
     case CalloutType.Post:
+      if (!contributionPolicy) {
+        return calloutIcons[type];
+      }
+
       return contributionPolicy.state === CalloutState.Open ? ForumOutlined : BlockOutlined;
     default:
       return calloutIcons[type];
