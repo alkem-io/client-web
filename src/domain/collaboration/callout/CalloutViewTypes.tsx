@@ -15,13 +15,13 @@ export interface CalloutSortProps {
 }
 
 export interface CalloutLayoutEvents extends Partial<CalloutSortEvents> {
-  onVisibilityChange?: (
+  onVisibilityChange: (
     calloutId: Callout['id'],
     visibility: CalloutVisibility,
     sendNotification: boolean
-  ) => Promise<void>;
-  onCalloutEdit?: (callout: CalloutEditType) => Promise<void>;
-  onCalloutDelete?: (callout: CalloutDeleteType) => Promise<void>;
+  ) => Promise<void> | undefined;
+  onCalloutEdit: (callout: CalloutEditType) => Promise<void> | undefined;
+  onCalloutDelete: (callout: CalloutDeleteType) => Promise<void> | undefined;
 }
 
 export interface BaseCalloutViewProps extends CalloutLayoutEvents, Partial<CalloutSortProps> {
@@ -32,7 +32,7 @@ export interface BaseCalloutViewProps extends CalloutLayoutEvents, Partial<Callo
   canCreate?: boolean;
   expanded?: boolean;
   onExpand?: () => void;
-  onClose?: () => void;
+  onCollapse?: () => void;
   onCalloutUpdate?: () => void;
   disableMarginal?: boolean;
 }
