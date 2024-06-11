@@ -2,7 +2,6 @@ import React, { PropsWithChildren, ReactNode, useState } from 'react';
 import { Box, ButtonBase, styled } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { CardText } from '../../../../core/ui/typography';
-import { gutters } from '../../../../core/ui/grid/utils';
 import MessageView, { MessageViewProps } from './MessageView';
 
 const ChildMessageContainer = styled(Box)(({ theme }) => ({
@@ -10,7 +9,6 @@ const ChildMessageContainer = styled(Box)(({ theme }) => ({
   flexDirection: 'column',
   borderLeft: `${theme.spacing(0.3)} ${theme.palette.background.default} solid`,
   paddingLeft: theme.spacing(1),
-  marginBottom: gutters()(theme),
 }));
 
 interface MessageWithRepliesViewProps extends MessageViewProps {

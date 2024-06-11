@@ -1,4 +1,4 @@
-import CalloutLayout, { CalloutLayoutProps } from '../../CalloutBlock/CalloutLayout';
+import { CalloutLayoutProps } from '../calloutBlock/CalloutLayout';
 import React, { useCallback, useMemo } from 'react';
 import { CommentsWithMessagesFragmentWithCallout } from '../useCallouts/useCallouts';
 import CommentsComponent from '../../../communication/room/Comments/CommentsComponent';
@@ -11,6 +11,8 @@ import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint
 import useSubscribeOnRoomEvents from '../useSubscribeOnRoomEvents';
 import usePostMessageMutations from '../../../communication/room/Comments/usePostMessageMutations';
 import { useMessages } from '../../../communication/room/Comments/useMessages';
+import CalloutSettingsContainer from '../calloutBlock/CalloutSettingsContainer';
+import CommentsCalloutLayout from './CommentsCalloutLayout';
 
 type NeededFields = 'id' | 'authorization' | 'messages' | 'calloutNameId';
 export type CommentsCalloutData = Pick<CommentsWithMessagesFragmentWithCallout, NeededFields>;
@@ -30,7 +32,8 @@ const CommentsCallout = ({
   expanded,
   contributionsCount,
   onExpand,
-  ...calloutLayoutProps
+  onCollapse,
+  ...calloutSettingsProps
 }: CommentsCalloutProps) => {
   const { user: userMetadata, isAuthenticated } = useUserContext();
   const user = userMetadata?.user;
@@ -79,29 +82,34 @@ const CommentsCallout = ({
   const lastMessageOnly = breakpoint === 'xs' && !expanded;
 
   return (
-    <CalloutLayout
-      callout={callout}
-      contributionsCount={contributionsCount}
-      {...calloutLayoutProps}
-      expanded={expanded}
-      onExpand={onExpand}
-    >
-      <CommentsComponent
-        messages={messages}
-        commentsId={commentsId}
-        canReadMessages={canReadMessages}
-        canPostMessages={canPostMessages}
-        postMessage={postMessage}
-        postReply={postReply}
-        canDeleteMessage={canDeleteMessage}
-        handleDeleteMessage={handleDeleteMessage}
-        canAddReaction={canAddReaction}
-        loading={loading || postingMessage || postingReply || deletingMessage}
-        last={lastMessageOnly}
-        maxHeight={COMMENTS_CONTAINER_HEIGHT}
-        onClickMore={onExpand}
-      />
-    </CalloutLayout>
+    <CalloutSettingsContainer callout={callout} expanded={expanded} {...calloutSettingsProps}>
+      {calloutSettingsProvided => (
+        <CommentsCalloutLayout
+          callout={callout}
+          contributionsCount={contributionsCount}
+          {...calloutSettingsProvided}
+          expanded={expanded}
+          onExpand={onExpand}
+          onCollapse={onCollapse}
+        >
+          <CommentsComponent
+            messages={messages}
+            commentsId={commentsId}
+            canReadMessages={canReadMessages}
+            canPostMessages={canPostMessages}
+            postMessage={postMessage}
+            postReply={postReply}
+            canDeleteMessage={canDeleteMessage}
+            handleDeleteMessage={handleDeleteMessage}
+            canAddReaction={canAddReaction}
+            loading={loading || postingMessage || postingReply || deletingMessage}
+            last={lastMessageOnly}
+            maxHeight={expanded ? undefined : COMMENTS_CONTAINER_HEIGHT}
+            onClickMore={onExpand}
+          />
+        </CommentsCalloutLayout>
+      )}
+    </CalloutSettingsContainer>
   );
 };
 

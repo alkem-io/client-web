@@ -14,6 +14,7 @@ import { CaptionSmall } from '../../../../core/ui/typography';
 import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
 import useCommentReactionsMutations from './useCommentReactionsMutations';
 import MessagesThread from './MessagesThread';
+import { gutters } from '../../../../core/ui/grid/utils';
 
 const SCROLL_BOTTOM_MISTAKE_TOLERANCE = 10;
 
@@ -106,10 +107,9 @@ const CommentsComponent: FC<CommentsComponentProps> = ({
       {!isShowingLastMessage && (
         <ScrollerWithGradient
           maxHeight={maxHeight}
-          minHeight={0}
-          flexGrow={1}
           scrollerRef={commentsContainerRef}
           onScroll={handleScroll}
+          margin={0}
         >
           <Gutters gap={0}>
             <MessagesThread
@@ -146,6 +146,8 @@ const CommentsComponent: FC<CommentsComponentProps> = ({
           placeholder={t('pages.post.dashboard.comment.placeholder')}
           onPostComment={postMessage}
           disabled={loading}
+          padding={gutters()}
+          paddingBottom={0}
         />
       )}
       {!canPostMessages && (

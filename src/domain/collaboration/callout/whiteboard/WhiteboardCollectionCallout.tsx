@@ -1,6 +1,6 @@
 import React, { forwardRef, useMemo } from 'react';
 import useNavigate from '../../../../core/routing/useNavigate';
-import CalloutLayout, { CalloutLayoutProps } from '../../CalloutBlock/CalloutLayout';
+import CalloutLayout, { CalloutLayoutProps } from '../calloutBlock/CalloutLayout';
 import ScrollableCardsLayout from '../../../../core/ui/card/cardsLayout/ScrollableCardsLayout';
 import CreateCalloutItemButton from '../CreateCalloutItemButton';
 import { CalloutState } from '../../../../core/apollo/generated/graphql-schema';
@@ -8,11 +8,12 @@ import { Skeleton } from '@mui/material';
 import WhiteboardCard, { WhiteboardCardWhiteboard } from './WhiteboardCard';
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
 import { gutters } from '../../../../core/ui/grid/utils';
-import CalloutBlockFooter from '../../CalloutBlock/CalloutBlockFooter';
+import CalloutBlockFooter from '../calloutBlock/CalloutBlockFooter';
 import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 import { normalizeLink } from '../../../../core/utils/links';
 import { LocationStateKeyCachedCallout } from '../../CalloutPage/CalloutPage';
+import CalloutSettingsContainer from '../calloutBlock/CalloutSettingsContainer';
 
 interface WhiteboardCollectionCalloutProps extends BaseCalloutViewProps {
   callout: CalloutLayoutProps['callout'];
@@ -29,7 +30,10 @@ const WhiteboardCollectionCallout = forwardRef<Element, WhiteboardCollectionCall
       canCreate = false,
       contributionsCount,
       createNewWhiteboard,
-      ...calloutLayoutProps
+      expanded,
+      onExpand,
+      onCollapse,
+      ...calloutSettingsProps
     },
     ref
   ) => {
@@ -61,32 +65,39 @@ const WhiteboardCollectionCallout = forwardRef<Element, WhiteboardCollectionCall
     const isMobile = breakpoint === 'xs';
 
     return (
-      <CalloutLayout
-        contentRef={ref}
-        callout={callout}
-        contributionsCount={contributionsCount}
-        {...calloutLayoutProps}
-        disableMarginal
-      >
-        {showCards && (
-          <ScrollableCardsLayout
-            items={loading ? [undefined, undefined] : whiteboards}
-            createButton={!isMobile && createButton}
-            maxHeight={gutters(22)}
+      <CalloutSettingsContainer callout={callout} expanded={expanded} {...calloutSettingsProps}>
+        {calloutSettingsProvided => (
+          <CalloutLayout
+            contentRef={ref}
+            callout={callout}
+            contributionsCount={contributionsCount}
+            expanded={expanded}
+            onExpand={onExpand}
+            onCollapse={onCollapse}
+            {...calloutSettingsProvided}
+            disableMarginal
           >
-            {whiteboard =>
-              whiteboard ? (
-                <WhiteboardCard key={whiteboard.id} whiteboard={whiteboard} callout={callout} />
-              ) : (
-                <Skeleton />
-              )
-            }
-          </ScrollableCardsLayout>
+            {showCards && (
+              <ScrollableCardsLayout
+                items={loading ? [undefined, undefined] : whiteboards}
+                createButton={!isMobile && createButton}
+                maxHeight={gutters(22)}
+              >
+                {whiteboard =>
+                  whiteboard ? (
+                    <WhiteboardCard key={whiteboard.id} whiteboard={whiteboard} callout={callout} />
+                  ) : (
+                    <Skeleton />
+                  )
+                }
+              </ScrollableCardsLayout>
+            )}
+            {isMobile && canCreate && callout.contributionPolicy.state !== CalloutState.Closed && (
+              <CalloutBlockFooter contributionsCount={contributionsCount} onCreate={handleCreate} />
+            )}
+          </CalloutLayout>
         )}
-        {isMobile && canCreate && callout.contributionPolicy.state !== CalloutState.Closed && (
-          <CalloutBlockFooter contributionsCount={contributionsCount} onCreate={handleCreate} />
-        )}
-      </CalloutLayout>
+      </CalloutSettingsContainer>
     );
   }
 );

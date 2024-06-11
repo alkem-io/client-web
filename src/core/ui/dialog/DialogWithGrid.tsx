@@ -97,7 +97,7 @@ const DialogWithGrid = ({
           maxWidth: '100vw',
           margin: 0,
           height: fullHeight ? '100%' : 'auto',
-          maxHeight: fullScreen ? '100vh' : undefined,
+          maxHeight: fullScreen ? '100vh' : '100%',
         },
         ...sx,
       }}

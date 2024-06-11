@@ -1,6 +1,6 @@
-import React, { FC } from 'react';
+import React from 'react';
 import { FetchResult } from '@apollo/client';
-import { AvatarProps, Box, styled } from '@mui/material';
+import { AvatarProps, Box, BoxProps, styled } from '@mui/material';
 import Avatar from '../../../../core/ui/avatar/Avatar';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { useTranslation } from 'react-i18next';
@@ -28,13 +28,14 @@ interface formValues {
   post: string;
 }
 
-const PostMessageToCommentsForm: FC<PostMessageToCommentsFormProps> = ({
+const PostMessageToCommentsForm = ({
   onPostComment,
   title,
   placeholder,
   maxLength = COMMENTS_TEXT_LENGTH,
   disabled,
-}) => {
+  ...containerProps
+}: PostMessageToCommentsFormProps & BoxProps) => {
   const { t } = useTranslation();
 
   const { user } = useUserContext();
@@ -63,7 +64,7 @@ const PostMessageToCommentsForm: FC<PostMessageToCommentsFormProps> = ({
   const isCompact = breakpoint === 'xs';
 
   return (
-    <Box display="flex" alignItems="start" gap={gutters(0.5)} marginBottom={gutters(-1)}>
+    <Box display="flex" alignItems="start" gap={gutters(0.5)} {...containerProps}>
       <UserAvatar
         src={userAvatarUri}
         variant="rounded"

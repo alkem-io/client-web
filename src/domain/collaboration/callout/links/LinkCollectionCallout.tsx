@@ -1,4 +1,4 @@
-import CalloutLayout, { CalloutLayoutProps } from '../../CalloutBlock/CalloutLayout';
+import CalloutLayout, { CalloutLayoutProps } from '../calloutBlock/CalloutLayout';
 import React, { useCallback, useMemo, useState } from 'react';
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
 import { Caption, CaptionSmall } from '../../../../core/ui/typography';
@@ -21,6 +21,7 @@ import { nanoid } from 'nanoid';
 import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
 import { evictFromCache } from '../../../../core/apollo/utils/removeFromCache';
 import { compact } from 'lodash';
+import CalloutSettingsContainer from '../calloutBlock/CalloutSettingsContainer';
 
 const MAX_LINKS_NORMALVIEW = 3;
 
@@ -47,7 +48,10 @@ const LinkCollectionCallout = ({
   expanded,
   contributionsCount,
   onExpand,
+  onCollapse,
   onCalloutUpdate,
+  calloutNames,
+  journeyTypeName,
   ...calloutLayoutProps
 }: LinkCollectionCalloutProps) => {
   const { t } = useTranslation();
@@ -192,64 +196,79 @@ const LinkCollectionCallout = ({
       calloutId={callout.id}
       skip={!addNewLinkDialogOpen && !editLink}
     >
-      <CalloutLayout
+      <CalloutSettingsContainer
         callout={callout}
-        contributionsCount={contributionsCount}
-        {...calloutLayoutProps}
+        calloutNames={calloutNames}
+        journeyTypeName={journeyTypeName}
         expanded={expanded}
-        onExpand={onExpand}
-        skipReferences
-        disableMarginal
+        {...calloutLayoutProps}
       >
-        <References
-          references={expanded ? formatedLinks : limitedLinks}
-          noItemsView={<CaptionSmall>{t('callout.link-collection.no-links-yet')}</CaptionSmall>}
-          onEdit={ref => setEditLink(ref)}
-        />
-        <Box display="flex" justifyContent={isListTruncated && !expanded ? 'space-between' : 'end'} alignItems="end">
-          {isListTruncated && !expanded && (
-            <Caption component={Link} onClick={onExpand} sx={{ cursor: 'pointer' }}>
-              {t('callout.link-collection.more-links', { count: formatedLinks.length })}
-            </Caption>
-          )}
-          {canAddLinks && (
-            <IconButton aria-label={t('common.add')} size="small" onClick={() => setAddNewLinkDialogOpen(true)}>
-              <RoundedIcon component={AddIcon} size="medium" iconSize="small" />
-            </IconButton>
-          )}
-        </Box>
-        <CreateLinksDialog
-          open={addNewLinkDialogOpen}
-          title={<Box>{t('callout.link-collection.add-link', { title: callout.framing.profile.displayName })}</Box>}
-          onClose={closeAddNewDialog}
-          onAddMore={getNewLinkId}
-          onRemove={removeNewLink}
-          onSave={handleSaveNewLinks}
-        />
-        <EditLinkDialog
-          open={Boolean(editLink)}
-          onClose={closeEditDialog}
-          title={<Box>{t('callout.link-collection.edit-link', { title: editLink?.name })}</Box>}
-          link={editLink!}
-          onSave={values => handleEditLink(values)}
-          canDelete={canDeleteLinks}
-          onDelete={() => setDeletingLinkId(editLink?.id)}
-        />
-        <ConfirmationDialog
-          actions={{
-            onConfirm: handleDeleteLink,
-            onCancel: () => setDeletingLinkId(undefined),
-          }}
-          options={{
-            show: Boolean(deletingLinkId),
-          }}
-          entities={{
-            titleId: 'callout.link-collection.delete-confirm-title',
-            content: t('callout.link-collection.delete-confirm', { title: callout.framing.profile.displayName }),
-            confirmButtonTextId: 'buttons.delete',
-          }}
-        />
-      </CalloutLayout>
+        {calloutSettingsProps => (
+          <CalloutLayout
+            callout={callout}
+            contributionsCount={contributionsCount}
+            {...calloutSettingsProps}
+            expanded={expanded}
+            onExpand={onExpand}
+            onCollapse={onCollapse}
+            skipReferences
+            disableMarginal
+          >
+            <References
+              references={expanded ? formatedLinks : limitedLinks}
+              noItemsView={<CaptionSmall>{t('callout.link-collection.no-links-yet')}</CaptionSmall>}
+              onEdit={ref => setEditLink(ref)}
+            />
+            <Box
+              display="flex"
+              justifyContent={isListTruncated && !expanded ? 'space-between' : 'end'}
+              alignItems="end"
+            >
+              {isListTruncated && !expanded && (
+                <Caption component={Link} onClick={onExpand} sx={{ cursor: 'pointer' }}>
+                  {t('callout.link-collection.more-links', { count: formatedLinks.length })}
+                </Caption>
+              )}
+              {canAddLinks && (
+                <IconButton aria-label={t('common.add')} size="small" onClick={() => setAddNewLinkDialogOpen(true)}>
+                  <RoundedIcon component={AddIcon} size="medium" iconSize="small" />
+                </IconButton>
+              )}
+            </Box>
+            <CreateLinksDialog
+              open={addNewLinkDialogOpen}
+              title={<Box>{t('callout.link-collection.add-link', { title: callout.framing.profile.displayName })}</Box>}
+              onClose={closeAddNewDialog}
+              onAddMore={getNewLinkId}
+              onRemove={removeNewLink}
+              onSave={handleSaveNewLinks}
+            />
+            <EditLinkDialog
+              open={Boolean(editLink)}
+              onClose={closeEditDialog}
+              title={<Box>{t('callout.link-collection.edit-link', { title: editLink?.name })}</Box>}
+              link={editLink!}
+              onSave={values => handleEditLink(values)}
+              canDelete={canDeleteLinks}
+              onDelete={() => setDeletingLinkId(editLink?.id)}
+            />
+            <ConfirmationDialog
+              actions={{
+                onConfirm: handleDeleteLink,
+                onCancel: () => setDeletingLinkId(undefined),
+              }}
+              options={{
+                show: Boolean(deletingLinkId),
+              }}
+              entities={{
+                titleId: 'callout.link-collection.delete-confirm-title',
+                content: t('callout.link-collection.delete-confirm', { title: callout.framing.profile.displayName }),
+                confirmButtonTextId: 'buttons.delete',
+              }}
+            />
+          </CalloutLayout>
+        )}
+      </CalloutSettingsContainer>
     </StorageConfigContextProvider>
   );
 };

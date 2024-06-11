@@ -5,7 +5,7 @@ import GridItem, { GridItemProps } from '../../core/ui/grid/GridItem';
 import { Box } from '@mui/material';
 import { GUTTER_MUI, GUTTER_PX } from '../../core/ui/grid/constants';
 import { BlockTitle, PageTitle, Text } from '../../core/ui/typography';
-import CalloutBlockMarginal from '../../domain/collaboration/callout/Contribute/CalloutBlockMarginal';
+import CalloutBlockMarginal from '../../domain/collaboration/callout/calloutBlock/CalloutBlockMarginal';
 import PageContentBlockGrid from '../../core/ui/content/PageContentBlockGrid';
 
 const DummyContent = (props: GridItemProps) => (
