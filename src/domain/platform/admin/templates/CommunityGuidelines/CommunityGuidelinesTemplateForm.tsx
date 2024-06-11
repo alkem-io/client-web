@@ -65,7 +65,7 @@ interface CommunityGuidelinesTemplateFormProps {
 const validator = {
   guidelines: yup.object().shape({
     profile: yup.object().shape({
-      displayName: yup.string(),
+      displayName: yup.string().required(),
       description: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
       references: referenceSegmentSchema,
     }),
