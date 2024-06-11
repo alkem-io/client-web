@@ -595,7 +595,7 @@
       "updatedSuccessfully": "Community guidelines updated successfully.",
       "adminsOnly": "Since there are no Community Guidelines specified, this block is only visible for admins and leads.",
       "communityGuidelinesRedirect": "Click here to update the Community Guidelines in the Space settings.",
-      "confirmDialog": {
+      "confirmationDialog": {
         "title": "Updating Community Guidelines",
         "description": "Are you sure you want to replace your existing Community Guidelines? This action cannot be undone."
       }
