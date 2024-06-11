@@ -1,6 +1,6 @@
 import React, { forwardRef, useMemo, useState } from 'react';
 import useNavigate from '../../../../core/routing/useNavigate';
-import CalloutLayout from '../../CalloutBlock/CalloutLayout';
+import CalloutLayout from '../calloutBlock/CalloutLayout';
 import ScrollableCardsLayout from '../../../../core/ui/card/cardsLayout/ScrollableCardsLayout';
 import PostCreationDialog from '../../post/PostCreationDialog/PostCreationDialog';
 import { CalloutState, CreatePostInput } from '../../../../core/apollo/generated/graphql-schema';
@@ -8,11 +8,12 @@ import CreateCalloutItemButton from '../CreateCalloutItemButton';
 import PostCard, { PostCardPost } from './PostCard';
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
 import { gutters } from '../../../../core/ui/grid/utils';
-import CalloutBlockFooter from '../../CalloutBlock/CalloutBlockFooter';
+import CalloutBlockFooter from '../calloutBlock/CalloutBlockFooter';
 import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
 import { LocationStateCachedCallout, LocationStateKeyCachedCallout } from '../../CalloutPage/CalloutPage';
 import { TypedCalloutDetails } from '../useCallouts/useCallouts';
 import { buildPostDashboardUrl } from './urlBuilders';
+import CalloutSettingsContainer from '../calloutBlock/CalloutSettingsContainer';
 
 interface PostCalloutProps extends BaseCalloutViewProps {
   callout: TypedCalloutDetails;
@@ -32,7 +33,10 @@ const PostCallout = forwardRef<Element, PostCalloutProps>(
       onCreatePost,
       canCreate = false,
       contributionsCount,
-      ...calloutLayoutProps
+      expanded,
+      onExpand,
+      onCollapse,
+      ...calloutSettingsProps
     },
     ref
   ) => {
@@ -61,35 +65,42 @@ const PostCallout = forwardRef<Element, PostCalloutProps>(
     const isMobile = breakpoint === 'xs';
 
     return (
-      <>
-        <CalloutLayout
-          contentRef={ref}
-          callout={callout}
-          contributionsCount={contributionsCount}
-          {...calloutLayoutProps}
-        >
-          <ScrollableCardsLayout
-            items={loading ? [undefined, undefined] : posts ?? []}
-            createButton={!isMobile && createButton}
-            maxHeight={gutters(22)}
-          >
-            {post => <PostCard post={post} onClick={navigateToPost} />}
-          </ScrollableCardsLayout>
-          {isMobile && canCreate && callout.contributionPolicy.state !== CalloutState.Closed && (
-            <CalloutBlockFooter contributionsCount={contributionsCount} onCreate={openCreateDialog} />
-          )}
-        </CalloutLayout>
-        <PostCreationDialog
-          open={postDialogOpen}
-          onClose={closeCreateDialog}
-          onCreate={onCreatePost}
-          postNames={postNames}
-          calloutDisplayName={callout.framing.profile.displayName}
-          calloutId={callout.id}
-          defaultDescription={callout.contributionDefaults.postDescription}
-          creating={creatingPost}
-        />
-      </>
+      <CalloutSettingsContainer callout={callout} expanded={expanded} {...calloutSettingsProps}>
+        {calloutSettingsProvided => (
+          <>
+            <CalloutLayout
+              contentRef={ref}
+              callout={callout}
+              contributionsCount={contributionsCount}
+              expanded={expanded}
+              onExpand={onExpand}
+              onCollapse={onCollapse}
+              {...calloutSettingsProvided}
+            >
+              <ScrollableCardsLayout
+                items={loading ? [undefined, undefined] : posts ?? []}
+                createButton={!isMobile && createButton}
+                maxHeight={gutters(22)}
+              >
+                {post => <PostCard post={post} onClick={navigateToPost} />}
+              </ScrollableCardsLayout>
+              {isMobile && canCreate && callout.contributionPolicy.state !== CalloutState.Closed && (
+                <CalloutBlockFooter contributionsCount={contributionsCount} onCreate={openCreateDialog} />
+              )}
+            </CalloutLayout>
+            <PostCreationDialog
+              open={postDialogOpen}
+              onClose={closeCreateDialog}
+              onCreate={onCreatePost}
+              postNames={postNames}
+              calloutDisplayName={callout.framing.profile.displayName}
+              calloutId={callout.id}
+              defaultDescription={callout.contributionDefaults.postDescription}
+              creating={creatingPost}
+            />
+          </>
+        )}
+      </CalloutSettingsContainer>
     );
   }
 );

@@ -44,7 +44,7 @@ const AdminInnovationPackPage: FC<AdminInnovationPackPageProps> = ({ editTemplat
     postNameId,
     whiteboardNameId,
     innovationTemplateId,
-    calloutNameId,
+    calloutTemplateId,
     communityGuidelinesNameId,
   } = useUrlParams();
 
@@ -148,7 +148,7 @@ const AdminInnovationPackPage: FC<AdminInnovationPackPageProps> = ({ editTemplat
             </PageContentBlockSeamless>
             <PageContentBlockSeamless disablePadding>
               <AdminCalloutTemplatesSection
-                templateId={calloutNameId}
+                templateId={calloutTemplateId}
                 templatesSetId={templatesSetID}
                 templates={calloutTemplates}
                 onCloseTemplateDialog={backFromTemplateDialog}

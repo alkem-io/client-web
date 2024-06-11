@@ -3317,17 +3317,64 @@ export const SearchResultUserFragmentDoc = gql`
   }
   ${SearchResultProfileFragmentDoc}
 `;
+export const CalloutParentFragmentDoc = gql`
+  fragment CalloutParent on SearchResultCallout {
+    space {
+      id
+      profile {
+        id
+        displayName
+        url
+      }
+      level
+    }
+  }
+`;
 export const SearchResultCalloutFragmentDoc = gql`
   fragment SearchResultCallout on SearchResultCallout {
+    id
     callout {
       id
       nameID
       type
       framing {
         id
+        profile {
+          id
+          displayName
+          description
+          url
+          tagset {
+            ...TagsetDetails
+          }
+        }
+      }
+      contributionPolicy {
+        id
+        state
+        allowedContributionTypes
+      }
+      contributions {
+        id
+        post {
+          id
+        }
+        whiteboard {
+          id
+        }
+        link {
+          id
+        }
+      }
+      comments {
+        id
+        messagesCount
       }
     }
+    ...CalloutParent
   }
+  ${TagsetDetailsFragmentDoc}
+  ${CalloutParentFragmentDoc}
 `;
 export const SearchResultOrganizationFragmentDoc = gql`
   fragment SearchResultOrganization on SearchResultOrganization {
@@ -3494,6 +3541,9 @@ export const LibraryTemplatesFragmentDoc = gql`
         id
         displayName
         description
+        tagset {
+          ...TagsetDetails
+        }
       }
       guidelines {
         id
@@ -10979,6 +11029,12 @@ export const AvailableVirtualContributorsDocument = gql`
             ...VirtualContributorName
           }
         }
+        account {
+          id
+          virtualContributors {
+            ...VirtualContributorName
+          }
+        }
       }
     }
     virtualContributors @skip(if: $filterSpace) {
@@ -17815,9 +17871,10 @@ export const CreateVirtualContributorOnAccountDocument = gql`
   mutation CreateVirtualContributorOnAccount($virtualContributorData: CreateVirtualContributorOnAccountInput!) {
     createVirtualContributor(virtualContributorData: $virtualContributorData) {
       id
+      nameID
+      bodyOfKnowledgeID
       profile {
         id
-        url
       }
     }
   }
@@ -17935,10 +17992,15 @@ export const SpaceSubspacesDocument = gql`
           nameID
           bodyOfKnowledgeID
           profile {
+            id
             displayName
+            tagline
             url
+            tagsets {
+              ...TagsetDetails
+            }
             avatar: visual(type: AVATAR) {
-              uri
+              ...VisualFull
             }
           }
         }
@@ -17948,13 +18010,18 @@ export const SpaceSubspacesDocument = gql`
         profile {
           id
           displayName
+          tagline
+          url
           avatar: visual(type: AVATAR) {
-            uri
+            ...VisualUri
           }
         }
       }
     }
   }
+  ${TagsetDetailsFragmentDoc}
+  ${VisualFullFragmentDoc}
+  ${VisualUriFragmentDoc}
 `;
 
 /**
@@ -21940,6 +22007,7 @@ export const SearchDocument = gql`
           ...SearchResultCallout
         }
       }
+      calloutResultsCount
       contributorResults {
         id
         score
