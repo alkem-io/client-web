@@ -29,7 +29,7 @@ export enum RoutePaths {
   whiteboardTemplatesRoutePath = 'whiteboard-templates',
   innovationTemplatesRoutePath = 'innovation-templates',
   calloutTemplatesRoutePath = 'callout-templates',
-  communityGuidelinesTemplatesRoutePath = 'communityGuidelines-templates',
+  communityGuidelinesTemplatesRoutePath = 'community-guidelines-templates',
 }
 
 interface AdminInnovationPackPageProps {
@@ -45,7 +45,7 @@ const AdminInnovationPackPage: FC<AdminInnovationPackPageProps> = ({ editTemplat
     whiteboardNameId,
     innovationTemplateId,
     calloutTemplateId,
-    communityGuidelinesNameId,
+    communityGuidelinesTemplateId,
   } = useUrlParams();
 
   if (!innovationPackNameId) {
@@ -182,7 +182,7 @@ const AdminInnovationPackPage: FC<AdminInnovationPackPageProps> = ({ editTemplat
             </PageContentBlockSeamless>
             <PageContentBlockSeamless disablePadding>
               <AdminCommunityGuidelinesTemplatesSection
-                templateId={communityGuidelinesNameId}
+                templateId={communityGuidelinesTemplateId}
                 templatesSetId={templatesSetID}
                 templates={communityGuidelinesTemplates}
                 onCloseTemplateDialog={backFromTemplateDialog}

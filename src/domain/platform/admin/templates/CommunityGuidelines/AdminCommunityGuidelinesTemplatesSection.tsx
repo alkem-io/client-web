@@ -47,12 +47,10 @@ const AdminCommunityGuidelinesTemplatesSection = ({
       templateCardComponent={CommunityGuidelinesImportTemplateCard}
       templateImportCardComponent={CommunityGuidelinesImportTemplateCard}
       createTemplateDialogComponent={CreateCommunityGuidelinesTemplateDialog}
-      editTemplateDialogComponent={undefined}
+      editTemplateDialogComponent={EditCommunityGuidelinesTemplateDialog}
       onCreateTemplate={variables => createCommunityGuidelinesTemplate({ variables, refetchQueries })}
       onUpdateTemplate={variables => updateCommunityGuidelinesTemplate({ variables, refetchQueries })}
-      onDeleteTemplate={async variables => {
-        await deleteCommunityGuidelinesTemplate({ variables, refetchQueries });
-      }}
+      onDeleteTemplate={variables => deleteCommunityGuidelinesTemplate({ variables, refetchQueries })}
       templateType={TemplateType.CommunityGuidelinesTemplate}
     />
   );

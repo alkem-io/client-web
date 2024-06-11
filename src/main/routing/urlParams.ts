@@ -21,6 +21,7 @@ export default interface UrlParams extends Record<string, string | undefined> {
   calendarEventNameId?: string;
   innovationPackNameId?: string;
   innovationHubNameId?: string;
+  communityGuidelinesTemplateId?: string;
 }
 
 export const nameOfUrl = nameof<UrlParams>();
