@@ -8,19 +8,23 @@ import ContributeCard from '../../../../core/ui/card/ContributeCard';
 import { Caption } from '../../../../core/ui/typography/components';
 import InnovationPackIcon from '../../InnovationPack/InnovationPackIcon';
 import { WhiteboardIcon } from '../icon/WhiteboardIcon';
-import { TemplateBase, TemplateCardBaseProps } from '../../templates/CollaborationTemplatesLibrary/TemplateBase';
+import {
+  InnovationPackTemplate,
+  TemplateCardBaseProps,
+} from '../../templates/CollaborationTemplatesLibrary/TemplateBase';
 import CardTags from '../../../../core/ui/card/CardTags';
 import { gutters } from '../../../../core/ui/grid/utils';
 
-interface WhiteboardTemplateCardProps extends TemplateCardBaseProps<TemplateBase> {}
+interface WhiteboardTemplateCardProps extends TemplateCardBaseProps<InnovationPackTemplate> {}
 
 const WhiteboardTemplateCard: FC<WhiteboardTemplateCardProps> = ({ template, innovationPack, loading, ...props }) => {
+  const cardInnovationPack = innovationPack || template?.innovationPack;
   return (
     <ContributeCard {...props}>
       <CardHeader title={template?.profile.displayName} iconComponent={WhiteboardIcon}>
         {loading && <Skeleton />}
-        <CardHeaderCaption logoUrl={innovationPack?.provider?.profile.avatar?.uri}>
-          {innovationPack?.provider?.profile.displayName}
+        <CardHeaderCaption logoUrl={cardInnovationPack?.provider?.profile.avatar?.uri}>
+          {cardInnovationPack?.provider?.profile.displayName}
         </CardHeaderCaption>
       </CardHeader>
       <CardImage
@@ -35,9 +39,9 @@ const WhiteboardTemplateCard: FC<WhiteboardTemplateCardProps> = ({ template, inn
         tags={template?.profile.tagset?.tags ?? []}
         hideIfEmpty
       />
-      {innovationPack?.profile.displayName && (
+      {cardInnovationPack?.profile.displayName && (
         <CardSegmentCaption icon={<InnovationPackIcon />}>
-          <Caption noWrap>{innovationPack?.profile.displayName}</Caption>
+          <Caption noWrap>{cardInnovationPack?.profile.displayName}</Caption>
         </CardSegmentCaption>
       )}
       {loading && <Skeleton />}
