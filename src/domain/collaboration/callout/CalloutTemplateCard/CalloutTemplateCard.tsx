@@ -29,11 +29,9 @@ interface CalloutTemplateCardProps extends TemplateCardBaseProps<CalloutTemplate
 const CalloutTemplateCard: FC<CalloutTemplateCardProps> = ({ template, innovationPack, loading, ...props }) => {
   const { t } = useTranslation();
 
-  const footerHeight = template?.type === CalloutType.LinkCollection ? 3 : 2;
   const hasTags = (template?.profile.tagset?.tags ?? []).length > 0;
-  const descriptionHeightGutters = hasTags
-    ? DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS - footerHeight
-    : DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS;
+  const footerHeight = template?.type === CalloutType.LinkCollection ? (hasTags ? 3 : 1) : hasTags ? 2 : 0;
+  const descriptionHeightGutters = DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS - footerHeight;
 
   const Icon = template?.type && calloutIcons[template?.type];
 
