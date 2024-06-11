@@ -242,6 +242,9 @@ const useCommunityAdmin = ({
   const filterByName = (vc: VirtualContributorNameProps, filter?: string) =>
     vc.profile.displayName.toLowerCase().includes(filter?.toLowerCase() ?? '');
 
+  const filterExisting = (vc: VirtualContributorNameProps, existingVCs) =>
+    !existingVCs.some(member => member.id === vc.id);
+
   const [fetchAllVirtualContributors] = useAvailableVirtualContributorsLazyQuery();
   const getAvailableVirtualContributors = async (filter: string | undefined, all: boolean = false) => {
     const { data } = await fetchAllVirtualContributors({
@@ -254,19 +257,23 @@ const useCommunityAdmin = ({
     // Results for Space Level - on Account if !all (filter in the query)
     if (journeyLevel === 0) {
       return (data?.lookup?.space?.account.virtualContributors ?? data?.virtualContributors ?? []).filter(
-        vc => !virtualContributors.some(member => member.id === vc.id) && filterByName(vc, filter)
+        vc => filterExisting(vc, virtualContributors) && filterByName(vc, filter)
       );
     }
 
     // Results for Subspaces - Community Members including External VCs (filter in the query)
     if (all) {
-      return (data?.lookup?.space?.community.virtualContributorsInRole ?? []).filter(vc => filterByName(vc, filter));
+      return (data?.lookup?.space?.community.virtualContributorsInRole ?? []).filter(
+        vc => filterExisting(vc, virtualContributors) && filterByName(vc, filter)
+      );
     }
 
     // Results for Subspaces - Only Community Members On Account (filter in the query)
     return (data?.lookup?.space?.community.virtualContributorsInRole ?? []).filter(
       vc =>
-        data?.lookup?.space?.account.virtualContributors.some(member => member.id === vc.id) && filterByName(vc, filter)
+        data?.lookup?.space?.account.virtualContributors.some(member => member.id === vc.id) &&
+        filterExisting(vc, virtualContributors) &&
+        filterByName(vc, filter)
     );
   };
 
