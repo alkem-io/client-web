@@ -1,8 +1,7 @@
-import React, { PropsWithChildren, Ref, useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import DownloadForOfflineOutlinedIcon from '@mui/icons-material/DownloadForOfflineOutlined';
-import { Box, DialogContent, IconButton, Menu } from '@mui/material';
+import { Menu } from '@mui/material';
 import {
   AuthorizationPrivilege,
   CalloutGroupName,
@@ -12,49 +11,45 @@ import {
   ContributeTabPostFragment,
   MessageDetailsFragment,
   WhiteboardDetailsFragment,
-} from '../../../core/apollo/generated/graphql-schema';
-import WrapperMarkdown from '../../../core/ui/markdown/WrapperMarkdown';
-import { CalloutSummary } from '../callout/CalloutSummary';
-import CalloutVisibilityChangeDialog from '../callout/edit/visibilityChangeDialog/CalloutVisibilityChangeDialog';
-import CalloutEditDialog from '../callout/edit/editDialog/CalloutEditDialog';
-import { CalloutEditType } from '../callout/edit/CalloutEditType';
-import ShareButton from '../../shared/components/ShareDialog/ShareButton';
-import CalloutBlockMarginal from '../callout/Contribute/CalloutBlockMarginal';
-import { BlockTitle } from '../../../core/ui/typography';
-import { CalloutLayoutEvents, CalloutSortProps } from '../callout/CalloutViewTypes';
-import Gutters from '../../../core/ui/grid/Gutters';
-import { useUrlParams } from '../../../core/routing/useUrlParams';
-import { Ribbon } from '../../../core/ui/card/Ribbon';
-import Authorship from '../../../core/ui/authorship/Authorship';
-import DialogHeader from '../../../core/ui/dialog/DialogHeader';
-import MenuItemWithIcon from '../../../core/ui/menu/MenuItemWithIcon';
+} from '../../../../core/apollo/generated/graphql-schema';
+import { CalloutSummary } from '../CalloutSummary';
+import CalloutVisibilityChangeDialog from '../edit/visibilityChangeDialog/CalloutVisibilityChangeDialog';
+import CalloutEditDialog from '../edit/editDialog/CalloutEditDialog';
+import { CalloutEditType } from '../edit/CalloutEditType';
+import { CalloutLayoutEvents, CalloutSortProps } from '../CalloutViewTypes';
+import { useUrlParams } from '../../../../core/routing/useUrlParams';
+import MenuItemWithIcon from '../../../../core/ui/menu/MenuItemWithIcon';
 import {
   ArrowDownwardOutlined,
   ArrowUpwardOutlined,
   CheckCircleOutlined,
-  Close,
   DeleteOutline,
   EditOutlined,
   UnpublishedOutlined,
   VerticalAlignBottomOutlined,
   VerticalAlignTopOutlined,
 } from '@mui/icons-material';
-import { ExpandContentIcon } from '../../../core/ui/content/ExpandContent';
-import { Reference, Tagset } from '../../common/profile/Profile';
-import References from '../../shared/components/References/References';
-import TagsComponent from '../../shared/components/TagsComponent/TagsComponent';
-import { JourneyTypeName } from '../../journey/JourneyTypeName';
-import { WhiteboardFragmentWithCallout } from '../callout/useCallouts/useCallouts';
-import CreateCalloutTemplateDialog from '../../platform/admin/templates/CalloutTemplates/CreateCalloutTemplateDialog';
-import { CalloutTemplateFormSubmittedValues } from '../../platform/admin/templates/CalloutTemplates/CalloutTemplateForm';
-import { useCreateCalloutTemplate } from '../../platform/admin/templates/CalloutTemplates/useCreateCalloutTemplate';
-import SkipLink from '../../../core/ui/keyboardNavigation/SkipLink';
-import { useNextBlockAnchor } from '../../../core/ui/keyboardNavigation/NextBlockAnchor';
-import { LinkDetails } from '../callout/links/LinkCollectionCallout';
-import ConfirmationDialog from '../../../core/ui/dialogs/ConfirmationDialog';
-import useLoadingState from '../../shared/utils/useLoadingState';
+import { Reference, Tagset } from '../../../common/profile/Profile';
+import { JourneyTypeName } from '../../../journey/JourneyTypeName';
+import { WhiteboardFragmentWithCallout } from '../useCallouts/useCallouts';
+import CreateCalloutTemplateDialog from '../../../platform/admin/templates/CalloutTemplates/CreateCalloutTemplateDialog';
+import { CalloutTemplateFormSubmittedValues } from '../../../platform/admin/templates/CalloutTemplates/CalloutTemplateForm';
+import { useCreateCalloutTemplate } from '../../../platform/admin/templates/CalloutTemplates/useCreateCalloutTemplate';
+import { LinkDetails } from '../links/LinkCollectionCallout';
+import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
+import useLoadingState from '../../../shared/utils/useLoadingState';
+import { SimpleContainerProps } from '../../../../core/container/SimpleContainer';
 
-export interface CalloutLayoutProps extends CalloutLayoutEvents, Partial<CalloutSortProps> {
+interface CalloutSettingsProvided {
+  settingsOpen: boolean;
+  onOpenSettings: (event: React.MouseEvent<HTMLElement>) => void;
+  onCloseSettings: () => void;
+}
+
+export interface CalloutSettingsContainerProps
+  extends CalloutLayoutEvents,
+    Partial<CalloutSortProps>,
+    SimpleContainerProps<CalloutSettingsProvided> {
   callout: {
     id: string;
     framing: {
@@ -100,24 +95,16 @@ export interface CalloutLayoutProps extends CalloutLayoutEvents, Partial<Callout
     publishedAt?: string;
   };
   calloutNames: string[];
-  contributionsCount: number;
   expanded?: boolean;
-  onExpand?: () => void;
-  onClose?: () => void;
-  skipReferences?: boolean;
-  disableMarginal?: boolean;
   journeyTypeName: JourneyTypeName;
-  contentRef?: Ref<Element>;
 }
 
-const CalloutLayout = ({
+const CalloutSettingsContainer = ({
   callout,
-  children,
   onVisibilityChange,
   onCalloutEdit,
   onCalloutDelete,
   calloutNames,
-  contributionsCount,
   topCallout,
   bottomCallout,
   onMoveUp,
@@ -125,13 +112,9 @@ const CalloutLayout = ({
   onMoveToTop,
   onMoveToBottom,
   expanded = false,
-  onExpand,
-  onClose,
-  skipReferences,
-  disableMarginal = false,
   journeyTypeName,
-  contentRef,
-}: PropsWithChildren<CalloutLayoutProps>) => {
+  children,
+}: CalloutSettingsContainerProps) => {
   const { t } = useTranslation();
 
   const { spaceNameId } = useUrlParams();
@@ -194,99 +177,24 @@ const CalloutLayout = ({
     [onCalloutEdit, setEditDialogOpened]
   );
 
-  const calloutNotOpenStateName = useMemo(() => {
-    const state = callout?.contributionPolicy.state;
-
-    if (!state || state === CalloutState.Open || disableMarginal) {
-      return undefined;
-    }
-
-    if (!callout?.comments?.messages?.length) {
-      return;
-    }
-
-    return t('callout.closed');
-  }, [callout?.contributionPolicy.state, callout?.comments?.messages, t]);
-
   const dontShow = callout.draft && !callout?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
-
-  const nextBlockAnchor = useNextBlockAnchor();
-
-  if (dontShow) {
-    return null;
-  }
-
-  const hasCalloutDetails = callout.authorName && callout.publishedAt;
 
   const handleMove = (callback?: (id: string) => void) => () => {
     handleSettingsClose();
     callback?.(callout.id);
   };
 
+  if (dontShow) {
+    return null;
+  }
+
   return (
     <>
-      {callout.draft && (
-        <Ribbon>
-          <BlockTitle textAlign="center">{t('callout.draftNotice')}</BlockTitle>
-        </Ribbon>
-      )}
-      <DialogHeader
-        actions={
-          <>
-            <IconButton
-              onClick={expanded ? onClose : onExpand}
-              aria-label={t('buttons.expandWindow')}
-              aria-haspopup="true"
-            >
-              {expanded ? <Close /> : <ExpandContentIcon />}
-            </IconButton>
-            {callout.editable && (
-              <IconButton
-                id="callout-settings-button"
-                aria-label={t('common.settings')}
-                aria-haspopup="true"
-                aria-controls={settingsOpened ? 'callout-settings-menu' : undefined}
-                aria-expanded={settingsOpened ? 'true' : undefined}
-                onClick={handleSettingsOpened}
-              >
-                <SettingsOutlinedIcon />
-              </IconButton>
-            )}
-            <ShareButton url={callout.framing.profile.url} entityTypeName="callout" />
-          </>
-        }
-        titleContainerProps={{ display: 'block', position: 'relative' }}
-      >
-        {hasCalloutDetails && (
-          <Authorship
-            authorAvatarUri={callout.authorAvatarUri}
-            date={callout.publishedAt}
-            authorName={callout.authorName}
-          >
-            {`${callout.authorName} • ${t('callout.contributions', {
-              count: contributionsCount,
-            })}`}
-          </Authorship>
-        )}
-        {!hasCalloutDetails && <BlockTitle noWrap>{callout.framing.profile.displayName}</BlockTitle>}
-        <SkipLink anchor={nextBlockAnchor} sx={{ position: 'absolute', right: 0, top: 0, zIndex: 99999 }} />
-      </DialogHeader>
-      <DialogContent ref={contentRef} sx={{ paddingTop: 0 }}>
-        <Gutters disablePadding>
-          {hasCalloutDetails && <BlockTitle noWrap>{callout.framing.profile.displayName}</BlockTitle>}
-          <Box sx={{ wordWrap: 'break-word' }}>
-            <WrapperMarkdown>{callout.framing.profile.description ?? ''}</WrapperMarkdown>
-          </Box>
-          {!skipReferences && <References compact references={callout.framing.profile.references} />}
-          {callout.framing.profile.tagset?.tags && callout.framing.profile.tagset?.tags.length > 0 ? (
-            <TagsComponent tags={callout.framing.profile.tagset?.tags} />
-          ) : undefined}
-          {children}
-        </Gutters>
-      </DialogContent>
-      {calloutNotOpenStateName && (
-        <CalloutBlockMarginal variant="footer">{calloutNotOpenStateName}</CalloutBlockMarginal>
-      )}
+      {children({
+        settingsOpen: settingsOpened,
+        onOpenSettings: handleSettingsOpened,
+        onCloseSettings: handleSettingsClose,
+      })}
       <Menu
         id="callout-settings-menu"
         aria-labelledby="callout-settings-button"
@@ -406,4 +314,4 @@ const CalloutLayout = ({
   );
 };
 
-export default CalloutLayout;
+export default CalloutSettingsContainer;

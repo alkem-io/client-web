@@ -3317,17 +3317,64 @@ export const SearchResultUserFragmentDoc = gql`
   }
   ${SearchResultProfileFragmentDoc}
 `;
+export const CalloutParentFragmentDoc = gql`
+  fragment CalloutParent on SearchResultCallout {
+    space {
+      id
+      profile {
+        id
+        displayName
+        url
+      }
+      level
+    }
+  }
+`;
 export const SearchResultCalloutFragmentDoc = gql`
   fragment SearchResultCallout on SearchResultCallout {
+    id
     callout {
       id
       nameID
       type
       framing {
         id
+        profile {
+          id
+          displayName
+          description
+          url
+          tagset {
+            ...TagsetDetails
+          }
+        }
+      }
+      contributionPolicy {
+        id
+        state
+        allowedContributionTypes
+      }
+      contributions {
+        id
+        post {
+          id
+        }
+        whiteboard {
+          id
+        }
+        link {
+          id
+        }
+      }
+      comments {
+        id
+        messagesCount
       }
     }
+    ...CalloutParent
   }
+  ${TagsetDetailsFragmentDoc}
+  ${CalloutParentFragmentDoc}
 `;
 export const SearchResultOrganizationFragmentDoc = gql`
   fragment SearchResultOrganization on SearchResultOrganization {
@@ -3494,6 +3541,9 @@ export const LibraryTemplatesFragmentDoc = gql`
         id
         displayName
         description
+        tagset {
+          ...TagsetDetails
+        }
       }
       guidelines {
         id
@@ -21954,6 +22004,7 @@ export const SearchDocument = gql`
           ...SearchResultCallout
         }
       }
+      calloutResultsCount
       contributorResults {
         id
         score
