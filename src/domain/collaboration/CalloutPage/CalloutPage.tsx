@@ -164,7 +164,7 @@ const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: Cal
           onCalloutEdit={handleEdit}
           onCalloutUpdate={refetchCalloutData}
           onCalloutDelete={handleDelete}
-          onClose={handleClose}
+          onCollapse={handleClose}
           expanded
         />
       </DialogWithGrid>

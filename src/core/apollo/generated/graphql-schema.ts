@@ -525,12 +525,6 @@ export type ActorGroup = {
   name: Scalars['String'];
 };
 
-export type AdminSearchIngestResult = {
-  __typename?: 'AdminSearchIngestResult';
-  /** The result of the operation. */
-  results: Array<IngestResult>;
-};
-
 export type Agent = {
   __typename?: 'Agent';
   /** The authorization rules for the entity */
@@ -732,6 +726,7 @@ export enum AuthorizationPrivilege {
   AccessVirtualContributor = 'ACCESS_VIRTUAL_CONTRIBUTOR',
   AuthorizationReset = 'AUTHORIZATION_RESET',
   CommunityAddMember = 'COMMUNITY_ADD_MEMBER',
+  CommunityAddMemberVcFromAccount = 'COMMUNITY_ADD_MEMBER_VC_FROM_ACCOUNT',
   CommunityApply = 'COMMUNITY_APPLY',
   CommunityInvite = 'COMMUNITY_INVITE',
   CommunityInviteAccept = 'COMMUNITY_INVITE_ACCEPT',
@@ -2118,6 +2113,8 @@ export type ISearchResults = {
   __typename?: 'ISearchResults';
   /** The search results for Callouts. */
   calloutResults: Array<SearchResult>;
+  /** The total number of results for Callouts. */
+  calloutResultsCount: Scalars['Float'];
   /** The search results for contributions (Posts, Whiteboards etc). */
   contributionResults: Array<SearchResult>;
   /** The total number of search results for contributions (Posts, Whiteboards etc). */
@@ -2128,9 +2125,9 @@ export type ISearchResults = {
   contributorResultsCount: Scalars['Float'];
   /** The search results for Groups. */
   groupResults: Array<SearchResult>;
-  /** The search results for Spaces / Challenges / Opportunities. */
+  /** The search results for Spaces / Subspaces. */
   journeyResults: Array<SearchResult>;
-  /** The total number of results for Spaces / Challenges / Opportunities. */
+  /** The total number of results for Spaces / Subspaces. */
   journeyResultsCount: Scalars['Float'];
 };
 
@@ -2711,7 +2708,7 @@ export type Mutation = {
   /** Allow updating the rule for joining rooms: public or invite. */
   adminCommunicationUpdateRoomsJoinRule: Scalars['Boolean'];
   /** Ingests new data into Elasticsearch from scratch. This will delete all existing data and ingest new data from the source. This is an admin only operation. */
-  adminSearchIngestFromScratch: AdminSearchIngestResult;
+  adminSearchIngestFromScratch: Scalars['String'];
   /** Apply to join the specified Community as a member. */
   applyForCommunityMembership: Application;
   /** Assigns an Organization a Role in the specified Community. */
@@ -4611,7 +4608,7 @@ export type SearchInput = {
   tagsetNames?: InputMaybe<Array<Scalars['String']>>;
   /** The terms to be searched for within this Space. Max 5. */
   terms: Array<Scalars['String']>;
-  /** Restrict the search to only the specified entity types. Values allowed: space, subspace, user, group, organization, Default is all. */
+  /** Restrict the search to only the specified entity types. Values allowed: space, subspace, user, group, organization, callout. Default is all. */
   typesFilter?: InputMaybe<Array<Scalars['String']>>;
 };
 
@@ -4632,6 +4629,8 @@ export type SearchResultCallout = SearchResult & {
   id: Scalars['UUID'];
   /** The score for this search result; more matches means a higher score. */
   score: Scalars['Float'];
+  /** The parent Space of the Callout. */
+  space: Space;
   /** The terms that were matched for this result */
   terms: Array<Scalars['String']>;
   /** The type of returned result for this search. */
@@ -15679,6 +15678,16 @@ export type AvailableVirtualContributorsQuery = {
               profile: { __typename?: 'Profile'; id: string; displayName: string };
             }>;
           };
+          account: {
+            __typename?: 'Account';
+            id: string;
+            virtualContributors: Array<{
+              __typename?: 'VirtualContributor';
+              id: string;
+              nameID: string;
+              profile: { __typename?: 'Profile'; id: string; displayName: string };
+            }>;
+          };
         }
       | undefined;
   };
@@ -22199,7 +22208,9 @@ export type CreateVirtualContributorOnAccountMutation = {
   createVirtualContributor: {
     __typename?: 'VirtualContributor';
     id: string;
-    profile: { __typename?: 'Profile'; id: string; url: string };
+    nameID: string;
+    bodyOfKnowledgeID?: string | undefined;
+    profile: { __typename?: 'Profile'; id: string };
   };
 };
 
@@ -22235,9 +22246,35 @@ export type SpaceSubspacesQuery = {
         bodyOfKnowledgeID?: string | undefined;
         profile: {
           __typename?: 'Profile';
+          id: string;
           displayName: string;
+          tagline: string;
           url: string;
-          avatar?: { __typename?: 'Visual'; uri: string } | undefined;
+          tagsets?:
+            | Array<{
+                __typename?: 'Tagset';
+                id: string;
+                name: string;
+                tags: Array<string>;
+                allowedValues: Array<string>;
+                type: TagsetType;
+              }>
+            | undefined;
+          avatar?:
+            | {
+                __typename?: 'Visual';
+                id: string;
+                uri: string;
+                name: string;
+                allowedTypes: Array<string>;
+                aspectRatio: number;
+                maxHeight: number;
+                maxWidth: number;
+                minHeight: number;
+                minWidth: number;
+                alternativeText?: string | undefined;
+              }
+            | undefined;
         };
       }>;
     };
@@ -22248,7 +22285,9 @@ export type SpaceSubspacesQuery = {
         __typename?: 'Profile';
         id: string;
         displayName: string;
-        avatar?: { __typename?: 'Visual'; uri: string } | undefined;
+        tagline: string;
+        url: string;
+        avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
       };
     }>;
   };
@@ -26327,6 +26366,7 @@ export type SearchQuery = {
   search: {
     __typename?: 'ISearchResults';
     journeyResultsCount: number;
+    calloutResultsCount: number;
     contributorResultsCount: number;
     contributionResultsCount: number;
     journeyResults: Array<
@@ -26411,7 +26451,47 @@ export type SearchQuery = {
             id: string;
             nameID: string;
             type: CalloutType;
-            framing: { __typename?: 'CalloutFraming'; id: string };
+            framing: {
+              __typename?: 'CalloutFraming';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                description?: string | undefined;
+                url: string;
+                tagset?:
+                  | {
+                      __typename?: 'Tagset';
+                      id: string;
+                      name: string;
+                      tags: Array<string>;
+                      allowedValues: Array<string>;
+                      type: TagsetType;
+                    }
+                  | undefined;
+              };
+            };
+            contributionPolicy: {
+              __typename?: 'CalloutContributionPolicy';
+              id: string;
+              state: CalloutState;
+              allowedContributionTypes: Array<CalloutContributionType>;
+            };
+            contributions: Array<{
+              __typename?: 'CalloutContribution';
+              id: string;
+              post?: { __typename?: 'Post'; id: string } | undefined;
+              whiteboard?: { __typename?: 'Whiteboard'; id: string } | undefined;
+              link?: { __typename?: 'Link'; id: string } | undefined;
+            }>;
+            comments?: { __typename?: 'Room'; id: string; messagesCount: number } | undefined;
+          };
+          space: {
+            __typename?: 'Space';
+            id: string;
+            level: number;
+            profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
           };
         }
       | {
@@ -26693,12 +26773,63 @@ export type SearchResultUserFragment = {
 
 export type SearchResultCalloutFragment = {
   __typename?: 'SearchResultCallout';
+  id: string;
   callout: {
     __typename?: 'Callout';
     id: string;
     nameID: string;
     type: CalloutType;
-    framing: { __typename?: 'CalloutFraming'; id: string };
+    framing: {
+      __typename?: 'CalloutFraming';
+      id: string;
+      profile: {
+        __typename?: 'Profile';
+        id: string;
+        displayName: string;
+        description?: string | undefined;
+        url: string;
+        tagset?:
+          | {
+              __typename?: 'Tagset';
+              id: string;
+              name: string;
+              tags: Array<string>;
+              allowedValues: Array<string>;
+              type: TagsetType;
+            }
+          | undefined;
+      };
+    };
+    contributionPolicy: {
+      __typename?: 'CalloutContributionPolicy';
+      id: string;
+      state: CalloutState;
+      allowedContributionTypes: Array<CalloutContributionType>;
+    };
+    contributions: Array<{
+      __typename?: 'CalloutContribution';
+      id: string;
+      post?: { __typename?: 'Post'; id: string } | undefined;
+      whiteboard?: { __typename?: 'Whiteboard'; id: string } | undefined;
+      link?: { __typename?: 'Link'; id: string } | undefined;
+    }>;
+    comments?: { __typename?: 'Room'; id: string; messagesCount: number } | undefined;
+  };
+  space: {
+    __typename?: 'Space';
+    id: string;
+    level: number;
+    profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+  };
+};
+
+export type CalloutParentFragment = {
+  __typename?: 'SearchResultCallout';
+  space: {
+    __typename?: 'Space';
+    id: string;
+    level: number;
+    profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
   };
 };
 

@@ -23,6 +23,10 @@ const InnovationPackRoute = () => {
           element={<AdminInnovationPackPage editTemplates />}
         />
         <Route
+          path={`:${nameOfUrl.innovationPackNameId}/${RoutePaths.calloutTemplatesRoutePath}/:${nameOfUrl.calloutTemplateId}`}
+          element={<AdminInnovationPackPage editTemplates />}
+        />
+        <Route
           path={`:${nameOfUrl.innovationPackNameId}/${RoutePaths.innovationTemplatesRoutePath}/:${nameOfUrl.innovationTemplateId}`}
           element={<AdminInnovationPackPage editTemplates />}
         />

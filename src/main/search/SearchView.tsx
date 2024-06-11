@@ -35,9 +35,6 @@ import { SpaceIcon } from '../../domain/journey/space/icon/SpaceIcon';
 import { findKey, groupBy, identity } from 'lodash';
 import SearchResultPostChooser from './searchResults/SearchResultPostChooser';
 import SearchResultsCalloutCard from './searchResults/searchResultsCallout/SearchResultsCalloutCard';
-import { CalloutCardCallout } from '../../domain/collaboration/callout/calloutCard/CalloutCard';
-import { SearchResultsCalloutCardFooterProps } from './searchResults/searchResultsCallout/SearchResultsCalloutCardFooter';
-import { JourneyTypeName } from '../../domain/journey/JourneyTypeName';
 
 export const MAX_TERMS_SEARCH = 5;
 
@@ -52,7 +49,8 @@ export type SearchResultMetaType =
   | TypedSearchResult<SearchResultType.Post, SearchResultPostFragment>
   | TypedSearchResult<SearchResultType.Space, SearchResultSpaceFragment>
   | TypedSearchResult<SearchResultType.Challenge, SearchResultSpaceFragment>
-  | TypedSearchResult<SearchResultType.Opportunity, SearchResultSpaceFragment>;
+  | TypedSearchResult<SearchResultType.Opportunity, SearchResultSpaceFragment>
+  | TypedSearchResult<SearchResultType.Callout, SearchResultCalloutFragment>;
 
 interface SearchViewProps {
   searchRoute: string;
@@ -62,7 +60,7 @@ interface SearchViewProps {
 
 interface SearchViewSections {
   journeyResults?: SearchResultMetaType[];
-  calloutResults?: SearchResultCalloutFragment[];
+  calloutResults?: SearchResultMetaType[];
   contributionResults?: SearchResultMetaType[];
   contributorResults?: SearchResultMetaType[];
 }
@@ -135,8 +133,8 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
   };
 
   const filters = useMemo(
-    () => [...journeyFilter.value, ...contributionFilter.value, ...contributorFilter.value],
-    [journeyFilter, contributionFilter, contributorFilter]
+    () => [...journeyFilter.value, ...contributionFilter.value, ...contributorFilter.value, ...calloutFilter.value],
+    [journeyFilter, contributionFilter, contributorFilter, calloutFilter]
   );
 
   const { data, loading: isSearching } = useSearchQuery({
@@ -154,7 +152,7 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
 
   const results = termsFromUrl.length === 0 ? undefined : toResultType(data);
 
-  const { journeyResultsCount, /* calloutResultsCount,*/ contributorResultsCount, contributionResultsCount } =
+  const { journeyResultsCount, calloutResultsCount, contributorResultsCount, contributionResultsCount } =
     data?.search ?? {};
 
   const { journeyResults, calloutResults, contributionResults, contributorResults }: SearchViewSections = useMemo(
@@ -216,18 +214,9 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
         <SearchResultSection
           title={t('common.collaborationTools')}
           filterTitle={t('common.type')}
-          count={calloutResults?.length}
-          filterConfig={calloutFilterConfig}
-          results={
-            calloutResults as unknown as {
-              // TODO remove this type cast when the server is updated
-              id: string;
-              callout: CalloutCardCallout & SearchResultsCalloutCardFooterProps['callout'];
-              matchedTerms: string[];
-              journeyTypeName: JourneyTypeName;
-              journeyDisplayName: string;
-            }[]
-          }
+          count={calloutResultsCount}
+          filterConfig={undefined /* TODO: Callout filtering disabled for now calloutFilterConfig */}
+          results={calloutResults as SearchResultCalloutFragment[]}
           currentFilter={calloutFilter}
           onFilterChange={setCalloutFilter}
           loading={isSearching}

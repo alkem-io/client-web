@@ -11,6 +11,12 @@ query AvailableVirtualContributors(
           ...VirtualContributorName
         }
       }
+      account {
+        id
+        virtualContributors {
+          ...VirtualContributorName
+        }
+      }
     }
   }
   virtualContributors @skip(if: $filterSpace) {
