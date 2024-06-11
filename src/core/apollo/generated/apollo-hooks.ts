@@ -3541,6 +3541,9 @@ export const LibraryTemplatesFragmentDoc = gql`
         id
         displayName
         description
+        tagset {
+          ...TagsetDetails
+        }
       }
       guidelines {
         id

@@ -2131,24 +2131,6 @@ export type ISearchResults = {
   journeyResultsCount: Scalars['Float'];
 };
 
-export type IngestBatchResult = {
-  __typename?: 'IngestBatchResult';
-  /** A message to describe the result of the operation. */
-  message?: Maybe<Scalars['String']>;
-  /** Whether the operation was successful. */
-  success: Scalars['Boolean'];
-};
-
-export type IngestResult = {
-  __typename?: 'IngestResult';
-  /** The result of the operation. */
-  batches: Array<IngestBatchResult>;
-  /** The index that the documents were ingested into. */
-  index: Scalars['String'];
-  /** Amount of documents indexed. */
-  total?: Maybe<Scalars['Float']>;
-};
-
 export type IngestSpaceInput = {
   /** The identifier for the Space to be ingested. */
   spaceID: Scalars['UUID'];
@@ -27231,7 +27213,22 @@ export type InnovationLibraryQuery = {
               communityGuidelinesTemplates: Array<{
                 __typename?: 'CommunityGuidelinesTemplate';
                 id: string;
-                profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  description?: string | undefined;
+                  tagset?:
+                    | {
+                        __typename?: 'Tagset';
+                        id: string;
+                        name: string;
+                        tags: Array<string>;
+                        allowedValues: Array<string>;
+                        type: TagsetType;
+                      }
+                    | undefined;
+                };
                 guidelines: {
                   __typename?: 'CommunityGuidelines';
                   id: string;
@@ -27498,7 +27495,22 @@ export type InnovationPackDataFragment = {
         communityGuidelinesTemplates: Array<{
           __typename?: 'CommunityGuidelinesTemplate';
           id: string;
-          profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            description?: string | undefined;
+            tagset?:
+              | {
+                  __typename?: 'Tagset';
+                  id: string;
+                  name: string;
+                  tags: Array<string>;
+                  allowedValues: Array<string>;
+                  type: TagsetType;
+                }
+              | undefined;
+          };
           guidelines: {
             __typename?: 'CommunityGuidelines';
             id: string;
@@ -27735,7 +27747,22 @@ export type LibraryTemplatesFragment = {
   communityGuidelinesTemplates: Array<{
     __typename?: 'CommunityGuidelinesTemplate';
     id: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      description?: string | undefined;
+      tagset?:
+        | {
+            __typename?: 'Tagset';
+            id: string;
+            name: string;
+            tags: Array<string>;
+            allowedValues: Array<string>;
+            type: TagsetType;
+          }
+        | undefined;
+    };
     guidelines: {
       __typename?: 'CommunityGuidelines';
       id: string;
