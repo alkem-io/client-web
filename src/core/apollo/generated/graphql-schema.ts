@@ -26348,6 +26348,7 @@ export type SearchQuery = {
   search: {
     __typename?: 'ISearchResults';
     journeyResultsCount: number;
+    calloutResultsCount: number;
     contributorResultsCount: number;
     contributionResultsCount: number;
     journeyResults: Array<
@@ -26432,7 +26433,47 @@ export type SearchQuery = {
             id: string;
             nameID: string;
             type: CalloutType;
-            framing: { __typename?: 'CalloutFraming'; id: string };
+            framing: {
+              __typename?: 'CalloutFraming';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                description?: string | undefined;
+                url: string;
+                tagset?:
+                  | {
+                      __typename?: 'Tagset';
+                      id: string;
+                      name: string;
+                      tags: Array<string>;
+                      allowedValues: Array<string>;
+                      type: TagsetType;
+                    }
+                  | undefined;
+              };
+            };
+            contributionPolicy: {
+              __typename?: 'CalloutContributionPolicy';
+              id: string;
+              state: CalloutState;
+              allowedContributionTypes: Array<CalloutContributionType>;
+            };
+            contributions: Array<{
+              __typename?: 'CalloutContribution';
+              id: string;
+              post?: { __typename?: 'Post'; id: string } | undefined;
+              whiteboard?: { __typename?: 'Whiteboard'; id: string } | undefined;
+              link?: { __typename?: 'Link'; id: string } | undefined;
+            }>;
+            comments?: { __typename?: 'Room'; id: string; messagesCount: number } | undefined;
+          };
+          space: {
+            __typename?: 'Space';
+            id: string;
+            level: number;
+            profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
           };
         }
       | {
@@ -26714,12 +26755,63 @@ export type SearchResultUserFragment = {
 
 export type SearchResultCalloutFragment = {
   __typename?: 'SearchResultCallout';
+  id: string;
   callout: {
     __typename?: 'Callout';
     id: string;
     nameID: string;
     type: CalloutType;
-    framing: { __typename?: 'CalloutFraming'; id: string };
+    framing: {
+      __typename?: 'CalloutFraming';
+      id: string;
+      profile: {
+        __typename?: 'Profile';
+        id: string;
+        displayName: string;
+        description?: string | undefined;
+        url: string;
+        tagset?:
+          | {
+              __typename?: 'Tagset';
+              id: string;
+              name: string;
+              tags: Array<string>;
+              allowedValues: Array<string>;
+              type: TagsetType;
+            }
+          | undefined;
+      };
+    };
+    contributionPolicy: {
+      __typename?: 'CalloutContributionPolicy';
+      id: string;
+      state: CalloutState;
+      allowedContributionTypes: Array<CalloutContributionType>;
+    };
+    contributions: Array<{
+      __typename?: 'CalloutContribution';
+      id: string;
+      post?: { __typename?: 'Post'; id: string } | undefined;
+      whiteboard?: { __typename?: 'Whiteboard'; id: string } | undefined;
+      link?: { __typename?: 'Link'; id: string } | undefined;
+    }>;
+    comments?: { __typename?: 'Room'; id: string; messagesCount: number } | undefined;
+  };
+  space: {
+    __typename?: 'Space';
+    id: string;
+    level: number;
+    profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+  };
+};
+
+export type CalloutParentFragment = {
+  __typename?: 'SearchResultCallout';
+  space: {
+    __typename?: 'Space';
+    id: string;
+    level: number;
+    profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
   };
 };
 
