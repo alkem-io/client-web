@@ -69,9 +69,7 @@ const EditCommunityGuidelinesTemplateDialog = ({
         },
       },
     };
-    return onSubmit({
-      ...variables,
-    });
+    return onSubmit(variables);
   };
 
   return (

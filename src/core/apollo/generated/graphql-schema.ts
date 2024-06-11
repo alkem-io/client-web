@@ -25331,7 +25331,7 @@ export type SpaceGuidelinesTemplateStorageConfigQuery = {
   spaceAccount: {
     __typename?: 'Space';
     id: string;
-    account?: {
+    account: {
       __typename?: 'Account';
       id: string;
       library?:

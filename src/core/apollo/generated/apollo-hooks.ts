@@ -21325,7 +21325,7 @@ export const SpaceGuidelinesTemplateStorageConfigDocument = gql`
     }
     spaceAccount: space(ID: $spaceId) @include(if: $includeTemplate) {
       id
-      account @include(if: $includeTemplate) {
+      account {
         id
         library {
           communityGuidelinesTemplate(ID: $templateId) {
