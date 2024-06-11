@@ -36,10 +36,6 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
   const openTemplateDialog = useCallback(() => setIsDialogOpen(true), []);
   const closeTemplatesDialog = useCallback(() => setIsDialogOpen(false), []);
 
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const openTemplateDialog = useCallback(() => setIsDialogOpen(true), []);
-  const closeTemplatesDialog = useCallback(() => setIsDialogOpen(false), []);
-
   const { spaceId, journeyLevel } = useRouteResolver();
 
   const {

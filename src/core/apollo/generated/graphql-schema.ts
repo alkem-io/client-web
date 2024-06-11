@@ -2136,11 +2136,6 @@ export type IngestSpaceInput = {
   spaceID: Scalars['UUID'];
 };
 
-export type IngestSpaceInput = {
-  /** The identifier for the Space to be ingested. */
-  spaceID: Scalars['UUID'];
-};
-
 export type InnovationFlow = {
   __typename?: 'InnovationFlow';
   /** The authorization rules for the entity */
