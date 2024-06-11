@@ -1,5 +1,6 @@
 import React, { ReactNode, useMemo } from 'react';
 import { FormikProps } from 'formik';
+import * as yup from 'yup';
 import { CalloutType, UpdateCalloutTemplateInput, Visual } from '../../../../../core/apollo/generated/graphql-schema';
 import TemplateForm, { TemplateProfileValues } from '../TemplateForm';
 import { useTranslation } from 'react-i18next';
@@ -16,6 +17,7 @@ import FormikWhiteboardPreview from '../WhiteboardTemplates/FormikWhiteboardPrev
 import { Reference, Tagset } from '../../../../common/profile/Profile';
 import { Identifiable } from '../../../../../core/utils/Identifiable';
 import { Caption } from '../../../../../core/ui/typography';
+import { displayNameValidator } from '../../../../../core/ui/forms/validator';
 
 export interface CalloutTemplateFormValues extends TemplateProfileValues {
   framing: {
@@ -66,7 +68,17 @@ interface CalloutTemplateFormProps {
   loading?: boolean;
 }
 
-const validator = {};
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const validator: yup.ObjectSchemaDefinition<Partial<any>> = {
+  framing: yup
+    .object()
+    .shape({
+      profile: yup.object().shape({
+        displayName: displayNameValidator,
+      }),
+    })
+    .default(undefined),
+};
 
 const EditCalloutTemplateForm = ({ template, visual, onSubmit, actions }: CalloutTemplateFormProps) => {
   const { t } = useTranslation();
