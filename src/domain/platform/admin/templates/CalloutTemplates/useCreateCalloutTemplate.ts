@@ -9,7 +9,7 @@ import {
   CreateCalloutTemplateMutation,
   CreateTagsetInput,
 } from '../../../../../core/apollo/generated/graphql-schema';
-import { CalloutLayoutProps } from '../../../../collaboration/CalloutBlock/CalloutLayout';
+import { CalloutLayoutProps } from '../../../../collaboration/callout/calloutBlock/CalloutLayout';
 import { CalloutTemplateFormSubmittedValues } from './CalloutTemplateForm';
 import { evictFromCache } from '../../../../../core/apollo/utils/removeFromCache';
 

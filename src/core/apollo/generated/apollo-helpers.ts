@@ -450,10 +450,6 @@ export type ActorGroupFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   name?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type AdminSearchIngestResultKeySpecifier = ('results' | AdminSearchIngestResultKeySpecifier)[];
-export type AdminSearchIngestResultFieldPolicy = {
-  results?: FieldPolicy<any> | FieldReadFunction<any>;
-};
 export type AgentKeySpecifier = (
   | 'authorization'
   | 'credentials'
@@ -1136,6 +1132,7 @@ export type GroupableFieldPolicy = {
 };
 export type ISearchResultsKeySpecifier = (
   | 'calloutResults'
+  | 'calloutResultsCount'
   | 'contributionResults'
   | 'contributionResultsCount'
   | 'contributorResults'
@@ -1147,6 +1144,7 @@ export type ISearchResultsKeySpecifier = (
 )[];
 export type ISearchResultsFieldPolicy = {
   calloutResults?: FieldPolicy<any> | FieldReadFunction<any>;
+  calloutResultsCount?: FieldPolicy<any> | FieldReadFunction<any>;
   contributionResults?: FieldPolicy<any> | FieldReadFunction<any>;
   contributionResultsCount?: FieldPolicy<any> | FieldReadFunction<any>;
   contributorResults?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1154,17 +1152,6 @@ export type ISearchResultsFieldPolicy = {
   groupResults?: FieldPolicy<any> | FieldReadFunction<any>;
   journeyResults?: FieldPolicy<any> | FieldReadFunction<any>;
   journeyResultsCount?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type IngestBatchResultKeySpecifier = ('message' | 'success' | IngestBatchResultKeySpecifier)[];
-export type IngestBatchResultFieldPolicy = {
-  message?: FieldPolicy<any> | FieldReadFunction<any>;
-  success?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type IngestResultKeySpecifier = ('batches' | 'index' | 'total' | IngestResultKeySpecifier)[];
-export type IngestResultFieldPolicy = {
-  batches?: FieldPolicy<any> | FieldReadFunction<any>;
-  index?: FieldPolicy<any> | FieldReadFunction<any>;
-  total?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type InnovationFlowKeySpecifier = (
   | 'authorization'
@@ -1553,6 +1540,7 @@ export type MutationKeySpecifier = (
   | 'assignCommunityRoleToOrganization'
   | 'assignCommunityRoleToUser'
   | 'assignCommunityRoleToVirtual'
+  | 'assignLicensePlanToAccount'
   | 'assignOrganizationRoleToUser'
   | 'assignPlatformRoleToUser'
   | 'assignUserToGroup'
@@ -1646,6 +1634,7 @@ export type MutationKeySpecifier = (
   | 'resetChatGuidance'
   | 'revokeCredentialFromOrganization'
   | 'revokeCredentialFromUser'
+  | 'revokeLicensePlanFromAccount'
   | 'sendMessageReplyToRoom'
   | 'sendMessageToCommunityLeads'
   | 'sendMessageToOrganization'
@@ -1714,6 +1703,7 @@ export type MutationFieldPolicy = {
   assignCommunityRoleToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   assignCommunityRoleToUser?: FieldPolicy<any> | FieldReadFunction<any>;
   assignCommunityRoleToVirtual?: FieldPolicy<any> | FieldReadFunction<any>;
+  assignLicensePlanToAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   assignOrganizationRoleToUser?: FieldPolicy<any> | FieldReadFunction<any>;
   assignPlatformRoleToUser?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserToGroup?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1807,6 +1797,7 @@ export type MutationFieldPolicy = {
   resetChatGuidance?: FieldPolicy<any> | FieldReadFunction<any>;
   revokeCredentialFromOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   revokeCredentialFromUser?: FieldPolicy<any> | FieldReadFunction<any>;
+  revokeLicensePlanFromAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   sendMessageReplyToRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   sendMessageToCommunityLeads?: FieldPolicy<any> | FieldReadFunction<any>;
   sendMessageToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2431,6 +2422,7 @@ export type SearchResultCalloutKeySpecifier = (
   | 'callout'
   | 'id'
   | 'score'
+  | 'space'
   | 'terms'
   | 'type'
   | SearchResultCalloutKeySpecifier
@@ -2439,6 +2431,7 @@ export type SearchResultCalloutFieldPolicy = {
   callout?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   score?: FieldPolicy<any> | FieldReadFunction<any>;
+  space?: FieldPolicy<any> | FieldReadFunction<any>;
   terms?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -3138,10 +3131,6 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | ActorGroupKeySpecifier | (() => undefined | ActorGroupKeySpecifier);
     fields?: ActorGroupFieldPolicy;
   };
-  AdminSearchIngestResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | AdminSearchIngestResultKeySpecifier | (() => undefined | AdminSearchIngestResultKeySpecifier);
-    fields?: AdminSearchIngestResultFieldPolicy;
-  };
   Agent?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | AgentKeySpecifier | (() => undefined | AgentKeySpecifier);
     fields?: AgentFieldPolicy;
@@ -3384,14 +3373,6 @@ export type StrictTypedTypePolicies = {
   ISearchResults?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ISearchResultsKeySpecifier | (() => undefined | ISearchResultsKeySpecifier);
     fields?: ISearchResultsFieldPolicy;
-  };
-  IngestBatchResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | IngestBatchResultKeySpecifier | (() => undefined | IngestBatchResultKeySpecifier);
-    fields?: IngestBatchResultFieldPolicy;
-  };
-  IngestResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | IngestResultKeySpecifier | (() => undefined | IngestResultKeySpecifier);
-    fields?: IngestResultFieldPolicy;
   };
   InnovationFlow?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | InnovationFlowKeySpecifier | (() => undefined | InnovationFlowKeySpecifier);

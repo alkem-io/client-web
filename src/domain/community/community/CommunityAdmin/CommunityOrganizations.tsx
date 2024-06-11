@@ -11,7 +11,6 @@ import { useTranslation } from 'react-i18next';
 import { FC, useState } from 'react';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
-import { buildOrganizationUrl } from '../../../../main/routing/urlBuilders';
 import { CommunityPolicyFragment } from '../../../../core/apollo/generated/graphql-schema';
 import { gutters } from '../../../../core/ui/grid/utils';
 import DataGridSkeleton from '../../../../core/ui/table/DataGridSkeleton';
@@ -83,7 +82,7 @@ const CommunityOrganizations: FC<CommunityOrganizationsProps> = ({
       sortable: false,
       filterable: false,
       renderCell: ({ row }: RenderParams) => (
-        <Link href={buildOrganizationUrl(row.nameID)} target="_blank">
+        <Link href={row.profile.url} target="_blank">
           <Avatar src={row.profile.avatar?.uri} alt={t('common.avatar-of', { user: row.profile.displayName })} />
         </Link>
       ),
@@ -93,7 +92,7 @@ const CommunityOrganizations: FC<CommunityOrganizationsProps> = ({
       headerName: t('common.name'),
       renderHeader: () => <>{t('common.name')}</>,
       renderCell: ({ row }: RenderParams) => (
-        <Link href={buildOrganizationUrl(row.nameID)} target="_blank">
+        <Link href={row.profile.url} target="_blank">
           {row.profile.displayName}
         </Link>
       ),

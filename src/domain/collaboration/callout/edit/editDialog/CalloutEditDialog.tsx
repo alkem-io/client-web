@@ -8,7 +8,7 @@ import { CalloutDeleteType, CalloutEditType } from '../CalloutEditType';
 import CalloutForm, { CalloutFormInput, CalloutFormOutput } from '../../CalloutForm';
 import { CalloutType, TagsetType } from '../../../../../core/apollo/generated/graphql-schema';
 import { useWhiteboardTemplateContentLazyQuery } from '../../../../../core/apollo/generated/apollo-hooks';
-import { CalloutLayoutProps } from '../../../CalloutBlock/CalloutLayout';
+import { CalloutLayoutProps } from '../../calloutBlock/CalloutLayout';
 import EmptyWhiteboard from '../../../../common/whiteboard/EmptyWhiteboard';
 import { JourneyTypeName } from '../../../../journey/JourneyTypeName';
 import { StorageConfigContextProvider } from '../../../../storage/StorageBucket/StorageConfigContext';

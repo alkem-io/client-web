@@ -25,7 +25,7 @@ type StorageConfigLocation =
   | 'organization'
   | 'callout'
   | 'post'
-  | 'guidelinestemplate'
+  | 'guidelinesTemplate'
   | 'innovationPack'
   | 'innovationHub'
   | 'platform';
@@ -54,7 +54,7 @@ interface UseStorageConfigOptionsPost extends UseStorageConfigOptionsBase {
 interface UseStorageConfigOptionsGuidelinesTemplate extends UseStorageConfigOptionsBase {
   spaceId: string | undefined;
   guidelinesTemplateId: string | undefined;
-  locationType: 'guidelinestemplate';
+  locationType: 'guidelinesTemplate';
 }
 
 interface UseStorageConfigOptionsUser extends UseStorageConfigOptionsBase {
@@ -129,7 +129,7 @@ const useStorageConfig = ({ locationType, skip, ...options }: StorageConfigOptio
       includeTemplate: !!guidelinesTemplateOptions.guidelinesTemplateId,
       templateId: guidelinesTemplateOptions.guidelinesTemplateId,
     },
-    skip: skip || locationType !== 'guidelinestemplate' || !guidelinesTemplateOptions.spaceId,
+    skip: skip || locationType !== 'guidelinesTemplate' || !guidelinesTemplateOptions.spaceId,
   });
 
   const userOptions = options as UseStorageConfigOptionsUser;

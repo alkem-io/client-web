@@ -4,6 +4,7 @@ import { SvgIconProps } from '@mui/material';
 import { ReferenceIcon } from '../../../shared/components/References/icons/ReferenceIcon';
 import { BlockOutlined, ForumOutlined, LibraryBooksOutlined } from '@mui/icons-material';
 import { WhiteboardIcon } from '../../whiteboard/icon/WhiteboardIcon';
+import calloutIcons from '../utils/calloutIcons';
 
 export interface ContributionPolicy {
   allowedContributionTypes: CalloutContributionType[];
@@ -20,8 +21,8 @@ export const getCalloutTypeIcon = ({
   switch (type) {
     case CalloutType.Post:
       return contributionPolicy.state === CalloutState.Open ? ForumOutlined : BlockOutlined;
-    case CalloutType.Whiteboard:
-      return WhiteboardIcon;
+    default:
+      return calloutIcons[type];
   }
 };
 

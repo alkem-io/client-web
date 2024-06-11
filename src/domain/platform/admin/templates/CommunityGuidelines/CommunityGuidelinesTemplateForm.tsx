@@ -62,13 +62,6 @@ const validator = {
   displayName: yup.string().required(),
   description: MarkdownValidator(MARKDOWN_TEXT_LENGTH).required(),
   referencesData: referenceSegmentSchema,
-  guidelines: yup.object().shape({
-    profile: yup.object().shape({
-      displayName: yup.string().required(),
-      description: MarkdownValidator(MARKDOWN_TEXT_LENGTH).required(),
-      referencesData: referenceSegmentSchema,
-    }),
-  }),
 };
 
 const validationSchema = yup.object().shape({
@@ -118,7 +111,7 @@ const CommunityGuidelinesTemplateForm = ({
               maxLength={MARKDOWN_TEXT_LENGTH}
             />
             <StorageConfigContextProvider
-              locationType="guidelinestemplate"
+              locationType="guidelinesTemplate"
               spaceId={spaceId}
               guidelinesTemplateId={guidelinesTemplateId}
             >

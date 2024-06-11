@@ -28,10 +28,13 @@ import CreateCommunityGuidelinesTemplateDialog from '../../../platform/admin/tem
 import { CommunityGuidelinesTemplateFormSubmittedValues } from '../../../platform/admin/templates/CommunityGuidelines/CommunityGuidelinesTemplateForm';
 import { useCreateCommunityGuidelinesTemplate } from '../../../platform/admin/templates/CommunityGuidelines/useCreateCommunityGuidelinesTemplate';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
+import { useUserContext } from '../../../community/user';
+import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
 
 const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   const { t } = useTranslation();
   const { spaceId, loading: isLoadingSpace, communityId, profile: spaceProfile } = useSpace();
+  const { user: { hasPlatformPrivilege } = {} } = useUserContext();
 
   const {
     users,
@@ -224,9 +227,12 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
             <PageContentBlock>
               <CommunityVirtualContributors
                 virtualContributors={virtualContributors}
-                canAddVirtualContributors={permissions.canAddVirtualContributors}
+                canAddVirtualContributors={
+                  permissions.canAddVirtualContributorsFromAccount || permissions.canAddMembers
+                }
                 onAddMember={onAddVirtualContributor}
                 onRemoveMember={onRemoveVirtualContributor}
+                isPlatformAdmin={hasPlatformPrivilege?.(AuthorizationPrivilege.PlatformAdmin)}
                 fetchAvailableVirtualContributors={getAvailableVirtualContributors}
                 loading={loading}
               />

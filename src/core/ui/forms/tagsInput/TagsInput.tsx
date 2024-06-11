@@ -101,7 +101,7 @@ export const TagsInput: FC<TagsInputProps> = forwardRef(
             />
           )}
         />
-        <FormHelperText error={error}>{helperText}</FormHelperText>
+        {helperText && <FormHelperText error={error}>{helperText}</FormHelperText>}
       </>
     );
   }
