@@ -12,7 +12,7 @@ interface ResultSectionProps<Result extends Identifiable> {
   results: Result[] | undefined;
   filterTitle?: string;
   count?: number;
-  filterConfig: FilterConfig;
+  filterConfig: FilterConfig | undefined;
   currentFilter: FilterDefinition;
   onFilterChange: (value: FilterDefinition) => void;
   loading?: boolean;
@@ -37,12 +37,14 @@ const SearchResultSection = <Result extends Identifiable>({
         title={title}
         disclaimer={resultDisclaimer}
         actions={
-          <EntityFilter
-            title={filterTitle}
-            currentFilter={currentFilter}
-            config={filterConfig}
-            onChange={onFilterChange}
-          />
+          filterConfig && (
+            <EntityFilter
+              title={filterTitle}
+              currentFilter={currentFilter}
+              config={filterConfig}
+              onChange={onFilterChange}
+            />
+          )
         }
       />
       <CardsLayout
