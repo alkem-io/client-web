@@ -16,7 +16,6 @@ import { Identifiable, Identifiables } from '../../../../core/utils/Identifiable
 import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
 import { identity } from 'lodash';
 import Spacer from '../../../../core/ui/content/Spacer';
-import CommunityGuidelinesConfirmDialog from '../../communityGuidelines/CommunityGuidelinesTemplateLibrary/CommunityGuidelinesConfirmDialog';
 
 enum TemplateSource {
   Space,
@@ -71,7 +70,7 @@ export interface CollaborationTemplatesLibraryProps<
   templatesFromPlatform?: Identifiables<Template>;
   loadingTemplatesFromPlatform?: boolean;
   disableUsePlatformTemplates?: boolean;
-  confirmDialog?: boolean;
+  confirmationDialog?: ComponentType<{ open: boolean; onClose: () => void; onConfirm: () => void }>;
 }
 
 const CollaborationTemplatesLibrary = <
@@ -97,7 +96,7 @@ const CollaborationTemplatesLibrary = <
   templatesFromPlatform,
   loadingTemplatesFromPlatform = false,
   disableUsePlatformTemplates = false,
-  confirmDialog,
+  confirmationDialog: ConfirmationDialog,
 }: CollaborationTemplatesLibraryProps<Template, TemplateWithContent, TemplatePreview>) => {
   const { t } = useTranslation();
 
@@ -122,7 +121,7 @@ const CollaborationTemplatesLibrary = <
   // Show gallery or show preview of this template:
   const [previewTemplate, setPreviewTemplate] = useState<Template & TemplateWithContent>();
   const [templateUseDisabled, setTemplateUseDisabled] = useState<boolean>(false);
-  const [useConfirmDialogOpen, setUseConfirmDialogOpen] = useState<boolean>(false);
+  const [confirmationDialogOpen, setConfirmationDialogOpen] = useState<boolean>(false);
 
   const handlePreviewTemplate = async (template: Template & Identifiable, source: TemplateSource) => {
     setTemplateUseDisabled(disableUsePlatformTemplates && source === TemplateSource.Platform);
@@ -214,7 +213,7 @@ const CollaborationTemplatesLibrary = <
                 variant="contained"
                 sx={{ marginLeft: theme => theme.spacing(1) }}
                 disabled={loading || templateUseDisabled}
-                onClick={confirmDialog ? () => setUseConfirmDialogOpen(true) : handleSelectTemplate}
+                onClick={ConfirmationDialog ? () => setConfirmationDialogOpen(true) : handleSelectTemplate}
               >
                 {t('buttons.use')}
               </Button>
@@ -222,11 +221,11 @@ const CollaborationTemplatesLibrary = <
           />
         )}
       </DialogContent>
-      {confirmDialog && (
-        <CommunityGuidelinesConfirmDialog
-          handleSelectTemplate={handleSelectTemplate}
-          open={useConfirmDialogOpen}
-          onClose={() => setUseConfirmDialogOpen(false)}
+      {ConfirmationDialog && (
+        <ConfirmationDialog
+          open={confirmationDialogOpen}
+          onClose={() => setConfirmationDialogOpen(false)}
+          onConfirm={handleSelectTemplate}
         />
       )}
     </DialogWithGrid>

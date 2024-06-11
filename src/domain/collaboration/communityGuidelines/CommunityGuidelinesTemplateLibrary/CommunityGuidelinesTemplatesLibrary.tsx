@@ -13,6 +13,7 @@ import CommunityGuidelinesTemplatePreview from './CommunityGuidelinesTemplatePre
 import { TemplateBase } from '../../templates/CollaborationTemplatesLibrary/TemplateBase';
 import { TemplateWithInnovationPack } from '../../../platform/admin/templates/InnovationPacks/ImportTemplatesDialogGalleryStep';
 import { Identifiable } from '../../../../core/utils/Identifiable';
+import CommunityGuidelinesConfirmationDialog from './CommunityGuidelinesConfirmationDialog';
 
 export interface CommunityGuidelinesTemplatesLibraryProps {
   open: boolean;
@@ -110,7 +111,7 @@ const CommunityGuidelinesTemplatesLibrary: FC<CommunityGuidelinesTemplatesLibrar
       templatesFromPlatform={templatesFromPlatform}
       loadingTemplatesFromPlatform={loadingTemplatesFromPlatform}
       getTemplateWithContent={getCommunityGuidelinesTemplateWithContent}
-      confirmDialog
+      confirmationDialog={CommunityGuidelinesConfirmationDialog}
     />
   );
 };
