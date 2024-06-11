@@ -1,5 +1,6 @@
 import React, { ReactNode, useMemo } from 'react';
 import { FormikProps } from 'formik';
+import * as yup from 'yup';
 import {
   CalloutType,
   CreateProfileInput,
@@ -19,6 +20,7 @@ import FormikMarkdownField from '../../../../../core/ui/forms/MarkdownInput/Form
 import { MARKDOWN_TEXT_LENGTH } from '../../../../../core/ui/forms/field-length.constants';
 import { TagsetField } from '../../components/Common/TagsetSegment';
 import FormikWhiteboardPreview from '../WhiteboardTemplates/FormikWhiteboardPreview';
+import { displayNameValidator } from '../../../../../core/ui/forms/validator';
 
 export interface CalloutTemplateFormValues {
   displayName: string;
@@ -68,7 +70,17 @@ interface CalloutTemplateFormProps {
   loading?: boolean;
 }
 
-const validator = {};
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const validator: yup.ObjectSchemaDefinition<Partial<any>> = {
+  framing: yup
+    .object()
+    .shape({
+      profile: yup.object().shape({
+        displayName: displayNameValidator,
+      }),
+    })
+    .default(undefined),
+};
 
 const CalloutTemplateForm = ({ initialValues, visual, onSubmit, actions }: CalloutTemplateFormProps) => {
   const { t } = useTranslation();
@@ -117,7 +129,7 @@ const CalloutTemplateForm = ({ initialValues, visual, onSubmit, actions }: Callo
           {values.type === CalloutType.PostCollection && (
             <Box marginBottom={gutters(-1)}>
               <FormikMarkdownField
-                name="contributionDefaults.postContent"
+                name="contributionDefaults.postDescription"
                 title={t('common.description')}
                 maxLength={MARKDOWN_TEXT_LENGTH}
               />
