@@ -30,9 +30,8 @@ const CalloutTemplateCard: FC<CalloutTemplateCardProps> = ({ template, innovatio
   const { t } = useTranslation();
 
   const hasTags = (template?.profile.tagset?.tags ?? []).length > 0;
-  const descriptionHeightGutters = hasTags
-    ? DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS - 2
-    : DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS;
+  const footerHeight = template?.type === CalloutType.LinkCollection ? (hasTags ? 3 : 1) : hasTags ? 2 : 0;
+  const descriptionHeightGutters = DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS - footerHeight;
 
   const Icon = template?.type && calloutIcons[template?.type];
 
@@ -51,7 +50,7 @@ const CalloutTemplateCard: FC<CalloutTemplateCardProps> = ({ template, innovatio
         <CardContent sx={{ '&:last-child': { paddingBottom: gutters(0.2) } }}>
           {template && (
             <Box display="flex" alignItems="center" marginLeft={-0.5} gap={gutters(0.5)}>
-              {Icon && <RoundedIcon marginLeft={0.5} size="xsmall" component={Icon} />}
+              {Icon && <RoundedIcon marginLeft={0.5} size="xsmall" component={Icon} flexShrink={0} />}
               <Caption>{t(`components.calloutTypeSelect.label.${template.type}` as const)}</Caption>
             </Box>
           )}
