@@ -114,7 +114,10 @@ export const VirtualContributorForm: FC<Props> = ({
   };
 
   // use keywords tagset (existing after creation of VC) as tags
-  const tags = useMemo(() => tagsets?.find(x => x.name.toLowerCase() === KEYWORDS_TAGSET) ?? undefined, [tagsets]);
+  const keywordsTagsetWrapped = useMemo(() => {
+    const tagset = tagsets?.find(x => x.name.toLowerCase() === KEYWORDS_TAGSET);
+    return tagset && [tagset];
+  }, [tagsets]);
 
   const [handleSubmit, loading] = useLoadingState(async (values: VirtualContributorFromProps) => {
     const { tagsets, description, tagline, name, ...otherData } = values;
@@ -178,7 +181,9 @@ export const VirtualContributorForm: FC<Props> = ({
                     <Gutters>
                       <NameSegment disabled required />
                       <ProfileSegment />
-                      {tags ? <TagsetSegment tagsets={[tags]} title={t('common.tags')} /> : null}
+                      {keywordsTagsetWrapped ? (
+                        <TagsetSegment tagsets={keywordsTagsetWrapped} title={t('common.tags')} />
+                      ) : null}
                       {hostDisplayName && <HostFields />}
                       <Actions marginTop={theme.spacing(2)} sx={{ justifyContent: 'end' }}>
                         {hasBackNavitagion && (
