@@ -16,7 +16,7 @@ export const getCalloutTypeIcon = ({
   contributionPolicy,
 }: {
   type: CalloutType;
-  contributionPolicy: ContributionPolicy;
+  contributionPolicy: ContributionPolicy | undefined;
 }) => {
   switch (type) {
     case CalloutType.Post:
