@@ -9,7 +9,8 @@ import {
   AdminCalloutTemplateFragment,
   CalloutState,
   CalloutType,
-  CreateCalloutTemplateMutationVariables, UpdateCalloutTemplateInput,
+  CreateCalloutTemplateMutationVariables,
+  UpdateCalloutTemplateInput,
 } from '../../../../../core/apollo/generated/graphql-schema';
 import { LinkWithState } from '../../../../shared/types/LinkWithState';
 import AdminTemplatesSection from '../AdminTemplatesSection';
@@ -59,6 +60,14 @@ const AdminCalloutTemplatesSection = ({ refetchQueries, ...props }: AdminCallout
         const { framing, contributionDefaults } = produce(calloutTemplate, draft => {
           if (draft.type !== CalloutType.Whiteboard) {
             delete draft.framing.whiteboard;
+          } else {
+            draft.framing.whiteboard = {
+              ...draft.framing.whiteboard,
+              profileData: {
+                ...draft.framing.whiteboard?.profileData,
+                displayName: calloutTemplate.framing.profile.displayName,
+              },
+            };
           }
           if (draft.type !== CalloutType.PostCollection) {
             delete draft.contributionDefaults.postDescription;
@@ -72,15 +81,7 @@ const AdminCalloutTemplatesSection = ({ refetchQueries, ...props }: AdminCallout
           templatesSetId: calloutTemplate.templatesSetId,
           profile: calloutTemplate.profile,
           tags: calloutTemplate.tags,
-          framing: {
-            ...framing,
-            whiteboard: {
-              ...framing.whiteboard,
-              profileData: {
-                displayName: framing.profile.displayName,
-              },
-            },
-          },
+          framing,
           type: calloutTemplate.type ?? CalloutType.Post,
           contributionPolicy: {
             state: CalloutState.Open,
