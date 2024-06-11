@@ -16,11 +16,14 @@ interface ContributionPolicy {
 }
 
 export interface CalloutCardCallout {
-  profile: {
-    displayName: string;
-    description?: string;
-    tagset?: {
-      tags: string[];
+  framing: {
+    profile: {
+      displayName: string;
+      description?: string;
+      tagset?: {
+        tags: string[];
+      };
+      url?: string;
     };
   };
   type: CalloutType;
@@ -54,15 +57,13 @@ const CalloutCard = ({
 
   return (
     <ContributeCard {...cardProps}>
-      <CardHeader title={callout?.profile.displayName} iconComponent={CalloutIcon}>
+      <CardHeader title={callout?.framing.profile.displayName} iconComponent={CalloutIcon}>
         {loading && <Skeleton />}
-        <CardHeaderCaption logoUrl={author?.profile.avatar?.uri}>
-          {author?.profile.displayName}
-        </CardHeaderCaption>
+        <CardHeaderCaption logoUrl={author?.profile.avatar?.uri}>{author?.profile.displayName}</CardHeaderCaption>
       </CardHeader>
       <CardDetails>
-        <CardDescriptionWithTags tags={callout?.profile.tagset?.tags}>
-          {callout?.profile.description}
+        <CardDescriptionWithTags tags={callout?.framing.profile.tagset?.tags}>
+          {callout?.framing.profile.description}
         </CardDescriptionWithTags>
       </CardDetails>
       {footer}
