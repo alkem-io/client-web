@@ -2951,6 +2951,8 @@ export type Mutation = {
   updateLink: Link;
   /** Updates the specified Organization. */
   updateOrganization: Organization;
+  /** Updates the specified Organization platform settings. */
+  updateOrganizationPlatformSettings: Organization;
   /** Updates the specified Post. */
   updatePost: Post;
   /** Updates the specified PostTemplate. */
@@ -3513,6 +3515,10 @@ export type MutationUpdateLinkArgs = {
 
 export type MutationUpdateOrganizationArgs = {
   organizationData: UpdateOrganizationInput;
+};
+
+export type MutationUpdateOrganizationPlatformSettingsArgs = {
+  organizationData: UpdateOrganizationPlatformSettingsInput;
 };
 
 export type MutationUpdatePostArgs = {
@@ -5408,6 +5414,13 @@ export type UpdateOrganizationInput = {
   /** The Profile of this entity. */
   profileData?: InputMaybe<UpdateProfileInput>;
   website?: InputMaybe<Scalars['String']>;
+};
+
+export type UpdateOrganizationPlatformSettingsInput = {
+  /** Upate the URL path for the Organization. */
+  nameID: Scalars['NameID'];
+  /** The ID of the Organization to update. */
+  organizationID: Scalars['UUID'];
 };
 
 export type UpdateOrganizationPreferenceInput = {
@@ -25304,65 +25317,32 @@ export type InnovationHubStorageConfigQuery = {
 };
 
 export type SpaceGuidelinesTemplateStorageConfigQueryVariables = Exact<{
-  spaceId: Scalars['UUID_NAMEID'];
-  includeTemplate?: InputMaybe<Scalars['Boolean']>;
-  templateId?: InputMaybe<Scalars['UUID']>;
+  templateId: Scalars['UUID'];
 }>;
 
 export type SpaceGuidelinesTemplateStorageConfigQuery = {
   __typename?: 'Query';
-  space?: {
-    __typename?: 'Space';
-    id: string;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      storageBucket: {
-        __typename?: 'StorageBucket';
-        id: string;
-        allowedMimeTypes: Array<string>;
-        maxFileSize: number;
-        authorization?:
-          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-          | undefined;
-      };
-    };
-  };
-  spaceAccount: {
-    __typename?: 'Space';
-    id: string;
-    account: {
-      __typename?: 'Account';
-      id: string;
-      library?:
-        | {
-            __typename?: 'TemplatesSet';
-            communityGuidelinesTemplate?:
-              | {
-                  __typename?: 'CommunityGuidelinesTemplate';
-                  id: string;
-                  profile: {
-                    __typename?: 'Profile';
-                    id: string;
-                    storageBucket: {
-                      __typename?: 'StorageBucket';
-                      id: string;
-                      allowedMimeTypes: Array<string>;
-                      maxFileSize: number;
-                      authorization?:
-                        | {
-                            __typename?: 'Authorization';
-                            id: string;
-                            myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                          }
-                        | undefined;
-                    };
-                  };
-                }
-              | undefined;
-          }
-        | undefined;
-    };
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    communityGuidelinesTemplate?:
+      | {
+          __typename?: 'CommunityGuidelinesTemplate';
+          id: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            storageBucket: {
+              __typename?: 'StorageBucket';
+              id: string;
+              allowedMimeTypes: Array<string>;
+              maxFileSize: number;
+              authorization?:
+                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                | undefined;
+            };
+          };
+        }
+      | undefined;
   };
 };
 

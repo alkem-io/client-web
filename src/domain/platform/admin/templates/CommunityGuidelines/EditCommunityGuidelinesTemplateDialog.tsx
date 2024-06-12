@@ -9,6 +9,7 @@ import CommunityGuidelinesTemplateForm, {
   CommunityGuidelinesTemplateFormSubmittedValues,
   CommunityGuidelinesTemplateFormValues,
 } from './CommunityGuidelinesTemplateForm';
+import { StorageConfigContextProvider } from '../../../../storage/StorageBucket/StorageConfigContext';
 
 interface EditCommunityGuidelinesTemplateDialogProps {
   open: boolean;
@@ -76,19 +77,20 @@ const EditCommunityGuidelinesTemplateDialog = ({
     <TemplateDialogBase
       open={open}
       onClose={onClose}
-      templateTypeName={t('templateLibrary.postTemplates.name')}
+      templateTypeName={t('templateLibrary.communityGuidelinesTemplates.name')}
       onDelete={onDelete}
       editMode
     >
       {({ actions }) => (
-        <CommunityGuidelinesTemplateForm
-          initialValues={initialValues}
-          visual={template.profile.visual}
-          onSubmit={handleSubmit}
-          actions={actions}
-          guidelinesTemplateId={template.id}
-          profileId={template.guidelines.profile.id}
-        />
+        <StorageConfigContextProvider locationType="guidelinesTemplate" guidelinesTemplateId={template?.id}>
+          <CommunityGuidelinesTemplateForm
+            initialValues={initialValues}
+            visual={template.profile.visual}
+            onSubmit={handleSubmit}
+            actions={actions}
+            profileId={template.guidelines.profile.id}
+          />
+        </StorageConfigContextProvider>
       )}
     </TemplateDialogBase>
   );

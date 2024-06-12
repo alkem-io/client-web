@@ -52,7 +52,6 @@ interface UseStorageConfigOptionsPost extends UseStorageConfigOptionsBase {
 }
 
 interface UseStorageConfigOptionsGuidelinesTemplate extends UseStorageConfigOptionsBase {
-  spaceId: string | undefined;
   guidelinesTemplateId: string | undefined;
   locationType: 'guidelinesTemplate';
 }
@@ -125,11 +124,9 @@ const useStorageConfig = ({ locationType, skip, ...options }: StorageConfigOptio
   const guidelinesTemplateOptions = options as UseStorageConfigOptionsGuidelinesTemplate;
   const { data: guidelinesTemplateStorageConfigData } = useSpaceGuidelinesTemplateStorageConfigQuery({
     variables: {
-      spaceId: guidelinesTemplateOptions.spaceId!,
-      includeTemplate: !!guidelinesTemplateOptions.guidelinesTemplateId,
-      templateId: guidelinesTemplateOptions.guidelinesTemplateId,
+      templateId: guidelinesTemplateOptions.guidelinesTemplateId!,
     },
-    skip: skip || locationType !== 'guidelinesTemplate' || !guidelinesTemplateOptions.spaceId,
+    skip: skip || locationType !== 'guidelinesTemplate' || !guidelinesTemplateOptions.guidelinesTemplateId,
   });
 
   const userOptions = options as UseStorageConfigOptionsUser;
@@ -176,8 +173,7 @@ const useStorageConfig = ({ locationType, skip, ...options }: StorageConfigOptio
     journey ??
     callout?.framing ??
     contribution?.post ??
-    guidelinesTemplateStorageConfigData?.space ??
-    guidelinesTemplateStorageConfigData?.spaceAccount.account?.library?.communityGuidelinesTemplate ??
+    guidelinesTemplateStorageConfigData?.lookup.communityGuidelinesTemplate ??
     userStorageConfigData?.user ??
     organizationStorageConfigData?.organization ??
     innovationPackStorageConfigData?.platform.library.innovationPack ??

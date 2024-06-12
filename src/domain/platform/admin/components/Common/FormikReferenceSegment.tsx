@@ -1,7 +1,8 @@
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 import { newReferenceName } from '../../../../common/reference/newReferenceName';
 import ReferenceSegment, { ReferenceSegmentProps } from './ReferenceSegment';
 import { useTranslation } from 'react-i18next';
+import { useField } from 'formik';
 
 interface Reference {
   id?: string;
@@ -10,23 +11,21 @@ interface Reference {
   description?: string;
 }
 
-interface FormikReferenceSegmentProps extends Omit<ReferenceSegmentProps, 'references'> {
-  references: Reference[];
-  setFieldValue: (field: string, value: Reference[], shouldValidate?: boolean | undefined) => void;
-}
+interface FormikReferenceSegmentProps extends Omit<ReferenceSegmentProps, 'references'> {}
 
-export const FormikReferenceSegment: FC<FormikReferenceSegmentProps> = ({
-  fieldName = 'references',
-  references,
-  setFieldValue,
-  ...rest
-}) => {
+export const FormikReferenceSegment: FC<FormikReferenceSegmentProps> = ({ fieldName = 'references', ...rest }) => {
   const { t } = useTranslation();
 
-  const referencesWithId = (references ?? []).map(ref => ({
-    ...ref,
-    id: ref.id ?? '',
-  }));
+  const [{ value: references = [] }] = useField<Reference[]>(fieldName);
+
+  const referencesWithId = useMemo(
+    () =>
+      references.map(ref => ({
+        ...ref,
+        id: ref.id ?? '',
+      })),
+    [references]
+  );
 
   const handleAdd = pushFn => {
     const newRef = {
