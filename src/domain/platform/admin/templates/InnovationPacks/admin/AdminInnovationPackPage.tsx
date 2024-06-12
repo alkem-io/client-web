@@ -29,7 +29,7 @@ export enum RoutePaths {
   whiteboardTemplatesRoutePath = 'whiteboard-templates',
   innovationTemplatesRoutePath = 'innovation-templates',
   calloutTemplatesRoutePath = 'callout-templates',
-  communityGuidelinesTemplatesRoutePath = 'communityGuidelines-templates',
+  communityGuidelinesTemplatesRoutePath = 'community-guidelines-templates',
 }
 
 interface AdminInnovationPackPageProps {
