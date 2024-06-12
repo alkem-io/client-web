@@ -129,7 +129,7 @@ const CalloutTemplateForm = ({ initialValues, visual, onSubmit, actions }: Callo
           {values.type === CalloutType.PostCollection && (
             <Box marginBottom={gutters(-1)}>
               <FormikMarkdownField
-                name="contributionDefaults.postContent"
+                name="contributionDefaults.postDescription"
                 title={t('common.description')}
                 maxLength={MARKDOWN_TEXT_LENGTH}
               />

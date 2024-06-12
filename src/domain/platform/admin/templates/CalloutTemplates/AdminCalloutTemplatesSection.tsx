@@ -60,6 +60,14 @@ const AdminCalloutTemplatesSection = ({ refetchQueries, ...props }: AdminCallout
         const { framing, contributionDefaults } = produce(calloutTemplate, draft => {
           if (draft.type !== CalloutType.Whiteboard) {
             delete draft.framing.whiteboard;
+          } else {
+            draft.framing.whiteboard = {
+              ...draft.framing.whiteboard,
+              profileData: {
+                ...draft.framing.whiteboard?.profileData,
+                displayName: calloutTemplate.framing.profile.displayName,
+              },
+            };
           }
           if (draft.type !== CalloutType.PostCollection) {
             delete draft.contributionDefaults.postDescription;
@@ -73,15 +81,7 @@ const AdminCalloutTemplatesSection = ({ refetchQueries, ...props }: AdminCallout
           templatesSetId: calloutTemplate.templatesSetId,
           profile: calloutTemplate.profile,
           tags: calloutTemplate.tags,
-          framing: {
-            ...framing,
-            whiteboard: {
-              ...framing.whiteboard,
-              profileData: {
-                displayName: framing.profile.displayName,
-              },
-            },
-          },
+          framing,
           type: calloutTemplate.type ?? CalloutType.Post,
           contributionPolicy: {
             state: CalloutState.Open,
@@ -92,8 +92,23 @@ const AdminCalloutTemplatesSection = ({ refetchQueries, ...props }: AdminCallout
         return createCalloutTemplate({ variables, refetchQueries });
       }}
       // @ts-ignore
-      onUpdateTemplate={async ({ templateId, ...template }: UpdateCalloutTemplateInput & { templateId: string }) => {
-        await updateCalloutTemplate({ variables: { template }, refetchQueries });
+      onUpdateTemplate={async ({
+        templateId,
+        ...template
+      }: UpdateCalloutTemplateInput & { templateId: string; type: CalloutType }) => {
+        const { type, ...updatedValues } = produce(template, draft => {
+          if (draft.type !== CalloutType.Whiteboard && draft.framing) {
+            delete draft.framing.whiteboardContent;
+          }
+          if (draft.type !== CalloutType.PostCollection && draft.contributionDefaults) {
+            delete draft.contributionDefaults.postDescription;
+          }
+          if (draft.type !== CalloutType.WhiteboardCollection && draft.contributionDefaults) {
+            delete draft.contributionDefaults.whiteboardContent;
+          }
+        });
+
+        await updateCalloutTemplate({ variables: { template: updatedValues }, refetchQueries });
       }}
       onDeleteTemplate={async variables => {
         await deleteCalloutTemplate({ variables, refetchQueries });

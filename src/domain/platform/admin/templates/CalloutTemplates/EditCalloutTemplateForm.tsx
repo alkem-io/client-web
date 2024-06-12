@@ -63,7 +63,7 @@ interface CalloutTemplateFormProps {
   };
   // initialValues: Partial<CalloutTemplateFormValues>;
   visual?: Visual;
-  onSubmit: (values: UpdateCalloutTemplateInput) => void;
+  onSubmit: (values: UpdateCalloutTemplateInput & { type: CalloutType }) => void;
   actions: ReactNode | ((formState: FormikProps<CalloutTemplateFormValues>) => ReactNode);
   loading?: boolean;
 }
@@ -135,18 +135,19 @@ const EditCalloutTemplateForm = ({ template, visual, onSubmit, actions }: Callou
   }, [template?.id]);
 
   const handleSubmit = (values: Partial<CalloutTemplateFormValues>) => {
-    const { framing, displayName, description, tags, contributionDefaults } = values as CalloutTemplateFormValues;
+    const { framing, profile, tags, contributionDefaults } = values as CalloutTemplateFormValues & {
+      profile: { displayName: string; description: string };
+    };
 
     if (!template) {
       throw new Error('Template is not loaded');
     }
 
-    const submittedValues: UpdateCalloutTemplateInput = {
+    const submittedValues: UpdateCalloutTemplateInput & { type: CalloutType } = {
       ID: template.id!,
-      // type, not allowed by schema
+      type: template.type,
       profile: {
-        displayName,
-        description,
+        ...profile,
         tagsets: template.profile.tagset && [
           {
             ID: template.profile.tagset.id!,
@@ -212,7 +213,7 @@ const EditCalloutTemplateForm = ({ template, visual, onSubmit, actions }: Callou
           {values.type === CalloutType.PostCollection && (
             <Box marginBottom={gutters(-1)}>
               <FormikMarkdownField
-                name="contributionDefaults.postContent"
+                name="contributionDefaults.postDescription"
                 title={t('common.description')}
                 maxLength={MARKDOWN_TEXT_LENGTH}
               />

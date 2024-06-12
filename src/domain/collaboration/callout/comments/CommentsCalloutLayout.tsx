@@ -60,7 +60,7 @@ const CommentsCalloutLayout = ({
         </Box>
       )}
       {callout.framing.profile.tagset?.tags && callout.framing.profile.tagset?.tags.length > 0 ? (
-        <TagsComponent tags={callout.framing.profile.tagset?.tags} />
+        <TagsComponent tags={callout.framing.profile.tagset?.tags} sx={{ paddingX: gutters() }} />
       ) : undefined}
       {children}
       <CalloutClosedMarginal callout={callout} disabled={disableMarginal} />
