@@ -1,6 +1,6 @@
 import Gutters from '../../grid/Gutters';
 import { ComponentType, ReactNode } from 'react';
-import { Box, Button, SvgIconProps, Tooltip } from '@mui/material';
+import { Box, Button, SvgIconProps, Tooltip, TooltipProps } from '@mui/material';
 import { Caption } from '../../typography';
 import SwapColors from '../../palette/SwapColors';
 import { gutters } from '../../grid/utils';
@@ -17,13 +17,20 @@ export interface RadioButtonsGroupProps<Value> {
   options: RadioButtonOption<Value>[];
   onChange?: (value: Value) => void;
   readOnly?: boolean;
+  tooltipProps?: Partial<TooltipProps>;
 }
 
-const RadioButtonsGroup = <Value,>({ value, options, onChange, readOnly }: RadioButtonsGroupProps<Value>) => {
+const RadioButtonsGroup = <Value,>({
+  value,
+  options,
+  onChange,
+  readOnly,
+  tooltipProps,
+}: RadioButtonsGroupProps<Value>) => {
   return (
     <Gutters row disablePadding>
       {options.map(({ value: optionValue, icon: Icon, label, tooltip }) => (
-        <Tooltip title={tooltip} key={String(optionValue)}>
+        <Tooltip title={tooltip} key={String(optionValue)} {...tooltipProps}>
           <Box>
             <Button
               key={String(optionValue)}
