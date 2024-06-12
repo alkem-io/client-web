@@ -8,16 +8,7 @@ import CalloutTemplateForm, {
 import TemplateDialogBase from '../../../../collaboration/templates/templateDialog/TemplateDialogBase';
 import { Reference, Tagset } from '../../../../common/profile/Profile';
 import { WhiteboardFragmentWithCallout } from '../../../../collaboration/callout/useCallouts/useCallouts';
-import {
-  AuthorizationPrivilege,
-  CalloutGroupName,
-  CalloutState,
-  CalloutType,
-  ContributeTabPostFragment,
-  MessageDetailsFragment,
-  WhiteboardDetailsFragment,
-} from '../../../../../core/apollo/generated/graphql-schema';
-import { LinkDetails } from '../../../../collaboration/callout/links/LinkCollectionCallout';
+import { CalloutType } from '../../../../../core/apollo/generated/graphql-schema';
 import { useWhiteboardWithContentQuery } from '../../../../../core/apollo/generated/apollo-hooks';
 
 export interface CreateCalloutTemplateDialogProps {
@@ -29,44 +20,18 @@ export interface CreateCalloutTemplateDialogProps {
     framing: {
       profile: {
         id: string;
-        url: string;
         displayName: string;
         description?: string;
         references?: Reference[];
         tagset?: Tagset;
-        storageBucket: {
-          id: string;
-        };
       };
       whiteboard?: WhiteboardFragmentWithCallout;
     };
-    comments?: {
-      messages: MessageDetailsFragment[] | undefined;
-    };
     type: CalloutType;
-    groupName: CalloutGroupName;
-    contributionPolicy: {
-      state: CalloutState;
-    };
     contributionDefaults: {
       postDescription?: string;
       whiteboardContent?: string;
     };
-    contributions?: {
-      link?: LinkDetails;
-      post?: ContributeTabPostFragment;
-      whiteboard?: WhiteboardDetailsFragment;
-    }[];
-    draft: boolean;
-    editable?: boolean;
-    movable?: boolean;
-    canSaveAsTemplate?: boolean;
-    authorization?: {
-      myPrivileges?: AuthorizationPrivilege[];
-    };
-    authorName?: string;
-    authorAvatarUri?: string;
-    publishedAt?: string;
   };
 }
 
