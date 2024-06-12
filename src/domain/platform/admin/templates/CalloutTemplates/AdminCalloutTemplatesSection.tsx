@@ -92,8 +92,23 @@ const AdminCalloutTemplatesSection = ({ refetchQueries, ...props }: AdminCallout
         return createCalloutTemplate({ variables, refetchQueries });
       }}
       // @ts-ignore
-      onUpdateTemplate={async ({ templateId, ...template }: UpdateCalloutTemplateInput & { templateId: string }) => {
-        await updateCalloutTemplate({ variables: { template }, refetchQueries });
+      onUpdateTemplate={async ({
+        templateId,
+        ...template
+      }: UpdateCalloutTemplateInput & { templateId: string; type: CalloutType }) => {
+        const { type, ...updatedValues } = produce(template, draft => {
+          if (draft.type !== CalloutType.Whiteboard && draft.framing) {
+            delete draft.framing.whiteboardContent;
+          }
+          if (draft.type !== CalloutType.PostCollection && draft.contributionDefaults) {
+            delete draft.contributionDefaults.postDescription;
+          }
+          if (draft.type !== CalloutType.WhiteboardCollection && draft.contributionDefaults) {
+            delete draft.contributionDefaults.whiteboardContent;
+          }
+        });
+
+        await updateCalloutTemplate({ variables: { template: updatedValues }, refetchQueries });
       }}
       onDeleteTemplate={async variables => {
         await deleteCalloutTemplate({ variables, refetchQueries });

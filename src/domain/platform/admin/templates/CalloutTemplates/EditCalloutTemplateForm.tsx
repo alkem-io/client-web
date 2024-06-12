@@ -63,7 +63,7 @@ interface CalloutTemplateFormProps {
   };
   // initialValues: Partial<CalloutTemplateFormValues>;
   visual?: Visual;
-  onSubmit: (values: UpdateCalloutTemplateInput) => void;
+  onSubmit: (values: UpdateCalloutTemplateInput & { type: CalloutType }) => void;
   actions: ReactNode | ((formState: FormikProps<CalloutTemplateFormValues>) => ReactNode);
   loading?: boolean;
 }
@@ -143,9 +143,9 @@ const EditCalloutTemplateForm = ({ template, visual, onSubmit, actions }: Callou
       throw new Error('Template is not loaded');
     }
 
-    const submittedValues: UpdateCalloutTemplateInput = {
+    const submittedValues: UpdateCalloutTemplateInput & { type: CalloutType } = {
       ID: template.id!,
-      // type, not allowed by schema
+      type: template.type,
       profile: {
         ...profile,
         tagsets: template.profile.tagset && [
