@@ -34,15 +34,10 @@ export const FormikReferenceSegment: FC<FormikReferenceSegmentProps> = ({
       uri: '',
       description: '',
     };
-    setFieldValue(fieldName, [...(references ?? []), newRef]);
     pushFn?.(newRef);
   };
 
   const handleRemove = (reference, removeFn) => {
-    setFieldValue(
-      fieldName,
-      (referencesWithId ?? []).filter(ref => ref !== reference)
-    );
     removeFn?.(reference);
   };
 
