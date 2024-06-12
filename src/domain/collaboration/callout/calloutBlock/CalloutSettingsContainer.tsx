@@ -276,6 +276,7 @@ const CalloutSettingsContainer = ({
         <CalloutSummary callout={callout} />
       </CalloutVisibilityChangeDialog>
       <CreateCalloutTemplateDialog
+        callout={callout}
         open={saveAsTemplateDialogOpen}
         onClose={() => setSaveAsTemplateDialogOpen(false)}
         onSubmit={handleSaveAsTemplate}
