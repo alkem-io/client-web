@@ -11,7 +11,6 @@ import { LinkWithState } from '../../../../shared/types/LinkWithState';
 import AdminTemplatesSection from '../AdminTemplatesSection';
 import { InnovationPack } from '../InnovationPacks/InnovationPack';
 import CommunityGuidelinesImportTemplateCard from './CommunityGuidelinesImportTemplateCard';
-import EditCommunityGuidelinesTemplateDialog from './EditCommunityGuidelinesTemplateDialog';
 import CreateCommunityGuidelinesTemplateDialog from './CreateCommunityGuidelinesTemplateDialog';
 
 interface AdminCommunityGuidelinesTemplatesSectionProps {
@@ -48,9 +47,23 @@ const AdminCommunityGuidelinesTemplatesSection = ({
       templateCardComponent={CommunityGuidelinesImportTemplateCard}
       templateImportCardComponent={CommunityGuidelinesImportTemplateCard}
       createTemplateDialogComponent={CreateCommunityGuidelinesTemplateDialog}
-      // @ts-ignore
-      editTemplateDialogComponent={EditCommunityGuidelinesTemplateDialog}
-      onCreateTemplate={variables => createCommunityGuidelinesTemplate({ variables, refetchQueries })}
+      editTemplateDialogComponent={undefined}
+      onCreateTemplate={variables => {
+        const updatedGuidelines = {
+          profile: {
+            displayName: variables.guidelines.profile.displayName,
+            description: variables.guidelines.profile.description,
+            referencesData: variables.guidelines.profile.references?.map(reference => ({
+              ID: reference.id,
+              name: reference.name,
+              uri: reference.uri,
+            })),
+          },
+        };
+        const { guidelines, ...rest } = variables;
+        const updatedVariables = { guidelines: updatedGuidelines, ...rest };
+        return createCommunityGuidelinesTemplate({ variables: updatedVariables, refetchQueries });
+      }}
       onUpdateTemplate={variables => updateCommunityGuidelinesTemplate({ variables, refetchQueries })}
       onDeleteTemplate={async variables => {
         await deleteCommunityGuidelinesTemplate({ variables, refetchQueries });
