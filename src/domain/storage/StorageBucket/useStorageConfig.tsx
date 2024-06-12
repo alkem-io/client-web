@@ -177,7 +177,7 @@ const useStorageConfig = ({ locationType, skip, ...options }: StorageConfigOptio
     callout?.framing ??
     contribution?.post ??
     guidelinesTemplateStorageConfigData?.space ??
-    guidelinesTemplateStorageConfigData?.space?.account?.library?.communityGuidelinesTemplate ??
+    guidelinesTemplateStorageConfigData?.spaceAccount.account?.library?.communityGuidelinesTemplate ??
     userStorageConfigData?.user ??
     organizationStorageConfigData?.organization ??
     innovationPackStorageConfigData?.platform.library.innovationPack ??

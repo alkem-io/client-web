@@ -22,14 +22,14 @@ import { Trans, useTranslation } from 'react-i18next';
 import { gutters } from '../../../../core/ui/grid/utils';
 import CommunityGuidelinesForm from '../../../community/community/CommunityGuidelines/CommunityGuidelinesForm';
 import CommunityVirtualContributors from '../../../community/community/CommunityAdmin/CommunityVirtualContributors';
+import { useUserContext } from '../../../community/user';
+import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
 import CommunityGuidelinesTemplatesLibrary from '../../../collaboration/communityGuidelines/CommunityGuidelinesTemplateLibrary/CommunityGuidelinesTemplatesLibrary';
 import CommunityGuidelinesContainer from '../../../community/community/CommunityGuidelines/CommunityGuidelinesContainer';
 import CreateCommunityGuidelinesTemplateDialog from '../../../platform/admin/templates/CommunityGuidelines/CreateCommunityGuidelinesTemplateDialog';
 import { CommunityGuidelinesTemplateFormSubmittedValues } from '../../../platform/admin/templates/CommunityGuidelines/CommunityGuidelinesTemplateForm';
 import { useCreateCommunityGuidelinesTemplate } from '../../../platform/admin/templates/CommunityGuidelines/useCreateCommunityGuidelinesTemplate';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
-import { useUserContext } from '../../../community/user';
-import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
 
 const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   const { t } = useTranslation();
