@@ -26,18 +26,12 @@ export const useCreateCommunityGuidelinesTemplate = (): CreateCommunityGuideline
         throw new TypeError('TemplateSet not found!');
       }
 
-      const profile = {
-        ...values.profile,
-        tagsets: {
-          name: '',
-          tags: values.tags,
-        },
-      };
-
       const result = await createCommunityGuidelinesTemplate({
         variables: {
           templatesSetId,
-          profile: profile,
+          profile: values.profile || { displayName: '' },
+          tags: values.tags,
+          // @ts-ignore
           guidelines: values.guidelines,
         },
         update: cache => {

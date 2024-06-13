@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useMemo, useState } from 'react';
+import React, { FC, useCallback, useMemo, useRef, useState } from 'react';
 import { Button, Icon, IconButton } from '@mui/material';
 import DownloadForOfflineOutlinedIcon from '@mui/icons-material/DownloadForOfflineOutlined';
 import InnovationLibraryIcon from '../../../../main/topLevelPages/InnovationLibraryPage/InnovationLibraryIcon';
@@ -26,7 +26,9 @@ import { useUserContext } from '../../../community/user';
 import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
 import CommunityGuidelinesTemplatesLibrary from '../../../collaboration/communityGuidelines/CommunityGuidelinesTemplateLibrary/CommunityGuidelinesTemplatesLibrary';
 import CommunityGuidelinesContainer from '../../../community/community/CommunityGuidelines/CommunityGuidelinesContainer';
-import CreateCommunityGuidelinesTemplateDialog from '../../../platform/admin/templates/CommunityGuidelines/CreateCommunityGuidelinesTemplateDialog';
+import CreateCommunityGuidelinesTemplateDialog, {
+  CommunityGuidelinesFormValues,
+} from '../../../platform/admin/templates/CommunityGuidelines/CreateCommunityGuidelinesTemplateDialog';
 import { CommunityGuidelinesTemplateFormSubmittedValues } from '../../../platform/admin/templates/CommunityGuidelines/CommunityGuidelinesTemplateForm';
 import { useCreateCommunityGuidelinesTemplate } from '../../../platform/admin/templates/CommunityGuidelines/useCreateCommunityGuidelinesTemplate';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
@@ -88,6 +90,7 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
   const openTemplateDialog = useCallback(() => setDialogOpen(true), []);
   const closeTemplatesDialog = useCallback(() => setDialogOpen(false), []);
 
+  const currentGuidelines = useRef<CommunityGuidelinesFormValues>();
   const [saveAsTemplateDialogOpen, setSaveAsTemplateDialogOpen] = useState(false);
   const handleSaveAsTemplateDialogOpen = () => {
     setSaveAsTemplateDialogOpen(true);
@@ -165,7 +168,10 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
                     </Button>
                     <IconButton
                       aria-label={t('buttons.saveAsTemplate')}
-                      onClick={handleSaveAsTemplateDialogOpen}
+                      onClick={() => {
+                        handleSaveAsTemplateDialogOpen();
+                        currentGuidelines.current = communityGuidelines;
+                      }}
                       sx={{ marginLeft: gutters(0.5) }}
                     >
                       <Icon component={DownloadForOfflineOutlinedIcon} color="primary" />
@@ -189,6 +195,7 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
           )}
         </CommunityGuidelinesContainer>
         <CreateCommunityGuidelinesTemplateDialog
+          guidelines={currentGuidelines.current}
           open={saveAsTemplateDialogOpen}
           onClose={() => setSaveAsTemplateDialogOpen(false)}
           onSubmit={handleSaveAsTemplate}
