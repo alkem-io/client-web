@@ -203,7 +203,12 @@ const EditCalloutTemplateForm = ({ template, visual, onSubmit, actions }: Callou
             />
           </Box>
           <TagsetField name="framing.profile.tags" title={t('common.tags')} />
-          <FormikRadioButtonsGroup name="type" options={calloutTypeOptions} readOnly />
+          <FormikRadioButtonsGroup
+            name="type"
+            options={calloutTypeOptions}
+            readOnly
+            tooltipProps={{ PopperProps: { sx: { pointerEvents: 'none' } } }}
+          />
           {values.type === CalloutType.Whiteboard && (
             <FormikWhiteboardPreview name="framing.whiteboard.content" canEdit />
           )}
