@@ -18308,11 +18308,13 @@ export function refetchSubspaceInfoQuery(variables: SchemaTypes.SubspaceInfoQuer
 }
 
 export const SubspaceCommunityIdDocument = gql`
-  query SubspaceCommunityId($spaceId: UUID_NAMEID!) {
-    space(ID: $spaceId) {
-      id
-      community {
+  query SubspaceCommunityId($spaceId: UUID!) {
+    lookup {
+      space(ID: $spaceId) {
         id
+        community {
+          id
+        }
       }
     }
   }
@@ -21312,28 +21314,12 @@ export function refetchInnovationHubStorageConfigQuery(
 }
 
 export const SpaceGuidelinesTemplateStorageConfigDocument = gql`
-  query SpaceGuidelinesTemplateStorageConfig(
-    $spaceId: UUID_NAMEID!
-    $includeTemplate: Boolean = true
-    $templateId: UUID = "00000000-0000-0000-0000-000000000000"
-  ) {
-    space(ID: $spaceId) @skip(if: $includeTemplate) {
-      id
-      profile {
-        ...ProfileStorageConfig
-      }
-    }
-    spaceAccount: space(ID: $spaceId) @include(if: $includeTemplate) {
-      id
-      account {
+  query SpaceGuidelinesTemplateStorageConfig($templateId: UUID!) {
+    lookup {
+      communityGuidelinesTemplate(ID: $templateId) {
         id
-        library {
-          communityGuidelinesTemplate(ID: $templateId) {
-            id
-            profile {
-              ...ProfileStorageConfig
-            }
-          }
+        profile {
+          ...ProfileStorageConfig
         }
       }
     }
@@ -21353,8 +21339,6 @@ export const SpaceGuidelinesTemplateStorageConfigDocument = gql`
  * @example
  * const { data, loading, error } = useSpaceGuidelinesTemplateStorageConfigQuery({
  *   variables: {
- *      spaceId: // value for 'spaceId'
- *      includeTemplate: // value for 'includeTemplate'
  *      templateId: // value for 'templateId'
  *   },
  * });
