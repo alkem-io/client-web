@@ -22551,12 +22551,15 @@ export type SubspaceInfoFragment = {
 };
 
 export type SubspaceCommunityIdQueryVariables = Exact<{
-  spaceId: Scalars['UUID_NAMEID'];
+  spaceId: Scalars['UUID'];
 }>;
 
 export type SubspaceCommunityIdQuery = {
   __typename?: 'Query';
-  space: { __typename?: 'Space'; id: string; community: { __typename?: 'Community'; id: string } };
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    space?: { __typename?: 'Space'; id: string; community: { __typename?: 'Community'; id: string } } | undefined;
+  };
 };
 
 export type SubspacePageQueryVariables = Exact<{
