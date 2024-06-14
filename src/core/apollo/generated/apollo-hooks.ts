@@ -18308,11 +18308,13 @@ export function refetchSubspaceInfoQuery(variables: SchemaTypes.SubspaceInfoQuer
 }
 
 export const SubspaceCommunityIdDocument = gql`
-  query SubspaceCommunityId($spaceId: UUID_NAMEID!) {
-    space(ID: $spaceId) {
-      id
-      community {
+  query SubspaceCommunityId($spaceId: UUID!) {
+    lookup {
+      space(ID: $spaceId) {
         id
+        community {
+          id
+        }
       }
     }
   }
