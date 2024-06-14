@@ -10,6 +10,7 @@ import { Reference, Tagset } from '../../../../common/profile/Profile';
 import { WhiteboardFragmentWithCallout } from '../../../../collaboration/callout/useCallouts/useCallouts';
 import { CalloutType } from '../../../../../core/apollo/generated/graphql-schema';
 import { useWhiteboardWithContentQuery } from '../../../../../core/apollo/generated/apollo-hooks';
+import EmptyWhiteboard from '../../../../common/whiteboard/EmptyWhiteboard';
 
 export interface CreateCalloutTemplateDialogProps {
   open: boolean;
@@ -62,7 +63,7 @@ const CreateCalloutTemplateDialog = ({ open, onClose, onSubmit, callout }: Creat
       },
       tags: callout?.framing.profile.tagset?.tags ?? [],
       whiteboard: {
-        content: whiteboardContent?.lookup.whiteboard?.content ?? '',
+        content: whiteboardContent?.lookup.whiteboard?.content ?? JSON.stringify(EmptyWhiteboard),
         profileData: {
           displayName: callout?.framing.whiteboard?.profile.displayName ?? '',
           description: callout?.framing.whiteboard?.profile.description ?? '',
@@ -71,7 +72,7 @@ const CreateCalloutTemplateDialog = ({ open, onClose, onSubmit, callout }: Creat
     },
     contributionDefaults: {
       postDescription: callout?.contributionDefaults.postDescription ?? '',
-      whiteboardContent: callout?.contributionDefaults.whiteboardContent ?? '',
+      whiteboardContent: callout?.contributionDefaults.whiteboardContent ?? JSON.stringify(EmptyWhiteboard),
     },
     type: callout?.type,
   };
