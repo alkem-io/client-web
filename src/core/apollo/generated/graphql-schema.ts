@@ -25320,65 +25320,32 @@ export type InnovationHubStorageConfigQuery = {
 };
 
 export type SpaceGuidelinesTemplateStorageConfigQueryVariables = Exact<{
-  spaceId: Scalars['UUID_NAMEID'];
-  includeTemplate?: InputMaybe<Scalars['Boolean']>;
-  templateId?: InputMaybe<Scalars['UUID']>;
+  templateId: Scalars['UUID'];
 }>;
 
 export type SpaceGuidelinesTemplateStorageConfigQuery = {
   __typename?: 'Query';
-  space?: {
-    __typename?: 'Space';
-    id: string;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      storageBucket: {
-        __typename?: 'StorageBucket';
-        id: string;
-        allowedMimeTypes: Array<string>;
-        maxFileSize: number;
-        authorization?:
-          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-          | undefined;
-      };
-    };
-  };
-  spaceAccount: {
-    __typename?: 'Space';
-    id: string;
-    account: {
-      __typename?: 'Account';
-      id: string;
-      library?:
-        | {
-            __typename?: 'TemplatesSet';
-            communityGuidelinesTemplate?:
-              | {
-                  __typename?: 'CommunityGuidelinesTemplate';
-                  id: string;
-                  profile: {
-                    __typename?: 'Profile';
-                    id: string;
-                    storageBucket: {
-                      __typename?: 'StorageBucket';
-                      id: string;
-                      allowedMimeTypes: Array<string>;
-                      maxFileSize: number;
-                      authorization?:
-                        | {
-                            __typename?: 'Authorization';
-                            id: string;
-                            myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                          }
-                        | undefined;
-                    };
-                  };
-                }
-              | undefined;
-          }
-        | undefined;
-    };
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    communityGuidelinesTemplate?:
+      | {
+          __typename?: 'CommunityGuidelinesTemplate';
+          id: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            storageBucket: {
+              __typename?: 'StorageBucket';
+              id: string;
+              allowedMimeTypes: Array<string>;
+              maxFileSize: number;
+              authorization?:
+                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                | undefined;
+            };
+          };
+        }
+      | undefined;
   };
 };
 
