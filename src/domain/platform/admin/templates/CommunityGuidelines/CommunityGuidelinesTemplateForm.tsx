@@ -9,9 +9,7 @@ import MarkdownValidator from '../../../../../core/ui/forms/MarkdownInput/Markdo
 import { MARKDOWN_TEXT_LENGTH } from '../../../../../core/ui/forms/field-length.constants';
 import { gutters } from '../../../../../core/ui/grid/utils';
 import TemplateForm, { TemplateProfileValues } from '../TemplateForm';
-import { StorageConfigContextProvider } from '../../../../storage/StorageBucket/StorageConfigContext';
 import { referenceSegmentSchema } from '../../components/Common/ReferenceSegment';
-import { useSpace } from '../../../../journey/space/SpaceContext/useSpace';
 import FormikReferenceSegment from '../../components/Common/FormikReferenceSegment';
 import ProfileReferenceSegment from '../../components/Common/ProfileReferenceSegment';
 
@@ -58,7 +56,6 @@ interface CommunityGuidelinesTemplateFormProps {
   visual?: Visual;
   onSubmit: (values: CommunityGuidelinesTemplateFormSubmittedValues) => void;
   actions: ReactNode | ((formState: FormikProps<CommunityGuidelinesTemplateFormValues>) => ReactNode);
-  guidelinesTemplateId?: string;
   profileId?: string;
 }
 
@@ -78,10 +75,8 @@ const CommunityGuidelinesTemplateForm = ({
   onSubmit,
   actions,
   profileId, // If we have a profileId means we are editing an existing CG template
-  guidelinesTemplateId,
 }: CommunityGuidelinesTemplateFormProps) => {
   const { t } = useTranslation();
-  const { spaceId } = useSpace();
   return (
     <TemplateForm
       initialValues={initialValues}
@@ -91,7 +86,7 @@ const CommunityGuidelinesTemplateForm = ({
       validator={validator}
       entityTypeName={t('templateLibrary.communityGuidelinesTemplates.name')}
     >
-      {({ values, setFieldValue }) => (
+      {({ values }) => (
         <>
           <FormikInputField
             name="guidelines.profile.displayName"
@@ -102,29 +97,17 @@ const CommunityGuidelinesTemplateForm = ({
             title={t('templateLibrary.communityGuidelinesTemplates.guidelinesDescription')}
             maxLength={MARKDOWN_TEXT_LENGTH}
           />
-          <StorageConfigContextProvider
-            locationType="guidelinesTemplate"
-            spaceId={spaceId}
-            guidelinesTemplateId={guidelinesTemplateId}
-          >
-            {profileId ? (
-              <ProfileReferenceSegment
-                profileId={profileId}
-                compactMode
-                fieldName="guidelines.profile.references"
-                references={values.guidelines?.profile?.references ?? []}
-                marginTop={gutters(-1)}
-              />
-            ) : (
-              <FormikReferenceSegment
-                compactMode
-                fieldName="guidelines.profile.referencesData"
-                references={values.guidelines?.profile?.referencesData ?? []}
-                marginTop={gutters(-1)}
-                setFieldValue={setFieldValue}
-              />
-            )}
-          </StorageConfigContextProvider>
+          {profileId ? (
+            <ProfileReferenceSegment
+              profileId={profileId}
+              compactMode
+              fieldName="guidelines.profile.references"
+              references={values.guidelines?.profile?.references ?? []}
+              marginTop={gutters(-1)}
+            />
+          ) : (
+            <FormikReferenceSegment compactMode fieldName="guidelines.profile.referencesData" marginTop={gutters(-1)} />
+          )}
         </>
       )}
     </TemplateForm>

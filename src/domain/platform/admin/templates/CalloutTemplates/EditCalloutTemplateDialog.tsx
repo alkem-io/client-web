@@ -11,10 +11,11 @@ export interface EditCalloutTemplateDialogProps {
   open: boolean;
   onClose: DialogHeaderProps['onClose'];
   onSubmit: (values: UpdateCalloutTemplateInput & { type: CalloutType }) => void;
+  onDelete: () => void;
   template: Identifiable | undefined;
 }
 
-const EditCalloutTemplateDialog = ({ template, open, onClose, onSubmit }: EditCalloutTemplateDialogProps) => {
+const EditCalloutTemplateDialog = ({ template, open, onClose, onSubmit, onDelete }: EditCalloutTemplateDialogProps) => {
   const { t } = useTranslation();
 
   const { data } = useCalloutTemplateEditableAttributesQuery({
@@ -29,6 +30,7 @@ const EditCalloutTemplateDialog = ({ template, open, onClose, onSubmit }: EditCa
       open={open}
       onClose={onClose}
       templateTypeName={t('templateLibrary.calloutTemplates.name')}
+      onDelete={onDelete}
       editMode
     >
       {({ actions }) => (
