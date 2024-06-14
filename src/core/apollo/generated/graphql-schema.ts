@@ -2951,6 +2951,8 @@ export type Mutation = {
   updateLink: Link;
   /** Updates the specified Organization. */
   updateOrganization: Organization;
+  /** Updates the specified Organization platform settings. */
+  updateOrganizationPlatformSettings: Organization;
   /** Updates the specified Post. */
   updatePost: Post;
   /** Updates the specified PostTemplate. */
@@ -3513,6 +3515,10 @@ export type MutationUpdateLinkArgs = {
 
 export type MutationUpdateOrganizationArgs = {
   organizationData: UpdateOrganizationInput;
+};
+
+export type MutationUpdateOrganizationPlatformSettingsArgs = {
+  organizationData: UpdateOrganizationPlatformSettingsInput;
 };
 
 export type MutationUpdatePostArgs = {
@@ -5408,6 +5414,13 @@ export type UpdateOrganizationInput = {
   /** The Profile of this entity. */
   profileData?: InputMaybe<UpdateProfileInput>;
   website?: InputMaybe<Scalars['String']>;
+};
+
+export type UpdateOrganizationPlatformSettingsInput = {
+  /** Upate the URL path for the Organization. */
+  nameID: Scalars['NameID'];
+  /** The ID of the Organization to update. */
+  organizationID: Scalars['UUID'];
 };
 
 export type UpdateOrganizationPreferenceInput = {
@@ -22538,12 +22551,15 @@ export type SubspaceInfoFragment = {
 };
 
 export type SubspaceCommunityIdQueryVariables = Exact<{
-  spaceId: Scalars['UUID_NAMEID'];
+  spaceId: Scalars['UUID'];
 }>;
 
 export type SubspaceCommunityIdQuery = {
   __typename?: 'Query';
-  space: { __typename?: 'Space'; id: string; community: { __typename?: 'Community'; id: string } };
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    space?: { __typename?: 'Space'; id: string; community: { __typename?: 'Community'; id: string } } | undefined;
+  };
 };
 
 export type SubspacePageQueryVariables = Exact<{

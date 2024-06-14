@@ -1,8 +1,10 @@
-query SubspaceCommunityId($spaceId: UUID_NAMEID!) {
-  space(ID: $spaceId) {
-    id
-    community {
+query SubspaceCommunityId($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
       id
+      community {
+        id
+      }
     }
   }
 }
