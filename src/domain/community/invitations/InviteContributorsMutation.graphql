@@ -1,0 +1,9 @@
+mutation inviteContributorsToCommunity($contributorIds: [UUID!]!, $communityId: UUID!, $message: String) {
+  inviteContributorsForCommunityMembership(invitationData: {
+    invitedContributors: $contributorIds
+    communityID: $communityId
+    welcomeMessage: $message
+  }) {
+    id
+  }
+}

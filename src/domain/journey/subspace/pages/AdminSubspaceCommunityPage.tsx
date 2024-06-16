@@ -72,7 +72,7 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
     () =>
       applications
         ?.filter(application => application.lifecycle.state === 'new')
-        .map(application => application.user.id) ?? [],
+        .map(application => application.contributor.id) ?? [],
     [applications]
   );
 

@@ -14645,6 +14645,7 @@ export type CommunityApplicationsInvitationsQuery = {
                     __typename?: 'Profile';
                     id: string;
                     displayName: string;
+                    url: string;
                     avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                     location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
                   };
@@ -14658,6 +14659,7 @@ export type CommunityApplicationsInvitationsQuery = {
                     __typename?: 'Profile';
                     id: string;
                     displayName: string;
+                    url: string;
                     avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                     location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
                   };
@@ -14670,6 +14672,7 @@ export type CommunityApplicationsInvitationsQuery = {
                     __typename?: 'Profile';
                     id: string;
                     displayName: string;
+                    url: string;
                     avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                     location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
                   };
@@ -14681,6 +14684,7 @@ export type CommunityApplicationsInvitationsQuery = {
             id: string;
             createdDate: Date;
             updatedDate: Date;
+            contributorType: CommunityContributorType;
             lifecycle: {
               __typename?: 'Lifecycle';
               id: string;
@@ -14696,18 +14700,21 @@ export type CommunityApplicationsInvitationsQuery = {
                     __typename?: 'Profile';
                     id: string;
                     displayName: string;
+                    url: string;
                     avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                     location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
                   };
                 }
               | {
                   __typename?: 'User';
+                  email: string;
                   id: string;
                   nameID: string;
                   profile: {
                     __typename?: 'Profile';
                     id: string;
                     displayName: string;
+                    url: string;
                     avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                     location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
                   };
@@ -14720,6 +14727,7 @@ export type CommunityApplicationsInvitationsQuery = {
                     __typename?: 'Profile';
                     id: string;
                     displayName: string;
+                    url: string;
                     avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                     location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
                   };
@@ -14756,6 +14764,7 @@ export type AdminCommunityApplicationFragment = {
           __typename?: 'Profile';
           id: string;
           displayName: string;
+          url: string;
           avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
           location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
         };
@@ -14769,6 +14778,7 @@ export type AdminCommunityApplicationFragment = {
           __typename?: 'Profile';
           id: string;
           displayName: string;
+          url: string;
           avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
           location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
         };
@@ -14781,6 +14791,7 @@ export type AdminCommunityApplicationFragment = {
           __typename?: 'Profile';
           id: string;
           displayName: string;
+          url: string;
           avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
           location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
         };
@@ -14793,6 +14804,7 @@ export type AdminCommunityInvitationFragment = {
   id: string;
   createdDate: Date;
   updatedDate: Date;
+  contributorType: CommunityContributorType;
   lifecycle: {
     __typename?: 'Lifecycle';
     id: string;
@@ -14808,18 +14820,21 @@ export type AdminCommunityInvitationFragment = {
           __typename?: 'Profile';
           id: string;
           displayName: string;
+          url: string;
           avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
           location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
         };
       }
     | {
         __typename?: 'User';
+        email: string;
         id: string;
         nameID: string;
         profile: {
           __typename?: 'Profile';
           id: string;
           displayName: string;
+          url: string;
           avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
           location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
         };
@@ -14832,6 +14847,7 @@ export type AdminCommunityInvitationFragment = {
           __typename?: 'Profile';
           id: string;
           displayName: string;
+          url: string;
           avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
           location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
         };
@@ -14853,6 +14869,7 @@ type AdminCommunityCandidateMember_Organization_Fragment = {
     __typename?: 'Profile';
     id: string;
     displayName: string;
+    url: string;
     avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
     location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
   };
@@ -14866,6 +14883,7 @@ type AdminCommunityCandidateMember_User_Fragment = {
     __typename?: 'Profile';
     id: string;
     displayName: string;
+    url: string;
     avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
     location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
   };
@@ -14879,6 +14897,7 @@ type AdminCommunityCandidateMember_VirtualContributor_Fragment = {
     __typename?: 'Profile';
     id: string;
     displayName: string;
+    url: string;
     avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
     location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
   };
@@ -16927,13 +16946,13 @@ export type InvitationStateEventMutation = {
   };
 };
 
-export type InviteExistingUserMutationVariables = Exact<{
+export type InviteContributorsToCommunityMutationVariables = Exact<{
   contributorIds: Array<Scalars['UUID']> | Scalars['UUID'];
   communityId: Scalars['UUID'];
   message?: InputMaybe<Scalars['String']>;
 }>;
 
-export type InviteExistingUserMutation = {
+export type InviteContributorsToCommunityMutation = {
   __typename?: 'Mutation';
   inviteContributorsForCommunityMembership: Array<{ __typename?: 'Invitation'; id: string }>;
 };

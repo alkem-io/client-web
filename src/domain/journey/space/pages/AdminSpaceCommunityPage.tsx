@@ -65,7 +65,7 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
     () =>
       applications
         ?.filter(application => application.lifecycle.state === 'new')
-        .map(application => application.user.id) ?? [],
+        .map(application => application.contributor.id) ?? [],
     [applications]
   );
 
@@ -73,7 +73,7 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
     () =>
       invitations
         ?.filter(invitation => invitation.lifecycle.state === 'invited')
-        .map(invitation => invitation.user.id) ?? [],
+        .map(invitation => invitation.contributor.id) ?? [],
     [invitations]
   );
 

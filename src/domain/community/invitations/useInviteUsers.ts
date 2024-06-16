@@ -1,5 +1,5 @@
 import {
-  useInviteExistingUserMutation,
+  useInviteContributorsToCommunityMutation,
   useInviteExternalUserMutation,
 } from '../../../core/apollo/generated/apollo-hooks';
 import ensurePresence from '../../../core/utils/ensurePresence';
@@ -8,8 +8,8 @@ interface InviteUserData {
   message: string;
 }
 
-export interface InviteExistingUserData extends InviteUserData {
-  userIds: string[];
+export interface InviteContributorsData extends InviteUserData {
+  contributorIds: string[];
 }
 
 export interface InviteExternalUserData extends InviteUserData {
@@ -17,32 +17,32 @@ export interface InviteExternalUserData extends InviteUserData {
 }
 
 interface UseInviteUsersProvided {
-  inviteExistingUser: (params: InviteExistingUserData) => Promise<void>;
+  inviteContributor: (params: InviteContributorsData) => Promise<void>;
   inviteExternalUser: (params: InviteExternalUserData) => Promise<void>;
 }
 
 interface UseInviteUsersCallbacks {
-  onInviteExistingUser?: (communityId: string) => void | Promise<void>;
+  onInviteContributor?: (communityId: string) => void | Promise<void>;
   onInviteExternalUser?: (communityId: string) => void | Promise<void>;
 }
 
 const useInviteUsers = (
   communityId: string | undefined,
-  { onInviteExistingUser, onInviteExternalUser }: UseInviteUsersCallbacks = {}
+  { onInviteContributor, onInviteExternalUser }: UseInviteUsersCallbacks = {}
 ): UseInviteUsersProvided => {
-  const [inviteExistingUser] = useInviteExistingUserMutation();
+  const [inviteExistingUser] = useInviteContributorsToCommunityMutation();
   const [inviteExternalUser] = useInviteExternalUserMutation();
 
   return {
-    inviteExistingUser: async ({ userIds, message }) => {
+    inviteContributor: async ({ contributorIds, message }) => {
       await inviteExistingUser({
         variables: {
-          userIds,
+          contributorIds,
           message,
           communityId: ensurePresence(communityId),
         },
       });
-      await onInviteExistingUser?.(ensurePresence(communityId));
+      await onInviteContributor?.(ensurePresence(communityId));
     },
     inviteExternalUser: async ({ email, message }) => {
       await inviteExternalUser({

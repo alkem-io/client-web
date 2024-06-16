@@ -1131,6 +1131,7 @@ export const AdminCommunityCandidateMemberFragmentDoc = gql`
         city
         country
       }
+      url
     }
   }
   ${VisualUriFragmentDoc}
@@ -1169,8 +1170,12 @@ export const AdminCommunityInvitationFragmentDoc = gql`
       state
       nextEvents
     }
+    contributorType
     contributor {
       ...AdminCommunityCandidateMember
+      ... on User {
+        email
+      }
     }
   }
   ${AdminCommunityCandidateMemberFragmentDoc}
@@ -12871,8 +12876,8 @@ export type InvitationStateEventMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.InvitationStateEventMutation,
   SchemaTypes.InvitationStateEventMutationVariables
 >;
-export const InviteExistingUserDocument = gql`
-  mutation InviteExistingUser($contributorIds: [UUID!]!, $communityId: UUID!, $message: String) {
+export const InviteContributorsToCommunityDocument = gql`
+  mutation inviteContributorsToCommunity($contributorIds: [UUID!]!, $communityId: UUID!, $message: String) {
     inviteContributorsForCommunityMembership(
       invitationData: { invitedContributors: $contributorIds, communityID: $communityId, welcomeMessage: $message }
     ) {
@@ -12880,23 +12885,23 @@ export const InviteExistingUserDocument = gql`
     }
   }
 `;
-export type InviteExistingUserMutationFn = Apollo.MutationFunction<
-  SchemaTypes.InviteExistingUserMutation,
-  SchemaTypes.InviteExistingUserMutationVariables
+export type InviteContributorsToCommunityMutationFn = Apollo.MutationFunction<
+  SchemaTypes.InviteContributorsToCommunityMutation,
+  SchemaTypes.InviteContributorsToCommunityMutationVariables
 >;
 
 /**
- * __useInviteExistingUserMutation__
+ * __useInviteContributorsToCommunityMutation__
  *
- * To run a mutation, you first call `useInviteExistingUserMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useInviteExistingUserMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useInviteContributorsToCommunityMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useInviteContributorsToCommunityMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [inviteExistingUserMutation, { data, loading, error }] = useInviteExistingUserMutation({
+ * const [inviteContributorsToCommunityMutation, { data, loading, error }] = useInviteContributorsToCommunityMutation({
  *   variables: {
  *      contributorIds: // value for 'contributorIds'
  *      communityId: // value for 'communityId'
@@ -12904,24 +12909,27 @@ export type InviteExistingUserMutationFn = Apollo.MutationFunction<
  *   },
  * });
  */
-export function useInviteExistingUserMutation(
+export function useInviteContributorsToCommunityMutation(
   baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.InviteExistingUserMutation,
-    SchemaTypes.InviteExistingUserMutationVariables
+    SchemaTypes.InviteContributorsToCommunityMutation,
+    SchemaTypes.InviteContributorsToCommunityMutationVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.InviteExistingUserMutation, SchemaTypes.InviteExistingUserMutationVariables>(
-    InviteExistingUserDocument,
-    options
-  );
+  return Apollo.useMutation<
+    SchemaTypes.InviteContributorsToCommunityMutation,
+    SchemaTypes.InviteContributorsToCommunityMutationVariables
+  >(InviteContributorsToCommunityDocument, options);
 }
 
-export type InviteExistingUserMutationHookResult = ReturnType<typeof useInviteExistingUserMutation>;
-export type InviteExistingUserMutationResult = Apollo.MutationResult<SchemaTypes.InviteExistingUserMutation>;
-export type InviteExistingUserMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.InviteExistingUserMutation,
-  SchemaTypes.InviteExistingUserMutationVariables
+export type InviteContributorsToCommunityMutationHookResult = ReturnType<
+  typeof useInviteContributorsToCommunityMutation
+>;
+export type InviteContributorsToCommunityMutationResult =
+  Apollo.MutationResult<SchemaTypes.InviteContributorsToCommunityMutation>;
+export type InviteContributorsToCommunityMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.InviteContributorsToCommunityMutation,
+  SchemaTypes.InviteContributorsToCommunityMutationVariables
 >;
 export const InviteExternalUserDocument = gql`
   mutation InviteExternalUser($email: String!, $communityId: UUID!, $message: String) {

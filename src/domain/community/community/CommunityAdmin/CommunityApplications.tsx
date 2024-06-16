@@ -13,30 +13,56 @@ import {
   AdminCommunityApplicationFragment,
   AdminCommunityInvitationExternalFragment,
   AdminCommunityInvitationFragment,
+  CommunityContributorType,
+  User,
 } from '../../../../core/apollo/generated/graphql-schema';
-import { buildUserProfileUrl } from '../../../../main/routing/urlBuilders';
 import { ApplicationDialog } from '../../application/dialogs/ApplicationDialog';
 import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
 import { formatDateTime } from '../../../../core/utils/time/utils';
 import useLoadingState from '../../../shared/utils/useLoadingState';
 import RemoveIcon from '@mui/icons-material/Remove';
-enum CandidateType {
+
+enum MembershipType {
   Application,
   Invitation,
   InvitationExternal,
 }
 
-type TableItem =
-  | (AdminCommunityApplicationFragment & { type: CandidateType.Application })
-  | (AdminCommunityInvitationFragment & { type: CandidateType.Invitation })
-  | (AdminCommunityInvitationExternalFragment & {
-      type: CandidateType.InvitationExternal;
-      lifecycle?: undefined;
-      user?: undefined;
-    });
+type MembershipTableItem = {
+  id: string;
+  type: MembershipType;
+  contributorType: CommunityContributorType;
+  url: string;
+  displayName: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  lifecycle?: any;
+  email?: string;
+  createdDate: Date;
+  updatedDate?: Date;
+  questions: {
+    id: string;
+    name: string;
+    value: string;
+  }[];
+  contributor?: {
+    id: string;
+    nameID: string;
+    profile: {
+      displayName: string;
+      avatar?: {
+        uri: string;
+      };
+      location?: {
+        city: string;
+        country: string;
+      };
+      url: string;
+    };
+  };
+};
 
-type RenderParams = GridRenderCellParams<string, TableItem>;
-type GetterParams = GridValueGetterParams<string, TableItem>;
+type RenderParams = GridRenderCellParams<string, MembershipTableItem>;
+type GetterParams = GridValueGetterParams<string, MembershipTableItem>;
 
 const initialState: GridInitialState = {
   pagination: {
@@ -53,19 +79,19 @@ const initialState: GridInitialState = {
   },
 };
 
-const getDeleteDialogTranslationNamespace = (row: TableItem) => {
+const getDeleteDialogTranslationNamespace = (row: MembershipTableItem) => {
   switch (row.type) {
-    case CandidateType.Application:
+    case MembershipType.Application:
       return 'confirmDeleteApplication';
-    case CandidateType.Invitation:
+    case MembershipType.Invitation:
       return 'confirmDeleteInvitation';
-    case CandidateType.InvitationExternal:
+    case MembershipType.InvitationExternal:
       return 'confirmDeleteInvitationExternal';
   }
 };
 
-const formatState = (item: TableItem, t: TFunction<'translation', undefined>) => {
-  if (item.type === CandidateType.Application) {
+const formatState = (item: MembershipTableItem, t: TFunction<'translation', undefined>) => {
+  if (item.type === MembershipType.Application) {
     switch (item.lifecycle.state) {
       case 'new':
         return <strong>{t('community.applicationStatus.applicationReceived')}</strong>;
@@ -76,7 +102,7 @@ const formatState = (item: TableItem, t: TFunction<'translation', undefined>) =>
       case 'archived':
         return t('community.applicationStatus.applicationArchived');
     }
-  } else if (item.type === CandidateType.Invitation) {
+  } else if (item.type === MembershipType.Invitation) {
     switch (item.lifecycle.state) {
       case 'invited':
         return t('community.invitationStatus.invited');
@@ -119,6 +145,56 @@ interface CommunityApplicationsProps {
 
 const NO_DATA_PLACEHOLDER = '—';
 
+const CreatePendingMembershipForApplication = (application: AdminCommunityApplicationFragment) => {
+  const applicant = application.contributor;
+  const result: MembershipTableItem = {
+    id: application.id,
+    type: MembershipType.Application,
+    contributorType: CommunityContributorType.User,
+    displayName: applicant.profile.displayName,
+    url: applicant.profile.url,
+    lifecycle: application.lifecycle,
+    email: (applicant as User).email,
+    createdDate: new Date(application.createdDate),
+    updatedDate: new Date(application.updatedDate),
+    contributor: applicant,
+    questions: application.questions,
+  } as const;
+  return result;
+};
+
+const CreatePendingMembershipForInvitation = (invitation: AdminCommunityInvitationFragment) => {
+  const contributor = invitation.contributor;
+  const result: MembershipTableItem = {
+    id: invitation.id,
+    type: MembershipType.Invitation,
+    contributorType: invitation.contributorType,
+    displayName: contributor.profile.displayName,
+    url: contributor.profile.url,
+    lifecycle: invitation.lifecycle,
+    email: (contributor as User).email,
+    createdDate: new Date(invitation.createdDate),
+    updatedDate: new Date(invitation.updatedDate),
+    contributor: contributor,
+    questions: [],
+  } as const;
+  return result;
+};
+
+const CreatePendingMembershipForInvitationExternal = (invitation: AdminCommunityInvitationExternalFragment) => {
+  const result: MembershipTableItem = {
+    id: invitation.id,
+    type: MembershipType.InvitationExternal,
+    contributorType: CommunityContributorType.User,
+    displayName: invitation.email,
+    url: '',
+    email: invitation.email,
+    createdDate: new Date(invitation.createdDate),
+    questions: [],
+  } as const;
+  return result;
+};
+
 const CommunityApplications: FC<CommunityApplicationsProps> = ({
   applications = [],
   onApplicationStateChange,
@@ -131,15 +207,15 @@ const CommunityApplications: FC<CommunityApplicationsProps> = ({
   loading,
 }) => {
   const { t } = useTranslation();
-  const [selectedItem, setSelectedItem] = useState<TableItem>();
-  const [deletingItem, setDeletingItem] = useState<TableItem>();
+  const [selectedItem, setSelectedItem] = useState<MembershipTableItem>();
+  const [deletingItem, setDeletingItem] = useState<MembershipTableItem>();
 
-  const tableItems = useMemo<TableItem[]>(
+  const tableItems = useMemo<MembershipTableItem[]>(
     () => [
-      ...applications.map(application => ({ ...application, type: CandidateType.Application } as const)),
-      ...invitations.map(invitation => ({ ...invitation, type: CandidateType.Invitation } as const)),
-      ...invitationsExternal.map(
-        invitationExternal => ({ ...invitationExternal, type: CandidateType.InvitationExternal } as const)
+      ...applications.map(application => CreatePendingMembershipForApplication(application)),
+      ...invitations.map(invitation => CreatePendingMembershipForInvitation(invitation)),
+      ...invitationsExternal.map(invitationExternal =>
+        CreatePendingMembershipForInvitationExternal(invitationExternal)
       ),
     ],
     [applications, invitations, invitationsExternal]
@@ -151,27 +227,24 @@ const CommunityApplications: FC<CommunityApplicationsProps> = ({
       headerName: t('fields.name'),
       renderHeader: () => <>{t('fields.name')}</>,
       renderCell: ({ row }: RenderParams) => {
-        if (row.type === CandidateType.InvitationExternal) {
+        if (row.type === MembershipType.InvitationExternal) {
           return NO_DATA_PLACEHOLDER;
         }
         return (
-          <Link href={buildUserProfileUrl(row.contributor.nameID)} target="_blank">
-            {row.contributor.profile.displayName}
+          <Link href={row.url} target="_blank">
+            {row.displayName}
           </Link>
         );
       },
-      valueGetter: ({ row }: GetterParams) => row.contributor?.profile.displayName,
+      valueGetter: ({ row }: GetterParams) => row.displayName,
       resizable: true,
     },
     {
       field: 'user.email',
       headerName: t('common.email'),
       renderHeader: () => <>{t('common.email')}</>,
-      renderCell: ({ row }: RenderParams) => (
-        <>{row.type === CandidateType.InvitationExternal ? row.email : row.contributor.email}</>
-      ),
-      valueGetter: ({ row }: GetterParams) =>
-        row.type === CandidateType.InvitationExternal ? row.email : row.user.email,
+      renderCell: ({ row }: RenderParams) => <>{row.email}</>,
+      valueGetter: ({ row }: GetterParams) => row.email,
       resizable: true,
     },
     {
@@ -198,8 +271,8 @@ const CommunityApplications: FC<CommunityApplicationsProps> = ({
     [tableItems]
   );
 
-  const [handleDeleteItem, isDeletingItem] = useLoadingState(async (item: TableItem) => {
-    if (item.type === CandidateType.Application) {
+  const [handleDeleteItem, isDeletingItem] = useLoadingState(async (item: MembershipTableItem) => {
+    if (item.type === MembershipType.Application) {
       switch (item.lifecycle.state) {
         case 'new': {
           await onApplicationStateChange(item.id, 'REJECT');
@@ -212,7 +285,7 @@ const CommunityApplications: FC<CommunityApplicationsProps> = ({
           break;
         }
       }
-    } else if (item.type === CandidateType.Invitation) {
+    } else if (item.type === MembershipType.Invitation) {
       switch (item.lifecycle.state) {
         case 'invited': {
           await onDeleteInvitation?.(item.id);
@@ -230,7 +303,7 @@ const CommunityApplications: FC<CommunityApplicationsProps> = ({
     setDeletingItem(undefined);
   });
 
-  const renderDeleteColumn = (row: TableItem) => {
+  const renderDeleteColumn = (row: MembershipTableItem) => {
     return (
       // TODO: Disabled for approved Applications for now: see #2900
       <IconButton
@@ -238,7 +311,7 @@ const CommunityApplications: FC<CommunityApplicationsProps> = ({
         disabled={row.lifecycle?.state === 'approved'}
         aria-label={t('buttons.delete')}
       >
-        {row.type === CandidateType.Invitation &&
+        {row.type === MembershipType.Invitation &&
         (row.lifecycle.state === 'approved' || row.lifecycle.state === 'rejected') ? (
           <RemoveIcon color="error" />
         ) : (
@@ -270,9 +343,9 @@ const CommunityApplications: FC<CommunityApplicationsProps> = ({
             actions={[
               {
                 name: 'view',
-                render: ({ row }: { row: TableItem }) =>
+                render: ({ row }: { row: MembershipTableItem }) =>
                   /* TODO: handle row type here and decide if show button or not, Application, invitation ... */
-                  row.__typename === 'Application' && (
+                  row.type === MembershipType.Application && (
                     <IconButton onClick={() => setSelectedItem(row)} aria-label={t('buttons.view')}>
                       <VisibilityOutlinedIcon color="primary" />
                     </IconButton>
@@ -280,7 +353,7 @@ const CommunityApplications: FC<CommunityApplicationsProps> = ({
               },
               {
                 name: 'delete',
-                render: ({ row }: { row: TableItem }) => renderDeleteColumn(row),
+                render: ({ row }: { row: MembershipTableItem }) => renderDeleteColumn(row),
               },
             ]}
             initialState={initialState}
@@ -289,7 +362,7 @@ const CommunityApplications: FC<CommunityApplicationsProps> = ({
           />
         )}
       </Box>
-      {selectedItem && selectedItem.type === CandidateType.Application && (
+      {selectedItem && selectedItem.type === MembershipType.Application && (
         <ApplicationDialog
           app={selectedItem}
           onClose={() => setSelectedItem(undefined)}
@@ -307,7 +380,7 @@ const CommunityApplications: FC<CommunityApplicationsProps> = ({
           }}
           entities={{
             title: t(`community.${getDeleteDialogTranslationNamespace(deletingItem)}.title` as const, {
-              user: deletingItem.user?.profile.displayName,
+              user: deletingItem.displayName,
             }),
             content: t(`community.${getDeleteDialogTranslationNamespace(deletingItem)}.content` as const),
             confirmButtonTextId: 'buttons.archive',

@@ -46,8 +46,12 @@ fragment AdminCommunityInvitation on Invitation {
     state
     nextEvents
   }
+  contributorType
   contributor {
     ...AdminCommunityCandidateMember
+    ... on User {
+      email
+    }
   }
 }
 
@@ -71,5 +75,6 @@ fragment AdminCommunityCandidateMember on Contributor {
       city
       country
     }
+    url
   }
 }
