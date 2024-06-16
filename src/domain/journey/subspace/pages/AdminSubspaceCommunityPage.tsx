@@ -76,11 +76,11 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
     [applications]
   );
 
-  const currentInvitationsUserIds = useMemo(
+  const currentInvitationsContributorIds = useMemo(
     () =>
       invitations
         ?.filter(invitation => invitation.lifecycle.state === 'invited')
-        .map(invitation => invitation.user.id) ?? [],
+        .map(invitation => invitation.contributor.id) ?? [],
     [invitations]
   );
 
@@ -113,7 +113,7 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
               inviteExistingUser={inviteExistingUser}
               inviteExternalUser={inviteExternalUser}
               currentApplicationsUserIds={currentApplicationsUserIds}
-              currentInvitationsUserIds={currentInvitationsUserIds}
+              currentInvitationsUserIds={currentInvitationsContributorIds}
               currentMembersIds={currentMembersIds}
               spaceId={spaceId}
               isParentPrivate={isPrivate}

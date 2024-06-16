@@ -155,12 +155,12 @@ const CommunityApplications: FC<CommunityApplicationsProps> = ({
           return NO_DATA_PLACEHOLDER;
         }
         return (
-          <Link href={buildUserProfileUrl(row.user.nameID)} target="_blank">
-            {row.user.profile.displayName}
+          <Link href={buildUserProfileUrl(row.contributor.nameID)} target="_blank">
+            {row.contributor.profile.displayName}
           </Link>
         );
       },
-      valueGetter: ({ row }: GetterParams) => row.user?.profile.displayName,
+      valueGetter: ({ row }: GetterParams) => row.contributor?.profile.displayName,
       resizable: true,
     },
     {
@@ -168,7 +168,7 @@ const CommunityApplications: FC<CommunityApplicationsProps> = ({
       headerName: t('common.email'),
       renderHeader: () => <>{t('common.email')}</>,
       renderCell: ({ row }: RenderParams) => (
-        <>{row.type === CandidateType.InvitationExternal ? row.email : row.user.email}</>
+        <>{row.type === CandidateType.InvitationExternal ? row.email : row.contributor.email}</>
       ),
       valueGetter: ({ row }: GetterParams) =>
         row.type === CandidateType.InvitationExternal ? row.email : row.user.email,

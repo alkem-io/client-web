@@ -24,8 +24,11 @@ fragment AdminCommunityApplication on Application {
     state
     nextEvents
   }
-  user {
+  contributor {
     ...AdminCommunityCandidateMember
+    ... on User {
+      email
+    }
   }
   questions {
     id
@@ -43,7 +46,7 @@ fragment AdminCommunityInvitation on Invitation {
     state
     nextEvents
   }
-  user {
+  contributor {
     ...AdminCommunityCandidateMember
   }
 }
@@ -54,10 +57,9 @@ fragment AdminCommunityInvitationExternal on InvitationExternal {
   email
 }
 
-fragment AdminCommunityCandidateMember on User {
+fragment AdminCommunityCandidateMember on Contributor {
   id
   nameID
-  email
   profile {
     id
     displayName

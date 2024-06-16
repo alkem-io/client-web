@@ -1117,10 +1117,9 @@ export const DiscussionCardFragmentDoc = gql`
   ${VisualFullFragmentDoc}
 `;
 export const AdminCommunityCandidateMemberFragmentDoc = gql`
-  fragment AdminCommunityCandidateMember on User {
+  fragment AdminCommunityCandidateMember on Contributor {
     id
     nameID
-    email
     profile {
       id
       displayName
@@ -1146,8 +1145,11 @@ export const AdminCommunityApplicationFragmentDoc = gql`
       state
       nextEvents
     }
-    user {
+    contributor {
       ...AdminCommunityCandidateMember
+      ... on User {
+        email
+      }
     }
     questions {
       id
@@ -1167,7 +1169,7 @@ export const AdminCommunityInvitationFragmentDoc = gql`
       state
       nextEvents
     }
-    user {
+    contributor {
       ...AdminCommunityCandidateMember
     }
   }
@@ -12870,9 +12872,9 @@ export type InvitationStateEventMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.InvitationStateEventMutationVariables
 >;
 export const InviteExistingUserDocument = gql`
-  mutation InviteExistingUser($userIds: [UUID!]!, $communityId: UUID!, $message: String) {
-    inviteExistingUserForCommunityMembership(
-      invitationData: { invitedUsers: $userIds, communityID: $communityId, welcomeMessage: $message }
+  mutation InviteExistingUser($contributorIds: [UUID!]!, $communityId: UUID!, $message: String) {
+    inviteContributorsForCommunityMembership(
+      invitationData: { invitedContributors: $contributorIds, communityID: $communityId, welcomeMessage: $message }
     ) {
       id
     }
@@ -12896,7 +12898,7 @@ export type InviteExistingUserMutationFn = Apollo.MutationFunction<
  * @example
  * const [inviteExistingUserMutation, { data, loading, error }] = useInviteExistingUserMutation({
  *   variables: {
- *      userIds: // value for 'userIds'
+ *      contributorIds: // value for 'contributorIds'
  *      communityId: // value for 'communityId'
  *      message: // value for 'message'
  *   },
