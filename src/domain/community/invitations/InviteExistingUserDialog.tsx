@@ -67,7 +67,7 @@ const InviteExistingUserDialog = ({
 
   const validationSchema = yup.object().shape({
     message: yup.string(),
-    userIds: yup.array().required(),
+    contributorIds: yup.array().required(),
   });
 
   const initialValues: InviteContributorsData = {
@@ -147,7 +147,7 @@ const InviteExistingUserDialog = ({
         >
           {({ handleSubmit, isValid }) => (
             <Form noValidate autoComplete="off">
-              <FormikUserSelector name="userIds" sortUsers={sortUsers} hydrateUsers={hydrateUsers} />
+              <FormikUserSelector name="contributorIds" sortUsers={sortUsers} hydrateUsers={hydrateUsers} />
               <FormikInputField
                 name="message"
                 title={t('messaging.message')}
