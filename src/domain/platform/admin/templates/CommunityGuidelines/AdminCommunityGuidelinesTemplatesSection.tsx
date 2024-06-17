@@ -11,8 +11,8 @@ import { LinkWithState } from '../../../../shared/types/LinkWithState';
 import AdminTemplatesSection from '../AdminTemplatesSection';
 import { InnovationPack } from '../InnovationPacks/InnovationPack';
 import CommunityGuidelinesImportTemplateCard from './CommunityGuidelinesImportTemplateCard';
-import EditCommunityGuidelinesTemplateDialog from './EditCommunityGuidelinesTemplateDialog';
 import CreateCommunityGuidelinesTemplateDialog from './CreateCommunityGuidelinesTemplateDialog';
+import EditCommunityGuidelinesTemplateDialog from './EditCommunityGuidelinesTemplateDialog';
 
 interface AdminCommunityGuidelinesTemplatesSectionProps {
   templateId: string | undefined;
