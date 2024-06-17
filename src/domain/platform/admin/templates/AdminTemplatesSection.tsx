@@ -100,6 +100,8 @@ type AdminTemplatesSectionProps<
     template: Partial<SubmittedValues> & ProfileUpdate & { templateId: string }
   ) => MutationResult<TemplateUpdateResult>;
   onDeleteTemplate: (template: { templateId: string; templatesSetId?: string }) => Promise<unknown>;
+  // On templateImport is a callback that allows to modify the template before it is imported (for example, for callout templates we need to load the template content)
+  onTemplateImport?: (template: T & Identifiable) => Promise<T & Identifiable>;
   onTemplateCreated?: (
     mutationResult: TemplateCreationResult | null | undefined,
     previewImages?: WhiteboardPreviewImage[]
@@ -143,6 +145,7 @@ const AdminTemplatesSection = <
   // Some Templates (Post, InnovationFlow...) come with the value included, and some others (Whiteboards) need to call this function to retrieve the data
   getWhiteboardTemplateContent = () => {},
   getImportedWhiteboardTemplateContent = () => {},
+  onTemplateImport = t => Promise.resolve(t as unknown as T & Identifiable),
   templateType,
   ...dialogProps
 }: AdminTemplatesSectionProps<T, V, SubmittedValues, CreateM, UpdateM, DialogProps>) => {
@@ -224,9 +227,10 @@ const AdminTemplatesSection = <
     if (!templatesSetId) {
       throw new TypeError('TemplatesSet ID not loaded.');
     }
+    const templateImported = await onTemplateImport(template);
 
     // Deconstruct and rebuild template information from the InnovationPack template downloaded:
-    const { id, profile, ...templateData } = template;
+    const { id, profile, ...templateData } = templateImported;
 
     const values: SubmittedValues = {
       ...(templateData as unknown as SubmittedValues), // TODO check type overlap
