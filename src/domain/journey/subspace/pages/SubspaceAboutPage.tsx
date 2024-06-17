@@ -13,6 +13,7 @@ import SeeMore from '../../../../core/ui/content/SeeMore';
 import { useTranslation } from 'react-i18next';
 import { buildAboutUrl } from '../../../../main/routing/urlBuilders';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
+import CommunityGuidelinesBlock from '../../../community/community/CommunityGuidelines/CommunityGuidelinesBlock';
 
 const SubspaceAboutPage: FC = () => {
   const { communityId, profile } = useSubSpace();
@@ -57,6 +58,7 @@ const SubspaceAboutPage: FC = () => {
             background={profile?.description}
             who={context?.who}
             impact={context?.impact}
+            guidelines={<CommunityGuidelinesBlock communityId={communityId} journeyUrl={profile.url} />}
             loading={state.loading}
             leadUsers={leadUsers}
             host={host}
