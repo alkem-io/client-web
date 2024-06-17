@@ -51,17 +51,14 @@ const AdminCommunityGuidelinesTemplatesSection = ({
       // @ts-ignore
       editTemplateDialogComponent={EditCommunityGuidelinesTemplateDialog}
       onCreateTemplate={variables => {
-        const updatedGuidelines = {
-          profile: {
-            displayName: variables.guidelines.profile.displayName,
-            description: variables.guidelines.profile.description,
-            referencesData: variables.guidelines.profile.references?.map(reference => ({
-              name: reference.name,
-              uri: reference.uri,
-            })),
-          },
-        };
         const { guidelines, ...rest } = variables;
+        const { profile } = guidelines;
+        const updatedProfile = {
+          displayName: profile.displayName,
+          description: profile.description,
+          referencesData: profile.references?.map(({ name, uri }) => ({ name, uri })),
+        };
+        const updatedGuidelines = { profile: updatedProfile };
         const updatedVariables = { guidelines: updatedGuidelines, ...rest };
         return createCommunityGuidelinesTemplate({ variables: updatedVariables, refetchQueries });
       }}
