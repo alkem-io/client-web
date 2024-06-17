@@ -34,10 +34,10 @@ export const calloutFilterConfig: FilterConfig = {
     title: 'pages.search.filter.key.all',
     value: ['callout'],
     typename: 'all',
-  }
+  },
 };
-/*
-TODO: Disabled Callout filters for now.
+
+/* TODO: Disabled Callout filters for now.
 Object.values(CalloutType).reduce(
   (filterConfig, calloutType) => {
     return {

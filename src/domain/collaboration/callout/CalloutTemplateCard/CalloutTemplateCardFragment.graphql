@@ -1,0 +1,12 @@
+fragment CalloutTemplateCard on CalloutTemplate {
+  id
+  type
+  profile {
+    ...ProfileInfoWithVisual
+  }
+  contributionPolicy {
+    id
+    allowedContributionTypes
+    state
+  }
+}

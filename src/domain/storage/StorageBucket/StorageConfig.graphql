@@ -83,6 +83,17 @@ query InnovationHubStorageConfig($innovationHubId: UUID_NAMEID!) {
   }
 }
 
+query SpaceGuidelinesTemplateStorageConfig($templateId: UUID!) {
+  lookup {
+    communityGuidelinesTemplate(ID: $templateId) {
+      id
+      profile {
+        ...ProfileStorageConfig
+      }
+    }
+  }
+}
+
 query PlatformStorageConfig {
   platform {
     id

@@ -112,6 +112,7 @@
     "take-me-home": "Take me home",
     "close": "Close",
     "yes-close": "Yes, close",
+    "yesReplace": "Yes, Replace",
     "delete": "Delete",
     "submit": "Submit",
     "remove": "Remove",
@@ -324,6 +325,7 @@
     "questions": "Questions",
     "show-more": "Show more",
     "show-all": "Show all",
+    "show": "Show",
     "lock": "Locked",
     "title": "Title",
     "visibility": "Visibility",
@@ -505,9 +507,11 @@
         "PostTemplate": "Post Template",
         "PostTemplate_plural": "Post Templates",
         "InnovationFlowTemplate": "Innovation Flow",
-        "InnovationFlowTemplate_plural": "Innovation Flows",
-        "CalloutTemplate": "Callout Template",
-        "CalloutTemplate_plural": "Callout Templates"
+        "InnovationFlowTemplate_plural": "Innovation Flow Templates",
+        "CalloutTemplate": "Collaboration Tool Template",
+        "CollaborationToolTemplate_plural": "Collaboration Tool Templates",
+        "CommunityGuidelinesTemplate": "Community Guidelines Template",
+        "CommunityGuidelinesTemplate_plural": "Community Guidelines Templates"
       },
       "calloutType": {
         "LINK_COLLECTION": "Link Collection",
@@ -590,7 +594,11 @@
       "title": "Community Guidelines",
       "updatedSuccessfully": "Community guidelines updated successfully.",
       "adminsOnly": "Since there are no Community Guidelines specified, this block is only visible for admins and leads.",
-      "memberGuidelinesRedirect": "Click here to update the Community Guidelines in the Space settings."
+      "communityGuidelinesRedirect": "Click here to update the Community Guidelines in the Space settings.",
+      "confirmationDialog": {
+        "title": "Updating Community Guidelines",
+        "description": "Are you sure you want to replace your existing Community Guidelines? This action cannot be undone."
+      }
     },
     "applicationsHelp": "Here you can find everyone that applied to become a member of this Space. By clicking on them you can review their application and accept or reject them.",
     "applicationStatus": {
@@ -870,9 +878,20 @@
       "atLeastOne": "At least one {{item}} must be selected."
     }
   },
+  "templateDialog": {
+    "profile": {
+      "title": "Template description",
+      "help": "This description will be visible to anyone browsing through the templates. However, it is not part of the actual {{entityTypeName}} content.",
+      "fields": {
+        "displayName": "Template title",
+        "description": "Template description",
+        "tags": "Template tags"
+      }
+    }
+  },
   "templateLibrary": {
     "calloutTemplates": {
-      "name": "Callout template",
+      "name": "Collaboration Tool template",
       "title": "Template Library: Collaboration Tools",
       "type": "Callout type",
       "description": "Description"
@@ -893,6 +912,13 @@
       "name": "Innovation Flow template",
       "title": "Template Library: Innovation Flows"
     },
+    "communityGuidelinesTemplates": {
+      "name": "Community Guidelines",
+      "title": "Template Library: Community Guidelines",
+      "content": "Guidelines",
+      "guidelinesTitle": "Title",
+      "guidelinesDescription": "Guidelines"
+    },
     "spaceTemplates": "Templates selected by the host of this community",
     "platformTemplates": "Platform Templates",
     "loadPlatformTemplates": "Or click here to browse through all platform templates",
@@ -906,6 +932,9 @@
     }
   },
   "components": {
+    "calloutTemplateDialog": {
+      "typeReadonly": "Once a template is created, its type cannot be changed. If you need a different type, please create a new template."
+    },
     "shareSettings": {
       "description": "Based on the settings of the Space that this Whiteboard is in, you can edit with multiple users\u2028at once. If you do not want others to edit, change the settings below.",
       "disabled": "Based on the settings of the Space that this Whiteboard is in, real-time collaboration is not enabled. This means that only one user can edit at a time.",
@@ -1709,11 +1738,6 @@
         "headerTitle": "Browse through all available materials",
         "dialogTitle": "All materials"
       }
-    },
-    "innovationPack": {
-      "whiteboardTemplatesEmpty": "This Innovation Pack doesn’t have any whiteboard templates.",
-      "postTemplatesEmpty": "This Innovation Pack doesn’t have any post templates.",
-      "innovationFlowTemplatesEmpty": "This Innovation Pack doesn’t have any innovation flows."
     },
     "admin": {
       "generic": {

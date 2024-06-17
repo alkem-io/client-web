@@ -15,7 +15,7 @@ interface CalloutTypeSelectProps {
   extraButtons?: React.ReactNode;
 }
 
-const AVAILABLE_CALLOUT_TYPES = [
+export const AVAILABLE_CALLOUT_TYPES = [
   CalloutType.Post,
   CalloutType.Whiteboard,
   CalloutType.LinkCollection,

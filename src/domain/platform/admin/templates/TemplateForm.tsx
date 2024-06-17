@@ -6,12 +6,18 @@ import { Formik, FormikProps } from 'formik';
 import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
 import { TagsetField } from '../components/Common/TagsetSegment';
 import VisualUpload from '../../../../core/ui/upload/VisualUpload/VisualUpload';
-import TemplateFormRows from './TemplateFormRows';
-import FormCols from '../../../shared/components/FormCols';
 import FormikMarkdownField from '../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
 import { MARKDOWN_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
 import { CreateProfileInput, Visual } from '../../../../core/apollo/generated/graphql-schema';
+import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
+import GridContainer from '../../../../core/ui/grid/GridContainer';
+import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
+import { Box } from '@mui/material';
+import { InfoOutlined } from '@mui/icons-material';
+import BlockSectionTitleWithIcon from '../../../../core/ui/content/BlockSectionTitleWithIcon';
+import { gutters } from '../../../../core/ui/grid/utils';
+import { BlockSectionTitle } from '../../../../core/ui/typography';
 
 export interface TemplateProfileValues {
   displayName: string;
@@ -31,7 +37,7 @@ interface TemplateFormProps<Values extends TemplateProfileValues> {
   actions: ReactNode | ((formState: FormikProps<Values & TemplateProfileValues>) => ReactNode);
   children?: ReactNode | ((formState: FormikProps<Values & TemplateProfileValues>) => ReactNode);
   validator: yup.ObjectSchemaDefinition<Partial<Values>>;
-  verticalLayout?: boolean;
+  entityTypeName: ReactNode;
 }
 
 const TemplateForm = <Values extends TemplateProfileValues>({
@@ -41,7 +47,7 @@ const TemplateForm = <Values extends TemplateProfileValues>({
   actions,
   children,
   validator,
-  verticalLayout = false,
+  entityTypeName,
 }: TemplateFormProps<Values>) => {
   const { t } = useTranslation();
 
@@ -78,27 +84,39 @@ const TemplateForm = <Values extends TemplateProfileValues>({
       validationSchema={validationSchema}
     >
       {formState => (
-        <>
-          <FormCols>
-            <TemplateFormRows>
-              <FormikInputField name="displayName" title={t('common.title')} />
-              <FormikMarkdownField
-                name="description"
-                title={t('common.description')}
-                maxLength={MARKDOWN_TEXT_LENGTH}
-              />
+        <GridContainer disablePadding>
+          <PageContentColumn columns={3}>
+            <PageContentBlockSeamless disablePadding>
+              <BlockSectionTitleWithIcon
+                icon={<InfoOutlined />}
+                tooltip={t('templateDialog.profile.help', { entityTypeName })}
+              >
+                {t('templateDialog.profile.title')}
+              </BlockSectionTitleWithIcon>
+              <FormikInputField name="displayName" title={t('templateDialog.profile.fields.displayName')} />
+              <Box marginBottom={gutters(-1)}>
+                <FormikMarkdownField
+                  name="description"
+                  title={t('templateDialog.profile.fields.description')}
+                  maxLength={MARKDOWN_TEXT_LENGTH}
+                />
+              </Box>
               <TagsetField
                 name="tags"
-                title={t('common.tags')}
+                title={t('templateDialog.profile.fields.tags')}
                 helpTextIcon={t('components.post-creation.info-step.tags-help-text')}
               />
               {visual && <VisualUpload visual={visual} />}
-            </TemplateFormRows>
-            {!verticalLayout && renderChildren(formState)}
-          </FormCols>
-          {verticalLayout && renderChildren(formState)}
+            </PageContentBlockSeamless>
+          </PageContentColumn>
+          <PageContentColumn columns={9}>
+            <PageContentBlockSeamless disablePadding>
+              <BlockSectionTitle>{entityTypeName}</BlockSectionTitle>
+              {renderChildren(formState)}
+            </PageContentBlockSeamless>
+          </PageContentColumn>
           {renderActions(formState)}
-        </>
+        </GridContainer>
       )}
     </Formik>
   );

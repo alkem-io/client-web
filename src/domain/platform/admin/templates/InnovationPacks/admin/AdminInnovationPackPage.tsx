@@ -21,11 +21,15 @@ import PageContentColumn from '../../../../../../core/ui/content/PageContentColu
 import PageContent from '../../../../../../core/ui/content/PageContent';
 import PageContentBlockSeamless from '../../../../../../core/ui/content/PageContentBlockSeamless';
 import PageContentBlock from '../../../../../../core/ui/content/PageContentBlock';
+import AdminCalloutTemplatesSection from '../../CalloutTemplates/AdminCalloutTemplatesSection';
+import AdminCommunityGuidelinesTemplatesSection from '../../CommunityGuidelines/AdminCommunityGuidelinesTemplatesSection';
 
 export enum RoutePaths {
   postTemplatesRoutePath = 'post-templates',
   whiteboardTemplatesRoutePath = 'whiteboard-templates',
   innovationTemplatesRoutePath = 'innovation-templates',
+  calloutTemplatesRoutePath = 'callout-templates',
+  communityGuidelinesTemplatesRoutePath = 'community-guidelines-templates',
 }
 
 interface AdminInnovationPackPageProps {
@@ -35,7 +39,14 @@ interface AdminInnovationPackPageProps {
 const AdminInnovationPackPage: FC<AdminInnovationPackPageProps> = ({ editTemplates }) => {
   const { t } = useTranslation();
   const notify = useNotification();
-  const { innovationPackNameId, postNameId, whiteboardNameId, innovationTemplateId } = useUrlParams();
+  const {
+    innovationPackNameId,
+    postNameId,
+    whiteboardNameId,
+    innovationTemplateId,
+    calloutTemplateId,
+    communityGuidelinesNameId,
+  } = useUrlParams();
 
   if (!innovationPackNameId) {
     throw new Error('Must be within Innovation Pack');
@@ -53,6 +64,8 @@ const AdminInnovationPackPage: FC<AdminInnovationPackPageProps> = ({ editTemplat
     postTemplates,
     whiteboardTemplates,
     innovationFlowTemplates,
+    calloutTemplates,
+    communityGuidelinesTemplates,
     id: templatesSetID,
   } = data?.platform.library.innovationPack?.templates ?? {};
 
@@ -117,23 +130,6 @@ const AdminInnovationPackPage: FC<AdminInnovationPackPageProps> = ({ editTemplat
               />
             </PageContentBlock>
             <PageContentBlockSeamless disablePadding>
-              <AdminPostTemplatesSection
-                templateId={postNameId}
-                templatesSetId={templatesSetID}
-                templates={postTemplates}
-                onCloseTemplateDialog={backFromTemplateDialog}
-                refetchQueries={[refetchAdminInnovationPackQuery({ innovationPackId: innovationPackNameId! })]}
-                buildTemplateLink={({ id }) =>
-                  buildLink(`${innovationPackRoute}/${RoutePaths.postTemplatesRoutePath}/${id}`)
-                }
-                edit={editTemplates}
-                loadInnovationPacks={() => {}}
-                loadingInnovationPacks={isLoading}
-                innovationPacks={[]}
-                canImportTemplates={false}
-              />
-            </PageContentBlockSeamless>
-            <PageContentBlockSeamless disablePadding>
               <AdminWhiteboardTemplatesSection
                 templateId={whiteboardNameId}
                 templatesSetId={templatesSetID}
@@ -151,6 +147,23 @@ const AdminInnovationPackPage: FC<AdminInnovationPackPageProps> = ({ editTemplat
               />
             </PageContentBlockSeamless>
             <PageContentBlockSeamless disablePadding>
+              <AdminCalloutTemplatesSection
+                templateId={calloutTemplateId}
+                templatesSetId={templatesSetID}
+                templates={calloutTemplates}
+                onCloseTemplateDialog={backFromTemplateDialog}
+                refetchQueries={[refetchAdminInnovationPackQuery({ innovationPackId: innovationPackNameId! })]}
+                buildTemplateLink={({ id }) =>
+                  buildLink(`${innovationPackRoute}/${RoutePaths.calloutTemplatesRoutePath}/${id}`)
+                }
+                edit={editTemplates}
+                loadInnovationPacks={() => {}}
+                loadingInnovationPacks={isLoading}
+                innovationPacks={[]}
+                canImportTemplates={false}
+              />
+            </PageContentBlockSeamless>
+            <PageContentBlockSeamless disablePadding>
               <AdminInnovationTemplatesSection
                 templateId={innovationTemplateId}
                 templatesSetId={templatesSetID}
@@ -159,6 +172,40 @@ const AdminInnovationPackPage: FC<AdminInnovationPackPageProps> = ({ editTemplat
                 refetchQueries={[refetchAdminInnovationPackQuery({ innovationPackId: innovationPackNameId! })]}
                 buildTemplateLink={({ id }) =>
                   buildLink(`${innovationPackRoute}/${RoutePaths.innovationTemplatesRoutePath}/${id}`)
+                }
+                edit={editTemplates}
+                loadInnovationPacks={() => {}}
+                loadingInnovationPacks={isLoading}
+                innovationPacks={[]}
+                canImportTemplates={false}
+              />
+            </PageContentBlockSeamless>
+            <PageContentBlockSeamless disablePadding>
+              <AdminCommunityGuidelinesTemplatesSection
+                templateId={communityGuidelinesNameId}
+                templatesSetId={templatesSetID}
+                templates={communityGuidelinesTemplates}
+                onCloseTemplateDialog={backFromTemplateDialog}
+                refetchQueries={[refetchAdminInnovationPackQuery({ innovationPackId: innovationPackNameId! })]}
+                buildTemplateLink={({ id }) =>
+                  buildLink(`${innovationPackRoute}/${RoutePaths.communityGuidelinesTemplatesRoutePath}/${id}`)
+                }
+                edit={editTemplates}
+                loadInnovationPacks={() => {}}
+                loadingInnovationPacks={isLoading}
+                innovationPacks={[]}
+                canImportTemplates={false}
+              />
+            </PageContentBlockSeamless>
+            <PageContentBlockSeamless disablePadding>
+              <AdminPostTemplatesSection
+                templateId={postNameId}
+                templatesSetId={templatesSetID}
+                templates={postTemplates}
+                onCloseTemplateDialog={backFromTemplateDialog}
+                refetchQueries={[refetchAdminInnovationPackQuery({ innovationPackId: innovationPackNameId! })]}
+                buildTemplateLink={({ id }) =>
+                  buildLink(`${innovationPackRoute}/${RoutePaths.postTemplatesRoutePath}/${id}`)
                 }
                 edit={editTemplates}
                 loadInnovationPacks={() => {}}

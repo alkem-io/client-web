@@ -2,7 +2,6 @@ import React, { ReactNode } from 'react';
 import * as yup from 'yup';
 import { FormikProps } from 'formik';
 import { CreateProfileInput, Visual } from '../../../../../core/apollo/generated/graphql-schema';
-import TemplateFormRows from '../TemplateFormRows';
 import TemplateForm from '../TemplateForm';
 import FormikWhiteboardPreview from './FormikWhiteboardPreview';
 import { useTranslation } from 'react-i18next';
@@ -48,16 +47,15 @@ const WhiteboardTemplateForm = ({ initialValues, visual, onSubmit, actions, load
       onSubmit={onSubmit}
       actions={actions}
       validator={validator}
+      entityTypeName={t('common.whiteboard')}
     >
-      <TemplateFormRows>
-        <FormikWhiteboardPreview
-          name="content"
-          previewImagesName="previewImages"
-          canEdit
-          loading={loading}
-          dialogProps={{ title: t('templateLibrary.whiteboardTemplates.editDialogTitle') }}
-        />
-      </TemplateFormRows>
+      <FormikWhiteboardPreview
+        name="content"
+        previewImagesName="previewImages"
+        canEdit
+        loading={loading}
+        dialogProps={{ title: t('templateLibrary.whiteboardTemplates.editDialogTitle') }}
+      />
     </TemplateForm>
   );
 };

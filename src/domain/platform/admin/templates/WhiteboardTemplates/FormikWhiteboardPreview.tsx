@@ -90,6 +90,7 @@ const FormikWhiteboardPreview: FC<FormikWhiteboardPreviewProps> = ({
             }}
             options={{
               viewModeEnabled: true,
+              gridModeEnabled: true,
               UIOptions: {
                 canvasActions: {
                   export: false,

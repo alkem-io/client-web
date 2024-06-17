@@ -21,7 +21,7 @@ const SubspaceSettingsRoute = () => {
     case 2:
       return (
         <OpportunityProvider>
-          <OpportunityRoute parentCommunityId={data?.space.community.id} />
+          <OpportunityRoute parentCommunityId={data?.lookup.space?.community.id} />
         </OpportunityProvider>
       );
   }

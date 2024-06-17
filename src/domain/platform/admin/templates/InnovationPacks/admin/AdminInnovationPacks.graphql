@@ -48,6 +48,12 @@ fragment AdminInnovationPackTemplates on TemplatesSet {
   whiteboardTemplates {
     ...AdminWhiteboardTemplate
   }
+  calloutTemplates {
+    ...AdminCalloutTemplate
+  }
+  communityGuidelinesTemplates {
+    ...AdminCommunityGuidelinesTemplate
+  }
 }
 
 query AdminInnovationPack($innovationPackId: UUID_NAMEID!) {

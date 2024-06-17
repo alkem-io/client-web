@@ -6,6 +6,7 @@ import {
   useJourneyStorageConfigQuery,
   useOrganizationStorageConfigQuery,
   usePlatformStorageConfigQuery,
+  useSpaceGuidelinesTemplateStorageConfigQuery,
   useUserStorageConfigQuery,
 } from '../../../core/apollo/generated/apollo-hooks';
 import { useMemo } from 'react';
@@ -24,6 +25,7 @@ type StorageConfigLocation =
   | 'organization'
   | 'callout'
   | 'post'
+  | 'guidelinesTemplate'
   | 'innovationPack'
   | 'innovationHub'
   | 'platform';
@@ -47,6 +49,11 @@ interface UseStorageConfigOptionsPost extends UseStorageConfigOptionsBase {
   postId: string | undefined;
   calloutId: string | undefined;
   locationType: 'post';
+}
+
+interface UseStorageConfigOptionsGuidelinesTemplate extends UseStorageConfigOptionsBase {
+  guidelinesTemplateId: string | undefined;
+  locationType: 'guidelinesTemplate';
 }
 
 interface UseStorageConfigOptionsUser extends UseStorageConfigOptionsBase {
@@ -79,6 +86,7 @@ export type StorageConfigOptions =
   | UseStorageConfigOptionsOrganization
   | UseStorageConfigOptionsCallout
   | UseStorageConfigOptionsPost
+  | UseStorageConfigOptionsGuidelinesTemplate
   | UseStorageConfigOptionsInnovationPack
   | UseStorageConfigOptionsInnovationHub
   | UseStorageConfigOptionsPlatform;
@@ -111,6 +119,14 @@ const useStorageConfig = ({ locationType, skip, ...options }: StorageConfigOptio
       calloutId: postOptions.calloutId!, // ensured by skip
     },
     skip: skip || locationType !== 'post' || !postOptions.postId || !postOptions.calloutId,
+  });
+
+  const guidelinesTemplateOptions = options as UseStorageConfigOptionsGuidelinesTemplate;
+  const { data: guidelinesTemplateStorageConfigData } = useSpaceGuidelinesTemplateStorageConfigQuery({
+    variables: {
+      templateId: guidelinesTemplateOptions.guidelinesTemplateId!,
+    },
+    skip: skip || locationType !== 'guidelinesTemplate' || !guidelinesTemplateOptions.guidelinesTemplateId,
   });
 
   const userOptions = options as UseStorageConfigOptionsUser;
@@ -157,6 +173,7 @@ const useStorageConfig = ({ locationType, skip, ...options }: StorageConfigOptio
     journey ??
     callout?.framing ??
     contribution?.post ??
+    guidelinesTemplateStorageConfigData?.lookup.communityGuidelinesTemplate ??
     userStorageConfigData?.user ??
     organizationStorageConfigData?.organization ??
     innovationPackStorageConfigData?.platform.library.innovationPack ??

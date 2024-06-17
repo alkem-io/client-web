@@ -1153,17 +1153,6 @@ export type ISearchResultsFieldPolicy = {
   journeyResults?: FieldPolicy<any> | FieldReadFunction<any>;
   journeyResultsCount?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type IngestBatchResultKeySpecifier = ('message' | 'success' | IngestBatchResultKeySpecifier)[];
-export type IngestBatchResultFieldPolicy = {
-  message?: FieldPolicy<any> | FieldReadFunction<any>;
-  success?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type IngestResultKeySpecifier = ('batches' | 'index' | 'total' | IngestResultKeySpecifier)[];
-export type IngestResultFieldPolicy = {
-  batches?: FieldPolicy<any> | FieldReadFunction<any>;
-  index?: FieldPolicy<any> | FieldReadFunction<any>;
-  total?: FieldPolicy<any> | FieldReadFunction<any>;
-};
 export type InnovationFlowKeySpecifier = (
   | 'authorization'
   | 'currentState'
@@ -1677,6 +1666,7 @@ export type MutationKeySpecifier = (
   | 'updateLicensePlan'
   | 'updateLink'
   | 'updateOrganization'
+  | 'updateOrganizationPlatformSettings'
   | 'updatePost'
   | 'updatePostTemplate'
   | 'updatePreferenceOnOrganization'
@@ -1840,6 +1830,7 @@ export type MutationFieldPolicy = {
   updateLicensePlan?: FieldPolicy<any> | FieldReadFunction<any>;
   updateLink?: FieldPolicy<any> | FieldReadFunction<any>;
   updateOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateOrganizationPlatformSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   updatePost?: FieldPolicy<any> | FieldReadFunction<any>;
   updatePostTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   updatePreferenceOnOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3384,14 +3375,6 @@ export type StrictTypedTypePolicies = {
   ISearchResults?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ISearchResultsKeySpecifier | (() => undefined | ISearchResultsKeySpecifier);
     fields?: ISearchResultsFieldPolicy;
-  };
-  IngestBatchResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | IngestBatchResultKeySpecifier | (() => undefined | IngestBatchResultKeySpecifier);
-    fields?: IngestBatchResultFieldPolicy;
-  };
-  IngestResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | IngestResultKeySpecifier | (() => undefined | IngestResultKeySpecifier);
-    fields?: IngestResultFieldPolicy;
   };
   InnovationFlow?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | InnovationFlowKeySpecifier | (() => undefined | InnovationFlowKeySpecifier);

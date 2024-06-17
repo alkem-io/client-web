@@ -1,10 +1,10 @@
-import { useCalloutTemplatePreviewQuery } from '../../../core/apollo/generated/apollo-hooks';
-import { Identifiable } from '../../../core/utils/Identifiable';
-import PageContentBlock from '../../../core/ui/content/PageContentBlock';
-import { BlockTitle } from '../../../core/ui/typography';
-import WrapperMarkdown from '../../../core/ui/markdown/WrapperMarkdown';
-import TagsComponent from '../../shared/components/TagsComponent/TagsComponent';
-import WhiteboardPreview from '../../collaboration/whiteboard/whiteboardPreview/WhiteboardPreview';
+import { useCalloutTemplatePreviewQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { Identifiable } from '../../../../core/utils/Identifiable';
+import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
+import { BlockSectionTitle } from '../../../../core/ui/typography';
+import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
+import TagsComponent from '../../../shared/components/TagsComponent/TagsComponent';
+import WhiteboardPreview from '../../whiteboard/whiteboardPreview/WhiteboardPreview';
 
 interface CalloutTemplatePreviewProps {
   template?: Identifiable;
@@ -28,7 +28,7 @@ const CalloutTemplatePreview = ({ template }: CalloutTemplatePreviewProps) => {
 
   return (
     <PageContentBlock>
-      <BlockTitle>{framing.profile.displayName}</BlockTitle>
+      <BlockSectionTitle>{framing.profile.displayName}</BlockSectionTitle>
       <WrapperMarkdown>{framing.profile.description ?? ''}</WrapperMarkdown>
       <TagsComponent tags={framing.profile.tagset?.tags ?? []} />
       {whiteboard && <WhiteboardPreview whiteboard={whiteboard} displayName={framing.profile.displayName} />}

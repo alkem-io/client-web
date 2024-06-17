@@ -70,6 +70,7 @@ export interface CollaborationTemplatesLibraryProps<
   templatesFromPlatform?: Identifiables<Template>;
   loadingTemplatesFromPlatform?: boolean;
   disableUsePlatformTemplates?: boolean;
+  confirmationDialog?: ComponentType<{ open: boolean; onClose: () => void; onConfirm: () => void }>;
 }
 
 const CollaborationTemplatesLibrary = <
@@ -95,6 +96,7 @@ const CollaborationTemplatesLibrary = <
   templatesFromPlatform,
   loadingTemplatesFromPlatform = false,
   disableUsePlatformTemplates = false,
+  confirmationDialog: ConfirmationDialog,
 }: CollaborationTemplatesLibraryProps<Template, TemplateWithContent, TemplatePreview>) => {
   const { t } = useTranslation();
 
@@ -119,6 +121,7 @@ const CollaborationTemplatesLibrary = <
   // Show gallery or show preview of this template:
   const [previewTemplate, setPreviewTemplate] = useState<Template & TemplateWithContent>();
   const [templateUseDisabled, setTemplateUseDisabled] = useState<boolean>(false);
+  const [confirmationDialogOpen, setConfirmationDialogOpen] = useState<boolean>(false);
 
   const handlePreviewTemplate = async (template: Template & Identifiable, source: TemplateSource) => {
     setTemplateUseDisabled(disableUsePlatformTemplates && source === TemplateSource.Platform);
@@ -210,7 +213,7 @@ const CollaborationTemplatesLibrary = <
                 variant="contained"
                 sx={{ marginLeft: theme => theme.spacing(1) }}
                 disabled={loading || templateUseDisabled}
-                onClick={handleSelectTemplate}
+                onClick={ConfirmationDialog ? () => setConfirmationDialogOpen(true) : handleSelectTemplate}
               >
                 {t('buttons.use')}
               </Button>
@@ -218,6 +221,13 @@ const CollaborationTemplatesLibrary = <
           />
         )}
       </DialogContent>
+      {ConfirmationDialog && (
+        <ConfirmationDialog
+          open={confirmationDialogOpen}
+          onClose={() => setConfirmationDialogOpen(false)}
+          onConfirm={handleSelectTemplate}
+        />
+      )}
     </DialogWithGrid>
   );
 };

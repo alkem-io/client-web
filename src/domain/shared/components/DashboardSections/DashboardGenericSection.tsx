@@ -52,6 +52,9 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+/**
+ * @deprecated - use PageContentBlock instead
+ */
 const DashboardGenericSection: FC<DashboardGenericSectionProps> = ({
   bannerUrl,
   alwaysShowBanner,

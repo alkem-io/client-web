@@ -1,25 +1,33 @@
 import React, { PropsWithChildren, ReactNode } from 'react';
-import { Box } from '@mui/material';
+import { Box, Tooltip } from '@mui/material';
 import { Caption } from '../typography';
 import RoundedBadge from '../icon/RoundedBadge';
 import { SvgIconComponent } from '@mui/icons-material';
 import RoundedIcon from '../icon/RoundedIcon';
 
 interface CardFooterBadgeProps {
+  tooltip?: string;
   icon?: ReactNode;
   iconComponent?: SvgIconComponent;
 }
 
-const CardFooterCountWithBadge = ({ icon, iconComponent, children }: PropsWithChildren<CardFooterBadgeProps>) => {
+const CardFooterCountWithBadge = ({
+  tooltip,
+  icon,
+  iconComponent,
+  children,
+}: PropsWithChildren<CardFooterBadgeProps>) => {
   return (
-    <Box display="flex" gap={1} alignItems="center">
-      {iconComponent ? (
-        <RoundedIcon size="xsmall" component={iconComponent} />
-      ) : (
-        <RoundedBadge size="xsmall">{icon}</RoundedBadge>
-      )}
-      <Caption>{children}</Caption>
-    </Box>
+    <Tooltip title={tooltip}>
+      <Box display="flex" gap={1} alignItems="center">
+        {iconComponent ? (
+          <RoundedIcon size="xsmall" component={iconComponent} />
+        ) : (
+          <RoundedBadge size="xsmall">{icon}</RoundedBadge>
+        )}
+        <Caption>{children}</Caption>
+      </Box>
+    </Tooltip>
   );
 };
 
