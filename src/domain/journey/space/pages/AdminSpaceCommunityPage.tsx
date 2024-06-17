@@ -1,5 +1,5 @@
 import React, { FC, useCallback, useMemo, useRef, useState } from 'react';
-import { Button, Icon, IconButton } from '@mui/material';
+import { Button, Icon, IconButton, Tooltip } from '@mui/material';
 import DownloadForOfflineOutlinedIcon from '@mui/icons-material/DownloadForOfflineOutlined';
 import InnovationLibraryIcon from '../../../../main/topLevelPages/InnovationLibraryPage/InnovationLibraryIcon';
 import SpaceSettingsLayout from '../../../platform/admin/space/SpaceSettingsLayout';
@@ -16,7 +16,7 @@ import CommunityApplications from '../../../community/community/CommunityAdmin/C
 import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
 import InvitationOptionsBlock from '../../../community/invitations/InvitationOptionsBlock';
 import PageContentBlockCollapsible from '../../../../core/ui/content/PageContentBlockCollapsible';
-import { BlockTitle, Text } from '../../../../core/ui/typography';
+import { BlockTitle, Caption, Text } from '../../../../core/ui/typography';
 import CommunityApplicationForm from '../../../community/community/CommunityApplicationForm/CommunityApplicationForm';
 import { Trans, useTranslation } from 'react-i18next';
 import { gutters } from '../../../../core/ui/grid/utils';
@@ -166,16 +166,18 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
                     >
                       {t('common.library')}
                     </Button>
-                    <IconButton
-                      aria-label={t('buttons.saveAsTemplate')}
-                      onClick={() => {
-                        handleSaveAsTemplateDialogOpen();
-                        currentGuidelines.current = communityGuidelines;
-                      }}
-                      sx={{ marginLeft: gutters(0.5) }}
-                    >
-                      <Icon component={DownloadForOfflineOutlinedIcon} color="primary" />
-                    </IconButton>
+                    <Tooltip title={<Caption>{t('buttons.saveAsTemplate')}</Caption>}>
+                      <IconButton
+                        aria-label={t('buttons.saveAsTemplate')}
+                        onClick={() => {
+                          handleSaveAsTemplateDialogOpen();
+                          currentGuidelines.current = communityGuidelines;
+                        }}
+                        sx={{ marginLeft: gutters(0.5) }}
+                      >
+                        <Icon component={DownloadForOfflineOutlinedIcon} color="primary" />
+                      </IconButton>
+                    </Tooltip>
                   </>
                 }
               >
