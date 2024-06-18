@@ -4,7 +4,11 @@ import { CommentsWithMessagesFragmentWithCallout } from '../useCallouts/useCallo
 import CommentsComponent from '../../../communication/room/Comments/CommentsComponent';
 import { useUserContext } from '../../../community/user';
 import { useRemoveCommentFromCalloutMutation } from '../../../../core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege, CalloutState } from '../../../../core/apollo/generated/graphql-schema';
+import {
+  AuthorizationPrivilege,
+  CalloutState,
+  CommunityMembershipStatus,
+} from '../../../../core/apollo/generated/graphql-schema';
 import { evictFromCache } from '../../../../core/apollo/utils/removeFromCache';
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
 import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
@@ -13,6 +17,7 @@ import usePostMessageMutations from '../../../communication/room/Comments/usePos
 import { useMessages } from '../../../communication/room/Comments/useMessages';
 import CalloutSettingsContainer from '../calloutBlock/CalloutSettingsContainer';
 import CommentsCalloutLayout from './CommentsCalloutLayout';
+import { useSpace } from '../../../journey/space/SpaceContext/useSpace';
 
 type NeededFields = 'id' | 'authorization' | 'messages' | 'calloutNameId';
 export type CommentsCalloutData = Pick<CommentsWithMessagesFragmentWithCallout, NeededFields>;
@@ -36,6 +41,7 @@ const CommentsCallout = ({
   ...calloutSettingsProps
 }: CommentsCalloutProps) => {
   const { user: userMetadata, isAuthenticated } = useUserContext();
+  const { myMembershipStatus } = useSpace();
   const user = userMetadata?.user;
 
   const commentsId = callout.comments?.id;
@@ -88,6 +94,7 @@ const CommentsCallout = ({
           callout={callout}
           contributionsCount={contributionsCount}
           {...calloutSettingsProvided}
+          isMember={myMembershipStatus === CommunityMembershipStatus.Member}
           expanded={expanded}
           onExpand={onExpand}
           onCollapse={onCollapse}
