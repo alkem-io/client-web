@@ -1,6 +1,7 @@
 import { InternalRefetchQueriesInclude } from '@apollo/client/core/types';
 import { useTranslation } from 'react-i18next';
 import {
+  useCalloutTemplateContentLazyQuery,
   useCreateCalloutTemplateMutation,
   useDeleteCalloutTemplateMutation,
   useUpdateCalloutTemplateMutation,
@@ -21,6 +22,7 @@ import CreateCalloutTemplateDialog from './CreateCalloutTemplateDialog';
 import { CalloutTemplateFormSubmittedValues } from './CalloutTemplateForm';
 import produce from 'immer';
 import EditCalloutTemplateDialog from './EditCalloutTemplateDialog';
+import { Identifiable } from '../../../../../core/utils/Identifiable';
 
 interface AdminCalloutTemplatesSectionProps {
   templateId: string | undefined;
@@ -42,6 +44,7 @@ const AdminCalloutTemplatesSection = ({ refetchQueries, ...props }: AdminCallout
   const [createCalloutTemplate] = useCreateCalloutTemplateMutation();
   const [updateCalloutTemplate] = useUpdateCalloutTemplateMutation();
   const [deleteCalloutTemplate] = useDeleteCalloutTemplateMutation();
+  const [fetchTemplateData] = useCalloutTemplateContentLazyQuery();
 
   return (
     <AdminTemplatesSection
@@ -114,6 +117,52 @@ const AdminCalloutTemplatesSection = ({ refetchQueries, ...props }: AdminCallout
         await deleteCalloutTemplate({ variables, refetchQueries });
       }}
       templateType={TemplateType.CalloutTemplate}
+      onTemplateImport={async (template: Identifiable) => {
+        const { data } = await fetchTemplateData({ variables: { calloutTemplateId: template.id } });
+        const calloutTemplate = data?.lookup.calloutTemplate;
+        if (!calloutTemplate) {
+          throw new TypeError('Template not found!');
+        }
+        return {
+          type: calloutTemplate.type,
+          profile: {
+            displayName: calloutTemplate.profile.displayName,
+            description: calloutTemplate.profile.description,
+            tagset: calloutTemplate.profile.tagset,
+            visual: calloutTemplate.profile.visual,
+          },
+          framing: {
+            profile: {
+              displayName: calloutTemplate.framing.profile.displayName,
+              description: calloutTemplate.framing.profile.description,
+              tagsets:
+                calloutTemplate.framing.profile.tagsets?.map(tagset => ({
+                  name: tagset.name,
+                  tags: tagset.tags,
+                  type: tagset.type,
+                })) ?? [],
+              referencesData:
+                calloutTemplate.framing.profile.references?.map(reference => ({
+                  name: reference.name,
+                  uri: reference.uri,
+                  description: reference.description,
+                })) ?? [],
+            },
+            whiteboard: calloutTemplate.framing.whiteboard
+              ? { content: calloutTemplate.framing.whiteboard.content }
+              : undefined,
+          },
+          contributionPolicy: {
+            state: calloutTemplate.contributionPolicy.state,
+          },
+          contributionDefaults: {
+            postDescription: calloutTemplate.contributionDefaults.postDescription,
+            whiteboardContent: calloutTemplate.contributionDefaults.whiteboardContent,
+          },
+          // TODO: Remove this
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } as any;
+      }}
     />
   );
 };

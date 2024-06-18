@@ -86,6 +86,12 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
               background={entities.space?.profile.description}
               who={entities.space?.context?.who}
               impact={entities.space?.context?.impact}
+              guidelines={
+                <CommunityGuidelinesBlock
+                  communityId={entities.space?.community?.id}
+                  journeyUrl={entities.space?.profile.url}
+                />
+              }
               loading={state.loading}
               leadUsers={entities.space?.community?.leadUsers}
               host={entities.host}
@@ -96,12 +102,6 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
                 </IconButton>
               }
               shareUrl={buildAboutUrl(entities.space?.profile.url)}
-              leftColumnChildrenTop={
-                <CommunityGuidelinesBlock
-                  communityId={entities.space?.community?.id}
-                  journeyUrl={entities.space?.profile.url}
-                />
-              }
             />
           </>
         )}

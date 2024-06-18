@@ -36,8 +36,8 @@ export const calloutFilterConfig: FilterConfig = {
     typename: 'all',
   },
 };
-/*
-TODO: Disabled Callout filters for now.
+
+/* TODO: Disabled Callout filters for now.
 Object.values(CalloutType).reduce(
   (filterConfig, calloutType) => {
     return {
