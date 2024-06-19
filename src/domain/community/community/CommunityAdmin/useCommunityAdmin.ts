@@ -444,8 +444,8 @@ const useCommunityAdmin = ({
     await refetchApplicationsAndInvitations();
   };
 
-  const { inviteExistingUser, inviteExternalUser } = useInviteUsers(communityId, {
-    onInviteExistingUser: onInviteUser,
+  const { inviteContributor: inviteExistingUser, inviteExternalUser } = useInviteUsers(communityId, {
+    onInviteContributor: onInviteUser,
     onInviteExternalUser: onInviteUser,
   });
 

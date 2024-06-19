@@ -485,22 +485,22 @@ export type AgentBeginVerifiedCredentialRequestOutputFieldPolicy = {
 };
 export type ApplicationKeySpecifier = (
   | 'authorization'
+  | 'contributor'
   | 'createdDate'
   | 'id'
   | 'lifecycle'
   | 'questions'
   | 'updatedDate'
-  | 'user'
   | ApplicationKeySpecifier
 )[];
 export type ApplicationFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  contributor?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   lifecycle?: FieldPolicy<any> | FieldReadFunction<any>;
   questions?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
-  user?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ApplicationForRoleResultKeySpecifier = (
   | 'communityID'
@@ -1228,25 +1228,27 @@ export type InnovationPackFieldPolicy = {
 };
 export type InvitationKeySpecifier = (
   | 'authorization'
+  | 'contributor'
+  | 'contributorType'
   | 'createdBy'
   | 'createdDate'
   | 'id'
   | 'invitedToParent'
   | 'lifecycle'
   | 'updatedDate'
-  | 'user'
   | 'welcomeMessage'
   | InvitationKeySpecifier
 )[];
 export type InvitationFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  contributor?: FieldPolicy<any> | FieldReadFunction<any>;
+  contributorType?: FieldPolicy<any> | FieldReadFunction<any>;
   createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   invitedToParent?: FieldPolicy<any> | FieldReadFunction<any>;
   lifecycle?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
-  user?: FieldPolicy<any> | FieldReadFunction<any>;
   welcomeMessage?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type InvitationExternalKeySpecifier = (
@@ -1618,7 +1620,7 @@ export type MutationKeySpecifier = (
   | 'grantCredentialToUser'
   | 'ingest'
   | 'ingestSpace'
-  | 'inviteExistingUserForCommunityMembership'
+  | 'inviteContributorsForCommunityMembership'
   | 'inviteForCommunityMembershipByEmail'
   | 'joinCommunity'
   | 'messageUser'
@@ -1782,7 +1784,7 @@ export type MutationFieldPolicy = {
   grantCredentialToUser?: FieldPolicy<any> | FieldReadFunction<any>;
   ingest?: FieldPolicy<any> | FieldReadFunction<any>;
   ingestSpace?: FieldPolicy<any> | FieldReadFunction<any>;
-  inviteExistingUserForCommunityMembership?: FieldPolicy<any> | FieldReadFunction<any>;
+  inviteContributorsForCommunityMembership?: FieldPolicy<any> | FieldReadFunction<any>;
   inviteForCommunityMembershipByEmail?: FieldPolicy<any> | FieldReadFunction<any>;
   joinCommunity?: FieldPolicy<any> | FieldReadFunction<any>;
   messageUser?: FieldPolicy<any> | FieldReadFunction<any>;

@@ -28,7 +28,7 @@ interface FormikUserSelectorProps {
   name: string;
   required?: boolean;
   readonly?: boolean;
-  onChange?: (userIds: string[]) => void;
+  onChange?: (contributorIds: string[]) => void;
   sortUsers?: <U extends Identifiable>(results: U[]) => U[];
   hydrateUsers?: HydratorFn;
 }
