@@ -68,6 +68,7 @@ export interface CalloutLayoutProps {
     publishedAt?: string;
   };
   contributionsCount: number;
+  isMember?: boolean;
   expanded: boolean | undefined;
   onExpand: (() => void) | undefined;
   onCollapse: (() => void) | undefined;

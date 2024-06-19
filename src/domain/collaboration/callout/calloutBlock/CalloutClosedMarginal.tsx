@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { CalloutState } from '../../../../core/apollo/generated/graphql-schema';
+import { CalloutState, CalloutType } from '../../../../core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
 import CalloutBlockMarginal from './CalloutBlockMarginal';
 
@@ -11,11 +11,19 @@ interface CalloutNotOpenStateMarginalProps {
     comments?: {
       messages?: unknown[];
     };
+    type?: CalloutType;
   };
   disabled?: boolean;
+  isMember?: boolean;
+  contributionsCount?: number;
 }
 
-const CalloutClosedMarginal = ({ callout, disabled = false }: CalloutNotOpenStateMarginalProps) => {
+const CalloutClosedMarginal = ({
+  callout,
+  disabled = false,
+  contributionsCount,
+  isMember,
+}: CalloutNotOpenStateMarginalProps) => {
   const { t } = useTranslation();
 
   const isClosed = useMemo(() => {
@@ -29,10 +37,12 @@ const CalloutClosedMarginal = ({ callout, disabled = false }: CalloutNotOpenStat
   }, [callout.contributionPolicy.state, callout.comments?.messages, t]);
 
   if (!isClosed) {
-    return null;
+    return !isMember && callout.type === CalloutType.Post && contributionsCount ? (
+      <CalloutBlockMarginal variant="footer">{t('callout.notMember')}</CalloutBlockMarginal>
+    ) : null;
+  } else {
+    return <CalloutBlockMarginal variant="footer">{t('callout.closed')}</CalloutBlockMarginal>;
   }
-
-  return <CalloutBlockMarginal variant="footer">{t('callout.closed')}</CalloutBlockMarginal>;
 };
 
 export default CalloutClosedMarginal;

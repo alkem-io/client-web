@@ -16,6 +16,7 @@ const CommentsCalloutLayout = ({
   callout,
   children,
   contributionsCount,
+  isMember,
   expanded = false,
   onExpand,
   onCollapse,
@@ -63,7 +64,12 @@ const CommentsCalloutLayout = ({
         <TagsComponent tags={callout.framing.profile.tagset?.tags} sx={{ paddingX: gutters() }} />
       ) : undefined}
       {children}
-      <CalloutClosedMarginal callout={callout} disabled={disableMarginal} />
+      <CalloutClosedMarginal
+        callout={callout}
+        disabled={disableMarginal}
+        contributionsCount={contributionsCount}
+        isMember={isMember}
+      />
     </>
   );
 };
