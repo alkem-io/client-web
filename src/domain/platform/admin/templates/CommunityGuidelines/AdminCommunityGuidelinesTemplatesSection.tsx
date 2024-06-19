@@ -1,6 +1,9 @@
 import { InternalRefetchQueriesInclude } from '@apollo/client/core/types';
 import { useTranslation } from 'react-i18next';
-import { AdminCommunityGuidelinesTemplateFragment } from '../../../../../core/apollo/generated/graphql-schema';
+import {
+  AdminCommunityGuidelinesTemplateFragment,
+  Reference,
+} from '../../../../../core/apollo/generated/graphql-schema';
 import {
   useCreateCommunityGuidelinesTemplateMutation,
   useDeleteCommunityGuidelinesTemplateMutation,
@@ -56,8 +59,10 @@ const AdminCommunityGuidelinesTemplatesSection = ({
         const updatedProfile = {
           displayName: profile.displayName,
           description: profile.description,
-          // @ts-ignore
-          referencesData: profile.referencesData?.map(({ name, uri }) => ({ name, uri })),
+          // TODO: References refactor referencesData should be just references
+          referencesData: (profile as unknown as { referencesData?: Reference[] }).referencesData?.map(
+            ({ id, ...reference }) => ({ ...reference })
+          ),
         };
         const updatedGuidelines = { profile: updatedProfile };
         const updatedVariables = { guidelines: updatedGuidelines, ...rest };
