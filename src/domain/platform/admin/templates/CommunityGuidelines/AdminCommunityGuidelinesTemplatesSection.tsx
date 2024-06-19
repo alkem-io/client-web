@@ -61,7 +61,7 @@ const AdminCommunityGuidelinesTemplatesSection = ({
           description: profile.description,
           // TODO: References refactor referencesData should be just references
           referencesData: (profile as unknown as { referencesData?: Reference[] }).referencesData?.map(
-            ({ name, uri }) => ({ name, uri })
+            ({ id, ...reference }) => ({ ...reference })
           ),
         };
         const updatedGuidelines = { profile: updatedProfile };

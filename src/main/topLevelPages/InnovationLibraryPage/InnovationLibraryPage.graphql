@@ -129,6 +129,9 @@ fragment LibraryTemplates on TemplatesSet {
       profile {
         displayName
         description
+        references {
+          ...ReferenceDetails
+        }
       }
     }
   }
