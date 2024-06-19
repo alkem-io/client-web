@@ -177,7 +177,7 @@ const CreatePendingMembershipForInvitation = (invitation: AdminCommunityInvitati
     updatedDate: new Date(invitation.updatedDate),
     contributor: contributor,
     questions: [],
-  } as const;
+  };
   return result;
 };
 
@@ -191,7 +191,7 @@ const CreatePendingMembershipForInvitationExternal = (invitation: AdminCommunity
     email: invitation.email,
     createdDate: new Date(invitation.createdDate),
     questions: [],
-  } as const;
+  };
   return result;
 };
 
