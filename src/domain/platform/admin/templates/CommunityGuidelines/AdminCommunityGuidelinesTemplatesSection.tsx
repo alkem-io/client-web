@@ -56,7 +56,8 @@ const AdminCommunityGuidelinesTemplatesSection = ({
         const updatedProfile = {
           displayName: profile.displayName,
           description: profile.description,
-          referencesData: profile.references?.map(({ name, uri }) => ({ name, uri })),
+          // @ts-ignore
+          referencesData: profile.referencesData?.map(({ name, uri }) => ({ name, uri })),
         };
         const updatedGuidelines = { profile: updatedProfile };
         const updatedVariables = { guidelines: updatedGuidelines, ...rest };
