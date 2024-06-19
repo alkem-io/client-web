@@ -2,14 +2,13 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog/Dialog';
 import { makeStyles } from '@mui/styles';
-import { AdminCommunityApplicationFragment } from '../../../../core/apollo/generated/graphql-schema';
 import WrapperTypography from '../../../../core/ui/typography/deprecated/WrapperTypography';
 import LifecycleButton from '../../../platform/admin/templates/InnovationTemplates/LifecycleButton';
-import { Optional } from '../../../../core/utils/Optional';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import { ProfileChip } from '../../contributor/ProfileChip/ProfileChip';
 import { Actions } from '../../../../core/ui/actions/Actions';
 import Gutters from '../../../../core/ui/grid/Gutters';
+import { CommunityContributorType } from '../../../../core/apollo/generated/graphql-schema';
 
 const appStyles = makeStyles(theme => ({
   minHeight: {
@@ -74,7 +73,35 @@ const appStyles = makeStyles(theme => ({
   },
 }));
 
-export type ApplicationDialogDataType = Optional<AdminCommunityApplicationFragment, 'lifecycle' | 'user'>;
+export type ApplicationDialogDataType = {
+  id: string;
+  contributorType: CommunityContributorType;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  lifecycle?: any;
+  email?: string;
+  createdDate: Date;
+  updatedDate?: Date;
+  questions: {
+    id: string;
+    name: string;
+    value: string;
+  }[];
+  contributor?: {
+    id: string;
+    nameID: string;
+    profile: {
+      displayName: string;
+      avatar?: {
+        uri: string;
+      };
+      location?: {
+        city: string;
+        country: string;
+      };
+      url: string;
+    };
+  };
+};
 
 export interface ApplicationDialogProps {
   app?: ApplicationDialogDataType;
@@ -91,7 +118,7 @@ export const ApplicationDialog: FC<ApplicationDialogProps> = ({ app, onClose, on
   const styles = appStyles();
 
   const appId = app?.id || '';
-  const user = app?.user;
+  const user = app?.contributor;
   const questions = app?.questions ?? [];
 
   const nextEvents = app?.lifecycle?.nextEvents ?? [];

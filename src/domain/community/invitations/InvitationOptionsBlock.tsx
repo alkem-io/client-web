@@ -10,12 +10,12 @@ import RadioButton from '../../shared/components/RadioButtons/RadioButton';
 import { Caption } from '../../../core/ui/typography';
 import { useSpaceSettingsQuery } from '../../../core/apollo/generated/apollo-hooks';
 import InviteExistingUserDialog from './InviteExistingUserDialog';
-import { InviteExistingUserData, InviteExternalUserData } from './useInviteUsers';
+import { InviteContributorsData, InviteExternalUserData } from './useInviteUsers';
 import InviteExternalUserDialog from './InviteExternalUserDialog';
 
 interface InvitationOptionsBlockProps {
   spaceDisplayName: string | undefined;
-  inviteExistingUser: (params: InviteExistingUserData) => Promise<void>;
+  inviteExistingUser: (params: InviteContributorsData) => Promise<void>;
   inviteExternalUser: (params: InviteExternalUserData) => Promise<void>;
   currentApplicationsUserIds: string[];
   currentInvitationsUserIds: string[];
