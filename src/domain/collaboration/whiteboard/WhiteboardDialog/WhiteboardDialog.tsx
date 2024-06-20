@@ -302,7 +302,7 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
           },
         }}
       >
-        {({ children, mode, modeReason }) => {
+        {({ children, mode, modeReason, restartCollaboration }) => {
           return (
             <Formik
               innerRef={formikRef}
@@ -345,6 +345,7 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
                   onSave={handleManualSave}
                   onDelete={() => setDeleteDialogOpen(true)}
                   canDelete={options.canDelete}
+                  onRestart={restartCollaboration}
                   canUpdateContent={options.canEdit!}
                   updating={state?.updatingWhiteboardContent}
                   createdBy={whiteboard?.createdBy}
