@@ -1706,6 +1706,7 @@ export type CreateSpaceInput = {
   nameID?: InputMaybe<Scalars['NameID']>;
   profileData: CreateProfileInput;
   tags?: InputMaybe<Array<Scalars['String']>>;
+  type?: InputMaybe<SpaceType>;
 };
 
 export type CreateSubspaceInput = {
@@ -1716,6 +1717,7 @@ export type CreateSubspaceInput = {
   profileData: CreateProfileInput;
   spaceID: Scalars['UUID_NAMEID'];
   tags?: InputMaybe<Array<Scalars['String']>>;
+  type?: InputMaybe<SpaceType>;
 };
 
 export type CreateTagsetInput = {
@@ -4804,6 +4806,12 @@ export type SpaceFilterInput = {
   visibilities?: InputMaybe<Array<SpaceVisibility>>;
 };
 
+export enum SpaceLevel {
+  Challenge = 'CHALLENGE',
+  Opportunity = 'OPPORTUNITY',
+  Space = 'SPACE',
+}
+
 export enum SpacePrivacyMode {
   Private = 'PRIVATE',
   Public = 'PUBLIC',
@@ -4848,9 +4856,11 @@ export type SpaceSettingsPrivacy = {
 };
 
 export enum SpaceType {
+  BlankSlate = 'BLANK_SLATE',
   Challenge = 'CHALLENGE',
   Opportunity = 'OPPORTUNITY',
   Space = 'SPACE',
+  VirtualContributor = 'VIRTUAL_CONTRIBUTOR',
 }
 
 export enum SpaceVisibility {
@@ -4883,8 +4893,8 @@ export type StorageAggregatorParent = {
   displayName: Scalars['String'];
   /** The UUID of the parent entity. */
   id: Scalars['UUID'];
-  /** The Type of the parent Entity. */
-  type: SpaceType;
+  /** The level of the parent Entity. */
+  level: SpaceLevel;
   /** The URL that can be used to access the parent entity. */
   url: Scalars['String'];
 };
@@ -23079,7 +23089,7 @@ export type SpaceStorageAdminPageQuery = {
               | {
                   __typename?: 'StorageAggregatorParent';
                   id: string;
-                  type: SpaceType;
+                  level: SpaceLevel;
                   displayName: string;
                   url: string;
                 }
@@ -23091,7 +23101,7 @@ export type SpaceStorageAdminPageQuery = {
                 | {
                     __typename?: 'StorageAggregatorParent';
                     id: string;
-                    type: SpaceType;
+                    level: SpaceLevel;
                     displayName: string;
                     url: string;
                   }
@@ -23192,7 +23202,13 @@ export type StorageAggregatorLookupQuery = {
           __typename?: 'StorageAggregator';
           id: string;
           parentEntity?:
-            | { __typename?: 'StorageAggregatorParent'; id: string; type: SpaceType; displayName: string; url: string }
+            | {
+                __typename?: 'StorageAggregatorParent';
+                id: string;
+                level: SpaceLevel;
+                displayName: string;
+                url: string;
+              }
             | undefined;
           storageAggregators: Array<{
             __typename?: 'StorageAggregator';
@@ -23201,7 +23217,7 @@ export type StorageAggregatorLookupQuery = {
               | {
                   __typename?: 'StorageAggregatorParent';
                   id: string;
-                  type: SpaceType;
+                  level: SpaceLevel;
                   displayName: string;
                   url: string;
                 }
@@ -23272,13 +23288,13 @@ export type StorageAggregatorFragment = {
   __typename?: 'StorageAggregator';
   id: string;
   parentEntity?:
-    | { __typename?: 'StorageAggregatorParent'; id: string; type: SpaceType; displayName: string; url: string }
+    | { __typename?: 'StorageAggregatorParent'; id: string; level: SpaceLevel; displayName: string; url: string }
     | undefined;
   storageAggregators: Array<{
     __typename?: 'StorageAggregator';
     id: string;
     parentEntity?:
-      | { __typename?: 'StorageAggregatorParent'; id: string; type: SpaceType; displayName: string; url: string }
+      | { __typename?: 'StorageAggregatorParent'; id: string; level: SpaceLevel; displayName: string; url: string }
       | undefined;
   }>;
   storageBuckets: Array<{
@@ -23343,7 +23359,7 @@ export type LoadableStorageAggregatorFragment = {
   __typename?: 'StorageAggregator';
   id: string;
   parentEntity?:
-    | { __typename?: 'StorageAggregatorParent'; id: string; type: SpaceType; displayName: string; url: string }
+    | { __typename?: 'StorageAggregatorParent'; id: string; level: SpaceLevel; displayName: string; url: string }
     | undefined;
 };
 
@@ -23387,7 +23403,7 @@ export type StorageBucketParentFragment = {
 export type StorageAggregatorParentFragment = {
   __typename?: 'StorageAggregatorParent';
   id: string;
-  type: SpaceType;
+  level: SpaceLevel;
   displayName: string;
   url: string;
 };
@@ -27374,7 +27390,20 @@ export type InnovationLibraryQuery = {
                 guidelines: {
                   __typename?: 'CommunityGuidelines';
                   id: string;
-                  profile: { __typename?: 'Profile'; displayName: string; description?: string | undefined };
+                  profile: {
+                    __typename?: 'Profile';
+                    displayName: string;
+                    description?: string | undefined;
+                    references?:
+                      | Array<{
+                          __typename?: 'Reference';
+                          id: string;
+                          name: string;
+                          uri: string;
+                          description?: string | undefined;
+                        }>
+                      | undefined;
+                  };
                 };
               }>;
             }
@@ -27656,7 +27685,20 @@ export type InnovationPackDataFragment = {
           guidelines: {
             __typename?: 'CommunityGuidelines';
             id: string;
-            profile: { __typename?: 'Profile'; displayName: string; description?: string | undefined };
+            profile: {
+              __typename?: 'Profile';
+              displayName: string;
+              description?: string | undefined;
+              references?:
+                | Array<{
+                    __typename?: 'Reference';
+                    id: string;
+                    name: string;
+                    uri: string;
+                    description?: string | undefined;
+                  }>
+                | undefined;
+            };
           };
         }>;
       }
@@ -27908,7 +27950,14 @@ export type LibraryTemplatesFragment = {
     guidelines: {
       __typename?: 'CommunityGuidelines';
       id: string;
-      profile: { __typename?: 'Profile'; displayName: string; description?: string | undefined };
+      profile: {
+        __typename?: 'Profile';
+        displayName: string;
+        description?: string | undefined;
+        references?:
+          | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
+          | undefined;
+      };
     };
   }>;
 };

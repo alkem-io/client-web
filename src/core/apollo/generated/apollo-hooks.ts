@@ -2857,7 +2857,7 @@ export const AdminSpaceFragmentDoc = gql`
 export const StorageAggregatorParentFragmentDoc = gql`
   fragment StorageAggregatorParent on StorageAggregatorParent {
     id
-    type
+    level
     displayName
     url
   }
@@ -3557,6 +3557,9 @@ export const LibraryTemplatesFragmentDoc = gql`
         profile {
           displayName
           description
+          references {
+            ...ReferenceDetails
+          }
         }
       }
     }

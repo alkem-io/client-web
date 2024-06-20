@@ -2645,14 +2645,14 @@ export type StorageAggregatorFieldPolicy = {
 export type StorageAggregatorParentKeySpecifier = (
   | 'displayName'
   | 'id'
-  | 'type'
+  | 'level'
   | 'url'
   | StorageAggregatorParentKeySpecifier
 )[];
 export type StorageAggregatorParentFieldPolicy = {
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
-  type?: FieldPolicy<any> | FieldReadFunction<any>;
+  level?: FieldPolicy<any> | FieldReadFunction<any>;
   url?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type StorageBucketKeySpecifier = (

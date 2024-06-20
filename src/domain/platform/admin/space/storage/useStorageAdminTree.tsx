@@ -10,7 +10,7 @@ import HistoryIcon from '@mui/icons-material/History';
 import {
   DocumentDataFragment,
   LoadableStorageAggregatorFragment,
-  SpaceType,
+  SpaceLevel,
   StorageAggregatorFragment,
   StorageBucketFragment,
 } from '../../../../../core/apollo/generated/graphql-schema';
@@ -54,13 +54,13 @@ interface Provided {
   reload: () => void;
 }
 
-export const getStorageAggregatorParentIcon = (type: SpaceType) => {
-  switch (type) {
-    case SpaceType.Space:
+export const getStorageAggregatorParentIcon = (level: SpaceLevel) => {
+  switch (level) {
+    case SpaceLevel.Space:
       return SpaceIcon;
-    case SpaceType.Challenge:
+    case SpaceLevel.Challenge:
       return ChallengeIcon;
-    case SpaceType.Opportunity:
+    case SpaceLevel.Opportunity:
       return OpportunityIcon;
   }
 };
@@ -118,7 +118,7 @@ const newStorageAggregatorRow = (storageAggregator: LoadableStorageAggregatorFra
     return {
       id: storageAggregator.id,
       displayName: storageAggregator.parentEntity.displayName,
-      iconComponent: getStorageAggregatorParentIcon(storageAggregator.parentEntity.type),
+      iconComponent: getStorageAggregatorParentIcon(storageAggregator.parentEntity.level),
       url: storageAggregator.parentEntity.url,
       size: 0,
       collapsible: true,

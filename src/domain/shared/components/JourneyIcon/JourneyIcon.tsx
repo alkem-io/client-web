@@ -1,7 +1,7 @@
 import { SpaceIcon } from '../../../journey/space/icon/SpaceIcon';
 import { ChallengeIcon } from '../../../journey/subspace/icon/ChallengeIcon';
 import { OpportunityIcon } from '../../../journey/opportunity/icon/OpportunityIcon';
-import { SpaceType } from '../../../../core/apollo/generated/graphql-schema';
+import { SpaceLevel } from '../../../../core/apollo/generated/graphql-schema';
 import { ComponentType } from 'react';
 import { SvgIconProps } from '@mui/material';
 
@@ -21,10 +21,10 @@ export const journeyIconByJourneyLevel = [
   undefined, // for Typescript to correctly assume you can get undefined as well
 ] as const;
 
-export const spaceTypeIcon: Record<SpaceType, ComponentType<SvgIconProps>> = {
-  [SpaceType.Space]: SpaceIcon,
-  [SpaceType.Challenge]: ChallengeIcon,
-  [SpaceType.Opportunity]: OpportunityIcon,
+export const spaceTypeIcon: Record<SpaceLevel, ComponentType<SvgIconProps>> = {
+  [SpaceLevel.Space]: SpaceIcon,
+  [SpaceLevel.Challenge]: ChallengeIcon,
+  [SpaceLevel.Opportunity]: OpportunityIcon,
 };
 
 export default journeyIcon;

@@ -63,7 +63,7 @@ fragment StorageBucketParent on StorageBucketParent {
 
 fragment StorageAggregatorParent on StorageAggregatorParent {
   id
-  type
+  level
   displayName
   url
 }
