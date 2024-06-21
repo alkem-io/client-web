@@ -65,7 +65,6 @@ fragment PendingMembershipInvitation on Invitation {
     profile {
       id
       displayName
-
     }
   }
 }
