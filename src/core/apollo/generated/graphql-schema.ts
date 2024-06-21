@@ -22963,6 +22963,34 @@ export type PlatformLevelAuthorizationQuery = {
   };
 };
 
+export type AssignLicensePlanToAccountMutationVariables = Exact<{
+  licensePlanId: Scalars['UUID'];
+  accountId: Scalars['UUID'];
+}>;
+
+export type AssignLicensePlanToAccountMutation = {
+  __typename?: 'Mutation';
+  assignLicensePlanToAccount: {
+    __typename?: 'Account';
+    id: string;
+    subscriptions: Array<{ __typename?: 'AccountSubscription'; name: LicenseCredential }>;
+  };
+};
+
+export type RevokeLicensePlanFromAccountMutationVariables = Exact<{
+  licensePlanId: Scalars['UUID'];
+  accountId: Scalars['UUID'];
+}>;
+
+export type RevokeLicensePlanFromAccountMutation = {
+  __typename?: 'Mutation';
+  revokeLicensePlanFromAccount: {
+    __typename?: 'Account';
+    id: string;
+    subscriptions: Array<{ __typename?: 'AccountSubscription'; name: LicenseCredential }>;
+  };
+};
+
 export type UpdateAccountPlatformSettingsMutationVariables = Exact<{
   accountId: Scalars['UUID'];
   hostId?: InputMaybe<Scalars['UUID_NAMEID']>;
@@ -23009,6 +23037,7 @@ export type AdminSpacesListQuery = {
     account: {
       __typename?: 'Account';
       id: string;
+      subscriptions: Array<{ __typename?: 'AccountSubscription'; name: LicenseCredential }>;
       license: {
         __typename?: 'License';
         id: string;
@@ -23034,6 +23063,14 @@ export type AdminSpacesListQuery = {
       | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
   }>;
+  platform: {
+    __typename?: 'Platform';
+    licensing: {
+      __typename?: 'Licensing';
+      id: string;
+      plans: Array<{ __typename?: 'LicensePlan'; id: string; name: string; licenseCredential: LicenseCredential }>;
+    };
+  };
 };
 
 export type AdminSpaceFragment = {
@@ -23043,6 +23080,7 @@ export type AdminSpaceFragment = {
   account: {
     __typename?: 'Account';
     id: string;
+    subscriptions: Array<{ __typename?: 'AccountSubscription'; name: LicenseCredential }>;
     license: {
       __typename?: 'License';
       id: string;
