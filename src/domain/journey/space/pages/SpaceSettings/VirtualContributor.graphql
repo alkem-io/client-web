@@ -2,7 +2,6 @@ mutation CreateVirtualContributorOnAccount($virtualContributorData: CreateVirtua
   createVirtualContributor(virtualContributorData: $virtualContributorData) {
     id
     nameID
-    bodyOfKnowledgeID
     profile {
       id
     }
@@ -30,7 +29,6 @@ query SpaceSubspaces($spaceId: UUID_NAMEID!) {
       virtualContributors {
         id
         nameID
-        bodyOfKnowledgeID
         profile {
           id
           displayName

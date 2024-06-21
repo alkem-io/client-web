@@ -555,6 +555,127 @@ export type AgentBeginVerifiedCredentialRequestOutput = {
   qrCodeImg: Scalars['String'];
 };
 
+export type AiPersona = {
+  __typename?: 'AiPersona';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The type of knowledge provided by this AI Persona. */
+  bodyOfKnowledgeType: AiPersonaBodyOfKnowledgeType;
+  /** The type of context sharing that are supported by this AI Persona when used. */
+  dataAccessMode: AiPersonaDataAccessMode;
+  /** The description for this AI Persona. */
+  description: Scalars['Markdown'];
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** The type of interactions that are supported by this AI Persona when used. */
+  interactionModes: Array<AiPersonaInteractionMode>;
+};
+
+export enum AiPersonaBodyOfKnowledgeType {
+  AlkemioSpace = 'ALKEMIO_SPACE',
+  Other = 'OTHER',
+}
+
+export enum AiPersonaDataAccessMode {
+  None = 'NONE',
+  SpaceProfile = 'SPACE_PROFILE',
+  SpaceProfileAndContents = 'SPACE_PROFILE_AND_CONTENTS',
+}
+
+export enum AiPersonaEngine {
+  CommunityManager = 'COMMUNITY_MANAGER',
+  Expert = 'EXPERT',
+  Guidance = 'GUIDANCE',
+}
+
+export enum AiPersonaInteractionMode {
+  DiscussionTagging = 'DISCUSSION_TAGGING',
+}
+
+export type AiPersonaQuestionInput = {
+  /** Virtual Persona Type. */
+  aiPersonaID: Scalars['UUID'];
+  /** The question that is being asked. */
+  question: Scalars['String'];
+};
+
+export type AiPersonaResult = {
+  __typename?: 'AiPersonaResult';
+  /** The answer to the question */
+  answer: Scalars['String'];
+  /** The id of the answer; null if an error was returned */
+  id?: Maybe<Scalars['String']>;
+  /** The original question */
+  question: Scalars['String'];
+  /** The sources used to answer the question */
+  sources?: Maybe<Array<Source>>;
+};
+
+export type AiPersonaService = {
+  __typename?: 'AiPersonaService';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The body of knowledge ID used for the AI Persona Service */
+  bodyOfKnowledgeID?: Maybe<Scalars['UUID']>;
+  /** The body of knowledge type used for the AI Persona Service */
+  bodyOfKnowledgeType?: Maybe<AiPersonaBodyOfKnowledgeType>;
+  /** The required data access by the Virtual Persona */
+  dataAccessMode: AiPersonaDataAccessMode;
+  /** The AI Persona Engine being used by this AI Persona. */
+  engine: AiPersonaEngine;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** The prompt used by this Virtual Persona */
+  prompt: Scalars['String'];
+};
+
+export type AiPersonaServiceIngestInput = {
+  aiPersonaServiceID: Scalars['UUID'];
+};
+
+export type AiPersonaServiceQuestionInput = {
+  /** Virtual Persona Type. */
+  aiPersonaServiceID: Scalars['UUID'];
+  /** The question that is being asked. */
+  question: Scalars['String'];
+};
+
+export type AiPersonaServiceResult = {
+  __typename?: 'AiPersonaServiceResult';
+  /** The answer to the question */
+  answer: Scalars['String'];
+  /** The id of the answer; null if an error was returned */
+  id?: Maybe<Scalars['String']>;
+  /** The original question */
+  question: Scalars['String'];
+  /** The sources used to answer the question */
+  sources?: Maybe<Array<Source>>;
+};
+
+export type AiServer = {
+  __typename?: 'AiServer';
+  /** A particular AiPersonaService */
+  aiPersonaService: AiPersonaService;
+  /** The AiPersonaServices on this aiServer */
+  aiPersonaServices: Array<AiPersonaService>;
+  /** Ask the virtual persona engine for guidance. */
+  askAiPersonaServiceQuestion: AiPersonaServiceResult;
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The default AiPersonaService in use on the aiServer. */
+  defaultAiPersonaService: AiPersonaService;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+};
+
+export type AiServerAiPersonaServiceArgs = {
+  ID: Scalars['UUID'];
+};
+
+export type AiServerAskAiPersonaServiceQuestionArgs = {
+  chatData: AiPersonaServiceQuestionInput;
+};
+
 export type AnyInvitation = Invitation | InvitationExternal;
 
 export type Application = {
@@ -763,11 +884,6 @@ export enum AuthorizationPrivilege {
   UpdateContent = 'UPDATE_CONTENT',
   UpdateInnovationFlow = 'UPDATE_INNOVATION_FLOW',
   UpdateWhiteboard = 'UPDATE_WHITEBOARD',
-}
-
-export enum BodyOfKnowledgeType {
-  Other = 'OTHER',
-  Space = 'SPACE',
 }
 
 export type Calendar = {
@@ -1452,6 +1568,20 @@ export type CreateActorInput = {
   value?: InputMaybe<Scalars['String']>;
 };
 
+export type CreateAiPersonaInput = {
+  aiPersonaService?: InputMaybe<CreateAiPersonaServiceInput>;
+  aiPersonaServiceID?: InputMaybe<Scalars['UUID']>;
+  description: Scalars['Markdown'];
+};
+
+export type CreateAiPersonaServiceInput = {
+  bodyOfKnowledgeID: Scalars['UUID'];
+  bodyOfKnowledgeType: AiPersonaBodyOfKnowledgeType;
+  dataAccessMode: AiPersonaDataAccessMode;
+  engine: AiPersonaEngine;
+  prompt?: InputMaybe<Scalars['JSON']>;
+};
+
 export type CreateCalendarEventOnCalendarInput = {
   calendarID: Scalars['UUID'];
   /** The length of the event in days. */
@@ -1752,20 +1882,11 @@ export type CreateUserInput = {
 
 export type CreateVirtualContributorOnAccountInput = {
   accountID: Scalars['UUID'];
-  bodyOfKnowledgeID?: InputMaybe<Scalars['UUID']>;
-  bodyOfKnowledgeType?: InputMaybe<BodyOfKnowledgeType>;
+  /** Data used to create the AI Persona */
+  aiPersona: CreateAiPersonaInput;
   /** A readable identifier, unique within the containing scope. */
   nameID?: InputMaybe<Scalars['NameID']>;
   profileData: CreateProfileInput;
-  virtualPersonaID?: InputMaybe<Scalars['UUID']>;
-};
-
-export type CreateVirtualPersonaInput = {
-  engine: VirtualContributorEngine;
-  /** A readable identifier, unique within the containing scope. */
-  nameID: Scalars['NameID'];
-  profileData: CreateProfileInput;
-  prompt?: InputMaybe<Scalars['JSON']>;
 };
 
 export type CreateWhiteboardInput = {
@@ -1852,6 +1973,10 @@ export type DeleteActorGroupInput = {
 };
 
 export type DeleteActorInput = {
+  ID: Scalars['UUID'];
+};
+
+export type DeleteAiPersonaServiceInput = {
   ID: Scalars['UUID'];
 };
 
@@ -1952,10 +2077,6 @@ export type DeleteUserInput = {
 };
 
 export type DeleteVirtualContributorInput = {
-  ID: Scalars['UUID_NAMEID'];
-};
-
-export type DeleteVirtualPersonaInput = {
   ID: Scalars['UUID_NAMEID'];
 };
 
@@ -2322,6 +2443,8 @@ export type Library = {
   innovationPacks: Array<InnovationPack>;
   /** The StorageAggregator for storage used by this Library */
   storageAggregator?: Maybe<StorageAggregator>;
+  /** The VirtualContributors listed on this platform */
+  virtualContributors: Array<VirtualContributor>;
 };
 
 export type LibraryInnovationPackArgs = {
@@ -2512,6 +2635,8 @@ export type LookupQueryResults = {
   space?: Maybe<Space>;
   /** Lookup the specified StorageAggregator */
   storageAggregator?: Maybe<StorageAggregator>;
+  /** A particular VirtualContributor */
+  virtualContributor?: Maybe<VirtualContributor>;
   /** Lookup the specified Whiteboard */
   whiteboard?: Maybe<Whiteboard>;
   /** Lookup the specified Whiteboard Template */
@@ -2600,6 +2725,10 @@ export type LookupQueryResultsSpaceArgs = {
 };
 
 export type LookupQueryResultsStorageAggregatorArgs = {
+  ID: Scalars['UUID'];
+};
+
+export type LookupQueryResultsVirtualContributorArgs = {
   ID: Scalars['UUID'];
 };
 
@@ -2701,6 +2830,16 @@ export type Mutation = {
   adminCommunicationUpdateRoomsJoinRule: Scalars['Boolean'];
   /** Ingests new data into Elasticsearch from scratch. This will delete all existing data and ingest new data from the source. This is an admin only operation. */
   adminSearchIngestFromScratch: Scalars['String'];
+  /** Reset the Authorization Policy on the specified AiServer. */
+  aiServerAuthorizationPolicyReset: AiServer;
+  /** Creates a new AiPersonaService on the aiServer. */
+  aiServerCreateAiPersonaService: AiPersonaService;
+  /** Deletes the specified AiPersonaService. */
+  aiServerDeleteAiPersonaService: AiPersonaService;
+  /** Trigger an ingesting of data on the remove AI Persona Service. */
+  aiServerPersonaServiceIngest: Scalars['Boolean'];
+  /** Updates the specified AI Persona. */
+  aiServerUpdateAiPersonaService: AiPersonaService;
   /** Apply to join the specified Community as a member. */
   applyForCommunityMembership: Application;
   /** Assigns an Organization a Role in the specified Community. */
@@ -2787,8 +2926,6 @@ export type Mutation = {
   createUserNewRegistration: User;
   /** Creates a new VirtualContributor on an Account. */
   createVirtualContributor: VirtualContributor;
-  /** Creates a new VirtualPersona on the platform. */
-  createVirtualPersona: VirtualPersona;
   /** Creates a new WhiteboardTemplate on the specified TemplatesSet. */
   createWhiteboardTemplate: WhiteboardTemplate;
   /** Deletes the specified Actor. */
@@ -2845,8 +2982,6 @@ export type Mutation = {
   deleteUserGroup: UserGroup;
   /** Deletes the specified VirtualContributor. */
   deleteVirtualContributor: VirtualContributor;
-  /** Deletes the specified VirtualPersona. */
-  deleteVirtualPersona: VirtualPersona;
   /** Deletes the specified Whiteboard. */
   deleteWhiteboard: Whiteboard;
   /** Deletes the specified WhiteboardTemplate. */
@@ -2913,6 +3048,8 @@ export type Mutation = {
   updateAccountPlatformSettings: Account;
   /** Updates the specified Actor. */
   updateActor: Actor;
+  /** Updates the specified AiPersona. */
+  updateAiPersona: AiPersona;
   /** User vote if a specific answer is relevant. */
   updateAnswerRelevance: Scalars['Boolean'];
   /** Updates the specified CalendarEvent. */
@@ -2995,8 +3132,6 @@ export type Mutation = {
   updateVirtualContributor: VirtualContributor;
   /** Update VirtualContributor Platform Settings. */
   updateVirtualContributorPlatformSettings: VirtualContributor;
-  /** Updates the specified VirtualPersona. */
-  updateVirtualPersona: VirtualPersona;
   /** Updates the image URI for the specified Visual. */
   updateVisual: Visual;
   /** Updates the specified Whiteboard. */
@@ -3029,6 +3164,22 @@ export type MutationAdminCommunicationRemoveOrphanedRoomArgs = {
 
 export type MutationAdminCommunicationUpdateRoomsJoinRuleArgs = {
   changeRoomAccessData: CommunicationAdminUpdateRoomsJoinRuleInput;
+};
+
+export type MutationAiServerCreateAiPersonaServiceArgs = {
+  aiPersonaServiceData: CreateAiPersonaServiceInput;
+};
+
+export type MutationAiServerDeleteAiPersonaServiceArgs = {
+  deleteData: DeleteAiPersonaServiceInput;
+};
+
+export type MutationAiServerPersonaServiceIngestArgs = {
+  ingestData: AiPersonaServiceIngestInput;
+};
+
+export type MutationAiServerUpdateAiPersonaServiceArgs = {
+  aiPersonaServiceData: UpdateAiPersonaServiceInput;
 };
 
 export type MutationApplyForCommunityMembershipArgs = {
@@ -3187,10 +3338,6 @@ export type MutationCreateVirtualContributorArgs = {
   virtualContributorData: CreateVirtualContributorOnAccountInput;
 };
 
-export type MutationCreateVirtualPersonaArgs = {
-  virtualPersonaData: CreateVirtualPersonaInput;
-};
-
 export type MutationCreateWhiteboardTemplateArgs = {
   whiteboardTemplateInput: CreateWhiteboardTemplateOnTemplatesSetInput;
 };
@@ -3301,10 +3448,6 @@ export type MutationDeleteUserGroupArgs = {
 
 export type MutationDeleteVirtualContributorArgs = {
   deleteData: DeleteVirtualContributorInput;
-};
-
-export type MutationDeleteVirtualPersonaArgs = {
-  deleteData: DeleteVirtualPersonaInput;
 };
 
 export type MutationDeleteWhiteboardArgs = {
@@ -3429,6 +3572,10 @@ export type MutationUpdateAccountPlatformSettingsArgs = {
 
 export type MutationUpdateActorArgs = {
   actorData: UpdateActorInput;
+};
+
+export type MutationUpdateAiPersonaArgs = {
+  aiPersonaData: UpdateAiPersonaInput;
 };
 
 export type MutationUpdateAnswerRelevanceArgs = {
@@ -3593,10 +3740,6 @@ export type MutationUpdateVirtualContributorArgs = {
 
 export type MutationUpdateVirtualContributorPlatformSettingsArgs = {
   updateData: UpdateVirtualContributorPlatformSettingsInput;
-};
-
-export type MutationUpdateVirtualPersonaArgs = {
-  virtualPersonaData: UpdateVirtualPersonaInput;
 };
 
 export type MutationUpdateVisualArgs = {
@@ -4087,10 +4230,12 @@ export type Query = {
   adminCommunicationMembership: CommunicationAdminMembershipResult;
   /** Usage of the messaging platform that are not tied to the domain model. */
   adminCommunicationOrphanedUsage: CommunicationAdminOrphanedUsageResult;
+  /** Alkemio AiServer */
+  aiServer: AiServer;
+  /** Ask the virtual persona engine for guidance. */
+  askAiPersonaQuestion: AiPersonaResult;
   /** Ask the chat engine for guidance. */
   askChatGuidanceQuestion: ChatGuidanceResult;
-  /** Ask the virtual persona engine for guidance. */
-  askVirtualPersonaQuestion: VirtualPersonaResult;
   /** Get supported credential metadata */
   getSupportedVerifiedCredentialMetadata: Array<CredentialMetadataOutput>;
   /** Allow direct lookup of entities from the domain model */
@@ -4135,10 +4280,6 @@ export type Query = {
   virtualContributor: VirtualContributor;
   /** The VirtualContributors on this platform */
   virtualContributors: Array<VirtualContributor>;
-  /** A particular VirtualPersona */
-  virtualPersona: VirtualPersona;
-  /** The VirtualPersonas on this platform */
-  virtualPersonas: Array<VirtualPersona>;
 };
 
 export type QueryAccountArgs = {
@@ -4165,12 +4306,12 @@ export type QueryAdminCommunicationMembershipArgs = {
   communicationData: CommunicationAdminMembershipInput;
 };
 
-export type QueryAskChatGuidanceQuestionArgs = {
-  chatData: ChatGuidanceInput;
+export type QueryAskAiPersonaQuestionArgs = {
+  chatData: AiPersonaQuestionInput;
 };
 
-export type QueryAskVirtualPersonaQuestionArgs = {
-  chatData: VirtualPersonaQuestionInput;
+export type QueryAskChatGuidanceQuestionArgs = {
+  chatData: ChatGuidanceInput;
 };
 
 export type QueryOrganizationArgs = {
@@ -4263,10 +4404,6 @@ export type QueryVirtualContributorsArgs = {
   filter?: InputMaybe<ContributorFilterInput>;
   limit?: InputMaybe<Scalars['Float']>;
   shuffle?: InputMaybe<Scalars['Boolean']>;
-};
-
-export type QueryVirtualPersonaArgs = {
-  ID: Scalars['UUID'];
 };
 
 export type Question = {
@@ -4717,6 +4854,12 @@ export type SearchResultUserGroup = SearchResult & {
   userGroup: UserGroup;
 };
 
+export enum SearchVisibility {
+  Account = 'ACCOUNT',
+  Hidden = 'HIDDEN',
+  Public = 'PUBLIC',
+}
+
 export type Sentry = {
   __typename?: 'Sentry';
   /** Flag indicating if the client should use Sentry for monitoring. */
@@ -5157,6 +5300,16 @@ export type UpdateActorInput = {
   impact?: InputMaybe<Scalars['String']>;
   name?: InputMaybe<Scalars['String']>;
   value?: InputMaybe<Scalars['String']>;
+};
+
+export type UpdateAiPersonaInput = {
+  ID: Scalars['UUID'];
+};
+
+export type UpdateAiPersonaServiceInput = {
+  ID: Scalars['UUID'];
+  engine: AiPersonaEngine;
+  prompt?: InputMaybe<Scalars['JSON']>;
 };
 
 export type UpdateCalendarEventInput = {
@@ -5619,16 +5772,6 @@ export type UpdateVirtualContributorPlatformSettingsInput = {
   accountID: Scalars['UUID'];
 };
 
-export type UpdateVirtualPersonaInput = {
-  ID: Scalars['UUID'];
-  engine: VirtualContributorEngine;
-  /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
-  nameID?: InputMaybe<Scalars['NameID']>;
-  /** The Profile of this entity. */
-  profileData?: InputMaybe<UpdateProfileInput>;
-  prompt?: InputMaybe<Scalars['JSON']>;
-};
-
 export type UpdateVisualInput = {
   alternativeText?: InputMaybe<Scalars['String']>;
   uri: Scalars['String'];
@@ -5799,75 +5942,26 @@ export type VerifiedCredentialClaim = {
 
 export type VirtualContributor = Contributor & {
   __typename?: 'VirtualContributor';
-  /** The account under which the virtual contributor was created */
+  /** The Account of the Virtual Contributor. */
   account?: Maybe<Account>;
   /** The Agent representing this User. */
   agent: Agent;
+  /** The AI persona being used by this virtual contributor */
+  aiPersona: AiPersona;
   /** The authorization rules for the Contributor */
   authorization?: Maybe<Authorization>;
-  /** The body of knowledge ID used for the Virtual Contributor */
-  bodyOfKnowledgeID?: Maybe<Scalars['UUID']>;
-  /** The body of knowledge type used for the Virtual Contributor */
-  bodyOfKnowledgeType?: Maybe<BodyOfKnowledgeType>;
   /** The ID of the Contributor */
   id: Scalars['UUID'];
+  /** Flag to control if this VC is listed in the platform store. */
+  listedInStore: Scalars['Boolean'];
   /** A name identifier of the Contributor, unique within a given scope. */
   nameID: Scalars['NameID'];
   /** The profile for this Virtual. */
   profile: Profile;
+  /** Visibility of the VC in searches. */
+  searchVisibility: SearchVisibility;
   /** The StorageAggregator for managing storage buckets in use by this Virtual */
   storageAggregator?: Maybe<StorageAggregator>;
-  /** The virtual persona being used by this virtual contributor */
-  virtualPersona: VirtualPersona;
-};
-
-export enum VirtualContributorEngine {
-  CommunityManager = 'COMMUNITY_MANAGER',
-  Expert = 'EXPERT',
-  Guidance = 'GUIDANCE',
-}
-
-export type VirtualPersona = {
-  __typename?: 'VirtualPersona';
-  /** The authorization rules for the entity */
-  authorization?: Maybe<Authorization>;
-  /** The required data access by the Virtual Persona */
-  dataAccessMode: VirtualPersonaAccessMode;
-  /** The Virtual Persona Engine being used by this virtual persona. */
-  engine: VirtualContributorEngine;
-  /** The ID of the entity */
-  id: Scalars['UUID'];
-  /** A name identifier of the entity, unique within a given scope. */
-  nameID: Scalars['NameID'];
-  /** The Profile for the VirtualPersona. */
-  profile: Profile;
-  /** The prompt used by this Virtual Persona */
-  prompt: Scalars['String'];
-};
-
-export enum VirtualPersonaAccessMode {
-  None = 'NONE',
-  SpaceProfile = 'SPACE_PROFILE',
-  SpaceProfileAndContents = 'SPACE_PROFILE_AND_CONTENTS',
-}
-
-export type VirtualPersonaQuestionInput = {
-  /** The question that is being asked. */
-  question: Scalars['String'];
-  /** Virtual Persona Type. */
-  virtualPersonaID: Scalars['UUID'];
-};
-
-export type VirtualPersonaResult = {
-  __typename?: 'VirtualPersonaResult';
-  /** The answer to the question */
-  answer: Scalars['String'];
-  /** The id of the answer; null if an error was returned */
-  id?: Maybe<Scalars['String']>;
-  /** The original question */
-  question: Scalars['String'];
-  /** The sources used to answer the question */
-  sources?: Maybe<Array<Source>>;
 };
 
 export type Visual = {
@@ -18262,7 +18356,6 @@ export type VirtualContributorQuery = {
     __typename?: 'VirtualContributor';
     id: string;
     nameID: string;
-    bodyOfKnowledgeID?: string | undefined;
     authorization?:
       | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
@@ -22369,7 +22462,6 @@ export type CreateVirtualContributorOnAccountMutation = {
     __typename?: 'VirtualContributor';
     id: string;
     nameID: string;
-    bodyOfKnowledgeID?: string | undefined;
     profile: { __typename?: 'Profile'; id: string };
   };
 };
@@ -22403,7 +22495,6 @@ export type SpaceSubspacesQuery = {
         __typename?: 'VirtualContributor';
         id: string;
         nameID: string;
-        bodyOfKnowledgeID?: string | undefined;
         profile: {
           __typename?: 'Profile';
           id: string;
@@ -25068,38 +25159,6 @@ export type AdminVirtualContributorsQuery = {
         | undefined;
     };
   }>;
-};
-
-export type VirtualContributorAvailablePersonasQueryVariables = Exact<{ [key: string]: never }>;
-
-export type VirtualContributorAvailablePersonasQuery = {
-  __typename?: 'Query';
-  virtualPersonas: Array<{
-    __typename?: 'VirtualPersona';
-    id: string;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      displayName: string;
-      description?: string | undefined;
-      avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-    };
-  }>;
-};
-
-export type CreateVirtualPersonaMutationVariables = Exact<{
-  virtualPersonaData: CreateVirtualPersonaInput;
-}>;
-
-export type CreateVirtualPersonaMutation = {
-  __typename?: 'Mutation';
-  createVirtualPersona: {
-    __typename?: 'VirtualPersona';
-    id: string;
-    nameID: string;
-    engine: VirtualContributorEngine;
-    profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
-  };
 };
 
 export type ConfigurationQueryVariables = Exact<{ [key: string]: never }>;
