@@ -1,0 +1,6 @@
+subscription WhiteboardSaved($whiteboardId: UUID!) {
+  whiteboardSaved(whiteboardID: $whiteboardId) {
+    whiteboardID
+    updatedDate
+  }
+}
