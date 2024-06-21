@@ -14263,7 +14263,7 @@ export const UserProviderDocument = gql`
         ...UserDetails
         ...UserAgent
       }
-      applications(states: ["new"]) {
+      communityApplications(states: ["new"]) {
         id
         communityID
         displayName
@@ -14271,7 +14271,7 @@ export const UserProviderDocument = gql`
         spaceID
         spaceLevel
       }
-      invitations(states: ["invited"]) {
+      communityInvitations(states: ["invited"]) {
         id
         spaceID
         spaceLevel
@@ -23058,7 +23058,7 @@ export function refetchMyMembershipsSubspaceQuery(variables: SchemaTypes.MyMembe
 export const NewMembershipsDocument = gql`
   query NewMemberships {
     me {
-      applications(states: ["new", "approved"]) {
+      communityApplications(states: ["new", "approved"]) {
         id
         communityID
         displayName
@@ -23067,9 +23067,11 @@ export const NewMembershipsDocument = gql`
         spaceLevel
         createdDate
       }
-      invitations(states: ["invited", "accepted"]) {
+      communityInvitations(states: ["invited", "accepted"]) {
         id
         spaceID
+        contributorID
+        contributorType
         spaceLevel
         state
         welcomeMessage

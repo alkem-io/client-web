@@ -7,8 +7,8 @@ import {
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { ErrorPage } from '../../../../../core/pages/Errors/ErrorPage';
 import {
-  ApplicationForRoleResult,
-  InvitationForRoleResult,
+  CommunityApplicationForRoleResult,
+  CommunityInvitationForRoleResult,
   User,
 } from '../../../../../core/apollo/generated/graphql-schema';
 import { useAuthenticationContext } from '../../../../../core/auth/authentication/hooks/useAuthenticationContext';
@@ -67,8 +67,8 @@ const UserProvider: FC<{}> = ({ children }) => {
       meData?.me
         ? toUserMetadata(
             meData.me.user as User,
-            meData.me.applications as ApplicationForRoleResult[],
-            meData.me.invitations as InvitationForRoleResult[],
+            meData.me.communityApplications as CommunityApplicationForRoleResult[],
+            meData.me.communityInvitations as CommunityInvitationForRoleResult[],
             platformLevelAuthorization
           )
         : undefined,

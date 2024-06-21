@@ -4,7 +4,7 @@ query UserProvider {
       ...UserDetails
       ...UserAgent
     }
-    applications(states: ["new"]) {
+    communityApplications(states: ["new"]) {
       id
       communityID
       displayName
@@ -12,7 +12,7 @@ query UserProvider {
       spaceID
       spaceLevel
     }
-    invitations(states: ["invited"]) {
+    communityInvitations(states: ["invited"]) {
       id
       spaceID
       spaceLevel
