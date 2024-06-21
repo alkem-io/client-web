@@ -1,7 +1,16 @@
 import { FC } from 'react';
-import { useWhiteboardWithContentQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import {
+  useWhiteboardSavedSubscription,
+  useWhiteboardWithContentQuery,
+} from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
-import { WhiteboardDetailsFragment, WhiteboardContentFragment } from '../../../../core/apollo/generated/graphql-schema';
+import {
+  WhiteboardDetailsFragment,
+  WhiteboardContentFragment,
+  PlatformFeatureFlagName,
+} from '../../../../core/apollo/generated/graphql-schema';
+import { useApolloErrorHandler } from '../../../../core/apollo/hooks/useApolloErrorHandler';
+import { useConfig } from '../../../platform/config/useConfig';
 
 export interface WhiteboardWithContent
   extends Omit<WhiteboardContentFragment, 'id'>,
@@ -26,6 +35,10 @@ export interface WhiteboardContentContainerProps
     WhiteboardContentParams {}
 
 const WhiteboardContentContainer: FC<WhiteboardContentContainerProps> = ({ children, whiteboardId }) => {
+  const handleError = useApolloErrorHandler();
+  const { isFeatureEnabled } = useConfig();
+  const areSubscriptionsEnabled = isFeatureEnabled(PlatformFeatureFlagName.Subscriptions);
+
   const { data: whiteboardWithContentData, loading: loadingWhiteboardWithContent } = useWhiteboardWithContentQuery({
     errorPolicy: 'all',
     // Disable cache, we really want to make sure that the latest content is fetched, in case there is no one else editing at the moment
@@ -33,6 +46,43 @@ const WhiteboardContentContainer: FC<WhiteboardContentContainerProps> = ({ child
     skip: !whiteboardId,
     variables: {
       whiteboardId: whiteboardId!,
+    },
+  });
+
+  useWhiteboardSavedSubscription({
+    shouldResubscribe: true,
+    variables: { whiteboardId: whiteboardId! }, // Ensured by skip
+    skip: !whiteboardId,
+    onSubscriptionData: ({ subscriptionData, client }) => {
+      if (subscriptionData.error) {
+        return handleError(subscriptionData.error);
+      }
+      if (!areSubscriptionsEnabled) {
+        return;
+      }
+
+      const data = subscriptionData?.data;
+
+      if (!data) {
+        return;
+      }
+
+      const whiteboardRefId = client.cache.identify({
+        id: whiteboardId,
+        __typename: 'Whiteboard',
+      });
+
+      if (!whiteboardRefId) {
+        return;
+      }
+      client.cache.modify({
+        id: whiteboardRefId,
+        fields: {
+          updatedDate(currentUpdatedDate = undefined) {
+            return data.whiteboardSaved.updatedDate ?? currentUpdatedDate;
+          },
+        },
+      });
     },
   });
 
