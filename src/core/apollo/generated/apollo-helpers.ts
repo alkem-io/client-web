@@ -2700,6 +2700,7 @@ export type SubscriptionKeySpecifier = (
   | 'profileVerifiedCredential'
   | 'roomEvents'
   | 'subspaceCreated'
+  | 'whiteboardSaved'
   | SubscriptionKeySpecifier
 )[];
 export type SubscriptionFieldPolicy = {
@@ -2709,6 +2710,7 @@ export type SubscriptionFieldPolicy = {
   profileVerifiedCredential?: FieldPolicy<any> | FieldReadFunction<any>;
   roomEvents?: FieldPolicy<any> | FieldReadFunction<any>;
   subspaceCreated?: FieldPolicy<any> | FieldReadFunction<any>;
+  whiteboardSaved?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type SubspaceCreatedKeySpecifier = ('spaceID' | 'subspace' | SubspaceCreatedKeySpecifier)[];
 export type SubspaceCreatedFieldPolicy = {
@@ -3001,6 +3003,15 @@ export type WhiteboardFieldPolicy = {
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type WhiteboardSavedSubscriptionResultKeySpecifier = (
+  | 'updatedDate'
+  | 'whiteboardID'
+  | WhiteboardSavedSubscriptionResultKeySpecifier
+)[];
+export type WhiteboardSavedSubscriptionResultFieldPolicy = {
+  updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  whiteboardID?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type WhiteboardTemplateKeySpecifier = (
   | 'authorization'
@@ -3778,6 +3789,13 @@ export type StrictTypedTypePolicies = {
   Whiteboard?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | WhiteboardKeySpecifier | (() => undefined | WhiteboardKeySpecifier);
     fields?: WhiteboardFieldPolicy;
+  };
+  WhiteboardSavedSubscriptionResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | WhiteboardSavedSubscriptionResultKeySpecifier
+      | (() => undefined | WhiteboardSavedSubscriptionResultKeySpecifier);
+    fields?: WhiteboardSavedSubscriptionResultFieldPolicy;
   };
   WhiteboardTemplate?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | WhiteboardTemplateKeySpecifier | (() => undefined | WhiteboardTemplateKeySpecifier);
