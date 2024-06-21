@@ -133,6 +133,7 @@ const CollaborationTemplatesLibrary = <
   };
 
   const handleSelectTemplate = () => {
+    setConfirmationDialogOpen(false);
     if (previewTemplate) {
       onImportTemplate(previewTemplate);
       handleClose();
