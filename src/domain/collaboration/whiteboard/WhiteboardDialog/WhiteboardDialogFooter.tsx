@@ -32,6 +32,7 @@ interface WhiteboardDialogFooterProps {
   canUpdateContent: boolean;
   onDelete: () => void;
   canDelete?: boolean;
+  onRestart?: () => void;
   updating?: boolean;
   createdBy:
     | (Identifiable & {
@@ -60,6 +61,7 @@ const WhiteboardDialogFooter = ({
   canUpdateContent,
   onDelete,
   canDelete,
+  onRestart,
   contentUpdatePolicy,
   createdBy,
   collaboratorMode,
@@ -144,6 +146,12 @@ const WhiteboardDialogFooter = ({
     setIsLearnWhyDialogOpen(true);
   };
 
+  const canRestart =
+    readonlyReason === ReadonlyReason.Readonly &&
+    (!collaboratorModeReason ||
+      collaboratorModeReason === CollaboratorModeReasons.INACTIVITY ||
+      collaboratorModeReason === CollaboratorModeReasons.ROOM_CAPACITY_REACHED);
+
   return (
     <>
       <Actions
@@ -179,7 +187,7 @@ const WhiteboardDialogFooter = ({
             </IconButton>
           </span>
         </Tooltip>
-        {readonlyReason ? (
+        {readonlyReason && (
           <Caption>
             <Trans
               i18nKey={`pages.whiteboard.readonlyReason.${readonlyReason}` as const}
@@ -199,9 +207,13 @@ const WhiteboardDialogFooter = ({
               }}
             />
           </Caption>
-        ) : (
-          <LastSavedCaption saving={updating} date={lastSavedDate} />
         )}
+        {canRestart && (
+          <Button onClick={onRestart} variant="outlined" sx={{ textTransform: 'none' }} size="small">
+            {t('pages.whiteboard.restartCollaboration')}
+          </Button>
+        )}
+        {!readonlyReason && <LastSavedCaption saving={updating} date={lastSavedDate} />}
         {directMessageDialog}
       </Actions>
       <DialogWithGrid open={isLearnWhyDialogOpen} onClose={() => setIsLearnWhyDialogOpen(false)}>
