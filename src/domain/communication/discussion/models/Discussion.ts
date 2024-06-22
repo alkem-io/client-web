@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import {
   AuthorizationPrivilege,
   DiscussionCardFragment,
-  DiscussionCategory,
+  ForumDiscussionCategory,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { Author } from '../../../shared/components/AuthorAvatar/models/author';
 import { useAuthorsDetails } from '../../communication/useAuthorsDetails';
@@ -12,7 +12,7 @@ export interface Discussion {
   id: string;
   url: string;
   title: string;
-  category: DiscussionCategory;
+  category: ForumDiscussionCategory;
   myPrivileges: AuthorizationPrivilege[] | undefined;
   author?: Author;
   authors: Author[];

@@ -5,17 +5,14 @@ import {
   GpsNotFixedOutlined as GpsNotFixedOutlinedIcon,
   QuestionMark as QuestionMarkIcon,
   MoreHoriz as MoreHorizIcon,
-  HelpOutlined as HelpOutlinedIcon,
-  LightbulbOutlined as LightbulbOutlinedIcon,
   QuestionAnswerOutlined as QuestionAnswerOutlinedIcon,
-  ShareOutlined as ShareOutlinedIcon,
   Celebration as CelebrationIcon,
 } from '@mui/icons-material';
 
 import { SvgIconProps } from '@mui/material';
 import { createElement, FC, useMemo } from 'react';
 import { DiscussionCategoryExt, DiscussionCategoryExtEnum } from '../constants/DiscusionCategories';
-import { DiscussionCategory } from '../../../../core/apollo/generated/graphql-schema';
+import { ForumDiscussionCategory } from '../../../../core/apollo/generated/graphql-schema';
 
 export interface DiscussionIconProps extends SvgIconProps {
   category: DiscussionCategoryExt;
@@ -24,26 +21,18 @@ export interface DiscussionIconProps extends SvgIconProps {
 export const DiscussionIcon: FC<DiscussionIconProps> = ({ category, ...rest }) => {
   const categoryIcon = useMemo(() => {
     switch (category) {
-      case DiscussionCategory.Releases:
+      case ForumDiscussionCategory.Releases:
         return CelebrationIcon;
-      case DiscussionCategory.PlatformFunctionalities:
+      case ForumDiscussionCategory.PlatformFunctionalities:
         return CategoryIcon;
-      case DiscussionCategory.ChallengeCentric:
+      case ForumDiscussionCategory.ChallengeCentric:
         return GpsNotFixedOutlinedIcon;
-      case DiscussionCategory.CommunityBuilding:
+      case ForumDiscussionCategory.CommunityBuilding:
         return GroupsOutlinedIcon;
-      case DiscussionCategory.Help:
+      case ForumDiscussionCategory.Help:
         return QuestionMarkIcon;
-      case DiscussionCategory.Other:
+      case ForumDiscussionCategory.Other:
         return MoreHorizIcon;
-      case DiscussionCategory.General:
-        return QuestionAnswerOutlinedIcon;
-      case DiscussionCategory.Ideas:
-        return LightbulbOutlinedIcon;
-      case DiscussionCategory.Questions:
-        return HelpOutlinedIcon;
-      case DiscussionCategory.Sharing:
-        return ShareOutlinedIcon;
       case DiscussionCategoryExtEnum.All:
         return AllInclusiveIcon;
       default:
