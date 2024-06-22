@@ -4975,6 +4975,8 @@ export type Subscription = {
   roomEvents: RoomEventSubscriptionResult;
   /** Receive new Subspaces created on the Space. */
   subspaceCreated: SubspaceCreated;
+  /** Receive Whiteboard Saved event */
+  whiteboardSaved: WhiteboardSavedSubscriptionResult;
 };
 
 export type SubscriptionActivityCreatedArgs = {
@@ -4995,6 +4997,10 @@ export type SubscriptionRoomEventsArgs = {
 
 export type SubscriptionSubspaceCreatedArgs = {
   spaceID: Scalars['UUID'];
+};
+
+export type SubscriptionWhiteboardSavedArgs = {
+  whiteboardID: Scalars['UUID'];
 };
 
 export type SubspaceCreated = {
@@ -5641,11 +5647,7 @@ export type UpdateVisualInput = {
 
 export type UpdateWhiteboardContentInput = {
   ID: Scalars['UUID'];
-  content?: InputMaybe<Scalars['WhiteboardContent']>;
-  /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
-  nameID?: InputMaybe<Scalars['NameID']>;
-  /** The Profile of this entity. */
-  profileData?: InputMaybe<UpdateProfileInput>;
+  content: Scalars['WhiteboardContent'];
 };
 
 export type UpdateWhiteboardInput = {
@@ -5930,6 +5932,15 @@ export type Whiteboard = {
   profile: Profile;
   /** The date at which the Whiteboard was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
+};
+
+/** The save event happened in the subscribed whiteboard. */
+export type WhiteboardSavedSubscriptionResult = {
+  __typename?: 'WhiteboardSavedSubscriptionResult';
+  /** The date at which the Whiteboard was last updated. */
+  updatedDate?: Maybe<Scalars['DateTime']>;
+  /** The identifier for the Whiteboard on which the save event happened. */
+  whiteboardID: Scalars['String'];
 };
 
 export type WhiteboardTemplate = {
@@ -13065,6 +13076,19 @@ export type UpdateWhiteboardContentMutationVariables = Exact<{
 export type UpdateWhiteboardContentMutation = {
   __typename?: 'Mutation';
   updateWhiteboardContent: { __typename?: 'Whiteboard'; id: string; content: string };
+};
+
+export type WhiteboardSavedSubscriptionVariables = Exact<{
+  whiteboardId: Scalars['UUID'];
+}>;
+
+export type WhiteboardSavedSubscription = {
+  __typename?: 'Subscription';
+  whiteboardSaved: {
+    __typename?: 'WhiteboardSavedSubscriptionResult';
+    whiteboardID: string;
+    updatedDate?: Date | undefined;
+  };
 };
 
 export type WhiteboardContentUpdatePolicyQueryVariables = Exact<{
@@ -22967,6 +22991,34 @@ export type PlatformLevelAuthorizationQuery = {
   };
 };
 
+export type AssignLicensePlanToAccountMutationVariables = Exact<{
+  licensePlanId: Scalars['UUID'];
+  accountId: Scalars['UUID'];
+}>;
+
+export type AssignLicensePlanToAccountMutation = {
+  __typename?: 'Mutation';
+  assignLicensePlanToAccount: {
+    __typename?: 'Account';
+    id: string;
+    subscriptions: Array<{ __typename?: 'AccountSubscription'; name: LicenseCredential }>;
+  };
+};
+
+export type RevokeLicensePlanFromAccountMutationVariables = Exact<{
+  licensePlanId: Scalars['UUID'];
+  accountId: Scalars['UUID'];
+}>;
+
+export type RevokeLicensePlanFromAccountMutation = {
+  __typename?: 'Mutation';
+  revokeLicensePlanFromAccount: {
+    __typename?: 'Account';
+    id: string;
+    subscriptions: Array<{ __typename?: 'AccountSubscription'; name: LicenseCredential }>;
+  };
+};
+
 export type UpdateAccountPlatformSettingsMutationVariables = Exact<{
   accountId: Scalars['UUID'];
   hostId?: InputMaybe<Scalars['UUID_NAMEID']>;
@@ -23013,6 +23065,7 @@ export type AdminSpacesListQuery = {
     account: {
       __typename?: 'Account';
       id: string;
+      subscriptions: Array<{ __typename?: 'AccountSubscription'; name: LicenseCredential }>;
       license: {
         __typename?: 'License';
         id: string;
@@ -23038,6 +23091,14 @@ export type AdminSpacesListQuery = {
       | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
   }>;
+  platform: {
+    __typename?: 'Platform';
+    licensing: {
+      __typename?: 'Licensing';
+      id: string;
+      plans: Array<{ __typename?: 'LicensePlan'; id: string; name: string; licenseCredential: LicenseCredential }>;
+    };
+  };
 };
 
 export type AdminSpaceFragment = {
@@ -23047,6 +23108,7 @@ export type AdminSpaceFragment = {
   account: {
     __typename?: 'Account';
     id: string;
+    subscriptions: Array<{ __typename?: 'AccountSubscription'; name: LicenseCredential }>;
     license: {
       __typename?: 'License';
       id: string;

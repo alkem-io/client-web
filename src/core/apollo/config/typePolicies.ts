@@ -11,6 +11,13 @@ export const typePolicies: TypedTypePolicies = {
   MeQueryResults: {
     merge: true,
   },
+  Account: {
+    fields: {
+      activeSubscription: {
+        merge: true,
+      },
+    },
+  },
   UserGroup: {
     fields: {
       members: {

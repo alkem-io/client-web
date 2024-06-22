@@ -58,21 +58,31 @@ export const SpaceList: FC = () => {
           displayName: space.profile.displayName,
           url: buildSettingsUrl(space.profile.url),
         }))
-        .map(space => ({
-          ...searchableListItemMapper()(space),
-          spaceId: space.id,
-          accountId: space.account.id,
-          nameId: space.nameID,
-          account: {
-            visibility: space.account.license.visibility,
-            hostId: space.account.host?.id,
-            features: Object.values(LicenseFeatureFlagName).reduce((acc, licenseFeature) => {
-              acc[licenseFeature] = licenseHasFeature(licenseFeature, space.account.license);
-              return acc;
-            }, {} as Record<LicenseFeatureFlagName, boolean>),
-            organizations,
-          },
-        })) ?? []
+        .map(space => {
+          const activeLicenseCredentials = space.account.subscriptions.map(subscription => subscription.name);
+          // TODO filter out expired ones
+          const activeLicensePlanIds = spacesData?.platform.licensing.plans
+            .filter(({ licenseCredential }) => activeLicenseCredentials.includes(licenseCredential))
+            .map(({ id }) => id);
+
+          return {
+            ...searchableListItemMapper()(space),
+            spaceId: space.id,
+            accountId: space.account.id,
+            nameId: space.nameID,
+            account: {
+              visibility: space.account.license.visibility,
+              hostId: space.account.host?.id,
+              activeLicensePlanIds,
+              features: Object.values(LicenseFeatureFlagName).reduce((acc, licenseFeature) => {
+                acc[licenseFeature] = licenseHasFeature(licenseFeature, space.account.license);
+                return acc;
+              }, {} as Record<LicenseFeatureFlagName, boolean>),
+              organizations,
+            },
+            licensePlans: spacesData?.platform.licensing.plans,
+          };
+        }) ?? []
     );
   }, [spacesData, organizations]);
 
