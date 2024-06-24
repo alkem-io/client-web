@@ -1,7 +1,7 @@
 query recentForumMessages($limit: Float = 5) {
   platform {
     id
-    communication {
+    forum {
       id
       discussionCategories
       authorization {

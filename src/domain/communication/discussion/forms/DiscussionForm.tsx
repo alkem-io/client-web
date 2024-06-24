@@ -3,7 +3,7 @@ import { Form, Formik } from 'formik';
 import { Grid } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { DiscussionCategory } from '../../../../core/apollo/generated/graphql-schema';
+import { ForumDiscussionCategory } from '../../../../core/apollo/generated/graphql-schema';
 import { SMALL_TEXT_LENGTH, MARKDOWN_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
 import DiscussionIcon from '../views/DiscussionIcon';
@@ -15,14 +15,14 @@ import { LoadingButton } from '@mui/lab';
 
 export interface DiscussionFormValues {
   title: string;
-  category: DiscussionCategory | null;
+  category: ForumDiscussionCategory | null;
   description: string;
 }
 
 export interface DiscussionFormProps {
   onSubmit: (values: DiscussionFormValues) => Promise<void>;
   discussion?: Discussion;
-  categories: DiscussionCategory[];
+  categories: ForumDiscussionCategory[];
   editMode?: boolean;
 }
 

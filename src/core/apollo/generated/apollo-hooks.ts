@@ -2827,6 +2827,9 @@ export const AdminSpaceFragmentDoc = gql`
     nameID
     account {
       id
+      subscriptions {
+        name
+      }
       license {
         id
         visibility
@@ -9008,7 +9011,7 @@ export function refetchLatestReleaseDiscussionQuery(variables?: SchemaTypes.Late
 }
 
 export const CreateDiscussionDocument = gql`
-  mutation createDiscussion($input: CommunicationCreateDiscussionInput!) {
+  mutation createDiscussion($input: ForumCreateDiscussionInput!) {
     createDiscussion(createData: $input) {
       ...DiscussionDetails
     }
@@ -9157,7 +9160,7 @@ export const PlatformDiscussionsDocument = gql`
   query platformDiscussions {
     platform {
       id
-      communication {
+      forum {
         id
         discussionCategories
         authorization {
@@ -9229,7 +9232,7 @@ export const PlatformDiscussionDocument = gql`
   query platformDiscussion($discussionId: String!) {
     platform {
       id
-      communication {
+      forum {
         id
         authorization {
           id
@@ -9297,9 +9300,9 @@ export function refetchPlatformDiscussionQuery(variables: SchemaTypes.PlatformDi
   return { query: PlatformDiscussionDocument, variables: variables };
 }
 
-export const CommunicationDiscussionUpdatedDocument = gql`
-  subscription communicationDiscussionUpdated($communicationID: UUID!) {
-    communicationDiscussionUpdated(communicationID: $communicationID) {
+export const ForumDiscussionUpdatedDocument = gql`
+  subscription forumDiscussionUpdated($forumID: UUID!) {
+    forumDiscussionUpdated(forumID: $forumID) {
       id
       nameID
       profile {
@@ -9324,39 +9327,37 @@ export const CommunicationDiscussionUpdatedDocument = gql`
 `;
 
 /**
- * __useCommunicationDiscussionUpdatedSubscription__
+ * __useForumDiscussionUpdatedSubscription__
  *
- * To run a query within a React component, call `useCommunicationDiscussionUpdatedSubscription` and pass it any options that fit your needs.
- * When your component renders, `useCommunicationDiscussionUpdatedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useForumDiscussionUpdatedSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useForumDiscussionUpdatedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useCommunicationDiscussionUpdatedSubscription({
+ * const { data, loading, error } = useForumDiscussionUpdatedSubscription({
  *   variables: {
- *      communicationID: // value for 'communicationID'
+ *      forumID: // value for 'forumID'
  *   },
  * });
  */
-export function useCommunicationDiscussionUpdatedSubscription(
+export function useForumDiscussionUpdatedSubscription(
   baseOptions: Apollo.SubscriptionHookOptions<
-    SchemaTypes.CommunicationDiscussionUpdatedSubscription,
-    SchemaTypes.CommunicationDiscussionUpdatedSubscriptionVariables
+    SchemaTypes.ForumDiscussionUpdatedSubscription,
+    SchemaTypes.ForumDiscussionUpdatedSubscriptionVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useSubscription<
-    SchemaTypes.CommunicationDiscussionUpdatedSubscription,
-    SchemaTypes.CommunicationDiscussionUpdatedSubscriptionVariables
-  >(CommunicationDiscussionUpdatedDocument, options);
+    SchemaTypes.ForumDiscussionUpdatedSubscription,
+    SchemaTypes.ForumDiscussionUpdatedSubscriptionVariables
+  >(ForumDiscussionUpdatedDocument, options);
 }
 
-export type CommunicationDiscussionUpdatedSubscriptionHookResult = ReturnType<
-  typeof useCommunicationDiscussionUpdatedSubscription
->;
-export type CommunicationDiscussionUpdatedSubscriptionResult =
-  Apollo.SubscriptionResult<SchemaTypes.CommunicationDiscussionUpdatedSubscription>;
+export type ForumDiscussionUpdatedSubscriptionHookResult = ReturnType<typeof useForumDiscussionUpdatedSubscription>;
+export type ForumDiscussionUpdatedSubscriptionResult =
+  Apollo.SubscriptionResult<SchemaTypes.ForumDiscussionUpdatedSubscription>;
 export const SendMessageToUserDocument = gql`
   mutation sendMessageToUser($messageData: CommunicationSendMessageToUserInput!) {
     sendMessageToUser(messageData: $messageData)
@@ -14303,7 +14304,7 @@ export const UserProviderDocument = gql`
         ...UserDetails
         ...UserAgent
       }
-      applications(states: ["new"]) {
+      communityApplications(states: ["new"]) {
         id
         communityID
         displayName
@@ -14311,7 +14312,7 @@ export const UserProviderDocument = gql`
         spaceID
         spaceLevel
       }
-      invitations(states: ["invited"]) {
+      communityInvitations(states: ["invited"]) {
         id
         spaceID
         spaceLevel
@@ -14839,11 +14840,16 @@ export const UpdateVirtualContributorDocument = gql`
       id
       profile {
         id
+        tagline
+        tagsets {
+          ...TagsetDetails
+        }
         displayName
         description
       }
     }
   }
+  ${TagsetDetailsFragmentDoc}
 `;
 export type UpdateVirtualContributorMutationFn = Apollo.MutationFunction<
   SchemaTypes.UpdateVirtualContributorMutation,
@@ -18546,6 +18552,112 @@ export function refetchPlatformLevelAuthorizationQuery(
   return { query: PlatformLevelAuthorizationDocument, variables: variables };
 }
 
+export const AssignLicensePlanToAccountDocument = gql`
+  mutation AssignLicensePlanToAccount($licensePlanId: UUID!, $accountId: UUID!) {
+    assignLicensePlanToAccount(planData: { accountID: $accountId, licensePlanID: $licensePlanId }) {
+      id
+      subscriptions {
+        name
+      }
+    }
+  }
+`;
+export type AssignLicensePlanToAccountMutationFn = Apollo.MutationFunction<
+  SchemaTypes.AssignLicensePlanToAccountMutation,
+  SchemaTypes.AssignLicensePlanToAccountMutationVariables
+>;
+
+/**
+ * __useAssignLicensePlanToAccountMutation__
+ *
+ * To run a mutation, you first call `useAssignLicensePlanToAccountMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAssignLicensePlanToAccountMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [assignLicensePlanToAccountMutation, { data, loading, error }] = useAssignLicensePlanToAccountMutation({
+ *   variables: {
+ *      licensePlanId: // value for 'licensePlanId'
+ *      accountId: // value for 'accountId'
+ *   },
+ * });
+ */
+export function useAssignLicensePlanToAccountMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.AssignLicensePlanToAccountMutation,
+    SchemaTypes.AssignLicensePlanToAccountMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.AssignLicensePlanToAccountMutation,
+    SchemaTypes.AssignLicensePlanToAccountMutationVariables
+  >(AssignLicensePlanToAccountDocument, options);
+}
+
+export type AssignLicensePlanToAccountMutationHookResult = ReturnType<typeof useAssignLicensePlanToAccountMutation>;
+export type AssignLicensePlanToAccountMutationResult =
+  Apollo.MutationResult<SchemaTypes.AssignLicensePlanToAccountMutation>;
+export type AssignLicensePlanToAccountMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.AssignLicensePlanToAccountMutation,
+  SchemaTypes.AssignLicensePlanToAccountMutationVariables
+>;
+export const RevokeLicensePlanFromAccountDocument = gql`
+  mutation RevokeLicensePlanFromAccount($licensePlanId: UUID!, $accountId: UUID!) {
+    revokeLicensePlanFromAccount(planData: { accountID: $accountId, licensePlanID: $licensePlanId }) {
+      id
+      subscriptions {
+        name
+      }
+    }
+  }
+`;
+export type RevokeLicensePlanFromAccountMutationFn = Apollo.MutationFunction<
+  SchemaTypes.RevokeLicensePlanFromAccountMutation,
+  SchemaTypes.RevokeLicensePlanFromAccountMutationVariables
+>;
+
+/**
+ * __useRevokeLicensePlanFromAccountMutation__
+ *
+ * To run a mutation, you first call `useRevokeLicensePlanFromAccountMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRevokeLicensePlanFromAccountMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [revokeLicensePlanFromAccountMutation, { data, loading, error }] = useRevokeLicensePlanFromAccountMutation({
+ *   variables: {
+ *      licensePlanId: // value for 'licensePlanId'
+ *      accountId: // value for 'accountId'
+ *   },
+ * });
+ */
+export function useRevokeLicensePlanFromAccountMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.RevokeLicensePlanFromAccountMutation,
+    SchemaTypes.RevokeLicensePlanFromAccountMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.RevokeLicensePlanFromAccountMutation,
+    SchemaTypes.RevokeLicensePlanFromAccountMutationVariables
+  >(RevokeLicensePlanFromAccountDocument, options);
+}
+
+export type RevokeLicensePlanFromAccountMutationHookResult = ReturnType<typeof useRevokeLicensePlanFromAccountMutation>;
+export type RevokeLicensePlanFromAccountMutationResult =
+  Apollo.MutationResult<SchemaTypes.RevokeLicensePlanFromAccountMutation>;
+export type RevokeLicensePlanFromAccountMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.RevokeLicensePlanFromAccountMutation,
+  SchemaTypes.RevokeLicensePlanFromAccountMutationVariables
+>;
 export const UpdateAccountPlatformSettingsDocument = gql`
   mutation UpdateAccountPlatformSettings($accountId: UUID!, $hostId: UUID_NAMEID, $license: UpdateLicenseInput) {
     updateAccountPlatformSettings(updateData: { accountID: $accountId, hostID: $hostId, license: $license }) {
@@ -18665,6 +18777,16 @@ export const AdminSpacesListDocument = gql`
   query adminSpacesList {
     spaces(filter: { visibilities: [ARCHIVED, ACTIVE, DEMO] }) {
       ...AdminSpace
+    }
+    platform {
+      licensing {
+        id
+        plans {
+          id
+          name
+          licenseCredential
+        }
+      }
     }
   }
   ${AdminSpaceFragmentDoc}
@@ -23098,7 +23220,7 @@ export function refetchMyMembershipsSubspaceQuery(variables: SchemaTypes.MyMembe
 export const NewMembershipsDocument = gql`
   query NewMemberships {
     me {
-      applications(states: ["new", "approved"]) {
+      communityApplications(states: ["new", "approved"]) {
         id
         communityID
         displayName
@@ -23107,9 +23229,11 @@ export const NewMembershipsDocument = gql`
         spaceLevel
         createdDate
       }
-      invitations(states: ["invited", "accepted"]) {
+      communityInvitations(states: ["invited", "accepted"]) {
         id
         spaceID
+        contributorID
+        contributorType
         spaceLevel
         state
         welcomeMessage
@@ -23176,7 +23300,7 @@ export const RecentForumMessagesDocument = gql`
   query recentForumMessages($limit: Float = 5) {
     platform {
       id
-      communication {
+      forum {
         id
         discussionCategories
         authorization {

@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { DialogContent } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { DiscussionCategory } from '../../../../core/apollo/generated/graphql-schema';
+import { ForumDiscussionCategory } from '../../../../core/apollo/generated/graphql-schema';
 import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import {
@@ -14,11 +14,11 @@ import DiscussionForm, { DiscussionFormValues } from '../forms/DiscussionForm';
 export interface NewDiscussionDialogProps {
   open: boolean;
   onClose: () => void;
-  communicationId: string;
-  categories: DiscussionCategory[];
+  forumId: string;
+  categories: ForumDiscussionCategory[];
 }
 
-const NewDiscussionDialog: FC<NewDiscussionDialogProps> = ({ open, onClose, communicationId, categories }) => {
+const NewDiscussionDialog: FC<NewDiscussionDialogProps> = ({ open, onClose, forumId, categories }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
@@ -30,7 +30,7 @@ const NewDiscussionDialog: FC<NewDiscussionDialogProps> = ({ open, onClose, comm
     const { data } = await createDiscussion({
       variables: {
         input: {
-          communicationID: communicationId,
+          forumID: forumId,
           profile: {
             description: values.description,
             displayName: values.title,
