@@ -8,16 +8,16 @@ import DiscussionsLayout from '../layout/DiscussionsLayout';
 import { DiscussionListView } from '../views/DiscussionsListView';
 import TopLevelPageLayout from '../../../../main/ui/layout/topLevelPageLayout/TopLevelPageLayout';
 import {
-  CommunicationDiscussionUpdatedDocument,
+  ForumDiscussionUpdatedDocument,
   usePlatformDiscussionsQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { Discussion, useDiscussionMapper } from '../models/Discussion';
 import { compact } from 'lodash';
 import {
   AuthorizationPrivilege,
-  CommunicationDiscussionUpdatedSubscription,
-  CommunicationDiscussionUpdatedSubscriptionVariables,
-  DiscussionCategory,
+  ForumDiscussionUpdatedSubscription,
+  ForumDiscussionUpdatedSubscriptionVariables,
+  ForumDiscussionCategory,
   PlatformDiscussionsQuery,
 } from '../../../../core/apollo/generated/graphql-schema';
 import DiscussionIcon from '../views/DiscussionIcon';
@@ -36,22 +36,22 @@ import { BlockTitle } from '../../../../core/ui/typography';
 const ALL_CATEGORIES = DiscussionCategoryExtEnum.All;
 const FORUM_GRAYED_OUT_IMAGE = '/forum/forum-grayed.png';
 
-const useSubscriptionToCommunication = UseSubscriptionToSubEntity<
-  PlatformDiscussionsQuery['platform']['communication'],
-  CommunicationDiscussionUpdatedSubscription,
-  CommunicationDiscussionUpdatedSubscriptionVariables
+const useSubscriptionToForum = UseSubscriptionToSubEntity<
+  PlatformDiscussionsQuery['platform']['forum'],
+  ForumDiscussionUpdatedSubscription,
+  ForumDiscussionUpdatedSubscriptionVariables
 >({
-  subscriptionDocument: CommunicationDiscussionUpdatedDocument,
-  getSubscriptionVariables: communication => ({ communicationID: communication.id }),
+  subscriptionDocument: ForumDiscussionUpdatedDocument,
+  getSubscriptionVariables: forum => ({ forumID: forum.id }),
   updateSubEntity: (communication, subscriptionData) => {
     if (!communication?.discussions) {
       return;
     }
-    const discussion = communication.discussions.find(d => d.id === subscriptionData.communicationDiscussionUpdated.id);
+    const discussion = communication.discussions.find(d => d.id === subscriptionData.forumDiscussionUpdated.id);
     if (!discussion) {
       return;
     }
-    Object.assign(discussion, subscriptionData.communicationDiscussionUpdated);
+    Object.assign(discussion, subscriptionData.forumDiscussionUpdated);
   },
 });
 
@@ -90,29 +90,25 @@ export const ForumPage: FC<ForumPageProps> = ({ dialog }) => {
 
   const [categorySelected, setCategorySelected] = useState<DiscussionCategoryExt>(category || ALL_CATEGORIES);
   const { data, loading: loadingDiscussions, subscribeToMore } = usePlatformDiscussionsQuery();
-  useSubscriptionToCommunication(data, data => data?.platform.communication, subscribeToMore);
+  useSubscriptionToForum(data, data => data?.platform.forum, subscribeToMore);
 
   const isPlatformAdmin = hasPlatformPrivilege?.(AuthorizationPrivilege.PlatformAdmin);
-  const validCategories = data?.platform.communication.discussionCategories ?? [];
+  const validCategories = data?.platform.forum.discussionCategories ?? [];
   const discussionCreationCategories =
     (isPlatformAdmin
-      ? data?.platform.communication.discussionCategories
-      : data?.platform.communication.discussionCategories?.filter(
-          category => category !== DiscussionCategory.Releases
-        )) ?? [];
-  const communicationId = data?.platform.communication.id;
+      ? data?.platform.forum.discussionCategories
+      : data?.platform.forum.discussionCategories?.filter(category => category !== ForumDiscussionCategory.Releases)) ??
+    [];
+  const communicationId = data?.platform.forum.id;
 
   const canCreateDiscussion =
-    data?.platform.communication.authorization?.myPrivileges?.includes(AuthorizationPrivilege.CreateDiscussion) ??
-    false;
+    data?.platform.forum.authorization?.myPrivileges?.includes(AuthorizationPrivilege.CreateDiscussion) ?? false;
 
-  const { discussionMapper } = useDiscussionMapper(
-    compact(data?.platform.communication.discussions?.map(d => d.createdBy))
-  );
+  const { discussionMapper } = useDiscussionMapper(compact(data?.platform.forum.discussions?.map(d => d.createdBy)));
 
   const discussions = useMemo(() => {
     return (
-      data?.platform.communication.discussions
+      data?.platform.forum.discussions
         ?.filter(d => categorySelected === ALL_CATEGORIES || d.category === categorySelected)
         .map<Discussion>(discussionMapper) ?? []
     );
@@ -209,7 +205,7 @@ export const ForumPage: FC<ForumPageProps> = ({ dialog }) => {
             />
             {!loading && communicationId && (
               <NewDiscussionDialog
-                communicationId={communicationId}
+                forumId={communicationId}
                 categories={discussionCreationCategories}
                 open={dialog === 'new'}
                 onClose={() => navigate('/forum')}

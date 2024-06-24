@@ -52,6 +52,8 @@ export type Account = {
   library?: Maybe<TemplatesSet>;
   /** The License governing platform functionality in use by this Account */
   license: License;
+  /** The privileges granted based on the License credentials held by this Account. */
+  licensePrivileges?: Maybe<Array<LicensePrivilege>>;
   /** The ID for the root space for the Account . */
   spaceID: Scalars['String'];
   /** The subscriptions active for this Account. */
@@ -577,26 +579,6 @@ export type ApplicationEventInput = {
   eventName: Scalars['String'];
 };
 
-export type ApplicationForRoleResult = {
-  __typename?: 'ApplicationForRoleResult';
-  /** ID for the community */
-  communityID: Scalars['UUID'];
-  /** Date of creation */
-  createdDate: Scalars['DateTime'];
-  /** Display name of the community */
-  displayName: Scalars['String'];
-  /** ID for the application */
-  id: Scalars['UUID'];
-  /** ID for the ultimate containing Space */
-  spaceID: Scalars['UUID'];
-  /** Nesting level of the Space */
-  spaceLevel: Scalars['Float'];
-  /** The current state of the application. */
-  state: Scalars['String'];
-  /** Date of last update */
-  updatedDate: Scalars['DateTime'];
-};
-
 export type AssignCommunityRoleToOrganizationInput = {
   communityID: Scalars['UUID'];
   organizationID: Scalars['UUID_NAMEID'];
@@ -1053,23 +1035,10 @@ export type Communication = {
   __typename?: 'Communication';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
-  /** A particular Discussions active in this Communication. */
-  discussion?: Maybe<Discussion>;
-  discussionCategories: Array<DiscussionCategory>;
-  /** The Discussions active in this Communication. */
-  discussions?: Maybe<Array<Discussion>>;
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** The updates on this Communication. */
   updates: Room;
-};
-
-export type CommunicationDiscussionArgs = {
-  ID: Scalars['String'];
-};
-
-export type CommunicationDiscussionsArgs = {
-  queryData?: InputMaybe<DiscussionsInput>;
 };
 
 export type CommunicationAdminEnsureAccessInput = {
@@ -1130,15 +1099,6 @@ export type CommunicationAdminRoomResult = {
 
 export type CommunicationAdminUpdateRoomsJoinRuleInput = {
   isPublic: Scalars['Boolean'];
-};
-
-export type CommunicationCreateDiscussionInput = {
-  /** The category for the Discussion */
-  category: DiscussionCategory;
-  /** The identifier for the Communication entity the Discussion is being created on. */
-  communicationID: Scalars['UUID'];
-  profile: CreateProfileInput;
-  tags?: InputMaybe<Array<Scalars['String']>>;
 };
 
 export type CommunicationRoom = {
@@ -1252,6 +1212,26 @@ export type CommunityVirtualContributorsInRoleArgs = {
   role: CommunityRole;
 };
 
+export type CommunityApplicationForRoleResult = {
+  __typename?: 'CommunityApplicationForRoleResult';
+  /** ID for the community */
+  communityID: Scalars['UUID'];
+  /** Date of creation */
+  createdDate: Scalars['DateTime'];
+  /** Display name of the community */
+  displayName: Scalars['String'];
+  /** ID for the application */
+  id: Scalars['UUID'];
+  /** ID for the ultimate containing Space */
+  spaceID: Scalars['UUID'];
+  /** Nesting level of the Space */
+  spaceLevel: Scalars['Float'];
+  /** The current state of the application. */
+  state: Scalars['String'];
+  /** Date of last update */
+  updatedDate: Scalars['DateTime'];
+};
+
 export type CommunityApplyInput = {
   communityID: Scalars['UUID'];
   questions: Array<CreateNvpInput>;
@@ -1283,6 +1263,34 @@ export type CommunityGuidelinesTemplate = {
   id: Scalars['UUID'];
   /** The Profile for this template. */
   profile: Profile;
+};
+
+export type CommunityInvitationForRoleResult = {
+  __typename?: 'CommunityInvitationForRoleResult';
+  /** ID for the community */
+  communityID: Scalars['UUID'];
+  /** ID for Contrbutor that is being invited to a community */
+  contributorID: Scalars['UUID'];
+  /** The Type of the Contrbutor that is being invited to a community */
+  contributorType: CommunityContributorType;
+  /** ID for the user that created the invitation. */
+  createdBy: Scalars['UUID'];
+  /** Date of creation */
+  createdDate: Scalars['DateTime'];
+  /** Display name of the community */
+  displayName: Scalars['String'];
+  /** ID for the Invitation */
+  id: Scalars['UUID'];
+  /** ID for the ultimate containing Space */
+  spaceID: Scalars['UUID'];
+  /** Nesting level of the Space */
+  spaceLevel: Scalars['Float'];
+  /** The current state of the invitation. */
+  state: Scalars['String'];
+  /** Date of last update */
+  updatedDate: Scalars['DateTime'];
+  /** The welcome message of the invitation */
+  welcomeMessage?: Maybe<Scalars['UUID']>;
 };
 
 export type CommunityJoinInput = {
@@ -1401,10 +1409,10 @@ export type ContributorFilterInput = {
 export type ContributorRoles = {
   __typename?: 'ContributorRoles';
   /** The applications for the specified user; only accessible for platform admins */
-  applications: Array<ApplicationForRoleResult>;
+  applications: Array<CommunityApplicationForRoleResult>;
   id: Scalars['UUID'];
   /** The invitations for the specified user; only accessible for platform admins */
-  invitations: Array<InvitationForRoleResult>;
+  invitations: Array<CommunityInvitationForRoleResult>;
   /** Details of the roles the contributor has in Organizations */
   organizations: Array<RolesResultOrganization>;
   /** Details of Spaces the User or Organization is a member of, with child memberships - if Space is accessible for the current user. */
@@ -1608,9 +1616,29 @@ export type CreateInvitationUserByEmailOnCommunityInput = {
 };
 
 export type CreateLicensePlanOnLicensingInput = {
+  /** Assign this plan to all new Organization accounts */
+  assignToNewOrganizationAccounts: Scalars['Boolean'];
+  /** Assign this plan to all new User accounts */
+  assignToNewUserAccounts: Scalars['Boolean'];
+  /** Is this plan enabled? */
+  enabled: Scalars['Boolean'];
+  /** Is this plan free? */
+  isFree: Scalars['Boolean'];
+  /** The credential to represent this plan */
+  licenseCredential: LicenseCredential;
   licensingID: Scalars['UUID'];
   /** The name of the License Plan */
   name: Scalars['String'];
+  /** The price per month of this plan. */
+  pricePerMonth?: InputMaybe<Scalars['Float']>;
+  /** Does this plan require contact support */
+  requiresContactSupport: Scalars['Boolean'];
+  /** Does this plan require a payment method? */
+  requiresPaymentMethod: Scalars['Boolean'];
+  /** The sorting order for this Plan. */
+  sortOrder: Scalars['Float'];
+  /** Is there a trial period enabled */
+  trialEnabled: Scalars['Boolean'];
 };
 
 export type CreateLinkInput = {
@@ -1825,6 +1853,9 @@ export type CredentialMetadataOutput = {
 export enum CredentialType {
   AccountHost = 'ACCOUNT_HOST',
   BetaTester = 'BETA_TESTER',
+  FeatureCalloutToCalloutTemplate = 'FEATURE_CALLOUT_TO_CALLOUT_TEMPLATE',
+  FeatureVirtualContributors = 'FEATURE_VIRTUAL_CONTRIBUTORS',
+  FeatureWhiteboardMultiUser = 'FEATURE_WHITEBOARD_MULTI_USER',
   GlobalAdmin = 'GLOBAL_ADMIN',
   GlobalCommunityRead = 'GLOBAL_COMMUNITY_READ',
   GlobalLicenseManager = 'GLOBAL_LICENSE_MANAGER',
@@ -1984,7 +2015,7 @@ export type Discussion = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The category assigned to this Discussion. */
-  category: DiscussionCategory;
+  category: ForumDiscussionCategory;
   /** The comments for this Discussion. */
   comments: Room;
   /** The id of the user that created this discussion */
@@ -1993,24 +2024,13 @@ export type Discussion = {
   id: Scalars['UUID'];
   /** A name identifier of the entity, unique within a given scope. */
   nameID: Scalars['NameID'];
+  /** Privacy mode for the Discussion. Note: this is not yet implemented in the authorization policy. */
+  privacy: ForumDiscussionPrivacy;
   /** The Profile for this Discussion. */
   profile: Profile;
   /** The timestamp for the creation of this Discussion. */
   timestamp?: Maybe<Scalars['Float']>;
 };
-
-export enum DiscussionCategory {
-  ChallengeCentric = 'CHALLENGE_CENTRIC',
-  CommunityBuilding = 'COMMUNITY_BUILDING',
-  General = 'GENERAL',
-  Help = 'HELP',
-  Ideas = 'IDEAS',
-  Other = 'OTHER',
-  PlatformFunctionalities = 'PLATFORM_FUNCTIONALITIES',
-  Questions = 'QUESTIONS',
-  Releases = 'RELEASES',
-  Sharing = 'SHARING',
-}
 
 export type DiscussionsInput = {
   /** The number of Discussion entries to return; if omitted return all Discussions. */
@@ -2089,6 +2109,51 @@ export type FormQuestion = {
   /** The sort order of this question in a wider set of questions. */
   sortOrder: Scalars['Float'];
 };
+
+export type Forum = {
+  __typename?: 'Forum';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** A particular Discussions active in this Forum. */
+  discussion?: Maybe<Discussion>;
+  discussionCategories: Array<ForumDiscussionCategory>;
+  /** The Discussions active in this Forum. */
+  discussions?: Maybe<Array<Discussion>>;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+};
+
+export type ForumDiscussionArgs = {
+  ID: Scalars['String'];
+};
+
+export type ForumDiscussionsArgs = {
+  queryData?: InputMaybe<DiscussionsInput>;
+};
+
+export type ForumCreateDiscussionInput = {
+  /** The category for the Discussion */
+  category: ForumDiscussionCategory;
+  /** The identifier for the Forum entity the Discussion is being created on. */
+  forumID: Scalars['UUID'];
+  profile: CreateProfileInput;
+  tags?: InputMaybe<Array<Scalars['String']>>;
+};
+
+export enum ForumDiscussionCategory {
+  ChallengeCentric = 'CHALLENGE_CENTRIC',
+  CommunityBuilding = 'COMMUNITY_BUILDING',
+  Help = 'HELP',
+  Other = 'OTHER',
+  PlatformFunctionalities = 'PLATFORM_FUNCTIONALITIES',
+  Releases = 'RELEASES',
+}
+
+export enum ForumDiscussionPrivacy {
+  Authenticated = 'AUTHENTICATED',
+  Author = 'AUTHOR',
+  Public = 'PUBLIC',
+}
 
 export type Geo = {
   __typename?: 'Geo';
@@ -2278,30 +2343,6 @@ export type InvitationExternal = {
   welcomeMessage?: Maybe<Scalars['String']>;
 };
 
-export type InvitationForRoleResult = {
-  __typename?: 'InvitationForRoleResult';
-  /** ID for the community */
-  communityID: Scalars['UUID'];
-  /** ID for the user that created the invitation. */
-  createdBy: Scalars['UUID'];
-  /** Date of creation */
-  createdDate: Scalars['DateTime'];
-  /** Display name of the community */
-  displayName: Scalars['String'];
-  /** ID for the application */
-  id: Scalars['UUID'];
-  /** ID for the ultimate containing Space */
-  spaceID: Scalars['UUID'];
-  /** Nesting level of the Space */
-  spaceLevel: Scalars['Float'];
-  /** The current state of the invitation. */
-  state: Scalars['String'];
-  /** Date of last update */
-  updatedDate: Scalars['DateTime'];
-  /** The welcome message of the invitation */
-  welcomeMessage?: Maybe<Scalars['UUID']>;
-};
-
 export type LatestReleaseDiscussion = {
   __typename?: 'LatestReleaseDiscussion';
   /** Id of the latest release discussion. */
@@ -2336,39 +2377,28 @@ export type License = {
   __typename?: 'License';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
-  /** The FeatureFlags for the license */
-  featureFlags: Array<LicenseFeatureFlag>;
   /** The ID of the entity */
   id: Scalars['UUID'];
-  /** The privileges granted based on this License. */
-  privileges?: Maybe<Array<LicensePrivilege>>;
   /** Visibility of the Space. */
   visibility: SpaceVisibility;
 };
 
 export enum LicenseCredential {
+  FeatureCalloutToCalloutTemplate = 'FEATURE_CALLOUT_TO_CALLOUT_TEMPLATE',
+  FeatureVirtualContributors = 'FEATURE_VIRTUAL_CONTRIBUTORS',
+  FeatureWhiteboardMultiUser = 'FEATURE_WHITEBOARD_MULTI_USER',
   LicenseSpaceEnterprise = 'LICENSE_SPACE_ENTERPRISE',
   LicenseSpaceFree = 'LICENSE_SPACE_FREE',
   LicenseSpacePlus = 'LICENSE_SPACE_PLUS',
   LicenseSpacePremium = 'LICENSE_SPACE_PREMIUM',
 }
 
-export type LicenseFeatureFlag = {
-  __typename?: 'LicenseFeatureFlag';
-  /** Is this feature flag enabled? */
-  enabled: Scalars['Boolean'];
-  /** The name of the feature flag */
-  name: LicenseFeatureFlagName;
-};
-
-export enum LicenseFeatureFlagName {
-  CalloutToCalloutTemplate = 'CALLOUT_TO_CALLOUT_TEMPLATE',
-  VirtualContributors = 'VIRTUAL_CONTRIBUTORS',
-  WhiteboardMultiUser = 'WHITEBOARD_MULTI_USER',
-}
-
 export type LicensePlan = {
   __typename?: 'LicensePlan';
+  /** Assign this plan to all new Organization accounts */
+  assignToNewOrganizationAccounts: Scalars['Boolean'];
+  /** Assign this plan to all new User accounts */
+  assignToNewUserAccounts: Scalars['Boolean'];
   /** Is this plan enabled? */
   enabled: Scalars['Boolean'];
   /** The ID of the entity */
@@ -2396,14 +2426,14 @@ export type LicensePolicy = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The set of credential rules that are contained by this License Policy. */
-  featureFlagRules?: Maybe<Array<LicensePolicyRuleFeatureFlag>>;
+  credentialRules: Array<LicensePolicyCredentialRule>;
   /** The ID of the entity */
   id: Scalars['UUID'];
 };
 
-export type LicensePolicyRuleFeatureFlag = {
-  __typename?: 'LicensePolicyRuleFeatureFlag';
-  featureFlagName: LicenseFeatureFlagName;
+export type LicensePolicyCredentialRule = {
+  __typename?: 'LicensePolicyCredentialRule';
+  credentialType: LicenseCredential;
   grantedPrivileges: Array<LicensePrivilege>;
   name?: Maybe<Scalars['String']>;
 };
@@ -2418,8 +2448,6 @@ export type Licensing = {
   __typename?: 'Licensing';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
-  /** The base License Plan assigned to all Accounts in use on the platform. */
-  basePlan: LicensePlan;
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** The License Plans in use on the platform. */
@@ -2613,14 +2641,14 @@ export type LookupQueryResultsWhiteboardTemplateArgs = {
 
 export type MeQueryResults = {
   __typename?: 'MeQueryResults';
-  /** The applications of the current authenticated user */
-  applications: Array<ApplicationForRoleResult>;
   /** Can I create a free space? */
   canCreateFreeSpace: Scalars['Boolean'];
+  /** The community applicationscurrent authenticated user can act on. */
+  communityApplications: Array<CommunityApplicationForRoleResult>;
+  /** The invitations the current authenticated user can act on. */
+  communityInvitations: Array<CommunityInvitationForRoleResult>;
   /** The query id */
   id: Scalars['String'];
-  /** The invitations of the current authenticated user */
-  invitations: Array<InvitationForRoleResult>;
   /** The Spaces I am contributing to */
   mySpaces: Array<MySpaceResults>;
   /** The applications of the current authenticated user */
@@ -2629,11 +2657,11 @@ export type MeQueryResults = {
   user?: Maybe<User>;
 };
 
-export type MeQueryResultsApplicationsArgs = {
+export type MeQueryResultsCommunityApplicationsArgs = {
   states?: InputMaybe<Array<Scalars['String']>>;
 };
 
-export type MeQueryResultsInvitationsArgs = {
+export type MeQueryResultsCommunityInvitationsArgs = {
   states?: InputMaybe<Array<Scalars['String']>>;
 };
 
@@ -2753,7 +2781,7 @@ export type Mutation = {
   createCommunityGuidelinesTemplate: CommunityGuidelinesTemplate;
   /** Create a new Contribution on the Callout. */
   createContributionOnCallout: CalloutContribution;
-  /** Creates a new Discussion as part of this Communication. */
+  /** Creates a new Discussion as part of this Forum. */
   createDiscussion: Discussion;
   /** Create a new CalendarEvent on the Calendar. */
   createEventOnCalendar: CalendarEvent;
@@ -3124,7 +3152,7 @@ export type MutationCreateContributionOnCalloutArgs = {
 };
 
 export type MutationCreateDiscussionArgs = {
-  createData: CommunicationCreateDiscussionInput;
+  createData: ForumCreateDiscussionInput;
 };
 
 export type MutationCreateEventOnCalendarArgs = {
@@ -3790,10 +3818,10 @@ export type Platform = {
   __typename?: 'Platform';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
-  /** The Communications for the platform */
-  communication: Communication;
   /** Alkemio configuration. Provides configuration to external services in the Alkemio ecosystem. */
   configuration: Config;
+  /** The Forum for the platform */
+  forum: Forum;
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** Details about an Innovation Hubs on the platform. If the arguments are omitted, the current Innovation Hub you are in will be returned. */
@@ -4964,7 +4992,7 @@ export type Subscription = {
   /** Receive new Update messages on Communities the currently authenticated User is a member of. */
   calloutPostCreated: CalloutPostCreated;
   /** Receive updates on Discussions */
-  communicationDiscussionUpdated: Discussion;
+  forumDiscussionUpdated: Discussion;
   /** Received on verified credentials change */
   profileVerifiedCredential: ProfileCredentialVerified;
   /** Receive Room event */
@@ -4983,8 +5011,8 @@ export type SubscriptionCalloutPostCreatedArgs = {
   calloutID: Scalars['UUID'];
 };
 
-export type SubscriptionCommunicationDiscussionUpdatedArgs = {
-  communicationID: Scalars['UUID'];
+export type SubscriptionForumDiscussionUpdatedArgs = {
+  forumID: Scalars['UUID'];
 };
 
 export type SubscriptionRoomEventsArgs = {
@@ -5283,7 +5311,7 @@ export type UpdateContextInput = {
 export type UpdateDiscussionInput = {
   ID: Scalars['UUID'];
   /** The category for the Discussion */
-  category?: InputMaybe<DiscussionCategory>;
+  category?: InputMaybe<ForumDiscussionCategory>;
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
   nameID?: InputMaybe<Scalars['NameID']>;
   /** The Profile of this entity. */
@@ -5300,13 +5328,6 @@ export type UpdateDocumentInput = {
 export type UpdateEcosystemModelInput = {
   ID: Scalars['UUID'];
   description?: InputMaybe<Scalars['String']>;
-};
-
-export type UpdateFeatureFlagInput = {
-  /** Is this feature flag enabled? */
-  enabled: Scalars['Boolean'];
-  /** The name of the feature flag */
-  name: Scalars['String'];
 };
 
 export type UpdateFormInput = {
@@ -5401,14 +5422,32 @@ export type UpdateInnovationPackInput = {
 };
 
 export type UpdateLicenseInput = {
-  /** Update the feature flags for the License. */
-  featureFlags?: InputMaybe<Array<UpdateFeatureFlagInput>>;
   /** Visibility of the Space. */
   visibility?: InputMaybe<SpaceVisibility>;
 };
 
 export type UpdateLicensePlanInput = {
   ID: Scalars['UUID'];
+  /** Assign this plan to all new Organization accounts */
+  assignToNewOrganizationAccounts?: InputMaybe<Scalars['Boolean']>;
+  /** Assign this plan to all new User accounts */
+  assignToNewUserAccounts?: InputMaybe<Scalars['Boolean']>;
+  /** Is this plan enabled? */
+  enabled?: InputMaybe<Scalars['Boolean']>;
+  /** Is this plan free? */
+  isFree?: InputMaybe<Scalars['Boolean']>;
+  /** The credential to represent this plan */
+  licenseCredential?: InputMaybe<LicenseCredential>;
+  /** The price per month of this plan. */
+  pricePerMonth?: InputMaybe<Scalars['Float']>;
+  /** Does this plan require contact support */
+  requiresContactSupport?: InputMaybe<Scalars['Boolean']>;
+  /** Does this plan require a payment method? */
+  requiresPaymentMethod?: InputMaybe<Scalars['Boolean']>;
+  /** The sorting order for this Plan. */
+  sortOrder?: InputMaybe<Scalars['Float']>;
+  /** Is there a trial period enabled */
+  trialEnabled?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type UpdateLinkInput = {
@@ -13290,7 +13329,7 @@ export type LatestReleaseDiscussionQuery = {
 };
 
 export type CreateDiscussionMutationVariables = Exact<{
-  input: CommunicationCreateDiscussionInput;
+  input: ForumCreateDiscussionInput;
 }>;
 
 export type CreateDiscussionMutation = {
@@ -13300,7 +13339,7 @@ export type CreateDiscussionMutation = {
     id: string;
     createdBy?: string | undefined;
     timestamp?: number | undefined;
-    category: DiscussionCategory;
+    category: ForumDiscussionCategory;
     profile: { __typename?: 'Profile'; id: string; url: string; displayName: string; description?: string | undefined };
     comments: {
       __typename?: 'Room';
@@ -13416,7 +13455,7 @@ export type UpdateDiscussionMutation = {
     id: string;
     createdBy?: string | undefined;
     timestamp?: number | undefined;
-    category: DiscussionCategory;
+    category: ForumDiscussionCategory;
     profile: { __typename?: 'Profile'; id: string; url: string; displayName: string; description?: string | undefined };
     comments: {
       __typename?: 'Room';
@@ -13535,7 +13574,7 @@ export type DiscussionDetailsFragment = {
   id: string;
   createdBy?: string | undefined;
   timestamp?: number | undefined;
-  category: DiscussionCategory;
+  category: ForumDiscussionCategory;
   profile: { __typename?: 'Profile'; id: string; url: string; displayName: string; description?: string | undefined };
   comments: {
     __typename?: 'Room';
@@ -13646,10 +13685,10 @@ export type PlatformDiscussionsQuery = {
   platform: {
     __typename?: 'Platform';
     id: string;
-    communication: {
-      __typename?: 'Communication';
+    forum: {
+      __typename?: 'Forum';
       id: string;
-      discussionCategories: Array<DiscussionCategory>;
+      discussionCategories: Array<ForumDiscussionCategory>;
       authorization?:
         | {
             __typename?: 'Authorization';
@@ -13662,7 +13701,7 @@ export type PlatformDiscussionsQuery = {
         | Array<{
             __typename?: 'Discussion';
             id: string;
-            category: DiscussionCategory;
+            category: ForumDiscussionCategory;
             timestamp?: number | undefined;
             createdBy?: string | undefined;
             profile: {
@@ -13713,7 +13752,7 @@ export type PlatformDiscussionsQuery = {
 export type DiscussionCardFragment = {
   __typename?: 'Discussion';
   id: string;
-  category: DiscussionCategory;
+  category: ForumDiscussionCategory;
   timestamp?: number | undefined;
   createdBy?: string | undefined;
   profile: {
@@ -13766,8 +13805,8 @@ export type PlatformDiscussionQuery = {
   platform: {
     __typename?: 'Platform';
     id: string;
-    communication: {
-      __typename?: 'Communication';
+    forum: {
+      __typename?: 'Forum';
       id: string;
       authorization?:
         | {
@@ -13783,7 +13822,7 @@ export type PlatformDiscussionQuery = {
             id: string;
             createdBy?: string | undefined;
             timestamp?: number | undefined;
-            category: DiscussionCategory;
+            category: ForumDiscussionCategory;
             profile: {
               __typename?: 'Profile';
               id: string;
@@ -13901,19 +13940,19 @@ export type PlatformDiscussionQuery = {
   };
 };
 
-export type CommunicationDiscussionUpdatedSubscriptionVariables = Exact<{
-  communicationID: Scalars['UUID'];
+export type ForumDiscussionUpdatedSubscriptionVariables = Exact<{
+  forumID: Scalars['UUID'];
 }>;
 
-export type CommunicationDiscussionUpdatedSubscription = {
+export type ForumDiscussionUpdatedSubscription = {
   __typename?: 'Subscription';
-  communicationDiscussionUpdated: {
+  forumDiscussionUpdated: {
     __typename?: 'Discussion';
     id: string;
     nameID: string;
     createdBy?: string | undefined;
     timestamp?: number | undefined;
-    category: DiscussionCategory;
+    category: ForumDiscussionCategory;
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -18007,8 +18046,8 @@ export type UserProviderQuery = {
           };
         }
       | undefined;
-    applications: Array<{
-      __typename?: 'ApplicationForRoleResult';
+    communityApplications: Array<{
+      __typename?: 'CommunityApplicationForRoleResult';
       id: string;
       communityID: string;
       displayName: string;
@@ -18016,8 +18055,8 @@ export type UserProviderQuery = {
       spaceID: string;
       spaceLevel: number;
     }>;
-    invitations: Array<{
-      __typename?: 'InvitationForRoleResult';
+    communityInvitations: Array<{
+      __typename?: 'CommunityInvitationForRoleResult';
       id: string;
       spaceID: string;
       spaceLevel: number;
@@ -18406,7 +18445,23 @@ export type UpdateVirtualContributorMutation = {
   updateVirtualContributor: {
     __typename?: 'VirtualContributor';
     id: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      tagline: string;
+      displayName: string;
+      description?: string | undefined;
+      tagsets?:
+        | Array<{
+            __typename?: 'Tagset';
+            id: string;
+            name: string;
+            tags: Array<string>;
+            allowedValues: Array<string>;
+            type: TagsetType;
+          }>
+        | undefined;
+    };
   };
 };
 
@@ -23026,12 +23081,7 @@ export type UpdateAccountPlatformSettingsMutation = {
   updateAccountPlatformSettings: {
     __typename?: 'Account';
     id: string;
-    license: {
-      __typename?: 'License';
-      id: string;
-      visibility: SpaceVisibility;
-      featureFlags: Array<{ __typename?: 'LicenseFeatureFlag'; name: LicenseFeatureFlagName; enabled: boolean }>;
-    };
+    license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
     host?:
       | { __typename?: 'Organization'; id: string }
       | { __typename?: 'User'; id: string }
@@ -23062,12 +23112,7 @@ export type AdminSpacesListQuery = {
       __typename?: 'Account';
       id: string;
       subscriptions: Array<{ __typename?: 'AccountSubscription'; name: LicenseCredential }>;
-      license: {
-        __typename?: 'License';
-        id: string;
-        visibility: SpaceVisibility;
-        featureFlags: Array<{ __typename?: 'LicenseFeatureFlag'; name: LicenseFeatureFlagName; enabled: boolean }>;
-      };
+      license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
       host?:
         | {
             __typename?: 'Organization';
@@ -23105,12 +23150,7 @@ export type AdminSpaceFragment = {
     __typename?: 'Account';
     id: string;
     subscriptions: Array<{ __typename?: 'AccountSubscription'; name: LicenseCredential }>;
-    license: {
-      __typename?: 'License';
-      id: string;
-      visibility: SpaceVisibility;
-      featureFlags: Array<{ __typename?: 'LicenseFeatureFlag'; name: LicenseFeatureFlagName; enabled: boolean }>;
-    };
+    license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
     host?:
       | {
           __typename?: 'Organization';
@@ -29348,8 +29388,8 @@ export type NewMembershipsQuery = {
   __typename?: 'Query';
   me: {
     __typename?: 'MeQueryResults';
-    applications: Array<{
-      __typename?: 'ApplicationForRoleResult';
+    communityApplications: Array<{
+      __typename?: 'CommunityApplicationForRoleResult';
       id: string;
       communityID: string;
       displayName: string;
@@ -29358,10 +29398,12 @@ export type NewMembershipsQuery = {
       spaceLevel: number;
       createdDate: Date;
     }>;
-    invitations: Array<{
-      __typename?: 'InvitationForRoleResult';
+    communityInvitations: Array<{
+      __typename?: 'CommunityInvitationForRoleResult';
       id: string;
       spaceID: string;
+      contributorID: string;
+      contributorType: CommunityContributorType;
       spaceLevel: number;
       state: string;
       welcomeMessage?: string | undefined;
@@ -29381,10 +29423,10 @@ export type RecentForumMessagesQuery = {
   platform: {
     __typename?: 'Platform';
     id: string;
-    communication: {
-      __typename?: 'Communication';
+    forum: {
+      __typename?: 'Forum';
       id: string;
-      discussionCategories: Array<DiscussionCategory>;
+      discussionCategories: Array<ForumDiscussionCategory>;
       authorization?:
         | {
             __typename?: 'Authorization';
@@ -29397,7 +29439,7 @@ export type RecentForumMessagesQuery = {
         | Array<{
             __typename?: 'Discussion';
             id: string;
-            category: DiscussionCategory;
+            category: ForumDiscussionCategory;
             timestamp?: number | undefined;
             createdBy?: string | undefined;
             profile: {

@@ -27,7 +27,7 @@ fragment DiscussionDetails on Discussion {
 query platformDiscussions {
   platform {
     id
-    communication {
+    forum {
       id
       discussionCategories
       authorization {
@@ -74,7 +74,7 @@ fragment DiscussionCard on Discussion {
 query platformDiscussion($discussionId: String!) {
   platform {
     id
-    communication {
+    forum {
       id
       authorization {
         id

@@ -16,9 +16,7 @@ const RecentForumMessages: FC<RecentForumMessagesProps> = () => {
   const navigate = useNavigate();
   const { data, loading: loadingDiscussions } = useRecentForumMessagesQuery();
 
-  const { discussionMapper } = useDiscussionMapper(
-    compact(data?.platform.communication.discussions?.map(d => d.createdBy))
-  );
+  const { discussionMapper } = useDiscussionMapper(compact(data?.platform.forum.discussions?.map(d => d.createdBy)));
 
   const handleClickDiscussion = (discussionUrl: string) => {
     navigate(discussionUrl);
@@ -29,7 +27,7 @@ const RecentForumMessages: FC<RecentForumMessagesProps> = () => {
       <PageContentBlockHeader title={t('pages.home.sections.forumMessages.title')} />
       <DiscussionListView
         entities={{
-          discussions: data?.platform.communication.discussions?.map(discussionMapper) ?? [],
+          discussions: data?.platform.forum.discussions?.map(discussionMapper) ?? [],
         }}
         state={{ loading: loadingDiscussions }}
         actions={{

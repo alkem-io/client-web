@@ -2833,10 +2833,6 @@ export const AdminSpaceFragmentDoc = gql`
       license {
         id
         visibility
-        featureFlags {
-          name
-          enabled
-        }
       }
       host {
         id
@@ -9011,7 +9007,7 @@ export function refetchLatestReleaseDiscussionQuery(variables?: SchemaTypes.Late
 }
 
 export const CreateDiscussionDocument = gql`
-  mutation createDiscussion($input: CommunicationCreateDiscussionInput!) {
+  mutation createDiscussion($input: ForumCreateDiscussionInput!) {
     createDiscussion(createData: $input) {
       ...DiscussionDetails
     }
@@ -9160,7 +9156,7 @@ export const PlatformDiscussionsDocument = gql`
   query platformDiscussions {
     platform {
       id
-      communication {
+      forum {
         id
         discussionCategories
         authorization {
@@ -9232,7 +9228,7 @@ export const PlatformDiscussionDocument = gql`
   query platformDiscussion($discussionId: String!) {
     platform {
       id
-      communication {
+      forum {
         id
         authorization {
           id
@@ -9300,9 +9296,9 @@ export function refetchPlatformDiscussionQuery(variables: SchemaTypes.PlatformDi
   return { query: PlatformDiscussionDocument, variables: variables };
 }
 
-export const CommunicationDiscussionUpdatedDocument = gql`
-  subscription communicationDiscussionUpdated($communicationID: UUID!) {
-    communicationDiscussionUpdated(communicationID: $communicationID) {
+export const ForumDiscussionUpdatedDocument = gql`
+  subscription forumDiscussionUpdated($forumID: UUID!) {
+    forumDiscussionUpdated(forumID: $forumID) {
       id
       nameID
       profile {
@@ -9327,39 +9323,37 @@ export const CommunicationDiscussionUpdatedDocument = gql`
 `;
 
 /**
- * __useCommunicationDiscussionUpdatedSubscription__
+ * __useForumDiscussionUpdatedSubscription__
  *
- * To run a query within a React component, call `useCommunicationDiscussionUpdatedSubscription` and pass it any options that fit your needs.
- * When your component renders, `useCommunicationDiscussionUpdatedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useForumDiscussionUpdatedSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useForumDiscussionUpdatedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useCommunicationDiscussionUpdatedSubscription({
+ * const { data, loading, error } = useForumDiscussionUpdatedSubscription({
  *   variables: {
- *      communicationID: // value for 'communicationID'
+ *      forumID: // value for 'forumID'
  *   },
  * });
  */
-export function useCommunicationDiscussionUpdatedSubscription(
+export function useForumDiscussionUpdatedSubscription(
   baseOptions: Apollo.SubscriptionHookOptions<
-    SchemaTypes.CommunicationDiscussionUpdatedSubscription,
-    SchemaTypes.CommunicationDiscussionUpdatedSubscriptionVariables
+    SchemaTypes.ForumDiscussionUpdatedSubscription,
+    SchemaTypes.ForumDiscussionUpdatedSubscriptionVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useSubscription<
-    SchemaTypes.CommunicationDiscussionUpdatedSubscription,
-    SchemaTypes.CommunicationDiscussionUpdatedSubscriptionVariables
-  >(CommunicationDiscussionUpdatedDocument, options);
+    SchemaTypes.ForumDiscussionUpdatedSubscription,
+    SchemaTypes.ForumDiscussionUpdatedSubscriptionVariables
+  >(ForumDiscussionUpdatedDocument, options);
 }
 
-export type CommunicationDiscussionUpdatedSubscriptionHookResult = ReturnType<
-  typeof useCommunicationDiscussionUpdatedSubscription
->;
-export type CommunicationDiscussionUpdatedSubscriptionResult =
-  Apollo.SubscriptionResult<SchemaTypes.CommunicationDiscussionUpdatedSubscription>;
+export type ForumDiscussionUpdatedSubscriptionHookResult = ReturnType<typeof useForumDiscussionUpdatedSubscription>;
+export type ForumDiscussionUpdatedSubscriptionResult =
+  Apollo.SubscriptionResult<SchemaTypes.ForumDiscussionUpdatedSubscription>;
 export const SendMessageToUserDocument = gql`
   mutation sendMessageToUser($messageData: CommunicationSendMessageToUserInput!) {
     sendMessageToUser(messageData: $messageData)
@@ -14306,7 +14300,7 @@ export const UserProviderDocument = gql`
         ...UserDetails
         ...UserAgent
       }
-      applications(states: ["new"]) {
+      communityApplications(states: ["new"]) {
         id
         communityID
         displayName
@@ -14314,7 +14308,7 @@ export const UserProviderDocument = gql`
         spaceID
         spaceLevel
       }
-      invitations(states: ["invited"]) {
+      communityInvitations(states: ["invited"]) {
         id
         spaceID
         spaceLevel
@@ -14842,11 +14836,16 @@ export const UpdateVirtualContributorDocument = gql`
       id
       profile {
         id
+        tagline
+        tagsets {
+          ...TagsetDetails
+        }
         displayName
         description
       }
     }
   }
+  ${TagsetDetailsFragmentDoc}
 `;
 export type UpdateVirtualContributorMutationFn = Apollo.MutationFunction<
   SchemaTypes.UpdateVirtualContributorMutation,
@@ -18662,10 +18661,6 @@ export const UpdateAccountPlatformSettingsDocument = gql`
       license {
         id
         visibility
-        featureFlags {
-          name
-          enabled
-        }
       }
       host {
         id
@@ -23217,7 +23212,7 @@ export function refetchMyMembershipsSubspaceQuery(variables: SchemaTypes.MyMembe
 export const NewMembershipsDocument = gql`
   query NewMemberships {
     me {
-      applications(states: ["new", "approved"]) {
+      communityApplications(states: ["new", "approved"]) {
         id
         communityID
         displayName
@@ -23226,9 +23221,11 @@ export const NewMembershipsDocument = gql`
         spaceLevel
         createdDate
       }
-      invitations(states: ["invited", "accepted"]) {
+      communityInvitations(states: ["invited", "accepted"]) {
         id
         spaceID
+        contributorID
+        contributorType
         spaceLevel
         state
         welcomeMessage
@@ -23295,7 +23292,7 @@ export const RecentForumMessagesDocument = gql`
   query recentForumMessages($limit: Float = 5) {
     platform {
       id
-      communication {
+      forum {
         id
         discussionCategories
         authorization {

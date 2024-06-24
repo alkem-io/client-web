@@ -70,6 +70,10 @@ mutation UpdateVirtualContributor($virtualContributorData: UpdateVirtualContribu
     id
     profile {
       id
+      tagline
+      tagsets {
+        ...TagsetDetails
+      }
       displayName
       description
     }
