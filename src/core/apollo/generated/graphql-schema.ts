@@ -577,26 +577,6 @@ export type ApplicationEventInput = {
   eventName: Scalars['String'];
 };
 
-export type ApplicationForRoleResult = {
-  __typename?: 'ApplicationForRoleResult';
-  /** ID for the community */
-  communityID: Scalars['UUID'];
-  /** Date of creation */
-  createdDate: Scalars['DateTime'];
-  /** Display name of the community */
-  displayName: Scalars['String'];
-  /** ID for the application */
-  id: Scalars['UUID'];
-  /** ID for the ultimate containing Space */
-  spaceID: Scalars['UUID'];
-  /** Nesting level of the Space */
-  spaceLevel: Scalars['Float'];
-  /** The current state of the application. */
-  state: Scalars['String'];
-  /** Date of last update */
-  updatedDate: Scalars['DateTime'];
-};
-
 export type AssignCommunityRoleToOrganizationInput = {
   communityID: Scalars['UUID'];
   organizationID: Scalars['UUID_NAMEID'];
@@ -1230,6 +1210,26 @@ export type CommunityVirtualContributorsInRoleArgs = {
   role: CommunityRole;
 };
 
+export type CommunityApplicationForRoleResult = {
+  __typename?: 'CommunityApplicationForRoleResult';
+  /** ID for the community */
+  communityID: Scalars['UUID'];
+  /** Date of creation */
+  createdDate: Scalars['DateTime'];
+  /** Display name of the community */
+  displayName: Scalars['String'];
+  /** ID for the application */
+  id: Scalars['UUID'];
+  /** ID for the ultimate containing Space */
+  spaceID: Scalars['UUID'];
+  /** Nesting level of the Space */
+  spaceLevel: Scalars['Float'];
+  /** The current state of the application. */
+  state: Scalars['String'];
+  /** Date of last update */
+  updatedDate: Scalars['DateTime'];
+};
+
 export type CommunityApplyInput = {
   communityID: Scalars['UUID'];
   questions: Array<CreateNvpInput>;
@@ -1261,6 +1261,34 @@ export type CommunityGuidelinesTemplate = {
   id: Scalars['UUID'];
   /** The Profile for this template. */
   profile: Profile;
+};
+
+export type CommunityInvitationForRoleResult = {
+  __typename?: 'CommunityInvitationForRoleResult';
+  /** ID for the community */
+  communityID: Scalars['UUID'];
+  /** ID for Contrbutor that is being invited to a community */
+  contributorID: Scalars['UUID'];
+  /** The Type of the Contrbutor that is being invited to a community */
+  contributorType: CommunityContributorType;
+  /** ID for the user that created the invitation. */
+  createdBy: Scalars['UUID'];
+  /** Date of creation */
+  createdDate: Scalars['DateTime'];
+  /** Display name of the community */
+  displayName: Scalars['String'];
+  /** ID for the Invitation */
+  id: Scalars['UUID'];
+  /** ID for the ultimate containing Space */
+  spaceID: Scalars['UUID'];
+  /** Nesting level of the Space */
+  spaceLevel: Scalars['Float'];
+  /** The current state of the invitation. */
+  state: Scalars['String'];
+  /** Date of last update */
+  updatedDate: Scalars['DateTime'];
+  /** The welcome message of the invitation */
+  welcomeMessage?: Maybe<Scalars['UUID']>;
 };
 
 export type CommunityJoinInput = {
@@ -1379,10 +1407,10 @@ export type ContributorFilterInput = {
 export type ContributorRoles = {
   __typename?: 'ContributorRoles';
   /** The applications for the specified user; only accessible for platform admins */
-  applications: Array<ApplicationForRoleResult>;
+  applications: Array<CommunityApplicationForRoleResult>;
   id: Scalars['UUID'];
   /** The invitations for the specified user; only accessible for platform admins */
-  invitations: Array<InvitationForRoleResult>;
+  invitations: Array<CommunityInvitationForRoleResult>;
   /** Details of the roles the contributor has in Organizations */
   organizations: Array<RolesResultOrganization>;
   /** Details of Spaces the User or Organization is a member of, with child memberships - if Space is accessible for the current user. */
@@ -2290,30 +2318,6 @@ export type InvitationExternal = {
   welcomeMessage?: Maybe<Scalars['String']>;
 };
 
-export type InvitationForRoleResult = {
-  __typename?: 'InvitationForRoleResult';
-  /** ID for the community */
-  communityID: Scalars['UUID'];
-  /** ID for the user that created the invitation. */
-  createdBy: Scalars['UUID'];
-  /** Date of creation */
-  createdDate: Scalars['DateTime'];
-  /** Display name of the community */
-  displayName: Scalars['String'];
-  /** ID for the application */
-  id: Scalars['UUID'];
-  /** ID for the ultimate containing Space */
-  spaceID: Scalars['UUID'];
-  /** Nesting level of the Space */
-  spaceLevel: Scalars['Float'];
-  /** The current state of the invitation. */
-  state: Scalars['String'];
-  /** Date of last update */
-  updatedDate: Scalars['DateTime'];
-  /** The welcome message of the invitation */
-  welcomeMessage?: Maybe<Scalars['UUID']>;
-};
-
 export type LatestReleaseDiscussion = {
   __typename?: 'LatestReleaseDiscussion';
   /** Id of the latest release discussion. */
@@ -2625,14 +2629,14 @@ export type LookupQueryResultsWhiteboardTemplateArgs = {
 
 export type MeQueryResults = {
   __typename?: 'MeQueryResults';
-  /** The applications of the current authenticated user */
-  applications: Array<ApplicationForRoleResult>;
   /** Can I create a free space? */
   canCreateFreeSpace: Scalars['Boolean'];
+  /** The community applicationscurrent authenticated user can act on. */
+  communityApplications: Array<CommunityApplicationForRoleResult>;
+  /** The invitations the current authenticated user can act on. */
+  communityInvitations: Array<CommunityInvitationForRoleResult>;
   /** The query id */
   id: Scalars['String'];
-  /** The invitations of the current authenticated user */
-  invitations: Array<InvitationForRoleResult>;
   /** The Spaces I am contributing to */
   mySpaces: Array<MySpaceResults>;
   /** The applications of the current authenticated user */
@@ -2641,11 +2645,11 @@ export type MeQueryResults = {
   user?: Maybe<User>;
 };
 
-export type MeQueryResultsApplicationsArgs = {
+export type MeQueryResultsCommunityApplicationsArgs = {
   states?: InputMaybe<Array<Scalars['String']>>;
 };
 
-export type MeQueryResultsInvitationsArgs = {
+export type MeQueryResultsCommunityInvitationsArgs = {
   states?: InputMaybe<Array<Scalars['String']>>;
 };
 
@@ -18019,8 +18023,8 @@ export type UserProviderQuery = {
           };
         }
       | undefined;
-    applications: Array<{
-      __typename?: 'ApplicationForRoleResult';
+    communityApplications: Array<{
+      __typename?: 'CommunityApplicationForRoleResult';
       id: string;
       communityID: string;
       displayName: string;
@@ -18028,8 +18032,8 @@ export type UserProviderQuery = {
       spaceID: string;
       spaceLevel: number;
     }>;
-    invitations: Array<{
-      __typename?: 'InvitationForRoleResult';
+    communityInvitations: Array<{
+      __typename?: 'CommunityInvitationForRoleResult';
       id: string;
       spaceID: string;
       spaceLevel: number;
@@ -29376,8 +29380,8 @@ export type NewMembershipsQuery = {
   __typename?: 'Query';
   me: {
     __typename?: 'MeQueryResults';
-    applications: Array<{
-      __typename?: 'ApplicationForRoleResult';
+    communityApplications: Array<{
+      __typename?: 'CommunityApplicationForRoleResult';
       id: string;
       communityID: string;
       displayName: string;
@@ -29386,10 +29390,12 @@ export type NewMembershipsQuery = {
       spaceLevel: number;
       createdDate: Date;
     }>;
-    invitations: Array<{
-      __typename?: 'InvitationForRoleResult';
+    communityInvitations: Array<{
+      __typename?: 'CommunityInvitationForRoleResult';
       id: string;
       spaceID: string;
+      contributorID: string;
+      contributorType: CommunityContributorType;
       spaceLevel: number;
       state: string;
       welcomeMessage?: string | undefined;

@@ -1,8 +1,8 @@
 import { KEYWORDS_TAGSET, SKILLS_TAGSET } from '../../../common/tags/tagset.constants';
 import {
-  ApplicationForRoleResult,
+  CommunityApplicationForRoleResult,
   AuthorizationPrivilege,
-  InvitationForRoleResult,
+  CommunityInvitationForRoleResult,
   MyPrivilegesFragment,
   UserDetailsFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
@@ -22,7 +22,7 @@ export interface UserMetadata {
   pendingInvitations: InvitationItem[];
 }
 
-export const getPendingApplications = (applicationsData: ApplicationForRoleResult[]) => {
+export const getPendingApplications = (applicationsData: CommunityApplicationForRoleResult[]) => {
   return (
     applicationsData.map<PendingApplication>(application => ({
       ...application,
@@ -31,7 +31,7 @@ export const getPendingApplications = (applicationsData: ApplicationForRoleResul
   );
 };
 
-const getPendingInvitations = (invitationsData: InvitationForRoleResult[]) => {
+const getPendingInvitations = (invitationsData: CommunityInvitationForRoleResult[]) => {
   return (
     invitationsData.map<InvitationItem>(invitation => ({
       ...invitation,
@@ -42,8 +42,8 @@ const getPendingInvitations = (invitationsData: InvitationForRoleResult[]) => {
 
 export const toUserMetadata = (
   user: UserDetailsFragment | undefined,
-  applications: ApplicationForRoleResult[],
-  invitations: InvitationForRoleResult[],
+  applications: CommunityApplicationForRoleResult[],
+  invitations: CommunityInvitationForRoleResult[],
   platformLevelAuthorization: MyPrivilegesFragment | undefined
 ): UserMetadata | undefined => {
   if (!user) {

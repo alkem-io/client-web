@@ -1,6 +1,6 @@
 query NewMemberships {
   me {
-    applications(states: ["new", "approved"]) {
+    communityApplications(states: ["new", "approved"]) {
       id
       communityID
       displayName
@@ -9,9 +9,11 @@ query NewMemberships {
       spaceLevel
       createdDate
     }
-    invitations(states: ["invited", "accepted"]) {
+    communityInvitations(states: ["invited", "accepted"]) {
       id
       spaceID
+      contributorID
+      contributorType
       spaceLevel
       state
       welcomeMessage
