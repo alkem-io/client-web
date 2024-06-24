@@ -5849,10 +5849,14 @@ export type UpdateUserPreferenceInput = {
 export type UpdateVirtualContributorInput = {
   /** The ID of the Virtual Contributor to update. */
   ID: Scalars['UUID'];
+  /** Flag to control the visibility of the VC in the platform store. */
+  listedInStore?: InputMaybe<Scalars['Boolean']>;
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
   nameID?: InputMaybe<Scalars['NameID']>;
   /** The Profile of this entity. */
   profileData?: InputMaybe<UpdateProfileInput>;
+  /** Visibility of the VC in searches. */
+  searchVisibility?: InputMaybe<SearchVisibility>;
 };
 
 export type UpdateVirtualContributorPlatformSettingsInput = {
@@ -18480,6 +18484,8 @@ export type VirtualContributorQuery = {
     __typename?: 'VirtualContributor';
     id: string;
     nameID: string;
+    searchVisibility: SearchVisibility;
+    listedInStore: boolean;
     authorization?:
       | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
@@ -18599,6 +18605,7 @@ export type UpdateVirtualContributorMutation = {
   updateVirtualContributor: {
     __typename?: 'VirtualContributor';
     id: string;
+    listedInStore: boolean;
     profile: {
       __typename?: 'Profile';
       id: string;

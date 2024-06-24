@@ -14723,6 +14723,8 @@ export const VirtualContributorDocument = gql`
           }
         }
       }
+      searchVisibility
+      listedInStore
       profile {
         id
         displayName
@@ -14874,6 +14876,7 @@ export const UpdateVirtualContributorDocument = gql`
   mutation UpdateVirtualContributor($virtualContributorData: UpdateVirtualContributorInput!) {
     updateVirtualContributor(virtualContributorData: $virtualContributorData) {
       id
+      listedInStore
       profile {
         id
         tagline
