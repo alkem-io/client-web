@@ -30,6 +30,7 @@ import Gutters from '../../../../../core/ui/grid/Gutters';
 
 const EmptyOrganization: Omit<Organization, 'authorization'> = {
   id: '',
+  accounts: [],
   agent: {
     id: '',
   },
@@ -74,7 +75,6 @@ const EmptyOrganization: Omit<Organization, 'authorization'> = {
     },
   },
   preferences: [],
-  accounts: [],
 };
 
 interface Props {

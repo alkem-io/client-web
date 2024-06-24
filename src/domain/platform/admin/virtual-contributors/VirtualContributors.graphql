@@ -17,16 +17,16 @@ query AdminVirtualContributors {
   }
 }
 
-query VirtualContributorAvailablePersonas {
-  virtualPersonas {
-    id
-    profile {
-      id
-      displayName
-      description
-      avatar: visual(type: AVATAR) {
-        ...VisualUri
-      }
-    }
-  }
-}
+# query VirtualContributorAvailablePersonas {
+#   virtualPersonas {
+#     id
+#     profile {
+#       id
+#       displayName
+#       description
+#       avatar: visual(type: AVATAR) {
+#         ...VisualUri
+#       }
+#     }
+#   }
+# }
