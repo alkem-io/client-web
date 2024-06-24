@@ -3,7 +3,7 @@ import { useVirtualContributorQuery } from '../../../../core/apollo/generated/ap
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import ProfilePageBanner from '../../../common/profile/ProfilePageBanner';
 import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
-import { buildSettingsUrl } from '../../../../main/routing/urlBuilders';
+import { buildSettingsProfileUrl } from '../../../../main/routing/urlBuilders';
 
 const VCPageBanner = () => {
   const { vcNameId = '' } = useUrlParams();
@@ -27,7 +27,7 @@ const VCPageBanner = () => {
       isVirtualContributor
       entityId={vcId}
       profile={profile}
-      settingsUri={hasSettingsAccess ? buildSettingsUrl(data?.virtualContributor.profile.url ?? '') : undefined}
+      settingsUri={hasSettingsAccess ? buildSettingsProfileUrl(data?.virtualContributor.profile.url ?? '') : undefined}
       loading={loading}
     />
   );
