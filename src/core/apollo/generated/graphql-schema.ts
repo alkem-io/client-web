@@ -21533,6 +21533,7 @@ export type PlansTableQuery = {
         trialEnabled: boolean;
         requiresPaymentMethod: boolean;
         requiresContactSupport: boolean;
+        type: LicensePlanType;
       }>;
     };
   };

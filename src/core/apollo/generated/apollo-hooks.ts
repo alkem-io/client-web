@@ -16625,6 +16625,7 @@ export const PlansTableDocument = gql`
           trialEnabled
           requiresPaymentMethod
           requiresContactSupport
+          type
         }
       }
     }
