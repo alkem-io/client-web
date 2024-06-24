@@ -73,6 +73,24 @@ const AdminCommunityGuidelinesTemplatesSection = ({
         await deleteCommunityGuidelinesTemplate({ variables, refetchQueries });
       }}
       templateType={TemplateType.CommunityGuidelinesTemplate}
+      onTemplateImport={(template: AdminCommunityGuidelinesTemplateFragment) => {
+        const { guidelines, innovationPack, ...templateRest } =
+          template as unknown as AdminCommunityGuidelinesTemplateFragment & { innovationPack: unknown };
+        const { profile, ...guidelinesRest } = guidelines;
+        const { references, ...profileRest } = profile;
+        // TODO: Refactor references
+        // Map references to referencesData, as the backend expects it
+        return Promise.resolve({
+          guidelines: {
+            profile: {
+              ...profileRest,
+              referencesData: references?.map(({ uri, name, description }) => ({ uri, name, description })),
+            },
+            ...guidelinesRest,
+          },
+          ...templateRest,
+        });
+      }}
     />
   );
 };
