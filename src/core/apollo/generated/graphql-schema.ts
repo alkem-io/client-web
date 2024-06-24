@@ -52,6 +52,8 @@ export type Account = {
   library?: Maybe<TemplatesSet>;
   /** The License governing platform functionality in use by this Account */
   license: License;
+  /** The privileges granted based on the License credentials held by this Account. */
+  licensePrivileges?: Maybe<Array<LicensePrivilege>>;
   /** The ID for the root space for the Account . */
   spaceID: Scalars['String'];
   /** The subscriptions active for this Account. */
@@ -555,12 +557,135 @@ export type AgentBeginVerifiedCredentialRequestOutput = {
   qrCodeImg: Scalars['String'];
 };
 
+export type AiPersona = {
+  __typename?: 'AiPersona';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The type of knowledge provided by this AI Persona. */
+  bodyOfKnowledgeType: AiPersonaBodyOfKnowledgeType;
+  /** The type of context sharing that are supported by this AI Persona when used. */
+  dataAccessMode: AiPersonaDataAccessMode;
+  /** The description for this AI Persona. */
+  description: Scalars['Markdown'];
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** The type of interactions that are supported by this AI Persona when used. */
+  interactionModes: Array<AiPersonaInteractionMode>;
+};
+
+export enum AiPersonaBodyOfKnowledgeType {
+  AlkemioSpace = 'ALKEMIO_SPACE',
+  Other = 'OTHER',
+}
+
+export enum AiPersonaDataAccessMode {
+  None = 'NONE',
+  SpaceProfile = 'SPACE_PROFILE',
+  SpaceProfileAndContents = 'SPACE_PROFILE_AND_CONTENTS',
+}
+
+export enum AiPersonaEngine {
+  CommunityManager = 'COMMUNITY_MANAGER',
+  Expert = 'EXPERT',
+  Guidance = 'GUIDANCE',
+}
+
+export enum AiPersonaInteractionMode {
+  DiscussionTagging = 'DISCUSSION_TAGGING',
+}
+
+export type AiPersonaQuestionInput = {
+  /** Virtual Persona Type. */
+  aiPersonaID: Scalars['UUID'];
+  /** The question that is being asked. */
+  question: Scalars['String'];
+};
+
+export type AiPersonaResult = {
+  __typename?: 'AiPersonaResult';
+  /** The answer to the question */
+  answer: Scalars['String'];
+  /** The id of the answer; null if an error was returned */
+  id?: Maybe<Scalars['String']>;
+  /** The original question */
+  question: Scalars['String'];
+  /** The sources used to answer the question */
+  sources?: Maybe<Array<Source>>;
+};
+
+export type AiPersonaService = {
+  __typename?: 'AiPersonaService';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The body of knowledge ID used for the AI Persona Service */
+  bodyOfKnowledgeID?: Maybe<Scalars['UUID']>;
+  /** The body of knowledge type used for the AI Persona Service */
+  bodyOfKnowledgeType?: Maybe<AiPersonaBodyOfKnowledgeType>;
+  /** The required data access by the Virtual Persona */
+  dataAccessMode: AiPersonaDataAccessMode;
+  /** The AI Persona Engine being used by this AI Persona. */
+  engine: AiPersonaEngine;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** The prompt used by this Virtual Persona */
+  prompt: Scalars['String'];
+};
+
+export type AiPersonaServiceIngestInput = {
+  aiPersonaServiceID: Scalars['UUID'];
+};
+
+export type AiPersonaServiceQuestionInput = {
+  /** Virtual Persona Type. */
+  aiPersonaServiceID: Scalars['UUID'];
+  /** The question that is being asked. */
+  question: Scalars['String'];
+};
+
+export type AiPersonaServiceResult = {
+  __typename?: 'AiPersonaServiceResult';
+  /** The answer to the question */
+  answer: Scalars['String'];
+  /** The id of the answer; null if an error was returned */
+  id?: Maybe<Scalars['String']>;
+  /** The original question */
+  question: Scalars['String'];
+  /** The sources used to answer the question */
+  sources?: Maybe<Array<Source>>;
+};
+
+export type AiServer = {
+  __typename?: 'AiServer';
+  /** A particular AiPersonaService */
+  aiPersonaService: AiPersonaService;
+  /** The AiPersonaServices on this aiServer */
+  aiPersonaServices: Array<AiPersonaService>;
+  /** Ask the virtual persona engine for guidance. */
+  askAiPersonaServiceQuestion: AiPersonaServiceResult;
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The default AiPersonaService in use on the aiServer. */
+  defaultAiPersonaService: AiPersonaService;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+};
+
+export type AiServerAiPersonaServiceArgs = {
+  ID: Scalars['UUID'];
+};
+
+export type AiServerAskAiPersonaServiceQuestionArgs = {
+  chatData: AiPersonaServiceQuestionInput;
+};
+
 export type AnyInvitation = Invitation | InvitationExternal;
 
 export type Application = {
   __typename?: 'Application';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
+  /** The User for this Application. */
+  contributor: Contributor;
   createdDate: Scalars['DateTime'];
   /** The ID of the entity */
   id: Scalars['UUID'];
@@ -568,33 +693,11 @@ export type Application = {
   /** The Questions for this application. */
   questions: Array<Question>;
   updatedDate: Scalars['DateTime'];
-  /** The User for this Application. */
-  user: User;
 };
 
 export type ApplicationEventInput = {
   applicationID: Scalars['UUID'];
   eventName: Scalars['String'];
-};
-
-export type ApplicationForRoleResult = {
-  __typename?: 'ApplicationForRoleResult';
-  /** ID for the community */
-  communityID: Scalars['UUID'];
-  /** Date of creation */
-  createdDate: Scalars['DateTime'];
-  /** Display name of the community */
-  displayName: Scalars['String'];
-  /** ID for the application */
-  id: Scalars['UUID'];
-  /** ID for the ultimate containing Space */
-  spaceID: Scalars['UUID'];
-  /** Nesting level of the Space */
-  spaceLevel: Scalars['Float'];
-  /** The current state of the application. */
-  state: Scalars['String'];
-  /** Date of last update */
-  updatedDate: Scalars['DateTime'];
 };
 
 export type AssignCommunityRoleToOrganizationInput = {
@@ -763,11 +866,6 @@ export enum AuthorizationPrivilege {
   UpdateContent = 'UPDATE_CONTENT',
   UpdateInnovationFlow = 'UPDATE_INNOVATION_FLOW',
   UpdateWhiteboard = 'UPDATE_WHITEBOARD',
-}
-
-export enum BodyOfKnowledgeType {
-  Other = 'OTHER',
-  Space = 'SPACE',
 }
 
 export type Calendar = {
@@ -1053,23 +1151,10 @@ export type Communication = {
   __typename?: 'Communication';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
-  /** A particular Discussions active in this Communication. */
-  discussion?: Maybe<Discussion>;
-  discussionCategories: Array<DiscussionCategory>;
-  /** The Discussions active in this Communication. */
-  discussions?: Maybe<Array<Discussion>>;
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** The updates on this Communication. */
   updates: Room;
-};
-
-export type CommunicationDiscussionArgs = {
-  ID: Scalars['String'];
-};
-
-export type CommunicationDiscussionsArgs = {
-  queryData?: InputMaybe<DiscussionsInput>;
 };
 
 export type CommunicationAdminEnsureAccessInput = {
@@ -1130,15 +1215,6 @@ export type CommunicationAdminRoomResult = {
 
 export type CommunicationAdminUpdateRoomsJoinRuleInput = {
   isPublic: Scalars['Boolean'];
-};
-
-export type CommunicationCreateDiscussionInput = {
-  /** The category for the Discussion */
-  category: DiscussionCategory;
-  /** The identifier for the Communication entity the Discussion is being created on. */
-  communicationID: Scalars['UUID'];
-  profile: CreateProfileInput;
-  tags?: InputMaybe<Array<Scalars['String']>>;
 };
 
 export type CommunicationRoom = {
@@ -1252,10 +1328,36 @@ export type CommunityVirtualContributorsInRoleArgs = {
   role: CommunityRole;
 };
 
+export type CommunityApplicationForRoleResult = {
+  __typename?: 'CommunityApplicationForRoleResult';
+  /** ID for the community */
+  communityID: Scalars['UUID'];
+  /** Date of creation */
+  createdDate: Scalars['DateTime'];
+  /** Display name of the community */
+  displayName: Scalars['String'];
+  /** ID for the application */
+  id: Scalars['UUID'];
+  /** ID for the ultimate containing Space */
+  spaceID: Scalars['UUID'];
+  /** Nesting level of the Space */
+  spaceLevel: Scalars['Float'];
+  /** The current state of the application. */
+  state: Scalars['String'];
+  /** Date of last update */
+  updatedDate: Scalars['DateTime'];
+};
+
 export type CommunityApplyInput = {
   communityID: Scalars['UUID'];
   questions: Array<CreateNvpInput>;
 };
+
+export enum CommunityContributorType {
+  Organization = 'ORGANIZATION',
+  User = 'USER',
+  Virtual = 'VIRTUAL',
+}
 
 export type CommunityGuidelines = {
   __typename?: 'CommunityGuidelines';
@@ -1277,6 +1379,34 @@ export type CommunityGuidelinesTemplate = {
   id: Scalars['UUID'];
   /** The Profile for this template. */
   profile: Profile;
+};
+
+export type CommunityInvitationForRoleResult = {
+  __typename?: 'CommunityInvitationForRoleResult';
+  /** ID for the community */
+  communityID: Scalars['UUID'];
+  /** ID for Contrbutor that is being invited to a community */
+  contributorID: Scalars['UUID'];
+  /** The Type of the Contrbutor that is being invited to a community */
+  contributorType: CommunityContributorType;
+  /** ID for the user that created the invitation. */
+  createdBy: Scalars['UUID'];
+  /** Date of creation */
+  createdDate: Scalars['DateTime'];
+  /** Display name of the community */
+  displayName: Scalars['String'];
+  /** ID for the Invitation */
+  id: Scalars['UUID'];
+  /** ID for the ultimate containing Space */
+  spaceID: Scalars['UUID'];
+  /** Nesting level of the Space */
+  spaceLevel: Scalars['Float'];
+  /** The current state of the invitation. */
+  state: Scalars['String'];
+  /** Date of last update */
+  updatedDate: Scalars['DateTime'];
+  /** The welcome message of the invitation */
+  welcomeMessage?: Maybe<Scalars['UUID']>;
 };
 
 export type CommunityJoinInput = {
@@ -1395,10 +1525,10 @@ export type ContributorFilterInput = {
 export type ContributorRoles = {
   __typename?: 'ContributorRoles';
   /** The applications for the specified user; only accessible for platform admins */
-  applications: Array<ApplicationForRoleResult>;
+  applications: Array<CommunityApplicationForRoleResult>;
   id: Scalars['UUID'];
   /** The invitations for the specified user; only accessible for platform admins */
-  invitations: Array<InvitationForRoleResult>;
+  invitations: Array<CommunityInvitationForRoleResult>;
   /** Details of the roles the contributor has in Organizations */
   organizations: Array<RolesResultOrganization>;
   /** Details of Spaces the User or Organization is a member of, with child memberships - if Space is accessible for the current user. */
@@ -1444,6 +1574,20 @@ export type CreateActorInput = {
   impact?: InputMaybe<Scalars['String']>;
   name: Scalars['String'];
   value?: InputMaybe<Scalars['String']>;
+};
+
+export type CreateAiPersonaInput = {
+  aiPersonaService?: InputMaybe<CreateAiPersonaServiceInput>;
+  aiPersonaServiceID?: InputMaybe<Scalars['UUID']>;
+  description?: InputMaybe<Scalars['Markdown']>;
+};
+
+export type CreateAiPersonaServiceInput = {
+  bodyOfKnowledgeID?: InputMaybe<Scalars['UUID']>;
+  bodyOfKnowledgeType?: InputMaybe<AiPersonaBodyOfKnowledgeType>;
+  dataAccessMode?: InputMaybe<AiPersonaDataAccessMode>;
+  engine?: InputMaybe<AiPersonaEngine>;
+  prompt?: InputMaybe<Scalars['JSON']>;
 };
 
 export type CreateCalendarEventOnCalendarInput = {
@@ -1586,10 +1730,10 @@ export type CreateInnovationPackOnLibraryInput = {
   tags?: InputMaybe<Array<Scalars['String']>>;
 };
 
-export type CreateInvitationForUsersOnCommunityInput = {
+export type CreateInvitationForContributorsOnCommunityInput = {
   communityID: Scalars['UUID'];
-  /** The identifiers for the users being invited. */
-  invitedUsers: Array<Scalars['UUID']>;
+  /** The identifiers for the contributors being invited. */
+  invitedContributors: Array<Scalars['UUID']>;
   welcomeMessage?: InputMaybe<Scalars['String']>;
 };
 
@@ -1602,9 +1746,31 @@ export type CreateInvitationUserByEmailOnCommunityInput = {
 };
 
 export type CreateLicensePlanOnLicensingInput = {
+  /** Assign this plan to all new Organization accounts */
+  assignToNewOrganizationAccounts: Scalars['Boolean'];
+  /** Assign this plan to all new User accounts */
+  assignToNewUserAccounts: Scalars['Boolean'];
+  /** Is this plan enabled? */
+  enabled: Scalars['Boolean'];
+  /** Is this plan free? */
+  isFree: Scalars['Boolean'];
+  /** The credential to represent this plan */
+  licenseCredential: LicenseCredential;
   licensingID: Scalars['UUID'];
   /** The name of the License Plan */
   name: Scalars['String'];
+  /** The price per month of this plan. */
+  pricePerMonth?: InputMaybe<Scalars['Float']>;
+  /** Does this plan require contact support */
+  requiresContactSupport: Scalars['Boolean'];
+  /** Does this plan require a payment method? */
+  requiresPaymentMethod: Scalars['Boolean'];
+  /** The sorting order for this Plan. */
+  sortOrder: Scalars['Float'];
+  /** Is there a trial period enabled */
+  trialEnabled: Scalars['Boolean'];
+  /** The type of this License Plan. */
+  type: LicensePlanType;
 };
 
 export type CreateLinkInput = {
@@ -1700,6 +1866,7 @@ export type CreateSpaceInput = {
   nameID?: InputMaybe<Scalars['NameID']>;
   profileData: CreateProfileInput;
   tags?: InputMaybe<Array<Scalars['String']>>;
+  type?: InputMaybe<SpaceType>;
 };
 
 export type CreateSubspaceInput = {
@@ -1710,6 +1877,7 @@ export type CreateSubspaceInput = {
   profileData: CreateProfileInput;
   spaceID: Scalars['UUID_NAMEID'];
   tags?: InputMaybe<Array<Scalars['String']>>;
+  type?: InputMaybe<SpaceType>;
 };
 
 export type CreateTagsetInput = {
@@ -1744,20 +1912,11 @@ export type CreateUserInput = {
 
 export type CreateVirtualContributorOnAccountInput = {
   accountID: Scalars['UUID'];
-  bodyOfKnowledgeID?: InputMaybe<Scalars['UUID']>;
-  bodyOfKnowledgeType?: InputMaybe<BodyOfKnowledgeType>;
+  /** Data used to create the AI Persona */
+  aiPersona: CreateAiPersonaInput;
   /** A readable identifier, unique within the containing scope. */
   nameID?: InputMaybe<Scalars['NameID']>;
   profileData: CreateProfileInput;
-  virtualPersonaID?: InputMaybe<Scalars['UUID']>;
-};
-
-export type CreateVirtualPersonaInput = {
-  engine: VirtualContributorEngine;
-  /** A readable identifier, unique within the containing scope. */
-  nameID: Scalars['NameID'];
-  profileData: CreateProfileInput;
-  prompt?: InputMaybe<Scalars['JSON']>;
 };
 
 export type CreateWhiteboardInput = {
@@ -1817,6 +1976,9 @@ export type CredentialMetadataOutput = {
 export enum CredentialType {
   AccountHost = 'ACCOUNT_HOST',
   BetaTester = 'BETA_TESTER',
+  FeatureCalloutToCalloutTemplate = 'FEATURE_CALLOUT_TO_CALLOUT_TEMPLATE',
+  FeatureVirtualContributors = 'FEATURE_VIRTUAL_CONTRIBUTORS',
+  FeatureWhiteboardMultiUser = 'FEATURE_WHITEBOARD_MULTI_USER',
   GlobalAdmin = 'GLOBAL_ADMIN',
   GlobalCommunityRead = 'GLOBAL_COMMUNITY_READ',
   GlobalLicenseManager = 'GLOBAL_LICENSE_MANAGER',
@@ -1844,6 +2006,10 @@ export type DeleteActorGroupInput = {
 };
 
 export type DeleteActorInput = {
+  ID: Scalars['UUID'];
+};
+
+export type DeleteAiPersonaServiceInput = {
   ID: Scalars['UUID'];
 };
 
@@ -1947,10 +2113,6 @@ export type DeleteVirtualContributorInput = {
   ID: Scalars['UUID_NAMEID'];
 };
 
-export type DeleteVirtualPersonaInput = {
-  ID: Scalars['UUID_NAMEID'];
-};
-
 export type DeleteWhiteboardInput = {
   ID: Scalars['UUID'];
 };
@@ -1976,7 +2138,7 @@ export type Discussion = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The category assigned to this Discussion. */
-  category: DiscussionCategory;
+  category: ForumDiscussionCategory;
   /** The comments for this Discussion. */
   comments: Room;
   /** The id of the user that created this discussion */
@@ -1985,24 +2147,13 @@ export type Discussion = {
   id: Scalars['UUID'];
   /** A name identifier of the entity, unique within a given scope. */
   nameID: Scalars['NameID'];
+  /** Privacy mode for the Discussion. Note: this is not yet implemented in the authorization policy. */
+  privacy: ForumDiscussionPrivacy;
   /** The Profile for this Discussion. */
   profile: Profile;
   /** The timestamp for the creation of this Discussion. */
   timestamp?: Maybe<Scalars['Float']>;
 };
-
-export enum DiscussionCategory {
-  ChallengeCentric = 'CHALLENGE_CENTRIC',
-  CommunityBuilding = 'COMMUNITY_BUILDING',
-  General = 'GENERAL',
-  Help = 'HELP',
-  Ideas = 'IDEAS',
-  Other = 'OTHER',
-  PlatformFunctionalities = 'PLATFORM_FUNCTIONALITIES',
-  Questions = 'QUESTIONS',
-  Releases = 'RELEASES',
-  Sharing = 'SHARING',
-}
 
 export type DiscussionsInput = {
   /** The number of Discussion entries to return; if omitted return all Discussions. */
@@ -2081,6 +2232,51 @@ export type FormQuestion = {
   /** The sort order of this question in a wider set of questions. */
   sortOrder: Scalars['Float'];
 };
+
+export type Forum = {
+  __typename?: 'Forum';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** A particular Discussions active in this Forum. */
+  discussion?: Maybe<Discussion>;
+  discussionCategories: Array<ForumDiscussionCategory>;
+  /** The Discussions active in this Forum. */
+  discussions?: Maybe<Array<Discussion>>;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+};
+
+export type ForumDiscussionArgs = {
+  ID: Scalars['String'];
+};
+
+export type ForumDiscussionsArgs = {
+  queryData?: InputMaybe<DiscussionsInput>;
+};
+
+export type ForumCreateDiscussionInput = {
+  /** The category for the Discussion */
+  category: ForumDiscussionCategory;
+  /** The identifier for the Forum entity the Discussion is being created on. */
+  forumID: Scalars['UUID'];
+  profile: CreateProfileInput;
+  tags?: InputMaybe<Array<Scalars['String']>>;
+};
+
+export enum ForumDiscussionCategory {
+  ChallengeCentric = 'CHALLENGE_CENTRIC',
+  CommunityBuilding = 'COMMUNITY_BUILDING',
+  Help = 'HELP',
+  Other = 'OTHER',
+  PlatformFunctionalities = 'PLATFORM_FUNCTIONALITIES',
+  Releases = 'RELEASES',
+}
+
+export enum ForumDiscussionPrivacy {
+  Authenticated = 'AUTHENTICATED',
+  Author = 'AUTHOR',
+  Public = 'PUBLIC',
+}
 
 export type Geo = {
   __typename?: 'Geo';
@@ -2229,17 +2425,19 @@ export type Invitation = {
   __typename?: 'Invitation';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
+  /** The Contributor who is invited. */
+  contributor: Contributor;
+  /** The type of contributor that is invited. */
+  contributorType: CommunityContributorType;
   /** The User who triggered the invitation. */
   createdBy: User;
   createdDate: Scalars['DateTime'];
   /** The ID of the entity */
   id: Scalars['UUID'];
-  /** Whether to also add the invited user to the parent community. */
+  /** Whether to also add the invited contributor to the parent community. */
   invitedToParent: Scalars['Boolean'];
   lifecycle: Lifecycle;
   updatedDate: Scalars['DateTime'];
-  /** The User who is invited. */
-  user: User;
   welcomeMessage?: Maybe<Scalars['String']>;
 };
 
@@ -2268,30 +2466,6 @@ export type InvitationExternal = {
   welcomeMessage?: Maybe<Scalars['String']>;
 };
 
-export type InvitationForRoleResult = {
-  __typename?: 'InvitationForRoleResult';
-  /** ID for the community */
-  communityID: Scalars['UUID'];
-  /** ID for the user that created the invitation. */
-  createdBy: Scalars['UUID'];
-  /** Date of creation */
-  createdDate: Scalars['DateTime'];
-  /** Display name of the community */
-  displayName: Scalars['String'];
-  /** ID for the application */
-  id: Scalars['UUID'];
-  /** ID for the ultimate containing Space */
-  spaceID: Scalars['UUID'];
-  /** Nesting level of the Space */
-  spaceLevel: Scalars['Float'];
-  /** The current state of the invitation. */
-  state: Scalars['String'];
-  /** Date of last update */
-  updatedDate: Scalars['DateTime'];
-  /** The welcome message of the invitation */
-  welcomeMessage?: Maybe<Scalars['UUID']>;
-};
-
 export type LatestReleaseDiscussion = {
   __typename?: 'LatestReleaseDiscussion';
   /** Id of the latest release discussion. */
@@ -2312,6 +2486,8 @@ export type Library = {
   innovationPacks: Array<InnovationPack>;
   /** The StorageAggregator for storage used by this Library */
   storageAggregator?: Maybe<StorageAggregator>;
+  /** The VirtualContributors listed on this platform */
+  virtualContributors: Array<VirtualContributor>;
 };
 
 export type LibraryInnovationPackArgs = {
@@ -2326,39 +2502,28 @@ export type License = {
   __typename?: 'License';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
-  /** The FeatureFlags for the license */
-  featureFlags: Array<LicenseFeatureFlag>;
   /** The ID of the entity */
   id: Scalars['UUID'];
-  /** The privileges granted based on this License. */
-  privileges?: Maybe<Array<LicensePrivilege>>;
   /** Visibility of the Space. */
   visibility: SpaceVisibility;
 };
 
 export enum LicenseCredential {
+  FeatureCalloutToCalloutTemplate = 'FEATURE_CALLOUT_TO_CALLOUT_TEMPLATE',
+  FeatureVirtualContributors = 'FEATURE_VIRTUAL_CONTRIBUTORS',
+  FeatureWhiteboardMultiUser = 'FEATURE_WHITEBOARD_MULTI_USER',
   LicenseSpaceEnterprise = 'LICENSE_SPACE_ENTERPRISE',
   LicenseSpaceFree = 'LICENSE_SPACE_FREE',
   LicenseSpacePlus = 'LICENSE_SPACE_PLUS',
   LicenseSpacePremium = 'LICENSE_SPACE_PREMIUM',
 }
 
-export type LicenseFeatureFlag = {
-  __typename?: 'LicenseFeatureFlag';
-  /** Is this feature flag enabled? */
-  enabled: Scalars['Boolean'];
-  /** The name of the feature flag */
-  name: LicenseFeatureFlagName;
-};
-
-export enum LicenseFeatureFlagName {
-  CalloutToCalloutTemplate = 'CALLOUT_TO_CALLOUT_TEMPLATE',
-  VirtualContributors = 'VIRTUAL_CONTRIBUTORS',
-  WhiteboardMultiUser = 'WHITEBOARD_MULTI_USER',
-}
-
 export type LicensePlan = {
   __typename?: 'LicensePlan';
+  /** Assign this plan to all new Organization accounts */
+  assignToNewOrganizationAccounts: Scalars['Boolean'];
+  /** Assign this plan to all new User accounts */
+  assignToNewUserAccounts: Scalars['Boolean'];
   /** Is this plan enabled? */
   enabled: Scalars['Boolean'];
   /** The ID of the entity */
@@ -2379,21 +2544,28 @@ export type LicensePlan = {
   sortOrder: Scalars['Float'];
   /** Is there a trial period enabled */
   trialEnabled: Scalars['Boolean'];
+  /** The type of this License Plan. */
+  type: LicensePlanType;
 };
+
+export enum LicensePlanType {
+  SpaceFeatureFlag = 'SPACE_FEATURE_FLAG',
+  SpacePlan = 'SPACE_PLAN',
+}
 
 export type LicensePolicy = {
   __typename?: 'LicensePolicy';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The set of credential rules that are contained by this License Policy. */
-  featureFlagRules?: Maybe<Array<LicensePolicyRuleFeatureFlag>>;
+  credentialRules: Array<LicensePolicyCredentialRule>;
   /** The ID of the entity */
   id: Scalars['UUID'];
 };
 
-export type LicensePolicyRuleFeatureFlag = {
-  __typename?: 'LicensePolicyRuleFeatureFlag';
-  featureFlagName: LicenseFeatureFlagName;
+export type LicensePolicyCredentialRule = {
+  __typename?: 'LicensePolicyCredentialRule';
+  credentialType: LicenseCredential;
   grantedPrivileges: Array<LicensePrivilege>;
   name?: Maybe<Scalars['String']>;
 };
@@ -2408,8 +2580,6 @@ export type Licensing = {
   __typename?: 'Licensing';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
-  /** The base License Plan assigned to all Accounts in use on the platform. */
-  basePlan: LicensePlan;
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** The License Plans in use on the platform. */
@@ -2502,6 +2672,8 @@ export type LookupQueryResults = {
   space?: Maybe<Space>;
   /** Lookup the specified StorageAggregator */
   storageAggregator?: Maybe<StorageAggregator>;
+  /** A particular VirtualContributor */
+  virtualContributor?: Maybe<VirtualContributor>;
   /** Lookup the specified Whiteboard */
   whiteboard?: Maybe<Whiteboard>;
   /** Lookup the specified Whiteboard Template */
@@ -2593,6 +2765,10 @@ export type LookupQueryResultsStorageAggregatorArgs = {
   ID: Scalars['UUID'];
 };
 
+export type LookupQueryResultsVirtualContributorArgs = {
+  ID: Scalars['UUID'];
+};
+
 export type LookupQueryResultsWhiteboardArgs = {
   ID: Scalars['UUID'];
 };
@@ -2603,14 +2779,14 @@ export type LookupQueryResultsWhiteboardTemplateArgs = {
 
 export type MeQueryResults = {
   __typename?: 'MeQueryResults';
-  /** The applications of the current authenticated user */
-  applications: Array<ApplicationForRoleResult>;
   /** Can I create a free space? */
   canCreateFreeSpace: Scalars['Boolean'];
+  /** The community applicationscurrent authenticated user can act on. */
+  communityApplications: Array<CommunityApplicationForRoleResult>;
+  /** The invitations the current authenticated user can act on. */
+  communityInvitations: Array<CommunityInvitationForRoleResult>;
   /** The query id */
   id: Scalars['String'];
-  /** The invitations of the current authenticated user */
-  invitations: Array<InvitationForRoleResult>;
   /** The Spaces I am contributing to */
   mySpaces: Array<MySpaceResults>;
   /** The applications of the current authenticated user */
@@ -2619,11 +2795,11 @@ export type MeQueryResults = {
   user?: Maybe<User>;
 };
 
-export type MeQueryResultsApplicationsArgs = {
+export type MeQueryResultsCommunityApplicationsArgs = {
   states?: InputMaybe<Array<Scalars['String']>>;
 };
 
-export type MeQueryResultsInvitationsArgs = {
+export type MeQueryResultsCommunityInvitationsArgs = {
   states?: InputMaybe<Array<Scalars['String']>>;
 };
 
@@ -2691,6 +2867,16 @@ export type Mutation = {
   adminCommunicationUpdateRoomsJoinRule: Scalars['Boolean'];
   /** Ingests new data into Elasticsearch from scratch. This will delete all existing data and ingest new data from the source. This is an admin only operation. */
   adminSearchIngestFromScratch: Scalars['String'];
+  /** Reset the Authorization Policy on the specified AiServer. */
+  aiServerAuthorizationPolicyReset: AiServer;
+  /** Creates a new AiPersonaService on the aiServer. */
+  aiServerCreateAiPersonaService: AiPersonaService;
+  /** Deletes the specified AiPersonaService. */
+  aiServerDeleteAiPersonaService: AiPersonaService;
+  /** Trigger an ingesting of data on the remove AI Persona Service. */
+  aiServerPersonaServiceIngest: Scalars['Boolean'];
+  /** Updates the specified AI Persona. */
+  aiServerUpdateAiPersonaService: AiPersonaService;
   /** Apply to join the specified Community as a member. */
   applyForCommunityMembership: Application;
   /** Assigns an Organization a Role in the specified Community. */
@@ -2743,7 +2929,7 @@ export type Mutation = {
   createCommunityGuidelinesTemplate: CommunityGuidelinesTemplate;
   /** Create a new Contribution on the Callout. */
   createContributionOnCallout: CalloutContribution;
-  /** Creates a new Discussion as part of this Communication. */
+  /** Creates a new Discussion as part of this Forum. */
   createDiscussion: Discussion;
   /** Create a new CalendarEvent on the Calendar. */
   createEventOnCalendar: CalendarEvent;
@@ -2777,8 +2963,6 @@ export type Mutation = {
   createUserNewRegistration: User;
   /** Creates a new VirtualContributor on an Account. */
   createVirtualContributor: VirtualContributor;
-  /** Creates a new VirtualPersona on the platform. */
-  createVirtualPersona: VirtualPersona;
   /** Creates a new WhiteboardTemplate on the specified TemplatesSet. */
   createWhiteboardTemplate: WhiteboardTemplate;
   /** Deletes the specified Actor. */
@@ -2835,8 +3019,6 @@ export type Mutation = {
   deleteUserGroup: UserGroup;
   /** Deletes the specified VirtualContributor. */
   deleteVirtualContributor: VirtualContributor;
-  /** Deletes the specified VirtualPersona. */
-  deleteVirtualPersona: VirtualPersona;
   /** Deletes the specified Whiteboard. */
   deleteWhiteboard: Whiteboard;
   /** Deletes the specified WhiteboardTemplate. */
@@ -2855,8 +3037,8 @@ export type Mutation = {
   ingest: Scalars['Boolean'];
   /** Triggers space ingestion. */
   ingestSpace: Space;
-  /** Invite an existing User to join the specified Community as a member. */
-  inviteExistingUserForCommunityMembership: Array<Invitation>;
+  /** Invite an existing Contriburor to join the specified Community as a member. */
+  inviteContributorsForCommunityMembership: Array<Invitation>;
   /** Invite an external User to join the specified Community as a member. */
   inviteForCommunityMembershipByEmail: AnyInvitation;
   /** Join the specified Community as a member, without going through an approval process. */
@@ -2903,6 +3085,8 @@ export type Mutation = {
   updateAccountPlatformSettings: Account;
   /** Updates the specified Actor. */
   updateActor: Actor;
+  /** Updates the specified AiPersona. */
+  updateAiPersona: AiPersona;
   /** User vote if a specific answer is relevant. */
   updateAnswerRelevance: Scalars['Boolean'];
   /** Updates the specified CalendarEvent. */
@@ -2985,8 +3169,6 @@ export type Mutation = {
   updateVirtualContributor: VirtualContributor;
   /** Update VirtualContributor Platform Settings. */
   updateVirtualContributorPlatformSettings: VirtualContributor;
-  /** Updates the specified VirtualPersona. */
-  updateVirtualPersona: VirtualPersona;
   /** Updates the image URI for the specified Visual. */
   updateVisual: Visual;
   /** Updates the specified Whiteboard. */
@@ -3019,6 +3201,22 @@ export type MutationAdminCommunicationRemoveOrphanedRoomArgs = {
 
 export type MutationAdminCommunicationUpdateRoomsJoinRuleArgs = {
   changeRoomAccessData: CommunicationAdminUpdateRoomsJoinRuleInput;
+};
+
+export type MutationAiServerCreateAiPersonaServiceArgs = {
+  aiPersonaServiceData: CreateAiPersonaServiceInput;
+};
+
+export type MutationAiServerDeleteAiPersonaServiceArgs = {
+  deleteData: DeleteAiPersonaServiceInput;
+};
+
+export type MutationAiServerPersonaServiceIngestArgs = {
+  ingestData: AiPersonaServiceIngestInput;
+};
+
+export type MutationAiServerUpdateAiPersonaServiceArgs = {
+  aiPersonaServiceData: UpdateAiPersonaServiceInput;
 };
 
 export type MutationApplyForCommunityMembershipArgs = {
@@ -3114,7 +3312,7 @@ export type MutationCreateContributionOnCalloutArgs = {
 };
 
 export type MutationCreateDiscussionArgs = {
-  createData: CommunicationCreateDiscussionInput;
+  createData: ForumCreateDiscussionInput;
 };
 
 export type MutationCreateEventOnCalendarArgs = {
@@ -3175,10 +3373,6 @@ export type MutationCreateUserArgs = {
 
 export type MutationCreateVirtualContributorArgs = {
   virtualContributorData: CreateVirtualContributorOnAccountInput;
-};
-
-export type MutationCreateVirtualPersonaArgs = {
-  virtualPersonaData: CreateVirtualPersonaInput;
 };
 
 export type MutationCreateWhiteboardTemplateArgs = {
@@ -3293,10 +3487,6 @@ export type MutationDeleteVirtualContributorArgs = {
   deleteData: DeleteVirtualContributorInput;
 };
 
-export type MutationDeleteVirtualPersonaArgs = {
-  deleteData: DeleteVirtualPersonaInput;
-};
-
 export type MutationDeleteWhiteboardArgs = {
   whiteboardData: DeleteWhiteboardInput;
 };
@@ -3329,8 +3519,8 @@ export type MutationIngestSpaceArgs = {
   ingestSpaceData: IngestSpaceInput;
 };
 
-export type MutationInviteExistingUserForCommunityMembershipArgs = {
-  invitationData: CreateInvitationForUsersOnCommunityInput;
+export type MutationInviteContributorsForCommunityMembershipArgs = {
+  invitationData: CreateInvitationForContributorsOnCommunityInput;
 };
 
 export type MutationInviteForCommunityMembershipByEmailArgs = {
@@ -3419,6 +3609,10 @@ export type MutationUpdateAccountPlatformSettingsArgs = {
 
 export type MutationUpdateActorArgs = {
   actorData: UpdateActorInput;
+};
+
+export type MutationUpdateAiPersonaArgs = {
+  aiPersonaData: UpdateAiPersonaInput;
 };
 
 export type MutationUpdateAnswerRelevanceArgs = {
@@ -3585,10 +3779,6 @@ export type MutationUpdateVirtualContributorPlatformSettingsArgs = {
   updateData: UpdateVirtualContributorPlatformSettingsInput;
 };
 
-export type MutationUpdateVirtualPersonaArgs = {
-  virtualPersonaData: UpdateVirtualPersonaInput;
-};
-
 export type MutationUpdateVisualArgs = {
   updateData: UpdateVisualInput;
 };
@@ -3648,6 +3838,8 @@ export type Nvp = {
 export type Organization = Contributor &
   Groupable & {
     __typename?: 'Organization';
+    /** The accounts hosted by this Organization. */
+    accounts: Array<Account>;
     /** All Users that are admins of this Organization. */
     admins?: Maybe<Array<User>>;
     /** The Agent representing this User. */
@@ -3780,10 +3972,10 @@ export type Platform = {
   __typename?: 'Platform';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
-  /** The Communications for the platform */
-  communication: Communication;
   /** Alkemio configuration. Provides configuration to external services in the Alkemio ecosystem. */
   configuration: Config;
+  /** The Forum for the platform */
+  forum: Forum;
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** Details about an Innovation Hubs on the platform. If the arguments are omitted, the current Innovation Hub you are in will be returned. */
@@ -4077,10 +4269,12 @@ export type Query = {
   adminCommunicationMembership: CommunicationAdminMembershipResult;
   /** Usage of the messaging platform that are not tied to the domain model. */
   adminCommunicationOrphanedUsage: CommunicationAdminOrphanedUsageResult;
+  /** Alkemio AiServer */
+  aiServer: AiServer;
+  /** Ask the virtual persona engine for guidance. */
+  askAiPersonaQuestion: AiPersonaResult;
   /** Ask the chat engine for guidance. */
   askChatGuidanceQuestion: ChatGuidanceResult;
-  /** Ask the virtual persona engine for guidance. */
-  askVirtualPersonaQuestion: VirtualPersonaResult;
   /** Get supported credential metadata */
   getSupportedVerifiedCredentialMetadata: Array<CredentialMetadataOutput>;
   /** Allow direct lookup of entities from the domain model */
@@ -4125,10 +4319,6 @@ export type Query = {
   virtualContributor: VirtualContributor;
   /** The VirtualContributors on this platform */
   virtualContributors: Array<VirtualContributor>;
-  /** A particular VirtualPersona */
-  virtualPersona: VirtualPersona;
-  /** The VirtualPersonas on this platform */
-  virtualPersonas: Array<VirtualPersona>;
 };
 
 export type QueryAccountArgs = {
@@ -4155,12 +4345,12 @@ export type QueryAdminCommunicationMembershipArgs = {
   communicationData: CommunicationAdminMembershipInput;
 };
 
-export type QueryAskChatGuidanceQuestionArgs = {
-  chatData: ChatGuidanceInput;
+export type QueryAskAiPersonaQuestionArgs = {
+  chatData: AiPersonaQuestionInput;
 };
 
-export type QueryAskVirtualPersonaQuestionArgs = {
-  chatData: VirtualPersonaQuestionInput;
+export type QueryAskChatGuidanceQuestionArgs = {
+  chatData: ChatGuidanceInput;
 };
 
 export type QueryOrganizationArgs = {
@@ -4253,10 +4443,6 @@ export type QueryVirtualContributorsArgs = {
   filter?: InputMaybe<ContributorFilterInput>;
   limit?: InputMaybe<Scalars['Float']>;
   shuffle?: InputMaybe<Scalars['Boolean']>;
-};
-
-export type QueryVirtualPersonaArgs = {
-  ID: Scalars['UUID'];
 };
 
 export type Question = {
@@ -4707,6 +4893,12 @@ export type SearchResultUserGroup = SearchResult & {
   userGroup: UserGroup;
 };
 
+export enum SearchVisibility {
+  Account = 'ACCOUNT',
+  Hidden = 'HIDDEN',
+  Public = 'PUBLIC',
+}
+
 export type Sentry = {
   __typename?: 'Sentry';
   /** Flag indicating if the client should use Sentry for monitoring. */
@@ -4796,6 +4988,12 @@ export type SpaceFilterInput = {
   visibilities?: InputMaybe<Array<SpaceVisibility>>;
 };
 
+export enum SpaceLevel {
+  Challenge = 'CHALLENGE',
+  Opportunity = 'OPPORTUNITY',
+  Space = 'SPACE',
+}
+
 export enum SpacePrivacyMode {
   Private = 'PRIVATE',
   Public = 'PUBLIC',
@@ -4840,9 +5038,11 @@ export type SpaceSettingsPrivacy = {
 };
 
 export enum SpaceType {
+  BlankSlate = 'BLANK_SLATE',
   Challenge = 'CHALLENGE',
   Opportunity = 'OPPORTUNITY',
   Space = 'SPACE',
+  VirtualContributor = 'VIRTUAL_CONTRIBUTOR',
 }
 
 export enum SpaceVisibility {
@@ -4875,8 +5075,8 @@ export type StorageAggregatorParent = {
   displayName: Scalars['String'];
   /** The UUID of the parent entity. */
   id: Scalars['UUID'];
-  /** The Type of the parent Entity. */
-  type: SpaceType;
+  /** The level of the parent Entity. */
+  level: SpaceLevel;
   /** The URL that can be used to access the parent entity. */
   url: Scalars['String'];
 };
@@ -4946,13 +5146,15 @@ export type Subscription = {
   /** Receive new Update messages on Communities the currently authenticated User is a member of. */
   calloutPostCreated: CalloutPostCreated;
   /** Receive updates on Discussions */
-  communicationDiscussionUpdated: Discussion;
+  forumDiscussionUpdated: Discussion;
   /** Received on verified credentials change */
   profileVerifiedCredential: ProfileCredentialVerified;
   /** Receive Room event */
   roomEvents: RoomEventSubscriptionResult;
   /** Receive new Subspaces created on the Space. */
   subspaceCreated: SubspaceCreated;
+  /** Receive Whiteboard Saved event */
+  whiteboardSaved: WhiteboardSavedSubscriptionResult;
 };
 
 export type SubscriptionActivityCreatedArgs = {
@@ -4963,8 +5165,8 @@ export type SubscriptionCalloutPostCreatedArgs = {
   calloutID: Scalars['UUID'];
 };
 
-export type SubscriptionCommunicationDiscussionUpdatedArgs = {
-  communicationID: Scalars['UUID'];
+export type SubscriptionForumDiscussionUpdatedArgs = {
+  forumID: Scalars['UUID'];
 };
 
 export type SubscriptionRoomEventsArgs = {
@@ -4973,6 +5175,10 @@ export type SubscriptionRoomEventsArgs = {
 
 export type SubscriptionSubspaceCreatedArgs = {
   spaceID: Scalars['UUID'];
+};
+
+export type SubscriptionWhiteboardSavedArgs = {
+  whiteboardID: Scalars['UUID'];
 };
 
 export type SubspaceCreated = {
@@ -5141,6 +5347,16 @@ export type UpdateActorInput = {
   value?: InputMaybe<Scalars['String']>;
 };
 
+export type UpdateAiPersonaInput = {
+  ID: Scalars['UUID'];
+};
+
+export type UpdateAiPersonaServiceInput = {
+  ID: Scalars['UUID'];
+  engine: AiPersonaEngine;
+  prompt?: InputMaybe<Scalars['JSON']>;
+};
+
 export type UpdateCalendarEventInput = {
   ID: Scalars['UUID'];
   /** The length of the event in days. */
@@ -5259,7 +5475,7 @@ export type UpdateContextInput = {
 export type UpdateDiscussionInput = {
   ID: Scalars['UUID'];
   /** The category for the Discussion */
-  category?: InputMaybe<DiscussionCategory>;
+  category?: InputMaybe<ForumDiscussionCategory>;
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
   nameID?: InputMaybe<Scalars['NameID']>;
   /** The Profile of this entity. */
@@ -5276,13 +5492,6 @@ export type UpdateDocumentInput = {
 export type UpdateEcosystemModelInput = {
   ID: Scalars['UUID'];
   description?: InputMaybe<Scalars['String']>;
-};
-
-export type UpdateFeatureFlagInput = {
-  /** Is this feature flag enabled? */
-  enabled: Scalars['Boolean'];
-  /** The name of the feature flag */
-  name: Scalars['String'];
 };
 
 export type UpdateFormInput = {
@@ -5377,14 +5586,32 @@ export type UpdateInnovationPackInput = {
 };
 
 export type UpdateLicenseInput = {
-  /** Update the feature flags for the License. */
-  featureFlags?: InputMaybe<Array<UpdateFeatureFlagInput>>;
   /** Visibility of the Space. */
   visibility?: InputMaybe<SpaceVisibility>;
 };
 
 export type UpdateLicensePlanInput = {
   ID: Scalars['UUID'];
+  /** Assign this plan to all new Organization accounts */
+  assignToNewOrganizationAccounts?: InputMaybe<Scalars['Boolean']>;
+  /** Assign this plan to all new User accounts */
+  assignToNewUserAccounts?: InputMaybe<Scalars['Boolean']>;
+  /** Is this plan enabled? */
+  enabled?: InputMaybe<Scalars['Boolean']>;
+  /** Is this plan free? */
+  isFree?: InputMaybe<Scalars['Boolean']>;
+  /** The credential to represent this plan */
+  licenseCredential?: InputMaybe<LicenseCredential>;
+  /** The price per month of this plan. */
+  pricePerMonth?: InputMaybe<Scalars['Float']>;
+  /** Does this plan require contact support */
+  requiresContactSupport?: InputMaybe<Scalars['Boolean']>;
+  /** Does this plan require a payment method? */
+  requiresPaymentMethod?: InputMaybe<Scalars['Boolean']>;
+  /** The sorting order for this Plan. */
+  sortOrder?: InputMaybe<Scalars['Float']>;
+  /** Is there a trial period enabled */
+  trialEnabled?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type UpdateLinkInput = {
@@ -5601,16 +5828,6 @@ export type UpdateVirtualContributorPlatformSettingsInput = {
   accountID: Scalars['UUID'];
 };
 
-export type UpdateVirtualPersonaInput = {
-  ID: Scalars['UUID'];
-  engine: VirtualContributorEngine;
-  /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
-  nameID?: InputMaybe<Scalars['NameID']>;
-  /** The Profile of this entity. */
-  profileData?: InputMaybe<UpdateProfileInput>;
-  prompt?: InputMaybe<Scalars['JSON']>;
-};
-
 export type UpdateVisualInput = {
   alternativeText?: InputMaybe<Scalars['String']>;
   uri: Scalars['String'];
@@ -5619,11 +5836,7 @@ export type UpdateVisualInput = {
 
 export type UpdateWhiteboardContentInput = {
   ID: Scalars['UUID'];
-  content?: InputMaybe<Scalars['WhiteboardContent']>;
-  /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
-  nameID?: InputMaybe<Scalars['NameID']>;
-  /** The Profile of this entity. */
-  profileData?: InputMaybe<UpdateProfileInput>;
+  content: Scalars['WhiteboardContent'];
 };
 
 export type UpdateWhiteboardInput = {
@@ -5646,6 +5859,8 @@ export type User = Contributor & {
   __typename?: 'User';
   /** The unique personal identifier (upn) for the account associated with this user profile */
   accountUpn: Scalars['String'];
+  /** The accounts hosted by this User. */
+  accounts: Array<Account>;
   /** The Agent representing this User. */
   agent: Agent;
   /** The authorization rules for the Contributor */
@@ -5781,75 +5996,26 @@ export type VerifiedCredentialClaim = {
 
 export type VirtualContributor = Contributor & {
   __typename?: 'VirtualContributor';
-  /** The account under which the virtual contributor was created */
+  /** The Account of the Virtual Contributor. */
   account?: Maybe<Account>;
   /** The Agent representing this User. */
   agent: Agent;
+  /** The AI persona being used by this virtual contributor */
+  aiPersona: AiPersona;
   /** The authorization rules for the Contributor */
   authorization?: Maybe<Authorization>;
-  /** The body of knowledge ID used for the Virtual Contributor */
-  bodyOfKnowledgeID?: Maybe<Scalars['UUID']>;
-  /** The body of knowledge type used for the Virtual Contributor */
-  bodyOfKnowledgeType?: Maybe<BodyOfKnowledgeType>;
   /** The ID of the Contributor */
   id: Scalars['UUID'];
+  /** Flag to control if this VC is listed in the platform store. */
+  listedInStore: Scalars['Boolean'];
   /** A name identifier of the Contributor, unique within a given scope. */
   nameID: Scalars['NameID'];
   /** The profile for this Virtual. */
   profile: Profile;
+  /** Visibility of the VC in searches. */
+  searchVisibility: SearchVisibility;
   /** The StorageAggregator for managing storage buckets in use by this Virtual */
   storageAggregator?: Maybe<StorageAggregator>;
-  /** The virtual persona being used by this virtual contributor */
-  virtualPersona: VirtualPersona;
-};
-
-export enum VirtualContributorEngine {
-  CommunityManager = 'COMMUNITY_MANAGER',
-  Expert = 'EXPERT',
-  Guidance = 'GUIDANCE',
-}
-
-export type VirtualPersona = {
-  __typename?: 'VirtualPersona';
-  /** The authorization rules for the entity */
-  authorization?: Maybe<Authorization>;
-  /** The required data access by the Virtual Persona */
-  dataAccessMode: VirtualPersonaAccessMode;
-  /** The Virtual Persona Engine being used by this virtual persona. */
-  engine: VirtualContributorEngine;
-  /** The ID of the entity */
-  id: Scalars['UUID'];
-  /** A name identifier of the entity, unique within a given scope. */
-  nameID: Scalars['NameID'];
-  /** The Profile for the VirtualPersona. */
-  profile: Profile;
-  /** The prompt used by this Virtual Persona */
-  prompt: Scalars['String'];
-};
-
-export enum VirtualPersonaAccessMode {
-  None = 'NONE',
-  SpaceProfile = 'SPACE_PROFILE',
-  SpaceProfileAndContents = 'SPACE_PROFILE_AND_CONTENTS',
-}
-
-export type VirtualPersonaQuestionInput = {
-  /** The question that is being asked. */
-  question: Scalars['String'];
-  /** Virtual Persona Type. */
-  virtualPersonaID: Scalars['UUID'];
-};
-
-export type VirtualPersonaResult = {
-  __typename?: 'VirtualPersonaResult';
-  /** The answer to the question */
-  answer: Scalars['String'];
-  /** The id of the answer; null if an error was returned */
-  id?: Maybe<Scalars['String']>;
-  /** The original question */
-  question: Scalars['String'];
-  /** The sources used to answer the question */
-  sources?: Maybe<Array<Source>>;
 };
 
 export type Visual = {
@@ -5908,6 +6074,15 @@ export type Whiteboard = {
   profile: Profile;
   /** The date at which the Whiteboard was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
+};
+
+/** The save event happened in the subscribed whiteboard. */
+export type WhiteboardSavedSubscriptionResult = {
+  __typename?: 'WhiteboardSavedSubscriptionResult';
+  /** The date at which the Whiteboard was last updated. */
+  updatedDate?: Maybe<Scalars['DateTime']>;
+  /** The identifier for the Whiteboard on which the save event happened. */
+  whiteboardID: Scalars['String'];
 };
 
 export type WhiteboardTemplate = {
@@ -13045,6 +13220,19 @@ export type UpdateWhiteboardContentMutation = {
   updateWhiteboardContent: { __typename?: 'Whiteboard'; id: string; content: string };
 };
 
+export type WhiteboardSavedSubscriptionVariables = Exact<{
+  whiteboardId: Scalars['UUID'];
+}>;
+
+export type WhiteboardSavedSubscription = {
+  __typename?: 'Subscription';
+  whiteboardSaved: {
+    __typename?: 'WhiteboardSavedSubscriptionResult';
+    whiteboardID: string;
+    updatedDate?: Date | undefined;
+  };
+};
+
 export type WhiteboardContentUpdatePolicyQueryVariables = Exact<{
   whiteboardId: Scalars['UUID'];
 }>;
@@ -13248,7 +13436,7 @@ export type LatestReleaseDiscussionQuery = {
 };
 
 export type CreateDiscussionMutationVariables = Exact<{
-  input: CommunicationCreateDiscussionInput;
+  input: ForumCreateDiscussionInput;
 }>;
 
 export type CreateDiscussionMutation = {
@@ -13258,7 +13446,7 @@ export type CreateDiscussionMutation = {
     id: string;
     createdBy?: string | undefined;
     timestamp?: number | undefined;
-    category: DiscussionCategory;
+    category: ForumDiscussionCategory;
     profile: { __typename?: 'Profile'; id: string; url: string; displayName: string; description?: string | undefined };
     comments: {
       __typename?: 'Room';
@@ -13374,7 +13562,7 @@ export type UpdateDiscussionMutation = {
     id: string;
     createdBy?: string | undefined;
     timestamp?: number | undefined;
-    category: DiscussionCategory;
+    category: ForumDiscussionCategory;
     profile: { __typename?: 'Profile'; id: string; url: string; displayName: string; description?: string | undefined };
     comments: {
       __typename?: 'Room';
@@ -13493,7 +13681,7 @@ export type DiscussionDetailsFragment = {
   id: string;
   createdBy?: string | undefined;
   timestamp?: number | undefined;
-  category: DiscussionCategory;
+  category: ForumDiscussionCategory;
   profile: { __typename?: 'Profile'; id: string; url: string; displayName: string; description?: string | undefined };
   comments: {
     __typename?: 'Room';
@@ -13604,10 +13792,10 @@ export type PlatformDiscussionsQuery = {
   platform: {
     __typename?: 'Platform';
     id: string;
-    communication: {
-      __typename?: 'Communication';
+    forum: {
+      __typename?: 'Forum';
       id: string;
-      discussionCategories: Array<DiscussionCategory>;
+      discussionCategories: Array<ForumDiscussionCategory>;
       authorization?:
         | {
             __typename?: 'Authorization';
@@ -13620,7 +13808,7 @@ export type PlatformDiscussionsQuery = {
         | Array<{
             __typename?: 'Discussion';
             id: string;
-            category: DiscussionCategory;
+            category: ForumDiscussionCategory;
             timestamp?: number | undefined;
             createdBy?: string | undefined;
             profile: {
@@ -13671,7 +13859,7 @@ export type PlatformDiscussionsQuery = {
 export type DiscussionCardFragment = {
   __typename?: 'Discussion';
   id: string;
-  category: DiscussionCategory;
+  category: ForumDiscussionCategory;
   timestamp?: number | undefined;
   createdBy?: string | undefined;
   profile: {
@@ -13724,8 +13912,8 @@ export type PlatformDiscussionQuery = {
   platform: {
     __typename?: 'Platform';
     id: string;
-    communication: {
-      __typename?: 'Communication';
+    forum: {
+      __typename?: 'Forum';
       id: string;
       authorization?:
         | {
@@ -13741,7 +13929,7 @@ export type PlatformDiscussionQuery = {
             id: string;
             createdBy?: string | undefined;
             timestamp?: number | undefined;
-            category: DiscussionCategory;
+            category: ForumDiscussionCategory;
             profile: {
               __typename?: 'Profile';
               id: string;
@@ -13859,19 +14047,19 @@ export type PlatformDiscussionQuery = {
   };
 };
 
-export type CommunicationDiscussionUpdatedSubscriptionVariables = Exact<{
-  communicationID: Scalars['UUID'];
+export type ForumDiscussionUpdatedSubscriptionVariables = Exact<{
+  forumID: Scalars['UUID'];
 }>;
 
-export type CommunicationDiscussionUpdatedSubscription = {
+export type ForumDiscussionUpdatedSubscription = {
   __typename?: 'Subscription';
-  communicationDiscussionUpdated: {
+  forumDiscussionUpdated: {
     __typename?: 'Discussion';
     id: string;
     nameID: string;
     createdBy?: string | undefined;
     timestamp?: number | undefined;
-    category: DiscussionCategory;
+    category: ForumDiscussionCategory;
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -14628,19 +14816,47 @@ export type CommunityApplicationsInvitationsQuery = {
               state?: string | undefined;
               nextEvents?: Array<string> | undefined;
             };
-            user: {
-              __typename?: 'User';
-              id: string;
-              nameID: string;
-              email: string;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                displayName: string;
-                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-              };
-            };
+            contributor:
+              | {
+                  __typename?: 'Organization';
+                  id: string;
+                  nameID: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    url: string;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                    location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                  };
+                }
+              | {
+                  __typename?: 'User';
+                  email: string;
+                  id: string;
+                  nameID: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    url: string;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                    location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                  };
+                }
+              | {
+                  __typename?: 'VirtualContributor';
+                  id: string;
+                  nameID: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    url: string;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                    location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                  };
+                };
             questions: Array<{ __typename?: 'Question'; id: string; name: string; value: string }>;
           }>;
           invitations: Array<{
@@ -14648,25 +14864,54 @@ export type CommunityApplicationsInvitationsQuery = {
             id: string;
             createdDate: Date;
             updatedDate: Date;
+            contributorType: CommunityContributorType;
             lifecycle: {
               __typename?: 'Lifecycle';
               id: string;
               state?: string | undefined;
               nextEvents?: Array<string> | undefined;
             };
-            user: {
-              __typename?: 'User';
-              id: string;
-              nameID: string;
-              email: string;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                displayName: string;
-                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-              };
-            };
+            contributor:
+              | {
+                  __typename?: 'Organization';
+                  id: string;
+                  nameID: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    url: string;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                    location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                  };
+                }
+              | {
+                  __typename?: 'User';
+                  email: string;
+                  id: string;
+                  nameID: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    url: string;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                    location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                  };
+                }
+              | {
+                  __typename?: 'VirtualContributor';
+                  id: string;
+                  nameID: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    url: string;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                    location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                  };
+                };
           }>;
           invitationsExternal: Array<{
             __typename?: 'InvitationExternal';
@@ -14690,19 +14935,47 @@ export type AdminCommunityApplicationFragment = {
     state?: string | undefined;
     nextEvents?: Array<string> | undefined;
   };
-  user: {
-    __typename?: 'User';
-    id: string;
-    nameID: string;
-    email: string;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      displayName: string;
-      avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-      location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-    };
-  };
+  contributor:
+    | {
+        __typename?: 'Organization';
+        id: string;
+        nameID: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          url: string;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+        };
+      }
+    | {
+        __typename?: 'User';
+        email: string;
+        id: string;
+        nameID: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          url: string;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+        };
+      }
+    | {
+        __typename?: 'VirtualContributor';
+        id: string;
+        nameID: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          url: string;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+        };
+      };
   questions: Array<{ __typename?: 'Question'; id: string; name: string; value: string }>;
 };
 
@@ -14711,25 +14984,54 @@ export type AdminCommunityInvitationFragment = {
   id: string;
   createdDate: Date;
   updatedDate: Date;
+  contributorType: CommunityContributorType;
   lifecycle: {
     __typename?: 'Lifecycle';
     id: string;
     state?: string | undefined;
     nextEvents?: Array<string> | undefined;
   };
-  user: {
-    __typename?: 'User';
-    id: string;
-    nameID: string;
-    email: string;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      displayName: string;
-      avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-      location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-    };
-  };
+  contributor:
+    | {
+        __typename?: 'Organization';
+        id: string;
+        nameID: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          url: string;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+        };
+      }
+    | {
+        __typename?: 'User';
+        email: string;
+        id: string;
+        nameID: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          url: string;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+        };
+      }
+    | {
+        __typename?: 'VirtualContributor';
+        id: string;
+        nameID: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          url: string;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+        };
+      };
 };
 
 export type AdminCommunityInvitationExternalFragment = {
@@ -14739,19 +15041,52 @@ export type AdminCommunityInvitationExternalFragment = {
   email: string;
 };
 
-export type AdminCommunityCandidateMemberFragment = {
-  __typename?: 'User';
+type AdminCommunityCandidateMember_Organization_Fragment = {
+  __typename?: 'Organization';
   id: string;
   nameID: string;
-  email: string;
   profile: {
     __typename?: 'Profile';
     id: string;
     displayName: string;
+    url: string;
     avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
     location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
   };
 };
+
+type AdminCommunityCandidateMember_User_Fragment = {
+  __typename?: 'User';
+  id: string;
+  nameID: string;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    url: string;
+    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+    location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+  };
+};
+
+type AdminCommunityCandidateMember_VirtualContributor_Fragment = {
+  __typename?: 'VirtualContributor';
+  id: string;
+  nameID: string;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    url: string;
+    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+    location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+  };
+};
+
+export type AdminCommunityCandidateMemberFragment =
+  | AdminCommunityCandidateMember_Organization_Fragment
+  | AdminCommunityCandidateMember_User_Fragment
+  | AdminCommunityCandidateMember_VirtualContributor_Fragment;
 
 export type CommunityApplicationFormQueryVariables = Exact<{
   communityId: Scalars['UUID'];
@@ -16791,15 +17126,15 @@ export type InvitationStateEventMutation = {
   };
 };
 
-export type InviteExistingUserMutationVariables = Exact<{
-  userIds: Array<Scalars['UUID']> | Scalars['UUID'];
+export type InviteContributorsToCommunityMutationVariables = Exact<{
+  contributorIds: Array<Scalars['UUID']> | Scalars['UUID'];
   communityId: Scalars['UUID'];
   message?: InputMaybe<Scalars['String']>;
 }>;
 
-export type InviteExistingUserMutation = {
+export type InviteContributorsToCommunityMutation = {
   __typename?: 'Mutation';
-  inviteExistingUserForCommunityMembership: Array<{ __typename?: 'Invitation'; id: string }>;
+  inviteContributorsForCommunityMembership: Array<{ __typename?: 'Invitation'; id: string }>;
 };
 
 export type InviteExternalUserMutationVariables = Exact<{
@@ -17818,8 +18153,8 @@ export type UserProviderQuery = {
           };
         }
       | undefined;
-    applications: Array<{
-      __typename?: 'ApplicationForRoleResult';
+    communityApplications: Array<{
+      __typename?: 'CommunityApplicationForRoleResult';
       id: string;
       communityID: string;
       displayName: string;
@@ -17827,8 +18162,8 @@ export type UserProviderQuery = {
       spaceID: string;
       spaceLevel: number;
     }>;
-    invitations: Array<{
-      __typename?: 'InvitationForRoleResult';
+    communityInvitations: Array<{
+      __typename?: 'CommunityInvitationForRoleResult';
       id: string;
       spaceID: string;
       spaceLevel: number;
@@ -18097,7 +18432,6 @@ export type VirtualContributorQuery = {
     __typename?: 'VirtualContributor';
     id: string;
     nameID: string;
-    bodyOfKnowledgeID?: string | undefined;
     authorization?:
       | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
@@ -18217,7 +18551,23 @@ export type UpdateVirtualContributorMutation = {
   updateVirtualContributor: {
     __typename?: 'VirtualContributor';
     id: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      tagline: string;
+      displayName: string;
+      description?: string | undefined;
+      tagsets?:
+        | Array<{
+            __typename?: 'Tagset';
+            id: string;
+            name: string;
+            tags: Array<string>;
+            allowedValues: Array<string>;
+            type: TagsetType;
+          }>
+        | undefined;
+    };
   };
 };
 
@@ -21183,6 +21533,7 @@ export type PlansTableQuery = {
         trialEnabled: boolean;
         requiresPaymentMethod: boolean;
         requiresContactSupport: boolean;
+        type: LicensePlanType;
       }>;
     };
   };
@@ -22204,7 +22555,6 @@ export type CreateVirtualContributorOnAccountMutation = {
     __typename?: 'VirtualContributor';
     id: string;
     nameID: string;
-    bodyOfKnowledgeID?: string | undefined;
     profile: { __typename?: 'Profile'; id: string };
   };
 };
@@ -22238,7 +22588,6 @@ export type SpaceSubspacesQuery = {
         __typename?: 'VirtualContributor';
         id: string;
         nameID: string;
-        bodyOfKnowledgeID?: string | undefined;
         profile: {
           __typename?: 'Profile';
           id: string;
@@ -22798,6 +23147,34 @@ export type PlatformLevelAuthorizationQuery = {
   };
 };
 
+export type AssignLicensePlanToAccountMutationVariables = Exact<{
+  licensePlanId: Scalars['UUID'];
+  accountId: Scalars['UUID'];
+}>;
+
+export type AssignLicensePlanToAccountMutation = {
+  __typename?: 'Mutation';
+  assignLicensePlanToAccount: {
+    __typename?: 'Account';
+    id: string;
+    subscriptions: Array<{ __typename?: 'AccountSubscription'; name: LicenseCredential }>;
+  };
+};
+
+export type RevokeLicensePlanFromAccountMutationVariables = Exact<{
+  licensePlanId: Scalars['UUID'];
+  accountId: Scalars['UUID'];
+}>;
+
+export type RevokeLicensePlanFromAccountMutation = {
+  __typename?: 'Mutation';
+  revokeLicensePlanFromAccount: {
+    __typename?: 'Account';
+    id: string;
+    subscriptions: Array<{ __typename?: 'AccountSubscription'; name: LicenseCredential }>;
+  };
+};
+
 export type UpdateAccountPlatformSettingsMutationVariables = Exact<{
   accountId: Scalars['UUID'];
   hostId?: InputMaybe<Scalars['UUID_NAMEID']>;
@@ -22809,12 +23186,7 @@ export type UpdateAccountPlatformSettingsMutation = {
   updateAccountPlatformSettings: {
     __typename?: 'Account';
     id: string;
-    license: {
-      __typename?: 'License';
-      id: string;
-      visibility: SpaceVisibility;
-      featureFlags: Array<{ __typename?: 'LicenseFeatureFlag'; name: LicenseFeatureFlagName; enabled: boolean }>;
-    };
+    license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
     host?:
       | { __typename?: 'Organization'; id: string }
       | { __typename?: 'User'; id: string }
@@ -22844,12 +23216,8 @@ export type AdminSpacesListQuery = {
     account: {
       __typename?: 'Account';
       id: string;
-      license: {
-        __typename?: 'License';
-        id: string;
-        visibility: SpaceVisibility;
-        featureFlags: Array<{ __typename?: 'LicenseFeatureFlag'; name: LicenseFeatureFlagName; enabled: boolean }>;
-      };
+      subscriptions: Array<{ __typename?: 'AccountSubscription'; name: LicenseCredential }>;
+      license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
       host?:
         | {
             __typename?: 'Organization';
@@ -22869,6 +23237,14 @@ export type AdminSpacesListQuery = {
       | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
   }>;
+  platform: {
+    __typename?: 'Platform';
+    licensing: {
+      __typename?: 'Licensing';
+      id: string;
+      plans: Array<{ __typename?: 'LicensePlan'; id: string; name: string; licenseCredential: LicenseCredential }>;
+    };
+  };
 };
 
 export type AdminSpaceFragment = {
@@ -22878,12 +23254,8 @@ export type AdminSpaceFragment = {
   account: {
     __typename?: 'Account';
     id: string;
-    license: {
-      __typename?: 'License';
-      id: string;
-      visibility: SpaceVisibility;
-      featureFlags: Array<{ __typename?: 'LicenseFeatureFlag'; name: LicenseFeatureFlagName; enabled: boolean }>;
-    };
+    subscriptions: Array<{ __typename?: 'AccountSubscription'; name: LicenseCredential }>;
+    license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
     host?:
       | {
           __typename?: 'Organization';
@@ -22924,7 +23296,7 @@ export type SpaceStorageAdminPageQuery = {
               | {
                   __typename?: 'StorageAggregatorParent';
                   id: string;
-                  type: SpaceType;
+                  level: SpaceLevel;
                   displayName: string;
                   url: string;
                 }
@@ -22936,7 +23308,7 @@ export type SpaceStorageAdminPageQuery = {
                 | {
                     __typename?: 'StorageAggregatorParent';
                     id: string;
-                    type: SpaceType;
+                    level: SpaceLevel;
                     displayName: string;
                     url: string;
                   }
@@ -23037,7 +23409,13 @@ export type StorageAggregatorLookupQuery = {
           __typename?: 'StorageAggregator';
           id: string;
           parentEntity?:
-            | { __typename?: 'StorageAggregatorParent'; id: string; type: SpaceType; displayName: string; url: string }
+            | {
+                __typename?: 'StorageAggregatorParent';
+                id: string;
+                level: SpaceLevel;
+                displayName: string;
+                url: string;
+              }
             | undefined;
           storageAggregators: Array<{
             __typename?: 'StorageAggregator';
@@ -23046,7 +23424,7 @@ export type StorageAggregatorLookupQuery = {
               | {
                   __typename?: 'StorageAggregatorParent';
                   id: string;
-                  type: SpaceType;
+                  level: SpaceLevel;
                   displayName: string;
                   url: string;
                 }
@@ -23117,13 +23495,13 @@ export type StorageAggregatorFragment = {
   __typename?: 'StorageAggregator';
   id: string;
   parentEntity?:
-    | { __typename?: 'StorageAggregatorParent'; id: string; type: SpaceType; displayName: string; url: string }
+    | { __typename?: 'StorageAggregatorParent'; id: string; level: SpaceLevel; displayName: string; url: string }
     | undefined;
   storageAggregators: Array<{
     __typename?: 'StorageAggregator';
     id: string;
     parentEntity?:
-      | { __typename?: 'StorageAggregatorParent'; id: string; type: SpaceType; displayName: string; url: string }
+      | { __typename?: 'StorageAggregatorParent'; id: string; level: SpaceLevel; displayName: string; url: string }
       | undefined;
   }>;
   storageBuckets: Array<{
@@ -23188,7 +23566,7 @@ export type LoadableStorageAggregatorFragment = {
   __typename?: 'StorageAggregator';
   id: string;
   parentEntity?:
-    | { __typename?: 'StorageAggregatorParent'; id: string; type: SpaceType; displayName: string; url: string }
+    | { __typename?: 'StorageAggregatorParent'; id: string; level: SpaceLevel; displayName: string; url: string }
     | undefined;
 };
 
@@ -23232,7 +23610,7 @@ export type StorageBucketParentFragment = {
 export type StorageAggregatorParentFragment = {
   __typename?: 'StorageAggregatorParent';
   id: string;
-  type: SpaceType;
+  level: SpaceLevel;
   displayName: string;
   url: string;
 };
@@ -24897,38 +25275,6 @@ export type AdminVirtualContributorsQuery = {
         | undefined;
     };
   }>;
-};
-
-export type VirtualContributorAvailablePersonasQueryVariables = Exact<{ [key: string]: never }>;
-
-export type VirtualContributorAvailablePersonasQuery = {
-  __typename?: 'Query';
-  virtualPersonas: Array<{
-    __typename?: 'VirtualPersona';
-    id: string;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      displayName: string;
-      description?: string | undefined;
-      avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-    };
-  }>;
-};
-
-export type CreateVirtualPersonaMutationVariables = Exact<{
-  virtualPersonaData: CreateVirtualPersonaInput;
-}>;
-
-export type CreateVirtualPersonaMutation = {
-  __typename?: 'Mutation';
-  createVirtualPersona: {
-    __typename?: 'VirtualPersona';
-    id: string;
-    nameID: string;
-    engine: VirtualContributorEngine;
-    profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
-  };
 };
 
 export type ConfigurationQueryVariables = Exact<{ [key: string]: never }>;
@@ -27219,7 +27565,20 @@ export type InnovationLibraryQuery = {
                 guidelines: {
                   __typename?: 'CommunityGuidelines';
                   id: string;
-                  profile: { __typename?: 'Profile'; displayName: string; description?: string | undefined };
+                  profile: {
+                    __typename?: 'Profile';
+                    displayName: string;
+                    description?: string | undefined;
+                    references?:
+                      | Array<{
+                          __typename?: 'Reference';
+                          id: string;
+                          name: string;
+                          uri: string;
+                          description?: string | undefined;
+                        }>
+                      | undefined;
+                  };
                 };
               }>;
             }
@@ -27501,7 +27860,20 @@ export type InnovationPackDataFragment = {
           guidelines: {
             __typename?: 'CommunityGuidelines';
             id: string;
-            profile: { __typename?: 'Profile'; displayName: string; description?: string | undefined };
+            profile: {
+              __typename?: 'Profile';
+              displayName: string;
+              description?: string | undefined;
+              references?:
+                | Array<{
+                    __typename?: 'Reference';
+                    id: string;
+                    name: string;
+                    uri: string;
+                    description?: string | undefined;
+                  }>
+                | undefined;
+            };
           };
         }>;
       }
@@ -27753,7 +28125,14 @@ export type LibraryTemplatesFragment = {
     guidelines: {
       __typename?: 'CommunityGuidelines';
       id: string;
-      profile: { __typename?: 'Profile'; displayName: string; description?: string | undefined };
+      profile: {
+        __typename?: 'Profile';
+        displayName: string;
+        description?: string | undefined;
+        references?:
+          | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
+          | undefined;
+      };
     };
   }>;
 };
@@ -29082,8 +29461,8 @@ export type NewMembershipsQuery = {
   __typename?: 'Query';
   me: {
     __typename?: 'MeQueryResults';
-    applications: Array<{
-      __typename?: 'ApplicationForRoleResult';
+    communityApplications: Array<{
+      __typename?: 'CommunityApplicationForRoleResult';
       id: string;
       communityID: string;
       displayName: string;
@@ -29092,10 +29471,12 @@ export type NewMembershipsQuery = {
       spaceLevel: number;
       createdDate: Date;
     }>;
-    invitations: Array<{
-      __typename?: 'InvitationForRoleResult';
+    communityInvitations: Array<{
+      __typename?: 'CommunityInvitationForRoleResult';
       id: string;
       spaceID: string;
+      contributorID: string;
+      contributorType: CommunityContributorType;
       spaceLevel: number;
       state: string;
       welcomeMessage?: string | undefined;
@@ -29115,10 +29496,10 @@ export type RecentForumMessagesQuery = {
   platform: {
     __typename?: 'Platform';
     id: string;
-    communication: {
-      __typename?: 'Communication';
+    forum: {
+      __typename?: 'Forum';
       id: string;
-      discussionCategories: Array<DiscussionCategory>;
+      discussionCategories: Array<ForumDiscussionCategory>;
       authorization?:
         | {
             __typename?: 'Authorization';
@@ -29131,7 +29512,7 @@ export type RecentForumMessagesQuery = {
         | Array<{
             __typename?: 'Discussion';
             id: string;
-            category: DiscussionCategory;
+            category: ForumDiscussionCategory;
             timestamp?: number | undefined;
             createdBy?: string | undefined;
             profile: {

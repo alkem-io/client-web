@@ -4,7 +4,7 @@ import VCProfilePage from './vcProfilePage/VCProfilePage';
 import { PageLayoutHolderWithOutlet } from '../../journey/common/EntityPageLayout';
 import TopLevelLayout from '../../../main/ui/layout/TopLevelLayout';
 import { Error404 } from '../../../core/pages/Errors/Error404';
-import VCSettingsPage from './vcSettingsPage/VCSettingsPage';
+import VCSettingsRoute from './VCSettingsRoute';
 
 export const VCRoute: FC = () => {
   return (
@@ -12,7 +12,7 @@ export const VCRoute: FC = () => {
       <Route path="/" element={<PageLayoutHolderWithOutlet />}>
         <Route index element={<VCProfilePage />} />
       </Route>
-      <Route path={'settings/*'} element={<VCSettingsPage />} />
+      <Route path={'settings/*'} element={<VCSettingsRoute />} />
       <Route
         path="*"
         element={

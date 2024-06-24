@@ -13,6 +13,7 @@ export type AccountKeySpecifier = (
   | 'id'
   | 'library'
   | 'license'
+  | 'licensePrivileges'
   | 'spaceID'
   | 'subscriptions'
   | 'virtualContributors'
@@ -27,6 +28,7 @@ export type AccountFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   library?: FieldPolicy<any> | FieldReadFunction<any>;
   license?: FieldPolicy<any> | FieldReadFunction<any>;
+  licensePrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
   spaceID?: FieldPolicy<any> | FieldReadFunction<any>;
   subscriptions?: FieldPolicy<any> | FieldReadFunction<any>;
   virtualContributors?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -483,44 +485,96 @@ export type AgentBeginVerifiedCredentialRequestOutputFieldPolicy = {
   jwt?: FieldPolicy<any> | FieldReadFunction<any>;
   qrCodeImg?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type AiPersonaKeySpecifier = (
+  | 'authorization'
+  | 'bodyOfKnowledgeType'
+  | 'dataAccessMode'
+  | 'description'
+  | 'id'
+  | 'interactionModes'
+  | AiPersonaKeySpecifier
+)[];
+export type AiPersonaFieldPolicy = {
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  bodyOfKnowledgeType?: FieldPolicy<any> | FieldReadFunction<any>;
+  dataAccessMode?: FieldPolicy<any> | FieldReadFunction<any>;
+  description?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  interactionModes?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type AiPersonaResultKeySpecifier = ('answer' | 'id' | 'question' | 'sources' | AiPersonaResultKeySpecifier)[];
+export type AiPersonaResultFieldPolicy = {
+  answer?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  question?: FieldPolicy<any> | FieldReadFunction<any>;
+  sources?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type AiPersonaServiceKeySpecifier = (
+  | 'authorization'
+  | 'bodyOfKnowledgeID'
+  | 'bodyOfKnowledgeType'
+  | 'dataAccessMode'
+  | 'engine'
+  | 'id'
+  | 'prompt'
+  | AiPersonaServiceKeySpecifier
+)[];
+export type AiPersonaServiceFieldPolicy = {
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  bodyOfKnowledgeID?: FieldPolicy<any> | FieldReadFunction<any>;
+  bodyOfKnowledgeType?: FieldPolicy<any> | FieldReadFunction<any>;
+  dataAccessMode?: FieldPolicy<any> | FieldReadFunction<any>;
+  engine?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  prompt?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type AiPersonaServiceResultKeySpecifier = (
+  | 'answer'
+  | 'id'
+  | 'question'
+  | 'sources'
+  | AiPersonaServiceResultKeySpecifier
+)[];
+export type AiPersonaServiceResultFieldPolicy = {
+  answer?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  question?: FieldPolicy<any> | FieldReadFunction<any>;
+  sources?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type AiServerKeySpecifier = (
+  | 'aiPersonaService'
+  | 'aiPersonaServices'
+  | 'askAiPersonaServiceQuestion'
+  | 'authorization'
+  | 'defaultAiPersonaService'
+  | 'id'
+  | AiServerKeySpecifier
+)[];
+export type AiServerFieldPolicy = {
+  aiPersonaService?: FieldPolicy<any> | FieldReadFunction<any>;
+  aiPersonaServices?: FieldPolicy<any> | FieldReadFunction<any>;
+  askAiPersonaServiceQuestion?: FieldPolicy<any> | FieldReadFunction<any>;
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  defaultAiPersonaService?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type ApplicationKeySpecifier = (
   | 'authorization'
+  | 'contributor'
   | 'createdDate'
   | 'id'
   | 'lifecycle'
   | 'questions'
   | 'updatedDate'
-  | 'user'
   | ApplicationKeySpecifier
 )[];
 export type ApplicationFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  contributor?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   lifecycle?: FieldPolicy<any> | FieldReadFunction<any>;
   questions?: FieldPolicy<any> | FieldReadFunction<any>;
-  updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
-  user?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type ApplicationForRoleResultKeySpecifier = (
-  | 'communityID'
-  | 'createdDate'
-  | 'displayName'
-  | 'id'
-  | 'spaceID'
-  | 'spaceLevel'
-  | 'state'
-  | 'updatedDate'
-  | ApplicationForRoleResultKeySpecifier
-)[];
-export type ApplicationForRoleResultFieldPolicy = {
-  communityID?: FieldPolicy<any> | FieldReadFunction<any>;
-  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
-  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-  spaceID?: FieldPolicy<any> | FieldReadFunction<any>;
-  spaceLevel?: FieldPolicy<any> | FieldReadFunction<any>;
-  state?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type AuthenticationConfigKeySpecifier = ('providers' | AuthenticationConfigKeySpecifier)[];
@@ -784,20 +838,9 @@ export type CollaborationFieldPolicy = {
   tagsetTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
   timeline?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type CommunicationKeySpecifier = (
-  | 'authorization'
-  | 'discussion'
-  | 'discussionCategories'
-  | 'discussions'
-  | 'id'
-  | 'updates'
-  | CommunicationKeySpecifier
-)[];
+export type CommunicationKeySpecifier = ('authorization' | 'id' | 'updates' | CommunicationKeySpecifier)[];
 export type CommunicationFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  discussion?: FieldPolicy<any> | FieldReadFunction<any>;
-  discussionCategories?: FieldPolicy<any> | FieldReadFunction<any>;
-  discussions?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   updates?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -900,6 +943,27 @@ export type CommunityFieldPolicy = {
   usersInRole?: FieldPolicy<any> | FieldReadFunction<any>;
   virtualContributorsInRole?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type CommunityApplicationForRoleResultKeySpecifier = (
+  | 'communityID'
+  | 'createdDate'
+  | 'displayName'
+  | 'id'
+  | 'spaceID'
+  | 'spaceLevel'
+  | 'state'
+  | 'updatedDate'
+  | CommunityApplicationForRoleResultKeySpecifier
+)[];
+export type CommunityApplicationForRoleResultFieldPolicy = {
+  communityID?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  spaceID?: FieldPolicy<any> | FieldReadFunction<any>;
+  spaceLevel?: FieldPolicy<any> | FieldReadFunction<any>;
+  state?: FieldPolicy<any> | FieldReadFunction<any>;
+  updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type CommunityGuidelinesKeySpecifier = ('authorization' | 'id' | 'profile' | CommunityGuidelinesKeySpecifier)[];
 export type CommunityGuidelinesFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -918,6 +982,35 @@ export type CommunityGuidelinesTemplateFieldPolicy = {
   guidelines?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CommunityInvitationForRoleResultKeySpecifier = (
+  | 'communityID'
+  | 'contributorID'
+  | 'contributorType'
+  | 'createdBy'
+  | 'createdDate'
+  | 'displayName'
+  | 'id'
+  | 'spaceID'
+  | 'spaceLevel'
+  | 'state'
+  | 'updatedDate'
+  | 'welcomeMessage'
+  | CommunityInvitationForRoleResultKeySpecifier
+)[];
+export type CommunityInvitationForRoleResultFieldPolicy = {
+  communityID?: FieldPolicy<any> | FieldReadFunction<any>;
+  contributorID?: FieldPolicy<any> | FieldReadFunction<any>;
+  contributorType?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  spaceID?: FieldPolicy<any> | FieldReadFunction<any>;
+  spaceLevel?: FieldPolicy<any> | FieldReadFunction<any>;
+  state?: FieldPolicy<any> | FieldReadFunction<any>;
+  updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  welcomeMessage?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CommunityPolicyKeySpecifier = ('admin' | 'id' | 'lead' | 'member' | CommunityPolicyKeySpecifier)[];
 export type CommunityPolicyFieldPolicy = {
@@ -1046,6 +1139,7 @@ export type DiscussionKeySpecifier = (
   | 'createdBy'
   | 'id'
   | 'nameID'
+  | 'privacy'
   | 'profile'
   | 'timestamp'
   | DiscussionKeySpecifier
@@ -1057,6 +1151,7 @@ export type DiscussionFieldPolicy = {
   createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
+  privacy?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   timestamp?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -1121,6 +1216,21 @@ export type FormQuestionFieldPolicy = {
   question?: FieldPolicy<any> | FieldReadFunction<any>;
   required?: FieldPolicy<any> | FieldReadFunction<any>;
   sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type ForumKeySpecifier = (
+  | 'authorization'
+  | 'discussion'
+  | 'discussionCategories'
+  | 'discussions'
+  | 'id'
+  | ForumKeySpecifier
+)[];
+export type ForumFieldPolicy = {
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  discussion?: FieldPolicy<any> | FieldReadFunction<any>;
+  discussionCategories?: FieldPolicy<any> | FieldReadFunction<any>;
+  discussions?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type GeoKeySpecifier = ('endpoint' | GeoKeySpecifier)[];
 export type GeoFieldPolicy = {
@@ -1228,25 +1338,27 @@ export type InnovationPackFieldPolicy = {
 };
 export type InvitationKeySpecifier = (
   | 'authorization'
+  | 'contributor'
+  | 'contributorType'
   | 'createdBy'
   | 'createdDate'
   | 'id'
   | 'invitedToParent'
   | 'lifecycle'
   | 'updatedDate'
-  | 'user'
   | 'welcomeMessage'
   | InvitationKeySpecifier
 )[];
 export type InvitationFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  contributor?: FieldPolicy<any> | FieldReadFunction<any>;
+  contributorType?: FieldPolicy<any> | FieldReadFunction<any>;
   createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   invitedToParent?: FieldPolicy<any> | FieldReadFunction<any>;
   lifecycle?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
-  user?: FieldPolicy<any> | FieldReadFunction<any>;
   welcomeMessage?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type InvitationExternalKeySpecifier = (
@@ -1274,31 +1386,6 @@ export type InvitationExternalFieldPolicy = {
   profileCreated?: FieldPolicy<any> | FieldReadFunction<any>;
   welcomeMessage?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type InvitationForRoleResultKeySpecifier = (
-  | 'communityID'
-  | 'createdBy'
-  | 'createdDate'
-  | 'displayName'
-  | 'id'
-  | 'spaceID'
-  | 'spaceLevel'
-  | 'state'
-  | 'updatedDate'
-  | 'welcomeMessage'
-  | InvitationForRoleResultKeySpecifier
-)[];
-export type InvitationForRoleResultFieldPolicy = {
-  communityID?: FieldPolicy<any> | FieldReadFunction<any>;
-  createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
-  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
-  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-  spaceID?: FieldPolicy<any> | FieldReadFunction<any>;
-  spaceLevel?: FieldPolicy<any> | FieldReadFunction<any>;
-  state?: FieldPolicy<any> | FieldReadFunction<any>;
-  updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
-  welcomeMessage?: FieldPolicy<any> | FieldReadFunction<any>;
-};
 export type LatestReleaseDiscussionKeySpecifier = ('id' | 'nameID' | LatestReleaseDiscussionKeySpecifier)[];
 export type LatestReleaseDiscussionFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1310,6 +1397,7 @@ export type LibraryKeySpecifier = (
   | 'innovationPack'
   | 'innovationPacks'
   | 'storageAggregator'
+  | 'virtualContributors'
   | LibraryKeySpecifier
 )[];
 export type LibraryFieldPolicy = {
@@ -1318,28 +1406,17 @@ export type LibraryFieldPolicy = {
   innovationPack?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationPacks?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
+  virtualContributors?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type LicenseKeySpecifier = (
-  | 'authorization'
-  | 'featureFlags'
-  | 'id'
-  | 'privileges'
-  | 'visibility'
-  | LicenseKeySpecifier
-)[];
+export type LicenseKeySpecifier = ('authorization' | 'id' | 'visibility' | LicenseKeySpecifier)[];
 export type LicenseFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  featureFlags?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
-  privileges?: FieldPolicy<any> | FieldReadFunction<any>;
   visibility?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type LicenseFeatureFlagKeySpecifier = ('enabled' | 'name' | LicenseFeatureFlagKeySpecifier)[];
-export type LicenseFeatureFlagFieldPolicy = {
-  enabled?: FieldPolicy<any> | FieldReadFunction<any>;
-  name?: FieldPolicy<any> | FieldReadFunction<any>;
-};
 export type LicensePlanKeySpecifier = (
+  | 'assignToNewOrganizationAccounts'
+  | 'assignToNewUserAccounts'
   | 'enabled'
   | 'id'
   | 'isFree'
@@ -1350,9 +1427,12 @@ export type LicensePlanKeySpecifier = (
   | 'requiresPaymentMethod'
   | 'sortOrder'
   | 'trialEnabled'
+  | 'type'
   | LicensePlanKeySpecifier
 )[];
 export type LicensePlanFieldPolicy = {
+  assignToNewOrganizationAccounts?: FieldPolicy<any> | FieldReadFunction<any>;
+  assignToNewUserAccounts?: FieldPolicy<any> | FieldReadFunction<any>;
   enabled?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   isFree?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1363,35 +1443,28 @@ export type LicensePlanFieldPolicy = {
   requiresPaymentMethod?: FieldPolicy<any> | FieldReadFunction<any>;
   sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
   trialEnabled?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type LicensePolicyKeySpecifier = ('authorization' | 'featureFlagRules' | 'id' | LicensePolicyKeySpecifier)[];
+export type LicensePolicyKeySpecifier = ('authorization' | 'credentialRules' | 'id' | LicensePolicyKeySpecifier)[];
 export type LicensePolicyFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  featureFlagRules?: FieldPolicy<any> | FieldReadFunction<any>;
+  credentialRules?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type LicensePolicyRuleFeatureFlagKeySpecifier = (
-  | 'featureFlagName'
+export type LicensePolicyCredentialRuleKeySpecifier = (
+  | 'credentialType'
   | 'grantedPrivileges'
   | 'name'
-  | LicensePolicyRuleFeatureFlagKeySpecifier
+  | LicensePolicyCredentialRuleKeySpecifier
 )[];
-export type LicensePolicyRuleFeatureFlagFieldPolicy = {
-  featureFlagName?: FieldPolicy<any> | FieldReadFunction<any>;
+export type LicensePolicyCredentialRuleFieldPolicy = {
+  credentialType?: FieldPolicy<any> | FieldReadFunction<any>;
   grantedPrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
   name?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type LicensingKeySpecifier = (
-  | 'authorization'
-  | 'basePlan'
-  | 'id'
-  | 'plans'
-  | 'policy'
-  | LicensingKeySpecifier
-)[];
+export type LicensingKeySpecifier = ('authorization' | 'id' | 'plans' | 'policy' | LicensingKeySpecifier)[];
 export type LicensingFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  basePlan?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   plans?: FieldPolicy<any> | FieldReadFunction<any>;
   policy?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1461,6 +1534,7 @@ export type LookupQueryResultsKeySpecifier = (
   | 'room'
   | 'space'
   | 'storageAggregator'
+  | 'virtualContributor'
   | 'whiteboard'
   | 'whiteboardTemplate'
   | LookupQueryResultsKeySpecifier
@@ -1487,24 +1561,25 @@ export type LookupQueryResultsFieldPolicy = {
   room?: FieldPolicy<any> | FieldReadFunction<any>;
   space?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
+  virtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboardTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type MeQueryResultsKeySpecifier = (
-  | 'applications'
   | 'canCreateFreeSpace'
+  | 'communityApplications'
+  | 'communityInvitations'
   | 'id'
-  | 'invitations'
   | 'mySpaces'
   | 'spaceMemberships'
   | 'user'
   | MeQueryResultsKeySpecifier
 )[];
 export type MeQueryResultsFieldPolicy = {
-  applications?: FieldPolicy<any> | FieldReadFunction<any>;
   canCreateFreeSpace?: FieldPolicy<any> | FieldReadFunction<any>;
+  communityApplications?: FieldPolicy<any> | FieldReadFunction<any>;
+  communityInvitations?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
-  invitations?: FieldPolicy<any> | FieldReadFunction<any>;
   mySpaces?: FieldPolicy<any> | FieldReadFunction<any>;
   spaceMemberships?: FieldPolicy<any> | FieldReadFunction<any>;
   user?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1536,6 +1611,11 @@ export type MutationKeySpecifier = (
   | 'adminCommunicationRemoveOrphanedRoom'
   | 'adminCommunicationUpdateRoomsJoinRule'
   | 'adminSearchIngestFromScratch'
+  | 'aiServerAuthorizationPolicyReset'
+  | 'aiServerCreateAiPersonaService'
+  | 'aiServerDeleteAiPersonaService'
+  | 'aiServerPersonaServiceIngest'
+  | 'aiServerUpdateAiPersonaService'
   | 'applyForCommunityMembership'
   | 'assignCommunityRoleToOrganization'
   | 'assignCommunityRoleToUser'
@@ -1579,7 +1659,6 @@ export type MutationKeySpecifier = (
   | 'createUser'
   | 'createUserNewRegistration'
   | 'createVirtualContributor'
-  | 'createVirtualPersona'
   | 'createWhiteboardTemplate'
   | 'deleteActor'
   | 'deleteActorGroup'
@@ -1608,7 +1687,6 @@ export type MutationKeySpecifier = (
   | 'deleteUserApplication'
   | 'deleteUserGroup'
   | 'deleteVirtualContributor'
-  | 'deleteVirtualPersona'
   | 'deleteWhiteboard'
   | 'deleteWhiteboardTemplate'
   | 'eventOnApplication'
@@ -1618,7 +1696,7 @@ export type MutationKeySpecifier = (
   | 'grantCredentialToUser'
   | 'ingest'
   | 'ingestSpace'
-  | 'inviteExistingUserForCommunityMembership'
+  | 'inviteContributorsForCommunityMembership'
   | 'inviteForCommunityMembershipByEmail'
   | 'joinCommunity'
   | 'messageUser'
@@ -1642,6 +1720,7 @@ export type MutationKeySpecifier = (
   | 'sendMessageToUser'
   | 'updateAccountPlatformSettings'
   | 'updateActor'
+  | 'updateAiPersona'
   | 'updateAnswerRelevance'
   | 'updateCalendarEvent'
   | 'updateCallout'
@@ -1683,7 +1762,6 @@ export type MutationKeySpecifier = (
   | 'updateUserPlatformSettings'
   | 'updateVirtualContributor'
   | 'updateVirtualContributorPlatformSettings'
-  | 'updateVirtualPersona'
   | 'updateVisual'
   | 'updateWhiteboard'
   | 'updateWhiteboardContent'
@@ -1700,6 +1778,11 @@ export type MutationFieldPolicy = {
   adminCommunicationRemoveOrphanedRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationUpdateRoomsJoinRule?: FieldPolicy<any> | FieldReadFunction<any>;
   adminSearchIngestFromScratch?: FieldPolicy<any> | FieldReadFunction<any>;
+  aiServerAuthorizationPolicyReset?: FieldPolicy<any> | FieldReadFunction<any>;
+  aiServerCreateAiPersonaService?: FieldPolicy<any> | FieldReadFunction<any>;
+  aiServerDeleteAiPersonaService?: FieldPolicy<any> | FieldReadFunction<any>;
+  aiServerPersonaServiceIngest?: FieldPolicy<any> | FieldReadFunction<any>;
+  aiServerUpdateAiPersonaService?: FieldPolicy<any> | FieldReadFunction<any>;
   applyForCommunityMembership?: FieldPolicy<any> | FieldReadFunction<any>;
   assignCommunityRoleToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   assignCommunityRoleToUser?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1743,7 +1826,6 @@ export type MutationFieldPolicy = {
   createUser?: FieldPolicy<any> | FieldReadFunction<any>;
   createUserNewRegistration?: FieldPolicy<any> | FieldReadFunction<any>;
   createVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
-  createVirtualPersona?: FieldPolicy<any> | FieldReadFunction<any>;
   createWhiteboardTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteActor?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteActorGroup?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1772,7 +1854,6 @@ export type MutationFieldPolicy = {
   deleteUserApplication?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteUserGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
-  deleteVirtualPersona?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteWhiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteWhiteboardTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   eventOnApplication?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1782,7 +1863,7 @@ export type MutationFieldPolicy = {
   grantCredentialToUser?: FieldPolicy<any> | FieldReadFunction<any>;
   ingest?: FieldPolicy<any> | FieldReadFunction<any>;
   ingestSpace?: FieldPolicy<any> | FieldReadFunction<any>;
-  inviteExistingUserForCommunityMembership?: FieldPolicy<any> | FieldReadFunction<any>;
+  inviteContributorsForCommunityMembership?: FieldPolicy<any> | FieldReadFunction<any>;
   inviteForCommunityMembershipByEmail?: FieldPolicy<any> | FieldReadFunction<any>;
   joinCommunity?: FieldPolicy<any> | FieldReadFunction<any>;
   messageUser?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1806,6 +1887,7 @@ export type MutationFieldPolicy = {
   sendMessageToUser?: FieldPolicy<any> | FieldReadFunction<any>;
   updateAccountPlatformSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   updateActor?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateAiPersona?: FieldPolicy<any> | FieldReadFunction<any>;
   updateAnswerRelevance?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCalendarEvent?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCallout?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1847,7 +1929,6 @@ export type MutationFieldPolicy = {
   updateUserPlatformSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   updateVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
   updateVirtualContributorPlatformSettings?: FieldPolicy<any> | FieldReadFunction<any>;
-  updateVirtualPersona?: FieldPolicy<any> | FieldReadFunction<any>;
   updateVisual?: FieldPolicy<any> | FieldReadFunction<any>;
   updateWhiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
   updateWhiteboardContent?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1869,6 +1950,7 @@ export type NVPFieldPolicy = {
   value?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type OrganizationKeySpecifier = (
+  | 'accounts'
   | 'admins'
   | 'agent'
   | 'associates'
@@ -1891,6 +1973,7 @@ export type OrganizationKeySpecifier = (
   | OrganizationKeySpecifier
 )[];
 export type OrganizationFieldPolicy = {
+  accounts?: FieldPolicy<any> | FieldReadFunction<any>;
   admins?: FieldPolicy<any> | FieldReadFunction<any>;
   agent?: FieldPolicy<any> | FieldReadFunction<any>;
   associates?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1967,8 +2050,8 @@ export type PaginatedUsersFieldPolicy = {
 };
 export type PlatformKeySpecifier = (
   | 'authorization'
-  | 'communication'
   | 'configuration'
+  | 'forum'
   | 'id'
   | 'innovationHub'
   | 'innovationHubs'
@@ -1981,8 +2064,8 @@ export type PlatformKeySpecifier = (
 )[];
 export type PlatformFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  communication?: FieldPolicy<any> | FieldReadFunction<any>;
   configuration?: FieldPolicy<any> | FieldReadFunction<any>;
+  forum?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationHub?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationHubs?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2156,8 +2239,9 @@ export type QueryKeySpecifier = (
   | 'activityLogOnCollaboration'
   | 'adminCommunicationMembership'
   | 'adminCommunicationOrphanedUsage'
+  | 'aiServer'
+  | 'askAiPersonaQuestion'
   | 'askChatGuidanceQuestion'
-  | 'askVirtualPersonaQuestion'
   | 'getSupportedVerifiedCredentialMetadata'
   | 'lookup'
   | 'me'
@@ -2180,8 +2264,6 @@ export type QueryKeySpecifier = (
   | 'usersWithAuthorizationCredential'
   | 'virtualContributor'
   | 'virtualContributors'
-  | 'virtualPersona'
-  | 'virtualPersonas'
   | QueryKeySpecifier
 )[];
 export type QueryFieldPolicy = {
@@ -2192,8 +2274,9 @@ export type QueryFieldPolicy = {
   activityLogOnCollaboration?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationMembership?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationOrphanedUsage?: FieldPolicy<any> | FieldReadFunction<any>;
+  aiServer?: FieldPolicy<any> | FieldReadFunction<any>;
+  askAiPersonaQuestion?: FieldPolicy<any> | FieldReadFunction<any>;
   askChatGuidanceQuestion?: FieldPolicy<any> | FieldReadFunction<any>;
-  askVirtualPersonaQuestion?: FieldPolicy<any> | FieldReadFunction<any>;
   getSupportedVerifiedCredentialMetadata?: FieldPolicy<any> | FieldReadFunction<any>;
   lookup?: FieldPolicy<any> | FieldReadFunction<any>;
   me?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2216,8 +2299,6 @@ export type QueryFieldPolicy = {
   usersWithAuthorizationCredential?: FieldPolicy<any> | FieldReadFunction<any>;
   virtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
   virtualContributors?: FieldPolicy<any> | FieldReadFunction<any>;
-  virtualPersona?: FieldPolicy<any> | FieldReadFunction<any>;
-  virtualPersonas?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type QuestionKeySpecifier = ('id' | 'name' | 'value' | QuestionKeySpecifier)[];
 export type QuestionFieldPolicy = {
@@ -2643,14 +2724,14 @@ export type StorageAggregatorFieldPolicy = {
 export type StorageAggregatorParentKeySpecifier = (
   | 'displayName'
   | 'id'
-  | 'type'
+  | 'level'
   | 'url'
   | StorageAggregatorParentKeySpecifier
 )[];
 export type StorageAggregatorParentFieldPolicy = {
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
-  type?: FieldPolicy<any> | FieldReadFunction<any>;
+  level?: FieldPolicy<any> | FieldReadFunction<any>;
   url?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type StorageBucketKeySpecifier = (
@@ -2694,19 +2775,21 @@ export type StorageConfigFieldPolicy = {
 export type SubscriptionKeySpecifier = (
   | 'activityCreated'
   | 'calloutPostCreated'
-  | 'communicationDiscussionUpdated'
+  | 'forumDiscussionUpdated'
   | 'profileVerifiedCredential'
   | 'roomEvents'
   | 'subspaceCreated'
+  | 'whiteboardSaved'
   | SubscriptionKeySpecifier
 )[];
 export type SubscriptionFieldPolicy = {
   activityCreated?: FieldPolicy<any> | FieldReadFunction<any>;
   calloutPostCreated?: FieldPolicy<any> | FieldReadFunction<any>;
-  communicationDiscussionUpdated?: FieldPolicy<any> | FieldReadFunction<any>;
+  forumDiscussionUpdated?: FieldPolicy<any> | FieldReadFunction<any>;
   profileVerifiedCredential?: FieldPolicy<any> | FieldReadFunction<any>;
   roomEvents?: FieldPolicy<any> | FieldReadFunction<any>;
   subspaceCreated?: FieldPolicy<any> | FieldReadFunction<any>;
+  whiteboardSaved?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type SubspaceCreatedKeySpecifier = ('spaceID' | 'subspace' | SubspaceCreatedKeySpecifier)[];
 export type SubspaceCreatedFieldPolicy = {
@@ -2817,6 +2900,7 @@ export type TimelineFieldPolicy = {
 };
 export type UserKeySpecifier = (
   | 'accountUpn'
+  | 'accounts'
   | 'agent'
   | 'authorization'
   | 'communityRooms'
@@ -2836,6 +2920,7 @@ export type UserKeySpecifier = (
 )[];
 export type UserFieldPolicy = {
   accountUpn?: FieldPolicy<any> | FieldReadFunction<any>;
+  accounts?: FieldPolicy<any> | FieldReadFunction<any>;
   agent?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   communityRooms?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2894,59 +2979,27 @@ export type VerifiedCredentialClaimFieldPolicy = {
 export type VirtualContributorKeySpecifier = (
   | 'account'
   | 'agent'
+  | 'aiPersona'
   | 'authorization'
-  | 'bodyOfKnowledgeID'
-  | 'bodyOfKnowledgeType'
   | 'id'
+  | 'listedInStore'
   | 'nameID'
   | 'profile'
+  | 'searchVisibility'
   | 'storageAggregator'
-  | 'virtualPersona'
   | VirtualContributorKeySpecifier
 )[];
 export type VirtualContributorFieldPolicy = {
   account?: FieldPolicy<any> | FieldReadFunction<any>;
   agent?: FieldPolicy<any> | FieldReadFunction<any>;
+  aiPersona?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  bodyOfKnowledgeID?: FieldPolicy<any> | FieldReadFunction<any>;
-  bodyOfKnowledgeType?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  listedInStore?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  searchVisibility?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
-  virtualPersona?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type VirtualPersonaKeySpecifier = (
-  | 'authorization'
-  | 'dataAccessMode'
-  | 'engine'
-  | 'id'
-  | 'nameID'
-  | 'profile'
-  | 'prompt'
-  | VirtualPersonaKeySpecifier
-)[];
-export type VirtualPersonaFieldPolicy = {
-  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  dataAccessMode?: FieldPolicy<any> | FieldReadFunction<any>;
-  engine?: FieldPolicy<any> | FieldReadFunction<any>;
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-  nameID?: FieldPolicy<any> | FieldReadFunction<any>;
-  profile?: FieldPolicy<any> | FieldReadFunction<any>;
-  prompt?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type VirtualPersonaResultKeySpecifier = (
-  | 'answer'
-  | 'id'
-  | 'question'
-  | 'sources'
-  | VirtualPersonaResultKeySpecifier
-)[];
-export type VirtualPersonaResultFieldPolicy = {
-  answer?: FieldPolicy<any> | FieldReadFunction<any>;
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-  question?: FieldPolicy<any> | FieldReadFunction<any>;
-  sources?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type VisualKeySpecifier = (
   | 'allowedTypes'
@@ -2999,6 +3052,15 @@ export type WhiteboardFieldPolicy = {
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type WhiteboardSavedSubscriptionResultKeySpecifier = (
+  | 'updatedDate'
+  | 'whiteboardID'
+  | WhiteboardSavedSubscriptionResultKeySpecifier
+)[];
+export type WhiteboardSavedSubscriptionResultFieldPolicy = {
+  updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  whiteboardID?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type WhiteboardTemplateKeySpecifier = (
   | 'authorization'
@@ -3151,13 +3213,29 @@ export type StrictTypedTypePolicies = {
       | (() => undefined | AgentBeginVerifiedCredentialRequestOutputKeySpecifier);
     fields?: AgentBeginVerifiedCredentialRequestOutputFieldPolicy;
   };
+  AiPersona?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | AiPersonaKeySpecifier | (() => undefined | AiPersonaKeySpecifier);
+    fields?: AiPersonaFieldPolicy;
+  };
+  AiPersonaResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | AiPersonaResultKeySpecifier | (() => undefined | AiPersonaResultKeySpecifier);
+    fields?: AiPersonaResultFieldPolicy;
+  };
+  AiPersonaService?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | AiPersonaServiceKeySpecifier | (() => undefined | AiPersonaServiceKeySpecifier);
+    fields?: AiPersonaServiceFieldPolicy;
+  };
+  AiPersonaServiceResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | AiPersonaServiceResultKeySpecifier | (() => undefined | AiPersonaServiceResultKeySpecifier);
+    fields?: AiPersonaServiceResultFieldPolicy;
+  };
+  AiServer?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | AiServerKeySpecifier | (() => undefined | AiServerKeySpecifier);
+    fields?: AiServerFieldPolicy;
+  };
   Application?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ApplicationKeySpecifier | (() => undefined | ApplicationKeySpecifier);
     fields?: ApplicationFieldPolicy;
-  };
-  ApplicationForRoleResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | ApplicationForRoleResultKeySpecifier | (() => undefined | ApplicationForRoleResultKeySpecifier);
-    fields?: ApplicationForRoleResultFieldPolicy;
   };
   AuthenticationConfig?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | AuthenticationConfigKeySpecifier | (() => undefined | AuthenticationConfigKeySpecifier);
@@ -3289,6 +3367,13 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | CommunityKeySpecifier | (() => undefined | CommunityKeySpecifier);
     fields?: CommunityFieldPolicy;
   };
+  CommunityApplicationForRoleResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | CommunityApplicationForRoleResultKeySpecifier
+      | (() => undefined | CommunityApplicationForRoleResultKeySpecifier);
+    fields?: CommunityApplicationForRoleResultFieldPolicy;
+  };
   CommunityGuidelines?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CommunityGuidelinesKeySpecifier | (() => undefined | CommunityGuidelinesKeySpecifier);
     fields?: CommunityGuidelinesFieldPolicy;
@@ -3299,6 +3384,13 @@ export type StrictTypedTypePolicies = {
       | CommunityGuidelinesTemplateKeySpecifier
       | (() => undefined | CommunityGuidelinesTemplateKeySpecifier);
     fields?: CommunityGuidelinesTemplateFieldPolicy;
+  };
+  CommunityInvitationForRoleResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | CommunityInvitationForRoleResultKeySpecifier
+      | (() => undefined | CommunityInvitationForRoleResultKeySpecifier);
+    fields?: CommunityInvitationForRoleResultFieldPolicy;
   };
   CommunityPolicy?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CommunityPolicyKeySpecifier | (() => undefined | CommunityPolicyKeySpecifier);
@@ -3364,6 +3456,10 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | FormQuestionKeySpecifier | (() => undefined | FormQuestionKeySpecifier);
     fields?: FormQuestionFieldPolicy;
   };
+  Forum?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | ForumKeySpecifier | (() => undefined | ForumKeySpecifier);
+    fields?: ForumFieldPolicy;
+  };
   Geo?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | GeoKeySpecifier | (() => undefined | GeoKeySpecifier);
     fields?: GeoFieldPolicy;
@@ -3404,10 +3500,6 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | InvitationExternalKeySpecifier | (() => undefined | InvitationExternalKeySpecifier);
     fields?: InvitationExternalFieldPolicy;
   };
-  InvitationForRoleResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | InvitationForRoleResultKeySpecifier | (() => undefined | InvitationForRoleResultKeySpecifier);
-    fields?: InvitationForRoleResultFieldPolicy;
-  };
   LatestReleaseDiscussion?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | LatestReleaseDiscussionKeySpecifier | (() => undefined | LatestReleaseDiscussionKeySpecifier);
     fields?: LatestReleaseDiscussionFieldPolicy;
@@ -3420,10 +3512,6 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | LicenseKeySpecifier | (() => undefined | LicenseKeySpecifier);
     fields?: LicenseFieldPolicy;
   };
-  LicenseFeatureFlag?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | LicenseFeatureFlagKeySpecifier | (() => undefined | LicenseFeatureFlagKeySpecifier);
-    fields?: LicenseFeatureFlagFieldPolicy;
-  };
   LicensePlan?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | LicensePlanKeySpecifier | (() => undefined | LicensePlanKeySpecifier);
     fields?: LicensePlanFieldPolicy;
@@ -3432,12 +3520,12 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | LicensePolicyKeySpecifier | (() => undefined | LicensePolicyKeySpecifier);
     fields?: LicensePolicyFieldPolicy;
   };
-  LicensePolicyRuleFeatureFlag?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+  LicensePolicyCredentialRule?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:
       | false
-      | LicensePolicyRuleFeatureFlagKeySpecifier
-      | (() => undefined | LicensePolicyRuleFeatureFlagKeySpecifier);
-    fields?: LicensePolicyRuleFeatureFlagFieldPolicy;
+      | LicensePolicyCredentialRuleKeySpecifier
+      | (() => undefined | LicensePolicyCredentialRuleKeySpecifier);
+    fields?: LicensePolicyCredentialRuleFieldPolicy;
   };
   Licensing?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | LicensingKeySpecifier | (() => undefined | LicensingKeySpecifier);
@@ -3761,14 +3849,6 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | VirtualContributorKeySpecifier | (() => undefined | VirtualContributorKeySpecifier);
     fields?: VirtualContributorFieldPolicy;
   };
-  VirtualPersona?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | VirtualPersonaKeySpecifier | (() => undefined | VirtualPersonaKeySpecifier);
-    fields?: VirtualPersonaFieldPolicy;
-  };
-  VirtualPersonaResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | VirtualPersonaResultKeySpecifier | (() => undefined | VirtualPersonaResultKeySpecifier);
-    fields?: VirtualPersonaResultFieldPolicy;
-  };
   Visual?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | VisualKeySpecifier | (() => undefined | VisualKeySpecifier);
     fields?: VisualFieldPolicy;
@@ -3776,6 +3856,13 @@ export type StrictTypedTypePolicies = {
   Whiteboard?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | WhiteboardKeySpecifier | (() => undefined | WhiteboardKeySpecifier);
     fields?: WhiteboardFieldPolicy;
+  };
+  WhiteboardSavedSubscriptionResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | WhiteboardSavedSubscriptionResultKeySpecifier
+      | (() => undefined | WhiteboardSavedSubscriptionResultKeySpecifier);
+    fields?: WhiteboardSavedSubscriptionResultFieldPolicy;
   };
   WhiteboardTemplate?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | WhiteboardTemplateKeySpecifier | (() => undefined | WhiteboardTemplateKeySpecifier);

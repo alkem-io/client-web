@@ -55,7 +55,9 @@ export interface WhiteboardWhiteboardEvents {}
 
 export interface WhiteboardWhiteboardOptions extends ExcalidrawProps {}
 
-interface CollaborativeExcalidrawWrapperProvided extends CollabState {}
+interface CollaborativeExcalidrawWrapperProvided extends CollabState {
+  restartCollaboration: () => void;
+}
 
 export interface WhiteboardWhiteboardProps {
   entities: WhiteboardWhiteboardEntities;
@@ -241,7 +243,14 @@ const CollaborativeExcalidrawWrapper = ({
 
   return (
     <>
-      {renderChildren({ children, collaborating, connecting, mode, modeReason })}
+      {renderChildren({
+        children,
+        collaborating,
+        connecting,
+        mode,
+        modeReason,
+        restartCollaboration,
+      })}
       <Dialog open={collaborationStoppedNoticeOpen} onClose={() => setCollaborationStoppedNoticeOpen(false)}>
         <DialogHeader title={t('pages.whiteboard.whiteboardDisconnected.title')} />
         <DialogContent>

@@ -17,6 +17,7 @@ import { usePlanAvailability } from './usePlanAvailability';
 import { TagCategoryValues, error } from '../../../../../core/logging/sentry/log';
 import { getPlanTranslations } from '../../../../license/plans/utils/getPlanTranslations';
 import { PlanFeatures, PlanName, PlanPrice } from '../../../../license/plans/ui/PlanCardsComponents';
+import { LicensePlanType } from '../../../../../core/apollo/generated/graphql-schema';
 
 const lines = (theme: Theme) => `1px solid ${theme.palette.divider}`;
 
@@ -41,13 +42,16 @@ const PlansTableDialog = ({ open, onClose, onSelectPlan }: PlansTableDialogProps
 
   const plansData = useMemo(
     () =>
-      (data?.platform.licensing.plans.filter(plan => plan.enabled).sort((a, b) => a.sortOrder - b.sortOrder) ?? []).map(
-        plan => ({
-          ...plan,
-          displayName: planTranslations[plan.name]?.displayName,
-          available: isPlanAvailable(plan),
-        })
-      ),
+      (
+        data?.platform.licensing.plans
+          .filter(plan => plan.enabled)
+          .filter(plan => plan.type === LicensePlanType.SpacePlan)
+          .sort((a, b) => a.sortOrder - b.sortOrder) ?? []
+      ).map(plan => ({
+        ...plan,
+        displayName: planTranslations[plan.name]?.displayName,
+        available: isPlanAvailable(plan),
+      })),
     [data, planTranslations, isPlanAvailable]
   );
 

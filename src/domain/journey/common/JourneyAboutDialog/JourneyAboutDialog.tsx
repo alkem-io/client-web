@@ -51,6 +51,7 @@ export interface JourneyAboutDialogProps extends EntityDashboardLeads {
   background: string | undefined;
   who: string | undefined;
   impact: string | undefined;
+  guidelines?: ReactNode;
   loading?: boolean;
   leftColumnChildrenTop?: ReactNode;
   leftColumnChildrenBottom?: ReactNode;
@@ -96,6 +97,7 @@ const JourneyAboutDialog = ({
   background,
   who,
   impact,
+  guidelines,
   loading = false,
   startButton,
   endButton,
@@ -209,6 +211,7 @@ const JourneyAboutDialog = ({
                 <WrapperMarkdown>{who}</WrapperMarkdown>
               </PageContentBlock>
             )}
+            {guidelines}
           </PageContentColumn>
           <PageContentColumn columns={4}>
             <PageContentBlockSeamless disablePadding order={1}>

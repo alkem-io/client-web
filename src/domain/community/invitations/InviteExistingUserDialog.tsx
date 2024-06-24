@@ -11,7 +11,7 @@ import { LONG_TEXT_LENGTH } from '../../../core/ui/forms/field-length.constants'
 import SendButton from '../../shared/components/SendButton';
 import Gutters from '../../../core/ui/grid/Gutters';
 import { FormikUserSelector } from '../user/FormikUserSelector/FormikUserSelector';
-import { InviteExistingUserData } from './useInviteUsers';
+import { InviteContributorsData } from './useInviteUsers';
 import { Identifiable } from '../../../core/utils/Identifiable';
 import { sortBy } from 'lodash';
 
@@ -19,7 +19,7 @@ interface MessageDialogProps {
   open: boolean;
   spaceDisplayName: string;
   onClose: () => void;
-  onInviteUser: (params: InviteExistingUserData) => Promise<void>;
+  onInviteUser: (params: InviteContributorsData) => Promise<void>;
   title?: ReactNode;
   subtitle?: ReactNode;
   currentApplicationsUserIds: string[];
@@ -51,7 +51,7 @@ const InviteExistingUserDialog = ({
   const [isMessageSent, setMessageSent] = useState(false);
 
   const [handleSendMessage, isLoading, error] = useLoadingState(
-    async (values: InviteExistingUserData, { resetForm }: FormikHelpers<InviteExistingUserData>) => {
+    async (values: InviteContributorsData, { resetForm }: FormikHelpers<InviteContributorsData>) => {
       await onInviteUser(values);
       if (!error) {
         setMessageSent(true);
@@ -67,11 +67,11 @@ const InviteExistingUserDialog = ({
 
   const validationSchema = yup.object().shape({
     message: yup.string(),
-    userIds: yup.array().required(),
+    contributorIds: yup.array().required(),
   });
 
-  const initialValues: InviteExistingUserData = {
-    userIds: [],
+  const initialValues: InviteContributorsData = {
+    contributorIds: [],
     message: t('components.invitations.defaultInvitationMessage', { space: spaceDisplayName }) as string,
   };
 
@@ -147,7 +147,7 @@ const InviteExistingUserDialog = ({
         >
           {({ handleSubmit, isValid }) => (
             <Form noValidate autoComplete="off">
-              <FormikUserSelector name="userIds" sortUsers={sortUsers} hydrateUsers={hydrateUsers} />
+              <FormikUserSelector name="contributorIds" sortUsers={sortUsers} hydrateUsers={hydrateUsers} />
               <FormikInputField
                 name="message"
                 title={t('messaging.message')}

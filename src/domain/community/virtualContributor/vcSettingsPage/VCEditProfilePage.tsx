@@ -1,9 +1,7 @@
 import React from 'react';
 import Loading from '../../../../core/ui/loading/Loading';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
-import VCPageLayout from '../layout/VCPageLayout';
 import {
-  useBodyOfKnowledgeProfileQuery,
   useUpdateVirtualContributorMutation,
   useVirtualContributorQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
@@ -14,6 +12,8 @@ import PageContent from '../../../../core/ui/content/PageContent';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
 import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
 import { useTranslation } from 'react-i18next';
+import { SettingsSection } from '../../../platform/admin/layout/EntitySettingsLayout/constants';
+import VCSettingsPageLayout from '../layout/VCSettingsPageLayout';
 
 export const VCSettingsPage = () => {
   const { t } = useTranslation();
@@ -26,13 +26,6 @@ export const VCSettingsPage = () => {
     variables: {
       id: vcNameId,
     },
-  });
-
-  const { data: bokProfile } = useBodyOfKnowledgeProfileQuery({
-    variables: {
-      spaceId: data?.virtualContributor.bodyOfKnowledgeID!,
-    },
-    skip: !data?.virtualContributor.bodyOfKnowledgeID,
   });
 
   const [updateContributorMutation] = useUpdateVirtualContributorMutation();
@@ -60,14 +53,13 @@ export const VCSettingsPage = () => {
 
   return (
     <StorageConfigContextProvider locationType="platform">
-      <VCPageLayout>
+      <VCSettingsPageLayout currentTab={SettingsSection.MyProfile}>
         <PageContent background="background.paper">
           <PageContentColumn columns={12}>
             <PageContentBlock>
               {data?.virtualContributor && (
                 <VirtualContributorForm
                   virtualContributor={data?.virtualContributor}
-                  bokProfile={bokProfile?.lookup.space?.profile}
                   avatar={data?.virtualContributor.profile.avatar}
                   onSave={handleUpdate}
                 />
@@ -75,7 +67,7 @@ export const VCSettingsPage = () => {
             </PageContentBlock>
           </PageContentColumn>
         </PageContent>
-      </VCPageLayout>
+      </VCSettingsPageLayout>
     </StorageConfigContextProvider>
   );
 };

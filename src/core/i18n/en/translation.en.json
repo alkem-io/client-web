@@ -158,7 +158,7 @@
     "fullscreen": "Toggle full screen",
     "changeLanguage": "Change language",
     "getHelp": "Get help",
-    "saveAsTemplate": "Save as template",
+    "saveAsTemplate": "Save as Template",
     "skipLink": "Skip to next block",
     "toolsMenu": "Tools Menu",
     "userMenu": "User Menu",
@@ -664,7 +664,8 @@
     "contributions": "{{count}} Contribution",
     "contributions_plural": "{{count}} Contributions",
     "draftNotice": "DRAFT - Only visible for admins",
-    "closed": "This Callout is closed. You can still comment on the individual Posts.",
+    "closed": "This discussion is closed so you can no longer comment",
+    "notMember": "You can't reply to this discussion since you're not a member of this Space",
     "delete-confirm-title": "Delete Callout?",
     "delete-confirm-text": "All Posts, Whiteboards and messages under the Callout will also be deleted.",
     "state-permission": "Accept new responses",
@@ -1975,12 +1976,7 @@
         }
       },
       "virtualContributors": {
-        "title": "Virtual Contributors",
-        "virtualPersonas": {
-          "title": "Virtual Personas",
-          "create": "Create Virtual Persona",
-          "selectEngine": "Select Engine"
-        }
+        "title": "Virtual Contributors"
       }
     },
     "feedback": {
@@ -2132,7 +2128,16 @@
             "title": "...or look for your Community below",
             "searchSuggestions": "Search suggestions:"
           },
-          "suggestionsArray": ["Innovation", "Energy", "Inclusive", "3D", "Community", "Transition", "SSI", "Privacy"]
+          "suggestionsArray": [
+            "Innovation",
+            "Energy",
+            "Inclusive",
+            "3D",
+            "Community",
+            "Transition",
+            "SSI",
+            "Privacy"
+          ]
         },
         "newMemberships": {
           "title": "Spaces & Subspaces",
@@ -2389,7 +2394,8 @@
           "roomCapacityReached": "You can’t edit this Whiteboard because this Space allows for multiple editors simultaneously, but the maximum is reached",
           "generic": "You can’t edit this Whiteboard for one of the following reasons:\n\n- You were inactive for 2 hours or more\n- You are not a member of the Space\n- This Space only allows one whiteboard editor at a time\n- This Space allows for more editors, but the maximum is reached"
         }
-      }
+      },
+      "restartCollaboration": "Continue Editing"
     },
     "login": {
       "title": "Sign in to Alkemio",
@@ -2690,27 +2696,42 @@
       {
         "key": "energy-transition",
         "name": "Energy Transition",
-        "tags": ["Energy Transition", "Energietransitie"]
+        "tags": [
+          "Energy Transition",
+          "Energietransitie"
+        ]
       },
       {
         "key": "inclusive-society",
         "name": "Inclusive Society",
-        "tags": ["Inclusive Society", "Inclusieve Samenleving"]
+        "tags": [
+          "Inclusive Society",
+          "Inclusieve Samenleving"
+        ]
       },
       {
         "key": "public-services",
         "name": "Public Services",
-        "tags": ["Public Services", "Publieke Diensten"]
+        "tags": [
+          "Public Services",
+          "Publieke Diensten"
+        ]
       },
       {
         "key": "innovation",
         "name": "Innovation",
-        "tags": ["Innovation", "Innovatie"]
+        "tags": [
+          "Innovation",
+          "Innovatie"
+        ]
       },
       {
         "key": "digitalization-of-society",
         "name": "Digitalization of Society",
-        "tags": ["Digitalization of Society", "Digitalisering"]
+        "tags": [
+          "Digitalization of Society",
+          "Digitalisering"
+        ]
       }
     ]
   },
@@ -2777,7 +2798,10 @@
         "name": "FREE",
         "displayName": "Free",
         "priceDescription": "For Change-Makers Exploring Alkemio",
-        "features": ["Up to 10 members", "Various tools, including standard Whiteboards"],
+        "features": [
+          "Up to 10 members",
+          "Various tools, including standard Whiteboards"
+        ],
         "disclaimer": "Free Spaces are limited to 1 Space per user",
         "disabledDisclaimer": "Each user can have 1 free space. It seems like you’ve already used yours!"
       },
@@ -2785,7 +2809,11 @@
         "name": "PLUS",
         "displayName": "Plus",
         "priceDescription": "For Starting Communities, coalitions, programs...",
-        "features": ["Up to 100 members", "Realtime, multi-user Whiteboards", "Create your Virtual Contributor"],
+        "features": [
+          "Up to 100 members",
+          "Realtime, multi-user Whiteboards",
+          "Create your Virtual Contributor"
+        ],
         "disclaimer": "",
         "disabledDisclaimer": ""
       },

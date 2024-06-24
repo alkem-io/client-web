@@ -2,7 +2,6 @@ query VirtualContributor ($id: UUID_NAMEID!) {
   virtualContributor (ID: $id) {
     id
     nameID
-    bodyOfKnowledgeID
     authorization {
       id
       myPrivileges
@@ -70,6 +69,10 @@ mutation UpdateVirtualContributor($virtualContributorData: UpdateVirtualContribu
     id
     profile {
       id
+      tagline
+      tagsets {
+        ...TagsetDetails
+      }
       displayName
       description
     }

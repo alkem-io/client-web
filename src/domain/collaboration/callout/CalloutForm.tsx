@@ -255,7 +255,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
             {formConfiguration.postTemplate && <PostTemplatesChooser name="postDescription" />}
             {formConfiguration.whiteboardTemplate && <WhiteboardTemplatesChooser name="whiteboardContent" />}
             {formConfiguration.newResponses && <FormikSwitch name="opened" title={t('callout.state-permission')} />}
-            {formConfiguration.locationChange && (
+            {formConfiguration.locationChange && journeyTypeName === 'space' && (
               <FormControlLabel
                 sx={{ margin: 0, '& > span': { marginRight: theme => theme.spacing(2) } }}
                 labelPlacement="start"

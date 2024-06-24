@@ -1,7 +1,6 @@
 import React, { FC, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FetchResult } from '@apollo/client';
-import { Box, Typography } from '@mui/material';
 import { last } from 'lodash';
 import { Message } from '../models/Message';
 import { animateScroll as scroller } from 'react-scroll';
@@ -149,11 +148,6 @@ const CommentsComponent: FC<CommentsComponentProps> = ({
           padding={gutters()}
           paddingBottom={0}
         />
-      )}
-      {!canPostMessages && (
-        <Box paddingY={1} display="flex" justifyContent="center">
-          <Typography variant="h4">{t('components.discussion.cant-post')}</Typography>
-        </Box>
       )}
       <ConfirmationDialog
         actions={{
