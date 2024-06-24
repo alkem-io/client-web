@@ -10,17 +10,12 @@ import { useNotification } from '../../../../../core/ui/notifications/useNotific
 import Loading from '../../../../../core/ui/loading/Loading';
 import ListPage from '../../components/ListPage';
 import { SearchableListItem, searchableListItemMapper } from '../../components/SearchableList';
-import {
-  AuthorizationPrivilege,
-  LicenseFeatureFlagName,
-  SpaceVisibility,
-} from '../../../../../core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, SpaceVisibility } from '../../../../../core/apollo/generated/graphql-schema';
 import { useResolvedPath } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { buildSettingsUrl } from '../../../../../main/routing/urlBuilders';
 import SpaceListItem from './SpaceListItem';
 import { sortBy } from 'lodash';
-import { licenseHasFeature } from '../../../../journey/space/license/useLicenseFeatures';
 
 export const SpaceList: FC = () => {
   const { pathname: url } = useResolvedPath('.');
@@ -74,10 +69,6 @@ export const SpaceList: FC = () => {
               visibility: space.account.license.visibility,
               hostId: space.account.host?.id,
               activeLicensePlanIds,
-              features: Object.values(LicenseFeatureFlagName).reduce((acc, licenseFeature) => {
-                acc[licenseFeature] = licenseHasFeature(licenseFeature, space.account.license);
-                return acc;
-              }, {} as Record<LicenseFeatureFlagName, boolean>),
               organizations,
             },
             licensePlans: spacesData?.platform.licensing.plans,

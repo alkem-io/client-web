@@ -65,7 +65,6 @@ const SpaceContext = React.createContext<SpaceContextProps>({
   license: {
     id: '',
     visibility: SpaceVisibility.Active,
-    featureFlags: [],
   },
   refetchSpace: () => {},
   myMembershipStatus: undefined,

@@ -52,6 +52,8 @@ export type Account = {
   library?: Maybe<TemplatesSet>;
   /** The License governing platform functionality in use by this Account */
   license: License;
+  /** The privileges granted based on the License credentials held by this Account. */
+  licensePrivileges?: Maybe<Array<LicensePrivilege>>;
   /** The ID for the root space for the Account . */
   spaceID: Scalars['String'];
   /** The subscriptions active for this Account. */
@@ -1614,9 +1616,29 @@ export type CreateInvitationUserByEmailOnCommunityInput = {
 };
 
 export type CreateLicensePlanOnLicensingInput = {
+  /** Assign this plan to all new Organization accounts */
+  assignToNewOrganizationAccounts: Scalars['Boolean'];
+  /** Assign this plan to all new User accounts */
+  assignToNewUserAccounts: Scalars['Boolean'];
+  /** Is this plan enabled? */
+  enabled: Scalars['Boolean'];
+  /** Is this plan free? */
+  isFree: Scalars['Boolean'];
+  /** The credential to represent this plan */
+  licenseCredential: LicenseCredential;
   licensingID: Scalars['UUID'];
   /** The name of the License Plan */
   name: Scalars['String'];
+  /** The price per month of this plan. */
+  pricePerMonth?: InputMaybe<Scalars['Float']>;
+  /** Does this plan require contact support */
+  requiresContactSupport: Scalars['Boolean'];
+  /** Does this plan require a payment method? */
+  requiresPaymentMethod: Scalars['Boolean'];
+  /** The sorting order for this Plan. */
+  sortOrder: Scalars['Float'];
+  /** Is there a trial period enabled */
+  trialEnabled: Scalars['Boolean'];
 };
 
 export type CreateLinkInput = {
@@ -1831,6 +1853,9 @@ export type CredentialMetadataOutput = {
 export enum CredentialType {
   AccountHost = 'ACCOUNT_HOST',
   BetaTester = 'BETA_TESTER',
+  FeatureCalloutToCalloutTemplate = 'FEATURE_CALLOUT_TO_CALLOUT_TEMPLATE',
+  FeatureVirtualContributors = 'FEATURE_VIRTUAL_CONTRIBUTORS',
+  FeatureWhiteboardMultiUser = 'FEATURE_WHITEBOARD_MULTI_USER',
   GlobalAdmin = 'GLOBAL_ADMIN',
   GlobalCommunityRead = 'GLOBAL_COMMUNITY_READ',
   GlobalLicenseManager = 'GLOBAL_LICENSE_MANAGER',
@@ -2352,39 +2377,28 @@ export type License = {
   __typename?: 'License';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
-  /** The FeatureFlags for the license */
-  featureFlags: Array<LicenseFeatureFlag>;
   /** The ID of the entity */
   id: Scalars['UUID'];
-  /** The privileges granted based on this License. */
-  privileges?: Maybe<Array<LicensePrivilege>>;
   /** Visibility of the Space. */
   visibility: SpaceVisibility;
 };
 
 export enum LicenseCredential {
+  FeatureCalloutToCalloutTemplate = 'FEATURE_CALLOUT_TO_CALLOUT_TEMPLATE',
+  FeatureVirtualContributors = 'FEATURE_VIRTUAL_CONTRIBUTORS',
+  FeatureWhiteboardMultiUser = 'FEATURE_WHITEBOARD_MULTI_USER',
   LicenseSpaceEnterprise = 'LICENSE_SPACE_ENTERPRISE',
   LicenseSpaceFree = 'LICENSE_SPACE_FREE',
   LicenseSpacePlus = 'LICENSE_SPACE_PLUS',
   LicenseSpacePremium = 'LICENSE_SPACE_PREMIUM',
 }
 
-export type LicenseFeatureFlag = {
-  __typename?: 'LicenseFeatureFlag';
-  /** Is this feature flag enabled? */
-  enabled: Scalars['Boolean'];
-  /** The name of the feature flag */
-  name: LicenseFeatureFlagName;
-};
-
-export enum LicenseFeatureFlagName {
-  CalloutToCalloutTemplate = 'CALLOUT_TO_CALLOUT_TEMPLATE',
-  VirtualContributors = 'VIRTUAL_CONTRIBUTORS',
-  WhiteboardMultiUser = 'WHITEBOARD_MULTI_USER',
-}
-
 export type LicensePlan = {
   __typename?: 'LicensePlan';
+  /** Assign this plan to all new Organization accounts */
+  assignToNewOrganizationAccounts: Scalars['Boolean'];
+  /** Assign this plan to all new User accounts */
+  assignToNewUserAccounts: Scalars['Boolean'];
   /** Is this plan enabled? */
   enabled: Scalars['Boolean'];
   /** The ID of the entity */
@@ -2412,14 +2426,14 @@ export type LicensePolicy = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The set of credential rules that are contained by this License Policy. */
-  featureFlagRules?: Maybe<Array<LicensePolicyRuleFeatureFlag>>;
+  credentialRules: Array<LicensePolicyCredentialRule>;
   /** The ID of the entity */
   id: Scalars['UUID'];
 };
 
-export type LicensePolicyRuleFeatureFlag = {
-  __typename?: 'LicensePolicyRuleFeatureFlag';
-  featureFlagName: LicenseFeatureFlagName;
+export type LicensePolicyCredentialRule = {
+  __typename?: 'LicensePolicyCredentialRule';
+  credentialType: LicenseCredential;
   grantedPrivileges: Array<LicensePrivilege>;
   name?: Maybe<Scalars['String']>;
 };
@@ -2434,8 +2448,6 @@ export type Licensing = {
   __typename?: 'Licensing';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
-  /** The base License Plan assigned to all Accounts in use on the platform. */
-  basePlan: LicensePlan;
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** The License Plans in use on the platform. */
@@ -5318,13 +5330,6 @@ export type UpdateEcosystemModelInput = {
   description?: InputMaybe<Scalars['String']>;
 };
 
-export type UpdateFeatureFlagInput = {
-  /** Is this feature flag enabled? */
-  enabled: Scalars['Boolean'];
-  /** The name of the feature flag */
-  name: Scalars['String'];
-};
-
 export type UpdateFormInput = {
   description: Scalars['Markdown'];
   questions: Array<UpdateFormQuestionInput>;
@@ -5417,14 +5422,32 @@ export type UpdateInnovationPackInput = {
 };
 
 export type UpdateLicenseInput = {
-  /** Update the feature flags for the License. */
-  featureFlags?: InputMaybe<Array<UpdateFeatureFlagInput>>;
   /** Visibility of the Space. */
   visibility?: InputMaybe<SpaceVisibility>;
 };
 
 export type UpdateLicensePlanInput = {
   ID: Scalars['UUID'];
+  /** Assign this plan to all new Organization accounts */
+  assignToNewOrganizationAccounts?: InputMaybe<Scalars['Boolean']>;
+  /** Assign this plan to all new User accounts */
+  assignToNewUserAccounts?: InputMaybe<Scalars['Boolean']>;
+  /** Is this plan enabled? */
+  enabled?: InputMaybe<Scalars['Boolean']>;
+  /** Is this plan free? */
+  isFree?: InputMaybe<Scalars['Boolean']>;
+  /** The credential to represent this plan */
+  licenseCredential?: InputMaybe<LicenseCredential>;
+  /** The price per month of this plan. */
+  pricePerMonth?: InputMaybe<Scalars['Float']>;
+  /** Does this plan require contact support */
+  requiresContactSupport?: InputMaybe<Scalars['Boolean']>;
+  /** Does this plan require a payment method? */
+  requiresPaymentMethod?: InputMaybe<Scalars['Boolean']>;
+  /** The sorting order for this Plan. */
+  sortOrder?: InputMaybe<Scalars['Float']>;
+  /** Is there a trial period enabled */
+  trialEnabled?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type UpdateLinkInput = {
@@ -23058,12 +23081,7 @@ export type UpdateAccountPlatformSettingsMutation = {
   updateAccountPlatformSettings: {
     __typename?: 'Account';
     id: string;
-    license: {
-      __typename?: 'License';
-      id: string;
-      visibility: SpaceVisibility;
-      featureFlags: Array<{ __typename?: 'LicenseFeatureFlag'; name: LicenseFeatureFlagName; enabled: boolean }>;
-    };
+    license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
     host?:
       | { __typename?: 'Organization'; id: string }
       | { __typename?: 'User'; id: string }
@@ -23094,12 +23112,7 @@ export type AdminSpacesListQuery = {
       __typename?: 'Account';
       id: string;
       subscriptions: Array<{ __typename?: 'AccountSubscription'; name: LicenseCredential }>;
-      license: {
-        __typename?: 'License';
-        id: string;
-        visibility: SpaceVisibility;
-        featureFlags: Array<{ __typename?: 'LicenseFeatureFlag'; name: LicenseFeatureFlagName; enabled: boolean }>;
-      };
+      license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
       host?:
         | {
             __typename?: 'Organization';
@@ -23137,12 +23150,7 @@ export type AdminSpaceFragment = {
     __typename?: 'Account';
     id: string;
     subscriptions: Array<{ __typename?: 'AccountSubscription'; name: LicenseCredential }>;
-    license: {
-      __typename?: 'License';
-      id: string;
-      visibility: SpaceVisibility;
-      featureFlags: Array<{ __typename?: 'LicenseFeatureFlag'; name: LicenseFeatureFlagName; enabled: boolean }>;
-    };
+    license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
     host?:
       | {
           __typename?: 'Organization';

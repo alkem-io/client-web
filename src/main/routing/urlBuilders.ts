@@ -9,6 +9,10 @@ export const buildSettingsUrl = (entityUrl: string) => {
   return `${entityUrl}/settings`;
 };
 
+export const buildSettingsProfileUrl = (entityUrl: string) => {
+  return `${entityUrl}/settings/profile`;
+};
+
 export const buildUserProfileUrl = (userNameId: string) => `/user/${userNameId}`;
 
 export const buildUserProfileSettingsUrl = (userNameId: string) =>

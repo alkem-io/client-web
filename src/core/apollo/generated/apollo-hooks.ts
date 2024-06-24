@@ -2833,10 +2833,6 @@ export const AdminSpaceFragmentDoc = gql`
       license {
         id
         visibility
-        featureFlags {
-          name
-          enabled
-        }
       }
       host {
         id
@@ -18665,10 +18661,6 @@ export const UpdateAccountPlatformSettingsDocument = gql`
       license {
         id
         visibility
-        featureFlags {
-          name
-          enabled
-        }
       }
       host {
         id
