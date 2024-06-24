@@ -14840,11 +14840,16 @@ export const UpdateVirtualContributorDocument = gql`
       id
       profile {
         id
+        tagline
+        tagsets {
+          ...TagsetDetails
+        }
         displayName
         description
       }
     }
   }
+  ${TagsetDetailsFragmentDoc}
 `;
 export type UpdateVirtualContributorMutationFn = Apollo.MutationFunction<
   SchemaTypes.UpdateVirtualContributorMutation,
