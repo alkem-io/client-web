@@ -964,6 +964,17 @@ export type CommunityApplicationForRoleResultFieldPolicy = {
   state?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type CommunityApplicationResultKeySpecifier = (
+  | 'application'
+  | 'id'
+  | 'space'
+  | CommunityApplicationResultKeySpecifier
+)[];
+export type CommunityApplicationResultFieldPolicy = {
+  application?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  space?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type CommunityGuidelinesKeySpecifier = ('authorization' | 'id' | 'profile' | CommunityGuidelinesKeySpecifier)[];
 export type CommunityGuidelinesFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1011,6 +1022,17 @@ export type CommunityInvitationForRoleResultFieldPolicy = {
   state?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   welcomeMessage?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CommunityInvitationResultKeySpecifier = (
+  | 'id'
+  | 'invitation'
+  | 'space'
+  | CommunityInvitationResultKeySpecifier
+)[];
+export type CommunityInvitationResultFieldPolicy = {
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  invitation?: FieldPolicy<any> | FieldReadFunction<any>;
+  space?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CommunityPolicyKeySpecifier = ('admin' | 'id' | 'lead' | 'member' | CommunityPolicyKeySpecifier)[];
 export type CommunityPolicyFieldPolicy = {
@@ -3374,6 +3396,13 @@ export type StrictTypedTypePolicies = {
       | (() => undefined | CommunityApplicationForRoleResultKeySpecifier);
     fields?: CommunityApplicationForRoleResultFieldPolicy;
   };
+  CommunityApplicationResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | CommunityApplicationResultKeySpecifier
+      | (() => undefined | CommunityApplicationResultKeySpecifier);
+    fields?: CommunityApplicationResultFieldPolicy;
+  };
   CommunityGuidelines?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CommunityGuidelinesKeySpecifier | (() => undefined | CommunityGuidelinesKeySpecifier);
     fields?: CommunityGuidelinesFieldPolicy;
@@ -3391,6 +3420,13 @@ export type StrictTypedTypePolicies = {
       | CommunityInvitationForRoleResultKeySpecifier
       | (() => undefined | CommunityInvitationForRoleResultKeySpecifier);
     fields?: CommunityInvitationForRoleResultFieldPolicy;
+  };
+  CommunityInvitationResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | CommunityInvitationResultKeySpecifier
+      | (() => undefined | CommunityInvitationResultKeySpecifier);
+    fields?: CommunityInvitationResultFieldPolicy;
   };
   CommunityPolicy?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CommunityPolicyKeySpecifier | (() => undefined | CommunityPolicyKeySpecifier);

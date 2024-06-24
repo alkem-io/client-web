@@ -1348,6 +1348,16 @@ export type CommunityApplicationForRoleResult = {
   updatedDate: Scalars['DateTime'];
 };
 
+export type CommunityApplicationResult = {
+  __typename?: 'CommunityApplicationResult';
+  /** The application itself */
+  application: Application;
+  /** ID for the pending membership */
+  id: Scalars['UUID'];
+  /** The space that the application is for */
+  space: Space;
+};
+
 export type CommunityApplyInput = {
   communityID: Scalars['UUID'];
   questions: Array<CreateNvpInput>;
@@ -1407,6 +1417,16 @@ export type CommunityInvitationForRoleResult = {
   updatedDate: Scalars['DateTime'];
   /** The welcome message of the invitation */
   welcomeMessage?: Maybe<Scalars['UUID']>;
+};
+
+export type CommunityInvitationResult = {
+  __typename?: 'CommunityInvitationResult';
+  /** ID for the pending membership */
+  id: Scalars['UUID'];
+  /** The invitation itself */
+  invitation: Invitation;
+  /** The space that the application is for */
+  space: Space;
 };
 
 export type CommunityJoinInput = {
@@ -2328,6 +2348,8 @@ export type ISearchResults = {
 };
 
 export type IngestSpaceInput = {
+  /** The purpose of the ingestions - either knowledge or context. */
+  purpose: SpaceIngestionPurpose;
   /** The identifier for the Space to be ingested. */
   spaceID: Scalars['UUID'];
 };
@@ -2781,10 +2803,10 @@ export type MeQueryResults = {
   __typename?: 'MeQueryResults';
   /** Can I create a free space? */
   canCreateFreeSpace: Scalars['Boolean'];
-  /** The community applicationscurrent authenticated user can act on. */
-  communityApplications: Array<CommunityApplicationForRoleResult>;
+  /** The community applications current authenticated user can act on. */
+  communityApplications: Array<CommunityApplicationResult>;
   /** The invitations the current authenticated user can act on. */
-  communityInvitations: Array<CommunityInvitationForRoleResult>;
+  communityInvitations: Array<CommunityInvitationResult>;
   /** The query id */
   id: Scalars['String'];
   /** The Spaces I am contributing to */
@@ -2838,13 +2860,19 @@ export type Metadata = {
 export enum MimeType {
   Avif = 'AVIF',
   Bmp = 'BMP',
+  Doc = 'DOC',
+  Docx = 'DOCX',
   Gif = 'GIF',
   Jpeg = 'JPEG',
   Jpg = 'JPG',
+  Ods = 'ODS',
+  Odt = 'ODT',
   Pdf = 'PDF',
   Png = 'PNG',
   Svg = 'SVG',
   Webp = 'WEBP',
+  Xls = 'XLS',
+  Xlsx = 'XLSX',
   Xpng = 'XPNG',
 }
 
@@ -4987,6 +5015,11 @@ export type SpaceFilterInput = {
   /** Return Spaces with a Visibility matching one of the provided types. */
   visibilities?: InputMaybe<Array<SpaceVisibility>>;
 };
+
+export enum SpaceIngestionPurpose {
+  Context = 'CONTEXT',
+  Knowledge = 'KNOWLEDGE',
+}
 
 export enum SpaceLevel {
   Challenge = 'CHALLENGE',
@@ -18154,23 +18187,38 @@ export type UserProviderQuery = {
         }
       | undefined;
     communityApplications: Array<{
-      __typename?: 'CommunityApplicationForRoleResult';
+      __typename?: 'CommunityApplicationResult';
       id: string;
-      communityID: string;
-      displayName: string;
-      state: string;
-      spaceID: string;
-      spaceLevel: number;
+      space: {
+        __typename?: 'Space';
+        id: string;
+        level: number;
+        profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string; url: string };
+      };
+      application: {
+        __typename?: 'Application';
+        id: string;
+        createdDate: Date;
+        lifecycle: { __typename?: 'Lifecycle'; id: string; state?: string | undefined };
+      };
     }>;
     communityInvitations: Array<{
-      __typename?: 'CommunityInvitationForRoleResult';
+      __typename?: 'CommunityInvitationResult';
       id: string;
-      spaceID: string;
-      spaceLevel: number;
-      welcomeMessage?: string | undefined;
-      createdBy: string;
-      createdDate: Date;
-      state: string;
+      space: {
+        __typename?: 'Space';
+        id: string;
+        level: number;
+        profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string; url: string };
+      };
+      invitation: {
+        __typename?: 'Invitation';
+        id: string;
+        welcomeMessage?: string | undefined;
+        createdDate: Date;
+        createdBy: { __typename?: 'User'; id: string };
+        lifecycle: { __typename?: 'Lifecycle'; id: string; state?: string | undefined };
+      };
     }>;
   };
 };
@@ -29462,29 +29510,56 @@ export type NewMembershipsQuery = {
   me: {
     __typename?: 'MeQueryResults';
     communityApplications: Array<{
-      __typename?: 'CommunityApplicationForRoleResult';
+      __typename?: 'CommunityApplicationResult';
       id: string;
-      communityID: string;
-      displayName: string;
-      state: string;
-      spaceID: string;
-      spaceLevel: number;
-      createdDate: Date;
+      space: {
+        __typename?: 'Space';
+        id: string;
+        level: number;
+        profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string; url: string };
+      };
+      application: {
+        __typename?: 'Application';
+        id: string;
+        createdDate: Date;
+        lifecycle: { __typename?: 'Lifecycle'; id: string; state?: string | undefined };
+      };
     }>;
     communityInvitations: Array<{
-      __typename?: 'CommunityInvitationForRoleResult';
+      __typename?: 'CommunityInvitationResult';
       id: string;
-      spaceID: string;
-      contributorID: string;
-      contributorType: CommunityContributorType;
-      spaceLevel: number;
-      state: string;
-      welcomeMessage?: string | undefined;
-      createdBy: string;
-      createdDate: Date;
+      space: {
+        __typename?: 'Space';
+        id: string;
+        level: number;
+        profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string; url: string };
+      };
+      invitation: {
+        __typename?: 'Invitation';
+        id: string;
+        welcomeMessage?: string | undefined;
+        createdDate: Date;
+        createdBy: { __typename?: 'User'; id: string };
+        lifecycle: { __typename?: 'Lifecycle'; id: string; state?: string | undefined };
+      };
     }>;
-    mySpaces: Array<{ __typename?: 'MySpaceResults'; space: { __typename?: 'Space'; id: string; spaceID: string } }>;
+    mySpaces: Array<{
+      __typename?: 'MySpaceResults';
+      space: {
+        __typename?: 'Space';
+        id: string;
+        level: number;
+        profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string; url: string };
+      };
+    }>;
   };
+};
+
+export type NewMembershipsBasicSpaceFragment = {
+  __typename?: 'Space';
+  id: string;
+  level: number;
+  profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string; url: string };
 };
 
 export type RecentForumMessagesQueryVariables = Exact<{

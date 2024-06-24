@@ -6,13 +6,10 @@ import {
   useUserProviderQuery,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { ErrorPage } from '../../../../../core/pages/Errors/ErrorPage';
-import {
-  CommunityApplicationForRoleResult,
-  CommunityInvitationForRoleResult,
-  User,
-} from '../../../../../core/apollo/generated/graphql-schema';
+import { User } from '../../../../../core/apollo/generated/graphql-schema';
 import { useAuthenticationContext } from '../../../../../core/auth/authentication/hooks/useAuthenticationContext';
-import { toUserMetadata, UserMetadata } from '../../hooks/useUserMetadataWrapper';
+import { PendingApplication, toUserMetadata, UserMetadata } from '../../hooks/useUserMetadataWrapper';
+import { InvitationItem } from './InvitationItem';
 
 export interface UserContextValue {
   user: UserMetadata | undefined;
@@ -67,8 +64,8 @@ const UserProvider: FC<{}> = ({ children }) => {
       meData?.me
         ? toUserMetadata(
             meData.me.user as User,
-            meData.me.communityApplications as CommunityApplicationForRoleResult[],
-            meData.me.communityInvitations as CommunityInvitationForRoleResult[],
+            meData.me.communityApplications as PendingApplication[],
+            meData.me.communityInvitations as InvitationItem[],
             platformLevelAuthorization
           )
         : undefined,

@@ -5,7 +5,12 @@ import DialogHeader from '../../../core/ui/dialog/DialogHeader';
 import { HdrStrongOutlined } from '@mui/icons-material';
 import Gutters from '../../../core/ui/grid/Gutters';
 import { BlockSectionTitle } from '../../../core/ui/typography';
-import { ApplicationHydrator, InvitationHydrator, usePendingMemberships } from './PendingMemberships';
+import {
+  ApplicationHydrator,
+  getChildJourneyTypeName,
+  InvitationHydrator,
+  usePendingMemberships,
+} from './PendingMemberships';
 import InvitationCardHorizontal from '../invitations/InvitationCardHorizontal/InvitationCardHorizontal';
 import JourneyCard from '../../journey/common/JourneyCard/JourneyCard';
 import journeyIcon from '../../shared/components/JourneyIcon/JourneyIcon';
@@ -17,6 +22,7 @@ import { VisualType } from '../../../core/apollo/generated/graphql-schema';
 import BackButton from '../../../core/ui/actions/BackButton';
 import useNavigate from '../../../core/routing/useNavigate';
 import { useNewMembershipsQuery } from '../../../core/apollo/generated/apollo-hooks';
+import { Identifiable } from '../../../core/utils/Identifiable';
 
 interface ButtonImplementationParams {
   header: ReactNode;
@@ -58,11 +64,11 @@ const PendingMembershipsUserMenuItem = ({ children }: PendingMembershipsUserMenu
 
   const closeDialog = () => setOpenDialog(undefined);
 
-  const handleInvitationCardClick = ({ id, journeyUri }) => {
+  const handleInvitationCardClick = ({ id, space }: Identifiable & { space: { profile: { url: string } } }) => {
     setOpenDialog({
       type: DialogType.InvitationView,
       invitationId: id,
-      journeyUri,
+      journeyUri: space.profile.url,
     });
   };
 
@@ -131,13 +137,13 @@ const PendingMembershipsUserMenuItem = ({ children }: PendingMembershipsUserMenu
                     {({ application: hydratedApplication }) =>
                       hydratedApplication && (
                         <JourneyCard
-                          iconComponent={journeyIcon[hydratedApplication.journeyTypeName]}
-                          header={hydratedApplication.journeyDisplayName}
-                          tags={hydratedApplication.journeyTags ?? []}
-                          banner={hydratedApplication.journeyVisual}
-                          journeyUri={hydratedApplication.journeyUri}
+                          iconComponent={journeyIcon[getChildJourneyTypeName(hydratedApplication.space)]}
+                          header={hydratedApplication.space.profile.displayName}
+                          tags={hydratedApplication.space.profile.tagset?.tags ?? []}
+                          banner={hydratedApplication.space.profile.visual}
+                          journeyUri={hydratedApplication.space.profile.url}
                         >
-                          <JourneyCardTagline>{hydratedApplication.journeyTagline ?? ''}</JourneyCardTagline>
+                          <JourneyCardTagline>{hydratedApplication.space.profile.tagline ?? ''}</JourneyCardTagline>
                         </JourneyCard>
                       )
                     }
