@@ -45,9 +45,9 @@ export const DiscussionPage: FC<DiscussionPageProps> = ({ discussionNameId }) =>
     skip: !discussionNameId,
   });
 
-  const isSubscribedToMessages = useSubscribeOnRoomEvents(data?.platform.communication.discussion?.comments.id);
+  const isSubscribedToMessages = useSubscribeOnRoomEvents(data?.platform.forum.discussion?.comments.id);
 
-  const rawDiscussion = data?.platform.communication.discussion;
+  const rawDiscussion = data?.platform.forum.discussion;
 
   const authors = useAuthorsDetails(
     compact([rawDiscussion?.createdBy, ...compact(rawDiscussion?.comments.messages?.map(c => c.sender?.id))])

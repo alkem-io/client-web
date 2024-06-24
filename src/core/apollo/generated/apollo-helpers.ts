@@ -784,20 +784,9 @@ export type CollaborationFieldPolicy = {
   tagsetTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
   timeline?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type CommunicationKeySpecifier = (
-  | 'authorization'
-  | 'discussion'
-  | 'discussionCategories'
-  | 'discussions'
-  | 'id'
-  | 'updates'
-  | CommunicationKeySpecifier
-)[];
+export type CommunicationKeySpecifier = ('authorization' | 'id' | 'updates' | CommunicationKeySpecifier)[];
 export type CommunicationFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  discussion?: FieldPolicy<any> | FieldReadFunction<any>;
-  discussionCategories?: FieldPolicy<any> | FieldReadFunction<any>;
-  discussions?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   updates?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -1046,6 +1035,7 @@ export type DiscussionKeySpecifier = (
   | 'createdBy'
   | 'id'
   | 'nameID'
+  | 'privacy'
   | 'profile'
   | 'timestamp'
   | DiscussionKeySpecifier
@@ -1057,6 +1047,7 @@ export type DiscussionFieldPolicy = {
   createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
+  privacy?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   timestamp?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -1121,6 +1112,21 @@ export type FormQuestionFieldPolicy = {
   question?: FieldPolicy<any> | FieldReadFunction<any>;
   required?: FieldPolicy<any> | FieldReadFunction<any>;
   sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type ForumKeySpecifier = (
+  | 'authorization'
+  | 'discussion'
+  | 'discussionCategories'
+  | 'discussions'
+  | 'id'
+  | ForumKeySpecifier
+)[];
+export type ForumFieldPolicy = {
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  discussion?: FieldPolicy<any> | FieldReadFunction<any>;
+  discussionCategories?: FieldPolicy<any> | FieldReadFunction<any>;
+  discussions?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type GeoKeySpecifier = ('endpoint' | GeoKeySpecifier)[];
 export type GeoFieldPolicy = {
@@ -1969,8 +1975,8 @@ export type PaginatedUsersFieldPolicy = {
 };
 export type PlatformKeySpecifier = (
   | 'authorization'
-  | 'communication'
   | 'configuration'
+  | 'forum'
   | 'id'
   | 'innovationHub'
   | 'innovationHubs'
@@ -1983,8 +1989,8 @@ export type PlatformKeySpecifier = (
 )[];
 export type PlatformFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  communication?: FieldPolicy<any> | FieldReadFunction<any>;
   configuration?: FieldPolicy<any> | FieldReadFunction<any>;
+  forum?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationHub?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationHubs?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2696,7 +2702,7 @@ export type StorageConfigFieldPolicy = {
 export type SubscriptionKeySpecifier = (
   | 'activityCreated'
   | 'calloutPostCreated'
-  | 'communicationDiscussionUpdated'
+  | 'forumDiscussionUpdated'
   | 'profileVerifiedCredential'
   | 'roomEvents'
   | 'subspaceCreated'
@@ -2706,7 +2712,7 @@ export type SubscriptionKeySpecifier = (
 export type SubscriptionFieldPolicy = {
   activityCreated?: FieldPolicy<any> | FieldReadFunction<any>;
   calloutPostCreated?: FieldPolicy<any> | FieldReadFunction<any>;
-  communicationDiscussionUpdated?: FieldPolicy<any> | FieldReadFunction<any>;
+  forumDiscussionUpdated?: FieldPolicy<any> | FieldReadFunction<any>;
   profileVerifiedCredential?: FieldPolicy<any> | FieldReadFunction<any>;
   roomEvents?: FieldPolicy<any> | FieldReadFunction<any>;
   subspaceCreated?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3376,6 +3382,10 @@ export type StrictTypedTypePolicies = {
   FormQuestion?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | FormQuestionKeySpecifier | (() => undefined | FormQuestionKeySpecifier);
     fields?: FormQuestionFieldPolicy;
+  };
+  Forum?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | ForumKeySpecifier | (() => undefined | ForumKeySpecifier);
+    fields?: ForumFieldPolicy;
   };
   Geo?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | GeoKeySpecifier | (() => undefined | GeoKeySpecifier);
