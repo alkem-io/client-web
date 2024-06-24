@@ -966,18 +966,14 @@ export type CommunityApplicationForRoleResultFieldPolicy = {
 };
 export type CommunityApplicationResultKeySpecifier = (
   | 'application'
-  | 'createdDate'
   | 'id'
   | 'space'
-  | 'state'
   | CommunityApplicationResultKeySpecifier
 )[];
 export type CommunityApplicationResultFieldPolicy = {
   application?: FieldPolicy<any> | FieldReadFunction<any>;
-  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   space?: FieldPolicy<any> | FieldReadFunction<any>;
-  state?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CommunityGuidelinesKeySpecifier = ('authorization' | 'id' | 'profile' | CommunityGuidelinesKeySpecifier)[];
 export type CommunityGuidelinesFieldPolicy = {
@@ -1028,19 +1024,15 @@ export type CommunityInvitationForRoleResultFieldPolicy = {
   welcomeMessage?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CommunityInvitationResultKeySpecifier = (
-  | 'createdDate'
   | 'id'
   | 'invitation'
   | 'space'
-  | 'state'
   | CommunityInvitationResultKeySpecifier
 )[];
 export type CommunityInvitationResultFieldPolicy = {
-  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   invitation?: FieldPolicy<any> | FieldReadFunction<any>;
   space?: FieldPolicy<any> | FieldReadFunction<any>;
-  state?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CommunityPolicyKeySpecifier = ('admin' | 'id' | 'lead' | 'member' | CommunityPolicyKeySpecifier)[];
 export type CommunityPolicyFieldPolicy = {

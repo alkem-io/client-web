@@ -1352,14 +1352,10 @@ export type CommunityApplicationResult = {
   __typename?: 'CommunityApplicationResult';
   /** The application itself */
   application: Application;
-  /** Date of creation */
-  createdDate: Scalars['DateTime'];
   /** ID for the pending membership */
   id: Scalars['UUID'];
   /** The space that the application is for */
   space: Space;
-  /** The current state of the invitation. */
-  state: Scalars['String'];
 };
 
 export type CommunityApplyInput = {
@@ -1425,16 +1421,12 @@ export type CommunityInvitationForRoleResult = {
 
 export type CommunityInvitationResult = {
   __typename?: 'CommunityInvitationResult';
-  /** Date of creation */
-  createdDate: Scalars['DateTime'];
   /** ID for the pending membership */
   id: Scalars['UUID'];
   /** The invitation itself */
   invitation: Invitation;
   /** The space that the application is for */
   space: Space;
-  /** The current state of the invitation. */
-  state: Scalars['String'];
 };
 
 export type CommunityJoinInput = {
@@ -2356,6 +2348,8 @@ export type ISearchResults = {
 };
 
 export type IngestSpaceInput = {
+  /** The purpose of the ingestions - either knowledge or context. */
+  purpose: SpaceIngestionPurpose;
   /** The identifier for the Space to be ingested. */
   spaceID: Scalars['UUID'];
 };
@@ -2809,7 +2803,7 @@ export type MeQueryResults = {
   __typename?: 'MeQueryResults';
   /** Can I create a free space? */
   canCreateFreeSpace: Scalars['Boolean'];
-  /** The community applicationscurrent authenticated user can act on. */
+  /** The community applications current authenticated user can act on. */
   communityApplications: Array<CommunityApplicationResult>;
   /** The invitations the current authenticated user can act on. */
   communityInvitations: Array<CommunityInvitationResult>;
@@ -2866,13 +2860,19 @@ export type Metadata = {
 export enum MimeType {
   Avif = 'AVIF',
   Bmp = 'BMP',
+  Doc = 'DOC',
+  Docx = 'DOCX',
   Gif = 'GIF',
   Jpeg = 'JPEG',
   Jpg = 'JPG',
+  Ods = 'ODS',
+  Odt = 'ODT',
   Pdf = 'PDF',
   Png = 'PNG',
   Svg = 'SVG',
   Webp = 'WEBP',
+  Xls = 'XLS',
+  Xlsx = 'XLSX',
   Xpng = 'XPNG',
 }
 
@@ -5015,6 +5015,11 @@ export type SpaceFilterInput = {
   /** Return Spaces with a Visibility matching one of the provided types. */
   visibilities?: InputMaybe<Array<SpaceVisibility>>;
 };
+
+export enum SpaceIngestionPurpose {
+  Context = 'CONTEXT',
+  Knowledge = 'KNOWLEDGE',
+}
 
 export enum SpaceLevel {
   Challenge = 'CHALLENGE',
