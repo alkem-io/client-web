@@ -25,10 +25,6 @@ fragment AdminSpace on Space {
     license {
       id
       visibility
-      featureFlags {
-        name
-        enabled
-      }
     }
     host {
       id

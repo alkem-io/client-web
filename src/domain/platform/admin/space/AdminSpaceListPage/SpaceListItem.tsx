@@ -2,12 +2,12 @@ import ListItemLink, { ListItemLinkProps } from '../../../../shared/components/S
 import React, { MouseEventHandler, useMemo, useState } from 'react';
 import * as yup from 'yup';
 import DialogWithGrid from '../../../../../core/ui/dialog/DialogWithGrid';
-import { Button, CircularProgress, DialogContent, FormLabel, ListItemIcon, RadioGroup, TextField } from '@mui/material';
+import { Button, CircularProgress, DialogContent, ListItemIcon, TextField } from '@mui/material';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import DialogHeader from '../../../../../core/ui/dialog/DialogHeader';
 import PageContentBlockSeamless from '../../../../../core/ui/content/PageContentBlockSeamless';
 import { Formik } from 'formik';
-import { LicenseFeatureFlagName, SpaceVisibility } from '../../../../../core/apollo/generated/graphql-schema';
+import { SpaceVisibility } from '../../../../../core/apollo/generated/graphql-schema';
 import FormikAutocomplete from '../../../../../core/ui/forms/FormikAutocomplete';
 import { FormikSelectValue } from '../../../../../core/ui/forms/FormikSelect';
 import {
@@ -23,7 +23,6 @@ import FormikInputField from '../../../../../core/ui/forms/FormikInputField/Form
 import { nameSegmentSchema } from '../../components/Common/NameSegment';
 import { LoadingButton } from '@mui/lab';
 import { gutters } from '../../../../../core/ui/grid/utils';
-import FormikCheckboxField from '../../../../../core/ui/forms/FormikCheckboxField';
 import useLoadingState from '../../../../shared/utils/useLoadingState';
 import PlansTable, { LicensePlan } from './PlansTable';
 import AssignPlan from './AssignPlan';
@@ -36,7 +35,6 @@ export interface SpacePlatformSettings {
 export interface AccountPlatformSettings {
   hostId: string | undefined;
   visibility: SpaceVisibility;
-  features: Record<LicenseFeatureFlagName, boolean>;
   organizations: {
     id: string;
     name: string;
@@ -55,7 +53,7 @@ const SpaceListItem = ({
   spaceId,
   accountId,
   nameId,
-  account: { visibility, hostId, organizations, features, activeLicensePlanIds },
+  account: { visibility, hostId, organizations, activeLicensePlanIds },
   licensePlans,
   ...props
 }: SpaceListItemProps) => {
@@ -72,7 +70,6 @@ const SpaceListItem = ({
     accountSettings: {
       visibility,
       hostId,
-      features,
     },
     platformSettings: {
       nameId,
@@ -85,14 +82,13 @@ const SpaceListItem = ({
   const [revokeLicensePlan] = useRevokeLicensePlanFromAccountMutation();
 
   const [handleSubmitAccountSettings, savingAccountSettings] = useLoadingState(
-    async ({ visibility, hostId, features }: Partial<AccountPlatformSettings>) => {
+    async ({ visibility, hostId }: Partial<AccountPlatformSettings>) => {
       await updateAccountSettings({
         variables: {
           accountId,
           hostId,
           license: {
             visibility,
-            featureFlags: Object.keys(features ?? {}).map(feature => ({ name: feature, enabled: features![feature] })),
           },
         },
       });
@@ -138,12 +134,6 @@ const SpaceListItem = ({
   const accountSettingsValidationSchema = yup.object().shape({
     hostId: yup.string().required(t('forms.validations.required')),
     visibility: yup.string().required(t('forms.validations.required')),
-    features: yup.object().shape(
-      Object.keys(features).reduce((acc, cur) => {
-        acc[cur] = yup.boolean().required(t('forms.validations.required'));
-        return acc;
-      }, {})
-    ),
   });
 
   const platformSettingsValidationSchema = yup.object().shape({
@@ -199,19 +189,6 @@ const SpaceListItem = ({
                   disablePortal={false}
                   disabled={loading}
                 />
-                <RadioGroup>
-                  <FormLabel component="legend">{t('pages.admin.space.settings.license-features.title')}</FormLabel>
-                  {Object.keys(features)
-                    .map(key => key as LicenseFeatureFlagName)
-                    .map(key => (
-                      <FormikCheckboxField
-                        key={`feature-checkbox-${key}`}
-                        title={t(`pages.admin.space.settings.license-features.features.${key}` as const)}
-                        name={`features.${key}`}
-                        disabled={loading}
-                      />
-                    ))}
-                </RadioGroup>
               </PageContentBlockSeamless>
               <Actions padding={gutters()}>
                 <Button onClick={() => setIsManageLicensePlansDialogOpen(true)}>Manage License Plans</Button>
