@@ -3,7 +3,6 @@ import Loading from '../../../../core/ui/loading/Loading';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import VCPageLayout from '../layout/VCPageLayout';
 import {
-  useBodyOfKnowledgeProfileQuery,
   useUpdateVirtualContributorMutation,
   useVirtualContributorQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
@@ -26,13 +25,6 @@ export const VCSettingsPage = () => {
     variables: {
       id: vcNameId,
     },
-  });
-
-  const { data: bokProfile } = useBodyOfKnowledgeProfileQuery({
-    variables: {
-      spaceId: data?.virtualContributor.bodyOfKnowledgeID!,
-    },
-    skip: !data?.virtualContributor.bodyOfKnowledgeID,
   });
 
   const [updateContributorMutation] = useUpdateVirtualContributorMutation();
@@ -67,7 +59,6 @@ export const VCSettingsPage = () => {
               {data?.virtualContributor && (
                 <VirtualContributorForm
                   virtualContributor={data?.virtualContributor}
-                  bokProfile={bokProfile?.lookup.space?.profile}
                   avatar={data?.virtualContributor.profile.avatar}
                   onSave={handleUpdate}
                 />
