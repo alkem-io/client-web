@@ -1033,23 +1033,10 @@ export type Communication = {
   __typename?: 'Communication';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
-  /** A particular Discussions active in this Communication. */
-  discussion?: Maybe<Discussion>;
-  discussionCategories: Array<DiscussionCategory>;
-  /** The Discussions active in this Communication. */
-  discussions?: Maybe<Array<Discussion>>;
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** The updates on this Communication. */
   updates: Room;
-};
-
-export type CommunicationDiscussionArgs = {
-  ID: Scalars['String'];
-};
-
-export type CommunicationDiscussionsArgs = {
-  queryData?: InputMaybe<DiscussionsInput>;
 };
 
 export type CommunicationAdminEnsureAccessInput = {
@@ -1110,15 +1097,6 @@ export type CommunicationAdminRoomResult = {
 
 export type CommunicationAdminUpdateRoomsJoinRuleInput = {
   isPublic: Scalars['Boolean'];
-};
-
-export type CommunicationCreateDiscussionInput = {
-  /** The category for the Discussion */
-  category: DiscussionCategory;
-  /** The identifier for the Communication entity the Discussion is being created on. */
-  communicationID: Scalars['UUID'];
-  profile: CreateProfileInput;
-  tags?: InputMaybe<Array<Scalars['String']>>;
 };
 
 export type CommunicationRoom = {
@@ -2012,7 +1990,7 @@ export type Discussion = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The category assigned to this Discussion. */
-  category: DiscussionCategory;
+  category: ForumDiscussionCategory;
   /** The comments for this Discussion. */
   comments: Room;
   /** The id of the user that created this discussion */
@@ -2021,24 +1999,13 @@ export type Discussion = {
   id: Scalars['UUID'];
   /** A name identifier of the entity, unique within a given scope. */
   nameID: Scalars['NameID'];
+  /** Privacy mode for the Discussion. Note: this is not yet implemented in the authorization policy. */
+  privacy: ForumDiscussionPrivacy;
   /** The Profile for this Discussion. */
   profile: Profile;
   /** The timestamp for the creation of this Discussion. */
   timestamp?: Maybe<Scalars['Float']>;
 };
-
-export enum DiscussionCategory {
-  ChallengeCentric = 'CHALLENGE_CENTRIC',
-  CommunityBuilding = 'COMMUNITY_BUILDING',
-  General = 'GENERAL',
-  Help = 'HELP',
-  Ideas = 'IDEAS',
-  Other = 'OTHER',
-  PlatformFunctionalities = 'PLATFORM_FUNCTIONALITIES',
-  Questions = 'QUESTIONS',
-  Releases = 'RELEASES',
-  Sharing = 'SHARING',
-}
 
 export type DiscussionsInput = {
   /** The number of Discussion entries to return; if omitted return all Discussions. */
@@ -2117,6 +2084,51 @@ export type FormQuestion = {
   /** The sort order of this question in a wider set of questions. */
   sortOrder: Scalars['Float'];
 };
+
+export type Forum = {
+  __typename?: 'Forum';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** A particular Discussions active in this Forum. */
+  discussion?: Maybe<Discussion>;
+  discussionCategories: Array<ForumDiscussionCategory>;
+  /** The Discussions active in this Forum. */
+  discussions?: Maybe<Array<Discussion>>;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+};
+
+export type ForumDiscussionArgs = {
+  ID: Scalars['String'];
+};
+
+export type ForumDiscussionsArgs = {
+  queryData?: InputMaybe<DiscussionsInput>;
+};
+
+export type ForumCreateDiscussionInput = {
+  /** The category for the Discussion */
+  category: ForumDiscussionCategory;
+  /** The identifier for the Forum entity the Discussion is being created on. */
+  forumID: Scalars['UUID'];
+  profile: CreateProfileInput;
+  tags?: InputMaybe<Array<Scalars['String']>>;
+};
+
+export enum ForumDiscussionCategory {
+  ChallengeCentric = 'CHALLENGE_CENTRIC',
+  CommunityBuilding = 'COMMUNITY_BUILDING',
+  Help = 'HELP',
+  Other = 'OTHER',
+  PlatformFunctionalities = 'PLATFORM_FUNCTIONALITIES',
+  Releases = 'RELEASES',
+}
+
+export enum ForumDiscussionPrivacy {
+  Authenticated = 'AUTHENTICATED',
+  Author = 'AUTHOR',
+  Public = 'PUBLIC',
+}
 
 export type Geo = {
   __typename?: 'Geo';
@@ -2757,7 +2769,7 @@ export type Mutation = {
   createCommunityGuidelinesTemplate: CommunityGuidelinesTemplate;
   /** Create a new Contribution on the Callout. */
   createContributionOnCallout: CalloutContribution;
-  /** Creates a new Discussion as part of this Communication. */
+  /** Creates a new Discussion as part of this Forum. */
   createDiscussion: Discussion;
   /** Create a new CalendarEvent on the Calendar. */
   createEventOnCalendar: CalendarEvent;
@@ -3128,7 +3140,7 @@ export type MutationCreateContributionOnCalloutArgs = {
 };
 
 export type MutationCreateDiscussionArgs = {
-  createData: CommunicationCreateDiscussionInput;
+  createData: ForumCreateDiscussionInput;
 };
 
 export type MutationCreateEventOnCalendarArgs = {
@@ -3794,10 +3806,10 @@ export type Platform = {
   __typename?: 'Platform';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
-  /** The Communications for the platform */
-  communication: Communication;
   /** Alkemio configuration. Provides configuration to external services in the Alkemio ecosystem. */
   configuration: Config;
+  /** The Forum for the platform */
+  forum: Forum;
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** Details about an Innovation Hubs on the platform. If the arguments are omitted, the current Innovation Hub you are in will be returned. */
@@ -4968,7 +4980,7 @@ export type Subscription = {
   /** Receive new Update messages on Communities the currently authenticated User is a member of. */
   calloutPostCreated: CalloutPostCreated;
   /** Receive updates on Discussions */
-  communicationDiscussionUpdated: Discussion;
+  forumDiscussionUpdated: Discussion;
   /** Received on verified credentials change */
   profileVerifiedCredential: ProfileCredentialVerified;
   /** Receive Room event */
@@ -4987,8 +4999,8 @@ export type SubscriptionCalloutPostCreatedArgs = {
   calloutID: Scalars['UUID'];
 };
 
-export type SubscriptionCommunicationDiscussionUpdatedArgs = {
-  communicationID: Scalars['UUID'];
+export type SubscriptionForumDiscussionUpdatedArgs = {
+  forumID: Scalars['UUID'];
 };
 
 export type SubscriptionRoomEventsArgs = {
@@ -5287,7 +5299,7 @@ export type UpdateContextInput = {
 export type UpdateDiscussionInput = {
   ID: Scalars['UUID'];
   /** The category for the Discussion */
-  category?: InputMaybe<DiscussionCategory>;
+  category?: InputMaybe<ForumDiscussionCategory>;
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
   nameID?: InputMaybe<Scalars['NameID']>;
   /** The Profile of this entity. */
@@ -13294,7 +13306,7 @@ export type LatestReleaseDiscussionQuery = {
 };
 
 export type CreateDiscussionMutationVariables = Exact<{
-  input: CommunicationCreateDiscussionInput;
+  input: ForumCreateDiscussionInput;
 }>;
 
 export type CreateDiscussionMutation = {
@@ -13304,7 +13316,7 @@ export type CreateDiscussionMutation = {
     id: string;
     createdBy?: string | undefined;
     timestamp?: number | undefined;
-    category: DiscussionCategory;
+    category: ForumDiscussionCategory;
     profile: { __typename?: 'Profile'; id: string; url: string; displayName: string; description?: string | undefined };
     comments: {
       __typename?: 'Room';
@@ -13420,7 +13432,7 @@ export type UpdateDiscussionMutation = {
     id: string;
     createdBy?: string | undefined;
     timestamp?: number | undefined;
-    category: DiscussionCategory;
+    category: ForumDiscussionCategory;
     profile: { __typename?: 'Profile'; id: string; url: string; displayName: string; description?: string | undefined };
     comments: {
       __typename?: 'Room';
@@ -13539,7 +13551,7 @@ export type DiscussionDetailsFragment = {
   id: string;
   createdBy?: string | undefined;
   timestamp?: number | undefined;
-  category: DiscussionCategory;
+  category: ForumDiscussionCategory;
   profile: { __typename?: 'Profile'; id: string; url: string; displayName: string; description?: string | undefined };
   comments: {
     __typename?: 'Room';
@@ -13650,10 +13662,10 @@ export type PlatformDiscussionsQuery = {
   platform: {
     __typename?: 'Platform';
     id: string;
-    communication: {
-      __typename?: 'Communication';
+    forum: {
+      __typename?: 'Forum';
       id: string;
-      discussionCategories: Array<DiscussionCategory>;
+      discussionCategories: Array<ForumDiscussionCategory>;
       authorization?:
         | {
             __typename?: 'Authorization';
@@ -13666,7 +13678,7 @@ export type PlatformDiscussionsQuery = {
         | Array<{
             __typename?: 'Discussion';
             id: string;
-            category: DiscussionCategory;
+            category: ForumDiscussionCategory;
             timestamp?: number | undefined;
             createdBy?: string | undefined;
             profile: {
@@ -13717,7 +13729,7 @@ export type PlatformDiscussionsQuery = {
 export type DiscussionCardFragment = {
   __typename?: 'Discussion';
   id: string;
-  category: DiscussionCategory;
+  category: ForumDiscussionCategory;
   timestamp?: number | undefined;
   createdBy?: string | undefined;
   profile: {
@@ -13770,8 +13782,8 @@ export type PlatformDiscussionQuery = {
   platform: {
     __typename?: 'Platform';
     id: string;
-    communication: {
-      __typename?: 'Communication';
+    forum: {
+      __typename?: 'Forum';
       id: string;
       authorization?:
         | {
@@ -13787,7 +13799,7 @@ export type PlatformDiscussionQuery = {
             id: string;
             createdBy?: string | undefined;
             timestamp?: number | undefined;
-            category: DiscussionCategory;
+            category: ForumDiscussionCategory;
             profile: {
               __typename?: 'Profile';
               id: string;
@@ -13905,19 +13917,19 @@ export type PlatformDiscussionQuery = {
   };
 };
 
-export type CommunicationDiscussionUpdatedSubscriptionVariables = Exact<{
-  communicationID: Scalars['UUID'];
+export type ForumDiscussionUpdatedSubscriptionVariables = Exact<{
+  forumID: Scalars['UUID'];
 }>;
 
-export type CommunicationDiscussionUpdatedSubscription = {
+export type ForumDiscussionUpdatedSubscription = {
   __typename?: 'Subscription';
-  communicationDiscussionUpdated: {
+  forumDiscussionUpdated: {
     __typename?: 'Discussion';
     id: string;
     nameID: string;
     createdBy?: string | undefined;
     timestamp?: number | undefined;
-    category: DiscussionCategory;
+    category: ForumDiscussionCategory;
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -18410,7 +18422,23 @@ export type UpdateVirtualContributorMutation = {
   updateVirtualContributor: {
     __typename?: 'VirtualContributor';
     id: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      tagline: string;
+      displayName: string;
+      description?: string | undefined;
+      tagsets?:
+        | Array<{
+            __typename?: 'Tagset';
+            id: string;
+            name: string;
+            tags: Array<string>;
+            allowedValues: Array<string>;
+            type: TagsetType;
+          }>
+        | undefined;
+    };
   };
 };
 
@@ -29387,10 +29415,10 @@ export type RecentForumMessagesQuery = {
   platform: {
     __typename?: 'Platform';
     id: string;
-    communication: {
-      __typename?: 'Communication';
+    forum: {
+      __typename?: 'Forum';
       id: string;
-      discussionCategories: Array<DiscussionCategory>;
+      discussionCategories: Array<ForumDiscussionCategory>;
       authorization?:
         | {
             __typename?: 'Authorization';
@@ -29403,7 +29431,7 @@ export type RecentForumMessagesQuery = {
         | Array<{
             __typename?: 'Discussion';
             id: string;
-            category: DiscussionCategory;
+            category: ForumDiscussionCategory;
             timestamp?: number | undefined;
             createdBy?: string | undefined;
             profile: {
