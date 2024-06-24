@@ -10,17 +10,12 @@ import { useNotification } from '../../../../../core/ui/notifications/useNotific
 import Loading from '../../../../../core/ui/loading/Loading';
 import ListPage from '../../components/ListPage';
 import { SearchableListItem, searchableListItemMapper } from '../../components/SearchableList';
-import {
-  AuthorizationPrivilege,
-  LicenseFeatureFlagName,
-  SpaceVisibility,
-} from '../../../../../core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, SpaceVisibility } from '../../../../../core/apollo/generated/graphql-schema';
 import { useResolvedPath } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { buildSettingsUrl } from '../../../../../main/routing/urlBuilders';
 import SpaceListItem from './SpaceListItem';
 import { sortBy } from 'lodash';
-import { licenseHasFeature } from '../../../../journey/space/license/useLicenseFeatures';
 
 export const SpaceList: FC = () => {
   const { pathname: url } = useResolvedPath('.');
@@ -58,21 +53,27 @@ export const SpaceList: FC = () => {
           displayName: space.profile.displayName,
           url: buildSettingsUrl(space.profile.url),
         }))
-        .map(space => ({
-          ...searchableListItemMapper()(space),
-          spaceId: space.id,
-          accountId: space.account.id,
-          nameId: space.nameID,
-          account: {
-            visibility: space.account.license.visibility,
-            hostId: space.account.host?.id,
-            features: Object.values(LicenseFeatureFlagName).reduce((acc, licenseFeature) => {
-              acc[licenseFeature] = licenseHasFeature(licenseFeature, space.account.license);
-              return acc;
-            }, {} as Record<LicenseFeatureFlagName, boolean>),
-            organizations,
-          },
-        })) ?? []
+        .map(space => {
+          const activeLicenseCredentials = space.account.subscriptions.map(subscription => subscription.name);
+          // TODO filter out expired ones
+          const activeLicensePlanIds = spacesData?.platform.licensing.plans
+            .filter(({ licenseCredential }) => activeLicenseCredentials.includes(licenseCredential))
+            .map(({ id }) => id);
+
+          return {
+            ...searchableListItemMapper()(space),
+            spaceId: space.id,
+            accountId: space.account.id,
+            nameId: space.nameID,
+            account: {
+              visibility: space.account.license.visibility,
+              hostId: space.account.host?.id,
+              activeLicensePlanIds,
+              organizations,
+            },
+            licensePlans: spacesData?.platform.licensing.plans,
+          };
+        }) ?? []
     );
   }, [spacesData, organizations]);
 

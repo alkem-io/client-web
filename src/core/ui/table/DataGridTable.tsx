@@ -115,7 +115,7 @@ const DataGridTable = <Item extends Identifiable>({
         render: ({ row }) =>
           canDelete(row) && (
             <IconButton onClick={() => onDelete(row)} disabled={disableDelete(row)} aria-label={t('buttons.delete')}>
-              <DeleteOutlineIcon color="warning" />
+              <DeleteOutlineIcon color={disableDelete(row) ? 'disabled' : 'warning'} />
             </IconButton>
           ),
       });
