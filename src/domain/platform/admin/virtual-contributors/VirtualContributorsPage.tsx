@@ -1,13 +1,10 @@
 import React, { FC } from 'react';
-import { Link, useLocation } from 'react-router-dom';
 import AdminLayout from '../layout/toplevel/AdminLayout';
 import { AdminSection } from '../layout/toplevel/constants';
 import { useAdminVirtualContributorsQuery } from '../../../../core/apollo/generated/apollo-hooks';
-import { Button } from '@mui/material';
 import Avatar from '../../../../core/ui/avatar/Avatar';
 import { BlockTitle } from '../../../../core/ui/typography';
 import { useTranslation } from 'react-i18next';
-import { Actions } from '../../../../core/ui/actions/Actions';
 import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
 import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
 import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
@@ -17,7 +14,6 @@ import Loading from '../../../../core/ui/loading/Loading';
 const VirtualContributorsPage: FC = () => {
   const { t } = useTranslation();
   const { data, loading: loadingVCs } = useAdminVirtualContributorsQuery();
-  const location = useLocation();
 
   return (
     <AdminLayout currentTab={AdminSection.VirtualContributors}>
