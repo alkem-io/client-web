@@ -76,9 +76,9 @@ const NewMembershipsBlock = ({
 
   const { data, refetch: refetchNewMembershipsQuery } = useNewMembershipsQuery();
 
-  const invitations = useMemo(
+  const communityInvitations = useMemo(
     () =>
-      data?.me.invitations.map(
+      data?.me.communityInvitations.map(
         invitation =>
           ({
             type: PendingMembershipItemType.Invitation,
@@ -86,21 +86,21 @@ const NewMembershipsBlock = ({
             spaceLevel: invitation.spaceLevel as JourneyLevel,
           } as const)
       ) ?? [],
-    [data?.me.invitations]
+    [data?.me.communityInvitations]
   );
 
-  const pendingInvitations = useMemo(
+  const pendingCommunityInvitations = useMemo(
     () =>
       sortBy(
-        invitations.filter(invitation => !RECENT_MEMBERSHIP_STATES.includes(invitation.state)),
+        communityInvitations.filter(invitation => !RECENT_MEMBERSHIP_STATES.includes(invitation.state)),
         ({ createdDate }) => createdDate
       ).reverse(),
-    [invitations]
+    [communityInvitations]
   );
 
-  const applications = useMemo(
+  const communityApplications = useMemo(
     () =>
-      data?.me.applications.map(
+      data?.me.communityApplications.map(
         application =>
           ({
             type: PendingMembershipItemType.Application,
@@ -108,30 +108,34 @@ const NewMembershipsBlock = ({
             spaceLevel: application.spaceLevel as JourneyLevel,
           } as const)
       ) ?? [],
-    [data?.me.applications]
+    [data?.me.communityApplications]
   );
 
-  const pendingApplications = applications.filter(invitation => !RECENT_MEMBERSHIP_STATES.includes(invitation.state));
+  const pendingCommunityApplications = communityApplications.filter(
+    invitation => !RECENT_MEMBERSHIP_STATES.includes(invitation.state)
+  );
 
   const recentPendingApplications = useMemo(
     () =>
-      sortBy(pendingApplications, ({ createdDate }) => createdDate)
+      sortBy(pendingCommunityApplications, ({ createdDate }) => createdDate)
         .reverse()
-        .slice(0, Math.max(0, PENDING_MEMBERSHIPS_MAX_ITEMS - pendingInvitations.length)),
-    [applications]
+        .slice(0, Math.max(0, PENDING_MEMBERSHIPS_MAX_ITEMS - pendingCommunityInvitations.length)),
+    [communityApplications]
   );
 
-  const pendingMembershipsCount = pendingInvitations.length + recentPendingApplications.length;
+  const pendingMembershipsCount = pendingCommunityInvitations.length + recentPendingApplications.length;
 
   const recentMemberships = useMemo(
     () =>
       sortBy(
-        [...invitations, ...applications].filter(({ state }) => RECENT_MEMBERSHIP_STATES.includes(state)),
+        [...communityInvitations, ...communityApplications].filter(({ state }) =>
+          RECENT_MEMBERSHIP_STATES.includes(state)
+        ),
         ({ createdDate }) => createdDate
       )
         .reverse()
         .slice(0, Math.max(0, PENDING_MEMBERSHIPS_MAX_ITEMS - pendingMembershipsCount - 1)),
-    [invitations, applications]
+    [communityInvitations, communityApplications]
   );
 
   const mySpaces = data?.me.mySpaces ?? [];
@@ -151,7 +155,7 @@ const NewMembershipsBlock = ({
 
   const currentInvitation =
     openDialog?.type === DialogType.InvitationView
-      ? invitations?.find(invitation => invitation.id === openDialog.invitationId)
+      ? communityInvitations?.find(invitation => invitation.id === openDialog.invitationId)
       : undefined;
 
   const handleInvitationDialogClose = () => {
@@ -186,7 +190,7 @@ const NewMembershipsBlock = ({
       <PageContentBlock halfWidth={halfWidth} disableGap flex>
         <PageContentBlockHeader title={t('pages.home.sections.newMemberships.title')} />
 
-        {pendingInvitations.length === 0 && recentPendingApplications.length === 0 && (
+        {pendingCommunityInvitations.length === 0 && recentPendingApplications.length === 0 && (
           <CaptionSmall color={theme => theme.palette.neutral.light} marginBottom={gutters(0.5)}>
             {t('pages.home.sections.newMemberships.noOpenInvitations')}
           </CaptionSmall>
@@ -196,11 +200,11 @@ const NewMembershipsBlock = ({
           title={
             <>
               {t('pages.home.sections.newMemberships.openInvitations')}
-              <BadgeCounter count={pendingInvitations.length} size="small" />
+              <BadgeCounter count={pendingCommunityInvitations.length} size="small" />
             </>
           }
         >
-          {pendingInvitations.slice(0, PENDING_MEMBERSHIPS_MAX_ITEMS).map(pendingInvitation => (
+          {pendingCommunityInvitations.slice(0, PENDING_MEMBERSHIPS_MAX_ITEMS).map(pendingInvitation => (
             <InvitationHydrator
               key={pendingInvitation.id}
               invitation={pendingInvitation}
@@ -322,13 +326,13 @@ const NewMembershipsBlock = ({
           onClose={closeDialog}
         />
         <Gutters paddingTop={0}>
-          {pendingInvitations && pendingInvitations.length > 0 && (
+          {pendingCommunityInvitations && pendingCommunityInvitations.length > 0 && (
             <>
               <BlockSectionTitle>
                 {t('community.pendingMembership.invitationsSectionTitle')}
-                <BadgeCounter count={pendingInvitations.length} size="small" />
+                <BadgeCounter count={pendingCommunityInvitations.length} size="small" />
               </BlockSectionTitle>
-              {pendingInvitations?.map(invitation => (
+              {pendingCommunityInvitations?.map(invitation => (
                 <InvitationHydrator key={invitation.id} invitation={invitation}>
                   {({ invitation }) => (
                     <InvitationCardHorizontal
@@ -340,11 +344,11 @@ const NewMembershipsBlock = ({
               ))}
             </>
           )}
-          {pendingApplications && pendingApplications.length > 0 && (
+          {pendingCommunityApplications && pendingCommunityApplications.length > 0 && (
             <>
               <BlockSectionTitle>{t('community.pendingMembership.applicationsSectionTitle')}</BlockSectionTitle>
               <ScrollableCardsLayoutContainer>
-                {pendingApplications?.map(application => (
+                {pendingCommunityApplications?.map(application => (
                   <ApplicationHydrator key={application.id} application={application} visualType={VisualType.Card}>
                     {({ application: hydratedApplication }) =>
                       hydratedApplication && (

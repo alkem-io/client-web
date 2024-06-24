@@ -2,15 +2,17 @@ import ListItemLink, { ListItemLinkProps } from '../../../../shared/components/S
 import React, { MouseEventHandler, useMemo, useState } from 'react';
 import * as yup from 'yup';
 import DialogWithGrid from '../../../../../core/ui/dialog/DialogWithGrid';
-import { Button, CircularProgress, DialogContent, FormLabel, ListItemIcon, RadioGroup, TextField } from '@mui/material';
+import { Button, CircularProgress, DialogContent, ListItemIcon, TextField } from '@mui/material';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import DialogHeader from '../../../../../core/ui/dialog/DialogHeader';
 import PageContentBlockSeamless from '../../../../../core/ui/content/PageContentBlockSeamless';
 import { Formik } from 'formik';
-import { LicenseFeatureFlagName, SpaceVisibility } from '../../../../../core/apollo/generated/graphql-schema';
+import { SpaceVisibility } from '../../../../../core/apollo/generated/graphql-schema';
 import FormikAutocomplete from '../../../../../core/ui/forms/FormikAutocomplete';
 import { FormikSelectValue } from '../../../../../core/ui/forms/FormikSelect';
 import {
+  useAssignLicensePlanToAccountMutation,
+  useRevokeLicensePlanFromAccountMutation,
   useUpdateAccountPlatformSettingsMutation,
   useUpdateSpacePlatformSettingsMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
@@ -21,8 +23,10 @@ import FormikInputField from '../../../../../core/ui/forms/FormikInputField/Form
 import { nameSegmentSchema } from '../../components/Common/NameSegment';
 import { LoadingButton } from '@mui/lab';
 import { gutters } from '../../../../../core/ui/grid/utils';
-import FormikCheckboxField from '../../../../../core/ui/forms/FormikCheckboxField';
 import useLoadingState from '../../../../shared/utils/useLoadingState';
+import PlansTable, { LicensePlan } from './PlansTable';
+import AssignPlan from './AssignPlan';
+import FlexSpacer from '../../../../../core/ui/utils/FlexSpacer';
 
 export interface SpacePlatformSettings {
   nameId: string;
@@ -31,24 +35,26 @@ export interface SpacePlatformSettings {
 export interface AccountPlatformSettings {
   hostId: string | undefined;
   visibility: SpaceVisibility;
-  features: Record<LicenseFeatureFlagName, boolean>;
   organizations: {
     id: string;
     name: string;
   }[];
+  activeLicensePlanIds: string[] | undefined;
 }
 
 interface SpaceListItemProps extends ListItemLinkProps, SpacePlatformSettings {
   spaceId: string;
   accountId: string;
   account: AccountPlatformSettings;
+  licensePlans: LicensePlan[] | undefined;
 }
 
 const SpaceListItem = ({
   spaceId,
   accountId,
   nameId,
-  account: { visibility, hostId, organizations, features },
+  account: { visibility, hostId, organizations, activeLicensePlanIds },
+  licensePlans,
   ...props
 }: SpaceListItemProps) => {
   const [isSettingsModalOpen, setSettingsModalOpen] = useState(false);
@@ -64,7 +70,6 @@ const SpaceListItem = ({
     accountSettings: {
       visibility,
       hostId,
-      features,
     },
     platformSettings: {
       nameId,
@@ -73,16 +78,17 @@ const SpaceListItem = ({
 
   const [updateAccountSettings] = useUpdateAccountPlatformSettingsMutation();
   const [updatePlatformSettings] = useUpdateSpacePlatformSettingsMutation();
+  const [assignLicensePlan] = useAssignLicensePlanToAccountMutation();
+  const [revokeLicensePlan] = useRevokeLicensePlanFromAccountMutation();
 
   const [handleSubmitAccountSettings, savingAccountSettings] = useLoadingState(
-    async ({ visibility, hostId, features }: Partial<AccountPlatformSettings>) => {
+    async ({ visibility, hostId }: Partial<AccountPlatformSettings>) => {
       await updateAccountSettings({
         variables: {
           accountId,
           hostId,
           license: {
             visibility,
-            featureFlags: Object.keys(features ?? {}).map(feature => ({ name: feature, enabled: features![feature] })),
           },
         },
       });
@@ -106,7 +112,7 @@ const SpaceListItem = ({
 
   const { t } = useTranslation();
 
-  const visiblitySelectOptions = useMemo<readonly FormikSelectValue[]>(
+  const visibilitySelectOptions = useMemo<readonly FormikSelectValue[]>(
     () =>
       [
         {
@@ -128,17 +134,13 @@ const SpaceListItem = ({
   const accountSettingsValidationSchema = yup.object().shape({
     hostId: yup.string().required(t('forms.validations.required')),
     visibility: yup.string().required(t('forms.validations.required')),
-    features: yup.object().shape(
-      Object.keys(features).reduce((acc, cur) => {
-        acc[cur] = yup.boolean().required(t('forms.validations.required'));
-        return acc;
-      }, {})
-    ),
   });
 
   const platformSettingsValidationSchema = yup.object().shape({
     nameId: nameSegmentSchema.fields?.nameID || yup.string(),
   });
+
+  const [isManageLicensePlansDialogOpen, setIsManageLicensePlansDialogOpen] = useState(false);
 
   return (
     <>
@@ -183,25 +185,14 @@ const SpaceListItem = ({
                 />
                 <FormikAutocomplete
                   name="visibility"
-                  values={visiblitySelectOptions}
+                  values={visibilitySelectOptions}
                   disablePortal={false}
                   disabled={loading}
                 />
-                <RadioGroup>
-                  <FormLabel component="legend">{t('pages.admin.space.settings.license-features.title')}</FormLabel>
-                  {Object.keys(features)
-                    .map(key => key as LicenseFeatureFlagName)
-                    .map(key => (
-                      <FormikCheckboxField
-                        key={`feature-checkbox-${key}`}
-                        title={t(`pages.admin.space.settings.license-features.features.${key}` as const)}
-                        name={`features.${key}`}
-                        disabled={loading}
-                      />
-                    ))}
-                </RadioGroup>
               </PageContentBlockSeamless>
-              <Actions padding={gutters()} justifyContent="end">
+              <Actions padding={gutters()}>
+                <Button onClick={() => setIsManageLicensePlansDialogOpen(true)}>Manage License Plans</Button>
+                <FlexSpacer />
                 <Button onClick={() => setSettingsModalOpen(false)}>{t('buttons.cancel')}</Button>
                 <LoadingButton variant="contained" loading={loading} onClick={() => handleSubmit()}>
                   {t('buttons.save')}
@@ -210,6 +201,22 @@ const SpaceListItem = ({
             </>
           )}
         </Formik>
+      </DialogWithGrid>
+      <DialogWithGrid open={isManageLicensePlansDialogOpen} onClose={() => setIsManageLicensePlansDialogOpen(false)}>
+        <DialogHeader title="Manage License Plans" onClose={() => setIsManageLicensePlansDialogOpen(false)} />
+        {licensePlans && (
+          <PlansTable
+            activeLicensePlanIds={activeLicensePlanIds}
+            licensePlans={licensePlans}
+            onDelete={plan => revokeLicensePlan({ variables: { accountId, licensePlanId: plan.id } })}
+          />
+        )}
+        {licensePlans && (
+          <AssignPlan
+            onAssignPlan={licensePlanId => assignLicensePlan({ variables: { accountId, licensePlanId } })}
+            licensePlans={licensePlans}
+          />
+        )}
       </DialogWithGrid>
       <DialogWithGrid open={isPlatformSettingsModalOpen} onClose={() => setSettingsModalOpen(false)}>
         <Formik
