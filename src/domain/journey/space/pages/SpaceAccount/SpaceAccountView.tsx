@@ -10,7 +10,7 @@ import { BlockTitle, Caption } from '../../../../../core/ui/typography';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import ContributorCardHorizontal from '../../../../../core/ui/card/ContributorCardHorizontal';
 import Gutters from '../../../../../core/ui/grid/Gutters';
-import { AuthorizationPrivilege, BodyOfKnowledgeType } from '../../../../../core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege } from '../../../../../core/apollo/generated/graphql-schema';
 import {
   refetchAdminSpacesListQuery,
   refetchSpaceSubspacesQuery,
@@ -180,23 +180,6 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
     [spaceData]
   );
 
-  const getBoKSpaceData = (bodyOfKnowledgeID: string) =>
-    spaceData?.space?.subspaces
-      .filter(subspace => subspace.id === bodyOfKnowledgeID)
-      .map(data => ({ profile: { displayName: data.profile.displayName, avatar: data.profile.avatar } }))[0];
-
-  const getBoKProfile = (bodyOfKnowledgeID: string) =>
-    spaceData?.space?.subspaces
-      .filter(subspace => subspace.id === bodyOfKnowledgeID)
-      .map(data => ({
-        profile: {
-          displayName: data.profile.displayName,
-          avatar: data.profile.avatar,
-          tagline: data.profile.tagline,
-          url: data.profile.url,
-        },
-      }))[0];
-
   const virtualContributors = spaceData?.space?.account?.virtualContributors;
 
   const [createVirtualContributorOnAccount, { loading: loadingVCCreation }] =
@@ -213,8 +196,12 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
             displayName,
           },
           accountID: spaceData?.space.account.id ?? '',
-          bodyOfKnowledgeID,
-          bodyOfKnowledgeType: BodyOfKnowledgeType.Space,
+          aiPersona: {
+            description: '',
+            aiPersonaService: {
+              bodyOfKnowledgeID,
+            },
+          },
         },
       },
     });
@@ -383,7 +370,7 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
                     <ContributorOnAccountCard
                       key={vc.id}
                       contributor={vc}
-                      space={getBoKSpaceData(vc.bodyOfKnowledgeID ?? '')}
+                      // space={getBoKSpaceData(vc.bodyOfKnowledgeID ?? '')}
                       hasDelete={canCreateVirtualContributor}
                       onDeleteClick={() => initiateDeleteVC(vc.nameID)}
                     />
@@ -440,7 +427,7 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
           {selectedVirtualContributor && (
             <EditVirtualContributorDialog
               virtualContributor={selectedVirtualContributor}
-              bok={getBoKProfile(selectedVirtualContributor.bodyOfKnowledgeID ?? '')}
+              // bok={getBoKProfile(selectedVirtualContributor.bodyOfKnowledgeID ?? '')}
               open={isEditVCDialogOpen}
               onClose={closeEditVCDialog}
               onSave={handleEditVirtualContributor}
