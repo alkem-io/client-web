@@ -1,17 +1,27 @@
 import { KEYWORDS_TAGSET, SKILLS_TAGSET } from '../../../common/tags/tagset.constants';
 import {
-  CommunityApplicationForRoleResult,
   AuthorizationPrivilege,
-  CommunityInvitationForRoleResult,
   MyPrivilegesFragment,
   UserDetailsFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
-import { InvitationItem } from '../providers/UserProvider/InvitationItem';
-import { Stateful } from '../../../shared/types/Stateful';
 import { JourneyLevel } from '../../../../main/routing/resolvers/RouteResolver';
-import { SpaceHostedItem } from '../../../journey/utils/SpaceHostedItem';
+import { Identifiable } from '../../../../core/utils/Identifiable';
+import { InvitationItem } from '../providers/UserProvider/InvitationItem';
 
-export interface PendingApplication extends SpaceHostedItem, Stateful {}
+export interface PendingApplication extends Identifiable {
+  space: Identifiable & {
+    level: JourneyLevel;
+    profile: {
+      displayName: string;
+      tagline: string;
+      url: string;
+    };
+  };
+  application: {
+    createdDate: Date | string;
+    lifecycle: { state?: string };
+  };
+}
 
 export interface UserMetadata {
   user: UserDetailsFragment;
@@ -22,28 +32,10 @@ export interface UserMetadata {
   pendingInvitations: InvitationItem[];
 }
 
-export const getPendingApplications = (applicationsData: CommunityApplicationForRoleResult[]) => {
-  return (
-    applicationsData.map<PendingApplication>(application => ({
-      ...application,
-      spaceLevel: application.spaceLevel as JourneyLevel,
-    })) || []
-  );
-};
-
-const getPendingInvitations = (invitationsData: CommunityInvitationForRoleResult[]) => {
-  return (
-    invitationsData.map<InvitationItem>(invitation => ({
-      ...invitation,
-      spaceLevel: invitation.spaceLevel as JourneyLevel,
-    })) || []
-  );
-};
-
 export const toUserMetadata = (
   user: UserDetailsFragment | undefined,
-  applications: CommunityApplicationForRoleResult[],
-  invitations: CommunityInvitationForRoleResult[],
+  applications: PendingApplication[],
+  invitations: InvitationItem[],
   platformLevelAuthorization: MyPrivilegesFragment | undefined
 ): UserMetadata | undefined => {
   if (!user) {
@@ -61,7 +53,7 @@ export const toUserMetadata = (
     hasPlatformPrivilege: hasPlatformPrivilege,
     keywords: user.profile.tagsets?.find(t => t.name.toLowerCase() === KEYWORDS_TAGSET)?.tags ?? [],
     skills: user.profile.tagsets?.find(t => t.name.toLowerCase() === SKILLS_TAGSET)?.tags ?? [],
-    pendingApplications: getPendingApplications(applications),
-    pendingInvitations: getPendingInvitations(invitations),
+    pendingApplications: applications,
+    pendingInvitations: invitations,
   };
 };

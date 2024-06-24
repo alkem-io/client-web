@@ -7,7 +7,7 @@ import { gutters } from '../../../../core/ui/grid/utils';
 import defaultJourneyAvatar from '../../../../domain/journey/defaultVisuals/Avatar.jpg';
 
 interface NewMembershipCardProps {
-  membership: JourneyDetails | undefined;
+  space: JourneyDetails | undefined;
   to?: string;
   onClick?: () => void;
   membershipType: 'application' | 'invitation' | 'membership';
@@ -17,13 +17,13 @@ const Wrapper = <D extends React.ElementType = ListItemButtonTypeMap['defaultCom
   ...props
 }: ListItemButtonProps<D, P>) => <ListItemButton component={ButtonBase} {...props} />;
 
-const NewMembershipCard = ({ membership, to, onClick, membershipType }: NewMembershipCardProps) => {
+const NewMembershipCard = ({ space, to, onClick, membershipType }: NewMembershipCardProps) => {
   const { t } = useTranslation();
 
   return (
     <BadgeCardView
       component={Wrapper}
-      visual={<Avatar src={membership?.journeyVisual?.uri || defaultJourneyAvatar} />}
+      visual={<Avatar src={space?.profile.visual?.uri || defaultJourneyAvatar} />}
       to={to}
       onClick={onClick}
       sx={{ textAlign: 'left', paddingLeft: gutters(0.5), width: '100%' }}
@@ -36,13 +36,13 @@ const NewMembershipCard = ({ membership, to, onClick, membershipType }: NewMembe
             b: <strong />,
           }}
           values={{
-            journey: membership?.journeyDisplayName,
+            journey: space?.profile.displayName,
           }}
         />
       </Caption>
       <Caption color={theme => theme.palette.neutral.light}>
         {t(`pages.home.sections.newMemberships.${membershipType}.caption` as const, {
-          tagline: membership?.journeyTagline,
+          tagline: space?.profile.tagline,
         })}
       </Caption>
     </BadgeCardView>

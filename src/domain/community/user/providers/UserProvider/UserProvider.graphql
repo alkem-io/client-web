@@ -10,14 +10,20 @@ query UserProvider {
         id
         level
         profile {
+          id
           displayName
+          tagline
+          url
         }
       }
       application {
         id
+        lifecycle {
+          id
+          state
+        }
+        createdDate
       }
-      state
-      createdDate
     }
     communityInvitations(states: ["invited"]) {
       id
@@ -25,7 +31,10 @@ query UserProvider {
         id
         level
         profile {
+          id
           displayName
+          tagline
+          url
         }
       }
       invitation {
@@ -34,10 +43,12 @@ query UserProvider {
         createdBy {
           id
         }
+        lifecycle {
+          id
+          state
+        }
         createdDate
       }
-      state
-      createdDate
     }
   }
 }

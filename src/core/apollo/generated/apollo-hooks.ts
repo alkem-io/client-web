@@ -3681,6 +3681,18 @@ export const MyMembershipsChildJourneyProfileFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
 `;
+export const NewMembershipsBasicSpaceFragmentDoc = gql`
+  fragment NewMembershipsBasicSpace on Space {
+    id
+    level
+    profile {
+      id
+      displayName
+      tagline
+      url
+    }
+  }
+`;
 export const RecentJourneyProfileFragmentDoc = gql`
   fragment RecentJourneyProfile on Profile {
     id
@@ -14306,14 +14318,20 @@ export const UserProviderDocument = gql`
           id
           level
           profile {
+            id
             displayName
+            tagline
+            url
           }
         }
         application {
           id
+          lifecycle {
+            id
+            state
+          }
+          createdDate
         }
-        state
-        createdDate
       }
       communityInvitations(states: ["invited"]) {
         id
@@ -14321,7 +14339,10 @@ export const UserProviderDocument = gql`
           id
           level
           profile {
+            id
             displayName
+            tagline
+            url
           }
         }
         invitation {
@@ -14330,10 +14351,12 @@ export const UserProviderDocument = gql`
           createdBy {
             id
           }
+          lifecycle {
+            id
+            state
+          }
           createdDate
         }
-        state
-        createdDate
       }
     }
   }
@@ -23233,26 +23256,21 @@ export const NewMembershipsDocument = gql`
       communityApplications(states: ["new", "approved"]) {
         id
         space {
-          id
-          level
-          profile {
-            displayName
-          }
+          ...NewMembershipsBasicSpace
         }
         application {
           id
+          lifecycle {
+            id
+            state
+          }
+          createdDate
         }
-        state
-        createdDate
       }
       communityInvitations(states: ["invited", "accepted"]) {
         id
         space {
-          id
-          level
-          profile {
-            displayName
-          }
+          ...NewMembershipsBasicSpace
         }
         invitation {
           id
@@ -23260,18 +23278,21 @@ export const NewMembershipsDocument = gql`
           createdBy {
             id
           }
+          lifecycle {
+            id
+            state
+          }
+          createdDate
         }
-        state
-        createdDate
       }
       mySpaces(showOnlyMyCreatedSpaces: true) {
         space {
-          id
-          spaceID: id
+          ...NewMembershipsBasicSpace
         }
       }
     }
   }
+  ${NewMembershipsBasicSpaceFragmentDoc}
 `;
 
 /**

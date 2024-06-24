@@ -1,5 +1,5 @@
 import React from 'react';
-import { InvitationWithMeta } from '../../pendingMembership/PendingMemberships';
+import { getChildJourneyTypeName, InvitationWithMeta } from '../../pendingMembership/PendingMemberships';
 import JourneyAvatar from '../../../journey/common/JourneyAvatar/JourneyAvatar';
 import { BlockSectionTitle, CardText } from '../../../../core/ui/typography';
 import { gutters } from '../../../../core/ui/grid/utils';
@@ -21,14 +21,17 @@ const InvitationCardHorizontal = ({ invitation, onClick }: InvitationCardHorizon
   return (
     <BadgeCardView
       component={LinkButton}
-      visual={<JourneyAvatar src={invitation.journeyVisual?.uri} />}
+      visual={<JourneyAvatar src={invitation.space.profile.visual?.uri} />}
       onClick={onClick}
       outlined
     >
       <BlockSectionTitle noWrap>
         <DetailedActivityDescription
           i18nKey="community.pendingMembership.invitationTitle"
-          {...invitation}
+          journeyDisplayName={invitation.space.profile.displayName}
+          journeyUrl={invitation.space.profile.url}
+          journeyTypeName={getChildJourneyTypeName(invitation.space)}
+          createdDate={invitation.invitation.createdDate}
           author={{ displayName: invitation.userDisplayName }}
         />
       </BlockSectionTitle>
@@ -40,9 +43,9 @@ const InvitationCardHorizontal = ({ invitation, onClick }: InvitationCardHorizon
         }}
         noWrap
       >
-        {invitation.welcomeMessage && (
+        {invitation.invitation.welcomeMessage && (
           <WrapperMarkdown card plain>
-            {invitation.welcomeMessage}
+            {invitation.invitation.welcomeMessage}
           </WrapperMarkdown>
         )}
       </CardText>

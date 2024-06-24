@@ -9,25 +9,28 @@ import { Visual } from '../../common/visual/Visual';
 import { InvitationItem } from '../user/providers/UserProvider/InvitationItem';
 import { CommunityGuidelinesSummaryFragment, VisualType } from '../../../core/apollo/generated/graphql-schema';
 import { JourneyLevel } from '../../../main/routing/resolvers/RouteResolver';
+import { Identifiable } from '../../../core/utils/Identifiable';
 
 export interface JourneyDetails {
-  journeyTypeName: JourneyTypeName;
-  journeyDisplayName: string;
-  journeyTagline: string | undefined;
-  journeyTags: string[] | undefined;
-  journeyVisual: Visual | undefined;
-  journeyUri: string | undefined;
+  profile: {
+    displayName: string;
+    tagline: string;
+    url: string;
+    tagset?: {
+      tags: string[];
+    };
+    visual?: Visual | undefined;
+  };
+  level: JourneyLevel;
 }
 
-export interface InvitationWithMeta extends JourneyDetails {
-  id: string;
+export interface InvitationWithMeta extends Omit<InvitationItem, 'space'> {
   userDisplayName: string | undefined;
-  welcomeMessage: string | undefined;
-  createdDate: Date | string;
+  space: JourneyDetails;
 }
 
-interface ApplicationWithMeta extends JourneyDetails {
-  id: string;
+interface ApplicationWithMeta extends Identifiable {
+  space: JourneyDetails;
 }
 
 interface UsePendingMembershipsProvided {
@@ -64,8 +67,8 @@ type InvitationHydratorProps = {
     }
 );
 
-const getChildJourneyTypeName = ({ spaceLevel }: { spaceLevel: JourneyLevel }): JourneyTypeName =>
-  ['space', 'subspace', 'subsubspace'][spaceLevel] as JourneyTypeName;
+export const getChildJourneyTypeName = ({ level }: { level: JourneyLevel }): JourneyTypeName =>
+  ['space', 'subspace', 'subsubspace'][level] as JourneyTypeName;
 
 export const InvitationHydrator = ({
   invitation,
@@ -78,10 +81,10 @@ export const InvitationHydrator = ({
 }: InvitationHydratorProps) => {
   const { data: spaceData } = usePendingMembershipsSpaceQuery({
     variables: {
-      spaceId: invitation.spaceID,
+      spaceId: invitation.space.id,
       fetchDetails: withJourneyDetails,
       fetchCommunityGuidelines: withCommunityGuidelines,
-      visualType: invitation.spaceLevel === 0 && visualType === VisualType.Avatar ? VisualType.Card : visualType, // Spaces don't have avatars
+      visualType: invitation.space.level === 0 && visualType === VisualType.Avatar ? VisualType.Card : visualType, // Spaces don't have avatars
     },
   });
 
@@ -89,28 +92,28 @@ export const InvitationHydrator = ({
 
   const { data: userData } = usePendingMembershipsUserQuery({
     variables: {
-      userId: invitation.createdBy,
+      userId: invitation.invitation.createdBy.id,
     },
   });
 
   const createdBy = userData?.user;
 
   const hydratedInvitation = useMemo<InvitationWithMeta | undefined>(() => {
-    if (!invitation || !journey) {
+    if (!invitation) {
       return undefined;
     }
 
     return {
-      id: invitation.id,
-      welcomeMessage: invitation.welcomeMessage,
-      createdDate: invitation.createdDate,
+      ...invitation,
       userDisplayName: createdBy?.profile.displayName,
-      journeyDisplayName: journey.profile.displayName,
-      journeyTypeName: getChildJourneyTypeName(invitation),
-      journeyUri: journey.profile.url,
-      journeyTagline: journey.profile.tagline,
-      journeyTags: journey.profile.tagset?.tags,
-      journeyVisual: journey.profile.visual,
+      space: {
+        ...invitation.space,
+        ...journey,
+        profile: {
+          ...invitation.space.profile,
+          ...journey?.profile,
+        },
+      },
     };
   }, [invitation, journey, createdBy]);
 
@@ -132,26 +135,28 @@ interface ApplicationHydratorProps {
 export const ApplicationHydrator = ({ application, visualType, children }: ApplicationHydratorProps) => {
   const { data: spaceData } = usePendingMembershipsSpaceQuery({
     variables: {
-      spaceId: application.spaceID,
+      spaceId: application.space.id,
       fetchDetails: true,
-      visualType: application.spaceLevel === 0 && visualType === VisualType.Avatar ? VisualType.Card : visualType, // Spaces don't have avatars
+      visualType: application.space.level === 0 && visualType === VisualType.Avatar ? VisualType.Card : visualType, // Spaces don't have avatars
     },
   });
 
   const journey = spaceData?.lookup.space;
 
   const hydratedApplication = useMemo<ApplicationWithMeta | undefined>(() => {
-    if (!application || !journey) {
+    if (!application) {
       return undefined;
     }
     return {
-      id: application.id,
-      journeyDisplayName: journey.profile.displayName,
-      journeyTypeName: getChildJourneyTypeName(application),
-      journeyUri: journey.profile.url,
-      journeyTagline: journey.profile.tagline,
-      journeyTags: journey.profile.tagset?.tags,
-      journeyVisual: journey.profile.visual,
+      ...application,
+      space: {
+        ...application.space,
+        ...journey,
+        profile: {
+          ...application.space.profile,
+          ...journey?.profile,
+        },
+      },
     };
   }, [application, journey]);
 

@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import { InvitationHydrator } from '../pendingMembership/PendingMemberships';
+import { getChildJourneyTypeName, InvitationHydrator } from '../pendingMembership/PendingMemberships';
 import DialogHeader from '../../../core/ui/dialog/DialogHeader';
 import Gutters from '../../../core/ui/grid/Gutters';
 import { CheckOutlined, HdrStrongOutlined } from '@mui/icons-material';
@@ -62,7 +62,7 @@ const InvitationDialog = ({
                     <Gutters row disablePadding>
                       <HdrStrongOutlined fontSize="small" />
                       {t('community.pendingMembership.invitationDialog.title', {
-                        journey: invitation?.journeyDisplayName,
+                        journey: invitation?.space.profile.displayName,
                       })}
                     </Gutters>
                   }
@@ -71,23 +71,26 @@ const InvitationDialog = ({
                 <DialogContent sx={{ padding: 0 }}>
                   <Gutters paddingTop={0} row alignItems="start">
                     <JourneyCard
-                      iconComponent={journeyIcon[invitation.journeyTypeName]}
-                      header={invitation.journeyDisplayName}
-                      tags={invitation.journeyTags ?? []}
-                      banner={invitation.journeyVisual}
-                      journeyUri={invitation.journeyUri}
+                      iconComponent={journeyIcon[getChildJourneyTypeName(invitation.space)]}
+                      header={invitation.space.profile.displayName}
+                      tags={invitation.space.profile.tagset?.tags ?? []}
+                      banner={invitation.space.profile.visual}
+                      journeyUri={invitation.space.profile.url}
                     >
-                      <JourneyCardTagline>{invitation.journeyTagline ?? ''}</JourneyCardTagline>
+                      <JourneyCardTagline>{invitation.space.profile.tagline}</JourneyCardTagline>
                     </JourneyCard>
                     <Gutters disablePadding>
                       <Caption>
                         <DetailedActivityDescription
                           i18nKey="community.pendingMembership.invitationTitle"
-                          {...invitation}
+                          journeyDisplayName={invitation.space.profile.displayName}
+                          journeyUrl={invitation.space.profile.url}
+                          journeyTypeName={getChildJourneyTypeName(invitation.space)}
+                          createdDate={invitation.invitation.createdDate}
                           author={{ displayName: invitation.userDisplayName }}
                         />
                       </Caption>
-                      {invitation.welcomeMessage && <Text>{invitation.welcomeMessage}</Text>}
+                      {invitation.invitation.welcomeMessage && <Text>{invitation.invitation.welcomeMessage}</Text>}
                       {communityGuidelines && (
                         <>
                           <BlockSectionTitle paddingTop={gutters()}>

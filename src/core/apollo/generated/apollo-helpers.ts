@@ -13,6 +13,7 @@ export type AccountKeySpecifier = (
   | 'id'
   | 'library'
   | 'license'
+  | 'licensePrivileges'
   | 'spaceID'
   | 'subscriptions'
   | 'virtualContributors'
@@ -27,6 +28,7 @@ export type AccountFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   library?: FieldPolicy<any> | FieldReadFunction<any>;
   license?: FieldPolicy<any> | FieldReadFunction<any>;
+  licensePrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
   spaceID?: FieldPolicy<any> | FieldReadFunction<any>;
   subscriptions?: FieldPolicy<any> | FieldReadFunction<any>;
   virtualContributors?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1361,27 +1363,15 @@ export type LibraryFieldPolicy = {
   innovationPacks?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type LicenseKeySpecifier = (
-  | 'authorization'
-  | 'featureFlags'
-  | 'id'
-  | 'privileges'
-  | 'visibility'
-  | LicenseKeySpecifier
-)[];
+export type LicenseKeySpecifier = ('authorization' | 'id' | 'visibility' | LicenseKeySpecifier)[];
 export type LicenseFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  featureFlags?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
-  privileges?: FieldPolicy<any> | FieldReadFunction<any>;
   visibility?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type LicenseFeatureFlagKeySpecifier = ('enabled' | 'name' | LicenseFeatureFlagKeySpecifier)[];
-export type LicenseFeatureFlagFieldPolicy = {
-  enabled?: FieldPolicy<any> | FieldReadFunction<any>;
-  name?: FieldPolicy<any> | FieldReadFunction<any>;
-};
 export type LicensePlanKeySpecifier = (
+  | 'assignToNewOrganizationAccounts'
+  | 'assignToNewUserAccounts'
   | 'enabled'
   | 'id'
   | 'isFree'
@@ -1392,9 +1382,12 @@ export type LicensePlanKeySpecifier = (
   | 'requiresPaymentMethod'
   | 'sortOrder'
   | 'trialEnabled'
+  | 'type'
   | LicensePlanKeySpecifier
 )[];
 export type LicensePlanFieldPolicy = {
+  assignToNewOrganizationAccounts?: FieldPolicy<any> | FieldReadFunction<any>;
+  assignToNewUserAccounts?: FieldPolicy<any> | FieldReadFunction<any>;
   enabled?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   isFree?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1405,35 +1398,28 @@ export type LicensePlanFieldPolicy = {
   requiresPaymentMethod?: FieldPolicy<any> | FieldReadFunction<any>;
   sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
   trialEnabled?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type LicensePolicyKeySpecifier = ('authorization' | 'featureFlagRules' | 'id' | LicensePolicyKeySpecifier)[];
+export type LicensePolicyKeySpecifier = ('authorization' | 'credentialRules' | 'id' | LicensePolicyKeySpecifier)[];
 export type LicensePolicyFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  featureFlagRules?: FieldPolicy<any> | FieldReadFunction<any>;
+  credentialRules?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type LicensePolicyRuleFeatureFlagKeySpecifier = (
-  | 'featureFlagName'
+export type LicensePolicyCredentialRuleKeySpecifier = (
+  | 'credentialType'
   | 'grantedPrivileges'
   | 'name'
-  | LicensePolicyRuleFeatureFlagKeySpecifier
+  | LicensePolicyCredentialRuleKeySpecifier
 )[];
-export type LicensePolicyRuleFeatureFlagFieldPolicy = {
-  featureFlagName?: FieldPolicy<any> | FieldReadFunction<any>;
+export type LicensePolicyCredentialRuleFieldPolicy = {
+  credentialType?: FieldPolicy<any> | FieldReadFunction<any>;
   grantedPrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
   name?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type LicensingKeySpecifier = (
-  | 'authorization'
-  | 'basePlan'
-  | 'id'
-  | 'plans'
-  | 'policy'
-  | LicensingKeySpecifier
-)[];
+export type LicensingKeySpecifier = ('authorization' | 'id' | 'plans' | 'policy' | LicensingKeySpecifier)[];
 export type LicensingFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  basePlan?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   plans?: FieldPolicy<any> | FieldReadFunction<any>;
   policy?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3501,10 +3487,6 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | LicenseKeySpecifier | (() => undefined | LicenseKeySpecifier);
     fields?: LicenseFieldPolicy;
   };
-  LicenseFeatureFlag?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | LicenseFeatureFlagKeySpecifier | (() => undefined | LicenseFeatureFlagKeySpecifier);
-    fields?: LicenseFeatureFlagFieldPolicy;
-  };
   LicensePlan?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | LicensePlanKeySpecifier | (() => undefined | LicensePlanKeySpecifier);
     fields?: LicensePlanFieldPolicy;
@@ -3513,12 +3495,12 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | LicensePolicyKeySpecifier | (() => undefined | LicensePolicyKeySpecifier);
     fields?: LicensePolicyFieldPolicy;
   };
-  LicensePolicyRuleFeatureFlag?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+  LicensePolicyCredentialRule?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:
       | false
-      | LicensePolicyRuleFeatureFlagKeySpecifier
-      | (() => undefined | LicensePolicyRuleFeatureFlagKeySpecifier);
-    fields?: LicensePolicyRuleFeatureFlagFieldPolicy;
+      | LicensePolicyCredentialRuleKeySpecifier
+      | (() => undefined | LicensePolicyCredentialRuleKeySpecifier);
+    fields?: LicensePolicyCredentialRuleFieldPolicy;
   };
   Licensing?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | LicensingKeySpecifier | (() => undefined | LicensingKeySpecifier);

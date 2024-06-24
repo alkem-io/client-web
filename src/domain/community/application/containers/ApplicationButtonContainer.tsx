@@ -104,13 +104,13 @@ export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = (
     update: cache => clearCacheForType(cache, 'Authorization'),
   });
 
-  const userApplication = user?.pendingApplications?.find(x => x.spaceID === journeyId);
+  const userApplication = user?.pendingApplications?.find(x => x.space.id === journeyId);
 
-  const userInvitation = user?.pendingInvitations?.find(x => x.spaceID === journeyId);
+  const userInvitation = user?.pendingInvitations?.find(x => x.space.id === journeyId);
 
   // find an application which does not have a challengeID, meaning it's on space level,
   // but you are at least at challenge level to have a parent application
-  const parentApplication = user?.pendingApplications?.find(x => x.spaceID === parentSpaceId);
+  const parentApplication = user?.pendingApplications?.find(x => x.space.id === parentSpaceId);
 
   const isMember = space?.community.myMembershipStatus === CommunityMembershipStatus.Member;
 
@@ -165,9 +165,9 @@ export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = (
     isParentMember,
     applyUrl,
     parentUrl,
-    applicationState: userApplication?.state,
+    applicationState: userApplication?.application.lifecycle.state,
     userInvitation,
-    parentApplicationState: parentApplication?.state,
+    parentApplicationState: parentApplication?.application.lifecycle.state,
     spaceName,
     challengeName,
     canJoinCommunity,
