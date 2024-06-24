@@ -10,7 +10,11 @@ import { BlockTitle, Caption } from '../../../../../core/ui/typography';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import ContributorCardHorizontal from '../../../../../core/ui/card/ContributorCardHorizontal';
 import Gutters from '../../../../../core/ui/grid/Gutters';
-import { AuthorizationPrivilege, BodyOfKnowledgeType } from '../../../../../core/apollo/generated/graphql-schema';
+import {
+  AuthorizationPrivilege,
+  BodyOfKnowledgeType,
+  LicensePlanType,
+} from '../../../../../core/apollo/generated/graphql-schema';
 import {
   refetchAdminSpacesListQuery,
   refetchSpaceSubspacesQuery,
@@ -78,6 +82,7 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
   const plansData = useMemo(() => {
     // Need to clone the array to be able to sort it:
     const plans = [...(data?.platform.licensing.plans ?? [])]
+      .filter(plan => plan.type === LicensePlanType.SpacePlan)
       .sort((a, b) => a.sortOrder - b.sortOrder)
       .map(plan => ({
         ...plan,
