@@ -52,8 +52,6 @@ export type Account = {
   library?: Maybe<TemplatesSet>;
   /** The License governing platform functionality in use by this Account */
   license: License;
-  /** The privileges granted based on the License credentials held by this Account. */
-  licensePrivileges?: Maybe<Array<LicensePrivilege>>;
   /** The ID for the root space for the Account . */
   spaceID: Scalars['String'];
   /** The subscriptions active for this Account. */
@@ -1232,6 +1230,20 @@ export type CommunityApplicationForRoleResult = {
   updatedDate: Scalars['DateTime'];
 };
 
+export type CommunityApplicationResult = {
+  __typename?: 'CommunityApplicationResult';
+  /** The application itself */
+  application: Application;
+  /** Date of creation */
+  createdDate: Scalars['DateTime'];
+  /** ID for the pending membership */
+  id: Scalars['UUID'];
+  /** The space that the application is for */
+  space: Space;
+  /** The current state of the invitation. */
+  state: Scalars['String'];
+};
+
 export type CommunityApplyInput = {
   communityID: Scalars['UUID'];
   questions: Array<CreateNvpInput>;
@@ -1291,6 +1303,20 @@ export type CommunityInvitationForRoleResult = {
   updatedDate: Scalars['DateTime'];
   /** The welcome message of the invitation */
   welcomeMessage?: Maybe<Scalars['UUID']>;
+};
+
+export type CommunityInvitationResult = {
+  __typename?: 'CommunityInvitationResult';
+  /** Date of creation */
+  createdDate: Scalars['DateTime'];
+  /** ID for the pending membership */
+  id: Scalars['UUID'];
+  /** The inviation itself */
+  invitation: Invitation;
+  /** The space that the application is for */
+  space: Space;
+  /** The current state of the invitation. */
+  state: Scalars['String'];
 };
 
 export type CommunityJoinInput = {
@@ -1616,29 +1642,9 @@ export type CreateInvitationUserByEmailOnCommunityInput = {
 };
 
 export type CreateLicensePlanOnLicensingInput = {
-  /** Assign this plan to all new Organization accounts */
-  assignToNewOrganizationAccounts: Scalars['Boolean'];
-  /** Assign this plan to all new User accounts */
-  assignToNewUserAccounts: Scalars['Boolean'];
-  /** Is this plan enabled? */
-  enabled: Scalars['Boolean'];
-  /** Is this plan free? */
-  isFree: Scalars['Boolean'];
-  /** The credential to represent this plan */
-  licenseCredential: LicenseCredential;
   licensingID: Scalars['UUID'];
   /** The name of the License Plan */
   name: Scalars['String'];
-  /** The price per month of this plan. */
-  pricePerMonth?: InputMaybe<Scalars['Float']>;
-  /** Does this plan require contact support */
-  requiresContactSupport: Scalars['Boolean'];
-  /** Does this plan require a payment method? */
-  requiresPaymentMethod: Scalars['Boolean'];
-  /** The sorting order for this Plan. */
-  sortOrder: Scalars['Float'];
-  /** Is there a trial period enabled */
-  trialEnabled: Scalars['Boolean'];
 };
 
 export type CreateLinkInput = {
@@ -1853,9 +1859,6 @@ export type CredentialMetadataOutput = {
 export enum CredentialType {
   AccountHost = 'ACCOUNT_HOST',
   BetaTester = 'BETA_TESTER',
-  FeatureCalloutToCalloutTemplate = 'FEATURE_CALLOUT_TO_CALLOUT_TEMPLATE',
-  FeatureVirtualContributors = 'FEATURE_VIRTUAL_CONTRIBUTORS',
-  FeatureWhiteboardMultiUser = 'FEATURE_WHITEBOARD_MULTI_USER',
   GlobalAdmin = 'GLOBAL_ADMIN',
   GlobalCommunityRead = 'GLOBAL_COMMUNITY_READ',
   GlobalLicenseManager = 'GLOBAL_LICENSE_MANAGER',
@@ -2377,28 +2380,39 @@ export type License = {
   __typename?: 'License';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
+  /** The FeatureFlags for the license */
+  featureFlags: Array<LicenseFeatureFlag>;
   /** The ID of the entity */
   id: Scalars['UUID'];
+  /** The privileges granted based on this License. */
+  privileges?: Maybe<Array<LicensePrivilege>>;
   /** Visibility of the Space. */
   visibility: SpaceVisibility;
 };
 
 export enum LicenseCredential {
-  FeatureCalloutToCalloutTemplate = 'FEATURE_CALLOUT_TO_CALLOUT_TEMPLATE',
-  FeatureVirtualContributors = 'FEATURE_VIRTUAL_CONTRIBUTORS',
-  FeatureWhiteboardMultiUser = 'FEATURE_WHITEBOARD_MULTI_USER',
   LicenseSpaceEnterprise = 'LICENSE_SPACE_ENTERPRISE',
   LicenseSpaceFree = 'LICENSE_SPACE_FREE',
   LicenseSpacePlus = 'LICENSE_SPACE_PLUS',
   LicenseSpacePremium = 'LICENSE_SPACE_PREMIUM',
 }
 
+export type LicenseFeatureFlag = {
+  __typename?: 'LicenseFeatureFlag';
+  /** Is this feature flag enabled? */
+  enabled: Scalars['Boolean'];
+  /** The name of the feature flag */
+  name: LicenseFeatureFlagName;
+};
+
+export enum LicenseFeatureFlagName {
+  CalloutToCalloutTemplate = 'CALLOUT_TO_CALLOUT_TEMPLATE',
+  VirtualContributors = 'VIRTUAL_CONTRIBUTORS',
+  WhiteboardMultiUser = 'WHITEBOARD_MULTI_USER',
+}
+
 export type LicensePlan = {
   __typename?: 'LicensePlan';
-  /** Assign this plan to all new Organization accounts */
-  assignToNewOrganizationAccounts: Scalars['Boolean'];
-  /** Assign this plan to all new User accounts */
-  assignToNewUserAccounts: Scalars['Boolean'];
   /** Is this plan enabled? */
   enabled: Scalars['Boolean'];
   /** The ID of the entity */
@@ -2426,14 +2440,14 @@ export type LicensePolicy = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The set of credential rules that are contained by this License Policy. */
-  credentialRules: Array<LicensePolicyCredentialRule>;
+  featureFlagRules?: Maybe<Array<LicensePolicyRuleFeatureFlag>>;
   /** The ID of the entity */
   id: Scalars['UUID'];
 };
 
-export type LicensePolicyCredentialRule = {
-  __typename?: 'LicensePolicyCredentialRule';
-  credentialType: LicenseCredential;
+export type LicensePolicyRuleFeatureFlag = {
+  __typename?: 'LicensePolicyRuleFeatureFlag';
+  featureFlagName: LicenseFeatureFlagName;
   grantedPrivileges: Array<LicensePrivilege>;
   name?: Maybe<Scalars['String']>;
 };
@@ -2448,6 +2462,8 @@ export type Licensing = {
   __typename?: 'Licensing';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
+  /** The base License Plan assigned to all Accounts in use on the platform. */
+  basePlan: LicensePlan;
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** The License Plans in use on the platform. */
@@ -2644,9 +2660,9 @@ export type MeQueryResults = {
   /** Can I create a free space? */
   canCreateFreeSpace: Scalars['Boolean'];
   /** The community applicationscurrent authenticated user can act on. */
-  communityApplications: Array<CommunityApplicationForRoleResult>;
+  communityApplications: Array<CommunityApplicationResult>;
   /** The invitations the current authenticated user can act on. */
-  communityInvitations: Array<CommunityInvitationForRoleResult>;
+  communityInvitations: Array<CommunityInvitationResult>;
   /** The query id */
   id: Scalars['String'];
   /** The Spaces I am contributing to */
@@ -3686,6 +3702,8 @@ export type Nvp = {
 export type Organization = Contributor &
   Groupable & {
     __typename?: 'Organization';
+    /** The accounts hosted by this Organization. */
+    accounts: Array<Account>;
     /** All Users that are admins of this Organization. */
     admins?: Maybe<Array<User>>;
     /** The Agent representing this User. */
@@ -5330,6 +5348,13 @@ export type UpdateEcosystemModelInput = {
   description?: InputMaybe<Scalars['String']>;
 };
 
+export type UpdateFeatureFlagInput = {
+  /** Is this feature flag enabled? */
+  enabled: Scalars['Boolean'];
+  /** The name of the feature flag */
+  name: Scalars['String'];
+};
+
 export type UpdateFormInput = {
   description: Scalars['Markdown'];
   questions: Array<UpdateFormQuestionInput>;
@@ -5422,32 +5447,14 @@ export type UpdateInnovationPackInput = {
 };
 
 export type UpdateLicenseInput = {
+  /** Update the feature flags for the License. */
+  featureFlags?: InputMaybe<Array<UpdateFeatureFlagInput>>;
   /** Visibility of the Space. */
   visibility?: InputMaybe<SpaceVisibility>;
 };
 
 export type UpdateLicensePlanInput = {
   ID: Scalars['UUID'];
-  /** Assign this plan to all new Organization accounts */
-  assignToNewOrganizationAccounts?: InputMaybe<Scalars['Boolean']>;
-  /** Assign this plan to all new User accounts */
-  assignToNewUserAccounts?: InputMaybe<Scalars['Boolean']>;
-  /** Is this plan enabled? */
-  enabled?: InputMaybe<Scalars['Boolean']>;
-  /** Is this plan free? */
-  isFree?: InputMaybe<Scalars['Boolean']>;
-  /** The credential to represent this plan */
-  licenseCredential?: InputMaybe<LicenseCredential>;
-  /** The price per month of this plan. */
-  pricePerMonth?: InputMaybe<Scalars['Float']>;
-  /** Does this plan require contact support */
-  requiresContactSupport?: InputMaybe<Scalars['Boolean']>;
-  /** Does this plan require a payment method? */
-  requiresPaymentMethod?: InputMaybe<Scalars['Boolean']>;
-  /** The sorting order for this Plan. */
-  sortOrder?: InputMaybe<Scalars['Float']>;
-  /** Is there a trial period enabled */
-  trialEnabled?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type UpdateLinkInput = {
@@ -5705,6 +5712,8 @@ export type User = Contributor & {
   __typename?: 'User';
   /** The unique personal identifier (upn) for the account associated with this user profile */
   accountUpn: Scalars['String'];
+  /** The accounts hosted by this User. */
+  accounts: Array<Account>;
   /** The Agent representing this User. */
   agent: Agent;
   /** The authorization rules for the Contributor */
@@ -18047,23 +18056,36 @@ export type UserProviderQuery = {
         }
       | undefined;
     communityApplications: Array<{
-      __typename?: 'CommunityApplicationForRoleResult';
+      __typename?: 'CommunityApplicationResult';
       id: string;
-      communityID: string;
-      displayName: string;
       state: string;
-      spaceID: string;
-      spaceLevel: number;
+      createdDate: Date;
+      space: {
+        __typename?: 'Space';
+        id: string;
+        level: number;
+        profile: { __typename?: 'Profile'; displayName: string };
+      };
+      application: { __typename?: 'Application'; id: string };
     }>;
     communityInvitations: Array<{
-      __typename?: 'CommunityInvitationForRoleResult';
+      __typename?: 'CommunityInvitationResult';
       id: string;
-      spaceID: string;
-      spaceLevel: number;
-      welcomeMessage?: string | undefined;
-      createdBy: string;
-      createdDate: Date;
       state: string;
+      createdDate: Date;
+      space: {
+        __typename?: 'Space';
+        id: string;
+        level: number;
+        profile: { __typename?: 'Profile'; displayName: string };
+      };
+      invitation: {
+        __typename?: 'Invitation';
+        id: string;
+        welcomeMessage?: string | undefined;
+        createdDate: Date;
+        createdBy: { __typename?: 'User'; id: string };
+      };
     }>;
   };
 };
@@ -29389,26 +29411,35 @@ export type NewMembershipsQuery = {
   me: {
     __typename?: 'MeQueryResults';
     communityApplications: Array<{
-      __typename?: 'CommunityApplicationForRoleResult';
+      __typename?: 'CommunityApplicationResult';
       id: string;
-      communityID: string;
-      displayName: string;
       state: string;
-      spaceID: string;
-      spaceLevel: number;
       createdDate: Date;
+      space: {
+        __typename?: 'Space';
+        id: string;
+        level: number;
+        profile: { __typename?: 'Profile'; displayName: string };
+      };
+      application: { __typename?: 'Application'; id: string };
     }>;
     communityInvitations: Array<{
-      __typename?: 'CommunityInvitationForRoleResult';
+      __typename?: 'CommunityInvitationResult';
       id: string;
-      spaceID: string;
-      contributorID: string;
-      contributorType: CommunityContributorType;
-      spaceLevel: number;
       state: string;
-      welcomeMessage?: string | undefined;
-      createdBy: string;
       createdDate: Date;
+      space: {
+        __typename?: 'Space';
+        id: string;
+        level: number;
+        profile: { __typename?: 'Profile'; displayName: string };
+      };
+      invitation: {
+        __typename?: 'Invitation';
+        id: string;
+        welcomeMessage?: string | undefined;
+        createdBy: { __typename?: 'User'; id: string };
+      };
     }>;
     mySpaces: Array<{ __typename?: 'MySpaceResults'; space: { __typename?: 'Space'; id: string; spaceID: string } }>;
   };

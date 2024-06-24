@@ -83,7 +83,7 @@ const NewMembershipsBlock = ({
           ({
             type: PendingMembershipItemType.Invitation,
             ...invitation,
-            spaceLevel: invitation.spaceLevel as JourneyLevel,
+            spaceLevel: invitation.space.level as JourneyLevel,
           } as const)
       ) ?? [],
     [data?.me.communityInvitations]
@@ -92,7 +92,7 @@ const NewMembershipsBlock = ({
   const pendingCommunityInvitations = useMemo(
     () =>
       sortBy(
-        communityInvitations.filter(invitation => !RECENT_MEMBERSHIP_STATES.includes(invitation.state)),
+        communityInvitations.filter(invitationListItem => !RECENT_MEMBERSHIP_STATES.includes(invitationListItem.state)),
         ({ createdDate }) => createdDate
       ).reverse(),
     [communityInvitations]
@@ -105,7 +105,7 @@ const NewMembershipsBlock = ({
           ({
             type: PendingMembershipItemType.Application,
             ...application,
-            spaceLevel: application.spaceLevel as JourneyLevel,
+            spaceLevel: application.space.level as JourneyLevel,
           } as const)
       ) ?? [],
     [data?.me.communityApplications]
@@ -348,8 +348,12 @@ const NewMembershipsBlock = ({
             <>
               <BlockSectionTitle>{t('community.pendingMembership.applicationsSectionTitle')}</BlockSectionTitle>
               <ScrollableCardsLayoutContainer>
-                {pendingCommunityApplications?.map(application => (
-                  <ApplicationHydrator key={application.id} application={application} visualType={VisualType.Card}>
+                {pendingCommunityApplications?.map(applicationItem => (
+                  <ApplicationHydrator
+                    key={applicationItem.id}
+                    application={applicationItem.application}
+                    visualType={VisualType.Card}
+                  >
                     {({ application: hydratedApplication }) =>
                       hydratedApplication && (
                         <JourneyCard

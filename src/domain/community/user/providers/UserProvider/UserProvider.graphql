@@ -6,20 +6,38 @@ query UserProvider {
     }
     communityApplications(states: ["new"]) {
       id
-      communityID
-      displayName
+      space {
+        id
+        level
+        profile {
+          displayName
+        }
+      }
+      application {
+        id
+      }
       state
-      spaceID
-      spaceLevel
+      createdDate
     }
     communityInvitations(states: ["invited"]) {
       id
-      spaceID
-      spaceLevel
-      welcomeMessage
-      createdBy
-      createdDate
+      space {
+        id
+        level
+        profile {
+          displayName
+        }
+      }
+      invitation {
+        id
+        welcomeMessage
+        createdBy {
+          id
+        }
+        createdDate
+      }
       state
+      createdDate
     }
   }
 }

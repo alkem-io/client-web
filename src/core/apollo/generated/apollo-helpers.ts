@@ -13,7 +13,6 @@ export type AccountKeySpecifier = (
   | 'id'
   | 'library'
   | 'license'
-  | 'licensePrivileges'
   | 'spaceID'
   | 'subscriptions'
   | 'virtualContributors'
@@ -28,7 +27,6 @@ export type AccountFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   library?: FieldPolicy<any> | FieldReadFunction<any>;
   license?: FieldPolicy<any> | FieldReadFunction<any>;
-  licensePrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
   spaceID?: FieldPolicy<any> | FieldReadFunction<any>;
   subscriptions?: FieldPolicy<any> | FieldReadFunction<any>;
   virtualContributors?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -891,6 +889,21 @@ export type CommunityApplicationForRoleResultFieldPolicy = {
   state?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type CommunityApplicationResultKeySpecifier = (
+  | 'application'
+  | 'createdDate'
+  | 'id'
+  | 'space'
+  | 'state'
+  | CommunityApplicationResultKeySpecifier
+)[];
+export type CommunityApplicationResultFieldPolicy = {
+  application?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  space?: FieldPolicy<any> | FieldReadFunction<any>;
+  state?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type CommunityGuidelinesKeySpecifier = ('authorization' | 'id' | 'profile' | CommunityGuidelinesKeySpecifier)[];
 export type CommunityGuidelinesFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -938,6 +951,21 @@ export type CommunityInvitationForRoleResultFieldPolicy = {
   state?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   welcomeMessage?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CommunityInvitationResultKeySpecifier = (
+  | 'createdDate'
+  | 'id'
+  | 'invitation'
+  | 'space'
+  | 'state'
+  | CommunityInvitationResultKeySpecifier
+)[];
+export type CommunityInvitationResultFieldPolicy = {
+  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  invitation?: FieldPolicy<any> | FieldReadFunction<any>;
+  space?: FieldPolicy<any> | FieldReadFunction<any>;
+  state?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CommunityPolicyKeySpecifier = ('admin' | 'id' | 'lead' | 'member' | CommunityPolicyKeySpecifier)[];
 export type CommunityPolicyFieldPolicy = {
@@ -1333,15 +1361,27 @@ export type LibraryFieldPolicy = {
   innovationPacks?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type LicenseKeySpecifier = ('authorization' | 'id' | 'visibility' | LicenseKeySpecifier)[];
+export type LicenseKeySpecifier = (
+  | 'authorization'
+  | 'featureFlags'
+  | 'id'
+  | 'privileges'
+  | 'visibility'
+  | LicenseKeySpecifier
+)[];
 export type LicenseFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  featureFlags?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  privileges?: FieldPolicy<any> | FieldReadFunction<any>;
   visibility?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type LicenseFeatureFlagKeySpecifier = ('enabled' | 'name' | LicenseFeatureFlagKeySpecifier)[];
+export type LicenseFeatureFlagFieldPolicy = {
+  enabled?: FieldPolicy<any> | FieldReadFunction<any>;
+  name?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type LicensePlanKeySpecifier = (
-  | 'assignToNewOrganizationAccounts'
-  | 'assignToNewUserAccounts'
   | 'enabled'
   | 'id'
   | 'isFree'
@@ -1355,8 +1395,6 @@ export type LicensePlanKeySpecifier = (
   | LicensePlanKeySpecifier
 )[];
 export type LicensePlanFieldPolicy = {
-  assignToNewOrganizationAccounts?: FieldPolicy<any> | FieldReadFunction<any>;
-  assignToNewUserAccounts?: FieldPolicy<any> | FieldReadFunction<any>;
   enabled?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   isFree?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1368,26 +1406,34 @@ export type LicensePlanFieldPolicy = {
   sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
   trialEnabled?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type LicensePolicyKeySpecifier = ('authorization' | 'credentialRules' | 'id' | LicensePolicyKeySpecifier)[];
+export type LicensePolicyKeySpecifier = ('authorization' | 'featureFlagRules' | 'id' | LicensePolicyKeySpecifier)[];
 export type LicensePolicyFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  credentialRules?: FieldPolicy<any> | FieldReadFunction<any>;
+  featureFlagRules?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type LicensePolicyCredentialRuleKeySpecifier = (
-  | 'credentialType'
+export type LicensePolicyRuleFeatureFlagKeySpecifier = (
+  | 'featureFlagName'
   | 'grantedPrivileges'
   | 'name'
-  | LicensePolicyCredentialRuleKeySpecifier
+  | LicensePolicyRuleFeatureFlagKeySpecifier
 )[];
-export type LicensePolicyCredentialRuleFieldPolicy = {
-  credentialType?: FieldPolicy<any> | FieldReadFunction<any>;
+export type LicensePolicyRuleFeatureFlagFieldPolicy = {
+  featureFlagName?: FieldPolicy<any> | FieldReadFunction<any>;
   grantedPrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
   name?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type LicensingKeySpecifier = ('authorization' | 'id' | 'plans' | 'policy' | LicensingKeySpecifier)[];
+export type LicensingKeySpecifier = (
+  | 'authorization'
+  | 'basePlan'
+  | 'id'
+  | 'plans'
+  | 'policy'
+  | LicensingKeySpecifier
+)[];
 export type LicensingFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  basePlan?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   plans?: FieldPolicy<any> | FieldReadFunction<any>;
   policy?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1865,6 +1911,7 @@ export type NVPFieldPolicy = {
   value?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type OrganizationKeySpecifier = (
+  | 'accounts'
   | 'admins'
   | 'agent'
   | 'associates'
@@ -1887,6 +1934,7 @@ export type OrganizationKeySpecifier = (
   | OrganizationKeySpecifier
 )[];
 export type OrganizationFieldPolicy = {
+  accounts?: FieldPolicy<any> | FieldReadFunction<any>;
   admins?: FieldPolicy<any> | FieldReadFunction<any>;
   agent?: FieldPolicy<any> | FieldReadFunction<any>;
   associates?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2815,6 +2863,7 @@ export type TimelineFieldPolicy = {
 };
 export type UserKeySpecifier = (
   | 'accountUpn'
+  | 'accounts'
   | 'agent'
   | 'authorization'
   | 'communityRooms'
@@ -2834,6 +2883,7 @@ export type UserKeySpecifier = (
 )[];
 export type UserFieldPolicy = {
   accountUpn?: FieldPolicy<any> | FieldReadFunction<any>;
+  accounts?: FieldPolicy<any> | FieldReadFunction<any>;
   agent?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   communityRooms?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3299,6 +3349,13 @@ export type StrictTypedTypePolicies = {
       | (() => undefined | CommunityApplicationForRoleResultKeySpecifier);
     fields?: CommunityApplicationForRoleResultFieldPolicy;
   };
+  CommunityApplicationResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | CommunityApplicationResultKeySpecifier
+      | (() => undefined | CommunityApplicationResultKeySpecifier);
+    fields?: CommunityApplicationResultFieldPolicy;
+  };
   CommunityGuidelines?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CommunityGuidelinesKeySpecifier | (() => undefined | CommunityGuidelinesKeySpecifier);
     fields?: CommunityGuidelinesFieldPolicy;
@@ -3316,6 +3373,13 @@ export type StrictTypedTypePolicies = {
       | CommunityInvitationForRoleResultKeySpecifier
       | (() => undefined | CommunityInvitationForRoleResultKeySpecifier);
     fields?: CommunityInvitationForRoleResultFieldPolicy;
+  };
+  CommunityInvitationResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | CommunityInvitationResultKeySpecifier
+      | (() => undefined | CommunityInvitationResultKeySpecifier);
+    fields?: CommunityInvitationResultFieldPolicy;
   };
   CommunityPolicy?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CommunityPolicyKeySpecifier | (() => undefined | CommunityPolicyKeySpecifier);
@@ -3437,6 +3501,10 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | LicenseKeySpecifier | (() => undefined | LicenseKeySpecifier);
     fields?: LicenseFieldPolicy;
   };
+  LicenseFeatureFlag?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | LicenseFeatureFlagKeySpecifier | (() => undefined | LicenseFeatureFlagKeySpecifier);
+    fields?: LicenseFeatureFlagFieldPolicy;
+  };
   LicensePlan?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | LicensePlanKeySpecifier | (() => undefined | LicensePlanKeySpecifier);
     fields?: LicensePlanFieldPolicy;
@@ -3445,12 +3513,12 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | LicensePolicyKeySpecifier | (() => undefined | LicensePolicyKeySpecifier);
     fields?: LicensePolicyFieldPolicy;
   };
-  LicensePolicyCredentialRule?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+  LicensePolicyRuleFeatureFlag?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:
       | false
-      | LicensePolicyCredentialRuleKeySpecifier
-      | (() => undefined | LicensePolicyCredentialRuleKeySpecifier);
-    fields?: LicensePolicyCredentialRuleFieldPolicy;
+      | LicensePolicyRuleFeatureFlagKeySpecifier
+      | (() => undefined | LicensePolicyRuleFeatureFlagKeySpecifier);
+    fields?: LicensePolicyRuleFeatureFlagFieldPolicy;
   };
   Licensing?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | LicensingKeySpecifier | (() => undefined | LicensingKeySpecifier);

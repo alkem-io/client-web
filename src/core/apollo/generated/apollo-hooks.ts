@@ -14302,20 +14302,38 @@ export const UserProviderDocument = gql`
       }
       communityApplications(states: ["new"]) {
         id
-        communityID
-        displayName
+        space {
+          id
+          level
+          profile {
+            displayName
+          }
+        }
+        application {
+          id
+        }
         state
-        spaceID
-        spaceLevel
+        createdDate
       }
       communityInvitations(states: ["invited"]) {
         id
-        spaceID
-        spaceLevel
-        welcomeMessage
-        createdBy
-        createdDate
+        space {
+          id
+          level
+          profile {
+            displayName
+          }
+        }
+        invitation {
+          id
+          welcomeMessage
+          createdBy {
+            id
+          }
+          createdDate
+        }
         state
+        createdDate
       }
     }
   }
@@ -23214,24 +23232,37 @@ export const NewMembershipsDocument = gql`
     me {
       communityApplications(states: ["new", "approved"]) {
         id
-        communityID
-        displayName
+        space {
+          id
+          level
+          profile {
+            displayName
+          }
+        }
+        application {
+          id
+        }
         state
-        spaceID
-        spaceLevel
         createdDate
       }
       communityInvitations(states: ["invited", "accepted"]) {
         id
-        spaceID
-        contributorID
-        contributorType
-        spaceLevel
+        space {
+          id
+          level
+          profile {
+            displayName
+          }
+        }
+        invitation {
+          id
+          welcomeMessage
+          createdBy {
+            id
+          }
+        }
         state
-        welcomeMessage
-        createdBy
         createdDate
-        state
       }
       mySpaces(showOnlyMyCreatedSpaces: true) {
         space {
