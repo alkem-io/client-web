@@ -4,6 +4,7 @@ import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
 import ContentPasteOutlinedIcon from '@mui/icons-material/ContentPasteOutlined';
 import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
+import { SettingsOutlined } from '@mui/icons-material';
 
 export enum SettingsSection {
   Profile = 'profile',
@@ -23,6 +24,7 @@ export enum SettingsSection {
   Credentials = 'credentials',
   InnovationFlow = 'innovation-flow',
   Account = 'account',
+  Settings = 'settings',
 }
 
 export const UserProfileTabs: TabDefinition<SettingsSection>[] = [
@@ -50,5 +52,23 @@ export const UserProfileTabs: TabDefinition<SettingsSection>[] = [
     section: SettingsSection.Credentials,
     route: 'credentials',
     icon: VerifiedUserIcon,
+  },
+];
+
+export const VCProfileTabs: TabDefinition<SettingsSection>[] = [
+  {
+    section: SettingsSection.Membership,
+    route: 'membership',
+    icon: ContentPasteOutlinedIcon,
+  },
+  {
+    section: SettingsSection.MyProfile,
+    route: 'profile',
+    icon: PeopleOutlinedIcon,
+  },
+  {
+    section: SettingsSection.Settings,
+    route: 'settings',
+    icon: SettingsOutlined,
   },
 ];
