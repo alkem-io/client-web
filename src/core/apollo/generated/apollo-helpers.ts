@@ -1352,6 +1352,7 @@ export type LicensePlanKeySpecifier = (
   | 'requiresPaymentMethod'
   | 'sortOrder'
   | 'trialEnabled'
+  | 'type'
   | LicensePlanKeySpecifier
 )[];
 export type LicensePlanFieldPolicy = {
@@ -1367,6 +1368,7 @@ export type LicensePlanFieldPolicy = {
   requiresPaymentMethod?: FieldPolicy<any> | FieldReadFunction<any>;
   sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
   trialEnabled?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type LicensePolicyKeySpecifier = ('authorization' | 'credentialRules' | 'id' | LicensePolicyKeySpecifier)[];
 export type LicensePolicyFieldPolicy = {
@@ -1865,6 +1867,7 @@ export type NVPFieldPolicy = {
   value?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type OrganizationKeySpecifier = (
+  | 'accounts'
   | 'admins'
   | 'agent'
   | 'associates'
@@ -1887,6 +1890,7 @@ export type OrganizationKeySpecifier = (
   | OrganizationKeySpecifier
 )[];
 export type OrganizationFieldPolicy = {
+  accounts?: FieldPolicy<any> | FieldReadFunction<any>;
   admins?: FieldPolicy<any> | FieldReadFunction<any>;
   agent?: FieldPolicy<any> | FieldReadFunction<any>;
   associates?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2815,6 +2819,7 @@ export type TimelineFieldPolicy = {
 };
 export type UserKeySpecifier = (
   | 'accountUpn'
+  | 'accounts'
   | 'agent'
   | 'authorization'
   | 'communityRooms'
@@ -2834,6 +2839,7 @@ export type UserKeySpecifier = (
 )[];
 export type UserFieldPolicy = {
   accountUpn?: FieldPolicy<any> | FieldReadFunction<any>;
+  accounts?: FieldPolicy<any> | FieldReadFunction<any>;
   agent?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   communityRooms?: FieldPolicy<any> | FieldReadFunction<any>;

@@ -1639,6 +1639,8 @@ export type CreateLicensePlanOnLicensingInput = {
   sortOrder: Scalars['Float'];
   /** Is there a trial period enabled */
   trialEnabled: Scalars['Boolean'];
+  /** The type of this License Plan. */
+  type: LicensePlanType;
 };
 
 export type CreateLinkInput = {
@@ -2419,7 +2421,14 @@ export type LicensePlan = {
   sortOrder: Scalars['Float'];
   /** Is there a trial period enabled */
   trialEnabled: Scalars['Boolean'];
+  /** The type of this License Plan. */
+  type: LicensePlanType;
 };
+
+export enum LicensePlanType {
+  SpaceFeatureFlag = 'SPACE_FEATURE_FLAG',
+  SpacePlan = 'SPACE_PLAN',
+}
 
 export type LicensePolicy = {
   __typename?: 'LicensePolicy';
@@ -3686,6 +3695,8 @@ export type Nvp = {
 export type Organization = Contributor &
   Groupable & {
     __typename?: 'Organization';
+    /** The accounts hosted by this Organization. */
+    accounts: Array<Account>;
     /** All Users that are admins of this Organization. */
     admins?: Maybe<Array<User>>;
     /** The Agent representing this User. */
@@ -5705,6 +5716,8 @@ export type User = Contributor & {
   __typename?: 'User';
   /** The unique personal identifier (upn) for the account associated with this user profile */
   accountUpn: Scalars['String'];
+  /** The accounts hosted by this User. */
+  accounts: Array<Account>;
   /** The Agent representing this User. */
   agent: Agent;
   /** The authorization rules for the Contributor */
@@ -21427,6 +21440,7 @@ export type PlansTableQuery = {
         trialEnabled: boolean;
         requiresPaymentMethod: boolean;
         requiresContactSupport: boolean;
+        type: LicensePlanType;
       }>;
     };
   };
