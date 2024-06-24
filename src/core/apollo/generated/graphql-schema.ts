@@ -1579,14 +1579,14 @@ export type CreateActorInput = {
 export type CreateAiPersonaInput = {
   aiPersonaService?: InputMaybe<CreateAiPersonaServiceInput>;
   aiPersonaServiceID?: InputMaybe<Scalars['UUID']>;
-  description: Scalars['Markdown'];
+  description?: InputMaybe<Scalars['Markdown']>;
 };
 
 export type CreateAiPersonaServiceInput = {
-  bodyOfKnowledgeID: Scalars['UUID'];
-  bodyOfKnowledgeType: AiPersonaBodyOfKnowledgeType;
-  dataAccessMode: AiPersonaDataAccessMode;
-  engine: AiPersonaEngine;
+  bodyOfKnowledgeID?: InputMaybe<Scalars['UUID']>;
+  bodyOfKnowledgeType?: InputMaybe<AiPersonaBodyOfKnowledgeType>;
+  dataAccessMode?: InputMaybe<AiPersonaDataAccessMode>;
+  engine?: InputMaybe<AiPersonaEngine>;
   prompt?: InputMaybe<Scalars['JSON']>;
 };
 
@@ -1769,6 +1769,8 @@ export type CreateLicensePlanOnLicensingInput = {
   sortOrder: Scalars['Float'];
   /** Is there a trial period enabled */
   trialEnabled: Scalars['Boolean'];
+  /** The type of this License Plan. */
+  type: LicensePlanType;
 };
 
 export type CreateLinkInput = {
@@ -2542,7 +2544,14 @@ export type LicensePlan = {
   sortOrder: Scalars['Float'];
   /** Is there a trial period enabled */
   trialEnabled: Scalars['Boolean'];
+  /** The type of this License Plan. */
+  type: LicensePlanType;
 };
+
+export enum LicensePlanType {
+  SpaceFeatureFlag = 'SPACE_FEATURE_FLAG',
+  SpacePlan = 'SPACE_PLAN',
+}
 
 export type LicensePolicy = {
   __typename?: 'LicensePolicy';
@@ -3829,6 +3838,8 @@ export type Nvp = {
 export type Organization = Contributor &
   Groupable & {
     __typename?: 'Organization';
+    /** The accounts hosted by this Organization. */
+    accounts: Array<Account>;
     /** All Users that are admins of this Organization. */
     admins?: Maybe<Array<User>>;
     /** The Agent representing this User. */
@@ -5848,6 +5859,8 @@ export type User = Contributor & {
   __typename?: 'User';
   /** The unique personal identifier (upn) for the account associated with this user profile */
   accountUpn: Scalars['String'];
+  /** The accounts hosted by this User. */
+  accounts: Array<Account>;
   /** The Agent representing this User. */
   agent: Agent;
   /** The authorization rules for the Contributor */
