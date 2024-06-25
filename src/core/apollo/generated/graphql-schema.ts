@@ -22242,6 +22242,7 @@ export type SpaceAccountQuery = {
         id: string;
         name: string;
         enabled: boolean;
+        type: LicensePlanType;
         sortOrder: number;
         isFree: boolean;
         pricePerMonth?: number | undefined;

@@ -48,6 +48,7 @@ query SpaceAccount($spaceId: UUID!) {
         id
         name
         enabled
+        type
         sortOrder
         isFree
         pricePerMonth
