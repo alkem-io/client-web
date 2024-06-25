@@ -1821,6 +1821,9 @@
             "yourLicense": "Your current license:",
             "downgradeTo": "Downgrade to {{planName}}",
             "upgradeTo": "Upgrade to {{planName}}"
+          },
+          "settings": {
+            "description": "Here you can edit the visibility settings of your {{entity}}."
           }
         }
       },
@@ -2489,6 +2492,7 @@
       "description": "Description",
       "references": "References",
       "host": "Host",
+      "success": "{{entity}} updated successfully.",
       "sections": {
         "knowledge": {
           "title": "Knowledge",
@@ -2510,7 +2514,15 @@
         }
       },
       "settings": {
-        "title": "Virtual Contributor Settings"
+        "title": "Virtual Contributor Settings",
+        "access": {
+          "listedInStore": "Allow the Virtual Contributor to be displayed in the Innovation Library.",
+          "visibility": {
+            "public": "<b>Public:</b> this Virtual Contributor is visible and can be invited to other Spaces, but only by users who are Space admins.",
+            "private": "<b>Private:</b> this Virtual Contributor is not visible for (admins of) other Spaces.",
+            "hidden": "<b>Hidden</b>"
+          }
+        }
       }
     },
     "user-credentials": {
