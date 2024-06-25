@@ -5,6 +5,7 @@ import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import { formatTimeElapsed } from '../../utils/formatTimeElapsed';
 import journeyIcon from '../JourneyIcon/JourneyIcon';
 import RouterLink from '../../../../core/ui/link/RouterLink';
+import { CommunityContributorType } from '../../../../core/apollo/generated/graphql-schema';
 
 export interface ActivityDescriptionProps {
   i18nKey: TranslationKey;
@@ -19,6 +20,7 @@ export interface ActivityDescriptionProps {
     url?: string;
   };
   withLinkToParent?: boolean;
+  type?: CommunityContributorType;
 }
 
 const PARENT_NAME_MAX_LENGTH = 20;
@@ -33,6 +35,7 @@ const DetailedActivityDescription = ({
   values = {},
   components = {},
   withLinkToParent,
+  type,
 }: ActivityDescriptionProps) => {
   const { t } = useTranslation();
 
@@ -55,6 +58,11 @@ const DetailedActivityDescription = ({
     }
 
     mergedValues['journey'] = journeyDisplayName;
+
+    mergedValues['invitedEntity'] =
+      type === CommunityContributorType.Virtual
+        ? t('community.pendingMembership.vc')
+        : t('community.pendingMembership.you');
 
     const truncatedParentName =
       journeyDisplayName && journeyDisplayName.length > PARENT_NAME_MAX_LENGTH

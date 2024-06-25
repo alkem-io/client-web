@@ -1,3 +1,4 @@
+import { CommunityContributorType } from '../../../../../core/apollo/generated/graphql-schema';
 import { Identifiable } from '../../../../../core/utils/Identifiable';
 import { JourneyLevel } from '../../../../../main/routing/resolvers/RouteResolver';
 
@@ -15,5 +16,6 @@ export interface InvitationItem extends Identifiable {
     welcomeMessage?: string;
     createdDate: Date | string;
     lifecycle: { state?: string };
+    contributorType?: CommunityContributorType.Virtual;
   };
 }

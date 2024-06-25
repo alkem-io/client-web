@@ -18,7 +18,7 @@ import ScrollableCardsLayoutContainer from '../../../core/ui/card/cardsLayout/Sc
 import JourneyCardTagline from '../../journey/common/JourneyCard/JourneyCardTagline';
 import InvitationDialog from '../invitations/InvitationDialog';
 import InvitationActionsContainer from '../invitations/InvitationActionsContainer';
-import { VisualType } from '../../../core/apollo/generated/graphql-schema';
+import { CommunityContributorType, VisualType } from '../../../core/apollo/generated/graphql-schema';
 import BackButton from '../../../core/ui/actions/BackButton';
 import useNavigate from '../../../core/routing/useNavigate';
 import { useNewMembershipsQuery } from '../../../core/apollo/generated/apollo-hooks';
@@ -79,6 +79,14 @@ const PendingMembershipsUserMenuItem = ({ children }: PendingMembershipsUserMenu
       ? invitations?.find(invitation => invitation.id === openDialog.invitationId)
       : undefined;
 
+  const virtualContributorIviitations = invitations?.filter(
+    invitation => invitation.invitation.contributorType === CommunityContributorType.Virtual
+  );
+
+  const nonVirtualContributorInvitations = invitations?.filter(
+    invitation => invitation.invitation.contributorType !== CommunityContributorType.Virtual
+  );
+
   const pendingMembershipsCount = invitations && applications ? invitations.length + applications.length : undefined;
 
   const onInvitationAccept = () => {
@@ -113,10 +121,25 @@ const PendingMembershipsUserMenuItem = ({ children }: PendingMembershipsUserMenu
           onClose={closeDialog}
         />
         <Gutters paddingTop={0}>
-          {invitations && invitations.length > 0 && (
+          {nonVirtualContributorInvitations && nonVirtualContributorInvitations.length > 0 && (
             <>
               <BlockSectionTitle>{t('community.pendingMembership.invitationsSectionTitle')}</BlockSectionTitle>
-              {invitations?.map(invitation => (
+              {nonVirtualContributorInvitations?.map(invitation => (
+                <InvitationHydrator key={invitation.id} invitation={invitation}>
+                  {({ invitation }) => (
+                    <InvitationCardHorizontal
+                      invitation={invitation}
+                      onClick={() => invitation && handleInvitationCardClick(invitation)}
+                    />
+                  )}
+                </InvitationHydrator>
+              ))}
+            </>
+          )}
+          {virtualContributorIviitations && virtualContributorIviitations.length > 0 && (
+            <>
+              <BlockSectionTitle>{t('community.pendingMembership.virtualInvitationsSectionTitle')}</BlockSectionTitle>
+              {virtualContributorIviitations?.map(invitation => (
                 <InvitationHydrator key={invitation.id} invitation={invitation}>
                   {({ invitation }) => (
                     <InvitationCardHorizontal
