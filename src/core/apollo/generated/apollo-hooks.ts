@@ -1776,19 +1776,6 @@ export const GroupMembersFragmentDoc = gql`
     email
   }
 `;
-export const UserAgentFragmentDoc = gql`
-  fragment UserAgent on User {
-    agent {
-      id
-      did
-      credentials {
-        id
-        resourceID
-        type
-      }
-    }
-  }
-`;
 export const UserDetailsFragmentDoc = gql`
   fragment UserDetails on User {
     id
@@ -11851,7 +11838,7 @@ export type RemoveCommunityRoleFromUserMutationOptions = Apollo.BaseMutationOpti
   SchemaTypes.RemoveCommunityRoleFromUserMutationVariables
 >;
 export const RemoveVirtualContributorAsCommunityMemberDocument = gql`
-  mutation removeVirtualContributorAsCommunityMember($communityId: UUID!, $memberId: UUID_NAMEID!) {
+  mutation RemoveVirtualContributorAsCommunityMember($communityId: UUID!, $memberId: UUID_NAMEID!) {
     removeCommunityRoleFromVirtual(
       roleData: { communityID: $communityId, virtualContributorID: $memberId, role: MEMBER }
     ) {
@@ -14027,11 +14014,9 @@ export const UserDocument = gql`
   query user($id: UUID_NAMEID_EMAIL!) {
     user(ID: $id) {
       ...UserDetails
-      ...UserAgent
     }
   }
   ${UserDetailsFragmentDoc}
-  ${UserAgentFragmentDoc}
 `;
 
 /**
@@ -14152,7 +14137,6 @@ export const UserProfileDocument = gql`
     user(ID: $input) {
       isContactable
       ...UserDetails
-      ...UserAgent
     }
     rolesUser(rolesData: { userID: $input, filter: { visibilities: [ACTIVE, DEMO] } }) {
       id
@@ -14165,7 +14149,6 @@ export const UserProfileDocument = gql`
     }
   }
   ${UserDetailsFragmentDoc}
-  ${UserAgentFragmentDoc}
   ${UserRolesDetailsFragmentDoc}
   ${MyPrivilegesFragmentDoc}
 `;
@@ -14364,7 +14347,62 @@ export const UserProviderDocument = gql`
     me {
       user {
         ...UserDetails
-        ...UserAgent
+      }
+    }
+  }
+  ${UserDetailsFragmentDoc}
+`;
+
+/**
+ * __useUserProviderQuery__
+ *
+ * To run a query within a React component, call `useUserProviderQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserProviderQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserProviderQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useUserProviderQuery(
+  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.UserProviderQuery, SchemaTypes.UserProviderQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.UserProviderQuery, SchemaTypes.UserProviderQueryVariables>(
+    UserProviderDocument,
+    options
+  );
+}
+
+export function useUserProviderLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.UserProviderQuery, SchemaTypes.UserProviderQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.UserProviderQuery, SchemaTypes.UserProviderQueryVariables>(
+    UserProviderDocument,
+    options
+  );
+}
+
+export type UserProviderQueryHookResult = ReturnType<typeof useUserProviderQuery>;
+export type UserProviderLazyQueryHookResult = ReturnType<typeof useUserProviderLazyQuery>;
+export type UserProviderQueryResult = Apollo.QueryResult<
+  SchemaTypes.UserProviderQuery,
+  SchemaTypes.UserProviderQueryVariables
+>;
+export function refetchUserProviderQuery(variables?: SchemaTypes.UserProviderQueryVariables) {
+  return { query: UserProviderDocument, variables: variables };
+}
+
+export const UserPendingMembershipsDocument = gql`
+  query UserPendingMemberships {
+    me {
+      user {
+        ...UserDetails
       }
       communityApplications(states: ["new"]) {
         id
@@ -14415,52 +14453,57 @@ export const UserProviderDocument = gql`
     }
   }
   ${UserDetailsFragmentDoc}
-  ${UserAgentFragmentDoc}
 `;
 
 /**
- * __useUserProviderQuery__
+ * __useUserPendingMembershipsQuery__
  *
- * To run a query within a React component, call `useUserProviderQuery` and pass it any options that fit your needs.
- * When your component renders, `useUserProviderQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useUserPendingMembershipsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserPendingMembershipsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useUserProviderQuery({
+ * const { data, loading, error } = useUserPendingMembershipsQuery({
  *   variables: {
  *   },
  * });
  */
-export function useUserProviderQuery(
-  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.UserProviderQuery, SchemaTypes.UserProviderQueryVariables>
+export function useUserPendingMembershipsQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.UserPendingMembershipsQuery,
+    SchemaTypes.UserPendingMembershipsQueryVariables
+  >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.UserProviderQuery, SchemaTypes.UserProviderQueryVariables>(
-    UserProviderDocument,
+  return Apollo.useQuery<SchemaTypes.UserPendingMembershipsQuery, SchemaTypes.UserPendingMembershipsQueryVariables>(
+    UserPendingMembershipsDocument,
     options
   );
 }
 
-export function useUserProviderLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.UserProviderQuery, SchemaTypes.UserProviderQueryVariables>
+export function useUserPendingMembershipsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.UserPendingMembershipsQuery,
+    SchemaTypes.UserPendingMembershipsQueryVariables
+  >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.UserProviderQuery, SchemaTypes.UserProviderQueryVariables>(
-    UserProviderDocument,
+  return Apollo.useLazyQuery<SchemaTypes.UserPendingMembershipsQuery, SchemaTypes.UserPendingMembershipsQueryVariables>(
+    UserPendingMembershipsDocument,
     options
   );
 }
 
-export type UserProviderQueryHookResult = ReturnType<typeof useUserProviderQuery>;
-export type UserProviderLazyQueryHookResult = ReturnType<typeof useUserProviderLazyQuery>;
-export type UserProviderQueryResult = Apollo.QueryResult<
-  SchemaTypes.UserProviderQuery,
-  SchemaTypes.UserProviderQueryVariables
+export type UserPendingMembershipsQueryHookResult = ReturnType<typeof useUserPendingMembershipsQuery>;
+export type UserPendingMembershipsLazyQueryHookResult = ReturnType<typeof useUserPendingMembershipsLazyQuery>;
+export type UserPendingMembershipsQueryResult = Apollo.QueryResult<
+  SchemaTypes.UserPendingMembershipsQuery,
+  SchemaTypes.UserPendingMembershipsQueryVariables
 >;
-export function refetchUserProviderQuery(variables?: SchemaTypes.UserProviderQueryVariables) {
-  return { query: UserProviderDocument, variables: variables };
+export function refetchUserPendingMembershipsQuery(variables?: SchemaTypes.UserPendingMembershipsQueryVariables) {
+  return { query: UserPendingMembershipsDocument, variables: variables };
 }
 
 export const SpaceCommunityContributorsDocument = gql`

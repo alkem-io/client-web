@@ -17539,18 +17539,6 @@ export type GroupMembersFragment = {
   profile: { __typename?: 'Profile'; id: string; displayName: string };
 };
 
-export type UserAgentFragment = {
-  __typename?: 'User';
-  agent: {
-    __typename?: 'Agent';
-    id: string;
-    did?: string | undefined;
-    credentials?:
-      | Array<{ __typename?: 'Credential'; id: string; resourceID: string; type: CredentialType }>
-      | undefined;
-  };
-};
-
 export type UserDetailsFragment = {
   __typename?: 'User';
   id: string;
@@ -17936,11 +17924,7 @@ export type UserQuery = {
     accountUpn: string;
     agent: {
       __typename?: 'Agent';
-      id: string;
-      did?: string | undefined;
-      credentials?:
-        | Array<{ __typename?: 'Credential'; type: CredentialType; resourceID: string; id: string }>
-        | undefined;
+      credentials?: Array<{ __typename?: 'Credential'; type: CredentialType; resourceID: string }> | undefined;
     };
     profile: {
       __typename?: 'Profile';
@@ -18026,11 +18010,7 @@ export type UserProfileQuery = {
     accountUpn: string;
     agent: {
       __typename?: 'Agent';
-      id: string;
-      did?: string | undefined;
-      credentials?:
-        | Array<{ __typename?: 'Credential'; type: CredentialType; resourceID: string; id: string }>
-        | undefined;
+      credentials?: Array<{ __typename?: 'Credential'; type: CredentialType; resourceID: string }> | undefined;
     };
     profile: {
       __typename?: 'Profile';
@@ -18161,11 +18141,75 @@ export type UserProviderQuery = {
           accountUpn: string;
           agent: {
             __typename?: 'Agent';
+            credentials?: Array<{ __typename?: 'Credential'; type: CredentialType; resourceID: string }> | undefined;
+          };
+          profile: {
+            __typename?: 'Profile';
             id: string;
-            did?: string | undefined;
-            credentials?:
-              | Array<{ __typename?: 'Credential'; type: CredentialType; resourceID: string; id: string }>
+            displayName: string;
+            tagline: string;
+            description?: string | undefined;
+            location?: { __typename?: 'Location'; country: string; city: string } | undefined;
+            avatar?:
+              | {
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: string;
+                  allowedTypes: Array<string>;
+                  aspectRatio: number;
+                  maxHeight: number;
+                  maxWidth: number;
+                  minHeight: number;
+                  minWidth: number;
+                  alternativeText?: string | undefined;
+                }
               | undefined;
+            references?:
+              | Array<{
+                  __typename?: 'Reference';
+                  id: string;
+                  name: string;
+                  uri: string;
+                  description?: string | undefined;
+                }>
+              | undefined;
+            tagsets?:
+              | Array<{
+                  __typename?: 'Tagset';
+                  id: string;
+                  name: string;
+                  tags: Array<string>;
+                  allowedValues: Array<string>;
+                  type: TagsetType;
+                }>
+              | undefined;
+          };
+        }
+      | undefined;
+  };
+};
+
+export type UserPendingMembershipsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type UserPendingMembershipsQuery = {
+  __typename?: 'Query';
+  me: {
+    __typename?: 'MeQueryResults';
+    user?:
+      | {
+          __typename?: 'User';
+          id: string;
+          nameID: string;
+          firstName: string;
+          lastName: string;
+          email: string;
+          gender: string;
+          phone: string;
+          accountUpn: string;
+          agent: {
+            __typename?: 'Agent';
+            credentials?: Array<{ __typename?: 'Credential'; type: CredentialType; resourceID: string }> | undefined;
           };
           profile: {
             __typename?: 'Profile';

@@ -4,7 +4,6 @@ import { SpaceHostedItem } from '../../../journey/utils/SpaceHostedItem';
 import { useMemo } from 'react';
 
 const useUserContributions = (userId: string | undefined) => {
-  //!!
   const { data } = useUserContributionsQuery({
     variables: {
       userId: userId!,

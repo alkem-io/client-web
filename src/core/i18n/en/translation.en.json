@@ -2674,7 +2674,7 @@
     "title": "Contributors"
   },
   "contributions-view": {
-    "no-data": "No {{name, lowercase}} available"
+    "no-data": "No memberships found"
   },
   "credentials-view": {
     "no-data": "No credentials have been presented"

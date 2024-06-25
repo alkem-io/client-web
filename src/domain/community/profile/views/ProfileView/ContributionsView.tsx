@@ -1,6 +1,5 @@
 import { Grid, Skeleton } from '@mui/material';
 import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import ContributionDetailsContainer from '../../ContributionDetails/ContributionDetailsContainer';
 import { SpaceHostedItem } from '../../../../journey/utils/SpaceHostedItem';
 import { Caption } from '../../../../../core/ui/typography';
@@ -51,7 +50,6 @@ export const ContributionsView = ({
   onLeave,
   cards,
 }: ContributionViewProps) => {
-  const { t } = useTranslation();
   const [leavingCommunityId, setLeavingCommunityId] = useState<string>();
 
   return (
@@ -94,11 +92,6 @@ export const ContributionsView = ({
               </ContributionDetailsContainer>
             ))}
           </ScrollableCardsLayoutContainer>
-        )}
-        {!loading && !contributions?.length && (
-          <Grid item flexGrow={1} flexBasis={'50%'}>
-            {t('contributions-view.no-data', { name: title })}
-          </Grid>
         )}
       </PageContentBlockGrid>
     </PageContentBlock>

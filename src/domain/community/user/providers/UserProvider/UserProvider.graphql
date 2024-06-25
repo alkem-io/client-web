@@ -2,7 +2,14 @@ query UserProvider {
   me {
     user {
       ...UserDetails
-      ...UserAgent
+    }
+  }
+}
+
+query UserPendingMemberships {
+  me {
+    user {
+      ...UserDetails
     }
     communityApplications(states: ["new"]) {
       id

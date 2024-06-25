@@ -14,7 +14,7 @@ export const useUserMetadata = (id: string) => {
   });
 
   return {
-    user: toUserMetadata(data?.user as User, [], [], data?.platform.authorization),
+    user: toUserMetadata(data?.user as User, data?.platform.authorization),
     loading,
   };
 };
