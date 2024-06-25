@@ -1976,12 +1976,7 @@
         }
       },
       "virtualContributors": {
-        "title": "Virtual Contributors",
-        "virtualPersonas": {
-          "title": "Virtual Personas",
-          "create": "Create Virtual Persona",
-          "selectEngine": "Select Engine"
-        }
+        "title": "Virtual Contributors"
       }
     },
     "feedback": {

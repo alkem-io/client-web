@@ -1,12 +1,12 @@
-mutation createVirtualPersona($virtualPersonaData: CreateVirtualPersonaInput!) {
-  createVirtualPersona(virtualPersonaData: $virtualPersonaData ) {
-    id
-    nameID
-    engine
-    profile {
-      id
-      displayName
-      description
-    }
-  }
-}
+# mutation createVirtualPersona($virtualPersonaData: CreateVirtualPersonaInput!) {
+#   createVirtualPersona(virtualPersonaData: $virtualPersonaData ) {
+#     id
+#     nameID
+#     engine
+#     profile {
+#       id
+#       displayName
+#       description
+#     }
+#   }
+# }
