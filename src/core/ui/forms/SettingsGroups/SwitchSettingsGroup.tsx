@@ -12,12 +12,14 @@ const LoadingSwitch: FC<SwitchProps & { loading?: boolean }> = ({ loading, ...pr
   );
 };
 
-interface SwitchSettingsGroupProps<T extends Record<string, { checked: boolean; label: ReactNode }>> {
+interface SwitchSettingsGroupProps<
+  T extends Record<string, { checked: boolean; label: ReactNode; disabled?: boolean }>
+> {
   options: T;
   onChange: (key: keyof T, newValue: boolean) => void;
 }
 
-function SwitchSettingsGroup<T extends Record<string, { checked: boolean; label: ReactNode }>>({
+function SwitchSettingsGroup<T extends Record<string, { checked: boolean; label: ReactNode; disabled?: boolean }>>({
   options,
   onChange,
 }: SwitchSettingsGroupProps<T>) {
@@ -47,6 +49,7 @@ function SwitchSettingsGroup<T extends Record<string, { checked: boolean; label:
               />
             }
             label={option.label}
+            disabled={option.disabled ?? false}
           />
         );
       })}

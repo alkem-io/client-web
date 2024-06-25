@@ -1,5 +1,5 @@
 import { Grid } from '@mui/material';
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { ContributionsView } from '../../profile/views/ProfileView';
@@ -9,6 +9,7 @@ import { useUserMetadata } from '../hooks/useUserMetadata';
 import GridProvider from '../../../../core/ui/grid/GridProvider';
 import SectionSpacer from '../../../shared/components/Section/SectionSpacer';
 import useUserContributions from '../userContributions/useUserContributions';
+import { SpaceHostedItem } from '../../../journey/utils/SpaceHostedItem';
 
 export interface UserMembershipPageProps {}
 
@@ -18,6 +19,16 @@ const UserMembershipPage: FC<UserMembershipPageProps> = () => {
   const { user: userMetadata, loading } = useUserMetadata(userNameId);
 
   const contributions = useUserContributions(userNameId);
+
+  const applications = useMemo<SpaceHostedItem[] | undefined>(
+    () =>
+      userMetadata?.pendingApplications.map(application => ({
+        id: application.id,
+        spaceID: application.space.id,
+        spaceLevel: application.space.level,
+      })),
+    [userMetadata?.pendingApplications]
+  );
 
   return (
     <UserSettingsLayout currentTab={SettingsSection.Membership}>
@@ -34,7 +45,7 @@ const UserMembershipPage: FC<UserMembershipPageProps> = () => {
         <Grid item xs={12}>
           <ContributionsView
             title={t('pages.user-profile.pending-applications.title')}
-            contributions={userMetadata?.pendingApplications}
+            contributions={applications}
             loading={loading}
           />
         </Grid>

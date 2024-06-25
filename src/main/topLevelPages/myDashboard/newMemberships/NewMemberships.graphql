@@ -2,30 +2,51 @@ query NewMemberships {
   me {
     communityApplications(states: ["new", "approved"]) {
       id
-      communityID
-      displayName
-      state
-      spaceID
-      spaceLevel
-      createdDate
+      space {
+        ...NewMembershipsBasicSpace
+      }
+      application {
+        id
+        lifecycle {
+          id
+          state
+        }
+        createdDate
+      }
     }
     communityInvitations(states: ["invited", "accepted"]) {
       id
-      spaceID
-      contributorID
-      contributorType
-      spaceLevel
-      state
-      welcomeMessage
-      createdBy
-      createdDate
-      state
+      space {
+        ...NewMembershipsBasicSpace
+      }
+      invitation {
+        id
+        welcomeMessage
+        createdBy {
+          id
+        }
+        lifecycle {
+          id
+          state
+        }
+        createdDate
+      }
     }
     mySpaces(showOnlyMyCreatedSpaces: true) {
       space {
-        id
-        spaceID: id
+        ...NewMembershipsBasicSpace
       }
     }
+  }
+}
+
+fragment NewMembershipsBasicSpace on Space {
+  id
+  level
+  profile {
+    id
+    displayName
+    tagline
+    url
   }
 }

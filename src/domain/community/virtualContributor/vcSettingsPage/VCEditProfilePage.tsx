@@ -39,7 +39,7 @@ export const VCSettingsPage = () => {
         },
       },
       onCompleted: () => {
-        notify('Profile updated successfully', 'success');
+        notify(t('pages.virtualContributorProfile.success', { entity: t('common.profile') }), 'success');
       },
     });
   };

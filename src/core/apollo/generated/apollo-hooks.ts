@@ -3681,6 +3681,18 @@ export const MyMembershipsChildJourneyProfileFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
 `;
+export const NewMembershipsBasicSpaceFragmentDoc = gql`
+  fragment NewMembershipsBasicSpace on Space {
+    id
+    level
+    profile {
+      id
+      displayName
+      tagline
+      url
+    }
+  }
+`;
 export const RecentJourneyProfileFragmentDoc = gql`
   fragment RecentJourneyProfile on Profile {
     id
@@ -14302,20 +14314,49 @@ export const UserProviderDocument = gql`
       }
       communityApplications(states: ["new"]) {
         id
-        communityID
-        displayName
-        state
-        spaceID
-        spaceLevel
+        space {
+          id
+          level
+          profile {
+            id
+            displayName
+            tagline
+            url
+          }
+        }
+        application {
+          id
+          lifecycle {
+            id
+            state
+          }
+          createdDate
+        }
       }
       communityInvitations(states: ["invited"]) {
         id
-        spaceID
-        spaceLevel
-        welcomeMessage
-        createdBy
-        createdDate
-        state
+        space {
+          id
+          level
+          profile {
+            id
+            displayName
+            tagline
+            url
+          }
+        }
+        invitation {
+          id
+          welcomeMessage
+          createdBy {
+            id
+          }
+          lifecycle {
+            id
+            state
+          }
+          createdDate
+        }
       }
     }
   }
@@ -14682,6 +14723,8 @@ export const VirtualContributorDocument = gql`
           }
         }
       }
+      searchVisibility
+      listedInStore
       profile {
         id
         displayName
@@ -14833,6 +14876,8 @@ export const UpdateVirtualContributorDocument = gql`
   mutation UpdateVirtualContributor($virtualContributorData: UpdateVirtualContributorInput!) {
     updateVirtualContributor(virtualContributorData: $virtualContributorData) {
       id
+      listedInStore
+      searchVisibility
       profile {
         id
         tagline
@@ -17596,6 +17641,7 @@ export const SpaceAccountDocument = gql`
           id
           name
           enabled
+          type
           sortOrder
           isFree
           pricePerMonth
@@ -23083,33 +23129,44 @@ export const NewMembershipsDocument = gql`
     me {
       communityApplications(states: ["new", "approved"]) {
         id
-        communityID
-        displayName
-        state
-        spaceID
-        spaceLevel
-        createdDate
+        space {
+          ...NewMembershipsBasicSpace
+        }
+        application {
+          id
+          lifecycle {
+            id
+            state
+          }
+          createdDate
+        }
       }
       communityInvitations(states: ["invited", "accepted"]) {
         id
-        spaceID
-        contributorID
-        contributorType
-        spaceLevel
-        state
-        welcomeMessage
-        createdBy
-        createdDate
-        state
+        space {
+          ...NewMembershipsBasicSpace
+        }
+        invitation {
+          id
+          welcomeMessage
+          createdBy {
+            id
+          }
+          lifecycle {
+            id
+            state
+          }
+          createdDate
+        }
       }
       mySpaces(showOnlyMyCreatedSpaces: true) {
         space {
-          id
-          spaceID: id
+          ...NewMembershipsBasicSpace
         }
       }
     }
   }
+  ${NewMembershipsBasicSpaceFragmentDoc}
 `;
 
 /**
