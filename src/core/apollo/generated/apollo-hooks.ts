@@ -17637,6 +17637,7 @@ export const SpaceAccountDocument = gql`
           id
           name
           enabled
+          type
           sortOrder
           isFree
           pricePerMonth
