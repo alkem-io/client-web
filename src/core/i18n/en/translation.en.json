@@ -2513,6 +2513,10 @@
           "bullets": "<ul><li>When interacting with a Virtual Contributor, only the data explicitly specified on the left (Context) is used to generate meaningful answers.</li><li>Importantly, your (Space) data is not utilized for training the Virtual Contributor.</li><li>Additionally, please note that questions and answers exchanged with the Virtual Contributor may be visible to the Alkemio team.</li></ul>"
         }
       },
+      "membership": {
+        "title": "Virtual Contributor Memberships",
+        "pendingInvitations": "Pending Invitations"
+      },
       "settings": {
         "title": "Virtual Contributor Settings",
         "access": {

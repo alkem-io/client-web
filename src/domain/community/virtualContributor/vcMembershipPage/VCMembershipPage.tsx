@@ -54,20 +54,20 @@ const UserMembershipPage: FC<UserMembershipPageProps> = () => {
     }, [] as SpaceHostedItem[]);
   }, [data]);
 
-  const pendingApplications = [];
+  const pendingInvitations = [];
 
   return (
     <VCSettingsPageLayout currentTab={SettingsSection.Membership}>
       <ContributionsView
-        title={t('common.my-memberships')}
+        title={t('pages.virtualContributorProfile.membership.title')}
         contributions={memberships}
         loading={loading}
         enableLeave
         onLeave={refetch}
       />
       <ContributionsView
-        title={t('pages.user-profile.pending-applications.title')}
-        contributions={pendingApplications}
+        title={t('pages.virtualContributorProfile.membership.pendingInvitations')}
+        contributions={pendingInvitations}
         loading={loading}
       />
     </VCSettingsPageLayout>
