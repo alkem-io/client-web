@@ -2273,6 +2273,7 @@ export type QueryKeySpecifier = (
   | 'platform'
   | 'rolesOrganization'
   | 'rolesUser'
+  | 'rolesVirtualContributor'
   | 'search'
   | 'space'
   | 'spaces'
@@ -2308,6 +2309,7 @@ export type QueryFieldPolicy = {
   platform?: FieldPolicy<any> | FieldReadFunction<any>;
   rolesOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   rolesUser?: FieldPolicy<any> | FieldReadFunction<any>;
+  rolesVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
   search?: FieldPolicy<any> | FieldReadFunction<any>;
   space?: FieldPolicy<any> | FieldReadFunction<any>;
   spaces?: FieldPolicy<any> | FieldReadFunction<any>;

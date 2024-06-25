@@ -10,6 +10,7 @@ import GridProvider from '../../../../core/ui/grid/GridProvider';
 import SectionSpacer from '../../../shared/components/Section/SectionSpacer';
 import useUserContributions from '../userContributions/useUserContributions';
 import { SpaceHostedItem } from '../../../journey/utils/SpaceHostedItem';
+import { CommunityContributorType } from '../../../../core/apollo/generated/graphql-schema';
 
 export interface UserMembershipPageProps {}
 
@@ -18,7 +19,7 @@ const UserMembershipPage: FC<UserMembershipPageProps> = () => {
   const { userNameId = '' } = useUrlParams();
   const { user: userMetadata, loading } = useUserMetadata(userNameId);
 
-  const contributions = useUserContributions(userNameId);
+  const contributions = useUserContributions(userMetadata?.user.id);
 
   const applications = useMemo<SpaceHostedItem[] | undefined>(
     () =>
@@ -26,6 +27,8 @@ const UserMembershipPage: FC<UserMembershipPageProps> = () => {
         id: application.id,
         spaceID: application.space.id,
         spaceLevel: application.space.level,
+        contributorId: userMetadata.user.id,
+        contributorType: CommunityContributorType.User,
       })),
     [userMetadata?.pendingApplications]
   );

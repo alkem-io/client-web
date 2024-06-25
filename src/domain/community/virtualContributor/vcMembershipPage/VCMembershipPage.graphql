@@ -1,0 +1,16 @@
+query VCMemberships($virtualContributorId: UUID_NAMEID!) {
+  virtualContributor(ID: $virtualContributorId) {
+    id
+  }
+  rolesVirtualContributor(rolesData: { virtualContributorID: $virtualContributorId }) {
+    spaces {
+      id
+      nameID
+      subspaces {
+        id
+        nameID
+        type
+      }
+    }
+  }
+}

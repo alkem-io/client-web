@@ -1,6 +1,7 @@
 import React, { FC, useCallback, useMemo } from 'react';
 import {
   useRemoveUserAsCommunityMemberMutation,
+  useRemoveVirtualContributorAsCommunityMemberMutation,
   useSpaceContributionDetailsQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
@@ -9,6 +10,7 @@ import { useUserContext } from '../../user/hooks/useUserContext';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import { VisualName } from '../../../common/visual/constants/visuals.constants';
 import { SpaceHostedItem } from '../../../journey/utils/SpaceHostedItem';
+import { CommunityContributorType } from '../../../../core/apollo/generated/graphql-schema';
 
 export interface EntityDetailsContainerEntities {
   details?: ContributionDetails;
@@ -20,7 +22,7 @@ export interface EntityDetailsContainerState {
 }
 
 export interface EntityDetailsContainerActions {
-  leaveCommunity: () => void;
+  leaveCommunity: () => Promise<void>;
 }
 
 interface EntityDetailsContainerProps
@@ -46,7 +48,7 @@ export interface ContributionDetails {
 }
 
 const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entities, children }) => {
-  const { spaceID, spaceLevel } = entities;
+  const { spaceID, spaceLevel, contributorType, contributorId } = entities;
   const { user: userMetadata } = useUserContext();
   const userId = userMetadata?.user?.id;
   const { data: spaceData, loading: spaceLoading } = useSpaceContributionDetailsQuery({
@@ -55,7 +57,8 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
     },
   });
 
-  const [leaveCommunity, { loading: isLeavingCommunity }] = useRemoveUserAsCommunityMemberMutation();
+  const [userLeaveCommunity, { loading: userIsLeavingCommunity }] = useRemoveUserAsCommunityMemberMutation();
+  const [vcLeaveCommunity, { loading: vcIsLeavingCommunity }] = useRemoveVirtualContributorAsCommunityMemberMutation();
 
   const details = useMemo<ContributionDetails | undefined>(() => {
     if (spaceData?.lookup.space) {
@@ -73,15 +76,35 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
   }, [spaceData, spaceLevel]);
 
   const handleLeaveCommunity = useCallback(async () => {
-    if (details?.communityId && userId)
-      await leaveCommunity({
-        variables: {
-          memberId: userId,
-          communityId: details?.communityId,
-        },
-        awaitRefetchQueries: true,
-      });
-  }, [userId, details?.communityId, leaveCommunity]);
+    switch (contributorType) {
+      case CommunityContributorType.User: {
+        if (details?.communityId && userId) {
+          await userLeaveCommunity({
+            variables: {
+              memberId: userId,
+              communityId: details.communityId,
+            },
+            awaitRefetchQueries: true,
+          });
+        }
+        break;
+      }
+      case CommunityContributorType.Virtual: {
+        if (details?.communityId && contributorId) {
+          await vcLeaveCommunity({
+            variables: {
+              memberId: contributorId,
+              communityId: details.communityId,
+            },
+          });
+        }
+        break;
+      }
+      default: {
+        throw new Error('Invalid contributor type');
+      }
+    }
+  }, [userId, contributorId, contributorType, details?.communityId, userLeaveCommunity, vcLeaveCommunity]);
 
   return (
     <>
@@ -89,7 +112,7 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
         { details },
         {
           loading: spaceLoading,
-          isLeavingCommunity,
+          isLeavingCommunity: userIsLeavingCommunity || vcIsLeavingCommunity,
         },
         { leaveCommunity: handleLeaveCommunity }
       )}

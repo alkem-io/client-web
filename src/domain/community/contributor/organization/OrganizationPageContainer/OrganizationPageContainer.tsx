@@ -17,7 +17,11 @@ import {
   SocialNetworkEnum,
   toSocialNetworkEnum,
 } from '../../../../shared/components/SocialLinks/models/SocialNetworks';
-import { AuthorizationPrivilege, OrganizationInfoFragment } from '../../../../../core/apollo/generated/graphql-schema';
+import {
+  AuthorizationPrivilege,
+  CommunityContributorType,
+  OrganizationInfoFragment,
+} from '../../../../../core/apollo/generated/graphql-schema';
 import { buildUserProfileUrl } from '../../../../../main/routing/urlBuilders';
 import { useTranslation } from 'react-i18next';
 import {
@@ -158,6 +162,8 @@ export const OrganizationPageContainer: FC<OrganizationPageContainerProps> = ({ 
       spaceID: x.id,
       spaceLevel: 0,
       id: x.id,
+      contributorId: organizationId,
+      contributorType: CommunityContributorType.Organization,
     }));
 
     // Loop over spaces, filter the challenges in which user has the role 'lead' and map those challenges to ContributionItems
@@ -169,6 +175,8 @@ export const OrganizationPageContainer: FC<OrganizationPageContainerProps> = ({ 
             spaceID: c.id,
             spaceLevel: 1,
             id: c.id,
+            contributorId: organizationId,
+            contributorType: CommunityContributorType.Organization,
           }))
       ) || [];
 

@@ -4321,6 +4321,8 @@ export type Query = {
   rolesOrganization: ContributorRoles;
   /** The roles that that the specified User has. */
   rolesUser: ContributorRoles;
+  /** The roles that the specified VirtualContributor has. */
+  rolesVirtualContributor: ContributorRoles;
   /** Search the platform for terms supplied */
   search: ISearchResults;
   /** Look up a top level Space (i.e. a Space that does not have a parent Space) by the UUID or NameID. */
@@ -4405,6 +4407,10 @@ export type QueryRolesOrganizationArgs = {
 
 export type QueryRolesUserArgs = {
   rolesData: RolesUserInput;
+};
+
+export type QueryRolesVirtualContributorArgs = {
+  rolesData: RolesVirtualContributorInput;
 };
 
 export type QuerySearchArgs = {
@@ -4719,6 +4725,11 @@ export type RolesUserInput = {
   filter?: InputMaybe<SpaceFilterInput>;
   /** The ID of the user to retrieve the roles of. */
   userID: Scalars['UUID_NAMEID_EMAIL'];
+};
+
+export type RolesVirtualContributorInput = {
+  /** The ID or nameID of the VC to retrieve the roles of. */
+  virtualContributorID: Scalars['UUID_NAMEID'];
 };
 
 export type Room = {
@@ -16226,6 +16237,16 @@ export type RemoveCommunityRoleFromUserMutation = {
   removeCommunityRoleFromUser: { __typename?: 'User'; id: string };
 };
 
+export type RemoveVirtualContributorAsCommunityMemberMutationVariables = Exact<{
+  communityId: Scalars['UUID'];
+  memberId: Scalars['UUID_NAMEID'];
+}>;
+
+export type RemoveVirtualContributorAsCommunityMemberMutation = {
+  __typename?: 'Mutation';
+  removeCommunityRoleFromVirtual: { __typename?: 'VirtualContributor'; id: string };
+};
+
 export type ContributorsPageOrganizationsQueryVariables = Exact<{
   first: Scalars['Int'];
   after?: InputMaybe<Scalars['UUID']>;
@@ -18624,6 +18645,24 @@ export type UpdateVirtualContributorMutation = {
           }>
         | undefined;
     };
+  };
+};
+
+export type VcMembershipsQueryVariables = Exact<{
+  virtualContributorId: Scalars['UUID_NAMEID'];
+}>;
+
+export type VcMembershipsQuery = {
+  __typename?: 'Query';
+  virtualContributor: { __typename?: 'VirtualContributor'; id: string };
+  rolesVirtualContributor: {
+    __typename?: 'ContributorRoles';
+    spaces: Array<{
+      __typename?: 'RolesResultSpace';
+      id: string;
+      nameID: string;
+      subspaces: Array<{ __typename?: 'RolesResultCommunity'; id: string; nameID: string; type: SpaceType }>;
+    }>;
   };
 };
 

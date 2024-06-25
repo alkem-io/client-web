@@ -16,6 +16,7 @@ interface ContributionViewProps {
   contributions: SpaceHostedItem[] | undefined;
   loading?: boolean;
   enableLeave?: boolean;
+  onLeave?: () => Promise<unknown>;
   cards?: PageContentBlockGridProps['cards'];
 }
 
@@ -47,6 +48,7 @@ export const ContributionsView = ({
   contributions,
   loading,
   enableLeave,
+  onLeave,
   cards,
 }: ContributionViewProps) => {
   const { t } = useTranslation();
@@ -64,19 +66,24 @@ export const ContributionsView = ({
           </>
         )}
         {!loading && (
-          <ScrollableCardsLayoutContainer>
+          <ScrollableCardsLayoutContainer containerProps={{ flex: 1 }}>
             {contributions?.map(contributionItem => (
               <ContributionDetailsContainer key={contributionItem.id} entities={contributionItem}>
                 {({ details }, { loading, isLeavingCommunity }, { leaveCommunity }) => {
                   if (loading || !details) {
                     return null;
                   }
+                  const handleLeaveCommunity = async () => {
+                    await leaveCommunity();
+                    onLeave?.();
+                  };
+
                   return (
                     <ContributionDetailsCard
                       {...details}
                       enableLeave={enableLeave}
                       leavingCommunity={isLeavingCommunity}
-                      handleLeaveCommunity={leaveCommunity}
+                      handleLeaveCommunity={handleLeaveCommunity}
                       leavingCommunityDialogOpen={leavingCommunityId === details?.communityId}
                       onLeaveCommunityDialogOpen={isOpen =>
                         setLeavingCommunityId(isOpen ? details?.communityId : undefined)
