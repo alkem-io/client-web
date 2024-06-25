@@ -9,6 +9,7 @@ import {
   ApplicationHydrator,
   getChildJourneyTypeName,
   InvitationHydrator,
+  InvitationWithMeta,
   usePendingMemberships,
 } from './PendingMemberships';
 import InvitationCardHorizontal from '../invitations/InvitationCardHorizontal/InvitationCardHorizontal';
@@ -22,7 +23,6 @@ import { CommunityContributorType, VisualType } from '../../../core/apollo/gener
 import BackButton from '../../../core/ui/actions/BackButton';
 import useNavigate from '../../../core/routing/useNavigate';
 import { useNewMembershipsQuery } from '../../../core/apollo/generated/apollo-hooks';
-import { Identifiable } from '../../../core/utils/Identifiable';
 
 interface ButtonImplementationParams {
   header: ReactNode;
@@ -64,11 +64,11 @@ const PendingMembershipsUserMenuItem = ({ children }: PendingMembershipsUserMenu
 
   const closeDialog = () => setOpenDialog(undefined);
 
-  const handleInvitationCardClick = ({ id, space }: Identifiable & { space: { profile: { url: string } } }) => {
+  const handleInvitationCardClick = ({ id, space, invitation }: InvitationWithMeta) => {
     setOpenDialog({
       type: DialogType.InvitationView,
       invitationId: id,
-      journeyUri: space.profile.url,
+      journeyUri: invitation.contributorType === CommunityContributorType.Virtual ? undefined : space.profile.url,
     });
   };
 

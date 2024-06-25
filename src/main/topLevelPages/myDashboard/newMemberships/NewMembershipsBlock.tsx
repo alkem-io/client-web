@@ -7,6 +7,7 @@ import {
   ApplicationHydrator,
   getChildJourneyTypeName,
   InvitationHydrator,
+  InvitationWithMeta,
 } from '../../../../domain/community/pendingMembership/PendingMemberships';
 import InvitationCardHorizontal from '../../../../domain/community/invitations/InvitationCardHorizontal/InvitationCardHorizontal';
 import React, { useMemo, useState } from 'react';
@@ -24,13 +25,12 @@ import InvitationActionsContainer from '../../../../domain/community/invitations
 import InvitationDialog from '../../../../domain/community/invitations/InvitationDialog';
 import NewMembershipCard from './NewMembershipCard';
 import SeeMore from '../../../../core/ui/content/SeeMore';
-import { VisualType } from '../../../../core/apollo/generated/graphql-schema';
+import { CommunityContributorType, VisualType } from '../../../../core/apollo/generated/graphql-schema';
 import BadgeCounter from '../../../../core/ui/icon/BadgeCounter';
 import HorizontalCardsGroup from '../../../../core/ui/content/HorizontalCardsGroup';
 import useNavigate from '../../../../core/routing/useNavigate';
 import { PendingApplication } from '../../../../domain/community/user';
 import { InvitationItem } from '../../../../domain/community/user/providers/UserProvider/InvitationItem';
-import { Identifiable } from '../../../../core/utils/Identifiable';
 
 enum PendingMembershipItemType {
   Invitation,
@@ -153,14 +153,14 @@ const NewMembershipsBlock = ({
   const closeDialog = () => setOpenDialog(undefined);
 
   const handleInvitationCardClick = (
-    { id, space }: Identifiable & { space: { profile: { url: string } } },
+    { id, space, invitation }: InvitationWithMeta,
     from: InvitationViewDialogDetails['from']
   ) => {
     setOpenDialog({
       type: DialogType.InvitationView,
       invitationId: id,
       from,
-      journeyUri: space.profile.url,
+      journeyUri: invitation.contributorType === CommunityContributorType.Virtual ? undefined : space.profile.url,
     });
   };
 
