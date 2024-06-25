@@ -4321,6 +4321,8 @@ export type Query = {
   rolesOrganization: ContributorRoles;
   /** The roles that that the specified User has. */
   rolesUser: ContributorRoles;
+  /** The roles that the specified VirtualContributor has. */
+  rolesVirtualContributor: ContributorRoles;
   /** Search the platform for terms supplied */
   search: ISearchResults;
   /** Look up a top level Space (i.e. a Space that does not have a parent Space) by the UUID or NameID. */
@@ -4405,6 +4407,10 @@ export type QueryRolesOrganizationArgs = {
 
 export type QueryRolesUserArgs = {
   rolesData: RolesUserInput;
+};
+
+export type QueryRolesVirtualContributorArgs = {
+  rolesData: RolesVirtualContributorInput;
 };
 
 export type QuerySearchArgs = {
@@ -4719,6 +4725,11 @@ export type RolesUserInput = {
   filter?: InputMaybe<SpaceFilterInput>;
   /** The ID of the user to retrieve the roles of. */
   userID: Scalars['UUID_NAMEID_EMAIL'];
+};
+
+export type RolesVirtualContributorInput = {
+  /** The ID or nameID of the VC to retrieve the roles of. */
+  virtualContributorID: Scalars['UUID_NAMEID'];
 };
 
 export type Room = {
@@ -25611,6 +25622,31 @@ export type UserStorageConfigQuery = {
   __typename?: 'Query';
   user: {
     __typename?: 'User';
+    id: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      storageBucket: {
+        __typename?: 'StorageBucket';
+        id: string;
+        allowedMimeTypes: Array<string>;
+        maxFileSize: number;
+        authorization?:
+          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+          | undefined;
+      };
+    };
+  };
+};
+
+export type VirtualContributorStorageConfigQueryVariables = Exact<{
+  virtualContributorId: Scalars['UUID_NAMEID'];
+}>;
+
+export type VirtualContributorStorageConfigQuery = {
+  __typename?: 'Query';
+  virtualContributor: {
+    __typename?: 'VirtualContributor';
     id: string;
     profile: {
       __typename?: 'Profile';
