@@ -23150,6 +23150,7 @@ export const NewMembershipsDocument = gql`
         invitation {
           id
           welcomeMessage
+          contributorType
           createdBy {
             id
           }

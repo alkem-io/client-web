@@ -635,10 +635,14 @@
       "applicationsSectionTitle": "Open applications",
       "invitationDialog": {
         "title": "Pending Membership: {{journey}}",
+        "vc": {
+          "title": "Pending Virtual Contributor membership: {{journey}}"
+        },
         "actions": {
           "hide": "Hide this invitation",
           "reject": "Decline",
-          "accept": "Join"
+          "join": "Join",
+          "accept": "Accept"
         }
       },
       "invitationTitle": "{{time}} {{user}} invited {{invitedEntity}} to <journeyicon /> {{journey}}",

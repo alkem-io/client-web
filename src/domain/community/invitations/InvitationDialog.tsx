@@ -1,5 +1,9 @@
 import React, { ReactNode } from 'react';
-import { getChildJourneyTypeName, InvitationHydrator } from '../pendingMembership/PendingMemberships';
+import {
+  getChildJourneyTypeName,
+  InvitationHydrator,
+  InvitationWithMeta,
+} from '../pendingMembership/PendingMemberships';
 import DialogHeader from '../../../core/ui/dialog/DialogHeader';
 import Gutters from '../../../core/ui/grid/Gutters';
 import { CheckOutlined, HdrStrongOutlined } from '@mui/icons-material';
@@ -13,7 +17,7 @@ import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import DialogWithGrid from '../../../core/ui/dialog/DialogWithGrid';
 import { InvitationItem } from '../user/providers/UserProvider/InvitationItem';
 import { useTranslation } from 'react-i18next';
-import { VisualType } from '../../../core/apollo/generated/graphql-schema';
+import { CommunityContributorType, VisualType } from '../../../core/apollo/generated/graphql-schema';
 import { Box, DialogActions, DialogContent } from '@mui/material';
 import WrapperMarkdown from '../../../core/ui/markdown/WrapperMarkdown';
 import References from '../../shared/components/References/References';
@@ -45,6 +49,26 @@ const InvitationDialog = ({
 }: InvitationDialogProps) => {
   const { t } = useTranslation();
 
+  const getTitle = (invitation: InvitationWithMeta) => {
+    if (invitation.invitation.contributorType === CommunityContributorType.Virtual) {
+      return t('community.pendingMembership.invitationDialog.vc.title', {
+        journey: invitation?.space.profile.displayName,
+      });
+    }
+
+    return t('community.pendingMembership.invitationDialog.title', {
+      journey: invitation?.space.profile.displayName,
+    });
+  };
+
+  const getAcceptLabel = (invitation: InvitationWithMeta) => {
+    if (invitation.invitation.contributorType === CommunityContributorType.Virtual) {
+      return t('community.pendingMembership.invitationDialog.actions.accept');
+    }
+
+    return t('community.pendingMembership.invitationDialog.actions.join');
+  };
+
   return (
     <DialogWithGrid columns={12} open={open} onClose={onClose}>
       {invitation && (
@@ -61,9 +85,7 @@ const InvitationDialog = ({
                   title={
                     <Gutters row disablePadding>
                       <HdrStrongOutlined fontSize="small" />
-                      {t('community.pendingMembership.invitationDialog.title', {
-                        journey: invitation?.space.profile.displayName,
-                      })}
+                      {getTitle(invitation)}
                     </Gutters>
                   }
                   onClose={onClose}
@@ -88,6 +110,7 @@ const InvitationDialog = ({
                           journeyTypeName={getChildJourneyTypeName(invitation.space)}
                           createdDate={invitation.invitation.createdDate}
                           author={{ displayName: invitation.userDisplayName }}
+                          type={invitation.invitation.contributorType}
                         />
                       </Caption>
                       {invitation.invitation.welcomeMessage && <Text>{invitation.invitation.welcomeMessage}</Text>}
@@ -128,7 +151,7 @@ const InvitationDialog = ({
                     loading={accepting}
                     disabled={updating && !accepting}
                   >
-                    {t('community.pendingMembership.invitationDialog.actions.accept')}
+                    {getAcceptLabel(invitation)}
                   </LoadingButton>
                 </DialogActions>
               </>
