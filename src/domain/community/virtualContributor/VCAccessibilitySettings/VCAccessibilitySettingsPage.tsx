@@ -58,8 +58,12 @@ export const VCAccessibilitySettingsPage = () => {
     handleUpdate({ searchVisibility: newValue });
   };
 
+  if (!data?.virtualContributor) {
+    return null;
+  }
+
   return (
-    <StorageConfigContextProvider locationType="platform">
+    <StorageConfigContextProvider locationType="virtualContributor" virtualContributorId={data.virtualContributor.id}>
       <VCSettingsPageLayout currentTab={SettingsSection.Settings}>
         <PageContent background="background.paper">
           <PageContentColumn columns={12}>

@@ -25667,6 +25667,31 @@ export type UserStorageConfigQuery = {
   };
 };
 
+export type VirtualContributorStorageConfigQueryVariables = Exact<{
+  virtualContributorId: Scalars['UUID_NAMEID'];
+}>;
+
+export type VirtualContributorStorageConfigQuery = {
+  __typename?: 'Query';
+  virtualContributor: {
+    __typename?: 'VirtualContributor';
+    id: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      storageBucket: {
+        __typename?: 'StorageBucket';
+        id: string;
+        allowedMimeTypes: Array<string>;
+        maxFileSize: number;
+        authorization?:
+          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+          | undefined;
+      };
+    };
+  };
+};
+
 export type OrganizationStorageConfigQueryVariables = Exact<{
   organizationId: Scalars['UUID_NAMEID'];
 }>;

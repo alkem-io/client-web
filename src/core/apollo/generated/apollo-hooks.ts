@@ -21310,6 +21310,74 @@ export function refetchUserStorageConfigQuery(variables: SchemaTypes.UserStorage
   return { query: UserStorageConfigDocument, variables: variables };
 }
 
+export const VirtualContributorStorageConfigDocument = gql`
+  query VirtualContributorStorageConfig($virtualContributorId: UUID_NAMEID!) {
+    virtualContributor(ID: $virtualContributorId) {
+      id
+      profile {
+        ...ProfileStorageConfig
+      }
+    }
+  }
+  ${ProfileStorageConfigFragmentDoc}
+`;
+
+/**
+ * __useVirtualContributorStorageConfigQuery__
+ *
+ * To run a query within a React component, call `useVirtualContributorStorageConfigQuery` and pass it any options that fit your needs.
+ * When your component renders, `useVirtualContributorStorageConfigQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useVirtualContributorStorageConfigQuery({
+ *   variables: {
+ *      virtualContributorId: // value for 'virtualContributorId'
+ *   },
+ * });
+ */
+export function useVirtualContributorStorageConfigQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.VirtualContributorStorageConfigQuery,
+    SchemaTypes.VirtualContributorStorageConfigQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.VirtualContributorStorageConfigQuery,
+    SchemaTypes.VirtualContributorStorageConfigQueryVariables
+  >(VirtualContributorStorageConfigDocument, options);
+}
+
+export function useVirtualContributorStorageConfigLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.VirtualContributorStorageConfigQuery,
+    SchemaTypes.VirtualContributorStorageConfigQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.VirtualContributorStorageConfigQuery,
+    SchemaTypes.VirtualContributorStorageConfigQueryVariables
+  >(VirtualContributorStorageConfigDocument, options);
+}
+
+export type VirtualContributorStorageConfigQueryHookResult = ReturnType<typeof useVirtualContributorStorageConfigQuery>;
+export type VirtualContributorStorageConfigLazyQueryHookResult = ReturnType<
+  typeof useVirtualContributorStorageConfigLazyQuery
+>;
+export type VirtualContributorStorageConfigQueryResult = Apollo.QueryResult<
+  SchemaTypes.VirtualContributorStorageConfigQuery,
+  SchemaTypes.VirtualContributorStorageConfigQueryVariables
+>;
+export function refetchVirtualContributorStorageConfigQuery(
+  variables: SchemaTypes.VirtualContributorStorageConfigQueryVariables
+) {
+  return { query: VirtualContributorStorageConfigDocument, variables: variables };
+}
+
 export const OrganizationStorageConfigDocument = gql`
   query OrganizationStorageConfig($organizationId: UUID_NAMEID!) {
     organization(ID: $organizationId) {
