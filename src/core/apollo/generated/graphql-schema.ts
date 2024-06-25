@@ -18606,6 +18606,7 @@ export type UpdateVirtualContributorMutation = {
     __typename?: 'VirtualContributor';
     id: string;
     listedInStore: boolean;
+    searchVisibility: SearchVisibility;
     profile: {
       __typename?: 'Profile';
       id: string;

@@ -70,6 +70,7 @@ mutation UpdateVirtualContributor($virtualContributorData: UpdateVirtualContribu
   updateVirtualContributor(virtualContributorData: $virtualContributorData) {
     id
     listedInStore
+    searchVisibility
     profile {
       id
       tagline

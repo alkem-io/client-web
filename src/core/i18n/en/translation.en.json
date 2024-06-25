@@ -2492,6 +2492,7 @@
       "description": "Description",
       "references": "References",
       "host": "Host",
+      "success": "{{entity}} updated successfully.",
       "sections": {
         "knowledge": {
           "title": "Knowledge",
@@ -2514,7 +2515,14 @@
       },
       "settings": {
         "title": "Virtual Contributor Settings",
-        "listedInStoreOption": "Allow the Virtual Contributor to be displayed in the Innovation Library."
+        "access": {
+          "listedInStore": "Allow the Virtual Contributor to be displayed in the Innovation Library.",
+          "visibility": {
+            "public": "<b>Public:</b> this Virtual Contributor is visible and can be invited to other Spaces, but only by users who are Space admins.",
+            "private": "<b>Private:</b> this Virtual Contributor is not visible for (admins of) other Spaces.",
+            "hidden": "<b>Hidden</b>"
+          }
+        }
       }
     },
     "user-credentials": {

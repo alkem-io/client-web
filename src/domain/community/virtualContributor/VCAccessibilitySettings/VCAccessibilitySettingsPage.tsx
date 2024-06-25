@@ -8,17 +8,22 @@ import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContent from '../../../../core/ui/content/PageContent';
 import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
-import { Trans } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { SettingsSection } from '../../../platform/admin/layout/EntitySettingsLayout/constants';
 import VCSettingsPageLayout from '../layout/VCSettingsPageLayout';
 import SwitchSettingsGroup from '../../../../core/ui/forms/SettingsGroups/SwitchSettingsGroup';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
+import RadioSettingsGroup from '../../../../core/ui/forms/SettingsGroups/RadioSettingsGroup';
+import { SearchVisibility } from '../../../../core/apollo/generated/graphql-schema';
 
 interface VCAccessibilityProps {
   listedInStore?: boolean;
+  searchVisibility?: SearchVisibility;
 }
 
 export const VCAccessibilitySettingsPage = () => {
+  const { t } = useTranslation();
+
   const { vcNameId = '' } = useUrlParams();
 
   const notify = useNotification();
@@ -40,7 +45,7 @@ export const VCAccessibilitySettingsPage = () => {
         },
       },
       onCompleted: () => {
-        notify('Settings updated successfully', 'success');
+        notify(t('pages.virtualContributorProfile.success', { entity: t('common.settings') }), 'success');
       },
     });
   };
@@ -49,25 +54,55 @@ export const VCAccessibilitySettingsPage = () => {
     handleUpdate({ listedInStore: newValue });
   };
 
+  const updateVisibility = (newValue: SearchVisibility) => {
+    handleUpdate({ searchVisibility: newValue });
+  };
+
   return (
     <StorageConfigContextProvider locationType="platform">
       <VCSettingsPageLayout currentTab={SettingsSection.Settings}>
         <PageContent background="background.paper">
           <PageContentColumn columns={12}>
             <PageContentBlock>
-              <SwitchSettingsGroup
+              <RadioSettingsGroup
+                value={data?.virtualContributor?.searchVisibility ?? SearchVisibility.Account}
                 options={{
-                  listedInStore: {
-                    checked: data?.virtualContributor?.listedInStore || false,
+                  [SearchVisibility.Public]: {
                     label: (
                       <Trans
-                        i18nKey="pages.virtualContributorProfile.settings.listedInStoreOption"
+                        i18nKey="pages.virtualContributorProfile.settings.access.visibility.public"
+                        components={{ b: <strong /> }}
+                      />
+                    ),
+                  },
+                  [SearchVisibility.Account]: {
+                    label: (
+                      <Trans
+                        i18nKey="pages.virtualContributorProfile.settings.access.visibility.private"
+                        components={{ b: <strong /> }}
+                      />
+                    ),
+                  },
+                  [SearchVisibility.Hidden]: {
+                    label: (
+                      <Trans
+                        i18nKey="pages.virtualContributorProfile.settings.access.visibility.hidden"
                         components={{ b: <strong /> }}
                       />
                     ),
                   },
                 }}
-                onChange={(event, newValue) => updateListedInStore(newValue)}
+                onChange={newValue => updateVisibility(newValue)}
+              />
+              <SwitchSettingsGroup
+                options={{
+                  listedInStore: {
+                    checked: data?.virtualContributor?.listedInStore ?? false,
+                    disabled: data?.virtualContributor?.searchVisibility !== SearchVisibility.Public,
+                    label: t('pages.virtualContributorProfile.settings.access.listedInStore'),
+                  },
+                }}
+                onChange={(key, newValue) => updateListedInStore(newValue)}
               />
             </PageContentBlock>
           </PageContentColumn>

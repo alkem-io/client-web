@@ -14877,6 +14877,7 @@ export const UpdateVirtualContributorDocument = gql`
     updateVirtualContributor(virtualContributorData: $virtualContributorData) {
       id
       listedInStore
+      searchVisibility
       profile {
         id
         tagline
