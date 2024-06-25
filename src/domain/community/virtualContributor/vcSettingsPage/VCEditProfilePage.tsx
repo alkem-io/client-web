@@ -18,7 +18,7 @@ import VCSettingsPageLayout from '../layout/VCSettingsPageLayout';
 export const VCSettingsPage = () => {
   const { t } = useTranslation();
 
-  const { vcNameId = '' } = useUrlParams();
+  const { vcNameId = '' } = useUrlParams() ?? { vcNameId: '' };
 
   const notify = useNotification();
 
@@ -52,23 +52,26 @@ export const VCSettingsPage = () => {
     );
 
   return (
-    <StorageConfigContextProvider locationType="platform">
-      <VCSettingsPageLayout currentTab={SettingsSection.MyProfile}>
-        <PageContent background="background.paper">
-          <PageContentColumn columns={12}>
-            <PageContentBlock>
-              {data?.virtualContributor && (
+    data?.virtualContributor && (
+      <StorageConfigContextProvider
+        locationType="virtualContributor"
+        virtualContributorId={data?.virtualContributor.id}
+      >
+        <VCSettingsPageLayout currentTab={SettingsSection.MyProfile}>
+          <PageContent background="background.paper">
+            <PageContentColumn columns={12}>
+              <PageContentBlock>
                 <VirtualContributorForm
                   virtualContributor={data?.virtualContributor}
                   avatar={data?.virtualContributor.profile.avatar}
                   onSave={handleUpdate}
                 />
-              )}
-            </PageContentBlock>
-          </PageContentColumn>
-        </PageContent>
-      </VCSettingsPageLayout>
-    </StorageConfigContextProvider>
+              </PageContentBlock>
+            </PageContentColumn>
+          </PageContent>
+        </VCSettingsPageLayout>
+      </StorageConfigContextProvider>
+    )
   );
 };
 

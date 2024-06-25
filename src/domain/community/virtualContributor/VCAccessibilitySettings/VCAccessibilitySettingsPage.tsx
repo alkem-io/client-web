@@ -59,56 +59,61 @@ export const VCAccessibilitySettingsPage = () => {
   };
 
   return (
-    <StorageConfigContextProvider locationType="platform">
-      <VCSettingsPageLayout currentTab={SettingsSection.Settings}>
-        <PageContent background="background.paper">
-          <PageContentColumn columns={12}>
-            <PageContentBlock>
-              <RadioSettingsGroup
-                value={data?.virtualContributor?.searchVisibility ?? SearchVisibility.Account}
-                options={{
-                  [SearchVisibility.Public]: {
-                    label: (
-                      <Trans
-                        i18nKey="pages.virtualContributorProfile.settings.access.visibility.public"
-                        components={{ b: <strong /> }}
-                      />
-                    ),
-                  },
-                  [SearchVisibility.Account]: {
-                    label: (
-                      <Trans
-                        i18nKey="pages.virtualContributorProfile.settings.access.visibility.private"
-                        components={{ b: <strong /> }}
-                      />
-                    ),
-                  },
-                  [SearchVisibility.Hidden]: {
-                    label: (
-                      <Trans
-                        i18nKey="pages.virtualContributorProfile.settings.access.visibility.hidden"
-                        components={{ b: <strong /> }}
-                      />
-                    ),
-                  },
-                }}
-                onChange={newValue => updateVisibility(newValue)}
-              />
-              <SwitchSettingsGroup
-                options={{
-                  listedInStore: {
-                    checked: data?.virtualContributor?.listedInStore ?? false,
-                    disabled: data?.virtualContributor?.searchVisibility !== SearchVisibility.Public,
-                    label: t('pages.virtualContributorProfile.settings.access.listedInStore'),
-                  },
-                }}
-                onChange={(key, newValue) => updateListedInStore(newValue)}
-              />
-            </PageContentBlock>
-          </PageContentColumn>
-        </PageContent>
-      </VCSettingsPageLayout>
-    </StorageConfigContextProvider>
+    data?.virtualContributor && (
+      <StorageConfigContextProvider
+        locationType="virtualContributor"
+        virtualContributorId={data?.virtualContributor?.id}
+      >
+        <VCSettingsPageLayout currentTab={SettingsSection.Settings}>
+          <PageContent background="background.paper">
+            <PageContentColumn columns={12}>
+              <PageContentBlock>
+                <RadioSettingsGroup
+                  value={data?.virtualContributor?.searchVisibility ?? SearchVisibility.Account}
+                  options={{
+                    [SearchVisibility.Public]: {
+                      label: (
+                        <Trans
+                          i18nKey="pages.virtualContributorProfile.settings.access.visibility.public"
+                          components={{ b: <strong /> }}
+                        />
+                      ),
+                    },
+                    [SearchVisibility.Account]: {
+                      label: (
+                        <Trans
+                          i18nKey="pages.virtualContributorProfile.settings.access.visibility.private"
+                          components={{ b: <strong /> }}
+                        />
+                      ),
+                    },
+                    [SearchVisibility.Hidden]: {
+                      label: (
+                        <Trans
+                          i18nKey="pages.virtualContributorProfile.settings.access.visibility.hidden"
+                          components={{ b: <strong /> }}
+                        />
+                      ),
+                    },
+                  }}
+                  onChange={newValue => updateVisibility(newValue)}
+                />
+                <SwitchSettingsGroup
+                  options={{
+                    listedInStore: {
+                      checked: data?.virtualContributor?.listedInStore ?? false,
+                      disabled: data?.virtualContributor?.searchVisibility !== SearchVisibility.Public,
+                      label: t('pages.virtualContributorProfile.settings.access.listedInStore'),
+                    },
+                  }}
+                  onChange={(key, newValue) => updateListedInStore(newValue)}
+                />
+              </PageContentBlock>
+            </PageContentColumn>
+          </PageContent>
+        </VCSettingsPageLayout>
+      </StorageConfigContextProvider>
+    )
   );
 };
 
