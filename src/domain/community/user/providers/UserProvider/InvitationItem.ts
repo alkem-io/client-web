@@ -11,6 +11,7 @@ export interface InvitationItem extends Identifiable {
     };
   };
   invitation: {
+    id: string;
     createdBy: Identifiable;
     welcomeMessage?: string;
     createdDate: Date | string;
