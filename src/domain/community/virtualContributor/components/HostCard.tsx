@@ -37,6 +37,7 @@ const HostCard: FC<HostProps> = ({ hostProfile }) => {
   const { t } = useTranslation();
 
   const profile = hostProfile || DEFAULT_PROFILE;
+  const hasLocation = profile.location && (profile.location.city || profile.location.country);
 
   return (
     <>
@@ -50,10 +51,13 @@ const HostCard: FC<HostProps> = ({ hostProfile }) => {
           }
         >
           <BlockSectionTitle>{profile.displayName}</BlockSectionTitle>
-          {profile.location && (
+          {hasLocation && (
             <BlockSectionTitle display={'flex'} alignItems={'center'}>
               <LocationIcon sx={{ fill: theme.palette.primary.main, width: 14, height: 14 }} />
-              {getLocationString(profile.location)}
+              {
+                //@ts-ignore already checked with hasLocation
+                getLocationString(profile.location)
+              }
             </BlockSectionTitle>
           )}
         </BadgeCardView>
