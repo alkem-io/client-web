@@ -18727,7 +18727,13 @@ export type VcMembershipsQueryVariables = Exact<{
 
 export type VcMembershipsQuery = {
   __typename?: 'Query';
-  virtualContributor: { __typename?: 'VirtualContributor'; id: string };
+  virtualContributor: {
+    __typename?: 'VirtualContributor';
+    id: string;
+    authorization?:
+      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+      | undefined;
+  };
   rolesVirtualContributor: {
     __typename?: 'ContributorRoles';
     spaces: Array<{

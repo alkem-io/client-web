@@ -5,7 +5,11 @@ import { ContributionsView } from '../../profile/views/ProfileView';
 import { SettingsSection } from '../../../platform/admin/layout/EntitySettingsLayout/constants';
 import VCSettingsPageLayout from '../layout/VCSettingsPageLayout';
 import { SpaceHostedItem } from '../../../journey/utils/SpaceHostedItem';
-import { CommunityContributorType, SpaceType } from '../../../../core/apollo/generated/graphql-schema';
+import {
+  AuthorizationPrivilege,
+  CommunityContributorType,
+  SpaceType,
+} from '../../../../core/apollo/generated/graphql-schema';
 import { useVcMembershipsQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { JourneyLevel } from '../../../../main/routing/resolvers/RouteResolver';
 
@@ -21,6 +25,9 @@ const UserMembershipPage: FC<UserMembershipPageProps> = () => {
     },
     skip: !vcNameId,
   });
+  const canLeaveCommunities = data?.virtualContributor.authorization?.myPrivileges?.includes(
+    AuthorizationPrivilege.Grant
+  );
 
   const memberships = useMemo(() => {
     if (!data?.rolesVirtualContributor.spaces) {
@@ -76,7 +83,7 @@ const UserMembershipPage: FC<UserMembershipPageProps> = () => {
         title={t('pages.virtualContributorProfile.membership.title')}
         contributions={memberships}
         loading={loading}
-        enableLeave
+        enableLeave={canLeaveCommunities}
         onLeave={refetch}
       />
       <ContributionsView
