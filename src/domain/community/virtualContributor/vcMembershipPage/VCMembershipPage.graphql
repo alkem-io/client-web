@@ -13,4 +13,10 @@ query VCMemberships($virtualContributorId: UUID_NAMEID!) {
       }
     }
   }
+  me {
+    id
+    communityInvitations(states: ["invited"]) {
+      ...InvitationData
+    }
+  }
 }

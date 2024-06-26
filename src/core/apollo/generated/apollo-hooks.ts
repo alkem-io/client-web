@@ -1855,6 +1855,37 @@ export const UserRolesDetailsFragmentDoc = gql`
     }
   }
 `;
+export const InvitationDataFragmentDoc = gql`
+  fragment InvitationData on CommunityInvitationResult {
+    id
+    space {
+      id
+      level
+      profile {
+        id
+        displayName
+        tagline
+        url
+      }
+    }
+    invitation {
+      id
+      welcomeMessage
+      createdBy {
+        id
+      }
+      lifecycle {
+        id
+        state
+      }
+      createdDate
+      contributor {
+        id
+      }
+      contributorType
+    }
+  }
+`;
 export const UserCardFragmentDoc = gql`
   fragment UserCard on User {
     id
@@ -14426,33 +14457,12 @@ export const UserPendingMembershipsDocument = gql`
         }
       }
       communityInvitations(states: ["invited"]) {
-        id
-        space {
-          id
-          level
-          profile {
-            id
-            displayName
-            tagline
-            url
-          }
-        }
-        invitation {
-          id
-          welcomeMessage
-          createdBy {
-            id
-          }
-          lifecycle {
-            id
-            state
-          }
-          createdDate
-        }
+        ...InvitationData
       }
     }
   }
   ${UserDetailsFragmentDoc}
+  ${InvitationDataFragmentDoc}
 `;
 
 /**
@@ -15046,7 +15056,14 @@ export const VcMembershipsDocument = gql`
         }
       }
     }
+    me {
+      id
+      communityInvitations(states: ["invited"]) {
+        ...InvitationData
+      }
+    }
   }
+  ${InvitationDataFragmentDoc}
 `;
 
 /**

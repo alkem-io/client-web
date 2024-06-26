@@ -54,7 +54,21 @@ const UserMembershipPage: FC<UserMembershipPageProps> = () => {
     }, [] as SpaceHostedItem[]);
   }, [data]);
 
-  const pendingInvitations = [];
+  const pendingInvitations = useMemo<SpaceHostedItem[] | undefined>(() => {
+    return data?.me.communityInvitations
+      .filter(
+        invitation =>
+          invitation.invitation.contributorType === CommunityContributorType.Virtual &&
+          invitation.invitation.contributor.id === data.virtualContributor.id
+      )
+      .map(invitation => ({
+        id: invitation.id,
+        spaceID: invitation.space.id,
+        spaceLevel: invitation.space.level as JourneyLevel,
+        contributorId: data.virtualContributor.id,
+        contributorType: CommunityContributorType.Virtual,
+      }));
+  }, [data]);
 
   return (
     <VCSettingsPageLayout currentTab={SettingsSection.Membership}>

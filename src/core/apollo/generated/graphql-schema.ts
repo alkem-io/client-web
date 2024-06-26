@@ -18285,10 +18285,39 @@ export type UserPendingMembershipsQuery = {
         id: string;
         welcomeMessage?: string | undefined;
         createdDate: Date;
+        contributorType: CommunityContributorType;
         createdBy: { __typename?: 'User'; id: string };
         lifecycle: { __typename?: 'Lifecycle'; id: string; state?: string | undefined };
+        contributor:
+          | { __typename?: 'Organization'; id: string }
+          | { __typename?: 'User'; id: string }
+          | { __typename?: 'VirtualContributor'; id: string };
       };
     }>;
+  };
+};
+
+export type InvitationDataFragment = {
+  __typename?: 'CommunityInvitationResult';
+  id: string;
+  space: {
+    __typename?: 'Space';
+    id: string;
+    level: number;
+    profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string; url: string };
+  };
+  invitation: {
+    __typename?: 'Invitation';
+    id: string;
+    welcomeMessage?: string | undefined;
+    createdDate: Date;
+    contributorType: CommunityContributorType;
+    createdBy: { __typename?: 'User'; id: string };
+    lifecycle: { __typename?: 'Lifecycle'; id: string; state?: string | undefined };
+    contributor:
+      | { __typename?: 'Organization'; id: string }
+      | { __typename?: 'User'; id: string }
+      | { __typename?: 'VirtualContributor'; id: string };
   };
 };
 
@@ -18706,6 +18735,33 @@ export type VcMembershipsQuery = {
       id: string;
       nameID: string;
       subspaces: Array<{ __typename?: 'RolesResultCommunity'; id: string; nameID: string; type: SpaceType }>;
+    }>;
+  };
+  me: {
+    __typename?: 'MeQueryResults';
+    id: string;
+    communityInvitations: Array<{
+      __typename?: 'CommunityInvitationResult';
+      id: string;
+      space: {
+        __typename?: 'Space';
+        id: string;
+        level: number;
+        profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string; url: string };
+      };
+      invitation: {
+        __typename?: 'Invitation';
+        id: string;
+        welcomeMessage?: string | undefined;
+        createdDate: Date;
+        contributorType: CommunityContributorType;
+        createdBy: { __typename?: 'User'; id: string };
+        lifecycle: { __typename?: 'Lifecycle'; id: string; state?: string | undefined };
+        contributor:
+          | { __typename?: 'Organization'; id: string }
+          | { __typename?: 'User'; id: string }
+          | { __typename?: 'VirtualContributor'; id: string };
+      };
     }>;
   };
 };
