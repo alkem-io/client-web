@@ -8,6 +8,7 @@ import {
   usePlatformStorageConfigQuery,
   useSpaceGuidelinesTemplateStorageConfigQuery,
   useUserStorageConfigQuery,
+  useVirtualContributorStorageConfigQuery,
 } from '../../../core/apollo/generated/apollo-hooks';
 import { useMemo } from 'react';
 import { AuthorizationPrivilege } from '../../../core/apollo/generated/graphql-schema';
@@ -22,6 +23,7 @@ export interface StorageConfig {
 type StorageConfigLocation =
   | 'journey'
   | 'user'
+  | 'virtualContributor'
   | 'organization'
   | 'callout'
   | 'post'
@@ -61,6 +63,11 @@ interface UseStorageConfigOptionsUser extends UseStorageConfigOptionsBase {
   locationType: 'user';
 }
 
+interface UseStorageConfigOptionsVirtualContributor extends UseStorageConfigOptionsBase {
+  virtualContributorId: string;
+  locationType: 'virtualContributor';
+}
+
 interface UseStorageConfigOptionsOrganization extends UseStorageConfigOptionsBase {
   organizationId: string | undefined;
   locationType: 'organization';
@@ -83,6 +90,7 @@ interface UseStorageConfigOptionsPlatform extends UseStorageConfigOptionsBase {
 export type StorageConfigOptions =
   | UseStorageConfigOptionsSpace
   | UseStorageConfigOptionsUser
+  | UseStorageConfigOptionsVirtualContributor
   | UseStorageConfigOptionsOrganization
   | UseStorageConfigOptionsCallout
   | UseStorageConfigOptionsPost
@@ -135,6 +143,12 @@ const useStorageConfig = ({ locationType, skip, ...options }: StorageConfigOptio
     skip: skip || locationType !== 'user',
   });
 
+  const virtualContributorOptions = options as UseStorageConfigOptionsVirtualContributor;
+  const { data: virtualContributorStorageConfigData } = useVirtualContributorStorageConfigQuery({
+    variables: virtualContributorOptions,
+    skip: skip || locationType !== 'virtualContributor',
+  });
+
   const organizationOptions = options as UseStorageConfigOptionsOrganization;
   const { data: organizationStorageConfigData } = useOrganizationStorageConfigQuery({
     variables: {
@@ -175,6 +189,7 @@ const useStorageConfig = ({ locationType, skip, ...options }: StorageConfigOptio
     contribution?.post ??
     guidelinesTemplateStorageConfigData?.lookup.communityGuidelinesTemplate ??
     userStorageConfigData?.user ??
+    virtualContributorStorageConfigData?.virtualContributor ??
     organizationStorageConfigData?.organization ??
     innovationPackStorageConfigData?.platform.library.innovationPack ??
     innovationHubStorageConfigData?.platform.innovationHub ??
