@@ -1,0 +1,26 @@
+query VCMemberships($virtualContributorId: UUID_NAMEID!) {
+  virtualContributor(ID: $virtualContributorId) {
+    id
+    authorization {
+      id
+      myPrivileges
+    }
+  }
+  rolesVirtualContributor(rolesData: { virtualContributorID: $virtualContributorId }) {
+    spaces {
+      id
+      nameID
+      subspaces {
+        id
+        nameID
+        level
+      }
+    }
+  }
+  me {
+    id
+    communityInvitations(states: ["invited"]) {
+      ...InvitationData
+    }
+  }
+}

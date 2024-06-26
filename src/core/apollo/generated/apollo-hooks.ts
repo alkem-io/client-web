@@ -1776,19 +1776,6 @@ export const GroupMembersFragmentDoc = gql`
     email
   }
 `;
-export const UserAgentFragmentDoc = gql`
-  fragment UserAgent on User {
-    agent {
-      id
-      did
-      credentials {
-        id
-        resourceID
-        type
-      }
-    }
-  }
-`;
 export const UserDetailsFragmentDoc = gql`
   fragment UserDetails on User {
     id
@@ -1865,6 +1852,37 @@ export const UserRolesDetailsFragmentDoc = gql`
         displayName
       }
       roles
+    }
+  }
+`;
+export const InvitationDataFragmentDoc = gql`
+  fragment InvitationData on CommunityInvitationResult {
+    id
+    space {
+      id
+      level
+      profile {
+        id
+        displayName
+        tagline
+        url
+      }
+    }
+    invitation {
+      id
+      welcomeMessage
+      createdBy {
+        id
+      }
+      lifecycle {
+        id
+        state
+      }
+      createdDate
+      contributor {
+        id
+      }
+      contributorType
     }
   }
 `;
@@ -11850,6 +11868,60 @@ export type RemoveCommunityRoleFromUserMutationOptions = Apollo.BaseMutationOpti
   SchemaTypes.RemoveCommunityRoleFromUserMutation,
   SchemaTypes.RemoveCommunityRoleFromUserMutationVariables
 >;
+export const RemoveVirtualContributorAsCommunityMemberDocument = gql`
+  mutation RemoveVirtualContributorAsCommunityMember($communityId: UUID!, $memberId: UUID_NAMEID!) {
+    removeCommunityRoleFromVirtual(
+      roleData: { communityID: $communityId, virtualContributorID: $memberId, role: MEMBER }
+    ) {
+      id
+    }
+  }
+`;
+export type RemoveVirtualContributorAsCommunityMemberMutationFn = Apollo.MutationFunction<
+  SchemaTypes.RemoveVirtualContributorAsCommunityMemberMutation,
+  SchemaTypes.RemoveVirtualContributorAsCommunityMemberMutationVariables
+>;
+
+/**
+ * __useRemoveVirtualContributorAsCommunityMemberMutation__
+ *
+ * To run a mutation, you first call `useRemoveVirtualContributorAsCommunityMemberMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveVirtualContributorAsCommunityMemberMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeVirtualContributorAsCommunityMemberMutation, { data, loading, error }] = useRemoveVirtualContributorAsCommunityMemberMutation({
+ *   variables: {
+ *      communityId: // value for 'communityId'
+ *      memberId: // value for 'memberId'
+ *   },
+ * });
+ */
+export function useRemoveVirtualContributorAsCommunityMemberMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.RemoveVirtualContributorAsCommunityMemberMutation,
+    SchemaTypes.RemoveVirtualContributorAsCommunityMemberMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.RemoveVirtualContributorAsCommunityMemberMutation,
+    SchemaTypes.RemoveVirtualContributorAsCommunityMemberMutationVariables
+  >(RemoveVirtualContributorAsCommunityMemberDocument, options);
+}
+
+export type RemoveVirtualContributorAsCommunityMemberMutationHookResult = ReturnType<
+  typeof useRemoveVirtualContributorAsCommunityMemberMutation
+>;
+export type RemoveVirtualContributorAsCommunityMemberMutationResult =
+  Apollo.MutationResult<SchemaTypes.RemoveVirtualContributorAsCommunityMemberMutation>;
+export type RemoveVirtualContributorAsCommunityMemberMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.RemoveVirtualContributorAsCommunityMemberMutation,
+  SchemaTypes.RemoveVirtualContributorAsCommunityMemberMutationVariables
+>;
 export const ContributorsPageOrganizationsDocument = gql`
   query ContributorsPageOrganizations($first: Int!, $after: UUID, $filter: OrganizationFilterInput) {
     organizationsPaginated(first: $first, after: $after, filter: $filter) {
@@ -13973,11 +14045,9 @@ export const UserDocument = gql`
   query user($id: UUID_NAMEID_EMAIL!) {
     user(ID: $id) {
       ...UserDetails
-      ...UserAgent
     }
   }
   ${UserDetailsFragmentDoc}
-  ${UserAgentFragmentDoc}
 `;
 
 /**
@@ -14098,7 +14168,6 @@ export const UserProfileDocument = gql`
     user(ID: $input) {
       isContactable
       ...UserDetails
-      ...UserAgent
     }
     rolesUser(rolesData: { userID: $input, filter: { visibilities: [ACTIVE, DEMO] } }) {
       id
@@ -14111,7 +14180,6 @@ export const UserProfileDocument = gql`
     }
   }
   ${UserDetailsFragmentDoc}
-  ${UserAgentFragmentDoc}
   ${UserRolesDetailsFragmentDoc}
   ${MyPrivilegesFragmentDoc}
 `;
@@ -14310,59 +14378,10 @@ export const UserProviderDocument = gql`
     me {
       user {
         ...UserDetails
-        ...UserAgent
-      }
-      communityApplications(states: ["new"]) {
-        id
-        space {
-          id
-          level
-          profile {
-            id
-            displayName
-            tagline
-            url
-          }
-        }
-        application {
-          id
-          lifecycle {
-            id
-            state
-          }
-          createdDate
-        }
-      }
-      communityInvitations(states: ["invited"]) {
-        id
-        space {
-          id
-          level
-          profile {
-            id
-            displayName
-            tagline
-            url
-          }
-        }
-        invitation {
-          id
-          welcomeMessage
-          contributorType
-          createdBy {
-            id
-          }
-          lifecycle {
-            id
-            state
-          }
-          createdDate
-        }
       }
     }
   }
   ${UserDetailsFragmentDoc}
-  ${UserAgentFragmentDoc}
 `;
 
 /**
@@ -14408,6 +14427,93 @@ export type UserProviderQueryResult = Apollo.QueryResult<
 >;
 export function refetchUserProviderQuery(variables?: SchemaTypes.UserProviderQueryVariables) {
   return { query: UserProviderDocument, variables: variables };
+}
+
+export const UserPendingMembershipsDocument = gql`
+  query UserPendingMemberships {
+    me {
+      user {
+        ...UserDetails
+      }
+      communityApplications(states: ["new"]) {
+        id
+        space {
+          id
+          level
+          profile {
+            id
+            displayName
+            tagline
+            url
+          }
+        }
+        application {
+          id
+          lifecycle {
+            id
+            state
+          }
+          createdDate
+        }
+      }
+      communityInvitations(states: ["invited"]) {
+        ...InvitationData
+      }
+    }
+  }
+  ${UserDetailsFragmentDoc}
+  ${InvitationDataFragmentDoc}
+`;
+
+/**
+ * __useUserPendingMembershipsQuery__
+ *
+ * To run a query within a React component, call `useUserPendingMembershipsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserPendingMembershipsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserPendingMembershipsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useUserPendingMembershipsQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.UserPendingMembershipsQuery,
+    SchemaTypes.UserPendingMembershipsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.UserPendingMembershipsQuery, SchemaTypes.UserPendingMembershipsQueryVariables>(
+    UserPendingMembershipsDocument,
+    options
+  );
+}
+
+export function useUserPendingMembershipsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.UserPendingMembershipsQuery,
+    SchemaTypes.UserPendingMembershipsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.UserPendingMembershipsQuery, SchemaTypes.UserPendingMembershipsQueryVariables>(
+    UserPendingMembershipsDocument,
+    options
+  );
+}
+
+export type UserPendingMembershipsQueryHookResult = ReturnType<typeof useUserPendingMembershipsQuery>;
+export type UserPendingMembershipsLazyQueryHookResult = ReturnType<typeof useUserPendingMembershipsLazyQuery>;
+export type UserPendingMembershipsQueryResult = Apollo.QueryResult<
+  SchemaTypes.UserPendingMembershipsQuery,
+  SchemaTypes.UserPendingMembershipsQueryVariables
+>;
+export function refetchUserPendingMembershipsQuery(variables?: SchemaTypes.UserPendingMembershipsQueryVariables) {
+  return { query: UserPendingMembershipsDocument, variables: variables };
 }
 
 export const SpaceCommunityContributorsDocument = gql`
@@ -14934,6 +15040,82 @@ export type UpdateVirtualContributorMutationOptions = Apollo.BaseMutationOptions
   SchemaTypes.UpdateVirtualContributorMutation,
   SchemaTypes.UpdateVirtualContributorMutationVariables
 >;
+export const VcMembershipsDocument = gql`
+  query VCMemberships($virtualContributorId: UUID_NAMEID!) {
+    virtualContributor(ID: $virtualContributorId) {
+      id
+      authorization {
+        id
+        myPrivileges
+      }
+    }
+    rolesVirtualContributor(rolesData: { virtualContributorID: $virtualContributorId }) {
+      spaces {
+        id
+        nameID
+        subspaces {
+          id
+          nameID
+          level
+        }
+      }
+    }
+    me {
+      id
+      communityInvitations(states: ["invited"]) {
+        ...InvitationData
+      }
+    }
+  }
+  ${InvitationDataFragmentDoc}
+`;
+
+/**
+ * __useVcMembershipsQuery__
+ *
+ * To run a query within a React component, call `useVcMembershipsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useVcMembershipsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useVcMembershipsQuery({
+ *   variables: {
+ *      virtualContributorId: // value for 'virtualContributorId'
+ *   },
+ * });
+ */
+export function useVcMembershipsQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.VcMembershipsQuery, SchemaTypes.VcMembershipsQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.VcMembershipsQuery, SchemaTypes.VcMembershipsQueryVariables>(
+    VcMembershipsDocument,
+    options
+  );
+}
+
+export function useVcMembershipsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.VcMembershipsQuery, SchemaTypes.VcMembershipsQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.VcMembershipsQuery, SchemaTypes.VcMembershipsQueryVariables>(
+    VcMembershipsDocument,
+    options
+  );
+}
+
+export type VcMembershipsQueryHookResult = ReturnType<typeof useVcMembershipsQuery>;
+export type VcMembershipsLazyQueryHookResult = ReturnType<typeof useVcMembershipsLazyQuery>;
+export type VcMembershipsQueryResult = Apollo.QueryResult<
+  SchemaTypes.VcMembershipsQuery,
+  SchemaTypes.VcMembershipsQueryVariables
+>;
+export function refetchVcMembershipsQuery(variables: SchemaTypes.VcMembershipsQueryVariables) {
+  return { query: VcMembershipsDocument, variables: variables };
+}
+
 export const InnovationHubAvailableSpacesDocument = gql`
   query InnovationHubAvailableSpaces {
     spaces(filter: { visibilities: [ACTIVE, DEMO] }) {
