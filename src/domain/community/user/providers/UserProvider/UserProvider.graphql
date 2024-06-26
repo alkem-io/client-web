@@ -40,6 +40,7 @@ query UserProvider {
       invitation {
         id
         welcomeMessage
+        contributorType
         createdBy {
           id
         }

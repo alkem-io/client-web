@@ -22,6 +22,7 @@ query NewMemberships {
       invitation {
         id
         welcomeMessage
+        contributorType
         createdBy {
           id
         }

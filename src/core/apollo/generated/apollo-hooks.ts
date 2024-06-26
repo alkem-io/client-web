@@ -14348,6 +14348,7 @@ export const UserProviderDocument = gql`
         invitation {
           id
           welcomeMessage
+          contributorType
           createdBy {
             id
           }
@@ -23217,6 +23218,7 @@ export const NewMembershipsDocument = gql`
         invitation {
           id
           welcomeMessage
+          contributorType
           createdBy {
             id
           }
