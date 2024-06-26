@@ -114,7 +114,7 @@ const InvitationDialog = ({
                   <FlexSpacer />
                   <LoadingButton
                     startIcon={<CloseOutlinedIcon />}
-                    onClick={() => rejectInvitation(invitation.id)}
+                    onClick={() => rejectInvitation(invitation.invitation.id)}
                     variant="outlined"
                     loading={rejecting}
                     disabled={updating && !rejecting}
@@ -123,7 +123,7 @@ const InvitationDialog = ({
                   </LoadingButton>
                   <LoadingButton
                     startIcon={<CheckOutlined />}
-                    onClick={() => acceptInvitation(invitation.id)}
+                    onClick={() => acceptInvitation(invitation.invitation.id)}
                     variant="contained"
                     loading={accepting}
                     disabled={updating && !accepting}
