@@ -1180,8 +1180,8 @@ export const AdminCommunityInvitationFragmentDoc = gql`
   }
   ${AdminCommunityCandidateMemberFragmentDoc}
 `;
-export const AdminCommunityInvitationExternalFragmentDoc = gql`
-  fragment AdminCommunityInvitationExternal on InvitationExternal {
+export const AdminPlatformInvitationCommunityFragmentDoc = gql`
+  fragment AdminPlatformInvitationCommunity on PlatformInvitation {
     id
     createdDate
     email
@@ -10341,14 +10341,14 @@ export const CommunityApplicationsInvitationsDocument = gql`
           ...AdminCommunityInvitation
         }
         invitationsExternal {
-          ...AdminCommunityInvitationExternal
+          ...AdminPlatformInvitationCommunity
         }
       }
     }
   }
   ${AdminCommunityApplicationFragmentDoc}
   ${AdminCommunityInvitationFragmentDoc}
-  ${AdminCommunityInvitationExternalFragmentDoc}
+  ${AdminPlatformInvitationCommunityFragmentDoc}
 `;
 
 /**
@@ -12897,54 +12897,54 @@ export type DeleteInvitationMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteInvitationMutation,
   SchemaTypes.DeleteInvitationMutationVariables
 >;
-export const DeleteExternalInvitationDocument = gql`
-  mutation DeleteExternalInvitation($invitationId: UUID!) {
-    deleteInvitationExternal(deleteData: { ID: $invitationId }) {
+export const DeletePlatformInvitationDocument = gql`
+  mutation DeletePlatformInvitation($invitationId: UUID!) {
+    deletePlatformInvitation(deleteData: { ID: $invitationId }) {
       id
     }
   }
 `;
-export type DeleteExternalInvitationMutationFn = Apollo.MutationFunction<
-  SchemaTypes.DeleteExternalInvitationMutation,
-  SchemaTypes.DeleteExternalInvitationMutationVariables
+export type DeletePlatformInvitationMutationFn = Apollo.MutationFunction<
+  SchemaTypes.DeletePlatformInvitationMutation,
+  SchemaTypes.DeletePlatformInvitationMutationVariables
 >;
 
 /**
- * __useDeleteExternalInvitationMutation__
+ * __useDeletePlatformInvitationMutation__
  *
- * To run a mutation, you first call `useDeleteExternalInvitationMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useDeleteExternalInvitationMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useDeletePlatformInvitationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeletePlatformInvitationMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [deleteExternalInvitationMutation, { data, loading, error }] = useDeleteExternalInvitationMutation({
+ * const [deletePlatformInvitationMutation, { data, loading, error }] = useDeletePlatformInvitationMutation({
  *   variables: {
  *      invitationId: // value for 'invitationId'
  *   },
  * });
  */
-export function useDeleteExternalInvitationMutation(
+export function useDeletePlatformInvitationMutation(
   baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.DeleteExternalInvitationMutation,
-    SchemaTypes.DeleteExternalInvitationMutationVariables
+    SchemaTypes.DeletePlatformInvitationMutation,
+    SchemaTypes.DeletePlatformInvitationMutationVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
-    SchemaTypes.DeleteExternalInvitationMutation,
-    SchemaTypes.DeleteExternalInvitationMutationVariables
-  >(DeleteExternalInvitationDocument, options);
+    SchemaTypes.DeletePlatformInvitationMutation,
+    SchemaTypes.DeletePlatformInvitationMutationVariables
+  >(DeletePlatformInvitationDocument, options);
 }
 
-export type DeleteExternalInvitationMutationHookResult = ReturnType<typeof useDeleteExternalInvitationMutation>;
-export type DeleteExternalInvitationMutationResult =
-  Apollo.MutationResult<SchemaTypes.DeleteExternalInvitationMutation>;
-export type DeleteExternalInvitationMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.DeleteExternalInvitationMutation,
-  SchemaTypes.DeleteExternalInvitationMutationVariables
+export type DeletePlatformInvitationMutationHookResult = ReturnType<typeof useDeletePlatformInvitationMutation>;
+export type DeletePlatformInvitationMutationResult =
+  Apollo.MutationResult<SchemaTypes.DeletePlatformInvitationMutation>;
+export type DeletePlatformInvitationMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.DeletePlatformInvitationMutation,
+  SchemaTypes.DeletePlatformInvitationMutationVariables
 >;
 export const InvitationStateEventDocument = gql`
   mutation InvitationStateEvent($eventName: String!, $invitationId: UUID!) {
@@ -13055,37 +13055,34 @@ export type InviteContributorsToCommunityMutationOptions = Apollo.BaseMutationOp
   SchemaTypes.InviteContributorsToCommunityMutation,
   SchemaTypes.InviteContributorsToCommunityMutationVariables
 >;
-export const InviteExternalUserDocument = gql`
-  mutation InviteExternalUser($email: String!, $communityId: UUID!, $message: String) {
-    inviteForCommunityMembershipByEmail(
+export const CreatePlatformInvitationForCommunityDocument = gql`
+  mutation CreatePlatformInvitationForCommunity($email: String!, $communityId: UUID!, $message: String) {
+    createPlatformInvitationForCommunity(
       invitationData: { email: $email, communityID: $communityId, welcomeMessage: $message }
     ) {
-      ... on InvitationExternal {
-        id
-      }
-      ... on Invitation {
+      ... on PlatformInvitation {
         id
       }
     }
   }
 `;
-export type InviteExternalUserMutationFn = Apollo.MutationFunction<
-  SchemaTypes.InviteExternalUserMutation,
-  SchemaTypes.InviteExternalUserMutationVariables
+export type CreatePlatformInvitationForCommunityMutationFn = Apollo.MutationFunction<
+  SchemaTypes.CreatePlatformInvitationForCommunityMutation,
+  SchemaTypes.CreatePlatformInvitationForCommunityMutationVariables
 >;
 
 /**
- * __useInviteExternalUserMutation__
+ * __useCreatePlatformInvitationForCommunityMutation__
  *
- * To run a mutation, you first call `useInviteExternalUserMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useInviteExternalUserMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useCreatePlatformInvitationForCommunityMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreatePlatformInvitationForCommunityMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [inviteExternalUserMutation, { data, loading, error }] = useInviteExternalUserMutation({
+ * const [createPlatformInvitationForCommunityMutation, { data, loading, error }] = useCreatePlatformInvitationForCommunityMutation({
  *   variables: {
  *      email: // value for 'email'
  *      communityId: // value for 'communityId'
@@ -13093,24 +13090,27 @@ export type InviteExternalUserMutationFn = Apollo.MutationFunction<
  *   },
  * });
  */
-export function useInviteExternalUserMutation(
+export function useCreatePlatformInvitationForCommunityMutation(
   baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.InviteExternalUserMutation,
-    SchemaTypes.InviteExternalUserMutationVariables
+    SchemaTypes.CreatePlatformInvitationForCommunityMutation,
+    SchemaTypes.CreatePlatformInvitationForCommunityMutationVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.InviteExternalUserMutation, SchemaTypes.InviteExternalUserMutationVariables>(
-    InviteExternalUserDocument,
-    options
-  );
+  return Apollo.useMutation<
+    SchemaTypes.CreatePlatformInvitationForCommunityMutation,
+    SchemaTypes.CreatePlatformInvitationForCommunityMutationVariables
+  >(CreatePlatformInvitationForCommunityDocument, options);
 }
 
-export type InviteExternalUserMutationHookResult = ReturnType<typeof useInviteExternalUserMutation>;
-export type InviteExternalUserMutationResult = Apollo.MutationResult<SchemaTypes.InviteExternalUserMutation>;
-export type InviteExternalUserMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.InviteExternalUserMutation,
-  SchemaTypes.InviteExternalUserMutationVariables
+export type CreatePlatformInvitationForCommunityMutationHookResult = ReturnType<
+  typeof useCreatePlatformInvitationForCommunityMutation
+>;
+export type CreatePlatformInvitationForCommunityMutationResult =
+  Apollo.MutationResult<SchemaTypes.CreatePlatformInvitationForCommunityMutation>;
+export type CreatePlatformInvitationForCommunityMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.CreatePlatformInvitationForCommunityMutation,
+  SchemaTypes.CreatePlatformInvitationForCommunityMutationVariables
 >;
 export const PendingMembershipsSpaceDocument = gql`
   query PendingMembershipsSpace(

@@ -1,6 +1,6 @@
 import {
   useInviteContributorsToCommunityMutation,
-  useInviteExternalUserMutation,
+  useCreatePlatformInvitationForCommunityMutation,
 } from '../../../core/apollo/generated/apollo-hooks';
 import ensurePresence from '../../../core/utils/ensurePresence';
 
@@ -31,7 +31,7 @@ const useInviteUsers = (
   { onInviteContributor, onInviteExternalUser }: UseInviteUsersCallbacks = {}
 ): UseInviteUsersProvided => {
   const [inviteExistingUser] = useInviteContributorsToCommunityMutation();
-  const [inviteExternalUser] = useInviteExternalUserMutation();
+  const [invitePlatformCommunity] = useCreatePlatformInvitationForCommunityMutation();
 
   return {
     inviteContributor: async ({ contributorIds, message }) => {
@@ -45,7 +45,7 @@ const useInviteUsers = (
       await onInviteContributor?.(ensurePresence(communityId));
     },
     inviteExternalUser: async ({ email, message }) => {
-      await inviteExternalUser({
+      await invitePlatformCommunity({
         variables: {
           email,
           message,

@@ -1,13 +1,10 @@
-mutation InviteExternalUser($email: String!, $communityId: UUID!, $message: String) {
-  inviteForCommunityMembershipByEmail(invitationData: {
+mutation CreatePlatformInvitationForCommunity($email: String!, $communityId: UUID!, $message: String) {
+  createPlatformInvitationForCommunity(invitationData: {
     email: $email
     communityID: $communityId
     welcomeMessage: $message
   }) {
-    ... on InvitationExternal {
-      id
-    }
-    ... on Invitation {
+    ... on PlatformInvitation {
       id
     }
   }

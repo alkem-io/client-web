@@ -14,7 +14,7 @@ import {
   useUsersWithCredentialsQuery,
   useInvitationStateEventMutation,
   useDeleteInvitationMutation,
-  useDeleteExternalInvitationMutation,
+  useDeletePlatformInvitationMutation,
   useCommunityMembersListQuery,
   useCommunityAvailableMembersLazyQuery,
   useAssignCommunityRoleToUserMutation,
@@ -452,7 +452,7 @@ const useCommunityAdmin = ({
   const [sendInvitationStateEvent] = useInvitationStateEventMutation();
 
   const [deleteInvitation] = useDeleteInvitationMutation();
-  const [deleteExternalInvitation] = useDeleteExternalInvitationMutation();
+  const [deletePlatformInvitation] = useDeletePlatformInvitationMutation();
 
   const handleInvitationStateChange = async (invitationId: string, eventName: string) => {
     await sendInvitationStateEvent({
@@ -472,8 +472,8 @@ const useCommunityAdmin = ({
     });
     await refetchApplicationsAndInvitations();
   };
-  const handleDeleteInvitationExternal = async (invitationId: string) => {
-    await deleteExternalInvitation({
+  const handleDeletePlatformInvitation = async (invitationId: string) => {
+    await deletePlatformInvitation({
       variables: {
         invitationId,
       },
@@ -502,7 +502,7 @@ const useCommunityAdmin = ({
     onRemoveOrganization: handleRemoveOrganization,
     onRemoveVirtualContributor: handleRemoveVirtualContributor,
     onDeleteInvitation: handleDeleteInvitation,
-    onDeleteInvitationExternal: handleDeleteInvitationExternal,
+    onDeletePlatformInvitation: handleDeletePlatformInvitation,
     getAvailableUsers,
     getAvailableOrganizations,
     getAvailableVirtualContributors,

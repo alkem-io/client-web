@@ -1383,31 +1383,6 @@ export type InvitationFieldPolicy = {
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   welcomeMessage?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type InvitationExternalKeySpecifier = (
-  | 'authorization'
-  | 'createdBy'
-  | 'createdDate'
-  | 'email'
-  | 'firstName'
-  | 'id'
-  | 'invitedToParent'
-  | 'lastName'
-  | 'profileCreated'
-  | 'welcomeMessage'
-  | InvitationExternalKeySpecifier
-)[];
-export type InvitationExternalFieldPolicy = {
-  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
-  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
-  email?: FieldPolicy<any> | FieldReadFunction<any>;
-  firstName?: FieldPolicy<any> | FieldReadFunction<any>;
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-  invitedToParent?: FieldPolicy<any> | FieldReadFunction<any>;
-  lastName?: FieldPolicy<any> | FieldReadFunction<any>;
-  profileCreated?: FieldPolicy<any> | FieldReadFunction<any>;
-  welcomeMessage?: FieldPolicy<any> | FieldReadFunction<any>;
-};
 export type LatestReleaseDiscussionKeySpecifier = ('id' | 'nameID' | LatestReleaseDiscussionKeySpecifier)[];
 export type LatestReleaseDiscussionFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1679,6 +1654,8 @@ export type MutationKeySpecifier = (
   | 'createInnovationPackOnLibrary'
   | 'createLicensePlan'
   | 'createOrganization'
+  | 'createPlatformInvitationForCommunity'
+  | 'createPlatformInvitationForRole'
   | 'createPostTemplate'
   | 'createReferenceOnProfile'
   | 'createRelationOnCollaboration'
@@ -1701,10 +1678,10 @@ export type MutationKeySpecifier = (
   | 'deleteInnovationHub'
   | 'deleteInnovationPack'
   | 'deleteInvitation'
-  | 'deleteInvitationExternal'
   | 'deleteLicensePlan'
   | 'deleteLink'
   | 'deleteOrganization'
+  | 'deletePlatformInvitation'
   | 'deletePost'
   | 'deletePostTemplate'
   | 'deleteReference'
@@ -1725,7 +1702,6 @@ export type MutationKeySpecifier = (
   | 'ingest'
   | 'ingestSpace'
   | 'inviteContributorsForCommunityMembership'
-  | 'inviteForCommunityMembershipByEmail'
   | 'joinCommunity'
   | 'messageUser'
   | 'moveContributionToCallout'
@@ -1848,6 +1824,8 @@ export type MutationFieldPolicy = {
   createInnovationPackOnLibrary?: FieldPolicy<any> | FieldReadFunction<any>;
   createLicensePlan?: FieldPolicy<any> | FieldReadFunction<any>;
   createOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
+  createPlatformInvitationForCommunity?: FieldPolicy<any> | FieldReadFunction<any>;
+  createPlatformInvitationForRole?: FieldPolicy<any> | FieldReadFunction<any>;
   createPostTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   createReferenceOnProfile?: FieldPolicy<any> | FieldReadFunction<any>;
   createRelationOnCollaboration?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1870,10 +1848,10 @@ export type MutationFieldPolicy = {
   deleteInnovationHub?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteInnovationPack?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteInvitation?: FieldPolicy<any> | FieldReadFunction<any>;
-  deleteInvitationExternal?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteLicensePlan?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteLink?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
+  deletePlatformInvitation?: FieldPolicy<any> | FieldReadFunction<any>;
   deletePost?: FieldPolicy<any> | FieldReadFunction<any>;
   deletePostTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteReference?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1894,7 +1872,6 @@ export type MutationFieldPolicy = {
   ingest?: FieldPolicy<any> | FieldReadFunction<any>;
   ingestSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   inviteContributorsForCommunityMembership?: FieldPolicy<any> | FieldReadFunction<any>;
-  inviteForCommunityMembershipByEmail?: FieldPolicy<any> | FieldReadFunction<any>;
   joinCommunity?: FieldPolicy<any> | FieldReadFunction<any>;
   messageUser?: FieldPolicy<any> | FieldReadFunction<any>;
   moveContributionToCallout?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2109,6 +2086,33 @@ export type PlatformFeatureFlagKeySpecifier = ('enabled' | 'name' | PlatformFeat
 export type PlatformFeatureFlagFieldPolicy = {
   enabled?: FieldPolicy<any> | FieldReadFunction<any>;
   name?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type PlatformInvitationKeySpecifier = (
+  | 'authorization'
+  | 'communityInvitedToParent'
+  | 'createdBy'
+  | 'createdDate'
+  | 'email'
+  | 'firstName'
+  | 'id'
+  | 'lastName'
+  | 'platformRole'
+  | 'profileCreated'
+  | 'welcomeMessage'
+  | PlatformInvitationKeySpecifier
+)[];
+export type PlatformInvitationFieldPolicy = {
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  communityInvitedToParent?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  email?: FieldPolicy<any> | FieldReadFunction<any>;
+  firstName?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  lastName?: FieldPolicy<any> | FieldReadFunction<any>;
+  platformRole?: FieldPolicy<any> | FieldReadFunction<any>;
+  profileCreated?: FieldPolicy<any> | FieldReadFunction<any>;
+  welcomeMessage?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type PlatformLocationsKeySpecifier = (
   | 'about'
@@ -3546,10 +3550,6 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | InvitationKeySpecifier | (() => undefined | InvitationKeySpecifier);
     fields?: InvitationFieldPolicy;
   };
-  InvitationExternal?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | InvitationExternalKeySpecifier | (() => undefined | InvitationExternalKeySpecifier);
-    fields?: InvitationExternalFieldPolicy;
-  };
   LatestReleaseDiscussion?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | LatestReleaseDiscussionKeySpecifier | (() => undefined | LatestReleaseDiscussionKeySpecifier);
     fields?: LatestReleaseDiscussionFieldPolicy;
@@ -3660,6 +3660,10 @@ export type StrictTypedTypePolicies = {
   PlatformFeatureFlag?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | PlatformFeatureFlagKeySpecifier | (() => undefined | PlatformFeatureFlagKeySpecifier);
     fields?: PlatformFeatureFlagFieldPolicy;
+  };
+  PlatformInvitation?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | PlatformInvitationKeySpecifier | (() => undefined | PlatformInvitationKeySpecifier);
+    fields?: PlatformInvitationFieldPolicy;
   };
   PlatformLocations?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | PlatformLocationsKeySpecifier | (() => undefined | PlatformLocationsKeySpecifier);

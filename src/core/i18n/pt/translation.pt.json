@@ -578,7 +578,7 @@
       "title": "Excluindo o convite de inscrição de {{user}}",
       "content": "Tem certeza que deseja arquivar este convite? O pedido será rejeitado, se já não for o caso."
     },
-    "confirmDeleteInvitationExternal": {
+    "confirmDeletePlatformInvitation": {
       "title": "Excluindo o convite de {{user}}",
       "content": "Tem certeza que deseja arquivar este convite? O pedido será rejeitado, se já não for o caso."
     },
