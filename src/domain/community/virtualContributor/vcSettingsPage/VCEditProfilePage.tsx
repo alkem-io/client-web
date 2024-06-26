@@ -50,20 +50,20 @@ export const VCSettingsPage = () => {
         text={t('components.loading.message', { blockName: t('pages.virtualContributorProfile.settings.title') })}
       />
     );
-
+  if (!data?.virtualContributor) {
+    return null;
+  }
   return (
-    <StorageConfigContextProvider locationType="platform">
+    <StorageConfigContextProvider locationType="virtualContributor" virtualContributorId={data.virtualContributor.id}>
       <VCSettingsPageLayout currentTab={SettingsSection.MyProfile}>
         <PageContent background="background.paper">
           <PageContentColumn columns={12}>
             <PageContentBlock>
-              {data?.virtualContributor && (
-                <VirtualContributorForm
-                  virtualContributor={data?.virtualContributor}
-                  avatar={data?.virtualContributor.profile.avatar}
-                  onSave={handleUpdate}
-                />
-              )}
+              <VirtualContributorForm
+                virtualContributor={data?.virtualContributor}
+                avatar={data?.virtualContributor.profile.avatar}
+                onSave={handleUpdate}
+              />
             </PageContentBlock>
           </PageContentColumn>
         </PageContent>

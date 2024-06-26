@@ -47,6 +47,14 @@ query UserStorageConfig($userId: UUID_NAMEID_EMAIL!) {
     }
   }
 }
+query VirtualContributorStorageConfig($virtualContributorId: UUID_NAMEID!) {
+  virtualContributor(ID: $virtualContributorId) {
+    id
+    profile {
+      ...ProfileStorageConfig
+    }
+  }
+}
 
 query OrganizationStorageConfig($organizationId: UUID_NAMEID!) {
   organization(ID: $organizationId) {
