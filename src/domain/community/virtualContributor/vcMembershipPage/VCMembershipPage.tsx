@@ -5,11 +5,7 @@ import { ContributionsView } from '../../profile/views/ProfileView';
 import { SettingsSection } from '../../../platform/admin/layout/EntitySettingsLayout/constants';
 import VCSettingsPageLayout from '../layout/VCSettingsPageLayout';
 import { SpaceHostedItem } from '../../../journey/utils/SpaceHostedItem';
-import {
-  AuthorizationPrivilege,
-  CommunityContributorType,
-  SpaceType,
-} from '../../../../core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, CommunityContributorType } from '../../../../core/apollo/generated/graphql-schema';
 import { useVcMembershipsQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { JourneyLevel } from '../../../../main/routing/resolvers/RouteResolver';
 import {
@@ -53,12 +49,7 @@ const UserMembershipPage: FC<UserMembershipPageProps> = () => {
       const subspaces = space.subspaces.map(subspace => ({
         id: subspace.id,
         spaceID: subspace.id,
-        spaceLevel:
-          subspace.type === SpaceType.Challenge
-            ? (1 as JourneyLevel)
-            : subspace.type === SpaceType.Opportunity
-            ? (2 as JourneyLevel)
-            : (1 as JourneyLevel),
+        spaceLevel: subspace.level as JourneyLevel,
         contributorId: data.virtualContributor.id,
         contributorType: CommunityContributorType.Virtual,
       }));

@@ -15056,7 +15056,7 @@ export const VcMembershipsDocument = gql`
         subspaces {
           id
           nameID
-          type
+          level
         }
       }
     }
