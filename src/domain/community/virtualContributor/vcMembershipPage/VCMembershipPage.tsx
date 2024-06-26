@@ -12,6 +12,10 @@ import {
 } from '../../../../core/apollo/generated/graphql-schema';
 import { useVcMembershipsQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { JourneyLevel } from '../../../../main/routing/resolvers/RouteResolver';
+import {
+  PendingMembershipsDialogType,
+  usePendingMembershipsDialog,
+} from '../../pendingMembership/PendingMembershipsDialogContext';
 
 export interface UserMembershipPageProps {}
 
@@ -25,6 +29,8 @@ const UserMembershipPage: FC<UserMembershipPageProps> = () => {
     },
     skip: !vcNameId,
   });
+  const { setOpenDialog } = usePendingMembershipsDialog();
+
   const canLeaveCommunities = data?.virtualContributor.authorization?.myPrivileges?.includes(
     AuthorizationPrivilege.Grant
   );
@@ -81,6 +87,7 @@ const UserMembershipPage: FC<UserMembershipPageProps> = () => {
     <VCSettingsPageLayout currentTab={SettingsSection.Membership}>
       <ContributionsView
         title={t('pages.virtualContributorProfile.membership.title')}
+        emptyCaption={t('pages.virtualContributorProfile.membership.noMemberships')}
         contributions={memberships}
         loading={loading}
         enableLeave={canLeaveCommunities}
@@ -88,8 +95,10 @@ const UserMembershipPage: FC<UserMembershipPageProps> = () => {
       />
       <ContributionsView
         title={t('pages.virtualContributorProfile.membership.pendingInvitations')}
+        emptyCaption={t('pages.virtualContributorProfile.membership.noPendingInvitations')}
         contributions={pendingInvitations}
         loading={loading}
+        onContributionClick={() => setOpenDialog({ type: PendingMembershipsDialogType.PendingMembershipsList })}
       />
     </VCSettingsPageLayout>
   );

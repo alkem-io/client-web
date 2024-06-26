@@ -17,6 +17,6 @@ export interface InvitationItem extends Identifiable {
     welcomeMessage?: string;
     createdDate: Date | string;
     lifecycle: { state?: string };
-    contributorType?: CommunityContributorType.Virtual;
+    contributorType?: CommunityContributorType;
   };
 }

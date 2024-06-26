@@ -2522,7 +2522,9 @@
       },
       "membership": {
         "title": "Virtual Contributor Memberships",
-        "pendingInvitations": "Pending Invitations"
+        "noMemberships": "This Virtual Contributor is not a member of any space",
+        "pendingInvitations": "Pending Invitations",
+        "noPendingInvitations": "No pending invitations"
       },
       "settings": {
         "title": "Virtual Contributor Settings",

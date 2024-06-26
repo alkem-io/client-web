@@ -1,6 +1,8 @@
 import { Grid, Skeleton } from '@mui/material';
 import React, { useState } from 'react';
-import ContributionDetailsContainer from '../../ContributionDetails/ContributionDetailsContainer';
+import ContributionDetailsContainer, {
+  ContributionDetails,
+} from '../../ContributionDetails/ContributionDetailsContainer';
 import { SpaceHostedItem } from '../../../../journey/utils/SpaceHostedItem';
 import { Caption } from '../../../../../core/ui/typography';
 import PageContentBlockGrid, { PageContentBlockGridProps } from '../../../../../core/ui/content/PageContentBlockGrid';
@@ -12,10 +14,12 @@ import ScrollableCardsLayoutContainer from '../../../../../core/ui/card/cardsLay
 interface ContributionViewProps {
   title: string;
   subtitle?: string;
+  emptyCaption?: string;
   contributions: SpaceHostedItem[] | undefined;
   loading?: boolean;
   enableLeave?: boolean;
   onLeave?: () => Promise<unknown>;
+  onContributionClick?: (event: React.MouseEvent<Element, MouseEvent>, contribution: ContributionDetails) => void;
   cards?: PageContentBlockGridProps['cards'];
 }
 
@@ -44,10 +48,12 @@ const SkeletonItem = () => (
 export const ContributionsView = ({
   title,
   subtitle,
+  emptyCaption,
   contributions,
   loading,
   enableLeave,
   onLeave,
+  onContributionClick,
   cards,
 }: ContributionViewProps) => {
   const [leavingCommunityId, setLeavingCommunityId] = useState<string>();
@@ -63,6 +69,7 @@ export const ContributionsView = ({
             <SkeletonItem />
           </>
         )}
+        {!loading && contributions?.length === 0 && emptyCaption && <Caption>{emptyCaption}</Caption>}
         {!loading && (
           <ScrollableCardsLayoutContainer containerProps={{ flex: 1 }}>
             {contributions?.map(contributionItem => (
@@ -86,6 +93,7 @@ export const ContributionsView = ({
                       onLeaveCommunityDialogOpen={isOpen =>
                         setLeavingCommunityId(isOpen ? details?.communityId : undefined)
                       }
+                      onClick={onContributionClick ? event => onContributionClick(event, details) : undefined}
                     />
                   );
                 }}

@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from 'react';
+import React, { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import DialogWithGrid from '../../../core/ui/dialog/DialogWithGrid';
 import DialogHeader from '../../../core/ui/dialog/DialogHeader';
@@ -23,6 +23,7 @@ import { CommunityContributorType, VisualType } from '../../../core/apollo/gener
 import BackButton from '../../../core/ui/actions/BackButton';
 import useNavigate from '../../../core/routing/useNavigate';
 import { useNewMembershipsQuery } from '../../../core/apollo/generated/apollo-hooks';
+import { PendingMembershipsDialogType, usePendingMembershipsDialog } from './PendingMembershipsDialogContext';
 
 interface ButtonImplementationParams {
   header: ReactNode;
@@ -33,26 +34,6 @@ interface PendingMembershipsUserMenuItemProps {
   children: ({ header, openDialog }: ButtonImplementationParams) => ReactNode;
 }
 
-enum DialogType {
-  PendingMembershipsList,
-  InvitationView,
-}
-
-interface DialogDetails {
-  type: DialogType;
-}
-
-interface PendingMembershipsListDialogDetails extends DialogDetails {
-  type: DialogType.PendingMembershipsList;
-  journeyUri?: string;
-}
-
-interface InvitationViewDialogDetails extends DialogDetails {
-  type: DialogType.InvitationView;
-  invitationId: string;
-  journeyUri?: string;
-}
-
 const PendingMembershipsUserMenuItem = ({ children }: PendingMembershipsUserMenuItemProps) => {
   const { t } = useTranslation();
 
@@ -60,13 +41,13 @@ const PendingMembershipsUserMenuItem = ({ children }: PendingMembershipsUserMenu
 
   const { refetch: refetchNewMembershipsQuery } = useNewMembershipsQuery();
 
-  const [openDialog, setOpenDialog] = useState<PendingMembershipsListDialogDetails | InvitationViewDialogDetails>();
+  const { openDialog, setOpenDialog } = usePendingMembershipsDialog();
 
   const closeDialog = () => setOpenDialog(undefined);
 
   const handleInvitationCardClick = ({ id, space, invitation }: InvitationWithMeta) => {
     setOpenDialog({
-      type: DialogType.InvitationView,
+      type: PendingMembershipsDialogType.InvitationView,
       invitationId: id,
       journeyUri: invitation.contributorType === CommunityContributorType.Virtual ? undefined : space.profile.url,
     });
@@ -75,7 +56,7 @@ const PendingMembershipsUserMenuItem = ({ children }: PendingMembershipsUserMenu
   const { invitations, applications } = usePendingMemberships();
 
   const currentInvitation =
-    openDialog?.type === DialogType.InvitationView
+    openDialog?.type === PendingMembershipsDialogType.InvitationView
       ? invitations?.find(invitation => invitation.id === openDialog.invitationId)
       : undefined;
 
@@ -95,22 +76,26 @@ const PendingMembershipsUserMenuItem = ({ children }: PendingMembershipsUserMenu
     if (openDialog?.journeyUri) {
       navigate(openDialog?.journeyUri);
     } else {
-      setOpenDialog({ type: DialogType.PendingMembershipsList });
+      setOpenDialog({ type: PendingMembershipsDialogType.PendingMembershipsList });
     }
   };
 
   const onInvitationReject = () => {
     refetchNewMembershipsQuery();
-    setOpenDialog({ type: DialogType.PendingMembershipsList });
+    setOpenDialog({ type: PendingMembershipsDialogType.PendingMembershipsList });
   };
 
   return (
     <>
       {children({
         header: t('community.pendingMembership.pendingMembershipsWithCount', { count: pendingMembershipsCount }),
-        openDialog: () => setOpenDialog({ type: DialogType.PendingMembershipsList }),
+        openDialog: () => setOpenDialog({ type: PendingMembershipsDialogType.PendingMembershipsList }),
       })}
-      <DialogWithGrid columns={12} open={openDialog?.type === DialogType.PendingMembershipsList} onClose={closeDialog}>
+      <DialogWithGrid
+        columns={12}
+        open={openDialog?.type === PendingMembershipsDialogType.PendingMembershipsList}
+        onClose={closeDialog}
+      >
         <DialogHeader
           title={
             <Gutters row disablePadding>
@@ -180,10 +165,14 @@ const PendingMembershipsUserMenuItem = ({ children }: PendingMembershipsUserMenu
       <InvitationActionsContainer onAccept={onInvitationAccept} onReject={onInvitationReject}>
         {props => (
           <InvitationDialog
-            open={openDialog?.type === DialogType.InvitationView}
+            open={openDialog?.type === PendingMembershipsDialogType.InvitationView}
             onClose={closeDialog}
             invitation={currentInvitation}
-            actions={<BackButton onClick={() => setOpenDialog({ type: DialogType.PendingMembershipsList })} />}
+            actions={
+              <BackButton
+                onClick={() => setOpenDialog({ type: PendingMembershipsDialogType.PendingMembershipsList })}
+              />
+            }
             {...props}
           />
         )}
