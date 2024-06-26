@@ -33,6 +33,7 @@ const InvitationCardHorizontal = ({ invitation, onClick }: InvitationCardHorizon
           journeyTypeName={getChildJourneyTypeName(invitation.space)}
           createdDate={invitation.invitation.createdDate}
           author={{ displayName: invitation.userDisplayName }}
+          type={invitation.invitation.contributorType}
         />
       </BlockSectionTitle>
       <CardText

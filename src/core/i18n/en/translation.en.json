@@ -631,16 +631,23 @@
       "pendingMemberships": "Pending Memberships",
       "pendingMembershipsWithCount": "Pending Memberships ({{count}})",
       "invitationsSectionTitle": "Invitations",
+      "virtualInvitationsSectionTitle": "Invitations for my Virtual Contributor",
       "applicationsSectionTitle": "Open applications",
       "invitationDialog": {
         "title": "Pending Membership: {{journey}}",
+        "vc": {
+          "title": "Pending Virtual Contributor membership: {{journey}}"
+        },
         "actions": {
           "hide": "Hide this invitation",
           "reject": "Decline",
-          "accept": "Join"
+          "join": "Join",
+          "accept": "Accept"
         }
       },
-      "invitationTitle": "{{time}} {{user}} invited you to <journeyicon /> {{journey}}"
+      "invitationTitle": "{{time}} {{user}} invited {{invitedEntity}} to <journeyicon /> {{journey}}",
+      "you": "you",
+      "vc": "your Virtual Contributor"
     },
     "memberSettings": {
       "title": "Member Settings",
