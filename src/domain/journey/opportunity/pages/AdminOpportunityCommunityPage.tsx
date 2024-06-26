@@ -11,12 +11,9 @@ import { useOpportunity } from '../hooks/useOpportunity';
 import SubspaceSettingsLayout from '../../../platform/admin/subspace/SubspaceSettingsLayout';
 import CommunityVirtualContributors from '../../../community/community/CommunityAdmin/CommunityVirtualContributors';
 import { useSpace } from '../../space/SpaceContext/useSpace';
-import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
-import { useUserContext } from '../../../community/user';
 
 const AdminOpportunityCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   const { loading: isLoadingChallenge, communityId, opportunityId } = useOpportunity();
-  const { user: { hasPlatformPrivilege } = {} } = useUserContext();
 
   const { spaceId } = useSpace();
 
@@ -31,7 +28,7 @@ const AdminOpportunityCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '.
     onOrganizationLeadChange,
     onAddUser,
     onAddOrganization,
-    onAddVirtualContributor,
+    inviteExistingUser,
     onRemoveUser,
     onRemoveOrganization,
     onRemoveVirtualContributor,
@@ -85,9 +82,8 @@ const AdminOpportunityCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '.
                 canAddVirtualContributors={
                   permissions.canAddVirtualContributorsFromAccount || permissions.canAddMembers
                 }
-                onAddMember={onAddVirtualContributor}
+                inviteExistingUser={inviteExistingUser}
                 onRemoveMember={onRemoveVirtualContributor}
-                isPlatformAdmin={hasPlatformPrivilege?.(AuthorizationPrivilege.PlatformAdmin)}
                 fetchAvailableVirtualContributors={getAvailableVirtualContributors}
                 loading={loading}
               />

@@ -22,8 +22,6 @@ import { Trans, useTranslation } from 'react-i18next';
 import { gutters } from '../../../../core/ui/grid/utils';
 import CommunityGuidelinesForm from '../../../community/community/CommunityGuidelines/CommunityGuidelinesForm';
 import CommunityVirtualContributors from '../../../community/community/CommunityAdmin/CommunityVirtualContributors';
-import { useUserContext } from '../../../community/user';
-import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
 import CommunityGuidelinesTemplatesLibrary from '../../../collaboration/communityGuidelines/CommunityGuidelinesTemplateLibrary/CommunityGuidelinesTemplatesLibrary';
 import CommunityGuidelinesContainer from '../../../community/community/CommunityGuidelines/CommunityGuidelinesContainer';
 import CreateCommunityGuidelinesTemplateDialog, {
@@ -36,7 +34,6 @@ import { useUrlParams } from '../../../../core/routing/useUrlParams';
 const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   const { t } = useTranslation();
   const { spaceId, loading: isLoadingSpace, communityId, profile: spaceProfile } = useSpace();
-  const { user: { hasPlatformPrivilege } = {} } = useUserContext();
 
   const {
     users,
@@ -56,7 +53,6 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
     onOrganizationLeadChange,
     onAddUser,
     onAddOrganization,
-    onAddVirtualContributor,
     onRemoveUser,
     onRemoveOrganization,
     onRemoveVirtualContributor,
@@ -239,10 +235,10 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
                 canAddVirtualContributors={
                   permissions.canAddVirtualContributorsFromAccount || permissions.canAddMembers
                 }
-                onAddMember={onAddVirtualContributor}
                 onRemoveMember={onRemoveVirtualContributor}
-                isPlatformAdmin={hasPlatformPrivilege?.(AuthorizationPrivilege.PlatformAdmin)}
+                spaceDisplayName={spaceProfile.displayName}
                 fetchAvailableVirtualContributors={getAvailableVirtualContributors}
+                inviteExistingUser={inviteExistingUser}
                 loading={loading}
               />
             </PageContentBlock>
