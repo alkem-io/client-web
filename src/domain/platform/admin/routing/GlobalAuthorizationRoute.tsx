@@ -32,6 +32,10 @@ const GlobalAuthorizationRoute: FC = () => {
         path={`roles/${AuthorizationCredential.BetaTester}`}
         element={<AdminAuthorizationPage credential={AuthorizationCredential.BetaTester} />}
       />
+      <Route
+        path={`roles/${AuthorizationCredential.VcCampaign}`}
+        element={<AdminAuthorizationPage credential={AuthorizationCredential.VcCampaign} />}
+      />
       <Route path="*" element={<Error404 />} />
     </Routes>
   );

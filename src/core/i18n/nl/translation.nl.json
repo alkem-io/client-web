@@ -578,7 +578,7 @@
       "title": "Aanmelding van {{user}} verwijderen",
       "content": "Weet je zeker dat je deze aanmelding wilt archiveren? De aanmeldingen zal worden afgewezen als deze nog open staat."
     },
-    "confirmDeleteInvitationExternal": {
+    "confirmDeletePlatformInvitation": {
       "title": "Aanmelding van {{user}} verwijderen",
       "content": "Weet je zeker dat je deze aanmelding wilt archiveren? De aanmelding zal worden afgewezen als deze nog open staat."
     },

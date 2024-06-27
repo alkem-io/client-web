@@ -578,7 +578,7 @@
       "title": "Lösche Anwendung von {{user}}",
       "content": "Bist du sicher, dass du diese Einladung archivieren möchtest? Die Einladung wird abgelehnt, falls sie noch nicht vorhanden ist."
     },
-    "confirmDeleteInvitationExternal": {
+    "confirmDeletePlatformInvitation": {
       "title": "Lösche Anwendung von {{user}}",
       "content": "Bist du sicher, dass du diese Einladung archivieren möchtest? Die Einladung wird abgelehnt, falls sie noch nicht vorhanden ist."
     },
