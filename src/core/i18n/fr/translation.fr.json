@@ -578,7 +578,7 @@
       "title": "Suppression de l'application de {{user}}",
       "content": "Êtes-vous sûr de vouloir archiver cette application ? La demande sera rejetée si elle n'est pas déjà présentée."
     },
-    "confirmDeleteInvitationExternal": {
+    "confirmDeletePlatformInvitation": {
       "title": "Suppression de l'application de {{user}}",
       "content": "Êtes-vous sûr de vouloir archiver cette application ? La demande sera rejetée si elle n'est pas déjà présentée."
     },

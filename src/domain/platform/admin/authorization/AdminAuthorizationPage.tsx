@@ -43,6 +43,11 @@ const tabs = [
     authorizationCredential: AuthorizationCredential.BetaTester,
     platformRole: PlatformRole.BetaTester,
   },
+  {
+    title: 'VC Campaign',
+    authorizationCredential: AuthorizationCredential.VcCampaign,
+    platformRole: PlatformRole.VcCampaign,
+  },
 ];
 
 const AdminAuthorizationPage = ({ credential }: AdminAuthorizationPageProps) => {

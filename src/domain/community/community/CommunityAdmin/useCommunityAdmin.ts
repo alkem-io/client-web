@@ -14,7 +14,7 @@ import {
   useUsersWithCredentialsQuery,
   useInvitationStateEventMutation,
   useDeleteInvitationMutation,
-  useDeleteExternalInvitationMutation,
+  useDeletePlatformInvitationMutation,
   useCommunityMembersListQuery,
   useCommunityAvailableMembersLazyQuery,
   useAssignCommunityRoleToUserMutation,
@@ -454,15 +454,18 @@ const useCommunityAdmin = ({
     await refetchApplicationsAndInvitations();
   };
 
-  const { inviteContributor: inviteExistingUser, inviteExternalUser } = useInviteUsers(communityId, {
-    onInviteContributor: onInviteUser,
-    onInviteExternalUser: onInviteUser,
-  });
+  const { inviteContributor: inviteExistingUser, platformInviteToCommunity: inviteExternalUser } = useInviteUsers(
+    communityId,
+    {
+      onInviteContributor: onInviteUser,
+      onInviteExternalUser: onInviteUser,
+    }
+  );
 
   const [sendInvitationStateEvent] = useInvitationStateEventMutation();
 
   const [deleteInvitation] = useDeleteInvitationMutation();
-  const [deleteExternalInvitation] = useDeleteExternalInvitationMutation();
+  const [deletePlatformInvitation] = useDeletePlatformInvitationMutation();
 
   const handleInvitationStateChange = async (invitationId: string, eventName: string) => {
     await sendInvitationStateEvent({
@@ -482,8 +485,8 @@ const useCommunityAdmin = ({
     });
     await refetchApplicationsAndInvitations();
   };
-  const handleDeleteInvitationExternal = async (invitationId: string) => {
-    await deleteExternalInvitation({
+  const handleDeletePlatformInvitation = async (invitationId: string) => {
+    await deletePlatformInvitation({
       variables: {
         invitationId,
       },
@@ -499,7 +502,7 @@ const useCommunityAdmin = ({
     permissions,
     applications: dataApplications?.lookup.community?.applications,
     invitations: dataApplications?.lookup.community?.invitations,
-    invitationsExternal: dataApplications?.lookup.community?.invitationsExternal,
+    platformInvitations: dataApplications?.lookup.community?.platformInvitations,
     onApplicationStateChange: handleApplicationStateChange,
     onInvitationStateChange: handleInvitationStateChange,
     onUserLeadChange: handleUserLeadChange,
@@ -512,7 +515,7 @@ const useCommunityAdmin = ({
     onRemoveOrganization: handleRemoveOrganization,
     onRemoveVirtualContributor: handleRemoveVirtualContributor,
     onDeleteInvitation: handleDeleteInvitation,
-    onDeleteInvitationExternal: handleDeleteInvitationExternal,
+    onDeletePlatformInvitation: handleDeletePlatformInvitation,
     getAvailableUsers,
     getAvailableOrganizations,
     getAvailableVirtualContributors,

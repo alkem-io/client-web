@@ -4,7 +4,7 @@ import { JourneyLevel } from '../../../../../main/routing/resolvers/RouteResolve
 
 export interface InvitationItem extends Identifiable {
   space: Identifiable & {
-    level: JourneyLevel;
+    level: JourneyLevel | number;
     profile: {
       url: string;
       displayName: string;
@@ -17,6 +17,6 @@ export interface InvitationItem extends Identifiable {
     welcomeMessage?: string;
     createdDate: Date | string;
     lifecycle: { state?: string };
-    contributorType?: CommunityContributorType.Virtual;
+    contributorType?: CommunityContributorType;
   };
 }

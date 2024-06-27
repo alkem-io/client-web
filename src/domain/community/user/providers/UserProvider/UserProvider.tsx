@@ -8,8 +8,7 @@ import {
 import { ErrorPage } from '../../../../../core/pages/Errors/ErrorPage';
 import { User } from '../../../../../core/apollo/generated/graphql-schema';
 import { useAuthenticationContext } from '../../../../../core/auth/authentication/hooks/useAuthenticationContext';
-import { PendingApplication, toUserMetadata, UserMetadata } from '../../hooks/useUserMetadataWrapper';
-import { InvitationItem } from './InvitationItem';
+import { toUserMetadata, UserMetadata } from '../../hooks/useUserMetadataWrapper';
 
 export interface UserContextValue {
   user: UserMetadata | undefined;
@@ -60,15 +59,7 @@ const UserProvider: FC<{}> = ({ children }) => {
   const loadingMeAndParentQueries = loadingAuthentication || loadingMe;
 
   const userMetadata = useMemo(
-    () =>
-      meData?.me
-        ? toUserMetadata(
-            meData.me.user as User,
-            meData.me.communityApplications as PendingApplication[],
-            meData.me.communityInvitations as InvitationItem[],
-            platformLevelAuthorization
-          )
-        : undefined,
+    () => (meData?.me ? toUserMetadata(meData.me.user as User, platformLevelAuthorization) : undefined),
     [meData, platformLevelAuthorization]
   );
 

@@ -11,7 +11,7 @@ import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
 import {
   AdminCommunityApplicationFragment,
-  AdminCommunityInvitationExternalFragment,
+  AdminPlatformInvitationCommunityFragment,
   AdminCommunityInvitationFragment,
   CommunityContributorType,
   User,
@@ -25,7 +25,7 @@ import RemoveIcon from '@mui/icons-material/Remove';
 enum MembershipType {
   Application,
   Invitation,
-  InvitationExternal,
+  PlatformInvitation,
 }
 
 type MembershipTableItem = {
@@ -85,8 +85,8 @@ const getDeleteDialogTranslationNamespace = (row: MembershipTableItem) => {
       return 'confirmDeleteApplication';
     case MembershipType.Invitation:
       return 'confirmDeleteInvitation';
-    case MembershipType.InvitationExternal:
-      return 'confirmDeleteInvitationExternal';
+    case MembershipType.PlatformInvitation:
+      return 'confirmDeletePlatformInvitation';
   }
 };
 
@@ -136,10 +136,10 @@ interface CommunityApplicationsProps {
   onApplicationStateChange: (applicationId: string, state: string) => Promise<unknown>;
   canHandleInvitations?: boolean;
   invitations?: AdminCommunityInvitationFragment[] | undefined;
-  invitationsExternal?: AdminCommunityInvitationExternalFragment[] | undefined;
+  platformInvitations?: AdminPlatformInvitationCommunityFragment[] | undefined;
   onInvitationStateChange?: (invitationId: string, state: string) => Promise<unknown>;
   onDeleteInvitation?: (invitationId: string) => Promise<unknown>;
-  onDeleteInvitationExternal?: (invitationId: string) => Promise<unknown>;
+  onDeletePlatformInvitation?: (invitationId: string) => Promise<unknown>;
   loading?: boolean;
 }
 
@@ -181,10 +181,10 @@ const CreatePendingMembershipForInvitation = (invitation: AdminCommunityInvitati
   return result;
 };
 
-const CreatePendingMembershipForInvitationExternal = (invitation: AdminCommunityInvitationExternalFragment) => {
+const CreatePendingMembershipForPlatformInvitation = (invitation: AdminPlatformInvitationCommunityFragment) => {
   const result: MembershipTableItem = {
     id: invitation.id,
-    type: MembershipType.InvitationExternal,
+    type: MembershipType.PlatformInvitation,
     contributorType: CommunityContributorType.User,
     displayName: invitation.email,
     url: '',
@@ -200,10 +200,10 @@ const CommunityApplications: FC<CommunityApplicationsProps> = ({
   onApplicationStateChange,
   canHandleInvitations = false,
   invitations = [],
-  invitationsExternal = [],
+  platformInvitations = [],
   onInvitationStateChange,
   onDeleteInvitation,
-  onDeleteInvitationExternal,
+  onDeletePlatformInvitation,
   loading,
 }) => {
   const { t } = useTranslation();
@@ -214,11 +214,11 @@ const CommunityApplications: FC<CommunityApplicationsProps> = ({
     () => [
       ...applications.map(application => CreatePendingMembershipForApplication(application)),
       ...invitations.map(invitation => CreatePendingMembershipForInvitation(invitation)),
-      ...invitationsExternal.map(invitationExternal =>
-        CreatePendingMembershipForInvitationExternal(invitationExternal)
+      ...platformInvitations.map(platformInvitation =>
+        CreatePendingMembershipForPlatformInvitation(platformInvitation)
       ),
     ],
-    [applications, invitations, invitationsExternal]
+    [applications, invitations, platformInvitations]
   );
 
   const columnDefinitions: GridColDef[] = [
@@ -227,7 +227,7 @@ const CommunityApplications: FC<CommunityApplicationsProps> = ({
       headerName: t('fields.name'),
       renderHeader: () => <>{t('fields.name')}</>,
       renderCell: ({ row }: RenderParams) => {
-        if (row.type === MembershipType.InvitationExternal) {
+        if (row.type === MembershipType.PlatformInvitation) {
           return NO_DATA_PLACEHOLDER;
         }
         return (
@@ -306,7 +306,7 @@ const CommunityApplications: FC<CommunityApplicationsProps> = ({
         }
       }
     } else {
-      await onDeleteInvitationExternal?.(item.id);
+      await onDeletePlatformInvitation?.(item.id);
     }
     setDeletingItem(undefined);
   });

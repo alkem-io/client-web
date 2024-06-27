@@ -6,11 +6,10 @@ import {
 } from '../../../../core/apollo/generated/graphql-schema';
 import { JourneyLevel } from '../../../../main/routing/resolvers/RouteResolver';
 import { Identifiable } from '../../../../core/utils/Identifiable';
-import { InvitationItem } from '../providers/UserProvider/InvitationItem';
 
 export interface PendingApplication extends Identifiable {
   space: Identifiable & {
-    level: JourneyLevel;
+    level: JourneyLevel | number;
     profile: {
       displayName: string;
       tagline: string;
@@ -28,14 +27,10 @@ export interface UserMetadata {
   hasPlatformPrivilege: (privilege: AuthorizationPrivilege) => boolean | undefined;
   keywords: string[];
   skills: string[];
-  pendingApplications: PendingApplication[];
-  pendingInvitations: InvitationItem[];
 }
 
 export const toUserMetadata = (
   user: UserDetailsFragment | undefined,
-  applications: PendingApplication[],
-  invitations: InvitationItem[],
   platformLevelAuthorization: MyPrivilegesFragment | undefined
 ): UserMetadata | undefined => {
   if (!user) {
@@ -53,7 +48,5 @@ export const toUserMetadata = (
     hasPlatformPrivilege: hasPlatformPrivilege,
     keywords: user.profile.tagsets?.find(t => t.name.toLowerCase() === KEYWORDS_TAGSET)?.tags ?? [],
     skills: user.profile.tagsets?.find(t => t.name.toLowerCase() === SKILLS_TAGSET)?.tags ?? [],
-    pendingApplications: applications,
-    pendingInvitations: invitations,
   };
 };

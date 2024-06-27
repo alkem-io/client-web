@@ -8,36 +8,84 @@ import UserSettingsLayout from '../../../platform/admin/user/layout/UserSettings
 import { useUserMetadata } from '../hooks/useUserMetadata';
 import GridProvider from '../../../../core/ui/grid/GridProvider';
 import SectionSpacer from '../../../shared/components/Section/SectionSpacer';
-import useUserContributions from '../userContributions/useUserContributions';
 import { SpaceHostedItem } from '../../../journey/utils/SpaceHostedItem';
+import { CommunityContributorType, SpaceType } from '../../../../core/apollo/generated/graphql-schema';
+import {
+  useUserContributionsQuery,
+  useUserPendingMembershipsQuery,
+} from '../../../../core/apollo/generated/apollo-hooks';
+import { JourneyLevel } from '../../../../main/routing/resolvers/RouteResolver';
 
 export interface UserMembershipPageProps {}
 
 const UserMembershipPage: FC<UserMembershipPageProps> = () => {
   const { t } = useTranslation();
   const { userNameId = '' } = useUrlParams();
-  const { user: userMetadata, loading } = useUserMetadata(userNameId);
+  const { user: userMetadata } = useUserMetadata(userNameId);
 
-  const contributions = useUserContributions(userNameId);
+  const { data, loading, refetch } = useUserContributionsQuery({
+    variables: {
+      userId: userMetadata?.user.id!,
+    },
+    skip: !userMetadata?.user.id,
+  });
 
-  const applications = useMemo<SpaceHostedItem[] | undefined>(
-    () =>
-      userMetadata?.pendingApplications.map(application => ({
+  const memberships = useMemo(() => {
+    if (!data?.rolesUser.spaces) {
+      return [];
+    }
+
+    return data.rolesUser.spaces.reduce((acc, space) => {
+      const currentSpace = {
+        spaceID: space.id,
+        id: space.id,
+        spaceLevel: 0 as JourneyLevel,
+        contributorId: userMetadata?.user.id!,
+        contributorType: CommunityContributorType.User,
+      };
+      acc.push(currentSpace);
+
+      const subspaces = space.subspaces.map(subspace => ({
+        id: subspace.id,
+        spaceID: subspace.id,
+        spaceLevel:
+          subspace.type === SpaceType.Challenge
+            ? (1 as JourneyLevel)
+            : subspace.type === SpaceType.Opportunity
+            ? (2 as JourneyLevel)
+            : (1 as JourneyLevel),
+        contributorId: userMetadata?.user.id!,
+        contributorType: CommunityContributorType.User,
+      }));
+
+      return acc.concat(subspaces);
+    }, [] as SpaceHostedItem[]);
+  }, [data]);
+
+  const { data: pendingMembershipsData } = useUserPendingMembershipsQuery();
+  const applications = useMemo<SpaceHostedItem[] | undefined>(() => {
+    if (!pendingMembershipsData || !userMetadata) {
+      return undefined;
+    } else {
+      return pendingMembershipsData.me.communityApplications.map(application => ({
         id: application.id,
         spaceID: application.space.id,
-        spaceLevel: application.space.level,
-      })),
-    [userMetadata?.pendingApplications]
-  );
+        spaceLevel: application.space.level as JourneyLevel,
+        contributorId: userMetadata.user.id,
+        contributorType: CommunityContributorType.User,
+      }));
+    }
+  }, [userMetadata, pendingMembershipsData]);
 
   return (
     <UserSettingsLayout currentTab={SettingsSection.Membership}>
       <GridProvider columns={12}>
         <ContributionsView
           title={t('common.my-memberships')}
-          contributions={contributions}
+          contributions={memberships}
           loading={loading}
           enableLeave
+          onLeave={refetch}
         />
       </GridProvider>
       <SectionSpacer />
