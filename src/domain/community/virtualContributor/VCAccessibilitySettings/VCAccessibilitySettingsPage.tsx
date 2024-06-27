@@ -15,6 +15,9 @@ import SwitchSettingsGroup from '../../../../core/ui/forms/SettingsGroups/Switch
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
 import RadioSettingsGroup from '../../../../core/ui/forms/SettingsGroups/RadioSettingsGroup';
 import { SearchVisibility } from '../../../../core/apollo/generated/graphql-schema';
+import { BlockTitle, Caption } from '../../../../core/ui/typography';
+import { Button } from '@mui/material';
+import { Actions } from '../../../../core/ui/actions/Actions';
 
 interface VCAccessibilityProps {
   listedInStore?: boolean;
@@ -68,6 +71,7 @@ export const VCAccessibilitySettingsPage = () => {
         <PageContent background="background.paper">
           <PageContentColumn columns={12}>
             <PageContentBlock>
+              <BlockTitle>{t('pages.virtualContributorProfile.settings.access.title')}</BlockTitle>
               <RadioSettingsGroup
                 value={data?.virtualContributor?.searchVisibility ?? SearchVisibility.Account}
                 options={{
@@ -108,6 +112,19 @@ export const VCAccessibilitySettingsPage = () => {
                 }}
                 onChange={(key, newValue) => updateListedInStore(newValue)}
               />
+            </PageContentBlock>
+          </PageContentColumn>
+        </PageContent>
+        <PageContent background="background.paper">
+          <PageContentColumn columns={12}>
+            <PageContentBlock>
+              <BlockTitle>{t('pages.virtualContributorProfile.settings.ingestion.title')}</BlockTitle>
+              <Caption>{t('pages.virtualContributorProfile.settings.ingestion.infoText')}</Caption>
+              <Actions>
+                <Button variant="contained" onClick={() => {}}>
+                  {t('pages.virtualContributorProfile.settings.ingestion.refreshBtn')}
+                </Button>
+              </Actions>
             </PageContentBlock>
           </PageContentColumn>
         </PageContent>
