@@ -41,13 +41,13 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
     virtualContributors,
     applications,
     invitations,
-    invitationsExternal,
+    platformInvitations,
     communityPolicy,
     permissions,
     onApplicationStateChange,
     onInvitationStateChange,
     onDeleteInvitation,
-    onDeleteInvitationExternal,
+    onDeletePlatformInvitation,
     onUserLeadChange,
     onUserAuthorizationChange,
     onOrganizationLeadChange,
@@ -119,10 +119,10 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
               onApplicationStateChange={onApplicationStateChange}
               canHandleInvitations
               invitations={invitations}
-              invitationsExternal={invitationsExternal}
+              platformInvitations={platformInvitations}
               onInvitationStateChange={onInvitationStateChange}
               onDeleteInvitation={onDeleteInvitation}
-              onDeleteInvitationExternal={onDeleteInvitationExternal}
+              onDeletePlatformInvitation={onDeletePlatformInvitation}
               loading={loading}
             />
           </PageContentBlock>

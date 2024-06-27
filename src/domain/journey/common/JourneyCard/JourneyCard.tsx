@@ -55,12 +55,13 @@ const JourneyCard = ({
 
   const toggleExpanded = () => setIsExpanded(wasExpanded => !wasExpanded);
 
-  const wrapperProps = journeyUri
-    ? ({
-        component: RouterLink,
-        to: journeyUri,
-      } as const)
-    : {};
+  const wrapperProps =
+    journeyUri && !containerProps.onClick
+      ? ({
+          component: RouterLink,
+          to: journeyUri,
+        } as const)
+      : {};
 
   return (
     <ContributeCard {...containerProps}>

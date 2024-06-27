@@ -2,9 +2,10 @@ import { ReactNode, useMemo } from 'react';
 import {
   usePendingMembershipsSpaceQuery,
   usePendingMembershipsUserQuery,
+  useUserPendingMembershipsQuery,
 } from '../../../core/apollo/generated/apollo-hooks';
 import { JourneyTypeName } from '../../journey/JourneyTypeName';
-import { PendingApplication, useUserContext } from '../user';
+import { PendingApplication } from '../user';
 import { Visual } from '../../common/visual/Visual';
 import { InvitationItem } from '../user/providers/UserProvider/InvitationItem';
 import { CommunityGuidelinesSummaryFragment, VisualType } from '../../../core/apollo/generated/graphql-schema';
@@ -39,11 +40,11 @@ interface UsePendingMembershipsProvided {
 }
 
 export const usePendingMemberships = (): UsePendingMembershipsProvided => {
-  const { user } = useUserContext();
+  const { data } = useUserPendingMembershipsQuery();
 
   return {
-    invitations: user?.pendingInvitations,
-    applications: user?.pendingApplications,
+    invitations: data?.me.communityInvitations,
+    applications: data?.me.communityApplications,
   };
 };
 
@@ -109,6 +110,7 @@ export const InvitationHydrator = ({
       space: {
         ...invitation.space,
         ...journey,
+        level: invitation.space.level as JourneyLevel,
         profile: {
           ...invitation.space.profile,
           ...journey?.profile,
@@ -152,6 +154,7 @@ export const ApplicationHydrator = ({ application, visualType, children }: Appli
       space: {
         ...application.space,
         ...journey,
+        level: application.space.level as JourneyLevel,
         profile: {
           ...application.space.profile,
           ...journey?.profile,

@@ -6,6 +6,7 @@ import {
   useJoinCommunityMutation,
   useSpacePageLazyQuery,
   useSubspacePageLazyQuery,
+  useUserPendingMembershipsQuery,
   useUserProfileLazyQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
@@ -48,6 +49,10 @@ export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = (
   const notify = useNotification();
   const { isAuthenticated } = useAuthenticationContext();
   const { user, loadingMe: membershipLoading } = useUserContext();
+  const { data: pendingMembershipsData } = useUserPendingMembershipsQuery();
+  const { communityApplications: pendingApplications, communityInvitations: pendingInvitations } =
+    pendingMembershipsData?.me ?? {};
+
   const userId = user?.user?.id;
 
   const [getUserProfile, { loading: gettingUserProfile }] = useUserProfileLazyQuery();
@@ -104,13 +109,13 @@ export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = (
     update: cache => clearCacheForType(cache, 'Authorization'),
   });
 
-  const userApplication = user?.pendingApplications?.find(x => x.space.id === journeyId);
+  const userApplication = pendingApplications?.find(x => x.space.id === journeyId);
 
-  const userInvitation = user?.pendingInvitations?.find(x => x.space.id === journeyId);
+  const userInvitation = pendingInvitations?.find(x => x.space.id === journeyId);
 
   // find an application which does not have a challengeID, meaning it's on space level,
   // but you are at least at challenge level to have a parent application
-  const parentApplication = user?.pendingApplications?.find(x => x.space.id === parentSpaceId);
+  const parentApplication = pendingApplications?.find(x => x.space.id === parentSpaceId);
 
   const isMember = space?.community.myMembershipStatus === CommunityMembershipStatus.Member;
 

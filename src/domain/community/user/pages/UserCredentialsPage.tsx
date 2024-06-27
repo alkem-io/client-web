@@ -21,12 +21,10 @@ import DashboardGenericSection from '../../../shared/components/DashboardSection
 import { CardLayoutContainer, CardLayoutItem } from '../../../../core/ui/card/cardsLayout/CardsLayout';
 import { useUserContext } from '../hooks/useUserContext';
 import useUserContributions from '../userContributions/useUserContributions';
-import { useUrlParams } from '../../../../core/routing/useUrlParams';
 
 export const UserCredentialsPage = () => {
   const { t } = useTranslation();
   const notify = useNotification();
-  const { userNameId = '' } = useUrlParams();
 
   const { user: currentUser, loading: loadingUserContext } = useUserContext();
 
@@ -46,7 +44,7 @@ export const UserCredentialsPage = () => {
     skip: !requestCredentialDialogOpen,
   });
 
-  const contributions = useUserContributions(userNameId);
+  const contributions = useUserContributions(currentUser?.user.id);
 
   if (!currentUser?.user.id) {
     return <Loading />;
