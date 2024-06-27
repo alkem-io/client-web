@@ -14904,6 +14904,10 @@ export const VirtualContributorDocument = gql`
       }
       searchVisibility
       listedInStore
+      aiPersona {
+        id
+        bodyOfKnowledgeID
+      }
       profile {
         id
         displayName

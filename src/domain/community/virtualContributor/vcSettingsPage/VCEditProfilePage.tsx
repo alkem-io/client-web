@@ -2,6 +2,7 @@ import React from 'react';
 import Loading from '../../../../core/ui/loading/Loading';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import {
+  useBodyOfKnowledgeProfileQuery,
   useUpdateVirtualContributorMutation,
   useVirtualContributorQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
@@ -28,6 +29,13 @@ export const VCSettingsPage = () => {
     },
   });
 
+  const { data: bokProfile } = useBodyOfKnowledgeProfileQuery({
+    variables: {
+      spaceId: data?.virtualContributor?.aiPersona?.bodyOfKnowledgeID!,
+    },
+    skip: !data?.virtualContributor?.aiPersona?.bodyOfKnowledgeID,
+  });
+
   const [updateContributorMutation] = useUpdateVirtualContributorMutation();
 
   const handleUpdate = virtualContributor => {
@@ -44,15 +52,18 @@ export const VCSettingsPage = () => {
     });
   };
 
-  if (loading)
+  if (loading) {
     return (
       <Loading
         text={t('components.loading.message', { blockName: t('pages.virtualContributorProfile.settings.title') })}
       />
     );
+  }
+
   if (!data?.virtualContributor) {
     return null;
   }
+
   return (
     <StorageConfigContextProvider locationType="virtualContributor" virtualContributorId={data.virtualContributor.id}>
       <VCSettingsPageLayout currentTab={SettingsSection.MyProfile}>
@@ -61,6 +72,7 @@ export const VCSettingsPage = () => {
             <PageContentBlock>
               <VirtualContributorForm
                 virtualContributor={data?.virtualContributor}
+                bokProfile={bokProfile?.lookup.space?.profile}
                 avatar={data?.virtualContributor.profile.avatar}
                 onSave={handleUpdate}
               />
