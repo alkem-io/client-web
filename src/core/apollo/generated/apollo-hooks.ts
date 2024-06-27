@@ -1180,8 +1180,8 @@ export const AdminCommunityInvitationFragmentDoc = gql`
   }
   ${AdminCommunityCandidateMemberFragmentDoc}
 `;
-export const AdminCommunityInvitationExternalFragmentDoc = gql`
-  fragment AdminCommunityInvitationExternal on InvitationExternal {
+export const AdminPlatformInvitationCommunityFragmentDoc = gql`
+  fragment AdminPlatformInvitationCommunity on PlatformInvitation {
     id
     createdDate
     email
@@ -10340,15 +10340,15 @@ export const CommunityApplicationsInvitationsDocument = gql`
         invitations {
           ...AdminCommunityInvitation
         }
-        invitationsExternal {
-          ...AdminCommunityInvitationExternal
+        platformInvitations {
+          ...AdminPlatformInvitationCommunity
         }
       }
     }
   }
   ${AdminCommunityApplicationFragmentDoc}
   ${AdminCommunityInvitationFragmentDoc}
-  ${AdminCommunityInvitationExternalFragmentDoc}
+  ${AdminPlatformInvitationCommunityFragmentDoc}
 `;
 
 /**
@@ -11176,6 +11176,79 @@ export function refetchAvailableVirtualContributorsQuery(
   variables?: SchemaTypes.AvailableVirtualContributorsQueryVariables
 ) {
   return { query: AvailableVirtualContributorsDocument, variables: variables };
+}
+
+export const AvailableVirtualContributorsInLibraryDocument = gql`
+  query AvailableVirtualContributorsInLibrary {
+    platform {
+      id
+      library {
+        id
+        virtualContributors {
+          searchVisibility
+          ...VirtualContributorName
+        }
+      }
+    }
+  }
+  ${VirtualContributorNameFragmentDoc}
+`;
+
+/**
+ * __useAvailableVirtualContributorsInLibraryQuery__
+ *
+ * To run a query within a React component, call `useAvailableVirtualContributorsInLibraryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAvailableVirtualContributorsInLibraryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAvailableVirtualContributorsInLibraryQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useAvailableVirtualContributorsInLibraryQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.AvailableVirtualContributorsInLibraryQuery,
+    SchemaTypes.AvailableVirtualContributorsInLibraryQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.AvailableVirtualContributorsInLibraryQuery,
+    SchemaTypes.AvailableVirtualContributorsInLibraryQueryVariables
+  >(AvailableVirtualContributorsInLibraryDocument, options);
+}
+
+export function useAvailableVirtualContributorsInLibraryLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.AvailableVirtualContributorsInLibraryQuery,
+    SchemaTypes.AvailableVirtualContributorsInLibraryQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.AvailableVirtualContributorsInLibraryQuery,
+    SchemaTypes.AvailableVirtualContributorsInLibraryQueryVariables
+  >(AvailableVirtualContributorsInLibraryDocument, options);
+}
+
+export type AvailableVirtualContributorsInLibraryQueryHookResult = ReturnType<
+  typeof useAvailableVirtualContributorsInLibraryQuery
+>;
+export type AvailableVirtualContributorsInLibraryLazyQueryHookResult = ReturnType<
+  typeof useAvailableVirtualContributorsInLibraryLazyQuery
+>;
+export type AvailableVirtualContributorsInLibraryQueryResult = Apollo.QueryResult<
+  SchemaTypes.AvailableVirtualContributorsInLibraryQuery,
+  SchemaTypes.AvailableVirtualContributorsInLibraryQueryVariables
+>;
+export function refetchAvailableVirtualContributorsInLibraryQuery(
+  variables?: SchemaTypes.AvailableVirtualContributorsInLibraryQueryVariables
+) {
+  return { query: AvailableVirtualContributorsInLibraryDocument, variables: variables };
 }
 
 export const AddVirtualContributorToCommunityDocument = gql`
@@ -12897,54 +12970,54 @@ export type DeleteInvitationMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteInvitationMutation,
   SchemaTypes.DeleteInvitationMutationVariables
 >;
-export const DeleteExternalInvitationDocument = gql`
-  mutation DeleteExternalInvitation($invitationId: UUID!) {
-    deleteInvitationExternal(deleteData: { ID: $invitationId }) {
+export const DeletePlatformInvitationDocument = gql`
+  mutation DeletePlatformInvitation($invitationId: UUID!) {
+    deletePlatformInvitation(deleteData: { ID: $invitationId }) {
       id
     }
   }
 `;
-export type DeleteExternalInvitationMutationFn = Apollo.MutationFunction<
-  SchemaTypes.DeleteExternalInvitationMutation,
-  SchemaTypes.DeleteExternalInvitationMutationVariables
+export type DeletePlatformInvitationMutationFn = Apollo.MutationFunction<
+  SchemaTypes.DeletePlatformInvitationMutation,
+  SchemaTypes.DeletePlatformInvitationMutationVariables
 >;
 
 /**
- * __useDeleteExternalInvitationMutation__
+ * __useDeletePlatformInvitationMutation__
  *
- * To run a mutation, you first call `useDeleteExternalInvitationMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useDeleteExternalInvitationMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useDeletePlatformInvitationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeletePlatformInvitationMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [deleteExternalInvitationMutation, { data, loading, error }] = useDeleteExternalInvitationMutation({
+ * const [deletePlatformInvitationMutation, { data, loading, error }] = useDeletePlatformInvitationMutation({
  *   variables: {
  *      invitationId: // value for 'invitationId'
  *   },
  * });
  */
-export function useDeleteExternalInvitationMutation(
+export function useDeletePlatformInvitationMutation(
   baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.DeleteExternalInvitationMutation,
-    SchemaTypes.DeleteExternalInvitationMutationVariables
+    SchemaTypes.DeletePlatformInvitationMutation,
+    SchemaTypes.DeletePlatformInvitationMutationVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
-    SchemaTypes.DeleteExternalInvitationMutation,
-    SchemaTypes.DeleteExternalInvitationMutationVariables
-  >(DeleteExternalInvitationDocument, options);
+    SchemaTypes.DeletePlatformInvitationMutation,
+    SchemaTypes.DeletePlatformInvitationMutationVariables
+  >(DeletePlatformInvitationDocument, options);
 }
 
-export type DeleteExternalInvitationMutationHookResult = ReturnType<typeof useDeleteExternalInvitationMutation>;
-export type DeleteExternalInvitationMutationResult =
-  Apollo.MutationResult<SchemaTypes.DeleteExternalInvitationMutation>;
-export type DeleteExternalInvitationMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.DeleteExternalInvitationMutation,
-  SchemaTypes.DeleteExternalInvitationMutationVariables
+export type DeletePlatformInvitationMutationHookResult = ReturnType<typeof useDeletePlatformInvitationMutation>;
+export type DeletePlatformInvitationMutationResult =
+  Apollo.MutationResult<SchemaTypes.DeletePlatformInvitationMutation>;
+export type DeletePlatformInvitationMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.DeletePlatformInvitationMutation,
+  SchemaTypes.DeletePlatformInvitationMutationVariables
 >;
 export const InvitationStateEventDocument = gql`
   mutation InvitationStateEvent($eventName: String!, $invitationId: UUID!) {
@@ -13055,37 +13128,34 @@ export type InviteContributorsToCommunityMutationOptions = Apollo.BaseMutationOp
   SchemaTypes.InviteContributorsToCommunityMutation,
   SchemaTypes.InviteContributorsToCommunityMutationVariables
 >;
-export const InviteExternalUserDocument = gql`
-  mutation InviteExternalUser($email: String!, $communityId: UUID!, $message: String) {
-    inviteForCommunityMembershipByEmail(
+export const InviteUserToPlatformAndCommunityDocument = gql`
+  mutation inviteUserToPlatformAndCommunity($email: String!, $communityId: UUID!, $message: String) {
+    inviteUserToPlatformAndCommunity(
       invitationData: { email: $email, communityID: $communityId, welcomeMessage: $message }
     ) {
-      ... on InvitationExternal {
-        id
-      }
-      ... on Invitation {
+      ... on PlatformInvitation {
         id
       }
     }
   }
 `;
-export type InviteExternalUserMutationFn = Apollo.MutationFunction<
-  SchemaTypes.InviteExternalUserMutation,
-  SchemaTypes.InviteExternalUserMutationVariables
+export type InviteUserToPlatformAndCommunityMutationFn = Apollo.MutationFunction<
+  SchemaTypes.InviteUserToPlatformAndCommunityMutation,
+  SchemaTypes.InviteUserToPlatformAndCommunityMutationVariables
 >;
 
 /**
- * __useInviteExternalUserMutation__
+ * __useInviteUserToPlatformAndCommunityMutation__
  *
- * To run a mutation, you first call `useInviteExternalUserMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useInviteExternalUserMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useInviteUserToPlatformAndCommunityMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useInviteUserToPlatformAndCommunityMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [inviteExternalUserMutation, { data, loading, error }] = useInviteExternalUserMutation({
+ * const [inviteUserToPlatformAndCommunityMutation, { data, loading, error }] = useInviteUserToPlatformAndCommunityMutation({
  *   variables: {
  *      email: // value for 'email'
  *      communityId: // value for 'communityId'
@@ -13093,24 +13163,27 @@ export type InviteExternalUserMutationFn = Apollo.MutationFunction<
  *   },
  * });
  */
-export function useInviteExternalUserMutation(
+export function useInviteUserToPlatformAndCommunityMutation(
   baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.InviteExternalUserMutation,
-    SchemaTypes.InviteExternalUserMutationVariables
+    SchemaTypes.InviteUserToPlatformAndCommunityMutation,
+    SchemaTypes.InviteUserToPlatformAndCommunityMutationVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.InviteExternalUserMutation, SchemaTypes.InviteExternalUserMutationVariables>(
-    InviteExternalUserDocument,
-    options
-  );
+  return Apollo.useMutation<
+    SchemaTypes.InviteUserToPlatformAndCommunityMutation,
+    SchemaTypes.InviteUserToPlatformAndCommunityMutationVariables
+  >(InviteUserToPlatformAndCommunityDocument, options);
 }
 
-export type InviteExternalUserMutationHookResult = ReturnType<typeof useInviteExternalUserMutation>;
-export type InviteExternalUserMutationResult = Apollo.MutationResult<SchemaTypes.InviteExternalUserMutation>;
-export type InviteExternalUserMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.InviteExternalUserMutation,
-  SchemaTypes.InviteExternalUserMutationVariables
+export type InviteUserToPlatformAndCommunityMutationHookResult = ReturnType<
+  typeof useInviteUserToPlatformAndCommunityMutation
+>;
+export type InviteUserToPlatformAndCommunityMutationResult =
+  Apollo.MutationResult<SchemaTypes.InviteUserToPlatformAndCommunityMutation>;
+export type InviteUserToPlatformAndCommunityMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.InviteUserToPlatformAndCommunityMutation,
+  SchemaTypes.InviteUserToPlatformAndCommunityMutationVariables
 >;
 export const PendingMembershipsSpaceDocument = gql`
   query PendingMembershipsSpace(
@@ -14903,6 +14976,80 @@ export function refetchVirtualContributorQuery(variables: SchemaTypes.VirtualCon
   return { query: VirtualContributorDocument, variables: variables };
 }
 
+export const VirtualContributorProfileDocument = gql`
+  query VirtualContributorProfile($id: UUID_NAMEID!) {
+    virtualContributor(ID: $id) {
+      id
+      profile {
+        id
+        displayName
+        tagline
+        tagsets {
+          ...TagsetDetails
+        }
+        url
+        avatar: visual(type: AVATAR) {
+          ...VisualFull
+        }
+      }
+    }
+  }
+  ${TagsetDetailsFragmentDoc}
+  ${VisualFullFragmentDoc}
+`;
+
+/**
+ * __useVirtualContributorProfileQuery__
+ *
+ * To run a query within a React component, call `useVirtualContributorProfileQuery` and pass it any options that fit your needs.
+ * When your component renders, `useVirtualContributorProfileQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useVirtualContributorProfileQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useVirtualContributorProfileQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.VirtualContributorProfileQuery,
+    SchemaTypes.VirtualContributorProfileQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.VirtualContributorProfileQuery,
+    SchemaTypes.VirtualContributorProfileQueryVariables
+  >(VirtualContributorProfileDocument, options);
+}
+
+export function useVirtualContributorProfileLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.VirtualContributorProfileQuery,
+    SchemaTypes.VirtualContributorProfileQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.VirtualContributorProfileQuery,
+    SchemaTypes.VirtualContributorProfileQueryVariables
+  >(VirtualContributorProfileDocument, options);
+}
+
+export type VirtualContributorProfileQueryHookResult = ReturnType<typeof useVirtualContributorProfileQuery>;
+export type VirtualContributorProfileLazyQueryHookResult = ReturnType<typeof useVirtualContributorProfileLazyQuery>;
+export type VirtualContributorProfileQueryResult = Apollo.QueryResult<
+  SchemaTypes.VirtualContributorProfileQuery,
+  SchemaTypes.VirtualContributorProfileQueryVariables
+>;
+export function refetchVirtualContributorProfileQuery(variables: SchemaTypes.VirtualContributorProfileQueryVariables) {
+  return { query: VirtualContributorProfileDocument, variables: variables };
+}
+
 export const BodyOfKnowledgeProfileDocument = gql`
   query BodyOfKnowledgeProfile($spaceId: UUID!) {
     lookup {
@@ -15039,6 +15186,52 @@ export type UpdateVirtualContributorMutationResult =
 export type UpdateVirtualContributorMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateVirtualContributorMutation,
   SchemaTypes.UpdateVirtualContributorMutationVariables
+>;
+export const RefreshBodyOfKnowledgeDocument = gql`
+  mutation refreshBodyOfKnowledge($deleteData: RefreshVirtualContributorBodyOfKnowledgeInput!) {
+    refreshVirtualContributorBodyOfKnowledge(deleteData: $deleteData)
+  }
+`;
+export type RefreshBodyOfKnowledgeMutationFn = Apollo.MutationFunction<
+  SchemaTypes.RefreshBodyOfKnowledgeMutation,
+  SchemaTypes.RefreshBodyOfKnowledgeMutationVariables
+>;
+
+/**
+ * __useRefreshBodyOfKnowledgeMutation__
+ *
+ * To run a mutation, you first call `useRefreshBodyOfKnowledgeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRefreshBodyOfKnowledgeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [refreshBodyOfKnowledgeMutation, { data, loading, error }] = useRefreshBodyOfKnowledgeMutation({
+ *   variables: {
+ *      deleteData: // value for 'deleteData'
+ *   },
+ * });
+ */
+export function useRefreshBodyOfKnowledgeMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.RefreshBodyOfKnowledgeMutation,
+    SchemaTypes.RefreshBodyOfKnowledgeMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.RefreshBodyOfKnowledgeMutation,
+    SchemaTypes.RefreshBodyOfKnowledgeMutationVariables
+  >(RefreshBodyOfKnowledgeDocument, options);
+}
+
+export type RefreshBodyOfKnowledgeMutationHookResult = ReturnType<typeof useRefreshBodyOfKnowledgeMutation>;
+export type RefreshBodyOfKnowledgeMutationResult = Apollo.MutationResult<SchemaTypes.RefreshBodyOfKnowledgeMutation>;
+export type RefreshBodyOfKnowledgeMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.RefreshBodyOfKnowledgeMutation,
+  SchemaTypes.RefreshBodyOfKnowledgeMutationVariables
 >;
 export const VcMembershipsDocument = gql`
   query VCMemberships($virtualContributorId: UUID_NAMEID!) {

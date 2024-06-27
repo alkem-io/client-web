@@ -23,14 +23,11 @@ import CommunityGuidelinesContainer from '../../../community/community/Community
 import CommunityGuidelinesForm from '../../../community/community/CommunityGuidelines/CommunityGuidelinesForm';
 import CommunityGuidelinesTemplatesLibrary from '../../../collaboration/communityGuidelines/CommunityGuidelinesTemplateLibrary/CommunityGuidelinesTemplatesLibrary';
 import { useSpace } from '../../space/SpaceContext/useSpace';
-import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
-import { useUserContext } from '../../../community/user';
 
 const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   const { t } = useTranslation();
   const { loading: isLoadingChallenge, communityId, subspaceId: challengeId, subspaceNameId } = useSubSpace();
   const { isPrivate, loading: isLoadingSpace } = useSpace();
-  const { user: { hasPlatformPrivilege } = {} } = useUserContext();
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const openTemplateDialog = useCallback(() => setIsDialogOpen(true), []);
@@ -44,13 +41,13 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
     virtualContributors,
     applications,
     invitations,
-    invitationsExternal,
+    platformInvitations,
     communityPolicy,
     permissions,
     onApplicationStateChange,
     onInvitationStateChange,
     onDeleteInvitation,
-    onDeleteInvitationExternal,
+    onDeletePlatformInvitation,
     onUserLeadChange,
     onUserAuthorizationChange,
     onOrganizationLeadChange,
@@ -63,6 +60,7 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
     getAvailableUsers,
     getAvailableOrganizations,
     getAvailableVirtualContributors,
+    getAvailableVirtualContributorsInLibrary,
     loading,
     inviteExternalUser,
     inviteExistingUser,
@@ -100,10 +98,10 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
               onApplicationStateChange={onApplicationStateChange}
               canHandleInvitations
               invitations={invitations}
-              invitationsExternal={invitationsExternal}
+              platformInvitations={platformInvitations}
               onInvitationStateChange={onInvitationStateChange}
               onDeleteInvitation={onDeleteInvitation}
-              onDeleteInvitationExternal={onDeleteInvitationExternal}
+              onDeletePlatformInvitation={onDeletePlatformInvitation}
               loading={loading}
             />
           </PageContentBlock>
@@ -190,10 +188,11 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
                 canAddVirtualContributors={
                   permissions.canAddVirtualContributorsFromAccount || permissions.canAddMembers
                 }
-                onAddMember={onAddVirtualContributor}
+                inviteExistingUser={inviteExistingUser}
                 onRemoveMember={onRemoveVirtualContributor}
-                isPlatformAdmin={hasPlatformPrivilege?.(AuthorizationPrivilege.PlatformAdmin)}
-                fetchAvailableVirtualContributors={getAvailableVirtualContributors}
+                fetchAvailableVirtualContributors={getAvailableVirtualContributorsInLibrary}
+                fetchAvailableVirtualContributorsOnAccount={getAvailableVirtualContributors}
+                onAddMember={onAddVirtualContributor}
                 loading={loading}
               />
             </PageContentBlock>

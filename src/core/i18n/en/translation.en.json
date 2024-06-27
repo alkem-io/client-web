@@ -578,7 +578,7 @@
         "title": "Remove Virtual Contributor",
         "confirm": "Are you sure?"
       },
-      "addExternalVC": "Add External VC",
+      "inviteExternalVC": "Invite External VC",
       "externalVCsInfo": "At the moment, only Alkemio Support can add an external Virtual Contributor to your Space. Please contact Support <click>here</click> if you wish to do so, we are happy to help!"
     },
     "application-form": {
@@ -623,7 +623,7 @@
       "title": "Deleting invitation from {{user}}",
       "content": "Are you sure that you want to Archive this invitation? The invitation will be rejected if it's not already."
     },
-    "confirmDeleteInvitationExternal": {
+    "confirmDeletePlatformInvitation": {
       "title": "Deleting invitation from {{user}}",
       "content": "Are you sure that you want to Archive this invitation? The invitation will be rejected if it's not already."
     },
@@ -1050,6 +1050,7 @@
       "inviteExternalUser": "Send email invitation",
       "inviteOrganizations": "Invite Organizations",
       "defaultInvitationMessage": "Hi, I would like to invite you to {{space}}. Click on the link below to have a look or directly accept the invitation.",
+      "defaultVCInvitationMessage": "Hi, I would like to invite your Virtual Contributor {{name}} to {{space}}. Click on the link below to have a look or directly accept the invitation.",
       "inviteExistingUserDialog": {
         "title": "Invite other Alkemio users to join this Space",
         "subtitle": "You can search for Alkemio users below and attach a personalized message.",
@@ -1058,6 +1059,9 @@
           "alreadyInvited": "This user is already invited",
           "alreadyMember": "This user is already a member"
         }
+      },
+      "inviteExistingVCDialog": {
+        "title": "Invite Virtual Contributor to join this Space"
       },
       "inviteExternalUserDialog": {
         "title": "Send an email invitation"
@@ -2537,12 +2541,18 @@
       "settings": {
         "title": "Virtual Contributor Settings",
         "access": {
-          "listedInStore": "Allow the Virtual Contributor to be displayed in the Innovation Library.",
+          "title": "Visibility",
+          "listedInStore": "Include in public selection lists.",
           "visibility": {
-            "public": "<b>Public:</b> this Virtual Contributor is visible and can be invited to other Spaces, but only by users who are Space admins.",
-            "private": "<b>Private:</b> this Virtual Contributor is not visible for (admins of) other Spaces.",
-            "hidden": "<b>Hidden</b>"
+            "public": "<b>Public:</b> This Virtual Contributor can be invited to all Spaces on Alkemio",
+            "private": "<b>Private:</b> This Virtual Contributor can be invited to spaces within my account.",
+            "hidden": "<b>Hidden:</b> This Virtual Contributor cannot be invited."
           }
+        },
+        "ingestion": {
+          "title": "Update Knowledge",
+          "infoText": "By clicking the button below, you will make sure your Virtual Contributor is based on the latest knowledge in the Subspace.",
+          "refreshBtn": "Update Knowledge"
         }
       }
     },

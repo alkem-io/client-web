@@ -24,6 +24,19 @@ query AvailableVirtualContributors(
   }
 }
 
+query AvailableVirtualContributorsInLibrary {
+  platform {
+    id
+    library {
+      id
+      virtualContributors {
+        searchVisibility
+        ...VirtualContributorName
+      }
+    }
+  }
+}
+
 fragment VirtualContributorName on VirtualContributor {
   id
   nameID

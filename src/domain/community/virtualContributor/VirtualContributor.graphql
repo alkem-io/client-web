@@ -44,6 +44,24 @@ query VirtualContributor ($id: UUID_NAMEID!) {
   }
 }
 
+query VirtualContributorProfile ($id: UUID_NAMEID!) {
+  virtualContributor (ID: $id) {
+    id
+    profile {
+      id
+      displayName
+      tagline
+      tagsets {
+        ...TagsetDetails
+      }
+      url
+      avatar: visual(type: AVATAR) {
+        ...VisualFull
+      }
+    }
+  }
+}
+
 query BodyOfKnowledgeProfile($spaceId: UUID!) {
   lookup {
     space(ID: $spaceId) {
@@ -81,4 +99,8 @@ mutation UpdateVirtualContributor($virtualContributorData: UpdateVirtualContribu
       description
     }
   }
+}
+
+mutation refreshBodyOfKnowledge($deleteData: RefreshVirtualContributorBodyOfKnowledgeInput!) {
+  refreshVirtualContributorBodyOfKnowledge(deleteData: $deleteData)
 }

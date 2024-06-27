@@ -8,8 +8,8 @@ query CommunityApplicationsInvitations($communityId: UUID!) {
       invitations {
         ...AdminCommunityInvitation
       }
-      invitationsExternal {
-        ...AdminCommunityInvitationExternal
+      platformInvitations {
+        ...AdminPlatformInvitationCommunity
       }
     }
   }
@@ -55,7 +55,7 @@ fragment AdminCommunityInvitation on Invitation {
   }
 }
 
-fragment AdminCommunityInvitationExternal on InvitationExternal {
+fragment AdminPlatformInvitationCommunity on PlatformInvitation {
   id
   createdDate
   email
