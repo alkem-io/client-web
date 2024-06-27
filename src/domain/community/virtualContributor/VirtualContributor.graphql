@@ -100,3 +100,7 @@ mutation UpdateVirtualContributor($virtualContributorData: UpdateVirtualContribu
     }
   }
 }
+
+mutation refreshBodyOfKnowledge($deleteData: RefreshVirtualContributorBodyOfKnowledgeInput!) {
+  refreshVirtualContributorBodyOfKnowledge(deleteData: $deleteData)
+}

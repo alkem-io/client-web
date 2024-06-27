@@ -3,6 +3,7 @@ import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import {
   useUpdateVirtualContributorMutation,
   useVirtualContributorQuery,
+  useRefreshBodyOfKnowledgeMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
@@ -16,8 +17,8 @@ import { useNotification } from '../../../../core/ui/notifications/useNotificati
 import RadioSettingsGroup from '../../../../core/ui/forms/SettingsGroups/RadioSettingsGroup';
 import { SearchVisibility } from '../../../../core/apollo/generated/graphql-schema';
 import { BlockTitle, Caption } from '../../../../core/ui/typography';
-import { Button } from '@mui/material';
 import { Actions } from '../../../../core/ui/actions/Actions';
+import { LoadingButton } from '@mui/lab';
 
 interface VCAccessibilityProps {
   listedInStore?: boolean;
@@ -38,7 +39,6 @@ export const VCAccessibilitySettingsPage = () => {
   });
 
   const [updateContributorMutation] = useUpdateVirtualContributorMutation();
-
   const handleUpdate = (props: VCAccessibilityProps) => {
     updateContributorMutation({
       variables: {
@@ -59,6 +59,20 @@ export const VCAccessibilitySettingsPage = () => {
 
   const updateVisibility = (newValue: SearchVisibility) => {
     handleUpdate({ searchVisibility: newValue });
+  };
+
+  const [updateBodyOfKnowledge, { loading: updateLoading }] = useRefreshBodyOfKnowledgeMutation();
+  const refreshIngestion = () => {
+    updateBodyOfKnowledge({
+      variables: {
+        deleteData: {
+          virtualContributorID: data?.virtualContributor?.id ?? '',
+        },
+      },
+      onCompleted: () => {
+        notify(t('pages.virtualContributorProfile.success', { entity: t('common.settings') }), 'success');
+      },
+    });
   };
 
   if (!data?.virtualContributor) {
@@ -121,9 +135,9 @@ export const VCAccessibilitySettingsPage = () => {
               <BlockTitle>{t('pages.virtualContributorProfile.settings.ingestion.title')}</BlockTitle>
               <Caption>{t('pages.virtualContributorProfile.settings.ingestion.infoText')}</Caption>
               <Actions>
-                <Button variant="contained" onClick={() => {}}>
+                <LoadingButton variant="contained" loading={updateLoading} onClick={refreshIngestion}>
                   {t('pages.virtualContributorProfile.settings.ingestion.refreshBtn')}
-                </Button>
+                </LoadingButton>
               </Actions>
             </PageContentBlock>
           </PageContentColumn>

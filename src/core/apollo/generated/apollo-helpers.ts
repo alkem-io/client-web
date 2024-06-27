@@ -1643,7 +1643,6 @@ export type MutationKeySpecifier = (
   | 'createInnovationPackOnLibrary'
   | 'createLicensePlan'
   | 'createOrganization'
-  | 'createPlatformInvitationForRole'
   | 'createPostTemplate'
   | 'createReferenceOnProfile'
   | 'createRelationOnCollaboration'
@@ -1691,6 +1690,7 @@ export type MutationKeySpecifier = (
   | 'ingestSpace'
   | 'inviteContributorsForCommunityMembership'
   | 'inviteUserToPlatformAndCommunity'
+  | 'inviteUserToPlatformWithRole'
   | 'joinCommunity'
   | 'messageUser'
   | 'moveContributionToCallout'
@@ -1814,7 +1814,6 @@ export type MutationFieldPolicy = {
   createInnovationPackOnLibrary?: FieldPolicy<any> | FieldReadFunction<any>;
   createLicensePlan?: FieldPolicy<any> | FieldReadFunction<any>;
   createOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
-  createPlatformInvitationForRole?: FieldPolicy<any> | FieldReadFunction<any>;
   createPostTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   createReferenceOnProfile?: FieldPolicy<any> | FieldReadFunction<any>;
   createRelationOnCollaboration?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1862,6 +1861,7 @@ export type MutationFieldPolicy = {
   ingestSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   inviteContributorsForCommunityMembership?: FieldPolicy<any> | FieldReadFunction<any>;
   inviteUserToPlatformAndCommunity?: FieldPolicy<any> | FieldReadFunction<any>;
+  inviteUserToPlatformWithRole?: FieldPolicy<any> | FieldReadFunction<any>;
   joinCommunity?: FieldPolicy<any> | FieldReadFunction<any>;
   messageUser?: FieldPolicy<any> | FieldReadFunction<any>;
   moveContributionToCallout?: FieldPolicy<any> | FieldReadFunction<any>;

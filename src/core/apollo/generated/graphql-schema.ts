@@ -2957,8 +2957,6 @@ export type Mutation = {
   createLicensePlan: LicensePlan;
   /** Creates a new Organization on the platform. */
   createOrganization: Organization;
-  /** Invite a User to join the platform and the specified Community as a member. */
-  createPlatformInvitationForRole: PlatformInvitation;
   /** Creates a new PostTemplate on the specified TemplatesSet. */
   createPostTemplate: PostTemplate;
   /** Creates a new Reference on the specified Profile. */
@@ -3053,6 +3051,8 @@ export type Mutation = {
   inviteContributorsForCommunityMembership: Array<Invitation>;
   /** Invite a User to join the platform and the specified Community as a member. */
   inviteUserToPlatformAndCommunity: PlatformInvitation;
+  /** Invite a User to join the platform in a particular Platform role e.g. BetaTester */
+  inviteUserToPlatformWithRole: PlatformInvitation;
   /** Join the specified Community as a member, without going through an approval process. */
   joinCommunity: Community;
   /** Sends a message on the specified User`s behalf and returns the room id */
@@ -3361,10 +3361,6 @@ export type MutationCreateOrganizationArgs = {
   organizationData: CreateOrganizationInput;
 };
 
-export type MutationCreatePlatformInvitationForRoleArgs = {
-  invitationData: CreatePlatformInvitationForRoleInput;
-};
-
 export type MutationCreatePostTemplateArgs = {
   postTemplateInput: CreatePostTemplateOnTemplatesSetInput;
 };
@@ -3543,6 +3539,10 @@ export type MutationInviteContributorsForCommunityMembershipArgs = {
 
 export type MutationInviteUserToPlatformAndCommunityArgs = {
   invitationData: CreatePlatformInvitationOnCommunityInput;
+};
+
+export type MutationInviteUserToPlatformWithRoleArgs = {
+  invitationData: CreatePlatformInvitationForRoleInput;
 };
 
 export type MutationJoinCommunityArgs = {
@@ -18808,6 +18808,15 @@ export type UpdateVirtualContributorMutation = {
         | undefined;
     };
   };
+};
+
+export type RefreshBodyOfKnowledgeMutationVariables = Exact<{
+  deleteData: RefreshVirtualContributorBodyOfKnowledgeInput;
+}>;
+
+export type RefreshBodyOfKnowledgeMutation = {
+  __typename?: 'Mutation';
+  refreshVirtualContributorBodyOfKnowledge: boolean;
 };
 
 export type VcMembershipsQueryVariables = Exact<{
