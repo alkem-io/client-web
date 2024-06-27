@@ -16116,6 +16116,7 @@ export type AvailableVirtualContributorsInLibraryQuery = {
       id: string;
       virtualContributors: Array<{
         __typename?: 'VirtualContributor';
+        searchVisibility: SearchVisibility;
         id: string;
         nameID: string;
         profile: { __typename?: 'Profile'; id: string; displayName: string };
