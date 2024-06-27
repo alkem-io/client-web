@@ -13055,9 +13055,9 @@ export type InviteContributorsToCommunityMutationOptions = Apollo.BaseMutationOp
   SchemaTypes.InviteContributorsToCommunityMutation,
   SchemaTypes.InviteContributorsToCommunityMutationVariables
 >;
-export const CreatePlatformInvitationForCommunityDocument = gql`
-  mutation CreatePlatformInvitationForCommunity($email: String!, $communityId: UUID!, $message: String) {
-    createPlatformInvitationForCommunity(
+export const InviteUserToPlatformAndCommunityDocument = gql`
+  mutation inviteUserToPlatformAndCommunity($email: String!, $communityId: UUID!, $message: String) {
+    inviteUserToPlatformAndCommunity(
       invitationData: { email: $email, communityID: $communityId, welcomeMessage: $message }
     ) {
       ... on PlatformInvitation {
@@ -13066,23 +13066,23 @@ export const CreatePlatformInvitationForCommunityDocument = gql`
     }
   }
 `;
-export type CreatePlatformInvitationForCommunityMutationFn = Apollo.MutationFunction<
-  SchemaTypes.CreatePlatformInvitationForCommunityMutation,
-  SchemaTypes.CreatePlatformInvitationForCommunityMutationVariables
+export type InviteUserToPlatformAndCommunityMutationFn = Apollo.MutationFunction<
+  SchemaTypes.InviteUserToPlatformAndCommunityMutation,
+  SchemaTypes.InviteUserToPlatformAndCommunityMutationVariables
 >;
 
 /**
- * __useCreatePlatformInvitationForCommunityMutation__
+ * __useInviteUserToPlatformAndCommunityMutation__
  *
- * To run a mutation, you first call `useCreatePlatformInvitationForCommunityMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreatePlatformInvitationForCommunityMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useInviteUserToPlatformAndCommunityMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useInviteUserToPlatformAndCommunityMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [createPlatformInvitationForCommunityMutation, { data, loading, error }] = useCreatePlatformInvitationForCommunityMutation({
+ * const [inviteUserToPlatformAndCommunityMutation, { data, loading, error }] = useInviteUserToPlatformAndCommunityMutation({
  *   variables: {
  *      email: // value for 'email'
  *      communityId: // value for 'communityId'
@@ -13090,27 +13090,27 @@ export type CreatePlatformInvitationForCommunityMutationFn = Apollo.MutationFunc
  *   },
  * });
  */
-export function useCreatePlatformInvitationForCommunityMutation(
+export function useInviteUserToPlatformAndCommunityMutation(
   baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.CreatePlatformInvitationForCommunityMutation,
-    SchemaTypes.CreatePlatformInvitationForCommunityMutationVariables
+    SchemaTypes.InviteUserToPlatformAndCommunityMutation,
+    SchemaTypes.InviteUserToPlatformAndCommunityMutationVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
-    SchemaTypes.CreatePlatformInvitationForCommunityMutation,
-    SchemaTypes.CreatePlatformInvitationForCommunityMutationVariables
-  >(CreatePlatformInvitationForCommunityDocument, options);
+    SchemaTypes.InviteUserToPlatformAndCommunityMutation,
+    SchemaTypes.InviteUserToPlatformAndCommunityMutationVariables
+  >(InviteUserToPlatformAndCommunityDocument, options);
 }
 
-export type CreatePlatformInvitationForCommunityMutationHookResult = ReturnType<
-  typeof useCreatePlatformInvitationForCommunityMutation
+export type InviteUserToPlatformAndCommunityMutationHookResult = ReturnType<
+  typeof useInviteUserToPlatformAndCommunityMutation
 >;
-export type CreatePlatformInvitationForCommunityMutationResult =
-  Apollo.MutationResult<SchemaTypes.CreatePlatformInvitationForCommunityMutation>;
-export type CreatePlatformInvitationForCommunityMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.CreatePlatformInvitationForCommunityMutation,
-  SchemaTypes.CreatePlatformInvitationForCommunityMutationVariables
+export type InviteUserToPlatformAndCommunityMutationResult =
+  Apollo.MutationResult<SchemaTypes.InviteUserToPlatformAndCommunityMutation>;
+export type InviteUserToPlatformAndCommunityMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.InviteUserToPlatformAndCommunityMutation,
+  SchemaTypes.InviteUserToPlatformAndCommunityMutationVariables
 >;
 export const PendingMembershipsSpaceDocument = gql`
   query PendingMembershipsSpace(
