@@ -2886,6 +2886,7 @@
   "createVirtualContributorWizard": {
     "createdSubspace": {
       "vision": "This subspace will be used as a body of knowledge for your Virtual Contributor. You can now add knowledge to this Subspace.",
+      "tagline": "",
       "description": "",
       "impact": "",
       "who": "",

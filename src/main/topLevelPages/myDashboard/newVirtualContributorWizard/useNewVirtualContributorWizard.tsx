@@ -90,6 +90,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
           profileData: {
             displayName: subspaceName,
             description: t('createVirtualContributorWizard.createdSubspace.description'),
+            tagline: t('createVirtualContributorWizard.createdSubspace.tagline'),
           },
           type: SpaceType.Knowledge,
           collaborationData: {
