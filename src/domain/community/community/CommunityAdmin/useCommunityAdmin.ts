@@ -28,6 +28,7 @@ import {
   AuthorizationCredential,
   AuthorizationPrivilege,
   CommunityRole,
+  SearchVisibility,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { OrganizationDetailsFragmentWithRoles } from '../../../community/community/CommunityAdmin/CommunityOrganizations';
 import { CommunityMemberUserFragmentWithRoles } from '../../../community/community/CommunityAdmin/CommunityUsers';
@@ -251,7 +252,10 @@ const useCommunityAdmin = ({
     const { data } = await fetchAllVirtualContributorsInLibrary();
 
     return (data?.platform.library.virtualContributors ?? []).filter(
-      vc => filterExisting(vc, virtualContributors) && filterByName(vc, filter)
+      vc =>
+        vc.searchVisibility === SearchVisibility.Public &&
+        filterExisting(vc, virtualContributors) &&
+        filterByName(vc, filter)
     );
   };
 
