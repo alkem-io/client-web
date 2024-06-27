@@ -85,6 +85,7 @@ const AdminOpportunityCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '.
                 inviteExistingUser={inviteExistingUser}
                 onRemoveMember={onRemoveVirtualContributor}
                 fetchAvailableVirtualContributors={getAvailableVirtualContributors}
+                fetchAvailableVirtualContributorsOnAccount={getAvailableVirtualContributors}
                 loading={loading}
               />
             </PageContentBlock>

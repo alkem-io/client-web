@@ -487,6 +487,8 @@ export type AgentBeginVerifiedCredentialRequestOutputFieldPolicy = {
 };
 export type AiPersonaKeySpecifier = (
   | 'authorization'
+  | 'bodyOfKnowledge'
+  | 'bodyOfKnowledgeID'
   | 'bodyOfKnowledgeType'
   | 'dataAccessMode'
   | 'description'
@@ -496,18 +498,13 @@ export type AiPersonaKeySpecifier = (
 )[];
 export type AiPersonaFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  bodyOfKnowledge?: FieldPolicy<any> | FieldReadFunction<any>;
+  bodyOfKnowledgeID?: FieldPolicy<any> | FieldReadFunction<any>;
   bodyOfKnowledgeType?: FieldPolicy<any> | FieldReadFunction<any>;
   dataAccessMode?: FieldPolicy<any> | FieldReadFunction<any>;
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   interactionModes?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type AiPersonaResultKeySpecifier = ('answer' | 'id' | 'question' | 'sources' | AiPersonaResultKeySpecifier)[];
-export type AiPersonaResultFieldPolicy = {
-  answer?: FieldPolicy<any> | FieldReadFunction<any>;
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-  question?: FieldPolicy<any> | FieldReadFunction<any>;
-  sources?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type AiPersonaServiceKeySpecifier = (
   | 'authorization'
@@ -527,19 +524,6 @@ export type AiPersonaServiceFieldPolicy = {
   engine?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   prompt?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type AiPersonaServiceResultKeySpecifier = (
-  | 'answer'
-  | 'id'
-  | 'question'
-  | 'sources'
-  | AiPersonaServiceResultKeySpecifier
-)[];
-export type AiPersonaServiceResultFieldPolicy = {
-  answer?: FieldPolicy<any> | FieldReadFunction<any>;
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-  question?: FieldPolicy<any> | FieldReadFunction<any>;
-  sources?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type AiServerKeySpecifier = (
   | 'aiPersonaService'
@@ -803,19 +787,6 @@ export type CalloutTemplateFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type ChatGuidanceResultKeySpecifier = (
-  | 'answer'
-  | 'id'
-  | 'question'
-  | 'sources'
-  | ChatGuidanceResultKeySpecifier
-)[];
-export type ChatGuidanceResultFieldPolicy = {
-  answer?: FieldPolicy<any> | FieldReadFunction<any>;
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-  question?: FieldPolicy<any> | FieldReadFunction<any>;
-  sources?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CollaborationKeySpecifier = (
   | 'authorization'
@@ -1623,9 +1594,31 @@ export type MessageFieldPolicy = {
   threadID?: FieldPolicy<any> | FieldReadFunction<any>;
   timestamp?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type MessageAnswerQuestionKeySpecifier = (
+  | 'answer'
+  | 'id'
+  | 'question'
+  | 'sources'
+  | MessageAnswerQuestionKeySpecifier
+)[];
+export type MessageAnswerQuestionFieldPolicy = {
+  answer?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  question?: FieldPolicy<any> | FieldReadFunction<any>;
+  sources?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type MessageAnswerToQuestionSourceKeySpecifier = ('title' | 'uri' | MessageAnswerToQuestionSourceKeySpecifier)[];
+export type MessageAnswerToQuestionSourceFieldPolicy = {
+  title?: FieldPolicy<any> | FieldReadFunction<any>;
+  uri?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type MetadataKeySpecifier = ('services' | MetadataKeySpecifier)[];
 export type MetadataFieldPolicy = {
   services?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type MigrateEmbeddingsKeySpecifier = ('success' | MigrateEmbeddingsKeySpecifier)[];
+export type MigrateEmbeddingsFieldPolicy = {
+  success?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type MutationKeySpecifier = (
   | 'addReactionToMessageInRoom'
@@ -1655,8 +1648,10 @@ export type MutationKeySpecifier = (
   | 'beginAlkemioUserVerifiedCredentialOfferInteraction'
   | 'beginCommunityMemberVerifiedCredentialOfferInteraction'
   | 'beginVerifiedCredentialRequestInteraction'
+  | 'cleanupCollections'
   | 'convertChallengeToSpace'
   | 'convertOpportunityToChallenge'
+  | 'copyCollections'
   | 'createAccount'
   | 'createActor'
   | 'createActorGroup'
@@ -1723,6 +1718,7 @@ export type MutationKeySpecifier = (
   | 'joinCommunity'
   | 'messageUser'
   | 'moveContributionToCallout'
+  | 'refreshVirtualContributorBodyOfKnowledge'
   | 'removeCommunityRoleFromOrganization'
   | 'removeCommunityRoleFromUser'
   | 'removeCommunityRoleFromVirtual'
@@ -1822,8 +1818,10 @@ export type MutationFieldPolicy = {
   beginAlkemioUserVerifiedCredentialOfferInteraction?: FieldPolicy<any> | FieldReadFunction<any>;
   beginCommunityMemberVerifiedCredentialOfferInteraction?: FieldPolicy<any> | FieldReadFunction<any>;
   beginVerifiedCredentialRequestInteraction?: FieldPolicy<any> | FieldReadFunction<any>;
+  cleanupCollections?: FieldPolicy<any> | FieldReadFunction<any>;
   convertChallengeToSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   convertOpportunityToChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
+  copyCollections?: FieldPolicy<any> | FieldReadFunction<any>;
   createAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   createActor?: FieldPolicy<any> | FieldReadFunction<any>;
   createActorGroup?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1890,6 +1888,7 @@ export type MutationFieldPolicy = {
   joinCommunity?: FieldPolicy<any> | FieldReadFunction<any>;
   messageUser?: FieldPolicy<any> | FieldReadFunction<any>;
   moveContributionToCallout?: FieldPolicy<any> | FieldReadFunction<any>;
+  refreshVirtualContributorBodyOfKnowledge?: FieldPolicy<any> | FieldReadFunction<any>;
   removeCommunityRoleFromOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   removeCommunityRoleFromUser?: FieldPolicy<any> | FieldReadFunction<any>;
   removeCommunityRoleFromVirtual?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2262,8 +2261,8 @@ export type QueryKeySpecifier = (
   | 'adminCommunicationMembership'
   | 'adminCommunicationOrphanedUsage'
   | 'aiServer'
-  | 'askAiPersonaQuestion'
   | 'askChatGuidanceQuestion'
+  | 'askVirtualContributorQuestion'
   | 'getSupportedVerifiedCredentialMetadata'
   | 'lookup'
   | 'me'
@@ -2298,8 +2297,8 @@ export type QueryFieldPolicy = {
   adminCommunicationMembership?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationOrphanedUsage?: FieldPolicy<any> | FieldReadFunction<any>;
   aiServer?: FieldPolicy<any> | FieldReadFunction<any>;
-  askAiPersonaQuestion?: FieldPolicy<any> | FieldReadFunction<any>;
   askChatGuidanceQuestion?: FieldPolicy<any> | FieldReadFunction<any>;
+  askVirtualContributorQuestion?: FieldPolicy<any> | FieldReadFunction<any>;
   getSupportedVerifiedCredentialMetadata?: FieldPolicy<any> | FieldReadFunction<any>;
   lookup?: FieldPolicy<any> | FieldReadFunction<any>;
   me?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2430,6 +2429,7 @@ export type RolesResultFieldPolicy = {
 export type RolesResultCommunityKeySpecifier = (
   | 'displayName'
   | 'id'
+  | 'level'
   | 'nameID'
   | 'roles'
   | 'type'
@@ -2438,6 +2438,7 @@ export type RolesResultCommunityKeySpecifier = (
 export type RolesResultCommunityFieldPolicy = {
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  level?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   roles?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2462,6 +2463,7 @@ export type RolesResultOrganizationFieldPolicy = {
 export type RolesResultSpaceKeySpecifier = (
   | 'displayName'
   | 'id'
+  | 'level'
   | 'nameID'
   | 'roles'
   | 'spaceID'
@@ -2473,6 +2475,7 @@ export type RolesResultSpaceKeySpecifier = (
 export type RolesResultSpaceFieldPolicy = {
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  level?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   roles?: FieldPolicy<any> | FieldReadFunction<any>;
   spaceID?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2633,11 +2636,6 @@ export type ServiceMetadataKeySpecifier = ('name' | 'version' | ServiceMetadataK
 export type ServiceMetadataFieldPolicy = {
   name?: FieldPolicy<any> | FieldReadFunction<any>;
   version?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type SourceKeySpecifier = ('title' | 'uri' | SourceKeySpecifier)[];
-export type SourceFieldPolicy = {
-  title?: FieldPolicy<any> | FieldReadFunction<any>;
-  uri?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type SpaceKeySpecifier = (
   | 'account'
@@ -3241,17 +3239,9 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | AiPersonaKeySpecifier | (() => undefined | AiPersonaKeySpecifier);
     fields?: AiPersonaFieldPolicy;
   };
-  AiPersonaResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | AiPersonaResultKeySpecifier | (() => undefined | AiPersonaResultKeySpecifier);
-    fields?: AiPersonaResultFieldPolicy;
-  };
   AiPersonaService?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | AiPersonaServiceKeySpecifier | (() => undefined | AiPersonaServiceKeySpecifier);
     fields?: AiPersonaServiceFieldPolicy;
-  };
-  AiPersonaServiceResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | AiPersonaServiceResultKeySpecifier | (() => undefined | AiPersonaServiceResultKeySpecifier);
-    fields?: AiPersonaServiceResultFieldPolicy;
   };
   AiServer?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | AiServerKeySpecifier | (() => undefined | AiServerKeySpecifier);
@@ -3342,10 +3332,6 @@ export type StrictTypedTypePolicies = {
   CalloutTemplate?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CalloutTemplateKeySpecifier | (() => undefined | CalloutTemplateKeySpecifier);
     fields?: CalloutTemplateFieldPolicy;
-  };
-  ChatGuidanceResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | ChatGuidanceResultKeySpecifier | (() => undefined | ChatGuidanceResultKeySpecifier);
-    fields?: ChatGuidanceResultFieldPolicy;
   };
   Collaboration?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CollaborationKeySpecifier | (() => undefined | CollaborationKeySpecifier);
@@ -3593,9 +3579,24 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | MessageKeySpecifier | (() => undefined | MessageKeySpecifier);
     fields?: MessageFieldPolicy;
   };
+  MessageAnswerQuestion?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | MessageAnswerQuestionKeySpecifier | (() => undefined | MessageAnswerQuestionKeySpecifier);
+    fields?: MessageAnswerQuestionFieldPolicy;
+  };
+  MessageAnswerToQuestionSource?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | MessageAnswerToQuestionSourceKeySpecifier
+      | (() => undefined | MessageAnswerToQuestionSourceKeySpecifier);
+    fields?: MessageAnswerToQuestionSourceFieldPolicy;
+  };
   Metadata?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | MetadataKeySpecifier | (() => undefined | MetadataKeySpecifier);
     fields?: MetadataFieldPolicy;
+  };
+  MigrateEmbeddings?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | MigrateEmbeddingsKeySpecifier | (() => undefined | MigrateEmbeddingsKeySpecifier);
+    fields?: MigrateEmbeddingsFieldPolicy;
   };
   Mutation?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | MutationKeySpecifier | (() => undefined | MutationKeySpecifier);
@@ -3787,10 +3788,6 @@ export type StrictTypedTypePolicies = {
   ServiceMetadata?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ServiceMetadataKeySpecifier | (() => undefined | ServiceMetadataKeySpecifier);
     fields?: ServiceMetadataFieldPolicy;
-  };
-  Source?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | SourceKeySpecifier | (() => undefined | SourceKeySpecifier);
-    fields?: SourceFieldPolicy;
   };
   Space?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SpaceKeySpecifier | (() => undefined | SpaceKeySpecifier);

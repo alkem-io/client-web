@@ -58,6 +58,7 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
     onRemoveVirtualContributor,
     getAvailableUsers,
     getAvailableVirtualContributors,
+    getAvailableVirtualContributorsInLibrary,
     getAvailableOrganizations,
     loading,
     inviteExternalUser,
@@ -237,7 +238,8 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
                 }
                 onRemoveMember={onRemoveVirtualContributor}
                 spaceDisplayName={spaceProfile.displayName}
-                fetchAvailableVirtualContributors={getAvailableVirtualContributors}
+                fetchAvailableVirtualContributors={getAvailableVirtualContributorsInLibrary}
+                fetchAvailableVirtualContributorsOnAccount={getAvailableVirtualContributors}
                 inviteExistingUser={inviteExistingUser}
                 loading={loading}
               />
