@@ -10340,7 +10340,7 @@ export const CommunityApplicationsInvitationsDocument = gql`
         invitations {
           ...AdminCommunityInvitation
         }
-        invitationsExternal {
+        platformInvitations {
           ...AdminPlatformInvitationCommunity
         }
       }

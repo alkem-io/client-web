@@ -444,10 +444,13 @@ const useCommunityAdmin = ({
     await refetchApplicationsAndInvitations();
   };
 
-  const { inviteContributor: inviteExistingUser, inviteExternalUser } = useInviteUsers(communityId, {
-    onInviteContributor: onInviteUser,
-    onInviteExternalUser: onInviteUser,
-  });
+  const { inviteContributor: inviteExistingUser, platformInviteToCommunity: inviteExternalUser } = useInviteUsers(
+    communityId,
+    {
+      onInviteContributor: onInviteUser,
+      onInviteExternalUser: onInviteUser,
+    }
+  );
 
   const [sendInvitationStateEvent] = useInvitationStateEventMutation();
 
@@ -489,7 +492,7 @@ const useCommunityAdmin = ({
     permissions,
     applications: dataApplications?.lookup.community?.applications,
     invitations: dataApplications?.lookup.community?.invitations,
-    invitationsExternal: dataApplications?.lookup.community?.invitationsExternal,
+    platformInvitations: dataApplications?.lookup.community?.platformInvitations,
     onApplicationStateChange: handleApplicationStateChange,
     onInvitationStateChange: handleInvitationStateChange,
     onUserLeadChange: handleUserLeadChange,

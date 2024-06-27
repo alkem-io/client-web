@@ -561,8 +561,12 @@ export type AiPersona = {
   __typename?: 'AiPersona';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
-  /** The type of knowledge provided by this AI Persona. */
-  bodyOfKnowledgeType: AiPersonaBodyOfKnowledgeType;
+  /** A overview of knowledge provided by this AI Persona. */
+  bodyOfKnowledge: Scalars['Markdown'];
+  /** The body of knowledge ID used for the AI Persona. */
+  bodyOfKnowledgeID?: Maybe<Scalars['String']>;
+  /** The body of knowledge type used for the AI Persona. */
+  bodyOfKnowledgeType?: Maybe<AiPersonaBodyOfKnowledgeType>;
   /** The type of context sharing that are supported by this AI Persona when used. */
   dataAccessMode: AiPersonaDataAccessMode;
   /** The description for this AI Persona. */
@@ -594,25 +598,6 @@ export enum AiPersonaInteractionMode {
   DiscussionTagging = 'DISCUSSION_TAGGING',
 }
 
-export type AiPersonaQuestionInput = {
-  /** Virtual Persona Type. */
-  aiPersonaID: Scalars['UUID'];
-  /** The question that is being asked. */
-  question: Scalars['String'];
-};
-
-export type AiPersonaResult = {
-  __typename?: 'AiPersonaResult';
-  /** The answer to the question */
-  answer: Scalars['String'];
-  /** The id of the answer; null if an error was returned */
-  id?: Maybe<Scalars['String']>;
-  /** The original question */
-  question: Scalars['String'];
-  /** The sources used to answer the question */
-  sources?: Maybe<Array<Source>>;
-};
-
 export type AiPersonaService = {
   __typename?: 'AiPersonaService';
   /** The authorization rules for the entity */
@@ -642,18 +627,6 @@ export type AiPersonaServiceQuestionInput = {
   question: Scalars['String'];
 };
 
-export type AiPersonaServiceResult = {
-  __typename?: 'AiPersonaServiceResult';
-  /** The answer to the question */
-  answer: Scalars['String'];
-  /** The id of the answer; null if an error was returned */
-  id?: Maybe<Scalars['String']>;
-  /** The original question */
-  question: Scalars['String'];
-  /** The sources used to answer the question */
-  sources?: Maybe<Array<Source>>;
-};
-
 export type AiServer = {
   __typename?: 'AiServer';
   /** A particular AiPersonaService */
@@ -661,7 +634,7 @@ export type AiServer = {
   /** The AiPersonaServices on this aiServer */
   aiPersonaServices: Array<AiPersonaService>;
   /** Ask the virtual persona engine for guidance. */
-  askAiPersonaServiceQuestion: AiPersonaServiceResult;
+  askAiPersonaServiceQuestion: MessageAnswerQuestion;
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The default AiPersonaService in use on the aiServer. */
@@ -1105,18 +1078,6 @@ export type ChatGuidanceInput = {
   question: Scalars['String'];
 };
 
-export type ChatGuidanceResult = {
-  __typename?: 'ChatGuidanceResult';
-  /** The answer to the question */
-  answer: Scalars['String'];
-  /** The id of the answer; null if an error was returned */
-  id?: Maybe<Scalars['String']>;
-  /** The original question */
-  question: Scalars['String'];
-  /** The sources used to answer the question */
-  sources?: Maybe<Array<Source>>;
-};
-
 export type Collaboration = {
   __typename?: 'Collaboration';
   /** The authorization rules for the entity */
@@ -1271,8 +1232,6 @@ export type Community = Groupable & {
   id: Scalars['UUID'];
   /** Invitations for this community. */
   invitations: Array<Invitation>;
-  /** Invitations to join this Community for users not yet on the Alkemio platform. */
-  invitationsExternal: Array<PlatformInvitation>;
   /** All users that are contributing to this Community. */
   memberUsers: Array<User>;
   /** The membership status of the currently logged in user. */
@@ -1283,6 +1242,8 @@ export type Community = Groupable & {
   myRolesImplicit: Array<CommunityRoleImplicit>;
   /** All Organizations that have the specified Role in this Community. */
   organizationsInRole: Array<Organization>;
+  /** Invitations to join this Community for users not yet on the Alkemio platform. */
+  platformInvitations: Array<PlatformInvitation>;
   /** The policy that defines the roles for this Community. */
   policy: CommunityPolicy;
   /** All users that have the specified Role in this Community. */
@@ -1598,6 +1559,7 @@ export type CreateActorInput = {
 export type CreateAiPersonaInput = {
   aiPersonaService?: InputMaybe<CreateAiPersonaServiceInput>;
   aiPersonaServiceID?: InputMaybe<Scalars['UUID']>;
+  bodyOfKnowledge?: InputMaybe<Scalars['Markdown']>;
   description?: InputMaybe<Scalars['Markdown']>;
 };
 
@@ -2839,6 +2801,28 @@ export type Message = {
   timestamp: Scalars['Float'];
 };
 
+/** A detailed answer to a question, typically from an AI service. */
+export type MessageAnswerQuestion = {
+  __typename?: 'MessageAnswerQuestion';
+  /** The answer to the question */
+  answer: Scalars['String'];
+  /** The id of the answer; null if an error was returned */
+  id?: Maybe<Scalars['String']>;
+  /** The original question */
+  question: Scalars['String'];
+  /** The sources used to answer the question */
+  sources?: Maybe<Array<MessageAnswerToQuestionSource>>;
+};
+
+/** A source used in a detailed answer to a question. */
+export type MessageAnswerToQuestionSource = {
+  __typename?: 'MessageAnswerToQuestionSource';
+  /** The title of the source */
+  title?: Maybe<Scalars['String']>;
+  /** The URI of the source */
+  uri?: Maybe<Scalars['String']>;
+};
+
 export type Metadata = {
   __typename?: 'Metadata';
   /** Collection of metadata about Alkemio services. */
@@ -3075,6 +3059,8 @@ export type Mutation = {
   messageUser: Scalars['String'];
   /** Moves the specified Contribution to another Callout. */
   moveContributionToCallout: CalloutContribution;
+  /** Triggers a request to the backing AI Service to refresh the knowledge that is available to it. */
+  refreshVirtualContributorBodyOfKnowledge: Scalars['Boolean'];
   /** Removes an Organization from a Role in the specified Community. */
   removeCommunityRoleFromOrganization: Organization;
   /** Removes a User from a Role in the specified Community. */
@@ -3571,6 +3557,10 @@ export type MutationMoveContributionToCalloutArgs = {
   moveContributionData: MoveCalloutContributionInput;
 };
 
+export type MutationRefreshVirtualContributorBodyOfKnowledgeArgs = {
+  deleteData: RefreshVirtualContributorBodyOfKnowledgeInput;
+};
+
 export type MutationRemoveCommunityRoleFromOrganizationArgs = {
   roleData: RemoveCommunityRoleFromOrganizationInput;
 };
@@ -4022,6 +4012,8 @@ export type Platform = {
   licensing: Licensing;
   /** Alkemio Services Metadata. */
   metadata: Metadata;
+  /** Invitations to join roles for users not yet on the Alkemio platform. */
+  platformInvitations: Array<PlatformInvitation>;
   /** The StorageAggregator with documents in use by Users + Organizations on the Platform. */
   storageAggregator: StorageAggregator;
 };
@@ -4326,10 +4318,10 @@ export type Query = {
   adminCommunicationOrphanedUsage: CommunicationAdminOrphanedUsageResult;
   /** Alkemio AiServer */
   aiServer: AiServer;
-  /** Ask the virtual persona engine for guidance. */
-  askAiPersonaQuestion: AiPersonaResult;
   /** Ask the chat engine for guidance. */
-  askChatGuidanceQuestion: ChatGuidanceResult;
+  askChatGuidanceQuestion: MessageAnswerQuestion;
+  /** Ask the virtual contributor a question directly. */
+  askVirtualContributorQuestion: MessageAnswerQuestion;
   /** Get supported credential metadata */
   getSupportedVerifiedCredentialMetadata: Array<CredentialMetadataOutput>;
   /** Allow direct lookup of entities from the domain model */
@@ -4402,12 +4394,12 @@ export type QueryAdminCommunicationMembershipArgs = {
   communicationData: CommunicationAdminMembershipInput;
 };
 
-export type QueryAskAiPersonaQuestionArgs = {
-  chatData: AiPersonaQuestionInput;
-};
-
 export type QueryAskChatGuidanceQuestionArgs = {
   chatData: ChatGuidanceInput;
+};
+
+export type QueryAskVirtualContributorQuestionArgs = {
+  chatData: VirtualContributorQuestionInput;
 };
 
 export type QueryOrganizationArgs = {
@@ -4539,6 +4531,11 @@ export type Reference = {
   name: Scalars['String'];
   /** URI of the reference */
   uri: Scalars['String'];
+};
+
+export type RefreshVirtualContributorBodyOfKnowledgeInput = {
+  /** The ID of the Virtual Contributor to update. */
+  virtualContributorID: Scalars['UUID'];
 };
 
 export type Relation = {
@@ -4985,14 +4982,6 @@ export type ServiceMetadata = {
   name?: Maybe<Scalars['String']>;
   /** Version in the format {major.minor.patch} - using SemVer. */
   version?: Maybe<Scalars['String']>;
-};
-
-export type Source = {
-  __typename?: 'Source';
-  /** The title of the source */
-  title?: Maybe<Scalars['String']>;
-  /** The URI of the source */
-  uri?: Maybe<Scalars['String']>;
 };
 
 export type Space = {
@@ -6080,7 +6069,7 @@ export type VirtualContributor = Contributor & {
   /** The Agent representing this User. */
   agent: Agent;
   /** The AI persona being used by this virtual contributor */
-  aiPersona: AiPersona;
+  aiPersona?: Maybe<AiPersona>;
   /** The authorization rules for the Contributor */
   authorization?: Maybe<Authorization>;
   /** The ID of the Contributor */
@@ -6095,6 +6084,13 @@ export type VirtualContributor = Contributor & {
   searchVisibility: SearchVisibility;
   /** The StorageAggregator for managing storage buckets in use by this Virtual */
   storageAggregator?: Maybe<StorageAggregator>;
+};
+
+export type VirtualContributorQuestionInput = {
+  /** The question that is being asked. */
+  question: Scalars['String'];
+  /** Virtual Contributor to be asked. */
+  virtualContributorID: Scalars['UUID'];
 };
 
 export type Visual = {
@@ -14992,7 +14988,7 @@ export type CommunityApplicationsInvitationsQuery = {
                   };
                 };
           }>;
-          invitationsExternal: Array<{
+          platformInvitations: Array<{
             __typename?: 'PlatformInvitation';
             id: string;
             createdDate: Date;
@@ -26903,11 +26899,13 @@ export type AskChatGuidanceQuestionQueryVariables = Exact<{
 export type AskChatGuidanceQuestionQuery = {
   __typename?: 'Query';
   askChatGuidanceQuestion: {
-    __typename?: 'ChatGuidanceResult';
+    __typename?: 'MessageAnswerQuestion';
     id?: string | undefined;
     answer: string;
     question: string;
-    sources?: Array<{ __typename?: 'Source'; uri?: string | undefined; title?: string | undefined }> | undefined;
+    sources?:
+      | Array<{ __typename?: 'MessageAnswerToQuestionSource'; uri?: string | undefined; title?: string | undefined }>
+      | undefined;
   };
 };
 
