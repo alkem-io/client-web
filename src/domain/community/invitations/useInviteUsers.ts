@@ -4,7 +4,7 @@ import {
 } from '../../../core/apollo/generated/apollo-hooks';
 import ensurePresence from '../../../core/utils/ensurePresence';
 
-interface InviteUserData {
+export interface InviteUserData {
   message: string;
 }
 

@@ -22,6 +22,7 @@ import {
   useAvailableVirtualContributorsLazyQuery,
   useAddVirtualContributorToCommunityMutation,
   useRemoveVirtualContributorFromCommunityMutation,
+  useAvailableVirtualContributorsInLibraryLazyQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import {
   AuthorizationCredential,
@@ -244,6 +245,15 @@ const useCommunityAdmin = ({
 
   const filterExisting = (vc: VirtualContributorNameProps, existingVCs) =>
     !existingVCs.some(member => member.id === vc.id);
+
+  const [fetchAllVirtualContributorsInLibrary] = useAvailableVirtualContributorsInLibraryLazyQuery();
+  const getAvailableVirtualContributorsInLibrary = async (filter: string | undefined) => {
+    const { data } = await fetchAllVirtualContributorsInLibrary();
+
+    return (data?.platform.library.virtualContributors ?? []).filter(
+      vc => filterExisting(vc, virtualContributors) && filterByName(vc, filter)
+    );
+  };
 
   const [fetchAllVirtualContributors] = useAvailableVirtualContributorsLazyQuery();
   const getAvailableVirtualContributors = async (filter: string | undefined, all: boolean = false) => {
@@ -509,6 +519,7 @@ const useCommunityAdmin = ({
     getAvailableUsers,
     getAvailableOrganizations,
     getAvailableVirtualContributors,
+    getAvailableVirtualContributorsInLibrary,
     inviteExistingUser,
     inviteExternalUser,
     loading: loadingAdmins || loadingMembers || loadingApplications,

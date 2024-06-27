@@ -264,6 +264,14 @@ const CommunityApplications: FC<CommunityApplicationsProps> = ({
       valueGetter: ({ row }: GetterParams) => sortState(row.lifecycle?.state),
       filterable: false, // TODO maybe... (has to be a combobox, maybe when we implement invitations)
     },
+    {
+      field: 'contributorType',
+      headerName: t('common.type'),
+      renderHeader: () => <>{t('common.type')}</>,
+      renderCell: ({ row }: RenderParams) => <>{row.contributorType}</>,
+      valueGetter: ({ row }: GetterParams) => row.contributorType,
+      filterable: false, //
+    },
   ];
 
   const visibleTableItems = useMemo(
