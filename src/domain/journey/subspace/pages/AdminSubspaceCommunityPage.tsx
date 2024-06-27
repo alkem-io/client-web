@@ -53,6 +53,7 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
     onOrganizationLeadChange,
     onAddUser,
     onAddOrganization,
+    onAddVirtualContributor,
     onRemoveUser,
     onRemoveOrganization,
     onRemoveVirtualContributor,
@@ -190,6 +191,7 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
                 onRemoveMember={onRemoveVirtualContributor}
                 fetchAvailableVirtualContributors={getAvailableVirtualContributors}
                 fetchAvailableVirtualContributorsOnAccount={getAvailableVirtualContributors}
+                onAddMember={onAddVirtualContributor}
                 loading={loading}
               />
             </PageContentBlock>

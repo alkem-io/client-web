@@ -578,7 +578,7 @@
         "title": "Remove Virtual Contributor",
         "confirm": "Are you sure?"
       },
-      "addExternalVC": "Add External VC",
+      "inviteExternalVC": "Invite External VC",
       "externalVCsInfo": "At the moment, only Alkemio Support can add an external Virtual Contributor to your Space. Please contact Support <click>here</click> if you wish to do so, we are happy to help!"
     },
     "application-form": {

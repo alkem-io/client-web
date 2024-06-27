@@ -56,6 +56,7 @@ interface CommunityVirtualContributorsProps {
   canAddVirtualContributors: boolean;
   fetchAvailableVirtualContributorsOnAccount: (filter?: string, all?: boolean) => Promise<Entity[] | undefined>;
   fetchAvailableVirtualContributors: (filter?: string) => Promise<Entity[] | undefined>;
+  onAddMember: (memberId: string) => Promise<unknown> | undefined | void;
   loading?: boolean;
   inviteExistingUser: (params: InviteContributorsData) => Promise<void>;
   spaceDisplayName?: string;
@@ -67,6 +68,7 @@ const CommunityVirtualContributors: FC<CommunityVirtualContributorsProps> = ({
   canAddVirtualContributors,
   fetchAvailableVirtualContributors,
   fetchAvailableVirtualContributorsOnAccount,
+  onAddMember,
   loading,
   inviteExistingUser,
   spaceDisplayName = '',
@@ -130,9 +132,13 @@ const CommunityVirtualContributors: FC<CommunityVirtualContributorsProps> = ({
   };
 
   const onAddClick = (virtualContributorId: string) => {
-    setAddingNewMember(false);
-    setIsInvitingExternal(true);
-    setSelectedVirtualContributorId(virtualContributorId);
+    if (allVirtualContributors) {
+      setAddingNewMember(false);
+      setIsInvitingExternal(true);
+      setSelectedVirtualContributorId(virtualContributorId);
+    } else {
+      onAddMember(virtualContributorId);
+    }
   };
 
   const closeInvitationDialog = () => setIsInvitingExternal(false);
@@ -147,7 +153,7 @@ const CommunityVirtualContributors: FC<CommunityVirtualContributorsProps> = ({
               {t('common.add')}
             </Button>
             <Button variant="contained" startIcon={<AddIcon />} onClick={() => openAvailableContributorsDialog(true)}>
-              {t('community.virtualContributors.addExternalVC')}
+              {t('community.virtualContributors.inviteExternalVC')}
             </Button>
           </Actions>
         )}

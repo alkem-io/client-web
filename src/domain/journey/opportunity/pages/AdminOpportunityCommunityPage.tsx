@@ -28,6 +28,7 @@ const AdminOpportunityCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '.
     onOrganizationLeadChange,
     onAddUser,
     onAddOrganization,
+    onAddVirtualContributor,
     inviteExistingUser,
     onRemoveUser,
     onRemoveOrganization,
@@ -86,6 +87,7 @@ const AdminOpportunityCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '.
                 onRemoveMember={onRemoveVirtualContributor}
                 fetchAvailableVirtualContributors={getAvailableVirtualContributors}
                 fetchAvailableVirtualContributorsOnAccount={getAvailableVirtualContributors}
+                onAddMember={onAddVirtualContributor}
                 loading={loading}
               />
             </PageContentBlock>
