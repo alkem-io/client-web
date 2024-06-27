@@ -578,7 +578,7 @@
         "title": "Remove Virtual Contributor",
         "confirm": "Are you sure?"
       },
-      "addExternalVC": "Add External VC",
+      "inviteExternalVC": "Invite External VC",
       "externalVCsInfo": "At the moment, only Alkemio Support can add an external Virtual Contributor to your Space. Please contact Support <click>here</click> if you wish to do so, we are happy to help!"
     },
     "application-form": {
@@ -1050,6 +1050,7 @@
       "inviteExternalUser": "Send email invitation",
       "inviteOrganizations": "Invite Organizations",
       "defaultInvitationMessage": "Hi, I would like to invite you to {{space}}. Click on the link below to have a look or directly accept the invitation.",
+      "defaultVCInvitationMessage": "Hi, I would like to invite your Virtual Contributor {{name}} to {{space}}. Click on the link below to have a look or directly accept the invitation.",
       "inviteExistingUserDialog": {
         "title": "Invite other Alkemio users to join this Space",
         "subtitle": "You can search for Alkemio users below and attach a personalized message.",
@@ -1058,6 +1059,9 @@
           "alreadyInvited": "This user is already invited",
           "alreadyMember": "This user is already a member"
         }
+      },
+      "inviteExistingVCDialog": {
+        "title": "Invite Virtual Contributor to join this Space"
       },
       "inviteExternalUserDialog": {
         "title": "Send an email invitation"
