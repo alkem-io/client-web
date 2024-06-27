@@ -218,14 +218,16 @@ const CommunityVirtualContributors: FC<CommunityVirtualContributorsProps> = ({
           onClose={() => setAddingNewMember(false)}
         />
       )}
-      <InviteVirtualContributorDialog
-        title={t('components.invitations.inviteExistingVCDialog.title')}
-        spaceDisplayName={spaceDisplayName}
-        open={isInvitingExternal}
-        onClose={closeInvitationDialog}
-        contributorId={selectedVirtualContributorId}
-        onInviteUser={inviteExistingUser}
-      />
+      {isInvitingExternal && (
+        <InviteVirtualContributorDialog
+          title={t('components.invitations.inviteExistingVCDialog.title')}
+          spaceDisplayName={spaceDisplayName}
+          open={isInvitingExternal}
+          onClose={closeInvitationDialog}
+          contributorId={selectedVirtualContributorId}
+          onInviteUser={inviteExistingUser}
+        />
+      )}
     </>
   );
 };

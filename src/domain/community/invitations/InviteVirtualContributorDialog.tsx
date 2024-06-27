@@ -14,6 +14,9 @@ import { InviteContributorsData, InviteUserData } from './useInviteUsers';
 import GridContainer from '../../../core/ui/grid/GridContainer';
 import GridProvider from '../../../core/ui/grid/GridProvider';
 import { useNotification } from '../../../core/ui/notifications/useNotification';
+import { useVirtualContributorProfileQuery } from '../../../core/apollo/generated/apollo-hooks';
+import { ProfileChip } from '../contributor/ProfileChip/ProfileChip';
+import { useColumns } from '../../../core/ui/grid/GridContext';
 
 interface MessageDialogProps {
   open: boolean;
@@ -38,7 +41,14 @@ const InviteVirtualContributorDialog = ({
 
   const notify = useNotification();
 
-  // todo: get VC details by contributorId
+  const columns = useColumns();
+
+  const { data: vcProfile } = useVirtualContributorProfileQuery({
+    variables: {
+      id: contributorId,
+    },
+    skip: !contributorId,
+  });
 
   const [handleSendMessage, isLoading, error] = useLoadingState(async (values: InviteUserData) => {
     await onInviteUser({ ...values, contributorIds: [contributorId] });
@@ -53,7 +63,10 @@ const InviteVirtualContributorDialog = ({
   });
 
   const initialValues: InviteUserData = {
-    message: t('components.invitations.defaultVCInvitationMessage', { space: spaceDisplayName }) as string,
+    message: t('components.invitations.defaultVCInvitationMessage', {
+      space: spaceDisplayName,
+      name: vcProfile?.virtualContributor?.profile.displayName ?? '',
+    }) as string,
   };
 
   return (
@@ -63,13 +76,22 @@ const InviteVirtualContributorDialog = ({
       </DialogHeader>
       <Gutters paddingTop={0}>
         {subtitle && <Text>{subtitle}</Text>}
-        <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSendMessage}>
+        <Formik
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          enableReinitialize
+          onSubmit={handleSendMessage}
+        >
           {({ handleSubmit, isValid }) => (
             <Form noValidate autoComplete="off">
-              <GridContainer>
-                <GridProvider columns={6}>
-                  {/* <ProfileChip /> */}
-                  {contributorId}
+              <GridContainer paddingLeft={0}>
+                <GridProvider columns={columns}>
+                  <ProfileChip
+                    displayName={vcProfile?.virtualContributor?.profile.displayName ?? ''}
+                    avatarUrl={vcProfile?.virtualContributor?.profile.avatar?.uri ?? ''}
+                    city=""
+                    country=""
+                  />
                 </GridProvider>
               </GridContainer>
               <FormikInputField

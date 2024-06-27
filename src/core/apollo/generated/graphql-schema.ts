@@ -18610,6 +18610,50 @@ export type VirtualContributorQuery = {
   };
 };
 
+export type VirtualContributorProfileQueryVariables = Exact<{
+  id: Scalars['UUID_NAMEID'];
+}>;
+
+export type VirtualContributorProfileQuery = {
+  __typename?: 'Query';
+  virtualContributor: {
+    __typename?: 'VirtualContributor';
+    id: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      tagline: string;
+      url: string;
+      tagsets?:
+        | Array<{
+            __typename?: 'Tagset';
+            id: string;
+            name: string;
+            tags: Array<string>;
+            allowedValues: Array<string>;
+            type: TagsetType;
+          }>
+        | undefined;
+      avatar?:
+        | {
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: string;
+            allowedTypes: Array<string>;
+            aspectRatio: number;
+            maxHeight: number;
+            maxWidth: number;
+            minHeight: number;
+            minWidth: number;
+            alternativeText?: string | undefined;
+          }
+        | undefined;
+    };
+  };
+};
+
 export type BodyOfKnowledgeProfileQueryVariables = Exact<{
   spaceId: Scalars['UUID'];
 }>;
