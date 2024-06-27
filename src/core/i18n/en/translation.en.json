@@ -2123,6 +2123,14 @@
             "short": "Explore all your Spaces"
           }
         },
+        "myAccount": {
+          "title": "My Account",
+          "hostedSpaces": "My Hosted Spaces",
+          "virtualContributors": "My Virtual Contributors",
+          "createSpaceButton": "🎉 Click here to start your own Space!",
+          "createVCButton": "Click here to start your Virtual Contributor!",
+          "createVCButtonDisabled": "You must create a space before you create a Virtual Contributor!"
+        },
         "myMemberships": {
           "title": "My Memberships",
           "noChildMemberships": "You are not a member of a subspace in this Space. Some subspaces do not require you to be a member to contribute, but if you want to receive updates or show the subspace here, become a member anyway!",

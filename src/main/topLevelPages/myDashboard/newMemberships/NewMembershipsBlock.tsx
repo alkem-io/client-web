@@ -63,16 +63,11 @@ const PENDING_MEMBERSHIPS_MAX_ITEMS = 4;
 const RECENT_MEMBERSHIP_STATES = ['approved', 'accepted'];
 
 interface NewMembershipsBlockProps {
-  halfWidth?: boolean;
   hiddenIfEmpty?: boolean;
   onOpenMemberships?: () => void;
 }
 
-const NewMembershipsBlock = ({
-  halfWidth = false,
-  hiddenIfEmpty = false,
-  onOpenMemberships,
-}: NewMembershipsBlockProps) => {
+const NewMembershipsBlock = ({ hiddenIfEmpty = false, onOpenMemberships }: NewMembershipsBlockProps) => {
   const { t } = useTranslation();
 
   const navigate = useNavigate();
@@ -198,7 +193,7 @@ const NewMembershipsBlock = ({
 
   return (
     <>
-      <PageContentBlock halfWidth={halfWidth} disableGap flex>
+      <PageContentBlock columns={4} disableGap flex>
         <PageContentBlockHeader title={t('pages.home.sections.newMemberships.title')} />
 
         {pendingCommunityInvitations.length === 0 && recentPendingApplications.length === 0 && (

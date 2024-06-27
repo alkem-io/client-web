@@ -1627,10 +1627,6 @@ export type MetadataKeySpecifier = ('services' | MetadataKeySpecifier)[];
 export type MetadataFieldPolicy = {
   services?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type MigrateEmbeddingsKeySpecifier = ('success' | MigrateEmbeddingsKeySpecifier)[];
-export type MigrateEmbeddingsFieldPolicy = {
-  success?: FieldPolicy<any> | FieldReadFunction<any>;
-};
 export type MutationKeySpecifier = (
   | 'addReactionToMessageInRoom'
   | 'adminCommunicationEnsureAccessToCommunications'
@@ -1659,10 +1655,8 @@ export type MutationKeySpecifier = (
   | 'beginAlkemioUserVerifiedCredentialOfferInteraction'
   | 'beginCommunityMemberVerifiedCredentialOfferInteraction'
   | 'beginVerifiedCredentialRequestInteraction'
-  | 'cleanupCollections'
   | 'convertChallengeToSpace'
   | 'convertOpportunityToChallenge'
-  | 'copyCollections'
   | 'createAccount'
   | 'createActor'
   | 'createActorGroup'
@@ -1828,10 +1822,8 @@ export type MutationFieldPolicy = {
   beginAlkemioUserVerifiedCredentialOfferInteraction?: FieldPolicy<any> | FieldReadFunction<any>;
   beginCommunityMemberVerifiedCredentialOfferInteraction?: FieldPolicy<any> | FieldReadFunction<any>;
   beginVerifiedCredentialRequestInteraction?: FieldPolicy<any> | FieldReadFunction<any>;
-  cleanupCollections?: FieldPolicy<any> | FieldReadFunction<any>;
   convertChallengeToSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   convertOpportunityToChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
-  copyCollections?: FieldPolicy<any> | FieldReadFunction<any>;
   createAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   createActor?: FieldPolicy<any> | FieldReadFunction<any>;
   createActorGroup?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2438,7 +2430,6 @@ export type RolesResultFieldPolicy = {
 export type RolesResultCommunityKeySpecifier = (
   | 'displayName'
   | 'id'
-  | 'level'
   | 'nameID'
   | 'roles'
   | 'type'
@@ -2447,7 +2438,6 @@ export type RolesResultCommunityKeySpecifier = (
 export type RolesResultCommunityFieldPolicy = {
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
-  level?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   roles?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2472,7 +2462,6 @@ export type RolesResultOrganizationFieldPolicy = {
 export type RolesResultSpaceKeySpecifier = (
   | 'displayName'
   | 'id'
-  | 'level'
   | 'nameID'
   | 'roles'
   | 'spaceID'
@@ -2484,7 +2473,6 @@ export type RolesResultSpaceKeySpecifier = (
 export type RolesResultSpaceFieldPolicy = {
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
-  level?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   roles?: FieldPolicy<any> | FieldReadFunction<any>;
   spaceID?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3608,10 +3596,6 @@ export type StrictTypedTypePolicies = {
   Metadata?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | MetadataKeySpecifier | (() => undefined | MetadataKeySpecifier);
     fields?: MetadataFieldPolicy;
-  };
-  MigrateEmbeddings?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | MigrateEmbeddingsKeySpecifier | (() => undefined | MigrateEmbeddingsKeySpecifier);
-    fields?: MigrateEmbeddingsFieldPolicy;
   };
   Mutation?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | MutationKeySpecifier | (() => undefined | MutationKeySpecifier);
