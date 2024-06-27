@@ -36,6 +36,7 @@ const AdminOpportunityCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '.
     getAvailableUsers,
     getAvailableOrganizations,
     getAvailableVirtualContributors,
+    getAvailableVirtualContributorsInLibrary,
     loading,
   } = useCommunityAdmin({ spaceId, opportunityId, communityId, journeyLevel: 2 });
 
@@ -85,7 +86,7 @@ const AdminOpportunityCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '.
                 }
                 inviteExistingUser={inviteExistingUser}
                 onRemoveMember={onRemoveVirtualContributor}
-                fetchAvailableVirtualContributors={getAvailableVirtualContributors}
+                fetchAvailableVirtualContributors={getAvailableVirtualContributorsInLibrary}
                 fetchAvailableVirtualContributorsOnAccount={getAvailableVirtualContributors}
                 onAddMember={onAddVirtualContributor}
                 loading={loading}

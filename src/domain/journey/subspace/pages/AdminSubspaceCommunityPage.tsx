@@ -60,6 +60,7 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
     getAvailableUsers,
     getAvailableOrganizations,
     getAvailableVirtualContributors,
+    getAvailableVirtualContributorsInLibrary,
     loading,
     inviteExternalUser,
     inviteExistingUser,
@@ -189,7 +190,7 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
                 }
                 inviteExistingUser={inviteExistingUser}
                 onRemoveMember={onRemoveVirtualContributor}
-                fetchAvailableVirtualContributors={getAvailableVirtualContributors}
+                fetchAvailableVirtualContributors={getAvailableVirtualContributorsInLibrary}
                 fetchAvailableVirtualContributorsOnAccount={getAvailableVirtualContributors}
                 onAddMember={onAddVirtualContributor}
                 loading={loading}
