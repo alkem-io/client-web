@@ -15,6 +15,7 @@ import { StorageConfigContextProvider } from '../../../storage/StorageBucket/Sto
 import { useTranslation } from 'react-i18next';
 import { SettingsSection } from '../../../platform/admin/layout/EntitySettingsLayout/constants';
 import VCSettingsPageLayout from '../layout/VCSettingsPageLayout';
+import { AiPersonaBodyOfKnowledgeType } from '../../../../core/apollo/generated/graphql-schema';
 
 export const VCSettingsPage = () => {
   const { t } = useTranslation();
@@ -33,7 +34,9 @@ export const VCSettingsPage = () => {
     variables: {
       spaceId: data?.virtualContributor?.aiPersona?.bodyOfKnowledgeID!,
     },
-    skip: !data?.virtualContributor?.aiPersona?.bodyOfKnowledgeID,
+    skip:
+      !data?.virtualContributor?.aiPersona?.bodyOfKnowledgeID ||
+      data?.virtualContributor?.aiPersona?.bodyOfKnowledgeType !== AiPersonaBodyOfKnowledgeType.AlkemioSpace,
   });
 
   const [updateContributorMutation] = useUpdateVirtualContributorMutation();

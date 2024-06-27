@@ -14907,6 +14907,8 @@ export const VirtualContributorDocument = gql`
       aiPersona {
         id
         bodyOfKnowledgeID
+        bodyOfKnowledgeType
+        bodyOfKnowledge
       }
       profile {
         id

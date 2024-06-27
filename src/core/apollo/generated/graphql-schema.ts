@@ -18673,7 +18673,15 @@ export type VirtualContributorQuery = {
             | undefined;
         }
       | undefined;
-    aiPersona?: { __typename?: 'AiPersona'; id: string; bodyOfKnowledgeID?: string | undefined } | undefined;
+    aiPersona?:
+      | {
+          __typename?: 'AiPersona';
+          id: string;
+          bodyOfKnowledgeID?: string | undefined;
+          bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType | undefined;
+          bodyOfKnowledge: string;
+        }
+      | undefined;
     profile: {
       __typename?: 'Profile';
       id: string;
