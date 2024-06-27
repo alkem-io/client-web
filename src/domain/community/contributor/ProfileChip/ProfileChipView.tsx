@@ -7,8 +7,8 @@ import VirtualContributorLabel from '../../virtualContributor/VirtualContributor
 
 export interface ProfileChipViewProps extends BoxProps {
   displayName: string | undefined;
-  city: string | undefined;
-  country: string | undefined;
+  city?: string;
+  country?: string;
   avatarUrl: string | undefined;
   selected?: boolean;
   virtualContributor?: boolean;

@@ -18350,6 +18350,7 @@ export const CreateVirtualContributorOnAccountDocument = gql`
       nameID
       profile {
         id
+        url
       }
     }
   }
@@ -23656,6 +23657,90 @@ export type NewMembershipsQueryResult = Apollo.QueryResult<
 >;
 export function refetchNewMembershipsQuery(variables?: SchemaTypes.NewMembershipsQueryVariables) {
   return { query: NewMembershipsDocument, variables: variables };
+}
+
+export const NewVirtualContributorMySpacesDocument = gql`
+  query NewVirtualContributorMySpaces {
+    me {
+      id
+      mySpaces {
+        space {
+          id
+          account {
+            id
+          }
+          profile {
+            id
+            displayName
+          }
+          subspaces {
+            id
+            type
+            profile {
+              id
+              displayName
+              url
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useNewVirtualContributorMySpacesQuery__
+ *
+ * To run a query within a React component, call `useNewVirtualContributorMySpacesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useNewVirtualContributorMySpacesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useNewVirtualContributorMySpacesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useNewVirtualContributorMySpacesQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.NewVirtualContributorMySpacesQuery,
+    SchemaTypes.NewVirtualContributorMySpacesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.NewVirtualContributorMySpacesQuery,
+    SchemaTypes.NewVirtualContributorMySpacesQueryVariables
+  >(NewVirtualContributorMySpacesDocument, options);
+}
+
+export function useNewVirtualContributorMySpacesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.NewVirtualContributorMySpacesQuery,
+    SchemaTypes.NewVirtualContributorMySpacesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.NewVirtualContributorMySpacesQuery,
+    SchemaTypes.NewVirtualContributorMySpacesQueryVariables
+  >(NewVirtualContributorMySpacesDocument, options);
+}
+
+export type NewVirtualContributorMySpacesQueryHookResult = ReturnType<typeof useNewVirtualContributorMySpacesQuery>;
+export type NewVirtualContributorMySpacesLazyQueryHookResult = ReturnType<
+  typeof useNewVirtualContributorMySpacesLazyQuery
+>;
+export type NewVirtualContributorMySpacesQueryResult = Apollo.QueryResult<
+  SchemaTypes.NewVirtualContributorMySpacesQuery,
+  SchemaTypes.NewVirtualContributorMySpacesQueryVariables
+>;
+export function refetchNewVirtualContributorMySpacesQuery(
+  variables?: SchemaTypes.NewVirtualContributorMySpacesQueryVariables
+) {
+  return { query: NewVirtualContributorMySpacesDocument, variables: variables };
 }
 
 export const RecentForumMessagesDocument = gql`

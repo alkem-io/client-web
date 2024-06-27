@@ -22855,7 +22855,7 @@ export type CreateVirtualContributorOnAccountMutation = {
     __typename?: 'VirtualContributor';
     id: string;
     nameID: string;
-    profile: { __typename?: 'Profile'; id: string };
+    profile: { __typename?: 'Profile'; id: string; url: string };
   };
 };
 
@@ -29840,6 +29840,31 @@ export type NewMembershipsBasicSpaceFragment = {
   id: string;
   level: number;
   profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string; url: string };
+};
+
+export type NewVirtualContributorMySpacesQueryVariables = Exact<{ [key: string]: never }>;
+
+export type NewVirtualContributorMySpacesQuery = {
+  __typename?: 'Query';
+  me: {
+    __typename?: 'MeQueryResults';
+    id: string;
+    mySpaces: Array<{
+      __typename?: 'MySpaceResults';
+      space: {
+        __typename?: 'Space';
+        id: string;
+        account: { __typename?: 'Account'; id: string };
+        profile: { __typename?: 'Profile'; id: string; displayName: string };
+        subspaces: Array<{
+          __typename?: 'Space';
+          id: string;
+          type: SpaceType;
+          profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+        }>;
+      };
+    }>;
+  };
 };
 
 export type RecentForumMessagesQueryVariables = Exact<{

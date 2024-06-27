@@ -4,6 +4,7 @@ mutation CreateVirtualContributorOnAccount($virtualContributorData: CreateVirtua
     nameID
     profile {
       id
+      url
     }
   }
 }

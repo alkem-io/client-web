@@ -1,0 +1,26 @@
+query NewVirtualContributorMySpaces {
+  me {
+    id
+    mySpaces {
+      space {
+        id
+        account {
+          id
+        }
+        profile {
+          id
+          displayName
+        }
+        subspaces {
+          id
+          type
+          profile {
+            id
+            displayName
+            url
+          }
+        }
+      }
+    }
+  }
+}

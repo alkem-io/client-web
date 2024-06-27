@@ -270,7 +270,7 @@ const CommunityApplications: FC<CommunityApplicationsProps> = ({
       renderHeader: () => <>{t('common.type')}</>,
       renderCell: ({ row }: RenderParams) => <>{row.contributorType}</>,
       valueGetter: ({ row }: GetterParams) => row.contributorType,
-      filterable: false, //
+      filterable: false,
     },
   ];
 
