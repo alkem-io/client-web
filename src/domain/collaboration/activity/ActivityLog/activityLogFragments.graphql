@@ -1,8 +1,6 @@
 fragment ActivityLogMemberJoined on ActivityLogEntryMemberJoined {
-  user {
+  contributor {
     id
-    firstName
-    lastName
     profile {
       id
       url
@@ -11,6 +9,10 @@ fragment ActivityLogMemberJoined on ActivityLogEntryMemberJoined {
         id
         uri
       }
+    }
+    ... on User {
+      firstName
+      lastName
     }
   }
 }
