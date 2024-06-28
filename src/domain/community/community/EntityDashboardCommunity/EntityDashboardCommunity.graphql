@@ -6,6 +6,9 @@ fragment EntityDashboardCommunity on Community {
   memberUsers(limit: 8) {
     ...DashboardContributingUser
   }
+  leadVirtualContributors: virtualContributorsInRole(role: LEAD) {
+    ...DashboardContributingVirtualContributor
+  }
   leadOrganizations: organizationsInRole(role: LEAD) {
     ...AssociatedOrganizationDetails
   }

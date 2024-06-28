@@ -36,3 +36,20 @@ fragment DashboardContributingOrganization on Organization {
     }
   }
 }
+
+fragment DashboardContributingVirtualContributor on VirtualContributor {
+  id
+  nameID
+  profile {
+    id
+    displayName
+    url
+    visual(type: AVATAR) {
+      id
+      uri
+    }
+    tagsets {
+      ...TagsetDetails
+    }
+  }
+}

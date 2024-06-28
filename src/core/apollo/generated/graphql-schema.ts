@@ -15483,6 +15483,28 @@ export type EntityDashboardCommunityFragment = {
         | undefined;
     };
   }>;
+  leadVirtualContributors: Array<{
+    __typename?: 'VirtualContributor';
+    id: string;
+    nameID: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      url: string;
+      visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+      tagsets?:
+        | Array<{
+            __typename?: 'Tagset';
+            id: string;
+            name: string;
+            tags: Array<string>;
+            allowedValues: Array<string>;
+            type: TagsetType;
+          }>
+        | undefined;
+    };
+  }>;
   leadOrganizations: Array<{
     __typename?: 'Organization';
     id: string;
@@ -15560,6 +15582,29 @@ export type DashboardContributingOrganizationFragment = {
     id: string;
     displayName: string;
     visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+    tagsets?:
+      | Array<{
+          __typename?: 'Tagset';
+          id: string;
+          name: string;
+          tags: Array<string>;
+          allowedValues: Array<string>;
+          type: TagsetType;
+        }>
+      | undefined;
+  };
+};
+
+export type DashboardContributingVirtualContributorFragment = {
+  __typename?: 'VirtualContributor';
+  id: string;
+  nameID: string;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    url: string;
+    visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
     tagsets?:
       | Array<{
           __typename?: 'Tagset';
@@ -19701,6 +19746,28 @@ export type AboutPageMembersQuery = {
                   | undefined;
               };
             }>;
+            leadVirtualContributors: Array<{
+              __typename?: 'VirtualContributor';
+              id: string;
+              nameID: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                url: string;
+                visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                tagsets?:
+                  | Array<{
+                      __typename?: 'Tagset';
+                      id: string;
+                      name: string;
+                      tags: Array<string>;
+                      allowedValues: Array<string>;
+                      type: TagsetType;
+                    }>
+                  | undefined;
+              };
+            }>;
             leadOrganizations: Array<{
               __typename?: 'Organization';
               id: string;
@@ -21157,6 +21224,28 @@ export type SpacePageQuery = {
                   | undefined;
               };
             }>;
+            leadVirtualContributors: Array<{
+              __typename?: 'VirtualContributor';
+              id: string;
+              nameID: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                url: string;
+                visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                tagsets?:
+                  | Array<{
+                      __typename?: 'Tagset';
+                      id: string;
+                      name: string;
+                      tags: Array<string>;
+                      allowedValues: Array<string>;
+                      type: TagsetType;
+                    }>
+                  | undefined;
+              };
+            }>;
             leadOrganizations: Array<{
               __typename?: 'Organization';
               id: string;
@@ -21442,6 +21531,28 @@ export type SpacePageFragment = {
           | undefined;
       };
     }>;
+    leadVirtualContributors: Array<{
+      __typename?: 'VirtualContributor';
+      id: string;
+      nameID: string;
+      profile: {
+        __typename?: 'Profile';
+        id: string;
+        displayName: string;
+        url: string;
+        visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+        tagsets?:
+          | Array<{
+              __typename?: 'Tagset';
+              id: string;
+              name: string;
+              tags: Array<string>;
+              allowedValues: Array<string>;
+              type: TagsetType;
+            }>
+          | undefined;
+      };
+    }>;
     leadOrganizations: Array<{
       __typename?: 'Organization';
       id: string;
@@ -21688,6 +21799,28 @@ export type LegacySubspaceDashboardPageQuery = {
                   | undefined;
               };
             }>;
+            leadVirtualContributors: Array<{
+              __typename?: 'VirtualContributor';
+              id: string;
+              nameID: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                url: string;
+                visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                tagsets?:
+                  | Array<{
+                      __typename?: 'Tagset';
+                      id: string;
+                      name: string;
+                      tags: Array<string>;
+                      allowedValues: Array<string>;
+                      type: TagsetType;
+                    }>
+                  | undefined;
+              };
+            }>;
             leadOrganizations: Array<{
               __typename?: 'Organization';
               id: string;
@@ -21857,6 +21990,28 @@ export type SubspacePageFragment = {
         id: string;
         displayName: string;
         location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+        visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+        tagsets?:
+          | Array<{
+              __typename?: 'Tagset';
+              id: string;
+              name: string;
+              tags: Array<string>;
+              allowedValues: Array<string>;
+              type: TagsetType;
+            }>
+          | undefined;
+      };
+    }>;
+    leadVirtualContributors: Array<{
+      __typename?: 'VirtualContributor';
+      id: string;
+      nameID: string;
+      profile: {
+        __typename?: 'Profile';
+        id: string;
+        displayName: string;
+        url: string;
         visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
         tagsets?:
           | Array<{
@@ -22832,6 +22987,28 @@ export type SpaceProfileFragment = {
           | undefined;
       };
     }>;
+    leadVirtualContributors: Array<{
+      __typename?: 'VirtualContributor';
+      id: string;
+      nameID: string;
+      profile: {
+        __typename?: 'Profile';
+        id: string;
+        displayName: string;
+        url: string;
+        visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+        tagsets?:
+          | Array<{
+              __typename?: 'Tagset';
+              id: string;
+              name: string;
+              tags: Array<string>;
+              allowedValues: Array<string>;
+              type: TagsetType;
+            }>
+          | undefined;
+      };
+    }>;
     leadOrganizations: Array<{
       __typename?: 'Organization';
       id: string;
@@ -23393,6 +23570,28 @@ export type SubspacePageQuery = {
                   | undefined;
               };
             }>;
+            leadVirtualContributors: Array<{
+              __typename?: 'VirtualContributor';
+              id: string;
+              nameID: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                url: string;
+                visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                tagsets?:
+                  | Array<{
+                      __typename?: 'Tagset';
+                      id: string;
+                      name: string;
+                      tags: Array<string>;
+                      allowedValues: Array<string>;
+                      type: TagsetType;
+                    }>
+                  | undefined;
+              };
+            }>;
             leadOrganizations: Array<{
               __typename?: 'Organization';
               id: string;
@@ -23491,6 +23690,28 @@ export type SubspacePageSpaceFragment = {
         id: string;
         displayName: string;
         location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+        visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+        tagsets?:
+          | Array<{
+              __typename?: 'Tagset';
+              id: string;
+              name: string;
+              tags: Array<string>;
+              allowedValues: Array<string>;
+              type: TagsetType;
+            }>
+          | undefined;
+      };
+    }>;
+    leadVirtualContributors: Array<{
+      __typename?: 'VirtualContributor';
+      id: string;
+      nameID: string;
+      profile: {
+        __typename?: 'Profile';
+        id: string;
+        displayName: string;
+        url: string;
         visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
         tagsets?:
           | Array<{

@@ -2443,6 +2443,25 @@ export const DashboardTimelineAuthorizationFragmentDoc = gql`
     }
   }
 `;
+export const DashboardContributingVirtualContributorFragmentDoc = gql`
+  fragment DashboardContributingVirtualContributor on VirtualContributor {
+    id
+    nameID
+    profile {
+      id
+      displayName
+      url
+      visual(type: AVATAR) {
+        id
+        uri
+      }
+      tagsets {
+        ...TagsetDetails
+      }
+    }
+  }
+  ${TagsetDetailsFragmentDoc}
+`;
 export const EntityDashboardCommunityFragmentDoc = gql`
   fragment EntityDashboardCommunity on Community {
     id
@@ -2451,6 +2470,9 @@ export const EntityDashboardCommunityFragmentDoc = gql`
     }
     memberUsers(limit: 8) {
       ...DashboardContributingUser
+    }
+    leadVirtualContributors: virtualContributorsInRole(role: LEAD) {
+      ...DashboardContributingVirtualContributor
     }
     leadOrganizations: organizationsInRole(role: LEAD) {
       ...AssociatedOrganizationDetails
@@ -2465,6 +2487,7 @@ export const EntityDashboardCommunityFragmentDoc = gql`
   }
   ${DashboardLeadUserFragmentDoc}
   ${DashboardContributingUserFragmentDoc}
+  ${DashboardContributingVirtualContributorFragmentDoc}
   ${AssociatedOrganizationDetailsFragmentDoc}
   ${DashboardContributingOrganizationFragmentDoc}
 `;
