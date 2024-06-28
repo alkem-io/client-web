@@ -1,0 +1,19 @@
+query MembershipSuggestionSpace($spaceNameId: UUID_NAMEID!) {
+  space(ID: $spaceNameId) {
+    id
+    nameID
+    profile {
+      id
+      displayName
+      tagline
+      url
+      avatar: visual(type: CARD) {
+        ...VisualUri
+      }
+    }
+    community {
+      id
+      myRoles
+    }
+  }
+}

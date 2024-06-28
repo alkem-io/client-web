@@ -9,6 +9,7 @@ import { useColumns } from '../../../core/ui/grid/GridContext';
 import NewMembershipsBlock from './newMemberships/NewMembershipsBlock';
 import MyAccountBlock from './myAccount/MyAccountBlock';
 import MyLatestContributions from './latestContributions/myLatestContributions/MyLatestContributions';
+import MembershipSuggestions from './membershipSuggestions/MembershipSuggestions';
 
 interface MyDashboardWithoutMembershipsProps {
   onOpenMembershipsDialog: () => void;
@@ -20,14 +21,19 @@ const MyDashboardWithoutMemberships: FC<MyDashboardWithoutMembershipsProps> = ({
     <>
       <PageContentColumn columns={12}>
         <MyAccountBlock />
-        <MyLatestContributions />
-        <NewMembershipsBlock hiddenIfEmpty onOpenMemberships={onOpenMembershipsDialog} />
-        <ExploreOtherChallenges />
+        <MembershipSuggestions />
+      </PageContentColumn>
+      <PageContentColumn columns={8}>
+        <TipsAndTricks halfWidth />
+        <InnovationLibraryBlock halfWidth />
       </PageContentColumn>
       <PageContentColumn columns={columns === 12 ? 4 : 8} flexDirection="column" alignSelf="stretch">
-        <TipsAndTricks />
-        <InnovationLibraryBlock />
+        <MyLatestContributions />
         <RecentForumMessages />
+        <NewMembershipsBlock hiddenIfEmpty onOpenMemberships={onOpenMembershipsDialog} />
+      </PageContentColumn>
+      <PageContentColumn columns={8}>
+        <ExploreOtherChallenges />
       </PageContentColumn>
       <MoreAboutAlkemio />
     </>

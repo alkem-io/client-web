@@ -29668,6 +29668,28 @@ export type LatestContributionsSpacesQuery = {
   };
 };
 
+export type MembershipSuggestionSpaceQueryVariables = Exact<{
+  spaceNameId: Scalars['UUID_NAMEID'];
+}>;
+
+export type MembershipSuggestionSpaceQuery = {
+  __typename?: 'Query';
+  space: {
+    __typename?: 'Space';
+    id: string;
+    nameID: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      tagline: string;
+      url: string;
+      avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+    };
+    community: { __typename?: 'Community'; id: string; myRoles: Array<CommunityRole> };
+  };
+};
+
 export type MyAccountQueryVariables = Exact<{ [key: string]: never }>;
 
 export type MyAccountQuery = {

@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@mui/material';
 import { useMyAccountQuery } from '../../../../core/apollo/generated/apollo-hooks';
-import { VisualType } from '../../../../core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, VisualType } from '../../../../core/apollo/generated/graphql-schema';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
 import HorizontalCardsGroup from '../../../../core/ui/content/HorizontalCardsGroup';
@@ -10,7 +10,7 @@ import { gutters } from '../../../../core/ui/grid/utils';
 import { Caption } from '../../../../core/ui/typography';
 import Loading from '../../../../core/ui/loading/Loading';
 import { ApplicationHydrator } from '../../../../domain/community/pendingMembership/PendingMemberships';
-import { PendingApplication } from '../../../../domain/community/user';
+import { PendingApplication, useUserContext } from '../../../../domain/community/user';
 import { ROUTE_CREATE_SPACE } from '../../../../domain/platform/routes/constants';
 import NewMembershipCard from '../newMemberships/NewMembershipCard';
 
@@ -28,7 +28,11 @@ const MyAccountBlock = () => {
     .filter(account => account.id === hostedSpace?.account.id)
     .filter(vc => vc.virtualContributors.length > 0)[0]?.virtualContributors[0];
 
-  const createLink = `/${ROUTE_CREATE_SPACE}`;
+  const { user } = useUserContext();
+  let createLink = t('pages.home.sections.startingSpace.url');
+  if (user && user.hasPlatformPrivilege(AuthorizationPrivilege.CreateSpace)) {
+    createLink = `/${ROUTE_CREATE_SPACE}`;
+  }
 
   return (
     <PageContentBlock columns={4}>
@@ -103,7 +107,7 @@ const MyAccountBlock = () => {
               <Button
                 aria-label={t('pages.home.sections.myAccount.createVCButton')}
                 variant="contained"
-                disabled={!hostedSpace}
+                disabled={!(user && user.hasPlatformPrivilege(AuthorizationPrivilege.CreateSpace)) || !hostedSpace}
                 sx={{ textTransform: 'none', paddingTop: gutters(0.5), paddingBottom: gutters(0.5) }}
               >
                 {hostedSpace
