@@ -11359,6 +11359,65 @@ export type RemoveVirtualContributorFromCommunityMutationOptions = Apollo.BaseMu
   SchemaTypes.RemoveVirtualContributorFromCommunityMutation,
   SchemaTypes.RemoveVirtualContributorFromCommunityMutationVariables
 >;
+export const AssignCommunityRoleToVirtualContributorDocument = gql`
+  mutation AssignCommunityRoleToVirtualContributor(
+    $communityId: UUID!
+    $virtualContributorId: UUID_NAMEID!
+    $role: CommunityRole!
+  ) {
+    assignCommunityRoleToVirtual(
+      roleData: { communityID: $communityId, role: $role, virtualContributorID: $virtualContributorId }
+    ) {
+      id
+    }
+  }
+`;
+export type AssignCommunityRoleToVirtualContributorMutationFn = Apollo.MutationFunction<
+  SchemaTypes.AssignCommunityRoleToVirtualContributorMutation,
+  SchemaTypes.AssignCommunityRoleToVirtualContributorMutationVariables
+>;
+
+/**
+ * __useAssignCommunityRoleToVirtualContributorMutation__
+ *
+ * To run a mutation, you first call `useAssignCommunityRoleToVirtualContributorMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAssignCommunityRoleToVirtualContributorMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [assignCommunityRoleToVirtualContributorMutation, { data, loading, error }] = useAssignCommunityRoleToVirtualContributorMutation({
+ *   variables: {
+ *      communityId: // value for 'communityId'
+ *      virtualContributorId: // value for 'virtualContributorId'
+ *      role: // value for 'role'
+ *   },
+ * });
+ */
+export function useAssignCommunityRoleToVirtualContributorMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.AssignCommunityRoleToVirtualContributorMutation,
+    SchemaTypes.AssignCommunityRoleToVirtualContributorMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.AssignCommunityRoleToVirtualContributorMutation,
+    SchemaTypes.AssignCommunityRoleToVirtualContributorMutationVariables
+  >(AssignCommunityRoleToVirtualContributorDocument, options);
+}
+
+export type AssignCommunityRoleToVirtualContributorMutationHookResult = ReturnType<
+  typeof useAssignCommunityRoleToVirtualContributorMutation
+>;
+export type AssignCommunityRoleToVirtualContributorMutationResult =
+  Apollo.MutationResult<SchemaTypes.AssignCommunityRoleToVirtualContributorMutation>;
+export type AssignCommunityRoleToVirtualContributorMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.AssignCommunityRoleToVirtualContributorMutation,
+  SchemaTypes.AssignCommunityRoleToVirtualContributorMutationVariables
+>;
 export const AllOrganizationsDocument = gql`
   query AllOrganizations($first: Int!, $after: UUID, $filter: OrganizationFilterInput) {
     organizationsPaginated(first: $first, after: $after, filter: $filter) {
@@ -23687,6 +23746,9 @@ export const NewVirtualContributorMySpacesDocument = gql`
               id
               displayName
               url
+            }
+            community {
+              id
             }
           }
         }

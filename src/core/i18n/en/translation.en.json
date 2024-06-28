@@ -2894,7 +2894,6 @@
     },
     "createdVirtualContributor": {
       "description": "",
-      "prompt": "",
       "successMessage": "Virtual Contributor '{{virtualContributorName}}' created successfully"
     },
     "step0": {

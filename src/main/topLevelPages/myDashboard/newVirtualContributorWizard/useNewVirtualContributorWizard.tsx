@@ -4,16 +4,13 @@ import CreateNewVirtualContributorStep0 from './CreateNewVirtualContributorStep0
 import CreateSubspaceStep1 from './CreateSubspaceStep1';
 import ChooseSubspaceStep1b from './ChooseSubspaceStep1b';
 import {
+  useAddVirtualContributorToCommunityMutation,
+  useAssignCommunityRoleToVirtualContributorMutation,
   useCreateSubspaceMutation,
   useCreateVirtualContributorOnAccountMutation,
   useNewVirtualContributorMySpacesQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
-import {
-  AiPersonaBodyOfKnowledgeType,
-  AiPersonaDataAccessMode,
-  AiPersonaEngine,
-  SpaceType,
-} from '../../../../core/apollo/generated/graphql-schema';
+import { CommunityRole, SpaceType } from '../../../../core/apollo/generated/graphql-schema';
 import NameVirtualContributorStep2 from './NameVirtualContributorStep2';
 import WhatsNextStep3 from './WhatsNextStep3';
 import { useTranslation } from 'react-i18next';
@@ -32,6 +29,9 @@ interface SelectedSubspace {
   profile: {
     displayName: string;
     url: string;
+  };
+  community: {
+    id: string;
   };
 }
 
@@ -55,19 +55,17 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
 
   const { data, loading } = useNewVirtualContributorMySpacesQuery();
 
-  const { mySpaceId, myAccountId, mySpaceName, mySubspaces, bokSubspaces } = useMemo(() => {
+  const { mySpaceId, myAccountId, mySpaceName, mySubspaces, selectableSubspaces } = useMemo(() => {
     const mySpace = data?.me.mySpaces[0]; // TODO: For now we just take the first space
     const mySubspaces = mySpace?.space.subspaces ?? [];
-    const bokSubspaces = mySubspaces
-      .filter(subspace => subspace.type === SpaceType.Knowledge)
-      .map(subspace => ({ id: subspace.id, name: subspace.profile.displayName }));
+    const selectableSubspaces = mySubspaces.map(subspace => ({ id: subspace.id, name: subspace.profile.displayName }));
 
     return {
       mySpaceId: mySpace?.space.id,
       myAccountId: mySpace?.space.account.id,
       mySpaceName: mySpace?.space.profile.displayName,
       mySubspaces,
-      bokSubspaces,
+      selectableSubspaces,
     };
   }, [data]);
 
@@ -76,7 +74,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     setDialogOpen(true);
   };
 
-  const canUseExistingSubspace = bokSubspaces.length > 0;
+  const canUseExistingSubspace = selectableSubspaces.length > 0;
 
   const [createSubspace] = useCreateSubspaceMutation();
   const handleCreateSubspace = async (subspaceName: string) => {
@@ -122,8 +120,10 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
 
   const [createdVirtualContributorUrl, setCreatedVirtualContributorUrl] = useState<string | undefined>(undefined);
   const [createVirtualContributor] = useCreateVirtualContributorOnAccountMutation();
+  const [addVirtualContributorToSubspace] = useAddVirtualContributorToCommunityMutation();
+  const [assignCommunityRole] = useAssignCommunityRoleToVirtualContributorMutation();
   const handleCreateVirtualContributor = async (virtualContributorName: string) => {
-    if (!myAccountId) {
+    if (!myAccountId || !selectedSubspace) {
       return;
     }
     const { data } = await createVirtualContributor({
@@ -137,16 +137,25 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
           aiPersona: {
             aiPersonaService: {
               bodyOfKnowledgeID: selectedSubspace?.id,
-              bodyOfKnowledgeType: AiPersonaBodyOfKnowledgeType.AlkemioSpace,
-              dataAccessMode: AiPersonaDataAccessMode.SpaceProfileAndContents,
-              engine: AiPersonaEngine.Expert,
-              prompt: t('createVirtualContributorWizard.createdVirtualContributor.prompt'),
             },
           },
         },
       },
     });
     if (data?.createVirtualContributor.id) {
+      await addVirtualContributorToSubspace({
+        variables: {
+          communityId: selectedSubspace.community.id,
+          virtualContributorId: data.createVirtualContributor.id,
+        },
+      });
+      await assignCommunityRole({
+        variables: {
+          communityId: selectedSubspace.community.id,
+          role: CommunityRole.Lead,
+          virtualContributorId: data.createVirtualContributor.id,
+        },
+      });
       notify(
         t('createVirtualContributorWizard.createdVirtualContributor.successMessage', { virtualContributorName }),
         'success'
@@ -184,7 +193,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
             onChooseSubspace={handleChooseSubspace}
             selectedSubspaceId={selectedSubspace?.id}
             mySpaceName={mySpaceName}
-            subspaces={bokSubspaces}
+            subspaces={selectableSubspaces}
             loading={loading}
           />
         )}

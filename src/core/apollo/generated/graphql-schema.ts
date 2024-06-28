@@ -16152,6 +16152,17 @@ export type RemoveVirtualContributorFromCommunityMutation = {
   removeCommunityRoleFromVirtual: { __typename?: 'VirtualContributor'; id: string };
 };
 
+export type AssignCommunityRoleToVirtualContributorMutationVariables = Exact<{
+  communityId: Scalars['UUID'];
+  virtualContributorId: Scalars['UUID_NAMEID'];
+  role: CommunityRole;
+}>;
+
+export type AssignCommunityRoleToVirtualContributorMutation = {
+  __typename?: 'Mutation';
+  assignCommunityRoleToVirtual: { __typename?: 'VirtualContributor'; id: string };
+};
+
 export type AllOrganizationsQueryVariables = Exact<{
   first: Scalars['Int'];
   after?: InputMaybe<Scalars['UUID']>;
@@ -29871,6 +29882,7 @@ export type NewVirtualContributorMySpacesQuery = {
           id: string;
           type: SpaceType;
           profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+          community: { __typename?: 'Community'; id: string };
         }>;
       };
     }>;

@@ -19,6 +19,9 @@ query NewVirtualContributorMySpaces {
             displayName
             url
           }
+          community {
+            id
+          }
         }
       }
     }
