@@ -11,6 +11,7 @@ import { InvitationItem } from '../user/providers/UserProvider/InvitationItem';
 import { CommunityGuidelinesSummaryFragment, VisualType } from '../../../core/apollo/generated/graphql-schema';
 import { JourneyLevel } from '../../../main/routing/resolvers/RouteResolver';
 import { Identifiable } from '../../../core/utils/Identifiable';
+import { useAuthenticationContext } from '../../../core/auth/authentication/hooks/useAuthenticationContext';
 
 export interface JourneyDetails {
   profile: {
@@ -40,7 +41,10 @@ interface UsePendingMembershipsProvided {
 }
 
 export const usePendingMemberships = (): UsePendingMembershipsProvided => {
-  const { data } = useUserPendingMembershipsQuery();
+  const { isAuthenticated } = useAuthenticationContext();
+  const { data } = useUserPendingMembershipsQuery({
+    skip: !isAuthenticated,
+  });
 
   return {
     invitations: data?.me.communityInvitations,
