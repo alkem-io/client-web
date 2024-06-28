@@ -159,10 +159,8 @@ export const InnovationFlowTemplateCardFragmentDoc = gql`
 `;
 export const ActivityLogMemberJoinedFragmentDoc = gql`
   fragment ActivityLogMemberJoined on ActivityLogEntryMemberJoined {
-    user {
+    contributor {
       id
-      firstName
-      lastName
       profile {
         id
         url
@@ -171,6 +169,10 @@ export const ActivityLogMemberJoinedFragmentDoc = gql`
           id
           uri
         }
+      }
+      ... on User {
+        firstName
+        lastName
       }
     }
   }
