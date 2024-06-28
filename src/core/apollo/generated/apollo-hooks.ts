@@ -11185,6 +11185,7 @@ export const AvailableVirtualContributorsInLibraryDocument = gql`
       library {
         id
         virtualContributors {
+          searchVisibility
           ...VirtualContributorName
         }
       }
