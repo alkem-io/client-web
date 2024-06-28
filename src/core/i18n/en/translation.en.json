@@ -2132,7 +2132,7 @@
           "hostedSpaces": "My Hosted Spaces",
           "virtualContributors": "My Virtual Contributors",
           "createSpaceButton": "🎉 Click here to start your own Space!",
-          "createVCButton": "Click here to start your Virtual Contributor!",
+          "createVCButton": "Click here to create your Virtual Contributor!",
           "createVCButtonDisabled": "You must create a space before you create a Virtual Contributor!"
         },
         "myMemberships": {
