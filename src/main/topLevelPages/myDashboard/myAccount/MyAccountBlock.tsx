@@ -82,7 +82,7 @@ const MyAccountBlock = () => {
           )}
 
           {virtualContributor ? (
-            <HorizontalCardsGroup title={t('pages.home.sections.myAccount.hostedSpaces')}>
+            <HorizontalCardsGroup title={t('pages.home.sections.myAccount.virtualContributors')}>
               {[virtualContributor].map(vc => (
                 <ApplicationHydrator
                   key={vc.id}

@@ -47,6 +47,7 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
               entityReadAccess={entities.permissions.spaceReadAccess}
               readUsersAccess={entities.permissions.readUsers}
               leadUsers={entities.space?.community?.leadUsers}
+              leadVirtualContributors={entities.space?.community?.leadVirtualContributors}
               host={entities.host}
               callouts={callouts}
               journeyTypeName="space"

@@ -141,8 +141,6 @@ const NewMembershipsBlock = ({ hiddenIfEmpty = false, onOpenMemberships }: NewMe
     [communityInvitations, communityApplications]
   );
 
-  const mySpaces = data?.me.mySpaces ?? [];
-
   const [openDialog, setOpenDialog] = useState<PendingMembershipsListDialogDetails | InvitationViewDialogDetails>();
 
   const closeDialog = () => setOpenDialog(undefined);
@@ -240,29 +238,6 @@ const NewMembershipsBlock = ({ hiddenIfEmpty = false, onOpenMemberships }: NewMe
                   space={hydratedApplication?.space}
                   to={hydratedApplication?.space.profile.url}
                   membershipType="application"
-                />
-              )}
-            </ApplicationHydrator>
-          ))}
-        </HorizontalCardsGroup>
-
-        <HorizontalCardsGroup title={t('pages.home.sections.newMemberships.mySpaces')}>
-          {mySpaces.map(item => (
-            <ApplicationHydrator
-              key={item.space.id}
-              application={
-                {
-                  id: item.space.id,
-                  space: item.space,
-                } as unknown as PendingApplication
-              }
-              visualType={VisualType.Avatar}
-            >
-              {({ application: hydratedApplication }) => (
-                <NewMembershipCard
-                  space={hydratedApplication?.space}
-                  to={hydratedApplication?.space.profile.url}
-                  membershipType="membership"
                 />
               )}
             </ApplicationHydrator>
