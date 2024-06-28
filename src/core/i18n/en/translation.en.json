@@ -2885,7 +2885,7 @@
     "infoTextBoK": "Select the Subspace you want as a body of knowledge for this Virtual Contributor",
     "noSubspacesInfo": "Create a Subspace first, and populate it with the relevant information for your Virtual Contributor.",
     "confirmDeletion": {
-      "description": "Are you certain you want to delete this {{entity}}? Keep in mind that this action is irreversible. All profile information will be removed and people will no longer be able to interact with the {{entity}}. "
+      "description": "Do you want to delete this {{entity}}? This action is irreversible. All profile information will be removed and people will no longer be able to interact with the {{entity}} "
     },
     "edit": {
       "title": "Edit Virtual Contributor Profile"
