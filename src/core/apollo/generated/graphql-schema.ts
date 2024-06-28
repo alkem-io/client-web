@@ -2829,6 +2829,12 @@ export type Metadata = {
   services: Array<ServiceMetadata>;
 };
 
+export type MigrateEmbeddings = {
+  __typename?: 'MigrateEmbeddings';
+  /** Result from the mutation execution. */
+  success: Scalars['Boolean'];
+};
+
 export enum MimeType {
   Avif = 'AVIF',
   Bmp = 'BMP',
@@ -2911,10 +2917,14 @@ export type Mutation = {
   beginCommunityMemberVerifiedCredentialOfferInteraction: AgentBeginVerifiedCredentialOfferOutput;
   /** Generate verified credential share request */
   beginVerifiedCredentialRequestInteraction: AgentBeginVerifiedCredentialRequestOutput;
+  /** Deletes collections nameID-... */
+  cleanupCollections: MigrateEmbeddings;
   /** Creates a new Space by converting an existing Challenge. */
   convertChallengeToSpace: Space;
   /** Creates a new Challenge by converting an existing Opportunity. */
   convertOpportunityToChallenge: Space;
+  /** Copies collections nameID-... into UUID-... */
+  copyCollections: MigrateEmbeddings;
   /** Creates a new Account with a single root Space. */
   createAccount: Account;
   /** Creates a new Actor in the specified ActorGroup. */
@@ -4690,6 +4700,8 @@ export type RolesResultCommunity = {
   displayName: Scalars['String'];
   /** A unique identifier for this membership result. */
   id: Scalars['String'];
+  /** The level of the Space e.g. space/challenge/opportunity. */
+  level: Scalars['Float'];
   /** Name Identifier of the entity */
   nameID: Scalars['NameID'];
   /** The roles held by the contributor */
@@ -4720,6 +4732,8 @@ export type RolesResultSpace = {
   displayName: Scalars['String'];
   /** A unique identifier for this membership result. */
   id: Scalars['String'];
+  /** The level of the Space e.g. space/challenge/opportunity. */
+  level: Scalars['Float'];
   /** Name Identifier of the entity */
   nameID: Scalars['NameID'];
   /** The roles held by the contributor */
@@ -5090,9 +5104,9 @@ export type SpaceSettingsPrivacy = {
 export enum SpaceType {
   BlankSlate = 'BLANK_SLATE',
   Challenge = 'CHALLENGE',
+  Knowledge = 'KNOWLEDGE',
   Opportunity = 'OPPORTUNITY',
   Space = 'SPACE',
-  VirtualContributor = 'VIRTUAL_CONTRIBUTOR',
 }
 
 export enum SpaceVisibility {
@@ -18834,7 +18848,7 @@ export type VcMembershipsQuery = {
       __typename?: 'RolesResultSpace';
       id: string;
       nameID: string;
-      subspaces: Array<{ __typename?: 'RolesResultCommunity'; id: string; nameID: string; type: SpaceType }>;
+      subspaces: Array<{ __typename?: 'RolesResultCommunity'; id: string; nameID: string; level: number }>;
     }>;
   };
   me: {
@@ -29651,28 +29665,6 @@ export type LatestContributionsSpacesQuery = {
       id: string;
       profile: { __typename?: 'Profile'; id: string; displayName: string };
     }>;
-  };
-};
-
-export type MembershipSuggestionSpaceQueryVariables = Exact<{
-  spaceNameId: Scalars['UUID_NAMEID'];
-}>;
-
-export type MembershipSuggestionSpaceQuery = {
-  __typename?: 'Query';
-  space: {
-    __typename?: 'Space';
-    id: string;
-    nameID: string;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      displayName: string;
-      tagline: string;
-      url: string;
-      avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-    };
-    community: { __typename?: 'Community'; id: string; myRoles: Array<CommunityRole> };
   };
 };
 
