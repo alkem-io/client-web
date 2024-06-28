@@ -2884,8 +2884,9 @@
     }
   },
   "createVirtualContributorWizard": {
+    "noSpaces": "Couldn't find any space hosted by you, please contact us for support.",
     "createdSubspace": {
-      "vision": "This subspace will be used as a body of knowledge for your Virtual Contributor. You can now add knowledge to this Subspace.",
+      "vision": "Welcome! Please follow the three steps on the right to learn how to use, upload knowledge to, and update your Virtual Contributor.",
       "tagline": "",
       "description": "",
       "impact": "",
@@ -2901,6 +2902,7 @@
       "description": "Your Virtual Contributor is trained on a body of knowledge, using an Alkemio Subspace.",
       "createSubspace": "Create a new Subspace",
       "useExistingSubspace": "Use an existing Subspace",
+      "cannotCreateSubspace": "This option is disabled because we couldn't find any Space that is hosted by you. Please contact us for support.",
       "cannotUseExisting": "This option cannot be selected because your space does not have a subspace."
     },
     "step1": {

@@ -9,6 +9,7 @@ import Gutters from '../../../../core/ui/grid/Gutters';
 import Loading from '../../../../core/ui/loading/Loading';
 
 type CreateNewVirtualContributorStep0Props = {
+  canCreateSubspace?: boolean;
   canUseExisting?: boolean;
   onClose: () => void;
   onCreateSubspace: () => void;
@@ -37,6 +38,7 @@ const BigButton = ({ tooltipDisabled, ...props }: ButtonProps & { tooltipDisable
 };
 
 const CreateNewVirtualContributorStep0 = ({
+  canCreateSubspace,
   canUseExisting,
   onClose,
   onCreateSubspace,
@@ -55,7 +57,11 @@ const CreateNewVirtualContributorStep0 = ({
           {loading && <Loading />}
           {!loading && (
             <Box display="flex" flexDirection={isSmallScreen ? 'column' : 'row'} width="100%" gap={gutters()}>
-              <BigButton onClick={onCreateSubspace}>
+              <BigButton
+                onClick={onCreateSubspace}
+                tooltipDisabled={t('createVirtualContributorWizard.step0.cannotCreateSubspace')}
+                disabled={!canCreateSubspace}
+              >
                 {t('createVirtualContributorWizard.step0.createSubspace')}
               </BigButton>
               <BigButton

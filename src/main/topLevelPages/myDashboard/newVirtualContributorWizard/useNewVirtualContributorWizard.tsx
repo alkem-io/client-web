@@ -10,11 +10,16 @@ import {
   useCreateVirtualContributorOnAccountMutation,
   useNewVirtualContributorMySpacesQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
-import { CommunityRole, SpaceType } from '../../../../core/apollo/generated/graphql-schema';
+import {
+  CommunityRole,
+  NewVirtualContributorMySpacesQuery,
+  SpaceType,
+} from '../../../../core/apollo/generated/graphql-schema';
 import NameVirtualContributorStep2 from './NameVirtualContributorStep2';
 import WhatsNextStep3 from './WhatsNextStep3';
 import { useTranslation } from 'react-i18next';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
+import { useUserContext } from '../../../../domain/community/user';
 
 enum Step {
   step0,
@@ -45,6 +50,7 @@ interface NewVirtualContributorWizardProps {}
 const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvided => {
   const { t } = useTranslation();
   const notify = useNotification();
+  const { user } = useUserContext();
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [step, setStep] = useState<Step>(Step.step0);
@@ -53,10 +59,29 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     setStep(Step.step0);
   };
 
-  const { data, loading } = useNewVirtualContributorMySpacesQuery();
+  const { data, loading } = useNewVirtualContributorMySpacesQuery({
+    skip: !dialogOpen,
+  });
+
+  const findMySpace = (
+    userId: string | undefined,
+    mySpaces: NewVirtualContributorMySpacesQuery['me']['mySpaces'] | undefined
+  ) => {
+    if (!userId || !mySpaces) {
+      return undefined;
+    }
+    const spacesHostedByUser = mySpaces.filter(space => space.space.account.host?.id === userId);
+    if (spacesHostedByUser.length > 0) {
+      return spacesHostedByUser[0];
+    } else {
+      notify(t('createVirtualContributorWizard.noSpaces'), 'error');
+      return undefined;
+    }
+  };
 
   const { mySpaceId, myAccountId, mySpaceName, mySubspaces, selectableSubspaces } = useMemo(() => {
-    const mySpace = data?.me.mySpaces[0]; // TODO: For now we just take the first space
+    const mySpace = findMySpace(user?.user.id, data?.me.mySpaces);
+
     const mySubspaces = mySpace?.space.subspaces ?? [];
     const selectableSubspaces = mySubspaces.map(subspace => ({ id: subspace.id, name: subspace.profile.displayName }));
 
@@ -67,13 +92,13 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
       mySubspaces,
       selectableSubspaces,
     };
-  }, [data]);
+  }, [data, user]);
 
   const startWizard = () => {
     setStep(Step.step0);
     setDialogOpen(true);
   };
-
+  const canCreateSubspace = mySpaceId !== undefined;
   const canUseExistingSubspace = selectableSubspaces.length > 0;
 
   const [createSubspace] = useCreateSubspaceMutation();
@@ -171,6 +196,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
         {step === Step.step0 && (
           <CreateNewVirtualContributorStep0
             onClose={onDialogClose}
+            canCreateSubspace={canCreateSubspace}
             canUseExisting={canUseExistingSubspace}
             loading={loading}
             onCreateSubspace={() => setStep(Step.step1)}
@@ -213,7 +239,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
         )}
       </Dialog>
     ),
-    [dialogOpen, step]
+    [dialogOpen, step, loading]
   );
 
   return {

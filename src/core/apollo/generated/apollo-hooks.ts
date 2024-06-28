@@ -23729,11 +23729,14 @@ export const NewVirtualContributorMySpacesDocument = gql`
   query NewVirtualContributorMySpaces {
     me {
       id
-      mySpaces {
+      mySpaces(showOnlyMyCreatedSpaces: true) {
         space {
           id
           account {
             id
+            host {
+              id
+            }
           }
           profile {
             id
