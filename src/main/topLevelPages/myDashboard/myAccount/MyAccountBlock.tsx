@@ -13,13 +13,16 @@ import { ApplicationHydrator } from '../../../../domain/community/pendingMembers
 import { PendingApplication, useUserContext } from '../../../../domain/community/user';
 import { ROUTE_CREATE_SPACE } from '../../../../domain/platform/routes/constants';
 import NewMembershipCard from '../newMemberships/NewMembershipCard';
+import useNewVirtualContributorWizard from '../newVirtualContributorWizard/useNewVirtualContributorWizard';
 
 const MyAccountBlock = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { data, loading } = useMyAccountQuery();
+  const { startWizard, NewVirtualContributorWizard } = useNewVirtualContributorWizard();
 
   // Curently displaying only the first hosted space and the first VC in it.
+  // TODO: use mySpaces(showOnlyMyCreatedSpaces: true) instead of spaceMemberships
   const hostedSpace = data?.me.spaceMemberships.filter(
     space => space.account && space.account.host?.id === data?.me.user?.id && space.level === 0
   )[0];
@@ -109,6 +112,7 @@ const MyAccountBlock = () => {
                 variant="contained"
                 disabled={!(user && user.hasPlatformPrivilege(AuthorizationPrivilege.CreateSpace)) || !hostedSpace}
                 sx={{ textTransform: 'none', paddingTop: gutters(0.5), paddingBottom: gutters(0.5) }}
+                onClick={startWizard}
               >
                 {hostedSpace
                   ? t('pages.home.sections.myAccount.createVCButton')
@@ -118,6 +122,7 @@ const MyAccountBlock = () => {
           )}
         </>
       )}
+      <NewVirtualContributorWizard />
     </PageContentBlock>
   );
 };
