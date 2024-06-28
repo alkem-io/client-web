@@ -2,6 +2,7 @@ import React from 'react';
 import Loading from '../../../../core/ui/loading/Loading';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import {
+  useBodyOfKnowledgeProfileQuery,
   useUpdateVirtualContributorMutation,
   useVirtualContributorQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
@@ -14,6 +15,7 @@ import { StorageConfigContextProvider } from '../../../storage/StorageBucket/Sto
 import { useTranslation } from 'react-i18next';
 import { SettingsSection } from '../../../platform/admin/layout/EntitySettingsLayout/constants';
 import VCSettingsPageLayout from '../layout/VCSettingsPageLayout';
+import { AiPersonaBodyOfKnowledgeType } from '../../../../core/apollo/generated/graphql-schema';
 
 export const VCSettingsPage = () => {
   const { t } = useTranslation();
@@ -26,6 +28,15 @@ export const VCSettingsPage = () => {
     variables: {
       id: vcNameId,
     },
+  });
+
+  const { data: bokProfile } = useBodyOfKnowledgeProfileQuery({
+    variables: {
+      spaceId: data?.virtualContributor?.aiPersona?.bodyOfKnowledgeID!,
+    },
+    skip:
+      !data?.virtualContributor?.aiPersona?.bodyOfKnowledgeID ||
+      data?.virtualContributor?.aiPersona?.bodyOfKnowledgeType !== AiPersonaBodyOfKnowledgeType.AlkemioSpace,
   });
 
   const [updateContributorMutation] = useUpdateVirtualContributorMutation();
@@ -44,15 +55,18 @@ export const VCSettingsPage = () => {
     });
   };
 
-  if (loading)
+  if (loading) {
     return (
       <Loading
         text={t('components.loading.message', { blockName: t('pages.virtualContributorProfile.settings.title') })}
       />
     );
+  }
+
   if (!data?.virtualContributor) {
     return null;
   }
+
   return (
     <StorageConfigContextProvider locationType="virtualContributor" virtualContributorId={data.virtualContributor.id}>
       <VCSettingsPageLayout currentTab={SettingsSection.MyProfile}>
@@ -61,6 +75,7 @@ export const VCSettingsPage = () => {
             <PageContentBlock>
               <VirtualContributorForm
                 virtualContributor={data?.virtualContributor}
+                bokProfile={bokProfile?.lookup.space?.profile}
                 avatar={data?.virtualContributor.profile.avatar}
                 onSave={handleUpdate}
               />
