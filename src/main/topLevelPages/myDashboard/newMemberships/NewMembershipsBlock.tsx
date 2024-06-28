@@ -31,8 +31,6 @@ import HorizontalCardsGroup from '../../../../core/ui/content/HorizontalCardsGro
 import useNavigate from '../../../../core/routing/useNavigate';
 import { PendingApplication } from '../../../../domain/community/user';
 import { InvitationItem } from '../../../../domain/community/user/providers/UserProvider/InvitationItem';
-import { Button } from '@mui/material';
-import useNewVirtualContributorWizard from '../newVirtualContributorWizard/useNewVirtualContributorWizard';
 
 enum PendingMembershipItemType {
   Invitation,
@@ -80,7 +78,6 @@ const NewMembershipsBlock = ({
   const navigate = useNavigate();
 
   const { data, refetch: refetchNewMembershipsQuery } = useNewMembershipsQuery();
-  const { startWizard: start, NewVirtualContributorWizard } = useNewVirtualContributorWizard();
 
   const communityInvitations = useMemo(
     () =>
@@ -203,10 +200,6 @@ const NewMembershipsBlock = ({
     <>
       <PageContentBlock halfWidth={halfWidth} disableGap flex>
         <PageContentBlockHeader title={t('pages.home.sections.newMemberships.title')} />
-        <Button variant="contained" onClick={start}>
-          Click here to create your own Virtual Contributor!
-        </Button>
-        <NewVirtualContributorWizard />
 
         {pendingCommunityInvitations.length === 0 && recentPendingApplications.length === 0 && (
           <CaptionSmall color={theme => theme.palette.neutral.light} marginBottom={gutters(0.5)}>
