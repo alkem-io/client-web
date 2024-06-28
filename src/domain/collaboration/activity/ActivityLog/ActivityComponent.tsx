@@ -115,7 +115,7 @@ export const ActivityViewChooser = ({ activity, ...rest }: ActivityViewChooserPr
     case ActivityEventType.DiscussionComment:
       return <ActivityDiscussionCommentCreatedView {...activity} {...rest} />;
     case ActivityEventType.MemberJoined:
-      const userAuthor = buildAuthorFromUser(activity.user);
+      const userAuthor = buildAuthorFromUser(activity.contributor);
       return <ActivityMemberJoinedView member={userAuthor} {...activity} {...rest} />;
     case ActivityEventType.ChallengeCreated:
       return <ActivityChallengeCreatedView {...activity} {...rest} />;
