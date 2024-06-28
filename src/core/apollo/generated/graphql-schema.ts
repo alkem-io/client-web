@@ -16152,6 +16152,17 @@ export type RemoveVirtualContributorFromCommunityMutation = {
   removeCommunityRoleFromVirtual: { __typename?: 'VirtualContributor'; id: string };
 };
 
+export type AssignCommunityRoleToVirtualContributorMutationVariables = Exact<{
+  communityId: Scalars['UUID'];
+  virtualContributorId: Scalars['UUID_NAMEID'];
+  role: CommunityRole;
+}>;
+
+export type AssignCommunityRoleToVirtualContributorMutation = {
+  __typename?: 'Mutation';
+  assignCommunityRoleToVirtual: { __typename?: 'VirtualContributor'; id: string };
+};
+
 export type AllOrganizationsQueryVariables = Exact<{
   first: Scalars['Int'];
   after?: InputMaybe<Scalars['UUID']>;
@@ -22865,7 +22876,7 @@ export type CreateVirtualContributorOnAccountMutation = {
     __typename?: 'VirtualContributor';
     id: string;
     nameID: string;
-    profile: { __typename?: 'Profile'; id: string };
+    profile: { __typename?: 'Profile'; id: string; url: string };
   };
 };
 
@@ -29904,6 +29915,40 @@ export type NewMembershipsBasicSpaceFragment = {
   id: string;
   level: number;
   profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string; url: string };
+};
+
+export type NewVirtualContributorMySpacesQueryVariables = Exact<{ [key: string]: never }>;
+
+export type NewVirtualContributorMySpacesQuery = {
+  __typename?: 'Query';
+  me: {
+    __typename?: 'MeQueryResults';
+    id: string;
+    mySpaces: Array<{
+      __typename?: 'MySpaceResults';
+      space: {
+        __typename?: 'Space';
+        id: string;
+        account: {
+          __typename?: 'Account';
+          id: string;
+          host?:
+            | { __typename?: 'Organization'; id: string }
+            | { __typename?: 'User'; id: string }
+            | { __typename?: 'VirtualContributor'; id: string }
+            | undefined;
+        };
+        profile: { __typename?: 'Profile'; id: string; displayName: string };
+        subspaces: Array<{
+          __typename?: 'Space';
+          id: string;
+          type: SpaceType;
+          profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+          community: { __typename?: 'Community'; id: string };
+        }>;
+      };
+    }>;
+  };
 };
 
 export type RecentForumMessagesQueryVariables = Exact<{

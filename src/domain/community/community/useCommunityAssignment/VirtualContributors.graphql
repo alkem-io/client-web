@@ -61,3 +61,15 @@ mutation RemoveVirtualContributorFromCommunity($communityId: UUID!, $virtualCont
     id
   }
 }
+
+mutation AssignCommunityRoleToVirtualContributor(
+  $communityId: UUID!
+  $virtualContributorId: UUID_NAMEID!
+  $role: CommunityRole!
+) {
+  assignCommunityRoleToVirtual(
+    roleData: { communityID: $communityId, role: $role, virtualContributorID: $virtualContributorId }
+  ) {
+    id
+  }
+}

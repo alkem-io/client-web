@@ -11359,6 +11359,65 @@ export type RemoveVirtualContributorFromCommunityMutationOptions = Apollo.BaseMu
   SchemaTypes.RemoveVirtualContributorFromCommunityMutation,
   SchemaTypes.RemoveVirtualContributorFromCommunityMutationVariables
 >;
+export const AssignCommunityRoleToVirtualContributorDocument = gql`
+  mutation AssignCommunityRoleToVirtualContributor(
+    $communityId: UUID!
+    $virtualContributorId: UUID_NAMEID!
+    $role: CommunityRole!
+  ) {
+    assignCommunityRoleToVirtual(
+      roleData: { communityID: $communityId, role: $role, virtualContributorID: $virtualContributorId }
+    ) {
+      id
+    }
+  }
+`;
+export type AssignCommunityRoleToVirtualContributorMutationFn = Apollo.MutationFunction<
+  SchemaTypes.AssignCommunityRoleToVirtualContributorMutation,
+  SchemaTypes.AssignCommunityRoleToVirtualContributorMutationVariables
+>;
+
+/**
+ * __useAssignCommunityRoleToVirtualContributorMutation__
+ *
+ * To run a mutation, you first call `useAssignCommunityRoleToVirtualContributorMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAssignCommunityRoleToVirtualContributorMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [assignCommunityRoleToVirtualContributorMutation, { data, loading, error }] = useAssignCommunityRoleToVirtualContributorMutation({
+ *   variables: {
+ *      communityId: // value for 'communityId'
+ *      virtualContributorId: // value for 'virtualContributorId'
+ *      role: // value for 'role'
+ *   },
+ * });
+ */
+export function useAssignCommunityRoleToVirtualContributorMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.AssignCommunityRoleToVirtualContributorMutation,
+    SchemaTypes.AssignCommunityRoleToVirtualContributorMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.AssignCommunityRoleToVirtualContributorMutation,
+    SchemaTypes.AssignCommunityRoleToVirtualContributorMutationVariables
+  >(AssignCommunityRoleToVirtualContributorDocument, options);
+}
+
+export type AssignCommunityRoleToVirtualContributorMutationHookResult = ReturnType<
+  typeof useAssignCommunityRoleToVirtualContributorMutation
+>;
+export type AssignCommunityRoleToVirtualContributorMutationResult =
+  Apollo.MutationResult<SchemaTypes.AssignCommunityRoleToVirtualContributorMutation>;
+export type AssignCommunityRoleToVirtualContributorMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.AssignCommunityRoleToVirtualContributorMutation,
+  SchemaTypes.AssignCommunityRoleToVirtualContributorMutationVariables
+>;
 export const AllOrganizationsDocument = gql`
   query AllOrganizations($first: Int!, $after: UUID, $filter: OrganizationFilterInput) {
     organizationsPaginated(first: $first, after: $after, filter: $filter) {
@@ -18357,6 +18416,7 @@ export const CreateVirtualContributorOnAccountDocument = gql`
       nameID
       profile {
         id
+        url
       }
     }
   }
@@ -23747,6 +23807,96 @@ export type NewMembershipsQueryResult = Apollo.QueryResult<
 >;
 export function refetchNewMembershipsQuery(variables?: SchemaTypes.NewMembershipsQueryVariables) {
   return { query: NewMembershipsDocument, variables: variables };
+}
+
+export const NewVirtualContributorMySpacesDocument = gql`
+  query NewVirtualContributorMySpaces {
+    me {
+      id
+      mySpaces(showOnlyMyCreatedSpaces: true) {
+        space {
+          id
+          account {
+            id
+            host {
+              id
+            }
+          }
+          profile {
+            id
+            displayName
+          }
+          subspaces {
+            id
+            type
+            profile {
+              id
+              displayName
+              url
+            }
+            community {
+              id
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useNewVirtualContributorMySpacesQuery__
+ *
+ * To run a query within a React component, call `useNewVirtualContributorMySpacesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useNewVirtualContributorMySpacesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useNewVirtualContributorMySpacesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useNewVirtualContributorMySpacesQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.NewVirtualContributorMySpacesQuery,
+    SchemaTypes.NewVirtualContributorMySpacesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.NewVirtualContributorMySpacesQuery,
+    SchemaTypes.NewVirtualContributorMySpacesQueryVariables
+  >(NewVirtualContributorMySpacesDocument, options);
+}
+
+export function useNewVirtualContributorMySpacesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.NewVirtualContributorMySpacesQuery,
+    SchemaTypes.NewVirtualContributorMySpacesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.NewVirtualContributorMySpacesQuery,
+    SchemaTypes.NewVirtualContributorMySpacesQueryVariables
+  >(NewVirtualContributorMySpacesDocument, options);
+}
+
+export type NewVirtualContributorMySpacesQueryHookResult = ReturnType<typeof useNewVirtualContributorMySpacesQuery>;
+export type NewVirtualContributorMySpacesLazyQueryHookResult = ReturnType<
+  typeof useNewVirtualContributorMySpacesLazyQuery
+>;
+export type NewVirtualContributorMySpacesQueryResult = Apollo.QueryResult<
+  SchemaTypes.NewVirtualContributorMySpacesQuery,
+  SchemaTypes.NewVirtualContributorMySpacesQueryVariables
+>;
+export function refetchNewVirtualContributorMySpacesQuery(
+  variables?: SchemaTypes.NewVirtualContributorMySpacesQueryVariables
+) {
+  return { query: NewVirtualContributorMySpacesDocument, variables: variables };
 }
 
 export const RecentForumMessagesDocument = gql`

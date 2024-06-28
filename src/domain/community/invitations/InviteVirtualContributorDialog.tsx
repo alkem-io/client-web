@@ -53,7 +53,7 @@ const InviteVirtualContributorDialog = ({
   const [handleSendMessage, isLoading, error] = useLoadingState(async (values: InviteUserData) => {
     await onInviteUser({ ...values, contributorIds: [contributorId] });
     if (!error) {
-      notify('Invitation sent succesfully', 'success');
+      notify(t('community.invitationSent'), 'success');
       onClose();
     }
   });
@@ -89,8 +89,6 @@ const InviteVirtualContributorDialog = ({
                   <ProfileChip
                     displayName={vcProfile?.virtualContributor?.profile.displayName ?? ''}
                     avatarUrl={vcProfile?.virtualContributor?.profile.avatar?.uri ?? ''}
-                    city=""
-                    country=""
                   />
                 </GridProvider>
               </GridContainer>
