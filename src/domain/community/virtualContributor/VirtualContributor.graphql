@@ -28,6 +28,12 @@ query VirtualContributor ($id: UUID_NAMEID!) {
     }
     searchVisibility
     listedInStore
+    aiPersona {
+      id
+      bodyOfKnowledgeID
+      bodyOfKnowledgeType
+      bodyOfKnowledge
+    }
     profile {
       id
       displayName
