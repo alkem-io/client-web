@@ -29701,6 +29701,60 @@ export type MembershipSuggestionSpaceQuery = {
   };
 };
 
+export type MyAccountQueryVariables = Exact<{ [key: string]: never }>;
+
+export type MyAccountQuery = {
+  __typename?: 'Query';
+  me: {
+    __typename?: 'MeQueryResults';
+    spaceMemberships: Array<{
+      __typename?: 'Space';
+      id: string;
+      level: number;
+      profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string; url: string };
+      account: {
+        __typename?: 'Account';
+        id: string;
+        host?:
+          | {
+              __typename?: 'Organization';
+              id: string;
+              nameID: string;
+              profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string; url: string };
+            }
+          | {
+              __typename?: 'User';
+              id: string;
+              nameID: string;
+              profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string; url: string };
+            }
+          | {
+              __typename?: 'VirtualContributor';
+              id: string;
+              nameID: string;
+              profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string; url: string };
+            }
+          | undefined;
+      };
+    }>;
+    user?:
+      | {
+          __typename?: 'User';
+          id: string;
+          accounts: Array<{
+            __typename?: 'Account';
+            id: string;
+            virtualContributors: Array<{
+              __typename?: 'VirtualContributor';
+              id: string;
+              profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string; url: string };
+            }>;
+          }>;
+        }
+      | undefined;
+  };
+};
+
 export type MyMembershipsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type MyMembershipsQuery = {

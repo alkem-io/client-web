@@ -1,5 +1,5 @@
-import { Box, Container } from '@mui/material';
 import React, { FC, useMemo } from 'react';
+import { Box, Container } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import SpaceEditForm, { SpaceEditFormValuesType } from '../../../../journey/space/spaceEditForm/SpaceEditForm';
 import WrapperTypography from '../../../../../core/ui/typography/deprecated/WrapperTypography';
@@ -7,6 +7,7 @@ import AdminLayout from '../../layout/toplevel/AdminLayout';
 import { AdminSection } from '../../layout/toplevel/constants';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import {
+  refetchMyAccountQuery,
   useCreateAccountMutation,
   useOrganizationsListQuery,
   useSpaceUrlLazyQuery,
@@ -26,6 +27,7 @@ export const NewSpace: FC<NewSpaceProps> = () => {
   const [spaceUrlQuery] = useSpaceUrlLazyQuery();
 
   const [createAccount, { loading }] = useCreateAccountMutation({
+    refetchQueries: [refetchMyAccountQuery()],
     onCompleted: async data => {
       const spaceId = data.createAccount.spaceID;
       const spaceWithUrl = await spaceUrlQuery({ variables: { spaceNameId: spaceId } });
