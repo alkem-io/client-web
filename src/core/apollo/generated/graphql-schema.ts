@@ -561,8 +561,12 @@ export type AiPersona = {
   __typename?: 'AiPersona';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
-  /** The type of knowledge provided by this AI Persona. */
-  bodyOfKnowledgeType: AiPersonaBodyOfKnowledgeType;
+  /** A overview of knowledge provided by this AI Persona. */
+  bodyOfKnowledge: Scalars['Markdown'];
+  /** The body of knowledge ID used for the AI Persona. */
+  bodyOfKnowledgeID?: Maybe<Scalars['String']>;
+  /** The body of knowledge type used for the AI Persona. */
+  bodyOfKnowledgeType?: Maybe<AiPersonaBodyOfKnowledgeType>;
   /** The type of context sharing that are supported by this AI Persona when used. */
   dataAccessMode: AiPersonaDataAccessMode;
   /** The description for this AI Persona. */
@@ -594,25 +598,6 @@ export enum AiPersonaInteractionMode {
   DiscussionTagging = 'DISCUSSION_TAGGING',
 }
 
-export type AiPersonaQuestionInput = {
-  /** Virtual Persona Type. */
-  aiPersonaID: Scalars['UUID'];
-  /** The question that is being asked. */
-  question: Scalars['String'];
-};
-
-export type AiPersonaResult = {
-  __typename?: 'AiPersonaResult';
-  /** The answer to the question */
-  answer: Scalars['String'];
-  /** The id of the answer; null if an error was returned */
-  id?: Maybe<Scalars['String']>;
-  /** The original question */
-  question: Scalars['String'];
-  /** The sources used to answer the question */
-  sources?: Maybe<Array<Source>>;
-};
-
 export type AiPersonaService = {
   __typename?: 'AiPersonaService';
   /** The authorization rules for the entity */
@@ -642,18 +627,6 @@ export type AiPersonaServiceQuestionInput = {
   question: Scalars['String'];
 };
 
-export type AiPersonaServiceResult = {
-  __typename?: 'AiPersonaServiceResult';
-  /** The answer to the question */
-  answer: Scalars['String'];
-  /** The id of the answer; null if an error was returned */
-  id?: Maybe<Scalars['String']>;
-  /** The original question */
-  question: Scalars['String'];
-  /** The sources used to answer the question */
-  sources?: Maybe<Array<Source>>;
-};
-
 export type AiServer = {
   __typename?: 'AiServer';
   /** A particular AiPersonaService */
@@ -661,7 +634,7 @@ export type AiServer = {
   /** The AiPersonaServices on this aiServer */
   aiPersonaServices: Array<AiPersonaService>;
   /** Ask the virtual persona engine for guidance. */
-  askAiPersonaServiceQuestion: AiPersonaServiceResult;
+  askAiPersonaServiceQuestion: MessageAnswerQuestion;
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The default AiPersonaService in use on the aiServer. */
@@ -677,8 +650,6 @@ export type AiServerAiPersonaServiceArgs = {
 export type AiServerAskAiPersonaServiceQuestionArgs = {
   chatData: AiPersonaServiceQuestionInput;
 };
-
-export type AnyInvitation = Invitation | InvitationExternal;
 
 export type Application = {
   __typename?: 'Application';
@@ -799,6 +770,7 @@ export enum AuthorizationCredential {
   SpaceSubspaceAdmin = 'SPACE_SUBSPACE_ADMIN',
   UserGroupMember = 'USER_GROUP_MEMBER',
   UserSelfManagement = 'USER_SELF_MANAGEMENT',
+  VcCampaign = 'VC_CAMPAIGN',
 }
 
 export type AuthorizationPolicyRuleCredential = {
@@ -1106,18 +1078,6 @@ export type ChatGuidanceInput = {
   question: Scalars['String'];
 };
 
-export type ChatGuidanceResult = {
-  __typename?: 'ChatGuidanceResult';
-  /** The answer to the question */
-  answer: Scalars['String'];
-  /** The id of the answer; null if an error was returned */
-  id?: Maybe<Scalars['String']>;
-  /** The original question */
-  question: Scalars['String'];
-  /** The sources used to answer the question */
-  sources?: Maybe<Array<Source>>;
-};
-
 export type Collaboration = {
   __typename?: 'Collaboration';
   /** The authorization rules for the entity */
@@ -1272,8 +1232,6 @@ export type Community = Groupable & {
   id: Scalars['UUID'];
   /** Invitations for this community. */
   invitations: Array<Invitation>;
-  /** Invitations to join this Community for users not yet on the Alkemio platform. */
-  invitationsExternal: Array<InvitationExternal>;
   /** All users that are contributing to this Community. */
   memberUsers: Array<User>;
   /** The membership status of the currently logged in user. */
@@ -1284,6 +1242,8 @@ export type Community = Groupable & {
   myRolesImplicit: Array<CommunityRoleImplicit>;
   /** All Organizations that have the specified Role in this Community. */
   organizationsInRole: Array<Organization>;
+  /** Invitations to join this Community for users not yet on the Alkemio platform. */
+  platformInvitations: Array<PlatformInvitation>;
   /** The policy that defines the roles for this Community. */
   policy: CommunityPolicy;
   /** All users that have the specified Role in this Community. */
@@ -1599,6 +1559,7 @@ export type CreateActorInput = {
 export type CreateAiPersonaInput = {
   aiPersonaService?: InputMaybe<CreateAiPersonaServiceInput>;
   aiPersonaServiceID?: InputMaybe<Scalars['UUID']>;
+  bodyOfKnowledge?: InputMaybe<Scalars['Markdown']>;
   description?: InputMaybe<Scalars['Markdown']>;
 };
 
@@ -1757,14 +1718,6 @@ export type CreateInvitationForContributorsOnCommunityInput = {
   welcomeMessage?: InputMaybe<Scalars['String']>;
 };
 
-export type CreateInvitationUserByEmailOnCommunityInput = {
-  communityID: Scalars['UUID'];
-  email: Scalars['String'];
-  firstName?: InputMaybe<Scalars['String']>;
-  lastName?: InputMaybe<Scalars['String']>;
-  welcomeMessage?: InputMaybe<Scalars['String']>;
-};
-
 export type CreateLicensePlanOnLicensingInput = {
   /** Assign this plan to all new Organization accounts */
   assignToNewOrganizationAccounts: Scalars['Boolean'];
@@ -1821,6 +1774,22 @@ export type CreateOrganizationInput = {
   nameID?: InputMaybe<Scalars['NameID']>;
   profileData: CreateProfileInput;
   website?: InputMaybe<Scalars['String']>;
+};
+
+export type CreatePlatformInvitationForRoleInput = {
+  email: Scalars['String'];
+  firstName?: InputMaybe<Scalars['String']>;
+  lastName?: InputMaybe<Scalars['String']>;
+  platformRole: PlatformRole;
+  welcomeMessage?: InputMaybe<Scalars['String']>;
+};
+
+export type CreatePlatformInvitationOnCommunityInput = {
+  communityID: Scalars['UUID'];
+  email: Scalars['String'];
+  firstName?: InputMaybe<Scalars['String']>;
+  lastName?: InputMaybe<Scalars['String']>;
+  welcomeMessage?: InputMaybe<Scalars['String']>;
 };
 
 export type CreatePostInput = {
@@ -2019,6 +1988,7 @@ export enum CredentialType {
   SpaceSubspaceAdmin = 'SPACE_SUBSPACE_ADMIN',
   UserGroupMember = 'USER_GROUP_MEMBER',
   UserSelfManagement = 'USER_SELF_MANAGEMENT',
+  VcCampaign = 'VC_CAMPAIGN',
 }
 
 export type DeleteActorGroupInput = {
@@ -2077,10 +2047,6 @@ export type DeleteInnovationPackInput = {
   ID: Scalars['UUID_NAMEID'];
 };
 
-export type DeleteInvitationExternalInput = {
-  ID: Scalars['UUID'];
-};
-
 export type DeleteInvitationInput = {
   ID: Scalars['UUID'];
 };
@@ -2095,6 +2061,10 @@ export type DeleteLinkInput = {
 
 export type DeleteOrganizationInput = {
   ID: Scalars['UUID_NAMEID'];
+};
+
+export type DeletePlatformInvitationInput = {
+  ID: Scalars['UUID'];
 };
 
 export type DeletePostInput = {
@@ -2468,26 +2438,6 @@ export type InvitationEventInput = {
   invitationID: Scalars['UUID'];
 };
 
-export type InvitationExternal = {
-  __typename?: 'InvitationExternal';
-  /** The authorization rules for the entity */
-  authorization?: Maybe<Authorization>;
-  /** The User who triggered the invitationExternal. */
-  createdBy: User;
-  createdDate: Scalars['DateTime'];
-  /** The email address of the external user being invited */
-  email: Scalars['String'];
-  firstName: Scalars['String'];
-  /** The ID of the entity */
-  id: Scalars['UUID'];
-  /** Whether to also add the invited user to the parent community. */
-  invitedToParent: Scalars['Boolean'];
-  lastName: Scalars['String'];
-  /** Whether a new user profile has been created. */
-  profileCreated: Scalars['Boolean'];
-  welcomeMessage?: Maybe<Scalars['String']>;
-};
-
 export type LatestReleaseDiscussion = {
   __typename?: 'LatestReleaseDiscussion';
   /** Id of the latest release discussion. */
@@ -2851,10 +2801,38 @@ export type Message = {
   timestamp: Scalars['Float'];
 };
 
+/** A detailed answer to a question, typically from an AI service. */
+export type MessageAnswerQuestion = {
+  __typename?: 'MessageAnswerQuestion';
+  /** The answer to the question */
+  answer: Scalars['String'];
+  /** The id of the answer; null if an error was returned */
+  id?: Maybe<Scalars['String']>;
+  /** The original question */
+  question: Scalars['String'];
+  /** The sources used to answer the question */
+  sources?: Maybe<Array<MessageAnswerToQuestionSource>>;
+};
+
+/** A source used in a detailed answer to a question. */
+export type MessageAnswerToQuestionSource = {
+  __typename?: 'MessageAnswerToQuestionSource';
+  /** The title of the source */
+  title?: Maybe<Scalars['String']>;
+  /** The URI of the source */
+  uri?: Maybe<Scalars['String']>;
+};
+
 export type Metadata = {
   __typename?: 'Metadata';
   /** Collection of metadata about Alkemio services. */
   services: Array<ServiceMetadata>;
+};
+
+export type MigrateEmbeddings = {
+  __typename?: 'MigrateEmbeddings';
+  /** Result from the mutation execution. */
+  success: Scalars['Boolean'];
 };
 
 export enum MimeType {
@@ -2939,10 +2917,14 @@ export type Mutation = {
   beginCommunityMemberVerifiedCredentialOfferInteraction: AgentBeginVerifiedCredentialOfferOutput;
   /** Generate verified credential share request */
   beginVerifiedCredentialRequestInteraction: AgentBeginVerifiedCredentialRequestOutput;
+  /** Deletes collections nameID-... */
+  cleanupCollections: MigrateEmbeddings;
   /** Creates a new Space by converting an existing Challenge. */
   convertChallengeToSpace: Space;
   /** Creates a new Challenge by converting an existing Opportunity. */
   convertOpportunityToChallenge: Space;
+  /** Copies collections nameID-... into UUID-... */
+  copyCollections: MigrateEmbeddings;
   /** Creates a new Account with a single root Space. */
   createAccount: Account;
   /** Creates a new Actor in the specified ActorGroup. */
@@ -3019,14 +3001,14 @@ export type Mutation = {
   deleteInnovationPack: InnovationPack;
   /** Removes the specified User invitation. */
   deleteInvitation: Invitation;
-  /** Removes the specified User invitationExternal. */
-  deleteInvitationExternal: InvitationExternal;
   /** Deletes the specified LicensePlan. */
   deleteLicensePlan: LicensePlan;
   /** Deletes the specified Link. */
   deleteLink: Link;
   /** Deletes the specified Organization. */
   deleteOrganization: Organization;
+  /** Removes the specified User platformInvitation. */
+  deletePlatformInvitation: PlatformInvitation;
   /** Deletes the specified Post. */
   deletePost: Post;
   /** Deletes the specified PostTemplate. */
@@ -3067,14 +3049,18 @@ export type Mutation = {
   ingestSpace: Space;
   /** Invite an existing Contriburor to join the specified Community as a member. */
   inviteContributorsForCommunityMembership: Array<Invitation>;
-  /** Invite an external User to join the specified Community as a member. */
-  inviteForCommunityMembershipByEmail: AnyInvitation;
+  /** Invite a User to join the platform and the specified Community as a member. */
+  inviteUserToPlatformAndCommunity: PlatformInvitation;
+  /** Invite a User to join the platform in a particular Platform role e.g. BetaTester */
+  inviteUserToPlatformWithRole: PlatformInvitation;
   /** Join the specified Community as a member, without going through an approval process. */
   joinCommunity: Community;
   /** Sends a message on the specified User`s behalf and returns the room id */
   messageUser: Scalars['String'];
   /** Moves the specified Contribution to another Callout. */
   moveContributionToCallout: CalloutContribution;
+  /** Triggers a request to the backing AI Service to refresh the knowledge that is available to it. */
+  refreshVirtualContributorBodyOfKnowledge: Scalars['Boolean'];
   /** Removes an Organization from a Role in the specified Community. */
   removeCommunityRoleFromOrganization: Organization;
   /** Removes a User from a Role in the specified Community. */
@@ -3459,10 +3445,6 @@ export type MutationDeleteInvitationArgs = {
   deleteData: DeleteInvitationInput;
 };
 
-export type MutationDeleteInvitationExternalArgs = {
-  deleteData: DeleteInvitationExternalInput;
-};
-
 export type MutationDeleteLicensePlanArgs = {
   deleteData: DeleteLicensePlanInput;
 };
@@ -3473,6 +3455,10 @@ export type MutationDeleteLinkArgs = {
 
 export type MutationDeleteOrganizationArgs = {
   deleteData: DeleteOrganizationInput;
+};
+
+export type MutationDeletePlatformInvitationArgs = {
+  deleteData: DeletePlatformInvitationInput;
 };
 
 export type MutationDeletePostArgs = {
@@ -3551,8 +3537,12 @@ export type MutationInviteContributorsForCommunityMembershipArgs = {
   invitationData: CreateInvitationForContributorsOnCommunityInput;
 };
 
-export type MutationInviteForCommunityMembershipByEmailArgs = {
-  invitationData: CreateInvitationUserByEmailOnCommunityInput;
+export type MutationInviteUserToPlatformAndCommunityArgs = {
+  invitationData: CreatePlatformInvitationOnCommunityInput;
+};
+
+export type MutationInviteUserToPlatformWithRoleArgs = {
+  invitationData: CreatePlatformInvitationForRoleInput;
 };
 
 export type MutationJoinCommunityArgs = {
@@ -3565,6 +3555,10 @@ export type MutationMessageUserArgs = {
 
 export type MutationMoveContributionToCalloutArgs = {
   moveContributionData: MoveCalloutContributionInput;
+};
+
+export type MutationRefreshVirtualContributorBodyOfKnowledgeArgs = {
+  deleteData: RefreshVirtualContributorBodyOfKnowledgeInput;
 };
 
 export type MutationRemoveCommunityRoleFromOrganizationArgs = {
@@ -4018,6 +4012,8 @@ export type Platform = {
   licensing: Licensing;
   /** Alkemio Services Metadata. */
   metadata: Metadata;
+  /** Invitations to join roles for users not yet on the Alkemio platform. */
+  platformInvitations: Array<PlatformInvitation>;
   /** The StorageAggregator with documents in use by Users + Organizations on the Platform. */
   storageAggregator: StorageAggregator;
 };
@@ -4045,6 +4041,28 @@ export enum PlatformFeatureFlagName {
   Subscriptions = 'SUBSCRIPTIONS',
   Whiteboards = 'WHITEBOARDS',
 }
+
+export type PlatformInvitation = {
+  __typename?: 'PlatformInvitation';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** Whether to also add the invited user to the parent community. */
+  communityInvitedToParent: Scalars['Boolean'];
+  /** The User who triggered the platformInvitation. */
+  createdBy: User;
+  createdDate: Scalars['DateTime'];
+  /** The email address of the external user being invited */
+  email: Scalars['String'];
+  firstName: Scalars['String'];
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  lastName: Scalars['String'];
+  /** The platform role the user will receive when they sign up */
+  platformRole?: Maybe<PlatformRole>;
+  /** Whether a new user profile has been created. */
+  profileCreated: Scalars['Boolean'];
+  welcomeMessage?: Maybe<Scalars['String']>;
+};
 
 export type PlatformLocations = {
   __typename?: 'PlatformLocations';
@@ -4105,6 +4123,7 @@ export enum PlatformRole {
   LicenseManager = 'LICENSE_MANAGER',
   SpacesReader = 'SPACES_READER',
   Support = 'SUPPORT',
+  VcCampaign = 'VC_CAMPAIGN',
 }
 
 export type Post = {
@@ -4299,10 +4318,10 @@ export type Query = {
   adminCommunicationOrphanedUsage: CommunicationAdminOrphanedUsageResult;
   /** Alkemio AiServer */
   aiServer: AiServer;
-  /** Ask the virtual persona engine for guidance. */
-  askAiPersonaQuestion: AiPersonaResult;
   /** Ask the chat engine for guidance. */
-  askChatGuidanceQuestion: ChatGuidanceResult;
+  askChatGuidanceQuestion: MessageAnswerQuestion;
+  /** Ask the virtual contributor a question directly. */
+  askVirtualContributorQuestion: MessageAnswerQuestion;
   /** Get supported credential metadata */
   getSupportedVerifiedCredentialMetadata: Array<CredentialMetadataOutput>;
   /** Allow direct lookup of entities from the domain model */
@@ -4375,12 +4394,12 @@ export type QueryAdminCommunicationMembershipArgs = {
   communicationData: CommunicationAdminMembershipInput;
 };
 
-export type QueryAskAiPersonaQuestionArgs = {
-  chatData: AiPersonaQuestionInput;
-};
-
 export type QueryAskChatGuidanceQuestionArgs = {
   chatData: ChatGuidanceInput;
+};
+
+export type QueryAskVirtualContributorQuestionArgs = {
+  chatData: VirtualContributorQuestionInput;
 };
 
 export type QueryOrganizationArgs = {
@@ -4512,6 +4531,11 @@ export type Reference = {
   name: Scalars['String'];
   /** URI of the reference */
   uri: Scalars['String'];
+};
+
+export type RefreshVirtualContributorBodyOfKnowledgeInput = {
+  /** The ID of the Virtual Contributor to update. */
+  virtualContributorID: Scalars['UUID'];
 };
 
 export type Relation = {
@@ -4676,6 +4700,8 @@ export type RolesResultCommunity = {
   displayName: Scalars['String'];
   /** A unique identifier for this membership result. */
   id: Scalars['String'];
+  /** The level of the Space e.g. space/challenge/opportunity. */
+  level: Scalars['Float'];
   /** Name Identifier of the entity */
   nameID: Scalars['NameID'];
   /** The roles held by the contributor */
@@ -4706,6 +4732,8 @@ export type RolesResultSpace = {
   displayName: Scalars['String'];
   /** A unique identifier for this membership result. */
   id: Scalars['String'];
+  /** The level of the Space e.g. space/challenge/opportunity. */
+  level: Scalars['Float'];
   /** Name Identifier of the entity */
   nameID: Scalars['NameID'];
   /** The roles held by the contributor */
@@ -4956,14 +4984,6 @@ export type ServiceMetadata = {
   version?: Maybe<Scalars['String']>;
 };
 
-export type Source = {
-  __typename?: 'Source';
-  /** The title of the source */
-  title?: Maybe<Scalars['String']>;
-  /** The URI of the source */
-  uri?: Maybe<Scalars['String']>;
-};
-
 export type Space = {
   __typename?: 'Space';
   /** The Account that this Space is part of. */
@@ -5084,9 +5104,9 @@ export type SpaceSettingsPrivacy = {
 export enum SpaceType {
   BlankSlate = 'BLANK_SLATE',
   Challenge = 'CHALLENGE',
+  Knowledge = 'KNOWLEDGE',
   Opportunity = 'OPPORTUNITY',
   Space = 'SPACE',
-  VirtualContributor = 'VIRTUAL_CONTRIBUTOR',
 }
 
 export enum SpaceVisibility {
@@ -6049,7 +6069,7 @@ export type VirtualContributor = Contributor & {
   /** The Agent representing this User. */
   agent: Agent;
   /** The AI persona being used by this virtual contributor */
-  aiPersona: AiPersona;
+  aiPersona?: Maybe<AiPersona>;
   /** The authorization rules for the Contributor */
   authorization?: Maybe<Authorization>;
   /** The ID of the Contributor */
@@ -6064,6 +6084,13 @@ export type VirtualContributor = Contributor & {
   searchVisibility: SearchVisibility;
   /** The StorageAggregator for managing storage buckets in use by this Virtual */
   storageAggregator?: Maybe<StorageAggregator>;
+};
+
+export type VirtualContributorQuestionInput = {
+  /** The question that is being asked. */
+  question: Scalars['String'];
+  /** Virtual Contributor to be asked. */
+  virtualContributorID: Scalars['UUID'];
 };
 
 export type Visual = {
@@ -14961,8 +14988,8 @@ export type CommunityApplicationsInvitationsQuery = {
                   };
                 };
           }>;
-          invitationsExternal: Array<{
-            __typename?: 'InvitationExternal';
+          platformInvitations: Array<{
+            __typename?: 'PlatformInvitation';
             id: string;
             createdDate: Date;
             email: string;
@@ -15082,8 +15109,8 @@ export type AdminCommunityInvitationFragment = {
       };
 };
 
-export type AdminCommunityInvitationExternalFragment = {
-  __typename?: 'InvitationExternal';
+export type AdminPlatformInvitationCommunityFragment = {
+  __typename?: 'PlatformInvitation';
   id: string;
   createdDate: Date;
   email: string;
@@ -16077,6 +16104,27 @@ export type AvailableVirtualContributorsQuery = {
   }>;
 };
 
+export type AvailableVirtualContributorsInLibraryQueryVariables = Exact<{ [key: string]: never }>;
+
+export type AvailableVirtualContributorsInLibraryQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    library: {
+      __typename?: 'Library';
+      id: string;
+      virtualContributors: Array<{
+        __typename?: 'VirtualContributor';
+        searchVisibility: SearchVisibility;
+        id: string;
+        nameID: string;
+        profile: { __typename?: 'Profile'; id: string; displayName: string };
+      }>;
+    };
+  };
+};
+
 export type VirtualContributorNameFragment = {
   __typename?: 'VirtualContributor';
   id: string;
@@ -16102,6 +16150,17 @@ export type RemoveVirtualContributorFromCommunityMutationVariables = Exact<{
 export type RemoveVirtualContributorFromCommunityMutation = {
   __typename?: 'Mutation';
   removeCommunityRoleFromVirtual: { __typename?: 'VirtualContributor'; id: string };
+};
+
+export type AssignCommunityRoleToVirtualContributorMutationVariables = Exact<{
+  communityId: Scalars['UUID'];
+  virtualContributorId: Scalars['UUID_NAMEID'];
+  role: CommunityRole;
+}>;
+
+export type AssignCommunityRoleToVirtualContributorMutation = {
+  __typename?: 'Mutation';
+  assignCommunityRoleToVirtual: { __typename?: 'VirtualContributor'; id: string };
 };
 
 export type AllOrganizationsQueryVariables = Exact<{
@@ -16235,6 +16294,16 @@ export type RemoveCommunityRoleFromUserMutationVariables = Exact<{
 export type RemoveCommunityRoleFromUserMutation = {
   __typename?: 'Mutation';
   removeCommunityRoleFromUser: { __typename?: 'User'; id: string };
+};
+
+export type RemoveVirtualContributorAsCommunityMemberMutationVariables = Exact<{
+  communityId: Scalars['UUID'];
+  memberId: Scalars['UUID_NAMEID'];
+}>;
+
+export type RemoveVirtualContributorAsCommunityMemberMutation = {
+  __typename?: 'Mutation';
+  removeCommunityRoleFromVirtual: { __typename?: 'VirtualContributor'; id: string };
 };
 
 export type ContributorsPageOrganizationsQueryVariables = Exact<{
@@ -17146,13 +17215,13 @@ export type DeleteInvitationMutation = {
   deleteInvitation: { __typename?: 'Invitation'; id: string };
 };
 
-export type DeleteExternalInvitationMutationVariables = Exact<{
+export type DeletePlatformInvitationMutationVariables = Exact<{
   invitationId: Scalars['UUID'];
 }>;
 
-export type DeleteExternalInvitationMutation = {
+export type DeletePlatformInvitationMutation = {
   __typename?: 'Mutation';
-  deleteInvitationExternal: { __typename?: 'InvitationExternal'; id: string };
+  deletePlatformInvitation: { __typename?: 'PlatformInvitation'; id: string };
 };
 
 export type InvitationStateEventMutationVariables = Exact<{
@@ -17185,17 +17254,15 @@ export type InviteContributorsToCommunityMutation = {
   inviteContributorsForCommunityMembership: Array<{ __typename?: 'Invitation'; id: string }>;
 };
 
-export type InviteExternalUserMutationVariables = Exact<{
+export type InviteUserToPlatformAndCommunityMutationVariables = Exact<{
   email: Scalars['String'];
   communityId: Scalars['UUID'];
   message?: InputMaybe<Scalars['String']>;
 }>;
 
-export type InviteExternalUserMutation = {
+export type InviteUserToPlatformAndCommunityMutation = {
   __typename?: 'Mutation';
-  inviteForCommunityMembershipByEmail:
-    | { __typename?: 'Invitation'; id: string }
-    | { __typename?: 'InvitationExternal'; id: string };
+  inviteUserToPlatformAndCommunity: { __typename?: 'PlatformInvitation'; id: string };
 };
 
 export type PendingMembershipsSpaceQueryVariables = Exact<{
@@ -17527,18 +17594,6 @@ export type GroupMembersFragment = {
   lastName: string;
   email: string;
   profile: { __typename?: 'Profile'; id: string; displayName: string };
-};
-
-export type UserAgentFragment = {
-  __typename?: 'User';
-  agent: {
-    __typename?: 'Agent';
-    id: string;
-    did?: string | undefined;
-    credentials?:
-      | Array<{ __typename?: 'Credential'; id: string; resourceID: string; type: CredentialType }>
-      | undefined;
-  };
 };
 
 export type UserDetailsFragment = {
@@ -17926,11 +17981,7 @@ export type UserQuery = {
     accountUpn: string;
     agent: {
       __typename?: 'Agent';
-      id: string;
-      did?: string | undefined;
-      credentials?:
-        | Array<{ __typename?: 'Credential'; type: CredentialType; resourceID: string; id: string }>
-        | undefined;
+      credentials?: Array<{ __typename?: 'Credential'; type: CredentialType; resourceID: string }> | undefined;
     };
     profile: {
       __typename?: 'Profile';
@@ -18016,11 +18067,7 @@ export type UserProfileQuery = {
     accountUpn: string;
     agent: {
       __typename?: 'Agent';
-      id: string;
-      did?: string | undefined;
-      credentials?:
-        | Array<{ __typename?: 'Credential'; type: CredentialType; resourceID: string; id: string }>
-        | undefined;
+      credentials?: Array<{ __typename?: 'Credential'; type: CredentialType; resourceID: string }> | undefined;
     };
     profile: {
       __typename?: 'Profile';
@@ -18151,11 +18198,75 @@ export type UserProviderQuery = {
           accountUpn: string;
           agent: {
             __typename?: 'Agent';
+            credentials?: Array<{ __typename?: 'Credential'; type: CredentialType; resourceID: string }> | undefined;
+          };
+          profile: {
+            __typename?: 'Profile';
             id: string;
-            did?: string | undefined;
-            credentials?:
-              | Array<{ __typename?: 'Credential'; type: CredentialType; resourceID: string; id: string }>
+            displayName: string;
+            tagline: string;
+            description?: string | undefined;
+            location?: { __typename?: 'Location'; country: string; city: string } | undefined;
+            avatar?:
+              | {
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: string;
+                  allowedTypes: Array<string>;
+                  aspectRatio: number;
+                  maxHeight: number;
+                  maxWidth: number;
+                  minHeight: number;
+                  minWidth: number;
+                  alternativeText?: string | undefined;
+                }
               | undefined;
+            references?:
+              | Array<{
+                  __typename?: 'Reference';
+                  id: string;
+                  name: string;
+                  uri: string;
+                  description?: string | undefined;
+                }>
+              | undefined;
+            tagsets?:
+              | Array<{
+                  __typename?: 'Tagset';
+                  id: string;
+                  name: string;
+                  tags: Array<string>;
+                  allowedValues: Array<string>;
+                  type: TagsetType;
+                }>
+              | undefined;
+          };
+        }
+      | undefined;
+  };
+};
+
+export type UserPendingMembershipsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type UserPendingMembershipsQuery = {
+  __typename?: 'Query';
+  me: {
+    __typename?: 'MeQueryResults';
+    user?:
+      | {
+          __typename?: 'User';
+          id: string;
+          nameID: string;
+          firstName: string;
+          lastName: string;
+          email: string;
+          gender: string;
+          phone: string;
+          accountUpn: string;
+          agent: {
+            __typename?: 'Agent';
+            credentials?: Array<{ __typename?: 'Credential'; type: CredentialType; resourceID: string }> | undefined;
           };
           profile: {
             __typename?: 'Profile';
@@ -18231,10 +18342,39 @@ export type UserProviderQuery = {
         id: string;
         welcomeMessage?: string | undefined;
         createdDate: Date;
+        contributorType: CommunityContributorType;
         createdBy: { __typename?: 'User'; id: string };
         lifecycle: { __typename?: 'Lifecycle'; id: string; state?: string | undefined };
+        contributor:
+          | { __typename?: 'Organization'; id: string }
+          | { __typename?: 'User'; id: string }
+          | { __typename?: 'VirtualContributor'; id: string };
       };
     }>;
+  };
+};
+
+export type InvitationDataFragment = {
+  __typename?: 'CommunityInvitationResult';
+  id: string;
+  space: {
+    __typename?: 'Space';
+    id: string;
+    level: number;
+    profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string; url: string };
+  };
+  invitation: {
+    __typename?: 'Invitation';
+    id: string;
+    welcomeMessage?: string | undefined;
+    createdDate: Date;
+    contributorType: CommunityContributorType;
+    createdBy: { __typename?: 'User'; id: string };
+    lifecycle: { __typename?: 'Lifecycle'; id: string; state?: string | undefined };
+    contributor:
+      | { __typename?: 'Organization'; id: string }
+      | { __typename?: 'User'; id: string }
+      | { __typename?: 'VirtualContributor'; id: string };
   };
 };
 
@@ -18545,11 +18685,64 @@ export type VirtualContributorQuery = {
             | undefined;
         }
       | undefined;
+    aiPersona?:
+      | {
+          __typename?: 'AiPersona';
+          id: string;
+          bodyOfKnowledgeID?: string | undefined;
+          bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType | undefined;
+          bodyOfKnowledge: string;
+        }
+      | undefined;
     profile: {
       __typename?: 'Profile';
       id: string;
       displayName: string;
       description?: string | undefined;
+      tagline: string;
+      url: string;
+      tagsets?:
+        | Array<{
+            __typename?: 'Tagset';
+            id: string;
+            name: string;
+            tags: Array<string>;
+            allowedValues: Array<string>;
+            type: TagsetType;
+          }>
+        | undefined;
+      avatar?:
+        | {
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: string;
+            allowedTypes: Array<string>;
+            aspectRatio: number;
+            maxHeight: number;
+            maxWidth: number;
+            minHeight: number;
+            minWidth: number;
+            alternativeText?: string | undefined;
+          }
+        | undefined;
+    };
+  };
+};
+
+export type VirtualContributorProfileQueryVariables = Exact<{
+  id: Scalars['UUID_NAMEID'];
+}>;
+
+export type VirtualContributorProfileQuery = {
+  __typename?: 'Query';
+  virtualContributor: {
+    __typename?: 'VirtualContributor';
+    id: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
       tagline: string;
       url: string;
       tagsets?:
@@ -18635,6 +18828,66 @@ export type UpdateVirtualContributorMutation = {
           }>
         | undefined;
     };
+  };
+};
+
+export type RefreshBodyOfKnowledgeMutationVariables = Exact<{
+  deleteData: RefreshVirtualContributorBodyOfKnowledgeInput;
+}>;
+
+export type RefreshBodyOfKnowledgeMutation = {
+  __typename?: 'Mutation';
+  refreshVirtualContributorBodyOfKnowledge: boolean;
+};
+
+export type VcMembershipsQueryVariables = Exact<{
+  virtualContributorId: Scalars['UUID_NAMEID'];
+}>;
+
+export type VcMembershipsQuery = {
+  __typename?: 'Query';
+  virtualContributor: {
+    __typename?: 'VirtualContributor';
+    id: string;
+    authorization?:
+      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+      | undefined;
+  };
+  rolesVirtualContributor: {
+    __typename?: 'ContributorRoles';
+    spaces: Array<{
+      __typename?: 'RolesResultSpace';
+      id: string;
+      nameID: string;
+      subspaces: Array<{ __typename?: 'RolesResultCommunity'; id: string; nameID: string; level: number }>;
+    }>;
+  };
+  me: {
+    __typename?: 'MeQueryResults';
+    id: string;
+    communityInvitations: Array<{
+      __typename?: 'CommunityInvitationResult';
+      id: string;
+      space: {
+        __typename?: 'Space';
+        id: string;
+        level: number;
+        profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string; url: string };
+      };
+      invitation: {
+        __typename?: 'Invitation';
+        id: string;
+        welcomeMessage?: string | undefined;
+        createdDate: Date;
+        contributorType: CommunityContributorType;
+        createdBy: { __typename?: 'User'; id: string };
+        lifecycle: { __typename?: 'Lifecycle'; id: string; state?: string | undefined };
+        contributor:
+          | { __typename?: 'Organization'; id: string }
+          | { __typename?: 'User'; id: string }
+          | { __typename?: 'VirtualContributor'; id: string };
+      };
+    }>;
   };
 };
 
@@ -22623,7 +22876,7 @@ export type CreateVirtualContributorOnAccountMutation = {
     __typename?: 'VirtualContributor';
     id: string;
     nameID: string;
-    profile: { __typename?: 'Profile'; id: string };
+    profile: { __typename?: 'Profile'; id: string; url: string };
   };
 };
 
@@ -26740,11 +26993,13 @@ export type AskChatGuidanceQuestionQueryVariables = Exact<{
 export type AskChatGuidanceQuestionQuery = {
   __typename?: 'Query';
   askChatGuidanceQuestion: {
-    __typename?: 'ChatGuidanceResult';
+    __typename?: 'MessageAnswerQuestion';
     id?: string | undefined;
     answer: string;
     question: string;
-    sources?: Array<{ __typename?: 'Source'; uri?: string | undefined; title?: string | undefined }> | undefined;
+    sources?:
+      | Array<{ __typename?: 'MessageAnswerToQuestionSource'; uri?: string | undefined; title?: string | undefined }>
+      | undefined;
   };
 };
 
@@ -29446,6 +29701,60 @@ export type MembershipSuggestionSpaceQuery = {
   };
 };
 
+export type MyAccountQueryVariables = Exact<{ [key: string]: never }>;
+
+export type MyAccountQuery = {
+  __typename?: 'Query';
+  me: {
+    __typename?: 'MeQueryResults';
+    spaceMemberships: Array<{
+      __typename?: 'Space';
+      id: string;
+      level: number;
+      profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string; url: string };
+      account: {
+        __typename?: 'Account';
+        id: string;
+        host?:
+          | {
+              __typename?: 'Organization';
+              id: string;
+              nameID: string;
+              profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string; url: string };
+            }
+          | {
+              __typename?: 'User';
+              id: string;
+              nameID: string;
+              profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string; url: string };
+            }
+          | {
+              __typename?: 'VirtualContributor';
+              id: string;
+              nameID: string;
+              profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string; url: string };
+            }
+          | undefined;
+      };
+    }>;
+    user?:
+      | {
+          __typename?: 'User';
+          id: string;
+          accounts: Array<{
+            __typename?: 'Account';
+            id: string;
+            virtualContributors: Array<{
+              __typename?: 'VirtualContributor';
+              id: string;
+              profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string; url: string };
+            }>;
+          }>;
+        }
+      | undefined;
+  };
+};
+
 export type MyMembershipsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type MyMembershipsQuery = {
@@ -29583,6 +29892,7 @@ export type NewMembershipsQuery = {
         __typename?: 'Invitation';
         id: string;
         welcomeMessage?: string | undefined;
+        contributorType: CommunityContributorType;
         createdDate: Date;
         createdBy: { __typename?: 'User'; id: string };
         lifecycle: { __typename?: 'Lifecycle'; id: string; state?: string | undefined };
@@ -29605,6 +29915,40 @@ export type NewMembershipsBasicSpaceFragment = {
   id: string;
   level: number;
   profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string; url: string };
+};
+
+export type NewVirtualContributorMySpacesQueryVariables = Exact<{ [key: string]: never }>;
+
+export type NewVirtualContributorMySpacesQuery = {
+  __typename?: 'Query';
+  me: {
+    __typename?: 'MeQueryResults';
+    id: string;
+    mySpaces: Array<{
+      __typename?: 'MySpaceResults';
+      space: {
+        __typename?: 'Space';
+        id: string;
+        account: {
+          __typename?: 'Account';
+          id: string;
+          host?:
+            | { __typename?: 'Organization'; id: string }
+            | { __typename?: 'User'; id: string }
+            | { __typename?: 'VirtualContributor'; id: string }
+            | undefined;
+        };
+        profile: { __typename?: 'Profile'; id: string; displayName: string };
+        subspaces: Array<{
+          __typename?: 'Space';
+          id: string;
+          type: SpaceType;
+          profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+          community: { __typename?: 'Community'; id: string };
+        }>;
+      };
+    }>;
+  };
 };
 
 export type RecentForumMessagesQueryVariables = Exact<{

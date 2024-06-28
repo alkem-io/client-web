@@ -1,0 +1,42 @@
+query MyAccount {
+  me {
+    spaceMemberships {
+      id
+      profile {
+        id
+        displayName
+        tagline
+        url
+      }
+      level
+      account {
+        id
+        host {
+          id
+          nameID
+          profile {
+            id
+            displayName
+            tagline
+            url
+          }
+        }
+      }
+    }
+    user {
+      id
+      accounts {
+        id
+        virtualContributors {
+          id
+          profile {
+            id
+            displayName
+            tagline
+            url
+          }
+        }
+      }
+    }
+  }
+}

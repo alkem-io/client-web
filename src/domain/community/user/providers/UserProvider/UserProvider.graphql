@@ -2,7 +2,14 @@ query UserProvider {
   me {
     user {
       ...UserDetails
-      ...UserAgent
+    }
+  }
+}
+
+query UserPendingMemberships {
+  me {
+    user {
+      ...UserDetails
     }
     communityApplications(states: ["new"]) {
       id
@@ -26,29 +33,37 @@ query UserProvider {
       }
     }
     communityInvitations(states: ["invited"]) {
-      id
-      space {
-        id
-        level
-        profile {
-          id
-          displayName
-          tagline
-          url
-        }
-      }
-      invitation {
-        id
-        welcomeMessage
-        createdBy {
-          id
-        }
-        lifecycle {
-          id
-          state
-        }
-        createdDate
-      }
+      ...InvitationData
     }
+  }
+}
+
+fragment InvitationData on CommunityInvitationResult {
+  id
+  space {
+    id
+    level
+    profile {
+      id
+      displayName
+      tagline
+      url
+    }
+  }
+  invitation {
+    id
+    welcomeMessage
+    createdBy {
+      id
+    }
+    lifecycle {
+      id
+      state
+    }
+    createdDate
+    contributor {
+      id
+    }
+    contributorType
   }
 }

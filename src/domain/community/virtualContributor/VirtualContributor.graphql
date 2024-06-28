@@ -28,10 +28,34 @@ query VirtualContributor ($id: UUID_NAMEID!) {
     }
     searchVisibility
     listedInStore
+    aiPersona {
+      id
+      bodyOfKnowledgeID
+      bodyOfKnowledgeType
+      bodyOfKnowledge
+    }
     profile {
       id
       displayName
       description
+      tagline
+      tagsets {
+        ...TagsetDetails
+      }
+      url
+      avatar: visual(type: AVATAR) {
+        ...VisualFull
+      }
+    }
+  }
+}
+
+query VirtualContributorProfile ($id: UUID_NAMEID!) {
+  virtualContributor (ID: $id) {
+    id
+    profile {
+      id
+      displayName
       tagline
       tagsets {
         ...TagsetDetails
@@ -81,4 +105,8 @@ mutation UpdateVirtualContributor($virtualContributorData: UpdateVirtualContribu
       description
     }
   }
+}
+
+mutation refreshBodyOfKnowledge($deleteData: RefreshVirtualContributorBodyOfKnowledgeInput!) {
+  refreshVirtualContributorBodyOfKnowledge(deleteData: $deleteData)
 }

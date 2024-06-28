@@ -14,7 +14,7 @@ import {
   useUsersWithCredentialsQuery,
   useInvitationStateEventMutation,
   useDeleteInvitationMutation,
-  useDeleteExternalInvitationMutation,
+  useDeletePlatformInvitationMutation,
   useCommunityMembersListQuery,
   useCommunityAvailableMembersLazyQuery,
   useAssignCommunityRoleToUserMutation,
@@ -22,11 +22,13 @@ import {
   useAvailableVirtualContributorsLazyQuery,
   useAddVirtualContributorToCommunityMutation,
   useRemoveVirtualContributorFromCommunityMutation,
+  useAvailableVirtualContributorsInLibraryLazyQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import {
   AuthorizationCredential,
   AuthorizationPrivilege,
   CommunityRole,
+  SearchVisibility,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { OrganizationDetailsFragmentWithRoles } from '../../../community/community/CommunityAdmin/CommunityOrganizations';
 import { CommunityMemberUserFragmentWithRoles } from '../../../community/community/CommunityAdmin/CommunityUsers';
@@ -245,6 +247,18 @@ const useCommunityAdmin = ({
   const filterExisting = (vc: VirtualContributorNameProps, existingVCs) =>
     !existingVCs.some(member => member.id === vc.id);
 
+  const [fetchAllVirtualContributorsInLibrary] = useAvailableVirtualContributorsInLibraryLazyQuery();
+  const getAvailableVirtualContributorsInLibrary = async (filter: string | undefined) => {
+    const { data } = await fetchAllVirtualContributorsInLibrary();
+
+    return (data?.platform.library.virtualContributors ?? []).filter(
+      vc =>
+        vc.searchVisibility === SearchVisibility.Public &&
+        filterExisting(vc, virtualContributors) &&
+        filterByName(vc, filter)
+    );
+  };
+
   const [fetchAllVirtualContributors] = useAvailableVirtualContributorsLazyQuery();
   const getAvailableVirtualContributors = async (filter: string | undefined, all: boolean = false) => {
     const { data } = await fetchAllVirtualContributors({
@@ -444,15 +458,18 @@ const useCommunityAdmin = ({
     await refetchApplicationsAndInvitations();
   };
 
-  const { inviteContributor: inviteExistingUser, inviteExternalUser } = useInviteUsers(communityId, {
-    onInviteContributor: onInviteUser,
-    onInviteExternalUser: onInviteUser,
-  });
+  const { inviteContributor: inviteExistingUser, platformInviteToCommunity: inviteExternalUser } = useInviteUsers(
+    communityId,
+    {
+      onInviteContributor: onInviteUser,
+      onInviteExternalUser: onInviteUser,
+    }
+  );
 
   const [sendInvitationStateEvent] = useInvitationStateEventMutation();
 
   const [deleteInvitation] = useDeleteInvitationMutation();
-  const [deleteExternalInvitation] = useDeleteExternalInvitationMutation();
+  const [deletePlatformInvitation] = useDeletePlatformInvitationMutation();
 
   const handleInvitationStateChange = async (invitationId: string, eventName: string) => {
     await sendInvitationStateEvent({
@@ -472,8 +489,8 @@ const useCommunityAdmin = ({
     });
     await refetchApplicationsAndInvitations();
   };
-  const handleDeleteInvitationExternal = async (invitationId: string) => {
-    await deleteExternalInvitation({
+  const handleDeletePlatformInvitation = async (invitationId: string) => {
+    await deletePlatformInvitation({
       variables: {
         invitationId,
       },
@@ -489,7 +506,7 @@ const useCommunityAdmin = ({
     permissions,
     applications: dataApplications?.lookup.community?.applications,
     invitations: dataApplications?.lookup.community?.invitations,
-    invitationsExternal: dataApplications?.lookup.community?.invitationsExternal,
+    platformInvitations: dataApplications?.lookup.community?.platformInvitations,
     onApplicationStateChange: handleApplicationStateChange,
     onInvitationStateChange: handleInvitationStateChange,
     onUserLeadChange: handleUserLeadChange,
@@ -502,10 +519,11 @@ const useCommunityAdmin = ({
     onRemoveOrganization: handleRemoveOrganization,
     onRemoveVirtualContributor: handleRemoveVirtualContributor,
     onDeleteInvitation: handleDeleteInvitation,
-    onDeleteInvitationExternal: handleDeleteInvitationExternal,
+    onDeletePlatformInvitation: handleDeletePlatformInvitation,
     getAvailableUsers,
     getAvailableOrganizations,
     getAvailableVirtualContributors,
+    getAvailableVirtualContributorsInLibrary,
     inviteExistingUser,
     inviteExternalUser,
     loading: loadingAdmins || loadingMembers || loadingApplications,

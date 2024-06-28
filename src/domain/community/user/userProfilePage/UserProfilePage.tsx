@@ -20,7 +20,7 @@ export const UserProfilePage: FC<UserProfileProps> = () => {
 
   const { user: userMetadata, loading } = useUserMetadata(userNameId);
 
-  const contributions = useUserContributions(userNameId);
+  const contributions = useUserContributions(userMetadata?.user.id);
 
   const organizationIds = useUserOrganizationIds(userNameId);
 

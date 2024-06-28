@@ -4,8 +4,12 @@ import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { Error404 } from '../../../../core/pages/Errors/Error404';
 import VCPageLayout from '../layout/VCPageLayout';
 import VCProfilePageView from './VCProfilePageView';
-import { useVirtualContributorQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import {
+  useBodyOfKnowledgeProfileQuery,
+  useVirtualContributorQuery,
+} from '../../../../core/apollo/generated/apollo-hooks';
 import { useTranslation } from 'react-i18next';
+import { AiPersonaBodyOfKnowledgeType } from '../../../../core/apollo/generated/graphql-schema';
 
 export const VCProfilePage = () => {
   const { t } = useTranslation();
@@ -16,6 +20,16 @@ export const VCProfilePage = () => {
     variables: {
       id: vcNameId,
     },
+  });
+
+  const isBoKSpace =
+    data?.virtualContributor?.aiPersona?.bodyOfKnowledgeType === AiPersonaBodyOfKnowledgeType.AlkemioSpace;
+
+  const { data: bokProfile, loading: loadingBok } = useBodyOfKnowledgeProfileQuery({
+    variables: {
+      spaceId: data?.virtualContributor?.aiPersona?.bodyOfKnowledgeID!,
+    },
+    skip: !data?.virtualContributor?.aiPersona?.bodyOfKnowledgeID || !isBoKSpace,
   });
 
   if (loading)
@@ -33,7 +47,11 @@ export const VCProfilePage = () => {
 
   return (
     <VCPageLayout>
-      <VCProfilePageView virtualContributor={data?.virtualContributor} showDefaults={false} />
+      <VCProfilePageView
+        virtualContributor={data?.virtualContributor}
+        bokProfile={isBoKSpace || loadingBok ? bokProfile?.lookup.space?.profile : undefined}
+        bokDescription={loadingBok ? undefined : data?.virtualContributor?.aiPersona?.bodyOfKnowledge}
+      />
     </VCPageLayout>
   );
 };

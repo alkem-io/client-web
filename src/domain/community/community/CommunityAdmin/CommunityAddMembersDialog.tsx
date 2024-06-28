@@ -24,7 +24,7 @@ type GetterParams = GridValueGetterParams<string, Entity>;
 export interface CommunityAddMembersDialogProps {
   onClose?: () => void;
   fetchAvailableEntities: (filter?: string) => Promise<Entity[] | undefined>;
-  onAdd: (memberId: string) => Promise<unknown> | undefined;
+  onAdd: (memberId: string) => Promise<unknown> | undefined | void;
 }
 
 const initialState: GridInitialState = {

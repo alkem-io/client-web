@@ -14,11 +14,12 @@ import { Trans, useTranslation } from 'react-i18next';
 import ProfileDetail from '../../profile/ProfileDetail/ProfileDetail';
 import BasicSpaceCard, { BasicSpaceProps } from '../components/BasicSpaceCard';
 import Spacer from '../../../../core/ui/content/Spacer';
+import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 
 interface Props {
   virtualContributor: VirtualContributorQuery['virtualContributor'] | undefined;
   bokProfile?: BasicSpaceProps;
-  showDefaults?: boolean;
+  bokDescription?: string;
 }
 
 const SectionTitle = ({ children }) => (
@@ -29,11 +30,7 @@ const SectionTitle = ({ children }) => (
 
 const SectionContent = ({ children }) => <Text>{children}</Text>;
 
-export const VCProfilePageView: FC<PropsWithChildren<Props>> = ({
-  virtualContributor,
-  bokProfile,
-  showDefaults = false,
-}) => {
+export const VCProfilePageView: FC<PropsWithChildren<Props>> = ({ virtualContributor, bokProfile, bokDescription }) => {
   const theme = useTheme();
   const { t } = useTranslation();
 
@@ -59,7 +56,11 @@ export const VCProfilePageView: FC<PropsWithChildren<Props>> = ({
           </SectionTitle>
           <SectionContent>
             <Trans i18nKey="pages.virtualContributorProfile.sections.knowledge.description" values={{ name }} />
-            <BasicSpaceCard space={bokProfile} showDefaults={showDefaults} />
+            {bokProfile ? (
+              <BasicSpaceCard space={bokProfile} />
+            ) : (
+              <WrapperMarkdown>{bokDescription ?? ''}</WrapperMarkdown>
+            )}
             <Spacer />
           </SectionContent>
           <SectionTitle>

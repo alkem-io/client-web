@@ -18,24 +18,12 @@ export interface BasicSpaceProps {
 
 interface Props {
   space: BasicSpaceProps | undefined;
-  showDefaults?: boolean;
 }
 
-const DEFULT_SPACE_DATA = {
-  avatar: {
-    uri: 'https://alkem.io/api/private/rest/storage/document/1057e0c1-2d47-4821-8848-20ec19cb2a0d',
-  },
-  displayName: 'Welcome @ Alkemio!',
-  tagline: 'Take 5 minutes to get started',
-  url: 'https://alkem.io/welcome-space',
-};
-
-const BasicSpaceCard: FC<Props> = ({ space, showDefaults }) => {
+const BasicSpaceCard: FC<Props> = ({ space }) => {
   const { t } = useTranslation();
 
-  const spaceData = space ? space : showDefaults ? DEFULT_SPACE_DATA : undefined;
-
-  if (!spaceData) {
+  if (!space) {
     return null;
   }
 
@@ -43,17 +31,17 @@ const BasicSpaceCard: FC<Props> = ({ space, showDefaults }) => {
     <BadgeCardView
       visual={
         <Avatar
-          src={spaceData.avatar?.uri || defaultJourneyCardBanner}
-          alt={t('common.avatar-of', { user: spaceData.displayName })}
+          src={space.avatar?.uri || defaultJourneyCardBanner}
+          alt={t('common.avatar-of', { user: space.displayName })}
         >
-          {spaceData.displayName}
+          {space.displayName}
         </Avatar>
       }
       component={RouterLink}
-      to={spaceData.url}
+      to={space.url}
     >
-      <BlockSectionTitle>{spaceData.displayName}</BlockSectionTitle>
-      <BlockSectionTitle>{spaceData.tagline}</BlockSectionTitle>
+      <BlockSectionTitle>{space.displayName}</BlockSectionTitle>
+      <BlockSectionTitle>{space.tagline}</BlockSectionTitle>
     </BadgeCardView>
   );
 };

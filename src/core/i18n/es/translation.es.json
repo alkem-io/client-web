@@ -578,7 +578,7 @@
       "title": "Eliminando invitación de {{user}}",
       "content": "Are you sure that you want to Archive this invitation? The invitation will be rejected if it's not already."
     },
-    "confirmDeleteInvitationExternal": {
+    "confirmDeletePlatformInvitation": {
       "title": "Deleting invitation from {{user}}",
       "content": "Are you sure that you want to Archive this invitation? The invitation will be rejected if it's not already."
     },

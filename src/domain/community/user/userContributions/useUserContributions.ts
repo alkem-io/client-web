@@ -1,16 +1,14 @@
 import { useUserContributionsQuery } from '../../../../core/apollo/generated/apollo-hooks';
-import { SpaceType } from '../../../../core/apollo/generated/graphql-schema';
+import { CommunityContributorType, SpaceType } from '../../../../core/apollo/generated/graphql-schema';
 import { SpaceHostedItem } from '../../../journey/utils/SpaceHostedItem';
 import { useMemo } from 'react';
 
-const useUserContributions = (userNameId: string) => {
-  const skip = !userNameId;
-
+const useUserContributions = (userId: string | undefined) => {
   const { data } = useUserContributionsQuery({
     variables: {
-      userId: userNameId,
+      userId: userId!,
     },
-    skip,
+    skip: !userId,
   });
 
   return useMemo(() => {
@@ -25,6 +23,8 @@ const useUserContributions = (userNameId: string) => {
         spaceID: e.id,
         id: e.id,
         spaceLevel: 0,
+        contributorId: userId!,
+        contributorType: CommunityContributorType.User,
       });
 
       e.subspaces.forEach(ss => {
@@ -33,6 +33,8 @@ const useUserContributions = (userNameId: string) => {
             id: ss.id,
             spaceID: ss.id,
             spaceLevel: 1,
+            contributorId: userId!,
+            contributorType: CommunityContributorType.User,
           });
         }
 
@@ -41,6 +43,8 @@ const useUserContributions = (userNameId: string) => {
             id: ss.id,
             spaceID: ss.id,
             spaceLevel: 2,
+            contributorId: userId!,
+            contributorType: CommunityContributorType.User,
           });
         }
       });

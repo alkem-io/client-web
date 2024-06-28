@@ -24,6 +24,19 @@ query AvailableVirtualContributors(
   }
 }
 
+query AvailableVirtualContributorsInLibrary {
+  platform {
+    id
+    library {
+      id
+      virtualContributors {
+        searchVisibility
+        ...VirtualContributorName
+      }
+    }
+  }
+}
+
 fragment VirtualContributorName on VirtualContributor {
   id
   nameID
@@ -44,6 +57,18 @@ mutation AddVirtualContributorToCommunity($communityId: UUID!, $virtualContribut
 mutation RemoveVirtualContributorFromCommunity($communityId: UUID!, $virtualContributorId: UUID_NAMEID!) {
   removeCommunityRoleFromVirtual(
     roleData: { communityID: $communityId, role: MEMBER, virtualContributorID: $virtualContributorId }
+  ) {
+    id
+  }
+}
+
+mutation AssignCommunityRoleToVirtualContributor(
+  $communityId: UUID!
+  $virtualContributorId: UUID_NAMEID!
+  $role: CommunityRole!
+) {
+  assignCommunityRoleToVirtual(
+    roleData: { communityID: $communityId, role: $role, virtualContributorID: $virtualContributorId }
   ) {
     id
   }

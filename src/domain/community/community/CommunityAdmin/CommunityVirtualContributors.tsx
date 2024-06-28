@@ -14,18 +14,14 @@ import { CommunityMemberVirtualContributorFragment } from '../../../../core/apol
 import { gutters } from '../../../../core/ui/grid/utils';
 import DataGridSkeleton from '../../../../core/ui/table/DataGridSkeleton';
 import DataGridTable from '../../../../core/ui/table/DataGridTable';
-import { BlockTitle, Caption } from '../../../../core/ui/typography';
+import { BlockTitle } from '../../../../core/ui/typography';
 import CommunityAddMembersDialog from './CommunityAddMembersDialog';
 import { Remove } from '@mui/icons-material';
 import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
 import { Actions } from '../../../../core/ui/actions/Actions';
-import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
-import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
-import Gutters from '../../../../core/ui/grid/Gutters';
-import GridItem from '../../../../core/ui/grid/GridItem';
 import { Identifiable } from '../../../../core/utils/Identifiable';
-import { TranslateWithElements } from '../../../../domain/shared/i18n/TranslateWithElements';
-import { useConfig } from '../../../platform/config/useConfig';
+import InviteVirtualContributorDialog from '../../invitations/InviteVirtualContributorDialog';
+import { InviteContributorsData } from '../../invitations/useInviteUsers';
 
 type RenderParams = GridRenderCellParams<string, CommunityMemberVirtualContributorFragment>;
 type GetterParams = GridValueGetterParams<string, CommunityMemberVirtualContributorFragment>;
@@ -58,23 +54,26 @@ interface CommunityVirtualContributorsProps {
   virtualContributors: CommunityMemberVirtualContributorFragment[] | undefined;
   onRemoveMember: (memberId: string) => Promise<unknown> | void;
   canAddVirtualContributors: boolean;
-  onAddMember: (memberId: string) => Promise<unknown> | undefined;
-  fetchAvailableVirtualContributors: (filter?: string, all?: boolean) => Promise<Entity[] | undefined>;
-  isPlatformAdmin?: boolean;
+  fetchAvailableVirtualContributorsOnAccount: (filter?: string, all?: boolean) => Promise<Entity[] | undefined>;
+  fetchAvailableVirtualContributors: (filter?: string) => Promise<Entity[] | undefined>;
+  onAddMember: (memberId: string) => Promise<unknown> | undefined | void;
   loading?: boolean;
+  inviteExistingUser: (params: InviteContributorsData) => Promise<void>;
+  spaceDisplayName?: string;
 }
 
 const CommunityVirtualContributors: FC<CommunityVirtualContributorsProps> = ({
   virtualContributors = [],
   onRemoveMember,
   canAddVirtualContributors,
-  onAddMember,
   fetchAvailableVirtualContributors,
-  isPlatformAdmin,
+  fetchAvailableVirtualContributorsOnAccount,
+  onAddMember,
   loading,
+  inviteExistingUser,
+  spaceDisplayName = '',
 }) => {
   const { t } = useTranslation();
-  const { locations } = useConfig();
 
   const usersColumns: GridColDef[] = [
     {
@@ -114,24 +113,35 @@ const CommunityVirtualContributors: FC<CommunityVirtualContributorsProps> = ({
 
   const [deletingMemberId, setDeletingMemberId] = useState<string>();
   const [isAddingNewMember, setAddingNewMember] = useState(false);
+  const [isInvitingExternal, setIsInvitingExternal] = useState(false);
   const [allVirtualContributors, setAllVirtualContributors] = useState(false);
-  const [supportMessageOpen, setSupportMessageOpen] = useState(false);
-  const closeSupportDialog = () => setSupportMessageOpen(false);
+  const [selectedVirtualContributorId, setSelectedVirtualContributorId] = useState<string>('');
 
   const openAvailableContributorsDialog = (external: boolean = false) => {
     setAllVirtualContributors(external);
 
-    if (external && !isPlatformAdmin) {
-      setSupportMessageOpen(true);
+    setAddingNewMember(true);
+  };
+
+  const getFilteredVirtualContributors = async (filter?: string) => {
+    if (allVirtualContributors) {
+      return fetchAvailableVirtualContributors(filter);
     } else {
-      setAddingNewMember(true);
+      return fetchAvailableVirtualContributorsOnAccount(filter, false);
     }
   };
 
-  const getFilteredVirtualContributors = async (filter?: string) =>
-    fetchAvailableVirtualContributors(filter, allVirtualContributors);
+  const onAddClick = (virtualContributorId: string) => {
+    if (allVirtualContributors) {
+      setAddingNewMember(false);
+      setIsInvitingExternal(true);
+      setSelectedVirtualContributorId(virtualContributorId);
+    } else {
+      onAddMember(virtualContributorId);
+    }
+  };
 
-  const tTerms = TranslateWithElements(<Link target="_blank" />);
+  const closeInvitationDialog = () => setIsInvitingExternal(false);
 
   return (
     <>
@@ -143,7 +153,7 @@ const CommunityVirtualContributors: FC<CommunityVirtualContributorsProps> = ({
               {t('common.add')}
             </Button>
             <Button variant="contained" startIcon={<AddIcon />} onClick={() => openAvailableContributorsDialog(true)}>
-              {t('community.virtualContributors.addExternalVC')}
+              {t('community.virtualContributors.inviteExternalVC')}
             </Button>
           </Actions>
         )}
@@ -203,25 +213,21 @@ const CommunityVirtualContributors: FC<CommunityVirtualContributorsProps> = ({
       )}
       {isAddingNewMember && (
         <CommunityAddMembersDialog
-          onAdd={onAddMember}
+          onAdd={onAddClick}
           fetchAvailableEntities={getFilteredVirtualContributors}
           onClose={() => setAddingNewMember(false)}
         />
       )}
-      <DialogWithGrid open={supportMessageOpen} columns={6} onClose={closeSupportDialog}>
-        <DialogHeader onClose={closeSupportDialog}>{t('community.addMember')}</DialogHeader>
-        <Gutters>
-          <GridItem>
-            <Caption>
-              {tTerms('community.virtualContributors.externalVCsInfo', {
-                click: {
-                  href: locations?.support,
-                },
-              })}
-            </Caption>
-          </GridItem>
-        </Gutters>
-      </DialogWithGrid>
+      {isInvitingExternal && (
+        <InviteVirtualContributorDialog
+          title={t('components.invitations.inviteExistingVCDialog.title')}
+          spaceDisplayName={spaceDisplayName}
+          open={isInvitingExternal}
+          onClose={closeInvitationDialog}
+          contributorId={selectedVirtualContributorId}
+          onInviteUser={inviteExistingUser}
+        />
+      )}
     </>
   );
 };

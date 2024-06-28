@@ -20,6 +20,7 @@ import { ApmProvider, ApmUserSetter } from './core/analytics/apm/context';
 import { UserGeoProvider } from './core/analytics/geo';
 import { SentryTransactionScopeContextProvider } from './core/analytics/SentryTransactionScopeContext';
 import { useInitialChatWidgetMessage } from './main/guidance/chatWidget/ChatWidget';
+import { PendingMembershipsDialogProvider } from './domain/community/pendingMembership/PendingMembershipsDialogContext';
 
 const useGlobalStyles = makeStyles(theme => ({
   '@global': {
@@ -79,9 +80,11 @@ const Root: FC = () => {
                             <ApmProvider>
                               <AlkemioApolloProvider apiUrl={privateGraphQLEndpoint}>
                                 <UserProvider>
-                                  <ApmUserSetter />
-                                  <ScrollToTop />
-                                  <TopLevelRoutes />
+                                  <PendingMembershipsDialogProvider>
+                                    <ApmUserSetter />
+                                    <ScrollToTop />
+                                    <TopLevelRoutes />
+                                  </PendingMembershipsDialogProvider>
                                 </UserProvider>
                               </AlkemioApolloProvider>
                             </ApmProvider>

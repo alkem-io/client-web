@@ -564,6 +564,7 @@
     "memberOrganizations": "Member Organizations ({{count}})",
     "pendingApplications": "Pending applications",
     "pendingMemberships": "Pending applications & invitations",
+    "invitationSent": "Invitation sent succesfully",
     "leads": "Leads",
     "members": "Members",
     "host": "Host",
@@ -578,7 +579,7 @@
         "title": "Remove Virtual Contributor",
         "confirm": "Are you sure?"
       },
-      "addExternalVC": "Add External VC",
+      "inviteExternalVC": "Invite External VC",
       "externalVCsInfo": "At the moment, only Alkemio Support can add an external Virtual Contributor to your Space. Please contact Support <click>here</click> if you wish to do so, we are happy to help!"
     },
     "application-form": {
@@ -623,7 +624,7 @@
       "title": "Deleting invitation from {{user}}",
       "content": "Are you sure that you want to Archive this invitation? The invitation will be rejected if it's not already."
     },
-    "confirmDeleteInvitationExternal": {
+    "confirmDeletePlatformInvitation": {
       "title": "Deleting invitation from {{user}}",
       "content": "Are you sure that you want to Archive this invitation? The invitation will be rejected if it's not already."
     },
@@ -631,16 +632,23 @@
       "pendingMemberships": "Pending Memberships",
       "pendingMembershipsWithCount": "Pending Memberships ({{count}})",
       "invitationsSectionTitle": "Invitations",
+      "virtualInvitationsSectionTitle": "Invitations for my Virtual Contributor",
       "applicationsSectionTitle": "Open applications",
       "invitationDialog": {
         "title": "Pending Membership: {{journey}}",
+        "vc": {
+          "title": "Pending Virtual Contributor membership: {{journey}}"
+        },
         "actions": {
           "hide": "Hide this invitation",
           "reject": "Decline",
-          "accept": "Join"
+          "join": "Join",
+          "accept": "Accept"
         }
       },
-      "invitationTitle": "{{time}} {{user}} invited you to <journeyicon /> {{journey}}"
+      "invitationTitle": "{{time}} {{user}} invited {{invitedEntity}} to <journeyicon /> {{journey}}",
+      "you": "you",
+      "vc": "your Virtual Contributor"
     },
     "memberSettings": {
       "title": "Member Settings",
@@ -1043,6 +1051,7 @@
       "inviteExternalUser": "Send email invitation",
       "inviteOrganizations": "Invite Organizations",
       "defaultInvitationMessage": "Hi, I would like to invite you to {{space}}. Click on the link below to have a look or directly accept the invitation.",
+      "defaultVCInvitationMessage": "Hi, I would like to invite your Virtual Contributor {{name}} to {{space}}. Click on the link below to have a look or directly accept the invitation.",
       "inviteExistingUserDialog": {
         "title": "Invite other Alkemio users to join this Space",
         "subtitle": "You can search for Alkemio users below and attach a personalized message.",
@@ -1051,6 +1060,9 @@
           "alreadyInvited": "This user is already invited",
           "alreadyMember": "This user is already a member"
         }
+      },
+      "inviteExistingVCDialog": {
+        "title": "Invite Virtual Contributor to join this Space"
       },
       "inviteExternalUserDialog": {
         "title": "Send an email invitation"
@@ -2116,6 +2128,14 @@
             "short": "Explore all your Spaces"
           }
         },
+        "myAccount": {
+          "title": "My Account",
+          "hostedSpaces": "My Hosted Spaces",
+          "virtualContributors": "My Virtual Contributors",
+          "createSpaceButton": "🎉 Click here to start your own Space!",
+          "createVCButton": "Click here to create your Virtual Contributor!",
+          "createVCButtonDisabled": "You must create a space before you create a Virtual Contributor!"
+        },
         "myMemberships": {
           "title": "My Memberships",
           "noChildMemberships": "You are not a member of a subspace in this Space. Some subspaces do not require you to be a member to contribute, but if you want to receive updates or show the subspace here, become a member anyway!",
@@ -2513,15 +2533,27 @@
           "bullets": "<ul><li>When interacting with a Virtual Contributor, only the data explicitly specified on the left (Context) is used to generate meaningful answers.</li><li>Importantly, your (Space) data is not utilized for training the Virtual Contributor.</li><li>Additionally, please note that questions and answers exchanged with the Virtual Contributor may be visible to the Alkemio team.</li></ul>"
         }
       },
+      "membership": {
+        "title": "Virtual Contributor Memberships",
+        "noMemberships": "This Virtual Contributor is not a member of any space",
+        "pendingInvitations": "Pending Invitations",
+        "noPendingInvitations": "No pending invitations"
+      },
       "settings": {
         "title": "Virtual Contributor Settings",
         "access": {
-          "listedInStore": "Allow the Virtual Contributor to be displayed in the Innovation Library.",
+          "title": "Visibility",
+          "listedInStore": "Include in public selection lists.",
           "visibility": {
-            "public": "<b>Public:</b> this Virtual Contributor is visible and can be invited to other Spaces, but only by users who are Space admins.",
-            "private": "<b>Private:</b> this Virtual Contributor is not visible for (admins of) other Spaces.",
-            "hidden": "<b>Hidden</b>"
+            "public": "<b>Public:</b> This Virtual Contributor can be invited to all Spaces on Alkemio",
+            "private": "<b>Private:</b> This Virtual Contributor can be invited to spaces within my account.",
+            "hidden": "<b>Hidden:</b> This Virtual Contributor cannot be invited."
           }
+        },
+        "ingestion": {
+          "title": "Update Knowledge",
+          "infoText": "By clicking the button below, you will make sure your Virtual Contributor is based on the latest knowledge in the Subspace.",
+          "refreshBtn": "Update Knowledge"
         }
       }
     },
@@ -2674,7 +2706,7 @@
     "title": "Contributors"
   },
   "contributions-view": {
-    "no-data": "No {{name, lowercase}} available"
+    "no-data": "No memberships found"
   },
   "credentials-view": {
     "no-data": "No credentials have been presented"
@@ -2857,6 +2889,52 @@
     },
     "edit": {
       "title": "Edit Virtual Contributor Profile"
+    }
+  },
+  "createVirtualContributorWizard": {
+    "noSpaces": "Couldn't find any space hosted by you, please contact us for support.",
+    "createdSubspace": {
+      "vision": "Welcome! Please follow the three steps on the right to learn how to use, upload knowledge to, and update your Virtual Contributor.",
+      "tagline": "",
+      "description": "",
+      "impact": "",
+      "who": "",
+      "successMessage": "Subspace '{{subspaceName}}' created successfully"
+    },
+    "createdVirtualContributor": {
+      "description": "",
+      "successMessage": "Virtual Contributor '{{virtualContributorName}}' created successfully"
+    },
+    "step0": {
+      "title": "Create a new Virtual Contributor",
+      "description": "Your Virtual Contributor is trained on a body of knowledge, using an Alkemio Subspace.",
+      "createSubspace": "Create a new Subspace",
+      "useExistingSubspace": "Use an existing Subspace",
+      "cannotCreateSubspace": "This option is disabled because we couldn't find any Space that is hosted by you. Please contact us for support.",
+      "cannotUseExisting": "This option cannot be selected because your space does not have a subspace."
+    },
+    "step1": {
+      "title": "1/3 Create a Subspace",
+      "description": "To create a safe environment to train your Virtual Contributor, we will now create a Subspace in {{spaceName}}.",
+      "spaceName": "Space",
+      "subspaceName": "Name"
+    },
+    "step1b": {
+      "title": "1/3 Choose a Subspace",
+      "description": "Select the Subspace you want to use as a body of knowledge.",
+      "spaceName": "Space",
+      "subspaceName": "Subspace"
+    },
+    "step2": {
+      "title": "2/3 Name a Virtual Contributor",
+      "description": "Choose a name for your Virtual Contributor. This is to other users on the platform.",
+      "virtualContributorName": "Name"
+    },
+    "step3": {
+      "title": "3/3 What is next?",
+      "description": "Travel to your Subspace to add knowledge or update the profile of your Virtual Contributor.",
+      "updateProfile": "Update profile",
+      "addKnowledge": "Add knowledge"
     }
   }
 }

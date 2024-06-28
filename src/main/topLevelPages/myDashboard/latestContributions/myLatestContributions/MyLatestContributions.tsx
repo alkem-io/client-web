@@ -60,7 +60,7 @@ const MyLatestContributions = () => {
   }, [data?.activityFeedGrouped]);
 
   return (
-    <PageContentBlock halfWidth>
+    <PageContentBlock columns={4}>
       <PageContentBlockHeader title={t('pages.home.sections.myLatestContributions.title')} />
       <ScrollerWithGradient>
         <Box padding={1}>

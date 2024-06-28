@@ -1,6 +1,5 @@
 query user($id: UUID_NAMEID_EMAIL!) {
   user(ID: $id) {
     ...UserDetails
-    ...UserAgent
   }
 }
