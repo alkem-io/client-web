@@ -415,6 +415,10 @@ export type ActivityLogEntryMemberJoined = ActivityLogEntry & {
   community: Community;
   /** The type of the the Community. */
   communityType: Scalars['String'];
+  /** The Contributor that joined the Community. */
+  contributor: Contributor;
+  /** The type of the Contributor that joined the Community. */
+  contributorType: CommunityContributorType;
   /** The timestamp for the Activity. */
   createdDate: Scalars['DateTime'];
   /** The text details for this Activity. */
@@ -430,8 +434,6 @@ export type ActivityLogEntryMemberJoined = ActivityLogEntry & {
   triggeredBy: User;
   /** The event type for this Activity. */
   type: ActivityEventType;
-  /** The User that joined the Community. */
-  user: User;
 };
 
 export type ActivityLogEntryOpportunityCreated = ActivityLogEntry & {
@@ -7512,19 +7514,42 @@ export type InnovationPackProfilePageQuery = {
 
 export type ActivityLogMemberJoinedFragment = {
   __typename?: 'ActivityLogEntryMemberJoined';
-  user: {
-    __typename?: 'User';
-    id: string;
-    firstName: string;
-    lastName: string;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      url: string;
-      displayName: string;
-      visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-    };
-  };
+  contributor:
+    | {
+        __typename?: 'Organization';
+        id: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          url: string;
+          displayName: string;
+          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+        };
+      }
+    | {
+        __typename?: 'User';
+        firstName: string;
+        lastName: string;
+        id: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          url: string;
+          displayName: string;
+          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+        };
+      }
+    | {
+        __typename?: 'VirtualContributor';
+        id: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          url: string;
+          displayName: string;
+          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+        };
+      };
 };
 
 export type ActivityLogCalloutPublishedFragment = {
@@ -7836,19 +7861,42 @@ export type ActivityCreatedSubscription = {
           id: string;
           createdDate: Date;
           type: ActivityEventType;
-          user: {
-            __typename?: 'User';
-            id: string;
-            firstName: string;
-            lastName: string;
-            profile: {
-              __typename?: 'Profile';
-              id: string;
-              url: string;
-              displayName: string;
-              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-            };
-          };
+          contributor:
+            | {
+                __typename?: 'Organization';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              }
+            | {
+                __typename?: 'User';
+                firstName: string;
+                lastName: string;
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              }
+            | {
+                __typename?: 'VirtualContributor';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              };
         }
       | {
           __typename?: 'ActivityLogEntryOpportunityCreated';
@@ -8028,19 +8076,42 @@ type ActivityLogOnCollaboration_ActivityLogEntryMemberJoined_Fragment = {
   id: string;
   createdDate: Date;
   type: ActivityEventType;
-  user: {
-    __typename?: 'User';
-    id: string;
-    firstName: string;
-    lastName: string;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      url: string;
-      displayName: string;
-      visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-    };
-  };
+  contributor:
+    | {
+        __typename?: 'Organization';
+        id: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          url: string;
+          displayName: string;
+          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+        };
+      }
+    | {
+        __typename?: 'User';
+        firstName: string;
+        lastName: string;
+        id: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          url: string;
+          displayName: string;
+          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+        };
+      }
+    | {
+        __typename?: 'VirtualContributor';
+        id: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          url: string;
+          displayName: string;
+          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+        };
+      };
 };
 
 type ActivityLogOnCollaboration_ActivityLogEntryOpportunityCreated_Fragment = {
@@ -8522,19 +8593,42 @@ export type ActivityLogOnCollaborationQuery = {
             avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
           };
         };
-        user: {
-          __typename?: 'User';
-          id: string;
-          firstName: string;
-          lastName: string;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            url: string;
-            displayName: string;
-            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-          };
-        };
+        contributor:
+          | {
+              __typename?: 'Organization';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                url: string;
+                displayName: string;
+                visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              };
+            }
+          | {
+              __typename?: 'User';
+              firstName: string;
+              lastName: string;
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                url: string;
+                displayName: string;
+                visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              };
+            }
+          | {
+              __typename?: 'VirtualContributor';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                url: string;
+                displayName: string;
+                visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              };
+            };
       }
     | {
         __typename?: 'ActivityLogEntryOpportunityCreated';
@@ -29349,19 +29443,42 @@ export type LatestContributionsQuery = {
               avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
             };
           };
-          user: {
-            __typename?: 'User';
-            id: string;
-            firstName: string;
-            lastName: string;
-            profile: {
-              __typename?: 'Profile';
-              id: string;
-              url: string;
-              displayName: string;
-              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-            };
-          };
+          contributor:
+            | {
+                __typename?: 'Organization';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              }
+            | {
+                __typename?: 'User';
+                firstName: string;
+                lastName: string;
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              }
+            | {
+                __typename?: 'VirtualContributor';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              };
         }
       | {
           __typename?: 'ActivityLogEntryOpportunityCreated';
@@ -29813,19 +29930,42 @@ export type LatestContributionsGroupedQuery = {
               };
             }
           | undefined;
-        user: {
-          __typename?: 'User';
-          id: string;
-          firstName: string;
-          lastName: string;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            url: string;
-            displayName: string;
-            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-          };
-        };
+        contributor:
+          | {
+              __typename?: 'Organization';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                url: string;
+                displayName: string;
+                visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              };
+            }
+          | {
+              __typename?: 'User';
+              firstName: string;
+              lastName: string;
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                url: string;
+                displayName: string;
+                visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              };
+            }
+          | {
+              __typename?: 'VirtualContributor';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                url: string;
+                displayName: string;
+                visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              };
+            };
       }
     | {
         __typename?: 'ActivityLogEntryOpportunityCreated';

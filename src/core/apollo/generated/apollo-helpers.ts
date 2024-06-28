@@ -336,6 +336,8 @@ export type ActivityLogEntryMemberJoinedKeySpecifier = (
   | 'collaborationID'
   | 'community'
   | 'communityType'
+  | 'contributor'
+  | 'contributorType'
   | 'createdDate'
   | 'description'
   | 'id'
@@ -344,7 +346,6 @@ export type ActivityLogEntryMemberJoinedKeySpecifier = (
   | 'space'
   | 'triggeredBy'
   | 'type'
-  | 'user'
   | ActivityLogEntryMemberJoinedKeySpecifier
 )[];
 export type ActivityLogEntryMemberJoinedFieldPolicy = {
@@ -352,6 +353,8 @@ export type ActivityLogEntryMemberJoinedFieldPolicy = {
   collaborationID?: FieldPolicy<any> | FieldReadFunction<any>;
   community?: FieldPolicy<any> | FieldReadFunction<any>;
   communityType?: FieldPolicy<any> | FieldReadFunction<any>;
+  contributor?: FieldPolicy<any> | FieldReadFunction<any>;
+  contributorType?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -360,7 +363,6 @@ export type ActivityLogEntryMemberJoinedFieldPolicy = {
   space?: FieldPolicy<any> | FieldReadFunction<any>;
   triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
-  user?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ActivityLogEntryOpportunityCreatedKeySpecifier = (
   | 'child'
