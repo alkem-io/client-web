@@ -156,7 +156,7 @@ export const ChallengeListView: FC = () => {
         </PageContentBlock>
       </PageContentBlock>
       <PageContentBlock>
-        <PageContentBlockHeader title={'Challenges'} />
+        <PageContentBlockHeader title={t('common.subspaces')} />
         <Box display="flex" flexDirection="column">
           <Button
             startIcon={<AddOutlinedIcon />}

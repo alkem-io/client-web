@@ -41,7 +41,7 @@ const MembershipSuggestions: FC = () => {
   };
 
   return (
-    <PageContentBlock disableGap disablePadding>
+    <PageContentBlock disableGap disablePadding columns={8}>
       <PageContentBlockGrid>
         <PageContentBlockHeader
           icon={<RocketLaunchOutlinedIcon />}
