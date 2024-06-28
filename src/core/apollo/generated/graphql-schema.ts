@@ -29875,7 +29875,15 @@ export type NewVirtualContributorMySpacesQuery = {
       space: {
         __typename?: 'Space';
         id: string;
-        account: { __typename?: 'Account'; id: string };
+        account: {
+          __typename?: 'Account';
+          id: string;
+          host?:
+            | { __typename?: 'Organization'; id: string }
+            | { __typename?: 'User'; id: string }
+            | { __typename?: 'VirtualContributor'; id: string }
+            | undefined;
+        };
         profile: { __typename?: 'Profile'; id: string; displayName: string };
         subspaces: Array<{
           __typename?: 'Space';
