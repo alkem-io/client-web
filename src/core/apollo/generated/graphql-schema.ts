@@ -29898,15 +29898,6 @@ export type NewMembershipsQuery = {
         lifecycle: { __typename?: 'Lifecycle'; id: string; state?: string | undefined };
       };
     }>;
-    mySpaces: Array<{
-      __typename?: 'MySpaceResults';
-      space: {
-        __typename?: 'Space';
-        id: string;
-        level: number;
-        profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string; url: string };
-      };
-    }>;
   };
 };
 

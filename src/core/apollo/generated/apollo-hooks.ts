@@ -23754,11 +23754,6 @@ export const NewMembershipsDocument = gql`
           createdDate
         }
       }
-      mySpaces(showOnlyMyCreatedSpaces: true) {
-        space {
-          ...NewMembershipsBasicSpace
-        }
-      }
     }
   }
   ${NewMembershipsBasicSpaceFragmentDoc}
