@@ -33,11 +33,6 @@ query NewMemberships {
         createdDate
       }
     }
-    mySpaces(showOnlyMyCreatedSpaces: true) {
-      space {
-        ...NewMembershipsBasicSpace
-      }
-    }
   }
 }
 
