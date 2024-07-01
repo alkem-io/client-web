@@ -1,8 +1,8 @@
 import React, { ComponentType, FC } from 'react';
 import linkedInTheme from '../AuthProviders/LinkedInTheme';
-import { ReactComponent as LinkedInIcon } from '../AuthProviders/LinkedIn.svg';
+import LinkedInIcon from '../AuthProviders/LinkedIn.svg?react';
 import microsoftTheme from '../AuthProviders/MicrosoftTheme';
-import { ReactComponent as MicrosoftIcon } from '../AuthProviders/Microsoft.svg';
+import MicrosoftIcon from '../AuthProviders/Microsoft.svg?react';
 import TranslationKey from '../../../../i18n/utils/TranslationKey';
 import ButtonStyling from '../AuthProviders/ButtonStyling';
 import { UiNodeInput } from './UiNodeTypes';

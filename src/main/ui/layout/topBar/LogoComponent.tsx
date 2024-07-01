@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, BoxProps, styled, Link as MuiLink } from '@mui/material';
-import { ReactComponent as LogoImage } from '../../logo/logoPreview.svg';
+import LogoImage from '../../logo/logoPreview.svg?react';
 import { env } from '../../../env';
 import RouterLink from '../../../../core/ui/link/RouterLink';
 import { ROUTE_HOME } from '../../../../domain/platform/routes/constants';
