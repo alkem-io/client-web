@@ -49,7 +49,9 @@ export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = (
   const notify = useNotification();
   const { isAuthenticated } = useAuthenticationContext();
   const { user, loadingMe: membershipLoading } = useUserContext();
-  const { data: pendingMembershipsData } = useUserPendingMembershipsQuery();
+  const { data: pendingMembershipsData } = useUserPendingMembershipsQuery({
+    skip: !isAuthenticated,
+  });
   const { communityApplications: pendingApplications, communityInvitations: pendingInvitations } =
     pendingMembershipsData?.me ?? {};
 

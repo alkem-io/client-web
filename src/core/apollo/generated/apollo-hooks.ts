@@ -2451,7 +2451,7 @@ export const DashboardContributingVirtualContributorFragmentDoc = gql`
       id
       displayName
       url
-      visual(type: AVATAR) {
+      avatar: visual(type: AVATAR) {
         id
         uri
       }

@@ -7,7 +7,6 @@ import AdminLayout from '../../layout/toplevel/AdminLayout';
 import { AdminSection } from '../../layout/toplevel/constants';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import {
-  refetchMyAccountQuery,
   useCreateAccountMutation,
   useOrganizationsListQuery,
   useSpaceUrlLazyQuery,
@@ -27,7 +26,6 @@ export const NewSpace: FC<NewSpaceProps> = () => {
   const [spaceUrlQuery] = useSpaceUrlLazyQuery();
 
   const [createAccount, { loading }] = useCreateAccountMutation({
-    refetchQueries: [refetchMyAccountQuery()],
     onCompleted: async data => {
       const spaceId = data.createAccount.spaceID;
       const spaceWithUrl = await spaceUrlQuery({ variables: { spaceNameId: spaceId } });

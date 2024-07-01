@@ -22,7 +22,7 @@ import Gutters from '../../../../core/ui/grid/Gutters';
 const MyAccountBlock = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { data, loading } = useMyAccountQuery();
+  const { data, loading } = useMyAccountQuery({ fetchPolicy: 'cache-and-network' });
   const { startWizard, NewVirtualContributorWizard } = useNewVirtualContributorWizard();
 
   // Curently displaying only the first hosted space and the first VC in it.
