@@ -30072,7 +30072,14 @@ export type MyAccountQuery = {
       __typename?: 'Space';
       id: string;
       level: number;
-      profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string; url: string };
+      profile: {
+        __typename?: 'Profile';
+        id: string;
+        displayName: string;
+        tagline: string;
+        url: string;
+        avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+      };
       account: {
         __typename?: 'Account';
         id: string;
@@ -30108,7 +30115,14 @@ export type MyAccountQuery = {
             virtualContributors: Array<{
               __typename?: 'VirtualContributor';
               id: string;
-              profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string; url: string };
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                tagline: string;
+                url: string;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              };
             }>;
           }>;
         }

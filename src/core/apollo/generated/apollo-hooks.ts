@@ -23497,6 +23497,9 @@ export const MyAccountDocument = gql`
           displayName
           tagline
           url
+          avatar: visual(type: AVATAR) {
+            ...VisualUri
+          }
         }
         level
         account {
@@ -23524,12 +23527,16 @@ export const MyAccountDocument = gql`
               displayName
               tagline
               url
+              avatar: visual(type: AVATAR) {
+                ...VisualUri
+              }
             }
           }
         }
       }
     }
   }
+  ${VisualUriFragmentDoc}
 `;
 
 /**
