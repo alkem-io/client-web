@@ -24,6 +24,7 @@ import BackButton from '../../../core/ui/actions/BackButton';
 import useNavigate from '../../../core/routing/useNavigate';
 import { useNewMembershipsQuery } from '../../../core/apollo/generated/apollo-hooks';
 import { PendingMembershipsDialogType, usePendingMembershipsDialog } from './PendingMembershipsDialogContext';
+import { defer } from 'lodash';
 
 interface ButtonImplementationParams {
   header: ReactNode;
@@ -60,7 +61,7 @@ const PendingMembershipsUserMenuItem = ({ children }: PendingMembershipsUserMenu
       ? invitations?.find(invitation => invitation.id === openDialog.invitationId)
       : undefined;
 
-  const virtualContributorIviitations = invitations?.filter(
+  const virtualContributorInvitations = invitations?.filter(
     invitation => invitation.invitation.contributorType === CommunityContributorType.Virtual
   );
 
@@ -75,6 +76,7 @@ const PendingMembershipsUserMenuItem = ({ children }: PendingMembershipsUserMenu
 
     if (openDialog?.journeyUri) {
       navigate(openDialog?.journeyUri);
+      defer(closeDialog); // Deferring for appearance purpose only
     } else {
       setOpenDialog({ type: PendingMembershipsDialogType.PendingMembershipsList });
     }
@@ -121,10 +123,10 @@ const PendingMembershipsUserMenuItem = ({ children }: PendingMembershipsUserMenu
               ))}
             </>
           )}
-          {virtualContributorIviitations && virtualContributorIviitations.length > 0 && (
+          {virtualContributorInvitations && virtualContributorInvitations.length > 0 && (
             <>
               <BlockSectionTitle>{t('community.pendingMembership.virtualInvitationsSectionTitle')}</BlockSectionTitle>
-              {virtualContributorIviitations?.map(invitation => (
+              {virtualContributorInvitations?.map(invitation => (
                 <InvitationHydrator key={invitation.id} invitation={invitation}>
                   {({ invitation }) => (
                     <InvitationCardHorizontal
