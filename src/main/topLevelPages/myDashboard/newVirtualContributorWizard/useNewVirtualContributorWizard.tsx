@@ -1,6 +1,7 @@
 import { Dialog } from '@mui/material';
 import { ComponentType, useCallback, useMemo, useState } from 'react';
 import {
+  refetchMyAccountQuery,
   useAddVirtualContributorToCommunityMutation,
   useAssignCommunityRoleToVirtualContributorMutation,
   useCreateSubspaceMutation,
@@ -138,7 +139,9 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
   };
 
   const [createdVirtualContributorUrl, setCreatedVirtualContributorUrl] = useState<string | undefined>(undefined);
-  const [createVirtualContributor] = useCreateVirtualContributorOnAccountMutation();
+  const [createVirtualContributor] = useCreateVirtualContributorOnAccountMutation({
+    refetchQueries: [refetchMyAccountQuery()],
+  });
   const [addVirtualContributorToSubspace] = useAddVirtualContributorToCommunityMutation();
   const [assignCommunityRole] = useAssignCommunityRoleToVirtualContributorMutation();
   const handleCreateVirtualContributor = async (virtualContributorName: string) => {
