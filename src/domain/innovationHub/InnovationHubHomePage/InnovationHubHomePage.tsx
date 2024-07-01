@@ -3,7 +3,7 @@ import PageContentBlock from '../../../core/ui/content/PageContentBlock';
 import { InnovationHubAttrs } from './InnovationHubAttrs';
 import WrapperMarkdown from '../../../core/ui/markdown/WrapperMarkdown';
 import { BlockTitle } from '../../../core/ui/typography';
-import { ReactComponent as Logo } from '../../../main/ui/logo/logoSmall.svg';
+import Logo from '../../../main/ui/logo/logoSmall.svg?react';
 import { gutters } from '../../../core/ui/grid/utils';
 import InnovationHubBanner from './InnovationHubBanner';
 import PageContentBlockHeader from '../../../core/ui/content/PageContentBlockHeader';
