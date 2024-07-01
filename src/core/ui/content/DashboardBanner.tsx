@@ -2,19 +2,20 @@ import PageContentBlock from './PageContentBlock';
 import React from 'react';
 import Gutters from '../grid/Gutters';
 import RouterLink, { RouterLinkProps } from '../link/RouterLink';
-import { IconButton } from '@mui/material';
+import { BoxProps, IconButton } from '@mui/material';
 import { CloseOutlined } from '@mui/icons-material';
 import { gutters } from '../grid/utils';
 
 interface DashboardBannerProps extends RouterLinkProps {
   onClose?: () => void;
+  containerProps?: BoxProps;
 }
 
-const DashboardBanner = ({ children, onClose, ...props }: DashboardBannerProps) => {
+const DashboardBanner = ({ children, onClose, containerProps, ...props }: DashboardBannerProps) => {
   return (
     <PageContentBlock row accent disablePadding sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
       <RouterLink {...props} sx={{ flexGrow: 1 }}>
-        <Gutters row flexWrap="wrap">
+        <Gutters row flexWrap="wrap" {...containerProps}>
           {children}
         </Gutters>
       </RouterLink>
