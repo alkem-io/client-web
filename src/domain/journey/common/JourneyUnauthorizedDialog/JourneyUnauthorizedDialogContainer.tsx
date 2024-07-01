@@ -103,6 +103,7 @@ const JourneyUnauthorizedDialogContainer = ({
     host,
     leadOrganizations: community?.leadOrganizations,
     leadUsers: community?.leadUsers,
+    leadVirtualContributors: undefined,
     loading,
     error: journeyCommunityPrivilegesError ?? journeyDataError,
   };

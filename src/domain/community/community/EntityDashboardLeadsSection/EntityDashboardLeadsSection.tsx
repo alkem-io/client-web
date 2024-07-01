@@ -9,6 +9,7 @@ import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
 import LeadOrganizationCard, { LeadOrganizationCardProps } from '../LeadCards/LeadOrganizationCard';
 import { SvgIconProps } from '@mui/material';
+import DashboardLeads from './DashboardLeads';
 
 const OrganizationCardTransparent = (props: LeadOrganizationCardProps) => <LeadOrganizationCard {...props} />;
 
@@ -21,6 +22,7 @@ interface EntityDashboardLeadsProps extends EntityDashboardLeads {
 const EntityDashboardLeadsSection = ({
   leadUsers,
   leadOrganizations,
+  leadVirtualContributors,
   usersHeader,
   organizationsHeader,
   organizationsHeaderIcon,
@@ -77,6 +79,9 @@ const EntityDashboardLeadsSection = ({
             entityName={t('community.leading-organizations')}
           />
         </>
+      )}
+      {leadUsersSectionVisible && usersHeader && (
+        <DashboardLeads headerText="" contributors={leadVirtualContributors} />
       )}
       {children}
     </PageContentBlock>
