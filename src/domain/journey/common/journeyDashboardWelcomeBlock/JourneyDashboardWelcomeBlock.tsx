@@ -89,13 +89,7 @@ const JourneyDashboardWelcomeBlock = ({
       {leadVirtualContributors && leadVirtualContributors.length > 0 && (
         <Gutters flexWrap="wrap" row disablePadding>
           {leadVirtualContributors.slice(0, 2).map(vc => (
-            <ContributorCardHorizontal
-              key={vc.id}
-              profile={vc.profile}
-              url={vc.profile.url}
-              onContact={() => {}}
-              seamless
-            />
+            <ContributorCardHorizontal key={vc.id} profile={vc.profile} url={vc.profile.url} seamless />
           ))}
         </Gutters>
       )}

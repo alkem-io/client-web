@@ -62,6 +62,7 @@ const UserMembershipPage: FC<UserMembershipPageProps> = () => {
     }, [] as SpaceHostedItem[]);
   }, [data]);
 
+  // TODO: I think this is wrong, we are seeing the memberships of certain user, not ours.
   const { data: pendingMembershipsData } = useUserPendingMembershipsQuery();
   const applications = useMemo<SpaceHostedItem[] | undefined>(() => {
     if (!pendingMembershipsData || !userMetadata) {

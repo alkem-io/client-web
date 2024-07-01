@@ -2451,7 +2451,7 @@ export const DashboardContributingVirtualContributorFragmentDoc = gql`
       id
       displayName
       url
-      visual(type: AVATAR) {
+      avatar: visual(type: AVATAR) {
         id
         uri
       }
@@ -23497,6 +23497,9 @@ export const MyAccountDocument = gql`
           displayName
           tagline
           url
+          avatar: visual(type: AVATAR) {
+            ...VisualUri
+          }
         }
         level
         account {
@@ -23524,12 +23527,16 @@ export const MyAccountDocument = gql`
               displayName
               tagline
               url
+              avatar: visual(type: AVATAR) {
+                ...VisualUri
+              }
             }
           }
         }
       }
     }
   }
+  ${VisualUriFragmentDoc}
 `;
 
 /**

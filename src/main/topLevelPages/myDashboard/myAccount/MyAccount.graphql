@@ -7,6 +7,9 @@ query MyAccount {
         displayName
         tagline
         url
+        avatar: visual(type: AVATAR) {
+          ...VisualUri
+        }
       }
       level
       account {
@@ -34,6 +37,9 @@ query MyAccount {
             displayName
             tagline
             url
+            avatar: visual(type: AVATAR) {
+              ...VisualUri
+            }
           }
         }
       }

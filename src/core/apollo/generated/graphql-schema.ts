@@ -15492,7 +15492,7 @@ export type EntityDashboardCommunityFragment = {
       id: string;
       displayName: string;
       url: string;
-      visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+      avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
       tagsets?:
         | Array<{
             __typename?: 'Tagset';
@@ -15604,7 +15604,7 @@ export type DashboardContributingVirtualContributorFragment = {
     id: string;
     displayName: string;
     url: string;
-    visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+    avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
     tagsets?:
       | Array<{
           __typename?: 'Tagset';
@@ -19755,7 +19755,7 @@ export type AboutPageMembersQuery = {
                 id: string;
                 displayName: string;
                 url: string;
-                visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 tagsets?:
                   | Array<{
                       __typename?: 'Tagset';
@@ -21233,7 +21233,7 @@ export type SpacePageQuery = {
                 id: string;
                 displayName: string;
                 url: string;
-                visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 tagsets?:
                   | Array<{
                       __typename?: 'Tagset';
@@ -21540,7 +21540,7 @@ export type SpacePageFragment = {
         id: string;
         displayName: string;
         url: string;
-        visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+        avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
         tagsets?:
           | Array<{
               __typename?: 'Tagset';
@@ -21808,7 +21808,7 @@ export type LegacySubspaceDashboardPageQuery = {
                 id: string;
                 displayName: string;
                 url: string;
-                visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 tagsets?:
                   | Array<{
                       __typename?: 'Tagset';
@@ -22012,7 +22012,7 @@ export type SubspacePageFragment = {
         id: string;
         displayName: string;
         url: string;
-        visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+        avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
         tagsets?:
           | Array<{
               __typename?: 'Tagset';
@@ -22996,7 +22996,7 @@ export type SpaceProfileFragment = {
         id: string;
         displayName: string;
         url: string;
-        visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+        avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
         tagsets?:
           | Array<{
               __typename?: 'Tagset';
@@ -23579,7 +23579,7 @@ export type SubspacePageQuery = {
                 id: string;
                 displayName: string;
                 url: string;
-                visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 tagsets?:
                   | Array<{
                       __typename?: 'Tagset';
@@ -23712,7 +23712,7 @@ export type SubspacePageSpaceFragment = {
         id: string;
         displayName: string;
         url: string;
-        visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+        avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
         tagsets?:
           | Array<{
               __typename?: 'Tagset';
@@ -30072,7 +30072,14 @@ export type MyAccountQuery = {
       __typename?: 'Space';
       id: string;
       level: number;
-      profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string; url: string };
+      profile: {
+        __typename?: 'Profile';
+        id: string;
+        displayName: string;
+        tagline: string;
+        url: string;
+        avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+      };
       account: {
         __typename?: 'Account';
         id: string;
@@ -30108,7 +30115,14 @@ export type MyAccountQuery = {
             virtualContributors: Array<{
               __typename?: 'VirtualContributor';
               id: string;
-              profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string; url: string };
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                tagline: string;
+                url: string;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              };
             }>;
           }>;
         }

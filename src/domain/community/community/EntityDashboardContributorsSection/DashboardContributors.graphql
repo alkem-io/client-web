@@ -44,7 +44,7 @@ fragment DashboardContributingVirtualContributor on VirtualContributor {
     id
     displayName
     url
-    visual(type: AVATAR) {
+    avatar: visual(type: AVATAR) {
       id
       uri
     }
