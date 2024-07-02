@@ -8,7 +8,7 @@ interface DashboardLeadsProps<T> {
   CardComponent: React.ComponentType<{ contributor: T }>;
 }
 
-const DashboardLeads = <T,>({ headerText, contributors, CardComponent }: DashboardLeadsProps<T>) => {
+function DashboardLeads<T>({ headerText, contributors, CardComponent }: DashboardLeadsProps<T>) {
   return (
     <>
       {headerText && <PageContentBlockHeader title={headerText} />}
@@ -17,6 +17,6 @@ const DashboardLeads = <T,>({ headerText, contributors, CardComponent }: Dashboa
       ))}
     </>
   );
-};
+}
 
 export default DashboardLeads;
