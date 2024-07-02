@@ -2319,13 +2319,6 @@ export type ISearchResults = {
   journeyResultsCount: Scalars['Float'];
 };
 
-export type IngestSpaceInput = {
-  /** The purpose of the ingestions - either knowledge or context. */
-  purpose: SpaceIngestionPurpose;
-  /** The identifier for the Space to be ingested. */
-  spaceID: Scalars['UUID'];
-};
-
 export type InnovationFlow = {
   __typename?: 'InnovationFlow';
   /** The authorization rules for the entity */
@@ -2925,8 +2918,6 @@ export type Mutation = {
   convertChallengeToSpace: Space;
   /** Creates a new Challenge by converting an existing Opportunity. */
   convertOpportunityToChallenge: Space;
-  /** Copies collections nameID-... into UUID-... */
-  copyCollections: MigrateEmbeddings;
   /** Creates a new Account with a single root Space. */
   createAccount: Account;
   /** Creates a new Actor in the specified ActorGroup. */
@@ -3047,8 +3038,6 @@ export type Mutation = {
   grantCredentialToUser: User;
   /** Resets the interaction with the chat engine. */
   ingest: Scalars['Boolean'];
-  /** Triggers space ingestion. */
-  ingestSpace: Space;
   /** Invite an existing Contriburor to join the specified Community as a member. */
   inviteContributorsForCommunityMembership: Array<Invitation>;
   /** Invite a User to join the platform and the specified Community as a member. */
@@ -3529,10 +3518,6 @@ export type MutationGrantCredentialToOrganizationArgs = {
 
 export type MutationGrantCredentialToUserArgs = {
   grantCredentialData: GrantAuthorizationCredentialInput;
-};
-
-export type MutationIngestSpaceArgs = {
-  ingestSpaceData: IngestSpaceInput;
 };
 
 export type MutationInviteContributorsForCommunityMembershipArgs = {
@@ -5048,11 +5033,6 @@ export type SpaceFilterInput = {
   /** Return Spaces with a Visibility matching one of the provided types. */
   visibilities?: InputMaybe<Array<SpaceVisibility>>;
 };
-
-export enum SpaceIngestionPurpose {
-  Context = 'CONTEXT',
-  Knowledge = 'KNOWLEDGE',
-}
 
 export enum SpaceLevel {
   Challenge = 'CHALLENGE',
@@ -30068,41 +30048,44 @@ export type MyAccountQuery = {
   __typename?: 'Query';
   me: {
     __typename?: 'MeQueryResults';
-    spaceMemberships: Array<{
-      __typename?: 'Space';
-      id: string;
-      level: number;
-      profile: {
-        __typename?: 'Profile';
+    mySpaces: Array<{
+      __typename?: 'MySpaceResults';
+      space: {
+        __typename?: 'Space';
         id: string;
-        displayName: string;
-        tagline: string;
-        url: string;
-        avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-      };
-      account: {
-        __typename?: 'Account';
-        id: string;
-        host?:
-          | {
-              __typename?: 'Organization';
-              id: string;
-              nameID: string;
-              profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string; url: string };
-            }
-          | {
-              __typename?: 'User';
-              id: string;
-              nameID: string;
-              profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string; url: string };
-            }
-          | {
-              __typename?: 'VirtualContributor';
-              id: string;
-              nameID: string;
-              profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string; url: string };
-            }
-          | undefined;
+        level: number;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          tagline: string;
+          url: string;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        };
+        account: {
+          __typename?: 'Account';
+          id: string;
+          host?:
+            | {
+                __typename?: 'Organization';
+                id: string;
+                nameID: string;
+                profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string; url: string };
+              }
+            | {
+                __typename?: 'User';
+                id: string;
+                nameID: string;
+                profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string; url: string };
+              }
+            | {
+                __typename?: 'VirtualContributor';
+                id: string;
+                nameID: string;
+                profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string; url: string };
+              }
+            | undefined;
+        };
       };
     }>;
     user?:
