@@ -23490,28 +23490,30 @@ export function refetchMembershipSuggestionSpaceQuery(variables: SchemaTypes.Mem
 export const MyAccountDocument = gql`
   query MyAccount {
     me {
-      spaceMemberships {
-        id
-        profile {
+      mySpaces(showOnlyMyCreatedSpaces: true) {
+        space {
           id
-          displayName
-          tagline
-          url
-          avatar: visual(type: AVATAR) {
-            ...VisualUri
-          }
-        }
-        level
-        account {
-          id
-          host {
+          profile {
             id
-            nameID
-            profile {
+            displayName
+            tagline
+            url
+            avatar: visual(type: AVATAR) {
+              ...VisualUri
+            }
+          }
+          level
+          account {
+            id
+            host {
               id
-              displayName
-              tagline
-              url
+              nameID
+              profile {
+                id
+                displayName
+                tagline
+                url
+              }
             }
           }
         }
