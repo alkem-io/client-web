@@ -37,6 +37,7 @@ export interface AboutPageContainerEntities {
   memberOrganizations: WithId<ContributorCardSquareProps>[] | undefined;
   memberOrganizationsCount: number | undefined;
   leadUsers: DashboardLeadUserFragment[] | undefined;
+  leadVirtualContributors: ContributorViewProps[] | undefined;
   leadOrganizations: AssociatedOrganizationDetailsFragment[] | undefined;
   host: ContributorViewProps | undefined;
   references: ReferenceDetailsFragment[] | undefined;
@@ -101,6 +102,7 @@ const AboutPageContainer: FC<AboutPageContainerProps> = ({ journeyId, children }
   } as Community;
   const leadUsers = memberJourney?.community?.leadUsers;
   const leadOrganizations = memberJourney?.community?.leadOrganizations;
+  const leadVirtualContributors = memberJourney?.community?.leadVirtualContributors;
   const references = memberProfile?.references;
 
   const metrics = nonMemberJourney?.metrics;
@@ -140,6 +142,7 @@ const AboutPageContainer: FC<AboutPageContainerProps> = ({ journeyId, children }
           metrics,
           leadUsers,
           leadOrganizations,
+          leadVirtualContributors,
           host,
           references,
           ...contributors,

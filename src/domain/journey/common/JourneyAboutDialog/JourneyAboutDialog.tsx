@@ -90,6 +90,7 @@ const JourneyAboutDialog = ({
   journeyLevel,
   leadUsers,
   leadOrganizations,
+  leadVirtualContributors,
   host,
   sendMessageToCommunityLeads,
   metrics,
@@ -233,6 +234,7 @@ const JourneyAboutDialog = ({
                 usersHeader={t(leadUsersHeader)}
                 leadUsers={leadUsers}
                 leadOrganizations={leadOrganizations}
+                leadVirtualContributors={leadVirtualContributors}
               />
               {messageReceivers.length !== 0 && (
                 <>
@@ -258,6 +260,7 @@ const JourneyAboutDialog = ({
                   }
                   leadOrganizations={host && [host]}
                   leadUsers={undefined}
+                  leadVirtualContributors={leadVirtualContributors}
                 >
                   {host && (
                     <Caption

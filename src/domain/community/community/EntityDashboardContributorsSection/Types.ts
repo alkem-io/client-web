@@ -34,5 +34,6 @@ export interface ContributorViewProps extends Identifiable {
 export interface EntityDashboardLeads {
   leadUsers: DashboardLeadUserFragment[] | undefined;
   leadOrganizations: ContributorViewProps[] | undefined;
+  leadVirtualContributors: ContributorViewProps[] | undefined;
   host?: ContributorViewProps;
 }

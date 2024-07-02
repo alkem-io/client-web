@@ -97,6 +97,7 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
               leadUsers={entities.space?.community?.leadUsers}
               host={entities.host}
               leadOrganizations={entities.space?.community?.leadOrganizations}
+              leadVirtualContributors={entities.space?.community?.leadVirtualContributors}
               endButton={
                 <IconButton onClick={backToDashboard} aria-label={t('buttons.close')}>
                   <Close />

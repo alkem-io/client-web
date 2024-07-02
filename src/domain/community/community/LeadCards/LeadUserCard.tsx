@@ -7,12 +7,14 @@ import LocationCaption from '../../../../core/ui/location/LocationCaption';
 import { Text } from '../../../../core/ui/typography';
 
 export interface LeadUserCardProps {
-  userUrl: string;
-  avatarUrl: string | undefined;
-  fullName: string;
-  city?: string;
-  country?: string;
-  tags?: string[];
+  contributor: {
+    userUrl: string;
+    avatarUrl: string | undefined;
+    fullName: string;
+    city?: string;
+    country?: string;
+    tags?: string[];
+  };
 }
 
 const TagsWithSpacing = styled(TagsComponent)(({ theme }) => ({
@@ -23,7 +25,13 @@ const LeadUserCardContainer = styled(Box)(({ theme }) => ({
   padding: theme.spacing(1),
 }));
 
-const LeadUserCard = ({ userUrl, fullName, city, country, avatarUrl, tags }: LeadUserCardProps) => {
+/**
+ * @deprecated
+ * use LeadContributorCard instead
+ */
+const LeadUserCard = ({ contributor }: LeadUserCardProps) => {
+  const { userUrl, fullName, city, country, avatarUrl, tags } = contributor;
+
   return (
     <LeadUserCardContainer>
       <LinkNoUnderline to={userUrl}>
