@@ -9,6 +9,8 @@ import VCPageBanner from './VCPageBanner';
 import { useVirtualContributorQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { SettingsSection, VCProfileTabs } from '../../../platform/admin/layout/EntitySettingsLayout/constants';
 import EntitySettingsLayout from '../../../platform/admin/layout/EntitySettingsLayout/EntitySettingsLayout';
+import useRestrictedRedirect from '../../../../core/routing/useRestrictedRedirect';
+import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
 
 interface VCPageLayoutProps {
   currentTab: SettingsSection;
@@ -19,10 +21,10 @@ const tabs = [SettingsSection.MyProfile, SettingsSection.Membership, SettingsSec
   return VCProfileTabs.find(tab => tab.section === section)!;
 });
 
-const VCPageLayout = ({ ...props }: PropsWithChildren<VCPageLayoutProps>) => {
+const VCSettingsPageLayout = ({ ...props }: PropsWithChildren<VCPageLayoutProps>) => {
   const { vcNameId = '' } = useUrlParams();
 
-  const { data, loading } = useVirtualContributorQuery({
+  const { data, loading, error } = useVirtualContributorQuery({
     variables: {
       id: vcNameId,
     },
@@ -34,6 +36,12 @@ const VCPageLayout = ({ ...props }: PropsWithChildren<VCPageLayoutProps>) => {
     displayName: data?.virtualContributor.profile.displayName || '',
     userNameId: data?.virtualContributor.nameID || '',
   };
+
+  useRestrictedRedirect(
+    { data, error },
+    data => data.virtualContributor.authorization?.myPrivileges,
+    AuthorizationPrivilege.Update
+  );
 
   return (
     <EntitySettingsLayout
@@ -61,4 +69,4 @@ const VCPageLayout = ({ ...props }: PropsWithChildren<VCPageLayoutProps>) => {
   );
 };
 
-export default VCPageLayout;
+export default VCSettingsPageLayout;
