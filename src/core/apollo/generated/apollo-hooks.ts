@@ -23501,6 +23501,9 @@ export const MyAccountDocument = gql`
             avatar: visual(type: AVATAR) {
               ...VisualUri
             }
+            cardBanner: visual(type: CARD) {
+              ...VisualUri
+            }
           }
           level
           account {
