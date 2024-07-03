@@ -30061,6 +30061,7 @@ export type MyAccountQuery = {
           tagline: string;
           url: string;
           avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
         };
         account: {
           __typename?: 'Account';

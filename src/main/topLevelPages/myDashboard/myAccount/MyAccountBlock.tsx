@@ -1,10 +1,9 @@
 import { useTranslation } from 'react-i18next';
-import { Button } from '@mui/material';
+import { Button, ListItemButton, ListItemButtonProps, ListItemButtonTypeMap } from '@mui/material';
 import { useMyAccountQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
-import HorizontalCardsGroup from '../../../../core/ui/content/HorizontalCardsGroup';
 import { gutters } from '../../../../core/ui/grid/utils';
 import { BlockSectionTitle, Caption } from '../../../../core/ui/typography';
 import Loading from '../../../../core/ui/loading/Loading';
@@ -13,10 +12,9 @@ import useNewVirtualContributorWizard from '../newVirtualContributorWizard/useNe
 import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
 import Avatar from '../../../../core/ui/avatar/Avatar';
 import defaultJourneyAvatar from '../../../../domain/journey/defaultVisuals/Avatar.jpg';
-import GridItem from '../../../../core/ui/grid/GridItem';
-import RouterLink from '../../../../core/ui/link/RouterLink';
+import RouterLink, { RouterLinkProps } from '../../../../core/ui/link/RouterLink';
 import Gutters from '../../../../core/ui/grid/Gutters';
-import StartingSpace from '../startingSpace/StartingSpace';
+import { ROUTE_CREATE_SPACE } from '../../../../domain/platform/routes/constants';
 
 const MyAccountBlock = () => {
   const { t } = useTranslation();
@@ -35,6 +33,16 @@ const MyAccountBlock = () => {
 
   const { user } = useUserContext();
 
+  let createLink = t('pages.home.sections.startingSpace.url');
+
+  if (user && user.hasPlatformPrivilege(AuthorizationPrivilege.CreateSpace)) {
+    createLink = `/${ROUTE_CREATE_SPACE}`;
+  }
+
+  const Wrapper = <D extends React.ElementType = ListItemButtonTypeMap['defaultComponent'], P = {}>(
+    props: ListItemButtonProps<D, P> & RouterLinkProps
+  ) => <ListItemButton component={RouterLink} {...props} />;
+
   return (
     <PageContentBlock columns={4}>
       <PageContentBlockHeader title={t('pages.home.sections.myAccount.title')} fullWidth />
@@ -43,55 +51,57 @@ const MyAccountBlock = () => {
       ) : (
         <>
           {hostedSpace ? (
-            <HorizontalCardsGroup title={t('pages.home.sections.myAccount.hostedSpaces')}>
-              <Gutters paddingY={0}>
-                <GridItem>
-                  <BadgeCardView
-                    variant="rounded"
-                    visual={
-                      <Avatar
-                        src={hostedSpace.profile.avatar?.uri || defaultJourneyAvatar}
-                        alt={t('common.avatar-of', { user: hostedSpace.profile.displayName })}
-                      />
-                    }
-                    component={RouterLink}
-                    to={hostedSpace.profile.url}
-                  >
-                    <BlockSectionTitle>{hostedSpace.profile.displayName}</BlockSectionTitle>
-                    <BlockSectionTitle>{hostedSpace.profile.tagline}</BlockSectionTitle>
-                  </BadgeCardView>
-                </GridItem>
-              </Gutters>
-            </HorizontalCardsGroup>
-          ) : (
-            <>
+            <Gutters disablePadding disableGap>
               <Caption>{t('pages.home.sections.myAccount.hostedSpaces')}</Caption>
-              <StartingSpace />
-            </>
+              <BadgeCardView
+                variant="rounded"
+                visual={
+                  <Avatar
+                    src={hostedSpace.profile.cardBanner?.uri || defaultJourneyAvatar}
+                    alt={t('common.avatar-of', { user: hostedSpace.profile.displayName })}
+                  />
+                }
+                component={Wrapper}
+                to={hostedSpace.profile.url}
+              >
+                <BlockSectionTitle>{hostedSpace.profile.displayName}</BlockSectionTitle>
+                <BlockSectionTitle>{hostedSpace.profile.tagline}</BlockSectionTitle>
+              </BadgeCardView>
+            </Gutters>
+          ) : (
+            <Gutters disablePadding disableGap>
+              <Caption>{t('pages.home.sections.myAccount.hostedSpaces')}</Caption>
+              <Button
+                aria-label={t('pages.home.sections.myAccount.createSpaceButton')}
+                variant="contained"
+                component={RouterLink}
+                to={createLink}
+                sx={{ padding: gutters(0.5), textTransform: 'none' }}
+              >
+                {t('pages.home.sections.myAccount.createSpaceButton')}
+              </Button>
+            </Gutters>
           )}
 
           {virtualContributor ? (
-            <HorizontalCardsGroup title={t('pages.home.sections.myAccount.virtualContributors')}>
-              <Gutters paddingY={0}>
-                <GridItem>
-                  <BadgeCardView
-                    variant="rounded"
-                    visual={
-                      <Avatar
-                        src={virtualContributor.profile.avatar?.uri}
-                        alt={t('common.avatar-of', { user: virtualContributor.profile.displayName })}
-                      />
-                    }
-                    component={RouterLink}
-                    to={virtualContributor.profile.url}
-                  >
-                    <BlockSectionTitle>{virtualContributor.profile.displayName}</BlockSectionTitle>
-                  </BadgeCardView>
-                </GridItem>
-              </Gutters>
-            </HorizontalCardsGroup>
+            <Gutters disablePadding disableGap>
+              <Caption>{t('pages.home.sections.myAccount.virtualContributors')}</Caption>
+              <BadgeCardView
+                variant="rounded"
+                visual={
+                  <Avatar
+                    src={virtualContributor.profile.avatar?.uri}
+                    alt={t('common.avatar-of', { user: virtualContributor.profile.displayName })}
+                  />
+                }
+                component={Wrapper}
+                to={virtualContributor.profile.url}
+              >
+                <BlockSectionTitle>{virtualContributor.profile.displayName}</BlockSectionTitle>
+              </BadgeCardView>
+            </Gutters>
           ) : (
-            <>
+            <Gutters disablePadding disableGap>
               <Caption>{t('pages.home.sections.myAccount.virtualContributors')}</Caption>
               <Button
                 aria-label={t('pages.home.sections.myAccount.createVCButton')}
@@ -104,7 +114,7 @@ const MyAccountBlock = () => {
                   ? t('pages.home.sections.myAccount.createVCButton')
                   : t('pages.home.sections.myAccount.createVCButtonDisabled')}
               </Button>
-            </>
+            </Gutters>
           )}
         </>
       )}
