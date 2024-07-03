@@ -2,7 +2,7 @@ import { gutters } from '../../../../../core/ui/grid/utils';
 import { Caption, PageTitle } from '../../../../../core/ui/typography';
 import React, { ReactElement, ReactNode } from 'react';
 import BadgeCardView from '../../../../../core/ui/list/BadgeCardView';
-import { Box, BoxProps, CircularProgress, useTheme } from '@mui/material';
+import { Box, BoxProps, CircularProgress, Theme, useMediaQuery, useTheme } from '@mui/material';
 import TagsComponent from '../../../../shared/components/TagsComponent/TagsComponent';
 import PageBannerCardWrapper, {
   PageBannerCardWrapperProps,
@@ -33,6 +33,7 @@ const PageBannerCardWithVisual = ({
   ...props
 }: PageBannerCardWithVisualProps) => {
   const theme = useTheme();
+  const isSmall = useMediaQuery<Theme>(theme => theme.breakpoints.only('xs'));
 
   return (
     <PageBannerCardWrapper disablePadding paddingRight={gutters(0.5)} {...props}>
@@ -40,7 +41,7 @@ const PageBannerCardWithVisual = ({
         visual={<Gutters paddingRight={0}>{loading ? <CircularProgress size={gutters(4)(theme)} /> : visual}</Gutters>}
       >
         <Box display="flex" flexDirection="column" paddingY={gutters(0.5)}>
-          <RowContainer>
+          <RowContainer {...(isSmall ? { flexWrap: 'wrap', gap: 0 } : {})}>
             {header ?? (
               <PageTitle color="primary" noWrap>
                 {title}
