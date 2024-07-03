@@ -3,11 +3,12 @@ import { AvatarProps, Box } from '@mui/material';
 import ErrorHandlingAvatar from './ErrorHandlingAvatar';
 import { gutters } from '../grid/utils';
 
-type Size = 'small' | 'medium' | 'large';
+type Size = 'small' | 'medium' | 'regular' | 'large';
 
 const AvatarSize: Record<Size, number> = {
   small: 1.5,
   medium: 2,
+  regular: 3,
   large: 4,
 };
 
