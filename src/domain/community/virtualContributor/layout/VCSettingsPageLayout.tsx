@@ -37,11 +37,9 @@ const VCSettingsPageLayout = ({ ...props }: PropsWithChildren<VCPageLayoutProps>
     userNameId: data?.virtualContributor.nameID || '',
   };
 
-  useRestrictedRedirect(
-    { data, error },
-    data => data.virtualContributor.authorization?.myPrivileges,
-    AuthorizationPrivilege.Update
-  );
+  useRestrictedRedirect({ data, error }, data => data.virtualContributor.authorization?.myPrivileges, {
+    requiredPrivilege: AuthorizationPrivilege.Update,
+  });
 
   return (
     <EntitySettingsLayout
