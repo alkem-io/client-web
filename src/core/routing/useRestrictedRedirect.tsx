@@ -3,6 +3,7 @@ import { AuthorizationPrivilege } from '../apollo/generated/graphql-schema';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { isApolloForbiddenError } from '../apollo/hooks/useApolloErrorHandler';
+import { NavigateOptions } from 'react-router/lib/hooks';
 
 interface RestrictedRedirectQueryResponse<Data extends {}> {
   data?: Data;
@@ -13,10 +14,21 @@ interface PrivilegesReader<Data> {
   (data: Data): AuthorizationPrivilege[] | undefined;
 }
 
+interface RestrictedRedirectOptions extends NavigateOptions {
+  requiredPrivilege?: AuthorizationPrivilege;
+}
+
+const DEFAULT_NAVIGATE_OPTIONS: NavigateOptions = {
+  replace: true,
+};
+
 const useRestrictedRedirect = <Data extends {}>(
   { data, error }: RestrictedRedirectQueryResponse<Data>,
   readPrivileges: PrivilegesReader<Data>,
-  requiredPrivilege = AuthorizationPrivilege.Read
+  {
+    requiredPrivilege = AuthorizationPrivilege.Read,
+    ...navigateOptions
+  }: RestrictedRedirectOptions = DEFAULT_NAVIGATE_OPTIONS
 ) => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
@@ -25,11 +37,11 @@ const useRestrictedRedirect = <Data extends {}>(
 
   useEffect(() => {
     if (error && isApolloForbiddenError(error)) {
-      navigate(redirectUrl);
+      navigate(redirectUrl, navigateOptions);
     }
 
     if (data && !readPrivileges(data)?.includes(requiredPrivilege)) {
-      navigate(redirectUrl);
+      navigate(redirectUrl, navigateOptions);
     }
   }, [data, error]);
 };
