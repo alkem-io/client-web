@@ -1,5 +1,5 @@
-query VirtualContributor ($id: UUID_NAMEID!) {
-  virtualContributor (ID: $id) {
+query VirtualContributor($id: UUID_NAMEID!) {
+  virtualContributor(ID: $id) {
     id
     nameID
     authorization {
