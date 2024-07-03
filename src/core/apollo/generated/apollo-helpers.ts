@@ -1628,7 +1628,6 @@ export type MutationKeySpecifier = (
   | 'cleanupCollections'
   | 'convertChallengeToSpace'
   | 'convertOpportunityToChallenge'
-  | 'copyCollections'
   | 'createAccount'
   | 'createActor'
   | 'createActorGroup'
@@ -1689,7 +1688,6 @@ export type MutationKeySpecifier = (
   | 'grantCredentialToOrganization'
   | 'grantCredentialToUser'
   | 'ingest'
-  | 'ingestSpace'
   | 'inviteContributorsForCommunityMembership'
   | 'inviteUserToPlatformAndCommunity'
   | 'inviteUserToPlatformWithRole'
@@ -1799,7 +1797,6 @@ export type MutationFieldPolicy = {
   cleanupCollections?: FieldPolicy<any> | FieldReadFunction<any>;
   convertChallengeToSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   convertOpportunityToChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
-  copyCollections?: FieldPolicy<any> | FieldReadFunction<any>;
   createAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   createActor?: FieldPolicy<any> | FieldReadFunction<any>;
   createActorGroup?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1860,7 +1857,6 @@ export type MutationFieldPolicy = {
   grantCredentialToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   grantCredentialToUser?: FieldPolicy<any> | FieldReadFunction<any>;
   ingest?: FieldPolicy<any> | FieldReadFunction<any>;
-  ingestSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   inviteContributorsForCommunityMembership?: FieldPolicy<any> | FieldReadFunction<any>;
   inviteUserToPlatformAndCommunity?: FieldPolicy<any> | FieldReadFunction<any>;
   inviteUserToPlatformWithRole?: FieldPolicy<any> | FieldReadFunction<any>;

@@ -24,10 +24,10 @@ const MyAccountBlock = () => {
   const { startWizard, NewVirtualContributorWizard } = useNewVirtualContributorWizard();
 
   // Curently displaying only the first hosted space and the first VC in it.
-  // TODO: use mySpaces(showOnlyMyCreatedSpaces: true) instead of spaceMemberships
-  const hostedSpace = data?.me.spaceMemberships.filter(
-    space => space.account && space.account.host?.id === data?.me.user?.id && space.level === 0
-  )[0];
+  const hostedSpace = data?.me.mySpaces.filter(
+    spaceData =>
+      spaceData.space.account && spaceData.space.account.host?.id === data?.me.user?.id && spaceData.space.level === 0
+  )[0]?.space;
 
   const virtualContributor = data?.me.user?.accounts
     .filter(account => account.id === hostedSpace?.account.id)
@@ -44,26 +44,24 @@ const MyAccountBlock = () => {
         <>
           {hostedSpace ? (
             <HorizontalCardsGroup title={t('pages.home.sections.myAccount.hostedSpaces')}>
-              {[hostedSpace].map(space => (
-                <Gutters paddingY={0}>
-                  <GridItem>
-                    <BadgeCardView
-                      variant="rounded"
-                      visual={
-                        <Avatar
-                          src={space.profile.avatar?.uri || defaultJourneyAvatar}
-                          alt={t('common.avatar-of', { user: space.profile.displayName })}
-                        />
-                      }
-                      component={RouterLink}
-                      to={space.profile.url}
-                    >
-                      <BlockSectionTitle>{space.profile.displayName}</BlockSectionTitle>
-                      <BlockSectionTitle>{space.profile.tagline}</BlockSectionTitle>
-                    </BadgeCardView>
-                  </GridItem>
-                </Gutters>
-              ))}
+              <Gutters paddingY={0}>
+                <GridItem>
+                  <BadgeCardView
+                    variant="rounded"
+                    visual={
+                      <Avatar
+                        src={hostedSpace.profile.avatar?.uri || defaultJourneyAvatar}
+                        alt={t('common.avatar-of', { user: hostedSpace.profile.displayName })}
+                      />
+                    }
+                    component={RouterLink}
+                    to={hostedSpace.profile.url}
+                  >
+                    <BlockSectionTitle>{hostedSpace.profile.displayName}</BlockSectionTitle>
+                    <BlockSectionTitle>{hostedSpace.profile.tagline}</BlockSectionTitle>
+                  </BadgeCardView>
+                </GridItem>
+              </Gutters>
             </HorizontalCardsGroup>
           ) : (
             <>
@@ -74,25 +72,23 @@ const MyAccountBlock = () => {
 
           {virtualContributor ? (
             <HorizontalCardsGroup title={t('pages.home.sections.myAccount.virtualContributors')}>
-              {[virtualContributor].map(vc => (
-                <Gutters paddingY={0}>
-                  <GridItem>
-                    <BadgeCardView
-                      variant="rounded"
-                      visual={
-                        <Avatar
-                          src={vc.profile.avatar?.uri}
-                          alt={t('common.avatar-of', { user: vc.profile.displayName })}
-                        />
-                      }
-                      component={RouterLink}
-                      to={vc.profile.url}
-                    >
-                      <BlockSectionTitle>{vc.profile.displayName}</BlockSectionTitle>
-                    </BadgeCardView>
-                  </GridItem>
-                </Gutters>
-              ))}
+              <Gutters paddingY={0}>
+                <GridItem>
+                  <BadgeCardView
+                    variant="rounded"
+                    visual={
+                      <Avatar
+                        src={virtualContributor.profile.avatar?.uri}
+                        alt={t('common.avatar-of', { user: virtualContributor.profile.displayName })}
+                      />
+                    }
+                    component={RouterLink}
+                    to={virtualContributor.profile.url}
+                  >
+                    <BlockSectionTitle>{virtualContributor.profile.displayName}</BlockSectionTitle>
+                  </BadgeCardView>
+                </GridItem>
+              </Gutters>
             </HorizontalCardsGroup>
           ) : (
             <>
