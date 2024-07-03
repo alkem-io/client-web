@@ -2,13 +2,13 @@ import React from 'react';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 
-interface DashboardLeadsProps<T> {
+interface DashboardLeadsProps<T extends {}> {
   headerText: string;
   contributors: (T & Identifiable)[] | undefined;
   CardComponent: React.ComponentType<{ contributor: T }>;
 }
 
-function DashboardLeads<T>({ headerText, contributors, CardComponent }: DashboardLeadsProps<T>) {
+const DashboardLeads = <T extends {}>({ headerText, contributors, CardComponent }: DashboardLeadsProps<T>) => {
   return (
     <>
       {headerText && <PageContentBlockHeader title={headerText} />}
@@ -17,6 +17,6 @@ function DashboardLeads<T>({ headerText, contributors, CardComponent }: Dashboar
       ))}
     </>
   );
-}
+};
 
 export default DashboardLeads;
