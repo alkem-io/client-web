@@ -32,17 +32,15 @@ const MyDashboardWithMemberships: FC<MyDashboardWithMembershipsProps> = ({ space
       <PageContentColumn columns={columns}>
         <RecentSpacesList onSeeMore={() => onOpenMembershipsDialog()} />
       </PageContentColumn>
-      <PageContentColumn columns={12}>
-        {data?.platform.latestReleaseDiscussion && <ReleaseNotesBanner />}
-        <MyAccountBlock />
-        <MyLatestContributions />
-        <NewMembershipsBlock onOpenMemberships={onOpenMembershipsDialog} />
-      </PageContentColumn>
       <PageContentColumn columns={columns === 12 ? 4 : 8} flexDirection="column" alignSelf="stretch">
+        <NewMembershipsBlock hiddenIfEmpty />
         <LatestContributions spaceMemberships={spacesData?.me.spaceMemberships} />
         <RecentForumMessages />
       </PageContentColumn>
       <PageContentColumn columns={8}>
+        {data?.platform.latestReleaseDiscussion && <ReleaseNotesBanner />}
+        <MyAccountBlock />
+        <MyLatestContributions />
         <TipsAndTricks halfWidth />
         <InnovationLibraryBlock halfWidth />
         <ExploreOtherChallenges />
