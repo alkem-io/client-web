@@ -15,6 +15,9 @@ import defaultJourneyAvatar from '../../../../domain/journey/defaultVisuals/Avat
 import RouterLink, { RouterLinkProps } from '../../../../core/ui/link/RouterLink';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import { ROUTE_CREATE_SPACE } from '../../../../domain/platform/routes/constants';
+import { Actions } from '../../../../core/ui/actions/Actions';
+
+const VIRTUAL_CONTRIBUTORS_LIMIT = 3;
 
 const MyAccountBlock = () => {
   const { t } = useTranslation();
@@ -27,9 +30,11 @@ const MyAccountBlock = () => {
       spaceData.space.account && spaceData.space.account.host?.id === data?.me.user?.id && spaceData.space.level === 0
   )[0]?.space;
 
-  const virtualContributor = data?.me.user?.accounts
+  const virtualContributors = data?.me.user?.accounts
     .filter(account => account.id === hostedSpace?.account.id)
-    .filter(vc => vc.virtualContributors.length > 0)[0]?.virtualContributors[0];
+    .filter(vc => vc.virtualContributors.length > 0)[0]?.virtualContributors;
+
+  const hasVirtualCointributors = virtualContributors && virtualContributors.length > 0;
 
   const { user } = useUserContext();
 
@@ -50,9 +55,9 @@ const MyAccountBlock = () => {
         <Loading text="" />
       ) : (
         <>
-          {hostedSpace ? (
-            <Gutters disablePadding disableGap>
-              <Caption>{t('pages.home.sections.myAccount.hostedSpaces')}</Caption>
+          <Gutters disablePadding disableGap>
+            <Caption>{t('pages.home.sections.myAccount.hostedSpaces')}</Caption>
+            {hostedSpace ? (
               <BadgeCardView
                 variant="rounded"
                 visual={
@@ -67,55 +72,54 @@ const MyAccountBlock = () => {
                 <BlockSectionTitle>{hostedSpace.profile.displayName}</BlockSectionTitle>
                 <BlockSectionTitle>{hostedSpace.profile.tagline}</BlockSectionTitle>
               </BadgeCardView>
-            </Gutters>
-          ) : (
-            <Gutters disablePadding disableGap>
-              <Caption>{t('pages.home.sections.myAccount.hostedSpaces')}</Caption>
-              <Button
-                aria-label={t('pages.home.sections.myAccount.createSpaceButton')}
-                variant="contained"
-                component={RouterLink}
-                to={createLink}
-                sx={{ padding: gutters(0.5), textTransform: 'none' }}
-              >
-                {t('pages.home.sections.myAccount.createSpaceButton')}
-              </Button>
-            </Gutters>
-          )}
-
-          {virtualContributor ? (
-            <Gutters disablePadding disableGap>
-              <Caption>{t('pages.home.sections.myAccount.virtualContributors')}</Caption>
-              <BadgeCardView
-                variant="rounded"
-                visual={
-                  <Avatar
-                    src={virtualContributor.profile.avatar?.uri}
-                    alt={t('common.avatar-of', { user: virtualContributor.profile.displayName })}
-                  />
-                }
-                component={Wrapper}
-                to={virtualContributor.profile.url}
-              >
-                <BlockSectionTitle>{virtualContributor.profile.displayName}</BlockSectionTitle>
-              </BadgeCardView>
-            </Gutters>
-          ) : (
-            <Gutters disablePadding disableGap>
-              <Caption>{t('pages.home.sections.myAccount.virtualContributors')}</Caption>
-              <Button
-                aria-label={t('pages.home.sections.myAccount.createVCButton')}
-                variant="contained"
-                disabled={!(user && user.hasPlatformPrivilege(AuthorizationPrivilege.CreateSpace)) || !hostedSpace}
-                sx={{ textTransform: 'none', paddingTop: gutters(0.5), paddingBottom: gutters(0.5) }}
-                onClick={startWizard}
-              >
-                {hostedSpace
-                  ? t('pages.home.sections.myAccount.createVCButton')
-                  : t('pages.home.sections.myAccount.createVCButtonDisabled')}
-              </Button>
-            </Gutters>
-          )}
+            ) : (
+              <Actions paddingY={gutters(0.5)}>
+                <Button
+                  aria-label={t('pages.home.sections.myAccount.createSpaceButton')}
+                  variant="contained"
+                  component={RouterLink}
+                  to={createLink}
+                  sx={{ padding: gutters(0.5), textTransform: 'none', flex: 1 }}
+                >
+                  {t('pages.home.sections.myAccount.createSpaceButton')}
+                </Button>
+              </Actions>
+            )}
+          </Gutters>
+          <Gutters disablePadding disableGap>
+            <Caption>{t('pages.home.sections.myAccount.virtualContributors')}</Caption>
+            {hasVirtualCointributors &&
+              virtualContributors?.map(vc => (
+                <BadgeCardView
+                  variant="rounded"
+                  visual={
+                    <Avatar
+                      src={vc.profile.avatar?.uri}
+                      alt={t('common.avatar-of', { user: vc.profile.displayName })}
+                    />
+                  }
+                  component={Wrapper}
+                  to={vc.profile.url}
+                >
+                  <BlockSectionTitle>{vc.profile.displayName}</BlockSectionTitle>
+                </BadgeCardView>
+              ))}
+            {(!hasVirtualCointributors || (virtualContributors ?? []).length < VIRTUAL_CONTRIBUTORS_LIMIT) && (
+              <Actions paddingY={gutters(0.5)}>
+                <Button
+                  aria-label={t('pages.home.sections.myAccount.createVCButton')}
+                  variant="contained"
+                  disabled={!(user && user.hasPlatformPrivilege(AuthorizationPrivilege.CreateSpace)) || !hostedSpace}
+                  sx={{ textTransform: 'none', paddingTop: gutters(0.5), paddingBottom: gutters(0.5), flex: 1 }}
+                  onClick={startWizard}
+                >
+                  {hostedSpace
+                    ? t('pages.home.sections.myAccount.createVCButton')
+                    : t('pages.home.sections.myAccount.createVCButtonDisabled')}
+                </Button>
+              </Actions>
+            )}
+          </Gutters>
         </>
       )}
       <NewVirtualContributorWizard />
