@@ -10,8 +10,10 @@ import { Identifiable } from '../../../../core/utils/Identifiable';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import LoadingIconButton from '../../../../core/ui/button/LoadingIconButton';
+import { getURLPath } from '../../../../core/utils/links';
 
 interface Entity extends Identifiable {
+  nameID?: string;
   email?: string;
   profile: {
     displayName: string;
@@ -25,6 +27,7 @@ export interface CommunityAddMembersDialogProps {
   onClose?: () => void;
   fetchAvailableEntities: (filter?: string) => Promise<Entity[] | undefined>;
   onAdd: (memberId: string) => Promise<unknown> | undefined | void;
+  allowSearchByURL?: boolean;
 }
 
 const initialState: GridInitialState = {
@@ -42,7 +45,12 @@ const initialState: GridInitialState = {
   },
 };
 
-const CommunityAddMembersDialog: FC<CommunityAddMembersDialogProps> = ({ onClose, onAdd, fetchAvailableEntities }) => {
+const CommunityAddMembersDialog: FC<CommunityAddMembersDialogProps> = ({
+  onClose,
+  onAdd,
+  fetchAvailableEntities,
+  allowSearchByURL = false,
+}) => {
   const { t } = useTranslation();
   const [filter, setFilter] = useState<string>();
   const [availableEntities, setData] = useState<Entity[]>();
@@ -55,6 +63,23 @@ const CommunityAddMembersDialog: FC<CommunityAddMembersDialogProps> = ({ onClose
   };
 
   const createCellText = (row: Entity) => `${row.profile.displayName} ${row.email ? '(' + row.email + ')' : ''}`;
+
+  const parseAndSetFilter = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    let filterValue = event.target.value;
+
+    const urlNameId = getURLPath(filterValue)?.split('/')[2];
+
+    // in case of a URL value split the pathname, extract the nameID, map it to displayName and apply filter
+    if (allowSearchByURL && urlNameId) {
+      const allEntities = await fetchAvailableEntities?.();
+
+      filterValue =
+        allEntities?.filter(entity => entity.nameID === urlNameId).map(entity => entity.profile.displayName)?.[0] ||
+        filterValue;
+    }
+
+    setFilter(filterValue);
+  };
 
   useEffect(() => {
     fetchData();
@@ -93,7 +118,7 @@ const CommunityAddMembersDialog: FC<CommunityAddMembersDialogProps> = ({ onClose
           <>
             <TextField
               value={filter}
-              onChange={event => setFilter(event.target.value)}
+              onChange={parseAndSetFilter}
               label={t('common.search')}
               placeholder={t('common.search')}
               size="small"
