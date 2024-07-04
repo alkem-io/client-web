@@ -110,9 +110,9 @@ export const HostSelector: FC<HostSelectorProps> = ({ name, host, ...containerPr
     [userData]
   );
 
-  const options = [...organizations, ...users].sort((a, b) =>
-    a.profile.displayName.localeCompare(b.profile.displayName)
-  );
+  const options = useMemo(() => {
+    return [...organizations, ...users].sort((a, b) => a.profile.displayName.localeCompare(b.profile.displayName));
+  }, [organizations, users]);
 
   const { t } = useTranslation();
 
