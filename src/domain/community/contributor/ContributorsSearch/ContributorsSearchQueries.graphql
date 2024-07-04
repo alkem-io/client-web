@@ -54,14 +54,6 @@ fragment UserContributor on User {
   id
   nameID
   isContactable
-  agent {
-    id
-    credentials {
-      id
-      type
-      resourceID
-    }
-  }
   userProfile: profile {
     id
     displayName

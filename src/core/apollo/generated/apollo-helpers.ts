@@ -335,7 +335,6 @@ export type ActivityLogEntryMemberJoinedKeySpecifier = (
   | 'child'
   | 'collaborationID'
   | 'community'
-  | 'communityType'
   | 'contributor'
   | 'contributorType'
   | 'createdDate'
@@ -352,7 +351,6 @@ export type ActivityLogEntryMemberJoinedFieldPolicy = {
   child?: FieldPolicy<any> | FieldReadFunction<any>;
   collaborationID?: FieldPolicy<any> | FieldReadFunction<any>;
   community?: FieldPolicy<any> | FieldReadFunction<any>;
-  communityType?: FieldPolicy<any> | FieldReadFunction<any>;
   contributor?: FieldPolicy<any> | FieldReadFunction<any>;
   contributorType?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1601,7 +1599,7 @@ export type MutationKeySpecifier = (
   | 'addReactionToMessageInRoom'
   | 'adminCommunicationEnsureAccessToCommunications'
   | 'adminCommunicationRemoveOrphanedRoom'
-  | 'adminCommunicationUpdateRoomsJoinRule'
+  | 'adminCommunicationUpdateRoomState'
   | 'adminSearchIngestFromScratch'
   | 'aiServerAuthorizationPolicyReset'
   | 'aiServerCreateAiPersonaService'
@@ -1770,7 +1768,7 @@ export type MutationFieldPolicy = {
   addReactionToMessageInRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationEnsureAccessToCommunications?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationRemoveOrphanedRoom?: FieldPolicy<any> | FieldReadFunction<any>;
-  adminCommunicationUpdateRoomsJoinRule?: FieldPolicy<any> | FieldReadFunction<any>;
+  adminCommunicationUpdateRoomState?: FieldPolicy<any> | FieldReadFunction<any>;
   adminSearchIngestFromScratch?: FieldPolicy<any> | FieldReadFunction<any>;
   aiServerAuthorizationPolicyReset?: FieldPolicy<any> | FieldReadFunction<any>;
   aiServerCreateAiPersonaService?: FieldPolicy<any> | FieldReadFunction<any>;
