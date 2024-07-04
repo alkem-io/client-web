@@ -129,7 +129,7 @@ const SpaceListItem = ({
   );
 
   const accountSettingsValidationSchema = yup.object().shape({
-    hostId: yup.string().required(t('forms.validations.required')),
+    host: yup.object().shape({ id: yup.string() }).required(t('forms.validations.required')),
     visibility: yup.string().required(t('forms.validations.required')),
   });
 
@@ -155,7 +155,7 @@ const SpaceListItem = ({
           validationSchema={accountSettingsValidationSchema}
           onSubmit={handleSubmitAccountSettings}
         >
-          {({ handleSubmit }) => (
+          {({ handleSubmit, isValid }) => (
             <>
               <DialogHeader onClose={() => setSettingsModalOpen(false)}>
                 <BlockTitle>{t('pages.admin.spaces.spaceSettings')}</BlockTitle>
@@ -172,15 +172,7 @@ const SpaceListItem = ({
                     ),
                   }}
                 />
-                {/* <FormikAutocomplete
-                  title={t('components.editSpaceForm.host.title')}
-                  name="hostId"
-                  values={[...organizations, ...users]} // + people
-                  required
-                  disabled={loading}
-                  placeholder={t('components.editSpaceForm.host.title')}
-                /> */}
-                <HostSelector name="hostId" host={host} />
+                <HostSelector name="host" host={host} />
                 <FormikAutocomplete
                   name="visibility"
                   values={visibilitySelectOptions}
@@ -194,7 +186,7 @@ const SpaceListItem = ({
                 </Button>
                 <FlexSpacer />
                 <Button onClick={() => setSettingsModalOpen(false)}>{t('buttons.cancel')}</Button>
-                <LoadingButton variant="contained" loading={loading} onClick={() => handleSubmit()}>
+                <LoadingButton variant="contained" loading={loading} onClick={() => handleSubmit()} disabled={!isValid}>
                   {t('buttons.save')}
                 </LoadingButton>
               </Actions>
@@ -207,19 +199,21 @@ const SpaceListItem = ({
           title={t('pages.admin.spaces.manageLicensePlans')}
           onClose={() => setIsManageLicensePlansDialogOpen(false)}
         />
-        {licensePlans && (
-          <PlansTable
-            activeLicensePlanIds={activeLicensePlanIds}
-            licensePlans={licensePlans}
-            onDelete={plan => revokeLicensePlan({ variables: { accountId, licensePlanId: plan.id } })}
-          />
-        )}
-        {licensePlans && (
-          <AssignPlan
-            onAssignPlan={licensePlanId => assignLicensePlan({ variables: { accountId, licensePlanId } })}
-            licensePlans={licensePlans}
-          />
-        )}
+        <DialogContent>
+          {licensePlans && (
+            <PlansTable
+              activeLicensePlanIds={activeLicensePlanIds}
+              licensePlans={licensePlans}
+              onDelete={plan => revokeLicensePlan({ variables: { accountId, licensePlanId: plan.id } })}
+            />
+          )}
+          {licensePlans && (
+            <AssignPlan
+              onAssignPlan={licensePlanId => assignLicensePlan({ variables: { accountId, licensePlanId } })}
+              licensePlans={licensePlans}
+            />
+          )}
+        </DialogContent>
       </DialogWithGrid>
       <DialogWithGrid open={isPlatformSettingsModalOpen} onClose={() => setSettingsModalOpen(false)}>
         <Formik
@@ -227,7 +221,7 @@ const SpaceListItem = ({
           validationSchema={platformSettingsValidationSchema}
           onSubmit={handleSubmitPlatformSettings}
         >
-          {({ handleSubmit }) => (
+          {({ handleSubmit, isValid }) => (
             <>
               <DialogHeader onClose={() => setPlatformSettingsModalOpen(false)}>
                 <BlockTitle>{t('pages.admin.spaces.changeNameId')}</BlockTitle>
@@ -242,7 +236,7 @@ const SpaceListItem = ({
               </DialogContent>
               <Actions padding={gutters()} justifyContent="end">
                 <Button onClick={() => setPlatformSettingsModalOpen(false)}>{t('buttons.cancel')}</Button>
-                <LoadingButton variant="contained" loading={loading} onClick={() => handleSubmit()}>
+                <LoadingButton variant="contained" loading={loading} onClick={() => handleSubmit()} disabled={!isValid}>
                   {t('buttons.save')}
                 </LoadingButton>
               </Actions>
