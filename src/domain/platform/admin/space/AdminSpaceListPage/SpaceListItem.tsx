@@ -1,13 +1,14 @@
 import ListItemLink, { ListItemLinkProps } from '../../../../shared/components/SearchableList/ListItemLink';
-import React, { MouseEventHandler, useMemo, useState } from 'react';
+import React, { MouseEventHandler, useCallback, useMemo, useState } from 'react';
 import * as yup from 'yup';
+import { sortBy } from 'lodash';
 import DialogWithGrid from '../../../../../core/ui/dialog/DialogWithGrid';
 import { Button, CircularProgress, DialogContent, ListItemIcon, TextField } from '@mui/material';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import DialogHeader from '../../../../../core/ui/dialog/DialogHeader';
 import PageContentBlockSeamless from '../../../../../core/ui/content/PageContentBlockSeamless';
 import { Formik } from 'formik';
-import { SpaceVisibility } from '../../../../../core/apollo/generated/graphql-schema';
+import { Organization, SpaceVisibility, User } from '../../../../../core/apollo/generated/graphql-schema';
 import FormikAutocomplete from '../../../../../core/ui/forms/FormikAutocomplete';
 import { FormikSelectValue } from '../../../../../core/ui/forms/FormikSelect';
 import {
@@ -27,18 +28,20 @@ import useLoadingState from '../../../../shared/utils/useLoadingState';
 import PlansTable, { LicensePlan } from './PlansTable';
 import AssignPlan from './AssignPlan';
 import FlexSpacer from '../../../../../core/ui/utils/FlexSpacer';
+import { Host, HostSelector } from './HostSelector';
 
 export interface SpacePlatformSettings {
   nameId: string;
 }
 
 export interface AccountPlatformSettings {
-  hostId: string | undefined;
+  host: Host | undefined;
   visibility: SpaceVisibility;
-  organizations: {
-    id: string;
-    name: string;
-  }[];
+  // organizations: {
+  //   id: string;
+  //   name: string;
+  // }[];
+  // users: User[];
   activeLicensePlanIds: string[] | undefined;
 }
 
@@ -53,7 +56,7 @@ const SpaceListItem = ({
   spaceId,
   accountId,
   nameId,
-  account: { visibility, hostId, organizations, activeLicensePlanIds },
+  account: { visibility, host, /*organizations, users,*/ activeLicensePlanIds },
   licensePlans,
   ...props
 }: SpaceListItemProps) => {
@@ -69,7 +72,7 @@ const SpaceListItem = ({
   const initialValues = {
     accountSettings: {
       visibility,
-      hostId,
+      host,
     },
     platformSettings: {
       nameId,
@@ -82,11 +85,11 @@ const SpaceListItem = ({
   const [revokeLicensePlan] = useRevokeLicensePlanFromAccountMutation();
 
   const [handleSubmitAccountSettings, savingAccountSettings] = useLoadingState(
-    async ({ visibility, hostId }: Partial<AccountPlatformSettings>) => {
+    async ({ visibility, host }: Partial<AccountPlatformSettings>) => {
       await updateAccountSettings({
         variables: {
           accountId,
-          hostId,
+          hostId: host?.id,
           license: {
             visibility,
           },
@@ -175,14 +178,15 @@ const SpaceListItem = ({
                     ),
                   }}
                 />
-                <FormikAutocomplete
+                {/* <FormikAutocomplete
                   title={t('components.editSpaceForm.host.title')}
                   name="hostId"
-                  values={organizations}
+                  values={[...organizations, ...users]} // + people
                   required
                   disabled={loading}
                   placeholder={t('components.editSpaceForm.host.title')}
-                />
+                /> */}
+                <HostSelector name="hostId" host={host} />
                 <FormikAutocomplete
                   name="visibility"
                   values={visibilitySelectOptions}
@@ -191,7 +195,7 @@ const SpaceListItem = ({
                 />
               </PageContentBlockSeamless>
               <Actions padding={gutters()}>
-                <Button onClick={() => setIsManageLicensePlansDialogOpen(true)}>Manage License Plans</Button>
+                <Button onClick={() => setIsManageLicensePlansDialogOpen(true)}>{t('pages.admin.spaces.manageLicensePlans')}</Button>
                 <FlexSpacer />
                 <Button onClick={() => setSettingsModalOpen(false)}>{t('buttons.cancel')}</Button>
                 <LoadingButton variant="contained" loading={loading} onClick={() => handleSubmit()}>
@@ -203,7 +207,7 @@ const SpaceListItem = ({
         </Formik>
       </DialogWithGrid>
       <DialogWithGrid open={isManageLicensePlansDialogOpen} onClose={() => setIsManageLicensePlansDialogOpen(false)}>
-        <DialogHeader title="Manage License Plans" onClose={() => setIsManageLicensePlansDialogOpen(false)} />
+        <DialogHeader title={t('pages.admin.spaces.manageLicensePlans')} onClose={() => setIsManageLicensePlansDialogOpen(false)} />
         {licensePlans && (
           <PlansTable
             activeLicensePlanIds={activeLicensePlanIds}

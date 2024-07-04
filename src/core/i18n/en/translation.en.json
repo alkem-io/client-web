@@ -1980,7 +1980,8 @@
       "spaces": {
         "updateVisibility": "Update Visibility",
         "spaceSettings": "Space Settings",
-        "changeNameId": "Change Space NameID"
+        "changeNameId": "Change Space NameID",
+        "manageLicensePlans": "Manage License Plans"
       },
       "innovationHub": {
         "spaceListFilter": {
