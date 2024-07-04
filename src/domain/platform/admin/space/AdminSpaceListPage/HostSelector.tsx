@@ -8,7 +8,7 @@ import FlexSpacer from '../../../../../core/ui/utils/FlexSpacer';
 import { ProfileChipView } from '../../../../community/contributor/ProfileChip/ProfileChipView';
 import { useField } from 'formik';
 
-const MAX_USERS_SHOWN = 2;
+const MAX_USERS_SHOWN = 10;
 
 interface HostFilterInput {
   displayName?: string;
