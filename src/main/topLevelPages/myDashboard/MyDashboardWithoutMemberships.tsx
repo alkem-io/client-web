@@ -11,12 +11,9 @@ import MyAccountBlock from './myAccount/MyAccountBlock';
 import MyLatestContributions from './latestContributions/myLatestContributions/MyLatestContributions';
 import MembershipSuggestions from './membershipSuggestions/MembershipSuggestions';
 
-interface MyDashboardWithoutMembershipsProps {
-  onOpenMembershipsDialog: () => void;
-}
-
-const MyDashboardWithoutMemberships: FC<MyDashboardWithoutMembershipsProps> = ({ onOpenMembershipsDialog }) => {
+const MyDashboardWithoutMemberships: FC = () => {
   const columns = useColumns();
+
   return (
     <>
       <PageContentColumn columns={12}>
@@ -28,9 +25,9 @@ const MyDashboardWithoutMemberships: FC<MyDashboardWithoutMembershipsProps> = ({
         <InnovationLibraryBlock halfWidth />
       </PageContentColumn>
       <PageContentColumn columns={columns === 12 ? 4 : 8} flexDirection="column" alignSelf="stretch">
+        <NewMembershipsBlock hiddenIfEmpty />
         <MyLatestContributions />
         <RecentForumMessages />
-        <NewMembershipsBlock hiddenIfEmpty onOpenMemberships={onOpenMembershipsDialog} />
       </PageContentColumn>
       <PageContentColumn columns={8}>
         <ExploreOtherChallenges />
