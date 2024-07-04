@@ -17321,6 +17321,7 @@ export type OrganizationsListQuery = {
       id: string;
       displayName: string;
       visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+      location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
     };
   }>;
 };

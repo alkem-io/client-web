@@ -80,7 +80,7 @@ export const HostSelector: FC<HostSelectorProps> = ({ name, host, ...containerPr
         profile: {
           id: org.profile.id,
           displayName: org.profile.displayName,
-          location: undefined, //!! TODO
+          location: org.profile.location,
           visual: {
             uri: org.profile.visual?.uri,
           },
@@ -139,8 +139,8 @@ export const HostSelector: FC<HostSelectorProps> = ({ name, host, ...containerPr
             <ProfileChipView
               displayName={host.profile.displayName}
               avatarUrl={host.profile.visual?.uri}
-              city={host.type === 'user' ? host.profile.location?.city : undefined}
-              country={host.type === 'user' ? host.profile.location?.country : undefined}
+              city={host.profile.location?.city}
+              country={host.profile.location?.country}
               width="100%"
             >
               <FlexSpacer />
