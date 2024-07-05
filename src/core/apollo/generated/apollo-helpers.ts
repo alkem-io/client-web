@@ -335,7 +335,6 @@ export type ActivityLogEntryMemberJoinedKeySpecifier = (
   | 'child'
   | 'collaborationID'
   | 'community'
-  | 'communityType'
   | 'contributor'
   | 'contributorType'
   | 'createdDate'
@@ -352,7 +351,6 @@ export type ActivityLogEntryMemberJoinedFieldPolicy = {
   child?: FieldPolicy<any> | FieldReadFunction<any>;
   collaborationID?: FieldPolicy<any> | FieldReadFunction<any>;
   community?: FieldPolicy<any> | FieldReadFunction<any>;
-  communityType?: FieldPolicy<any> | FieldReadFunction<any>;
   contributor?: FieldPolicy<any> | FieldReadFunction<any>;
   contributorType?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1601,7 +1599,7 @@ export type MutationKeySpecifier = (
   | 'addReactionToMessageInRoom'
   | 'adminCommunicationEnsureAccessToCommunications'
   | 'adminCommunicationRemoveOrphanedRoom'
-  | 'adminCommunicationUpdateRoomsJoinRule'
+  | 'adminCommunicationUpdateRoomState'
   | 'adminSearchIngestFromScratch'
   | 'aiServerAuthorizationPolicyReset'
   | 'aiServerCreateAiPersonaService'
@@ -1628,7 +1626,6 @@ export type MutationKeySpecifier = (
   | 'cleanupCollections'
   | 'convertChallengeToSpace'
   | 'convertOpportunityToChallenge'
-  | 'copyCollections'
   | 'createAccount'
   | 'createActor'
   | 'createActorGroup'
@@ -1689,7 +1686,6 @@ export type MutationKeySpecifier = (
   | 'grantCredentialToOrganization'
   | 'grantCredentialToUser'
   | 'ingest'
-  | 'ingestSpace'
   | 'inviteContributorsForCommunityMembership'
   | 'inviteUserToPlatformAndCommunity'
   | 'inviteUserToPlatformWithRole'
@@ -1772,7 +1768,7 @@ export type MutationFieldPolicy = {
   addReactionToMessageInRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationEnsureAccessToCommunications?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationRemoveOrphanedRoom?: FieldPolicy<any> | FieldReadFunction<any>;
-  adminCommunicationUpdateRoomsJoinRule?: FieldPolicy<any> | FieldReadFunction<any>;
+  adminCommunicationUpdateRoomState?: FieldPolicy<any> | FieldReadFunction<any>;
   adminSearchIngestFromScratch?: FieldPolicy<any> | FieldReadFunction<any>;
   aiServerAuthorizationPolicyReset?: FieldPolicy<any> | FieldReadFunction<any>;
   aiServerCreateAiPersonaService?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1799,7 +1795,6 @@ export type MutationFieldPolicy = {
   cleanupCollections?: FieldPolicy<any> | FieldReadFunction<any>;
   convertChallengeToSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   convertOpportunityToChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
-  copyCollections?: FieldPolicy<any> | FieldReadFunction<any>;
   createAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   createActor?: FieldPolicy<any> | FieldReadFunction<any>;
   createActorGroup?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1860,7 +1855,6 @@ export type MutationFieldPolicy = {
   grantCredentialToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   grantCredentialToUser?: FieldPolicy<any> | FieldReadFunction<any>;
   ingest?: FieldPolicy<any> | FieldReadFunction<any>;
-  ingestSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   inviteContributorsForCommunityMembership?: FieldPolicy<any> | FieldReadFunction<any>;
   inviteUserToPlatformAndCommunity?: FieldPolicy<any> | FieldReadFunction<any>;
   inviteUserToPlatformWithRole?: FieldPolicy<any> | FieldReadFunction<any>;

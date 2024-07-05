@@ -413,8 +413,6 @@ export type ActivityLogEntryMemberJoined = ActivityLogEntry & {
   collaborationID: Scalars['UUID'];
   /** The community that was joined. */
   community: Community;
-  /** The type of the the Community. */
-  communityType: Scalars['String'];
   /** The Contributor that joined the Community. */
   contributor: Contributor;
   /** The type of the Contributor that joined the Community. */
@@ -1175,8 +1173,10 @@ export type CommunicationAdminRoomResult = {
   members: Array<Scalars['String']>;
 };
 
-export type CommunicationAdminUpdateRoomsJoinRuleInput = {
+export type CommunicationAdminUpdateRoomStateInput = {
   isPublic: Scalars['Boolean'];
+  isWorldVisible: Scalars['Boolean'];
+  roomID: Scalars['String'];
 };
 
 export type CommunicationRoom = {
@@ -2319,13 +2319,6 @@ export type ISearchResults = {
   journeyResultsCount: Scalars['Float'];
 };
 
-export type IngestSpaceInput = {
-  /** The purpose of the ingestions - either knowledge or context. */
-  purpose: SpaceIngestionPurpose;
-  /** The identifier for the Space to be ingested. */
-  spaceID: Scalars['UUID'];
-};
-
 export type InnovationFlow = {
   __typename?: 'InnovationFlow';
   /** The authorization rules for the entity */
@@ -2871,8 +2864,8 @@ export type Mutation = {
   adminCommunicationEnsureAccessToCommunications: Scalars['Boolean'];
   /** Remove an orphaned room from messaging platform. */
   adminCommunicationRemoveOrphanedRoom: Scalars['Boolean'];
-  /** Allow updating the rule for joining rooms: public or invite. */
-  adminCommunicationUpdateRoomsJoinRule: Scalars['Boolean'];
+  /** Allow updating the state flags of a particular rule. */
+  adminCommunicationUpdateRoomState: Scalars['Boolean'];
   /** Ingests new data into Elasticsearch from scratch. This will delete all existing data and ingest new data from the source. This is an admin only operation. */
   adminSearchIngestFromScratch: Scalars['String'];
   /** Reset the Authorization Policy on the specified AiServer. */
@@ -2925,8 +2918,6 @@ export type Mutation = {
   convertChallengeToSpace: Space;
   /** Creates a new Challenge by converting an existing Opportunity. */
   convertOpportunityToChallenge: Space;
-  /** Copies collections nameID-... into UUID-... */
-  copyCollections: MigrateEmbeddings;
   /** Creates a new Account with a single root Space. */
   createAccount: Account;
   /** Creates a new Actor in the specified ActorGroup. */
@@ -3047,8 +3038,6 @@ export type Mutation = {
   grantCredentialToUser: User;
   /** Resets the interaction with the chat engine. */
   ingest: Scalars['Boolean'];
-  /** Triggers space ingestion. */
-  ingestSpace: Space;
   /** Invite an existing Contriburor to join the specified Community as a member. */
   inviteContributorsForCommunityMembership: Array<Invitation>;
   /** Invite a User to join the platform and the specified Community as a member. */
@@ -3215,8 +3204,8 @@ export type MutationAdminCommunicationRemoveOrphanedRoomArgs = {
   orphanedRoomData: CommunicationAdminRemoveOrphanedRoomInput;
 };
 
-export type MutationAdminCommunicationUpdateRoomsJoinRuleArgs = {
-  changeRoomAccessData: CommunicationAdminUpdateRoomsJoinRuleInput;
+export type MutationAdminCommunicationUpdateRoomStateArgs = {
+  roomStateData: CommunicationAdminUpdateRoomStateInput;
 };
 
 export type MutationAiServerCreateAiPersonaServiceArgs = {
@@ -3529,10 +3518,6 @@ export type MutationGrantCredentialToOrganizationArgs = {
 
 export type MutationGrantCredentialToUserArgs = {
   grantCredentialData: GrantAuthorizationCredentialInput;
-};
-
-export type MutationIngestSpaceArgs = {
-  ingestSpaceData: IngestSpaceInput;
 };
 
 export type MutationInviteContributorsForCommunityMembershipArgs = {
@@ -5049,11 +5034,6 @@ export type SpaceFilterInput = {
   visibilities?: InputMaybe<Array<SpaceVisibility>>;
 };
 
-export enum SpaceIngestionPurpose {
-  Context = 'CONTEXT',
-  Knowledge = 'KNOWLEDGE',
-}
-
 export enum SpaceLevel {
   Challenge = 'CHALLENGE',
   Opportunity = 'OPPORTUNITY',
@@ -6325,9 +6305,6 @@ export type UserAgentSsiFragment = {
     __typename?: 'Agent';
     id: string;
     did?: string | undefined;
-    credentials?:
-      | Array<{ __typename?: 'Credential'; id: string; resourceID: string; type: CredentialType }>
-      | undefined;
     verifiedCredentials?:
       | Array<{
           __typename?: 'VerifiedCredential';
@@ -6358,9 +6335,6 @@ export type UserSsiQuery = {
             __typename?: 'Agent';
             id: string;
             did?: string | undefined;
-            credentials?:
-              | Array<{ __typename?: 'Credential'; id: string; resourceID: string; type: CredentialType }>
-              | undefined;
             verifiedCredentials?:
               | Array<{
                   __typename?: 'VerifiedCredential';
@@ -15646,13 +15620,6 @@ export type CommunityPageMembersFragment = {
   id: string;
   nameID: string;
   email: string;
-  agent: {
-    __typename?: 'Agent';
-    id: string;
-    credentials?:
-      | Array<{ __typename?: 'Credential'; id: string; type: CredentialType; resourceID: string }>
-      | undefined;
-  };
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -16493,13 +16460,6 @@ export type ContributorsPageUsersQuery = {
       id: string;
       nameID: string;
       isContactable: boolean;
-      agent: {
-        __typename?: 'Agent';
-        id: string;
-        credentials?:
-          | Array<{ __typename?: 'Credential'; id: string; type: CredentialType; resourceID: string }>
-          | undefined;
-      };
       userProfile: {
         __typename?: 'Profile';
         id: string;
@@ -16573,13 +16533,6 @@ export type UserContributorPaginatedFragment = {
     id: string;
     nameID: string;
     isContactable: boolean;
-    agent: {
-      __typename?: 'Agent';
-      id: string;
-      credentials?:
-        | Array<{ __typename?: 'Credential'; id: string; type: CredentialType; resourceID: string }>
-        | undefined;
-    };
     userProfile: {
       __typename?: 'Profile';
       id: string;
@@ -16611,13 +16564,6 @@ export type UserContributorFragment = {
   id: string;
   nameID: string;
   isContactable: boolean;
-  agent: {
-    __typename?: 'Agent';
-    id: string;
-    credentials?:
-      | Array<{ __typename?: 'Credential'; id: string; type: CredentialType; resourceID: string }>
-      | undefined;
-  };
   userProfile: {
     __typename?: 'Profile';
     id: string;
@@ -17341,6 +17287,7 @@ export type OrganizationsListQuery = {
       id: string;
       displayName: string;
       visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+      location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
     };
   }>;
 };
@@ -17745,10 +17692,6 @@ export type UserDetailsFragment = {
   gender: string;
   phone: string;
   accountUpn: string;
-  agent: {
-    __typename?: 'Agent';
-    credentials?: Array<{ __typename?: 'Credential'; type: CredentialType; resourceID: string }> | undefined;
-  };
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -17858,10 +17801,6 @@ export type CreateUserMutation = {
     gender: string;
     phone: string;
     accountUpn: string;
-    agent: {
-      __typename?: 'Agent';
-      credentials?: Array<{ __typename?: 'Credential'; type: CredentialType; resourceID: string }> | undefined;
-    };
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -17915,10 +17854,6 @@ export type CreateUserNewRegistrationMutation = {
     gender: string;
     phone: string;
     accountUpn: string;
-    agent: {
-      __typename?: 'Agent';
-      credentials?: Array<{ __typename?: 'Credential'; type: CredentialType; resourceID: string }> | undefined;
-    };
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -18050,10 +17985,6 @@ export type UpdateUserMutation = {
     gender: string;
     phone: string;
     accountUpn: string;
-    agent: {
-      __typename?: 'Agent';
-      credentials?: Array<{ __typename?: 'Credential'; type: CredentialType; resourceID: string }> | undefined;
-    };
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -18118,10 +18049,6 @@ export type UserQuery = {
     gender: string;
     phone: string;
     accountUpn: string;
-    agent: {
-      __typename?: 'Agent';
-      credentials?: Array<{ __typename?: 'Credential'; type: CredentialType; resourceID: string }> | undefined;
-    };
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -18204,10 +18131,6 @@ export type UserProfileQuery = {
     gender: string;
     phone: string;
     accountUpn: string;
-    agent: {
-      __typename?: 'Agent';
-      credentials?: Array<{ __typename?: 'Credential'; type: CredentialType; resourceID: string }> | undefined;
-    };
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -18335,10 +18258,6 @@ export type UserProviderQuery = {
           gender: string;
           phone: string;
           accountUpn: string;
-          agent: {
-            __typename?: 'Agent';
-            credentials?: Array<{ __typename?: 'Credential'; type: CredentialType; resourceID: string }> | undefined;
-          };
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -18403,10 +18322,6 @@ export type UserPendingMembershipsQuery = {
           gender: string;
           phone: string;
           accountUpn: string;
-          agent: {
-            __typename?: 'Agent';
-            credentials?: Array<{ __typename?: 'Credential'; type: CredentialType; resourceID: string }> | undefined;
-          };
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -30068,41 +29983,45 @@ export type MyAccountQuery = {
   __typename?: 'Query';
   me: {
     __typename?: 'MeQueryResults';
-    spaceMemberships: Array<{
-      __typename?: 'Space';
-      id: string;
-      level: number;
-      profile: {
-        __typename?: 'Profile';
+    mySpaces: Array<{
+      __typename?: 'MySpaceResults';
+      space: {
+        __typename?: 'Space';
         id: string;
-        displayName: string;
-        tagline: string;
-        url: string;
-        avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-      };
-      account: {
-        __typename?: 'Account';
-        id: string;
-        host?:
-          | {
-              __typename?: 'Organization';
-              id: string;
-              nameID: string;
-              profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string; url: string };
-            }
-          | {
-              __typename?: 'User';
-              id: string;
-              nameID: string;
-              profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string; url: string };
-            }
-          | {
-              __typename?: 'VirtualContributor';
-              id: string;
-              nameID: string;
-              profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string; url: string };
-            }
-          | undefined;
+        level: number;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          tagline: string;
+          url: string;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        };
+        account: {
+          __typename?: 'Account';
+          id: string;
+          host?:
+            | {
+                __typename?: 'Organization';
+                id: string;
+                nameID: string;
+                profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string; url: string };
+              }
+            | {
+                __typename?: 'User';
+                id: string;
+                nameID: string;
+                profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string; url: string };
+              }
+            | {
+                __typename?: 'VirtualContributor';
+                id: string;
+                nameID: string;
+                profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string; url: string };
+              }
+            | undefined;
+        };
       };
     }>;
     user?:

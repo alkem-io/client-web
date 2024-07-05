@@ -64,10 +64,9 @@ const RECENT_MEMBERSHIP_STATES = ['approved', 'accepted'];
 
 interface NewMembershipsBlockProps {
   hiddenIfEmpty?: boolean;
-  onOpenMemberships?: () => void;
 }
 
-const NewMembershipsBlock = ({ hiddenIfEmpty = false, onOpenMemberships }: NewMembershipsBlockProps) => {
+const NewMembershipsBlock = ({ hiddenIfEmpty = false }: NewMembershipsBlockProps) => {
   const { t } = useTranslation();
 
   const navigate = useNavigate();
@@ -113,7 +112,7 @@ const NewMembershipsBlock = ({ hiddenIfEmpty = false, onOpenMemberships }: NewMe
     ({ application }) => !RECENT_MEMBERSHIP_STATES.includes(application.lifecycle.state ?? '')
   );
 
-  const recentPendingApplications = useMemo(
+  const newestPendingApplications = useMemo(
     () =>
       sortBy(pendingCommunityApplications, ({ application }) => application.createdDate)
         .reverse()
@@ -121,25 +120,7 @@ const NewMembershipsBlock = ({ hiddenIfEmpty = false, onOpenMemberships }: NewMe
     [communityApplications]
   );
 
-  const pendingMembershipsCount = pendingCommunityInvitations.length + recentPendingApplications.length;
-
-  const recentMemberships = useMemo(
-    () =>
-      sortBy(
-        [...communityInvitations, ...communityApplications].filter(membershipItem => {
-          const { lifecycle } = 'invitation' in membershipItem ? membershipItem.invitation : membershipItem.application;
-          return RECENT_MEMBERSHIP_STATES.includes(lifecycle.state ?? '');
-        }),
-        membershipItem => {
-          const { createdDate } =
-            'invitation' in membershipItem ? membershipItem.invitation : membershipItem.application;
-          return createdDate;
-        }
-      )
-        .reverse()
-        .slice(0, Math.max(0, PENDING_MEMBERSHIPS_MAX_ITEMS - pendingMembershipsCount - 1)),
-    [communityInvitations, communityApplications]
-  );
+  const pendingMembershipsCount = pendingCommunityInvitations.length + pendingCommunityApplications.length;
 
   const [openDialog, setOpenDialog] = useState<PendingMembershipsListDialogDetails | InvitationViewDialogDetails>();
 
@@ -194,7 +175,7 @@ const NewMembershipsBlock = ({ hiddenIfEmpty = false, onOpenMemberships }: NewMe
       <PageContentBlock columns={4} disableGap flex>
         <PageContentBlockHeader title={t('pages.home.sections.newMemberships.title')} />
 
-        {pendingCommunityInvitations.length === 0 && recentPendingApplications.length === 0 && (
+        {pendingCommunityInvitations.length === 0 && newestPendingApplications.length === 0 && (
           <CaptionSmall color={theme => theme.palette.neutral.light} marginBottom={gutters(0.5)}>
             {t('pages.home.sections.newMemberships.noOpenInvitations')}
           </CaptionSmall>
@@ -227,7 +208,7 @@ const NewMembershipsBlock = ({ hiddenIfEmpty = false, onOpenMemberships }: NewMe
         </HorizontalCardsGroup>
 
         <HorizontalCardsGroup title={t('pages.home.sections.newMemberships.openApplications')}>
-          {recentPendingApplications.map(pendingApplication => (
+          {newestPendingApplications.map(pendingApplication => (
             <ApplicationHydrator
               key={pendingApplication.id}
               application={pendingApplication as PendingApplication}
@@ -244,55 +225,11 @@ const NewMembershipsBlock = ({ hiddenIfEmpty = false, onOpenMemberships }: NewMe
           ))}
         </HorizontalCardsGroup>
 
-        <HorizontalCardsGroup title={t('pages.home.sections.newMemberships.recentlyJoined')}>
-          {recentMemberships.map(membership => {
-            switch (membership.type) {
-              case PendingMembershipItemType.Invitation:
-                return (
-                  <InvitationHydrator
-                    key={membership.id}
-                    invitation={membership}
-                    withJourneyDetails
-                    visualType={VisualType.Avatar}
-                  >
-                    {({ invitation }) => (
-                      <NewMembershipCard
-                        space={invitation?.space}
-                        to={invitation?.space.profile.url}
-                        membershipType="membership"
-                      />
-                    )}
-                  </InvitationHydrator>
-                );
-              case PendingMembershipItemType.Application:
-                return (
-                  <ApplicationHydrator key={membership.id} application={membership} visualType={VisualType.Avatar}>
-                    {({ application: hydratedApplication }) => (
-                      <NewMembershipCard
-                        space={hydratedApplication?.space}
-                        to={hydratedApplication?.space.profile.url}
-                        membershipType="membership"
-                      />
-                    )}
-                  </ApplicationHydrator>
-                );
-              default:
-                return null;
-            }
-          })}
-        </HorizontalCardsGroup>
-
-        {pendingMembershipsCount > 0 ? (
+        {pendingMembershipsCount > PENDING_MEMBERSHIPS_MAX_ITEMS && (
           <SeeMore
             sx={{ marginTop: gutters() }}
             label="pages.home.sections.newMemberships.seeMore"
             onClick={() => setOpenDialog({ type: DialogType.PendingMembershipsList })}
-          />
-        ) : (
-          <SeeMore
-            sx={{ marginTop: gutters() }}
-            label="pages.home.sections.newMemberships.seeAll"
-            onClick={() => onOpenMemberships?.()}
           />
         )}
       </PageContentBlock>

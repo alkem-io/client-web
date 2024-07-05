@@ -15,11 +15,6 @@ export const UserAgentSsiFragmentDoc = gql`
     agent {
       id
       did
-      credentials {
-        id
-        resourceID
-        type
-      }
       verifiedCredentials {
         claims {
           name
@@ -1240,14 +1235,6 @@ export const CommunityPageMembersFragmentDoc = gql`
     id
     nameID
     email
-    agent {
-      id
-      credentials {
-        id
-        type
-        resourceID
-      }
-    }
     profile {
       id
       displayName
@@ -1494,14 +1481,6 @@ export const UserContributorFragmentDoc = gql`
     id
     nameID
     isContactable
-    agent {
-      id
-      credentials {
-        id
-        type
-        resourceID
-      }
-    }
     userProfile: profile {
       id
       displayName
@@ -1788,12 +1767,6 @@ export const UserDetailsFragmentDoc = gql`
     gender
     phone
     accountUpn
-    agent {
-      credentials {
-        type
-        resourceID
-      }
-    }
     profile {
       id
       displayName
@@ -12949,6 +12922,11 @@ export const OrganizationsListDocument = gql`
         visual(type: AVATAR) {
           ...VisualUri
         }
+        location {
+          id
+          city
+          country
+        }
       }
     }
   }
@@ -23490,28 +23468,33 @@ export function refetchMembershipSuggestionSpaceQuery(variables: SchemaTypes.Mem
 export const MyAccountDocument = gql`
   query MyAccount {
     me {
-      spaceMemberships {
-        id
-        profile {
+      mySpaces(showOnlyMyCreatedSpaces: true) {
+        space {
           id
-          displayName
-          tagline
-          url
-          avatar: visual(type: AVATAR) {
-            ...VisualUri
-          }
-        }
-        level
-        account {
-          id
-          host {
+          profile {
             id
-            nameID
-            profile {
+            displayName
+            tagline
+            url
+            avatar: visual(type: AVATAR) {
+              ...VisualUri
+            }
+            cardBanner: visual(type: CARD) {
+              ...VisualUri
+            }
+          }
+          level
+          account {
+            id
+            host {
               id
-              displayName
-              tagline
-              url
+              nameID
+              profile {
+                id
+                displayName
+                tagline
+                url
+              }
             }
           }
         }

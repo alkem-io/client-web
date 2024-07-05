@@ -27,18 +27,15 @@ import useLoadingState from '../../../../shared/utils/useLoadingState';
 import PlansTable, { LicensePlan } from './PlansTable';
 import AssignPlan from './AssignPlan';
 import FlexSpacer from '../../../../../core/ui/utils/FlexSpacer';
+import { Host, HostSelector } from './HostSelector';
 
 export interface SpacePlatformSettings {
   nameId: string;
 }
 
 export interface AccountPlatformSettings {
-  hostId: string | undefined;
+  host: Host | undefined;
   visibility: SpaceVisibility;
-  organizations: {
-    id: string;
-    name: string;
-  }[];
   activeLicensePlanIds: string[] | undefined;
 }
 
@@ -53,7 +50,7 @@ const SpaceListItem = ({
   spaceId,
   accountId,
   nameId,
-  account: { visibility, hostId, organizations, activeLicensePlanIds },
+  account: { visibility, host, activeLicensePlanIds },
   licensePlans,
   ...props
 }: SpaceListItemProps) => {
@@ -69,7 +66,7 @@ const SpaceListItem = ({
   const initialValues = {
     accountSettings: {
       visibility,
-      hostId,
+      host,
     },
     platformSettings: {
       nameId,
@@ -82,11 +79,11 @@ const SpaceListItem = ({
   const [revokeLicensePlan] = useRevokeLicensePlanFromAccountMutation();
 
   const [handleSubmitAccountSettings, savingAccountSettings] = useLoadingState(
-    async ({ visibility, hostId }: Partial<AccountPlatformSettings>) => {
+    async ({ visibility, host }: Partial<AccountPlatformSettings>) => {
       await updateAccountSettings({
         variables: {
           accountId,
-          hostId,
+          hostId: host?.id,
           license: {
             visibility,
           },
@@ -132,7 +129,7 @@ const SpaceListItem = ({
   );
 
   const accountSettingsValidationSchema = yup.object().shape({
-    hostId: yup.string().required(t('forms.validations.required')),
+    host: yup.object().shape({ id: yup.string() }).required(t('forms.validations.required')),
     visibility: yup.string().required(t('forms.validations.required')),
   });
 
@@ -158,7 +155,7 @@ const SpaceListItem = ({
           validationSchema={accountSettingsValidationSchema}
           onSubmit={handleSubmitAccountSettings}
         >
-          {({ handleSubmit }) => (
+          {({ handleSubmit, isValid }) => (
             <>
               <DialogHeader onClose={() => setSettingsModalOpen(false)}>
                 <BlockTitle>{t('pages.admin.spaces.spaceSettings')}</BlockTitle>
@@ -175,14 +172,7 @@ const SpaceListItem = ({
                     ),
                   }}
                 />
-                <FormikAutocomplete
-                  title={t('components.editSpaceForm.host.title')}
-                  name="hostId"
-                  values={organizations}
-                  required
-                  disabled={loading}
-                  placeholder={t('components.editSpaceForm.host.title')}
-                />
+                <HostSelector name="host" host={host} />
                 <FormikAutocomplete
                   name="visibility"
                   values={visibilitySelectOptions}
@@ -191,10 +181,12 @@ const SpaceListItem = ({
                 />
               </PageContentBlockSeamless>
               <Actions padding={gutters()}>
-                <Button onClick={() => setIsManageLicensePlansDialogOpen(true)}>Manage License Plans</Button>
+                <Button onClick={() => setIsManageLicensePlansDialogOpen(true)}>
+                  {t('pages.admin.spaces.manageLicensePlans')}
+                </Button>
                 <FlexSpacer />
                 <Button onClick={() => setSettingsModalOpen(false)}>{t('buttons.cancel')}</Button>
-                <LoadingButton variant="contained" loading={loading} onClick={() => handleSubmit()}>
+                <LoadingButton variant="contained" loading={loading} onClick={() => handleSubmit()} disabled={!isValid}>
                   {t('buttons.save')}
                 </LoadingButton>
               </Actions>
@@ -203,20 +195,25 @@ const SpaceListItem = ({
         </Formik>
       </DialogWithGrid>
       <DialogWithGrid open={isManageLicensePlansDialogOpen} onClose={() => setIsManageLicensePlansDialogOpen(false)}>
-        <DialogHeader title="Manage License Plans" onClose={() => setIsManageLicensePlansDialogOpen(false)} />
-        {licensePlans && (
-          <PlansTable
-            activeLicensePlanIds={activeLicensePlanIds}
-            licensePlans={licensePlans}
-            onDelete={plan => revokeLicensePlan({ variables: { accountId, licensePlanId: plan.id } })}
-          />
-        )}
-        {licensePlans && (
-          <AssignPlan
-            onAssignPlan={licensePlanId => assignLicensePlan({ variables: { accountId, licensePlanId } })}
-            licensePlans={licensePlans}
-          />
-        )}
+        <DialogHeader
+          title={t('pages.admin.spaces.manageLicensePlans')}
+          onClose={() => setIsManageLicensePlansDialogOpen(false)}
+        />
+        <DialogContent>
+          {licensePlans && (
+            <PlansTable
+              activeLicensePlanIds={activeLicensePlanIds}
+              licensePlans={licensePlans}
+              onDelete={plan => revokeLicensePlan({ variables: { accountId, licensePlanId: plan.id } })}
+            />
+          )}
+          {licensePlans && (
+            <AssignPlan
+              onAssignPlan={licensePlanId => assignLicensePlan({ variables: { accountId, licensePlanId } })}
+              licensePlans={licensePlans}
+            />
+          )}
+        </DialogContent>
       </DialogWithGrid>
       <DialogWithGrid open={isPlatformSettingsModalOpen} onClose={() => setSettingsModalOpen(false)}>
         <Formik
@@ -224,7 +221,7 @@ const SpaceListItem = ({
           validationSchema={platformSettingsValidationSchema}
           onSubmit={handleSubmitPlatformSettings}
         >
-          {({ handleSubmit }) => (
+          {({ handleSubmit, isValid }) => (
             <>
               <DialogHeader onClose={() => setPlatformSettingsModalOpen(false)}>
                 <BlockTitle>{t('pages.admin.spaces.changeNameId')}</BlockTitle>
@@ -239,7 +236,7 @@ const SpaceListItem = ({
               </DialogContent>
               <Actions padding={gutters()} justifyContent="end">
                 <Button onClick={() => setPlatformSettingsModalOpen(false)}>{t('buttons.cancel')}</Button>
-                <LoadingButton variant="contained" loading={loading} onClick={() => handleSubmit()}>
+                <LoadingButton variant="contained" loading={loading} onClick={() => handleSubmit()} disabled={!isValid}>
                   {t('buttons.save')}
                 </LoadingButton>
               </Actions>

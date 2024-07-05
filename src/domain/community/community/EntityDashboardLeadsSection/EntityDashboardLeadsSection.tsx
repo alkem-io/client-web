@@ -3,12 +3,14 @@ import { useTranslation } from 'react-i18next';
 import { EntityDashboardLeads } from '../EntityDashboardContributorsSection/Types';
 import AssociatedOrganizationsView from '../../contributor/organization/AssociatedOrganizations/AssociatedOrganizationsView';
 import { buildUserProfileUrl } from '../../../../main/routing/urlBuilders';
-import DashboardLeadUsers from './DashboardLeadUsers';
 import { useUserContext } from '../../user';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
 import LeadOrganizationCard, { LeadOrganizationCardProps } from '../LeadCards/LeadOrganizationCard';
 import { SvgIconProps } from '@mui/material';
+import DashboardLeads from './DashboardLeads';
+import LeadContributorCard from '../LeadCards/LeadContributorCard';
+import LeadUserCard from '../LeadCards/LeadUserCard';
 
 const OrganizationCardTransparent = (props: LeadOrganizationCardProps) => <LeadOrganizationCard {...props} />;
 
@@ -21,6 +23,7 @@ interface EntityDashboardLeadsProps extends EntityDashboardLeads {
 const EntityDashboardLeadsSection = ({
   leadUsers,
   leadOrganizations,
+  leadVirtualContributors,
   usersHeader,
   organizationsHeader,
   organizationsHeaderIcon,
@@ -66,7 +69,7 @@ const EntityDashboardLeadsSection = ({
   return (
     <PageContentBlock>
       {leadUsersSectionVisible && usersHeader && (
-        <DashboardLeadUsers headerText={usersHeader} users={leadUsersMapped} />
+        <DashboardLeads headerText={usersHeader} contributors={leadUsersMapped} CardComponent={LeadUserCard} />
       )}
       {leadOrganizationsSectionVisible && organizationsHeader && (
         <>
@@ -77,6 +80,9 @@ const EntityDashboardLeadsSection = ({
             entityName={t('community.leading-organizations')}
           />
         </>
+      )}
+      {leadUsersSectionVisible && usersHeader && (
+        <DashboardLeads headerText="" contributors={leadVirtualContributors} CardComponent={LeadContributorCard} />
       )}
       {children}
     </PageContentBlock>
