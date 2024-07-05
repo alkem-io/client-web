@@ -413,8 +413,6 @@ export type ActivityLogEntryMemberJoined = ActivityLogEntry & {
   collaborationID: Scalars['UUID'];
   /** The community that was joined. */
   community: Community;
-  /** The type of the the Community. */
-  communityType: Scalars['String'];
   /** The Contributor that joined the Community. */
   contributor: Contributor;
   /** The type of the Contributor that joined the Community. */
@@ -1175,8 +1173,10 @@ export type CommunicationAdminRoomResult = {
   members: Array<Scalars['String']>;
 };
 
-export type CommunicationAdminUpdateRoomsJoinRuleInput = {
+export type CommunicationAdminUpdateRoomStateInput = {
   isPublic: Scalars['Boolean'];
+  isWorldVisible: Scalars['Boolean'];
+  roomID: Scalars['String'];
 };
 
 export type CommunicationRoom = {
@@ -2864,8 +2864,8 @@ export type Mutation = {
   adminCommunicationEnsureAccessToCommunications: Scalars['Boolean'];
   /** Remove an orphaned room from messaging platform. */
   adminCommunicationRemoveOrphanedRoom: Scalars['Boolean'];
-  /** Allow updating the rule for joining rooms: public or invite. */
-  adminCommunicationUpdateRoomsJoinRule: Scalars['Boolean'];
+  /** Allow updating the state flags of a particular rule. */
+  adminCommunicationUpdateRoomState: Scalars['Boolean'];
   /** Ingests new data into Elasticsearch from scratch. This will delete all existing data and ingest new data from the source. This is an admin only operation. */
   adminSearchIngestFromScratch: Scalars['String'];
   /** Reset the Authorization Policy on the specified AiServer. */
@@ -3204,8 +3204,8 @@ export type MutationAdminCommunicationRemoveOrphanedRoomArgs = {
   orphanedRoomData: CommunicationAdminRemoveOrphanedRoomInput;
 };
 
-export type MutationAdminCommunicationUpdateRoomsJoinRuleArgs = {
-  changeRoomAccessData: CommunicationAdminUpdateRoomsJoinRuleInput;
+export type MutationAdminCommunicationUpdateRoomStateArgs = {
+  roomStateData: CommunicationAdminUpdateRoomStateInput;
 };
 
 export type MutationAiServerCreateAiPersonaServiceArgs = {
@@ -6305,9 +6305,6 @@ export type UserAgentSsiFragment = {
     __typename?: 'Agent';
     id: string;
     did?: string | undefined;
-    credentials?:
-      | Array<{ __typename?: 'Credential'; id: string; resourceID: string; type: CredentialType }>
-      | undefined;
     verifiedCredentials?:
       | Array<{
           __typename?: 'VerifiedCredential';
@@ -6338,9 +6335,6 @@ export type UserSsiQuery = {
             __typename?: 'Agent';
             id: string;
             did?: string | undefined;
-            credentials?:
-              | Array<{ __typename?: 'Credential'; id: string; resourceID: string; type: CredentialType }>
-              | undefined;
             verifiedCredentials?:
               | Array<{
                   __typename?: 'VerifiedCredential';
@@ -15626,13 +15620,6 @@ export type CommunityPageMembersFragment = {
   id: string;
   nameID: string;
   email: string;
-  agent: {
-    __typename?: 'Agent';
-    id: string;
-    credentials?:
-      | Array<{ __typename?: 'Credential'; id: string; type: CredentialType; resourceID: string }>
-      | undefined;
-  };
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -16473,13 +16460,6 @@ export type ContributorsPageUsersQuery = {
       id: string;
       nameID: string;
       isContactable: boolean;
-      agent: {
-        __typename?: 'Agent';
-        id: string;
-        credentials?:
-          | Array<{ __typename?: 'Credential'; id: string; type: CredentialType; resourceID: string }>
-          | undefined;
-      };
       userProfile: {
         __typename?: 'Profile';
         id: string;
@@ -16553,13 +16533,6 @@ export type UserContributorPaginatedFragment = {
     id: string;
     nameID: string;
     isContactable: boolean;
-    agent: {
-      __typename?: 'Agent';
-      id: string;
-      credentials?:
-        | Array<{ __typename?: 'Credential'; id: string; type: CredentialType; resourceID: string }>
-        | undefined;
-    };
     userProfile: {
       __typename?: 'Profile';
       id: string;
@@ -16591,13 +16564,6 @@ export type UserContributorFragment = {
   id: string;
   nameID: string;
   isContactable: boolean;
-  agent: {
-    __typename?: 'Agent';
-    id: string;
-    credentials?:
-      | Array<{ __typename?: 'Credential'; id: string; type: CredentialType; resourceID: string }>
-      | undefined;
-  };
   userProfile: {
     __typename?: 'Profile';
     id: string;
@@ -17725,10 +17691,6 @@ export type UserDetailsFragment = {
   gender: string;
   phone: string;
   accountUpn: string;
-  agent: {
-    __typename?: 'Agent';
-    credentials?: Array<{ __typename?: 'Credential'; type: CredentialType; resourceID: string }> | undefined;
-  };
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -17838,10 +17800,6 @@ export type CreateUserMutation = {
     gender: string;
     phone: string;
     accountUpn: string;
-    agent: {
-      __typename?: 'Agent';
-      credentials?: Array<{ __typename?: 'Credential'; type: CredentialType; resourceID: string }> | undefined;
-    };
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -17895,10 +17853,6 @@ export type CreateUserNewRegistrationMutation = {
     gender: string;
     phone: string;
     accountUpn: string;
-    agent: {
-      __typename?: 'Agent';
-      credentials?: Array<{ __typename?: 'Credential'; type: CredentialType; resourceID: string }> | undefined;
-    };
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -18030,10 +17984,6 @@ export type UpdateUserMutation = {
     gender: string;
     phone: string;
     accountUpn: string;
-    agent: {
-      __typename?: 'Agent';
-      credentials?: Array<{ __typename?: 'Credential'; type: CredentialType; resourceID: string }> | undefined;
-    };
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -18098,10 +18048,6 @@ export type UserQuery = {
     gender: string;
     phone: string;
     accountUpn: string;
-    agent: {
-      __typename?: 'Agent';
-      credentials?: Array<{ __typename?: 'Credential'; type: CredentialType; resourceID: string }> | undefined;
-    };
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -18184,10 +18130,6 @@ export type UserProfileQuery = {
     gender: string;
     phone: string;
     accountUpn: string;
-    agent: {
-      __typename?: 'Agent';
-      credentials?: Array<{ __typename?: 'Credential'; type: CredentialType; resourceID: string }> | undefined;
-    };
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -18315,10 +18257,6 @@ export type UserProviderQuery = {
           gender: string;
           phone: string;
           accountUpn: string;
-          agent: {
-            __typename?: 'Agent';
-            credentials?: Array<{ __typename?: 'Credential'; type: CredentialType; resourceID: string }> | undefined;
-          };
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -18383,10 +18321,6 @@ export type UserPendingMembershipsQuery = {
           gender: string;
           phone: string;
           accountUpn: string;
-          agent: {
-            __typename?: 'Agent';
-            credentials?: Array<{ __typename?: 'Credential'; type: CredentialType; resourceID: string }> | undefined;
-          };
           profile: {
             __typename?: 'Profile';
             id: string;
