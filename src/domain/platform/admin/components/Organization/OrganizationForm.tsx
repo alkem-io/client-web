@@ -28,11 +28,8 @@ import { LocationSegment } from '../../../../common/location/LocationSegment';
 import { EmptyLocation } from '../../../../common/location/Location';
 import Gutters from '../../../../../core/ui/grid/Gutters';
 
-const EmptyOrganization: Omit<Organization, 'authorization'> = {
+const EmptyOrganization: Omit<Organization, 'authorization' | 'agent'> = {
   id: '',
-  agent: {
-    id: '',
-  },
   nameID: '',
   contactEmail: undefined,
   domain: '',
