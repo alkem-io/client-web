@@ -34,24 +34,11 @@ interface HostSelectorProps {
   host?: Host;
 }
 
-export const mapUserOrOrganizationToHost = (
-  host:
-    | {
-        id: string;
-        profile: {
-          displayName: string;
-          location?: {
-            city: string;
-            country: string;
-          };
-          visual?: {
-            uri?: string;
-          };
-        };
-        __typename?: 'User' | 'Organization' | 'VirtualContributor';
-      }
-    | undefined
-): Host | undefined => {
+interface AllHosts extends Omit<Host, 'type'> {
+  __typename?: 'User' | 'Organization' | 'VirtualContributor';
+}
+
+export const mapUserOrOrganizationToHost = (host: AllHosts | undefined): Host | undefined => {
   if (!host || !host.__typename || (host.__typename !== 'User' && host.__typename !== 'Organization')) {
     // We don't allouw VirtualContributors as hosts, at least for now
     return undefined;
@@ -121,56 +108,54 @@ export const HostSelector: FC<HostSelectorProps> = ({ name, host, ...containerPr
     helpers.setTouched(true);
     helpers.setValue(host);
   };
-  const error = (meta.touched && !field.value) || !!meta.error; //!! TODO
+  const error = (meta.touched && !field.value) || !!meta.error;
 
   return (
-    <>
-      <Autocomplete
-        options={options}
-        value={field.value}
-        defaultValue={host}
-        autoHighlight
-        getOptionLabel={option => option.profile.displayName}
-        noOptionsText={t('components.user-selector.tooltip')}
-        popupIcon={<SearchIcon />}
-        onChange={(event, value) => handleSelect(value)}
-        renderOption={(props, host: Host) => (
-          <li {...props}>
-            <ProfileChipView
-              displayName={host.profile.displayName}
-              avatarUrl={host.profile.visual?.uri}
-              city={host.profile.location?.city}
-              country={host.profile.location?.country}
-              width="100%"
-            >
-              <FlexSpacer />
-              <CaptionSmall sx={{ maxWidth: '50%' }}>{t(`common.${host.type}` as const)}</CaptionSmall>
-            </ProfileChipView>
-          </li>
-        )}
-        renderInput={params => (
-          <>
-            <TextField
-              {...params}
-              name={Math.random().toString(36).slice(2)} // Disables autofill in Chrome
-              onChange={({ target }) => {
-                if (target.value) {
-                  setFilter({ displayName: target.value });
-                } else {
-                  setFilter(undefined);
-                }
-              }}
-              inputProps={{
-                ...params.inputProps,
-                autoComplete: 'new-password', // disable autocomplete and autofill
-              }}
-              error={error}
-            />
-            {error && <FormHelperText error>{t('common.field-required')}</FormHelperText>}
-          </>
-        )}
-        {...containerProps}
-      />
-    </>
+    <Autocomplete
+      options={options}
+      value={field.value}
+      defaultValue={host}
+      autoHighlight
+      getOptionLabel={option => option.profile.displayName}
+      noOptionsText={t('components.user-selector.tooltip')}
+      popupIcon={<SearchIcon />}
+      onChange={(event, value) => handleSelect(value)}
+      renderOption={(props, host: Host) => (
+        <li {...props}>
+          <ProfileChipView
+            displayName={host.profile.displayName}
+            avatarUrl={host.profile.visual?.uri}
+            city={host.profile.location?.city}
+            country={host.profile.location?.country}
+            width="100%"
+          >
+            <FlexSpacer />
+            <CaptionSmall sx={{ maxWidth: '50%' }}>{t(`common.${host.type}` as const)}</CaptionSmall>
+          </ProfileChipView>
+        </li>
+      )}
+      renderInput={params => (
+        <>
+          <TextField
+            {...params}
+            name={Math.random().toString(36).slice(2)} // Disables autofill in Chrome
+            onChange={({ target }) => {
+              if (target.value) {
+                setFilter({ displayName: target.value });
+              } else {
+                setFilter(undefined);
+              }
+            }}
+            inputProps={{
+              ...params.inputProps,
+              autoComplete: 'new-password', // disable autocomplete and autofill
+            }}
+            error={error}
+          />
+          {error && <FormHelperText error>{t('common.field-required')}</FormHelperText>}
+        </>
+      )}
+      {...containerProps}
+    />
   );
 };
