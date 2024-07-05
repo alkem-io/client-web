@@ -56,6 +56,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
 
   const { data, loading } = useNewVirtualContributorMySpacesQuery({
     skip: !dialogOpen,
+    fetchPolicy: 'cache-and-network',
   });
 
   const findMySpace = (
