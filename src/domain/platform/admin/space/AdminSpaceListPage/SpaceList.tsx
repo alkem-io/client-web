@@ -16,6 +16,7 @@ import { useTranslation } from 'react-i18next';
 import { buildSettingsUrl } from '../../../../../main/routing/urlBuilders';
 import SpaceListItem from './SpaceListItem';
 import { sortBy } from 'lodash';
+import { mapUserOrOrganizationToHost } from './HostSelector';
 
 export const SpaceList: FC = () => {
   const { pathname: url } = useResolvedPath('.');
@@ -67,7 +68,7 @@ export const SpaceList: FC = () => {
             nameId: space.nameID,
             account: {
               visibility: space.account.license.visibility,
-              hostId: space.account.host?.id,
+              host: mapUserOrOrganizationToHost(space.account.host),
               activeLicensePlanIds,
               organizations,
             },
