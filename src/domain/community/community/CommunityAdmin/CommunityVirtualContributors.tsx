@@ -215,6 +215,7 @@ const CommunityVirtualContributors: FC<CommunityVirtualContributorsProps> = ({
         <CommunityAddMembersDialog
           onAdd={onAddClick}
           fetchAvailableEntities={getFilteredVirtualContributors}
+          allowSearchByURL
           onClose={() => setAddingNewMember(false)}
         />
       )}
