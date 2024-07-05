@@ -1,6 +1,6 @@
 import { FormControl, InputLabel, List, OutlinedInput } from '@mui/material';
 import Delete from '@mui/icons-material/Delete';
-import React, { forwardRef, useMemo, useState } from 'react';
+import React, { forwardRef, ReactNode, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import SearchableListIconButton from './SearchableListIconButton';
 import RemoveModal from '../../../../core/ui/dialogs/RemoveModal';
@@ -21,6 +21,7 @@ export interface SearchableListProps<Item extends SearchableListItem> {
   onSearchTermChange: (searchTerm: string) => void;
   totalCount?: number;
   hasMore: boolean | undefined;
+  itemActions?: (item: Item) => ReactNode | ReactNode;
 }
 
 export interface SearchableListItem {
@@ -40,6 +41,7 @@ const SimpleSearchableList = <Item extends SearchableListItem>({
   onSearchTermChange,
   totalCount,
   hasMore = false,
+  itemActions = () => null,
 }: SearchableListProps<Item>) => {
   const { t } = useTranslation();
   const [isModalOpened, setModalOpened] = useState<boolean>(false);
@@ -87,6 +89,8 @@ const SimpleSearchableList = <Item extends SearchableListItem>({
     setItemToRemove(null);
   };
 
+  const renderItemActions = typeof itemActions === 'function' ? itemActions : () => itemActions;
+
   return (
     <>
       <FormControl fullWidth size="small">
@@ -120,6 +124,7 @@ const SimpleSearchableList = <Item extends SearchableListItem>({
                     </SearchableListIconButton>
                   )
                 }
+                actions={renderItemActions(item)}
               />
             ))}
         {loader}

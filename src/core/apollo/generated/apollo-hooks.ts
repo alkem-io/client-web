@@ -22331,6 +22331,148 @@ export type DeleteCalendarEventMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteCalendarEventMutation,
   SchemaTypes.DeleteCalendarEventMutationVariables
 >;
+export const AuthorizationPolicyDocument = gql`
+  query AuthorizationPolicy($authorizationPolicyId: UUID!) {
+    lookup {
+      authorizationPolicy(ID: $authorizationPolicyId) {
+        id
+        anonymousReadAccess
+        credentialRules {
+          name
+          cascade
+          criterias {
+            resourceID
+            type
+          }
+          grantedPrivileges
+        }
+        privilegeRules {
+          name
+          sourcePrivilege
+          grantedPrivileges
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useAuthorizationPolicyQuery__
+ *
+ * To run a query within a React component, call `useAuthorizationPolicyQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAuthorizationPolicyQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAuthorizationPolicyQuery({
+ *   variables: {
+ *      authorizationPolicyId: // value for 'authorizationPolicyId'
+ *   },
+ * });
+ */
+export function useAuthorizationPolicyQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.AuthorizationPolicyQuery,
+    SchemaTypes.AuthorizationPolicyQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.AuthorizationPolicyQuery, SchemaTypes.AuthorizationPolicyQueryVariables>(
+    AuthorizationPolicyDocument,
+    options
+  );
+}
+
+export function useAuthorizationPolicyLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.AuthorizationPolicyQuery,
+    SchemaTypes.AuthorizationPolicyQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.AuthorizationPolicyQuery, SchemaTypes.AuthorizationPolicyQueryVariables>(
+    AuthorizationPolicyDocument,
+    options
+  );
+}
+
+export type AuthorizationPolicyQueryHookResult = ReturnType<typeof useAuthorizationPolicyQuery>;
+export type AuthorizationPolicyLazyQueryHookResult = ReturnType<typeof useAuthorizationPolicyLazyQuery>;
+export type AuthorizationPolicyQueryResult = Apollo.QueryResult<
+  SchemaTypes.AuthorizationPolicyQuery,
+  SchemaTypes.AuthorizationPolicyQueryVariables
+>;
+export function refetchAuthorizationPolicyQuery(variables: SchemaTypes.AuthorizationPolicyQueryVariables) {
+  return { query: AuthorizationPolicyDocument, variables: variables };
+}
+
+export const AuthorizationPrivilegesForUserDocument = gql`
+  query AuthorizationPrivilegesForUser($userId: UUID!, $authorizationId: UUID!) {
+    lookup {
+      authorizationPrivilegesForUser(userID: $userId, authorizationID: $authorizationId)
+    }
+  }
+`;
+
+/**
+ * __useAuthorizationPrivilegesForUserQuery__
+ *
+ * To run a query within a React component, call `useAuthorizationPrivilegesForUserQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAuthorizationPrivilegesForUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAuthorizationPrivilegesForUserQuery({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *      authorizationId: // value for 'authorizationId'
+ *   },
+ * });
+ */
+export function useAuthorizationPrivilegesForUserQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.AuthorizationPrivilegesForUserQuery,
+    SchemaTypes.AuthorizationPrivilegesForUserQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.AuthorizationPrivilegesForUserQuery,
+    SchemaTypes.AuthorizationPrivilegesForUserQueryVariables
+  >(AuthorizationPrivilegesForUserDocument, options);
+}
+
+export function useAuthorizationPrivilegesForUserLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.AuthorizationPrivilegesForUserQuery,
+    SchemaTypes.AuthorizationPrivilegesForUserQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.AuthorizationPrivilegesForUserQuery,
+    SchemaTypes.AuthorizationPrivilegesForUserQueryVariables
+  >(AuthorizationPrivilegesForUserDocument, options);
+}
+
+export type AuthorizationPrivilegesForUserQueryHookResult = ReturnType<typeof useAuthorizationPrivilegesForUserQuery>;
+export type AuthorizationPrivilegesForUserLazyQueryHookResult = ReturnType<
+  typeof useAuthorizationPrivilegesForUserLazyQuery
+>;
+export type AuthorizationPrivilegesForUserQueryResult = Apollo.QueryResult<
+  SchemaTypes.AuthorizationPrivilegesForUserQuery,
+  SchemaTypes.AuthorizationPrivilegesForUserQueryVariables
+>;
+export function refetchAuthorizationPrivilegesForUserQuery(
+  variables: SchemaTypes.AuthorizationPrivilegesForUserQueryVariables
+) {
+  return { query: AuthorizationPrivilegesForUserDocument, variables: variables };
+}
+
 export const UpdateAnswerRelevanceDocument = gql`
   mutation updateAnswerRelevance($input: ChatGuidanceAnswerRelevanceInput!) {
     updateAnswerRelevance(input: $input)
