@@ -7,7 +7,7 @@ import InnovationFlowStates from '../../../collaboration/InnovationFlow/Innovati
 import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
 import { OrderUpdate, TypedCallout } from '../../../collaboration/callout/useCallouts/useCallouts';
 import { InnovationFlowState } from '../../../collaboration/InnovationFlow/InnovationFlow';
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { SubspaceInnovationFlow, useConsumeAction } from '../layout/SubspacePageLayout';
 import { useCalloutCreationWithPreviewImages } from '../../../collaboration/callout/creationDialog/useCalloutCreation/useCalloutCreationWithPreviewImages';
 import CalloutCreationDialog from '../../../collaboration/callout/creationDialog/CalloutCreationDialog';
@@ -67,9 +67,15 @@ const SubspaceHomeView = ({
     </Button>
   );
 
+  // on innovation flow tab change
   const [selectedInnovationFlowState, setSelectedInnovationFlowState] = useResettableState(currentInnovationFlowState, [
     innovationFlowId,
   ]);
+
+  // on innovation flow template change #6319
+  useEffect(() => {
+    setSelectedInnovationFlowState(currentInnovationFlowState);
+  }, [currentInnovationFlowState]);
 
   const selectedFlowStateCallouts = useMemo(() => {
     const filterCallouts = (callouts: TypedCallout[] | undefined) => {
