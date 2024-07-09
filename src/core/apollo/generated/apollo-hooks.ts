@@ -16535,9 +16535,13 @@ export function refetchSpacePrivilegesQuery(variables: SchemaTypes.SpacePrivileg
 }
 
 export const SpaceCommunityPageDocument = gql`
-  query SpaceCommunityPage($spaceNameId: UUID_NAMEID!) {
+  query SpaceCommunityPage($spaceNameId: UUID_NAMEID!, $includeCommunity: Boolean!) {
     space(ID: $spaceNameId) {
       id
+      authorization {
+        id
+        myPrivileges
+      }
       profile {
         id
         url
@@ -16548,7 +16552,7 @@ export const SpaceCommunityPageDocument = gql`
           ...ContributorDetails
         }
       }
-      community {
+      community @include(if: $includeCommunity) {
         ...CommunityPageCommunity
       }
       collaboration {
@@ -16573,6 +16577,7 @@ export const SpaceCommunityPageDocument = gql`
  * const { data, loading, error } = useSpaceCommunityPageQuery({
  *   variables: {
  *      spaceNameId: // value for 'spaceNameId'
+ *      includeCommunity: // value for 'includeCommunity'
  *   },
  * });
  */

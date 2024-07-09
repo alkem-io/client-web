@@ -1,6 +1,10 @@
-query SpaceCommunityPage($spaceNameId: UUID_NAMEID!) {
+query SpaceCommunityPage($spaceNameId: UUID_NAMEID!, $includeCommunity: Boolean!) {
   space(ID: $spaceNameId) {
     id
+    authorization {
+      id
+      myPrivileges
+    }
     profile {
       id
       url
@@ -11,7 +15,7 @@ query SpaceCommunityPage($spaceNameId: UUID_NAMEID!) {
         ...ContributorDetails
       }
     }
-    community {
+    community @include(if: $includeCommunity) {
       ...CommunityPageCommunity
     }
     collaboration {
