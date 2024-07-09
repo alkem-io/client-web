@@ -15,8 +15,17 @@ import SpaceCalloutPage from '../spaceCalloutPage/SpaceCalloutPage';
 import SpaceCommunityPage from '../SpaceCommunityPage/SpaceCommunityPage';
 import KnowledgeBasePage from '../../../collaboration/KnowledgeBase/KnowedgeBasePage';
 import { SpaceRoute as SpaceSettingsRoute } from '../../settings/routes/SpaceRoute';
+import { useUrlParams } from '../../../../core/routing/useUrlParams';
+import reservedTopLevelRoutePaths from '../../../../main/routing/reservedTopLevelRoutePaths';
+import { ROUTE_HOME } from '../../../platform/routes/constants';
 
 export const SpaceRoute = () => {
+  const { spaceNameId } = useUrlParams();
+
+  if (reservedTopLevelRoutePaths.includes(spaceNameId!)) {
+    return <Navigate to={ROUTE_HOME} replace />;
+  }
+
   return (
     <Routes>
       <Route index element={<Navigate replace to={routes.Dashboard} />} />

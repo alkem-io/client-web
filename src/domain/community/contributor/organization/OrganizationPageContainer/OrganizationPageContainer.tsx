@@ -77,6 +77,8 @@ const roleChecks = [
 export const OrganizationPageContainer: FC<OrganizationPageContainerProps> = ({ children }) => {
   const { organizationId, organizationNameId, loading, organization, canReadUsers } = useOrganization();
 
+  console.log(organizationId, organizationNameId, loading, organization, canReadUsers);
+
   const { t } = useTranslation();
 
   const usersWithRoles = organization?.associates?.map(user => {

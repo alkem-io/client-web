@@ -3,7 +3,6 @@ import { Route, Routes } from 'react-router-dom';
 import App from '../ui/layout/topLevelWrappers/App';
 import { CommunityContextProvider } from '../../domain/community/community/CommunityContext';
 import { SpaceContextProvider } from '../../domain/journey/space/SpaceContext/SpaceContext';
-import { OrganizationProvider } from '../../domain/community/contributor/organization/context/OrganizationProvider';
 import HomePage from '../topLevelPages/Home/HomePage';
 import AboutPage from '../topLevelPages/About';
 import { Error404 } from '../../core/pages/Errors/Error404';
@@ -100,7 +99,7 @@ export const TopLevelRoutes: FC = () => {
         />
         {IdentityRoute()}
         <Route
-          path={`/user/:${nameOfUrl.userNameId}/*`}
+          path="/user/*"
           element={
             <NonIdentity>
               <WithApmTransaction path={`:${nameOfUrl.userNameId}/*`}>
@@ -112,13 +111,23 @@ export const TopLevelRoutes: FC = () => {
           }
         />
         <Route
-          path={`/vc/:${nameOfUrl.vcNameId}/*`}
+          path="/vc/*"
           element={
             <NonIdentity>
               <WithApmTransaction path={`:${nameOfUrl.vcNameId}/*`}>
                 <NoIdentityRedirect>
                   <VCRoute />
                 </NoIdentityRedirect>
+              </WithApmTransaction>
+            </NonIdentity>
+          }
+        />
+        <Route
+          path="/organization/*"
+          element={
+            <NonIdentity>
+              <WithApmTransaction path={`:${nameOfUrl.organizationNameId}/*`}>
+                <OrganizationRoute />
               </WithApmTransaction>
             </NonIdentity>
           }
@@ -169,18 +178,6 @@ export const TopLevelRoutes: FC = () => {
             <NonIdentity>
               <WithApmTransaction path="/forum">
                 <ForumRoute />
-              </WithApmTransaction>
-            </NonIdentity>
-          }
-        />
-        <Route
-          path={`/organization/:${nameOfUrl.organizationNameId}/*`}
-          element={
-            <NonIdentity>
-              <WithApmTransaction path={`/organization/:${nameOfUrl.organizationNameId}/*`}>
-                <OrganizationProvider>
-                  <OrganizationRoute />
-                </OrganizationProvider>
               </WithApmTransaction>
             </NonIdentity>
           }
