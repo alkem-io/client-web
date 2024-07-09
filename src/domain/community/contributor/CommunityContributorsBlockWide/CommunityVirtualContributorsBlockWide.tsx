@@ -14,7 +14,7 @@ import Loading from '../../../../core/ui/loading/Loading';
 import usePlatformOrigin from '../../../platform/routes/usePlatformOrigin';
 
 interface CommunityContributorsBlockWideProps {
-  virtualContributors: VirtualContributorProps[] | undefined;
+  virtualContributors: VirtualContributorProps[];
   isLoading?: boolean;
 }
 

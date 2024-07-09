@@ -40,6 +40,8 @@ import { useSpace } from '../SpaceContext/useSpace';
 import InfoColumn from '../../../../core/ui/content/InfoColumn';
 import ContentColumn from '../../../../core/ui/content/ContentColumn';
 import VirtualContributorsBlock from '../../../community/community/VirtualContributorsBlock/VirtualContributorsBlock';
+import { VirtualContributorProps } from '../../../community/community/VirtualContributorsBlock/VirtualContributorsDialog';
+import { compact } from 'lodash';
 
 const SpaceCommunityPage = () => {
   const { spaceNameId } = useUrlParams();
@@ -100,12 +102,13 @@ const SpaceCommunityPage = () => {
 
   const { data: virtualContributorsData, loading } = useVirtualContributorsMySpacesQuery();
 
-  const virtualContributors =
+  const virtualContributors: VirtualContributorProps[] = compact(
     virtualContributorsData?.me.mySpaces
       ?.filter(space => space.space.account?.virtualContributors)
       .map(space => space.space.account?.virtualContributors)
-      .flat()
-      .filter(vc => vc?.searchVisibility === SearchVisibility.Public) ?? [];
+  )
+    .flat()
+    .filter(vc => vc?.searchVisibility === SearchVisibility.Public);
 
   const hasReadPrivilege = !!virtualContributorsData?.me.mySpaces?.filter(space =>
     space.space.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Read)

@@ -50,7 +50,8 @@ const VirtualContributorsDialog: FC<VirtualContributorsDialogProps> = ({ open, o
     );
   };
   const filteredVCs = useMemo(
-    () => (virtualContributors && filter.length > 0 ? virtualContributors?.filter(filterVCs) : virtualContributors),
+    () =>
+      (virtualContributors && filter.length > 0 ? virtualContributors.filter(filterVCs) : virtualContributors) ?? [],
     [virtualContributors, filter]
   );
 

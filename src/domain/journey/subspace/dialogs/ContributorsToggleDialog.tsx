@@ -9,6 +9,7 @@ import { ContributorType } from '../../../community/contributor/CommunityContrib
 import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
 import CommunityVirtualContributorsBlockWide from '../../../community/contributor/CommunityContributorsBlockWide/CommunityVirtualContributorsBlockWide';
 import { SearchVisibility } from '../../../../core/apollo/generated/graphql-schema';
+import { VirtualContributorProps } from '../../../community/community/VirtualContributorsBlock/VirtualContributorsDialog';
 
 export interface ContributorsToggleDialogProps {
   open?: boolean;
@@ -47,9 +48,8 @@ const ContributorsToggleDialog = ({ open = false, journeyId, onClose }: Contribu
       contributorType: ContributorType.Organizations,
     }));
 
-  const virtualContributors = data?.lookup.space?.account.virtualContributors.filter(
-    vc => vc.searchVisibility === SearchVisibility.Public
-  );
+  const virtualContributors: VirtualContributorProps[] =
+    data?.lookup.space?.account.virtualContributors.filter(vc => vc.searchVisibility === SearchVisibility.Public) ?? [];
 
   return (
     <DialogWithGrid open={open} fullWidth columns={12} aria-labelledby="contributors-dialog-title">

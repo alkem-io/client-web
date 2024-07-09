@@ -26,7 +26,7 @@ const VirtualContributorsBlock = ({ virtualContributors, loading }: VirtualContr
   const openDialog = () => setDialogOpen(true);
   const closeDialog = () => setDialogOpen(false);
 
-  const visibleVCs = virtualContributors?.slice(0, VIRTUAL_CONTRIBUTORS_LIMIT);
+  const visibleVCs = virtualContributors.slice(0, VIRTUAL_CONTRIBUTORS_LIMIT);
 
   const Wrapper = <D extends React.ElementType = ListItemButtonTypeMap['defaultComponent'], P = {}>(
     props: ListItemButtonProps<D, P> & RouterLinkProps
@@ -49,7 +49,7 @@ const VirtualContributorsBlock = ({ virtualContributors, loading }: VirtualContr
             <BlockSectionTitle>{vc.profile.displayName}</BlockSectionTitle>
           </BadgeCardView>
         ))}
-        {virtualContributors?.length > VIRTUAL_CONTRIBUTORS_LIMIT && (
+        {virtualContributors.length > VIRTUAL_CONTRIBUTORS_LIMIT && (
           <SeeMore label="buttons.see-more" onClick={openDialog} />
         )}
       </PageContentBlock>
