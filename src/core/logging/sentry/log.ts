@@ -7,21 +7,45 @@ export enum TagCategoryValues {
   WHITEBOARD = 'WHITEBOARD',
   CONFIG = 'CONFIG',
   SPACE_CREATION = 'SPACE_CREATION',
+  WS = 'WS',
 }
 
 interface Tags {
   category?: TagCategoryValues;
   label?: string;
+  code?: string;
 }
 
 const setTags = (tags: Tags, scope: Sentry.Scope) => {
   for (const [key, value] of Object.entries(tags)) {
-    scope.setTag(key.toUpperCase(), value);
+    if (value) {
+      scope.setTag(key.toUpperCase(), value);
+    }
   }
 };
 
-const log = (severity: Sentry.SeverityLevel) => (error: Error | string, tags?: Tags) =>
-  Sentry.withScope(scope => {
+const getLogTypeBySeverity = (severity: Sentry.SeverityLevel) => {
+  switch (severity) {
+    case 'error':
+      return 'error';
+    case 'warning':
+      return 'warn';
+    case 'info':
+      return 'info';
+    default:
+      return 'log';
+  }
+};
+
+const consoleLog = (severity: Sentry.SeverityLevel, error: Error | string, tags?: Tags) => {
+  console[getLogTypeBySeverity(severity)]?.('[Sentry Log] ', error, tags);
+};
+
+const log = (severity: Sentry.SeverityLevel) => (error: Error | string, tags?: Tags) => {
+  const isDevelopment = import.meta.env.MODE === 'development';
+  isDevelopment && consoleLog(severity, error, tags);
+
+  return Sentry.withScope(scope => {
     scope.setLevel(severity);
     tags && setTags(tags, scope);
     if (typeof error === 'string') {
@@ -30,6 +54,7 @@ const log = (severity: Sentry.SeverityLevel) => (error: Error | string, tags?: T
       Sentry.captureException(error);
     }
   });
+};
 
 export const error = log('error');
 
