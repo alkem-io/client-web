@@ -10734,6 +10734,95 @@ export type UpdateCommunityGuidelinesMutationOptions = Apollo.BaseMutationOption
   SchemaTypes.UpdateCommunityGuidelinesMutation,
   SchemaTypes.UpdateCommunityGuidelinesMutationVariables
 >;
+export const VirtualContributorsMySpacesDocument = gql`
+  query VirtualContributorsMySpaces {
+    me {
+      id
+      mySpaces(showOnlyMyCreatedSpaces: true) {
+        space {
+          id
+          nameID
+          authorization {
+            id
+            myPrivileges
+          }
+          account {
+            id
+            virtualContributors {
+              id
+              nameID
+              searchVisibility
+              profile {
+                id
+                displayName
+                tagline
+                url
+                avatar: visual(type: AVATAR) {
+                  ...VisualUri
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
+
+/**
+ * __useVirtualContributorsMySpacesQuery__
+ *
+ * To run a query within a React component, call `useVirtualContributorsMySpacesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useVirtualContributorsMySpacesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useVirtualContributorsMySpacesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useVirtualContributorsMySpacesQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.VirtualContributorsMySpacesQuery,
+    SchemaTypes.VirtualContributorsMySpacesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.VirtualContributorsMySpacesQuery,
+    SchemaTypes.VirtualContributorsMySpacesQueryVariables
+  >(VirtualContributorsMySpacesDocument, options);
+}
+
+export function useVirtualContributorsMySpacesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.VirtualContributorsMySpacesQuery,
+    SchemaTypes.VirtualContributorsMySpacesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.VirtualContributorsMySpacesQuery,
+    SchemaTypes.VirtualContributorsMySpacesQueryVariables
+  >(VirtualContributorsMySpacesDocument, options);
+}
+
+export type VirtualContributorsMySpacesQueryHookResult = ReturnType<typeof useVirtualContributorsMySpacesQuery>;
+export type VirtualContributorsMySpacesLazyQueryHookResult = ReturnType<typeof useVirtualContributorsMySpacesLazyQuery>;
+export type VirtualContributorsMySpacesQueryResult = Apollo.QueryResult<
+  SchemaTypes.VirtualContributorsMySpacesQuery,
+  SchemaTypes.VirtualContributorsMySpacesQueryVariables
+>;
+export function refetchVirtualContributorsMySpacesQuery(
+  variables?: SchemaTypes.VirtualContributorsMySpacesQueryVariables
+) {
+  return { query: VirtualContributorsMySpacesDocument, variables: variables };
+}
+
 export const CreateGroupOnCommunityDocument = gql`
   mutation createGroupOnCommunity($input: CreateUserGroupInput!) {
     createGroupOnCommunity(groupData: $input) {
@@ -14682,6 +14771,20 @@ export const SpaceCommunityContributorsDocument = gql`
           host {
             ...OrganizationCard
           }
+          virtualContributors {
+            id
+            nameID
+            searchVisibility
+            profile {
+              id
+              displayName
+              tagline
+              url
+              avatar: visual(type: AVATAR) {
+                ...VisualUri
+              }
+            }
+          }
         }
         community {
           id
@@ -14699,6 +14802,7 @@ export const SpaceCommunityContributorsDocument = gql`
     }
   }
   ${OrganizationCardFragmentDoc}
+  ${VisualUriFragmentDoc}
   ${UserCardFragmentDoc}
 `;
 
@@ -15925,11 +16029,33 @@ export const AboutPageMembersDocument = gql`
             ...ReferenceDetails
           }
         }
+        authorization {
+          id
+          myPrivileges
+        }
+        account {
+          id
+          virtualContributors {
+            id
+            nameID
+            searchVisibility
+            profile {
+              id
+              displayName
+              tagline
+              url
+              avatar: visual(type: AVATAR) {
+                ...VisualUri
+              }
+            }
+          }
+        }
       }
     }
   }
   ${EntityDashboardCommunityFragmentDoc}
   ${ReferenceDetailsFragmentDoc}
+  ${VisualUriFragmentDoc}
 `;
 
 /**

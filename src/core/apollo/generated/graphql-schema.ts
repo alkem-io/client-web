@@ -413,8 +413,6 @@ export type ActivityLogEntryMemberJoined = ActivityLogEntry & {
   collaborationID: Scalars['UUID'];
   /** The community that was joined. */
   community: Community;
-  /** The type of the the Community. */
-  communityType: Scalars['String'];
   /** The Contributor that joined the Community. */
   contributor: Contributor;
   /** The type of the Contributor that joined the Community. */
@@ -1175,8 +1173,10 @@ export type CommunicationAdminRoomResult = {
   members: Array<Scalars['String']>;
 };
 
-export type CommunicationAdminUpdateRoomsJoinRuleInput = {
+export type CommunicationAdminUpdateRoomStateInput = {
   isPublic: Scalars['Boolean'];
+  isWorldVisible: Scalars['Boolean'];
+  roomID: Scalars['String'];
 };
 
 export type CommunicationRoom = {
@@ -2864,8 +2864,8 @@ export type Mutation = {
   adminCommunicationEnsureAccessToCommunications: Scalars['Boolean'];
   /** Remove an orphaned room from messaging platform. */
   adminCommunicationRemoveOrphanedRoom: Scalars['Boolean'];
-  /** Allow updating the rule for joining rooms: public or invite. */
-  adminCommunicationUpdateRoomsJoinRule: Scalars['Boolean'];
+  /** Allow updating the state flags of a particular rule. */
+  adminCommunicationUpdateRoomState: Scalars['Boolean'];
   /** Ingests new data into Elasticsearch from scratch. This will delete all existing data and ingest new data from the source. This is an admin only operation. */
   adminSearchIngestFromScratch: Scalars['String'];
   /** Reset the Authorization Policy on the specified AiServer. */
@@ -3204,8 +3204,8 @@ export type MutationAdminCommunicationRemoveOrphanedRoomArgs = {
   orphanedRoomData: CommunicationAdminRemoveOrphanedRoomInput;
 };
 
-export type MutationAdminCommunicationUpdateRoomsJoinRuleArgs = {
-  changeRoomAccessData: CommunicationAdminUpdateRoomsJoinRuleInput;
+export type MutationAdminCommunicationUpdateRoomStateArgs = {
+  roomStateData: CommunicationAdminUpdateRoomStateInput;
 };
 
 export type MutationAiServerCreateAiPersonaServiceArgs = {
@@ -4919,6 +4919,7 @@ export enum SearchResultType {
   Space = 'SPACE',
   User = 'USER',
   Usergroup = 'USERGROUP',
+  Whiteboard = 'WHITEBOARD',
 }
 
 export type SearchResultUser = SearchResult & {
@@ -15621,6 +15622,45 @@ export type DashboardLeadUserFragment = {
   };
 };
 
+export type VirtualContributorsMySpacesQueryVariables = Exact<{ [key: string]: never }>;
+
+export type VirtualContributorsMySpacesQuery = {
+  __typename?: 'Query';
+  me: {
+    __typename?: 'MeQueryResults';
+    id: string;
+    mySpaces: Array<{
+      __typename?: 'MySpaceResults';
+      space: {
+        __typename?: 'Space';
+        id: string;
+        nameID: string;
+        authorization?:
+          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+          | undefined;
+        account: {
+          __typename?: 'Account';
+          id: string;
+          virtualContributors: Array<{
+            __typename?: 'VirtualContributor';
+            id: string;
+            nameID: string;
+            searchVisibility: SearchVisibility;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              tagline: string;
+              url: string;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+            };
+          }>;
+        };
+      };
+    }>;
+  };
+};
+
 export type CommunityPageMembersFragment = {
   __typename?: 'User';
   id: string;
@@ -18535,6 +18575,20 @@ export type SpaceCommunityContributorsQuery = {
               | { __typename?: 'User' }
               | { __typename?: 'VirtualContributor' }
               | undefined;
+            virtualContributors: Array<{
+              __typename?: 'VirtualContributor';
+              id: string;
+              nameID: string;
+              searchVisibility: SearchVisibility;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                tagline: string;
+                url: string;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              };
+            }>;
           };
           community: {
             __typename?: 'Community';
@@ -19807,6 +19861,27 @@ export type AboutPageMembersQuery = {
                   description?: string | undefined;
                 }>
               | undefined;
+          };
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
+          account: {
+            __typename?: 'Account';
+            id: string;
+            virtualContributors: Array<{
+              __typename?: 'VirtualContributor';
+              id: string;
+              nameID: string;
+              searchVisibility: SearchVisibility;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                tagline: string;
+                url: string;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              };
+            }>;
           };
         }
       | undefined;

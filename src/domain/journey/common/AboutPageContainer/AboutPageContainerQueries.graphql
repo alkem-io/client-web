@@ -82,6 +82,27 @@ query AboutPageMembers($spaceId: UUID!) {
           ...ReferenceDetails
         }
       }
+      authorization {
+        id
+        myPrivileges
+      }
+      account {
+        id
+        virtualContributors {
+          id
+          nameID
+          searchVisibility
+          profile {
+            id
+            displayName
+            tagline
+            url
+            avatar: visual(type: AVATAR) {
+              ...VisualUri
+            }
+          }
+        }
+      }
     }
   }
 }

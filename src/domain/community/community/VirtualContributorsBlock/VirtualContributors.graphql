@@ -1,0 +1,32 @@
+query VirtualContributorsMySpaces {
+  me {
+    id
+    mySpaces(showOnlyMyCreatedSpaces: true) {
+      space {
+        id
+        nameID
+        authorization {
+          id
+          myPrivileges
+        }
+        account {
+          id
+          virtualContributors {
+            id
+            nameID
+            searchVisibility
+            profile {
+              id
+              displayName
+              tagline
+              url
+              avatar: visual(type: AVATAR) {
+                ...VisualUri
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

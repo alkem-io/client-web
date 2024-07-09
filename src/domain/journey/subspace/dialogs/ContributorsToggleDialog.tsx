@@ -7,6 +7,8 @@ import { useSpaceCommunityContributorsQuery } from '../../../../core/apollo/gene
 import { ContributorCardSquareProps } from '../../../community/contributor/ContributorCardSquare/ContributorCardSquare';
 import { ContributorType } from '../../../community/contributor/CommunityContributorsBlockWide/CommunityContributorsBlockWideContent';
 import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
+import CommunityVirtualContributorsBlockWide from '../../../community/contributor/CommunityContributorsBlockWide/CommunityVirtualContributorsBlockWide';
+import { SearchVisibility } from '../../../../core/apollo/generated/graphql-schema';
 
 export interface ContributorsToggleDialogProps {
   open?: boolean;
@@ -45,11 +47,19 @@ const ContributorsToggleDialog = ({ open = false, journeyId, onClose }: Contribu
       contributorType: ContributorType.Organizations,
     }));
 
+  const virtualContributors = data?.lookup.space?.account.virtualContributors.filter(
+    vc => vc.searchVisibility === SearchVisibility.Public
+  );
+
   return (
     <DialogWithGrid open={open} fullWidth columns={12} aria-labelledby="contributors-dialog-title">
       <DialogHeader onClose={onClose} title={t('common.contributors')} />
       <DialogContent>
         <CommunityContributorsBlockWide users={users} organizations={organizations} isLoading={loading} isDialogView />
+      </DialogContent>
+      <DialogHeader onClose={onClose} title={t('pages.admin.virtualContributors.title')} />
+      <DialogContent>
+        <CommunityVirtualContributorsBlockWide virtualContributors={virtualContributors} isLoading={loading} />
       </DialogContent>
     </DialogWithGrid>
   );

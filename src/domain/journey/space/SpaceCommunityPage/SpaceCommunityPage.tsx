@@ -15,11 +15,19 @@ import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlock
 import { ActivityComponent } from '../../../collaboration/activity/ActivityLog/ActivityComponent';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import CommunityContributorsBlockWide from '../../../community/contributor/CommunityContributorsBlockWide/CommunityContributorsBlockWide';
-import { useSpaceCommunityPageQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import {
+  useSpaceCommunityPageQuery,
+  useVirtualContributorsMySpacesQuery,
+} from '../../../../core/apollo/generated/apollo-hooks';
 import useActivityOnCollaboration from '../../../collaboration/activity/useActivityLogOnCollaboration/useActivityOnCollaboration';
 import useSendMessageToCommunityLeads from '../../../community/CommunityLeads/useSendMessageToCommunityLeads';
 import useCommunityMembersAsCardProps from '../../../community/community/utils/useCommunityMembersAsCardProps';
-import { ActivityEventType, CalloutGroupName } from '../../../../core/apollo/generated/graphql-schema';
+import {
+  ActivityEventType,
+  AuthorizationPrivilege,
+  CalloutGroupName,
+  SearchVisibility,
+} from '../../../../core/apollo/generated/graphql-schema';
 import SpaceCommunityContainer from './SpaceCommunityContainer';
 import SpacePageLayout from '../layout/SpacePageLayout';
 import { RECENT_ACTIVITIES_LIMIT_EXPANDED } from '../../common/journeyDashboard/constants';
@@ -31,6 +39,7 @@ import CommunityGuidelinesBlock from '../../../community/community/CommunityGuid
 import { useSpace } from '../SpaceContext/useSpace';
 import InfoColumn from '../../../../core/ui/content/InfoColumn';
 import ContentColumn from '../../../../core/ui/content/ContentColumn';
+import VirtualContributorsBlock from '../../../community/community/VirtualContributorsBlock/VirtualContributorsBlock';
 
 const SpaceCommunityPage = () => {
   const { spaceNameId } = useUrlParams();
@@ -89,6 +98,19 @@ const SpaceCommunityPage = () => {
 
   const [isActivitiesDialogOpen, setIsActivitiesDialogOpen] = useState(false);
 
+  const { data: virtualContributorsData, loading } = useVirtualContributorsMySpacesQuery();
+
+  const virtualContributors =
+    virtualContributorsData?.me.mySpaces
+      ?.filter(space => space.space.account?.virtualContributors)
+      .map(space => space.space.account?.virtualContributors)
+      .flat()
+      .filter(vc => vc?.searchVisibility === SearchVisibility.Public) ?? [];
+
+  const hasReadPrivilege = !!virtualContributorsData?.me.mySpaces?.filter(space =>
+    space.space.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Read)
+  );
+
   useEffect(() => {
     if (isActivitiesDialogOpen) {
       fetchMoreActivities(RECENT_ACTIVITIES_LIMIT_EXPANDED);
@@ -118,6 +140,9 @@ const SpaceCommunityPage = () => {
                 onSendMessage={sendMessageToCommunityLeads}
                 messageReceivers={messageReceivers}
               />
+              {hasReadPrivilege && virtualContributors?.length > 0 && (
+                <VirtualContributorsBlock virtualContributors={virtualContributors} loading={loading} />
+              )}
               <CommunityGuidelinesBlock communityId={communityId} journeyUrl={data?.space.profile.url} />
             </InfoColumn>
             <ContentColumn>
