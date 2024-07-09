@@ -3999,6 +3999,8 @@ export type Platform = {
   licensing: Licensing;
   /** Alkemio Services Metadata. */
   metadata: Metadata;
+  /** The roles on the Platform for the currently logged in user. */
+  myRoles: Array<PlatformRole>;
   /** Invitations to join roles for users not yet on the Alkemio platform. */
   platformInvitations: Array<PlatformInvitation>;
   /** The StorageAggregator with documents in use by Users + Organizations on the Platform. */
@@ -15622,45 +15624,6 @@ export type DashboardLeadUserFragment = {
   };
 };
 
-export type VirtualContributorsMySpacesQueryVariables = Exact<{ [key: string]: never }>;
-
-export type VirtualContributorsMySpacesQuery = {
-  __typename?: 'Query';
-  me: {
-    __typename?: 'MeQueryResults';
-    id: string;
-    mySpaces: Array<{
-      __typename?: 'MySpaceResults';
-      space: {
-        __typename?: 'Space';
-        id: string;
-        nameID: string;
-        authorization?:
-          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-          | undefined;
-        account: {
-          __typename?: 'Account';
-          id: string;
-          virtualContributors: Array<{
-            __typename?: 'VirtualContributor';
-            id: string;
-            nameID: string;
-            searchVisibility: SearchVisibility;
-            profile: {
-              __typename?: 'Profile';
-              id: string;
-              displayName: string;
-              tagline: string;
-              url: string;
-              avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-            };
-          }>;
-        };
-      };
-    }>;
-  };
-};
-
 export type CommunityPageMembersFragment = {
   __typename?: 'User';
   id: string;
@@ -20549,6 +20512,9 @@ export type SpaceCommunityPageQuery = {
           }
         | undefined;
     };
+    authorization?:
+      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+      | undefined;
     community: {
       __typename?: 'Community';
       id: string;
@@ -20634,6 +20600,19 @@ export type SpaceCommunityPageQuery = {
                 type: TagsetType;
               }>
             | undefined;
+        };
+      }>;
+      virtualContributors: Array<{
+        __typename?: 'VirtualContributor';
+        id: string;
+        searchVisibility: SearchVisibility;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          tagline: string;
+          url: string;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
         };
       }>;
     };
@@ -20726,6 +20705,19 @@ export type CommunityPageCommunityFragment = {
             type: TagsetType;
           }>
         | undefined;
+    };
+  }>;
+  virtualContributors: Array<{
+    __typename?: 'VirtualContributor';
+    id: string;
+    searchVisibility: SearchVisibility;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      tagline: string;
+      url: string;
+      avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
     };
   }>;
 };

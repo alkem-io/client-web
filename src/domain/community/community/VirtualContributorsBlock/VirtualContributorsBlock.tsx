@@ -9,7 +9,7 @@ import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
 import Avatar from '../../../../core/ui/avatar/Avatar';
 import { BlockSectionTitle } from '../../../../core/ui/typography';
 import RouterLink, { RouterLinkProps } from '../../../../core/ui/link/RouterLink';
-import { ReactComponent as VirtualContributorIcon } from '../../../../domain/community/virtualContributor/virtualContributor.svg';
+import { VirtualContributorIcon } from '../../../../domain/community/virtualContributor/VirtualContributorIcon';
 import VirtualContributorsDialog, { VirtualContributorProps } from './VirtualContributorsDialog';
 
 const VIRTUAL_CONTRIBUTORS_LIMIT = 3;
@@ -33,28 +33,24 @@ const VirtualContributorsBlock = ({ virtualContributors, loading }: VirtualContr
   ) => <ListItemButton component={RouterLink} {...props} />;
 
   return (
-    <>
-      <PageContentBlock>
-        <PageContentBlockHeader title={t('pages.admin.virtualContributors.title')} icon={<VirtualContributorIcon />} />
-        {loading && <Loading />}
-        {visibleVCs?.map(vc => (
-          <BadgeCardView
-            variant="rounded"
-            visual={
-              <Avatar src={vc.profile.avatar?.uri} alt={t('common.avatar-of', { user: vc.profile.displayName })} />
-            }
-            component={Wrapper}
-            to={vc.profile.url}
-          >
-            <BlockSectionTitle>{vc.profile.displayName}</BlockSectionTitle>
-          </BadgeCardView>
-        ))}
-        {virtualContributors.length > VIRTUAL_CONTRIBUTORS_LIMIT && (
-          <SeeMore label="buttons.see-more" onClick={openDialog} />
-        )}
-      </PageContentBlock>
+    <PageContentBlock>
+      <PageContentBlockHeader title={t('pages.admin.virtualContributors.title')} icon={<VirtualContributorIcon />} />
+      {loading && <Loading />}
+      {visibleVCs?.map(vc => (
+        <BadgeCardView
+          variant="rounded"
+          visual={<Avatar src={vc.profile.avatar?.uri} alt={t('common.avatar-of', { user: vc.profile.displayName })} />}
+          component={Wrapper}
+          to={vc.profile.url}
+        >
+          <BlockSectionTitle>{vc.profile.displayName}</BlockSectionTitle>
+        </BadgeCardView>
+      ))}
+      {virtualContributors.length > VIRTUAL_CONTRIBUTORS_LIMIT && (
+        <SeeMore label="buttons.see-more" onClick={openDialog} />
+      )}
       <VirtualContributorsDialog open={dialogOpen} onClose={closeDialog} virtualContributors={virtualContributors} />
-    </>
+    </PageContentBlock>
   );
 };
 

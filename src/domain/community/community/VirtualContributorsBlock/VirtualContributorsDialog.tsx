@@ -14,7 +14,7 @@ import SearchField from '../../../../core/ui/search/SearchField';
 
 export interface VirtualContributorProps {
   id: string;
-  nameID: string;
+  nameID?: string;
   searchVisibility: SearchVisibility;
   profile: {
     displayName: string;

@@ -11,6 +11,10 @@ query SpaceCommunityPage($spaceNameId: UUID_NAMEID!) {
         ...ContributorDetails
       }
     }
+    authorization {
+      id
+      myPrivileges
+    }
     community {
       ...CommunityPageCommunity
     }
@@ -33,5 +37,18 @@ fragment CommunityPageCommunity on Community {
   }
   memberOrganizations: organizationsInRole(role: MEMBER) {
     ...DashboardContributingOrganization
+  }
+  virtualContributors: virtualContributorsInRole(role: MEMBER) {
+    id
+    searchVisibility
+    profile {
+      id
+      displayName
+      tagline
+      url
+      avatar: visual(type: AVATAR) {
+        ...VisualUri
+      }
+    }
   }
 }
