@@ -8,6 +8,11 @@ query organizationsList($limit: Float, $shuffle: Boolean, $filterCredentials: [A
       visual(type: AVATAR) {
         ...VisualUri
       }
+      location {
+        id
+        city
+        country
+      }
     }
   }
 }

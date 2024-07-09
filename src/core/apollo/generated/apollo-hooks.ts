@@ -15,11 +15,6 @@ export const UserAgentSsiFragmentDoc = gql`
     agent {
       id
       did
-      credentials {
-        id
-        resourceID
-        type
-      }
       verifiedCredentials {
         claims {
           name
@@ -1240,14 +1235,6 @@ export const CommunityPageMembersFragmentDoc = gql`
     id
     nameID
     email
-    agent {
-      id
-      credentials {
-        id
-        type
-        resourceID
-      }
-    }
     profile {
       id
       displayName
@@ -1494,14 +1481,6 @@ export const UserContributorFragmentDoc = gql`
     id
     nameID
     isContactable
-    agent {
-      id
-      credentials {
-        id
-        type
-        resourceID
-      }
-    }
     userProfile: profile {
       id
       displayName
@@ -1788,12 +1767,6 @@ export const UserDetailsFragmentDoc = gql`
     gender
     phone
     accountUpn
-    agent {
-      credentials {
-        type
-        resourceID
-      }
-    }
     profile {
       id
       displayName
@@ -13037,6 +13010,11 @@ export const OrganizationsListDocument = gql`
         displayName
         visual(type: AVATAR) {
           ...VisualUri
+        }
+        location {
+          id
+          city
+          country
         }
       }
     }
