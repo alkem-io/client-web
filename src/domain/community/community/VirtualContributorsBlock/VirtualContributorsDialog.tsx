@@ -55,7 +55,7 @@ const VirtualContributorsDialog: FC<VirtualContributorsDialogProps> = ({ open, o
   );
 
   return (
-    <DialogWithGrid open={open} onClose={onClose} columns={8}>
+    <DialogWithGrid open={open} onClose={onClose} columns={6}>
       <DialogHeader
         onClose={onClose}
         title={t('pages.admin.virtualContributors.title')}
