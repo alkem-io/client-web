@@ -16,7 +16,7 @@ import SpaceCommunityPage from '../SpaceCommunityPage/SpaceCommunityPage';
 import KnowledgeBasePage from '../../../collaboration/KnowledgeBase/KnowedgeBasePage';
 import { SpaceRoute as SpaceSettingsRoute } from '../../settings/routes/SpaceRoute';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
-import reservedTopLevelRoutePaths from '../../../../main/routing/reservedTopLevelRoutePaths';
+import { reservedTopLevelRoutePaths } from '../../../../main/routing/TopLevelRoutePath';
 import { ROUTE_HOME } from '../../../platform/routes/constants';
 
 export const SpaceRoute = () => {
