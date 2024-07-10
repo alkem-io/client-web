@@ -13,6 +13,7 @@ export enum AdminSection {
   InnovationHubs = 'innovation-hubs',
   VirtualContributors = 'virtual-contributors',
   Authorization = 'authorization',
+  AuthorizationPolicies = 'authorizationPolicies',
 }
 
 export const adminTabs: TabDefinition<AdminSection>[] = [
@@ -49,6 +50,11 @@ export const adminTabs: TabDefinition<AdminSection>[] = [
   {
     section: AdminSection.Authorization,
     route: '/admin/authorization',
+    icon: GppGoodOutlinedIcon,
+  },
+  {
+    section: AdminSection.AuthorizationPolicies,
+    route: '/admin/authorization-policies',
     icon: GppGoodOutlinedIcon,
   },
 ];

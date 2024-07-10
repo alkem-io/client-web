@@ -3,7 +3,6 @@ import { Route, Routes } from 'react-router-dom';
 import App from '../ui/layout/topLevelWrappers/App';
 import { CommunityContextProvider } from '../../domain/community/community/CommunityContext';
 import { SpaceContextProvider } from '../../domain/journey/space/SpaceContext/SpaceContext';
-import { OrganizationProvider } from '../../domain/community/contributor/organization/context/OrganizationProvider';
 import HomePage from '../topLevelPages/Home/HomePage';
 import AboutPage from '../topLevelPages/About';
 import { Error404 } from '../../core/pages/Errors/Error404';
@@ -18,20 +17,19 @@ import UserRoute from '../../domain/community/user/routing/UserRoute';
 import { SpaceRoute } from '../../domain/journey/space/routing/SpaceRoute';
 import { SpaceExplorerPage } from '../topLevelPages/topLevelSpaces/SpaceExplorerPage';
 import { IdentityRoute } from '../../core/auth/authentication/routing/IdentityRoute';
-import { ROUTE_CREATE_SPACE, ROUTE_HOME } from '../../domain/platform/routes/constants';
 import { WithApmTransaction } from '../../domain/shared/components';
 import devRoute from '../../dev/routes';
 import RedirectToLanding from '../../domain/platform/routes/RedirectToLanding';
 import ForumRoute from '../../domain/communication/discussion/routing/ForumRoute';
 import InnovationLibraryPage from '../topLevelPages/InnovationLibraryPage/InnovationLibraryPage';
 import InnovationPackRoute from '../../domain/collaboration/InnovationPack/InnovationPackRoute';
-import { innovationPacksPath } from '../../domain/collaboration/InnovationPack/urlBuilders';
 import NonIdentity from '../../domain/platform/routes/NonIdentity';
 import useRedirectToIdentityDomain from '../../core/auth/authentication/routing/useRedirectToIdentityDomain';
 import { EntityPageLayoutHolder, NotFoundPageLayout, RenderPoint } from '../../domain/journey/common/EntityPageLayout';
 import RedirectToWelcomeSite from '../../domain/platform/routes/RedirectToWelcomeSite';
 import CreateSpaceDialog from '../../domain/journey/space/createSpace/CreateSpaceDialog';
 import VCRoute from '../../domain/community/virtualContributor/VCRoute';
+import { TopLevelRoutePath } from './TopLevelRoutePath';
 
 export const TopLevelRoutes: FC = () => {
   useRedirectToIdentityDomain();
@@ -47,12 +45,12 @@ export const TopLevelRoutes: FC = () => {
         }
       >
         <Route index element={<RedirectToLanding />} />
-        <Route path="landing" element={<RedirectToWelcomeSite />} />
+        <Route path={TopLevelRoutePath._Landing} element={<RedirectToWelcomeSite />} />
         <Route
-          path={ROUTE_CREATE_SPACE}
+          path={TopLevelRoutePath.CreateSpace}
           element={
             <NonIdentity>
-              <WithApmTransaction path={ROUTE_CREATE_SPACE}>
+              <WithApmTransaction path={TopLevelRoutePath.CreateSpace}>
                 <>
                   <HomePage />
                   <CreateSpaceDialog />
@@ -62,10 +60,10 @@ export const TopLevelRoutes: FC = () => {
           }
         />
         <Route
-          path={ROUTE_HOME}
+          path={TopLevelRoutePath.Home}
           element={
             <NonIdentity>
-              <WithApmTransaction path={ROUTE_HOME}>
+              <WithApmTransaction path={TopLevelRoutePath.Home}>
                 <HomePage />
               </WithApmTransaction>
             </NonIdentity>
@@ -89,7 +87,7 @@ export const TopLevelRoutes: FC = () => {
           }
         />
         <Route
-          path="/admin/*"
+          path={`/${TopLevelRoutePath.Admin}/*`}
           element={
             <NonIdentity>
               <WithApmTransaction path="/admin/*">
@@ -100,7 +98,7 @@ export const TopLevelRoutes: FC = () => {
         />
         {IdentityRoute()}
         <Route
-          path={`/user/:${nameOfUrl.userNameId}/*`}
+          path={`/${TopLevelRoutePath.User}/*`}
           element={
             <NonIdentity>
               <WithApmTransaction path={`:${nameOfUrl.userNameId}/*`}>
@@ -112,7 +110,7 @@ export const TopLevelRoutes: FC = () => {
           }
         />
         <Route
-          path={`/vc/:${nameOfUrl.vcNameId}/*`}
+          path={`/${TopLevelRoutePath.VirtualContributor}/*`}
           element={
             <NonIdentity>
               <WithApmTransaction path={`:${nameOfUrl.vcNameId}/*`}>
@@ -124,91 +122,89 @@ export const TopLevelRoutes: FC = () => {
           }
         />
         <Route
-          path="/innovation-library"
+          path={`/${TopLevelRoutePath.Organization}/*`}
           element={
             <NonIdentity>
-              <WithApmTransaction path="/innovation-library">
+              <WithApmTransaction path={`:${nameOfUrl.organizationNameId}/*`}>
+                <OrganizationRoute />
+              </WithApmTransaction>
+            </NonIdentity>
+          }
+        />
+        <Route
+          path={`/${TopLevelRoutePath.InnovationLibrary}`}
+          element={
+            <NonIdentity>
+              <WithApmTransaction path={`/${TopLevelRoutePath.InnovationLibrary}`}>
                 <InnovationLibraryPage />
               </WithApmTransaction>
             </NonIdentity>
           }
         />
         <Route
-          path={`${innovationPacksPath}/*`}
+          path={`${TopLevelRoutePath.InnovationPacks}/*`}
           element={
             <NonIdentity>
-              <WithApmTransaction path={innovationPacksPath}>
+              <WithApmTransaction path={TopLevelRoutePath.InnovationPacks}>
                 <InnovationPackRoute />
               </WithApmTransaction>
             </NonIdentity>
           }
         />
         <Route
-          path="/spaces"
+          path={`/${TopLevelRoutePath.Spaces}`}
           element={
             <NonIdentity>
-              <WithApmTransaction path="/spaces">
+              <WithApmTransaction path={`/${TopLevelRoutePath.Spaces}`}>
                 <SpaceExplorerPage />
               </WithApmTransaction>
             </NonIdentity>
           }
         />
         <Route
-          path="/contributors"
+          path={`/${TopLevelRoutePath.Contributors}`}
           element={
             <NonIdentity>
-              <WithApmTransaction path="/contributors">
+              <WithApmTransaction path={`/${TopLevelRoutePath.Contributors}`}>
                 <ContributorsPage />
               </WithApmTransaction>
             </NonIdentity>
           }
         />
         <Route
-          path="/forum/*"
+          path={`/${TopLevelRoutePath.Forum}/*`}
           element={
             <NonIdentity>
-              <WithApmTransaction path="/forum">
+              <WithApmTransaction path={`/${TopLevelRoutePath.Forum}`}>
                 <ForumRoute />
               </WithApmTransaction>
             </NonIdentity>
           }
         />
         <Route
-          path={`/organization/:${nameOfUrl.organizationNameId}/*`}
+          path={`/${TopLevelRoutePath.About}`}
           element={
             <NonIdentity>
-              <WithApmTransaction path={`/organization/:${nameOfUrl.organizationNameId}/*`}>
-                <OrganizationProvider>
-                  <OrganizationRoute />
-                </OrganizationProvider>
-              </WithApmTransaction>
-            </NonIdentity>
-          }
-        />
-        <Route
-          path="/about"
-          element={
-            <NonIdentity>
-              <WithApmTransaction path="/about">
+              <WithApmTransaction path={`/${TopLevelRoutePath.About}`}>
                 <AboutPage />
               </WithApmTransaction>
             </NonIdentity>
           }
         />
         <Route
-          path="/profile"
+          path={`/${TopLevelRoutePath.Profile}`}
           element={
             <NonIdentity>
-              <WithApmTransaction path="/profile">
+              <WithApmTransaction path={`/${TopLevelRoutePath.Profile}`}>
                 <ProfileRoute />
               </WithApmTransaction>
             </NonIdentity>
           }
         />
         <Route
-          path="/restricted"
+          path={`/${TopLevelRoutePath.Restricted}`}
           element={
-            <WithApmTransaction path="/restricted">
+            <WithApmTransaction path={`/${TopLevelRoutePath.Restricted}`}>
               <Restricted />
             </WithApmTransaction>
           }

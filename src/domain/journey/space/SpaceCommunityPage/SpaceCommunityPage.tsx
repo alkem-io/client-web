@@ -19,7 +19,11 @@ import { useSpaceCommunityPageQuery } from '../../../../core/apollo/generated/ap
 import useActivityOnCollaboration from '../../../collaboration/activity/useActivityLogOnCollaboration/useActivityOnCollaboration';
 import useSendMessageToCommunityLeads from '../../../community/CommunityLeads/useSendMessageToCommunityLeads';
 import useCommunityMembersAsCardProps from '../../../community/community/utils/useCommunityMembersAsCardProps';
-import { ActivityEventType, CalloutGroupName } from '../../../../core/apollo/generated/graphql-schema';
+import {
+  ActivityEventType,
+  AuthorizationPrivilege,
+  CalloutGroupName,
+} from '../../../../core/apollo/generated/graphql-schema';
 import SpaceCommunityContainer from './SpaceCommunityContainer';
 import SpacePageLayout from '../layout/SpacePageLayout';
 import { RECENT_ACTIVITIES_LIMIT_EXPANDED } from '../../common/journeyDashboard/constants';
@@ -31,10 +35,11 @@ import CommunityGuidelinesBlock from '../../../community/community/CommunityGuid
 import { useSpace } from '../SpaceContext/useSpace';
 import InfoColumn from '../../../../core/ui/content/InfoColumn';
 import ContentColumn from '../../../../core/ui/content/ContentColumn';
+import { useUserContext } from '../../../community/user';
 
 const SpaceCommunityPage = () => {
   const { spaceNameId } = useUrlParams();
-
+  const { user, isAuthenticated } = useUserContext();
   const { spaceId, journeyPath } = useRouteResolver();
   const { communityId } = useSpace();
 
@@ -53,7 +58,7 @@ const SpaceCommunityPage = () => {
   };
 
   const { data } = useSpaceCommunityPageQuery({
-    variables: { spaceNameId },
+    variables: { spaceNameId, includeCommunity: isAuthenticated },
   });
 
   const leadUsers = data?.space.community?.leadUsers;
@@ -75,9 +80,17 @@ const SpaceCommunityPage = () => {
     [data?.space.account.host]
   );
 
+  const spacePrivileges = data?.space.authorization?.myPrivileges ?? [];
+
+  const permissions = {
+    readAccess: spacePrivileges.includes(AuthorizationPrivilege.Read),
+    readUsers: user?.hasPlatformPrivilege(AuthorizationPrivilege.ReadUsers) ?? false,
+  };
+
   const { activities, fetchMoreActivities } = useActivityOnCollaboration(data?.space.collaboration?.id, {
     types: [ActivityEventType.MemberJoined],
     limit: 5,
+    skip: !permissions.readAccess || !permissions.readUsers,
   });
 
   const { memberUsers, memberOrganizations } = useCommunityMembersAsCardProps(data?.space.community, {
@@ -122,26 +135,28 @@ const SpaceCommunityPage = () => {
             </InfoColumn>
             <ContentColumn>
               <CommunityContributorsBlockWide users={memberUsers} organizations={memberOrganizations} />
-              <PageContentBlock>
-                <PageContentBlockHeader title={t('common.activity')} />
-                <Box margin={-1}>
-                  <ActivityComponent activities={activities} limit={5} />
-                </Box>
-                <SeeMore subject={t('common.contributions')} onClick={() => setIsActivitiesDialogOpen(true)} />
-                <DialogWithGrid
-                  columns={8}
-                  open={isActivitiesDialogOpen}
-                  onClose={() => setIsActivitiesDialogOpen(false)}
-                >
-                  <DialogHeader
-                    title={t('components.activity-log-section.title')}
-                    onClose={() => setIsActivitiesDialogOpen(false)}
-                  />
-                  <Box padding={1}>
-                    <ActivityComponent activities={activities} />
+              {permissions.readAccess && permissions.readUsers && (
+                <PageContentBlock>
+                  <PageContentBlockHeader title={t('common.activity')} />
+                  <Box margin={-1}>
+                    <ActivityComponent activities={activities} limit={5} />
                   </Box>
-                </DialogWithGrid>
-              </PageContentBlock>
+                  <SeeMore subject={t('common.contributions')} onClick={() => setIsActivitiesDialogOpen(true)} />
+                  <DialogWithGrid
+                    columns={8}
+                    open={isActivitiesDialogOpen}
+                    onClose={() => setIsActivitiesDialogOpen(false)}
+                  >
+                    <DialogHeader
+                      title={t('components.activity-log-section.title')}
+                      onClose={() => setIsActivitiesDialogOpen(false)}
+                    />
+                    <Box padding={1}>
+                      <ActivityComponent activities={activities} />
+                    </Box>
+                  </DialogWithGrid>
+                </PageContentBlock>
+              )}
               <CalloutsGroupView
                 journeyId={spaceId}
                 callouts={callouts.groupedCallouts[CalloutGroupName.Community]}

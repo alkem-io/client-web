@@ -2053,6 +2053,7 @@ export type PlatformKeySpecifier = (
   | 'library'
   | 'licensing'
   | 'metadata'
+  | 'myRoles'
   | 'platformInvitations'
   | 'storageAggregator'
   | PlatformKeySpecifier
@@ -2068,6 +2069,7 @@ export type PlatformFieldPolicy = {
   library?: FieldPolicy<any> | FieldReadFunction<any>;
   licensing?: FieldPolicy<any> | FieldReadFunction<any>;
   metadata?: FieldPolicy<any> | FieldReadFunction<any>;
+  myRoles?: FieldPolicy<any> | FieldReadFunction<any>;
   platformInvitations?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
 };

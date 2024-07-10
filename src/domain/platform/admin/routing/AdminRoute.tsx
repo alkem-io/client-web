@@ -11,6 +11,7 @@ import NoIdentityRedirect from '../../../../core/routing/NoIdentityRedirect';
 import AdminInnovationPacksRoutes from '../templates/InnovationPacks/admin/AdminInnovationPackRoutes';
 import AdminInnovationHubsRoutes from '../../../innovationHub/InnovationHubsAdmin/InnovationHubsAdminRoutes';
 import VirtualContributorsRoutes from '../virtual-contributors/VirtualContributorsRoutes';
+import AuthorizationPoliciesPage from '../../../../main/admin/authorizationPolicies/AuthorizationPoliciesPage';
 
 export const AdminRoute: FC = () => {
   useTransactionScope({ type: 'admin' });
@@ -22,6 +23,7 @@ export const AdminRoute: FC = () => {
           <Route index element={<Navigate to="spaces" replace />} />
           <Route path="spaces/*" element={<SpacesRoute />} />
           <Route path="users/*" element={<UsersRoute />} />
+          <Route path="authorization-policies/*" element={<AuthorizationPoliciesPage />} />
           <Route path="authorization/*" element={<GlobalAuthorizationRoute />} />
           <Route path="organizations/*" element={<AdminOrganizationsRoutes />} />
           <Route path="innovation-packs/*" element={<AdminInnovationPacksRoutes />} />

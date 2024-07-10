@@ -8,9 +8,21 @@ import OrganizationAuthorizationPage from './OrganizationAuthorizationPage';
 import NonAdminRedirect from '../../../../main/admin/NonAdminRedirect';
 import { useOrganization } from '../../../community/contributor/organization/hooks/useOrganization';
 import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
+import Loading from '../../../../core/ui/loading/Loading';
+import TopLevelLayout from '../../../../main/ui/layout/TopLevelLayout';
 
 const OrganizationAdminRoutes: FC = () => {
   const { organization, loading } = useOrganization();
+
+  if (loading) return <Loading />;
+
+  if (!organization && !loading) {
+    return (
+      <TopLevelLayout>
+        <Error404 />
+      </TopLevelLayout>
+    );
+  }
 
   return (
     <NonAdminRedirect
