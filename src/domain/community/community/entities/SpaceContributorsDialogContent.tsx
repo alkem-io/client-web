@@ -8,11 +8,11 @@ import NoOrganizations from '../CommunityContributors/NoOrganizations';
 import { ContributorsDialogContentProps } from '../ContributorsDialog/ContributorsDialog';
 
 const SpaceContributorsDialogContent: FC<ContributorsDialogContentProps> = ({ dialogOpen }) => {
-  const { spaceId } = useSpace();
+  const { spaceId, permissions } = useSpace();
 
   const { loading, data } = useSpaceCommunityContributorsQuery({
     variables: { spaceId },
-    skip: !dialogOpen || !spaceId,
+    skip: !dialogOpen || !spaceId || !permissions.canRead,
   });
 
   const { memberUsers, memberOrganizations } = data?.lookup.space?.community ?? {};

@@ -7,6 +7,8 @@ import { useSpaceCommunityContributorsQuery } from '../../../../core/apollo/gene
 import { ContributorCardSquareProps } from '../../../community/contributor/ContributorCardSquare/ContributorCardSquare';
 import { ContributorType } from '../../../community/contributor/CommunityContributorsBlockWide/CommunityContributorsBlockWideContent';
 import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
+import { useUserContext } from '../../../community/user';
+import { Caption } from '../../../../core/ui/typography';
 
 export interface ContributorsToggleDialogProps {
   open?: boolean;
@@ -19,13 +21,14 @@ export interface ContributorsToggleDialogProps {
  * @param journeyId is a spaceId from the context.
  */
 const ContributorsToggleDialog = ({ open = false, journeyId, onClose }: ContributorsToggleDialogProps) => {
+  const { isAuthenticated } = useUserContext();
   const { t } = useTranslation();
 
   const { loading, data } = useSpaceCommunityContributorsQuery({
     variables: {
       spaceId: journeyId,
     },
-    skip: !open || !journeyId,
+    skip: !open || !journeyId || !isAuthenticated,
   });
 
   const users: ContributorCardSquareProps[] | undefined = data?.lookup.space?.community?.memberUsers.map(user => ({
@@ -49,7 +52,15 @@ const ContributorsToggleDialog = ({ open = false, journeyId, onClose }: Contribu
     <DialogWithGrid open={open} fullWidth columns={12} aria-labelledby="contributors-dialog-title">
       <DialogHeader onClose={onClose} title={t('common.contributors')} />
       <DialogContent>
-        <CommunityContributorsBlockWide users={users} organizations={organizations} isLoading={loading} isDialogView />
+        {!isAuthenticated && <Caption>{t('pages.contributors.unauthorized')}</Caption>}
+        {isAuthenticated && (
+          <CommunityContributorsBlockWide
+            users={users}
+            organizations={organizations}
+            isLoading={loading}
+            isDialogView
+          />
+        )}
       </DialogContent>
     </DialogWithGrid>
   );

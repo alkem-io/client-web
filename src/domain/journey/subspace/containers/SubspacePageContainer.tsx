@@ -56,6 +56,7 @@ export const SubspacePageContainer: FC<ChallengePageContainerProps> = ({ challen
   const { data: subspaceData, loading: loadingProfile } = useLegacySubspaceDashboardPageQuery({
     variables: {
       subspaceId: challengeId!,
+      authorizedReadAccessCommunity: isAuthenticated,
     },
     skip: !challengeId,
   });

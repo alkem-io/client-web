@@ -79,7 +79,10 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ opportuni
     loading: loadingOpportunity,
     error: errorOpportunity,
   } = useLegacySubspaceDashboardPageQuery({
-    variables: { subspaceId: opportunityId! },
+    variables: {
+      subspaceId: opportunityId!,
+      authorizedReadAccessCommunity: isAuthenticated,
+    },
     skip: !opportunityId,
     errorPolicy: 'all',
   });

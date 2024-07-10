@@ -88,6 +88,7 @@ export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = (
     refetchSpaceQuery({
       variables: {
         spaceId: journeyId!,
+        authorizedReadAccessCommunity: isAuthenticated,
       },
     });
 
