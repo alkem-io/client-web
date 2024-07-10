@@ -16119,6 +16119,13 @@ export const JourneyPrivilegesDocument = gql`
           id
           myPrivileges
         }
+        community {
+          id
+          authorization {
+            id
+            myPrivileges
+          }
+        }
       }
     }
   }

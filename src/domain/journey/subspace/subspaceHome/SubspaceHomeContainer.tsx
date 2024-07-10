@@ -7,7 +7,6 @@ import { SubspacePageSpaceFragment } from '../../../../core/apollo/generated/gra
 import { JourneyTypeName } from '../../JourneyTypeName';
 import { useSubspacePageQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import useCanReadSpace, { SpaceReadAccess } from '../../common/authorization/useCanReadSpace';
-import { useUserContext } from '../../../community/user';
 
 interface SubspaceHomeContainerProvided {
   innovationFlow: UseInnovationFlowStatesProvided;
@@ -23,12 +22,11 @@ interface SubspaceHomeContainerProps extends SimpleContainerProps<SubspaceHomeCo
 
 const SubspaceHomeContainer = ({ journeyId, journeyTypeName, children }: SubspaceHomeContainerProps) => {
   const spaceReadAccess = useCanReadSpace({ spaceId: journeyId });
-  const { isAuthenticated } = useUserContext();
 
   const { data } = useSubspacePageQuery({
     variables: {
       spaceId: journeyId!,
-      authorizedReadAccessCommunity: isAuthenticated,
+      authorizedReadAccessCommunity: spaceReadAccess.canReadCommunity,
     },
     skip: !journeyId || !spaceReadAccess.canReadSpace,
   });

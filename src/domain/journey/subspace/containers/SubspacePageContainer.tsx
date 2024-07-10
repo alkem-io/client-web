@@ -19,6 +19,7 @@ import {
   useLegacySubspaceDashboardPageQuery,
   useSpaceDashboardReferencesQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
+import useCanReadSpace from '../../common/authorization/useCanReadSpace';
 
 export interface SubspaceContainerEntities extends EntityDashboardContributors {
   challenge?: SubspacePageFragment;
@@ -52,11 +53,12 @@ const NO_PRIVILEGES = [];
 
 export const SubspacePageContainer: FC<ChallengePageContainerProps> = ({ challengeId, children }) => {
   const { user, isAuthenticated } = useUserContext();
+  const { canReadCommunity } = useCanReadSpace({ spaceId: challengeId });
 
   const { data: subspaceData, loading: loadingProfile } = useLegacySubspaceDashboardPageQuery({
     variables: {
       subspaceId: challengeId!,
-      authorizedReadAccessCommunity: isAuthenticated,
+      authorizedReadAccessCommunity: canReadCommunity,
     },
     skip: !challengeId,
   });
