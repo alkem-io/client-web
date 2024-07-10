@@ -1,0 +1,8 @@
+query AuthorizationPrivilegesForUser($userId: UUID!, $authorizationId: UUID!) {
+  lookup {
+    authorizationPrivilegesForUser(
+      userID: $userId
+      authorizationID: $authorizationId
+    )
+  }
+}
