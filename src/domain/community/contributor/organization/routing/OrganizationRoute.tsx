@@ -7,6 +7,7 @@ import OrganizationAdminRoutes from '../../../../platform/admin/organization/Org
 import { nameOfUrl } from '../../../../../main/routing/urlParams';
 import { OrganizationProvider } from '../context/OrganizationProvider';
 import { Outlet } from 'react-router-dom';
+import TopLevelLayout from '../../../../../main/ui/layout/TopLevelLayout';
 
 const OrganizationProviderWithOutlet = () => (
   <OrganizationProvider>
@@ -21,9 +22,16 @@ const OrganizationRoute: FC = () => {
         <Route path="" element={<PageLayoutHolderWithOutlet />}>
           <Route index element={<OrganizationPage />} />
           <Route path="settings/*" element={<OrganizationAdminRoutes />} />
-          <Route path="*" element={<Error404 />} />
         </Route>
       </Route>
+      <Route
+        path="*"
+        element={
+          <TopLevelLayout>
+            <Error404 />
+          </TopLevelLayout>
+        }
+      />
     </Routes>
   );
 };

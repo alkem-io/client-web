@@ -122,7 +122,7 @@ export const TopLevelRoutes: FC = () => {
           }
         />
         <Route
-          path={`${TopLevelRoutePath.Organization}/*`}
+          path={`/${TopLevelRoutePath.Organization}/*`}
           element={
             <NonIdentity>
               <WithApmTransaction path={`:${nameOfUrl.organizationNameId}/*`}>
