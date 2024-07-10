@@ -6,20 +6,6 @@ query SpaceCommunityContributors($spaceId: UUID!) {
         host {
           ...OrganizationCard
         }
-        virtualContributors {
-          id
-            nameID
-            searchVisibility
-            profile {
-              id
-              displayName
-              tagline
-              url
-              avatar: visual(type: AVATAR) {
-                ...VisualUri
-              }
-            }
-        }
       }
       community {
         id
@@ -31,6 +17,19 @@ query SpaceCommunityContributors($spaceId: UUID!) {
         }
         memberOrganizations: organizationsInRole(role: MEMBER) {
           ...OrganizationCard
+        }
+        virtualContributors: virtualContributorsInRole(role: MEMBER) {
+          id
+          searchVisibility
+          profile {
+            id
+            displayName
+            tagline
+            url
+            avatar: visual(type: AVATAR) {
+              ...VisualUri
+            }
+          }
         }
       }
     }

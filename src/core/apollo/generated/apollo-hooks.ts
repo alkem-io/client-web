@@ -14674,20 +14674,6 @@ export const SpaceCommunityContributorsDocument = gql`
           host {
             ...OrganizationCard
           }
-          virtualContributors {
-            id
-            nameID
-            searchVisibility
-            profile {
-              id
-              displayName
-              tagline
-              url
-              avatar: visual(type: AVATAR) {
-                ...VisualUri
-              }
-            }
-          }
         }
         community {
           id
@@ -14700,13 +14686,26 @@ export const SpaceCommunityContributorsDocument = gql`
           memberOrganizations: organizationsInRole(role: MEMBER) {
             ...OrganizationCard
           }
+          virtualContributors: virtualContributorsInRole(role: MEMBER) {
+            id
+            searchVisibility
+            profile {
+              id
+              displayName
+              tagline
+              url
+              avatar: visual(type: AVATAR) {
+                ...VisualUri
+              }
+            }
+          }
         }
       }
     }
   }
   ${OrganizationCardFragmentDoc}
-  ${VisualUriFragmentDoc}
   ${UserCardFragmentDoc}
+  ${VisualUriFragmentDoc}
 `;
 
 /**
@@ -15936,11 +15935,10 @@ export const AboutPageMembersDocument = gql`
           id
           myPrivileges
         }
-        account {
+        community {
           id
-          virtualContributors {
+          virtualContributors: virtualContributorsInRole(role: MEMBER) {
             id
-            nameID
             searchVisibility
             profile {
               id

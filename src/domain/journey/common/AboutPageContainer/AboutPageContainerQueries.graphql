@@ -86,11 +86,10 @@ query AboutPageMembers($spaceId: UUID!) {
         id
         myPrivileges
       }
-      account {
+      community {
         id
-        virtualContributors {
+        virtualContributors: virtualContributorsInRole(role: MEMBER){
           id
-          nameID
           searchVisibility
           profile {
             id

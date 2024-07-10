@@ -18473,20 +18473,6 @@ export type SpaceCommunityContributorsQuery = {
               | { __typename?: 'User' }
               | { __typename?: 'VirtualContributor' }
               | undefined;
-            virtualContributors: Array<{
-              __typename?: 'VirtualContributor';
-              id: string;
-              nameID: string;
-              searchVisibility: SearchVisibility;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                displayName: string;
-                tagline: string;
-                url: string;
-                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-              };
-            }>;
           };
           community: {
             __typename?: 'Community';
@@ -18557,6 +18543,19 @@ export type SpaceCommunityContributorsQuery = {
                 __typename?: 'OrganizationVerification';
                 id: string;
                 status: OrganizationVerificationEnum;
+              };
+            }>;
+            virtualContributors: Array<{
+              __typename?: 'VirtualContributor';
+              id: string;
+              searchVisibility: SearchVisibility;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                tagline: string;
+                url: string;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
               };
             }>;
           };
@@ -19633,6 +19632,19 @@ export type AboutPageMembersQuery = {
           community: {
             __typename?: 'Community';
             id: string;
+            virtualContributors: Array<{
+              __typename?: 'VirtualContributor';
+              id: string;
+              searchVisibility: SearchVisibility;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                tagline: string;
+                url: string;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              };
+            }>;
             leadUsers: Array<{
               __typename?: 'User';
               id: string;
@@ -19763,24 +19775,6 @@ export type AboutPageMembersQuery = {
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
-          account: {
-            __typename?: 'Account';
-            id: string;
-            virtualContributors: Array<{
-              __typename?: 'VirtualContributor';
-              id: string;
-              nameID: string;
-              searchVisibility: SearchVisibility;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                displayName: string;
-                tagline: string;
-                url: string;
-                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-              };
-            }>;
-          };
         }
       | undefined;
   };

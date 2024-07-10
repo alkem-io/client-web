@@ -89,7 +89,7 @@ const AboutPageContainer: FC<AboutPageContainerProps> = ({ journeyId, children }
   });
 
   const memberProfile = membersData?.lookup.space?.profile;
-  const virtualContributors = membersData?.lookup.space?.account.virtualContributors.filter(
+  const virtualContributors = membersData?.lookup.space?.community.virtualContributors.filter(
     vc => vc.searchVisibility === SearchVisibility.Public
   );
   const hasReadPrivilege = membersData?.lookup.space?.authorization?.myPrivileges?.includes(

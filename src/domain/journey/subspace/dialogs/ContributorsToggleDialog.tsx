@@ -49,7 +49,8 @@ const ContributorsToggleDialog = ({ open = false, journeyId, onClose }: Contribu
     }));
 
   const virtualContributors: VirtualContributorProps[] =
-    data?.lookup.space?.account.virtualContributors.filter(vc => vc.searchVisibility === SearchVisibility.Public) ?? [];
+    data?.lookup.space?.community.virtualContributors.filter(vc => vc.searchVisibility === SearchVisibility.Public) ??
+    [];
 
   return (
     <DialogWithGrid open={open} fullWidth columns={12} aria-labelledby="contributors-dialog-title">
@@ -57,7 +58,7 @@ const ContributorsToggleDialog = ({ open = false, journeyId, onClose }: Contribu
       <DialogContent>
         <CommunityContributorsBlockWide users={users} organizations={organizations} isLoading={loading} isDialogView />
       </DialogContent>
-      <DialogHeader onClose={onClose} title={t('pages.admin.virtualContributors.title')} />
+      <DialogHeader title={t('pages.admin.virtualContributors.title')} />
       <DialogContent>
         <CommunityVirtualContributorsBlockWide virtualContributors={virtualContributors} isLoading={loading} />
       </DialogContent>

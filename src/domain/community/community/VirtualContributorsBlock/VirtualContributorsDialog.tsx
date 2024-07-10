@@ -14,7 +14,6 @@ import SearchField from '../../../../core/ui/search/SearchField';
 
 export interface VirtualContributorProps {
   id: string;
-  nameID?: string;
   searchVisibility: SearchVisibility;
   profile: {
     displayName: string;
@@ -45,7 +44,6 @@ const VirtualContributorsDialog: FC<VirtualContributorsDialogProps> = ({ open, o
 
     return (
       virtualContributor.profile.displayName.toLowerCase().includes(lowerCaseFilter) ||
-      virtualContributor.nameID?.toLowerCase().includes(lowerCaseFilter) ||
       virtualContributor.profile.tagline.toLowerCase().includes(lowerCaseFilter)
     );
   };
