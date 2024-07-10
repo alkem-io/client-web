@@ -206,6 +206,7 @@
     "activity": "Activity",
     "avatar": "Avatar",
     "avatar-of": "Avatar of {{user}}",
+    "authorizationPolicies": "Authorization Policies",
     "beta": "Beta",
     "inspiration": "Inspiration",
     "name": "Name",

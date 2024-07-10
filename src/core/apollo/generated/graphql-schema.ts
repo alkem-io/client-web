@@ -27273,6 +27273,54 @@ export type DeleteCalendarEventMutation = {
   deleteCalendarEvent: { __typename?: 'CalendarEvent'; id: string };
 };
 
+export type AuthorizationPolicyQueryVariables = Exact<{
+  authorizationPolicyId: Scalars['UUID'];
+}>;
+
+export type AuthorizationPolicyQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    authorizationPolicy?:
+      | {
+          __typename?: 'Authorization';
+          id: string;
+          anonymousReadAccess: boolean;
+          credentialRules?:
+            | Array<{
+                __typename?: 'AuthorizationPolicyRuleCredential';
+                name?: string | undefined;
+                cascade: boolean;
+                grantedPrivileges: Array<AuthorizationPrivilege>;
+                criterias: Array<{ __typename?: 'CredentialDefinition'; resourceID: string; type: string }>;
+              }>
+            | undefined;
+          privilegeRules?:
+            | Array<{
+                __typename?: 'AuthorizationPolicyRulePrivilege';
+                name?: string | undefined;
+                sourcePrivilege: AuthorizationPrivilege;
+                grantedPrivileges: Array<AuthorizationPrivilege>;
+              }>
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type AuthorizationPrivilegesForUserQueryVariables = Exact<{
+  userId: Scalars['UUID'];
+  authorizationId: Scalars['UUID'];
+}>;
+
+export type AuthorizationPrivilegesForUserQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    authorizationPrivilegesForUser?: Array<AuthorizationPrivilege> | undefined;
+  };
+};
+
 export type UpdateAnswerRelevanceMutationVariables = Exact<{
   input: ChatGuidanceAnswerRelevanceInput;
 }>;
