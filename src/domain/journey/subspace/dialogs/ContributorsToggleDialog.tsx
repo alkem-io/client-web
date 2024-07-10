@@ -49,7 +49,7 @@ const ContributorsToggleDialog = ({ open = false, journeyId, onClose }: Contribu
     }));
 
   const virtualContributors: VirtualContributorProps[] =
-    data?.lookup.space?.community.virtualContributors.filter(vc => vc.searchVisibility === SearchVisibility.Public) ??
+    data?.lookup.space?.community.virtualContributors.filter(vc => vc.searchVisibility !== SearchVisibility.Hidden) ??
     [];
 
   return (

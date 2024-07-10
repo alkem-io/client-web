@@ -14,6 +14,7 @@ import VCIcon from '../../virtualContributor/VirtualContributorsIcons';
 
 export interface VirtualContributorProps {
   id: string;
+  nameID: string;
   searchVisibility: SearchVisibility;
   profile: {
     displayName: string;
@@ -41,11 +42,7 @@ const VirtualContributorsDialog: FC<VirtualContributorsDialogProps> = ({ open, o
   const [filter, setFilter] = useState<string>('');
   const filterVCs = (virtualContributor: VirtualContributorProps) => {
     const lowerCaseFilter = filter.toLowerCase();
-
-    return (
-      virtualContributor.profile.displayName.toLowerCase().includes(lowerCaseFilter) ||
-      virtualContributor.profile.tagline.toLowerCase().includes(lowerCaseFilter)
-    );
+    return virtualContributor.profile.displayName.toLowerCase().includes(lowerCaseFilter);
   };
   const filteredVCs = useMemo(
     () =>

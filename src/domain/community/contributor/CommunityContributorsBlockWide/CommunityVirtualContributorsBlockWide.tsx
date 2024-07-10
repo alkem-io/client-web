@@ -11,35 +11,28 @@ import { useColumns } from '../../../../core/ui/grid/GridContext';
 import { VirtualContributorProps } from '../../community/VirtualContributorsBlock/VirtualContributorsDialog';
 import { ContributorType } from './CommunityContributorsBlockWideContent';
 import Loading from '../../../../core/ui/loading/Loading';
-import usePlatformOrigin from '../../../platform/routes/usePlatformOrigin';
+import { buildVirtualContributorUrl } from '../../../../main/routing/urlBuilders';
 
 interface CommunityContributorsBlockWideProps {
   virtualContributors: VirtualContributorProps[];
   isLoading?: boolean;
 }
 
-const COMPACT_VIEW_ITEMS_LIMIT = 3 * 8;
+const COMPACT_VIEW_ITEMS_LIMIT = 3 * 8; // 3 rows on Desktop
 
 const CommunityVirtualContributorsBlockWide = ({
   virtualContributors,
   isLoading,
 }: CommunityContributorsBlockWideProps) => {
-  const [filter, onFilterChange] = useState<string[]>([]);
+  const [searchTerm, onSearchTermChange] = useState<string[]>([]);
   const isSmallScreen = useMediaQuery<Theme>(theme => theme.breakpoints.down('lg'));
   const columns = useColumns();
 
-  const filterFn = (filter: string[]) => (element: VirtualContributorProps) => {
+  const matchesNameFilter = (filter: string[]) => (element: VirtualContributorProps) => {
     return (
-      filter.length === 0 ||
-      filter.some(
-        term =>
-          element.profile.displayName.toLowerCase().includes(term.toLowerCase()) ||
-          element.profile.tagline.toLowerCase().includes(term.toLowerCase())
-      )
+      filter.length === 0 || filter.some(term => element.profile.displayName.toLowerCase().includes(term.toLowerCase()))
     );
   };
-
-  const origin = usePlatformOrigin() ?? '';
 
   return (
     <PageContentBlock>
@@ -47,8 +40,8 @@ const CommunityVirtualContributorsBlockWide = ({
         title={''}
         actions={
           <MultipleSelect
-            onChange={onFilterChange}
-            value={filter}
+            onChange={onSearchTermChange}
+            value={searchTerm}
             minLength={2}
             containerProps={{
               marginLeft: theme => theme.spacing(2),
@@ -64,7 +57,7 @@ const CommunityVirtualContributorsBlockWide = ({
             <Loading text={''} />
           ) : (
             virtualContributors
-              ?.filter(filterFn(filter))
+              ?.filter(matchesNameFilter(searchTerm))
               .slice(0, COMPACT_VIEW_ITEMS_LIMIT)
               .map(vc => (
                 <GridItem key={vc.id} columns={1}>
@@ -73,7 +66,7 @@ const CommunityVirtualContributorsBlockWide = ({
                       avatar={vc.profile.avatar?.uri ?? ''}
                       displayName={vc.profile.displayName}
                       tooltip={{ tags: [] }}
-                      url={vc.profile.url.substring(origin.length, vc.profile.url.length) ?? ''}
+                      url={buildVirtualContributorUrl(vc.nameID)}
                       contributorType={ContributorType.Virtuals}
                       isContactable={false}
                       {...vc}

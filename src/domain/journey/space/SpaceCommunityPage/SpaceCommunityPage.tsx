@@ -105,10 +105,12 @@ const SpaceCommunityPage = () => {
 
   const [isActivitiesDialogOpen, setIsActivitiesDialogOpen] = useState(false);
 
-  const virtualContributors: VirtualContributorProps[] =
-    data?.space.community.virtualContributors?.filter(vc => vc?.searchVisibility === SearchVisibility.Public) ?? [];
-
   const hasReadPrivilege = data?.space.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Read);
+  let virtualContributors: VirtualContributorProps[] = [];
+  if (hasReadPrivilege) {
+    virtualContributors =
+      data?.space.community?.virtualContributors?.filter(vc => vc?.searchVisibility !== SearchVisibility.Hidden) ?? [];
+  }
 
   useEffect(() => {
     if (isActivitiesDialogOpen) {

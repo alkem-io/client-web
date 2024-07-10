@@ -90,6 +90,7 @@ query AboutPageMembers($spaceId: UUID!) {
         id
         virtualContributors: virtualContributorsInRole(role: MEMBER){
           id
+          nameID
           searchVisibility
           profile {
             id

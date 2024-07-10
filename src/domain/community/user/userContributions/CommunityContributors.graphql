@@ -20,6 +20,7 @@ query SpaceCommunityContributors($spaceId: UUID!) {
         }
         virtualContributors: virtualContributorsInRole(role: MEMBER) {
           id
+          nameID
           searchVisibility
           profile {
             id
