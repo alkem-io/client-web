@@ -9,7 +9,7 @@ import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
 import Avatar from '../../../../core/ui/avatar/Avatar';
 import { BlockSectionTitle } from '../../../../core/ui/typography';
 import RouterLink, { RouterLinkProps } from '../../../../core/ui/link/RouterLink';
-import { VirtualContributorIcon } from '../../../../domain/community/virtualContributor/VirtualContributorIcon';
+import { ReactComponent as VirtualContributorIcon } from '../../../../domain/community/virtualContributor/virtualContributor.svg';
 import VirtualContributorsDialog, { VirtualContributorProps } from './VirtualContributorsDialog';
 
 const VIRTUAL_CONTRIBUTORS_LIMIT = 3;
