@@ -30,6 +30,7 @@ import RedirectToWelcomeSite from '../../domain/platform/routes/RedirectToWelcom
 import CreateSpaceDialog from '../../domain/journey/space/createSpace/CreateSpaceDialog';
 import VCRoute from '../../domain/community/virtualContributor/VCRoute';
 import { TopLevelRoutePath } from './TopLevelRoutePath';
+import DocumentationPage from '../../domain/documentation/DocumentationPage';
 
 export const TopLevelRoutes: FC = () => {
   useRedirectToIdentityDomain();
@@ -151,6 +152,7 @@ export const TopLevelRoutes: FC = () => {
             </NonIdentity>
           }
         />
+        <Route path="/docs" element={<DocumentationPage />} />
         <Route
           path={`/${TopLevelRoutePath.Spaces}`}
           element={
