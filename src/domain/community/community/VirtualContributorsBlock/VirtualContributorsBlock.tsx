@@ -9,8 +9,8 @@ import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
 import Avatar from '../../../../core/ui/avatar/Avatar';
 import { BlockSectionTitle } from '../../../../core/ui/typography';
 import RouterLink, { RouterLinkProps } from '../../../../core/ui/link/RouterLink';
-import { ReactComponent as VirtualContributorIcon } from '../../../../domain/community/virtualContributor/virtualContributor.svg';
 import VirtualContributorsDialog, { VirtualContributorProps } from './VirtualContributorsDialog';
+import VCIcon from '../../virtualContributor/VirtualContributorsIcons';
 
 const VIRTUAL_CONTRIBUTORS_LIMIT = 3;
 
@@ -34,7 +34,7 @@ const VirtualContributorsBlock = ({ virtualContributors, loading }: VirtualContr
 
   return (
     <PageContentBlock>
-      <PageContentBlockHeader title={t('pages.admin.virtualContributors.title')} icon={<VirtualContributorIcon />} />
+      <PageContentBlockHeader title={t('pages.admin.virtualContributors.title')} icon={<VCIcon />} />
       {loading && <Loading />}
       {visibleVCs?.map(vc => (
         <BadgeCardView
