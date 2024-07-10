@@ -886,7 +886,8 @@
       "maxLength": "Exceeded the limit of {{max}} characters",
       "alphaNumeric": "{{field}} can contain only lower case latin characters, numbers and hyphens",
       "nonBlank": "{{field}} must not consist of just spaces",
-      "atLeastOne": "At least one {{item}} must be selected."
+      "atLeastOne": "At least one {{item}} must be selected.",
+      "reservedTopLevelRoute": "This URL is reserved for the platform. Please choose another one."
     }
   },
   "templateDialog": {

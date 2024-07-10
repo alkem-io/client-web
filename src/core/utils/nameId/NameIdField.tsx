@@ -1,5 +1,5 @@
 import { useField } from 'formik';
-import React, { useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
 import FormikInputField, { FormikInputFieldProps } from '../../ui/forms/FormikInputField/FormikInputField';
 import usePlatformOrigin from '../../../domain/platform/routes/usePlatformOrigin';
 import { Typography } from '@mui/material';
@@ -15,27 +15,31 @@ const NameIdField = ({
   name = 'nameID',
   ...props
 }: FormikInputFieldProps & NameIdFieldProps) => {
-  const [{ value: sourceFieldValue = '' }] = useField(sourceFieldName);
-  const [{ value }, { touched }, { setValue, setTouched }] = useField(name);
+  const [{ value: sourceFieldValue = '' }, { touched: isSourceFieldTouched }] = useField(sourceFieldName);
+  const [{}, { error }, { setValue, setTouched }] = useField(name);
 
-  const nameId = useMemo(() => {
-    if (touched) {
-      return value;
-    } else {
+  const [isTouchedByUser, setIsTouchedByUser] = useState(false);
+
+  useEffect(() => {
+    if (!isTouchedByUser) {
       const derivedNameId = createNameId(sourceFieldValue);
       setValue(derivedNameId);
-      return derivedNameId;
     }
-  }, [sourceFieldValue, touched, value]);
+  }, [sourceFieldValue]);
+
+  useEffect(() => {
+    if (error && isSourceFieldTouched) {
+      setTouched(true); // Won't show the error otherwise
+    }
+  }, [error, isSourceFieldTouched]);
 
   const origin = usePlatformOrigin();
 
   return (
     <FormikInputField
       {...props}
-      value={nameId}
       name={name}
-      onClick={() => setTouched(true)}
+      onBlur={() => setIsTouchedByUser(true)}
       InputProps={{
         startAdornment: <Typography color="neutral.light">{`${origin}/`}</Typography>,
       }}

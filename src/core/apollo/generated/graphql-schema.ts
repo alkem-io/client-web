@@ -20355,6 +20355,7 @@ export type SpaceCardFragment = {
 
 export type SpaceCommunityPageQueryVariables = Exact<{
   spaceNameId: Scalars['UUID_NAMEID'];
+  includeCommunity: Scalars['Boolean'];
 }>;
 
 export type SpaceCommunityPageQuery = {
@@ -20362,6 +20363,9 @@ export type SpaceCommunityPageQuery = {
   space: {
     __typename?: 'Space';
     id: string;
+    authorization?:
+      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+      | undefined;
     profile: { __typename?: 'Profile'; id: string; url: string };
     account: {
       __typename?: 'Account';
@@ -20441,10 +20445,7 @@ export type SpaceCommunityPageQuery = {
           }
         | undefined;
     };
-    authorization?:
-      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-      | undefined;
-    community: {
+    community?: {
       __typename?: 'Community';
       id: string;
       leadUsers: Array<{
