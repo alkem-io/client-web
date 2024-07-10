@@ -1,7 +1,7 @@
-export const innovationPacksPath = '/innovation-packs';
+import { TopLevelRoutePath } from '../../../main/routing/TopLevelRoutePath';
 
 export const buildInnovationPackUrl = (innovationPackNameId: string) =>
-  `${innovationPacksPath}/${innovationPackNameId}`;
+  `/${TopLevelRoutePath.InnovationPacks}/${innovationPackNameId}`;
 
 export const buildInnovationPackSettingsUrl = (innovationPackNameId: string) =>
   `${buildInnovationPackUrl(innovationPackNameId)}/settings`;
