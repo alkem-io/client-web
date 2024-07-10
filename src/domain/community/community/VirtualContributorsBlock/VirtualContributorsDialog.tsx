@@ -9,8 +9,8 @@ import Avatar from '../../../../core/ui/avatar/Avatar';
 import RouterLink, { RouterLinkProps } from '../../../../core/ui/link/RouterLink';
 import { BlockSectionTitle } from '../../../../core/ui/typography';
 import { SearchVisibility } from '../../../../core/apollo/generated/graphql-schema';
-import { ReactComponent as VirtualContributorIcon } from '../../../../domain/community/virtualContributor/virtualContributor.svg';
 import SearchField from '../../../../core/ui/search/SearchField';
+import VCIcon from '../../virtualContributor/VirtualContributorsIcons';
 
 export interface VirtualContributorProps {
   id: string;
@@ -57,11 +57,7 @@ const VirtualContributorsDialog: FC<VirtualContributorsDialogProps> = ({ open, o
 
   return (
     <DialogWithGrid open={open} onClose={onClose} columns={6}>
-      <DialogHeader
-        onClose={onClose}
-        title={t('pages.admin.virtualContributors.title')}
-        icon={<VirtualContributorIcon />}
-      />
+      <DialogHeader onClose={onClose} title={t('pages.admin.virtualContributors.title')} icon={<VCIcon />} />
       <SearchField
         value={filter}
         onChange={event => setFilter(event.target.value)}
