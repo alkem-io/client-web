@@ -13,6 +13,7 @@ import { useInView } from 'react-intersection-observer';
 import { SimpleContainerProps } from '../../../../core/container/SimpleContainer';
 import { Ref } from 'react';
 import { DEFAULT_TAGSET } from '../../../common/tags/tagset.constants';
+import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
 
 interface PostCalloutContainerProvided {
   ref: Ref<Element>;
@@ -130,7 +131,7 @@ const PostCalloutContainer = ({ callout, children }: PostCalloutContainerProps) 
   };
 
   return (
-    <>
+    <StorageConfigContextProvider locationType="callout" calloutId={callout?.id}>
       {children({
         ref: intersectionObserverRef,
         posts,
@@ -139,7 +140,7 @@ const PostCalloutContainer = ({ callout, children }: PostCalloutContainerProps) 
         canCreate: callout.authorization?.myPrivileges?.includes(AuthorizationPrivilege.CreatePost) ?? false,
         onCreatePost,
       })}
-    </>
+    </StorageConfigContextProvider>
   );
 };
 
