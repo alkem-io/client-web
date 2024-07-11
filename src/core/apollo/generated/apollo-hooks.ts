@@ -2285,11 +2285,25 @@ export const CommunityPageCommunityFragmentDoc = gql`
     memberOrganizations: organizationsInRole(role: MEMBER) {
       ...DashboardContributingOrganization
     }
+    virtualContributors: virtualContributorsInRole(role: MEMBER) {
+      id
+      searchVisibility
+      profile {
+        id
+        displayName
+        tagline
+        url
+        avatar: visual(type: AVATAR) {
+          ...VisualUri
+        }
+      }
+    }
   }
   ${DashboardLeadUserFragmentDoc}
   ${DashboardContributingUserFragmentDoc}
   ${AssociatedOrganizationDetailsFragmentDoc}
   ${DashboardContributingOrganizationFragmentDoc}
+  ${VisualUriFragmentDoc}
 `;
 export const ContextDetailsFragmentDoc = gql`
   fragment ContextDetails on Context {
@@ -2602,7 +2616,7 @@ export const SubspacePageFragmentDoc = gql`
         myPrivileges
       }
     }
-    community {
+    community @include(if: $authorizedReadAccessCommunity) {
       ...EntityDashboardCommunity
       myMembershipStatus
     }
@@ -2827,7 +2841,7 @@ export const SubspacePageSpaceFragmentDoc = gql`
       id
       vision
     }
-    community {
+    community @include(if: $authorizedReadAccessCommunity) {
       ...EntityDashboardCommunity
       myMembershipStatus
     }
@@ -14672,12 +14686,26 @@ export const SpaceCommunityContributorsDocument = gql`
           memberOrganizations: organizationsInRole(role: MEMBER) {
             ...OrganizationCard
           }
+          virtualContributors: virtualContributorsInRole(role: MEMBER) {
+            id
+            searchVisibility
+            profile {
+              id
+              displayName
+              tagline
+              url
+              avatar: visual(type: AVATAR) {
+                ...VisualUri
+              }
+            }
+          }
         }
       }
     }
   }
   ${OrganizationCardFragmentDoc}
   ${UserCardFragmentDoc}
+  ${VisualUriFragmentDoc}
 `;
 
 /**
@@ -15903,11 +15931,32 @@ export const AboutPageMembersDocument = gql`
             ...ReferenceDetails
           }
         }
+        authorization {
+          id
+          myPrivileges
+        }
+        community {
+          id
+          virtualContributors: virtualContributorsInRole(role: MEMBER) {
+            id
+            searchVisibility
+            profile {
+              id
+              displayName
+              tagline
+              url
+              avatar: visual(type: AVATAR) {
+                ...VisualUri
+              }
+            }
+          }
+        }
       }
     }
   }
   ${EntityDashboardCommunityFragmentDoc}
   ${ReferenceDetailsFragmentDoc}
+  ${VisualUriFragmentDoc}
 `;
 
 /**
@@ -16118,6 +16167,13 @@ export const JourneyPrivilegesDocument = gql`
         authorization {
           id
           myPrivileges
+        }
+        community {
+          id
+          authorization {
+            id
+            myPrivileges
+          }
         }
       }
     }
@@ -16551,6 +16607,10 @@ export const SpaceCommunityPageDocument = gql`
         host {
           ...ContributorDetails
         }
+      }
+      authorization {
+        id
+        myPrivileges
       }
       community @include(if: $includeCommunity) {
         ...CommunityPageCommunity
@@ -16988,7 +17048,7 @@ export function refetchSpaceSubspaceCardsQuery(variables: SchemaTypes.SpaceSubsp
 }
 
 export const LegacySubspaceDashboardPageDocument = gql`
-  query LegacySubspaceDashboardPage($subspaceId: UUID!) {
+  query LegacySubspaceDashboardPage($subspaceId: UUID!, $authorizedReadAccessCommunity: Boolean = false) {
     lookup {
       space(ID: $subspaceId) {
         ...SubspacePage
@@ -17011,6 +17071,7 @@ export const LegacySubspaceDashboardPageDocument = gql`
  * const { data, loading, error } = useLegacySubspaceDashboardPageQuery({
  *   variables: {
  *      subspaceId: // value for 'subspaceId'
+ *      authorizedReadAccessCommunity: // value for 'authorizedReadAccessCommunity'
  *   },
  * });
  */
@@ -18922,7 +18983,7 @@ export function refetchSubspaceCommunityIdQuery(variables: SchemaTypes.SubspaceC
 }
 
 export const SubspacePageDocument = gql`
-  query SubspacePage($spaceId: UUID!) {
+  query SubspacePage($spaceId: UUID!, $authorizedReadAccessCommunity: Boolean = false) {
     lookup {
       space(ID: $spaceId) {
         ...SubspacePageSpace
@@ -18945,6 +19006,7 @@ export const SubspacePageDocument = gql`
  * const { data, loading, error } = useSubspacePageQuery({
  *   variables: {
  *      spaceId: // value for 'spaceId'
+ *      authorizedReadAccessCommunity: // value for 'authorizedReadAccessCommunity'
  *   },
  * });
  */
