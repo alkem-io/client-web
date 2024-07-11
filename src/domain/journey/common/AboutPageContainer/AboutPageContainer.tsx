@@ -9,6 +9,7 @@ import {
   MetricsItemFragment,
   Profile,
   ReferenceDetailsFragment,
+  SearchVisibility,
   Tagset,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { ContributorCardSquareProps } from '../../../community/contributor/ContributorCardSquare/ContributorCardSquare';
@@ -20,6 +21,7 @@ import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
 import { MetricType } from '../../../platform/metrics/MetricType';
 import { InnovationFlowDetails } from '../../../collaboration/InnovationFlow/InnovationFlow';
 import { ContributorViewProps } from '../../../community/community/EntityDashboardContributorsSection/Types';
+import { VirtualContributorProps } from '../../../community/community/VirtualContributorsBlock/VirtualContributorsDialog';
 
 interface AboutPagePermissions {
   communityReadAccess: boolean;
@@ -41,6 +43,8 @@ export interface AboutPageContainerEntities {
   leadOrganizations: AssociatedOrganizationDetailsFragment[] | undefined;
   host: ContributorViewProps | undefined;
   references: ReferenceDetailsFragment[] | undefined;
+  virtualContributors?: VirtualContributorProps[];
+  hasReadPrivilege?: boolean;
 }
 
 export interface AboutPageContainerActions {}
@@ -85,6 +89,12 @@ const AboutPageContainer: FC<AboutPageContainerProps> = ({ journeyId, children }
   });
 
   const memberProfile = membersData?.lookup.space?.profile;
+  const virtualContributors = membersData?.lookup.space?.community.virtualContributors.filter(
+    vc => vc.searchVisibility === SearchVisibility.Public
+  );
+  const hasReadPrivilege = membersData?.lookup.space?.authorization?.myPrivileges?.includes(
+    AuthorizationPrivilege.Read
+  );
 
   const context = nonMemberContext;
 
@@ -145,6 +155,8 @@ const AboutPageContainer: FC<AboutPageContainerProps> = ({ journeyId, children }
           leadVirtualContributors,
           host,
           references,
+          virtualContributors,
+          hasReadPrivilege,
           ...contributors,
         },
         { loading, error },

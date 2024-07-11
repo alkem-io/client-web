@@ -2285,11 +2285,25 @@ export const CommunityPageCommunityFragmentDoc = gql`
     memberOrganizations: organizationsInRole(role: MEMBER) {
       ...DashboardContributingOrganization
     }
+    virtualContributors: virtualContributorsInRole(role: MEMBER) {
+      id
+      searchVisibility
+      profile {
+        id
+        displayName
+        tagline
+        url
+        avatar: visual(type: AVATAR) {
+          ...VisualUri
+        }
+      }
+    }
   }
   ${DashboardLeadUserFragmentDoc}
   ${DashboardContributingUserFragmentDoc}
   ${AssociatedOrganizationDetailsFragmentDoc}
   ${DashboardContributingOrganizationFragmentDoc}
+  ${VisualUriFragmentDoc}
 `;
 export const ContextDetailsFragmentDoc = gql`
   fragment ContextDetails on Context {
@@ -14672,12 +14686,26 @@ export const SpaceCommunityContributorsDocument = gql`
           memberOrganizations: organizationsInRole(role: MEMBER) {
             ...OrganizationCard
           }
+          virtualContributors: virtualContributorsInRole(role: MEMBER) {
+            id
+            searchVisibility
+            profile {
+              id
+              displayName
+              tagline
+              url
+              avatar: visual(type: AVATAR) {
+                ...VisualUri
+              }
+            }
+          }
         }
       }
     }
   }
   ${OrganizationCardFragmentDoc}
   ${UserCardFragmentDoc}
+  ${VisualUriFragmentDoc}
 `;
 
 /**
@@ -15903,11 +15931,32 @@ export const AboutPageMembersDocument = gql`
             ...ReferenceDetails
           }
         }
+        authorization {
+          id
+          myPrivileges
+        }
+        community {
+          id
+          virtualContributors: virtualContributorsInRole(role: MEMBER) {
+            id
+            searchVisibility
+            profile {
+              id
+              displayName
+              tagline
+              url
+              avatar: visual(type: AVATAR) {
+                ...VisualUri
+              }
+            }
+          }
+        }
       }
     }
   }
   ${EntityDashboardCommunityFragmentDoc}
   ${ReferenceDetailsFragmentDoc}
+  ${VisualUriFragmentDoc}
 `;
 
 /**
@@ -16535,9 +16584,13 @@ export function refetchSpacePrivilegesQuery(variables: SchemaTypes.SpacePrivileg
 }
 
 export const SpaceCommunityPageDocument = gql`
-  query SpaceCommunityPage($spaceNameId: UUID_NAMEID!) {
+  query SpaceCommunityPage($spaceNameId: UUID_NAMEID!, $includeCommunity: Boolean!) {
     space(ID: $spaceNameId) {
       id
+      authorization {
+        id
+        myPrivileges
+      }
       profile {
         id
         url
@@ -16548,7 +16601,11 @@ export const SpaceCommunityPageDocument = gql`
           ...ContributorDetails
         }
       }
-      community {
+      authorization {
+        id
+        myPrivileges
+      }
+      community @include(if: $includeCommunity) {
         ...CommunityPageCommunity
       }
       collaboration {
@@ -16573,6 +16630,7 @@ export const SpaceCommunityPageDocument = gql`
  * const { data, loading, error } = useSpaceCommunityPageQuery({
  *   variables: {
  *      spaceNameId: // value for 'spaceNameId'
+ *      includeCommunity: // value for 'includeCommunity'
  *   },
  * });
  */

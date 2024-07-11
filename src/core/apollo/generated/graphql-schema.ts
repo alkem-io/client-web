@@ -3999,6 +3999,8 @@ export type Platform = {
   licensing: Licensing;
   /** Alkemio Services Metadata. */
   metadata: Metadata;
+  /** The roles on the Platform for the currently logged in user. */
+  myRoles: Array<PlatformRole>;
   /** Invitations to join roles for users not yet on the Alkemio platform. */
   platformInvitations: Array<PlatformInvitation>;
   /** The StorageAggregator with documents in use by Users + Organizations on the Platform. */
@@ -4919,6 +4921,7 @@ export enum SearchResultType {
   Space = 'SPACE',
   User = 'USER',
   Usergroup = 'USERGROUP',
+  Whiteboard = 'WHITEBOARD',
 }
 
 export type SearchResultUser = SearchResult & {
@@ -18542,6 +18545,19 @@ export type SpaceCommunityContributorsQuery = {
                 status: OrganizationVerificationEnum;
               };
             }>;
+            virtualContributors: Array<{
+              __typename?: 'VirtualContributor';
+              id: string;
+              searchVisibility: SearchVisibility;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                tagline: string;
+                url: string;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              };
+            }>;
           };
         }
       | undefined;
@@ -19616,6 +19632,19 @@ export type AboutPageMembersQuery = {
           community: {
             __typename?: 'Community';
             id: string;
+            virtualContributors: Array<{
+              __typename?: 'VirtualContributor';
+              id: string;
+              searchVisibility: SearchVisibility;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                tagline: string;
+                url: string;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              };
+            }>;
             leadUsers: Array<{
               __typename?: 'User';
               id: string;
@@ -19743,6 +19772,9 @@ export type AboutPageMembersQuery = {
                 }>
               | undefined;
           };
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
         }
       | undefined;
   };
@@ -20323,6 +20355,7 @@ export type SpaceCardFragment = {
 
 export type SpaceCommunityPageQueryVariables = Exact<{
   spaceNameId: Scalars['UUID_NAMEID'];
+  includeCommunity: Scalars['Boolean'];
 }>;
 
 export type SpaceCommunityPageQuery = {
@@ -20330,6 +20363,9 @@ export type SpaceCommunityPageQuery = {
   space: {
     __typename?: 'Space';
     id: string;
+    authorization?:
+      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+      | undefined;
     profile: { __typename?: 'Profile'; id: string; url: string };
     account: {
       __typename?: 'Account';
@@ -20409,7 +20445,7 @@ export type SpaceCommunityPageQuery = {
           }
         | undefined;
     };
-    community: {
+    community?: {
       __typename?: 'Community';
       id: string;
       leadUsers: Array<{
@@ -20494,6 +20530,19 @@ export type SpaceCommunityPageQuery = {
                 type: TagsetType;
               }>
             | undefined;
+        };
+      }>;
+      virtualContributors: Array<{
+        __typename?: 'VirtualContributor';
+        id: string;
+        searchVisibility: SearchVisibility;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          tagline: string;
+          url: string;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
         };
       }>;
     };
@@ -20586,6 +20635,19 @@ export type CommunityPageCommunityFragment = {
             type: TagsetType;
           }>
         | undefined;
+    };
+  }>;
+  virtualContributors: Array<{
+    __typename?: 'VirtualContributor';
+    id: string;
+    searchVisibility: SearchVisibility;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      tagline: string;
+      url: string;
+      avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
     };
   }>;
 };

@@ -5,14 +5,17 @@ import { PageLayoutHolderWithOutlet } from '../../journey/common/EntityPageLayou
 import TopLevelLayout from '../../../main/ui/layout/TopLevelLayout';
 import { Error404 } from '../../../core/pages/Errors/Error404';
 import VCSettingsRoute from './VCSettingsRoute';
+import { nameOfUrl } from '../../../main/routing/urlParams';
 
 export const VCRoute: FC = () => {
   return (
     <Routes>
-      <Route path="/" element={<PageLayoutHolderWithOutlet />}>
-        <Route index element={<VCProfilePage />} />
+      <Route path={`:${nameOfUrl.vcNameId}/*`}>
+        <Route path="" element={<PageLayoutHolderWithOutlet />}>
+          <Route index element={<VCProfilePage />} />
+        </Route>
+        <Route path="settings/*" element={<VCSettingsRoute />} />
       </Route>
-      <Route path={'settings/*'} element={<VCSettingsRoute />} />
       <Route
         path="*"
         element={
