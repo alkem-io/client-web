@@ -8,10 +8,11 @@ import { ContributorCardSquareProps } from '../../../community/contributor/Contr
 import { ContributorType } from '../../../community/contributor/CommunityContributorsBlockWide/CommunityContributorsBlockWideContent';
 import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
 import { useUserContext } from '../../../community/user';
-import { Caption } from '../../../../core/ui/typography';
+import { BlockTitle, Caption } from '../../../../core/ui/typography';
 import CommunityVirtualContributorsBlockWide from '../../../community/contributor/CommunityContributorsBlockWide/CommunityVirtualContributorsBlockWide';
 import { SearchVisibility } from '../../../../core/apollo/generated/graphql-schema';
 import { VirtualContributorProps } from '../../../community/community/VirtualContributorsBlock/VirtualContributorsDialog';
+import Gutters from '../../../../core/ui/grid/Gutters';
 
 export interface ContributorsToggleDialogProps {
   open?: boolean;
@@ -62,21 +63,21 @@ const ContributorsToggleDialog = ({ open = false, journeyId, onClose }: Contribu
       <DialogContent>
         {!isAuthenticated && <Caption>{t('pages.contributors.unauthorized')}</Caption>}
         {isAuthenticated && (
-          <CommunityContributorsBlockWide
-            users={users}
-            organizations={organizations}
-            isLoading={loading}
-            isDialogView
-          />
+          <Gutters disablePadding>
+            <CommunityContributorsBlockWide
+              users={users}
+              organizations={organizations}
+              isLoading={loading}
+              isDialogView
+            />
+            {virtualContributors && virtualContributors?.length > 0 && (
+              <>
+                <BlockTitle>{t('pages.admin.virtualContributors.title')}</BlockTitle>
+                <CommunityVirtualContributorsBlockWide virtualContributors={virtualContributors} />
+              </>
+            )}
+          </Gutters>
         )}
-      </DialogContent>
-      <DialogHeader title={t('pages.admin.virtualContributors.title')} />
-      <DialogContent>
-        <CommunityVirtualContributorsBlockWide virtualContributors={virtualContributors} isLoading={loading} />
-      </DialogContent>
-      <DialogHeader title={t('pages.admin.virtualContributors.title')} />
-      <DialogContent>
-        <CommunityVirtualContributorsBlockWide virtualContributors={virtualContributors} isLoading={loading} />
       </DialogContent>
     </DialogWithGrid>
   );
