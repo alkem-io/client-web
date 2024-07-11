@@ -44,7 +44,6 @@ fragment CommunityPageCommunity on Community {
   }
   virtualContributors: virtualContributorsInRole(role: MEMBER) {
     id
-    nameID
     searchVisibility
     profile {
       id

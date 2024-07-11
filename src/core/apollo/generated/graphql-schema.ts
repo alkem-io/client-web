@@ -18548,7 +18548,6 @@ export type SpaceCommunityContributorsQuery = {
             virtualContributors: Array<{
               __typename?: 'VirtualContributor';
               id: string;
-              nameID: string;
               searchVisibility: SearchVisibility;
               profile: {
                 __typename?: 'Profile';
@@ -19636,7 +19635,6 @@ export type AboutPageMembersQuery = {
             virtualContributors: Array<{
               __typename?: 'VirtualContributor';
               id: string;
-              nameID: string;
               searchVisibility: SearchVisibility;
               profile: {
                 __typename?: 'Profile';
@@ -20537,7 +20535,6 @@ export type SpaceCommunityPageQuery = {
       virtualContributors: Array<{
         __typename?: 'VirtualContributor';
         id: string;
-        nameID: string;
         searchVisibility: SearchVisibility;
         profile: {
           __typename?: 'Profile';
@@ -20643,7 +20640,6 @@ export type CommunityPageCommunityFragment = {
   virtualContributors: Array<{
     __typename?: 'VirtualContributor';
     id: string;
-    nameID: string;
     searchVisibility: SearchVisibility;
     profile: {
       __typename?: 'Profile';

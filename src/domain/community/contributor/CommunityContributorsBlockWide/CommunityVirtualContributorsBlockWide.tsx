@@ -11,7 +11,7 @@ import { useColumns } from '../../../../core/ui/grid/GridContext';
 import { VirtualContributorProps } from '../../community/VirtualContributorsBlock/VirtualContributorsDialog';
 import { ContributorType } from './CommunityContributorsBlockWideContent';
 import Loading from '../../../../core/ui/loading/Loading';
-import { buildVirtualContributorUrl } from '../../../../main/routing/urlBuilders';
+import usePlatformOrigin from '../../../platform/routes/usePlatformOrigin';
 
 interface CommunityContributorsBlockWideProps {
   virtualContributors: VirtualContributorProps[];
@@ -33,6 +33,8 @@ const CommunityVirtualContributorsBlockWide = ({
       filter.length === 0 || filter.some(term => element.profile.displayName.toLowerCase().includes(term.toLowerCase()))
     );
   };
+
+  const origin = usePlatformOrigin() ?? '';
 
   return (
     <PageContentBlock>
@@ -66,7 +68,7 @@ const CommunityVirtualContributorsBlockWide = ({
                       avatar={vc.profile.avatar?.uri ?? ''}
                       displayName={vc.profile.displayName}
                       tooltip={{ tags: [] }}
-                      url={buildVirtualContributorUrl(vc.nameID)}
+                      url={vc.profile.url.substring(origin.length, vc.profile.url.length) ?? ''}
                       contributorType={ContributorType.Virtuals}
                       isContactable={false}
                       {...vc}

@@ -2287,7 +2287,6 @@ export const CommunityPageCommunityFragmentDoc = gql`
     }
     virtualContributors: virtualContributorsInRole(role: MEMBER) {
       id
-      nameID
       searchVisibility
       profile {
         id
@@ -14689,7 +14688,6 @@ export const SpaceCommunityContributorsDocument = gql`
           }
           virtualContributors: virtualContributorsInRole(role: MEMBER) {
             id
-            nameID
             searchVisibility
             profile {
               id
@@ -15941,7 +15939,6 @@ export const AboutPageMembersDocument = gql`
           id
           virtualContributors: virtualContributorsInRole(role: MEMBER) {
             id
-            nameID
             searchVisibility
             profile {
               id
