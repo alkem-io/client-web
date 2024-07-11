@@ -91,6 +91,7 @@ const MyAccountBlock = () => {
             {hasVirtualCointributors &&
               virtualContributors?.map(vc => (
                 <BadgeCardView
+                  key={vc.id}
                   variant="rounded"
                   visual={
                     <Avatar
