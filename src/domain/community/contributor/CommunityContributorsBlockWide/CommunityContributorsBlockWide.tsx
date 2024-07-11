@@ -8,7 +8,8 @@ import { BlockTitle, CaptionSmall } from '../../../../core/ui/typography';
 import { useTranslation } from 'react-i18next';
 import { Actions } from '../../../../core/ui/actions/Actions';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
-import CommunityContributorsBlockWideContent, { ContributorType } from './CommunityContributorsBlockWideContent';
+import CommunityContributorsBlockWideContent from './CommunityContributorsBlockWideContent';
+import { CommunityContributorType } from '../../../../core/apollo/generated/graphql-schema';
 import AltToggle from '../../../../core/ui/forms/AltToggle/AltToggle';
 import MultipleSelect from '../../../../core/ui/search/MultipleSelect';
 import { Theme } from '@mui/material/styles';
@@ -26,11 +27,11 @@ interface CommunityContributorsBlockWideProps {
 const config = [
   {
     label: 'common.people',
-    value: ContributorType.People,
+    value: CommunityContributorType.User,
   },
   {
     label: 'common.organizations',
-    value: ContributorType.Organizations,
+    value: CommunityContributorType.Organization,
   },
 ] as const;
 
@@ -44,7 +45,7 @@ const CommunityContributorsBlockWide = ({
 
   const { t } = useTranslation();
 
-  const [contributorType, setContributorType] = useState(ContributorType.People);
+  const [contributorType, setContributorType] = useState(CommunityContributorType.User);
   const [filter, onFilterChange] = useState<string[]>([]);
 
   const contributorTypeToggleOptions = config.map(configItem => ({

@@ -5,12 +5,11 @@ import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import CommunityContributorsBlockWide from '../../../community/contributor/CommunityContributorsBlockWide/CommunityContributorsBlockWide';
 import { useSpaceCommunityContributorsQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContributorCardSquareProps } from '../../../community/contributor/ContributorCardSquare/ContributorCardSquare';
-import { ContributorType } from '../../../community/contributor/CommunityContributorsBlockWide/CommunityContributorsBlockWideContent';
 import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
 import { useUserContext } from '../../../community/user';
 import { BlockTitle, Caption } from '../../../../core/ui/typography';
 import CommunityVirtualContributorsBlockWide from '../../../community/contributor/CommunityContributorsBlockWide/CommunityVirtualContributorsBlockWide';
-import { SearchVisibility } from '../../../../core/apollo/generated/graphql-schema';
+import { CommunityContributorType, SearchVisibility } from '../../../../core/apollo/generated/graphql-schema';
 import { VirtualContributorProps } from '../../../community/community/VirtualContributorsBlock/VirtualContributorsDialog';
 import Gutters from '../../../../core/ui/grid/Gutters';
 
@@ -40,7 +39,7 @@ const ContributorsToggleDialog = ({ open = false, journeyId, onClose }: Contribu
     avatar: user.profile.visual?.uri || '',
     displayName: user.profile.displayName || '',
     url: user.profile.url,
-    contributorType: ContributorType.People,
+    contributorType: CommunityContributorType.User,
   }));
 
   const organizations: ContributorCardSquareProps[] | undefined = data?.lookup.space?.community.memberOrganizations.map(
@@ -49,7 +48,7 @@ const ContributorsToggleDialog = ({ open = false, journeyId, onClose }: Contribu
       avatar: organization.profile.visual?.uri || '',
       displayName: organization.profile.displayName || '',
       url: organization.profile.url,
-      contributorType: ContributorType.Organizations,
+      contributorType: CommunityContributorType.Organization,
     })
   );
 

@@ -6,11 +6,11 @@ import { buildOrganizationUrl, buildUserProfileUrl } from '../../../../main/rout
 import { COUNTRIES_BY_CODE } from '../../../common/location/countries.constants';
 import { getVisualAvatar } from '../../../common/visual/utils/visuals.utils';
 import {
+  CommunityContributorType,
   DashboardContributingOrganizationFragment,
   DashboardContributingUserFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { EntityDashboardContributors } from '../EntityDashboardContributorsSection/Types';
-import { ContributorType } from '../../contributor/CommunityContributorsBlockWide/CommunityContributorsBlockWideContent';
 
 interface CommunityMembers {
   memberUsers?: DashboardContributingUserFragment[];
@@ -40,7 +40,7 @@ const mapUserToContributorCardProps = (
     country: user.profile.location?.country ? COUNTRIES_BY_CODE[user.profile.location.country] : undefined,
   },
   isContactable: user.isContactable,
-  contributorType: ContributorType.People,
+  contributorType: CommunityContributorType.User,
 });
 
 export const mapUserCardPropsToContributorCardProps = (user: UserCardProps): WithId<ContributorCardSquareProps> => ({
@@ -54,7 +54,7 @@ export const mapUserCardPropsToContributorCardProps = (user: UserCardProps): Wit
     country: user.country,
   },
   isContactable: user.isContactable ?? true,
-  contributorType: ContributorType.People,
+  contributorType: CommunityContributorType.User,
 });
 
 const mapOrganizationToContributorCardProps = (
@@ -68,7 +68,7 @@ const mapOrganizationToContributorCardProps = (
     tags: org.profile.tagsets?.flatMap(x => x.tags.map(t => t)) ?? [],
   },
   isContactable: true,
-  contributorType: ContributorType.Organizations,
+  contributorType: CommunityContributorType.Organization,
 });
 
 const applyLimit = <Item>(items: Item[] | undefined, limit?: number): Item[] | undefined =>

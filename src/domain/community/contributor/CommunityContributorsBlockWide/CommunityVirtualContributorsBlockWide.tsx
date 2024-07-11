@@ -9,9 +9,9 @@ import ContributorCardSquare from '../ContributorCardSquare/ContributorCardSquar
 import { useState } from 'react';
 import { useColumns } from '../../../../core/ui/grid/GridContext';
 import { VirtualContributorProps } from '../../community/VirtualContributorsBlock/VirtualContributorsDialog';
-import { ContributorType } from './CommunityContributorsBlockWideContent';
 import Loading from '../../../../core/ui/loading/Loading';
 import usePlatformOrigin from '../../../platform/routes/usePlatformOrigin';
+import { CommunityContributorType } from '../../../../core/apollo/generated/graphql-schema';
 
 interface CommunityContributorsBlockWideProps {
   virtualContributors: VirtualContributorProps[];
@@ -69,7 +69,7 @@ const CommunityVirtualContributorsBlockWide = ({
                       displayName={vc.profile.displayName}
                       tooltip={{ tags: [] }}
                       url={vc.profile.url.substring(origin.length, vc.profile.url.length) ?? ''}
-                      contributorType={ContributorType.Virtuals}
+                      contributorType={CommunityContributorType.Virtual}
                       isContactable={false}
                       {...vc}
                     />
