@@ -23,6 +23,7 @@ import {
   ActivityEventType,
   AuthorizationPrivilege,
   CalloutGroupName,
+  SearchVisibility,
 } from '../../../../core/apollo/generated/graphql-schema';
 import SpaceCommunityContainer from './SpaceCommunityContainer';
 import SpacePageLayout from '../layout/SpacePageLayout';
@@ -35,6 +36,8 @@ import CommunityGuidelinesBlock from '../../../community/community/CommunityGuid
 import { useSpace } from '../SpaceContext/useSpace';
 import InfoColumn from '../../../../core/ui/content/InfoColumn';
 import ContentColumn from '../../../../core/ui/content/ContentColumn';
+import VirtualContributorsBlock from '../../../community/community/VirtualContributorsBlock/VirtualContributorsBlock';
+import { VirtualContributorProps } from '../../../community/community/VirtualContributorsBlock/VirtualContributorsDialog';
 import { useUserContext } from '../../../community/user';
 
 const SpaceCommunityPage = () => {
@@ -57,7 +60,7 @@ const SpaceCommunityPage = () => {
     setIsContactLeadUsersDialogOpen(false);
   };
 
-  const { data } = useSpaceCommunityPageQuery({
+  const { data, loading } = useSpaceCommunityPageQuery({
     variables: { spaceNameId, includeCommunity: isAuthenticated },
   });
 
@@ -102,6 +105,13 @@ const SpaceCommunityPage = () => {
 
   const [isActivitiesDialogOpen, setIsActivitiesDialogOpen] = useState(false);
 
+  const hasReadPrivilege = data?.space.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Read);
+  let virtualContributors: VirtualContributorProps[] = [];
+  if (hasReadPrivilege) {
+    virtualContributors =
+      data?.space.community?.virtualContributors?.filter(vc => vc?.searchVisibility !== SearchVisibility.Hidden) ?? [];
+  }
+
   useEffect(() => {
     if (isActivitiesDialogOpen) {
       fetchMoreActivities(RECENT_ACTIVITIES_LIMIT_EXPANDED);
@@ -131,6 +141,9 @@ const SpaceCommunityPage = () => {
                 onSendMessage={sendMessageToCommunityLeads}
                 messageReceivers={messageReceivers}
               />
+              {hasReadPrivilege && virtualContributors?.length > 0 && (
+                <VirtualContributorsBlock virtualContributors={virtualContributors} loading={loading} />
+              )}
               <CommunityGuidelinesBlock communityId={communityId} journeyUrl={data?.space.profile.url} />
             </InfoColumn>
             <ContentColumn>

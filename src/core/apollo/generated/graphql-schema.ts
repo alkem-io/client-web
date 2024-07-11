@@ -18545,6 +18545,19 @@ export type SpaceCommunityContributorsQuery = {
                 status: OrganizationVerificationEnum;
               };
             }>;
+            virtualContributors: Array<{
+              __typename?: 'VirtualContributor';
+              id: string;
+              searchVisibility: SearchVisibility;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                tagline: string;
+                url: string;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              };
+            }>;
           };
         }
       | undefined;
@@ -19619,6 +19632,19 @@ export type AboutPageMembersQuery = {
           community: {
             __typename?: 'Community';
             id: string;
+            virtualContributors: Array<{
+              __typename?: 'VirtualContributor';
+              id: string;
+              searchVisibility: SearchVisibility;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                tagline: string;
+                url: string;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              };
+            }>;
             leadUsers: Array<{
               __typename?: 'User';
               id: string;
@@ -19746,6 +19772,9 @@ export type AboutPageMembersQuery = {
                 }>
               | undefined;
           };
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
         }
       | undefined;
   };
@@ -20503,6 +20532,19 @@ export type SpaceCommunityPageQuery = {
             | undefined;
         };
       }>;
+      virtualContributors: Array<{
+        __typename?: 'VirtualContributor';
+        id: string;
+        searchVisibility: SearchVisibility;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          tagline: string;
+          url: string;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        };
+      }>;
     };
     collaboration: { __typename?: 'Collaboration'; id: string };
   };
@@ -20593,6 +20635,19 @@ export type CommunityPageCommunityFragment = {
             type: TagsetType;
           }>
         | undefined;
+    };
+  }>;
+  virtualContributors: Array<{
+    __typename?: 'VirtualContributor';
+    id: string;
+    searchVisibility: SearchVisibility;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      tagline: string;
+      url: string;
+      avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
     };
   }>;
 };
