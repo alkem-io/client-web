@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import App from '../ui/layout/topLevelWrappers/App';
 import { CommunityContextProvider } from '../../domain/community/community/CommunityContext';
@@ -30,7 +30,9 @@ import RedirectToWelcomeSite from '../../domain/platform/routes/RedirectToWelcom
 import CreateSpaceDialog from '../../domain/journey/space/createSpace/CreateSpaceDialog';
 import VCRoute from '../../domain/community/virtualContributor/VCRoute';
 import { TopLevelRoutePath } from './TopLevelRoutePath';
-import DocumentationPage from '../../domain/documentation/DocumentationPage';
+import Loading from '../../core/ui/loading/Loading';
+
+const DocumentationPage = React.lazy(() => import('../../domain/documentation/DocumentationPage'));
 
 export const TopLevelRoutes: FC = () => {
   useRedirectToIdentityDomain();
@@ -152,7 +154,14 @@ export const TopLevelRoutes: FC = () => {
             </NonIdentity>
           }
         />
-        <Route path="/docs" element={<DocumentationPage />} />
+        <Route
+          path="/docs/*"
+          element={
+            <Suspense fallback={<Loading />}>
+              <DocumentationPage />
+            </Suspense>
+          }
+        />
         <Route
           path={`/${TopLevelRoutePath.Spaces}`}
           element={
