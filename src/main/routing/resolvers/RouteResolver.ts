@@ -3,6 +3,8 @@ import { useCalloutIdQuery, useJourneyRouteResolverQuery } from '../../../core/a
 import { getJourneyTypeName, JourneyTypeName } from '../../../domain/journey/JourneyTypeName';
 import { takeWhile } from 'lodash';
 import { useMemo } from 'react';
+import { isApolloNotFoundError } from '../../../core/apollo/hooks/useApolloErrorHandler';
+import { NotFoundError } from '../../../core/notFound/NotFoundErrorBoundary';
 
 enum RouteType {
   Journey = 'Journey',
@@ -42,6 +44,7 @@ interface JourneyCalloutRouteParams extends JourneyRouteParams {
 
 interface RouteResolverState {
   loading: boolean;
+  notFound: boolean;
 }
 
 type AllParams = JourneyRouteParams & JourneyCalloutRouteParams;
@@ -68,10 +71,18 @@ const getJourneyLevel = (urlParams: Partial<JourneyLocation>): JourneyLevel | -1
   return (takeWhile(JOURNEY_PARAM_NESTING, param => urlParams[param]).length - 1) as JourneyLevel | -1;
 };
 
-export const useRouteResolver = (): RouteParams => {
+interface RouteResolverOptions {
+  failOnNotFound?: boolean;
+}
+
+export const useRouteResolver = ({ failOnNotFound = true }: RouteResolverOptions = {}): RouteParams => {
   const { spaceNameId, subspaceNameId, subsubspaceNameId, calloutNameId } = useUrlParams();
 
-  const { data, loading: loadingJourney } = useJourneyRouteResolverQuery({
+  const {
+    data,
+    loading: loadingJourney,
+    error: journeyRouteError,
+  } = useJourneyRouteResolverQuery({
     variables: {
       spaceNameId: spaceNameId!,
       challengeNameId: subspaceNameId,
@@ -119,7 +130,11 @@ export const useRouteResolver = (): RouteParams => {
     journeyPath,
   };
 
-  const { data: calloutData, loading: loadingCallout } = useCalloutIdQuery({
+  const {
+    data: calloutData,
+    loading: loadingCallout,
+    error: calloutIdError,
+  } = useCalloutIdQuery({
     variables: {
       calloutNameId: calloutNameId!,
       spaceId: resolvedJourney.subSubSpaceId ?? resolvedJourney.subSpaceId ?? resolvedJourney.spaceId!,
@@ -133,9 +148,16 @@ export const useRouteResolver = (): RouteParams => {
 
   const loading = loadingJourney || loadingCallout;
 
+  const isNotFound = isApolloNotFoundError(journeyRouteError ?? calloutIdError);
+
+  if (failOnNotFound && isNotFound) {
+    throw new NotFoundError();
+  }
+
   return {
     loading,
     ...resolvedJourney,
     calloutId,
+    notFound: isNotFound,
   };
 };
