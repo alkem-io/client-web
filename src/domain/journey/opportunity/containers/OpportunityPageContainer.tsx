@@ -18,6 +18,7 @@ import useCallouts, { UseCalloutsProvided } from '../../../collaboration/callout
 import { useAuthenticationContext } from '../../../../core/auth/authentication/hooks/useAuthenticationContext';
 import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
 import { MetricType } from '../../../platform/metrics/MetricType';
+import useCanReadSpace from '../../common/authorization/useCanReadSpace';
 
 export interface OpportunityContainerEntities extends EntityDashboardContributors {
   subsubspace: SubspacePageFragment | undefined;
@@ -73,13 +74,17 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ opportuni
 
   const { isAuthenticated } = useAuthenticationContext();
   const { user } = useUserContext();
+  const { canReadCommunity } = useCanReadSpace({ spaceId: opportunityId });
 
   const {
     data: query,
     loading: loadingOpportunity,
     error: errorOpportunity,
   } = useLegacySubspaceDashboardPageQuery({
-    variables: { subspaceId: opportunityId! },
+    variables: {
+      subspaceId: opportunityId!,
+      authorizedReadAccessCommunity: canReadCommunity,
+    },
     skip: !opportunityId,
     errorPolicy: 'all',
   });

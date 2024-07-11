@@ -8,6 +8,7 @@ import ContributorCardSquare, {
 } from '../contributor/ContributorCardSquare/ContributorCardSquare';
 import { PaginatedResult } from '../contributor/ContributorsSearch/ContributorsSearchContainer';
 import {
+  CommunityContributorType,
   OrganizationContributorFragment,
   UserContributorFragment,
 } from '../../../core/apollo/generated/graphql-schema';
@@ -21,7 +22,6 @@ import GridItem from '../../../core/ui/grid/GridItem';
 import { useColumns } from '../../../core/ui/grid/GridContext';
 import GridProvider from '../../../core/ui/grid/GridProvider';
 import { Identifiable } from '../../../core/utils/Identifiable';
-import { ContributorType } from '../contributor/CommunityContributorsBlockWide/CommunityContributorsBlockWideContent';
 
 const USERS_GRAYED_OUT_IMAGE = '/contributors/users-grayed.png';
 export const ITEMS_PER_PAGE = 16;
@@ -38,7 +38,7 @@ const userToContributorCard = (user: UserContributorFragment): ContributorCardSq
       country: user.userProfile?.location?.country || '',
     },
     isContactable: user.isContactable,
-    contributorType: ContributorType.People,
+    contributorType: CommunityContributorType.User,
   };
 };
 
@@ -49,7 +49,7 @@ const organizationToContributorCard = (org: OrganizationContributorFragment): Co
     avatar: org.orgProfile.visual?.uri ?? '',
     url: buildOrganizationUrl(org.nameID),
     isContactable: true,
-    contributorType: ContributorType.Organizations,
+    contributorType: CommunityContributorType.Organization,
   };
 };
 

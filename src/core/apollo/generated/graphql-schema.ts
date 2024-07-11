@@ -20057,6 +20057,13 @@ export type JourneyPrivilegesQuery = {
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
+          community: {
+            __typename?: 'Community';
+            id: string;
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
+          };
         }
       | undefined;
   };
@@ -21633,6 +21640,7 @@ export type SpaceSubspaceCardsQuery = {
 
 export type LegacySubspaceDashboardPageQueryVariables = Exact<{
   subspaceId: Scalars['UUID'];
+  authorizedReadAccessCommunity?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 export type LegacySubspaceDashboardPageQuery = {
@@ -21727,7 +21735,7 @@ export type LegacySubspaceDashboardPageQuery = {
                 }
               | undefined;
           };
-          community: {
+          community?: {
             __typename?: 'Community';
             myMembershipStatus?: CommunityMembershipStatus | undefined;
             id: string;
@@ -21931,7 +21939,7 @@ export type SubspacePageFragment = {
         }
       | undefined;
   };
-  community: {
+  community?: {
     __typename?: 'Community';
     myMembershipStatus?: CommunityMembershipStatus | undefined;
     id: string;
@@ -23482,6 +23490,7 @@ export type SubspaceCommunityIdQuery = {
 
 export type SubspacePageQueryVariables = Exact<{
   spaceId: Scalars['UUID'];
+  authorizedReadAccessCommunity?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 export type SubspacePageQuery = {
@@ -23498,7 +23507,7 @@ export type SubspacePageQuery = {
           profile: { __typename?: 'Profile'; id: string; url: string };
           metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
           context: { __typename?: 'Context'; id: string; vision?: string | undefined };
-          community: {
+          community?: {
             __typename?: 'Community';
             myMembershipStatus?: CommunityMembershipStatus | undefined;
             id: string;
@@ -23631,7 +23640,7 @@ export type SubspacePageSpaceFragment = {
   profile: { __typename?: 'Profile'; id: string; url: string };
   metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
   context: { __typename?: 'Context'; id: string; vision?: string | undefined };
-  community: {
+  community?: {
     __typename?: 'Community';
     myMembershipStatus?: CommunityMembershipStatus | undefined;
     id: string;

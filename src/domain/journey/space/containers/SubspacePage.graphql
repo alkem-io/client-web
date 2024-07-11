@@ -1,4 +1,4 @@
-query LegacySubspaceDashboardPage($subspaceId: UUID!) {
+query LegacySubspaceDashboardPage($subspaceId: UUID!, $authorizedReadAccessCommunity: Boolean = false) {
   lookup {
     space(ID: $subspaceId) {
       ...SubspacePage
@@ -60,7 +60,7 @@ fragment SubspacePage on Space {
       myPrivileges
     }
   }
-  community {
+  community @include(if: $authorizedReadAccessCommunity) {
     ...EntityDashboardCommunity
     myMembershipStatus
   }

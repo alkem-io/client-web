@@ -5,11 +5,13 @@ import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import CommunityContributorsBlockWide from '../../../community/contributor/CommunityContributorsBlockWide/CommunityContributorsBlockWide';
 import { useSpaceCommunityContributorsQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContributorCardSquareProps } from '../../../community/contributor/ContributorCardSquare/ContributorCardSquare';
-import { ContributorType } from '../../../community/contributor/CommunityContributorsBlockWide/CommunityContributorsBlockWideContent';
 import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
+import { useUserContext } from '../../../community/user';
+import { BlockTitle, Caption } from '../../../../core/ui/typography';
 import CommunityVirtualContributorsBlockWide from '../../../community/contributor/CommunityContributorsBlockWide/CommunityVirtualContributorsBlockWide';
-import { SearchVisibility } from '../../../../core/apollo/generated/graphql-schema';
+import { CommunityContributorType, SearchVisibility } from '../../../../core/apollo/generated/graphql-schema';
 import { VirtualContributorProps } from '../../../community/community/VirtualContributorsBlock/VirtualContributorsDialog';
+import Gutters from '../../../../core/ui/grid/Gutters';
 
 export interface ContributorsToggleDialogProps {
   open?: boolean;
@@ -22,31 +24,33 @@ export interface ContributorsToggleDialogProps {
  * @param journeyId is a spaceId from the context.
  */
 const ContributorsToggleDialog = ({ open = false, journeyId, onClose }: ContributorsToggleDialogProps) => {
+  const { isAuthenticated } = useUserContext();
   const { t } = useTranslation();
 
   const { loading, data } = useSpaceCommunityContributorsQuery({
     variables: {
       spaceId: journeyId,
     },
-    skip: !open || !journeyId,
+    skip: !open || !journeyId || !isAuthenticated,
   });
 
-  const users: ContributorCardSquareProps[] | undefined = data?.lookup.space?.community?.memberUsers.map(user => ({
+  const users: ContributorCardSquareProps[] | undefined = data?.lookup.space?.community.memberUsers.map(user => ({
     id: user.id,
     avatar: user.profile.visual?.uri || '',
     displayName: user.profile.displayName || '',
     url: user.profile.url,
-    contributorType: ContributorType.People,
+    contributorType: CommunityContributorType.User,
   }));
 
-  const organizations: ContributorCardSquareProps[] | undefined =
-    data?.lookup.space?.community?.memberOrganizations.map(organization => ({
+  const organizations: ContributorCardSquareProps[] | undefined = data?.lookup.space?.community.memberOrganizations.map(
+    organization => ({
       id: organization.id,
       avatar: organization.profile.visual?.uri || '',
       displayName: organization.profile.displayName || '',
       url: organization.profile.url,
-      contributorType: ContributorType.Organizations,
-    }));
+      contributorType: CommunityContributorType.Organization,
+    })
+  );
 
   const virtualContributors: VirtualContributorProps[] =
     data?.lookup.space?.community.virtualContributors.filter(vc => vc.searchVisibility !== SearchVisibility.Hidden) ??
@@ -56,11 +60,23 @@ const ContributorsToggleDialog = ({ open = false, journeyId, onClose }: Contribu
     <DialogWithGrid open={open} fullWidth columns={12} aria-labelledby="contributors-dialog-title">
       <DialogHeader onClose={onClose} title={t('common.contributors')} />
       <DialogContent>
-        <CommunityContributorsBlockWide users={users} organizations={organizations} isLoading={loading} isDialogView />
-      </DialogContent>
-      <DialogHeader title={t('pages.admin.virtualContributors.title')} />
-      <DialogContent>
-        <CommunityVirtualContributorsBlockWide virtualContributors={virtualContributors} isLoading={loading} />
+        {!isAuthenticated && <Caption>{t('pages.contributors.unauthorized')}</Caption>}
+        {isAuthenticated && (
+          <Gutters disablePadding>
+            <CommunityContributorsBlockWide
+              users={users}
+              organizations={organizations}
+              isLoading={loading}
+              isDialogView
+            />
+            {virtualContributors && virtualContributors?.length > 0 && (
+              <>
+                <BlockTitle>{t('pages.admin.virtualContributors.title')}</BlockTitle>
+                <CommunityVirtualContributorsBlockWide virtualContributors={virtualContributors} />
+              </>
+            )}
+          </Gutters>
+        )}
       </DialogContent>
     </DialogWithGrid>
   );
