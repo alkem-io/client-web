@@ -5,6 +5,8 @@ import { isAbsoluteUrl } from '../../core/utils/links';
 
 export const buildOrganizationUrl = (organizationNameId: string) => `/organization/${organizationNameId}`;
 
+export const buildVirtualContributorUrl = (virtualContributorNameId: string) => `/vc/${virtualContributorNameId}`;
+
 export const buildSettingsUrl = (entityUrl: string) => {
   return `${entityUrl}/settings`;
 };

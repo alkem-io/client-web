@@ -10,6 +10,7 @@ import { useColumns } from '../../../../core/ui/grid/GridContext';
 export enum ContributorType {
   People,
   Organizations,
+  Virtuals,
 }
 
 interface CommunityContributorsBlockWideContentProps {
