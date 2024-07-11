@@ -11,6 +11,10 @@ const mainQuery =
   (...args: Args) => {
     const result = fn(...args);
 
+    console.log(result);
+
+    console.log({ notFound: isApolloNotFoundError(result.error) });
+
     if (isApolloNotFoundError(result.error)) {
       throw new NotFoundError();
     }
