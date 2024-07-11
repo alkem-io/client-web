@@ -22,6 +22,7 @@ import { MetricType } from '../../../platform/metrics/MetricType';
 import { InnovationFlowDetails } from '../../../collaboration/InnovationFlow/InnovationFlow';
 import { ContributorViewProps } from '../../../community/community/EntityDashboardContributorsSection/Types';
 import { VirtualContributorProps } from '../../../community/community/VirtualContributorsBlock/VirtualContributorsDialog';
+import { useAuthenticationContext } from '../../../../core/auth/authentication/hooks/useAuthenticationContext';
 
 interface AboutPagePermissions {
   communityReadAccess: boolean;
@@ -60,6 +61,7 @@ export interface AboutPageContainerProps
 }
 
 const AboutPageContainer: FC<AboutPageContainerProps> = ({ journeyId, children }) => {
+  const { isAuthenticated } = useAuthenticationContext();
   const {
     data: nonMembersData,
     loading: nonMembersDataLoading,
@@ -85,7 +87,7 @@ const AboutPageContainer: FC<AboutPageContainerProps> = ({ journeyId, children }
     variables: {
       spaceId: journeyId!,
     },
-    skip: nonMembersDataLoading || !journeyId,
+    skip: nonMembersDataLoading || !journeyId || !isAuthenticated,
   });
 
   const memberProfile = membersData?.lookup.space?.profile;
