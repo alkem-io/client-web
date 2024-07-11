@@ -7,21 +7,19 @@ import InnovationFlowStates from '../../../collaboration/InnovationFlow/Innovati
 import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
 import { OrderUpdate, TypedCallout } from '../../../collaboration/callout/useCallouts/useCallouts';
 import { InnovationFlowState } from '../../../collaboration/InnovationFlow/InnovationFlow';
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { SubspaceInnovationFlow, useConsumeAction } from '../layout/SubspacePageLayout';
 import { useCalloutCreationWithPreviewImages } from '../../../collaboration/callout/creationDialog/useCalloutCreation/useCalloutCreationWithPreviewImages';
 import CalloutCreationDialog from '../../../collaboration/callout/creationDialog/CalloutCreationDialog';
 import { SubspaceDialog } from '../layout/SubspaceDialog';
 import InnovationFlowVisualizerMobile from '../../../collaboration/InnovationFlow/InnovationFlowVisualizers/InnovationFlowVisualizerMobile';
 import InnovationFlowChips from '../../../collaboration/InnovationFlow/InnovationFlowVisualizers/InnovationFlowChips';
-import useResettableState from '../../../../core/utils/useResettableState';
 import InnovationFlowSettingsButton from '../../../collaboration/InnovationFlow/InnovationFlowDialogs/InnovationFlowSettingsButton';
 import { CalloutGroupNameValuesMap } from '../../../collaboration/callout/CalloutsInContext/CalloutsGroup';
 
 interface SubspaceHomeViewProps {
   journeyId: string | undefined;
   collaborationId: string | undefined;
-  innovationFlowId: string | undefined;
   innovationFlowStates: InnovationFlowState[] | undefined;
   currentInnovationFlowState: string | undefined;
   callouts: TypedCallout[] | undefined;
@@ -36,7 +34,6 @@ interface SubspaceHomeViewProps {
 const SubspaceHomeView = ({
   journeyId,
   collaborationId,
-  innovationFlowId,
   innovationFlowStates,
   currentInnovationFlowState,
   callouts,
@@ -68,14 +65,18 @@ const SubspaceHomeView = ({
   );
 
   // on innovation flow tab change
-  const [selectedInnovationFlowState, setSelectedInnovationFlowState] = useResettableState(currentInnovationFlowState, [
-    innovationFlowId,
-  ]);
+  const [selectedInnovationFlowState, setSelectedInnovationFlowState] = useState(currentInnovationFlowState);
 
-  // on innovation flow template change #6319
+  const doesSelectedInnovationFlowStateExist = innovationFlowStates?.some(
+    state => state.displayName === selectedInnovationFlowState
+  );
+
+  // on e.g. innovation flow template change #6319
   useEffect(() => {
-    setSelectedInnovationFlowState(currentInnovationFlowState);
-  }, [currentInnovationFlowState]);
+    if (!doesSelectedInnovationFlowStateExist) {
+      setSelectedInnovationFlowState(currentInnovationFlowState);
+    }
+  }, [doesSelectedInnovationFlowStateExist]);
 
   const selectedFlowStateCallouts = useMemo(() => {
     const filterCallouts = (callouts: TypedCallout[] | undefined) => {
