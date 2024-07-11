@@ -14,8 +14,8 @@ import Avatar from '../../../../core/ui/avatar/Avatar';
 import defaultJourneyAvatar from '../../../../domain/journey/defaultVisuals/Avatar.jpg';
 import RouterLink, { RouterLinkProps } from '../../../../core/ui/link/RouterLink';
 import Gutters from '../../../../core/ui/grid/Gutters';
-import { ROUTE_CREATE_SPACE } from '../../../../domain/platform/routes/constants';
 import { Actions } from '../../../../core/ui/actions/Actions';
+import { TopLevelRoutePath } from '../../../routing/TopLevelRoutePath';
 
 const VIRTUAL_CONTRIBUTORS_LIMIT = 3;
 
@@ -41,7 +41,7 @@ const MyAccountBlock = () => {
   let createLink = t('pages.home.sections.startingSpace.url');
 
   if (user && user.hasPlatformPrivilege(AuthorizationPrivilege.CreateSpace)) {
-    createLink = `/${ROUTE_CREATE_SPACE}`;
+    createLink = `/${TopLevelRoutePath.CreateSpace}`;
   }
 
   const Wrapper = <D extends React.ElementType = ListItemButtonTypeMap['defaultComponent'], P = {}>(
@@ -91,6 +91,7 @@ const MyAccountBlock = () => {
             {hasVirtualCointributors &&
               virtualContributors?.map(vc => (
                 <BadgeCardView
+                  key={vc.id}
                   variant="rounded"
                   visual={
                     <Avatar

@@ -35,6 +35,8 @@ import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
 import { getSpaceLabel } from '../../JourneyTypeName';
 import Loading from '../../../../core/ui/loading/Loading';
 import { JourneyLevel } from '../../../../main/routing/resolvers/RouteResolver';
+import VirtualContributorsBlock from '../../../community/community/VirtualContributorsBlock/VirtualContributorsBlock';
+import { VirtualContributorProps } from '../../../community/community/VirtualContributorsBlock/VirtualContributorsDialog';
 
 export interface JourneyAboutDialogProps extends EntityDashboardLeads {
   open: boolean;
@@ -56,6 +58,8 @@ export interface JourneyAboutDialogProps extends EntityDashboardLeads {
   leftColumnChildrenTop?: ReactNode;
   leftColumnChildrenBottom?: ReactNode;
   shareUrl?: string;
+  virtualContributors?: VirtualContributorProps[];
+  hasReadPrivilege?: boolean;
 }
 
 interface DialogHeaderItemProps extends BoxProps {
@@ -105,6 +109,8 @@ const JourneyAboutDialog = ({
   leftColumnChildrenTop,
   leftColumnChildrenBottom,
   shareUrl,
+  virtualContributors,
+  hasReadPrivilege,
 }: JourneyAboutDialogProps) => {
   const { t } = useTranslation();
 
@@ -285,6 +291,9 @@ const JourneyAboutDialog = ({
               )}
             </PageContentBlockSeamless>
             {leftColumnChildrenBottom}
+            {hasReadPrivilege && virtualContributors && virtualContributors?.length > 0 && (
+              <VirtualContributorsBlock virtualContributors={virtualContributors} loading={loading} />
+            )}
           </PageContentColumn>
         </Gutters>
       </Box>

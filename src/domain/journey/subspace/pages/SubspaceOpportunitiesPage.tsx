@@ -58,7 +58,7 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
     <SubspacePageLayout
       journeyId={journeyId}
       journeyPath={journeyPath}
-      spaceReadAccess={{ canReadSpace: false, loading: false }}
+      spaceReadAccess={{ canReadSpace: false, canReadCommunity: false, loading: false }}
       parentJourneyId={undefined}
     >
       <ChallengeOpportunitiesContainer challengeId={challengeId}>
