@@ -3,11 +3,12 @@ import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import FormRow from '../../../../../core/ui/forms/FormRow';
 import FormikInputFieldField from '../../../../../core/ui/forms/FormikInputField/FormikInputField';
-import { displayNameValidator, nameIdValidator } from '../../../../../core/ui/forms/validator';
+import { displayNameValidator } from '../../../../../core/ui/forms/validator';
+import nonReservedNameIdValidator from '../../../../../main/routing/nonReservedNameIdValidator';
 
 export const nameSegmentSchema = yup.object().shape({
   name: displayNameValidator,
-  nameID: nameIdValidator,
+  nameID: nonReservedNameIdValidator,
 });
 
 interface NameSegmentProps {

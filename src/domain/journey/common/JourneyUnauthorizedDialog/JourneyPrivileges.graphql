@@ -6,6 +6,13 @@ query JourneyPrivileges($spaceId: UUID!) {
         id
         myPrivileges
       }
+      community {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+      }
     }
   }
 }

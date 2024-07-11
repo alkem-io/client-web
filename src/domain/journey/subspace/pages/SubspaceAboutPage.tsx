@@ -44,6 +44,8 @@ const SubspaceAboutPage: FC = () => {
             memberUsersCount,
             memberOrganizations,
             memberOrganizationsCount,
+            virtualContributors,
+            hasReadPrivilege,
           },
           state
         ) => (
@@ -81,6 +83,8 @@ const SubspaceAboutPage: FC = () => {
                 <SeeMore subject={t('common.contributors')} onClick={() => setIsContributorsDialogOpen(true)} />
               </EntityDashboardContributorsSection>
             }
+            virtualContributors={virtualContributors}
+            hasReadPrivilege={hasReadPrivilege}
           />
         )}
       </AboutPageContainer>

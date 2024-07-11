@@ -21,6 +21,9 @@ import { UserGeoProvider } from './core/analytics/geo';
 import { SentryTransactionScopeContextProvider } from './core/analytics/SentryTransactionScopeContext';
 import { useInitialChatWidgetMessage } from './main/guidance/chatWidget/ChatWidget';
 import { PendingMembershipsDialogProvider } from './domain/community/pendingMembership/PendingMembershipsDialogContext';
+import { NotFoundErrorBoundary } from './core/notFound/NotFoundErrorBoundary';
+import { Error404 } from './core/pages/Errors/Error404';
+import TopLevelLayout from './main/ui/layout/TopLevelLayout';
 
 const useGlobalStyles = makeStyles(theme => ({
   '@global': {
@@ -83,7 +86,15 @@ const Root: FC = () => {
                                   <PendingMembershipsDialogProvider>
                                     <ApmUserSetter />
                                     <ScrollToTop />
-                                    <TopLevelRoutes />
+                                    <NotFoundErrorBoundary
+                                      errorComponent={
+                                        <TopLevelLayout>
+                                          <Error404 />
+                                        </TopLevelLayout>
+                                      }
+                                    >
+                                      <TopLevelRoutes />
+                                    </NotFoundErrorBoundary>
                                   </PendingMembershipsDialogProvider>
                                 </UserProvider>
                               </AlkemioApolloProvider>

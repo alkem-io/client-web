@@ -1,4 +1,4 @@
-query SubspacePage($spaceId: UUID!) {
+query SubspacePage($spaceId: UUID!, $authorizedReadAccessCommunity: Boolean = false) {
   lookup {
     space(ID: $spaceId) {
       ...SubspacePageSpace
@@ -25,7 +25,7 @@ fragment SubspacePageSpace on Space {
     id
     vision
   }
-  community {
+  community @include(if: $authorizedReadAccessCommunity) {
     ...EntityDashboardCommunity
     myMembershipStatus
   }

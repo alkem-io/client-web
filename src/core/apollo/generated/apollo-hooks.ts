@@ -2285,11 +2285,25 @@ export const CommunityPageCommunityFragmentDoc = gql`
     memberOrganizations: organizationsInRole(role: MEMBER) {
       ...DashboardContributingOrganization
     }
+    virtualContributors: virtualContributorsInRole(role: MEMBER) {
+      id
+      searchVisibility
+      profile {
+        id
+        displayName
+        tagline
+        url
+        avatar: visual(type: AVATAR) {
+          ...VisualUri
+        }
+      }
+    }
   }
   ${DashboardLeadUserFragmentDoc}
   ${DashboardContributingUserFragmentDoc}
   ${AssociatedOrganizationDetailsFragmentDoc}
   ${DashboardContributingOrganizationFragmentDoc}
+  ${VisualUriFragmentDoc}
 `;
 export const ContextDetailsFragmentDoc = gql`
   fragment ContextDetails on Context {
@@ -2602,7 +2616,7 @@ export const SubspacePageFragmentDoc = gql`
         myPrivileges
       }
     }
-    community {
+    community @include(if: $authorizedReadAccessCommunity) {
       ...EntityDashboardCommunity
       myMembershipStatus
     }
@@ -2827,7 +2841,7 @@ export const SubspacePageSpaceFragmentDoc = gql`
       id
       vision
     }
-    community {
+    community @include(if: $authorizedReadAccessCommunity) {
       ...EntityDashboardCommunity
       myMembershipStatus
     }
@@ -14672,12 +14686,26 @@ export const SpaceCommunityContributorsDocument = gql`
           memberOrganizations: organizationsInRole(role: MEMBER) {
             ...OrganizationCard
           }
+          virtualContributors: virtualContributorsInRole(role: MEMBER) {
+            id
+            searchVisibility
+            profile {
+              id
+              displayName
+              tagline
+              url
+              avatar: visual(type: AVATAR) {
+                ...VisualUri
+              }
+            }
+          }
         }
       }
     }
   }
   ${OrganizationCardFragmentDoc}
   ${UserCardFragmentDoc}
+  ${VisualUriFragmentDoc}
 `;
 
 /**
@@ -15903,11 +15931,32 @@ export const AboutPageMembersDocument = gql`
             ...ReferenceDetails
           }
         }
+        authorization {
+          id
+          myPrivileges
+        }
+        community {
+          id
+          virtualContributors: virtualContributorsInRole(role: MEMBER) {
+            id
+            searchVisibility
+            profile {
+              id
+              displayName
+              tagline
+              url
+              avatar: visual(type: AVATAR) {
+                ...VisualUri
+              }
+            }
+          }
+        }
       }
     }
   }
   ${EntityDashboardCommunityFragmentDoc}
   ${ReferenceDetailsFragmentDoc}
+  ${VisualUriFragmentDoc}
 `;
 
 /**
@@ -16118,6 +16167,13 @@ export const JourneyPrivilegesDocument = gql`
         authorization {
           id
           myPrivileges
+        }
+        community {
+          id
+          authorization {
+            id
+            myPrivileges
+          }
         }
       }
     }
@@ -16535,9 +16591,13 @@ export function refetchSpacePrivilegesQuery(variables: SchemaTypes.SpacePrivileg
 }
 
 export const SpaceCommunityPageDocument = gql`
-  query SpaceCommunityPage($spaceNameId: UUID_NAMEID!) {
+  query SpaceCommunityPage($spaceNameId: UUID_NAMEID!, $includeCommunity: Boolean!) {
     space(ID: $spaceNameId) {
       id
+      authorization {
+        id
+        myPrivileges
+      }
       profile {
         id
         url
@@ -16548,7 +16608,11 @@ export const SpaceCommunityPageDocument = gql`
           ...ContributorDetails
         }
       }
-      community {
+      authorization {
+        id
+        myPrivileges
+      }
+      community @include(if: $includeCommunity) {
         ...CommunityPageCommunity
       }
       collaboration {
@@ -16573,6 +16637,7 @@ export const SpaceCommunityPageDocument = gql`
  * const { data, loading, error } = useSpaceCommunityPageQuery({
  *   variables: {
  *      spaceNameId: // value for 'spaceNameId'
+ *      includeCommunity: // value for 'includeCommunity'
  *   },
  * });
  */
@@ -16983,7 +17048,7 @@ export function refetchSpaceSubspaceCardsQuery(variables: SchemaTypes.SpaceSubsp
 }
 
 export const LegacySubspaceDashboardPageDocument = gql`
-  query LegacySubspaceDashboardPage($subspaceId: UUID!) {
+  query LegacySubspaceDashboardPage($subspaceId: UUID!, $authorizedReadAccessCommunity: Boolean = false) {
     lookup {
       space(ID: $subspaceId) {
         ...SubspacePage
@@ -17006,6 +17071,7 @@ export const LegacySubspaceDashboardPageDocument = gql`
  * const { data, loading, error } = useLegacySubspaceDashboardPageQuery({
  *   variables: {
  *      subspaceId: // value for 'subspaceId'
+ *      authorizedReadAccessCommunity: // value for 'authorizedReadAccessCommunity'
  *   },
  * });
  */
@@ -18917,7 +18983,7 @@ export function refetchSubspaceCommunityIdQuery(variables: SchemaTypes.SubspaceC
 }
 
 export const SubspacePageDocument = gql`
-  query SubspacePage($spaceId: UUID!) {
+  query SubspacePage($spaceId: UUID!, $authorizedReadAccessCommunity: Boolean = false) {
     lookup {
       space(ID: $spaceId) {
         ...SubspacePageSpace
@@ -18940,6 +19006,7 @@ export const SubspacePageDocument = gql`
  * const { data, loading, error } = useSubspacePageQuery({
  *   variables: {
  *      spaceId: // value for 'spaceId'
+ *      authorizedReadAccessCommunity: // value for 'authorizedReadAccessCommunity'
  *   },
  * });
  */
@@ -22331,6 +22398,148 @@ export type DeleteCalendarEventMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteCalendarEventMutation,
   SchemaTypes.DeleteCalendarEventMutationVariables
 >;
+export const AuthorizationPolicyDocument = gql`
+  query AuthorizationPolicy($authorizationPolicyId: UUID!) {
+    lookup {
+      authorizationPolicy(ID: $authorizationPolicyId) {
+        id
+        anonymousReadAccess
+        credentialRules {
+          name
+          cascade
+          criterias {
+            resourceID
+            type
+          }
+          grantedPrivileges
+        }
+        privilegeRules {
+          name
+          sourcePrivilege
+          grantedPrivileges
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useAuthorizationPolicyQuery__
+ *
+ * To run a query within a React component, call `useAuthorizationPolicyQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAuthorizationPolicyQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAuthorizationPolicyQuery({
+ *   variables: {
+ *      authorizationPolicyId: // value for 'authorizationPolicyId'
+ *   },
+ * });
+ */
+export function useAuthorizationPolicyQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.AuthorizationPolicyQuery,
+    SchemaTypes.AuthorizationPolicyQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.AuthorizationPolicyQuery, SchemaTypes.AuthorizationPolicyQueryVariables>(
+    AuthorizationPolicyDocument,
+    options
+  );
+}
+
+export function useAuthorizationPolicyLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.AuthorizationPolicyQuery,
+    SchemaTypes.AuthorizationPolicyQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.AuthorizationPolicyQuery, SchemaTypes.AuthorizationPolicyQueryVariables>(
+    AuthorizationPolicyDocument,
+    options
+  );
+}
+
+export type AuthorizationPolicyQueryHookResult = ReturnType<typeof useAuthorizationPolicyQuery>;
+export type AuthorizationPolicyLazyQueryHookResult = ReturnType<typeof useAuthorizationPolicyLazyQuery>;
+export type AuthorizationPolicyQueryResult = Apollo.QueryResult<
+  SchemaTypes.AuthorizationPolicyQuery,
+  SchemaTypes.AuthorizationPolicyQueryVariables
+>;
+export function refetchAuthorizationPolicyQuery(variables: SchemaTypes.AuthorizationPolicyQueryVariables) {
+  return { query: AuthorizationPolicyDocument, variables: variables };
+}
+
+export const AuthorizationPrivilegesForUserDocument = gql`
+  query AuthorizationPrivilegesForUser($userId: UUID!, $authorizationId: UUID!) {
+    lookup {
+      authorizationPrivilegesForUser(userID: $userId, authorizationID: $authorizationId)
+    }
+  }
+`;
+
+/**
+ * __useAuthorizationPrivilegesForUserQuery__
+ *
+ * To run a query within a React component, call `useAuthorizationPrivilegesForUserQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAuthorizationPrivilegesForUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAuthorizationPrivilegesForUserQuery({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *      authorizationId: // value for 'authorizationId'
+ *   },
+ * });
+ */
+export function useAuthorizationPrivilegesForUserQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.AuthorizationPrivilegesForUserQuery,
+    SchemaTypes.AuthorizationPrivilegesForUserQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.AuthorizationPrivilegesForUserQuery,
+    SchemaTypes.AuthorizationPrivilegesForUserQueryVariables
+  >(AuthorizationPrivilegesForUserDocument, options);
+}
+
+export function useAuthorizationPrivilegesForUserLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.AuthorizationPrivilegesForUserQuery,
+    SchemaTypes.AuthorizationPrivilegesForUserQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.AuthorizationPrivilegesForUserQuery,
+    SchemaTypes.AuthorizationPrivilegesForUserQueryVariables
+  >(AuthorizationPrivilegesForUserDocument, options);
+}
+
+export type AuthorizationPrivilegesForUserQueryHookResult = ReturnType<typeof useAuthorizationPrivilegesForUserQuery>;
+export type AuthorizationPrivilegesForUserLazyQueryHookResult = ReturnType<
+  typeof useAuthorizationPrivilegesForUserLazyQuery
+>;
+export type AuthorizationPrivilegesForUserQueryResult = Apollo.QueryResult<
+  SchemaTypes.AuthorizationPrivilegesForUserQuery,
+  SchemaTypes.AuthorizationPrivilegesForUserQueryVariables
+>;
+export function refetchAuthorizationPrivilegesForUserQuery(
+  variables: SchemaTypes.AuthorizationPrivilegesForUserQueryVariables
+) {
+  return { query: AuthorizationPrivilegesForUserDocument, variables: variables };
+}
+
 export const UpdateAnswerRelevanceDocument = gql`
   mutation updateAnswerRelevance($input: ChatGuidanceAnswerRelevanceInput!) {
     updateAnswerRelevance(input: $input)

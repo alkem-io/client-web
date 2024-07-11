@@ -6,17 +6,13 @@ import Gutters from '../../../../core/ui/grid/Gutters';
 import { Theme } from '@mui/material/styles';
 import GridProvider from '../../../../core/ui/grid/GridProvider';
 import { useColumns } from '../../../../core/ui/grid/GridContext';
-
-export enum ContributorType {
-  People,
-  Organizations,
-}
+import { CommunityContributorType } from '../../../../core/apollo/generated/graphql-schema';
 
 interface CommunityContributorsBlockWideContentProps {
   users: ContributorCardSquareProps[] | undefined;
   organizations: ContributorCardSquareProps[] | undefined;
   nested?: boolean;
-  contributorType: ContributorType;
+  contributorType: CommunityContributorType;
   filter: string[];
   compactView?: boolean;
 }
@@ -49,7 +45,7 @@ const CommunityContributorsBlockWideContent = ({
   return (
     <GridProvider columns={isSmallScreen ? columns / 2 : columns}>
       <Gutters row flexWrap="wrap" disablePadding={nested} sx={{ overflowY: 'auto' }}>
-        {contributorType === ContributorType.People &&
+        {contributorType === CommunityContributorType.User &&
           users
             ?.filter(filterFn(filter))
             .slice(0, compactView ? COMPACT_VIEW_ITEMS_LIMIT : undefined)
@@ -60,7 +56,7 @@ const CommunityContributorsBlockWideContent = ({
                 </Box>
               </GridItem>
             ))}
-        {contributorType === ContributorType.Organizations &&
+        {contributorType === CommunityContributorType.Organization &&
           organizations
             ?.filter(filterFn(filter))
             .slice(0, compactView ? COMPACT_VIEW_ITEMS_LIMIT : undefined)

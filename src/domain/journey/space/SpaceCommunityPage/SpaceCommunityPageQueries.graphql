@@ -1,6 +1,10 @@
-query SpaceCommunityPage($spaceNameId: UUID_NAMEID!) {
+query SpaceCommunityPage($spaceNameId: UUID_NAMEID!, $includeCommunity: Boolean!) {
   space(ID: $spaceNameId) {
     id
+    authorization {
+      id
+      myPrivileges
+    }
     profile {
       id
       url
@@ -11,7 +15,11 @@ query SpaceCommunityPage($spaceNameId: UUID_NAMEID!) {
         ...ContributorDetails
       }
     }
-    community {
+    authorization {
+      id
+      myPrivileges
+    }
+    community @include(if: $includeCommunity) {
       ...CommunityPageCommunity
     }
     collaboration {
@@ -33,5 +41,18 @@ fragment CommunityPageCommunity on Community {
   }
   memberOrganizations: organizationsInRole(role: MEMBER) {
     ...DashboardContributingOrganization
+  }
+  virtualContributors: virtualContributorsInRole(role: MEMBER) {
+    id
+    searchVisibility
+    profile {
+      id
+      displayName
+      tagline
+      url
+      avatar: visual(type: AVATAR) {
+        ...VisualUri
+      }
+    }
   }
 }

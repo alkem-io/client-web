@@ -26,6 +26,7 @@ const SubspaceHomeContainer = ({ journeyId, journeyTypeName, children }: Subspac
   const { data } = useSubspacePageQuery({
     variables: {
       spaceId: journeyId!,
+      authorizedReadAccessCommunity: spaceReadAccess.canReadCommunity,
     },
     skip: !journeyId || !spaceReadAccess.canReadSpace,
   });
