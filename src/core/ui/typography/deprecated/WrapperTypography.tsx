@@ -1,8 +1,7 @@
 import { Palette, TypographyVariant } from '@mui/material/styles';
 import makeStyles from '@mui/styles/makeStyles';
-import _clamp from 'clamp-js';
 import clsx from 'clsx';
-import React, { FC, useLayoutEffect, useMemo, useRef } from 'react';
+import React, { FC, useMemo, useRef } from 'react';
 import { replaceAll } from '../../../utils/replaceAll';
 
 const useTypographyStyles = makeStyles(theme => ({
@@ -93,7 +92,7 @@ export const fontWeight: FontWeight = {
   bold: 900,
 };
 
-interface TypographyProps extends Record<string, unknown> {
+interface TypographyProps {
   variant?: TypographyVariant;
   className?: string;
   color?: keyof Palette | 'inherit';
@@ -101,7 +100,6 @@ interface TypographyProps extends Record<string, unknown> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   as?: React.ComponentType<any> | string;
   classes?: unknown;
-  clamp?: string | number;
 }
 
 /**
@@ -116,17 +114,10 @@ const WrapperTypography: FC<TypographyProps> = ({
   className,
   classes,
   children,
-  clamp = undefined,
   ...rest
 }) => {
   const styles = useTypographyStyles(classes);
   const ref = useRef();
-
-  useLayoutEffect(() => {
-    if (clamp && ref?.current) {
-      _clamp(ref.current, { clamp });
-    }
-  });
 
   const removeSlashes = (string: string) => replaceAll('\\"', '"', replaceAll('\\n', '<br/>', string));
 
