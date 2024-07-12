@@ -68,7 +68,7 @@ const BasePageContentBlock = forwardRef(
       flexDirection: getFlexDirection({ row, flex }),
       flexWrap,
       gap: disableGap ? undefined : gutters(),
-      height: fullHeight ? '100vh' : undefined,
+      height: fullHeight ? '100%' : undefined,
       ...getGridItemStyle(columnsTaken),
       ...sx,
     };
