@@ -421,6 +421,7 @@ class Collab {
   };
 
   public syncScene = async (elements: readonly ExcalidrawElement[], files: BinaryFilesWithUrl) => {
+    const { getSceneVersion } = await this.excalidrawUtils;
     if (getSceneVersion(elements) > this.getLastBroadcastedOrReceivedSceneVersion()) {
       this.portal.broadcastScene(WS_SCENE_EVENT_TYPES.SCENE_UPDATE, elements, files, { syncAll: false });
       this.lastBroadcastedOrReceivedSceneVersion = getSceneVersion(elements);
@@ -429,6 +430,7 @@ class Collab {
   };
 
   private queueBroadcastAllElements = throttle(async () => {
+    const { getSceneVersion } = await this.excalidrawUtils;
     const elements = this.excalidrawAPI.getSceneElementsIncludingDeleted();
     const files = await this.filesManager.getUploadedFiles(this.excalidrawAPI.getFiles());
     this.portal.broadcastScene(WS_SCENE_EVENT_TYPES.SCENE_UPDATE, elements, files, { syncAll: true });
