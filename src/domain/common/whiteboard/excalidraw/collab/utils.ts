@@ -1,13 +1,13 @@
-import {
+import type {
   ExcalidrawElement,
   ExcalidrawImageElement,
   InitializedExcalidrawImageElement,
 } from '@alkemio/excalidraw/types/element/types';
+import type { FileId } from '@alkemio/excalidraw/types/element/types';
 import { unstable_batchedUpdates } from 'react-dom';
-import { FileId } from '@alkemio/excalidraw/types/element/types';
 
 ///// This is copied from Excalidraw sources because VITE cannot import certain things from the package,
-///// eventhough VSCode seems to have no problem to see them and shows no compilation error
+///// even though VSCode seems to have no problem to see them and shows no compilation error
 // TODO: import them properly
 
 export const arrayToMapWithIndex = <T extends { id: string }>(elements: readonly T[]) =>
