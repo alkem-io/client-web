@@ -18656,6 +18656,7 @@ export type UserContributionDisplayNamesQuery = {
   __typename?: 'Query';
   rolesUser: {
     __typename?: 'ContributorRoles';
+    id: string;
     spaces: Array<{
       __typename?: 'RolesResultSpace';
       id: string;
@@ -18674,6 +18675,7 @@ export type UserContributionsQuery = {
   __typename?: 'Query';
   rolesUser: {
     __typename?: 'ContributorRoles';
+    id: string;
     spaces: Array<{
       __typename?: 'RolesResultSpace';
       id: string;
@@ -18691,6 +18693,7 @@ export type UserOrganizationIdsQuery = {
   __typename?: 'Query';
   rolesUser: {
     __typename?: 'ContributorRoles';
+    id: string;
     organizations: Array<{ __typename?: 'RolesResultOrganization'; id: string }>;
   };
 };
@@ -27958,6 +27961,7 @@ export type UserRolesSearchCardsQuery = {
   __typename?: 'Query';
   rolesUser: {
     __typename?: 'ContributorRoles';
+    id: string;
     spaces: Array<{
       __typename?: 'RolesResultSpace';
       id: string;

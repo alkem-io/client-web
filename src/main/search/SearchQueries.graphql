@@ -262,6 +262,7 @@ fragment SearchResultSpace on SearchResultSpace {
 
 query userRolesSearchCards($userId: UUID_NAMEID_EMAIL!) {
   rolesUser(rolesData: { userID: $userId, filter: { visibilities: [ACTIVE, DEMO] } }) {
+    id
     spaces {
       id
       roles

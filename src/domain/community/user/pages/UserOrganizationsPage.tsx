@@ -13,7 +13,7 @@ const UserOrganizationsPage = () => {
   const { t } = useTranslation();
   const { userNameId = '' } = useUrlParams();
   const { user: userMetadata, loading } = useUserMetadata(userNameId);
-  const organizationIds = useUserOrganizationIds(userNameId);
+  const organizationIds = useUserOrganizationIds(userMetadata?.user.id);
 
   return (
     <UserSettingsLayout currentTab={SettingsSection.Organizations}>
