@@ -10,10 +10,11 @@ import {
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { useTranslation } from 'react-i18next';
 import { AiPersonaBodyOfKnowledgeType } from '../../../../core/apollo/generated/graphql-schema';
+import { isApolloNotFoundError } from '../../../../core/apollo/hooks/useApolloErrorHandler';
+import useRestrictedRedirect from '../../../../core/routing/useRestrictedRedirect';
 
 export const VCProfilePage = () => {
   const { t } = useTranslation();
-
   const { vcNameId = '' } = useUrlParams();
 
   const { data, loading, error } = useVirtualContributorQuery({
@@ -32,12 +33,15 @@ export const VCProfilePage = () => {
     skip: !data?.virtualContributor?.aiPersona?.bodyOfKnowledgeID || !isBoKSpace,
   });
 
-  if (loading)
+  useRestrictedRedirect({ data, error }, data => data.virtualContributor.authorization?.myPrivileges);
+
+  if (loading) {
     return (
       <Loading text={t('components.loading.message', { blockName: t('pages.virtualContributorProfile.title') })} />
     );
+  }
 
-  if (error) {
+  if (error && isApolloNotFoundError(error)) {
     return (
       <VCPageLayout>
         <Error404 />
