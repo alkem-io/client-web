@@ -1,6 +1,5 @@
-import { Excalidraw } from '@alkemio/excalidraw';
-import { ExportedDataState } from '@alkemio/excalidraw/types/data/types';
-import {
+import type { ExportedDataState } from '@alkemio/excalidraw/types/data/types';
+import type {
   BinaryFileData,
   BinaryFiles,
   ExcalidrawImperativeAPI,
@@ -11,11 +10,12 @@ import BackupIcon from '@mui/icons-material/Backup';
 import { Box } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { compact, debounce, merge } from 'lodash';
-import React, { useCallback, useEffect, useMemo, useRef } from 'react';
+import React, { Suspense, useCallback, useEffect, useMemo, useRef } from 'react';
 import ReactDOM from 'react-dom';
 import EmptyWhiteboard from '../EmptyWhiteboard';
 import { WhiteboardFilesManager } from './useWhiteboardFilesManager';
 import useWhiteboardDefaults from './useWhiteboardDefaults';
+import Loading from '../../../../core/ui/loading/Loading';
 
 const useActorWhiteboardStyles = makeStyles(theme => ({
   container: {
@@ -54,6 +54,11 @@ const WHITEBOARD_UPDATE_DEBOUNCE_INTERVAL = 100;
 type RefreshWhiteboardStateParam = Parameters<ExcalidrawImperativeAPI['updateScene']>[0] & { files?: BinaryFiles };
 
 const WINDOW_SCROLL_HANDLER_DEBOUNCE_INTERVAL = 100;
+
+const Excalidraw = React.lazy(async () => {
+  const { Excalidraw } = await import('@alkemio/excalidraw');
+  return { default: Excalidraw };
+});
 
 const ExcalidrawWrapper = ({ entities, actions, options }: WhiteboardWhiteboardProps) => {
   const { whiteboard, filesManager } = entities;
@@ -182,16 +187,18 @@ const ExcalidrawWrapper = ({ entities, actions, options }: WhiteboardWhiteboardP
   return (
     <div className={styles.container}>
       {whiteboard && (
-        <Excalidraw
-          key={whiteboard.id} // initializing a fresh Excalidraw for each whiteboard
-          excalidrawAPI={handleInitializeApi}
-          initialData={data}
-          UIOptions={mergedUIOptions}
-          isCollaborating={false}
-          viewModeEnabled
-          generateIdForFile={addNewFile}
-          {...restOptions}
-        />
+        <Suspense fallback={<Loading />}>
+          <Excalidraw
+            key={whiteboard.id} // initializing a fresh Excalidraw for each whiteboard
+            excalidrawAPI={handleInitializeApi}
+            initialData={data}
+            UIOptions={mergedUIOptions}
+            isCollaborating={false}
+            viewModeEnabled
+            generateIdForFile={addNewFile}
+            {...restOptions}
+          />
+        </Suspense>
       )}
     </div>
   );
