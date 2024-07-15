@@ -103,7 +103,7 @@ const CredentialCard: FC<CredentialCardProps> = ({ entities: details, loading = 
         ) : (
           <>
             <Box display="flex" flexDirection="column" justifyContent="space-between">
-              <WrapperTypography color="primary" weight="boldLight" clamp={1}>
+              <WrapperTypography color="primary" weight="boldLight">
                 {name}
               </WrapperTypography>
               {expiryDate && (
@@ -111,12 +111,8 @@ const CredentialCard: FC<CredentialCardProps> = ({ entities: details, loading = 
               )}
             </Box>
             <Box paddingY={1}>
-              {descriptionText && (
-                <WrapperTypography variant="body2" sx={{ wordWrap: 'break-word' }}>
-                  {descriptionText}
-                </WrapperTypography>
-              )}
-              <WrapperTypography variant="body2" color="neutralMedium" sx={{ wordWrap: 'break-word' }}>
+              {descriptionText && <WrapperTypography variant="body2">{descriptionText}</WrapperTypography>}
+              <WrapperTypography variant="body2" color="neutralMedium">
                 {credentialInfo}
               </WrapperTypography>
               <pre>{claimParser(claims)}</pre>

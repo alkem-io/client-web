@@ -135,7 +135,7 @@ const UserPopUp: FC<UserPopUpProps> = ({ id, onHide }) => {
           </div>
           {user?.profile.description && (
             <div className={styles.description}>
-              <WrapperTypography weight={'medium'} color={'neutral'} as={'p'} clamp={3}>
+              <WrapperTypography weight={'medium'} color={'neutral'} as={'p'}>
                 {user?.profile.description}
               </WrapperTypography>
             </div>

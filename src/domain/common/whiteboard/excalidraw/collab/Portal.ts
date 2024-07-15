@@ -1,5 +1,6 @@
-import { isSyncableElement, SocketUpdateData, SocketUpdateDataSource } from './data';
-import { ExcalidrawElement } from '@alkemio/excalidraw/types/element/types';
+import { IsSyncableElement, SocketUpdateData, SocketUpdateDataSource } from './data';
+import type { ExcalidrawElement } from '@alkemio/excalidraw/types/element/types';
+import type { DataURL } from '@alkemio/excalidraw/types/types';
 import {
   CollaboratorModeEvent,
   PRECEDING_ELEMENT_KEY,
@@ -10,7 +11,6 @@ import { UserIdleState } from './utils';
 import { BroadcastedExcalidrawElement } from './reconciliation';
 import { Socket } from 'socket.io-client';
 import { BinaryFileDataWithUrl, BinaryFilesWithUrl } from '../useWhiteboardFilesManager';
-import { DataURL } from '@alkemio/excalidraw/types/types';
 
 interface PortalProps {
   onSaveRequest: () => Promise<{ success: boolean; errors?: string[] }>;
@@ -181,6 +181,10 @@ class Portal {
     if (updateType === WS_SCENE_EVENT_TYPES.INIT && !syncAll) {
       throw new Error('syncAll must be true when sending SCENE.INIT');
     }
+
+    const { isInvisiblySmallElement } = await import('@alkemio/excalidraw');
+
+    const isSyncableElement = IsSyncableElement({ isInvisiblySmallElement });
 
     // sync out only the elements we think we need to to save bandwidth.
     // periodically we'll resync the whole thing to make sure no one diverges

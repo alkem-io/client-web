@@ -1,5 +1,4 @@
-import { ExportedDataState } from '@alkemio/excalidraw/types/data/types';
-import { exportToBlob } from '@alkemio/excalidraw';
+import type { ExportedDataState } from '@alkemio/excalidraw/types/data/types';
 import getWhiteboardPreviewDimensions from './getWhiteboardPreviewDimensions';
 import { VisualType } from '../../../../core/apollo/generated/graphql-schema';
 import { useUploadVisualMutation } from '../../../../core/apollo/generated/apollo-hooks';
@@ -43,6 +42,8 @@ export const generateWhiteboardPreviewImages = async <Whiteboard extends Whitebo
   const { appState, elements, files } = excalidrawState;
 
   const previewImages: WhiteboardPreviewImage[] = [];
+
+  const { exportToBlob } = await import('@alkemio/excalidraw');
 
   previewImages.push({
     visualType: VisualType.Banner,
