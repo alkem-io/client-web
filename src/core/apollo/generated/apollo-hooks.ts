@@ -14765,6 +14765,7 @@ export function refetchSpaceCommunityContributorsQuery(
 export const UserContributionDisplayNamesDocument = gql`
   query UserContributionDisplayNames($userId: UUID_NAMEID_EMAIL!) {
     rolesUser(rolesData: { userID: $userId, filter: { visibilities: [ACTIVE, DEMO] } }) {
+      id
       spaces {
         id
         displayName
@@ -14840,6 +14841,7 @@ export function refetchUserContributionDisplayNamesQuery(
 export const UserContributionsDocument = gql`
   query UserContributions($userId: UUID_NAMEID_EMAIL!) {
     rolesUser(rolesData: { userID: $userId, filter: { visibilities: [ACTIVE, DEMO] } }) {
+      id
       spaces {
         id
         nameID
@@ -14905,6 +14907,7 @@ export function refetchUserContributionsQuery(variables: SchemaTypes.UserContrib
 export const UserOrganizationIdsDocument = gql`
   query UserOrganizationIds($userId: UUID_NAMEID_EMAIL!) {
     rolesUser(rolesData: { userID: $userId }) {
+      id
       organizations {
         id
       }
@@ -22868,6 +22871,7 @@ export function refetchSearchQuery(variables: SchemaTypes.SearchQueryVariables) 
 export const UserRolesSearchCardsDocument = gql`
   query userRolesSearchCards($userId: UUID_NAMEID_EMAIL!) {
     rolesUser(rolesData: { userID: $userId, filter: { visibilities: [ACTIVE, DEMO] } }) {
+      id
       spaces {
         id
         roles

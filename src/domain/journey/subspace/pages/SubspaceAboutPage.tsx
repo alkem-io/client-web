@@ -74,14 +74,16 @@ const SubspaceAboutPage: FC = () => {
             }
             shareUrl={buildAboutUrl(profile.url)}
             leftColumnChildrenBottom={
-              <EntityDashboardContributorsSection
-                memberUsers={memberUsers}
-                memberUsersCount={memberUsersCount}
-                memberOrganizations={memberOrganizations}
-                memberOrganizationsCount={memberOrganizationsCount}
-              >
-                <SeeMore subject={t('common.contributors')} onClick={() => setIsContributorsDialogOpen(true)} />
-              </EntityDashboardContributorsSection>
+              hasReadPrivilege && (
+                <EntityDashboardContributorsSection
+                  memberUsers={memberUsers}
+                  memberUsersCount={memberUsersCount}
+                  memberOrganizations={memberOrganizations}
+                  memberOrganizationsCount={memberOrganizationsCount}
+                >
+                  <SeeMore subject={t('common.contributors')} onClick={() => setIsContributorsDialogOpen(true)} />
+                </EntityDashboardContributorsSection>
+              )
             }
             virtualContributors={virtualContributors}
             hasReadPrivilege={hasReadPrivilege}
