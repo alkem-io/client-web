@@ -1320,11 +1320,6 @@ export type CommunityApplicationResult = {
   space: Space;
 };
 
-export type CommunityApplyInput = {
-  communityID: Scalars['UUID'];
-  questions: Array<CreateNvpInput>;
-};
-
 export enum CommunityContributorType {
   Organization = 'ORGANIZATION',
   User = 'USER',
@@ -1425,6 +1420,11 @@ export enum CommunityRole {
   Lead = 'LEAD',
   Member = 'MEMBER',
 }
+
+export type CommunityRoleApplyInput = {
+  communityID: Scalars['UUID'];
+  questions: Array<CreateNvpInput>;
+};
 
 export enum CommunityRoleImplicit {
   SubspaceAdmin = 'SUBSPACE_ADMIN',
@@ -3225,7 +3225,7 @@ export type MutationAiServerUpdateAiPersonaServiceArgs = {
 };
 
 export type MutationApplyForCommunityMembershipArgs = {
-  applicationData: CommunityApplyInput;
+  applicationData: CommunityRoleApplyInput;
 };
 
 export type MutationAssignCommunityRoleToOrganizationArgs = {
@@ -14913,7 +14913,7 @@ export type SpaceApplicationQuery = {
 };
 
 export type ApplyForCommunityMembershipMutationVariables = Exact<{
-  input: CommunityApplyInput;
+  input: CommunityRoleApplyInput;
 }>;
 
 export type ApplyForCommunityMembershipMutation = {
