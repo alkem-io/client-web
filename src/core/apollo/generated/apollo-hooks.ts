@@ -10240,7 +10240,7 @@ export function refetchSpaceApplicationQuery(variables: SchemaTypes.SpaceApplica
 }
 
 export const ApplyForCommunityMembershipDocument = gql`
-  mutation applyForCommunityMembership($input: CommunityApplyInput!) {
+  mutation applyForCommunityMembership($input: CommunityRoleApplyInput!) {
     applyForCommunityMembership(applicationData: $input) {
       id
     }
