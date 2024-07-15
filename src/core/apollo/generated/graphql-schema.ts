@@ -2656,7 +2656,7 @@ export type LookupQueryResultsAuthorizationPolicyArgs = {
 };
 
 export type LookupQueryResultsAuthorizationPrivilegesForUserArgs = {
-  authorizationID: Scalars['UUID'];
+  authorizationPolicyID: Scalars['UUID'];
   userID: Scalars['UUID'];
 };
 
@@ -27317,7 +27317,7 @@ export type AuthorizationPolicyQuery = {
 
 export type AuthorizationPrivilegesForUserQueryVariables = Exact<{
   userId: Scalars['UUID'];
-  authorizationId: Scalars['UUID'];
+  authorizationPolicyId: Scalars['UUID'];
 }>;
 
 export type AuthorizationPrivilegesForUserQuery = {

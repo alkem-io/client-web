@@ -22479,9 +22479,9 @@ export function refetchAuthorizationPolicyQuery(variables: SchemaTypes.Authoriza
 }
 
 export const AuthorizationPrivilegesForUserDocument = gql`
-  query AuthorizationPrivilegesForUser($userId: UUID!, $authorizationId: UUID!) {
+  query AuthorizationPrivilegesForUser($userId: UUID!, $authorizationPolicyId: UUID!) {
     lookup {
-      authorizationPrivilegesForUser(userID: $userId, authorizationID: $authorizationId)
+      authorizationPrivilegesForUser(userID: $userId, authorizationPolicyID: $authorizationPolicyId)
     }
   }
 `;
@@ -22499,7 +22499,7 @@ export const AuthorizationPrivilegesForUserDocument = gql`
  * const { data, loading, error } = useAuthorizationPrivilegesForUserQuery({
  *   variables: {
  *      userId: // value for 'userId'
- *      authorizationId: // value for 'authorizationId'
+ *      authorizationPolicyId: // value for 'authorizationPolicyId'
  *   },
  * });
  */

@@ -1,4 +1,4 @@
-import React, { FC, useCallback } from 'react';
+import React, { FC } from 'react';
 import { AdminSection, adminTabs } from './constants';
 import { useTranslation } from 'react-i18next';
 import SpacePageBanner from '../../../../journey/space/layout/SpacePageBanner';
@@ -16,7 +16,6 @@ interface AdminLayoutProps {
 
 const AdminLayout: FC<AdminLayoutProps> = ({ currentTab, children }) => {
   const { t } = useTranslation();
-  const getTabLabel = useCallback((section: AdminSection) => t(`common.${section}` as const), [t]);
 
   return (
     <TopLevelLayout
@@ -28,7 +27,7 @@ const AdminLayout: FC<AdminLayoutProps> = ({ currentTab, children }) => {
               return (
                 <HeaderNavigationTab
                   key={tab.route}
-                  label={getTabLabel(tab.section)}
+                  label={t(`common.${tab.section}` as const)}
                   value={tab.section}
                   to={tab.route}
                 />
