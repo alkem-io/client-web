@@ -23,27 +23,41 @@ interface Provided {
   onSearchTermChange: (filterTerm: string) => void;
 }
 
-const PAGE_SIZE = 10;
+const DEFAULT_PAGE_SIZE = 10;
 
-const useAdminGlobalUserList = (): Provided => {
+interface UseAdminGlobalUserListOptions {
+  skip?: boolean;
+  pageSize?: number;
+}
+
+const useAdminGlobalUserList = ({
+  skip = false,
+  pageSize = DEFAULT_PAGE_SIZE,
+}: UseAdminGlobalUserListOptions = {}): Provided => {
   const { t } = useTranslation();
   const notify = useNotification();
 
   const [searchTerm, setSearchTerm] = useState('');
 
-  const { data, loading, error, fetchMore, hasMore, pageSize, firstPageSize } = usePaginatedQuery<
-    UserListQuery,
-    UserListQueryVariables
-  >({
+  const {
+    data,
+    loading,
+    error,
+    fetchMore,
+    hasMore,
+    pageSize: actualPageSize,
+    firstPageSize,
+  } = usePaginatedQuery<UserListQuery, UserListQueryVariables>({
     useQuery: useUserListQuery,
     options: {
       fetchPolicy: 'cache-first',
       nextFetchPolicy: 'cache-first',
+      skip,
     },
     variables: {
       filter: { firstName: searchTerm, lastName: searchTerm, email: searchTerm },
     },
-    pageSize: PAGE_SIZE,
+    pageSize,
     getPageInfo: result => result.usersPaginated.pageInfo,
   });
 
@@ -80,7 +94,7 @@ const useAdminGlobalUserList = (): Provided => {
     onDelete,
     fetchMore,
     hasMore,
-    pageSize,
+    pageSize: actualPageSize,
     firstPageSize,
     searchTerm,
     onSearchTermChange: setSearchTerm,
