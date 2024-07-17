@@ -1,11 +1,11 @@
 language: node_js
 node_js:
-  - v16.15.0
+  - v20.12.1
 cache:
   directories:
     - node_modules
 before_install:
-  - npm i -g npm@8.5.5
+  - npm i -g npm@10.5.0
 install:
   - npm install
 script:
