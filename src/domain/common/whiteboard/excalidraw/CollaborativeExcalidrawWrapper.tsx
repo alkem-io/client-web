@@ -1,12 +1,11 @@
-import { Excalidraw } from '@alkemio/excalidraw';
-import { ExportedDataState } from '@alkemio/excalidraw/types/data/types';
-import { AppState, BinaryFiles, ExcalidrawImperativeAPI, ExcalidrawProps } from '@alkemio/excalidraw/types/types';
+import type { ExportedDataState } from '@alkemio/excalidraw/types/data/types';
+import type { AppState, BinaryFiles, ExcalidrawImperativeAPI, ExcalidrawProps } from '@alkemio/excalidraw/types/types';
+import type { ExcalidrawElement } from '@alkemio/excalidraw/types/element/types';
 import { makeStyles } from '@mui/styles';
 import { debounce, merge } from 'lodash';
-import React, { PropsWithChildren, Ref, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { PropsWithChildren, Ref, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useCombinedRefs } from '../../../shared/utils/useCombinedRefs';
 import EmptyWhiteboard from '../EmptyWhiteboard';
-import { ExcalidrawElement } from '@alkemio/excalidraw/types/element/types';
 import { useUserContext } from '../../../community/user';
 import { WhiteboardFilesManager } from './useWhiteboardFilesManager';
 import useCollab, { CollabAPI, CollabState } from './collab/useCollab';
@@ -23,6 +22,12 @@ import useOnlineStatus from '../../../../core/utils/onlineStatus';
 import Reconnectable from '../../../../core/utils/reconnectable';
 import { useTick } from '../../../../core/utils/time/tick';
 import useWhiteboardDefaults from './useWhiteboardDefaults';
+import Loading from '../../../../core/ui/loading/Loading';
+
+const Excalidraw = React.lazy(async () => {
+  const { Excalidraw } = await import('@alkemio/excalidraw');
+  return { default: Excalidraw };
+});
 
 const useActorWhiteboardStyles = makeStyles(theme => ({
   container: {
@@ -219,25 +224,27 @@ const CollaborativeExcalidrawWrapper = ({
 
   const children = (
     <div className={styles.container}>
-      {whiteboard && (
-        <Excalidraw
-          key={whiteboard.id} // initializing a fresh Excalidraw for each whiteboard
-          excalidrawAPI={handleInitializeApi}
-          initialData={data}
-          UIOptions={mergedUIOptions}
-          isCollaborating={collaborating}
-          viewModeEnabled={!collaborating || mode === 'read'}
-          onChange={onChange}
-          onPointerUpdate={collabApi?.onPointerUpdate}
-          detectScroll={false}
-          autoFocus
-          generateIdForFile={addNewFile}
-          /*renderTopRightUI={_isMobile => {
-              return <LiveCollaborationStatus />;
-            }}*/
-          {...restOptions}
-        />
-      )}
+      <Suspense fallback={<Loading />}>
+        {whiteboard && (
+          <Excalidraw
+            key={whiteboard.id} // initializing a fresh Excalidraw for each whiteboard
+            excalidrawAPI={handleInitializeApi}
+            initialData={data}
+            UIOptions={mergedUIOptions}
+            isCollaborating={collaborating}
+            viewModeEnabled={!collaborating || mode === 'read'}
+            onChange={onChange}
+            onPointerUpdate={collabApi?.onPointerUpdate}
+            detectScroll={false}
+            autoFocus
+            generateIdForFile={addNewFile}
+            /*renderTopRightUI={_isMobile => {
+                return <LiveCollaborationStatus />;
+              }}*/
+            {...restOptions}
+          />
+        )}
+      </Suspense>
     </div>
   );
 

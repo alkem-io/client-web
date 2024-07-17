@@ -12,8 +12,8 @@ import {
   useSendMessageToUserMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { DirectMessageDialog } from '../../../communication/messaging/DirectMessaging/DirectMessageDialog';
-import { ContributorType } from '../CommunityContributorsBlockWide/CommunityContributorsBlockWideContent';
 import GridProvider from '../../../../core/ui/grid/GridProvider';
+import { CommunityContributorType } from '../../../../core/apollo/generated/graphql-schema';
 
 interface ContributorCardTooltip {
   tags: string[];
@@ -30,7 +30,7 @@ export interface ContributorCardSquareProps {
   tooltip?: ContributorCardTooltip;
   url: string;
   isContactable?: boolean;
-  contributorType: ContributorType;
+  contributorType: CommunityContributorType;
   roleName?: ReactNode;
 }
 
@@ -79,7 +79,7 @@ export const ContributorCardSquare: FC<ContributorCardSquareProps> = props => {
         throw new Error('User not loaded.');
       }
 
-      if (contributorType === ContributorType.People) {
+      if (contributorType === CommunityContributorType.User) {
         await sendMessageToUser({
           variables: {
             messageData: {
@@ -89,7 +89,7 @@ export const ContributorCardSquare: FC<ContributorCardSquareProps> = props => {
           },
         });
       }
-      if (contributorType === ContributorType.Organizations) {
+      if (contributorType === CommunityContributorType.Organization) {
         await sendMessageToOrganization({
           variables: {
             messageData: {

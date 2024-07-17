@@ -579,6 +579,7 @@ export type AiPersona = {
 
 export enum AiPersonaBodyOfKnowledgeType {
   AlkemioSpace = 'ALKEMIO_SPACE',
+  None = 'NONE',
   Other = 'OTHER',
 }
 
@@ -1320,11 +1321,6 @@ export type CommunityApplicationResult = {
   space: Space;
 };
 
-export type CommunityApplyInput = {
-  communityID: Scalars['UUID'];
-  questions: Array<CreateNvpInput>;
-};
-
 export enum CommunityContributorType {
   Organization = 'ORGANIZATION',
   User = 'USER',
@@ -1425,6 +1421,11 @@ export enum CommunityRole {
   Lead = 'LEAD',
   Member = 'MEMBER',
 }
+
+export type CommunityRoleApplyInput = {
+  communityID: Scalars['UUID'];
+  questions: Array<CreateNvpInput>;
+};
 
 export enum CommunityRoleImplicit {
   SubspaceAdmin = 'SUBSPACE_ADMIN',
@@ -2656,7 +2657,7 @@ export type LookupQueryResultsAuthorizationPolicyArgs = {
 };
 
 export type LookupQueryResultsAuthorizationPrivilegesForUserArgs = {
-  authorizationID: Scalars['UUID'];
+  authorizationPolicyID: Scalars['UUID'];
   userID: Scalars['UUID'];
 };
 
@@ -3225,7 +3226,7 @@ export type MutationAiServerUpdateAiPersonaServiceArgs = {
 };
 
 export type MutationApplyForCommunityMembershipArgs = {
-  applicationData: CommunityApplyInput;
+  applicationData: CommunityRoleApplyInput;
 };
 
 export type MutationAssignCommunityRoleToOrganizationArgs = {
@@ -14913,7 +14914,7 @@ export type SpaceApplicationQuery = {
 };
 
 export type ApplyForCommunityMembershipMutationVariables = Exact<{
-  input: CommunityApplyInput;
+  input: CommunityRoleApplyInput;
 }>;
 
 export type ApplyForCommunityMembershipMutation = {
@@ -18656,6 +18657,7 @@ export type UserContributionDisplayNamesQuery = {
   __typename?: 'Query';
   rolesUser: {
     __typename?: 'ContributorRoles';
+    id: string;
     spaces: Array<{
       __typename?: 'RolesResultSpace';
       id: string;
@@ -18674,6 +18676,7 @@ export type UserContributionsQuery = {
   __typename?: 'Query';
   rolesUser: {
     __typename?: 'ContributorRoles';
+    id: string;
     spaces: Array<{
       __typename?: 'RolesResultSpace';
       id: string;
@@ -18691,6 +18694,7 @@ export type UserOrganizationIdsQuery = {
   __typename?: 'Query';
   rolesUser: {
     __typename?: 'ContributorRoles';
+    id: string;
     organizations: Array<{ __typename?: 'RolesResultOrganization'; id: string }>;
   };
 };
@@ -20057,6 +20061,13 @@ export type JourneyPrivilegesQuery = {
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
+          community: {
+            __typename?: 'Community';
+            id: string;
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
+          };
         }
       | undefined;
   };
@@ -21633,6 +21644,7 @@ export type SpaceSubspaceCardsQuery = {
 
 export type LegacySubspaceDashboardPageQueryVariables = Exact<{
   subspaceId: Scalars['UUID'];
+  authorizedReadAccessCommunity?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 export type LegacySubspaceDashboardPageQuery = {
@@ -21727,7 +21739,7 @@ export type LegacySubspaceDashboardPageQuery = {
                 }
               | undefined;
           };
-          community: {
+          community?: {
             __typename?: 'Community';
             myMembershipStatus?: CommunityMembershipStatus | undefined;
             id: string;
@@ -21931,7 +21943,7 @@ export type SubspacePageFragment = {
         }
       | undefined;
   };
-  community: {
+  community?: {
     __typename?: 'Community';
     myMembershipStatus?: CommunityMembershipStatus | undefined;
     id: string;
@@ -23482,6 +23494,7 @@ export type SubspaceCommunityIdQuery = {
 
 export type SubspacePageQueryVariables = Exact<{
   spaceId: Scalars['UUID'];
+  authorizedReadAccessCommunity?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 export type SubspacePageQuery = {
@@ -23498,7 +23511,7 @@ export type SubspacePageQuery = {
           profile: { __typename?: 'Profile'; id: string; url: string };
           metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
           context: { __typename?: 'Context'; id: string; vision?: string | undefined };
-          community: {
+          community?: {
             __typename?: 'Community';
             myMembershipStatus?: CommunityMembershipStatus | undefined;
             id: string;
@@ -23631,7 +23644,7 @@ export type SubspacePageSpaceFragment = {
   profile: { __typename?: 'Profile'; id: string; url: string };
   metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
   context: { __typename?: 'Context'; id: string; vision?: string | undefined };
-  community: {
+  community?: {
     __typename?: 'Community';
     myMembershipStatus?: CommunityMembershipStatus | undefined;
     id: string;
@@ -27305,7 +27318,7 @@ export type AuthorizationPolicyQuery = {
 
 export type AuthorizationPrivilegesForUserQueryVariables = Exact<{
   userId: Scalars['UUID'];
-  authorizationId: Scalars['UUID'];
+  authorizationPolicyId: Scalars['UUID'];
 }>;
 
 export type AuthorizationPrivilegesForUserQuery = {
@@ -27949,6 +27962,7 @@ export type UserRolesSearchCardsQuery = {
   __typename?: 'Query';
   rolesUser: {
     __typename?: 'ContributorRoles';
+    id: string;
     spaces: Array<{
       __typename?: 'RolesResultSpace';
       id: string;

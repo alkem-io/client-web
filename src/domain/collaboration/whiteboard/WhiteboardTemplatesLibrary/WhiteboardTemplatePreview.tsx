@@ -1,7 +1,7 @@
 import { FC, useState } from 'react';
 import ExcalidrawWrapper from '../../../common/whiteboard/excalidraw/ExcalidrawWrapper';
 import useWhiteboardFilesManager from '../../../common/whiteboard/excalidraw/useWhiteboardFilesManager';
-import { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/types/types';
+import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/types/types';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 
 interface WhiteboardTemplatePreviewProps {

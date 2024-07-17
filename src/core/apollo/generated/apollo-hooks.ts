@@ -2616,7 +2616,7 @@ export const SubspacePageFragmentDoc = gql`
         myPrivileges
       }
     }
-    community {
+    community @include(if: $authorizedReadAccessCommunity) {
       ...EntityDashboardCommunity
       myMembershipStatus
     }
@@ -2841,7 +2841,7 @@ export const SubspacePageSpaceFragmentDoc = gql`
       id
       vision
     }
-    community {
+    community @include(if: $authorizedReadAccessCommunity) {
       ...EntityDashboardCommunity
       myMembershipStatus
     }
@@ -10240,7 +10240,7 @@ export function refetchSpaceApplicationQuery(variables: SchemaTypes.SpaceApplica
 }
 
 export const ApplyForCommunityMembershipDocument = gql`
-  mutation applyForCommunityMembership($input: CommunityApplyInput!) {
+  mutation applyForCommunityMembership($input: CommunityRoleApplyInput!) {
     applyForCommunityMembership(applicationData: $input) {
       id
     }
@@ -14765,6 +14765,7 @@ export function refetchSpaceCommunityContributorsQuery(
 export const UserContributionDisplayNamesDocument = gql`
   query UserContributionDisplayNames($userId: UUID_NAMEID_EMAIL!) {
     rolesUser(rolesData: { userID: $userId, filter: { visibilities: [ACTIVE, DEMO] } }) {
+      id
       spaces {
         id
         displayName
@@ -14840,6 +14841,7 @@ export function refetchUserContributionDisplayNamesQuery(
 export const UserContributionsDocument = gql`
   query UserContributions($userId: UUID_NAMEID_EMAIL!) {
     rolesUser(rolesData: { userID: $userId, filter: { visibilities: [ACTIVE, DEMO] } }) {
+      id
       spaces {
         id
         nameID
@@ -14905,6 +14907,7 @@ export function refetchUserContributionsQuery(variables: SchemaTypes.UserContrib
 export const UserOrganizationIdsDocument = gql`
   query UserOrganizationIds($userId: UUID_NAMEID_EMAIL!) {
     rolesUser(rolesData: { userID: $userId }) {
+      id
       organizations {
         id
       }
@@ -16168,6 +16171,13 @@ export const JourneyPrivilegesDocument = gql`
           id
           myPrivileges
         }
+        community {
+          id
+          authorization {
+            id
+            myPrivileges
+          }
+        }
       }
     }
   }
@@ -17041,7 +17051,7 @@ export function refetchSpaceSubspaceCardsQuery(variables: SchemaTypes.SpaceSubsp
 }
 
 export const LegacySubspaceDashboardPageDocument = gql`
-  query LegacySubspaceDashboardPage($subspaceId: UUID!) {
+  query LegacySubspaceDashboardPage($subspaceId: UUID!, $authorizedReadAccessCommunity: Boolean = false) {
     lookup {
       space(ID: $subspaceId) {
         ...SubspacePage
@@ -17064,6 +17074,7 @@ export const LegacySubspaceDashboardPageDocument = gql`
  * const { data, loading, error } = useLegacySubspaceDashboardPageQuery({
  *   variables: {
  *      subspaceId: // value for 'subspaceId'
+ *      authorizedReadAccessCommunity: // value for 'authorizedReadAccessCommunity'
  *   },
  * });
  */
@@ -18975,7 +18986,7 @@ export function refetchSubspaceCommunityIdQuery(variables: SchemaTypes.SubspaceC
 }
 
 export const SubspacePageDocument = gql`
-  query SubspacePage($spaceId: UUID!) {
+  query SubspacePage($spaceId: UUID!, $authorizedReadAccessCommunity: Boolean = false) {
     lookup {
       space(ID: $spaceId) {
         ...SubspacePageSpace
@@ -18998,6 +19009,7 @@ export const SubspacePageDocument = gql`
  * const { data, loading, error } = useSubspacePageQuery({
  *   variables: {
  *      spaceId: // value for 'spaceId'
+ *      authorizedReadAccessCommunity: // value for 'authorizedReadAccessCommunity'
  *   },
  * });
  */
@@ -22467,9 +22479,9 @@ export function refetchAuthorizationPolicyQuery(variables: SchemaTypes.Authoriza
 }
 
 export const AuthorizationPrivilegesForUserDocument = gql`
-  query AuthorizationPrivilegesForUser($userId: UUID!, $authorizationId: UUID!) {
+  query AuthorizationPrivilegesForUser($userId: UUID!, $authorizationPolicyId: UUID!) {
     lookup {
-      authorizationPrivilegesForUser(userID: $userId, authorizationID: $authorizationId)
+      authorizationPrivilegesForUser(userID: $userId, authorizationPolicyID: $authorizationPolicyId)
     }
   }
 `;
@@ -22487,7 +22499,7 @@ export const AuthorizationPrivilegesForUserDocument = gql`
  * const { data, loading, error } = useAuthorizationPrivilegesForUserQuery({
  *   variables: {
  *      userId: // value for 'userId'
- *      authorizationId: // value for 'authorizationId'
+ *      authorizationPolicyId: // value for 'authorizationPolicyId'
  *   },
  * });
  */
@@ -22859,6 +22871,7 @@ export function refetchSearchQuery(variables: SchemaTypes.SearchQueryVariables) 
 export const UserRolesSearchCardsDocument = gql`
   query userRolesSearchCards($userId: UUID_NAMEID_EMAIL!) {
     rolesUser(rolesData: { userID: $userId, filter: { visibilities: [ACTIVE, DEMO] } }) {
+      id
       spaces {
         id
         roles
