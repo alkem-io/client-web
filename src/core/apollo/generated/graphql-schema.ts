@@ -2754,6 +2754,8 @@ export type MeQueryResults = {
   communityInvitations: Array<CommunityInvitationResult>;
   /** The query id */
   id: Scalars['String'];
+  /** The Spaces I have created */
+  myCreatedSpaces: Array<Space>;
   /** The Spaces I am contributing to */
   mySpaces: Array<MySpaceResults>;
   /** The applications of the current authenticated user */
@@ -2770,9 +2772,12 @@ export type MeQueryResultsCommunityInvitationsArgs = {
   states?: InputMaybe<Array<Scalars['String']>>;
 };
 
+export type MeQueryResultsMyCreatedSpacesArgs = {
+  limit?: InputMaybe<Scalars['Float']>;
+};
+
 export type MeQueryResultsMySpacesArgs = {
   limit?: InputMaybe<Scalars['Float']>;
-  showOnlyMyCreatedSpaces?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type MeQueryResultsSpaceMembershipsArgs = {
@@ -30106,45 +30111,42 @@ export type MyAccountQuery = {
   __typename?: 'Query';
   me: {
     __typename?: 'MeQueryResults';
-    mySpaces: Array<{
-      __typename?: 'MySpaceResults';
-      space: {
-        __typename?: 'Space';
+    myCreatedSpaces: Array<{
+      __typename?: 'Space';
+      id: string;
+      level: number;
+      profile: {
+        __typename?: 'Profile';
         id: string;
-        level: number;
-        profile: {
-          __typename?: 'Profile';
-          id: string;
-          displayName: string;
-          tagline: string;
-          url: string;
-          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-          cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-        };
-        account: {
-          __typename?: 'Account';
-          id: string;
-          host?:
-            | {
-                __typename?: 'Organization';
-                id: string;
-                nameID: string;
-                profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string; url: string };
-              }
-            | {
-                __typename?: 'User';
-                id: string;
-                nameID: string;
-                profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string; url: string };
-              }
-            | {
-                __typename?: 'VirtualContributor';
-                id: string;
-                nameID: string;
-                profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string; url: string };
-              }
-            | undefined;
-        };
+        displayName: string;
+        tagline: string;
+        url: string;
+        avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+      };
+      account: {
+        __typename?: 'Account';
+        id: string;
+        host?:
+          | {
+              __typename?: 'Organization';
+              id: string;
+              nameID: string;
+              profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string; url: string };
+            }
+          | {
+              __typename?: 'User';
+              id: string;
+              nameID: string;
+              profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string; url: string };
+            }
+          | {
+              __typename?: 'VirtualContributor';
+              id: string;
+              nameID: string;
+              profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string; url: string };
+            }
+          | undefined;
       };
     }>;
     user?:
@@ -30332,29 +30334,26 @@ export type NewVirtualContributorMySpacesQuery = {
   me: {
     __typename?: 'MeQueryResults';
     id: string;
-    mySpaces: Array<{
-      __typename?: 'MySpaceResults';
-      space: {
+    myCreatedSpaces: Array<{
+      __typename?: 'Space';
+      id: string;
+      account: {
+        __typename?: 'Account';
+        id: string;
+        host?:
+          | { __typename?: 'Organization'; id: string }
+          | { __typename?: 'User'; id: string }
+          | { __typename?: 'VirtualContributor'; id: string }
+          | undefined;
+      };
+      profile: { __typename?: 'Profile'; id: string; displayName: string };
+      subspaces: Array<{
         __typename?: 'Space';
         id: string;
-        account: {
-          __typename?: 'Account';
-          id: string;
-          host?:
-            | { __typename?: 'Organization'; id: string }
-            | { __typename?: 'User'; id: string }
-            | { __typename?: 'VirtualContributor'; id: string }
-            | undefined;
-        };
-        profile: { __typename?: 'Profile'; id: string; displayName: string };
-        subspaces: Array<{
-          __typename?: 'Space';
-          id: string;
-          type: SpaceType;
-          profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
-          community: { __typename?: 'Community'; id: string };
-        }>;
-      };
+        type: SpaceType;
+        profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+        community: { __typename?: 'Community'; id: string };
+      }>;
     }>;
   };
 };
