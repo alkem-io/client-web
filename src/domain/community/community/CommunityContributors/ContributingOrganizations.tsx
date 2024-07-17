@@ -1,10 +1,23 @@
-import Grid from '@mui/material/Grid';
-import LoadingOrganizationCard from '../../../shared/components/LoadingOrganizationCard';
-import OrganizationCardHorizontal, {
-  OrganizationCardProps,
-} from '../../contributor/organization/OrganizationCardHorizontal/OrganizationCardHorizontal';
 import React, { FC, ReactElement } from 'react';
+import Grid from '@mui/material/Grid';
+import { Box, Skeleton } from '@mui/material';
 import { Identifiable } from '../../../../core/utils/Identifiable';
+import ContributorCardHorizontal from '../../../../core/ui/card/ContributorCardHorizontal';
+import Loading from '../../../../core/ui/loading/Loading';
+import { Caption } from '../../../../core/ui/typography';
+import OrganizationVerifiedStatus from '../../organization/organizationVerifiedStatus/OrganizationVerifiedStatus';
+import CircleTag from '../../../../core/ui/tags/CircleTag';
+
+interface OrganizationCardProps {
+  name?: string;
+  avatar?: string;
+  city?: string;
+  country?: string;
+  associatesCount?: number;
+  verified?: boolean;
+  loading?: boolean;
+  url?: string;
+}
 
 export interface ContributingOrganizationsProps {
   loading?: boolean;
@@ -20,9 +33,7 @@ const ContributingOrganizations: FC<ContributingOrganizationsProps> = ({
   if (loading) {
     return (
       <Grid container spacing={3}>
-        <LoadingOrganizationCard />
-        <LoadingOrganizationCard />
-        <LoadingOrganizationCard />
+        <Loading />
       </Grid>
     );
   }
@@ -31,14 +42,56 @@ const ContributingOrganizations: FC<ContributingOrganizationsProps> = ({
     return noOrganizationsView ?? null;
   }
 
+  const renderAssociatesCount = org => {
+    return (
+      <Box display="flex" flexDirection="column" alignItems="flex-end">
+        <Box display="flex">
+          <Caption sx={{ marginRight: 1, flexGrow: 1 }}>{loading ? <Skeleton /> : 'Associates'}</Caption>
+          {loading ? (
+            <Skeleton variant="circular">
+              <CircleTag text={`${org.associatesCount}`} color="primary" size="small" />
+            </Skeleton>
+          ) : (
+            <CircleTag text={`${org.associatesCount}`} color="primary" size="small" />
+          )}
+        </Box>
+        {loading ? (
+          <Skeleton>
+            <OrganizationVerifiedStatus verified={Boolean(org.verified)} />
+          </Skeleton>
+        ) : (
+          <OrganizationVerifiedStatus verified={Boolean(org.verified)} />
+        )}
+      </Box>
+    );
+  };
+
+  const mappedOrganizations = organizations?.map(org => ({
+    id: org.id,
+    profile:
+      {
+        displayName: org.name || '',
+        avatar: {
+          uri: org.avatar || '',
+        },
+        location: {
+          city: org.city,
+          country: org.country,
+        },
+      } || undefined,
+    url: org.url,
+    index: renderAssociatesCount(org),
+    onContact: () => {},
+  }));
+
   return (
-    <Grid container spacing={3} columns={1}>
-      {organizations?.map(org => (
-        <Grid key={org.id} item xs={1}>
-          <OrganizationCardHorizontal {...org} transparent />
+    <>
+      {mappedOrganizations?.map(org => (
+        <Grid item key={org.id} padding={0.5}>
+          <ContributorCardHorizontal {...org} seamless />
         </Grid>
       ))}
-    </Grid>
+    </>
   );
 };
 

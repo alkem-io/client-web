@@ -1,8 +1,8 @@
 import React, { ComponentType, FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import Dialog from '@mui/material/Dialog';
 import { Box, Button, DialogActions } from '@mui/material';
 import { DialogContent, DialogTitle } from '../../../../core/ui/dialog/deprecated';
+import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
 
 export interface ContributorsDialogContentProps {
   dialogOpen: boolean;
@@ -22,7 +22,7 @@ const ContributorsDialog: FC<ContributorsDialogProps> = ({ open, onClose, dialog
   };
 
   return (
-    <Dialog open={open} maxWidth="md" fullWidth aria-labelledby="community-updates-dialog-title">
+    <DialogWithGrid open={open} maxWidth="md" fullWidth aria-labelledby="community-updates-dialog-title">
       <DialogTitle id="community-updates-dialog-title" onClose={handleClose}>
         <Box display="flex" alignItems="center">
           {t('dashboard-contributors-section.dialog-title')}
@@ -36,7 +36,7 @@ const ContributorsDialog: FC<ContributorsDialogProps> = ({ open, onClose, dialog
       <DialogActions>
         <Button onClick={onClose}>{t('buttons.close')}</Button>
       </DialogActions>
-    </Dialog>
+    </DialogWithGrid>
   );
 };
 
