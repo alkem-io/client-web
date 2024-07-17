@@ -1,4 +1,5 @@
 import React, { FC, ReactElement } from 'react';
+import { useTranslation } from 'react-i18next';
 import Grid from '@mui/material/Grid';
 import { Box, Skeleton } from '@mui/material';
 import { Identifiable } from '../../../../core/utils/Identifiable';
@@ -7,6 +8,7 @@ import Loading from '../../../../core/ui/loading/Loading';
 import { Caption } from '../../../../core/ui/typography';
 import OrganizationVerifiedStatus from '../../organization/organizationVerifiedStatus/OrganizationVerifiedStatus';
 import CircleTag from '../../../../core/ui/tags/CircleTag';
+import useDirectMessageDialog from '../../../communication/messaging/DirectMessaging/useDirectMessageDialog';
 
 export interface OrganizationCardProps {
   name?: string;
@@ -30,6 +32,12 @@ const ContributingOrganizations: FC<ContributingOrganizationsProps> = ({
   loading = false,
   noOrganizationsView,
 }) => {
+  const { t } = useTranslation();
+  const directMessageDialogOptions = {
+    dialogTitle: t('send-message-dialog.direct-message-title'),
+  };
+  const { sendMessage, directMessageDialog } = useDirectMessageDialog(directMessageDialogOptions);
+
   if (loading) {
     return (
       <Grid container spacing={3}>
@@ -81,7 +89,15 @@ const ContributingOrganizations: FC<ContributingOrganizationsProps> = ({
       } || undefined,
     url: org.url,
     index: renderAssociatesCount(org),
-    onContact: () => {},
+    onContact: () => {
+      sendMessage('organization', {
+        id: org.id,
+        avatarUri: org.avatar,
+        displayName: org.name,
+        city: org.city,
+        country: org.country,
+      });
+    },
   }));
 
   return (
@@ -91,6 +107,7 @@ const ContributingOrganizations: FC<ContributingOrganizationsProps> = ({
           <ContributorCardHorizontal {...org} seamless />
         </Grid>
       ))}
+      {directMessageDialog}
     </>
   );
 };
