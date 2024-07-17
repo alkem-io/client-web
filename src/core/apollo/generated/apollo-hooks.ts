@@ -23681,33 +23681,31 @@ export function refetchMembershipSuggestionSpaceQuery(variables: SchemaTypes.Mem
 export const MyAccountDocument = gql`
   query MyAccount {
     me {
-      mySpaces(showOnlyMyCreatedSpaces: true) {
-        space {
+      myCreatedSpaces {
+        id
+        profile {
           id
-          profile {
-            id
-            displayName
-            tagline
-            url
-            avatar: visual(type: AVATAR) {
-              ...VisualUri
-            }
-            cardBanner: visual(type: CARD) {
-              ...VisualUri
-            }
+          displayName
+          tagline
+          url
+          avatar: visual(type: AVATAR) {
+            ...VisualUri
           }
-          level
-          account {
+          cardBanner: visual(type: CARD) {
+            ...VisualUri
+          }
+        }
+        level
+        account {
+          id
+          host {
             id
-            host {
+            nameID
+            profile {
               id
-              nameID
-              profile {
-                id
-                displayName
-                tagline
-                url
-              }
+              displayName
+              tagline
+              url
             }
           }
         }
@@ -24036,30 +24034,28 @@ export const NewVirtualContributorMySpacesDocument = gql`
   query NewVirtualContributorMySpaces {
     me {
       id
-      mySpaces(showOnlyMyCreatedSpaces: true) {
-        space {
+      myCreatedSpaces {
+        id
+        account {
           id
-          account {
+          host {
             id
-            host {
-              id
-            }
           }
+        }
+        profile {
+          id
+          displayName
+        }
+        subspaces {
+          id
+          type
           profile {
             id
             displayName
+            url
           }
-          subspaces {
+          community {
             id
-            type
-            profile {
-              id
-              displayName
-              url
-            }
-            community {
-              id
-            }
           }
         }
       }
