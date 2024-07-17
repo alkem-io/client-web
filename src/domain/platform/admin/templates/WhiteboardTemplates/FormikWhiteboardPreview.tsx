@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { BlockTitle } from '../../../../../core/ui/typography';
 import { WhiteboardPreviewImage } from '../../../../collaboration/whiteboard/WhiteboardPreviewImages/WhiteboardPreviewImages';
 import { useFullscreen } from '../../../../../core/ui/fullscreen/useFullscreen';
-import { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/types/types';
+import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/types/types';
 import useWhiteboardFilesManager from '../../../../common/whiteboard/excalidraw/useWhiteboardFilesManager';
 
 interface FormikWhiteboardPreviewProps extends BoxProps {

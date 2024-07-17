@@ -18,7 +18,7 @@ export interface JourneyCardProps extends ContributeCardProps {
   iconComponent: ComponentType<SvgIconProps>;
   header: ReactNode;
   banner?: JourneyCardBanner;
-  tags: string[];
+  tags?: string[];
   journeyUri?: string;
   expansion?: ReactNode;
   expansionActions?: ReactNode;
@@ -90,7 +90,7 @@ const JourneyCard = ({
           expansion={expansion}
           actions={actions}
           expansionActions={expansionActions}
-          tags={tags.length > 0 ? <CardTags disableIndentation tags={tags} /> : <></>}
+          tags={tags && <CardTags disableIndentation tags={tags} />}
         />
       </Box>
     </ContributeCard>

@@ -25,10 +25,9 @@ const MyAccountBlock = () => {
   const { startWizard, NewVirtualContributorWizard } = useNewVirtualContributorWizard();
 
   // Curently displaying only the first hosted space and the first VC in it.
-  const hostedSpace = data?.me.mySpaces.filter(
-    spaceData =>
-      spaceData.space.account && spaceData.space.account.host?.id === data?.me.user?.id && spaceData.space.level === 0
-  )[0]?.space;
+  const hostedSpace = data?.me.myCreatedSpaces.filter(
+    spaceData => spaceData.account && spaceData.account.host?.id === data?.me.user?.id && spaceData.level === 0
+  )[0];
 
   const virtualContributors = data?.me.user?.accounts
     .filter(account => account.id === hostedSpace?.account.id)

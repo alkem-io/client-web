@@ -10,7 +10,7 @@ interface CardExpandableProps extends BoxProps {
   expansion?: ReactNode;
   actions?: ReactNode;
   expansionActions?: ReactNode;
-  tags: ReactElement<CardTagsProps>;
+  tags?: ReactElement<CardTagsProps>;
 }
 
 const ExpandableCardFooter = ({
@@ -32,14 +32,15 @@ const ExpandableCardFooter = ({
         flexWrap={actions ? 'wrap' : 'nowrap'}
         {...containerProps}
       >
-        {cloneElement(tags, { visibility: expanded ? 'hidden' : 'visible', flexBasis: actions ? '100%' : undefined })}
+        {tags &&
+          cloneElement(tags, { visibility: expanded ? 'hidden' : 'visible', flexBasis: actions ? '100%' : undefined })}
         {actions}
         {expandable && <CardExpandButton expanded={expanded} />}
       </Box>
       <Collapse in={expandable && expanded}>
         <CardContent {...containerProps}>
           {expansion}
-          {cloneElement(tags, { rows: 2 })}
+          {tags && cloneElement(tags, { rows: 2 })}
           {expansionActions}
         </CardContent>
       </Collapse>

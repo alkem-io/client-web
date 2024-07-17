@@ -1,7 +1,6 @@
-import { ExcalidrawElement } from '@alkemio/excalidraw/types/element/types';
+import type { ExcalidrawElement } from '@alkemio/excalidraw/types/element/types';
+import type { AppState, UserIdleState } from '@alkemio/excalidraw/types/types';
 import { DELETED_ELEMENT_TIMEOUT } from '../excalidrawAppConstants';
-import { isInvisiblySmallElement } from '@alkemio/excalidraw';
-import { AppState, UserIdleState } from '@alkemio/excalidraw/types/types';
 import { env } from '../../../../../../main/env';
 import { BinaryFilesWithUrl } from '../../useWhiteboardFilesManager';
 
@@ -9,12 +8,14 @@ export type SyncableExcalidrawElement = ExcalidrawElement & {
   _brand: 'SyncableExcalidrawElement';
 };
 
-export const isSyncableElement = (element: ExcalidrawElement): element is SyncableExcalidrawElement => {
-  if (element.isDeleted) {
-    return element.updated > Date.now() - DELETED_ELEMENT_TIMEOUT;
-  }
-  return !isInvisiblySmallElement(element);
-};
+export const IsSyncableElement =
+  ({ isInvisiblySmallElement }: { isInvisiblySmallElement: (element: ExcalidrawElement) => boolean }) =>
+  (element: ExcalidrawElement): element is SyncableExcalidrawElement => {
+    if (element.isDeleted) {
+      return element.updated > Date.now() - DELETED_ELEMENT_TIMEOUT;
+    }
+    return !isInvisiblySmallElement(element);
+  };
 
 /**
  * Right now the reason why we resolve connection params (url, polling...)

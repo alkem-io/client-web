@@ -14765,6 +14765,7 @@ export function refetchSpaceCommunityContributorsQuery(
 export const UserContributionDisplayNamesDocument = gql`
   query UserContributionDisplayNames($userId: UUID_NAMEID_EMAIL!) {
     rolesUser(rolesData: { userID: $userId, filter: { visibilities: [ACTIVE, DEMO] } }) {
+      id
       spaces {
         id
         displayName
@@ -14840,6 +14841,7 @@ export function refetchUserContributionDisplayNamesQuery(
 export const UserContributionsDocument = gql`
   query UserContributions($userId: UUID_NAMEID_EMAIL!) {
     rolesUser(rolesData: { userID: $userId, filter: { visibilities: [ACTIVE, DEMO] } }) {
+      id
       spaces {
         id
         nameID
@@ -14905,6 +14907,7 @@ export function refetchUserContributionsQuery(variables: SchemaTypes.UserContrib
 export const UserOrganizationIdsDocument = gql`
   query UserOrganizationIds($userId: UUID_NAMEID_EMAIL!) {
     rolesUser(rolesData: { userID: $userId }) {
+      id
       organizations {
         id
       }
@@ -22476,9 +22479,9 @@ export function refetchAuthorizationPolicyQuery(variables: SchemaTypes.Authoriza
 }
 
 export const AuthorizationPrivilegesForUserDocument = gql`
-  query AuthorizationPrivilegesForUser($userId: UUID!, $authorizationId: UUID!) {
+  query AuthorizationPrivilegesForUser($userId: UUID!, $authorizationPolicyId: UUID!) {
     lookup {
-      authorizationPrivilegesForUser(userID: $userId, authorizationID: $authorizationId)
+      authorizationPrivilegesForUser(userID: $userId, authorizationPolicyID: $authorizationPolicyId)
     }
   }
 `;
@@ -22496,7 +22499,7 @@ export const AuthorizationPrivilegesForUserDocument = gql`
  * const { data, loading, error } = useAuthorizationPrivilegesForUserQuery({
  *   variables: {
  *      userId: // value for 'userId'
- *      authorizationId: // value for 'authorizationId'
+ *      authorizationPolicyId: // value for 'authorizationPolicyId'
  *   },
  * });
  */
@@ -22868,6 +22871,7 @@ export function refetchSearchQuery(variables: SchemaTypes.SearchQueryVariables) 
 export const UserRolesSearchCardsDocument = gql`
   query userRolesSearchCards($userId: UUID_NAMEID_EMAIL!) {
     rolesUser(rolesData: { userID: $userId, filter: { visibilities: [ACTIVE, DEMO] } }) {
+      id
       spaces {
         id
         roles
@@ -23677,33 +23681,31 @@ export function refetchMembershipSuggestionSpaceQuery(variables: SchemaTypes.Mem
 export const MyAccountDocument = gql`
   query MyAccount {
     me {
-      mySpaces(showOnlyMyCreatedSpaces: true) {
-        space {
+      myCreatedSpaces {
+        id
+        profile {
           id
-          profile {
-            id
-            displayName
-            tagline
-            url
-            avatar: visual(type: AVATAR) {
-              ...VisualUri
-            }
-            cardBanner: visual(type: CARD) {
-              ...VisualUri
-            }
+          displayName
+          tagline
+          url
+          avatar: visual(type: AVATAR) {
+            ...VisualUri
           }
-          level
-          account {
+          cardBanner: visual(type: CARD) {
+            ...VisualUri
+          }
+        }
+        level
+        account {
+          id
+          host {
             id
-            host {
+            nameID
+            profile {
               id
-              nameID
-              profile {
-                id
-                displayName
-                tagline
-                url
-              }
+              displayName
+              tagline
+              url
             }
           }
         }
@@ -24032,30 +24034,28 @@ export const NewVirtualContributorMySpacesDocument = gql`
   query NewVirtualContributorMySpaces {
     me {
       id
-      mySpaces(showOnlyMyCreatedSpaces: true) {
-        space {
+      myCreatedSpaces {
+        id
+        account {
           id
-          account {
+          host {
             id
-            host {
-              id
-            }
           }
+        }
+        profile {
+          id
+          displayName
+        }
+        subspaces {
+          id
+          type
           profile {
             id
             displayName
+            url
           }
-          subspaces {
+          community {
             id
-            type
-            profile {
-              id
-              displayName
-              url
-            }
-            community {
-              id
-            }
           }
         }
       }
