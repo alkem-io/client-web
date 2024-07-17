@@ -8,7 +8,7 @@ import { Caption } from '../../../../core/ui/typography';
 import OrganizationVerifiedStatus from '../../organization/organizationVerifiedStatus/OrganizationVerifiedStatus';
 import CircleTag from '../../../../core/ui/tags/CircleTag';
 
-interface OrganizationCardProps {
+export interface OrganizationCardProps {
   name?: string;
   avatar?: string;
   city?: string;
