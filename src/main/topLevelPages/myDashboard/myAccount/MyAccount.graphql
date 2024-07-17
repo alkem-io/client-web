@@ -1,32 +1,30 @@
 query MyAccount {
   me {
-    mySpaces (showOnlyMyCreatedSpaces: true) {
-      space {
+    myCreatedSpaces {
+      id
+      profile {
         id
-        profile {
-          id
-          displayName
-          tagline
-          url
-          avatar: visual(type: AVATAR) {
-            ...VisualUri
-          }
-          cardBanner: visual(type: CARD) {
-            ...VisualUri
-          }
+        displayName
+        tagline
+        url
+        avatar: visual(type: AVATAR) {
+          ...VisualUri
         }
-        level
-        account {
+        cardBanner: visual(type: CARD) {
+          ...VisualUri
+        }
+      }
+      level
+      account {
+        id
+        host {
           id
-          host {
+          nameID
+          profile {
             id
-            nameID
-            profile {
-              id
-              displayName
-              tagline
-              url
-            }
+            displayName
+            tagline
+            url
           }
         }
       }
