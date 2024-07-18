@@ -1502,6 +1502,7 @@ export type LookupQueryResultsKeySpecifier = (
   | 'room'
   | 'space'
   | 'storageAggregator'
+  | 'storageBucket'
   | 'virtualContributor'
   | 'whiteboard'
   | 'whiteboardTemplate'
@@ -1529,6 +1530,7 @@ export type LookupQueryResultsFieldPolicy = {
   room?: FieldPolicy<any> | FieldReadFunction<any>;
   space?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
+  storageBucket?: FieldPolicy<any> | FieldReadFunction<any>;
   virtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboardTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2489,10 +2491,18 @@ export type RolesResultSpaceFieldPolicy = {
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   visibility?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type RoomKeySpecifier = ('authorization' | 'id' | 'messages' | 'messagesCount' | RoomKeySpecifier)[];
+export type RoomKeySpecifier = (
+  | 'authorization'
+  | 'id'
+  | 'interactions'
+  | 'messages'
+  | 'messagesCount'
+  | RoomKeySpecifier
+)[];
 export type RoomFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  interactions?: FieldPolicy<any> | FieldReadFunction<any>;
   messages?: FieldPolicy<any> | FieldReadFunction<any>;
   messagesCount?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -2979,6 +2989,12 @@ export type UserGroupFieldPolicy = {
   members?: FieldPolicy<any> | FieldReadFunction<any>;
   parent?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type VcInteractionKeySpecifier = ('id' | 'room' | 'threadID' | VcInteractionKeySpecifier)[];
+export type VcInteractionFieldPolicy = {
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  room?: FieldPolicy<any> | FieldReadFunction<any>;
+  threadID?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type VerifiedCredentialKeySpecifier = (
   | 'claims'
@@ -3877,6 +3893,10 @@ export type StrictTypedTypePolicies = {
   UserGroup?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | UserGroupKeySpecifier | (() => undefined | UserGroupKeySpecifier);
     fields?: UserGroupFieldPolicy;
+  };
+  VcInteraction?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | VcInteractionKeySpecifier | (() => undefined | VcInteractionKeySpecifier);
+    fields?: VcInteractionFieldPolicy;
   };
   VerifiedCredential?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | VerifiedCredentialKeySpecifier | (() => undefined | VerifiedCredentialKeySpecifier);
