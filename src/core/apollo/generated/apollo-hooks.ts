@@ -655,6 +655,11 @@ export const CommentsWithMessagesFragmentDoc = gql`
     messages {
       ...MessageDetails
     }
+    vcInteractions {
+      id
+      threadID
+      virtualContributorID
+    }
   }
   ${MessageDetailsFragmentDoc}
 `;
@@ -15287,8 +15292,8 @@ export type UpdateVirtualContributorMutationOptions = Apollo.BaseMutationOptions
   SchemaTypes.UpdateVirtualContributorMutationVariables
 >;
 export const RefreshBodyOfKnowledgeDocument = gql`
-  mutation refreshBodyOfKnowledge($deleteData: RefreshVirtualContributorBodyOfKnowledgeInput!) {
-    refreshVirtualContributorBodyOfKnowledge(deleteData: $deleteData)
+  mutation refreshBodyOfKnowledge($refreshData: RefreshVirtualContributorBodyOfKnowledgeInput!) {
+    refreshVirtualContributorBodyOfKnowledge(refreshData: $refreshData)
   }
 `;
 export type RefreshBodyOfKnowledgeMutationFn = Apollo.MutationFunction<
@@ -15309,7 +15314,7 @@ export type RefreshBodyOfKnowledgeMutationFn = Apollo.MutationFunction<
  * @example
  * const [refreshBodyOfKnowledgeMutation, { data, loading, error }] = useRefreshBodyOfKnowledgeMutation({
  *   variables: {
- *      deleteData: // value for 'deleteData'
+ *      refreshData: // value for 'refreshData'
  *   },
  * });
  */

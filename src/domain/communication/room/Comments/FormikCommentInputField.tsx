@@ -27,6 +27,7 @@ import { gutters } from '../../../../core/ui/grid/utils';
 import { Caption } from '../../../../core/ui/typography';
 import HelpIcon from '@mui/icons-material/Help';
 import { useTranslation } from 'react-i18next';
+import { VcInteraction } from '../../../../core/apollo/generated/graphql-schema';
 
 const MENTION_WITH_SPACE = ` ${MENTION_SYMBOL}`;
 
@@ -61,6 +62,8 @@ interface FormikCommentInputFieldProps extends InputProps {
   submitOnReturnKey?: boolean;
   size?: OutlinedInputProps['size'];
   compactMode?: boolean;
+  vcInteractions?: Partial<VcInteraction>[];
+  threadId?: string;
 }
 
 export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
@@ -74,6 +77,8 @@ export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
   submitOnReturnKey = false,
   size = 'medium',
   compactMode = false,
+  vcInteractions = [],
+  threadId = '',
 }) => {
   const ref = useRef<HTMLElement>(null);
   const emojiButtonRef = useRef(null);
@@ -237,6 +242,8 @@ export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
             aria-describedby="filled-weight-helper-text"
             inputComponent={CommentInputField}
             inputProps={{
+              vcInteractions,
+              threadId,
               value: field.value,
               onValueChange: (newValue: string) => helpers.setValue(newValue),
               onBlur: () => helpers.setTouched(true),

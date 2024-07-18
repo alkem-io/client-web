@@ -14,11 +14,13 @@ import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
 import useCommentReactionsMutations from './useCommentReactionsMutations';
 import MessagesThread from './MessagesThread';
 import { gutters } from '../../../../core/ui/grid/utils';
+import { VcInteraction } from '../../../../core/apollo/generated/graphql-schema';
 
 const SCROLL_BOTTOM_MISTAKE_TOLERANCE = 10;
 
 export interface CommentsComponentProps {
   messages: Message[] | undefined;
+  vcInteractions: Partial<VcInteraction>[];
   commentsId: string | undefined;
   canReadMessages: boolean;
   canPostMessages: boolean;
@@ -51,6 +53,7 @@ const isScrolledToBottom = ({
 const CommentsComponent: FC<CommentsComponentProps> = ({
   last: isShowingLastMessage,
   messages = [],
+  vcInteractions = [],
   commentsId,
   postMessage,
   postReply,
@@ -113,6 +116,7 @@ const CommentsComponent: FC<CommentsComponentProps> = ({
           <Gutters gap={0}>
             <MessagesThread
               messages={messages}
+              vcInteractions={vcInteractions}
               loading={loading}
               canPostMessages={canPostMessages}
               onReply={postReply}

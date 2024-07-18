@@ -1,4 +1,4 @@
-import { Box, InputBaseComponentProps, Paper, Popper, PopperProps, styled } from '@mui/material';
+import { Box, IconButton, InputBaseComponentProps, Paper, Popper, PopperProps, styled, Tooltip } from '@mui/material';
 import React, { FC, forwardRef, PropsWithChildren, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Mention, MentionsInput, OnChangeHandlerFunc, SuggestionDataItem } from 'react-mentions';
@@ -8,6 +8,8 @@ import { Caption } from '../../../../core/ui/typography';
 import { ProfileChipView } from '../../../community/contributor/ProfileChip/ProfileChipView';
 import { useCombinedRefs } from '../../../shared/utils/useCombinedRefs';
 import { useCommunityContext } from '../../../community/community/CommunityContext';
+import { VcInteraction, VirtualContributor } from '../../../../core/apollo/generated/graphql-schema';
+import { HelpOutlineOutlined } from '@mui/icons-material';
 
 export const POPPER_Z_INDEX = 1400; // Dialogs are 1300
 const MAX_USERS_LISTED = 30;
@@ -32,6 +34,8 @@ interface SuggestionsContainerProps {
 }
 
 const SuggestionsContainer: FC<PropsWithChildren<SuggestionsContainerProps>> = ({ anchorElement, children }) => {
+  const { t } = useTranslation();
+
   return (
     <Popper open placement="bottom-start" anchorEl={anchorElement} sx={{ zIndex: POPPER_Z_INDEX }}>
       <Paper elevation={3}>
@@ -50,6 +54,28 @@ const SuggestionsContainer: FC<PropsWithChildren<SuggestionsContainerProps>> = (
             },
           })}
         >
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'row',
+              height: gutters(2),
+              alignItems: 'center',
+              fontStyle: 'italic',
+              padding: theme => `0 ${gutters(0.5)(theme)} 0 ${gutters(0.5)(theme)}`,
+              fontSize: 'small',
+            }}
+          >
+            {t('components.post-comment.vc-interactions.disclaimer')}
+            <Tooltip
+              title={<Caption>{t('components.post-comment.vc-interactions.help')}</Caption>}
+              placement="top"
+              arrow
+            >
+              <IconButton size="small" aria-label={t('components.post-comment.vc-interactions.help')}>
+                <HelpOutlineOutlined fontSize="small" />
+              </IconButton>
+            </Tooltip>
+          </Box>
           {children}
         </Box>
       </Paper>
@@ -70,6 +96,8 @@ interface CommentInputFieldProps {
   maxLength?: number;
   onReturnKey?: (event: React.KeyboardEvent<HTMLTextAreaElement> | React.KeyboardEvent<HTMLInputElement>) => void;
   popperAnchor: SuggestionsContainerProps['anchorElement'];
+  vcInteractions?: Partial<VcInteraction>[];
+  threadId?: string;
 }
 
 const StyledCommentInput = styled(Box)(({ theme }) => ({
@@ -96,8 +124,18 @@ export const CommentInputField: FC<InputBaseComponentProps> = forwardRef<
   InputBaseComponentProps
 >((props, ref) => {
   // Need to extract the properties like this because OutlinedInput doesn't accept an ElementType<CommentInputFieldProps>
-  const { value, onValueChange, onBlur, inactive, readOnly, maxLength, onReturnKey, popperAnchor } =
-    props as CommentInputFieldProps;
+  const {
+    value,
+    onValueChange,
+    onBlur,
+    inactive,
+    readOnly,
+    maxLength,
+    onReturnKey,
+    popperAnchor,
+    vcInteractions = [],
+    threadId,
+  } = props as CommentInputFieldProps;
 
   const { t } = useTranslation();
   const containerRef = useCombinedRefs(null, ref);
@@ -128,10 +166,18 @@ export const CommentInputField: FC<InputBaseComponentProps> = forwardRef<
         includeVirtualContributors: communityId !== '',
       },
     });
+    let hasVcInteraction = false;
 
-    const mentionableVCs = data?.lookup?.community?.virtualContributorsInRole?.filter(vc => {
-      return !isAlreadyMentioned(vc) && vc.profile.displayName.toLowerCase().includes(search.toLowerCase());
-    });
+    if (threadId) {
+      hasVcInteraction = vcInteractions.some(interaction => interaction?.threadID === threadId);
+    }
+
+    let mentionableVCs = [];
+    // if (!hasVcInteraction) {
+    //   mentionableVCs = data?.lookup?.community?.virtualContributorsInRole?.filter(vc => {
+    //     return !isAlreadyMentioned(vc) && vc.profile.displayName.toLowerCase().includes(search.toLowerCase());
+    //   });
+    // }
 
     const mentionableUsers = data?.usersPaginated.users.filter(user => !isAlreadyMentioned(user));
 
@@ -154,12 +200,12 @@ export const CommentInputField: FC<InputBaseComponentProps> = forwardRef<
       );
     }
 
-    if (mentionableVCs) {
+    if (mentionableVCs.length) {
       mentionableContributors.push(
-        ...mentionableVCs.map(vc => ({
+        ...mentionableVCs.map((vc: VirtualContributor) => ({
           id: vc.profile.url,
           display: vc.profile.displayName,
-          avatarUrl: vc.profile.avatar?.uri,
+          avatarUrl: '', //vc.profile.avatar?.uri,
           virtualContributor: true,
         }))
       );
@@ -189,7 +235,9 @@ export const CommentInputField: FC<InputBaseComponentProps> = forwardRef<
   }, [value]);
 
   const handleChange: OnChangeHandlerFunc = (_event, newValue, _newPlaintextValue, mentions) => {
-    currentMentionedUsersRef.current = mentions;
+    if (mentions.length) {
+      currentMentionedUsersRef.current = mentions;
+    }
     onValueChange?.(newValue);
   };
 
@@ -230,8 +278,8 @@ export const CommentInputField: FC<InputBaseComponentProps> = forwardRef<
           trigger={MENTION_SYMBOL}
           data={findMentionableUsers}
           appendSpaceOnAdd
-          displayTransform={(id, display) => `${MENTION_SYMBOL}${display}`}
-          renderSuggestion={(suggestion, search, highlightedDisplay, index, focused) => {
+          displayTransform={(_, display) => `${MENTION_SYMBOL}${display}`}
+          renderSuggestion={(suggestion, _, __, ___, focused) => {
             const user = suggestion as EnrichedSuggestionDataItem;
             return (
               <ProfileChipView

@@ -6,9 +6,11 @@ import { Message } from '../models/Message';
 import { useTranslation } from 'react-i18next';
 import useMessagesTree from './useMessagesTree';
 import useRestoredMessages from './useRestoredMessages';
+import { VcInteraction } from '../../../../core/apollo/generated/graphql-schema';
 
 interface MessagesThreadProps {
   messages: Message[] | undefined;
+  vcInteractions: Partial<VcInteraction>[];
   loading?: boolean;
   canPostMessages: boolean;
   onReply: (reply: { threadId: string; messageText: string }) => void;
@@ -21,6 +23,7 @@ interface MessagesThreadProps {
 
 const MessagesThread = ({
   messages,
+  vcInteractions,
   loading,
   canPostMessages,
   onReply,
@@ -51,6 +54,8 @@ const MessagesThread = ({
             canPostMessages &&
             !message.deleted && (
               <PostMessageToCommentsForm
+                vcInteractions={vcInteractions}
+                threadId={message.id}
                 placeholder={t('pages.post.dashboard.comment.placeholder')}
                 onPostComment={(messageText: string) =>
                   message &&

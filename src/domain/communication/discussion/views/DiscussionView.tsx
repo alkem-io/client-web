@@ -57,6 +57,7 @@ export const DiscussionView: FC<DiscussionViewProps> = ({
     [id, author, createdAt, description]
   );
 
+  console.log(discussion.comments);
   const commentReactionsMutations = useCommentReactionsMutations(discussion.comments.id);
 
   return (

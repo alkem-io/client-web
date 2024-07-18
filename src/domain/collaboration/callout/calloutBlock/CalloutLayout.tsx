@@ -102,6 +102,7 @@ const CalloutLayout = ({
 
   const hasCalloutDetails = callout.authorName && callout.publishedAt;
 
+  console.log(callout);
   return (
     <>
       {callout.draft && (

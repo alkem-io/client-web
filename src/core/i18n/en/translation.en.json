@@ -1614,6 +1614,10 @@
       "tooltip": {
         "markdown-help": "You can add formatting to your comment,\nfor example:\nBold text: **bold**\nItalic text: *italic*\nHeader: ##Title\nLink: [text](url)",
         "mentions": "Type a few characters to find relevant users"
+      },
+      "vc-interactions": {
+        "disclaimer": "Create a new comment to interact with another VC.",
+        "help": "You can only interact with one Virtual Contributor per thread (comment + 'sub’comments). If you’d like to engage with another VC, start a new thread by creating a comment in the bottom input field."
       }
     },
     "discussionForm": {
@@ -2156,7 +2160,16 @@
             "title": "...or look for your Community below",
             "searchSuggestions": "Search suggestions:"
           },
-          "suggestionsArray": ["Innovation", "Energy", "Inclusive", "3D", "Community", "Transition", "SSI", "Privacy"]
+          "suggestionsArray": [
+            "Innovation",
+            "Energy",
+            "Inclusive",
+            "3D",
+            "Community",
+            "Transition",
+            "SSI",
+            "Privacy"
+          ]
         },
         "newMemberships": {
           "title": "My Invitations",
@@ -2736,27 +2749,42 @@
       {
         "key": "energy-transition",
         "name": "Energy Transition",
-        "tags": ["Energy Transition", "Energietransitie"]
+        "tags": [
+          "Energy Transition",
+          "Energietransitie"
+        ]
       },
       {
         "key": "inclusive-society",
         "name": "Inclusive Society",
-        "tags": ["Inclusive Society", "Inclusieve Samenleving"]
+        "tags": [
+          "Inclusive Society",
+          "Inclusieve Samenleving"
+        ]
       },
       {
         "key": "public-services",
         "name": "Public Services",
-        "tags": ["Public Services", "Publieke Diensten"]
+        "tags": [
+          "Public Services",
+          "Publieke Diensten"
+        ]
       },
       {
         "key": "innovation",
         "name": "Innovation",
-        "tags": ["Innovation", "Innovatie"]
+        "tags": [
+          "Innovation",
+          "Innovatie"
+        ]
       },
       {
         "key": "digitalization-of-society",
         "name": "Digitalization of Society",
-        "tags": ["Digitalization of Society", "Digitalisering"]
+        "tags": [
+          "Digitalization of Society",
+          "Digitalisering"
+        ]
       }
     ]
   },
@@ -2823,7 +2851,10 @@
         "name": "FREE",
         "displayName": "Free",
         "priceDescription": "For Change-Makers Exploring Alkemio",
-        "features": ["Up to 10 members", "Various tools, including standard Whiteboards"],
+        "features": [
+          "Up to 10 members",
+          "Various tools, including standard Whiteboards"
+        ],
         "disclaimer": "Free Spaces are limited to 1 Space per user",
         "disabledDisclaimer": "Each user can have 1 free space. It seems like you’ve already used yours!"
       },
@@ -2831,7 +2862,11 @@
         "name": "PLUS",
         "displayName": "Plus",
         "priceDescription": "For Starting Communities, coalitions, programs...",
-        "features": ["Up to 100 members", "Realtime, multi-user Whiteboards", "Create your Virtual Contributor"],
+        "features": [
+          "Up to 100 members",
+          "Realtime, multi-user Whiteboards",
+          "Create your Virtual Contributor"
+        ],
         "disclaimer": "",
         "disabledDisclaimer": ""
       },

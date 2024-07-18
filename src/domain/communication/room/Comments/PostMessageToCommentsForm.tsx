@@ -10,6 +10,8 @@ import FormikCommentInputField from './FormikCommentInputField';
 import { gutters } from '../../../../core/ui/grid/utils';
 import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
 import { COMMENTS_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
+import { VcInteraction } from '../../../../core/apollo/generated/graphql-schema';
+import { threadId } from 'worker_threads';
 
 const UserAvatar = styled(props => <Avatar {...props} />)<AvatarProps>(({ theme }) => ({
   height: theme.avatarSizeXs,
@@ -22,6 +24,8 @@ export interface PostMessageToCommentsFormProps {
   placeholder?: string;
   maxLength?: number;
   disabled?: boolean;
+  vcInteractions?: Partial<VcInteraction>[];
+  threadId?: string;
 }
 
 interface formValues {
@@ -34,6 +38,7 @@ const PostMessageToCommentsForm = ({
   placeholder,
   maxLength = COMMENTS_TEXT_LENGTH,
   disabled,
+  vcInteractions,
   ...containerProps
 }: PostMessageToCommentsFormProps & BoxProps) => {
   const { t } = useTranslation();
@@ -80,6 +85,8 @@ const PostMessageToCommentsForm = ({
           {({ isSubmitting }) => (
             <Form noValidate>
               <FormikCommentInputField
+                vcInteractions={vcInteractions}
+                threadId={threadId}
                 name="post"
                 size="small"
                 title={title}
