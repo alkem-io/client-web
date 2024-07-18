@@ -1,4 +1,4 @@
-import { createUploadLink } from 'apollo-upload-client';
+import createUploadLink from 'apollo-upload-client/createUploadLink.mjs';
 import { split } from '@apollo/client';
 import { getMainDefinition } from '@apollo/client/utilities';
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
