@@ -50,6 +50,7 @@ const ContributingUserCard = ({ id, isContactable, ...contributorCardProps }: Co
         avatarAltText={t('common.avatar-of', { user: contributorCardProps.displayName })}
         isContactable={isContactable}
         onContact={openMessageUserDialog}
+        url={contributorCardProps.userUri}
         {...contributorCardProps}
       />
       <DirectMessageDialog
