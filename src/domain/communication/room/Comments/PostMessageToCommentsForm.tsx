@@ -11,7 +11,6 @@ import { gutters } from '../../../../core/ui/grid/utils';
 import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
 import { COMMENTS_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 import { VcInteraction } from '../../../../core/apollo/generated/graphql-schema';
-import { threadId } from 'worker_threads';
 
 const UserAvatar = styled(props => <Avatar {...props} />)<AvatarProps>(({ theme }) => ({
   height: theme.avatarSizeXs,
@@ -39,6 +38,7 @@ const PostMessageToCommentsForm = ({
   maxLength = COMMENTS_TEXT_LENGTH,
   disabled,
   vcInteractions,
+  threadId,
   ...containerProps
 }: PostMessageToCommentsFormProps & BoxProps) => {
   const { t } = useTranslation();

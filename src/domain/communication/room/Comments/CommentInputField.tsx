@@ -8,7 +8,7 @@ import { Caption } from '../../../../core/ui/typography';
 import { ProfileChipView } from '../../../community/contributor/ProfileChip/ProfileChipView';
 import { useCombinedRefs } from '../../../shared/utils/useCombinedRefs';
 import { useCommunityContext } from '../../../community/community/CommunityContext';
-import { VcInteraction, VirtualContributor } from '../../../../core/apollo/generated/graphql-schema';
+import { VcInteraction } from '../../../../core/apollo/generated/graphql-schema';
 import { HelpOutlineOutlined } from '@mui/icons-material';
 
 export const POPPER_Z_INDEX = 1400; // Dialogs are 1300
@@ -31,9 +31,14 @@ interface EnrichedSuggestionDataItem extends SuggestionDataItem {
  */
 interface SuggestionsContainerProps {
   anchorElement: PopperProps['anchorEl'];
+  showVcDisclaimer?: boolean;
 }
 
-const SuggestionsContainer: FC<PropsWithChildren<SuggestionsContainerProps>> = ({ anchorElement, children }) => {
+const SuggestionsContainer: FC<PropsWithChildren<SuggestionsContainerProps>> = ({
+  anchorElement,
+  children,
+  showVcDisclaimer = false,
+}) => {
   const { t } = useTranslation();
 
   return (
@@ -54,28 +59,30 @@ const SuggestionsContainer: FC<PropsWithChildren<SuggestionsContainerProps>> = (
             },
           })}
         >
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'row',
-              height: gutters(2),
-              alignItems: 'center',
-              fontStyle: 'italic',
-              padding: theme => `0 ${gutters(0.5)(theme)} 0 ${gutters(0.5)(theme)}`,
-              fontSize: 'small',
-            }}
-          >
-            {t('components.post-comment.vc-interactions.disclaimer')}
-            <Tooltip
-              title={<Caption>{t('components.post-comment.vc-interactions.help')}</Caption>}
-              placement="top"
-              arrow
+          {showVcDisclaimer && (
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'row',
+                height: gutters(2),
+                alignItems: 'center',
+                fontStyle: 'italic',
+                padding: theme => `0 ${gutters(0.5)(theme)} 0 ${gutters(0.5)(theme)}`,
+                fontSize: 'small',
+              }}
             >
-              <IconButton size="small" aria-label={t('components.post-comment.vc-interactions.help')}>
-                <HelpOutlineOutlined fontSize="small" />
-              </IconButton>
-            </Tooltip>
-          </Box>
+              {t('components.post-comment.vc-interactions.disclaimer')}
+              <Tooltip
+                title={<Caption>{t('components.post-comment.vc-interactions.help')}</Caption>}
+                placement="top"
+                arrow
+              >
+                <IconButton size="small" aria-label={t('components.post-comment.vc-interactions.help')}>
+                  <HelpOutlineOutlined fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            </Box>
+          )}
           {children}
         </Box>
       </Paper>
@@ -151,6 +158,8 @@ export const CommentInputField: FC<InputBaseComponentProps> = forwardRef<
   const isAlreadyMentioned = ({ profile }: { profile: { url: string } }) =>
     currentMentionedUsersRef.current.some(mention => mention.id === profile.url);
 
+  const hasVcInteraction = vcInteractions.some(interaction => interaction?.threadID === threadId);
+
   const getMentionableUsers = async (search: string): Promise<EnrichedSuggestionDataItem[]> => {
     if (!search || emptyQueries.some(query => search.startsWith(query))) {
       return [];
@@ -166,49 +175,36 @@ export const CommentInputField: FC<InputBaseComponentProps> = forwardRef<
         includeVirtualContributors: communityId !== '',
       },
     });
-    let hasVcInteraction = false;
-
-    if (threadId) {
-      hasVcInteraction = vcInteractions.some(interaction => interaction?.threadID === threadId);
-    }
-
-    let mentionableVCs = [];
-    // if (!hasVcInteraction) {
-    //   mentionableVCs = data?.lookup?.community?.virtualContributorsInRole?.filter(vc => {
-    //     return !isAlreadyMentioned(vc) && vc.profile.displayName.toLowerCase().includes(search.toLowerCase());
-    //   });
-    // }
-
-    const mentionableUsers = data?.usersPaginated.users.filter(user => !isAlreadyMentioned(user));
-
-    if (!mentionableVCs?.length && !mentionableUsers?.length) {
-      emptyQueries.push(search);
-      return [];
-    }
 
     const mentionableContributors: EnrichedSuggestionDataItem[] = [];
 
-    if (mentionableUsers) {
-      mentionableContributors.push(
-        ...mentionableUsers.map(user => ({
+    if (!hasVcInteraction) {
+      data?.lookup?.community?.virtualContributorsInRole?.forEach(vc => {
+        if (!isAlreadyMentioned(vc) && vc.profile.displayName.toLowerCase().includes(search.toLowerCase())) {
+          mentionableContributors.push({
+            id: vc.profile.url,
+            display: vc.profile.displayName,
+            avatarUrl: vc.profile.avatar?.uri,
+            virtualContributor: true,
+          });
+        }
+      });
+    }
+
+    data?.usersPaginated.users.forEach(user => {
+      if (!isAlreadyMentioned(user)) {
+        mentionableContributors.push({
           id: user.profile.url,
           display: user.profile.displayName,
           avatarUrl: user.profile.avatar?.uri,
           city: user.profile.location?.city,
           country: user.profile.location?.country,
-        }))
-      );
-    }
+        });
+      }
+    });
 
-    if (mentionableVCs.length) {
-      mentionableContributors.push(
-        ...mentionableVCs.map((vc: VirtualContributor) => ({
-          id: vc.profile.url,
-          display: vc.profile.displayName,
-          avatarUrl: '', //vc.profile.avatar?.uri,
-          virtualContributor: true,
-        }))
-      );
+    if (!mentionableContributors.length) {
+      emptyQueries.push(search);
     }
 
     return mentionableContributors;
@@ -235,9 +231,7 @@ export const CommentInputField: FC<InputBaseComponentProps> = forwardRef<
   }, [value]);
 
   const handleChange: OnChangeHandlerFunc = (_event, newValue, _newPlaintextValue, mentions) => {
-    if (mentions.length) {
-      currentMentionedUsersRef.current = mentions;
-    }
+    currentMentionedUsersRef.current = mentions;
     onValueChange?.(newValue);
   };
 
@@ -271,7 +265,9 @@ export const CommentInputField: FC<InputBaseComponentProps> = forwardRef<
         forceSuggestionsAboveCursor
         allowSpaceInQuery
         customSuggestionsContainer={children => (
-          <SuggestionsContainer anchorElement={popperAnchor}>{children}</SuggestionsContainer>
+          <SuggestionsContainer anchorElement={popperAnchor} showVcDisclaimer={hasVcInteraction}>
+            {children}
+          </SuggestionsContainer>
         )}
       >
         <Mention
