@@ -11,7 +11,7 @@ query VirtualContributor($id: UUID_NAMEID!) {
       spaceID
       host {
         id
-				profile {
+        profile {
           id
           displayName
           tagline
@@ -50,8 +50,8 @@ query VirtualContributor($id: UUID_NAMEID!) {
   }
 }
 
-query VirtualContributorProfile ($id: UUID_NAMEID!) {
-  virtualContributor (ID: $id) {
+query VirtualContributorProfile($id: UUID_NAMEID!) {
+  virtualContributor(ID: $id) {
     id
     profile {
       id

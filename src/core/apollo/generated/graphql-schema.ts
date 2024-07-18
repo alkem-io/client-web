@@ -579,7 +579,6 @@ export type AiPersona = {
 
 export enum AiPersonaBodyOfKnowledgeType {
   AlkemioSpace = 'ALKEMIO_SPACE',
-  None = 'NONE',
   Other = 'OTHER',
 }
 
