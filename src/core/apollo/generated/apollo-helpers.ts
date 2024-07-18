@@ -1538,6 +1538,7 @@ export type MeQueryResultsKeySpecifier = (
   | 'communityApplications'
   | 'communityInvitations'
   | 'id'
+  | 'myCreatedSpaces'
   | 'mySpaces'
   | 'spaceMemberships'
   | 'user'
@@ -1548,6 +1549,7 @@ export type MeQueryResultsFieldPolicy = {
   communityApplications?: FieldPolicy<any> | FieldReadFunction<any>;
   communityInvitations?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  myCreatedSpaces?: FieldPolicy<any> | FieldReadFunction<any>;
   mySpaces?: FieldPolicy<any> | FieldReadFunction<any>;
   spaceMemberships?: FieldPolicy<any> | FieldReadFunction<any>;
   user?: FieldPolicy<any> | FieldReadFunction<any>;

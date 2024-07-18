@@ -61,12 +61,12 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
 
   const findMySpace = (
     userId: string | undefined,
-    mySpaces: NewVirtualContributorMySpacesQuery['me']['mySpaces'] | undefined
+    mySpaces: NewVirtualContributorMySpacesQuery['me']['myCreatedSpaces'] | undefined
   ) => {
     if (!userId || !mySpaces) {
       return undefined;
     }
-    const spacesHostedByUser = mySpaces.filter(space => space.space.account.host?.id === userId);
+    const spacesHostedByUser = mySpaces.filter(space => space.account.host?.id === userId);
     if (spacesHostedByUser.length > 0) {
       return spacesHostedByUser[0];
     } else {
@@ -76,15 +76,15 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
   };
 
   const { mySpaceId, myAccountId, mySpaceName, mySubspaces, selectableSubspaces } = useMemo(() => {
-    const mySpace = findMySpace(user?.user.id, data?.me.mySpaces);
+    const mySpace = findMySpace(user?.user.id, data?.me.myCreatedSpaces);
 
-    const mySubspaces = mySpace?.space.subspaces ?? [];
+    const mySubspaces = mySpace?.subspaces ?? [];
     const selectableSubspaces = mySubspaces.map(subspace => ({ id: subspace.id, name: subspace.profile.displayName }));
 
     return {
-      mySpaceId: mySpace?.space.id,
-      myAccountId: mySpace?.space.account.id,
-      mySpaceName: mySpace?.space.profile.displayName,
+      mySpaceId: mySpace?.id,
+      myAccountId: mySpace?.account.id,
+      mySpaceName: mySpace?.profile.displayName,
       mySubspaces,
       selectableSubspaces,
     };
