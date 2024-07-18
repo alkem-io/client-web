@@ -624,8 +624,16 @@ export type AiPersonaServiceIngestInput = {
 export type AiPersonaServiceQuestionInput = {
   /** Virtual Persona Type. */
   aiPersonaServiceID: Scalars['UUID'];
+  /** The ID of the context, the Virtual Persona is asked a question */
+  contextID?: InputMaybe<Scalars['String']>;
+  /** The Virtual Contributor interaciton part of which is this question */
+  interactionID?: InputMaybe<Scalars['String']>;
   /** The question that is being asked. */
   question: Scalars['String'];
+  /** The ID of the message thread where the Virtual Contributor is asked a question if applicable */
+  threadID?: InputMaybe<Scalars['String']>;
+  /** User identifier used internaly by the engine */
+  userID?: InputMaybe<Scalars['String']>;
 };
 
 export type AiServer = {
@@ -649,7 +657,7 @@ export type AiServerAiPersonaServiceArgs = {
 };
 
 export type AiServerAskAiPersonaServiceQuestionArgs = {
-  chatData: AiPersonaServiceQuestionInput;
+  aiPersonaQuestionInput: AiPersonaServiceQuestionInput;
 };
 
 export type Application = {
@@ -2640,6 +2648,8 @@ export type LookupQueryResults = {
   space?: Maybe<Space>;
   /** Lookup the specified StorageAggregator */
   storageAggregator?: Maybe<StorageAggregator>;
+  /** Lookup the specified StorageBucket */
+  storageBucket?: Maybe<StorageBucket>;
   /** A particular VirtualContributor */
   virtualContributor?: Maybe<VirtualContributor>;
   /** Lookup the specified Whiteboard */
@@ -2730,6 +2740,10 @@ export type LookupQueryResultsSpaceArgs = {
 };
 
 export type LookupQueryResultsStorageAggregatorArgs = {
+  ID: Scalars['UUID'];
+};
+
+export type LookupQueryResultsStorageBucketArgs = {
   ID: Scalars['UUID'];
 };
 
@@ -3551,7 +3565,7 @@ export type MutationMoveContributionToCalloutArgs = {
 };
 
 export type MutationRefreshVirtualContributorBodyOfKnowledgeArgs = {
-  deleteData: RefreshVirtualContributorBodyOfKnowledgeInput;
+  refreshData: RefreshVirtualContributorBodyOfKnowledgeInput;
 };
 
 export type MutationRemoveCommunityRoleFromOrganizationArgs = {
@@ -4394,7 +4408,7 @@ export type QueryAskChatGuidanceQuestionArgs = {
 };
 
 export type QueryAskVirtualContributorQuestionArgs = {
-  chatData: VirtualContributorQuestionInput;
+  virtualContributorQuestionInput: VirtualContributorQuestionInput;
 };
 
 export type QueryOrganizationArgs = {
@@ -4761,6 +4775,8 @@ export type Room = {
   authorization?: Maybe<Authorization>;
   /** The ID of the entity */
   id: Scalars['UUID'];
+  /** Virtual Contributor Interactions in this Room. */
+  interactions: Array<VcInteraction>;
   /** Messages in this Room. */
   messages: Array<Message>;
   /** The number of messages in the Room. */
@@ -6027,6 +6043,14 @@ export type UsersWithAuthorizationCredentialInput = {
   type: AuthorizationCredential;
 };
 
+export type VcInteraction = {
+  __typename?: 'VcInteraction';
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  room: Room;
+  threadID: Scalars['String'];
+};
+
 export type VerifiedCredential = {
   __typename?: 'VerifiedCredential';
   /** The time at which the credential is no longer valid */
@@ -6078,8 +6102,16 @@ export type VirtualContributor = Contributor & {
 };
 
 export type VirtualContributorQuestionInput = {
+  /** The space in which context the Virtual Contributor is asked a question */
+  contextSpaceID?: InputMaybe<Scalars['String']>;
   /** The question that is being asked. */
   question: Scalars['String'];
+  /** The ID of the message thread where the Virtual Contributor is asked a question */
+  threadID?: InputMaybe<Scalars['String']>;
+  /** User identifier used internaly by the engine */
+  userID?: InputMaybe<Scalars['String']>;
+  /** The Virtual Contributor interaciton part of which is this question */
+  vcInteractionID?: InputMaybe<Scalars['String']>;
   /** Virtual Contributor to be asked. */
   virtualContributorID: Scalars['UUID'];
 };
@@ -18911,7 +18943,7 @@ export type UpdateVirtualContributorMutation = {
 };
 
 export type RefreshBodyOfKnowledgeMutationVariables = Exact<{
-  deleteData: RefreshVirtualContributorBodyOfKnowledgeInput;
+  refreshData: RefreshVirtualContributorBodyOfKnowledgeInput;
 }>;
 
 export type RefreshBodyOfKnowledgeMutation = {

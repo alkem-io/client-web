@@ -65,7 +65,7 @@ export const VCAccessibilitySettingsPage = () => {
   const refreshIngestion = () => {
     updateBodyOfKnowledge({
       variables: {
-        deleteData: {
+        refreshData: {
           virtualContributorID: data?.virtualContributor?.id ?? '',
         },
       },
