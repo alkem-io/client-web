@@ -1,3 +1,3 @@
-import { ReactComponent as ExpandContentIcon } from './ExpandContentIcon.svg';
+import ExpandContentIcon from './ExpandContentIcon.svg?react';
 
 export { ExpandContentIcon };
