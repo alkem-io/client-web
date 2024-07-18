@@ -1,12 +1,12 @@
 dist: focal
 language: node_js
 node_js:
-  - v20.12.1
+  - v20.15.1
 cache:
   directories:
     - node_modules
 before_install:
-  - npm i -g npm@10.5.0
+  - npm i -g npm@10.7.0
 install:
   - npm install
 script:
