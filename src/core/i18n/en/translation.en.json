@@ -1575,6 +1575,7 @@
       }
     },
     "associates": {
+      "name": "Associates",
       "title": "Associates ({{count}})",
       "help": "Users associated with this organization"
     },

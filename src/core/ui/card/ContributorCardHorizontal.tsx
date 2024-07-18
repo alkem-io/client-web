@@ -25,7 +25,7 @@ export interface SpaceWelcomeSectionContributorProps {
   onContact?: () => void;
   seamless?: boolean;
   actions?: ReactNode;
-  index?: ReactNode;
+  titleEndAmendment?: ReactNode;
 }
 
 const ContributorCardHorizontal = ({
@@ -34,7 +34,7 @@ const ContributorCardHorizontal = ({
   onContact,
   seamless = false,
   actions,
-  index,
+  titleEndAmendment,
 }: SpaceWelcomeSectionContributorProps) => {
   const { t } = useTranslation();
 
@@ -81,7 +81,7 @@ const ContributorCardHorizontal = ({
                 <BlockSectionTitle>{profile?.displayName}</BlockSectionTitle>
                 <BlockSectionTitle>{profile?.location && getLocationString(profile.location)}</BlockSectionTitle>
               </Box>
-              {index}
+              {titleEndAmendment}
             </Box>
           </BadgeCardView>
         </ContributorTooltip>

@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Skeleton } from '@mui/material';
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import CloseIcon from '@mui/icons-material/Close';
 import ContributorCardHorizontal, {
   SpaceWelcomeSectionContributorProps,
 } from '../../../../../core/ui/card/ContributorCardHorizontal';
-import { Caption } from '../../../../../core/ui/typography';
-import CircleTag from '../../../../../core/ui/tags/CircleTag';
-import OrganizationVerifiedStatus from '../../../organization/organizationVerifiedStatus/OrganizationVerifiedStatus';
+import LabeledCount from '../../../../../core/ui/content/LabeledCount';
 
 export interface AssociatedOrganizationCardProps extends SpaceWelcomeSectionContributorProps {
   enableLeave?: boolean;
@@ -99,27 +97,14 @@ const AssociatedOrganizationCard = ({
           </>
         )
       }
-      index={
+      titleEndAmendment={
         associatesCount && (
-          <Box display="flex" flexDirection="column" alignItems="flex-end">
-            <Box display="flex">
-              <Caption sx={{ marginRight: 1, flexGrow: 1 }}>{loading ? <Skeleton /> : 'Associates'}</Caption>
-              {loading ? (
-                <Skeleton variant="circular">
-                  <CircleTag text={`${associatesCount}`} color="primary" size="small" />
-                </Skeleton>
-              ) : (
-                <CircleTag text={`${associatesCount}`} color="primary" size="small" />
-              )}
-            </Box>
-            {loading ? (
-              <Skeleton>
-                <OrganizationVerifiedStatus verified={Boolean(verified)} />
-              </Skeleton>
-            ) : (
-              <OrganizationVerifiedStatus verified={Boolean(verified)} />
-            )}
-          </Box>
+          <LabeledCount
+            label={t('components.associates.name')}
+            count={associatesCount}
+            loading={loading}
+            verified={verified}
+          />
         )
       }
       {...props}

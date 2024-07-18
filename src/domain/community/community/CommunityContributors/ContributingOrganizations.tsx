@@ -1,14 +1,13 @@
 import React, { FC, ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 import Grid from '@mui/material/Grid';
-import { Box, Skeleton } from '@mui/material';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 import ContributorCardHorizontal from '../../../../core/ui/card/ContributorCardHorizontal';
 import Loading from '../../../../core/ui/loading/Loading';
-import { Caption } from '../../../../core/ui/typography';
-import OrganizationVerifiedStatus from '../../organization/organizationVerifiedStatus/OrganizationVerifiedStatus';
-import CircleTag from '../../../../core/ui/tags/CircleTag';
 import useDirectMessageDialog from '../../../communication/messaging/DirectMessaging/useDirectMessageDialog';
+import GridItem from '../../../../core/ui/grid/GridItem';
+import Gutters from '../../../../core/ui/grid/Gutters';
+import LabeledCount from '../../../../core/ui/content/LabeledCount';
 
 export interface OrganizationCardProps {
   name?: string;
@@ -50,29 +49,14 @@ const ContributingOrganizations: FC<ContributingOrganizationsProps> = ({
     return noOrganizationsView ?? null;
   }
 
-  const renderAssociatesCount = org => {
-    return (
-      <Box display="flex" flexDirection="column" alignItems="flex-end">
-        <Box display="flex">
-          <Caption sx={{ marginRight: 1, flexGrow: 1 }}>{loading ? <Skeleton /> : 'Associates'}</Caption>
-          {loading ? (
-            <Skeleton variant="circular">
-              <CircleTag text={`${org.associatesCount}`} color="primary" size="small" />
-            </Skeleton>
-          ) : (
-            <CircleTag text={`${org.associatesCount}`} color="primary" size="small" />
-          )}
-        </Box>
-        {loading ? (
-          <Skeleton>
-            <OrganizationVerifiedStatus verified={Boolean(org.verified)} />
-          </Skeleton>
-        ) : (
-          <OrganizationVerifiedStatus verified={Boolean(org.verified)} />
-        )}
-      </Box>
-    );
-  };
+  const renderAssociatesCount = (org: OrganizationCardProps & Identifiable) => (
+    <LabeledCount
+      label={t('components.associates.name')}
+      count={org.associatesCount || 0}
+      loading={loading}
+      verified={org.verified}
+    />
+  );
 
   const mappedOrganizations = organizations?.map(org => ({
     id: org.id,
@@ -88,7 +72,7 @@ const ContributingOrganizations: FC<ContributingOrganizationsProps> = ({
         },
       } || undefined,
     url: org.url,
-    index: renderAssociatesCount(org),
+    titleEndAmendment: renderAssociatesCount(org),
     onContact: () => {
       sendMessage('organization', {
         id: org.id,
@@ -103,9 +87,11 @@ const ContributingOrganizations: FC<ContributingOrganizationsProps> = ({
   return (
     <>
       {mappedOrganizations?.map(org => (
-        <Grid item key={org.id} padding={0.5}>
-          <ContributorCardHorizontal {...org} seamless />
-        </Grid>
+        <GridItem key={org.id} columns={4}>
+          <Gutters paddingX={0} paddingY={1}>
+            <ContributorCardHorizontal {...org} seamless />
+          </Gutters>
+        </GridItem>
       ))}
       {directMessageDialog}
     </>

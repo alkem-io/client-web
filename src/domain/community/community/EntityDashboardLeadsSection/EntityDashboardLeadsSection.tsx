@@ -21,6 +21,8 @@ const OrganizationCardTransparent = (props: SpaceWelcomeSectionContributorProps)
   <ContributorCardHorizontal {...props} />
 );
 
+const ContributorCard = (props: SpaceWelcomeSectionContributorProps) => <ContributorCardHorizontal {...props} />;
+
 interface EntityDashboardLeadsProps extends EntityDashboardLeads {
   organizationsHeader: string;
   organizationsHeaderIcon?: ReactElement<SvgIconProps>;
@@ -110,7 +112,7 @@ const EntityDashboardLeadsSection = ({
         <DashboardLeads
           headerText={usersHeader}
           contributors={leadUsersMapped}
-          CardComponent={leadUsersMapped => ContributorCardHorizontal(leadUsersMapped.contributor)}
+          CardComponent={leadUsersMapped => ContributorCard(leadUsersMapped.contributor)}
         />
       )}
       {leadOrganizationsSectionVisible && organizationsHeader && (
@@ -127,9 +129,7 @@ const EntityDashboardLeadsSection = ({
         <DashboardLeads
           headerText=""
           contributors={leadVirtualContributorsMapped}
-          CardComponent={leadVirtualContributorsMapped =>
-            ContributorCardHorizontal(leadVirtualContributorsMapped.contributor)
-          }
+          CardComponent={leadVirtualContributorsMapped => ContributorCard(leadVirtualContributorsMapped.contributor)}
         />
       )}
       {children}
