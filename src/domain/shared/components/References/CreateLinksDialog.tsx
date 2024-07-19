@@ -180,6 +180,7 @@ const CreateLinksDialog: FC<CreateLinksDialogProps> = ({ open, onClose, title, o
                                       'aria-label': t('components.referenceSegment.plaintext-helper-text'),
                                     },
                                   })}
+                                  onChange={fileName => setFieldValue(`${fieldName}.${index}.name`, fileName)}
                                 />
                                 <Box>
                                   <Tooltip
