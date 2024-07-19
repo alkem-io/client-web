@@ -18,6 +18,7 @@ export type FileUploadEntityType = 'reference' | 'link';
 
 interface FileUploadProps {
   onUpload?: (fileCID: string) => void;
+  onChange?: (fileName: string) => void;
   entityID?: string;
   entityType?: FileUploadEntityType;
   storageConfig: StorageConfig;
@@ -27,6 +28,7 @@ const bytesInMegabyte = Math.pow(1024, 2);
 
 const FileUploadButton: FC<FileUploadProps> = ({
   onUpload,
+  onChange,
   entityID,
   entityType = DEFAULT_REFERENCE_TYPE,
   storageConfig,
@@ -107,6 +109,7 @@ const FileUploadButton: FC<FileUploadProps> = ({
         const file = e && e.target && e.target.files && e.target.files[0];
         if (file) {
           handleSubmit(file);
+          onChange?.(file.name);
         }
       }}
     />
