@@ -10,6 +10,7 @@ export type ComponentOrChildrenFn<Provided extends {}> =
       children: Rendered<Provided>;
     };
 
+// @ts-ignore TS5UPGRADE
 export type ContainerPropsWithProvided<TProps, TProvidedProps> = TProps & ComponentOrChildrenFn<TProvidedProps>;
 
 export const renderComponentOrChildrenFn = <Consumed extends {}, Provided extends Consumed>(

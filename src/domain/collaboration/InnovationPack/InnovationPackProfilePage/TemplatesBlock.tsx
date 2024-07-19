@@ -11,6 +11,7 @@ interface TemplatesBlockProps<Template extends TemplateBase, TemplateType> {
   title: ReactNode;
   innovationPack?: TemplateCardBaseProps<Template>['innovationPack'];
   templateType: TemplateType;
+  // @ts-ignore TS5UPGRADE
   onClickCard: ({ template: TemplateCardProps, templateType: TemplateType }) => void;
   cardComponent: ComponentType<TemplateCardBaseProps<Template>>;
 }

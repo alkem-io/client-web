@@ -12,8 +12,8 @@ module.exports = {
     createDefaultProgram: true,
     project: './tsconfig.json',
   },
-  plugins: ['@typescript-eslint', 'react', 'jest'],
-  extends: ['react-app', 'react-app/jest', 'prettier', 'prettier/prettier'],
+  plugins: ['react'],
+  extends: ['react-app', 'prettier', 'prettier/prettier'],
   env: {
     browser: true,
     es6: true,
