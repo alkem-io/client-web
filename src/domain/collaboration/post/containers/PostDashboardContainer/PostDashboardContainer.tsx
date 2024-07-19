@@ -82,6 +82,8 @@ const PostDashboardContainer: FC<PostDashboardContainerProps> = ({ calloutId, po
     [_messages]
   );
 
+  const vcInteractions = useMemo(() => post?.comments?.vcInteractions ?? [], [post?.comments?.vcInteractions]);
+
   const commentsPrivileges = post?.comments?.authorization?.myPrivileges ?? [];
   const canDeleteComments = commentsPrivileges.includes(AuthorizationPrivilege.Delete);
   const canDeleteComment = useCallback(
@@ -122,6 +124,7 @@ const PostDashboardContainer: FC<PostDashboardContainerProps> = ({ calloutId, po
     canAddReaction,
     post,
     messages,
+    vcInteractions,
     roomId,
     creatorAvatar,
     creatorName,

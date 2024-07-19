@@ -63,6 +63,7 @@ interface FormikCommentInputFieldProps extends InputProps {
   size?: OutlinedInputProps['size'];
   compactMode?: boolean;
   vcInteractions?: Partial<VcInteraction>[];
+  vcEnabled?: boolean;
   threadId?: string;
 }
 
@@ -78,6 +79,7 @@ export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
   size = 'medium',
   compactMode = false,
   vcInteractions = [],
+  vcEnabled = true,
   threadId = '',
 }) => {
   const ref = useRef<HTMLElement>(null);
@@ -243,6 +245,7 @@ export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
             inputComponent={CommentInputField}
             inputProps={{
               vcInteractions,
+              vcEnabled,
               threadId,
               value: field.value,
               onValueChange: (newValue: string) => helpers.setValue(newValue),

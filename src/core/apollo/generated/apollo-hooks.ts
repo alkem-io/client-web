@@ -816,6 +816,11 @@ export const PostDashboardFragmentDoc = gql`
       messages {
         ...MessageDetails
       }
+      vcInteractions {
+        id
+        threadID
+        virtualContributorID
+      }
     }
   }
   ${TagsetDetailsFragmentDoc}

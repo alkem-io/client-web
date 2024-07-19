@@ -11,6 +11,7 @@ import { VcInteraction } from '../../../../core/apollo/generated/graphql-schema'
 interface MessagesThreadProps {
   messages: Message[] | undefined;
   vcInteractions?: Partial<VcInteraction>[];
+  vcEnabled?: boolean;
   loading?: boolean;
   canPostMessages: boolean;
   onReply: (reply: { threadId: string; messageText: string }) => void;
@@ -24,6 +25,7 @@ interface MessagesThreadProps {
 const MessagesThread = ({
   messages,
   vcInteractions = [],
+  vcEnabled = true,
   loading,
   canPostMessages,
   onReply,
@@ -55,6 +57,7 @@ const MessagesThread = ({
             !message.deleted && (
               <PostMessageToCommentsForm
                 vcInteractions={vcInteractions}
+                vcEnabled={vcEnabled}
                 threadId={message.id}
                 placeholder={t('pages.post.dashboard.comment.placeholder')}
                 onPostComment={(messageText: string) =>

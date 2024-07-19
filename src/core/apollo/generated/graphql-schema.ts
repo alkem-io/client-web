@@ -11423,6 +11423,12 @@ export type PostQuery = {
                           }
                         | undefined;
                     }>;
+                    vcInteractions: Array<{
+                      __typename?: 'VcInteraction';
+                      id: string;
+                      threadID: string;
+                      virtualContributorID: string;
+                    }>;
                   };
                 }
               | undefined;
@@ -11576,6 +11582,7 @@ export type PostDashboardFragment = {
           }
         | undefined;
     }>;
+    vcInteractions: Array<{ __typename?: 'VcInteraction'; id: string; threadID: string; virtualContributorID: string }>;
   };
 };
 

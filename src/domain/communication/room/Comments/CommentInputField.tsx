@@ -71,13 +71,13 @@ const SuggestionsContainer: FC<PropsWithChildren<SuggestionsContainerProps>> = (
                 fontSize: 'small',
               }}
             >
-              {t('components.post-comment.vc-interactions.disclaimer')}
+              {t('components.post-comment.vcInteractions.disclaimer')}
               <Tooltip
-                title={<Caption>{t('components.post-comment.vc-interactions.help')}</Caption>}
+                title={<Caption>{t('components.post-comment.vcInteractions.help')}</Caption>}
                 placement="top"
                 arrow
               >
-                <IconButton size="small" aria-label={t('components.post-comment.vc-interactions.help')}>
+                <IconButton size="small" aria-label={t('components.post-comment.vcInteractions.help')}>
                   <HelpOutlineOutlined fontSize="small" />
                 </IconButton>
               </Tooltip>
@@ -104,6 +104,7 @@ interface CommentInputFieldProps {
   onReturnKey?: (event: React.KeyboardEvent<HTMLTextAreaElement> | React.KeyboardEvent<HTMLInputElement>) => void;
   popperAnchor: SuggestionsContainerProps['anchorElement'];
   vcInteractions?: Partial<VcInteraction>[];
+  vcEnabled?: boolean;
   threadId?: string;
 }
 
@@ -141,6 +142,7 @@ export const CommentInputField: FC<InputBaseComponentProps> = forwardRef<
     onReturnKey,
     popperAnchor,
     vcInteractions = [],
+    vcEnabled = true,
     threadId,
   } = props as CommentInputFieldProps;
 
@@ -178,7 +180,7 @@ export const CommentInputField: FC<InputBaseComponentProps> = forwardRef<
 
     const mentionableContributors: EnrichedSuggestionDataItem[] = [];
 
-    if (!hasVcInteraction) {
+    if (!hasVcInteraction && vcEnabled) {
       data?.lookup?.community?.virtualContributorsInRole?.forEach(vc => {
         if (!isAlreadyMentioned(vc) && vc.profile.displayName.toLowerCase().includes(search.toLowerCase())) {
           mentionableContributors.push({
@@ -265,7 +267,7 @@ export const CommentInputField: FC<InputBaseComponentProps> = forwardRef<
         forceSuggestionsAboveCursor
         allowSpaceInQuery
         customSuggestionsContainer={children => (
-          <SuggestionsContainer anchorElement={popperAnchor} showVcDisclaimer={hasVcInteraction}>
+          <SuggestionsContainer anchorElement={popperAnchor} showVcDisclaimer={vcEnabled && hasVcInteraction}>
             {children}
           </SuggestionsContainer>
         )}

@@ -24,6 +24,7 @@ export interface PostMessageToCommentsFormProps {
   maxLength?: number;
   disabled?: boolean;
   vcInteractions?: Partial<VcInteraction>[];
+  vcEnabled: boolean;
   threadId?: string;
 }
 
@@ -38,6 +39,7 @@ const PostMessageToCommentsForm = ({
   maxLength = COMMENTS_TEXT_LENGTH,
   disabled,
   vcInteractions,
+  vcEnabled = true,
   threadId,
   ...containerProps
 }: PostMessageToCommentsFormProps & BoxProps) => {
@@ -86,6 +88,7 @@ const PostMessageToCommentsForm = ({
             <Form noValidate>
               <FormikCommentInputField
                 vcInteractions={vcInteractions}
+                vcEnabled={vcEnabled}
                 threadId={threadId}
                 name="post"
                 size="small"

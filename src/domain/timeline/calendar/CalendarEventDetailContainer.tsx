@@ -1,6 +1,10 @@
 import { FC, useCallback, useMemo } from 'react';
 import { ApolloError } from '@apollo/client';
-import { AuthorizationPrivilege, CalendarEventDetailsFragment } from '../../../core/apollo/generated/graphql-schema';
+import {
+  AuthorizationPrivilege,
+  CalendarEventDetailsFragment,
+  VcInteraction,
+} from '../../../core/apollo/generated/graphql-schema';
 import {
   useCalendarEventDetailsQuery,
   useRemoveMessageOnRoomMutation,
@@ -26,6 +30,7 @@ interface Provided {
   canAddReaction: boolean;
   event?: CalendarEventDetailData;
   messages: Message[];
+  vcInteractions: Partial<VcInteraction>[];
   roomId: string | undefined;
   creatorAvatar?: string;
   creatorName?: string;
@@ -82,6 +87,8 @@ const CalendarEventDetailContainer: FC<CalendarEventDetailContainerProps> = ({ e
     [_messages]
   );
 
+  const vcInteractions = useMemo(() => event?.comments?.vcInteractions ?? [], [event?.comments?.vcInteractions]);
+
   const commentsPrivileges = event?.comments?.authorization?.myPrivileges ?? [];
   const canDeleteComments = commentsPrivileges.includes(AuthorizationPrivilege.Delete);
   const canDeleteComment = useCallback(
@@ -120,6 +127,7 @@ const CalendarEventDetailContainer: FC<CalendarEventDetailContainerProps> = ({ e
     canAddReaction,
     event,
     messages,
+    vcInteractions,
     roomId,
     creatorAvatar,
     creatorName,
