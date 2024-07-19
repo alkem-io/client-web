@@ -163,13 +163,11 @@
     "husky": "^4.3.7",
     "lint-staged": "^13.0.3",
     "prettier": "^2.5.1",
-    "sass": "^1.52.1",
     "source-map-explorer": "^2.5.3",
     "vite": "^5.3.4",
     "vite-plugin-svgr": "^4.2.0",
     "vite-tsconfig-paths": "^4.2.0",
     "vitest": "^2.0.3",
-    "webdriverio": "^8.15.4",
     "webpack": "^5.88.1"
   },
   "husky": {

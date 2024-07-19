@@ -127,7 +127,8 @@ const InnovationFlowTemplateForm = ({ initialValues, onSubmit, actions }: Innova
       initialValues={initialValues}
       onSubmit={onSubmit}
       actions={actions}
-      validator={validator[0]}
+      // @ts-ignore TS5UPGRADE
+      validator={validator}
       entityTypeName={t('common.innovation-flow')}
     >
       {({ values, setFieldValue, setFieldTouched }) => {
