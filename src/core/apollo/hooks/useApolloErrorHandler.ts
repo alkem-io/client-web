@@ -36,6 +36,7 @@ export const useApolloErrorHandler = (severity: Severity = 'error') => {
       networkError &&
       'result' in networkError &&
       typeof networkError.result === 'object' &&
+      'errors' in networkError.result &&
       networkError.result.errors
     ) {
       const error = networkError.result.errors[0] as GraphQLError;
