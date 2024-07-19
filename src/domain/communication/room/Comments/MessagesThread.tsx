@@ -10,7 +10,7 @@ import { VcInteraction } from '../../../../core/apollo/generated/graphql-schema'
 
 interface MessagesThreadProps {
   messages: Message[] | undefined;
-  vcInteractions: Partial<VcInteraction>[];
+  vcInteractions?: Partial<VcInteraction>[];
   loading?: boolean;
   canPostMessages: boolean;
   onReply: (reply: { threadId: string; messageText: string }) => void;
@@ -23,7 +23,7 @@ interface MessagesThreadProps {
 
 const MessagesThread = ({
   messages,
-  vcInteractions,
+  vcInteractions = [],
   loading,
   canPostMessages,
   onReply,
