@@ -32,12 +32,7 @@ export const useApolloErrorHandler = (severity: Severity = 'error') => {
 
   const handleNetworkErrors = (error: ApolloError) => {
     const networkError = error.networkError;
-    if (
-      networkError &&
-      'result' in networkError &&
-      typeof networkError.result === 'object' &&
-      networkError.result.errors
-    ) {
+    if (networkError && 'result' in networkError && 'errors' in networkError.result && networkError.result.errors) {
       const error = networkError.result.errors[0] as GraphQLError;
       notify(error.message, severity);
     }
