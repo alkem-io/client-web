@@ -143,7 +143,7 @@ const JourneyAboutDialog = ({
   );
 
   // @ts-ignore TS5UPGRADE
-  const JourneyIcon = journeyLevel > -1 ? journeyIconByJourneyLevel[journeyLevel] : null;
+  const JourneyIcon = journeyLevel > -1 ? journeyIconByJourneyLevel[journeyLevel] : undefined;
 
   const metricsItems = useMetricsItems(metrics, getMetricsSpec(journeyLevel));
 
