@@ -2945,7 +2945,6 @@ export type UserKeySpecifier = (
   | 'directRooms'
   | 'email'
   | 'firstName'
-  | 'gender'
   | 'id'
   | 'isContactable'
   | 'lastName'
@@ -2965,7 +2964,6 @@ export type UserFieldPolicy = {
   directRooms?: FieldPolicy<any> | FieldReadFunction<any>;
   email?: FieldPolicy<any> | FieldReadFunction<any>;
   firstName?: FieldPolicy<any> | FieldReadFunction<any>;
-  gender?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   isContactable?: FieldPolicy<any> | FieldReadFunction<any>;
   lastName?: FieldPolicy<any> | FieldReadFunction<any>;
