@@ -85,7 +85,9 @@ const ToggleLinkButton = ({ editor, onDialogOpen, onDialogClose, ...buttonProps 
           .run();
       }
     } catch (error) {
-      notify(error.message, 'error');
+      if (error instanceof Error) {
+        notify(error.message, 'error');
+      }
       throw error;
     }
 

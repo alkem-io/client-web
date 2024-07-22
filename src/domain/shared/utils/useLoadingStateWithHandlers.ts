@@ -16,7 +16,9 @@ const useLoadingStateWithHandlers = <Args extends unknown[], Result>(
       try {
         return await callback(...args);
       } catch (error) {
-        onError?.(error);
+        if (error instanceof Error) {
+          onError?.(error);
+        }
       }
     },
     [callback, onError]

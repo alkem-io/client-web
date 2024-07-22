@@ -1,5 +1,5 @@
-import { Box, InputBaseComponentProps, Paper, Popper, PopperProps, styled } from '@mui/material';
-import React, { FC, forwardRef, PropsWithChildren, useEffect, useRef, useState } from 'react';
+import { Box, IconButton, InputBaseComponentProps, Paper, Popper, PopperProps, styled, Tooltip } from '@mui/material';
+import React, { FC, forwardRef, PropsWithChildren, ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Mention, MentionsInput, OnChangeHandlerFunc, SuggestionDataItem } from 'react-mentions';
 import { useMentionableUsersLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
@@ -8,6 +8,8 @@ import { Caption } from '../../../../core/ui/typography';
 import { ProfileChipView } from '../../../community/contributor/ProfileChip/ProfileChipView';
 import { useCombinedRefs } from '../../../shared/utils/useCombinedRefs';
 import { useCommunityContext } from '../../../community/community/CommunityContext';
+import { HelpOutlineOutlined } from '@mui/icons-material';
+import Gutters from '../../../../core/ui/grid/Gutters';
 
 export const POPPER_Z_INDEX = 1400; // Dialogs are 1300
 const MAX_USERS_LISTED = 30;
@@ -24,14 +26,41 @@ interface EnrichedSuggestionDataItem extends SuggestionDataItem {
   virtualContributor?: boolean;
 }
 
+const SuggestionsVCDisclaimer = () => {
+  const { t } = useTranslation();
+  return (
+    <Gutters
+      row
+      height={gutters(2)}
+      alignItems="center"
+      justifyContent="space-between"
+      fontSize="small"
+      fontStyle="italic"
+      paddingX={gutters(0.5)}
+    >
+      {t('components.post-comment.vcInteractions.disclaimer')}
+      <Tooltip title={<Caption>{t('components.post-comment.vcInteractions.help')}</Caption>} placement="top" arrow>
+        <IconButton size="small" aria-label={t('components.post-comment.vcInteractions.help')}>
+          <HelpOutlineOutlined fontSize="small" />
+        </IconButton>
+      </Tooltip>
+    </Gutters>
+  );
+};
+
 /**
  * Rounded paper that pops under the input field showing the mentions
  */
 interface SuggestionsContainerProps {
   anchorElement: PopperProps['anchorEl'];
+  disclaimer?: ReactNode;
 }
 
-const SuggestionsContainer: FC<PropsWithChildren<SuggestionsContainerProps>> = ({ anchorElement, children }) => {
+const SuggestionsContainer: FC<PropsWithChildren<SuggestionsContainerProps>> = ({
+  anchorElement,
+  children,
+  disclaimer = null,
+}) => {
   return (
     <Popper open placement="bottom-start" anchorEl={anchorElement} sx={{ zIndex: POPPER_Z_INDEX }}>
       <Paper elevation={3}>
@@ -50,6 +79,7 @@ const SuggestionsContainer: FC<PropsWithChildren<SuggestionsContainerProps>> = (
             },
           })}
         >
+          {disclaimer}
           {children}
         </Box>
       </Paper>
@@ -61,7 +91,7 @@ const SuggestionsContainer: FC<PropsWithChildren<SuggestionsContainerProps>> = (
  * CommentInput
  * Wrapper around MentionsInput to style it properly and to query for users on mentions
  */
-interface CommentInputFieldProps {
+export interface CommentInputFieldProps {
   value: string;
   onValueChange?: (newValue: string) => void;
   onBlur?: () => void;
@@ -70,6 +100,9 @@ interface CommentInputFieldProps {
   maxLength?: number;
   onReturnKey?: (event: React.KeyboardEvent<HTMLTextAreaElement> | React.KeyboardEvent<HTMLInputElement>) => void;
   popperAnchor: SuggestionsContainerProps['anchorElement'];
+  vcInteractions?: { threadID: string }[];
+  vcEnabled?: boolean;
+  threadId?: string;
 }
 
 const StyledCommentInput = styled(Box)(({ theme }) => ({
@@ -96,8 +129,19 @@ export const CommentInputField: FC<InputBaseComponentProps> = forwardRef<
   InputBaseComponentProps
 >((props, ref) => {
   // Need to extract the properties like this because OutlinedInput doesn't accept an ElementType<CommentInputFieldProps>
-  const { value, onValueChange, onBlur, inactive, readOnly, maxLength, onReturnKey, popperAnchor } =
-    props as CommentInputFieldProps;
+  const {
+    value,
+    onValueChange,
+    onBlur,
+    inactive,
+    readOnly,
+    maxLength,
+    onReturnKey,
+    popperAnchor,
+    vcInteractions = [],
+    vcEnabled = true,
+    threadId,
+  } = props as CommentInputFieldProps;
 
   const { t } = useTranslation();
   const containerRef = useCombinedRefs(null, ref);
@@ -112,6 +156,8 @@ export const CommentInputField: FC<InputBaseComponentProps> = forwardRef<
 
   const isAlreadyMentioned = ({ profile }: { profile: { url: string } }) =>
     currentMentionedUsersRef.current.some(mention => mention.id === profile.url);
+
+  const hasVcInteraction = vcInteractions.some(interaction => interaction?.threadID === threadId);
 
   const getMentionableUsers = async (search: string): Promise<EnrichedSuggestionDataItem[]> => {
     if (!search || emptyQueries.some(query => search.startsWith(query))) {
@@ -129,40 +175,35 @@ export const CommentInputField: FC<InputBaseComponentProps> = forwardRef<
       },
     });
 
-    const mentionableVCs = data?.lookup?.community?.virtualContributorsInRole?.filter(vc => {
-      return !isAlreadyMentioned(vc) && vc.profile.displayName.toLowerCase().includes(search.toLowerCase());
-    });
-
-    const mentionableUsers = data?.usersPaginated.users.filter(user => !isAlreadyMentioned(user));
-
-    if (!mentionableVCs?.length && !mentionableUsers?.length) {
-      emptyQueries.push(search);
-      return [];
-    }
-
     const mentionableContributors: EnrichedSuggestionDataItem[] = [];
 
-    if (mentionableUsers) {
-      mentionableContributors.push(
-        ...mentionableUsers.map(user => ({
+    if (!hasVcInteraction && vcEnabled) {
+      data?.lookup?.community?.virtualContributorsInRole?.forEach(vc => {
+        if (!isAlreadyMentioned(vc) && vc.profile.displayName.toLowerCase().includes(search.toLowerCase())) {
+          mentionableContributors.push({
+            id: vc.profile.url,
+            display: vc.profile.displayName,
+            avatarUrl: vc.profile.avatar?.uri,
+            virtualContributor: true,
+          });
+        }
+      });
+    }
+
+    data?.usersPaginated.users.forEach(user => {
+      if (!isAlreadyMentioned(user)) {
+        mentionableContributors.push({
           id: user.profile.url,
           display: user.profile.displayName,
           avatarUrl: user.profile.avatar?.uri,
           city: user.profile.location?.city,
           country: user.profile.location?.country,
-        }))
-      );
-    }
+        });
+      }
+    });
 
-    if (mentionableVCs) {
-      mentionableContributors.push(
-        ...mentionableVCs.map(vc => ({
-          id: vc.profile.url,
-          display: vc.profile.displayName,
-          avatarUrl: vc.profile.avatar?.uri,
-          virtualContributor: true,
-        }))
-      );
+    if (!mentionableContributors.length) {
+      emptyQueries.push(search);
     }
 
     return mentionableContributors;
@@ -223,15 +264,20 @@ export const CommentInputField: FC<InputBaseComponentProps> = forwardRef<
         forceSuggestionsAboveCursor
         allowSpaceInQuery
         customSuggestionsContainer={children => (
-          <SuggestionsContainer anchorElement={popperAnchor}>{children}</SuggestionsContainer>
+          <SuggestionsContainer
+            anchorElement={popperAnchor}
+            disclaimer={vcEnabled && hasVcInteraction && <SuggestionsVCDisclaimer />}
+          >
+            {children}
+          </SuggestionsContainer>
         )}
       >
         <Mention
           trigger={MENTION_SYMBOL}
           data={findMentionableUsers}
           appendSpaceOnAdd
-          displayTransform={(id, display) => `${MENTION_SYMBOL}${display}`}
-          renderSuggestion={(suggestion, search, highlightedDisplay, index, focused) => {
+          displayTransform={(_, display) => `${MENTION_SYMBOL}${display}`}
+          renderSuggestion={(suggestion, _, __, ___, focused) => {
             const user = suggestion as EnrichedSuggestionDataItem;
             return (
               <ProfileChipView

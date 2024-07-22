@@ -33,7 +33,9 @@ const InsertEmojiButton = ({ editor, onDialogOpen, onDialogClose, ...buttonProps
     try {
       editor?.commands.insertContent(emoji);
     } catch (error) {
-      notify(error.message, 'error');
+      if (error instanceof Error) {
+        notify(error.message, 'error');
+      }
       throw error;
     }
     closeDialog();

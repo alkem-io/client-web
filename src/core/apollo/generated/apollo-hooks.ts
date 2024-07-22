@@ -655,6 +655,11 @@ export const CommentsWithMessagesFragmentDoc = gql`
     messages {
       ...MessageDetails
     }
+    vcInteractions {
+      id
+      threadID
+      virtualContributorID
+    }
   }
   ${MessageDetailsFragmentDoc}
 `;
@@ -810,6 +815,11 @@ export const PostDashboardFragmentDoc = gql`
       }
       messages {
         ...MessageDetails
+      }
+      vcInteractions {
+        id
+        threadID
+        virtualContributorID
       }
     }
   }

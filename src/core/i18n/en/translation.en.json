@@ -1614,6 +1614,10 @@
       "tooltip": {
         "markdown-help": "You can add formatting to your comment,\nfor example:\nBold text: **bold**\nItalic text: *italic*\nHeader: ##Title\nLink: [text](url)",
         "mentions": "Type a few characters to find relevant users"
+      },
+      "vcInteractions": {
+        "disclaimer": "Create a new comment to interact with another VC.",
+        "help": "You can only interact with one Virtual Contributor per thread (comment + 'sub’comments). If you’d like to engage with another VC, start a new thread by creating a comment in the bottom input field."
       }
     },
     "discussionForm": {

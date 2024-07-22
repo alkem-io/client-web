@@ -1,6 +1,6 @@
 import { SvgIcon, SvgIconProps } from '@mui/material';
 
-import { ReactComponent as CalloutIconIconSvg } from './CalloutIcon.svg';
+import CalloutIconIconSvg from './CalloutIcon.svg?react';
 
 const CalloutIcon = (props: SvgIconProps) => {
   return <SvgIcon component={CalloutIconIconSvg} inheritViewBox {...props} />;

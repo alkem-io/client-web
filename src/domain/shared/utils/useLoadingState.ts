@@ -21,7 +21,9 @@ const useLoadingState = <Args extends unknown[], Result>(
     try {
       return await originalCallback(...args);
     } catch (error) {
-      setError(error);
+      if (error instanceof Error) {
+        setError(error);
+      }
       throw error;
     } finally {
       setIsLoading(false);

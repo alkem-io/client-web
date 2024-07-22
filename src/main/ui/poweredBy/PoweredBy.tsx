@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { BlockSectionTitle } from '../../../core/ui/typography';
-import { ReactComponent as LogoPreviewImage } from '../logo/logoPreview.svg';
-import { ReactComponent as LogoImage } from '../logo/logo.svg';
+import LogoPreviewImage from '../logo/logoPreview.svg?react';
+import LogoImage from '../logo/logo.svg?react';
 import { gutters } from '../../../core/ui/grid/utils';
 import { Box, BoxProps } from '@mui/material';
 import { useConfig } from '../../../domain/platform/config/useConfig';
