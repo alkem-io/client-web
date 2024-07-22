@@ -36,7 +36,7 @@ query InnovationPacks {
   }
 }
 
-fragment InnovationPackProviderProfileWithAvatar on Organization {
+fragment InnovationPackProviderProfileWithAvatar on Contributor {
   id
   nameID
   profile {

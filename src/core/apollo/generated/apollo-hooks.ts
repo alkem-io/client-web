@@ -3612,7 +3612,7 @@ export const LibraryTemplatesFragmentDoc = gql`
   ${WhiteboardContentFragmentDoc}
 `;
 export const InnovationPackProviderProfileWithAvatarFragmentDoc = gql`
-  fragment InnovationPackProviderProfileWithAvatar on Organization {
+  fragment InnovationPackProviderProfileWithAvatar on Contributor {
     id
     nameID
     profile {

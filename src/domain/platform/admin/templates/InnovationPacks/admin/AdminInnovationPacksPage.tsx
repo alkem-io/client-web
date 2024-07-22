@@ -1,5 +1,4 @@
 import { FC, useMemo, useState } from 'react';
-import { useResolvedPath } from 'react-router-dom';
 import { sortBy } from 'lodash';
 import {
   refetchAdminInnovationPacksListQuery,
@@ -15,7 +14,6 @@ import { buildInnovationPackSettingsUrl } from '../../../../../collaboration/Inn
 interface AdminInnovationPacksPageProps {}
 
 const AdminInnovationPacksPage: FC<AdminInnovationPacksPageProps> = () => {
-  const { pathname } = useResolvedPath('.');
   const { data, loading } = useAdminInnovationPacksListQuery();
   const [deleteInnovationPack] = useDeleteInnovationPackMutation({
     refetchQueries: [refetchAdminInnovationPacksListQuery()],
@@ -47,7 +45,7 @@ const AdminInnovationPacksPage: FC<AdminInnovationPacksPageProps> = () => {
 
   return (
     <AdminLayout currentTab={AdminSection.InnovationPacks}>
-      <SearchableListLayout newLink={`${pathname}/new`}>
+      <SearchableListLayout>
         <SimpleSearchableList
           data={innovationPacks}
           onDelete={item => handleDelete(item.id)}

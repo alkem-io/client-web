@@ -7366,8 +7366,28 @@ export type InnovationPackProfilePageQuery = {
                   avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                 };
               }
-            | { __typename?: 'User' }
-            | { __typename?: 'VirtualContributor' };
+            | {
+                __typename?: 'User';
+                id: string;
+                nameID: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                };
+              }
+            | {
+                __typename?: 'VirtualContributor';
+                id: string;
+                nameID: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                };
+              };
           profile: {
             __typename?: 'Profile';
             tagline: string;
@@ -25180,8 +25200,28 @@ export type InnovationPacksQuery = {
                 avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
               };
             }
-          | { __typename?: 'User' }
-          | { __typename?: 'VirtualContributor' };
+          | {
+              __typename?: 'User';
+              id: string;
+              nameID: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              };
+            }
+          | {
+              __typename?: 'VirtualContributor';
+              id: string;
+              nameID: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              };
+            };
         profile: { __typename?: 'Profile'; id: string; displayName: string };
         templates?:
           | {
@@ -25397,7 +25437,7 @@ export type InnovationPacksQuery = {
   };
 };
 
-export type InnovationPackProviderProfileWithAvatarFragment = {
+type InnovationPackProviderProfileWithAvatar_Organization_Fragment = {
   __typename?: 'Organization';
   id: string;
   nameID: string;
@@ -25408,6 +25448,35 @@ export type InnovationPackProviderProfileWithAvatarFragment = {
     avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
   };
 };
+
+type InnovationPackProviderProfileWithAvatar_User_Fragment = {
+  __typename?: 'User';
+  id: string;
+  nameID: string;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+  };
+};
+
+type InnovationPackProviderProfileWithAvatar_VirtualContributor_Fragment = {
+  __typename?: 'VirtualContributor';
+  id: string;
+  nameID: string;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+  };
+};
+
+export type InnovationPackProviderProfileWithAvatarFragment =
+  | InnovationPackProviderProfileWithAvatar_Organization_Fragment
+  | InnovationPackProviderProfileWithAvatar_User_Fragment
+  | InnovationPackProviderProfileWithAvatar_VirtualContributor_Fragment;
 
 export type AdminInnovationPacksListQueryVariables = Exact<{ [key: string]: never }>;
 
@@ -25686,8 +25755,28 @@ export type AdminInnovationPackQuery = {
                   avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                 };
               }
-            | { __typename?: 'User' }
-            | { __typename?: 'VirtualContributor' };
+            | {
+                __typename?: 'User';
+                id: string;
+                nameID: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                };
+              }
+            | {
+                __typename?: 'VirtualContributor';
+                id: string;
+                nameID: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                };
+              };
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -28491,8 +28580,28 @@ export type InnovationLibraryQuery = {
                 avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
               };
             }
-          | { __typename?: 'User' }
-          | { __typename?: 'VirtualContributor' };
+          | {
+              __typename?: 'User';
+              id: string;
+              nameID: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              };
+            }
+          | {
+              __typename?: 'VirtualContributor';
+              id: string;
+              nameID: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              };
+            };
       }>;
     };
   };
@@ -28787,8 +28896,28 @@ export type InnovationPackDataFragment = {
           avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
         };
       }
-    | { __typename?: 'User' }
-    | { __typename?: 'VirtualContributor' };
+    | {
+        __typename?: 'User';
+        id: string;
+        nameID: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        };
+      }
+    | {
+        __typename?: 'VirtualContributor';
+        id: string;
+        nameID: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        };
+      };
 };
 
 export type LibraryTemplatesFragment = {
@@ -29176,8 +29305,28 @@ export type InnovationLibraryBlockQuery = {
                 avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
               };
             }
-          | { __typename?: 'User' }
-          | { __typename?: 'VirtualContributor' };
+          | {
+              __typename?: 'User';
+              id: string;
+              nameID: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              };
+            }
+          | {
+              __typename?: 'VirtualContributor';
+              id: string;
+              nameID: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              };
+            };
       }>;
     };
   };
@@ -29225,8 +29374,28 @@ export type InnovationPackCardFragment = {
           avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
         };
       }
-    | { __typename?: 'User' }
-    | { __typename?: 'VirtualContributor' };
+    | {
+        __typename?: 'User';
+        id: string;
+        nameID: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        };
+      }
+    | {
+        __typename?: 'VirtualContributor';
+        id: string;
+        nameID: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        };
+      };
 };
 
 export type LatestContributionsQueryVariables = Exact<{
