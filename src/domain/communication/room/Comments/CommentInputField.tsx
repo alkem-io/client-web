@@ -27,7 +27,7 @@ interface EnrichedSuggestionDataItem extends SuggestionDataItem {
   virtualContributor?: boolean;
 }
 
-const SuggestionsDisclaimer = () => {
+const SuggestionsVCDisclaimer = () => {
   const { t } = useTranslation();
   return (
     <Gutters
@@ -267,7 +267,7 @@ export const CommentInputField: FC<InputBaseComponentProps> = forwardRef<
         customSuggestionsContainer={children => (
           <SuggestionsContainer
             anchorElement={popperAnchor}
-            disclaimer={vcEnabled && hasVcInteraction && <SuggestionsDisclaimer />}
+            disclaimer={vcEnabled && hasVcInteraction && <SuggestionsVCDisclaimer />}
           >
             {children}
           </SuggestionsContainer>
