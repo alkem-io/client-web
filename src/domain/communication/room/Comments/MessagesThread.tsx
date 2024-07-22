@@ -1,5 +1,5 @@
 import React from 'react';
-import PostMessageToCommentsForm from './PostMessageToCommentsForm';
+import PostMessageToCommentsForm, { PostMessageToCommentsFormProps } from './PostMessageToCommentsForm';
 import MessageView, { MessageViewProps } from './MessageView';
 import MessageWithRepliesView from './MessageWithRepliesView';
 import { Message } from '../models/Message';
@@ -7,8 +7,10 @@ import { useTranslation } from 'react-i18next';
 import useMessagesTree from './useMessagesTree';
 import useRestoredMessages from './useRestoredMessages';
 
-interface MessagesThreadProps {
+export interface MessagesThreadProps {
   messages: Message[] | undefined;
+  vcInteractions?: PostMessageToCommentsFormProps['vcInteractions'];
+  vcEnabled?: boolean;
   loading?: boolean;
   canPostMessages: boolean;
   onReply: (reply: { threadId: string; messageText: string }) => void;
@@ -21,6 +23,8 @@ interface MessagesThreadProps {
 
 const MessagesThread = ({
   messages,
+  vcInteractions = [],
+  vcEnabled = true,
   loading,
   canPostMessages,
   onReply,
@@ -51,6 +55,9 @@ const MessagesThread = ({
             canPostMessages &&
             !message.deleted && (
               <PostMessageToCommentsForm
+                vcInteractions={vcInteractions}
+                vcEnabled={vcEnabled}
+                threadId={message.id}
                 placeholder={t('pages.post.dashboard.comment.placeholder')}
                 onPostComment={(messageText: string) =>
                   message &&
