@@ -21,7 +21,9 @@ const OrganizationCardTransparent = (props: SpaceWelcomeSectionContributorProps)
   <ContributorCardHorizontal {...props} />
 );
 
-const ContributorCard = (props: SpaceWelcomeSectionContributorProps) => <ContributorCardHorizontal {...props} />;
+const ContributorCard = ({ contributor }: { contributor: SpaceWelcomeSectionContributorProps }) => (
+  <ContributorCardHorizontal {...contributor} />
+);
 
 interface EntityDashboardLeadsProps extends EntityDashboardLeads {
   organizationsHeader: string;
@@ -109,11 +111,7 @@ const EntityDashboardLeadsSection = ({
   return (
     <PageContentBlock>
       {leadUsersSectionVisible && usersHeader && (
-        <DashboardLeads
-          headerText={usersHeader}
-          contributors={leadUsersMapped}
-          CardComponent={leadUsersMapped => ContributorCard(leadUsersMapped.contributor)}
-        />
+        <DashboardLeads headerText={usersHeader} contributors={leadUsersMapped} CardComponent={ContributorCard} />
       )}
       {leadOrganizationsSectionVisible && organizationsHeader && (
         <>
@@ -126,11 +124,7 @@ const EntityDashboardLeadsSection = ({
         </>
       )}
       {leadUsersSectionVisible && usersHeader && (
-        <DashboardLeads
-          headerText=""
-          contributors={leadVirtualContributorsMapped}
-          CardComponent={leadVirtualContributorsMapped => ContributorCard(leadVirtualContributorsMapped.contributor)}
-        />
+        <DashboardLeads headerText="" contributors={leadVirtualContributorsMapped} CardComponent={ContributorCard} />
       )}
       {children}
       {directMessageDialog}
