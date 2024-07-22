@@ -147,21 +147,17 @@ query whiteboardLastUpdatedDate($whiteboardId: UUID!) {
   }
 }
 
-query platformTemplateWhiteboardContents($innovationPackId: UUID_NAMEID!, $whiteboardId: UUID!) {
-  platform {
-    id
-    library {
-      id
-      innovationPack(ID: $innovationPackId) {
-        templates {
+query platformTemplateWhiteboardContents($innovationPackId: UUID!, $whiteboardId: UUID!) {
+  lookup {
+    innovationPack(ID: $innovationPackId) {
+      templates {
+        id
+        whiteboardTemplate(ID: $whiteboardId) {
           id
-          whiteboardTemplate(ID: $whiteboardId) {
-            id
-            profile {
-              ...WhiteboardProfile
-            }
-            content
+          profile {
+            ...WhiteboardProfile
           }
+          content
         }
       }
     }

@@ -5368,42 +5368,38 @@ export type UpdateInnovationFlowMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateInnovationFlowMutationVariables
 >;
 export const InnovationPackProfilePageDocument = gql`
-  query InnovationPackProfilePage($innovationPackId: UUID_NAMEID!) {
-    platform {
-      id
-      library {
+  query InnovationPackProfilePage($innovationPackId: UUID!) {
+    lookup {
+      innovationPack(ID: $innovationPackId) {
         id
-        innovationPack(ID: $innovationPackId) {
+        nameID
+        authorization {
           id
-          nameID
-          authorization {
-            id
-            myPrivileges
+          myPrivileges
+        }
+        provider {
+          ...InnovationPackProviderProfileWithAvatar
+        }
+        profile {
+          ...InnovationPackProfile
+          tagline
+        }
+        templates {
+          id
+          whiteboardTemplates {
+            ...WhiteboardTemplateCard
           }
-          provider {
-            ...InnovationPackProviderProfileWithAvatar
+          postTemplates {
+            ...PostTemplateCard
           }
-          profile {
-            ...InnovationPackProfile
-            tagline
+          innovationFlowTemplates {
+            ...InnovationFlowTemplateCard
           }
-          templates {
-            id
-            whiteboardTemplates {
-              ...WhiteboardTemplateCard
-            }
-            postTemplates {
-              ...PostTemplateCard
-            }
-            innovationFlowTemplates {
-              ...InnovationFlowTemplateCard
-            }
-            calloutTemplates {
-              ...CalloutTemplateCard
-            }
-            communityGuidelinesTemplates {
-              ...CommunityGuidelinesTemplateCard
-            }
+          calloutTemplates {
+            ...CalloutTemplateCard
+          }
+          communityGuidelinesTemplates {
+            ...CommunityGuidelinesTemplateCard
           }
         }
       }
@@ -8173,21 +8169,17 @@ export function refetchWhiteboardLastUpdatedDateQuery(variables: SchemaTypes.Whi
 }
 
 export const PlatformTemplateWhiteboardContentsDocument = gql`
-  query platformTemplateWhiteboardContents($innovationPackId: UUID_NAMEID!, $whiteboardId: UUID!) {
-    platform {
-      id
-      library {
-        id
-        innovationPack(ID: $innovationPackId) {
-          templates {
+  query platformTemplateWhiteboardContents($innovationPackId: UUID!, $whiteboardId: UUID!) {
+    lookup {
+      innovationPack(ID: $innovationPackId) {
+        templates {
+          id
+          whiteboardTemplate(ID: $whiteboardId) {
             id
-            whiteboardTemplate(ID: $whiteboardId) {
-              id
-              profile {
-                ...WhiteboardProfile
-              }
-              content
+            profile {
+              ...WhiteboardProfile
             }
+            content
           }
         }
       }
@@ -20476,32 +20468,20 @@ export type DeleteInnovationPackMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteInnovationPackMutationVariables
 >;
 export const AdminInnovationPackDocument = gql`
-  query AdminInnovationPack($innovationPackId: UUID_NAMEID!) {
-    platform {
-      id
-      library {
+  query AdminInnovationPack($innovationPackId: UUID!) {
+    lookup {
+      innovationPack(ID: $innovationPackId) {
         id
-        innovationPack(ID: $innovationPackId) {
-          id
-          nameID
-          provider {
-            ...InnovationPackProviderProfileWithAvatar
-          }
-          profile {
-            ...InnovationPackProfile
-          }
-          templates {
-            ...AdminInnovationPackTemplates
-          }
+        nameID
+        provider {
+          ...InnovationPackProviderProfileWithAvatar
         }
-      }
-    }
-    organizations {
-      id
-      nameID
-      profile {
-        id
-        displayName
+        profile {
+          ...InnovationPackProfile
+        }
+        templates {
+          ...AdminInnovationPackTemplates
+        }
       }
     }
   }
@@ -20563,8 +20543,8 @@ export function refetchAdminInnovationPackQuery(variables: SchemaTypes.AdminInno
 }
 
 export const CreateInnovationPackDocument = gql`
-  mutation createInnovationPack($packData: CreateInnovationPackOnLibraryInput!) {
-    createInnovationPackOnLibrary(packData: $packData) {
+  mutation createInnovationPack($packData: CreateInnovationPackOnAccountInput!) {
+    createInnovationPack(innovationPackData: $packData) {
       id
       nameID
     }
@@ -21849,16 +21829,12 @@ export function refetchOrganizationStorageConfigQuery(variables: SchemaTypes.Org
 }
 
 export const InnovationPackStorageConfigDocument = gql`
-  query InnovationPackStorageConfig($innovationPackId: UUID_NAMEID!) {
-    platform {
-      id
-      library {
+  query InnovationPackStorageConfig($innovationPackId: UUID!) {
+    lookup {
+      innovationPack(ID: $innovationPackId) {
         id
-        innovationPack(ID: $innovationPackId) {
-          id
-          profile {
-            ...ProfileStorageConfig
-          }
+        profile {
+          ...ProfileStorageConfig
         }
       }
     }

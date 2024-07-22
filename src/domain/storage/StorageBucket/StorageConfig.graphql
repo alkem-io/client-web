@@ -65,16 +65,12 @@ query OrganizationStorageConfig($organizationId: UUID_NAMEID!) {
   }
 }
 
-query InnovationPackStorageConfig($innovationPackId: UUID_NAMEID!) {
-  platform {
-    id
-    library {
+query InnovationPackStorageConfig($innovationPackId: UUID!) {
+  lookup {
+    innovationPack(ID: $innovationPackId) {
       id
-      innovationPack(ID: $innovationPackId) {
-        id
-        profile {
-          ...ProfileStorageConfig
-        }
+      profile {
+        ...ProfileStorageConfig
       }
     }
   }

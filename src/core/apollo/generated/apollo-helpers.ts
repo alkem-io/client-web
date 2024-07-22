@@ -11,6 +11,7 @@ export type AccountKeySpecifier = (
   | 'defaults'
   | 'host'
   | 'id'
+  | 'innovationPacks'
   | 'library'
   | 'license'
   | 'licensePrivileges'
@@ -26,6 +27,7 @@ export type AccountFieldPolicy = {
   defaults?: FieldPolicy<any> | FieldReadFunction<any>;
   host?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  innovationPacks?: FieldPolicy<any> | FieldReadFunction<any>;
   library?: FieldPolicy<any> | FieldReadFunction<any>;
   license?: FieldPolicy<any> | FieldReadFunction<any>;
   licensePrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1315,18 +1317,22 @@ export type InnovationHubFieldPolicy = {
 export type InnovationPackKeySpecifier = (
   | 'authorization'
   | 'id'
+  | 'listedInStore'
   | 'nameID'
   | 'profile'
   | 'provider'
+  | 'searchVisibility'
   | 'templates'
   | InnovationPackKeySpecifier
 )[];
 export type InnovationPackFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  listedInStore?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   provider?: FieldPolicy<any> | FieldReadFunction<any>;
+  searchVisibility?: FieldPolicy<any> | FieldReadFunction<any>;
   templates?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type InvitationKeySpecifier = (
@@ -1362,18 +1368,14 @@ export type LatestReleaseDiscussionFieldPolicy = {
 export type LibraryKeySpecifier = (
   | 'authorization'
   | 'id'
-  | 'innovationPack'
   | 'innovationPacks'
-  | 'storageAggregator'
   | 'virtualContributors'
   | LibraryKeySpecifier
 )[];
 export type LibraryFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
-  innovationPack?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationPacks?: FieldPolicy<any> | FieldReadFunction<any>;
-  storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
   virtualContributors?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type LicenseKeySpecifier = ('authorization' | 'id' | 'visibility' | LicenseKeySpecifier)[];
@@ -1496,12 +1498,14 @@ export type LookupQueryResultsKeySpecifier = (
   | 'document'
   | 'innovationFlow'
   | 'innovationFlowTemplate'
+  | 'innovationPack'
   | 'invitation'
   | 'post'
   | 'profile'
   | 'room'
   | 'space'
   | 'storageAggregator'
+  | 'storageBucket'
   | 'virtualContributor'
   | 'whiteboard'
   | 'whiteboardTemplate'
@@ -1523,12 +1527,14 @@ export type LookupQueryResultsFieldPolicy = {
   document?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationFlow?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationFlowTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
+  innovationPack?: FieldPolicy<any> | FieldReadFunction<any>;
   invitation?: FieldPolicy<any> | FieldReadFunction<any>;
   post?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   room?: FieldPolicy<any> | FieldReadFunction<any>;
   space?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
+  storageBucket?: FieldPolicy<any> | FieldReadFunction<any>;
   virtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboardTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1641,7 +1647,7 @@ export type MutationKeySpecifier = (
   | 'createGroupOnOrganization'
   | 'createInnovationFlowTemplate'
   | 'createInnovationHub'
-  | 'createInnovationPackOnLibrary'
+  | 'createInnovationPack'
   | 'createLicensePlan'
   | 'createOrganization'
   | 'createPostTemplate'
@@ -1810,7 +1816,7 @@ export type MutationFieldPolicy = {
   createGroupOnOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   createInnovationFlowTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   createInnovationHub?: FieldPolicy<any> | FieldReadFunction<any>;
-  createInnovationPackOnLibrary?: FieldPolicy<any> | FieldReadFunction<any>;
+  createInnovationPack?: FieldPolicy<any> | FieldReadFunction<any>;
   createLicensePlan?: FieldPolicy<any> | FieldReadFunction<any>;
   createOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   createPostTemplate?: FieldPolicy<any> | FieldReadFunction<any>;

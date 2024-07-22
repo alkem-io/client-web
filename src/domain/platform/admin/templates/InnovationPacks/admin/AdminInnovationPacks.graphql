@@ -56,11 +56,8 @@ fragment AdminInnovationPackTemplates on TemplatesSet {
   }
 }
 
-query AdminInnovationPack($innovationPackId: UUID_NAMEID!) {
-  platform {
-    id
-    library {
-      id
+query AdminInnovationPack($innovationPackId: UUID!) {
+  lookup {
       innovationPack(ID: $innovationPackId) {
         id
         nameID
@@ -75,20 +72,10 @@ query AdminInnovationPack($innovationPackId: UUID_NAMEID!) {
         }
       }
     }
-  }
-  # Load organizations together to be able to show the Provider form field combobox
-  organizations {
-    id
-    nameID
-    profile {
-      id
-      displayName
-    }
-  }
 }
 
-mutation createInnovationPack($packData: CreateInnovationPackOnLibraryInput!) {
-  createInnovationPackOnLibrary(packData: $packData) {
+mutation createInnovationPack($packData: CreateInnovationPackOnAccountInput!) {
+  createInnovationPack(innovationPackData: $packData) {
     id
     nameID
   }
