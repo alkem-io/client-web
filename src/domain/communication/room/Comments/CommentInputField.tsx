@@ -8,7 +8,6 @@ import { Caption } from '../../../../core/ui/typography';
 import { ProfileChipView } from '../../../community/contributor/ProfileChip/ProfileChipView';
 import { useCombinedRefs } from '../../../shared/utils/useCombinedRefs';
 import { useCommunityContext } from '../../../community/community/CommunityContext';
-import { VcInteraction } from '../../../../core/apollo/generated/graphql-schema';
 import { HelpOutlineOutlined } from '@mui/icons-material';
 import Gutters from '../../../../core/ui/grid/Gutters';
 
@@ -101,7 +100,7 @@ export interface CommentInputFieldProps {
   maxLength?: number;
   onReturnKey?: (event: React.KeyboardEvent<HTMLTextAreaElement> | React.KeyboardEvent<HTMLInputElement>) => void;
   popperAnchor: SuggestionsContainerProps['anchorElement'];
-  vcInteractions?: Pick<VcInteraction, 'threadID'>[];
+  vcInteractions?: { threadID: string }[];
   vcEnabled?: boolean;
   threadId?: string;
 }
