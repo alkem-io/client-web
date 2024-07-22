@@ -52,7 +52,7 @@ const ContributingOrganizations: FC<ContributingOrganizationsProps> = ({
   const renderAssociatesCount = (org: OrganizationCardProps & Identifiable) => (
     <LabeledCount
       label={t('components.associates.name')}
-      count={org.associatesCount || 0}
+      count={org.associatesCount ?? 0}
       loading={loading}
       verified={org.verified}
     />
