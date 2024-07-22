@@ -21,7 +21,7 @@ import { ShareComponent } from '../../../shared/components/ShareDialog/ShareDial
 import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import useCommentReactionsMutations from '../../../communication/room/Comments/useCommentReactionsMutations';
-import MessagesThread from '../../../communication/room/Comments/MessagesThread';
+import MessagesThread, { MessagesThreadProps } from '../../../communication/room/Comments/MessagesThread';
 import ScrollerWithGradient from '../../../../core/ui/overflow/ScrollerWithGradient';
 
 const COMMENTS_CONTAINER_HEIGHT = 400;
@@ -38,6 +38,8 @@ export interface PostDashboardViewProps {
   description?: string;
   type?: string;
   messages?: Message[];
+  vcInteractions?: MessagesThreadProps['vcInteractions'];
+  vcEnabled?: boolean;
   roomId: string | undefined;
   tags?: string[];
   references?: Pick<Reference, 'id' | 'name' | 'uri' | 'description'>[];
@@ -77,7 +79,19 @@ const PostDashboardView: FC<PostDashboardViewProps> = props => {
   const wasScrolledToBottomRef = useRef(true);
   const [commentToBeDeleted, setCommentToBeDeleted] = useState<string | undefined>(undefined);
 
-  const { banner, description, displayName, type, messages = [], roomId, tags = [], references } = props;
+  const {
+    banner,
+    description,
+    displayName,
+    type,
+    messages = [],
+    vcInteractions = [],
+    vcEnabled = true,
+    roomId,
+    tags = [],
+    references,
+  } = props;
+
   const { creatorName, creatorAvatar, createdDate } = props;
   const { canReadComments, canDeleteComment, canPostComments } = props;
   const { postMessage, postReply, handleDeleteComment } = props;
@@ -169,6 +183,8 @@ const PostDashboardView: FC<PostDashboardViewProps> = props => {
               <Gutters gap={0}>
                 <MessagesThread
                   messages={messages}
+                  vcInteractions={vcInteractions}
+                  vcEnabled={vcEnabled}
                   canPostMessages={canPostComments}
                   onReply={postReply}
                   canDeleteMessage={canDeleteComment}
@@ -182,6 +198,7 @@ const PostDashboardView: FC<PostDashboardViewProps> = props => {
             <Box>
               {canPostComments && (
                 <PostMessageToCommentsForm
+                  vcEnabled={vcEnabled}
                   placeholder={t('pages.post.dashboard.comment.placeholder')}
                   onPostComment={postMessage}
                 />
