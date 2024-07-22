@@ -579,7 +579,6 @@ export type AiPersona = {
 
 export enum AiPersonaBodyOfKnowledgeType {
   AlkemioSpace = 'ALKEMIO_SPACE',
-  None = 'NONE',
   Other = 'OTHER',
 }
 
@@ -2648,8 +2647,6 @@ export type LookupQueryResults = {
   space?: Maybe<Space>;
   /** Lookup the specified StorageAggregator */
   storageAggregator?: Maybe<StorageAggregator>;
-  /** Lookup the specified StorageBucket */
-  storageBucket?: Maybe<StorageBucket>;
   /** A particular VirtualContributor */
   virtualContributor?: Maybe<VirtualContributor>;
   /** Lookup the specified Whiteboard */
@@ -2740,10 +2737,6 @@ export type LookupQueryResultsSpaceArgs = {
 };
 
 export type LookupQueryResultsStorageAggregatorArgs = {
-  ID: Scalars['UUID'];
-};
-
-export type LookupQueryResultsStorageBucketArgs = {
   ID: Scalars['UUID'];
 };
 
@@ -4775,12 +4768,12 @@ export type Room = {
   authorization?: Maybe<Authorization>;
   /** The ID of the entity */
   id: Scalars['UUID'];
-  /** Virtual Contributor Interactions in this Room. */
-  interactions: Array<VcInteraction>;
   /** Messages in this Room. */
   messages: Array<Message>;
   /** The number of messages in the Room. */
   messagesCount: Scalars['Float'];
+  /** Information about the interactions with Virtual Contributors */
+  vcInteractions: Array<VcInteraction>;
 };
 
 export type RoomAddReactionToMessageInput = {
@@ -6049,6 +6042,7 @@ export type VcInteraction = {
   id: Scalars['UUID'];
   room: Room;
   threadID: Scalars['String'];
+  virtualContributorID: Scalars['UUID'];
 };
 
 export type VerifiedCredential = {
@@ -6666,6 +6660,12 @@ export type CalloutPageCalloutQuery = {
                         };
                       }
                     | undefined;
+                }>;
+                vcInteractions: Array<{
+                  __typename?: 'VcInteraction';
+                  id: string;
+                  threadID: string;
+                  virtualContributorID: string;
                 }>;
               }
             | undefined;
@@ -9461,6 +9461,12 @@ export type CreateCalloutMutation = {
                 }
               | undefined;
           }>;
+          vcInteractions: Array<{
+            __typename?: 'VcInteraction';
+            id: string;
+            threadID: string;
+            virtualContributorID: string;
+          }>;
         }
       | undefined;
     authorization?:
@@ -9775,6 +9781,12 @@ export type UpdateCalloutVisibilityMutation = {
                   };
                 }
               | undefined;
+          }>;
+          vcInteractions: Array<{
+            __typename?: 'VcInteraction';
+            id: string;
+            threadID: string;
+            virtualContributorID: string;
           }>;
         }
       | undefined;
@@ -10525,6 +10537,12 @@ export type CalloutDetailsQuery = {
                       }
                     | undefined;
                 }>;
+                vcInteractions: Array<{
+                  __typename?: 'VcInteraction';
+                  id: string;
+                  threadID: string;
+                  virtualContributorID: string;
+                }>;
               }
             | undefined;
           authorization?:
@@ -10783,6 +10801,12 @@ export type CalloutDetailsFragment = {
                 };
               }
             | undefined;
+        }>;
+        vcInteractions: Array<{
+          __typename?: 'VcInteraction';
+          id: string;
+          threadID: string;
+          virtualContributorID: string;
         }>;
       }
     | undefined;
@@ -11399,6 +11423,12 @@ export type PostQuery = {
                           }
                         | undefined;
                     }>;
+                    vcInteractions: Array<{
+                      __typename?: 'VcInteraction';
+                      id: string;
+                      threadID: string;
+                      virtualContributorID: string;
+                    }>;
                   };
                 }
               | undefined;
@@ -11552,6 +11582,7 @@ export type PostDashboardFragment = {
           }
         | undefined;
     }>;
+    vcInteractions: Array<{ __typename?: 'VcInteraction'; id: string; threadID: string; virtualContributorID: string }>;
   };
 };
 
@@ -14502,6 +14533,7 @@ export type CommentsWithMessagesFragment = {
         }
       | undefined;
   }>;
+  vcInteractions: Array<{ __typename?: 'VcInteraction'; id: string; threadID: string; virtualContributorID: string }>;
 };
 
 export type RemoveReactionMutationVariables = Exact<{
@@ -26768,6 +26800,12 @@ export type CalendarEventDetailsQuery = {
                   }
                 | undefined;
             }>;
+            vcInteractions: Array<{
+              __typename?: 'VcInteraction';
+              id: string;
+              threadID: string;
+              virtualContributorID: string;
+            }>;
           };
           profile: {
             __typename?: 'Profile';
@@ -26935,6 +26973,7 @@ export type CalendarEventDetailsFragment = {
           }
         | undefined;
     }>;
+    vcInteractions: Array<{ __typename?: 'VcInteraction'; id: string; threadID: string; virtualContributorID: string }>;
   };
   profile: {
     __typename?: 'Profile';
@@ -27120,6 +27159,12 @@ export type CreateCalendarEventMutation = {
             }
           | undefined;
       }>;
+      vcInteractions: Array<{
+        __typename?: 'VcInteraction';
+        id: string;
+        threadID: string;
+        virtualContributorID: string;
+      }>;
     };
     profile: {
       __typename?: 'Profile';
@@ -27284,6 +27329,12 @@ export type UpdateCalendarEventMutation = {
               };
             }
           | undefined;
+      }>;
+      vcInteractions: Array<{
+        __typename?: 'VcInteraction';
+        id: string;
+        threadID: string;
+        virtualContributorID: string;
       }>;
     };
     profile: {

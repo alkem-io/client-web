@@ -6,7 +6,7 @@ import { Form, Formik, FormikHelpers } from 'formik';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { useUserContext } from '../../../community/user';
-import FormikCommentInputField from './FormikCommentInputField';
+import FormikCommentInputField, { FormikCommentInputFieldProps } from './FormikCommentInputField';
 import { gutters } from '../../../../core/ui/grid/utils';
 import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
 import { COMMENTS_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
@@ -22,6 +22,9 @@ export interface PostMessageToCommentsFormProps {
   placeholder?: string;
   maxLength?: number;
   disabled?: boolean;
+  vcInteractions?: FormikCommentInputFieldProps['vcInteractions'];
+  vcEnabled?: boolean;
+  threadId?: string;
 }
 
 interface formValues {
@@ -34,6 +37,9 @@ const PostMessageToCommentsForm = ({
   placeholder,
   maxLength = COMMENTS_TEXT_LENGTH,
   disabled,
+  vcInteractions,
+  vcEnabled = true,
+  threadId,
   ...containerProps
 }: PostMessageToCommentsFormProps & BoxProps) => {
   const { t } = useTranslation();
@@ -80,6 +86,9 @@ const PostMessageToCommentsForm = ({
           {({ isSubmitting }) => (
             <Form noValidate>
               <FormikCommentInputField
+                vcInteractions={vcInteractions}
+                vcEnabled={vcEnabled}
+                threadId={threadId}
                 name="post"
                 size="small"
                 title={title}
