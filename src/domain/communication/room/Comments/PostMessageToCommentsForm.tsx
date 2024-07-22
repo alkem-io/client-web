@@ -6,11 +6,10 @@ import { Form, Formik, FormikHelpers } from 'formik';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { useUserContext } from '../../../community/user';
-import FormikCommentInputField from './FormikCommentInputField';
+import FormikCommentInputField, { FormikCommentInputFieldProps } from './FormikCommentInputField';
 import { gutters } from '../../../../core/ui/grid/utils';
 import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
 import { COMMENTS_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
-import { VcInteraction } from '../../../../core/apollo/generated/graphql-schema';
 
 const UserAvatar = styled(props => <Avatar {...props} />)<AvatarProps>(({ theme }) => ({
   height: theme.avatarSizeXs,
@@ -23,8 +22,8 @@ export interface PostMessageToCommentsFormProps {
   placeholder?: string;
   maxLength?: number;
   disabled?: boolean;
-  vcInteractions?: Partial<VcInteraction>[];
-  vcEnabled: boolean;
+  vcInteractions?: FormikCommentInputFieldProps['vcInteractions'];
+  vcEnabled?: boolean;
   threadId?: string;
 }
 

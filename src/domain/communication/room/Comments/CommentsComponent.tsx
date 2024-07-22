@@ -14,13 +14,13 @@ import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
 import useCommentReactionsMutations from './useCommentReactionsMutations';
 import MessagesThread from './MessagesThread';
 import { gutters } from '../../../../core/ui/grid/utils';
-import { VcInteraction } from '../../../../core/apollo/generated/graphql-schema';
+import { CommentInputFieldProps } from './CommentInputField';
 
 const SCROLL_BOTTOM_MISTAKE_TOLERANCE = 10;
 
 export interface CommentsComponentProps {
   messages: Message[] | undefined;
-  vcInteractions: Partial<VcInteraction>[];
+  vcInteractions: CommentInputFieldProps['vcInteractions'];
   commentsId: string | undefined;
   canReadMessages: boolean;
   canPostMessages: boolean;

@@ -1,10 +1,6 @@
 import { FC, useCallback, useMemo } from 'react';
 import { ApolloError } from '@apollo/client';
-import {
-  AuthorizationPrivilege,
-  CalendarEventDetailsFragment,
-  VcInteraction,
-} from '../../../core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, CalendarEventDetailsFragment } from '../../../core/apollo/generated/graphql-schema';
 import {
   useCalendarEventDetailsQuery,
   useRemoveMessageOnRoomMutation,
@@ -16,6 +12,7 @@ import { evictFromCache } from '../../../core/apollo/utils/removeFromCache';
 import { buildAuthorFromUser } from '../../community/user/utils/buildAuthorFromUser';
 import usePostMessageMutations from '../../communication/room/Comments/usePostMessageMutations';
 import useSubscribeOnRoomEvents from '../../collaboration/callout/useSubscribeOnRoomEvents';
+import { PostDashboardViewProps } from '../../collaboration/post/views/PostDashboardView';
 
 export type CalendarEventDetailData = CalendarEventDetailsFragment;
 
@@ -30,7 +27,7 @@ interface Provided {
   canAddReaction: boolean;
   event?: CalendarEventDetailData;
   messages: Message[];
-  vcInteractions: Partial<VcInteraction>[];
+  vcInteractions: PostDashboardViewProps['vcInteractions'];
   roomId: string | undefined;
   creatorAvatar?: string;
   creatorName?: string;

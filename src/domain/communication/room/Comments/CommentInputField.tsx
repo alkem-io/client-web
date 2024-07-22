@@ -1,5 +1,5 @@
 import { Box, IconButton, InputBaseComponentProps, Paper, Popper, PopperProps, styled, Tooltip } from '@mui/material';
-import React, { FC, forwardRef, PropsWithChildren, useEffect, useRef, useState } from 'react';
+import React, { FC, forwardRef, PropsWithChildren, ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Mention, MentionsInput, OnChangeHandlerFunc, SuggestionDataItem } from 'react-mentions';
 import { useMentionableUsersLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
@@ -10,6 +10,7 @@ import { useCombinedRefs } from '../../../shared/utils/useCombinedRefs';
 import { useCommunityContext } from '../../../community/community/CommunityContext';
 import { VcInteraction } from '../../../../core/apollo/generated/graphql-schema';
 import { HelpOutlineOutlined } from '@mui/icons-material';
+import Gutters from '../../../../core/ui/grid/Gutters';
 
 export const POPPER_Z_INDEX = 1400; // Dialogs are 1300
 const MAX_USERS_LISTED = 30;
@@ -26,21 +27,41 @@ interface EnrichedSuggestionDataItem extends SuggestionDataItem {
   virtualContributor?: boolean;
 }
 
+const SuggestionsDisclaimer = () => {
+  const { t } = useTranslation();
+  return (
+    <Gutters
+      row
+      height={gutters(2)}
+      alignItems="center"
+      justifyContent="space-between"
+      fontSize="small"
+      fontStyle="italic"
+      paddingX={gutters(0.5)}
+    >
+      {t('components.post-comment.vcInteractions.disclaimer')}
+      <Tooltip title={<Caption>{t('components.post-comment.vcInteractions.help')}</Caption>} placement="top" arrow>
+        <IconButton size="small" aria-label={t('components.post-comment.vcInteractions.help')}>
+          <HelpOutlineOutlined fontSize="small" />
+        </IconButton>
+      </Tooltip>
+    </Gutters>
+  );
+};
+
 /**
  * Rounded paper that pops under the input field showing the mentions
  */
 interface SuggestionsContainerProps {
   anchorElement: PopperProps['anchorEl'];
-  showVcDisclaimer?: boolean;
+  disclaimer?: ReactNode;
 }
 
 const SuggestionsContainer: FC<PropsWithChildren<SuggestionsContainerProps>> = ({
   anchorElement,
   children,
-  showVcDisclaimer = false,
+  disclaimer = null,
 }) => {
-  const { t } = useTranslation();
-
   return (
     <Popper open placement="bottom-start" anchorEl={anchorElement} sx={{ zIndex: POPPER_Z_INDEX }}>
       <Paper elevation={3}>
@@ -59,30 +80,7 @@ const SuggestionsContainer: FC<PropsWithChildren<SuggestionsContainerProps>> = (
             },
           })}
         >
-          {showVcDisclaimer && (
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'row',
-                height: gutters(2),
-                alignItems: 'center',
-                fontStyle: 'italic',
-                padding: theme => `0 ${gutters(0.5)(theme)} 0 ${gutters(0.5)(theme)}`,
-                fontSize: 'small',
-              }}
-            >
-              {t('components.post-comment.vcInteractions.disclaimer')}
-              <Tooltip
-                title={<Caption>{t('components.post-comment.vcInteractions.help')}</Caption>}
-                placement="top"
-                arrow
-              >
-                <IconButton size="small" aria-label={t('components.post-comment.vcInteractions.help')}>
-                  <HelpOutlineOutlined fontSize="small" />
-                </IconButton>
-              </Tooltip>
-            </Box>
-          )}
+          {disclaimer}
           {children}
         </Box>
       </Paper>
@@ -94,7 +92,7 @@ const SuggestionsContainer: FC<PropsWithChildren<SuggestionsContainerProps>> = (
  * CommentInput
  * Wrapper around MentionsInput to style it properly and to query for users on mentions
  */
-interface CommentInputFieldProps {
+export interface CommentInputFieldProps {
   value: string;
   onValueChange?: (newValue: string) => void;
   onBlur?: () => void;
@@ -103,7 +101,7 @@ interface CommentInputFieldProps {
   maxLength?: number;
   onReturnKey?: (event: React.KeyboardEvent<HTMLTextAreaElement> | React.KeyboardEvent<HTMLInputElement>) => void;
   popperAnchor: SuggestionsContainerProps['anchorElement'];
-  vcInteractions?: Partial<VcInteraction>[];
+  vcInteractions?: Pick<VcInteraction, 'threadID'>[];
   vcEnabled?: boolean;
   threadId?: string;
 }
@@ -267,7 +265,10 @@ export const CommentInputField: FC<InputBaseComponentProps> = forwardRef<
         forceSuggestionsAboveCursor
         allowSpaceInQuery
         customSuggestionsContainer={children => (
-          <SuggestionsContainer anchorElement={popperAnchor} showVcDisclaimer={vcEnabled && hasVcInteraction}>
+          <SuggestionsContainer
+            anchorElement={popperAnchor}
+            disclaimer={vcEnabled && hasVcInteraction && <SuggestionsDisclaimer />}
+          >
             {children}
           </SuggestionsContainer>
         )}

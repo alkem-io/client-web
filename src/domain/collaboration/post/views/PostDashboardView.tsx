@@ -6,7 +6,7 @@ import Avatar from '../../../../core/ui/avatar/Avatar';
 import Typography from '@mui/material/Typography';
 import Skeleton from '@mui/material/Skeleton';
 import DashboardGenericSection from '../../../shared/components/DashboardSections/DashboardGenericSection';
-import { Reference, VcInteraction } from '../../../../core/apollo/generated/graphql-schema';
+import { Reference } from '../../../../core/apollo/generated/graphql-schema';
 import { SectionSpacer } from '../../../shared/components/Section/Section';
 import TagsComponent from '../../../shared/components/TagsComponent/TagsComponent';
 import { Message } from '../../../communication/room/models/Message';
@@ -21,7 +21,7 @@ import { ShareComponent } from '../../../shared/components/ShareDialog/ShareDial
 import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import useCommentReactionsMutations from '../../../communication/room/Comments/useCommentReactionsMutations';
-import MessagesThread from '../../../communication/room/Comments/MessagesThread';
+import MessagesThread, { MessagesThreadProps } from '../../../communication/room/Comments/MessagesThread';
 import ScrollerWithGradient from '../../../../core/ui/overflow/ScrollerWithGradient';
 
 const COMMENTS_CONTAINER_HEIGHT = 400;
@@ -38,7 +38,7 @@ export interface PostDashboardViewProps {
   description?: string;
   type?: string;
   messages?: Message[];
-  vcInteractions?: Partial<VcInteraction>[];
+  vcInteractions?: MessagesThreadProps['vcInteractions'];
   vcEnabled?: boolean;
   roomId: string | undefined;
   tags?: string[];
