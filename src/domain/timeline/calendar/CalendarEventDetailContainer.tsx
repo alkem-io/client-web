@@ -12,6 +12,7 @@ import { evictFromCache } from '../../../core/apollo/utils/removeFromCache';
 import { buildAuthorFromUser } from '../../community/user/utils/buildAuthorFromUser';
 import usePostMessageMutations from '../../communication/room/Comments/usePostMessageMutations';
 import useSubscribeOnRoomEvents from '../../collaboration/callout/useSubscribeOnRoomEvents';
+import { PostDashboardViewProps } from '../../collaboration/post/views/PostDashboardView';
 
 export type CalendarEventDetailData = CalendarEventDetailsFragment;
 
@@ -26,6 +27,7 @@ interface Provided {
   canAddReaction: boolean;
   event?: CalendarEventDetailData;
   messages: Message[];
+  vcInteractions: PostDashboardViewProps['vcInteractions'];
   roomId: string | undefined;
   creatorAvatar?: string;
   creatorName?: string;
@@ -82,6 +84,8 @@ const CalendarEventDetailContainer: FC<CalendarEventDetailContainerProps> = ({ e
     [_messages]
   );
 
+  const vcInteractions = useMemo(() => event?.comments?.vcInteractions ?? [], [event?.comments?.vcInteractions]);
+
   const commentsPrivileges = event?.comments?.authorization?.myPrivileges ?? [];
   const canDeleteComments = commentsPrivileges.includes(AuthorizationPrivilege.Delete);
   const canDeleteComment = useCallback(
@@ -120,6 +124,7 @@ const CalendarEventDetailContainer: FC<CalendarEventDetailContainerProps> = ({ e
     canAddReaction,
     event,
     messages,
+    vcInteractions,
     roomId,
     creatorAvatar,
     creatorName,

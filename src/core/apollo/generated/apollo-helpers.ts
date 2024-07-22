@@ -1502,7 +1502,6 @@ export type LookupQueryResultsKeySpecifier = (
   | 'room'
   | 'space'
   | 'storageAggregator'
-  | 'storageBucket'
   | 'virtualContributor'
   | 'whiteboard'
   | 'whiteboardTemplate'
@@ -1530,7 +1529,6 @@ export type LookupQueryResultsFieldPolicy = {
   room?: FieldPolicy<any> | FieldReadFunction<any>;
   space?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
-  storageBucket?: FieldPolicy<any> | FieldReadFunction<any>;
   virtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboardTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2494,17 +2492,17 @@ export type RolesResultSpaceFieldPolicy = {
 export type RoomKeySpecifier = (
   | 'authorization'
   | 'id'
-  | 'interactions'
   | 'messages'
   | 'messagesCount'
+  | 'vcInteractions'
   | RoomKeySpecifier
 )[];
 export type RoomFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
-  interactions?: FieldPolicy<any> | FieldReadFunction<any>;
   messages?: FieldPolicy<any> | FieldReadFunction<any>;
   messagesCount?: FieldPolicy<any> | FieldReadFunction<any>;
+  vcInteractions?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type RoomEventSubscriptionResultKeySpecifier = (
   | 'message'
@@ -2990,11 +2988,18 @@ export type UserGroupFieldPolicy = {
   parent?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type VcInteractionKeySpecifier = ('id' | 'room' | 'threadID' | VcInteractionKeySpecifier)[];
+export type VcInteractionKeySpecifier = (
+  | 'id'
+  | 'room'
+  | 'threadID'
+  | 'virtualContributorID'
+  | VcInteractionKeySpecifier
+)[];
 export type VcInteractionFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   room?: FieldPolicy<any> | FieldReadFunction<any>;
   threadID?: FieldPolicy<any> | FieldReadFunction<any>;
+  virtualContributorID?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type VerifiedCredentialKeySpecifier = (
   | 'claims'

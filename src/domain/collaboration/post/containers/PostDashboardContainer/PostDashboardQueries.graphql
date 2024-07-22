@@ -63,5 +63,10 @@ fragment PostDashboard on Post {
     messages {
       ...MessageDetails
     }
+    vcInteractions {
+      id
+      threadID
+      virtualContributorID
+    }
   }
 }
