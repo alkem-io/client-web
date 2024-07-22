@@ -1,23 +1,72 @@
 import { useTranslation } from 'react-i18next';
-import { Button, ListItemButton, ListItemButtonProps, ListItemButtonTypeMap } from '@mui/material';
 import { useMyAccountQuery } from '../../../../core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
+import {
+  AuthorizationPrivilege,
+  CredentialType,
+  Space,
+  VirtualContributor,
+} from '../../../../core/apollo/generated/graphql-schema';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
-import { gutters } from '../../../../core/ui/grid/utils';
-import { BlockSectionTitle, Caption } from '../../../../core/ui/typography';
 import Loading from '../../../../core/ui/loading/Loading';
 import { useUserContext } from '../../../../domain/community/user';
-import useNewVirtualContributorWizard from '../newVirtualContributorWizard/useNewVirtualContributorWizard';
-import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
-import Avatar from '../../../../core/ui/avatar/Avatar';
-import defaultJourneyAvatar from '../../../../domain/journey/defaultVisuals/Avatar.jpg';
-import RouterLink, { RouterLinkProps } from '../../../../core/ui/link/RouterLink';
-import Gutters from '../../../../core/ui/grid/Gutters';
-import { Actions } from '../../../../core/ui/actions/Actions';
 import { TopLevelRoutePath } from '../../../routing/TopLevelRoutePath';
+import useNewVirtualContributorWizard from '../newVirtualContributorWizard/useNewVirtualContributorWizard';
+import MyAccountBlockNoGlobalRoleUser from './MyAccountBlockNoGlobalRoleUser';
+import MyAccountBlockGlobalRoleUser from './MyAccountBlockGlobalRoleUser';
+import MyAccountBlockVCCampaignUser from './MyAccountBlockVCCampaignUser';
 
-const VIRTUAL_CONTRIBUTORS_LIMIT = 3;
+enum UserRoles {
+  isNoGlobalRoleUser = 'isNoGlobalRoleUser',
+  isVcCampaignUser = 'isVcCampaignUser',
+  isGlobalRoleUser = 'isGlobalRoleUser',
+}
+
+export interface MyAccountVirtualContributor extends Pick<VirtualContributor, 'id' | 'searchVisibility'> {
+  profile: {
+    id: string;
+    displayName: string;
+    tagline: string;
+    url: string;
+    avatar?: {
+      id: string;
+      uri: string;
+      name: string;
+    };
+  };
+}
+
+export interface MyAccountSpace extends Pick<Space, 'id' | 'level'> {
+  profile: {
+    id: string;
+    displayName: string;
+    tagline: string;
+    url: string;
+    avatar?: {
+      id: string;
+      uri: string;
+      name: string;
+    };
+    cardBanner?: {
+      id: string;
+      uri: string;
+      name: string;
+    };
+  };
+  account: {
+    id: string;
+    host?: {
+      id: string;
+      nameID: string;
+      profile: {
+        id: string;
+        displayName: string;
+        tagline: string;
+        url: string;
+      };
+    };
+  };
+}
 
 const MyAccountBlock = () => {
   const { t } = useTranslation();
@@ -25,17 +74,24 @@ const MyAccountBlock = () => {
   const { startWizard, NewVirtualContributorWizard } = useNewVirtualContributorWizard();
 
   // Curently displaying only the first hosted space and the first VC in it.
-  const hostedSpace = data?.me.myCreatedSpaces.filter(
+  const hostedSpace: MyAccountSpace | undefined = data?.me.myCreatedSpaces.filter(
     spaceData => spaceData.account && spaceData.account.host?.id === data?.me.user?.id && spaceData.level === 0
   )[0];
 
-  const virtualContributors = data?.me.user?.accounts
-    .filter(account => account.id === hostedSpace?.account.id)
-    .filter(vc => vc.virtualContributors.length > 0)[0]?.virtualContributors;
-
-  const hasVirtualCointributors = virtualContributors && virtualContributors.length > 0;
+  const virtualContributors: MyAccountVirtualContributor[] =
+    data?.me.user?.accounts
+      .filter(account => account.id === hostedSpace?.account.id)
+      .filter(vc => vc.virtualContributors.length > 0)[0]?.virtualContributors ?? [];
 
   const { user } = useUserContext();
+  const userRoles: CredentialType[] | undefined = data?.me.user?.agent.credentials?.map(credential => credential.type);
+  const globalRoles = [CredentialType.GlobalAdmin, CredentialType.GlobalLicenseManager, CredentialType.GlobalSupport];
+
+  const userRole = userRoles?.includes(CredentialType.VcCampaign)
+    ? UserRoles.isVcCampaignUser
+    : userRoles?.some(role => globalRoles.includes(role))
+    ? UserRoles.isGlobalRoleUser
+    : UserRoles.isNoGlobalRoleUser;
 
   let createLink = t('pages.home.sections.startingSpace.url');
 
@@ -43,85 +99,35 @@ const MyAccountBlock = () => {
     createLink = `/${TopLevelRoutePath.CreateSpace}`;
   }
 
-  const Wrapper = <D extends React.ElementType = ListItemButtonTypeMap['defaultComponent'], P = {}>(
-    props: ListItemButtonProps<D, P> & RouterLinkProps
-  ) => <ListItemButton component={RouterLink} {...props} />;
+  const renderMyBlock = {
+    isNoGlobalRoleUser: (
+      <MyAccountBlockNoGlobalRoleUser
+        hostedSpace={hostedSpace}
+        virtualContributors={virtualContributors}
+        startWizard={startWizard}
+      />
+    ),
+    isVcCampaignUser: (
+      <MyAccountBlockVCCampaignUser
+        hostedSpace={hostedSpace}
+        virtualContributors={virtualContributors}
+        startWizard={startWizard}
+      />
+    ),
+    isGlobalRoleUser: (
+      <MyAccountBlockGlobalRoleUser
+        hostedSpace={hostedSpace}
+        virtualContributors={virtualContributors}
+        startWizard={startWizard}
+        createLink={createLink}
+      />
+    ),
+  };
 
   return (
     <PageContentBlock columns={4}>
       <PageContentBlockHeader title={t('pages.home.sections.myAccount.title')} fullWidth />
-      {loading ? (
-        <Loading text="" />
-      ) : (
-        <>
-          <Gutters disablePadding disableGap>
-            <Caption>{t('pages.home.sections.myAccount.hostedSpaces')}</Caption>
-            {hostedSpace ? (
-              <BadgeCardView
-                variant="rounded"
-                visual={
-                  <Avatar
-                    src={hostedSpace.profile.cardBanner?.uri || defaultJourneyAvatar}
-                    alt={t('common.avatar-of', { user: hostedSpace.profile.displayName })}
-                  />
-                }
-                component={Wrapper}
-                to={hostedSpace.profile.url}
-              >
-                <BlockSectionTitle>{hostedSpace.profile.displayName}</BlockSectionTitle>
-                <BlockSectionTitle>{hostedSpace.profile.tagline}</BlockSectionTitle>
-              </BadgeCardView>
-            ) : (
-              <Actions paddingY={gutters(0.5)}>
-                <Button
-                  aria-label={t('pages.home.sections.myAccount.createSpaceButton')}
-                  variant="contained"
-                  component={RouterLink}
-                  to={createLink}
-                  sx={{ padding: gutters(0.5), textTransform: 'none', flex: 1 }}
-                >
-                  {t('pages.home.sections.myAccount.createSpaceButton')}
-                </Button>
-              </Actions>
-            )}
-          </Gutters>
-          <Gutters disablePadding disableGap>
-            <Caption>{t('pages.home.sections.myAccount.virtualContributors')}</Caption>
-            {hasVirtualCointributors &&
-              virtualContributors?.map(vc => (
-                <BadgeCardView
-                  key={vc.id}
-                  variant="rounded"
-                  visual={
-                    <Avatar
-                      src={vc.profile.avatar?.uri}
-                      alt={t('common.avatar-of', { user: vc.profile.displayName })}
-                    />
-                  }
-                  component={Wrapper}
-                  to={vc.profile.url}
-                >
-                  <BlockSectionTitle>{vc.profile.displayName}</BlockSectionTitle>
-                </BadgeCardView>
-              ))}
-            {(!hasVirtualCointributors || (virtualContributors ?? []).length < VIRTUAL_CONTRIBUTORS_LIMIT) && (
-              <Actions paddingY={gutters(0.5)}>
-                <Button
-                  aria-label={t('pages.home.sections.myAccount.createVCButton')}
-                  variant="contained"
-                  disabled={!(user && user.hasPlatformPrivilege(AuthorizationPrivilege.CreateSpace)) || !hostedSpace}
-                  sx={{ textTransform: 'none', paddingTop: gutters(0.5), paddingBottom: gutters(0.5), flex: 1 }}
-                  onClick={startWizard}
-                >
-                  {hostedSpace
-                    ? t('pages.home.sections.myAccount.createVCButton')
-                    : t('pages.home.sections.myAccount.createVCButtonDisabled')}
-                </Button>
-              </Actions>
-            )}
-          </Gutters>
-        </>
-      )}
+      {loading ? <Loading text="" /> : renderMyBlock[userRole]}
       <NewVirtualContributorWizard />
     </PageContentBlock>
   );

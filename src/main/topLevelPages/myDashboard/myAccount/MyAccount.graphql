@@ -31,6 +31,12 @@ query MyAccount {
     }
     user {
       id
+      agent {
+        credentials {
+          resourceID
+          type
+        }
+      }
       accounts {
         id
         virtualContributors {

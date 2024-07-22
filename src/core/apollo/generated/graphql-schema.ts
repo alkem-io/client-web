@@ -30186,6 +30186,10 @@ export type MyAccountQuery = {
       | {
           __typename?: 'User';
           id: string;
+          agent: {
+            __typename?: 'Agent';
+            credentials?: Array<{ __typename?: 'Credential'; resourceID: string; type: CredentialType }> | undefined;
+          };
           accounts: Array<{
             __typename?: 'Account';
             id: string;
