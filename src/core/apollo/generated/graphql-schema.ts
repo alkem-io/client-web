@@ -2400,7 +2400,7 @@ export type InnovationPack = {
   /** The Profile for this InnovationPack. */
   profile: Profile;
   /** The InnovationPack provider. */
-  provider?: Maybe<Contributor>;
+  provider: Contributor;
   /** Visibility of the InnovationPack in searches. */
   searchVisibility: SearchVisibility;
   /** The templates in use by this InnovationPack */
@@ -7223,7 +7223,7 @@ export type PlatformInnovationFlowTemplatesLibraryQuery = {
         id: string;
         nameID: string;
         profile: { __typename?: 'Profile'; id: string; displayName: string };
-        provider?:
+        provider:
           | {
               __typename?: 'Organization';
               id: string;
@@ -7256,8 +7256,7 @@ export type PlatformInnovationFlowTemplatesLibraryQuery = {
                 displayName: string;
                 visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
               };
-            }
-          | undefined;
+            };
         templates?:
           | {
               __typename?: 'TemplatesSet';
@@ -7355,7 +7354,7 @@ export type InnovationPackProfilePageQuery = {
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
-          provider?:
+          provider:
             | {
                 __typename?: 'Organization';
                 id: string;
@@ -7368,8 +7367,7 @@ export type InnovationPackProfilePageQuery = {
                 };
               }
             | { __typename?: 'User' }
-            | { __typename?: 'VirtualContributor' }
-            | undefined;
+            | { __typename?: 'VirtualContributor' };
           profile: {
             __typename?: 'Profile';
             tagline: string;
@@ -8961,7 +8959,7 @@ export type PlatformCalloutTemplatesLibraryQuery = {
         id: string;
         nameID: string;
         profile: { __typename?: 'Profile'; id: string; displayName: string };
-        provider?:
+        provider:
           | {
               __typename?: 'Organization';
               id: string;
@@ -8994,8 +8992,7 @@ export type PlatformCalloutTemplatesLibraryQuery = {
                 displayName: string;
                 visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
               };
-            }
-          | undefined;
+            };
         templates?:
           | {
               __typename?: 'TemplatesSet';
@@ -11060,7 +11057,7 @@ export type PlatformCommunityGuidelinesTemplatesLibraryQuery = {
         id: string;
         nameID: string;
         profile: { __typename?: 'Profile'; id: string; displayName: string };
-        provider?:
+        provider:
           | {
               __typename?: 'Organization';
               id: string;
@@ -11093,8 +11090,7 @@ export type PlatformCommunityGuidelinesTemplatesLibraryQuery = {
                 displayName: string;
                 visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
               };
-            }
-          | undefined;
+            };
         templates?:
           | {
               __typename?: 'TemplatesSet';
@@ -11265,7 +11261,7 @@ export type PlatformPostTemplatesLibraryQuery = {
         id: string;
         nameID: string;
         profile: { __typename?: 'Profile'; id: string; displayName: string };
-        provider?:
+        provider:
           | {
               __typename?: 'Organization';
               id: string;
@@ -11298,8 +11294,7 @@ export type PlatformPostTemplatesLibraryQuery = {
                 displayName: string;
                 visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
               };
-            }
-          | undefined;
+            };
         templates?:
           | {
               __typename?: 'TemplatesSet';
@@ -11989,7 +11984,7 @@ export type InnovationPackWithProviderFragment = {
   id: string;
   nameID: string;
   profile: { __typename?: 'Profile'; id: string; displayName: string };
-  provider?:
+  provider:
     | {
         __typename?: 'Organization';
         id: string;
@@ -12019,8 +12014,7 @@ export type InnovationPackWithProviderFragment = {
           displayName: string;
           visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
         };
-      }
-    | undefined;
+      };
 };
 
 export type TemplateProviderProfileFragment = {
@@ -12467,7 +12461,7 @@ export type PlatformWhiteboardTemplatesLibraryQuery = {
         id: string;
         nameID: string;
         profile: { __typename?: 'Profile'; id: string; displayName: string };
-        provider?:
+        provider:
           | {
               __typename?: 'Organization';
               id: string;
@@ -12500,8 +12494,7 @@ export type PlatformWhiteboardTemplatesLibraryQuery = {
                 displayName: string;
                 visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
               };
-            }
-          | undefined;
+            };
         templates?:
           | {
               __typename?: 'TemplatesSet';
@@ -25175,7 +25168,7 @@ export type InnovationPacksQuery = {
         __typename?: 'InnovationPack';
         id: string;
         nameID: string;
-        provider?:
+        provider:
           | {
               __typename?: 'Organization';
               id: string;
@@ -25188,8 +25181,7 @@ export type InnovationPacksQuery = {
               };
             }
           | { __typename?: 'User' }
-          | { __typename?: 'VirtualContributor' }
-          | undefined;
+          | { __typename?: 'VirtualContributor' };
         profile: { __typename?: 'Profile'; id: string; displayName: string };
         templates?:
           | {
@@ -25682,7 +25674,7 @@ export type AdminInnovationPackQuery = {
           __typename?: 'InnovationPack';
           id: string;
           nameID: string;
-          provider?:
+          provider:
             | {
                 __typename?: 'Organization';
                 id: string;
@@ -25695,8 +25687,7 @@ export type AdminInnovationPackQuery = {
                 };
               }
             | { __typename?: 'User' }
-            | { __typename?: 'VirtualContributor' }
-            | undefined;
+            | { __typename?: 'VirtualContributor' };
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -28488,7 +28479,7 @@ export type InnovationLibraryQuery = {
               }>;
             }
           | undefined;
-        provider?:
+        provider:
           | {
               __typename?: 'Organization';
               id: string;
@@ -28501,8 +28492,7 @@ export type InnovationLibraryQuery = {
               };
             }
           | { __typename?: 'User' }
-          | { __typename?: 'VirtualContributor' }
-          | undefined;
+          | { __typename?: 'VirtualContributor' };
       }>;
     };
   };
@@ -28785,7 +28775,7 @@ export type InnovationPackDataFragment = {
         }>;
       }
     | undefined;
-  provider?:
+  provider:
     | {
         __typename?: 'Organization';
         id: string;
@@ -28798,8 +28788,7 @@ export type InnovationPackDataFragment = {
         };
       }
     | { __typename?: 'User' }
-    | { __typename?: 'VirtualContributor' }
-    | undefined;
+    | { __typename?: 'VirtualContributor' };
 };
 
 export type LibraryTemplatesFragment = {
@@ -29175,7 +29164,7 @@ export type InnovationLibraryBlockQuery = {
               communityGuidelinesTemplatesCount: number;
             }
           | undefined;
-        provider?:
+        provider:
           | {
               __typename?: 'Organization';
               id: string;
@@ -29188,8 +29177,7 @@ export type InnovationLibraryBlockQuery = {
               };
             }
           | { __typename?: 'User' }
-          | { __typename?: 'VirtualContributor' }
-          | undefined;
+          | { __typename?: 'VirtualContributor' };
       }>;
     };
   };
@@ -29225,7 +29213,7 @@ export type InnovationPackCardFragment = {
         communityGuidelinesTemplatesCount: number;
       }
     | undefined;
-  provider?:
+  provider:
     | {
         __typename?: 'Organization';
         id: string;
@@ -29238,8 +29226,7 @@ export type InnovationPackCardFragment = {
         };
       }
     | { __typename?: 'User' }
-    | { __typename?: 'VirtualContributor' }
-    | undefined;
+    | { __typename?: 'VirtualContributor' };
 };
 
 export type LatestContributionsQueryVariables = Exact<{

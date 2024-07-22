@@ -15,7 +15,7 @@ interface InnovationPackProfileLayoutProps {
     | (Identifiable & {
         nameID: string;
         profile: ProfilePageBannerProps['profile'];
-        provider?: {
+        provider: {
           profile: {
             displayName: string;
             avatar?: Visual;

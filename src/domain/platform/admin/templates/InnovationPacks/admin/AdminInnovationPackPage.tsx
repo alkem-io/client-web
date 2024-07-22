@@ -67,7 +67,7 @@ const AdminInnovationPackPage: FC<AdminInnovationPackPageProps> = ({ editTemplat
     calloutTemplates,
     communityGuidelinesTemplates,
     id: templatesSetID,
-  } = data?.platform.library.innovationPack?.templates ?? {};
+  } = data?.lookup.innovationPack?.templates ?? {};
 
   const { data: organizationsList, loading: loadingOrganizations } = useOrganizationsListQuery();
   const organizations = useMemo(
@@ -86,7 +86,6 @@ const AdminInnovationPackPage: FC<AdminInnovationPackPageProps> = ({ editTemplat
       variables: {
         packData: {
           ID: innovationPackNameId,
-          providerOrgID: formData.providerId,
           profileData: {
             displayName: formData.profile.displayName,
             description: formData.profile.description,
@@ -110,7 +109,7 @@ const AdminInnovationPackPage: FC<AdminInnovationPackPageProps> = ({ editTemplat
     }
   };
 
-  const innovationPack = data?.platform.library.innovationPack;
+  const innovationPack = data?.lookup.innovationPack;
 
   const isLoading = loading || loadingOrganizations || updating;
 

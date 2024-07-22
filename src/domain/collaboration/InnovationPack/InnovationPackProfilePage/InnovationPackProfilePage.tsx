@@ -48,7 +48,7 @@ const InnovationPackProfilePage = () => {
     },
   });
 
-  const { displayName, description, tagset, references } = data?.platform.library.innovationPack?.profile ?? {};
+  const { displayName, description, tagset, references } = data?.lookup.innovationPack?.profile ?? {};
 
   const {
     whiteboardTemplates,
@@ -56,9 +56,9 @@ const InnovationPackProfilePage = () => {
     innovationFlowTemplates,
     calloutTemplates,
     communityGuidelinesTemplates,
-  } = data?.platform.library.innovationPack?.templates ?? {};
+  } = data?.lookup.innovationPack?.templates ?? {};
 
-  const { innovationPack } = data?.platform.library ?? {};
+  const { innovationPack } = data?.lookup ?? {};
 
   const [selectedTemplate, setSelectedTemplate] = useState<TemplatePreview | undefined>();
 
