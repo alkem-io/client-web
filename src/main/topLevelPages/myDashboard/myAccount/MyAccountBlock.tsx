@@ -22,7 +22,7 @@ enum UserRoles {
   isGlobalRoleUser = 'isGlobalRoleUser',
 }
 
-export interface MyAccountVirtualContributor extends Pick<VirtualContributor, 'id' | 'searchVisibility'> {
+export interface MyAccountVirtualContributor extends Pick<VirtualContributor, 'id'> {
   profile: {
     id: string;
     displayName: string;
