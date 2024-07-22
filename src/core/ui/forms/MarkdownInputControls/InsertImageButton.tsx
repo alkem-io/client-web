@@ -45,7 +45,9 @@ const InsertImageButton = ({ editor, onDialogOpen, onDialogClose, ...buttonProps
     try {
       editor?.commands.setImage(imageProps);
     } catch (error) {
-      notify(error.message, 'error');
+      if (error instanceof Error) {
+        notify(error.message, 'error');
+      }
       throw error;
     }
     closeDialog();

@@ -1,6 +1,6 @@
 import { SvgIcon, SvgIconProps } from '@mui/material';
 
-import { ReactComponent as InnovationFlowIconSvg } from './InnovationFlowIcon.svg';
+import InnovationFlowIconSvg from './InnovationFlowIcon.svg?react';
 
 const InnovationFlowIcon = (props: SvgIconProps) => {
   return <SvgIcon component={InnovationFlowIconSvg} inheritViewBox {...props} />;

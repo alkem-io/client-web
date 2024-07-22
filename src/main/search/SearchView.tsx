@@ -30,7 +30,7 @@ import { SEARCH_SPACE_URL_PARAM, SEARCH_TERMS_URL_PARAM } from './constants';
 import PageContentBlockSeamless from '../../core/ui/content/PageContentBlockSeamless';
 import SearchResultsScope from '../../core/ui/search/SearchResultsScope';
 import SearchResultsScopeCard from '../../core/ui/search/SearchResultsScopeCard';
-import { ReactComponent as AlkemioLogo } from '../ui/logo/logoSmall.svg';
+import AlkemioLogo from '../ui/logo/logoSmall.svg?react';
 import { SpaceIcon } from '../../domain/journey/space/icon/SpaceIcon';
 import { findKey, groupBy, identity } from 'lodash';
 import SearchResultPostChooser from './searchResults/SearchResultPostChooser';
