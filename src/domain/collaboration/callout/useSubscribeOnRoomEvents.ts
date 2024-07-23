@@ -33,7 +33,6 @@ const useSubscribeOnRoomEvents = (roomID: string | undefined, skip?: boolean) =>
         return;
       }
 
-      console.log(data);
       const roomRefId = client.cache.identify({
         id: roomID,
         __typename: 'Room',
