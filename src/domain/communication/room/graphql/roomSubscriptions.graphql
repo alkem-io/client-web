@@ -1,11 +1,6 @@
 subscription roomEvents($roomID: UUID!) {
   roomEvents(roomID: $roomID) {
     roomID
-    room {
-      vcInteractions {
-        ...VcInteractionsDetails
-      }
-    }
     message {
       type
       data {

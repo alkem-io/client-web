@@ -9915,11 +9915,6 @@ export const RoomEventsDocument = gql`
   subscription roomEvents($roomID: UUID!) {
     roomEvents(roomID: $roomID) {
       roomID
-      room {
-        vcInteractions {
-          ...VcInteractionsDetails
-        }
-      }
       message {
         type
         data {
@@ -9935,7 +9930,6 @@ export const RoomEventsDocument = gql`
       }
     }
   }
-  ${VcInteractionsDetailsFragmentDoc}
   ${MessageDetailsFragmentDoc}
   ${ReactionDetailsFragmentDoc}
 `;

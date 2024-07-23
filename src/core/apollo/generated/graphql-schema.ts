@@ -1902,6 +1902,7 @@ export type CreateUserInput = {
   accountUpn?: InputMaybe<Scalars['String']>;
   email: Scalars['String'];
   firstName?: InputMaybe<Scalars['String']>;
+  gender?: InputMaybe<Scalars['String']>;
   lastName?: InputMaybe<Scalars['String']>;
   /** A readable identifier, unique within the containing scope. */
   nameID?: InputMaybe<Scalars['NameID']>;
@@ -4798,8 +4799,6 @@ export type RoomEventSubscriptionResult = {
   message?: Maybe<RoomMessageEventSubscriptionResult>;
   /** A message reaction related event. */
   reaction?: Maybe<RoomMessageReactionEventSubscriptionResult>;
-  /** The Room on which the event happened. */
-  room: Room;
   /** The identifier for the Room on which the event happened. */
   roomID: Scalars['String'];
 };
@@ -5858,6 +5857,7 @@ export type UpdateUserInput = {
   ID: Scalars['UUID_NAMEID_EMAIL'];
   accountUpn?: InputMaybe<Scalars['String']>;
   firstName?: InputMaybe<Scalars['String']>;
+  gender?: InputMaybe<Scalars['String']>;
   lastName?: InputMaybe<Scalars['String']>;
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
   nameID?: InputMaybe<Scalars['NameID']>;
@@ -5947,6 +5947,7 @@ export type User = Contributor & {
   /** The email address for this User. */
   email: Scalars['String'];
   firstName: Scalars['String'];
+  gender: Scalars['String'];
   /** The ID of the Contributor */
   id: Scalars['UUID'];
   /** Can a message be sent to this User. */
@@ -14656,15 +14657,6 @@ export type RoomEventsSubscription = {
   roomEvents: {
     __typename?: 'RoomEventSubscriptionResult';
     roomID: string;
-    room: {
-      __typename?: 'Room';
-      vcInteractions: Array<{
-        __typename?: 'VcInteraction';
-        id: string;
-        threadID: string;
-        virtualContributorID: string;
-      }>;
-    };
     message?:
       | {
           __typename?: 'RoomMessageEventSubscriptionResult';
