@@ -35,6 +35,10 @@ const JourneyDashboardWelcomeBlock = ({
   vision,
   member = false,
 }: JourneyDashboardWelcomeBlockProps) => {
+  const leadOrganizationsUnique = leadOrganizations?.filter(
+    ({ id }) => !leadUsers?.slice(0, 2).some(user => user.id === id)
+  );
+
   return (
     <>
       <OverflowGradient
@@ -65,9 +69,9 @@ const JourneyDashboardWelcomeBlock = ({
           ))}
         </Gutters>
       )}
-      {leadOrganizations && leadOrganizations.length > 0 && (
+      {leadOrganizationsUnique && leadOrganizationsUnique.length > 0 && (
         <Gutters flexWrap="wrap" row disablePadding>
-          {leadOrganizations.slice(0, 2).map(org => (
+          {leadOrganizationsUnique.slice(0, 2).map(org => (
             <ContributorCardHorizontal
               key={org.id}
               profile={org.profile}
