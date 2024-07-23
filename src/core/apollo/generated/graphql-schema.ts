@@ -1902,7 +1902,6 @@ export type CreateUserInput = {
   accountUpn?: InputMaybe<Scalars['String']>;
   email: Scalars['String'];
   firstName?: InputMaybe<Scalars['String']>;
-  gender?: InputMaybe<Scalars['String']>;
   lastName?: InputMaybe<Scalars['String']>;
   /** A readable identifier, unique within the containing scope. */
   nameID?: InputMaybe<Scalars['NameID']>;
@@ -5859,7 +5858,6 @@ export type UpdateUserInput = {
   ID: Scalars['UUID_NAMEID_EMAIL'];
   accountUpn?: InputMaybe<Scalars['String']>;
   firstName?: InputMaybe<Scalars['String']>;
-  gender?: InputMaybe<Scalars['String']>;
   lastName?: InputMaybe<Scalars['String']>;
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
   nameID?: InputMaybe<Scalars['NameID']>;
@@ -5949,7 +5947,6 @@ export type User = Contributor & {
   /** The email address for this User. */
   email: Scalars['String'];
   firstName: Scalars['String'];
-  gender: Scalars['String'];
   /** The ID of the Contributor */
   id: Scalars['UUID'];
   /** Can a message be sent to this User. */
@@ -17787,7 +17784,6 @@ export type UserDetailsFragment = {
   firstName: string;
   lastName: string;
   email: string;
-  gender: string;
   phone: string;
   accountUpn: string;
   profile: {
@@ -17896,7 +17892,6 @@ export type CreateUserMutation = {
     firstName: string;
     lastName: string;
     email: string;
-    gender: string;
     phone: string;
     accountUpn: string;
     profile: {
@@ -17949,7 +17944,6 @@ export type CreateUserNewRegistrationMutation = {
     firstName: string;
     lastName: string;
     email: string;
-    gender: string;
     phone: string;
     accountUpn: string;
     profile: {
@@ -18080,7 +18074,6 @@ export type UpdateUserMutation = {
     firstName: string;
     lastName: string;
     email: string;
-    gender: string;
     phone: string;
     accountUpn: string;
     profile: {
@@ -18144,7 +18137,6 @@ export type UserQuery = {
     firstName: string;
     lastName: string;
     email: string;
-    gender: string;
     phone: string;
     accountUpn: string;
     profile: {
@@ -18226,7 +18218,6 @@ export type UserProfileQuery = {
     firstName: string;
     lastName: string;
     email: string;
-    gender: string;
     phone: string;
     accountUpn: string;
     profile: {
@@ -18353,7 +18344,6 @@ export type UserProviderQuery = {
           firstName: string;
           lastName: string;
           email: string;
-          gender: string;
           phone: string;
           accountUpn: string;
           profile: {
@@ -18417,7 +18407,6 @@ export type UserPendingMembershipsQuery = {
           firstName: string;
           lastName: string;
           email: string;
-          gender: string;
           phone: string;
           accountUpn: string;
           profile: {
