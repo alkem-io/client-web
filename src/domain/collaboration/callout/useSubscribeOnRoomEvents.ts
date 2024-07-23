@@ -2,6 +2,7 @@ import { useApolloErrorHandler } from '../../../core/apollo/hooks/useApolloError
 import { useConfig } from '../../platform/config/useConfig';
 import { useUserContext } from '../../community/user';
 import {
+  VcInteractionsDetailsFragmentDoc,
   MessageDetailsFragmentDoc,
   ReactionDetailsFragmentDoc,
   useRoomEventsSubscription,
@@ -32,6 +33,7 @@ const useSubscribeOnRoomEvents = (roomID: string | undefined, skip?: boolean) =>
         return;
       }
 
+      console.log(data);
       const roomRefId = client.cache.identify({
         id: roomID,
         __typename: 'Room',
@@ -42,7 +44,11 @@ const useSubscribeOnRoomEvents = (roomID: string | undefined, skip?: boolean) =>
       }
 
       const {
-        roomEvents: { message, reaction },
+        roomEvents: {
+          message,
+          reaction,
+          room: { vcInteractions },
+        },
       } = data;
 
       if (message) {
@@ -68,6 +74,18 @@ const useSubscribeOnRoomEvents = (roomID: string | undefined, skip?: boolean) =>
                     });
                     return [...existingMessages, newMessage];
                   }
+                },
+                vcInteractions(existingInteractions = []) {
+                  return [
+                    ...existingInteractions,
+                    ...vcInteractions.map(data =>
+                      client.cache.writeFragment({
+                        data,
+                        fragment: VcInteractionsDetailsFragmentDoc,
+                        fragmentName: 'VcInteractionsDetails',
+                      })
+                    ),
+                  ];
                 },
               },
             });

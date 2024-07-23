@@ -1502,6 +1502,7 @@ export type LookupQueryResultsKeySpecifier = (
   | 'room'
   | 'space'
   | 'storageAggregator'
+  | 'storageBucket'
   | 'virtualContributor'
   | 'whiteboard'
   | 'whiteboardTemplate'
@@ -1529,6 +1530,7 @@ export type LookupQueryResultsFieldPolicy = {
   room?: FieldPolicy<any> | FieldReadFunction<any>;
   space?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
+  storageBucket?: FieldPolicy<any> | FieldReadFunction<any>;
   virtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboardTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2507,12 +2509,14 @@ export type RoomFieldPolicy = {
 export type RoomEventSubscriptionResultKeySpecifier = (
   | 'message'
   | 'reaction'
+  | 'room'
   | 'roomID'
   | RoomEventSubscriptionResultKeySpecifier
 )[];
 export type RoomEventSubscriptionResultFieldPolicy = {
   message?: FieldPolicy<any> | FieldReadFunction<any>;
   reaction?: FieldPolicy<any> | FieldReadFunction<any>;
+  room?: FieldPolicy<any> | FieldReadFunction<any>;
   roomID?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type RoomMessageEventSubscriptionResultKeySpecifier = (

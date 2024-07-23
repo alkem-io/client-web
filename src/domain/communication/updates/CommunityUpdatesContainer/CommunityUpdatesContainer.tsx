@@ -65,6 +65,7 @@ export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ 
       if (!roomID) {
         throw new Error('RoomId is not defined');
       }
+      debugger;
       const update = await sendUpdate({
         variables: { messageData: { message, roomID } },
       });
