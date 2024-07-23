@@ -11,6 +11,7 @@ export type AccountKeySpecifier = (
   | 'defaults'
   | 'host'
   | 'id'
+  | 'innovationHubs'
   | 'library'
   | 'license'
   | 'licensePrivileges'
@@ -26,6 +27,7 @@ export type AccountFieldPolicy = {
   defaults?: FieldPolicy<any> | FieldReadFunction<any>;
   host?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  innovationHubs?: FieldPolicy<any> | FieldReadFunction<any>;
   library?: FieldPolicy<any> | FieldReadFunction<any>;
   license?: FieldPolicy<any> | FieldReadFunction<any>;
   licensePrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1293,8 +1295,10 @@ export type InnovationHubKeySpecifier = (
   | 'account'
   | 'authorization'
   | 'id'
+  | 'listedInStore'
   | 'nameID'
   | 'profile'
+  | 'searchVisibility'
   | 'spaceListFilter'
   | 'spaceVisibilityFilter'
   | 'subdomain'
@@ -1305,8 +1309,10 @@ export type InnovationHubFieldPolicy = {
   account?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  listedInStore?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  searchVisibility?: FieldPolicy<any> | FieldReadFunction<any>;
   spaceListFilter?: FieldPolicy<any> | FieldReadFunction<any>;
   spaceVisibilityFilter?: FieldPolicy<any> | FieldReadFunction<any>;
   subdomain?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1362,6 +1368,7 @@ export type LatestReleaseDiscussionFieldPolicy = {
 export type LibraryKeySpecifier = (
   | 'authorization'
   | 'id'
+  | 'innovationHubs'
   | 'innovationPack'
   | 'innovationPacks'
   | 'storageAggregator'
@@ -1371,6 +1378,7 @@ export type LibraryKeySpecifier = (
 export type LibraryFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  innovationHubs?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationPack?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationPacks?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1496,6 +1504,7 @@ export type LookupQueryResultsKeySpecifier = (
   | 'document'
   | 'innovationFlow'
   | 'innovationFlowTemplate'
+  | 'innovationHub'
   | 'invitation'
   | 'post'
   | 'profile'
@@ -1524,6 +1533,7 @@ export type LookupQueryResultsFieldPolicy = {
   document?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationFlow?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationFlowTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
+  innovationHub?: FieldPolicy<any> | FieldReadFunction<any>;
   invitation?: FieldPolicy<any> | FieldReadFunction<any>;
   post?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2052,7 +2062,6 @@ export type PlatformKeySpecifier = (
   | 'forum'
   | 'id'
   | 'innovationHub'
-  | 'innovationHubs'
   | 'latestReleaseDiscussion'
   | 'library'
   | 'licensing'
@@ -2068,7 +2077,6 @@ export type PlatformFieldPolicy = {
   forum?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationHub?: FieldPolicy<any> | FieldReadFunction<any>;
-  innovationHubs?: FieldPolicy<any> | FieldReadFunction<any>;
   latestReleaseDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
   library?: FieldPolicy<any> | FieldReadFunction<any>;
   licensing?: FieldPolicy<any> | FieldReadFunction<any>;

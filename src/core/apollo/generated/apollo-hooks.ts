@@ -15491,13 +15491,15 @@ export const AdminInnovationHubsListDocument = gql`
   query AdminInnovationHubsList {
     platform {
       id
-      innovationHubs {
-        id
-        nameID
-        subdomain
-        profile {
+      library {
+        innovationHubs {
           id
-          displayName
+          nameID
+          subdomain
+          profile {
+            id
+            displayName
+          }
         }
       }
     }
@@ -15668,7 +15670,7 @@ export function refetchAdminInnovationHubQuery(variables: SchemaTypes.AdminInnov
 }
 
 export const CreateInnovationHubDocument = gql`
-  mutation createInnovationHub($hubData: CreateInnovationHubInput!) {
+  mutation createInnovationHub($hubData: CreateInnovationHubOnAccountInput!) {
     createInnovationHub(createData: $hubData) {
       ...AdminInnovationHub
     }

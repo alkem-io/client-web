@@ -1,13 +1,15 @@
 query AdminInnovationHubsList {
   platform {
     id
-    innovationHubs {
-      id
-      nameID
-      subdomain
-      profile {
+    library {
+      innovationHubs {
         id
-        displayName
+        nameID
+        subdomain
+        profile {
+          id
+          displayName
+        }
       }
     }
   }
@@ -57,7 +59,7 @@ fragment AdminInnovationHub on InnovationHub {
   spaceVisibilityFilter
 }
 
-mutation createInnovationHub($hubData: CreateInnovationHubInput!) {
+mutation createInnovationHub($hubData: CreateInnovationHubOnAccountInput!) {
   createInnovationHub(createData: $hubData) {
     ...AdminInnovationHub
   }
