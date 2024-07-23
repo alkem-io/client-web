@@ -9,11 +9,21 @@ import { MetricType } from '../../../../platform/metrics/MetricType';
 
 export interface AssociatedOrganization {
   key: string; // to be used as React key
-  name?: string;
-  avatar?: string;
-  description?: string;
-  city?: string;
-  country?: string;
+  profile:
+    | {
+        url: string;
+        displayName: string;
+        avatar?: {
+          uri: string;
+        };
+        location?: {
+          city: string;
+          country: string;
+        };
+        tagsets?: { tags: string[] }[];
+      }
+    | undefined;
+  seamless?: boolean;
   associatesCount: number;
   verified: boolean;
   url?: string;
@@ -33,12 +43,9 @@ export const mapToAssociatedOrganization = (
 ): AssociatedOrganization => {
   return {
     key,
-    name: organization?.profile.displayName,
+    profile: organization?.profile,
+    seamless: true,
     associatesCount: getMetricCount(organization?.metrics || [], MetricType.Associate),
-    description: organization?.profile.description,
-    city: organization?.profile.location?.city,
-    country: organization?.profile.location?.country,
-    avatar: organization?.profile.avatar?.uri,
     verified: organization?.verification.status === OrganizationVerificationEnum.VerifiedManualAttestation,
     url: organization && buildOrganizationUrl(organization.nameID),
     ...state,

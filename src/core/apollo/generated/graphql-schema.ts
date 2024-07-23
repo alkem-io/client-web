@@ -4810,6 +4810,8 @@ export type RoomEventSubscriptionResult = {
   message?: Maybe<RoomMessageEventSubscriptionResult>;
   /** A message reaction related event. */
   reaction?: Maybe<RoomMessageReactionEventSubscriptionResult>;
+  /** The Room on which the event happened. */
+  room: Room;
   /** The identifier for the Room on which the event happened. */
   roomID: Scalars['String'];
 };
@@ -14672,6 +14674,15 @@ export type RoomEventsSubscription = {
   roomEvents: {
     __typename?: 'RoomEventSubscriptionResult';
     roomID: string;
+    room: {
+      __typename?: 'Room';
+      vcInteractions: Array<{
+        __typename?: 'VcInteraction';
+        id: string;
+        threadID: string;
+        virtualContributorID: string;
+      }>;
+    };
     message?:
       | {
           __typename?: 'RoomMessageEventSubscriptionResult';
