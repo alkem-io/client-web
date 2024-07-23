@@ -2494,27 +2494,29 @@ export type RolesResultSpaceFieldPolicy = {
 export type RoomKeySpecifier = (
   | 'authorization'
   | 'id'
-  | 'interactions'
   | 'messages'
   | 'messagesCount'
+  | 'vcInteractions'
   | RoomKeySpecifier
 )[];
 export type RoomFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
-  interactions?: FieldPolicy<any> | FieldReadFunction<any>;
   messages?: FieldPolicy<any> | FieldReadFunction<any>;
   messagesCount?: FieldPolicy<any> | FieldReadFunction<any>;
+  vcInteractions?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type RoomEventSubscriptionResultKeySpecifier = (
   | 'message'
   | 'reaction'
+  | 'room'
   | 'roomID'
   | RoomEventSubscriptionResultKeySpecifier
 )[];
 export type RoomEventSubscriptionResultFieldPolicy = {
   message?: FieldPolicy<any> | FieldReadFunction<any>;
   reaction?: FieldPolicy<any> | FieldReadFunction<any>;
+  room?: FieldPolicy<any> | FieldReadFunction<any>;
   roomID?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type RoomMessageEventSubscriptionResultKeySpecifier = (
@@ -2988,11 +2990,18 @@ export type UserGroupFieldPolicy = {
   parent?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type VcInteractionKeySpecifier = ('id' | 'room' | 'threadID' | VcInteractionKeySpecifier)[];
+export type VcInteractionKeySpecifier = (
+  | 'id'
+  | 'room'
+  | 'threadID'
+  | 'virtualContributorID'
+  | VcInteractionKeySpecifier
+)[];
 export type VcInteractionFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   room?: FieldPolicy<any> | FieldReadFunction<any>;
   threadID?: FieldPolicy<any> | FieldReadFunction<any>;
+  virtualContributorID?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type VerifiedCredentialKeySpecifier = (
   | 'claims'

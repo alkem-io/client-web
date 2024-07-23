@@ -1,6 +1,6 @@
 import React, { ReactNode, useState } from 'react';
 import { Alert, Dialog, DialogActions } from '@mui/material';
-import { Form, Formik } from 'formik';
+import { Form, Formik, FormikHelpers } from 'formik';
 import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import useLoadingState from '../../shared/utils/useLoadingState';
@@ -34,11 +34,16 @@ const InviteExternalUserDialog = ({
   const [isMessageSent, setMessageSent] = useState(false);
 
   const [handleSendMessage, isLoading, error] = useLoadingState(
-    async (values: InviteExternalUserData, { resetForm }) => {
-      await onInviteUser(values);
-      if (!error) {
-        setMessageSent(true);
-        resetForm();
+    async (values: InviteExternalUserData, formikHelpers: FormikHelpers<InviteExternalUserData>) => {
+      try {
+        await onInviteUser(values);
+
+        if (!error) {
+          setMessageSent(true);
+          formikHelpers.resetForm();
+        }
+      } catch (err) {
+        console.error(err);
       }
     }
   );

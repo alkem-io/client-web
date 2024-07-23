@@ -21,6 +21,7 @@ export const usePreferences = <TQuery, TQVariable, TMVariable>(
   selectedGroups?: string[],
   excludeTypes?: PreferenceType[]
 ): Provided => {
+  // @ts-ignore TS5UPGRADE
   const { data, loading, error } = useQuery<TQuery, TQVariable>(queryDocument, {
     variables: queryVariables,
     fetchPolicy: 'network-only',
@@ -36,9 +37,8 @@ export const usePreferences = <TQuery, TQVariable, TMVariable>(
 
   const onUpdate = useCallback(
     (type: PreferenceTypes, checked: boolean) => {
-      updatePreference({
-        variables: mutationVariables(queryVariables, type, checked),
-      });
+      // @ts-ignore TS5UPGRADE
+      updatePreference({ variables: mutationVariables(queryVariables, type, checked) });
     },
     [mutationVariables, queryVariables, updatePreference]
   );

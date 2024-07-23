@@ -1,4 +1,4 @@
-import { createUploadLink } from 'apollo-upload-client';
+import createUploadLink from 'apollo-upload-client/createUploadLink.mjs';
 import { split } from '@apollo/client';
 import { getMainDefinition } from '@apollo/client/utilities';
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
@@ -13,7 +13,7 @@ export const httpLink = (graphQLEndpoint: string, enableWebSockets: boolean) => 
   const uploadLink = createUploadLink({
     uri: graphQLEndpoint,
     credentials: 'include',
-    headers: { 'apollo-require-preflight': true },
+    headers: { 'apollo-require-preflight': 'true' },
   });
   if (enableWebSockets) {
     // if creating the web socket link fails fall back to http only

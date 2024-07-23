@@ -9,4 +9,7 @@ fragment CommentsWithMessages on Room {
   messages {
     ...MessageDetails
   }
+  vcInteractions {
+    ...VcInteractionsDetails
+  }
 }

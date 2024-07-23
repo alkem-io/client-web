@@ -4774,12 +4774,12 @@ export type Room = {
   authorization?: Maybe<Authorization>;
   /** The ID of the entity */
   id: Scalars['UUID'];
-  /** Virtual Contributor Interactions in this Room. */
-  interactions: Array<VcInteraction>;
   /** Messages in this Room. */
   messages: Array<Message>;
   /** The number of messages in the Room. */
   messagesCount: Scalars['Float'];
+  /** Virtual Contributor Interactions in this Room. */
+  vcInteractions: Array<VcInteraction>;
 };
 
 export type RoomAddReactionToMessageInput = {
@@ -4798,6 +4798,8 @@ export type RoomEventSubscriptionResult = {
   message?: Maybe<RoomMessageEventSubscriptionResult>;
   /** A message reaction related event. */
   reaction?: Maybe<RoomMessageReactionEventSubscriptionResult>;
+  /** The Room on which the event happened. */
+  room: Room;
   /** The identifier for the Room on which the event happened. */
   roomID: Scalars['String'];
 };
@@ -6046,6 +6048,7 @@ export type VcInteraction = {
   id: Scalars['UUID'];
   room: Room;
   threadID: Scalars['String'];
+  virtualContributorID: Scalars['UUID'];
 };
 
 export type VerifiedCredential = {
@@ -6663,6 +6666,12 @@ export type CalloutPageCalloutQuery = {
                         };
                       }
                     | undefined;
+                }>;
+                vcInteractions: Array<{
+                  __typename?: 'VcInteraction';
+                  id: string;
+                  threadID: string;
+                  virtualContributorID: string;
                 }>;
               }
             | undefined;
@@ -9458,6 +9467,12 @@ export type CreateCalloutMutation = {
                 }
               | undefined;
           }>;
+          vcInteractions: Array<{
+            __typename?: 'VcInteraction';
+            id: string;
+            threadID: string;
+            virtualContributorID: string;
+          }>;
         }
       | undefined;
     authorization?:
@@ -9772,6 +9787,12 @@ export type UpdateCalloutVisibilityMutation = {
                   };
                 }
               | undefined;
+          }>;
+          vcInteractions: Array<{
+            __typename?: 'VcInteraction';
+            id: string;
+            threadID: string;
+            virtualContributorID: string;
           }>;
         }
       | undefined;
@@ -10522,6 +10543,12 @@ export type CalloutDetailsQuery = {
                       }
                     | undefined;
                 }>;
+                vcInteractions: Array<{
+                  __typename?: 'VcInteraction';
+                  id: string;
+                  threadID: string;
+                  virtualContributorID: string;
+                }>;
               }
             | undefined;
           authorization?:
@@ -10780,6 +10807,12 @@ export type CalloutDetailsFragment = {
                 };
               }
             | undefined;
+        }>;
+        vcInteractions: Array<{
+          __typename?: 'VcInteraction';
+          id: string;
+          threadID: string;
+          virtualContributorID: string;
         }>;
       }
     | undefined;
@@ -11396,6 +11429,12 @@ export type PostQuery = {
                           }
                         | undefined;
                     }>;
+                    vcInteractions: Array<{
+                      __typename?: 'VcInteraction';
+                      id: string;
+                      threadID: string;
+                      virtualContributorID: string;
+                    }>;
                   };
                 }
               | undefined;
@@ -11549,6 +11588,7 @@ export type PostDashboardFragment = {
           }
         | undefined;
     }>;
+    vcInteractions: Array<{ __typename?: 'VcInteraction'; id: string; threadID: string; virtualContributorID: string }>;
   };
 };
 
@@ -14499,6 +14539,7 @@ export type CommentsWithMessagesFragment = {
         }
       | undefined;
   }>;
+  vcInteractions: Array<{ __typename?: 'VcInteraction'; id: string; threadID: string; virtualContributorID: string }>;
 };
 
 export type RemoveReactionMutationVariables = Exact<{
@@ -14527,6 +14568,13 @@ export type ReplyToMessageMutation = {
       | { __typename?: 'VirtualContributor'; id: string }
       | undefined;
   };
+};
+
+export type VcInteractionsDetailsFragment = {
+  __typename?: 'VcInteraction';
+  id: string;
+  threadID: string;
+  virtualContributorID: string;
 };
 
 export type MentionableUsersQueryVariables = Exact<{
@@ -14608,6 +14656,15 @@ export type RoomEventsSubscription = {
   roomEvents: {
     __typename?: 'RoomEventSubscriptionResult';
     roomID: string;
+    room: {
+      __typename?: 'Room';
+      vcInteractions: Array<{
+        __typename?: 'VcInteraction';
+        id: string;
+        threadID: string;
+        virtualContributorID: string;
+      }>;
+    };
     message?:
       | {
           __typename?: 'RoomMessageEventSubscriptionResult';
@@ -26757,6 +26814,12 @@ export type CalendarEventDetailsQuery = {
                   }
                 | undefined;
             }>;
+            vcInteractions: Array<{
+              __typename?: 'VcInteraction';
+              id: string;
+              threadID: string;
+              virtualContributorID: string;
+            }>;
           };
           profile: {
             __typename?: 'Profile';
@@ -26924,6 +26987,7 @@ export type CalendarEventDetailsFragment = {
           }
         | undefined;
     }>;
+    vcInteractions: Array<{ __typename?: 'VcInteraction'; id: string; threadID: string; virtualContributorID: string }>;
   };
   profile: {
     __typename?: 'Profile';
@@ -27109,6 +27173,12 @@ export type CreateCalendarEventMutation = {
             }
           | undefined;
       }>;
+      vcInteractions: Array<{
+        __typename?: 'VcInteraction';
+        id: string;
+        threadID: string;
+        virtualContributorID: string;
+      }>;
     };
     profile: {
       __typename?: 'Profile';
@@ -27273,6 +27343,12 @@ export type UpdateCalendarEventMutation = {
               };
             }
           | undefined;
+      }>;
+      vcInteractions: Array<{
+        __typename?: 'VcInteraction';
+        id: string;
+        threadID: string;
+        virtualContributorID: string;
       }>;
     };
     profile: {

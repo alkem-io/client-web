@@ -58,7 +58,7 @@ export function Filter<T>({ data, limitKeys = [], sort, placeholder, children }:
   };
 
   const keyFromSortItem = (item?: sortItem<T>) => {
-    return item ? `${item.key}-${item.order}` : '';
+    return item ? `${String(item.key)}-${item.order}` : '';
   };
 
   return (
