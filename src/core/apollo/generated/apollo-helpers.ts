@@ -2509,14 +2509,12 @@ export type RoomFieldPolicy = {
 export type RoomEventSubscriptionResultKeySpecifier = (
   | 'message'
   | 'reaction'
-  | 'room'
   | 'roomID'
   | RoomEventSubscriptionResultKeySpecifier
 )[];
 export type RoomEventSubscriptionResultFieldPolicy = {
   message?: FieldPolicy<any> | FieldReadFunction<any>;
   reaction?: FieldPolicy<any> | FieldReadFunction<any>;
-  room?: FieldPolicy<any> | FieldReadFunction<any>;
   roomID?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type RoomMessageEventSubscriptionResultKeySpecifier = (
