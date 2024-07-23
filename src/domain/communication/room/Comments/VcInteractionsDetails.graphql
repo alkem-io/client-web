@@ -1,0 +1,5 @@
+fragment VcInteractionsDetails on VcInteraction {
+    id
+    threadID
+    virtualContributorID
+}
