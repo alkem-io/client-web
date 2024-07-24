@@ -2215,10 +2215,6 @@ export const SpaceCardFragmentDoc = gql`
         ...VisualUri
       }
     }
-    authorization {
-      id
-      anonymousReadAccess
-    }
     metrics {
       name
       value
@@ -2236,6 +2232,11 @@ export const SpaceCardFragmentDoc = gql`
       license {
         id
         visibility
+      }
+    }
+    settings {
+      privacy {
+        mode
       }
     }
   }
