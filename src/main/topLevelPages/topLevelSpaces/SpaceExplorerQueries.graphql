@@ -79,13 +79,7 @@ fragment SpaceExplorerSpace on Space {
     id
     vision
   }
-  account {
-    id
-    license {
-      id
-      visibility
-    }
-  }
+  visibility
   community {
     id
     myMembershipStatus

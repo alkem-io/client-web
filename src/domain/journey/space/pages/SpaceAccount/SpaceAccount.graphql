@@ -10,6 +10,7 @@ query SpaceAccount($spaceId: UUID!) {
         id
         myPrivileges
       }
+      visibility
       account {
         id
         host {
@@ -28,10 +29,6 @@ query SpaceAccount($spaceId: UUID!) {
             }
             url
           }
-        }
-        license {
-          id
-          visibility
         }
         activeSubscription {
           name
