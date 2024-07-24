@@ -28,7 +28,6 @@ fragment SubspacePage on Space {
   }
   authorization {
     id
-    anonymousReadAccess
     myPrivileges
   }
   metrics {

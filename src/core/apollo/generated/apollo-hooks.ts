@@ -2527,7 +2527,6 @@ export const SpacePageFragmentDoc = gql`
     }
     authorization {
       id
-      anonymousReadAccess
       myPrivileges
     }
     profile {
@@ -2601,7 +2600,6 @@ export const SubspacePageFragmentDoc = gql`
     }
     authorization {
       id
-      anonymousReadAccess
       myPrivileges
     }
     metrics {
@@ -2647,10 +2645,6 @@ export const SubspacePageFragmentDoc = gql`
 export const SubspaceCardFragmentDoc = gql`
   fragment SubspaceCard on Space {
     id
-    authorization {
-      id
-      anonymousReadAccess
-    }
     metrics {
       id
       name
@@ -2829,7 +2823,6 @@ export const SubspaceInfoFragmentDoc = gql`
     authorization {
       id
       myPrivileges
-      anonymousReadAccess
     }
     context {
       id

@@ -21174,12 +21174,7 @@ export type SpacePageQuery = {
           };
           metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
           authorization?:
-            | {
-                __typename?: 'Authorization';
-                id: string;
-                anonymousReadAccess: boolean;
-                myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-              }
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
           profile: {
             __typename?: 'Profile';
@@ -21481,12 +21476,7 @@ export type SpacePageFragment = {
   };
   metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
   authorization?:
-    | {
-        __typename?: 'Authorization';
-        id: string;
-        anonymousReadAccess: boolean;
-        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-      }
+    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
   profile: {
     __typename?: 'Profile';
@@ -21690,7 +21680,6 @@ export type SpaceSubspaceCardsQuery = {
           subspaces: Array<{
             __typename?: 'Space';
             id: string;
-            authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
             metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
             profile: {
               __typename?: 'Profile';
@@ -21768,12 +21757,7 @@ export type LegacySubspaceDashboardPageQuery = {
             visuals: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }>;
           };
           authorization?:
-            | {
-                __typename?: 'Authorization';
-                id: string;
-                anonymousReadAccess: boolean;
-                myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-              }
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
           metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
           collaboration: {
@@ -21972,12 +21956,7 @@ export type SubspacePageFragment = {
     visuals: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }>;
   };
   authorization?:
-    | {
-        __typename?: 'Authorization';
-        id: string;
-        anonymousReadAccess: boolean;
-        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-      }
+    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
   metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
   collaboration: {
@@ -22202,7 +22181,6 @@ export type ContactSupportLocationQuery = {
 export type SubspaceCardFragment = {
   __typename?: 'Space';
   id: string;
-  authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
   metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
   profile: {
     __typename?: 'Profile';
@@ -22234,7 +22212,6 @@ export type SubspacesOnSpaceFragment = {
   subspaces: Array<{
     __typename?: 'Space';
     id: string;
-    authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
     metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
     profile: {
       __typename?: 'Profile';
@@ -22380,7 +22357,6 @@ export type SubspaceCardsQuery = {
     subspaces: Array<{
       __typename?: 'Space';
       id: string;
-      authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
       metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
       profile: {
         __typename?: 'Profile';
@@ -23491,12 +23467,7 @@ export type SubspaceInfoQuery = {
               | undefined;
           };
           authorization?:
-            | {
-                __typename?: 'Authorization';
-                id: string;
-                myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                anonymousReadAccess: boolean;
-              }
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
           context: {
             __typename?: 'Context';
@@ -23567,12 +23538,7 @@ export type SubspaceInfoFragment = {
       | undefined;
   };
   authorization?:
-    | {
-        __typename?: 'Authorization';
-        id: string;
-        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-        anonymousReadAccess: boolean;
-      }
+    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
   context: {
     __typename?: 'Context';
@@ -26137,7 +26103,6 @@ export type CreateSubspaceMutation = {
   createSubspace: {
     __typename?: 'Space';
     id: string;
-    authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
     metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
     profile: {
       __typename?: 'Profile';
