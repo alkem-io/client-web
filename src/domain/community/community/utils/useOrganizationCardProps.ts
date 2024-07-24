@@ -3,18 +3,17 @@ import {
   OrganizationCardFragment,
   OrganizationVerificationEnum,
 } from '../../../../core/apollo/generated/graphql-schema';
-import { OrganizationCardProps } from '../../contributor/organization/OrganizationCardHorizontal/OrganizationCardHorizontal';
 import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
 import { buildOrganizationUrl } from '../../../../main/routing/urlBuilders';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 import { MetricType } from '../../../platform/metrics/MetricType';
+import { OrganizationCardProps } from '../CommunityContributors/ContributingOrganizations';
 
 export const toOrganizationCardProps = (org: OrganizationCardFragment): OrganizationCardProps & Identifiable => {
   return {
     id: org.id,
     name: org.profile.displayName,
     avatar: org.profile.visual?.uri,
-    description: org.profile.description,
     city: org.profile.location?.city,
     country: org.profile.location?.country,
     associatesCount: getMetricCount(org.metrics ?? [], MetricType.Associate),

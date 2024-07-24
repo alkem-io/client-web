@@ -4,7 +4,6 @@ fragment UserDetails on User {
   firstName
   lastName
   email
-  gender
   phone
   accountUpn
   profile {

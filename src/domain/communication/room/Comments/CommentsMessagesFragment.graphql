@@ -10,8 +10,6 @@ fragment CommentsWithMessages on Room {
     ...MessageDetails
   }
   vcInteractions {
-    id
-    threadID
-    virtualContributorID
+    ...VcInteractionsDetails
   }
 }

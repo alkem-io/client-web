@@ -579,6 +579,7 @@ export type AiPersona = {
 
 export enum AiPersonaBodyOfKnowledgeType {
   AlkemioSpace = 'ALKEMIO_SPACE',
+  None = 'NONE',
   Other = 'OTHER',
 }
 
@@ -2647,6 +2648,8 @@ export type LookupQueryResults = {
   space?: Maybe<Space>;
   /** Lookup the specified StorageAggregator */
   storageAggregator?: Maybe<StorageAggregator>;
+  /** Lookup the specified StorageBucket */
+  storageBucket?: Maybe<StorageBucket>;
   /** A particular VirtualContributor */
   virtualContributor?: Maybe<VirtualContributor>;
   /** Lookup the specified Whiteboard */
@@ -2737,6 +2740,10 @@ export type LookupQueryResultsSpaceArgs = {
 };
 
 export type LookupQueryResultsStorageAggregatorArgs = {
+  ID: Scalars['UUID'];
+};
+
+export type LookupQueryResultsStorageBucketArgs = {
   ID: Scalars['UUID'];
 };
 
@@ -4772,7 +4779,7 @@ export type Room = {
   messages: Array<Message>;
   /** The number of messages in the Room. */
   messagesCount: Scalars['Float'];
-  /** Information about the interactions with Virtual Contributors */
+  /** Virtual Contributor Interactions in this Room. */
   vcInteractions: Array<VcInteraction>;
 };
 
@@ -4792,6 +4799,8 @@ export type RoomEventSubscriptionResult = {
   message?: Maybe<RoomMessageEventSubscriptionResult>;
   /** A message reaction related event. */
   reaction?: Maybe<RoomMessageReactionEventSubscriptionResult>;
+  /** The Room on which the event happened. */
+  room: Room;
   /** The identifier for the Room on which the event happened. */
   roomID: Scalars['String'];
 };
@@ -14564,6 +14573,13 @@ export type ReplyToMessageMutation = {
   };
 };
 
+export type VcInteractionsDetailsFragment = {
+  __typename?: 'VcInteraction';
+  id: string;
+  threadID: string;
+  virtualContributorID: string;
+};
+
 export type MentionableUsersQueryVariables = Exact<{
   filter?: InputMaybe<UserFilterInput>;
   first?: InputMaybe<Scalars['Int']>;
@@ -14643,6 +14659,15 @@ export type RoomEventsSubscription = {
   roomEvents: {
     __typename?: 'RoomEventSubscriptionResult';
     roomID: string;
+    room: {
+      __typename?: 'Room';
+      vcInteractions: Array<{
+        __typename?: 'VcInteraction';
+        id: string;
+        threadID: string;
+        virtualContributorID: string;
+      }>;
+    };
     message?:
       | {
           __typename?: 'RoomMessageEventSubscriptionResult';
@@ -17762,7 +17787,6 @@ export type UserDetailsFragment = {
   firstName: string;
   lastName: string;
   email: string;
-  gender: string;
   phone: string;
   accountUpn: string;
   profile: {
@@ -17871,7 +17895,6 @@ export type CreateUserMutation = {
     firstName: string;
     lastName: string;
     email: string;
-    gender: string;
     phone: string;
     accountUpn: string;
     profile: {
@@ -17924,7 +17947,6 @@ export type CreateUserNewRegistrationMutation = {
     firstName: string;
     lastName: string;
     email: string;
-    gender: string;
     phone: string;
     accountUpn: string;
     profile: {
@@ -18055,7 +18077,6 @@ export type UpdateUserMutation = {
     firstName: string;
     lastName: string;
     email: string;
-    gender: string;
     phone: string;
     accountUpn: string;
     profile: {
@@ -18119,7 +18140,6 @@ export type UserQuery = {
     firstName: string;
     lastName: string;
     email: string;
-    gender: string;
     phone: string;
     accountUpn: string;
     profile: {
@@ -18201,7 +18221,6 @@ export type UserProfileQuery = {
     firstName: string;
     lastName: string;
     email: string;
-    gender: string;
     phone: string;
     accountUpn: string;
     profile: {
@@ -18328,7 +18347,6 @@ export type UserProviderQuery = {
           firstName: string;
           lastName: string;
           email: string;
-          gender: string;
           phone: string;
           accountUpn: string;
           profile: {
@@ -18392,7 +18410,6 @@ export type UserPendingMembershipsQuery = {
           firstName: string;
           lastName: string;
           email: string;
-          gender: string;
           phone: string;
           accountUpn: string;
           profile: {

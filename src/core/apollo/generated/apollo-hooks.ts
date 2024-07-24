@@ -643,6 +643,13 @@ export const MessageDetailsFragmentDoc = gql`
   ${ReactionDetailsFragmentDoc}
   ${ContributorDetailsFragmentDoc}
 `;
+export const VcInteractionsDetailsFragmentDoc = gql`
+  fragment VcInteractionsDetails on VcInteraction {
+    id
+    threadID
+    virtualContributorID
+  }
+`;
 export const CommentsWithMessagesFragmentDoc = gql`
   fragment CommentsWithMessages on Room {
     id
@@ -656,12 +663,11 @@ export const CommentsWithMessagesFragmentDoc = gql`
       ...MessageDetails
     }
     vcInteractions {
-      id
-      threadID
-      virtualContributorID
+      ...VcInteractionsDetails
     }
   }
   ${MessageDetailsFragmentDoc}
+  ${VcInteractionsDetailsFragmentDoc}
 `;
 export const CalloutDetailsFragmentDoc = gql`
   fragment CalloutDetails on Callout {
@@ -1774,7 +1780,6 @@ export const UserDetailsFragmentDoc = gql`
     firstName
     lastName
     email
-    gender
     phone
     accountUpn
     profile {
@@ -9910,6 +9915,11 @@ export const RoomEventsDocument = gql`
   subscription roomEvents($roomID: UUID!) {
     roomEvents(roomID: $roomID) {
       roomID
+      room {
+        vcInteractions {
+          ...VcInteractionsDetails
+        }
+      }
       message {
         type
         data {
@@ -9925,6 +9935,7 @@ export const RoomEventsDocument = gql`
       }
     }
   }
+  ${VcInteractionsDetailsFragmentDoc}
   ${MessageDetailsFragmentDoc}
   ${ReactionDetailsFragmentDoc}
 `;
