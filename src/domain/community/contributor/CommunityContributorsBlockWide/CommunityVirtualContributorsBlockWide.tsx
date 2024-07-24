@@ -18,7 +18,8 @@ interface CommunityContributorsBlockWideProps {
   isLoading?: boolean;
 }
 
-const COMPACT_VIEW_ITEMS_LIMIT = 3 * 8; // 3 rows on Desktop
+const DESKTOP_COLUMNS = 8;
+const COMPACT_VIEW_ITEMS_LIMIT = 3 * DESKTOP_COLUMNS; // 3 rows on Desktop
 
 const CommunityVirtualContributorsBlockWide = ({
   virtualContributors,
@@ -53,7 +54,7 @@ const CommunityVirtualContributorsBlockWide = ({
           />
         }
       />
-      <GridProvider columns={isSmallScreen ? columns / 2 : columns}>
+      <GridProvider columns={isSmallScreen ? columns / 2 : DESKTOP_COLUMNS}>
         <Gutters row flexWrap="wrap" disablePadding sx={{ overflowY: 'auto' }}>
           {isLoading ? (
             <Loading text={''} />

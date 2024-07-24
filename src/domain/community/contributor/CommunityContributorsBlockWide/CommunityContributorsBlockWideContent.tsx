@@ -17,7 +17,8 @@ interface CommunityContributorsBlockWideContentProps {
   compactView?: boolean;
 }
 
-const COMPACT_VIEW_ITEMS_LIMIT = 3 * 8; // 3 rows on Desktop
+const DESKTOP_COLUMNS = 8;
+const COMPACT_VIEW_ITEMS_LIMIT = 3 * DESKTOP_COLUMNS; // 3 rows on Desktop
 
 const filterFn = (filter: string[]) => (element: ContributorCardSquareProps) => {
   return (
@@ -43,7 +44,7 @@ const CommunityContributorsBlockWideContent = ({
   const columns = useColumns();
 
   return (
-    <GridProvider columns={isSmallScreen ? columns / 2 : columns}>
+    <GridProvider columns={isSmallScreen ? columns / 2 : DESKTOP_COLUMNS}>
       <Gutters row flexWrap="wrap" disablePadding={nested} sx={{ overflowY: 'auto' }}>
         {contributorType === CommunityContributorType.User &&
           users
