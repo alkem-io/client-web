@@ -23827,6 +23827,9 @@ export const MyMembershipsDocument = gql`
             ...VisualUri
           }
         }
+        community {
+          myRoles
+        }
         subspaces {
           id
           authorization {

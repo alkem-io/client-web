@@ -30301,6 +30301,7 @@ export type MyMembershipsQuery = {
         tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
         cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
       };
+      community: { __typename?: 'Community'; myRoles: Array<CommunityRole> };
       subspaces: Array<{
         __typename?: 'Space';
         id: string;

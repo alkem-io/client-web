@@ -31,6 +31,9 @@ query MyMemberships {
           ...VisualUri
         }
       }
+      community {
+        myRoles
+      }
       subspaces {
         id
         authorization {

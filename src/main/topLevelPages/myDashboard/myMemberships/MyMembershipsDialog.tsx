@@ -25,6 +25,7 @@ import {
 } from '../../../../core/apollo/generated/graphql-schema';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 import Loading from '../../../../core/ui/loading/Loading';
+import MyMembershipsSpaceCard from './MyMembershipsSpaceCard';
 
 interface MyJourneysDialogProps {
   open: boolean;
@@ -77,6 +78,8 @@ const MyMembershipsDialog = ({ open, onClose }: MyJourneysDialogProps) => {
     [data]
   );
 
+  console.log(data?.me.spaceMemberships);
+
   const getMembership = (id: string) => allMyMembershipsMap[id];
 
   return (
@@ -85,39 +88,57 @@ const MyMembershipsDialog = ({ open, onClose }: MyJourneysDialogProps) => {
       <DialogContent>
         {loading && <Loading />}
         <Gutters disablePadding>
-          {myTopLevelMemberships?.map(space => (
-            <PageContentBlock
-              row
-              flexWrap="wrap"
-              sx={{
-                background: theme => theme.palette.background.default,
-                alignItems: 'start',
-              }}
-            >
-              <SpaceCard
-                banner={space.profile.cardBanner}
-                displayName={space.profile.displayName}
-                vision={space.context?.vision ?? ''}
-                tagline={space.profile.tagline}
-                journeyUri={space.profile.url}
-                tags={space.profile.tagset?.tags ?? []}
-                membersCount={getMetricCount(space.metrics, MetricType.Member)}
-                spaceVisibility={space.account.license.visibility}
-              />
-              <GridItem columns={9}>
-                <Gutters row disablePadding flexGrow={1} flexWrap="wrap">
-                  <GridProvider columns={8}>
-                    {space.subspaces?.filter(isJourneyMember).map(subspace => (
-                      <MyMembershipsSubSpace key={subspace.id} subspace={subspace} getMembership={getMembership} />
-                    ))}
-                    {!loading && !space.subspaces?.length && (
-                      <Caption alignSelf="center">{t('pages.home.sections.myMemberships.noChildMemberships')}</Caption>
-                    )}
-                  </GridProvider>
-                </Gutters>
-              </GridItem>
-            </PageContentBlock>
-          ))}
+          {myTopLevelMemberships?.map(space => {
+            const communityRoles = space.community?.myRoles
+              .map(role => role.toLowerCase())
+              .filter(role => ['admin', 'lead'].includes(role))
+              .sort();
+            console.log(communityRoles);
+            return (
+              <>
+                <MyMembershipsSpaceCard
+                  displayName={space.profile.displayName}
+                  tagline={space.profile.tagline ?? ''}
+                  avatar={space.profile.cardBanner?.uri}
+                  url={space.profile.url}
+                  roles={communityRoles}
+                />
+                <PageContentBlock
+                  row
+                  flexWrap="wrap"
+                  sx={{
+                    background: theme => theme.palette.background.default,
+                    alignItems: 'start',
+                  }}
+                >
+                  <SpaceCard
+                    banner={space.profile.cardBanner}
+                    displayName={space.profile.displayName}
+                    vision={space.context?.vision ?? ''}
+                    tagline={space.profile.tagline}
+                    journeyUri={space.profile.url}
+                    tags={space.profile.tagset?.tags ?? []}
+                    membersCount={getMetricCount(space.metrics, MetricType.Member)}
+                    spaceVisibility={space.account.license.visibility}
+                  />
+                  <GridItem columns={9}>
+                    <Gutters row disablePadding flexGrow={1} flexWrap="wrap">
+                      <GridProvider columns={8}>
+                        {space.subspaces?.filter(isJourneyMember).map(subspace => (
+                          <MyMembershipsSubSpace key={subspace.id} subspace={subspace} getMembership={getMembership} />
+                        ))}
+                        {!loading && !space.subspaces?.length && (
+                          <Caption alignSelf="center">
+                            {t('pages.home.sections.myMemberships.noChildMemberships')}
+                          </Caption>
+                        )}
+                      </GridProvider>
+                    </Gutters>
+                  </GridItem>
+                </PageContentBlock>
+              </>
+            );
+          })}
           <Caption alignSelf="center">
             <Trans
               i18nKey="pages.home.sections.myMemberships.seeMore"
