@@ -1780,7 +1780,6 @@ export const UserDetailsFragmentDoc = gql`
     firstName
     lastName
     email
-    gender
     phone
     accountUpn
     profile {

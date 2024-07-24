@@ -13,7 +13,7 @@ const DashboardLeads = <T extends {}>({ headerText, contributors, CardComponent 
     <>
       {headerText && <PageContentBlockHeader title={headerText} />}
       {contributors?.map(c => (
-        <CardComponent key={c.id} contributor={c} />
+        <CardComponent key={c.id} contributor={c} {...c} />
       ))}
     </>
   );

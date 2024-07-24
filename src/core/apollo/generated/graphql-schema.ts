@@ -17787,7 +17787,6 @@ export type UserDetailsFragment = {
   firstName: string;
   lastName: string;
   email: string;
-  gender: string;
   phone: string;
   accountUpn: string;
   profile: {
@@ -17896,7 +17895,6 @@ export type CreateUserMutation = {
     firstName: string;
     lastName: string;
     email: string;
-    gender: string;
     phone: string;
     accountUpn: string;
     profile: {
@@ -17949,7 +17947,6 @@ export type CreateUserNewRegistrationMutation = {
     firstName: string;
     lastName: string;
     email: string;
-    gender: string;
     phone: string;
     accountUpn: string;
     profile: {
@@ -18080,7 +18077,6 @@ export type UpdateUserMutation = {
     firstName: string;
     lastName: string;
     email: string;
-    gender: string;
     phone: string;
     accountUpn: string;
     profile: {
@@ -18144,7 +18140,6 @@ export type UserQuery = {
     firstName: string;
     lastName: string;
     email: string;
-    gender: string;
     phone: string;
     accountUpn: string;
     profile: {
@@ -18226,7 +18221,6 @@ export type UserProfileQuery = {
     firstName: string;
     lastName: string;
     email: string;
-    gender: string;
     phone: string;
     accountUpn: string;
     profile: {
@@ -18353,7 +18347,6 @@ export type UserProviderQuery = {
           firstName: string;
           lastName: string;
           email: string;
-          gender: string;
           phone: string;
           accountUpn: string;
           profile: {
@@ -18417,7 +18410,6 @@ export type UserPendingMembershipsQuery = {
           firstName: string;
           lastName: string;
           email: string;
-          gender: string;
           phone: string;
           accountUpn: string;
           profile: {
