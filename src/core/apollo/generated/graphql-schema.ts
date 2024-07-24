@@ -962,7 +962,7 @@ export type Callout = {
   /** The user that created this Callout */
   createdBy?: Maybe<User>;
   /** The date at which the entity was created. */
-  createdDate: Scalars['DateTime'];
+  createdDate?: Maybe<Scalars['DateTime']>;
   /** The Callout Framing associated with this Callout. */
   framing: CalloutFraming;
   /** The ID of the entity */
@@ -4325,7 +4325,7 @@ export type Post = {
   /** The user that created this Post */
   createdBy?: Maybe<User>;
   /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']>;
+  createdDate: Scalars['DateTime'];
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** A name identifier of the entity, unique within a given scope. */
@@ -10196,7 +10196,7 @@ export type CalloutPostCreatedSubscription = {
       __typename?: 'Post';
       id: string;
       type: string;
-      createdDate?: Date | undefined;
+      createdDate: Date;
       authorization?:
         | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
         | undefined;
@@ -10260,7 +10260,7 @@ export type CalloutPostsQuery = {
                   __typename?: 'Post';
                   id: string;
                   type: string;
-                  createdDate?: Date | undefined;
+                  createdDate: Date;
                   authorization?:
                     | {
                         __typename?: 'Authorization';
@@ -10327,7 +10327,7 @@ export type ContributeTabPostFragment = {
   __typename?: 'Post';
   id: string;
   type: string;
-  createdDate?: Date | undefined;
+  createdDate: Date;
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
@@ -10374,7 +10374,7 @@ export type PostCardFragment = {
   __typename?: 'Post';
   id: string;
   type: string;
-  createdDate?: Date | undefined;
+  createdDate: Date;
   createdBy?:
     | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
     | undefined;
@@ -11541,7 +11541,7 @@ export type PostQuery = {
                   id: string;
                   nameID: string;
                   type: string;
-                  createdDate?: Date | undefined;
+                  createdDate: Date;
                   profile: {
                     __typename?: 'Profile';
                     id: string;
@@ -11720,7 +11720,7 @@ export type PostDashboardFragment = {
   id: string;
   nameID: string;
   type: string;
-  createdDate?: Date | undefined;
+  createdDate: Date;
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -27992,7 +27992,7 @@ export type SearchQuery = {
           post: {
             __typename?: 'Post';
             id: string;
-            createdDate?: Date | undefined;
+            createdDate: Date;
             profile: {
               __typename?: 'Profile';
               id: string;
@@ -28060,7 +28060,7 @@ export type SearchResultPostFragment = {
   post: {
     __typename?: 'Post';
     id: string;
-    createdDate?: Date | undefined;
+    createdDate: Date;
     profile: {
       __typename?: 'Profile';
       id: string;
