@@ -2365,12 +2365,13 @@ export const SpaceDetailsFragmentDoc = gql`
         id
       }
     }
-    authorization {
-      id
-      anonymousReadAccess
-    }
     context {
       ...ContextDetails
+    }
+    settings {
+      privacy {
+        mode
+      }
     }
   }
   ${TagsetDetailsFragmentDoc}
@@ -3291,9 +3292,10 @@ export const PostParentFragmentDoc = gql`
         url
         displayName
       }
-      authorization {
-        id
-        anonymousReadAccess
+      settings {
+        privacy {
+          mode
+        }
       }
     }
     callout {
@@ -3456,9 +3458,10 @@ export const SearchResultSpaceFragmentDoc = gql`
         url
         displayName
       }
-      authorization {
-        id
-        anonymousReadAccess
+      settings {
+        privacy {
+          mode
+        }
       }
     }
     space {
@@ -3480,10 +3483,6 @@ export const SearchResultSpaceFragmentDoc = gql`
         id
         vision
       }
-      authorization {
-        id
-        anonymousReadAccess
-      }
       community {
         id
         myMembershipStatus
@@ -3493,6 +3492,11 @@ export const SearchResultSpaceFragmentDoc = gql`
         license {
           id
           visibility
+        }
+      }
+      settings {
+        privacy {
+          mode
         }
       }
     }
