@@ -189,7 +189,7 @@ const CreatePendingMembershipForPlatformInvitation = (invitation: AdminPlatformI
     displayName: invitation.email,
     url: '',
     email: invitation.email,
-    createdDate: new Date(invitation.createdDate),
+    createdDate: invitation.createdDate ? new Date(invitation.createdDate) : new Date(),
     questions: [],
   };
   return result;
