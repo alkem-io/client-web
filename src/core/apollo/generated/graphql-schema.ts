@@ -30622,12 +30622,7 @@ export type SpaceExplorerSearchQuery = {
             id: string;
             type: SpaceType;
             authorization?:
-              | {
-                  __typename?: 'Authorization';
-                  id: string;
-                  anonymousReadAccess: boolean;
-                  myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                }
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
             profile: {
               __typename?: 'Profile';
@@ -30650,6 +30645,10 @@ export type SpaceExplorerSearchQuery = {
               id: string;
               myMembershipStatus?: CommunityMembershipStatus | undefined;
             };
+            settings: {
+              __typename?: 'SpaceSettings';
+              privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
+            };
           };
         }
       | { __typename?: 'SearchResultUser'; id: string; type: SearchResultType; terms: Array<string> }
@@ -30665,12 +30664,7 @@ export type SpaceExplorerSearchSpaceFragment = {
     id: string;
     type: SpaceType;
     authorization?:
-      | {
-          __typename?: 'Authorization';
-          id: string;
-          anonymousReadAccess: boolean;
-          myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-        }
+      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
     profile: {
       __typename?: 'Profile';
@@ -30689,6 +30683,10 @@ export type SpaceExplorerSearchSpaceFragment = {
       license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
     };
     community: { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
+    settings: {
+      __typename?: 'SpaceSettings';
+      privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
+    };
   };
 };
 
@@ -30720,14 +30718,13 @@ export type SpaceExplorerMemberSpacesQuery = {
       };
       context: { __typename?: 'Context'; id: string; vision?: string | undefined };
       community: { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
+      settings: {
+        __typename?: 'SpaceSettings';
+        privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
+      };
     }>;
     authorization?:
-      | {
-          __typename?: 'Authorization';
-          id: string;
-          anonymousReadAccess: boolean;
-          myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-        }
+      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
     profile: {
       __typename?: 'Profile';
@@ -30746,6 +30743,10 @@ export type SpaceExplorerMemberSpacesQuery = {
       license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
     };
     community: { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
+    settings: {
+      __typename?: 'SpaceSettings';
+      privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
+    };
   }>;
 };
 
@@ -30764,12 +30765,7 @@ export type SpaceExplorerAllSpacesQuery = {
       id: string;
       type: SpaceType;
       authorization?:
-        | {
-            __typename?: 'Authorization';
-            id: string;
-            anonymousReadAccess: boolean;
-            myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-          }
+        | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
         | undefined;
       profile: {
         __typename?: 'Profile';
@@ -30788,6 +30784,10 @@ export type SpaceExplorerAllSpacesQuery = {
         license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
       };
       community: { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
+      settings: {
+        __typename?: 'SpaceSettings';
+        privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
+      };
     }>;
     pageInfo: {
       __typename?: 'PageInfo';
@@ -30825,6 +30825,10 @@ export type SpaceExplorerSubspacesQuery = {
       };
       context: { __typename?: 'Context'; id: string; vision?: string | undefined };
       community: { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
+      settings: {
+        __typename?: 'SpaceSettings';
+        privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
+      };
     }>;
   }>;
 };
@@ -30834,12 +30838,7 @@ export type SpaceExplorerSpaceFragment = {
   id: string;
   type: SpaceType;
   authorization?:
-    | {
-        __typename?: 'Authorization';
-        id: string;
-        anonymousReadAccess: boolean;
-        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-      }
+    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
   profile: {
     __typename?: 'Profile';
@@ -30858,6 +30857,7 @@ export type SpaceExplorerSpaceFragment = {
     license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
   };
   community: { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
+  settings: { __typename?: 'SpaceSettings'; privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode } };
 };
 
 export type SpaceExplorerSubspaceFragment = {
@@ -30878,6 +30878,7 @@ export type SpaceExplorerSubspaceFragment = {
   };
   context: { __typename?: 'Context'; id: string; vision?: string | undefined };
   community: { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
+  settings: { __typename?: 'SpaceSettings'; privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode } };
 };
 
 export type SpaceExplorerWelcomeSpaceQueryVariables = Exact<{

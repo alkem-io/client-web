@@ -3759,7 +3759,6 @@ export const SpaceExplorerSpaceFragmentDoc = gql`
     id
     authorization {
       id
-      anonymousReadAccess
       myPrivileges
     }
     type
@@ -3791,6 +3790,11 @@ export const SpaceExplorerSpaceFragmentDoc = gql`
     community {
       id
       myMembershipStatus
+    }
+    settings {
+      privacy {
+        mode
+      }
     }
   }
   ${VisualUriFragmentDoc}
@@ -3832,6 +3836,11 @@ export const SpaceExplorerSubspaceFragmentDoc = gql`
     community {
       id
       myMembershipStatus
+    }
+    settings {
+      privacy {
+        mode
+      }
     }
   }
   ${VisualUriFragmentDoc}
