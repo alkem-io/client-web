@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import OverflowGradient from '../../../../core/ui/overflow/OverflowGradient';
 import { gutters } from '../../../../core/ui/grid/utils';
 import DashboardMemberIcon from '../../../community/membership/DashboardMemberIcon/DashboardMemberIcon';
@@ -35,8 +35,9 @@ const JourneyDashboardWelcomeBlock = ({
   vision,
   member = false,
 }: JourneyDashboardWelcomeBlockProps) => {
-  const leadOrganizationsUnique = leadOrganizations?.filter(
-    ({ id }) => !leadUsers?.slice(0, 2).some(user => user.id === id)
+  const leadOrganizationsUnique = useMemo(
+    () => leadOrganizations?.filter(({ id }) => !leadUsers?.some(user => user.id === id)),
+    [leadOrganizations, leadUsers]
   );
 
   return (
