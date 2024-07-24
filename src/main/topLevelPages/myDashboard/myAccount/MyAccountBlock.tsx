@@ -17,9 +17,9 @@ import MyAccountBlockGlobalRoleUser from './MyAccountBlockGlobalRoleUser';
 import MyAccountBlockVCCampaignUser from './MyAccountBlockVCCampaignUser';
 
 enum UserRoles {
-  isNoGlobalRoleUser = 'isNoGlobalRoleUser',
-  isVcCampaignUser = 'isVcCampaignUser',
-  isGlobalRoleUser = 'isGlobalRoleUser',
+  noGlobalRoleUser = 'noGlobalRoleUser',
+  vcCampaignUser = 'vcCampaignUser',
+  globalRoleUser = 'globalRoleUser',
 }
 
 export interface MyAccountVirtualContributor extends Pick<VirtualContributor, 'id'> {
@@ -74,24 +74,25 @@ const MyAccountBlock = () => {
   const { startWizard, NewVirtualContributorWizard } = useNewVirtualContributorWizard();
 
   // Curently displaying only the first hosted space and the first VC in it.
-  const hostedSpace: MyAccountSpace | undefined = data?.me.myCreatedSpaces.filter(
+  const hostedSpace = data?.me.myCreatedSpaces.find(
     spaceData => spaceData.account && spaceData.account.host?.id === data?.me.user?.id && spaceData.level === 0
-  )[0];
+  );
 
   const virtualContributors: MyAccountVirtualContributor[] =
     data?.me.user?.accounts
       .filter(account => account.id === hostedSpace?.account.id)
-      .filter(vc => vc.virtualContributors.length > 0)[0]?.virtualContributors ?? [];
+      .find(vc => vc.virtualContributors.length > 0)?.virtualContributors ?? [];
 
   const { user } = useUserContext();
   const userRoles: CredentialType[] | undefined = data?.me.user?.agent.credentials?.map(credential => credential.type);
   const globalRoles = [CredentialType.GlobalAdmin, CredentialType.GlobalLicenseManager, CredentialType.GlobalSupport];
 
-  const userRole = userRoles?.includes(CredentialType.VcCampaign)
-    ? UserRoles.isVcCampaignUser
-    : userRoles?.some(role => globalRoles.includes(role))
-    ? UserRoles.isGlobalRoleUser
-    : UserRoles.isNoGlobalRoleUser;
+  let userRole = UserRoles.noGlobalRoleUser;
+  if (userRoles?.includes(CredentialType.VcCampaign)) {
+    userRole = UserRoles.vcCampaignUser;
+  } else if (userRoles?.some(role => globalRoles.includes(role))) {
+    userRole = UserRoles.globalRoleUser;
+  }
 
   let createLink = t('pages.home.sections.startingSpace.url');
 
@@ -99,35 +100,43 @@ const MyAccountBlock = () => {
     createLink = `/${TopLevelRoutePath.CreateSpace}`;
   }
 
-  const renderMyBlock = {
-    isNoGlobalRoleUser: (
-      <MyAccountBlockNoGlobalRoleUser
-        hostedSpace={hostedSpace}
-        virtualContributors={virtualContributors}
-        startWizard={startWizard}
-      />
-    ),
-    isVcCampaignUser: (
-      <MyAccountBlockVCCampaignUser
-        hostedSpace={hostedSpace}
-        virtualContributors={virtualContributors}
-        startWizard={startWizard}
-      />
-    ),
-    isGlobalRoleUser: (
-      <MyAccountBlockGlobalRoleUser
-        hostedSpace={hostedSpace}
-        virtualContributors={virtualContributors}
-        startWizard={startWizard}
-        createLink={createLink}
-      />
-    ),
+  const renderMyBlock = (userRole: UserRoles) => {
+    switch (userRole) {
+      case UserRoles.noGlobalRoleUser: {
+        return (
+          <MyAccountBlockNoGlobalRoleUser
+            hostedSpace={hostedSpace}
+            virtualContributors={virtualContributors}
+            startWizard={startWizard}
+          />
+        );
+      }
+      case UserRoles.vcCampaignUser: {
+        return (
+          <MyAccountBlockVCCampaignUser
+            hostedSpace={hostedSpace}
+            virtualContributors={virtualContributors}
+            startWizard={startWizard}
+          />
+        );
+      }
+      case UserRoles.globalRoleUser: {
+        return (
+          <MyAccountBlockGlobalRoleUser
+            hostedSpace={hostedSpace}
+            virtualContributors={virtualContributors}
+            startWizard={startWizard}
+            createLink={createLink}
+          />
+        );
+      }
+    }
   };
 
   return (
     <PageContentBlock columns={4}>
       <PageContentBlockHeader title={t('pages.home.sections.myAccount.title')} fullWidth />
-      {loading ? <Loading text="" /> : renderMyBlock[userRole]}
+      {loading ? <Loading text="" /> : renderMyBlock(userRole)}
       <NewVirtualContributorWizard />
     </PageContentBlock>
   );
