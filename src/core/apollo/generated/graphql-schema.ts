@@ -21722,6 +21722,10 @@ export type SpaceSubspaceCardsQuery = {
               id: string;
               myMembershipStatus?: CommunityMembershipStatus | undefined;
             };
+            settings: {
+              __typename?: 'SpaceSettings';
+              privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
+            };
           }>;
         }
       | undefined;
@@ -22226,6 +22230,7 @@ export type SubspaceCardFragment = {
   };
   context: { __typename?: 'Context'; id: string; vision?: string | undefined };
   community: { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
+  settings: { __typename?: 'SpaceSettings'; privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode } };
 };
 
 export type SubspacesOnSpaceFragment = {
@@ -22257,6 +22262,10 @@ export type SubspacesOnSpaceFragment = {
     };
     context: { __typename?: 'Context'; id: string; vision?: string | undefined };
     community: { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
+    settings: {
+      __typename?: 'SpaceSettings';
+      privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
+    };
   }>;
 };
 
@@ -22396,6 +22405,10 @@ export type SubspaceCardsQuery = {
       };
       context: { __typename?: 'Context'; id: string; vision?: string | undefined };
       community: { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
+      settings: {
+        __typename?: 'SpaceSettings';
+        privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
+      };
     }>;
   };
 };
@@ -26143,6 +26156,10 @@ export type CreateSubspaceMutation = {
     };
     context: { __typename?: 'Context'; id: string; vision?: string | undefined };
     community: { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
+    settings: {
+      __typename?: 'SpaceSettings';
+      privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
+    };
   };
 };
 

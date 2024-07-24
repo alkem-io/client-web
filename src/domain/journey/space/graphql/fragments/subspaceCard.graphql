@@ -31,4 +31,9 @@ fragment SubspaceCard on Space {
     id
     myMembershipStatus
   }
+  settings {
+    privacy {
+        mode
+    }
+  }
 }

@@ -2676,6 +2676,11 @@ export const SubspaceCardFragmentDoc = gql`
       id
       myMembershipStatus
     }
+    settings {
+      privacy {
+        mode
+      }
+    }
   }
   ${VisualUriFragmentDoc}
   ${TagsetDetailsFragmentDoc}
