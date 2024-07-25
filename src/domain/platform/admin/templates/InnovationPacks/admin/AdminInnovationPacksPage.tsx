@@ -1,5 +1,4 @@
 import { FC, useMemo, useState } from 'react';
-import { useResolvedPath } from 'react-router-dom';
 import { sortBy } from 'lodash';
 import {
   refetchAdminInnovationPacksListQuery,
@@ -10,12 +9,11 @@ import SearchableListLayout from '../../../../../shared/components/SearchableLis
 import SimpleSearchableList from '../../../../../shared/components/SearchableList/SimpleSearchableList';
 import AdminLayout from '../../../layout/toplevel/AdminLayout';
 import { AdminSection } from '../../../layout/toplevel/constants';
-import { buildInnovationPackSettingsUrl } from '../../../../../collaboration/InnovationPack/urlBuilders';
+import { buildInnovationPackSettingsUrl } from '../../../../../../main/routing/urlBuilders';
 
 interface AdminInnovationPacksPageProps {}
 
 const AdminInnovationPacksPage: FC<AdminInnovationPacksPageProps> = () => {
-  const { pathname } = useResolvedPath('.');
   const { data, loading } = useAdminInnovationPacksListQuery();
   const [deleteInnovationPack] = useDeleteInnovationPackMutation({
     refetchQueries: [refetchAdminInnovationPacksListQuery()],
@@ -36,7 +34,7 @@ const AdminInnovationPacksPage: FC<AdminInnovationPacksPageProps> = () => {
         data?.platform.library.innovationPacks
           .map(pack => ({
             value: pack.profile.displayName,
-            url: buildInnovationPackSettingsUrl(pack.nameID),
+            url: buildInnovationPackSettingsUrl(pack.profile.url),
             ...pack,
           }))
           .filter(ip => !searchTerm || ip.profile.displayName.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1),
@@ -47,7 +45,7 @@ const AdminInnovationPacksPage: FC<AdminInnovationPacksPageProps> = () => {
 
   return (
     <AdminLayout currentTab={AdminSection.InnovationPacks}>
-      <SearchableListLayout newLink={`${pathname}/new`}>
+      <SearchableListLayout>
         <SimpleSearchableList
           data={innovationPacks}
           onDelete={item => handleDelete(item.id)}
