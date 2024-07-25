@@ -1,9 +1,16 @@
 import getMetricCount, { Metric } from './getMetricCount';
 import { useTranslation } from 'react-i18next';
-import { MetricItem } from '../views/Metrics';
-import { useMemo } from 'react';
+import { ReactNode, useMemo } from 'react';
 import { MetricType } from '../MetricType';
 import TranslationKey from '../../../../core/i18n/utils/TranslationKey';
+
+export interface MetricItem {
+  name: ReactNode;
+  type?: MetricType;
+  isLoading?: boolean;
+  count: number | undefined;
+  color?: 'positive' | 'neutral' | 'primary' | 'neutralMedium';
+}
 
 export interface MetricsItemSpec {
   label: TranslationKey;

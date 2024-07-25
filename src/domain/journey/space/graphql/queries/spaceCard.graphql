@@ -1,7 +1,0 @@
-query SpaceCard($spaceId: UUID!) {
-  lookup {
-    space(ID: $spaceId) {
-      ...SpaceCard
-    }
-  }
-}
