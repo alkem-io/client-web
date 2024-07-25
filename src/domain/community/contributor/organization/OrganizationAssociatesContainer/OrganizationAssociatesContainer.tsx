@@ -12,7 +12,7 @@ import {
   UserDisplayNameFragment,
 } from '../../../../../core/apollo/generated/graphql-schema';
 import { Member } from '../../../user/models/User';
-import { useAvailableMembersWithCredential } from '../../../community/useAvailableMembersWithCredential';
+import { useAvailableMembersWithCredential } from '../../../community/useAvailableMembersWithCredential/useAvailableMembersWithCredential';
 import { AvailableMembersResults } from '../../../community/useAvailableMembersWithCredential/useAvailableMembersWithCredential';
 
 const organizationAssociateCredential = AuthorizationCredential.OrganizationAssociate;
