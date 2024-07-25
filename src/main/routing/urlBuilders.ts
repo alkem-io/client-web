@@ -43,8 +43,7 @@ export const buildAboutUrl = (journeyLocation: string | undefined) => {
   return journeyLocation && `${journeyLocation}/about`;
 };
 
-export const buildInnovationPackUrl = (innovationPackId: string) =>
-  `/${TopLevelRoutePath.InnovationPacks}/${innovationPackId}`;
+export const buildInnovationPackUrl = (innovationPackNameId: string) =>
+  `/${TopLevelRoutePath.InnovationPacks}/${innovationPackNameId}`;
 
-export const buildInnovationPackSettingsUrl = (innovationPackId: string) =>
-  `${buildInnovationPackUrl(innovationPackId)}/settings`;
+export const buildInnovationPackSettingsUrl = buildSettingsUrl;

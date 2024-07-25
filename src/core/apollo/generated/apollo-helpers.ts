@@ -1707,6 +1707,10 @@ export type LocationFieldPolicy = {
   stateOrProvince?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type LookupByNameQueryResultsKeySpecifier = ('innovationPack' | LookupByNameQueryResultsKeySpecifier)[];
+export type LookupByNameQueryResultsFieldPolicy = {
+  innovationPack?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type LookupQueryResultsKeySpecifier = (
   | 'application'
   | 'authorizationPolicy'
@@ -2542,6 +2546,7 @@ export type QueryKeySpecifier = (
   | 'askVirtualContributorQuestion'
   | 'getSupportedVerifiedCredentialMetadata'
   | 'lookup'
+  | 'lookupByName'
   | 'me'
   | 'organization'
   | 'organizations'
@@ -2578,6 +2583,7 @@ export type QueryFieldPolicy = {
   askVirtualContributorQuestion?: FieldPolicy<any> | FieldReadFunction<any>;
   getSupportedVerifiedCredentialMetadata?: FieldPolicy<any> | FieldReadFunction<any>;
   lookup?: FieldPolicy<any> | FieldReadFunction<any>;
+  lookupByName?: FieldPolicy<any> | FieldReadFunction<any>;
   me?: FieldPolicy<any> | FieldReadFunction<any>;
   organization?: FieldPolicy<any> | FieldReadFunction<any>;
   organizations?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3940,6 +3946,10 @@ export type StrictTypedTypePolicies = {
   Location?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | LocationKeySpecifier | (() => undefined | LocationKeySpecifier);
     fields?: LocationFieldPolicy;
+  };
+  LookupByNameQueryResults?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | LookupByNameQueryResultsKeySpecifier | (() => undefined | LookupByNameQueryResultsKeySpecifier);
+    fields?: LookupByNameQueryResultsFieldPolicy;
   };
   LookupQueryResults?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | LookupQueryResultsKeySpecifier | (() => undefined | LookupQueryResultsKeySpecifier);

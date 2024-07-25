@@ -20,6 +20,7 @@ fragment InnovationPackData on InnovationPack {
     tagset {
       ...TagsetDetails
     }
+    url
   }
   templates {
     ...LibraryTemplates

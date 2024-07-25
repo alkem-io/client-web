@@ -3567,6 +3567,7 @@ export const InnovationPackDataFragmentDoc = gql`
       tagset {
         ...TagsetDetails
       }
+      url
     }
     templates {
       ...LibraryTemplates
@@ -8046,85 +8047,6 @@ export type WhiteboardLastUpdatedDateQueryResult = Apollo.QueryResult<
 >;
 export function refetchWhiteboardLastUpdatedDateQuery(variables: SchemaTypes.WhiteboardLastUpdatedDateQueryVariables) {
   return { query: WhiteboardLastUpdatedDateDocument, variables: variables };
-}
-
-export const PlatformTemplateWhiteboardContentsDocument = gql`
-  query platformTemplateWhiteboardContents($innovationPackId: UUID!, $whiteboardId: UUID!) {
-    lookup {
-      innovationPack(ID: $innovationPackId) {
-        templates {
-          id
-          whiteboardTemplate(ID: $whiteboardId) {
-            id
-            profile {
-              ...WhiteboardProfile
-            }
-            content
-          }
-        }
-      }
-    }
-  }
-  ${WhiteboardProfileFragmentDoc}
-`;
-
-/**
- * __usePlatformTemplateWhiteboardContentsQuery__
- *
- * To run a query within a React component, call `usePlatformTemplateWhiteboardContentsQuery` and pass it any options that fit your needs.
- * When your component renders, `usePlatformTemplateWhiteboardContentsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = usePlatformTemplateWhiteboardContentsQuery({
- *   variables: {
- *      innovationPackId: // value for 'innovationPackId'
- *      whiteboardId: // value for 'whiteboardId'
- *   },
- * });
- */
-export function usePlatformTemplateWhiteboardContentsQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.PlatformTemplateWhiteboardContentsQuery,
-    SchemaTypes.PlatformTemplateWhiteboardContentsQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    SchemaTypes.PlatformTemplateWhiteboardContentsQuery,
-    SchemaTypes.PlatformTemplateWhiteboardContentsQueryVariables
-  >(PlatformTemplateWhiteboardContentsDocument, options);
-}
-
-export function usePlatformTemplateWhiteboardContentsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.PlatformTemplateWhiteboardContentsQuery,
-    SchemaTypes.PlatformTemplateWhiteboardContentsQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.PlatformTemplateWhiteboardContentsQuery,
-    SchemaTypes.PlatformTemplateWhiteboardContentsQueryVariables
-  >(PlatformTemplateWhiteboardContentsDocument, options);
-}
-
-export type PlatformTemplateWhiteboardContentsQueryHookResult = ReturnType<
-  typeof usePlatformTemplateWhiteboardContentsQuery
->;
-export type PlatformTemplateWhiteboardContentsLazyQueryHookResult = ReturnType<
-  typeof usePlatformTemplateWhiteboardContentsLazyQuery
->;
-export type PlatformTemplateWhiteboardContentsQueryResult = Apollo.QueryResult<
-  SchemaTypes.PlatformTemplateWhiteboardContentsQuery,
-  SchemaTypes.PlatformTemplateWhiteboardContentsQueryVariables
->;
-export function refetchPlatformTemplateWhiteboardContentsQuery(
-  variables: SchemaTypes.PlatformTemplateWhiteboardContentsQueryVariables
-) {
-  return { query: PlatformTemplateWhiteboardContentsDocument, variables: variables };
 }
 
 export const CreateWhiteboardOnCalloutDocument = gql`
@@ -20010,6 +19932,7 @@ export const AdminInnovationPacksListDocument = gql`
           profile {
             id
             displayName
+            url
           }
         }
       }
@@ -20116,6 +20039,68 @@ export type DeleteInnovationPackMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteInnovationPackMutation,
   SchemaTypes.DeleteInnovationPackMutationVariables
 >;
+export const InnovationPackResolveIdDocument = gql`
+  query InnovationPackResolveId($innovationPackNameId: NameID!) {
+    lookupByName {
+      innovationPack(NAMEID: $innovationPackNameId) {
+        id
+      }
+    }
+  }
+`;
+
+/**
+ * __useInnovationPackResolveIdQuery__
+ *
+ * To run a query within a React component, call `useInnovationPackResolveIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useInnovationPackResolveIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useInnovationPackResolveIdQuery({
+ *   variables: {
+ *      innovationPackNameId: // value for 'innovationPackNameId'
+ *   },
+ * });
+ */
+export function useInnovationPackResolveIdQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.InnovationPackResolveIdQuery,
+    SchemaTypes.InnovationPackResolveIdQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.InnovationPackResolveIdQuery, SchemaTypes.InnovationPackResolveIdQueryVariables>(
+    InnovationPackResolveIdDocument,
+    options
+  );
+}
+
+export function useInnovationPackResolveIdLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.InnovationPackResolveIdQuery,
+    SchemaTypes.InnovationPackResolveIdQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.InnovationPackResolveIdQuery,
+    SchemaTypes.InnovationPackResolveIdQueryVariables
+  >(InnovationPackResolveIdDocument, options);
+}
+
+export type InnovationPackResolveIdQueryHookResult = ReturnType<typeof useInnovationPackResolveIdQuery>;
+export type InnovationPackResolveIdLazyQueryHookResult = ReturnType<typeof useInnovationPackResolveIdLazyQuery>;
+export type InnovationPackResolveIdQueryResult = Apollo.QueryResult<
+  SchemaTypes.InnovationPackResolveIdQuery,
+  SchemaTypes.InnovationPackResolveIdQueryVariables
+>;
+export function refetchInnovationPackResolveIdQuery(variables: SchemaTypes.InnovationPackResolveIdQueryVariables) {
+  return { query: InnovationPackResolveIdDocument, variables: variables };
+}
+
 export const AdminInnovationPackDocument = gql`
   query AdminInnovationPack($innovationPackId: UUID!) {
     lookup {

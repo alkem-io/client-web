@@ -9,6 +9,7 @@ query AdminInnovationPacksList {
         profile {
           id
           displayName
+          url
         }
       }
     }
@@ -54,6 +55,14 @@ fragment AdminInnovationPackTemplates on TemplatesSet {
   }
   communityGuidelinesTemplates {
     ...AdminCommunityGuidelinesTemplate
+  }
+}
+
+query InnovationPackResolveId($innovationPackNameId: NameID!) {
+  lookupByName {
+    innovationPack(NAMEID: $innovationPackNameId) {
+      id
+    }
   }
 }
 

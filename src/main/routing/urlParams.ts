@@ -19,7 +19,7 @@ export default interface UrlParams extends Record<string, string | undefined> {
   whiteboardNameId?: string;
   innovationTemplateId?: string;
   calendarEventNameId?: string;
-  innovationPackId?: string;
+  innovationPackNameId?: string;
   innovationHubNameId?: string;
 }
 

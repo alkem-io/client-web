@@ -2761,6 +2761,16 @@ export type Location = {
   updatedDate?: Maybe<Scalars['DateTime']>;
 };
 
+export type LookupByNameQueryResults = {
+  __typename?: 'LookupByNameQueryResults';
+  /** Lookup the specified InnovationPack using a NameID */
+  innovationPack?: Maybe<InnovationPack>;
+};
+
+export type LookupByNameQueryResultsInnovationPackArgs = {
+  NAMEID: Scalars['NameID'];
+};
+
 export type LookupQueryResults = {
   __typename?: 'LookupQueryResults';
   /** Lookup the specified Application */
@@ -4536,6 +4546,8 @@ export type Query = {
   getSupportedVerifiedCredentialMetadata: Array<CredentialMetadataOutput>;
   /** Allow direct lookup of entities from the domain model */
   lookup: LookupQueryResults;
+  /** Allow direct lookup of entities using their NameIDs */
+  lookupByName: LookupByNameQueryResults;
   /** Information about the current authenticated user */
   me: MeQueryResults;
   /** A particular Organization */
@@ -13619,84 +13631,6 @@ export type WhiteboardLastUpdatedDateQuery = {
   lookup: {
     __typename?: 'LookupQueryResults';
     whiteboard?: { __typename?: 'Whiteboard'; id: string; updatedDate?: Date | undefined } | undefined;
-  };
-};
-
-export type PlatformTemplateWhiteboardContentsQueryVariables = Exact<{
-  innovationPackId: Scalars['UUID'];
-  whiteboardId: Scalars['UUID'];
-}>;
-
-export type PlatformTemplateWhiteboardContentsQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    innovationPack?:
-      | {
-          __typename?: 'InnovationPack';
-          templates?:
-            | {
-                __typename?: 'TemplatesSet';
-                id: string;
-                whiteboardTemplate?:
-                  | {
-                      __typename?: 'WhiteboardTemplate';
-                      id: string;
-                      content: string;
-                      profile: {
-                        __typename?: 'Profile';
-                        id: string;
-                        url: string;
-                        displayName: string;
-                        description?: string | undefined;
-                        visual?:
-                          | {
-                              __typename?: 'Visual';
-                              id: string;
-                              uri: string;
-                              name: string;
-                              allowedTypes: Array<string>;
-                              aspectRatio: number;
-                              maxHeight: number;
-                              maxWidth: number;
-                              minHeight: number;
-                              minWidth: number;
-                              alternativeText?: string | undefined;
-                            }
-                          | undefined;
-                        preview?:
-                          | {
-                              __typename?: 'Visual';
-                              id: string;
-                              uri: string;
-                              name: string;
-                              allowedTypes: Array<string>;
-                              aspectRatio: number;
-                              maxHeight: number;
-                              maxWidth: number;
-                              minHeight: number;
-                              minWidth: number;
-                              alternativeText?: string | undefined;
-                            }
-                          | undefined;
-                        tagset?:
-                          | {
-                              __typename?: 'Tagset';
-                              id: string;
-                              name: string;
-                              tags: Array<string>;
-                              allowedValues: Array<string>;
-                              type: TagsetType;
-                            }
-                          | undefined;
-                        storageBucket: { __typename?: 'StorageBucket'; id: string };
-                      };
-                    }
-                  | undefined;
-              }
-            | undefined;
-        }
-      | undefined;
   };
 };
 
@@ -25203,7 +25137,7 @@ export type AdminInnovationPacksListQuery = {
         __typename?: 'InnovationPack';
         id: string;
         nameID: string;
-        profile: { __typename?: 'Profile'; id: string; displayName: string };
+        profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
       }>;
     };
   };
@@ -25440,6 +25374,18 @@ export type AdminInnovationPackTemplatesFragment = {
       };
     };
   }>;
+};
+
+export type InnovationPackResolveIdQueryVariables = Exact<{
+  innovationPackNameId: Scalars['NameID'];
+}>;
+
+export type InnovationPackResolveIdQuery = {
+  __typename?: 'Query';
+  lookupByName: {
+    __typename?: 'LookupByNameQueryResults';
+    innovationPack?: { __typename?: 'InnovationPack'; id: string } | undefined;
+  };
 };
 
 export type AdminInnovationPackQueryVariables = Exact<{
@@ -28037,6 +27983,7 @@ export type InnovationLibraryQuery = {
           id: string;
           displayName: string;
           description?: string | undefined;
+          url: string;
           tagset?:
             | {
                 __typename?: 'Tagset';
@@ -28355,6 +28302,7 @@ export type InnovationPackDataFragment = {
     id: string;
     displayName: string;
     description?: string | undefined;
+    url: string;
     tagset?:
       | {
           __typename?: 'Tagset';

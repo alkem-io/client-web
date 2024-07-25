@@ -34,7 +34,7 @@ const AdminInnovationPacksPage: FC<AdminInnovationPacksPageProps> = () => {
         data?.platform.library.innovationPacks
           .map(pack => ({
             value: pack.profile.displayName,
-            url: buildInnovationPackSettingsUrl(pack.id),
+            url: buildInnovationPackSettingsUrl(pack.profile.url),
             ...pack,
           }))
           .filter(ip => !searchTerm || ip.profile.displayName.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1),

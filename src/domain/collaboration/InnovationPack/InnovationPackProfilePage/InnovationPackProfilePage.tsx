@@ -3,6 +3,7 @@ import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   useInnovationPackProfilePageQuery,
+  useInnovationPackResolveIdQuery,
   useWhiteboardTemplateContentQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
@@ -36,16 +37,27 @@ export enum TemplateType {
 }
 
 const InnovationPackProfilePage = () => {
-  const { innovationPackId } = useUrlParams();
+  const { innovationPackNameId } = useUrlParams();
 
-  if (!innovationPackId) {
-    throw new Error('Must be within InnovationPack');
+  if (!innovationPackNameId) {
+    throw new Error('Must be within Innovation Pack');
+  }
+
+  const { data: innovationPackResolverData, loading: resolving } = useInnovationPackResolveIdQuery({
+    variables: { innovationPackNameId },
+    skip: !innovationPackNameId,
+  });
+
+  const innovationPackId = innovationPackResolverData?.lookupByName.innovationPack?.id;
+  if (innovationPackNameId && !resolving && !innovationPackId) {
+    throw new Error('Innovation pack not found.');
   }
 
   const { data, loading } = useInnovationPackProfilePageQuery({
     variables: {
-      innovationPackId,
+      innovationPackId: innovationPackId!,
     },
+    skip: !innovationPackId,
   });
 
   const { displayName, description, tagset, references } = data?.lookup.innovationPack?.profile ?? {};
@@ -89,7 +101,11 @@ const InnovationPackProfilePage = () => {
 
   return (
     <>
-      <InnovationPackProfileLayout innovationPack={innovationPack} showSettings={canUpdate} loading={loading}>
+      <InnovationPackProfileLayout
+        innovationPack={innovationPack}
+        showSettings={canUpdate}
+        loading={loading || resolving}
+      >
         <PageContent>
           <PageContentColumn columns={12}>
             <PageContentBlock sx={{ flexDirection: 'row' }}>

@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import {
   refetchAdminInnovationPackQuery,
   useAdminInnovationPackQuery,
+  useInnovationPackResolveIdQuery,
   useOrganizationsListQuery,
   useUpdateInnovationPackMutation,
 } from '../../../../../../core/apollo/generated/apollo-hooks';
@@ -16,7 +17,6 @@ import AdminWhiteboardTemplatesSection from '../../WhiteboardTemplates/AdminWhit
 import InnovationPackForm, { InnovationPackFormValues } from './InnovationPackForm';
 import { StorageConfigContextProvider } from '../../../../../storage/StorageBucket/StorageConfigContext';
 import InnovationPackProfileLayout from '../../../../../collaboration/InnovationPack/InnovationPackProfilePage/InnovationPackProfileLayout';
-import { buildInnovationPackUrl } from '../../../../../../main/routing/urlBuilders';
 import PageContentColumn from '../../../../../../core/ui/content/PageContentColumn';
 import PageContent from '../../../../../../core/ui/content/PageContent';
 import PageContentBlockSeamless from '../../../../../../core/ui/content/PageContentBlockSeamless';
@@ -40,7 +40,7 @@ const AdminInnovationPackPage: FC<AdminInnovationPackPageProps> = ({ editTemplat
   const { t } = useTranslation();
   const notify = useNotification();
   const {
-    innovationPackId,
+    innovationPackNameId,
     postNameId,
     whiteboardNameId,
     innovationTemplateId,
@@ -48,17 +48,27 @@ const AdminInnovationPackPage: FC<AdminInnovationPackPageProps> = ({ editTemplat
     communityGuidelinesNameId,
   } = useUrlParams();
 
-  if (!innovationPackId) {
+  if (!innovationPackNameId) {
     throw new Error('Must be within Innovation Pack');
   }
 
-  const innovationPackRoute = buildInnovationPackUrl(innovationPackId);
-  const [backFromTemplateDialog, buildLink] = useBackToParentPage(innovationPackRoute);
-
-  const { data, loading } = useAdminInnovationPackQuery({
-    variables: { innovationPackId },
-    errorPolicy: 'ignore',
+  const { data: innovationPackResolverData, loading: resolving } = useInnovationPackResolveIdQuery({
+    variables: { innovationPackNameId },
+    skip: !innovationPackNameId,
   });
+
+  const innovationPackId = innovationPackResolverData?.lookupByName.innovationPack?.id;
+  if (innovationPackNameId && !resolving && !innovationPackId) {
+    throw new Error('Innovation pack not found.');
+  }
+
+  const { data, loading: loadingInnovationPack } = useAdminInnovationPackQuery({
+    variables: { innovationPackId: innovationPackId! },
+    skip: !innovationPackId,
+  });
+
+  const innovationPackRoute = data?.lookup.innovationPack?.profile.url ?? '';
+  const [backFromTemplateDialog, buildLink] = useBackToParentPage(innovationPackRoute);
 
   const {
     postTemplates,
@@ -85,7 +95,7 @@ const AdminInnovationPackPage: FC<AdminInnovationPackPageProps> = ({ editTemplat
     const { data } = await updateInnovationPack({
       variables: {
         packData: {
-          ID: innovationPackId,
+          ID: innovationPackId!,
           listedInStore: formData.listedInStore,
           searchVisibility: formData.searchVisibility,
           profileData: {
@@ -113,113 +123,122 @@ const AdminInnovationPackPage: FC<AdminInnovationPackPageProps> = ({ editTemplat
 
   const innovationPack = data?.lookup.innovationPack;
 
-  const isLoading = loading || loadingOrganizations || updating;
+  const isLoading = resolving || loadingInnovationPack || loadingOrganizations || updating;
 
   return (
-    <InnovationPackProfileLayout innovationPack={innovationPack} loading={loading} showSettings settings>
-      <StorageConfigContextProvider locationType="innovationPack" innovationPackId={innovationPackId}>
-        <PageContent>
-          <PageContentColumn columns={12}>
-            <PageContentBlock>
-              <InnovationPackForm
-                nameID={innovationPack?.nameID}
-                profile={innovationPack?.profile}
-                providerId={innovationPack?.provider?.id}
-                organizations={organizations}
-                onSubmit={handleSubmit}
-                loading={isLoading}
-                listedInStore={innovationPack?.listedInStore}
-                searchVisibility={innovationPack?.searchVisibility}
-              />
-            </PageContentBlock>
-            <PageContentBlockSeamless disablePadding>
-              <AdminWhiteboardTemplatesSection
-                templateId={whiteboardNameId}
-                templatesSetId={templatesSetID}
-                templates={whiteboardTemplates}
-                onCloseTemplateDialog={backFromTemplateDialog}
-                refetchQueries={[refetchAdminInnovationPackQuery({ innovationPackId })]}
-                buildTemplateLink={({ id }) =>
-                  buildLink(`${innovationPackRoute}/${RoutePaths.whiteboardTemplatesRoutePath}/${id}`)
-                }
-                edit={editTemplates}
-                loadInnovationPacks={() => {}}
-                loadingInnovationPacks={isLoading}
-                innovationPacks={[]}
-                canImportTemplates={false}
-              />
-            </PageContentBlockSeamless>
-            <PageContentBlockSeamless disablePadding>
-              <AdminCalloutTemplatesSection
-                templateId={calloutTemplateId}
-                templatesSetId={templatesSetID}
-                templates={calloutTemplates}
-                onCloseTemplateDialog={backFromTemplateDialog}
-                refetchQueries={[refetchAdminInnovationPackQuery({ innovationPackId })]}
-                buildTemplateLink={({ id }) =>
-                  buildLink(`${innovationPackRoute}/${RoutePaths.calloutTemplatesRoutePath}/${id}`)
-                }
-                edit={editTemplates}
-                loadInnovationPacks={() => {}}
-                loadingInnovationPacks={isLoading}
-                innovationPacks={[]}
-                canImportTemplates={false}
-              />
-            </PageContentBlockSeamless>
-            <PageContentBlockSeamless disablePadding>
-              <AdminInnovationTemplatesSection
-                templateId={innovationTemplateId}
-                templatesSetId={templatesSetID}
-                templates={innovationFlowTemplates}
-                onCloseTemplateDialog={backFromTemplateDialog}
-                refetchQueries={[refetchAdminInnovationPackQuery({ innovationPackId })]}
-                buildTemplateLink={({ id }) =>
-                  buildLink(`${innovationPackRoute}/${RoutePaths.innovationTemplatesRoutePath}/${id}`)
-                }
-                edit={editTemplates}
-                loadInnovationPacks={() => {}}
-                loadingInnovationPacks={isLoading}
-                innovationPacks={[]}
-                canImportTemplates={false}
-              />
-            </PageContentBlockSeamless>
-            <PageContentBlockSeamless disablePadding>
-              <AdminCommunityGuidelinesTemplatesSection
-                templateId={communityGuidelinesNameId}
-                templatesSetId={templatesSetID}
-                templates={communityGuidelinesTemplates}
-                onCloseTemplateDialog={backFromTemplateDialog}
-                refetchQueries={[refetchAdminInnovationPackQuery({ innovationPackId })]}
-                buildTemplateLink={({ id }) =>
-                  buildLink(`${innovationPackRoute}/${RoutePaths.communityGuidelinesTemplatesRoutePath}/${id}`)
-                }
-                edit={editTemplates}
-                loadInnovationPacks={() => {}}
-                loadingInnovationPacks={isLoading}
-                innovationPacks={[]}
-                canImportTemplates={false}
-              />
-            </PageContentBlockSeamless>
-            <PageContentBlockSeamless disablePadding>
-              <AdminPostTemplatesSection
-                templateId={postNameId}
-                templatesSetId={templatesSetID}
-                templates={postTemplates}
-                onCloseTemplateDialog={backFromTemplateDialog}
-                refetchQueries={[refetchAdminInnovationPackQuery({ innovationPackId })]}
-                buildTemplateLink={({ id }) =>
-                  buildLink(`${innovationPackRoute}/${RoutePaths.postTemplatesRoutePath}/${id}`)
-                }
-                edit={editTemplates}
-                loadInnovationPacks={() => {}}
-                loadingInnovationPacks={isLoading}
-                innovationPacks={[]}
-                canImportTemplates={false}
-              />
-            </PageContentBlockSeamless>
-          </PageContentColumn>
-        </PageContent>
-      </StorageConfigContextProvider>
+    <InnovationPackProfileLayout
+      innovationPack={innovationPack}
+      loading={resolving || loadingInnovationPack}
+      showSettings
+      settings
+    >
+      {innovationPackId && (
+        <>
+          <StorageConfigContextProvider locationType="innovationPack" innovationPackId={innovationPackId}>
+            <PageContent>
+              <PageContentColumn columns={12}>
+                <PageContentBlock>
+                  <InnovationPackForm
+                    nameID={innovationPack?.nameID}
+                    profile={innovationPack?.profile}
+                    providerId={innovationPack?.provider?.id}
+                    organizations={organizations}
+                    onSubmit={handleSubmit}
+                    loading={isLoading}
+                    listedInStore={innovationPack?.listedInStore}
+                    searchVisibility={innovationPack?.searchVisibility}
+                  />
+                </PageContentBlock>
+                <PageContentBlockSeamless disablePadding>
+                  <AdminWhiteboardTemplatesSection
+                    templateId={whiteboardNameId}
+                    templatesSetId={templatesSetID}
+                    templates={whiteboardTemplates}
+                    onCloseTemplateDialog={backFromTemplateDialog}
+                    refetchQueries={[refetchAdminInnovationPackQuery({ innovationPackId })]}
+                    buildTemplateLink={({ id }) =>
+                      buildLink(`${innovationPackRoute}/${RoutePaths.whiteboardTemplatesRoutePath}/${id}`)
+                    }
+                    edit={editTemplates}
+                    loadInnovationPacks={() => {}}
+                    loadingInnovationPacks={isLoading}
+                    innovationPacks={[]}
+                    canImportTemplates={false}
+                  />
+                </PageContentBlockSeamless>
+                <PageContentBlockSeamless disablePadding>
+                  <AdminCalloutTemplatesSection
+                    templateId={calloutTemplateId}
+                    templatesSetId={templatesSetID}
+                    templates={calloutTemplates}
+                    onCloseTemplateDialog={backFromTemplateDialog}
+                    refetchQueries={[refetchAdminInnovationPackQuery({ innovationPackId })]}
+                    buildTemplateLink={({ id }) =>
+                      buildLink(`${innovationPackRoute}/${RoutePaths.calloutTemplatesRoutePath}/${id}`)
+                    }
+                    edit={editTemplates}
+                    loadInnovationPacks={() => {}}
+                    loadingInnovationPacks={isLoading}
+                    innovationPacks={[]}
+                    canImportTemplates={false}
+                  />
+                </PageContentBlockSeamless>
+                <PageContentBlockSeamless disablePadding>
+                  <AdminInnovationTemplatesSection
+                    templateId={innovationTemplateId}
+                    templatesSetId={templatesSetID}
+                    templates={innovationFlowTemplates}
+                    onCloseTemplateDialog={backFromTemplateDialog}
+                    refetchQueries={[refetchAdminInnovationPackQuery({ innovationPackId })]}
+                    buildTemplateLink={({ id }) =>
+                      buildLink(`${innovationPackRoute}/${RoutePaths.innovationTemplatesRoutePath}/${id}`)
+                    }
+                    edit={editTemplates}
+                    loadInnovationPacks={() => {}}
+                    loadingInnovationPacks={isLoading}
+                    innovationPacks={[]}
+                    canImportTemplates={false}
+                  />
+                </PageContentBlockSeamless>
+                <PageContentBlockSeamless disablePadding>
+                  <AdminCommunityGuidelinesTemplatesSection
+                    templateId={communityGuidelinesNameId}
+                    templatesSetId={templatesSetID}
+                    templates={communityGuidelinesTemplates}
+                    onCloseTemplateDialog={backFromTemplateDialog}
+                    refetchQueries={[refetchAdminInnovationPackQuery({ innovationPackId })]}
+                    buildTemplateLink={({ id }) =>
+                      buildLink(`${innovationPackRoute}/${RoutePaths.communityGuidelinesTemplatesRoutePath}/${id}`)
+                    }
+                    edit={editTemplates}
+                    loadInnovationPacks={() => {}}
+                    loadingInnovationPacks={isLoading}
+                    innovationPacks={[]}
+                    canImportTemplates={false}
+                  />
+                </PageContentBlockSeamless>
+                <PageContentBlockSeamless disablePadding>
+                  <AdminPostTemplatesSection
+                    templateId={postNameId}
+                    templatesSetId={templatesSetID}
+                    templates={postTemplates}
+                    onCloseTemplateDialog={backFromTemplateDialog}
+                    refetchQueries={[refetchAdminInnovationPackQuery({ innovationPackId })]}
+                    buildTemplateLink={({ id }) =>
+                      buildLink(`${innovationPackRoute}/${RoutePaths.postTemplatesRoutePath}/${id}`)
+                    }
+                    edit={editTemplates}
+                    loadInnovationPacks={() => {}}
+                    loadingInnovationPacks={isLoading}
+                    innovationPacks={[]}
+                    canImportTemplates={false}
+                  />
+                </PageContentBlockSeamless>
+              </PageContentColumn>
+            </PageContent>
+          </StorageConfigContextProvider>
+        </>
+      )}
     </InnovationPackProfileLayout>
   );
 };
