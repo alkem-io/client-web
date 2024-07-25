@@ -7,6 +7,7 @@ import { Theme } from '@mui/material/styles';
 import GridProvider from '../../../../core/ui/grid/GridProvider';
 import { useColumns } from '../../../../core/ui/grid/GridContext';
 import { CommunityContributorType } from '../../../../core/apollo/generated/graphql-schema';
+import { times } from 'lodash';
 
 interface CommunityContributorsBlockWideContentProps {
   users: ContributorCardSquareProps[] | undefined;
@@ -17,8 +18,7 @@ interface CommunityContributorsBlockWideContentProps {
   compactView?: boolean;
 }
 
-const DESKTOP_COLUMNS = 8;
-const COMPACT_VIEW_ITEMS_LIMIT = 3 * DESKTOP_COLUMNS; // 3 rows on Desktop
+const COMPACT_VIEW_ROWS = 3;
 
 const filterFn = (filter: string[]) => (element: ContributorCardSquareProps) => {
   return (
@@ -39,17 +39,25 @@ const CommunityContributorsBlockWideContent = ({
   filter,
   compactView = false,
 }: CommunityContributorsBlockWideContentProps) => {
-  const isSmallScreen = useMediaQuery<Theme>(theme => theme.breakpoints.down('lg'));
+  const isSmallScreen = useMediaQuery<Theme>(theme => theme.breakpoints.down('md'));
 
   const columns = useColumns();
 
+  const compactViewItemsLimit = compactView ? columns * COMPACT_VIEW_ROWS : undefined;
+
+  const manyUsers =
+    users &&
+    times(50, () => users)
+      .flat()
+      .map(({ id, ...x }, i) => ({ id: id + i, ...x }));
+
   return (
-    <GridProvider columns={isSmallScreen ? columns / 2 : DESKTOP_COLUMNS}>
+    <GridProvider columns={isSmallScreen ? columns / 2 : columns}>
       <Gutters row flexWrap="wrap" disablePadding={nested} sx={{ overflowY: 'auto' }}>
         {contributorType === CommunityContributorType.User &&
-          users
+          manyUsers
             ?.filter(filterFn(filter))
-            .slice(0, compactView ? COMPACT_VIEW_ITEMS_LIMIT : undefined)
+            .slice(0, compactView ? compactViewItemsLimit : undefined)
             .map(user => (
               <GridItem key={user.id} columns={1}>
                 <Box>
@@ -60,7 +68,7 @@ const CommunityContributorsBlockWideContent = ({
         {contributorType === CommunityContributorType.Organization &&
           organizations
             ?.filter(filterFn(filter))
-            .slice(0, compactView ? COMPACT_VIEW_ITEMS_LIMIT : undefined)
+            .slice(0, compactView ? compactViewItemsLimit : undefined)
             .map(organization => (
               <GridItem key={organization.id} columns={1}>
                 <Box>

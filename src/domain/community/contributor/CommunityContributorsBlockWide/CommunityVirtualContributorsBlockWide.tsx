@@ -18,15 +18,14 @@ interface CommunityContributorsBlockWideProps {
   isLoading?: boolean;
 }
 
-const DESKTOP_COLUMNS = 8;
-const COMPACT_VIEW_ITEMS_LIMIT = 3 * DESKTOP_COLUMNS; // 3 rows on Desktop
+const COMPACT_VIEW_ROWS = 3;
 
 const CommunityVirtualContributorsBlockWide = ({
   virtualContributors,
   isLoading,
 }: CommunityContributorsBlockWideProps) => {
   const [searchTerm, onSearchTermChange] = useState<string[]>([]);
-  const isSmallScreen = useMediaQuery<Theme>(theme => theme.breakpoints.down('lg'));
+  const isSmallScreen = useMediaQuery<Theme>(theme => theme.breakpoints.down('md'));
   const columns = useColumns();
 
   const matchesNameFilter = (filter: string[]) => (element: VirtualContributorProps) => {
@@ -36,6 +35,8 @@ const CommunityVirtualContributorsBlockWide = ({
   };
 
   const origin = usePlatformOrigin() ?? '';
+
+  const itemsLimit = columns * COMPACT_VIEW_ROWS;
 
   return (
     <PageContentBlock>
@@ -54,14 +55,14 @@ const CommunityVirtualContributorsBlockWide = ({
           />
         }
       />
-      <GridProvider columns={isSmallScreen ? columns / 2 : DESKTOP_COLUMNS}>
+      <GridProvider columns={isSmallScreen ? columns / 2 : columns}>
         <Gutters row flexWrap="wrap" disablePadding sx={{ overflowY: 'auto' }}>
           {isLoading ? (
             <Loading text={''} />
           ) : (
             virtualContributors
               ?.filter(matchesNameFilter(searchTerm))
-              .slice(0, COMPACT_VIEW_ITEMS_LIMIT)
+              .slice(0, itemsLimit)
               .map(vc => (
                 <GridItem key={vc.id} columns={1}>
                   <Box>
