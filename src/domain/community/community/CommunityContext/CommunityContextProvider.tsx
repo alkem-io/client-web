@@ -2,7 +2,7 @@ import React, { FC, useMemo } from 'react';
 import { useSpaceCommunityQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { CommunityContext, CommunityContextValue } from './CommunityContext';
 import { useSpace } from '../../../journey/space/SpaceContext/useSpace';
-import { useSubSpace } from '../../../journey/subspace/hooks/useChallenge';
+import { useSubSpace } from '../../../journey/subspace/hooks/useSubSpace';
 import { useOpportunity } from '../../../journey/opportunity/hooks/useOpportunity';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 
