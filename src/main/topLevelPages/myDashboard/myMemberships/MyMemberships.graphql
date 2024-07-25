@@ -10,40 +10,43 @@ query MyMemberships {
           visibility
         }
       }
-      metrics {
-        name
-        value
-      }
-      context {
-        id
-        vision
-      }
       profile {
-        id
-        url
-        displayName
-        tagline
-        tagset {
-          id
-          tags
-        }
-        cardBanner: visual(type: CARD) {
-          ...VisualUri
-        }
+        ...MyMembershipsSpaceProfile
       }
       community {
         myRoles
       }
       subspaces {
-        id
-        authorization {
-          id
-          myPrivileges
-        }
-        community {
-          ...MyMembershipsChildJourneyCommunity
+        ...MyMembershipsSubspaceProfile
+        subspaces {
+          ...MyMembershipsSubspaceProfile
         }
       }
     }
+  }
+}
+
+fragment MyMembershipsSpaceProfile on Profile {
+  id
+  url
+  displayName
+  tagline
+  cardBanner: visual(type: CARD) {
+    ...VisualUri
+  }
+}
+
+fragment MyMembershipsSubspaceProfile on Space {
+  id
+  level
+  authorization {
+    id
+    myPrivileges
+  }
+  profile {
+    ...MyMembershipsSpaceProfile
+  }
+  community {
+    ...MyMembershipsChildJourneyCommunity
   }
 }

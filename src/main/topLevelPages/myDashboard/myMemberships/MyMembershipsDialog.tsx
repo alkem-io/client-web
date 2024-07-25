@@ -1,29 +1,16 @@
+import React, { useMemo } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
+import { DialogContent } from '@mui/material';
 import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
-import { Trans, useTranslation } from 'react-i18next';
 import Gutters from '../../../../core/ui/grid/Gutters';
-import { DialogContent } from '@mui/material';
 import { useMyMembershipsQuery } from '../../../../core/apollo/generated/apollo-hooks';
-import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
-import SpaceCard from '../../../../domain/journey/space/SpaceCard/SpaceCard';
-import getMetricCount from '../../../../domain/platform/metrics/utils/getMetricCount';
-import { MetricType } from '../../../../domain/platform/metrics/MetricType';
 import { Caption } from '../../../../core/ui/typography';
-import React, { useMemo } from 'react';
-import GridProvider from '../../../../core/ui/grid/GridProvider';
-import GridItem from '../../../../core/ui/grid/GridItem';
 import RouterLink from '../../../../core/ui/link/RouterLink';
 import useLandingUrl from '../../../landing/useLandingUrl';
 import { SpaceIcon } from '../../../../domain/journey/space/icon/SpaceIcon';
-import MyMembershipsSubSpace from './MyMembershipsSubSpace';
-import isJourneyMember from '../../../../domain/journey/utils/isJourneyMember';
 import { Visual } from '../../../../domain/common/visual/Visual';
-import {
-  AuthorizationPrivilege,
-  CommunityMembershipStatus,
-  CommunityRole,
-} from '../../../../core/apollo/generated/graphql-schema';
-import { Identifiable } from '../../../../core/utils/Identifiable';
+import { CommunityRole } from '../../../../core/apollo/generated/graphql-schema';
 import Loading from '../../../../core/ui/loading/Loading';
 import MyMembershipsSpaceCard from './MyMembershipsSpaceCard';
 
@@ -32,17 +19,8 @@ interface MyJourneysDialogProps {
   onClose: () => void;
 }
 
-interface SubspaceAccessProps extends Identifiable {
-  authorization?: {
-    myPrivileges?: AuthorizationPrivilege[];
-  };
-  community?: {
-    myRoles?: CommunityRole[];
-    myMembershipStatus?: CommunityMembershipStatus;
-  };
-}
-
 export interface MembershipProps {
+  id: string;
   profile: {
     url: string;
     displayName: string;
@@ -50,11 +28,24 @@ export interface MembershipProps {
     avatar?: Visual;
     cardBanner?: Visual;
   };
+  level: number;
   community?: {
     myRoles?: CommunityRole[];
   };
-  subspaces?: SubspaceAccessProps[];
+  subspaces?: MembershipProps[];
 }
+
+const MyMembershipsSpaceView = (space: MembershipProps) => (
+  <MyMembershipsSpaceCard
+    displayName={space.profile.displayName}
+    tagline={space.profile.tagline ?? ''}
+    avatar={space.profile.cardBanner?.uri}
+    url={space.profile.url}
+    roles={space.community?.myRoles}
+    level={space.level}
+    subspaces={space.subspaces}
+  />
+);
 
 const MyMembershipsDialog = ({ open, onClose }: MyJourneysDialogProps) => {
   const { t } = useTranslation();
@@ -67,78 +58,15 @@ const MyMembershipsDialog = ({ open, onClose }: MyJourneysDialogProps) => {
 
   const myTopLevelMemberships = useMemo(() => data?.me.spaceMemberships.filter(space => space?.level === 0), [data]);
 
-  // As the query returns all levels of memberships, we're using a map for ease of access to the data of each membership
-  // without having to iterate over the array each time or making redundant queries for the details of every subspace
-  const allMyMembershipsMap: Record<string, MembershipProps> = useMemo(
-    () =>
-      (data?.me.spaceMemberships ?? []).reduce((acc, item) => {
-        acc[item.id] = item;
-        return acc;
-      }, {}),
-    [data]
-  );
-
-  console.log(data?.me.spaceMemberships);
-
-  const getMembership = (id: string) => allMyMembershipsMap[id];
-
   return (
     <DialogWithGrid open={open} onClose={onClose} columns={12}>
       <DialogHeader icon={<SpaceIcon />} title={t('pages.home.sections.myMemberships.title')} onClose={onClose} />
       <DialogContent>
         {loading && <Loading />}
-        <Gutters disablePadding>
-          {myTopLevelMemberships?.map(space => {
-            const communityRoles = space.community?.myRoles
-              .map(role => role.toLowerCase())
-              .filter(role => ['admin', 'lead'].includes(role))
-              .sort();
-            console.log(communityRoles);
-            return (
-              <>
-                <MyMembershipsSpaceCard
-                  displayName={space.profile.displayName}
-                  tagline={space.profile.tagline ?? ''}
-                  avatar={space.profile.cardBanner?.uri}
-                  url={space.profile.url}
-                  roles={communityRoles}
-                />
-                <PageContentBlock
-                  row
-                  flexWrap="wrap"
-                  sx={{
-                    background: theme => theme.palette.background.default,
-                    alignItems: 'start',
-                  }}
-                >
-                  <SpaceCard
-                    banner={space.profile.cardBanner}
-                    displayName={space.profile.displayName}
-                    vision={space.context?.vision ?? ''}
-                    tagline={space.profile.tagline}
-                    journeyUri={space.profile.url}
-                    tags={space.profile.tagset?.tags ?? []}
-                    membersCount={getMetricCount(space.metrics, MetricType.Member)}
-                    spaceVisibility={space.account.license.visibility}
-                  />
-                  <GridItem columns={9}>
-                    <Gutters row disablePadding flexGrow={1} flexWrap="wrap">
-                      <GridProvider columns={8}>
-                        {space.subspaces?.filter(isJourneyMember).map(subspace => (
-                          <MyMembershipsSubSpace key={subspace.id} subspace={subspace} getMembership={getMembership} />
-                        ))}
-                        {!loading && !space.subspaces?.length && (
-                          <Caption alignSelf="center">
-                            {t('pages.home.sections.myMemberships.noChildMemberships')}
-                          </Caption>
-                        )}
-                      </GridProvider>
-                    </Gutters>
-                  </GridItem>
-                </PageContentBlock>
-              </>
-            );
-          })}
+        <Gutters disablePadding disableGap>
+          {myTopLevelMemberships?.map(space => (
+            <MyMembershipsSpaceView {...space} />
+          ))}
           <Caption alignSelf="center">
             <Trans
               i18nKey="pages.home.sections.myMemberships.seeMore"
