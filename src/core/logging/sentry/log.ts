@@ -16,6 +16,8 @@ interface Tags {
   code?: string;
 }
 
+const isDevelopment = import.meta.env.MODE === 'development';
+
 const setTags = (tags: Tags, scope: Sentry.Scope) => {
   for (const [key, value] of Object.entries(tags)) {
     if (value) {
@@ -42,7 +44,6 @@ const consoleLog = (severity: Sentry.SeverityLevel, error: Error | string, tags?
 };
 
 const log = (severity: Sentry.SeverityLevel) => (error: Error | string, tags?: Tags) => {
-  const isDevelopment = import.meta.env.MODE === 'development';
   isDevelopment && consoleLog(severity, error, tags);
 
   return Sentry.withScope(scope => {
@@ -63,9 +64,17 @@ export const warn = log('warning');
 export const info = log('info');
 
 export const log404NotFound = () => {
+  const severity = 'error';
+  const currentURL = document.location.href;
+  const referrer = document.referrer;
+  const message = `404: url: '${currentURL}', referrer: '${referrer}'`;
+  const tags = { code: '404' };
+
+  isDevelopment && consoleLog(severity, message, tags);
+
   Sentry.withScope(scope => {
-    scope.setLevel('error');
-    const message = `404: '${document.location.href}'`;
-    Sentry.captureEvent({ message, extra: { url: document.location.href, referrer: document.referrer } });
+    scope.setLevel(severity);
+    setTags(tags, scope);
+    Sentry.captureEvent({ message, extra: { url: currentURL, referrer: referrer } });
   });
 };

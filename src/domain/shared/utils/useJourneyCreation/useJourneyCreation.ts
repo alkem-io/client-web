@@ -9,6 +9,7 @@ import { useConfig } from '../../../platform/config/useConfig';
 import {
   CommunityMembershipStatus,
   PlatformFeatureFlagName,
+  SpacePrivacyMode,
   TagsetType,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { DEFAULT_TAGSET } from '../../../common/tags/tagset.constants';
@@ -120,6 +121,11 @@ export const useSubspaceCreation = () => {
             context: {
               id: '',
               vision: value.vision,
+            },
+            settings: {
+              privacy: {
+                mode: SpacePrivacyMode.Public,
+              },
             },
           },
         },
