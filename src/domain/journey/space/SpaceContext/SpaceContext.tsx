@@ -8,6 +8,7 @@ import {
   CommunityMembershipStatus,
   License,
   SpaceInfoFragment,
+  SpacePrivacyMode,
   SpaceVisibility,
 } from '../../../../core/apollo/generated/graphql-schema';
 
@@ -98,7 +99,7 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
     featureFlags: [],
   };
   const communityId = space?.community?.id ?? '';
-  const isPrivate = space && !space.authorization?.anonymousReadAccess;
+  const isPrivate = space && space.settings.privacy?.mode === SpacePrivacyMode.Private;
   const error = configError || spaceError;
 
   const contextPrivileges = space?.context?.authorization?.myPrivileges ?? NO_PRIVILEGES;

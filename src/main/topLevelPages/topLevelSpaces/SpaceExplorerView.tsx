@@ -10,7 +10,11 @@ import Gutters from '../../../core/ui/grid/Gutters';
 import ScrollableCardsLayoutContainer from '../../../core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
 import SpaceSubspaceCard from '../../../domain/journey/space/SpaceSubspaceCard/SpaceSubspaceCard';
 import { Identifiable } from '../../../core/utils/Identifiable';
-import { CommunityMembershipStatus, ProfileType } from '../../../core/apollo/generated/graphql-schema';
+import {
+  CommunityMembershipStatus,
+  ProfileType,
+  SpacePrivacyMode,
+} from '../../../core/apollo/generated/graphql-schema';
 import { Visual } from '../../../domain/common/visual/Visual';
 import { gutters, useGridItem } from '../../../core/ui/grid/utils';
 import useLazyLoading from '../../../domain/shared/pagination/useLazyLoading';
@@ -80,10 +84,12 @@ interface Space extends Identifiable {
   community?: {
     myMembershipStatus?: CommunityMembershipStatus;
   };
-  authorization?: {
-    anonymousReadAccess: boolean;
-  };
   matchedTerms?: string[];
+  settings: {
+    privacy?: {
+      mode: SpacePrivacyMode;
+    };
+  };
 }
 
 interface WithBanner {
@@ -209,7 +215,7 @@ export const SpaceExplorerView: FC<SpaceExplorerViewProps> = ({
                     <SpaceSubspaceCardLabel
                       type={space.profile.type!}
                       member={space.community?.myMembershipStatus === CommunityMembershipStatus.Member}
-                      isPrivate={!space.authorization?.anonymousReadAccess}
+                      isPrivate={space.settings.privacy?.mode === SpacePrivacyMode.Private}
                     />
                   )
                 }

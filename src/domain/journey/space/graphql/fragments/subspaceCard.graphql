@@ -1,9 +1,5 @@
 fragment SubspaceCard on Space {
   id
-  authorization {
-    id
-    anonymousReadAccess
-  }
   metrics {
     id
     name
@@ -30,5 +26,10 @@ fragment SubspaceCard on Space {
   community {
     id
     myMembershipStatus
+  }
+  settings {
+    privacy {
+        mode
+    }
   }
 }
