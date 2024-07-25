@@ -7,7 +7,6 @@ import { Theme } from '@mui/material/styles';
 import GridProvider from '../../../../core/ui/grid/GridProvider';
 import { useColumns } from '../../../../core/ui/grid/GridContext';
 import { CommunityContributorType } from '../../../../core/apollo/generated/graphql-schema';
-import { times } from 'lodash';
 
 interface CommunityContributorsBlockWideContentProps {
   users: ContributorCardSquareProps[] | undefined;
@@ -45,17 +44,11 @@ const CommunityContributorsBlockWideContent = ({
 
   const compactViewItemsLimit = compactView ? columns * COMPACT_VIEW_ROWS : undefined;
 
-  const manyUsers =
-    users &&
-    times(50, () => users)
-      .flat()
-      .map(({ id, ...x }, i) => ({ id: id + i, ...x }));
-
   return (
     <GridProvider columns={isSmallScreen ? columns / 2 : columns}>
       <Gutters row flexWrap="wrap" disablePadding={nested} sx={{ overflowY: 'auto' }}>
         {contributorType === CommunityContributorType.User &&
-          manyUsers
+          users
             ?.filter(filterFn(filter))
             .slice(0, compactView ? compactViewItemsLimit : undefined)
             .map(user => (
