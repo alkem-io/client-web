@@ -12,26 +12,26 @@ const InnovationPackRoute = () => {
   return (
     <Routes>
       <Route path="/" element={<PageLayoutHolderWithOutlet />}>
-        <Route path={`:${nameOfUrl.innovationPackNameId}`} element={<InnovationPackProfilePage />} />
-        <Route path={`:${nameOfUrl.innovationPackNameId}/settings`} element={<AdminInnovationPackPage />} />
+        <Route path={`:${nameOfUrl.innovationPackId}`} element={<InnovationPackProfilePage />} />
+        <Route path={`:${nameOfUrl.innovationPackId}/settings`} element={<AdminInnovationPackPage />} />
         <Route
-          path={`:${nameOfUrl.innovationPackNameId}/${RoutePaths.postTemplatesRoutePath}/:${nameOfUrl.postNameId}`}
+          path={`:${nameOfUrl.innovationPackId}/${RoutePaths.postTemplatesRoutePath}/:${nameOfUrl.postNameId}`}
           element={<AdminInnovationPackPage editTemplates />}
         />
         <Route
-          path={`:${nameOfUrl.innovationPackNameId}/${RoutePaths.whiteboardTemplatesRoutePath}/:${nameOfUrl.whiteboardNameId}`}
+          path={`:${nameOfUrl.innovationPackId}/${RoutePaths.whiteboardTemplatesRoutePath}/:${nameOfUrl.whiteboardNameId}`}
           element={<AdminInnovationPackPage editTemplates />}
         />
         <Route
-          path={`:${nameOfUrl.innovationPackNameId}/${RoutePaths.calloutTemplatesRoutePath}/:${nameOfUrl.calloutTemplateId}`}
+          path={`:${nameOfUrl.innovationPackId}/${RoutePaths.calloutTemplatesRoutePath}/:${nameOfUrl.calloutTemplateId}`}
           element={<AdminInnovationPackPage editTemplates />}
         />
         <Route
-          path={`:${nameOfUrl.innovationPackNameId}/${RoutePaths.innovationTemplatesRoutePath}/:${nameOfUrl.innovationTemplateId}`}
+          path={`:${nameOfUrl.innovationPackId}/${RoutePaths.innovationTemplatesRoutePath}/:${nameOfUrl.innovationTemplateId}`}
           element={<AdminInnovationPackPage editTemplates />}
         />
         <Route
-          path={`:${nameOfUrl.innovationPackNameId}/${RoutePaths.communityGuidelinesTemplatesRoutePath}/:${nameOfUrl.communityGuidelinesNameId}`}
+          path={`:${nameOfUrl.innovationPackId}/${RoutePaths.communityGuidelinesTemplatesRoutePath}/:${nameOfUrl.communityGuidelinesNameId}`}
           element={<AdminInnovationPackPage editTemplates />}
         />
         <Route path="*" element={<Error404 />} />

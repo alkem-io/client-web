@@ -2916,6 +2916,7 @@ export const InnovationPackProfileFragmentDoc = gql`
       description
       uri
     }
+    url
   }
   ${TagsetDetailsFragmentDoc}
 `;
@@ -3589,6 +3590,7 @@ export const InnovationPackCardFragmentDoc = gql`
       tagset {
         ...TagsetDetails
       }
+      url
     }
     templates {
       postTemplatesCount
@@ -20129,6 +20131,8 @@ export const AdminInnovationPackDocument = gql`
         templates {
           ...AdminInnovationPackTemplates
         }
+        listedInStore
+        searchVisibility
       }
     }
   }

@@ -36,15 +36,15 @@ export enum TemplateType {
 }
 
 const InnovationPackProfilePage = () => {
-  const { innovationPackNameId } = useUrlParams();
+  const { innovationPackId } = useUrlParams();
 
-  if (!innovationPackNameId) {
+  if (!innovationPackId) {
     throw new Error('Must be within InnovationPack');
   }
 
   const { data, loading } = useInnovationPackProfilePageQuery({
     variables: {
-      innovationPackId: innovationPackNameId,
+      innovationPackId,
     },
   });
 

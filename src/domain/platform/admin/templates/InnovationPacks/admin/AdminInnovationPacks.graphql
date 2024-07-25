@@ -35,6 +35,7 @@ fragment InnovationPackProfile on Profile {
     description
     uri
   }
+  url
 }
 
 fragment AdminInnovationPackTemplates on TemplatesSet {
@@ -58,20 +59,22 @@ fragment AdminInnovationPackTemplates on TemplatesSet {
 
 query AdminInnovationPack($innovationPackId: UUID!) {
   lookup {
-      innovationPack(ID: $innovationPackId) {
-        id
-        nameID
-        provider {
-          ...InnovationPackProviderProfileWithAvatar
-        }
-        profile {
-          ...InnovationPackProfile
-        }
-        templates {
-          ...AdminInnovationPackTemplates
-        }
+    innovationPack(ID: $innovationPackId) {
+      id
+      nameID
+      provider {
+        ...InnovationPackProviderProfileWithAvatar
       }
+      profile {
+        ...InnovationPackProfile
+      }
+      templates {
+        ...AdminInnovationPackTemplates
+      }
+      listedInStore
+      searchVisibility
     }
+  }
 }
 
 mutation createInnovationPack($packData: CreateInnovationPackOnAccountInput!) {

@@ -2,6 +2,7 @@ import { _AUTH_LOGIN_PATH } from '../../core/auth/authentication/constants/authe
 import { EntityPageSection } from '../../domain/shared/layout/EntityPageSection';
 import { ROUTE_HOME } from '../../domain/platform/routes/constants';
 import { isAbsoluteUrl } from '../../core/utils/links';
+import { TopLevelRoutePath } from './TopLevelRoutePath';
 
 export const buildOrganizationUrl = (organizationNameId: string) => `/organization/${organizationNameId}`;
 
@@ -41,3 +42,9 @@ export const buildUpdatesUrl = (journeyLocation: string) => {
 export const buildAboutUrl = (journeyLocation: string | undefined) => {
   return journeyLocation && `${journeyLocation}/about`;
 };
+
+export const buildInnovationPackUrl = (innovationPackId: string) =>
+  `/${TopLevelRoutePath.InnovationPacks}/${innovationPackId}`;
+
+export const buildInnovationPackSettingsUrl = (innovationPackId: string) =>
+  `${buildInnovationPackUrl(innovationPackId)}/settings`;

@@ -9,7 +9,7 @@ import SearchableListLayout from '../../../../../shared/components/SearchableLis
 import SimpleSearchableList from '../../../../../shared/components/SearchableList/SimpleSearchableList';
 import AdminLayout from '../../../layout/toplevel/AdminLayout';
 import { AdminSection } from '../../../layout/toplevel/constants';
-import { buildInnovationPackSettingsUrl } from '../../../../../collaboration/InnovationPack/urlBuilders';
+import { buildInnovationPackSettingsUrl } from '../../../../../../main/routing/urlBuilders';
 
 interface AdminInnovationPacksPageProps {}
 
@@ -34,7 +34,7 @@ const AdminInnovationPacksPage: FC<AdminInnovationPacksPageProps> = () => {
         data?.platform.library.innovationPacks
           .map(pack => ({
             value: pack.profile.displayName,
-            url: buildInnovationPackSettingsUrl(pack.nameID),
+            url: buildInnovationPackSettingsUrl(pack.id),
             ...pack,
           }))
           .filter(ip => !searchTerm || ip.profile.displayName.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1),
