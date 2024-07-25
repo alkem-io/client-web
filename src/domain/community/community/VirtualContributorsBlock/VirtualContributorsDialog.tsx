@@ -14,7 +14,7 @@ import VCIcon from '../../virtualContributor/VirtualContributorsIcons';
 
 export interface VirtualContributorProps {
   id: string;
-  searchVisibility: SearchVisibility;
+  searchVisibility?: SearchVisibility;
   profile: {
     displayName: string;
     tagline: string;
