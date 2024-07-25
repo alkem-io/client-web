@@ -1,17 +1,22 @@
 import { ValueType } from '../../../../core/utils/filtering/filterFn';
-import { SubspaceCardFragment, SpaceCardQuery } from '../../../../core/apollo/generated/graphql-schema';
 
-/**
- @deprecated
-*/
-type JourneyCard = Required<SpaceCardQuery['lookup']>['space'] | SubspaceCardFragment;
+interface JourneyCard {
+  id: string;
+  profile: {
+    displayName: string;
+    tagline?: string;
+    tagset?: {
+      tags: string[];
+    };
+  };
+}
 
 /**
  @deprecated try to remove these one of these days
 */
 export const journeyCardValueGetter = ({ id, profile }: JourneyCard): ValueType => ({
   id,
-  values: [profile.displayName, profile.tagline || '', (profile.tagset?.tags || []).join(' ')],
+  values: [profile.displayName, profile.tagline ?? '', (profile.tagset?.tags || []).join(' ')],
 });
 
 /**

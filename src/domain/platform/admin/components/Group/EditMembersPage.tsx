@@ -4,10 +4,10 @@ import { SettingsSection } from '../../layout/EntitySettingsLayout/constants';
 import OrganizationAdminLayout from '../../organization/OrganizationAdminLayout';
 import { AuthorizationCredential } from '../../../../../core/apollo/generated/graphql-schema';
 import EditGroupCredentials from '../Authorization/EditGroupCredentials';
-import { WithCommunity } from '../Community/CommunityTypes';
 
-interface EditMembersPageProps extends WithCommunity {
+interface EditMembersPageProps {
   groupId: string;
+  parentCommunityId: string | undefined;
 }
 
 export const EditMembersPage: FC<EditMembersPageProps> = ({ parentCommunityId, groupId }) => {
