@@ -65,7 +65,7 @@ const MyMembershipsDialog = ({ open, onClose }: MyJourneysDialogProps) => {
         {loading && <Loading />}
         <Gutters disablePadding disableGap>
           {myTopLevelMemberships?.map(space => (
-            <MyMembershipsSpaceView {...space} />
+            <MyMembershipsSpaceView key={space.id} {...space} />
           ))}
           <Caption alignSelf="center">
             <Trans

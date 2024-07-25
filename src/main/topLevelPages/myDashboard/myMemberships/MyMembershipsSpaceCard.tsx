@@ -85,6 +85,7 @@ const MyMembershipsSpaceCard = ({
       {isExpanded &&
         subspaces?.map(subspace => (
           <MyMembershipsSpaceCard
+            key={subspace.id}
             displayName={subspace.profile.displayName}
             tagline={subspace.profile.tagline}
             avatar={subspace.profile.cardBanner?.uri}
