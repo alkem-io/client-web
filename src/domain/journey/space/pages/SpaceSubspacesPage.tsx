@@ -11,7 +11,11 @@ import SubspacesContainer from '../containers/SubspacesContainer';
 import { useSpace } from '../SpaceContext/useSpace';
 import SpacePageLayout from '../layout/SpacePageLayout';
 import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
-import { CalloutGroupName, CommunityMembershipStatus } from '../../../../core/apollo/generated/graphql-schema';
+import {
+  CalloutGroupName,
+  CommunityMembershipStatus,
+  SpacePrivacyMode,
+} from '../../../../core/apollo/generated/graphql-schema';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 import { ChallengeIcon } from '../../subspace/icon/ChallengeIcon';
 import SubspaceCard from '../../subspace/subspaceCard/SubspaceCard';
@@ -78,7 +82,7 @@ const SpaceSubspacesPage: FC<SpaceSubspacesPageProps> = () => {
                 tagline={challenge.profile.tagline!}
                 vision={challenge.context?.vision!}
                 journeyUri={challenge.profile.url}
-                locked={!challenge.authorization?.anonymousReadAccess}
+                locked={challenge.settings.privacy?.mode === SpacePrivacyMode.Private}
                 spaceVisibility={spaceVisibility}
                 member={challenge.community?.myMembershipStatus === CommunityMembershipStatus.Member}
               />

@@ -2202,10 +2202,6 @@ export const SpaceCardFragmentDoc = gql`
         ...VisualUri
       }
     }
-    authorization {
-      id
-      anonymousReadAccess
-    }
     metrics {
       name
       value
@@ -2223,6 +2219,11 @@ export const SpaceCardFragmentDoc = gql`
       license {
         id
         visibility
+      }
+    }
+    settings {
+      privacy {
+        mode
       }
     }
   }
@@ -2351,12 +2352,13 @@ export const SpaceDetailsFragmentDoc = gql`
         id
       }
     }
-    authorization {
-      id
-      anonymousReadAccess
-    }
     context {
       ...ContextDetails
+    }
+    settings {
+      privacy {
+        mode
+      }
     }
   }
   ${TagsetDetailsFragmentDoc}
@@ -2512,7 +2514,6 @@ export const SpacePageFragmentDoc = gql`
     }
     authorization {
       id
-      anonymousReadAccess
       myPrivileges
     }
     profile {
@@ -2566,10 +2567,6 @@ export const SpacePageFragmentDoc = gql`
 export const SubspaceCardFragmentDoc = gql`
   fragment SubspaceCard on Space {
     id
-    authorization {
-      id
-      anonymousReadAccess
-    }
     metrics {
       id
       name
@@ -2596,6 +2593,11 @@ export const SubspaceCardFragmentDoc = gql`
     community {
       id
       myMembershipStatus
+    }
+    settings {
+      privacy {
+        mode
+      }
     }
   }
   ${VisualUriFragmentDoc}
@@ -2743,7 +2745,6 @@ export const SubspaceInfoFragmentDoc = gql`
     authorization {
       id
       myPrivileges
-      anonymousReadAccess
     }
     context {
       id
@@ -3206,9 +3207,10 @@ export const PostParentFragmentDoc = gql`
         url
         displayName
       }
-      authorization {
-        id
-        anonymousReadAccess
+      settings {
+        privacy {
+          mode
+        }
       }
     }
     callout {
@@ -3371,9 +3373,10 @@ export const SearchResultSpaceFragmentDoc = gql`
         url
         displayName
       }
-      authorization {
-        id
-        anonymousReadAccess
+      settings {
+        privacy {
+          mode
+        }
       }
     }
     space {
@@ -3395,10 +3398,6 @@ export const SearchResultSpaceFragmentDoc = gql`
         id
         vision
       }
-      authorization {
-        id
-        anonymousReadAccess
-      }
       community {
         id
         myMembershipStatus
@@ -3408,6 +3407,11 @@ export const SearchResultSpaceFragmentDoc = gql`
         license {
           id
           visibility
+        }
+      }
+      settings {
+        privacy {
+          mode
         }
       }
     }
@@ -3675,7 +3679,6 @@ export const SpaceExplorerSpaceFragmentDoc = gql`
     id
     authorization {
       id
-      anonymousReadAccess
       myPrivileges
     }
     type
@@ -3707,6 +3710,11 @@ export const SpaceExplorerSpaceFragmentDoc = gql`
     community {
       id
       myMembershipStatus
+    }
+    settings {
+      privacy {
+        mode
+      }
     }
   }
   ${VisualUriFragmentDoc}
@@ -3748,6 +3756,11 @@ export const SpaceExplorerSubspaceFragmentDoc = gql`
     community {
       id
       myMembershipStatus
+    }
+    settings {
+      privacy {
+        mode
+      }
     }
   }
   ${VisualUriFragmentDoc}

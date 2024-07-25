@@ -20388,7 +20388,6 @@ export type SpaceCardFragment = {
       | undefined;
     cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
   };
-  authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
   metrics?: Array<{ __typename?: 'NVP'; name: string; value: string }> | undefined;
   community: { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
   context: { __typename?: 'Context'; id: string; vision?: string | undefined };
@@ -20397,6 +20396,7 @@ export type SpaceCardFragment = {
     id: string;
     license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
   };
+  settings: { __typename?: 'SpaceSettings'; privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode } };
 };
 
 export type SpaceCommunityPageQueryVariables = Exact<{
@@ -20756,7 +20756,6 @@ export type SpaceDetailsFragment = {
       | { __typename?: 'VirtualContributor'; id: string }
       | undefined;
   };
-  authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
   context: {
     __typename?: 'Context';
     id: string;
@@ -20772,6 +20771,7 @@ export type SpaceDetailsFragment = {
         }
       | undefined;
   };
+  settings: { __typename?: 'SpaceSettings'; privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode } };
 };
 
 export type SpaceProviderQueryVariables = Exact<{
@@ -20785,12 +20785,7 @@ export type SpaceProviderQuery = {
     id: string;
     nameID: string;
     authorization?:
-      | {
-          __typename?: 'Authorization';
-          id: string;
-          myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-          anonymousReadAccess: boolean;
-        }
+      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
     community: {
       __typename?: 'Community';
@@ -20871,6 +20866,10 @@ export type SpaceProviderQuery = {
           }
         | undefined;
     };
+    settings: {
+      __typename?: 'SpaceSettings';
+      privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
+    };
   };
 };
 
@@ -20888,12 +20887,7 @@ export type SpaceInfoFragment = {
   id: string;
   nameID: string;
   authorization?:
-    | {
-        __typename?: 'Authorization';
-        id: string;
-        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-        anonymousReadAccess: boolean;
-      }
+    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
   community: {
     __typename?: 'Community';
@@ -20974,6 +20968,7 @@ export type SpaceInfoFragment = {
         }
       | undefined;
   };
+  settings: { __typename?: 'SpaceSettings'; privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode } };
 };
 
 export type SpaceHostQueryVariables = Exact<{
@@ -21128,12 +21123,7 @@ export type SpacePageQuery = {
           };
           metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
           authorization?:
-            | {
-                __typename?: 'Authorization';
-                id: string;
-                anonymousReadAccess: boolean;
-                myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-              }
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
           profile: {
             __typename?: 'Profile';
@@ -21435,12 +21425,7 @@ export type SpacePageFragment = {
   };
   metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
   authorization?:
-    | {
-        __typename?: 'Authorization';
-        id: string;
-        anonymousReadAccess: boolean;
-        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-      }
+    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
   profile: {
     __typename?: 'Profile';
@@ -21644,7 +21629,6 @@ export type SpaceSubspaceCardsQuery = {
           subspaces: Array<{
             __typename?: 'Space';
             id: string;
-            authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
             metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
             profile: {
               __typename?: 'Profile';
@@ -21670,6 +21654,10 @@ export type SpaceSubspaceCardsQuery = {
               __typename?: 'Community';
               id: string;
               myMembershipStatus?: CommunityMembershipStatus | undefined;
+            };
+            settings: {
+              __typename?: 'SpaceSettings';
+              privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
             };
           }>;
         }
@@ -21735,7 +21723,6 @@ export type ContactSupportLocationQuery = {
 export type SubspaceCardFragment = {
   __typename?: 'Space';
   id: string;
-  authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
   metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
   profile: {
     __typename?: 'Profile';
@@ -21758,6 +21745,7 @@ export type SubspaceCardFragment = {
   };
   context: { __typename?: 'Context'; id: string; vision?: string | undefined };
   community: { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
+  settings: { __typename?: 'SpaceSettings'; privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode } };
 };
 
 export type SubspacesOnSpaceFragment = {
@@ -21766,7 +21754,6 @@ export type SubspacesOnSpaceFragment = {
   subspaces: Array<{
     __typename?: 'Space';
     id: string;
-    authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
     metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
     profile: {
       __typename?: 'Profile';
@@ -21789,6 +21776,10 @@ export type SubspacesOnSpaceFragment = {
     };
     context: { __typename?: 'Context'; id: string; vision?: string | undefined };
     community: { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
+    settings: {
+      __typename?: 'SpaceSettings';
+      privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
+    };
   }>;
 };
 
@@ -21874,7 +21865,6 @@ export type UpdateSpaceMutation = {
         | { __typename?: 'VirtualContributor'; id: string }
         | undefined;
     };
-    authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
     context: {
       __typename?: 'Context';
       id: string;
@@ -21889,6 +21879,10 @@ export type UpdateSpaceMutation = {
             anonymousReadAccess: boolean;
           }
         | undefined;
+    };
+    settings: {
+      __typename?: 'SpaceSettings';
+      privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
     };
   };
 };
@@ -22163,7 +22157,6 @@ export type SubspaceCreatedSubscription = {
           | undefined;
         cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
       };
-      authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
       metrics?: Array<{ __typename?: 'NVP'; name: string; value: string }> | undefined;
       community: { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
       context: { __typename?: 'Context'; id: string; vision?: string | undefined };
@@ -22171,6 +22164,10 @@ export type SubspaceCreatedSubscription = {
         __typename?: 'Account';
         id: string;
         license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
+      };
+      settings: {
+        __typename?: 'SpaceSettings';
+        privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
       };
     };
   };
@@ -22919,12 +22916,7 @@ export type SubspaceInfoQuery = {
               | undefined;
           };
           authorization?:
-            | {
-                __typename?: 'Authorization';
-                id: string;
-                myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                anonymousReadAccess: boolean;
-              }
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
           context: {
             __typename?: 'Context';
@@ -22995,12 +22987,7 @@ export type SubspaceInfoFragment = {
       | undefined;
   };
   authorization?:
-    | {
-        __typename?: 'Authorization';
-        id: string;
-        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-        anonymousReadAccess: boolean;
-      }
+    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
   context: {
     __typename?: 'Context';
@@ -25565,7 +25552,6 @@ export type CreateSubspaceMutation = {
   createSubspace: {
     __typename?: 'Space';
     id: string;
-    authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
     metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
     profile: {
       __typename?: 'Profile';
@@ -25588,6 +25574,10 @@ export type CreateSubspaceMutation = {
     };
     context: { __typename?: 'Context'; id: string; vision?: string | undefined };
     community: { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
+    settings: {
+      __typename?: 'SpaceSettings';
+      privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
+    };
   };
 };
 
@@ -26957,7 +26947,10 @@ export type SearchQuery = {
                 id: string;
                 type: SpaceType;
                 profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
-                authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
+                settings: {
+                  __typename?: 'SpaceSettings';
+                  privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
+                };
               }
             | undefined;
           space: {
@@ -26983,7 +26976,6 @@ export type SearchQuery = {
               visuals: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }>;
             };
             context: { __typename?: 'Context'; id: string; vision?: string | undefined };
-            authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
             community: {
               __typename?: 'Community';
               id: string;
@@ -26993,6 +26985,10 @@ export type SearchQuery = {
               __typename?: 'Account';
               id: string;
               license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
+            };
+            settings: {
+              __typename?: 'SpaceSettings';
+              privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
             };
           };
         }
@@ -27207,7 +27203,10 @@ export type SearchQuery = {
               license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
             };
             profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
-            authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
+            settings: {
+              __typename?: 'SpaceSettings';
+              privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
+            };
           };
           callout: {
             __typename?: 'Callout';
@@ -27271,7 +27270,10 @@ export type SearchResultPostFragment = {
       license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
     };
     profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
-    authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
+    settings: {
+      __typename?: 'SpaceSettings';
+      privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
+    };
   };
   callout: {
     __typename?: 'Callout';
@@ -27296,7 +27298,10 @@ export type PostParentFragment = {
       license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
     };
     profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
-    authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
+    settings: {
+      __typename?: 'SpaceSettings';
+      privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
+    };
   };
   callout: {
     __typename?: 'Callout';
@@ -27468,7 +27473,10 @@ export type SearchResultSpaceFragment = {
         id: string;
         type: SpaceType;
         profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
-        authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
+        settings: {
+          __typename?: 'SpaceSettings';
+          privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
+        };
       }
     | undefined;
   space: {
@@ -27494,12 +27502,15 @@ export type SearchResultSpaceFragment = {
       visuals: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }>;
     };
     context: { __typename?: 'Context'; id: string; vision?: string | undefined };
-    authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
     community: { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
     account: {
       __typename?: 'Account';
       id: string;
       license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
+    };
+    settings: {
+      __typename?: 'SpaceSettings';
+      privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
     };
   };
 };
@@ -28416,7 +28427,6 @@ export type DashboardSpacesQuery = {
         | undefined;
       cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
     };
-    authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
     metrics?: Array<{ __typename?: 'NVP'; name: string; value: string }> | undefined;
     community: { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
     context: { __typename?: 'Context'; id: string; vision?: string | undefined };
@@ -28424,6 +28434,10 @@ export type DashboardSpacesQuery = {
       __typename?: 'Account';
       id: string;
       license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
+    };
+    settings: {
+      __typename?: 'SpaceSettings';
+      privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
     };
   }>;
 };
@@ -28459,7 +28473,6 @@ export type DashboardSpacesPaginatedQuery = {
           | undefined;
         cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
       };
-      authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
       metrics?: Array<{ __typename?: 'NVP'; name: string; value: string }> | undefined;
       community: { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
       context: { __typename?: 'Context'; id: string; vision?: string | undefined };
@@ -28467,6 +28480,10 @@ export type DashboardSpacesPaginatedQuery = {
         __typename?: 'Account';
         id: string;
         license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
+      };
+      settings: {
+        __typename?: 'SpaceSettings';
+        privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
       };
     }>;
     pageInfo: {
@@ -30012,12 +30029,7 @@ export type SpaceExplorerSearchQuery = {
             id: string;
             type: SpaceType;
             authorization?:
-              | {
-                  __typename?: 'Authorization';
-                  id: string;
-                  anonymousReadAccess: boolean;
-                  myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                }
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
             profile: {
               __typename?: 'Profile';
@@ -30040,6 +30052,10 @@ export type SpaceExplorerSearchQuery = {
               id: string;
               myMembershipStatus?: CommunityMembershipStatus | undefined;
             };
+            settings: {
+              __typename?: 'SpaceSettings';
+              privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
+            };
           };
         }
       | { __typename?: 'SearchResultUser'; id: string; type: SearchResultType; terms: Array<string> }
@@ -30055,12 +30071,7 @@ export type SpaceExplorerSearchSpaceFragment = {
     id: string;
     type: SpaceType;
     authorization?:
-      | {
-          __typename?: 'Authorization';
-          id: string;
-          anonymousReadAccess: boolean;
-          myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-        }
+      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
     profile: {
       __typename?: 'Profile';
@@ -30079,6 +30090,10 @@ export type SpaceExplorerSearchSpaceFragment = {
       license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
     };
     community: { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
+    settings: {
+      __typename?: 'SpaceSettings';
+      privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
+    };
   };
 };
 
@@ -30110,14 +30125,13 @@ export type SpaceExplorerMemberSpacesQuery = {
       };
       context: { __typename?: 'Context'; id: string; vision?: string | undefined };
       community: { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
+      settings: {
+        __typename?: 'SpaceSettings';
+        privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
+      };
     }>;
     authorization?:
-      | {
-          __typename?: 'Authorization';
-          id: string;
-          anonymousReadAccess: boolean;
-          myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-        }
+      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
     profile: {
       __typename?: 'Profile';
@@ -30136,6 +30150,10 @@ export type SpaceExplorerMemberSpacesQuery = {
       license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
     };
     community: { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
+    settings: {
+      __typename?: 'SpaceSettings';
+      privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
+    };
   }>;
 };
 
@@ -30154,12 +30172,7 @@ export type SpaceExplorerAllSpacesQuery = {
       id: string;
       type: SpaceType;
       authorization?:
-        | {
-            __typename?: 'Authorization';
-            id: string;
-            anonymousReadAccess: boolean;
-            myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-          }
+        | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
         | undefined;
       profile: {
         __typename?: 'Profile';
@@ -30178,6 +30191,10 @@ export type SpaceExplorerAllSpacesQuery = {
         license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
       };
       community: { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
+      settings: {
+        __typename?: 'SpaceSettings';
+        privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
+      };
     }>;
     pageInfo: {
       __typename?: 'PageInfo';
@@ -30215,6 +30232,10 @@ export type SpaceExplorerSubspacesQuery = {
       };
       context: { __typename?: 'Context'; id: string; vision?: string | undefined };
       community: { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
+      settings: {
+        __typename?: 'SpaceSettings';
+        privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
+      };
     }>;
   }>;
 };
@@ -30224,12 +30245,7 @@ export type SpaceExplorerSpaceFragment = {
   id: string;
   type: SpaceType;
   authorization?:
-    | {
-        __typename?: 'Authorization';
-        id: string;
-        anonymousReadAccess: boolean;
-        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-      }
+    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
   profile: {
     __typename?: 'Profile';
@@ -30248,6 +30264,7 @@ export type SpaceExplorerSpaceFragment = {
     license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
   };
   community: { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
+  settings: { __typename?: 'SpaceSettings'; privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode } };
 };
 
 export type SpaceExplorerSubspaceFragment = {
@@ -30268,6 +30285,7 @@ export type SpaceExplorerSubspaceFragment = {
   };
   context: { __typename?: 'Context'; id: string; vision?: string | undefined };
   community: { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
+  settings: { __typename?: 'SpaceSettings'; privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode } };
 };
 
 export type SpaceExplorerWelcomeSpaceQueryVariables = Exact<{
