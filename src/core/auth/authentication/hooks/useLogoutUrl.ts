@@ -21,7 +21,8 @@ export const useLogoutUrl = () => {
       }
       setLogoutUrl(data.logout_url);
     } catch (error) {
-      setError(error.message ? error.message : t('kratos.errors.session.default'));
+      const message = error instanceof Error ? error.message : t('kratos.errors.session.default');
+      setError(new Error(message));
     } finally {
       setLoading(false);
     }

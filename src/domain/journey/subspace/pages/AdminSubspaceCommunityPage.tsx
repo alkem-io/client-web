@@ -10,7 +10,7 @@ import CommunityUsers from '../../../community/community/CommunityAdmin/Communit
 import useCommunityAdmin from '../../../community/community/CommunityAdmin/useCommunityAdmin';
 import { SettingsSection } from '../../../platform/admin/layout/EntitySettingsLayout/constants';
 import { SettingsPageProps } from '../../../platform/admin/layout/EntitySettingsLayout/types';
-import { useSubSpace } from '../hooks/useChallenge';
+import { useSubSpace } from '../hooks/useSubSpace';
 import SubspaceSettingsLayout from '../../../platform/admin/subspace/SubspaceSettingsLayout';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 import InnovationLibraryIcon from '../../../../main/topLevelPages/InnovationLibraryPage/InnovationLibraryIcon';

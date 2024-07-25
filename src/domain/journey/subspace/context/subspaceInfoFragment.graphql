@@ -33,7 +33,6 @@ fragment SubspaceInfo on Space {
   authorization {
     id
     myPrivileges
-    anonymousReadAccess
   }
   context {
     id

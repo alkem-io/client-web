@@ -42,7 +42,7 @@ export const useSetCharacterCount = () => {
 
 interface CharacterCountContainerProps {
   onChange?: (characterCount: number) => void;
-  children: ({ characterCount: number }) => ReactElement | null;
+  children: ({ characterCount }) => ReactElement | null;
 }
 
 export const CharacterCountContainer = ({ onChange, children }: CharacterCountContainerProps) => {

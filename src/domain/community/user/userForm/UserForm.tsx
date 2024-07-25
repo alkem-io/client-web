@@ -67,7 +67,6 @@ export const UserForm: FC<UserProps> = ({
     firstName,
     lastName,
     email,
-    gender,
     phone,
     profile: {
       id: profileId,
@@ -102,7 +101,6 @@ export const UserForm: FC<UserProps> = ({
     linkedin: linkedinRef?.uri || '',
     twitter: twitterRef?.uri || '',
     github: githubRef?.uri || '',
-    gender: gender || '',
     city: city || '',
     country: COUNTRIES.find(x => x.code === country) || null,
     phone: phone || '',

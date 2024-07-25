@@ -281,7 +281,7 @@ const CalloutSettingsContainer = ({
         onClose={() => setSaveAsTemplateDialogOpen(false)}
         onSubmit={handleSaveAsTemplate}
       />
-      {onCalloutDelete && (
+      {!!onCalloutDelete && (
         <CalloutEditDialog
           open={editDialogOpened}
           onClose={handleEditDialogClosed}

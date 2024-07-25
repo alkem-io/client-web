@@ -8,7 +8,6 @@ export interface UserModel {
   lastName: string;
   email: string;
   phone: string;
-  gender: string;
   agent?: {};
   profile: {
     id?: string;
@@ -46,7 +45,6 @@ export const defaultUser: UserModel = {
   lastName: '',
   email: '',
   phone: '',
-  gender: '',
   profile: {
     id: '',
     displayName: '',
@@ -82,7 +80,6 @@ export interface UserFormGenerated {
   phone: string;
   lastName: string;
   city: string;
-  gender: string;
   bio: string;
   profileId: string;
 }

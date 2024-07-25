@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Button, Dialog, DialogContent } from '@mui/material';
-import { useSubSpace } from '../../../journey/subspace/hooks/useChallenge';
+import { useSubSpace } from '../../../journey/subspace/hooks/useSubSpace';
 import { useSpace } from '../../../journey/space/SpaceContext/useSpace';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import { BlockTitle } from '../../../../core/ui/typography';
