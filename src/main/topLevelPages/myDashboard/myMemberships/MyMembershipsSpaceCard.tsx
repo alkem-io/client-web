@@ -40,10 +40,7 @@ const MyMembershipsSpaceCard = ({
   const [isExpanded, setIsExpanded] = useState(false);
   const toggleExpanded = () => setIsExpanded(wasExpanded => !wasExpanded);
 
-  const communityRoles = roles
-    ?.filter(role => VISIBLE_COMMUNITY_ROLES.includes(role))
-    .map(role => role.toLowerCase())
-    .sort();
+  const communityRoles = roles?.filter(role => VISIBLE_COMMUNITY_ROLES.includes(role)).sort();
 
   return (
     <>
@@ -66,12 +63,16 @@ const MyMembershipsSpaceCard = ({
             <BlockTitle sx={isMobile ? webkitLineClamp(2) : undefined}>{displayName}</BlockTitle>
             <BlockSectionTitle sx={isMobile ? webkitLineClamp(2) : undefined}>{tagline}</BlockSectionTitle>
             {isMobile && (
-              <Caption color="primary">{communityRoles?.map(role => t(`common.${role}` as const)).join(', ')}</Caption>
+              <Caption color="primary">
+                {communityRoles?.map(role => t(`common.enums.communityRole.${role}` as const)).join(', ')}
+              </Caption>
             )}
           </BadgeCardView>
           <Gutters flexDirection="row">
             {!isMobile && (
-              <Caption color="primary">{communityRoles?.map(role => t(`common.${role}` as const)).join(', ')}</Caption>
+              <Caption color="primary">
+                {communityRoles?.map(role => t(`common.enums.communityRole.${role}` as const)).join(', ')}
+              </Caption>
             )}
             <Button
               onClick={toggleExpanded}
