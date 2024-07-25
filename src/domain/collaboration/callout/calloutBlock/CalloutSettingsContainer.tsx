@@ -148,8 +148,8 @@ const CalloutSettingsContainer = ({
   };
 
   const [handleDelete, loadingDelete] = useLoadingState(async () => {
-    await onCalloutDelete?.(callout);
     setDeleteDialogOpen(false);
+    await onCalloutDelete?.(callout);
   });
 
   const [saveAsTemplateDialogOpen, setSaveAsTemplateDialogOpen] = useState(false);

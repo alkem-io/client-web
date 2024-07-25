@@ -22,6 +22,7 @@ import { NavigationState } from '../../../core/routing/ScrollToTop';
 import { useRouteResolver } from '../../../main/routing/resolvers/RouteResolver';
 import { getCalloutGroupNameValue } from '../callout/utils/getCalloutGroupValue';
 import useCanReadSpace from '../../journey/common/authorization/useCanReadSpace';
+import { CalloutDeleteType } from '../callout/edit/CalloutEditType';
 
 interface CalloutLocation {
   journeyTypeName: JourneyTypeName;
@@ -97,6 +98,16 @@ const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: Cal
 
   const backOrElse = useBackToPath();
 
+  const handleClose = () => {
+    backOrElse(parentPagePath);
+  };
+
+  const onDelete = async (callout: CalloutDeleteType) => {
+    // close the dialog optimistically before deleting to avoid useCalloutPageCalloutQuery refetch
+    handleClose();
+    await handleDelete(callout);
+  };
+
   const isSmallScreen = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
 
   const PageLayout = usePageLayoutByEntity(journeyTypeName);
@@ -129,10 +140,6 @@ const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: Cal
 
   const parentPagePath = typeof parentRoute === 'function' ? parentRoute(calloutGroupName) : parentRoute;
 
-  const handleClose = () => {
-    backOrElse(parentPagePath);
-  };
-
   if (isApolloForbiddenError(error)) {
     return (
       <>
@@ -163,7 +170,7 @@ const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: Cal
           onVisibilityChange={handleVisibilityChange}
           onCalloutEdit={handleEdit}
           onCalloutUpdate={refetchCalloutData}
-          onCalloutDelete={handleDelete}
+          onCalloutDelete={onDelete}
           onCollapse={handleClose}
           expanded
         />

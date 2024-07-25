@@ -3,6 +3,7 @@ import { useInView } from 'react-intersection-observer';
 import { useCalloutDetailsQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { SimpleContainerProps } from '../../../../core/container/SimpleContainer';
 import { TypedCallout, TypedCalloutDetails } from '../useCallouts/useCallouts';
+import { getCachedDeletedIDs } from '../edit/useCalloutEdit/useCalloutEdit';
 
 interface CalloutDetailsContainerProvided {
   ref: Ref<Element>;
@@ -21,11 +22,14 @@ const CalloutDetailsContainer = ({ callout, children }: CalloutDetailsContainerP
     triggerOnce: true,
   });
 
+  // fixes #6634
+  const deletedCalloutIDs = getCachedDeletedIDs();
+
   const { data, loading } = useCalloutDetailsQuery({
     variables: {
       calloutId: callout.id,
     },
-    skip: !inView,
+    skip: !inView || deletedCalloutIDs[callout.id],
   });
 
   const result: TypedCalloutDetails | undefined = useMemo(() => {
