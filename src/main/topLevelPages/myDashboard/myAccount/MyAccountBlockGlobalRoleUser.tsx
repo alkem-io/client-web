@@ -47,7 +47,7 @@ const MyAccountBlockGlobalRoleUser = ({
   return (
     <>
       <Gutters disablePadding disableGap>
-        <Caption>{t('pages.home.sections.myAccount.hostedSpaces')}</Caption>
+        <Caption marginBottom={gutters(0.5)}>{t('pages.home.sections.myAccount.hostedSpaces')}</Caption>
         {hostedSpace ? (
           <BadgeCardView
             variant="rounded"
@@ -78,7 +78,7 @@ const MyAccountBlockGlobalRoleUser = ({
         )}
       </Gutters>
       <Gutters disablePadding disableGap>
-        <Caption>{t('pages.home.sections.myAccount.virtualContributors')}</Caption>
+        <Caption marginBottom={gutters(0.5)}>{t('pages.home.sections.myAccount.virtualContributors')}</Caption>
         {hasVirtualCointributors ? (
           <>
             {visibleVCs?.map(vc => (
