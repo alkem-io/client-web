@@ -32,7 +32,7 @@ import { JourneyTypeName } from '../../../JourneyTypeName';
 import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
 import DeleteIcon from './icon/DeleteIcon';
 import SpaceProfileDeleteDialog from './SpaceProfileDeleteDialog';
-import { useSubSpace } from '../../../subspace/hooks/useChallenge';
+import { useSubSpace } from '../../../subspace/hooks/useSubSpace';
 import { useSpace } from '../../SpaceContext/useSpace';
 
 interface SpaceSettingsViewProps {
