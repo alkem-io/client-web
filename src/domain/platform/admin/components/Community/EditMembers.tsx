@@ -234,5 +234,3 @@ export const AvailableMembers = <Member extends Identifiable>({
     </>
   );
 };
-
-export default EditMembers;
