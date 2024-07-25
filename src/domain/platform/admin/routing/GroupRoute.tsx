@@ -1,15 +1,15 @@
 import React, { FC } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import GroupPage from '../components/Group/GroupPage';
-import { WithCommunity } from '../components/Community/CommunityTypes';
 import EditMembersPage from '../components/Group/EditMembersPage';
 import Loading from '../../../../core/ui/loading/Loading';
 import { GroupInfoFragment } from '../../../../core/apollo/generated/graphql-schema';
 import { Error404 } from '../../../../core/pages/Errors/Error404';
 
-interface Props extends WithCommunity {
+interface Props {
   group?: GroupInfoFragment;
   loading?: boolean;
+  parentCommunityId?: string;
 }
 
 export const GroupRoute: FC<Props> = ({ group, loading = false, parentCommunityId }) => {
