@@ -1,6 +1,6 @@
 import React, { FC, useMemo } from 'react';
 import { Grid, Typography } from '@mui/material';
-import { MetricItem } from './Metrics';
+import { MetricItem } from '../utils/useMetricsItems';
 import CircleTag from '../../../../core/ui/tags/CircleTag';
 import Skeleton from '@mui/material/Skeleton';
 

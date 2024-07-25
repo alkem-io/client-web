@@ -1,10 +1,11 @@
 import React, { FC } from 'react';
-import { WithCommunity } from '../../components/Community/CommunityTypes';
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import { useSpaceGroupQuery } from '../../../../../core/apollo/generated/apollo-hooks';
 import { GroupRoute } from '../../routing/GroupRoute';
 
-interface GroupRouteProps extends WithCommunity {}
+interface GroupRouteProps {
+  parentCommunityId: string | undefined;
+}
 
 export const SpaceGroupRoute: FC<GroupRouteProps> = ({ parentCommunityId }) => {
   const { groupId = '', spaceNameId = '' } = useUrlParams();

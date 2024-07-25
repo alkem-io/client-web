@@ -1,6 +1,6 @@
 import { ApolloError } from '@apollo/client';
 import React, { FC } from 'react';
-import useChallengeCreatedSubscription from '../hooks/useChallengeCreatedSubscription';
+import useSubSpaceCreatedSubscription from '../hooks/useSubSpaceCreatedSubscription';
 import { useSpaceSubspaceCardsQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
 import { SubspaceCardFragment } from '../../../../core/apollo/generated/graphql-schema';
@@ -27,7 +27,7 @@ export const SubspacesContainer: FC<SubspacesContainerProps> = ({ spaceId, child
     skip: !spaceId,
   });
 
-  useChallengeCreatedSubscription(data, data => data?.lookup.space, subscribeToMore);
+  useSubSpaceCreatedSubscription(data, data => data?.lookup.space, subscribeToMore);
 
   const subspaces = data?.lookup.space?.subspaces ?? [];
 
