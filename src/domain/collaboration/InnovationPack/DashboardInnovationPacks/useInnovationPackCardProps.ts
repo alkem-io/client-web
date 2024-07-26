@@ -2,7 +2,6 @@ import { InnovationPackCardFragment } from '../../../../core/apollo/generated/gr
 import { useMemo } from 'react';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 import { InnovationPackCardProps } from '../InnovationPackCard/InnovationPackCard';
-import { buildInnovationPackUrl } from '../urlBuilders';
 
 const useInnovationPackCardProps = (
   innovationPacks: InnovationPackCardFragment[] | undefined
@@ -15,14 +14,14 @@ const useInnovationPackCardProps = (
           displayName: innovationPack.profile.displayName,
           description: innovationPack.profile.description,
           tags: innovationPack.profile.tagset?.tags,
-          providerDisplayName: innovationPack.provider?.profile.displayName,
-          providerAvatarUri: innovationPack.provider?.profile.avatar?.uri,
+          providerDisplayName: innovationPack.provider.profile.displayName,
+          providerAvatarUri: innovationPack.provider.profile.avatar?.uri,
           whiteboardTemplatesCount: innovationPack.templates?.whiteboardTemplatesCount,
           postTemplatesCount: innovationPack.templates?.postTemplatesCount,
           innovationFlowTemplatesCount: innovationPack.templates?.innovationFlowTemplatesCount,
           calloutTemplatesCount: innovationPack.templates?.calloutTemplatesCount,
           communityGuidelinesTemplatesCount: innovationPack.templates?.communityGuidelinesTemplatesCount,
-          innovationPackUri: buildInnovationPackUrl(innovationPack.nameID),
+          innovationPackUri: innovationPack.profile.url,
         };
       }),
     [innovationPacks]
