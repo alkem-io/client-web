@@ -37,7 +37,7 @@ type MembershipTableItem = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   lifecycle?: any;
   email?: string;
-  createdDate: Date;
+  createdDate: Date | undefined;
   updatedDate?: Date;
   questions: {
     id: string;
@@ -189,7 +189,7 @@ const CreatePendingMembershipForPlatformInvitation = (invitation: AdminPlatformI
     displayName: invitation.email,
     url: '',
     email: invitation.email,
-    createdDate: new Date(invitation.createdDate),
+    createdDate: invitation.createdDate ? new Date(invitation.createdDate) : undefined,
     questions: [],
   };
   return result;
@@ -253,7 +253,7 @@ const CommunityApplications: FC<CommunityApplicationsProps> = ({
       minWidth: 200,
       type: 'date',
       renderHeader: () => <>{t('common.date')}</>,
-      renderCell: ({ row }: RenderParams) => formatDateTime(row.createdDate),
+      renderCell: ({ row }: RenderParams) => (row.createdDate ? formatDateTime(row.createdDate) : ''),
     },
     {
       field: 'state',
