@@ -1,5 +1,5 @@
 import React, { FC, useState } from 'react';
-import { useSubSpace } from '../hooks/useChallenge';
+import { useSubSpace } from '../hooks/useSubSpace';
 import AboutPageContainer from '../../common/AboutPageContainer/AboutPageContainer';
 import { useBackToStaticPath } from '../../../../core/routing/useBackToPath';
 import JourneyAboutDialog from '../../common/JourneyAboutDialog/JourneyAboutDialog';
@@ -8,7 +8,7 @@ import { Close } from '@mui/icons-material';
 import useSendMessageToCommunityLeads from '../../../community/CommunityLeads/useSendMessageToCommunityLeads';
 import EntityDashboardContributorsSection from '../../../community/community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';
 import ContributorsDialog from '../../../community/community/ContributorsDialog/ContributorsDialog';
-import ChallengeContributorsDialogContent from '../../../community/community/entities/ChallengeContributorsDialogContent';
+import SubspaceContributorsDialogContent from '../../../community/community/entities/SubspaceContributorsDialogContent';
 import SeeMore from '../../../../core/ui/content/SeeMore';
 import { useTranslation } from 'react-i18next';
 import { buildAboutUrl } from '../../../../main/routing/urlBuilders';
@@ -93,7 +93,7 @@ const SubspaceAboutPage: FC = () => {
       <ContributorsDialog
         open={isContributorsDialogOpen}
         onClose={() => setIsContributorsDialogOpen(false)}
-        dialogContent={ChallengeContributorsDialogContent}
+        dialogContent={SubspaceContributorsDialogContent}
       />
     </>
   );
