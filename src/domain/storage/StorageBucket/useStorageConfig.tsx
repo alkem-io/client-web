@@ -191,7 +191,7 @@ const useStorageConfig = ({ locationType, skip, ...options }: StorageConfigOptio
     userStorageConfigData?.user ??
     virtualContributorStorageConfigData?.virtualContributor ??
     organizationStorageConfigData?.organization ??
-    innovationPackStorageConfigData?.platform.library.innovationPack ??
+    innovationPackStorageConfigData?.lookup.innovationPack ??
     innovationHubStorageConfigData?.platform.innovationHub ??
     {};
 

@@ -1,39 +1,35 @@
-query InnovationPackProfilePage($innovationPackId: UUID_NAMEID!) {
-  platform {
-    id
-    library {
+query InnovationPackProfilePage($innovationPackId: UUID!) {
+  lookup {
+    innovationPack(ID: $innovationPackId) {
       id
-      innovationPack(ID: $innovationPackId) {
+      nameID
+      authorization {
         id
-        nameID
-        authorization {
-          id
-          myPrivileges
+        myPrivileges
+      }
+      provider {
+        ...InnovationPackProviderProfileWithAvatar
+      }
+      profile {
+        ...InnovationPackProfile
+        tagline
+      }
+      templates {
+        id
+        whiteboardTemplates {
+          ...WhiteboardTemplateCard
         }
-        provider {
-          ...InnovationPackProviderProfileWithAvatar
+        postTemplates {
+          ...PostTemplateCard
         }
-        profile {
-          ...InnovationPackProfile
-          tagline
+        innovationFlowTemplates {
+          ...InnovationFlowTemplateCard
         }
-        templates {
-          id
-          whiteboardTemplates {
-            ...WhiteboardTemplateCard
-          }
-          postTemplates {
-            ...PostTemplateCard
-          }
-          innovationFlowTemplates {
-            ...InnovationFlowTemplateCard
-          }
-          calloutTemplates {
-            ...CalloutTemplateCard
-          }
-          communityGuidelinesTemplates {
-            ...CommunityGuidelinesTemplateCard
-          }
+        calloutTemplates {
+          ...CalloutTemplateCard
+        }
+        communityGuidelinesTemplates {
+          ...CommunityGuidelinesTemplateCard
         }
       }
     }
