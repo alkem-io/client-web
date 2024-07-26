@@ -12,7 +12,7 @@ import { SpaceIcon } from '../../../../domain/journey/space/icon/SpaceIcon';
 import { Visual } from '../../../../domain/common/visual/Visual';
 import { CommunityRole } from '../../../../core/apollo/generated/graphql-schema';
 import Loading from '../../../../core/ui/loading/Loading';
-import MyMembershipsSpaceCard from './MyMembershipsSpaceCard';
+import ExpandableSpaceTree from './ExpandableSpaceTree';
 
 interface MyJourneysDialogProps {
   open: boolean;
@@ -36,7 +36,7 @@ export interface MembershipProps {
 }
 
 const MyMembershipsSpaceView = (space: MembershipProps) => (
-  <MyMembershipsSpaceCard
+  <ExpandableSpaceTree
     displayName={space.profile.displayName}
     tagline={space.profile.tagline ?? ''}
     avatar={space.profile.cardBanner?.uri}
@@ -59,7 +59,7 @@ const MyMembershipsDialog = ({ open, onClose }: MyJourneysDialogProps) => {
   const myTopLevelMemberships = useMemo(() => data?.me.spaceMemberships.filter(space => space?.level === 0), [data]);
 
   return (
-    <DialogWithGrid open={open} onClose={onClose} columns={12}>
+    <DialogWithGrid open={open} onClose={onClose} columns={8}>
       <DialogHeader icon={<SpaceIcon />} title={t('pages.home.sections.myMemberships.title')} onClose={onClose} />
       <DialogContent>
         {loading && <Loading />}

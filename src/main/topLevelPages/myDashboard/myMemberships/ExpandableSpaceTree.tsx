@@ -14,7 +14,7 @@ import { MembershipProps } from './MyMembershipsDialog';
 import { CommunityRole } from '../../../../core/apollo/generated/graphql-schema';
 import webkitLineClamp from '../../../../core/ui/utils/webkitLineClamp';
 
-interface MyMembershipsSpaceCardProps {
+interface ExpandableSpaceTreeProps {
   displayName: string;
   tagline?: string;
   avatar?: string;
@@ -26,7 +26,7 @@ interface MyMembershipsSpaceCardProps {
 
 const VISIBLE_COMMUNITY_ROLES = [CommunityRole.Admin, CommunityRole.Lead];
 
-const MyMembershipsSpaceCard = ({
+const ExpandableSpaceTree = ({
   displayName,
   tagline,
   avatar,
@@ -34,7 +34,7 @@ const MyMembershipsSpaceCard = ({
   roles,
   level,
   subspaces,
-}: MyMembershipsSpaceCardProps) => {
+}: ExpandableSpaceTreeProps) => {
   const { t } = useTranslation();
   const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
   const [isExpanded, setIsExpanded] = useState(false);
@@ -85,7 +85,7 @@ const MyMembershipsSpaceCard = ({
       </GridItem>
       {isExpanded &&
         subspaces?.map(subspace => (
-          <MyMembershipsSpaceCard
+          <ExpandableSpaceTree
             key={subspace.id}
             displayName={subspace.profile.displayName}
             tagline={subspace.profile.tagline}
@@ -100,4 +100,4 @@ const MyMembershipsSpaceCard = ({
   );
 };
 
-export default MyMembershipsSpaceCard;
+export default ExpandableSpaceTree;
