@@ -23360,6 +23360,13 @@ export const MyAccountDocument = gql`
       }
       user {
         id
+        agent {
+          id
+          credentials {
+            resourceID
+            type
+          }
+        }
         accounts {
           id
           virtualContributors {
