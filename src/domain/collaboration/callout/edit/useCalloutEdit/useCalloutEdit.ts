@@ -9,7 +9,6 @@ import { Callout, CalloutVisibility } from '../../../../../core/apollo/generated
 import { CalloutDeleteType, CalloutEditType } from '../CalloutEditType';
 import removeFromCache from '../../../../../core/apollo/utils/removeFromCache';
 import { useApolloClient } from '@apollo/client';
-import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 
 type UseCalloutEditReturnType = {
   handleVisibilityChange: (
@@ -21,23 +20,11 @@ type UseCalloutEditReturnType = {
   handleDelete: (callout: CalloutDeleteType) => Promise<void>;
 };
 
-export const DELETED_CALLOUTS_IDS_KEY = 'deletedCalloutIDs';
-
-const setDeletedCalloutID = (id: string) => {
-  localStorage.setItem(DELETED_CALLOUTS_IDS_KEY, JSON.stringify({ [id]: true }));
-};
-
-export const getCachedDeletedIDs = () => JSON.parse(localStorage.getItem(DELETED_CALLOUTS_IDS_KEY) || '{}');
-
-const deleteCachedCalloutIDs = () => localStorage.removeItem(DELETED_CALLOUTS_IDS_KEY);
-
 export const useCalloutEdit = (): UseCalloutEditReturnType => {
   const [updateCallout] = useUpdateCalloutMutation();
   const [updateCalloutVisibility] = useUpdateCalloutVisibilityMutation();
 
   const apolloClient = useApolloClient();
-
-  const notify = useNotification();
 
   const handleVisibilityChange = useCallback(
     async (calloutId: string, visibility: CalloutVisibility, sendNotification: boolean) => {
@@ -104,14 +91,10 @@ export const useCalloutEdit = (): UseCalloutEditReturnType => {
 
   const [deleteCallout] = useDeleteCalloutMutation({
     update: removeFromCache,
-    onCompleted: () => notify('Callout deleted successfully!', 'success'),
-    onError: deleteCachedCalloutIDs,
   });
 
   const handleDelete = useCallback(
     async (callout: CalloutDeleteType) => {
-      setDeletedCalloutID(callout.id);
-
       await deleteCallout({
         variables: { calloutId: callout.id },
       });
