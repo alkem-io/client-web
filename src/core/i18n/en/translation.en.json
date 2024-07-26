@@ -388,6 +388,11 @@
         "ARCHIVED": "Archived",
         "DEMO": "Demo"
       },
+      "searchVisibility": {
+        "ACCOUNT": "Account",
+        "HIDDEN": "Hidden",
+        "PUBLIC": "Public"
+      },
       "authorization-credentials": {
         "GLOBAL_ADMIN": {
           "name": "Global Admin",
@@ -1970,7 +1975,9 @@
       },
       "innovation-packs": {
         "fields": {
-          "provider": "Provider organization"
+          "provider": "Provider organization",
+          "listedInStore": "Listed in Store",
+          "searchVisibility": "Search Visibility"
         },
         "back-button": "All $t(common.innovation-packs)",
         "save-new-for-details": "Save the new Innovation Pack to edit the rest of the details",

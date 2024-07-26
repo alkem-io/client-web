@@ -68,7 +68,7 @@ const CalendarEventDetailContainer: FC<CalendarEventDetailContainerProps> = ({ e
   const creator = event?.createdBy;
   const creatorAvatar = creator?.profile.visual?.uri;
   const creatorName = creator?.profile.displayName;
-  const createdDate = event?.createdDate.toString();
+  const createdDate = event?.createdDate?.toString();
 
   const _messages = useMemo(() => event?.comments?.messages ?? [], [event?.comments?.messages]);
   const messages = useMemo<Message[]>(
