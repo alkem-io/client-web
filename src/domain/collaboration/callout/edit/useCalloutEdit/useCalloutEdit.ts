@@ -7,7 +7,6 @@ import {
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { Callout, CalloutVisibility } from '../../../../../core/apollo/generated/graphql-schema';
 import { CalloutDeleteType, CalloutEditType } from '../CalloutEditType';
-import removeFromCache from '../../../../../core/apollo/utils/removeFromCache';
 import { useApolloClient } from '@apollo/client';
 
 type UseCalloutEditReturnType = {
@@ -90,7 +89,7 @@ export const useCalloutEdit = (): UseCalloutEditReturnType => {
   );
 
   const [deleteCallout] = useDeleteCalloutMutation({
-    update: removeFromCache,
+    refetchQueries: ['Callouts'],
   });
 
   const handleDelete = useCallback(
