@@ -35,7 +35,6 @@ export interface SpacePlatformSettings {
 
 export interface AccountPlatformSettings {
   host: Host | undefined;
-  visibility: SpaceVisibility;
   activeLicensePlanIds: string[] | undefined;
 }
 
@@ -50,7 +49,7 @@ const SpaceListItem = ({
   spaceId,
   accountId,
   nameId,
-  account: { visibility, host, activeLicensePlanIds },
+  account: { host, activeLicensePlanIds },
   licensePlans,
   ...props
 }: SpaceListItemProps) => {
@@ -65,7 +64,6 @@ const SpaceListItem = ({
 
   const initialValues = {
     accountSettings: {
-      visibility,
       host,
     },
     platformSettings: {
@@ -79,14 +77,11 @@ const SpaceListItem = ({
   const [revokeLicensePlan] = useRevokeLicensePlanFromAccountMutation();
 
   const [handleSubmitAccountSettings, savingAccountSettings] = useLoadingState(
-    async ({ visibility, host }: Partial<AccountPlatformSettings>) => {
+    async ({ host }: Partial<AccountPlatformSettings>) => {
       await updateAccountSettings({
         variables: {
           accountId,
           hostId: host?.id,
-          license: {
-            visibility,
-          },
         },
       });
       setSettingsModalOpen(false);

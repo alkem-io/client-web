@@ -24,8 +24,7 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const { spaceNameId, license } = useSpace();
-  const spaceVisibility = license.visibility;
+  const { spaceNameId, visibility } = useSpace();
   const { subspaceId: challengeId, permissions } = useSubSpace();
   const { challengeNameId = '' } = useUrlParams();
   const { journeyId, journeyPath } = useRouteResolver();
@@ -79,7 +78,7 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
                 tags={subsubspace.profile.tagset?.tags!}
                 banner={subsubspace.profile.cardBanner}
                 journeyUri={subsubspace.profile.url}
-                spaceVisibility={spaceVisibility}
+                spaceVisibility={visibility}
                 member={subsubspace.community?.myMembershipStatus === CommunityMembershipStatus.Member}
               />
             )}

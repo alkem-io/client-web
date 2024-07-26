@@ -78,13 +78,7 @@ fragment PostParent on SearchResultPost {
   space {
     id
     type
-    account {
-      id
-      license {
-        id
-        visibility
-      }
-    }
+    visibility
     profile {
       id
       url
@@ -250,13 +244,7 @@ fragment SearchResultSpace on SearchResultSpace {
       id
       myMembershipStatus
     }
-    account {
-      id
-      license {
-        id
-        visibility
-      }
-    }
+    visibility
   }
 }
 

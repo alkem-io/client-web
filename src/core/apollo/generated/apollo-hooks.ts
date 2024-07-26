@@ -1975,12 +1975,9 @@ export const InnovationHubProfileFragmentDoc = gql`
 export const InnovationHubSpaceFragmentDoc = gql`
   fragment InnovationHubSpace on Space {
     id
+    visibility
     account {
       id
-      license {
-        id
-        visibility
-      }
       host {
         id
         profile {
@@ -2231,13 +2228,7 @@ export const SpaceCardFragmentDoc = gql`
       id
       vision
     }
-    account {
-      id
-      license {
-        id
-        visibility
-      }
-    }
+    visibility
   }
   ${TagsetDetailsFragmentDoc}
   ${VisualUriFragmentDoc}
@@ -2399,13 +2390,7 @@ export const SpaceInfoFragmentDoc = gql`
         myPrivileges
       }
     }
-    account {
-      id
-      license {
-        id
-        visibility
-      }
-    }
+    visibility
   }
   ${SpaceDetailsFragmentDoc}
 `;
@@ -2870,14 +2855,11 @@ export const AdminSpaceFragmentDoc = gql`
   fragment AdminSpace on Space {
     id
     nameID
+    visibility
     account {
       id
       subscriptions {
         name
-      }
-      license {
-        id
-        visibility
       }
       host {
         id
@@ -3273,13 +3255,7 @@ export const PostParentFragmentDoc = gql`
     space {
       id
       type
-      account {
-        id
-        license {
-          id
-          visibility
-        }
-      }
+      visibility
       profile {
         id
         url
@@ -3482,13 +3458,7 @@ export const SearchResultSpaceFragmentDoc = gql`
         id
         myMembershipStatus
       }
-      account {
-        id
-        license {
-          id
-          visibility
-        }
-      }
+      visibility
     }
   }
   ${TagsetDetailsFragmentDoc}
@@ -3776,13 +3746,7 @@ export const SpaceExplorerSpaceFragmentDoc = gql`
       id
       vision
     }
-    account {
-      id
-      license {
-        id
-        visibility
-      }
-    }
+    visibility
     community {
       id
       myMembershipStatus
@@ -18137,6 +18101,7 @@ export const SpaceAccountDocument = gql`
           id
           myPrivileges
         }
+        visibility
         account {
           id
           host {
@@ -18155,10 +18120,6 @@ export const SpaceAccountDocument = gql`
               }
               url
             }
-          }
-          license {
-            id
-            visibility
           }
           activeSubscription {
             name
@@ -19235,13 +19196,9 @@ export type RevokeLicensePlanFromAccountMutationOptions = Apollo.BaseMutationOpt
   SchemaTypes.RevokeLicensePlanFromAccountMutationVariables
 >;
 export const UpdateAccountPlatformSettingsDocument = gql`
-  mutation UpdateAccountPlatformSettings($accountId: UUID!, $hostId: UUID_NAMEID, $license: UpdateLicenseInput) {
-    updateAccountPlatformSettings(updateData: { accountID: $accountId, hostID: $hostId, license: $license }) {
+  mutation UpdateAccountPlatformSettings($accountId: UUID!, $hostId: UUID_NAMEID) {
+    updateAccountPlatformSettings(updateData: { accountID: $accountId, hostID: $hostId }) {
       id
-      license {
-        id
-        visibility
-      }
       host {
         id
       }
@@ -19268,7 +19225,6 @@ export type UpdateAccountPlatformSettingsMutationFn = Apollo.MutationFunction<
  *   variables: {
  *      accountId: // value for 'accountId'
  *      hostId: // value for 'hostId'
- *      license: // value for 'license'
  *   },
  * });
  */
@@ -22974,13 +22930,7 @@ export const SearchScopeDetailsSpaceDocument = gql`
           uri
         }
       }
-      account {
-        id
-        license {
-          id
-          visibility
-        }
-      }
+      visibility
     }
   }
 `;
@@ -23799,13 +23749,7 @@ export const MyMembershipsDocument = gql`
       spaceMemberships {
         id
         level
-        account {
-          id
-          license {
-            id
-            visibility
-          }
-        }
+        visibility
         metrics {
           name
           value

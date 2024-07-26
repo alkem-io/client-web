@@ -102,7 +102,7 @@ const MyMembershipsDialog = ({ open, onClose }: MyJourneysDialogProps) => {
                 journeyUri={space.profile.url}
                 tags={space.profile.tagset?.tags ?? []}
                 membersCount={getMetricCount(space.metrics, MetricType.Member)}
-                spaceVisibility={space.account.license.visibility}
+                spaceVisibility={space.visibility}
               />
               <GridItem columns={9}>
                 <Gutters row disablePadding flexGrow={1} flexWrap="wrap">

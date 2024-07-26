@@ -253,7 +253,7 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
                     t={t}
                     i18nKey="components.editSpaceForm.visibility"
                     values={{
-                      visibility: t(`common.enums.space-visibility.${space.account.license.visibility}` as const),
+                      visibility: t(`common.enums.space-visibility.${space.visibility}` as const),
                     }}
                     components={{ strong: <strong /> }}
                   />
