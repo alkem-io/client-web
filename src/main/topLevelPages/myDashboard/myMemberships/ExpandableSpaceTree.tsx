@@ -10,42 +10,66 @@ import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
 import Avatar from '../../../../core/ui/avatar/Avatar';
 import RouterLink from '../../../../core/ui/link/RouterLink';
 import { BlockSectionTitle, BlockTitle, Caption } from '../../../../core/ui/typography';
-import { MembershipProps } from './MyMembershipsDialog';
+import { MembershipProps, SubspaceAccessProps } from './MyMembershipsDialog';
 import { CommunityRole } from '../../../../core/apollo/generated/graphql-schema';
 import webkitLineClamp from '../../../../core/ui/utils/webkitLineClamp';
+import isJourneyMember from '../../../../domain/journey/utils/isJourneyMember';
+import { gutters } from '../../../../core/ui/grid/utils';
+import { useColumns } from '../../../../core/ui/grid/GridContext';
 
 interface ExpandableSpaceTreeProps {
-  displayName: string;
-  tagline?: string;
-  avatar?: string;
-  url: string;
-  roles?: CommunityRole[];
-  level: number;
-  subspaces: MembershipProps[] | undefined;
+  space: {
+    profile: {
+      displayName: string;
+      tagline?: string;
+      url: string;
+      cardBanner?: {
+        uri: string;
+      };
+    };
+    community?: {
+      myRoles?: CommunityRole[] | undefined;
+    };
+    level: number;
+  };
+  subspaces?: SubspaceAccessProps[] | undefined;
+  getMembershipWithDetails: (id: string) => MembershipProps;
 }
 
 const VISIBLE_COMMUNITY_ROLES = [CommunityRole.Admin, CommunityRole.Lead];
 
 const ExpandableSpaceTree = ({
-  displayName,
-  tagline,
-  avatar,
-  url,
-  roles,
-  level,
+  space: {
+    profile: { displayName, tagline, cardBanner: { uri: avatar } = { uri: '' }, url },
+    level,
+    community: { myRoles: roles } = { myRoles: [] },
+  },
   subspaces,
+  getMembershipWithDetails,
 }: ExpandableSpaceTreeProps) => {
   const { t } = useTranslation();
-  const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
+
   const [isExpanded, setIsExpanded] = useState(false);
   const toggleExpanded = () => setIsExpanded(wasExpanded => !wasExpanded);
 
   const communityRoles = roles?.filter(role => VISIBLE_COMMUNITY_ROLES.includes(role)).sort();
 
+  const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
+
+  const columns = useColumns();
+
+  const verticalOffset = level === 0 ? 1 : 0.5;
+
   return (
     <>
-      <GridItem columns={12}>
-        <Gutters flexDirection="row" paddingY={isMobile ? 0.5 : 0} paddingLeft={level * 5} paddingRight={0} marginY={0}>
+      <GridItem columns={columns}>
+        <Gutters
+          flexDirection="row"
+          paddingY={gutters(verticalOffset)}
+          paddingLeft={level * 5}
+          paddingRight={0}
+          marginY={0}
+        >
           <BadgeCardView
             visual={
               <Avatar
@@ -68,9 +92,9 @@ const ExpandableSpaceTree = ({
               </Caption>
             )}
           </BadgeCardView>
-          <Gutters flexDirection="row">
+          <Gutters flexDirection="row" disableGap padding={0}>
             {!isMobile && (
-              <Caption color="primary">
+              <Caption color="primary" display="flex" alignItems="center">
                 {communityRoles?.map(role => t(`common.enums.communityRole.${role}` as const)).join(', ')}
               </Caption>
             )}
@@ -87,13 +111,9 @@ const ExpandableSpaceTree = ({
         subspaces?.map(subspace => (
           <ExpandableSpaceTree
             key={subspace.id}
-            displayName={subspace.profile.displayName}
-            tagline={subspace.profile.tagline}
-            avatar={subspace.profile.cardBanner?.uri}
-            url={subspace.profile.url}
-            roles={subspace.community?.myRoles}
-            level={subspace.level}
-            subspaces={subspace.subspaces}
+            space={getMembershipWithDetails(subspace.id)}
+            subspaces={getMembershipWithDetails(subspace.id)?.subspaces?.filter(isJourneyMember)}
+            getMembershipWithDetails={getMembershipWithDetails}
           />
         ))}
     </>

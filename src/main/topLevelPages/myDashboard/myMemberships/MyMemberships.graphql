@@ -18,9 +18,6 @@ query MyMemberships {
       }
       subspaces {
         ...MyMembershipsSubspaceProfile
-        subspaces {
-          ...MyMembershipsSubspaceProfile
-        }
       }
     }
   }
@@ -42,9 +39,6 @@ fragment MyMembershipsSubspaceProfile on Space {
   authorization {
     id
     myPrivileges
-  }
-  profile {
-    ...MyMembershipsSpaceProfile
   }
   community {
     ...MyMembershipsChildJourneyCommunity

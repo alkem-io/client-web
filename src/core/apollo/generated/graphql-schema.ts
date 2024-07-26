@@ -30260,39 +30260,9 @@ export type MyMembershipsQuery = {
         __typename?: 'Space';
         id: string;
         level: number;
-        subspaces: Array<{
-          __typename?: 'Space';
-          id: string;
-          level: number;
-          authorization?:
-            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-            | undefined;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            url: string;
-            displayName: string;
-            tagline: string;
-            cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-          };
-          community: {
-            __typename?: 'Community';
-            id: string;
-            myMembershipStatus?: CommunityMembershipStatus | undefined;
-            myRoles: Array<CommunityRole>;
-          };
-        }>;
         authorization?:
           | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
           | undefined;
-        profile: {
-          __typename?: 'Profile';
-          id: string;
-          url: string;
-          displayName: string;
-          tagline: string;
-          cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-        };
         community: {
           __typename?: 'Community';
           id: string;
@@ -30320,14 +30290,6 @@ export type MyMembershipsSubspaceProfileFragment = {
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
-  profile: {
-    __typename?: 'Profile';
-    id: string;
-    url: string;
-    displayName: string;
-    tagline: string;
-    cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-  };
   community: {
     __typename?: 'Community';
     id: string;

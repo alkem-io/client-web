@@ -3662,14 +3662,10 @@ export const MyMembershipsSubspaceProfileFragmentDoc = gql`
       id
       myPrivileges
     }
-    profile {
-      ...MyMembershipsSpaceProfile
-    }
     community {
       ...MyMembershipsChildJourneyCommunity
     }
   }
-  ${MyMembershipsSpaceProfileFragmentDoc}
   ${MyMembershipsChildJourneyCommunityFragmentDoc}
 `;
 export const MyMembershipsChildJourneyProfileFragmentDoc = gql`
@@ -23445,9 +23441,6 @@ export const MyMembershipsDocument = gql`
         }
         subspaces {
           ...MyMembershipsSubspaceProfile
-          subspaces {
-            ...MyMembershipsSubspaceProfile
-          }
         }
       }
     }
