@@ -14,6 +14,7 @@ import {
   SearchResultType,
   SpaceExplorerSubspacesQuery,
   SpaceExplorerSearchSpaceFragment,
+  SpacePrivacyMode,
 } from '../../../core/apollo/generated/graphql-schema';
 import { TypedSearchResult } from '../../search/SearchView';
 import { ITEMS_LIMIT, SpacesExplorerMembershipFilter, SpaceWithParent } from './SpaceExplorerView';
@@ -198,7 +199,7 @@ const SpaceExplorerContainer = ({ searchTerms, children }: SpaceExplorerContaine
       return flattenedSpaces?.filter(space => space.community?.myMembershipStatus === CommunityMembershipStatus.Member);
     }
     if (membershipFilter === SpacesExplorerMembershipFilter.Public) {
-      return flattenedSpaces?.filter(space => space.authorization?.anonymousReadAccess);
+      return flattenedSpaces?.filter(space => space.settings.privacy?.mode === SpacePrivacyMode.Public);
     }
     return flattenedSpaces;
   }, [flattenedSpaces, membershipFilter, shouldSearch]);

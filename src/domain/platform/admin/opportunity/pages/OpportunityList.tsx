@@ -8,7 +8,7 @@ import SearchableList, { SearchableListItem } from '../../components/SearchableL
 import Loading from '../../../../../core/ui/loading/Loading';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import { useSpace } from '../../../../journey/space/SpaceContext/useSpace';
-import { useSubSpace } from '../../../../journey/subspace/hooks/useChallenge';
+import { useSubSpace } from '../../../../journey/subspace/hooks/useSubSpace';
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import { JourneyCreationDialog } from '../../../../shared/components/JorneyCreationDialog';
 import { CreateOpportunityForm } from '../../../../journey/opportunity/forms/CreateOpportunityForm';

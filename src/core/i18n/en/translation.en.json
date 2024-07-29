@@ -388,6 +388,11 @@
         "ARCHIVED": "Archived",
         "DEMO": "Demo"
       },
+      "searchVisibility": {
+        "ACCOUNT": "Account",
+        "HIDDEN": "Hidden",
+        "PUBLIC": "Public"
+      },
       "authorization-credentials": {
         "GLOBAL_ADMIN": {
           "name": "Global Admin",
@@ -1970,7 +1975,9 @@
       },
       "innovation-packs": {
         "fields": {
-          "provider": "Provider organization"
+          "provider": "Provider organization",
+          "listedInStore": "Listed in Store",
+          "searchVisibility": "Search Visibility"
         },
         "back-button": "All $t(common.innovation-packs)",
         "save-new-for-details": "Save the new Innovation Pack to edit the rest of the details",
@@ -2140,11 +2147,28 @@
         },
         "myAccount": {
           "title": "My Account",
-          "hostedSpaces": "My Hosted Spaces",
-          "virtualContributors": "My Virtual Contributors",
+          "hostedSpaces": "Space",
+          "virtualContributors": "Virtual Contributor(s)",
           "createSpaceButton": "🎉 Click here to start your own Space!",
-          "createVCButton": "Click here to create your Virtual Contributor!",
-          "createVCButtonDisabled": "You must create a space before you create a Virtual Contributor!"
+          "createVCButton": "Or start by creating your Virtual Contributor",
+          "createVCButtonDisabled": "You must create a space before you create a Virtual Contributor!",
+          "createYourVCButton": "🎉 Create your Virtual Contributor!",
+          "globalRoleUser": {
+            "createSpaceButton": "🎉 Create a Space and get started with Alkemio",
+            "createAnotherVCButton": "Create another Virtual Contributor"
+          },
+          "noGlobalRoleUser": {
+            "spaceSection": "You don’t host a Space yet. Click <pricing>here</pricing> to learn more about the different plans.",
+            "vcSectionLink": "Turn your knowledge into a Virtual Contributor powered by AI in your own space. Read more about Alkemio’s Virtual Contributor <vc>here</vc>.",
+            "vcSection": "Do you want to be part of the first group of people to test our Virtual Contributor?",
+            "joinButton": "Sign up and join the Early Access Program for free!",
+            "joinSection": "Do you want to be part of the first group of people to test our Virtual Contributor?",
+            "limitReached": "You've reached the maximum of 3 VCs"
+          },
+          "vcCampaignUser": {
+            "welcome": "Welcome to the Virtual Contributors - Early Access Program!",
+            "clickHere": "Click below to create your Virtual Contributor. Once finished, this block will give you access to both your Virtual Contributor and your Space in which you can interact with it. Enjoy!"
+          }
         },
         "myMemberships": {
           "title": "My Memberships",

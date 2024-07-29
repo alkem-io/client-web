@@ -12,10 +12,6 @@ fragment SpaceCard on Space {
       ...VisualUri
     }
   }
-  authorization {
-    id
-    anonymousReadAccess
-  }
   metrics {
     name
     value
@@ -27,6 +23,11 @@ fragment SpaceCard on Space {
   context {
     id
     vision
+  }
+  settings {
+    privacy {
+      mode
+    }
   }
   visibility
 }

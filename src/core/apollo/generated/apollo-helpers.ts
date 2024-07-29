@@ -12,6 +12,7 @@ export type AccountKeySpecifier = (
   | 'defaults'
   | 'host'
   | 'id'
+  | 'innovationPacks'
   | 'library'
   | 'licensePrivileges'
   | 'spaceID'
@@ -28,6 +29,7 @@ export type AccountFieldPolicy = {
   defaults?: FieldPolicy<any> | FieldReadFunction<any>;
   host?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  innovationPacks?: FieldPolicy<any> | FieldReadFunction<any>;
   library?: FieldPolicy<any> | FieldReadFunction<any>;
   licensePrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
   spaceID?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1481,9 +1483,11 @@ export type InnovationPackKeySpecifier = (
   | 'authorization'
   | 'createdDate'
   | 'id'
+  | 'listedInStore'
   | 'nameID'
   | 'profile'
   | 'provider'
+  | 'searchVisibility'
   | 'templates'
   | 'updatedDate'
   | InnovationPackKeySpecifier
@@ -1492,9 +1496,11 @@ export type InnovationPackFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  listedInStore?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   provider?: FieldPolicy<any> | FieldReadFunction<any>;
+  searchVisibility?: FieldPolicy<any> | FieldReadFunction<any>;
   templates?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -1532,9 +1538,7 @@ export type LibraryKeySpecifier = (
   | 'authorization'
   | 'createdDate'
   | 'id'
-  | 'innovationPack'
   | 'innovationPacks'
-  | 'storageAggregator'
   | 'updatedDate'
   | 'virtualContributors'
   | LibraryKeySpecifier
@@ -1543,11 +1547,24 @@ export type LibraryFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
-  innovationPack?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationPacks?: FieldPolicy<any> | FieldReadFunction<any>;
-  storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   virtualContributors?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type LicenseKeySpecifier = (
+  | 'authorization'
+  | 'createdDate'
+  | 'id'
+  | 'updatedDate'
+  | 'visibility'
+  | LicenseKeySpecifier
+)[];
+export type LicenseFieldPolicy = {
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  visibility?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type LicensePlanKeySpecifier = (
   | 'assignToNewOrganizationAccounts'
@@ -1688,6 +1705,10 @@ export type LocationFieldPolicy = {
   stateOrProvince?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type LookupByNameQueryResultsKeySpecifier = ('innovationPack' | LookupByNameQueryResultsKeySpecifier)[];
+export type LookupByNameQueryResultsFieldPolicy = {
+  innovationPack?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type LookupQueryResultsKeySpecifier = (
   | 'application'
   | 'authorizationPolicy'
@@ -1704,6 +1725,7 @@ export type LookupQueryResultsKeySpecifier = (
   | 'document'
   | 'innovationFlow'
   | 'innovationFlowTemplate'
+  | 'innovationPack'
   | 'invitation'
   | 'post'
   | 'profile'
@@ -1732,6 +1754,7 @@ export type LookupQueryResultsFieldPolicy = {
   document?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationFlow?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationFlowTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
+  innovationPack?: FieldPolicy<any> | FieldReadFunction<any>;
   invitation?: FieldPolicy<any> | FieldReadFunction<any>;
   post?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1851,7 +1874,7 @@ export type MutationKeySpecifier = (
   | 'createGroupOnOrganization'
   | 'createInnovationFlowTemplate'
   | 'createInnovationHub'
-  | 'createInnovationPackOnLibrary'
+  | 'createInnovationPack'
   | 'createLicensePlan'
   | 'createOrganization'
   | 'createPostTemplate'
@@ -2020,7 +2043,7 @@ export type MutationFieldPolicy = {
   createGroupOnOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   createInnovationFlowTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   createInnovationHub?: FieldPolicy<any> | FieldReadFunction<any>;
-  createInnovationPackOnLibrary?: FieldPolicy<any> | FieldReadFunction<any>;
+  createInnovationPack?: FieldPolicy<any> | FieldReadFunction<any>;
   createLicensePlan?: FieldPolicy<any> | FieldReadFunction<any>;
   createOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   createPostTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2521,6 +2544,7 @@ export type QueryKeySpecifier = (
   | 'askVirtualContributorQuestion'
   | 'getSupportedVerifiedCredentialMetadata'
   | 'lookup'
+  | 'lookupByName'
   | 'me'
   | 'organization'
   | 'organizations'
@@ -2557,6 +2581,7 @@ export type QueryFieldPolicy = {
   askVirtualContributorQuestion?: FieldPolicy<any> | FieldReadFunction<any>;
   getSupportedVerifiedCredentialMetadata?: FieldPolicy<any> | FieldReadFunction<any>;
   lookup?: FieldPolicy<any> | FieldReadFunction<any>;
+  lookupByName?: FieldPolicy<any> | FieldReadFunction<any>;
   me?: FieldPolicy<any> | FieldReadFunction<any>;
   organization?: FieldPolicy<any> | FieldReadFunction<any>;
   organizations?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2656,7 +2681,6 @@ export type RelayPaginatedSpaceKeySpecifier = (
   | 'subspaces'
   | 'type'
   | 'updatedDate'
-  | 'visibility'
   | RelayPaginatedSpaceKeySpecifier
 )[];
 export type RelayPaginatedSpaceFieldPolicy = {
@@ -2679,7 +2703,6 @@ export type RelayPaginatedSpaceFieldPolicy = {
   subspaces?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
-  visibility?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type RelayPaginatedSpaceEdgeKeySpecifier = ('node' | RelayPaginatedSpaceEdgeKeySpecifier)[];
 export type RelayPaginatedSpaceEdgeFieldPolicy = {
@@ -2950,7 +2973,6 @@ export type SpaceKeySpecifier = (
   | 'subspaces'
   | 'type'
   | 'updatedDate'
-  | 'visibility'
   | SpaceKeySpecifier
 )[];
 export type SpaceFieldPolicy = {
@@ -2973,7 +2995,6 @@ export type SpaceFieldPolicy = {
   subspaces?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
-  visibility?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type SpaceDefaultsKeySpecifier = (
   | 'authorization'
@@ -3923,6 +3944,10 @@ export type StrictTypedTypePolicies = {
   Location?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | LocationKeySpecifier | (() => undefined | LocationKeySpecifier);
     fields?: LocationFieldPolicy;
+  };
+  LookupByNameQueryResults?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | LookupByNameQueryResultsKeySpecifier | (() => undefined | LookupByNameQueryResultsKeySpecifier);
+    fields?: LookupByNameQueryResultsFieldPolicy;
   };
   LookupQueryResults?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | LookupQueryResultsKeySpecifier | (() => undefined | LookupQueryResultsKeySpecifier);

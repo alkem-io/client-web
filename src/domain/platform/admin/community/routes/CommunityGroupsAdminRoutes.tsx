@@ -1,12 +1,14 @@
 import React, { FC } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import { WithCommunity } from '../../components/Community/CommunityTypes';
 import { CreateCommunityGroup } from '../../components/Community/CreateCommunityGroup';
 import { Error404 } from '../../../../../core/pages/Errors/Error404';
 import { nameOfUrl } from '../../../../../main/routing/urlParams';
 import { SpaceGroupRoute } from '../../space/routing/SpaceGroupRoute';
 
-interface CommunityGroupsAdminRoutesProps extends WithCommunity {}
+interface CommunityGroupsAdminRoutesProps {
+  communityId?: string;
+  parentCommunityId?: string;
+}
 
 const CommunityGroupsAdminRoutes: FC<CommunityGroupsAdminRoutesProps> = ({ communityId, parentCommunityId }) => {
   return (

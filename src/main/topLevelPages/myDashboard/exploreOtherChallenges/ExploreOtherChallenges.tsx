@@ -10,6 +10,7 @@ import {
   CommunityMembershipStatus,
   DashboardSpacesPaginatedQuery,
   DashboardSpacesPaginatedQueryVariables,
+  SpacePrivacyMode,
   SpaceVisibility,
 } from '../../../../core/apollo/generated/graphql-schema';
 import FilterByTag from '../../../../domain/journey/space/FilterByTag/FilterByTag';
@@ -54,15 +55,17 @@ const ExploreOtherChallenges = () => {
   });
 
   const getSpaceCardProps: DashboardSpaceSectionProps<{
-    authorization?: {
-      anonymousReadAccess: boolean;
+    settings?: {
+      privacy?: {
+        mode: SpacePrivacyMode;
+      };
     };
     community?: {
       myMembershipStatus?: CommunityMembershipStatus;
     };
   }>['getSpaceCardProps'] = space => {
     return {
-      locked: !space.authorization?.anonymousReadAccess,
+      locked: space.settings?.privacy?.mode === SpacePrivacyMode.Private,
       member: space.community?.myMembershipStatus === CommunityMembershipStatus.Member,
     };
   };

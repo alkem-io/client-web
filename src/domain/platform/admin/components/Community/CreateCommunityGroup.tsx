@@ -5,9 +5,10 @@ import {
   useCreateGroupOnCommunityMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import CreateGroupForm from '../Common/CreateGroupForm';
-import { WithCommunity } from './CommunityTypes';
 
-interface CreateCommunityGroupProps extends WithCommunity {}
+interface CreateCommunityGroupProps {
+  communityId: string | undefined;
+}
 
 export const CreateCommunityGroup: FC<CreateCommunityGroupProps> = ({ communityId }) => {
   const navigate = useNavigate();

@@ -7,14 +7,14 @@ import NoOrganizations from '../CommunityContributors/NoOrganizations';
 import { ContributorsDialogContentProps } from '../ContributorsDialog/ContributorsDialog';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 
-const ChallengeContributorsDialogContent: FC<ContributorsDialogContentProps> = ({ dialogOpen }) => {
-  const { subSpaceId: challengeId } = useRouteResolver();
+const SubspaceContributorsDialogContent: FC<ContributorsDialogContentProps> = ({ dialogOpen }) => {
+  const { journeyId } = useRouteResolver();
 
   const { loading, data } = useSpaceCommunityContributorsQuery({
     variables: {
-      spaceId: challengeId!,
+      spaceId: journeyId!,
     },
-    skip: !dialogOpen || !challengeId,
+    skip: !dialogOpen || !journeyId,
   });
 
   const { memberUsers, memberOrganizations } = data?.lookup.space?.community ?? {};
@@ -31,4 +31,4 @@ const ChallengeContributorsDialogContent: FC<ContributorsDialogContentProps> = (
   );
 };
 
-export default ChallengeContributorsDialogContent;
+export default SubspaceContributorsDialogContent;

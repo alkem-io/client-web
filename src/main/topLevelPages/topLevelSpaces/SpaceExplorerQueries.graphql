@@ -57,7 +57,6 @@ fragment SpaceExplorerSpace on Space {
   id
   authorization {
     id
-    anonymousReadAccess
     myPrivileges
   }
   type
@@ -83,6 +82,11 @@ fragment SpaceExplorerSpace on Space {
   community {
     id
     myMembershipStatus
+  }
+  settings {
+    privacy {
+      mode
+    }
   }
 }
 
@@ -114,6 +118,11 @@ fragment SpaceExplorerSubspace on Space {
   community {
     id
     myMembershipStatus
+  }
+  settings {
+    privacy {
+      mode
+    }
   }
 }
 

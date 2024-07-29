@@ -3,7 +3,7 @@ import SubspaceSettingsLayout from '../../../../platform/admin/subspace/Subspace
 import { SettingsSection } from '../../../../platform/admin/layout/EntitySettingsLayout/constants';
 import { SettingsPageProps } from '../../../../platform/admin/layout/EntitySettingsLayout/types';
 import { Trans, useTranslation } from 'react-i18next';
-import { useSubSpace } from '../../hooks/useChallenge';
+import { useSubSpace } from '../../hooks/useSubSpace';
 import { CommunityMembershipPolicy, SpacePrivacyMode } from '../../../../../core/apollo/generated/graphql-schema';
 import {
   useSpaceSettingsQuery,

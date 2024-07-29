@@ -1,37 +1,32 @@
+import React, { useMemo } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
+import { DialogContent } from '@mui/material';
 import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
-import { Trans, useTranslation } from 'react-i18next';
 import Gutters from '../../../../core/ui/grid/Gutters';
-import { DialogContent } from '@mui/material';
 import { useMyMembershipsQuery } from '../../../../core/apollo/generated/apollo-hooks';
-import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
-import SpaceCard from '../../../../domain/journey/space/SpaceCard/SpaceCard';
-import getMetricCount from '../../../../domain/platform/metrics/utils/getMetricCount';
-import { MetricType } from '../../../../domain/platform/metrics/MetricType';
 import { Caption } from '../../../../core/ui/typography';
-import React, { useMemo } from 'react';
-import GridProvider from '../../../../core/ui/grid/GridProvider';
-import GridItem from '../../../../core/ui/grid/GridItem';
 import RouterLink from '../../../../core/ui/link/RouterLink';
 import useLandingUrl from '../../../landing/useLandingUrl';
 import { SpaceIcon } from '../../../../domain/journey/space/icon/SpaceIcon';
-import MyMembershipsSubSpace from './MyMembershipsSubSpace';
-import isJourneyMember from '../../../../domain/journey/utils/isJourneyMember';
 import { Visual } from '../../../../domain/common/visual/Visual';
 import {
   AuthorizationPrivilege,
   CommunityMembershipStatus,
   CommunityRole,
 } from '../../../../core/apollo/generated/graphql-schema';
-import { Identifiable } from '../../../../core/utils/Identifiable';
 import Loading from '../../../../core/ui/loading/Loading';
+import ExpandableSpaceTree from './ExpandableSpaceTree';
+import { Identifiable } from '../../../../core/utils/Identifiable';
+import { gutters } from '../../../../core/ui/grid/utils';
+import isJourneyMember from '../../../../domain/journey/utils/isJourneyMember';
 
 interface MyJourneysDialogProps {
   open: boolean;
   onClose: () => void;
 }
 
-interface SubspaceAccessProps extends Identifiable {
+export interface SubspaceAccessProps extends Identifiable {
   authorization?: {
     myPrivileges?: AuthorizationPrivilege[];
   };
@@ -42,6 +37,7 @@ interface SubspaceAccessProps extends Identifiable {
 }
 
 export interface MembershipProps {
+  id: string;
   profile: {
     url: string;
     displayName: string;
@@ -49,6 +45,7 @@ export interface MembershipProps {
     avatar?: Visual;
     cardBanner?: Visual;
   };
+  level: number;
   community?: {
     myRoles?: CommunityRole[];
   };
@@ -80,45 +77,19 @@ const MyMembershipsDialog = ({ open, onClose }: MyJourneysDialogProps) => {
   const getMembership = (id: string) => allMyMembershipsMap[id];
 
   return (
-    <DialogWithGrid open={open} onClose={onClose} columns={12}>
+    <DialogWithGrid open={open} onClose={onClose} columns={8}>
       <DialogHeader icon={<SpaceIcon />} title={t('pages.home.sections.myMemberships.title')} onClose={onClose} />
-      <DialogContent>
+      <DialogContent style={{ paddingTop: 0 }}>
         {loading && <Loading />}
-        <Gutters disablePadding>
+        <Gutters disablePadding disableGap>
           {myTopLevelMemberships?.map(space => (
-            <PageContentBlock
-              row
-              flexWrap="wrap"
-              sx={{
-                background: theme => theme.palette.background.default,
-                alignItems: 'start',
-              }}
-            >
-              <SpaceCard
-                banner={space.profile.cardBanner}
-                displayName={space.profile.displayName}
-                vision={space.context?.vision ?? ''}
-                tagline={space.profile.tagline}
-                journeyUri={space.profile.url}
-                tags={space.profile.tagset?.tags ?? []}
-                membersCount={getMetricCount(space.metrics, MetricType.Member)}
-                spaceVisibility={space.visibility}
-              />
-              <GridItem columns={9}>
-                <Gutters row disablePadding flexGrow={1} flexWrap="wrap">
-                  <GridProvider columns={8}>
-                    {space.subspaces?.filter(isJourneyMember).map(subspace => (
-                      <MyMembershipsSubSpace key={subspace.id} subspace={subspace} getMembership={getMembership} />
-                    ))}
-                    {!loading && !space.subspaces?.length && (
-                      <Caption alignSelf="center">{t('pages.home.sections.myMemberships.noChildMemberships')}</Caption>
-                    )}
-                  </GridProvider>
-                </Gutters>
-              </GridItem>
-            </PageContentBlock>
+            <ExpandableSpaceTree
+              space={space}
+              subspaces={space.subspaces?.filter(isJourneyMember)}
+              getMembershipWithDetails={getMembership}
+            />
           ))}
-          <Caption alignSelf="center">
+          <Caption alignSelf="center" paddingTop={gutters(0.5)}>
             <Trans
               i18nKey="pages.home.sections.myMemberships.seeMore"
               components={{
