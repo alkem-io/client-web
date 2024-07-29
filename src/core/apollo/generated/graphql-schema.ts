@@ -30229,6 +30229,11 @@ export type MyAccountQuery = {
       | {
           __typename?: 'User';
           id: string;
+          agent: {
+            __typename?: 'Agent';
+            id: string;
+            credentials?: Array<{ __typename?: 'Credential'; resourceID: string; type: CredentialType }> | undefined;
+          };
           accounts: Array<{
             __typename?: 'Account';
             id: string;
@@ -30265,20 +30270,19 @@ export type MyMembershipsQuery = {
         id: string;
         license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
       };
-      metrics?: Array<{ __typename?: 'NVP'; name: string; value: string }> | undefined;
-      context: { __typename?: 'Context'; id: string; vision?: string | undefined };
       profile: {
         __typename?: 'Profile';
         id: string;
         url: string;
         displayName: string;
         tagline: string;
-        tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
         cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
       };
+      community: { __typename?: 'Community'; myRoles: Array<CommunityRole> };
       subspaces: Array<{
         __typename?: 'Space';
         id: string;
+        level: number;
         authorization?:
           | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
           | undefined;
@@ -30290,6 +30294,30 @@ export type MyMembershipsQuery = {
         };
       }>;
     }>;
+  };
+};
+
+export type MyMembershipsSpaceProfileFragment = {
+  __typename?: 'Profile';
+  id: string;
+  url: string;
+  displayName: string;
+  tagline: string;
+  cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+};
+
+export type MyMembershipsSubspaceProfileFragment = {
+  __typename?: 'Space';
+  id: string;
+  level: number;
+  authorization?:
+    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+    | undefined;
+  community: {
+    __typename?: 'Community';
+    id: string;
+    myMembershipStatus?: CommunityMembershipStatus | undefined;
+    myRoles: Array<CommunityRole>;
   };
 };
 
