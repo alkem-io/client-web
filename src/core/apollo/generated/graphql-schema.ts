@@ -19390,6 +19390,21 @@ export type FullLocationFragment = {
   postalCode: string;
 };
 
+export type AccountsListQueryVariables = Exact<{ [key: string]: never }>;
+
+export type AccountsListQuery = {
+  __typename?: 'Query';
+  accounts: Array<{
+    __typename?: 'Account';
+    id: string;
+    host?:
+      | { __typename?: 'Organization'; id: string; profile: { __typename?: 'Profile'; displayName: string } }
+      | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; displayName: string } }
+      | { __typename?: 'VirtualContributor'; id: string; profile: { __typename?: 'Profile'; displayName: string } }
+      | undefined;
+  }>;
+};
+
 export type InnovationHubAvailableSpacesQueryVariables = Exact<{ [key: string]: never }>;
 
 export type InnovationHubAvailableSpacesQuery = {
@@ -19457,7 +19472,7 @@ export type AdminInnovationHubsListQuery = {
         id: string;
         nameID: string;
         subdomain: string;
-        profile: { __typename?: 'Profile'; id: string; displayName: string };
+        profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
       }>;
     };
   };
@@ -19553,6 +19568,27 @@ export type AdminInnovationHubQuery = {
                 }
               | undefined;
           };
+          account: {
+            __typename?: 'Account';
+            id: string;
+            host?:
+              | {
+                  __typename?: 'Organization';
+                  id: string;
+                  profile: { __typename?: 'Profile'; id: string; displayName: string };
+                }
+              | {
+                  __typename?: 'User';
+                  id: string;
+                  profile: { __typename?: 'Profile'; id: string; displayName: string };
+                }
+              | {
+                  __typename?: 'VirtualContributor';
+                  id: string;
+                  profile: { __typename?: 'Profile'; id: string; displayName: string };
+                }
+              | undefined;
+          };
           spaceListFilter?:
             | Array<{
                 __typename?: 'Space';
@@ -19625,6 +19661,23 @@ export type AdminInnovationHubFragment = {
         }
       | undefined;
   };
+  account: {
+    __typename?: 'Account';
+    id: string;
+    host?:
+      | {
+          __typename?: 'Organization';
+          id: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string };
+        }
+      | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+      | {
+          __typename?: 'VirtualContributor';
+          id: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string };
+        }
+      | undefined;
+  };
   spaceListFilter?:
     | Array<{
         __typename?: 'Space';
@@ -19693,6 +19746,23 @@ export type CreateInnovationHubMutation = {
             minHeight: number;
             minWidth: number;
             alternativeText?: string | undefined;
+          }
+        | undefined;
+    };
+    account: {
+      __typename?: 'Account';
+      id: string;
+      host?:
+        | {
+            __typename?: 'Organization';
+            id: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string };
+          }
+        | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+        | {
+            __typename?: 'VirtualContributor';
+            id: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string };
           }
         | undefined;
     };
@@ -19772,6 +19842,23 @@ export type UpdateInnovationHubMutation = {
           }
         | undefined;
     };
+    account: {
+      __typename?: 'Account';
+      id: string;
+      host?:
+        | {
+            __typename?: 'Organization';
+            id: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string };
+          }
+        | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+        | {
+            __typename?: 'VirtualContributor';
+            id: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string };
+          }
+        | undefined;
+    };
     spaceListFilter?:
       | Array<{
           __typename?: 'Space';
@@ -19802,6 +19889,16 @@ export type UpdateInnovationHubMutation = {
         }>
       | undefined;
   };
+};
+
+export type UpdateInnovationHubPlatformSettingsMutationVariables = Exact<{
+  innovationHubId: Scalars['UUID'];
+  accountId: Scalars['UUID'];
+}>;
+
+export type UpdateInnovationHubPlatformSettingsMutation = {
+  __typename?: 'Mutation';
+  updateInnovationHubPlatformSettings: { __typename?: 'InnovationHub'; id: string };
 };
 
 export type InnovationHubQueryVariables = Exact<{

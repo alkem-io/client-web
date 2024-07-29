@@ -1990,6 +1990,16 @@ export const AdminInnovationHubFragmentDoc = gql`
     profile {
       ...InnovationHubProfile
     }
+    account {
+      id
+      host {
+        id
+        profile {
+          id
+          displayName
+        }
+      }
+    }
     spaceListFilter {
       ...InnovationHubSpace
     }
@@ -15182,6 +15192,65 @@ export function refetchVcMembershipsQuery(variables: SchemaTypes.VcMembershipsQu
   return { query: VcMembershipsDocument, variables: variables };
 }
 
+export const AccountsListDocument = gql`
+  query AccountsList {
+    accounts {
+      id
+      host {
+        id
+        profile {
+          displayName
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useAccountsListQuery__
+ *
+ * To run a query within a React component, call `useAccountsListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAccountsListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAccountsListQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useAccountsListQuery(
+  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.AccountsListQuery, SchemaTypes.AccountsListQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.AccountsListQuery, SchemaTypes.AccountsListQueryVariables>(
+    AccountsListDocument,
+    options
+  );
+}
+
+export function useAccountsListLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.AccountsListQuery, SchemaTypes.AccountsListQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.AccountsListQuery, SchemaTypes.AccountsListQueryVariables>(
+    AccountsListDocument,
+    options
+  );
+}
+
+export type AccountsListQueryHookResult = ReturnType<typeof useAccountsListQuery>;
+export type AccountsListLazyQueryHookResult = ReturnType<typeof useAccountsListLazyQuery>;
+export type AccountsListQueryResult = Apollo.QueryResult<
+  SchemaTypes.AccountsListQuery,
+  SchemaTypes.AccountsListQueryVariables
+>;
+export function refetchAccountsListQuery(variables?: SchemaTypes.AccountsListQueryVariables) {
+  return { query: AccountsListDocument, variables: variables };
+}
+
 export const InnovationHubAvailableSpacesDocument = gql`
   query InnovationHubAvailableSpaces {
     spaces(filter: { visibilities: [ACTIVE, DEMO] }) {
@@ -15258,6 +15327,7 @@ export const AdminInnovationHubsListDocument = gql`
           profile {
             id
             displayName
+            url
           }
         }
       }
@@ -15525,6 +15595,58 @@ export type UpdateInnovationHubMutationResult = Apollo.MutationResult<SchemaType
 export type UpdateInnovationHubMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateInnovationHubMutation,
   SchemaTypes.UpdateInnovationHubMutationVariables
+>;
+export const UpdateInnovationHubPlatformSettingsDocument = gql`
+  mutation updateInnovationHubPlatformSettings($innovationHubId: UUID!, $accountId: UUID!) {
+    updateInnovationHubPlatformSettings(updateData: { ID: $innovationHubId, accountID: $accountId }) {
+      id
+    }
+  }
+`;
+export type UpdateInnovationHubPlatformSettingsMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateInnovationHubPlatformSettingsMutation,
+  SchemaTypes.UpdateInnovationHubPlatformSettingsMutationVariables
+>;
+
+/**
+ * __useUpdateInnovationHubPlatformSettingsMutation__
+ *
+ * To run a mutation, you first call `useUpdateInnovationHubPlatformSettingsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateInnovationHubPlatformSettingsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateInnovationHubPlatformSettingsMutation, { data, loading, error }] = useUpdateInnovationHubPlatformSettingsMutation({
+ *   variables: {
+ *      innovationHubId: // value for 'innovationHubId'
+ *      accountId: // value for 'accountId'
+ *   },
+ * });
+ */
+export function useUpdateInnovationHubPlatformSettingsMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateInnovationHubPlatformSettingsMutation,
+    SchemaTypes.UpdateInnovationHubPlatformSettingsMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.UpdateInnovationHubPlatformSettingsMutation,
+    SchemaTypes.UpdateInnovationHubPlatformSettingsMutationVariables
+  >(UpdateInnovationHubPlatformSettingsDocument, options);
+}
+
+export type UpdateInnovationHubPlatformSettingsMutationHookResult = ReturnType<
+  typeof useUpdateInnovationHubPlatformSettingsMutation
+>;
+export type UpdateInnovationHubPlatformSettingsMutationResult =
+  Apollo.MutationResult<SchemaTypes.UpdateInnovationHubPlatformSettingsMutation>;
+export type UpdateInnovationHubPlatformSettingsMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateInnovationHubPlatformSettingsMutation,
+  SchemaTypes.UpdateInnovationHubPlatformSettingsMutationVariables
 >;
 export const InnovationHubDocument = gql`
   query InnovationHub($subdomain: String) {

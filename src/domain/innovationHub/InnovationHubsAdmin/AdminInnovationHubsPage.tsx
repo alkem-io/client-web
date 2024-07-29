@@ -33,10 +33,10 @@ const AdminInnovationHubsPage: FC<AdminInnovationHubsPageProps> = () => {
     () =>
       sortBy(
         data?.platform.library.innovationHubs
-          .map(pack => ({
-            value: pack.profile.displayName,
-            url: pack.nameID,
-            ...pack,
+          .map(hub => ({
+            value: hub.profile.displayName,
+            url: hub.profile.url,
+            ...hub,
           }))
           .filter(ip => !searchTerm || ip.profile.displayName.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1),
         ip => ip.profile.displayName.toLowerCase() // sortBy
