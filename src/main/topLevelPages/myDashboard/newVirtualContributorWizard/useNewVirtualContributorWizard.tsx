@@ -190,7 +190,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
 
   const NewVirtualContributorWizard = useCallback(
     () => (
-      <Dialog open={dialogOpen}>
+      <Dialog open={dialogOpen} maxWidth="md">
         {step === 'step0' && (
           <CreateNewVirtualContributorStep0
             onClose={onDialogClose}

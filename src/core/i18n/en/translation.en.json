@@ -2940,10 +2940,14 @@
       "successMessage": "Virtual Contributor '{{virtualContributorName}}' created successfully"
     },
     "step0": {
-      "title": "Create a new Virtual Contributor",
-      "description": "Your Virtual Contributor is trained on a body of knowledge, using an Alkemio Subspace.",
-      "createSubspace": "Create a new Subspace",
-      "useExistingSubspace": "Use an existing Subspace",
+      "title": "Create a Virtual Contributor",
+      "profileDescription": "Choose a name, add an avatar and enrich your Virtual Contributors profile below. ",
+      "description": "A Virtual Contributor allows you to interact with AI on Alkemio. What do you want to make available through your Virtual Contributor?",
+      "createSpace": "Written knowledge in text and documents",
+      "useExistingSpace": "The content of a (Sub)Space on Alkemio",
+      "useExternalAI": "An external AI",
+      "ownAI": "AI Powered by Alkemio",
+      "externalAI": "External AI",
       "cannotCreateSubspace": "This option is disabled because we couldn't find any Space hosted by you. Please contact us for support.",
       "cannotUseExisting": "This option cannot be selected because your Space does not have a Subspace."
     },

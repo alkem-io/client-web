@@ -23,6 +23,7 @@ interface MarkdownFieldProps extends InputProps {
   counterDisabled?: boolean;
   helperText?: string;
   loading?: boolean; // TODO make use of
+  hideImageOptions?: boolean;
 }
 
 interface FilledDetectorProps {
@@ -57,6 +58,7 @@ export const FormikMarkdownField = ({
   maxLength,
   counterDisabled = false,
   helperText: validInputHelperText,
+  hideImageOptions,
 }: MarkdownFieldProps) => {
   const tErr = useValidationMessageTranslation();
   const { t } = useTranslation();
@@ -142,6 +144,7 @@ export const FormikMarkdownField = ({
           inputProps={{
             controlsVisible: 'always',
             maxLength,
+            hideImageOptions,
           }}
           readOnly={readOnly}
           placeholder={placeholder}
