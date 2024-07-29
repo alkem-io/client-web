@@ -3635,12 +3635,38 @@ export const RecentContributionsChildJourneyProfileFragmentDoc = gql`
   }
   ${RecentContributionsJourneyProfileFragmentDoc}
 `;
+export const MyMembershipsSpaceProfileFragmentDoc = gql`
+  fragment MyMembershipsSpaceProfile on Profile {
+    id
+    url
+    displayName
+    tagline
+    cardBanner: visual(type: CARD) {
+      ...VisualUri
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
 export const MyMembershipsChildJourneyCommunityFragmentDoc = gql`
   fragment MyMembershipsChildJourneyCommunity on Community {
     id
     myMembershipStatus
     myRoles
   }
+`;
+export const MyMembershipsSubspaceProfileFragmentDoc = gql`
+  fragment MyMembershipsSubspaceProfile on Space {
+    id
+    level
+    authorization {
+      id
+      myPrivileges
+    }
+    community {
+      ...MyMembershipsChildJourneyCommunity
+    }
+  }
+  ${MyMembershipsChildJourneyCommunityFragmentDoc}
 `;
 export const MyMembershipsChildJourneyProfileFragmentDoc = gql`
   fragment MyMembershipsChildJourneyProfile on Profile {
@@ -23414,42 +23440,20 @@ export const MyMembershipsDocument = gql`
             visibility
           }
         }
-        metrics {
-          name
-          value
-        }
-        context {
-          id
-          vision
-        }
         profile {
-          id
-          url
-          displayName
-          tagline
-          tagset {
-            id
-            tags
-          }
-          cardBanner: visual(type: CARD) {
-            ...VisualUri
-          }
+          ...MyMembershipsSpaceProfile
+        }
+        community {
+          myRoles
         }
         subspaces {
-          id
-          authorization {
-            id
-            myPrivileges
-          }
-          community {
-            ...MyMembershipsChildJourneyCommunity
-          }
+          ...MyMembershipsSubspaceProfile
         }
       }
     }
   }
-  ${VisualUriFragmentDoc}
-  ${MyMembershipsChildJourneyCommunityFragmentDoc}
+  ${MyMembershipsSpaceProfileFragmentDoc}
+  ${MyMembershipsSubspaceProfileFragmentDoc}
 `;
 
 /**
