@@ -50,6 +50,8 @@ export type Account = {
   host?: Maybe<Contributor>;
   /** The ID of the entity */
   id: Scalars['UUID'];
+  /** The InnovationHubs for this Account. */
+  innovationHubs: Array<InnovationHub>;
   /** The InnovationPacks for this Account. */
   innovationPacks: Array<InnovationPack>;
   /** The Library in use by this Account */
@@ -1789,9 +1791,8 @@ export type CreateInnovationFlowTemplateOnTemplatesSetInput = {
   visualUri?: InputMaybe<Scalars['String']>;
 };
 
-export type CreateInnovationHubInput = {
-  /** Account ID, associated with the Innovation Hub. */
-  accountID?: InputMaybe<Scalars['UUID']>;
+export type CreateInnovationHubOnAccountInput = {
+  accountID: Scalars['UUID'];
   /** A readable identifier, unique within the containing scope. */
   nameID?: InputMaybe<Scalars['NameID']>;
   profileData: CreateProfileInput;
@@ -2493,10 +2494,14 @@ export type InnovationHub = {
   createdDate?: Maybe<Scalars['DateTime']>;
   /** The ID of the entity */
   id: Scalars['UUID'];
+  /** Flag to control if this InnovationHub is listed in the platform store. */
+  listedInStore: Scalars['Boolean'];
   /** A name identifier of the entity, unique within a given scope. */
   nameID: Scalars['NameID'];
   /** The Innovation Hub profile. */
   profile: Profile;
+  /** Visibility of the InnovationHub in searches. */
+  searchVisibility: SearchVisibility;
   spaceListFilter?: Maybe<Array<Space>>;
   /** If defined, what type of visibility to filter the Spaces on. You can have only one type of filter active at any given time. */
   spaceVisibilityFilter?: Maybe<SpaceVisibility>;
@@ -2591,6 +2596,8 @@ export type Library = {
   createdDate?: Maybe<Scalars['DateTime']>;
   /** The ID of the entity */
   id: Scalars['UUID'];
+  /** The InnovationHub listed on this platform */
+  innovationHubs: Array<InnovationHub>;
   /** The Innovation Packs in the platform Innovation Library. */
   innovationPacks: Array<InnovationPack>;
   /** The date at which the entity was last updated. */
@@ -2803,6 +2810,8 @@ export type LookupQueryResults = {
   innovationFlow?: Maybe<InnovationFlow>;
   /** Lookup the specified InnovationFlow Template */
   innovationFlowTemplate?: Maybe<InnovationFlowTemplate>;
+  /** Lookup the specified InnovationHub */
+  innovationHub?: Maybe<InnovationHub>;
   /** Lookup the specified InnovationPack */
   innovationPack?: Maybe<InnovationPack>;
   /** Lookup the specified Invitation */
@@ -2885,6 +2894,10 @@ export type LookupQueryResultsInnovationFlowArgs = {
 };
 
 export type LookupQueryResultsInnovationFlowTemplateArgs = {
+  ID: Scalars['UUID'];
+};
+
+export type LookupQueryResultsInnovationHubArgs = {
   ID: Scalars['UUID'];
 };
 
@@ -3530,7 +3543,7 @@ export type MutationCreateInnovationFlowTemplateArgs = {
 };
 
 export type MutationCreateInnovationHubArgs = {
-  createData: CreateInnovationHubInput;
+  createData: CreateInnovationHubOnAccountInput;
 };
 
 export type MutationCreateInnovationPackArgs = {
@@ -4194,10 +4207,8 @@ export type Platform = {
   forum: Forum;
   /** The ID of the entity */
   id: Scalars['UUID'];
-  /** Details about an Innovation Hubs on the platform. If the arguments are omitted, the current Innovation Hub you are in will be returned. */
+  /** Details about the current Innovation Hub you are in. */
   innovationHub?: Maybe<InnovationHub>;
-  /** List of Innovation Hubs on the platform */
-  innovationHubs: Array<InnovationHub>;
   /** The latest release discussion. */
   latestReleaseDiscussion?: Maybe<LatestReleaseDiscussion>;
   /** The Innovation Library for the platform */
@@ -5892,10 +5903,14 @@ export type UpdateInnovationFlowTemplateInput = {
 
 export type UpdateInnovationHubInput = {
   ID: Scalars['UUID'];
+  /** Flag to control the visibility of the InnovationHub in the platform store. */
+  listedInStore?: InputMaybe<Scalars['Boolean']>;
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
   nameID?: InputMaybe<Scalars['NameID']>;
   /** The Profile of this entity. */
   profileData?: InputMaybe<UpdateProfileInput>;
+  /** Visibility of the InnovationHub in searches. */
+  searchVisibility?: InputMaybe<SearchVisibility>;
   /** A list of Spaces to include in this Innovation Hub. Only valid when type 'list' is used. */
   spaceListFilter?: InputMaybe<Array<Scalars['UUID_NAMEID']>>;
   /** Spaces with which visibility this Innovation Hub will display. Only valid when type 'visibility' is used. */
@@ -19375,6 +19390,21 @@ export type FullLocationFragment = {
   postalCode: string;
 };
 
+export type AccountsListQueryVariables = Exact<{ [key: string]: never }>;
+
+export type AccountsListQuery = {
+  __typename?: 'Query';
+  accounts: Array<{
+    __typename?: 'Account';
+    id: string;
+    host?:
+      | { __typename?: 'Organization'; id: string; profile: { __typename?: 'Profile'; displayName: string } }
+      | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; displayName: string } }
+      | { __typename?: 'VirtualContributor'; id: string; profile: { __typename?: 'Profile'; displayName: string } }
+      | undefined;
+  }>;
+};
+
 export type InnovationHubAvailableSpacesQueryVariables = Exact<{ [key: string]: never }>;
 
 export type InnovationHubAvailableSpacesQuery = {
@@ -19435,13 +19465,16 @@ export type AdminInnovationHubsListQuery = {
   platform: {
     __typename?: 'Platform';
     id: string;
-    innovationHubs: Array<{
-      __typename?: 'InnovationHub';
-      id: string;
-      nameID: string;
-      subdomain: string;
-      profile: { __typename?: 'Profile'; id: string; displayName: string };
-    }>;
+    library: {
+      __typename?: 'Library';
+      innovationHubs: Array<{
+        __typename?: 'InnovationHub';
+        id: string;
+        nameID: string;
+        subdomain: string;
+        profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+      }>;
+    };
   };
 };
 
@@ -19535,6 +19568,27 @@ export type AdminInnovationHubQuery = {
                 }
               | undefined;
           };
+          account: {
+            __typename?: 'Account';
+            id: string;
+            host?:
+              | {
+                  __typename?: 'Organization';
+                  id: string;
+                  profile: { __typename?: 'Profile'; id: string; displayName: string };
+                }
+              | {
+                  __typename?: 'User';
+                  id: string;
+                  profile: { __typename?: 'Profile'; id: string; displayName: string };
+                }
+              | {
+                  __typename?: 'VirtualContributor';
+                  id: string;
+                  profile: { __typename?: 'Profile'; id: string; displayName: string };
+                }
+              | undefined;
+          };
           spaceListFilter?:
             | Array<{
                 __typename?: 'Space';
@@ -19607,6 +19661,23 @@ export type AdminInnovationHubFragment = {
         }
       | undefined;
   };
+  account: {
+    __typename?: 'Account';
+    id: string;
+    host?:
+      | {
+          __typename?: 'Organization';
+          id: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string };
+        }
+      | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+      | {
+          __typename?: 'VirtualContributor';
+          id: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string };
+        }
+      | undefined;
+  };
   spaceListFilter?:
     | Array<{
         __typename?: 'Space';
@@ -19635,7 +19706,7 @@ export type AdminInnovationHubFragment = {
 };
 
 export type CreateInnovationHubMutationVariables = Exact<{
-  hubData: CreateInnovationHubInput;
+  hubData: CreateInnovationHubOnAccountInput;
 }>;
 
 export type CreateInnovationHubMutation = {
@@ -19675,6 +19746,23 @@ export type CreateInnovationHubMutation = {
             minHeight: number;
             minWidth: number;
             alternativeText?: string | undefined;
+          }
+        | undefined;
+    };
+    account: {
+      __typename?: 'Account';
+      id: string;
+      host?:
+        | {
+            __typename?: 'Organization';
+            id: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string };
+          }
+        | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+        | {
+            __typename?: 'VirtualContributor';
+            id: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string };
           }
         | undefined;
     };
@@ -19754,6 +19842,23 @@ export type UpdateInnovationHubMutation = {
           }
         | undefined;
     };
+    account: {
+      __typename?: 'Account';
+      id: string;
+      host?:
+        | {
+            __typename?: 'Organization';
+            id: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string };
+          }
+        | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+        | {
+            __typename?: 'VirtualContributor';
+            id: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string };
+          }
+        | undefined;
+    };
     spaceListFilter?:
       | Array<{
           __typename?: 'Space';
@@ -19784,6 +19889,16 @@ export type UpdateInnovationHubMutation = {
         }>
       | undefined;
   };
+};
+
+export type UpdateInnovationHubPlatformSettingsMutationVariables = Exact<{
+  innovationHubId: Scalars['UUID'];
+  accountId: Scalars['UUID'];
+}>;
+
+export type UpdateInnovationHubPlatformSettingsMutation = {
+  __typename?: 'Mutation';
+  updateInnovationHubPlatformSettings: { __typename?: 'InnovationHub'; id: string };
 };
 
 export type InnovationHubQueryVariables = Exact<{
