@@ -1985,7 +1985,7 @@
       },
       "innovationHubs": {
         "fields": {
-          "host": "Host Organization",
+          "host": "Host Account",
           "subdomain": "Subdomain"
         },
         "saveForMoreDetails": "Save the new $t(common.innovation-hub) to edit the rest of the details",

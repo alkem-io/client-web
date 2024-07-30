@@ -4,9 +4,10 @@ import { useTranslation } from 'react-i18next';
 import { useNotification } from '../../../core/ui/notifications/useNotification';
 import { useUrlParams } from '../../../core/routing/useUrlParams';
 import {
+  useAccountsListQuery,
   useAdminInnovationHubQuery,
-  useOrganizationsListQuery,
   useUpdateInnovationHubMutation,
+  useUpdateInnovationHubPlatformSettingsMutation,
 } from '../../../core/apollo/generated/apollo-hooks';
 import InnovationHubForm, { InnovationHubFormValues } from './InnovationHubForm';
 import { StorageConfigContextProvider } from '../../storage/StorageBucket/StorageConfigContext';
@@ -37,22 +38,33 @@ const AdminInnovationHubPage: FC<AdminInnovationHubPageProps> = () => {
 
   const innovationHub = data?.platform.innovationHub;
 
-  const { data: organizationsList, loading: loadingOrganizations } = useOrganizationsListQuery();
-  const organizations = useMemo(
+  const { data: accountsList, loading: loadingAccounts } = useAccountsListQuery();
+  const accounts = useMemo(
     () =>
       sortBy(
-        organizationsList?.organizations.map(e => ({ id: e.id, name: e.profile.displayName })) || [],
-        org => org.name
+        accountsList?.accounts.map(acc => ({ id: acc.id, name: acc.host?.profile.displayName ?? acc.id })) || [],
+        acc => acc.name
       ),
-    [organizationsList]
+    [accountsList]
   );
 
   const [updateInnovationHub, { loading: updating }] = useUpdateInnovationHubMutation();
+  const [updateInnovationHubPlatformSettings, { loading: updatingPlatformSettings }] =
+    useUpdateInnovationHubPlatformSettingsMutation();
 
   const handleSubmit = async (formData: InnovationHubFormValues) => {
     if (!innovationHub?.id) {
       return;
     }
+    if (innovationHub.account.id !== formData.accountId) {
+      await updateInnovationHubPlatformSettings({
+        variables: {
+          innovationHubId: innovationHub.id,
+          accountId: formData.accountId,
+        },
+      });
+    }
+
     const { data } = await updateInnovationHub({
       variables: {
         hubData: {
@@ -98,7 +110,7 @@ const AdminInnovationHubPage: FC<AdminInnovationHubPageProps> = () => {
     }
   };
 
-  const isLoading = loading || loadingOrganizations || updating;
+  const isLoading = loading || loadingAccounts || updating || updatingPlatformSettings;
 
   return (
     <AdminLayout currentTab={AdminSection.InnovationHubs}>
@@ -111,8 +123,9 @@ const AdminInnovationHubPage: FC<AdminInnovationHubPageProps> = () => {
             <InnovationHubForm
               nameID={innovationHub?.nameID}
               profile={innovationHub?.profile}
+              accountId={innovationHub?.account.id}
               subdomain={innovationHub?.subdomain}
-              organizations={organizations}
+              accounts={accounts}
               onSubmit={handleSubmit}
               loading={isLoading}
             />
