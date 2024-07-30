@@ -6,6 +6,7 @@ import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import { useTranslation } from 'react-i18next';
 import { SpaceVisibility } from '../../../../../core/apollo/generated/graphql-schema';
 import {
+  refetchAdminSpacesListQuery,
   useAssignLicensePlanToAccountMutation,
   useRevokeLicensePlanFromAccountMutation,
   useUpdateAccountPlatformSettingsMutation,
@@ -52,6 +53,7 @@ const SpaceListItem = ({
   nameId,
   account: { host, activeLicensePlanIds },
   licensePlans,
+  visibility,
   ...props
 }: SpaceListItemProps) => {
   const [isSettingsModalOpen, setSettingsModalOpen] = useState(false);
@@ -65,7 +67,7 @@ const SpaceListItem = ({
   const initialValues = {
     host,
     nameId,
-    visibility: props.visibility,
+    visibility,
   };
 
   const [updateAccountSettings] = useUpdateAccountPlatformSettingsMutation();
@@ -87,6 +89,8 @@ const SpaceListItem = ({
           nameId: nameId!,
           visibility: visibility!,
         },
+        refetchQueries: [refetchAdminSpacesListQuery()],
+        awaitRefetchQueries: true,
       });
       setSettingsModalOpen(false);
     }
