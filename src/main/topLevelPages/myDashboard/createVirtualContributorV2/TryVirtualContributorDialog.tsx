@@ -38,7 +38,7 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
   onClose,
 }) => {
   const { t } = useTranslation();
-  const [postCreationLoading, setPostCreationLoading] = useState(false);
+  const [demoCalloutCreationLoading, setDemoCalloutCreationLoading] = useState(false);
   const [hasError, setHasError] = useState(false);
   const [calloutId, setCalloutId] = useState<string | undefined>(undefined);
 
@@ -108,21 +108,21 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
     } as unknown as TypedCalloutDetails;
   }, [callout]);
 
-  const createCalloutHook = useCalloutCreation(options);
+  const { handleCreateCallout, canCreateCallout } = useCalloutCreation(options);
 
   useEffect(() => {
     const createCallout = async () => {
       try {
-        const callout = await createCalloutHook.handleCreateCallout(calloutDetails);
-        setPostCreationLoading(false);
+        const callout = await handleCreateCallout(calloutDetails);
+        setDemoCalloutCreationLoading(false);
         setCalloutId(callout?.id);
       } catch (e) {
         setHasError(true);
       }
     };
 
-    spaceId && open && createCallout();
-  }, [spaceId, open]);
+    spaceId && open && canCreateCallout && createCallout();
+  }, [spaceId, open, canCreateCallout]);
 
   if (calloutError || hasError) {
     return null;
@@ -132,7 +132,7 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
     <DialogWithGrid open={open} onClose={handleClose} columns={8}>
       <DialogHeader title={t('createVirtualContributorV2.trySection.title')} onClose={handleClose} />
       <DialogContent>
-        {postCreationLoading && isCalloutLoading ? (
+        {demoCalloutCreationLoading && isCalloutLoading ? (
           <Loading />
         ) : (
           <Gutters disablePadding>

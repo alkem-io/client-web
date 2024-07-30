@@ -49,6 +49,7 @@ export interface CalloutCreationUtils {
     callout: CalloutCreationType
   ) => Promise<CreateCalloutMutation['createCalloutOnCollaboration'] | undefined>;
   loading: boolean;
+  canCreateCallout: boolean;
 }
 
 export const useCalloutCreation = ({
@@ -57,7 +58,7 @@ export const useCalloutCreation = ({
 }: CalloutCreationParams): CalloutCreationUtils => {
   const [isCalloutCreationDialogOpen, setIsCalloutCreationDialogOpen] = useState(initialOpened);
   const [isCreating, setIsCreating] = useState(false);
-  const { collaborationId, loading } = useCollaborationAuthorization({ journeyId });
+  const { collaborationId, canCreateCallout, loading } = useCollaborationAuthorization({ journeyId });
 
   const [createCallout] = useCreateCalloutMutation({
     update: (cache, { data }) => {
@@ -131,5 +132,6 @@ export const useCalloutCreation = ({
     handleCreateCalloutClosed,
     handleCreateCallout,
     loading: loading || isCreating,
+    canCreateCallout: canCreateCallout && !loading,
   };
 };
