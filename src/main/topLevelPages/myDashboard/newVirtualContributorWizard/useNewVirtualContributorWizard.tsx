@@ -13,7 +13,7 @@ import {
   NewVirtualContributorMySpacesQuery,
   SpaceType,
 } from '../../../../core/apollo/generated/graphql-schema';
-import CreateNewVirtualContributorStep0 from './CreateNewVirtualContributor.step0';
+import CreateNewVirtualContributor from './CreateNewVirtualContributor';
 import CreateSubspaceStep1 from './CreateSubspace.step1';
 import ChooseSubspaceStep1b from './ChooseSubspace.step1b';
 import NameVirtualContributorStep2 from './NameVirtualContributor.step2';
@@ -22,7 +22,7 @@ import { useTranslation } from 'react-i18next';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
 import { useUserContext } from '../../../../domain/community/user';
 
-type Step = 'step0' | 'step1' | 'step1b' | 'step2' | 'step3';
+type Step = 'initial' | 'step1' | 'step1b' | 'step2' | 'step3';
 
 interface SelectedSubspace {
   id: string;
@@ -48,10 +48,10 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
   const { user } = useUserContext();
 
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [step, setStep] = useState<Step>('step0');
+  const [step, setStep] = useState<Step>('initial');
   const onDialogClose = () => {
     setDialogOpen(false);
-    setStep('step0');
+    setStep('initial');
   };
 
   const { data, loading } = useNewVirtualContributorMySpacesQuery({
@@ -91,7 +91,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
   }, [data, user]);
 
   const startWizard = () => {
-    setStep('step0');
+    setStep('initial');
     setDialogOpen(true);
   };
   const canCreateSubspace = mySpaceId !== undefined;
@@ -191,8 +191,8 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
   const NewVirtualContributorWizard = useCallback(
     () => (
       <Dialog open={dialogOpen} maxWidth="md">
-        {step === 'step0' && (
-          <CreateNewVirtualContributorStep0
+        {step === 'initial' && (
+          <CreateNewVirtualContributor
             onClose={onDialogClose}
             canCreateSubspace={canCreateSubspace}
             canUseExisting={canUseExistingSubspace}
@@ -204,7 +204,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
         {step === 'step1' && (
           <CreateSubspaceStep1
             onClose={onDialogClose}
-            onBack={() => setStep('step0')}
+            onBack={() => setStep('initial')}
             onCreateSubspace={handleCreateSubspace}
             mySpaceName={mySpaceName}
             loading={loading}
@@ -213,7 +213,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
         {step === 'step1b' && (
           <ChooseSubspaceStep1b
             onClose={onDialogClose}
-            onBack={() => setStep('step0')}
+            onBack={() => setStep('initial')}
             onChooseSubspace={handleChooseSubspace}
             selectedSubspaceId={selectedSubspace?.id}
             mySpaceName={mySpaceName}

@@ -30,7 +30,7 @@ type CreateNewVirtualContributorStep0Props = {
 };
 
 enum VCSourceOptions {
-  CREATE_SPACE = 'createSpace',
+  WRITTEN_KNOWLEDGE = 'createSpace',
   EXISTING_SPACE = 'existingSpace',
   EXTERNAL = 'external',
 }
@@ -96,7 +96,7 @@ const CreateNewVirtualContributorStep0 = ({ onClose, loading }: CreateNewVirtual
 
   const handleSubmit = () => {
     switch (source) {
-      case VCSourceOptions.CREATE_SPACE:
+      case VCSourceOptions.WRITTEN_KNOWLEDGE:
         // TODO: #6603
         break;
       case VCSourceOptions.EXISTING_SPACE:
@@ -161,10 +161,10 @@ const CreateNewVirtualContributorStep0 = ({ onClose, loading }: CreateNewVirtual
                             >
                               <BigButton
                                 onClick={selectVCSource}
-                                value={VCSourceOptions.CREATE_SPACE}
+                                value={VCSourceOptions.WRITTEN_KNOWLEDGE}
                                 startIcon={<LibraryBooksOutlined />}
                                 tooltipDisabled={t('createVirtualContributorWizard.step0.cannotCreateSubspace')}
-                                selected={source === VCSourceOptions.CREATE_SPACE}
+                                selected={source === VCSourceOptions.WRITTEN_KNOWLEDGE}
                               >
                                 {t('createVirtualContributorWizard.step0.createSpace')}
                                 <Caption fontSize={9}>{t('createVirtualContributorWizard.step0.ownAI')}</Caption>
