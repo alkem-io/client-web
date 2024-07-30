@@ -59,8 +59,9 @@ const BigButton = ({
           gap: gutters(0.5),
           textTransform: 'none',
           borderColor: selected ? 'primary.main' : 'divider',
+          opacity: selected ? 1 : 0.9,
           paddingTop: gutters(0.5),
-          '&:active': { background: 'pink', border: '1px solid #1D384A;' },
+          '&:active': { border: `1px solid ${theme.palette.text.primary};` },
         }}
         {...props}
       />
@@ -103,6 +104,7 @@ const CreateNewVirtualContributorStep0 = ({ onClose, loading }: CreateNewVirtual
         // TODO: #6604
         break;
       case VCSourceOptions.EXTERNAL:
+        console.log('EXTERNAL');
         // TODO: #6605
         break;
     }

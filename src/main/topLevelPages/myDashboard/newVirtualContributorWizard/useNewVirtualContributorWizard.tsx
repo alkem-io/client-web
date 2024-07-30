@@ -1,4 +1,3 @@
-import { Dialog } from '@mui/material';
 import { ComponentType, useCallback, useMemo, useState } from 'react';
 import {
   refetchMyAccountQuery,
@@ -21,6 +20,7 @@ import WhatsNextStep3 from './WhatsNext.step3';
 import { useTranslation } from 'react-i18next';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
 import { useUserContext } from '../../../../domain/community/user';
+import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
 
 type Step = 'initial' | 'step1' | 'step1b' | 'step2' | 'step3';
 
@@ -190,7 +190,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
 
   const NewVirtualContributorWizard = useCallback(
     () => (
-      <Dialog open={dialogOpen} maxWidth="md">
+      <DialogWithGrid open={dialogOpen} columns={6}>
         {step === 'initial' && (
           <CreateNewVirtualContributor
             onClose={onDialogClose}
@@ -235,7 +235,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
             addKnowledgeUrl={selectedSubspace?.profile.url}
           />
         )}
-      </Dialog>
+      </DialogWithGrid>
     ),
     [dialogOpen, step, loading]
   );
