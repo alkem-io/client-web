@@ -100,13 +100,13 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
       ...callout,
       framing: {
         ...callout.framing,
-        whiteboard: callout?.framing.whiteboard
-          ? { ...callout?.framing.whiteboard, calloutNameId: callout?.nameID }
+        whiteboard: callout.framing.whiteboard
+          ? { ...callout.framing.whiteboard, calloutNameId: callout.nameID }
           : undefined,
       },
-      comments: callout?.comments ? { ...callout?.comments, calloutNameId: callout?.nameID } : undefined,
+      comments: callout.comments ? { ...callout.comments, calloutNameId: callout.nameID } : undefined,
       // Fake callout properties to show the callout inside the dialog without any controls
-      draft: callout?.visibility === CalloutVisibility.Draft,
+      draft: callout.visibility === CalloutVisibility.Draft,
       editable: false,
       movable: false,
       canSaveAsTemplate: false,
