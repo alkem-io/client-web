@@ -3,7 +3,7 @@ import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import { Trans, useTranslation } from 'react-i18next';
 import Gutters from '../../../../core/ui/grid/Gutters';
-import { Box, DialogContent, Paper, Tooltip } from '@mui/material';
+import { Box, Button, DialogContent, Paper, Tooltip } from '@mui/material';
 import { Caption } from '../../../../core/ui/typography';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { gutters } from '../../../../core/ui/grid/utils';
@@ -22,14 +22,21 @@ import Loading from '../../../../core/ui/loading/Loading';
 import CalloutView from '../../../../domain/collaboration/callout/CalloutView/CalloutView';
 import { useCalloutPageCalloutQuery, useDeleteCalloutMutation } from '../../../../core/apollo/generated/apollo-hooks';
 import { TypedCalloutDetails } from '../../../../domain/collaboration/callout/useCallouts/useCallouts';
+import { Actions } from '../../../../core/ui/actions/Actions';
 
 interface TryVirtualContributorDialogProps {
   spaceId: string;
+  vcName: string;
   open: boolean;
   onClose: () => void;
 }
 
-const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = ({ spaceId, open, onClose }) => {
+const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = ({
+  spaceId,
+  vcName,
+  open,
+  onClose,
+}) => {
   const { t } = useTranslation();
   const [postCreationLoading, setPostCreationLoading] = useState(false);
   const [hasError, setHasError] = useState(false);
@@ -133,8 +140,10 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
               <Caption alignSelf="center">
                 <Trans
                   i18nKey="createVirtualContributorV2.trySection.subTitle"
+                  values={{ vcName: vcName }}
                   components={{
                     b: <strong />,
+                    i: <em />,
                     icon: <InfoOutlinedIcon fontSize="small" color="primary" style={{ verticalAlign: 'bottom' }} />,
                     tooltip: (
                       <Tooltip title={t('createVirtualContributorV2.trySection.subTitleInfo')} arrow placement="top">
@@ -150,8 +159,8 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
                 <Loading />
               </Box>
             )}
-            <Paper variant="outlined">
-              {typedCalloutDetails && (
+            {typedCalloutDetails && (
+              <Paper variant="outlined">
                 <CalloutView
                   callout={typedCalloutDetails}
                   journeyTypeName="space"
@@ -163,8 +172,8 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
                   onCalloutEdit={undefined}
                   onCalloutDelete={undefined}
                 />
-              )}
-            </Paper>
+              </Paper>
+            )}
             <Box display="flex" gap={gutters(0.5)}>
               <InfoOutlinedIcon color="primary" fontSize="small" />
               <Caption alignSelf="center">
@@ -176,6 +185,11 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
                 />
               </Caption>
             </Box>
+            <Actions justifyContent="end">
+              <Button variant="contained" onClick={handleClose}>
+                {t('createVirtualContributorV2.trySection.continueButton')}
+              </Button>
+            </Actions>
           </Gutters>
         )}
       </DialogContent>
