@@ -20,7 +20,7 @@ import {
 } from '../../../../core/apollo/generated/graphql-schema';
 import Loading from '../../../../core/ui/loading/Loading';
 import CalloutView from '../../../../domain/collaboration/callout/CalloutView/CalloutView';
-import { useCalloutPageCalloutQuery, useDeleteCalloutMutation } from '../../../../core/apollo/generated/apollo-hooks';
+import { useCalloutDetailsQuery, useDeleteCalloutMutation } from '../../../../core/apollo/generated/apollo-hooks';
 import { TypedCalloutDetails } from '../../../../domain/collaboration/callout/useCallouts/useCallouts';
 import { Actions } from '../../../../core/ui/actions/Actions';
 
@@ -82,7 +82,7 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
     loading: isCalloutLoading,
     refetch: refetchCalloutData,
     error: calloutError,
-  } = useCalloutPageCalloutQuery({
+  } = useCalloutDetailsQuery({
     variables: {
       calloutId: calloutId!,
     },
@@ -91,21 +91,31 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
 
   const callout = calloutData?.lookup.callout;
 
-  const typedCalloutDetails = useMemo(() => {
+  const typedCalloutDetails = useMemo<TypedCalloutDetails | undefined>(() => {
     if (!callout) {
       return undefined;
     }
 
-    const draft = callout?.visibility === CalloutVisibility.Draft;
-    const editable = false;
-
     return {
       ...callout,
-      draft,
-      editable,
+      framing: {
+        ...callout.framing,
+        whiteboard: callout?.framing.whiteboard
+          ? { ...callout?.framing.whiteboard, calloutNameId: callout?.nameID }
+          : undefined,
+      },
       comments: callout?.comments ? { ...callout?.comments, calloutNameId: callout?.nameID } : undefined,
-      // TODO: Try to remove this `as unknown`
-    } as unknown as TypedCalloutDetails;
+      // Fake callout properties to show the callout inside the dialog without any controls
+      draft: callout?.visibility === CalloutVisibility.Draft,
+      editable: false,
+      movable: false,
+      canSaveAsTemplate: false,
+      flowStates: undefined,
+      groupName: CalloutGroupName.Home,
+      authorization: {
+        myPrivileges: [],
+      },
+    };
   }, [callout]);
 
   const { handleCreateCallout, canCreateCallout } = useCalloutCreation(options);
