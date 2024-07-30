@@ -1551,21 +1551,6 @@ export type LibraryFieldPolicy = {
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   virtualContributors?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type LicenseKeySpecifier = (
-  | 'authorization'
-  | 'createdDate'
-  | 'id'
-  | 'updatedDate'
-  | 'visibility'
-  | LicenseKeySpecifier
-)[];
-export type LicenseFieldPolicy = {
-  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-  updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
-  visibility?: FieldPolicy<any> | FieldReadFunction<any>;
-};
 export type LicensePlanKeySpecifier = (
   | 'assignToNewOrganizationAccounts'
   | 'assignToNewUserAccounts'
@@ -2681,6 +2666,7 @@ export type RelayPaginatedSpaceKeySpecifier = (
   | 'subspaces'
   | 'type'
   | 'updatedDate'
+  | 'visibility'
   | RelayPaginatedSpaceKeySpecifier
 )[];
 export type RelayPaginatedSpaceFieldPolicy = {
@@ -2703,6 +2689,7 @@ export type RelayPaginatedSpaceFieldPolicy = {
   subspaces?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  visibility?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type RelayPaginatedSpaceEdgeKeySpecifier = ('node' | RelayPaginatedSpaceEdgeKeySpecifier)[];
 export type RelayPaginatedSpaceEdgeFieldPolicy = {
@@ -2973,6 +2960,7 @@ export type SpaceKeySpecifier = (
   | 'subspaces'
   | 'type'
   | 'updatedDate'
+  | 'visibility'
   | SpaceKeySpecifier
 )[];
 export type SpaceFieldPolicy = {
@@ -2995,6 +2983,7 @@ export type SpaceFieldPolicy = {
   subspaces?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  visibility?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type SpaceDefaultsKeySpecifier = (
   | 'authorization'

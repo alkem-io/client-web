@@ -2211,6 +2211,11 @@ export const SpaceCardFragmentDoc = gql`
       id
       vision
     }
+    settings {
+      privacy {
+        mode
+      }
+    }
     visibility
   }
   ${TagsetDetailsFragmentDoc}
@@ -3373,6 +3378,11 @@ export const SearchResultSpaceFragmentDoc = gql`
       community {
         id
         myMembershipStatus
+      }
+      settings {
+        privacy {
+          mode
+        }
       }
       visibility
     }
@@ -18819,10 +18829,11 @@ export type UpdateAccountPlatformSettingsMutationOptions = Apollo.BaseMutationOp
   SchemaTypes.UpdateAccountPlatformSettingsMutationVariables
 >;
 export const UpdateSpacePlatformSettingsDocument = gql`
-  mutation UpdateSpacePlatformSettings($spaceId: UUID!, $nameId: NameID!) {
-    updateSpacePlatformSettings(updateData: { spaceID: $spaceId, nameID: $nameId }) {
+  mutation UpdateSpacePlatformSettings($spaceId: UUID!, $nameId: NameID!, $visibility: SpaceVisibility!) {
+    updateSpacePlatformSettings(updateData: { spaceID: $spaceId, nameID: $nameId, visibility: $visibility }) {
       id
       nameID
+      visibility
     }
   }
 `;
@@ -18846,6 +18857,7 @@ export type UpdateSpacePlatformSettingsMutationFn = Apollo.MutationFunction<
  *   variables: {
  *      spaceId: // value for 'spaceId'
  *      nameId: // value for 'nameId'
+ *      visibility: // value for 'visibility'
  *   },
  * });
  */
@@ -23374,14 +23386,6 @@ export const MyMembershipsDocument = gql`
         id
         level
         visibility
-        metrics {
-          name
-          value
-        }
-        context {
-          id
-          vision
-        }
         profile {
           ...MyMembershipsSpaceProfile
         }
