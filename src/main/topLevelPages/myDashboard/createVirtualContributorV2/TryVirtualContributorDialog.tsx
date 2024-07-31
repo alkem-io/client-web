@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import { Trans, useTranslation } from 'react-i18next';
@@ -23,6 +23,7 @@ import CalloutView from '../../../../domain/collaboration/callout/CalloutView/Ca
 import { useCalloutDetailsQuery, useDeleteCalloutMutation } from '../../../../core/apollo/generated/apollo-hooks';
 import { TypedCalloutDetails } from '../../../../domain/collaboration/callout/useCallouts/useCallouts';
 import { Actions } from '../../../../core/ui/actions/Actions';
+import { removeVCCreationCache } from './vcCreationUtil';
 
 interface TryVirtualContributorDialogProps {
   spaceId: string;
@@ -67,7 +68,7 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
     refetchQueries: ['Callouts'],
   });
 
-  const handleClose = useCallback(() => {
+  const handleClose = () => {
     if (calloutId) {
       deleteCallout({
         variables: { calloutId: calloutId },
@@ -75,7 +76,7 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
     }
 
     onClose();
-  }, [onClose]);
+  };
 
   const {
     data: calloutData,
@@ -120,17 +121,18 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
 
   const { handleCreateCallout, canCreateCallout } = useCalloutCreation(options);
 
-  useEffect(() => {
-    const createCallout = async () => {
-      try {
-        const callout = await handleCreateCallout(calloutDetails);
-        setDemoCalloutCreationLoading(false);
-        setCalloutId(callout?.id);
-      } catch (e) {
-        setHasError(true);
-      }
-    };
+  const createCallout = async () => {
+    try {
+      const callout = await handleCreateCallout(calloutDetails);
+      setDemoCalloutCreationLoading(false);
+      setCalloutId(callout?.id);
+      removeVCCreationCache();
+    } catch (e) {
+      setHasError(true);
+    }
+  };
 
+  useEffect(() => {
     spaceId && open && canCreateCallout && createCallout();
   }, [spaceId, open, canCreateCallout]);
 
