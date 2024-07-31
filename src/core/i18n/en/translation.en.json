@@ -2973,6 +2973,22 @@
       "description": "Travel to your Subspace to add knowledge or update the profile of your Virtual Contributor.",
       "updateProfile": "Update profile",
       "addKnowledge": "Add knowledge"
+    },
+
+    "externalAICommingSoon": {
+      "title": "🚀 Coming soon!",
+      "subTitle": "We're currently building the functionality to use external AI services for your Virtual Contributor. You can help us by sharing which AI service you would like to use.",
+      "input": {
+        "label": "AI Service",
+        "placeholder": "E.g. the AI that xx created to xx"
+      },
+      "contactOptions": {
+        "title": "May we contact you if we have questions about the way you want to use this AI service?",
+        "option1": "Yes",
+        "option2": "No"
+      },
+      "receiverID": "f87384fe-ac08-4ea8-bc6f-246af0359a02",
+      "success": "Message sent successfully!"
     }
   },
   "createVirtualContributorV2": {
