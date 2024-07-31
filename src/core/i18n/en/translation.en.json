@@ -2989,9 +2989,7 @@
       },
       "receiverID": "f87384fe-ac08-4ea8-bc6f-246af0359a02",
       "success": "Message sent successfully!"
-    }
-  },
-  "createVirtualContributorV2": {
+    },
     "trySection": {
       "title": "🎉 Try it out!",
       "subTitle": "Your Virtual Contributor is successfully created and we added it to your personal Space <tooltip><icon /></tooltip>. You can now interact with it by typing <i>@{{vcName}}</i> in a comment on any post in your Space. Give it a try in the preview below!",
