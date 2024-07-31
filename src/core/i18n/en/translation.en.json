@@ -2973,9 +2973,8 @@
       "description": "Travel to your Subspace to add knowledge or update the profile of your Virtual Contributor.",
       "updateProfile": "Update profile",
       "addKnowledge": "Add knowledge"
-    }
-  },
-  "createVirtualContributorV2": {
+    },
+
     "trySection": {
       "title": "🎉 Try it out!",
       "subTitle": "Your Virtual Contributor is successfully created and we added it to your personal Space <tooltip><icon /></tooltip>. You can now interact with it by typing <i>@{{vcName}}</i> in a comment on any post in your Space. Give it a try in the preview below!",

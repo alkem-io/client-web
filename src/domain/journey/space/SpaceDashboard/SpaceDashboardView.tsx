@@ -30,11 +30,11 @@ import ContentColumn from '../../../../core/ui/content/ContentColumn';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
 import { ContributorViewProps } from '../../../community/community/EntityDashboardContributorsSection/Types';
-import TryVirtualContributorDialog from '../../../../main/topLevelPages/myDashboard/createVirtualContributorV2/TryVirtualContributorDialog';
+import TryVirtualContributorDialog from '../../../../main/topLevelPages/myDashboard/newVirtualContributorWizard/TryVirtualContributorDialog';
 import {
   getVCCreationCache,
   removeVCCreationCache,
-} from '../../../../main/topLevelPages/myDashboard/createVirtualContributorV2/vcCreationUtil';
+} from '../../../../main/topLevelPages/myDashboard/newVirtualContributorWizard/vcCreationUtil';
 
 interface SpaceWelcomeBlockContributor {
   profile: SpaceWelcomeBlockContributorProfileFragment;

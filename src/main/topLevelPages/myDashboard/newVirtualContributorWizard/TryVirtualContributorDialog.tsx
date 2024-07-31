@@ -50,8 +50,8 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
   const calloutDetails: CalloutCreationType = {
     framing: {
       profile: {
-        displayName: t('createVirtualContributorV2.trySection.postTitle'),
-        description: t('createVirtualContributorV2.trySection.postDescription'),
+        displayName: t('createVirtualContributorWizard.trySection.postTitle'),
+        description: t('createVirtualContributorWizard.trySection.postDescription'),
         referencesData: [],
       },
     },
@@ -142,7 +142,7 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
 
   return (
     <DialogWithGrid open={open} onClose={handleClose} columns={8}>
-      <DialogHeader title={t('createVirtualContributorV2.trySection.title')} onClose={handleClose} />
+      <DialogHeader title={t('createVirtualContributorWizard.trySection.title')} onClose={handleClose} />
       <DialogContent>
         {demoCalloutCreationLoading && isCalloutLoading ? (
           <Loading />
@@ -151,14 +151,18 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
             <Box display="flex" gap={gutters(0.5)}>
               <Caption alignSelf="center">
                 <Trans
-                  i18nKey="createVirtualContributorV2.trySection.subTitle"
+                  i18nKey="createVirtualContributorWizard.trySection.subTitle"
                   values={{ vcName: vcName }}
                   components={{
                     b: <strong />,
                     i: <em />,
                     icon: <InfoOutlinedIcon fontSize="small" color="primary" style={{ verticalAlign: 'bottom' }} />,
                     tooltip: (
-                      <Tooltip title={t('createVirtualContributorV2.trySection.subTitleInfo')} arrow placement="top">
+                      <Tooltip
+                        title={t('createVirtualContributorWizard.trySection.subTitleInfo')}
+                        arrow
+                        placement="top"
+                      >
                         <></>
                       </Tooltip>
                     ),
@@ -190,7 +194,7 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
               <InfoOutlinedIcon color="primary" fontSize="small" />
               <Caption alignSelf="center">
                 <Trans
-                  i18nKey="createVirtualContributorV2.trySection.lastInfoBox"
+                  i18nKey="createVirtualContributorWizard.trySection.lastInfoBox"
                   components={{
                     b: <strong />,
                   }}
@@ -199,7 +203,7 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
             </Box>
             <Actions justifyContent="end">
               <Button variant="contained" onClick={handleClose}>
-                {t('createVirtualContributorV2.trySection.continueButton')}
+                {t('createVirtualContributorWizard.trySection.continueButton')}
               </Button>
             </Actions>
           </Gutters>
