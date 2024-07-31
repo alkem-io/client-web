@@ -30,6 +30,7 @@ interface CalloutHeaderProps {
   settingsOpen?: boolean;
   onOpenSettings?: (event: React.MouseEvent<HTMLElement>) => void;
   contributionsCount: number;
+  calloutActions?: boolean;
 }
 
 const CalloutHeader = ({
@@ -40,6 +41,7 @@ const CalloutHeader = ({
   settingsOpen = false,
   onOpenSettings,
   contributionsCount,
+  calloutActions = true,
 }: CalloutHeaderProps) => {
   const { t } = useTranslation();
 
@@ -50,28 +52,30 @@ const CalloutHeader = ({
   return (
     <DialogHeader
       actions={
-        <>
-          <IconButton
-            onClick={expanded ? onCollapse : onExpand}
-            aria-label={t('buttons.expandWindow')}
-            aria-haspopup="true"
-          >
-            {expanded ? <Close /> : <ExpandContentIcon />}
-          </IconButton>
-          {callout.editable && (
+        calloutActions ? (
+          <>
             <IconButton
-              id="callout-settings-button"
-              aria-label={t('common.settings')}
+              onClick={expanded ? onCollapse : onExpand}
+              aria-label={t('buttons.expandWindow')}
               aria-haspopup="true"
-              aria-controls={settingsOpen ? 'callout-settings-menu' : undefined}
-              aria-expanded={settingsOpen ? 'true' : undefined}
-              onClick={onOpenSettings}
             >
-              <SettingsOutlinedIcon />
+              {expanded ? <Close /> : <ExpandContentIcon />}
             </IconButton>
-          )}
-          <ShareButton url={callout.framing.profile.url} entityTypeName="callout" />
-        </>
+            {callout.editable && (
+              <IconButton
+                id="callout-settings-button"
+                aria-label={t('common.settings')}
+                aria-haspopup="true"
+                aria-controls={settingsOpen ? 'callout-settings-menu' : undefined}
+                aria-expanded={settingsOpen ? 'true' : undefined}
+                onClick={onOpenSettings}
+              >
+                <SettingsOutlinedIcon />
+              </IconButton>
+            )}
+            <ShareButton url={callout.framing.profile.url} entityTypeName="callout" />
+          </>
+        ) : null
       }
       titleContainerProps={{ display: 'block', position: 'relative' }}
     >

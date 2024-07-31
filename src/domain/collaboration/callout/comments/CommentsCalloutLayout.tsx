@@ -24,6 +24,7 @@ const CommentsCalloutLayout = ({
   disableMarginal = false,
   settingsOpen,
   onOpenSettings,
+  calloutActions = true,
 }: PropsWithChildren<CalloutLayoutProps>) => {
   const { t } = useTranslation();
 
@@ -50,6 +51,7 @@ const CommentsCalloutLayout = ({
         onCollapse={onCollapse}
         settingsOpen={settingsOpen}
         onOpenSettings={onOpenSettings}
+        calloutActions={calloutActions}
       />
       {hasCalloutDetails && <BlockTitle noWrap>{callout.framing.profile.displayName}</BlockTitle>}
       <Box sx={{ wordWrap: 'break-word' }} paddingX={gutters()}>

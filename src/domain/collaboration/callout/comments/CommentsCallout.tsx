@@ -27,6 +27,7 @@ interface CommentsCalloutProps extends BaseCalloutViewProps {
     comments: CommentsCalloutData | undefined;
   };
   calloutNames: string[];
+  calloutActions?: boolean;
 }
 
 const COMMENTS_CONTAINER_HEIGHT = 400;
@@ -38,6 +39,7 @@ const CommentsCallout = ({
   contributionsCount,
   onExpand,
   onCollapse,
+  calloutActions = true,
   ...calloutSettingsProps
 }: CommentsCalloutProps) => {
   const { user: userMetadata, isAuthenticated } = useUserContext();
@@ -98,6 +100,7 @@ const CommentsCallout = ({
           expanded={expanded}
           onExpand={onExpand}
           onCollapse={onCollapse}
+          calloutActions={calloutActions}
         >
           <CommentsComponent
             messages={messages}
