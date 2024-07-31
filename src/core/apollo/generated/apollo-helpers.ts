@@ -15,7 +15,6 @@ export type AccountKeySpecifier = (
   | 'innovationHubs'
   | 'innovationPacks'
   | 'library'
-  | 'license'
   | 'licensePrivileges'
   | 'spaceID'
   | 'subscriptions'
@@ -34,7 +33,6 @@ export type AccountFieldPolicy = {
   innovationHubs?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationPacks?: FieldPolicy<any> | FieldReadFunction<any>;
   library?: FieldPolicy<any> | FieldReadFunction<any>;
-  license?: FieldPolicy<any> | FieldReadFunction<any>;
   licensePrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
   spaceID?: FieldPolicy<any> | FieldReadFunction<any>;
   subscriptions?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1561,21 +1559,6 @@ export type LibraryFieldPolicy = {
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   virtualContributors?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type LicenseKeySpecifier = (
-  | 'authorization'
-  | 'createdDate'
-  | 'id'
-  | 'updatedDate'
-  | 'visibility'
-  | LicenseKeySpecifier
-)[];
-export type LicenseFieldPolicy = {
-  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-  updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
-  visibility?: FieldPolicy<any> | FieldReadFunction<any>;
-};
 export type LicensePlanKeySpecifier = (
   | 'assignToNewOrganizationAccounts'
   | 'assignToNewUserAccounts'
@@ -2681,6 +2664,7 @@ export type RelayPaginatedSpaceKeySpecifier = (
   | 'createdDate'
   | 'id'
   | 'level'
+  | 'levelZeroSpaceID'
   | 'metrics'
   | 'nameID'
   | 'profile'
@@ -2690,6 +2674,7 @@ export type RelayPaginatedSpaceKeySpecifier = (
   | 'subspaces'
   | 'type'
   | 'updatedDate'
+  | 'visibility'
   | RelayPaginatedSpaceKeySpecifier
 )[];
 export type RelayPaginatedSpaceFieldPolicy = {
@@ -2702,6 +2687,7 @@ export type RelayPaginatedSpaceFieldPolicy = {
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   level?: FieldPolicy<any> | FieldReadFunction<any>;
+  levelZeroSpaceID?: FieldPolicy<any> | FieldReadFunction<any>;
   metrics?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2711,6 +2697,7 @@ export type RelayPaginatedSpaceFieldPolicy = {
   subspaces?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  visibility?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type RelayPaginatedSpaceEdgeKeySpecifier = ('node' | RelayPaginatedSpaceEdgeKeySpecifier)[];
 export type RelayPaginatedSpaceEdgeFieldPolicy = {
@@ -2971,6 +2958,7 @@ export type SpaceKeySpecifier = (
   | 'createdDate'
   | 'id'
   | 'level'
+  | 'levelZeroSpaceID'
   | 'metrics'
   | 'nameID'
   | 'profile'
@@ -2980,6 +2968,7 @@ export type SpaceKeySpecifier = (
   | 'subspaces'
   | 'type'
   | 'updatedDate'
+  | 'visibility'
   | SpaceKeySpecifier
 )[];
 export type SpaceFieldPolicy = {
@@ -2992,6 +2981,7 @@ export type SpaceFieldPolicy = {
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   level?: FieldPolicy<any> | FieldReadFunction<any>;
+  levelZeroSpaceID?: FieldPolicy<any> | FieldReadFunction<any>;
   metrics?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3001,6 +2991,7 @@ export type SpaceFieldPolicy = {
   subspaces?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  visibility?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type SpaceDefaultsKeySpecifier = (
   | 'authorization'
@@ -3919,10 +3910,6 @@ export type StrictTypedTypePolicies = {
   Library?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | LibraryKeySpecifier | (() => undefined | LibraryKeySpecifier);
     fields?: LibraryFieldPolicy;
-  };
-  License?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | LicenseKeySpecifier | (() => undefined | LicenseKeySpecifier);
-    fields?: LicenseFieldPolicy;
   };
   LicensePlan?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | LicensePlanKeySpecifier | (() => undefined | LicensePlanKeySpecifier);

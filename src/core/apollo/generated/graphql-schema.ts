@@ -56,8 +56,6 @@ export type Account = {
   innovationPacks: Array<InnovationPack>;
   /** The Library in use by this Account */
   library?: Maybe<TemplatesSet>;
-  /** The License governing platform functionality in use by this Account */
-  license: License;
   /** The privileges granted based on the License credentials held by this Account. */
   licensePrivileges?: Maybe<Array<LicensePrivilege>>;
   /** The ID for the root space for the Account . */
@@ -2610,20 +2608,6 @@ export type LibraryInnovationPacksArgs = {
   queryData?: InputMaybe<InnovationPacksInput>;
 };
 
-export type License = {
-  __typename?: 'License';
-  /** The authorization rules for the entity */
-  authorization?: Maybe<Authorization>;
-  /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']>;
-  /** The ID of the entity */
-  id: Scalars['UUID'];
-  /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']>;
-  /** Visibility of the Space. */
-  visibility: SpaceVisibility;
-};
-
 export enum LicenseCredential {
   FeatureCalloutToCalloutTemplate = 'FEATURE_CALLOUT_TO_CALLOUT_TEMPLATE',
   FeatureVirtualContributors = 'FEATURE_VIRTUAL_CONTRIBUTORS',
@@ -4816,6 +4800,8 @@ export type RelayPaginatedSpace = {
   id: Scalars['UUID'];
   /** The level of this Space, representing the number of Spaces above this one. */
   level: Scalars['Float'];
+  /** The ID of the level zero space for this tree. */
+  levelZeroSpaceID: Scalars['String'];
   /** Metrics about activity within this Space. */
   metrics?: Maybe<Array<Nvp>>;
   /** A name identifier of the entity, unique within a given scope. */
@@ -4834,6 +4820,8 @@ export type RelayPaginatedSpace = {
   type: SpaceType;
   /** The date at which the entity was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
+  /** Visibility of the Space. */
+  visibility: SpaceVisibility;
 };
 
 export type RelayPaginatedSpaceSubspaceArgs = {
@@ -5260,6 +5248,8 @@ export type Space = {
   id: Scalars['UUID'];
   /** The level of this Space, representing the number of Spaces above this one. */
   level: Scalars['Float'];
+  /** The ID of the level zero space for this tree. */
+  levelZeroSpaceID: Scalars['String'];
   /** Metrics about activity within this Space. */
   metrics?: Maybe<Array<Nvp>>;
   /** A name identifier of the entity, unique within a given scope. */
@@ -5278,6 +5268,8 @@ export type Space = {
   type: SpaceType;
   /** The date at which the entity was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
+  /** Visibility of the Space. */
+  visibility: SpaceVisibility;
 };
 
 export type SpaceSubspaceArgs = {
@@ -5680,8 +5672,6 @@ export type UpdateAccountPlatformSettingsInput = {
   accountID: Scalars['UUID'];
   /** Update the host Organization or User for the Account. */
   hostID?: InputMaybe<Scalars['UUID_NAMEID']>;
-  /** Update the license settings for the Account. */
-  license?: InputMaybe<UpdateLicenseInput>;
 };
 
 export type UpdateActorInput = {
@@ -5935,11 +5925,6 @@ export type UpdateInnovationPackInput = {
   searchVisibility?: InputMaybe<SearchVisibility>;
 };
 
-export type UpdateLicenseInput = {
-  /** Visibility of the Space. */
-  visibility?: InputMaybe<SpaceVisibility>;
-};
-
 export type UpdateLicensePlanInput = {
   ID: Scalars['UUID'];
   /** Assign this plan to all new Organization accounts */
@@ -6078,9 +6063,11 @@ export type UpdateSpaceInput = {
 
 export type UpdateSpacePlatformSettingsInput = {
   /** Upate the URL path for the Space. */
-  nameID: Scalars['NameID'];
+  nameID?: InputMaybe<Scalars['NameID']>;
   /** The identifier for the Space whose license etc is to be updated. */
   spaceID: Scalars['UUID'];
+  /** Visibility of the Space, only on L0 spaces. */
+  visibility?: InputMaybe<SpaceVisibility>;
 };
 
 export type UpdateSpaceSettingsCollaborationInput = {
@@ -19412,10 +19399,10 @@ export type InnovationHubAvailableSpacesQuery = {
   spaces: Array<{
     __typename?: 'Space';
     id: string;
+    visibility: SpaceVisibility;
     account: {
       __typename?: 'Account';
       id: string;
-      license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
       host?:
         | {
             __typename?: 'Organization';
@@ -19437,10 +19424,10 @@ export type InnovationHubAvailableSpacesQuery = {
 export type InnovationHubSpaceFragment = {
   __typename?: 'Space';
   id: string;
+  visibility: SpaceVisibility;
   account: {
     __typename?: 'Account';
     id: string;
-    license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
     host?:
       | {
           __typename?: 'Organization';
@@ -19593,10 +19580,10 @@ export type AdminInnovationHubQuery = {
             | Array<{
                 __typename?: 'Space';
                 id: string;
+                visibility: SpaceVisibility;
                 account: {
                   __typename?: 'Account';
                   id: string;
-                  license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
                   host?:
                     | {
                         __typename?: 'Organization';
@@ -19682,10 +19669,10 @@ export type AdminInnovationHubFragment = {
     | Array<{
         __typename?: 'Space';
         id: string;
+        visibility: SpaceVisibility;
         account: {
           __typename?: 'Account';
           id: string;
-          license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
           host?:
             | {
                 __typename?: 'Organization';
@@ -19770,10 +19757,10 @@ export type CreateInnovationHubMutation = {
       | Array<{
           __typename?: 'Space';
           id: string;
+          visibility: SpaceVisibility;
           account: {
             __typename?: 'Account';
             id: string;
-            license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
             host?:
               | {
                   __typename?: 'Organization';
@@ -19863,10 +19850,10 @@ export type UpdateInnovationHubMutation = {
       | Array<{
           __typename?: 'Space';
           id: string;
+          visibility: SpaceVisibility;
           account: {
             __typename?: 'Account';
             id: string;
-            license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
             host?:
               | {
                   __typename?: 'Organization';
@@ -20825,6 +20812,7 @@ export type SpacePrivilegesQuery = {
 export type SpaceCardFragment = {
   __typename?: 'Space';
   id: string;
+  visibility: SpaceVisibility;
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -20846,11 +20834,6 @@ export type SpaceCardFragment = {
   metrics?: Array<{ __typename?: 'NVP'; name: string; value: string }> | undefined;
   community: { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
   context: { __typename?: 'Context'; id: string; vision?: string | undefined };
-  account: {
-    __typename?: 'Account';
-    id: string;
-    license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
-  };
   settings: { __typename?: 'SpaceSettings'; privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode } };
 };
 
@@ -21237,6 +21220,7 @@ export type SpaceProviderQuery = {
   __typename?: 'Query';
   space: {
     __typename?: 'Space';
+    visibility: SpaceVisibility;
     id: string;
     nameID: string;
     authorization?:
@@ -21263,16 +21247,6 @@ export type SpaceProviderQuery = {
             myPrivileges?: Array<AuthorizationPrivilege> | undefined;
             anonymousReadAccess: boolean;
           }
-        | undefined;
-    };
-    account: {
-      __typename?: 'Account';
-      id: string;
-      license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
-      host?:
-        | { __typename?: 'Organization'; id: string }
-        | { __typename?: 'User'; id: string }
-        | { __typename?: 'VirtualContributor'; id: string }
         | undefined;
     };
     profile: {
@@ -21321,6 +21295,14 @@ export type SpaceProviderQuery = {
           }
         | undefined;
     };
+    account: {
+      __typename?: 'Account';
+      host?:
+        | { __typename?: 'Organization'; id: string }
+        | { __typename?: 'User'; id: string }
+        | { __typename?: 'VirtualContributor'; id: string }
+        | undefined;
+    };
     settings: {
       __typename?: 'SpaceSettings';
       privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
@@ -21339,6 +21321,7 @@ export type SpaceUrlQuery = {
 
 export type SpaceInfoFragment = {
   __typename?: 'Space';
+  visibility: SpaceVisibility;
   id: string;
   nameID: string;
   authorization?:
@@ -21365,16 +21348,6 @@ export type SpaceInfoFragment = {
           myPrivileges?: Array<AuthorizationPrivilege> | undefined;
           anonymousReadAccess: boolean;
         }
-      | undefined;
-  };
-  account: {
-    __typename?: 'Account';
-    id: string;
-    license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
-    host?:
-      | { __typename?: 'Organization'; id: string }
-      | { __typename?: 'User'; id: string }
-      | { __typename?: 'VirtualContributor'; id: string }
       | undefined;
   };
   profile: {
@@ -21421,6 +21394,14 @@ export type SpaceInfoFragment = {
           stateOrProvince: string;
           postalCode: string;
         }
+      | undefined;
+  };
+  account: {
+    __typename?: 'Account';
+    host?:
+      | { __typename?: 'Organization'; id: string }
+      | { __typename?: 'User'; id: string }
+      | { __typename?: 'VirtualContributor'; id: string }
       | undefined;
   };
   settings: { __typename?: 'SpaceSettings'; privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode } };
@@ -22594,6 +22575,7 @@ export type SubspaceCreatedSubscription = {
     subspace: {
       __typename?: 'Space';
       id: string;
+      visibility: SpaceVisibility;
       profile: {
         __typename?: 'Profile';
         id: string;
@@ -22615,11 +22597,6 @@ export type SubspaceCreatedSubscription = {
       metrics?: Array<{ __typename?: 'NVP'; name: string; value: string }> | undefined;
       community: { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
       context: { __typename?: 'Context'; id: string; vision?: string | undefined };
-      account: {
-        __typename?: 'Account';
-        id: string;
-        license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
-      };
       settings: {
         __typename?: 'SpaceSettings';
         privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
@@ -22660,6 +22637,7 @@ export type SpaceAccountQuery = {
       | {
           __typename?: 'Space';
           id: string;
+          visibility: SpaceVisibility;
           profile: { __typename?: 'Profile'; id: string; url: string };
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -22708,7 +22686,6 @@ export type SpaceAccountQuery = {
                   };
                 }
               | undefined;
-            license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
             activeSubscription?:
               | { __typename?: 'AccountSubscription'; name: LicenseCredential; expires?: Date | undefined }
               | undefined;
@@ -23777,7 +23754,6 @@ export type RevokeLicensePlanFromAccountMutation = {
 export type UpdateAccountPlatformSettingsMutationVariables = Exact<{
   accountId: Scalars['UUID'];
   hostId?: InputMaybe<Scalars['UUID_NAMEID']>;
-  license?: InputMaybe<UpdateLicenseInput>;
 }>;
 
 export type UpdateAccountPlatformSettingsMutation = {
@@ -23785,7 +23761,6 @@ export type UpdateAccountPlatformSettingsMutation = {
   updateAccountPlatformSettings: {
     __typename?: 'Account';
     id: string;
-    license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
     host?:
       | { __typename?: 'Organization'; id: string }
       | { __typename?: 'User'; id: string }
@@ -23797,11 +23772,12 @@ export type UpdateAccountPlatformSettingsMutation = {
 export type UpdateSpacePlatformSettingsMutationVariables = Exact<{
   spaceId: Scalars['UUID'];
   nameId: Scalars['NameID'];
+  visibility: SpaceVisibility;
 }>;
 
 export type UpdateSpacePlatformSettingsMutation = {
   __typename?: 'Mutation';
-  updateSpacePlatformSettings: { __typename?: 'Space'; id: string; nameID: string };
+  updateSpacePlatformSettings: { __typename?: 'Space'; id: string; nameID: string; visibility: SpaceVisibility };
 };
 
 export type AdminSpacesListQueryVariables = Exact<{ [key: string]: never }>;
@@ -23812,11 +23788,11 @@ export type AdminSpacesListQuery = {
     __typename?: 'Space';
     id: string;
     nameID: string;
+    visibility: SpaceVisibility;
     account: {
       __typename?: 'Account';
       id: string;
       subscriptions: Array<{ __typename?: 'AccountSubscription'; name: LicenseCredential }>;
-      license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
       host?:
         | {
             __typename?: 'Organization';
@@ -23850,11 +23826,11 @@ export type AdminSpaceFragment = {
   __typename?: 'Space';
   id: string;
   nameID: string;
+  visibility: SpaceVisibility;
   account: {
     __typename?: 'Account';
     id: string;
     subscriptions: Array<{ __typename?: 'AccountSubscription'; name: LicenseCredential }>;
-    license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
     host?:
       | {
           __typename?: 'Organization';
@@ -27479,6 +27455,7 @@ export type SearchQuery = {
             __typename?: 'Space';
             id: string;
             type: SpaceType;
+            visibility: SpaceVisibility;
             profile: {
               __typename?: 'Profile';
               id: string;
@@ -27502,11 +27479,6 @@ export type SearchQuery = {
               __typename?: 'Community';
               id: string;
               myMembershipStatus?: CommunityMembershipStatus | undefined;
-            };
-            account: {
-              __typename?: 'Account';
-              id: string;
-              license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
             };
             settings: {
               __typename?: 'SpaceSettings';
@@ -27719,11 +27691,7 @@ export type SearchQuery = {
             __typename?: 'Space';
             id: string;
             type: SpaceType;
-            account: {
-              __typename?: 'Account';
-              id: string;
-              license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
-            };
+            visibility: SpaceVisibility;
             profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
             settings: {
               __typename?: 'SpaceSettings';
@@ -27786,11 +27754,7 @@ export type SearchResultPostFragment = {
     __typename?: 'Space';
     id: string;
     type: SpaceType;
-    account: {
-      __typename?: 'Account';
-      id: string;
-      license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
-    };
+    visibility: SpaceVisibility;
     profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
     settings: {
       __typename?: 'SpaceSettings';
@@ -27814,11 +27778,7 @@ export type PostParentFragment = {
     __typename?: 'Space';
     id: string;
     type: SpaceType;
-    account: {
-      __typename?: 'Account';
-      id: string;
-      license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
-    };
+    visibility: SpaceVisibility;
     profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
     settings: {
       __typename?: 'SpaceSettings';
@@ -28005,6 +27965,7 @@ export type SearchResultSpaceFragment = {
     __typename?: 'Space';
     id: string;
     type: SpaceType;
+    visibility: SpaceVisibility;
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -28025,11 +27986,6 @@ export type SearchResultSpaceFragment = {
     };
     context: { __typename?: 'Context'; id: string; vision?: string | undefined };
     community: { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
-    account: {
-      __typename?: 'Account';
-      id: string;
-      license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
-    };
     settings: {
       __typename?: 'SpaceSettings';
       privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
@@ -28065,16 +28021,12 @@ export type SearchScopeDetailsSpaceQuery = {
   space: {
     __typename?: 'Space';
     id: string;
+    visibility: SpaceVisibility;
     profile: {
       __typename?: 'Profile';
       id: string;
       displayName: string;
       avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-    };
-    account: {
-      __typename?: 'Account';
-      id: string;
-      license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
     };
   };
 };
@@ -28975,6 +28927,7 @@ export type DashboardSpacesQuery = {
   spaces: Array<{
     __typename?: 'Space';
     id: string;
+    visibility: SpaceVisibility;
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -28996,11 +28949,6 @@ export type DashboardSpacesQuery = {
     metrics?: Array<{ __typename?: 'NVP'; name: string; value: string }> | undefined;
     community: { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
     context: { __typename?: 'Context'; id: string; vision?: string | undefined };
-    account: {
-      __typename?: 'Account';
-      id: string;
-      license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
-    };
     settings: {
       __typename?: 'SpaceSettings';
       privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
@@ -29021,6 +28969,7 @@ export type DashboardSpacesPaginatedQuery = {
     spaces: Array<{
       __typename?: 'Space';
       id: string;
+      visibility: SpaceVisibility;
       profile: {
         __typename?: 'Profile';
         id: string;
@@ -29042,11 +28991,6 @@ export type DashboardSpacesPaginatedQuery = {
       metrics?: Array<{ __typename?: 'NVP'; name: string; value: string }> | undefined;
       community: { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
       context: { __typename?: 'Context'; id: string; vision?: string | undefined };
-      account: {
-        __typename?: 'Account';
-        id: string;
-        license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
-      };
       settings: {
         __typename?: 'SpaceSettings';
         privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
@@ -30362,11 +30306,7 @@ export type MyMembershipsQuery = {
       __typename?: 'Space';
       id: string;
       level: number;
-      account: {
-        __typename?: 'Account';
-        id: string;
-        license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
-      };
+      visibility: SpaceVisibility;
       profile: {
         __typename?: 'Profile';
         id: string;
@@ -30661,6 +30601,7 @@ export type SpaceExplorerSearchQuery = {
             __typename?: 'Space';
             id: string;
             type: SpaceType;
+            visibility: SpaceVisibility;
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
@@ -30675,11 +30616,6 @@ export type SpaceExplorerSearchQuery = {
               cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
             };
             context: { __typename?: 'Context'; id: string; vision?: string | undefined };
-            account: {
-              __typename?: 'Account';
-              id: string;
-              license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
-            };
             community: {
               __typename?: 'Community';
               id: string;
@@ -30703,6 +30639,7 @@ export type SpaceExplorerSearchSpaceFragment = {
     __typename?: 'Space';
     id: string;
     type: SpaceType;
+    visibility: SpaceVisibility;
     authorization?:
       | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
@@ -30717,11 +30654,6 @@ export type SpaceExplorerSearchSpaceFragment = {
       cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
     };
     context: { __typename?: 'Context'; id: string; vision?: string | undefined };
-    account: {
-      __typename?: 'Account';
-      id: string;
-      license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
-    };
     community: { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
     settings: {
       __typename?: 'SpaceSettings';
@@ -30740,6 +30672,7 @@ export type SpaceExplorerMemberSpacesQuery = {
     __typename?: 'Space';
     id: string;
     type: SpaceType;
+    visibility: SpaceVisibility;
     subspaces: Array<{
       __typename?: 'Space';
       id: string;
@@ -30777,11 +30710,6 @@ export type SpaceExplorerMemberSpacesQuery = {
       cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
     };
     context: { __typename?: 'Context'; id: string; vision?: string | undefined };
-    account: {
-      __typename?: 'Account';
-      id: string;
-      license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
-    };
     community: { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
     settings: {
       __typename?: 'SpaceSettings';
@@ -30804,6 +30732,7 @@ export type SpaceExplorerAllSpacesQuery = {
       __typename?: 'Space';
       id: string;
       type: SpaceType;
+      visibility: SpaceVisibility;
       authorization?:
         | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
         | undefined;
@@ -30818,11 +30747,6 @@ export type SpaceExplorerAllSpacesQuery = {
         cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
       };
       context: { __typename?: 'Context'; id: string; vision?: string | undefined };
-      account: {
-        __typename?: 'Account';
-        id: string;
-        license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
-      };
       community: { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
       settings: {
         __typename?: 'SpaceSettings';
@@ -30877,6 +30801,7 @@ export type SpaceExplorerSpaceFragment = {
   __typename?: 'Space';
   id: string;
   type: SpaceType;
+  visibility: SpaceVisibility;
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
@@ -30891,11 +30816,6 @@ export type SpaceExplorerSpaceFragment = {
     cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
   };
   context: { __typename?: 'Context'; id: string; vision?: string | undefined };
-  account: {
-    __typename?: 'Account';
-    id: string;
-    license: { __typename?: 'License'; id: string; visibility: SpaceVisibility };
-  };
   community: { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
   settings: { __typename?: 'SpaceSettings'; privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode } };
 };

@@ -11,7 +11,7 @@ import JourneyCardTagline from '../../../journey/common/JourneyCard/JourneyCardT
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import journeyIcon from '../../../shared/components/JourneyIcon/JourneyIcon';
 import CardRibbon from '../../../../core/ui/card/CardRibbon';
-import { License, SpaceVisibility } from '../../../../core/apollo/generated/graphql-schema';
+import { SpaceVisibility } from '../../../../core/apollo/generated/graphql-schema';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 
 interface ContributionDetailsCardProps extends Omit<JourneyCardProps, 'iconComponent' | 'header'> {
@@ -24,7 +24,7 @@ interface ContributionDetailsCardProps extends Omit<JourneyCardProps, 'iconCompo
   onLeaveCommunityDialogOpen?: (isOpen: boolean) => void;
   handleLeaveCommunity?: () => void;
   loading?: boolean;
-  license?: License;
+  visibility?: SpaceVisibility;
 }
 
 const ContributionDetailsCard = ({
@@ -37,15 +37,14 @@ const ContributionDetailsCard = ({
   onLeaveCommunityDialogOpen,
   handleLeaveCommunity,
   loading,
-  license,
+  visibility,
   ...props
 }: ContributionDetailsCardProps) => {
   const { t } = useTranslation();
 
-  const spaceVisibility = license?.visibility;
   const ribbon =
-    spaceVisibility && spaceVisibility !== SpaceVisibility.Active ? (
-      <CardRibbon text={t(`common.enums.space-visibility.${spaceVisibility}` as const)} />
+    visibility && visibility !== SpaceVisibility.Active ? (
+      <CardRibbon text={t(`common.enums.space-visibility.${visibility}` as const)} />
     ) : undefined;
 
   return (

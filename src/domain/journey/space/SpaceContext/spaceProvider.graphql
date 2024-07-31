@@ -35,13 +35,7 @@ fragment SpaceInfo on Space {
       myPrivileges
     }
   }
-  account {
-    id
-    license {
-      id
-      visibility
-    }
-  }
+  visibility
 }
 
 query SpaceHost($spaceNameId: UUID_NAMEID!) {
