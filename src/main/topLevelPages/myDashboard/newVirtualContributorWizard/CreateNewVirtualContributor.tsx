@@ -71,7 +71,11 @@ const BigButton = ({
   return tooltipDisabled && props.disabled ? <Tooltip title={tooltipDisabled}>{button}</Tooltip> : button;
 };
 
-const CreateNewVirtualContributorStep0 = ({ onClose, loading }: CreateNewVirtualContributorStep0Props) => {
+const CreateNewVirtualContributorStep0 = ({
+  onClose,
+  onUseExistingSubspace,
+  loading,
+}: CreateNewVirtualContributorStep0Props) => {
   const { t } = useTranslation();
   const isSmallScreen = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
 
@@ -101,7 +105,7 @@ const CreateNewVirtualContributorStep0 = ({ onClose, loading }: CreateNewVirtual
         // TODO: #6603
         break;
       case VCSourceOptions.EXISTING_SPACE:
-        // TODO: #6604
+        onUseExistingSubspace();
         break;
       case VCSourceOptions.EXTERNAL:
         console.log('EXTERNAL');

@@ -1,37 +1,30 @@
 import { ComponentType, useCallback, useMemo, useState } from 'react';
 import {
   refetchMyAccountQuery,
-  useAddVirtualContributorToCommunityMutation,
-  useAssignCommunityRoleToVirtualContributorMutation,
   useCreateSubspaceMutation,
   useCreateVirtualContributorOnAccountMutation,
   useNewVirtualContributorMySpacesQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
-import {
-  CommunityRole,
-  NewVirtualContributorMySpacesQuery,
-  SpaceType,
-} from '../../../../core/apollo/generated/graphql-schema';
+import { NewVirtualContributorMySpacesQuery, SpaceType } from '../../../../core/apollo/generated/graphql-schema';
 import CreateNewVirtualContributor from './CreateNewVirtualContributor';
 import CreateSubspaceStep1 from './CreateSubspace.step1';
-import ChooseSubspaceStep1b from './ChooseSubspace.step1b';
+import ExistingSpace from './ExistingSpace';
 import NameVirtualContributorStep2 from './NameVirtualContributor.step2';
 import WhatsNextStep3 from './WhatsNext.step3';
 import { useTranslation } from 'react-i18next';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
 import { useUserContext } from '../../../../domain/community/user';
 import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
+// import { addVCCreationCache } from './vcCreationUtil';
+// import useNavigate from '../../../../core/routing/useNavigate';
 
-type Step = 'initial' | 'step1' | 'step1b' | 'step2' | 'step3';
+type Step = 'initial' | 'step1' | 'step.existing' | 'step2' | 'step3';
 
 interface SelectedSubspace {
   id: string;
   profile: {
     displayName: string;
     url: string;
-  };
-  community: {
-    id: string;
   };
 }
 
@@ -46,6 +39,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
   const { t } = useTranslation();
   const notify = useNotification();
   const { user } = useUserContext();
+  // const navigate = useNavigate();
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [step, setStep] = useState<Step>('initial');
@@ -59,7 +53,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     fetchPolicy: 'cache-and-network',
   });
 
-  const findMySpace = (
+  const findMySpaces = (
     userId: string | undefined,
     mySpaces: NewVirtualContributorMySpacesQuery['me']['myCreatedSpaces'] | undefined
   ) => {
@@ -68,25 +62,31 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     }
     const spacesHostedByUser = mySpaces.filter(space => space.account.host?.id === userId);
     if (spacesHostedByUser.length > 0) {
-      return spacesHostedByUser[0];
-    } else {
-      notify(t('createVirtualContributorWizard.noSpaces'), 'error');
-      return undefined;
+      return spacesHostedByUser;
     }
   };
 
-  const { mySpaceId, myAccountId, mySpaceName, mySubspaces, selectableSubspaces } = useMemo(() => {
-    const mySpace = findMySpace(user?.user.id, data?.me.myCreatedSpaces);
+  const { mySpaceId, allSpaces, myAccountId, mySpaceName, selectableSpaces } = useMemo(() => {
+    const mySpaces = findMySpaces(user?.user.id, data?.me.myCreatedSpaces);
+    const allSpaces: NewVirtualContributorMySpacesQuery['me']['myCreatedSpaces'] = [];
+    let selectableSpaces: { id: string; name: string }[] = [];
 
-    const mySubspaces = mySpace?.subspaces ?? [];
-    const selectableSubspaces = mySubspaces.map(subspace => ({ id: subspace.id, name: subspace.profile.displayName }));
+    mySpaces?.forEach(space => {
+      if (space) {
+        allSpaces.push(space);
+        selectableSpaces.push({ id: space.id, name: `${space.profile.displayName} (space)` });
+        selectableSpaces = selectableSpaces.concat(
+          space.subspaces?.map(subspace => ({ id: subspace.id, name: subspace.profile.displayName }))
+        );
+      }
+    });
 
     return {
-      mySpaceId: mySpace?.id,
-      myAccountId: mySpace?.account.id,
-      mySpaceName: mySpace?.profile.displayName,
-      mySubspaces,
-      selectableSubspaces,
+      mySpaceId: mySpaces?.[0]?.id,
+      allSpaces: allSpaces,
+      myAccountId: mySpaces?.[0]?.account.id,
+      mySpaceName: mySpaces?.[0]?.profile.displayName,
+      selectableSpaces,
     };
   }, [data, user]);
 
@@ -95,7 +95,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     setDialogOpen(true);
   };
   const canCreateSubspace = mySpaceId !== undefined;
-  const canUseExistingSubspace = selectableSubspaces.length > 0;
+  const canUseExistingSubspace = selectableSpaces.length > 0;
 
   const [createSubspace] = useCreateSubspaceMutation();
   const handleCreateSubspace = async (subspaceName: string) => {
@@ -132,10 +132,21 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
 
   const [selectedSubspace, setSelectedSubspace] = useState<SelectedSubspace | undefined>(undefined);
   const handleChooseSubspace = async (subspaceId: string) => {
-    const subspace = mySubspaces.find(subspace => subspace.id === subspaceId);
-    if (subspace) {
-      setSelectedSubspace(subspace);
-      setStep('step2');
+    const selectedBoK = allSpaces.find(space => space?.id === subspaceId);
+
+    if (selectedBoK) {
+      setSelectedSubspace({
+        id: selectedBoK?.id,
+        profile: {
+          displayName: selectedBoK?.profile.displayName,
+          url: '',
+        },
+      });
+      // TODO: #6604
+      // save the VC name in the state (after choosing a step in 'initial')
+      // handleCreateVirtualContributor(virtualContributorName);
+      // addVCCreationCache(virtualContributorName);
+      // navigate(mySpace?.profile.url);
     }
   };
 
@@ -143,8 +154,6 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
   const [createVirtualContributor] = useCreateVirtualContributorOnAccountMutation({
     refetchQueries: [refetchMyAccountQuery()],
   });
-  const [addVirtualContributorToSubspace] = useAddVirtualContributorToCommunityMutation();
-  const [assignCommunityRole] = useAssignCommunityRoleToVirtualContributorMutation();
   const handleCreateVirtualContributor = async (virtualContributorName: string) => {
     if (!myAccountId || !selectedSubspace) {
       return;
@@ -166,25 +175,18 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
       },
     });
     if (data?.createVirtualContributor.id) {
-      await addVirtualContributorToSubspace({
-        variables: {
-          communityId: selectedSubspace.community.id,
-          virtualContributorId: data.createVirtualContributor.id,
-        },
-      });
-      await assignCommunityRole({
-        variables: {
-          communityId: selectedSubspace.community.id,
-          role: CommunityRole.Lead,
-          virtualContributorId: data.createVirtualContributor.id,
-        },
-      });
+      // await addVirtualContributorToSubspace({
+      //   variables: {
+      //     communityId: selectedSubspace.community.id,
+      //     virtualContributorId: data.createVirtualContributor.id,
+      //   },
+      // });
       notify(
         t('createVirtualContributorWizard.createdVirtualContributor.successMessage', { virtualContributorName }),
         'success'
       );
       setCreatedVirtualContributorUrl(data.createVirtualContributor.profile.url);
-      setStep('step3');
+      // setStep('step3');
     }
   };
 
@@ -198,7 +200,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
             canUseExisting={canUseExistingSubspace}
             loading={loading}
             onCreateSubspace={() => setStep('step1')}
-            onUseExistingSubspace={() => setStep('step1b')}
+            onUseExistingSubspace={() => setStep('step.existing')}
           />
         )}
         {step === 'step1' && (
@@ -210,21 +212,20 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
             loading={loading}
           />
         )}
-        {step === 'step1b' && (
-          <ChooseSubspaceStep1b
+        {step === 'step.existing' && (
+          <ExistingSpace
             onClose={onDialogClose}
             onBack={() => setStep('initial')}
             onChooseSubspace={handleChooseSubspace}
             selectedSubspaceId={selectedSubspace?.id}
-            mySpaceName={mySpaceName}
-            subspaces={selectableSubspaces}
+            subspaces={selectableSpaces}
             loading={loading}
           />
         )}
         {step === 'step2' && (
           <NameVirtualContributorStep2
             onClose={onDialogClose}
-            onBack={() => setStep('step1b')}
+            onBack={() => setStep('step.existing')}
             onCreateVirtualContributor={handleCreateVirtualContributor}
           />
         )}

@@ -8,29 +8,25 @@ import { LoadingButton } from '@mui/lab';
 import useLoadingState from '../../../../domain/shared/utils/useLoadingState';
 import { Formik } from 'formik';
 import * as yup from 'yup';
-import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
-import Loading from '../../../../core/ui/loading/Loading';
 import FormikSelect from '../../../../core/ui/forms/FormikSelect';
 
-type ChooseSubspaceStep1bProps = {
+type ExistingSpaceProps = {
   onClose: () => void;
   onBack: () => void;
   onChooseSubspace: (subspaceId: string) => Promise<void>;
   selectedSubspaceId?: string;
-  mySpaceName: string | undefined;
   subspaces: { id: string; name: string }[];
   loading: boolean;
 };
 
-const ChooseSubspaceStep1b = ({
+const ExistingSpace = ({
   onClose,
   onBack,
   onChooseSubspace,
   selectedSubspaceId,
-  mySpaceName,
   subspaces,
   loading,
-}: ChooseSubspaceStep1bProps) => {
+}: ExistingSpaceProps) => {
   const { t } = useTranslation();
 
   const [handleContinue, loadingChooseSubspace] = useLoadingState(async (subspaceId: string) => {
@@ -39,10 +35,9 @@ const ChooseSubspaceStep1b = ({
 
   const initialValues = useMemo(
     () => ({
-      mySpaceName: mySpaceName ?? ' ', // A space character because MUI is doing something weird with the label
       subspaceId: selectedSubspaceId ?? '',
     }),
-    [mySpaceName, selectedSubspaceId]
+    [selectedSubspaceId]
   );
 
   const validationSchema = yup.object().shape({
@@ -59,36 +54,37 @@ const ChooseSubspaceStep1b = ({
     >
       {({ values, isValid }) => (
         <>
-          <DialogHeader onClose={onClose}>{t('createVirtualContributorWizard.step1b.title')}</DialogHeader>
+          <DialogHeader onClose={onClose}>{t('createVirtualContributorWizard.existingSpace.title')}</DialogHeader>
           <DialogContent>
-            <Gutters disablePadding>
-              <Caption>{t('createVirtualContributorWizard.step1b.description')}</Caption>
-              <FormikInputField
-                name="mySpaceName"
-                title={t('createVirtualContributorWizard.step1b.spaceName')}
-                disabled
-                endAdornment={loading ? <Loading /> : undefined}
-              />
-              <FormikSelect
-                name="subspaceId"
-                title={t('createVirtualContributorWizard.step1b.subspaceName')}
-                values={subspaces}
-                required
-              />
-            </Gutters>
+            {(!subspaces || subspaces.length === 0) && (
+              <Caption>{t('createVirtualContributorWizard.existingSpace.noSpaces')}</Caption>
+            )}
+            {subspaces && subspaces.length > 0 && (
+              <Gutters disablePadding>
+                <Caption>{t('createVirtualContributorWizard.existingSpace.description')}</Caption>
+                <FormikSelect
+                  name="subspaceId"
+                  title={t('createVirtualContributorWizard.existingSpace.label')}
+                  values={subspaces}
+                  required
+                />
+              </Gutters>
+            )}
           </DialogContent>
           <DialogActions>
             <Button variant="text" onClick={onBack}>
               {t('buttons.back')}
             </Button>
-            <LoadingButton
-              variant="contained"
-              disabled={!isValid || loading}
-              loading={loadingChooseSubspace}
-              onClick={() => handleContinue(values.subspaceId)}
-            >
-              {t('buttons.continue')}
-            </LoadingButton>
+            {subspaces && subspaces.length > 0 && (
+              <LoadingButton
+                variant="contained"
+                disabled={!isValid || loading}
+                loading={loadingChooseSubspace}
+                onClick={() => handleContinue(values.subspaceId)}
+              >
+                {t('buttons.create')}
+              </LoadingButton>
+            )}
           </DialogActions>
         </>
       )}
@@ -96,4 +92,4 @@ const ChooseSubspaceStep1b = ({
   );
 };
 
-export default ChooseSubspaceStep1b;
+export default ExistingSpace;
