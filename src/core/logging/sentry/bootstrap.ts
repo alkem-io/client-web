@@ -20,6 +20,7 @@ const bootstrap = (sentryEnabled?: boolean, sentryEndpoint?: string) => {
       tracesSampleRate: 1.0,
       environment: import.meta.env.MODE,
       release: `client-web@${import.meta.env.VITE_APP_BUILD_VERSION}`,
+      ignoreErrors: ['ResizeObserver loop limit exceeded'],
     });
   }
 };
