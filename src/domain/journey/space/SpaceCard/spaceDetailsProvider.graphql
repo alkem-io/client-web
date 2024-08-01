@@ -24,16 +24,10 @@ fragment SpaceCard on Space {
     id
     vision
   }
-  account {
-    id
-    license {
-      id
-      visibility
-    }
-  }
   settings {
     privacy {
       mode
     }
   }
+  visibility
 }
