@@ -26,7 +26,7 @@ export interface InnovationHubFormValues {
     tagline: string;
     tagsets: Pick<Tagset, 'id' | 'tags' | 'name' | 'allowedValues' | 'type'>[];
   };
-  hostId: string;
+  accountId: string;
 }
 
 interface InnovationHubFormProps {
@@ -41,9 +41,9 @@ interface InnovationHubFormProps {
     tagset?: { id: string; name: string; tags: string[]; allowedValues: string[]; type: TagsetType };
     visual?: Visual;
   };
-  hostId?: string;
+  accountId?: string;
 
-  organizations?: { id: string; name: string }[];
+  accounts?: { id: string; name: string }[];
 
   loading?: boolean;
   onSubmit: (formData: InnovationHubFormValues) => void;
@@ -54,8 +54,8 @@ const InnovationHubForm: FC<InnovationHubFormProps> = ({
   nameID,
   subdomain,
   profile,
-  hostId,
-  organizations,
+  accountId,
+  accounts,
   loading,
   onSubmit,
 }) => {
@@ -73,7 +73,7 @@ const InnovationHubForm: FC<InnovationHubFormProps> = ({
       tagline: profile?.tagline ?? '',
       tagsets: [profile?.tagset ?? { id: '', name: 'Tags', tags: [], allowedValues: [], type: TagsetType.Freeform }],
     },
-    hostId: hostId ?? '',
+    accountId: accountId ?? '',
   };
 
   const validationSchema = yup.object().shape({
@@ -85,12 +85,13 @@ const InnovationHubForm: FC<InnovationHubFormProps> = ({
       tagline: yup.string().max(MID_TEXT_LENGTH),
       tagsets: tagsetSegmentSchema,
     }),
-    // hostId: yup.string().required(), // TODO: Add provider
+    accountId: yup.string().required(),
   });
 
   return (
     <Formik initialValues={initialValues} validationSchema={validationSchema} enableReinitialize onSubmit={onSubmit}>
-      {({ values: { profile }, handleSubmit }) => {
+      {({ values: { profile }, errors, handleSubmit }) => {
+        console.log({ ee: Object.keys(errors) });
         return (
           <PageContentBlock>
             <FormikInputField
@@ -103,10 +104,8 @@ const InnovationHubForm: FC<InnovationHubFormProps> = ({
             <FormGroup>
               <FormikAutocomplete
                 title={t('pages.admin.innovationHubs.fields.host')}
-                name="hostId"
-                values={organizations ?? []}
-                /* required */
-                disabled
+                name="accountId"
+                values={accounts ?? []}
                 placeholder={t('pages.admin.innovationHubs.fields.host')}
               />
             </FormGroup>
@@ -139,7 +138,11 @@ const InnovationHubForm: FC<InnovationHubFormProps> = ({
             )}
             <FormGroup>
               <Box display="flex" marginY={4} justifyContent="flex-end">
-                <SaveButton loading={loading} onClick={() => handleSubmit()} />
+                <SaveButton
+                  loading={loading}
+                  disabled={errors && Object.keys(errors).length > 0}
+                  onClick={() => handleSubmit()}
+                />
               </Box>
             </FormGroup>
           </PageContentBlock>

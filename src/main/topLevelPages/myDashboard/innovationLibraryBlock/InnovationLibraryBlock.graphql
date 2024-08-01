@@ -20,6 +20,7 @@ fragment InnovationPackCard on InnovationPack {
     tagset {
       ...TagsetDetails
     }
+    url
   }
   templates {
     postTemplatesCount

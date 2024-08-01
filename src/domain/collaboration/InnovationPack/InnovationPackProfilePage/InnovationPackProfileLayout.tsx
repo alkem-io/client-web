@@ -3,7 +3,7 @@ import TopLevelLayout from '../../../../main/ui/layout/TopLevelLayout';
 import TopLevelPageBreadcrumbs from '../../../../main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 import ProfilePageBanner, { ProfilePageBannerProps } from '../../../common/profile/ProfilePageBanner';
-import { buildInnovationPackSettingsUrl, buildInnovationPackUrl } from '../urlBuilders';
+import { buildInnovationPackSettingsUrl } from '../../../../main/routing/urlBuilders';
 import { Visual } from '../../../common/visual/Visual';
 import BreadcrumbsItem from '../../../../core/ui/navigation/BreadcrumbsItem';
 import { useTranslation } from 'react-i18next';
@@ -15,7 +15,7 @@ interface InnovationPackProfileLayoutProps {
     | (Identifiable & {
         nameID: string;
         profile: ProfilePageBannerProps['profile'];
-        provider?: {
+        provider: {
           profile: {
             displayName: string;
             avatar?: Visual;
@@ -52,11 +52,7 @@ const InnovationPackProfileLayout = ({
           <BreadcrumbsItem uri="/innovation-library" iconComponent={InnovationLibraryIcon}>
             {t('pages.innovationLibrary.shortName')}
           </BreadcrumbsItem>
-          <BreadcrumbsItem
-            uri={innovationPack?.nameID && buildInnovationPackUrl(innovationPack?.nameID)}
-            iconComponent={InnovationLibraryIcon}
-            loading={loading}
-          >
+          <BreadcrumbsItem uri={innovationPack?.profile?.url} iconComponent={InnovationLibraryIcon} loading={loading}>
             {innovationPack?.profile?.displayName}
           </BreadcrumbsItem>
           {settings && <BreadcrumbsItem iconComponent={Settings}>{t('common.settings')}</BreadcrumbsItem>}
@@ -68,7 +64,9 @@ const InnovationPackProfileLayout = ({
           profile={profile}
           loading={loading}
           settingsUri={
-            showSettings && innovationPack?.nameID ? buildInnovationPackSettingsUrl(innovationPack?.nameID) : undefined
+            showSettings && innovationPack?.profile?.url
+              ? buildInnovationPackSettingsUrl(innovationPack.profile.url)
+              : undefined
           }
         />
       }

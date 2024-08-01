@@ -28,11 +28,12 @@ fragment SpaceDetails on Space {
       id
     }
   }
-  authorization {
-    id
-    anonymousReadAccess
-  }
   context {
     ...ContextDetails
+  }
+  settings {
+    privacy {
+      mode
+    }
   }
 }

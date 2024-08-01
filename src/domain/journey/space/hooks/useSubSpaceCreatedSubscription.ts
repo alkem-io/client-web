@@ -7,7 +7,7 @@ import {
 } from '../../../../core/apollo/generated/graphql-schema';
 import createUseSubscriptionToSubEntityHook from '../../../../core/apollo/subscriptions/useSubscriptionToSubEntity';
 
-const useChallengeCreatedSubscription = createUseSubscriptionToSubEntityHook<
+const useSubSpaceCreatedSubscription = createUseSubscriptionToSubEntityHook<
   SubspacesOnSpaceFragment,
   SubspaceCreatedSubscription,
   SubspaceCreatedSubscriptionVariables
@@ -19,4 +19,4 @@ const useChallengeCreatedSubscription = createUseSubscriptionToSubEntityHook<
   },
 });
 
-export default useChallengeCreatedSubscription;
+export default useSubSpaceCreatedSubscription;

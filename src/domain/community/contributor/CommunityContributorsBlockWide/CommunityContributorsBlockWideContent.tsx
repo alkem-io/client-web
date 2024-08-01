@@ -17,7 +17,7 @@ interface CommunityContributorsBlockWideContentProps {
   compactView?: boolean;
 }
 
-const COMPACT_VIEW_ITEMS_LIMIT = 3 * 8; // 3 rows on Desktop
+const COMPACT_VIEW_ROWS = 3;
 
 const filterFn = (filter: string[]) => (element: ContributorCardSquareProps) => {
   return (
@@ -38,9 +38,11 @@ const CommunityContributorsBlockWideContent = ({
   filter,
   compactView = false,
 }: CommunityContributorsBlockWideContentProps) => {
-  const isSmallScreen = useMediaQuery<Theme>(theme => theme.breakpoints.down('lg'));
+  const isSmallScreen = useMediaQuery<Theme>(theme => theme.breakpoints.down('md'));
 
   const columns = useColumns();
+
+  const compactViewItemsLimit = compactView ? columns * COMPACT_VIEW_ROWS : undefined;
 
   return (
     <GridProvider columns={isSmallScreen ? columns / 2 : columns}>
@@ -48,7 +50,7 @@ const CommunityContributorsBlockWideContent = ({
         {contributorType === CommunityContributorType.User &&
           users
             ?.filter(filterFn(filter))
-            .slice(0, compactView ? COMPACT_VIEW_ITEMS_LIMIT : undefined)
+            .slice(0, compactView ? compactViewItemsLimit : undefined)
             .map(user => (
               <GridItem key={user.id} columns={1}>
                 <Box>
@@ -59,7 +61,7 @@ const CommunityContributorsBlockWideContent = ({
         {contributorType === CommunityContributorType.Organization &&
           organizations
             ?.filter(filterFn(filter))
-            .slice(0, compactView ? COMPACT_VIEW_ITEMS_LIMIT : undefined)
+            .slice(0, compactView ? compactViewItemsLimit : undefined)
             .map(organization => (
               <GridItem key={organization.id} columns={1}>
                 <Box>

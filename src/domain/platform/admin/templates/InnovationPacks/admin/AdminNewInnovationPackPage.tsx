@@ -35,8 +35,8 @@ const AdminNewInnovationPackPage = () => {
     const { data } = await createInnovationPack({
       variables: {
         packData: {
+          accountID: 'Use account ID, not provider ID', // TODO
           nameID: formData.nameID,
-          providerID: formData.providerId,
           profileData: {
             displayName: formData.profile.displayName,
             description: formData.profile.description,
@@ -45,8 +45,8 @@ const AdminNewInnovationPackPage = () => {
       },
       refetchQueries: [refetchAdminInnovationPacksListQuery()],
     });
-    if (data?.createInnovationPackOnLibrary.nameID) {
-      navigate(`/innovation-packs/${data?.createInnovationPackOnLibrary.nameID}/settings`);
+    if (data?.createInnovationPack.nameID) {
+      navigate(`/innovation-packs/${data?.createInnovationPack.nameID}/settings`);
     }
   };
 

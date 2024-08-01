@@ -78,21 +78,16 @@ fragment PostParent on SearchResultPost {
   space {
     id
     type
-    account {
-      id
-      license {
-        id
-        visibility
-      }
-    }
+    visibility
     profile {
       id
       url
       displayName
     }
-    authorization {
-      id
-      anonymousReadAccess
+    settings {
+      privacy {
+        mode
+      }
     }
   }
   callout {
@@ -218,9 +213,10 @@ fragment SearchResultSpace on SearchResultSpace {
       url
       displayName
     }
-    authorization {
-      id
-      anonymousReadAccess
+    settings {
+      privacy {
+        mode
+      }
     }
   }
   space {
@@ -242,21 +238,16 @@ fragment SearchResultSpace on SearchResultSpace {
       id
       vision
     }
-    authorization {
-      id
-      anonymousReadAccess
-    }
     community {
       id
       myMembershipStatus
     }
-    account {
-      id
-      license {
-        id
-        visibility
+    settings {
+      privacy {
+        mode
       }
     }
+    visibility
   }
 }
 

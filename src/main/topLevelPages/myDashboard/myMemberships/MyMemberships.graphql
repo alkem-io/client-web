@@ -3,44 +3,38 @@ query MyMemberships {
     spaceMemberships {
       id
       level
-      account {
-        id
-        license {
-          id
-          visibility
-        }
-      }
-      metrics {
-        name
-        value
-      }
-      context {
-        id
-        vision
-      }
+      visibility
       profile {
-        id
-        url
-        displayName
-        tagline
-        tagset {
-          id
-          tags
-        }
-        cardBanner: visual(type: CARD) {
-          ...VisualUri
-        }
+        ...MyMembershipsSpaceProfile
+      }
+      community {
+        myRoles
       }
       subspaces {
-        id
-        authorization {
-          id
-          myPrivileges
-        }
-        community {
-          ...MyMembershipsChildJourneyCommunity
-        }
+        ...MyMembershipsSubspaceProfile
       }
     }
+  }
+}
+
+fragment MyMembershipsSpaceProfile on Profile {
+  id
+  url
+  displayName
+  tagline
+  cardBanner: visual(type: CARD) {
+    ...VisualUri
+  }
+}
+
+fragment MyMembershipsSubspaceProfile on Space {
+  id
+  level
+  authorization {
+    id
+    myPrivileges
+  }
+  community {
+    ...MyMembershipsChildJourneyCommunity
   }
 }

@@ -9,12 +9,6 @@ query SearchScopeDetailsSpace($spaceNameId: UUID_NAMEID!) {
         uri
       }
     }
-    account {
-      id
-      license {
-        id
-        visibility
-      }
-    }
+    visibility
   }
 }

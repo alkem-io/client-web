@@ -33,6 +33,7 @@ export interface ProfilePageBannerProps {
         tagsets?: {
           tags: string[];
         }[];
+        url?: string;
       }
     | undefined;
   settingsUri?: string;
