@@ -47,7 +47,7 @@ const ExternalAIComingSoonDialog: React.FC<ExternalAIComingSoonDialogProps> = ({
 
   const initialValues: FormValues = {
     aiService: '',
-    sendResponse: ContactOptions.option1,
+    sendResponse: '',
   };
 
   const validationSchema = yup.object().shape({
@@ -56,6 +56,7 @@ const ExternalAIComingSoonDialog: React.FC<ExternalAIComingSoonDialogProps> = ({
       .required()
       .min(3, MessageWithPayload('forms.validations.minLength'))
       .max(MID_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength')),
+    sendResponse: yup.string().oneOf([ContactOptions.option1, ContactOptions.option2]).required(),
   });
 
   const filter: UserFilterInput = { email: SUPPORT_EMAIL };
@@ -113,7 +114,7 @@ const ExternalAIComingSoonDialog: React.FC<ExternalAIComingSoonDialogProps> = ({
           {({ isValid, handleChange }) => (
             <Form>
               <Gutters disablePadding>
-                <Box display="flex" gap={gutters(0.5)}>
+                <Box display="flex">
                   <Caption alignSelf="center">
                     {t('createVirtualContributorWizard.externalAICommingSoon.subTitle')}
                   </Caption>
@@ -123,22 +124,28 @@ const ExternalAIComingSoonDialog: React.FC<ExternalAIComingSoonDialogProps> = ({
                   title={t('createVirtualContributorWizard.externalAICommingSoon.input.label')}
                   placeholder={t('createVirtualContributorWizard.externalAICommingSoon.input.placeholder')}
                 />
-                <Box display="flex" gap={gutters(0.5)}>
+                <Box display="flex" marginTop={gutters()}>
                   <Caption alignSelf="center">
                     {t('createVirtualContributorWizard.externalAICommingSoon.contactOptions.title')}
                   </Caption>
                 </Box>
-                <Field component={RadioGroup} name="sendResponse" onChange={handleChange}>
-                  <FormControlLabel
-                    value={ContactOptions.option1}
-                    control={<Radio disabled={loading} />}
-                    label={t('createVirtualContributorWizard.externalAICommingSoon.contactOptions.option1')}
-                  />
-                  <FormControlLabel
-                    value={ContactOptions.option2}
-                    control={<Radio disabled={loading} />}
-                    label={t('createVirtualContributorWizard.externalAICommingSoon.contactOptions.option2')}
-                  />
+                <Field name="sendResponse">
+                  {({ field }) => (
+                    <RadioGroup {...field}>
+                      <FormControlLabel
+                        value={ContactOptions.option1}
+                        onChange={handleChange}
+                        control={<Radio disabled={loading} />}
+                        label={t('createVirtualContributorWizard.externalAICommingSoon.contactOptions.option1')}
+                      />
+                      <FormControlLabel
+                        value={ContactOptions.option2}
+                        onChange={handleChange}
+                        control={<Radio disabled={loading} />}
+                        label={t('createVirtualContributorWizard.externalAICommingSoon.contactOptions.option2')}
+                      />
+                    </RadioGroup>
+                  )}
                 </Field>
                 <Actions justifyContent="end">
                   <Button variant="text" onClick={onClose}>
