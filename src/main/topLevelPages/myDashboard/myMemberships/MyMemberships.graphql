@@ -3,13 +3,7 @@ query MyMemberships {
     spaceMemberships {
       id
       level
-      account {
-        id
-        license {
-          id
-          visibility
-        }
-      }
+      visibility
       profile {
         ...MyMembershipsSpaceProfile
       }
