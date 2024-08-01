@@ -17,6 +17,7 @@ import { useSendMessageToUserMutation, useUserSelectorQuery } from '../../../../
 import { useUserContext } from '../../../../domain/community/user';
 import { UserFilterInput } from '../../../../core/apollo/generated/graphql-schema';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
+import { warn as logWarn } from '../../../../core/logging/sentry/log';
 
 const SUPPORT_EMAIL = 'support@alkem.io';
 
@@ -45,7 +46,7 @@ const ExternalAIComingSoonDialog: React.FC<ExternalAIComingSoonDialogProps> = ({
   const [sendMessageToUser] = useSendMessageToUserMutation();
 
   const initialValues: FormValues = {
-    aiService: ' ',
+    aiService: '',
     sendResponse: ContactOptions.option1,
   };
 
@@ -85,8 +86,14 @@ const ExternalAIComingSoonDialog: React.FC<ExternalAIComingSoonDialogProps> = ({
         onClose();
       }
     } else {
-      // email not configured but no need of error for the user
-      // todo: log this error in sentry
+      // email not configured but there's no need of UI error message
+      logWarn(
+        `User tried to send an externa AI request "${values.aiService.trim()}" | User: ${
+          user?.user.email
+        } | Contact me: ${values.sendResponse}" but there's no support email configured.`,
+        { code: 'NoSupportEmailConfigured' }
+      );
+
       setLoading(false);
       onClose();
     }
