@@ -20,12 +20,11 @@ import { theme } from '../../../../core/ui/themes/default/Theme';
 import { useColumns } from '../../../../core/ui/grid/GridContext';
 import FormikMarkdownField from '../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
 
-type CreateNewVirtualContributorStep0Props = {
+type CreateNewVirtualContributorProps = {
   canCreateSubspace?: boolean;
   canUseExisting?: boolean;
   onClose: () => void;
-  onCreateSubspace: () => void;
-  onUseExistingSubspace: () => void;
+  onCreateSpace: (values: VirtualContributorFromProps) => void;
   loading?: boolean;
 };
 
@@ -71,7 +70,7 @@ const BigButton = ({
   return tooltipDisabled && props.disabled ? <Tooltip title={tooltipDisabled}>{button}</Tooltip> : button;
 };
 
-const CreateNewVirtualContributorStep0 = ({ onClose, loading }: CreateNewVirtualContributorStep0Props) => {
+const CreateNewVirtualContributor = ({ onClose, onCreateSpace, loading }: CreateNewVirtualContributorProps) => {
   const { t } = useTranslation();
   const isSmallScreen = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
 
@@ -95,16 +94,15 @@ const CreateNewVirtualContributorStep0 = ({ onClose, loading }: CreateNewVirtual
     setSource(event.currentTarget.value as VCSourceOptions);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = (values: VirtualContributorFromProps) => {
     switch (source) {
       case VCSourceOptions.WRITTEN_KNOWLEDGE:
-        // TODO: #6603
+        onCreateSpace(values)
         break;
       case VCSourceOptions.EXISTING_SPACE:
         // TODO: #6604
         break;
       case VCSourceOptions.EXTERNAL:
-        console.log('EXTERNAL');
         // TODO: #6605
         break;
     }
@@ -112,49 +110,49 @@ const CreateNewVirtualContributorStep0 = ({ onClose, loading }: CreateNewVirtual
 
   return (
     <>
-      <DialogHeader onClose={onClose}>{t('createVirtualContributorWizard.step0.title')}</DialogHeader>
-      <DialogContent sx={{ paddingTop: 0 }}>
-        <Gutters disablePadding>
-          <Caption>{t('createVirtualContributorWizard.step0.profileDescription')}</Caption>
-          <GridContainer disablePadding>
-            <GridProvider columns={12}>
-              <Formik
-                initialValues={initialValues}
-                validationSchema={validationSchema}
-                enableReinitialize
-                onSubmit={handleSubmit}
-              >
-                {({ values }) => {
-                  return (
-                    <Form noValidate>
-                      <GridItem columns={isMobile ? cols : 8}>
-                        <Gutters disablePadding>
-                          <FormikInputField
-                            name="name"
-                            title={t('components.nameSegment.name')}
-                            placeholder={t('components.nameSegment.name')}
-                            required
-                          />
-                          <FormikInputField
-                            name="tagline"
-                            title={t('components.profileSegment.tagline.name')}
-                            placeholder={t('components.profileSegment.tagline.placeholder')}
-                          />
-                          <FormikMarkdownField
-                            name="description"
-                            title={t('components.profileSegment.description.name')}
-                            placeholder={t('components.profileSegment.description.placeholder')}
-                            rows={10}
-                            multiline
-                            hideImageOptions
-                          />
-                        </Gutters>
-                      </GridItem>
-                      <GridItem columns={isMobile ? cols : 8}>
-                        <Gutters disablePadding paddingTop={gutters()}>
-                          <Caption>{t('createVirtualContributorWizard.step0.description')}</Caption>
-                          {loading && <Loading />}
-                          {!loading && (
+      <DialogHeader onClose={onClose}>{t('createVirtualContributorWizard.initial.title')}</DialogHeader>
+      {loading && <Loading />}
+      {!loading && (
+        <DialogContent sx={{ paddingTop: 0 }}>
+          <Gutters disablePadding>
+            <Caption>{t('createVirtualContributorWizard.initial.profileDescription')}</Caption>
+            <GridContainer disablePadding>
+              <GridProvider columns={12}>
+                <Formik
+                  initialValues={initialValues}
+                  validationSchema={validationSchema}
+                  enableReinitialize
+                  onSubmit={handleSubmit}
+                >
+                  {({ values }) => {
+                    return (
+                      <Form noValidate>
+                        <GridItem columns={isMobile ? cols : 8}>
+                          <Gutters disablePadding>
+                            <FormikInputField
+                              name="name"
+                              title={t('components.nameSegment.name')}
+                              placeholder={t('components.nameSegment.name')}
+                              required
+                            />
+                            <FormikInputField
+                              name="tagline"
+                              title={t('components.profileSegment.tagline.name')}
+                              placeholder={t('components.profileSegment.tagline.placeholder')}
+                            />
+                            <FormikMarkdownField
+                              name="description"
+                              title={t('components.profileSegment.description.name')}
+                              placeholder={t('components.profileSegment.description.placeholder')}
+                              rows={10}
+                              multiline
+                              hideImageOptions
+                            />
+                          </Gutters>
+                        </GridItem>
+                        <GridItem columns={isMobile ? cols : 8}>
+                          <Gutters disablePadding paddingTop={gutters()}>
+                            <Caption>{t('createVirtualContributorWizard.initial.description')}</Caption>
                             <Box
                               display="flex"
                               flexDirection={isSmallScreen ? 'column' : 'row'}
@@ -165,11 +163,11 @@ const CreateNewVirtualContributorStep0 = ({ onClose, loading }: CreateNewVirtual
                                 onClick={selectVCSource}
                                 value={VCSourceOptions.WRITTEN_KNOWLEDGE}
                                 startIcon={<LibraryBooksOutlined />}
-                                tooltipDisabled={t('createVirtualContributorWizard.step0.cannotCreateSubspace')}
+                                tooltipDisabled={t('createVirtualContributorWizard.initial.cannotCreateSubspace')}
                                 selected={source === VCSourceOptions.WRITTEN_KNOWLEDGE}
                               >
-                                {t('createVirtualContributorWizard.step0.createSpace')}
-                                <Caption fontSize={9}>{t('createVirtualContributorWizard.step0.ownAI')}</Caption>
+                                {t('createVirtualContributorWizard.initial.createSpace')}
+                                <Caption fontSize={9}>{t('createVirtualContributorWizard.initial.ownAI')}</Caption>
                               </BigButton>
                               <BigButton
                                 onClick={selectVCSource}
@@ -179,41 +177,41 @@ const CreateNewVirtualContributorStep0 = ({ onClose, loading }: CreateNewVirtual
                                     <LogoSmallImage />
                                   </Box>
                                 }
-                                tooltipDisabled={t('createVirtualContributorWizard.step0.cannotCreateSubspace')}
+                                tooltipDisabled={t('createVirtualContributorWizard.initial.cannotCreateSubspace')}
                                 selected={source === VCSourceOptions.EXISTING_SPACE}
                               >
-                                {t('createVirtualContributorWizard.step0.useExistingSpace')}
-                                <Caption fontSize={9}>{t('createVirtualContributorWizard.step0.ownAI')}</Caption>
+                                {t('createVirtualContributorWizard.initial.useExistingSpace')}
+                                <Caption fontSize={9}>{t('createVirtualContributorWizard.initial.ownAI')}</Caption>
                               </BigButton>
                               <BigButton
                                 onClick={selectVCSource}
                                 value={VCSourceOptions.EXTERNAL}
                                 startIcon={<CloudDownloadOutlinedIcon />}
-                                tooltipDisabled={t('createVirtualContributorWizard.step0.cannotUseExisting')}
+                                tooltipDisabled={t('createVirtualContributorWizard.initial.cannotUseExisting')}
                                 selected={source === VCSourceOptions.EXTERNAL}
                               >
-                                {t('createVirtualContributorWizard.step0.useExternalAI')}
-                                <Caption fontSize={9}>{t('createVirtualContributorWizard.step0.externalAI')}</Caption>
+                                {t('createVirtualContributorWizard.initial.useExternalAI')}
+                                <Caption fontSize={9}>{t('createVirtualContributorWizard.initial.externalAI')}</Caption>
                               </BigButton>
                             </Box>
-                          )}
-                        </Gutters>
-                      </GridItem>
-                      <Actions marginTop={theme.spacing(2)} sx={{ justifyContent: 'end', flexBasis: '100%' }}>
-                        <Button type="submit" variant="contained" disabled={!values.name || !source}>
-                          {t('buttons.create')}
-                        </Button>
-                      </Actions>
-                    </Form>
-                  );
-                }}
-              </Formik>
-            </GridProvider>
-          </GridContainer>
-        </Gutters>
-      </DialogContent>
+                          </Gutters>
+                        </GridItem>
+                        <Actions marginTop={theme.spacing(2)} sx={{ justifyContent: 'end', flexBasis: '100%' }}>
+                          <Button type="submit" variant="contained" disabled={!values.name || !source}>
+                            {t('buttons.create')}
+                          </Button>
+                        </Actions>
+                      </Form>
+                    );
+                  }}
+                </Formik>
+              </GridProvider>
+            </GridContainer>
+          </Gutters>
+        </DialogContent>
+      )}
     </>
   );
 };
 
-export default CreateNewVirtualContributorStep0;
+export default CreateNewVirtualContributor;

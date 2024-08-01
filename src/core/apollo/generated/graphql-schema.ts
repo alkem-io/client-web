@@ -30444,6 +30444,7 @@ export type NewVirtualContributorMySpacesQuery = {
           | { __typename?: 'VirtualContributor'; id: string }
           | undefined;
       };
+      community: { __typename?: 'Community'; id: string };
       profile: { __typename?: 'Profile'; id: string; displayName: string };
       subspaces: Array<{
         __typename?: 'Space';
@@ -30454,6 +30455,13 @@ export type NewVirtualContributorMySpacesQuery = {
       }>;
     }>;
   };
+};
+
+export type AllSpacesQueryVariables = Exact<{ [key: string]: never }>;
+
+export type AllSpacesQuery = {
+  __typename?: 'Query';
+  spaces: Array<{ __typename?: 'Space'; id: string; nameID: string }>;
 };
 
 export type RecentForumMessagesQueryVariables = Exact<{
