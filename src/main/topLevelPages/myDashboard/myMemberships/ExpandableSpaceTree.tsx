@@ -60,6 +60,23 @@ const ExpandableSpaceTree = ({
 
   const verticalOffset = level === 0 ? 1 : 0.5;
 
+  const renderSubSpaces = (subspace: SubspaceAccessProps) => {
+    const spaceDetails = getMembershipWithDetails(subspace.id);
+
+    if (spaceDetails) {
+      return (
+        <ExpandableSpaceTree
+          key={subspace.id}
+          space={spaceDetails}
+          subspaces={spaceDetails?.subspaces?.filter(isJourneyMember)}
+          getMembershipWithDetails={getMembershipWithDetails}
+        />
+      );
+    }
+
+    return null;
+  };
+
   return (
     <>
       <GridItem columns={columns}>
@@ -107,15 +124,7 @@ const ExpandableSpaceTree = ({
           </Gutters>
         </Gutters>
       </GridItem>
-      {isExpanded &&
-        subspaces?.map(subspace => (
-          <ExpandableSpaceTree
-            key={subspace.id}
-            space={getMembershipWithDetails(subspace.id)}
-            subspaces={getMembershipWithDetails(subspace.id)?.subspaces?.filter(isJourneyMember)}
-            getMembershipWithDetails={getMembershipWithDetails}
-          />
-        ))}
+      {isExpanded && subspaces?.map(renderSubSpaces)}
     </>
   );
 };
