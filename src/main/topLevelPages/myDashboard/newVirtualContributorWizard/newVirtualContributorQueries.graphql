@@ -12,6 +12,7 @@ query NewVirtualContributorMySpaces {
       profile {
         id
         displayName
+        url
       }
       subspaces {
         id
@@ -24,6 +25,9 @@ query NewVirtualContributorMySpaces {
         community {
           id
         }
+      }
+      community {
+        id
       }
     }
   }

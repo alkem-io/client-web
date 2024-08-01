@@ -30444,7 +30444,7 @@ export type NewVirtualContributorMySpacesQuery = {
           | { __typename?: 'VirtualContributor'; id: string }
           | undefined;
       };
-      profile: { __typename?: 'Profile'; id: string; displayName: string };
+      profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
       subspaces: Array<{
         __typename?: 'Space';
         id: string;
@@ -30452,6 +30452,7 @@ export type NewVirtualContributorMySpacesQuery = {
         profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
         community: { __typename?: 'Community'; id: string };
       }>;
+      community: { __typename?: 'Community'; id: string };
     }>;
   };
 };

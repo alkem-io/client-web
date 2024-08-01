@@ -1,6 +1,7 @@
 import { ComponentType, useCallback, useMemo, useState } from 'react';
 import {
   refetchMyAccountQuery,
+  useAddVirtualContributorToCommunityMutation,
   useCreateSubspaceMutation,
   useCreateVirtualContributorOnAccountMutation,
   useNewVirtualContributorMySpacesQuery,
@@ -25,6 +26,9 @@ interface SelectedSubspace {
   profile: {
     displayName: string;
     url: string;
+  };
+  community: {
+    id: string;
   };
 }
 
@@ -139,7 +143,10 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
         id: selectedBoK?.id,
         profile: {
           displayName: selectedBoK?.profile.displayName,
-          url: '',
+          url: selectedBoK?.profile.url,
+        },
+        community: {
+          id: selectedBoK?.community?.id,
         },
       });
       // TODO: #6604
@@ -150,6 +157,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     }
   };
 
+  const [addVirtualContributorToSubspace] = useAddVirtualContributorToCommunityMutation();
   const [createdVirtualContributorUrl, setCreatedVirtualContributorUrl] = useState<string | undefined>(undefined);
   const [createVirtualContributor] = useCreateVirtualContributorOnAccountMutation({
     refetchQueries: [refetchMyAccountQuery()],
@@ -175,12 +183,12 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
       },
     });
     if (data?.createVirtualContributor.id) {
-      // await addVirtualContributorToSubspace({
-      //   variables: {
-      //     communityId: selectedSubspace.community.id,
-      //     virtualContributorId: data.createVirtualContributor.id,
-      //   },
-      // });
+      await addVirtualContributorToSubspace({
+        variables: {
+          communityId: selectedSubspace.community.id,
+          virtualContributorId: data.createVirtualContributor.id,
+        },
+      });
       notify(
         t('createVirtualContributorWizard.createdVirtualContributor.successMessage', { virtualContributorName }),
         'success'
