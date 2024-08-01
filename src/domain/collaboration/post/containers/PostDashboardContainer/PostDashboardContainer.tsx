@@ -66,7 +66,7 @@ const PostDashboardContainer: FC<PostDashboardContainerProps> = ({ calloutId, po
   const creator = post?.createdBy;
   const creatorAvatar = creator?.profile.avatar?.uri;
   const creatorName = creator?.profile.displayName;
-  const createdDate = post?.createdDate.toString();
+  const createdDate = post?.createdDate?.toString();
 
   const _messages = useMemo(() => post?.comments?.messages ?? [], [post?.comments?.messages]);
   const messages = useMemo<Message[]>(
