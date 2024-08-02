@@ -2960,7 +2960,7 @@
     "createVC": {
       "loading": "A Space and Subspace for adding the knowledge for your Virtual Contributor are being built. This process may take a few moments to complete."
     },
-    "addContent" : {
+    "addContent": {
       "title": "Add knowledge",
       "description": "What knowledge do you want your Virtual Contributor to have? Write it down in post(s) and/or upload relevant documents.",
       "descriptionBold": "You can update, add, and remove content later.",
@@ -2988,6 +2988,20 @@
       "addKnowledge": "Add knowledge"
     },
 
+    "externalAICommingSoon": {
+      "title": "🚀 Coming soon!",
+      "subTitle": "We're currently building the functionality to use external AI services for your Virtual Contributor. You can help us by sharing which AI service you would like to use.",
+      "input": {
+        "label": "AI Service",
+        "placeholder": "E.g. the AI that xx created to xx"
+      },
+      "contactOptions": {
+        "title": "May we contact you if we have questions about the way you want to use this AI service?",
+        "option1": "Yes",
+        "option2": "No"
+      },
+      "success": "Message sent successfully!"
+    },
     "trySection": {
       "title": "🎉 Try it out!",
       "subTitle": "Your Virtual Contributor is successfully created and we added it to your personal Space <tooltip><icon /></tooltip>. You can now interact with it by typing <i>@{{vcName}}</i> in a comment on any post in your Space. Give it a try in the preview below!",

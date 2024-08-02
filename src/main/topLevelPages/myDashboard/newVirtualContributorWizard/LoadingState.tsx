@@ -22,7 +22,7 @@ const LoadingState = ({ onClose }: LoadingStateProps) => {
   const onConfirmCancel = () => {
     // TODO: deletion doesn't work if the VC and/or space are not yet created
     onClose();
-  }
+  };
 
   return (
     <>
@@ -34,6 +34,6 @@ const LoadingState = ({ onClose }: LoadingStateProps) => {
       <CancelDialog open={dialogOpen} onClose={() => setDialogOpen(false)} onConfirm={onConfirmCancel} />
     </>
   );
-}
+};
 
 export default LoadingState;
