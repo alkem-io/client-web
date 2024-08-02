@@ -9,6 +9,9 @@ query NewVirtualContributorMySpaces {
           id
         }
       }
+      community {
+        id
+      }
       profile {
         id
         displayName
@@ -30,5 +33,12 @@ query NewVirtualContributorMySpaces {
         id
       }
     }
+  }
+}
+
+query AllSpaces {
+  spaces {
+    id
+    nameID
   }
 }

@@ -23669,6 +23669,9 @@ export const NewVirtualContributorMySpacesDocument = gql`
             id
           }
         }
+        community {
+          id
+        }
         profile {
           id
           displayName
@@ -23747,6 +23750,54 @@ export function refetchNewVirtualContributorMySpacesQuery(
   variables?: SchemaTypes.NewVirtualContributorMySpacesQueryVariables
 ) {
   return { query: NewVirtualContributorMySpacesDocument, variables: variables };
+}
+
+export const AllSpacesDocument = gql`
+  query AllSpaces {
+    spaces {
+      id
+      nameID
+    }
+  }
+`;
+
+/**
+ * __useAllSpacesQuery__
+ *
+ * To run a query within a React component, call `useAllSpacesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAllSpacesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAllSpacesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useAllSpacesQuery(
+  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.AllSpacesQuery, SchemaTypes.AllSpacesQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.AllSpacesQuery, SchemaTypes.AllSpacesQueryVariables>(AllSpacesDocument, options);
+}
+
+export function useAllSpacesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.AllSpacesQuery, SchemaTypes.AllSpacesQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.AllSpacesQuery, SchemaTypes.AllSpacesQueryVariables>(
+    AllSpacesDocument,
+    options
+  );
+}
+
+export type AllSpacesQueryHookResult = ReturnType<typeof useAllSpacesQuery>;
+export type AllSpacesLazyQueryHookResult = ReturnType<typeof useAllSpacesLazyQuery>;
+export type AllSpacesQueryResult = Apollo.QueryResult<SchemaTypes.AllSpacesQuery, SchemaTypes.AllSpacesQueryVariables>;
+export function refetchAllSpacesQuery(variables?: SchemaTypes.AllSpacesQueryVariables) {
+  return { query: AllSpacesDocument, variables: variables };
 }
 
 export const RecentForumMessagesDocument = gql`
