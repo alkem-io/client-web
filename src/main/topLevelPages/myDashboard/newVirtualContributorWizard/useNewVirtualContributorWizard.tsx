@@ -128,7 +128,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     if (!user?.user.id) {
       return;
     }
-    debugger;
+
     const { data: newSpace } = await CreateNewSpace({
       variables: {
         hostId: user?.user.id,
