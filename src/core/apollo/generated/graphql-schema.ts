@@ -30445,7 +30445,7 @@ export type NewVirtualContributorMySpacesQuery = {
           | undefined;
       };
       community: { __typename?: 'Community'; id: string };
-      profile: { __typename?: 'Profile'; id: string; displayName: string };
+      profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
       subspaces: Array<{
         __typename?: 'Space';
         id: string;

@@ -23675,6 +23675,7 @@ export const NewVirtualContributorMySpacesDocument = gql`
         profile {
           id
           displayName
+          url
         }
         subspaces {
           id
@@ -23687,6 +23688,9 @@ export const NewVirtualContributorMySpacesDocument = gql`
           community {
             id
           }
+        }
+        community {
+          id
         }
       }
     }
