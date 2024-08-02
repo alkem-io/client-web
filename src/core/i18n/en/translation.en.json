@@ -1840,7 +1840,7 @@
             "hostedSpaces": "Hosted Spaces",
             "virtualContributors": "Virtual Contributors",
             "innovationPacks": "$t(common.innovation-packs)",
-            "customHomepages": "My Custom Homepages",
+            "customHomepages": "Your Custom Homepages",
             "hostTitle": "Host",
             "contactsLink": "If you want to change any of these settings, please contact the Alkemio team here.",
             "freeTrialNotice": {
@@ -1978,7 +1978,7 @@
         }
       },
       "innovation-packs": {
-        "create": "Create InnovationPack",
+        "create": "Create Innovation Pack",
         "fields": {
           "provider": "Provider organization",
           "listedInStore": "Listed in Store",

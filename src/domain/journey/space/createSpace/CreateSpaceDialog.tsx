@@ -1,7 +1,5 @@
 import DialogWithGrid, { DialogFooter } from '../../../../core/ui/dialog/DialogWithGrid';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
-import { useBackToStaticPath } from '../../../../core/routing/useBackToPath';
-import { ROUTE_HOME } from '../../../platform/routes/constants';
 import { Button, Checkbox, Dialog, DialogContent, FormControlLabel, IconButton, Link, TextField } from '@mui/material';
 import { Caption } from '../../../../core/ui/typography';
 import { Formik } from 'formik';
@@ -38,11 +36,16 @@ interface FormValues extends SpaceEditFormValuesType {
 }
 
 const CreateSpaceDialog = () => {
-  const handleClose = useBackToStaticPath(ROUTE_HOME);
   const { t } = useTranslation();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [plansTableDialogOpen, setPlansTableDialogOpen] = useState(false);
   const [creatingDialogOpen, setCreatingDialogOpen] = useState(false);
+
+  const handleClose = () => {
+    setDialogOpen(false);
+    setPlansTableDialogOpen(false);
+    setCreatingDialogOpen(false);
+  };
 
   const tagsets = useMemo(() => {
     return [

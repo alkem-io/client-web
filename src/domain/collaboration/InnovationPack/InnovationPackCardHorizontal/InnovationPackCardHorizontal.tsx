@@ -1,5 +1,5 @@
 import DesignServicesIcon from '@mui/icons-material/DesignServices';
-import { Box, Skeleton } from '@mui/material';
+import { Box, Skeleton, useTheme } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import CardFooterCountWithBadge from '../../../../core/ui/card/CardFooterCountWithBadge';
 import { gutters } from '../../../../core/ui/grid/utils';
@@ -27,18 +27,15 @@ export interface InnovationPackCardProps {
   whiteboardTemplatesCount?: number;
 }
 
-export const InnovationPackCardHorizontalSkeleton = () => (
-  <BadgeCardView
-    visual={
-      <Box width={gutters(2)} height={gutters(3)}>
-        <Skeleton height="100%" />
-      </Box>
-    }
-  >
-    <Skeleton />
-    <Skeleton />
-  </BadgeCardView>
-);
+export const InnovationPackCardHorizontalSkeleton = () => {
+  const theme = useTheme();
+  return (
+    <BadgeCardView visual={<Skeleton height={gutters(2)(theme)} width={gutters(2)(theme)} variant="circular" />}>
+      <Skeleton />
+      <Skeleton />
+    </BadgeCardView>
+  );
+};
 
 const InnovationPackCardHorizontal = ({
   profile: { displayName, description, url },

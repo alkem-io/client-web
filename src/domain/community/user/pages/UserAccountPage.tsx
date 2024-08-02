@@ -36,6 +36,7 @@ export const UserAccountPage: FC<UserAccountPageProps> = () => {
     },
     skip: !userNameId,
   });
+
   const isMyProfile = data?.user.id === currentUser?.user.id;
 
   // TODO: This will not be needed when we have multiple spaces per account and a single account per user
@@ -57,7 +58,6 @@ export const UserAccountPage: FC<UserAccountPageProps> = () => {
     },
     skip: !spaceIds.length,
   });
-  //     <StorageConfigContextProvider locationType="user" userId={data?.me.user?.id}>
 
   return (
     <UserSettingsLayout currentTab={SettingsSection.Account}>
