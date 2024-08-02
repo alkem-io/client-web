@@ -21,6 +21,6 @@ const LoadingState = ({ onClose }: LoadingStateProps) => {
       </Gutters>
     </>
   );
-}
+};
 
 export default LoadingState;
