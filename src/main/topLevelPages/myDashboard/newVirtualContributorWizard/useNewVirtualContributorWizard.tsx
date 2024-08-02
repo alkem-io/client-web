@@ -21,6 +21,7 @@ import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
 import useNavigate from '../../../../core/routing/useNavigate';
 import { usePlanAvailability } from '../../../../domain/journey/space/createSpace/plansTable/usePlanAvailability';
 import { addVCCreationCache } from './vcCreationUtil';
+import { info } from '../../../../core/logging/sentry/log';
 
 const SPACE_LABEL = '(space)';
 
@@ -142,6 +143,11 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     if (!user?.user.id) {
       return;
     }
+    if (plans.length === 0) {
+      info(`No available plans for this account. User: ${user?.user.id}`);
+      notify('No available plans for this account. Please, contact support@alkem.io.', 'error');
+      return;
+    }
 
     const { data: newSpace } = await CreateNewSpace({
       variables: {
@@ -149,7 +155,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
         spaceData: {
           nameID: makeUniqueName(generateNameId(user?.user.profile.displayName!)),
           profileData: {
-            displayName: generateSpaceName(user?.user.profile.displayName!), // ensured by yup validation
+            displayName: generateSpaceName(user?.user.profile.displayName!),
           },
           collaborationData: {},
         },
@@ -157,6 +163,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
       },
     });
     setSpaceId(newSpace?.createAccount.spaceID);
+
     return newSpace;
   };
 
