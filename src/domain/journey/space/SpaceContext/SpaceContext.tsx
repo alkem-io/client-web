@@ -6,7 +6,6 @@ import { useSpaceProviderQuery } from '../../../../core/apollo/generated/apollo-
 import {
   AuthorizationPrivilege,
   CommunityMembershipStatus,
-  License,
   SpaceInfoFragment,
   SpacePrivacyMode,
   SpaceVisibility,
@@ -36,7 +35,7 @@ interface SpaceContextProps {
   // TODO This Context should provide as little data as possible or just be removed.
   context?: SpaceInfoFragment['context'];
   profile: SpaceInfoFragment['profile'];
-  license: License;
+  visibility: SpaceVisibility;
   myMembershipStatus: CommunityMembershipStatus | undefined;
 }
 
@@ -63,10 +62,7 @@ const SpaceContext = React.createContext<SpaceContextProps>({
     tagline: '',
     url: '',
   },
-  license: {
-    id: '',
-    visibility: SpaceVisibility.Active,
-  },
+  visibility: SpaceVisibility.Active,
   refetchSpace: () => {},
   myMembershipStatus: undefined,
 });
@@ -93,11 +89,8 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
 
   const space = data?.space;
   const spaceId = space?.id || '';
-  const license = {
-    id: space?.account.license.id || '',
-    visibility: space?.account.license?.visibility || SpaceVisibility.Active,
-    featureFlags: [],
-  };
+  const visibility = space?.visibility || SpaceVisibility.Active;
+
   const communityId = space?.community?.id ?? '';
   const isPrivate = space && space.settings.privacy?.mode === SpacePrivacyMode.Private;
   const error = configError || spaceError;
@@ -135,7 +128,7 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
       references: space?.profile.references ?? [],
       location: space?.profile.location,
       url: space?.profile.url ?? '',
-      license,
+      visibility,
     };
   }, [space?.profile]);
 
@@ -152,7 +145,7 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
         refetchSpace,
         profile,
         context: space?.context,
-        license,
+        visibility,
         myMembershipStatus: space?.community?.myMembershipStatus,
       }}
     >

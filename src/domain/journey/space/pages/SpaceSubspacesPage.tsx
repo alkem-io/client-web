@@ -28,8 +28,7 @@ const SpaceSubspacesPage: FC<SpaceSubspacesPageProps> = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { spaceId, journeyPath } = useRouteResolver();
-  const { spaceNameId, permissions, license } = useSpace();
-  const spaceVisibility = license.visibility;
+  const { spaceNameId, permissions, visibility } = useSpace();
 
   const [isCreateDialogOpen, setCreateDialogOpen] = useState(false);
 
@@ -83,7 +82,7 @@ const SpaceSubspacesPage: FC<SpaceSubspacesPageProps> = () => {
                 vision={challenge.context?.vision!}
                 journeyUri={challenge.profile.url}
                 locked={challenge.settings.privacy?.mode === SpacePrivacyMode.Private}
-                spaceVisibility={spaceVisibility}
+                spaceVisibility={visibility}
                 member={challenge.community?.myMembershipStatus === CommunityMembershipStatus.Member}
               />
             )}
