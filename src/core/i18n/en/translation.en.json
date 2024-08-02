@@ -112,7 +112,8 @@
     "take-me-home": "Take me home",
     "close": "Close",
     "yes-close": "Yes, close",
-    "yesReplace": "Yes, Replace",
+    "yesReplace": "Yes, replace",
+    "yesStop": "Yes, stop",
     "delete": "Delete",
     "submit": "Submit",
     "remove": "Remove",
@@ -2939,7 +2940,11 @@
       "description": "",
       "successMessage": "Virtual Contributor '{{virtualContributorName}}' created successfully"
     },
-    "deleted": "Virtual Contributor deleted successfuly!",
+    "cancel": {
+      "title": "Discard Virtual Contributor",
+      "description": "Are you sure you want to stop creating your Virtual Contributor? Your work will not be saved.",
+      "deleted": "Virtual Contributor deleted successfuly!"
+    },
     "initial": {
       "title": "Create a Virtual Contributor",
       "profileDescription": "Choose a name, add an avatar and enrich your Virtual Contributors profile below. ",
@@ -2958,7 +2963,12 @@
     "addContent" : {
       "title": "Add knowledge",
       "description": "What knowledge do you want your Virtual Contributor to have? Write it down in post(s) and/or upload relevant documents.",
-      "descriptionBold": "You can update, add, and remove content later."
+      "descriptionBold": "You can update, add, and remove content later.",
+      "post": {
+        "title": "Post title",
+        "exampleTitle": "Example: About Alkemio",
+        "addAnotherPost": "Add another post"
+      }
     },
     "step1b": {
       "title": "1/3 Choose a Subspace",

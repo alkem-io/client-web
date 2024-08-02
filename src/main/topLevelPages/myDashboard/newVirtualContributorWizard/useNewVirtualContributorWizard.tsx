@@ -128,7 +128,6 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     if (!user?.user.id) {
       return;
     }
-    debugger;
     const { data: newSpace } = await CreateNewSpace({
       variables: {
         hostId: user?.user.id,
@@ -187,7 +186,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
         },
       });
     }
-    notify(t('createVirtualContributorWizard.deleted'), 'success');
+    notify(t('createVirtualContributorWizard.cancel.deleted'), 'success');
     onDialogClose();
   };
 
