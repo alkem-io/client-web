@@ -26,7 +26,7 @@ import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 import RouterLink from '../../../../core/ui/link/RouterLink';
 import { useConfig } from '../../../platform/config/useConfig';
 import PlansTableDialog from './plansTable/PlansTableDialog';
-import { refetchUserAccountQuery, useCreateNewSpaceMutation } from '../../../../core/apollo/generated/apollo-hooks';
+import { useCreateNewSpaceMutation } from '../../../../core/apollo/generated/apollo-hooks';
 import Loading from '../../../../core/ui/loading/Loading';
 import { TagCategoryValues, info } from '../../../../core/logging/sentry/log';
 import { compact } from 'lodash';
@@ -102,7 +102,7 @@ const CreateSpaceDialog = () => {
         },
         licensePlanId: values.licensePlanId,
       },
-      refetchQueries: [refetchUserAccountQuery()],
+      refetchQueries: ['UserAccount'],
     });
 
     if (newSpace?.createAccount.spaceID) {

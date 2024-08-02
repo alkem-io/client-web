@@ -4,8 +4,6 @@ import DialogWithGrid from '../../../../../../core/ui/dialog/DialogWithGrid';
 import { useTranslation } from 'react-i18next';
 import { DialogContent, IconButton } from '@mui/material';
 import {
-  refetchAdminInnovationPacksListQuery,
-  refetchUserAccountQuery,
   useCreateInnovationPackMutation,
   useOrganizationsListQuery,
 } from '../../../../../../core/apollo/generated/apollo-hooks';
@@ -53,7 +51,7 @@ const CreateInnovationPackDialog = ({ accountId }: CreateInnovationPackDialogPro
           },
         },
       },
-      refetchQueries: [refetchAdminInnovationPacksListQuery(), refetchUserAccountQuery()],
+      refetchQueries: ['AdminInnovationPacksList', 'UserAccount'],
     });
     if (data?.createInnovationPack.nameID) {
       setIsOpen(false);
