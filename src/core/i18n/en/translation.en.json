@@ -1836,7 +1836,11 @@
             }
           },
           "account": {
-            "description": "",
+            "description": "Here you can see details about things hosted by your account.",
+            "hostedSpaces": "Hosted Spaces",
+            "virtualContributors": "Virtual Contributors",
+            "innovationPacks": "$t(common.innovation-packs)",
+            "customHomepages": "My Custom Homepages",
             "hostTitle": "Host",
             "contactsLink": "If you want to change any of these settings, please contact the Alkemio team here.",
             "freeTrialNotice": {

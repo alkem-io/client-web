@@ -40,6 +40,7 @@ export interface JourneyCardHorizontalProps {
     };
   };
   deepness?: number;
+  seamless?: boolean;
   journeyTypeName: JourneyTypeName;
   sx?: PaperProps['sx'];
 }
@@ -52,6 +53,7 @@ const JourneyCardHorizontal = ({
   journey,
   journeyTypeName,
   deepness = journeyTypeName === 'subspace' ? 0 : 1,
+  seamless,
   sx,
 }: JourneyCardHorizontalProps) => {
   const Icon = JourneyIcon[journeyTypeName];
@@ -67,7 +69,7 @@ const JourneyCardHorizontal = ({
   };
 
   return (
-    <ElevatedPaper component={RouterLink} to={journey.profile.url} sx={mergedSx}>
+    <ElevatedPaper component={RouterLink} to={journey.profile.url} sx={mergedSx} elevation={seamless ? 0 : undefined}>
       <BadgeCardView
         visual={
           <JourneyAvatar
