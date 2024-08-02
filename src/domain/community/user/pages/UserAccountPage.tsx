@@ -20,31 +20,42 @@ import InnovationHubCardHorizontal, {
 import { Actions } from '../../../../core/ui/actions/Actions';
 import CreateInnovationPackDialog from '../../../platform/admin/templates/InnovationPacks/admin/CreateInnovationPackDialog';
 import CreateSpaceDialog from '../../../journey/space/createSpace/CreateSpaceDialog';
+import { useUrlParams } from '../../../../core/routing/useUrlParams';
+import { useUserContext } from '../hooks/useUserContext';
 
 interface UserAccountPageProps {}
 
 export const UserAccountPage: FC<UserAccountPageProps> = () => {
+  const { userNameId = '' } = useUrlParams();
+  const { user: currentUser } = useUserContext();
   const { t } = useTranslation();
-  const { data, loading } = useUserAccountQuery();
+
+  const { data, loading } = useUserAccountQuery({
+    variables: {
+      userId: userNameId,
+    },
+    skip: !userNameId,
+  });
+  const isMyProfile = data?.user.id === currentUser?.user.id;
 
   // TODO: This will not be needed when we have multiple spaces per account and a single account per user
-  const accountId = data?.me.user?.accounts[0].id;
+  const accountId = data?.user?.accounts[0]?.id;
 
   const { spaceIds, virtualContributors, innovationPacks, innovationHubs } = useMemo(
     () => ({
-      spaceIds: data?.me.user?.accounts.flatMap(account => account.spaceID),
-      virtualContributors: data?.me.user?.accounts.flatMap(account => account.virtualContributors),
-      innovationPacks: data?.me.user?.accounts.flatMap(account => account.innovationPacks),
-      innovationHubs: data?.me.user?.accounts.flatMap(account => account.innovationHubs),
+      spaceIds: data?.user?.accounts.flatMap(account => account.spaceID) ?? [],
+      virtualContributors: data?.user?.accounts.flatMap(account => account.virtualContributors) ?? [],
+      innovationPacks: data?.user?.accounts.flatMap(account => account.innovationPacks) ?? [],
+      innovationHubs: data?.user?.accounts.flatMap(account => account.innovationHubs) ?? [],
     }),
-    [data?.me.user?.accounts]
+    [data?.user?.accounts]
   );
 
   const { data: spacesData, loading: spacesLoading } = useAccountSpacesQuery({
     variables: {
       spacesIds: spaceIds,
     },
-    skip: !spaceIds?.length,
+    skip: !spaceIds.length,
   });
   //     <StorageConfigContextProvider locationType="user" userId={data?.me.user?.id}>
 
@@ -66,9 +77,7 @@ export const UserAccountPage: FC<UserAccountPageProps> = () => {
                 />
               ))}
           </Gutters>
-          <Actions>
-            <CreateSpaceDialog />
-          </Actions>
+          <Actions>{isMyProfile && <CreateSpaceDialog />}</Actions>
         </PageContentBlock>
         <PageContentBlock halfWidth>
           <BlockTitle>{t('pages.admin.generic.sections.account.virtualContributors')}</BlockTitle>
@@ -80,18 +89,16 @@ export const UserAccountPage: FC<UserAccountPageProps> = () => {
               ))}
           </Gutters>
         </PageContentBlock>
-        {innovationPacks?.length && (
+        {innovationPacks.length > 0 && (
           <PageContentBlock halfWidth>
             <BlockTitle>{t('pages.admin.generic.sections.account.innovationPacks')}</BlockTitle>
             {loading && <InnovationPackCardHorizontalSkeleton />}
             {!loading &&
               innovationPacks?.map(ip => <InnovationPackCardHorizontal profile={ip.profile} {...ip.templates} />)}
-            <Actions>
-              <CreateInnovationPackDialog accountId={accountId} />
-            </Actions>
+            <Actions>{isMyProfile && accountId && <CreateInnovationPackDialog accountId={accountId} />}</Actions>
           </PageContentBlock>
         )}
-        {innovationHubs?.length && (
+        {innovationHubs.length > 0 && (
           <PageContentBlock halfWidth>
             <BlockTitle>{t('pages.admin.generic.sections.account.customHomepages')}</BlockTitle>
             {loading && <InnovationHubCardHorizontalSkeleton />}

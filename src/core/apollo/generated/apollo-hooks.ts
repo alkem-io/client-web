@@ -13997,50 +13997,48 @@ export function refetchUserQuery(variables: SchemaTypes.UserQueryVariables) {
 }
 
 export const UserAccountDocument = gql`
-  query UserAccount {
-    me {
-      user {
+  query UserAccount($userId: UUID_NAMEID_EMAIL!) {
+    user(ID: $userId) {
+      id
+      accounts {
         id
-        accounts {
+        spaceID
+        virtualContributors {
           id
-          spaceID
-          virtualContributors {
+          profile {
+            ...AccountItemProfile
+            tagline
+          }
+        }
+        innovationPacks {
+          id
+          profile {
+            ...AccountItemProfile
+          }
+          templates {
             id
-            profile {
-              ...AccountItemProfile
-              tagline
+            calloutTemplatesCount
+            communityGuidelinesTemplatesCount
+            innovationFlowTemplatesCount
+            postTemplatesCount
+            whiteboardTemplatesCount
+          }
+        }
+        innovationHubs {
+          id
+          profile {
+            ...AccountItemProfile
+            banner: visual(type: BANNER_WIDE) {
+              ...VisualFull
+              __typename
             }
           }
-          innovationPacks {
+          spaceVisibilityFilter
+          spaceListFilter {
             id
             profile {
-              ...AccountItemProfile
-            }
-            templates {
               id
-              calloutTemplatesCount
-              communityGuidelinesTemplatesCount
-              innovationFlowTemplatesCount
-              postTemplatesCount
-              whiteboardTemplatesCount
-            }
-          }
-          innovationHubs {
-            id
-            profile {
-              ...AccountItemProfile
-              banner: visual(type: BANNER_WIDE) {
-                ...VisualFull
-                __typename
-              }
-            }
-            spaceVisibilityFilter
-            spaceListFilter {
-              id
-              profile {
-                id
-                displayName
-              }
+              displayName
             }
           }
         }
@@ -14063,11 +14061,12 @@ export const UserAccountDocument = gql`
  * @example
  * const { data, loading, error } = useUserAccountQuery({
  *   variables: {
+ *      userId: // value for 'userId'
  *   },
  * });
  */
 export function useUserAccountQuery(
-  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.UserAccountQuery, SchemaTypes.UserAccountQueryVariables>
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.UserAccountQuery, SchemaTypes.UserAccountQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.UserAccountQuery, SchemaTypes.UserAccountQueryVariables>(
@@ -14092,7 +14091,7 @@ export type UserAccountQueryResult = Apollo.QueryResult<
   SchemaTypes.UserAccountQuery,
   SchemaTypes.UserAccountQueryVariables
 >;
-export function refetchUserAccountQuery(variables?: SchemaTypes.UserAccountQueryVariables) {
+export function refetchUserAccountQuery(variables: SchemaTypes.UserAccountQueryVariables) {
   return { query: UserAccountDocument, variables: variables };
 }
 
