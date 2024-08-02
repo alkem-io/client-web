@@ -3000,6 +3000,12 @@
       "postDescription": "At Alkemio, we utilize Posts to facilitate collaborative interactions with AI. Unlike private chats, other members within a Space can learn from and contribute to these interactions.\n\nSimilar to mentioning a human contributor, you can use the \"@\" symbol followed by the Virtual Contributor's name.",
       "lastInfoBox": "To <b>change the knowledge</b> of this Virtual Contributor, visit the VC - Knowledge Subspace in your Space. Don't forget to press the Update button on your Virtual Contributor's profile settings when you're done!",
       "continueButton": "Visit Space"
+    },
+    "existingSpace": {
+      "title": "Choose a (Sub)Space",
+      "description": "Which Space or Subspace do you want to bring to life with the Virtual Contributor? Below you'll be able to choose from all Spaces and Subspaces that you are host of.",
+      "label": "(Sub)Space",
+      "noSpaces": "You need a Space to proceed with this option. To create a Virtual Contributor, please go back and follow the Written Knowledge flow."
     }
   }
 }

@@ -26,6 +26,7 @@ type CreateNewVirtualContributorProps = {
   canUseExisting?: boolean;
   onClose: () => void;
   onCreateSpace: (values: VirtualContributorFromProps) => void;
+  onUseExistingKnowledge: (values: VirtualContributorFromProps) => void;
   loading?: boolean;
 };
 
@@ -71,7 +72,12 @@ const BigButton = ({
   return tooltipDisabled && props.disabled ? <Tooltip title={tooltipDisabled}>{button}</Tooltip> : button;
 };
 
-const CreateNewVirtualContributor = ({ onClose, onCreateSpace, loading }: CreateNewVirtualContributorProps) => {
+const CreateNewVirtualContributor = ({
+  onClose,
+  onCreateSpace,
+  onUseExistingKnowledge,
+  loading,
+}: CreateNewVirtualContributorProps) => {
   const { t } = useTranslation();
   const isSmallScreen = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
   const [exernalOpen, setExernalOpen] = useState(false);
@@ -103,7 +109,7 @@ const CreateNewVirtualContributor = ({ onClose, onCreateSpace, loading }: Create
         onCreateSpace(values);
         break;
       case VCSourceOptions.EXISTING_SPACE:
-        // TODO: #6604
+        onUseExistingKnowledge(values);
         break;
       case VCSourceOptions.EXTERNAL:
         setExernalOpen(true);
