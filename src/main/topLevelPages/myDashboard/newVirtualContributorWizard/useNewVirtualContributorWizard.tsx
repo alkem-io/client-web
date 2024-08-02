@@ -1,30 +1,26 @@
 import { ComponentType, useCallback, useMemo, useState } from 'react';
 import {
-  refetchAdminSpacesListQuery,
   refetchMyAccountQuery,
-  useAddVirtualContributorToCommunityMutation,
   useAllSpacesQuery,
   useCreateNewSpaceMutation,
-  useCreateSubspaceMutation,
   useCreateVirtualContributorOnAccountMutation,
   useDeleteSpaceMutation,
   useDeleteVirtualContributorOnAccountMutation,
   useNewVirtualContributorMySpacesQuery,
+  usePlansTableQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
-import { NewVirtualContributorMySpacesQuery } from '../../../../core/apollo/generated/graphql-schema';
+import { LicensePlanType, NewVirtualContributorMySpacesQuery } from '../../../../core/apollo/generated/graphql-schema';
 import CreateNewVirtualContributor, { VirtualContributorFromProps } from './CreateNewVirtualContributor';
 import LoadingState from './LoadingState';
 import AddContent from './AddContent';
 import ChooseSubspaceStep1b from './ChooseSubspace.step1b';
-import WhatsNextStep3 from './WhatsNext.step3';
 import { useTranslation } from 'react-i18next';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
 import { useUserContext } from '../../../../domain/community/user';
 import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
+import { usePlanAvailability } from '../../../../domain/journey/space/createSpace/plansTable/usePlanAvailability';
 
-type Step = 'initial' | 'create_VC' | 'add_knowledge' | 'step1b' | 'step3';
-
-const FREE_PLAN_ID = '246c2b8e-033c-40f9-b2ae-0753fe2f4365';
+type Step = 'initial' | 'create_VC' | 'add_knowledge' | 'step1b';
 
 interface SelectedSubspace {
   id: string;
@@ -91,6 +87,22 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     };
   }, [data, user]);
 
+  const { data: plansData } = usePlansTableQuery({
+    skip: !!mySpaceId,
+  });
+
+  const { isPlanAvailable } = usePlanAvailability({ skip: !!mySpaceId });
+
+  const plans = useMemo(
+    () =>
+      plansData?.platform.licensing.plans
+        .filter(plan => plan.enabled)
+        .filter(plan => plan.type === LicensePlanType.SpacePlan)
+        .filter(plan => isPlanAvailable(plan))
+        .sort((a, b) => a.sortOrder - b.sortOrder) ?? [],
+    [plansData, isPlanAvailable]
+  );
+
   const startWizard = () => {
     setStep('initial');
     setDialogOpen(true);
@@ -116,6 +128,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     if (!user?.user.id) {
       return;
     }
+    debugger;
     const { data: newSpace } = await CreateNewSpace({
       variables: {
         hostId: user?.user.id,
@@ -126,7 +139,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
           },
           collaborationData: {},
         },
-        licensePlanId: FREE_PLAN_ID,
+        licensePlanId: plans[0].id,
       },
     });
     setSpaceId(newSpace?.createAccount.spaceID);
@@ -145,7 +158,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
   };
 
   const handleAddContent = async () => {
-    console.log('Not implemented')
+    console.log('Not implemented');
   };
 
   const [deleteVirtualContributor] = useDeleteVirtualContributorOnAccountMutation({
@@ -186,12 +199,15 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     }
   };
 
-  const [createdVirtualContributorUrl, setCreatedVirtualContributorUrl] = useState<string | undefined>(undefined);
   const [createVirtualContributor] = useCreateVirtualContributorOnAccountMutation({
     refetchQueries: [refetchMyAccountQuery()],
   });
 
-  const handleCreateVirtualContributor = async (values: VirtualContributorFromProps, accountId: string, spaceId: string) => {
+  const handleCreateVirtualContributor = async (
+    values: VirtualContributorFromProps,
+    accountId: string,
+    spaceId: string
+  ) => {
     if (!accountId || !spaceId) {
       return;
     }
@@ -202,7 +218,8 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
           profileData: {
             displayName: values.name,
             tagline: values.tagline,
-            description: values.description ?? t('createVirtualContributorWizard.createdVirtualContributor.description'),
+            description:
+              values.description ?? t('createVirtualContributorWizard.createdVirtualContributor.description'),
           },
           aiPersona: {
             aiPersonaService: {
@@ -218,7 +235,6 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
         'success'
       );
       setVirtualContributorId(data.createVirtualContributor.id);
-      // setCreatedVirtualContributorUrl(data.createVirtualContributor.profile.url);
     }
   };
 
@@ -237,12 +253,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
             onClose={handleCancel} // TODO: Cancel NOT WORKING
           />
         )}
-        {step === 'add_knowledge' && (
-          <AddContent
-            onClose={handleCancel}
-            onCreateBoK={handleAddContent}
-          />
-        )}
+        {step === 'add_knowledge' && <AddContent onClose={handleCancel} onCreateBoK={handleAddContent} />}
         {step === 'step1b' && (
           <ChooseSubspaceStep1b
             onClose={onDialogClose}
@@ -252,13 +263,6 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
             mySpaceName={mySpaceName}
             subspaces={selectableSubspaces}
             loading={loading}
-          />
-        )}
-        {step === 'step3' && (
-          <WhatsNextStep3
-            onClose={onDialogClose}
-            updateProfileUrl={createdVirtualContributorUrl}
-            addKnowledgeUrl={selectedSubspace?.profile.url}
           />
         )}
       </DialogWithGrid>
