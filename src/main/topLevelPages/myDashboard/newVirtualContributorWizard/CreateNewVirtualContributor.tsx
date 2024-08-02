@@ -1,4 +1,4 @@
-import React, { MouseEvent, useState } from 'react';
+import React, { MouseEvent, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Form, Formik } from 'formik';
 import * as yup from 'yup';
@@ -19,6 +19,7 @@ import { Actions } from '../../../../core/ui/actions/Actions';
 import { theme } from '../../../../core/ui/themes/default/Theme';
 import { useColumns } from '../../../../core/ui/grid/GridContext';
 import FormikMarkdownField from '../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
+import ExternalAIComingSoonDialog from './ExternalAICominSoonDialog';
 
 type CreateNewVirtualContributorProps = {
   canCreateSubspace?: boolean;
@@ -79,6 +80,8 @@ const CreateNewVirtualContributor = ({
 }: CreateNewVirtualContributorProps) => {
   const { t } = useTranslation();
   const isSmallScreen = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
+  const [exernalOpen, setExernalOpen] = useState(false);
+  const closeExternalAI = useCallback(() => setExernalOpen(false), [setExernalOpen]);
 
   const cols = useColumns();
   const isMobile = cols < 5;
@@ -109,7 +112,7 @@ const CreateNewVirtualContributor = ({
         onUseExistingKnowledge(values);
         break;
       case VCSourceOptions.EXTERNAL:
-        // TODO: #6605
+        setExernalOpen(true);
         break;
     }
   };
@@ -214,6 +217,7 @@ const CreateNewVirtualContributor = ({
               </GridProvider>
             </GridContainer>
           </Gutters>
+          <ExternalAIComingSoonDialog open={exernalOpen} onClose={closeExternalAI} />
         </DialogContent>
       )}
     </>
