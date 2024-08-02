@@ -25,7 +25,7 @@ type CreateNewVirtualContributorProps = {
   canUseExisting?: boolean;
   onClose: () => void;
   onCreateSpace: (values: VirtualContributorFromProps) => void;
-  onUseExistingSubspace: () => void;
+  onUseExistingKnowledge: (values: VirtualContributorFromProps) => void;
   loading?: boolean;
 };
 
@@ -74,7 +74,7 @@ const BigButton = ({
 const CreateNewVirtualContributor = ({
   onClose,
   onCreateSpace,
-  onUseExistingSubspace,
+  onUseExistingKnowledge,
   loading,
 }: CreateNewVirtualContributorProps) => {
   const { t } = useTranslation();
@@ -106,7 +106,7 @@ const CreateNewVirtualContributor = ({
         onCreateSpace(values);
         break;
       case VCSourceOptions.EXISTING_SPACE:
-        onUseExistingSubspace();
+        onUseExistingKnowledge(values);
         break;
       case VCSourceOptions.EXTERNAL:
         // TODO: #6605
