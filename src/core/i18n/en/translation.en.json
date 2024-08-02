@@ -1978,6 +1978,7 @@
         }
       },
       "innovation-packs": {
+        "create": "Create InnovationPack",
         "fields": {
           "provider": "Provider organization",
           "listedInStore": "Listed in Store",

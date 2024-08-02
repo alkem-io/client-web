@@ -17,12 +17,18 @@ import InnovationPackCardHorizontal, {
 import InnovationHubCardHorizontal, {
   InnovationHubCardHorizontalSkeleton,
 } from '../../../innovationHub/InnovationHubCardHorizontal/InnovationHubCardHorizontal';
+import { Actions } from '../../../../core/ui/actions/Actions';
+import CreateInnovationPackDialog from '../../../platform/admin/templates/InnovationPacks/admin/CreateInnovationPackDialog';
+import CreateSpaceDialog from '../../../journey/space/createSpace/CreateSpaceDialog';
 
 interface UserAccountPageProps {}
 
 export const UserAccountPage: FC<UserAccountPageProps> = () => {
   const { t } = useTranslation();
   const { data, loading } = useUserAccountQuery();
+
+  // TODO: This will not be needed when we have multiple spaces per account and a single account per user
+  const accountId = data?.me.user?.accounts[0].id;
 
   const { spaceIds, virtualContributors, innovationPacks, innovationHubs } = useMemo(
     () => ({
@@ -60,6 +66,9 @@ export const UserAccountPage: FC<UserAccountPageProps> = () => {
                 />
               ))}
           </Gutters>
+          <Actions>
+            <CreateSpaceDialog />
+          </Actions>
         </PageContentBlock>
         <PageContentBlock halfWidth>
           <BlockTitle>{t('pages.admin.generic.sections.account.virtualContributors')}</BlockTitle>
@@ -77,6 +86,9 @@ export const UserAccountPage: FC<UserAccountPageProps> = () => {
             {loading && <InnovationPackCardHorizontalSkeleton />}
             {!loading &&
               innovationPacks?.map(ip => <InnovationPackCardHorizontal profile={ip.profile} {...ip.templates} />)}
+            <Actions>
+              <CreateInnovationPackDialog accountId={accountId} />
+            </Actions>
           </PageContentBlock>
         )}
         {innovationHubs?.length && (

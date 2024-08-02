@@ -2,7 +2,7 @@ import DialogWithGrid, { DialogFooter } from '../../../../core/ui/dialog/DialogW
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import { useBackToStaticPath } from '../../../../core/routing/useBackToPath';
 import { ROUTE_HOME } from '../../../platform/routes/constants';
-import { Button, Checkbox, Dialog, DialogContent, FormControlLabel, IconButton, Link, TextField } from '@mui/material';
+import { Button, Checkbox, Dialog, DialogContent, FormControlLabel, Link, TextField } from '@mui/material';
 import { Caption } from '../../../../core/ui/typography';
 import { Formik } from 'formik';
 import { Trans, useTranslation } from 'react-i18next';
@@ -21,26 +21,28 @@ import { Actions } from '../../../../core/ui/actions/Actions';
 import useLoadingState from '../../../shared/utils/useLoadingState';
 import { gutters } from '../../../../core/ui/grid/utils';
 import { useUserContext } from '../../../community/user';
+import { useAuthenticationContext } from '../../../../core/auth/authentication/hooks/useAuthenticationContext';
+import { Navigate } from 'react-router-dom';
 import NameIdField from '../../../../core/utils/nameId/NameIdField';
 import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 import RouterLink from '../../../../core/ui/link/RouterLink';
 import { useConfig } from '../../../platform/config/useConfig';
 import PlansTableDialog from './plansTable/PlansTableDialog';
-import { refetchUserAccountQuery, useCreateNewSpaceMutation } from '../../../../core/apollo/generated/apollo-hooks';
+import { useCreateNewSpaceMutation, useSpaceUrlLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import useNavigate from '../../../../core/routing/useNavigate';
 import Loading from '../../../../core/ui/loading/Loading';
 import { TagCategoryValues, info } from '../../../../core/logging/sentry/log';
 import { compact } from 'lodash';
-import RoundedIcon from '../../../../core/ui/icon/RoundedIcon';
-import AddIcon from '@mui/icons-material/Add';
 
 interface FormValues extends SpaceEditFormValuesType {
   licensePlanId: string;
 }
 
-const CreateSpaceDialog = () => {
+const DashboardCreateSpaceDialog = () => {
   const handleClose = useBackToStaticPath(ROUTE_HOME);
   const { t } = useTranslation();
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const navigate = useNavigate();
+  const [dialogOpen, setDialogOpen] = useState(true);
   const [plansTableDialogOpen, setPlansTableDialogOpen] = useState(false);
   const [creatingDialogOpen, setCreatingDialogOpen] = useState(false);
 
@@ -72,6 +74,8 @@ const CreateSpaceDialog = () => {
     tagsets: tagsetSegmentSchema,
   });
 
+  const { isAuthenticated } = useAuthenticationContext();
+
   const { user } = useUserContext();
 
   const [hasAcceptedTerms, setHasAcceptedTerms] = useState(false);
@@ -81,6 +85,7 @@ const CreateSpaceDialog = () => {
   const config = useConfig();
 
   const [CreateNewSpace] = useCreateNewSpaceMutation();
+  const [getSpaceUrl] = useSpaceUrlLazyQuery();
   const [handleSubmit] = useLoadingState(async (values: Partial<FormValues>) => {
     if (!user?.user.id) {
       return;
@@ -102,24 +107,36 @@ const CreateSpaceDialog = () => {
         },
         licensePlanId: values.licensePlanId,
       },
-      refetchQueries: [refetchUserAccountQuery()],
     });
 
     if (newSpace?.createAccount.spaceID) {
-      setDialogOpen(false);
-      setCreatingDialogOpen(false);
-      info(`Space Created SpaceId:${newSpace.createAccount.spaceID} Plan:${values.licensePlanId}`, {
-        category: TagCategoryValues.SPACE_CREATION,
-        label: 'Space Created',
+      const { data: spaceUrlData } = await getSpaceUrl({
+        variables: {
+          spaceNameId: newSpace.createAccount.spaceID,
+        },
       });
+      info(
+        `Space Created SpaceId:${newSpace.createAccount.spaceID} Plan:${values.licensePlanId} SpaceUrl:${spaceUrlData?.space.profile.url}`,
+        {
+          category: TagCategoryValues.SPACE_CREATION,
+          label: 'Space Created',
+        }
+      );
+
+      const spaceUrl = spaceUrlData?.space.profile.url;
+      if (spaceUrl) {
+        navigate(spaceUrl);
+        return;
+      }
     }
   });
 
+  if (!isAuthenticated) {
+    return <Navigate to={ROUTE_HOME} replace />;
+  }
+
   return (
     <>
-      <IconButton aria-label={t('common.add')} aria-haspopup="true" size="small" onClick={() => setDialogOpen(true)}>
-        <RoundedIcon component={AddIcon} size="medium" iconSize="small" />
-      </IconButton>
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
@@ -219,4 +236,4 @@ const CreateSpaceDialog = () => {
   );
 };
 
-export default CreateSpaceDialog;
+export default DashboardCreateSpaceDialog;
