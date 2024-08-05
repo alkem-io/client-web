@@ -73,7 +73,7 @@ const JourneyCardHorizontal = ({
       <BadgeCardView
         visual={
           <JourneyAvatar
-            src={journey.profile.avatar?.uri ?? journey.profile.cardBanner?.uri}
+            src={journey.profile.avatar?.uri || journey.profile.cardBanner?.uri}
             sx={{ width: gutters(3), height: gutters(3) }}
           />
         }
