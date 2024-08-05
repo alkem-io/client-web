@@ -35,6 +35,7 @@ import {
   useCalloutCreation,
 } from '../../../../domain/collaboration/callout/creationDialog/useCalloutCreation/useCalloutCreation';
 import SetupVC from './SetupVC';
+import { info } from '../../../../core/logging/sentry/log';
 
 const SPACE_LABEL = '(space)';
 
@@ -156,6 +157,11 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
   const handleCreateSpace = async (values: VirtualContributorFromProps) => {
     setStep('create_space');
     if (!user?.user.id) {
+      return;
+    }
+    if (plans.length === 0) {
+      info(`No available plans for this account. User: ${user?.user.id}`);
+      notify('No available plans for this account. Please, contact support@alkem.io.', 'error');
       return;
     }
     if (mySpaceId && myAccountId) {
