@@ -22,6 +22,7 @@ import CreateInnovationPackDialog from '../../../platform/admin/templates/Innova
 import CreateSpaceDialog from '../../../journey/space/createSpace/CreateSpaceDialog';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { useUserContext } from '../hooks/useUserContext';
+import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
 
 interface UserAccountPageProps {}
 
@@ -38,6 +39,8 @@ export const UserAccountPage: FC<UserAccountPageProps> = () => {
   });
 
   const isMyProfile = data?.user.id === currentUser?.user.id;
+  const canCreateSpace =
+    isMyProfile && currentUser && currentUser.hasPlatformPrivilege(AuthorizationPrivilege.CreateSpace);
 
   // TODO: This will not be needed when we have multiple spaces per account and a single account per user
   const accountId = data?.user?.accounts[0]?.id;
@@ -77,7 +80,7 @@ export const UserAccountPage: FC<UserAccountPageProps> = () => {
                 />
               ))}
           </Gutters>
-          <Actions>{isMyProfile && <CreateSpaceDialog />}</Actions>
+          <Actions>{canCreateSpace && <CreateSpaceDialog />}</Actions>
         </PageContentBlock>
         <PageContentBlock halfWidth>
           <BlockTitle>{t('pages.admin.generic.sections.account.virtualContributors')}</BlockTitle>
@@ -89,25 +92,23 @@ export const UserAccountPage: FC<UserAccountPageProps> = () => {
               ))}
           </Gutters>
         </PageContentBlock>
-        {innovationPacks.length > 0 && (
-          <PageContentBlock halfWidth>
-            <BlockTitle>{t('pages.admin.generic.sections.account.innovationPacks')}</BlockTitle>
-            {loading && <InnovationPackCardHorizontalSkeleton />}
-            {!loading &&
-              innovationPacks?.map(ip => <InnovationPackCardHorizontal profile={ip.profile} {...ip.templates} />)}
-            <Actions>{isMyProfile && accountId && <CreateInnovationPackDialog accountId={accountId} />}</Actions>
-          </PageContentBlock>
-        )}
+        <PageContentBlock halfWidth>
+          <BlockTitle>{t('pages.admin.generic.sections.account.innovationPacks')}</BlockTitle>
+          {loading && <InnovationPackCardHorizontalSkeleton />}
+          {!loading &&
+            innovationPacks?.map(pack => <InnovationPackCardHorizontal profile={pack.profile} {...pack.templates} />)}
+          <Actions>{isMyProfile && accountId && <CreateInnovationPackDialog accountId={accountId} />}</Actions>
+        </PageContentBlock>
         {innovationHubs.length > 0 && (
           <PageContentBlock halfWidth>
             <BlockTitle>{t('pages.admin.generic.sections.account.customHomepages')}</BlockTitle>
             {loading && <InnovationHubCardHorizontalSkeleton />}
             {!loading &&
-              innovationHubs?.map(ih => (
+              innovationHubs?.map(hub => (
                 <InnovationHubCardHorizontal
-                  profile={ih.profile}
-                  spaceListFilter={ih.spaceListFilter}
-                  spaceVisibilityFilter={ih.spaceVisibilityFilter}
+                  profile={hub.profile}
+                  spaceListFilter={hub.spaceListFilter}
+                  spaceVisibilityFilter={hub.spaceVisibilityFilter}
                 />
               ))}
           </PageContentBlock>
