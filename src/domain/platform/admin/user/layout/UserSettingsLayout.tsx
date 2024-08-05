@@ -14,6 +14,7 @@ import { PlatformFeatureFlagName } from '../../../../../core/apollo/generated/gr
 
 const tabs = [
   SettingsSection.MyProfile,
+  SettingsSection.Account,
   SettingsSection.Membership,
   SettingsSection.Organizations,
   SettingsSection.Notifications,
