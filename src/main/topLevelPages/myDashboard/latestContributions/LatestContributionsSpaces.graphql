@@ -1,11 +1,14 @@
 query LatestContributionsSpaces {
   me {
-    spaceMemberships {
+    spaceMembershipsHierarchical {
       id
-      profile {
+      space {
         id
-        displayName
-      }
+        profile {
+          id
+          displayName
+        }
+     }
     }
   }
 }

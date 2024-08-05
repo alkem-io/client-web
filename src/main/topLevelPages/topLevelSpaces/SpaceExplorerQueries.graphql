@@ -1,7 +1,22 @@
 query ChallengeExplorerPage {
   me {
-    spaceMemberships(visibilities: [ACTIVE, DEMO]) {
+    spaceMembershipsHierarchical {
       id
+      space {
+        id
+      }
+      childMemberships {
+        id
+        space {
+          id
+        }
+        childMemberships {
+          id
+          space {
+            id
+          }
+        }
+      }
     }
   }
 }

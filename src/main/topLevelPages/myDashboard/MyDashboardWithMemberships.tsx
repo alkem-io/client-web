@@ -26,6 +26,8 @@ const MyDashboardWithMemberships: FC<MyDashboardWithMembershipsProps> = ({ space
   const { data } = useLatestReleaseDiscussionQuery({
     fetchPolicy: 'network-only',
   });
+  // TODO: need to check here that child memberships are also shown if that was previous behavior
+  const levelZeroSpaces = spacesData?.me.spaceMembershipsHierarchical.map(membership => membership.space);
 
   return (
     <>
@@ -34,7 +36,7 @@ const MyDashboardWithMemberships: FC<MyDashboardWithMembershipsProps> = ({ space
       </PageContentColumn>
       <PageContentColumn columns={columns === 12 ? 4 : 8} flexDirection="column" alignSelf="stretch">
         <NewMembershipsBlock hiddenIfEmpty />
-        <LatestContributions spaceMemberships={spacesData?.me.spaceMemberships} />
+        <LatestContributions spaceMemberships={levelZeroSpaces} />
         <RecentForumMessages />
       </PageContentColumn>
       <PageContentColumn columns={8}>

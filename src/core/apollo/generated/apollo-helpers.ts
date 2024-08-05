@@ -17,6 +17,7 @@ export type AccountKeySpecifier = (
   | 'library'
   | 'licensePrivileges'
   | 'spaceID'
+  | 'storageAggregator'
   | 'subscriptions'
   | 'updatedDate'
   | 'virtualContributors'
@@ -35,6 +36,7 @@ export type AccountFieldPolicy = {
   library?: FieldPolicy<any> | FieldReadFunction<any>;
   licensePrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
   spaceID?: FieldPolicy<any> | FieldReadFunction<any>;
+  storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
   subscriptions?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   virtualContributors?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1105,6 +1107,17 @@ export type CommunityInvitationResultFieldPolicy = {
   invitation?: FieldPolicy<any> | FieldReadFunction<any>;
   space?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type CommunityMembershipResultKeySpecifier = (
+  | 'childMemberships'
+  | 'id'
+  | 'space'
+  | CommunityMembershipResultKeySpecifier
+)[];
+export type CommunityMembershipResultFieldPolicy = {
+  childMemberships?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  space?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type CommunityPolicyKeySpecifier = (
   | 'admin'
   | 'createdDate'
@@ -1768,7 +1781,7 @@ export type MeQueryResultsKeySpecifier = (
   | 'id'
   | 'myCreatedSpaces'
   | 'mySpaces'
-  | 'spaceMemberships'
+  | 'spaceMembershipsHierarchical'
   | 'user'
   | MeQueryResultsKeySpecifier
 )[];
@@ -1779,7 +1792,7 @@ export type MeQueryResultsFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   myCreatedSpaces?: FieldPolicy<any> | FieldReadFunction<any>;
   mySpaces?: FieldPolicy<any> | FieldReadFunction<any>;
-  spaceMemberships?: FieldPolicy<any> | FieldReadFunction<any>;
+  spaceMembershipsHierarchical?: FieldPolicy<any> | FieldReadFunction<any>;
   user?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type MessageKeySpecifier = (
@@ -3798,6 +3811,13 @@ export type StrictTypedTypePolicies = {
       | CommunityInvitationResultKeySpecifier
       | (() => undefined | CommunityInvitationResultKeySpecifier);
     fields?: CommunityInvitationResultFieldPolicy;
+  };
+  CommunityMembershipResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | CommunityMembershipResultKeySpecifier
+      | (() => undefined | CommunityMembershipResultKeySpecifier);
+    fields?: CommunityMembershipResultFieldPolicy;
   };
   CommunityPolicy?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CommunityPolicyKeySpecifier | (() => undefined | CommunityPolicyKeySpecifier);

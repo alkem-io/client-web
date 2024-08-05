@@ -10,15 +10,14 @@ import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
 import Avatar from '../../../../core/ui/avatar/Avatar';
 import RouterLink from '../../../../core/ui/link/RouterLink';
 import { BlockSectionTitle, BlockTitle, Caption } from '../../../../core/ui/typography';
-import { MembershipProps, SubspaceAccessProps } from './MyMembershipsDialog';
 import { CommunityRole } from '../../../../core/apollo/generated/graphql-schema';
 import webkitLineClamp from '../../../../core/ui/utils/webkitLineClamp';
-import isJourneyMember from '../../../../domain/journey/utils/isJourneyMember';
 import { gutters } from '../../../../core/ui/grid/utils';
 import { useColumns } from '../../../../core/ui/grid/GridContext';
 
 interface ExpandableSpaceTreeProps {
   space: {
+    id: string;
     profile: {
       displayName: string;
       tagline?: string;
@@ -32,8 +31,7 @@ interface ExpandableSpaceTreeProps {
     };
     level: number;
   };
-  subspaces?: SubspaceAccessProps[] | undefined;
-  getMembershipWithDetails: (id: string) => MembershipProps;
+  subspaceMemberships?: ExpandableSpaceTreeProps[] | undefined;
 }
 
 const VISIBLE_COMMUNITY_ROLES = [CommunityRole.Admin, CommunityRole.Lead];
@@ -44,8 +42,7 @@ const ExpandableSpaceTree = ({
     level,
     community: { myRoles: roles } = { myRoles: [] },
   },
-  subspaces,
-  getMembershipWithDetails,
+  subspaceMemberships,
 }: ExpandableSpaceTreeProps) => {
   const { t } = useTranslation();
 
@@ -60,21 +57,14 @@ const ExpandableSpaceTree = ({
 
   const verticalOffset = level === 0 ? 1 : 0.5;
 
-  const renderSubSpaces = (subspace: SubspaceAccessProps) => {
-    const spaceDetails = getMembershipWithDetails(subspace.id);
-
-    if (spaceDetails) {
-      return (
-        <ExpandableSpaceTree
-          key={subspace.id}
-          space={spaceDetails}
-          subspaces={spaceDetails?.subspaces?.filter(isJourneyMember)}
-          getMembershipWithDetails={getMembershipWithDetails}
-        />
-      );
-    }
-
-    return null;
+  const renderSubSpaces = (spaceMembership: ExpandableSpaceTreeProps) => {
+    return (
+      <ExpandableSpaceTree
+        key={spaceMembership.space.id}
+        space={spaceMembership.space}
+        subspaceMemberships={spaceMembership.subspaceMemberships}
+      />
+    );
   };
 
   return (
@@ -118,13 +108,13 @@ const ExpandableSpaceTree = ({
             <Button
               onClick={toggleExpanded}
               endIcon={isExpanded ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-              sx={{ visibility: subspaces?.length ? 'visible' : 'hidden' }}
+              sx={{ visibility: subspaceMemberships?.length ? 'visible' : 'hidden' }}
               area-label={isExpanded ? t('buttons.collapse') : t('buttons.expand')}
             />
           </Gutters>
         </Gutters>
       </GridItem>
-      {isExpanded && subspaces?.map(renderSubSpaces)}
+      {isExpanded && subspaceMemberships?.map(renderSubSpaces)}
     </>
   );
 };

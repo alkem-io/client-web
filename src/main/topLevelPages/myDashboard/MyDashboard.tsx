@@ -14,7 +14,7 @@ export const MyDashboard = () => {
   const [isMyMembershipsDialogOpen, setIsMyMembershipsDialogOpen] = useState(false);
 
   const { data: spacesData, loading: areSpacesLoading } = useLatestContributionsSpacesQuery();
-  const hasSpaceMemberships = !!spacesData?.me.spaceMemberships.length;
+  const hasSpaceMemberships = !!spacesData?.me.spaceMembershipsHierarchical.length;
 
   if (areSpacesLoading) {
     return (

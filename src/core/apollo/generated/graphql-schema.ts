@@ -60,6 +60,8 @@ export type Account = {
   licensePrivileges?: Maybe<Array<LicensePrivilege>>;
   /** The ID for the root space for the Account . */
   spaceID: Scalars['String'];
+  /** The StorageAggregator in use by this Account */
+  storageAggregator: StorageAggregator;
   /** The subscriptions active for this Account. */
   subscriptions: Array<AccountSubscription>;
   /** The date at which the entity was last updated. */
@@ -1488,6 +1490,16 @@ export enum CommunityMembershipPolicy {
   Invitations = 'INVITATIONS',
   Open = 'OPEN',
 }
+
+export type CommunityMembershipResult = {
+  __typename?: 'CommunityMembershipResult';
+  /** The child community memberships */
+  childMemberships: Array<CommunityMembershipResult>;
+  /** ID for the membership */
+  id: Scalars['UUID'];
+  /** The space for the membership is for */
+  space: Space;
+};
 
 export enum CommunityMembershipStatus {
   ApplicationPending = 'APPLICATION_PENDING',
@@ -2943,8 +2955,8 @@ export type MeQueryResults = {
   myCreatedSpaces: Array<Space>;
   /** The Spaces I am contributing to */
   mySpaces: Array<MySpaceResults>;
-  /** The applications of the current authenticated user */
-  spaceMemberships: Array<Space>;
+  /** The hierarchy of the Spaces the current user is a member. */
+  spaceMembershipsHierarchical: Array<CommunityMembershipResult>;
   /** The current authenticated User;  null if not yet registered on the platform */
   user?: Maybe<User>;
 };
@@ -2963,10 +2975,6 @@ export type MeQueryResultsMyCreatedSpacesArgs = {
 
 export type MeQueryResultsMySpacesArgs = {
   limit?: InputMaybe<Scalars['Float']>;
-};
-
-export type MeQueryResultsSpaceMembershipsArgs = {
-  visibilities?: InputMaybe<Array<SpaceVisibility>>;
 };
 
 /** A message that was sent either as an Update or as part of a Discussion. */
@@ -30192,10 +30200,10 @@ export type LatestContributionsSpacesQuery = {
   __typename?: 'Query';
   me: {
     __typename?: 'MeQueryResults';
-    spaceMemberships: Array<{
-      __typename?: 'Space';
+    spaceMembershipsHierarchical: Array<{
+      __typename?: 'CommunityMembershipResult';
       id: string;
-      profile: { __typename?: 'Profile'; id: string; displayName: string };
+      space: { __typename?: 'Space'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } };
     }>;
   };
 };
@@ -30302,21 +30310,10 @@ export type MyMembershipsQuery = {
   __typename?: 'Query';
   me: {
     __typename?: 'MeQueryResults';
-    spaceMemberships: Array<{
-      __typename?: 'Space';
+    spaceMembershipsHierarchical: Array<{
+      __typename?: 'CommunityMembershipResult';
       id: string;
-      level: number;
-      visibility: SpaceVisibility;
-      profile: {
-        __typename?: 'Profile';
-        id: string;
-        url: string;
-        displayName: string;
-        tagline: string;
-        cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-      };
-      community: { __typename?: 'Community'; myRoles: Array<CommunityRole> };
-      subspaces: Array<{
+      space: {
         __typename?: 'Space';
         id: string;
         level: number;
@@ -30329,21 +30326,72 @@ export type MyMembershipsQuery = {
           myMembershipStatus?: CommunityMembershipStatus | undefined;
           myRoles: Array<CommunityRole>;
         };
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          url: string;
+          displayName: string;
+          tagline: string;
+          cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        };
+      };
+      childMemberships: Array<{
+        __typename?: 'CommunityMembershipResult';
+        id: string;
+        space: {
+          __typename?: 'Space';
+          id: string;
+          level: number;
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
+          community: {
+            __typename?: 'Community';
+            id: string;
+            myMembershipStatus?: CommunityMembershipStatus | undefined;
+            myRoles: Array<CommunityRole>;
+          };
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            url: string;
+            displayName: string;
+            tagline: string;
+            cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          };
+        };
+        childMemberships: Array<{
+          __typename?: 'CommunityMembershipResult';
+          id: string;
+          space: {
+            __typename?: 'Space';
+            id: string;
+            level: number;
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
+            community: {
+              __typename?: 'Community';
+              id: string;
+              myMembershipStatus?: CommunityMembershipStatus | undefined;
+              myRoles: Array<CommunityRole>;
+            };
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              url: string;
+              displayName: string;
+              tagline: string;
+              cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+            };
+          };
+        }>;
       }>;
     }>;
   };
 };
 
-export type MyMembershipsSpaceProfileFragment = {
-  __typename?: 'Profile';
-  id: string;
-  url: string;
-  displayName: string;
-  tagline: string;
-  cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-};
-
-export type MyMembershipsSubspaceProfileFragment = {
+export type SpaceMembershipFragment = {
   __typename?: 'Space';
   id: string;
   level: number;
@@ -30355,6 +30403,14 @@ export type MyMembershipsSubspaceProfileFragment = {
     id: string;
     myMembershipStatus?: CommunityMembershipStatus | undefined;
     myRoles: Array<CommunityRole>;
+  };
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    url: string;
+    displayName: string;
+    tagline: string;
+    cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
   };
 };
 
@@ -30577,7 +30633,24 @@ export type ChallengeExplorerPageQueryVariables = Exact<{ [key: string]: never }
 
 export type ChallengeExplorerPageQuery = {
   __typename?: 'Query';
-  me: { __typename?: 'MeQueryResults'; spaceMemberships: Array<{ __typename?: 'Space'; id: string }> };
+  me: {
+    __typename?: 'MeQueryResults';
+    spaceMembershipsHierarchical: Array<{
+      __typename?: 'CommunityMembershipResult';
+      id: string;
+      space: { __typename?: 'Space'; id: string };
+      childMemberships: Array<{
+        __typename?: 'CommunityMembershipResult';
+        id: string;
+        space: { __typename?: 'Space'; id: string };
+        childMemberships: Array<{
+          __typename?: 'CommunityMembershipResult';
+          id: string;
+          space: { __typename?: 'Space'; id: string };
+        }>;
+      }>;
+    }>;
+  };
 };
 
 export type SpaceExplorerSearchQueryVariables = Exact<{

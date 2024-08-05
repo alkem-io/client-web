@@ -3615,18 +3615,6 @@ export const RecentContributionsChildJourneyProfileFragmentDoc = gql`
   }
   ${RecentContributionsJourneyProfileFragmentDoc}
 `;
-export const MyMembershipsSpaceProfileFragmentDoc = gql`
-  fragment MyMembershipsSpaceProfile on Profile {
-    id
-    url
-    displayName
-    tagline
-    cardBanner: visual(type: CARD) {
-      ...VisualUri
-    }
-  }
-  ${VisualUriFragmentDoc}
-`;
 export const MyMembershipsChildJourneyCommunityFragmentDoc = gql`
   fragment MyMembershipsChildJourneyCommunity on Community {
     id
@@ -3634,8 +3622,8 @@ export const MyMembershipsChildJourneyCommunityFragmentDoc = gql`
     myRoles
   }
 `;
-export const MyMembershipsSubspaceProfileFragmentDoc = gql`
-  fragment MyMembershipsSubspaceProfile on Space {
+export const SpaceMembershipFragmentDoc = gql`
+  fragment SpaceMembership on Space {
     id
     level
     authorization {
@@ -3645,8 +3633,18 @@ export const MyMembershipsSubspaceProfileFragmentDoc = gql`
     community {
       ...MyMembershipsChildJourneyCommunity
     }
+    profile {
+      id
+      url
+      displayName
+      tagline
+      cardBanner: visual(type: CARD) {
+        ...VisualUri
+      }
+    }
   }
   ${MyMembershipsChildJourneyCommunityFragmentDoc}
+  ${VisualUriFragmentDoc}
 `;
 export const MyMembershipsChildJourneyProfileFragmentDoc = gql`
   fragment MyMembershipsChildJourneyProfile on Profile {
@@ -23265,11 +23263,14 @@ export function refetchLatestContributionsGroupedQuery(
 export const LatestContributionsSpacesDocument = gql`
   query LatestContributionsSpaces {
     me {
-      spaceMemberships {
+      spaceMembershipsHierarchical {
         id
-        profile {
+        space {
           id
-          displayName
+          profile {
+            id
+            displayName
+          }
         }
       }
     }
@@ -23506,24 +23507,27 @@ export function refetchMyAccountQuery(variables?: SchemaTypes.MyAccountQueryVari
 export const MyMembershipsDocument = gql`
   query MyMemberships {
     me {
-      spaceMemberships {
+      spaceMembershipsHierarchical {
         id
-        level
-        visibility
-        profile {
-          ...MyMembershipsSpaceProfile
+        space {
+          ...SpaceMembership
         }
-        community {
-          myRoles
-        }
-        subspaces {
-          ...MyMembershipsSubspaceProfile
+        childMemberships {
+          id
+          space {
+            ...SpaceMembership
+          }
+          childMemberships {
+            id
+            space {
+              ...SpaceMembership
+            }
+          }
         }
       }
     }
   }
-  ${MyMembershipsSpaceProfileFragmentDoc}
-  ${MyMembershipsSubspaceProfileFragmentDoc}
+  ${SpaceMembershipFragmentDoc}
 `;
 
 /**
@@ -23940,8 +23944,23 @@ export function refetchRecentSpacesQuery(variables?: SchemaTypes.RecentSpacesQue
 export const ChallengeExplorerPageDocument = gql`
   query ChallengeExplorerPage {
     me {
-      spaceMemberships(visibilities: [ACTIVE, DEMO]) {
+      spaceMembershipsHierarchical {
         id
+        space {
+          id
+        }
+        childMemberships {
+          id
+          space {
+            id
+          }
+          childMemberships {
+            id
+            space {
+              id
+            }
+          }
+        }
       }
     }
   }

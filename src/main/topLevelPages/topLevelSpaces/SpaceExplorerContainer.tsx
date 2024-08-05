@@ -56,7 +56,8 @@ const SpaceExplorerContainer = ({ searchTerms, children }: SpaceExplorerContaine
     skip: !userMetadata?.user?.id || shouldSearch || membershipFilter !== SpacesExplorerMembershipFilter.Member,
   });
 
-  const mySpaceIds = spaceMembershipsData?.me.spaceMemberships.map(space => space.id);
+  // TODO: this may have a dependency on receiving all memberhsips, not just root ones
+  const mySpaceIds = spaceMembershipsData?.me.spaceMembershipsHierarchical.map(space => space.id);
 
   const { data: challengesData, loading: isLoadingMemberSpaces } = useSpaceExplorerMemberSpacesQuery({
     variables: {
