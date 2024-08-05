@@ -1,7 +1,6 @@
 import { ComponentType, useCallback, useMemo, useState } from 'react';
 import {
   refetchMyAccountQuery,
-  useAllSpacesQuery,
   useCreateNewSpaceMutation,
   useCreateVirtualContributorOnAccountMutation,
   useDeleteSpaceMutation,
@@ -123,20 +122,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     setDialogOpen(true);
   };
 
-  const { data: allSpaces } = useAllSpacesQuery();
-  const allSpacesNameIds = allSpaces?.spaces.map(space => space.nameID) || [];
-  const makeUniqueName = (name: string): string => {
-    let uniqueName = name;
-    let counter = 1;
-    while (allSpacesNameIds.includes(uniqueName)) {
-      uniqueName = `${name}${counter}`;
-      counter++;
-    }
-    return uniqueName;
-  };
-
   const generateSpaceName = (name: string) => `${name}'s Space`;
-  const generateNameId = (name: string) => `${name}s Space`.toLowerCase().replaceAll(' ', '');
 
   const [CreateNewSpace] = useCreateNewSpaceMutation();
   const handleCreateSpace = async () => {
@@ -153,7 +139,6 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
       variables: {
         hostId: user?.user.id,
         spaceData: {
-          nameID: makeUniqueName(generateNameId(user?.user.profile.displayName!)),
           profileData: {
             displayName: generateSpaceName(user?.user.profile.displayName!),
           },
