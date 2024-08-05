@@ -1,14 +1,14 @@
 query SpaceInnovationFlowTemplatesLibrary($spaceNameId: UUID_NAMEID!) {
   space(ID: $spaceNameId) {
     id
+    library {
+      id
+      innovationFlowTemplates {
+        ...InnovationFlowTemplateCard
+      }
+    }
     account {
       id
-      library {
-        id
-        innovationFlowTemplates {
-          ...InnovationFlowTemplateCard
-        }
-      }
       host {
         id
         nameID

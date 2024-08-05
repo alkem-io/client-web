@@ -1,14 +1,15 @@
 query SpaceCommunityGuidelinesTemplatesLibrary($spaceNameId: UUID_NAMEID!) {
   space(ID: $spaceNameId) {
     id
+    library {
+      id
+      communityGuidelinesTemplates {
+        ...CommunityGuidelinesTemplateCard
+      }
+    }
     account {
       id
-      library {
-        id
-        communityGuidelinesTemplates {
-          ...CommunityGuidelinesTemplateCard
-        }
-      }
+
       host {
         id
         nameID

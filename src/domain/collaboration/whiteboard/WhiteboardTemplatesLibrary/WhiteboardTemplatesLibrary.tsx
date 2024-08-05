@@ -55,7 +55,7 @@ const WhiteboardTemplatesLibrary: FC<WhiteboardTemplatesLibraryProps> = ({ open,
     () =>
       applyFilter(
         filter,
-        spaceData?.space.account.library?.whiteboardTemplates.map(template => ({
+        spaceData?.space.library?.whiteboardTemplates.map(template => ({
           ...template,
           innovationPack: {
             // TODO ???

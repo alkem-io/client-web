@@ -9,14 +9,13 @@ export type AccountKeySpecifier = (
   | 'agent'
   | 'authorization'
   | 'createdDate'
-  | 'defaults'
   | 'host'
   | 'id'
   | 'innovationHubs'
   | 'innovationPacks'
-  | 'library'
   | 'licensePrivileges'
   | 'spaceID'
+  | 'storageAggregator'
   | 'subscriptions'
   | 'updatedDate'
   | 'virtualContributors'
@@ -27,14 +26,13 @@ export type AccountFieldPolicy = {
   agent?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
-  defaults?: FieldPolicy<any> | FieldReadFunction<any>;
   host?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationHubs?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationPacks?: FieldPolicy<any> | FieldReadFunction<any>;
-  library?: FieldPolicy<any> | FieldReadFunction<any>;
   licensePrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
   spaceID?: FieldPolicy<any> | FieldReadFunction<any>;
+  storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
   subscriptions?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   virtualContributors?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2662,9 +2660,11 @@ export type RelayPaginatedSpaceKeySpecifier = (
   | 'community'
   | 'context'
   | 'createdDate'
+  | 'defaults'
   | 'id'
   | 'level'
   | 'levelZeroSpaceID'
+  | 'library'
   | 'metrics'
   | 'nameID'
   | 'profile'
@@ -2685,9 +2685,11 @@ export type RelayPaginatedSpaceFieldPolicy = {
   community?: FieldPolicy<any> | FieldReadFunction<any>;
   context?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  defaults?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   level?: FieldPolicy<any> | FieldReadFunction<any>;
   levelZeroSpaceID?: FieldPolicy<any> | FieldReadFunction<any>;
+  library?: FieldPolicy<any> | FieldReadFunction<any>;
   metrics?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2956,9 +2958,11 @@ export type SpaceKeySpecifier = (
   | 'community'
   | 'context'
   | 'createdDate'
+  | 'defaults'
   | 'id'
   | 'level'
   | 'levelZeroSpaceID'
+  | 'library'
   | 'metrics'
   | 'nameID'
   | 'profile'
@@ -2979,9 +2983,11 @@ export type SpaceFieldPolicy = {
   community?: FieldPolicy<any> | FieldReadFunction<any>;
   context?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  defaults?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   level?: FieldPolicy<any> | FieldReadFunction<any>;
   levelZeroSpaceID?: FieldPolicy<any> | FieldReadFunction<any>;
+  library?: FieldPolicy<any> | FieldReadFunction<any>;
   metrics?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;

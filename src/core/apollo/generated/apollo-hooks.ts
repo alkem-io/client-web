@@ -4945,16 +4945,13 @@ export const SpaceInnovationFlowsDocument = gql`
   query SpaceInnovationFlows($spaceId: UUID!) {
     lookup {
       space(ID: $spaceId) {
-        account {
+        library {
           id
-          library {
+          innovationFlowTemplates {
             id
-            innovationFlowTemplates {
+            profile {
               id
-              profile {
-                id
-                displayName
-              }
+              displayName
             }
           }
         }
@@ -5019,14 +5016,14 @@ export const SpaceInnovationFlowTemplatesLibraryDocument = gql`
   query SpaceInnovationFlowTemplatesLibrary($spaceNameId: UUID_NAMEID!) {
     space(ID: $spaceNameId) {
       id
+      library {
+        id
+        innovationFlowTemplates {
+          ...InnovationFlowTemplateCard
+        }
+      }
       account {
         id
-        library {
-          id
-          innovationFlowTemplates {
-            ...InnovationFlowTemplateCard
-          }
-        }
         host {
           id
           nameID
@@ -5729,14 +5726,14 @@ export const SpaceCalloutTemplatesLibraryDocument = gql`
   query SpaceCalloutTemplatesLibrary($spaceNameId: UUID_NAMEID!) {
     space(ID: $spaceNameId) {
       id
+      library {
+        id
+        calloutTemplates {
+          ...CalloutTemplateCard
+        }
+      }
       account {
         id
-        library {
-          id
-          calloutTemplates {
-            ...CalloutTemplateCard
-          }
-        }
         host {
           id
           nameID
@@ -6872,14 +6869,14 @@ export const SpaceCommunityGuidelinesTemplatesLibraryDocument = gql`
   query SpaceCommunityGuidelinesTemplatesLibrary($spaceNameId: UUID_NAMEID!) {
     space(ID: $spaceNameId) {
       id
+      library {
+        id
+        communityGuidelinesTemplates {
+          ...CommunityGuidelinesTemplateCard
+        }
+      }
       account {
         id
-        library {
-          id
-          communityGuidelinesTemplates {
-            ...CommunityGuidelinesTemplateCard
-          }
-        }
         host {
           id
           nameID
@@ -7047,14 +7044,14 @@ export const SpacePostTemplatesLibraryDocument = gql`
   query SpacePostTemplatesLibrary($spaceNameId: UUID_NAMEID!) {
     space(ID: $spaceNameId) {
       id
+      library {
+        id
+        postTemplates {
+          ...PostTemplateCard
+        }
+      }
       account {
         id
-        library {
-          id
-          postTemplates {
-            ...PostTemplateCard
-          }
-        }
         host {
           id
           nameID
@@ -7688,14 +7685,14 @@ export const SpaceWhiteboardTemplatesLibraryDocument = gql`
   query SpaceWhiteboardTemplatesLibrary($spaceNameId: UUID_NAMEID!) {
     space(ID: $spaceNameId) {
       id
+      library {
+        id
+        whiteboardTemplates {
+          ...WhiteboardTemplateCard
+        }
+      }
       account {
         id
-        library {
-          id
-          whiteboardTemplates {
-            ...WhiteboardTemplateCard
-          }
-        }
         host {
           id
           nameID
@@ -17436,20 +17433,17 @@ export const SpaceInnovationFlowTemplatesDocument = gql`
     lookup {
       space(ID: $spaceId) {
         id
-        account {
+        library {
           id
-          library {
+          innovationFlowTemplates {
             id
-            innovationFlowTemplates {
+            states {
+              displayName
+              description
+            }
+            profile {
               id
-              states {
-                displayName
-                description
-              }
-              profile {
-                id
-                displayName
-              }
+              displayName
             }
           }
         }
@@ -17914,18 +17908,16 @@ export const AdminSpaceChallengesPageDocument = gql`
           url
         }
       }
-      account {
+      defaults {
         id
-        defaults {
-          innovationFlowTemplate {
-            id
-            profile {
-              ...InnovationFlowProfile
-            }
-            states {
-              displayName
-              description
-            }
+        innovationFlowTemplate {
+          id
+          profile {
+            ...InnovationFlowProfile
+          }
+          states {
+            displayName
+            description
           }
         }
       }
@@ -17987,8 +17979,10 @@ export function refetchAdminSpaceChallengesPageQuery(variables: SchemaTypes.Admi
 }
 
 export const UpdateSpaceDefaultInnovationFlowTemplateDocument = gql`
-  mutation UpdateSpaceDefaultInnovationFlowTemplate($spaceId: UUID!, $innovationFlowTemplateId: UUID!) {
-    updateSpaceDefaults(spaceDefaultsData: { spaceID: $spaceId, flowTemplateID: $innovationFlowTemplateId }) {
+  mutation UpdateSpaceDefaultInnovationFlowTemplate($spaceDefaultsID: UUID!, $innovationFlowTemplateId: UUID!) {
+    updateSpaceDefaults(
+      spaceDefaultsData: { spaceDefaultsID: $spaceDefaultsID, flowTemplateID: $innovationFlowTemplateId }
+    ) {
       id
     }
   }
@@ -18011,7 +18005,7 @@ export type UpdateSpaceDefaultInnovationFlowTemplateMutationFn = Apollo.Mutation
  * @example
  * const [updateSpaceDefaultInnovationFlowTemplateMutation, { data, loading, error }] = useUpdateSpaceDefaultInnovationFlowTemplateMutation({
  *   variables: {
- *      spaceId: // value for 'spaceId'
+ *      spaceDefaultsID: // value for 'spaceDefaultsID'
  *      innovationFlowTemplateId: // value for 'innovationFlowTemplateId'
  *   },
  * });
@@ -19255,29 +19249,26 @@ export const AdminSpaceTemplatesDocument = gql`
     lookup {
       space(ID: $spaceId) {
         id
-        account {
+        library {
           id
-          library {
+          authorization {
             id
-            authorization {
-              id
-              myPrivileges
-            }
-            calloutTemplates {
-              ...AdminCalloutTemplate
-            }
-            postTemplates {
-              ...AdminPostTemplate
-            }
-            whiteboardTemplates {
-              ...AdminWhiteboardTemplate
-            }
-            innovationFlowTemplates {
-              ...AdminInnovationFlowTemplate
-            }
-            communityGuidelinesTemplates {
-              ...AdminCommunityGuidelinesTemplate
-            }
+            myPrivileges
+          }
+          calloutTemplates {
+            ...AdminCalloutTemplate
+          }
+          postTemplates {
+            ...AdminPostTemplate
+          }
+          whiteboardTemplates {
+            ...AdminWhiteboardTemplate
+          }
+          innovationFlowTemplates {
+            ...AdminInnovationFlowTemplate
+          }
+          communityGuidelinesTemplates {
+            ...AdminCommunityGuidelinesTemplate
           }
         }
       }
@@ -19346,17 +19337,14 @@ export const AdminCommunityGuidelinesTemplatesDocument = gql`
   query AdminCommunityGuidelinesTemplates($spaceId: UUID_NAMEID!) {
     space(ID: $spaceId) {
       id
-      account {
+      library {
         id
-        library {
+        authorization {
           id
-          authorization {
-            id
-            myPrivileges
-          }
-          communityGuidelinesTemplates {
-            ...AdminCommunityGuidelinesTemplate
-          }
+          myPrivileges
+        }
+        communityGuidelinesTemplates {
+          ...AdminCommunityGuidelinesTemplate
         }
       }
     }
@@ -19647,11 +19635,8 @@ export const SpaceTemplateSetIdDocument = gql`
   query SpaceTemplateSetId($spaceNameId: UUID_NAMEID!) {
     space(ID: $spaceNameId) {
       id
-      account {
+      library {
         id
-        library {
-          id
-        }
       }
     }
   }
