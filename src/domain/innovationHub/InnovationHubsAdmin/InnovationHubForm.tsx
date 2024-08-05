@@ -91,7 +91,6 @@ const InnovationHubForm: FC<InnovationHubFormProps> = ({
   return (
     <Formik initialValues={initialValues} validationSchema={validationSchema} enableReinitialize onSubmit={onSubmit}>
       {({ values: { profile }, errors, handleSubmit }) => {
-        console.log({ ee: Object.keys(errors) });
         return (
           <PageContentBlock>
             <FormikInputField
