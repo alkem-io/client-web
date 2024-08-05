@@ -2955,6 +2955,8 @@ export type MeQueryResults = {
   myCreatedSpaces: Array<Space>;
   /** The Spaces I am contributing to */
   mySpaces: Array<MySpaceResults>;
+  /** The Spaces the current user is a member of as a flat list. */
+  spaceMembershipsFlat: Array<CommunityMembershipResult>;
   /** The hierarchy of the Spaces the current user is a member. */
   spaceMembershipsHierarchical: Array<CommunityMembershipResult>;
   /** The current authenticated User;  null if not yet registered on the platform */
@@ -30635,20 +30637,10 @@ export type ChallengeExplorerPageQuery = {
   __typename?: 'Query';
   me: {
     __typename?: 'MeQueryResults';
-    spaceMembershipsHierarchical: Array<{
+    spaceMembershipsFlat: Array<{
       __typename?: 'CommunityMembershipResult';
       id: string;
       space: { __typename?: 'Space'; id: string };
-      childMemberships: Array<{
-        __typename?: 'CommunityMembershipResult';
-        id: string;
-        space: { __typename?: 'Space'; id: string };
-        childMemberships: Array<{
-          __typename?: 'CommunityMembershipResult';
-          id: string;
-          space: { __typename?: 'Space'; id: string };
-        }>;
-      }>;
     }>;
   };
 };

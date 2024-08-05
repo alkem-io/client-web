@@ -1781,6 +1781,7 @@ export type MeQueryResultsKeySpecifier = (
   | 'id'
   | 'myCreatedSpaces'
   | 'mySpaces'
+  | 'spaceMembershipsFlat'
   | 'spaceMembershipsHierarchical'
   | 'user'
   | MeQueryResultsKeySpecifier
@@ -1792,6 +1793,7 @@ export type MeQueryResultsFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   myCreatedSpaces?: FieldPolicy<any> | FieldReadFunction<any>;
   mySpaces?: FieldPolicy<any> | FieldReadFunction<any>;
+  spaceMembershipsFlat?: FieldPolicy<any> | FieldReadFunction<any>;
   spaceMembershipsHierarchical?: FieldPolicy<any> | FieldReadFunction<any>;
   user?: FieldPolicy<any> | FieldReadFunction<any>;
 };

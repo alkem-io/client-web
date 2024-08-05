@@ -26,7 +26,7 @@ const MyDashboardWithMemberships: FC<MyDashboardWithMembershipsProps> = ({ space
   const { data } = useLatestReleaseDiscussionQuery({
     fetchPolicy: 'network-only',
   });
-  // TODO: need to check here that child memberships are also shown if that was previous behavior
+  // TODO: need to check here that child memberships should be done via flat or hierarchical space memberships query
   const levelZeroSpaces = spacesData?.me.spaceMembershipsHierarchical.map(membership => membership.space);
 
   return (

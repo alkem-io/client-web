@@ -23944,22 +23944,10 @@ export function refetchRecentSpacesQuery(variables?: SchemaTypes.RecentSpacesQue
 export const ChallengeExplorerPageDocument = gql`
   query ChallengeExplorerPage {
     me {
-      spaceMembershipsHierarchical {
+      spaceMembershipsFlat {
         id
         space {
           id
-        }
-        childMemberships {
-          id
-          space {
-            id
-          }
-          childMemberships {
-            id
-            space {
-              id
-            }
-          }
         }
       }
     }
