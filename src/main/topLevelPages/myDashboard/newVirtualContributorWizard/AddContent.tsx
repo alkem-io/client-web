@@ -11,33 +11,50 @@ import Gutters from '../../../../core/ui/grid/Gutters';
 import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
 import FormikMarkdownField from '../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
 import { Actions } from '../../../../core/ui/actions/Actions';
-// import { displayNameValidator } from '../../../../core/ui/forms/validator';
 import { LONG_MARKDOWN_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 import CancelDialog from './CancelDialog';
+import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
 
 type AddContentProps = {
   onClose: () => void;
-  onCreateBoK: (subspaceId: string) => Promise<void>;
+  onCreateVC: (posts: PostsFormValues) => Promise<void>;
 };
 
-interface FormValueType {
+export interface PostValues {
   title: string;
+  description: string;
 }
 
-const AddContent = ({ onClose }: AddContentProps) => {
+export interface PostsFormValues {
+  posts: PostValues[];
+}
+
+const AddContent = ({ onClose, onCreateVC }: AddContentProps) => {
   const { t } = useTranslation();
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const validationSchema = yup.object().shape({
-    // name: displayNameValidator.concat(uniqueNameValidator),
-    // description: MarkdownValidator(LONG_MARKDOWN_TEXT_LENGTH),
+    posts: yup.array().of(
+      yup.object().shape({
+        title: yup.string().required(),
+        description: MarkdownValidator(LONG_MARKDOWN_TEXT_LENGTH),
+      })
+    ),
   });
 
-  const initialValues: FormValueType = {
-    title: t('createVirtualContributorWizard.addContent.post.exampleTitle')
+  const initialValues: PostsFormValues = {
+    posts: [
+      {
+        title: t('createVirtualContributorWizard.addContent.post.exampleTitle'),
+        description: t('createVirtualContributorWizard.addContent.post.exampleDescription'),
+      },
+    ],
   };
 
-  const handleChange = () => {};
+  const newPost = () => ({
+    title: '',
+    description: '',
+  });
 
   const onCancel = () => {
     setDialogOpen(true);
@@ -50,61 +67,62 @@ const AddContent = ({ onClose }: AddContentProps) => {
         <Gutters disablePadding disableGap>
           <Caption>{t('createVirtualContributorWizard.addContent.description')}</Caption>
           <Caption fontWeight="bold">{t('createVirtualContributorWizard.addContent.descriptionBold')}</Caption>
-          <Formik
-            initialValues={initialValues}
-            validationSchema={validationSchema}
-            onSubmit={() => {}}
-          >
-            {({ isValid }) => (
-              <>
-                <Gutters paddingX={0}>
-                  {/* <FormikEffect onChange={handleChange} onStatusChange={onStatusChanged} /> */}
-                  <FormikInputField
-                    name={'title'}
-                    title={t('createVirtualContributorWizard.addContent.post.title')}
-                    required
-                    // placeholder={t('createVirtualContributorWizard.addContent.postTitlePlaceholder')}
-                  />
-                  <FormikMarkdownField
-                    name="description"
-                    title={t('components.post-creation.info-step.description')}
-                    placeholder={t('components.post-creation.info-step.description-placeholder')}
-                    rows={7}
-                    required
-                    maxLength={LONG_MARKDOWN_TEXT_LENGTH}
-                    hideImageOptions
-                  />
-                  <Tooltip title={t('createVirtualContributorWizard.addContent.addAnotherPost')} placement={'bottom'}>
+          <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onCreateVC}>
+            {({ values: { posts }, isValid, setFieldValue }) => {
+              const handleAdd = () => {
+                const newArray = [...posts, newPost()];
+                setFieldValue('posts', newArray);
+              };
+              return (
+                <>
+                  {posts.map((post, index) => (
+                    <Gutters paddingX={0} key={index}>
+                      <FormikInputField
+                        name={`posts[${index}].title`}
+                        title={t('createVirtualContributorWizard.addContent.post.title')}
+                        required
+                        value={post.title}
+                      />
+                      <FormikMarkdownField
+                        name={`posts[${index}].description`}
+                        title={t('common.post')}
+                        rows={7}
+                        maxLength={LONG_MARKDOWN_TEXT_LENGTH}
+                        hideImageOptions
+                        value={post.description}
+                      />
+                    </Gutters>
+                  ))}
+
+                  <Tooltip
+                    title={t('createVirtualContributorWizard.addContent.post.addAnotherPost')}
+                    placement={'bottom'}
+                  >
                     <Box>
                       <Button
-                        aria-label={t('createVirtualContributorWizard.addContent.addAnotherPost')}
-                        onClick={() => {
-                          // handleAdd(push);
-                        }}
                         color="primary"
                         variant="outlined"
                         startIcon={<AddIcon />}
-                        // disabled={disabled || adding}
+                        onClick={() => {
+                          handleAdd();
+                        }}
                       >
                         {t('createVirtualContributorWizard.addContent.post.addAnotherPost')}
                       </Button>
                     </Box>
                   </Tooltip>
+
                   <Actions justifyContent="flex-end">
                     <Button variant="text" onClick={onCancel}>
                       {t('buttons.cancel')}
                     </Button>
-                    <LoadingButton
-                      variant="contained"
-                      disabled={!isValid}
-                      // onClick={() => handleContinue(values.subspaceName)}
-                    >
+                    <LoadingButton variant="contained" disabled={!isValid} onClick={() => onCreateVC({ posts })}>
                       {t('buttons.continue')}
                     </LoadingButton>
                   </Actions>
-                </Gutters>
-              </>
-            )}
+                </>
+              );
+            }}
           </Formik>
         </Gutters>
       </DialogContent>

@@ -42,3 +42,13 @@ query AllSpaces {
     nameID
   }
 }
+
+query NewSpace($spaceId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
+    id
+    profile {
+      url
+    }
+  }
+}
+
