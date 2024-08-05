@@ -1,13 +1,9 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import InnovationPackForm, { InnovationPackFormValues } from './InnovationPackForm'; // Assuming InnovationPackForm is in the same directory
 import DialogWithGrid from '../../../../../../core/ui/dialog/DialogWithGrid';
 import { useTranslation } from 'react-i18next';
 import { DialogContent, IconButton } from '@mui/material';
-import {
-  useCreateInnovationPackMutation,
-  useOrganizationsListQuery,
-} from '../../../../../../core/apollo/generated/apollo-hooks';
-import { sortBy } from 'lodash';
+import { useCreateInnovationPackMutation } from '../../../../../../core/apollo/generated/apollo-hooks';
 import DialogHeader from '../../../../../../core/ui/dialog/DialogHeader';
 import { BlockTitle } from '../../../../../../core/ui/typography';
 import AddIcon from '@mui/icons-material/Add';
@@ -21,20 +17,7 @@ const CreateInnovationPackDialog = ({ accountId }: CreateInnovationPackDialogPro
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
 
-  const { data: organizationsList, loading: loadingOrganizations } = useOrganizationsListQuery({
-    skip: !isOpen,
-  });
-
-  const organizations = useMemo(
-    () =>
-      sortBy(
-        organizationsList?.organizations.map(e => ({ id: e.id, name: e.profile.displayName })) || [],
-        org => org.name
-      ),
-    [organizationsList]
-  );
-
-  const [createInnovationPack, { loading: creating }] = useCreateInnovationPackMutation();
+  const [createInnovationPack, { loading }] = useCreateInnovationPackMutation();
 
   const handleSubmit = async (formData: InnovationPackFormValues) => {
     if (!accountId) {
@@ -62,21 +45,14 @@ const CreateInnovationPackDialog = ({ accountId }: CreateInnovationPackDialogPro
     return null;
   }
 
-  const loading = loadingOrganizations || creating;
-
   return (
     <>
-      <DialogWithGrid open={isOpen} onClose={() => setIsOpen(false)}>
+      <DialogWithGrid open={isOpen} onClose={() => setIsOpen(false)} columns={6}>
         <DialogHeader onClose={() => setIsOpen(false)}>
           <BlockTitle>{t('pages.admin.innovation-packs.create')}</BlockTitle>
         </DialogHeader>
         <DialogContent>
-          <InnovationPackForm
-            isNew
-            organizations={organizations}
-            onSubmit={handleSubmit}
-            loading={loading || !accountId}
-          />
+          <InnovationPackForm isNew onSubmit={handleSubmit} loading={loading || !accountId} />
         </DialogContent>
       </DialogWithGrid>
       <IconButton aria-label={t('common.add')} aria-haspopup="true" size="small" onClick={() => setIsOpen(true)}>
