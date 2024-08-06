@@ -1,17 +1,26 @@
-import { ComponentType, useCallback, useMemo, useState } from 'react';
+import { ComponentType, useCallback, useMemo, useRef, useState } from 'react';
 import {
+  PostCardFragmentDoc,
   refetchMyAccountQuery,
   useCreateNewSpaceMutation,
+  useCreatePostFromContributeTabMutation,
   useCreateVirtualContributorOnAccountMutation,
   useDeleteSpaceMutation,
-  useDeleteVirtualContributorOnAccountMutation,
+  useNewSpaceLazyQuery,
   useNewVirtualContributorMySpacesQuery,
   usePlansTableQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
-import { LicensePlanType, NewVirtualContributorMySpacesQuery } from '../../../../core/apollo/generated/graphql-schema';
+import {
+  CalloutGroupName,
+  CalloutState,
+  CalloutType,
+  CalloutVisibility,
+  LicensePlanType,
+  NewVirtualContributorMySpacesQuery,
+} from '../../../../core/apollo/generated/graphql-schema';
 import CreateNewVirtualContributor, { VirtualContributorFromProps } from './CreateNewVirtualContributor';
 import LoadingState from './LoadingState';
-import AddContent from './AddContent';
+import AddContent, { PostsFormValues, PostValues } from './AddContent';
 import ExistingSpace, { SelectableKnowledgeProps } from './ExistingSpace';
 import { useTranslation } from 'react-i18next';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
@@ -20,11 +29,16 @@ import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
 import useNavigate from '../../../../core/routing/useNavigate';
 import { usePlanAvailability } from '../../../../domain/journey/space/createSpace/plansTable/usePlanAvailability';
 import { addVCCreationCache } from './vcCreationUtil';
+import {
+  CalloutCreationType,
+  useCalloutCreation,
+} from '../../../../domain/collaboration/callout/creationDialog/useCalloutCreation/useCalloutCreation';
+import SetupVC from './SetupVC';
 import { info } from '../../../../core/logging/sentry/log';
 
 const SPACE_LABEL = '(space)';
 
-type Step = 'initial' | 'create_VC' | 'add_knowledge' | 'existingKnowledge';
+type Step = 'initial' | 'createSpace' | 'addKnowledge' | 'existingKnowledge' | 'vcSetup';
 
 interface useNewVirtualContributorWizardProvided {
   startWizard: () => void;
@@ -42,7 +56,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
   const [dialogOpen, setDialogOpen] = useState(false);
   const [step, setStep] = useState<Step>('initial');
   const [spaceId, setSpaceId] = useState<string>();
-  const [virtualContributorId, setVirtualContributorId] = useState<string>();
+  const [accountId, setAccountId] = useState<string>();
   const [virtualContributorInput, setVirtualContributorInput] = useState<VirtualContributorFromProps | undefined>(
     undefined
   );
@@ -124,67 +138,151 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
 
   const generateSpaceName = (name: string) => `${name}'s Space`;
 
-  const [CreateNewSpace] = useCreateNewSpaceMutation();
-  const handleCreateSpace = async () => {
+  const [CreateNewSpace] = useCreateNewSpaceMutation({
+    refetchQueries: [refetchMyAccountQuery()],
+  });
+  const handleCreateSpace = async (values: VirtualContributorFromProps) => {
+    setStep('createSpace');
     if (!user?.user.id) {
       return;
     }
-    if (plans.length === 0) {
-      info(`No available plans for this account. User: ${user?.user.id}`);
-      notify('No available plans for this account. Please, contact support@alkem.io.', 'error');
-      return;
-    }
-
-    const { data: newSpace } = await CreateNewSpace({
-      variables: {
-        hostId: user?.user.id,
-        spaceData: {
-          profileData: {
-            displayName: generateSpaceName(user?.user.profile.displayName!),
+    if (mySpaceId && myAccountId) {
+      setSpaceId(mySpaceId);
+      setAccountId(myAccountId);
+    } else {
+      if (plans.length === 0) {
+        info(`No available plans for this account. User: ${user?.user.id}`);
+        notify('No available plans for this account. Please, contact support@alkem.io.', 'error');
+        return;
+      }
+      const { data: newSpace } = await CreateNewSpace({
+        variables: {
+          hostId: user?.user.id,
+          spaceData: {
+            profileData: {
+              displayName: generateSpaceName(user?.user.profile.displayName!),
+            },
+            collaborationData: {},
           },
-          collaborationData: {},
+          licensePlanId: plans[0]?.id,
         },
-        licensePlanId: plans[0].id,
+      });
+      setSpaceId(newSpace?.createAccount.spaceID);
+      setAccountId(newSpace?.createAccount.id);
+    }
+    setVirtualContributorInput(values);
+    setStep('addKnowledge');
+  };
+
+  const [getNewSpaceUrl] = useNewSpaceLazyQuery({
+    variables: {
+      spaceId: spaceId!,
+    },
+  });
+
+  const { handleCreateCallout } = useCalloutCreation(
+    {
+      journeyId: spaceId,
+    }!
+  );
+
+  const calloutDetails: CalloutCreationType = {
+    framing: {
+      profile: {
+        displayName: t('createVirtualContributorWizard.addContent.post.initialPosts'),
+        description: '',
+        referencesData: [],
+      },
+    },
+    type: CalloutType.PostCollection,
+    contributionPolicy: {
+      state: CalloutState.Open,
+    },
+    groupName: CalloutGroupName.Home,
+    visibility: CalloutVisibility.Published,
+    sendNotification: false,
+  };
+
+  const calloutId = useRef<string>();
+  const [createPost] = useCreatePostFromContributeTabMutation({
+    update: (cache, { data }) => {
+      if (!calloutId.current || !data) {
+        return;
+      }
+      const { createContributionOnCallout } = data;
+      const calloutRefId = cache.identify({
+        id: calloutId.current,
+      });
+
+      if (!calloutRefId) {
+        return;
+      }
+
+      cache.modify({
+        id: calloutRefId,
+        fields: {
+          posts(existingPosts = []) {
+            const newPostRef = cache.writeFragment({
+              data: createContributionOnCallout.post,
+              fragment: PostCardFragmentDoc,
+              fragmentName: 'PostCard',
+            });
+            return [...existingPosts, newPostRef];
+          },
+        },
+      });
+    },
+  });
+
+  const onCreatePost = async (post: PostValues, calloutId: string) => {
+    await createPost({
+      variables: {
+        postData: {
+          calloutID: calloutId!,
+          post: {
+            profileData: {
+              displayName: post.title,
+              description: post.description,
+            },
+            type: CalloutType.Post,
+          },
+        },
       },
     });
-    setSpaceId(newSpace?.createAccount.spaceID);
-
-    return newSpace;
   };
 
-  const handleSetupVirtualContributor = async (values: VirtualContributorFromProps) => {
-    setStep('create_VC');
-    if (mySpaceId && myAccountId) {
-      await handleCreateVirtualContributor(values, myAccountId, mySpaceId);
-    } else {
-      const newSpace = await handleCreateSpace();
-      await handleCreateVirtualContributor(values, newSpace?.createAccount.id!, newSpace?.createAccount.spaceID!);
+  const handleAddContent = async (posts: PostsFormValues) => {
+    setStep('vcSetup');
+
+    // create collection of posts
+    if (posts.posts.length > 0) {
+      const callout = await handleCreateCallout(calloutDetails);
+      calloutId.current = callout?.id;
+
+      // add posts to collection
+      if (callout?.id) {
+        posts.posts.forEach(async post => {
+          await onCreatePost(post, callout?.id);
+        });
+      }
     }
-    await setStep('add_knowledge');
+
+    // create VC
+    if (virtualContributorInput && accountId && spaceId) {
+      handleCreateVirtualContributor(virtualContributorInput, accountId, spaceId);
+      addVCCreationCache(virtualContributorInput.name);
+      const { data } = await getNewSpaceUrl({ variables: { spaceId: spaceId! } });
+      navigate(data?.space.profile.url ?? '');
+    }
   };
 
-  const handleAddContent = async () => {
-    console.log('Not implemented');
-  };
-
-  const [deleteVirtualContributor] = useDeleteVirtualContributorOnAccountMutation({
-    refetchQueries: [refetchMyAccountQuery()],
-  });
   const [deleteSpace] = useDeleteSpaceMutation({
     refetchQueries: [refetchMyAccountQuery()],
   });
 
   const handleCancel = async () => {
-    if (virtualContributorId) {
-      await deleteVirtualContributor({
-        variables: {
-          virtualContributorData: {
-            ID: virtualContributorId,
-          },
-        },
-      });
-    }
-    if (spaceId) {
+    if (spaceId && spaceId !== mySpaceId) {
+      // if there was a space before the VC creation, let's not delete it
       await deleteSpace({
         variables: {
           input: {
@@ -193,7 +291,6 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
         },
       });
     }
-    notify(t('createVirtualContributorWizard.deleted'), 'success');
     onDialogClose();
   };
 
@@ -206,7 +303,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     accountId: string,
     spaceId: string
   ) => {
-    if (!accountId || !spaceId) {
+    if (!accountId || !spaceId || !virtualContributorInput) {
       return;
     }
     const { data } = await createVirtualContributor({
@@ -232,7 +329,6 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
         t('createVirtualContributorWizard.createdVirtualContributor.successMessage', { values: { name: values.name } }),
         'success'
       );
-      setVirtualContributorId(data.createVirtualContributor.id);
     }
   };
 
@@ -256,16 +352,14 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
           <CreateNewVirtualContributor
             onClose={onDialogClose}
             loading={loading}
-            onCreateSpace={handleSetupVirtualContributor}
+            onCreateSpace={handleCreateSpace}
             onUseExistingKnowledge={values => onStepSelection('existingKnowledge', values)}
           />
         )}
-        {step === 'create_VC' && (
-          <LoadingState
-            onClose={handleCancel} // TODO: Cancel NOT WORKING
-          />
+        {step === 'createSpace' && <LoadingState onClose={handleCancel} />}
+        {step === 'addKnowledge' && virtualContributorInput && (
+          <AddContent onClose={handleCancel} onCreateVC={handleAddContent} />
         )}
-        {step === 'add_knowledge' && <AddContent onClose={handleCancel} onCreateBoK={handleAddContent} />}
         {step === 'existingKnowledge' && (
           <ExistingSpace
             onClose={onDialogClose}
@@ -275,6 +369,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
             loading={loading}
           />
         )}
+        {step === 'vcSetup' && <SetupVC />}
       </DialogWithGrid>
     ),
     [dialogOpen, step, loading]

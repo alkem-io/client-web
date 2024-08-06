@@ -112,7 +112,8 @@
     "take-me-home": "Take me home",
     "close": "Close",
     "yes-close": "Yes, close",
-    "yesReplace": "Yes, Replace",
+    "yesReplace": "Yes, replace",
+    "yesStop": "Yes, stop",
     "delete": "Delete",
     "submit": "Submit",
     "remove": "Remove",
@@ -2939,7 +2940,11 @@
       "description": "",
       "successMessage": "Virtual Contributor '{{virtualContributorName}}' created successfully"
     },
-    "deleted": "Virtual Contributor deleted successfuly!",
+    "cancel": {
+      "title": "Discard Virtual Contributor",
+      "description": "Are you sure you want to stop creating your Virtual Contributor? Your work will not be saved.",
+      "deleted": "Virtual Contributor deleted successfuly!"
+    },
     "initial": {
       "title": "Create a Virtual Contributor",
       "profileDescription": "Choose a name, add an avatar and enrich your Virtual Contributors profile below. ",
@@ -2958,18 +2963,18 @@
     "addContent": {
       "title": "Add knowledge",
       "description": "What knowledge do you want your Virtual Contributor to have? Write it down in post(s) and/or upload relevant documents.",
-      "descriptionBold": "You can update, add, and remove content later."
+      "descriptionBold": "You can update, add, and remove content later.",
+      "post": {
+        "title": "Post title",
+        "exampleTitle": "Example: About Alkemio",
+        "exampleDescription": "Tip: Create a structured and specific text, for example:\n\n<strong>Background</strong>\n\nAlkemio, founded in 2020, was born out of frustration with slow progress on COVID-related challenges and a recognition of the numerous fast-moving challenges we face daily.\n\n<strong>Governance</strong>\n\nTo maintain trust and realize our long-term vision, we’ve adopted Steward Ownership as our core group structure. Steward ownership is...\n",
+        "addAnotherPost": "Add another post",
+        "initialPosts": "Initial Posts",
+        "delete": "Delete post"
+      }
     },
-    "step1b": {
-      "title": "1/3 Choose a Subspace",
-      "description": "Select the Subspace you want to use as a body of knowledge.",
-      "spaceName": "Space",
-      "subspaceName": "Subspace"
-    },
-    "step2": {
-      "title": "2/3 Name your Virtual Contributor",
-      "description": "Choose a name for your Virtual Contributor. This is visible to other users on the platform.",
-      "virtualContributorName": "Name"
+    "setupVC": {
+      "loading": "Your Virtual Contributor is being created. This process may take a few moments to complete."
     },
     "step3": {
       "title": "3/3 What is next?",

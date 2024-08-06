@@ -30459,6 +30459,15 @@ export type NewVirtualContributorMySpacesQuery = {
   };
 };
 
+export type NewSpaceQueryVariables = Exact<{
+  spaceId: Scalars['UUID_NAMEID'];
+}>;
+
+export type NewSpaceQuery = {
+  __typename?: 'Query';
+  space: { __typename?: 'Space'; id: string; profile: { __typename?: 'Profile'; id: string; url: string } };
+};
+
 export type RecentForumMessagesQueryVariables = Exact<{
   limit?: InputMaybe<Scalars['Float']>;
 }>;
