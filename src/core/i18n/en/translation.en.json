@@ -2955,7 +2955,7 @@
     },
     "cancel": {
       "title": "Discard Virtual Contributor",
-      "description": "Are you sure you want to stop creating your Virtual Contributor? Your work will not be saved.",
+      "description": "Are you sure you want to stop creating your Virtual Contributor? Your work will not be saved. A space might already be created for you. Please, reload the page if you confirm the cancellation.",
       "deleted": "Virtual Contributor deleted successfuly!"
     },
     "addContent": {
