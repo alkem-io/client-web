@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { DialogContent } from '@mui/material';
 import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
@@ -53,15 +53,13 @@ const MyMembershipsDialog = ({ open, onClose }: MyJourneysDialogProps) => {
 
   const landingUrl = useLandingUrl();
 
-  const myTopLevelMemberships = useMemo(() => data?.me.spaceMembershipsHierarchical, [data]);
-
   return (
     <DialogWithGrid open={open} onClose={onClose} columns={8}>
       <DialogHeader icon={<SpaceIcon />} title={t('pages.home.sections.myMemberships.title')} onClose={onClose} />
       <DialogContent style={{ paddingTop: 0 }}>
         {loading && <Loading />}
         <Gutters disablePadding disableGap>
-          {myTopLevelMemberships?.map(spaceMembership => (
+          {data?.me.spaceMembershipsHierarchical?.map(spaceMembership => (
             <ExpandableSpaceTree membership={spaceMembership} />
           ))}
           <Caption alignSelf="center" paddingTop={gutters(0.5)}>
