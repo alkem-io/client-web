@@ -10,8 +10,8 @@ import RouterLink from '../../../core/ui/link/RouterLink';
 import InnovationHubForm, { InnovationHubFormValues } from './InnovationHubForm';
 import {
   refetchAdminInnovationHubsListQuery,
+  useAccountsListQuery,
   useCreateInnovationHubMutation,
-  useOrganizationsListQuery,
 } from '../../../core/apollo/generated/apollo-hooks';
 import { InnovationHubType } from '../../../core/apollo/generated/graphql-schema';
 import PageContent from '../../../core/ui/content/PageContent';
@@ -21,15 +21,15 @@ const AdminNewInnovationHubPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const { data: organizationsList, loading: loadingOrganizations } = useOrganizationsListQuery();
+  const { data: accountsList, loading: loadingAccounts } = useAccountsListQuery();
 
-  const organizations = useMemo(
+  const accounts = useMemo(
     () =>
       sortBy(
-        organizationsList?.organizations.map(e => ({ id: e.id, name: e.profile.displayName })) || [],
-        org => org.name
+        accountsList?.accounts.map(acc => ({ id: acc.id, name: acc.host?.profile.displayName ?? acc.id })) || [],
+        acc => acc.name
       ),
-    [organizationsList]
+    [accountsList]
   );
 
   const [createInnovationHub, { loading: creating }] = useCreateInnovationHubMutation();
@@ -38,9 +38,8 @@ const AdminNewInnovationHubPage = () => {
     const { data } = await createInnovationHub({
       variables: {
         hubData: {
-          accountID: 'TODO: fix this',
+          accountID: formData.accountId,
           nameID: formData.nameID,
-          //providerID: formData.providerId, // TODO: Add provider field when serverside is ready
           subdomain: formData.subdomain,
           profileData: {
             displayName: formData.profile.displayName,
@@ -58,7 +57,7 @@ const AdminNewInnovationHubPage = () => {
     }
   };
 
-  const isLoading = loadingOrganizations || creating;
+  const isLoading = loadingAccounts || creating;
 
   return (
     <AdminLayout currentTab={AdminSection.InnovationHubs}>
@@ -67,7 +66,7 @@ const AdminNewInnovationHubPage = () => {
           <Button component={RouterLink} to="../" startIcon={<ArrowBackIcon />}>
             {t('pages.admin.innovationHubs.back')}
           </Button>
-          <InnovationHubForm isNew organizations={organizations} onSubmit={handleSubmit} loading={isLoading} />
+          <InnovationHubForm isNew accounts={accounts} onSubmit={handleSubmit} loading={isLoading} />
         </PageContentColumn>
       </PageContent>
     </AdminLayout>

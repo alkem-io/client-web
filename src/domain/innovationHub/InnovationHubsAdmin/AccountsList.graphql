@@ -1,0 +1,11 @@
+query AccountsList {
+  accounts {
+    id
+    host {
+      id
+      profile {
+        displayName
+      }
+    }
+  }
+}

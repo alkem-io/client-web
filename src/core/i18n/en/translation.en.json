@@ -388,6 +388,11 @@
         "ARCHIVED": "Archived",
         "DEMO": "Demo"
       },
+      "searchVisibility": {
+        "ACCOUNT": "Account",
+        "HIDDEN": "Hidden",
+        "PUBLIC": "Public"
+      },
       "authorization-credentials": {
         "GLOBAL_ADMIN": {
           "name": "Global Admin",
@@ -1831,7 +1836,11 @@
             }
           },
           "account": {
-            "description": "",
+            "description": "Here you can see details about things hosted by your account.",
+            "hostedSpaces": "Hosted Spaces",
+            "virtualContributors": "Virtual Contributors",
+            "innovationPacks": "$t(common.innovation-packs)",
+            "customHomepages": "Your Custom Homepages",
             "hostTitle": "Host",
             "contactsLink": "If you want to change any of these settings, please contact the Alkemio team here.",
             "freeTrialNotice": {
@@ -1969,8 +1978,11 @@
         }
       },
       "innovation-packs": {
+        "create": "Create Innovation Pack",
         "fields": {
-          "provider": "Provider organization"
+          "provider": "Provider organization",
+          "listedInStore": "Listed in Store",
+          "searchVisibility": "Search Visibility"
         },
         "back-button": "All $t(common.innovation-packs)",
         "save-new-for-details": "Save the new Innovation Pack to edit the rest of the details",
@@ -1978,7 +1990,7 @@
       },
       "innovationHubs": {
         "fields": {
-          "host": "Host Organization",
+          "host": "Host Account",
           "subdomain": "Subdomain"
         },
         "saveForMoreDetails": "Save the new $t(common.innovation-hub) to edit the rest of the details",

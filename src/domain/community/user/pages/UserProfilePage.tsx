@@ -20,9 +20,9 @@ import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import UserSettingsLayout from '../../../platform/admin/user/layout/UserSettingsLayout';
 import { SettingsSection } from '../../../platform/admin/layout/EntitySettingsLayout/constants';
 
-interface EditUserProfilePageProps {}
+interface UserProfilePageProps {}
 
-export const EditUserProfilePage: FC<EditUserProfilePageProps> = () => {
+export const UserProfilePage: FC<UserProfilePageProps> = () => {
   const navigate = useNavigate();
   const { userNameId = '' } = useUrlParams();
 
@@ -104,4 +104,4 @@ export const EditUserProfilePage: FC<EditUserProfilePageProps> = () => {
   );
 };
 
-export default EditUserProfilePage;
+export default UserProfilePage;

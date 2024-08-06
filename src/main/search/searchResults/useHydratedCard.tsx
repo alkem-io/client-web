@@ -131,7 +131,7 @@ const hydrateSpaceCard = (
       matchedTerms
       vision={vision}
       locked={space.settings.privacy?.mode === SpacePrivacyMode.Private}
-      spaceVisibility={space.account.license.visibility}
+      spaceVisibility={space.visibility}
       parentSegment={parentSegment(data)}
     />
   );
