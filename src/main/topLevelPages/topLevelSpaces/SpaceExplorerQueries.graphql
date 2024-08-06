@@ -1,7 +1,10 @@
 query ChallengeExplorerPage {
   me {
-    spaceMemberships(visibilities: [ACTIVE, DEMO]) {
+    spaceMembershipsFlat {
       id
+      space {
+        id
+      }
     }
   }
 }

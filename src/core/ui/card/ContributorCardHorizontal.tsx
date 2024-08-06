@@ -7,7 +7,7 @@ import BadgeCardView from '../list/BadgeCardView';
 import GridItem from '../grid/GridItem';
 import SwapColors from '../palette/SwapColors';
 import RouterLink from '../link/RouterLink';
-import { BlockSectionTitle } from '../typography';
+import { BlockSectionTitle, Caption } from '../typography';
 import ContributorTooltip from './ContributorTooltip';
 
 export interface SpaceWelcomeSectionContributorProps {
@@ -17,6 +17,7 @@ export interface SpaceWelcomeSectionContributorProps {
         avatar?: {
           uri: string;
         };
+        tagline?: string;
         location?: Location;
         tagsets?: { tags: string[] }[];
       }
@@ -80,6 +81,7 @@ const ContributorCardHorizontal = ({
               <Box display="flex" flexDirection="column">
                 <BlockSectionTitle>{profile?.displayName}</BlockSectionTitle>
                 <BlockSectionTitle>{profile?.location && getLocationString(profile.location)}</BlockSectionTitle>
+                {profile?.tagline && <Caption>{profile.tagline}</Caption>}
               </Box>
               {titleEndAmendment}
             </Box>
