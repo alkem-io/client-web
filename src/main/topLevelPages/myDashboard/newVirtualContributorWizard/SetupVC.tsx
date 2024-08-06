@@ -13,7 +13,7 @@ const SetupVC = () => {
       <DialogHeader />
       <Loading text="" />
       <Gutters padding={gutters(2)} sx={{ textAlign: 'center' }}>
-        <Caption>{t('createVirtualContributorWizard.setupVC.loading')}</Caption>
+        <Caption>{t('createVirtualContributorWizard.loadingInfo.vcCreation')}</Caption>
       </Gutters>
     </>
   );

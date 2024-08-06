@@ -24,7 +24,7 @@ const LoadingState = ({ onClose }: LoadingStateProps) => {
       <DialogHeader onClose={onCancel} />
       <Loading text="" />
       <Gutters padding={gutters(2)} sx={{ textAlign: 'center' }}>
-        <Caption>{t('createVirtualContributorWizard.createVC.loading')}</Caption>
+        <Caption>{t('createVirtualContributorWizard.loadingInfo.spaceCreation')}</Caption>
       </Gutters>
       <CancelDialog open={dialogOpen} onClose={() => setDialogOpen(false)} onConfirm={onClose} />
     </>
