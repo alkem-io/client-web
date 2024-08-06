@@ -19,6 +19,7 @@ import { Actions } from '../../../../core/ui/actions/Actions';
 import { theme } from '../../../../core/ui/themes/default/Theme';
 import { useColumns } from '../../../../core/ui/grid/GridContext';
 import FormikMarkdownField from '../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
+import { MessageWithPayload } from '../../../../domain/shared/i18n/ValidationMessageTranslation';
 import ExternalAIComingSoonDialog from './ExternalAICominSoonDialog';
 
 type CreateNewVirtualContributorProps = {
@@ -93,7 +94,7 @@ const CreateNewVirtualContributor = ({
   };
 
   const validationSchema = yup.object().shape({
-    name: yup.string().required(),
+    name: yup.string().min(3, MessageWithPayload('forms.validations.minLength')).required(),
     tagline: yup.string(),
     description: yup.string(),
   });
@@ -133,7 +134,7 @@ const CreateNewVirtualContributor = ({
                   enableReinitialize
                   onSubmit={handleSubmit}
                 >
-                  {({ values }) => {
+                  {({ isValid }) => {
                     return (
                       <Form noValidate>
                         <GridItem columns={isMobile ? cols : 8}>
@@ -206,7 +207,7 @@ const CreateNewVirtualContributor = ({
                           </Gutters>
                         </GridItem>
                         <Actions marginTop={theme.spacing(2)} sx={{ justifyContent: 'end', flexBasis: '100%' }}>
-                          <Button type="submit" variant="contained" disabled={!values.name || !source}>
+                          <Button type="submit" variant="contained" disabled={!isValid || !source}>
                             {t('buttons.create')}
                           </Button>
                         </Actions>
