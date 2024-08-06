@@ -8,7 +8,22 @@ query LatestContributionsSpaces {
           id
           displayName
         }
-     }
+      }
+    }
+  }
+}
+
+query LatestContributionsSpacesFlat {
+  me {
+    spaceMembershipsFlat {
+      id
+      space {
+        id
+        profile {
+          id
+          displayName
+        }
+      }
     }
   }
 }

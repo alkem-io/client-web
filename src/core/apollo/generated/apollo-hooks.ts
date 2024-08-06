@@ -23503,6 +23503,78 @@ export function refetchLatestContributionsSpacesQuery(variables?: SchemaTypes.La
   return { query: LatestContributionsSpacesDocument, variables: variables };
 }
 
+export const LatestContributionsSpacesFlatDocument = gql`
+  query LatestContributionsSpacesFlat {
+    me {
+      spaceMembershipsFlat {
+        id
+        space {
+          id
+          profile {
+            id
+            displayName
+          }
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useLatestContributionsSpacesFlatQuery__
+ *
+ * To run a query within a React component, call `useLatestContributionsSpacesFlatQuery` and pass it any options that fit your needs.
+ * When your component renders, `useLatestContributionsSpacesFlatQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useLatestContributionsSpacesFlatQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useLatestContributionsSpacesFlatQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.LatestContributionsSpacesFlatQuery,
+    SchemaTypes.LatestContributionsSpacesFlatQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.LatestContributionsSpacesFlatQuery,
+    SchemaTypes.LatestContributionsSpacesFlatQueryVariables
+  >(LatestContributionsSpacesFlatDocument, options);
+}
+
+export function useLatestContributionsSpacesFlatLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.LatestContributionsSpacesFlatQuery,
+    SchemaTypes.LatestContributionsSpacesFlatQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.LatestContributionsSpacesFlatQuery,
+    SchemaTypes.LatestContributionsSpacesFlatQueryVariables
+  >(LatestContributionsSpacesFlatDocument, options);
+}
+
+export type LatestContributionsSpacesFlatQueryHookResult = ReturnType<typeof useLatestContributionsSpacesFlatQuery>;
+export type LatestContributionsSpacesFlatLazyQueryHookResult = ReturnType<
+  typeof useLatestContributionsSpacesFlatLazyQuery
+>;
+export type LatestContributionsSpacesFlatQueryResult = Apollo.QueryResult<
+  SchemaTypes.LatestContributionsSpacesFlatQuery,
+  SchemaTypes.LatestContributionsSpacesFlatQueryVariables
+>;
+export function refetchLatestContributionsSpacesFlatQuery(
+  variables?: SchemaTypes.LatestContributionsSpacesFlatQueryVariables
+) {
+  return { query: LatestContributionsSpacesFlatDocument, variables: variables };
+}
+
 export const MembershipSuggestionSpaceDocument = gql`
   query MembershipSuggestionSpace($spaceNameId: UUID_NAMEID!) {
     space(ID: $spaceNameId) {

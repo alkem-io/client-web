@@ -30330,6 +30330,20 @@ export type LatestContributionsSpacesQuery = {
   };
 };
 
+export type LatestContributionsSpacesFlatQueryVariables = Exact<{ [key: string]: never }>;
+
+export type LatestContributionsSpacesFlatQuery = {
+  __typename?: 'Query';
+  me: {
+    __typename?: 'MeQueryResults';
+    spaceMembershipsFlat: Array<{
+      __typename?: 'CommunityMembershipResult';
+      id: string;
+      space: { __typename?: 'Space'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } };
+    }>;
+  };
+};
+
 export type MembershipSuggestionSpaceQueryVariables = Exact<{
   spaceNameId: Scalars['UUID_NAMEID'];
 }>;
