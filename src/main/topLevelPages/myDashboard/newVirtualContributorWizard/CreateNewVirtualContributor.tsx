@@ -120,9 +120,9 @@ const CreateNewVirtualContributor = ({
   return (
     <>
       <DialogHeader onClose={onClose}>{t('createVirtualContributorWizard.initial.title')}</DialogHeader>
-      {loading && <Loading />}
-      {!loading && (
-        <DialogContent sx={{ paddingTop: 0 }}>
+      <DialogContent sx={{ paddingTop: 0 }}>
+        {loading && <Loading />}
+        {!loading && (
           <Gutters disablePadding>
             <Caption>{t('createVirtualContributorWizard.initial.profileDescription')}</Caption>
             <GridContainer disablePadding>
@@ -217,9 +217,9 @@ const CreateNewVirtualContributor = ({
               </GridProvider>
             </GridContainer>
           </Gutters>
-          <ExternalAIComingSoonDialog open={exernalOpen} onClose={closeExternalAI} />
-        </DialogContent>
-      )}
+        )}
+        <ExternalAIComingSoonDialog open={exernalOpen} onClose={closeExternalAI} />
+      </DialogContent>
     </>
   );
 };

@@ -356,11 +356,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
             onUseExistingKnowledge={values => onStepSelection('existingKnowledge', values)}
           />
         )}
-        {step === 'createSpace' && (
-          <LoadingState
-            onClose={handleCancel} // TODO: Cancel NOT WORKING
-          />
-        )}
+        {step === 'createSpace' && <LoadingState onClose={handleCancel} />}
         {step === 'addKnowledge' && virtualContributorInput && (
           <AddContent onClose={handleCancel} onCreateVC={handleAddContent} />
         )}
