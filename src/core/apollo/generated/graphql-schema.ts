@@ -30316,20 +30316,6 @@ export type LatestContributionsGroupedQuery = {
   >;
 };
 
-export type LatestContributionsSpacesQueryVariables = Exact<{ [key: string]: never }>;
-
-export type LatestContributionsSpacesQuery = {
-  __typename?: 'Query';
-  me: {
-    __typename?: 'MeQueryResults';
-    spaceMembershipsHierarchical: Array<{
-      __typename?: 'CommunityMembershipResult';
-      id: string;
-      space: { __typename?: 'Space'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } };
-    }>;
-  };
-};
-
 export type LatestContributionsSpacesFlatQueryVariables = Exact<{ [key: string]: never }>;
 
 export type LatestContributionsSpacesFlatQuery = {
