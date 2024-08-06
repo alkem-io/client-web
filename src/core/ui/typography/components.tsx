@@ -19,6 +19,10 @@ export const Tagline = provideStaticProps(Typography, {
 
 export const Text = provideStaticProps(Typography, { variant: 'body1' }) as typeof Typography;
 
+export const CardTitle = provideStaticProps(Typography, {
+  fontWeight: 'bold',
+}) as typeof Typography;
+
 export const CardText = provideStaticProps(Typography, {
   variant: 'body2',
   color: theme => lighten(theme.palette.text.primary, 0.4),

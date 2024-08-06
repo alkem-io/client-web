@@ -22,10 +22,12 @@ import { Remove, Search } from '@mui/icons-material';
 import DialogWithGrid from '../../../core/ui/dialog/DialogWithGrid';
 import Gutters from '../../../core/ui/grid/Gutters';
 import { Account } from '../../journey/account/Account';
+import { SpaceVisibility } from '../../../core/apollo/generated/graphql-schema';
 
 export interface Space extends Identifiable {
   id: string;
   account: Account;
+  visibility: SpaceVisibility;
   profile: {
     displayName: string;
   };
@@ -75,8 +77,8 @@ const InnovationHubSpacesField = ({ spaces, onChange }: InnovationHubSpacesField
       field: 'visibility',
       headerName: t('pages.admin.space.settings.visibility.title'),
       renderHeader: () => <>{t('pages.admin.space.settings.visibility.title')}</>,
-      renderCell: ({ row }: GridRenderCellParams<string, Space>) => <>{row.account.license.visibility}</>,
-      valueGetter: ({ row }: GridValueGetterParams<string, Space>) => row.account.license.visibility,
+      renderCell: ({ row }: GridRenderCellParams<string, Space>) => <>{row.visibility}</>,
+      valueGetter: ({ row }: GridValueGetterParams<string, Space>) => row.visibility,
       filterable: false,
       resizable: true,
     },
@@ -191,7 +193,7 @@ const InnovationHubSpacesField = ({ spaces, onChange }: InnovationHubSpacesField
                           sx={{ display: snapshot.isDragging ? 'table' : undefined }}
                         >
                           <TableCell>{space.profile.displayName}</TableCell>
-                          <TableCell>{space.account.license.visibility}</TableCell>
+                          <TableCell>{space.visibility}</TableCell>
                           <TableCell>{space.account.host?.profile.displayName}</TableCell>
                           <TableCell>
                             <IconButton

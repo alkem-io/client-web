@@ -79,7 +79,7 @@ export type ApplicationDialogDataType = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   lifecycle?: any;
   email?: string;
-  createdDate: Date;
+  createdDate: Date | undefined;
   updatedDate?: Date;
   questions: {
     id: string;

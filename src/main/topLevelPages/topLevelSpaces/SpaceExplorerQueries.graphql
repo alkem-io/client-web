@@ -1,7 +1,10 @@
 query ChallengeExplorerPage {
   me {
-    spaceMemberships(visibilities: [ACTIVE, DEMO]) {
+    spaceMembershipsFlat {
       id
+      space {
+        id
+      }
     }
   }
 }
@@ -78,13 +81,7 @@ fragment SpaceExplorerSpace on Space {
     id
     vision
   }
-  account {
-    id
-    license {
-      id
-      visibility
-    }
-  }
+  visibility
   community {
     id
     myMembershipStatus

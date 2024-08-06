@@ -20,8 +20,7 @@ export interface SubspacesListDialogProps {
 
 const SubspacesListDialog = ({ open = false, journeyId, onClose }: SubspacesListDialogProps) => {
   const { t } = useTranslation();
-  const { license } = useSpace();
-  const spaceVisibility = license.visibility;
+  const { visibility } = useSpace();
 
   return (
     <DialogWithGrid open={open} fullWidth columns={12}>
@@ -53,7 +52,7 @@ const SubspacesListDialog = ({ open = false, journeyId, onClose }: SubspacesList
                             vision={subspace.context?.vision!}
                             journeyUri={subspace.profile.url}
                             locked={subspace.settings.privacy?.mode === SpacePrivacyMode.Private}
-                            spaceVisibility={spaceVisibility}
+                            spaceVisibility={visibility}
                             member={subspace.community?.myMembershipStatus === CommunityMembershipStatus.Member}
                           />
                         );

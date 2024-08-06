@@ -1,10 +1,6 @@
-mutation UpdateAccountPlatformSettings($accountId: UUID!, $hostId: UUID_NAMEID, $license: UpdateLicenseInput) {
-  updateAccountPlatformSettings(updateData: { accountID: $accountId, hostID: $hostId, license: $license }) {
+mutation UpdateAccountPlatformSettings($accountId: UUID!, $hostId: UUID_NAMEID) {
+  updateAccountPlatformSettings(updateData: { accountID: $accountId, hostID: $hostId }) {
     id
-    license {
-      id
-      visibility
-    }
     host {
       id
     }
