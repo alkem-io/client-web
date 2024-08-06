@@ -62,7 +62,7 @@ const MyMembershipsDialog = ({ open, onClose }: MyJourneysDialogProps) => {
         {loading && <Loading />}
         <Gutters disablePadding disableGap>
           {myTopLevelMemberships?.map(spaceMembership => (
-            <ExpandableSpaceTree space={spaceMembership.space} subspaceMemberships={spaceMembership.childMemberships} />
+            <ExpandableSpaceTree membership={spaceMembership} />
           ))}
           <Caption alignSelf="center" paddingTop={gutters(0.5)}>
             <Trans

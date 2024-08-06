@@ -15,7 +15,7 @@ import webkitLineClamp from '../../../../core/ui/utils/webkitLineClamp';
 import { gutters } from '../../../../core/ui/grid/utils';
 import { useColumns } from '../../../../core/ui/grid/GridContext';
 
-interface ExpandableSpaceTreeProps {
+interface MembershipProps {
   space: {
     id: string;
     profile: {
@@ -31,18 +31,24 @@ interface ExpandableSpaceTreeProps {
     };
     level: number;
   };
-  subspaceMemberships?: ExpandableSpaceTreeProps[] | undefined;
+  childMemberships?: MembershipProps[] | undefined;
+}
+
+interface ExpandableSpaceTreeProps {
+  membership: MembershipProps;
 }
 
 const VISIBLE_COMMUNITY_ROLES = [CommunityRole.Admin, CommunityRole.Lead];
 
 const ExpandableSpaceTree = ({
-  space: {
-    profile: { displayName, tagline, cardBanner: { uri: avatar } = { uri: '' }, url },
-    level,
-    community: { myRoles: roles } = { myRoles: [] },
+  membership: {
+    space: {
+      profile: { displayName, tagline, cardBanner: { uri: avatar } = { uri: '' }, url },
+      level,
+      community: { myRoles: roles } = { myRoles: [] },
+    },
+    childMemberships = [],
   },
-  subspaceMemberships,
 }: ExpandableSpaceTreeProps) => {
   const { t } = useTranslation();
 
@@ -57,14 +63,8 @@ const ExpandableSpaceTree = ({
 
   const verticalOffset = level === 0 ? 1 : 0.5;
 
-  const renderSubSpaces = (spaceMembership: ExpandableSpaceTreeProps) => {
-    return (
-      <ExpandableSpaceTree
-        key={spaceMembership.space.id}
-        space={spaceMembership.space}
-        subspaceMemberships={spaceMembership.subspaceMemberships}
-      />
-    );
+  const renderSubSpaces = (childMembership: MembershipProps) => {
+    return <ExpandableSpaceTree key={childMembership.space.id} membership={childMembership} />;
   };
 
   return (
@@ -108,13 +108,13 @@ const ExpandableSpaceTree = ({
             <Button
               onClick={toggleExpanded}
               endIcon={isExpanded ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-              sx={{ visibility: subspaceMemberships?.length ? 'visible' : 'hidden' }}
+              sx={{ visibility: childMemberships?.length ? 'visible' : 'hidden' }}
               area-label={isExpanded ? t('buttons.collapse') : t('buttons.expand')}
             />
           </Gutters>
         </Gutters>
       </GridItem>
-      {isExpanded && subspaceMemberships?.map(renderSubSpaces)}
+      {isExpanded && childMemberships?.map(renderSubSpaces)}
     </>
   );
 };
