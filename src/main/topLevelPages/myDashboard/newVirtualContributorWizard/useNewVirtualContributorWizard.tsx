@@ -56,6 +56,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
   const [dialogOpen, setDialogOpen] = useState(false);
   const [step, setStep] = useState<Step>('initial');
   const [spaceId, setSpaceId] = useState<string>();
+  const [accountId, setAccountId] = useState<string>();
   const [virtualContributorInput, setVirtualContributorInput] = useState<VirtualContributorFromProps | undefined>(
     undefined
   );
@@ -147,6 +148,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     }
     if (mySpaceId && myAccountId) {
       setSpaceId(mySpaceId);
+      setAccountId(myAccountId);
     } else {
       if (plans.length === 0) {
         info(`No available plans for this account. User: ${user?.user.id}`);
@@ -166,6 +168,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
         },
       });
       setSpaceId(newSpace?.createAccount.spaceID);
+      setAccountId(newSpace?.createAccount.id);
     }
     setVirtualContributorInput(values);
     setStep('addKnowledge');
@@ -265,8 +268,8 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     }
 
     // create VC
-    if (virtualContributorInput && myAccountId && spaceId) {
-      handleCreateVirtualContributor(virtualContributorInput, myAccountId, spaceId);
+    if (virtualContributorInput && accountId && spaceId) {
+      handleCreateVirtualContributor(virtualContributorInput, accountId, spaceId);
       addVCCreationCache(virtualContributorInput.name);
       const { data } = await getNewSpaceUrl({ variables: { spaceId: spaceId! } });
       navigate(data?.space.profile.url ?? '');
