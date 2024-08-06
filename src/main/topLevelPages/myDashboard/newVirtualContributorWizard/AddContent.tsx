@@ -17,6 +17,7 @@ import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownV
 import { pullAt } from 'lodash';
 import DeleteIcon from '../../../../domain/journey/space/pages/SpaceSettings/icon/DeleteIcon';
 import { gutters } from '../../../../core/ui/grid/utils';
+import { MessageWithPayload } from '../../../../domain/shared/i18n/ValidationMessageTranslation';
 
 type AddContentProps = {
   onClose: () => void;
@@ -39,7 +40,7 @@ const AddContent = ({ onClose, onCreateVC }: AddContentProps) => {
   const validationSchema = yup.object().shape({
     posts: yup.array().of(
       yup.object().shape({
-        title: yup.string().required(),
+        title: yup.string().min(3, MessageWithPayload('forms.validations.minLength')).required(),
         description: MarkdownValidator(LONG_MARKDOWN_TEXT_LENGTH),
       })
     ),
