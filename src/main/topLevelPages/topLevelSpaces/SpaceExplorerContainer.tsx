@@ -56,7 +56,7 @@ const SpaceExplorerContainer = ({ searchTerms, children }: SpaceExplorerContaine
     skip: !userMetadata?.user?.id || shouldSearch || membershipFilter !== SpacesExplorerMembershipFilter.Member,
   });
 
-  const mySpaceIds = spaceMembershipsData?.me.spaceMemberships.map(space => space.id);
+  const mySpaceIds = spaceMembershipsData?.me.spaceMembershipsFlat.map(space => space.id);
 
   const { data: challengesData, loading: isLoadingMemberSpaces } = useSpaceExplorerMemberSpacesQuery({
     variables: {

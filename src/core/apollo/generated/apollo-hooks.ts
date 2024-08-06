@@ -3627,18 +3627,6 @@ export const RecentContributionsChildJourneyProfileFragmentDoc = gql`
   }
   ${RecentContributionsJourneyProfileFragmentDoc}
 `;
-export const MyMembershipsSpaceProfileFragmentDoc = gql`
-  fragment MyMembershipsSpaceProfile on Profile {
-    id
-    url
-    displayName
-    tagline
-    cardBanner: visual(type: CARD) {
-      ...VisualUri
-    }
-  }
-  ${VisualUriFragmentDoc}
-`;
 export const MyMembershipsChildJourneyCommunityFragmentDoc = gql`
   fragment MyMembershipsChildJourneyCommunity on Community {
     id
@@ -3646,8 +3634,8 @@ export const MyMembershipsChildJourneyCommunityFragmentDoc = gql`
     myRoles
   }
 `;
-export const MyMembershipsSubspaceProfileFragmentDoc = gql`
-  fragment MyMembershipsSubspaceProfile on Space {
+export const SpaceMembershipFragmentDoc = gql`
+  fragment SpaceMembership on Space {
     id
     level
     authorization {
@@ -3657,8 +3645,18 @@ export const MyMembershipsSubspaceProfileFragmentDoc = gql`
     community {
       ...MyMembershipsChildJourneyCommunity
     }
+    profile {
+      id
+      url
+      displayName
+      tagline
+      cardBanner: visual(type: CARD) {
+        ...VisualUri
+      }
+    }
   }
   ${MyMembershipsChildJourneyCommunityFragmentDoc}
+  ${VisualUriFragmentDoc}
 `;
 export const MyMembershipsChildJourneyProfileFragmentDoc = gql`
   fragment MyMembershipsChildJourneyProfile on Profile {
@@ -23437,14 +23435,17 @@ export function refetchLatestContributionsGroupedQuery(
   return { query: LatestContributionsGroupedDocument, variables: variables };
 }
 
-export const LatestContributionsSpacesDocument = gql`
-  query LatestContributionsSpaces {
+export const LatestContributionsSpacesFlatDocument = gql`
+  query LatestContributionsSpacesFlat {
     me {
-      spaceMemberships {
+      spaceMembershipsFlat {
         id
-        profile {
+        space {
           id
-          displayName
+          profile {
+            id
+            displayName
+          }
         }
       }
     }
@@ -23452,54 +23453,58 @@ export const LatestContributionsSpacesDocument = gql`
 `;
 
 /**
- * __useLatestContributionsSpacesQuery__
+ * __useLatestContributionsSpacesFlatQuery__
  *
- * To run a query within a React component, call `useLatestContributionsSpacesQuery` and pass it any options that fit your needs.
- * When your component renders, `useLatestContributionsSpacesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useLatestContributionsSpacesFlatQuery` and pass it any options that fit your needs.
+ * When your component renders, `useLatestContributionsSpacesFlatQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useLatestContributionsSpacesQuery({
+ * const { data, loading, error } = useLatestContributionsSpacesFlatQuery({
  *   variables: {
  *   },
  * });
  */
-export function useLatestContributionsSpacesQuery(
+export function useLatestContributionsSpacesFlatQuery(
   baseOptions?: Apollo.QueryHookOptions<
-    SchemaTypes.LatestContributionsSpacesQuery,
-    SchemaTypes.LatestContributionsSpacesQueryVariables
+    SchemaTypes.LatestContributionsSpacesFlatQuery,
+    SchemaTypes.LatestContributionsSpacesFlatQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<
-    SchemaTypes.LatestContributionsSpacesQuery,
-    SchemaTypes.LatestContributionsSpacesQueryVariables
-  >(LatestContributionsSpacesDocument, options);
+    SchemaTypes.LatestContributionsSpacesFlatQuery,
+    SchemaTypes.LatestContributionsSpacesFlatQueryVariables
+  >(LatestContributionsSpacesFlatDocument, options);
 }
 
-export function useLatestContributionsSpacesLazyQuery(
+export function useLatestContributionsSpacesFlatLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.LatestContributionsSpacesQuery,
-    SchemaTypes.LatestContributionsSpacesQueryVariables
+    SchemaTypes.LatestContributionsSpacesFlatQuery,
+    SchemaTypes.LatestContributionsSpacesFlatQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<
-    SchemaTypes.LatestContributionsSpacesQuery,
-    SchemaTypes.LatestContributionsSpacesQueryVariables
-  >(LatestContributionsSpacesDocument, options);
+    SchemaTypes.LatestContributionsSpacesFlatQuery,
+    SchemaTypes.LatestContributionsSpacesFlatQueryVariables
+  >(LatestContributionsSpacesFlatDocument, options);
 }
 
-export type LatestContributionsSpacesQueryHookResult = ReturnType<typeof useLatestContributionsSpacesQuery>;
-export type LatestContributionsSpacesLazyQueryHookResult = ReturnType<typeof useLatestContributionsSpacesLazyQuery>;
-export type LatestContributionsSpacesQueryResult = Apollo.QueryResult<
-  SchemaTypes.LatestContributionsSpacesQuery,
-  SchemaTypes.LatestContributionsSpacesQueryVariables
+export type LatestContributionsSpacesFlatQueryHookResult = ReturnType<typeof useLatestContributionsSpacesFlatQuery>;
+export type LatestContributionsSpacesFlatLazyQueryHookResult = ReturnType<
+  typeof useLatestContributionsSpacesFlatLazyQuery
 >;
-export function refetchLatestContributionsSpacesQuery(variables?: SchemaTypes.LatestContributionsSpacesQueryVariables) {
-  return { query: LatestContributionsSpacesDocument, variables: variables };
+export type LatestContributionsSpacesFlatQueryResult = Apollo.QueryResult<
+  SchemaTypes.LatestContributionsSpacesFlatQuery,
+  SchemaTypes.LatestContributionsSpacesFlatQueryVariables
+>;
+export function refetchLatestContributionsSpacesFlatQuery(
+  variables?: SchemaTypes.LatestContributionsSpacesFlatQueryVariables
+) {
+  return { query: LatestContributionsSpacesFlatDocument, variables: variables };
 }
 
 export const MembershipSuggestionSpaceDocument = gql`
@@ -23681,24 +23686,27 @@ export function refetchMyAccountQuery(variables?: SchemaTypes.MyAccountQueryVari
 export const MyMembershipsDocument = gql`
   query MyMemberships {
     me {
-      spaceMemberships {
+      spaceMembershipsHierarchical {
         id
-        level
-        visibility
-        profile {
-          ...MyMembershipsSpaceProfile
+        space {
+          ...SpaceMembership
         }
-        community {
-          myRoles
-        }
-        subspaces {
-          ...MyMembershipsSubspaceProfile
+        childMemberships {
+          id
+          space {
+            ...SpaceMembership
+          }
+          childMemberships {
+            id
+            space {
+              ...SpaceMembership
+            }
+          }
         }
       }
     }
   }
-  ${MyMembershipsSpaceProfileFragmentDoc}
-  ${MyMembershipsSubspaceProfileFragmentDoc}
+  ${SpaceMembershipFragmentDoc}
 `;
 
 /**
@@ -24115,8 +24123,11 @@ export function refetchRecentSpacesQuery(variables?: SchemaTypes.RecentSpacesQue
 export const ChallengeExplorerPageDocument = gql`
   query ChallengeExplorerPage {
     me {
-      spaceMemberships(visibilities: [ACTIVE, DEMO]) {
+      spaceMembershipsFlat {
         id
+        space {
+          id
+        }
       }
     }
   }
