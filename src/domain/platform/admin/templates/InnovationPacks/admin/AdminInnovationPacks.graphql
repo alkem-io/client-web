@@ -9,6 +9,7 @@ query AdminInnovationPacksList {
         profile {
           id
           displayName
+          url
         }
       }
     }
@@ -35,6 +36,7 @@ fragment InnovationPackProfile on Profile {
     description
     uri
   }
+  url
 }
 
 fragment AdminInnovationPackTemplates on TemplatesSet {
@@ -56,39 +58,36 @@ fragment AdminInnovationPackTemplates on TemplatesSet {
   }
 }
 
-query AdminInnovationPack($innovationPackId: UUID_NAMEID!) {
-  platform {
-    id
-    library {
+query InnovationPackResolveId($innovationPackNameId: NameID!) {
+  lookupByName {
+    innovationPack(NAMEID: $innovationPackNameId) {
       id
-      innovationPack(ID: $innovationPackId) {
-        id
-        nameID
-        provider {
-          ...InnovationPackProviderProfileWithAvatar
-        }
-        profile {
-          ...InnovationPackProfile
-        }
-        templates {
-          ...AdminInnovationPackTemplates
-        }
-      }
-    }
-  }
-  # Load organizations together to be able to show the Provider form field combobox
-  organizations {
-    id
-    nameID
-    profile {
-      id
-      displayName
     }
   }
 }
 
-mutation createInnovationPack($packData: CreateInnovationPackOnLibraryInput!) {
-  createInnovationPackOnLibrary(packData: $packData) {
+query AdminInnovationPack($innovationPackId: UUID!) {
+  lookup {
+    innovationPack(ID: $innovationPackId) {
+      id
+      nameID
+      provider {
+        ...InnovationPackProviderProfileWithAvatar
+      }
+      profile {
+        ...InnovationPackProfile
+      }
+      templates {
+        ...AdminInnovationPackTemplates
+      }
+      listedInStore
+      searchVisibility
+    }
+  }
+}
+
+mutation createInnovationPack($packData: CreateInnovationPackOnAccountInput!) {
+  createInnovationPack(innovationPackData: $packData) {
     id
     nameID
   }

@@ -32,11 +32,11 @@ const AdminInnovationHubsPage: FC<AdminInnovationHubsPageProps> = () => {
   const innovationHubs = useMemo(
     () =>
       sortBy(
-        data?.platform.innovationHubs
-          .map(pack => ({
-            value: pack.profile.displayName,
-            url: pack.nameID,
-            ...pack,
+        data?.platform.library.innovationHubs
+          .map(hub => ({
+            value: hub.profile.displayName,
+            url: hub.profile.url,
+            ...hub,
           }))
           .filter(ip => !searchTerm || ip.profile.displayName.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1),
         ip => ip.profile.displayName.toLowerCase() // sortBy
@@ -52,7 +52,7 @@ const AdminInnovationHubsPage: FC<AdminInnovationHubsPageProps> = () => {
           onDelete={item => handleDelete(item.id)}
           loading={loading}
           fetchMore={() => Promise.resolve()}
-          pageSize={data?.platform.innovationHubs.length ?? 0}
+          pageSize={data?.platform.library.innovationHubs.length ?? 0}
           searchTerm={searchTerm}
           onSearchTermChange={setSearchTerm}
           hasMore={false}

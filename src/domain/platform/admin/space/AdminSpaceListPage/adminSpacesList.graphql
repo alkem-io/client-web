@@ -17,14 +17,11 @@ query adminSpacesList {
 fragment AdminSpace on Space {
   id
   nameID
+  visibility
   account {
     id
     subscriptions {
       name
-    }
-    license {
-      id
-      visibility
     }
     host {
       id

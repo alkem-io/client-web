@@ -1,46 +1,43 @@
 query MyMemberships {
   me {
-    spaceMemberships {
+    spaceMembershipsHierarchical {
       id
-      level
-      account {
+      space {
+        ...SpaceMembership
+      }
+      childMemberships {
         id
-        license {
-          id
-          visibility
+        space {
+          ...SpaceMembership
         }
-      }
-      metrics {
-        name
-        value
-      }
-      context {
+        childMemberships {
         id
-        vision
-      }
-      profile {
-        id
-        url
-        displayName
-        tagline
-        tagset {
-          id
-          tags
-        }
-        cardBanner: visual(type: CARD) {
-          ...VisualUri
+        space {
+          ...SpaceMembership
         }
       }
-      subspaces {
-        id
-        authorization {
-          id
-          myPrivileges
-        }
-        community {
-          ...MyMembershipsChildJourneyCommunity
-        }
       }
+    }
+  }
+}
+
+fragment SpaceMembership on Space {
+  id
+  level
+  authorization {
+    id
+    myPrivileges
+  }
+  community {
+    ...MyMembershipsChildJourneyCommunity
+  }
+  profile {
+    id
+    url
+    displayName
+    tagline
+    cardBanner: visual(type: CARD) {
+      ...VisualUri
     }
   }
 }

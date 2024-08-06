@@ -4,7 +4,7 @@ import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
 import ContentPasteOutlinedIcon from '@mui/icons-material/ContentPasteOutlined';
 import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
-import { SettingsOutlined } from '@mui/icons-material';
+import { SellOutlined, SettingsOutlined } from '@mui/icons-material';
 
 export enum SettingsSection {
   Profile = 'profile',
@@ -37,6 +37,11 @@ export const UserProfileTabs: TabDefinition<SettingsSection>[] = [
     section: SettingsSection.MyProfile,
     route: 'profile',
     icon: PeopleOutlinedIcon,
+  },
+  {
+    section: SettingsSection.Account,
+    route: 'account',
+    icon: SellOutlined,
   },
   {
     section: SettingsSection.Organizations,
