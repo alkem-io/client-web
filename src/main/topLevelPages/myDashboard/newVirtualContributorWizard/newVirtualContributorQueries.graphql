@@ -35,10 +35,3 @@ query NewVirtualContributorMySpaces {
     }
   }
 }
-
-query AllSpaces {
-  spaces {
-    id
-    nameID
-  }
-}
