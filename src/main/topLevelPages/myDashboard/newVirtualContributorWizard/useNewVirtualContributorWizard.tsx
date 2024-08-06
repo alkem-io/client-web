@@ -39,7 +39,7 @@ import { info } from '../../../../core/logging/sentry/log';
 
 const SPACE_LABEL = '(space)';
 
-type Step = 'initial' | 'create_space' | 'add_knowledge' | 'existingKnowledge' | 'vc_setup';
+type Step = 'initial' | 'createSpace' | 'addKnowledge' | 'existingKnowledge' | 'vcSetup';
 
 interface useNewVirtualContributorWizardProvided {
   startWizard: () => void;
@@ -155,18 +155,18 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     refetchQueries: [refetchMyAccountQuery()],
   });
   const handleCreateSpace = async (values: VirtualContributorFromProps) => {
-    setStep('create_space');
+    setStep('createSpace');
     if (!user?.user.id) {
-      return;
-    }
-    if (plans.length === 0) {
-      info(`No available plans for this account. User: ${user?.user.id}`);
-      notify('No available plans for this account. Please, contact support@alkem.io.', 'error');
       return;
     }
     if (mySpaceId && myAccountId) {
       setSpaceId(mySpaceId);
     } else {
+      if (plans.length === 0) {
+        info(`No available plans for this account. User: ${user?.user.id}`);
+        notify('No available plans for this account. Please, contact support@alkem.io.', 'error');
+        return;
+      }
       const { data: newSpace } = await CreateNewSpace({
         variables: {
           hostId: user?.user.id,
@@ -183,7 +183,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
       setSpaceId(newSpace?.createAccount.spaceID);
     }
     setVirtualContributorInput(values);
-    setStep('add_knowledge');
+    setStep('addKnowledge');
   };
 
   const [getNewSpaceUrl] = useNewSpaceLazyQuery({
@@ -264,18 +264,19 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
   };
 
   const handleAddContent = async (posts: PostsFormValues) => {
-    setStep('vc_setup');
+    setStep('vcSetup');
 
     // create collection of posts
-    const callout = await handleCreateCallout(calloutDetails);
-    calloutId.current = callout?.id;
+    if (posts.posts.length > 0) {
+      const callout = await handleCreateCallout(calloutDetails);
+      calloutId.current = callout?.id;
 
-    // add posts to collection
-    if (callout?.id && posts.posts.length > 0) {
-      posts.posts.forEach(async post => {
-        console.log(post);
-        await onCreatePost(post, callout?.id);
-      });
+      // add posts to collection
+      if (callout?.id) {
+        posts.posts.forEach(async post => {
+          await onCreatePost(post, callout?.id);
+        });
+      }
     }
 
     // create VC
@@ -292,7 +293,8 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
   });
 
   const handleCancel = async () => {
-    if (spaceId) {
+    if (spaceId && spaceId !== mySpaceId) {
+      // if there was a space before the VC creation, let's not delete it
       await deleteSpace({
         variables: {
           input: {
@@ -366,12 +368,12 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
             onUseExistingKnowledge={values => onStepSelection('existingKnowledge', values)}
           />
         )}
-        {step === 'create_space' && (
+        {step === 'createSpace' && (
           <LoadingState
             onClose={handleCancel} // TODO: Cancel NOT WORKING
           />
         )}
-        {step === 'add_knowledge' && virtualContributorInput && (
+        {step === 'addKnowledge' && virtualContributorInput && (
           <AddContent onClose={handleCancel} onCreateVC={handleAddContent} />
         )}
         {step === 'existingKnowledge' && (
@@ -383,7 +385,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
             loading={loading}
           />
         )}
-        {step === 'vc_setup' && <SetupVC />}
+        {step === 'vcSetup' && <SetupVC />}
       </DialogWithGrid>
     ),
     [dialogOpen, step, loading]
