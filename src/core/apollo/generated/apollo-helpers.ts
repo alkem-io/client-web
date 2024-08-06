@@ -17,6 +17,7 @@ export type AccountKeySpecifier = (
   | 'library'
   | 'licensePrivileges'
   | 'spaceID'
+  | 'storageAggregator'
   | 'subscriptions'
   | 'updatedDate'
   | 'virtualContributors'
@@ -35,6 +36,7 @@ export type AccountFieldPolicy = {
   library?: FieldPolicy<any> | FieldReadFunction<any>;
   licensePrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
   spaceID?: FieldPolicy<any> | FieldReadFunction<any>;
+  storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
   subscriptions?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   virtualContributors?: FieldPolicy<any> | FieldReadFunction<any>;

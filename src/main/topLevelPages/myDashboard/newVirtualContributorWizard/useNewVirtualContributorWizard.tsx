@@ -2,7 +2,6 @@ import { ComponentType, useCallback, useMemo, useRef, useState } from 'react';
 import {
   PostCardFragmentDoc,
   refetchMyAccountQuery,
-  useAllSpacesQuery,
   useCreateNewSpaceMutation,
   useCreatePostFromContributeTabMutation,
   useCreateVirtualContributorOnAccountMutation,
@@ -136,20 +135,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     setDialogOpen(true);
   };
 
-  const { data: allSpaces } = useAllSpacesQuery();
-  const allSpacesNameIds = allSpaces?.spaces.map(space => space.nameID) || [];
-  const makeUniqueName = (name: string): string => {
-    let uniqueName = name;
-    let counter = 1;
-    while (allSpacesNameIds.includes(uniqueName)) {
-      uniqueName = `${name}${counter}`;
-      counter++;
-    }
-    return uniqueName;
-  };
-
   const generateSpaceName = (name: string) => `${name}'s Space`;
-  const generateNameId = (name: string) => `${name}s Space`.toLowerCase().replaceAll(' ', '');
 
   const [CreateNewSpace] = useCreateNewSpaceMutation({
     refetchQueries: [refetchMyAccountQuery()],
@@ -171,9 +157,8 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
         variables: {
           hostId: user?.user.id,
           spaceData: {
-            nameID: makeUniqueName(generateNameId(user?.user.profile.displayName!)),
             profileData: {
-              displayName: generateSpaceName(user?.user.profile.displayName!), // ensured by yup validation
+              displayName: generateSpaceName(user?.user.profile.displayName!),
             },
             collaborationData: {},
           },

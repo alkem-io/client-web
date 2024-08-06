@@ -60,6 +60,8 @@ export type Account = {
   licensePrivileges?: Maybe<Array<LicensePrivilege>>;
   /** The ID for the root space for the Account . */
   spaceID: Scalars['String'];
+  /** The StorageAggregator in use by this Account */
+  storageAggregator: StorageAggregator;
   /** The subscriptions active for this Account. */
   subscriptions: Array<AccountSubscription>;
   /** The date at which the entity was last updated. */
@@ -30457,20 +30459,13 @@ export type NewVirtualContributorMySpacesQuery = {
   };
 };
 
-export type AllSpacesQueryVariables = Exact<{ [key: string]: never }>;
-
-export type AllSpacesQuery = {
-  __typename?: 'Query';
-  spaces: Array<{ __typename?: 'Space'; id: string; nameID: string }>;
-};
-
 export type NewSpaceQueryVariables = Exact<{
   spaceId: Scalars['UUID_NAMEID'];
 }>;
 
 export type NewSpaceQuery = {
   __typename?: 'Query';
-  space: { __typename?: 'Space'; id: string; profile: { __typename?: 'Profile'; url: string } };
+  space: { __typename?: 'Space'; id: string; profile: { __typename?: 'Profile'; id: string; url: string } };
 };
 
 export type RecentForumMessagesQueryVariables = Exact<{

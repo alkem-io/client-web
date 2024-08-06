@@ -36,17 +36,11 @@ query NewVirtualContributorMySpaces {
   }
 }
 
-query AllSpaces {
-  spaces {
-    id
-    nameID
-  }
-}
-
 query NewSpace($spaceId: UUID_NAMEID!) {
   space(ID: $spaceId) {
     id
     profile {
+      id
       url
     }
   }

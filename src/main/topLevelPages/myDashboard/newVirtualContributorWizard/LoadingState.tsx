@@ -19,11 +19,6 @@ const LoadingState = ({ onClose }: LoadingStateProps) => {
     setDialogOpen(true);
   };
 
-  const onConfirmCancel = () => {
-    // TODO: deletion doesn't work if the VC and/or space are not yet created
-    onClose();
-  };
-
   return (
     <>
       <DialogHeader onClose={onCancel} />
@@ -31,7 +26,7 @@ const LoadingState = ({ onClose }: LoadingStateProps) => {
       <Gutters padding={gutters(2)} sx={{ textAlign: 'center' }}>
         <Caption>{t('createVirtualContributorWizard.createVC.loading')}</Caption>
       </Gutters>
-      <CancelDialog open={dialogOpen} onClose={() => setDialogOpen(false)} onConfirm={onConfirmCancel} />
+      <CancelDialog open={dialogOpen} onClose={() => setDialogOpen(false)} onConfirm={onClose} />
     </>
   );
 };
