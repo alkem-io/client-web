@@ -40,6 +40,7 @@ const CreateSpaceDialog = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [plansTableDialogOpen, setPlansTableDialogOpen] = useState(false);
   const [creatingDialogOpen, setCreatingDialogOpen] = useState(false);
+  const isAnyDialogOpen = dialogOpen || plansTableDialogOpen || creatingDialogOpen;
 
   const handleClose = () => {
     setDialogOpen(false);
@@ -123,101 +124,105 @@ const CreateSpaceDialog = () => {
       <IconButton aria-label={t('common.add')} aria-haspopup="true" size="small" onClick={() => setDialogOpen(true)}>
         <RoundedIcon component={AddIcon} size="medium" iconSize="small" />
       </IconButton>
-      <Formik
-        initialValues={initialValues}
-        validationSchema={validationSchema}
-        enableReinitialize
-        onSubmit={handleSubmit}
-      >
-        {({ setFieldValue, handleSubmit, errors }) => {
-          return (
-            <>
-              <DialogWithGrid open={dialogOpen} columns={12} onClose={handleClose}>
-                <DialogHeader title={t('createSpace.title')} onClose={handleClose} />
-                <DialogContent sx={{ paddingTop: 0, marginTop: -1 }}>
-                  <PageContentBlockSeamless disablePadding>
-                    <Caption>{t('createSpace.subtitle')}</Caption>
+      {isAnyDialogOpen && (
+        <>
+          <Formik
+            initialValues={initialValues}
+            validationSchema={validationSchema}
+            enableReinitialize
+            onSubmit={handleSubmit}
+          >
+            {({ setFieldValue, handleSubmit, errors }) => {
+              return (
+                <>
+                  <DialogWithGrid open={dialogOpen} columns={12} onClose={handleClose}>
+                    <DialogHeader title={t('createSpace.title')} onClose={handleClose} />
+                    <DialogContent sx={{ paddingTop: 0, marginTop: -1 }}>
+                      <PageContentBlockSeamless disablePadding>
+                        <Caption>{t('createSpace.subtitle')}</Caption>
 
-                    <FormikInputField name="name" title={t('components.nameSegment.name')} required />
-                    <NameIdField name="nameID" title={t('common.url')} required />
-                    <TextField value={user?.user.profile.displayName} disabled />
-                    <FormikInputField
-                      name="tagline"
-                      title={t('context.space.tagline.title')}
-                      rows={3}
-                      maxLength={SMALL_TEXT_LENGTH}
-                    />
-                    <TagsetSegment title={t('common.tags')} tagsets={tagsets} />
-                    <FormControlLabel
-                      value={hasAcceptedTerms}
-                      onChange={(event, isChecked) => setHasAcceptedTerms(isChecked)}
-                      required
-                      control={<Checkbox />}
-                      label={
-                        <Caption>
-                          <Trans
-                            i18nKey="createSpace.terms.checkboxLabel"
-                            components={{
-                              terms: (
-                                <Link
-                                  underline="always"
-                                  onClick={event => {
-                                    event.stopPropagation();
-                                    event.preventDefault();
-                                    setIsTermsDialogOpen(true);
-                                  }}
-                                />
-                              ),
-                            }}
-                          />
-                        </Caption>
-                      }
-                    />
-                    <DialogFooter>
-                      <Actions justifyContent="end" padding={gutters()}>
-                        <Button
-                          variant="contained"
-                          onClick={() => {
-                            setDialogOpen(false);
-                            setPlansTableDialogOpen(true);
-                          }}
-                          disabled={Object.keys(errors).length > 0 || !hasAcceptedTerms}
-                        >
-                          {t('buttons.continue')}
-                        </Button>
-                      </Actions>
-                    </DialogFooter>
-                  </PageContentBlockSeamless>
-                </DialogContent>
-              </DialogWithGrid>
-              <PlansTableDialog
-                onClose={handleClose}
-                open={plansTableDialogOpen}
-                onSelectPlan={licensePlanId => {
-                  setFieldValue('licensePlanId', licensePlanId);
-                  handleSubmit();
-                }}
-              />
-            </>
-          );
-        }}
-      </Formik>
-      <DialogWithGrid columns={8} open={isTermsDialogOpen} onClose={() => setIsTermsDialogOpen(false)}>
-        <DialogHeader title={t('createSpace.terms.dialogTitle')} onClose={() => setIsTermsDialogOpen(false)} />
-        <DialogContent sx={{ paddingTop: 0 }}>
-          <WrapperMarkdown caption>{t('createSpace.terms.dialogContent')}</WrapperMarkdown>
-          {config.locations?.terms && (
-            <RouterLink to={config.locations?.terms ?? ''} blank underline="always">
-              <Caption>{t('createSpace.terms.fullTermsLink')}</Caption>
-            </RouterLink>
-          )}
-        </DialogContent>
-      </DialogWithGrid>
-      <Dialog open={creatingDialogOpen}>
-        <DialogContent sx={{ display: 'flex', alignItems: 'center' }}>
-          <Loading />
-        </DialogContent>
-      </Dialog>
+                        <FormikInputField name="name" title={t('components.nameSegment.name')} required />
+                        <NameIdField name="nameID" title={t('common.url')} required />
+                        <TextField value={user?.user.profile.displayName} disabled />
+                        <FormikInputField
+                          name="tagline"
+                          title={t('context.space.tagline.title')}
+                          rows={3}
+                          maxLength={SMALL_TEXT_LENGTH}
+                        />
+                        <TagsetSegment title={t('common.tags')} tagsets={tagsets} />
+                        <FormControlLabel
+                          value={hasAcceptedTerms}
+                          onChange={(event, isChecked) => setHasAcceptedTerms(isChecked)}
+                          required
+                          control={<Checkbox />}
+                          label={
+                            <Caption>
+                              <Trans
+                                i18nKey="createSpace.terms.checkboxLabel"
+                                components={{
+                                  terms: (
+                                    <Link
+                                      underline="always"
+                                      onClick={event => {
+                                        event.stopPropagation();
+                                        event.preventDefault();
+                                        setIsTermsDialogOpen(true);
+                                      }}
+                                    />
+                                  ),
+                                }}
+                              />
+                            </Caption>
+                          }
+                        />
+                        <DialogFooter>
+                          <Actions justifyContent="end" padding={gutters()}>
+                            <Button
+                              variant="contained"
+                              onClick={() => {
+                                setDialogOpen(false);
+                                setPlansTableDialogOpen(true);
+                              }}
+                              disabled={Object.keys(errors).length > 0 || !hasAcceptedTerms}
+                            >
+                              {t('buttons.continue')}
+                            </Button>
+                          </Actions>
+                        </DialogFooter>
+                      </PageContentBlockSeamless>
+                    </DialogContent>
+                  </DialogWithGrid>
+                  <PlansTableDialog
+                    onClose={handleClose}
+                    open={plansTableDialogOpen}
+                    onSelectPlan={licensePlanId => {
+                      setFieldValue('licensePlanId', licensePlanId);
+                      handleSubmit();
+                    }}
+                  />
+                </>
+              );
+            }}
+          </Formik>
+          <DialogWithGrid columns={8} open={isTermsDialogOpen} onClose={() => setIsTermsDialogOpen(false)}>
+            <DialogHeader title={t('createSpace.terms.dialogTitle')} onClose={() => setIsTermsDialogOpen(false)} />
+            <DialogContent sx={{ paddingTop: 0 }}>
+              <WrapperMarkdown caption>{t('createSpace.terms.dialogContent')}</WrapperMarkdown>
+              {config.locations?.terms && (
+                <RouterLink to={config.locations?.terms ?? ''} blank underline="always">
+                  <Caption>{t('createSpace.terms.fullTermsLink')}</Caption>
+                </RouterLink>
+              )}
+            </DialogContent>
+          </DialogWithGrid>
+          <Dialog open={creatingDialogOpen}>
+            <DialogContent sx={{ display: 'flex', alignItems: 'center' }}>
+              <Loading />
+            </DialogContent>
+          </Dialog>
+        </>
+      )}
     </>
   );
 };
