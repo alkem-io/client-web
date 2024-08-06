@@ -1,6 +1,6 @@
-query LatestContributionsSpaces {
+query LatestContributionsSpacesFlat {
   me {
-    spaceMembershipsHierarchical {
+    spaceMembershipsFlat {
       id
       space {
         id
@@ -8,7 +8,7 @@ query LatestContributionsSpaces {
           id
           displayName
         }
-     }
+      }
     }
   }
 }

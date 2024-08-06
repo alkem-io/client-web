@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import HomePageLayout from '../Home/HomePageLayout';
 import PageContent from '../../../core/ui/content/PageContent';
 import MyMembershipsDialog from './myMemberships/MyMembershipsDialog';
-import { useLatestContributionsSpacesQuery } from '../../../core/apollo/generated/apollo-hooks';
+import { useLatestContributionsSpacesFlatQuery } from '../../../core/apollo/generated/apollo-hooks';
 import Loading from '../../../core/ui/loading/Loading';
 import MyDashboardWithMemberships from './MyDashboardWithMemberships';
 import MyDashboardWithoutMemberships from './MyDashboardWithoutMemberships';
@@ -13,8 +13,8 @@ export const MyDashboard = () => {
   const { isAuthenticated, loading: isLoadingAuthentication } = useAuthenticationContext();
   const [isMyMembershipsDialogOpen, setIsMyMembershipsDialogOpen] = useState(false);
 
-  const { data: spacesData, loading: areSpacesLoading } = useLatestContributionsSpacesQuery();
-  const hasSpaceMemberships = !!spacesData?.me.spaceMembershipsHierarchical.length;
+  const { data: spacesData, loading: areSpacesLoading } = useLatestContributionsSpacesFlatQuery();
+  const hasSpaceMemberships = !!spacesData?.me.spaceMembershipsFlat.length;
 
   if (areSpacesLoading) {
     return (

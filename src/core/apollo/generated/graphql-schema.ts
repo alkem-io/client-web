@@ -30316,13 +30316,13 @@ export type LatestContributionsGroupedQuery = {
   >;
 };
 
-export type LatestContributionsSpacesQueryVariables = Exact<{ [key: string]: never }>;
+export type LatestContributionsSpacesFlatQueryVariables = Exact<{ [key: string]: never }>;
 
-export type LatestContributionsSpacesQuery = {
+export type LatestContributionsSpacesFlatQuery = {
   __typename?: 'Query';
   me: {
     __typename?: 'MeQueryResults';
-    spaceMembershipsHierarchical: Array<{
+    spaceMembershipsFlat: Array<{
       __typename?: 'CommunityMembershipResult';
       id: string;
       space: { __typename?: 'Space'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } };

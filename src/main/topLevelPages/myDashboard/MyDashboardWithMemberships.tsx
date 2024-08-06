@@ -9,14 +9,14 @@ import MyLatestContributions from './latestContributions/myLatestContributions/M
 import TipsAndTricks from './tipsAndTricks/TipsAndTricks';
 import NewMembershipsBlock from './newMemberships/NewMembershipsBlock';
 import ExploreOtherChallenges from './exploreOtherChallenges/ExploreOtherChallenges';
-import { LatestContributionsSpacesQuery } from '../../../core/apollo/generated/graphql-schema';
 import { useColumns } from '../../../core/ui/grid/GridContext';
 import ReleaseNotesBanner from './releaseNotesBanner/ReleaseNotesBanner';
 import { useLatestReleaseDiscussionQuery } from '../../../core/apollo/generated/apollo-hooks';
 import MyAccountBlock from './myAccount/MyAccountBlock';
+import { LatestContributionsSpacesFlatQuery } from '../../../core/apollo/generated/graphql-schema';
 
 interface MyDashboardWithMembershipsProps {
-  spacesData: LatestContributionsSpacesQuery | undefined;
+  spacesData: LatestContributionsSpacesFlatQuery | undefined;
   onOpenMembershipsDialog: () => void;
 }
 
@@ -27,7 +27,7 @@ const MyDashboardWithMemberships: FC<MyDashboardWithMembershipsProps> = ({ space
     fetchPolicy: 'network-only',
   });
   // TODO: need to check here that child memberships should be done via flat or hierarchical space memberships query
-  const levelZeroSpaces = spacesData?.me.spaceMembershipsHierarchical.map(membership => membership.space);
+  const flatSpacesWithMemberships = spacesData?.me.spaceMembershipsFlat.map(membership => membership.space);
 
   return (
     <>
@@ -36,7 +36,7 @@ const MyDashboardWithMemberships: FC<MyDashboardWithMembershipsProps> = ({ space
       </PageContentColumn>
       <PageContentColumn columns={columns === 12 ? 4 : 8} flexDirection="column" alignSelf="stretch">
         <NewMembershipsBlock hiddenIfEmpty />
-        <LatestContributions spaceMemberships={levelZeroSpaces} />
+        <LatestContributions spaceMemberships={flatSpacesWithMemberships} />
         <RecentForumMessages />
       </PageContentColumn>
       <PageContentColumn columns={8}>
