@@ -76,6 +76,8 @@ export const guessVariant = ({ attributes }: UiNode) => {
       return null;
     case 'password':
       return 'password';
+    case 'profile':
+      return 'profile';
     default:
       return 'text';
   }
