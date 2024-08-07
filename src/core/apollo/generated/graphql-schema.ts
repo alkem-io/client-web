@@ -17750,6 +17750,94 @@ export type InviteUserToPlatformAndCommunityMutation = {
   inviteUserToPlatformAndCommunity: { __typename?: 'PlatformInvitation'; id: string };
 };
 
+export type OrganizationAccountQueryVariables = Exact<{
+  organizationNameId: Scalars['UUID_NAMEID'];
+}>;
+
+export type OrganizationAccountQuery = {
+  __typename?: 'Query';
+  organization: {
+    __typename?: 'Organization';
+    id: string;
+    accounts: Array<{
+      __typename?: 'Account';
+      id: string;
+      spaceID: string;
+      virtualContributors: Array<{
+        __typename?: 'VirtualContributor';
+        id: string;
+        profile: {
+          __typename?: 'Profile';
+          tagline: string;
+          id: string;
+          displayName: string;
+          description?: string | undefined;
+          url: string;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        };
+      }>;
+      innovationPacks: Array<{
+        __typename?: 'InnovationPack';
+        id: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          description?: string | undefined;
+          url: string;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        };
+        templates?:
+          | {
+              __typename?: 'TemplatesSet';
+              id: string;
+              calloutTemplatesCount: number;
+              communityGuidelinesTemplatesCount: number;
+              innovationFlowTemplatesCount: number;
+              postTemplatesCount: number;
+              whiteboardTemplatesCount: number;
+            }
+          | undefined;
+      }>;
+      innovationHubs: Array<{
+        __typename?: 'InnovationHub';
+        id: string;
+        spaceVisibilityFilter?: SpaceVisibility | undefined;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          description?: string | undefined;
+          url: string;
+          banner?:
+            | {
+                __typename: 'Visual';
+                id: string;
+                uri: string;
+                name: string;
+                allowedTypes: Array<string>;
+                aspectRatio: number;
+                maxHeight: number;
+                maxWidth: number;
+                minHeight: number;
+                minWidth: number;
+                alternativeText?: string | undefined;
+              }
+            | undefined;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        };
+        spaceListFilter?:
+          | Array<{
+              __typename?: 'Space';
+              id: string;
+              profile: { __typename?: 'Profile'; id: string; displayName: string };
+            }>
+          | undefined;
+      }>;
+    }>;
+  };
+};
+
 export type PendingMembershipsSpaceQueryVariables = Exact<{
   spaceId: Scalars['UUID'];
   fetchDetails?: Scalars['Boolean'];

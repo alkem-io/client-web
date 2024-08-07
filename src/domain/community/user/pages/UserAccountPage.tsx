@@ -23,6 +23,7 @@ import CreateSpaceDialog from '../../../journey/space/createSpace/CreateSpaceDia
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { useUserContext } from '../hooks/useUserContext';
 import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
+import { compact } from 'lodash';
 
 interface UserAccountPageProps {}
 
@@ -47,7 +48,7 @@ export const UserAccountPage: FC<UserAccountPageProps> = () => {
 
   const { spaceIds, virtualContributors, innovationPacks, innovationHubs } = useMemo(
     () => ({
-      spaceIds: data?.user?.accounts.flatMap(account => account.spaceID) ?? [],
+      spaceIds: compact(data?.user?.accounts.flatMap(account => account.spaceID)),
       virtualContributors: data?.user?.accounts.flatMap(account => account.virtualContributors) ?? [],
       innovationPacks: data?.user?.accounts.flatMap(account => account.innovationPacks) ?? [],
       innovationHubs: data?.user?.accounts.flatMap(account => account.innovationHubs) ?? [],

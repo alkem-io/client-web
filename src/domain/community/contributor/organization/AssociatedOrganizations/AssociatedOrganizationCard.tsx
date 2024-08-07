@@ -4,11 +4,11 @@ import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle } from '
 import { LoadingButton } from '@mui/lab';
 import CloseIcon from '@mui/icons-material/Close';
 import ContributorCardHorizontal, {
-  SpaceWelcomeSectionContributorProps,
+  ContributorCardHorizontalProps,
 } from '../../../../../core/ui/card/ContributorCardHorizontal';
 import LabeledCount from '../../../../../core/ui/content/LabeledCount';
 
-export interface AssociatedOrganizationCardProps extends SpaceWelcomeSectionContributorProps {
+export interface AssociatedOrganizationCardProps extends ContributorCardHorizontalProps {
   enableLeave?: boolean;
   removingFromOrganization?: boolean;
   handleRemoveSelfFromOrganization?: () => void;
