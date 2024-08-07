@@ -2,6 +2,7 @@ import { ComponentType, useCallback, useMemo, useRef, useState } from 'react';
 import {
   PostCardFragmentDoc,
   refetchMyAccountQuery,
+  useAddVirtualContributorToCommunityMutation,
   useCreateNewSpaceMutation,
   useCreatePostFromContributeTabMutation,
   useCreateVirtualContributorOnAccountMutation,
@@ -103,6 +104,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
             name: subspace.profile.displayName,
             accountId: space.account.id,
             url: space.profile.url,
+            communityId: subspace.community.id,
           })) ?? []
         );
       }
@@ -294,6 +296,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     onDialogClose();
   };
 
+  const [addVirtualContributorToSubspace] = useAddVirtualContributorToCommunityMutation();
   const [createVirtualContributor] = useCreateVirtualContributorOnAccountMutation({
     refetchQueries: [refetchMyAccountQuery()],
   });
@@ -301,7 +304,8 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
   const handleCreateVirtualContributor = async (
     values: VirtualContributorFromProps,
     accountId: string,
-    spaceId: string
+    spaceId: string,
+    communityId?: string
   ) => {
     if (!accountId || !spaceId || !virtualContributorInput) {
       return;
@@ -325,6 +329,15 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
       },
     });
     if (data?.createVirtualContributor.id) {
+      if (communityId) {
+        await addVirtualContributorToSubspace({
+          variables: {
+            communityId: communityId,
+            virtualContributorId: data.createVirtualContributor.id,
+          },
+        });
+      }
+
       notify(
         t('createVirtualContributorWizard.createdVirtualContributor.successMessage', { values: { name: values.name } }),
         'success'
@@ -339,7 +352,12 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
 
   const handleCreateVCWithExistingKnowledge = async (selectedKnowledge: SelectableKnowledgeProps) => {
     if (selectedKnowledge && virtualContributorInput) {
-      await handleCreateVirtualContributor(virtualContributorInput, selectedKnowledge.accountId, selectedKnowledge.id);
+      await handleCreateVirtualContributor(
+        virtualContributorInput,
+        selectedKnowledge.accountId,
+        selectedKnowledge.id,
+        selectedKnowledge.communityId
+      );
       addVCCreationCache(virtualContributorInput.name);
       navigate(selectedKnowledge.url ?? '');
     }
