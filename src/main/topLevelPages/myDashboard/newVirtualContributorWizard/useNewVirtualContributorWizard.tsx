@@ -1,6 +1,5 @@
-import { ComponentType, useCallback, useMemo, useRef, useState } from 'react';
+import { ComponentType, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
-  PostCardFragmentDoc,
   refetchMyAccountQuery,
   useAddVirtualContributorToCommunityMutation,
   useCreateNewSpaceMutation,
@@ -31,15 +30,16 @@ import useNavigate from '../../../../core/routing/useNavigate';
 import { usePlanAvailability } from '../../../../domain/journey/space/createSpace/plansTable/usePlanAvailability';
 import { addVCCreationCache } from './vcCreationUtil';
 import {
+  CalloutCreationParams,
   CalloutCreationType,
   useCalloutCreation,
 } from '../../../../domain/collaboration/callout/creationDialog/useCalloutCreation/useCalloutCreation';
-import SetupVC from './SetupVC';
+import SetupVCInfo from './SetupVCInfo';
 import { info } from '../../../../core/logging/sentry/log';
 
 const SPACE_LABEL = '(space)';
 
-type Step = 'initial' | 'createSpace' | 'addKnowledge' | 'existingKnowledge' | 'vcSetup';
+type Step = 'initial' | 'createSpace' | 'addKnowledge' | 'existingKnowledge' | 'loadingVCSetup';
 
 interface useNewVirtualContributorWizardProvided {
   startWizard: () => void;
@@ -48,10 +48,12 @@ interface useNewVirtualContributorWizardProvided {
 
 interface NewVirtualContributorWizardProps {}
 
+const generateSpaceName = (name: string) => `${name}'s Space`;
+
 const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvided => {
   const { t } = useTranslation();
-  const notify = useNotification();
   const { user } = useUserContext();
+  const notify = useNotification();
   const navigate = useNavigate();
 
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -61,6 +63,29 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
   const [virtualContributorInput, setVirtualContributorInput] = useState<VirtualContributorFromProps | undefined>(
     undefined
   );
+  const [calloutPostData, setCalloutPostData] = useState<PostsFormValues | undefined>(undefined);
+  const [tryCreateCallout, setTryCreateCallout] = useState<boolean>(false);
+  const calloutId = useRef<string>();
+
+  const calloutCreationOptions: CalloutCreationParams = {
+    journeyId: spaceId,
+  };
+
+  const startWizard = () => {
+    setStep('initial');
+    setDialogOpen(true);
+  };
+
+  const onStepSelection = (step: Step, values: VirtualContributorFromProps) => {
+    setVirtualContributorInput(values);
+    setStep(step);
+  };
+
+  const handleAddContent = async (posts: PostsFormValues) => {
+    setCalloutPostData(posts);
+    // trigger useEffect to create the callout once canCreateCallout is true
+    setTryCreateCallout(true);
+  };
 
   const onDialogClose = () => {
     setDialogOpen(false);
@@ -79,13 +104,15 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     if (!userId || !mySpaces) {
       return undefined;
     }
+
     const spacesHostedByUser = mySpaces.filter(space => space.account.host?.id === userId);
     if (spacesHostedByUser.length > 0) {
       return spacesHostedByUser;
     }
   };
 
-  // note, selectableSpaces are space and subspaces
+  // selectableSpaces are space and subspaces
+  // subspaces has communityId in order to manually add the VC to it
   const { mySpaceId, myAccountId, selectableSpaces } = useMemo(() => {
     const mySpaces = findMySpaces(user?.user.id, data?.me.myCreatedSpaces);
     let selectableSpaces: SelectableKnowledgeProps[] = [];
@@ -133,21 +160,16 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     [plansData, isPlanAvailable]
   );
 
-  const startWizard = () => {
-    setStep('initial');
-    setDialogOpen(true);
-  };
-
-  const generateSpaceName = (name: string) => `${name}'s Space`;
-
   const [CreateNewSpace] = useCreateNewSpaceMutation({
     refetchQueries: [refetchMyAccountQuery()],
   });
   const handleCreateSpace = async (values: VirtualContributorFromProps) => {
     setStep('createSpace');
+
     if (!user?.user.id) {
       return;
     }
+
     if (mySpaceId && myAccountId) {
       setSpaceId(mySpaceId);
       setAccountId(myAccountId);
@@ -157,6 +179,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
         notify('No available plans for this account. Please, contact support@alkem.io.', 'error');
         return;
       }
+
       const { data: newSpace } = await CreateNewSpace({
         variables: {
           hostId: user?.user.id,
@@ -169,113 +192,13 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
           licensePlanId: plans[0]?.id,
         },
       });
+
       setSpaceId(newSpace?.createAccount.spaceID);
       setAccountId(newSpace?.createAccount.id);
     }
+
     setVirtualContributorInput(values);
     setStep('addKnowledge');
-  };
-
-  const [getNewSpaceUrl] = useSpaceUrlLazyQuery({
-    variables: {
-      spaceNameId: spaceId!,
-    },
-  });
-
-  const { handleCreateCallout } = useCalloutCreation(
-    {
-      journeyId: spaceId,
-    }!
-  );
-
-  const calloutDetails: CalloutCreationType = {
-    framing: {
-      profile: {
-        displayName: t('createVirtualContributorWizard.addContent.post.initialPosts'),
-        description: '',
-        referencesData: [],
-      },
-    },
-    type: CalloutType.PostCollection,
-    contributionPolicy: {
-      state: CalloutState.Open,
-    },
-    groupName: CalloutGroupName.Home,
-    visibility: CalloutVisibility.Published,
-    sendNotification: false,
-  };
-
-  const calloutId = useRef<string>();
-  const [createPost] = useCreatePostFromContributeTabMutation({
-    update: (cache, { data }) => {
-      if (!calloutId.current || !data) {
-        return;
-      }
-      const { createContributionOnCallout } = data;
-      const calloutRefId = cache.identify({
-        id: calloutId.current,
-      });
-
-      if (!calloutRefId) {
-        return;
-      }
-
-      cache.modify({
-        id: calloutRefId,
-        fields: {
-          posts(existingPosts = []) {
-            const newPostRef = cache.writeFragment({
-              data: createContributionOnCallout.post,
-              fragment: PostCardFragmentDoc,
-              fragmentName: 'PostCard',
-            });
-            return [...existingPosts, newPostRef];
-          },
-        },
-      });
-    },
-  });
-
-  const onCreatePost = async (post: PostValues, calloutId: string) => {
-    await createPost({
-      variables: {
-        postData: {
-          calloutID: calloutId!,
-          post: {
-            profileData: {
-              displayName: post.title,
-              description: post.description,
-            },
-            type: CalloutType.Post,
-          },
-        },
-      },
-    });
-  };
-
-  const handleAddContent = async (posts: PostsFormValues) => {
-    setStep('vcSetup');
-
-    // create collection of posts
-    if (posts.posts.length > 0) {
-      const callout = await handleCreateCallout(calloutDetails);
-      calloutId.current = callout?.id;
-
-      // add posts to collection
-      if (callout?.id) {
-        posts.posts.forEach(async post => {
-          await onCreatePost(post, callout?.id);
-        });
-      }
-    }
-
-    // create VC
-    if (virtualContributorInput && accountId && spaceId) {
-      handleCreateVirtualContributor(virtualContributorInput, accountId, spaceId);
-      addVCCreationCache(virtualContributorInput.name);
-      const { data } = await getNewSpaceUrl({ variables: { spaceNameId: spaceId! } });
-      navigate(data?.space.profile.url ?? '');
-    }
   };
 
   const [deleteSpace] = useDeleteSpaceMutation({
@@ -294,6 +217,79 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
       });
     }
     onDialogClose();
+  };
+
+  const [getNewSpaceUrl] = useSpaceUrlLazyQuery({
+    variables: {
+      spaceNameId: spaceId!,
+    },
+  });
+
+  const { handleCreateCallout, canCreateCallout } = useCalloutCreation(calloutCreationOptions);
+
+  const calloutDetails: CalloutCreationType = {
+    framing: {
+      profile: {
+        displayName: t('createVirtualContributorWizard.addContent.post.initialPosts'),
+        description: '',
+        referencesData: [],
+      },
+    },
+    type: CalloutType.PostCollection,
+    contributionPolicy: {
+      state: CalloutState.Open,
+    },
+    groupName: CalloutGroupName.Home,
+    visibility: CalloutVisibility.Published,
+    sendNotification: false,
+  };
+
+  // no need of 'update' implementation as the callout is on another page
+  // where CalloutDetails will refetch the details
+  const [createPost] = useCreatePostFromContributeTabMutation();
+
+  const onCreatePost = async (post: PostValues, calloutId: string) => {
+    await createPost({
+      variables: {
+        postData: {
+          calloutID: calloutId!,
+          post: {
+            profileData: {
+              displayName: post.title,
+              description: post.description,
+            },
+            type: CalloutType.Post,
+          },
+        },
+      },
+    });
+  };
+
+  const createCalloutContent = async () => {
+    setStep('loadingVCSetup');
+
+    // create collection of posts
+    if (calloutPostData?.posts && calloutPostData?.posts.length > 0) {
+      const callout = await handleCreateCallout(calloutDetails);
+      calloutId.current = callout?.id;
+
+      // add posts to collection
+      if (callout?.id) {
+        for (const post of calloutPostData?.posts) {
+          await onCreatePost(post, callout.id);
+        }
+      }
+
+      setTryCreateCallout(false);
+    }
+
+    // create VC
+    if (virtualContributorInput && accountId && spaceId) {
+      await handleCreateVirtualContributor(virtualContributorInput, accountId, spaceId);
+      addVCCreationCache(virtualContributorInput.name);
+      const { data } = await getNewSpaceUrl({ variables: { spaceNameId: spaceId! } });
+      navigate(data?.space.profile.url ?? '');
+    }
   };
 
   const [addVirtualContributorToSubspace] = useAddVirtualContributorToCommunityMutation();
@@ -345,11 +341,6 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     }
   };
 
-  const onStepSelection = (step: Step, values: VirtualContributorFromProps) => {
-    setVirtualContributorInput(values);
-    setStep(step);
-  };
-
   const handleCreateVCWithExistingKnowledge = async (selectedKnowledge: SelectableKnowledgeProps) => {
     if (selectedKnowledge && virtualContributorInput) {
       await handleCreateVirtualContributor(
@@ -362,6 +353,12 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
       navigate(selectedKnowledge.url ?? '');
     }
   };
+
+  useEffect(() => {
+    if (tryCreateCallout && canCreateCallout) {
+      createCalloutContent();
+    }
+  }, [tryCreateCallout, canCreateCallout]);
 
   const NewVirtualContributorWizard = useCallback(
     () => (
@@ -387,7 +384,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
             loading={loading}
           />
         )}
-        {step === 'vcSetup' && <SetupVC />}
+        {step === 'loadingVCSetup' && <SetupVCInfo />}
       </DialogWithGrid>
     ),
     [dialogOpen, step, loading]
