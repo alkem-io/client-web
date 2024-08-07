@@ -106,6 +106,11 @@ export const KratosUI: FC<KratosUIProps> = ({
               return { ...acc, submit: [...acc.submit, node] };
             }
             return { ...acc, password: [...acc.password, node] };
+          case 'profile':
+            if (isSubmitButton(node)) {
+              return { ...acc, submit: [...acc.submit, node] };
+            }
+            return { ...acc, password: [...acc.password, node] };
           default:
             return { ...acc, rest: [...acc.rest, node] };
         }
@@ -158,6 +163,9 @@ export const KratosUI: FC<KratosUIProps> = ({
       case 'hidden':
         return <KratosHidden key={key} node={node} />;
       case 'submit':
+        if (node.attributes.value.includes(':back')) {
+          return <KratosButton key={key} node={node} variant="text" />;
+        }
         return <KratosButton key={key} node={node} />;
       case 'checkbox':
         return <KratosCheckbox key={key} node={node} />;

@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { DialogContent } from '@mui/material';
 import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
@@ -17,23 +17,11 @@ import {
 } from '../../../../core/apollo/generated/graphql-schema';
 import Loading from '../../../../core/ui/loading/Loading';
 import ExpandableSpaceTree from './ExpandableSpaceTree';
-import { Identifiable } from '../../../../core/utils/Identifiable';
 import { gutters } from '../../../../core/ui/grid/utils';
-import isJourneyMember from '../../../../domain/journey/utils/isJourneyMember';
 
 interface MyJourneysDialogProps {
   open: boolean;
   onClose: () => void;
-}
-
-export interface SubspaceAccessProps extends Identifiable {
-  authorization?: {
-    myPrivileges?: AuthorizationPrivilege[];
-  };
-  community?: {
-    myRoles?: CommunityRole[];
-    myMembershipStatus?: CommunityMembershipStatus;
-  };
 }
 
 export interface MembershipProps {
@@ -46,10 +34,14 @@ export interface MembershipProps {
     cardBanner?: Visual;
   };
   level: number;
+  authorization?: {
+    myPrivileges?: AuthorizationPrivilege[];
+  };
   community?: {
     myRoles?: CommunityRole[];
+    myMembershipStatus?: CommunityMembershipStatus;
   };
-  subspaces?: SubspaceAccessProps[];
+  childMemberships?: MembershipProps[];
 }
 
 const MyMembershipsDialog = ({ open, onClose }: MyJourneysDialogProps) => {
@@ -61,33 +53,14 @@ const MyMembershipsDialog = ({ open, onClose }: MyJourneysDialogProps) => {
 
   const landingUrl = useLandingUrl();
 
-  const myTopLevelMemberships = useMemo(() => data?.me.spaceMemberships.filter(space => space?.level === 0), [data]);
-
-  // As the query returns all levels of memberships, we're using a map for ease of access to the data of each membership
-  // without having to iterate over the array each time or making redundant queries for the details of every subspace
-  const allMyMembershipsMap: Record<string, MembershipProps> = useMemo(
-    () =>
-      (data?.me.spaceMemberships ?? []).reduce((acc, item) => {
-        acc[item.id] = item;
-        return acc;
-      }, {}),
-    [data]
-  );
-
-  const getMembership = (id: string) => allMyMembershipsMap[id];
-
   return (
     <DialogWithGrid open={open} onClose={onClose} columns={8}>
       <DialogHeader icon={<SpaceIcon />} title={t('pages.home.sections.myMemberships.title')} onClose={onClose} />
       <DialogContent style={{ paddingTop: 0 }}>
         {loading && <Loading />}
         <Gutters disablePadding disableGap>
-          {myTopLevelMemberships?.map(space => (
-            <ExpandableSpaceTree
-              space={space}
-              subspaces={space.subspaces?.filter(isJourneyMember)}
-              getMembershipWithDetails={getMembership}
-            />
+          {data?.me.spaceMembershipsHierarchical?.map(spaceMembership => (
+            <ExpandableSpaceTree membership={spaceMembership} />
           ))}
           <Caption alignSelf="center" paddingTop={gutters(0.5)}>
             <Trans

@@ -105,22 +105,29 @@ const InnovationPackForm: FC<InnovationPackFormProps> = ({
         return (
           <Gutters disablePadding>
             <NameSegment disabled={!isNew} required={isNew} nameFieldName="profile.displayName" />
-            <TextField
-              title={t('pages.admin.innovation-packs.fields.provider')}
-              label={t('pages.admin.innovation-packs.fields.provider')}
-              value={findProvider(providerId, organizations)}
-              disabled
-              placeholder={t('pages.admin.innovation-packs.fields.provider')}
-            />
-            <FormikCheckboxField name="listedInStore" title={t('pages.admin.innovation-packs.fields.listedInStore')} />
-            <FormikSelect
-              name="searchVisibility"
-              title={t('pages.admin.innovation-packs.fields.searchVisibility')}
-              values={Object.values(SearchVisibility).map(id => ({
-                id,
-                name: t(`common.enums.searchVisibility.${id}` as const),
-              }))}
-            />
+            {!isNew && (
+              <>
+                <TextField
+                  title={t('pages.admin.innovation-packs.fields.provider')}
+                  label={t('pages.admin.innovation-packs.fields.provider')}
+                  value={findProvider(providerId, organizations)}
+                  disabled
+                  placeholder={t('pages.admin.innovation-packs.fields.provider')}
+                />
+                <FormikCheckboxField
+                  name="listedInStore"
+                  title={t('pages.admin.innovation-packs.fields.listedInStore')}
+                />
+                <FormikSelect
+                  name="searchVisibility"
+                  title={t('pages.admin.innovation-packs.fields.searchVisibility')}
+                  values={Object.values(SearchVisibility).map(id => ({
+                    id,
+                    name: t(`common.enums.searchVisibility.${id}` as const),
+                  }))}
+                />
+              </>
+            )}
             <FormikMarkdownField
               title={t('common.description')}
               name="profile.description"
