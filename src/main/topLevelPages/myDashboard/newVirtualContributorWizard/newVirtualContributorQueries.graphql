@@ -29,20 +29,6 @@ query NewVirtualContributorMySpaces {
           id
         }
       }
-      community {
-        id
-      }
     }
   }
 }
-
-query NewSpace($spaceId: UUID_NAMEID!) {
-  space(ID: $spaceId) {
-    id
-    profile {
-      id
-      url
-    }
-  }
-}
-

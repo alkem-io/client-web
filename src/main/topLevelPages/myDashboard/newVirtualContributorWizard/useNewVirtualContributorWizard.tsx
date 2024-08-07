@@ -6,9 +6,9 @@ import {
   useCreatePostFromContributeTabMutation,
   useCreateVirtualContributorOnAccountMutation,
   useDeleteSpaceMutation,
-  useNewSpaceLazyQuery,
   useNewVirtualContributorMySpacesQuery,
   usePlansTableQuery,
+  useSpaceUrlLazyQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import {
   CalloutGroupName,
@@ -174,9 +174,9 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     setStep('addKnowledge');
   };
 
-  const [getNewSpaceUrl] = useNewSpaceLazyQuery({
+  const [getNewSpaceUrl] = useSpaceUrlLazyQuery({
     variables: {
-      spaceId: spaceId!,
+      spaceNameId: spaceId!,
     },
   });
 
@@ -271,7 +271,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     if (virtualContributorInput && accountId && spaceId) {
       handleCreateVirtualContributor(virtualContributorInput, accountId, spaceId);
       addVCCreationCache(virtualContributorInput.name);
-      const { data } = await getNewSpaceUrl({ variables: { spaceId: spaceId! } });
+      const { data } = await getNewSpaceUrl({ variables: { spaceNameId: spaceId! } });
       navigate(data?.space.profile.url ?? '');
     }
   };
