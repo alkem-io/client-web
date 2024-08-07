@@ -13995,7 +13995,7 @@ export const UserAccountDocument = gql`
   query UserAccount($userId: UUID_NAMEID_EMAIL!) {
     user(ID: $userId) {
       id
-      accounts {
+      account {
         id
         spaces {
           id
@@ -23503,7 +23503,7 @@ export const MyAccountDocument = gql`
             type
           }
         }
-        accounts {
+        account {
           id
           virtualContributors {
             id

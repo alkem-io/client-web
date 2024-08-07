@@ -4035,8 +4035,8 @@ export type Nvp = {
 export type Organization = Contributor &
   Groupable & {
     __typename?: 'Organization';
-    /** The accounts hosted by this Organization. */
-    accounts: Array<Account>;
+    /** The account hosted by this Organization. */
+    account?: Maybe<Account>;
     /** All Users that are admins of this Organization. */
     admins?: Maybe<Array<User>>;
     /** The Agent representing this User. */
@@ -6192,10 +6192,10 @@ export type UpdateWhiteboardTemplateInput = {
 
 export type User = Contributor & {
   __typename?: 'User';
+  /** The account hosted by this User. */
+  account: Account;
   /** The unique personal identifier (upn) for the account associated with this user profile */
   accountUpn: Scalars['String'];
-  /** The accounts hosted by this User. */
-  accounts: Array<Account>;
   /** The Agent representing this User. */
   agent: Agent;
   /** The authorization rules for the Contributor */
@@ -18472,7 +18472,7 @@ export type UserAccountQuery = {
   user: {
     __typename?: 'User';
     id: string;
-    accounts: Array<{
+    account: {
       __typename?: 'Account';
       id: string;
       spaces: Array<{
@@ -18559,7 +18559,7 @@ export type UserAccountQuery = {
             }>
           | undefined;
       }>;
-    }>;
+    };
   };
 };
 
@@ -30346,7 +30346,7 @@ export type MyAccountQuery = {
             id: string;
             credentials?: Array<{ __typename?: 'Credential'; resourceID: string; type: CredentialType }> | undefined;
           };
-          accounts: Array<{
+          account: {
             __typename?: 'Account';
             id: string;
             virtualContributors: Array<{
@@ -30361,7 +30361,7 @@ export type MyAccountQuery = {
                 avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
               };
             }>;
-          }>;
+          };
         }
       | undefined;
   };

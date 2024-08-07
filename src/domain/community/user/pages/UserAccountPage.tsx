@@ -43,16 +43,16 @@ export const UserAccountPage: FC<UserAccountPageProps> = () => {
     isMyProfile && currentUser && currentUser.hasPlatformPrivilege(AuthorizationPrivilege.CreateSpace);
 
   // TODO: This will not be needed when we have multiple spaces per account and a single account per user
-  const accountId = data?.user?.accounts[0]?.id;
+  const accountId = data?.user?.account?.id;
 
   const { spaces, virtualContributors, innovationPacks, innovationHubs } = useMemo(
     () => ({
-      spaces: data?.user?.accounts.flatMap(account => account.spaces) ?? [],
-      virtualContributors: data?.user?.accounts.flatMap(account => account.virtualContributors) ?? [],
-      innovationPacks: data?.user?.accounts.flatMap(account => account.innovationPacks) ?? [],
-      innovationHubs: data?.user?.accounts.flatMap(account => account.innovationHubs) ?? [],
+      spaces: data?.user?.account?.spaces ?? [],
+      virtualContributors: data?.user?.account?.virtualContributors ?? [],
+      innovationPacks: data?.user?.account?.innovationPacks ?? [],
+      innovationHubs: data?.user?.account?.innovationHubs ?? [],
     }),
-    [data?.user?.accounts]
+    [data?.user?.account]
   );
   const spaceIds = spaces.map(space => space.id);
 
