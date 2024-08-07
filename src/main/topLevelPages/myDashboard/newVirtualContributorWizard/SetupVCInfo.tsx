@@ -5,7 +5,7 @@ import { Caption } from '../../../../core/ui/typography';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import { gutters } from '../../../../core/ui/grid/utils';
 
-const SetupVC = () => {
+const SetupVCInfo = () => {
   const { t } = useTranslation();
 
   return (
@@ -19,4 +19,4 @@ const SetupVC = () => {
   );
 };
 
-export default SetupVC;
+export default SetupVCInfo;
