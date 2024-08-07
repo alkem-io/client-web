@@ -54,8 +54,8 @@ export type Account = {
   innovationPacks: Array<InnovationPack>;
   /** The privileges granted based on the License credentials held by this Account. */
   licensePrivileges?: Maybe<Array<LicensePrivilege>>;
-  /** The ID for the root space for the Account . */
-  spaceID: Scalars['String'];
+  /** The Spaces within this Account. */
+  spaces: Array<Space>;
   /** The StorageAggregator in use by this Account */
   storageAggregator: StorageAggregator;
   /** The subscriptions active for this Account. */
@@ -1644,15 +1644,6 @@ export type ConvertSubsubspaceToSubspaceInput = {
   subsubspaceID: Scalars['UUID_NAMEID'];
 };
 
-export type CreateAccountInput = {
-  /** The host Organization or User for the account */
-  hostID: Scalars['UUID_NAMEID'];
-  /** The license plan selected for the account */
-  licensePlanID?: InputMaybe<Scalars['UUID']>;
-  /** The root Space to be created. */
-  spaceData: CreateSpaceInput;
-};
-
 export type CreateActorGroupInput = {
   description?: InputMaybe<Scalars['String']>;
   ecosystemModelID: Scalars['UUID'];
@@ -1798,6 +1789,7 @@ export type CreateInnovationFlowTemplateOnTemplatesSetInput = {
 };
 
 export type CreateInnovationHubOnAccountInput = {
+  /** The Account where the InnovationHub is to be created. */
   accountID: Scalars['UUID'];
   /** A readable identifier, unique within the containing scope. */
   nameID?: InputMaybe<Scalars['NameID']>;
@@ -1813,6 +1805,7 @@ export type CreateInnovationHubOnAccountInput = {
 };
 
 export type CreateInnovationPackOnAccountInput = {
+  /** The Account where the InnovationPack is to be created. */
   accountID: Scalars['UUID'];
   /** A readable identifier, unique within the containing scope. */
   nameID: Scalars['NameID'];
@@ -1957,7 +1950,9 @@ export type CreateRelationOnCollaborationInput = {
   type: Scalars['String'];
 };
 
-export type CreateSpaceInput = {
+export type CreateSpaceOnAccountInput = {
+  /** The Account where the Space is to be created. */
+  accountID: Scalars['UUID'];
   collaborationData?: InputMaybe<CreateCollaborationInput>;
   context?: InputMaybe<CreateContextInput>;
   /** A readable identifier, unique within the containing Account. */
@@ -2008,6 +2003,7 @@ export type CreateUserInput = {
 };
 
 export type CreateVirtualContributorOnAccountInput = {
+  /** The Account where the VirtualContributor is to be created. */
   accountID: Scalars['UUID'];
   /** Data used to create the AI Persona */
   aiPersona: CreateAiPersonaInput;
@@ -2318,8 +2314,6 @@ export type FileStorageConfig = {
   __typename?: 'FileStorageConfig';
   /** Max file size, in bytes. */
   maxFileSize: Scalars['Float'];
-  /** Allowed mime types for file upload, separated by a coma. */
-  mimeTypes: Array<Scalars['String']>;
 };
 
 export type Form = {
@@ -3114,8 +3108,6 @@ export type Mutation = {
   convertChallengeToSpace: Space;
   /** Creates a new Challenge by converting an existing Opportunity. */
   convertOpportunityToChallenge: Space;
-  /** Creates a new Account with a single root Space. */
-  createAccount: Account;
   /** Creates a new Actor in the specified ActorGroup. */
   createActor: Actor;
   /** Create a new Actor Group on the EcosystemModel. */
@@ -3138,7 +3130,7 @@ export type Mutation = {
   createGroupOnOrganization: UserGroup;
   /** Creates a new InnovationFlowTemplate on the specified TemplatesSet. */
   createInnovationFlowTemplate: InnovationFlowTemplate;
-  /** Create Innovation Hub. */
+  /** Create an Innovation Hub on the specified account */
   createInnovationHub: InnovationHub;
   /** Creates a new InnovationPack on an Account. */
   createInnovationPack: InnovationPack;
@@ -3152,6 +3144,8 @@ export type Mutation = {
   createReferenceOnProfile: Reference;
   /** Create a new Relation on the Collaboration. */
   createRelationOnCollaboration: Relation;
+  /** Creates a new Level Zero Space within the specified Account. */
+  createSpace: Account;
   /** Creates a new Subspace within the specified Space. */
   createSubspace: Space;
   /** Creates a new Tagset on the specified Profile */
@@ -3282,8 +3276,6 @@ export type Mutation = {
   sendMessageToRoom: Message;
   /** Send message to a User. */
   sendMessageToUser: Scalars['Boolean'];
-  /** Update the platform settings, such as license, of the specified Account. */
-  updateAccountPlatformSettings: Account;
   /** Updates the specified Actor. */
   updateActor: Actor;
   /** Updates the specified AiPersona. */
@@ -3484,10 +3476,6 @@ export type MutationConvertOpportunityToChallengeArgs = {
   convertData: ConvertSubsubspaceToSubspaceInput;
 };
 
-export type MutationCreateAccountArgs = {
-  accountData: CreateAccountInput;
-};
-
 export type MutationCreateActorArgs = {
   actorData: CreateActorInput;
 };
@@ -3558,6 +3546,10 @@ export type MutationCreateReferenceOnProfileArgs = {
 
 export type MutationCreateRelationOnCollaborationArgs = {
   relationData: CreateRelationOnCollaborationInput;
+};
+
+export type MutationCreateSpaceArgs = {
+  spaceData: CreateSpaceOnAccountInput;
 };
 
 export type MutationCreateSubspaceArgs = {
@@ -3806,10 +3798,6 @@ export type MutationSendMessageToRoomArgs = {
 
 export type MutationSendMessageToUserArgs = {
   messageData: CommunicationSendMessageToUserInput;
-};
-
-export type MutationUpdateAccountPlatformSettingsArgs = {
-  updateData: UpdateAccountPlatformSettingsInput;
 };
 
 export type MutationUpdateActorArgs = {
@@ -5679,13 +5667,6 @@ export type Timeline = {
   id: Scalars['UUID'];
   /** The date at which the entity was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
-};
-
-export type UpdateAccountPlatformSettingsInput = {
-  /** The identifier for the Account whose license etc is to be updated. */
-  accountID: Scalars['UUID'];
-  /** Update the host Organization or User for the Account. */
-  hostID?: InputMaybe<Scalars['UUID_NAMEID']>;
 };
 
 export type UpdateActorInput = {
@@ -18494,7 +18475,19 @@ export type UserAccountQuery = {
     accounts: Array<{
       __typename?: 'Account';
       id: string;
-      spaceID: string;
+      spaces: Array<{
+        __typename?: 'Space';
+        id: string;
+        profile: {
+          __typename?: 'Profile';
+          tagline: string;
+          id: string;
+          displayName: string;
+          description?: string | undefined;
+          url: string;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        };
+      }>;
       virtualContributors: Array<{
         __typename?: 'VirtualContributor';
         id: string;
@@ -19225,7 +19218,6 @@ export type VirtualContributorQuery = {
       | {
           __typename?: 'Account';
           id: string;
-          spaceID: string;
           host?:
             | {
                 __typename?: 'Organization';
@@ -22231,16 +22223,11 @@ export type SpaceSubspaceCardsQuery = {
   };
 };
 
-export type CreateNewSpaceMutationVariables = Exact<{
-  hostId: Scalars['UUID_NAMEID'];
-  spaceData: CreateSpaceInput;
-  licensePlanId?: InputMaybe<Scalars['UUID']>;
+export type CreateSpaceMutationVariables = Exact<{
+  spaceData: CreateSpaceOnAccountInput;
 }>;
 
-export type CreateNewSpaceMutation = {
-  __typename?: 'Mutation';
-  createAccount: { __typename?: 'Account'; id: string; spaceID: string };
-};
+export type CreateSpaceMutation = { __typename?: 'Mutation'; createSpace: { __typename?: 'Account'; id: string } };
 
 export type PlansTableQueryVariables = Exact<{ [key: string]: never }>;
 
@@ -22347,15 +22334,6 @@ export type SubspacesOnSpaceFragment = {
       privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
     };
   }>;
-};
-
-export type CreateAccountMutationVariables = Exact<{
-  input: CreateAccountInput;
-}>;
-
-export type CreateAccountMutation = {
-  __typename?: 'Mutation';
-  createAccount: { __typename?: 'Account'; id: string; spaceID: string };
 };
 
 export type DeleteSpaceMutationVariables = Exact<{
@@ -23871,24 +23849,6 @@ export type RevokeLicensePlanFromAccountMutation = {
     __typename?: 'Account';
     id: string;
     subscriptions: Array<{ __typename?: 'AccountSubscription'; name: LicenseCredential }>;
-  };
-};
-
-export type UpdateAccountPlatformSettingsMutationVariables = Exact<{
-  accountId: Scalars['UUID'];
-  hostId?: InputMaybe<Scalars['UUID_NAMEID']>;
-}>;
-
-export type UpdateAccountPlatformSettingsMutation = {
-  __typename?: 'Mutation';
-  updateAccountPlatformSettings: {
-    __typename?: 'Account';
-    id: string;
-    host?:
-      | { __typename?: 'Organization'; id: string }
-      | { __typename?: 'User'; id: string }
-      | { __typename?: 'VirtualContributor'; id: string }
-      | undefined;
   };
 };
 

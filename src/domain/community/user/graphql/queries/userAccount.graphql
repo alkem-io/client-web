@@ -3,7 +3,13 @@ query UserAccount($userId: UUID_NAMEID_EMAIL!) {
     id
     accounts {
       id
-      spaceID
+      spaces {
+        id
+        profile {
+          ...AccountItemProfile
+          tagline
+        }
+      }
       virtualContributors {
         id
         profile {

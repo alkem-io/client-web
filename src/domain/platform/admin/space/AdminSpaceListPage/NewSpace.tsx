@@ -7,7 +7,7 @@ import AdminLayout from '../../layout/toplevel/AdminLayout';
 import { AdminSection } from '../../layout/toplevel/constants';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import {
-  useCreateAccountMutation,
+  useCreateSpaceMutation,
   useOrganizationsListQuery,
   useSpaceUrlLazyQuery,
 } from '../../../../../core/apollo/generated/apollo-hooks';
@@ -25,9 +25,9 @@ export const NewSpace: FC<NewSpaceProps> = () => {
 
   const [spaceUrlQuery] = useSpaceUrlLazyQuery();
 
-  const [createAccount, { loading }] = useCreateAccountMutation({
+  const [createSpace, { loading }] = useCreateSpaceMutation({
     onCompleted: async data => {
-      const spaceId = data.createAccount.spaceID;
+      const spaceId = data.createSpace.id;
       const spaceWithUrl = await spaceUrlQuery({ variables: { spaceNameId: spaceId } });
       const url = spaceWithUrl.data?.space.profile.url;
 
@@ -46,21 +46,19 @@ export const NewSpace: FC<NewSpaceProps> = () => {
   );
 
   const onSubmit = async (values: SpaceEditFormValuesType) => {
-    const { name, nameID, hostId, tagsets } = values;
+    const { name, nameID, tagsets } = values;
 
-    await createAccount({
+    await createSpace({
       variables: {
-        input: {
-          hostID: hostId,
-          spaceData: {
-            nameID,
-            profileData: {
-              displayName: name,
-              tagline: values.tagline,
-              location: formatDatabaseLocation(values.location),
-            },
-            tags: tagsets.flatMap(x => x.tags),
+        spaceData: {
+          accountID: '', // TODO: pick up from where the space is being created
+          nameID,
+          profileData: {
+            displayName: name,
+            tagline: values.tagline,
+            location: formatDatabaseLocation(values.location),
           },
+          tags: tagsets.flatMap(x => x.tags),
         },
       },
     });

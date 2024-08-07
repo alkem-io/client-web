@@ -28,7 +28,7 @@ import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 import RouterLink from '../../../../core/ui/link/RouterLink';
 import { useConfig } from '../../../platform/config/useConfig';
 import PlansTableDialog from './plansTable/PlansTableDialog';
-import { useCreateNewSpaceMutation, useSpaceUrlLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { useCreateSpaceMutation, useSpaceUrlLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import useNavigate from '../../../../core/routing/useNavigate';
 import Loading from '../../../../core/ui/loading/Loading';
 import { TagCategoryValues, info } from '../../../../core/logging/sentry/log';
@@ -63,7 +63,6 @@ const DashboardCreateSpaceDialog = () => {
     nameID: '',
     tagline: '',
     tagsets,
-    hostId: '',
     licensePlanId: '',
   };
 
@@ -84,7 +83,7 @@ const DashboardCreateSpaceDialog = () => {
 
   const config = useConfig();
 
-  const [CreateNewSpace] = useCreateNewSpaceMutation();
+  const [CreateNewSpace] = useCreateSpaceMutation();
   const [getSpaceUrl] = useSpaceUrlLazyQuery();
   const [handleSubmit] = useLoadingState(async (values: Partial<FormValues>) => {
     if (!user?.user.id) {
@@ -93,10 +92,11 @@ const DashboardCreateSpaceDialog = () => {
     setDialogOpen(false);
     setPlansTableDialogOpen(false);
     setCreatingDialogOpen(true);
+    const accountID = ''; // something like user.accounts?[0].id;
     const { data: newSpace } = await CreateNewSpace({
       variables: {
-        hostId: user.user.id,
         spaceData: {
+          accountID: accountID,
           nameID: values.nameID,
           profileData: {
             displayName: values.name!, // ensured by yup validation
@@ -105,18 +105,18 @@ const DashboardCreateSpaceDialog = () => {
           collaborationData: {},
           tags: compact(values.tagsets?.reduce((acc: string[], tagset) => [...acc, ...tagset.tags], [])),
         },
-        licensePlanId: values.licensePlanId,
       },
     });
 
-    if (newSpace?.createAccount.spaceID) {
+    const spaceID = newSpace?.createSpace.id;
+    if (spaceID) {
       const { data: spaceUrlData } = await getSpaceUrl({
         variables: {
-          spaceNameId: newSpace.createAccount.spaceID,
+          spaceNameId: spaceID, // TODO: spaceNameId?
         },
       });
       info(
-        `Space Created SpaceId:${newSpace.createAccount.spaceID} Plan:${values.licensePlanId} SpaceUrl:${spaceUrlData?.space.profile.url}`,
+        `Space Created SpaceId:${spaceID} Plan:${values.licensePlanId} SpaceUrl:${spaceUrlData?.space.profile.url}`,
         {
           category: TagCategoryValues.SPACE_CREATION,
           label: 'Space Created',

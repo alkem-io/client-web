@@ -8,7 +8,6 @@ query VirtualContributor($id: UUID_NAMEID!) {
     }
     account {
       id
-      spaceID
       host {
         id
         profile {

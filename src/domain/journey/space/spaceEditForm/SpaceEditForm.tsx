@@ -39,7 +39,6 @@ interface SpaceEditFormProps {
 export interface SpaceEditFormValuesType {
   name: string;
   nameID: string;
-  hostId: string;
   tagline: string;
   location: Partial<Location>;
   references: Reference[];
@@ -50,7 +49,6 @@ const SpaceEditForm: FC<SpaceEditFormProps> = ({
   profile,
   name,
   nameID,
-  hostId,
   tagset,
   onSubmit,
   edit,
@@ -81,7 +79,6 @@ const SpaceEditForm: FC<SpaceEditFormProps> = ({
     location: formatLocation(profile?.location) || EmptyLocation,
     references: profile?.references ?? [],
     tagsets,
-    hostId: hostId ?? '',
   };
 
   const validationSchema = yup.object().shape({

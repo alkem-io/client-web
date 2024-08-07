@@ -45,21 +45,22 @@ export const UserAccountPage: FC<UserAccountPageProps> = () => {
   // TODO: This will not be needed when we have multiple spaces per account and a single account per user
   const accountId = data?.user?.accounts[0]?.id;
 
-  const { spaceIds, virtualContributors, innovationPacks, innovationHubs } = useMemo(
+  const { spaces, virtualContributors, innovationPacks, innovationHubs } = useMemo(
     () => ({
-      spaceIds: data?.user?.accounts.flatMap(account => account.spaceID) ?? [],
+      spaces: data?.user?.accounts.flatMap(account => account.spaces) ?? [],
       virtualContributors: data?.user?.accounts.flatMap(account => account.virtualContributors) ?? [],
       innovationPacks: data?.user?.accounts.flatMap(account => account.innovationPacks) ?? [],
       innovationHubs: data?.user?.accounts.flatMap(account => account.innovationHubs) ?? [],
     }),
     [data?.user?.accounts]
   );
+  const spaceIds = spaces.map(space => space.id);
 
   const { data: spacesData, loading: spacesLoading } = useAccountSpacesQuery({
     variables: {
       spacesIds: spaceIds,
     },
-    skip: !spaceIds.length,
+    skip: !spaces.length,
   });
 
   return (
