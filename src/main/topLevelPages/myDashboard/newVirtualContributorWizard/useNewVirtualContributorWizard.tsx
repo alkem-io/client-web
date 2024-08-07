@@ -1,13 +1,14 @@
 import { ComponentType, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   refetchMyAccountQuery,
+  useAddVirtualContributorToCommunityMutation,
   useCreateNewSpaceMutation,
   useCreatePostFromContributeTabMutation,
   useCreateVirtualContributorOnAccountMutation,
   useDeleteSpaceMutation,
-  useNewSpaceLazyQuery,
   useNewVirtualContributorMySpacesQuery,
   usePlansTableQuery,
+  useSpaceUrlLazyQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import {
   CalloutGroupName,
@@ -130,6 +131,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
             name: subspace.profile.displayName,
             accountId: space.account.id,
             url: space.profile.url,
+            communityId: subspace.community.id,
           })) ?? []
         );
       }
@@ -217,9 +219,9 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     onDialogClose();
   };
 
-  const [getNewSpaceUrl] = useNewSpaceLazyQuery({
+  const [getNewSpaceUrl] = useSpaceUrlLazyQuery({
     variables: {
-      spaceId: spaceId!,
+      spaceNameId: spaceId!,
     },
   });
 
@@ -285,11 +287,12 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     if (virtualContributorInput && accountId && spaceId) {
       await handleCreateVirtualContributor(virtualContributorInput, accountId, spaceId);
       addVCCreationCache(virtualContributorInput.name);
-      const { data } = await getNewSpaceUrl({ variables: { spaceId: spaceId! } });
+      const { data } = await getNewSpaceUrl({ variables: { spaceNameId: spaceId! } });
       navigate(data?.space.profile.url ?? '');
     }
   };
 
+  const [addVirtualContributorToSubspace] = useAddVirtualContributorToCommunityMutation();
   const [createVirtualContributor] = useCreateVirtualContributorOnAccountMutation({
     refetchQueries: [refetchMyAccountQuery()],
   });
@@ -297,7 +300,8 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
   const handleCreateVirtualContributor = async (
     values: VirtualContributorFromProps,
     accountId: string,
-    spaceId: string
+    spaceId: string,
+    communityId?: string
   ) => {
     if (!accountId || !spaceId || !virtualContributorInput) {
       return;
@@ -321,6 +325,15 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
       },
     });
     if (data?.createVirtualContributor.id) {
+      if (communityId) {
+        await addVirtualContributorToSubspace({
+          variables: {
+            communityId: communityId,
+            virtualContributorId: data.createVirtualContributor.id,
+          },
+        });
+      }
+
       notify(
         t('createVirtualContributorWizard.createdVirtualContributor.successMessage', { values: { name: values.name } }),
         'success'
@@ -330,7 +343,12 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
 
   const handleCreateVCWithExistingKnowledge = async (selectedKnowledge: SelectableKnowledgeProps) => {
     if (selectedKnowledge && virtualContributorInput) {
-      await handleCreateVirtualContributor(virtualContributorInput, selectedKnowledge.accountId, selectedKnowledge.id);
+      await handleCreateVirtualContributor(
+        virtualContributorInput,
+        selectedKnowledge.accountId,
+        selectedKnowledge.id,
+        selectedKnowledge.communityId
+      );
       addVCCreationCache(virtualContributorInput.name);
       navigate(selectedKnowledge.url ?? '');
     }

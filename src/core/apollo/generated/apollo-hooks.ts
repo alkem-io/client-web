@@ -23872,9 +23872,6 @@ export const NewVirtualContributorMySpacesDocument = gql`
             id
           }
         }
-        community {
-          id
-        }
       }
     }
   }
@@ -23933,55 +23930,6 @@ export function refetchNewVirtualContributorMySpacesQuery(
   variables?: SchemaTypes.NewVirtualContributorMySpacesQueryVariables
 ) {
   return { query: NewVirtualContributorMySpacesDocument, variables: variables };
-}
-
-export const NewSpaceDocument = gql`
-  query NewSpace($spaceId: UUID_NAMEID!) {
-    space(ID: $spaceId) {
-      id
-      profile {
-        id
-        url
-      }
-    }
-  }
-`;
-
-/**
- * __useNewSpaceQuery__
- *
- * To run a query within a React component, call `useNewSpaceQuery` and pass it any options that fit your needs.
- * When your component renders, `useNewSpaceQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useNewSpaceQuery({
- *   variables: {
- *      spaceId: // value for 'spaceId'
- *   },
- * });
- */
-export function useNewSpaceQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.NewSpaceQuery, SchemaTypes.NewSpaceQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.NewSpaceQuery, SchemaTypes.NewSpaceQueryVariables>(NewSpaceDocument, options);
-}
-
-export function useNewSpaceLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.NewSpaceQuery, SchemaTypes.NewSpaceQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.NewSpaceQuery, SchemaTypes.NewSpaceQueryVariables>(NewSpaceDocument, options);
-}
-
-export type NewSpaceQueryHookResult = ReturnType<typeof useNewSpaceQuery>;
-export type NewSpaceLazyQueryHookResult = ReturnType<typeof useNewSpaceLazyQuery>;
-export type NewSpaceQueryResult = Apollo.QueryResult<SchemaTypes.NewSpaceQuery, SchemaTypes.NewSpaceQueryVariables>;
-export function refetchNewSpaceQuery(variables: SchemaTypes.NewSpaceQueryVariables) {
-  return { query: NewSpaceDocument, variables: variables };
 }
 
 export const RecentForumMessagesDocument = gql`
