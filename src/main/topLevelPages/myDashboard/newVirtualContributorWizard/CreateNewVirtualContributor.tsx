@@ -173,7 +173,6 @@ const CreateNewVirtualContributor = ({
                                 onClick={selectVCSource}
                                 value={VCSourceOptions.WRITTEN_KNOWLEDGE}
                                 startIcon={<LibraryBooksOutlined />}
-                                tooltipDisabled={t('createVirtualContributorWizard.initial.cannotCreateSubspace')}
                                 selected={source === VCSourceOptions.WRITTEN_KNOWLEDGE}
                               >
                                 {t('createVirtualContributorWizard.initial.createSpace')}
@@ -187,7 +186,6 @@ const CreateNewVirtualContributor = ({
                                     <LogoSmallImage />
                                   </Box>
                                 }
-                                tooltipDisabled={t('createVirtualContributorWizard.initial.cannotCreateSubspace')}
                                 selected={source === VCSourceOptions.EXISTING_SPACE}
                               >
                                 {t('createVirtualContributorWizard.initial.useExistingSpace')}
@@ -197,7 +195,6 @@ const CreateNewVirtualContributor = ({
                                 onClick={selectVCSource}
                                 value={VCSourceOptions.EXTERNAL}
                                 startIcon={<CloudDownloadOutlinedIcon />}
-                                tooltipDisabled={t('createVirtualContributorWizard.initial.cannotUseExisting')}
                                 selected={source === VCSourceOptions.EXTERNAL}
                               >
                                 {t('createVirtualContributorWizard.initial.useExternalAI')}
