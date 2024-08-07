@@ -31,7 +31,6 @@ query OrganizationAccount($organizationNameId: UUID_NAMEID!) {
           ...AccountItemProfile
           banner: visual(type: BANNER_WIDE) {
             ...VisualFull
-            __typename
           }
         }
         spaceVisibilityFilter

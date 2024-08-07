@@ -31,7 +31,6 @@ query UserAccount($userId: UUID_NAMEID_EMAIL!) {
           ...AccountItemProfile
           banner: visual(type: BANNER_WIDE) {
             ...VisualFull
-            __typename
           }
         }
         spaceVisibilityFilter

@@ -1933,6 +1933,7 @@
         },
         "notifications": {
           "space-created": "Space created successfuly.",
+          "errorCreatingSpace": "Error creating Space.",
           "space-removed": "Space '{{name}}' removed successfully."
         },
         "settings": {
