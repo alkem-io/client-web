@@ -10,7 +10,7 @@ import RouterLink from '../link/RouterLink';
 import { BlockSectionTitle, Caption } from '../typography';
 import ContributorTooltip from './ContributorTooltip';
 
-export interface SpaceWelcomeSectionContributorProps {
+export interface ContributorCardHorizontalProps {
   profile:
     | {
         displayName: string;
@@ -36,7 +36,7 @@ const ContributorCardHorizontal = ({
   seamless = false,
   actions,
   titleEndAmendment,
-}: SpaceWelcomeSectionContributorProps) => {
+}: ContributorCardHorizontalProps) => {
   const { t } = useTranslation();
 
   const tags = useMemo(
