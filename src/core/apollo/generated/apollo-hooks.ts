@@ -1699,6 +1699,9 @@ export const CommunityGuidelinesSummaryFragmentDoc = gql`
 export const UserSelectorUserInformationFragmentDoc = gql`
   fragment UserSelectorUserInformation on User {
     id
+    account {
+      id
+    }
     profile {
       id
       displayName
@@ -2385,6 +2388,9 @@ export const SpaceInfoFragmentDoc = gql`
     authorization {
       id
       myPrivileges
+    }
+    account {
+      id
     }
     community {
       id
@@ -12685,6 +12691,9 @@ export const OrganizationsListDocument = gql`
     organizations(limit: $limit, shuffle: $shuffle, filter: { credentials: $filterCredentials }) {
       id
       nameID
+      account {
+        id
+      }
       profile {
         id
         displayName

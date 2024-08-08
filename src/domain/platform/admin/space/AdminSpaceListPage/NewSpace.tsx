@@ -1,4 +1,4 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC } from 'react';
 import { Box, Container } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import SpaceEditForm, { SpaceEditFormValuesType } from '../../../../journey/space/spaceEditForm/SpaceEditForm';
@@ -6,11 +6,7 @@ import WrapperTypography from '../../../../../core/ui/typography/deprecated/Wrap
 import AdminLayout from '../../layout/toplevel/AdminLayout';
 import { AdminSection } from '../../layout/toplevel/constants';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
-import {
-  useCreateSpaceMutation,
-  useOrganizationsListQuery,
-  useSpaceUrlLazyQuery,
-} from '../../../../../core/apollo/generated/apollo-hooks';
+import { useCreateSpaceMutation, useSpaceUrlLazyQuery } from '../../../../../core/apollo/generated/apollo-hooks';
 import { PageProps } from '../../../../shared/types/PageProps';
 import { formatDatabaseLocation } from '../../../../common/location/LocationUtils';
 import useNavigate from '../../../../../core/routing/useNavigate';
@@ -21,7 +17,6 @@ export const NewSpace: FC<NewSpaceProps> = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const notify = useNotification();
-  const { data: organizationList } = useOrganizationsListQuery();
 
   const [spaceUrlQuery] = useSpaceUrlLazyQuery();
 
@@ -40,18 +35,13 @@ export const NewSpace: FC<NewSpaceProps> = () => {
     },
   });
 
-  const organizations = useMemo(
-    () => organizationList?.organizations.map(e => ({ id: e.id, name: e.profile.displayName })) || [],
-    [organizationList]
-  );
-
   const onSubmit = async (values: SpaceEditFormValuesType) => {
     const { name, nameID, tagsets } = values;
 
     await createSpace({
       variables: {
         spaceData: {
-          accountID: '', // TODO: pick up from where the space is being created
+          accountID: values.host.accountId,
           nameID,
           profileData: {
             displayName: name,
@@ -70,7 +60,7 @@ export const NewSpace: FC<NewSpaceProps> = () => {
         <Box marginY={3}>
           <WrapperTypography variant="h2">{'New Space'}</WrapperTypography>
         </Box>
-        <SpaceEditForm onSubmit={onSubmit} organizations={organizations} loading={loading} />
+        <SpaceEditForm onSubmit={onSubmit} loading={loading} />
       </Container>
     </AdminLayout>
   );

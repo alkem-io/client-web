@@ -850,6 +850,8 @@ export enum AuthorizationPrivilege {
   Create = 'CREATE',
   CreateCallout = 'CREATE_CALLOUT',
   CreateDiscussion = 'CREATE_DISCUSSION',
+  CreateInnovationHub = 'CREATE_INNOVATION_HUB',
+  CreateInnovationPack = 'CREATE_INNOVATION_PACK',
   CreateMessage = 'CREATE_MESSAGE',
   CreateMessageReaction = 'CREATE_MESSAGE_REACTION',
   CreateMessageReply = 'CREATE_MESSAGE_REPLY',
@@ -17662,6 +17664,7 @@ export type OrganizationsListQuery = {
     __typename?: 'Organization';
     id: string;
     nameID: string;
+    account?: { __typename?: 'Account'; id: string } | undefined;
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -17888,6 +17891,7 @@ export type UserSelectorQuery = {
     users: Array<{
       __typename?: 'User';
       id: string;
+      account: { __typename?: 'Account'; id: string };
       profile: {
         __typename?: 'Profile';
         id: string;
@@ -17908,6 +17912,7 @@ export type UserSelectorUserDetailsQuery = {
   user: {
     __typename?: 'User';
     id: string;
+    account: { __typename?: 'Account'; id: string };
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -17921,6 +17926,7 @@ export type UserSelectorUserDetailsQuery = {
 export type UserSelectorUserInformationFragment = {
   __typename?: 'User';
   id: string;
+  account: { __typename?: 'Account'; id: string };
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -21348,6 +21354,15 @@ export type SpaceProviderQuery = {
     authorization?:
       | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
+    account: {
+      __typename?: 'Account';
+      id: string;
+      host?:
+        | { __typename?: 'Organization'; id: string }
+        | { __typename?: 'User'; id: string }
+        | { __typename?: 'VirtualContributor'; id: string }
+        | undefined;
+    };
     community: {
       __typename?: 'Community';
       id: string;
@@ -21417,14 +21432,6 @@ export type SpaceProviderQuery = {
           }
         | undefined;
     };
-    account: {
-      __typename?: 'Account';
-      host?:
-        | { __typename?: 'Organization'; id: string }
-        | { __typename?: 'User'; id: string }
-        | { __typename?: 'VirtualContributor'; id: string }
-        | undefined;
-    };
     settings: {
       __typename?: 'SpaceSettings';
       privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
@@ -21449,6 +21456,15 @@ export type SpaceInfoFragment = {
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
+  account: {
+    __typename?: 'Account';
+    id: string;
+    host?:
+      | { __typename?: 'Organization'; id: string }
+      | { __typename?: 'User'; id: string }
+      | { __typename?: 'VirtualContributor'; id: string }
+      | undefined;
+  };
   community: {
     __typename?: 'Community';
     id: string;
@@ -21516,14 +21532,6 @@ export type SpaceInfoFragment = {
           stateOrProvince: string;
           postalCode: string;
         }
-      | undefined;
-  };
-  account: {
-    __typename?: 'Account';
-    host?:
-      | { __typename?: 'Organization'; id: string }
-      | { __typename?: 'User'; id: string }
-      | { __typename?: 'VirtualContributor'; id: string }
       | undefined;
   };
   settings: { __typename?: 'SpaceSettings'; privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode } };

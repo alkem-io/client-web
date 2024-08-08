@@ -5,7 +5,6 @@ import * as yup from 'yup';
 import { Context, Profile, Reference, Tagset, TagsetType } from '../../../../core/apollo/generated/graphql-schema';
 import ContextReferenceSegment from '../../../platform/admin/components/Common/ContextReferenceSegment';
 import { contextSegmentSchema } from '../../../platform/admin/components/Common/ContextSegment';
-import FormikAutocomplete from '../../../../core/ui/forms/FormikAutocomplete';
 import { nameSegmentSchema } from '../../../platform/admin/components/Common/NameSegment';
 import { referenceSegmentSchema } from '../../../platform/admin/components/Common/ReferenceSegment';
 import { TagsetSegment, tagsetSegmentSchema } from '../../../platform/admin/components/Common/TagsetSegment';
@@ -22,15 +21,15 @@ import { Actions } from '../../../../core/ui/actions/Actions';
 import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
 import { DEFAULT_TAGSET } from '../../../common/tags/tagset.constants';
 import { Caption } from '../../../../core/ui/typography';
+import HostSelector from '../../../platform/admin/space/AdminSpaceListPage/HostSelector';
 
 interface SpaceEditFormProps {
   context?: Context;
   profile?: Omit<Profile, 'storageBucket' | 'url'>;
   name?: string;
   nameID?: string;
-  hostId?: string;
+  accountId?: string;
   tagset?: Tagset;
-  organizations?: { id: string; name: string }[];
   onSubmit: (formData: SpaceEditFormValuesType) => void;
   edit?: boolean;
   loading: boolean;
@@ -39,6 +38,9 @@ interface SpaceEditFormProps {
 export interface SpaceEditFormValuesType {
   name: string;
   nameID: string;
+  host: {
+    accountId: string;
+  };
   tagline: string;
   location: Partial<Location>;
   references: Reference[];
@@ -49,10 +51,10 @@ const SpaceEditForm: FC<SpaceEditFormProps> = ({
   profile,
   name,
   nameID,
+  accountId,
   tagset,
   onSubmit,
   edit,
-  organizations = [],
   loading,
 }) => {
   const { t } = useTranslation();
@@ -75,6 +77,9 @@ const SpaceEditForm: FC<SpaceEditFormProps> = ({
   const initialValues: SpaceEditFormValuesType = {
     name: name ?? '',
     nameID: nameID ?? '',
+    host: {
+      accountId: accountId ?? '',
+    },
     tagline: profile?.tagline ?? '',
     location: formatLocation(profile?.location) || EmptyLocation,
     references: profile?.references ?? [],
@@ -84,7 +89,9 @@ const SpaceEditForm: FC<SpaceEditFormProps> = ({
   const validationSchema = yup.object().shape({
     name: nameSegmentSchema.fields?.name ?? yup.string(),
     nameID: nameSegmentSchema.fields?.nameID ?? yup.string(),
-    hostId: yup.string().required(t('forms.validations.required')),
+    host: yup.object().shape({
+      accountId: yup.string().required(t('forms.validations.required')),
+    }),
     tagline: contextSegmentSchema.fields?.tagline ?? yup.string(),
     references: referenceSegmentSchema,
     tagsets: tagsetSegmentSchema,
@@ -115,10 +122,9 @@ const SpaceEditForm: FC<SpaceEditFormProps> = ({
                   />
                 )}
                 {!edit && (
-                  <FormikAutocomplete
+                  <HostSelector
                     title={t('components.editSpaceForm.host.title')}
-                    name="hostId"
-                    values={organizations}
+                    name="host"
                     required
                     placeholder={t('components.editSpaceForm.host.title')}
                     disabled={edit}
