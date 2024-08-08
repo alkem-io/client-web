@@ -16,14 +16,15 @@ const OrganizationAccountPage: FC<SettingsPageProps> = () => {
     skip: !organizationNameId,
   });
 
+  const accounts = data?.organization?.accounts ?? [];
   const { spaceIds, virtualContributors, innovationPacks, innovationHubs } = useMemo(
     () => ({
-      spaceIds: compact(data?.organization?.accounts.flatMap(account => account.spaceID)),
-      virtualContributors: data?.organization?.accounts.flatMap(account => account.virtualContributors) ?? [],
-      innovationPacks: data?.organization?.accounts.flatMap(account => account.innovationPacks) ?? [],
-      innovationHubs: data?.organization?.accounts.flatMap(account => account.innovationHubs) ?? [],
+      spaceIds: compact(accounts.flatMap(account => account.spaceID)),
+      virtualContributors: accounts.flatMap(account => account.virtualContributors) ?? [],
+      innovationPacks: accounts.flatMap(account => account.innovationPacks) ?? [],
+      innovationHubs: accounts.flatMap(account => account.innovationHubs) ?? [],
     }),
-    [data?.organization?.accounts]
+    [accounts]
   );
 
   const { data: spacesData, loading: spacesLoading } = useAccountSpacesQuery({
