@@ -2322,8 +2322,6 @@ export type FileStorageConfig = {
   __typename?: 'FileStorageConfig';
   /** Max file size, in bytes. */
   maxFileSize: Scalars['Float'];
-  /** Allowed mime types for file upload, separated by a coma. */
-  mimeTypes: Array<Scalars['String']>;
 };
 
 export type Form = {
@@ -30622,7 +30620,8 @@ export type NewVirtualContributorMySpacesQuery = {
           | { __typename?: 'VirtualContributor'; id: string }
           | undefined;
       };
-      profile: { __typename?: 'Profile'; id: string; displayName: string };
+      community: { __typename?: 'Community'; id: string };
+      profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
       subspaces: Array<{
         __typename?: 'Space';
         id: string;

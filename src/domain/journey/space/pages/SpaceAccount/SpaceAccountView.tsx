@@ -158,7 +158,7 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
       },
     });
 
-    notify('Virtual Contribuotr deleted successfuly!', 'success');
+    notify('Virtual Contributor deleted successfuly!', 'success');
     closeDeleteVCDialog();
   };
 
