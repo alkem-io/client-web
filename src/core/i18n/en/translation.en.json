@@ -2948,12 +2948,12 @@
       "externalAI": "External AI"
     },
     "loadingInfo": {
-      "spaceCreation": "A Space for adding the knowledge for your Virtual Contributor is being built. This process may take a few moments to complete.",
+      "spaceCreation": "A {{entity}} for adding the knowledge for your Virtual Contributor is being built. This process may take a few moments to complete.",
       "vcCreation": "Your Virtual Contributor is being created. This process may take a few moments to complete."
     },
     "cancel": {
       "title": "Discard Virtual Contributor",
-      "description": "Are you sure you want to stop creating your Virtual Contributor? Your work will not be saved. A space might already be created for you. Please, reload the page if you confirm the cancellation.",
+      "description": "Are you sure you want to stop creating your Virtual Contributor? Your work will not be saved. A space/subspace might already be created for you. Please, reload the page if you confirm the cancellation.",
       "deleted": "Virtual Contributor deleted successfuly!"
     },
     "addContent": {

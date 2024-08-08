@@ -1,9 +1,11 @@
 import { ComponentType, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   refetchMyAccountQuery,
+  refetchSubspacesInSpaceQuery,
   useAddVirtualContributorToCommunityMutation,
   useCreateNewSpaceMutation,
   useCreatePostFromContributeTabMutation,
+  useCreateSubspaceMutation,
   useCreateVirtualContributorOnAccountMutation,
   useDeleteSpaceMutation,
   useNewVirtualContributorMySpacesQuery,
@@ -30,7 +32,6 @@ import useNavigate from '../../../../core/routing/useNavigate';
 import { usePlanAvailability } from '../../../../domain/journey/space/createSpace/plansTable/usePlanAvailability';
 import { addVCCreationCache } from './vcCreationUtil';
 import {
-  CalloutCreationParams,
   CalloutCreationType,
   useCalloutCreation,
 } from '../../../../domain/collaboration/callout/creationDialog/useCalloutCreation/useCalloutCreation';
@@ -49,6 +50,7 @@ interface useNewVirtualContributorWizardProvided {
 interface NewVirtualContributorWizardProps {}
 
 const generateSpaceName = (name: string) => `${name}'s Space`;
+const generateSubSpaceName = (name: string) => `${name}'s BoK`;
 
 const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvided => {
   const { t } = useTranslation();
@@ -59,6 +61,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
   const [dialogOpen, setDialogOpen] = useState(false);
   const [step, setStep] = useState<Step>('initial');
   const [spaceId, setSpaceId] = useState<string>();
+  const [bokId, setbokId] = useState<string | undefined>(undefined);
   const [accountId, setAccountId] = useState<string>();
   const [virtualContributorInput, setVirtualContributorInput] = useState<VirtualContributorFromProps | undefined>(
     undefined
@@ -66,10 +69,6 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
   const [calloutPostData, setCalloutPostData] = useState<PostsFormValues | undefined>(undefined);
   const [tryCreateCallout, setTryCreateCallout] = useState<boolean>(false);
   const calloutId = useRef<string>();
-
-  const calloutCreationOptions: CalloutCreationParams = {
-    journeyId: spaceId,
-  };
 
   const startWizard = () => {
     setStep('initial');
@@ -144,6 +143,31 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     };
   }, [data, user]);
 
+  const [createSubspace] = useCreateSubspaceMutation({
+    refetchQueries: [refetchSubspacesInSpaceQuery({ spaceId: spaceId! })],
+  });
+
+  const handleSubspaceCreation = async (parentId: string, vcName: string) => {
+    return await createSubspace({
+      variables: {
+        input: {
+          spaceID: parentId,
+          context: {
+            vision: '-',
+          },
+          profileData: {
+            displayName: generateSubSpaceName(vcName),
+            tagline: 'A Knowledge Base of a Virtual Contributor',
+          },
+          tags: [],
+          collaborationData: {
+            addDefaultCallouts: false,
+          },
+        },
+      },
+    });
+  };
+
   const { data: plansData } = usePlansTableQuery({
     skip: !!mySpaceId,
   });
@@ -164,15 +188,21 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     refetchQueries: [refetchMyAccountQuery()],
   });
   const handleCreateSpace = async (values: VirtualContributorFromProps) => {
-    setStep('createSpace');
-
     if (!user?.user.id) {
       return;
     }
 
+    setVirtualContributorInput(values);
+    setStep('createSpace');
+
+    // in case of existing space, create subspace as BoK
+    // otherwise create a new space
     if (mySpaceId && myAccountId) {
       setSpaceId(mySpaceId);
       setAccountId(myAccountId);
+
+      const subspace = await handleSubspaceCreation(mySpaceId, values.name);
+      setbokId(subspace?.data?.createSubspace.id);
     } else {
       if (plans.length === 0) {
         info(`No available plans for this account. User: ${user?.user.id}`);
@@ -197,7 +227,6 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
       setAccountId(newSpace?.createAccount.id);
     }
 
-    setVirtualContributorInput(values);
     setStep('addKnowledge');
   };
 
@@ -206,8 +235,19 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
   });
 
   const handleCancel = async () => {
+    // delete the BoK (Subspace) if it was created
+    if (bokId) {
+      await deleteSpace({
+        variables: {
+          input: {
+            ID: bokId,
+          },
+        },
+      });
+    }
+
+    // if there was a space before the VC creation, let's not delete it
     if (spaceId && spaceId !== mySpaceId) {
-      // if there was a space before the VC creation, let's not delete it
       await deleteSpace({
         variables: {
           input: {
@@ -225,7 +265,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     },
   });
 
-  const { handleCreateCallout, canCreateCallout } = useCalloutCreation(calloutCreationOptions);
+  const { handleCreateCallout, canCreateCallout } = useCalloutCreation({ journeyId: bokId ?? spaceId });
 
   const calloutDetails: CalloutCreationType = {
     framing: {
@@ -285,7 +325,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
 
     // create VC
     if (virtualContributorInput && accountId && spaceId) {
-      await handleCreateVirtualContributor(virtualContributorInput, accountId, spaceId);
+      await handleCreateVirtualContributor(virtualContributorInput, accountId, bokId ?? spaceId);
       addVCCreationCache(virtualContributorInput.name);
       const { data } = await getNewSpaceUrl({ variables: { spaceNameId: spaceId! } });
       navigate(data?.space.profile.url ?? '');
@@ -371,7 +411,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
             onUseExistingKnowledge={values => onStepSelection('existingKnowledge', values)}
           />
         )}
-        {step === 'createSpace' && <LoadingState onClose={handleCancel} />}
+        {step === 'createSpace' && <LoadingState onClose={handleCancel} entity={mySpaceId ? 'subspace' : 'space'} />}
         {step === 'addKnowledge' && virtualContributorInput && (
           <AddContent onClose={handleCancel} onCreateVC={handleAddContent} />
         )}
