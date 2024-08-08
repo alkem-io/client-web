@@ -137,6 +137,8 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
   }, [spaceId, open, canCreateCallout]);
 
   if (calloutError || hasError) {
+    setDemoCalloutCreationLoading(false);
+    removeVCCreationCache();
     return null;
   }
 
