@@ -56,11 +56,11 @@ interface NewVirtualContributorWizardProps {}
 
 // generate name for the space/subspace based on the VC name
 // index is needed in case of canceling the flow. Creation with the same name/nameID leads to issues accessing it later
-const generateEntitiName = (name: string, entityPostfix: string, index: number = 0) => {
+const generateEntityName = (name: string, entityPostfix: string, index: number = 0) => {
   return `${name}${entityPostfix}${index > 0 ? ` ${index}` : ''}`;
 };
-const generateSpaceName = (name: string, index?: number) => generateEntitiName(name, entityNamePostfixes.SPACE, index);
-const generateSubSpaceName = (name: string) => generateEntitiName(name, entityNamePostfixes.SUBSPACE);
+const generateSpaceName = (name: string, index?: number) => generateEntityName(name, entityNamePostfixes.SPACE, index);
+const generateSubSpaceName = (name: string) => generateEntityName(name, entityNamePostfixes.SUBSPACE);
 
 const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvided => {
   const { t } = useTranslation();
