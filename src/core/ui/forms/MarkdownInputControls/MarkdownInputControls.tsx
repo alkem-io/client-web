@@ -24,6 +24,7 @@ import produce from 'immer';
 interface MarkdownInputControlsProps {
   editor: Editor | null;
   visible?: boolean;
+  hideImageOptions?: boolean;
   onDialogOpen?: () => void;
   onDialogClose?: () => void;
 }
@@ -103,7 +104,7 @@ const CONTROLS_SHOW_DELAY_MS = 150; // to allow a user to select text by double-
 
 const MarkdownInputControls = memo(
   forwardRef<HTMLDivElement | null, MarkdownInputControlsProps>(
-    ({ editor, visible = false, onDialogOpen, onDialogClose }, ref) => {
+    ({ editor, visible = false, hideImageOptions = false, onDialogOpen, onDialogClose }, ref) => {
       const [isVisible, setIsVisible] = useState(visible);
 
       useEffect(() => {
@@ -168,7 +169,9 @@ const MarkdownInputControls = memo(
               <HorizontalRuleOutlined />
             </ControlsButton>
             <ToggleLinkButton editor={editor} onDialogOpen={onDialogOpen} onDialogClose={onDialogClose} />
-            <InsertImageButton editor={editor} onDialogOpen={onDialogOpen} onDialogClose={onDialogClose} />
+            {!hideImageOptions && (
+              <InsertImageButton editor={editor} onDialogOpen={onDialogOpen} onDialogClose={onDialogClose} />
+            )}
             <InsertEmojiButton editor={editor} onDialogOpen={onDialogOpen} onDialogClose={onDialogClose} />
           </Toolbar>
         </Collapse>

@@ -12,6 +12,7 @@ import WhiteboardCollectionCalloutContainer from '../whiteboard/WhiteboardCollec
 
 export interface CalloutViewProps extends Omit<BaseCalloutViewProps, 'canCreate'> {
   callout: TypedCalloutDetails;
+  calloutActions?: boolean;
 }
 
 const CalloutView = ({ callout, ...props }: CalloutViewProps) => {

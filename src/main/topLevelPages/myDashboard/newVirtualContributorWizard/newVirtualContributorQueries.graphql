@@ -9,9 +9,13 @@ query NewVirtualContributorMySpaces {
           id
         }
       }
+      community {
+        id
+      }
       profile {
         id
         displayName
+        url
       }
       subspaces {
         id

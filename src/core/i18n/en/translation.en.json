@@ -112,7 +112,8 @@
     "take-me-home": "Take me home",
     "close": "Close",
     "yes-close": "Yes, close",
-    "yesReplace": "Yes, Replace",
+    "yesReplace": "Yes, replace",
+    "yesStop": "Yes, stop",
     "delete": "Delete",
     "submit": "Submit",
     "remove": "Remove",
@@ -2933,48 +2934,70 @@
   },
   "createVirtualContributorWizard": {
     "noSpaces": "Couldn't find any Space hosted by you, please contact us for support.",
-    "createdSubspace": {
-      "vision": "Welcome! Please follow the three steps on the right to learn how to use, upload knowledge to, and update your Virtual Contributor.",
-      "tagline": "",
-      "description": "",
-      "impact": "",
-      "who": "",
-      "successMessage": "Subspace '{{subspaceName}}' created successfully"
-    },
     "createdVirtualContributor": {
       "description": "",
       "successMessage": "Virtual Contributor '{{virtualContributorName}}' created successfully"
     },
-    "step0": {
-      "title": "Create a new Virtual Contributor",
-      "description": "Your Virtual Contributor is trained on a body of knowledge, using an Alkemio Subspace.",
-      "createSubspace": "Create a new Subspace",
-      "useExistingSubspace": "Use an existing Subspace",
-      "cannotCreateSubspace": "This option is disabled because we couldn't find any Space hosted by you. Please contact us for support.",
-      "cannotUseExisting": "This option cannot be selected because your Space does not have a Subspace."
+    "initial": {
+      "title": "Create a Virtual Contributor",
+      "profileDescription": "Choose a name and enrich your Virtual Contributors profile below.",
+      "description": "A Virtual Contributor allows you to interact with AI on Alkemio. What do you want to make available through your Virtual Contributor?",
+      "createSpace": "Written knowledge in text and documents",
+      "useExistingSpace": "The content of a (Sub)Space on Alkemio",
+      "useExternalAI": "An external AI",
+      "ownAI": "AI Powered by Alkemio",
+      "externalAI": "External AI"
     },
-    "step1": {
-      "title": "1/3 Create a Subspace",
-      "description": "This Subspace in {{spaceName}} is used to train your Virtual Contributor.",
-      "spaceName": "Space",
-      "subspaceName": "Name"
+    "loadingInfo": {
+      "spaceCreation": "A {{entity}} for adding the knowledge for your Virtual Contributor is being built. This process may take a few moments to complete.",
+      "vcCreation": "Your Virtual Contributor is being created. This process may take a few moments to complete."
     },
-    "step1b": {
-      "title": "1/3 Choose a Subspace",
-      "description": "Select the Subspace you want to use as a body of knowledge.",
-      "spaceName": "Space",
-      "subspaceName": "Subspace"
+    "cancel": {
+      "title": "Discard Virtual Contributor",
+      "description": "Are you sure you want to stop creating your Virtual Contributor? Your work will not be saved. A space/subspace might already be created for you. Please, reload the page if you confirm the cancellation.",
+      "deleted": "Virtual Contributor deleted successfuly!"
     },
-    "step2": {
-      "title": "2/3 Name your Virtual Contributor",
-      "description": "Choose a name for your Virtual Contributor. This is visible to other users on the platform.",
-      "virtualContributorName": "Name"
+    "addContent": {
+      "title": "Add knowledge",
+      "description": "What knowledge do you want your Virtual Contributor to have? Write it down in post(s).",
+      "descriptionBold": "You can update, add, and remove content later.",
+      "post": {
+        "title": "Post title",
+        "exampleTitle": "Example: About Alkemio",
+        "exampleDescription": "Tip: Create a structured and specific text, for example:\n\n<strong>Background</strong>\n\nAlkemio, founded in 2020, was born out of frustration with slow progress on COVID-related challenges and a recognition of the numerous fast-moving challenges we face daily.\n\n<strong>Governance</strong>\n\nTo maintain trust and realize our long-term vision, we’ve adopted Steward Ownership as our core group structure. Steward ownership is...\n",
+        "addAnotherPost": "Add another post",
+        "initialPosts": "Initial Posts",
+        "delete": "Delete post"
+      }
     },
-    "step3": {
-      "title": "3/3 What is next?",
-      "description": "Travel to your Subspace to add knowledge or update the profile of your Virtual Contributor.",
-      "updateProfile": "Update profile",
-      "addKnowledge": "Add knowledge"
+    "externalAICommingSoon": {
+      "title": "🚀 Coming soon!",
+      "subTitle": "We're currently building the functionality to use external AI services for your Virtual Contributor. You can help us by sharing which AI service you would like to use.",
+      "input": {
+        "label": "AI Service",
+        "placeholder": "E.g. the AI that xx created to xx"
+      },
+      "contactOptions": {
+        "title": "May we contact you if we have questions about the way you want to use this AI service?",
+        "option1": "Yes",
+        "option2": "No"
+      },
+      "success": "Message sent successfully!"
+    },
+    "trySection": {
+      "title": "🎉 Try it out!",
+      "subTitle": "Your Virtual Contributor is successfully created and we added it to your personal Space <tooltip><icon /></tooltip>. You can now interact with it by typing <i>@{{vcName}}</i> in a comment on any post in your Space. Give it a try in the preview below!",
+      "subTitleInfo": "When you create your first VC, we automatically generate a Space for you. This Space functions like any other Space on Alkemio, and you can customize the settings according to your preferences.",
+      "postTitle": "Example post",
+      "postDescription": "At Alkemio, we utilize Posts to facilitate collaborative interactions with AI. Unlike private chats, other members within a Space can learn from and contribute to these interactions.\n\nSimilar to mentioning a human contributor, you can use the \"@\" symbol followed by the Virtual Contributor's name.",
+      "lastInfoBox": "To <b>change the knowledge</b> of this Virtual Contributor, visit its Knowledge (Sub)Space. Don't forget to press the Update button on your Virtual Contributor's profile settings when you're done!",
+      "continueButton": "Visit Space"
+    },
+    "existingSpace": {
+      "title": "Choose a (Sub)Space",
+      "description": "Which Space or Subspace do you want to bring to life with the Virtual Contributor? Below you'll be able to choose from all Spaces and Subspaces that you are host of.",
+      "label": "(Sub)Space",
+      "noSpaces": "You need a Space to proceed with this option. To create a Virtual Contributor, please go back and follow the Written Knowledge flow."
     }
   }
 }
