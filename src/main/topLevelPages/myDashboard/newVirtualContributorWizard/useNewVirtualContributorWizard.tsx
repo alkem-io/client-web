@@ -11,6 +11,7 @@ import {
   useNewVirtualContributorMySpacesQuery,
   usePlansTableQuery,
   useSpaceUrlLazyQuery,
+  useSubspaceProfileInfoQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import {
   CalloutGroupName,
@@ -62,6 +63,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
   const [step, setStep] = useState<Step>('initial');
   const [spaceId, setSpaceId] = useState<string>();
   const [bokId, setbokId] = useState<string | undefined>(undefined);
+  const [bokCommunityId, setBokCommunityId] = useState<string | undefined>(undefined);
   const [accountId, setAccountId] = useState<string>();
   const [virtualContributorInput, setVirtualContributorInput] = useState<VirtualContributorFromProps | undefined>(
     undefined
@@ -203,6 +205,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
 
       const subspace = await handleSubspaceCreation(mySpaceId, values.name);
       setbokId(subspace?.data?.createSubspace.id);
+      setBokCommunityId(subspace?.data?.createSubspace.community.id);
     } else {
       if (plans.length === 0) {
         info(`No available plans for this account. User: ${user?.user.id}`);
@@ -244,6 +247,10 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
           },
         },
       });
+
+      // cleanup state
+      setbokId(undefined);
+      setBokCommunityId(undefined);
     }
 
     // if there was a space before the VC creation, let's not delete it
@@ -255,7 +262,10 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
           },
         },
       });
+
+      setSpaceId(undefined);
     }
+
     onDialogClose();
   };
 
@@ -265,7 +275,18 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     },
   });
 
-  const { handleCreateCallout, canCreateCallout } = useCalloutCreation({ journeyId: bokId ?? spaceId });
+  const { data: subspaceProfile } = useSubspaceProfileInfoQuery({
+    variables: { subspaceId: bokId! },
+    skip: !bokId,
+  });
+
+  const callabId = subspaceProfile?.lookup.space?.collaboration?.id;
+
+  // load the following hook either with bokId (created subspace) or spaceId (created/existing space)
+  const { handleCreateCallout, canCreateCallout } = useCalloutCreation({
+    journeyId: bokId ?? spaceId,
+    collabId: callabId,
+  });
 
   const calloutDetails: CalloutCreationType = {
     framing: {
@@ -325,9 +346,9 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
 
     // create VC
     if (virtualContributorInput && accountId && spaceId) {
-      await handleCreateVirtualContributor(virtualContributorInput, accountId, bokId ?? spaceId);
+      await handleCreateVirtualContributor(virtualContributorInput, accountId, bokId ?? spaceId, bokCommunityId);
       addVCCreationCache(virtualContributorInput.name);
-      const { data } = await getNewSpaceUrl({ variables: { spaceNameId: spaceId! } });
+      const { data } = await getNewSpaceUrl();
       navigate(data?.space.profile.url ?? '');
     }
   };
