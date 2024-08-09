@@ -1,5 +1,5 @@
-query UserAccount($userId: UUID_NAMEID_EMAIL!) {
-  user(ID: $userId) {
+query OrganizationAccount($organizationNameId: UUID_NAMEID!) {
+  organization(ID: $organizationNameId) {
     id
     accounts {
       id
@@ -44,28 +44,4 @@ query UserAccount($userId: UUID_NAMEID_EMAIL!) {
       }
     }
   }
-}
-
-query AccountSpaces($spacesIds: [UUID!]) {
-  spaces(IDs: $spacesIds) {
-    id
-    level
-    profile {
-      ...AccountItemProfile
-      cardBanner: visual(type: CARD) {
-        ...VisualUri
-      }
-      tagline
-    }
-  }
-}
-
-fragment AccountItemProfile on Profile {
-  id
-  displayName
-  description
-  avatar: visual(type: AVATAR) {
-    ...VisualUri
-  }
-  url
 }

@@ -28,11 +28,15 @@ export const NewSpace: FC<NewSpaceProps> = () => {
   const [createAccount, { loading }] = useCreateAccountMutation({
     onCompleted: async data => {
       const spaceId = data.createAccount.spaceID;
+      if (!spaceId) {
+        notify(t('pages.admin.space.notifications.errorCreatingSpace'), 'error');
+        return;
+      }
       const spaceWithUrl = await spaceUrlQuery({ variables: { spaceNameId: spaceId } });
       const url = spaceWithUrl.data?.space.profile.url;
 
       if (!url) {
-        notify(t('pages.admin.space.notifications.space-created'), 'error');
+        notify(t('pages.admin.space.notifications.errorCreatingSpace'), 'error');
         return;
       }
       notify(t('pages.admin.space.notifications.space-created'), 'success');

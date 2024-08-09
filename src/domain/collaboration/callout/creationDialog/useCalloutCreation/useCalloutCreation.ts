@@ -38,6 +38,7 @@ export interface CalloutCreationType {
 
 export interface CalloutCreationParams {
   journeyId: string | undefined;
+  collabId?: string;
   initialOpened?: boolean;
 }
 
@@ -49,27 +50,28 @@ export interface CalloutCreationUtils {
     callout: CalloutCreationType
   ) => Promise<CreateCalloutMutation['createCalloutOnCollaboration'] | undefined>;
   loading: boolean;
+  canCreateCallout: boolean;
 }
 
 export const useCalloutCreation = ({
   journeyId,
+  collabId,
   initialOpened = false,
 }: CalloutCreationParams): CalloutCreationUtils => {
   const [isCalloutCreationDialogOpen, setIsCalloutCreationDialogOpen] = useState(initialOpened);
   const [isCreating, setIsCreating] = useState(false);
-  const { collaborationId, loading } = useCollaborationAuthorization({ journeyId });
+  const { collaborationId, canCreateCallout, loading } = useCollaborationAuthorization({ journeyId });
 
   const [createCallout] = useCreateCalloutMutation({
     update: (cache, { data }) => {
-      if (!data || !collaborationId) {
+      if (!data || !(collabId || collaborationId)) {
         return;
       }
-
       const { createCalloutOnCollaboration } = data;
 
       const collabRefId = cache.identify({
         __typename: 'Collaboration',
-        id: collaborationId,
+        id: collabId ?? collaborationId,
       });
 
       if (!collabRefId) {
@@ -99,7 +101,7 @@ export const useCalloutCreation = ({
 
   const handleCreateCallout = useCallback(
     async (callout: CalloutCreationType) => {
-      if (!collaborationId) {
+      if (!collaborationId && !collabId) {
         return;
       }
 
@@ -109,7 +111,7 @@ export const useCalloutCreation = ({
         const result = await createCallout({
           variables: {
             calloutData: {
-              collaborationID: collaborationId,
+              collaborationID: collabId ?? collaborationId ?? '',
               ...callout,
             },
           },
@@ -122,7 +124,7 @@ export const useCalloutCreation = ({
         setIsCreating(false);
       }
     },
-    [collaborationId, createCallout]
+    [collabId, collaborationId, createCallout]
   );
 
   return {
@@ -131,5 +133,6 @@ export const useCalloutCreation = ({
     handleCreateCalloutClosed,
     handleCreateCallout,
     loading: loading || isCreating,
+    canCreateCallout: canCreateCallout && !loading,
   };
 };

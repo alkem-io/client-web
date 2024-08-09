@@ -28,6 +28,7 @@ import { EditorOptions } from '@tiptap/core';
 interface MarkdownInputProps extends InputBaseComponentProps {
   controlsVisible?: 'always' | 'focused';
   maxLength?: number;
+  hideImageOptions?: boolean;
 }
 
 interface Offset {
@@ -60,7 +61,7 @@ const editorOptions: Partial<EditorOptions> = {
 
 export const MarkdownInput = memo(
   forwardRef<MarkdownInputRefApi, MarkdownInputProps>(
-    ({ value, onChange, maxLength, controlsVisible = 'focused', onFocus, onBlur }, ref) => {
+    ({ value, onChange, maxLength, controlsVisible = 'focused', hideImageOptions, onFocus, onBlur }, ref) => {
       const containerRef = useRef<HTMLDivElement>(null);
       const toolbarRef = useRef<HTMLDivElement>(null);
 
@@ -258,6 +259,7 @@ export const MarkdownInput = memo(
             ref={toolbarRef}
             editor={editor}
             visible={areControlsVisible()}
+            hideImageOptions={hideImageOptions}
             onDialogOpen={handleDialogOpen}
             onDialogClose={handleDialogClose}
           />

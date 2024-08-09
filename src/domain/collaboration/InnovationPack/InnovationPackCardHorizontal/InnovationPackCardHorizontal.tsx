@@ -14,7 +14,7 @@ import InnovationPackIcon from '../InnovationPackIcon';
 import OneLineMarkdown from '../../../../core/ui/markdown/OneLineMarkdown';
 import RoundedIcon from '../../../../core/ui/icon/RoundedIcon';
 
-export interface InnovationPackCardProps {
+export interface InnovationPackCardHorizontalProps {
   profile: {
     displayName: string;
     description?: string;
@@ -44,7 +44,7 @@ const InnovationPackCardHorizontal = ({
   innovationFlowTemplatesCount,
   postTemplatesCount,
   whiteboardTemplatesCount,
-}: InnovationPackCardProps) => {
+}: InnovationPackCardHorizontalProps) => {
   const { t } = useTranslation();
   return (
     <BadgeCardView
