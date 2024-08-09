@@ -1,8 +1,10 @@
 import { ComponentType, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   refetchMyAccountQuery,
   refetchSubspacesInSpaceQuery,
   useAddVirtualContributorToCommunityMutation,
+  useCreateLinkOnCalloutMutation,
   useCreateNewSpaceMutation,
   useCreatePostFromContributeTabMutation,
   useCreateSubspaceMutation,
@@ -21,23 +23,22 @@ import {
   LicensePlanType,
   NewVirtualContributorMySpacesQuery,
 } from '../../../../core/apollo/generated/graphql-schema';
-import CreateNewVirtualContributor, { VirtualContributorFromProps } from './CreateNewVirtualContributor';
-import LoadingState from './LoadingState';
-import AddContent, { PostsFormValues, PostValues } from './AddContent';
-import ExistingSpace, { SelectableKnowledgeProps } from './ExistingSpace';
-import { useTranslation } from 'react-i18next';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
-import { useUserContext } from '../../../../domain/community/user';
 import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
 import useNavigate from '../../../../core/routing/useNavigate';
+import { info } from '../../../../core/logging/sentry/log';
+import { useUserContext } from '../../../../domain/community/user';
 import { usePlanAvailability } from '../../../../domain/journey/space/createSpace/plansTable/usePlanAvailability';
-import { addVCCreationCache } from './vcCreationUtil';
 import {
   CalloutCreationType,
   useCalloutCreation,
 } from '../../../../domain/collaboration/callout/creationDialog/useCalloutCreation/useCalloutCreation';
+import CreateNewVirtualContributor, { VirtualContributorFromProps } from './CreateNewVirtualContributor';
+import LoadingState from './LoadingState';
+import AddContent, { ContentFormValues, DocumentValues, PostValues } from './AddContent';
+import ExistingSpace, { SelectableKnowledgeProps } from './ExistingSpace';
+import { addVCCreationCache } from './vcCreationUtil';
 import SetupVCInfo from './SetupVCInfo';
-import { info } from '../../../../core/logging/sentry/log';
 
 const SPACE_LABEL = '(space)';
 const entityNamePostfixes = {
@@ -78,7 +79,8 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
   const [virtualContributorInput, setVirtualContributorInput] = useState<VirtualContributorFromProps | undefined>(
     undefined
   );
-  const [calloutPostData, setCalloutPostData] = useState<PostsFormValues | undefined>(undefined);
+  const [calloutPostData, setCalloutPostData] = useState<PostValues[] | undefined>(undefined);
+  const [calloutDocumentData, setCalloutDocumentData] = useState<DocumentValues[] | undefined>(undefined);
   const [tryCreateCallout, setTryCreateCallout] = useState<boolean>(false);
   const calloutId = useRef<string>();
 
@@ -92,8 +94,10 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     setStep(step);
   };
 
-  const handleAddContent = async (posts: PostsFormValues) => {
-    setCalloutPostData(posts);
+  const handleAddContent = async (values: ContentFormValues) => {
+    setCalloutPostData(values.posts);
+    const docsFiltered = values.documents.filter(doc => doc.url);
+    setCalloutDocumentData(docsFiltered);
     // trigger useEffect to create the callout once canCreateCallout is true
     setTryCreateCallout(true);
   };
@@ -300,7 +304,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     collabId: callabId,
   });
 
-  const calloutDetails: CalloutCreationType = {
+  const calloutPostDetails: CalloutCreationType = {
     framing: {
       profile: {
         displayName: t('createVirtualContributorWizard.addContent.post.initialPosts'),
@@ -318,7 +322,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
   };
 
   // no need of 'update' implementation as the callout is on another page
-  // where CalloutDetails will refetch the details
+  // where CalloutPostDetails will refetch the details
   const [createPost] = useCreatePostFromContributeTabMutation();
 
   const onCreatePost = async (post: PostValues, calloutId: string) => {
@@ -338,18 +342,48 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     });
   };
 
+  const [createLinkOnCallout] = useCreateLinkOnCalloutMutation();
+  const onCreateLink = async (document: DocumentValues, calloutId: string) => {
+    await createLinkOnCallout({
+      variables: {
+        input: {
+          calloutID: calloutId,
+          link: {
+            uri: document.url,
+            profile: {
+              displayName: document.name,
+            },
+          },
+        },
+      },
+    });
+  };
+
   const createCalloutContent = async () => {
     setStep('loadingVCSetup');
 
     // create collection of posts
-    if (calloutPostData?.posts && calloutPostData?.posts.length > 0) {
-      const callout = await handleCreateCallout(calloutDetails);
-      calloutId.current = callout?.id;
+    if (calloutPostData && calloutPostData.length > 0) {
+      const postCallout = await handleCreateCallout(calloutPostDetails);
+      calloutId.current = postCallout?.id;
 
       // add posts to collection
-      if (callout?.id) {
-        for (const post of calloutPostData?.posts) {
-          await onCreatePost(post, callout.id);
+      if (postCallout?.id) {
+        for (const post of calloutPostData) {
+          await onCreatePost(post, postCallout.id);
+        }
+      }
+
+      setTryCreateCallout(false);
+    }
+
+    if (calloutDocumentData && calloutDocumentData.length > 0) {
+      const documentsCallout = await handleCreateCallout(calloutDocumentsDetails);
+      calloutId.current = documentsCallout?.id;
+
+      if (documentsCallout?.id) {
+        for (const document of calloutDocumentData) {
+          await onCreateLink(document, documentsCallout.id);
         }
       }
 
@@ -363,6 +397,23 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
       const { data } = await getNewSpaceUrl();
       navigate(data?.space.profile.url ?? '');
     }
+  };
+
+  const calloutDocumentsDetails: CalloutCreationType = {
+    framing: {
+      profile: {
+        displayName: t('createVirtualContributorWizard.addContent.documents.initialDocuments'),
+        description: '',
+        referencesData: [],
+      },
+    },
+    type: CalloutType.LinkCollection,
+    contributionPolicy: {
+      state: CalloutState.Open,
+    },
+    groupName: CalloutGroupName.Home,
+    visibility: CalloutVisibility.Published,
+    sendNotification: false,
   };
 
   const [addVirtualContributorToSubspace] = useAddVirtualContributorToCommunityMutation();

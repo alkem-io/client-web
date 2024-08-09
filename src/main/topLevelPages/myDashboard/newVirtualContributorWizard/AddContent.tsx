@@ -1,27 +1,32 @@
 import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { Formik } from 'formik';
 import * as yup from 'yup';
+import { pullAt } from 'lodash';
 import { LoadingButton } from '@mui/lab';
-import { Box, Button, DialogContent, IconButton, Tooltip } from '@mui/material';
+import { Box, Button, DialogContent, IconButton, Theme, Tooltip, useMediaQuery } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import { Caption } from '../../../../core/ui/typography';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
 import FormikMarkdownField from '../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
 import { Actions } from '../../../../core/ui/actions/Actions';
-import { LONG_MARKDOWN_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
-import CancelDialog from './CancelDialog';
+import {
+  LONG_MARKDOWN_TEXT_LENGTH,
+  MID_TEXT_LENGTH,
+  SMALL_TEXT_LENGTH,
+} from '../../../../core/ui/forms/field-length.constants';
 import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
-import { pullAt } from 'lodash';
-import DeleteIcon from '../../../../domain/journey/space/pages/SpaceSettings/icon/DeleteIcon';
 import { gutters } from '../../../../core/ui/grid/utils';
 import { MessageWithPayload } from '../../../../domain/shared/i18n/ValidationMessageTranslation';
+import CancelDialog from './CancelDialog';
 
 type AddContentProps = {
   onClose: () => void;
-  onCreateVC: (posts: PostsFormValues) => Promise<void>;
+  onCreateVC: (values: ContentFormValues) => Promise<void>;
 };
 
 export interface PostValues {
@@ -29,13 +34,20 @@ export interface PostValues {
   description: string;
 }
 
-export interface PostsFormValues {
+export interface DocumentValues {
+  name: string;
+  url: string;
+}
+
+export interface ContentFormValues {
   posts: PostValues[];
+  documents: DocumentValues[];
 }
 
 const AddContent = ({ onClose, onCreateVC }: AddContentProps) => {
   const { t } = useTranslation();
   const [dialogOpen, setDialogOpen] = useState(false);
+  const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
 
   const validationSchema = yup.object().shape({
     posts: yup.array().of(
@@ -44,13 +56,33 @@ const AddContent = ({ onClose, onCreateVC }: AddContentProps) => {
         description: MarkdownValidator(LONG_MARKDOWN_TEXT_LENGTH),
       })
     ),
+    documents: yup.array().of(
+      yup.object().shape({
+        name: yup
+          .string()
+          .min(3, MessageWithPayload('forms.validations.minLength'))
+          .max(SMALL_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength'))
+          .when('url', {
+            is: (url: string) => url.length > 0,
+            then: yup.string().required(),
+            otherwise: yup.string().notRequired(),
+          }),
+        url: yup.string().max(MID_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength')),
+      })
+    ),
   });
 
-  const initialValues: PostsFormValues = {
+  const initialValues: ContentFormValues = {
     posts: [
       {
         title: t('createVirtualContributorWizard.addContent.post.exampleTitle'),
         description: t('createVirtualContributorWizard.addContent.post.exampleDescription'),
+      },
+    ],
+    documents: [
+      {
+        name: '',
+        url: '',
       },
     ],
   };
@@ -64,28 +96,44 @@ const AddContent = ({ onClose, onCreateVC }: AddContentProps) => {
     setDialogOpen(true);
   };
 
+  const newDocument = () => ({
+    name: '',
+    url: '',
+  });
+
   return (
     <>
       <DialogHeader onClose={onCancel}>{t('createVirtualContributorWizard.addContent.title')}</DialogHeader>
-      <DialogContent>
-        <Gutters disablePadding disableGap paddingBottom={gutters(2)}>
-          <Caption>{t('createVirtualContributorWizard.addContent.description')}</Caption>
-          <Caption fontWeight="bold">{t('createVirtualContributorWizard.addContent.descriptionBold')}</Caption>
+      <DialogContent sx={{ paddingTop: 0 }}>
+        <Gutters disablePadding paddingBottom={gutters(2)}>
+          <span>
+            <Caption>{t('createVirtualContributorWizard.addContent.description')}</Caption>
+            <Caption fontWeight="bold">{t('createVirtualContributorWizard.addContent.descriptionBold')}</Caption>
+          </span>
           <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onCreateVC}>
-            {({ values: { posts }, isValid, setFieldValue }) => {
+            {({ values, isValid, setFieldValue }) => {
               const handleAdd = () => {
-                const newArray = [...posts, newPost()];
+                const newArray = [...values.posts, newPost()];
                 setFieldValue('posts', newArray);
               };
               const handleDelete = (index: number) => {
-                const nextPosts = [...posts];
+                const nextPosts = [...values.posts];
                 pullAt(nextPosts, index);
                 setFieldValue('posts', nextPosts);
               };
+              const handleAddDocument = () => {
+                const newArrayDocuments = [...values.documents, newDocument()];
+                setFieldValue('documents', newArrayDocuments);
+              };
+              const handleDeleteDocument = (index: number) => {
+                const nextDocuments = [...values.documents];
+                pullAt(nextDocuments, index);
+                setFieldValue('documents', nextDocuments);
+              };
               return (
                 <>
-                  {posts.map((post, index) => (
-                    <Gutters paddingX={0} key={index}>
+                  {values.posts?.map((post, index) => (
+                    <Gutters disablePadding key={index}>
                       <FormikInputField
                         name={`posts[${index}].title`}
                         title={t('createVirtualContributorWizard.addContent.post.title')}
@@ -111,7 +159,7 @@ const AddContent = ({ onClose, onCreateVC }: AddContentProps) => {
                             aria-label={t('createVirtualContributorWizard.addContent.post.delete')}
                             sx={{ marginTop: gutters(-1), alignSelf: 'flex-end' }}
                           >
-                            <DeleteIcon />
+                            <DeleteOutlineIcon color="primary" />
                           </IconButton>
                         </Tooltip>
                       </Box>
@@ -122,20 +170,76 @@ const AddContent = ({ onClose, onCreateVC }: AddContentProps) => {
                     title={t('createVirtualContributorWizard.addContent.post.addAnotherPost')}
                     placement={'bottom'}
                   >
-                    <Box>
-                      <Button
-                        color="primary"
-                        variant="outlined"
-                        startIcon={<AddIcon />}
-                        onClick={() => {
-                          handleAdd();
-                        }}
-                      >
+                    <Box marginTop={gutters(-1)}>
+                      <Button color="primary" variant="outlined" startIcon={<AddIcon />} onClick={handleAdd}>
                         {t('createVirtualContributorWizard.addContent.post.addAnotherPost')}
                       </Button>
                     </Box>
                   </Tooltip>
 
+                  <Caption>
+                    <Trans
+                      i18nKey="createVirtualContributorWizard.addContent.documents.title"
+                      components={{
+                        icon: <InfoOutlinedIcon fontSize="small" color="primary" style={{ verticalAlign: 'bottom' }} />,
+                        tooltip: (
+                          <Tooltip
+                            title={t('createVirtualContributorWizard.addContent.documents.tooltip')}
+                            arrow
+                            placement="top"
+                          >
+                            <></>
+                          </Tooltip>
+                        ),
+                      }}
+                    />
+                  </Caption>
+                  {values.documents?.map((document, index) => (
+                    <Gutters key={index} data-reference={index} row={!isMobile} disablePadding>
+                      <FormikInputField
+                        name={`documents[${index}].name`}
+                        title={t('createVirtualContributorWizard.addContent.documents.referenceTitle')}
+                        fullWidth={isMobile}
+                        value={document.name}
+                      />
+                      <Box flexGrow={1} width={isMobile ? '100%' : undefined}>
+                        <Box display="flex">
+                          <FormikInputField
+                            name={`documents[${index}].url`}
+                            title={t('createVirtualContributorWizard.addContent.documents.referenceUrl')}
+                            fullWidth
+                            value={document.url}
+                          />
+                          <Box>
+                            <Tooltip
+                              title={t('createVirtualContributorWizard.addContent.documents.remove')}
+                              id={'remove-link'}
+                              placement={'bottom'}
+                            >
+                              <IconButton
+                                aria-label={t('buttons.delete')}
+                                onClick={() => handleDeleteDocument(index)}
+                                size="large"
+                                color="primary"
+                              >
+                                <DeleteOutlineIcon />
+                              </IconButton>
+                            </Tooltip>
+                          </Box>
+                        </Box>
+                      </Box>
+                    </Gutters>
+                  ))}
+                  <Tooltip
+                    title={t('createVirtualContributorWizard.addContent.documents.addAnother')}
+                    placement={'bottom'}
+                  >
+                    <Box>
+                      <Button color="primary" variant="outlined" startIcon={<AddIcon />} onClick={handleAddDocument}>
+                        {t('createVirtualContributorWizard.addContent.documents.addAnother')}
+                      </Button>
+                    </Box>
+                  </Tooltip>
                   <Box
                     sx={{
                       position: 'absolute',
@@ -152,7 +256,7 @@ const AddContent = ({ onClose, onCreateVC }: AddContentProps) => {
                       <Button variant="text" onClick={onCancel}>
                         {t('buttons.cancel')}
                       </Button>
-                      <LoadingButton variant="contained" disabled={!isValid} onClick={() => onCreateVC({ posts })}>
+                      <LoadingButton variant="contained" disabled={!isValid} onClick={() => onCreateVC(values)}>
                         {t('buttons.continue')}
                       </LoadingButton>
                     </Actions>
