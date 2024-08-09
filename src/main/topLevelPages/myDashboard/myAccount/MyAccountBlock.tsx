@@ -78,10 +78,7 @@ const MyAccountBlock = () => {
     spaceData => spaceData.account && spaceData.account.host?.id === data?.me.user?.id && spaceData.level === 0
   );
 
-  const virtualContributors: MyAccountVirtualContributor[] =
-    data?.me.user?.accounts
-      .filter(account => account.id === hostedSpace?.account.id)
-      .find(vc => vc.virtualContributors.length > 0)?.virtualContributors ?? [];
+  const virtualContributors: MyAccountVirtualContributor[] = data?.me.user?.account.virtualContributors ?? [];
 
   const { user } = useUserContext();
   const userRoles: CredentialType[] | undefined = data?.me.user?.agent.credentials?.map(credential => credential.type);

@@ -1,7 +1,10 @@
 query organizationsList($limit: Float, $shuffle: Boolean, $filterCredentials: [AuthorizationCredential!]) {
-  organizations(limit: $limit, shuffle: $shuffle, filter: { credentials: $filterCredentials}) {
+  organizations(limit: $limit, shuffle: $shuffle, filter: { credentials: $filterCredentials }) {
     id
     nameID
+    account {
+      id
+    }
     profile {
       id
       displayName

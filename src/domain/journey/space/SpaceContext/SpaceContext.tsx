@@ -25,6 +25,7 @@ export interface SpacePermissions {
 interface SpaceContextProps {
   spaceId: string;
   spaceNameId: string;
+  accountId: string;
   communityId: string;
   isPrivate?: boolean;
   loading: boolean;
@@ -44,6 +45,7 @@ const SpaceContext = React.createContext<SpaceContextProps>({
   isPrivate: undefined,
   spaceId: '',
   spaceNameId: '',
+  accountId: '',
   communityId: '',
   permissions: {
     canRead: false,
@@ -91,6 +93,7 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
   const spaceId = space?.id || '';
   const visibility = space?.visibility || SpaceVisibility.Active;
 
+  const accountId = space?.account?.id ?? '';
   const communityId = space?.community?.id ?? '';
   const isPrivate = space && space.settings.privacy?.mode === SpacePrivacyMode.Private;
   const error = configError || spaceError;
@@ -137,6 +140,7 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
       value={{
         spaceId,
         spaceNameId,
+        accountId,
         communityId,
         permissions,
         isPrivate,

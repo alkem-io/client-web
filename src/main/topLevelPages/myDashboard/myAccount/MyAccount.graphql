@@ -38,7 +38,7 @@ query MyAccount {
           type
         }
       }
-      accounts {
+      account {
         id
         virtualContributors {
           id

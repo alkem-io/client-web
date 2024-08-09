@@ -20,6 +20,9 @@ fragment SpaceInfo on Space {
     id
     myPrivileges
   }
+  account {
+    id
+  }
   community {
     id
     myMembershipStatus
