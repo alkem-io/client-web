@@ -2,6 +2,7 @@ import React, { FC } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { Error404 } from '../../../../core/pages/Errors/Error404';
 import OrganizationProfilePage from './OrganizationProfilePage';
+import OrganizationAccountPage from './OrganizationAccountPage';
 import { OrganizationGroupsRoute } from './OrganizationGroupsRoute';
 import OrganizationCommunityPage from './OrganizationCommunityPage';
 import OrganizationAuthorizationPage from './OrganizationAuthorizationPage';
@@ -33,6 +34,7 @@ const OrganizationAdminRoutes: FC = () => {
       <Routes>
         <Route index element={<Navigate to="profile" replace />} />
         <Route path="profile" element={<OrganizationProfilePage />} />
+        <Route path="account" element={<OrganizationAccountPage />} />
         <Route path="community" element={<OrganizationCommunityPage />} />
         <Route path="community/groups/*" element={<OrganizationGroupsRoute />} />
         <Route path="authorization" element={<OrganizationAuthorizationPage />} />

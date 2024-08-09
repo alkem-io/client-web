@@ -13,15 +13,13 @@ import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlock
 import { SvgIconProps } from '@mui/material';
 import DashboardLeads from './DashboardLeads';
 import ContributorCardHorizontal, {
-  SpaceWelcomeSectionContributorProps,
+  ContributorCardHorizontalProps,
 } from '../../../../core/ui/card/ContributorCardHorizontal';
 import useDirectMessageDialog from '../../../communication/messaging/DirectMessaging/useDirectMessageDialog';
 
-const OrganizationCardTransparent = (props: SpaceWelcomeSectionContributorProps) => (
-  <ContributorCardHorizontal {...props} />
-);
+const OrganizationCardTransparent = (props: ContributorCardHorizontalProps) => <ContributorCardHorizontal {...props} />;
 
-const ContributorCard = ({ contributor }: { contributor: SpaceWelcomeSectionContributorProps }) => (
+const ContributorCard = ({ contributor }: { contributor: ContributorCardHorizontalProps }) => (
   <ContributorCardHorizontal {...contributor} />
 );
 

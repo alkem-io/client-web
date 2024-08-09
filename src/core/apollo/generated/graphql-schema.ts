@@ -59,7 +59,7 @@ export type Account = {
   /** The privileges granted based on the License credentials held by this Account. */
   licensePrivileges?: Maybe<Array<LicensePrivilege>>;
   /** The ID for the root space for the Account . */
-  spaceID: Scalars['String'];
+  spaceID?: Maybe<Scalars['String']>;
   /** The StorageAggregator in use by this Account */
   storageAggregator: StorageAggregator;
   /** The subscriptions active for this Account. */
@@ -18492,7 +18492,7 @@ export type UserAccountQuery = {
     accounts: Array<{
       __typename?: 'Account';
       id: string;
-      spaceID: string;
+      spaceID?: string | undefined;
       virtualContributors: Array<{
         __typename?: 'VirtualContributor';
         id: string;
@@ -18541,7 +18541,7 @@ export type UserAccountQuery = {
           url: string;
           banner?:
             | {
-                __typename: 'Visual';
+                __typename?: 'Visual';
                 id: string;
                 uri: string;
                 name: string;
@@ -19223,7 +19223,7 @@ export type VirtualContributorQuery = {
       | {
           __typename?: 'Account';
           id: string;
-          spaceID: string;
+          spaceID?: string | undefined;
           host?:
             | {
                 __typename?: 'Organization';
@@ -22237,7 +22237,7 @@ export type CreateNewSpaceMutationVariables = Exact<{
 
 export type CreateNewSpaceMutation = {
   __typename?: 'Mutation';
-  createAccount: { __typename?: 'Account'; id: string; spaceID: string };
+  createAccount: { __typename?: 'Account'; id: string; spaceID?: string | undefined };
 };
 
 export type PlansTableQueryVariables = Exact<{ [key: string]: never }>;
@@ -22353,7 +22353,7 @@ export type CreateAccountMutationVariables = Exact<{
 
 export type CreateAccountMutation = {
   __typename?: 'Mutation';
-  createAccount: { __typename?: 'Account'; id: string; spaceID: string };
+  createAccount: { __typename?: 'Account'; id: string; spaceID?: string | undefined };
 };
 
 export type DeleteSpaceMutationVariables = Exact<{
@@ -23848,6 +23848,94 @@ export type PlatformLevelAuthorizationQuery = {
     authorization?:
       | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
+  };
+};
+
+export type OrganizationAccountQueryVariables = Exact<{
+  organizationNameId: Scalars['UUID_NAMEID'];
+}>;
+
+export type OrganizationAccountQuery = {
+  __typename?: 'Query';
+  organization: {
+    __typename?: 'Organization';
+    id: string;
+    accounts: Array<{
+      __typename?: 'Account';
+      id: string;
+      spaceID?: string | undefined;
+      virtualContributors: Array<{
+        __typename?: 'VirtualContributor';
+        id: string;
+        profile: {
+          __typename?: 'Profile';
+          tagline: string;
+          id: string;
+          displayName: string;
+          description?: string | undefined;
+          url: string;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        };
+      }>;
+      innovationPacks: Array<{
+        __typename?: 'InnovationPack';
+        id: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          description?: string | undefined;
+          url: string;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        };
+        templates?:
+          | {
+              __typename?: 'TemplatesSet';
+              id: string;
+              calloutTemplatesCount: number;
+              communityGuidelinesTemplatesCount: number;
+              innovationFlowTemplatesCount: number;
+              postTemplatesCount: number;
+              whiteboardTemplatesCount: number;
+            }
+          | undefined;
+      }>;
+      innovationHubs: Array<{
+        __typename?: 'InnovationHub';
+        id: string;
+        spaceVisibilityFilter?: SpaceVisibility | undefined;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          description?: string | undefined;
+          url: string;
+          banner?:
+            | {
+                __typename?: 'Visual';
+                id: string;
+                uri: string;
+                name: string;
+                allowedTypes: Array<string>;
+                aspectRatio: number;
+                maxHeight: number;
+                maxWidth: number;
+                minHeight: number;
+                minWidth: number;
+                alternativeText?: string | undefined;
+              }
+            | undefined;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        };
+        spaceListFilter?:
+          | Array<{
+              __typename?: 'Space';
+              id: string;
+              profile: { __typename?: 'Profile'; id: string; displayName: string };
+            }>
+          | undefined;
+      }>;
+    }>;
   };
 };
 

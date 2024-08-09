@@ -23,6 +23,7 @@ import CreateSpaceDialog from '../../../journey/space/createSpace/CreateSpaceDia
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { useUserContext } from '../hooks/useUserContext';
 import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
+import { compact } from 'lodash';
 
 interface UserAccountPageProps {}
 
@@ -42,17 +43,18 @@ export const UserAccountPage: FC<UserAccountPageProps> = () => {
   const canCreateSpace =
     isMyProfile && currentUser && currentUser.hasPlatformPrivilege(AuthorizationPrivilege.CreateSpace);
 
+  const accounts = data?.user?.accounts ?? [];
   // TODO: This will not be needed when we have multiple spaces per account and a single account per user
-  const accountId = data?.user?.accounts[0]?.id;
+  const accountId = accounts[0]?.id;
 
   const { spaceIds, virtualContributors, innovationPacks, innovationHubs } = useMemo(
     () => ({
-      spaceIds: data?.user?.accounts.flatMap(account => account.spaceID) ?? [],
-      virtualContributors: data?.user?.accounts.flatMap(account => account.virtualContributors) ?? [],
-      innovationPacks: data?.user?.accounts.flatMap(account => account.innovationPacks) ?? [],
-      innovationHubs: data?.user?.accounts.flatMap(account => account.innovationHubs) ?? [],
+      spaceIds: compact(accounts.flatMap(account => account.spaceID)),
+      virtualContributors: accounts.flatMap(account => account.virtualContributors) ?? [],
+      innovationPacks: accounts.flatMap(account => account.innovationPacks) ?? [],
+      innovationHubs: accounts.flatMap(account => account.innovationHubs) ?? [],
     }),
-    [data?.user?.accounts]
+    [accounts]
   );
 
   const { data: spacesData, loading: spacesLoading } = useAccountSpacesQuery({

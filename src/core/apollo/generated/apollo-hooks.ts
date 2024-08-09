@@ -14028,7 +14028,6 @@ export const UserAccountDocument = gql`
             ...AccountItemProfile
             banner: visual(type: BANNER_WIDE) {
               ...VisualFull
-              __typename
             }
           }
           spaceVisibilityFilter
@@ -18962,6 +18961,110 @@ export function refetchPlatformLevelAuthorizationQuery(
   variables?: SchemaTypes.PlatformLevelAuthorizationQueryVariables
 ) {
   return { query: PlatformLevelAuthorizationDocument, variables: variables };
+}
+
+export const OrganizationAccountDocument = gql`
+  query OrganizationAccount($organizationNameId: UUID_NAMEID!) {
+    organization(ID: $organizationNameId) {
+      id
+      accounts {
+        id
+        spaceID
+        virtualContributors {
+          id
+          profile {
+            ...AccountItemProfile
+            tagline
+          }
+        }
+        innovationPacks {
+          id
+          profile {
+            ...AccountItemProfile
+          }
+          templates {
+            id
+            calloutTemplatesCount
+            communityGuidelinesTemplatesCount
+            innovationFlowTemplatesCount
+            postTemplatesCount
+            whiteboardTemplatesCount
+          }
+        }
+        innovationHubs {
+          id
+          profile {
+            ...AccountItemProfile
+            banner: visual(type: BANNER_WIDE) {
+              ...VisualFull
+            }
+          }
+          spaceVisibilityFilter
+          spaceListFilter {
+            id
+            profile {
+              id
+              displayName
+            }
+          }
+        }
+      }
+    }
+  }
+  ${AccountItemProfileFragmentDoc}
+  ${VisualFullFragmentDoc}
+`;
+
+/**
+ * __useOrganizationAccountQuery__
+ *
+ * To run a query within a React component, call `useOrganizationAccountQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOrganizationAccountQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOrganizationAccountQuery({
+ *   variables: {
+ *      organizationNameId: // value for 'organizationNameId'
+ *   },
+ * });
+ */
+export function useOrganizationAccountQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.OrganizationAccountQuery,
+    SchemaTypes.OrganizationAccountQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.OrganizationAccountQuery, SchemaTypes.OrganizationAccountQueryVariables>(
+    OrganizationAccountDocument,
+    options
+  );
+}
+
+export function useOrganizationAccountLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.OrganizationAccountQuery,
+    SchemaTypes.OrganizationAccountQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.OrganizationAccountQuery, SchemaTypes.OrganizationAccountQueryVariables>(
+    OrganizationAccountDocument,
+    options
+  );
+}
+
+export type OrganizationAccountQueryHookResult = ReturnType<typeof useOrganizationAccountQuery>;
+export type OrganizationAccountLazyQueryHookResult = ReturnType<typeof useOrganizationAccountLazyQuery>;
+export type OrganizationAccountQueryResult = Apollo.QueryResult<
+  SchemaTypes.OrganizationAccountQuery,
+  SchemaTypes.OrganizationAccountQueryVariables
+>;
+export function refetchOrganizationAccountQuery(variables: SchemaTypes.OrganizationAccountQueryVariables) {
+  return { query: OrganizationAccountDocument, variables: variables };
 }
 
 export const AssignLicensePlanToAccountDocument = gql`
