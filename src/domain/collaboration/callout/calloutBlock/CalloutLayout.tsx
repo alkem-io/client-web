@@ -77,6 +77,7 @@ export interface CalloutLayoutProps {
   contentRef?: Ref<Element>;
   settingsOpen?: boolean;
   onOpenSettings?: (event: React.MouseEvent<HTMLElement>) => void;
+  calloutActions?: boolean;
 }
 
 const CalloutLayout = ({
@@ -91,6 +92,7 @@ const CalloutLayout = ({
   contentRef,
   settingsOpen,
   onOpenSettings,
+  calloutActions = true,
 }: PropsWithChildren<CalloutLayoutProps>) => {
   const { t } = useTranslation();
 
@@ -117,6 +119,7 @@ const CalloutLayout = ({
         onCollapse={onCollapse}
         settingsOpen={settingsOpen}
         onOpenSettings={onOpenSettings}
+        calloutActions={calloutActions}
       />
       <DialogContent ref={contentRef} sx={{ paddingTop: 0 }}>
         <Gutters disablePadding>

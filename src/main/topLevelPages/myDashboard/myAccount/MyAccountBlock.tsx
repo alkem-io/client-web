@@ -15,7 +15,6 @@ import useNewVirtualContributorWizard from '../newVirtualContributorWizard/useNe
 import MyAccountBlockNoGlobalRoleUser from './MyAccountBlockNoGlobalRoleUser';
 import MyAccountBlockGlobalRoleUser from './MyAccountBlockGlobalRoleUser';
 import MyAccountBlockVCCampaignUser from './MyAccountBlockVCCampaignUser';
-import useNavigate from '../../../../core/routing/useNavigate';
 
 enum UserRoles {
   noGlobalRoleUser = 'noGlobalRoleUser',
@@ -71,7 +70,6 @@ export interface MyAccountSpace extends Pick<Space, 'id' | 'level'> {
 
 const MyAccountBlock = () => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const { data, loading } = useMyAccountQuery({ fetchPolicy: 'cache-and-network' });
   const { startWizard, NewVirtualContributorWizard } = useNewVirtualContributorWizard();
 
@@ -99,15 +97,6 @@ const MyAccountBlock = () => {
     createLink = `/${TopLevelRoutePath.CreateSpace}`;
   }
 
-  // TODO: temporary logic to support the old wizard with the new AccounBlock
-  const initiateVCcreationFlow = () => {
-    if (hostedSpace) {
-      startWizard();
-    } else {
-      navigate(createLink);
-    }
-  };
-
   const renderMyBlock = (userRole: UserRoles) => {
     switch (userRole) {
       case UserRoles.noGlobalRoleUser: {
@@ -115,7 +104,7 @@ const MyAccountBlock = () => {
           <MyAccountBlockNoGlobalRoleUser
             hostedSpace={hostedSpace}
             virtualContributors={virtualContributors}
-            startWizard={initiateVCcreationFlow}
+            startWizard={startWizard}
           />
         );
       }
@@ -124,7 +113,7 @@ const MyAccountBlock = () => {
           <MyAccountBlockVCCampaignUser
             hostedSpace={hostedSpace}
             virtualContributors={virtualContributors}
-            startWizard={initiateVCcreationFlow}
+            startWizard={startWizard}
           />
         );
       }
@@ -133,7 +122,7 @@ const MyAccountBlock = () => {
           <MyAccountBlockGlobalRoleUser
             hostedSpace={hostedSpace}
             virtualContributors={virtualContributors}
-            startWizard={initiateVCcreationFlow}
+            startWizard={startWizard}
             createLink={createLink}
           />
         );

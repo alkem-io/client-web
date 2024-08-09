@@ -113,7 +113,15 @@ const MyAccountBlockNoGlobalRoleUser = ({
                 to={'https://welcome.alkem.io/vc-program/'}
                 aria-label={t('pages.home.sections.myAccount.noGlobalRoleUser.joinButton')}
                 variant="contained"
-                sx={{ textTransform: 'none', paddingTop: gutters(0.5), paddingBottom: gutters(0.5), flex: 1 }}
+                sx={{
+                  textTransform: 'none',
+                  paddingTop: gutters(0.5),
+                  paddingBottom: gutters(0.5),
+                  flex: 1,
+                  '&:hover': {
+                    color: 'common.white',
+                  },
+                }}
               >
                 {t('pages.home.sections.myAccount.noGlobalRoleUser.joinButton')}
               </Button>
