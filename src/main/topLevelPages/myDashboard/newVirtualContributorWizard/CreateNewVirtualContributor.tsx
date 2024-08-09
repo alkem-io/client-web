@@ -94,7 +94,7 @@ const CreateNewVirtualContributor = ({
   };
 
   const validationSchema = yup.object().shape({
-    name: yup.string().min(3, MessageWithPayload('forms.validations.minLength')).required(),
+    name: yup.string().trim().min(3, MessageWithPayload('forms.validations.minLength')).required(),
     tagline: yup.string(),
     description: yup.string(),
   });
