@@ -1337,10 +1337,9 @@ export type EcosystemModelFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type FileStorageConfigKeySpecifier = ('maxFileSize' | 'mimeTypes' | FileStorageConfigKeySpecifier)[];
+export type FileStorageConfigKeySpecifier = ('maxFileSize' | FileStorageConfigKeySpecifier)[];
 export type FileStorageConfigFieldPolicy = {
   maxFileSize?: FieldPolicy<any> | FieldReadFunction<any>;
-  mimeTypes?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type FormKeySpecifier = (
   | 'createdDate'

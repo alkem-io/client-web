@@ -21,7 +21,7 @@ export const InnovationHubCardHorizontalSkeleton = () => (
   </BadgeCardView>
 );
 
-export interface InnovationHubCardProps extends InnovationHubSpacesProps {
+export interface InnovationHubCardHorizontalProps extends InnovationHubSpacesProps {
   profile: {
     displayName: string;
     description?: string;
@@ -61,7 +61,7 @@ const InnovationHubSpaces = ({ spaceVisibilityFilter, spaceListFilter }: Innovat
 const InnovationHubCardHorizontal = ({
   profile: { displayName, description, url, banner },
   ...spaces
-}: InnovationHubCardProps) => {
+}: InnovationHubCardHorizontalProps) => {
   return (
     <BadgeCardView visual={<Avatar src={banner?.uri} size="medium" />} component={RouterLink} to={url ?? ''}>
       <Box display="flex" flexDirection="row" justifyContent="space-between">
