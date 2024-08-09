@@ -9,14 +9,12 @@ export type AccountKeySpecifier = (
   | 'agent'
   | 'authorization'
   | 'createdDate'
-  | 'defaults'
   | 'host'
   | 'id'
   | 'innovationHubs'
   | 'innovationPacks'
-  | 'library'
   | 'licensePrivileges'
-  | 'spaceID'
+  | 'spaces'
   | 'storageAggregator'
   | 'subscriptions'
   | 'updatedDate'
@@ -28,14 +26,12 @@ export type AccountFieldPolicy = {
   agent?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
-  defaults?: FieldPolicy<any> | FieldReadFunction<any>;
   host?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationHubs?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationPacks?: FieldPolicy<any> | FieldReadFunction<any>;
-  library?: FieldPolicy<any> | FieldReadFunction<any>;
   licensePrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
-  spaceID?: FieldPolicy<any> | FieldReadFunction<any>;
+  spaces?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
   subscriptions?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1870,7 +1866,6 @@ export type MutationKeySpecifier = (
   | 'cleanupCollections'
   | 'convertChallengeToSpace'
   | 'convertOpportunityToChallenge'
-  | 'createAccount'
   | 'createActor'
   | 'createActorGroup'
   | 'createCalloutOnCollaboration'
@@ -1889,6 +1884,7 @@ export type MutationKeySpecifier = (
   | 'createPostTemplate'
   | 'createReferenceOnProfile'
   | 'createRelationOnCollaboration'
+  | 'createSpace'
   | 'createSubspace'
   | 'createTagsetOnProfile'
   | 'createUser'
@@ -1954,7 +1950,6 @@ export type MutationKeySpecifier = (
   | 'sendMessageToOrganization'
   | 'sendMessageToRoom'
   | 'sendMessageToUser'
-  | 'updateAccountPlatformSettings'
   | 'updateActor'
   | 'updateAiPersona'
   | 'updateAnswerRelevance'
@@ -2039,7 +2034,6 @@ export type MutationFieldPolicy = {
   cleanupCollections?: FieldPolicy<any> | FieldReadFunction<any>;
   convertChallengeToSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   convertOpportunityToChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
-  createAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   createActor?: FieldPolicy<any> | FieldReadFunction<any>;
   createActorGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   createCalloutOnCollaboration?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2058,6 +2052,7 @@ export type MutationFieldPolicy = {
   createPostTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   createReferenceOnProfile?: FieldPolicy<any> | FieldReadFunction<any>;
   createRelationOnCollaboration?: FieldPolicy<any> | FieldReadFunction<any>;
+  createSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   createSubspace?: FieldPolicy<any> | FieldReadFunction<any>;
   createTagsetOnProfile?: FieldPolicy<any> | FieldReadFunction<any>;
   createUser?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2123,7 +2118,6 @@ export type MutationFieldPolicy = {
   sendMessageToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   sendMessageToRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   sendMessageToUser?: FieldPolicy<any> | FieldReadFunction<any>;
-  updateAccountPlatformSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   updateActor?: FieldPolicy<any> | FieldReadFunction<any>;
   updateAiPersona?: FieldPolicy<any> | FieldReadFunction<any>;
   updateAnswerRelevance?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2190,7 +2184,7 @@ export type NVPFieldPolicy = {
   value?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type OrganizationKeySpecifier = (
-  | 'accounts'
+  | 'account'
   | 'admins'
   | 'agent'
   | 'associates'
@@ -2215,7 +2209,7 @@ export type OrganizationKeySpecifier = (
   | OrganizationKeySpecifier
 )[];
 export type OrganizationFieldPolicy = {
-  accounts?: FieldPolicy<any> | FieldReadFunction<any>;
+  account?: FieldPolicy<any> | FieldReadFunction<any>;
   admins?: FieldPolicy<any> | FieldReadFunction<any>;
   agent?: FieldPolicy<any> | FieldReadFunction<any>;
   associates?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2676,9 +2670,11 @@ export type RelayPaginatedSpaceKeySpecifier = (
   | 'community'
   | 'context'
   | 'createdDate'
+  | 'defaults'
   | 'id'
   | 'level'
   | 'levelZeroSpaceID'
+  | 'library'
   | 'metrics'
   | 'nameID'
   | 'profile'
@@ -2699,9 +2695,11 @@ export type RelayPaginatedSpaceFieldPolicy = {
   community?: FieldPolicy<any> | FieldReadFunction<any>;
   context?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  defaults?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   level?: FieldPolicy<any> | FieldReadFunction<any>;
   levelZeroSpaceID?: FieldPolicy<any> | FieldReadFunction<any>;
+  library?: FieldPolicy<any> | FieldReadFunction<any>;
   metrics?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2970,9 +2968,11 @@ export type SpaceKeySpecifier = (
   | 'community'
   | 'context'
   | 'createdDate'
+  | 'defaults'
   | 'id'
   | 'level'
   | 'levelZeroSpaceID'
+  | 'library'
   | 'metrics'
   | 'nameID'
   | 'profile'
@@ -2993,9 +2993,11 @@ export type SpaceFieldPolicy = {
   community?: FieldPolicy<any> | FieldReadFunction<any>;
   context?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  defaults?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   level?: FieldPolicy<any> | FieldReadFunction<any>;
   levelZeroSpaceID?: FieldPolicy<any> | FieldReadFunction<any>;
+  library?: FieldPolicy<any> | FieldReadFunction<any>;
   metrics?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3285,8 +3287,8 @@ export type TimelineFieldPolicy = {
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UserKeySpecifier = (
+  | 'account'
   | 'accountUpn'
-  | 'accounts'
   | 'agent'
   | 'authorization'
   | 'communityRooms'
@@ -3306,8 +3308,8 @@ export type UserKeySpecifier = (
   | UserKeySpecifier
 )[];
 export type UserFieldPolicy = {
+  account?: FieldPolicy<any> | FieldReadFunction<any>;
   accountUpn?: FieldPolicy<any> | FieldReadFunction<any>;
-  accounts?: FieldPolicy<any> | FieldReadFunction<any>;
   agent?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   communityRooms?: FieldPolicy<any> | FieldReadFunction<any>;

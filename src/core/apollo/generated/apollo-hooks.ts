@@ -1699,6 +1699,9 @@ export const CommunityGuidelinesSummaryFragmentDoc = gql`
 export const UserSelectorUserInformationFragmentDoc = gql`
   fragment UserSelectorUserInformation on User {
     id
+    account {
+      id
+    }
     profile {
       id
       displayName
@@ -2385,6 +2388,9 @@ export const SpaceInfoFragmentDoc = gql`
     authorization {
       id
       myPrivileges
+    }
+    account {
+      id
     }
     community {
       id
@@ -4955,16 +4961,13 @@ export const SpaceInnovationFlowsDocument = gql`
   query SpaceInnovationFlows($spaceId: UUID!) {
     lookup {
       space(ID: $spaceId) {
-        account {
+        library {
           id
-          library {
+          innovationFlowTemplates {
             id
-            innovationFlowTemplates {
+            profile {
               id
-              profile {
-                id
-                displayName
-              }
+              displayName
             }
           }
         }
@@ -5029,14 +5032,14 @@ export const SpaceInnovationFlowTemplatesLibraryDocument = gql`
   query SpaceInnovationFlowTemplatesLibrary($spaceNameId: UUID_NAMEID!) {
     space(ID: $spaceNameId) {
       id
+      library {
+        id
+        innovationFlowTemplates {
+          ...InnovationFlowTemplateCard
+        }
+      }
       account {
         id
-        library {
-          id
-          innovationFlowTemplates {
-            ...InnovationFlowTemplateCard
-          }
-        }
         host {
           id
           nameID
@@ -5739,14 +5742,14 @@ export const SpaceCalloutTemplatesLibraryDocument = gql`
   query SpaceCalloutTemplatesLibrary($spaceNameId: UUID_NAMEID!) {
     space(ID: $spaceNameId) {
       id
+      library {
+        id
+        calloutTemplates {
+          ...CalloutTemplateCard
+        }
+      }
       account {
         id
-        library {
-          id
-          calloutTemplates {
-            ...CalloutTemplateCard
-          }
-        }
         host {
           id
           nameID
@@ -6882,14 +6885,14 @@ export const SpaceCommunityGuidelinesTemplatesLibraryDocument = gql`
   query SpaceCommunityGuidelinesTemplatesLibrary($spaceNameId: UUID_NAMEID!) {
     space(ID: $spaceNameId) {
       id
+      library {
+        id
+        communityGuidelinesTemplates {
+          ...CommunityGuidelinesTemplateCard
+        }
+      }
       account {
         id
-        library {
-          id
-          communityGuidelinesTemplates {
-            ...CommunityGuidelinesTemplateCard
-          }
-        }
         host {
           id
           nameID
@@ -7057,14 +7060,14 @@ export const SpacePostTemplatesLibraryDocument = gql`
   query SpacePostTemplatesLibrary($spaceNameId: UUID_NAMEID!) {
     space(ID: $spaceNameId) {
       id
+      library {
+        id
+        postTemplates {
+          ...PostTemplateCard
+        }
+      }
       account {
         id
-        library {
-          id
-          postTemplates {
-            ...PostTemplateCard
-          }
-        }
         host {
           id
           nameID
@@ -7698,14 +7701,14 @@ export const SpaceWhiteboardTemplatesLibraryDocument = gql`
   query SpaceWhiteboardTemplatesLibrary($spaceNameId: UUID_NAMEID!) {
     space(ID: $spaceNameId) {
       id
+      library {
+        id
+        whiteboardTemplates {
+          ...WhiteboardTemplateCard
+        }
+      }
       account {
         id
-        library {
-          id
-          whiteboardTemplates {
-            ...WhiteboardTemplateCard
-          }
-        }
         host {
           id
           nameID
@@ -12688,6 +12691,9 @@ export const OrganizationsListDocument = gql`
     organizations(limit: $limit, shuffle: $shuffle, filter: { credentials: $filterCredentials }) {
       id
       nameID
+      account {
+        id
+      }
       profile {
         id
         displayName
@@ -13998,9 +14004,15 @@ export const UserAccountDocument = gql`
   query UserAccount($userId: UUID_NAMEID_EMAIL!) {
     user(ID: $userId) {
       id
-      accounts {
+      account {
         id
-        spaceID
+        spaces {
+          id
+          profile {
+            ...AccountItemProfile
+            tagline
+          }
+        }
         virtualContributors {
           id
           profile {
@@ -14898,7 +14910,6 @@ export const VirtualContributorDocument = gql`
       }
       account {
         id
-        spaceID
         host {
           id
           profile {
@@ -17084,56 +17095,50 @@ export function refetchSpaceSubspaceCardsQuery(variables: SchemaTypes.SpaceSubsp
   return { query: SpaceSubspaceCardsDocument, variables: variables };
 }
 
-export const CreateNewSpaceDocument = gql`
-  mutation CreateNewSpace($hostId: UUID_NAMEID!, $spaceData: CreateSpaceInput!, $licensePlanId: UUID) {
-    createAccount(accountData: { hostID: $hostId, spaceData: $spaceData, licensePlanID: $licensePlanId }) {
+export const CreateSpaceDocument = gql`
+  mutation CreateSpace($spaceData: CreateSpaceOnAccountInput!) {
+    createSpace(spaceData: $spaceData) {
       id
-      spaceID
     }
   }
 `;
-export type CreateNewSpaceMutationFn = Apollo.MutationFunction<
-  SchemaTypes.CreateNewSpaceMutation,
-  SchemaTypes.CreateNewSpaceMutationVariables
+export type CreateSpaceMutationFn = Apollo.MutationFunction<
+  SchemaTypes.CreateSpaceMutation,
+  SchemaTypes.CreateSpaceMutationVariables
 >;
 
 /**
- * __useCreateNewSpaceMutation__
+ * __useCreateSpaceMutation__
  *
- * To run a mutation, you first call `useCreateNewSpaceMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateNewSpaceMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useCreateSpaceMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateSpaceMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [createNewSpaceMutation, { data, loading, error }] = useCreateNewSpaceMutation({
+ * const [createSpaceMutation, { data, loading, error }] = useCreateSpaceMutation({
  *   variables: {
- *      hostId: // value for 'hostId'
  *      spaceData: // value for 'spaceData'
- *      licensePlanId: // value for 'licensePlanId'
  *   },
  * });
  */
-export function useCreateNewSpaceMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.CreateNewSpaceMutation,
-    SchemaTypes.CreateNewSpaceMutationVariables
-  >
+export function useCreateSpaceMutation(
+  baseOptions?: Apollo.MutationHookOptions<SchemaTypes.CreateSpaceMutation, SchemaTypes.CreateSpaceMutationVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.CreateNewSpaceMutation, SchemaTypes.CreateNewSpaceMutationVariables>(
-    CreateNewSpaceDocument,
+  return Apollo.useMutation<SchemaTypes.CreateSpaceMutation, SchemaTypes.CreateSpaceMutationVariables>(
+    CreateSpaceDocument,
     options
   );
 }
 
-export type CreateNewSpaceMutationHookResult = ReturnType<typeof useCreateNewSpaceMutation>;
-export type CreateNewSpaceMutationResult = Apollo.MutationResult<SchemaTypes.CreateNewSpaceMutation>;
-export type CreateNewSpaceMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.CreateNewSpaceMutation,
-  SchemaTypes.CreateNewSpaceMutationVariables
+export type CreateSpaceMutationHookResult = ReturnType<typeof useCreateSpaceMutation>;
+export type CreateSpaceMutationResult = Apollo.MutationResult<SchemaTypes.CreateSpaceMutation>;
+export type CreateSpaceMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.CreateSpaceMutation,
+  SchemaTypes.CreateSpaceMutationVariables
 >;
 export const PlansTableDocument = gql`
   query PlansTable {
@@ -17325,55 +17330,6 @@ export function refetchContactSupportLocationQuery(variables?: SchemaTypes.Conta
   return { query: ContactSupportLocationDocument, variables: variables };
 }
 
-export const CreateAccountDocument = gql`
-  mutation createAccount($input: CreateAccountInput!) {
-    createAccount(accountData: $input) {
-      id
-      spaceID
-    }
-  }
-`;
-export type CreateAccountMutationFn = Apollo.MutationFunction<
-  SchemaTypes.CreateAccountMutation,
-  SchemaTypes.CreateAccountMutationVariables
->;
-
-/**
- * __useCreateAccountMutation__
- *
- * To run a mutation, you first call `useCreateAccountMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateAccountMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createAccountMutation, { data, loading, error }] = useCreateAccountMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useCreateAccountMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.CreateAccountMutation,
-    SchemaTypes.CreateAccountMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.CreateAccountMutation, SchemaTypes.CreateAccountMutationVariables>(
-    CreateAccountDocument,
-    options
-  );
-}
-
-export type CreateAccountMutationHookResult = ReturnType<typeof useCreateAccountMutation>;
-export type CreateAccountMutationResult = Apollo.MutationResult<SchemaTypes.CreateAccountMutation>;
-export type CreateAccountMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.CreateAccountMutation,
-  SchemaTypes.CreateAccountMutationVariables
->;
 export const DeleteSpaceDocument = gql`
   mutation deleteSpace($input: DeleteSpaceInput!) {
     deleteSpace(deleteData: $input) {
@@ -17608,20 +17564,17 @@ export const SpaceInnovationFlowTemplatesDocument = gql`
     lookup {
       space(ID: $spaceId) {
         id
-        account {
+        library {
           id
-          library {
+          innovationFlowTemplates {
             id
-            innovationFlowTemplates {
+            states {
+              displayName
+              description
+            }
+            profile {
               id
-              states {
-                displayName
-                description
-              }
-              profile {
-                id
-                displayName
-              }
+              displayName
             }
           }
         }
@@ -18086,18 +18039,16 @@ export const AdminSpaceChallengesPageDocument = gql`
           url
         }
       }
-      account {
+      defaults {
         id
-        defaults {
-          innovationFlowTemplate {
-            id
-            profile {
-              ...InnovationFlowProfile
-            }
-            states {
-              displayName
-              description
-            }
+        innovationFlowTemplate {
+          id
+          profile {
+            ...InnovationFlowProfile
+          }
+          states {
+            displayName
+            description
           }
         }
       }
@@ -18159,8 +18110,10 @@ export function refetchAdminSpaceChallengesPageQuery(variables: SchemaTypes.Admi
 }
 
 export const UpdateSpaceDefaultInnovationFlowTemplateDocument = gql`
-  mutation UpdateSpaceDefaultInnovationFlowTemplate($spaceId: UUID!, $innovationFlowTemplateId: UUID!) {
-    updateSpaceDefaults(spaceDefaultsData: { spaceID: $spaceId, flowTemplateID: $innovationFlowTemplateId }) {
+  mutation UpdateSpaceDefaultInnovationFlowTemplate($spaceDefaultsID: UUID!, $innovationFlowTemplateId: UUID!) {
+    updateSpaceDefaults(
+      spaceDefaultsData: { spaceDefaultsID: $spaceDefaultsID, flowTemplateID: $innovationFlowTemplateId }
+    ) {
       id
     }
   }
@@ -18183,7 +18136,7 @@ export type UpdateSpaceDefaultInnovationFlowTemplateMutationFn = Apollo.Mutation
  * @example
  * const [updateSpaceDefaultInnovationFlowTemplateMutation, { data, loading, error }] = useUpdateSpaceDefaultInnovationFlowTemplateMutation({
  *   variables: {
- *      spaceId: // value for 'spaceId'
+ *      spaceDefaultsID: // value for 'spaceDefaultsID'
  *      innovationFlowTemplateId: // value for 'innovationFlowTemplateId'
  *   },
  * });
@@ -18967,9 +18920,15 @@ export const OrganizationAccountDocument = gql`
   query OrganizationAccount($organizationNameId: UUID_NAMEID!) {
     organization(ID: $organizationNameId) {
       id
-      accounts {
+      account {
         id
-        spaceID
+        spaces {
+          id
+          profile {
+            ...AccountItemProfile
+            tagline
+          }
+        }
         virtualContributors {
           id
           profile {
@@ -19172,61 +19131,6 @@ export type RevokeLicensePlanFromAccountMutationResult =
 export type RevokeLicensePlanFromAccountMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.RevokeLicensePlanFromAccountMutation,
   SchemaTypes.RevokeLicensePlanFromAccountMutationVariables
->;
-export const UpdateAccountPlatformSettingsDocument = gql`
-  mutation UpdateAccountPlatformSettings($accountId: UUID!, $hostId: UUID_NAMEID) {
-    updateAccountPlatformSettings(updateData: { accountID: $accountId, hostID: $hostId }) {
-      id
-      host {
-        id
-      }
-    }
-  }
-`;
-export type UpdateAccountPlatformSettingsMutationFn = Apollo.MutationFunction<
-  SchemaTypes.UpdateAccountPlatformSettingsMutation,
-  SchemaTypes.UpdateAccountPlatformSettingsMutationVariables
->;
-
-/**
- * __useUpdateAccountPlatformSettingsMutation__
- *
- * To run a mutation, you first call `useUpdateAccountPlatformSettingsMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateAccountPlatformSettingsMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateAccountPlatformSettingsMutation, { data, loading, error }] = useUpdateAccountPlatformSettingsMutation({
- *   variables: {
- *      accountId: // value for 'accountId'
- *      hostId: // value for 'hostId'
- *   },
- * });
- */
-export function useUpdateAccountPlatformSettingsMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.UpdateAccountPlatformSettingsMutation,
-    SchemaTypes.UpdateAccountPlatformSettingsMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.UpdateAccountPlatformSettingsMutation,
-    SchemaTypes.UpdateAccountPlatformSettingsMutationVariables
-  >(UpdateAccountPlatformSettingsDocument, options);
-}
-
-export type UpdateAccountPlatformSettingsMutationHookResult = ReturnType<
-  typeof useUpdateAccountPlatformSettingsMutation
->;
-export type UpdateAccountPlatformSettingsMutationResult =
-  Apollo.MutationResult<SchemaTypes.UpdateAccountPlatformSettingsMutation>;
-export type UpdateAccountPlatformSettingsMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.UpdateAccountPlatformSettingsMutation,
-  SchemaTypes.UpdateAccountPlatformSettingsMutationVariables
 >;
 export const UpdateSpacePlatformSettingsDocument = gql`
   mutation UpdateSpacePlatformSettings($spaceId: UUID!, $nameId: NameID!, $visibility: SpaceVisibility!) {
@@ -19531,29 +19435,26 @@ export const AdminSpaceTemplatesDocument = gql`
     lookup {
       space(ID: $spaceId) {
         id
-        account {
+        library {
           id
-          library {
+          authorization {
             id
-            authorization {
-              id
-              myPrivileges
-            }
-            calloutTemplates {
-              ...AdminCalloutTemplate
-            }
-            postTemplates {
-              ...AdminPostTemplate
-            }
-            whiteboardTemplates {
-              ...AdminWhiteboardTemplate
-            }
-            innovationFlowTemplates {
-              ...AdminInnovationFlowTemplate
-            }
-            communityGuidelinesTemplates {
-              ...AdminCommunityGuidelinesTemplate
-            }
+            myPrivileges
+          }
+          calloutTemplates {
+            ...AdminCalloutTemplate
+          }
+          postTemplates {
+            ...AdminPostTemplate
+          }
+          whiteboardTemplates {
+            ...AdminWhiteboardTemplate
+          }
+          innovationFlowTemplates {
+            ...AdminInnovationFlowTemplate
+          }
+          communityGuidelinesTemplates {
+            ...AdminCommunityGuidelinesTemplate
           }
         }
       }
@@ -19622,17 +19523,14 @@ export const AdminCommunityGuidelinesTemplatesDocument = gql`
   query AdminCommunityGuidelinesTemplates($spaceId: UUID_NAMEID!) {
     space(ID: $spaceId) {
       id
-      account {
+      library {
         id
-        library {
+        authorization {
           id
-          authorization {
-            id
-            myPrivileges
-          }
-          communityGuidelinesTemplates {
-            ...AdminCommunityGuidelinesTemplate
-          }
+          myPrivileges
+        }
+        communityGuidelinesTemplates {
+          ...AdminCommunityGuidelinesTemplate
         }
       }
     }
@@ -19923,11 +19821,8 @@ export const SpaceTemplateSetIdDocument = gql`
   query SpaceTemplateSetId($spaceNameId: UUID_NAMEID!) {
     space(ID: $spaceNameId) {
       id
-      account {
+      library {
         id
-        library {
-          id
-        }
       }
     }
   }
@@ -23726,7 +23621,7 @@ export const MyAccountDocument = gql`
             type
           }
         }
-        accounts {
+        account {
           id
           virtualContributors {
             id

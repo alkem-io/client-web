@@ -1,12 +1,12 @@
-import { FC, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import SearchIcon from '@mui/icons-material/Search';
-import { Autocomplete, FormHelperText, TextField } from '@mui/material';
-import { useOrganizationsListQuery, useUserSelectorQuery } from '../../../../../core/apollo/generated/apollo-hooks';
-import { CaptionSmall } from '../../../../../core/ui/typography';
-import FlexSpacer from '../../../../../core/ui/utils/FlexSpacer';
-import { ProfileChipView } from '../../../../community/contributor/ProfileChip/ProfileChipView';
 import { useField } from 'formik';
+import { FC, useMemo, useState } from 'react';
+import { useOrganizationsListQuery, useUserSelectorQuery } from '../../../../../core/apollo/generated/apollo-hooks';
+import { useTranslation } from 'react-i18next';
+import { Autocomplete, FormHelperText, TextField } from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
+import { ProfileChipView } from '../../../../community/contributor/ProfileChip/ProfileChipView';
+import FlexSpacer from '../../../../../core/ui/utils/FlexSpacer';
+import { CaptionSmall } from '../../../../../core/ui/typography';
 
 const MAX_USERS_SHOWN = 10;
 
@@ -17,6 +17,7 @@ interface HostFilterInput {
 export interface Host {
   type: 'user' | 'organization';
   id: string;
+  accountId: string;
   profile: {
     displayName: string;
     location?: {
@@ -29,23 +30,21 @@ export interface Host {
   };
 }
 
-interface HostSelectorProps {
-  name: string;
-  host?: Host;
-}
-
+/*
+//!!
 interface AllHosts extends Omit<Host, 'type'> {
   __typename?: 'User' | 'Organization' | 'VirtualContributor';
 }
 
-export const mapUserOrOrganizationToHost = (host: AllHosts | undefined): Host | undefined => {
+const mapUserOrOrganizationToHost = (host: AllHosts | undefined): Host | undefined => {
   if (!host || !host.__typename || (host.__typename !== 'User' && host.__typename !== 'Organization')) {
-    // We don't allouw VirtualContributors as hosts, at least for now
+    // We don't allow VirtualContributors as hosts, at least for now
     return undefined;
   }
 
   return {
     id: host.id,
+    accountId: host.accountId,
     type: host.__typename === 'User' ? 'user' : 'organization',
     profile: {
       displayName: host.profile?.displayName ?? '',
@@ -54,36 +53,51 @@ export const mapUserOrOrganizationToHost = (host: AllHosts | undefined): Host | 
     },
   };
 };
+*/
 
-export const HostSelector: FC<HostSelectorProps> = ({ name, host, ...containerProps }) => {
+interface HostSelectorProps {
+  name: string;
+  defaultValue?: {
+    accountId: string;
+  };
+  title?: string;
+  placeholder?: string;
+  required?: boolean;
+  disabled?: boolean;
+}
+
+export const HostSelector: FC<HostSelectorProps> = ({ name, defaultValue, ...containerProps }) => {
+  const { t } = useTranslation();
   const [filter, setFilter] = useState<HostFilterInput>();
 
   const { data: organizationData } = useOrganizationsListQuery();
-  const organizations: Host[] = useMemo(() => {
-    return (
-      organizationData?.organizations.map(org => ({
-        id: org.id,
-        type: 'organization',
-        profile: {
-          id: org.profile.id,
-          displayName: org.profile.displayName,
-          location: org.profile.location,
-          visual: {
-            uri: org.profile.visual?.uri,
-          },
-        },
-      })) ?? []
-    );
-  }, [organizationData]);
-
   const { data: userData } = useUserSelectorQuery({
     variables: { filter, first: MAX_USERS_SHOWN },
     skip: !filter,
   });
-  const users: Host[] = useMemo(
-    () =>
+
+  const options = useMemo(() => {
+    const organizations =
+      organizationData?.organizations
+        .filter(org => org.account) //!! filter out organizations without account
+        .map(org => ({
+          id: org.id,
+          accountId: org.account!.id,
+          type: 'organization',
+          profile: {
+            id: org.profile.id,
+            displayName: org.profile.displayName,
+            location: org.profile.location,
+            visual: {
+              uri: org.profile.visual?.uri,
+            },
+          },
+        })) ?? [];
+
+    const users =
       userData?.usersPaginated.users.map(user => ({
         id: user.id,
+        accountId: user.account.id,
         type: 'user',
         profile: {
           id: user.profile.id,
@@ -93,15 +107,10 @@ export const HostSelector: FC<HostSelectorProps> = ({ name, host, ...containerPr
             uri: user.profile.visual?.uri,
           },
         },
-      })) ?? [],
-    [userData]
-  );
+      })) ?? [];
 
-  const options = useMemo(() => {
     return [...organizations, ...users].sort((a, b) => a.profile.displayName.localeCompare(b.profile.displayName));
-  }, [organizations, users]);
-
-  const { t } = useTranslation();
+  }, [organizationData, userData]);
 
   const [field, meta, helpers] = useField(name);
   const handleSelect = (host: Host | null) => {
@@ -114,9 +123,8 @@ export const HostSelector: FC<HostSelectorProps> = ({ name, host, ...containerPr
     <Autocomplete
       options={options}
       value={field.value}
-      defaultValue={host}
       autoHighlight
-      getOptionLabel={option => option.profile.displayName}
+      getOptionLabel={option => option?.profile?.displayName ?? ''}
       noOptionsText={t('components.user-selector.tooltip')}
       popupIcon={<SearchIcon />}
       onChange={(event, value) => handleSelect(value)}
@@ -159,3 +167,5 @@ export const HostSelector: FC<HostSelectorProps> = ({ name, host, ...containerPr
     />
   );
 };
+
+export default HostSelector;

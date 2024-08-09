@@ -21,7 +21,7 @@ export const useCreateCommunityGuidelinesTemplate = (): CreateCommunityGuideline
   const handleCreateCommunityGuidelinesTemplate = useCallback(
     async (values: CommunityGuidelinesTemplateFormSubmittedValues, spaceNameId: string) => {
       const { data: templatesData } = await fetchTemplateSetId({ variables: { spaceNameId } });
-      const templatesSetId = templatesData?.space.account.library?.id;
+      const templatesSetId = templatesData?.space.library?.id;
       if (!templatesSetId) {
         throw new TypeError('TemplateSet not found!');
       }

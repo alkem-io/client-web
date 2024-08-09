@@ -71,7 +71,7 @@ const EmptyOrganization: Omit<Organization, 'authorization' | 'agent'> = {
     },
   },
   preferences: [],
-  accounts: [],
+  account: undefined,
 };
 
 interface Props {

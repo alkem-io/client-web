@@ -64,7 +64,7 @@ const SpaceTemplatesAdminPage: FC<SpaceTemplatesAdminPageProps> = ({
     communityGuidelinesTemplates,
     id: templatesSetID,
     authorization: templateSetAuth,
-  } = spaceTemplatesData?.lookup.space?.account.library ?? {};
+  } = spaceTemplatesData?.lookup.space?.library ?? {};
   const canImportTemplates = templateSetAuth?.myPrivileges?.includes(AuthorizationPrivilege.Create) ?? false;
 
   const postInnovationPacks = useMemo(() => {

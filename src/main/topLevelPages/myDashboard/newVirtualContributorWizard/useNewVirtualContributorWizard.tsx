@@ -3,7 +3,7 @@ import {
   refetchMyAccountQuery,
   refetchSubspacesInSpaceQuery,
   useAddVirtualContributorToCommunityMutation,
-  useCreateNewSpaceMutation,
+  useCreateSpaceMutation,
   useCreatePostFromContributeTabMutation,
   useCreateSubspaceMutation,
   useCreateVirtualContributorOnAccountMutation,
@@ -196,7 +196,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     [plansData, isPlanAvailable]
   );
 
-  const [CreateNewSpace] = useCreateNewSpaceMutation({
+  const [CreateNewSpace] = useCreateSpaceMutation({
     refetchQueries: [refetchMyAccountQuery()],
   });
   const handleCreateSpace = async (values: VirtualContributorFromProps) => {
@@ -223,21 +223,21 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
         return;
       }
 
+      const accountID = 'TO BE SET PROPERLY';
       const { data: newSpace } = await CreateNewSpace({
         variables: {
-          hostId: user?.user.id,
           spaceData: {
+            accountID: accountID,
             profileData: {
               displayName: generateSpaceName(user?.user.profile.displayName!, creationIndex),
             },
             collaborationData: {},
           },
-          licensePlanId: plans[0]?.id,
         },
       });
 
-      setSpaceId(newSpace?.createAccount.spaceID);
-      setAccountId(newSpace?.createAccount.id);
+      setSpaceId(newSpace?.createSpace.id);
+      //setAccountId(newSpace?.createAccount.id);
       setCreationIndex(0);
     }
 

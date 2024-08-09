@@ -42,7 +42,8 @@ export const ChallengeListView: FC = () => {
       spaceId: spaceNameId,
     },
   });
-  const defaultInnovationFlow = data?.space.account.defaults?.innovationFlowTemplate;
+  const defaultInnovationFlow = data?.space.defaults?.innovationFlowTemplate;
+  const spaceDefaultsID = data?.space.defaults?.id || ''; // How to handle when IDs are not found?
   const [selectedState, setSelectedState] = useState<string | undefined>(undefined);
   useEffect(() => {
     setSelectedState(defaultInnovationFlow?.states[0].displayName);
@@ -119,7 +120,7 @@ export const ChallengeListView: FC = () => {
   const handleSelectInnovationFlow = async (innovationFlowTemplateId: string) => {
     await updateInnovationFlow({
       variables: {
-        spaceId: spaceId,
+        spaceDefaultsID: spaceDefaultsID,
         innovationFlowTemplateId,
       },
       refetchQueries: [

@@ -4,8 +4,7 @@ import { SettingsSection } from '../layout/EntitySettingsLayout/constants';
 import { SettingsPageProps } from '../layout/EntitySettingsLayout/types';
 import OrganizationAccountView from './views/OrganizationAccountView';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
-import { useAccountSpacesQuery, useOrganizationAccountQuery } from '../../../../core/apollo/generated/apollo-hooks';
-import { compact } from 'lodash';
+import { useOrganizationAccountQuery } from '../../../../core/apollo/generated/apollo-hooks';
 
 const OrganizationAccountPage: FC<SettingsPageProps> = () => {
   const { organizationNameId = '' } = useUrlParams();
@@ -16,33 +15,26 @@ const OrganizationAccountPage: FC<SettingsPageProps> = () => {
     skip: !organizationNameId,
   });
 
-  const accounts = data?.organization?.accounts ?? [];
-  const { spaceIds, virtualContributors, innovationPacks, innovationHubs } = useMemo(
-    () => ({
-      spaceIds: compact(accounts.flatMap(account => account.spaceID)),
-      virtualContributors: accounts.flatMap(account => account.virtualContributors) ?? [],
-      innovationPacks: accounts.flatMap(account => account.innovationPacks) ?? [],
-      innovationHubs: accounts.flatMap(account => account.innovationHubs) ?? [],
-    }),
-    [accounts]
-  );
+  const account = data?.organization?.account;
 
-  const { data: spacesData, loading: spacesLoading } = useAccountSpacesQuery({
-    variables: {
-      spacesIds: spaceIds,
-    },
-    skip: !spaceIds.length,
-  });
+  const { spaces, virtualContributors, innovationPacks, innovationHubs } = useMemo(
+    () => ({
+      spaces: account?.spaces ?? [],
+      virtualContributors: account?.virtualContributors ?? [],
+      innovationPacks: account?.innovationPacks ?? [],
+      innovationHubs: account?.innovationHubs ?? [],
+    }),
+    [account]
+  );
 
   return (
     <OrganizationAdminLayout currentTab={SettingsSection.Account}>
       <OrganizationAccountView
-        spaces={spacesData?.spaces ?? []}
+        spaces={spaces}
         virtualContributors={virtualContributors}
         innovationPacks={innovationPacks}
         innovationHubs={innovationHubs}
         loading={loading}
-        spacesLoading={spacesLoading}
       />
     </OrganizationAdminLayout>
   );

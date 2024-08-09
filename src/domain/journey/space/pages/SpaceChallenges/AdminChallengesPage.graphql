@@ -9,26 +9,24 @@ query AdminSpaceChallengesPage($spaceId: UUID_NAMEID!) {
         url
       }
     }
-    account {
+    defaults {
       id
-      defaults {
-        innovationFlowTemplate {
-          id
-          profile {
-            ...InnovationFlowProfile
-          }
-          states {
-            displayName
-            description
-          }
+      innovationFlowTemplate {
+        id
+        profile {
+          ...InnovationFlowProfile
+        }
+        states {
+          displayName
+          description
         }
       }
     }
   }
 }
 
-mutation UpdateSpaceDefaultInnovationFlowTemplate($spaceId: UUID!, $innovationFlowTemplateId: UUID!) {
-  updateSpaceDefaults(spaceDefaultsData: { spaceID: $spaceId, flowTemplateID: $innovationFlowTemplateId }) {
+mutation UpdateSpaceDefaultInnovationFlowTemplate($spaceDefaultsID: UUID!, $innovationFlowTemplateId: UUID!) {
+  updateSpaceDefaults(spaceDefaultsData: { spaceDefaultsID: $spaceDefaultsID, flowTemplateID: $innovationFlowTemplateId }) {
     id
   }
 }

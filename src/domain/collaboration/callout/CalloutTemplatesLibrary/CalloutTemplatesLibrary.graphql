@@ -1,14 +1,14 @@
 query SpaceCalloutTemplatesLibrary($spaceNameId: UUID_NAMEID!) {
   space(ID: $spaceNameId) {
     id
+    library {
+      id
+      calloutTemplates {
+        ...CalloutTemplateCard
+      }
+    }
     account {
       id
-      library {
-        id
-        calloutTemplates {
-          ...CalloutTemplateCard
-        }
-      }
       host {
         id
         nameID

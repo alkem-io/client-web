@@ -1,14 +1,14 @@
 query SpacePostTemplatesLibrary($spaceNameId: UUID_NAMEID!) {
   space(ID: $spaceNameId) {
     id
+    library {
+      id
+      postTemplates {
+        ...PostTemplateCard
+      }
+    }
     account {
       id
-      library {
-        id
-        postTemplates {
-          ...PostTemplateCard
-        }
-      }
       host {
         id
         nameID

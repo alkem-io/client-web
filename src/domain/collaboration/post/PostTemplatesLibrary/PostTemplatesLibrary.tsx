@@ -51,7 +51,7 @@ const PostTemplatesLibrary: FC<PostTemplatesLibraryProps> = ({ onSelectTemplate 
     () =>
       applyFilter(
         filter,
-        spaceData?.space.account.library?.postTemplates.map(template => ({
+        spaceData?.space.library?.postTemplates.map(template => ({
           ...template,
           innovationPack: {
             profile: { displayName: '' },

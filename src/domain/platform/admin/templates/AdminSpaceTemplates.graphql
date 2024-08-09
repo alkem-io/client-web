@@ -2,29 +2,26 @@ query AdminSpaceTemplates($spaceId: UUID!) {
   lookup {
     space(ID: $spaceId) {
       id
-      account {
+      library {
         id
-        library {
+        authorization {
           id
-          authorization {
-            id
-            myPrivileges
-          }
-          calloutTemplates {
-            ...AdminCalloutTemplate
-          }
-          postTemplates {
-            ...AdminPostTemplate
-          }
-          whiteboardTemplates {
-            ...AdminWhiteboardTemplate
-          }
-          innovationFlowTemplates {
-            ...AdminInnovationFlowTemplate
-          }
-          communityGuidelinesTemplates {
-            ...AdminCommunityGuidelinesTemplate
-          }
+          myPrivileges
+        }
+        calloutTemplates {
+          ...AdminCalloutTemplate
+        }
+        postTemplates {
+          ...AdminPostTemplate
+        }
+        whiteboardTemplates {
+          ...AdminWhiteboardTemplate
+        }
+        innovationFlowTemplates {
+          ...AdminInnovationFlowTemplate
+        }
+        communityGuidelinesTemplates {
+          ...AdminCommunityGuidelinesTemplate
         }
       }
     }
@@ -34,17 +31,14 @@ query AdminSpaceTemplates($spaceId: UUID!) {
 query AdminCommunityGuidelinesTemplates($spaceId: UUID_NAMEID!) {
   space(ID: $spaceId) {
     id
-    account {
+    library {
       id
-      library {
+      authorization {
         id
-        authorization {
-          id
-          myPrivileges
-        }
-        communityGuidelinesTemplates {
-          ...AdminCommunityGuidelinesTemplate
-        }
+        myPrivileges
+      }
+      communityGuidelinesTemplates {
+        ...AdminCommunityGuidelinesTemplate
       }
     }
   }

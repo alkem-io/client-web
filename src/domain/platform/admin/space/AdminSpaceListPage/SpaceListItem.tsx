@@ -9,7 +9,6 @@ import {
   refetchAdminSpacesListQuery,
   useAssignLicensePlanToAccountMutation,
   useRevokeLicensePlanFromAccountMutation,
-  useUpdateAccountPlatformSettingsMutation,
   useUpdateSpacePlatformSettingsMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import ListItemLink, { ListItemLinkProps } from '../../../../shared/components/SearchableList/ListItemLink';
@@ -25,7 +24,6 @@ import useLoadingState from '../../../../shared/utils/useLoadingState';
 import PlansTable, { LicensePlan } from './PlansTable';
 import AssignPlan from './AssignPlan';
 import FlexSpacer from '../../../../../core/ui/utils/FlexSpacer';
-import { Host, HostSelector } from './HostSelector';
 import FormikAutocomplete from '../../../../../core/ui/forms/FormikAutocomplete';
 import FormikInputField from '../../../../../core/ui/forms/FormikInputField/FormikInputField';
 import { FormikSelectValue } from '../../../../../core/ui/forms/FormikSelect';
@@ -36,7 +34,6 @@ export interface SpacePlatformSettings {
 }
 
 export interface AccountPlatformSettings {
-  host: Host | undefined;
   activeLicensePlanIds: string[] | undefined;
 }
 
@@ -51,7 +48,7 @@ const SpaceListItem = ({
   spaceId,
   accountId,
   nameId,
-  account: { host, activeLicensePlanIds },
+  account: { activeLicensePlanIds },
   licensePlans,
   visibility,
   ...props
@@ -65,25 +62,17 @@ const SpaceListItem = ({
   };
 
   const initialValues = {
-    host,
     nameId,
     visibility,
   };
 
-  const [updateAccountSettings] = useUpdateAccountPlatformSettingsMutation();
-  const [updatePlatformSettings] = useUpdateSpacePlatformSettingsMutation();
+  const [updateSpacePlatformSettings] = useUpdateSpacePlatformSettingsMutation();
   const [assignLicensePlan] = useAssignLicensePlanToAccountMutation();
   const [revokeLicensePlan] = useRevokeLicensePlanFromAccountMutation();
 
   const [handleSubmit, saving] = useLoadingState(
-    async ({ host, nameId, visibility }: Partial<AccountPlatformSettings & SpacePlatformSettings>) => {
-      await updateAccountSettings({
-        variables: {
-          accountId,
-          hostId: host?.id,
-        },
-      });
-      await updatePlatformSettings({
+    async ({ nameId, visibility }: Partial<AccountPlatformSettings & SpacePlatformSettings>) => {
+      await updateSpacePlatformSettings({
         variables: {
           spaceId,
           nameId: nameId!,
@@ -149,7 +138,6 @@ const SpaceListItem = ({
                   placeholder={t('components.nameSegment.nameID.placeholder')}
                   required
                 />
-                <HostSelector name="host" host={host} />
                 <FormikAutocomplete
                   name="visibility"
                   values={visibilitySelectOptions}

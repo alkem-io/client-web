@@ -24,7 +24,7 @@ import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 import RouterLink from '../../../../core/ui/link/RouterLink';
 import { useConfig } from '../../../platform/config/useConfig';
 import PlansTableDialog from './plansTable/PlansTableDialog';
-import { useCreateNewSpaceMutation } from '../../../../core/apollo/generated/apollo-hooks';
+import { useCreateSpaceMutation } from '../../../../core/apollo/generated/apollo-hooks';
 import Loading from '../../../../core/ui/loading/Loading';
 import { TagCategoryValues, info } from '../../../../core/logging/sentry/log';
 import { compact } from 'lodash';
@@ -65,7 +65,6 @@ const CreateSpaceDialog = () => {
     nameID: '',
     tagline: '',
     tagsets,
-    hostId: '',
     licensePlanId: '',
   };
 
@@ -84,7 +83,7 @@ const CreateSpaceDialog = () => {
 
   const config = useConfig();
 
-  const [CreateNewSpace] = useCreateNewSpaceMutation();
+  const [CreateNewSpace] = useCreateSpaceMutation();
   const [handleSubmit] = useLoadingState(async (values: Partial<FormValues>) => {
     if (!user?.user.id) {
       return;
@@ -94,8 +93,8 @@ const CreateSpaceDialog = () => {
     setCreatingDialogOpen(true);
     const { data: newSpace } = await CreateNewSpace({
       variables: {
-        hostId: user.user.id,
         spaceData: {
+          accountID: '', // TODO: pick up from where the space is being created
           nameID: values.nameID,
           profileData: {
             displayName: values.name!, // ensured by yup validation
@@ -104,15 +103,15 @@ const CreateSpaceDialog = () => {
           collaborationData: {},
           tags: compact(values.tagsets?.reduce((acc: string[], tagset) => [...acc, ...tagset.tags], [])),
         },
-        licensePlanId: values.licensePlanId,
       },
       refetchQueries: ['UserAccount'],
     });
 
-    if (newSpace?.createAccount.spaceID) {
+    const spaceID = newSpace?.createSpace.id;
+    if (spaceID) {
       setDialogOpen(false);
       setCreatingDialogOpen(false);
-      info(`Space Created SpaceId:${newSpace.createAccount.spaceID} Plan:${values.licensePlanId}`, {
+      info(`Space Created SpaceId:${spaceID}`, {
         category: TagCategoryValues.SPACE_CREATION,
         label: 'Space Created',
       });
