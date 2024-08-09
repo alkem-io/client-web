@@ -40,6 +40,10 @@ import SetupVCInfo from './SetupVCInfo';
 import { info } from '../../../../core/logging/sentry/log';
 
 const SPACE_LABEL = '(space)';
+const entityNamePostfixes = {
+  SPACE: "'s Space",
+  SUBSPACE: "'s Knowledge Subspace",
+};
 
 type Step = 'initial' | 'createSpace' | 'addKnowledge' | 'existingKnowledge' | 'loadingVCSetup';
 
@@ -50,8 +54,13 @@ interface useNewVirtualContributorWizardProvided {
 
 interface NewVirtualContributorWizardProps {}
 
-const generateSpaceName = (name: string) => `${name}'s Space`;
-const generateSubSpaceName = (name: string) => `${name}'s BoK`;
+// generate name for the space/subspace based on the VC name
+// index is needed in case of canceling the flow. Creation with the same name/nameID leads to issues accessing it later
+const generateEntityName = (name: string, entityPostfix: string, index: number = 0) => {
+  return `${name}${entityPostfix}${index > 0 ? ` ${index}` : ''}`;
+};
+const generateSpaceName = (name: string, index?: number) => generateEntityName(name, entityNamePostfixes.SPACE, index);
+const generateSubSpaceName = (name: string) => generateEntityName(name, entityNamePostfixes.SUBSPACE);
 
 const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvided => {
   const { t } = useTranslation();
@@ -63,6 +72,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
   const [step, setStep] = useState<Step>('initial');
   const [spaceId, setSpaceId] = useState<string>();
   const [bokId, setbokId] = useState<string | undefined>(undefined);
+  const [creationIndex, setCreationIndex] = useState<number>(0);
   const [bokCommunityId, setBokCommunityId] = useState<string | undefined>(undefined);
   const [accountId, setAccountId] = useState<string>();
   const [virtualContributorInput, setVirtualContributorInput] = useState<VirtualContributorFromProps | undefined>(
@@ -218,7 +228,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
           hostId: user?.user.id,
           spaceData: {
             profileData: {
-              displayName: generateSpaceName(user?.user.profile.displayName!),
+              displayName: generateSpaceName(user?.user.profile.displayName!, creationIndex),
             },
             collaborationData: {},
           },
@@ -228,6 +238,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
 
       setSpaceId(newSpace?.createAccount.spaceID);
       setAccountId(newSpace?.createAccount.id);
+      setCreationIndex(0);
     }
 
     setStep('addKnowledge');
@@ -263,6 +274,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
         },
       });
 
+      setCreationIndex(prevIndex => prevIndex + 1);
       setSpaceId(undefined);
     }
 
