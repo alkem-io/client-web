@@ -96,7 +96,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
 
   const handleAddContent = async (values: ContentFormValues) => {
     setCalloutPostData(values.posts);
-    const docsFiltered = values.documents.filter(doc => doc.url);
+    const docsFiltered = values.documents.filter(doc => doc.url && doc.name);
     setCalloutDocumentData(docsFiltered);
     // trigger useEffect to create the callout once canCreateCallout is true
     setTryCreateCallout(true);
