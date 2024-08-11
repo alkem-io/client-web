@@ -19,7 +19,6 @@ import {
   CalloutType,
   CalloutVisibility,
   LicensePlanType,
-  NewVirtualContributorMySpacesQuery,
 } from '../../../../core/apollo/generated/graphql-schema';
 import CreateNewVirtualContributor, { VirtualContributorFromProps } from './CreateNewVirtualContributor';
 import LoadingState from './LoadingState';
@@ -108,24 +107,12 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     fetchPolicy: 'cache-and-network',
   });
 
-  const findMySpaces = (
-    userId: string | undefined,
-    mySpaces: NewVirtualContributorMySpacesQuery['me']['user']['account']['spaces'] | undefined
-  ) => {
-    if (!userId || !mySpaces) {
-      return undefined;
-    }
-
-    const spacesHostedByUser = mySpaces.filter(space => space.account.host?.id === userId);
-    if (spacesHostedByUser.length > 0) {
-      return spacesHostedByUser;
-    }
-  };
-
   // selectableSpaces are space and subspaces
   // subspaces has communityId in order to manually add the VC to it
   const { mySpaceId, myAccountId, selectableSpaces } = useMemo(() => {
-    const mySpaces = findMySpaces(user?.user.id, data?.me.user?.account.spaces);
+    const account = data?.me.user?.account;
+    const accountID = account?.id || ''; // TODO: how to handle this?
+    const mySpaces = account?.spaces;
     let selectableSpaces: SelectableKnowledgeProps[] = [];
 
     mySpaces?.forEach(space => {
@@ -133,15 +120,15 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
         selectableSpaces.push({
           id: space.id,
           name: `${space.profile.displayName} ${SPACE_LABEL}`,
-          accountId: space.account.id,
+          accountId: accountID,
           url: space.profile.url,
         });
         selectableSpaces = selectableSpaces.concat(
           space.subspaces?.map(subspace => ({
             id: subspace.id,
             name: subspace.profile.displayName,
-            accountId: space.account.id,
-            url: space.profile.url,
+            accountId: accountID,
+            url: subspace.profile.url, // TODO: subspace?
             communityId: subspace.community.id,
           })) ?? []
         );
@@ -149,8 +136,8 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     });
 
     return {
-      mySpaceId: mySpaces?.[0]?.id,
-      myAccountId: mySpaces?.[0]?.account.id,
+      mySpaceId: mySpaces?.[0]?.id, // TODO: what is this field for?
+      myAccountId: accountID,
       selectableSpaces,
     };
   }, [data, user]);
