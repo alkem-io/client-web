@@ -551,6 +551,8 @@ export type Agent = {
   did?: Maybe<Scalars['DID']>;
   /** The ID of the entity */
   id: Scalars['UUID'];
+  /** A type of entity that this Agent is being used with. */
+  type?: Maybe<AgentType>;
   /** The date at which the entity was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
   /** The Verfied Credentials for this Agent. */
@@ -572,6 +574,14 @@ export type AgentBeginVerifiedCredentialRequestOutput = {
   /** The QR Code Image to be offered on the client for scanning by a mobile wallet */
   qrCodeImg: Scalars['String'];
 };
+
+export enum AgentType {
+  Account = 'ACCOUNT',
+  Organization = 'ORGANIZATION',
+  Space = 'SPACE',
+  User = 'USER',
+  VirtualContributor = 'VIRTUAL_CONTRIBUTOR',
+}
 
 export type AiPersona = {
   __typename?: 'AiPersona';
@@ -5378,6 +5388,8 @@ export type StorageAggregator = {
   storageAggregators: Array<StorageAggregator>;
   /** The Storage Buckets that are being managed via this StorageAggregators. */
   storageBuckets: Array<StorageBucket>;
+  /** A type of entity that this StorageAggregator is being used with. */
+  type?: Maybe<StorageAggregatorType>;
   /** The date at which the entity was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
 };
@@ -5388,11 +5400,19 @@ export type StorageAggregatorParent = {
   displayName: Scalars['String'];
   /** The UUID of the parent entity. */
   id: Scalars['UUID'];
-  /** The level of the parent Entity. */
-  level: SpaceLevel;
+  /** If the parent entity is a Space, then the level of the Space. */
+  level?: Maybe<SpaceLevel>;
   /** The URL that can be used to access the parent entity. */
   url: Scalars['String'];
 };
+
+export enum StorageAggregatorType {
+  Account = 'ACCOUNT',
+  Organization = 'ORGANIZATION',
+  Platform = 'PLATFORM',
+  Space = 'SPACE',
+  User = 'USER',
+}
 
 export type StorageBucket = {
   __typename?: 'StorageBucket';
@@ -24056,7 +24076,7 @@ export type SpaceStorageAdminPageQuery = {
               | {
                   __typename?: 'StorageAggregatorParent';
                   id: string;
-                  level: SpaceLevel;
+                  level?: SpaceLevel | undefined;
                   displayName: string;
                   url: string;
                 }
@@ -24068,7 +24088,7 @@ export type SpaceStorageAdminPageQuery = {
                 | {
                     __typename?: 'StorageAggregatorParent';
                     id: string;
-                    level: SpaceLevel;
+                    level?: SpaceLevel | undefined;
                     displayName: string;
                     url: string;
                   }
@@ -24172,7 +24192,7 @@ export type StorageAggregatorLookupQuery = {
             | {
                 __typename?: 'StorageAggregatorParent';
                 id: string;
-                level: SpaceLevel;
+                level?: SpaceLevel | undefined;
                 displayName: string;
                 url: string;
               }
@@ -24184,7 +24204,7 @@ export type StorageAggregatorLookupQuery = {
               | {
                   __typename?: 'StorageAggregatorParent';
                   id: string;
-                  level: SpaceLevel;
+                  level?: SpaceLevel | undefined;
                   displayName: string;
                   url: string;
                 }
@@ -24255,13 +24275,25 @@ export type StorageAggregatorFragment = {
   __typename?: 'StorageAggregator';
   id: string;
   parentEntity?:
-    | { __typename?: 'StorageAggregatorParent'; id: string; level: SpaceLevel; displayName: string; url: string }
+    | {
+        __typename?: 'StorageAggregatorParent';
+        id: string;
+        level?: SpaceLevel | undefined;
+        displayName: string;
+        url: string;
+      }
     | undefined;
   storageAggregators: Array<{
     __typename?: 'StorageAggregator';
     id: string;
     parentEntity?:
-      | { __typename?: 'StorageAggregatorParent'; id: string; level: SpaceLevel; displayName: string; url: string }
+      | {
+          __typename?: 'StorageAggregatorParent';
+          id: string;
+          level?: SpaceLevel | undefined;
+          displayName: string;
+          url: string;
+        }
       | undefined;
   }>;
   storageBuckets: Array<{
@@ -24326,7 +24358,13 @@ export type LoadableStorageAggregatorFragment = {
   __typename?: 'StorageAggregator';
   id: string;
   parentEntity?:
-    | { __typename?: 'StorageAggregatorParent'; id: string; level: SpaceLevel; displayName: string; url: string }
+    | {
+        __typename?: 'StorageAggregatorParent';
+        id: string;
+        level?: SpaceLevel | undefined;
+        displayName: string;
+        url: string;
+      }
     | undefined;
 };
 
@@ -24370,7 +24408,7 @@ export type StorageBucketParentFragment = {
 export type StorageAggregatorParentFragment = {
   __typename?: 'StorageAggregatorParent';
   id: string;
-  level: SpaceLevel;
+  level?: SpaceLevel | undefined;
   displayName: string;
   url: string;
 };

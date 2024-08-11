@@ -54,7 +54,11 @@ interface Provided {
   reload: () => void;
 }
 
-export const getStorageAggregatorParentIcon = (level: SpaceLevel) => {
+export const getStorageAggregatorParentIcon = (level: SpaceLevel | undefined) => {
+  if (!level) {
+    // TODO: do we have an undefined icon?
+    return SpaceIcon;
+  }
   switch (level) {
     case SpaceLevel.Space:
       return SpaceIcon;
