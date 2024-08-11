@@ -53,19 +53,6 @@ export interface MyAccountSpace extends Pick<Space, 'id' | 'level'> {
       name: string;
     };
   };
-  account: {
-    id: string;
-    host?: {
-      id: string;
-      nameID: string;
-      profile: {
-        id: string;
-        displayName: string;
-        tagline: string;
-        url: string;
-      };
-    };
-  };
 }
 
 const MyAccountBlock = () => {
@@ -73,11 +60,10 @@ const MyAccountBlock = () => {
   const { data, loading } = useMyAccountQuery({ fetchPolicy: 'cache-and-network' });
   const { startWizard, NewVirtualContributorWizard } = useNewVirtualContributorWizard();
 
-  // Curently displaying only the first hosted space and the first VC in it.
-  const hostedSpace = data?.me.myCreatedSpaces.find(
-    spaceData => spaceData.account && spaceData.account.host?.id === data?.me.user?.id && spaceData.level === 0
-  );
+  // Curently displaying only the first hosted space and the first VC in it
 
+  const spaces = data?.me.user?.account.spaces ?? [];
+  const hostedSpace = spaces[0];
   const virtualContributors: MyAccountVirtualContributor[] = data?.me.user?.account.virtualContributors ?? [];
 
   const { user } = useUserContext();

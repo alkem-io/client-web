@@ -793,7 +793,6 @@ export type Authorization = {
 };
 
 export enum AuthorizationCredential {
-  AccountHost = 'ACCOUNT_HOST',
   BetaTester = 'BETA_TESTER',
   GlobalAdmin = 'GLOBAL_ADMIN',
   GlobalCommunityRead = 'GLOBAL_COMMUNITY_READ',
@@ -2073,7 +2072,6 @@ export type CredentialMetadataOutput = {
 };
 
 export enum CredentialType {
-  AccountHost = 'ACCOUNT_HOST',
   BetaTester = 'BETA_TESTER',
   FeatureCalloutToCalloutTemplate = 'FEATURE_CALLOUT_TO_CALLOUT_TEMPLATE',
   FeatureVirtualContributors = 'FEATURE_VIRTUAL_CONTRIBUTORS',
@@ -2943,8 +2941,6 @@ export type MeQueryResults = {
   communityInvitations: Array<CommunityInvitationResult>;
   /** The query id */
   id: Scalars['String'];
-  /** The Spaces I have created */
-  myCreatedSpaces: Array<Space>;
   /** The Spaces I am contributing to */
   mySpaces: Array<MySpaceResults>;
   /** The Spaces the current user is a member of as a flat list. */
@@ -2961,10 +2957,6 @@ export type MeQueryResultsCommunityApplicationsArgs = {
 
 export type MeQueryResultsCommunityInvitationsArgs = {
   states?: InputMaybe<Array<Scalars['String']>>;
-};
-
-export type MeQueryResultsMyCreatedSpacesArgs = {
-  limit?: InputMaybe<Scalars['Float']>;
 };
 
 export type MeQueryResultsMySpacesArgs = {
@@ -30409,44 +30401,6 @@ export type MyAccountQuery = {
   __typename?: 'Query';
   me: {
     __typename?: 'MeQueryResults';
-    myCreatedSpaces: Array<{
-      __typename?: 'Space';
-      id: string;
-      level: number;
-      profile: {
-        __typename?: 'Profile';
-        id: string;
-        displayName: string;
-        tagline: string;
-        url: string;
-        avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-        cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-      };
-      account: {
-        __typename?: 'Account';
-        id: string;
-        host?:
-          | {
-              __typename?: 'Organization';
-              id: string;
-              nameID: string;
-              profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string; url: string };
-            }
-          | {
-              __typename?: 'User';
-              id: string;
-              nameID: string;
-              profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string; url: string };
-            }
-          | {
-              __typename?: 'VirtualContributor';
-              id: string;
-              nameID: string;
-              profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string; url: string };
-            }
-          | undefined;
-      };
-    }>;
     user?:
       | {
           __typename?: 'User';
@@ -30469,6 +30423,20 @@ export type MyAccountQuery = {
                 tagline: string;
                 url: string;
                 avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              };
+            }>;
+            spaces: Array<{
+              __typename?: 'Space';
+              id: string;
+              level: number;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                tagline: string;
+                url: string;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
               };
             }>;
           };
@@ -30661,28 +30629,34 @@ export type NewVirtualContributorMySpacesQuery = {
   me: {
     __typename?: 'MeQueryResults';
     id: string;
-    myCreatedSpaces: Array<{
-      __typename?: 'Space';
-      id: string;
-      account: {
-        __typename?: 'Account';
-        id: string;
-        host?:
-          | { __typename?: 'Organization'; id: string }
-          | { __typename?: 'User'; id: string }
-          | { __typename?: 'VirtualContributor'; id: string }
-          | undefined;
-      };
-      community: { __typename?: 'Community'; id: string };
-      profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
-      subspaces: Array<{
-        __typename?: 'Space';
-        id: string;
-        type: SpaceType;
-        profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
-        community: { __typename?: 'Community'; id: string };
-      }>;
-    }>;
+    user?:
+      | {
+          __typename?: 'User';
+          id: string;
+          account: {
+            __typename?: 'Account';
+            id: string;
+            host?:
+              | { __typename?: 'Organization'; id: string }
+              | { __typename?: 'User'; id: string }
+              | { __typename?: 'VirtualContributor'; id: string }
+              | undefined;
+            spaces: Array<{
+              __typename?: 'Space';
+              id: string;
+              community: { __typename?: 'Community'; id: string };
+              profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+              subspaces: Array<{
+                __typename?: 'Space';
+                id: string;
+                type: SpaceType;
+                profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+                community: { __typename?: 'Community'; id: string };
+              }>;
+            }>;
+          };
+        }
+      | undefined;
   };
 };
 

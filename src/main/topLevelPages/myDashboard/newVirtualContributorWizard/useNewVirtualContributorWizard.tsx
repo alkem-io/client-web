@@ -110,7 +110,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
 
   const findMySpaces = (
     userId: string | undefined,
-    mySpaces: NewVirtualContributorMySpacesQuery['me']['myCreatedSpaces'] | undefined
+    mySpaces: NewVirtualContributorMySpacesQuery['me']['user']['account']['spaces'] | undefined
   ) => {
     if (!userId || !mySpaces) {
       return undefined;
@@ -125,7 +125,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
   // selectableSpaces are space and subspaces
   // subspaces has communityId in order to manually add the VC to it
   const { mySpaceId, myAccountId, selectableSpaces } = useMemo(() => {
-    const mySpaces = findMySpaces(user?.user.id, data?.me.myCreatedSpaces);
+    const mySpaces = findMySpaces(user?.user.id, data?.me.user?.account.spaces);
     let selectableSpaces: SelectableKnowledgeProps[] = [];
 
     mySpaces?.forEach(space => {
