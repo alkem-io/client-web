@@ -40,7 +40,11 @@ const AddContent = ({ onClose, onCreateVC }: AddContentProps) => {
   const validationSchema = yup.object().shape({
     posts: yup.array().of(
       yup.object().shape({
-        title: yup.string().min(3, MessageWithPayload('forms.validations.minLength')).max(SMALL_TEXT_LENGTH).required(),
+        title: yup
+          .string()
+          .min(3, MessageWithPayload('forms.validations.minLength'))
+          .max(SMALL_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength'))
+          .required(),
         description: MarkdownValidator(LONG_MARKDOWN_TEXT_LENGTH),
       })
     ),
