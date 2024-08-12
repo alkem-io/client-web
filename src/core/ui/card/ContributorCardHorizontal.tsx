@@ -20,9 +20,9 @@ export interface ContributorCardHorizontalProps {
         tagline?: string;
         location?: Location;
         tagsets?: { tags: string[] }[];
+        url?: string;
       }
     | undefined;
-  url?: string;
   onContact?: () => void;
   seamless?: boolean;
   actions?: ReactNode;
@@ -30,7 +30,6 @@ export interface ContributorCardHorizontalProps {
 }
 
 const ContributorCardHorizontal = ({
-  url,
   profile,
   onContact,
   seamless = false,
@@ -47,7 +46,7 @@ const ContributorCardHorizontal = ({
   if (!seamless) {
     return (
       <SwapColors>
-        <ContributorCardHorizontal profile={profile} url={url} onContact={onContact} seamless />
+        <ContributorCardHorizontal profile={profile} onContact={onContact} seamless />
       </SwapColors>
     );
   }
@@ -75,7 +74,7 @@ const ContributorCardHorizontal = ({
               </Avatar>
             }
             component={RouterLink}
-            to={url ?? ''}
+            to={profile?.url ?? ''}
           >
             <Box display="flex" flexDirection="row" justifyContent="space-between">
               <Box display="flex" flexDirection="column">

@@ -268,8 +268,8 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
                   avatar: hostOrganization.profile.avatar,
                   location: hostOrganization.profile.location,
                   tagsets: undefined,
+                  url: hostOrganization.profile.url,
                 }}
-                url={hostOrganization.profile.url}
                 seamless
               />
             </Gutters>

@@ -70,8 +70,8 @@ const ContributingOrganizations: FC<ContributingOrganizationsProps> = ({
           city: org.city,
           country: org.country,
         },
+        url: org.url,
       } || undefined,
-    url: org.url,
     titleEndAmendment: renderAssociatesCount(org),
     onContact: () => {
       sendMessage('organization', {
