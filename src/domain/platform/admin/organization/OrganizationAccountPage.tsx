@@ -20,7 +20,10 @@ const OrganizationAccountPage: FC<SettingsPageProps> = () => {
   const { spaceIds, virtualContributors, innovationPacks, innovationHubs } = useMemo(
     () => ({
       spaceIds: compact(accounts.flatMap(account => account.spaceID)),
-      virtualContributors: accounts.flatMap(account => account.virtualContributors) ?? [],
+      virtualContributors: (accounts.flatMap(account => account.virtualContributors) ?? []).map(vc => ({
+        ...vc,
+        url: vc.profile.url,
+      })), // ContributorsCards have their url in the root of the properties
       innovationPacks: accounts.flatMap(account => account.innovationPacks) ?? [],
       innovationHubs: accounts.flatMap(account => account.innovationHubs) ?? [],
     }),

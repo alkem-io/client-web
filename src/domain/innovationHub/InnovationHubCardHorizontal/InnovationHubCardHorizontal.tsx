@@ -4,9 +4,10 @@ import Avatar from '../../../core/ui/avatar/Avatar';
 import RouterLink from '../../../core/ui/link/RouterLink';
 import { Caption, CardTitle } from '../../../core/ui/typography';
 import OneLineMarkdown from '../../../core/ui/markdown/OneLineMarkdown';
-import { SpaceVisibility } from '../../../core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, SpaceVisibility } from '../../../core/apollo/generated/graphql-schema';
 import { gutters } from '../../../core/ui/grid/utils';
 import { useTranslation } from 'react-i18next';
+import { useUserContext } from '../../community/user';
 
 export const InnovationHubCardHorizontalSkeleton = () => (
   <BadgeCardView
@@ -62,8 +63,13 @@ const InnovationHubCardHorizontal = ({
   profile: { displayName, description, url, banner },
   ...spaces
 }: InnovationHubCardHorizontalProps) => {
+  const { user: { hasPlatformPrivilege } = {} } = useUserContext();
+  const isPlatformAdmin = hasPlatformPrivilege?.(AuthorizationPrivilege.PlatformAdmin);
+
+  const SelectComponent = () => (url && isPlatformAdmin ? { component: RouterLink, to: url } : { component: Box });
+
   return (
-    <BadgeCardView visual={<Avatar src={banner?.uri} size="medium" />} component={RouterLink} to={url ?? ''}>
+    <BadgeCardView visual={<Avatar src={banner?.uri} size="medium" />} {...SelectComponent()}>
       <Box display="flex" flexDirection="row" justifyContent="space-between">
         <Box display="flex" flexDirection="column">
           <CardTitle>{displayName}</CardTitle>

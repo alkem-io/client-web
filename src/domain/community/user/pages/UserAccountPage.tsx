@@ -97,8 +97,7 @@ export const UserAccountPage: FC<UserAccountPageProps> = () => {
         <PageContentBlock halfWidth>
           <BlockTitle>{t('pages.admin.generic.sections.account.innovationPacks')}</BlockTitle>
           {loading && <InnovationPackCardHorizontalSkeleton />}
-          {!loading &&
-            innovationPacks?.map(pack => <InnovationPackCardHorizontal profile={pack.profile} {...pack.templates} />)}
+          {!loading && innovationPacks?.map(pack => <InnovationPackCardHorizontal {...pack} />)}
           <Actions>{isMyProfile && accountId && <CreateInnovationPackDialog accountId={accountId} />}</Actions>
         </PageContentBlock>
         {innovationHubs.length > 0 && (
