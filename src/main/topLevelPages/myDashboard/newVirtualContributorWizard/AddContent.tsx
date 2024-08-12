@@ -11,7 +11,7 @@ import Gutters from '../../../../core/ui/grid/Gutters';
 import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
 import FormikMarkdownField from '../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
 import { Actions } from '../../../../core/ui/actions/Actions';
-import { LONG_MARKDOWN_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
+import { LONG_MARKDOWN_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 import CancelDialog from './CancelDialog';
 import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
 import { pullAt } from 'lodash';
@@ -45,7 +45,11 @@ const AddContent = ({ onClose, onCreateVC }: AddContentProps) => {
       .array()
       .of(
         yup.object().shape({
-          title: yup.string().min(3, MessageWithPayload('forms.validations.minLength')).required(),
+          title: yup
+            .string()
+            .min(3, MessageWithPayload('forms.validations.minLength'))
+            .max(SMALL_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength'))
+            .required(MessageWithPayload('forms.validations.requiredField')),
           description: MarkdownValidator(LONG_MARKDOWN_TEXT_LENGTH),
         })
       )
