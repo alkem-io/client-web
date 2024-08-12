@@ -125,6 +125,10 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
     onCompleted: data => {
       notify(t('pages.admin.space.notifications.space-removed', { name: data.deleteSpace.nameID }), 'success');
       navigate(ROUTE_HOME, { replace: true });
+      // Resetting the Apollo cache is not working well, because the page has not fully navigated
+      // to the dashboard when we reset, so Apollo is trying to reload SpaceProvider
+      // with the "just deleted" spaceId. With navigate(0) we just reload the page and that clears the cache.
+      navigate(0);
     },
   });
 
