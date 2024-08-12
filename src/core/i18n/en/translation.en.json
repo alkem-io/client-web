@@ -888,6 +888,7 @@
   "forms": {
     "validations": {
       "required": "This field is required!",
+      "requiredField": "{{field}} is required!",
       "minLength": "{{field}} should be at least {{min}} symbols long",
       "maxLength": "Exceeded the limit of {{max}} characters",
       "alphaNumeric": "{{field}} can contain only lower case latin characters, numbers and hyphens",
@@ -2966,6 +2967,7 @@
         "title": "Post title",
         "exampleTitle": "Example: About Alkemio",
         "exampleDescription": "Tip: Create a structured and specific text, for example:\n\n<strong>Background</strong>\n\nAlkemio, founded in 2020, was born out of frustration with slow progress on COVID-related challenges and a recognition of the numerous fast-moving challenges we face daily.\n\n<strong>Governance</strong>\n\nTo maintain trust and realize our long-term vision, we’ve adopted Steward Ownership as our core group structure. Steward ownership is...\n",
+        "titleError": "Post title is a required field",
         "addAnotherPost": "Add another post",
         "tooltip": "More posts can be added in the Body of Knowledge once the VC is created",
         "initialPosts": "Initial Posts",
