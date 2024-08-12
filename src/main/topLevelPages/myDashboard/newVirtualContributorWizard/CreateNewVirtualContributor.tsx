@@ -126,7 +126,7 @@ const CreateNewVirtualContributor = ({
         {!loading && (
           <Gutters disablePadding>
             <Caption>{t('createVirtualContributorWizard.initial.profileDescription')}</Caption>
-            <GridContainer disablePadding>
+            <GridContainer disablePadding sx={{ display: 'contents' }}>
               <GridProvider columns={12}>
                 <Formik
                   initialValues={initialValues}
