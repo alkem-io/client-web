@@ -105,12 +105,14 @@ const CreateNewVirtualContributor = ({
   };
 
   const handleSubmit = (values: VirtualContributorFromProps) => {
+    const name = values.name.trim();
+    const newValues = { ...values, name };
     switch (source) {
       case VCSourceOptions.WRITTEN_KNOWLEDGE:
-        onCreateSpace(values);
+        onCreateSpace(newValues);
         break;
       case VCSourceOptions.EXISTING_SPACE:
-        onUseExistingKnowledge(values);
+        onUseExistingKnowledge(newValues);
         break;
       case VCSourceOptions.EXTERNAL:
         setExernalOpen(true);
