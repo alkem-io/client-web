@@ -49,7 +49,7 @@ const AddContent = ({ onClose, onCreateVC }: AddContentProps) => {
             .string()
             .min(3, MessageWithPayload('forms.validations.minLength'))
             .max(SMALL_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength'))
-            .required(t('createVirtualContributorWizard.addContent.post.titleError')),
+            .required(MessageWithPayload('forms.validations.requiredField')),
           description: MarkdownValidator(LONG_MARKDOWN_TEXT_LENGTH),
         })
       )
