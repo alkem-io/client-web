@@ -20,11 +20,13 @@ export interface InnovationPackCardHorizontalProps {
     description?: string;
     url: string;
   };
-  calloutTemplatesCount?: number;
-  communityGuidelinesTemplatesCount?: number;
-  innovationFlowTemplatesCount?: number;
-  postTemplatesCount?: number;
-  whiteboardTemplatesCount?: number;
+  templates?: {
+    calloutTemplatesCount?: number;
+    communityGuidelinesTemplatesCount?: number;
+    innovationFlowTemplatesCount?: number;
+    postTemplatesCount?: number;
+    whiteboardTemplatesCount?: number;
+  };
 }
 
 export const InnovationPackCardHorizontalSkeleton = () => {
@@ -39,13 +41,24 @@ export const InnovationPackCardHorizontalSkeleton = () => {
 
 const InnovationPackCardHorizontal = ({
   profile: { displayName, description, url },
-  calloutTemplatesCount,
-  communityGuidelinesTemplatesCount,
-  innovationFlowTemplatesCount,
-  postTemplatesCount,
-  whiteboardTemplatesCount,
+  templates,
 }: InnovationPackCardHorizontalProps) => {
   const { t } = useTranslation();
+  const {
+    calloutTemplatesCount,
+    communityGuidelinesTemplatesCount,
+    innovationFlowTemplatesCount,
+    postTemplatesCount,
+    whiteboardTemplatesCount,
+  } = templates ?? {};
+
+  const totalTemplatesCount =
+    (calloutTemplatesCount ?? 0) +
+    (communityGuidelinesTemplatesCount ?? 0) +
+    (innovationFlowTemplatesCount ?? 0) +
+    (postTemplatesCount ?? 0) +
+    (whiteboardTemplatesCount ?? 0);
+
   return (
     <BadgeCardView
       visual={<RoundedIcon size="medium" component={InnovationPackIcon} />}
@@ -110,6 +123,7 @@ const InnovationPackCardHorizontal = ({
             <Caption>{innovationFlowTemplatesCount}</Caption>
           </CardFooterCountWithBadge>
         )}
+        {totalTemplatesCount === 0 && <Caption>{t('pages.admin.generic.sections.account.noTemplates')}</Caption>}
       </Box>
     </BadgeCardView>
   );
