@@ -142,8 +142,8 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
     });
   };
 
-  const initiateDeleteVC = (nameID: string) => {
-    setSelectedVirtualContributorId(nameID);
+  const initiateDeleteVC = (id: string) => {
+    setSelectedVirtualContributorId(id);
     openDeleteVCDialog();
   };
 
@@ -377,7 +377,7 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
                       contributor={vc}
                       // space={getBoKSpaceData(vc.bodyOfKnowledgeID ?? '')}
                       hasDelete={canCreateVirtualContributor}
-                      onDeleteClick={() => initiateDeleteVC(vc.nameID)}
+                      onDeleteClick={() => initiateDeleteVC(vc.id)}
                     />
                   ))}
                 {canCreateVirtualContributor && (
