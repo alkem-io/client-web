@@ -66,10 +66,16 @@ const InnovationHubCardHorizontal = ({
   const { user: { hasPlatformPrivilege } = {} } = useUserContext();
   const isPlatformAdmin = hasPlatformPrivilege?.(AuthorizationPrivilege.PlatformAdmin);
 
-  const SelectComponent = () => (url && isPlatformAdmin ? { component: RouterLink, to: url } : { component: Box });
+  const componentProps =
+    url && isPlatformAdmin
+      ? {
+          component: RouterLink,
+          to: url,
+        }
+      : undefined;
 
   return (
-    <BadgeCardView visual={<Avatar src={banner?.uri} size="medium" />} {...SelectComponent()}>
+    <BadgeCardView visual={<Avatar src={banner?.uri} size="medium" />} {...componentProps}>
       <Box display="flex" flexDirection="row" justifyContent="space-between">
         <Box display="flex" flexDirection="column">
           <CardTitle>{displayName}</CardTitle>
