@@ -32,7 +32,6 @@ const TryVCInfoDialog: React.FC<TryVCInfoDialogProps> = ({ vcName, open, onClose
                 values={{ vcName: vcName }}
                 components={{
                   b: <strong />,
-                  i: <em />,
                   icon: <InfoOutlinedIcon fontSize="small" color="primary" style={{ verticalAlign: 'bottom' }} />,
                   tooltip: (
                     <Tooltip title={t('createVirtualContributorWizard.trySection.subTitleInfo')} arrow placement="top">
