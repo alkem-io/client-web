@@ -64,9 +64,7 @@ const WhiteboardShareSettings = ({
         <GridItem columns={4}>
           <Gutters disablePadding>
             <BlockSectionTitle>{t('components.shareSettings.ownedBy.title')}</BlockSectionTitle>
-            {createdBy && (
-              <ContributorCardHorizontal profile={createdBy.profile} url={createdBy.profile.url} seamless />
-            )}
+            {createdBy && <ContributorCardHorizontal profile={createdBy.profile} seamless />}
           </Gutters>
         </GridItem>
         <GridItem columns={4}>

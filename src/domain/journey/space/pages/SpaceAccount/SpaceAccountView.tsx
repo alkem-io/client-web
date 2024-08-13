@@ -125,6 +125,10 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
     onCompleted: data => {
       notify(t('pages.admin.space.notifications.space-removed', { name: data.deleteSpace.nameID }), 'success');
       navigate(ROUTE_HOME, { replace: true });
+      // Resetting the Apollo cache is not working well, because the page has not fully navigated
+      // to the dashboard when we reset, so Apollo is trying to reload SpaceProvider
+      // with the "just deleted" spaceId. With navigate(0) we just reload the page and that clears the cache.
+      navigate(0);
     },
   });
 
@@ -138,8 +142,8 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
     });
   };
 
-  const initiateDeleteVC = (nameID: string) => {
-    setSelectedVirtualContributorId(nameID);
+  const initiateDeleteVC = (id: string) => {
+    setSelectedVirtualContributorId(id);
     openDeleteVCDialog();
   };
 
@@ -268,8 +272,8 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
                   avatar: hostOrganization.profile.avatar,
                   location: hostOrganization.profile.location,
                   tagsets: undefined,
+                  url: hostOrganization.profile.url,
                 }}
-                url={hostOrganization.profile.url}
                 seamless
               />
             </Gutters>
@@ -373,7 +377,7 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
                       contributor={vc}
                       // space={getBoKSpaceData(vc.bodyOfKnowledgeID ?? '')}
                       hasDelete={canCreateVirtualContributor}
-                      onDeleteClick={() => initiateDeleteVC(vc.nameID)}
+                      onDeleteClick={() => initiateDeleteVC(vc.id)}
                     />
                   ))}
                 {canCreateVirtualContributor && (

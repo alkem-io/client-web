@@ -94,7 +94,7 @@ const CreateNewVirtualContributor = ({
   };
 
   const validationSchema = yup.object().shape({
-    name: yup.string().min(3, MessageWithPayload('forms.validations.minLength')).required(),
+    name: yup.string().trim().min(3, MessageWithPayload('forms.validations.minLength')).required(),
     tagline: yup.string(),
     description: yup.string(),
   });
@@ -105,12 +105,14 @@ const CreateNewVirtualContributor = ({
   };
 
   const handleSubmit = (values: VirtualContributorFromProps) => {
+    const name = values.name.trim();
+    const newValues = { ...values, name };
     switch (source) {
       case VCSourceOptions.WRITTEN_KNOWLEDGE:
-        onCreateSpace(values);
+        onCreateSpace(newValues);
         break;
       case VCSourceOptions.EXISTING_SPACE:
-        onUseExistingKnowledge(values);
+        onUseExistingKnowledge(newValues);
         break;
       case VCSourceOptions.EXTERNAL:
         setExernalOpen(true);
@@ -126,7 +128,7 @@ const CreateNewVirtualContributor = ({
         {!loading && (
           <Gutters disablePadding>
             <Caption>{t('createVirtualContributorWizard.initial.profileDescription')}</Caption>
-            <GridContainer disablePadding>
+            <GridContainer disablePadding sx={{ display: 'contents' }}>
               <GridProvider columns={12}>
                 <Formik
                   initialValues={initialValues}
