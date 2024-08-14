@@ -95,9 +95,10 @@ export const useConsumeAction = (action: SubspaceDialog | undefined | null | fal
   return actionDef;
 };
 
+const MENU_STATE_KEY = 'menuState';
 enum MenuState {
-  expanded = 'expanded',
-  collapsed = 'collapsed',
+  EXPANDED = 'expanded',
+  COLLAPSED = 'collapsed',
 }
 
 const SubspacePageLayout = ({
@@ -113,7 +114,7 @@ const SubspacePageLayout = ({
   children,
   infoColumnChildren,
 }: PropsWithChildren<SubspacePageLayoutProps>) => {
-  const [isCollapsed, setIsCollapsed] = useState(localStorage.getItem('menuState') === MenuState.collapsed || false);
+  const [isCollapsed, setIsCollapsed] = useState(localStorage.getItem(MENU_STATE_KEY) === MenuState.COLLAPSED || false);
 
   const { t } = useTranslation();
 
@@ -191,7 +192,7 @@ const SubspacePageLayout = ({
                         variant="contained"
                         onClick={() => {
                           setIsCollapsed(true);
-                          localStorage.setItem('menuState', MenuState.collapsed);
+                          localStorage.setItem(MENU_STATE_KEY, MenuState.COLLAPSED);
                         }}
                         sx={{ '.MuiSvgIcon-root': { transform: 'rotate(180deg)' } }}
                       >
@@ -207,7 +208,7 @@ const SubspacePageLayout = ({
                           iconButton
                           onClick={() => {
                             setIsCollapsed(false);
-                            localStorage.setItem('menuState', MenuState.expanded);
+                            localStorage.setItem(MENU_STATE_KEY, MenuState.EXPANDED);
                           }}
                         >
                           <KeyboardTab />
