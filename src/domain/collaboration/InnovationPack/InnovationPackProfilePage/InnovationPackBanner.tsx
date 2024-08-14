@@ -66,8 +66,8 @@ const InnovationPackBanner = ({
             avatar: {
               uri: providerVisualUri,
             },
+            url: providerUri,
           }}
-          url={providerUri}
         />
       </PageContent>
     </Root>

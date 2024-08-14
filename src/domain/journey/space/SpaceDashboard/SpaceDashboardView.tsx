@@ -30,7 +30,7 @@ import ContentColumn from '../../../../core/ui/content/ContentColumn';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
 import { ContributorViewProps } from '../../../community/community/EntityDashboardContributorsSection/Types';
-import TryVirtualContributorDialog from '../../../../main/topLevelPages/myDashboard/newVirtualContributorWizard/TryVirtualContributorDialog';
+import TryVCInfoDialog from '../../../../main/topLevelPages/myDashboard/newVirtualContributorWizard/TryVCInfoDialog';
 import {
   getVCCreationCache,
   removeVCCreationCache,
@@ -109,7 +109,6 @@ const SpaceDashboardView = ({
 
   useEffect(() => {
     // on mount of a space, check the LS and show the try dialog if present
-
     const cachedVC = getVCCreationCache();
 
     if (cachedVC) {
@@ -188,7 +187,7 @@ const SpaceDashboardView = ({
           />
         </ContentColumn>
         {spaceId && tryVirtualContributorOpen && (
-          <TryVirtualContributorDialog
+          <TryVCInfoDialog
             open={tryVirtualContributorOpen}
             onClose={onCloseTryVirtualContributor}
             spaceId={spaceId}
