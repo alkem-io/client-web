@@ -13,7 +13,11 @@ import Gutters from '../../../../core/ui/grid/Gutters';
 
 export const POPPER_Z_INDEX = 1400; // Dialogs are 1300
 const MAX_USERS_LISTED = 30;
+
 export const MENTION_SYMBOL = '@';
+const MENTION_INVALID_CHARS_REGEXP = /[.?%_\\]/; // skip mentions if any of these are used after MENTION_SYMBOL
+const MAX_SPACES_IN_MENTION = 2;
+const MAX_MENTION_LENGTH = 30;
 
 interface EnrichedSuggestionDataItem extends SuggestionDataItem {
   // `id` and `display` are from SuggestionDataItem and used by react-mentions
@@ -124,6 +128,8 @@ const StyledCommentInput = styled(Box)(({ theme }) => ({
   },
 }));
 
+const hasExcessiveSpaces = (searchTerm: string) => searchTerm.trim().split(' ').length > MAX_SPACES_IN_MENTION + 1;
+
 export const CommentInputField: FC<InputBaseComponentProps> = forwardRef<
   HTMLDivElement | null,
   InputBaseComponentProps
@@ -160,7 +166,13 @@ export const CommentInputField: FC<InputBaseComponentProps> = forwardRef<
   const hasVcInteraction = vcInteractions.some(interaction => interaction?.threadID === threadId);
 
   const getMentionableUsers = async (search: string): Promise<EnrichedSuggestionDataItem[]> => {
-    if (!search || emptyQueries.some(query => search.startsWith(query))) {
+    if (
+      !search ||
+      emptyQueries.some(query => search.startsWith(query)) ||
+      hasExcessiveSpaces(search) ||
+      MENTION_INVALID_CHARS_REGEXP.test(search) ||
+      search.length > MAX_MENTION_LENGTH
+    ) {
       return [];
     }
 
