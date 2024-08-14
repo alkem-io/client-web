@@ -4,10 +4,10 @@ import Avatar from '../../../core/ui/avatar/Avatar';
 import RouterLink from '../../../core/ui/link/RouterLink';
 import { Caption, CardTitle } from '../../../core/ui/typography';
 import OneLineMarkdown from '../../../core/ui/markdown/OneLineMarkdown';
-import { AuthorizationPrivilege, SpaceVisibility } from '../../../core/apollo/generated/graphql-schema';
+import { SpaceVisibility } from '../../../core/apollo/generated/graphql-schema';
 import { gutters } from '../../../core/ui/grid/utils';
 import { useTranslation } from 'react-i18next';
-import { useUserContext } from '../../community/user';
+import { buildInnovationHubUrl } from '../../../main/routing/urlBuilders';
 
 export const InnovationHubCardHorizontalSkeleton = () => (
   <BadgeCardView
@@ -31,6 +31,7 @@ export interface InnovationHubCardHorizontalProps extends InnovationHubSpacesPro
     };
     url: string;
   };
+  subdomain: string;
 }
 
 interface InnovationHubSpacesProps {
@@ -60,22 +61,16 @@ const InnovationHubSpaces = ({ spaceVisibilityFilter, spaceListFilter }: Innovat
 };
 
 const InnovationHubCardHorizontal = ({
-  profile: { displayName, description, url, banner },
+  profile: { displayName, description, banner },
+  subdomain,
   ...spaces
 }: InnovationHubCardHorizontalProps) => {
-  const { user: { hasPlatformPrivilege } = {} } = useUserContext();
-  const isPlatformAdmin = hasPlatformPrivilege?.(AuthorizationPrivilege.PlatformAdmin);
-
-  const componentProps =
-    url && isPlatformAdmin
-      ? {
-          component: RouterLink,
-          to: url,
-        }
-      : undefined;
-
   return (
-    <BadgeCardView visual={<Avatar src={banner?.uri} size="medium" />} {...componentProps}>
+    <BadgeCardView
+      visual={<Avatar src={banner?.uri} size="medium" />}
+      component={RouterLink}
+      to={buildInnovationHubUrl(subdomain)}
+    >
       <Box display="flex" flexDirection="row" justifyContent="space-between">
         <Box display="flex" flexDirection="column">
           <CardTitle>{displayName}</CardTitle>
