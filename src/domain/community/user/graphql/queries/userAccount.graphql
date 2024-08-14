@@ -41,6 +41,7 @@ query UserAccount($userId: UUID_NAMEID_EMAIL!) {
             displayName
           }
         }
+        subdomain
       }
     }
   }

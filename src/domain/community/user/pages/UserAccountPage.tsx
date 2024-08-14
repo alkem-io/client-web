@@ -101,14 +101,7 @@ export const UserAccountPage: FC<UserAccountPageProps> = () => {
           <PageContentBlock halfWidth>
             <BlockTitle>{t('pages.admin.generic.sections.account.customHomepages')}</BlockTitle>
             {loading && <InnovationHubCardHorizontalSkeleton />}
-            {!loading &&
-              innovationHubs?.map(hub => (
-                <InnovationHubCardHorizontal
-                  profile={hub.profile}
-                  spaceListFilter={hub.spaceListFilter}
-                  spaceVisibilityFilter={hub.spaceVisibilityFilter}
-                />
-              ))}
+            {!loading && innovationHubs?.map(hub => <InnovationHubCardHorizontal {...hub} />)}
           </PageContentBlock>
         )}
       </PageContentColumn>

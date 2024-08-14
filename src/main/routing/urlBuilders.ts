@@ -47,3 +47,27 @@ export const buildInnovationPackUrl = (innovationPackNameId: string) =>
   `/${TopLevelRoutePath.InnovationPacks}/${innovationPackNameId}`;
 
 export const buildInnovationPackSettingsUrl = buildSettingsUrl;
+
+export const buildInnovationHubUrl = (subdomain: string): string => {
+  if (!window || !window.location) {
+    throw new Error("Couldn't determine the base URL");
+  }
+
+  const { hostname, protocol, origin } = window.location;
+  if (import.meta.env.MODE === 'development') {
+    // For localhost return always the base URL
+    if (subdomain) {
+      return `${origin}/?subdomain=${subdomain}`;
+    } else {
+      return origin;
+    }
+  } else {
+    // get the last 2 parts of the hostname: ['xx-alkem', 'io']
+    const domain = hostname.split('.').slice(-2);
+    if (subdomain) {
+      return `${protocol}//${subdomain}.${domain.join('.')}`;
+    } else {
+      return `${protocol}//${domain.join('.')}`;
+    }
+  }
+};
