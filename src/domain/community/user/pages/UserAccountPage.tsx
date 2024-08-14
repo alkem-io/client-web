@@ -19,10 +19,10 @@ import InnovationHubCardHorizontal, {
 } from '../../../innovationHub/InnovationHubCardHorizontal/InnovationHubCardHorizontal';
 import { Actions } from '../../../../core/ui/actions/Actions';
 import CreateInnovationPackDialog from '../../../platform/admin/templates/InnovationPacks/admin/CreateInnovationPackDialog';
-import CreateSpaceDialog from '../../../journey/space/createSpace/CreateSpaceDialog';
+// import CreateSpaceDialog from '../../../journey/space/createSpace/CreateSpaceDialog';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { useUserContext } from '../hooks/useUserContext';
-import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
+// import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
 import { compact } from 'lodash';
 
 interface UserAccountPageProps {}
@@ -40,8 +40,8 @@ export const UserAccountPage: FC<UserAccountPageProps> = () => {
   });
 
   const isMyProfile = data?.user.id === currentUser?.user.id;
-  const canCreateSpace =
-    isMyProfile && currentUser && currentUser.hasPlatformPrivilege(AuthorizationPrivilege.CreateSpace);
+  // const canCreateSpace =
+  //   isMyProfile && currentUser && currentUser.hasPlatformPrivilege(AuthorizationPrivilege.CreateSpace);
 
   const accounts = data?.user?.accounts ?? [];
   // TODO: This will not be needed when we have multiple spaces per account and a single account per user
@@ -82,7 +82,7 @@ export const UserAccountPage: FC<UserAccountPageProps> = () => {
                 />
               ))}
           </Gutters>
-          <Actions>{canCreateSpace && <CreateSpaceDialog />}</Actions>
+          {/* <Actions>{canCreateSpace && <CreateSpaceDialog />}</Actions> */}
         </PageContentBlock>
         <PageContentBlock halfWidth>
           <BlockTitle>{t('pages.admin.generic.sections.account.virtualContributors')}</BlockTitle>
