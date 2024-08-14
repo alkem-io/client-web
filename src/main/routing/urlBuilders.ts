@@ -57,7 +57,7 @@ export const buildInnovationHubUrl = (subdomain: string): string => {
   if (import.meta.env.MODE === 'development') {
     // For localhost return always the base URL
     if (subdomain) {
-      return `${origin}?subdomain=${subdomain}`;
+      return `${origin}/?subdomain=${subdomain}`;
     } else {
       return origin;
     }
