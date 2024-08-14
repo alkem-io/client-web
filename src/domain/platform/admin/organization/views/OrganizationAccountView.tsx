@@ -13,7 +13,6 @@ import ContributorCardHorizontal, {
 } from '../../../../../core/ui/card/ContributorCardHorizontal';
 import InnovationPackCardHorizontal, {
   InnovationPackCardHorizontalProps,
-  InnovationPackCardHorizontalSkeleton,
 } from '../../../../collaboration/InnovationPack/InnovationPackCardHorizontal/InnovationPackCardHorizontal';
 import InnovationHubCardHorizontal, {
   InnovationHubCardHorizontalProps,
@@ -64,23 +63,17 @@ export const OrganizationAccountView = ({
           {!loading && virtualContributors?.map(vc => <ContributorCardHorizontal {...vc} seamless />)}
         </Gutters>
       </PageContentBlock>
-      <PageContentBlock halfWidth>
-        <BlockTitle>{t('pages.admin.generic.sections.account.innovationPacks')}</BlockTitle>
-        {loading && <InnovationPackCardHorizontalSkeleton />}
-        {!loading && innovationPacks?.map(pack => <InnovationPackCardHorizontal {...pack} />)}
-      </PageContentBlock>
+      {(innovationPacks?.length ?? 0) > 0 && (
+        <PageContentBlock halfWidth>
+          <BlockTitle>{t('pages.admin.generic.sections.account.innovationPacks')}</BlockTitle>
+          {!loading && innovationPacks.map(pack => <InnovationPackCardHorizontal {...pack} />)}
+        </PageContentBlock>
+      )}
       {innovationHubs.length > 0 && (
         <PageContentBlock halfWidth>
           <BlockTitle>{t('pages.admin.generic.sections.account.customHomepages')}</BlockTitle>
           {loading && <InnovationHubCardHorizontalSkeleton />}
-          {!loading &&
-            innovationHubs?.map(hub => (
-              <InnovationHubCardHorizontal
-                profile={hub.profile}
-                spaceListFilter={hub.spaceListFilter}
-                spaceVisibilityFilter={hub.spaceVisibilityFilter}
-              />
-            ))}
+          {!loading && innovationHubs?.map(hub => <InnovationHubCardHorizontal {...hub} />)}
         </PageContentBlock>
       )}
     </PageContentColumn>

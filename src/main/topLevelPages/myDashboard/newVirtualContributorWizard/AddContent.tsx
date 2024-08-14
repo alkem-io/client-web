@@ -44,6 +44,9 @@ export interface ContentFormValues {
   documents: DocumentValues[];
 }
 
+const MAX__POSTS = 25;
+const MIN__POSTS = 1;
+
 const AddContent = ({ onClose, onCreateVC }: AddContentProps) => {
   const { t } = useTranslation();
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -52,24 +55,31 @@ const AddContent = ({ onClose, onCreateVC }: AddContentProps) => {
   const validationSchema = yup.object().shape({
     posts: yup.array().of(
       yup.object().shape({
-        title: yup.string().min(3, MessageWithPayload('forms.validations.minLength')).required(),
-        description: MarkdownValidator(LONG_MARKDOWN_TEXT_LENGTH),
-      })
-    ),
-    documents: yup.array().of(
-      yup.object().shape({
-        name: yup
+        title: yup
           .string()
           .min(3, MessageWithPayload('forms.validations.minLength'))
           .max(SMALL_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength'))
-          .when('url', {
-            is: (url: string) => url.length > 0,
-            then: yup.string().required(),
-            otherwise: yup.string().notRequired(),
-          }),
-        url: yup.string().max(MID_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength')),
+          .required(MessageWithPayload('forms.validations.requiredField')),
+        description: MarkdownValidator(LONG_MARKDOWN_TEXT_LENGTH),
       })
     ),
+    documents: yup
+      .array()
+      .of(
+        yup.object().shape({
+          name: yup
+            .string()
+            .min(3, MessageWithPayload('forms.validations.minLength'))
+            .max(SMALL_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength'))
+            .when('url', {
+              is: (url: string) => url.length > 0,
+              then: yup.string().required(),
+              otherwise: yup.string().notRequired(),
+            }),
+          url: yup.string().max(MID_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength')),
+        })
+      )
+      .min(MIN__POSTS, MessageWithPayload('forms.validations.minLength')),
   });
 
   const initialValues: ContentFormValues = {
@@ -149,29 +159,41 @@ const AddContent = ({ onClose, onCreateVC }: AddContentProps) => {
                           hideImageOptions
                           value={post.description}
                         />
-                        <Tooltip
-                          title={t('createVirtualContributorWizard.addContent.post.delete')}
-                          placement={'bottom'}
-                        >
-                          <IconButton
-                            onClick={() => handleDelete(index)}
-                            size="large"
-                            aria-label={t('createVirtualContributorWizard.addContent.post.delete')}
-                            sx={{ marginTop: gutters(-1), alignSelf: 'flex-end' }}
+                        {values.posts.length > MIN__POSTS && (
+                          <Tooltip
+                            title={t('createVirtualContributorWizard.addContent.post.delete')}
+                            placement={'bottom'}
                           >
-                            <DeleteOutlineIcon color="primary" />
-                          </IconButton>
-                        </Tooltip>
+                            <IconButton
+                              onClick={() => handleDelete(index)}
+                              size="large"
+                              aria-label={t('createVirtualContributorWizard.addContent.post.delete')}
+                              sx={{ marginTop: gutters(-1), alignSelf: 'flex-end' }}
+                            >
+                              <DeleteOutlineIcon color="primary" />
+                            </IconButton>
+                          </Tooltip>
+                        )}
                       </Box>
                     </Gutters>
                   ))}
 
                   <Tooltip
-                    title={t('createVirtualContributorWizard.addContent.post.addAnotherPost')}
-                    placement={'bottom'}
+                    title={
+                      values.posts.length >= MAX__POSTS
+                        ? t('createVirtualContributorWizard.addContent.post.tooltip')
+                        : t('createVirtualContributorWizard.addContent.post.addAnotherPost')
+                    }
+                    placement={'bottom-start'}
                   >
-                    <Box marginTop={gutters(-1)}>
-                      <Button color="primary" variant="outlined" startIcon={<AddIcon />} onClick={handleAdd}>
+                    <Box>
+                      <Button
+                        color="primary"
+                        variant="outlined"
+                        startIcon={<AddIcon />}
+                        disabled={values.posts.length >= MAX__POSTS}
+                        onClick={handleAdd}
+                      >
                         {t('createVirtualContributorWizard.addContent.post.addAnotherPost')}
                       </Button>
                     </Box>
@@ -256,9 +278,20 @@ const AddContent = ({ onClose, onCreateVC }: AddContentProps) => {
                       <Button variant="text" onClick={onCancel}>
                         {t('buttons.cancel')}
                       </Button>
-                      <LoadingButton variant="contained" disabled={!isValid} onClick={() => onCreateVC(values)}>
-                        {t('buttons.continue')}
-                      </LoadingButton>
+                      <Tooltip
+                        title={
+                          values.posts.length < MIN__POSTS
+                            ? t('createVirtualContributorWizard.addContent.submitDisabled')
+                            : undefined
+                        }
+                        placement={'bottom-start'}
+                      >
+                        <span>
+                          <LoadingButton variant="contained" disabled={!isValid} onClick={() => onCreateVC(values)}>
+                            {t('buttons.continue')}
+                          </LoadingButton>
+                        </span>
+                      </Tooltip>
                     </Actions>
                   </Box>
                 </>

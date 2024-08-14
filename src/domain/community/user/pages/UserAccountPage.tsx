@@ -88,31 +88,20 @@ export const UserAccountPage: FC<UserAccountPageProps> = () => {
           <BlockTitle>{t('pages.admin.generic.sections.account.virtualContributors')}</BlockTitle>
           <Gutters disablePadding>
             {loading && <JourneyCardHorizontalSkeleton />}
-            {!loading &&
-              virtualContributors?.map(vc => (
-                <ContributorCardHorizontal profile={vc.profile} url={vc.profile.url} seamless />
-              ))}
+            {!loading && virtualContributors?.map(vc => <ContributorCardHorizontal profile={vc.profile} seamless />)}
           </Gutters>
         </PageContentBlock>
         <PageContentBlock halfWidth>
           <BlockTitle>{t('pages.admin.generic.sections.account.innovationPacks')}</BlockTitle>
           {loading && <InnovationPackCardHorizontalSkeleton />}
-          {!loading &&
-            innovationPacks?.map(pack => <InnovationPackCardHorizontal profile={pack.profile} {...pack.templates} />)}
+          {!loading && innovationPacks?.map(pack => <InnovationPackCardHorizontal {...pack} />)}
           <Actions>{isMyProfile && accountId && <CreateInnovationPackDialog accountId={accountId} />}</Actions>
         </PageContentBlock>
         {innovationHubs.length > 0 && (
           <PageContentBlock halfWidth>
             <BlockTitle>{t('pages.admin.generic.sections.account.customHomepages')}</BlockTitle>
             {loading && <InnovationHubCardHorizontalSkeleton />}
-            {!loading &&
-              innovationHubs?.map(hub => (
-                <InnovationHubCardHorizontal
-                  profile={hub.profile}
-                  spaceListFilter={hub.spaceListFilter}
-                  spaceVisibilityFilter={hub.spaceVisibilityFilter}
-                />
-              ))}
+            {!loading && innovationHubs?.map(hub => <InnovationHubCardHorizontal {...hub} />)}
           </PageContentBlock>
         )}
       </PageContentColumn>

@@ -888,6 +888,7 @@
   "forms": {
     "validations": {
       "required": "This field is required!",
+      "requiredField": "{{field}} is required!",
       "minLength": "{{field}} should be at least {{min}} symbols long",
       "maxLength": "Exceeded the limit of {{max}} characters",
       "alphaNumeric": "{{field}} can contain only lower case latin characters, numbers and hyphens",
@@ -1841,6 +1842,7 @@
             "hostedSpaces": "Hosted Spaces",
             "virtualContributors": "Virtual Contributors",
             "innovationPacks": "$t(common.innovation-packs)",
+            "noTemplates": "This Innovation Pack doesn't have any template yet",
             "customHomepages": "Your Custom Homepages",
             "hostTitle": "Host",
             "contactsLink": "If you want to change any of these settings, please contact the Alkemio team here.",
@@ -2949,7 +2951,8 @@
       "externalAI": "External AI"
     },
     "loadingInfo": {
-      "spaceCreation": "A {{entity}} for adding the knowledge for your Virtual Contributor is being built. This process may take a few moments to complete.",
+      "subspaceCreation": "A Subspace for adding the knowledge for your Virtual Contributor is being built. This process may take a few moments to complete.",
+      "spaceAndSubspaceCreation": "A Space and Subspace for adding the knowledge for your Virtual Contributor are being built. This process may take a few moments to complete.",
       "vcCreation": "Your Virtual Contributor is being created. This process may take a few moments to complete."
     },
     "cancel": {
@@ -2966,6 +2969,7 @@
         "exampleTitle": "Example: About Alkemio",
         "exampleDescription": "Tip: Create a structured and specific text, for example:\n\n<strong>Background</strong>\n\nAlkemio, founded in 2020, was born out of frustration with slow progress on COVID-related challenges and a recognition of the numerous fast-moving challenges we face daily.\n\n<strong>Governance</strong>\n\nTo maintain trust and realize our long-term vision, we’ve adopted Steward Ownership as our core group structure. Steward ownership is...\n",
         "addAnotherPost": "Add another post",
+        "tooltip": "More posts can be added in the Body of Knowledge once the VC is created",
         "initialPosts": "Initial Posts",
         "delete": "Delete post"
       },
@@ -2977,7 +2981,8 @@
         "addAnother": "Add another document",
         "remove": "Remove document",
         "initialDocuments": "Initial Links and Documents"
-      }
+      },
+      "submitDisabled": "Add at least one Post to continue"
     },
     "externalAICommingSoon": {
       "title": "🚀 Coming soon!",
@@ -2995,11 +3000,11 @@
     },
     "trySection": {
       "title": "🎉 Try it out!",
-      "subTitle": "Your Virtual Contributor is successfully created and we added it to your personal Space <tooltip><icon /></tooltip>. You can now interact with it by typing <i>@{{vcName}}</i> in a comment on any post in your Space. Give it a try in the preview below!",
+      "subTitle": "Your Virtual Contributor is being created and added it to your personal Space <tooltip><icon /></tooltip>. This process may take a couple of minutes, after which you can interact with it by typing <b>@{{vcName}}</b> in a comment on any post in your Space.",
       "subTitleInfo": "When you create your first VC, we automatically generate a Space for you. This Space functions like any other Space on Alkemio, and you can customize the settings according to your preferences.",
       "postTitle": "Example post",
       "postDescription": "At Alkemio, we utilize Posts to facilitate collaborative interactions with AI. Unlike private chats, other members within a Space can learn from and contribute to these interactions.\n\nSimilar to mentioning a human contributor, you can use the \"@\" symbol followed by the Virtual Contributor's name.",
-      "lastInfoBox": "To <b>change the knowledge</b> of this Virtual Contributor, visit its Knowledge (Sub)Space. Don't forget to press the Update button on your Virtual Contributor's profile settings when you're done!",
+      "lastInfoBox": "To <b>change the knowledge</b> of this Virtual Contributor, visit its Knowledge (Sub)Space.\nDon't forget to press the Update button on your Virtual Contributor's profile settings when you're done!",
       "continueButton": "Visit Space"
     },
     "existingSpace": {

@@ -22,6 +22,7 @@ import {
   CalloutVisibility,
   LicensePlanType,
   NewVirtualContributorMySpacesQuery,
+  SpaceType,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
 import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
@@ -167,6 +168,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     return await createSubspace({
       variables: {
         input: {
+          type: SpaceType.Knowledge,
           spaceID: parentId,
           context: {
             vision: '-',
@@ -177,7 +179,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
           },
           tags: [],
           collaborationData: {
-            addDefaultCallouts: false,
+            addDefaultCallouts: true,
           },
         },
       },
@@ -239,10 +241,13 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
           licensePlanId: plans[0]?.id,
         },
       });
-
       setSpaceId(newSpace?.createAccount.spaceID);
       setAccountId(newSpace?.createAccount.id);
       setCreationIndex(0);
+
+      const subspace = await handleSubspaceCreation(newSpace?.createAccount.spaceID ?? '', values.name);
+      setbokId(subspace?.data?.createSubspace.id);
+      setBokCommunityId(subspace?.data?.createSubspace.community.id);
     }
 
     setStep('addKnowledge');
