@@ -20,13 +20,12 @@ const LoadingState = ({ onClose, entity = 'space' }: LoadingStateProps) => {
     setDialogOpen(true);
   };
 
-  const getEntityValue = (entity: string) => {
+  const getTranslationBasedOnEntity = (entity: string) => {
     switch (entity) {
       case 'subspace':
-        return t('common.subspace');
-      case 'space':
+        return t('createVirtualContributorWizard.loadingInfo.subspaceCreation');
       default:
-        return t('common.space');
+        return t('createVirtualContributorWizard.loadingInfo.spaceAndSubspaceCreation');
     }
   };
 
@@ -35,9 +34,7 @@ const LoadingState = ({ onClose, entity = 'space' }: LoadingStateProps) => {
       <DialogHeader onClose={onCancel} />
       <Loading text="" />
       <Gutters padding={gutters(2)} textAlign="center">
-        <Caption>
-          {t('createVirtualContributorWizard.loadingInfo.spaceCreation', { entity: getEntityValue(entity) })}
-        </Caption>
+        <Caption>{getTranslationBasedOnEntity(entity)}</Caption>
       </Gutters>
       <CancelDialog open={dialogOpen} onClose={() => setDialogOpen(false)} onConfirm={onClose} />
     </>
