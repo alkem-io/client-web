@@ -53,21 +53,21 @@ export const buildInnovationHubUrl = (subdomain: string): string => {
     throw new Error("Couldn't determine the base URL");
   }
 
+  const { hostname, protocol, origin } = window.location;
   if (import.meta.env.MODE === 'development') {
     // For localhost return always the base URL
     if (subdomain) {
-      return `${window.location.origin}?subdomain=${subdomain}`;
+      return `${origin}?subdomain=${subdomain}`;
     } else {
-      return window.location.origin;
+      return origin;
     }
   } else {
     // get the last 2 parts of the hostname: ['xx-alkem', 'io']
-    const url = window.location;
-    const domain = url.hostname.split('.').slice(-2);
+    const domain = hostname.split('.').slice(-2);
     if (subdomain) {
-      return `${url.protocol}//${subdomain}.${domain.join('.')}`;
+      return `${protocol}//${subdomain}.${domain.join('.')}`;
     } else {
-      return `${url.protocol}//${domain.join('.')}`;
+      return `${protocol}//${domain.join('.')}`;
     }
   }
 };

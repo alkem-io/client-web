@@ -18533,6 +18533,7 @@ export type UserAccountQuery = {
         __typename?: 'InnovationHub';
         id: string;
         spaceVisibilityFilter?: SpaceVisibility | undefined;
+        subdomain: string;
         profile: {
           __typename?: 'Profile';
           id: string;
@@ -23904,6 +23905,7 @@ export type OrganizationAccountQuery = {
         __typename?: 'InnovationHub';
         id: string;
         spaceVisibilityFilter?: SpaceVisibility | undefined;
+        subdomain: string;
         profile: {
           __typename?: 'Profile';
           id: string;
